@@ -17,7 +17,7 @@ export const sketchStyle: DesignStyle = {
     secondary: "#f5f0e8",
     accent: ["#e74c3c", "#3498db", "#27ae60", "#f39c12"],
   },
-  keywords: ["手绘", "铅笔", "素描", "纸张", "手写", "涂鸦", "不规则"],
+  keywords: ["手绘", "铅笔", "素描", "纸张", "手写", "涂鸦", "不规则", "expressive", "bold", "vibrant"],
 
   philosophy: `Sketch Style 是一种模拟手绘铅笔素描的设计风格，通过不规则的线条、纸张纹理和手写感元素，为数字界面注入温暖的手工质感。
 
@@ -25,7 +25,14 @@ export const sketchStyle: DesignStyle = {
 - 手工感：线条和形状不追求完美对齐，保留手绘的不规则感
 - 纸张质感：使用暖色调米色背景模拟素描本纸张
 - 铅笔线条：边框使用不均匀的手绘风格线条
-- 素描阴影：使用交叉线条（cross-hatching）模拟阴影效果`,
+- 素描阴影：使用交叉线条（cross-hatching）模拟阴影效果
+
+设计原则：
+- 视觉一致性：所有组件必须遵循统一的视觉语言，从色彩到字体到间距保持谐调
+- 层次分明：通过颜色深浅、字号大小、留白空间建立清晰的信息层级
+- 交互反馈：每个可交互元素都必须有明确的 hover、active、focus 状态反馈
+- 响应式适配：设计必须在移动端、平板、桌面端上保持一致的体验
+- 无障碍性：确保色彩对比度符合 WCAG 2.1 AA 标准，所有交互元素可键盘访问`,
 
   philosophyEn: `Sketch Style is a design style simulating hand-drawn pencil sketches, injecting warm handcrafted texture into digital interfaces through irregular lines, paper textures, and handwritten-feel elements.
 
@@ -268,6 +275,59 @@ Core principles:
   border: 2px solid var(--sketch-dark);
   border-radius: 50%;
   transform: rotate(-2deg);
+}
+@keyframes sketch-style-fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes sketch-style-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.sketch-style-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.sketch-style-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  background: linear-gradient(135deg, rgba(44, 44, 44, 0.05), transparent);
+  pointer-events: none;
+}
+
+.sketch-style-card:hover::before {
+  opacity: 1;
+}
+
+.sketch-style-gradient {
+  background: linear-gradient(135deg, #2c2c2c, #e74c3c);
+}
+
+.sketch-style-gradient-text {
+  background: linear-gradient(135deg, #2c2c2c, #e74c3c);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.sketch-style-frosted {
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  background: rgba(44, 44, 44, 0.08);
+}
+
+.sketch-style-accent-corner {
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 2rem), calc(100% - 2rem) 100%, 0 100%);
+}
+
+.sketch-style-animate-in {
+  animation: sketch-style-fade-in 0.5s ease-out both;
 }`,
 
   aiRules: `你是一个 Sketch Style 设计风格的前端开发专家。生成的所有代码必须严格遵守以下约束：
@@ -323,7 +383,28 @@ Core principles:
 - Pencil Shading: hover 时可将线框元素快速涂黑并反白文字，模拟铅笔涂抹。
 - Stroke Jitter: 交互允许轻微旋转和位移抖动，保留手绘笔触不稳定感。
 - Scribble Reveal: 文本强调优先使用虚线/波浪下划线或手绘轨迹样式。
-- Paper Press: active 状态应减少阴影并增强倾斜，表现笔尖压纸阻尼感。`,
+- Paper Press: active 状态应减少阴影并增强倾斜，表现笔尖压纸阻尼感。
+
+## Layout & Spacing
+- Section padding: py-16 md:py-24
+- Card padding: p-6 md:p-8
+- Gap between cards: gap-6 md:gap-8
+- Max content width: max-w-6xl mx-auto
+
+## Responsive Design
+- Mobile-first approach with Tailwind breakpoints
+- Stack elements vertically on mobile (flex-col), row on desktop (md:flex-row)
+- Reduce font sizes on mobile: text-3xl md:text-5xl for headings
+- Touch-friendly targets: min 44px for interactive elements
+
+## Self-Check Verification
+After generating code, verify:
+1. All interactive elements have hover/focus/active states
+2. Color contrast meets WCAG 2.1 AA (4.5:1 for text)
+3. Layout is responsive across breakpoints
+4. Typography hierarchy is clear (h1 > h2 > h3 > body)
+5. Spacing is consistent using the defined scale
+6. All animations respect prefers-reduced-motion`,
 
   aiRulesEn: `You are a Sketch Style design frontend development expert. All generated code must strictly follow these constraints:
 
@@ -406,6 +487,37 @@ After generating code, verify:
 4. 涂鸦圆圈标注关键点
 5. 虚线分割线分隔内容
 6. 铅笔素描风格的图标`,
+    },
+  {
+      title: "作品集展示",
+      titleEn: "Portfolio Showcase",
+      description: "生成 铅笔手绘风风格的作品集页面",
+      descriptionEn: "Generate a portfolio showcase in Sketch Style style",
+      prompt: `Create a portfolio showcase page using Sketch Style style with project grid, about section, contact form, and consistent visual language.`,
+    }],
+
+  variants: [
+    {
+      id: "sketch-style-warm",
+      name: "铅笔手绘风暖色版",
+      nameEn: "Sketch Style Warm",
+      description: "Warm-toned variant with shifted hues toward amber/orange",
+      colors: {
+        primary: "#2c2c2c",
+        secondary: "#f6f2ea",
+        accent: ["#bf5e05", "#6985fa", "#1fab98", "#9fb700"],
+      },
+    },
+    {
+      id: "sketch-style-cool",
+      name: "铅笔手绘风冷色版",
+      nameEn: "Sketch Style Cool",
+      description: "Cool-toned variant with shifted hues toward blue/teal",
+      colors: {
+        primary: "#2c2c2c",
+        secondary: "#ddd8d1",
+        accent: ["#ee4380", "#15a6a6", "#4aa834", "#ff834d"],
+      },
     },
   ],
 };

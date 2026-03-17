@@ -15,9 +15,9 @@ export const steampunk: DesignStyle = {
   colors: {
     primary: "#b5a642",
     secondary: "#3d2b1f",
-    accent: ["#b87333", "#f5f0e1", "#4a4a4a"],
+    accent: ["#b87333", "#f5f0e1", "#4a4a4a", "#5a9025"],
   },
-  keywords: ["蒸汽朋克", "齿轮", "黄铜", "铜质", "工业", "发条", "维多利亚", "铆钉"],
+  keywords: ["蒸汽朋克", "齿轮", "黄铜", "铜质", "工业", "发条", "维多利亚", "铆钉", "expressive", "bold"],
 
   philosophy: `Steampunk 风格源自维多利亚时代工业革命的美学想象，通过黄铜/铜质金属质感、齿轮机关元素和精密的机械细节创造复古未来感。
 
@@ -25,7 +25,14 @@ export const steampunk: DesignStyle = {
 - 金属质感：黄铜与铜质为核心色调，呈现温暖的金属光泽
 - 机械装饰：齿轮、管道、铆钉等工业元素融入界面设计
 - 维多利亚优雅：使用衬线字体和装饰性边框保持古典优雅
-- 做旧纹理：深棕色背景与泛黄纸张色营造年代感`,
+- 做旧纹理：深棕色背景与泛黄纸张色营造年代感
+
+设计原则：
+- 视觉一致性：所有组件必须遵循统一的视觉语言，从色彩到字体到间距保持谐调
+- 层次分明：通过颜色深浅、字号大小、留白空间建立清晰的信息层级
+- 交互反馈：每个可交互元素都必须有明确的 hover、active、focus 状态反馈
+- 响应式适配：设计必须在移动端、平板、桌面端上保持一致的体验
+- 无障碍性：确保色彩对比度符合 WCAG 2.1 AA 标准，所有交互元素可键盘访问`,
 
   philosophyEn: `Steampunk style originates from the aesthetic imagination of the Victorian-era Industrial Revolution, creating a retro-futuristic feel through brass/copper metallic textures, gear mechanism elements, and precision mechanical details.
 
@@ -154,6 +161,57 @@ Core principles:
 @keyframes gear-spin {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
+}
+/* Steampunk Design Tokens */
+:root {
+  --steampunk-primary: #b5a642;
+  --steampunk-secondary: #3d2b1f;
+  --steampunk-accent: #b87333;
+  --steampunk-glow: rgba(181, 166, 66, 0.3);
+}
+
+.steampunk-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.steampunk-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  background: linear-gradient(135deg, rgba(181, 166, 66, 0.05), transparent);
+  pointer-events: none;
+}
+
+.steampunk-card:hover::before {
+  opacity: 1;
+}
+
+.steampunk-gradient {
+  background: linear-gradient(135deg, #b5a642, #b87333);
+}
+
+.steampunk-gradient-text {
+  background: linear-gradient(135deg, #b5a642, #b87333);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.steampunk-frosted {
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  background: rgba(181, 166, 66, 0.08);
+}
+
+.steampunk-accent-corner {
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 2rem), calc(100% - 2rem) 100%, 0 100%);
+}
+
+.steampunk-animate-in {
+  animation: steampunk-fade-in 0.5s ease-out both;
 }`,
 
   aiRules: `STYLE: Steampunk
@@ -255,6 +313,44 @@ SPECIAL EFFECTS:
 - Brass gradient buttons with metallic sheen
 - Victorian serif typography
 - Copper border accents and warm glow effects`,
+    },
+  {
+      title: "SaaS 着陆页",
+      titleEn: "SaaS Landing Page",
+      description: "生成 蒸汽朋克风格的 SaaS 产品着陆页",
+      descriptionEn: "Generate a SaaS product landing page in Steampunk style",
+      prompt: `Create a SaaS landing page using Steampunk style with hero section, feature grid, testimonials, pricing table, and footer.`,
+    },
+    {
+      title: "作品集展示",
+      titleEn: "Portfolio Showcase",
+      description: "生成 蒸汽朋克风格的作品集页面",
+      descriptionEn: "Generate a portfolio showcase in Steampunk style",
+      prompt: `Create a portfolio showcase page using Steampunk style with project grid, about section, contact form, and consistent visual language.`,
+    }],
+
+  variants: [
+    {
+      id: "steampunk-warm",
+      name: "蒸汽朋克暖色版",
+      nameEn: "Steampunk Warm",
+      description: "Warm-toned variant with shifted hues toward amber/orange",
+      colors: {
+        primary: "#82b545",
+        secondary: "#504035",
+        accent: ["#8b821f", "#edf2e1", "#4a4a4a"],
+      },
+    },
+    {
+      id: "steampunk-cool",
+      name: "蒸汽朋克冷色版",
+      nameEn: "Steampunk Cool",
+      description: "Cool-toned variant with shifted hues toward blue/teal",
+      colors: {
+        primary: "#e29658",
+        secondary: "#37271c",
+        accent: ["#d5665a", "#fceee6", "#4a4a4a"],
+      },
     },
   ],
 };

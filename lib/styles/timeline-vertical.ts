@@ -18,7 +18,7 @@ export const timelineVertical: DesignStyle = {
     secondary: "#f8fafc",
     accent: ["#3b82f6", "#10b981", "#f59e0b", "#ef4444"],
   },
-  keywords: ["时间线", "历程", "里程碑", "流程", "步骤", "进度"],
+  keywords: ["时间线", "历程", "里程碑", "流程", "步骤", "进度", "minimal", "clean", "simple", "极简"],
 
   philosophy: `Vertical Timeline（垂直时间线布局）是一种用于展示时间序列或流程步骤的布局方式，通过视觉连接线引导阅读。
 
@@ -26,7 +26,14 @@ export const timelineVertical: DesignStyle = {
 - 线性叙事：清晰的时间或流程顺序
 - 节点突出：每个重要时刻都有明确标记
 - 连接关系：视觉线条串联所有事件
-- 渐进展示：支持滚动触发动画`,
+- 渐进展示：支持滚动触发动画
+
+设计原则：
+- 视觉一致性：所有组件必须遵循统一的视觉语言，从色彩到字体到间距保持谐调
+- 层次分明：通过颜色深浅、字号大小、留白空间建立清晰的信息层级
+- 交互反馈：每个可交互元素都必须有明确的 hover、active、focus 状态反馈
+- 响应式适配：设计必须在移动端、平板、桌面端上保持一致的体验
+- 无障碍性：确保色彩对比度符合 WCAG 2.1 AA 标准，所有交互元素可键盘访问`,
 
   philosophyEn: `Vertical Timeline is a layout approach for displaying time sequences or process steps, guiding reading through visual connecting lines.
 
@@ -333,6 +340,48 @@ Core principles:
 
 .timeline-item[data-status="upcoming"]::before {
   background: #d1d5db;
+}
+/* Vertical Timeline Design Tokens */
+:root {
+  --timeline-vertical-primary: #1e293b;
+  --timeline-vertical-secondary: #f8fafc;
+  --timeline-vertical-accent: #3b82f6;
+  --timeline-vertical-glow: rgba(30, 41, 59, 0.3);
+}
+
+@keyframes timeline-vertical-fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes timeline-vertical-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.timeline-vertical-gradient {
+  background: linear-gradient(135deg, #1e293b, #3b82f6);
+}
+
+.timeline-vertical-gradient-text {
+  background: linear-gradient(135deg, #1e293b, #3b82f6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.timeline-vertical-frosted {
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  background: rgba(30, 41, 59, 0.08);
+}
+
+.timeline-vertical-accent-corner {
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 2rem), calc(100% - 2rem) 100%, 0 100%);
+}
+
+.timeline-vertical-animate-in {
+  animation: timeline-vertical-fade-in 0.5s ease-out both;
 }`,
 
   aiRules: `You are a frontend expert specializing in Vertical Timeline layout. All generated code must strictly follow these constraints:
@@ -529,6 +578,31 @@ Clean minimal design, professional look`,
 6. Progress percentage at top
 7. Click node to expand details
 Interactive with hover states`,
+    },
+  ],
+
+  variants: [
+    {
+      id: "timeline-vertical-warm",
+      name: "垂直时间线布局暖色版",
+      nameEn: "Vertical Timeline Warm",
+      description: "Warm-toned variant with shifted hues toward amber/orange",
+      colors: {
+        primary: "#29263d",
+        secondary: "#f9fbfc",
+        accent: ["#816cff", "#19afc4", "#9dba00", "#cb5506"],
+      },
+    },
+    {
+      id: "timeline-vertical-cool",
+      name: "垂直时间线布局冷色版",
+      nameEn: "Vertical Timeline Cool",
+      description: "Cool-toned variant with shifted hues toward blue/teal",
+      colors: {
+        primary: "#162c33",
+        secondary: "#dfe1e3",
+        accent: ["#0697c5", "#29b843", "#ff8447", "#ef3d8c"],
+      },
     },
   ],
 };

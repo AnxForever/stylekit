@@ -17,7 +17,7 @@ export const maximalism: DesignStyle = {
     secondary: "#1a0a2e",
     accent: ["#ffbe0b", "#3a86ff", "#8338ec", "#06d6a0"],
   },
-  keywords: ["极繁", "华丽", "层叠", "混搭", "饱和", "装饰", "丰富"],
+  keywords: ["极繁", "华丽", "层叠", "混搭", "饱和", "装饰", "丰富", "expressive", "bold", "vibrant"],
 
   philosophy: `极繁主义（Maximalism）是对极简主义的直接反叛。它相信"更多就是更多"，拒绝留白的克制，拥抱层叠、装饰和视觉丰富性。从巴洛克宫殿到波西米亚室内设计，极繁主义一直是人类表达欲望的自然产物。
 
@@ -292,6 +292,48 @@ The key to designing maximalist work: although everything is "full," it is not w
     0 0 10px var(--max-pink),
     0 0 30px rgba(212, 20, 90, 0.3),
     0 0 60px rgba(131, 56, 236, 0.2);
+}
+@keyframes maximalism-fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes maximalism-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.maximalism-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.maximalism-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  background: linear-gradient(135deg, rgba(212, 20, 90, 0.05), transparent);
+  pointer-events: none;
+}
+
+.maximalism-card:hover::before {
+  opacity: 1;
+}
+
+.maximalism-frosted {
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  background: rgba(212, 20, 90, 0.08);
+}
+
+.maximalism-accent-corner {
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 2rem), calc(100% - 2rem) 100%, 0 100%);
+}
+
+.maximalism-animate-in {
+  animation: maximalism-fade-in 0.5s ease-out both;
 }`,
 
   aiRules: `You are a Maximalism design style frontend development expert. All generated code must strictly follow these constraints:
@@ -406,6 +448,44 @@ Primary:
 5. Buttons: gradient bg, thick yellow border, double-layer shadows
 6. Typography: mix serif (headings), sans (body), mono (labels)
 7. Color palette: hot pink, vivid yellow, electric blue, vivid purple, emerald`,
+    },
+  {
+      title: "SaaS 着陆页",
+      titleEn: "SaaS Landing Page",
+      description: "生成 极繁主义风格的 SaaS 产品着陆页",
+      descriptionEn: "Generate a SaaS product landing page in Maximalism style",
+      prompt: `Create a SaaS landing page using Maximalism style with hero section, feature grid, testimonials, pricing table, and footer.`,
+    },
+    {
+      title: "作品集展示",
+      titleEn: "Portfolio Showcase",
+      description: "生成 极繁主义风格的作品集页面",
+      descriptionEn: "Generate a portfolio showcase in Maximalism style",
+      prompt: `Create a portfolio showcase page using Maximalism style with project grid, about section, contact form, and consistent visual language.`,
+    }],
+
+  variants: [
+    {
+      id: "maximalism-warm",
+      name: "极繁主义暖色版",
+      nameEn: "Maximalism Warm",
+      description: "Warm-toned variant with shifted hues toward amber/orange",
+      colors: {
+        primary: "#cc1e0e",
+        secondary: "#312343",
+        accent: ["#9cdc03", "#836eff", "#c828c1", "#19c8f1"],
+      },
+    },
+    {
+      id: "maximalism-cool",
+      name: "极繁主义冷色版",
+      nameEn: "Maximalism Cool",
+      description: "Cool-toned variant with shifted hues toward blue/teal",
+      colors: {
+        primary: "#b416a0",
+        secondary: "#170929",
+        accent: ["#ffa043", "#039ccc", "#3150ef", "#1ed751"],
+      },
     },
   ],
 };

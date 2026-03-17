@@ -15,9 +15,9 @@ export const tropicalParadise: DesignStyle = {
   colors: {
     primary: "#00897b",
     secondary: "#fffde7",
-    accent: ["#ff6f61", "#ffc107", "#4caf50"],
+    accent: ["#ff6f61", "#ffc107", "#4caf50", "#a09314"],
   },
-  keywords: ["热带", "天堂", "棕榈", "花卉", "阳光", "度假", "明快"],
+  keywords: ["热带", "天堂", "棕榈", "花卉", "阳光", "度假", "明快", "modern", "contemporary", "sleek"],
 
   philosophy: `Tropical Paradise（热带天堂）风格汲取热带岛屿的自然色彩与度假氛围，将阳光、海洋、棕榈叶和热带花卉的鲜活能量注入数字界面。
 
@@ -250,6 +250,48 @@ When designing, use vivid colors boldly while maintaining harmony. Rounded shape
 .tp-card-hover:hover {
   transform: translateY(-4px);
   box-shadow: 0 8px 30px rgba(0, 137, 123, 0.2);
+}
+@keyframes tropical-paradise-fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes tropical-paradise-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.tropical-paradise-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.tropical-paradise-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  background: linear-gradient(135deg, rgba(0, 137, 123, 0.05), transparent);
+  pointer-events: none;
+}
+
+.tropical-paradise-card:hover::before {
+  opacity: 1;
+}
+
+.tropical-paradise-frosted {
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  background: rgba(0, 137, 123, 0.08);
+}
+
+.tropical-paradise-accent-corner {
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 2rem), calc(100% - 2rem) 100%, 0 100%);
+}
+
+.tropical-paradise-animate-in {
+  animation: tropical-paradise-fade-in 0.5s ease-out both;
 }`,
 
   aiRules: `你是一个 Tropical Paradise 设计风格的前端开发专家。生成的所有代码必须严格遵守以下约束：
@@ -350,6 +392,44 @@ Primary:
 3. 卡片：白色圆角，温暖阴影，悬停上浮
 4. 价格标签：珊瑚红强调
 5. 整体传达阳光明快的度假氛围`,
+    },
+  {
+      title: "SaaS 着陆页",
+      titleEn: "SaaS Landing Page",
+      description: "生成 热带天堂风格的 SaaS 产品着陆页",
+      descriptionEn: "Generate a SaaS product landing page in Tropical Paradise style",
+      prompt: `Create a SaaS landing page using Tropical Paradise style with hero section, feature grid, testimonials, pricing table, and footer.`,
+    },
+    {
+      title: "作品集展示",
+      titleEn: "Portfolio Showcase",
+      description: "生成 热带天堂风格的作品集页面",
+      descriptionEn: "Generate a portfolio showcase in Tropical Paradise style",
+      prompt: `Create a portfolio showcase page using Tropical Paradise style with project grid, about section, contact form, and consistent visual language.`,
+    }],
+
+  variants: [
+    {
+      id: "tropical-paradise-warm",
+      name: "热带天堂暖色版",
+      nameEn: "Tropical Paradise Warm",
+      description: "Warm-toned variant with shifted hues toward amber/orange",
+      colors: {
+        primary: "#167dae",
+        secondary: "#fffde9",
+        accent: ["#da7f2e", "#9ae001", "#34b27d"],
+      },
+    },
+    {
+      id: "tropical-paradise-cool",
+      name: "热带天堂冷色版",
+      nameEn: "Tropical Paradise Cool",
+      description: "Cool-toned variant with shifted hues toward blue/teal",
+      colors: {
+        primary: "#068d43",
+        secondary: "#e6e4d0",
+        accent: ["#ff67a0", "#ffa23f", "#77a535"],
+      },
     },
   ],
 };

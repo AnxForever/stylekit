@@ -15,9 +15,9 @@ export const artDeco: DesignStyle = {
   colors: {
     primary: "#d4af37",
     secondary: "#1a1a2e",
-    accent: ["#c9a227", "#2d2d44", "#f5f5dc"],
+    accent: ["#c9a227", "#2d2d44", "#f5f5dc", "#4bc542"],
   },
-  keywords: ["装饰艺术", "奢华", "金色", "几何", "1920年代", "优雅", "高端"],
+  keywords: ["装饰艺术", "奢华", "金色", "几何", "1920年代", "优雅", "高端", "retro", "vintage", "nostalgic"],
 
   philosophy: `Art Deco（装饰艺术）是1920-30年代流行的设计风格，融合了现代主义的几何形式与传统工艺的奢华感。
 
@@ -25,7 +25,14 @@ export const artDeco: DesignStyle = {
 - 几何对称：放射状线条、重复几何图案
 - 奢华感：金色、黑色、深蓝的高端配色
 - 精致工艺：细腻的线条和装饰细节
-- 现代与传统：机械时代美学与古典优雅的结合`,
+- 现代与传统：机械时代美学与古典优雅的结合
+
+设计原则：
+- 视觉一致性：所有组件必须遵循统一的视觉语言，从色彩到字体到间距保持谐调
+- 层次分明：通过颜色深浅、字号大小、留白空间建立清晰的信息层级
+- 交互反馈：每个可交互元素都必须有明确的 hover、active、focus 状态反馈
+- 响应式适配：设计必须在移动端、平板、桌面端上保持一致的体验
+- 无障碍性：确保色彩对比度符合 WCAG 2.1 AA 标准，所有交互元素可键盘访问`,
 
   philosophyEn: `Art Deco is a design style popular in the 1920s-30s, blending modernist geometric forms with the luxury of traditional craftsmanship.
 
@@ -275,6 +282,29 @@ Core principles:
 .deco-divider {
   height: 2px;
   background: linear-gradient(90deg, transparent, var(--deco-gold), transparent);
+}
+@keyframes art-deco-fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes art-deco-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.art-deco-frosted {
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  background: rgba(212, 175, 55, 0.08);
+}
+
+.art-deco-accent-corner {
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 2rem), calc(100% - 2rem) 100%, 0 100%);
+}
+
+.art-deco-animate-in {
+  animation: art-deco-fade-in 0.5s ease-out both;
 }`,
 
   aiRules: `你是一个 Art Deco 设计风格的前端开发专家。生成的所有代码必须严格遵守以下约束：
@@ -315,7 +345,28 @@ Core principles:
 - Elegant & Slow: 动画必须显得高贵从容。使用较长持续时间，如 \`duration-500\` 或 \`duration-700\`，绝不能有急促弹跳感。
 - Golden Shimmer: 悬停时，通过背景渐变位置移动（如 \`bg-[length:200%_auto] hover:bg-right\`）模拟黄金材质反光与流泽。
 - Symmetrical Expansion: 交互时，尽量保持对称性。例如悬停卡片时，四角装饰线框可以产生向外轻微扩张（通过 \`group-hover:translate\` 实现）。
-- Subtle Lift: 采用极轻微上浮和金色光晕放大效果。`,
+- Subtle Lift: 采用极轻微上浮和金色光晕放大效果。
+
+## Layout & Spacing
+- Section padding: py-16 md:py-24
+- Card padding: p-6 md:p-8
+- Gap between cards: gap-6 md:gap-8
+- Max content width: max-w-6xl mx-auto
+
+## Responsive Design
+- Mobile-first approach with Tailwind breakpoints
+- Stack elements vertically on mobile (flex-col), row on desktop (md:flex-row)
+- Reduce font sizes on mobile: text-3xl md:text-5xl for headings
+- Touch-friendly targets: min 44px for interactive elements
+
+## Self-Check Verification
+After generating code, verify:
+1. All interactive elements have hover/focus/active states
+2. Color contrast meets WCAG 2.1 AA (4.5:1 for text)
+3. Layout is responsive across breakpoints
+4. Typography hierarchy is clear (h1 > h2 > h3 > body)
+5. Spacing is consistent using the defined scale
+6. All animations respect prefers-reduced-motion`,
 
   aiRulesEn: `You are an Art Deco design style frontend development expert. All generated code must strictly follow these constraints:
 
@@ -369,6 +420,44 @@ Primary:
 3. 装饰：放射状线条 + 角落边框
 4. 按钮：金色边框 + 悬停填充
 5. 整体对称优雅`,
+    },
+  {
+      title: "SaaS 着陆页",
+      titleEn: "SaaS Landing Page",
+      description: "生成 装饰艺术风格风格的 SaaS 产品着陆页",
+      descriptionEn: "Generate a SaaS product landing page in Art Deco style",
+      prompt: `Create a SaaS landing page using Art Deco style with hero section, feature grid, testimonials, pricing table, and footer.`,
+    },
+    {
+      title: "作品集展示",
+      titleEn: "Portfolio Showcase",
+      description: "生成 装饰艺术风格风格的作品集页面",
+      descriptionEn: "Generate a portfolio showcase in Art Deco style",
+      prompt: `Create a portfolio showcase page using Art Deco style with project grid, about section, contact form, and consistent visual language.`,
+    }],
+
+  variants: [
+    {
+      id: "art-deco-warm",
+      name: "装饰艺术风格暖色版",
+      nameEn: "Art Deco Warm",
+      description: "Warm-toned variant with shifted hues toward amber/orange",
+      colors: {
+        primary: "#93c334",
+        secondary: "#313143",
+        accent: ["#86b624", "#382a42", "#e9f8de"],
+      },
+    },
+    {
+      id: "art-deco-cool",
+      name: "装饰艺术风格冷色版",
+      nameEn: "Art Deco Cool",
+      description: "Cool-toned variant with shifted hues toward blue/teal",
+      colors: {
+        primary: "#ff9b5a",
+        secondary: "#171729",
+        accent: ["#ff8e4b", "#233040", "#fff1e0"],
+      },
     },
   ],
 };

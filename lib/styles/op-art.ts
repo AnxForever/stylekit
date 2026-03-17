@@ -15,9 +15,9 @@ export const opArt: DesignStyle = {
   colors: {
     primary: "#000000",
     secondary: "#ffffff",
-    accent: ["#ff3300", "#0066ff", "#ffcc00"],
+    accent: ["#ff3300", "#0066ff", "#ffcc00", "#5e6d00"],
   },
-  keywords: ["光学", "幻觉", "视觉", "运动感", "几何", "黑白", "振动"],
+  keywords: ["光学", "幻觉", "视觉", "运动感", "几何", "黑白", "振动", "expressive", "bold", "vibrant"],
 
   philosophy: `Op Art（光学艺术）兴起于1960年代，以Bridget Riley和Victor Vasarely为代表。它利用精密的几何图案在二维平面上制造运动、振动和深度的视觉幻象，挑战观者的感知系统。
 
@@ -382,6 +382,48 @@ Typography pursues minimalism and geometric precision: sans-serif fonts, uniform
   border: 3px solid var(--op-red);
   outline: 3px solid var(--op-blue);
   outline-offset: 3px;
+}
+@keyframes op-art-fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes op-art-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.op-art-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.op-art-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.05), transparent);
+  pointer-events: none;
+}
+
+.op-art-card:hover::before {
+  opacity: 1;
+}
+
+.op-art-frosted {
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  background: rgba(0, 0, 0, 0.08);
+}
+
+.op-art-accent-corner {
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 2rem), calc(100% - 2rem) 100%, 0 100%);
+}
+
+.op-art-animate-in {
+  animation: op-art-fade-in 0.5s ease-out both;
 }`,
 
   aiRules: `你是一个 Op Art 欧普艺术设计风格的前端开发专家。生成的所有代码必须严格遵守以下约束：
@@ -492,6 +534,44 @@ Vibrating color pairs (10% accents):
 3. 装饰：同心圆 + 条纹 + 棋盘格（克制使用）
 4. 按钮：黑白反转悬停效果
 5. 整体干净锐利，视觉张力集中在局部`,
+    },
+  {
+      title: "SaaS 着陆页",
+      titleEn: "SaaS Landing Page",
+      description: "生成 欧普艺术风格的 SaaS 产品着陆页",
+      descriptionEn: "Generate a SaaS product landing page in Op Art style",
+      prompt: `Create a SaaS landing page using Op Art style with hero section, feature grid, testimonials, pricing table, and footer.`,
+    },
+    {
+      title: "作品集展示",
+      titleEn: "Portfolio Showcase",
+      description: "生成 欧普艺术风格的作品集页面",
+      descriptionEn: "Generate a portfolio showcase in Op Art style",
+      prompt: `Create a portfolio showcase page using Op Art style with project grid, about section, contact form, and consistent visual language.`,
+    }],
+
+  variants: [
+    {
+      id: "op-art-warm",
+      name: "欧普艺术暖色版",
+      nameEn: "Op Art Warm",
+      description: "Warm-toned variant with shifted hues toward amber/orange",
+      colors: {
+        primary: "#000000",
+        secondary: "#ffffff",
+        accent: ["#bc4e00", "#5e48ff", "#94ec00"],
+      },
+    },
+    {
+      id: "op-art-cool",
+      name: "欧普艺术冷色版",
+      nameEn: "Op Art Cool",
+      description: "Cool-toned variant with shifted hues toward blue/teal",
+      colors: {
+        primary: "#000000",
+        secondary: "#e6e6e6",
+        accent: ["#ff235e", "#0082bb", "#ffab36"],
+      },
     },
   ],
 };

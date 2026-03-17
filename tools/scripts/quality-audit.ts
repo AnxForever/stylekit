@@ -54,7 +54,7 @@ function printReport(report: QualityReport): void {
       "Score".padStart(6) +
       "  Grade" +
       "  Recipe".padStart(8) +
-      "  Token".padStart(7) +
+      "  CSS".padStart(7) +
       "  Def".padStart(6) +
       "  Color".padStart(7) +
       "  Missing",
@@ -74,7 +74,7 @@ function printReport(report: QualityReport): void {
         "  " +
         s.grade.padStart(5) +
         String(s.recipeScore).padStart(8) +
-        String(s.tokenScore).padStart(7) +
+        String(s.cssScore).padStart(7) +
         String(s.definitionScore).padStart(6) +
         String(s.colorScore).padStart(7) +
         "  " +
@@ -123,10 +123,10 @@ function writeGapReport(report: QualityReport, outputDir: string): void {
       }
       lines.push("");
       lines.push("Score breakdown:");
-      lines.push(`- Recipe: ${s.recipeScore}/40`);
-      lines.push(`- Token: ${s.tokenScore}/25`);
-      lines.push(`- Definition: ${s.definitionScore}/25`);
-      lines.push(`- Color: ${s.colorScore}/10`);
+      lines.push(`- Recipe: ${s.recipeScore}/30`);
+      lines.push(`- CSS: ${s.cssScore}/25`);
+      lines.push(`- Definition: ${s.definitionScore}/30`);
+      lines.push(`- Color: ${s.colorScore}/15`);
       lines.push("");
     }
   }

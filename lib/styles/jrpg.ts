@@ -15,9 +15,9 @@ export const jrpg: DesignStyle = {
   colors: {
     primary: "#1e40af",
     secondary: "#0f172a",
-    accent: ["#fbbf24", "#f0f9ff", "#22c55e"],
+    accent: ["#fbbf24", "#f0f9ff", "#22c55e", "#56ed40"],
   },
-  keywords: ["RPG", "菜单", "属性", "道具栏", "奇幻", "对话框", "血条", "经验值"],
+  keywords: ["RPG", "菜单", "属性", "道具栏", "奇幻", "对话框", "血条", "经验值", "expressive", "bold"],
 
   philosophy: `JRPG 风格源自经典日式角色扮演游戏的菜单与 UI 设计，通过斜面边框、渐变背景和精致框架重现复古游戏体验。
 
@@ -25,7 +25,14 @@ export const jrpg: DesignStyle = {
 - 斜面边框：使用内外阴影和渐变模拟立体按钮与面板
 - 深色基底：深海军蓝背景搭配金色与水晶白高光
 - 状态可视化：HP/MP/EXP 条形图直观展示数值
-- 华丽装饰：边角纹饰和框架增强奇幻世界感`,
+- 华丽装饰：边角纹饰和框架增强奇幻世界感
+
+设计原则：
+- 视觉一致性：所有组件必须遵循统一的视觉语言，从色彩到字体到间距保持谐调
+- 层次分明：通过颜色深浅、字号大小、留白空间建立清晰的信息层级
+- 交互反馈：每个可交互元素都必须有明确的 hover、active、focus 状态反馈
+- 响应式适配：设计必须在移动端、平板、桌面端上保持一致的体验
+- 无障碍性：确保色彩对比度符合 WCAG 2.1 AA 标准，所有交互元素可键盘访问`,
 
   philosophyEn: `JRPG style originates from the menu and UI design of classic Japanese role-playing games, recreating the retro gaming experience through beveled borders, gradient backgrounds, and ornate frames.
 
@@ -160,6 +167,57 @@ Core principles:
 @keyframes hp-pulse {
   0%, 100% { box-shadow: 0 0 4px rgba(34, 197, 94, 0.3); }
   50% { box-shadow: 0 0 8px rgba(34, 197, 94, 0.6); }
+}
+/* JRPG Design Tokens */
+:root {
+  --jrpg-primary: #1e40af;
+  --jrpg-secondary: #0f172a;
+  --jrpg-accent: #fbbf24;
+  --jrpg-glow: rgba(30, 64, 175, 0.3);
+}
+
+.jrpg-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.jrpg-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  background: linear-gradient(135deg, rgba(30, 64, 175, 0.05), transparent);
+  pointer-events: none;
+}
+
+.jrpg-card:hover::before {
+  opacity: 1;
+}
+
+.jrpg-gradient {
+  background: linear-gradient(135deg, #1e40af, #fbbf24);
+}
+
+.jrpg-gradient-text {
+  background: linear-gradient(135deg, #1e40af, #fbbf24);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.jrpg-frosted {
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  background: rgba(30, 64, 175, 0.08);
+}
+
+.jrpg-accent-corner {
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 2rem), calc(100% - 2rem) 100%, 0 100%);
+}
+
+.jrpg-animate-in {
+  animation: jrpg-fade-in 0.5s ease-out both;
 }`,
 
   aiRules: `STYLE: JRPG
@@ -259,6 +317,44 @@ Animation & Interaction Rules:
 - Equipment slots with beveled borders
 - Action buttons with inset shadow depth
 - Stats grid showing STR, DEF, INT, SPD values`,
+    },
+  {
+      title: "SaaS 着陆页",
+      titleEn: "SaaS Landing Page",
+      description: "生成 日式RPG风格的 SaaS 产品着陆页",
+      descriptionEn: "Generate a SaaS product landing page in JRPG style",
+      prompt: `Create a SaaS landing page using JRPG style with hero section, feature grid, testimonials, pricing table, and footer.`,
+    },
+    {
+      title: "作品集展示",
+      titleEn: "Portfolio Showcase",
+      description: "生成 日式RPG风格的作品集页面",
+      descriptionEn: "Generate a portfolio showcase in JRPG style",
+      prompt: `Create a portfolio showcase page using JRPG style with project grid, about section, contact form, and consistent visual language.`,
+    }],
+
+  variants: [
+    {
+      id: "jrpg-warm",
+      name: "日式RPG暖色版",
+      nameEn: "JRPG Warm",
+      description: "Warm-toned variant with shifted hues toward amber/orange",
+      colors: {
+        primary: "#5a2eb2",
+        secondary: "#272e3f",
+        accent: ["#a5d91c", "#f5f7ff", "#14c2a3"],
+      },
+    },
+    {
+      id: "jrpg-cool",
+      name: "日式RPG冷色版",
+      nameEn: "JRPG Cool",
+      description: "Cool-toned variant with shifted hues toward blue/teal",
+      colors: {
+        primary: "#00528f",
+        secondary: "#0e1526",
+        accent: ["#ffa556", "#edfafa", "#51bc2a"],
+      },
     },
   ],
 };

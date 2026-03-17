@@ -15,7 +15,7 @@ export const zenGarden: DesignStyle = {
   colors: {
     primary: "#4a5548",
     secondary: "#f5f3ee",
-    accent: ["#8a9a7b", "#c4bba8", "#7a7062"],
+    accent: ["#8a9a7b", "#c4bba8", "#7a7062", "#799d91"],
   },
   keywords: ["枯山水", "日式", "禅", "砂纹", "石组", "苔藓", "冥想", "庭园", "karesansui"],
 
@@ -26,7 +26,14 @@ export const zenGarden: DesignStyle = {
 - 石组之美：精心放置的石组代表山岳与岛屿，以少胜多
 - 苔藓之生：苔绿是时间沉淀的痕迹，是静中有动的生命力
 - 冥想之境：整座庭园是一个供人静观、内省的空间
-- 借景与留白：将周围自然纳入构图，空间本身即是表达`,
+- 借景与留白：将周围自然纳入构图，空间本身即是表达
+
+设计原则：
+- 视觉一致性：所有组件必须遵循统一的视觉语言，从色彩到字体到间距保持谐调
+- 层次分明：通过颜色深浅、字号大小、留白空间建立清晰的信息层级
+- 交互反馈：每个可交互元素都必须有明确的 hover、active、focus 状态反馈
+- 响应式适配：设计必须在移动端、平板、桌面端上保持一致的体验
+- 无障碍性：确保色彩对比度符合 WCAG 2.1 AA 标准，所有交互元素可键盘访问`,
 
   philosophyEn: `Karesansui (Zen Garden) is the highest expression of Japanese Zen Buddhist garden art.
 
@@ -125,6 +132,23 @@ Core principles:
     },
   },
 
+  examplePrompts: [
+    {
+      title: "SaaS 着陆页",
+      titleEn: "SaaS Landing Page",
+      description: "生成 枯山水风格的 SaaS 产品着陆页",
+      descriptionEn: "Generate a SaaS product landing page in Zen Garden style",
+      prompt: `Create a SaaS landing page using Zen Garden style with hero section, feature grid, testimonials, pricing table, and footer.`,
+    },
+    {
+      title: "作品集展示",
+      titleEn: "Portfolio Showcase",
+      description: "生成 枯山水风格的作品集页面",
+      descriptionEn: "Generate a portfolio showcase in Zen Garden style",
+      prompt: `Create a portfolio showcase page using Zen Garden style with project grid, about section, contact form, and consistent visual language.`,
+    },
+  ],
+
   globalCss: `/* Zen Garden (Karesansui) */
 :root {
   --zen-bg: #f5f3ee;
@@ -135,6 +159,83 @@ Core principles:
   --zen-sand: #c4bba8;
   --zen-stone: #7a7062;
   --zen-border: #c4bba8;
+}
+@keyframes zen-garden-fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes zen-garden-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.zen-garden-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.zen-garden-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  background: linear-gradient(135deg, rgba(74, 85, 72, 0.05), transparent);
+  pointer-events: none;
+}
+
+.zen-garden-card:hover::before {
+  opacity: 1;
+}
+
+.zen-garden-gradient {
+  background: linear-gradient(135deg, #4a5548, #8a9a7b);
+}
+
+.zen-garden-gradient-text {
+  background: linear-gradient(135deg, #4a5548, #8a9a7b);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.zen-garden-frosted {
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  background: rgba(74, 85, 72, 0.08);
+}
+
+.zen-garden-accent-corner {
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 2rem), calc(100% - 2rem) 100%, 0 100%);
+}
+
+.zen-garden-animate-in {
+  animation: zen-garden-fade-in 0.5s ease-out both;
+}
+
+.zen-garden-focus { outline: 2px solid var(--zen-garden-primary, currentColor); outline-offset: 2px; }
+
+/* Responsive utilities */
+@media (prefers-reduced-motion: reduce) {
+  .zen-garden-animate-in {
+    animation: none;
+  }
+}
+
+@media (min-width: 768px) {
+  .zen-garden-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+}
+
+/* Print styles */
+@media print {
+  .zen-garden-gradient,
+  .zen-garden-frosted {
+    background: none;
+    backdrop-filter: none;
+  }
 }`,
 
   aiRules: `You are designing in Zen Garden (Karesansui) style.
@@ -172,4 +273,29 @@ Animation & Interaction Rules:
 - Zero Displacement: No translate or rotate allowed; avoid any physical displacement animations. Focus should be expressed through show/hide and tonal changes.
 - Ephemeral Fades: Use only low-contrast color deepening, opacity emergence, or very faint shadow fade-ins. No bouncing or high-contrast flashing.
 - Quiet Focus: Text can default to semi-transparent (e.g., text-[#4a5548]/70), slowly becoming clear on hover/focus, maintaining a meditative rhythm.`,
+
+  variants: [
+    {
+      id: "zen-garden-warm",
+      name: "枯山水暖色版",
+      nameEn: "Zen Garden Warm",
+      description: "Warm-toned variant with shifted hues toward amber/orange",
+      colors: {
+        primary: "#46564d",
+        secondary: "#f6f4f0",
+        accent: ["#7f9c84", "#b9bea6", "#717360"],
+      },
+    },
+    {
+      id: "zen-garden-cool",
+      name: "枯山水冷色版",
+      nameEn: "Zen Garden Cool",
+      description: "Cool-toned variant with shifted hues toward blue/teal",
+      colors: {
+        primary: "#505445",
+        secondary: "#dddbd6",
+        accent: ["#989679", "#cdb8af", "#806d68"],
+      },
+    },
+  ],
 };

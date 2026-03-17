@@ -15,9 +15,9 @@ export const modernGradient: DesignStyle = {
   colors: {
     primary: "#8b5cf6",
     secondary: "#1e1b4b",
-    accent: ["#06b6d4", "#ec4899", "#f59e0b"],
+    accent: ["#06b6d4", "#ec4899", "#f59e0b", "#8587ff"],
   },
-  keywords: ["渐变", "现代", "活力", "创业", "数字", "动态", "科技感"],
+  keywords: ["渐变", "现代", "活力", "创业", "数字", "动态", "科技感", "expressive", "bold", "vibrant"],
 
   philosophy: `Modern Gradient 风格通过丰富的渐变色彩和光影效果创造视觉冲击力和活力感。
 
@@ -25,7 +25,14 @@ export const modernGradient: DesignStyle = {
 - 视觉活力：渐变色彩带来动感和能量
 - 深度层次：通过渐变和透明度创造深度
 - 现代科技：传达创新和前沿的品牌形象
-- 情感共鸣：色彩激发积极的情感反应`,
+- 情感共鸣：色彩激发积极的情感反应
+
+设计原则：
+- 视觉一致性：所有组件必须遵循统一的视觉语言，从色彩到字体到间距保持谐调
+- 层次分明：通过颜色深浅、字号大小、留白空间建立清晰的信息层级
+- 交互反馈：每个可交互元素都必须有明确的 hover、active、focus 状态反馈
+- 响应式适配：设计必须在移动端、平板、桌面端上保持一致的体验
+- 无障碍性：确保色彩对比度符合 WCAG 2.1 AA 标准，所有交互元素可键盘访问`,
 
   philosophyEn: `Modern Gradient style creates visual impact and vitality through rich gradient colors and lighting effects.
 
@@ -149,6 +156,46 @@ Core principles:
 .animated-gradient {
   background-size: 200% 200%;
   animation: gradient-shift 8s ease infinite;
+}
+/* Modern Gradient Design Tokens */
+:root {
+  --modern-gradient-primary: #8b5cf6;
+  --modern-gradient-secondary: #1e1b4b;
+  --modern-gradient-accent: #06b6d4;
+  --modern-gradient-glow: rgba(139, 92, 246, 0.3);
+}
+
+.modern-gradient-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.modern-gradient-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.05), transparent);
+  pointer-events: none;
+}
+
+.modern-gradient-card:hover::before {
+  opacity: 1;
+}
+
+.modern-gradient-frosted {
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  background: rgba(139, 92, 246, 0.08);
+}
+
+.modern-gradient-accent-corner {
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 2rem), calc(100% - 2rem) 100%, 0 100%);
+}
+
+.modern-gradient-animate-in {
+  animation: modern-gradient-fade-in 0.5s ease-out both;
 }`,
 
   aiRules: `STYLE: Modern Gradient
@@ -241,6 +288,44 @@ TYPOGRAPHY:
 - Testimonials in glass cards
 - Dark footer with gradient accents
 - Add decorative glow orbs`,
+    },
+  {
+      title: "SaaS 着陆页",
+      titleEn: "SaaS Landing Page",
+      description: "生成 现代渐变风风格的 SaaS 产品着陆页",
+      descriptionEn: "Generate a SaaS product landing page in Modern Gradient style",
+      prompt: `Create a SaaS landing page using Modern Gradient style with hero section, feature grid, testimonials, pricing table, and footer.`,
+    },
+    {
+      title: "作品集展示",
+      titleEn: "Portfolio Showcase",
+      description: "生成 现代渐变风风格的作品集页面",
+      descriptionEn: "Generate a portfolio showcase in Modern Gradient style",
+      prompt: `Create a portfolio showcase page using Modern Gradient style with project grid, about section, contact form, and consistent visual language.`,
+    }],
+
+  variants: [
+    {
+      id: "modern-gradient-warm",
+      name: "现代渐变风暖色版",
+      nameEn: "Modern Gradient Warm",
+      description: "Warm-toned variant with shifted hues toward amber/orange",
+      colors: {
+        primary: "#ca4cd7",
+        secondary: "#35325d",
+        accent: ["#3aa0ff", "#f04e56", "#9dba00"],
+      },
+    },
+    {
+      id: "modern-gradient-cool",
+      name: "现代渐变风冷色版",
+      nameEn: "Modern Gradient Cool",
+      description: "Cool-toned variant with shifted hues toward blue/teal",
+      colors: {
+        primary: "#4571f1",
+        secondary: "#1b1844",
+        accent: ["#00c285", "#c74dd1", "#ff8447"],
+      },
     },
   ],
 };

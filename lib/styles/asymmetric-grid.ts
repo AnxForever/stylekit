@@ -16,9 +16,9 @@ export const asymmetricGrid: DesignStyle = {
   colors: {
     primary: "#0f0f0f",
     secondary: "#ffffff",
-    accent: ["#ff3366", "#00d4ff", "#ffcc00"],
+    accent: ["#ff3366", "#00d4ff", "#ffcc00", "#b45700"],
   },
-  keywords: ["非对称", "网格", "不规则", "动态", "张力", "重叠", "创意"],
+  keywords: ["非对称", "网格", "不规则", "动态", "张力", "重叠", "创意", "modern", "contemporary", "sleek"],
 
   philosophy: `Asymmetric Grid 打破传统网格的均匀分布，通过不等宽列、元素重叠和留白对比创造视觉张力。
 
@@ -27,7 +27,14 @@ export const asymmetricGrid: DesignStyle = {
 - 视觉张力：通过大小对比和位置偏移创造动感
 - 留白即内容：大面积留白与密集区域形成对比
 - 层次重叠：允许元素相互重叠产生深度感
-- 空间突围：交互时元素从杂乱网格中"跳"到最前面`,
+- 空间突围：交互时元素从杂乱网格中"跳"到最前面
+
+设计原则：
+- 视觉一致性：所有组件必须遵循统一的视觉语言，从色彩到字体到间距保持谐调
+- 层次分明：通过颜色深浅、字号大小、留白空间建立清晰的信息层级
+- 交互反馈：每个可交互元素都必须有明确的 hover、active、focus 状态反馈
+- 响应式适配：设计必须在移动端、平板、桌面端上保持一致的体验
+- 无障碍性：确保色彩对比度符合 WCAG 2.1 AA 标准，所有交互元素可键盘访问`,
 
   philosophyEn: `Asymmetric Grid breaks the even distribution of traditional grids, creating visual tension through unequal column widths, element overlap, and whitespace contrast.
 
@@ -180,6 +187,23 @@ Core principles:
     },
   },
 
+  examplePrompts: [
+    {
+      title: "SaaS 着陆页",
+      titleEn: "SaaS Landing Page",
+      description: "生成 非对称网格风格的 SaaS 产品着陆页",
+      descriptionEn: "Generate a SaaS product landing page in Asymmetric Grid style",
+      prompt: `Create a SaaS landing page using Asymmetric Grid style with hero section, feature grid, testimonials, pricing table, and footer.`,
+    },
+    {
+      title: "作品集展示",
+      titleEn: "Portfolio Showcase",
+      description: "生成 非对称网格风格的作品集页面",
+      descriptionEn: "Generate a portfolio showcase in Asymmetric Grid style",
+      prompt: `Create a portfolio showcase page using Asymmetric Grid style with project grid, about section, contact form, and consistent visual language.`,
+    },
+  ],
+
   globalCss: `/* Asymmetric Grid 全局样式 */
 .asymmetric-grid {
   --ag-black: #0f0f0f;
@@ -201,6 +225,59 @@ Core principles:
 .ag-pop:active {
   transform: translate(0, 0);
   box-shadow: none;
+}
+@keyframes asymmetric-grid-fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes asymmetric-grid-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.asymmetric-grid-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.asymmetric-grid-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  background: linear-gradient(135deg, rgba(15, 15, 15, 0.05), transparent);
+  pointer-events: none;
+}
+
+.asymmetric-grid-card:hover::before {
+  opacity: 1;
+}
+
+.asymmetric-grid-gradient {
+  background: linear-gradient(135deg, #0f0f0f, #ff3366);
+}
+
+.asymmetric-grid-gradient-text {
+  background: linear-gradient(135deg, #0f0f0f, #ff3366);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.asymmetric-grid-frosted {
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  background: rgba(15, 15, 15, 0.08);
+}
+
+.asymmetric-grid-accent-corner {
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 2rem), calc(100% - 2rem) 100%, 0 100%);
+}
+
+.asymmetric-grid-animate-in {
+  animation: asymmetric-grid-fade-in 0.5s ease-out both;
 }`,
 
   aiRules: `你是 Asymmetric Grid 布局专家。生成代码必须遵守：
@@ -221,7 +298,28 @@ Core principles:
 - 所有列宽相等的对称布局
 - 圆角设计（rounded-lg, rounded-xl）
 - 柔和阴影（shadow-sm, shadow-md）
-- 超过 duration-300 的过渡时间`,
+- 超过 duration-300 的过渡时间
+
+## Layout & Spacing
+- Section padding: py-16 md:py-24
+- Card padding: p-6 md:p-8
+- Gap between cards: gap-6 md:gap-8
+- Max content width: max-w-6xl mx-auto
+
+## Responsive Design
+- Mobile-first approach with Tailwind breakpoints
+- Stack elements vertically on mobile (flex-col), row on desktop (md:flex-row)
+- Reduce font sizes on mobile: text-3xl md:text-5xl for headings
+- Touch-friendly targets: min 44px for interactive elements
+
+## Self-Check Verification
+After generating code, verify:
+1. All interactive elements have hover/focus/active states
+2. Color contrast meets WCAG 2.1 AA (4.5:1 for text)
+3. Layout is responsive across breakpoints
+4. Typography hierarchy is clear (h1 > h2 > h3 > body)
+5. Spacing is consistent using the defined scale
+6. All animations respect prefers-reduced-motion`,
 
   aiRulesEn: `You are an Asymmetric Grid layout expert. Generated code must follow:
 
@@ -242,4 +340,29 @@ Core principles:
 - Rounded design (rounded-lg, rounded-xl)
 - Soft shadows (shadow-sm, shadow-md)
 - Transitions exceeding duration-300`,
+
+  variants: [
+    {
+      id: "asymmetric-grid-warm",
+      name: "非对称网格暖色版",
+      nameEn: "Asymmetric Grid Warm",
+      description: "Warm-toned variant with shifted hues toward amber/orange",
+      colors: {
+        primary: "#0f0f0f",
+        secondary: "#ffffff",
+        accent: ["#ec4117", "#41b9ff", "#94ec00"],
+      },
+    },
+    {
+      id: "asymmetric-grid-cool",
+      name: "非对称网格冷色版",
+      nameEn: "Asymmetric Grid Cool",
+      description: "Cool-toned variant with shifted hues toward blue/teal",
+      colors: {
+        primary: "#0f0f0f",
+        secondary: "#e6e6e6",
+        accent: ["#e832b4", "#00e49f", "#ffab36"],
+      },
+    },
+  ],
 };

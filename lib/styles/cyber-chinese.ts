@@ -15,9 +15,9 @@ export const cyberChinese: DesignStyle = {
   colors: {
     primary: "#d4553a",
     secondary: "#c9a227",
-    accent: ["#00d4ff", "#a020f0", "#0a0a0a"],
+    accent: ["#00d4ff", "#a020f0", "#0a0a0a", "#9f9aff"],
   },
-  keywords: ["赛博朋克", "中华风", "霓虹", "龙凤", "印章", "灯笼", "未来东方"],
+  keywords: ["赛博朋克", "中华风", "霓虹", "龙凤", "印章", "灯笼", "未来东方", "expressive", "bold", "vibrant"],
 
   philosophy: `Cyber Chinese（赛博中华）是传统中国美学与赛博朋克科幻风格的融合，在暗色基底上用霓虹光效重新演绎东方经典元素。
 
@@ -25,7 +25,14 @@ export const cyberChinese: DesignStyle = {
 - 古今碰撞：传统朱红金黄与霓虹蓝紫并存
 - 东方未来：龙凤图腾、印章纹样被赛博化重构
 - 霓虹灯笼：传统灯笼造型发出赛博光芒
-- 锐利线条：直角硬朗造型体现科技感`,
+- 锐利线条：直角硬朗造型体现科技感
+
+设计原则：
+- 视觉一致性：所有组件必须遵循统一的视觉语言，从色彩到字体到间距保持谐调
+- 层次分明：通过颜色深浅、字号大小、留白空间建立清晰的信息层级
+- 交互反馈：每个可交互元素都必须有明确的 hover、active、focus 状态反馈
+- 响应式适配：设计必须在移动端、平板、桌面端上保持一致的体验
+- 无障碍性：确保色彩对比度符合 WCAG 2.1 AA 标准，所有交互元素可键盘访问`,
 
   philosophyEn: `Cyber Chinese is a fusion of traditional Chinese aesthetics with cyberpunk sci-fi style, reinterpreting classic Eastern elements with neon light effects on a dark base.
 
@@ -224,6 +231,48 @@ Core principles:
   box-shadow:
     0 0 20px rgba(212, 85, 58, 0.4),
     0 0 40px rgba(201, 162, 39, 0.2);
+}
+@keyframes cyber-chinese-fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes cyber-chinese-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.cyber-chinese-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.cyber-chinese-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  background: linear-gradient(135deg, rgba(212, 85, 58, 0.05), transparent);
+  pointer-events: none;
+}
+
+.cyber-chinese-card:hover::before {
+  opacity: 1;
+}
+
+.cyber-chinese-frosted {
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  background: rgba(212, 85, 58, 0.08);
+}
+
+.cyber-chinese-accent-corner {
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 2rem), calc(100% - 2rem) 100%, 0 100%);
+}
+
+.cyber-chinese-animate-in {
+  animation: cyber-chinese-fade-in 0.5s ease-out both;
 }`,
 
   aiRules: `你是一个 Cyber Chinese 设计风格的前端开发专家。生成的所有代码必须严格遵守以下约束：
@@ -268,7 +317,28 @@ Core principles:
 - 龙凤图腾
 - 云纹装饰
 - 灯笼造型
-- 赛博网格`,
+- 赛博网格
+
+## Layout & Spacing
+- Section padding: py-16 md:py-24
+- Card padding: p-6 md:p-8
+- Gap between cards: gap-6 md:gap-8
+- Max content width: max-w-6xl mx-auto
+
+## Responsive Design
+- Mobile-first approach with Tailwind breakpoints
+- Stack elements vertically on mobile (flex-col), row on desktop (md:flex-row)
+- Reduce font sizes on mobile: text-3xl md:text-5xl for headings
+- Touch-friendly targets: min 44px for interactive elements
+
+## Self-Check Verification
+After generating code, verify:
+1. All interactive elements have hover/focus/active states
+2. Color contrast meets WCAG 2.1 AA (4.5:1 for text)
+3. Layout is responsive across breakpoints
+4. Typography hierarchy is clear (h1 > h2 > h3 > body)
+5. Spacing is consistent using the defined scale
+6. All animations respect prefers-reduced-motion`,
 
   aiRulesEn: `You are a Cyber Chinese design style frontend development expert. All generated code must strictly follow these constraints:
 
@@ -326,6 +396,44 @@ Primary:
 3. 装饰：印章、云纹、灯笼元素
 4. 按钮：朱红底色 + 金色边框
 5. 整体东方未来科幻感`,
+    },
+  {
+      title: "SaaS 着陆页",
+      titleEn: "SaaS Landing Page",
+      description: "生成 赛博中华风风格的 SaaS 产品着陆页",
+      descriptionEn: "Generate a SaaS product landing page in Cyber Chinese style",
+      prompt: `Create a SaaS landing page using Cyber Chinese style with hero section, feature grid, testimonials, pricing table, and footer.`,
+    },
+    {
+      title: "作品集展示",
+      titleEn: "Portfolio Showcase",
+      description: "生成 赛博中华风风格的作品集页面",
+      descriptionEn: "Generate a portfolio showcase in Cyber Chinese style",
+      prompt: `Create a portfolio showcase page using Cyber Chinese style with project grid, about section, contact form, and consistent visual language.`,
+    }],
+
+  variants: [
+    {
+      id: "cyber-chinese-warm",
+      name: "赛博中华风暖色版",
+      nameEn: "Cyber Chinese Warm",
+      description: "Warm-toned variant with shifted hues toward amber/orange",
+      colors: {
+        primary: "#ac650e",
+        secondary: "#ceab3d",
+        accent: ["#41b9ff", "#e711af", "#0a0a0a"],
+      },
+    },
+    {
+      id: "cyber-chinese-cool",
+      name: "赛博中华风冷色版",
+      nameEn: "Cyber Chinese Cool",
+      description: "Cool-toned variant with shifted hues toward blue/teal",
+      colors: {
+        primary: "#e04b74",
+        secondary: "#b59223",
+        accent: ["#00e49f", "#423aff", "#0a0a0a"],
+      },
     },
   ],
 };

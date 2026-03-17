@@ -24,7 +24,7 @@ describe("scoreStyleQuality", () => {
     expect(score).toHaveProperty("overall");
     expect(score).toHaveProperty("grade");
     expect(score).toHaveProperty("recipeScore");
-    expect(score).toHaveProperty("tokenScore");
+    expect(score).toHaveProperty("cssScore");
     expect(score).toHaveProperty("definitionScore");
     expect(score).toHaveProperty("colorScore");
     expect(score).toHaveProperty("missing");
@@ -52,10 +52,10 @@ describe("scoreStyleQuality", () => {
 
   it("sub-scores do not exceed their max values", () => {
     const score = scoreStyleQuality(VALID_SLUG)!;
-    expect(score.recipeScore).toBeLessThanOrEqual(40);
-    expect(score.tokenScore).toBeLessThanOrEqual(25);
-    expect(score.definitionScore).toBeLessThanOrEqual(25);
-    expect(score.colorScore).toBeLessThanOrEqual(10);
+    expect(score.recipeScore).toBeLessThanOrEqual(30);
+    expect(score.cssScore).toBeLessThanOrEqual(25);
+    expect(score.definitionScore).toBeLessThanOrEqual(30);
+    expect(score.colorScore).toBeLessThanOrEqual(15);
   });
 
   it("works for glassmorphism style", () => {

@@ -15,9 +15,9 @@ export const notionStyle: DesignStyle = {
   colors: {
     primary: "#37352f",
     secondary: "#ffffff",
-    accent: ["#2eaadc", "#eb5757", "#0f7b6c"],
+    accent: ["#2eaadc", "#eb5757", "#0f7b6c", "#a083ff"],
   },
-  keywords: ["Notion", "文档", "极简", "清爽", "工具", "协作", "笔记"],
+  keywords: ["Notion", "文档", "极简", "清爽", "工具", "协作", "笔记", "minimal", "clean", "simple"],
 
   philosophy: `Notion Style 是一种源于 Notion 应用的极简设计风格，强调内容的可读性和功能的直观性。通过微妙的视觉元素和清晰的层级结构，让用户专注于内容本身。
 
@@ -25,7 +25,14 @@ export const notionStyle: DesignStyle = {
 - 内容优先：设计服务于内容，不喧宾夺主
 - 功能清晰：每个元素都有明确的功能目的
 - 微妙交互：悬停和点击反馈轻柔自然
-- 层级分明：通过字体大小和颜色区分信息层级`,
+- 层级分明：通过字体大小和颜色区分信息层级
+
+设计原则：
+- 视觉一致性：所有组件必须遵循统一的视觉语言，从色彩到字体到间距保持谐调
+- 层次分明：通过颜色深浅、字号大小、留白空间建立清晰的信息层级
+- 交互反馈：每个可交互元素都必须有明确的 hover、active、focus 状态反馈
+- 响应式适配：设计必须在移动端、平板、桌面端上保持一致的体验
+- 无障碍性：确保色彩对比度符合 WCAG 2.1 AA 标准，所有交互元素可键盘访问`,
 
   philosophyEn: `Notion Style is a minimalist design style originating from the Notion app, emphasizing content readability and intuitive functionality. Through subtle visual elements and clear hierarchical structure, it lets users focus on the content itself.
 
@@ -239,6 +246,59 @@ body {
   border: none;
   border-top: 1px solid var(--notion-border);
   margin: 1rem 0;
+}
+@keyframes notion-style-fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes notion-style-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.notion-style-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.notion-style-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  background: linear-gradient(135deg, rgba(55, 53, 47, 0.05), transparent);
+  pointer-events: none;
+}
+
+.notion-style-card:hover::before {
+  opacity: 1;
+}
+
+.notion-style-gradient {
+  background: linear-gradient(135deg, #37352f, #2eaadc);
+}
+
+.notion-style-gradient-text {
+  background: linear-gradient(135deg, #37352f, #2eaadc);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.notion-style-frosted {
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  background: rgba(55, 53, 47, 0.08);
+}
+
+.notion-style-accent-corner {
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 2rem), calc(100% - 2rem) 100%, 0 100%);
+}
+
+.notion-style-animate-in {
+  animation: notion-style-fade-in 0.5s ease-out both;
 }`,
 
   aiRules: `你是一个 Notion Style 设计风格的前端开发专家。生成的所有代码必须严格遵守以下约束：
@@ -369,6 +429,37 @@ After generating code, verify:
 3. 拖拽指示：悬停时显示抓取光标
 4. 添加按钮：简洁的 + 图标
 5. 标签：彩色小标签（蓝、红、绿、黄）`,
+    },
+  {
+      title: "作品集展示",
+      titleEn: "Portfolio Showcase",
+      description: "生成 Notion 风格风格的作品集页面",
+      descriptionEn: "Generate a portfolio showcase in Notion Style style",
+      prompt: `Create a portfolio showcase page using Notion Style style with project grid, about section, contact form, and consistent visual language.`,
+    }],
+
+  variants: [
+    {
+      id: "notion-style-warm",
+      name: "Notion 风格暖色版",
+      nameEn: "Notion Style Warm",
+      description: "Warm-toned variant with shifted hues toward amber/orange",
+      colors: {
+        primary: "#34362f",
+        secondary: "#ffffff",
+        accent: ["#6097ff", "#cc6621", "#1f7295"],
+      },
+    },
+    {
+      id: "notion-style-cool",
+      name: "Notion 风格冷色版",
+      nameEn: "Notion Style Cool",
+      description: "Cool-toned variant with shifted hues toward blue/teal",
+      colors: {
+        primary: "#3a3431",
+        secondary: "#e6e6e6",
+        accent: ["#17b7a0", "#eb5195", "#167d41"],
+      },
     },
   ],
 };

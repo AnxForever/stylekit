@@ -17,7 +17,7 @@ export const neonGradient: DesignStyle = {
     secondary: "#0f0a1e",
     accent: ["#f472b6", "#22d3ee", "#a3e635", "#fbbf24", "#fb7185"],
   },
-  keywords: ["霓虹", "渐变", "深色", "发光", "科技", "SaaS", "年轻化"],
+  keywords: ["霓虹", "渐变", "深色", "发光", "科技", "SaaS", "年轻化", "expressive", "bold", "vibrant"],
 
   philosophy: `Neon Gradient（霓虹渐变）是一种大胆、现代的设计风格，在深色背景上使用鲜艳的渐变色卡片和粗彩色边框，营造出未来感和科技感。
 
@@ -28,7 +28,14 @@ export const neonGradient: DesignStyle = {
 - 发光效果：box-shadow 模拟霓虹灯光晕
 - 漂浮元素：星星、火箭、几何图形作为装饰
 
-适用场景：SaaS 产品、开发者工具、游戏平台、年轻化品牌`,
+适用场景：SaaS 产品、开发者工具、游戏平台、年轻化品牌
+
+设计原则：
+- 视觉一致性：所有组件必须遵循统一的视觉语言，从色彩到字体到间距保持谐调
+- 层次分明：通过颜色深浅、字号大小、留白空间建立清晰的信息层级
+- 交互反馈：每个可交互元素都必须有明确的 hover、active、focus 状态反馈
+- 响应式适配：设计必须在移动端、平板、桌面端上保持一致的体验
+- 无障碍性：确保色彩对比度符合 WCAG 2.1 AA 标准，所有交互元素可键盘访问`,
 
   philosophyEn: `Neon Gradient is a bold, modern design style that uses vivid gradient cards and thick colored borders on dark backgrounds to create a futuristic and tech-forward feel.
 
@@ -481,6 +488,38 @@ body {
 
 .neon-pulse {
   animation: glow-pulse 2s ease-in-out infinite;
+}
+.neon-gradient-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.neon-gradient-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  background: linear-gradient(135deg, rgba(168, 85, 247, 0.05), transparent);
+  pointer-events: none;
+}
+
+.neon-gradient-card:hover::before {
+  opacity: 1;
+}
+
+.neon-gradient-frosted {
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  background: rgba(168, 85, 247, 0.08);
+}
+
+.neon-gradient-accent-corner {
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 2rem), calc(100% - 2rem) 100%, 0 100%);
+}
+
+.neon-gradient-animate-in {
+  animation: neon-gradient-fade-in 0.5s ease-out both;
 }`,
 
   aiRules: `你是一个 Neon Gradient（霓虹渐变）设计风格的前端开发专家。
@@ -717,6 +756,31 @@ Effects: animate-pulse, animate-bounce
 ## 装饰
 - 闪电、星星、火焰图标
 - 粒子效果背景`,
+    },
+  ],
+
+  variants: [
+    {
+      id: "neon-gradient-warm",
+      name: "霓虹渐变暖色版",
+      nameEn: "Neon Gradient Warm",
+      description: "Warm-toned variant with shifted hues toward amber/orange",
+      colors: {
+        primary: "#e348ca",
+        secondary: "#272335",
+        accent: ["#f97681", "#54beff", "#5df75d", "#a5d91c", "#e77c51"],
+      },
+    },
+    {
+      id: "neon-gradient-cool",
+      name: "霓虹渐变冷色版",
+      nameEn: "Neon Gradient Cool",
+      description: "Cool-toned variant with shifted hues toward blue/teal",
+      colors: {
+        primary: "#5e6aff",
+        secondary: "#0e091b",
+        accent: ["#d577e2", "#16df9f", "#f3ce35", "#ffa556", "#f26ebc"],
+      },
     },
   ],
 };

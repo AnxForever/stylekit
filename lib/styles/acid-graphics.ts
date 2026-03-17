@@ -17,7 +17,7 @@ export const acidGraphics: DesignStyle = {
     secondary: "#0a0a0a",
     accent: ["#e6ff00", "#a020f0", "#ff6ec7", "#00ffff"],
   },
-  keywords: ["酸性", "迷幻", "荧光", "扭曲", "锐舞", "Op-Art", "赛博"],
+  keywords: ["酸性", "迷幻", "荧光", "扭曲", "锐舞", "Op-Art", "赛博", "expressive", "bold", "vibrant"],
 
   philosophy: `Acid Graphics 源于90年代锐舞文化和地下俱乐部场景，融合了赛博朋克、迷幻艺术和实验排版。
 
@@ -26,7 +26,14 @@ export const acidGraphics: DesignStyle = {
 - 暗色基底：深黑背景让荧光色彩更加刺眼和突出
 - 扭曲变形：字体和形态的液态扭曲感，倾斜的卡片和元素
 - 视觉噪声：扫描线叠加、Op-Art 棋盘格、3D 线框网格
-- 多层叠加：文字和色彩的多层偏移堆叠，制造视觉干扰`,
+- 多层叠加：文字和色彩的多层偏移堆叠，制造视觉干扰
+
+设计原则：
+- 视觉一致性：所有组件必须遵循统一的视觉语言，从色彩到字体到间距保持谐调
+- 层次分明：通过颜色深浅、字号大小、留白空间建立清晰的信息层级
+- 交互反馈：每个可交互元素都必须有明确的 hover、active、focus 状态反馈
+- 响应式适配：设计必须在移动端、平板、桌面端上保持一致的体验
+- 无障碍性：确保色彩对比度符合 WCAG 2.1 AA 标准，所有交互元素可键盘访问`,
 
   philosophyEn: `Acid Graphics originates from 90s rave culture and underground club scenes, blending cyberpunk, psychedelic art, and experimental typography.
 
@@ -261,7 +268,13 @@ Core principles:
     linear-gradient(rgba(57, 255, 20, 0.08) 1px, transparent 1px),
     linear-gradient(90deg, rgba(57, 255, 20, 0.08) 1px, transparent 1px);
   background-size: 40px 40px;
-}`,
+}
+
+.acid-graphics-filter { filter: brightness(1.05) contrast(1.02); }
+
+.acid-graphics-hover-lift { transition: transform 0.3s ease; }
+
+.acid-graphics-hover-lift:hover { transform: translateY(-2px); }`,
 
   aiRules: `You are an Acid Graphics design style frontend development expert. All generated code must strictly follow these constraints:
 
@@ -375,6 +388,44 @@ Primary:
 5. Terminal-style form inputs
 6. Op-Art checkerboard pattern sections
 7. Overall psychedelic, distorted, digital brutalism aesthetic`,
+    },
+  {
+      title: "SaaS 着陆页",
+      titleEn: "SaaS Landing Page",
+      description: "生成 酸性平面设计风格的 SaaS 产品着陆页",
+      descriptionEn: "Generate a SaaS product landing page in Acid Graphics style",
+      prompt: `Create a SaaS landing page using Acid Graphics style with hero section, feature grid, testimonials, pricing table, and footer.`,
+    },
+    {
+      title: "作品集展示",
+      titleEn: "Portfolio Showcase",
+      description: "生成 酸性平面设计风格的作品集页面",
+      descriptionEn: "Generate a portfolio showcase in Acid Graphics style",
+      prompt: `Create a portfolio showcase page using Acid Graphics style with project grid, about section, contact form, and consistent visual language.`,
+    }],
+
+  variants: [
+    {
+      id: "acid-graphics-warm",
+      name: "酸性平面设计暖色版",
+      nameEn: "Acid Graphics Warm",
+      description: "Warm-toned variant with shifted hues toward amber/orange",
+      colors: {
+        primary: "#00ff71",
+        secondary: "#232323",
+        accent: ["#73ff20", "#e711af", "#ff718a", "#36e5ff"],
+      },
+    },
+    {
+      id: "acid-graphics-cool",
+      name: "酸性平面设计冷色版",
+      nameEn: "Acid Graphics Cool",
+      description: "Cool-toned variant with shifted hues toward blue/teal",
+      colors: {
+        primary: "#a4e400",
+        secondary: "#090909",
+        accent: ["#ffda1e", "#423aff", "#d775f6", "#00ff93"],
+      },
     },
   ],
 };

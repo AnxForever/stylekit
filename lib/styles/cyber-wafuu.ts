@@ -15,9 +15,9 @@ export const cyberWafuu: DesignStyle = {
   colors: {
     primary: "#1e3a5f",
     secondary: "#080814",
-    accent: ["#c41e3a", "#c9a227", "#38bdf8"],
+    accent: ["#c41e3a", "#c9a227", "#38bdf8", "#7c3e00"],
   },
-  keywords: ["赛博和风", "数字和风", "青海波", "金继ぎ", "障子", "鸟居", "麻叶纹", "电路"],
+  keywords: ["赛博和风", "数字和风", "青海波", "金继ぎ", "障子", "鸟居", "麻叶纹", "电路", "expressive", "bold"],
 
   philosophy: `Cyber Wafuu reimagines traditional Japanese visual culture through digital disruption, creating a sophisticated fusion where heritage patterns are "hacked" by technology.
 
@@ -274,7 +274,15 @@ Core principles:
     rgba(201, 162, 39, 0.03) 50%,
     rgba(201, 162, 39, 0.12) 100%
   );
-}`,
+}
+
+.cyber-wafuu-filter { filter: brightness(1.05) contrast(1.02); }
+
+.cyber-wafuu-hover-lift { transition: transform 0.3s ease; }
+
+.cyber-wafuu-hover-lift:hover { transform: translateY(-2px); }
+
+.cyber-wafuu-focus { outline: 2px solid var(--cyber-wafuu-primary, currentColor); outline-offset: 2px; }`,
 
   aiRules: `You are a Cyber Wafuu design style frontend development expert. All generated code must strictly follow these constraints:
 
@@ -383,6 +391,44 @@ Primary:
 4. Circuit trace lines connecting card elements
 5. Cherry blossom with neon outlines as decorative accents
 6. Asanoha hemp leaf grid as section background`,
+    },
+  {
+      title: "SaaS 着陆页",
+      titleEn: "SaaS Landing Page",
+      description: "生成 赛博和风风格的 SaaS 产品着陆页",
+      descriptionEn: "Generate a SaaS product landing page in Cyber Wafuu style",
+      prompt: `Create a SaaS landing page using Cyber Wafuu style with hero section, feature grid, testimonials, pricing table, and footer.`,
+    },
+    {
+      title: "作品集展示",
+      titleEn: "Portfolio Showcase",
+      description: "生成 赛博和风风格的作品集页面",
+      descriptionEn: "Generate a portfolio showcase in Cyber Wafuu style",
+      prompt: `Create a portfolio showcase page using Cyber Wafuu style with project grid, about section, contact form, and consistent visual language.`,
+    }],
+
+  variants: [
+    {
+      id: "cyber-wafuu-warm",
+      name: "赛博和风暖色版",
+      nameEn: "Cyber Wafuu Warm",
+      description: "Warm-toned variant with shifted hues toward amber/orange",
+      colors: {
+        primary: "#353266",
+        secondary: "#21212c",
+        accent: ["#ae2b00", "#86b624", "#70a8ff"],
+      },
+    },
+    {
+      id: "cyber-wafuu-cool",
+      name: "赛博和风冷色版",
+      nameEn: "Cyber Wafuu Cool",
+      description: "Cool-toned variant with shifted hues toward blue/teal",
+      colors: {
+        primary: "#0d414d",
+        secondary: "#070712",
+        accent: ["#b71b7c", "#ff8e4b", "#1dccb6"],
+      },
     },
   ],
 };

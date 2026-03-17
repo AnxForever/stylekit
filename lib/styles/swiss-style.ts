@@ -15,9 +15,9 @@ export const swissStyle: DesignStyle = {
   colors: {
     primary: "#000000",
     secondary: "#ffffff",
-    accent: ["#ff0000", "#0057b8", "#ffcc00"],
+    accent: ["#ff0000", "#0057b8", "#ffcc00", "#6c3b00"],
   },
-  keywords: ["瑞士", "国际主义", "网格", "Helvetica", "理性", "排版", "极简"],
+  keywords: ["瑞士", "国际主义", "网格", "Helvetica", "理性", "排版", "极简", "modern", "contemporary", "sleek"],
 
   philosophy: `Swiss International Style（瑞士国际风格）是20世纪50年代在瑞士发展起来的设计运动，强调清晰、客观、理性的视觉传达。
 
@@ -25,7 +25,14 @@ export const swissStyle: DesignStyle = {
 - 网格系统：严格的数学网格控制布局
 - 无衬线字体：Helvetica 等清晰易读的字体
 - 负空间：大量留白增强可读性
-- 客观传达：设计服务于信息，而非装饰`,
+- 客观传达：设计服务于信息，而非装饰
+
+设计原则：
+- 视觉一致性：所有组件必须遵循统一的视觉语言，从色彩到字体到间距保持谐调
+- 层次分明：通过颜色深浅、字号大小、留白空间建立清晰的信息层级
+- 交互反馈：每个可交互元素都必须有明确的 hover、active、focus 状态反馈
+- 响应式适配：设计必须在移动端、平板、桌面端上保持一致的体验
+- 无障碍性：确保色彩对比度符合 WCAG 2.1 AA 标准，所有交互元素可键盘访问`,
 
   philosophyEn: `Swiss International Style is a design movement developed in Switzerland in the 1950s, emphasizing clear, objective, and rational visual communication.
 
@@ -207,6 +214,59 @@ Core principles:
 .swiss-accent {
   border-left: 4px solid var(--swiss-black);
   padding-left: 1.5rem;
+}
+@keyframes swiss-style-fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes swiss-style-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.swiss-style-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.swiss-style-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.05), transparent);
+  pointer-events: none;
+}
+
+.swiss-style-card:hover::before {
+  opacity: 1;
+}
+
+.swiss-style-gradient {
+  background: linear-gradient(135deg, #000000, #ff0000);
+}
+
+.swiss-style-gradient-text {
+  background: linear-gradient(135deg, #000000, #ff0000);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.swiss-style-frosted {
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  background: rgba(0, 0, 0, 0.08);
+}
+
+.swiss-style-accent-corner {
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 2rem), calc(100% - 2rem) 100%, 0 100%);
+}
+
+.swiss-style-animate-in {
+  animation: swiss-style-fade-in 0.5s ease-out both;
 }`,
 
   aiRules: `你是一个 Swiss International Style 设计风格的前端开发专家。生成的所有代码必须严格遵守以下约束：
@@ -301,6 +361,44 @@ Only use:
 3. 配色：黑白为主，红色点缀
 4. 大量留白
 5. 简洁的几何装饰`,
+    },
+  {
+      title: "SaaS 着陆页",
+      titleEn: "SaaS Landing Page",
+      description: "生成 瑞士国际风格风格的 SaaS 产品着陆页",
+      descriptionEn: "Generate a SaaS product landing page in Swiss International style",
+      prompt: `Create a SaaS landing page using Swiss International style with hero section, feature grid, testimonials, pricing table, and footer.`,
+    },
+    {
+      title: "作品集展示",
+      titleEn: "Portfolio Showcase",
+      description: "生成 瑞士国际风格风格的作品集页面",
+      descriptionEn: "Generate a portfolio showcase in Swiss International style",
+      prompt: `Create a portfolio showcase page using Swiss International style with project grid, about section, contact form, and consistent visual language.`,
+    }],
+
+  variants: [
+    {
+      id: "swiss-style-warm",
+      name: "瑞士国际风格暖色版",
+      nameEn: "Swiss International Warm",
+      description: "Warm-toned variant with shifted hues toward amber/orange",
+      colors: {
+        primary: "#000000",
+        secondary: "#ffffff",
+        accent: ["#c91a00", "#4042cf", "#94ec00"],
+      },
+    },
+    {
+      id: "swiss-style-cool",
+      name: "瑞士国际风格冷色版",
+      nameEn: "Swiss International Cool",
+      description: "Cool-toned variant with shifted hues toward blue/teal",
+      colors: {
+        primary: "#000000",
+        secondary: "#e6e6e6",
+        accent: ["#ff006c", "#006984", "#ffab36"],
+      },
     },
   ],
 };

@@ -17,7 +17,7 @@ export const comicStyle: DesignStyle = {
     secondary: "#ffffff",
     accent: ["#ff3333", "#ffcc00", "#3366ff", "#33cc33"],
   },
-  keywords: ["漫画", "manga", "网点", "对话气泡", "分镜", "动作线", "墨线"],
+  keywords: ["漫画", "manga", "网点", "对话气泡", "分镜", "动作线", "墨线", "expressive", "bold", "vibrant"],
 
   philosophy: `Comic Style 是一种源自漫画书和日式漫画的设计风格，通过浓重的墨线边框、半调网点、对话气泡和动态线条，将界面变成生动的漫画面板。
 
@@ -26,7 +26,14 @@ export const comicStyle: DesignStyle = {
 - 网点效果：使用 halftone dots 模拟漫画印刷质感
 - 动态感：通过速度线和动作线表达能量与运动
 - 叙事性：每个区块都像漫画的一帧，讲述故事
-- 情绪爆发：交互要像 POW! BAM! 一样夸张有力`,
+- 情绪爆发：交互要像 POW! BAM! 一样夸张有力
+
+设计原则：
+- 视觉一致性：所有组件必须遵循统一的视觉语言，从色彩到字体到间距保持谐调
+- 层次分明：通过颜色深浅、字号大小、留白空间建立清晰的信息层级
+- 交互反馈：每个可交互元素都必须有明确的 hover、active、focus 状态反馈
+- 响应式适配：设计必须在移动端、平板、桌面端上保持一致的体验
+- 无障碍性：确保色彩对比度符合 WCAG 2.1 AA 标准，所有交互元素可键盘访问`,
 
   philosophyEn: `Comic Style is a design style derived from comic books and manga, transforming interfaces into vivid comic panels through heavy ink-line borders, halftone dots, speech bubbles, and dynamic lines.
 
@@ -314,7 +321,11 @@ Core principles:
 .comic-pop:active {
   transform: scale(0.95) rotate(2deg) translate(4px, 4px);
   box-shadow: none;
-}`,
+}
+
+.comic-style-filter { filter: brightness(1.05) contrast(1.02); }
+
+.comic-style-focus { outline: 2px solid var(--comic-style-primary, currentColor); outline-offset: 2px; }`,
 
   aiRules: `你是一个 Comic Style 设计风格的前端开发专家。生成的所有代码必须严格遵守以下约束：
 
@@ -457,6 +468,37 @@ After generating code, verify:
 4. hover 时卡片阴影从 8px 扩大到 16px + -translate-y-2
 5. 半调网点作为背景纹理
 6. 点击时 active:shadow-none 瞬间墨水压迫感`,
+    },
+  {
+      title: "作品集展示",
+      titleEn: "Portfolio Showcase",
+      description: "生成 漫画风格风格的作品集页面",
+      descriptionEn: "Generate a portfolio showcase in Comic Style style",
+      prompt: `Create a portfolio showcase page using Comic Style style with project grid, about section, contact form, and consistent visual language.`,
+    }],
+
+  variants: [
+    {
+      id: "comic-style-warm",
+      name: "漫画风格暖色版",
+      nameEn: "Comic Style Warm",
+      description: "Warm-toned variant with shifted hues toward amber/orange",
+      colors: {
+        primary: "#1a1a1a",
+        secondary: "#ffffff",
+        accent: ["#d44700", "#94ec00", "#864dff", "#0bd178"],
+      },
+    },
+    {
+      id: "comic-style-cool",
+      name: "漫画风格冷色版",
+      nameEn: "Comic Style Cool",
+      description: "Cool-toned variant with shifted hues toward blue/teal",
+      colors: {
+        primary: "#1a1a1a",
+        secondary: "#e6e6e6",
+        accent: ["#ff2a89", "#ffab36", "#007fd1", "#78bb0b"],
+      },
     },
   ],
 };

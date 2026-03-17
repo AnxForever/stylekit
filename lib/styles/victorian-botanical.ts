@@ -15,9 +15,9 @@ export const victorianBotanical: DesignStyle = {
   colors: {
     primary: "#2d4a2d",
     secondary: "#faf5ef",
-    accent: ["#8b6914", "#6b3a3a", "#3d5c3d"],
+    accent: ["#8b6914", "#6b3a3a", "#3d5c3d", "#308323"],
   },
-  keywords: ["维多利亚", "植物", "插画", "花卉", "自然", "线描", "博物馆"],
+  keywords: ["维多利亚", "植物", "插画", "花卉", "自然", "线描", "博物馆", "retro", "vintage", "nostalgic"],
 
   philosophy: `Victorian Botanical（维多利亚植物学）风格源于19世纪英国维多利亚时代的自然历史研究热潮。当时的植物学家和插画师用精细的线描记录世界各地的植物标本，这些插画不仅是科学文献，更是艺术珍品。
 
@@ -219,6 +219,48 @@ When designing, focus on the meticulous crafting of details rather than visual i
   color: var(--vb-gold);
   font-family: Georgia, "Times New Roman", serif;
   letter-spacing: 0.05em;
+}
+@keyframes victorian-botanical-fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes victorian-botanical-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.victorian-botanical-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.victorian-botanical-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  background: linear-gradient(135deg, rgba(45, 74, 45, 0.05), transparent);
+  pointer-events: none;
+}
+
+.victorian-botanical-card:hover::before {
+  opacity: 1;
+}
+
+.victorian-botanical-frosted {
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  background: rgba(45, 74, 45, 0.08);
+}
+
+.victorian-botanical-accent-corner {
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 2rem), calc(100% - 2rem) 100%, 0 100%);
+}
+
+.victorian-botanical-animate-in {
+  animation: victorian-botanical-fade-in 0.5s ease-out both;
 }`,
 
   aiRules: `你是一个 Victorian Botanical 设计风格的前端开发专家。生成的所有代码必须严格遵守以下约束：
@@ -317,6 +359,44 @@ Primary:
 3. 卡片：细线边框，金色强调，学名斜体
 4. 添加精细的装饰分隔线
 5. 整体传达自然历史博物馆的优雅氛围`,
+    },
+  {
+      title: "SaaS 着陆页",
+      titleEn: "SaaS Landing Page",
+      description: "生成 维多利亚植物风格的 SaaS 产品着陆页",
+      descriptionEn: "Generate a SaaS product landing page in Victorian Botanical style",
+      prompt: `Create a SaaS landing page using Victorian Botanical style with hero section, feature grid, testimonials, pricing table, and footer.`,
+    },
+    {
+      title: "作品集展示",
+      titleEn: "Portfolio Showcase",
+      description: "生成 维多利亚植物风格的作品集页面",
+      descriptionEn: "Generate a portfolio showcase in Victorian Botanical style",
+      prompt: `Create a portfolio showcase page using Victorian Botanical style with project grid, about section, contact form, and consistent visual language.`,
+    }],
+
+  variants: [
+    {
+      id: "victorian-botanical-warm",
+      name: "维多利亚植物暖色版",
+      nameEn: "Victorian Botanical Warm",
+      description: "Warm-toned variant with shifted hues toward amber/orange",
+      colors: {
+        primary: "#254b3a",
+        secondary: "#fbf6f1",
+        accent: ["#5c780f", "#613f28", "#355d4b"],
+      },
+    },
+    {
+      id: "victorian-botanical-cool",
+      name: "维多利亚植物冷色版",
+      nameEn: "Victorian Botanical Cool",
+      description: "Cool-toned variant with shifted hues toward blue/teal",
+      colors: {
+        primary: "#3a4725",
+        secondary: "#e1ddd7",
+        accent: ["#b25b30", "#6b384f", "#4b5935"],
+      },
     },
   ],
 };

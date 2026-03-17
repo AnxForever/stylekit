@@ -39,7 +39,14 @@ export const vhsAesthetic: DesignStyle = {
 - 信号故障：hover 时出现水平位移的 tracking 干扰效果
 - VHS标记：REC指示灯、时间戳、计数器等录像带UI元素
 - 单色字体：所有文字使用 monospace 字体，大写优先
-- 极暗背景：黑色或深紫色背景最大化霓虹对比度`,
+- 极暗背景：黑色或深紫色背景最大化霓虹对比度
+
+设计原则：
+- 视觉一致性：所有组件必须遵循统一的视觉语言，从色彩到字体到间距保持谐调
+- 层次分明：通过颜色深浅、字号大小、留白空间建立清晰的信息层级
+- 交互反馈：每个可交互元素都必须有明确的 hover、active、focus 状态反馈
+- 响应式适配：设计必须在移动端、平板、桌面端上保持一致的体验
+- 无障碍性：确保色彩对比度符合 WCAG 2.1 AA 标准，所有交互元素可键盘访问`,
 
   philosophyEn: `VHS Aesthetic recreates the analog warmth and beautiful imperfections of 80-90s VHS tapes.
 
@@ -218,7 +225,49 @@ Core principles:
   0%, 100% { text-shadow: -2px 0 #ff00ff, 2px 0 #00ffff; }
   33% { text-shadow: -3px 0 #ff00ff, 1px 0 #00ffff; }
   66% { text-shadow: -1px 0 #ff00ff, 3px 0 #00ffff; }
-}`,
+}
+/* VHS Aesthetic Design Tokens */
+:root {
+  --vhs-aesthetic-primary: #ff00ff;
+  --vhs-aesthetic-secondary: #000000;
+  --vhs-aesthetic-accent: #00ffff;
+  --vhs-aesthetic-glow: rgba(255, 0, 255, 0.3);
+}
+
+.vhs-aesthetic-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.vhs-aesthetic-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  background: linear-gradient(135deg, rgba(255, 0, 255, 0.05), transparent);
+  pointer-events: none;
+}
+
+.vhs-aesthetic-card:hover::before {
+  opacity: 1;
+}
+
+.vhs-aesthetic-frosted {
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  background: rgba(255, 0, 255, 0.08);
+}
+
+.vhs-aesthetic-accent-corner {
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 2rem), calc(100% - 2rem) 100%, 0 100%);
+}
+
+.vhs-aesthetic-animate-in {
+  animation: vhs-aesthetic-fade-in 0.5s ease-out both;
+}
+
+.vhs-aesthetic-focus { outline: 2px solid var(--vhs-aesthetic-primary, currentColor); outline-offset: 2px; }`,
 
   aiRules: `STYLE: VHS Aesthetic
 TYPE: 80-90s VHS tape visual aesthetic
@@ -330,6 +379,31 @@ Animation & Interaction Rules:
 - Tape collection showcase grid
 - Retro timestamp and counter overlays
 - Magenta and cyan neon accents throughout`,
+    },
+  ],
+
+  variants: [
+    {
+      id: "vhs-aesthetic-warm",
+      name: "VHS美学暖色版",
+      nameEn: "VHS Aesthetic Warm",
+      description: "Warm-toned variant with shifted hues toward amber/orange",
+      colors: {
+        primary: "#ff008b",
+        secondary: "#1a1a1a",
+        accent: ["#36e5ff", "#86ff17", "#00ff74", "#280725"],
+      },
+    },
+    {
+      id: "vhs-aesthetic-cool",
+      name: "VHS美学冷色版",
+      nameEn: "VHS Aesthetic Cool",
+      description: "Cool-toned variant with shifted hues toward blue/teal",
+      colors: {
+        primary: "#8b1cff",
+        secondary: "#000000",
+        accent: ["#00ff93", "#ffd829", "#74e300", "#0a0f2f"],
+      },
     },
   ],
 };

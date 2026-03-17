@@ -18,7 +18,7 @@ export const splitScreen: DesignStyle = {
     secondary: "#ffffff",
     accent: ["#ff4757", "#2ed573", "#1e90ff", "#ffa502"],
   },
-  keywords: ["分屏", "对比", "左右布局", "对称", "品牌", "展示"],
+  keywords: ["分屏", "对比", "左右布局", "对称", "品牌", "展示", "modern", "contemporary", "sleek", "现代"],
 
   philosophy: `Split Screen（分屏布局）是一种将视口分为两个或多个区域的布局方式，通过对比创造视觉张力和叙事效果。
 
@@ -26,7 +26,14 @@ export const splitScreen: DesignStyle = {
 - 对比强调：通过左右对比突出差异或联系
 - 视觉平衡：即使不对称也保持视觉重量平衡
 - 叙事引导：引导用户视线在两侧之间流动
-- 空间利用：充分利用宽屏显示器的优势`,
+- 空间利用：充分利用宽屏显示器的优势
+
+设计原则：
+- 视觉一致性：所有组件必须遵循统一的视觉语言，从色彩到字体到间距保持谐调
+- 层次分明：通过颜色深浅、字号大小、留白空间建立清晰的信息层级
+- 交互反馈：每个可交互元素都必须有明确的 hover、active、focus 状态反馈
+- 响应式适配：设计必须在移动端、平板、桌面端上保持一致的体验
+- 无障碍性：确保色彩对比度符合 WCAG 2.1 AA 标准，所有交互元素可键盘访问`,
 
   philosophyEn: `Split Screen is a layout approach that divides the viewport into two or more regions, creating visual tension and narrative effect through contrast.
 
@@ -297,6 +304,63 @@ Core principles:
 .split-hover-left, .split-hover-right {
   flex: 0.5;
   transition: flex 0.5s ease;
+}
+/* Split Screen Design Tokens */
+:root {
+  --split-screen-primary: #0f0f0f;
+  --split-screen-secondary: #ffffff;
+  --split-screen-accent: #ff4757;
+  --split-screen-glow: rgba(15, 15, 15, 0.3);
+}
+
+@keyframes split-screen-fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes split-screen-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.split-screen-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.split-screen-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  background: linear-gradient(135deg, rgba(15, 15, 15, 0.05), transparent);
+  pointer-events: none;
+}
+
+.split-screen-card:hover::before {
+  opacity: 1;
+}
+
+.split-screen-gradient {
+  background: linear-gradient(135deg, #0f0f0f, #ff4757);
+}
+
+.split-screen-gradient-text {
+  background: linear-gradient(135deg, #0f0f0f, #ff4757);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.split-screen-frosted {
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  background: rgba(15, 15, 15, 0.08);
+}
+
+.split-screen-animate-in {
+  animation: split-screen-fade-in 0.5s ease-out both;
 }`,
 
   aiRules: `You are a frontend expert specializing in Split Screen layout. All generated code must strictly follow these constraints:
@@ -475,6 +539,31 @@ Use contrasting colors, balanced visual weight`,
 5. Mobile: Image at top, details below
 6. Previous/Next project navigation at bottom
 Use sticky positioning for image, smooth scroll for details`,
+    },
+  ],
+
+  variants: [
+    {
+      id: "split-screen-warm",
+      name: "分屏布局暖色版",
+      nameEn: "Split Screen Warm",
+      description: "Warm-toned variant with shifted hues toward amber/orange",
+      colors: {
+        primary: "#0f0f0f",
+        secondary: "#ffffff",
+        accent: ["#e05712", "#23d1b9", "#6b76ff", "#9fc300"],
+      },
+    },
+    {
+      id: "split-screen-cool",
+      name: "分屏布局冷色版",
+      nameEn: "Split Screen Cool",
+      description: "Cool-toned variant with shifted hues toward blue/teal",
+      colors: {
+        primary: "#0f0f0f",
+        secondary: "#e6e6e6",
+        accent: ["#f842a2", "#5acd3c", "#00a6bd", "#ff8842"],
+      },
     },
   ],
 };

@@ -15,9 +15,9 @@ export const japaneseFresh: DesignStyle = {
   colors: {
     primary: "#64b5f6",
     secondary: "#fafaf8",
-    accent: ["#98d8c8", "#ffb7c5", "#b8d4e3"],
+    accent: ["#98d8c8", "#ffb7c5", "#b8d4e3", "#b0cdf3"],
   },
-  keywords: ["Ma", "侘寂", "留白", "发丝边框", "植物线描", "呼吸感"],
+  keywords: ["Ma", "侘寂", "留白", "发丝边框", "植物线描", "呼吸感", "minimal", "clean", "simple", "极简"],
 
   philosophy: `Japanese Fresh embodies Ma (space between) and wabi-sabi (beauty in imperfection). Design is not about what you add, but what you allow to breathe.
 
@@ -230,6 +230,59 @@ Core principles:
   stroke: var(--jf-muted);
   fill: none;
   stroke-width: 0.7;
+}
+@keyframes japanese-fresh-fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes japanese-fresh-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.japanese-fresh-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.japanese-fresh-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  background: linear-gradient(135deg, rgba(100, 181, 246, 0.05), transparent);
+  pointer-events: none;
+}
+
+.japanese-fresh-card:hover::before {
+  opacity: 1;
+}
+
+.japanese-fresh-gradient {
+  background: linear-gradient(135deg, #64b5f6, #98d8c8);
+}
+
+.japanese-fresh-gradient-text {
+  background: linear-gradient(135deg, #64b5f6, #98d8c8);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.japanese-fresh-frosted {
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  background: rgba(100, 181, 246, 0.08);
+}
+
+.japanese-fresh-accent-corner {
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 2rem), calc(100% - 2rem) 100%, 0 100%);
+}
+
+.japanese-fresh-animate-in {
+  animation: japanese-fresh-fade-in 0.5s ease-out both;
 }`,
 
   aiRules: `You are a Japanese Fresh design style frontend development expert. All generated code must strictly follow these constraints:
@@ -350,6 +403,44 @@ Primary:
 3. Hairline borders only (0.5px warm gray)
 4. One delicate botanical line drawing SVG accent
 5. Bottom-line inputs, no shadows, font-extralight throughout`,
+    },
+  {
+      title: "SaaS 着陆页",
+      titleEn: "SaaS Landing Page",
+      description: "生成 日系清新风风格的 SaaS 产品着陆页",
+      descriptionEn: "Generate a SaaS product landing page in Japanese Fresh style",
+      prompt: `Create a SaaS landing page using Japanese Fresh style with hero section, feature grid, testimonials, pricing table, and footer.`,
+    },
+    {
+      title: "作品集展示",
+      titleEn: "Portfolio Showcase",
+      description: "生成 日系清新风风格的作品集页面",
+      descriptionEn: "Generate a portfolio showcase in Japanese Fresh style",
+      prompt: `Create a portfolio showcase page using Japanese Fresh style with project grid, about section, contact form, and consistent visual language.`,
+    }],
+
+  variants: [
+    {
+      id: "japanese-fresh-warm",
+      name: "日系清新风暖色版",
+      nameEn: "Japanese Fresh Warm",
+      description: "Warm-toned variant with shifted hues toward amber/orange",
+      colors: {
+        primary: "#94a4ff",
+        secondary: "#fbfbf9",
+        accent: ["#9ed4e1", "#f6bca9", "#c5cfec"],
+      },
+    },
+    {
+      id: "japanese-fresh-cool",
+      name: "日系清新风冷色版",
+      nameEn: "Japanese Fresh Cool",
+      description: "Cool-toned variant with shifted hues toward blue/teal",
+      colors: {
+        primary: "#46c2c9",
+        secondary: "#e1e1df",
+        accent: ["#9fd8b0", "#f9b6e1", "#b1d7d5"],
+      },
     },
   ],
 };

@@ -15,9 +15,9 @@ export const ghibliStyle: DesignStyle = {
   colors: {
     primary: "#7cb9a8",
     secondary: "#f4e4bc",
-    accent: ["#e8a87c", "#85cdca", "#c38d94"],
+    accent: ["#e8a87c", "#85cdca", "#c38d94", "#9ec069"],
   },
-  keywords: ["吉卜力", "宫崎骏", "手绘", "治愈", "自然", "梦幻", "动画"],
+  keywords: ["吉卜力", "宫崎骏", "手绘", "治愈", "自然", "梦幻", "动画", "expressive", "bold", "vibrant"],
 
   philosophy: `Ghibli Style（吉卜力风格）受日本吉卜力工作室动画影响，以温暖、治愈、富有诗意的视觉语言著称。
 
@@ -25,7 +25,14 @@ export const ghibliStyle: DesignStyle = {
 - 手绘质感：保留手工绘制的温度和不完美
 - 自然主题：云朵、森林、天空等自然元素
 - 柔和色调：温暖的大地色系和天空色
-- 梦幻氛围：创造宁静治愈的视觉体验`,
+- 梦幻氛围：创造宁静治愈的视觉体验
+
+设计原则：
+- 视觉一致性：所有组件必须遵循统一的视觉语言，从色彩到字体到间距保持谐调
+- 层次分明：通过颜色深浅、字号大小、留白空间建立清晰的信息层级
+- 交互反馈：每个可交互元素都必须有明确的 hover、active、focus 状态反馈
+- 响应式适配：设计必须在移动端、平板、桌面端上保持一致的体验
+- 无障碍性：确保色彩对比度符合 WCAG 2.1 AA 标准，所有交互元素可键盘访问`,
 
   philosophyEn: `Ghibli Style is influenced by Japan's Studio Ghibli animations, known for its warm, healing, and poetic visual language.
 
@@ -199,6 +206,48 @@ Core principles:
 /* 柔和阴影 */
 .ghibli-shadow {
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+}
+@keyframes ghibli-style-fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes ghibli-style-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.ghibli-style-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.ghibli-style-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  background: linear-gradient(135deg, rgba(124, 185, 168, 0.05), transparent);
+  pointer-events: none;
+}
+
+.ghibli-style-card:hover::before {
+  opacity: 1;
+}
+
+.ghibli-style-frosted {
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  background: rgba(124, 185, 168, 0.08);
+}
+
+.ghibli-style-accent-corner {
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 2rem), calc(100% - 2rem) 100%, 0 100%);
+}
+
+.ghibli-style-animate-in {
+  animation: ghibli-style-fade-in 0.5s ease-out both;
 }`,
 
   aiRules: `你是一个 Ghibli Style 设计风格的前端开发专家。生成的所有代码必须严格遵守以下约束：
@@ -240,7 +289,28 @@ Core principles:
 - Gentle Breeze: 悬停动画需轻柔克制，可使用微小浮动与低角度旋转（约 1deg 内）模拟自然风感。
 - Watercolor Glow: 阴影应使用本体色的柔和扩散（如鼠尾草绿系），避免厚重黑影破坏水彩质地。
 - Soft Cushion: 点击反馈使用温和按压（如 \`active:scale-[0.98]\`），避免机械式快速收缩。
-- Magic Longing: 交互节奏建议 \`duration-500\` 到 \`duration-700\`，搭配 \`ease-in-out\` 保持童话般从容。`,
+- Magic Longing: 交互节奏建议 \`duration-500\` 到 \`duration-700\`，搭配 \`ease-in-out\` 保持童话般从容。
+
+## Layout & Spacing
+- Section padding: py-16 md:py-24
+- Card padding: p-6 md:p-8
+- Gap between cards: gap-6 md:gap-8
+- Max content width: max-w-6xl mx-auto
+
+## Responsive Design
+- Mobile-first approach with Tailwind breakpoints
+- Stack elements vertically on mobile (flex-col), row on desktop (md:flex-row)
+- Reduce font sizes on mobile: text-3xl md:text-5xl for headings
+- Touch-friendly targets: min 44px for interactive elements
+
+## Self-Check Verification
+After generating code, verify:
+1. All interactive elements have hover/focus/active states
+2. Color contrast meets WCAG 2.1 AA (4.5:1 for text)
+3. Layout is responsive across breakpoints
+4. Typography hierarchy is clear (h1 > h2 > h3 > body)
+5. Spacing is consistent using the defined scale
+6. All animations respect prefers-reduced-motion`,
 
   aiRulesEn: `You are a Ghibli Style design frontend development expert. All generated code must strictly follow these constraints:
 
@@ -295,6 +365,44 @@ Primary:
 3. 配色：鼠尾草绿、奶油色、天空蓝
 4. 圆润的卡片和按钮
 5. 整体传递温暖治愈的感觉`,
+    },
+  {
+      title: "SaaS 着陆页",
+      titleEn: "SaaS Landing Page",
+      description: "生成 吉卜力风格风格的 SaaS 产品着陆页",
+      descriptionEn: "Generate a SaaS product landing page in Ghibli Style style",
+      prompt: `Create a SaaS landing page using Ghibli Style style with hero section, feature grid, testimonials, pricing table, and footer.`,
+    },
+    {
+      title: "作品集展示",
+      titleEn: "Portfolio Showcase",
+      description: "生成 吉卜力风格风格的作品集页面",
+      descriptionEn: "Generate a portfolio showcase in Ghibli Style style",
+      prompt: `Create a portfolio showcase page using Ghibli Style style with project grid, about section, contact form, and consistent visual language.`,
+    }],
+
+  variants: [
+    {
+      id: "ghibli-style-warm",
+      name: "吉卜力风格暖色版",
+      nameEn: "Ghibli Style Warm",
+      description: "Warm-toned variant with shifted hues toward amber/orange",
+      colors: {
+        primary: "#81b5c0",
+        secondary: "#f5e7c3",
+        accent: ["#c6b469", "#93c6e5", "#bb9180"],
+      },
+    },
+    {
+      id: "ghibli-style-cool",
+      name: "吉卜力风格冷色版",
+      nameEn: "Ghibli Style Cool",
+      description: "Cool-toned variant with shifted hues toward blue/teal",
+      colors: {
+        primary: "#84b991",
+        secondary: "#dccda9",
+        accent: ["#fc9f9e", "#86d0ac", "#c08caa"],
+      },
     },
   ],
 };

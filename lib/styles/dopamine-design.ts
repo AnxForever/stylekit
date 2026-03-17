@@ -15,7 +15,7 @@ export const dopamineDesign: DesignStyle = {
     secondary: "#8338ec",
     accent: ["#ffbe0b", "#3a86ff", "#06d6a0", "#fb5607"],
   },
-  keywords: ["多巴胺", "高饱和", "霓虹", "快乐", "大胆", "能量"],
+  keywords: ["多巴胺", "高饱和", "霓虹", "快乐", "大胆", "能量", "expressive", "bold", "vibrant", "表现力"],
 
   philosophy: `Dopamine Design 是 2025-2026 年最火热的设计趋势，核心理念是通过高饱和度色彩、大胆排版和充满能量的视觉元素直接刺激用户的愉悦感。
 
@@ -24,7 +24,14 @@ export const dopamineDesign: DesignStyle = {
 - 大胆排版：超大字号、加粗字重、紧凑行距
 - 圆润友好：大圆角、pill 形状、bubble 元素
 - 动效活泼：弹性动画、过冲回弹、愉快的 micro-interactions
-- 反灰色：最小化灰色使用，用彩色替代中性色`,
+- 反灰色：最小化灰色使用，用彩色替代中性色
+
+设计原则：
+- 视觉一致性：所有组件必须遵循统一的视觉语言，从色彩到字体到间距保持谐调
+- 层次分明：通过颜色深浅、字号大小、留白空间建立清晰的信息层级
+- 交互反馈：每个可交互元素都必须有明确的 hover、active、focus 状态反馈
+- 响应式适配：设计必须在移动端、平板、桌面端上保持一致的体验
+- 无障碍性：确保色彩对比度符合 WCAG 2.1 AA 标准，所有交互元素可键盘访问`,
 
   philosophyEn: `Dopamine Design is the hottest design trend of 2025-2026. The core idea is to use highly saturated colors, bold typography, and energetic visual elements to directly stimulate feelings of joy and excitement.
 
@@ -135,6 +142,56 @@ Core principles:
   .dopamine-glow-blue {
     box-shadow: 0 8px 30px rgba(58, 134, 255, 0.4);
   }
+}
+/* Dopamine Design Design Tokens */
+:root {
+  --dopamine-design-primary: #ff006e;
+  --dopamine-design-secondary: #8338ec;
+  --dopamine-design-accent: #ffbe0b;
+  --dopamine-design-glow: rgba(255, 0, 110, 0.3);
+}
+
+@keyframes dopamine-design-fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes dopamine-design-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.dopamine-design-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.dopamine-design-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  background: linear-gradient(135deg, rgba(255, 0, 110, 0.05), transparent);
+  pointer-events: none;
+}
+
+.dopamine-design-card:hover::before {
+  opacity: 1;
+}
+
+.dopamine-design-frosted {
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  background: rgba(255, 0, 110, 0.08);
+}
+
+.dopamine-design-accent-corner {
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 2rem), calc(100% - 2rem) 100%, 0 100%);
+}
+
+.dopamine-design-animate-in {
+  animation: dopamine-design-fade-in 0.5s ease-out both;
 }`,
 
   aiRules: `You are a Dopamine Design expert. This is the 2025-2026 design mega-trend centered on high-saturation colors, bold typography, and joyful energy.
@@ -230,6 +287,44 @@ If any check fails, fix before output.
       description: "高能量的移动应用着陆页，渐变英雄区 + 特性展示",
       descriptionEn: "High-energy mobile app landing page with gradient hero + feature showcase",
       prompt: "Use Dopamine Design style to create a mobile app landing page. Include a full-width gradient hero (pink to purple to blue), oversized pill-shaped CTA buttons, feature cards with colored shadows, and a bold pricing section. Everything should feel joyful and energetic.",
+    },
+  {
+      title: "SaaS 着陆页",
+      titleEn: "SaaS Landing Page",
+      description: "生成 多巴胺设计风格的 SaaS 产品着陆页",
+      descriptionEn: "Generate a SaaS product landing page in Dopamine Design style",
+      prompt: `Create a SaaS landing page using Dopamine Design style with hero section, feature grid, testimonials, pricing table, and footer.`,
+    },
+    {
+      title: "作品集展示",
+      titleEn: "Portfolio Showcase",
+      description: "生成 多巴胺设计风格的作品集页面",
+      descriptionEn: "Generate a portfolio showcase in Dopamine Design style",
+      prompt: `Create a portfolio showcase page using Dopamine Design style with project grid, about section, contact form, and consistent visual language.`,
+    }],
+
+  variants: [
+    {
+      id: "dopamine-design-warm",
+      name: "多巴胺设计暖色版",
+      nameEn: "Dopamine Design Warm",
+      description: "Warm-toned variant with shifted hues toward amber/orange",
+      colors: {
+        primary: "#fd0b07",
+        secondary: "#8f4cee",
+        accent: ["#9cdc03", "#836eff", "#19c8f1", "#b37100"],
+      },
+    },
+    {
+      id: "dopamine-design-cool",
+      name: "多巴胺设计冷色版",
+      nameEn: "Dopamine Design Cool",
+      description: "Cool-toned variant with shifted hues toward blue/teal",
+      colors: {
+        primary: "#cd06c8",
+        secondary: "#7632d4",
+        accent: ["#ffa043", "#039ccc", "#1ed751", "#ff4359"],
+      },
     },
   ],
 };

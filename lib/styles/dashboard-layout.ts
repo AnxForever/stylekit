@@ -18,7 +18,7 @@ export const dashboardLayout: DesignStyle = {
     secondary: "#f9fafb",
     accent: ["#6366f1", "#10b981", "#f59e0b", "#ef4444"],
   },
-  keywords: ["仪表盘", "数据", "面板", "图表", "监控", "后台", "分析"],
+  keywords: ["仪表盘", "数据", "面板", "图表", "监控", "后台", "分析", "modern", "contemporary", "sleek"],
 
   philosophy: `Dashboard Layout 是一种以数据展示为核心的布局方案，通过侧边导航、多模块数据面板和灵活的网格系统，让用户高效地监控和分析多维数据。
 
@@ -26,7 +26,14 @@ export const dashboardLayout: DesignStyle = {
 - 数据优先：所有布局决策服务于数据的高效展示
 - 模块化：每个数据面板独立成模块，可灵活组合
 - 密度控制：在信息密度和可读性之间取得平衡
-- 实时性：布局支持数据的实时更新和刷新`,
+- 实时性：布局支持数据的实时更新和刷新
+
+设计原则：
+- 视觉一致性：所有组件必须遵循统一的视觉语言，从色彩到字体到间距保持谐调
+- 层次分明：通过颜色深浅、字号大小、留白空间建立清晰的信息层级
+- 交互反馈：每个可交互元素都必须有明确的 hover、active、focus 状态反馈
+- 响应式适配：设计必须在移动端、平板、桌面端上保持一致的体验
+- 无障碍性：确保色彩对比度符合 WCAG 2.1 AA 标准，所有交互元素可键盘访问`,
 
   philosophyEn: `Dashboard Layout is a layout solution centered on data presentation, enabling users to efficiently monitor and analyze multi-dimensional data through side navigation, multi-module data panels, and a flexible grid system.
 
@@ -298,6 +305,67 @@ Core principles:
   .dashboard-kpi-grid {
     grid-template-columns: 1fr;
   }
+}
+/* Dashboard Layout Design Tokens */
+:root {
+  --dashboard-layout-primary: #111827;
+  --dashboard-layout-secondary: #f9fafb;
+  --dashboard-layout-accent: #6366f1;
+  --dashboard-layout-glow: rgba(17, 24, 39, 0.3);
+}
+
+@keyframes dashboard-layout-fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes dashboard-layout-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.dashboard-layout-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.dashboard-layout-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  background: linear-gradient(135deg, rgba(17, 24, 39, 0.05), transparent);
+  pointer-events: none;
+}
+
+.dashboard-layout-card:hover::before {
+  opacity: 1;
+}
+
+.dashboard-layout-gradient {
+  background: linear-gradient(135deg, #111827, #6366f1);
+}
+
+.dashboard-layout-gradient-text {
+  background: linear-gradient(135deg, #111827, #6366f1);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.dashboard-layout-frosted {
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  background: rgba(17, 24, 39, 0.08);
+}
+
+.dashboard-layout-accent-corner {
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 2rem), calc(100% - 2rem) 100%, 0 100%);
+}
+
+.dashboard-layout-animate-in {
+  animation: dashboard-layout-fade-in 0.5s ease-out both;
 }`,
 
   aiRules: `你是一个 Dashboard Layout 布局专家。生成的所有代码必须严格遵守以下约束：
@@ -414,6 +482,44 @@ Small screens: Hidden sidebar + 1-column KPI
 5. 底部：最近订单表格
 6. 所有数字带增长/下降百分比
 7. 响应式折叠侧边栏`,
+    },
+  {
+      title: "SaaS 着陆页",
+      titleEn: "SaaS Landing Page",
+      description: "生成 仪表盘布局风格的 SaaS 产品着陆页",
+      descriptionEn: "Generate a SaaS product landing page in Dashboard Layout style",
+      prompt: `Create a SaaS landing page using Dashboard Layout style with hero section, feature grid, testimonials, pricing table, and footer.`,
+    },
+    {
+      title: "作品集展示",
+      titleEn: "Portfolio Showcase",
+      description: "生成 仪表盘布局风格的作品集页面",
+      descriptionEn: "Generate a portfolio showcase in Dashboard Layout style",
+      prompt: `Create a portfolio showcase page using Dashboard Layout style with project grid, about section, contact form, and consistent visual language.`,
+    }],
+
+  variants: [
+    {
+      id: "dashboard-layout-warm",
+      name: "仪表盘布局暖色版",
+      nameEn: "Dashboard Layout Warm",
+      description: "Warm-toned variant with shifted hues toward amber/orange",
+      colors: {
+        primary: "#1a1528",
+        secondary: "#fafbfb",
+        accent: ["#a553e6", "#19afc4", "#9dba00", "#cb5506"],
+      },
+    },
+    {
+      id: "dashboard-layout-cool",
+      name: "仪表盘布局冷色版",
+      nameEn: "Dashboard Layout Cool",
+      description: "Cool-toned variant with shifted hues toward blue/teal",
+      colors: {
+        primary: "#0a1b22",
+        secondary: "#e0e1e2",
+        accent: ["#247bd9", "#29b843", "#ff8447", "#ef3d8c"],
+      },
     },
   ],
 };

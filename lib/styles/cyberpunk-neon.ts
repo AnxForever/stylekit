@@ -15,9 +15,9 @@ export const cyberpunkNeon: DesignStyle = {
   colors: {
     primary: "#00ffff",
     secondary: "#0a0a0f",
-    accent: ["#ff00ff", "#ffff00", "#00ff00"],
+    accent: ["#ff00ff", "#ffff00", "#00ff00", "#ff0506"],
   },
-  keywords: ["赛博朋克", "霓虹", "未来", "发光", "游戏", "科技"],
+  keywords: ["赛博朋克", "霓虹", "未来", "发光", "游戏", "科技", "expressive", "bold", "vibrant", "表现力"],
 
   philosophy: `Cyberpunk Neon 风格来源于赛博朋克科幻美学，通过霓虹发光、深色背景和高对比度创造未来感。
 
@@ -25,7 +25,14 @@ export const cyberpunkNeon: DesignStyle = {
 - 霓虹发光：核心元素使用发光效果突出
 - 深色主导：近乎纯黑的背景让霓虹更加醒目
 - 高科技感：使用网格、扫描线等元素增加科技感
-- 色彩冲击：青色、品红、黄色等高饱和度颜色`,
+- 色彩冲击：青色、品红、黄色等高饱和度颜色
+
+设计原则：
+- 视觉一致性：所有组件必须遵循统一的视觉语言，从色彩到字体到间距保持谐调
+- 层次分明：通过颜色深浅、字号大小、留白空间建立清晰的信息层级
+- 交互反馈：每个可交互元素都必须有明确的 hover、active、focus 状态反馈
+- 响应式适配：设计必须在移动端、平板、桌面端上保持一致的体验
+- 无障碍性：确保色彩对比度符合 WCAG 2.1 AA 标准，所有交互元素可键盘访问`,
 
   philosophyEn: `Cyberpunk Neon style draws from cyberpunk sci-fi aesthetics, creating a futuristic feel through neon glow, dark backgrounds, and high contrast.
 
@@ -142,7 +149,53 @@ Core principles:
 @keyframes neon-pulse {
   0%, 100% { opacity: 1; }
   50% { opacity: 0.7; }
-}`,
+}
+/* Cyberpunk Neon Design Tokens */
+:root {
+  --cyberpunk-neon-primary: #00ffff;
+  --cyberpunk-neon-secondary: #0a0a0f;
+  --cyberpunk-neon-accent: #ff00ff;
+  --cyberpunk-neon-glow: rgba(0, 255, 255, 0.3);
+}
+
+.cyberpunk-neon-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.cyberpunk-neon-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  background: linear-gradient(135deg, rgba(0, 255, 255, 0.05), transparent);
+  pointer-events: none;
+}
+
+.cyberpunk-neon-card:hover::before {
+  opacity: 1;
+}
+
+.cyberpunk-neon-frosted {
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  background: rgba(0, 255, 255, 0.08);
+}
+
+.cyberpunk-neon-accent-corner {
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 2rem), calc(100% - 2rem) 100%, 0 100%);
+}
+
+.cyberpunk-neon-animate-in {
+  animation: cyberpunk-neon-fade-in 0.5s ease-out both;
+}
+
+.cyberpunk-neon-hover-lift { transition: transform 0.3s ease; }
+
+.cyberpunk-neon-hover-lift:hover { transform: translateY(-2px); }
+
+.cyberpunk-neon-focus { outline: 2px solid var(--cyberpunk-neon-primary, currentColor); outline-offset: 2px; }`,
 
   aiRules: `STYLE: Cyberpunk Neon
 TYPE: Futuristic sci-fi interface
@@ -233,6 +286,44 @@ Animation & Interaction Rules:
 - Action buttons with pulse animation
 - Futuristic font-mono typography
 - Magenta accent for alerts/warnings`,
+    },
+  {
+      title: "SaaS 着陆页",
+      titleEn: "SaaS Landing Page",
+      description: "生成 赛博朋克霓虹风格的 SaaS 产品着陆页",
+      descriptionEn: "Generate a SaaS product landing page in Cyberpunk Neon style",
+      prompt: `Create a SaaS landing page using Cyberpunk Neon style with hero section, feature grid, testimonials, pricing table, and footer.`,
+    },
+    {
+      title: "作品集展示",
+      titleEn: "Portfolio Showcase",
+      description: "生成 赛博朋克霓虹风格的作品集页面",
+      descriptionEn: "Generate a portfolio showcase in Cyberpunk Neon style",
+      prompt: `Create a portfolio showcase page using Cyberpunk Neon style with project grid, about section, contact form, and consistent visual language.`,
+    }],
+
+  variants: [
+    {
+      id: "cyberpunk-neon-warm",
+      name: "赛博朋克霓虹暖色版",
+      nameEn: "Cyberpunk Neon Warm",
+      description: "Warm-toned variant with shifted hues toward amber/orange",
+      colors: {
+        primary: "#36e5ff",
+        secondary: "#232327",
+        accent: ["#ff008b", "#86ff17", "#00ff74"],
+      },
+    },
+    {
+      id: "cyberpunk-neon-cool",
+      name: "赛博朋克霓虹冷色版",
+      nameEn: "Cyberpunk Neon Cool",
+      description: "Cool-toned variant with shifted hues toward blue/teal",
+      colors: {
+        primary: "#00ff93",
+        secondary: "#09090e",
+        accent: ["#8b1cff", "#ffd829", "#74e300"],
+      },
     },
   ],
 };

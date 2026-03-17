@@ -17,7 +17,7 @@ export const dataDense: DesignStyle = {
     secondary: "#f8fafc",
     accent: ["#3b82f6", "#ef4444", "#22c55e", "#64748b"],
   },
-  keywords: ["后台管理", "数据表格", "高密度", "管理面板", "运营", "admin"],
+  keywords: ["后台管理", "数据表格", "高密度", "管理面板", "运营", "admin", "modern", "contemporary", "sleek", "现代"],
 
   philosophy: `Data Dense 是一种效率优先的管理界面设计语言。
 
@@ -25,7 +25,14 @@ export const dataDense: DesignStyle = {
 - 信息密度最大化：在有限屏幕空间内展示最多有效信息
 - 扫描效率：行高紧凑、对齐严格，支持快速垂直扫描
 - 操作即时性：行内操作、快捷键、批量选择减少点击次数
-- 状态可视化：颜色编码传递状态，无需阅读文字即可理解`,
+- 状态可视化：颜色编码传递状态，无需阅读文字即可理解
+
+设计原则：
+- 视觉一致性：所有组件必须遵循统一的视觉语言，从色彩到字体到间距保持谐调
+- 层次分明：通过颜色深浅、字号大小、留白空间建立清晰的信息层级
+- 交互反馈：每个可交互元素都必须有明确的 hover、active、focus 状态反馈
+- 响应式适配：设计必须在移动端、平板、桌面端上保持一致的体验
+- 无障碍性：确保色彩对比度符合 WCAG 2.1 AA 标准，所有交互元素可键盘访问`,
 
   philosophyEn: `Data Dense is an efficiency-first admin interface design language.
 
@@ -184,7 +191,60 @@ Core principles:
 .data-dense-badge--success { background: #f0fdf4; color: #15803d; }
 .data-dense-badge--warning { background: #fffbeb; color: #a16207; }
 .data-dense-badge--error { background: #fef2f2; color: #b91c1c; }
-.data-dense-badge--info { background: #eff6ff; color: #1d4ed8; }`,
+.data-dense-badge--info { background: #eff6ff; color: #1d4ed8; }
+@keyframes data-dense-fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes data-dense-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.data-dense-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.data-dense-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), transparent);
+  pointer-events: none;
+}
+
+.data-dense-card:hover::before {
+  opacity: 1;
+}
+
+.data-dense-gradient {
+  background: linear-gradient(135deg, #ffffff, #3b82f6);
+}
+
+.data-dense-gradient-text {
+  background: linear-gradient(135deg, #ffffff, #3b82f6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.data-dense-frosted {
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.data-dense-accent-corner {
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 2rem), calc(100% - 2rem) 100%, 0 100%);
+}
+
+.data-dense-animate-in {
+  animation: data-dense-fade-in 0.5s ease-out both;
+}`,
 
   aiRules: `You are a Data Dense admin panel design expert.
 
@@ -215,6 +275,44 @@ Core principles:
       description: "高密度后台面板，含 KPI 卡片、数据表格、筛选栏",
       descriptionEn: "Dense admin panel with KPI cards, data table, and filter toolbar",
       prompt: "Build a data-dense admin dashboard with 4 compact KPI cards at top, filter toolbar with search and dropdowns, dense data table with inline status badges and action buttons, and pagination footer.",
+    },
+  {
+      title: "SaaS 着陆页",
+      titleEn: "SaaS Landing Page",
+      description: "生成 数据密集风格的 SaaS 产品着陆页",
+      descriptionEn: "Generate a SaaS product landing page in Data Dense style",
+      prompt: `Create a SaaS landing page using Data Dense style with hero section, feature grid, testimonials, pricing table, and footer.`,
+    },
+    {
+      title: "作品集展示",
+      titleEn: "Portfolio Showcase",
+      description: "生成 数据密集风格的作品集页面",
+      descriptionEn: "Generate a portfolio showcase in Data Dense style",
+      prompt: `Create a portfolio showcase page using Data Dense style with project grid, about section, contact form, and consistent visual language.`,
+    }],
+
+  variants: [
+    {
+      id: "data-dense-warm",
+      name: "数据密集暖色版",
+      nameEn: "Data Dense Warm",
+      description: "Warm-toned variant with shifted hues toward amber/orange",
+      colors: {
+        primary: "#ffffff",
+        secondary: "#f9fbfc",
+        accent: ["#816cff", "#cb5506", "#14c2a3", "#726f8f"],
+      },
+    },
+    {
+      id: "data-dense-cool",
+      name: "数据密集冷色版",
+      nameEn: "Data Dense Cool",
+      description: "Cool-toned variant with shifted hues toward blue/teal",
+      colors: {
+        primary: "#ffffff",
+        secondary: "#dfe1e3",
+        accent: ["#0697c5", "#ef3d8c", "#51bc2a", "#5a7881"],
+      },
     },
   ],
 };

@@ -15,9 +15,9 @@ export const kawaiiMinimal: DesignStyle = {
   colors: {
     primary: "#F9A8D4",
     secondary: "#FFF7ED",
-    accent: ["#A78BFA", "#67E8F9", "#FDE68A"],
+    accent: ["#A78BFA", "#67E8F9", "#FDE68A", "#f47abd"],
   },
-  keywords: ["可爱", "极简", "粉彩", "圆润", "温柔", "日系", "卡哇伊"],
+  keywords: ["可爱", "极简", "粉彩", "圆润", "温柔", "日系", "卡哇伊", "minimal", "clean", "simple"],
 
   philosophy: `Kawaii Minimal 风格融合日本可爱文化的温暖感与北欧极简主义的克制感。
 
@@ -26,7 +26,14 @@ export const kawaiiMinimal: DesignStyle = {
 - 圆润形状：大圆角、圆形元素、避免尖锐边角
 - 轻盈留白：充足的呼吸空间让界面感觉轻松舒适
 - 微交互：细腻的弹跳、摇摆动效增加趣味性
-- 功能优先：可爱但不杂乱，保持信息清晰`,
+- 功能优先：可爱但不杂乱，保持信息清晰
+
+设计原则：
+- 视觉一致性：所有组件必须遵循统一的视觉语言，从色彩到字体到间距保持谐调
+- 层次分明：通过颜色深浅、字号大小、留白空间建立清晰的信息层级
+- 交互反馈：每个可交互元素都必须有明确的 hover、active、focus 状态反馈
+- 响应式适配：设计必须在移动端、平板、桌面端上保持一致的体验
+- 无障碍性：确保色彩对比度符合 WCAG 2.1 AA 标准，所有交互元素可键盘访问`,
 
   philosophyEn: `Kawaii Minimal blends the warmth of Japanese cute culture with the restraint of Nordic minimalism.
 
@@ -154,6 +161,57 @@ Core principles:
 @keyframes kawaii-float {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-8px); }
+}
+/* Kawaii Minimal Design Tokens */
+:root {
+  --kawaii-minimal-primary: #F9A8D4;
+  --kawaii-minimal-secondary: #FFF7ED;
+  --kawaii-minimal-accent: #A78BFA;
+  --kawaii-minimal-glow: rgba(249, 168, 212, 0.3);
+}
+
+.kawaii-minimal-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.kawaii-minimal-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  background: linear-gradient(135deg, rgba(249, 168, 212, 0.05), transparent);
+  pointer-events: none;
+}
+
+.kawaii-minimal-card:hover::before {
+  opacity: 1;
+}
+
+.kawaii-minimal-gradient {
+  background: linear-gradient(135deg, #F9A8D4, #A78BFA);
+}
+
+.kawaii-minimal-gradient-text {
+  background: linear-gradient(135deg, #F9A8D4, #A78BFA);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.kawaii-minimal-frosted {
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  background: rgba(249, 168, 212, 0.08);
+}
+
+.kawaii-minimal-accent-corner {
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 2rem), calc(100% - 2rem) 100%, 0 100%);
+}
+
+.kawaii-minimal-animate-in {
+  animation: kawaii-minimal-fade-in 0.5s ease-out both;
 }`,
 
   aiRules: `STYLE: Kawaii Minimal
@@ -240,6 +298,44 @@ Animation & Interaction Rules:
 - Clean typography with generous spacing
 - Decorative rounded icons
 - Habit tracker with pastel progress indicators`,
+    },
+  {
+      title: "SaaS 着陆页",
+      titleEn: "SaaS Landing Page",
+      description: "生成 可爱极简风格的 SaaS 产品着陆页",
+      descriptionEn: "Generate a SaaS product landing page in Kawaii Minimal style",
+      prompt: `Create a SaaS landing page using Kawaii Minimal style with hero section, feature grid, testimonials, pricing table, and footer.`,
+    },
+    {
+      title: "作品集展示",
+      titleEn: "Portfolio Showcase",
+      description: "生成 可爱极简风格的作品集页面",
+      descriptionEn: "Generate a portfolio showcase in Kawaii Minimal style",
+      prompt: `Create a portfolio showcase page using Kawaii Minimal style with project grid, about section, contact form, and consistent visual language.`,
+    }],
+
+  variants: [
+    {
+      id: "kawaii-minimal-warm",
+      name: "可爱极简暖色版",
+      nameEn: "Kawaii Minimal Warm",
+      description: "Warm-toned variant with shifted hues toward amber/orange",
+      colors: {
+        primary: "#fdaab3",
+        secondary: "#fff8ef",
+        accent: ["#d67fe6", "#8ad9ff", "#cdf48a"],
+      },
+    },
+    {
+      id: "kawaii-minimal-cool",
+      name: "可爱极简冷色版",
+      nameEn: "Kawaii Minimal Cool",
+      description: "Cool-toned variant with shifted hues toward blue/teal",
+      colors: {
+        primary: "#e5abef",
+        secondary: "#e6ded5",
+        accent: ["#759bf4", "#5ff0c0", "#ffd7a2"],
+      },
     },
   ],
 };

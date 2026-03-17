@@ -15,9 +15,9 @@ export const risograph: DesignStyle = {
   colors: {
     primary: "#ff6b9d",
     secondary: "#2563eb",
-    accent: ["#ff8a00", "#22c55e"],
+    accent: ["#ff8a00", "#22c55e", "#48c200", "#a38bff"],
   },
-  keywords: ["Risograph", "印刷", "套印", "半调", "网点", "错位", "手工"],
+  keywords: ["Risograph", "印刷", "套印", "半调", "网点", "错位", "手工", "expressive", "bold", "vibrant"],
 
   philosophy: `Risograph 是一种源于日本的快速印刷技术，因其独特的视觉效果而被艺术家和设计师广泛采用。
 
@@ -25,7 +25,14 @@ export const risograph: DesignStyle = {
 - 有限色彩：通常只使用2-3种墨色叠加
 - 套印错位：颜色层之间故意的微妙偏移
 - 半调网点：可见的网点纹理和颗粒感
-- 印刷美学：拥抱印刷的不完美和独特性`,
+- 印刷美学：拥抱印刷的不完美和独特性
+
+设计原则：
+- 视觉一致性：所有组件必须遵循统一的视觉语言，从色彩到字体到间距保持谐调
+- 层次分明：通过颜色深浅、字号大小、留白空间建立清晰的信息层级
+- 交互反馈：每个可交互元素都必须有明确的 hover、active、focus 状态反馈
+- 响应式适配：设计必须在移动端、平板、桌面端上保持一致的体验
+- 无障碍性：确保色彩对比度符合 WCAG 2.1 AA 标准，所有交互元素可键盘访问`,
 
   philosophyEn: `Risograph is a rapid printing technology originating from Japan, widely adopted by artists and designers for its distinctive visual effects.
 
@@ -212,6 +219,29 @@ Core principles:
 .riso-halftone {
   background-image: radial-gradient(circle, currentColor 1px, transparent 1px);
   background-size: 4px 4px;
+}
+@keyframes risograph-fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes risograph-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.risograph-frosted {
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  background: rgba(255, 107, 157, 0.08);
+}
+
+.risograph-accent-corner {
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 2rem), calc(100% - 2rem) 100%, 0 100%);
+}
+
+.risograph-animate-in {
+  animation: risograph-fade-in 0.5s ease-out both;
 }`,
 
   aiRules: `You are a Risograph design style frontend development expert. All generated code must strictly follow these constraints:
@@ -308,6 +338,44 @@ Primary:
 3. Cards: bold borders with color offset shadows
 4. Only use 2-3 colors maximum
 5. Overall hand-printed, limited palette aesthetic`,
+    },
+  {
+      title: "SaaS 着陆页",
+      titleEn: "SaaS Landing Page",
+      description: "生成 Risograph 印刷风风格的 SaaS 产品着陆页",
+      descriptionEn: "Generate a SaaS product landing page in Risograph style",
+      prompt: `Create a SaaS landing page using Risograph style with hero section, feature grid, testimonials, pricing table, and footer.`,
+    },
+    {
+      title: "作品集展示",
+      titleEn: "Portfolio Showcase",
+      description: "生成 Risograph 印刷风风格的作品集页面",
+      descriptionEn: "Generate a portfolio showcase in Risograph style",
+      prompt: `Create a portfolio showcase page using Risograph style with project grid, about section, contact form, and consistent visual language.`,
+    }],
+
+  variants: [
+    {
+      id: "risograph-warm",
+      name: "Risograph 印刷风暖色版",
+      nameEn: "Risograph Warm",
+      description: "Warm-toned variant with shifted hues toward amber/orange",
+      colors: {
+        primary: "#f77363",
+        secondary: "#3b73ed",
+        accent: ["#a5a800", "#14c2a3"],
+      },
+    },
+    {
+      id: "risograph-cool",
+      name: "Risograph 印刷风冷色版",
+      nameEn: "Risograph Cool",
+      description: "Cool-toned variant with shifted hues toward blue/teal",
+      colors: {
+        primary: "#e86cd3",
+        secondary: "#2159d4",
+        accent: ["#ff7048", "#51bc2a"],
+      },
     },
   ],
 };

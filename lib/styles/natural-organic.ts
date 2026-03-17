@@ -15,9 +15,9 @@ export const naturalOrganic: DesignStyle = {
   colors: {
     primary: "#5c4033",
     secondary: "#faf6f1",
-    accent: ["#8b9d77", "#d4a373", "#e9e0d4"],
+    accent: ["#8b9d77", "#d4a373", "#e9e0d4", "#75a191"],
   },
-  keywords: ["自然", "有机", "大地色", "手工", "健康", "环保", "可持续"],
+  keywords: ["自然", "有机", "大地色", "手工", "健康", "环保", "可持续", "minimal", "clean", "simple"],
 
   philosophy: `Natural Organic 风格从自然界汲取灵感，通过大地色系、有机形状和自然纹理创造温暖亲切的体验。
 
@@ -25,7 +25,14 @@ export const naturalOrganic: DesignStyle = {
 - 自然和谐：色彩和形状来自自然界
 - 温暖亲切：让用户感到舒适和信任
 - 手工质感：避免过于工业化的冷感
-- 可持续美学：简约但不冷淡`,
+- 可持续美学：简约但不冷淡
+
+设计原则：
+- 视觉一致性：所有组件必须遵循统一的视觉语言，从色彩到字体到间距保持谐调
+- 层次分明：通过颜色深浅、字号大小、留白空间建立清晰的信息层级
+- 交互反馈：每个可交互元素都必须有明确的 hover、active、focus 状态反馈
+- 响应式适配：设计必须在移动端、平板、桌面端上保持一致的体验
+- 无障碍性：确保色彩对比度符合 WCAG 2.1 AA 标准，所有交互元素可键盘访问`,
 
   philosophyEn: `Natural Organic style draws inspiration from the natural world, creating warm and inviting experiences through earth tones, organic shapes, and natural textures.
 
@@ -142,6 +149,67 @@ Core principles:
 /* Optional paper texture overlay */
 .organic-texture {
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.04'/%3E%3C/svg%3E");
+}
+/* Natural Organic Design Tokens */
+:root {
+  --natural-organic-primary: #5c4033;
+  --natural-organic-secondary: #faf6f1;
+  --natural-organic-accent: #8b9d77;
+  --natural-organic-glow: rgba(92, 64, 51, 0.3);
+}
+
+@keyframes natural-organic-fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes natural-organic-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.natural-organic-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.natural-organic-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  background: linear-gradient(135deg, rgba(92, 64, 51, 0.05), transparent);
+  pointer-events: none;
+}
+
+.natural-organic-card:hover::before {
+  opacity: 1;
+}
+
+.natural-organic-gradient {
+  background: linear-gradient(135deg, #5c4033, #8b9d77);
+}
+
+.natural-organic-gradient-text {
+  background: linear-gradient(135deg, #5c4033, #8b9d77);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.natural-organic-frosted {
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  background: rgba(92, 64, 51, 0.08);
+}
+
+.natural-organic-accent-corner {
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 2rem), calc(100% - 2rem) 100%, 0 100%);
+}
+
+.natural-organic-animate-in {
+  animation: natural-organic-fade-in 0.5s ease-out both;
 }`,
 
   aiRules: `STYLE: Natural Organic
@@ -179,7 +247,28 @@ TYPOGRAPHY:
 - Organic Morphing: 使用不规则圆角（blob）并在交互中缓慢变化，避免工业化标准圆角。
 - Soft Earth Press: hover 可轻微下沉（translate-y-0.5）并加深土色层次，不做漂浮弹跳。
 - Botanical Slowness: 动画节奏建议 duration-500 以上 + ease-in-out，模拟自然生长速度。
-- Verdant Tint: 交互时文字/图标向深绿色缓慢过渡，表达植物被光照唤醒的生命感。`,
+- Verdant Tint: 交互时文字/图标向深绿色缓慢过渡，表达植物被光照唤醒的生命感。
+
+## Layout & Spacing
+- Section padding: py-16 md:py-24
+- Card padding: p-6 md:p-8
+- Gap between cards: gap-6 md:gap-8
+- Max content width: max-w-6xl mx-auto
+
+## Responsive Design
+- Mobile-first approach with Tailwind breakpoints
+- Stack elements vertically on mobile (flex-col), row on desktop (md:flex-row)
+- Reduce font sizes on mobile: text-3xl md:text-5xl for headings
+- Touch-friendly targets: min 44px for interactive elements
+
+## Self-Check Verification
+After generating code, verify:
+1. All interactive elements have hover/focus/active states
+2. Color contrast meets WCAG 2.1 AA (4.5:1 for text)
+3. Layout is responsive across breakpoints
+4. Typography hierarchy is clear (h1 > h2 > h3 > body)
+5. Spacing is consistent using the defined scale
+6. All animations respect prefers-reduced-motion`,
 
   aiRulesEn: `STYLE: Natural Organic
 TYPE: Warm, earthy, nature-inspired design
@@ -231,6 +320,44 @@ TYPOGRAPHY:
 - Newsletter signup with rounded-full input
 - Footer with earth-tone color blocks
 - Font-serif for headings, warm color palette`,
+    },
+  {
+      title: "SaaS 着陆页",
+      titleEn: "SaaS Landing Page",
+      description: "生成 自然有机风风格的 SaaS 产品着陆页",
+      descriptionEn: "Generate a SaaS product landing page in Natural Organic style",
+      prompt: `Create a SaaS landing page using Natural Organic style with hero section, feature grid, testimonials, pricing table, and footer.`,
+    },
+    {
+      title: "作品集展示",
+      titleEn: "Portfolio Showcase",
+      description: "生成 自然有机风风格的作品集页面",
+      descriptionEn: "Generate a portfolio showcase in Natural Organic style",
+      prompt: `Create a portfolio showcase page using Natural Organic style with project grid, about section, contact form, and consistent visual language.`,
+    }],
+
+  variants: [
+    {
+      id: "natural-organic-warm",
+      name: "自然有机风暖色版",
+      nameEn: "Natural Organic Warm",
+      description: "Warm-toned variant with shifted hues toward amber/orange",
+      colors: {
+        primary: "#50452a",
+        secondary: "#fbf7f2",
+        accent: ["#7da081", "#b3ae65", "#e1e2d2"],
+      },
+    },
+    {
+      id: "natural-organic-cool",
+      name: "自然有机风冷色版",
+      nameEn: "Natural Organic Cool",
+      description: "Cool-toned variant with shifted hues toward blue/teal",
+      colors: {
+        primary: "#623d41",
+        secondary: "#e1ddd9",
+        accent: ["#9c9875", "#ea9a8f", "#eededa"],
+      },
     },
   ],
 };

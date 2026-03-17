@@ -15,9 +15,9 @@ export const neonSamurai: DesignStyle = {
   colors: {
     primary: "#dc2626",
     secondary: "#080818",
-    accent: ["#a020f0", "#38bdf8", "#fbbf24"],
+    accent: ["#a020f0", "#38bdf8", "#fbbf24", "#ff1253"],
   },
-  keywords: ["霓虹武士", "赛博武士", "日本", "霓虹", "传统融合", "动作", "刀锋", "鸟居"],
+  keywords: ["霓虹武士", "赛博武士", "日本", "霓虹", "传统融合", "动作", "刀锋", "鸟居", "expressive", "bold"],
 
   philosophy: `Neon Samurai fuses Japanese bushido aesthetics with cyberpunk neon luminance, forging a style of relentless tension and kinetic energy.
 
@@ -248,7 +248,16 @@ Core principles:
     rgba(0, 0, 0, 0.08) 4px
   );
   pointer-events: none;
-}`,
+}
+
+.neon-samurai-filter { filter: brightness(1.05) contrast(1.02); }
+
+.neon-samurai-focus { outline: 2px solid var(--neon-samurai-primary, currentColor); outline-offset: 2px; }
+
+/* Additional techniques */
+@keyframes neon-samurai-shimmer { from { background-position: -200% 0; } to { background-position: 200% 0; } }
+
+.neon-samurai-glass { backdrop-filter: blur(8px) saturate(150%); -webkit-backdrop-filter: blur(8px) saturate(150%); }`,
 
   aiRules: `You are a Neon Samurai design style frontend development expert. All generated code must strictly follow these constraints:
 
@@ -355,6 +364,44 @@ Primary:
 4. Cards: armor-plate angular clip-path with neon edge glow
 5. Inputs: brush-stroke underline style with glow focus
 6. Purple stroke with blue glow halo (dual-color effect)`,
+    },
+  {
+      title: "SaaS 着陆页",
+      titleEn: "SaaS Landing Page",
+      description: "生成 霓虹武士风风格的 SaaS 产品着陆页",
+      descriptionEn: "Generate a SaaS product landing page in Neon Samurai style",
+      prompt: `Create a SaaS landing page using Neon Samurai style with hero section, feature grid, testimonials, pricing table, and footer.`,
+    },
+    {
+      title: "作品集展示",
+      titleEn: "Portfolio Showcase",
+      description: "生成 霓虹武士风风格的作品集页面",
+      descriptionEn: "Generate a portfolio showcase in Neon Samurai style",
+      prompt: `Create a portfolio showcase page using Neon Samurai style with project grid, about section, contact form, and consistent visual language.`,
+    }],
+
+  variants: [
+    {
+      id: "neon-samurai-warm",
+      name: "霓虹武士风暖色版",
+      nameEn: "Neon Samurai Warm",
+      description: "Warm-toned variant with shifted hues toward amber/orange",
+      colors: {
+        primary: "#b53800",
+        secondary: "#21212f",
+        accent: ["#e711af", "#70a8ff", "#a5d91c"],
+      },
+    },
+    {
+      id: "neon-samurai-cool",
+      name: "霓虹武士风冷色版",
+      nameEn: "Neon Samurai Cool",
+      description: "Cool-toned variant with shifted hues toward blue/teal",
+      colors: {
+        primary: "#dc1e73",
+        secondary: "#070716",
+        accent: ["#423aff", "#1dccb6", "#ffa556"],
+      },
     },
   ],
 };

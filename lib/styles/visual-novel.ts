@@ -15,9 +15,9 @@ export const visualNovel: DesignStyle = {
   colors: {
     primary: "#4a5568",
     secondary: "#f7fafc",
-    accent: ["#6366f1", "#ec4899", "#10b981"],
+    accent: ["#6366f1", "#ec4899", "#10b981", "#d948bb"],
   },
-  keywords: ["视觉小说", "ADV对话框", "铭牌", "立绘", "选项", "游戏UI", "交互故事", "装饰边角"],
+  keywords: ["视觉小说", "ADV对话框", "铭牌", "立绘", "选项", "游戏UI", "交互故事", "装饰边角", "modern", "contemporary"],
 
   philosophy: `Visual Novel 风格源于日本ADV（Adventure）视觉小说游戏的UI设计，强调叙事沉浸感和角色互动。
 
@@ -27,7 +27,14 @@ export const visualNovel: DesignStyle = {
 - 装饰性边角框线：对话面板四角的L形装饰线条，营造精致画框感
 - 分支选项按钮：居中排列的毛玻璃按钮，代表故事分支
 - 场景氛围渲染：通过天空渐变、剪影、柔光营造时间和情感氛围
-- 存档界面设计：带装饰边角的暗色面板，包含输入框和操作按钮`,
+- 存档界面设计：带装饰边角的暗色面板，包含输入框和操作按钮
+
+设计原则：
+- 视觉一致性：所有组件必须遵循统一的视觉语言，从色彩到字体到间距保持谐调
+- 层次分明：通过颜色深浅、字号大小、留白空间建立清晰的信息层级
+- 交互反馈：每个可交互元素都必须有明确的 hover、active、focus 状态反馈
+- 响应式适配：设计必须在移动端、平板、桌面端上保持一致的体验
+- 无障碍性：确保色彩对比度符合 WCAG 2.1 AA 标准，所有交互元素可键盘访问`,
 
   philosophyEn: `Visual Novel style originates from the UI design of Japanese ADV (Adventure) visual novel games, emphasizing narrative immersion and character interaction.
 
@@ -374,6 +381,44 @@ Primary:
 4. Choice buttons: full-width frosted glass panels with hover glow and right arrow
 5. Cards: scene chapter cards with header image area and nameplate badge overlapping the border
 6. Form: save screen with ornate corner frame, dark backdrop, and dual-color labeled inputs`,
+    },
+  {
+      title: "SaaS 着陆页",
+      titleEn: "SaaS Landing Page",
+      description: "生成 视觉小说风风格的 SaaS 产品着陆页",
+      descriptionEn: "Generate a SaaS product landing page in Visual Novel style",
+      prompt: `Create a SaaS landing page using Visual Novel style with hero section, feature grid, testimonials, pricing table, and footer.`,
+    },
+    {
+      title: "作品集展示",
+      titleEn: "Portfolio Showcase",
+      description: "生成 视觉小说风风格的作品集页面",
+      descriptionEn: "Generate a portfolio showcase in Visual Novel style",
+      prompt: `Create a portfolio showcase page using Visual Novel style with project grid, about section, contact form, and consistent visual language.`,
+    }],
+
+  variants: [
+    {
+      id: "visual-novel-warm",
+      name: "视觉小说风暖色版",
+      nameEn: "Visual Novel Warm",
+      description: "Warm-toned variant with shifted hues toward amber/orange",
+      colors: {
+        primary: "#55516a",
+        secondary: "#f8fbfc",
+        accent: ["#a553e6", "#f04e56", "#19afc4"],
+      },
+    },
+    {
+      id: "visual-novel-cool",
+      name: "视觉小说风冷色版",
+      nameEn: "Visual Novel Cool",
+      description: "Cool-toned variant with shifted hues toward blue/teal",
+      colors: {
+        primary: "#415860",
+        secondary: "#dee1e3",
+        accent: ["#247bd9", "#c74dd1", "#29b843"],
+      },
     },
   ],
 };

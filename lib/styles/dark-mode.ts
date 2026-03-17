@@ -15,9 +15,9 @@ export const darkMode: DesignStyle = {
   colors: {
     primary: "#3b82f6",
     secondary: "#0f172a",
-    accent: ["#22c55e", "#f59e0b", "#ef4444"],
+    accent: ["#22c55e", "#f59e0b", "#ef4444", "#2ab5e5"],
   },
-  keywords: ["暗黑", "深色", "夜间", "开发", "专业", "护眼"],
+  keywords: ["暗黑", "深色", "夜间", "开发", "专业", "护眼", "modern", "contemporary", "sleek", "现代"],
 
   philosophy: `Dark Mode 设计强调在深色背景上创造舒适的阅读体验和清晰的信息层次。
 
@@ -25,7 +25,14 @@ export const darkMode: DesignStyle = {
 - 护眼舒适：降低屏幕亮度，减少视觉疲劳
 - 层次分明：通过灰度和透明度区分层级
 - 高亮聚焦：使用高亮色引导用户注意力
-- 专业氛围：传达技术感和专业感`,
+- 专业氛围：传达技术感和专业感
+
+设计原则：
+- 视觉一致性：所有组件必须遵循统一的视觉语言，从色彩到字体到间距保持谐调
+- 层次分明：通过颜色深浅、字号大小、留白空间建立清晰的信息层级
+- 交互反馈：每个可交互元素都必须有明确的 hover、active、focus 状态反馈
+- 响应式适配：设计必须在移动端、平板、桌面端上保持一致的体验
+- 无障碍性：确保色彩对比度符合 WCAG 2.1 AA 标准，所有交互元素可键盘访问`,
 
   philosophyEn: `Dark Mode design emphasizes creating a comfortable reading experience and clear information hierarchy on dark backgrounds.
 
@@ -283,6 +290,67 @@ Core principles:
 /* Subtle glow for focus states */
 .dark-focus-glow:focus {
   box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3);
+}
+/* Dark Mode Design Tokens */
+:root {
+  --dark-mode-primary: #3b82f6;
+  --dark-mode-secondary: #0f172a;
+  --dark-mode-accent: #22c55e;
+  --dark-mode-glow: rgba(59, 130, 246, 0.3);
+}
+
+@keyframes dark-mode-fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes dark-mode-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.dark-mode-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.dark-mode-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.05), transparent);
+  pointer-events: none;
+}
+
+.dark-mode-card:hover::before {
+  opacity: 1;
+}
+
+.dark-mode-gradient {
+  background: linear-gradient(135deg, #3b82f6, #22c55e);
+}
+
+.dark-mode-gradient-text {
+  background: linear-gradient(135deg, #3b82f6, #22c55e);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.dark-mode-frosted {
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  background: rgba(59, 130, 246, 0.08);
+}
+
+.dark-mode-accent-corner {
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 2rem), calc(100% - 2rem) 100%, 0 100%);
+}
+
+.dark-mode-animate-in {
+  animation: dark-mode-fade-in 0.5s ease-out both;
 }`,
 
   aiRules: `STYLE: Dark Mode
@@ -409,6 +477,44 @@ After generating code, verify:
 - Status indicators with colored dots
 - Blue accent for primary actions
 - Comfortable contrast for long sessions`,
+    },
+  {
+      title: "SaaS 着陆页",
+      titleEn: "SaaS Landing Page",
+      description: "生成 暗黑模式风格的 SaaS 产品着陆页",
+      descriptionEn: "Generate a SaaS product landing page in Dark Mode style",
+      prompt: `Create a SaaS landing page using Dark Mode style with hero section, feature grid, testimonials, pricing table, and footer.`,
+    },
+    {
+      title: "作品集展示",
+      titleEn: "Portfolio Showcase",
+      description: "生成 暗黑模式风格的作品集页面",
+      descriptionEn: "Generate a portfolio showcase in Dark Mode style",
+      prompt: `Create a portfolio showcase page using Dark Mode style with project grid, about section, contact form, and consistent visual language.`,
+    }],
+
+  variants: [
+    {
+      id: "dark-mode-warm",
+      name: "暗黑模式暖色版",
+      nameEn: "Dark Mode Warm",
+      description: "Warm-toned variant with shifted hues toward amber/orange",
+      colors: {
+        primary: "#816cff",
+        secondary: "#272e3f",
+        accent: ["#14c2a3", "#9dba00", "#cb5506"],
+      },
+    },
+    {
+      id: "dark-mode-cool",
+      name: "暗黑模式冷色版",
+      nameEn: "Dark Mode Cool",
+      description: "Cool-toned variant with shifted hues toward blue/teal",
+      colors: {
+        primary: "#0697c5",
+        secondary: "#0e1526",
+        accent: ["#51bc2a", "#ff8447", "#ef3d8c"],
+      },
     },
   ],
 };

@@ -15,7 +15,7 @@ export const wabiSabi: DesignStyle = {
   colors: {
     primary: "#3a3a3a",
     secondary: "#f2ede4",
-    accent: ["#8a9a7b", "#b5a78c", "#8b6f4e"],
+    accent: ["#8a9a7b", "#b5a78c", "#8b6f4e", "#799d91"],
   },
   keywords: ["侘寂", "日式", "禅", "不完美", "留白", "Ma", "纸张", "自然", "东方"],
 
@@ -26,7 +26,14 @@ export const wabiSabi: DesignStyle = {
 - 间（Ma）：留白不是空无，是有意义的空间
 - 自然衰变：万物生长、衰老、消逝的过程本身就是美
 - 朴素之深：在极致的简约中发现深邃
-- 一期一会：此刻即是唯一，不可再现`,
+- 一期一会：此刻即是唯一，不可再现
+
+设计原则：
+- 视觉一致性：所有组件必须遵循统一的视觉语言，从色彩到字体到间距保持谐调
+- 层次分明：通过颜色深浅、字号大小、留白空间建立清晰的信息层级
+- 交互反馈：每个可交互元素都必须有明确的 hover、active、focus 状态反馈
+- 响应式适配：设计必须在移动端、平板、桌面端上保持一致的体验
+- 无障碍性：确保色彩对比度符合 WCAG 2.1 AA 标准，所有交互元素可键盘访问`,
 
   philosophyEn: `Wabi-Sabi is the deepest philosophical concept in Japanese traditional aesthetics.
 
@@ -98,6 +105,23 @@ Core principles:
     },
   },
 
+  examplePrompts: [
+    {
+      title: "SaaS 着陆页",
+      titleEn: "SaaS Landing Page",
+      description: "生成 侘寂风风格的 SaaS 产品着陆页",
+      descriptionEn: "Generate a SaaS product landing page in Wabi-Sabi style",
+      prompt: `Create a SaaS landing page using Wabi-Sabi style with hero section, feature grid, testimonials, pricing table, and footer.`,
+    },
+    {
+      title: "作品集展示",
+      titleEn: "Portfolio Showcase",
+      description: "生成 侘寂风风格的作品集页面",
+      descriptionEn: "Generate a portfolio showcase in Wabi-Sabi style",
+      prompt: `Create a portfolio showcase page using Wabi-Sabi style with project grid, about section, contact form, and consistent visual language.`,
+    },
+  ],
+
   globalCss: `/* Wabi-Sabi */
 :root {
   --wabi-bg: #f7f3ec;
@@ -108,6 +132,83 @@ Core principles:
   --wabi-tea: #b5a78c;
   --wabi-clay: #8b6f4e;
   --wabi-border: #d4cdc5;
+}
+@keyframes wabi-sabi-fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes wabi-sabi-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.wabi-sabi-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.wabi-sabi-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  background: linear-gradient(135deg, rgba(58, 58, 58, 0.05), transparent);
+  pointer-events: none;
+}
+
+.wabi-sabi-card:hover::before {
+  opacity: 1;
+}
+
+.wabi-sabi-gradient {
+  background: linear-gradient(135deg, #3a3a3a, #8a9a7b);
+}
+
+.wabi-sabi-gradient-text {
+  background: linear-gradient(135deg, #3a3a3a, #8a9a7b);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.wabi-sabi-frosted {
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  background: rgba(58, 58, 58, 0.08);
+}
+
+.wabi-sabi-accent-corner {
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 2rem), calc(100% - 2rem) 100%, 0 100%);
+}
+
+.wabi-sabi-animate-in {
+  animation: wabi-sabi-fade-in 0.5s ease-out both;
+}
+
+.wabi-sabi-focus { outline: 2px solid var(--wabi-sabi-primary, currentColor); outline-offset: 2px; }
+
+/* Responsive utilities */
+@media (prefers-reduced-motion: reduce) {
+  .wabi-sabi-animate-in {
+    animation: none;
+  }
+}
+
+@media (min-width: 768px) {
+  .wabi-sabi-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+}
+
+/* Print styles */
+@media print {
+  .wabi-sabi-gradient,
+  .wabi-sabi-frosted {
+    background: none;
+    backdrop-filter: none;
+  }
 }`,
 
   aiRules: `You are designing in Wabi-Sabi style.
@@ -145,4 +246,29 @@ Animation & Interaction Rules:
 - Shadowless Void: Abandon all box-shadow for modern depth. Layer hierarchy is expressed only through generous whitespace and very faint border lines.
 - Dust Breathing: All interactions must be extremely slow. Use duration-1000 or longer transitions (e.g., duration-[1500ms]) with ease-in-out. Let background color deepening look like natural light slowly dimming.
 - Ink Fading: On hover, text color should not change abruptly but transition through opacity changes (e.g., from opacity-60 slowly to opacity-100), simulating ink appearing through time.`,
+
+  variants: [
+    {
+      id: "wabi-sabi-warm",
+      name: "侘寂风暖色版",
+      nameEn: "Wabi-Sabi Warm",
+      description: "Warm-toned variant with shifted hues toward amber/orange",
+      colors: {
+        primary: "#3a3a3a",
+        secondary: "#f3efe7",
+        accent: ["#7f9c84", "#a5ac89", "#757647"],
+      },
+    },
+    {
+      id: "wabi-sabi-cool",
+      name: "侘寂风冷色版",
+      nameEn: "Wabi-Sabi Cool",
+      description: "Cool-toned variant with shifted hues toward blue/teal",
+      colors: {
+        primary: "#3a3a3a",
+        secondary: "#dad5cd",
+        accent: ["#989679", "#c1a296", "#9a695f"],
+      },
+    },
+  ],
 };

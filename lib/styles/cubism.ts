@@ -15,9 +15,9 @@ export const cubism: DesignStyle = {
   colors: {
     primary: "#5c4033",
     secondary: "#e8dcc8",
-    accent: ["#8b7355", "#3d5c6e", "#9b3d25"],
+    accent: ["#8b7355", "#3d5c6e", "#9b3d25", "#647f53"],
   },
-  keywords: ["立体主义", "毕加索", "几何", "碎片", "多视角", "棱角", "大地色"],
+  keywords: ["立体主义", "毕加索", "几何", "碎片", "多视角", "棱角", "大地色", "expressive", "bold", "vibrant"],
 
   philosophy: `Cubism（立体主义）是20世纪最具革命性的艺术运动之一，由毕加索和布拉克于1907年前后开创。它彻底打破了文艺复兴以来的单点透视传统，用几何碎片和多视角叠加重新定义了视觉表达。
 
@@ -233,6 +233,44 @@ When designing, focus on the layering and interweaving of geometric elements, su
   background-image:
     linear-gradient(135deg, rgba(61, 92, 110, 0.05) 25%, transparent 25%),
     linear-gradient(225deg, rgba(155, 61, 37, 0.05) 25%, transparent 25%);
+}
+@keyframes cubism-fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes cubism-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.cubism-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.cubism-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  background: linear-gradient(135deg, rgba(92, 64, 51, 0.05), transparent);
+  pointer-events: none;
+}
+
+.cubism-card:hover::before {
+  opacity: 1;
+}
+
+.cubism-frosted {
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  background: rgba(92, 64, 51, 0.08);
+}
+
+.cubism-animate-in {
+  animation: cubism-fade-in 0.5s ease-out both;
 }`,
 
   aiRules: `你是一个 Cubism 设计风格的前端开发专家。生成的所有代码必须严格遵守以下约束：
@@ -277,7 +315,28 @@ When designing, focus on the layering and interweaving of geometric elements, su
 - 几何碎片装饰 (clip-path, skew, rotate)
 - 硬边阴影 (无模糊)
 - 不对称构图
-- 粗体大写字母排版`,
+- 粗体大写字母排版
+
+## Layout & Spacing
+- Section padding: py-16 md:py-24
+- Card padding: p-6 md:p-8
+- Gap between cards: gap-6 md:gap-8
+- Max content width: max-w-6xl mx-auto
+
+## Responsive Design
+- Mobile-first approach with Tailwind breakpoints
+- Stack elements vertically on mobile (flex-col), row on desktop (md:flex-row)
+- Reduce font sizes on mobile: text-3xl md:text-5xl for headings
+- Touch-friendly targets: min 44px for interactive elements
+
+## Self-Check Verification
+After generating code, verify:
+1. All interactive elements have hover/focus/active states
+2. Color contrast meets WCAG 2.1 AA (4.5:1 for text)
+3. Layout is responsive across breakpoints
+4. Typography hierarchy is clear (h1 > h2 > h3 > body)
+5. Spacing is consistent using the defined scale
+6. All animations respect prefers-reduced-motion`,
 
   aiRulesEn: `You are a Cubism design style frontend development expert. All generated code must strictly follow these constraints:
 
@@ -335,6 +394,44 @@ Primary:
 3. 卡片：粗边框 + 硬阴影，赭石色调
 4. 标题：粗体大写，紧密字间距
 5. 整体传达多视角碎片化的前卫美学`,
+    },
+  {
+      title: "SaaS 着陆页",
+      titleEn: "SaaS Landing Page",
+      description: "生成 立体主义风格的 SaaS 产品着陆页",
+      descriptionEn: "Generate a SaaS product landing page in Cubism style",
+      prompt: `Create a SaaS landing page using Cubism style with hero section, feature grid, testimonials, pricing table, and footer.`,
+    },
+    {
+      title: "作品集展示",
+      titleEn: "Portfolio Showcase",
+      description: "生成 立体主义风格的作品集页面",
+      descriptionEn: "Generate a portfolio showcase in Cubism style",
+      prompt: `Create a portfolio showcase page using Cubism style with project grid, about section, contact form, and consistent visual language.`,
+    }],
+
+  variants: [
+    {
+      id: "cubism-warm",
+      name: "立体主义暖色版",
+      nameEn: "Cubism Warm",
+      description: "Warm-toned variant with shifted hues toward amber/orange",
+      colors: {
+        primary: "#50452a",
+        secondary: "#eae0ce",
+        accent: ["#78794f", "#4c5778", "#7c4a05"],
+      },
+    },
+    {
+      id: "cubism-cool",
+      name: "立体主义冷色版",
+      nameEn: "Cubism Cool",
+      description: "Cool-toned variant with shifted hues toward blue/teal",
+      colors: {
+        primary: "#623d41",
+        secondary: "#d1c6b4",
+        accent: ["#996d64", "#35605e", "#a63551"],
+      },
     },
   ],
 };

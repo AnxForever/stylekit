@@ -17,7 +17,7 @@ export const freshMarket: DesignStyle = {
     secondary: "#2d5016",
     accent: ["#e8722a", "#f5c542", "#8b4513", "#d4e4bc"],
   },
-  keywords: ["生鲜", "食品", "有机", "电商", "暖色", "自然"],
+  keywords: ["生鲜", "食品", "有机", "电商", "暖色", "自然", "modern", "contemporary", "sleek", "现代"],
 
   philosophy: `Fresh Market 的灵感来源于农贸集市和有机食品店。
 
@@ -25,7 +25,14 @@ export const freshMarket: DesignStyle = {
 - 自然温暖：暖色调底色让人联想到阳光和丰收
 - 圆润友好：大圆角和柔和阴影传递亲和力
 - 新鲜感知：绿色代表新鲜，橙色代表活力，棕色代表大地
-- 手工质感：微妙的纹理暗示天然与手工制作的品质`,
+- 手工质感：微妙的纹理暗示天然与手工制作的品质
+
+设计原则：
+- 视觉一致性：所有组件必须遵循统一的视觉语言，从色彩到字体到间距保持谐调
+- 层次分明：通过颜色深浅、字号大小、留白空间建立清晰的信息层级
+- 交互反馈：每个可交互元素都必须有明确的 hover、active、focus 状态反馈
+- 响应式适配：设计必须在移动端、平板、桌面端上保持一致的体验
+- 无障碍性：确保色彩对比度符合 WCAG 2.1 AA 标准，所有交互元素可键盘访问`,
 
   philosophyEn: `Fresh Market draws inspiration from farmers' markets and organic food stores.
 
@@ -160,6 +167,67 @@ Core principles:
   font-size: 0.65rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
+}
+/* Fresh Market Design Tokens */
+:root {
+  --fresh-market-primary: #fef9f0;
+  --fresh-market-secondary: #2d5016;
+  --fresh-market-accent: #e8722a;
+  --fresh-market-glow: rgba(254, 249, 240, 0.3);
+}
+
+@keyframes fresh-market-fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fresh-market-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.fresh-market-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.fresh-market-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  background: linear-gradient(135deg, rgba(254, 249, 240, 0.05), transparent);
+  pointer-events: none;
+}
+
+.fresh-market-card:hover::before {
+  opacity: 1;
+}
+
+.fresh-market-gradient {
+  background: linear-gradient(135deg, #fef9f0, #e8722a);
+}
+
+.fresh-market-gradient-text {
+  background: linear-gradient(135deg, #fef9f0, #e8722a);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.fresh-market-frosted {
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  background: rgba(254, 249, 240, 0.08);
+}
+
+.fresh-market-accent-corner {
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 2rem), calc(100% - 2rem) 100%, 0 100%);
+}
+
+.fresh-market-animate-in {
+  animation: fresh-market-fade-in 0.5s ease-out both;
 }`,
 
   aiRules: `You are a Fresh Market food e-commerce design expert.
@@ -181,7 +249,28 @@ Core principles:
 
 ## Responsive
 - Mobile: single-column with large product images
-- Desktop: 3-4 column product grid`,
+- Desktop: 3-4 column product grid
+
+## Layout & Spacing
+- Section padding: py-16 md:py-24
+- Card padding: p-6 md:p-8
+- Gap between cards: gap-6 md:gap-8
+- Max content width: max-w-6xl mx-auto
+
+## Responsive Design
+- Mobile-first approach with Tailwind breakpoints
+- Stack elements vertically on mobile (flex-col), row on desktop (md:flex-row)
+- Reduce font sizes on mobile: text-3xl md:text-5xl for headings
+- Touch-friendly targets: min 44px for interactive elements
+
+## Self-Check Verification
+After generating code, verify:
+1. All interactive elements have hover/focus/active states
+2. Color contrast meets WCAG 2.1 AA (4.5:1 for text)
+3. Layout is responsive across breakpoints
+4. Typography hierarchy is clear (h1 > h2 > h3 > body)
+5. Spacing is consistent using the defined scale
+6. All animations respect prefers-reduced-motion`,
 
   examplePrompts: [
     {
@@ -190,6 +279,44 @@ Core principles:
       description: "有机生鲜电商首页，含当季推荐和产品分类",
       descriptionEn: "Organic grocery homepage with seasonal picks and category browsing",
       prompt: "Create a warm, organic grocery store homepage with seasonal hero banner, product category pills, featured products grid with add-to-cart buttons, and delivery info section.",
+    },
+  {
+      title: "SaaS 着陆页",
+      titleEn: "SaaS Landing Page",
+      description: "生成 鲜活市集风格的 SaaS 产品着陆页",
+      descriptionEn: "Generate a SaaS product landing page in Fresh Market style",
+      prompt: `Create a SaaS landing page using Fresh Market style with hero section, feature grid, testimonials, pricing table, and footer.`,
+    },
+    {
+      title: "作品集展示",
+      titleEn: "Portfolio Showcase",
+      description: "生成 鲜活市集风格的作品集页面",
+      descriptionEn: "Generate a portfolio showcase in Fresh Market style",
+      prompt: `Create a portfolio showcase page using Fresh Market style with project grid, about section, contact form, and consistent visual language.`,
+    }],
+
+  variants: [
+    {
+      id: "fresh-market-warm",
+      name: "鲜活市集暖色版",
+      nameEn: "Fresh Market Warm",
+      description: "Warm-toned variant with shifted hues toward amber/orange",
+      colors: {
+        primary: "#f9fbef",
+        secondary: "#42622d",
+        accent: ["#ad8705", "#addb3c", "#645300", "#c4e8c5"],
+      },
+    },
+    {
+      id: "fresh-market-cool",
+      name: "鲜活市集冷色版",
+      nameEn: "Fresh Market Cool",
+      description: "Cool-toned variant with shifted hues toward blue/teal",
+      colors: {
+        primary: "#fff7f4",
+        secondary: "#294814",
+        accent: ["#ff6267", "#ffaf6b", "#a23a39", "#e6dfbc"],
+      },
     },
   ],
 };

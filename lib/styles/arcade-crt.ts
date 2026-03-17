@@ -17,7 +17,7 @@ export const arcadeCrt: DesignStyle = {
     secondary: "#050505",
     accent: ["#ff00ff", "#00ffff", "#ff2a2a", "#FFFF00", "#ff8533"],
   },
-  keywords: ["CRT", "scanlines", "retro gaming", "arcade", "pixel", "neon glow", "chromatic aberration"],
+  keywords: ["CRT", "scanlines", "retro gaming", "arcade", "pixel", "neon glow", "chromatic aberration", "retro", "vintage", "nostalgic"],
 
   philosophy: `Arcade CRT 风格再现了80-90年代街机CRT显示器的怀旧辉光。
 
@@ -27,7 +27,14 @@ export const arcadeCrt: DesignStyle = {
 - 像素字体：所有文字使用 monospace 字体
 - 极暗背景：近乎纯黑的背景最大化霓虹对比度
 - RGB色差：标题使用品红和青色偏移的 text-shadow
-- 高饱和度：仅使用高饱和度霓虹色`,
+- 高饱和度：仅使用高饱和度霓虹色
+
+设计原则：
+- 视觉一致性：所有组件必须遵循统一的视觉语言，从色彩到字体到间距保持谐调
+- 层次分明：通过颜色深浅、字号大小、留白空间建立清晰的信息层级
+- 交互反馈：每个可交互元素都必须有明确的 hover、active、focus 状态反馈
+- 响应式适配：设计必须在移动端、平板、桌面端上保持一致的体验
+- 无障碍性：确保色彩对比度符合 WCAG 2.1 AA 标准，所有交互元素可键盘访问`,
 
   philosophyEn: `Arcade CRT style recreates the nostalgic glow of 80-90s arcade CRT monitors.
 
@@ -190,7 +197,49 @@ Core principles:
 @keyframes rgb-shift {
   0%, 100% { text-shadow: -2px 0 #ff00ff, 2px 0 #00ffff; }
   50% { text-shadow: -3px 0 #ff00ff, 3px 0 #00ffff; }
-}`,
+}
+/* Arcade CRT Design Tokens */
+:root {
+  --arcade-crt-primary: #39ff14;
+  --arcade-crt-secondary: #050505;
+  --arcade-crt-accent: #ff00ff;
+  --arcade-crt-glow: rgba(57, 255, 20, 0.3);
+}
+
+.arcade-crt-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.arcade-crt-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  background: linear-gradient(135deg, rgba(57, 255, 20, 0.05), transparent);
+  pointer-events: none;
+}
+
+.arcade-crt-card:hover::before {
+  opacity: 1;
+}
+
+.arcade-crt-frosted {
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  background: rgba(57, 255, 20, 0.08);
+}
+
+.arcade-crt-accent-corner {
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 2rem), calc(100% - 2rem) 100%, 0 100%);
+}
+
+.arcade-crt-animate-in {
+  animation: arcade-crt-fade-in 0.5s ease-out both;
+}
+
+.arcade-crt-focus { outline: 2px solid var(--arcade-crt-primary, currentColor); outline-offset: 2px; }`,
 
   aiRules: `STYLE: Arcade CRT
 TYPE: Retro gaming CRT monitor aesthetic
@@ -285,6 +334,37 @@ Animation & Interaction Rules:
 - Player names in cyan
 - Rank numbers in yellow
 - Pulsing top-score highlight`,
+    },
+  {
+      title: "作品集展示",
+      titleEn: "Portfolio Showcase",
+      description: "生成 街机CRT风格的作品集页面",
+      descriptionEn: "Generate a portfolio showcase in Arcade CRT style",
+      prompt: `Create a portfolio showcase page using Arcade CRT style with project grid, about section, contact form, and consistent visual language.`,
+    }],
+
+  variants: [
+    {
+      id: "arcade-crt-warm",
+      name: "街机CRT暖色版",
+      nameEn: "Arcade CRT Warm",
+      description: "Warm-toned variant with shifted hues toward amber/orange",
+      colors: {
+        primary: "#00ff71",
+        secondary: "#1e1e1e",
+        accent: ["#ff008b", "#36e5ff", "#d23f00", "#86ff17", "#be9c0e"],
+      },
+    },
+    {
+      id: "arcade-crt-cool",
+      name: "街机CRT冷色版",
+      nameEn: "Arcade CRT Cool",
+      description: "Cool-toned variant with shifted hues toward blue/teal",
+      colors: {
+        primary: "#a4e400",
+        secondary: "#050505",
+        accent: ["#8b1cff", "#00ff93", "#ff2184", "#ffd829", "#ff7374"],
+      },
     },
   ],
 };

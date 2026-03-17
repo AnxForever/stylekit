@@ -18,7 +18,7 @@ export const sidebarFixed: DesignStyle = {
     secondary: "#f8fafc",
     accent: ["#3b82f6", "#10b981", "#f59e0b", "#ef4444"],
   },
-  keywords: ["侧边栏", "后台", "管理", "导航", "仪表盘", "应用"],
+  keywords: ["侧边栏", "后台", "管理", "导航", "仪表盘", "应用", "modern", "contemporary", "sleek", "现代"],
 
   philosophy: `Fixed Sidebar（固定侧边栏布局）是应用型界面的经典布局，提供持久可见的导航同时最大化内容展示空间。
 
@@ -26,7 +26,14 @@ export const sidebarFixed: DesignStyle = {
 - 导航常驻：重要入口始终可及
 - 内容优先：主区域最大化利用
 - 层级清晰：侧边栏体现信息架构
-- 响应适配：小屏幕优雅收起`,
+- 响应适配：小屏幕优雅收起
+
+设计原则：
+- 视觉一致性：所有组件必须遵循统一的视觉语言，从色彩到字体到间距保持谐调
+- 层次分明：通过颜色深浅、字号大小、留白空间建立清晰的信息层级
+- 交互反馈：每个可交互元素都必须有明确的 hover、active、focus 状态反馈
+- 响应式适配：设计必须在移动端、平板、桌面端上保持一致的体验
+- 无障碍性：确保色彩对比度符合 WCAG 2.1 AA 标准，所有交互元素可键盘访问`,
 
   philosophyEn: `Fixed Sidebar is a classic layout for application-type interfaces, providing persistent visible navigation while maximizing content display space.
 
@@ -344,6 +351,67 @@ Core principles:
   background: #eff6ff;
   color: #2563eb;
   font-weight: 500;
+}
+/* Fixed Sidebar Design Tokens */
+:root {
+  --sidebar-fixed-primary: #1e293b;
+  --sidebar-fixed-secondary: #f8fafc;
+  --sidebar-fixed-accent: #3b82f6;
+  --sidebar-fixed-glow: rgba(30, 41, 59, 0.3);
+}
+
+@keyframes sidebar-fixed-fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes sidebar-fixed-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.sidebar-fixed-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.sidebar-fixed-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  background: linear-gradient(135deg, rgba(30, 41, 59, 0.05), transparent);
+  pointer-events: none;
+}
+
+.sidebar-fixed-card:hover::before {
+  opacity: 1;
+}
+
+.sidebar-fixed-gradient {
+  background: linear-gradient(135deg, #1e293b, #3b82f6);
+}
+
+.sidebar-fixed-gradient-text {
+  background: linear-gradient(135deg, #1e293b, #3b82f6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.sidebar-fixed-frosted {
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  background: rgba(30, 41, 59, 0.08);
+}
+
+.sidebar-fixed-accent-corner {
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 2rem), calc(100% - 2rem) 100%, 0 100%);
+}
+
+.sidebar-fixed-animate-in {
+  animation: sidebar-fixed-fade-in 0.5s ease-out both;
 }`,
 
   aiRules: `You are a frontend expert specializing in Fixed Sidebar layout. All generated code must strictly follow these constraints:
@@ -529,6 +597,31 @@ Clean minimal design focused on readability`,
 6. Mobile: slide-out navigation
 7. Collapsible sidebar with keyboard shortcut hint
 Modern SaaS aesthetic with subtle shadows`,
+    },
+  ],
+
+  variants: [
+    {
+      id: "sidebar-fixed-warm",
+      name: "固定侧边栏布局暖色版",
+      nameEn: "Fixed Sidebar Warm",
+      description: "Warm-toned variant with shifted hues toward amber/orange",
+      colors: {
+        primary: "#29263d",
+        secondary: "#f9fbfc",
+        accent: ["#816cff", "#19afc4", "#9dba00", "#cb5506"],
+      },
+    },
+    {
+      id: "sidebar-fixed-cool",
+      name: "固定侧边栏布局冷色版",
+      nameEn: "Fixed Sidebar Cool",
+      description: "Cool-toned variant with shifted hues toward blue/teal",
+      colors: {
+        primary: "#162c33",
+        secondary: "#dfe1e3",
+        accent: ["#0697c5", "#29b843", "#ff8447", "#ef3d8c"],
+      },
     },
   ],
 };

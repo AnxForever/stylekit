@@ -15,9 +15,9 @@ export const synthwave: DesignStyle = {
   colors: {
     primary: "#ff00ff",
     secondary: "#00ffff",
-    accent: ["#ff6ec7", "#7b68ee", "#ff1493"],
+    accent: ["#ff6ec7", "#7b68ee", "#ff1493", "#f67d50"],
   },
-  keywords: ["合成波", "80年代", "霓虹", "复古未来", "网格", "日落"],
+  keywords: ["合成波", "80年代", "霓虹", "复古未来", "网格", "日落", "retro", "vintage", "nostalgic", "复古"],
 
   philosophy: `Synthwave（合成波）是一种源于2000年代中期的电子音乐流派和视觉美学，致敬80年代的科幻电影、电子游戏和合成器音乐。
 
@@ -25,7 +25,14 @@ export const synthwave: DesignStyle = {
 - 复古未来：对80年代未来想象的怀旧
 - 霓虹美学：粉色、紫色、青色的霓虹灯效果
 - 网格地平线：透视网格延伸至地平线
-- 日落渐变：橙粉紫的日落天空`,
+- 日落渐变：橙粉紫的日落天空
+
+设计原则：
+- 视觉一致性：所有组件必须遵循统一的视觉语言，从色彩到字体到间距保持谐调
+- 层次分明：通过颜色深浅、字号大小、留白空间建立清晰的信息层级
+- 交互反馈：每个可交互元素都必须有明确的 hover、active、focus 状态反馈
+- 响应式适配：设计必须在移动端、平板、桌面端上保持一致的体验
+- 无障碍性：确保色彩对比度符合 WCAG 2.1 AA 标准，所有交互元素可键盘访问`,
 
   philosophyEn: `Synthwave is an electronic music genre and visual aesthetic originating in the mid-2000s, paying homage to 80s sci-fi films, video games, and synthesizer music.
 
@@ -230,6 +237,29 @@ Core principles:
     transparent 2px
   );
   pointer-events: none;
+}
+@keyframes synthwave-fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes synthwave-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.synthwave-frosted {
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  background: rgba(255, 0, 255, 0.08);
+}
+
+.synthwave-accent-corner {
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 2rem), calc(100% - 2rem) 100%, 0 100%);
+}
+
+.synthwave-animate-in {
+  animation: synthwave-fade-in 0.5s ease-out both;
 }`,
 
   aiRules: `你是一个 Synthwave 设计风格的前端开发专家。生成的所有代码必须严格遵守以下约束：
@@ -322,6 +352,44 @@ Primary:
 3. 按钮：霓虹边框
 4. 添加太阳和山脉剪影
 5. 整体复古未来感`,
+    },
+  {
+      title: "SaaS 着陆页",
+      titleEn: "SaaS Landing Page",
+      description: "生成 合成波风格的 SaaS 产品着陆页",
+      descriptionEn: "Generate a SaaS product landing page in Synthwave style",
+      prompt: `Create a SaaS landing page using Synthwave style with hero section, feature grid, testimonials, pricing table, and footer.`,
+    },
+    {
+      title: "作品集展示",
+      titleEn: "Portfolio Showcase",
+      description: "生成 合成波风格的作品集页面",
+      descriptionEn: "Generate a portfolio showcase in Synthwave style",
+      prompt: `Create a portfolio showcase page using Synthwave style with project grid, about section, contact form, and consistent visual language.`,
+    }],
+
+  variants: [
+    {
+      id: "synthwave-warm",
+      name: "合成波暖色版",
+      nameEn: "Synthwave Warm",
+      description: "Warm-toned variant with shifted hues toward amber/orange",
+      colors: {
+        primary: "#ff008b",
+        secondary: "#1affff",
+        accent: ["#ff718a", "#b658db", "#ff1b32"],
+      },
+    },
+    {
+      id: "synthwave-cool",
+      name: "合成波冷色版",
+      nameEn: "Synthwave Cool",
+      description: "Cool-toned variant with shifted hues toward blue/teal",
+      colors: {
+        primary: "#8b1cff",
+        secondary: "#00e6e6",
+        accent: ["#d775f6", "#3e7be1", "#c61de2"],
+      },
     },
   ],
 };

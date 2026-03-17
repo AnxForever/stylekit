@@ -15,9 +15,9 @@ export const outrun: DesignStyle = {
   colors: {
     primary: "#ff006e",
     secondary: "#a020f0",
-    accent: ["#00d4ff", "#0a0a0a", "#ff6b35"],
+    accent: ["#00d4ff", "#0a0a0a", "#ff6b35", "#9f9aff"],
   },
-  keywords: ["Outrun", "复古未来", "80年代", "日落", "跑车", "棕榈树", "霓虹"],
+  keywords: ["Outrun", "复古未来", "80年代", "日落", "跑车", "棕榈树", "霓虹", "retro", "vintage", "nostalgic"],
 
   philosophy: `Outrun 是一种根植于80年代流行文化的视觉美学，命名自同名电子游戏。它将夕阳、跑车、棕榈树和霓虹灯光融为一体，创造出一种永恒的复古未来主义视觉语言。
 
@@ -25,7 +25,14 @@ export const outrun: DesignStyle = {
 - 日落驾驶：橙粉紫的日落天空下永恒的公路之旅
 - 霓虹速度：洋红与紫色的霓虹灯光表达速度与激情
 - 网格地平线：透视网格地板延伸向无限的地平线
-- 棕榈剪影：黑色棕榈树映衬渐变天空`,
+- 棕榈剪影：黑色棕榈树映衬渐变天空
+
+设计原则：
+- 视觉一致性：所有组件必须遵循统一的视觉语言，从色彩到字体到间距保持谐调
+- 层次分明：通过颜色深浅、字号大小、留白空间建立清晰的信息层级
+- 交互反馈：每个可交互元素都必须有明确的 hover、active、focus 状态反馈
+- 响应式适配：设计必须在移动端、平板、桌面端上保持一致的体验
+- 无障碍性：确保色彩对比度符合 WCAG 2.1 AA 标准，所有交互元素可键盘访问`,
 
   philosophyEn: `Outrun is a visual aesthetic rooted in 80s pop culture, named after the eponymous video game. It fuses sunsets, sports cars, palm trees, and neon lights into an eternal retro-futuristic visual language.
 
@@ -237,6 +244,29 @@ Core principles:
     transparent 2px
   );
   pointer-events: none;
+}
+@keyframes outrun-fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes outrun-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.outrun-frosted {
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  background: rgba(255, 0, 110, 0.08);
+}
+
+.outrun-accent-corner {
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 2rem), calc(100% - 2rem) 100%, 0 100%);
+}
+
+.outrun-animate-in {
+  animation: outrun-fade-in 0.5s ease-out both;
 }`,
 
   aiRules: `你是一个 Outrun 复古未来设计风格的前端开发专家。生成的所有代码必须严格遵守以下约束：
@@ -277,7 +307,28 @@ Core principles:
 - Perspective Drive: 网格或扫描线在 hover 时通过 bg-position 位移制造高速前冲幻觉。
 - Dual Neon Glow: 悬停发光至少叠加洋红与青色两层阴影，形成复古霓虹色散。
 - CRT Jitter: active 状态允许短促闪烁和轻微下压，模拟老式屏幕反馈。
-- Horizon Tilt: 卡片交互可配合极轻微抬升和底部光带增强地平线动势。`,
+- Horizon Tilt: 卡片交互可配合极轻微抬升和底部光带增强地平线动势。
+
+## Layout & Spacing
+- Section padding: py-16 md:py-24
+- Card padding: p-6 md:p-8
+- Gap between cards: gap-6 md:gap-8
+- Max content width: max-w-6xl mx-auto
+
+## Responsive Design
+- Mobile-first approach with Tailwind breakpoints
+- Stack elements vertically on mobile (flex-col), row on desktop (md:flex-row)
+- Reduce font sizes on mobile: text-3xl md:text-5xl for headings
+- Touch-friendly targets: min 44px for interactive elements
+
+## Self-Check Verification
+After generating code, verify:
+1. All interactive elements have hover/focus/active states
+2. Color contrast meets WCAG 2.1 AA (4.5:1 for text)
+3. Layout is responsive across breakpoints
+4. Typography hierarchy is clear (h1 > h2 > h3 > body)
+5. Spacing is consistent using the defined scale
+6. All animations respect prefers-reduced-motion`,
 
   aiRulesEn: `You are an Outrun retro-futuristic design style frontend development expert. All generated code must strictly follow these constraints:
 
@@ -331,6 +382,44 @@ Primary:
 3. 按钮：洋红霓虹边框
 4. 添加太阳和棕榈树剪影
 5. 整体复古未来速度感`,
+    },
+  {
+      title: "SaaS 着陆页",
+      titleEn: "SaaS Landing Page",
+      description: "生成 Outrun 复古未来风格的 SaaS 产品着陆页",
+      descriptionEn: "Generate a SaaS product landing page in Outrun style",
+      prompt: `Create a SaaS landing page using Outrun style with hero section, feature grid, testimonials, pricing table, and footer.`,
+    },
+    {
+      title: "作品集展示",
+      titleEn: "Portfolio Showcase",
+      description: "生成 Outrun 复古未来风格的作品集页面",
+      descriptionEn: "Generate a portfolio showcase in Outrun style",
+      prompt: `Create a portfolio showcase page using Outrun style with project grid, about section, contact form, and consistent visual language.`,
+    }],
+
+  variants: [
+    {
+      id: "outrun-warm",
+      name: "Outrun 复古未来暖色版",
+      nameEn: "Outrun Warm",
+      description: "Warm-toned variant with shifted hues toward amber/orange",
+      colors: {
+        primary: "#fd0b07",
+        secondary: "#aa36f2",
+        accent: ["#41b9ff", "#0a0a0a", "#c68104"],
+      },
+    },
+    {
+      id: "outrun-cool",
+      name: "Outrun 复古未来冷色版",
+      nameEn: "Outrun Cool",
+      description: "Cool-toned variant with shifted hues toward blue/teal",
+      colors: {
+        primary: "#cd06c8",
+        secondary: "#901dd8",
+        accent: ["#00e49f", "#0a0a0a", "#ff5c7c"],
+      },
     },
   ],
 };

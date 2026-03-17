@@ -15,9 +15,9 @@ export const africanTextile: DesignStyle = {
   colors: {
     primary: "#c4501f",
     secondary: "#2c1810",
-    accent: ["#f0c75e", "#1a5632", "#e8d5b5"],
+    accent: ["#f0c75e", "#1a5632", "#e8d5b5", "#80e671"],
   },
-  keywords: ["非洲", "Kente", "编织", "扎染", "纺织", "大地", "手工"],
+  keywords: ["非洲", "Kente", "编织", "扎染", "纺织", "大地", "手工", "expressive", "bold", "vibrant"],
 
   philosophy: `African Textile（非洲纺织）以西非的Kente编织布和Adire靛蓝扎染为灵感源泉，将数百年的纺织工艺传统转化为充满生命力的数字设计语言。
 
@@ -266,6 +266,48 @@ Suitable for cultural brands, artisan e-commerce, educational platforms, and any
 .at-gold-line {
   height: 3px;
   background: linear-gradient(90deg, var(--at-kente-orange), var(--at-gold), var(--at-forest-green));
+}
+@keyframes african-textile-fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes african-textile-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.african-textile-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.african-textile-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  background: linear-gradient(135deg, rgba(196, 80, 31, 0.05), transparent);
+  pointer-events: none;
+}
+
+.african-textile-card:hover::before {
+  opacity: 1;
+}
+
+.african-textile-frosted {
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  background: rgba(196, 80, 31, 0.08);
+}
+
+.african-textile-accent-corner {
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 2rem), calc(100% - 2rem) 100%, 0 100%);
+}
+
+.african-textile-animate-in {
+  animation: african-textile-fade-in 0.5s ease-out both;
 }`,
 
   aiRules: `You are an African Textile design style frontend development expert. All generated code must strictly follow these constraints:
@@ -374,6 +416,44 @@ Primary:
 3. Decorations: Kente stripe headers and geometric blocks
 4. Buttons: orange with gold borders
 5. Overall bold, earthy, handcrafted aesthetic`,
+    },
+  {
+      title: "SaaS 着陆页",
+      titleEn: "SaaS Landing Page",
+      description: "生成 非洲纺织风格的 SaaS 产品着陆页",
+      descriptionEn: "Generate a SaaS product landing page in African Textile style",
+      prompt: `Create a SaaS landing page using African Textile style with hero section, feature grid, testimonials, pricing table, and footer.`,
+    },
+    {
+      title: "作品集展示",
+      titleEn: "Portfolio Showcase",
+      description: "生成 非洲纺织风格的作品集页面",
+      descriptionEn: "Generate a portfolio showcase in African Textile style",
+      prompt: `Create a portfolio showcase page using African Textile style with project grid, about section, contact form, and consistent visual language.`,
+    }],
+
+  variants: [
+    {
+      id: "african-textile-warm",
+      name: "非洲纺织暖色版",
+      nameEn: "African Textile Warm",
+      description: "Warm-toned variant with shifted hues toward amber/orange",
+      colors: {
+        primary: "#946200",
+        secondary: "#412f28",
+        accent: ["#b6d958", "#16554b", "#d5dbb1"],
+      },
+    },
+    {
+      id: "african-textile-cool",
+      name: "非洲纺织冷色版",
+      nameEn: "African Textile Cool",
+      description: "Cool-toned variant with shifted hues toward blue/teal",
+      colors: {
+        primary: "#da4458",
+        secondary: "#28160e",
+        accent: ["#ffb580", "#2a531e", "#f7cfc2"],
+      },
     },
   ],
 };

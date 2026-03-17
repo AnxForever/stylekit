@@ -17,7 +17,7 @@ export const memphis: DesignStyle = {
     secondary: "#feca57",
     accent: ["#48dbfb", "#ff9ff3", "#1dd1a1", "#5f27cd"],
   },
-  keywords: ["孟菲斯", "几何", "撞色", "80年代", "波普", "图案", "大胆"],
+  keywords: ["孟菲斯", "几何", "撞色", "80年代", "波普", "图案", "大胆", "retro", "vintage", "nostalgic"],
 
   philosophy: `Memphis（孟菲斯）是1980年代由意大利设计师 Ettore Sottsass 创立的设计运动，以打破传统、拥抱混乱和趣味性著称。
 
@@ -25,7 +25,14 @@ export const memphis: DesignStyle = {
 - 反叛传统：打破功能主义的严肃设计
 - 大胆撞色：鲜艳、对比强烈的色彩组合
 - 几何图形：圆形、三角形、波浪线的自由组合
-- 趣味性：设计应该有趣、令人愉悦`,
+- 趣味性：设计应该有趣、令人愉悦
+
+设计原则：
+- 视觉一致性：所有组件必须遵循统一的视觉语言，从色彩到字体到间距保持谐调
+- 层次分明：通过颜色深浅、字号大小、留白空间建立清晰的信息层级
+- 交互反馈：每个可交互元素都必须有明确的 hover、active、focus 状态反馈
+- 响应式适配：设计必须在移动端、平板、桌面端上保持一致的体验
+- 无障碍性：确保色彩对比度符合 WCAG 2.1 AA 标准，所有交互元素可键盘访问`,
 
   philosophyEn: `Memphis is a design movement founded in the 1980s by Italian designer Ettore Sottsass, known for breaking traditions and embracing chaos and playfulness.
 
@@ -224,6 +231,48 @@ Core principles:
     #000 10px,
     #000 12px
   );
+}
+@keyframes memphis-fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes memphis-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.memphis-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.memphis-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  background: linear-gradient(135deg, rgba(255, 107, 107, 0.05), transparent);
+  pointer-events: none;
+}
+
+.memphis-card:hover::before {
+  opacity: 1;
+}
+
+.memphis-frosted {
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  background: rgba(255, 107, 107, 0.08);
+}
+
+.memphis-accent-corner {
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 2rem), calc(100% - 2rem) 100%, 0 100%);
+}
+
+.memphis-animate-in {
+  animation: memphis-fade-in 0.5s ease-out both;
 }`,
 
   aiRules: `你是一个 Memphis 设计风格的前端开发专家。生成的所有代码必须严格遵守以下约束：
@@ -318,6 +367,44 @@ Primary:
 3. 卡片：粗边框 + 硬阴影
 4. 按钮：鲜艳撞色
 5. 添加圆形、三角形装饰`,
+    },
+  {
+      title: "SaaS 着陆页",
+      titleEn: "SaaS Landing Page",
+      description: "生成 孟菲斯风格风格的 SaaS 产品着陆页",
+      descriptionEn: "Generate a SaaS product landing page in Memphis style",
+      prompt: `Create a SaaS landing page using Memphis style with hero section, feature grid, testimonials, pricing table, and footer.`,
+    },
+    {
+      title: "作品集展示",
+      titleEn: "Portfolio Showcase",
+      description: "生成 孟菲斯风格风格的作品集页面",
+      descriptionEn: "Generate a portfolio showcase in Memphis style",
+      prompt: `Create a portfolio showcase page using Memphis style with project grid, about section, contact form, and consistent visual language.`,
+    }],
+
+  variants: [
+    {
+      id: "memphis-warm",
+      name: "孟菲斯风格暖色版",
+      nameEn: "Memphis Warm",
+      description: "Warm-toned variant with shifted hues toward amber/orange",
+      colors: {
+        primary: "#e07a35",
+        secondary: "#fecf68",
+        accent: ["#76c8ff", "#ff9ec9", "#2cc5e7", "#a217aa"],
+      },
+    },
+    {
+      id: "memphis-cool",
+      name: "孟菲斯风格冷色版",
+      nameEn: "Memphis Cool",
+      description: "Cool-toned variant with shifted hues toward blue/teal",
+      colors: {
+        primary: "#ff65a9",
+        secondary: "#e5b64e",
+        accent: ["#39e6b8", "#d9a8ff", "#33d15d", "#143eca"],
+      },
     },
   ],
 };

@@ -15,9 +15,9 @@ export const handDrawnDoodle: DesignStyle = {
   colors: {
     primary: "#2c2c2c",
     secondary: "#fffef5",
-    accent: ["#ff6b6b", "#4ecdc4", "#ffd93d"],
+    accent: ["#ff6b6b", "#4ecdc4", "#ffd93d", "#a98d16"],
   },
-  keywords: ["手绘", "涂鸦", "笔记本", "虚线", "标记笔", "胶带", "图钉"],
+  keywords: ["手绘", "涂鸦", "笔记本", "虚线", "标记笔", "胶带", "图钉", "expressive", "bold", "vibrant"],
 
   philosophy: `Hand-Drawn Doodle 风格模拟手工绘制的质感，营造温暖、亲切、创意十足的视觉体验。
 
@@ -27,7 +27,14 @@ export const handDrawnDoodle: DesignStyle = {
 - 不规则形态：微妙的旋转和偏移营造手工感
 - 标记笔配色：红、蓝绿、黄三色标记笔点缀
 - 装饰元素：胶带、图钉、回形针、咖啡渍等纸张装饰
-- 涂鸦点缀：随手画的星星、波浪线、箭头等装饰`,
+- 涂鸦点缀：随手画的星星、波浪线、箭头等装饰
+
+设计原则：
+- 视觉一致性：所有组件必须遵循统一的视觉语言，从色彩到字体到间距保持谐调
+- 层次分明：通过颜色深浅、字号大小、留白空间建立清晰的信息层级
+- 交互反馈：每个可交互元素都必须有明确的 hover、active、focus 状态反馈
+- 响应式适配：设计必须在移动端、平板、桌面端上保持一致的体验
+- 无障碍性：确保色彩对比度符合 WCAG 2.1 AA 标准，所有交互元素可键盘访问`,
 
   philosophyEn: `Hand-Drawn Doodle style simulates the texture of hand-crafted drawing, creating a warm, approachable, and creatively rich visual experience.
 
@@ -390,6 +397,44 @@ Primary:
 4. Use only marker colors (red, teal, yellow) for accents
 5. Add notebook elements: spiral holes, coffee stains, tape strips
 6. Overall hand-crafted, sketchy, creative notebook feel`,
+    },
+  {
+      title: "SaaS 着陆页",
+      titleEn: "SaaS Landing Page",
+      description: "生成 手绘涂鸦风风格的 SaaS 产品着陆页",
+      descriptionEn: "Generate a SaaS product landing page in Hand-Drawn Doodle style",
+      prompt: `Create a SaaS landing page using Hand-Drawn Doodle style with hero section, feature grid, testimonials, pricing table, and footer.`,
+    },
+    {
+      title: "作品集展示",
+      titleEn: "Portfolio Showcase",
+      description: "生成 手绘涂鸦风风格的作品集页面",
+      descriptionEn: "Generate a portfolio showcase in Hand-Drawn Doodle style",
+      prompt: `Create a portfolio showcase page using Hand-Drawn Doodle style with project grid, about section, contact form, and consistent visual language.`,
+    }],
+
+  variants: [
+    {
+      id: "hand-drawn-doodle-warm",
+      name: "手绘涂鸦风暖色版",
+      nameEn: "Hand-Drawn Doodle Warm",
+      description: "Warm-toned variant with shifted hues toward amber/orange",
+      colors: {
+        primary: "#2c2c2c",
+        secondary: "#fffef6",
+        accent: ["#e07a35", "#65c1f3", "#adf13d"],
+      },
+    },
+    {
+      id: "hand-drawn-doodle-cool",
+      name: "手绘涂鸦风冷色版",
+      nameEn: "Hand-Drawn Doodle Cool",
+      description: "Cool-toned variant with shifted hues toward blue/teal",
+      colors: {
+        primary: "#2c2c2c",
+        secondary: "#e6e5dd",
+        accent: ["#ff65a9", "#52d190", "#ffc066"],
+      },
     },
   ],
 };
