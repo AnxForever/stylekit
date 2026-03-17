@@ -2,6 +2,16 @@
 @plugin "tailwindcss-animate";
 @plugin "@tailwindcss/typography";
 
+/* Fix: Chrome 120+ changed <details> to use ::details-content pseudo-element
+   with content-visibility:hidden. The old md:!block trick no longer works.
+   Force details content visible on desktop so CollapsibleSection works. */
+@media (min-width: 768px) {
+  details.group\/collapsible::details-content {
+    display: block;
+    content-visibility: visible;
+  }
+}
+
 :root {
   color-scheme: light;
   --background: #fafafa;
