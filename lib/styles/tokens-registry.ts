@@ -138,6 +138,7 @@ import { paperCraftTokens } from "./paper-craft-tokens";
 import { blueprintTokens } from "./blueprint-tokens";
 import { dopamineDesignTokens } from "./dopamine-design-tokens";
 import { linearStyleTokens } from "./linear-style-tokens";
+import { macosVibrancyTokens } from "./macos-vibrancy-tokens";
 
 // Registry of all style tokens
 export const styleTokensRegistry: Record<string, StyleTokens> = {
@@ -277,6 +278,7 @@ export const styleTokensRegistry: Record<string, StyleTokens> = {
   "blueprint": blueprintTokens,
   "dopamine-design": dopamineDesignTokens,
   "linear-style": linearStyleTokens,
+  "macos-vibrancy": macosVibrancyTokens,
 };
 
 // Get tokens for a style by slug
