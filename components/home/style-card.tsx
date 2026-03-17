@@ -4,7 +4,9 @@ import React from "react";
 import Link from "next/link";
 import { FavoriteButton } from "@/components/favorite-button";
 import { StyleCoverPreview } from "@/components/style-preview/style-cover-preview";
+import { useI18n } from "@/lib/i18n/context";
 import type { StyleMeta } from "@/lib/styles/meta";
+import { getScenarioLabel, getStyleScenarios } from "@/lib/styles/scenarios";
 
 interface StyleCardProps {
   style: StyleMeta;
@@ -19,7 +21,9 @@ export const StyleCard = React.memo(function StyleCard({
   style,
   variant = "default",
 }: StyleCardProps) {
+  const { locale } = useI18n();
   const isCompact = variant === "compact";
+  const scenarios = getStyleScenarios(style, isCompact ? 2 : 3);
   const cardClassName = "group block border border-border motion-safe:transition-[border-color,transform,box-shadow] motion-safe:duration-200 hover:border-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background motion-safe:hover:-translate-y-0.5 motion-safe:hover:shadow-md";
 
   // 保存当前滚动位置和过滤器状态，用于返回时恢复
@@ -71,6 +75,18 @@ export const StyleCard = React.memo(function StyleCard({
           <p className="text-sm text-muted leading-relaxed line-clamp-2">
             {style.description}
           </p>
+          {scenarios.length > 0 && (
+            <div className="flex flex-wrap gap-1.5 mt-3">
+              {scenarios.map((scenario) => (
+                <span
+                  key={scenario}
+                  className="text-[10px] px-2 py-0.5 border border-border text-muted"
+                >
+                  {getScenarioLabel(scenario, locale)}
+                </span>
+              ))}
+            </div>
+          )}
           <div className="flex flex-wrap gap-1.5 mt-3">
             {style.tags?.map((tag) => (
               <span

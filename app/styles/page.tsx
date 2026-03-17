@@ -3,6 +3,7 @@ import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { StylesContent } from "@/components/styles/styles-content";
 import { type StyleType, type StyleTag } from "@/lib/styles/meta";
+import { type StyleScenario, STYLE_SCENARIOS } from "@/lib/styles/scenarios";
 import { listCatalogStylesMeta } from "@/lib/styles/community-runtime";
 
 export const metadata: Metadata = {
@@ -23,6 +24,7 @@ interface StylesPageProps {
     fav?: string;
     sort?: string;
     q?: string;
+    scenario?: string;
   }>;
 }
 
@@ -41,6 +43,9 @@ export default async function StylesPage({ searchParams }: StylesPageProps) {
     ? (params.sort as StyleSort)
     : "recommended";
   const initialQuery = typeof params.q === "string" ? params.q : "";
+  const initialScenario: StyleScenario | "all" = STYLE_SCENARIOS.includes(params.scenario as StyleScenario)
+    ? (params.scenario as StyleScenario)
+    : "all";
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -53,6 +58,7 @@ export default async function StylesPage({ searchParams }: StylesPageProps) {
           initialShowFavorites={initialShowFavorites}
           initialSort={initialSort}
           initialQuery={initialQuery}
+          initialScenario={initialScenario}
         />
       </main>
       <Footer />
