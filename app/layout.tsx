@@ -4,6 +4,7 @@ import { LazyCommandPalette } from "@/components/ui/lazy-command-palette";
 import { ScrollToTop } from "@/components/ui/scroll-to-top";
 import { ClientScripts } from "@/components/layout/client-scripts";
 import { serializeJsonLd } from "@/lib/security/json-ld";
+import { MobileBottomNav } from "@/components/layout/mobile-bottom-nav";
 import "./globals.css";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://www.stylekit.top";
@@ -13,6 +14,7 @@ export const viewport: Viewport = {
   initialScale: 1,
   maximumScale: 5,
   userScalable: true,
+  viewportFit: "cover",
   themeColor: "#000000",
 };
 
@@ -134,10 +136,11 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className="antialiased">
+      <body className="antialiased pb-16 md:pb-0">
         <ClientProviders>
           <LazyCommandPalette />
           {children}
+          <MobileBottomNav />
           <ScrollToTop />
         </ClientProviders>
         <ClientScripts />

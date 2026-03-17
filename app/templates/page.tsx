@@ -926,7 +926,7 @@ export default function TemplatesPage() {
                 <button
                   type="button"
                   onClick={() => handleScenarioChange("all")}
-                  className={`px-3 py-1.5 text-xs tracking-wide border transition-colors ${
+                  className={`px-3 py-1.5 md:px-4 md:py-2.5 text-xs tracking-wide border transition-colors ${
                     activeScenario === "all"
                       ? "border-foreground bg-foreground text-background"
                       : "border-border text-muted hover:text-foreground hover:border-foreground"
@@ -942,7 +942,7 @@ export default function TemplatesPage() {
                       key={scenario}
                       type="button"
                       onClick={() => handleScenarioChange(isActive ? "all" : scenario)}
-                      className={`px-3 py-1.5 text-xs tracking-wide border transition-colors ${
+                      className={`px-3 py-1.5 md:px-4 md:py-2.5 text-xs tracking-wide border transition-colors ${
                         isActive
                           ? "border-foreground bg-foreground text-background"
                           : "border-border text-muted hover:text-foreground hover:border-foreground"
@@ -987,7 +987,7 @@ export default function TemplatesPage() {
                     value={activeSort}
                     onChange={(event) => handleSortChange(event.target.value as TemplateSort)}
                     aria-label={t("templates.sortAriaLabel")}
-                    className="h-9 px-3 text-sm border border-border bg-background focus:outline-none focus:border-foreground transition-colors"
+                    className="h-9 md:h-11 px-3 text-sm border border-border bg-background focus:outline-none focus:border-foreground transition-colors"
                   >
                     <option value="recommended">{t("templates.sortRecommended")}</option>
                     <option value="name-asc">{t("templates.sortNameAsc")}</option>
