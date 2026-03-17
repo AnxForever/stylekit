@@ -1,121 +1,175 @@
 # Contributing to StyleKit
 
-Thanks for contributing.
-This repository accepts both human-authored and AI-assisted pull requests.
+Thanks for your interest in contributing to StyleKit. Whether you're fixing a bug, adding a new style, or improving docs, this guide will help you get started.
 
-## Before You Start
+## Table of Contents
 
-- Read `AGENTS.md` and `docs/AGENTS.md`.
-- For new style contributions, follow `docs/STYLE_ADDITION_CHECKLIST.md`.
-- Keep PR scope focused. Avoid mixing unrelated refactors.
+- [Development Setup](#development-setup)
+- [Types of Contributions](#types-of-contributions)
+- [Workflow](#workflow)
+- [Code Style](#code-style)
+- [Adding a New Style](#adding-a-new-style)
+- [Pull Request Process](#pull-request-process)
+- [Local Validation](#local-validation)
+- [Security](#security)
 
-## Branch and Commit Conventions
-
-### Branch naming
-
-- `feat/<short-topic>`
-- `fix/<short-topic>`
-- `docs/<short-topic>`
-- `refactor/<short-topic>`
-- `cc/admin-<short-topic>`
-- `cc/web-<short-topic>`
-- `cc/shared-<short-topic>`
-
-Examples:
-
-- `feat/new-style-arcade-crt`
-- `fix/supabase-auth-callback`
-- `cc/admin-users-aggregation-fallback`
-
-### Main-only workflow
-
-- `main` is the only long-lived integration branch.
-- Use short-lived branches per task (prefer `cc/*`).
-- Prefer worktree isolation for AI sessions:
+## Development Setup
 
 ```bash
-bash tools/scripts/new-cc-worktree.sh admin <task-name>
+# Clone the repo
+git clone https://github.com/AnxForever/stylekit.git
+cd stylekit
+
+# Install dependencies (pnpm required)
+pnpm install
+
+# Start dev server
+pnpm dev
 ```
 
-### Commit format
+Open [localhost:3000](http://localhost:3000).
 
-Use Conventional Commits:
+<!-- PLACEHOLDER_SETUP -->
 
-- `feat: add style metadata schema validation`
-- `fix: correct style showcase route params`
-- `docs: add AI PR prompt template`
+**Optional:** Copy `.env.example` to `.env.local` and fill in Supabase credentials if you need auth or database features. Most UI work doesn't require this.
 
-## Pull Request Requirements
+**Tech stack at a glance:**
 
-Every PR should include:
+| What | Tool |
+|------|------|
+| Package manager | pnpm |
+| Framework | Next.js 16 (App Router) |
+| Language | TypeScript (strict mode) |
+| Styling | Tailwind CSS 4 |
+| Components | Radix UI primitives |
+| Tests | Vitest (unit) + Playwright (E2E) |
 
-1. Clear summary of what changed and why
-2. Linked issue (if available)
-3. Validation results (commands + outcomes)
-4. Screenshots/GIFs for UI changes
-5. Breaking change notes (if applicable)
+## Types of Contributions
 
-Use the repo PR template at `.github/pull_request_template.md`.
+| Type | Description | Difficulty |
+|------|-------------|------------|
+| Bug fix | Fix broken UI, routing, or logic | Easy |
+| New style | Add a complete design style (tokens, recipes, showcase) | Medium |
+| New animation | Add a CSS animation with preview | Easy |
+| Feature | Add new functionality (tools, pages, API endpoints) | Medium-Hard |
+| Docs | Improve guides, fix typos, add examples | Easy |
+| Performance | Optimize rendering, bundle size, or load times | Medium |
 
-## Required Local Checks
+## Workflow
 
-Run these checks before opening a PR:
+1. **Fork** the repo and create a branch from `main`:
+   ```bash
+   git checkout -b feat/your-feature
+   ```
+
+2. **Branch naming** convention:
+   - `feat/<topic>` — new feature or style
+   - `fix/<topic>` — bug fix
+   - `docs/<topic>` — documentation
+   - `refactor/<topic>` — code improvement
+
+3. **Make your changes** with focused, atomic commits.
+
+4. **Run validation** (see [Local Validation](#local-validation)).
+
+5. **Open a PR** against `main`.
+
+## Code Style
+
+- **Formatting:** 2 spaces, double quotes, semicolons
+- **TypeScript:** strict mode, no `any` unless absolutely necessary
+- **Imports:** use `@/` path aliases (e.g., `@/lib/styles`, `@/components/ui`)
+- **Components:** keep UI in `components/`, domain logic in `lib/`
+- **No console.log** in production code
+- **Commit messages:** use [Conventional Commits](https://www.conventionalcommits.org/)
+  ```
+  feat: add arcade-crt style with CRT scanline effects
+  fix: correct color palette rendering on mobile
+  docs: update style addition checklist
+  ```
+
+<!-- PLACEHOLDER_STYLE -->
+
+## Adding a New Style
+
+This is the most common contribution. A complete style requires **6 new files + 4 modified files**.
+
+> For the full step-by-step checklist, see [`STYLE_ADDITION_CHECKLIST.md`](./STYLE_ADDITION_CHECKLIST.md).
+
+**Quick overview:**
+
+```
+New files:
+  lib/styles/{slug}.ts              # Style definition (colors, rules, components)
+  lib/styles/{slug}-tokens.ts       # Design tokens for AI consumption
+  lib/recipes/{slug}.ts             # Component recipes (button, card, input)
+  app/styles/{slug}/showcase/page.tsx       # Showcase page wrapper
+  app/styles/{slug}/showcase/_content.tsx   # Showcase content (400+ lines, 12+ sections)
+  public/styles/{slug}.svg          # Cover image (1200x630)
+
+Modified files:
+  lib/styles/index.ts               # Register style import
+  lib/styles/meta.ts                # Add metadata entry
+  lib/recipes/index.ts              # Register recipes
+  lib/style-components.tsx          # Add component renderers
+```
+
+**Key rules:**
+- Slug must be kebab-case and consistent across all files
+- Showcase must have 12+ sections with interactive elements (useState)
+- Cover SVG must show miniaturized UI components, not just the style name
+- Run the test suite to verify all registrations are correct
+
+## Pull Request Process
+
+1. Fill out the [PR template](../.github/pull_request_template.md) completely.
+2. Include screenshots or GIFs for any UI changes.
+3. Link related issues if applicable.
+4. Ensure all validation checks pass.
+5. A maintainer will review your PR. Expect feedback within a few days.
+
+**For style contributions**, the PR checklist includes:
+- Verified `/styles/{slug}` page loads correctly
+- Verified `/styles/{slug}/showcase` renders all sections
+- Attached screenshots of the style in the gallery and showcase
+
+## Local Validation
+
+Run these before opening a PR:
 
 ```bash
-npm run security:secrets
-npm run lint
-npm run lint:style-rules
+# Security: check for leaked secrets
+pnpm run security:secrets
+
+# Lint
+pnpm run lint
+
+# Type check
 npx tsc --noEmit
-npm run test
-npm run build
+
+# Unit tests
+pnpm test
+
+# Build
+pnpm build
 ```
 
-If you touched `style-extractor` integration files:
+All checks must pass. The CI pipeline runs the same checks automatically.
 
-```bash
-npm run test:style-extractor:ci
-```
+## Security
 
-## New Style Contribution Rules
+- Never commit secrets, API keys, or credentials
+- Never commit `.env` files (use `.env.example` for placeholders)
+- Keep server-side secrets server-only (no `NEXT_PUBLIC_` prefix)
+- Validate all user input at system boundaries
 
-If your PR adds a new style:
+## Questions?
 
-- Use a kebab-case slug, and keep it consistent in all files.
-- Add style definition, tokens, recipes, showcase pages, and cover SVG.
-- Register the style in all required registries.
-- Verify routes:
-  - `/styles`
-  - `/styles/<slug>`
-  - `/styles/<slug>/showcase`
-- Include visual proof (screenshots) in PR.
+- Open a [Discussion](https://github.com/AnxForever/stylekit/discussions) for questions
+- Open an [Issue](https://github.com/AnxForever/stylekit/issues) for bugs or feature requests
+- Check existing issues before creating new ones
 
-Do not skip checklist items in `docs/STYLE_ADDITION_CHECKLIST.md`.
+---
 
-## Security Rules
+Thank you for helping make StyleKit better.
 
-- Never commit real keys, tokens, credentials, or `.env` files.
-- Only commit placeholders in `.env.example`.
-- Keep server secrets server-only (no `NEXT_PUBLIC_` prefix).
-
-## AI Contributor Prompt Template
-
-Use this prompt when asking an AI to prepare a PR:
-
-```text
-You are contributing to StyleKit.
-Follow AGENTS.md, docs/AGENTS.md, and CONTRIBUTING.md exactly.
-If adding a style, follow docs/STYLE_ADDITION_CHECKLIST.md item by item.
-Use Conventional Commit messages.
-Do not commit secrets or .env files.
-Before final output, run:
-- npm run security:secrets
-- npm run lint
-- npx tsc --noEmit
-- npm run test
-- npm run build
-Return:
-1) summary
-2) files changed
-3) command results
-4) risks/breaking changes
-```
