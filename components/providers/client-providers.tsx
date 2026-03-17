@@ -2,9 +2,11 @@
 
 import { ThemeProvider } from "@/components/theme-provider";
 import { I18nProvider } from "@/lib/i18n/context";
+import { HtmlLangUpdater } from "@/components/i18n/html-lang-updater";
 import { FavoritesProvider } from "@/lib/favorites/context";
 import { PageTransition } from "@/components/page-transition";
 import { SWRProvider } from "@/lib/swr/provider";
+import { UtmProvider } from "@/components/analytics/utm-provider";
 
 interface ClientProvidersProps {
   children: React.ReactNode;
@@ -24,11 +26,14 @@ export function ClientProviders({ children }: ClientProvidersProps) {
       disableTransitionOnChange
     >
       <I18nProvider>
+        <HtmlLangUpdater />
         <SWRProvider>
           <FavoritesProvider>
-            <PageTransition>
-              {children}
-            </PageTransition>
+            <UtmProvider>
+              <PageTransition>
+                {children}
+              </PageTransition>
+            </UtmProvider>
           </FavoritesProvider>
         </SWRProvider>
       </I18nProvider>

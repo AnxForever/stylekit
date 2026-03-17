@@ -7,7 +7,7 @@ import { getAllStylesMeta } from "@/lib/styles/meta";
 export const metadata: Metadata = {
   title: "StyleKit - UI Design Prompts, Visual Styles & AI-Friendly Design System",
   description:
-    "Browse 130+ visual styles with design tokens, component recipes, and AI prompts. Export to Tailwind, shadcn, Figma, and IDE configs for consistent website UI generation.",
+    "Browse 120+ visual styles with design tokens, component recipes, and AI prompts. Export to Tailwind, shadcn, Figma, and IDE configs for consistent website UI generation.",
   keywords: [
     "UI design prompts",
     "web design prompts",

@@ -9,7 +9,7 @@
 </p>
 
 <p align="center">
-  <strong>150+ Styles. 47 Animations. One Toolkit for AI-Driven UI.</strong>
+  <strong>120+ Styles. 49 Animations. 34 Templates. One Toolkit for AI-Driven UI.</strong>
 </p>
 
 <p align="center">
@@ -50,7 +50,7 @@ StyleKit helps humans and AI generate consistent, high-quality UI code. Pick a s
 
 ### Design System
 
-- **150+ visual styles** with design tokens, color palettes, and typography
+- **120+ visual styles** with design tokens, color palettes, and typography
 - **128 live showcases** — full-page interactive demos for every style
 - **Component recipes** — copy-paste code for buttons, cards, inputs, and more
 - **Export anywhere** — Tailwind preset, shadcn theme, CSS variables, Figma tokens
@@ -72,7 +72,7 @@ StyleKit helps humans and AI generate consistent, high-quality UI code. Pick a s
 
 ### Creative Tools
 
-- **47 CSS animations** with live preview and one-click copy
+- **49 CSS animations** with live preview and one-click copy
 - **34 page templates** — SaaS, dashboard, e-commerce, portfolio, blog
 - **Style blender** — mix two styles into a new hybrid
 - **Side-by-side comparison** — evaluate styles head-to-head
@@ -93,7 +93,7 @@ StyleKit helps humans and AI generate consistent, high-quality UI code. Pick a s
 
 ## Styles
 
-150+ styles across 10+ categories. Every style includes design tokens, component code, AI rules, and a live showcase.
+120+ styles across 10+ categories. Every style includes design tokens, component code, AI rules, and a live showcase.
 
 <details>
 <summary><strong>Modern / Tech</strong> — Glassmorphism, Liquid Glass, Neumorphism, Bento Grid, Fluent Design, Material Design, Linear Style ...</summary>

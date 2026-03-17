@@ -65,7 +65,7 @@ export default function OGImage() {
               lineHeight: 1.4,
             }}
           >
-            AI-Friendly Design System with 130+ Visual Styles
+            AI-Friendly Design System with 120+ Visual Styles
           </div>
         </div>
 
@@ -78,7 +78,7 @@ export default function OGImage() {
           }}
         >
           <div style={{ display: "flex", gap: 16 }}>
-            {["130+ Styles", "20+ Templates", "AI Prompts", "Design Tokens"].map(
+            {["120+ Styles", "30+ Templates", "40+ Animations", "Design Tokens"].map(
               (tag, i) => (
                 <div
                   key={i}

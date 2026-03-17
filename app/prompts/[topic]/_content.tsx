@@ -295,8 +295,8 @@ export function PromptTopicContent({
           </h2>
           <p className="text-muted mb-8 max-w-xl mx-auto">
             {isZh
-              ? "StyleKit 提供 130+ 种视觉风格，每种都有完整的 design tokens、组件配方和可导出的 AI Rules。"
-              : "StyleKit offers 130+ visual styles, each with complete design tokens, component recipes, and exportable AI Rules."}
+              ? "StyleKit 提供 120+ 种视觉风格，每种都有完整的 design tokens、组件配方和可导出的 AI Rules。"
+              : "StyleKit offers 120+ visual styles, each with complete design tokens, component recipes, and exportable AI Rules."}
           </p>
           <div className="flex justify-center gap-4">
             <Link

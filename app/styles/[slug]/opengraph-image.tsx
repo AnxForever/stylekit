@@ -1,9 +1,10 @@
 import { ImageResponse } from "next/og";
 import { styles } from "@/lib/styles";
 import { resolveStyleBySlug } from "@/lib/styles/community-runtime";
+import { OG_SIZE, containerStyle, titleStyle, subtitleStyle } from "@/lib/og/shared";
 
 export const alt = "StyleKit style preview";
-export const size = { width: 1200, height: 630 };
+export const size = OG_SIZE;
 export const contentType = "image/png";
 
 export function generateStaticParams() {
@@ -56,16 +57,7 @@ export default async function OGImage({
 
   return new ImageResponse(
     (
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          width: "100%",
-          height: "100%",
-          backgroundColor: "#0a0a0a",
-          padding: 60,
-        }}
-      >
+      <div style={containerStyle()}>
         {/* Color swatches row */}
         <div style={{ display: "flex", gap: 12, marginBottom: 40 }}>
           {allColors.map((color, i) => (
@@ -83,7 +75,7 @@ export default async function OGImage({
           ))}
         </div>
 
-        {/* Style name - English only to avoid CJK font issues */}
+        {/* Style name */}
         <div
           style={{
             display: "flex",
@@ -92,28 +84,8 @@ export default async function OGImage({
             justifyContent: "center",
           }}
         >
-          <div
-            style={{
-              display: "flex",
-              fontSize: 72,
-              fontWeight: 800,
-              color: "#ffffff",
-              lineHeight: 1.1,
-              marginBottom: 16,
-            }}
-          >
-            {style.nameEn}
-          </div>
-          <div
-            style={{
-              display: "flex",
-              fontSize: 24,
-              color: "rgba(255,255,255,0.5)",
-              lineHeight: 1.4,
-            }}
-          >
-            {subtitle}
-          </div>
+          <div style={titleStyle(72)}>{style.nameEn}</div>
+          <div style={subtitleStyle()}>{subtitle}</div>
         </div>
 
         {/* Footer branding */}
@@ -124,13 +96,7 @@ export default async function OGImage({
             justifyContent: "space-between",
           }}
         >
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: 12,
-            }}
-          >
+          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
             <div
               style={{
                 display: "flex",

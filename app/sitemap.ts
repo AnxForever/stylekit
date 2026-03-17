@@ -14,6 +14,23 @@ function getTemplateSlugs(): string[] {
     .map((directoryEntry) => directoryEntry.name);
 }
 
+const ALTERNATE_REFS = [
+  { hreflang: "en", href: BASE_URL },
+  { hreflang: "zh-CN", href: BASE_URL },
+  { hreflang: "x-default", href: BASE_URL },
+];
+
+function withAlternates(entry: MetadataRoute.Sitemap[number]): MetadataRoute.Sitemap[number] {
+  return {
+    ...entry,
+    alternates: {
+      languages: Object.fromEntries(
+        ALTERNATE_REFS.map((ref) => [ref.hreflang, ref.href + new URL(entry.url).pathname])
+      ),
+    },
+  };
+}
+
 export default function sitemap(): MetadataRoute.Sitemap {
   const styles = getAllStylesMeta();
   const redirectedPromptSlugs = new Set([
@@ -85,5 +102,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.7,
   }));
 
-  return [...staticPages, ...stylePages, ...showcasePages, ...templatePages, ...promptPages, ...animationPages];
+  return [
+    ...staticPages,
+    ...stylePages,
+    ...showcasePages,
+    ...templatePages,
+    ...promptPages,
+    ...animationPages,
+  ].map(withAlternates);
 }
