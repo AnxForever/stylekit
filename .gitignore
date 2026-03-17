@@ -111,3 +111,4 @@ ai_studio_code*.txt
 
 # Skill packs
 *.skill
+!dist-skills/*.skill
