@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import { useI18n } from "@/lib/i18n/context";
 import { buildPromptPair } from "@/lib/styles/prompt-pair";
+import { trackEvent } from "@/lib/analytics/events";
 
 interface PromptPairExporterProps {
   styleName: string;
@@ -66,6 +67,7 @@ export function PromptPairExporter({
     try {
       await navigator.clipboard.writeText(content);
       setCopiedKind(kind);
+      trackEvent("code_copy", { slug: styleSlug, language: `prompt-${kind}` });
       setTimeout(() => setCopiedKind(null), 2000);
     } catch {
       const textArea = document.createElement("textarea");
@@ -75,6 +77,7 @@ export function PromptPairExporter({
       document.execCommand("copy");
       document.body.removeChild(textArea);
       setCopiedKind(kind);
+      trackEvent("code_copy", { slug: styleSlug, language: `prompt-${kind}` });
       setTimeout(() => setCopiedKind(null), 2000);
     }
   };
