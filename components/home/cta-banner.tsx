@@ -4,6 +4,7 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { useI18n } from "@/lib/i18n/context";
 import { RevealOnScroll } from "@/components/home/reveal-on-scroll";
+import { trackEvent } from "@/lib/analytics/events";
 
 const GITHUB_URL = "https://github.com/AnxForever/stylekit";
 
@@ -29,6 +30,7 @@ export function CTABanner() {
             <div className="flex flex-wrap items-center justify-center gap-3">
               <Link
                 href="/styles"
+                onClick={() => trackEvent("cta_click", { label: "browse_styles", location: "cta_banner" })}
                 className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-white text-zinc-950 text-sm tracking-wide hover:bg-zinc-200 transition-colors"
               >
                 {t("home.cta.browseStyles")}
@@ -38,6 +40,7 @@ export function CTABanner() {
                 href={GITHUB_URL}
                 target="_blank"
                 rel="noopener noreferrer"
+                onClick={() => trackEvent("cta_click", { label: "view_github", location: "cta_banner" })}
                 className="inline-flex items-center justify-center px-6 py-3 border border-zinc-700 text-zinc-300 text-sm tracking-wide hover:border-zinc-500 hover:text-white transition-colors"
               >
                 {t("home.cta.viewGitHub")}

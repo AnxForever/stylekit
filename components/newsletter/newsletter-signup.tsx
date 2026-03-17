@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { z } from "zod";
 import { useI18n } from "@/lib/i18n/context";
+import { trackEvent } from "@/lib/analytics/events";
 
 const clientEmailSchema = z.string().email();
 
@@ -44,6 +45,7 @@ export function NewsletterSignup({ variant = "card" }: { variant?: Variant }) {
       }
 
       setStatus("success");
+      trackEvent("newsletter_subscribe", { source: variant });
       setEmail("");
     } catch {
       setStatus("error");
