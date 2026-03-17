@@ -10,9 +10,22 @@ import { FeaturedCarousel } from "@/components/home/featured-carousel";
 import { RevealOnScroll } from "@/components/home/reveal-on-scroll";
 import { GitHubStarButton } from "@/components/github-star-button";
 import { SocialProof } from "@/components/home/social-proof";
-import { BuiltForSection } from "@/components/home/built-for-section";
-import { HowItWorks } from "@/components/home/how-it-works";
-import { CTABanner } from "@/components/home/cta-banner";
+
+const HowItWorks = dynamic(
+  () => import("@/components/home/how-it-works").then((m) => ({ default: m.HowItWorks })),
+  { ssr: true }
+);
+
+const CTABanner = dynamic(
+  () => import("@/components/home/cta-banner").then((m) => ({ default: m.CTABanner })),
+  { ssr: true }
+);
+
+const BuiltForSection = dynamic(
+  () => import("@/components/home/built-for-section").then((m) => ({ default: m.BuiltForSection })),
+  { ssr: true }
+);
+
 import type { StyleMeta } from "@/lib/styles/meta";
 import {
   getScenarioLabel,
@@ -592,7 +605,8 @@ function TrendingStylesSkeleton() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-12 py-10 sm:py-12 md:py-16">
         <div className="mb-6 sm:mb-8 space-y-2">
           <div className="h-3 w-28 rounded bg-zinc-200 dark:bg-zinc-800" />
-          <div className="h-8 w-48 rounded bg-zinc-200 dark:bg-zinc-800" />
+          <h2 className="sr-only">Trending</h2>
+          <div className="h-8 w-48 rounded bg-zinc-200 dark:bg-zinc-800" aria-hidden="true" />
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 [content-visibility:auto] [contain-intrinsic-size:1px_560px]">
           {Array.from({ length: 4 }).map((_, index) => (
