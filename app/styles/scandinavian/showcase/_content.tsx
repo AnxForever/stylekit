@@ -92,9 +92,19 @@ export default function ScandinavianShowcase() {
       <nav className="sticky top-0 z-40 bg-[#f5f0eb] border-b border-[#d4cdc5]/40 px-8 py-5">
         <div className="max-w-6xl mx-auto flex items-center justify-between">
           {/* Logo */}
-          <span className="font-light tracking-wide text-[#3d3d3d] text-lg lowercase">
-            scandinavian
-          </span>
+          <div className="flex items-center gap-4">
+            <Link
+              href="/styles/scandinavian"
+              className="text-sm text-[#a89279] hover:text-[#5a7a6b] transition-colors duration-700 font-light tracking-wide flex items-center gap-1.5"
+            >
+              <span>&larr;</span>
+              Back to Docs
+            </Link>
+            <div className="w-px h-4 bg-[#d4cdc5]" />
+            <span className="font-light tracking-wide text-[#3d3d3d] text-lg lowercase">
+              scandinavian
+            </span>
+          </div>
 
           {/* Nav links */}
           <div className="hidden md:flex items-center gap-8">

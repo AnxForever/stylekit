@@ -242,7 +242,7 @@ export default function CardStackShowcaseContent() {
           }}
         >
           <Link
-            href="/styles"
+            href="/styles/card-stack"
             style={{
               color: "rgba(255,255,255,0.55)",
               fontSize: 13,
@@ -254,7 +254,7 @@ export default function CardStackShowcaseContent() {
               transition: "color 0.2s",
             }}
           >
-            <span style={{ fontSize: 16 }}>&#8592;</span> Styles
+            <span style={{ fontSize: 16 }}>&#8592;</span> Back to Docs
           </Link>
           <span style={{ color: "rgba(255,255,255,0.2)" }}>|</span>
           <Link

@@ -1,5 +1,6 @@
 "use client"
 import { useState, useRef, useEffect } from "react"
+import Link from "next/link"
 
 function useInView(options = {}) {
   const ref = useRef<HTMLDivElement>(null);
@@ -339,9 +340,20 @@ export default function ShowcaseContent() {
         style={{ backgroundColor: "#faf5ef" }}
       >
         <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
-          <span className="font-serif tracking-wider text-lg text-[#2d4a2d]">
-            Victorian Botanical
-          </span>
+          <div className="flex items-center gap-4">
+            <Link
+              href="/styles/victorian-botanical"
+              className="font-serif text-sm text-[#2d4a2d]/60 hover:text-[#8b6914] transition-colors duration-500 flex items-center gap-1.5"
+              style={{ fontVariant: "small-caps" }}
+            >
+              <span>&larr;</span>
+              Back to Docs
+            </Link>
+            <div className="w-px h-4 bg-[#2d4a2d]/20" />
+            <span className="font-serif tracking-wider text-lg text-[#2d4a2d]">
+              Victorian Botanical
+            </span>
+          </div>
           <div className="hidden md:flex items-center gap-8">
             {["Specimens", "Components", "Palette", "Principles", "Rules"].map((link) => (
               <a

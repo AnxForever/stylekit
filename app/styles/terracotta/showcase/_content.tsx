@@ -410,6 +410,14 @@ export default function TerracottaShowcase() {
         <div className="max-w-6xl mx-auto flex items-center justify-between">
           {/* Brand logo */}
           <div className="flex items-center gap-2.5">
+            <Link
+              href="/styles/terracotta"
+              className="text-sm text-[#8b9d77] hover:text-[#b5654a] transition-colors duration-300 font-medium flex items-center gap-1.5"
+            >
+              <span>&larr;</span>
+              Back to Docs
+            </Link>
+            <div className="w-px h-4 bg-[#d4a373]/40" />
             <div className="w-8 h-8 rounded-lg bg-[#b5654a] flex items-center justify-center shadow-[0_2px_8px_rgba(181,101,74,0.3)]">
               <svg viewBox="0 0 24 24" className="w-4 h-4 fill-[#faf5ef]" aria-hidden="true">
                 <path d="M12,2 C8,2 4,6 4,11 C4,16 7,19 10,20.5 L10,22 L14,22 L14,20.5 C17,19 20,16 20,11 C20,6 16,2 12,2 Z" />

@@ -417,7 +417,7 @@ export default function ShowcaseContent() {
 
           {/* Back link */}
           <Link
-            href="/"
+            href="/styles/memphis"
             style={{
               display: "flex",
               alignItems: "center",
@@ -444,7 +444,7 @@ export default function ShowcaseContent() {
             }}
           >
             <span>&#8592;</span>
-            <span>StyleKit</span>
+            <span>Back to Docs</span>
           </Link>
         </div>
       </header>

@@ -355,7 +355,7 @@ export default function ShowcaseContent() {
 
           {/* Back link */}
           <Link
-            href="/"
+            href="/styles/japanese-fresh"
             className="flex items-center gap-1.5 px-4 py-1.5 font-light text-xs text-[#7a8a9e] tracking-widest rounded-lg transition-all duration-500 hover:text-[#64b5f6] hover:-translate-y-px"
             style={{ border: "0.5px solid rgba(212,212,207,0.5)" }}
             onMouseEnter={(e) => {
@@ -366,7 +366,7 @@ export default function ShowcaseContent() {
             }}
           >
             <span>&#8592;</span>
-            <span>StyleKit</span>
+            <span>Back to Docs</span>
           </Link>
         </div>
       </header>

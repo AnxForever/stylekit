@@ -223,13 +223,25 @@ export default function ShowcaseContent() {
       >
         <div className="max-w-7xl mx-auto px-6 md:px-12">
           <div className="flex items-center justify-between h-16">
-            {/* Brand */}
-            <span
-              className="text-sm font-black tracking-[0.5em] uppercase"
-              style={{ color: "#39ff14", textShadow: "0 0 12px #39ff14" }}
+            {/* Back link */}
+            <Link
+              href="/styles/acid-graphics"
+              className="group flex items-center gap-2"
+              style={{ textDecoration: "none" }}
             >
-              STYLEKIT
-            </span>
+              <span
+                className="text-lg group-hover:-translate-x-1 transition-transform duration-200 inline-block"
+                style={{ color: "#39ff14", textShadow: "0 0 8px #39ff14" }}
+              >
+                &#8592;
+              </span>
+              <span
+                className="text-xs font-black tracking-[0.3em] uppercase"
+                style={{ color: "#39ff14", textShadow: "0 0 8px #39ff14" }}
+              >
+                BACK TO DOCS
+              </span>
+            </Link>
 
             {/* Nav links — each a different neon color */}
             <nav className="hidden md:flex items-center gap-8">

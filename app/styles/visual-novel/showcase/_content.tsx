@@ -226,10 +226,11 @@ export default function ShowcaseContent() {
         <div className="max-w-6xl mx-auto px-6 flex items-center justify-between h-14">
           <div className="flex items-center gap-4">
             <Link
-              href="/"
-              className="font-sans text-[13px] tracking-wider text-[#a5b4fc]/75 hover:text-white transition-colors duration-200"
+              href="/styles/visual-novel"
+              className="font-sans text-[13px] tracking-wider text-[#a5b4fc]/75 hover:text-white transition-colors duration-200 flex items-center gap-1.5"
             >
-              StyleKit &rarr;
+              <span>&larr;</span>
+              Back to Docs
             </Link>
             <span className="text-white/15 text-xs">|</span>
             <span className="font-sans text-[13px] tracking-widest text-[#f7fafc]">

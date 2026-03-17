@@ -373,6 +373,15 @@ export default function HandDrawnDoodleShowcase() {
       >
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between relative">
           <MarginLine />
+          <div className="flex items-center gap-4">
+          <Link
+            href="/styles/hand-drawn-doodle"
+            className="group flex items-center gap-1.5 text-sm font-semibold text-[#2c2c2c]/60 underline decoration-wavy decoration-[#ff6b6b]/40 underline-offset-4 hover:text-[#ff6b6b] transition-colors"
+            style={{ transform: "rotate(-0.5deg)", display: "inline-flex" }}
+          >
+            <span className="group-hover:-translate-x-0.5 transition-transform duration-150 inline-block">&larr;</span>
+            Back to Docs
+          </Link>
           <div className="flex items-center gap-3">
             <span
               className="font-black text-xl text-[#2c2c2c] select-none"
@@ -381,6 +390,7 @@ export default function HandDrawnDoodleShowcase() {
               Hand-Drawn Doodle
             </span>
             <DoodleStar size={14} color="#ffd93d" rotation={15} />
+          </div>
           </div>
           <nav className="flex items-center gap-6">
             <a

@@ -263,11 +263,20 @@ export default function ShowcaseContent() {
       {/* ============================================================ */}
       <header className="fixed top-0 left-0 right-0 z-50 bg-white/8 backdrop-blur-[60px] backdrop-saturate-[180%] border-b border-white/10 shadow-[0_1px_0_rgba(255,255,255,0.08)]">
         <div className="max-w-6xl mx-auto px-5 md:px-10 flex items-center justify-between h-16">
+          <div className="flex items-center gap-3">
+          <Link
+            href="/styles/glassmorphism"
+            className="group flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/10 backdrop-blur-[40px] border border-white/15 text-white/60 text-sm hover:text-white hover:bg-white/18 hover:border-white/25 lg-spring"
+          >
+            <span className="group-hover:-translate-x-0.5 transition-transform duration-300 inline-block">&larr;</span>
+            <span>Back to Docs</span>
+          </Link>
           <div className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/12 backdrop-blur-[40px] backdrop-saturate-[180%] border border-white/20 shadow-[inset_0_1px_0_rgba(255,255,255,0.25)]">
             <DiamondIcon className="w-4 h-4 text-white/90" />
             <span className="text-sm font-semibold text-white tracking-tight">
               Liquid<span className="text-white/60">Glass</span>
             </span>
+          </div>
           </div>
           <nav className="hidden md:flex items-center gap-1">
             {["Palette", "Components", "Layers", "Playground", "Rules"].map((item) => (
