@@ -14,9 +14,9 @@ export function ColorPalette({ colors }: ColorPaletteProps) {
   ];
 
   return (
-    <div className="grid grid-cols-3 md:grid-cols-6 gap-3">
-      {allColors.map((color) => (
-        <div key={color.value} className="group">
+    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3">
+      {allColors.map((color, index) => (
+        <div key={color.value} className={`group ${index >= 4 ? "hidden sm:block" : ""}`}>
           <div
             className="aspect-square border border-border mb-2"
             style={{ backgroundColor: color.value }}

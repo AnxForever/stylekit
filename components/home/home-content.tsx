@@ -90,7 +90,7 @@ export function HomeContent({ styles }: HomeContentProps) {
     },
   ];
   const smallLinkClassName = "inline-flex items-center gap-1.5 text-xs tracking-wide text-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background transition-colors";
-  const quickJumpLinkClassName = "inline-flex items-center gap-1.5 px-2.5 py-1.5 text-[11px] border border-border text-muted hover:text-foreground hover:border-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background transition-[color,border-color,background-color,transform,box-shadow] duration-200 ease-out";
+  const quickJumpLinkClassName = "inline-flex items-center gap-1.5 px-2.5 py-1.5 md:px-3.5 md:py-2.5 text-[11px] md:text-xs border border-border text-muted hover:text-foreground hover:border-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background transition-[color,border-color,background-color,transform,box-shadow] duration-200 ease-out";
   const sectionLabelClassName = "text-[11px] tracking-[0.16em] uppercase text-muted";
   const sectionTitleClassName = "text-[1.6rem] sm:text-2xl md:text-3xl leading-tight tracking-tight";
   const quickLinkTargets = useMemo(
@@ -299,7 +299,7 @@ export function HomeContent({ styles }: HomeContentProps) {
         </div>
 
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 md:px-12 py-10 sm:py-16 md:py-20">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-10 md:gap-12 lg:gap-16 items-center">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 sm:gap-10 md:gap-12 lg:gap-16 items-center">
             <RevealOnScroll instant>
               <p className={`${sectionLabelClassName} mb-4`}>{t("home.subtitle")}</p>
               <h1 className="text-[2rem] sm:text-4xl md:text-5xl lg:text-6xl leading-[1.05] tracking-tight max-w-[11ch] mb-4 sm:mb-6">
@@ -337,7 +337,7 @@ export function HomeContent({ styles }: HomeContentProps) {
                     <Link
                       key={item.scenario}
                       href={`/styles?scenario=${item.scenario}`}
-                      className="inline-flex items-center gap-2 px-3 py-1.5 text-xs border border-border text-muted hover:text-foreground hover:border-foreground transition-colors"
+                      className="inline-flex items-center gap-2 px-3 py-1.5 md:px-4 md:py-2.5 text-xs border border-border text-muted hover:text-foreground hover:border-foreground transition-colors"
                     >
                       <span>{item.label}</span>
                       <span className="text-[10px] text-muted tabular-nums">
@@ -405,7 +405,7 @@ export function HomeContent({ styles }: HomeContentProps) {
               </nav>
             </RevealOnScroll>
 
-            <RevealOnScroll instant className="w-full max-w-xl lg:max-w-none lg:justify-self-end">
+            <RevealOnScroll instant className="w-full max-w-xl md:max-w-none md:justify-self-end">
               <FeaturedCarousel styles={featuredStyles} />
             </RevealOnScroll>
           </div>
@@ -582,7 +582,7 @@ function TrendingStylesSkeleton() {
           <div className="h-3 w-28 rounded bg-zinc-200 dark:bg-zinc-800" />
           <div className="h-8 w-48 rounded bg-zinc-200 dark:bg-zinc-800" />
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 [content-visibility:auto] [contain-intrinsic-size:1px_560px]">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 [content-visibility:auto] [contain-intrinsic-size:1px_560px]">
           {Array.from({ length: 4 }).map((_, index) => (
             <div key={index} className="border border-border p-3 sm:p-4 animate-pulse">
               <div className="h-4 w-2/3 rounded bg-zinc-200 dark:bg-zinc-800 mb-3" />

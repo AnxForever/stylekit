@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, useRef, useCallback } from "react";
 import { CodeBlock } from "./code-block";
 import type { ComponentTemplate } from "@/lib/styles";
 import { useI18n } from "@/lib/i18n/context";
@@ -20,6 +20,25 @@ export function ComponentPreview({
   const [showCode, setShowCode] = useState(defaultShowCode);
   const activeComponent = components[activeTab];
   const { t, locale } = useI18n();
+  const touchStartX = useRef(0);
+
+  const handleTouchStart = useCallback((e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+  }, []);
+
+  const handleTouchEnd = useCallback(
+    (e: React.TouchEvent) => {
+      const dx = e.changedTouches[0].clientX - touchStartX.current;
+      if (Math.abs(dx) < 50) return;
+      const currentIndex = componentKeys.indexOf(activeTab);
+      if (dx < 0 && currentIndex < componentKeys.length - 1) {
+        setActiveTab(componentKeys[currentIndex + 1]);
+      } else if (dx > 0 && currentIndex > 0) {
+        setActiveTab(componentKeys[currentIndex - 1]);
+      }
+    },
+    [activeTab, componentKeys]
+  );
 
   // Tab labels with i18n support
   const getTabLabel = (key: string): string => {
@@ -81,7 +100,11 @@ export function ComponentPreview({
       </div>
 
       {/* Preview Area */}
-      <div className="p-6 md:p-10 bg-white dark:bg-zinc-900 flex items-start justify-center min-h-[200px] overflow-x-auto">
+      <div
+        className="p-6 md:p-10 bg-white dark:bg-zinc-900 flex items-start justify-center min-h-[200px] overflow-x-auto"
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
+      >
         {/* 
           Create a containing block for position: fixed preview snippets
           (common in nav examples). Without this, fixed elements attach to the

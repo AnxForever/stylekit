@@ -402,7 +402,7 @@ export function StylesContent({
     <>
       {/* Page Header */}
       <section className="border-b border-border">
-        <div className="max-w-7xl mx-auto px-6 md:px-12 py-8 md:py-12">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-12 py-8 md:py-12">
           <p className="text-xs tracking-widest uppercase text-muted mb-3">
             {t("styles.subtitle")}
           </p>
@@ -417,7 +417,7 @@ export function StylesContent({
 
       {/* Style Grid */}
       <section>
-        <div className="max-w-7xl mx-auto px-6 md:px-12 py-12 md:py-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-12 py-12 md:py-16">
           <div className="mb-5 md:mb-7 space-y-3">
             <label htmlFor="styles-search" className="sr-only">
               {t("nav.search")}
@@ -444,19 +444,19 @@ export function StylesContent({
                 className="w-full h-10 pl-10 pr-3 text-sm border border-border bg-background focus:outline-none focus:border-foreground transition-colors"
               />
             </div>
-            <p className="text-xs text-muted">
+            <p className="hidden sm:block text-xs text-muted">
               {locale === "zh"
                 ? "提示：按 / 可快速聚焦搜索，按 Esc 可清空。"
                 : "Tip: press / to focus search, and Esc to clear."}
             </p>
-            <div className="flex flex-wrap items-center gap-2">
-              <span className="text-[11px] tracking-[0.16em] uppercase text-muted">
+            <div className="flex flex-nowrap overflow-x-auto scrollbar-hide gap-2 md:flex-wrap md:overflow-visible items-center">
+              <span className="text-[11px] tracking-[0.16em] uppercase text-muted shrink-0">
                 {locale === "zh" ? "按场景进入" : "Explore by goal"}
               </span>
               <button
                 type="button"
                 onClick={() => handleScenarioChange("all")}
-                className={`px-3 py-1.5 text-xs tracking-wide border transition-colors ${
+                className={`shrink-0 px-3 py-1.5 md:px-4 md:py-2.5 min-h-[44px] sm:min-h-0 text-xs tracking-wide border transition-colors ${
                   activeScenario === "all"
                     ? "border-foreground bg-foreground text-background"
                     : "border-border text-muted hover:text-foreground hover:border-foreground"
@@ -472,7 +472,7 @@ export function StylesContent({
                     key={scenario}
                     type="button"
                     onClick={() => handleScenarioChange(isActive ? "all" : scenario)}
-                    className={`px-3 py-1.5 text-xs tracking-wide border transition-colors ${
+                    className={`shrink-0 px-3 py-1.5 md:px-4 md:py-2.5 min-h-[44px] sm:min-h-0 text-xs tracking-wide border transition-colors ${
                       isActive
                         ? "border-foreground bg-foreground text-background"
                         : "border-border text-muted hover:text-foreground hover:border-foreground"
@@ -504,13 +504,13 @@ export function StylesContent({
           </div>
 
           {/* Type Filter */}
-          <div className="flex flex-wrap items-center gap-3 mb-4 text-sm">
-            <span className="text-muted">{t("styles.type")}:</span>
+          <div className="flex flex-nowrap overflow-x-auto scrollbar-hide md:flex-wrap md:overflow-visible items-center gap-3 mb-4 text-sm">
+            <span className="text-muted shrink-0">{t("styles.type")}:</span>
             {typeFilters.map((type) => (
               <button
                 key={type.key}
                 onClick={() => handleTypeChange(type.key)}
-                className={`inline-flex items-center gap-1.5 px-3 py-1.5 transition-colors ${
+                className={`shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 min-h-[44px] sm:min-h-0 transition-colors ${
                   activeType === type.key
                     ? "bg-foreground text-background"
                     : "border border-border hover:border-foreground"
@@ -525,7 +525,7 @@ export function StylesContent({
             <button
               onClick={handleToggleFavorites}
               aria-label={t("styles.favorites")}
-              className={`inline-flex items-center gap-1.5 px-3 py-1.5 transition-colors ml-auto ${
+              className={`shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 min-h-[44px] sm:min-h-0 transition-colors ml-auto ${
                 showFavorites
                   ? "bg-foreground text-background"
                   : "border border-border hover:border-foreground"
@@ -633,7 +633,7 @@ export function StylesContent({
                 id="styles-sort"
                 value={sortBy}
                 onChange={(event) => handleSortChange(event.target.value as SortOption)}
-                className="h-9 px-3 text-sm border border-border bg-background focus:outline-none focus:border-foreground transition-colors"
+                className="h-9 md:h-11 px-3 text-sm border border-border bg-background focus:outline-none focus:border-foreground transition-colors"
               >
                 <option value="recommended">{t("styles.sortRecommended")}</option>
                 <option value="name-asc">{t("styles.sortNameAsc")}</option>
@@ -652,7 +652,7 @@ export function StylesContent({
 
           {/* Styles List with loading indicator */}
           <div
-            className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 transition-opacity ${
+            className={`grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 md:gap-8 transition-opacity ${
               isFiltering ? "opacity-70" : ""
             }`}
           >
