@@ -421,6 +421,25 @@ export function AnimationCardPreviewStyles() {
       .sk-mini-confetti-3 { animation: sk-mini-confetti-3 1.2s cubic-bezier(0, 0.9, 0.57, 1) 0.1s infinite; }
       .sk-mini-confetti-4 { animation: sk-mini-confetti-4 1.2s cubic-bezier(0, 0.9, 0.57, 1) 0.15s infinite; }
       .sk-mini-confetti-5 { animation: sk-mini-confetti-5 1.2s cubic-bezier(0, 0.9, 0.57, 1) 0.08s infinite; }
+
+      @keyframes sk-mini-page-turn {
+        0%, 20% { transform: perspective(400px) rotateY(0deg); opacity: 1; }
+        50% { transform: perspective(400px) rotateY(-75deg); opacity: 0.3; }
+        51% { transform: perspective(400px) rotateY(-75deg); opacity: 0; }
+        52%, 80% { transform: perspective(400px) rotateY(0deg); opacity: 1; }
+        100% { transform: perspective(400px) rotateY(0deg); opacity: 1; }
+      }
+
+      @keyframes sk-mini-peel {
+        0%, 20% { transform: perspective(400px) rotateX(0deg) rotateZ(0deg); clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%); opacity: 1; }
+        55% { transform: perspective(400px) rotateX(-10deg) rotateZ(5deg); clip-path: polygon(0% 0%, 30% 0%, 0% 30%); opacity: 0.6; }
+        56% { opacity: 0; }
+        57%, 80% { transform: perspective(400px) rotateX(0deg) rotateZ(0deg); clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%); opacity: 1; }
+        100% { opacity: 1; }
+      }
+
+      .sk-mini-page-turn { animation: sk-mini-page-turn 3.5s ease-in-out infinite; transform-origin: left center; backface-visibility: hidden; }
+      .sk-mini-peel { animation: sk-mini-peel 3.5s ease-in-out infinite; transform-origin: bottom left; }
     `}</style>
   );
 }
@@ -906,6 +925,30 @@ function MiniPreview({ slug }: { slug: string }) {
           <span className="sk-mini-anim sk-mini-confetti-3 absolute h-1.5 w-1.5 rounded-full bg-blue-500" />
           <span className="sk-mini-anim sk-mini-confetti-4 absolute h-1.5 w-1.5 rounded-sm bg-green-400" />
           <span className="sk-mini-anim sk-mini-confetti-5 absolute h-1.5 w-1.5 rounded-full bg-purple-500" />
+        </div>
+      );
+    case "scroll-page-turn":
+      return (
+        <div className="relative h-12 w-16">
+          <div className={`${previewPanelClass} sk-mini-page-turn absolute inset-0 rounded-[12px] bg-gradient-to-br from-slate-700 to-slate-800`}>
+            <div className="absolute left-2 right-2 top-2 h-1 rounded-full bg-white/30" />
+            <div className="absolute bottom-2 left-2 h-1.5 w-7 rounded-full bg-white/20" />
+          </div>
+          <div className="absolute inset-0 -z-10 flex items-center justify-center rounded-[12px] border border-black/10 bg-gradient-to-br from-indigo-700 to-indigo-800 dark:border-white/10">
+            <div className="h-1 w-6 rounded-full bg-white/25" />
+          </div>
+        </div>
+      );
+    case "scroll-peel-away":
+      return (
+        <div className="relative h-12 w-16">
+          <div className={`${previewPanelClass} sk-mini-peel absolute inset-0 rounded-[12px] bg-gradient-to-br from-zinc-100 to-zinc-200 dark:from-zinc-300 dark:to-zinc-400`}>
+            <div className="absolute left-2 right-2 top-2 h-1 rounded-full bg-black/10" />
+            <div className="absolute bottom-2 left-2 h-1.5 w-7 rounded-full bg-black/8" />
+          </div>
+          <div className="absolute inset-0 -z-10 flex items-center justify-center rounded-[12px] border border-black/10 bg-gradient-to-br from-amber-50 to-orange-100 dark:border-white/10 dark:from-amber-200 dark:to-orange-200">
+            <div className="h-1 w-6 rounded-full bg-amber-800/20" />
+          </div>
         </div>
       );
     default:

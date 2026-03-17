@@ -164,6 +164,12 @@ const previewMap: Record<string, ComponentType> = {
   "confetti-burst": dynamicPreview(
     () => import("@/lib/animations/previews/confetti-burst-preview").then((m) => m.ConfettiBurstPreview)
   ),
+  "scroll-page-turn": dynamicPreview(
+    () => import("@/lib/animations/previews/scroll-page-turn-preview").then((m) => m.ScrollPageTurnPreview)
+  ),
+  "scroll-peel-away": dynamicPreview(
+    () => import("@/lib/animations/previews/scroll-peel-away-preview").then((m) => m.ScrollPeelAwayPreview)
+  ),
 };
 
 interface AnimationPreviewProps {
