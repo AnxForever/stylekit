@@ -71,9 +71,12 @@ export function GitHubStarButton({
   variant = "default",
   className = "",
 }: GitHubStarButtonProps) {
-  const [count, setCount] = useState<number | null>(() => getCachedCount());
+  const [count, setCount] = useState<number | null>(null);
 
   useEffect(() => {
+    const cached = getCachedCount();
+    if (cached !== null) setCount(cached);
+
     fetch(`https://api.github.com/repos/${REPO}`, {
       headers: { Accept: "application/vnd.github.v3+json" },
     })
@@ -93,6 +96,8 @@ export function GitHubStarButton({
 
   const href = `https://github.com/${REPO}`;
 
+  const formattedCount = count !== null ? formatCount(count) : null;
+
   if (variant === "compact") {
     return (
       <a
@@ -101,11 +106,11 @@ export function GitHubStarButton({
         rel="noopener noreferrer"
         onClick={() => trackEvent("github_click", { location: "header" })}
         className={`group inline-flex items-center gap-1.5 px-2.5 py-1.5 text-sm text-muted hover:text-foreground transition-colors ${className}`}
-        aria-label={`Star ${REPO} on GitHub${count !== null ? ` (${count} stars)` : ""}`}
+        aria-label={`GitHub${formattedCount !== null ? ` ${formattedCount} stars` : ""}`}
       >
         <GitHubIcon size={16} />
-        {count !== null && (
-          <span className="text-xs tabular-nums">{formatCount(count)}</span>
+        {formattedCount !== null && (
+          <span className="text-xs tabular-nums">{formattedCount}</span>
         )}
       </a>
     );
@@ -118,14 +123,14 @@ export function GitHubStarButton({
       rel="noopener noreferrer"
       onClick={() => trackEvent("github_click", { location: "hero" })}
       className={`inline-flex w-full sm:w-auto items-center justify-center gap-2 px-6 py-3 border border-border text-sm tracking-wide hover:border-foreground hover:bg-foreground/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background transition-colors ${className}`}
-      aria-label={`Star ${REPO} on GitHub${count !== null ? ` (${count} stars)` : ""}`}
+      aria-label={`Star on GitHub${formattedCount !== null ? ` ${formattedCount}` : ""}`}
     >
       <GitHubIcon size={16} />
       <StarIcon size={14} />
       <span>Star</span>
-      {count !== null && (
+      {formattedCount !== null && (
         <span className="ml-0.5 px-1.5 py-0.5 text-xs tabular-nums bg-foreground/5 border border-border rounded-sm">
-          {formatCount(count)}
+          {formattedCount}
         </span>
       )}
     </a>

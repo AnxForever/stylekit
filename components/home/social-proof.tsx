@@ -33,9 +33,12 @@ interface StatItem {
 
 export function SocialProof() {
   const { t } = useI18n();
-  const [stars, setStars] = useState<number | null>(() => getCachedStars());
+  const [stars, setStars] = useState<number | null>(null);
 
   useEffect(() => {
+    const cached = getCachedStars();
+    if (cached !== null) setStars(cached);
+
     fetch(`https://api.github.com/repos/${REPO}`, {
       headers: { Accept: "application/vnd.github.v3+json" },
     })
