@@ -86,6 +86,12 @@ const SCENARIO_OVERRIDES: Partial<Record<string, StyleScenario[]>> = {
 
   // --- Docs ---
   "holy-grail-layout": ["docs", "blog", "admin"],
+
+  // --- New styles (Batch 15) ---
+  "shopify-clean": ["ecommerce", "marketing", "saas"],
+  "luxury-retail": ["ecommerce", "marketing", "portfolio"],
+  "fresh-market": ["ecommerce", "marketing", "creative"],
+  "data-dense": ["admin", "dashboard", "saas"],
 };
 
 const SCENARIO_MATCHERS: Record<StyleScenario, RegExp[]> = {
