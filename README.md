@@ -1,36 +1,173 @@
-<div align="center">
+<p align="center">
+  <a href="https://www.stylekit.top">
+    <picture>
+      <source media="(prefers-color-scheme: dark)" srcset="public/readme/logo-dark.svg">
+      <source media="(prefers-color-scheme: light)" srcset="public/readme/logo-light.svg">
+      <img alt="StyleKit" src="public/readme/logo-light.svg" width="280">
+    </picture>
+  </a>
+</p>
 
-<img src="public/readme/home-hero.png" alt="StyleKit" width="100%" />
+<p align="center">
+  <strong>150+ Styles. 47 Animations. One Toolkit for AI-Driven UI.</strong>
+</p>
 
-# StyleKit
+<p align="center">
+  <a href="https://www.stylekit.top"><img src="https://img.shields.io/badge/Live-www.stylekit.top-black?style=flat-square&logo=vercel" alt="Live Site"></a>
+  <a href="https://github.com/AnxForever/stylekit/stargazers"><img src="https://img.shields.io/github/stars/AnxForever/stylekit?style=flat-square&color=f59e0b" alt="Stars"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-green?style=flat-square" alt="License"></a>
+  <a href="https://nextjs.org"><img src="https://img.shields.io/badge/Next.js-16-black?style=flat-square&logo=next.js" alt="Next.js 16"></a>
+  <a href="https://www.typescriptlang.org"><img src="https://img.shields.io/badge/TypeScript-5-3178C6?style=flat-square&logo=typescript" alt="TypeScript"></a>
+</p>
 
-**AI-Friendly Design System — 130+ Styles, 30+ Templates, One Toolkit**
+<br>
 
-[![Live Site](https://img.shields.io/badge/Live-www.stylekit.top-black?style=for-the-badge&logo=vercel)](https://www.stylekit.top)
+<p align="center">
+  <a href="https://www.stylekit.top">
+    <img src="public/readme/home-hero.png" alt="StyleKit Preview" width="100%">
+  </a>
+</p>
 
-[![Next.js 16](https://img.shields.io/badge/Next.js-16-black?logo=next.js)](https://nextjs.org)
-[![React 19](https://img.shields.io/badge/React-19-61DAFB?logo=react)](https://react.dev)
-[![Tailwind CSS 4](https://img.shields.io/badge/Tailwind-4-06B6D4?logo=tailwindcss)](https://tailwindcss.com)
-[![TypeScript 5](https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript)](https://www.typescriptlang.org)
-[![License: MIT](https://img.shields.io/badge/License-MIT-green)](LICENSE)
+<p align="center">
+  <a href="https://www.stylekit.top/styles"><strong>Showcase</strong></a> &middot;
+  <a href="https://www.stylekit.top/templates"><strong>Templates</strong></a> &middot;
+  <a href="https://www.stylekit.top/animations"><strong>Animations</strong></a> &middot;
+  <a href="https://www.stylekit.top/developers/api"><strong>API Docs</strong></a> &middot;
+  <a href="#contributing"><strong>Contributing</strong></a>
+</p>
 
-[Features](#features) · [Quick Start](#quick-start) · [Styles](#styles) · [Templates](#templates) · [AI Integration](#ai-integration) · [API](#api) · [Contributing](#contributing)
-
-</div>
+<br>
 
 ---
 
-StyleKit helps humans and AI generate consistent, high-quality UI code. It provides structured style specifications, design tokens, component recipes, and prompt templates — everything needed to go from "glassmorphism SaaS dashboard" to production-ready code.
+## What is StyleKit?
 
-## Features
+StyleKit helps humans and AI generate consistent, high-quality UI code. Pick a style, get structured design tokens, component recipes, and prompt templates — everything needed to go from "glassmorphism SaaS dashboard" to production-ready code.
 
-**Design System** — 130+ visual styles with design tokens, component recipes, and export to CSS variables, Tailwind presets, shadcn themes, and Figma tokens.
+<table>
+<tr>
+<td width="50%" valign="top">
 
-**AI Tools** — Prompt builder (Surface + Context + Constraints), smart recommender, style linter, style analyzer, and style blender.
+### Design System
 
-**Creative Tools** — Live code playground, style creator, side-by-side comparison, and design system generator.
+- **150+ visual styles** with design tokens, color palettes, and typography
+- **128 live showcases** — full-page interactive demos for every style
+- **Component recipes** — copy-paste code for buttons, cards, inputs, and more
+- **Export anywhere** — Tailwind preset, shadcn theme, CSS variables, Figma tokens
 
-**Platform** — OAuth auth, community ratings and comments, style submissions, bilingual (EN/ZH), PWA, dark/light mode.
+</td>
+<td width="50%" valign="top">
+
+### AI-Native Workflow
+
+- **Prompt builder** — Surface + Context + Constraints methodology
+- **IDE export** — `.cursorrules`, `claude-rules`, `windsurf-rules`
+- **Style linter** — validate code against any style spec
+- **llms.txt** — AI-discoverable docs at [`/llms.txt`](https://www.stylekit.top/llms.txt)
+
+</td>
+</tr>
+<tr>
+<td width="50%" valign="top">
+
+### Creative Tools
+
+- **47 CSS animations** with live preview and one-click copy
+- **34 page templates** — SaaS, dashboard, e-commerce, portfolio, blog
+- **Style blender** — mix two styles into a new hybrid
+- **Side-by-side comparison** — evaluate styles head-to-head
+
+</td>
+<td width="50%" valign="top">
+
+### Platform
+
+- **Bilingual** — full English and Chinese support
+- **Community** — ratings, comments, and style submissions
+- **OAuth** — GitHub and Google sign-in
+- **PWA** — installable, works offline, dark/light mode
+
+</td>
+</tr>
+</table>
+
+## Styles
+
+150+ styles across 10+ categories. Every style includes design tokens, component code, AI rules, and a live showcase.
+
+<details>
+<summary><strong>Modern / Tech</strong> — Glassmorphism, Liquid Glass, Neumorphism, Bento Grid, Fluent Design, Material Design, Linear Style ...</summary>
+
+Clean, professional styles for SaaS products, dashboards, and developer tools. Emphasis on subtle depth, blur effects, and systematic spacing.
+
+</details>
+
+<details>
+<summary><strong>Brutalist</strong> — Neo-Brutalist, Neo-Brutalist Playful, Neo-Brutalist Soft, Brutalist Web, Anti-Design</summary>
+
+Bold borders, raw typography, high contrast. Ranges from aggressive to playful depending on the variant.
+
+</details>
+
+<details>
+<summary><strong>Brand-Inspired</strong> — Apple Style, Stripe Style, Notion Style, GitHub Style, Shopify Clean, Linear Style</summary>
+
+Reverse-engineered design languages from iconic products. Great starting points for product UI.
+
+</details>
+
+<details>
+<summary><strong>Retro / Vintage</strong> — Art Deco, Vaporwave, VHS Aesthetic, Y2K, Outrun, Synthwave, Retro Vintage, Frutiger Aero</summary>
+
+Nostalgic aesthetics spanning decades. From 1920s Art Deco to 2000s Y2K and Frutiger Aero.
+
+</details>
+
+<details>
+<summary><strong>Artistic</strong> — Watercolor, Impressionist Oil, Pop Art, Risograph, Collage Art, Ink Wash, Generative Art</summary>
+
+Fine art movements translated into UI design. Painterly textures, halftone patterns, and organic forms.
+
+</details>
+
+<details>
+<summary><strong>Japanese / Anime</strong> — Ghibli Style, Cyber Anime, Shoujo Manga, Ukiyo-e, Pixel Anime, Neon Samurai, Kawaii Minimal</summary>
+
+Japanese visual culture from traditional woodblock prints to modern anime aesthetics.
+
+</details>
+
+<details>
+<summary><strong>Cyberpunk / Sci-Fi</strong> — Cyberpunk Neon, Neon Tokyo, Sci-Fi HUD, Mecha, Holographic, Arcade CRT</summary>
+
+Neon-drenched, high-tech interfaces. Terminal greens, scan lines, and holographic effects.
+
+</details>
+
+<details>
+<summary><strong>Layout Patterns</strong> — Magazine Grid, Masonry Flow, Split Screen, Parallax, Dashboard Layout, Holy Grail, F-Pattern, Z-Pattern</summary>
+
+Structural patterns that pair with any visual style. Responsive grids, scroll-based layouts, and classic page structures.
+
+</details>
+
+<details>
+<summary><strong>Cultural / Regional</strong> — Islamic Geometric, Indian Festive, African Textile, Korean Minimal, Cyber Chinese, Dark Academia</summary>
+
+Design traditions from around the world, adapted for modern web interfaces.
+
+</details>
+
+<details>
+<summary><strong>Nature / Cozy</strong> — Cottagecore, Scandinavian, Wabi-Sabi, Natural Organic, Solarpunk, Zen Garden, Tropical Paradise</summary>
+
+Warm, organic, and calming. Earthy palettes, soft textures, and generous whitespace.
+
+</details>
+
+<p align="center">
+  <a href="https://www.stylekit.top/styles"><strong>Browse all styles &rarr;</strong></a>
+</p>
 
 ## Quick Start
 
@@ -41,67 +178,25 @@ pnpm install
 pnpm dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000). See [`.env.example`](.env.example) for optional Supabase and admin configuration.
-
-## Styles
-
-130+ styles across multiple categories:
-
-| Category | Examples |
-|----------|---------|
-| Modern / Tech | Glassmorphism, Neumorphism, Bento Grid, Liquid Glass, Fluent Design |
-| Brutalist | Neo-Brutalist, Neo-Brutalist Playful, Neo-Brutalist Soft |
-| Brand-Inspired | Apple Style, Notion Style, Stripe Style |
-| Retro / Vintage | Art Deco, Vaporwave, VHS Aesthetic, Y2K, Outrun |
-| Artistic | Watercolor, Impressionist Oil, Pop Art, Risograph |
-| Japanese / Anime | Ghibli Style, Cyber Anime, Shoujo Manga, Ukiyo-e |
-| Cyberpunk | Cyberpunk Neon, Neon Samurai, Sci-Fi HUD, Mecha |
-| Layout Patterns | Magazine Grid, Masonry Flow, Split Screen, Parallax |
-| Nature / Cozy | Cottagecore, Scandinavian, Wabi-Sabi, Natural Organic |
-
-[Browse all styles →](https://www.stylekit.top/styles)
-
-## Templates
-
-30+ production-ready page templates covering SaaS landing, admin panel, e-commerce, portfolio, editorial blog, dashboard, auth pages, docs site, pricing, and more.
-
-[Browse all templates →](https://www.stylekit.top/templates)
-
-## AI Integration
-
-### IDE Export
-
-Export any style as `.cursorrules`, `claude-rules`, `windsurf-rules`, `tailwind-preset`, `shadcn-theme`, `figma-tokens`, or `skill-pack`.
-
-### llms.txt
-
-AI-discoverable docs at [`/llms.txt`](https://www.stylekit.top/llms.txt) and `/llms-full.txt`.
-
-### CLI
-
-```bash
-pnpm run cli -- lint src/app.tsx --style glassmorphism
-pnpm run cli -- recommend --audience developers --mood professional
-pnpm run cli -- export neo-brutalist --format tailwind-preset
-```
+Open [localhost:3000](http://localhost:3000). See [`.env.example`](.env.example) for optional Supabase and admin configuration.
 
 ## API
 
-RESTful API for programmatic access:
+RESTful API for programmatic access. All endpoints return JSON.
 
 ```
 GET  /api/styles                      # List all styles
-GET  /api/styles/{slug}               # Full style pack
-GET  /api/styles/{slug}/tokens        # Design tokens
-GET  /api/styles/{slug}/recipes       # Component recipes
+GET  /api/styles/{slug}               # Full style pack (tokens + recipes + rules)
+GET  /api/styles/{slug}/tokens        # Design tokens only
+GET  /api/styles/{slug}/recipes       # Component recipes only
 POST /api/lint                        # Lint code against a style
 POST /api/analyze-style               # Analyze existing code
-POST /api/match-style                 # Match to closest style
-GET  /api/knowledge/search?q=...      # Search design knowledge
-GET  /api/knowledge/smart             # Smart recommendations
+POST /api/match-style                 # Match code to closest style
 ```
 
-[Full API docs →](https://www.stylekit.top/developers/api)
+<p align="right">
+  <a href="https://www.stylekit.top/developers/api">Full API docs &rarr;</a>
+</p>
 
 ## Tech Stack
 
@@ -128,16 +223,33 @@ pnpm lint && pnpm test && pnpm build
 git commit -m "feat: add your feature"
 ```
 
+## Star History
+
+<p align="center">
+  <a href="https://star-history.com/#AnxForever/stylekit&Date">
+    <picture>
+      <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=AnxForever/stylekit&type=Date&theme=dark">
+      <img alt="Star History" src="https://api.star-history.com/svg?repos=AnxForever/stylekit&type=Date" width="600">
+    </picture>
+  </a>
+</p>
+
+## Contributors
+
+<a href="https://github.com/AnxForever/stylekit/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=AnxForever/stylekit" />
+</a>
+
 ## License
 
 MIT — see [LICENSE](LICENSE).
 
 ---
 
-<div align="center">
+<p align="center">
+  <a href="https://www.stylekit.top"><strong>www.stylekit.top</strong></a>
+  <br>
+  Built by <a href="https://github.com/AnxForever">AnxForever</a>
+</p>
 
-**[www.stylekit.top](https://www.stylekit.top)**
 
-Built by [AnxForever](https://github.com/AnxForever)
-
-</div>
