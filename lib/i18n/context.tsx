@@ -4,6 +4,7 @@ import {
   createContext,
   useContext,
   useState,
+  useEffect,
   ReactNode,
 } from "react";
 import { Locale, translations, TranslationKey } from "./translations";
@@ -16,15 +17,26 @@ interface I18nContextType {
 
 const I18nContext = createContext<I18nContextType | null>(null);
 
-export function I18nProvider({ children }: { children: ReactNode }) {
-  const [locale, setLocaleState] = useState<Locale>(() => {
-    if (typeof window === "undefined") {
-      return "zh";
-    }
+const DEFAULT_LOCALE: Locale = "zh";
 
-    const savedLocale = localStorage.getItem("stylekit-locale") as Locale | null;
-    return savedLocale === "zh" || savedLocale === "en" ? savedLocale : "zh";
-  });
+function getSavedLocale(): Locale {
+  try {
+    const saved = localStorage.getItem("stylekit-locale") as Locale | null;
+    return saved === "zh" || saved === "en" ? saved : DEFAULT_LOCALE;
+  } catch {
+    return DEFAULT_LOCALE;
+  }
+}
+
+export function I18nProvider({ children }: { children: ReactNode }) {
+  const [locale, setLocaleState] = useState<Locale>(DEFAULT_LOCALE);
+
+  useEffect(() => {
+    const saved = getSavedLocale();
+    if (saved !== DEFAULT_LOCALE) {
+      setLocaleState(saved);
+    }
+  }, []);
 
   const setLocale = (newLocale: Locale) => {
     setLocaleState(newLocale);

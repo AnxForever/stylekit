@@ -69,7 +69,7 @@ export function Header() {
                 <path d="m21 21-4.3-4.3" />
               </svg>
               <span>{t("nav.search")}</span>
-              <kbd className="hidden lg:inline-flex px-1.5 py-0.5 text-[10px] bg-zinc-100 dark:bg-zinc-800 rounded">Ctrl K</kbd>
+              <kbd className="hidden lg:inline-flex px-1.5 py-0.5 text-[10px] text-zinc-600 dark:text-zinc-300 bg-zinc-100 dark:bg-zinc-800 rounded">Ctrl K</kbd>
             </button>
 
             {/* Main Nav Items */}
