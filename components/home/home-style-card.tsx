@@ -1,12 +1,17 @@
 import Link from "next/link";
 import { StyleCoverPreview } from "@/components/style-preview/style-cover-preview";
+import { useI18n } from "@/lib/i18n/context";
 import type { StyleMeta } from "@/lib/styles/meta";
+import { getScenarioLabel, getStyleScenarios } from "@/lib/styles/scenarios";
 
 interface HomeStyleCardProps {
   style: StyleMeta;
 }
 
 export function HomeStyleCard({ style }: HomeStyleCardProps) {
+  const { locale } = useI18n();
+  const scenarios = getStyleScenarios(style, 2);
+
   return (
     <Link
       href={`/styles/${style.slug}`}
@@ -42,12 +47,12 @@ export function HomeStyleCard({ style }: HomeStyleCardProps) {
           {style.description}
         </p>
         <div className="mt-3 flex flex-wrap gap-1.5">
-          {style.tags?.map((tag) => (
+          {scenarios.map((scenario) => (
             <span
-              key={tag}
-              className="text-[10px] px-2 py-0.5 bg-zinc-100 dark:bg-zinc-800 text-muted uppercase tracking-wider"
+              key={scenario}
+              className="text-[10px] px-2 py-0.5 border border-border text-muted"
             >
-              {tag}
+              {getScenarioLabel(scenario, locale)}
             </span>
           ))}
         </div>
