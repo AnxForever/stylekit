@@ -9,6 +9,10 @@ import { HomeStyleCard } from "@/components/home/home-style-card";
 import { FeaturedCarousel } from "@/components/home/featured-carousel";
 import { RevealOnScroll } from "@/components/home/reveal-on-scroll";
 import { GitHubStarButton } from "@/components/github-star-button";
+import { SocialProof } from "@/components/home/social-proof";
+import { BuiltForSection } from "@/components/home/built-for-section";
+import { HowItWorks } from "@/components/home/how-it-works";
+import { CTABanner } from "@/components/home/cta-banner";
 import type { StyleMeta } from "@/lib/styles/meta";
 import {
   getScenarioLabel,
@@ -507,6 +511,8 @@ export function HomeContent({ styles }: HomeContentProps) {
         </nav>
       </section>
 
+      <SocialProof />
+
       <section id="home-core-features" className="relative border-b border-border scroll-mt-24 bg-zinc-50/40 dark:bg-zinc-900/15">
         <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-16 bg-gradient-to-b from-background/70 to-transparent" />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-12 py-10 sm:py-12 md:py-16">
@@ -570,6 +576,12 @@ export function HomeContent({ styles }: HomeContentProps) {
           </div>
         </div>
       </section>
+
+      <HowItWorks />
+
+      <CTABanner />
+
+      <BuiltForSection />
     </>
   );
 }

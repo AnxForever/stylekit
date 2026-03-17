@@ -24,7 +24,7 @@ export const metadata: Metadata = {
     default: "StyleKit - UI Design Prompts, Visual Styles & AI-Friendly Design System",
     template: "%s | StyleKit",
   },
-  description: "UI design prompt library and AI-friendly design system with 130+ visual styles. Export design tokens, component recipes, Tailwind-ready patterns, and AI prompts for consistent website UI generation.",
+  description: "UI design prompt library and AI-friendly design system with 120+ visual styles. Export design tokens, component recipes, Tailwind-ready patterns, and AI prompts for consistent website UI generation.",
   keywords: [
     "UI design prompts",
     "web design prompts",
@@ -52,6 +52,19 @@ export const metadata: Metadata = {
   },
   alternates: {
     canonical: BASE_URL,
+    languages: {
+      "en": BASE_URL,
+      "zh-CN": BASE_URL,
+    },
+    types: {
+      "application/rss+xml": [
+        { url: "/feed.xml", title: "StyleKit Blog" },
+        { url: "/feed/styles.xml", title: "StyleKit - New Styles" },
+      ],
+    },
+  },
+  other: {
+    "content-language": "en, zh",
   },
   openGraph: {
     type: "website",
@@ -59,12 +72,12 @@ export const metadata: Metadata = {
     url: BASE_URL,
     siteName: "StyleKit",
     title: "StyleKit - UI Design Prompts, Visual Styles & AI-Friendly Design System",
-    description: "130+ visual styles with design tokens, component recipes, Tailwind-ready patterns, and AI prompts for beautiful, consistent website UI.",
+    description: "120+ visual styles with design tokens, component recipes, Tailwind-ready patterns, and AI prompts for beautiful, consistent website UI.",
   },
   twitter: {
     card: "summary_large_image",
     title: "StyleKit - UI Design Prompts, Visual Styles & AI-Friendly Design System",
-    description: "130+ visual styles with design tokens, component recipes, Tailwind-ready patterns, and AI prompts.",
+    description: "120+ visual styles with design tokens, component recipes, Tailwind-ready patterns, and AI prompts.",
     creator: "@stylekit",
   },
   robots: {
@@ -95,8 +108,11 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
+        <link rel="icon" href="/favicon.ico" sizes="32x32" />
+        <link rel="icon" href="/favicon-16x16.png" sizes="16x16" type="image/png" />
+        <link rel="icon" href="/favicon-32x32.png" sizes="32x32" type="image/png" />
         <link rel="icon" href="/icon.svg" type="image/svg+xml" />
-        <link rel="apple-touch-icon" href="/icon.svg" />
+        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
         <link rel="manifest" href="/manifest.json" />
         <script
           type="application/ld+json"
@@ -105,7 +121,7 @@ export default function RootLayout({
               "@context": "https://schema.org",
               "@type": "WebApplication",
               name: "StyleKit",
-              description: "AI-friendly design system with 130+ visual styles, design tokens, component recipes, and AI prompts.",
+              description: "AI-friendly design system with 120+ visual styles, design tokens, component recipes, and AI prompts.",
               url: BASE_URL,
               applicationCategory: "DesignApplication",
               operatingSystem: "Web",
@@ -130,7 +146,7 @@ export default function RootLayout({
               "name": "StyleKit",
               "url": BASE_URL,
               "logo": `${BASE_URL}/icon.svg`,
-              "description": "AI-friendly design system with 130+ visual styles, design tokens, and AI prompts.",
+              "description": "AI-friendly design system with 120+ visual styles, design tokens, and AI prompts.",
               "sameAs": [],
             }),
           }}

@@ -9,6 +9,7 @@ import { resolveStyleBySlug } from "@/lib/styles/community-runtime";
 import { scoreStyle } from "@/lib/accessibility";
 import { getCurrentVersion, getChangelog } from "@/lib/versioning";
 import { serializeJsonLd } from "@/lib/security/json-ld";
+import { generateStyleJsonLd, generateBreadcrumbJsonLd } from "@/lib/seo/json-ld";
 import { StyleDetailContent } from "./_content";
 
 // 生成静态参数
@@ -113,25 +114,13 @@ export default async function StyleDetailPage({
     resolved.source === "static" ? getChangelog(slug) : [];
   const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://stylekit.top";
 
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "SoftwareApplication",
-    name: `${style.nameEn} - StyleKit`,
+  const jsonLd = generateStyleJsonLd({
+    slug,
+    nameEn: style.nameEn,
     description: style.description,
-    url: `${BASE_URL}/styles/${slug}`,
-    applicationCategory: "DesignApplication",
-    operatingSystem: "Web",
-    offers: {
-      "@type": "Offer",
-      price: "0",
-      priceCurrency: "USD",
-    },
-    author: {
-      "@type": "Organization",
-      name: "StyleKit",
-    },
-    keywords: style.keywords.join(", "),
-  };
+    keywords: style.keywords,
+    category: style.category,
+  });
 
   // FAQ Schema for SEO
   const faqSchema = {
@@ -165,16 +154,11 @@ export default async function StyleDetailPage({
     ],
   };
 
-  // Breadcrumb Schema
-  const breadcrumbSchema = {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Home", item: BASE_URL },
-      { "@type": "ListItem", position: 2, name: "Styles", item: `${BASE_URL}/styles` },
-      { "@type": "ListItem", position: 3, name: style.nameEn, item: `${BASE_URL}/styles/${slug}` },
-    ],
-  };
+  const breadcrumbSchema = generateBreadcrumbJsonLd([
+    { name: "Home", url: BASE_URL },
+    { name: "Styles", url: `${BASE_URL}/styles` },
+    { name: style.nameEn, url: `${BASE_URL}/styles/${slug}` },
+  ]);
 
   return (
     <div className="min-h-screen flex flex-col">

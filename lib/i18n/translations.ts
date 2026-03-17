@@ -123,6 +123,31 @@ const en = {
     "home.featuredSlideNav": "Featured style slides",
     "home.featuredSlide": "Featured slide",
 
+    // Social proof
+    "home.proof.ariaLabel": "Project stats",
+    "home.proof.styles": "Visual Styles",
+    "home.proof.animations": "CSS Animations",
+    "home.proof.templates": "Page Templates",
+    "home.proof.openSource": "Open Source",
+    "home.builtFor.label": "Built for",
+    "home.builtFor.ariaLabel": "Tool integrations",
+
+    // How it works
+    "home.howItWorks.label": "How It Works",
+    "home.howItWorks.title": "From browsing to building in 3 steps",
+    "home.howItWorks.step1.title": "Browse Styles",
+    "home.howItWorks.step1.desc": "Explore 120+ visual styles with live previews",
+    "home.howItWorks.step2.title": "Export Tokens",
+    "home.howItWorks.step2.desc": "Get design tokens, Tailwind presets, or AI prompts",
+    "home.howItWorks.step3.title": "Build Consistent UI",
+    "home.howItWorks.step3.desc": "Use in your project with any framework",
+
+    // CTA Banner
+    "home.cta.title": "Start building beautiful UI today",
+    "home.cta.description": "Browse curated styles, export tokens, and ship consistent interfaces faster.",
+    "home.cta.browseStyles": "Browse Styles",
+    "home.cta.viewGitHub": "View on GitHub",
+
     // Styles page
     "styles.subtitle": "Design Styles Collection",
     "styles.title": "Style Catalog",
@@ -376,6 +401,15 @@ const en = {
     "footer.submitStyle": "Submit Style",
     "footer.openSource": "(c) {year} StyleKit. Open Source.",
     "footer.builtWith": "Built with Editorial style",
+
+    // Newsletter
+    "newsletter.title": "Stay Updated",
+    "newsletter.description": "Get the latest styles, tips, and updates delivered to your inbox.",
+    "newsletter.placeholder": "Your email address",
+    "newsletter.subscribe": "Subscribe",
+    "newsletter.success": "Thanks for subscribing! We'll keep you updated.",
+    "newsletter.error": "Something went wrong. Please try again.",
+    "newsletter.invalidEmail": "Please enter a valid email address.",
 
     // Common
     "common.loading": "Loading...",
@@ -1319,6 +1353,22 @@ const en = {
     "prompts.styleCount": "{count} styles",
     "prompts.intro": "About This Topic",
     "prompts.dosAndDonts": "Tips & Guidelines",
+
+    // Navigation — Blog & Changelog
+    "nav.blog": "Blog",
+    "nav.changelog": "Changelog",
+
+    // Blog
+    "blog.badge": "Blog",
+    "blog.heading": "Blog",
+    "blog.subheading": "News, tutorials, and updates from the StyleKit team.",
+    "blog.noPosts": "No posts yet. Check back soon.",
+    "blog.backToBlog": "Back to Blog",
+
+    // Changelog
+    "changelog.badge": "Changelog",
+    "changelog.heading": "Changelog",
+    "changelog.subheading": "What is new in StyleKit. Version history and release notes.",
 } as const;
 
 const zh: { [K in keyof typeof en]: string } = {
@@ -1483,6 +1533,31 @@ const zh: { [K in keyof typeof en]: string } = {
   "home.featuredNextStyle": "下一个精选风格",
   "home.featuredSlideNav": "精选风格分页",
   "home.featuredSlide": "精选页",
+
+  // Social proof
+  "home.proof.ariaLabel": "项目数据",
+  "home.proof.styles": "视觉风格",
+  "home.proof.animations": "CSS 动画",
+  "home.proof.templates": "页面模板",
+  "home.proof.openSource": "开源项目",
+  "home.builtFor.label": "适配工具",
+  "home.builtFor.ariaLabel": "工具集成",
+
+  // How it works
+  "home.howItWorks.label": "使用流程",
+  "home.howItWorks.title": "三步完成从浏览到构建",
+  "home.howItWorks.step1.title": "浏览风格",
+  "home.howItWorks.step1.desc": "探索 120+ 种视觉风格，支持实时预览",
+  "home.howItWorks.step2.title": "导出 Token",
+  "home.howItWorks.step2.desc": "获取设计 Token、Tailwind 预设或 AI 提示词",
+  "home.howItWorks.step3.title": "构建一致 UI",
+  "home.howItWorks.step3.desc": "在任何框架的项目中直接使用",
+
+  // CTA Banner
+  "home.cta.title": "立即开始构建精美 UI",
+  "home.cta.description": "浏览精选风格、导出 Token，更快交付一致的界面。",
+  "home.cta.browseStyles": "浏览风格",
+  "home.cta.viewGitHub": "查看 GitHub",
 
   // Templates page
   "templates.subtitle": "页面模板",
@@ -1663,6 +1738,15 @@ const zh: { [K in keyof typeof en]: string } = {
   "footer.submitStyle": "提交风格",
   "footer.openSource": "(c) {year} StyleKit. \u5f00\u6e90\u9879\u76ee\u3002",
   "footer.builtWith": "基于 Editorial 风格构建",
+
+  // Newsletter
+  "newsletter.title": "保持更新",
+  "newsletter.description": "获取最新的风格、技巧和更新，直达您的收件箱。",
+  "newsletter.placeholder": "您的邮箱地址",
+  "newsletter.subscribe": "订阅",
+  "newsletter.success": "感谢订阅！我们会及时为您推送更新。",
+  "newsletter.error": "出了点问题，请稍后再试。",
+  "newsletter.invalidEmail": "请输入有效的邮箱地址。",
   "common.noResults": "未找到结果",
   "theme.switchToLight": "切换到浅色模式",
   "theme.switchToDark": "切换到深色模式",
@@ -2581,6 +2665,22 @@ const zh: { [K in keyof typeof en]: string } = {
   "prompts.styleCount": "{count} 个风格",
   "prompts.intro": "关于此主题",
   "prompts.dosAndDonts": "建议与注意事项",
+
+  // Navigation — Blog & Changelog
+  "nav.blog": "博客",
+  "nav.changelog": "更新日志",
+
+  // Blog
+  "blog.badge": "博客",
+  "blog.heading": "博客",
+  "blog.subheading": "来自 StyleKit 团队的新闻、教程和更新。",
+  "blog.noPosts": "暂无文章，请稍后再来。",
+  "blog.backToBlog": "返回博客",
+
+  // Changelog
+  "changelog.badge": "更新日志",
+  "changelog.heading": "更新日志",
+  "changelog.subheading": "StyleKit 的最新动态、版本历史和发布说明。",
 } as const;
 
 export const translations = {
