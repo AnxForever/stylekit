@@ -40,33 +40,52 @@ const SCENARIO_LABELS: Record<StyleScenario, { zh: string; en: string }> = {
 };
 
 const SCENARIO_OVERRIDES: Partial<Record<string, StyleScenario[]>> = {
+  // --- Creative / Marketing ---
   "neo-brutalist": ["marketing", "creative", "portfolio"],
   "neo-brutalist-soft": ["marketing", "creative", "saas"],
   "neo-brutalist-playful": ["creative", "marketing", "portfolio"],
-  editorial: ["editorial", "blog", "creative"],
-  "magazine-grid": ["editorial", "blog", "marketing"],
-  "corporate-clean": ["saas", "dashboard", "docs"],
-  "dashboard-layout": ["dashboard", "admin", "saas"],
-  "warm-dashboard": ["dashboard", "saas", "marketing"],
-  "notion-style": ["docs", "blog", "saas"],
-  "stripe-style": ["saas", "marketing", "docs"],
-  "bento-grid": ["portfolio", "marketing", "dashboard"],
-  "sidebar-fixed": ["docs", "admin", "dashboard"],
-  "holy-grail-layout": ["docs", "blog", "admin"],
-  "f-pattern-layout": ["blog", "editorial", "marketing"],
-  "z-pattern-layout": ["marketing", "portfolio", "saas"],
+  "retro-vintage": ["creative", "marketing", "editorial"],
+  "modern-gradient": ["marketing", "ecommerce", "saas"],
   "full-page-scroll": ["marketing", "portfolio", "creative"],
   "split-screen": ["marketing", "portfolio", "creative"],
   "hero-fullscreen": ["marketing", "portfolio", "creative"],
+
+  // --- Editorial / Blog ---
+  editorial: ["editorial", "blog", "creative"],
+  "magazine-grid": ["editorial", "blog", "marketing"],
+  "f-pattern-layout": ["blog", "editorial", "marketing"],
+  "swiss-style": ["editorial", "blog", "docs"],
+  "dark-academia": ["blog", "editorial", "creative"],
+  "linear-style": ["saas", "blog", "docs"],
+  "scandinavian": ["portfolio", "blog", "docs"],
+  "wabi-sabi": ["blog", "portfolio", "creative"],
+
+  // --- SaaS / B2B ---
   glassmorphism: ["saas", "marketing", "ecommerce"],
   neumorphism: ["saas", "marketing", "ecommerce"],
-  "natural-organic": ["ecommerce", "marketing", "creative"],
-  "minimalist-flat": ["portfolio", "marketing", "blog"],
-  "modern-gradient": ["marketing", "saas", "creative"],
-  "retro-vintage": ["creative", "marketing", "editorial"],
+  "z-pattern-layout": ["marketing", "portfolio", "saas"],
+  "bento-grid": ["portfolio", "marketing", "dashboard"],
+
+  // --- E-Commerce ---
   "apple-style": ["ecommerce", "saas", "marketing"],
+  "natural-organic": ["ecommerce", "marketing", "creative"],
+  "stripe-style": ["saas", "ecommerce", "docs"],
+  "minimalist-flat": ["ecommerce", "portfolio", "blog"],
+  "marble-luxury": ["ecommerce", "marketing", "portfolio"],
+  "tropical-paradise": ["ecommerce", "marketing", "creative"],
+
+  // --- Dashboard / Admin ---
+  "corporate-clean": ["saas", "admin", "dashboard"],
+  "dashboard-layout": ["dashboard", "admin", "saas"],
+  "warm-dashboard": ["dashboard", "admin", "saas"],
   "fluent-design": ["dashboard", "admin", "saas"],
   "material-design": ["dashboard", "admin", "saas"],
+  "sidebar-fixed": ["admin", "docs", "dashboard"],
+  "github-style": ["admin", "saas", "docs"],
+  "notion-style": ["docs", "admin", "blog"],
+
+  // --- Docs ---
+  "holy-grail-layout": ["docs", "blog", "admin"],
 };
 
 const SCENARIO_MATCHERS: Record<StyleScenario, RegExp[]> = {
