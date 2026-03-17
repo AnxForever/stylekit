@@ -15,9 +15,9 @@ export const gothic: DesignStyle = {
   colors: {
     primary: "#2d1b4e",
     secondary: "#8b1a1a",
-    accent: ["#c9a227", "#0a0a0a", "#4a2d6e"],
+    accent: ["#c9a227", "#0a0a0a", "#4a2d6e", "#4bc542"],
   },
-  keywords: ["哥特", "中世纪", "大教堂", "尖拱", "玫瑰窗", "黑暗", "神秘"],
+  keywords: ["哥特", "中世纪", "大教堂", "尖拱", "玫瑰窗", "黑暗", "神秘", "retro", "vintage", "nostalgic"],
 
   philosophy: `Gothic（哥特式）设计灵感源自中世纪晚期的大教堂建筑和手抄本装饰艺术，强调垂直线条、尖拱结构和精致的装饰纹样。
 
@@ -25,7 +25,14 @@ export const gothic: DesignStyle = {
 - 大教堂美学：尖拱、飞扶壁和玫瑰窗的结构之美
 - 黑暗庄严：深色调营造神秘而肃穆的氛围
 - 金色点缀：以金色装饰线条和细节突出奢华感
-- 手抄本风格：繁复的装饰边框和花体字`,
+- 手抄本风格：繁复的装饰边框和花体字
+
+设计原则：
+- 视觉一致性：所有组件必须遵循统一的视觉语言，从色彩到字体到间距保持谐调
+- 层次分明：通过颜色深浅、字号大小、留白空间建立清晰的信息层级
+- 交互反馈：每个可交互元素都必须有明确的 hover、active、focus 状态反馈
+- 响应式适配：设计必须在移动端、平板、桌面端上保持一致的体验
+- 无障碍性：确保色彩对比度符合 WCAG 2.1 AA 标准，所有交互元素可键盘访问`,
 
   philosophyEn: `Gothic design draws inspiration from late medieval cathedral architecture and manuscript illumination art, emphasizing vertical lines, pointed arch structures, and intricate decorative patterns.
 
@@ -204,6 +211,44 @@ Core principles:
     var(--gothic-blood) 40%,
     var(--gothic-black) 60%
   );
+}
+@keyframes gothic-fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes gothic-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.gothic-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.gothic-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  background: linear-gradient(135deg, rgba(45, 27, 78, 0.05), transparent);
+  pointer-events: none;
+}
+
+.gothic-card:hover::before {
+  opacity: 1;
+}
+
+.gothic-frosted {
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  background: rgba(45, 27, 78, 0.08);
+}
+
+.gothic-animate-in {
+  animation: gothic-fade-in 0.5s ease-out both;
 }`,
 
   aiRules: `你是一个 Gothic 哥特式设计风格的前端开发专家。生成的所有代码必须严格遵守以下约束：
@@ -243,7 +288,28 @@ Core principles:
 - Cathedral Weight: 禁止轻浮弹跳或快速位移，交互应以光影与色阶的缓慢变化为主。
 - Divine Illumination: 金色边框与文字在 hover 时缓慢增强发光，模拟烛火与神圣光晕。
 - Stone Mechanism: \`:active\` 通过深色内阴影增强按压阻尼感，而非常规缩放反馈。
-- Eternal Slowness: 动画建议 \`duration-500\` 到 \`duration-700\` 搭配 \`ease-in-out\`，维持庄严厚重气质。`,
+- Eternal Slowness: 动画建议 \`duration-500\` 到 \`duration-700\` 搭配 \`ease-in-out\`，维持庄严厚重气质。
+
+## Layout & Spacing
+- Section padding: py-16 md:py-24
+- Card padding: p-6 md:p-8
+- Gap between cards: gap-6 md:gap-8
+- Max content width: max-w-6xl mx-auto
+
+## Responsive Design
+- Mobile-first approach with Tailwind breakpoints
+- Stack elements vertically on mobile (flex-col), row on desktop (md:flex-row)
+- Reduce font sizes on mobile: text-3xl md:text-5xl for headings
+- Touch-friendly targets: min 44px for interactive elements
+
+## Self-Check Verification
+After generating code, verify:
+1. All interactive elements have hover/focus/active states
+2. Color contrast meets WCAG 2.1 AA (4.5:1 for text)
+3. Layout is responsive across breakpoints
+4. Typography hierarchy is clear (h1 > h2 > h3 > body)
+5. Spacing is consistent using the defined scale
+6. All animations respect prefers-reduced-motion`,
 
   aiRulesEn: `You are a Gothic design style frontend development expert. All generated code must strictly follow these constraints:
 
@@ -296,6 +362,44 @@ Primary:
 3. 卡片：深色背景配金色边框
 4. 添加尖拱形装饰元素
 5. 整体庄严神秘感`,
+    },
+  {
+      title: "SaaS 着陆页",
+      titleEn: "SaaS Landing Page",
+      description: "生成 哥特式风风格的 SaaS 产品着陆页",
+      descriptionEn: "Generate a SaaS product landing page in Gothic style",
+      prompt: `Create a SaaS landing page using Gothic style with hero section, feature grid, testimonials, pricing table, and footer.`,
+    },
+    {
+      title: "作品集展示",
+      titleEn: "Portfolio Showcase",
+      description: "生成 哥特式风风格的作品集页面",
+      descriptionEn: "Generate a portfolio showcase in Gothic style",
+      prompt: `Create a portfolio showcase page using Gothic style with project grid, about section, contact form, and consistent visual language.`,
+    }],
+
+  variants: [
+    {
+      id: "gothic-warm",
+      name: "哥特式风暖色版",
+      nameEn: "Gothic Warm",
+      description: "Warm-toned variant with shifted hues toward amber/orange",
+      colors: {
+        primary: "#411643",
+        secondary: "#973131",
+        accent: ["#86b624", "#0a0a0a", "#63275e"],
+      },
+    },
+    {
+      id: "gothic-cool",
+      name: "哥特式风冷色版",
+      nameEn: "Gothic Cool",
+      description: "Cool-toned variant with shifted hues toward blue/teal",
+      colors: {
+        primary: "#16224d",
+        secondary: "#7d1717",
+        accent: ["#ff8e4b", "#0a0a0a", "#2c3670"],
+      },
     },
   ],
 };

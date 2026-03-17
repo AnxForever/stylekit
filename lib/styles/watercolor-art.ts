@@ -17,7 +17,7 @@ export const watercolorArt: DesignStyle = {
     secondary: "#faf6f0",
     accent: ["#7bb8d4", "#8cc5a8", "#c3a0d4", "#e8c87a"],
   },
-  keywords: ["水彩", "晕染", "透明", "纸张", "颜料", "池化", "植物", "有机"],
+  keywords: ["水彩", "晕染", "透明", "纸张", "颜料", "池化", "植物", "有机", "expressive", "bold"],
 
   philosophy: `水彩艺术风格追求真实水彩画的自然有机美学，强调颜料在湿纸上的流动、渗透和池化效果。
 
@@ -26,7 +26,14 @@ export const watercolorArt: DesignStyle = {
 - 颜料池化：颜色在边缘处浓缩变深，中心区域保持透明层叠
 - 纸张纹理：温暖的手工纸底色带有微妙的纤维纹理
 - 植物装饰：叶片和花朵形态的水彩点缀增添自然气息
-- 湿染技法：色彩在湿润表面自然扩散、融合、产生意外之美`,
+- 湿染技法：色彩在湿润表面自然扩散、融合、产生意外之美
+
+设计原则：
+- 视觉一致性：所有组件必须遵循统一的视觉语言，从色彩到字体到间距保持谐调
+- 层次分明：通过颜色深浅、字号大小、留白空间建立清晰的信息层级
+- 交互反馈：每个可交互元素都必须有明确的 hover、active、focus 状态反馈
+- 响应式适配：设计必须在移动端、平板、桌面端上保持一致的体验
+- 无障碍性：确保色彩对比度符合 WCAG 2.1 AA 标准，所有交互元素可键盘访问`,
 
   philosophyEn: `Watercolor Art style pursues the natural, organic aesthetics of real watercolor painting, emphasizing the flow, seepage, and pooling of pigment on wet paper.
 
@@ -202,6 +209,29 @@ Core principles:
   opacity: 0.12;
   border-radius: 0 100% 0 100%;
   filter: blur(4px);
+}
+@keyframes watercolor-art-fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes watercolor-art-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.watercolor-art-frosted {
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  background: rgba(212, 160, 160, 0.08);
+}
+
+.watercolor-art-accent-corner {
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 2rem), calc(100% - 2rem) 100%, 0 100%);
+}
+
+.watercolor-art-animate-in {
+  animation: watercolor-art-fade-in 0.5s ease-out both;
 }`,
 
   aiRulesEn: `You are a Watercolor Art design style frontend development expert. All generated code must strictly follow these constraints:
@@ -317,6 +347,44 @@ Primary:
 5. Add botanical leaf/flower decorations at organic positions
 6. Maintain generous whitespace and breathing room
 7. Buttons use radial-gradient for pigment pooling effect`,
+    },
+  {
+      title: "SaaS 着陆页",
+      titleEn: "SaaS Landing Page",
+      description: "生成 水彩艺术风风格的 SaaS 产品着陆页",
+      descriptionEn: "Generate a SaaS product landing page in Watercolor Art style",
+      prompt: `Create a SaaS landing page using Watercolor Art style with hero section, feature grid, testimonials, pricing table, and footer.`,
+    },
+    {
+      title: "作品集展示",
+      titleEn: "Portfolio Showcase",
+      description: "生成 水彩艺术风风格的作品集页面",
+      descriptionEn: "Generate a portfolio showcase in Watercolor Art style",
+      prompt: `Create a portfolio showcase page using Watercolor Art style with project grid, about section, contact form, and consistent visual language.`,
+    }],
+
+  variants: [
+    {
+      id: "watercolor-art-warm",
+      name: "水彩艺术风暖色版",
+      nameEn: "Watercolor Art Warm",
+      description: "Warm-toned variant with shifted hues toward amber/orange",
+      colors: {
+        primary: "#c9a58d",
+        secondary: "#fbf7f2",
+        accent: ["#95aee8", "#8ac3bf", "#d49dc3", "#bcd575"],
+      },
+    },
+    {
+      id: "watercolor-art-cool",
+      name: "水彩艺术风冷色版",
+      nameEn: "Watercolor Art Cool",
+      description: "Cool-toned variant with shifted hues toward blue/teal",
+      colors: {
+        primary: "#d49eb6",
+        secondary: "#e1ddd8",
+        accent: ["#6ebfb6", "#99c395", "#aba6da", "#ffbb94"],
+      },
     },
   ],
 };

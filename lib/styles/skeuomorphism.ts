@@ -15,9 +15,9 @@ export const skeuomorphism: DesignStyle = {
   colors: {
     primary: "#8b7355",
     secondary: "#d4c4a8",
-    accent: ["#c9a227", "#5c4033", "#2e5a3c"],
+    accent: ["#c9a227", "#5c4033", "#2e5a3c", "#4bc542"],
   },
-  keywords: ["拟物", "写实", "纹理", "质感", "真实", "3D", "阴影"],
+  keywords: ["拟物", "写实", "纹理", "质感", "真实", "3D", "阴影", "retro", "vintage", "nostalgic"],
 
   philosophy: `Skeuomorphism（拟物设计）是一种模拟真实世界物体外观和行为的设计方法，曾在早期 iOS 和数字产品中广泛使用。
 
@@ -25,7 +25,14 @@ export const skeuomorphism: DesignStyle = {
 - 真实模拟：界面元素模仿现实物品的外观和触感
 - 材质纹理：皮革、木材、金属等真实材质纹理
 - 光影深度：通过高光、阴影创造立体感
-- 熟悉直觉：利用用户对现实世界的认知减少学习成本`,
+- 熟悉直觉：利用用户对现实世界的认知减少学习成本
+
+设计原则：
+- 视觉一致性：所有组件必须遵循统一的视觉语言，从色彩到字体到间距保持谐调
+- 层次分明：通过颜色深浅、字号大小、留白空间建立清晰的信息层级
+- 交互反馈：每个可交互元素都必须有明确的 hover、active、focus 状态反馈
+- 响应式适配：设计必须在移动端、平板、桌面端上保持一致的体验
+- 无障碍性：确保色彩对比度符合 WCAG 2.1 AA 标准，所有交互元素可键盘访问`,
 
   philosophyEn: `Skeuomorphism is a design approach that simulates the appearance and behavior of real-world objects, widely used in early iOS and digital products.
 
@@ -185,7 +192,51 @@ Core principles:
 /* 凸起效果 */
 .skeu-raised {
   box-shadow: 0 4px 8px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.5);
-}`,
+}
+@keyframes skeuomorphism-fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes skeuomorphism-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.skeuomorphism-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.skeuomorphism-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  background: linear-gradient(135deg, rgba(139, 115, 85, 0.05), transparent);
+  pointer-events: none;
+}
+
+.skeuomorphism-card:hover::before {
+  opacity: 1;
+}
+
+.skeuomorphism-frosted {
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  background: rgba(139, 115, 85, 0.08);
+}
+
+.skeuomorphism-accent-corner {
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 2rem), calc(100% - 2rem) 100%, 0 100%);
+}
+
+.skeuomorphism-animate-in {
+  animation: skeuomorphism-fade-in 0.5s ease-out both;
+}
+
+.skeuomorphism-focus { outline: 2px solid var(--skeuomorphism-primary, currentColor); outline-offset: 2px; }`,
 
   aiRules: `你是一个 Skeuomorphism 设计风格的前端开发专家。生成的所有代码必须严格遵守以下约束：
 
@@ -223,7 +274,28 @@ Core principles:
 - Tactile Resistance: active 状态使用短时下压和更紧凑外阴影，模拟按键阻尼，不使用弹跳放大。
 - Fixed Illuminant: 顶部高光和底部暗边在 hover 与 active 中保持稳定，确保光源始终来自上方。
 - Texture Shimmer: 材质层允许轻微 background-position 位移，表达金属拉丝或皮革纹理的受光变化。
-- Embossed Focus: 输入焦点优先加深 inset 阴影，而不是强烈外发光轮廓。`,
+- Embossed Focus: 输入焦点优先加深 inset 阴影，而不是强烈外发光轮廓。
+
+## Layout & Spacing
+- Section padding: py-16 md:py-24
+- Card padding: p-6 md:p-8
+- Gap between cards: gap-6 md:gap-8
+- Max content width: max-w-6xl mx-auto
+
+## Responsive Design
+- Mobile-first approach with Tailwind breakpoints
+- Stack elements vertically on mobile (flex-col), row on desktop (md:flex-row)
+- Reduce font sizes on mobile: text-3xl md:text-5xl for headings
+- Touch-friendly targets: min 44px for interactive elements
+
+## Self-Check Verification
+After generating code, verify:
+1. All interactive elements have hover/focus/active states
+2. Color contrast meets WCAG 2.1 AA (4.5:1 for text)
+3. Layout is responsive across breakpoints
+4. Typography hierarchy is clear (h1 > h2 > h3 > body)
+5. Spacing is consistent using the defined scale
+6. All animations respect prefers-reduced-motion`,
 
   aiRulesEn: `You are a Skeuomorphism design style frontend development expert. All generated code must strictly follow these constraints:
 
@@ -275,6 +347,44 @@ Core principles:
 3. 旋钮：模拟真实旋钮的外观
 4. 显示屏：模拟 LCD 或复古显示器
 5. 整体有复古电子设备的质感`,
+    },
+  {
+      title: "SaaS 着陆页",
+      titleEn: "SaaS Landing Page",
+      description: "生成 拟物设计风格的 SaaS 产品着陆页",
+      descriptionEn: "Generate a SaaS product landing page in Skeuomorphism style",
+      prompt: `Create a SaaS landing page using Skeuomorphism style with hero section, feature grid, testimonials, pricing table, and footer.`,
+    },
+    {
+      title: "作品集展示",
+      titleEn: "Portfolio Showcase",
+      description: "生成 拟物设计风格的作品集页面",
+      descriptionEn: "Generate a portfolio showcase in Skeuomorphism style",
+      prompt: `Create a portfolio showcase page using Skeuomorphism style with project grid, about section, contact form, and consistent visual language.`,
+    }],
+
+  variants: [
+    {
+      id: "skeuomorphism-warm",
+      name: "拟物设计暖色版",
+      nameEn: "Skeuomorphism Warm",
+      description: "Warm-toned variant with shifted hues toward amber/orange",
+      colors: {
+        primary: "#78794f",
+        secondary: "#d8cab1",
+        accent: ["#86b624", "#50452a", "#295a4f"],
+      },
+    },
+    {
+      id: "skeuomorphism-cool",
+      name: "拟物设计冷色版",
+      nameEn: "Skeuomorphism Cool",
+      description: "Cool-toned variant with shifted hues toward blue/teal",
+      colors: {
+        primary: "#996d64",
+        secondary: "#bfb097",
+        accent: ["#ff8e4b", "#623d41", "#3c572e"],
+      },
     },
   ],
 };

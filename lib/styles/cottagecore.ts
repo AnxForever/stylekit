@@ -15,9 +15,9 @@ export const cottagecore: DesignStyle = {
   colors: {
     primary: "#5a8f5a",
     secondary: "#faf6f0",
-    accent: ["#f5d75f", "#8b7355", "#d4a0a0"],
+    accent: ["#f5d75f", "#8b7355", "#d4a0a0", "#7ff77e"],
   },
-  keywords: ["田园", "乡村", "花卉", "刺绣", "蘑菇", "温馨", "手工"],
+  keywords: ["田园", "乡村", "花卉", "刺绣", "蘑菇", "温馨", "手工", "retro", "vintage", "nostalgic"],
 
   philosophy: `Cottagecore（田园核）是一种浪漫化田园乡村生活的美学运动，起源于2010年代末的互联网文化。
 
@@ -25,7 +25,14 @@ export const cottagecore: DesignStyle = {
 - 田园诗意：对简单乡村生活的浪漫化想象
 - 手工温暖：刺绣、编织、手写字体的手工质感
 - 自然亲密：花卉、蘑菇、蜜蜂、莓果等自然元素
-- 家庭舒适：温暖的色调和柔软的材质感`,
+- 家庭舒适：温暖的色调和柔软的材质感
+
+设计原则：
+- 视觉一致性：所有组件必须遵循统一的视觉语言，从色彩到字体到间距保持谐调
+- 层次分明：通过颜色深浅、字号大小、留白空间建立清晰的信息层级
+- 交互反馈：每个可交互元素都必须有明确的 hover、active、focus 状态反馈
+- 响应式适配：设计必须在移动端、平板、桌面端上保持一致的体验
+- 无障碍性：确保色彩对比度符合 WCAG 2.1 AA 标准，所有交互元素可键盘访问`,
 
   philosophyEn: `Cottagecore is a romanticized pastoral countryside living aesthetic movement, originating from late 2010s internet culture.
 
@@ -187,6 +194,59 @@ Core principles:
 .cottage-heading {
   font-family: Georgia, 'Times New Roman', serif;
   color: var(--cottage-brown);
+}
+@keyframes cottagecore-fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes cottagecore-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.cottagecore-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.cottagecore-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  background: linear-gradient(135deg, rgba(90, 143, 90, 0.05), transparent);
+  pointer-events: none;
+}
+
+.cottagecore-card:hover::before {
+  opacity: 1;
+}
+
+.cottagecore-gradient {
+  background: linear-gradient(135deg, #5a8f5a, #f5d75f);
+}
+
+.cottagecore-gradient-text {
+  background: linear-gradient(135deg, #5a8f5a, #f5d75f);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.cottagecore-frosted {
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  background: rgba(90, 143, 90, 0.08);
+}
+
+.cottagecore-accent-corner {
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 2rem), calc(100% - 2rem) 100%, 0 100%);
+}
+
+.cottagecore-animate-in {
+  animation: cottagecore-fade-in 0.5s ease-out both;
 }`,
 
   aiRules: `You are a Cottagecore design style frontend development expert. All generated code must strictly follow these constraints:
@@ -227,7 +287,28 @@ Primary:
 - Gentle & Breezy: 动画节奏应轻柔舒缓，优先 \`duration-500\` 到 \`duration-700\` 搭配 \`ease-in-out\`。
 - Handmade Imperfection: 悬停可加入非常轻微的旋转（建议不超过 1deg）和小幅放大，避免机械式直上直下。
 - Soft Cushion Press: 点击反馈以柔和按压为主，推荐 \`active:scale-[0.97]\`；\`0.95\` 仅用于大面积元素，避免显得卡通化。
-- Botanical Sway: 装饰性花叶图标可在 hover 时微幅摆动，幅度需克制，不能变成明显抖动动画。`,
+- Botanical Sway: 装饰性花叶图标可在 hover 时微幅摆动，幅度需克制，不能变成明显抖动动画。
+
+## Layout & Spacing
+- Section padding: py-16 md:py-24
+- Card padding: p-6 md:p-8
+- Gap between cards: gap-6 md:gap-8
+- Max content width: max-w-6xl mx-auto
+
+## Responsive Design
+- Mobile-first approach with Tailwind breakpoints
+- Stack elements vertically on mobile (flex-col), row on desktop (md:flex-row)
+- Reduce font sizes on mobile: text-3xl md:text-5xl for headings
+- Touch-friendly targets: min 44px for interactive elements
+
+## Self-Check Verification
+After generating code, verify:
+1. All interactive elements have hover/focus/active states
+2. Color contrast meets WCAG 2.1 AA (4.5:1 for text)
+3. Layout is responsive across breakpoints
+4. Typography hierarchy is clear (h1 > h2 > h3 > body)
+5. Spacing is consistent using the defined scale
+6. All animations respect prefers-reduced-motion`,
 
   aiRulesEn: `You are a Cottagecore design style frontend development expert. All generated code must strictly follow these constraints:
 
@@ -281,6 +362,44 @@ Primary:
 3. Cards: rounded with floral borders
 4. Buttons: green rounded-full with soft shadows
 5. Overall warm, homey countryside feel`,
+    },
+  {
+      title: "SaaS 着陆页",
+      titleEn: "SaaS Landing Page",
+      description: "生成 田园核风风格的 SaaS 产品着陆页",
+      descriptionEn: "Generate a SaaS product landing page in Cottagecore style",
+      prompt: `Create a SaaS landing page using Cottagecore style with hero section, feature grid, testimonials, pricing table, and footer.`,
+    },
+    {
+      title: "作品集展示",
+      titleEn: "Portfolio Showcase",
+      description: "生成 田园核风风格的作品集页面",
+      descriptionEn: "Generate a portfolio showcase in Cottagecore style",
+      prompt: `Create a portfolio showcase page using Cottagecore style with project grid, about section, contact form, and consistent visual language.`,
+    }],
+
+  variants: [
+    {
+      id: "cottagecore-warm",
+      name: "田园核风暖色版",
+      nameEn: "Cottagecore Warm",
+      description: "Warm-toned variant with shifted hues toward amber/orange",
+      colors: {
+        primary: "#4c9172",
+        secondary: "#fbf7f2",
+        accent: ["#b6ea5f", "#78794f", "#c9a58d"],
+      },
+    },
+    {
+      id: "cottagecore-cool",
+      name: "田园核风冷色版",
+      nameEn: "Cottagecore Cool",
+      description: "Cool-toned variant with shifted hues toward blue/teal",
+      colors: {
+        primary: "#72894c",
+        secondary: "#e1ddd8",
+        accent: ["#ffc47f", "#996d64", "#d49eb6"],
+      },
     },
   ],
 };

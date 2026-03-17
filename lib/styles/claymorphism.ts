@@ -15,9 +15,9 @@ export const claymorphism: DesignStyle = {
   colors: {
     primary: "#f8b4d9",
     secondary: "#fef3c7",
-    accent: ["#a7f3d0", "#c4b5fd", "#fcd34d"],
+    accent: ["#a7f3d0", "#c4b5fd", "#fcd34d", "#b6e9ff"],
   },
-  keywords: ["粘土", "3D", "可爱", "柔软", "圆润", "儿童", "趣味"],
+  keywords: ["粘土", "3D", "可爱", "柔软", "圆润", "儿童", "趣味", "modern", "contemporary", "sleek"],
 
   philosophy: `Claymorphism（粘土拟态）是一种模拟粘土或橡皮泥质感的 UI 设计风格，通过超大圆角、内外阴影组合和柔和的渐变色彩，创造出柔软、可爱的 3D 立体效果。
 
@@ -26,7 +26,14 @@ export const claymorphism: DesignStyle = {
 - 立体感：内阴影 + 外阴影组合模拟 3D 效果
 - 趣味性：糖果色系和圆润造型传递愉悦情绪
 - 触感：设计元素看起来像可以触摸和捏揉
-- Q弹物理：按压时发生挤压形变，松开后弹性回弹`,
+- Q弹物理：按压时发生挤压形变，松开后弹性回弹
+
+设计原则：
+- 视觉一致性：所有组件必须遵循统一的视觉语言，从色彩到字体到间距保持谐调
+- 层次分明：通过颜色深浅、字号大小、留白空间建立清晰的信息层级
+- 交互反馈：每个可交互元素都必须有明确的 hover、active、focus 状态反馈
+- 响应式适配：设计必须在移动端、平板、桌面端上保持一致的体验
+- 无障碍性：确保色彩对比度符合 WCAG 2.1 AA 标准，所有交互元素可键盘访问`,
 
   philosophyEn: `Claymorphism is a UI design style that simulates the texture of clay or plasticine, creating soft, adorable 3D effects through extra-large border radii, combined inner and outer shadows, and gentle gradient colors.
 
@@ -259,6 +266,59 @@ Core principles:
     inset 4px 4px 8px var(--clay-shadow-dark),
     inset -4px -4px 8px var(--clay-shadow-light);
   transition: all 0.3s var(--clay-spring);
+}
+@keyframes claymorphism-fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes claymorphism-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.claymorphism-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.claymorphism-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  background: linear-gradient(135deg, rgba(248, 180, 217, 0.05), transparent);
+  pointer-events: none;
+}
+
+.claymorphism-card:hover::before {
+  opacity: 1;
+}
+
+.claymorphism-gradient {
+  background: linear-gradient(135deg, #f8b4d9, #a7f3d0);
+}
+
+.claymorphism-gradient-text {
+  background: linear-gradient(135deg, #f8b4d9, #a7f3d0);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.claymorphism-frosted {
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  background: rgba(248, 180, 217, 0.08);
+}
+
+.claymorphism-accent-corner {
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 2rem), calc(100% - 2rem) 100%, 0 100%);
+}
+
+.claymorphism-animate-in {
+  animation: claymorphism-fade-in 0.5s ease-out both;
 }`,
 
   aiRules: `你是一个 Claymorphism 设计风格的前端开发专家。生成的所有代码必须严格遵守以下约束：
@@ -395,6 +455,37 @@ After generating code, verify:
 3. 分数显示：大号圆润数字
 4. 按钮：Play、Pause、Settings 等，都是粘土风格，active 时 Squash & Stretch
 5. 所有过渡使用 ease-[cubic-bezier(0.34,1.56,0.64,1)]`,
+    },
+  {
+      title: "作品集展示",
+      titleEn: "Portfolio Showcase",
+      description: "生成 粘土拟态风格的作品集页面",
+      descriptionEn: "Generate a portfolio showcase in Claymorphism style",
+      prompt: `Create a portfolio showcase page using Claymorphism style with project grid, about section, contact form, and consistent visual language.`,
+    }],
+
+  variants: [
+    {
+      id: "claymorphism-warm",
+      name: "粘土拟态暖色版",
+      nameEn: "Claymorphism Warm",
+      description: "Warm-toned variant with shifted hues toward amber/orange",
+      colors: {
+        primary: "#fbb6bd",
+        secondary: "#fef4cd",
+        accent: ["#a7f0ef", "#e3adf1", "#b4e94a"],
+      },
+    },
+    {
+      id: "claymorphism-cool",
+      name: "粘土拟态冷色版",
+      nameEn: "Claymorphism Cool",
+      description: "Cool-toned variant with shifted hues toward blue/teal",
+      colors: {
+        primary: "#e7b7f0",
+        secondary: "#e5dbb3",
+        accent: ["#b7f1b6", "#a3bff8", "#ffbd74"],
+      },
     },
   ],
 };

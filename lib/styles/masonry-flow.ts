@@ -18,7 +18,7 @@ export const masonryFlow: DesignStyle = {
     secondary: "#f5f5f5",
     accent: ["#e94560", "#16c79a", "#ffd460", "#7579e7"],
   },
-  keywords: ["瀑布流", "Pinterest", "不等高", "图片墙", "作品集", "gallery"],
+  keywords: ["瀑布流", "Pinterest", "不等高", "图片墙", "作品集", "gallery", "modern", "contemporary", "sleek", "现代"],
 
   philosophy: `Masonry Flow（瀑布流布局）是一种模仿砖墙砌筑方式的布局，卡片按列排列，高度不一，形成自然流动的视觉效果。
 
@@ -26,7 +26,14 @@ export const masonryFlow: DesignStyle = {
 - 自然流动：内容高度由内容本身决定，无需强制等高
 - 空间利用：最大化利用可视区域，减少留白浪费
 - 视觉节奏：不规则高度创造有趣的视觉韵律
-- 无限滚动：天然适合加载更多内容的交互模式`,
+- 无限滚动：天然适合加载更多内容的交互模式
+
+设计原则：
+- 视觉一致性：所有组件必须遵循统一的视觉语言，从色彩到字体到间距保持谐调
+- 层次分明：通过颜色深浅、字号大小、留白空间建立清晰的信息层级
+- 交互反馈：每个可交互元素都必须有明确的 hover、active、focus 状态反馈
+- 响应式适配：设计必须在移动端、平板、桌面端上保持一致的体验
+- 无障碍性：确保色彩对比度符合 WCAG 2.1 AA 标准，所有交互元素可键盘访问`,
 
   philosophyEn: `Masonry Flow is a layout that mimics brickwork, where cards are arranged in columns with varying heights, creating a naturally flowing visual effect.
 
@@ -298,6 +305,46 @@ Core principles:
 .masonry-item img.loaded {
   background: none;
   animation: none;
+}
+/* Masonry Flow Design Tokens */
+:root {
+  --masonry-flow-primary: #1a1a2e;
+  --masonry-flow-secondary: #f5f5f5;
+  --masonry-flow-accent: #e94560;
+  --masonry-flow-glow: rgba(26, 26, 46, 0.3);
+}
+
+.masonry-flow-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.masonry-flow-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  background: linear-gradient(135deg, rgba(26, 26, 46, 0.05), transparent);
+  pointer-events: none;
+}
+
+.masonry-flow-card:hover::before {
+  opacity: 1;
+}
+
+.masonry-flow-frosted {
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  background: rgba(26, 26, 46, 0.08);
+}
+
+.masonry-flow-accent-corner {
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 2rem), calc(100% - 2rem) 100%, 0 100%);
+}
+
+.masonry-flow-animate-in {
+  animation: masonry-flow-fade-in 0.5s ease-out both;
 }`,
 
   aiRules: `You are a frontend expert specializing in Masonry Flow layout. All generated code must strictly follow these constraints:
@@ -458,6 +505,31 @@ Cards use break-inside-avoid, rounded-2xl, elegant shadows`,
 6. Hover to show action buttons (like, comment, share)
 7. Infinite scroll loading indicator
 Use break-inside-avoid, rounded-xl cards, subtle shadows`,
+    },
+  ],
+
+  variants: [
+    {
+      id: "masonry-flow-warm",
+      name: "瀑布流布局暖色版",
+      nameEn: "Masonry Flow Warm",
+      description: "Warm-toned variant with shifted hues toward amber/orange",
+      colors: {
+        primary: "#23172c",
+        secondary: "#f6f6f6",
+        accent: ["#d35222", "#26bbdf", "#bfe85b", "#aa6adf"],
+      },
+    },
+    {
+      id: "masonry-flow-cool",
+      name: "瀑布流布局冷色版",
+      nameEn: "Masonry Flow Cool",
+      description: "Cool-toned variant with shifted hues toward blue/teal",
+      colors: {
+        primary: "#111d2b",
+        secondary: "#dddddd",
+        accent: ["#dd42a1", "#2ac857", "#ffc185", "#438ad4"],
+      },
     },
   ],
 };

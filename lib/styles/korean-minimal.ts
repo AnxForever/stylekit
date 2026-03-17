@@ -15,9 +15,9 @@ export const koreanMinimal: DesignStyle = {
   colors: {
     primary: "#3d4a5c",
     secondary: "#faf9f7",
-    accent: ["#d4a5a5", "#a8c5b8", "#e8d4b8"],
+    accent: ["#d4a5a5", "#a8c5b8", "#e8d4b8", "#b9b08a"],
   },
-  keywords: ["韩式", "极简", "K-beauty", "留白", "粉彩", "克制", "精致"],
+  keywords: ["韩式", "极简", "K-beauty", "留白", "粉彩", "克制", "精致", "minimal", "clean", "simple"],
 
   philosophy: `Korean Minimal（韩式极简）源自韩国当代设计美学中对"留白"与"克制"的深度追求，融合了K-beauty的柔和质感和韩国现代建筑的简洁线条。
 
@@ -230,6 +230,59 @@ Suitable for beauty brands, lifestyle e-commerce, personal blogs, photography po
 .km-focus {
   outline: none;
   box-shadow: 0 0 0 3px rgba(212, 165, 165, 0.15);
+}
+@keyframes korean-minimal-fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes korean-minimal-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.korean-minimal-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.korean-minimal-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  background: linear-gradient(135deg, rgba(61, 74, 92, 0.05), transparent);
+  pointer-events: none;
+}
+
+.korean-minimal-card:hover::before {
+  opacity: 1;
+}
+
+.korean-minimal-gradient {
+  background: linear-gradient(135deg, #3d4a5c, #d4a5a5);
+}
+
+.korean-minimal-gradient-text {
+  background: linear-gradient(135deg, #3d4a5c, #d4a5a5);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.korean-minimal-frosted {
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  background: rgba(61, 74, 92, 0.08);
+}
+
+.korean-minimal-accent-corner {
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 2rem), calc(100% - 2rem) 100%, 0 100%);
+}
+
+.korean-minimal-animate-in {
+  animation: korean-minimal-fade-in 0.5s ease-out both;
 }`,
 
   aiRules: `You are a Korean Minimal design style frontend development expert. All generated code must strictly follow these constraints:
@@ -338,6 +391,44 @@ Primary:
 3. Cards: thin borders, large padding, subtle shadows
 4. Buttons: rounded-2xl with soft hover effects
 5. Decorations: thin lines and tiny pastel dots only`,
+    },
+  {
+      title: "SaaS 着陆页",
+      titleEn: "SaaS Landing Page",
+      description: "生成 韩式极简风格的 SaaS 产品着陆页",
+      descriptionEn: "Generate a SaaS product landing page in Korean Minimal style",
+      prompt: `Create a SaaS landing page using Korean Minimal style with hero section, feature grid, testimonials, pricing table, and footer.`,
+    },
+    {
+      title: "作品集展示",
+      titleEn: "Portfolio Showcase",
+      description: "生成 韩式极简风格的作品集页面",
+      descriptionEn: "Generate a portfolio showcase in Korean Minimal style",
+      prompt: `Create a portfolio showcase page using Korean Minimal style with project grid, about section, contact form, and consistent visual language.`,
+    }],
+
+  variants: [
+    {
+      id: "korean-minimal-warm",
+      name: "韩式极简暖色版",
+      nameEn: "Korean Minimal Warm",
+      description: "Warm-toned variant with shifted hues toward amber/orange",
+      colors: {
+        primary: "#48465f",
+        secondary: "#fbfaf8",
+        accent: ["#caaa94", "#a8c4c4", "#d6dab3"],
+      },
+    },
+    {
+      id: "korean-minimal-cool",
+      name: "韩式极简冷色版",
+      nameEn: "Korean Minimal Cool",
+      description: "Cool-toned variant with shifted hues toward blue/teal",
+      colors: {
+        primary: "#354d54",
+        secondary: "#e1e0de",
+        accent: ["#d4a3b9", "#aec4ae", "#f5cfc5"],
+      },
     },
   ],
 };

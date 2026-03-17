@@ -17,7 +17,7 @@ export const graffitiStreet: DesignStyle = {
     secondary: "#1c1c1e",
     accent: ["#00e5ff", "#ffea00", "#b620e0", "#ff6d00"],
   },
-  keywords: ["涂鸦", "街头", "喷漆", "撞色", "都市", "反叛", "标签"],
+  keywords: ["涂鸦", "街头", "喷漆", "撞色", "都市", "反叛", "标签", "expressive", "bold", "vibrant"],
 
   philosophy: `涂鸦街头（Graffiti Street）风格源自20世纪60年代纽约地铁和费城街头的涂鸦文化，是嘻哈文化四大元素之一。从早期的简单"tag"签名到后来的"wildstyle"和"piece"（masterpiece），涂鸦始终是城市青年自我表达和反叛精神的象征。
 
@@ -431,6 +431,44 @@ Primary:
 5. Tags: colored badges with font-black uppercase labels
 6. Typography: all uppercase, font-black, random rotations and skews
 7. Colors: spray red, cyan, neon yellow, purple, orange clash freely`,
+    },
+  {
+      title: "SaaS 着陆页",
+      titleEn: "SaaS Landing Page",
+      description: "生成 涂鸦街头风格的 SaaS 产品着陆页",
+      descriptionEn: "Generate a SaaS product landing page in Graffiti Street style",
+      prompt: `Create a SaaS landing page using Graffiti Street style with hero section, feature grid, testimonials, pricing table, and footer.`,
+    },
+    {
+      title: "作品集展示",
+      titleEn: "Portfolio Showcase",
+      description: "生成 涂鸦街头风格的作品集页面",
+      descriptionEn: "Generate a portfolio showcase in Graffiti Street style",
+      prompt: `Create a portfolio showcase page using Graffiti Street style with project grid, about section, contact form, and consistent visual language.`,
+    }],
+
+  variants: [
+    {
+      id: "graffiti-street-warm",
+      name: "涂鸦街头暖色版",
+      nameEn: "Graffiti Street Warm",
+      description: "Warm-toned variant with shifted hues toward amber/orange",
+      colors: {
+        primary: "#e53d05",
+        secondary: "#333335",
+        accent: ["#3dcbff", "#8cff0d", "#f11698", "#ac8a00"],
+      },
+    },
+    {
+      id: "graffiti-street-cool",
+      name: "涂鸦街头冷色版",
+      nameEn: "Graffiti Street Cool",
+      description: "Cool-toned variant with shifted hues toward blue/teal",
+      colors: {
+        primary: "#ed2aa7",
+        secondary: "#19191b",
+        accent: ["#00f39a", "#ffc62e", "#5f37ff", "#ff564f"],
+      },
     },
   ],
 };

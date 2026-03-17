@@ -15,9 +15,9 @@ export const corporateClean: DesignStyle = {
   colors: {
     primary: "#1e40af",
     secondary: "#f8fafc",
-    accent: ["#3b82f6", "#64748b", "#10b981"],
+    accent: ["#3b82f6", "#64748b", "#10b981", "#c559f0"],
   },
-  keywords: ["企业", "专业", "简洁", "B2B", "SaaS", "后台", "Dashboard"],
+  keywords: ["企业", "专业", "简洁", "B2B", "SaaS", "后台", "Dashboard", "minimal", "clean", "simple"],
 
   philosophy: `Corporate Clean 设计风格源于现代企业软件的设计语言，强调专业性、可信度和高效的信息传达。
 
@@ -25,7 +25,14 @@ export const corporateClean: DesignStyle = {
 - 专业可信：通过一致的视觉语言建立信任
 - 信息层次：清晰的标题、正文、辅助信息层级
 - 功能优先：设计服务于功能，不牺牲可用性
-- 响应迅速：流畅的交互和即时的视觉反馈`,
+- 响应迅速：流畅的交互和即时的视觉反馈
+
+设计原则：
+- 视觉一致性：所有组件必须遵循统一的视觉语言，从色彩到字体到间距保持谐调
+- 层次分明：通过颜色深浅、字号大小、留白空间建立清晰的信息层级
+- 交互反馈：每个可交互元素都必须有明确的 hover、active、focus 状态反馈
+- 响应式适配：设计必须在移动端、平板、桌面端上保持一致的体验
+- 无障碍性：确保色彩对比度符合 WCAG 2.1 AA 标准，所有交互元素可键盘访问`,
 
   philosophyEn: `Corporate Clean design style originates from the design language of modern enterprise software, emphasizing professionalism, trustworthiness, and efficient information delivery.
 
@@ -277,6 +284,59 @@ Core principles:
   h1, h2, h3, h4, h5, h6 {
     @apply font-semibold tracking-tight text-gray-900;
   }
+}
+@keyframes corporate-clean-fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes corporate-clean-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.corporate-clean-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.corporate-clean-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  background: linear-gradient(135deg, rgba(30, 64, 175, 0.05), transparent);
+  pointer-events: none;
+}
+
+.corporate-clean-card:hover::before {
+  opacity: 1;
+}
+
+.corporate-clean-gradient {
+  background: linear-gradient(135deg, #1e40af, #3b82f6);
+}
+
+.corporate-clean-gradient-text {
+  background: linear-gradient(135deg, #1e40af, #3b82f6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.corporate-clean-frosted {
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  background: rgba(30, 64, 175, 0.08);
+}
+
+.corporate-clean-accent-corner {
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 2rem), calc(100% - 2rem) 100%, 0 100%);
+}
+
+.corporate-clean-animate-in {
+  animation: corporate-clean-fade-in 0.5s ease-out both;
 }`,
 
   aiRules: `You are a Corporate Clean style frontend development expert. All generated code must follow modern enterprise UI standards.
@@ -419,6 +479,37 @@ After generating code, verify:
 6. "Sign in with SSO" as secondary button
 7. Footer with privacy policy and terms links
 8. Clean, no decoration, maximum trust`,
+    },
+  {
+      title: "作品集展示",
+      titleEn: "Portfolio Showcase",
+      description: "生成 企业简洁风风格的作品集页面",
+      descriptionEn: "Generate a portfolio showcase in Corporate Clean style",
+      prompt: `Create a portfolio showcase page using Corporate Clean style with project grid, about section, contact form, and consistent visual language.`,
+    }],
+
+  variants: [
+    {
+      id: "corporate-clean-warm",
+      name: "企业简洁风暖色版",
+      nameEn: "Corporate Clean Warm",
+      description: "Warm-toned variant with shifted hues toward amber/orange",
+      colors: {
+        primary: "#5a2eb2",
+        secondary: "#f9fbfc",
+        accent: ["#816cff", "#726f8f", "#19afc4"],
+      },
+    },
+    {
+      id: "corporate-clean-cool",
+      name: "企业简洁风冷色版",
+      nameEn: "Corporate Clean Cool",
+      description: "Cool-toned variant with shifted hues toward blue/teal",
+      colors: {
+        primary: "#00528f",
+        secondary: "#dfe1e3",
+        accent: ["#0697c5", "#5a7881", "#29b843"],
+      },
     },
   ],
 };

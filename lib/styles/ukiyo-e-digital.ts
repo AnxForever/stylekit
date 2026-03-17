@@ -15,9 +15,9 @@ export const ukiyoEDigital: DesignStyle = {
   colors: {
     primary: "#1a3055",
     secondary: "#f5f0e1",
-    accent: ["#d4553a", "#c9a227", "#2a5a8c"],
+    accent: ["#d4553a", "#c9a227", "#2a5a8c", "#747800"],
   },
-  keywords: ["浮世绘", "木版画", "北斋", "波浪", "和风", "扁平", "东方美学"],
+  keywords: ["浮世绘", "木版画", "北斋", "波浪", "和风", "扁平", "东方美学", "retro", "vintage", "nostalgic"],
 
   philosophy: `Ukiyo-e Digital（浮世绘数字风）将江户时代的木版画艺术转化为现代数字设计语言，保留其独特的扁平透视和色彩分区技法。
 
@@ -25,7 +25,14 @@ export const ukiyoEDigital: DesignStyle = {
 - 扁平透视：无景深的层叠式构图
 - 色彩分区：大面积的纯色填充和强烈轮廓
 - 自然意象：波浪、山川、花鸟的装饰性表达
-- 东方韵味：含蓄、留白与意境的美学追求`,
+- 东方韵味：含蓄、留白与意境的美学追求
+
+设计原则：
+- 视觉一致性：所有组件必须遵循统一的视觉语言，从色彩到字体到间距保持谐调
+- 层次分明：通过颜色深浅、字号大小、留白空间建立清晰的信息层级
+- 交互反馈：每个可交互元素都必须有明确的 hover、active、focus 状态反馈
+- 响应式适配：设计必须在移动端、平板、桌面端上保持一致的体验
+- 无障碍性：确保色彩对比度符合 WCAG 2.1 AA 标准，所有交互元素可键盘访问`,
 
   philosophyEn: `Ukiyo-e Digital transforms Edo-period woodblock print art into a modern digital design language, preserving its distinctive flat perspective and color-blocking techniques.
 
@@ -224,6 +231,48 @@ Core principles:
   padding: 4px 8px;
   color: var(--ue-vermilion);
   font-weight: bold;
+}
+@keyframes ukiyo-e-digital-fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes ukiyo-e-digital-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.ukiyo-e-digital-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.ukiyo-e-digital-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  background: linear-gradient(135deg, rgba(26, 48, 85, 0.05), transparent);
+  pointer-events: none;
+}
+
+.ukiyo-e-digital-card:hover::before {
+  opacity: 1;
+}
+
+.ukiyo-e-digital-frosted {
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  background: rgba(26, 48, 85, 0.08);
+}
+
+.ukiyo-e-digital-accent-corner {
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 2rem), calc(100% - 2rem) 100%, 0 100%);
+}
+
+.ukiyo-e-digital-animate-in {
+  animation: ukiyo-e-digital-fade-in 0.5s ease-out both;
 }`,
 
   aiRules: `你是一个 Ukiyo-e Digital 设计风格的前端开发专家。生成的所有代码必须严格遵守以下约束：
@@ -263,7 +312,28 @@ Core principles:
 - Woodblock Offset: hover 必须使用硬边偏移阴影（无 blur）+ 轻微位移，模拟木版错位叠印。
 - Stamp Press: active 瞬间取消阴影与位移，并切换朱红边框/文字反馈，表现印章压印。
 - Zero Fluidity: 使用 duration-75 ease-linear 或 transition-none，拒绝现代丝滑动效。
-- Motif Reveal: 波纹/云纹等传统图案可在 hover 进行不透明度硬切，强化版面层次。`,
+- Motif Reveal: 波纹/云纹等传统图案可在 hover 进行不透明度硬切，强化版面层次。
+
+## Layout & Spacing
+- Section padding: py-16 md:py-24
+- Card padding: p-6 md:p-8
+- Gap between cards: gap-6 md:gap-8
+- Max content width: max-w-6xl mx-auto
+
+## Responsive Design
+- Mobile-first approach with Tailwind breakpoints
+- Stack elements vertically on mobile (flex-col), row on desktop (md:flex-row)
+- Reduce font sizes on mobile: text-3xl md:text-5xl for headings
+- Touch-friendly targets: min 44px for interactive elements
+
+## Self-Check Verification
+After generating code, verify:
+1. All interactive elements have hover/focus/active states
+2. Color contrast meets WCAG 2.1 AA (4.5:1 for text)
+3. Layout is responsive across breakpoints
+4. Typography hierarchy is clear (h1 > h2 > h3 > body)
+5. Spacing is consistent using the defined scale
+6. All animations respect prefers-reduced-motion`,
 
   aiRulesEn: `You are a Ukiyo-e Digital design style frontend development expert. All generated code must strictly follow these constraints:
 
@@ -316,6 +386,44 @@ Primary:
 3. 卡片：硬边阴影，强轮廓
 4. 添加波浪纹和朱红装饰元素
 5. 整体东方木版画美学`,
+    },
+  {
+      title: "SaaS 着陆页",
+      titleEn: "SaaS Landing Page",
+      description: "生成 浮世绘数字风风格的 SaaS 产品着陆页",
+      descriptionEn: "Generate a SaaS product landing page in Ukiyo-e Digital style",
+      prompt: `Create a SaaS landing page using Ukiyo-e Digital style with hero section, feature grid, testimonials, pricing table, and footer.`,
+    },
+    {
+      title: "作品集展示",
+      titleEn: "Portfolio Showcase",
+      description: "生成 浮世绘数字风风格的作品集页面",
+      descriptionEn: "Generate a portfolio showcase in Ukiyo-e Digital style",
+      prompt: `Create a portfolio showcase page using Ukiyo-e Digital style with project grid, about section, contact form, and consistent visual language.`,
+    }],
+
+  variants: [
+    {
+      id: "ukiyo-e-digital-warm",
+      name: "浮世绘数字风暖色版",
+      nameEn: "Ukiyo-e Digital Warm",
+      description: "Warm-toned variant with shifted hues toward amber/orange",
+      colors: {
+        primary: "#30295a",
+        secondary: "#f6f2e4",
+        accent: ["#ac650e", "#86b624", "#4c4f99"],
+      },
+    },
+    {
+      id: "ukiyo-e-digital-cool",
+      name: "浮世绘数字风冷色版",
+      nameEn: "Ukiyo-e Digital Cool",
+      description: "Cool-toned variant with shifted hues toward blue/teal",
+      colors: {
+        primary: "#093746",
+        secondary: "#ddd8cb",
+        accent: ["#e04b74", "#ff8e4b", "#136470"],
+      },
     },
   ],
 };

@@ -17,7 +17,7 @@ export const frutigerAero: DesignStyle = {
     secondary: "#5FB3CC",
     accent: ["#ffffff", "#e0f2fe", "#34d399", "#7dd3fc"],
   },
-  keywords: ["aero glass", "translucent", "sky blue", "glossy", "Vista", "Y2K", "nature", "bubbles"],
+  keywords: ["aero glass", "translucent", "sky blue", "glossy", "Vista", "Y2K", "nature", "bubbles", "retro", "vintage"],
 
   philosophy: `Frutiger Aero draws inspiration from the Windows Vista/7 Aero glass aesthetic -- sky-blue gradients, frosted glass panels, water droplets, and a feeling of floating in clean air.
 
@@ -336,6 +336,43 @@ Core principles:
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border: 1px solid var(--aero-glass-border);
+}
+.frutiger-aero-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.frutiger-aero-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  background: linear-gradient(135deg, rgba(135, 206, 235, 0.05), transparent);
+  pointer-events: none;
+}
+
+.frutiger-aero-card:hover::before {
+  opacity: 1;
+}
+
+.frutiger-aero-gradient {
+  background: linear-gradient(135deg, #87CEEB, #ffffff);
+}
+
+.frutiger-aero-gradient-text {
+  background: linear-gradient(135deg, #87CEEB, #ffffff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.frutiger-aero-accent-corner {
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 2rem), calc(100% - 2rem) 100%, 0 100%);
+}
+
+.frutiger-aero-animate-in {
+  animation: frutiger-aero-fade-in 0.5s ease-out both;
 }`,
 
   aiRules: `You are a Frutiger Aero design style expert. All generated code must follow these rules:
@@ -460,6 +497,31 @@ Animation & Interaction Rules:
 3. Product grid: 3-column glass cards with hover float effect
 4. Each card: Product image, name, price on translucent panel
 5. CTA buttons: Glossy white glass with rounded-full`,
+    },
+  ],
+
+  variants: [
+    {
+      id: "frutiger-aero-warm",
+      name: "Frutiger Aero暖色版",
+      nameEn: "Frutiger Aero Warm",
+      description: "Warm-toned variant with shifted hues toward amber/orange",
+      colors: {
+        primary: "#a4c3ff",
+        secondary: "#6fbbd1",
+        accent: ["#ffffff", "#e9efff", "#3acbd8", "#a3c5ff"],
+      },
+    },
+    {
+      id: "frutiger-aero-cool",
+      name: "Frutiger Aero冷色版",
+      nameEn: "Frutiger Aero Cool",
+      description: "Cool-toned variant with shifted hues toward blue/teal",
+      colors: {
+        primary: "#7ad5c8",
+        secondary: "#56a1b8",
+        accent: ["#ffffff", "#dbf5f4", "#4ed15f", "#6addd1"],
+      },
     },
   ],
 };

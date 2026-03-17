@@ -15,9 +15,9 @@ export const pixelAnime: DesignStyle = {
   colors: {
     primary: "#4a90d9",
     secondary: "#2d1b69",
-    accent: ["#ff6b6b", "#ffd93d", "#50c878"],
+    accent: ["#ff6b6b", "#ffd93d", "#50c878", "#a98d16"],
   },
-  keywords: ["像素动漫", "JRPG", "8-bit", "RPG对话框", "像素", "NES色板"],
+  keywords: ["像素动漫", "JRPG", "8-bit", "RPG对话框", "像素", "NES色板", "retro", "vintage", "nostalgic", "复古"],
 
   philosophy: `Pixel Anime merges classic JRPG game UI with pixel-art anime aesthetics. Every element feels like it belongs in a 16-bit RPG menu screen.
 
@@ -354,6 +354,44 @@ Primary:
 3. HP/MP/EXP status bars with flat color fills
 4. Character stats in monospace font, NES color palette
 5. Pixel shadows and step-based button interactions`,
+    },
+  {
+      title: "SaaS 着陆页",
+      titleEn: "SaaS Landing Page",
+      description: "生成 像素动漫风风格的 SaaS 产品着陆页",
+      descriptionEn: "Generate a SaaS product landing page in Pixel Anime style",
+      prompt: `Create a SaaS landing page using Pixel Anime style with hero section, feature grid, testimonials, pricing table, and footer.`,
+    },
+    {
+      title: "作品集展示",
+      titleEn: "Portfolio Showcase",
+      description: "生成 像素动漫风风格的作品集页面",
+      descriptionEn: "Generate a portfolio showcase in Pixel Anime style",
+      prompt: `Create a portfolio showcase page using Pixel Anime style with project grid, about section, contact form, and consistent visual language.`,
+    }],
+
+  variants: [
+    {
+      id: "pixel-anime-warm",
+      name: "像素动漫风暖色版",
+      nameEn: "Pixel Anime Warm",
+      description: "Warm-toned variant with shifted hues toward amber/orange",
+      colors: {
+        primary: "#7b7fec",
+        secondary: "#423278",
+        accent: ["#e07a35", "#adf13d", "#44c7ab"],
+      },
+    },
+    {
+      id: "pixel-anime-cool",
+      name: "像素动漫风冷色版",
+      nameEn: "Pixel Anime Cool",
+      description: "Cool-toned variant with shifted hues toward blue/teal",
+      colors: {
+        primary: "#299eb0",
+        secondary: "#29185f",
+        accent: ["#ff65a9", "#ffc066", "#74c152"],
+      },
     },
   ],
 };

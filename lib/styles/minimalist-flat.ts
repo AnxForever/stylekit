@@ -15,9 +15,9 @@ export const minimalistFlat: DesignStyle = {
   colors: {
     primary: "#000000",
     secondary: "#ffffff",
-    accent: ["#ff3366", "#00d4aa", "#ffcc00"],
+    accent: ["#ff3366", "#00d4aa", "#ffcc00", "#b45700"],
   },
-  keywords: ["极简", "扁平", "无阴影", "作品集", "创意", "艺术"],
+  keywords: ["极简", "扁平", "无阴影", "作品集", "创意", "艺术", "minimal", "clean", "simple", "留白"],
 
   philosophy: `Minimalist Flat 风格追求设计的本质，去除一切不必要的装饰，让内容成为主角。
 
@@ -25,7 +25,14 @@ export const minimalistFlat: DesignStyle = {
 - 少即是多：每个元素都必须有存在的理由
 - 扁平纯粹：拒绝阴影、渐变等仿真效果
 - 颜色说话：用色彩区分层次而非光影
-- 大量留白：让设计呼吸，突出核心内容`,
+- 大量留白：让设计呼吸，突出核心内容
+
+设计原则：
+- 视觉一致性：所有组件必须遵循统一的视觉语言，从色彩到字体到间距保持谐调
+- 层次分明：通过颜色深浅、字号大小、留白空间建立清晰的信息层级
+- 交互反馈：每个可交互元素都必须有明确的 hover、active、focus 状态反馈
+- 响应式适配：设计必须在移动端、平板、桌面端上保持一致的体验
+- 无障碍性：确保色彩对比度符合 WCAG 2.1 AA 标准，所有交互元素可键盘访问`,
 
   philosophyEn: `Minimalist Flat style pursues the essence of design, removing all unnecessary decoration and letting content take center stage.
 
@@ -147,6 +154,67 @@ Core principles:
   ::selection {
     @apply bg-black text-white;
   }
+}
+/* Minimalist Flat Design Tokens */
+:root {
+  --minimalist-flat-primary: #000000;
+  --minimalist-flat-secondary: #ffffff;
+  --minimalist-flat-accent: #ff3366;
+  --minimalist-flat-glow: rgba(0, 0, 0, 0.3);
+}
+
+@keyframes minimalist-flat-fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes minimalist-flat-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.minimalist-flat-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.minimalist-flat-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.05), transparent);
+  pointer-events: none;
+}
+
+.minimalist-flat-card:hover::before {
+  opacity: 1;
+}
+
+.minimalist-flat-gradient {
+  background: linear-gradient(135deg, #000000, #ff3366);
+}
+
+.minimalist-flat-gradient-text {
+  background: linear-gradient(135deg, #000000, #ff3366);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.minimalist-flat-frosted {
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  background: rgba(0, 0, 0, 0.08);
+}
+
+.minimalist-flat-accent-corner {
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 2rem), calc(100% - 2rem) 100%, 0 100%);
+}
+
+.minimalist-flat-animate-in {
+  animation: minimalist-flat-fade-in 0.5s ease-out both;
 }`,
 
   aiRules: `STYLE: Minimalist Flat
@@ -184,7 +252,28 @@ TYPOGRAPHY:
 - Strict 2D Flatness: 禁止使用 translate、scale、shadow 等 Z 轴反馈，所有交互仅在二维平面内完成。
 - High-Contrast Inversion: hover 以前景/背景反色为主，保证视觉反馈干脆明确。
 - Instant Sharpness: 交互优先 transition-none 或 duration-75 的短反馈，不做柔和过渡。
-- Border Dynamics: 聚焦或 hover 通过边框粗细/底线变化建立层次，替代阴影与位移。`,
+- Border Dynamics: 聚焦或 hover 通过边框粗细/底线变化建立层次，替代阴影与位移。
+
+## Layout & Spacing
+- Section padding: py-16 md:py-24
+- Card padding: p-6 md:p-8
+- Gap between cards: gap-6 md:gap-8
+- Max content width: max-w-6xl mx-auto
+
+## Responsive Design
+- Mobile-first approach with Tailwind breakpoints
+- Stack elements vertically on mobile (flex-col), row on desktop (md:flex-row)
+- Reduce font sizes on mobile: text-3xl md:text-5xl for headings
+- Touch-friendly targets: min 44px for interactive elements
+
+## Self-Check Verification
+After generating code, verify:
+1. All interactive elements have hover/focus/active states
+2. Color contrast meets WCAG 2.1 AA (4.5:1 for text)
+3. Layout is responsive across breakpoints
+4. Typography hierarchy is clear (h1 > h2 > h3 > body)
+5. Spacing is consistent using the defined scale
+6. All animations respect prefers-reduced-motion`,
 
   aiRulesEn: `STYLE: Minimalist Flat
 TYPE: Ultra-minimal flat design
@@ -236,6 +325,44 @@ TYPOGRAPHY:
 - Black and white with one accent color
 - Large typography for headings
 - Generous whitespace between sections`,
+    },
+  {
+      title: "SaaS 着陆页",
+      titleEn: "SaaS Landing Page",
+      description: "生成 极简扁平风风格的 SaaS 产品着陆页",
+      descriptionEn: "Generate a SaaS product landing page in Minimalist Flat style",
+      prompt: `Create a SaaS landing page using Minimalist Flat style with hero section, feature grid, testimonials, pricing table, and footer.`,
+    },
+    {
+      title: "作品集展示",
+      titleEn: "Portfolio Showcase",
+      description: "生成 极简扁平风风格的作品集页面",
+      descriptionEn: "Generate a portfolio showcase in Minimalist Flat style",
+      prompt: `Create a portfolio showcase page using Minimalist Flat style with project grid, about section, contact form, and consistent visual language.`,
+    }],
+
+  variants: [
+    {
+      id: "minimalist-flat-warm",
+      name: "极简扁平风暖色版",
+      nameEn: "Minimalist Flat Warm",
+      description: "Warm-toned variant with shifted hues toward amber/orange",
+      colors: {
+        primary: "#000000",
+        secondary: "#ffffff",
+        accent: ["#ec4117", "#19c4fb", "#94ec00"],
+      },
+    },
+    {
+      id: "minimalist-flat-cool",
+      name: "极简扁平风冷色版",
+      nameEn: "Minimalist Flat Cool",
+      description: "Cool-toned variant with shifted hues toward blue/teal",
+      colors: {
+        primary: "#000000",
+        secondary: "#e6e6e6",
+        accent: ["#e832b4", "#13d757", "#ffab36"],
+      },
     },
   ],
 };

@@ -15,9 +15,9 @@ export const blueprint: DesignStyle = {
   colors: {
     primary: "#ffffff",
     secondary: "#1e3a5f",
-    accent: ["#4a90d9", "#ff6b35", "#a0c4e8"],
+    accent: ["#4a90d9", "#ff6b35", "#a0c4e8", "#b071e4"],
   },
-  keywords: ["蓝图", "工程", "技术", "图纸", "网格", "标注", "坐标"],
+  keywords: ["蓝图", "工程", "技术", "图纸", "网格", "标注", "坐标", "minimal", "clean", "simple"],
 
   philosophy: `Blueprint（工程蓝图）的设计灵感来自传统的氰版蓝图印刷工艺和现代工程制图。蓝色底色上的白色线条是其最具标志性的视觉特征，网格系统、标注线和尺寸标记赋予界面精确、专业、可信赖的气质。
 
@@ -193,7 +193,38 @@ Suitable for: architecture firms, engineering consultancies, tech product launch
   background: rgba(255, 107, 53, 0.6);
 }
 .blueprint-dimension::before { left: 0; }
-.blueprint-dimension::after { right: 0; }`,
+.blueprint-dimension::after { right: 0; }
+/* Blueprint Design Tokens */
+:root {
+  --blueprint-primary: #ffffff;
+  --blueprint-secondary: #1e3a5f;
+  --blueprint-accent: #4a90d9;
+  --blueprint-glow: rgba(255, 255, 255, 0.3);
+}
+
+@keyframes blueprint-fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes blueprint-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.blueprint-frosted {
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.blueprint-accent-corner {
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 2rem), calc(100% - 2rem) 100%, 0 100%);
+}
+
+.blueprint-animate-in {
+  animation: blueprint-fade-in 0.5s ease-out both;
+}`,
 
   aiRules: `STYLE: Blueprint
 TYPE: Engineering technical drawing interface
@@ -290,6 +321,44 @@ Animation & Interaction Rules:
 - Annotation callouts in orange
 - All text in monospace uppercase
 - Coordinate labels at corners for reference`,
+    },
+  {
+      title: "SaaS 着陆页",
+      titleEn: "SaaS Landing Page",
+      description: "生成 工程蓝图风格的 SaaS 产品着陆页",
+      descriptionEn: "Generate a SaaS product landing page in Blueprint style",
+      prompt: `Create a SaaS landing page using Blueprint style with hero section, feature grid, testimonials, pricing table, and footer.`,
+    },
+    {
+      title: "作品集展示",
+      titleEn: "Portfolio Showcase",
+      description: "生成 工程蓝图风格的作品集页面",
+      descriptionEn: "Generate a portfolio showcase in Blueprint style",
+      prompt: `Create a portfolio showcase page using Blueprint style with project grid, about section, contact form, and consistent visual language.`,
+    }],
+
+  variants: [
+    {
+      id: "blueprint-warm",
+      name: "工程蓝图暖色版",
+      nameEn: "Blueprint Warm",
+      description: "Warm-toned variant with shifted hues toward amber/orange",
+      colors: {
+        primary: "#ffffff",
+        secondary: "#354e6f",
+        accent: ["#7b7fec", "#c68104", "#b9bcf2"],
+      },
+    },
+    {
+      id: "blueprint-cool",
+      name: "工程蓝图冷色版",
+      nameEn: "Blueprint Cool",
+      description: "Cool-toned variant with shifted hues toward blue/teal",
+      colors: {
+        primary: "#ffffff",
+        secondary: "#1b3456",
+        accent: ["#299eb0", "#ff5c7c", "#90cbd3"],
+      },
     },
   ],
 };

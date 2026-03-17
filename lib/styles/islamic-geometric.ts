@@ -15,9 +15,9 @@ export const islamicGeometric: DesignStyle = {
   colors: {
     primary: "#1a3a5c",
     secondary: "#f5ecd7",
-    accent: ["#c9a74e", "#2d7d46", "#8b2332"],
+    accent: ["#c9a74e", "#2d7d46", "#8b2332", "#6bc15e"],
   },
-  keywords: ["伊斯兰", "几何", "镶嵌", "阿拉伯", "花纹", "纹理"],
+  keywords: ["伊斯兰", "几何", "镶嵌", "阿拉伯", "花纹", "纹理", "expressive", "bold", "vibrant", "表现力"],
 
   philosophy: `伊斯兰几何艺术是人类文明中最精密的装饰体系之一，跨越千年仍令人叹服。它基于严格的数学原理——正多边形的镶嵌（tessellation）、星形多角图案、阿拉伯式卷草纹——构建出无限延展的视觉宇宙。
 
@@ -302,7 +302,15 @@ In interface design, geometric tessellation patterns typically appear as border 
 /* 拱形顶部 */
 .ig-arch {
   border-radius: 50% 50% 0 0;
-}`,
+}
+
+.islamic-geometric-filter { filter: brightness(1.05) contrast(1.02); }
+
+.islamic-geometric-hover-lift { transition: transform 0.3s ease; }
+
+.islamic-geometric-hover-lift:hover { transform: translateY(-2px); }
+
+.islamic-geometric-focus { outline: 2px solid var(--islamic-geometric-primary, currentColor); outline-offset: 2px; }`,
 
   aiRules: `你是一个 Islamic Geometric 伊斯兰几何设计风格的前端开发专家。生成的所有代码必须严格遵守以下约束：
 
@@ -352,7 +360,28 @@ In interface design, geometric tessellation patterns typically appear as border 
 - Sacred Symmetry: 交互动效保持严格对称，角落装饰在 hover 时同步轻微外扩。
 - Divine Illumination: 金色边框和分隔线可缓慢增强辉光，避免突兀闪烁。
 - Tessellation Reveal: 几何纹样在 hover/focus 时提升可见度，体现秩序被揭示的层次感。
-- Elegant Easing: 推荐 duration-500 + ease-out，保持庄重且优雅的节奏。`,
+- Elegant Easing: 推荐 duration-500 + ease-out，保持庄重且优雅的节奏。
+
+## Layout & Spacing
+- Section padding: py-16 md:py-24
+- Card padding: p-6 md:p-8
+- Gap between cards: gap-6 md:gap-8
+- Max content width: max-w-6xl mx-auto
+
+## Responsive Design
+- Mobile-first approach with Tailwind breakpoints
+- Stack elements vertically on mobile (flex-col), row on desktop (md:flex-row)
+- Reduce font sizes on mobile: text-3xl md:text-5xl for headings
+- Touch-friendly targets: min 44px for interactive elements
+
+## Self-Check Verification
+After generating code, verify:
+1. All interactive elements have hover/focus/active states
+2. Color contrast meets WCAG 2.1 AA (4.5:1 for text)
+3. Layout is responsive across breakpoints
+4. Typography hierarchy is clear (h1 > h2 > h3 > body)
+5. Spacing is consistent using the defined scale
+6. All animations respect prefers-reduced-motion`,
 
   aiRulesEn: `You are an Islamic Geometric design style frontend development expert. All generated code must strictly follow these constraints:
 
@@ -416,6 +445,44 @@ Supporting colors:
 3. 装饰：金色角框 + 星形图案 + 渐变分隔线
 4. 按钮：金色边框 + 微妙发光
 5. 整体对称庄重，精致典雅`,
+    },
+  {
+      title: "SaaS 着陆页",
+      titleEn: "SaaS Landing Page",
+      description: "生成 伊斯兰几何风格的 SaaS 产品着陆页",
+      descriptionEn: "Generate a SaaS product landing page in Islamic Geometric style",
+      prompt: `Create a SaaS landing page using Islamic Geometric style with hero section, feature grid, testimonials, pricing table, and footer.`,
+    },
+    {
+      title: "作品集展示",
+      titleEn: "Portfolio Showcase",
+      description: "生成 伊斯兰几何风格的作品集页面",
+      descriptionEn: "Generate a portfolio showcase in Islamic Geometric style",
+      prompt: `Create a portfolio showcase page using Islamic Geometric style with project grid, about section, contact form, and consistent visual language.`,
+    }],
+
+  variants: [
+    {
+      id: "islamic-geometric-warm",
+      name: "伊斯兰几何暖色版",
+      nameEn: "Islamic Geometric Warm",
+      description: "Warm-toned variant with shifted hues toward amber/orange",
+      colors: {
+        primary: "#313265",
+        secondary: "#f6eedb",
+        accent: ["#98b649", "#247c68", "#7c2b0b"],
+      },
+    },
+    {
+      id: "islamic-geometric-cool",
+      name: "伊斯兰几何冷色版",
+      nameEn: "Islamic Geometric Cool",
+      description: "Cool-toned variant with shifted hues toward blue/teal",
+      colors: {
+        primary: "#0b4149",
+        secondary: "#ddd4c2",
+        accent: ["#f1986b", "#46782d", "#84215b"],
+      },
     },
   ],
 };

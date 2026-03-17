@@ -18,7 +18,7 @@ export const fullPageScroll: DesignStyle = {
     secondary: "#ffffff",
     accent: ["#6366f1", "#ec4899", "#14b8a6", "#f59e0b"],
   },
-  keywords: ["全屏", "滚动", "沉浸式", "场景", "品牌", "故事"],
+  keywords: ["全屏", "滚动", "沉浸式", "场景", "品牌", "故事", "expressive", "bold", "vibrant", "表现力"],
 
   philosophy: `Full Page Scroll（全屏滚动布局）是一种将每个内容区块扩展到整个视口的布局方式，创造电影般的叙事体验。
 
@@ -26,7 +26,14 @@ export const fullPageScroll: DesignStyle = {
 - 沉浸体验：每一屏都是完整的视觉场景
 - 叙事节奏：滚动即翻页，控制信息节奏
 - 焦点集中：一次只展示一个核心信息
-- 记忆深刻：场景化展示更易被记住`,
+- 记忆深刻：场景化展示更易被记住
+
+设计原则：
+- 视觉一致性：所有组件必须遵循统一的视觉语言，从色彩到字体到间距保持谐调
+- 层次分明：通过颜色深浅、字号大小、留白空间建立清晰的信息层级
+- 交互反馈：每个可交互元素都必须有明确的 hover、active、focus 状态反馈
+- 响应式适配：设计必须在移动端、平板、桌面端上保持一致的体验
+- 无障碍性：确保色彩对比度符合 WCAG 2.1 AA 标准，所有交互元素可键盘访问`,
 
   philosophyEn: `Full Page Scroll is a layout approach that expands each content block to fill the entire viewport, creating a cinematic narrative experience.
 
@@ -384,7 +391,58 @@ Core principles:
 .fullpage-section.in-view [data-animate]:nth-child(1) { transition-delay: 0.1s; }
 .fullpage-section.in-view [data-animate]:nth-child(2) { transition-delay: 0.2s; }
 .fullpage-section.in-view [data-animate]:nth-child(3) { transition-delay: 0.3s; }
-.fullpage-section.in-view [data-animate]:nth-child(4) { transition-delay: 0.4s; }`,
+.fullpage-section.in-view [data-animate]:nth-child(4) { transition-delay: 0.4s; }
+/* Full Page Scroll Design Tokens */
+:root {
+  --full-page-scroll-primary: #000000;
+  --full-page-scroll-secondary: #ffffff;
+  --full-page-scroll-accent: #6366f1;
+  --full-page-scroll-glow: rgba(0, 0, 0, 0.3);
+}
+
+.full-page-scroll-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.full-page-scroll-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.05), transparent);
+  pointer-events: none;
+}
+
+.full-page-scroll-card:hover::before {
+  opacity: 1;
+}
+
+.full-page-scroll-gradient {
+  background: linear-gradient(135deg, #000000, #6366f1);
+}
+
+.full-page-scroll-gradient-text {
+  background: linear-gradient(135deg, #000000, #6366f1);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.full-page-scroll-frosted {
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  background: rgba(0, 0, 0, 0.08);
+}
+
+.full-page-scroll-accent-corner {
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 2rem), calc(100% - 2rem) 100%, 0 100%);
+}
+
+.full-page-scroll-animate-in {
+  animation: full-page-scroll-fade-in 0.5s ease-out both;
+}`,
 
   aiRules: `You are a frontend expert specializing in Full Page Scroll layout. All generated code must strictly follow these constraints:
 
@@ -549,6 +607,31 @@ Use bold typography, centered content`,
 6. Final section with contact form
 7. Smooth scroll between sections
 Use dramatic visuals, minimal text`,
+    },
+  ],
+
+  variants: [
+    {
+      id: "full-page-scroll-warm",
+      name: "全屏滚动布局暖色版",
+      nameEn: "Full Page Scroll Warm",
+      description: "Warm-toned variant with shifted hues toward amber/orange",
+      colors: {
+        primary: "#000000",
+        secondary: "#ffffff",
+        accent: ["#a553e6", "#f04e56", "#2eaae3", "#9dba00"],
+      },
+    },
+    {
+      id: "full-page-scroll-cool",
+      name: "全屏滚动布局冷色版",
+      nameEn: "Full Page Scroll Cool",
+      description: "Cool-toned variant with shifted hues toward blue/teal",
+      colors: {
+        primary: "#000000",
+        secondary: "#e6e6e6",
+        accent: ["#247bd9", "#c74dd1", "#1cbc64", "#ff8447"],
+      },
     },
   ],
 };

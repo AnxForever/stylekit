@@ -15,7 +15,7 @@ export const shoujoManga: DesignStyle = {
   colors: {
     primary: "#ffb7c5",
     secondary: "#fff5f7",
-    accent: ["#c4b5fd", "#fde68a", "#fecdd3"],
+    accent: ["#c4b5fd", "#fde68a", "#fecdd3", "#f8a9d7"],
   },
   keywords: ["少女漫画", "樱花", "网点", "花框", "缎带", "闪光", "蕾丝", "爱心", "浪漫"],
 
@@ -421,6 +421,44 @@ Primary:
 5. Form: love letter diary with lace scallop border at top and bottom
 6. Decorations: scattered cherry blossom petals and gold sparkle star dots throughout
 7. Buttons: pill-shaped (rounded-full) with pink glow shadows`,
+    },
+  {
+      title: "SaaS 着陆页",
+      titleEn: "SaaS Landing Page",
+      description: "生成 少女漫画风风格的 SaaS 产品着陆页",
+      descriptionEn: "Generate a SaaS product landing page in Shoujo Manga style",
+      prompt: `Create a SaaS landing page using Shoujo Manga style with hero section, feature grid, testimonials, pricing table, and footer.`,
+    },
+    {
+      title: "作品集展示",
+      titleEn: "Portfolio Showcase",
+      description: "生成 少女漫画风风格的作品集页面",
+      descriptionEn: "Generate a portfolio showcase in Shoujo Manga style",
+      prompt: `Create a portfolio showcase page using Shoujo Manga style with project grid, about section, contact form, and consistent visual language.`,
+    }],
+
+  variants: [
+    {
+      id: "shoujo-manga-warm",
+      name: "少女漫画风暖色版",
+      nameEn: "Shoujo Manga Warm",
+      description: "Warm-toned variant with shifted hues toward amber/orange",
+      colors: {
+        primary: "#f6bca9",
+        secondary: "#fff6f8",
+        accent: ["#e3adf1", "#cdf48a", "#f6d1c1"],
+      },
+    },
+    {
+      id: "shoujo-manga-cool",
+      name: "少女漫画风冷色版",
+      nameEn: "Shoujo Manga Cool",
+      description: "Cool-toned variant with shifted hues toward blue/teal",
+      colors: {
+        primary: "#f9b6e1",
+        secondary: "#e6ddde",
+        accent: ["#a3bff8", "#ffd7a2", "#fbcce7"],
+      },
     },
   ],
 };

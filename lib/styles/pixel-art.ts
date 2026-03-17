@@ -17,7 +17,7 @@ export const pixelArt: DesignStyle = {
     secondary: "#f4f4f4",
     accent: ["#ff004d", "#00e436", "#29adff", "#ffec27"],
   },
-  keywords: ["像素", "8-bit", "复古", "游戏", "怀旧", "独立", "retro"],
+  keywords: ["像素", "8-bit", "复古", "游戏", "怀旧", "独立", "retro", "vintage", "nostalgic", "pixel"],
 
   philosophy: `Pixel Art 是一种源于早期电子游戏的复古设计风格，通过像素化的视觉元素、硬边阴影和鲜明的 8-bit 配色，唤起对经典游戏的怀旧情感。
 
@@ -25,7 +25,14 @@ export const pixelArt: DesignStyle = {
 - 像素感：所有元素都呈现像素化的锐利边缘
 - 硬边阴影：使用纯色偏移阴影模拟像素效果
 - 8-bit 配色：使用经典游戏机的调色板
-- 怀旧情感：唤起对经典游戏的美好回忆`,
+- 怀旧情感：唤起对经典游戏的美好回忆
+
+设计原则：
+- 视觉一致性：所有组件必须遵循统一的视觉语言，从色彩到字体到间距保持谐调
+- 层次分明：通过颜色深浅、字号大小、留白空间建立清晰的信息层级
+- 交互反馈：每个可交互元素都必须有明确的 hover、active、focus 状态反馈
+- 响应式适配：设计必须在移动端、平板、桌面端上保持一致的体验
+- 无障碍性：确保色彩对比度符合 WCAG 2.1 AA 标准，所有交互元素可键盘访问`,
 
   philosophyEn: `Pixel Art is a retro design style originating from early video games, evoking nostalgic feelings for classic games through pixelated visual elements, hard-edge shadows, and vivid 8-bit color palettes.
 
@@ -256,6 +263,49 @@ Core principles:
 
 .pixel-blink {
   animation: pixel-blink 1s step-end infinite;
+}
+.pixel-art-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.pixel-art-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  background: linear-gradient(135deg, rgba(26, 28, 44, 0.05), transparent);
+  pointer-events: none;
+}
+
+.pixel-art-card:hover::before {
+  opacity: 1;
+}
+
+.pixel-art-gradient {
+  background: linear-gradient(135deg, #1a1c2c, #ff004d);
+}
+
+.pixel-art-gradient-text {
+  background: linear-gradient(135deg, #1a1c2c, #ff004d);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.pixel-art-frosted {
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  background: rgba(26, 28, 44, 0.08);
+}
+
+.pixel-art-accent-corner {
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 2rem), calc(100% - 2rem) 100%, 0 100%);
+}
+
+.pixel-art-animate-in {
+  animation: pixel-art-fade-in 0.5s ease-out both;
 }`,
 
   aiRules: `你是一个 Pixel Art 设计风格的前端开发专家。生成的所有代码必须严格遵守以下约束：
@@ -406,6 +456,37 @@ After generating code, verify:
 3. 边框：粗像素边框
 4. 配色：使用 8-bit 调色板
 5. 底部：返回按钮`,
+    },
+  {
+      title: "作品集展示",
+      titleEn: "Portfolio Showcase",
+      description: "生成 像素艺术风风格的作品集页面",
+      descriptionEn: "Generate a portfolio showcase in Pixel Art style",
+      prompt: `Create a portfolio showcase page using Pixel Art style with project grid, about section, contact form, and consistent visual language.`,
+    }],
+
+  variants: [
+    {
+      id: "pixel-art-warm",
+      name: "像素艺术风暖色版",
+      nameEn: "Pixel Art Warm",
+      description: "Warm-toned variant with shifted hues toward amber/orange",
+      colors: {
+        primary: "#221a2b",
+        secondary: "#f5f5f5",
+        accent: ["#ed0f00", "#00e499", "#6c95ff", "#9eff31"],
+      },
+    },
+    {
+      id: "pixel-art-cool",
+      name: "像素艺术风冷色版",
+      nameEn: "Pixel Art Cool",
+      description: "Cool-toned variant with shifted hues toward blue/teal",
+      colors: {
+        primary: "#131f29",
+        secondary: "#dcdcdc",
+        accent: ["#dc01ac", "#4fd300", "#04bfba", "#ffcd4f"],
+      },
     },
   ],
 };

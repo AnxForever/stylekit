@@ -15,9 +15,9 @@ export const witchcore: DesignStyle = {
   colors: {
     primary: "#4a1942",
     secondary: "#0d0b14",
-    accent: ["#c9a74e", "#7b68ae", "#3d8b6e"],
+    accent: ["#c9a74e", "#7b68ae", "#3d8b6e", "#6bc15e"],
   },
-  keywords: ["巫术", "神秘", "塔罗", "月相", "水晶", "符文", "暗黑"],
+  keywords: ["巫术", "神秘", "塔罗", "月相", "水晶", "符文", "暗黑", "expressive", "bold", "vibrant"],
 
   philosophy: `Witchcore（巫术核心）设计灵感源自神秘学、塔罗牌与自然魔法传统，通过深邃的暗紫色调与闪烁的金色符文，构建一个充满仪式感与神秘力量的视觉世界。
 
@@ -165,6 +165,46 @@ Suitable for: occult apps, tarot reading platforms, crystal healing shops, dark 
 @keyframes rune-pulse {
   0%, 100% { opacity: 1; text-shadow: 0 0 8px rgba(201, 167, 78, 0.4); }
   50% { opacity: 0.8; text-shadow: 0 0 16px rgba(201, 167, 78, 0.6); }
+}
+/* Witchcore Design Tokens */
+:root {
+  --witchcore-primary: #4a1942;
+  --witchcore-secondary: #0d0b14;
+  --witchcore-accent: #c9a74e;
+  --witchcore-glow: rgba(74, 25, 66, 0.3);
+}
+
+.witchcore-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.witchcore-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  background: linear-gradient(135deg, rgba(74, 25, 66, 0.05), transparent);
+  pointer-events: none;
+}
+
+.witchcore-card:hover::before {
+  opacity: 1;
+}
+
+.witchcore-frosted {
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  background: rgba(74, 25, 66, 0.08);
+}
+
+.witchcore-accent-corner {
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 2rem), calc(100% - 2rem) 100%, 0 100%);
+}
+
+.witchcore-animate-in {
+  animation: witchcore-fade-in 0.5s ease-out both;
 }`,
 
   aiRules: `STYLE: Witchcore
@@ -260,6 +300,44 @@ ANIMATION & INTERACTION RULES:
 - Moon phase indicator at the top
 - Serif typography with mystical glow
 - Amethyst accent for secondary information`,
+    },
+  {
+      title: "SaaS 着陆页",
+      titleEn: "SaaS Landing Page",
+      description: "生成 巫术核心风格的 SaaS 产品着陆页",
+      descriptionEn: "Generate a SaaS product landing page in Witchcore style",
+      prompt: `Create a SaaS landing page using Witchcore style with hero section, feature grid, testimonials, pricing table, and footer.`,
+    },
+    {
+      title: "作品集展示",
+      titleEn: "Portfolio Showcase",
+      description: "生成 巫术核心风格的作品集页面",
+      descriptionEn: "Generate a portfolio showcase in Witchcore style",
+      prompt: `Create a portfolio showcase page using Witchcore style with project grid, about section, contact form, and consistent visual language.`,
+    }],
+
+  variants: [
+    {
+      id: "witchcore-warm",
+      name: "巫术核心暖色版",
+      nameEn: "Witchcore Warm",
+      description: "Warm-toned variant with shifted hues toward amber/orange",
+      colors: {
+        primary: "#53182c",
+        secondary: "#25232c",
+        accent: ["#98b649", "#9861a1", "#40878d"],
+      },
+    },
+    {
+      id: "witchcore-cool",
+      name: "巫术核心冷色版",
+      nameEn: "Witchcore Cool",
+      description: "Cool-toned variant with shifted hues toward blue/teal",
+      colors: {
+        primary: "#371d50",
+        secondary: "#0c0a12",
+        accent: ["#f1986b", "#5b72ab", "#4a8a52"],
+      },
     },
   ],
 };

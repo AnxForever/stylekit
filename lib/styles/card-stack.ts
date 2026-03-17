@@ -18,7 +18,7 @@ export const cardStack: DesignStyle = {
     secondary: "#f0f0f5",
     accent: ["#6c5ce7", "#00cec9", "#fd79a8", "#ffeaa7"],
   },
-  keywords: ["卡片", "堆叠", "立体", "层叠", "轮播", "3D"],
+  keywords: ["卡片", "堆叠", "立体", "层叠", "轮播", "3D", "expressive", "bold", "vibrant", "表现力"],
 
   philosophy: `Card Stack（卡片堆叠布局）是一种利用 Z 轴创造深度感的布局方式，多张卡片前后重叠，形成视觉层次。
 
@@ -27,7 +27,14 @@ export const cardStack: DesignStyle = {
 - 焦点引导：最前面的卡片获得最多关注
 - 交互预期：暗示可以翻阅或切换
 - 空间节省：在有限空间展示多个选项
-- 洗牌动感：hover 时牌堆像手持扑克般散开`,
+- 洗牌动感：hover 时牌堆像手持扑克般散开
+
+设计原则：
+- 视觉一致性：所有组件必须遵循统一的视觉语言，从色彩到字体到间距保持谐调
+- 层次分明：通过颜色深浅、字号大小、留白空间建立清晰的信息层级
+- 交互反馈：每个可交互元素都必须有明确的 hover、active、focus 状态反馈
+- 响应式适配：设计必须在移动端、平板、桌面端上保持一致的体验
+- 无障碍性：确保色彩对比度符合 WCAG 2.1 AA 标准，所有交互元素可键盘访问`,
 
   philosophyEn: `Card Stack is a layout approach that creates depth perception using the Z-axis, with multiple cards overlapping front to back to form visual layers.
 
@@ -314,6 +321,67 @@ Core principles:
 .card-stack-swipe .card-stack-item.swiping-right {
   transform: translateX(100%) rotate(10deg);
   opacity: 0;
+}
+/* Card Stack Design Tokens */
+:root {
+  --card-stack-primary: #1a1a2e;
+  --card-stack-secondary: #f0f0f5;
+  --card-stack-accent: #6c5ce7;
+  --card-stack-glow: rgba(26, 26, 46, 0.3);
+}
+
+@keyframes card-stack-fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes card-stack-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.card-stack-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.card-stack-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  background: linear-gradient(135deg, rgba(26, 26, 46, 0.05), transparent);
+  pointer-events: none;
+}
+
+.card-stack-card:hover::before {
+  opacity: 1;
+}
+
+.card-stack-gradient {
+  background: linear-gradient(135deg, #1a1a2e, #6c5ce7);
+}
+
+.card-stack-gradient-text {
+  background: linear-gradient(135deg, #1a1a2e, #6c5ce7);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.card-stack-frosted {
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  background: rgba(26, 26, 46, 0.08);
+}
+
+.card-stack-accent-corner {
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 2rem), calc(100% - 2rem) 100%, 0 100%);
+}
+
+.card-stack-animate-in {
+  animation: card-stack-fade-in 0.5s ease-out both;
 }`,
 
   aiRules: `You are a frontend expert specializing in Card Stack layout. All generated code must strictly follow these constraints:
@@ -466,6 +534,31 @@ Dark gradient background, white cards`,
 6. Each card: step number, title, illustration, description
 7. Final card has CTA button
 Clean design with duration-[400ms] ease-out transitions`,
+    },
+  ],
+
+  variants: [
+    {
+      id: "card-stack-warm",
+      name: "卡片堆叠布局暖色版",
+      nameEn: "Card Stack Warm",
+      description: "Warm-toned variant with shifted hues toward amber/orange",
+      colors: {
+        primary: "#23172c",
+        secondary: "#f2f2f6",
+        accent: ["#aa4bd5", "#29baff", "#f78074", "#dbf5a5"],
+      },
+    },
+    {
+      id: "card-stack-cool",
+      name: "卡片堆叠布局冷色版",
+      nameEn: "Card Stack Cool",
+      description: "Cool-toned variant with shifted hues toward blue/teal",
+      colors: {
+        primary: "#111d2b",
+        secondary: "#d8d8dd",
+        accent: ["#2d70d7", "#02d673", "#e87ad8", "#ffdfbb"],
+      },
     },
   ],
 };

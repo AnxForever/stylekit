@@ -15,9 +15,9 @@ export const gothicLolita: DesignStyle = {
   colors: {
     primary: "#4a1a4a",
     secondary: "#8b1a2a",
-    accent: ["#e5e5e5", "#1a1a1a", "#6b2d5b"],
+    accent: ["#e5e5e5", "#1a1a1a", "#6b2d5b", "#e5e5e5"],
   },
-  keywords: ["哥特", "萝莉塔", "维多利亚", "蕾丝", "暗黑优雅", "玫瑰", "十字架"],
+  keywords: ["哥特", "萝莉塔", "维多利亚", "蕾丝", "暗黑优雅", "玫瑰", "十字架", "expressive", "bold", "vibrant"],
 
   philosophy: `Gothic Lolita（哥特萝莉）是一种融合维多利亚时代与哥特美学的视觉风格，起源于日本街头时尚。
 
@@ -25,7 +25,14 @@ export const gothicLolita: DesignStyle = {
 - 暗黑优雅：黑色为主调，搭配深紫和血红点缀
 - 精致细节：蕾丝花边、缎带蝴蝶结、十字架装饰
 - 维多利亚风情：繁复的衬线字体、对称的装饰花纹
-- 浪漫黑暗：玫瑰、烛台、哥特式拱门等元素`,
+- 浪漫黑暗：玫瑰、烛台、哥特式拱门等元素
+
+设计原则：
+- 视觉一致性：所有组件必须遵循统一的视觉语言，从色彩到字体到间距保持谐调
+- 层次分明：通过颜色深浅、字号大小、留白空间建立清晰的信息层级
+- 交互反馈：每个可交互元素都必须有明确的 hover、active、focus 状态反馈
+- 响应式适配：设计必须在移动端、平板、桌面端上保持一致的体验
+- 无障碍性：确保色彩对比度符合 WCAG 2.1 AA 标准，所有交互元素可键盘访问`,
 
   philosophyEn: `Gothic Lolita is a visual style blending Victorian-era and Gothic aesthetics, originating from Japanese street fashion.
 
@@ -208,6 +215,53 @@ Core principles:
     #1a0a1a 50%,
     #0a0a0a 100%
   );
+}
+@keyframes gothic-lolita-fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes gothic-lolita-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.gothic-lolita-frosted {
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  background: rgba(74, 26, 74, 0.08);
+}
+
+.gothic-lolita-accent-corner {
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 2rem), calc(100% - 2rem) 100%, 0 100%);
+}
+
+.gothic-lolita-animate-in {
+  animation: gothic-lolita-fade-in 0.5s ease-out both;
+}
+
+.gothic-lolita-focus { outline: 2px solid var(--gothic-lolita-primary, currentColor); outline-offset: 2px; }
+
+/* Responsive utilities */
+@media (prefers-reduced-motion: reduce) {
+  .gothic-lolita-animate-in {
+    animation: none;
+  }
+}
+
+@media (min-width: 768px) {
+  .gothic-lolita-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+}
+
+/* Print styles */
+@media print {
+  .gothic-lolita-gradient,
+  .gothic-lolita-frosted {
+    background: none;
+    backdrop-filter: none;
+  }
 }`,
 
   aiRules: `你是一个 Gothic Lolita 设计风格的前端开发专家。生成的所有代码必须严格遵守以下约束：
@@ -250,7 +304,28 @@ Core principles:
 - Velvet Depth: hover 以深紫/血红阴影的缓慢扩散为主，体现丝绒质感，避免轻浮弹跳。
 - Lace Elegance: 交互时长建议 duration-500 到 700，使用 ease-in-out 保持精致与克制。
 - Corset Press: active 使用轻微收束（scale-[0.98]）和内阴影加强，模拟束腰式阻尼反馈。
-- Silver Whisper: 边框与文字可在 hover 中缓慢浮现银白微光，增强暗黑华丽层次。`,
+- Silver Whisper: 边框与文字可在 hover 中缓慢浮现银白微光，增强暗黑华丽层次。
+
+## Layout & Spacing
+- Section padding: py-16 md:py-24
+- Card padding: p-6 md:p-8
+- Gap between cards: gap-6 md:gap-8
+- Max content width: max-w-6xl mx-auto
+
+## Responsive Design
+- Mobile-first approach with Tailwind breakpoints
+- Stack elements vertically on mobile (flex-col), row on desktop (md:flex-row)
+- Reduce font sizes on mobile: text-3xl md:text-5xl for headings
+- Touch-friendly targets: min 44px for interactive elements
+
+## Self-Check Verification
+After generating code, verify:
+1. All interactive elements have hover/focus/active states
+2. Color contrast meets WCAG 2.1 AA (4.5:1 for text)
+3. Layout is responsive across breakpoints
+4. Typography hierarchy is clear (h1 > h2 > h3 > body)
+5. Spacing is consistent using the defined scale
+6. All animations respect prefers-reduced-motion`,
 
   aiRulesEn: `You are a Gothic Lolita design style frontend development expert. All generated code must strictly follow these constraints:
 
@@ -306,6 +381,44 @@ Primary:
 3. 装饰：蕾丝花边边框和十字架图案
 4. 按钮：深紫配血红边框
 5. 整体暗色浪漫氛围`,
+    },
+  {
+      title: "SaaS 着陆页",
+      titleEn: "SaaS Landing Page",
+      description: "生成 哥特萝莉风风格的 SaaS 产品着陆页",
+      descriptionEn: "Generate a SaaS product landing page in Gothic Lolita style",
+      prompt: `Create a SaaS landing page using Gothic Lolita style with hero section, feature grid, testimonials, pricing table, and footer.`,
+    },
+    {
+      title: "作品集展示",
+      titleEn: "Portfolio Showcase",
+      description: "生成 哥特萝莉风风格的作品集页面",
+      descriptionEn: "Generate a portfolio showcase in Gothic Lolita style",
+      prompt: `Create a portfolio showcase page using Gothic Lolita style with project grid, about section, contact form, and consistent visual language.`,
+    }],
+
+  variants: [
+    {
+      id: "gothic-lolita-warm",
+      name: "哥特萝莉风暖色版",
+      nameEn: "Gothic Lolita Warm",
+      description: "Warm-toned variant with shifted hues toward amber/orange",
+      colors: {
+        primary: "#571834",
+        secondary: "#97313f",
+        accent: ["#e5e5e5", "#1a1a1a", "#742d40"],
+      },
+    },
+    {
+      id: "gothic-lolita-cool",
+      name: "哥特萝莉风冷色版",
+      nameEn: "Gothic Lolita Cool",
+      description: "Cool-toned variant with shifted hues toward blue/teal",
+      colors: {
+        primary: "#341f57",
+        secondary: "#7d1726",
+        accent: ["#e5e5e5", "#1a1a1a", "#56316e"],
+      },
     },
   ],
 };

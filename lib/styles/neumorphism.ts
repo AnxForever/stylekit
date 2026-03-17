@@ -17,7 +17,7 @@ export const neumorphism: DesignStyle = {
     secondary: "#d1d9e6",
     accent: ["#6d5dfc", "#ff6b6b", "#4ecdc4", "#ffe66d"],
   },
-  keywords: ["立体感", "双重阴影", "柔和", "浅色系", "内凹外凸"],
+  keywords: ["立体感", "双重阴影", "柔和", "浅色系", "内凹外凸", "modern", "contemporary", "sleek", "现代", "简洁"],
 
   philosophy: `Neumorphism（新拟物派）是一种介于扁平设计和拟物设计之间的风格，通过柔和的阴影创造出元素从背景中"挤压"或"凹陷"的视觉效果。
 
@@ -25,7 +25,14 @@ export const neumorphism: DesignStyle = {
 - 柔和立体：通过双重阴影（亮/暗）模拟自然光源
 - 同色系统一：元素与背景使用相同或相近的颜色
 - 触感直觉：凸起表示可交互，凹陷表示已激活或输入区
-- 克制装饰：避免过多颜色和对比，保持整体柔和感`,
+- 克制装饰：避免过多颜色和对比，保持整体柔和感
+
+设计原则：
+- 视觉一致性：所有组件必须遵循统一的视觉语言，从色彩到字体到间距保持谐调
+- 层次分明：通过颜色深浅、字号大小、留白空间建立清晰的信息层级
+- 交互反馈：每个可交互元素都必须有明确的 hover、active、focus 状态反馈
+- 响应式适配：设计必须在移动端、平板、桌面端上保持一致的体验
+- 无障碍性：确保色彩对比度符合 WCAG 2.1 AA 标准，所有交互元素可键盘访问`,
 
   philosophyEn: `Neumorphism is a style between flat design and skeuomorphism, creating the visual effect of elements being "extruded" or "recessed" from the background through soft shadows.
 
@@ -247,6 +254,59 @@ Core principles:
 /* 圆形元素 */
 .neu-circle {
   border-radius: 50%;
+}
+@keyframes neumorphism-fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes neumorphism-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.neumorphism-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.neumorphism-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  background: linear-gradient(135deg, rgba(224, 229, 236, 0.05), transparent);
+  pointer-events: none;
+}
+
+.neumorphism-card:hover::before {
+  opacity: 1;
+}
+
+.neumorphism-gradient {
+  background: linear-gradient(135deg, #e0e5ec, #6d5dfc);
+}
+
+.neumorphism-gradient-text {
+  background: linear-gradient(135deg, #e0e5ec, #6d5dfc);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.neumorphism-frosted {
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  background: rgba(224, 229, 236, 0.08);
+}
+
+.neumorphism-accent-corner {
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 2rem), calc(100% - 2rem) 100%, 0 100%);
+}
+
+.neumorphism-animate-in {
+  animation: neumorphism-fade-in 0.5s ease-out both;
 }`,
 
   aiRules: `# Neumorphism (新拟物派) 设计规范
@@ -390,6 +450,31 @@ You are using the Neumorphism design style. This style creates a sense of depth 
 4. 均衡器：多个垂直滑块并排
 5. 按钮：静音/预设等，按下时凹陷
 保持统一的浅灰色调，通过阴影创造立体感`,
+    },
+  ],
+
+  variants: [
+    {
+      id: "neumorphism-warm",
+      name: "新拟物派暖色版",
+      nameEn: "Neumorphism Warm",
+      description: "Warm-toned variant with shifted hues toward amber/orange",
+      colors: {
+        primary: "#e4e4ed",
+        secondary: "#d6dde9",
+        accent: ["#b54ae8", "#e07a35", "#65c1f3", "#c0f86f"],
+      },
+    },
+    {
+      id: "neumorphism-cool",
+      name: "新拟物派冷色版",
+      nameEn: "Neumorphism Cool",
+      description: "Cool-toned variant with shifted hues toward blue/teal",
+      colors: {
+        primary: "#dde6e9",
+        secondary: "#bcc3cf",
+        accent: ["#2574e9", "#ff65a9", "#52d190", "#ffd38b"],
+      },
     },
   ],
 };

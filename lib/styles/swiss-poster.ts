@@ -15,9 +15,9 @@ export const swissPoster: DesignStyle = {
   colors: {
     primary: "#000000",
     secondary: "#ffffff",
-    accent: ["#ff0000", "#0057b8", "#ffcc00"],
+    accent: ["#ff0000", "#0057b8", "#ffcc00", "#6c3b00"],
   },
-  keywords: ["海报", "大字体", "网格", "实验排版", "国际主义", "12列网格", "色块"],
+  keywords: ["海报", "大字体", "网格", "实验排版", "国际主义", "12列网格", "色块", "modern", "contemporary", "sleek"],
 
   philosophy: `Swiss Poster 风格源于瑞士国际主义设计运动的海报传统，追求极致的排版表现力。
 
@@ -27,7 +27,14 @@ export const swissPoster: DesignStyle = {
 - 原色色块：黑白为主，红蓝黄作为大面积色块强调
 - 边框分隔：使用 border-2 border-[#000000] 分隔区域，不使用阴影或间距
 - 零间距：gap-0 让元素边缘紧贴，以边框线作为视觉分隔
-- 无装饰：没有圆角、阴影、渐变、模糊，只有纯色和线条`,
+- 无装饰：没有圆角、阴影、渐变、模糊，只有纯色和线条
+
+设计原则：
+- 视觉一致性：所有组件必须遵循统一的视觉语言，从色彩到字体到间距保持谐调
+- 层次分明：通过颜色深浅、字号大小、留白空间建立清晰的信息层级
+- 交互反馈：每个可交互元素都必须有明确的 hover、active、focus 状态反馈
+- 响应式适配：设计必须在移动端、平板、桌面端上保持一致的体验
+- 无障碍性：确保色彩对比度符合 WCAG 2.1 AA 标准，所有交互元素可键盘访问`,
 
   philosophyEn: `Swiss Poster style originates from the poster tradition of the Swiss International Style design movement, pursuing the ultimate in typographic expressiveness.
 
@@ -236,6 +243,48 @@ Core principles:
 }
 .sp-button-group > * + * {
   border-left: 0;
+}
+@keyframes swiss-poster-fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes swiss-poster-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.swiss-poster-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.swiss-poster-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.05), transparent);
+  pointer-events: none;
+}
+
+.swiss-poster-card:hover::before {
+  opacity: 1;
+}
+
+.swiss-poster-frosted {
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  background: rgba(0, 0, 0, 0.08);
+}
+
+.swiss-poster-accent-corner {
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 2rem), calc(100% - 2rem) 100%, 0 100%);
+}
+
+.swiss-poster-animate-in {
+  animation: swiss-poster-fade-in 0.5s ease-out both;
 }`,
 
   aiRules: `You are a Swiss Poster design style frontend development expert. All generated code must strictly follow these constraints:
@@ -359,6 +408,44 @@ Primary:
 6. Color blocks: large red/blue/yellow sections as accents
 7. Section dividers: border-2 border-[#000000], no spacing
 8. Overall bold, grid-based, mathematical typographic poster aesthetic`,
+    },
+  {
+      title: "SaaS 着陆页",
+      titleEn: "SaaS Landing Page",
+      description: "生成 瑞士海报风风格的 SaaS 产品着陆页",
+      descriptionEn: "Generate a SaaS product landing page in Swiss Poster style",
+      prompt: `Create a SaaS landing page using Swiss Poster style with hero section, feature grid, testimonials, pricing table, and footer.`,
+    },
+    {
+      title: "作品集展示",
+      titleEn: "Portfolio Showcase",
+      description: "生成 瑞士海报风风格的作品集页面",
+      descriptionEn: "Generate a portfolio showcase in Swiss Poster style",
+      prompt: `Create a portfolio showcase page using Swiss Poster style with project grid, about section, contact form, and consistent visual language.`,
+    }],
+
+  variants: [
+    {
+      id: "swiss-poster-warm",
+      name: "瑞士海报风暖色版",
+      nameEn: "Swiss Poster Warm",
+      description: "Warm-toned variant with shifted hues toward amber/orange",
+      colors: {
+        primary: "#000000",
+        secondary: "#ffffff",
+        accent: ["#c91a00", "#4042cf", "#94ec00"],
+      },
+    },
+    {
+      id: "swiss-poster-cool",
+      name: "瑞士海报风冷色版",
+      nameEn: "Swiss Poster Cool",
+      description: "Cool-toned variant with shifted hues toward blue/teal",
+      colors: {
+        primary: "#000000",
+        secondary: "#e6e6e6",
+        accent: ["#ff006c", "#006984", "#ffab36"],
+      },
     },
   ],
 };

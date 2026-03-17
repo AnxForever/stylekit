@@ -15,9 +15,9 @@ export const popArt: DesignStyle = {
   colors: {
     primary: "#ffdd00",
     secondary: "#ff69b4",
-    accent: ["#00bfff", "#000000", "#ffffff"],
+    accent: ["#00bfff", "#000000", "#ffffff", "#a486ff"],
   },
-  keywords: ["波普", "Warhol", "Lichtenstein", "半色调", "漫画", "粗体", "网点", "对话泡泡"],
+  keywords: ["波普", "Warhol", "Lichtenstein", "半色调", "漫画", "粗体", "网点", "对话泡泡", "expressive", "bold"],
 
   philosophy: `Pop Art 风格来源于 20 世纪 60 年代的波普艺术运动，以 Andy Warhol 和 Roy Lichtenstein 为代表，通过大胆色块、粗黑轮廓和半色调网点创造视觉冲击。
 
@@ -25,7 +25,14 @@ export const popArt: DesignStyle = {
 - 粗黑轮廓：所有元素使用粗黑边框强调形状
 - 高饱和色块：使用黄、粉、蓝等纯色平涂填充
 - 半色调网点：Ben-Day dots 是波普艺术的标志性纹理
-- 漫画风格：对话泡泡、动作线条等漫画元素融入界面`,
+- 漫画风格：对话泡泡、动作线条等漫画元素融入界面
+
+设计原则：
+- 视觉一致性：所有组件必须遵循统一的视觉语言，从色彩到字体到间距保持谐调
+- 层次分明：通过颜色深浅、字号大小、留白空间建立清晰的信息层级
+- 交互反馈：每个可交互元素都必须有明确的 hover、active、focus 状态反馈
+- 响应式适配：设计必须在移动端、平板、桌面端上保持一致的体验
+- 无障碍性：确保色彩对比度符合 WCAG 2.1 AA 标准，所有交互元素可键盘访问`,
 
   philosophyEn: `Pop Art style originates from the 1960s Pop Art movement, represented by Andy Warhol and Roy Lichtenstein, creating visual impact through bold color blocks, thick black outlines, and halftone Ben-Day dots.
 
@@ -166,6 +173,56 @@ Core principles:
 .pop-art-dots {
   background-image: radial-gradient(circle, #000 1px, transparent 1px);
   background-size: 8px 8px;
+}
+/* Pop Art Design Tokens */
+:root {
+  --pop-art-primary: #ffdd00;
+  --pop-art-secondary: #ff69b4;
+  --pop-art-accent: #00bfff;
+  --pop-art-glow: rgba(255, 221, 0, 0.3);
+}
+
+@keyframes pop-art-fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pop-art-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.pop-art-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.pop-art-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  background: linear-gradient(135deg, rgba(255, 221, 0, 0.05), transparent);
+  pointer-events: none;
+}
+
+.pop-art-card:hover::before {
+  opacity: 1;
+}
+
+.pop-art-frosted {
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  background: rgba(255, 221, 0, 0.08);
+}
+
+.pop-art-accent-corner {
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 2rem), calc(100% - 2rem) 100%, 0 100%);
+}
+
+.pop-art-animate-in {
+  animation: pop-art-fade-in 0.5s ease-out both;
 }`,
 
   aiRules: `STYLE: Pop Art
@@ -263,6 +320,44 @@ SPECIAL EFFECTS:
 - Comic-style headings with font-black uppercase
 - Action word labels (POW, BANG, WOW)
 - Hover effects that shift shadow offset`,
+    },
+  {
+      title: "SaaS 着陆页",
+      titleEn: "SaaS Landing Page",
+      description: "生成 波普艺术风格的 SaaS 产品着陆页",
+      descriptionEn: "Generate a SaaS product landing page in Pop Art style",
+      prompt: `Create a SaaS landing page using Pop Art style with hero section, feature grid, testimonials, pricing table, and footer.`,
+    },
+    {
+      title: "作品集展示",
+      titleEn: "Portfolio Showcase",
+      description: "生成 波普艺术风格的作品集页面",
+      descriptionEn: "Generate a portfolio showcase in Pop Art style",
+      prompt: `Create a portfolio showcase page using Pop Art style with project grid, about section, contact form, and consistent visual language.`,
+    }],
+
+  variants: [
+    {
+      id: "pop-art-warm",
+      name: "波普艺术暖色版",
+      nameEn: "Pop Art Warm",
+      description: "Warm-toned variant with shifted hues toward amber/orange",
+      colors: {
+        primary: "#8ffe07",
+        secondary: "#ff78bc",
+        accent: ["#47a3ff", "#000000", "#ffffff"],
+      },
+    },
+    {
+      id: "pop-art-cool",
+      name: "波普艺术冷色版",
+      nameEn: "Pop Art Cool",
+      description: "Cool-toned variant with shifted hues toward blue/teal",
+      colors: {
+        primary: "#ffba32",
+        secondary: "#e65fa2",
+        accent: ["#00d1a4", "#000000", "#ffffff"],
+      },
     },
   ],
 };

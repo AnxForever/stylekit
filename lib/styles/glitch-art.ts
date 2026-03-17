@@ -15,9 +15,9 @@ export const glitchArt: DesignStyle = {
   colors: {
     primary: "#00ffff",
     secondary: "#0a0a0a",
-    accent: ["#ff00ff", "#ffff00", "#ffffff"],
+    accent: ["#ff00ff", "#ffff00", "#ffffff", "#ff0506"],
   },
-  keywords: ["故障", "像素", "RGB分离", "扫描线", "数字损坏", "位移", "VHS", "通道分离"],
+  keywords: ["故障", "像素", "RGB分离", "扫描线", "数字损坏", "位移", "VHS", "通道分离", "expressive", "bold"],
 
   philosophy: `Glitch Art 是一种拥抱数字错误与技术故障的艺术形式，将系统崩溃和数据损坏转化为视觉表达。完美是数字世界的幻觉——我们在断裂的代码、丢失的帧和剧烈失同步的像素中发现美。
 
@@ -26,7 +26,14 @@ export const glitchArt: DesignStyle = {
 - 水平位移带：通过clip-path随机裁切区域产生水平错位
 - 扫描线纹理：CRT显示器的水平扫描线覆盖层
 - VHS追踪错误：模拟老式录像带的追踪错误横线
-- 数据损坏块：随机分布的半透明色彩块模拟数据丢失`,
+- 数据损坏块：随机分布的半透明色彩块模拟数据丢失
+
+设计原则：
+- 视觉一致性：所有组件必须遵循统一的视觉语言，从色彩到字体到间距保持谐调
+- 层次分明：通过颜色深浅、字号大小、留白空间建立清晰的信息层级
+- 交互反馈：每个可交互元素都必须有明确的 hover、active、focus 状态反馈
+- 响应式适配：设计必须在移动端、平板、桌面端上保持一致的体验
+- 无障碍性：确保色彩对比度符合 WCAG 2.1 AA 标准，所有交互元素可键盘访问`,
 
   philosophyEn: `Perfection is a digital illusion. We find beauty in the broken code, the dropped frames, and the violently unsynchronized pixels.
 
@@ -454,6 +461,44 @@ Palette is strictly CMY + black/white -- no other decorative colors allowed:
 4. Only use cyan, magenta, yellow on black -- no other colors
 5. Include signal monitor panel with hex readouts and progress bars
 6. All elements use sharp corners (rounded-none) and RGB split shadows`,
+    },
+  {
+      title: "SaaS 着陆页",
+      titleEn: "SaaS Landing Page",
+      description: "生成 故障艺术风风格的 SaaS 产品着陆页",
+      descriptionEn: "Generate a SaaS product landing page in Glitch Art style",
+      prompt: `Create a SaaS landing page using Glitch Art style with hero section, feature grid, testimonials, pricing table, and footer.`,
+    },
+    {
+      title: "作品集展示",
+      titleEn: "Portfolio Showcase",
+      description: "生成 故障艺术风风格的作品集页面",
+      descriptionEn: "Generate a portfolio showcase in Glitch Art style",
+      prompt: `Create a portfolio showcase page using Glitch Art style with project grid, about section, contact form, and consistent visual language.`,
+    }],
+
+  variants: [
+    {
+      id: "glitch-art-warm",
+      name: "故障艺术风暖色版",
+      nameEn: "Glitch Art Warm",
+      description: "Warm-toned variant with shifted hues toward amber/orange",
+      colors: {
+        primary: "#36e5ff",
+        secondary: "#232323",
+        accent: ["#ff008b", "#86ff17", "#ffffff"],
+      },
+    },
+    {
+      id: "glitch-art-cool",
+      name: "故障艺术风冷色版",
+      nameEn: "Glitch Art Cool",
+      description: "Cool-toned variant with shifted hues toward blue/teal",
+      colors: {
+        primary: "#00ff93",
+        secondary: "#090909",
+        accent: ["#8b1cff", "#ffd829", "#ffffff"],
+      },
     },
   ],
 };

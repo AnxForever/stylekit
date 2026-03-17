@@ -17,7 +17,7 @@ export const shopifyClean: DesignStyle = {
     secondary: "#f7f7f8",
     accent: ["#008060", "#1a1a1a", "#e3e3e3", "#ffd700"],
   },
-  keywords: ["电商", "独立站", "产品展示", "购物车", "DTC", "Shopify"],
+  keywords: ["电商", "独立站", "产品展示", "购物车", "DTC", "Shopify", "modern", "contemporary", "sleek", "现代"],
 
   philosophy: `Shopify Clean 是一种以转化为导向的电商设计语言。
 
@@ -25,7 +25,14 @@ export const shopifyClean: DesignStyle = {
 - 产品优先：所有设计决策围绕产品展示和购买转化
 - 信任感建设：通过一致的间距、清晰的层级和专业排版建立可信度
 - 摩擦最小化：按钮明确、流程简短、信息层次清晰
-- 留白即呼吸：给产品图片足够空间，不拥挤不杂乱`,
+- 留白即呼吸：给产品图片足够空间，不拥挤不杂乱
+
+设计原则：
+- 视觉一致性：所有组件必须遵循统一的视觉语言，从色彩到字体到间距保持谐调
+- 层次分明：通过颜色深浅、字号大小、留白空间建立清晰的信息层级
+- 交互反馈：每个可交互元素都必须有明确的 hover、active、focus 状态反馈
+- 响应式适配：设计必须在移动端、平板、桌面端上保持一致的体验
+- 无障碍性：确保色彩对比度符合 WCAG 2.1 AA 标准，所有交互元素可键盘访问`,
 
   philosophyEn: `Shopify Clean is a conversion-oriented e-commerce design language.
 
@@ -170,6 +177,59 @@ Core principles:
 .shopify-clean-badge--new {
   background: #d1fae5;
   color: #065f46;
+}
+@keyframes shopify-clean-fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes shopify-clean-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.shopify-clean-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.shopify-clean-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), transparent);
+  pointer-events: none;
+}
+
+.shopify-clean-card:hover::before {
+  opacity: 1;
+}
+
+.shopify-clean-gradient {
+  background: linear-gradient(135deg, #ffffff, #008060);
+}
+
+.shopify-clean-gradient-text {
+  background: linear-gradient(135deg, #ffffff, #008060);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.shopify-clean-frosted {
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.shopify-clean-accent-corner {
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 2rem), calc(100% - 2rem) 100%, 0 100%);
+}
+
+.shopify-clean-animate-in {
+  animation: shopify-clean-fade-in 0.5s ease-out both;
 }`,
 
   aiRules: `You are a Shopify Clean e-commerce design expert.
@@ -190,7 +250,28 @@ Core principles:
 ## Responsive
 - Mobile: single-column product grid, sticky bottom CTA
 - Tablet: 2-column grid
-- Desktop: 3-4 column grid with sidebar filters`,
+- Desktop: 3-4 column grid with sidebar filters
+
+## Layout & Spacing
+- Section padding: py-16 md:py-24
+- Card padding: p-6 md:p-8
+- Gap between cards: gap-6 md:gap-8
+- Max content width: max-w-6xl mx-auto
+
+## Responsive Design
+- Mobile-first approach with Tailwind breakpoints
+- Stack elements vertically on mobile (flex-col), row on desktop (md:flex-row)
+- Reduce font sizes on mobile: text-3xl md:text-5xl for headings
+- Touch-friendly targets: min 44px for interactive elements
+
+## Self-Check Verification
+After generating code, verify:
+1. All interactive elements have hover/focus/active states
+2. Color contrast meets WCAG 2.1 AA (4.5:1 for text)
+3. Layout is responsive across breakpoints
+4. Typography hierarchy is clear (h1 > h2 > h3 > body)
+5. Spacing is consistent using the defined scale
+6. All animations respect prefers-reduced-motion`,
 
   aiRulesEn: `You are a Shopify Clean e-commerce design expert.
 
@@ -219,6 +300,44 @@ Core principles:
       description: "包含促销横幅、产品网格、信任标识的电商首页",
       descriptionEn: "Store homepage with hero banner, product grid, and trust badges",
       prompt: "Build a Shopify-style e-commerce homepage with hero banner promoting a new collection, 8-product grid with hover effects, trust badges (free shipping, 30-day returns), and newsletter signup.",
+    },
+  {
+      title: "SaaS 着陆页",
+      titleEn: "SaaS Landing Page",
+      description: "生成 清爽电商风格的 SaaS 产品着陆页",
+      descriptionEn: "Generate a SaaS product landing page in Shopify Clean style",
+      prompt: `Create a SaaS landing page using Shopify Clean style with hero section, feature grid, testimonials, pricing table, and footer.`,
+    },
+    {
+      title: "作品集展示",
+      titleEn: "Portfolio Showcase",
+      description: "生成 清爽电商风格的作品集页面",
+      descriptionEn: "Generate a portfolio showcase in Shopify Clean style",
+      prompt: `Create a portfolio showcase page using Shopify Clean style with project grid, about section, contact form, and consistent visual language.`,
+    }],
+
+  variants: [
+    {
+      id: "shopify-clean-warm",
+      name: "清爽电商暖色版",
+      nameEn: "Shopify Clean Warm",
+      description: "Warm-toned variant with shifted hues toward amber/orange",
+      colors: {
+        primary: "#ffffff",
+        secondary: "#f8f8f9",
+        accent: ["#0c7792", "#1a1a1a", "#e3e3e3", "#91f704"],
+      },
+    },
+    {
+      id: "shopify-clean-cool",
+      name: "清爽电商冷色版",
+      nameEn: "Shopify Clean Cool",
+      description: "Cool-toned variant with shifted hues toward blue/teal",
+      colors: {
+        primary: "#ffffff",
+        secondary: "#dededf",
+        accent: ["#0e812f", "#1a1a1a", "#e3e3e3", "#ffb533"],
+      },
     },
   ],
 };

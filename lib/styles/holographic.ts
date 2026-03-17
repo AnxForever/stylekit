@@ -36,7 +36,14 @@ export const holographic: DesignStyle = {
 - 棱镜折射：多色光谱渐变，3个以上色停
 - 宇宙深空：深色背景让全息元素跃然而出
 - 动态光效：渐变位移动画模拟全息箔片的角度变化
-- 半透明层叠：玻璃质感卡片配合背景模糊`,
+- 半透明层叠：玻璃质感卡片配合背景模糊
+
+设计原则：
+- 视觉一致性：所有组件必须遵循统一的视觉语言，从色彩到字体到间距保持谐调
+- 层次分明：通过颜色深浅、字号大小、留白空间建立清晰的信息层级
+- 交互反馈：每个可交互元素都必须有明确的 hover、active、focus 状态反馈
+- 响应式适配：设计必须在移动端、平板、桌面端上保持一致的体验
+- 无障碍性：确保色彩对比度符合 WCAG 2.1 AA 标准，所有交互元素可键盘访问`,
 
   philosophyEn: `Holographic simulates the prismatic beauty of holographic foil -- rainbow spectrum gradients that shift and flow with viewing angle, creating an otherworldly iridescent experience.
 
@@ -265,6 +272,19 @@ Core principles:
     transparent 60%
   );
   animation: holo-shimmer 3s ease-in-out infinite;
+}
+.holographic-frosted {
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  background: rgba(168, 85, 247, 0.08);
+}
+
+.holographic-accent-corner {
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 2rem), calc(100% - 2rem) 100%, 0 100%);
+}
+
+.holographic-animate-in {
+  animation: holographic-fade-in 0.5s ease-out both;
 }`,
 
   aiRules: `## Holographic Style Rules
@@ -350,6 +370,37 @@ Animation & Interaction Rules:
 2. 每个等级使用不同的全息渐变
 3. 推荐等级添加动态渐变动画
 4. 全息箔片风格的徽章标记`,
+    },
+  {
+      title: "作品集展示",
+      titleEn: "Portfolio Showcase",
+      description: "生成 全息渐变风格的作品集页面",
+      descriptionEn: "Generate a portfolio showcase in Holographic style",
+      prompt: `Create a portfolio showcase page using Holographic style with project grid, about section, contact form, and consistent visual language.`,
+    }],
+
+  variants: [
+    {
+      id: "holographic-warm",
+      name: "全息渐变暖色版",
+      nameEn: "Holographic Warm",
+      description: "Warm-toned variant with shifted hues toward amber/orange",
+      colors: {
+        primary: "#e348ca",
+        secondary: "#232335",
+        accent: ["#ff0918", "#91f704", "#41b9ff", "#00f5f0", "#a553e6"],
+      },
+    },
+    {
+      id: "holographic-cool",
+      name: "全息渐变冷色版",
+      nameEn: "Holographic Cool",
+      description: "Cool-toned variant with shifted hues toward blue/teal",
+      colors: {
+        primary: "#5e6aff",
+        secondary: "#09091c",
+        accent: ["#c508d7", "#ffb533", "#00e49f", "#36f82f", "#247bd9"],
+      },
     },
   ],
 };

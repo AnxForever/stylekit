@@ -15,9 +15,9 @@ export const y2k: DesignStyle = {
   colors: {
     primary: "#c0c0c0",
     secondary: "#ff69b4",
-    accent: ["#00ffff", "#ff00ff", "#87ceeb"],
+    accent: ["#00ffff", "#ff00ff", "#87ceeb", "#93c4ff"],
   },
-  keywords: ["Y2K", "千禧", "未来主义", "金属", "透明", "气泡", "2000年代"],
+  keywords: ["Y2K", "千禧", "未来主义", "金属", "透明", "气泡", "2000年代", "retro", "vintage", "nostalgic"],
 
   philosophy: `Y2K（千禧风格）是1990年代末至2000年代初的设计美学，反映了人们对新千年和数字未来的乐观想象。
 
@@ -25,7 +25,14 @@ export const y2k: DesignStyle = {
 - 未来感：对数字时代的乐观憧憬
 - 金属质感：银色、铬合金、反光材质
 - 透明元素：透明塑料、气泡、水滴效果
-- 彩虹渐变：全息效果、彩虹反光`,
+- 彩虹渐变：全息效果、彩虹反光
+
+设计原则：
+- 视觉一致性：所有组件必须遵循统一的视觉语言，从色彩到字体到间距保持谐调
+- 层次分明：通过颜色深浅、字号大小、留白空间建立清晰的信息层级
+- 交互反馈：每个可交互元素都必须有明确的 hover、active、focus 状态反馈
+- 响应式适配：设计必须在移动端、平板、桌面端上保持一致的体验
+- 无障碍性：确保色彩对比度符合 WCAG 2.1 AA 标准，所有交互元素可键盘访问`,
 
   philosophyEn: `Y2K is the design aesthetic of the late 1990s to early 2000s, reflecting people's optimistic imagination of the new millennium and the digital future.
 
@@ -196,6 +203,38 @@ Core concepts:
 .y2k-bubble {
   background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.8), transparent);
   border-radius: 50%;
+}
+.y2k-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.y2k-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  background: linear-gradient(135deg, rgba(192, 192, 192, 0.05), transparent);
+  pointer-events: none;
+}
+
+.y2k-card:hover::before {
+  opacity: 1;
+}
+
+.y2k-frosted {
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  background: rgba(192, 192, 192, 0.08);
+}
+
+.y2k-accent-corner {
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 2rem), calc(100% - 2rem) 100%, 0 100%);
+}
+
+.y2k-animate-in {
+  animation: y2k-fade-in 0.5s ease-out both;
 }`,
 
   aiRules: `你是一个 Y2K 设计风格的前端开发专家。生成的所有代码必须严格遵守以下约束：
@@ -235,7 +274,28 @@ Core concepts:
 - 液态金属（Chrome Liquid）：交互必须传达"液态金属"或"塑料果冻"质感。悬停时金属渐变通过高亮内阴影增强（如 \`hover:shadow-[inset_0_4px_8px_rgba(255,255,255,1)]\`），模拟光泽在金属表面滑过的 3D 反光感。
 - 气泡弹跳（Bubble Pop）：Y2K 充满乐观和玩具感。必须使用弹性自定义缓动 \`ease-[cubic-bezier(0.34,1.56,0.64,1)]\`，悬停时夸张放大（\`hover:scale-105\` 或 \`hover:-translate-y-1\`），点击时如果冻般挤压（\`active:scale-90\`）。
 - 镭射炫光（CD Glare）：阴影颜色必须使用高饱和度青色（#00ffff）和粉色（#ff69b4）的混合光晕，模拟 CD 光盘的镭射反光。禁止使用黑色阴影。
-- 熔岩灯效果：卡片内的圆形气泡装饰在悬停时产生非对称移动或拉伸，就像熔岩灯中的液滴上升。`,
+- 熔岩灯效果：卡片内的圆形气泡装饰在悬停时产生非对称移动或拉伸，就像熔岩灯中的液滴上升。
+
+## Layout & Spacing
+- Section padding: py-16 md:py-24
+- Card padding: p-6 md:p-8
+- Gap between cards: gap-6 md:gap-8
+- Max content width: max-w-6xl mx-auto
+
+## Responsive Design
+- Mobile-first approach with Tailwind breakpoints
+- Stack elements vertically on mobile (flex-col), row on desktop (md:flex-row)
+- Reduce font sizes on mobile: text-3xl md:text-5xl for headings
+- Touch-friendly targets: min 44px for interactive elements
+
+## Self-Check Verification
+After generating code, verify:
+1. All interactive elements have hover/focus/active states
+2. Color contrast meets WCAG 2.1 AA (4.5:1 for text)
+3. Layout is responsive across breakpoints
+4. Typography hierarchy is clear (h1 > h2 > h3 > body)
+5. Spacing is consistent using the defined scale
+6. All animations respect prefers-reduced-motion`,
 
   aiRulesEn: `You are a Y2K design style frontend development expert. All generated code must strictly follow these constraints:
 
@@ -288,6 +348,44 @@ Primary:
 3. 产品卡片：金属光泽边框
 4. 按钮：圆润 + 彩虹渐变
 5. 添加星星闪光装饰`,
+    },
+  {
+      title: "SaaS 着陆页",
+      titleEn: "SaaS Landing Page",
+      description: "生成 千禧风格风格的 SaaS 产品着陆页",
+      descriptionEn: "Generate a SaaS product landing page in Y2K style",
+      prompt: `Create a SaaS landing page using Y2K style with hero section, feature grid, testimonials, pricing table, and footer.`,
+    },
+    {
+      title: "作品集展示",
+      titleEn: "Portfolio Showcase",
+      description: "生成 千禧风格风格的作品集页面",
+      descriptionEn: "Generate a portfolio showcase in Y2K style",
+      prompt: `Create a portfolio showcase page using Y2K style with project grid, about section, contact form, and consistent visual language.`,
+    }],
+
+  variants: [
+    {
+      id: "y2k-warm",
+      name: "千禧风格暖色版",
+      nameEn: "Y2K Warm",
+      description: "Warm-toned variant with shifted hues toward amber/orange",
+      colors: {
+        primary: "#c0c0c0",
+        secondary: "#ff78bc",
+        accent: ["#36e5ff", "#ff008b", "#a4c3ff"],
+      },
+    },
+    {
+      id: "y2k-cool",
+      name: "千禧风格冷色版",
+      nameEn: "Y2K Cool",
+      description: "Cool-toned variant with shifted hues toward blue/teal",
+      colors: {
+        primary: "#c0c0c0",
+        secondary: "#e65fa2",
+        accent: ["#00ff93", "#8b1cff", "#7ad5c8"],
+      },
     },
   ],
 };

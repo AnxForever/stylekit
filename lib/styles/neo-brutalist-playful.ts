@@ -17,7 +17,7 @@ export const neoBrutalistPlayful: DesignStyle = {
     secondary: "#ffffff",
     accent: ["#ff6b6b", "#4ecdc4", "#ffe66d", "#95e1d3", "#f38181"],
   },
-  keywords: ["俏皮野兽派", "多彩", "倾斜元素", "图标", "年轻化"],
+  keywords: ["俏皮野兽派", "多彩", "倾斜元素", "图标", "年轻化", "expressive", "bold", "vibrant", "表现力", "张力"],
 
   philosophy: `Neo-Brutalist Playful（俏皮野兽派）是原版 Neo-Brutalist 的活泼变体。在保持硬边缘、无圆角的结构基础上，通过以下方式增加趣味性：
 
@@ -28,7 +28,14 @@ export const neoBrutalistPlayful: DesignStyle = {
 - 更活泼的 hover 动画（scale、bounce）
 - 手写风格的装饰文字
 
-适用场景：年轻化品牌、创意工作室、儿童产品、趣味应用`,
+适用场景：年轻化品牌、创意工作室、儿童产品、趣味应用
+
+设计原则：
+- 视觉一致性：所有组件必须遵循统一的视觉语言，从色彩到字体到间距保持谐调
+- 层次分明：通过颜色深浅、字号大小、留白空间建立清晰的信息层级
+- 交互反馈：每个可交互元素都必须有明确的 hover、active、focus 状态反馈
+- 响应式适配：设计必须在移动端、平板、桌面端上保持一致的体验
+- 无障碍性：确保色彩对比度符合 WCAG 2.1 AA 标准，所有交互元素可键盘访问`,
 
   philosophyEn: `Neo-Brutalist Playful is a lively variant of the original Neo-Brutalist. While maintaining the hard-edge, no-rounded-corner structural foundation, it adds fun through:
 
@@ -283,6 +290,59 @@ h1, h2, h3, h4, h5, h6 {
   text-decoration-color: var(--playful-yellow);
   text-decoration-thickness: 4px;
   text-underline-offset: 4px;
+}
+@keyframes neo-brutalist-playful-fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes neo-brutalist-playful-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.neo-brutalist-playful-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.neo-brutalist-playful-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.05), transparent);
+  pointer-events: none;
+}
+
+.neo-brutalist-playful-card:hover::before {
+  opacity: 1;
+}
+
+.neo-brutalist-playful-gradient {
+  background: linear-gradient(135deg, #000000, #ff6b6b);
+}
+
+.neo-brutalist-playful-gradient-text {
+  background: linear-gradient(135deg, #000000, #ff6b6b);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.neo-brutalist-playful-frosted {
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  background: rgba(0, 0, 0, 0.08);
+}
+
+.neo-brutalist-playful-accent-corner {
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 2rem), calc(100% - 2rem) 100%, 0 100%);
+}
+
+.neo-brutalist-playful-animate-in {
+  animation: neo-brutalist-playful-fade-in 0.5s ease-out both;
 }`,
 
   aiRules: `你是一个 Neo-Brutalist Playful（俏皮野兽派）设计风格的前端开发专家。这是 Neo-Brutalist 的活泼版本。
@@ -426,6 +486,31 @@ Interaction effects:
 4. 技能展示：彩色进度条或图标
 5. 联系区：趣味表单，彩色按钮
 保持无圆角、粗边框、硬阴影的野兽派特征`,
+    },
+  ],
+
+  variants: [
+    {
+      id: "neo-brutalist-playful-warm",
+      name: "俏皮野兽派暖色版",
+      nameEn: "Neo-Brutalist Playful Warm",
+      description: "Warm-toned variant with shifted hues toward amber/orange",
+      colors: {
+        primary: "#000000",
+        secondary: "#ffffff",
+        accent: ["#e07a35", "#65c1f3", "#c0f86f", "#9edbf0", "#db8c57"],
+      },
+    },
+    {
+      id: "neo-brutalist-playful-cool",
+      name: "俏皮野兽派冷色版",
+      nameEn: "Neo-Brutalist Playful Cool",
+      description: "Cool-toned variant with shifted hues toward blue/teal",
+      colors: {
+        primary: "#000000",
+        secondary: "#e6e6e6",
+        accent: ["#ff65a9", "#52d190", "#ffd38b", "#9be2b5", "#f37cb1"],
+      },
     },
   ],
 };

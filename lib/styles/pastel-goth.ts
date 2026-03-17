@@ -17,7 +17,7 @@ export const pastelGoth: DesignStyle = {
     secondary: "#1a1225",
     accent: ["#d4a5e3", "#7ec8c8", "#f5a5b8", "#b8a5f5"],
   },
-  keywords: ["粉彩哥特", "柔暗", "糖果色", "骷髅", "十字架", "暗色", "粉紫"],
+  keywords: ["粉彩哥特", "柔暗", "糖果色", "骷髅", "十字架", "暗色", "粉紫", "expressive", "bold", "vibrant"],
 
   philosophy: `Pastel Goth（粉彩哥特）是2010年代从Tumblr亚文化中诞生的独特美学流派，将传统哥特的暗黑元素与甜美的糖果色彩进行了颠覆性的融合。
 
@@ -392,6 +392,44 @@ Primary:
 3. Cards: dark with pastel borders and soft glow shadows
 4. Buttons: dark purple with lavender text and glow
 5. Decorations: crosses, dots, and ambient light effects`,
+    },
+  {
+      title: "SaaS 着陆页",
+      titleEn: "SaaS Landing Page",
+      description: "生成 粉彩哥特风格的 SaaS 产品着陆页",
+      descriptionEn: "Generate a SaaS product landing page in Pastel Goth style",
+      prompt: `Create a SaaS landing page using Pastel Goth style with hero section, feature grid, testimonials, pricing table, and footer.`,
+    },
+    {
+      title: "作品集展示",
+      titleEn: "Portfolio Showcase",
+      description: "生成 粉彩哥特风格的作品集页面",
+      descriptionEn: "Generate a portfolio showcase in Pastel Goth style",
+      prompt: `Create a portfolio showcase page using Pastel Goth style with project grid, about section, contact form, and consistent visual language.`,
+    }],
+
+  variants: [
+    {
+      id: "pastel-goth-warm",
+      name: "粉彩哥特暖色版",
+      nameEn: "Pastel Goth Warm",
+      description: "Warm-toned variant with shifted hues toward amber/orange",
+      colors: {
+        primary: "#391833",
+        secondary: "#312a3b",
+        accent: ["#e7a2cc", "#8ec1e3", "#edaa99", "#da9ce7"],
+      },
+    },
+    {
+      id: "pastel-goth-cool",
+      name: "粉彩哥特冷色版",
+      nameEn: "Pastel Goth Cool",
+      description: "Cool-toned variant with shifted hues toward blue/teal",
+      colors: {
+        primary: "#1e1f3f",
+        secondary: "#171021",
+        accent: ["#b8aced", "#7ecba9", "#eca4d7", "#94b0f0"],
+      },
     },
   ],
 };

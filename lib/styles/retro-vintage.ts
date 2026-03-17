@@ -15,9 +15,9 @@ export const retroVintage: DesignStyle = {
   colors: {
     primary: "#8b4513",
     secondary: "#f5e6d3",
-    accent: ["#c94c4c", "#2e4a3f", "#d4a373"],
+    accent: ["#c94c4c", "#2e4a3f", "#d4a373", "#816904"],
   },
-  keywords: ["复古", "怀旧", "老式", "手工", "咖啡馆", "独立", "文艺"],
+  keywords: ["复古", "怀旧", "老式", "手工", "咖啡馆", "独立", "文艺", "retro", "vintage", "nostalgic"],
 
   philosophy: `Retro Vintage 风格从20世纪中期的设计美学中汲取灵感，通过复古排版、做旧纹理和怀旧色调创造温暖的时光感。
 
@@ -25,7 +25,14 @@ export const retroVintage: DesignStyle = {
 - 时光沉淀：设计带有岁月的温度和故事
 - 手工温度：避免过于数字化的冷感
 - 经典永恒：使用经过时间检验的设计元素
-- 文化底蕴：传达历史感和文化认同`,
+- 文化底蕴：传达历史感和文化认同
+
+设计原则：
+- 视觉一致性：所有组件必须遵循统一的视觉语言，从色彩到字体到间距保持谐调
+- 层次分明：通过颜色深浅、字号大小、留白空间建立清晰的信息层级
+- 交互反馈：每个可交互元素都必须有明确的 hover、active、focus 状态反馈
+- 响应式适配：设计必须在移动端、平板、桌面端上保持一致的体验
+- 无障碍性：确保色彩对比度符合 WCAG 2.1 AA 标准，所有交互元素可键盘访问`,
 
   philosophyEn: `Retro Vintage style draws inspiration from mid-20th century design aesthetics, creating a warm sense of time through vintage typography, aged textures, and nostalgic color tones.
 
@@ -154,6 +161,72 @@ Core principles:
 .retro-divider::after {
   content: '';
   @apply flex-1 h-px bg-[#8b4513]/30;
+}
+/* Retro Vintage Design Tokens */
+:root {
+  --retro-vintage-primary: #8b4513;
+  --retro-vintage-secondary: #f5e6d3;
+  --retro-vintage-accent: #c94c4c;
+  --retro-vintage-glow: rgba(139, 69, 19, 0.3);
+}
+
+@keyframes retro-vintage-fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes retro-vintage-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.retro-vintage-gradient {
+  background: linear-gradient(135deg, #8b4513, #c94c4c);
+}
+
+.retro-vintage-gradient-text {
+  background: linear-gradient(135deg, #8b4513, #c94c4c);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.retro-vintage-frosted {
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  background: rgba(139, 69, 19, 0.08);
+}
+
+.retro-vintage-accent-corner {
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 2rem), calc(100% - 2rem) 100%, 0 100%);
+}
+
+.retro-vintage-animate-in {
+  animation: retro-vintage-fade-in 0.5s ease-out both;
+}
+
+.retro-vintage-focus { outline: 2px solid var(--retro-vintage-primary, currentColor); outline-offset: 2px; }
+
+/* Responsive utilities */
+@media (prefers-reduced-motion: reduce) {
+  .retro-vintage-animate-in {
+    animation: none;
+  }
+}
+
+@media (min-width: 768px) {
+  .retro-vintage-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+}
+
+/* Print styles */
+@media print {
+  .retro-vintage-gradient,
+  .retro-vintage-frosted {
+    background: none;
+    backdrop-filter: none;
+  }
 }`,
 
   aiRules: `STYLE: Retro Vintage
@@ -244,6 +317,44 @@ TYPOGRAPHY:
 - Paper texture backgrounds
 - Ornamental corner decorations
 - Serif fonts throughout`,
+    },
+  {
+      title: "SaaS 着陆页",
+      titleEn: "SaaS Landing Page",
+      description: "生成 复古怀旧风风格的 SaaS 产品着陆页",
+      descriptionEn: "Generate a SaaS product landing page in Retro Vintage style",
+      prompt: `Create a SaaS landing page using Retro Vintage style with hero section, feature grid, testimonials, pricing table, and footer.`,
+    },
+    {
+      title: "作品集展示",
+      titleEn: "Portfolio Showcase",
+      description: "生成 复古怀旧风风格的作品集页面",
+      descriptionEn: "Generate a portfolio showcase in Retro Vintage style",
+      prompt: `Create a portfolio showcase page using Retro Vintage style with project grid, about section, contact form, and consistent visual language.`,
+    }],
+
+  variants: [
+    {
+      id: "retro-vintage-warm",
+      name: "复古怀旧风暖色版",
+      nameEn: "Retro Vintage Warm",
+      description: "Warm-toned variant with shifted hues toward amber/orange",
+      colors: {
+        primary: "#645300",
+        secondary: "#f6e9d7",
+        accent: ["#af591e", "#2f494a", "#b3ae65"],
+      },
+    },
+    {
+      id: "retro-vintage-cool",
+      name: "复古怀旧风冷色版",
+      nameEn: "Retro Vintage Cool",
+      description: "Cool-toned variant with shifted hues toward blue/teal",
+      colors: {
+        primary: "#a23a39",
+        secondary: "#ddcfbe",
+        accent: ["#c94781", "#334a35", "#ea9a8f"],
+      },
     },
   ],
 };

@@ -17,7 +17,7 @@ export const watercolorStyle: DesignStyle = {
     secondary: "#faf8f5",
     accent: ["#e8a87c", "#85cdca", "#c38d94", "#d4a373"],
   },
-  keywords: ["水彩", "渐变", "柔和", "纸张", "艺术", "流动", "诗意"],
+  keywords: ["水彩", "渐变", "柔和", "纸张", "艺术", "流动", "诗意", "expressive", "bold", "vibrant"],
 
   philosophy: `Watercolor Style 是一种模拟水彩画效果的设计风格，通过柔和的颜色渐变、模糊的边缘和流动的色彩扩散，为界面注入艺术气息和诗意感受。
 
@@ -25,7 +25,14 @@ export const watercolorStyle: DesignStyle = {
 - 流动感：颜色像水彩一样自然渗透和扩散
 - 柔和边缘：没有硬朗的边界线，一切都柔和过渡
 - 纸张质感：底层保留水彩纸的温暖纹理
-- 透明叠加：水彩的半透明特性，颜色层层叠加`,
+- 透明叠加：水彩的半透明特性，颜色层层叠加
+
+设计原则：
+- 视觉一致性：所有组件必须遵循统一的视觉语言，从色彩到字体到间距保持谐调
+- 层次分明：通过颜色深浅、字号大小、留白空间建立清晰的信息层级
+- 交互反馈：每个可交互元素都必须有明确的 hover、active、focus 状态反馈
+- 响应式适配：设计必须在移动端、平板、桌面端上保持一致的体验
+- 无障碍性：确保色彩对比度符合 WCAG 2.1 AA 标准，所有交互元素可键盘访问`,
 
   philosophyEn: `Watercolor Style is a design style simulating watercolor painting effects, injecting artistic atmosphere and poetic feeling into interfaces through soft color gradients, blurred edges, and flowing color diffusion.
 
@@ -229,6 +236,48 @@ Core principles:
   height: 2px;
   background: linear-gradient(to right, transparent, var(--wc-blue), transparent);
   opacity: 0.2;
+}
+@keyframes watercolor-style-fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes watercolor-style-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.watercolor-style-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.watercolor-style-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  background: linear-gradient(135deg, rgba(74, 111, 165, 0.05), transparent);
+  pointer-events: none;
+}
+
+.watercolor-style-card:hover::before {
+  opacity: 1;
+}
+
+.watercolor-style-frosted {
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  background: rgba(74, 111, 165, 0.08);
+}
+
+.watercolor-style-accent-corner {
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 2rem), calc(100% - 2rem) 100%, 0 100%);
+}
+
+.watercolor-style-animate-in {
+  animation: watercolor-style-fade-in 0.5s ease-out both;
 }`,
 
   aiRules: `你是一个 Watercolor Style 设计风格的前端开发专家。生成的所有代码必须严格遵守以下约束：
@@ -366,6 +415,37 @@ After generating code, verify:
 3. 导航使用柔和的半透明效果
 4. 联系方式卡片使用水彩渐变背景
 5. 整体色调温暖柔和，像一幅水彩画`,
+    },
+  {
+      title: "作品集展示",
+      titleEn: "Portfolio Showcase",
+      description: "生成 水彩画风风格的作品集页面",
+      descriptionEn: "Generate a portfolio showcase in Watercolor Style style",
+      prompt: `Create a portfolio showcase page using Watercolor Style style with project grid, about section, contact form, and consistent visual language.`,
+    }],
+
+  variants: [
+    {
+      id: "watercolor-style-warm",
+      name: "水彩画风暖色版",
+      nameEn: "Watercolor Style Warm",
+      description: "Warm-toned variant with shifted hues toward amber/orange",
+      colors: {
+        primary: "#6b64ae",
+        secondary: "#fbf9f6",
+        accent: ["#c6b469", "#93c6e5", "#bb9180", "#b3ae65"],
+      },
+    },
+    {
+      id: "watercolor-style-cool",
+      name: "水彩画风冷色版",
+      nameEn: "Watercolor Style Cool",
+      description: "Cool-toned variant with shifted hues toward blue/teal",
+      colors: {
+        primary: "#31798d",
+        secondary: "#e1dfdd",
+        accent: ["#fc9f9e", "#86d0ac", "#c08caa", "#ea9a8f"],
+      },
     },
   ],
 };

@@ -15,9 +15,9 @@ export const marbleLuxury: DesignStyle = {
   colors: {
     primary: "#1a1a1a",
     secondary: "#f8f6f3",
-    accent: ["#c9a96e", "#8a7968", "#e8e0d6"],
+    accent: ["#c9a96e", "#8a7968", "#e8e0d6", "#85bd73"],
   },
-  keywords: ["大理石", "奢华", "金色", "高端", "纹理", "精致", "品牌"],
+  keywords: ["大理石", "奢华", "金色", "高端", "纹理", "精致", "品牌", "modern", "contemporary", "sleek"],
 
   philosophy: `大理石奢华（Marble Luxury）设计风格源自高端建筑和室内设计的材质美学。大理石自古罗马时代起便是权力、财富和永恒之美的象征，其天然纹理中的灰色脉络与温暖白色基底形成了独一无二的视觉韵律。
 
@@ -403,6 +403,44 @@ Primary:
 5. Buttons: black bg with gold border, hover transitions to gold bg (duration-500)
 6. Inputs: underline-only style, gold focus border
 7. Typography: font-serif throughout, tracking-[0.2em]+ on labels, relaxed leading`,
+    },
+  {
+      title: "SaaS 着陆页",
+      titleEn: "SaaS Landing Page",
+      description: "生成 大理石奢华风格的 SaaS 产品着陆页",
+      descriptionEn: "Generate a SaaS product landing page in Marble Luxury style",
+      prompt: `Create a SaaS landing page using Marble Luxury style with hero section, feature grid, testimonials, pricing table, and footer.`,
+    },
+    {
+      title: "作品集展示",
+      titleEn: "Portfolio Showcase",
+      description: "生成 大理石奢华风格的作品集页面",
+      descriptionEn: "Generate a portfolio showcase in Marble Luxury style",
+      prompt: `Create a portfolio showcase page using Marble Luxury style with project grid, about section, contact form, and consistent visual language.`,
+    }],
+
+  variants: [
+    {
+      id: "marble-luxury-warm",
+      name: "大理石奢华暖色版",
+      nameEn: "Marble Luxury Warm",
+      description: "Warm-toned variant with shifted hues toward amber/orange",
+      colors: {
+        primary: "#1a1a1a",
+        secondary: "#f9f7f4",
+        accent: ["#a6b468", "#7e7d63", "#e2e2d4"],
+      },
+    },
+    {
+      id: "marble-luxury-cool",
+      name: "大理石奢华冷色版",
+      nameEn: "Marble Luxury Cool",
+      description: "Cool-toned variant with shifted hues toward blue/teal",
+      colors: {
+        primary: "#1a1a1a",
+        secondary: "#dfdddb",
+        accent: ["#e49f85", "#927672", "#eddedb"],
+      },
     },
   ],
 };

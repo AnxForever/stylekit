@@ -17,7 +17,7 @@ export const neoBrutalist: DesignStyle = {
     secondary: "#ffffff",
     accent: ["#ff006e", "#ccff00", "#00d9ff", "#ff9500"],
   },
-  keywords: ["粗边框", "硬阴影", "无圆角", "高对比", "功能主义"],
+  keywords: ["粗边框", "硬阴影", "无圆角", "高对比", "功能主义", "expressive", "bold", "vibrant", "表现力", "张力"],
 
   // 风格变体
   variants: [
@@ -73,7 +73,14 @@ export const neoBrutalist: DesignStyle = {
 - 功能优先：每个元素都有明确的目的
 - 诚实表达：不掩饰结构，不伪装功能
 - 大胆直接：用视觉冲击力传达信息
-- 反对圆滑：拒绝过度精致，拥抱粗犷`,
+- 反对圆滑：拒绝过度精致，拥抱粗犷
+
+设计原则：
+- 视觉一致性：所有组件必须遵循统一的视觉语言，从色彩到字体到间距保持谐调
+- 层次分明：通过颜色深浅、字号大小、留白空间建立清晰的信息层级
+- 交互反馈：每个可交互元素都必须有明确的 hover、active、focus 状态反馈
+- 响应式适配：设计必须在移动端、平板、桌面端上保持一致的体验
+- 无障碍性：确保色彩对比度符合 WCAG 2.1 AA 标准，所有交互元素可键盘访问`,
 
   philosophyEn: `Neo-Brutalist design style originates from the Brutalist movement in architecture, emphasizing raw, unadorned functional aesthetics. In web design, this style is expressed through bold black borders, hard-edge shadows, sharp right angles, and high-contrast color schemes.
 
@@ -289,6 +296,59 @@ body {
 ::selection {
   background: var(--accent-pink);
   color: white;
+}
+@keyframes neo-brutalist-fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes neo-brutalist-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.neo-brutalist-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.neo-brutalist-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.05), transparent);
+  pointer-events: none;
+}
+
+.neo-brutalist-card:hover::before {
+  opacity: 1;
+}
+
+.neo-brutalist-gradient {
+  background: linear-gradient(135deg, #000000, #ff006e);
+}
+
+.neo-brutalist-gradient-text {
+  background: linear-gradient(135deg, #000000, #ff006e);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.neo-brutalist-frosted {
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  background: rgba(0, 0, 0, 0.08);
+}
+
+.neo-brutalist-accent-corner {
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 2rem), calc(100% - 2rem) 100%, 0 100%);
+}
+
+.neo-brutalist-animate-in {
+  animation: neo-brutalist-fade-in 0.5s ease-out both;
 }`,
 
   aiRules: `你是一个 Neo-Brutalist 设计风格的前端开发专家。生成的所有代码必须严格遵守以下约束：

@@ -15,7 +15,7 @@ export const brutalistWeb: DesignStyle = {
   colors: {
     primary: "#000000",
     secondary: "#ffffff",
-    accent: ["#0000ff", "#ff0000", "#008000"],
+    accent: ["#0000ff", "#ff0000", "#008000", "#d60099"],
   },
   keywords: [
     "brutalist",
@@ -307,6 +307,40 @@ th, td {
   outline: 1px dotted var(--bw-black);
   outline-offset: 1px;
   background: #ffffcc;
+}
+@keyframes brutalist-web-fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes brutalist-web-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.brutalist-web-gradient {
+  background: linear-gradient(135deg, #000000, #0000ff);
+}
+
+.brutalist-web-gradient-text {
+  background: linear-gradient(135deg, #000000, #0000ff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.brutalist-web-frosted {
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  background: rgba(0, 0, 0, 0.08);
+}
+
+.brutalist-web-accent-corner {
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 2rem), calc(100% - 2rem) 100%, 0 100%);
+}
+
+.brutalist-web-animate-in {
+  animation: brutalist-web-fade-in 0.5s ease-out both;
 }`,
 
   aiRules: `You are a Brutalist Web style frontend development expert. All generated code must recreate the raw, unstyled feel of 1990s early internet HTML pages.
@@ -442,6 +476,31 @@ Animation & Interaction Rules:
 6. Sidebar (if any) is just a list of links
 7. Footer: plain text copyright and a link to RSS feed
 8. Maximum readability, zero decoration`,
+    },
+  ],
+
+  variants: [
+    {
+      id: "brutalist-web-warm",
+      name: "网页粗野主义暖色版",
+      nameEn: "Brutalist Web Warm",
+      description: "Warm-toned variant with shifted hues toward amber/orange",
+      colors: {
+        primary: "#000000",
+        secondary: "#ffffff",
+        accent: ["#7900e8", "#c91a00", "#00843a"],
+      },
+    },
+    {
+      id: "brutalist-web-cool",
+      name: "网页粗野主义冷色版",
+      nameEn: "Brutalist Web Cool",
+      description: "Cool-toned variant with shifted hues toward blue/teal",
+      colors: {
+        primary: "#000000",
+        secondary: "#e6e6e6",
+        accent: ["#0027d6", "#ff006c", "#3a7200"],
+      },
     },
   ],
 };

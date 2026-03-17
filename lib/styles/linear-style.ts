@@ -15,7 +15,7 @@ export const linearStyle: DesignStyle = {
     secondary: "#0a0a0b",
     accent: ["#f2c94c", "#27ae60", "#eb5757", "#2d9cdb"],
   },
-  keywords: ["Linear", "极简", "暗色", "开发者", "精确", "工具"],
+  keywords: ["Linear", "极简", "暗色", "开发者", "精确", "工具", "minimal", "clean", "simple", "留白"],
 
   philosophy: `Linear Style 源自备受开发者推崇的项目管理工具 Linear。其设计理念是"每一个像素都有目的"。
 
@@ -24,7 +24,14 @@ export const linearStyle: DesignStyle = {
 - 精确排版：Inter 字体，letter-spacing 微调，恰到好处的行高
 - 克制渐变：紫色渐变仅用于主要 CTA 和品牌元素
 - 微妙边框：1px 的半透明白色边框划分层级
-- 无多余装饰：没有阴影、没有圆角过大的元素、没有花哨的效果`,
+- 无多余装饰：没有阴影、没有圆角过大的元素、没有花哨的效果
+
+设计原则：
+- 视觉一致性：所有组件必须遵循统一的视觉语言，从色彩到字体到间距保持谐调
+- 层次分明：通过颜色深浅、字号大小、留白空间建立清晰的信息层级
+- 交互反馈：每个可交互元素都必须有明确的 hover、active、focus 状态反馈
+- 响应式适配：设计必须在移动端、平板、桌面端上保持一致的体验
+- 无障碍性：确保色彩对比度符合 WCAG 2.1 AA 标准，所有交互元素可键盘访问`,
 
   philosophyEn: `Linear Style draws from the beloved developer tool Linear. The design philosophy: "Every pixel has a purpose."
 
@@ -140,6 +147,56 @@ Core principles:
   .linear-gradient {
     background: linear-gradient(to right, #5e6ad2, #8b5cf6);
   }
+}
+/* Linear Style Design Tokens */
+:root {
+  --linear-style-primary: #5e6ad2;
+  --linear-style-secondary: #0a0a0b;
+  --linear-style-accent: #f2c94c;
+  --linear-style-glow: rgba(94, 106, 210, 0.3);
+}
+
+@keyframes linear-style-fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes linear-style-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.linear-style-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.linear-style-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  background: linear-gradient(135deg, rgba(94, 106, 210, 0.05), transparent);
+  pointer-events: none;
+}
+
+.linear-style-card:hover::before {
+  opacity: 1;
+}
+
+.linear-style-frosted {
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  background: rgba(94, 106, 210, 0.08);
+}
+
+.linear-style-accent-corner {
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 2rem), calc(100% - 2rem) 100%, 0 100%);
+}
+
+.linear-style-animate-in {
+  animation: linear-style-fade-in 0.5s ease-out both;
 }`,
 
   aiRules: `You are a Linear Style design expert. This style emulates the design language of the Linear project management tool — precise, restrained, and developer-focused.
@@ -192,6 +249,44 @@ Core principles:
       description: "Linear 风格的项目看板，包含 issue 列表和状态管理",
       descriptionEn: "Linear-style project board with issue list and status management",
       prompt: "Create a project management dashboard in Linear style. Include a sidebar with workspace navigation, a main area with issue list (showing status icons, issue IDs, titles, labels, and assignees), and a top bar with filters. Use #0a0a0b background, border-white/10 borders, and #5e6ad2 for the primary action button.",
+    },
+  {
+      title: "SaaS 着陆页",
+      titleEn: "SaaS Landing Page",
+      description: "生成 Linear 风格风格的 SaaS 产品着陆页",
+      descriptionEn: "Generate a SaaS product landing page in Linear Style style",
+      prompt: `Create a SaaS landing page using Linear Style style with hero section, feature grid, testimonials, pricing table, and footer.`,
+    },
+    {
+      title: "作品集展示",
+      titleEn: "Portfolio Showcase",
+      description: "生成 Linear 风格风格的作品集页面",
+      descriptionEn: "Generate a portfolio showcase in Linear Style style",
+      prompt: `Create a portfolio showcase page using Linear Style style with project grid, about section, contact form, and consistent visual language.`,
+    }],
+
+  variants: [
+    {
+      id: "linear-style-warm",
+      name: "Linear 风格暖色版",
+      nameEn: "Linear Style Warm",
+      description: "Warm-toned variant with shifted hues toward amber/orange",
+      colors: {
+        primary: "#925bcd",
+        secondary: "#232323",
+        accent: ["#aede48", "#1fab98", "#cc6621", "#6289fe"],
+      },
+    },
+    {
+      id: "linear-style-cool",
+      name: "Linear 风格冷色版",
+      nameEn: "Linear Style Cool",
+      description: "Cool-toned variant with shifted hues toward blue/teal",
+      colors: {
+        primary: "#2f7abc",
+        secondary: "#09090a",
+        accent: ["#ffb471", "#4aa834", "#eb5195", "#10aaa2"],
+      },
     },
   ],
 };
