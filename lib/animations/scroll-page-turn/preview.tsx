@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState, useEffect } from "react";
-import { PreviewContainer } from "./_shared";
+import { PreviewContainer } from "../previews/_shared";
 
 const pages = [
   { bg: "from-slate-800 to-slate-900", label: "Page 1", sub: "Scroll to turn" },
@@ -9,12 +9,16 @@ const pages = [
   { bg: "from-emerald-800 to-emerald-900", label: "Page 3", sub: "Last page" },
 ];
 
+/**
+ * Contained preview — uses a local scroll container instead of window scroll
+ * so it works inside the detail page without hijacking the page scroll.
+ */
 export function ScrollPageTurnPreview() {
-  const containerRef = useRef<HTMLDivElement>(null);
+  const scrollRef = useRef<HTMLDivElement>(null);
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {
-    const el = containerRef.current;
+    const el = scrollRef.current;
     if (!el) return;
 
     function onScroll() {
@@ -33,13 +37,10 @@ export function ScrollPageTurnPreview() {
     <PreviewContainer bg="dark">
       <div className="flex flex-col items-center gap-2 w-full max-w-xs">
         <div
-          ref={containerRef}
+          ref={scrollRef}
           className="relative w-full h-[200px] overflow-y-auto rounded-lg border border-zinc-700 bg-zinc-950"
-          style={{ scrollBehavior: "smooth" }}
         >
-          {/* Tall scroll content */}
           <div style={{ height: `${total * 200}px`, position: "relative" }}>
-            {/* Sticky viewport */}
             <div
               className="sticky top-0 h-[200px] w-full overflow-hidden"
               style={{ perspective: "800px" }}
@@ -62,9 +63,10 @@ export function ScrollPageTurnPreview() {
                       opacity: Math.max(0, opacity),
                       zIndex: total - i,
                       backfaceVisibility: "hidden",
-                      boxShadow: shadowIntensity > 0.01
-                        ? `inset -20px 0 40px rgba(0,0,0,${shadowIntensity})`
-                        : "none",
+                      boxShadow:
+                        shadowIntensity > 0.01
+                          ? `inset -20px 0 40px rgba(0,0,0,${shadowIntensity})`
+                          : "none",
                     }}
                   >
                     <span className="text-lg font-bold text-white">{page.label}</span>
@@ -82,3 +84,9 @@ export function ScrollPageTurnPreview() {
     </PreviewContainer>
   );
 }
+
+/**
+ * Full-page usage example — uses the real hook with window scroll.
+ * Not used in the preview card, but demonstrates the hook API.
+ */
+export { useScrollPageTurn } from "./use-scroll-page-turn";

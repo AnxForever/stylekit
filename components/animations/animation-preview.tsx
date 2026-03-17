@@ -86,8 +86,9 @@ const previewMap: Record<string, ComponentType> = {
   shake: dynamicPreview(
     () => import("@/lib/animations/previews/shake-preview").then((m) => m.ShakePreview)
   ),
+  // --- Directory-based animations (Phase 1 pilot) ---
   "flip-card": dynamicPreview(
-    () => import("@/lib/animations/previews/flip-card-preview").then((m) => m.FlipCardPreview)
+    () => import("@/lib/animations/flip-card/preview").then((m) => m.FlipCardPreview)
   ),
   "ripple-click": dynamicPreview(
     () => import("@/lib/animations/previews/ripple-click-preview").then((m) => m.RippleClickPreview)
@@ -165,10 +166,10 @@ const previewMap: Record<string, ComponentType> = {
     () => import("@/lib/animations/previews/confetti-burst-preview").then((m) => m.ConfettiBurstPreview)
   ),
   "scroll-page-turn": dynamicPreview(
-    () => import("@/lib/animations/previews/scroll-page-turn-preview").then((m) => m.ScrollPageTurnPreview)
+    () => import("@/lib/animations/scroll-page-turn/preview").then((m) => m.ScrollPageTurnPreview)
   ),
   "scroll-peel-away": dynamicPreview(
-    () => import("@/lib/animations/previews/scroll-peel-away-preview").then((m) => m.ScrollPeelAwayPreview)
+    () => import("@/lib/animations/scroll-peel-away/preview").then((m) => m.ScrollPeelAwayPreview)
   ),
 };
 

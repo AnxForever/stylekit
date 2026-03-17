@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState, useEffect } from "react";
-import { PreviewContainer } from "./_shared";
+import { PreviewContainer } from "../previews/_shared";
 
 const pages = [
   { bg: "from-white to-zinc-100", text: "text-zinc-900", label: "Page 1", sub: "Scroll to peel" },
@@ -10,11 +10,11 @@ const pages = [
 ];
 
 export function ScrollPeelAwayPreview() {
-  const containerRef = useRef<HTMLDivElement>(null);
+  const scrollRef = useRef<HTMLDivElement>(null);
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {
-    const el = containerRef.current;
+    const el = scrollRef.current;
     if (!el) return;
 
     function onScroll() {
@@ -33,9 +33,8 @@ export function ScrollPeelAwayPreview() {
     <PreviewContainer bg="light">
       <div className="flex flex-col items-center gap-2 w-full max-w-xs">
         <div
-          ref={containerRef}
+          ref={scrollRef}
           className="relative w-full h-[200px] overflow-y-auto rounded-lg border border-border bg-zinc-100 dark:bg-zinc-900"
-          style={{ scrollBehavior: "smooth" }}
         >
           <div style={{ height: `${total * 200}px`, position: "relative" }}>
             <div className="sticky top-0 h-[200px] w-full overflow-hidden">
@@ -83,3 +82,5 @@ export function ScrollPeelAwayPreview() {
     </PreviewContainer>
   );
 }
+
+export { useScrollPeelAway } from "./use-scroll-peel-away";
