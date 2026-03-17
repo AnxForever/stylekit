@@ -10,11 +10,25 @@ import { FeaturedCarousel } from "@/components/home/featured-carousel";
 import { RevealOnScroll } from "@/components/home/reveal-on-scroll";
 import { GitHubStarButton } from "@/components/github-star-button";
 import type { StyleMeta } from "@/lib/styles/meta";
+import {
+  getScenarioLabel,
+  getStyleScenarios,
+  type StyleScenario,
+} from "@/lib/styles/scenarios";
 import { cn } from "@/lib/utils";
 
 interface HomeContentProps {
   styles: StyleMeta[];
 }
+
+const HERO_SCENARIO_ORDER: StyleScenario[] = [
+  "saas",
+  "dashboard",
+  "portfolio",
+  "blog",
+  "marketing",
+  "creative",
+];
 
 const TrendingStyles = dynamic(
   () => import("@/components/home/trending-styles").then((m) => ({ default: m.TrendingStyles })),
@@ -94,6 +108,16 @@ export function HomeContent({ styles }: HomeContentProps) {
       { href: quickLinkTargets[2], label: t("home.styleCatalog") },
     ],
     [quickLinkTargets, t]
+  );
+  const heroScenarioEntries = useMemo(
+    () => HERO_SCENARIO_ORDER
+      .map((scenario) => ({
+        scenario,
+        label: getScenarioLabel(scenario, locale),
+        count: styles.filter((style) => getStyleScenarios(style).includes(scenario)).length,
+      }))
+      .filter((item) => item.count > 0),
+    [locale, styles]
   );
   const activeQuickLinkIndex = useMemo(
     () => Math.max(quickLinkTargets.findIndex((href) => href === activeQuickLink), 0),
@@ -303,6 +327,30 @@ export function HomeContent({ styles }: HomeContentProps) {
                   {t("nav.guide")}
                   <ArrowRight className="w-3 h-3" />
                 </Link>
+              </div>
+              <div className="mt-5">
+                <p className={`${sectionLabelClassName} mb-2`}>
+                  {locale === "zh" ? "按场景开始" : "Start by Scenario"}
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  {heroScenarioEntries.map((item) => (
+                    <Link
+                      key={item.scenario}
+                      href={`/styles?scenario=${item.scenario}`}
+                      className="inline-flex items-center gap-2 px-3 py-1.5 text-xs border border-border text-muted hover:text-foreground hover:border-foreground transition-colors"
+                    >
+                      <span>{item.label}</span>
+                      <span className="text-[10px] text-muted tabular-nums">
+                        {item.count}
+                      </span>
+                    </Link>
+                  ))}
+                </div>
+                <p className="mt-2 text-xs text-muted">
+                  {locale === "zh"
+                    ? "模板页也已接入同一套场景筛选。"
+                    : "Templates now follow the same scenario filters."}
+                </p>
               </div>
               <div className="mt-4 flex flex-wrap items-center gap-3">
                 <GitHubStarButton />
