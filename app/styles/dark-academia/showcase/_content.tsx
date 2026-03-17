@@ -259,11 +259,20 @@ export default function DarkAcademiaShowcase() {
       <header className="fixed top-0 left-0 right-0 z-50 bg-[#3d2b1f]/97 backdrop-blur-sm border-b border-[#8b7355]/30">
         <div className="max-w-7xl mx-auto px-6 md:px-12">
           <div className="flex items-center justify-between h-14 md:h-16">
-            {/* Crest + wordmark */}
-            <Link
-              href="/styles/dark-academia/showcase"
-              className="flex items-center gap-3 group"
-            >
+            {/* Back + Crest + wordmark */}
+            <div className="flex items-center gap-3">
+              <Link
+                href="/styles/dark-academia"
+                className="group flex items-center gap-1.5 font-serif text-[#8b7355]/70 text-xs tracking-[0.15em] hover:text-[#f5f0e1] transition-colors duration-700"
+              >
+                <span className="group-hover:-translate-x-0.5 transition-transform duration-500 inline-block">&larr;</span>
+                <span>Back to Docs</span>
+              </Link>
+              <div className="w-px h-4 bg-[#8b7355]/30" />
+              <Link
+                href="/styles/dark-academia/showcase"
+                className="flex items-center gap-3 group"
+              >
               {/* SVG seal / crest */}
               <div className="w-7 h-7 rounded-full border border-[#8b7355]/50 flex items-center justify-center group-hover:border-[#8b7355] transition-colors duration-700">
                 <span className="text-[#8b7355] text-[10px] font-serif leading-none">DA</span>
@@ -272,8 +281,7 @@ export default function DarkAcademiaShowcase() {
                 Dark Academia
               </span>
             </Link>
-
-            {/* Desktop nav */}
+            </div>
             <nav className="hidden md:flex items-center gap-1 text-[#f5f0e1]/50 text-xs tracking-widest select-none">
               {[
                 { label: "Docs", href: "/styles/dark-academia" },

@@ -390,13 +390,23 @@ export default function SwissStyleShowcase() {
       <header className="fixed top-0 left-0 right-0 z-50 bg-white border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-6 md:px-12">
           <div className="flex items-center justify-between h-16">
-            {/* Brand */}
-            <Link
-              href="/styles/swiss-style/showcase"
-              className="text-sm font-bold uppercase tracking-[0.15em] text-black"
-            >
-              Swiss International
-            </Link>
+            {/* Back + Brand */}
+            <div className="flex items-center gap-4">
+              <Link
+                href="/styles/swiss-style"
+                className="text-[11px] font-medium uppercase tracking-[0.2em] text-gray-400 hover:text-[#ff0000] transition-colors duration-150 ease-out flex items-center gap-1.5"
+              >
+                <span>&larr;</span>
+                Back to Docs
+              </Link>
+              <div className="w-px h-4 bg-gray-200" />
+              <Link
+                href="/styles/swiss-style/showcase"
+                className="text-sm font-bold uppercase tracking-[0.15em] text-black"
+              >
+                Swiss International
+              </Link>
+            </div>
 
             {/* Nav items */}
             <nav className="hidden md:flex items-center gap-8">
