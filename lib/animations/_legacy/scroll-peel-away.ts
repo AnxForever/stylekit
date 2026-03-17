@@ -1,4 +1,4 @@
-import type { Animation } from "./types";
+import type { Animation } from "../types";
 
 export const scrollPeelAway: Animation = {
   slug: "scroll-peel-away",

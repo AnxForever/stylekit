@@ -1,4 +1,4 @@
-import type { Animation } from "./types";
+import type { Animation } from "../types";
 
 export const scrollPageTurn: Animation = {
   slug: "scroll-page-turn",
