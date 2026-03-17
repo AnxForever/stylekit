@@ -139,6 +139,10 @@ import { blueprintTokens } from "./blueprint-tokens";
 import { dopamineDesignTokens } from "./dopamine-design-tokens";
 import { linearStyleTokens } from "./linear-style-tokens";
 import { macosVibrancyTokens } from "./macos-vibrancy-tokens";
+import { dataDenseTokens } from "./data-dense-tokens";
+import { freshMarketTokens } from "./fresh-market-tokens";
+import { luxuryRetailTokens } from "./luxury-retail-tokens";
+import { shopifyCleanTokens } from "./shopify-clean-tokens";
 
 // Registry of all style tokens
 export const styleTokensRegistry: Record<string, StyleTokens> = {
@@ -279,6 +283,10 @@ export const styleTokensRegistry: Record<string, StyleTokens> = {
   "dopamine-design": dopamineDesignTokens,
   "linear-style": linearStyleTokens,
   "macos-vibrancy": macosVibrancyTokens,
+  "data-dense": dataDenseTokens,
+  "fresh-market": freshMarketTokens,
+  "luxury-retail": luxuryRetailTokens,
+  "shopify-clean": shopifyCleanTokens,
 };
 
 // Get tokens for a style by slug
