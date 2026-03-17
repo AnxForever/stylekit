@@ -22,6 +22,7 @@ import { CollapsibleSection } from "@/components/ui/collapsible-section";
 import { LazySection } from "@/components/ui/lazy-section";
 import { useI18n } from "@/lib/i18n/context";
 import { localizedString, localizedList } from "@/lib/styles/locale-content";
+import { trackEvent } from "@/lib/analytics/events";
 
 import type { DesignStyle } from "@/lib/styles";
 import type { AccessibilityScore } from "@/lib/accessibility";
@@ -130,6 +131,7 @@ export function StyleDetailContent({
       }).catch(() => {
         // Analytics failure is non-blocking
       });
+      trackEvent("style_view", { slug: style.slug, source: "page" });
     };
 
     if (typeof window.requestIdleCallback === "function") {
@@ -334,7 +336,7 @@ export function StyleDetailContent({
         <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-12 py-12 md:py-16">
           <CollapsibleSection title={t("styleDetail.globalStyles")}>
             <h2 className="text-2xl md:text-3xl mb-8">{t("styleDetail.globalCssTitle")}</h2>
-            <CodeBlock code={style.globalCss} language="css" />
+            <CodeBlock code={style.globalCss} language="css" slug={style.slug} />
           </CollapsibleSection>
         </div>
       </section>
@@ -412,7 +414,7 @@ export function StyleDetailContent({
         <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-12 py-12 md:py-16">
           <CollapsibleSection title={t("styleDetail.globalStyles")}>
             <h2 className="text-2xl md:text-3xl mb-8">{t("styleDetail.globalCssTitle")}</h2>
-            <CodeBlock code={style.globalCss} language="css" />
+            <CodeBlock code={style.globalCss} language="css" slug={style.slug} />
           </CollapsibleSection>
         </div>
       </section>
