@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { AnimationsContent } from "@/components/animations/animations-content";
@@ -20,7 +21,9 @@ export default function AnimationsPage() {
     <div className="min-h-screen flex flex-col">
       <Header />
       <main className="flex-1">
-        <AnimationsContent allAnimations={allAnimations} />
+        <Suspense>
+          <AnimationsContent allAnimations={allAnimations} />
+        </Suspense>
       </main>
       <Footer />
     </div>

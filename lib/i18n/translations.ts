@@ -65,6 +65,11 @@ const en = {
     "animations.playgroundDuration": "Duration",
     "animations.playgroundEasing": "Easing",
     "animations.playgroundDelay": "Delay",
+    "animations.sandbox": "Sandbox",
+    "animations.moreFilters": "More Filters",
+    "animations.jsDriven": "Controlled via JavaScript hooks",
+    "animations.scrollDriven": "Driven by scroll position",
+    "animations.viewCode": "View Code",
 
     // Home page
     "home.subtitle": "Design Style Gallery",
@@ -1425,6 +1430,11 @@ const zh: { [K in keyof typeof en]: string } = {
   "animations.playgroundDuration": "持续时间",
   "animations.playgroundEasing": "缓动",
   "animations.playgroundDelay": "延迟",
+  "animations.sandbox": "沙盒",
+  "animations.moreFilters": "更多筛选",
+  "animations.jsDriven": "通过 JavaScript hooks 控制",
+  "animations.scrollDriven": "由滚动位置驱动",
+  "animations.viewCode": "查看代码",
 
   // Home page
   "home.subtitle": "风格设计库",
