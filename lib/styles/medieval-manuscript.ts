@@ -15,9 +15,9 @@ export const medievalManuscript: DesignStyle = {
   colors: {
     primary: "#8b1a1a",
     secondary: "#f0e6d0",
-    accent: ["#c9a74e", "#2d4a2d", "#3d2b1f"],
+    accent: ["#c9a74e", "#2d4a2d", "#3d2b1f", "#6bc15e"],
   },
-  keywords: ["中世纪", "手抄本", "泥金", "花体", "羊皮纸", "哥特字体", "装饰"],
+  keywords: ["中世纪", "手抄本", "泥金", "花体", "羊皮纸", "哥特字体", "装饰", "retro", "vintage", "nostalgic"],
 
   philosophy: `中世纪泥金手抄本（Illuminated Manuscript）是西方书籍艺术的巅峰形态，诞生于修道院的缮写室中。每一页都是信仰与美学的结合——金箔装饰的首字母、精细的藤蔓纹样、深红与深绿的矿物颜料，以及羊皮纸特有的温暖质感。
 
@@ -415,6 +415,44 @@ Primary:
 5. Buttons: deep red bg, gold double border, serif uppercase text
 6. Typography: font-serif throughout, justified text, relaxed line-height
 7. Dividers: gold border-t-2 separators between sections`,
+    },
+  {
+      title: "SaaS 着陆页",
+      titleEn: "SaaS Landing Page",
+      description: "生成 中世纪手抄本风格的 SaaS 产品着陆页",
+      descriptionEn: "Generate a SaaS product landing page in Medieval Manuscript style",
+      prompt: `Create a SaaS landing page using Medieval Manuscript style with hero section, feature grid, testimonials, pricing table, and footer.`,
+    },
+    {
+      title: "作品集展示",
+      titleEn: "Portfolio Showcase",
+      description: "生成 中世纪手抄本风格的作品集页面",
+      descriptionEn: "Generate a portfolio showcase in Medieval Manuscript style",
+      prompt: `Create a portfolio showcase page using Medieval Manuscript style with project grid, about section, contact form, and consistent visual language.`,
+    }],
+
+  variants: [
+    {
+      id: "medieval-manuscript-warm",
+      name: "中世纪手抄本暖色版",
+      nameEn: "Medieval Manuscript Warm",
+      description: "Warm-toned variant with shifted hues toward amber/orange",
+      colors: {
+        primary: "#732500",
+        secondary: "#f2e9d5",
+        accent: ["#98b649", "#254b3a", "#342e19"],
+      },
+    },
+    {
+      id: "medieval-manuscript-cool",
+      name: "中世纪手抄本冷色版",
+      nameEn: "Medieval Manuscript Cool",
+      description: "Cool-toned variant with shifted hues toward blue/teal",
+      colors: {
+        primary: "#8b154a",
+        secondary: "#d8cfbb",
+        accent: ["#f1986b", "#3a4725", "#422829"],
+      },
     },
   ],
 };

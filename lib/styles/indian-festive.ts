@@ -17,7 +17,7 @@ export const indianFestive: DesignStyle = {
     secondary: "#fff8e7",
     accent: ["#ff9f1c", "#7b2d8e", "#2a9d8f", "#d4af37"],
   },
-  keywords: ["印度", "排灯节", "色彩节", "曼荼罗", "金色", "宝石色", "节庆"],
+  keywords: ["印度", "排灯节", "色彩节", "曼荼罗", "金色", "宝石色", "节庆", "expressive", "bold", "vibrant"],
 
   philosophy: `Indian Festive（印度节庆）汲取排灯节（Diwali）和色彩节（Holi）的绚烂视觉语言，将南亚次大陆数千年的色彩传统转化为现代数字界面。
 
@@ -250,6 +250,48 @@ Suitable for celebration event pages, lifestyle brands, cultural education platf
   box-shadow:
     0 0 20px rgba(255, 159, 28, 0.4),
     0 0 40px rgba(212, 175, 55, 0.2);
+}
+@keyframes indian-festive-fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes indian-festive-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.indian-festive-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.indian-festive-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  background: linear-gradient(135deg, rgba(230, 57, 70, 0.05), transparent);
+  pointer-events: none;
+}
+
+.indian-festive-card:hover::before {
+  opacity: 1;
+}
+
+.indian-festive-frosted {
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  background: rgba(230, 57, 70, 0.08);
+}
+
+.indian-festive-accent-corner {
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 2rem), calc(100% - 2rem) 100%, 0 100%);
+}
+
+.indian-festive-animate-in {
+  animation: indian-festive-fade-in 0.5s ease-out both;
 }`,
 
   aiRules: `You are an Indian Festive design style frontend development expert. All generated code must strictly follow these constraints:
@@ -396,6 +438,44 @@ Primary:
 3. Cards: gold-bordered with jewel-tone accents
 4. Buttons: red-orange gradient with gold glow
 5. Decorations: mandala circles and gold divider lines`,
+    },
+  {
+      title: "SaaS 着陆页",
+      titleEn: "SaaS Landing Page",
+      description: "生成 印度节庆风格的 SaaS 产品着陆页",
+      descriptionEn: "Generate a SaaS product landing page in Indian Festive style",
+      prompt: `Create a SaaS landing page using Indian Festive style with hero section, feature grid, testimonials, pricing table, and footer.`,
+    },
+    {
+      title: "作品集展示",
+      titleEn: "Portfolio Showcase",
+      description: "生成 印度节庆风格的作品集页面",
+      descriptionEn: "Generate a portfolio showcase in Indian Festive style",
+      prompt: `Create a portfolio showcase page using Indian Festive style with project grid, about section, contact form, and consistent visual language.`,
+    }],
+
+  variants: [
+    {
+      id: "indian-festive-warm",
+      name: "印度节庆暖色版",
+      nameEn: "Indian Festive Warm",
+      description: "Warm-toned variant with shifted hues toward amber/orange",
+      colors: {
+        primary: "#c74906",
+        secondary: "#fff9e9",
+        accent: ["#adba05", "#982869", "#3c93ba", "#93c334"],
+      },
+    },
+    {
+      id: "indian-festive-cool",
+      name: "印度节庆冷色版",
+      nameEn: "Indian Festive Cool",
+      description: "Cool-toned variant with shifted hues toward blue/teal",
+      colors: {
+        primary: "#e0348d",
+        secondary: "#e6dfd0",
+        accent: ["#ff875a", "#4f389f", "#30a061", "#ff9b5a"],
+      },
     },
   ],
 };

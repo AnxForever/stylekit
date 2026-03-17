@@ -15,9 +15,9 @@ export const cyberAnime: DesignStyle = {
   colors: {
     primary: "#7c3aed",
     secondary: "#0f0f1a",
-    accent: ["#06d6a0", "#ff006e", "#38bdf8"],
+    accent: ["#06d6a0", "#ff006e", "#38bdf8", "#51b1ff"],
   },
-  keywords: ["赛博动漫", "HUD", "全息", "霓虹", "机甲", "神经数据流"],
+  keywords: ["赛博动漫", "HUD", "全息", "霓虹", "机甲", "神经数据流", "expressive", "bold", "vibrant", "表现力"],
 
   philosophy: `Cyber Anime fuses cyberpunk HUD interfaces with anime's expressive power. Every panel is a data terminal, every border a mecha frame.
 
@@ -257,7 +257,20 @@ Core principles:
 /* Mecha angled corners */
 .ca-mecha-clip {
   clip-path: polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 16px 100%, 0 calc(100% - 16px));
-}`,
+}
+
+.cyber-anime-filter { filter: brightness(1.05) contrast(1.02); }
+
+.cyber-anime-hover-lift { transition: transform 0.3s ease; }
+
+.cyber-anime-hover-lift:hover { transform: translateY(-2px); }
+
+.cyber-anime-focus { outline: 2px solid var(--cyber-anime-primary, currentColor); outline-offset: 2px; }
+
+/* Additional techniques */
+@keyframes cyber-anime-shimmer { from { background-position: -200% 0; } to { background-position: 200% 0; } }
+
+.cyber-anime-glass { backdrop-filter: blur(8px) saturate(150%); -webkit-backdrop-filter: blur(8px) saturate(150%); }`,
 
   aiRules: `You are a Cyber Anime design style frontend development expert. All generated code must strictly follow these constraints:
 
@@ -371,6 +384,44 @@ Primary:
 3. Holographic glow effects with multi-layer purple/cyan neon
 4. Terminal-style data readouts with monospace font
 5. HUD corner decorations on the main viewport frame`,
+    },
+  {
+      title: "SaaS 着陆页",
+      titleEn: "SaaS Landing Page",
+      description: "生成 赛博动漫风风格的 SaaS 产品着陆页",
+      descriptionEn: "Generate a SaaS product landing page in Cyber Anime style",
+      prompt: `Create a SaaS landing page using Cyber Anime style with hero section, feature grid, testimonials, pricing table, and footer.`,
+    },
+    {
+      title: "作品集展示",
+      titleEn: "Portfolio Showcase",
+      description: "生成 赛博动漫风风格的作品集页面",
+      descriptionEn: "Generate a portfolio showcase in Cyber Anime style",
+      prompt: `Create a portfolio showcase page using Cyber Anime style with project grid, about section, contact form, and consistent visual language.`,
+    }],
+
+  variants: [
+    {
+      id: "cyber-anime-warm",
+      name: "赛博动漫风暖色版",
+      nameEn: "Cyber Anime Warm",
+      description: "Warm-toned variant with shifted hues toward amber/orange",
+      colors: {
+        primary: "#c329c5",
+        secondary: "#272731",
+        accent: ["#19c8f1", "#fd0b07", "#70a8ff"],
+      },
+    },
+    {
+      id: "cyber-anime-cool",
+      name: "赛博动漫风冷色版",
+      nameEn: "Cyber Anime Cool",
+      description: "Cool-toned variant with shifted hues toward blue/teal",
+      colors: {
+        primary: "#2b52ec",
+        secondary: "#0e0e17",
+        accent: ["#1ed751", "#cd06c8", "#1dccb6"],
+      },
     },
   ],
 };

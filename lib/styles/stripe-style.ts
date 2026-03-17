@@ -15,9 +15,9 @@ export const stripeStyle: DesignStyle = {
   colors: {
     primary: "#635bff",
     secondary: "#0a2540",
-    accent: ["#00d4ff", "#7a73ff", "#80e9ff"],
+    accent: ["#00d4ff", "#7a73ff", "#80e9ff", "#9f9aff"],
   },
-  keywords: ["Stripe", "金融", "支付", "SaaS", "开发者", "专业", "科技"],
+  keywords: ["Stripe", "金融", "支付", "SaaS", "开发者", "专业", "科技", "modern", "contemporary", "sleek"],
 
   philosophy: `Stripe Style 是一种源于 Stripe 的精致设计风格，以其标志性的紫色和专业的视觉语言著称。通过渐变网格背景、精致的卡片阴影和流畅的动画，传达信任感和技术实力。
 
@@ -25,7 +25,14 @@ export const stripeStyle: DesignStyle = {
 - 专业信任：精致的设计传达可靠性
 - 技术感：网格背景和代码元素展示技术实力
 - 品牌一致：Stripe 紫贯穿整个设计
-- 流畅体验：微妙的动画增强交互感`,
+- 流畅体验：微妙的动画增强交互感
+
+设计原则：
+- 视觉一致性：所有组件必须遵循统一的视觉语言，从色彩到字体到间距保持谐调
+- 层次分明：通过颜色深浅、字号大小、留白空间建立清晰的信息层级
+- 交互反馈：每个可交互元素都必须有明确的 hover、active、focus 状态反馈
+- 响应式适配：设计必须在移动端、平板、桌面端上保持一致的体验
+- 无障碍性：确保色彩对比度符合 WCAG 2.1 AA 标准，所有交互元素可键盘访问`,
 
   philosophyEn: `Stripe Style is a refined design style originating from Stripe, known for its signature purple and professional visual language. Through gradient grid backgrounds, elegant card shadows, and smooth animations, it conveys trust and technical prowess.
 
@@ -262,6 +269,48 @@ Core principles:
   background: var(--stripe-dark);
   border-radius: 8px;
   font-family: 'SF Mono', SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace;
+}
+@keyframes stripe-style-fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes stripe-style-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.stripe-style-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.stripe-style-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  background: linear-gradient(135deg, rgba(99, 91, 255, 0.05), transparent);
+  pointer-events: none;
+}
+
+.stripe-style-card:hover::before {
+  opacity: 1;
+}
+
+.stripe-style-frosted {
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  background: rgba(99, 91, 255, 0.08);
+}
+
+.stripe-style-accent-corner {
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 2rem), calc(100% - 2rem) 100%, 0 100%);
+}
+
+.stripe-style-animate-in {
+  animation: stripe-style-fade-in 0.5s ease-out both;
 }`,
 
   aiRules: `你是一个 Stripe Style 设计风格的前端开发专家。生成的所有代码必须严格遵守以下约束：
@@ -410,6 +459,37 @@ After generating code, verify:
 3. 标题：清晰的层级结构
 4. 代码块：语法高亮，复制按钮
 5. 整体：专业、技术感强`,
+    },
+  {
+      title: "作品集展示",
+      titleEn: "Portfolio Showcase",
+      description: "生成 Stripe 风格风格的作品集页面",
+      descriptionEn: "Generate a portfolio showcase in Stripe Style style",
+      prompt: `Create a portfolio showcase page using Stripe Style style with project grid, about section, contact form, and consistent visual language.`,
+    }],
+
+  variants: [
+    {
+      id: "stripe-style-warm",
+      name: "Stripe 风格暖色版",
+      nameEn: "Stripe Style Warm",
+      description: "Warm-toned variant with shifted hues toward amber/orange",
+      colors: {
+        primary: "#af46ee",
+        secondary: "#233b53",
+        accent: ["#41b9ff", "#bb61f0", "#a1dcff"],
+      },
+    },
+    {
+      id: "stripe-style-cool",
+      name: "Stripe 风格冷色版",
+      nameEn: "Stripe Style Cool",
+      description: "Cool-toned variant with shifted hues toward blue/teal",
+      colors: {
+        primary: "#1873e8",
+        secondary: "#09213a",
+        accent: ["#00e49f", "#3a88ec", "#76f1cf"],
+      },
     },
   ],
 };

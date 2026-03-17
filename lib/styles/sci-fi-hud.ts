@@ -15,9 +15,9 @@ export const sciFiHud: DesignStyle = {
   colors: {
     primary: "#06B6D4",
     secondary: "#020617",
-    accent: ["#0EA5E9", "#22D3EE", "#22C55E"],
+    accent: ["#0EA5E9", "#22D3EE", "#22C55E", "#9e74ff"],
   },
-  keywords: ["科幻", "HUD", "全息", "雷达", "指挥中心", "太空", "发光边框", "数据流"],
+  keywords: ["科幻", "HUD", "全息", "雷达", "指挥中心", "太空", "发光边框", "数据流", "modern", "contemporary"],
 
   philosophy: `Sci-Fi HUD 风格源自电影、游戏中的未来科技界面，核心在于"信息即界面"。
 
@@ -26,7 +26,14 @@ export const sciFiHud: DesignStyle = {
 - 发光几何：所有元素使用青色/蓝绿色发光边框，创造全息投影感
 - 信息密集：通过分层和模块化保持大量实时数据的可读性
 - 实时动态：雷达扫描、数据流滚动、状态脉冲传递"系统运行中"的感觉
-- 半透明材质：面板使用玻璃态效果 + 模糊背景`,
+- 半透明材质：面板使用玻璃态效果 + 模糊背景
+
+设计原则：
+- 视觉一致性：所有组件必须遵循统一的视觉语言，从色彩到字体到间距保持谐调
+- 层次分明：通过颜色深浅、字号大小、留白空间建立清晰的信息层级
+- 交互反馈：每个可交互元素都必须有明确的 hover、active、focus 状态反馈
+- 响应式适配：设计必须在移动端、平板、桌面端上保持一致的体验
+- 无障碍性：确保色彩对比度符合 WCAG 2.1 AA 标准，所有交互元素可键盘访问`,
 
   philosophyEn: `Sci-Fi HUD style draws from futuristic tech interfaces in movies and games, where "information IS the interface."
 
@@ -204,6 +211,57 @@ Design principles:
 @keyframes hud-bar-shine {
   from { left: -100%; }
   to { left: 100%; }
+}
+/* Sci-Fi HUD Design Tokens */
+:root {
+  --sci-fi-hud-primary: #06B6D4;
+  --sci-fi-hud-secondary: #020617;
+  --sci-fi-hud-accent: #0EA5E9;
+  --sci-fi-hud-glow: rgba(6, 182, 212, 0.3);
+}
+
+.sci-fi-hud-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.sci-fi-hud-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  background: linear-gradient(135deg, rgba(6, 182, 212, 0.05), transparent);
+  pointer-events: none;
+}
+
+.sci-fi-hud-card:hover::before {
+  opacity: 1;
+}
+
+.sci-fi-hud-gradient {
+  background: linear-gradient(135deg, #06B6D4, #0EA5E9);
+}
+
+.sci-fi-hud-gradient-text {
+  background: linear-gradient(135deg, #06B6D4, #0EA5E9);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.sci-fi-hud-frosted {
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  background: rgba(6, 182, 212, 0.08);
+}
+
+.sci-fi-hud-accent-corner {
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 2rem), calc(100% - 2rem) 100%, 0 100%);
+}
+
+.sci-fi-hud-animate-in {
+  animation: sci-fi-hud-fade-in 0.5s ease-out both;
 }`,
 
   aiRules: `STYLE: Sci-Fi HUD
@@ -293,6 +351,44 @@ Animation & Interaction Rules:
 - Bottom: Control buttons with hover glow effects
 - L-shaped corner decorations on all major panels
 - Cyan/teal color scheme with status colors`,
+    },
+  {
+      title: "SaaS 着陆页",
+      titleEn: "SaaS Landing Page",
+      description: "生成 科幻HUD风格的 SaaS 产品着陆页",
+      descriptionEn: "Generate a SaaS product landing page in Sci-Fi HUD style",
+      prompt: `Create a SaaS landing page using Sci-Fi HUD style with hero section, feature grid, testimonials, pricing table, and footer.`,
+    },
+    {
+      title: "作品集展示",
+      titleEn: "Portfolio Showcase",
+      description: "生成 科幻HUD风格的作品集页面",
+      descriptionEn: "Generate a portfolio showcase in Sci-Fi HUD style",
+      prompt: `Create a portfolio showcase page using Sci-Fi HUD style with project grid, about section, contact form, and consistent visual language.`,
+    }],
+
+  variants: [
+    {
+      id: "sci-fi-hud-warm",
+      name: "科幻HUD暖色版",
+      nameEn: "Sci-Fi HUD Warm",
+      description: "Warm-toned variant with shifted hues toward amber/orange",
+      colors: {
+        primary: "#3aa0ff",
+        secondary: "#1b1f2e",
+        accent: ["#4e8dff", "#54beff", "#14c2a3"],
+      },
+    },
+    {
+      id: "sci-fi-hud-cool",
+      name: "科幻HUD冷色版",
+      nameEn: "Sci-Fi HUD Cool",
+      description: "Cool-toned variant with shifted hues toward blue/teal",
+      colors: {
+        primary: "#00c285",
+        secondary: "#020515",
+        accent: ["#00b69e", "#16df9f", "#51bc2a"],
+      },
     },
   ],
 };

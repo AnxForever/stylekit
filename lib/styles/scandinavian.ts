@@ -15,9 +15,9 @@ export const scandinavian: DesignStyle = {
   colors: {
     primary: "#3d3d3d",
     secondary: "#f5f0eb",
-    accent: ["#5a7a6b", "#7ba0b8", "#c9a88c"],
+    accent: ["#5a7a6b", "#7ba0b8", "#c9a88c", "#607683"],
   },
-  keywords: ["北欧", "斯堪的纳维亚", "Hygge", "木质", "自然", "温暖", "留白", "舒适"],
+  keywords: ["北欧", "斯堪的纳维亚", "Hygge", "木质", "自然", "温暖", "留白", "舒适", "minimal", "clean"],
 
   philosophy: `北欧极简风（Scandinavian Minimalism）源自丹麦、瑞典、挪威、芬兰等北欧国家的设计传统。
 
@@ -26,7 +26,14 @@ export const scandinavian: DesignStyle = {
 - 自然连接：使用木材、亚麻等自然材质的色调
 - Hygge 精神：营造温馨、舒适、幸福的氛围
 - 功能之美：实用性与美感的完美平衡
-- 光的崇拜：大量留白模拟北欧的自然光线`,
+- 光的崇拜：大量留白模拟北欧的自然光线
+
+设计原则：
+- 视觉一致性：所有组件必须遵循统一的视觉语言，从色彩到字体到间距保持谐调
+- 层次分明：通过颜色深浅、字号大小、留白空间建立清晰的信息层级
+- 交互反馈：每个可交互元素都必须有明确的 hover、active、focus 状态反馈
+- 响应式适配：设计必须在移动端、平板、桌面端上保持一致的体验
+- 无障碍性：确保色彩对比度符合 WCAG 2.1 AA 标准，所有交互元素可键盘访问`,
 
   philosophyEn: `Scandinavian Minimalism originates from the design traditions of Nordic countries such as Denmark, Sweden, Norway, and Finland.
 
@@ -135,6 +142,23 @@ Core principles:
     },
   },
 
+  examplePrompts: [
+    {
+      title: "SaaS 着陆页",
+      titleEn: "SaaS Landing Page",
+      description: "生成 北欧极简风风格的 SaaS 产品着陆页",
+      descriptionEn: "Generate a SaaS product landing page in Scandinavian Minimalism style",
+      prompt: `Create a SaaS landing page using Scandinavian Minimalism style with hero section, feature grid, testimonials, pricing table, and footer.`,
+    },
+    {
+      title: "作品集展示",
+      titleEn: "Portfolio Showcase",
+      description: "生成 北欧极简风风格的作品集页面",
+      descriptionEn: "Generate a portfolio showcase in Scandinavian Minimalism style",
+      prompt: `Create a portfolio showcase page using Scandinavian Minimalism style with project grid, about section, contact form, and consistent visual language.`,
+    },
+  ],
+
   globalCss: `/* Scandinavian Minimalism */
 :root {
   --scandinavian-bg: #f5f0eb;
@@ -142,6 +166,59 @@ Core principles:
   --scandinavian-muted: #a89279;
   --scandinavian-accent: #5a7a6b;
   --scandinavian-border: #d4cdc5;
+}
+@keyframes scandinavian-fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes scandinavian-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.scandinavian-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.scandinavian-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  background: linear-gradient(135deg, rgba(61, 61, 61, 0.05), transparent);
+  pointer-events: none;
+}
+
+.scandinavian-card:hover::before {
+  opacity: 1;
+}
+
+.scandinavian-gradient {
+  background: linear-gradient(135deg, #3d3d3d, #5a7a6b);
+}
+
+.scandinavian-gradient-text {
+  background: linear-gradient(135deg, #3d3d3d, #5a7a6b);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.scandinavian-frosted {
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  background: rgba(61, 61, 61, 0.08);
+}
+
+.scandinavian-accent-corner {
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 2rem), calc(100% - 2rem) 100%, 0 100%);
+}
+
+.scandinavian-animate-in {
+  animation: scandinavian-fade-in 0.5s ease-out both;
 }`,
 
   aiRules: `You are designing in Scandinavian Minimalism style.
@@ -174,4 +251,29 @@ Animation & Interaction Rules:
 - Morning Fog: Transitions should use duration-700 + ease-in-out, revealing slowly like morning mist dissipating.
 - Silent Elevation: Hover hints should prioritize subtle border and background changes, keeping shadows extremely light or omitted.
 - No Impact: Active state should only provide slight brightness feedback, with no noticeable deformation.`,
+
+  variants: [
+    {
+      id: "scandinavian-warm",
+      name: "北欧极简风暖色版",
+      nameEn: "Scandinavian Minimalism Warm",
+      description: "Warm-toned variant with shifted hues toward amber/orange",
+      colors: {
+        primary: "#3d3d3d",
+        secondary: "#f6f2ed",
+        accent: ["#5a7978", "#8e99c3", "#b5af82"],
+      },
+    },
+    {
+      id: "scandinavian-cool",
+      name: "北欧极简风冷色版",
+      nameEn: "Scandinavian Minimalism Cool",
+      description: "Cool-toned variant with shifted hues toward blue/teal",
+      colors: {
+        primary: "#3d3d3d",
+        secondary: "#ddd8d4",
+        accent: ["#617960", "#70a5a5", "#d6a29e"],
+      },
+    },
+  ],
 };

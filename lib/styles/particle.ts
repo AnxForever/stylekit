@@ -17,7 +17,7 @@ export const particle: DesignStyle = {
     secondary: "#0f1419",
     accent: ["#e0e8ff", "#64c8ff", "#64ffc8", "#a78bfa"],
   },
-  keywords: ["particles", "network", "connections", "floating", "tech", "nodes", "constellation"],
+  keywords: ["particles", "network", "connections", "floating", "tech", "nodes", "constellation", "modern", "contemporary", "sleek"],
 
   philosophy: `A living network of floating particles and connection lines creates a sense of data flowing through space — tech-forward yet organic and mesmerizing.
 
@@ -192,6 +192,81 @@ Core principles:
 @keyframes particle-connect {
   0%, 100% { opacity: 0.1; }
   50% { opacity: 0.3; }
+}
+/* Particle System Design Tokens */
+:root {
+  --particle-primary: #0a0e1a;
+  --particle-secondary: #0f1419;
+  --particle-accent: #e0e8ff;
+  --particle-glow: rgba(10, 14, 26, 0.3);
+}
+
+.particle-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.particle-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  background: linear-gradient(135deg, rgba(10, 14, 26, 0.05), transparent);
+  pointer-events: none;
+}
+
+.particle-card:hover::before {
+  opacity: 1;
+}
+
+.particle-gradient {
+  background: linear-gradient(135deg, #0a0e1a, #e0e8ff);
+}
+
+.particle-gradient-text {
+  background: linear-gradient(135deg, #0a0e1a, #e0e8ff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.particle-frosted {
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  background: rgba(10, 14, 26, 0.08);
+}
+
+.particle-accent-corner {
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 2rem), calc(100% - 2rem) 100%, 0 100%);
+}
+
+.particle-animate-in {
+  animation: particle-fade-in 0.5s ease-out both;
+}
+
+.particle-focus { outline: 2px solid var(--particle-primary, currentColor); outline-offset: 2px; }
+
+/* Responsive utilities */
+@media (prefers-reduced-motion: reduce) {
+  .particle-animate-in {
+    animation: none;
+  }
+}
+
+@media (min-width: 768px) {
+  .particle-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+}
+
+/* Print styles */
+@media print {
+  .particle-gradient,
+  .particle-frosted {
+    background: none;
+    backdrop-filter: none;
+  }
 }`,
 
   aiRules: `STYLE: Particle System
@@ -299,6 +374,31 @@ Animation & Interaction Rules:
 - Project cards with dark glass surface and glow hover
 - Skills section with node-and-line visualization
 - Contact section with blue accent buttons`,
+    },
+  ],
+
+  variants: [
+    {
+      id: "particle-warm",
+      name: "粒子系统暖色版",
+      nameEn: "Particle System Warm",
+      description: "Warm-toned variant with shifted hues toward amber/orange",
+      colors: {
+        primary: "#110c1a",
+        secondary: "#272c30",
+        accent: ["#ede4ff", "#93b7ff", "#6bf7ff", "#d67fe6"],
+      },
+    },
+    {
+      id: "particle-cool",
+      name: "粒子系统冷色版",
+      nameEn: "Particle System Cool",
+      description: "Cool-toned variant with shifted hues toward blue/teal",
+      colors: {
+        primary: "#051016",
+        secondary: "#0e1217",
+        accent: ["#d6ecf8", "#4bd5cc", "#7dfd8f", "#759bf4"],
+      },
     },
   ],
 };

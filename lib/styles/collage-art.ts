@@ -26,7 +26,7 @@ export const collageArt: DesignStyle = {
     "撕纸",
     "混搭",
     "washi",
-  ],
+  "expressive", "bold"],
 
   philosophy: `拼贴艺术风格源于达达主义和波普艺术的混合媒材传统，强调不同材料、字体和图像的碰撞与融合。
 
@@ -430,6 +430,44 @@ After generating code:
 5. Buttons: rotated via rotate-[Xdeg], hover paper-lift effect (scale-105 + rotation change + shadow expand)
 6. Form: mixed font labels (serif/sans/mono), dashed border textarea
 7. Typography mixes serif, sans-serif, and monospace throughout`,
+    },
+  {
+      title: "SaaS 着陆页",
+      titleEn: "SaaS Landing Page",
+      description: "生成 拼贴艺术风风格的 SaaS 产品着陆页",
+      descriptionEn: "Generate a SaaS product landing page in Collage Art style",
+      prompt: `Create a SaaS landing page using Collage Art style with hero section, feature grid, testimonials, pricing table, and footer.`,
+    },
+    {
+      title: "作品集展示",
+      titleEn: "Portfolio Showcase",
+      description: "生成 拼贴艺术风风格的作品集页面",
+      descriptionEn: "Generate a portfolio showcase in Collage Art style",
+      prompt: `Create a portfolio showcase page using Collage Art style with project grid, about section, contact form, and consistent visual language.`,
+    }],
+
+  variants: [
+    {
+      id: "collage-art-warm",
+      name: "拼贴艺术风暖色版",
+      nameEn: "Collage Art Warm",
+      description: "Warm-toned variant with shifted hues toward amber/orange",
+      colors: {
+        primary: "#2d2d2d",
+        secondary: "#f6f2ea",
+        accent: ["#bf5e05", "#6985fa", "#9fb700", "#b95396"],
+      },
+    },
+    {
+      id: "collage-art-cool",
+      name: "拼贴艺术风冷色版",
+      nameEn: "Collage Art Cool",
+      description: "Cool-toned variant with shifted hues toward blue/teal",
+      colors: {
+        primary: "#2d2d2d",
+        secondary: "#ddd8d1",
+        accent: ["#ee4380", "#15a6a6", "#ff834d", "#7164c3"],
+      },
     },
   ],
 };

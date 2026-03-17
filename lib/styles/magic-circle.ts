@@ -15,7 +15,7 @@ export const magicCircle: DesignStyle = {
   colors: {
     primary: "#1e1b4b",
     secondary: "#0a0920",
-    accent: ["#fbbf24", "#e2e8f0", "#818cf8"],
+    accent: ["#fbbf24", "#e2e8f0", "#818cf8", "#56ed40"],
   },
   keywords: ["魔法阵", "符文", "神秘", "奇幻", "光效", "几何", "魔法", "同心圆", "六芒星"],
 
@@ -365,6 +365,44 @@ Primary:
 4. Buttons: hexagon-bordered with golden glow hover radiation
 5. Alchemical symbols at geometric intersection points
 6. Slow-rotating ring animation suggesting ancient mechanisms`,
+    },
+  {
+      title: "SaaS 着陆页",
+      titleEn: "SaaS Landing Page",
+      description: "生成 魔法阵风风格的 SaaS 产品着陆页",
+      descriptionEn: "Generate a SaaS product landing page in Magic Circle style",
+      prompt: `Create a SaaS landing page using Magic Circle style with hero section, feature grid, testimonials, pricing table, and footer.`,
+    },
+    {
+      title: "作品集展示",
+      titleEn: "Portfolio Showcase",
+      description: "生成 魔法阵风风格的作品集页面",
+      descriptionEn: "Generate a portfolio showcase in Magic Circle style",
+      prompt: `Create a portfolio showcase page using Magic Circle style with project grid, about section, contact form, and consistent visual language.`,
+    }],
+
+  variants: [
+    {
+      id: "magic-circle-warm",
+      name: "魔法阵风暖色版",
+      nameEn: "Magic Circle Warm",
+      description: "Warm-toned variant with shifted hues toward amber/orange",
+      colors: {
+        primary: "#341546",
+        secondary: "#232236",
+        accent: ["#a5d91c", "#e7e6f1", "#b67df2"],
+      },
+    },
+    {
+      id: "magic-circle-cool",
+      name: "魔法阵风冷色版",
+      nameEn: "Magic Circle Cool",
+      description: "Cool-toned variant with shifted hues toward blue/teal",
+      colors: {
+        primary: "#082245",
+        secondary: "#09081d",
+        accent: ["#ffa556", "#dee9ec", "#509de2"],
+      },
     },
   ],
 };

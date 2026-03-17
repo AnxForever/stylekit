@@ -26,7 +26,7 @@ export const impressionistOil: DesignStyle = {
     "色彩",
     "画布",
     "impasto",
-  ],
+  "expressive", "bold"],
 
   philosophy: `油画印象派风格汲取19世纪法国印象派绘画的精髓，强调光影变化和色彩的即兴表达。
 
@@ -440,6 +440,44 @@ Primary:
 4. Buttons: linear-gradient fills with 0 4px 0 solid + blur shadow
 5. Warm palette: #e8a87c, #c0392b, #2c3e50, #1abc9c, #f5d88a
 6. Font: serif bold throughout`,
+    },
+  {
+      title: "SaaS 着陆页",
+      titleEn: "SaaS Landing Page",
+      description: "生成 油画印象派风风格的 SaaS 产品着陆页",
+      descriptionEn: "Generate a SaaS product landing page in Impressionist Oil style",
+      prompt: `Create a SaaS landing page using Impressionist Oil style with hero section, feature grid, testimonials, pricing table, and footer.`,
+    },
+    {
+      title: "作品集展示",
+      titleEn: "Portfolio Showcase",
+      description: "生成 油画印象派风风格的作品集页面",
+      descriptionEn: "Generate a portfolio showcase in Impressionist Oil style",
+      prompt: `Create a portfolio showcase page using Impressionist Oil style with project grid, about section, contact form, and consistent visual language.`,
+    }],
+
+  variants: [
+    {
+      id: "impressionist-oil-warm",
+      name: "油画印象派风暖色版",
+      nameEn: "Impressionist Oil Warm",
+      description: "Warm-toned variant with shifted hues toward amber/orange",
+      colors: {
+        primary: "#c6b469",
+        secondary: "#f6f2e4",
+        accent: ["#9d4800", "#383a55", "#2db0da", "#cae586"],
+      },
+    },
+    {
+      id: "impressionist-oil-cool",
+      name: "油画印象派风冷色版",
+      nameEn: "Impressionist Oil Cool",
+      description: "Cool-toned variant with shifted hues toward blue/teal",
+      colors: {
+        primary: "#fc9f9e",
+        secondary: "#ddd8cb",
+        accent: ["#c73166", "#244146", "#28be5d", "#ffcba3"],
+      },
     },
   ],
 };

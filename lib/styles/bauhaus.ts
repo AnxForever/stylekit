@@ -15,9 +15,9 @@ export const bauhaus: DesignStyle = {
   colors: {
     primary: "#000000",
     secondary: "#ffffff",
-    accent: ["#ff0000", "#ffcc00", "#0000ff"],
+    accent: ["#ff0000", "#ffcc00", "#0000ff", "#6c3b00"],
   },
-  keywords: ["包豪斯", "功能主义", "几何", "原色", "现代主义", "极简"],
+  keywords: ["包豪斯", "功能主义", "几何", "原色", "现代主义", "极简", "modern", "contemporary", "sleek", "现代"],
 
   philosophy: `Bauhaus（包豪斯）是1919年在德国创立的设计学派，其核心理念"形式追随功能"深刻影响了现代设计。
 
@@ -26,7 +26,14 @@ export const bauhaus: DesignStyle = {
 - 几何形式：圆形、方形、三角形的纯粹运用
 - 原色运用：红、黄、蓝三原色 + 黑白
 - 统一性：艺术与工艺的结合
-- 机械精密：交互如精密仪器运转，短促有力`,
+- 机械精密：交互如精密仪器运转，短促有力
+
+设计原则：
+- 视觉一致性：所有组件必须遵循统一的视觉语言，从色彩到字体到间距保持谐调
+- 层次分明：通过颜色深浅、字号大小、留白空间建立清晰的信息层级
+- 交互反馈：每个可交互元素都必须有明确的 hover、active、focus 状态反馈
+- 响应式适配：设计必须在移动端、平板、桌面端上保持一致的体验
+- 无障碍性：确保色彩对比度符合 WCAG 2.1 AA 标准，所有交互元素可键盘访问`,
 
   philosophyEn: `Bauhaus is a design school founded in Germany in 1919, whose core principle "form follows function" profoundly influenced modern design.
 
@@ -229,6 +236,40 @@ Core principles:
   display: grid;
   grid-template-columns: repeat(12, 1fr);
   gap: 24px;
+}
+@keyframes bauhaus-fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes bauhaus-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.bauhaus-gradient {
+  background: linear-gradient(135deg, #000000, #ff0000);
+}
+
+.bauhaus-gradient-text {
+  background: linear-gradient(135deg, #000000, #ff0000);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.bauhaus-frosted {
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  background: rgba(0, 0, 0, 0.08);
+}
+
+.bauhaus-accent-corner {
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 2rem), calc(100% - 2rem) 100%, 0 100%);
+}
+
+.bauhaus-animate-in {
+  animation: bauhaus-fade-in 0.5s ease-out both;
 }`,
 
   aiRules: `你是一个 Bauhaus 设计风格的前端开发专家。生成的所有代码必须严格遵守以下约束：
@@ -331,6 +372,44 @@ Only use:
 5. 布局：网格对齐
 6. 所有交互 duration-150 到 200，ease-out
 7. 去除所有装饰性元素`,
+    },
+  {
+      title: "SaaS 着陆页",
+      titleEn: "SaaS Landing Page",
+      description: "生成 包豪斯风格风格的 SaaS 产品着陆页",
+      descriptionEn: "Generate a SaaS product landing page in Bauhaus style",
+      prompt: `Create a SaaS landing page using Bauhaus style with hero section, feature grid, testimonials, pricing table, and footer.`,
+    },
+    {
+      title: "作品集展示",
+      titleEn: "Portfolio Showcase",
+      description: "生成 包豪斯风格风格的作品集页面",
+      descriptionEn: "Generate a portfolio showcase in Bauhaus style",
+      prompt: `Create a portfolio showcase page using Bauhaus style with project grid, about section, contact form, and consistent visual language.`,
+    }],
+
+  variants: [
+    {
+      id: "bauhaus-warm",
+      name: "包豪斯风格暖色版",
+      nameEn: "Bauhaus Warm",
+      description: "Warm-toned variant with shifted hues toward amber/orange",
+      colors: {
+        primary: "#000000",
+        secondary: "#ffffff",
+        accent: ["#c91a00", "#94ec00", "#7900e8"],
+      },
+    },
+    {
+      id: "bauhaus-cool",
+      name: "包豪斯风格冷色版",
+      nameEn: "Bauhaus Cool",
+      description: "Cool-toned variant with shifted hues toward blue/teal",
+      colors: {
+        primary: "#000000",
+        secondary: "#e6e6e6",
+        accent: ["#ff006c", "#ffab36", "#0027d6"],
+      },
     },
   ],
 };

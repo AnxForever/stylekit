@@ -15,9 +15,9 @@ export const githubStyle: DesignStyle = {
   colors: {
     primary: "#0969da",
     secondary: "#ffffff",
-    accent: ["#1f883d", "#9a6700", "#cf222e"],
+    accent: ["#1f883d", "#9a6700", "#cf222e", "#1d7f98"],
   },
-  keywords: ["GitHub", "开发者", "代码", "简洁", "灰度", "蓝色", "设计系统"],
+  keywords: ["GitHub", "开发者", "代码", "简洁", "灰度", "蓝色", "设计系统", "modern", "contemporary", "sleek"],
 
   philosophy: `GitHub Style 是一种源于 GitHub 平台的设计语言，为全球数以千万计的开发者提供清晰、高效、无干扰的工作界面。它的设计哲学是"让内容说话"。
 
@@ -279,6 +279,59 @@ body {
   border: none;
   border-top: 1px solid var(--gh-border);
   margin: 1rem 0;
+}
+@keyframes github-style-fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes github-style-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.github-style-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.github-style-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  background: linear-gradient(135deg, rgba(9, 105, 218, 0.05), transparent);
+  pointer-events: none;
+}
+
+.github-style-card:hover::before {
+  opacity: 1;
+}
+
+.github-style-gradient {
+  background: linear-gradient(135deg, #0969da, #1f883d);
+}
+
+.github-style-gradient-text {
+  background: linear-gradient(135deg, #0969da, #1f883d);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.github-style-frosted {
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  background: rgba(9, 105, 218, 0.08);
+}
+
+.github-style-accent-corner {
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 2rem), calc(100% - 2rem) 100%, 0 100%);
+}
+
+.github-style-animate-in {
+  animation: github-style-fade-in 0.5s ease-out both;
 }`,
 
   aiRules: `你是一个 GitHub Style 设计风格的前端开发专家。生成的所有代码必须严格遵守以下约束：
@@ -415,6 +468,37 @@ After each code generation, verify:
 3. 标签使用语义色：bug(红)、enhancement(蓝)、help-wanted(绿)
 4. 分页控件：简洁的页码导航
 5. 整体简洁、信息密度适中`,
+    },
+  {
+      title: "作品集展示",
+      titleEn: "Portfolio Showcase",
+      description: "生成 GitHub 风格风格的作品集页面",
+      descriptionEn: "Generate a portfolio showcase in GitHub Style style",
+      prompt: `Create a portfolio showcase page using GitHub Style style with project grid, about section, contact form, and consistent visual language.`,
+    }],
+
+  variants: [
+    {
+      id: "github-style-warm",
+      name: "GitHub 风格暖色版",
+      nameEn: "GitHub Style Warm",
+      description: "Warm-toned variant with shifted hues toward amber/orange",
+      colors: {
+        primary: "#5350f3",
+        secondary: "#ffffff",
+        accent: ["#12876a", "#5e7a00", "#b03200"],
+      },
+    },
+    {
+      id: "github-style-cool",
+      name: "GitHub 风格冷色版",
+      nameEn: "GitHub Style Cool",
+      description: "Cool-toned variant with shifted hues toward blue/teal",
+      colors: {
+        primary: "#007e9f",
+        secondary: "#e6e6e6",
+        accent: ["#41811d", "#c95526", "#ca1c75"],
+      },
     },
   ],
 };

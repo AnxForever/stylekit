@@ -17,7 +17,7 @@ export const warmDashboard: DesignStyle = {
     secondary: "#faf8f5",
     accent: ["#4a9d9a", "#e8b86d", "#c17767", "#6b8e8e"],
   },
-  keywords: ["暖色", "仪表盘", "珊瑚色", "赤陶", "奶油白", "数据可视化", "舒适"],
+  keywords: ["暖色", "仪表盘", "珊瑚色", "赤陶", "奶油白", "数据可视化", "舒适", "modern", "contemporary", "sleek"],
 
   philosophy: `Warm Dashboard（暖色仪表盘）是一种温暖、专业的界面设计风格，通过暖色调背景和柔和的卡片设计，让数据展示更加亲和友好。
 
@@ -26,7 +26,14 @@ export const warmDashboard: DesignStyle = {
 - 清晰层次：奶油白卡片在暖色背景上形成清晰对比
 - 柔和触感：大圆角、漫射阴影营造柔软视觉
 - 专业可读：深灰文字确保数据可读性
-- 点缀色彩：青绿、金黄作为数据高亮和图表色`,
+- 点缀色彩：青绿、金黄作为数据高亮和图表色
+
+设计原则：
+- 视觉一致性：所有组件必须遵循统一的视觉语言，从色彩到字体到间距保持谐调
+- 层次分明：通过颜色深浅、字号大小、留白空间建立清晰的信息层级
+- 交互反馈：每个可交互元素都必须有明确的 hover、active、focus 状态反馈
+- 响应式适配：设计必须在移动端、平板、桌面端上保持一致的体验
+- 无障碍性：确保色彩对比度符合 WCAG 2.1 AA 标准，所有交互元素可键盘访问`,
 
   philosophyEn: `Warm Dashboard is a warm, professional interface design style that makes data presentation more approachable and friendly through warm-toned backgrounds and soft card designs.
 
@@ -327,6 +334,53 @@ body {
 
 .warm-chart-secondary {
   fill: var(--warm-teal);
+}
+@keyframes warm-dashboard-fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes warm-dashboard-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.warm-dashboard-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.warm-dashboard-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  background: linear-gradient(135deg, rgba(212, 160, 136, 0.05), transparent);
+  pointer-events: none;
+}
+
+.warm-dashboard-card:hover::before {
+  opacity: 1;
+}
+
+.warm-dashboard-gradient {
+  background: linear-gradient(135deg, #d4a088, #4a9d9a);
+}
+
+.warm-dashboard-gradient-text {
+  background: linear-gradient(135deg, #d4a088, #4a9d9a);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.warm-dashboard-accent-corner {
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 2rem), calc(100% - 2rem) 100%, 0 100%);
+}
+
+.warm-dashboard-animate-in {
+  animation: warm-dashboard-fade-in 0.5s ease-out both;
 }`,
 
   aiRules: `你是一个 Warm Dashboard（暖色仪表盘）设计风格的前端开发专家。

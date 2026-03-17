@@ -15,9 +15,9 @@ export const constructivism: DesignStyle = {
   colors: {
     primary: "#cc0000",
     secondary: "#f2e8d5",
-    accent: ["#1a1a1a", "#d4a843", "#8b4513"],
+    accent: ["#1a1a1a", "#d4a843", "#8b4513", "#1a1a1a"],
   },
-  keywords: ["构成主义", "苏联", "海报", "几何", "宣传", "对角线"],
+  keywords: ["构成主义", "苏联", "海报", "几何", "宣传", "对角线", "retro", "vintage", "nostalgic", "复古"],
 
   philosophy: `构成主义（Constructivism）起源于1910年代的俄国先锋派艺术运动，在1920-30年代的苏联达到高峰。它主张"艺术为社会服务"，将视觉设计视为传达信息和动员大众的工具。
 
@@ -243,6 +243,48 @@ In modern interface design, Constructivism is suited for scenarios requiring str
   height: 4px;
   background: var(--cstv-black);
   transform: rotate(-2deg);
+}
+@keyframes constructivism-fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes constructivism-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.constructivism-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.constructivism-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  background: linear-gradient(135deg, rgba(204, 0, 0, 0.05), transparent);
+  pointer-events: none;
+}
+
+.constructivism-card:hover::before {
+  opacity: 1;
+}
+
+.constructivism-frosted {
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  background: rgba(204, 0, 0, 0.08);
+}
+
+.constructivism-accent-corner {
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 2rem), calc(100% - 2rem) 100%, 0 100%);
+}
+
+.constructivism-animate-in {
+  animation: constructivism-fade-in 0.5s ease-out both;
 }`,
 
   aiRules: `你是一个 Constructivism 构成主义设计风格的前端开发专家。生成的所有代码必须严格遵守以下约束：
@@ -344,6 +386,44 @@ Animation & Interaction Rules:
 3. 布局：对角线分割 + 几何色块
 4. 按钮：硬边框 + 硬阴影
 5. 整体像一张苏联构成主义海报`,
+    },
+  {
+      title: "SaaS 着陆页",
+      titleEn: "SaaS Landing Page",
+      description: "生成 构成主义风格的 SaaS 产品着陆页",
+      descriptionEn: "Generate a SaaS product landing page in Constructivism style",
+      prompt: `Create a SaaS landing page using Constructivism style with hero section, feature grid, testimonials, pricing table, and footer.`,
+    },
+    {
+      title: "作品集展示",
+      titleEn: "Portfolio Showcase",
+      description: "生成 构成主义风格的作品集页面",
+      descriptionEn: "Generate a portfolio showcase in Constructivism style",
+      prompt: `Create a portfolio showcase page using Constructivism style with project grid, about section, contact form, and consistent visual language.`,
+    }],
+
+  variants: [
+    {
+      id: "constructivism-warm",
+      name: "构成主义暖色版",
+      nameEn: "Constructivism Warm",
+      description: "Warm-toned variant with shifted hues toward amber/orange",
+      colors: {
+        primary: "#a11400",
+        secondary: "#f3ead9",
+        accent: ["#1a1a1a", "#9bba3c", "#645300"],
+      },
+    },
+    {
+      id: "constructivism-cool",
+      name: "构成主义冷色版",
+      nameEn: "Constructivism Cool",
+      description: "Cool-toned variant with shifted hues toward blue/teal",
+      colors: {
+        primary: "#cc0056",
+        secondary: "#dad1c0",
+        accent: ["#1a1a1a", "#ff9766", "#a23a39"],
+      },
     },
   ],
 };

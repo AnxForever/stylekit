@@ -25,7 +25,7 @@ export const antiDesign: DesignStyle = {
     "bold",
     "punk",
     "rebellious",
-  ],
+  "expressive", "vibrant", "表现力"],
 
   philosophy: `Anti-Design deliberately breaks every UI convention. Where traditional design seeks harmony, Anti-Design seeks visual conflict.
 
@@ -252,6 +252,49 @@ Core principles:
   border-bottom-width: 6px;
   border-left-width: 4px;
   border-top-width: 4px;
+}
+.anti-design-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.anti-design-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.05), transparent);
+  pointer-events: none;
+}
+
+.anti-design-card:hover::before {
+  opacity: 1;
+}
+
+.anti-design-gradient {
+  background: linear-gradient(135deg, #000000, #FF0000);
+}
+
+.anti-design-gradient-text {
+  background: linear-gradient(135deg, #000000, #FF0000);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.anti-design-frosted {
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  background: rgba(0, 0, 0, 0.08);
+}
+
+.anti-design-accent-corner {
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 2rem), calc(100% - 2rem) 100%, 0 100%);
+}
+
+.anti-design-animate-in {
+  animation: anti-design-fade-in 0.5s ease-out both;
 }`,
 
   aiRules: `You are an Anti-Design style frontend development expert. All generated code must strictly follow these constraints:
@@ -376,6 +419,31 @@ Animation & Interaction Rules:
 4. Component showcase with buttons, inputs, all thick black borders
 5. Color palette section showing flat color blocks
 6. No subtle anything - maximum visual impact`,
+    },
+  ],
+
+  variants: [
+    {
+      id: "anti-design-warm",
+      name: "反设计暖色版",
+      nameEn: "Anti-Design Warm",
+      description: "Warm-toned variant with shifted hues toward amber/orange",
+      colors: {
+        primary: "#000000",
+        secondary: "#ffffff",
+        accent: ["#c91a00", "#7900e8", "#86ff17", "#ff008b", "#36e5ff", "#00ff74"],
+      },
+    },
+    {
+      id: "anti-design-cool",
+      name: "反设计冷色版",
+      nameEn: "Anti-Design Cool",
+      description: "Cool-toned variant with shifted hues toward blue/teal",
+      colors: {
+        primary: "#000000",
+        secondary: "#e6e6e6",
+        accent: ["#ff006c", "#0027d6", "#ffd829", "#8b1cff", "#00ff93", "#74e300"],
+      },
     },
   ],
 };

@@ -18,7 +18,7 @@ export const fPatternLayout: DesignStyle = {
     secondary: "#f8f9fa",
     accent: ["#e63946", "#457b9d", "#2a9d8f", "#e9c46a"],
   },
-  keywords: ["F型", "眼动", "内容优先", "扫描", "阅读", "博客", "新闻"],
+  keywords: ["F型", "眼动", "内容优先", "扫描", "阅读", "博客", "新闻", "modern", "contemporary", "sleek"],
 
   philosophy: `F-Pattern Layout 基于尼尔森·诺曼集团的眼动追踪研究，用户浏览网页时视线呈 F 形移动：先水平扫描顶部内容，再向下移动后进行第二次水平扫描（较短），最后垂直向下浏览左侧。
 
@@ -26,7 +26,14 @@ export const fPatternLayout: DesignStyle = {
 - 内容优先级：最重要的内容放在顶部和左侧
 - 视觉引导：通过层次和权重引导用户阅读路径
 - 信息密度：适合文字密集型内容的高效排列
-- 可扫描性：标题、摘要和正文形成清晰的层级`,
+- 可扫描性：标题、摘要和正文形成清晰的层级
+
+设计原则：
+- 视觉一致性：所有组件必须遵循统一的视觉语言，从色彩到字体到间距保持谐调
+- 层次分明：通过颜色深浅、字号大小、留白空间建立清晰的信息层级
+- 交互反馈：每个可交互元素都必须有明确的 hover、active、focus 状态反馈
+- 响应式适配：设计必须在移动端、平板、桌面端上保持一致的体验
+- 无障碍性：确保色彩对比度符合 WCAG 2.1 AA 标准，所有交互元素可键盘访问`,
 
   philosophyEn: `F-Pattern Layout is based on eye-tracking research by the Nielsen Norman Group, where users browse web pages with their gaze moving in an F-shape: first scanning horizontally across the top content, then moving down for a second (shorter) horizontal scan, and finally browsing vertically down the left side.
 
@@ -242,6 +249,67 @@ Core principles:
   .f-secondary {
     width: 100%;
   }
+}
+/* F-Pattern Layout Design Tokens */
+:root {
+  --f-pattern-layout-primary: #1a1a2e;
+  --f-pattern-layout-secondary: #f8f9fa;
+  --f-pattern-layout-accent: #e63946;
+  --f-pattern-layout-glow: rgba(26, 26, 46, 0.3);
+}
+
+@keyframes f-pattern-layout-fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes f-pattern-layout-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.f-pattern-layout-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.f-pattern-layout-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  background: linear-gradient(135deg, rgba(26, 26, 46, 0.05), transparent);
+  pointer-events: none;
+}
+
+.f-pattern-layout-card:hover::before {
+  opacity: 1;
+}
+
+.f-pattern-layout-gradient {
+  background: linear-gradient(135deg, #1a1a2e, #e63946);
+}
+
+.f-pattern-layout-gradient-text {
+  background: linear-gradient(135deg, #1a1a2e, #e63946);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.f-pattern-layout-frosted {
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  background: rgba(26, 26, 46, 0.08);
+}
+
+.f-pattern-layout-accent-corner {
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 2rem), calc(100% - 2rem) 100%, 0 100%);
+}
+
+.f-pattern-layout-animate-in {
+  animation: f-pattern-layout-fade-in 0.5s ease-out both;
 }`,
 
   aiRules: `你是一个 F-Pattern Layout 布局专家。生成的所有代码必须严格遵守以下约束：
@@ -292,7 +360,28 @@ Core principles:
 - Eye-Tracking Guides: 列表项 hover 时，主标题可轻微右移（如 \`translate-x-1\`）或下划线浮现，帮助扫描阶段快速锁定。
 - Fast Feedback: 资讯类交互建议 \`duration-150\` 到 \`duration-200\`，避免冗长过渡打断阅读。
 - Contrast Pop: 当前 hover 项可通过轻微阴影或边框对比强化，从信息流中短暂剥离。
-- Image Focus: 缩略图 hover 时可提升对比度或亮度，作为可点击反馈，但幅度必须克制。`,
+- Image Focus: 缩略图 hover 时可提升对比度或亮度，作为可点击反馈，但幅度必须克制。
+
+## Layout & Spacing
+- Section padding: py-16 md:py-24
+- Card padding: p-6 md:p-8
+- Gap between cards: gap-6 md:gap-8
+- Max content width: max-w-6xl mx-auto
+
+## Responsive Design
+- Mobile-first approach with Tailwind breakpoints
+- Stack elements vertically on mobile (flex-col), row on desktop (md:flex-row)
+- Reduce font sizes on mobile: text-3xl md:text-5xl for headings
+- Touch-friendly targets: min 44px for interactive elements
+
+## Self-Check Verification
+After generating code, verify:
+1. All interactive elements have hover/focus/active states
+2. Color contrast meets WCAG 2.1 AA (4.5:1 for text)
+3. Layout is responsive across breakpoints
+4. Typography hierarchy is clear (h1 > h2 > h3 > body)
+5. Spacing is consistent using the defined scale
+6. All animations respect prefers-reduced-motion`,
 
   aiRulesEn: `You are an F-Pattern Layout expert. All generated code must strictly follow these constraints:
 
@@ -357,6 +446,44 @@ Mobile: Single column stacked
 4. 右侧：热门文章 + 标签云
 5. 所有内容左对齐，优先级从上到下递减
 6. 响应式：手机端单列显示`,
+    },
+  {
+      title: "SaaS 着陆页",
+      titleEn: "SaaS Landing Page",
+      description: "生成 F型布局风格的 SaaS 产品着陆页",
+      descriptionEn: "Generate a SaaS product landing page in F-Pattern Layout style",
+      prompt: `Create a SaaS landing page using F-Pattern Layout style with hero section, feature grid, testimonials, pricing table, and footer.`,
+    },
+    {
+      title: "作品集展示",
+      titleEn: "Portfolio Showcase",
+      description: "生成 F型布局风格的作品集页面",
+      descriptionEn: "Generate a portfolio showcase in F-Pattern Layout style",
+      prompt: `Create a portfolio showcase page using F-Pattern Layout style with project grid, about section, contact form, and consistent visual language.`,
+    }],
+
+  variants: [
+    {
+      id: "f-pattern-layout-warm",
+      name: "F型布局暖色版",
+      nameEn: "F-Pattern Layout Warm",
+      description: "Warm-toned variant with shifted hues toward amber/orange",
+      colors: {
+        primary: "#23172c",
+        secondary: "#f9fafb",
+        accent: ["#c74906", "#6171ae", "#3c93ba", "#b7d464"],
+      },
+    },
+    {
+      id: "f-pattern-layout-cool",
+      name: "F型布局冷色版",
+      nameEn: "F-Pattern Layout Cool",
+      description: "Cool-toned variant with shifted hues toward blue/teal",
+      colors: {
+        primary: "#111d2b",
+        secondary: "#dfe0e1",
+        accent: ["#e0348d", "#358281", "#30a061", "#ffb588"],
+      },
     },
   ],
 };

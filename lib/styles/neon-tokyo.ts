@@ -15,9 +15,9 @@ export const neonTokyo: DesignStyle = {
   colors: {
     primary: "#ff1493",
     secondary: "#0a0a1a",
-    accent: ["#00f0ff", "#ff6b00", "#bc13fe"],
+    accent: ["#00f0ff", "#ff6b00", "#bc13fe", "#97b6ff"],
   },
-  keywords: ["霓虹", "东京", "夜景", "歌舞伎町", "都市", "招牌", "倒影"],
+  keywords: ["霓虹", "东京", "夜景", "歌舞伎町", "都市", "招牌", "倒影", "modern", "contemporary", "sleek"],
 
   philosophy: `Neon Tokyo（霓虹东京）灵感源自东京歌舞伎町、新宿和涩谷的霓虹夜景。不同于 Cyberpunk Neon 的科幻未来感，这个风格更贴近真实的都市夜色——雨后的街道倒映着层叠的霓虹招牌，暖色与冷色交织在潮湿的沥青上。
 
@@ -184,7 +184,34 @@ Suitable for: nightlife apps, music streaming, streetwear brands, urban photogra
   96% { opacity: 0.6; }
   97% { opacity: 1; }
   98% { opacity: 0.8; }
-}`,
+}
+/* Neon Tokyo Design Tokens */
+:root {
+  --neon-tokyo-primary: #ff1493;
+  --neon-tokyo-secondary: #0a0a1a;
+  --neon-tokyo-accent: #00f0ff;
+  --neon-tokyo-glow: rgba(255, 20, 147, 0.3);
+}
+
+.neon-tokyo-frosted {
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  background: rgba(255, 20, 147, 0.08);
+}
+
+.neon-tokyo-accent-corner {
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 2rem), calc(100% - 2rem) 100%, 0 100%);
+}
+
+.neon-tokyo-animate-in {
+  animation: neon-tokyo-fade-in 0.5s ease-out both;
+}
+
+.neon-tokyo-hover-lift { transition: transform 0.3s ease; }
+
+.neon-tokyo-hover-lift:hover { transform: translateY(-2px); }
+
+.neon-tokyo-focus { outline: 2px solid var(--neon-tokyo-primary, currentColor); outline-offset: 2px; }`,
 
   aiRules: `STYLE: Neon Tokyo
 TYPE: Urban nightscape interface
@@ -285,6 +312,44 @@ DIFFERENCE FROM CYBERPUNK-NEON:
 - Hero section with flickering neon sign effect
 - Wet street reflection aesthetic at the bottom
 - Japanese text decorations for atmosphere`,
+    },
+  {
+      title: "SaaS 着陆页",
+      titleEn: "SaaS Landing Page",
+      description: "生成 霓虹东京风格的 SaaS 产品着陆页",
+      descriptionEn: "Generate a SaaS product landing page in Neon Tokyo style",
+      prompt: `Create a SaaS landing page using Neon Tokyo style with hero section, feature grid, testimonials, pricing table, and footer.`,
+    },
+    {
+      title: "作品集展示",
+      titleEn: "Portfolio Showcase",
+      description: "生成 霓虹东京风格的作品集页面",
+      descriptionEn: "Generate a portfolio showcase in Neon Tokyo style",
+      prompt: `Create a portfolio showcase page using Neon Tokyo style with project grid, about section, contact form, and consistent visual language.`,
+    }],
+
+  variants: [
+    {
+      id: "neon-tokyo-warm",
+      name: "霓虹东京暖色版",
+      nameEn: "Neon Tokyo Warm",
+      description: "Warm-toned variant with shifted hues toward amber/orange",
+      colors: {
+        primary: "#ff1b32",
+        secondary: "#232331",
+        accent: ["#3ad6ff", "#ad8800", "#ff05ac"],
+      },
+    },
+    {
+      id: "neon-tokyo-cool",
+      name: "霓虹东京冷色版",
+      nameEn: "Neon Tokyo Cool",
+      description: "Cool-toned variant with shifted hues toward blue/teal",
+      colors: {
+        primary: "#c61de2",
+        secondary: "#090917",
+        accent: ["#00fd97", "#ff5450", "#512fff"],
+      },
     },
   ],
 };

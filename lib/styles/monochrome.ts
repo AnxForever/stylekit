@@ -15,9 +15,9 @@ export const monochrome: DesignStyle = {
   colors: {
     primary: "#111111",
     secondary: "#fafafa",
-    accent: ["#666666", "#999999", "#cccccc"],
+    accent: ["#666666", "#999999", "#cccccc", "#666666"],
   },
-  keywords: ["单色", "黑白", "灰阶", "极简", "无色彩", "高级感", "摄影", "建筑"],
+  keywords: ["单色", "黑白", "灰阶", "极简", "无色彩", "高级感", "摄影", "建筑", "minimal", "clean"],
 
   philosophy: `单色极简（Monochrome）是对色彩的彻底放弃，仅凭黑、白、灰三者的精确调度构建完整的视觉层次。
 
@@ -26,7 +26,14 @@ export const monochrome: DesignStyle = {
 - 灰阶层次：通过 #111111 到 #fafafa 之间的精确灰度梯度建立信息优先级
 - 字重对比：以 font-light 与 font-bold 的差异替代色彩区分
 - 负空间构图：大量留白不是空白，是设计的一部分
-- 网格秩序：严格的网格系统确保每一个元素都有精确的位置`,
+- 网格秩序：严格的网格系统确保每一个元素都有精确的位置
+
+设计原则：
+- 视觉一致性：所有组件必须遵循统一的视觉语言，从色彩到字体到间距保持谐调
+- 层次分明：通过颜色深浅、字号大小、留白空间建立清晰的信息层级
+- 交互反馈：每个可交互元素都必须有明确的 hover、active、focus 状态反馈
+- 响应式适配：设计必须在移动端、平板、桌面端上保持一致的体验
+- 无障碍性：确保色彩对比度符合 WCAG 2.1 AA 标准，所有交互元素可键盘访问`,
 
   philosophyEn: `Monochrome is the complete abandonment of color, building a full visual hierarchy solely through the precise orchestration of black, white, and gray.
 
@@ -125,6 +132,23 @@ Core principles:
     },
   },
 
+  examplePrompts: [
+    {
+      title: "SaaS 着陆页",
+      titleEn: "SaaS Landing Page",
+      description: "生成 单色极简风格的 SaaS 产品着陆页",
+      descriptionEn: "Generate a SaaS product landing page in Monochrome style",
+      prompt: `Create a SaaS landing page using Monochrome style with hero section, feature grid, testimonials, pricing table, and footer.`,
+    },
+    {
+      title: "作品集展示",
+      titleEn: "Portfolio Showcase",
+      description: "生成 单色极简风格的作品集页面",
+      descriptionEn: "Generate a portfolio showcase in Monochrome style",
+      prompt: `Create a portfolio showcase page using Monochrome style with project grid, about section, contact form, and consistent visual language.`,
+    },
+  ],
+
   globalCss: `/* Monochrome */
 :root {
   --monochrome-bg: #fafafa;
@@ -133,6 +157,59 @@ Core principles:
   --monochrome-subtle: #999999;
   --monochrome-border: #e5e5e5;
   --monochrome-surface: #f5f5f5;
+}
+@keyframes monochrome-fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes monochrome-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.monochrome-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.monochrome-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  background: linear-gradient(135deg, rgba(17, 17, 17, 0.05), transparent);
+  pointer-events: none;
+}
+
+.monochrome-card:hover::before {
+  opacity: 1;
+}
+
+.monochrome-gradient {
+  background: linear-gradient(135deg, #111111, #666666);
+}
+
+.monochrome-gradient-text {
+  background: linear-gradient(135deg, #111111, #666666);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.monochrome-frosted {
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  background: rgba(17, 17, 17, 0.08);
+}
+
+.monochrome-accent-corner {
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 2rem), calc(100% - 2rem) 100%, 0 100%);
+}
+
+.monochrome-animate-in {
+  animation: monochrome-fade-in 0.5s ease-out both;
 }`,
 
   aiRules: `You are designing in Monochrome style.
@@ -169,4 +246,29 @@ Animation & Interaction Rules:
 - Grayscale Breathing: Only allow adjacent grayscale transitions (e.g., #111111 to #2a2a2a), maintaining restraint.
 - Line Growth: Prefer thin line extension as interaction hints, reducing large-area contrast switching.
 - Static Elevation: Avoid translate and heavy shadows, maintaining a quiet two-dimensional plane feel.`,
+
+  variants: [
+    {
+      id: "monochrome-warm",
+      name: "单色极简暖色版",
+      nameEn: "Monochrome Warm",
+      description: "Warm-toned variant with shifted hues toward amber/orange",
+      colors: {
+        primary: "#111111",
+        secondary: "#fbfbfb",
+        accent: ["#666666", "#999999", "#cccccc"],
+      },
+    },
+    {
+      id: "monochrome-cool",
+      name: "单色极简冷色版",
+      nameEn: "Monochrome Cool",
+      description: "Cool-toned variant with shifted hues toward blue/teal",
+      colors: {
+        primary: "#111111",
+        secondary: "#e1e1e1",
+        accent: ["#666666", "#999999", "#cccccc"],
+      },
+    },
+  ],
 };

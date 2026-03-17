@@ -17,7 +17,7 @@ export const celShading: DesignStyle = {
     secondary: "#fafaf5",
     accent: ["#e63946", "#4ea8de", "#2ecc71", "#f1c40f"],
   },
-  keywords: ["赛璐璐", "卡通", "轮廓线", "平面阴影", "动画", "游戏", "toon", "bold"],
+  keywords: ["赛璐璐", "卡通", "轮廓线", "平面阴影", "动画", "游戏", "toon", "bold", "expressive", "vibrant"],
 
   philosophy: `赛璐璐动画风（Cel Shading / Toon Shading）模拟传统手绘动画的视觉效果。
 
@@ -27,7 +27,14 @@ export const celShading: DesignStyle = {
 - 硬阴影：阴影是实体位移，不是模糊
 - 高饱和度：色彩鲜艳、对比强烈
 - 游戏化 UI：按钮、卡片像游戏菜单一样生动有趣
-- 动画抽帧感：交互极短促，模拟关键帧而非丝滑过渡`,
+- 动画抽帧感：交互极短促，模拟关键帧而非丝滑过渡
+
+设计原则：
+- 视觉一致性：所有组件必须遵循统一的视觉语言，从色彩到字体到间距保持谐调
+- 层次分明：通过颜色深浅、字号大小、留白空间建立清晰的信息层级
+- 交互反馈：每个可交互元素都必须有明确的 hover、active、focus 状态反馈
+- 响应式适配：设计必须在移动端、平板、桌面端上保持一致的体验
+- 无障碍性：确保色彩对比度符合 WCAG 2.1 AA 标准，所有交互元素可键盘访问`,
 
   philosophyEn: `Cel Shading (Toon Shading) simulates the visual effect of traditional hand-drawn animation.
 
@@ -157,6 +164,23 @@ Core principles:
     },
   },
 
+  examplePrompts: [
+    {
+      title: "SaaS 着陆页",
+      titleEn: "SaaS Landing Page",
+      description: "生成 赛璐璐动画风风格的 SaaS 产品着陆页",
+      descriptionEn: "Generate a SaaS product landing page in Cel Shading style",
+      prompt: `Create a SaaS landing page using Cel Shading style with hero section, feature grid, testimonials, pricing table, and footer.`,
+    },
+    {
+      title: "作品集展示",
+      titleEn: "Portfolio Showcase",
+      description: "生成 赛璐璐动画风风格的作品集页面",
+      descriptionEn: "Generate a portfolio showcase in Cel Shading style",
+      prompt: `Create a portfolio showcase page using Cel Shading style with project grid, about section, contact form, and consistent visual language.`,
+    },
+  ],
+
   globalCss: `/* Cel Shading */
 :root {
   --cel-bg: #fafaf5;
@@ -195,6 +219,40 @@ Core principles:
   transform: scaleX(1.1) scaleY(0.9) translate(2px, 4px);
   box-shadow: none !important;
   transition-duration: 75ms;
+}
+@keyframes cel-shading-fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes cel-shading-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.cel-shading-gradient {
+  background: linear-gradient(135deg, #1a1a2e, #e63946);
+}
+
+.cel-shading-gradient-text {
+  background: linear-gradient(135deg, #1a1a2e, #e63946);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.cel-shading-frosted {
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  background: rgba(26, 26, 46, 0.08);
+}
+
+.cel-shading-accent-corner {
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 2rem), calc(100% - 2rem) 100%, 0 100%);
+}
+
+.cel-shading-animate-in {
+  animation: cel-shading-fade-in 0.5s ease-out both;
 }`,
 
   aiRules: `You are designing in Cel Shading (Toon Shading) style.
@@ -229,4 +287,29 @@ Animation & Interaction Rules:
 - Zero-Blur Impact: On :active, hard shadow must instantly snap to zero (active:shadow-none), creating a strong physical "hit" sensation.
 - Toon Highlight: On hover, a white diagonal stripe (bg-white/30 -skew-x-12) sweeps across the button via translate-x from off-screen to [200%], simulating cel shading's hard specular highlight.
 - Hover Lift: Elements can hover:-translate-y-1 with expanded shadow to "charge up" before clicking.`,
+
+  variants: [
+    {
+      id: "cel-shading-warm",
+      name: "赛璐璐动画风暖色版",
+      nameEn: "Cel Shading Warm",
+      description: "Warm-toned variant with shifted hues toward amber/orange",
+      colors: {
+        primary: "#23172c",
+        secondary: "#fbfbf6",
+        accent: ["#c74906", "#7b98fa", "#24c8b3", "#92e00f"],
+      },
+    },
+    {
+      id: "cel-shading-cool",
+      name: "赛璐璐动画风冷色版",
+      nameEn: "Cel Shading Cool",
+      description: "Cool-toned variant with shifted hues toward blue/teal",
+      colors: {
+        primary: "#111d2b",
+        secondary: "#e1e1dd",
+        accent: ["#e0348d", "#35b4af", "#57c53d", "#ffa73f"],
+      },
+    },
+  ],
 };

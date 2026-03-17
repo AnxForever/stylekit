@@ -15,9 +15,9 @@ export const fluentDesign: DesignStyle = {
   colors: {
     primary: "#0078d4",
     secondary: "#106ebe",
-    accent: ["#ffb900", "#e81123", "#00cc6a"],
+    accent: ["#ffb900", "#e81123", "#00cc6a", "#3bf022"],
   },
-  keywords: ["Fluent", "微软", "亚克力", "Reveal", "光效", "深度", "动效"],
+  keywords: ["Fluent", "微软", "亚克力", "Reveal", "光效", "深度", "动效", "modern", "contemporary", "sleek"],
 
   philosophy: `Fluent Design System（流利设计系统）是微软于 2017 年推出的设计语言，旨在创造跨设备的一致体验。
 
@@ -26,7 +26,14 @@ export const fluentDesign: DesignStyle = {
 - Depth（深度）：创造层次感和空间感
 - Motion（动效）：自然流畅的过渡动画
 - Material（材质）：亚克力等半透明材质
-- Scale（缩放）：适应不同尺寸的设备`,
+- Scale（缩放）：适应不同尺寸的设备
+
+设计原则：
+- 视觉一致性：所有组件必须遵循统一的视觉语言，从色彩到字体到间距保持谐调
+- 层次分明：通过颜色深浅、字号大小、留白空间建立清晰的信息层级
+- 交互反馈：每个可交互元素都必须有明确的 hover、active、focus 状态反馈
+- 响应式适配：设计必须在移动端、平板、桌面端上保持一致的体验
+- 无障碍性：确保色彩对比度符合 WCAG 2.1 AA 标准，所有交互元素可键盘访问`,
 
   philosophyEn: `Fluent Design System is a design language launched by Microsoft in 2017, aimed at creating consistent experiences across devices.
 
@@ -288,7 +295,18 @@ Core five elements:
 
 .fluent-shadow-hover {
   box-shadow: 0 4px 8px rgba(0,0,0,0.06), 0 16px 32px rgba(0,0,0,0.12);
-}`,
+}
+
+.fluent-design-hover-lift { transition: transform 0.3s ease; }
+
+.fluent-design-hover-lift:hover { transform: translateY(-2px); }
+
+.fluent-design-focus { outline: 2px solid var(--fluent-design-primary, currentColor); outline-offset: 2px; }
+
+/* Additional techniques */
+@keyframes fluent-design-shimmer { from { background-position: -200% 0; } to { background-position: 200% 0; } }
+
+.fluent-design-slant { clip-path: polygon(0 0, 100% 0, 100% calc(100% - 3rem), 0 100%); }`,
 
   aiRules: `You are a Fluent Design System frontend development expert. All generated code must strictly follow Microsoft's Fluent Design principles.
 
@@ -402,6 +420,44 @@ After generating code, verify:
 3. 卡片式设置项
 4. 微软蓝色主题
 5. 清晰的交互反馈`,
+    },
+  {
+      title: "SaaS 着陆页",
+      titleEn: "SaaS Landing Page",
+      description: "生成 流利设计风格的 SaaS 产品着陆页",
+      descriptionEn: "Generate a SaaS product landing page in Fluent Design style",
+      prompt: `Create a SaaS landing page using Fluent Design style with hero section, feature grid, testimonials, pricing table, and footer.`,
+    },
+    {
+      title: "作品集展示",
+      titleEn: "Portfolio Showcase",
+      description: "生成 流利设计风格的作品集页面",
+      descriptionEn: "Generate a portfolio showcase in Fluent Design style",
+      prompt: `Create a portfolio showcase page using Fluent Design style with project grid, about section, contact form, and consistent visual language.`,
+    }],
+
+  variants: [
+    {
+      id: "fluent-design-warm",
+      name: "流利设计暖色版",
+      nameEn: "Fluent Design Warm",
+      description: "Warm-toned variant with shifted hues toward amber/orange",
+      colors: {
+        primary: "#4560f8",
+        secondary: "#287dc5",
+        accent: ["#99d800", "#c32400", "#00c5bd"],
+      },
+    },
+    {
+      id: "fluent-design-cool",
+      name: "流利设计冷色版",
+      nameEn: "Fluent Design Cool",
+      description: "Cool-toned variant with shifted hues toward blue/teal",
+      colors: {
+        primary: "#008b93",
+        secondary: "#0e63ab",
+        accent: ["#ff9a3b", "#e00a7b", "#2cc624"],
+      },
     },
   ],
 };

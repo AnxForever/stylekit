@@ -15,9 +15,9 @@ export const inkWash: DesignStyle = {
   colors: {
     primary: "#2c2c2c",
     secondary: "#f8f5f0",
-    accent: ["#6b7b6e", "#a89279", "#c4b9a8"],
+    accent: ["#6b7b6e", "#a89279", "#c4b9a8", "#697a7c"],
   },
-  keywords: ["水墨", "国画", "留白", "意境", "东方", "书法", "文化", "气韵"],
+  keywords: ["水墨", "国画", "留白", "意境", "东方", "书法", "文化", "气韵", "minimal", "clean"],
 
   philosophy: `水墨画风（Ink Wash）源自中国传统绘画的千年美学体系，以"墨分五色"诠释万象。
 
@@ -26,7 +26,14 @@ export const inkWash: DesignStyle = {
 - 墨分五色：焦、浓、重、淡、清，仅凭墨色浓淡即表现丰富层次
 - 计白当黑：留白不是空缺，而是意境的延伸与想象的空间
 - 以形写神：不求形似，但求神韵，超越表象触及本质
-- 气韵贯通：笔断意连，形散神聚，整体气韵一脉相承`,
+- 气韵贯通：笔断意连，形散神聚，整体气韵一脉相承
+
+设计原则：
+- 视觉一致性：所有组件必须遵循统一的视觉语言，从色彩到字体到间距保持谐调
+- 层次分明：通过颜色深浅、字号大小、留白空间建立清晰的信息层级
+- 交互反馈：每个可交互元素都必须有明确的 hover、active、focus 状态反馈
+- 响应式适配：设计必须在移动端、平板、桌面端上保持一致的体验
+- 无障碍性：确保色彩对比度符合 WCAG 2.1 AA 标准，所有交互元素可键盘访问`,
 
   philosophyEn: `Ink Wash originates from the millennia-old aesthetic system of traditional Chinese painting, interpreting all things through "ink divided into five tones."
 
@@ -130,6 +137,23 @@ Core principles:
     },
   },
 
+  examplePrompts: [
+    {
+      title: "SaaS 着陆页",
+      titleEn: "SaaS Landing Page",
+      description: "生成 水墨画风风格的 SaaS 产品着陆页",
+      descriptionEn: "Generate a SaaS product landing page in Ink Wash style",
+      prompt: `Create a SaaS landing page using Ink Wash style with hero section, feature grid, testimonials, pricing table, and footer.`,
+    },
+    {
+      title: "作品集展示",
+      titleEn: "Portfolio Showcase",
+      description: "生成 水墨画风风格的作品集页面",
+      descriptionEn: "Generate a portfolio showcase in Ink Wash style",
+      prompt: `Create a portfolio showcase page using Ink Wash style with project grid, about section, contact form, and consistent visual language.`,
+    },
+  ],
+
   globalCss: `/* Ink Wash */
 :root {
   --ink-bg: #f8f5f0;
@@ -139,6 +163,59 @@ Core principles:
   --ink-moss: #6b7b6e;
   --ink-sand: #c4b9a8;
   --ink-border: #2c2c2c;
+}
+@keyframes ink-wash-fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes ink-wash-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.ink-wash-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.ink-wash-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  background: linear-gradient(135deg, rgba(44, 44, 44, 0.05), transparent);
+  pointer-events: none;
+}
+
+.ink-wash-card:hover::before {
+  opacity: 1;
+}
+
+.ink-wash-gradient {
+  background: linear-gradient(135deg, #2c2c2c, #6b7b6e);
+}
+
+.ink-wash-gradient-text {
+  background: linear-gradient(135deg, #2c2c2c, #6b7b6e);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.ink-wash-frosted {
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  background: rgba(44, 44, 44, 0.08);
+}
+
+.ink-wash-accent-corner {
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 2rem), calc(100% - 2rem) 100%, 0 100%);
+}
+
+.ink-wash-animate-in {
+  animation: ink-wash-fade-in 0.5s ease-out both;
 }`,
 
   aiRules: `You are designing in Ink Wash (Chinese ink painting) style.
@@ -177,4 +254,29 @@ Animation & Interaction Rules:
 - Calligraphic Press: Active state prioritizes dark inner shadows, simulating brush pressing on paper, without mechanical scaling.
 - Flow of Qi: Interaction rhythm uses duration-700 to 1000 with ease-in-out, maintaining ethereal breathing feel.
 - Whispering Text: Text can slowly transition from low contrast to clear ink color, avoiding abrupt intensification.`,
+
+  variants: [
+    {
+      id: "ink-wash-warm",
+      name: "水墨画风暖色版",
+      nameEn: "Ink Wash Warm",
+      description: "Warm-toned variant with shifted hues toward amber/orange",
+      colors: {
+        primary: "#2c2c2c",
+        secondary: "#f9f6f2",
+        accent: ["#687b75", "#979773", "#babca5"],
+      },
+    },
+    {
+      id: "ink-wash-cool",
+      name: "水墨画风冷色版",
+      nameEn: "Ink Wash Cool",
+      description: "Cool-toned variant with shifted hues toward blue/teal",
+      colors: {
+        primary: "#2c2c2c",
+        secondary: "#dfddd8",
+        accent: ["#717a69", "#b38d86", "#ccb6af"],
+      },
+    },
+  ],
 };

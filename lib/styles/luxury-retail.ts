@@ -17,7 +17,7 @@ export const luxuryRetail: DesignStyle = {
     secondary: "#1a1a1a",
     accent: ["#c9a96e", "#8b7355", "#e8e0d4", "#2c2c2c"],
   },
-  keywords: ["奢侈品", "高端", "品牌", "零售", "大留白", "衬线"],
+  keywords: ["奢侈品", "高端", "品牌", "零售", "大留白", "衬线", "modern", "contemporary", "sleek", "现代"],
 
   philosophy: `Luxury Retail 的设计哲学源自高端时装与珠宝零售。
 
@@ -25,7 +25,14 @@ export const luxuryRetail: DesignStyle = {
 - 克制即尊贵：越少的元素越能传递高端感，留白是最昂贵的设计语言
 - 衬线权威感：使用衬线字体建立品牌的历史感和工艺传承
 - 金色点缀：金色仅作为点缀色出现在关键交互和分隔线上
-- 触感质地：通过微妙的纹理和渐变暗示材质的精致`,
+- 触感质地：通过微妙的纹理和渐变暗示材质的精致
+
+设计原则：
+- 视觉一致性：所有组件必须遵循统一的视觉语言，从色彩到字体到间距保持谐调
+- 层次分明：通过颜色深浅、字号大小、留白空间建立清晰的信息层级
+- 交互反馈：每个可交互元素都必须有明确的 hover、active、focus 状态反馈
+- 响应式适配：设计必须在移动端、平板、桌面端上保持一致的体验
+- 无障碍性：确保色彩对比度符合 WCAG 2.1 AA 标准，所有交互元素可键盘访问`,
 
   philosophyEn: `Luxury Retail design philosophy comes from high-end fashion and jewelry retail.
 
@@ -140,6 +147,56 @@ Core principles:
   height: 1px;
   background: linear-gradient(to right, transparent, #c9a96e, transparent);
   margin: 2rem 0;
+}
+/* Luxury Retail Design Tokens */
+:root {
+  --luxury-retail-primary: #faf9f6;
+  --luxury-retail-secondary: #1a1a1a;
+  --luxury-retail-accent: #c9a96e;
+  --luxury-retail-glow: rgba(250, 249, 246, 0.3);
+}
+
+@keyframes luxury-retail-fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes luxury-retail-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.luxury-retail-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.luxury-retail-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  background: linear-gradient(135deg, rgba(250, 249, 246, 0.05), transparent);
+  pointer-events: none;
+}
+
+.luxury-retail-card:hover::before {
+  opacity: 1;
+}
+
+.luxury-retail-frosted {
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  background: rgba(250, 249, 246, 0.08);
+}
+
+.luxury-retail-accent-corner {
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 2rem), calc(100% - 2rem) 100%, 0 100%);
+}
+
+.luxury-retail-animate-in {
+  animation: luxury-retail-fade-in 0.5s ease-out both;
 }`,
 
   aiRules: `You are a Luxury Retail design expert.
@@ -162,7 +219,28 @@ Core principles:
 
 ## Responsive
 - Mobile: full-width hero, stacked product cards
-- Desktop: 2-3 column editorial grid`,
+- Desktop: 2-3 column editorial grid
+
+## Layout & Spacing
+- Section padding: py-16 md:py-24
+- Card padding: p-6 md:p-8
+- Gap between cards: gap-6 md:gap-8
+- Max content width: max-w-6xl mx-auto
+
+## Responsive Design
+- Mobile-first approach with Tailwind breakpoints
+- Stack elements vertically on mobile (flex-col), row on desktop (md:flex-row)
+- Reduce font sizes on mobile: text-3xl md:text-5xl for headings
+- Touch-friendly targets: min 44px for interactive elements
+
+## Self-Check Verification
+After generating code, verify:
+1. All interactive elements have hover/focus/active states
+2. Color contrast meets WCAG 2.1 AA (4.5:1 for text)
+3. Layout is responsive across breakpoints
+4. Typography hierarchy is clear (h1 > h2 > h3 > body)
+5. Spacing is consistent using the defined scale
+6. All animations respect prefers-reduced-motion`,
 
   examplePrompts: [
     {
@@ -171,6 +249,44 @@ Core principles:
       description: "高端品牌首页，含全屏 Hero、产品陈列、品牌故事",
       descriptionEn: "Premium brand homepage with fullscreen hero, product showcase, brand story",
       prompt: "Create a luxury brand homepage with a full-height hero showing seasonal collection, 4-product editorial grid, gold divider accents, and serif typography throughout.",
+    },
+  {
+      title: "SaaS 着陆页",
+      titleEn: "SaaS Landing Page",
+      description: "生成 奢品零售风格的 SaaS 产品着陆页",
+      descriptionEn: "Generate a SaaS product landing page in Luxury Retail style",
+      prompt: `Create a SaaS landing page using Luxury Retail style with hero section, feature grid, testimonials, pricing table, and footer.`,
+    },
+    {
+      title: "作品集展示",
+      titleEn: "Portfolio Showcase",
+      description: "生成 奢品零售风格的作品集页面",
+      descriptionEn: "Generate a portfolio showcase in Luxury Retail style",
+      prompt: `Create a portfolio showcase page using Luxury Retail style with project grid, about section, contact form, and consistent visual language.`,
+    }],
+
+  variants: [
+    {
+      id: "luxury-retail-warm",
+      name: "奢品零售暖色版",
+      nameEn: "Luxury Retail Warm",
+      description: "Warm-toned variant with shifted hues toward amber/orange",
+      colors: {
+        primary: "#f8f9f6",
+        secondary: "#313131",
+        accent: ["#a6b468", "#78794f", "#e1e2d2", "#2c2c2c"],
+      },
+    },
+    {
+      id: "luxury-retail-cool",
+      name: "奢品零售冷色版",
+      nameEn: "Luxury Retail Cool",
+      description: "Cool-toned variant with shifted hues toward blue/teal",
+      colors: {
+        primary: "#fbf9f7",
+        secondary: "#171717",
+        accent: ["#e49f85", "#996d64", "#edded9", "#2c2c2c"],
+      },
     },
   ],
 };

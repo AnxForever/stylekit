@@ -15,9 +15,9 @@ export const darkAcademia: DesignStyle = {
   colors: {
     primary: "#3d2b1f",
     secondary: "#2d4a3e",
-    accent: ["#8b7355", "#f5f0e1", "#5c4033"],
+    accent: ["#8b7355", "#f5f0e1", "#5c4033", "#647f53"],
   },
-  keywords: ["暗黑学院", "古典", "图书馆", "文学", "大学", "皮革", "手稿"],
+  keywords: ["暗黑学院", "古典", "图书馆", "文学", "大学", "皮革", "手稿", "retro", "vintage", "nostalgic"],
 
   philosophy: `Dark Academia（暗黑学院风）是一种以古典教育、文学和建筑为核心的美学流派，融合了古希腊罗马文化、哥特式建筑和维多利亚时代学术氛围。
 
@@ -25,7 +25,14 @@ export const darkAcademia: DesignStyle = {
 - 学术古典：古典大学建筑和图书馆的庄严之美
 - 文学气息：皮革装帧的古籍与手写体的浪漫
 - 温暖沉静：大地色系营造温暖而内敛的氛围
-- 知识崇拜：对学习、阅读和智慧的极致推崇`,
+- 知识崇拜：对学习、阅读和智慧的极致推崇
+
+设计原则：
+- 视觉一致性：所有组件必须遵循统一的视觉语言，从色彩到字体到间距保持谐调
+- 层次分明：通过颜色深浅、字号大小、留白空间建立清晰的信息层级
+- 交互反馈：每个可交互元素都必须有明确的 hover、active、focus 状态反馈
+- 响应式适配：设计必须在移动端、平板、桌面端上保持一致的体验
+- 无障碍性：确保色彩对比度符合 WCAG 2.1 AA 标准，所有交互元素可键盘访问`,
 
   philosophyEn: `Dark Academia is an aesthetic movement centered on classical education, literature, and architecture, blending Greco-Roman culture, Gothic architecture, and Victorian-era scholarly atmosphere.
 
@@ -206,6 +213,48 @@ Core principles:
     transparent
   );
   margin: 2rem 0;
+}
+@keyframes dark-academia-fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes dark-academia-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.dark-academia-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.dark-academia-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  background: linear-gradient(135deg, rgba(61, 43, 31, 0.05), transparent);
+  pointer-events: none;
+}
+
+.dark-academia-card:hover::before {
+  opacity: 1;
+}
+
+.dark-academia-frosted {
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  background: rgba(61, 43, 31, 0.08);
+}
+
+.dark-academia-accent-corner {
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 2rem), calc(100% - 2rem) 100%, 0 100%);
+}
+
+.dark-academia-animate-in {
+  animation: dark-academia-fade-in 0.5s ease-out both;
 }`,
 
   aiRules: `你是一个 Dark Academia 暗黑学院风设计的前端开发专家。生成的所有代码必须严格遵守以下约束：
@@ -247,7 +296,28 @@ Core principles:
 - Library Stillness: 禁止使用跳跃、缩放或任何轻浮位移（如 \`translate\`）。界面应保持古籍般沉稳。
 - Candlelight Reveal: 悬停时可使用极柔和径向光晕或内阴影变化，模拟烛光靠近，亮度变化需克制。
 - Antique Slowness: 过渡建议 \`duration-700\` 到 \`duration-1000\`，并使用 \`ease-in-out\` 呈现厚重时间感。
-- Ink & Gold: 文本与装饰线在墨黑与暗金之间缓慢过渡，不使用高对比闪烁或突然反转。`,
+- Ink & Gold: 文本与装饰线在墨黑与暗金之间缓慢过渡，不使用高对比闪烁或突然反转。
+
+## Layout & Spacing
+- Section padding: py-16 md:py-24
+- Card padding: p-6 md:p-8
+- Gap between cards: gap-6 md:gap-8
+- Max content width: max-w-6xl mx-auto
+
+## Responsive Design
+- Mobile-first approach with Tailwind breakpoints
+- Stack elements vertically on mobile (flex-col), row on desktop (md:flex-row)
+- Reduce font sizes on mobile: text-3xl md:text-5xl for headings
+- Touch-friendly targets: min 44px for interactive elements
+
+## Self-Check Verification
+After generating code, verify:
+1. All interactive elements have hover/focus/active states
+2. Color contrast meets WCAG 2.1 AA (4.5:1 for text)
+3. Layout is responsive across breakpoints
+4. Typography hierarchy is clear (h1 > h2 > h3 > body)
+5. Spacing is consistent using the defined scale
+6. All animations respect prefers-reduced-motion`,
 
   aiRulesEn: `You are a Dark Academia design style frontend development expert. All generated code must strictly follow these constraints:
 
@@ -302,6 +372,44 @@ Primary:
 3. 卡片：微妙边框和阴影
 4. 添加书脊装饰线
 5. 整体温暖沉静的学术氛围`,
+    },
+  {
+      title: "SaaS 着陆页",
+      titleEn: "SaaS Landing Page",
+      description: "生成 暗黑学院风风格的 SaaS 产品着陆页",
+      descriptionEn: "Generate a SaaS product landing page in Dark Academia style",
+      prompt: `Create a SaaS landing page using Dark Academia style with hero section, feature grid, testimonials, pricing table, and footer.`,
+    },
+    {
+      title: "作品集展示",
+      titleEn: "Portfolio Showcase",
+      description: "生成 暗黑学院风风格的作品集页面",
+      descriptionEn: "Generate a portfolio showcase in Dark Academia style",
+      prompt: `Create a portfolio showcase page using Dark Academia style with project grid, about section, contact form, and consistent visual language.`,
+    }],
+
+  variants: [
+    {
+      id: "dark-academia-warm",
+      name: "暗黑学院风暖色版",
+      nameEn: "Dark Academia Warm",
+      description: "Warm-toned variant with shifted hues toward amber/orange",
+      colors: {
+        primary: "#342e19",
+        secondary: "#425c51",
+        accent: ["#78794f", "#edf2e1", "#50452a"],
+      },
+    },
+    {
+      id: "dark-academia-cool",
+      name: "暗黑学院风冷色版",
+      nameEn: "Dark Academia Cool",
+      description: "Cool-toned variant with shifted hues toward blue/teal",
+      colors: {
+        primary: "#422829",
+        secondary: "#294338",
+        accent: ["#996d64", "#fceee6", "#623d41"],
+      },
     },
   ],
 };

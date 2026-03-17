@@ -17,7 +17,7 @@ export const glassmorphism: DesignStyle = {
     secondary: "rgba(255, 255, 255, 0.10)",
     accent: ["#667eea", "#764ba2", "#f093fb", "#f5576c"],
   },
-  keywords: ["liquid glass", "frosted", "blur", "refraction", "translucent"],
+  keywords: ["liquid glass", "frosted", "blur", "refraction", "translucent", "modern", "contemporary", "sleek", "现代", "简洁"],
 
   philosophy: `Liquid Glass 是 Apple 在 WWDC25 推出的设计语言的精髓提炼。它不是简单的半透明加模糊，而是模拟真实玻璃的光学特性：折射、色散、内发光、高光边缘。
 
@@ -26,7 +26,14 @@ export const glassmorphism: DesignStyle = {
 - 内发光：顶部白色渐变模拟光线从上方照射玻璃的效果
 - 色散边缘：边框在交互时呈现微妙的彩虹色散
 - 深度层级：多层玻璃叠加，每层透明度和模糊度不同
-- 流体动效：所有过渡使用 spring easing，模拟玻璃的物理惯性`,
+- 流体动效：所有过渡使用 spring easing，模拟玻璃的物理惯性
+
+设计原则：
+- 视觉一致性：所有组件必须遵循统一的视觉语言，从色彩到字体到间距保持谐调
+- 层次分明：通过颜色深浅、字号大小、留白空间建立清晰的信息层级
+- 交互反馈：每个可交互元素都必须有明确的 hover、active、focus 状态反馈
+- 响应式适配：设计必须在移动端、平板、桌面端上保持一致的体验
+- 无障碍性：确保色彩对比度符合 WCAG 2.1 AA 标准，所有交互元素可键盘访问`,
 
   philosophyEn: `Liquid Glass distills the design language Apple introduced at WWDC25. It goes beyond simple translucency plus blur to simulate real glass optics: refraction, chromatic dispersion, inner luminance, and specular edges.
 
@@ -256,6 +263,23 @@ Core principles:
 .glass-container {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
   min-height: 100vh;
+}
+@keyframes glassmorphism-fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes glassmorphism-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.glassmorphism-accent-corner {
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 2rem), calc(100% - 2rem) 100%, 0 100%);
+}
+
+.glassmorphism-animate-in {
+  animation: glassmorphism-fade-in 0.5s ease-out both;
 }`,
 
   aiRules: `你是一个 Liquid Glass 设计风格的前端开发专家。生成的所有代码必须严格遵守以下约束：
@@ -408,6 +432,31 @@ After generating code, verify:
 5. Progress bar: glass track with gradient fill, glass thumb
 6. Playlist: glass sidebar with hover-highlighted rows
 7. All transitions spring easing, multi-layer shadows throughout`,
+    },
+  ],
+
+  variants: [
+    {
+      id: "glassmorphism-warm",
+      name: "Liquid Glass暖色版",
+      nameEn: "Liquid Glass Warm",
+      description: "Warm-toned variant with shifted hues toward amber/orange",
+      colors: {
+        primary: "rgba(255, 255, 255, 0.15)",
+        secondary: "rgba(255, 255, 255, 0.10)",
+        accent: ["#9e6de9", "#96448b", "#ff8fd0", "#dd6430"],
+      },
+    },
+    {
+      id: "glassmorphism-cool",
+      name: "Liquid Glass冷色版",
+      nameEn: "Liquid Glass Cool",
+      description: "Cool-toned variant with shifted hues toward blue/teal",
+      colors: {
+        primary: "rgba(255, 255, 255, 0.15)",
+        secondary: "rgba(255, 255, 255, 0.10)",
+        accent: ["#358fcf", "#4f56a6", "#c19fff", "#ec53ab"],
+      },
     },
   ],
 };

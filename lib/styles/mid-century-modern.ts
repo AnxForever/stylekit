@@ -15,9 +15,9 @@ export const midCenturyModern: DesignStyle = {
   colors: {
     primary: "#e8572a",
     secondary: "#f5f0e1",
-    accent: ["#2a6e5e", "#c4a35a", "#3d3d3d"],
+    accent: ["#2a6e5e", "#c4a35a", "#3d3d3d", "#44628c"],
   },
-  keywords: ["中世纪", "原子时代", "有机曲线", "星芒", "复古现代"],
+  keywords: ["中世纪", "原子时代", "有机曲线", "星芒", "复古现代", "retro", "vintage", "nostalgic", "复古", "怀旧"],
 
   philosophy: `Mid-Century Modern（中世纪现代主义）是20世纪40-60年代盛行的设计运动，诞生于战后乐观主义与太空时代的交汇点。它追求形式与功能的完美统一，相信好的设计应该服务于日常生活。
 
@@ -248,6 +248,48 @@ In interface design, Mid-Century Modern emphasizes whitespace, grid alignment, a
 /* 肾形容器 */
 .mcm-kidney {
   border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+}
+@keyframes mid-century-modern-fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes mid-century-modern-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.mid-century-modern-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.mid-century-modern-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  background: linear-gradient(135deg, rgba(232, 87, 42, 0.05), transparent);
+  pointer-events: none;
+}
+
+.mid-century-modern-card:hover::before {
+  opacity: 1;
+}
+
+.mid-century-modern-frosted {
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  background: rgba(232, 87, 42, 0.08);
+}
+
+.mid-century-modern-accent-corner {
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 2rem), calc(100% - 2rem) 100%, 0 100%);
+}
+
+.mid-century-modern-animate-in {
+  animation: mid-century-modern-fade-in 0.5s ease-out both;
 }`,
 
   aiRules: `你是一个 Mid-Century Modern 设计风格的前端开发专家。生成的所有代码必须严格遵守以下约束：
@@ -295,7 +337,28 @@ In interface design, Mid-Century Modern emphasizes whitespace, grid alignment, a
 - Analog Switch: 交互应模拟复古机械按键，active 以硬位移 + 阴影消失表达阻尼反馈。
 - Brass Shimmer: 黄铜装饰（如星芒）在 hover 轻微旋转并加深色泽，营造金属反光。
 - Retro Elevation: 卡片 hover 通过硬边阴影加长与轻微反向位移强化版画式层级。
-- Warm Dimming: 奶油底色在交互时仅做轻微变暗，避免高对比闪烁或现代霓虹感。`,
+- Warm Dimming: 奶油底色在交互时仅做轻微变暗，避免高对比闪烁或现代霓虹感。
+
+## Layout & Spacing
+- Section padding: py-16 md:py-24
+- Card padding: p-6 md:p-8
+- Gap between cards: gap-6 md:gap-8
+- Max content width: max-w-6xl mx-auto
+
+## Responsive Design
+- Mobile-first approach with Tailwind breakpoints
+- Stack elements vertically on mobile (flex-col), row on desktop (md:flex-row)
+- Reduce font sizes on mobile: text-3xl md:text-5xl for headings
+- Touch-friendly targets: min 44px for interactive elements
+
+## Self-Check Verification
+After generating code, verify:
+1. All interactive elements have hover/focus/active states
+2. Color contrast meets WCAG 2.1 AA (4.5:1 for text)
+3. Layout is responsive across breakpoints
+4. Typography hierarchy is clear (h1 > h2 > h3 > body)
+5. Spacing is consistent using the defined scale
+6. All animations respect prefers-reduced-motion`,
 
   aiRulesEn: `You are a Mid-Century Modern design style frontend development expert. All generated code must strictly follow these constraints:
 
@@ -336,6 +399,44 @@ Animation & Interaction Rules:
 3. 装饰：星芒图案 + 有机曲线形状
 4. 按钮：焦橙色 + 中等圆角
 5. 整体温暖、均衡、留白充足`,
+    },
+  {
+      title: "SaaS 着陆页",
+      titleEn: "SaaS Landing Page",
+      description: "生成 中世纪现代风格的 SaaS 产品着陆页",
+      descriptionEn: "Generate a SaaS product landing page in Mid-Century Modern style",
+      prompt: `Create a SaaS landing page using Mid-Century Modern style with hero section, feature grid, testimonials, pricing table, and footer.`,
+    },
+    {
+      title: "作品集展示",
+      titleEn: "Portfolio Showcase",
+      description: "生成 中世纪现代风格的作品集页面",
+      descriptionEn: "Generate a portfolio showcase in Mid-Century Modern style",
+      prompt: `Create a portfolio showcase page using Mid-Century Modern style with project grid, about section, contact form, and consistent visual language.`,
+    }],
+
+  variants: [
+    {
+      id: "mid-century-modern-warm",
+      name: "中世纪现代暖色版",
+      nameEn: "Mid-Century Modern Warm",
+      description: "Warm-toned variant with shifted hues toward amber/orange",
+      colors: {
+        primary: "#b46b00",
+        secondary: "#f6f2e4",
+        accent: ["#316978", "#9ab054", "#3d3d3d"],
+      },
+    },
+    {
+      id: "mid-century-modern-cool",
+      name: "中世纪现代冷色版",
+      nameEn: "Mid-Century Modern Cool",
+      description: "Cool-toned variant with shifted hues toward blue/teal",
+      colors: {
+        primary: "#fd4a6e",
+        secondary: "#ddd8cb",
+        accent: ["#316f44", "#e59774", "#3d3d3d"],
+      },
     },
   ],
 };

@@ -15,9 +15,9 @@ export const paperCraft: DesignStyle = {
   colors: {
     primary: "#e85d75",
     secondary: "#fdf6ee",
-    accent: ["#5cb8a5", "#f5c040", "#6b7fb5"],
+    accent: ["#5cb8a5", "#f5c040", "#6b7fb5", "#81a7e2"],
   },
-  keywords: ["纸艺", "剪纸", "手作", "层叠", "阴影", "创意", "质感"],
+  keywords: ["纸艺", "剪纸", "手作", "层叠", "阴影", "创意", "质感", "expressive", "bold", "vibrant"],
 
   philosophy: `Paper Craft（纸艺手作）的设计灵感来自剪纸艺术、折纸和手工拼贴。通过层叠的纸张效果、柔和的投影和不规则的手作边缘，创造出温暖、有触感的视觉体验。
 
@@ -177,6 +177,56 @@ Suitable for: children's education apps, handmade craft shops, kindergarten webs
     rgba(0, 0, 0, 0.05) 50.5%,
     transparent 50.5%
   );
+}
+/* Paper Craft Design Tokens */
+:root {
+  --paper-craft-primary: #e85d75;
+  --paper-craft-secondary: #fdf6ee;
+  --paper-craft-accent: #5cb8a5;
+  --paper-craft-glow: rgba(232, 93, 117, 0.3);
+}
+
+@keyframes paper-craft-fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes paper-craft-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.paper-craft-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.paper-craft-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  background: linear-gradient(135deg, rgba(232, 93, 117, 0.05), transparent);
+  pointer-events: none;
+}
+
+.paper-craft-card:hover::before {
+  opacity: 1;
+}
+
+.paper-craft-frosted {
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  background: rgba(232, 93, 117, 0.08);
+}
+
+.paper-craft-accent-corner {
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 2rem), calc(100% - 2rem) 100%, 0 100%);
+}
+
+.paper-craft-animate-in {
+  animation: paper-craft-fade-in 0.5s ease-out both;
 }`,
 
   aiRules: `STYLE: Paper Craft
@@ -278,6 +328,44 @@ SPECIAL EFFECTS:
 - Badge/label elements as paper cutouts
 - Layered paper decorative borders
 - Bright but soft craft colors`,
+    },
+  {
+      title: "SaaS 着陆页",
+      titleEn: "SaaS Landing Page",
+      description: "生成 纸艺手作风格的 SaaS 产品着陆页",
+      descriptionEn: "Generate a SaaS product landing page in Paper Craft style",
+      prompt: `Create a SaaS landing page using Paper Craft style with hero section, feature grid, testimonials, pricing table, and footer.`,
+    },
+    {
+      title: "作品集展示",
+      titleEn: "Portfolio Showcase",
+      description: "生成 纸艺手作风格的作品集页面",
+      descriptionEn: "Generate a portfolio showcase in Paper Craft style",
+      prompt: `Create a portfolio showcase page using Paper Craft style with project grid, about section, contact form, and consistent visual language.`,
+    }],
+
+  variants: [
+    {
+      id: "paper-craft-warm",
+      name: "纸艺手作暖色版",
+      nameEn: "Paper Craft Warm",
+      description: "Warm-toned variant with shifted hues toward amber/orange",
+      colors: {
+        primary: "#d66840",
+        secondary: "#fdf7f0",
+        accent: ["#66b1c8", "#add638", "#8976b8"],
+      },
+    },
+    {
+      id: "paper-craft-cool",
+      name: "纸艺手作冷色版",
+      nameEn: "Paper Craft Cool",
+      description: "Cool-toned variant with shifted hues toward blue/teal",
+      colors: {
+        primary: "#dd5bac",
+        secondary: "#e4ddd6",
+        accent: ["#65b981", "#ffaa6b", "#5288a4"],
+      },
     },
   ],
 };

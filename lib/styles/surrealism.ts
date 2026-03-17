@@ -15,9 +15,9 @@ export const surrealism: DesignStyle = {
   colors: {
     primary: "#1a1a3e",
     secondary: "#f0ece4",
-    accent: ["#d4a574", "#c38d94", "#4a3f6b"],
+    accent: ["#d4a574", "#c38d94", "#4a3f6b", "#90ba6d"],
   },
-  keywords: ["超现实", "梦境", "Dali", "融化", "不合逻辑", "潜意识", "奇幻"],
+  keywords: ["超现实", "梦境", "Dali", "融化", "不合逻辑", "潜意识", "奇幻", "expressive", "bold", "vibrant"],
 
   philosophy: `Surrealism（超现实主义）是20世纪初的艺术运动，致力于释放潜意识的创造力，打破理性与非理性的界限。
 
@@ -25,7 +25,14 @@ export const surrealism: DesignStyle = {
 - 梦境逻辑：超越现实的视觉叙事
 - 意外并置：不相关元素的奇妙组合
 - 变形流动：融化、扭曲的形态
-- 潜意识探索：深层心理的视觉表达`,
+- 潜意识探索：深层心理的视觉表达
+
+设计原则：
+- 视觉一致性：所有组件必须遵循统一的视觉语言，从色彩到字体到间距保持谐调
+- 层次分明：通过颜色深浅、字号大小、留白空间建立清晰的信息层级
+- 交互反馈：每个可交互元素都必须有明确的 hover、active、focus 状态反馈
+- 响应式适配：设计必须在移动端、平板、桌面端上保持一致的体验
+- 无障碍性：确保色彩对比度符合 WCAG 2.1 AA 标准，所有交互元素可键盘访问`,
 
   philosophyEn: `Surrealism is an early 20th-century art movement dedicated to unleashing the creative power of the subconscious, breaking the boundaries between the rational and irrational.
 
@@ -212,6 +219,48 @@ Core principles:
   box-shadow:
     0 20px 60px rgba(26, 26, 62, 0.3),
     0 0 40px rgba(195, 141, 148, 0.15);
+}
+@keyframes surrealism-fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes surrealism-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.surrealism-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.surrealism-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  background: linear-gradient(135deg, rgba(26, 26, 62, 0.05), transparent);
+  pointer-events: none;
+}
+
+.surrealism-card:hover::before {
+  opacity: 1;
+}
+
+.surrealism-frosted {
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  background: rgba(26, 26, 62, 0.08);
+}
+
+.surrealism-accent-corner {
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 2rem), calc(100% - 2rem) 100%, 0 100%);
+}
+
+.surrealism-animate-in {
+  animation: surrealism-fade-in 0.5s ease-out both;
 }`,
 
   aiRules: `你是一个 Surrealism 设计风格的前端开发专家。生成的所有代码必须严格遵守以下约束：
@@ -304,6 +353,44 @@ Primary:
 3. 卡片：圆角带光晕阴影
 4. 添加模糊光球装饰
 5. 整体梦境般的神秘氛围`,
+    },
+  {
+      title: "SaaS 着陆页",
+      titleEn: "SaaS Landing Page",
+      description: "生成 超现实主义风风格的 SaaS 产品着陆页",
+      descriptionEn: "Generate a SaaS product landing page in Surrealism style",
+      prompt: `Create a SaaS landing page using Surrealism style with hero section, feature grid, testimonials, pricing table, and footer.`,
+    },
+    {
+      title: "作品集展示",
+      titleEn: "Portfolio Showcase",
+      description: "生成 超现实主义风风格的作品集页面",
+      descriptionEn: "Generate a portfolio showcase in Surrealism style",
+      prompt: `Create a portfolio showcase page using Surrealism style with project grid, about section, contact form, and consistent visual language.`,
+    }],
+
+  variants: [
+    {
+      id: "surrealism-warm",
+      name: "超现实主义风暖色版",
+      nameEn: "Surrealism Warm",
+      description: "Warm-toned variant with shifted hues toward amber/orange",
+      colors: {
+        primary: "#2b153b",
+        secondary: "#f2eee7",
+        accent: ["#b3b067", "#bb9180", "#5d3a63"],
+      },
+    },
+    {
+      id: "surrealism-cool",
+      name: "超现实主义风冷色版",
+      nameEn: "Surrealism Cool",
+      description: "Cool-toned variant with shifted hues toward blue/teal",
+      colors: {
+        primary: "#0a1f38",
+        secondary: "#d8d4cd",
+        accent: ["#ea9c90", "#c08caa", "#364569"],
+      },
     },
   ],
 };

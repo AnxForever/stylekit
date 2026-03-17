@@ -15,9 +15,9 @@ export const softUI: DesignStyle = {
   colors: {
     primary: "#6366f1",
     secondary: "#f1f5f9",
-    accent: ["#ec4899", "#10b981", "#f59e0b"],
+    accent: ["#ec4899", "#10b981", "#f59e0b", "#d15d1a"],
   },
-  keywords: ["柔和", "圆润", "友好", "消费类", "App", "社交", "生活服务"],
+  keywords: ["柔和", "圆润", "友好", "消费类", "App", "社交", "生活服务", "modern", "contemporary", "sleek"],
 
   philosophy: `Soft UI 设计风格强调友好、亲和、舒适的视觉体验，让用户感到放松和愉悦。
 
@@ -25,7 +25,14 @@ export const softUI: DesignStyle = {
 - 温和友好：通过柔和的阴影和圆角传达亲和力
 - 低对比度：避免强烈对比，使用柔和的色彩过渡
 - 触感设计：让界面元素看起来可以触摸
-- 情感连接：通过设计传达温暖和关怀`,
+- 情感连接：通过设计传达温暖和关怀
+
+设计原则：
+- 视觉一致性：所有组件必须遵循统一的视觉语言，从色彩到字体到间距保持谐调
+- 层次分明：通过颜色深浅、字号大小、留白空间建立清晰的信息层级
+- 交互反馈：每个可交互元素都必须有明确的 hover、active、focus 状态反馈
+- 响应式适配：设计必须在移动端、平板、桌面端上保持一致的体验
+- 无障碍性：确保色彩对比度符合 WCAG 2.1 AA 标准，所有交互元素可键盘访问`,
 
   philosophyEn: `Soft UI design style emphasizes a friendly, approachable, and comfortable visual experience that makes users feel relaxed and delighted.
 
@@ -132,6 +139,59 @@ Core principles:
   h1, h2, h3, h4 {
     @apply font-semibold text-gray-800;
   }
+}
+@keyframes soft-ui-fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes soft-ui-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.soft-ui-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.soft-ui-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.05), transparent);
+  pointer-events: none;
+}
+
+.soft-ui-card:hover::before {
+  opacity: 1;
+}
+
+.soft-ui-gradient {
+  background: linear-gradient(135deg, #6366f1, #ec4899);
+}
+
+.soft-ui-gradient-text {
+  background: linear-gradient(135deg, #6366f1, #ec4899);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.soft-ui-frosted {
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  background: rgba(99, 102, 241, 0.08);
+}
+
+.soft-ui-accent-corner {
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 2rem), calc(100% - 2rem) 100%, 0 100%);
+}
+
+.soft-ui-animate-in {
+  animation: soft-ui-fade-in 0.5s ease-out both;
 }`,
 
   aiRules: `STYLE: Soft UI
@@ -169,7 +229,28 @@ SPACING:
 - Cloud Float: hover 以上浮加阴影扩散为主，阴影保持彩色且柔和，避免脏灰硬影。
 - Pillow Press: active 状态用轻微缩放和内阴影，呈现按入枕面的柔软反馈。
 - Friendly Viscosity: 交互节奏推荐 duration-300 和 ease-in-out，避免突兀速度变化。
-- Halo Focus: 表单 focus 使用大半径低不透明度 ring 与柔光阴影，不依赖硬边框。`,
+- Halo Focus: 表单 focus 使用大半径低不透明度 ring 与柔光阴影，不依赖硬边框。
+
+## Layout & Spacing
+- Section padding: py-16 md:py-24
+- Card padding: p-6 md:p-8
+- Gap between cards: gap-6 md:gap-8
+- Max content width: max-w-6xl mx-auto
+
+## Responsive Design
+- Mobile-first approach with Tailwind breakpoints
+- Stack elements vertically on mobile (flex-col), row on desktop (md:flex-row)
+- Reduce font sizes on mobile: text-3xl md:text-5xl for headings
+- Touch-friendly targets: min 44px for interactive elements
+
+## Self-Check Verification
+After generating code, verify:
+1. All interactive elements have hover/focus/active states
+2. Color contrast meets WCAG 2.1 AA (4.5:1 for text)
+3. Layout is responsive across breakpoints
+4. Typography hierarchy is clear (h1 > h2 > h3 > body)
+5. Spacing is consistent using the defined scale
+6. All animations respect prefers-reduced-motion`,
 
   aiRulesEn: `STYLE: Soft UI
 TYPE: Friendly, approachable interface design
@@ -221,6 +302,44 @@ SPACING:
 - CTA with gradient button (soft gradient)
 - All rounded-2xl or rounded-3xl
 - Hover effects with lift and shadow expansion`,
+    },
+  {
+      title: "SaaS 着陆页",
+      titleEn: "SaaS Landing Page",
+      description: "生成 柔和界面风风格的 SaaS 产品着陆页",
+      descriptionEn: "Generate a SaaS product landing page in Soft UI style",
+      prompt: `Create a SaaS landing page using Soft UI style with hero section, feature grid, testimonials, pricing table, and footer.`,
+    },
+    {
+      title: "作品集展示",
+      titleEn: "Portfolio Showcase",
+      description: "生成 柔和界面风风格的作品集页面",
+      descriptionEn: "Generate a portfolio showcase in Soft UI style",
+      prompt: `Create a portfolio showcase page using Soft UI style with project grid, about section, contact form, and consistent visual language.`,
+    }],
+
+  variants: [
+    {
+      id: "soft-ui-warm",
+      name: "柔和界面风暖色版",
+      nameEn: "Soft UI Warm",
+      description: "Warm-toned variant with shifted hues toward amber/orange",
+      colors: {
+        primary: "#a553e6",
+        secondary: "#f2f6fa",
+        accent: ["#f04e56", "#19afc4", "#9dba00"],
+      },
+    },
+    {
+      id: "soft-ui-cool",
+      name: "柔和界面风冷色版",
+      nameEn: "Soft UI Cool",
+      description: "Cool-toned variant with shifted hues toward blue/teal",
+      colors: {
+        primary: "#247bd9",
+        secondary: "#d9dde0",
+        accent: ["#c74dd1", "#29b843", "#ff8447"],
+      },
     },
   ],
 };

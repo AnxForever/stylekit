@@ -1,10 +1,11 @@
-// Quality Scoring Engine for StyleKit styles
-// Evaluates recipe coverage, token completeness, definition quality, and color palette
+// Quality Scoring Engine for StyleKit styles (v2)
+// Evaluates recipe coverage, CSS depth, definition quality, and color system
+// Upgraded from v1: content-depth scoring replaces simple existence checks
 
 import { styles, type DesignStyle } from "@/lib/styles";
 import { getStyleRecipes } from "@/lib/recipes";
 
-// ── Types ────────────────────────────────────────────────────────────
+// -- Types --------------------------------------------------------------------
 
 export interface QualityScore {
   slug: string;
@@ -12,7 +13,7 @@ export interface QualityScore {
   overall: number;
   grade: string;
   recipeScore: number;
-  tokenScore: number;
+  cssScore: number;
   definitionScore: number;
   colorScore: number;
   missing: string[];
@@ -28,7 +29,7 @@ export interface QualityReport {
   bottomStyles: QualityScore[];
 }
 
-// ── Constants ────────────────────────────────────────────────────────
+// -- Constants ----------------------------------------------------------------
 
 const REQUIRED_RECIPE_COMPONENTS = [
   "button",
@@ -39,19 +40,16 @@ const REQUIRED_RECIPE_COMPONENTS = [
   "footer",
 ] as const;
 
-const TOKEN_CATEGORIES = [
-  "colors",
-  "typography",
-  "spacing",
-  "shadows",
-  "borders",
-] as const;
+const MAX_RECIPE = 30;
+const MAX_CSS = 25;
+const MAX_DEFINITION = 30;
+const MAX_COLOR = 15;
 
-// ── Scoring Functions ────────────────────────────────────────────────
+// -- Scoring Functions --------------------------------------------------------
 
 /**
- * Score recipe coverage (40 points max)
- * Each of the 6 required components is worth ~6.67 points
+ * Score recipe coverage (30 points max, was 40)
+ * Each of the 6 required components is worth 5 points
  */
 function scoreRecipeCoverage(
   slug: string,
@@ -77,187 +75,288 @@ function scoreRecipeCoverage(
     }
   }
 
-  // 40 points total, distributed across 6 required components
-  const pointsPerComponent = 40 / REQUIRED_RECIPE_COMPONENTS.length;
+  const pointsPerComponent = MAX_RECIPE / REQUIRED_RECIPE_COMPONENTS.length;
   return {
-    score: Math.round(found * pointsPerComponent * 10) / 10,
+    score: round(found * pointsPerComponent),
     missing,
   };
 }
 
 /**
- * Score token completeness (25 points max)
- * Checks if the style has meaningful data in key token categories
+ * Score CSS quality and depth (25 points max)
+ *
+ * Breakdown:
+ *   - globalCss line depth:        10 pts (0-5 lines=0, 6-15=3, 16-30=5, 31-60=8, 60+=10)
+ *   - Utility class richness:       8 pts (count .className definitions: 0=0, 1-2=3, 3-4=6, 5+=8)
+ *   - Advanced CSS techniques:      7 pts (1 pt each for CSS vars, @keyframes, pseudo-elements,
+ *                                          clip-path, SVG filter, backdrop-filter, gradients; max 7)
  */
-function scoreTokenCompleteness(
+function scoreCssQuality(
   style: DesignStyle,
 ): { score: number; missing: string[] } {
   const missing: string[] = [];
-  let points = 0;
-  const pointsPerCategory = 25 / TOKEN_CATEGORIES.length;
+  const css = style.globalCss || "";
+  const lines = css.split("\n").filter((l) => l.trim().length > 0);
+  const lineCount = lines.length;
 
-  // colors - check primary, secondary, accent
-  if (style.colors?.primary && style.colors?.secondary) {
-    points += pointsPerCategory;
-  } else {
-    missing.push("token:colors");
-  }
+  // 1. Line depth (10 pts)
+  let depthPts = 0;
+  if (lineCount >= 60) depthPts = 10;
+  else if (lineCount >= 31) depthPts = 8;
+  else if (lineCount >= 16) depthPts = 5;
+  else if (lineCount >= 6) depthPts = 3;
+  else missing.push(`css:depth(${lineCount} lines)`);
 
-  // typography - check keywords for typography hints or globalCss for font-related rules
-  const hasTypography =
-    style.globalCss?.includes("font-") ||
-    style.globalCss?.includes("text-") ||
-    style.globalCss?.includes("letter-spacing");
-  if (hasTypography) {
-    points += pointsPerCategory;
-  } else {
-    missing.push("token:typography");
-  }
+  // 2. Utility class richness (8 pts)
+  const classMatches = css.match(/\.\w[\w-]*\s*\{/g) || [];
+  // Also count classes defined with ::before/::after
+  const pseudoClassMatches = css.match(/\.\w[\w-]*::?\w+/g) || [];
+  const uniqueClasses = new Set([
+    ...classMatches.map((m) => m.replace(/\s*\{/, "")),
+    ...pseudoClassMatches.map((m) => m.split("::")[0].split(":")[0]),
+  ]);
+  const classCount = uniqueClasses.size;
+  let classPts = 0;
+  if (classCount >= 5) classPts = 8;
+  else if (classCount >= 3) classPts = 6;
+  else if (classCount >= 1) classPts = 3;
+  else missing.push("css:no-utility-classes");
 
-  // spacing - check globalCss for spacing/padding/margin rules
-  const hasSpacing =
-    style.globalCss?.includes("padding") ||
-    style.globalCss?.includes("margin") ||
-    style.globalCss?.includes("gap") ||
-    style.globalCss?.includes("space-");
-  if (hasSpacing) {
-    points += pointsPerCategory;
-  } else {
-    missing.push("token:spacing");
+  // 3. Advanced CSS techniques (7 pts, 1 pt each)
+  let techPts = 0;
+  const techniques: [string, RegExp][] = [
+    ["css-vars", /--[\w-]+\s*:/],
+    ["keyframes", /@keyframes/],
+    ["pseudo-elements", /::(?:before|after)/],
+    ["clip-path", /clip-path/],
+    ["svg-filter", /(?:filter\s*:|url\(#)/],
+    ["backdrop-filter", /backdrop-filter/],
+    ["gradients", /(?:linear|radial|conic)-gradient/],
+  ];
+  for (const [name, regex] of techniques) {
+    if (regex.test(css)) {
+      techPts++;
+    } else {
+      // Only report missing for advanced techniques if CSS is substantial
+      if (lineCount >= 16) {
+        missing.push(`css:technique(${name})`);
+      }
+    }
   }
-
-  // shadows - check globalCss for shadow rules
-  const hasShadows =
-    style.globalCss?.includes("shadow") ||
-    style.globalCss?.includes("box-shadow");
-  if (hasShadows) {
-    points += pointsPerCategory;
-  } else {
-    missing.push("token:shadows");
-  }
-
-  // borders - check globalCss for border rules
-  const hasBorders =
-    style.globalCss?.includes("border") ||
-    style.globalCss?.includes("outline") ||
-    style.globalCss?.includes("ring");
-  if (hasBorders) {
-    points += pointsPerCategory;
-  } else {
-    missing.push("token:borders");
-  }
+  techPts = Math.min(techPts, 7);
 
   return {
-    score: Math.round(points * 10) / 10,
-    missing,
+    score: round(depthPts + classPts + techPts),
+    missing: missing.slice(0, 5), // Limit missing items for readability
   };
 }
 
 /**
- * Score style definition completeness (25 points max)
- * Checks philosophy, doList (3+), dontList (3+), aiRules (3+ rules), keywords (3+), examplePrompts (2+)
+ * Score definition completeness and depth (30 points max, was 25)
+ *
+ * Breakdown (5 pts each):
+ *   - philosophy:     depth by char count (50-150=2, 150-300=3.5, 300+=5)
+ *   - doList:         count + specificity (has CSS values = bonus)
+ *   - dontList:       count + specificity (has CSS values = bonus)
+ *   - aiRules:        depth by char count + structure (sections/checklist bonus)
+ *   - keywords:       count gradient (3-5=3, 6-8=4, 9+=5)
+ *   - examplePrompts: count gradient (1=2.5, 2=4, 3+=5)
  */
-function scoreDefinitionCompleteness(
+function scoreDefinitionQuality(
   style: DesignStyle,
 ): { score: number; missing: string[] } {
   const missing: string[] = [];
   let points = 0;
-  // 6 criteria, ~4.17 points each
-  const pointsPerCriteria = 25 / 6;
 
-  // philosophy - must be non-empty and substantial (>50 chars)
-  if (style.philosophy && style.philosophy.length > 50) {
-    points += pointsPerCriteria;
+  // 1. Philosophy depth (5 pts)
+  const philLen = (style.philosophy || "").length;
+  if (philLen >= 300) {
+    points += 5;
+  } else if (philLen >= 150) {
+    points += 3.5;
+  } else if (philLen >= 50) {
+    points += 2;
   } else {
-    missing.push("def:philosophy");
+    missing.push(`def:philosophy(${philLen} chars)`);
   }
 
-  // doList - at least 3 items
-  if (style.doList && style.doList.length >= 3) {
-    points += pointsPerCriteria;
+  // 2. doList quality (5 pts)
+  const doCount = style.doList?.length ?? 0;
+  if (doCount >= 3) {
+    let doPts = doCount >= 5 ? 3 : 2;
+    // Bonus for specificity: check if items contain CSS values
+    if (hasCssValues(style.doList)) {
+      doPts += 2;
+    }
+    points += Math.min(doPts, 5);
   } else {
-    missing.push(`def:doList(${style.doList?.length ?? 0}/3)`);
+    missing.push(`def:doList(${doCount}/3)`);
   }
 
-  // dontList - at least 3 items
-  if (style.dontList && style.dontList.length >= 3) {
-    points += pointsPerCriteria;
+  // 3. dontList quality (5 pts)
+  const dontCount = style.dontList?.length ?? 0;
+  if (dontCount >= 3) {
+    let dontPts = dontCount >= 5 ? 3 : 2;
+    if (hasCssValues(style.dontList)) {
+      dontPts += 2;
+    }
+    points += Math.min(dontPts, 5);
   } else {
-    missing.push(`def:dontList(${style.dontList?.length ?? 0}/3)`);
+    missing.push(`def:dontList(${dontCount}/3)`);
   }
 
-  // aiRules - must be non-empty and contain at least 3 distinct rules
-  const aiRulesLines = style.aiRules
-    ? style.aiRules.split("\n").filter((l) => l.trim().startsWith("-") || l.trim().startsWith("*") || /^\d+\./.test(l.trim()))
-    : [];
-  if (style.aiRules && (style.aiRules.length > 100 || aiRulesLines.length >= 3)) {
-    points += pointsPerCriteria;
+  // 4. aiRules depth (5 pts)
+  const rulesLen = (style.aiRules || "").length;
+  if (rulesLen >= 1000) {
+    let rulesPts = 4;
+    // Bonus for structure: sections, headers, checklist
+    if (hasStructuredContent(style.aiRules || "")) {
+      rulesPts += 1;
+    }
+    points += Math.min(rulesPts, 5);
+  } else if (rulesLen >= 500) {
+    points += 3;
+  } else if (rulesLen >= 100) {
+    points += 1.5;
   } else {
     missing.push("def:aiRules");
   }
 
-  // keywords - at least 3
-  if (style.keywords && style.keywords.length >= 3) {
-    points += pointsPerCriteria;
+  // 5. Keywords (5 pts)
+  const kwCount = style.keywords?.length ?? 0;
+  if (kwCount >= 9) {
+    points += 5;
+  } else if (kwCount >= 6) {
+    points += 4;
+  } else if (kwCount >= 3) {
+    points += 3;
   } else {
-    missing.push(`def:keywords(${style.keywords?.length ?? 0}/3)`);
+    missing.push(`def:keywords(${kwCount}/3)`);
   }
 
-  // examplePrompts - at least 2
-  if (style.examplePrompts && style.examplePrompts.length >= 2) {
-    points += pointsPerCriteria;
+  // 6. Example prompts (5 pts)
+  const promptCount = style.examplePrompts?.length ?? 0;
+  if (promptCount >= 3) {
+    points += 5;
+  } else if (promptCount >= 2) {
+    points += 4;
+  } else if (promptCount >= 1) {
+    points += 2.5;
   } else {
-    missing.push(`def:examplePrompts(${style.examplePrompts?.length ?? 0}/2)`);
+    missing.push("def:examplePrompts(0)");
   }
 
   return {
-    score: Math.round(points * 10) / 10,
+    score: round(points),
     missing,
   };
 }
 
 /**
- * Score color palette completeness (10 points max)
- * Checks for primary, secondary, accent, and whether accent has multiple colors
+ * Score color palette system (15 points max, was 10)
+ *
+ * Breakdown:
+ *   - primary:         3 pts
+ *   - secondary:       3 pts
+ *   - accent exists:   3 pts
+ *   - accent richness: 3 pts (2 colors=1.5, 3=2.5, 4+=3)
+ *   - variants:        3 pts (1 variant=2, 2+=3)
  */
-function scoreColorPalette(
+function scoreColorSystem(
   style: DesignStyle,
 ): { score: number; missing: string[] } {
   const missing: string[] = [];
   let points = 0;
 
-  // primary (3 points)
+  // primary (3 pts)
   if (style.colors?.primary) {
     points += 3;
   } else {
     missing.push("color:primary");
   }
 
-  // secondary (3 points)
+  // secondary (3 pts)
   if (style.colors?.secondary) {
     points += 3;
   } else {
     missing.push("color:secondary");
   }
 
-  // accent exists (2 points)
-  if (style.colors?.accent && style.colors.accent.length > 0) {
-    points += 2;
+  // accent exists (3 pts)
+  const accentCount = style.colors?.accent?.length ?? 0;
+  if (accentCount > 0) {
+    points += 3;
   } else {
     missing.push("color:accent");
   }
 
-  // accent has 2+ colors (2 points)
-  if (style.colors?.accent && style.colors.accent.length >= 2) {
-    points += 2;
-  } else if (!missing.includes("color:accent")) {
-    missing.push("color:accent(needs 2+)");
+  // accent richness (3 pts)
+  if (accentCount >= 4) {
+    points += 3;
+  } else if (accentCount >= 3) {
+    points += 2.5;
+  } else if (accentCount >= 2) {
+    points += 1.5;
+  } else if (accentCount === 0) {
+    missing.push("color:accent-richness");
   }
 
-  return { score: points, missing };
+  // variants (3 pts)
+  const variantCount = style.variants?.length ?? 0;
+  if (variantCount >= 2) {
+    points += 3;
+  } else if (variantCount >= 1) {
+    points += 2;
+  } else {
+    missing.push("color:no-variants");
+  }
+
+  return { score: round(points), missing };
 }
 
-// ── Grade Assignment ─────────────────────────────────────────────────
+// -- Helpers ------------------------------------------------------------------
+
+/** Round to 1 decimal place */
+function round(n: number): number {
+  return Math.round(n * 10) / 10;
+}
+
+/** Check if a list of strings contains specific CSS values (px, rem, %, Tailwind classes) */
+function hasCssValues(items: string[] | undefined): boolean {
+  if (!items || items.length === 0) return false;
+  const cssPattern = /(?:\d+px|\d+rem|\d+%|#[0-9a-f]{3,8}|rgba?\(|hsla?\(|border-|bg-|text-|shadow-|rounded-|p-|m-|gap-|space-|font-|blur-|backdrop-|cubic-bezier|transition-|transform|opacity-|ring-)/i;
+  const matchCount = items.filter((item) => cssPattern.test(item)).length;
+  // At least 30% of items should contain specific CSS values
+  return matchCount >= Math.ceil(items.length * 0.3);
+}
+
+/** Check if text has structured content (sections, headers, numbered lists, checklists) */
+function hasStructuredContent(text: string): boolean {
+  const lines = text.split("\n");
+  let structureIndicators = 0;
+
+  // Check for section headers (##, **, numbered headings)
+  if (lines.some((l) => /^#{1,3}\s/.test(l.trim()) || /^\*\*[^*]+\*\*/.test(l.trim()))) {
+    structureIndicators++;
+  }
+
+  // Check for numbered/bulleted lists (at least 3 items)
+  const listItems = lines.filter(
+    (l) => /^\s*[-*]\s/.test(l) || /^\s*\d+[.)]\s/.test(l),
+  );
+  if (listItems.length >= 3) {
+    structureIndicators++;
+  }
+
+  // Check for checklist or verification items
+  if (/checklist|self-check|verify|verification/i.test(text)) {
+    structureIndicators++;
+  }
+
+  return structureIndicators >= 2;
+}
+
+// -- Grade Assignment ---------------------------------------------------------
 
 function assignGrade(score: number): string {
   if (score >= 90) return "A";
@@ -267,7 +366,7 @@ function assignGrade(score: number): string {
   return "F";
 }
 
-// ── Public API ───────────────────────────────────────────────────────
+// -- Public API ---------------------------------------------------------------
 
 /**
  * Score a single style's quality
@@ -277,18 +376,17 @@ export function scoreStyleQuality(slug: string): QualityScore | null {
   if (!style) return null;
 
   const recipe = scoreRecipeCoverage(slug);
-  const token = scoreTokenCompleteness(style);
-  const definition = scoreDefinitionCompleteness(style);
-  const color = scoreColorPalette(style);
+  const css = scoreCssQuality(style);
+  const definition = scoreDefinitionQuality(style);
+  const color = scoreColorSystem(style);
 
-  const overall =
-    Math.round(
-      (recipe.score + token.score + definition.score + color.score) * 10,
-    ) / 10;
+  const overall = round(
+    recipe.score + css.score + definition.score + color.score,
+  );
 
   const allMissing = [
     ...recipe.missing,
-    ...token.missing,
+    ...css.missing,
     ...definition.missing,
     ...color.missing,
   ];
@@ -299,7 +397,7 @@ export function scoreStyleQuality(slug: string): QualityScore | null {
     overall,
     grade: assignGrade(overall),
     recipeScore: recipe.score,
-    tokenScore: token.score,
+    cssScore: css.score,
     definitionScore: definition.score,
     colorScore: color.score,
     missing: allMissing,
@@ -332,9 +430,9 @@ export function generateQualityReport(): QualityReport {
   const totalStyles = scoreList.length;
   const averageScore =
     totalStyles > 0
-      ? Math.round(
-          (scoreList.reduce((sum, s) => sum + s.overall, 0) / totalStyles) * 10,
-        ) / 10
+      ? round(
+          scoreList.reduce((sum, s) => sum + s.overall, 0) / totalStyles,
+        )
       : 0;
 
   const gradeDistribution: Record<string, number> = {

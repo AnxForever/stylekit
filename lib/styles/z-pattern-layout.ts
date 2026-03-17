@@ -18,7 +18,7 @@ export const zPatternLayout: DesignStyle = {
     secondary: "#ffffff",
     accent: ["#6366f1", "#06b6d4", "#f59e0b", "#ec4899"],
   },
-  keywords: ["Z型", "着陆页", "营销", "视觉引导", "CTA", "扫描路径"],
+  keywords: ["Z型", "着陆页", "营销", "视觉引导", "CTA", "扫描路径", "modern", "contemporary", "sleek", "现代"],
 
   philosophy: `Z-Pattern Layout 基于用户在视觉简洁页面上的自然扫描路径。视线从左上角（logo/品牌）移到右上角（CTA），然后斜穿到左下角，最后移至右下角（最终CTA）。
 
@@ -26,7 +26,14 @@ export const zPatternLayout: DesignStyle = {
 - 视觉引导：利用Z型路径引导用户完成预设的信息接收顺序
 - 关键点位：四个角是最重要的信息放置点
 - 简洁明了：适合内容较少但需要强转化的页面
-- 层层推进：每一行都是一个信息层级`,
+- 层层推进：每一行都是一个信息层级
+
+设计原则：
+- 视觉一致性：所有组件必须遵循统一的视觉语言，从色彩到字体到间距保持谐调
+- 层次分明：通过颜色深浅、字号大小、留白空间建立清晰的信息层级
+- 交互反馈：每个可交互元素都必须有明确的 hover、active、focus 状态反馈
+- 响应式适配：设计必须在移动端、平板、桌面端上保持一致的体验
+- 无障碍性：确保色彩对比度符合 WCAG 2.1 AA 标准，所有交互元素可键盘访问`,
 
   philosophyEn: `Z-Pattern Layout is based on the user's natural scanning path on visually clean pages. The gaze moves from the top-left (logo/brand) to the top-right (CTA), then diagonally to the bottom-left, and finally to the bottom-right (final CTA).
 
@@ -224,6 +231,48 @@ Core principles:
   .z-diagonal {
     padding: 3rem 1.5rem;
   }
+}
+/* Z-Pattern Layout Design Tokens */
+:root {
+  --z-pattern-layout-primary: #0f172a;
+  --z-pattern-layout-secondary: #ffffff;
+  --z-pattern-layout-accent: #6366f1;
+  --z-pattern-layout-glow: rgba(15, 23, 42, 0.3);
+}
+
+@keyframes z-pattern-layout-fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes z-pattern-layout-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.z-pattern-layout-gradient {
+  background: linear-gradient(135deg, #0f172a, #6366f1);
+}
+
+.z-pattern-layout-gradient-text {
+  background: linear-gradient(135deg, #0f172a, #6366f1);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.z-pattern-layout-frosted {
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  background: rgba(15, 23, 42, 0.08);
+}
+
+.z-pattern-layout-accent-corner {
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 2rem), calc(100% - 2rem) 100%, 0 100%);
+}
+
+.z-pattern-layout-animate-in {
+  animation: z-pattern-layout-fade-in 0.5s ease-out both;
 }`,
 
   aiRules: `你是一个 Z-Pattern Layout 布局专家。生成的所有代码必须严格遵守以下约束：
@@ -334,6 +383,44 @@ Mobile: Vertical stack, maintain priority order
 5. 底部左侧：客户logo/信任标识
 6. 底部右侧：最终 CTA
 7. 整体简洁，引导用户沿Z路径浏览`,
+    },
+  {
+      title: "SaaS 着陆页",
+      titleEn: "SaaS Landing Page",
+      description: "生成 Z型布局风格的 SaaS 产品着陆页",
+      descriptionEn: "Generate a SaaS product landing page in Z-Pattern Layout style",
+      prompt: `Create a SaaS landing page using Z-Pattern Layout style with hero section, feature grid, testimonials, pricing table, and footer.`,
+    },
+    {
+      title: "作品集展示",
+      titleEn: "Portfolio Showcase",
+      description: "生成 Z型布局风格的作品集页面",
+      descriptionEn: "Generate a portfolio showcase in Z-Pattern Layout style",
+      prompt: `Create a portfolio showcase page using Z-Pattern Layout style with project grid, about section, contact form, and consistent visual language.`,
+    }],
+
+  variants: [
+    {
+      id: "z-pattern-layout-warm",
+      name: "Z型布局暖色版",
+      nameEn: "Z-Pattern Layout Warm",
+      description: "Warm-toned variant with shifted hues toward amber/orange",
+      colors: {
+        primary: "#1a142b",
+        secondary: "#ffffff",
+        accent: ["#a553e6", "#3aa0ff", "#9dba00", "#f04e56"],
+      },
+    },
+    {
+      id: "z-pattern-layout-cool",
+      name: "Z型布局冷色版",
+      nameEn: "Z-Pattern Layout Cool",
+      description: "Cool-toned variant with shifted hues toward blue/teal",
+      colors: {
+        primary: "#061a24",
+        secondary: "#e6e6e6",
+        accent: ["#247bd9", "#00c285", "#ff8447", "#c74dd1"],
+      },
     },
   ],
 };

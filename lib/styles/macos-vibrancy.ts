@@ -17,7 +17,7 @@ export const macosVibrancy: DesignStyle = {
     secondary: "#1c1c1e",
     accent: ["#0a84ff", "#30d158", "#ff9f0a", "#ff453a"],
   },
-  keywords: ["macOS", "原生", "暗色", "毛玻璃", "桌面", "vibrancy", "侧边栏"],
+  keywords: ["macOS", "原生", "暗色", "毛玻璃", "桌面", "vibrancy", "侧边栏", "modern", "contemporary", "sleek"],
 
   philosophy: `macOS Vibrancy 是 Apple 桌面应用设计语言的 Web 还原。它的核心不是炫技，而是克制。
 
@@ -26,7 +26,14 @@ export const macosVibrancy: DesignStyle = {
 - 系统级模糊：侧边栏使用 backdrop-blur 让底层内容微微透出，模拟 NSVisualEffectView
 - 排版驱动：衬线标题 + 无衬线正文 + 等宽代码，三种字体各司其职
 - 1px 哲学：所有分隔都是 1px 半透明边框，不用阴影制造深度
-- 无装饰主义：没有渐变、没有发光、没有动画，内容本身就是装饰`,
+- 无装饰主义：没有渐变、没有发光、没有动画，内容本身就是装饰
+
+设计原则：
+- 视觉一致性：所有组件必须遵循统一的视觉语言，从色彩到字体到间距保持谐调
+- 层次分明：通过颜色深浅、字号大小、留白空间建立清晰的信息层级
+- 交互反馈：每个可交互元素都必须有明确的 hover、active、focus 状态反馈
+- 响应式适配：设计必须在移动端、平板、桌面端上保持一致的体验
+- 无障碍性：确保色彩对比度符合 WCAG 2.1 AA 标准，所有交互元素可键盘访问`,
 
   philosophyEn: `macOS Vibrancy is the Web adaptation of Apple's desktop application design language. Its core is restraint, not spectacle.
 
@@ -201,6 +208,53 @@ Core principles:
 .mv-panel {
   background: var(--mv-bg-mid);
   border: 1px solid var(--mv-border);
+}
+@keyframes macos-vibrancy-fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes macos-vibrancy-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.macos-vibrancy-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.macos-vibrancy-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  background: linear-gradient(135deg, rgba(58, 58, 60, 0.05), transparent);
+  pointer-events: none;
+}
+
+.macos-vibrancy-card:hover::before {
+  opacity: 1;
+}
+
+.macos-vibrancy-gradient {
+  background: linear-gradient(135deg, #3a3a3c, #0a84ff);
+}
+
+.macos-vibrancy-gradient-text {
+  background: linear-gradient(135deg, #3a3a3c, #0a84ff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.macos-vibrancy-accent-corner {
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 2rem), calc(100% - 2rem) 100%, 0 100%);
+}
+
+.macos-vibrancy-animate-in {
+  animation: macos-vibrancy-fade-in 0.5s ease-out both;
 }`,
 
   aiRules: `You are a macOS Vibrancy design style frontend expert. All code must follow these constraints:
@@ -325,6 +379,31 @@ Core principles:
 4. Search bar in sidebar: bg-[#1c1c1e] rounded-lg
 5. Timestamps in white/40, names in white/90
 6. No gradients, no glow, 1px borders only`,
+    },
+  ],
+
+  variants: [
+    {
+      id: "macos-vibrancy-warm",
+      name: "macOS 毛玻璃暖色版",
+      nameEn: "macOS Vibrancy Warm",
+      description: "Warm-toned variant with shifted hues toward amber/orange",
+      colors: {
+        primary: "#3b3a3c",
+        secondary: "#333335",
+        accent: ["#5e68ff", "#19d19d", "#a4bc00", "#d25900"],
+      },
+    },
+    {
+      id: "macos-vibrancy-cool",
+      name: "macOS 毛玻璃冷色版",
+      nameEn: "macOS Vibrancy Cool",
+      description: "Cool-toned variant with shifted hues toward blue/teal",
+      colors: {
+        primary: "#393a3c",
+        secondary: "#19191b",
+        accent: ["#009cb8", "#67c627", "#ff844a", "#ff3b8a"],
+      },
     },
   ],
 };

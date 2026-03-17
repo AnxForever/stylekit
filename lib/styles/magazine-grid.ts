@@ -18,7 +18,7 @@ export const magazineGrid: DesignStyle = {
     secondary: "#fafafa",
     accent: ["#e63946", "#2a9d8f", "#e9c46a", "#264653"],
   },
-  keywords: ["杂志", "多栏", "新闻", "博客", "内容", "网格"],
+  keywords: ["杂志", "多栏", "新闻", "博客", "内容", "网格", "modern", "contemporary", "sleek", "现代"],
 
   philosophy: `Magazine Grid（杂志网格布局）借鉴传统印刷杂志的排版智慧，通过多栏和混合尺寸内容块创造专业的编辑效果。
 
@@ -26,7 +26,14 @@ export const magazineGrid: DesignStyle = {
 - 视觉层级：大图抓眼球，小块填充细节
 - 扫描友好：读者可快速浏览找到感兴趣的内容
 - 空间节奏：大小交替创造阅读节奏
-- 专业感：传递权威性和可信度`,
+- 专业感：传递权威性和可信度
+
+设计原则：
+- 视觉一致性：所有组件必须遵循统一的视觉语言，从色彩到字体到间距保持谐调
+- 层次分明：通过颜色深浅、字号大小、留白空间建立清晰的信息层级
+- 交互反馈：每个可交互元素都必须有明确的 hover、active、focus 状态反馈
+- 响应式适配：设计必须在移动端、平板、桌面端上保持一致的体验
+- 无障碍性：确保色彩对比度符合 WCAG 2.1 AA 标准，所有交互元素可键盘访问`,
 
   philosophyEn: `Magazine Grid borrows the typographic wisdom of traditional print magazines, creating professional editorial effects through multi-column and mixed-size content blocks.
 
@@ -373,6 +380,67 @@ Core principles:
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
+}
+/* Magazine Grid Design Tokens */
+:root {
+  --magazine-grid-primary: #1a1a1a;
+  --magazine-grid-secondary: #fafafa;
+  --magazine-grid-accent: #e63946;
+  --magazine-grid-glow: rgba(26, 26, 26, 0.3);
+}
+
+@keyframes magazine-grid-fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes magazine-grid-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.magazine-grid-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.magazine-grid-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  background: linear-gradient(135deg, rgba(26, 26, 26, 0.05), transparent);
+  pointer-events: none;
+}
+
+.magazine-grid-card:hover::before {
+  opacity: 1;
+}
+
+.magazine-grid-gradient {
+  background: linear-gradient(135deg, #1a1a1a, #e63946);
+}
+
+.magazine-grid-gradient-text {
+  background: linear-gradient(135deg, #1a1a1a, #e63946);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.magazine-grid-frosted {
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  background: rgba(26, 26, 26, 0.08);
+}
+
+.magazine-grid-accent-corner {
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 2rem), calc(100% - 2rem) 100%, 0 100%);
+}
+
+.magazine-grid-animate-in {
+  animation: magazine-grid-fade-in 0.5s ease-out both;
 }`,
 
   aiRules: `You are a frontend expert specializing in Magazine Grid layout. All generated code must strictly follow these constraints:
@@ -549,6 +617,31 @@ Modern editorial style with serif headlines`,
 6. Newsletter signup card in grid
 7. Trending topics tags
 Multi-format content with clear type indicators`,
+    },
+  ],
+
+  variants: [
+    {
+      id: "magazine-grid-warm",
+      name: "杂志网格布局暖色版",
+      nameEn: "Magazine Grid Warm",
+      description: "Warm-toned variant with shifted hues toward amber/orange",
+      colors: {
+        primary: "#1a1a1a",
+        secondary: "#fbfbfb",
+        accent: ["#c74906", "#3c93ba", "#b7d464", "#33415e"],
+      },
+    },
+    {
+      id: "magazine-grid-cool",
+      name: "杂志网格布局冷色版",
+      nameEn: "Magazine Grid Cool",
+      description: "Cool-toned variant with shifted hues toward blue/teal",
+      colors: {
+        primary: "#1a1a1a",
+        secondary: "#e1e1e1",
+        accent: ["#e0348d", "#30a061", "#ffb588", "#204943"],
+      },
     },
   ],
 };

@@ -15,9 +15,9 @@ export const appleStyle: DesignStyle = {
   colors: {
     primary: "#000000",
     secondary: "#f5f5f7",
-    accent: ["#0071e3", "#34c759", "#ff3b30"],
+    accent: ["#0071e3", "#34c759", "#ff3b30", "#a13ff6"],
   },
-  keywords: ["Apple", "极简", "高端", "科技", "产品", "留白", "精致"],
+  keywords: ["Apple", "极简", "高端", "科技", "产品", "留白", "精致", "minimal", "clean", "simple"],
 
   philosophy: `Apple Style 是一种源于 Apple 设计语言的极致简约风格，通过大量留白、精致的细节和克制的配色，传达高端科技产品的品质感和信任感。
 
@@ -25,7 +25,14 @@ export const appleStyle: DesignStyle = {
 - 极致简约：去除一切不必要的元素
 - 大量留白：让内容呼吸，突出重点
 - 精致细节：每个像素都经过精心设计
-- 克制配色：黑白灰为主，蓝色点缀`,
+- 克制配色：黑白灰为主，蓝色点缀
+
+设计原则：
+- 视觉一致性：所有组件必须遵循统一的视觉语言，从色彩到字体到间距保持谐调
+- 层次分明：通过颜色深浅、字号大小、留白空间建立清晰的信息层级
+- 交互反馈：每个可交互元素都必须有明确的 hover、active、focus 状态反馈
+- 响应式适配：设计必须在移动端、平板、桌面端上保持一致的体验
+- 无障碍性：确保色彩对比度符合 WCAG 2.1 AA 标准，所有交互元素可键盘访问`,
 
   philosophyEn: `Apple Style is an ultra-minimalist style derived from Apple's design language, conveying the quality and trust of premium tech products through generous whitespace, refined details, and restrained color usage.
 
@@ -248,6 +255,59 @@ body {
   background: white;
   border-radius: 18px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+@keyframes apple-style-fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes apple-style-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.apple-style-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.apple-style-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.05), transparent);
+  pointer-events: none;
+}
+
+.apple-style-card:hover::before {
+  opacity: 1;
+}
+
+.apple-style-gradient {
+  background: linear-gradient(135deg, #000000, #0071e3);
+}
+
+.apple-style-gradient-text {
+  background: linear-gradient(135deg, #000000, #0071e3);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.apple-style-frosted {
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  background: rgba(0, 0, 0, 0.08);
+}
+
+.apple-style-accent-corner {
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 2rem), calc(100% - 2rem) 100%, 0 100%);
+}
+
+.apple-style-animate-in {
+  animation: apple-style-fade-in 0.5s ease-out both;
 }`,
 
   aiRules: `你是一个 Apple Style 设计风格的前端开发专家。生成的所有代码必须严格遵守以下约束：
@@ -390,6 +450,37 @@ After generating code, verify:
 3. 定价区：清晰的价格对比
 4. CTA：Apple 蓝按钮，圆角胶囊形状
 5. 整体：专业、可信、简约`,
+    },
+  {
+      title: "作品集展示",
+      titleEn: "Portfolio Showcase",
+      description: "生成 Apple 风格风格的作品集页面",
+      descriptionEn: "Generate a portfolio showcase in Apple Style style",
+      prompt: `Create a portfolio showcase page using Apple Style style with project grid, about section, contact form, and consistent visual language.`,
+    }],
+
+  variants: [
+    {
+      id: "apple-style-warm",
+      name: "Apple 风格暖色版",
+      nameEn: "Apple Style Warm",
+      description: "Warm-toned variant with shifted hues toward amber/orange",
+      colors: {
+        primary: "#000000",
+        secondary: "#f6f6f8",
+        accent: ["#4e57ff", "#1fc798", "#d05000"],
+      },
+    },
+    {
+      id: "apple-style-cool",
+      name: "Apple 风格冷色版",
+      nameEn: "Apple Style Cool",
+      description: "Cool-toned variant with shifted hues toward blue/teal",
+      colors: {
+        primary: "#000000",
+        secondary: "#ddddde",
+        accent: ["#0087a1", "#66bd2d", "#ff3184"],
+      },
     },
   ],
 };

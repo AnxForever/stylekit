@@ -18,7 +18,7 @@ export const heroFullscreen: DesignStyle = {
     secondary: "#000000",
     accent: ["#ff6b6b", "#4ecdc4", "#ffe66d", "#6c5ce7"],
   },
-  keywords: ["全屏", "英雄区", "大图", "视频", "品牌", "震撼"],
+  keywords: ["全屏", "英雄区", "大图", "视频", "品牌", "震撼", "expressive", "bold", "vibrant", "表现力"],
 
   philosophy: `Fullscreen Hero（全屏英雄区布局）是一种以视觉冲击力为核心的布局方式，用全屏图片或视频创造沉浸式第一印象。
 
@@ -26,7 +26,14 @@ export const heroFullscreen: DesignStyle = {
 - 第一印象：用震撼视觉立即抓住访客
 - 品牌表达：通过图像传达品牌调性
 - 聚焦核心：突出最重要的信息和行动
-- 情感连接：通过视觉建立情感共鸣`,
+- 情感连接：通过视觉建立情感共鸣
+
+设计原则：
+- 视觉一致性：所有组件必须遵循统一的视觉语言，从色彩到字体到间距保持谐调
+- 层次分明：通过颜色深浅、字号大小、留白空间建立清晰的信息层级
+- 交互反馈：每个可交互元素都必须有明确的 hover、active、focus 状态反馈
+- 响应式适配：设计必须在移动端、平板、桌面端上保持一致的体验
+- 无障碍性：确保色彩对比度符合 WCAG 2.1 AA 标准，所有交互元素可键盘访问`,
 
   philosophyEn: `Fullscreen Hero is a layout approach centered on visual impact, using fullscreen images or video to create an immersive first impression.
 
@@ -366,7 +373,20 @@ Core principles:
 
 .hero-kenburns .hero-bg {
   animation: kenburns 20s ease-out forwards;
-}`,
+}
+
+.hero-fullscreen-filter { filter: brightness(1.05) contrast(1.02); }
+
+.hero-fullscreen-focus { outline: 2px solid var(--hero-fullscreen-primary, currentColor); outline-offset: 2px; }
+
+/* Additional techniques */
+:root { --hero-fullscreen-radius: 0.75rem; --hero-fullscreen-transition: 0.3s ease; }
+
+.hero-fullscreen-divider::after { content: ""; display: block; width: 3rem; height: 2px; margin-top: 0.5rem; background: var(--hero-fullscreen-primary, currentColor); }
+
+.hero-fullscreen-slant { clip-path: polygon(0 0, 100% 0, 100% calc(100% - 3rem), 0 100%); }
+
+.hero-fullscreen-glass { backdrop-filter: blur(8px) saturate(150%); -webkit-backdrop-filter: blur(8px) saturate(150%); }`,
 
   aiRules: `You are a frontend expert specializing in Fullscreen Hero layout. All generated code must strictly follow these constraints:
 
@@ -604,6 +624,31 @@ Elegant, premium brand feel`,
 6. CTA: "Register Now" with early bird badge
 7. Speaker photos strip at bottom (optional)
 Energetic, exciting event atmosphere`,
+    },
+  ],
+
+  variants: [
+    {
+      id: "hero-fullscreen-warm",
+      name: "全屏英雄区布局暖色版",
+      nameEn: "Fullscreen Hero Warm",
+      description: "Warm-toned variant with shifted hues toward amber/orange",
+      colors: {
+        primary: "#ffffff",
+        secondary: "#1a1a1a",
+        accent: ["#e07a35", "#65c1f3", "#c0f86f", "#aa4bd5"],
+      },
+    },
+    {
+      id: "hero-fullscreen-cool",
+      name: "全屏英雄区布局冷色版",
+      nameEn: "Fullscreen Hero Cool",
+      description: "Cool-toned variant with shifted hues toward blue/teal",
+      colors: {
+        primary: "#ffffff",
+        secondary: "#000000",
+        accent: ["#ff65a9", "#52d190", "#ffd38b", "#2d70d7"],
+      },
     },
   ],
 };

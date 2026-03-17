@@ -15,9 +15,9 @@ export const editorial: DesignStyle = {
   colors: {
     primary: "#1C1C1C",
     secondary: "#F9F8F6",
-    accent: ["#1C1C1C", "#6b7280"],
+    accent: ["#1C1C1C", "#6b7280", "#1c1c1c", "#816d70"],
   },
-  keywords: ["杂志排版", "衬线字体", "优雅留白", "网格系统", "极简主义", "作品集", "单色"],
+  keywords: ["杂志排版", "衬线字体", "优雅留白", "网格系统", "极简主义", "作品集", "单色", "minimal", "clean", "simple"],
 
   philosophy: `Editorial（编辑杂志风）设计风格源于传统印刷媒体的排版美学，特别是高端时尚杂志和报纸的设计语言。这种风格强调内容的层次结构、精致的字体搭配和大量留白。
 
@@ -266,6 +266,36 @@ h1, h2, h3, h4, h5, h6 {
 }
 .clip-reveal.revealed {
   clip-path: inset(0% 0 0 0);
+}
+@keyframes editorial-fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes editorial-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.editorial-gradient {
+  background: linear-gradient(135deg, #1C1C1C, #1C1C1C);
+}
+
+.editorial-gradient-text {
+  background: linear-gradient(135deg, #1C1C1C, #1C1C1C);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.editorial-frosted {
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  background: rgba(28, 28, 28, 0.08);
+}
+
+.editorial-animate-in {
+  animation: editorial-fade-in 0.5s ease-out both;
 }`,
 
   aiRules: `You are an Editorial design style frontend development expert. All generated code must strictly follow these constraints:
@@ -440,6 +470,31 @@ h1, h2, h3, h4, h5, h6 {
 5. Contact section: Say Hello heading text-8xl, floating-label form inputs
 6. Interactions: IntersectionObserver scroll reveals, group-hover:italic on links
 7. Palette: bg-[#F9F8F6], pure monochrome, NO accent colors`,
+    },
+  ],
+
+  variants: [
+    {
+      id: "editorial-warm",
+      name: "编辑杂志风暖色版",
+      nameEn: "Editorial Warm",
+      description: "Warm-toned variant with shifted hues toward amber/orange",
+      colors: {
+        primary: "#1c1c1c",
+        secondary: "#faf9f7",
+        accent: ["#1c1c1c", "#736f81"],
+      },
+    },
+    {
+      id: "editorial-cool",
+      name: "编辑杂志风冷色版",
+      nameEn: "Editorial Cool",
+      description: "Cool-toned variant with shifted hues toward blue/teal",
+      colors: {
+        primary: "#1c1c1c",
+        secondary: "#e0dfdd",
+        accent: ["#1c1c1c", "#65747b"],
+      },
     },
   ],
 };

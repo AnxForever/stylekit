@@ -18,7 +18,7 @@ export const bentoGrid: DesignStyle = {
     secondary: "#fafafa",
     accent: ["#3b82f6", "#8b5cf6", "#ec4899", "#f97316"],
   },
-  keywords: ["网格", "卡片", "不规则", "作品集", "现代"],
+  keywords: ["网格", "卡片", "不规则", "作品集", "现代", "modern", "contemporary", "sleek", "简洁", "bento"],
 
   philosophy: `Bento Grid（便当盒布局）是一种源于日式便当盒分隔设计的现代布局风格。通过不同尺寸的卡片在网格中的组合排列，创造出既有秩序又富有变化的视觉效果。
 
@@ -27,7 +27,14 @@ export const bentoGrid: DesignStyle = {
 - 层次感：通过尺寸差异突出重点内容
 - 留白：适当间隙让布局呼吸
 - 响应式：在不同屏幕上优雅适配
-- Widget 把玩感：每张卡片如独立的 iOS 小组件`,
+- Widget 把玩感：每张卡片如独立的 iOS 小组件
+
+设计原则：
+- 视觉一致性：所有组件必须遵循统一的视觉语言，从色彩到字体到间距保持谐调
+- 层次分明：通过颜色深浅、字号大小、留白空间建立清晰的信息层级
+- 交互反馈：每个可交互元素都必须有明确的 hover、active、focus 状态反馈
+- 响应式适配：设计必须在移动端、平板、桌面端上保持一致的体验
+- 无障碍性：确保色彩对比度符合 WCAG 2.1 AA 标准，所有交互元素可键盘访问`,
 
   philosophyEn: `Bento Grid is a modern layout style inspired by the compartmentalized design of Japanese bento boxes. Through combining cards of different sizes within a grid, it creates visual effects that are both orderly and varied.
 
@@ -268,6 +275,67 @@ Core principles:
 
 .bento-icon {
   transition: transform 0.3s ease-out, background-color 0.3s ease-out, color 0.3s ease-out;
+}
+/* Bento Grid Design Tokens */
+:root {
+  --bento-grid-primary: #18181b;
+  --bento-grid-secondary: #fafafa;
+  --bento-grid-accent: #3b82f6;
+  --bento-grid-glow: rgba(24, 24, 27, 0.3);
+}
+
+@keyframes bento-grid-fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes bento-grid-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.bento-grid-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.bento-grid-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  background: linear-gradient(135deg, rgba(24, 24, 27, 0.05), transparent);
+  pointer-events: none;
+}
+
+.bento-grid-card:hover::before {
+  opacity: 1;
+}
+
+.bento-grid-gradient {
+  background: linear-gradient(135deg, #18181b, #3b82f6);
+}
+
+.bento-grid-gradient-text {
+  background: linear-gradient(135deg, #18181b, #3b82f6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.bento-grid-frosted {
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  background: rgba(24, 24, 27, 0.08);
+}
+
+.bento-grid-accent-corner {
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 2rem), calc(100% - 2rem) 100%, 0 100%);
+}
+
+.bento-grid-animate-in {
+  animation: bento-grid-fade-in 0.5s ease-out both;
 }`,
 
   aiRules: `你是一个 Bento Grid 设计风格的前端开发专家。生成的所有代码必须严格遵守以下约束：
@@ -440,6 +508,31 @@ After generating code, verify:
 4. 小卡片：快捷操作按钮，active:scale-95
 5. 全宽卡片：时间线或进度条
 使用 CSS Grid，所有卡片 rounded-2xl + hover 微动效`,
+    },
+  ],
+
+  variants: [
+    {
+      id: "bento-grid-warm",
+      name: "便当盒布局暖色版",
+      nameEn: "Bento Grid Warm",
+      description: "Warm-toned variant with shifted hues toward amber/orange",
+      colors: {
+        primary: "#19181b",
+        secondary: "#fbfbfb",
+        accent: ["#816cff", "#ca4cd7", "#f04e56", "#b18d00"],
+      },
+    },
+    {
+      id: "bento-grid-cool",
+      name: "便当盒布局冷色版",
+      nameEn: "Bento Grid Cool",
+      description: "Cool-toned variant with shifted hues toward blue/teal",
+      colors: {
+        primary: "#17181b",
+        secondary: "#e1e1e1",
+        accent: ["#0697c5", "#4571f1", "#c74dd1", "#ff5f5d"],
+      },
     },
   ],
 };
