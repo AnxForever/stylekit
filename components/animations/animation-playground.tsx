@@ -1,12 +1,15 @@
 "use client";
 
 import { useState, useCallback, useMemo } from "react";
-import { RotateCcw, Copy, Check } from "lucide-react";
+import { RotateCcw, Copy, Check, Code } from "lucide-react";
 import { useI18n } from "@/lib/i18n/context";
+import { extractKeyframeName, extractKeyframesBlock, buildAnimationCSS } from "@/lib/animations/parse-keyframes";
 import type { Animation } from "@/lib/animations/types";
 
 interface AnimationPlaygroundProps {
   animation: Animation;
+  /** When true, omits the section header and outer margin (used inside sandbox). */
+  embedded?: boolean;
 }
 
 const easingPresets: { label: string; value: string }[] = [
@@ -19,78 +22,37 @@ const easingPresets: { label: string; value: string }[] = [
   { label: "linear", value: "linear" },
 ];
 
-function getKeyframeName(slug: string): string {
-  return slug.replace(/-/g, "-");
+/** Find the CSS Keyframes snippet from an animation's codeSnippets. */
+function findCSSSnippet(animation: Animation): string | null {
+  const snippet = animation.codeSnippets.find(
+    (s) => s.label === "CSS Keyframes" && s.language === "css"
+  );
+  return snippet?.code ?? null;
 }
 
-function getKeyframesCSS(slug: string): string {
-  const map: Record<string, string> = {
-    "fade-in-up": `@keyframes fade-in-up {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
-}`,
-    "fade-in-down": `@keyframes fade-in-down {
-  from { opacity: 0; transform: translateY(-20px); }
-  to { opacity: 1; transform: translateY(0); }
-}`,
-    "scale-in": `@keyframes scale-in {
-  from { opacity: 0; transform: scale(0.9); }
-  to { opacity: 1; transform: scale(1); }
-}`,
-    "slide-in-left": `@keyframes slide-in-left {
-  from { opacity: 0; transform: translateX(-30px); }
-  to { opacity: 1; transform: translateX(0); }
-}`,
-    "blur-in": `@keyframes blur-in {
-  from { opacity: 0; filter: blur(10px); }
-  to { opacity: 1; filter: blur(0px); }
-}`,
-    "skeleton-pulse": `@keyframes skeleton-pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.4; }
-}`,
-    "spinner-dots": `@keyframes spinner-dot-bounce {
-  0%, 80%, 100% { transform: scale(0); opacity: 0.5; }
-  40% { transform: scale(1); opacity: 1; }
-}`,
-    "background-gradient-shift": `@keyframes bg-gradient-shift {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}`,
-    "text-gradient-flow": `@keyframes text-gradient-flow {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}`,
-    "stagger-children": `@keyframes stagger-fade-in {
-  from { opacity: 0; transform: translateY(15px); }
-  to { opacity: 1; transform: translateY(0); }
-}`,
-  };
-  return map[slug] || `@keyframes ${getKeyframeName(slug)} {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}`;
-}
-
-// Which animations support the playground (keyframe-based, not hover/scroll)
-const playgroundSupported = new Set([
-  "fade-in-up", "fade-in-down", "scale-in", "slide-in-left",
-  "blur-in", "skeleton-pulse", "stagger-children",
-  "background-gradient-shift", "text-gradient-flow",
-]);
-
-export function AnimationPlayground({ animation }: AnimationPlaygroundProps) {
+export function AnimationPlayground({ animation, embedded = false }: AnimationPlaygroundProps) {
   const { t } = useI18n();
-  const isSupported = playgroundSupported.has(animation.slug);
+  const mode = animation.playgroundMode ?? "keyframe";
+
+  // Parse keyframe data from the CSS snippet
+  const cssSnippet = useMemo(() => findCSSSnippet(animation), [animation]);
+  const keyframeName = useMemo(
+    () => (cssSnippet ? extractKeyframeName(cssSnippet) : null),
+    [cssSnippet]
+  );
+  const keyframesBlock = useMemo(
+    () => (cssSnippet ? extractKeyframesBlock(cssSnippet) : null),
+    [cssSnippet]
+  );
+
+  const isPlayable = mode === "keyframe" && keyframeName && keyframesBlock;
 
   const defaultDuration = parseInt(animation.duration) || 500;
   const [duration, setDuration] = useState(defaultDuration);
   const [easingIndex, setEasingIndex] = useState(
     easingPresets.findIndex((p) => p.value === animation.easing) >= 0
       ? easingPresets.findIndex((p) => p.value === animation.easing)
-      : 4 // default to Expo Out
+      : 4
   );
   const [delay, setDelay] = useState(0);
   const [playKey, setPlayKey] = useState(0);
@@ -102,15 +64,10 @@ export function AnimationPlayground({ animation }: AnimationPlaygroundProps) {
   const replay = useCallback(() => setPlayKey((k) => k + 1), []);
 
   const generatedCSS = useMemo(() => {
-    const kfName = getKeyframeName(animation.slug);
-    const kf = getKeyframesCSS(animation.slug);
-    const iterationCount = isContinuous ? "infinite" : "both";
-    return `${kf}
-
-.${kfName} {
-  animation: ${kfName} ${duration}ms ${easing} ${delay}ms ${iterationCount};
-}`;
-  }, [animation.slug, duration, easing, delay, isContinuous]);
+    if (!isPlayable) return "";
+    const shorthand = buildAnimationCSS(keyframeName, duration, easing, delay, isContinuous);
+    return `${keyframesBlock}\n\n.${keyframeName} {\n  animation: ${shorthand};\n}`;
+  }, [isPlayable, keyframeName, keyframesBlock, duration, easing, delay, isContinuous]);
 
   const handleCopy = useCallback(async () => {
     try {
@@ -122,22 +79,55 @@ export function AnimationPlayground({ animation }: AnimationPlaygroundProps) {
     }
   }, [generatedCSS]);
 
-  if (!isSupported) return null;
+  // --- JS-driven / scroll-driven fallback ---
+  if (mode === "js-driven" || mode === "scroll-driven") {
+    const messageKey = mode === "js-driven" ? "animations.jsDriven" : "animations.scrollDriven";
+    return (
+      <div className={embedded ? "" : "mb-12"}>
+        {!embedded && (
+          <h2 className="text-xs tracking-widest uppercase text-muted mb-4">
+            {t("animations.playground")}
+          </h2>
+        )}
+        <div className={`${embedded ? "" : "border border-border "}p-6 flex flex-col items-center justify-center gap-3 min-h-[120px] text-center`}>
+          <Code className="w-5 h-5 text-muted" />
+          <p className="text-sm text-muted">
+            {t(messageKey as Parameters<typeof t>[0])}
+          </p>
+          <button
+            type="button"
+            onClick={() => {
+              const codeSection = document.querySelector("[data-sandbox-tab='code']");
+              if (codeSection instanceof HTMLElement) codeSection.click();
+            }}
+            className="text-xs text-foreground underline underline-offset-4 hover:text-muted transition-colors"
+          >
+            {t("animations.viewCode")}
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // --- No parseable keyframes ---
+  if (!isPlayable) return null;
 
   const animationStyle = {
-    animation: `${getKeyframeName(animation.slug)} ${duration}ms ${easing} ${delay}ms ${isContinuous ? "infinite" : "both"}`,
+    animation: buildAnimationCSS(keyframeName, duration, easing, delay, isContinuous),
   };
 
   return (
-    <div className="mb-12">
-      <h2 className="text-xs tracking-widest uppercase text-muted mb-4">
-        {t("animations.playground")}
-      </h2>
+    <div className={embedded ? "" : "mb-12"}>
+      {!embedded && (
+        <h2 className="text-xs tracking-widest uppercase text-muted mb-4">
+          {t("animations.playground")}
+        </h2>
+      )}
 
-      <div className="border border-border overflow-hidden">
+      <div className={`${embedded ? "" : "border border-border "}overflow-hidden`}>
         {/* Preview area */}
         <div className="relative bg-muted/30 p-8 flex items-center justify-center min-h-[160px]">
-          <style>{getKeyframesCSS(animation.slug)}</style>
+          <style>{keyframesBlock}</style>
           <div
             key={playKey}
             className="w-24 h-16 bg-gradient-to-br from-blue-500 to-purple-500 shadow-md"
