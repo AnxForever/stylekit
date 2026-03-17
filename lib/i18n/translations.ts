@@ -1529,6 +1529,7 @@ const zh: { [K in keyof typeof en]: string } = {
   "styles.typeAll": "全部",
   "styles.typeVisual": "视觉风格",
   "styles.typeLayout": "布局模式",
+  "styles.typeAnimation": "动画交互",
   "styles.tags": "标签",
   "styles.tagModern": "现代",
   "styles.tagExpressive": "表现力",
