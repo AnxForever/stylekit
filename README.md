@@ -69,21 +69,6 @@ Open [http://localhost:3000](http://localhost:3000). See [`.env.example`](.env.e
 
 ## AI Integration
 
-### MCP Server
-
-Direct AI assistant integration via [Model Context Protocol](https://modelcontextprotocol.io):
-
-```json
-{
-  "mcpServers": {
-    "stylekit": {
-      "command": "npx",
-      "args": ["tsx", "/path/to/stylekit/tools/mcp/server.ts"]
-    }
-  }
-}
-```
-
 ### IDE Export
 
 Export any style as `.cursorrules`, `claude-rules`, `windsurf-rules`, `tailwind-preset`, `shadcn-theme`, `figma-tokens`, or `skill-pack`.
@@ -128,7 +113,7 @@ GET  /api/knowledge/smart             # Smart recommendations
 | Auth & DB | Supabase (OAuth, PostgreSQL) |
 | Validation | Zod 4 |
 | Testing | Vitest + Playwright |
-| AI Protocol | MCP SDK |
+| Deployment | Vercel |
 
 ## Contributing
 
