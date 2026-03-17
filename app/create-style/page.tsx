@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   description:
     "Create a custom style or import style-extractor results, then reuse it in the generator.",
   alternates: {
-    canonical: `${process.env.NEXT_PUBLIC_BASE_URL || "https://www.stylekit.top"}/create-style`,
+    canonical: `${process.env.NEXT_PUBLIC_BASE_URL || "https://stylekit.top"}/create-style`,
   },
 };
 

@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   title: "模板生成器",
   description: "3 步完成：选风格、选模板、编辑内容并下载代码。",
   alternates: {
-    canonical: `${process.env.NEXT_PUBLIC_BASE_URL || "https://www.stylekit.top"}/generate`,
+    canonical: `${process.env.NEXT_PUBLIC_BASE_URL || "https://stylekit.top"}/generate`,
   },
   robots: {
     index: false,

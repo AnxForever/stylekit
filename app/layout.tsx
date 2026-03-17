@@ -7,7 +7,7 @@ import { serializeJsonLd } from "@/lib/security/json-ld";
 import { MobileBottomNav } from "@/components/layout/mobile-bottom-nav";
 import "./globals.css";
 
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://www.stylekit.top";
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://stylekit.top";
 
 export const viewport: Viewport = {
   width: "device-width",

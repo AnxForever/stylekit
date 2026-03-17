@@ -65,7 +65,7 @@ body:
     attributes:
       label: Page URL
       description: The URL where the bug occurs (if applicable).
-      placeholder: "https://www.stylekit.top/styles/glassmorphism"
+      placeholder: "https://stylekit.top/styles/glassmorphism"
 
   - type: dropdown
     id: browser

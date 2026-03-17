@@ -4,7 +4,7 @@ import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { promptTopics } from "@/lib/prompts";
 
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://www.stylekit.top";
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://stylekit.top";
 
 export const metadata: Metadata = {
   title: "UI Design Prompts Library",

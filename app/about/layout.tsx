@@ -5,7 +5,7 @@ export const metadata: Metadata = {
   description:
     "StyleKit is an open-source, AI-friendly design system toolkit with 130+ visual styles, design tokens, and component recipes for building consistent UI.",
   alternates: {
-    canonical: `${process.env.NEXT_PUBLIC_BASE_URL || "https://www.stylekit.top"}/about`,
+    canonical: `${process.env.NEXT_PUBLIC_BASE_URL || "https://stylekit.top"}/about`,
   },
 };
 

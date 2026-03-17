@@ -5,7 +5,7 @@ export const metadata: Metadata = {
   description:
     "Developer resources for StyleKit including the CLI, MCP server, API endpoints, and AI workflow integrations.",
   alternates: {
-    canonical: `${process.env.NEXT_PUBLIC_BASE_URL || "https://www.stylekit.top"}/developers`,
+    canonical: `${process.env.NEXT_PUBLIC_BASE_URL || "https://stylekit.top"}/developers`,
   },
 };
 

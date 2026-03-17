@@ -17,7 +17,7 @@ describe("GET /api/pipeline/run/[id]", () => {
 
     const { GET } = await import("@/app/api/pipeline/run/[id]/route");
     const response = await GET(
-      new Request("https://www.stylekit.top/api/pipeline/run/pl_missing"),
+      new Request("https://stylekit.top/api/pipeline/run/pl_missing"),
       { params: Promise.resolve({ id: "pl_missing" }) }
     );
 
@@ -36,7 +36,7 @@ describe("GET /api/pipeline/run/[id]", () => {
 
     const { GET } = await import("@/app/api/pipeline/run/[id]/route");
     const response = await GET(
-      new Request("https://www.stylekit.top/api/pipeline/run/pl_1"),
+      new Request("https://stylekit.top/api/pipeline/run/pl_1"),
       { params: Promise.resolve({ id: "pl_1" }) }
     );
 
@@ -49,7 +49,7 @@ describe("GET /api/pipeline/run/[id]", () => {
   it("returns 500 when request processing throws", async () => {
     const { GET } = await import("@/app/api/pipeline/run/[id]/route");
     const response = await GET(
-      new Request("https://www.stylekit.top/api/pipeline/run/pl_1"),
+      new Request("https://stylekit.top/api/pipeline/run/pl_1"),
       { params: Promise.reject(new Error("boom")) }
     );
 

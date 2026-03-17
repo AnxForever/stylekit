@@ -116,12 +116,12 @@ describe("GET /api/auth/linuxdo/callback", () => {
 
     const response = await GET(
       new Request(
-        "https://www.stylekit.top/api/auth/linuxdo/callback?code=test-code&next=%2Fprofile"
+        "https://stylekit.top/api/auth/linuxdo/callback?code=test-code&next=%2Fprofile"
       ) as never
     );
 
     expect(response.status).toBe(307);
-    expect(response.headers.get("location")).toBe("https://www.stylekit.top/profile");
+    expect(response.headers.get("location")).toBe("https://stylekit.top/profile");
     expect(verifyOtp).toHaveBeenCalledWith({
       type: "magiclink",
       token_hash: "hashed-token",
@@ -181,12 +181,12 @@ describe("GET /api/auth/linuxdo/callback", () => {
 
     const response = await GET(
       new Request(
-        "https://www.stylekit.top/api/auth/linuxdo/callback?code=test-code&next=dashboard"
+        "https://stylekit.top/api/auth/linuxdo/callback?code=test-code&next=dashboard"
       ) as never
     );
 
     expect(response.status).toBe(307);
-    expect(response.headers.get("location")).toBe("https://www.stylekit.top/");
+    expect(response.headers.get("location")).toBe("https://stylekit.top/");
     expect(mockedGetOrAssignSeqId).not.toHaveBeenCalled();
     expect(updateUserById).toHaveBeenCalledWith("existing-user", {
       user_metadata: {

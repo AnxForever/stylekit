@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   description:
     "Compare design styles side-by-side. Analyze token differences in colors, typography, spacing, shadows, and more.",
   alternates: {
-    canonical: `${process.env.NEXT_PUBLIC_BASE_URL || "https://www.stylekit.top"}/compare`,
+    canonical: `${process.env.NEXT_PUBLIC_BASE_URL || "https://stylekit.top"}/compare`,
   },
 };
 

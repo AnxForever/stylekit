@@ -85,12 +85,12 @@ describe("GET /api/auth/callback", () => {
 
     const response = await GET(
       new Request(
-        "https://www.stylekit.top/api/auth/callback?code=test-code&next=%2Fprofile"
+        "https://stylekit.top/api/auth/callback?code=test-code&next=%2Fprofile"
       ) as never
     );
 
     expect(response.status).toBe(307);
-    expect(response.headers.get("location")).toBe("https://www.stylekit.top/profile");
+    expect(response.headers.get("location")).toBe("https://stylekit.top/profile");
     expect(updateUserById).not.toHaveBeenCalled();
   });
 
@@ -117,12 +117,12 @@ describe("GET /api/auth/callback", () => {
 
     const response = await GET(
       new Request(
-        "https://www.stylekit.top/api/auth/callback?code=test-code&next=profile"
+        "https://stylekit.top/api/auth/callback?code=test-code&next=profile"
       ) as never
     );
 
     expect(response.status).toBe(307);
-    expect(response.headers.get("location")).toBe("https://www.stylekit.top/");
+    expect(response.headers.get("location")).toBe("https://stylekit.top/");
     expect(updateUserById).toHaveBeenCalledWith("user_2", {
       user_metadata: {
         provider: "github",

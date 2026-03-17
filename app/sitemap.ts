@@ -5,7 +5,7 @@ import { getAllStylesMeta } from "@/lib/styles/meta";
 import { getAllAnimationsMeta } from "@/lib/animations/meta";
 import { getAllTopicSlugs } from "@/lib/prompts";
 
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://www.stylekit.top";
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://stylekit.top";
 
 function getTemplateSlugs(): string[] {
   const templatesDir = join(process.cwd(), "app/templates");

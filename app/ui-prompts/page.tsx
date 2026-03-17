@@ -6,7 +6,7 @@ import { PromptTemplatePreviewSection } from "@/components/seo/prompt-template-p
 import { promptTopics } from "@/lib/prompts";
 import { uiPromptTemplates } from "@/lib/seo/prompt-template-previews";
 
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://www.stylekit.top";
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://stylekit.top";
 
 export const metadata: Metadata = {
   title: "UI Design Prompts Library",
