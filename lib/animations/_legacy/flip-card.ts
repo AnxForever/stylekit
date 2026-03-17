@@ -1,4 +1,4 @@
-import type { Animation } from "./types";
+import type { Animation } from "../types";
 
 export const flipCard: Animation = {
   slug: "flip-card",
