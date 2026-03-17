@@ -120,9 +120,12 @@ export default function BrutalistWebShowcase() {
         className="bg-white px-4 py-2"
       >
         <div className="max-w-4xl mx-auto flex items-center justify-between">
-          <span className="font-serif font-bold text-xl text-black">
-            BRUTALIST WEB
-          </span>
+          <Link
+            href="/styles/brutalist-web"
+            className="font-mono text-sm text-[#0000ff] underline hover:text-[#ff0000] transition-none"
+          >
+            &larr; Back to Docs
+          </Link>
           <div className="flex items-center gap-0 font-mono text-sm">
             <a
               href="#"

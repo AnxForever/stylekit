@@ -445,30 +445,21 @@ export default function ShowcaseContent() {
         }}
       >
         <div className="max-w-6xl mx-auto flex items-center justify-between">
-          {/* Logo */}
+          {/* Back link */}
           <Link
-            href="/"
+            href="/styles/claymorphism"
             className="flex items-center gap-2 group"
           >
             <div
-              className="w-10 h-10 rounded-full flex items-center justify-center font-black text-gray-700 text-sm"
+              className="w-8 h-8 rounded-full flex items-center justify-center text-gray-600 text-sm group-hover:-translate-x-0.5 transition-transform duration-200"
               style={{
                 background: "linear-gradient(135deg, #f8b4d9, #c4b5fd)",
                 boxShadow: "4px 4px 0px rgba(0,0,0,0.12), inset 0 1px 3px rgba(255,255,255,0.6)",
               }}
             >
-              SK
+              &#8592;
             </div>
-            <span className="font-black text-gray-800 text-lg tracking-tight">StyleKit</span>
-            <span
-              className="text-sm font-semibold px-2 py-0.5 rounded-full ml-1"
-              style={{
-                backgroundColor: "#f8b4d9",
-                boxShadow: "2px 2px 0px rgba(0,0,0,0.1)",
-              }}
-            >
-              →
-            </span>
+            <span className="font-bold text-gray-700 text-sm tracking-tight">Back to Docs</span>
           </Link>
 
           {/* Nav items */}

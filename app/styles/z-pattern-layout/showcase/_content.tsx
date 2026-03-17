@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useRef, useEffect } from "react"
+import Link from "next/link"
 
 // ─── Inline Hooks & Utilities ──────────────────────────────────────────────
 
@@ -166,13 +167,13 @@ export default function ZPatternLayoutShowcase() {
           <div className="flex items-center justify-between h-16">
             {/* Top-Left: Logo / Brand — Z-Pattern Zone 1 */}
             <div className="flex items-center gap-4">
-              <a
-                href="/styles"
+              <Link
+                href="/styles/z-pattern-layout"
                 className="text-sm text-slate-500 hover:text-slate-700 transition-colors flex items-center gap-1 group"
               >
                 <span className="group-hover:-translate-x-0.5 transition-transform inline-block">&larr;</span>
-                <span>StyleKit</span>
-              </a>
+                <span>Back to Docs</span>
+              </Link>
               <div className="w-px h-5 bg-slate-200" />
               <div className="flex items-center gap-2">
                 <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-indigo-500 to-indigo-700 flex items-center justify-center shadow-md">

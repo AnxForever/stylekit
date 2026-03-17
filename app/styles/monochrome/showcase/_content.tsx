@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useRef, useEffect } from "react"
+import Link from "next/link"
 
 function useInView(options = {}) {
   const ref = useRef<HTMLDivElement>(null)
@@ -164,12 +165,13 @@ export default function MonochromeShowcase() {
               </span>
             ))}
           </div>
-          <a
-            href="/"
-            className="text-xs tracking-[0.15em] uppercase text-[#666666] hover:text-[#111111] transition-colors duration-700"
+          <Link
+            href="/styles/monochrome"
+            className="group flex items-center gap-2 text-xs tracking-[0.15em] uppercase text-[#666666] hover:text-[#111111] transition-colors duration-700"
           >
-            StyleKit &rarr;
-          </a>
+            <span className="inline-block transition-transform duration-300 group-hover:-translate-x-0.5">&larr;</span>
+            Back to Docs
+          </Link>
         </div>
       </nav>
 

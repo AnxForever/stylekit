@@ -359,6 +359,15 @@ export default function CyberAnimeShowcase() {
         }}
       >
         <div className="max-w-7xl mx-auto px-6 h-14 flex items-center justify-between">
+          {/* Back to Docs */}
+          <div className="flex items-center gap-4">
+          <Link
+            href="/styles/cyber-anime"
+            className="group flex items-center gap-1.5 font-mono text-xs text-white/40 hover:text-[#7c3aed] transition-colors duration-150 tracking-widest"
+          >
+            <span className="group-hover:-translate-x-0.5 transition-transform duration-150 inline-block text-[#7c3aed]">&larr;</span>
+            <span className="uppercase">Back to Docs</span>
+          </Link>
           {/* Logo */}
           <div className="flex items-center gap-2">
             <span className="font-mono text-sm text-[#7c3aed] font-bold tracking-widest">
@@ -368,6 +377,7 @@ export default function CyberAnimeShowcase() {
             <span className="font-mono text-[#7c3aed]/80 text-xs tracking-widest uppercase">
               CYBER ANIME
             </span>
+          </div>
           </div>
 
           {/* Center — status badge, click to cycle */}

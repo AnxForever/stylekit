@@ -401,9 +401,19 @@ export default function ShowcaseContent() {
         <div className="max-w-7xl mx-auto px-6 md:px-12">
           <div className="flex items-center justify-between h-14">
             {/* Brand */}
-            <span className="font-sans font-black text-lg tracking-tight text-[#1a1a1a]">
-              Neo-Brutalist Soft
-            </span>
+            <div className="flex items-center gap-3">
+              <Link
+                href="/styles/neo-brutalist-soft"
+                className="font-mono text-xs font-bold uppercase tracking-widest text-gray-500 hover:text-[#f472b6] transition-colors duration-150 flex items-center gap-1"
+              >
+                <span>&larr;</span>
+                Back to Docs
+              </Link>
+              <div className="w-px h-4 bg-gray-800" />
+              <span className="font-sans font-black text-lg tracking-tight text-[#1a1a1a]">
+                Neo-Brutalist Soft
+              </span>
+            </div>
 
             {/* Nav links */}
             <nav className="hidden md:flex items-center gap-8">

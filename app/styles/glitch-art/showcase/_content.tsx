@@ -166,12 +166,27 @@ export default function GlitchArtShowcase() {
           borderBottom: "1px solid rgba(0,255,255,0.2)",
         }}
       >
+        <div className="flex items-center gap-4">
+        <Link
+          href="/styles/glitch-art"
+          className="group flex items-center gap-1.5 text-xs tracking-widest uppercase"
+          style={{ color: "#ff00ff", textDecoration: "none" }}
+        >
+          <span
+            className="group-hover:-translate-x-0.5 transition-transform duration-150 inline-block"
+            style={{ color: "#00ffff" }}
+          >
+            &larr;
+          </span>
+          <span>BACK_TO_DOCS</span>
+        </Link>
         <span
           className="text-lg font-bold tracking-widest"
           style={{ color: "#00ffff" }}
         >
           [GLITCH.ART]
         </span>
+        </div>
         <div className="flex items-center gap-6">
           <Link
             href="/"
