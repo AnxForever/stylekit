@@ -11,6 +11,12 @@ import { TemplatesFilter } from "@/components/templates/templates-filter";
 import { TemplateCoverPreview } from "@/components/templates/template-cover-preview";
 import { useI18n } from "@/lib/i18n/context";
 import { pickLocale, type LocaleCopy } from "@/lib/i18n/locale-copy";
+import {
+  getScenarioLabel,
+  getStyleScenarios,
+  STYLE_SCENARIOS,
+  type StyleScenario,
+} from "@/lib/styles/scenarios";
 
 type TemplateType = "landing" | "dashboard" | "blog" | "portfolio" | "saas" | "ecommerce" | "admin" | "auth" | "docs" | "social" | "messaging" | "media" | "lifestyle" | "education";
 type TemplateTypeFilter = "all" | TemplateType;
@@ -425,6 +431,29 @@ const templates: Template[] = [
 const allStyles = getAllStylesMeta();
 const styleMap = new Map(allStyles.map((style) => [style.slug, style]));
 
+const templatePrimaryScenarioMap: Partial<Record<TemplateType, StyleScenario>> = {
+  landing: "marketing",
+  dashboard: "dashboard",
+  blog: "blog",
+  portfolio: "portfolio",
+  saas: "saas",
+  ecommerce: "ecommerce",
+  admin: "admin",
+  docs: "docs",
+};
+
+function getTemplateScenarios(template: Template): StyleScenario[] {
+  const primary = templatePrimaryScenarioMap[template.type];
+  const style = styleMap.get(template.styleSlug);
+  const styleScenarios = style ? getStyleScenarios(style, 3) : [];
+  const combined = [
+    ...(primary ? [primary] : []),
+    ...styleScenarios,
+  ];
+
+  return combined.filter((scenario, index) => combined.indexOf(scenario) === index).slice(0, 3);
+}
+
 function getTemplateGridColumns() {
   if (typeof window === "undefined") return 1;
   if (window.innerWidth >= 1024) return 3;
@@ -485,6 +514,11 @@ export default function TemplatesPage() {
   const activeStyleSlug = styleMap.has(styleParam) ? styleParam : "";
   const deferredActiveStyleSlug = useDeferredValue(activeStyleSlug);
   const activeStyleMeta = activeStyleSlug ? styleMap.get(activeStyleSlug) : undefined;
+  const scenarioParam = searchParams.get("scenario") || "";
+  const activeScenario: StyleScenario | "all" = STYLE_SCENARIOS.includes(scenarioParam as StyleScenario)
+    ? (scenarioParam as StyleScenario)
+    : "all";
+  const deferredActiveScenario = useDeferredValue(activeScenario);
   const sortParam = searchParams.get("sort");
   const validSorts: TemplateSort[] = ["recommended", "name-asc", "name-desc"];
   const activeSort: TemplateSort = validSorts.includes(sortParam as TemplateSort)
@@ -493,6 +527,7 @@ export default function TemplatesPage() {
   const deferredActiveSort = useDeferredValue(activeSort);
   const hasActiveControls =
     activeStyleSlug.length > 0 ||
+    activeScenario !== "all" ||
     activeType !== "all" ||
     activeSort !== "recommended" ||
     queryParam.trim().length > 0;
@@ -501,6 +536,11 @@ export default function TemplatesPage() {
     if (activeStyleMeta) {
       parts.push(
         `${t("nav.styles")}: ${locale === "zh" ? activeStyleMeta.name : (activeStyleMeta.nameEn || activeStyleMeta.name)}`
+      );
+    }
+    if (activeScenario !== "all") {
+      parts.push(
+        `${locale === "zh" ? "场景" : "Scenario"}: ${getScenarioLabel(activeScenario, locale)}`
       );
     }
     if (activeType !== "all") {
@@ -516,7 +556,7 @@ export default function TemplatesPage() {
       parts.push(`${t("nav.search")}: ${queryParam}`);
     }
     return parts.join(" · ");
-  }, [activeStyleMeta, activeType, activeSort, locale, queryParam, t]);
+  }, [activeScenario, activeStyleMeta, activeType, activeSort, locale, queryParam, t]);
 
   useEffect(() => {
     const savedScroll = sessionStorage.getItem("templates-scroll-position");
@@ -600,10 +640,23 @@ export default function TemplatesPage() {
     router.replace(query ? `${pathname}?${query}` : pathname, { scroll: false });
   };
 
+  const handleScenarioChange = (scenario: StyleScenario | "all") => {
+    const params = new URLSearchParams(searchParams.toString());
+    if (scenario === "all") {
+      params.delete("scenario");
+    } else {
+      params.set("scenario", scenario);
+    }
+
+    const query = params.toString();
+    router.replace(query ? `${pathname}?${query}` : pathname, { scroll: false });
+  };
+
   const handleResetFilters = () => {
     setSearchQuery("");
     const params = new URLSearchParams(searchParams.toString());
     params.delete("style");
+    params.delete("scenario");
     params.delete("type");
     params.delete("sort");
     params.delete("q");
@@ -617,6 +670,10 @@ export default function TemplatesPage() {
 
     const matchedTemplates = templates
       .filter((template) => !deferredActiveStyleSlug || template.styleSlug === deferredActiveStyleSlug)
+      .filter((template) => (
+        deferredActiveScenario === "all" ||
+        getTemplateScenarios(template).includes(deferredActiveScenario)
+      ))
       .filter((template) => deferredActiveType === "all" || template.type === deferredActiveType)
       .filter((template) => {
         if (!normalizedQuery) return true;
@@ -652,9 +709,10 @@ export default function TemplatesPage() {
     }
 
     return sortedTemplates;
-  }, [deferredActiveSort, deferredActiveStyleSlug, deferredActiveType, locale, trimmedDeferredSearchQuery]);
+  }, [deferredActiveScenario, deferredActiveSort, deferredActiveStyleSlug, deferredActiveType, locale, trimmedDeferredSearchQuery]);
   const isFiltering =
     searchQuery !== deferredSearchQuery ||
+    activeScenario !== deferredActiveScenario ||
     activeStyleSlug !== deferredActiveStyleSlug ||
     activeType !== deferredActiveType ||
     activeSort !== deferredActiveSort;
@@ -861,6 +919,40 @@ export default function TemplatesPage() {
               <p className="text-xs text-muted">
                 {t("templates.searchHint")}
               </p>
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="text-[11px] tracking-[0.16em] uppercase text-muted">
+                  {locale === "zh" ? "按场景进入" : "Explore by goal"}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => handleScenarioChange("all")}
+                  className={`px-3 py-1.5 text-xs tracking-wide border transition-colors ${
+                    activeScenario === "all"
+                      ? "border-foreground bg-foreground text-background"
+                      : "border-border text-muted hover:text-foreground hover:border-foreground"
+                  }`}
+                >
+                  {locale === "zh" ? "全部" : "All"}
+                </button>
+                {STYLE_SCENARIOS.map((scenario) => {
+                  const isActive = activeScenario === scenario;
+
+                  return (
+                    <button
+                      key={scenario}
+                      type="button"
+                      onClick={() => handleScenarioChange(isActive ? "all" : scenario)}
+                      className={`px-3 py-1.5 text-xs tracking-wide border transition-colors ${
+                        isActive
+                          ? "border-foreground bg-foreground text-background"
+                          : "border-border text-muted hover:text-foreground hover:border-foreground"
+                      }`}
+                    >
+                      {getScenarioLabel(scenario, locale)}
+                    </button>
+                  );
+                })}
+              </div>
               {trimmedSearchQuery.length > 0 && (
                 <button
                   type="button"
@@ -985,6 +1077,16 @@ export default function TemplatesPage() {
                         <p className="text-sm text-muted leading-relaxed line-clamp-2">
                           {templateDescription}
                         </p>
+                        <div className="flex flex-wrap gap-1.5 mt-3">
+                          {getTemplateScenarios(template).slice(0, 2).map((scenario) => (
+                            <span
+                              key={scenario}
+                              className="text-[10px] px-2 py-0.5 border border-border text-muted"
+                            >
+                              {getScenarioLabel(scenario, locale)}
+                            </span>
+                          ))}
+                        </div>
 
                         <p className="text-xs tracking-wide mt-4 group-hover:text-accent transition-colors">
                           {t("templates.openTemplate")} &rarr;
