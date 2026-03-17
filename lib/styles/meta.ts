@@ -237,6 +237,22 @@ export const stylesMeta: StyleMeta[] = [
     keywords: ["暗黑", "深色", "夜间", "开发", "专业", "护眼"],
   },
   {
+    slug: "macos-vibrancy",
+    name: "macOS 毛玻璃",
+    nameEn: "macOS Vibrancy",
+    description: "macOS 原生暗色毛玻璃风格。通过多层深灰面板、系统级 backdrop-blur 和极度克制的装饰，还原桌面应用的沉稳质感。",
+    cover: "/styles/macos-vibrancy.svg",
+    styleType: "visual",
+    tags: ["modern", "minimal"],
+    category: "modern",
+    colors: {
+      primary: "#3a3a3c",
+      secondary: "#1c1c1e",
+      accent: ["#0a84ff", "#30d158", "#ff9f0a", "#ff453a"],
+    },
+    keywords: ["macOS", "原生", "暗色", "毛玻璃", "桌面", "vibrancy", "侧边栏"],
+  },
+  {
     slug: "geometric-bold",
     name: "几何大胆风",
     nameEn: "Geometric Bold",
