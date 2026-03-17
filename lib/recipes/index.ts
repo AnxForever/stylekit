@@ -13,6 +13,7 @@ import { materialDesignRecipes } from "./material-design";
 import { swissStyleRecipes } from "./swiss-style";
 import { ghibliStyleRecipes } from "./ghibli-style";
 import { darkModeRecipes } from "./dark-mode";
+import { macosVibrancyRecipes } from "./macos-vibrancy";
 import { stripeStyleRecipes } from "./stripe-style";
 import { notionStyleRecipes } from "./notion-style";
 import { bentoGridRecipes } from "./bento-grid";
@@ -148,6 +149,7 @@ const recipeRegistry: Record<string, StyleRecipes> = {
   "swiss-style": swissStyleRecipes,
   "ghibli-style": ghibliStyleRecipes,
   "dark-mode": darkModeRecipes,
+  "macos-vibrancy": macosVibrancyRecipes,
   "stripe-style": stripeStyleRecipes,
   "notion-style": notionStyleRecipes,
   "bento-grid": bentoGridRecipes,

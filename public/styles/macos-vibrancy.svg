@@ -1,0 +1,94 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="warmBg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#c4856a"/>
+      <stop offset="100%" stop-color="#a0766a"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Desktop wallpaper background -->
+  <rect width="1200" height="630" fill="url(#warmBg)"/>
+
+  <!-- App window frame -->
+  <rect x="80" y="40" width="1040" height="550" rx="12" fill="#1c1c1e" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+
+  <!-- Title bar -->
+  <rect x="80" y="40" width="1040" height="36" rx="12" fill="#2c2c2e"/>
+  <rect x="80" y="64" width="1040" height="12" fill="#2c2c2e"/>
+  <!-- Traffic lights -->
+  <circle cx="104" cy="58" r="6" fill="#ff5f57"/>
+  <circle cx="124" cy="58" r="6" fill="#febc2e"/>
+  <circle cx="144" cy="58" r="6" fill="#28c840"/>
+  <!-- Title text -->
+  <text x="600" y="63" text-anchor="middle" fill="rgba(255,255,255,0.6)" font-family="system-ui" font-size="12" font-weight="500">macOS Vibrancy</text>
+
+  <!-- Sidebar (with vibrancy - slightly warm tinted) -->
+  <rect x="80" y="76" width="240" height="514" fill="rgba(28,28,30,0.85)"/>
+  <rect x="320" y="76" width="1" height="514" fill="rgba(255,255,255,0.08)"/>
+
+  <!-- Sidebar search -->
+  <rect x="96" y="92" width="208" height="28" rx="6" fill="rgba(255,255,255,0.06)"/>
+  <text x="116" y="110" fill="rgba(255,255,255,0.3)" font-family="system-ui" font-size="11">Search...</text>
+
+  <!-- Sidebar nav items -->
+  <rect x="92" y="132" width="216" height="32" rx="8" fill="rgba(255,255,255,0.1)"/>
+  <text x="116" y="153" fill="rgba(255,255,255,0.9)" font-family="system-ui" font-size="13" font-weight="500">Dashboard</text>
+
+  <text x="116" y="185" fill="rgba(255,255,255,0.5)" font-family="system-ui" font-size="13">Analytics</text>
+  <text x="116" y="215" fill="rgba(255,255,255,0.5)" font-family="system-ui" font-size="13">Settings</text>
+  <text x="116" y="245" fill="rgba(255,255,255,0.5)" font-family="system-ui" font-size="13">Profile</text>
+
+  <!-- Middle panel -->
+  <rect x="321" y="76" width="280" height="514" fill="#2c2c2e"/>
+  <rect x="601" y="76" width="1" height="514" fill="rgba(255,255,255,0.08)"/>
+
+  <!-- Middle panel content -->
+  <text x="341" y="108" fill="rgba(255,255,255,0.4)" font-family="system-ui" font-size="10" font-weight="600" letter-spacing="1.5">SUMMARY</text>
+  <rect x="341" y="120" width="240" height="8" rx="2" fill="rgba(255,255,255,0.15)"/>
+  <rect x="341" y="136" width="200" height="8" rx="2" fill="rgba(255,255,255,0.1)"/>
+  <rect x="341" y="152" width="220" height="8" rx="2" fill="rgba(255,255,255,0.1)"/>
+
+  <text x="341" y="192" fill="rgba(255,255,255,0.4)" font-family="system-ui" font-size="10" font-weight="600" letter-spacing="1.5">OUTLINE</text>
+  <text x="341" y="216" fill="rgba(255,255,255,0.7)" font-family="system-ui" font-size="12">Overview</text>
+  <text x="341" y="240" fill="rgba(255,255,255,0.5)" font-family="system-ui" font-size="12">Components</text>
+  <text x="341" y="264" fill="rgba(255,255,255,0.5)" font-family="system-ui" font-size="12">Typography</text>
+  <text x="341" y="288" fill="rgba(255,255,255,0.5)" font-family="system-ui" font-size="12">Colors</text>
+
+  <!-- Main content area -->
+  <rect x="602" y="76" width="518" height="514" fill="#2c2c2e"/>
+
+  <!-- Content heading (serif) -->
+  <text x="640" y="140" fill="rgba(255,255,255,0.95)" font-family="Georgia, serif" font-size="32" font-weight="700">macOS Vibrancy</text>
+
+  <!-- Content body -->
+  <rect x="640" y="168" width="440" height="8" rx="2" fill="rgba(255,255,255,0.15)"/>
+  <rect x="640" y="184" width="380" height="8" rx="2" fill="rgba(255,255,255,0.1)"/>
+  <rect x="640" y="200" width="420" height="8" rx="2" fill="rgba(255,255,255,0.1)"/>
+
+  <!-- Card component preview -->
+  <rect x="640" y="240" width="440" height="100" rx="10" fill="#3a3a3c" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+  <text x="664" y="272" fill="rgba(255,255,255,0.9)" font-family="Georgia, serif" font-size="15" font-weight="600">Panel Title</text>
+  <rect x="664" y="284" width="300" height="6" rx="2" fill="rgba(255,255,255,0.12)"/>
+  <rect x="664" y="298" width="260" height="6" rx="2" fill="rgba(255,255,255,0.08)"/>
+  <rect x="664" y="312" width="280" height="6" rx="2" fill="rgba(255,255,255,0.08)"/>
+
+  <!-- Button previews -->
+  <rect x="640" y="360" width="100" height="32" rx="8" fill="#3a3a3c"/>
+  <text x="668" y="381" fill="rgba(255,255,255,0.9)" font-family="system-ui" font-size="12" font-weight="500">Primary</text>
+
+  <rect x="756" y="360" width="100" height="32" rx="8" fill="#0a84ff"/>
+  <text x="786" y="381" fill="white" font-family="system-ui" font-size="12" font-weight="500">Accent</text>
+
+  <rect x="872" y="360" width="100" height="32" rx="8" fill="transparent" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
+  <text x="900" y="381" fill="rgba(255,255,255,0.7)" font-family="system-ui" font-size="12" font-weight="500">Outline</text>
+
+  <!-- Input preview -->
+  <rect x="640" y="412" width="440" height="36" rx="8" fill="#1c1c1e" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+  <text x="660" y="435" fill="rgba(255,255,255,0.3)" font-family="system-ui" font-size="12">Search conversations...</text>
+
+  <!-- Code block preview -->
+  <rect x="640" y="468" width="440" height="80" rx="8" fill="#1c1c1e" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+  <text x="660" y="492" fill="rgba(255,255,255,0.5)" font-family="SF Mono, monospace" font-size="11">bg-[#1c1c1e]/80</text>
+  <text x="660" y="510" fill="rgba(255,255,255,0.5)" font-family="SF Mono, monospace" font-size="11">backdrop-blur-xl</text>
+  <text x="660" y="528" fill="rgba(255,255,255,0.5)" font-family="SF Mono, monospace" font-size="11">border-r border-white/8</text>
+</svg>
