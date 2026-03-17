@@ -1,0 +1,37 @@
+---
+title: "Glassmorphism vs Neo-Brutalist: Choosing the Right Style for Your Project"
+description: "A practical comparison of two popular UI styles -- when to use frosted glass effects vs bold brutalist borders, and what to consider."
+date: "2026-03-08"
+author: "StyleKit Team"
+tags: ["comparison", "glassmorphism", "neo-brutalist", "design"]
+---
+
+Glassmorphism and Neo-Brutalism are two of the most distinctive visual styles in modern web design, and they could not be more different. One simulates light flowing through translucent glass; the other slams you with thick black borders and zero-blur shadows. Choosing between them is not just an aesthetic preference -- it depends on your audience, your content, and the experience you want to create. This guide breaks down both styles using real definitions from StyleKit's library so you can make an informed decision.
+
+## Glassmorphism: Light Through Glass
+
+Glassmorphism -- called "Liquid Glass" in StyleKit's library -- creates depth through translucency. The core technique layers semi-transparent backgrounds (`bg-white/15`) over rich gradient backdrops, then applies heavy gaussian blur (`backdrop-blur-[60px]`) and saturation boost (`backdrop-saturate-[180%]`) to make background colors feel alive behind the glass surface. Borders are subtle white lines (`border-white/20`) that brighten on hover. Corners are always generously rounded (`rounded-3xl`). Shadows are multi-layered, combining outer depth with inset highlights that simulate light hitting the glass from above.
+
+The interaction model is fluid and physical. Hover states lift elements slightly (`-translate-y-0.5`) with enhanced glow. Transitions use spring easing (`cubic-bezier(0.16, 1, 0.3, 1)`) at 500ms duration to mimic the inertia of real glass. A specular sweep -- a skewed white gradient that slides across the surface on hover -- adds a premium feel. The overall impression is calm, sophisticated, and layered.
+
+**Best suited for:** SaaS dashboards, music and media apps, portfolio sites, login pages, and any product targeting a design-conscious audience. Glassmorphism works especially well when you have a vibrant gradient or image background that the glass panels can refract.
+
+## Neo-Brutalist: Raw and Unapologetic
+
+Neo-Brutalism takes the opposite approach. Inspired by architectural Brutalism, it strips away every decorative flourish and replaces it with raw structural honesty. Borders are thick and black (`border-4 border-black`). Shadows are hard-edge offsets with zero blur (`shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]`). Corners are always sharp (`rounded-none`). Typography is aggressive: `font-black` for headings, `font-mono` for body text. The color palette pairs stark black and white with vivid accent colors -- hot pink (`#ff006e`), electric lime (`#ccff00`), cyan (`#00d9ff`).
+
+Interactions in Neo-Brutalism are deliberately physical. StyleKit's implementation uses what it calls "Physical Crushing" -- when you click a button, it translates down and right by exactly the shadow offset distance and the shadow disappears, creating the illusion of the element being physically pressed flat. Hover states use "Brutal Snap" -- an instant hard-cut to a high-contrast background color like bright yellow, with no opacity transitions or gradients allowed. Everything happens at `duration-150 ease-out`, fast and punchy.
+
+**Best suited for:** Creative agencies, indie products, developer tools, editorial sites, event pages, and brands that want to stand out from the polished SaaS crowd. Neo-Brutalism signals confidence and personality. It works well for content-heavy pages where strong visual hierarchy matters.
+
+## Accessibility Considerations
+
+Both styles require attention to accessibility, but in different ways. Glassmorphism's biggest challenge is text contrast. White text on a semi-transparent background can become unreadable if the underlying gradient shifts to a light color. StyleKit's Glassmorphism tokens address this by requiring `text-white` on backgrounds with sufficient opacity and blur, but you should always test with real content and varying viewport sizes. The style also relies heavily on `backdrop-filter`, which has good browser support today but may not render on older browsers -- plan a fallback.
+
+Neo-Brutalism has a natural advantage in contrast. Black borders on white backgrounds, bold font weights, and vivid accent colors produce high contrast ratios that typically exceed WCAG AA requirements without extra effort. The main accessibility concern is interaction feedback: the hard-cut hover transitions can feel jarring for users with vestibular sensitivities. Consider respecting `prefers-reduced-motion` by softening or disabling the snap transitions for users who request it. StyleKit's Neo-Brutalist definition notes that all interactive elements should have clear hover, active, and focus states -- which is good practice regardless of style.
+
+## Making the Choice
+
+The decision often comes down to tone. If your product needs to feel premium, calm, and modern -- think fintech, health tech, or creative tools -- Glassmorphism gives you that layered sophistication. If your product needs to feel bold, direct, and memorable -- think indie SaaS, developer platforms, or editorial brands -- Neo-Brutalism delivers that raw energy.
+
+You do not have to commit to one style for your entire product, either. Some teams use Glassmorphism for their main app interface and Neo-Brutalism for marketing pages, or vice versa. StyleKit's token system makes this practical: each style is self-contained with its own color palette, shadow system, typography rules, and interaction patterns. You can explore both styles -- along with 120+ others -- at [stylekit.top](https://stylekit.top), preview them with real components, and export ready-made prompts for your AI coding tool of choice.

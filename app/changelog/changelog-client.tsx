@@ -5,11 +5,18 @@ import { Footer } from "@/components/layout/footer";
 import { useI18n } from "@/lib/i18n/context";
 import { changelog } from "@/lib/changelog";
 
-const typeLabel: Record<string, string> = {
+const typeLabelEn: Record<string, string> = {
   added: "Added",
   changed: "Changed",
   fixed: "Fixed",
   removed: "Removed",
+};
+
+const typeLabelZh: Record<string, string> = {
+  added: "新增",
+  changed: "变更",
+  fixed: "修复",
+  removed: "移除",
 };
 
 const typeColor: Record<string, string> = {
@@ -20,7 +27,8 @@ const typeColor: Record<string, string> = {
 };
 
 export function ChangelogClient() {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
+  const typeLabel = locale === "zh" ? typeLabelZh : typeLabelEn;
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -53,14 +61,14 @@ export function ChangelogClient() {
                       {entry.date}
                     </time>
                   </div>
-                  <p className="text-sm text-muted mb-4">{entry.title}</p>
+                  <p className="text-sm text-muted mb-4">{locale === "zh" && entry.titleZh ? entry.titleZh : entry.title}</p>
                   <ul className="space-y-2">
                     {entry.changes.map((change, i) => (
                       <li key={i} className="flex items-start gap-2 text-sm">
                         <span className={`text-xs font-medium uppercase tracking-wide mt-0.5 ${typeColor[change.type]}`}>
                           {typeLabel[change.type]}
                         </span>
-                        <span className="text-muted">{change.description}</span>
+                        <span className="text-muted">{locale === "zh" && change.descriptionZh ? change.descriptionZh : change.description}</span>
                       </li>
                     ))}
                   </ul>

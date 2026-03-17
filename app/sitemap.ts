@@ -4,6 +4,7 @@ import { join } from "path";
 import { getAllStylesMeta } from "@/lib/styles/meta";
 import { getAllAnimationsMeta } from "@/lib/animations/meta";
 import { getAllTopicSlugs } from "@/lib/prompts";
+import { getAllPosts } from "@/lib/blog";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://stylekit.top";
 
@@ -63,6 +64,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${BASE_URL}/guide`, lastModified: TOOLS_UPDATED, changeFrequency: "monthly", priority: 0.6 },
     { url: `${BASE_URL}/components`, lastModified: CONTENT_UPDATED, changeFrequency: "weekly", priority: 0.6 },
     { url: `${BASE_URL}/about`, lastModified: TOOLS_UPDATED, changeFrequency: "monthly", priority: 0.4 },
+    { url: `${BASE_URL}/blog`, lastModified: CONTENT_UPDATED, changeFrequency: "weekly", priority: 0.7 },
+    { url: `${BASE_URL}/changelog`, lastModified: CONTENT_UPDATED, changeFrequency: "monthly", priority: 0.5 },
   ];
 
   const stylePages: MetadataRoute.Sitemap = styles.map((style) => ({
@@ -102,6 +105,14 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.7,
   }));
 
+  const blogPosts = getAllPosts();
+  const blogPostPages: MetadataRoute.Sitemap = blogPosts.map((post) => ({
+    url: `${BASE_URL}/blog/${post.slug}`,
+    lastModified: post.date ? new Date(post.date) : CONTENT_UPDATED,
+    changeFrequency: "monthly" as const,
+    priority: 0.6,
+  }));
+
   return [
     ...staticPages,
     ...stylePages,
@@ -109,5 +120,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...templatePages,
     ...promptPages,
     ...animationPages,
+    ...blogPostPages,
   ].map(withAlternates);
 }

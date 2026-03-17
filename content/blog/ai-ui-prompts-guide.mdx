@@ -1,0 +1,48 @@
+---
+title: "How to Write Better UI Prompts for AI Coding Tools"
+description: "Learn practical techniques for writing effective UI prompts that produce consistent, beautiful results with AI tools like v0, Cursor, and ChatGPT."
+date: "2026-03-15"
+author: "StyleKit Team"
+tags: ["guide", "ai-prompts", "best-practices"]
+---
+
+If you have ever pasted a UI prompt into an AI coding tool and gotten back something that looks like a generic Bootstrap template, you are not alone. The gap between what you imagine and what the AI generates usually comes down to one thing: the prompt itself. Vague instructions produce vague results. The good news is that writing better UI prompts is a learnable skill, and it does not require you to become a prompt engineer.
+
+## The Problem with Most UI Prompts
+
+The most common mistake is being too abstract. A prompt like "build me a landing page" gives the AI almost nothing to work with. It will fall back on defaults -- safe colors, standard spacing, rounded corners everywhere, and a layout you have seen a thousand times. The second most common mistake is specifying what you want without specifying what you do not want. If you ask for "a modern card component" without ruling out gradients, drop shadows, or specific border treatments, the AI will make its own choices, and those choices rarely match your design intent.
+
+Compare these two prompts:
+
+**Vague:** "Create a pricing page with three tiers."
+
+**Specific:** "Create a pricing page with three tiers. Use a Neo-Brutalist style: no rounded corners, black 4px solid borders on all cards, hard-edge box shadows (8px offset, no blur, solid black), monospace font for body text, font-weight 900 for headings. The recommended tier should have a bright #ccff00 background. All buttons should shift down and right on click with the shadow removed."
+
+The second prompt gives the AI concrete constraints. It knows what to include, what to avoid, and what the interaction patterns should look like. The result will be dramatically closer to what you actually want.
+
+## Anatomy of an Effective UI Prompt
+
+A good UI prompt has four parts. First, **the layout structure**: describe what sections exist and how they relate to each other. Second, **the visual style**: specify colors, typography, borders, shadows, and spacing with actual values, not adjectives. Third, **interaction behavior**: define what happens on hover, focus, and click. Fourth, **constraints**: explicitly list what the AI should not do. This last part is surprisingly important -- AI models are trained on millions of generic UIs, and without negative constraints they will regress toward the mean.
+
+Here is a practical framework:
+
+```
+1. Layout: [sections, grid, hierarchy]
+2. Style: [colors (hex), typography (weights, families), borders, shadows, radius]
+3. Interactions: [hover effects, active states, transitions]
+4. Do NOT: [list of forbidden patterns]
+```
+
+This is exactly the structure StyleKit uses internally. Each of the 130+ styles in the library ships with a `doList` and `dontList` -- explicit rules that tell AI tools what to follow and what to avoid. When you export a prompt from StyleKit, these rules are baked in, so the AI gets a complete style specification rather than a vague aesthetic direction.
+
+## Using Design Tokens to Ground Your Prompts
+
+One technique that dramatically improves AI output is referencing design tokens directly in your prompt. Instead of saying "use a soft shadow," say `shadow-[0_8px_24px_rgba(0,0,0,0.12),inset_0_1px_0_rgba(255,255,255,0.3)]`. Instead of "make it rounded," say `rounded-3xl`. Tokens remove ambiguity. The AI does not have to interpret your intent -- it just applies the exact values you specified.
+
+StyleKit structures every style around tokens for borders, shadows, typography, spacing, colors, and interaction patterns. These tokens map directly to Tailwind CSS classes, which means you can copy them straight into a prompt for any AI tool that generates Tailwind-based code. The token system also defines forbidden classes -- patterns the AI should never use for a given style. For example, a Glassmorphism prompt will explicitly forbid `rounded-none`, `bg-white`, and `duration-150`, because those break the style's visual language.
+
+## Putting It All Together
+
+The next time you write a UI prompt, start by choosing a clear visual direction. Then translate that direction into concrete values: hex colors, pixel measurements, specific Tailwind classes, and explicit interaction rules. Add a "do not" section that rules out the generic defaults you want to avoid. If you are using StyleKit, you can skip most of this work -- browse the style library at [stylekit.top](https://stylekit.top), pick a style, and export a ready-made prompt that includes all of these details. The prompt system supports v0, Cursor, ChatGPT, Claude, and other popular AI coding tools.
+
+Writing better prompts is not about being more verbose. It is about being more precise. Give the AI a clear target and clear boundaries, and the results will speak for themselves.
