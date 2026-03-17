@@ -7,6 +7,12 @@ import { useFavorites } from "@/lib/favorites/context";
 import { StyleCard } from "@/components/home/style-card";
 import { Heart, Layers, Paintbrush, Loader2, ChevronDown, Search, X } from "lucide-react";
 import type { StyleMeta, StyleType, StyleTag } from "@/lib/styles/meta";
+import {
+  getScenarioLabel,
+  getStyleScenarios,
+  STYLE_SCENARIOS,
+  type StyleScenario,
+} from "@/lib/styles/scenarios";
 
 type TypeFilter = StyleType | "all";
 type SortOption = "recommended" | "name-asc" | "name-desc";
@@ -18,6 +24,7 @@ interface StylesContentProps {
   initialShowFavorites: boolean;
   initialSort: SortOption;
   initialQuery: string;
+  initialScenario: StyleScenario | "all";
 }
 
 export function StylesContent({
@@ -27,6 +34,7 @@ export function StylesContent({
   initialShowFavorites,
   initialSort,
   initialQuery,
+  initialScenario,
 }: StylesContentProps) {
   const { t, locale } = useI18n();
   const tagTriggerId = useId();
@@ -42,6 +50,7 @@ export function StylesContent({
   const [showFavorites, setShowFavorites] = useState(initialShowFavorites);
   const [sortBy, setSortBy] = useState<SortOption>(initialSort);
   const [searchQuery, setSearchQuery] = useState(initialQuery);
+  const [activeScenario, setActiveScenario] = useState<StyleScenario | "all">(initialScenario);
   const [isPending, startTransition] = useTransition();
   const [tagDropdownOpen, setTagDropdownOpen] = useState(false);
   const tagDropdownRef = useRef<HTMLDivElement>(null);
@@ -50,6 +59,7 @@ export function StylesContent({
   const deferredShowFavorites = useDeferredValue(showFavorites);
   const deferredSortBy = useDeferredValue(sortBy);
   const deferredSearchQuery = useDeferredValue(searchQuery);
+  const deferredActiveScenario = useDeferredValue(activeScenario);
   const trimmedSearchQuery = searchQuery.trim();
   const trimmedDeferredSearchQuery = deferredSearchQuery.trim().toLowerCase();
   const deferredActiveTagsKey = useDeferredValue(activeTagsKey);
@@ -60,6 +70,10 @@ export function StylesContent({
         : []
     ),
     [deferredActiveTagsKey]
+  );
+  const styleScenarios = useMemo(
+    () => new Map(allStyles.map((style) => [style.slug, getStyleScenarios(style)])),
+    [allStyles]
   );
 
   // 点击外部关闭下拉框
@@ -135,13 +149,21 @@ export function StylesContent({
   }, []);
 
   const syncToUrl = useCallback(
-    (type: TypeFilter, tags: StyleTag[], fav: boolean, sort: SortOption, query: string) => {
+    (
+      type: TypeFilter,
+      tags: StyleTag[],
+      fav: boolean,
+      sort: SortOption,
+      query: string,
+      scenario: StyleScenario | "all"
+    ) => {
       const sp = new URLSearchParams();
       if (type && type !== "all") sp.set("type", type);
       if (tags.length > 0) sp.set("tags", tags.join(","));
       if (fav) sp.set("fav", "1");
       if (sort !== "recommended") sp.set("sort", sort);
       if (query.trim().length > 0) sp.set("q", query.trim());
+      if (scenario !== "all") sp.set("scenario", scenario);
 
       const qs = sp.toString();
       const newUrl = qs ? `${pathname}?${qs}` : pathname;
@@ -152,11 +174,14 @@ export function StylesContent({
   );
 
   // Type filter 配置
-  const typeFilters: { key: TypeFilter; label: string; icon?: ReactNode }[] = [
-    { key: "all", label: t("styles.typeAll") },
-    { key: "visual", label: t("styles.typeVisual"), icon: <Paintbrush className="w-3.5 h-3.5" /> },
-    { key: "layout", label: t("styles.typeLayout"), icon: <Layers className="w-3.5 h-3.5" /> },
-  ];
+  const typeFilters: { key: TypeFilter; label: string; icon?: ReactNode }[] = useMemo(
+    () => [
+      { key: "all", label: t("styles.typeAll") },
+      { key: "visual", label: t("styles.typeVisual"), icon: <Paintbrush className="w-3.5 h-3.5" /> },
+      { key: "layout", label: t("styles.typeLayout"), icon: <Layers className="w-3.5 h-3.5" /> },
+    ],
+    [t]
+  );
 
   // Tag filter 配置
   const availableTags: StyleTag[] = [
@@ -169,20 +194,68 @@ export function StylesContent({
     "brand-inspired",
   ];
 
-  const tagLabels: Record<StyleTag, string> = {
-    modern: t("styles.tagModern"),
-    expressive: t("styles.tagExpressive"),
-    minimal: t("styles.tagMinimal"),
-    retro: t("styles.tagRetro"),
-    "high-contrast": t("styles.tagHighContrast"),
-    responsive: t("styles.tagResponsive"),
-    "brand-inspired": t("styles.tagBrandInspired"),
-  };
+  const tagLabels: Record<StyleTag, string> = useMemo(
+    () => ({
+      modern: t("styles.tagModern"),
+      expressive: t("styles.tagExpressive"),
+      minimal: t("styles.tagMinimal"),
+      retro: t("styles.tagRetro"),
+      "high-contrast": t("styles.tagHighContrast"),
+      responsive: t("styles.tagResponsive"),
+      "brand-inspired": t("styles.tagBrandInspired"),
+    }),
+    [t]
+  );
+  const activeFilterSummary = useMemo(() => {
+    const parts: string[] = [];
+
+    if (activeScenario !== "all") {
+      parts.push(`${locale === "zh" ? "场景" : "Scenario"}: ${getScenarioLabel(activeScenario, locale)}`);
+    }
+
+    if (activeType !== "all") {
+      parts.push(`${t("styles.type")}: ${typeFilters.find((item) => item.key === activeType)?.label ?? activeType}`);
+    }
+
+    if (activeTags.length > 0) {
+      parts.push(
+        `${t("styles.tags")}: ${activeTags.map((tag) => tagLabels[tag]).join(", ")}`
+      );
+    }
+
+    if (showFavorites) {
+      parts.push(t("styles.favorites"));
+    }
+
+    if (sortBy !== "recommended") {
+      const sortLabel = sortBy === "name-asc"
+        ? t("styles.sortNameAsc")
+        : t("styles.sortNameDesc");
+      parts.push(`${t("styles.sort")}: ${sortLabel}`);
+    }
+
+    if (trimmedSearchQuery.length > 0) {
+      parts.push(`${t("nav.search")}: ${trimmedSearchQuery}`);
+    }
+
+    return parts.join(" · ");
+  }, [
+    activeScenario,
+    activeTags,
+    activeType,
+    locale,
+    showFavorites,
+    sortBy,
+    t,
+    tagLabels,
+    trimmedSearchQuery,
+    typeFilters,
+  ]);
 
   const handleTypeChange = (type: TypeFilter) => {
     startTransition(() => {
       setActiveType(type);
-      syncToUrl(type, activeTags, showFavorites, sortBy, searchQuery);
+      syncToUrl(type, activeTags, showFavorites, sortBy, searchQuery, activeScenario);
     });
   };
 
@@ -192,14 +265,14 @@ export function StylesContent({
         ? activeTags.filter((t) => t !== tag)
         : [...activeTags, tag];
       setActiveTags(newTags);
-      syncToUrl(activeType, newTags, showFavorites, sortBy, searchQuery);
+      syncToUrl(activeType, newTags, showFavorites, sortBy, searchQuery, activeScenario);
     });
   };
 
   const handleClearTags = () => {
     startTransition(() => {
       setActiveTags([]);
-      syncToUrl(activeType, [], showFavorites, sortBy, searchQuery);
+      syncToUrl(activeType, [], showFavorites, sortBy, searchQuery, activeScenario);
     });
   };
 
@@ -207,14 +280,21 @@ export function StylesContent({
     startTransition(() => {
       const newFav = !showFavorites;
       setShowFavorites(newFav);
-      syncToUrl(activeType, activeTags, newFav, sortBy, searchQuery);
+      syncToUrl(activeType, activeTags, newFav, sortBy, searchQuery, activeScenario);
     });
   };
 
   const handleSortChange = (sort: SortOption) => {
     startTransition(() => {
       setSortBy(sort);
-      syncToUrl(activeType, activeTags, showFavorites, sort, searchQuery);
+      syncToUrl(activeType, activeTags, showFavorites, sort, searchQuery, activeScenario);
+    });
+  };
+
+  const handleScenarioChange = (scenario: StyleScenario | "all") => {
+    startTransition(() => {
+      setActiveScenario(scenario);
+      syncToUrl(activeType, activeTags, showFavorites, sortBy, searchQuery, scenario);
     });
   };
 
@@ -225,7 +305,8 @@ export function StylesContent({
       setShowFavorites(false);
       setSortBy("recommended");
       setSearchQuery("");
-      syncToUrl("all", [], false, "recommended", "");
+      setActiveScenario("all");
+      syncToUrl("all", [], false, "recommended", "", "all");
     });
   };
 
@@ -236,11 +317,11 @@ export function StylesContent({
     }
 
     const timer = window.setTimeout(() => {
-      syncToUrl(activeType, activeTags, showFavorites, sortBy, searchQuery);
+      syncToUrl(activeType, activeTags, showFavorites, sortBy, searchQuery, activeScenario);
     }, 250);
 
     return () => window.clearTimeout(timer);
-  }, [activeType, activeTags, searchQuery, showFavorites, sortBy, syncToUrl]);
+  }, [activeScenario, activeType, activeTags, searchQuery, showFavorites, sortBy, syncToUrl]);
 
   const favoriteSet = useMemo(() => new Set(favorites), [favorites]);
 
@@ -253,6 +334,10 @@ export function StylesContent({
           deferredActiveTags.length === 0 ||
           deferredActiveTags.some((tag) => s.tags?.includes(tag))
       )
+      .filter((style) => (
+        deferredActiveScenario === "all" ||
+        (styleScenarios.get(style.slug) ?? []).includes(deferredActiveScenario)
+      ))
       .filter((style) => {
         if (!trimmedDeferredSearchQuery) return true;
 
@@ -288,14 +373,17 @@ export function StylesContent({
   }, [
     allStyles,
     deferredActiveTags,
+    deferredActiveScenario,
     deferredActiveType,
     deferredShowFavorites,
     deferredSortBy,
     favoriteSet,
+    styleScenarios,
     trimmedDeferredSearchQuery,
   ]);
 
   const hasActiveFilters =
+    activeScenario !== "all" ||
     activeType !== "all" ||
     activeTags.length > 0 ||
     showFavorites ||
@@ -303,6 +391,7 @@ export function StylesContent({
     trimmedSearchQuery.length > 0;
   const isFiltering =
     isPending ||
+    activeScenario !== deferredActiveScenario ||
     searchQuery !== deferredSearchQuery ||
     activeType !== deferredActiveType ||
     showFavorites !== deferredShowFavorites ||
@@ -360,14 +449,57 @@ export function StylesContent({
                 ? "提示：按 / 可快速聚焦搜索，按 Esc 可清空。"
                 : "Tip: press / to focus search, and Esc to clear."}
             </p>
-            {trimmedSearchQuery.length > 0 && (
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="text-[11px] tracking-[0.16em] uppercase text-muted">
+                {locale === "zh" ? "按场景进入" : "Explore by goal"}
+              </span>
               <button
                 type="button"
-                onClick={() => setSearchQuery("")}
-                className="text-xs text-muted hover:text-foreground transition-colors"
+                onClick={() => handleScenarioChange("all")}
+                className={`px-3 py-1.5 text-xs tracking-wide border transition-colors ${
+                  activeScenario === "all"
+                    ? "border-foreground bg-foreground text-background"
+                    : "border-border text-muted hover:text-foreground hover:border-foreground"
+                }`}
               >
-                {locale === "zh" ? "清空搜索" : "Clear Search"}
+                {locale === "zh" ? "全部" : "All"}
               </button>
+              {STYLE_SCENARIOS.map((scenario) => {
+                const isActive = activeScenario === scenario;
+
+                return (
+                  <button
+                    key={scenario}
+                    type="button"
+                    onClick={() => handleScenarioChange(isActive ? "all" : scenario)}
+                    className={`px-3 py-1.5 text-xs tracking-wide border transition-colors ${
+                      isActive
+                        ? "border-foreground bg-foreground text-background"
+                        : "border-border text-muted hover:text-foreground hover:border-foreground"
+                    }`}
+                  >
+                    {getScenarioLabel(scenario, locale)}
+                  </button>
+                );
+              })}
+            </div>
+              {(trimmedSearchQuery.length > 0 || activeScenario !== "all") && (
+                <button
+                  type="button"
+                  onClick={() => startTransition(() => {
+                    setSearchQuery("");
+                    setActiveScenario("all");
+                    syncToUrl(activeType, activeTags, showFavorites, sortBy, "", "all");
+                  })}
+                  className="text-xs text-muted hover:text-foreground transition-colors"
+                >
+                  {locale === "zh" ? "清空搜索" : "Clear Search"}
+              </button>
+            )}
+            {hasActiveFilters && activeFilterSummary.length > 0 && (
+              <p className="text-xs text-muted">
+                {locale === "zh" ? "当前筛选" : "Active filters"}: {activeFilterSummary}
+              </p>
             )}
           </div>
 
