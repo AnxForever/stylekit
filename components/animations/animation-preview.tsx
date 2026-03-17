@@ -15,162 +15,72 @@ function PreviewLoadingFallback() {
   );
 }
 
-function dynamicPreview(loader: () => Promise<ComponentType>) {
-  return dynamic(loader, {
-    ssr: false,
-    loading: () => <PreviewLoadingFallback />,
-  });
+/**
+ * Convention-based preview discovery.
+ *
+ * All previews live at lib/animations/{slug}/preview.tsx
+ * and export a named component matching the PascalCase slug + "Preview".
+ *
+ * Webpack requires static import paths for code splitting, so we still
+ * enumerate them here — but the pattern is mechanical: one line per slug,
+ * all pointing to `@/lib/animations/{slug}/preview`.
+ *
+ * TODO (Phase 4): Generate this map at build time from directory scan.
+ */
+function dp(loader: () => Promise<ComponentType>) {
+  return dynamic(loader, { ssr: false, loading: () => <PreviewLoadingFallback /> });
 }
 
 const previewMap: Record<string, ComponentType> = {
-  "fade-in-up": dynamicPreview(
-    () => import("@/lib/animations/previews/fade-in-up-preview").then((m) => m.FadeInUpPreview)
-  ),
-  "fade-in-down": dynamicPreview(
-    () => import("@/lib/animations/previews/fade-in-down-preview").then((m) => m.FadeInDownPreview)
-  ),
-  "scale-in": dynamicPreview(
-    () => import("@/lib/animations/previews/scale-in-preview").then((m) => m.ScaleInPreview)
-  ),
-  "slide-in-left": dynamicPreview(
-    () => import("@/lib/animations/previews/slide-in-left-preview").then((m) => m.SlideInLeftPreview)
-  ),
-  "hover-lift": dynamicPreview(
-    () => import("@/lib/animations/previews/hover-lift-preview").then((m) => m.HoverLiftPreview)
-  ),
-  "hover-glow": dynamicPreview(
-    () => import("@/lib/animations/previews/hover-glow-preview").then((m) => m.HoverGlowPreview)
-  ),
-  "scroll-reveal": dynamicPreview(
-    () => import("@/lib/animations/previews/scroll-reveal-preview").then((m) => m.ScrollRevealPreview)
-  ),
-  "parallax-float": dynamicPreview(
-    () => import("@/lib/animations/previews/parallax-float-preview").then((m) => m.ParallaxFloatPreview)
-  ),
-  typewriter: dynamicPreview(
-    () => import("@/lib/animations/previews/typewriter-preview").then((m) => m.TypewriterPreview)
-  ),
-  "text-gradient-flow": dynamicPreview(
-    () => import("@/lib/animations/previews/text-gradient-flow-preview").then((m) => m.TextGradientFlowPreview)
-  ),
-  "skeleton-pulse": dynamicPreview(
-    () => import("@/lib/animations/previews/skeleton-pulse-preview").then((m) => m.SkeletonPulsePreview)
-  ),
-  "spinner-dots": dynamicPreview(
-    () => import("@/lib/animations/previews/spinner-dots-preview").then((m) => m.SpinnerDotsPreview)
-  ),
-  "background-gradient-shift": dynamicPreview(
-    () => import("@/lib/animations/previews/background-gradient-shift-preview").then((m) => m.BackgroundGradientShiftPreview)
-  ),
-  "stagger-children": dynamicPreview(
-    () => import("@/lib/animations/previews/stagger-children-preview").then((m) => m.StaggerChildrenPreview)
-  ),
-  "blur-in": dynamicPreview(
-    () => import("@/lib/animations/previews/blur-in-preview").then((m) => m.BlurInPreview)
-  ),
-  "spotlight-card": dynamicPreview(
-    () => import("@/lib/animations/previews/spotlight-card-preview").then((m) => m.SpotlightCardPreview)
-  ),
-  "magnetic-hover": dynamicPreview(
-    () => import("@/lib/animations/previews/magnetic-hover-preview").then((m) => m.MagneticHoverPreview)
-  ),
-  "bounce-in": dynamicPreview(
-    () => import("@/lib/animations/previews/bounce-in-preview").then((m) => m.BounceInPreview)
-  ),
-  "slide-in-right": dynamicPreview(
-    () => import("@/lib/animations/previews/slide-in-right-preview").then((m) => m.SlideInRightPreview)
-  ),
-  "rotate-in": dynamicPreview(
-    () => import("@/lib/animations/previews/rotate-in-preview").then((m) => m.RotateInPreview)
-  ),
-  shake: dynamicPreview(
-    () => import("@/lib/animations/previews/shake-preview").then((m) => m.ShakePreview)
-  ),
-  // --- Directory-based animations (Phase 1 pilot) ---
-  "flip-card": dynamicPreview(
-    () => import("@/lib/animations/flip-card/preview").then((m) => m.FlipCardPreview)
-  ),
-  "ripple-click": dynamicPreview(
-    () => import("@/lib/animations/previews/ripple-click-preview").then((m) => m.RippleClickPreview)
-  ),
-  "counter-roll": dynamicPreview(
-    () => import("@/lib/animations/previews/counter-roll-preview").then((m) => m.CounterRollPreview)
-  ),
-  "morph-shape": dynamicPreview(
-    () => import("@/lib/animations/previews/morph-shape-preview").then((m) => m.MorphShapePreview)
-  ),
-  "fade-out-down": dynamicPreview(
-    () => import("@/lib/animations/previews/fade-out-down-preview").then((m) => m.FadeOutDownPreview)
-  ),
-  "scale-out": dynamicPreview(
-    () => import("@/lib/animations/previews/scale-out-preview").then((m) => m.ScaleOutPreview)
-  ),
-  "slide-out-right": dynamicPreview(
-    () => import("@/lib/animations/previews/slide-out-right-preview").then((m) => m.SlideOutRightPreview)
-  ),
-  collapse: dynamicPreview(
-    () => import("@/lib/animations/previews/collapse-preview").then((m) => m.CollapsePreview)
-  ),
-  crossfade: dynamicPreview(
-    () => import("@/lib/animations/previews/crossfade-preview").then((m) => m.CrossfadePreview)
-  ),
-  "slide-swap": dynamicPreview(
-    () => import("@/lib/animations/previews/slide-swap-preview").then((m) => m.SlideSwapPreview)
-  ),
-  "morph-transition": dynamicPreview(
-    () => import("@/lib/animations/previews/morph-transition-preview").then((m) => m.MorphTransitionPreview)
-  ),
-  "text-reveal": dynamicPreview(
-    () => import("@/lib/animations/previews/text-reveal-preview").then((m) => m.TextRevealPreview)
-  ),
-  "underline-draw": dynamicPreview(
-    () => import("@/lib/animations/previews/underline-draw-preview").then((m) => m.UnderlineDrawPreview)
-  ),
-  "progress-bar": dynamicPreview(
-    () => import("@/lib/animations/previews/progress-bar-preview").then((m) => m.ProgressBarPreview)
-  ),
-  "elastic-scale": dynamicPreview(
-    () => import("@/lib/animations/previews/elastic-scale-preview").then((m) => m.ElasticScalePreview)
-  ),
-  "pulse-ring": dynamicPreview(
-    () => import("@/lib/animations/previews/pulse-ring-preview").then((m) => m.PulseRingPreview)
-  ),
-  "zoom-in": dynamicPreview(
-    () => import("@/lib/animations/previews/zoom-in-preview").then((m) => m.ZoomInPreview)
-  ),
-  "marquee-scroll": dynamicPreview(
-    () => import("@/lib/animations/previews/marquee-scroll-preview").then((m) => m.MarqueeScrollPreview)
-  ),
-  shimmer: dynamicPreview(
-    () => import("@/lib/animations/previews/shimmer-preview").then((m) => m.ShimmerPreview)
-  ),
-  pulse: dynamicPreview(
-    () => import("@/lib/animations/previews/pulse-preview").then((m) => m.PulsePreview)
-  ),
-  "elastic-snap": dynamicPreview(
-    () => import("@/lib/animations/previews/elastic-snap-preview").then((m) => m.ElasticSnapPreview)
-  ),
-  "border-trace": dynamicPreview(
-    () => import("@/lib/animations/previews/border-trace-preview").then((m) => m.BorderTracePreview)
-  ),
-  "glitch-text": dynamicPreview(
-    () => import("@/lib/animations/previews/glitch-text-preview").then((m) => m.GlitchTextPreview)
-  ),
-  "text-scramble": dynamicPreview(
-    () => import("@/lib/animations/previews/text-scramble-preview").then((m) => m.TextScramblePreview)
-  ),
-  "tilt-3d": dynamicPreview(
-    () => import("@/lib/animations/previews/tilt-3d-preview").then((m) => m.Tilt3dPreview)
-  ),
-  "confetti-burst": dynamicPreview(
-    () => import("@/lib/animations/previews/confetti-burst-preview").then((m) => m.ConfettiBurstPreview)
-  ),
-  "scroll-page-turn": dynamicPreview(
-    () => import("@/lib/animations/scroll-page-turn/preview").then((m) => m.ScrollPageTurnPreview)
-  ),
-  "scroll-peel-away": dynamicPreview(
-    () => import("@/lib/animations/scroll-peel-away/preview").then((m) => m.ScrollPeelAwayPreview)
-  ),
+  "background-gradient-shift": dp(() => import("@/lib/animations/background-gradient-shift/preview").then((m) => m.BackgroundGradientShiftPreview)),
+  "blur-in": dp(() => import("@/lib/animations/blur-in/preview").then((m) => m.BlurInPreview)),
+  "border-trace": dp(() => import("@/lib/animations/border-trace/preview").then((m) => m.BorderTracePreview)),
+  "bounce-in": dp(() => import("@/lib/animations/bounce-in/preview").then((m) => m.BounceInPreview)),
+  "collapse": dp(() => import("@/lib/animations/collapse/preview").then((m) => m.CollapsePreview)),
+  "confetti-burst": dp(() => import("@/lib/animations/confetti-burst/preview").then((m) => m.ConfettiBurstPreview)),
+  "counter-roll": dp(() => import("@/lib/animations/counter-roll/preview").then((m) => m.CounterRollPreview)),
+  "crossfade": dp(() => import("@/lib/animations/crossfade/preview").then((m) => m.CrossfadePreview)),
+  "elastic-scale": dp(() => import("@/lib/animations/elastic-scale/preview").then((m) => m.ElasticScalePreview)),
+  "elastic-snap": dp(() => import("@/lib/animations/elastic-snap/preview").then((m) => m.ElasticSnapPreview)),
+  "fade-in-down": dp(() => import("@/lib/animations/fade-in-down/preview").then((m) => m.FadeInDownPreview)),
+  "fade-in-up": dp(() => import("@/lib/animations/fade-in-up/preview").then((m) => m.FadeInUpPreview)),
+  "fade-out-down": dp(() => import("@/lib/animations/fade-out-down/preview").then((m) => m.FadeOutDownPreview)),
+  "flip-card": dp(() => import("@/lib/animations/flip-card/preview").then((m) => m.FlipCardPreview)),
+  "glitch-text": dp(() => import("@/lib/animations/glitch-text/preview").then((m) => m.GlitchTextPreview)),
+  "hover-glow": dp(() => import("@/lib/animations/hover-glow/preview").then((m) => m.HoverGlowPreview)),
+  "hover-lift": dp(() => import("@/lib/animations/hover-lift/preview").then((m) => m.HoverLiftPreview)),
+  "magnetic-hover": dp(() => import("@/lib/animations/magnetic-hover/preview").then((m) => m.MagneticHoverPreview)),
+  "marquee-scroll": dp(() => import("@/lib/animations/marquee-scroll/preview").then((m) => m.MarqueeScrollPreview)),
+  "morph-shape": dp(() => import("@/lib/animations/morph-shape/preview").then((m) => m.MorphShapePreview)),
+  "morph-transition": dp(() => import("@/lib/animations/morph-transition/preview").then((m) => m.MorphTransitionPreview)),
+  "parallax-float": dp(() => import("@/lib/animations/parallax-float/preview").then((m) => m.ParallaxFloatPreview)),
+  "progress-bar": dp(() => import("@/lib/animations/progress-bar/preview").then((m) => m.ProgressBarPreview)),
+  "pulse": dp(() => import("@/lib/animations/pulse/preview").then((m) => m.PulsePreview)),
+  "pulse-ring": dp(() => import("@/lib/animations/pulse-ring/preview").then((m) => m.PulseRingPreview)),
+  "ripple-click": dp(() => import("@/lib/animations/ripple-click/preview").then((m) => m.RippleClickPreview)),
+  "rotate-in": dp(() => import("@/lib/animations/rotate-in/preview").then((m) => m.RotateInPreview)),
+  "scale-in": dp(() => import("@/lib/animations/scale-in/preview").then((m) => m.ScaleInPreview)),
+  "scale-out": dp(() => import("@/lib/animations/scale-out/preview").then((m) => m.ScaleOutPreview)),
+  "scroll-page-turn": dp(() => import("@/lib/animations/scroll-page-turn/preview").then((m) => m.ScrollPageTurnPreview)),
+  "scroll-peel-away": dp(() => import("@/lib/animations/scroll-peel-away/preview").then((m) => m.ScrollPeelAwayPreview)),
+  "scroll-reveal": dp(() => import("@/lib/animations/scroll-reveal/preview").then((m) => m.ScrollRevealPreview)),
+  "shake": dp(() => import("@/lib/animations/shake/preview").then((m) => m.ShakePreview)),
+  "shimmer": dp(() => import("@/lib/animations/shimmer/preview").then((m) => m.ShimmerPreview)),
+  "skeleton-pulse": dp(() => import("@/lib/animations/skeleton-pulse/preview").then((m) => m.SkeletonPulsePreview)),
+  "slide-in-left": dp(() => import("@/lib/animations/slide-in-left/preview").then((m) => m.SlideInLeftPreview)),
+  "slide-in-right": dp(() => import("@/lib/animations/slide-in-right/preview").then((m) => m.SlideInRightPreview)),
+  "slide-out-right": dp(() => import("@/lib/animations/slide-out-right/preview").then((m) => m.SlideOutRightPreview)),
+  "slide-swap": dp(() => import("@/lib/animations/slide-swap/preview").then((m) => m.SlideSwapPreview)),
+  "spinner-dots": dp(() => import("@/lib/animations/spinner-dots/preview").then((m) => m.SpinnerDotsPreview)),
+  "spotlight-card": dp(() => import("@/lib/animations/spotlight-card/preview").then((m) => m.SpotlightCardPreview)),
+  "stagger-children": dp(() => import("@/lib/animations/stagger-children/preview").then((m) => m.StaggerChildrenPreview)),
+  "text-gradient-flow": dp(() => import("@/lib/animations/text-gradient-flow/preview").then((m) => m.TextGradientFlowPreview)),
+  "text-reveal": dp(() => import("@/lib/animations/text-reveal/preview").then((m) => m.TextRevealPreview)),
+  "text-scramble": dp(() => import("@/lib/animations/text-scramble/preview").then((m) => m.TextScramblePreview)),
+  "tilt-3d": dp(() => import("@/lib/animations/tilt-3d/preview").then((m) => m.Tilt3dPreview)),
+  "typewriter": dp(() => import("@/lib/animations/typewriter/preview").then((m) => m.TypewriterPreview)),
+  "underline-draw": dp(() => import("@/lib/animations/underline-draw/preview").then((m) => m.UnderlineDrawPreview)),
+  "zoom-in": dp(() => import("@/lib/animations/zoom-in/preview").then((m) => m.ZoomInPreview)),
 };
 
 interface AnimationPreviewProps {
