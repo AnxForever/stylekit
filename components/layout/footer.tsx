@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useI18n } from "@/lib/i18n/context";
+import { NewsletterSignup } from "@/components/newsletter/newsletter-signup";
 
 const currentYear = new Date().getFullYear();
 
@@ -26,7 +27,7 @@ export function Footer() {
   return (
     <footer className="border-t border-border mt-auto">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-12 py-12 md:py-16">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 md:gap-12">
           <div>
             <p className="masthead text-lg mb-4">StyleKit</p>
             <p className="text-sm text-muted leading-relaxed">
@@ -57,6 +58,18 @@ export function Footer() {
               >
                 {t("nav.guide")}
               </Link>
+              <Link
+                href="/blog"
+                className="text-sm text-foreground hover:text-accent transition-colors"
+              >
+                {t("nav.blog")}
+              </Link>
+              <Link
+                href="/changelog"
+                className="text-sm text-foreground hover:text-accent transition-colors"
+              >
+                {t("nav.changelog")}
+              </Link>
             </nav>
           </div>
 
@@ -83,6 +96,10 @@ export function Footer() {
                 {t("footer.githubRepo")}
               </a>
             </nav>
+          </div>
+
+          <div>
+            <NewsletterSignup variant="inline" />
           </div>
         </div>
 
