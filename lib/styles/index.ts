@@ -110,6 +110,7 @@ import { naturalOrganic } from "./natural-organic";
 import { modernGradient } from "./modern-gradient";
 import { retroVintage } from "./retro-vintage";
 import { darkMode } from "./dark-mode";
+import { macosVibrancy } from "./macos-vibrancy";
 import { geometricBold } from "./geometric-bold";
 // 新增布局风格
 import { masonryFlow } from "./masonry-flow";
@@ -259,6 +260,7 @@ const rawStyles: DesignStyle[] = [
   modernGradient,
   retroVintage,
   darkMode,
+  macosVibrancy,
   geometricBold,
   // 新增布局风格
   masonryFlow,
