@@ -5,7 +5,7 @@ export const metadata: Metadata = {
   description:
     "30+ production-ready page templates for SaaS landing, admin panel, e-commerce, portfolio, blog, dashboard, auth, and more. Preview and export with one click.",
   alternates: {
-    canonical: `${process.env.NEXT_PUBLIC_BASE_URL || "https://www.stylekit.top"}/templates`,
+    canonical: `${process.env.NEXT_PUBLIC_BASE_URL || "https://stylekit.top"}/templates`,
   },
 };
 

@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   description:
     "Mix and match design token dimensions from different styles. Pick colors from one style, typography from another, and create unique hybrid designs.",
   alternates: {
-    canonical: `${process.env.NEXT_PUBLIC_BASE_URL || "https://www.stylekit.top"}/blend`,
+    canonical: `${process.env.NEXT_PUBLIC_BASE_URL || "https://stylekit.top"}/blend`,
   },
 };
 

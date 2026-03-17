@@ -16,7 +16,7 @@ describe("GET /api/auth/linuxdo", () => {
     );
 
     const response = await GET(
-      new Request("https://www.stylekit.top/api/auth/linuxdo?next=dashboard") as never
+      new Request("https://stylekit.top/api/auth/linuxdo?next=dashboard") as never
     );
 
     expect(response.status).toBe(307);
@@ -24,7 +24,7 @@ describe("GET /api/auth/linuxdo", () => {
       "https://connect.linux.do/oauth2/authorize?state=test"
     );
     expect(mockedBuildAuthorizationUrl).toHaveBeenCalledWith(
-      "https://www.stylekit.top/api/auth/linuxdo/callback?next=%2F"
+      "https://stylekit.top/api/auth/linuxdo/callback?next=%2F"
     );
   });
 
@@ -34,10 +34,10 @@ describe("GET /api/auth/linuxdo", () => {
     });
 
     const response = await GET(
-      new Request("https://www.stylekit.top/api/auth/linuxdo?next=%2Fprofile") as never
+      new Request("https://stylekit.top/api/auth/linuxdo?next=%2Fprofile") as never
     );
 
     expect(response.status).toBe(307);
-    expect(response.headers.get("location")).toBe("https://www.stylekit.top/");
+    expect(response.headers.get("location")).toBe("https://stylekit.top/");
   });
 });

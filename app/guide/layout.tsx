@@ -5,7 +5,7 @@ export const metadata: Metadata = {
   description:
     "Learn how to use StyleKit: browse styles, export design tokens, generate AI prompts, and integrate with your development workflow.",
   alternates: {
-    canonical: `${process.env.NEXT_PUBLIC_BASE_URL || "https://www.stylekit.top"}/guide`,
+    canonical: `${process.env.NEXT_PUBLIC_BASE_URL || "https://stylekit.top"}/guide`,
   },
 };
 

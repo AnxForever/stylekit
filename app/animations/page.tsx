@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   description:
     "Browse CSS animation patterns with code snippets ready to copy. Each animation includes CSS keyframes and Tailwind utility classes for modern web projects.",
   alternates: {
-    canonical: `${process.env.NEXT_PUBLIC_BASE_URL || "https://www.stylekit.top"}/animations`,
+    canonical: `${process.env.NEXT_PUBLIC_BASE_URL || "https://stylekit.top"}/animations`,
   },
 };
 

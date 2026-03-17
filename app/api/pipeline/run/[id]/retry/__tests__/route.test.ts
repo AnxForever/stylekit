@@ -44,7 +44,7 @@ describe("POST /api/pipeline/run/[id]/retry", () => {
     const { POST } = await import("@/app/api/pipeline/run/[id]/retry/route");
 
     const response = await POST(
-      new Request("https://www.stylekit.top/api/pipeline/run/pl_1/retry", {
+      new Request("https://stylekit.top/api/pipeline/run/pl_1/retry", {
         method: "POST",
         headers: {
           origin: "https://evil.example",
@@ -80,7 +80,7 @@ describe("POST /api/pipeline/run/[id]/retry", () => {
 
     const { POST } = await import("@/app/api/pipeline/run/[id]/retry/route");
     const response = await POST(
-      new Request("https://www.stylekit.top/api/pipeline/run/pl_1/retry", {
+      new Request("https://stylekit.top/api/pipeline/run/pl_1/retry", {
         method: "POST",
         headers: {
           "content-type": "application/json",
@@ -105,7 +105,7 @@ describe("POST /api/pipeline/run/[id]/retry", () => {
 
     const { POST } = await import("@/app/api/pipeline/run/[id]/retry/route");
     const response = await POST(
-      new Request("https://www.stylekit.top/api/pipeline/run/pl_1/retry", {
+      new Request("https://stylekit.top/api/pipeline/run/pl_1/retry", {
         method: "POST",
         headers: {
           "content-type": "application/json",
@@ -134,7 +134,7 @@ describe("POST /api/pipeline/run/[id]/retry", () => {
 
     const { POST } = await import("@/app/api/pipeline/run/[id]/retry/route");
     const response = await POST(
-      new Request("https://www.stylekit.top/api/pipeline/run/pl_1/retry", {
+      new Request("https://stylekit.top/api/pipeline/run/pl_1/retry", {
         method: "POST",
         headers: {
           "content-type": "application/json",
@@ -157,7 +157,7 @@ describe("POST /api/pipeline/run/[id]/retry", () => {
 
     const { POST } = await import("@/app/api/pipeline/run/[id]/retry/route");
     const response = await POST(
-      new Request("https://www.stylekit.top/api/pipeline/run/pl_1/retry", {
+      new Request("https://stylekit.top/api/pipeline/run/pl_1/retry", {
         method: "POST",
         headers: {
           "content-type": "application/json",
@@ -180,7 +180,7 @@ describe("POST /api/pipeline/run/[id]/retry", () => {
 
     const { POST } = await import("@/app/api/pipeline/run/[id]/retry/route");
     const response = await POST(
-      new Request("https://www.stylekit.top/api/pipeline/run/missing/retry", {
+      new Request("https://stylekit.top/api/pipeline/run/missing/retry", {
         method: "POST",
         headers: {
           "content-type": "application/json",
@@ -205,7 +205,7 @@ describe("POST /api/pipeline/run/[id]/retry", () => {
 
     const { POST } = await import("@/app/api/pipeline/run/[id]/retry/route");
     const response = await POST(
-      new Request("https://www.stylekit.top/api/pipeline/run/pl_1/retry", {
+      new Request("https://stylekit.top/api/pipeline/run/pl_1/retry", {
         method: "POST",
         headers: {
           "content-type": "application/json",
@@ -230,7 +230,7 @@ describe("POST /api/pipeline/run/[id]/retry", () => {
 
     const { POST } = await import("@/app/api/pipeline/run/[id]/retry/route");
     const response = await POST(
-      new Request("https://www.stylekit.top/api/pipeline/run/pl_1/retry", {
+      new Request("https://stylekit.top/api/pipeline/run/pl_1/retry", {
         method: "POST",
         headers: {
           "content-type": "application/json",
@@ -262,7 +262,7 @@ describe("POST /api/pipeline/run/[id]/retry", () => {
 
     const { POST } = await import("@/app/api/pipeline/run/[id]/retry/route");
     const response = await POST(
-      new Request("https://www.stylekit.top/api/pipeline/run/pl_1/retry", {
+      new Request("https://stylekit.top/api/pipeline/run/pl_1/retry", {
         method: "POST",
         headers: {
           "content-type": "application/json",
@@ -290,7 +290,7 @@ describe("POST /api/pipeline/run/[id]/retry", () => {
 
     const { POST } = await import("@/app/api/pipeline/run/[id]/retry/route");
     const response = await POST(
-      new Request("https://www.stylekit.top/api/pipeline/run/pl_1/retry", {
+      new Request("https://stylekit.top/api/pipeline/run/pl_1/retry", {
         method: "POST",
         headers: {
           "content-type": "application/json",

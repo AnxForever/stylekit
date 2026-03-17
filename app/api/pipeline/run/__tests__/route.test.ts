@@ -44,7 +44,7 @@ describe("POST /api/pipeline/run", () => {
     const { POST } = await import("@/app/api/pipeline/run/route");
 
     const response = await POST(
-      new Request("https://www.stylekit.top/api/pipeline/run", {
+      new Request("https://stylekit.top/api/pipeline/run", {
         method: "POST",
         headers: {
           origin: "https://evil.example",
@@ -79,7 +79,7 @@ describe("POST /api/pipeline/run", () => {
 
     const { POST } = await import("@/app/api/pipeline/run/route");
     const response = await POST(
-      new Request("https://www.stylekit.top/api/pipeline/run", {
+      new Request("https://stylekit.top/api/pipeline/run", {
         method: "POST",
         headers: {
           "content-type": "application/json",
@@ -107,7 +107,7 @@ describe("POST /api/pipeline/run", () => {
 
     const { POST } = await import("@/app/api/pipeline/run/route");
     const response = await POST(
-      new Request("https://www.stylekit.top/api/pipeline/run", {
+      new Request("https://stylekit.top/api/pipeline/run", {
         method: "POST",
         headers: {
           "content-type": "application/json",
@@ -137,7 +137,7 @@ describe("POST /api/pipeline/run", () => {
 
     const { POST } = await import("@/app/api/pipeline/run/route");
     const response = await POST(
-      new Request("https://www.stylekit.top/api/pipeline/run", {
+      new Request("https://stylekit.top/api/pipeline/run", {
         method: "POST",
         headers: {
           "content-type": "application/json",
@@ -160,7 +160,7 @@ describe("POST /api/pipeline/run", () => {
 
     const { POST } = await import("@/app/api/pipeline/run/route");
     const response = await POST(
-      new Request("https://www.stylekit.top/api/pipeline/run", {
+      new Request("https://stylekit.top/api/pipeline/run", {
         method: "POST",
         headers: {
           "content-type": "application/json",
@@ -197,7 +197,7 @@ describe("POST /api/pipeline/run", () => {
 
     const { POST } = await import("@/app/api/pipeline/run/route");
     const response = await POST(
-      new Request("https://www.stylekit.top/api/pipeline/run", {
+      new Request("https://stylekit.top/api/pipeline/run", {
         method: "POST",
         headers: {
           "content-type": "application/json",
@@ -228,7 +228,7 @@ describe("POST /api/pipeline/run", () => {
 
     const { POST } = await import("@/app/api/pipeline/run/route");
     const response = await POST(
-      new Request("https://www.stylekit.top/api/pipeline/run", {
+      new Request("https://stylekit.top/api/pipeline/run", {
         method: "POST",
         headers: {
           "content-type": "application/json",

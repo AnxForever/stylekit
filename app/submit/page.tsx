@@ -6,7 +6,7 @@ export const metadata = {
   title: "提交风格",
   description: "提交你发现的优质设计风格，一起丰富 StyleKit 风格集合。",
   alternates: {
-    canonical: `${process.env.NEXT_PUBLIC_BASE_URL || "https://www.stylekit.top"}/submit`,
+    canonical: `${process.env.NEXT_PUBLIC_BASE_URL || "https://stylekit.top"}/submit`,
   },
   robots: {
     index: false,
