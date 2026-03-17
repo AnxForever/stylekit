@@ -27,7 +27,7 @@ describe("applyExtractedDraftToCustomStyle", () => {
     const next = applyExtractedDraftToCustomStyle(
       {
         primaryColor: "#14b8a6",
-        styleType: "animation",
+        styleType: "visual",
         category: "expressive",
       },
       base,

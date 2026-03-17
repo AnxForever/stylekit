@@ -80,7 +80,7 @@ interface BasicInfoStepProps {
 }
 
 const categoryOptions: StyleCategory[] = ["modern", "minimal", "expressive", "retro"];
-const typeOptions: StyleType[] = ["visual", "layout", "animation"];
+const typeOptions: StyleType[] = ["visual", "layout"];
 const tagOptions: StyleTag[] = ["modern", "minimal", "expressive", "retro", "high-contrast", "responsive", "brand-inspired"];
 
 export function BasicInfoStep({

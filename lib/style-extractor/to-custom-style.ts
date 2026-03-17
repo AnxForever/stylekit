@@ -120,7 +120,7 @@ function inferRadius(
   fallback: string
 ): string {
   if (evidence?.hasGlassEffect) return "1rem";
-  if (draft.styleType === "animation" || evidence?.hasAnimation) return "0.75rem";
+  if (evidence?.hasAnimation) return "0.75rem";
   if (draft.category === "minimal") return "0.375rem";
   if (draft.category === "retro") return "0.25rem";
   return fallback;

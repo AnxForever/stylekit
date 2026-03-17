@@ -84,7 +84,7 @@ Accent: #22d3ee
     expect(result.ok).toBe(true);
     expect(result.source).toBe("markdown");
     expect(result.data?.name).toBe("Aurora Motion");
-    expect(result.data?.styleType).toBe("animation");
+    expect(result.data?.styleType).toBe("visual");
     expect(result.data?.primaryColor).toBe("#0f172a");
     expect(result.data?.secondaryColor).toBe("#f8fafc");
     expect(result.data?.accentColors).toEqual(["#22d3ee"]);
