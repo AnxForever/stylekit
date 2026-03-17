@@ -1,5 +1,6 @@
 import fs from "fs";
 import path from "path";
+import matter from "gray-matter";
 
 export interface BlogPost {
   slug: string;
@@ -13,39 +14,6 @@ export interface BlogPost {
 
 const BLOG_DIR = path.join(process.cwd(), "content/blog");
 
-function parseFrontmatter(raw: string): { data: Record<string, unknown>; content: string } {
-  const match = raw.match(/^---\n([\s\S]*?)\n---\n([\s\S]*)$/);
-  if (!match) {
-    return { data: {}, content: raw };
-  }
-
-  const data: Record<string, unknown> = {};
-  for (const line of match[1].split("\n")) {
-    const idx = line.indexOf(":");
-    if (idx === -1) continue;
-    const key = line.slice(0, idx).trim();
-    let value: unknown = line.slice(idx + 1).trim();
-
-    // Strip surrounding quotes
-    if (typeof value === "string" && value.startsWith('"') && value.endsWith('"')) {
-      value = value.slice(1, -1);
-    }
-
-    // Parse arrays like ["a", "b"]
-    if (typeof value === "string" && value.startsWith("[") && value.endsWith("]")) {
-      try {
-        value = JSON.parse(value);
-      } catch {
-        // keep as string
-      }
-    }
-
-    data[key] = value;
-  }
-
-  return { data, content: match[2].trim() };
-}
-
 export function getAllPosts(): BlogPost[] {
   if (!fs.existsSync(BLOG_DIR)) {
     return [];
@@ -56,7 +24,7 @@ export function getAllPosts(): BlogPost[] {
   const posts = files.map((file) => {
     const slug = file.replace(/\.mdx?$/, "");
     const raw = fs.readFileSync(path.join(BLOG_DIR, file), "utf-8");
-    const { data, content } = parseFrontmatter(raw);
+    const { data, content } = matter(raw);
 
     return {
       slug,
