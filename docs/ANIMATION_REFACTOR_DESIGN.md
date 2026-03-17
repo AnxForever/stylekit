@@ -125,25 +125,25 @@ One function, zero manual mapping. Adding a new animation = adding a directory.
 
 ## 7. Migration Plan
 
-### Phase 1: Pilot (2 animations)
-- [ ] Create new directory structure for `scroll-page-turn` and `flip-card`
-- [ ] Write real hooks: `use-scroll-page-turn.ts`, `use-flip-card.ts`
-- [ ] Preview imports the real hook
-- [ ] `_registry.ts` supports both old (flat file) and new (directory) formats
-- [ ] Verify: listing page, detail page, code tabs all work
-- [ ] Verify: build passes, no regressions
+### Phase 1: Pilot (2 animations) -- DONE (commit 766aac4)
+- [x] Create new directory structure for `scroll-page-turn` and `flip-card`
+- [x] Write real hooks: `use-scroll-page-turn.ts`, `use-flip-card.ts`
+- [x] Preview imports the real hook
+- [x] `_registry.ts` supports both old (flat file) and new (directory) formats
+- [x] Verify: listing page, detail page, code tabs all work
+- [x] Verify: build passes, no regressions
 
-### Phase 2: Tooling
-- [ ] Write `tools/scripts/generate-animation-registry.ts`
-- [ ] Write migration script: old flat file → new directory structure
-- [ ] Update `animation-preview.tsx` to convention-based discovery
-- [ ] Add `prebuild` hook to regenerate registry
+### Phase 2: Tooling -- DONE (commit 62f1e7d)
+- [x] Write `tools/scripts/migrate-animations.mjs`
+- [x] Write migration script: old flat file -> new directory structure
+- [x] Update `animation-preview.tsx` to convention-based discovery
+- [x] ~~Add `prebuild` hook to regenerate registry~~ (not needed — webpack requires static imports)
 
-### Phase 3: Batch Migration
-- [ ] Run migration script for remaining 45 animations
-- [ ] Delete old `previewMap` manual mapping
-- [ ] Delete old flat `lib/animations/*.ts` files
-- [ ] Update docs and STYLE_ADDITION_CHECKLIST.md
+### Phase 3: Batch Migration -- DONE (commit 62f1e7d)
+- [x] Run migration script for remaining 46 animations
+- [x] Delete old `previewMap` manual mapping (replaced with unified directory-based map)
+- [x] Delete old flat `lib/animations/*.ts` files (moved to `_legacy/`)
+- [x] Old preview files moved into `{slug}/preview.tsx`
 
 ### Phase 4: CLI Add Command (optional, future)
 - [ ] `npx stylekit add animation scroll-page-turn`
