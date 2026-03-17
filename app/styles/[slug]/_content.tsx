@@ -409,16 +409,6 @@ export function StyleDetailContent({
         </section>
       )}
 
-      {/* Global CSS */}
-      <section className="border-b border-border">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-12 py-12 md:py-16">
-          <CollapsibleSection title={t("styleDetail.globalStyles")}>
-            <h2 className="text-2xl md:text-3xl mb-8">{t("styleDetail.globalCssTitle")}</h2>
-            <CodeBlock code={style.globalCss} language="css" slug={style.slug} />
-          </CollapsibleSection>
-        </div>
-      </section>
-
       {/* Export Tools */}
       <section id="style-exports" className="border-b border-border scroll-mt-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-12 py-12 md:py-16">
