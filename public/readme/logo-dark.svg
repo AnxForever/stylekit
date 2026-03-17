@@ -1,0 +1,13 @@
+<svg width="280" height="56" viewBox="0 0 280 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Icon -->
+  <rect width="56" height="56" rx="8" fill="#1a1a1a"/>
+  <rect x="12" y="10" width="12" height="12" fill="#ff006e" stroke="#333" stroke-width=".5"/>
+  <rect x="24" y="10" width="12" height="12" fill="#ff006e" stroke="#333" stroke-width=".5"/>
+  <rect x="12" y="22" width="12" height="12" fill="#00d4ff" stroke="#333" stroke-width=".5"/>
+  <rect x="24" y="22" width="12" height="12" fill="#00d4ff" stroke="#333" stroke-width=".5"/>
+  <rect x="33" y="22" width="12" height="12" fill="#00d4ff" stroke="#333" stroke-width=".5"/>
+  <rect x="33" y="34" width="12" height="12" fill="#ffbe0b" stroke="#333" stroke-width=".5"/>
+  <rect x="21" y="34" width="12" height="12" fill="#ffbe0b" stroke="#333" stroke-width=".5"/>
+  <!-- Text -->
+  <text x="72" y="38" fill="#fafafa" font-family="'Inter','SF Pro Display','Segoe UI',system-ui,sans-serif" font-size="32" font-weight="700" letter-spacing="-0.02em">StyleKit</text>
+</svg>
