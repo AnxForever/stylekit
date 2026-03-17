@@ -30,6 +30,8 @@ export interface AnimationCodeSnippet {
   code: string;
 }
 
+export type PlaygroundMode = "keyframe" | "js-driven" | "scroll-driven";
+
 export interface Animation {
   slug: string;
   name: string;
@@ -50,6 +52,7 @@ export interface Animation {
   useCases: string[];
   relatedAnimations?: string[];
   recommendedStyles?: string[];
+  playgroundMode?: PlaygroundMode;
 }
 
 export interface AnimationMeta {
@@ -63,4 +66,5 @@ export interface AnimationMeta {
   difficulty: "beginner" | "intermediate" | "advanced";
   duration: string;
   keywords: string[];
+  playgroundMode?: PlaygroundMode;
 }

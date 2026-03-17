@@ -118,6 +118,7 @@ export const animationsMeta: AnimationMeta[] = [
     difficulty: "intermediate",
     duration: "600ms",
     keywords: ["scroll", "reveal", "viewport", "intersection observer", "lazy", "on-scroll"],
+    playgroundMode: "scroll-driven",
   },
   {
     slug: "parallax-float",
@@ -130,6 +131,7 @@ export const animationsMeta: AnimationMeta[] = [
     difficulty: "intermediate",
     duration: "continuous",
     keywords: ["parallax", "float", "depth", "scroll speed", "layers", "3D"],
+    playgroundMode: "scroll-driven",
   },
   {
     slug: "text-gradient-flow",
@@ -202,6 +204,7 @@ export const animationsMeta: AnimationMeta[] = [
     difficulty: "advanced",
     duration: "continuous",
     keywords: ["spotlight", "mouse tracking", "glow", "card effect", "lighting"],
+    playgroundMode: "js-driven",
   },
   {
     slug: "magnetic-hover",
@@ -214,6 +217,7 @@ export const animationsMeta: AnimationMeta[] = [
     difficulty: "intermediate",
     duration: "continuous",
     keywords: ["magnetic", "spring", "button hover", "physics", "attract"],
+    playgroundMode: "js-driven",
   },
   {
     slug: "bounce-in",
@@ -286,6 +290,7 @@ export const animationsMeta: AnimationMeta[] = [
     difficulty: "intermediate",
     duration: "600ms",
     keywords: ["ripple", "click", "material design", "wave", "touch feedback", "button click"],
+    playgroundMode: "js-driven",
   },
   {
     slug: "counter-roll",
@@ -298,6 +303,7 @@ export const animationsMeta: AnimationMeta[] = [
     difficulty: "intermediate",
     duration: "2s",
     keywords: ["counter", "number", "roll", "count up", "statistics", "dashboard"],
+    playgroundMode: "scroll-driven",
   },
   {
     slug: "morph-shape",
@@ -562,6 +568,7 @@ export const animationsMeta: AnimationMeta[] = [
     difficulty: "intermediate",
     duration: "continuous",
     keywords: ["3d tilt", "perspective", "mouse tracking", "card hover", "parallax card"],
+    playgroundMode: "js-driven",
   },
   {
     slug: "confetti-burst",
@@ -574,6 +581,7 @@ export const animationsMeta: AnimationMeta[] = [
     difficulty: "advanced",
     duration: "1.2s",
     keywords: ["confetti", "celebration", "particle", "burst", "success", "reward"],
+    playgroundMode: "js-driven",
   },
   {
     slug: "scroll-page-turn",
@@ -586,6 +594,7 @@ export const animationsMeta: AnimationMeta[] = [
     difficulty: "advanced",
     duration: "continuous",
     keywords: ["page turn", "book flip", "scroll animation", "3D", "perspective", "apple", "sticky scroll", "cinematic"],
+    playgroundMode: "scroll-driven",
   },
   {
     slug: "scroll-peel-away",
@@ -598,6 +607,7 @@ export const animationsMeta: AnimationMeta[] = [
     difficulty: "advanced",
     duration: "continuous",
     keywords: ["peel", "curl", "paper", "sticker", "scroll animation", "3D", "apple", "page transition"],
+    playgroundMode: "scroll-driven",
   },
 ];
 
