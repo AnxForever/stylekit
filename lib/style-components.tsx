@@ -3561,6 +3561,87 @@ export const styleComponents: Record<
       </div>
     ),
   },
+  "shopify-clean": {
+    coverPreview: () => (
+      <div className="w-full h-full bg-[#f7f7f8] flex items-center justify-center p-4">
+        <div className="w-full max-w-[200px] bg-white rounded-xl p-4 shadow-sm border border-gray-200">
+          <div className="h-2 w-16 rounded bg-[#008060] mb-3" />
+          <div className="h-1.5 w-28 rounded bg-gray-300 mb-2" />
+          <div className="h-1.5 w-20 rounded bg-gray-200 mb-3" />
+          <div className="flex gap-2">
+            <div className="h-7 flex-1 rounded-lg bg-[#008060] flex items-center justify-center">
+              <div className="h-1.5 w-10 rounded bg-white/80" />
+            </div>
+            <div className="h-7 flex-1 rounded-lg border border-gray-300 flex items-center justify-center">
+              <div className="h-1.5 w-8 rounded bg-gray-400" />
+            </div>
+          </div>
+        </div>
+      </div>
+    ),
+  },
+  "luxury-retail": {
+    coverPreview: () => (
+      <div className="w-full h-full bg-[#1a1a1a] flex items-center justify-center p-4">
+        <div className="w-full max-w-[200px] border border-[#c9a96e]/30 bg-[#1a1a1a] p-4">
+          <div className="h-px bg-[#c9a96e]/40 mb-3" />
+          <div className="h-2 w-20 rounded bg-[#faf9f6]/80 mb-2 mx-auto" />
+          <div className="h-1.5 w-28 rounded bg-[#faf9f6]/30 mb-3 mx-auto" />
+          <div className="h-7 w-24 mx-auto border border-[#c9a96e]/50 flex items-center justify-center">
+            <div className="h-1.5 w-12 rounded bg-[#c9a96e]/70" />
+          </div>
+          <div className="h-px bg-[#c9a96e]/40 mt-3" />
+        </div>
+      </div>
+    ),
+  },
+  "fresh-market": {
+    coverPreview: () => (
+      <div className="w-full h-full bg-[#fef9f0] flex items-center justify-center p-4">
+        <div className="w-full max-w-[200px] bg-white rounded-2xl p-4 shadow-sm border border-[#2d5016]/10">
+          <div className="flex gap-2 mb-3">
+            <div className="w-8 h-8 rounded-full bg-[#e8722a]/20 flex items-center justify-center">
+              <div className="w-4 h-4 rounded-full bg-[#e8722a]" />
+            </div>
+            <div className="w-8 h-8 rounded-full bg-[#2d5016]/10 flex items-center justify-center">
+              <div className="w-4 h-4 rounded-full bg-[#2d5016]" />
+            </div>
+          </div>
+          <div className="h-2 w-20 rounded bg-[#2d5016] mb-2" />
+          <div className="h-1.5 w-28 rounded bg-[#2d5016]/20 mb-3" />
+          <div className="h-7 rounded-full bg-[#e8722a] flex items-center justify-center">
+            <div className="h-1.5 w-14 rounded bg-white/80" />
+          </div>
+        </div>
+      </div>
+    ),
+  },
+  "data-dense": {
+    coverPreview: () => (
+      <div className="w-full h-full bg-[#f8fafc] flex items-center justify-center p-4">
+        <div className="w-full max-w-[200px] bg-white rounded-lg p-3 shadow-sm border border-gray-200">
+          <div className="flex items-center gap-1.5 mb-2">
+            <div className="w-2 h-2 rounded-full bg-[#3b82f6]" />
+            <div className="h-1.5 w-12 rounded bg-gray-400" />
+            <div className="ml-auto h-1.5 w-6 rounded bg-[#22c55e]" />
+          </div>
+          <div className="space-y-1 mb-2">
+            <div className="flex gap-1">
+              <div className="h-3 flex-1 rounded bg-[#3b82f6]/15 border border-[#3b82f6]/20" />
+              <div className="h-3 flex-1 rounded bg-[#ef4444]/15 border border-[#ef4444]/20" />
+              <div className="h-3 flex-1 rounded bg-[#22c55e]/15 border border-[#22c55e]/20" />
+            </div>
+            <div className="flex gap-1">
+              <div className="h-3 flex-1 rounded bg-gray-100" />
+              <div className="h-3 flex-1 rounded bg-gray-100" />
+              <div className="h-3 flex-1 rounded bg-gray-100" />
+            </div>
+          </div>
+          <div className="h-px bg-gray-200" />
+        </div>
+      </div>
+    ),
+  },
 };
 
 // 渲染指定风格的指定组件

@@ -112,7 +112,7 @@ export const macosVibrancyRecipes = createStyleRecipes("macos-vibrancy", "macOS 
     },
     slots: [
       { id: "title", label: "Title", labelZh: "标题", type: "text", default: "Panel Title", required: false },
-      { id: "content", label: "Content", labelZh: "内容", type: "children", default: "Content on dark surface.", required: true },
+      { id: "children", label: "Content", labelZh: "内容", type: "children", default: "Content on dark surface.", required: true },
     ],
     states: {
       hover: ["hover:border-white/12"],

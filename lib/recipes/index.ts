@@ -134,6 +134,10 @@ import { wabiSabiRecipes } from "./wabi-sabi";
 // New styles - Batch 13
 import { linearStyleRecipes } from "./linear-style";
 import { dopamineDesignRecipes } from "./dopamine-design";
+import { shopifyCleanRecipes } from "./shopify-clean";
+import { luxuryRetailRecipes } from "./luxury-retail";
+import { freshMarketRecipes } from "./fresh-market";
+import { dataDenseRecipes } from "./data-dense";
 
 // Recipe registry
 const recipeRegistry: Record<string, StyleRecipes> = {
@@ -270,6 +274,11 @@ const recipeRegistry: Record<string, StyleRecipes> = {
   // New styles - Batch 13
   "linear-style": linearStyleRecipes,
   "dopamine-design": dopamineDesignRecipes,
+  // New styles - Batch 15 (Scenario Gap Fill)
+  "shopify-clean": shopifyCleanRecipes,
+  "luxury-retail": luxuryRetailRecipes,
+  "fresh-market": freshMarketRecipes,
+  "data-dense": dataDenseRecipes,
 };
 
 /**
