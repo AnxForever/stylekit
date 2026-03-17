@@ -87,8 +87,8 @@ export function StyleDetailContent({
   const localizedDonts = localizedList(locale, style.dontList, style.dontListEn);
   const detailSections = [
     {
-      href: "#style-overview",
-      label: locale === "zh" ? "风格概览" : "Overview",
+      href: "#style-prompts",
+      label: locale === "zh" ? "提示词" : "Prompts",
     },
     {
       href: "#style-components",
@@ -296,72 +296,8 @@ export function StyleDetailContent({
         </div>
       </section>
 
-      {/* Philosophy */}
-      <section id="style-overview" className="border-b border-border scroll-mt-24">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-12 py-12 md:py-16">
-          <CollapsibleSection title={t("styleDetail.philosophy")}>
-            <div className="max-w-3xl">
-              <div className="prose prose-lg">
-                {localizedPhilosophy.split("\n\n").map((paragraph, i) => (
-                  <p key={i} className="text-muted leading-relaxed mb-4 last:mb-0">
-                    {paragraph}
-                  </p>
-                ))}
-              </div>
-            </div>
-          </CollapsibleSection>
-        </div>
-      </section>
-
-      {/* Do's and Don'ts */}
-      <section className="border-b border-border">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-12 py-12 md:py-16">
-          <CollapsibleSection title={locale === "zh" ? "设计准则" : "Design Guidelines"}>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-16">
-              <div>
-                <p className="text-xs tracking-widest uppercase text-muted mb-4">
-                  {t("styleDetail.dos")}
-                </p>
-                <ul className="space-y-3">
-                  {localizedDos.map((item, i) => (
-                    <li key={i} className="flex items-start gap-3">
-                      <span className="w-4 h-4 rounded-full bg-green-600 flex items-center justify-center text-white text-xs mt-0.5">+</span>
-                      <span className="text-sm leading-relaxed">{item}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-              <div>
-                <p className="text-xs tracking-widest uppercase text-muted mb-4">
-                  {t("styleDetail.donts")}
-                </p>
-                <ul className="space-y-3">
-                  {localizedDonts.map((item, i) => (
-                    <li key={i} className="flex items-start gap-3">
-                      <span className="w-4 h-4 rounded-full bg-red-600 flex items-center justify-center text-white text-xs mt-0.5">-</span>
-                      <span className="text-sm leading-relaxed">{item}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-          </CollapsibleSection>
-        </div>
-      </section>
-
-      {/* Component Preview */}
-      <section id="style-components" className="border-b border-border scroll-mt-24">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-12 py-12 md:py-16">
-          <p className="text-xs tracking-widest uppercase text-muted mb-4">
-            {t("styleDetail.componentTemplates")}
-          </p>
-          <h2 className="text-2xl md:text-3xl mb-8">{t("styleDetail.componentPreview")}</h2>
-          <ComponentPreview components={style.components} defaultShowCode={false} />
-        </div>
-      </section>
-
-      {/* Prompt Pair Export */}
-      <section id="style-exports" className="border-b border-border scroll-mt-24">
+      {/* Prompt Pair Export — PRIMARY ACTION */}
+      <section id="style-prompts" className="border-b border-border scroll-mt-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-12 py-12 md:py-16">
           <p className="text-xs tracking-widest uppercase text-muted mb-4">
             {t("promptPair.sectionLabel")}
@@ -379,6 +315,17 @@ export function StyleDetailContent({
             dontList={style.dontList}
             keywords={style.keywords}
           />
+        </div>
+      </section>
+
+      {/* Component Preview */}
+      <section id="style-components" className="border-b border-border scroll-mt-24">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-12 py-12 md:py-16">
+          <p className="text-xs tracking-widest uppercase text-muted mb-4">
+            {t("styleDetail.componentTemplates")}
+          </p>
+          <h2 className="text-2xl md:text-3xl mb-8">{t("styleDetail.componentPreview")}</h2>
+          <ComponentPreview components={style.components} defaultShowCode={false} />
         </div>
       </section>
 
@@ -460,6 +407,71 @@ export function StyleDetailContent({
         </section>
       )}
 
+      {/* Global CSS */}
+      <section className="border-b border-border">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-12 py-12 md:py-16">
+          <CollapsibleSection title={t("styleDetail.globalStyles")}>
+            <h2 className="text-2xl md:text-3xl mb-8">{t("styleDetail.globalCssTitle")}</h2>
+            <CodeBlock code={style.globalCss} language="css" />
+          </CollapsibleSection>
+        </div>
+      </section>
+
+      {/* Export Tools */}
+      <section id="style-exports" className="border-b border-border scroll-mt-24">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-12 py-12 md:py-16">
+          {styleSource === "static" && (
+            <div className="mb-12">
+              <p className="text-xs tracking-widest uppercase text-muted mb-4">
+                {t("ideExport.section")}
+              </p>
+              <h2 className="text-2xl md:text-3xl mb-4">{t("ideExport.title")}</h2>
+              <p className="text-muted mb-8 max-w-2xl">
+                {t("ideExport.description")}
+              </p>
+              <IdeExportButtons slug={style.slug} />
+            </div>
+          )}
+          <div>
+            <p className="text-xs tracking-widest uppercase text-muted mb-4">
+              {t("styleDetail.stylePackLabel")}
+            </p>
+            <h2 className="text-2xl md:text-3xl mb-4">{t("styleDetail.exportStylePack")}</h2>
+            <p className="text-muted mb-8 max-w-2xl">
+              {t("styleDetail.exportStylePackDesc")}
+            </p>
+            <StylePackExport style={style} />
+          </div>
+        </div>
+      </section>
+
+      {/* Community */}
+      <LazySection>
+        <section id="style-feedback" className="border-b border-border scroll-mt-24">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-12 py-12 md:py-16">
+            <p className="text-xs tracking-widest uppercase text-muted mb-4">
+              {t("community.label")}
+            </p>
+            <h2 className="text-2xl md:text-3xl mb-6">{t("styleDetail.ratingsFeedback")}</h2>
+            <div className="mb-8">
+              <StyleRating slug={style.slug} />
+            </div>
+            <StyleComments slug={style.slug} />
+          </div>
+        </section>
+      </LazySection>
+
+      {/* Philosophy — condensed, collapsed */}
+      <section className="border-b border-border">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-12 py-12 md:py-16">
+          <CollapsibleSection title={t("styleDetail.philosophy")}>
+            <p className="text-muted leading-relaxed max-w-3xl">
+              {localizedPhilosophy.split("\n\n")[0]}
+            </p>
+          </CollapsibleSection>
+        </div>
+      </section>
+
       {/* Accessibility Score */}
       {accessibilityScore && (
         <section className="border-b border-border">
@@ -475,56 +487,7 @@ export function StyleDetailContent({
         </section>
       )}
 
-      {/* IDE Config Export */}
-      {styleSource === "static" && (
-        <LazySection>
-          <section className="border-b border-border">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-12 py-12 md:py-16">
-              <p className="text-xs tracking-widest uppercase text-muted mb-4">
-                {t("ideExport.section")}
-              </p>
-              <h2 className="text-2xl md:text-3xl mb-4">{t("ideExport.title")}</h2>
-              <p className="text-muted mb-8 max-w-2xl">
-                {t("ideExport.description")}
-              </p>
-              <IdeExportButtons slug={style.slug} />
-            </div>
-          </section>
-        </LazySection>
-      )}
-
-      {/* Style Pack Export */}
-      <LazySection>
-        <section className="border-b border-border">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-12 py-12 md:py-16">
-            <p className="text-xs tracking-widest uppercase text-muted mb-4">
-              {t("styleDetail.stylePackLabel")}
-            </p>
-            <h2 className="text-2xl md:text-3xl mb-4">{t("styleDetail.exportStylePack")}</h2>
-            <p className="text-muted mb-8 max-w-2xl">
-              {t("styleDetail.exportStylePackDesc")}
-            </p>
-            <StylePackExport style={style} />
-          </div>
-        </section>
-      </LazySection>
-
-      {/* Community */}
-      <LazySection>
-        <section id="style-feedback" className="border-t border-border scroll-mt-24">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-12 py-12 md:py-16">
-            <p className="text-xs tracking-widest uppercase text-muted mb-4">
-              {t("community.label")}
-            </p>
-            <h2 className="text-2xl md:text-3xl mb-6">{t("styleDetail.ratingsFeedback")}</h2>
-            <div className="mb-8">
-              <StyleRating slug={style.slug} />
-            </div>
-            <StyleComments slug={style.slug} />
-          </div>
-        </section>
-      </LazySection>
-
+      {/* SEO Extended */}
       <section id="style-seo" className="border-t border-border">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-12 py-12 md:py-16">
           <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
