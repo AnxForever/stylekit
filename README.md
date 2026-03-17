@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="https://www.stylekit.top">
+  <a href="https://stylekit.top">
     <picture>
       <source media="(prefers-color-scheme: dark)" srcset="public/readme/logo-dark.svg">
       <source media="(prefers-color-scheme: light)" srcset="public/readme/logo-light.svg">
@@ -13,7 +13,7 @@
 </p>
 
 <p align="center">
-  <a href="https://www.stylekit.top"><img src="https://img.shields.io/badge/Live-www.stylekit.top-black?style=flat-square&logo=vercel" alt="Live Site"></a>
+  <a href="https://stylekit.top"><img src="https://img.shields.io/badge/Live-www.stylekit.top-black?style=flat-square&logo=vercel" alt="Live Site"></a>
   <a href="https://github.com/AnxForever/stylekit/stargazers"><img src="https://img.shields.io/github/stars/AnxForever/stylekit?style=flat-square&color=f59e0b" alt="Stars"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-green?style=flat-square" alt="License"></a>
   <a href="https://nextjs.org"><img src="https://img.shields.io/badge/Next.js-16-black?style=flat-square&logo=next.js" alt="Next.js 16"></a>
@@ -23,16 +23,16 @@
 <br>
 
 <p align="center">
-  <a href="https://www.stylekit.top">
+  <a href="https://stylekit.top">
     <img src="public/readme/home-hero.png" alt="StyleKit Preview" width="100%">
   </a>
 </p>
 
 <p align="center">
-  <a href="https://www.stylekit.top/styles"><strong>Showcase</strong></a> &middot;
-  <a href="https://www.stylekit.top/templates"><strong>Templates</strong></a> &middot;
-  <a href="https://www.stylekit.top/animations"><strong>Animations</strong></a> &middot;
-  <a href="https://www.stylekit.top/developers/api"><strong>API Docs</strong></a> &middot;
+  <a href="https://stylekit.top/styles"><strong>Showcase</strong></a> &middot;
+  <a href="https://stylekit.top/templates"><strong>Templates</strong></a> &middot;
+  <a href="https://stylekit.top/animations"><strong>Animations</strong></a> &middot;
+  <a href="https://stylekit.top/developers/api"><strong>API Docs</strong></a> &middot;
   <a href="#contributing"><strong>Contributing</strong></a>
 </p>
 
@@ -63,7 +63,7 @@ StyleKit helps humans and AI generate consistent, high-quality UI code. Pick a s
 - **Prompt builder** — Surface + Context + Constraints methodology
 - **IDE export** — `.cursorrules`, `claude-rules`, `windsurf-rules`
 - **Style linter** — validate code against any style spec
-- **llms.txt** — AI-discoverable docs at [`/llms.txt`](https://www.stylekit.top/llms.txt)
+- **llms.txt** — AI-discoverable docs at [`/llms.txt`](https://stylekit.top/llms.txt)
 
 </td>
 </tr>
@@ -166,7 +166,7 @@ Warm, organic, and calming. Earthy palettes, soft textures, and generous whitesp
 </details>
 
 <p align="center">
-  <a href="https://www.stylekit.top/styles"><strong>Browse all styles &rarr;</strong></a>
+  <a href="https://stylekit.top/styles"><strong>Browse all styles &rarr;</strong></a>
 </p>
 
 ## Quick Start
@@ -195,7 +195,7 @@ POST /api/match-style                 # Match code to closest style
 ```
 
 <p align="right">
-  <a href="https://www.stylekit.top/developers/api">Full API docs &rarr;</a>
+  <a href="https://stylekit.top/developers/api">Full API docs &rarr;</a>
 </p>
 
 ## Tech Stack
@@ -247,7 +247,7 @@ MIT — see [LICENSE](LICENSE).
 ---
 
 <p align="center">
-  <a href="https://www.stylekit.top"><strong>www.stylekit.top</strong></a>
+  <a href="https://stylekit.top"><strong>www.stylekit.top</strong></a>
   <br>
   Built by <a href="https://github.com/AnxForever">AnxForever</a>
 </p>

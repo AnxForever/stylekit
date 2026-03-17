@@ -17,7 +17,7 @@ describe("GET /api/pipeline/run/[id]/download", () => {
 
     const { GET } = await import("@/app/api/pipeline/run/[id]/download/route");
     const response = await GET(
-      new Request("https://www.stylekit.top/api/pipeline/run/pl_1/download"),
+      new Request("https://stylekit.top/api/pipeline/run/pl_1/download"),
       { params: Promise.resolve({ id: "pl_1" }) },
     );
 
@@ -35,7 +35,7 @@ describe("GET /api/pipeline/run/[id]/download", () => {
 
     const { GET } = await import("@/app/api/pipeline/run/[id]/download/route");
     const response = await GET(
-      new Request("https://www.stylekit.top/api/pipeline/run/pl_1/download"),
+      new Request("https://stylekit.top/api/pipeline/run/pl_1/download"),
       { params: Promise.resolve({ id: "pl_1" }) },
     );
 
@@ -68,7 +68,7 @@ describe("GET /api/pipeline/run/[id]/download", () => {
 
     const { GET } = await import("@/app/api/pipeline/run/[id]/download/route");
     const response = await GET(
-      new Request("https://www.stylekit.top/api/pipeline/run/pl_1/download"),
+      new Request("https://stylekit.top/api/pipeline/run/pl_1/download"),
       { params: Promise.resolve({ id: "pl_1" }) },
     );
 
@@ -89,7 +89,7 @@ describe("GET /api/pipeline/run/[id]/download", () => {
 
     const { GET } = await import("@/app/api/pipeline/run/[id]/download/route");
     const response = await GET(
-      new Request("https://www.stylekit.top/api/pipeline/run/pl_1/download"),
+      new Request("https://stylekit.top/api/pipeline/run/pl_1/download"),
       { params: Promise.reject(new Error("boom")) },
     );
 

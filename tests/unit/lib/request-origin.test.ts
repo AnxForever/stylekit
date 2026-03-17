@@ -20,15 +20,15 @@ afterEach(() => {
 
 describe("verifyTrustedOrigin", () => {
   it("allows safe methods", () => {
-    const request = new Request("https://www.stylekit.top/api/styles");
+    const request = new Request("https://stylekit.top/api/styles");
     expect(verifyTrustedOrigin(request)).toEqual({ ok: true });
   });
 
   it("allows same-origin POST requests", () => {
-    const request = new Request("https://www.stylekit.top/api/submit", {
+    const request = new Request("https://stylekit.top/api/submit", {
       method: "POST",
       headers: {
-        origin: "https://www.stylekit.top",
+        origin: "https://stylekit.top",
       },
     });
 
@@ -36,7 +36,7 @@ describe("verifyTrustedOrigin", () => {
   });
 
   it("rejects cross-origin POST requests", () => {
-    const request = new Request("https://www.stylekit.top/api/submit", {
+    const request = new Request("https://stylekit.top/api/submit", {
       method: "POST",
       headers: {
         origin: "https://evil.example",
@@ -52,7 +52,7 @@ describe("verifyTrustedOrigin", () => {
 
   it("allows configured trusted origins", () => {
     process.env.CSRF_TRUSTED_ORIGINS = "https://admin.stylekit.top";
-    const request = new Request("https://www.stylekit.top/api/submit", {
+    const request = new Request("https://stylekit.top/api/submit", {
       method: "POST",
       headers: {
         origin: "https://admin.stylekit.top",
@@ -63,7 +63,7 @@ describe("verifyTrustedOrigin", () => {
   });
 
   it("rejects invalid origin header values", () => {
-    const request = new Request("https://www.stylekit.top/api/submit", {
+    const request = new Request("https://stylekit.top/api/submit", {
       method: "POST",
       headers: {
         origin: "not-a-valid-origin",

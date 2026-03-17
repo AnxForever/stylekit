@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import dynamic from "next/dynamic";
 import { resolveStyleBySlug } from "@/lib/styles/community-runtime";
 
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://www.stylekit.top";
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://stylekit.top";
 
 export async function generateMetadata({
   params,

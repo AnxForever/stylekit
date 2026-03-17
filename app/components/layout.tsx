@@ -5,7 +5,7 @@ export const metadata: Metadata = {
   description:
     "Browse 25+ accessible UI components built on Radix UI with Tailwind CSS. Preview buttons, cards, inputs, and more across multiple design styles.",
   alternates: {
-    canonical: `${process.env.NEXT_PUBLIC_BASE_URL || "https://www.stylekit.top"}/components`,
+    canonical: `${process.env.NEXT_PUBLIC_BASE_URL || "https://stylekit.top"}/components`,
   },
 };
 

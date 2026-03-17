@@ -16,7 +16,7 @@ export const metadata: Metadata = {
     "Tailwind UI prompts",
   ],
   alternates: {
-    canonical: process.env.NEXT_PUBLIC_BASE_URL || "https://www.stylekit.top",
+    canonical: process.env.NEXT_PUBLIC_BASE_URL || "https://stylekit.top",
   },
 };
 
