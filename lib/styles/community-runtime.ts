@@ -23,7 +23,7 @@ import {
 
 const SLUG_RE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
-const STYLE_TYPES: ReadonlySet<StyleType> = new Set(["visual", "layout", "animation"]);
+const STYLE_TYPES: ReadonlySet<StyleType> = new Set(["visual", "layout"]);
 const STYLE_CATEGORIES: ReadonlySet<StyleCategory> = new Set([
   "modern",
   "retro",

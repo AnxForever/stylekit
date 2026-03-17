@@ -31,7 +31,7 @@ No commentary, no extra files, no markdown outside the JSON block.
     "slug": "<kebab-case, ^[a-z0-9]+(?:-[a-z0-9]+)*$>",
     "description": "<1-2 sentence description>",
     "category": "modern" | "retro" | "minimal" | "expressive",
-    "styleType": "visual" | "layout" | "animation",
+    "styleType": "visual" | "layout",
     "tags": ["modern", "minimal", "expressive", "retro", "high-contrast", "responsive", "brand-inspired"],
     "primaryColor": "#hex",
     "secondaryColor": "#hex",

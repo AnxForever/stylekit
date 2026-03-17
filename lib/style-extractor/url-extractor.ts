@@ -876,15 +876,11 @@ function inferStyleType(
   text: string,
   hasAnimation: boolean,
   hasGridLayout: boolean
-): "visual" | "layout" | "animation" {
-  const animationScore =
-    Number(hasAnimation) * 3 +
-    scoreKeywords(text, ["animation", "motion", "transition", "micro-interaction", "keyframes"]);
+): "visual" | "layout" {
   const layoutScore =
     Number(hasGridLayout) * 3 +
     scoreKeywords(text, ["layout", "grid", "sidebar", "dashboard", "hero", "section"]);
 
-  if (animationScore >= 4 && animationScore >= layoutScore) return "animation";
   if (layoutScore >= 4) return "layout";
   return "visual";
 }
@@ -911,7 +907,7 @@ function inferCategory(
 function inferTags(
   text: string,
   category: "modern" | "minimal" | "expressive" | "retro",
-  styleType: "visual" | "layout" | "animation"
+  styleType: "visual" | "layout"
 ): Array<
   | "modern"
   | "minimal"
@@ -934,7 +930,7 @@ function inferTags(
   if (/contrast|high-contrast|bold color/i.test(text)) tags.push("high-contrast");
   if (/responsive|mobile|adaptive/i.test(text)) tags.push("responsive");
   if (/brand|identity|marketing/i.test(text)) tags.push("brand-inspired");
-  if (styleType === "animation") tags.push("expressive");
+  if (styleType === "layout") tags.push("responsive");
 
   return dedupe(tags);
 }

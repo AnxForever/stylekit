@@ -20,7 +20,7 @@ export const wizardFormSchema = z.object({
     .regex(SLUG_RE, "Slug must be lowercase letters, numbers, and hyphens"),
   description: z.string(),
   category: z.enum(["modern", "retro", "minimal", "expressive"]),
-  styleType: z.enum(["visual", "layout", "animation"]),
+  styleType: z.enum(["visual", "layout"]),
   tags: z.array(
     z.enum([
       "modern",

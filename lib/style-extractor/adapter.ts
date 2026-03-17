@@ -719,7 +719,6 @@ function normalizeStyleType(value: string | undefined): StyleType | undefined {
   if (!value) return undefined;
   const normalized = value.toLowerCase();
   if (normalized.includes("layout")) return "layout";
-  if (normalized.includes("animation") || normalized.includes("motion")) return "animation";
   if (normalized.includes("visual")) return "visual";
   return undefined;
 }
@@ -784,7 +783,7 @@ function inferStyleType(text: string): StyleType {
     "栅格",
   ]);
 
-  if (animationScore >= 2 && animationScore >= layoutScore) return "animation";
+  if (animationScore >= 2 && animationScore >= layoutScore) return "visual";
   if (layoutScore >= 2) return "layout";
   return "visual";
 }
@@ -816,9 +815,6 @@ function inferTags(text: string, category: StyleCategory, styleType: StyleType):
   }
   if (normalized.includes("brand") || normalized.includes("品牌")) {
     tags.push("brand-inspired");
-  }
-  if (styleType === "animation") {
-    tags.push("expressive");
   }
 
   return dedupe(tags);

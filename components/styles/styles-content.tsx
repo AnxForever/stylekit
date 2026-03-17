@@ -5,7 +5,7 @@ import { useRouter, usePathname } from "next/navigation";
 import { useI18n } from "@/lib/i18n/context";
 import { useFavorites } from "@/lib/favorites/context";
 import { StyleCard } from "@/components/home/style-card";
-import { Heart, Layers, Paintbrush, Loader2, ChevronDown, Search, X, Play } from "lucide-react";
+import { Heart, Layers, Paintbrush, Loader2, ChevronDown, Search, X } from "lucide-react";
 import type { StyleMeta, StyleType, StyleTag } from "@/lib/styles/meta";
 import {
   getScenarioLabel,
@@ -179,7 +179,6 @@ export function StylesContent({
       { key: "all", label: t("styles.typeAll") },
       { key: "visual", label: t("styles.typeVisual"), icon: <Paintbrush className="w-3.5 h-3.5" /> },
       { key: "layout", label: t("styles.typeLayout"), icon: <Layers className="w-3.5 h-3.5" /> },
-      { key: "animation", label: t("styles.typeAnimation"), icon: <Play className="w-3.5 h-3.5" /> },
     ],
     [t]
   );
