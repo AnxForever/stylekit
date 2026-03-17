@@ -112,3 +112,7 @@ ai_studio_code*.txt
 # Skill packs
 *.skill
 !dist-skills/*.skill
+
+# dist-skills local artifacts (symlinks, data, scripts)
+dist-skills/*
+!dist-skills/*.skill
