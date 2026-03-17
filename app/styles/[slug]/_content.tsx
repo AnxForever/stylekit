@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { ScrollBackButton } from "@/components/scroll-back-button";
@@ -20,7 +20,7 @@ import { StyleComments } from "@/components/styles/style-comments";
 import { StyleSEOSection } from "@/components/style-preview/style-seo-section";
 import { useI18n } from "@/lib/i18n/context";
 import { localizedString, localizedList } from "@/lib/styles/locale-content";
-import { sanitizePreviewHtml } from "@/lib/security/sanitize-html";
+
 import type { DesignStyle } from "@/lib/styles";
 import type { AccessibilityScore } from "@/lib/accessibility";
 import type { StyleVersion } from "@/lib/versioning";
@@ -37,23 +37,6 @@ interface Props {
   changelog?: StyleVersion[];
 }
 
-const BLOCK_ELEMENTS =
-  "div|span|p|h[1-6]|section|article|nav|aside|header|footer|main|ul|ol|li|button|label|blockquote|pre|code|form|fieldset|figure|figcaption|details|summary|a|strong|em|time|address";
-
-function generatePreviewHTML(code: string): string {
-  return code
-    .replace(/className=/g, "class=")
-    .replace(/\{`([^`]*)`\}/g, "$1")
-    .replace(/\{\/\*[\s\S]*?\*\/\}/g, "")
-    .replace(
-      new RegExp(
-        `<(${BLOCK_ELEMENTS})((?:[^>]|"[^"]*"|'[^']*')*?)\\s*\\/>`,
-        "g"
-      ),
-      "<$1$2></$1>"
-    )
-    .trim();
-}
 
 export function StyleDetailContent({
   style,
@@ -67,6 +50,19 @@ export function StyleDetailContent({
 }: Props) {
   const { t, locale } = useI18n();
   const [isSeoExpanded, setIsSeoExpanded] = useState(false);
+  const showcaseContainerRef = useRef<HTMLDivElement>(null);
+  const [showcaseScale, setShowcaseScale] = useState(0);
+
+  const updateShowcaseScale = useCallback(() => {
+    const el = showcaseContainerRef.current;
+    if (el) setShowcaseScale(el.offsetWidth / 1280);
+  }, []);
+
+  useEffect(() => {
+    updateShowcaseScale();
+    window.addEventListener("resize", updateShowcaseScale);
+    return () => window.removeEventListener("resize", updateShowcaseScale);
+  }, [updateShowcaseScale]);
   const localizedDescription = localizedString(
     locale,
     style.description,
@@ -79,21 +75,6 @@ export function StyleDetailContent({
   );
   const localizedDos = localizedList(locale, style.doList, style.doListEn);
   const localizedDonts = localizedList(locale, style.dontList, style.dontListEn);
-  const showcasePreviewEntry = [
-    style.components.hero,
-    style.components.nav,
-    style.components.card,
-    style.components.button,
-    style.components.input,
-    style.components.footer,
-    ...Object.values(style.components),
-  ].find((component) => component?.code);
-  const showcasePreviewHtml = showcasePreviewEntry
-    ? sanitizePreviewHtml(
-        showcasePreviewEntry.preview ||
-          generatePreviewHTML(showcasePreviewEntry.code)
-      )
-    : "";
   const detailSections = [
     {
       href: "#style-overview",
@@ -237,40 +218,28 @@ export function StyleDetailContent({
                   href={`/styles/${style.slug}/showcase`}
                   className="group block border border-border overflow-hidden hover:border-foreground transition-colors"
                 >
-                  <div className="aspect-[16/10] bg-zinc-100 dark:bg-zinc-900 overflow-hidden">
-                    {showcasePreviewHtml ? (
-                      <div className="w-full h-full bg-white dark:bg-zinc-900 overflow-hidden">
-                        <div className="relative isolate w-full h-full transform-gpu origin-top-left scale-[0.78] sm:scale-[0.84]">
-                          <div
-                            dangerouslySetInnerHTML={{
-                              __html: showcasePreviewHtml,
-                            }}
-                          />
-                        </div>
-                      </div>
-                    ) : (
-                      <StyleCoverPreview styleSlug={style.slug} />
+                  <div
+                    ref={showcaseContainerRef}
+                    className="aspect-[16/10] bg-zinc-100 dark:bg-zinc-900 overflow-hidden relative"
+                  >
+                    {showcaseScale > 0 && (
+                      <iframe
+                        src={`/styles/${style.slug}/showcase`}
+                        title={`${style.nameEn} Showcase Preview`}
+                        className="absolute top-0 left-0 w-[1280px] h-[800px] origin-top-left border-0 pointer-events-none select-none"
+                        style={{ transform: `scale(${showcaseScale})` }}
+                        tabIndex={-1}
+                        loading="lazy"
+                        aria-hidden="true"
+                      />
                     )}
                   </div>
                   <div className="flex items-center justify-between gap-4 p-4 border-t border-border">
                     <div>
                       <p className="text-sm">
                         {locale === "zh"
-                          ? showcasePreviewEntry
-                            ? "这里展示的是风格里的真实组件片段，完整体验请进入 showcase 页面。"
-                            : "该风格暂无可裁切的真实片段，先通过封面入口进入 showcase 页面。"
-                          : showcasePreviewEntry
-                            ? "This uses a real component fragment from the style. Open the showcase for the full experience."
-                            : "No reusable showcase fragment is available here yet, so this falls back to the style cover."}
-                      </p>
-                      <p className="text-xs text-muted mt-1">
-                        {locale === "zh"
-                          ? showcasePreviewEntry
-                            ? `当前片段：${showcasePreviewEntry.name}`
-                            : "点击后查看完整示例页面。"
-                          : showcasePreviewEntry
-                            ? `Current fragment: ${showcasePreviewEntry.name}`
-                            : "Open the full showcase page to evaluate the style."}
+                          ? "Showcase 页面的实时预览，点击查看完整体验。"
+                          : "Live preview of the showcase page. Click to explore the full experience."}
                       </p>
                     </div>
                     <span className="shrink-0 inline-flex items-center gap-1 text-xs tracking-wide text-muted group-hover:text-foreground transition-colors">
