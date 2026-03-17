@@ -243,6 +243,10 @@ import { paperCraft } from "./paper-craft";
 import { blueprint } from "./blueprint";
 import { dopamineDesign } from "./dopamine-design";
 import { linearStyle } from "./linear-style";
+import { shopifyClean } from "./shopify-clean";
+import { luxuryRetail } from "./luxury-retail";
+import { freshMarket } from "./fresh-market";
+import { dataDense } from "./data-dense";
 import { normalizeStyleRules } from "./rule-normalizer";
 
 // 风格列表
@@ -394,6 +398,11 @@ const rawStyles: DesignStyle[] = [
   // New styles - Batch 14
   dopamineDesign,
   linearStyle,
+  // New styles - Batch 15 (Scenario Gap Fill)
+  shopifyClean,
+  luxuryRetail,
+  freshMarket,
+  dataDense,
 ];
 
 export const styles: DesignStyle[] = rawStyles.map((style) => normalizeStyleRules(style));
