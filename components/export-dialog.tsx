@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import type { DesignStyle } from "@/lib/styles";
 import { exportStyleTokens, downloadTokens, ExportFormat } from "@/lib/export/figma-tokens";
 
@@ -32,6 +33,13 @@ export function ExportDialog({ style, isOpen, onClose }: ExportDialogProps) {
   const [selectedFormat, setSelectedFormat] = useState<ExportFormat>("figma-tokens");
   const [copied, setCopied] = useState(false);
 
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = "hidden";
+      return () => { document.body.style.overflow = ""; };
+    }
+  }, [isOpen]);
+
   if (!isOpen) return null;
 
   const preview = exportStyleTokens(style, selectedFormat);
@@ -46,7 +54,7 @@ export function ExportDialog({ style, isOpen, onClose }: ExportDialogProps) {
     downloadTokens(style, selectedFormat);
   };
 
-  return (
+  return createPortal(
     <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4">
       {/* Backdrop */}
       <div
@@ -129,6 +137,7 @@ export function ExportDialog({ style, isOpen, onClose }: ExportDialogProps) {
           </p>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
