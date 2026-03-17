@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { trackEvent } from "@/lib/analytics/events";
 
 const REPO = "AnxForever/stylekit";
 const CACHE_KEY = "gh_star_count";
@@ -98,6 +99,7 @@ export function GitHubStarButton({
         href={href}
         target="_blank"
         rel="noopener noreferrer"
+        onClick={() => trackEvent("github_click", { location: "header" })}
         className={`group inline-flex items-center gap-1.5 px-2.5 py-1.5 text-sm text-muted hover:text-foreground transition-colors ${className}`}
         aria-label={`Star ${REPO} on GitHub${count !== null ? ` (${count} stars)` : ""}`}
       >
@@ -114,6 +116,7 @@ export function GitHubStarButton({
       href={href}
       target="_blank"
       rel="noopener noreferrer"
+      onClick={() => trackEvent("github_click", { location: "hero" })}
       className={`inline-flex w-full sm:w-auto items-center justify-center gap-2 px-6 py-3 border border-border text-sm tracking-wide hover:border-foreground hover:bg-foreground/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background transition-colors ${className}`}
       aria-label={`Star ${REPO} on GitHub${count !== null ? ` (${count} stars)` : ""}`}
     >
