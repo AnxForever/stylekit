@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState, useEffect } from "react";
+import Link from "next/link";
 
 // ─── Hooks ────────────────────────────────────────────────────────────────────
 
@@ -162,7 +163,17 @@ export default function ShopifyCleanShowcaseContent() {
           <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8">
             <div className="flex items-center justify-between h-16">
               <div className="flex items-center gap-8">
-                <span className="text-xl font-semibold tracking-tight text-[#1a1a1a]">STORE</span>
+                <div className="flex items-center gap-3">
+                  <Link
+                    href="/styles/shopify-clean"
+                    className="text-sm text-[#6b7280] hover:text-[#008060] transition-colors flex items-center gap-1.5"
+                  >
+                    <span>&larr;</span>
+                    Back to Docs
+                  </Link>
+                  <div className="w-px h-4 bg-[#e3e3e3]" />
+                  <span className="text-xl font-semibold tracking-tight text-[#1a1a1a]">STORE</span>
+                </div>
                 <div className="hidden md:flex items-center gap-6 text-sm text-[#6b7280]">
                   <span className="hover:text-[#1a1a1a] transition-colors cursor-pointer">Shop</span>
                   <span className="hover:text-[#1a1a1a] transition-colors cursor-pointer">Collections</span>

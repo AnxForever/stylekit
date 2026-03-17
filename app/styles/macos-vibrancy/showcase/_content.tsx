@@ -82,8 +82,11 @@ export default function ShowcaseContent() {
             </div>
             <span className="text-sm font-medium text-white/60 ml-2" style={{ fontFamily: "Georgia, serif" }}>macOS Vibrancy</span>
           </div>
-          <Link href="/" className="text-xs text-white/40 hover:text-white/70 transition-colors duration-200">
-            StyleKit
+          <Link href="/styles/macos-vibrancy" className="group flex items-center gap-1.5 text-xs text-white/40 hover:text-white/70 transition-colors duration-200">
+            <svg className="w-3.5 h-3.5 transition-transform duration-200 group-hover:-translate-x-0.5" viewBox="0 0 16 16" fill="none">
+              <path d="M10 3L5 8L10 13" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+            Back to Docs
           </Link>
         </div>
       </header>

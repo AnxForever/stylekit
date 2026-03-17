@@ -337,13 +337,13 @@ export default function ShowcaseContent() {
             ))}
           </div>
 
-          {/* Right: StyleKit link */}
+          {/* Right: Back to Docs link */}
           <Link
-            href="/"
-            className="px-5 py-2 text-xs font-serif uppercase tracking-widest text-[#f0e6d0] bg-[#8b1a1a] border-2 border-[#c9a74e] hover:bg-[#8b1a1a]/90 transition-all duration-300"
+            href="/styles/medieval-manuscript"
+            className="group px-5 py-2 text-xs font-serif uppercase tracking-widest text-[#f0e6d0] bg-[#8b1a1a] border-2 border-[#c9a74e] hover:bg-[#8b1a1a]/90 transition-all duration-300"
             style={{ boxShadow: "2px 2px 0 rgba(61,43,31,0.4)" }}
           >
-            StyleKit &rarr;
+            <span className="inline-block transition-transform duration-300 group-hover:-translate-x-0.5">&#8592;</span> Back to Docs
           </Link>
         </div>
         {/* Gold double-rule border accent */}

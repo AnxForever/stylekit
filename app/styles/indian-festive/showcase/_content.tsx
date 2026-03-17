@@ -349,6 +349,15 @@ export default function IndianFestiveShowcase() {
       {/* ─── 1. NAVIGATION ─── */}
       <nav className="sticky top-0 z-50 bg-[#fff8e7] border-b-2 border-[#d4af37]/30 px-6 py-4 shadow-[0_2px_16px_rgba(212,175,55,0.12)]">
         <div className="max-w-6xl mx-auto flex items-center justify-between">
+          {/* Back + Brand */}
+          <div className="flex items-center gap-4">
+          <Link
+            href="/styles/indian-festive"
+            className="group flex items-center gap-1.5 text-sm font-bold text-[#7b2d8e]/50 hover:text-[#e63946] transition-colors duration-300"
+          >
+            <span className="group-hover:-translate-x-0.5 transition-transform duration-300 inline-block">&larr;</span>
+            <span>Back to Docs</span>
+          </Link>
           {/* Brand */}
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 rounded-full border-2 border-[#d4af37] flex items-center justify-center shadow-[0_0_10px_rgba(212,175,55,0.4)]">
@@ -357,6 +366,7 @@ export default function IndianFestiveShowcase() {
             <span className="text-xl font-bold bg-gradient-to-r from-[#e63946] to-[#ff9f1c] bg-clip-text text-transparent">
               Indian Festive
             </span>
+          </div>
           </div>
 
           {/* Nav links */}

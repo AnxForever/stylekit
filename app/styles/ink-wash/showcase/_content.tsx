@@ -281,13 +281,25 @@ export default function InkWashShowcase() {
         className="px-8 py-5 sticky top-0 z-50"
       >
         <div className="max-w-6xl mx-auto flex items-center justify-between">
-          <Link
-            href="/"
-            className="font-serif font-light tracking-widest text-lg"
-            style={{ color: "#2c2c2c" }}
-          >
-            水墨 / Ink Wash
-          </Link>
+          <div className="flex items-center gap-6">
+            <Link
+              href="/styles/ink-wash"
+              className="group flex items-center gap-2 font-serif font-light text-sm tracking-wider"
+              style={{ color: "#6b7b6e", transition: "color 0.7s ease-in-out" }}
+              onMouseEnter={(e) => (e.currentTarget.style.color = "#2c2c2c")}
+              onMouseLeave={(e) => (e.currentTarget.style.color = "#6b7b6e")}
+            >
+              <span style={{ transition: "transform 0.3s ease" }} className="inline-block group-hover:-translate-x-0.5">&#8592;</span>
+              Back to Docs
+            </Link>
+            <Link
+              href="/"
+              className="font-serif font-light tracking-widest text-lg"
+              style={{ color: "#2c2c2c" }}
+            >
+              水墨 / Ink Wash
+            </Link>
+          </div>
           <div className="flex items-center gap-10">
             <a
               href="#shades"

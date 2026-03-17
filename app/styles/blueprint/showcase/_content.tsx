@@ -556,7 +556,7 @@ export default function ShowcaseContent() {
 
             {/* Back link */}
             <Link
-              href="/"
+              href="/styles/blueprint"
               className="flex items-center gap-2 text-[#a0c4e8] hover:text-white transition-colors duration-200 group"
             >
               <svg
@@ -572,10 +572,7 @@ export default function ShowcaseContent() {
               >
                 <path d="M10 12L6 8l4-4" />
               </svg>
-              <span className="text-xs font-mono uppercase tracking-widest">StyleKit</span>
-              <svg width="10" height="10" viewBox="0 0 10 10" fill="none" className="opacity-50">
-                <path d="M2 8L8 2M8 2H3M8 2V7" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
+              <span className="text-xs font-mono uppercase tracking-widest">Back to Docs</span>
             </Link>
 
             {/* Brand */}

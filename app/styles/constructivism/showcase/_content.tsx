@@ -175,36 +175,30 @@ export default function ShowcaseContent() {
         }}
       >
         <div className="max-w-7xl mx-auto px-5 md:px-10 flex items-center justify-between h-14">
-          {/* Logo */}
-          <div className="flex items-center gap-3">
+          {/* Back link */}
+          <Link
+            href="/styles/constructivism"
+            className="flex items-center gap-3 group"
+            style={{ textDecoration: "none" }}
+          >
             <div
-              className="w-8 h-8 flex items-center justify-center"
+              className="w-8 h-8 flex items-center justify-center group-hover:translate-x-[-2px] transition-transform duration-75 ease-linear"
               style={{ backgroundColor: RED }}
             >
               <span
-                className="font-black text-xs uppercase"
-                style={{ color: PAPER, letterSpacing: "0.1em" }}
+                className="font-black text-sm"
+                style={{ color: PAPER }}
               >
-                C
+                &#8592;
               </span>
             </div>
             <span
-              className="font-black uppercase tracking-[0.25em] text-sm"
+              className="font-black uppercase tracking-[0.25em] text-xs"
               style={{ color: PAPER }}
             >
-              Constructivism
+              BACK TO DOCS
             </span>
-            <div
-              className="hidden md:block w-px h-5"
-              style={{ backgroundColor: RED }}
-            />
-            <span
-              className="hidden md:block text-xs uppercase tracking-[0.2em]"
-              style={{ color: GOLD }}
-            >
-              StyleKit
-            </span>
-          </div>
+          </Link>
 
           {/* Center nav */}
           <nav className="hidden md:flex items-center gap-1">

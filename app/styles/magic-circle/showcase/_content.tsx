@@ -320,13 +320,13 @@ export default function ShowcaseContent() {
       <nav className="relative z-20 border-b border-[#fbbf24]/20 bg-[#0a0920]/80 backdrop-blur-sm sticky top-0">
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
           <Link
-            href="/styles"
-            className="flex items-center gap-2 text-[#e2e8f0]/60 hover:text-[#e2e8f0] transition-colors text-sm font-mono tracking-wide"
+            href="/styles/magic-circle"
+            className="group flex items-center gap-2 text-[#e2e8f0]/60 hover:text-[#fbbf24] transition-colors text-sm font-mono tracking-wide"
           >
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
               <path d="M10 3L5 8L10 13" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
-            STYLEKIT
+            Back to Docs
           </Link>
 
           <span

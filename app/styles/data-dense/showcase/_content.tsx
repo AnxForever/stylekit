@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState, useEffect } from "react";
+import Link from "next/link";
 
 // ─── Hooks ────────────────────────────────────────────────────────────────────
 
@@ -207,6 +208,16 @@ export default function DataDenseShowcaseContent() {
       {/* ─── Section 1: Top Bar ─────────────────────────────────────────── */}
       <header className="flex items-center justify-between px-3 py-2 bg-white border-b border-[#e2e8f0]">
         <div className="flex items-center gap-2">
+          <Link
+            href="/styles/data-dense"
+            className="flex items-center gap-1 text-[10px] font-medium text-[#64748b] hover:text-[#3b82f6] transition-colors"
+          >
+            <svg className="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M15 19l-7-7 7-7" />
+            </svg>
+            Docs
+          </Link>
+          <span className="text-[10px] text-[#e2e8f0]">|</span>
           <button
             onClick={() => setSidebarOpen(!sidebarOpen)}
             className="p-1 rounded hover:bg-[#f8fafc] transition-colors"
