@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect, useMemo } from "react";
 import Link from "next/link";
-import { sanitizePreviewHtml } from "@/lib/security/sanitize-html";
+import { sanitizePreviewHtml, sanitizeCss } from "@/lib/security/sanitize-html";
 import type { DesignStyle, ComponentTemplate } from "@/lib/styles";
 
 // --- Inline hooks ---
@@ -98,7 +98,7 @@ export default function DynamicShowcaseContent({ style }: Props) {
   return (
     <div className="min-h-screen">
       {style.globalCss && (
-        <style dangerouslySetInnerHTML={{ __html: style.globalCss }} />
+        <style dangerouslySetInnerHTML={{ __html: sanitizeCss(style.globalCss) }} />
       )}
       {/* Hero */}
       <section className="min-h-[70vh] flex flex-col items-center justify-center px-6 py-20 text-center relative overflow-hidden">

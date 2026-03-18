@@ -199,11 +199,11 @@ export async function POST(request: NextRequest) {
       candidates: generated.candidates,
       meta: generated.meta,
     });
-  } catch (error) {
+  } catch {
     return respondError(
       500,
       "GENERATION_FAILED",
-      `Failed to generate style: ${(error as Error).message}`
+      "Failed to generate style. Please try again."
     );
   }
 }

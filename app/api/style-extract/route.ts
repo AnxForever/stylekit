@@ -128,7 +128,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json(
       {
-        error: `Failed to extract style from URL: ${(error as Error).message}`,
+        error: "Failed to extract style from URL. Please try again.",
       },
       { status: 500 }
     );

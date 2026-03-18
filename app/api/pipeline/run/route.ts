@@ -130,10 +130,10 @@ export async function POST(req: Request) {
     const finalRun = await executePipeline(run);
 
     return respond(200, { run: finalRun });
-  } catch (error) {
+  } catch {
     return respond(
       500,
-      { error: `Pipeline execution failed: ${(error as Error).message}` },
+      { error: "Pipeline execution failed. Please try again." },
       "PIPELINE_EXECUTION_FAILED",
     );
   }

@@ -247,7 +247,7 @@ describe("POST /api/pipeline/run", () => {
       "PIPELINE_EXECUTION_FAILED"
     );
     await expect(response.json()).resolves.toEqual({
-      error: "Pipeline execution failed: boom",
+      error: "Pipeline execution failed. Please try again.",
     });
   });
 });
