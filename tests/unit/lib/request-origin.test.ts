@@ -76,4 +76,12 @@ describe("verifyTrustedOrigin", () => {
       error: "Invalid request origin.",
     });
   });
+
+  it("allows POST requests without Origin header (API clients)", () => {
+    const request = new Request("https://stylekit.top/api/submit", {
+      method: "POST",
+    });
+
+    expect(verifyTrustedOrigin(request)).toEqual({ ok: true });
+  });
 });
