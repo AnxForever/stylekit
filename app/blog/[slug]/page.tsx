@@ -8,6 +8,7 @@ import { serializeJsonLd } from "@/lib/security/json-ld";
 import { generateBlogPostJsonLd, generateBreadcrumbJsonLd } from "@/lib/seo/json-ld";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
+import { getSiteBaseUrl } from "@/lib/site-url";
 
 interface BlogPostPageProps {
   params: Promise<{ slug: string }>;
@@ -44,7 +45,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     notFound();
   }
 
-  const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://www.stylekit.top";
+  const BASE_URL = getSiteBaseUrl();
   const articleJsonLd = generateBlogPostJsonLd(post);
   const breadcrumbJsonLd = generateBreadcrumbJsonLd([
     { name: "Home", url: BASE_URL },

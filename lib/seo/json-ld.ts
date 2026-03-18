@@ -1,6 +1,7 @@
 import type { BlogPost } from "@/lib/blog";
+import { getSiteBaseUrl } from "@/lib/site-url";
 
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://www.stylekit.top";
+const BASE_URL = getSiteBaseUrl();
 
 interface StyleJsonLdInput {
   slug: string;

@@ -1,6 +1,7 @@
 import { MetadataRoute } from "next";
+import { getSiteBaseUrl } from "@/lib/site-url";
 
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://www.stylekit.top";
+const BASE_URL = getSiteBaseUrl();
 
 export default function robots(): MetadataRoute.Robots {
   return {

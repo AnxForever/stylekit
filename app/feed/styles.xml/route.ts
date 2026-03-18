@@ -1,8 +1,9 @@
 import { NextResponse } from "next/server";
 import { stylesMeta } from "@/lib/styles/meta";
 import { generateRss } from "@/lib/rss";
+import { getSiteBaseUrl } from "@/lib/site-url";
 
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://www.stylekit.top";
+const BASE_URL = getSiteBaseUrl();
 
 export async function GET() {
   const xml = generateRss({
