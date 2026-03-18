@@ -6,6 +6,8 @@ import { Search, FileText, Palette, Layers, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { getAllStylesMeta } from "@/lib/styles/meta";
 import { useI18n } from "@/lib/i18n/context";
+import { trackEvent } from "@/lib/analytics/events";
+import { localizeHref } from "@/lib/i18n/routing";
 
 interface SearchResult {
   id: string;
@@ -23,7 +25,7 @@ export function CommandPalette() {
   const [selectedIndex, setSelectedIndex] = React.useState(0);
   const router = useRouter();
   const inputRef = React.useRef<HTMLInputElement>(null);
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
 
   // Component list hidden temporarily to keep only polished entry points
   const componentItems: SearchResult[] = React.useMemo(() => [], []);
@@ -132,7 +134,14 @@ export function CommandPalette() {
       case "Enter":
         e.preventDefault();
         if (flatResults[selectedIndex]) {
-          router.push(flatResults[selectedIndex].href);
+          const trimmedQuery = query.trim();
+          if (trimmedQuery) {
+            trackEvent("search", {
+              query: trimmedQuery.slice(0, 80),
+              results_count: filteredResults.length,
+            });
+          }
+          router.push(localizeHref(flatResults[selectedIndex].href, locale));
           setOpen(false);
         }
         break;
@@ -204,7 +213,14 @@ export function CommandPalette() {
                       <button
                         key={item.id}
                         onClick={() => {
-                          router.push(item.href);
+                          const trimmedQuery = query.trim();
+                          if (trimmedQuery) {
+                            trackEvent("search", {
+                              query: trimmedQuery.slice(0, 80),
+                              results_count: filteredResults.length,
+                            });
+                          }
+                          router.push(localizeHref(item.href, locale));
                           setOpen(false);
                         }}
                         onMouseEnter={() => setSelectedIndex(globalIndex)}

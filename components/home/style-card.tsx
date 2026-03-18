@@ -1,8 +1,8 @@
 "use client";
 
 import React from "react";
-import Link from "next/link";
 import { FavoriteButton } from "@/components/favorite-button";
+import { LocalizedLink } from "@/components/i18n/localized-link";
 import { StyleCoverPreview } from "@/components/style-preview/style-cover-preview";
 import { useI18n } from "@/lib/i18n/context";
 import type { StyleMeta } from "@/lib/styles/meta";
@@ -38,7 +38,7 @@ export const StyleCard = React.memo(function StyleCard({
 
   return (
     <div className="relative">
-      <Link
+      <LocalizedLink
         href={`/styles/${style.slug}`}
         onClick={handleClick}
         className={cardClassName}
@@ -98,7 +98,7 @@ export const StyleCard = React.memo(function StyleCard({
             ))}
           </div>
         </div>
-      </Link>
+      </LocalizedLink>
 
       <div className="absolute top-2 right-2 z-10">
         <FavoriteButton

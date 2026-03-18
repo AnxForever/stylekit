@@ -26,17 +26,13 @@ export async function generateMetadata({
   const topic = getTopicBySlug(slug);
   if (!topic) return { title: "Topic Not Found" };
 
-  const url = `${BASE_URL}/prompts/${slug}`;
-
   return {
     title: topic.titleEn,
     description: topic.descriptionEn,
-    keywords: topic.keywords,
-    alternates: { canonical: url },
+    keywords: topic.keywords,
     openGraph: {
       title: `${topic.titleEn} | StyleKit`,
       description: topic.descriptionEn,
-      url,
       siteName: "StyleKit",
       type: "article",
       images: [

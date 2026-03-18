@@ -8,9 +8,6 @@ export const metadata: Metadata = {
   title: "AI Style Generator",
   description:
     "Describe your ideal design style in natural language and generate custom design tokens by blending existing styles.",
-  alternates: {
-    canonical: `${process.env.NEXT_PUBLIC_BASE_URL || "https://stylekit.top"}/generate-style`,
-  },
 };
 
 export default function GenerateStylePage() {

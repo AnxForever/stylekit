@@ -7,8 +7,6 @@ import { serializeJsonLd } from "@/lib/security/json-ld";
 import { MobileBottomNav } from "@/components/layout/mobile-bottom-nav";
 import "./globals.css";
 
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://stylekit.top";
-
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
@@ -17,6 +15,19 @@ export const viewport: Viewport = {
   viewportFit: "cover",
   themeColor: "#000000",
 };
+
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://stylekit.top";
+const LOCALE_BOOTSTRAP_SCRIPT = `
+(() => {
+  try {
+    const pathname = window.location.pathname || "/";
+    const firstSegment = pathname.split("/")[1];
+    const lang = firstSegment === "zh" ? "zh-CN" : "en";
+    document.documentElement.lang = lang;
+    document.documentElement.dataset.locale = firstSegment === "zh" ? "zh" : "en";
+  } catch {}
+})();
+`;
 
 export const metadata: Metadata = {
   metadataBase: new URL(BASE_URL),
@@ -52,19 +63,12 @@ export const metadata: Metadata = {
   },
   alternates: {
     canonical: BASE_URL,
-    languages: {
-      "en": BASE_URL,
-      "zh-CN": BASE_URL,
-    },
     types: {
       "application/rss+xml": [
         { url: "/feed.xml", title: "StyleKit Blog" },
         { url: "/feed/styles.xml", title: "StyleKit - New Styles" },
       ],
     },
-  },
-  other: {
-    "content-language": "en, zh",
   },
   openGraph: {
     type: "website",
@@ -115,6 +119,11 @@ export default function RootLayout({
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
         <link rel="manifest" href="/manifest.json" />
         <script
+          dangerouslySetInnerHTML={{
+            __html: LOCALE_BOOTSTRAP_SCRIPT,
+          }}
+        />
+        <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
             __html: serializeJsonLd({
@@ -153,7 +162,7 @@ export default function RootLayout({
         />
       </head>
       <body className="antialiased pb-16 md:pb-0">
-        <ClientProviders>
+        <ClientProviders initialLocale="en">
           <LazyCommandPalette />
           {children}
           <MobileBottomNav />

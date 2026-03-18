@@ -1,66 +1,50 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useSyncExternalStore } from "react";
 import { useI18n } from "@/lib/i18n/context";
 import { RevealOnScroll } from "@/components/home/reveal-on-scroll";
-
-const REPO = "AnxForever/stylekit";
-const CACHE_KEY = "gh_star_count";
-const CACHE_TTL = 1000 * 60 * 30;
-
-function getCachedStars(): number | null {
-  if (typeof window === "undefined") return null;
-  try {
-    const raw = localStorage.getItem(CACHE_KEY);
-    if (!raw) return null;
-    const { count, ts } = JSON.parse(raw) as { count: number; ts: number };
-    if (Date.now() - ts > CACHE_TTL) return null;
-    return count;
-  } catch {
-    return null;
-  }
-}
-
-function formatStars(n: number): string {
-  if (n >= 1000) return `${(n / 1000).toFixed(1).replace(/\.0$/, "")}k`;
-  return String(n);
-}
+import {
+  formatGitHubStars,
+  getGitHubStarsServerSnapshot,
+  getGitHubStarsSnapshot,
+  GITHUB_REPO_URL,
+  requestGitHubStars,
+  subscribeGitHubStars,
+} from "@/lib/github-stars";
 
 interface StatItem {
   value: string;
   label: string;
 }
 
-export function SocialProof() {
+interface SocialProofProps {
+  stats: {
+    styles: number;
+    animations: number;
+    templates: number;
+  };
+}
+
+export function SocialProof({ stats }: SocialProofProps) {
   const { t } = useI18n();
-  const [stars, setStars] = useState<number | null>(null);
+  const stars = useSyncExternalStore(
+    subscribeGitHubStars,
+    getGitHubStarsSnapshot,
+    getGitHubStarsServerSnapshot
+  );
 
   useEffect(() => {
-    const cached = getCachedStars();
-    if (cached !== null) setStars(cached);
-
-    fetch(`https://api.github.com/repos/${REPO}`, {
-      headers: { Accept: "application/vnd.github.v3+json" },
-    })
-      .then((res) => {
-        if (!res.ok) throw new Error(`GitHub API ${res.status}`);
-        return res.json();
-      })
-      .then((data: { stargazers_count?: number }) => {
-        const fresh = data.stargazers_count ?? 0;
-        setStars(fresh);
-      })
-      .catch(() => {});
+    void requestGitHubStars();
   }, []);
 
-  const stats: StatItem[] = [
-    { value: "130+", label: t("home.proof.styles") },
-    { value: "40+", label: t("home.proof.animations") },
-    { value: "30+", label: t("home.proof.templates") },
+  const statItems: StatItem[] = [
+    { value: `${stats.styles}+`, label: t("home.proof.styles") },
+    { value: `${stats.animations}+`, label: t("home.proof.animations") },
+    { value: `${stats.templates}+`, label: t("home.proof.templates") },
   ];
 
   const openSourceLabel = stars !== null
-    ? `${formatStars(stars)} Stars`
+    ? `${formatGitHubStars(stars)} Stars`
     : t("home.proof.openSource");
 
   return (
@@ -68,7 +52,7 @@ export function SocialProof() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-12 py-8 sm:py-10">
         <RevealOnScroll variant="soft">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
-            {stats.map((stat, index) => (
+            {statItems.map((stat, index) => (
               <RevealOnScroll
                 key={stat.label}
                 variant="upSubtle"
@@ -87,7 +71,7 @@ export function SocialProof() {
             ))}
             <RevealOnScroll variant="upSubtle" delayMs={260} disableDelayOnMobile>
               <a
-                href={`https://github.com/${REPO}`}
+                href={GITHUB_REPO_URL}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex flex-col items-center justify-center text-center group"

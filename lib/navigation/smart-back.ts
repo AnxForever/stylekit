@@ -1,3 +1,5 @@
+import { getLocaleFromPathname, localizeHref } from "@/lib/i18n/routing";
+
 interface RouterLike {
   back(): void;
   push(href: string): void;
@@ -51,6 +53,15 @@ function canUseBrowserBack(): boolean {
   }
 }
 
+function localizeForCurrentPath(href: string): string {
+  if (typeof window === "undefined") {
+    return href;
+  }
+
+  const locale = getLocaleFromPathname(window.location.pathname);
+  return locale ? localizeHref(href, locale) : href;
+}
+
 export function navigateBackOrFallback(
   router: RouterLike,
   options: SmartBackOptions = {}
@@ -74,7 +85,7 @@ export function navigateBackOrFallback(
   }
 
   if (href) {
-    router.push(href);
+    router.push(localizeForCurrentPath(href));
     return;
   }
 
@@ -83,5 +94,5 @@ export function navigateBackOrFallback(
     return;
   }
 
-  router.push(fallbackHref);
+  router.push(localizeForCurrentPath(fallbackHref));
 }

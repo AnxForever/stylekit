@@ -25,14 +25,10 @@ export const metadata: Metadata = {
     "admin dashboard design prompt",
     "SaaS dashboard prompt",
   ],
-  alternates: {
-    canonical: `${BASE_URL}/dashboard-prompts`,
-  },
   openGraph: {
     title: "Dashboard Prompts | StyleKit",
     description:
       "Copyable dashboard UI prompts for analytics, admin panels, KPI cards, charts, tables, and responsive data-heavy interfaces.",
-    url: `${BASE_URL}/dashboard-prompts`,
     siteName: "StyleKit",
     type: "article",
   },
@@ -110,7 +106,7 @@ export default function DashboardPromptsPage() {
         >
           <PromptTemplatePreviewSection
             title="Example previews and starter templates"
-            description="如果你想让 dashboard prompt 更像真实产品而不是模板拼贴，先参考这些模板里的 KPI、图表、表格和筛选布局，再写回 prompt。"
+            description="Use these examples to anchor your dashboard prompt in real KPI cards, charts, tables, and filter layouts instead of vague dashboard language."
             templates={dashboardTemplates}
           />
         </PromptTopicContent>

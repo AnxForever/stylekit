@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition, useDeferredValue, useMemo, useCallback, useRef, useEffect, useId, type ReactNode } from "react";
-import { useRouter, usePathname } from "next/navigation";
+import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { useI18n } from "@/lib/i18n/context";
 import { useFavorites } from "@/lib/favorites/context";
 import { StyleCard } from "@/components/home/style-card";
@@ -13,44 +13,82 @@ import {
   STYLE_SCENARIOS,
   type StyleScenario,
 } from "@/lib/styles/scenarios";
+import { useCatalogStyles } from "@/lib/swr";
 
 type TypeFilter = StyleType | "all";
 type SortOption = "recommended" | "name-asc" | "name-desc";
 
 interface StylesContentProps {
   allStyles: StyleMeta[];
-  initialType: TypeFilter;
-  initialTags: StyleTag[];
-  initialShowFavorites: boolean;
-  initialSort: SortOption;
-  initialQuery: string;
-  initialScenario: StyleScenario | "all";
 }
 
-export function StylesContent({
-  allStyles,
-  initialType,
-  initialTags,
-  initialShowFavorites,
-  initialSort,
-  initialQuery,
-  initialScenario,
-}: StylesContentProps) {
+interface SearchParamsLike {
+  get(name: string): string | null;
+}
+
+function parseStylesSearchParams(searchParams: SearchParamsLike | null) {
+  const typeParam = searchParams?.get("type");
+  const type: TypeFilter =
+    typeParam === "visual" || typeParam === "layout" ? typeParam : "all";
+
+  const tags = (searchParams?.get("tags") ?? "")
+    .split(",")
+    .filter(Boolean)
+    .filter((tag: string): tag is StyleTag => [
+      "modern",
+      "expressive",
+      "minimal",
+      "retro",
+      "high-contrast",
+      "responsive",
+      "brand-inspired",
+    ].includes(tag));
+
+  const showFavorites = searchParams?.get("fav") === "1";
+  const sortParam = searchParams?.get("sort");
+  const sort: SortOption =
+    sortParam === "name-asc" || sortParam === "name-desc"
+      ? sortParam
+      : "recommended";
+  const query = searchParams?.get("q") ?? "";
+  const scenarioParam = searchParams?.get("scenario");
+  const scenario: StyleScenario | "all" = STYLE_SCENARIOS.includes(scenarioParam as StyleScenario)
+    ? (scenarioParam as StyleScenario)
+    : "all";
+
+  return {
+    type,
+    tags,
+    showFavorites,
+    sort,
+    query,
+    scenario,
+  };
+}
+
+export function StylesContent({ allStyles }: StylesContentProps) {
   const { t, locale } = useI18n();
   const tagTriggerId = useId();
   const tagListboxId = useId();
   const { favorites } = useFavorites();
   const router = useRouter();
   const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const parsedSearchParams = useMemo(
+    () => parseStylesSearchParams(searchParams),
+    [searchParams]
+  );
+  const { data: catalogStylesData } = useCatalogStyles();
+  const catalogStyles: StyleMeta[] = catalogStylesData?.styles ?? allStyles;
   const searchInputRef = useRef<HTMLInputElement>(null);
   const hasMountedQuerySyncRef = useRef(false);
 
-  const [activeType, setActiveType] = useState<TypeFilter>(initialType);
-  const [activeTags, setActiveTags] = useState<StyleTag[]>(initialTags);
-  const [showFavorites, setShowFavorites] = useState(initialShowFavorites);
-  const [sortBy, setSortBy] = useState<SortOption>(initialSort);
-  const [searchQuery, setSearchQuery] = useState(initialQuery);
-  const [activeScenario, setActiveScenario] = useState<StyleScenario | "all">(initialScenario);
+  const [activeType, setActiveType] = useState<TypeFilter>(parsedSearchParams.type);
+  const [activeTags, setActiveTags] = useState<StyleTag[]>(parsedSearchParams.tags);
+  const [showFavorites, setShowFavorites] = useState(parsedSearchParams.showFavorites);
+  const [sortBy, setSortBy] = useState<SortOption>(parsedSearchParams.sort);
+  const [searchQuery, setSearchQuery] = useState(parsedSearchParams.query);
+  const [activeScenario, setActiveScenario] = useState<StyleScenario | "all">(parsedSearchParams.scenario);
   const [isPending, startTransition] = useTransition();
   const [tagDropdownOpen, setTagDropdownOpen] = useState(false);
   const tagDropdownRef = useRef<HTMLDivElement>(null);
@@ -72,9 +110,18 @@ export function StylesContent({
     [deferredActiveTagsKey]
   );
   const styleScenarios = useMemo(
-    () => new Map(allStyles.map((style) => [style.slug, getStyleScenarios(style)])),
-    [allStyles]
+    () => new Map(catalogStyles.map((style) => [style.slug, getStyleScenarios(style)])),
+    [catalogStyles]
   );
+
+  useEffect(() => {
+    setActiveType(parsedSearchParams.type);
+    setActiveTags(parsedSearchParams.tags);
+    setShowFavorites(parsedSearchParams.showFavorites);
+    setSortBy(parsedSearchParams.sort);
+    setSearchQuery(parsedSearchParams.query);
+    setActiveScenario(parsedSearchParams.scenario);
+  }, [parsedSearchParams]);
 
   // 点击外部关闭下拉框
   useEffect(() => {
@@ -326,19 +373,22 @@ export function StylesContent({
   const favoriteSet = useMemo(() => new Set(favorites), [favorites]);
 
   const filteredStyles = useMemo(() => {
-    const base = allStyles
-      .filter((s) => !deferredShowFavorites || favoriteSet.has(s.slug))
-      .filter((s) => deferredActiveType === "all" || s.styleType === deferredActiveType)
+    const base = catalogStyles
+      .filter((style: StyleMeta, index: number, collection: StyleMeta[]) => (
+        collection.findIndex((candidate: StyleMeta) => candidate.slug === style.slug) === index
+      ))
+      .filter((s: StyleMeta) => !deferredShowFavorites || favoriteSet.has(s.slug))
+      .filter((s: StyleMeta) => deferredActiveType === "all" || s.styleType === deferredActiveType)
       .filter(
-        (s) =>
+        (s: StyleMeta) =>
           deferredActiveTags.length === 0 ||
           deferredActiveTags.some((tag) => s.tags?.includes(tag))
       )
-      .filter((style) => (
+      .filter((style: StyleMeta) => (
         deferredActiveScenario === "all" ||
         (styleScenarios.get(style.slug) ?? []).includes(deferredActiveScenario)
       ))
-      .filter((style) => {
+      .filter((style: StyleMeta) => {
         if (!trimmedDeferredSearchQuery) return true;
 
         const searchableText = [
@@ -371,7 +421,7 @@ export function StylesContent({
 
     return sorted;
   }, [
-    allStyles,
+    catalogStyles,
     deferredActiveTags,
     deferredActiveScenario,
     deferredActiveType,
@@ -667,7 +717,7 @@ export function StylesContent({
                 )}
               </div>
             ) : (
-              filteredStyles.map((style) => (
+              filteredStyles.map((style: StyleMeta) => (
                 <div
                   key={style.slug}
                   className="[content-visibility:auto] [contain-intrinsic-size:1px_540px]"

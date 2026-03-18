@@ -10,8 +10,8 @@
 
 import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
-import Link from "next/link";
 import { useUser } from "@/lib/auth/use-user";
+import { LocalizedLink } from "@/components/i18n/localized-link";
 import { useI18n } from "@/lib/i18n/context";
 import { LogIn, LogOut, User as UserIcon } from "lucide-react";
 
@@ -38,13 +38,13 @@ export function UserMenu() {
 
   if (!user) {
     return (
-      <Link
+      <LocalizedLink
         href="/login"
         className="flex items-center gap-1.5 text-sm text-muted hover:text-foreground transition-colors"
       >
         <LogIn className="w-4 h-4" />
         <span className="hidden lg:inline">{t("auth.signIn")}</span>
-      </Link>
+      </LocalizedLink>
     );
   }
 
@@ -86,14 +86,14 @@ export function UserMenu() {
               <p className="text-xs text-muted truncate">{user.email}</p>
             )}
           </div>
-          <Link
+          <LocalizedLink
             href="/profile"
             onClick={() => setOpen(false)}
             className="w-full text-left px-4 py-2 text-sm text-muted hover:text-foreground hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors flex items-center gap-2"
           >
             <UserIcon className="w-4 h-4" />
             {t("profile.title")}
-          </Link>
+          </LocalizedLink>
           <button
             onClick={() => {
               setOpen(false);
@@ -121,13 +121,13 @@ export function MobileUserMenu() {
 
   if (!user) {
     return (
-      <Link
+      <LocalizedLink
         href="/login"
         className="flex items-center gap-2 text-sm text-muted hover:text-foreground transition-colors"
       >
         <LogIn className="w-4 h-4" />
         {t("auth.signIn")}
-      </Link>
+      </LocalizedLink>
     );
   }
 
@@ -156,13 +156,13 @@ export function MobileUserMenu() {
         <span className="text-sm">{displayName}</span>
       </div>
       <div className="flex items-center gap-3">
-        <Link
+        <LocalizedLink
           href="/profile"
           className="text-sm text-muted hover:text-foreground transition-colors flex items-center gap-1"
         >
           <UserIcon className="w-3.5 h-3.5" />
           {t("profile.title")}
-        </Link>
+        </LocalizedLink>
         <button
           onClick={signOut}
           className="text-sm text-muted hover:text-foreground transition-colors flex items-center gap-1"

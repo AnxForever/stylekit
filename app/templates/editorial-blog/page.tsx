@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 import { Search, X, Mail, ChevronRight } from "lucide-react";
 import { TemplateBackButton } from "@/components/templates/template-back-button";
@@ -746,12 +747,12 @@ export default function EditorialBlogPage() {
           <div className="border-t border-zinc-100 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3">
             <p className="text-[10px] text-zinc-400 tracking-wide">
               &copy; 2026 The Editorial. Part of{" "}
-              <a
+              <Link
                 href="/templates"
                 className="text-zinc-500 hover:text-zinc-800 underline underline-offset-2"
               >
                 StyleKit Templates
-              </a>
+              </Link>
               .
             </p>
             <div className="flex gap-4 text-[10px] text-zinc-400">

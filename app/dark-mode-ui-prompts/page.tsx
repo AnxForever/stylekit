@@ -25,14 +25,10 @@ export const metadata: Metadata = {
     "dark UI design system",
     "dark mode Tailwind prompt",
   ],
-  alternates: {
-    canonical: `${BASE_URL}/dark-mode-ui-prompts`,
-  },
   openGraph: {
     title: "Dark Mode UI Prompts | StyleKit",
     description:
       "Copyable dark mode UI prompts for dashboards, SaaS apps, media interfaces, and dark-first design systems with strong contrast and readable surfaces.",
-    url: `${BASE_URL}/dark-mode-ui-prompts`,
     siteName: "StyleKit",
     type: "article",
   },
@@ -110,7 +106,7 @@ export default function DarkModeUiPromptsPage() {
         >
           <PromptTemplatePreviewSection
             title="Example previews and starter templates"
-            description="这些模板更适合反推暗色界面的层级：base surface、elevated surface、边框、文字对比和 accent 节奏。"
+            description="Use these templates to reverse-engineer dark UI hierarchy: base surfaces, elevated panels, borders, readable contrast, and accent rhythm."
             templates={darkModeTemplates}
           />
         </PromptTopicContent>

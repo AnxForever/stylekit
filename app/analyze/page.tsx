@@ -8,9 +8,6 @@ export const metadata: Metadata = {
   title: "Analyze Style",
   description:
     "Analyze your component code to detect which StyleKit design style it most closely matches.",
-  alternates: {
-    canonical: `${process.env.NEXT_PUBLIC_BASE_URL || "https://stylekit.top"}/analyze`,
-  },
 };
 
 export default function AnalyzePage() {

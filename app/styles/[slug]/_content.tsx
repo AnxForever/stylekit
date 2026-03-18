@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useRef, useState, useCallback } from "react";
-import Link from "next/link";
 import { ArrowRight } from "lucide-react";
+import { LocalizedLink } from "@/components/i18n/localized-link";
 import { ScrollBackButton } from "@/components/scroll-back-button";
 import { ComponentPreview } from "@/components/style-preview/component-preview";
 import { ColorPalette } from "@/components/style-preview/color-palette";
@@ -151,9 +151,9 @@ export function StyleDetailContent({
           <div className="flex items-center gap-4 mb-4">
             <ScrollBackButton label={t("styleDetail.backToCatalog")} href="/styles" />
             <div className="flex items-center gap-2 text-sm text-muted">
-              <Link href="/styles" className="hover:text-foreground transition-colors">
+              <LocalizedLink href="/styles" className="hover:text-foreground transition-colors">
                 {t("styleDetail.catalog")}
-              </Link>
+              </LocalizedLink>
               <span>/</span>
               <span>{style.name}</span>
             </div>
@@ -188,19 +188,19 @@ export function StyleDetailContent({
               </div>
 
               <div className="flex flex-col sm:flex-row flex-wrap gap-3 sm:gap-4 mt-6">
-                <Link
+                <LocalizedLink
                   href={`/styles/${style.slug}/showcase`}
                   className="inline-flex items-center justify-center px-6 py-3 bg-foreground text-background text-sm tracking-wide hover:bg-foreground/90 transition-colors"
                 >
                   {t("styleDetail.viewShowcase")}
-                </Link>
-                <Link
+                </LocalizedLink>
+                <LocalizedLink
                   href={`/templates?style=${style.slug}`}
                   className="inline-flex items-center gap-2 justify-center px-6 py-3 border border-border text-sm tracking-wide hover:border-foreground transition-colors"
                 >
                   <ArrowRight className="w-4 h-4" />
                   {t("nav.templates")}
-                </Link>
+                </LocalizedLink>
                 <TokensExportButton style={style} />
               </div>
 
@@ -226,7 +226,7 @@ export function StyleDetailContent({
                 <p className="text-xs tracking-widest uppercase text-muted mb-4">
                   {locale === "zh" ? "Showcase 入口" : "Showcase Entry"}
                 </p>
-                <Link
+                <LocalizedLink
                   href={`/styles/${style.slug}/showcase`}
                   className="group block border border-border overflow-hidden hover:border-foreground transition-colors"
                 >
@@ -264,7 +264,7 @@ export function StyleDetailContent({
                       <ArrowRight className="w-3 h-3" />
                     </span>
                   </div>
-                </Link>
+                </LocalizedLink>
               </div>
 
               <div>
@@ -286,13 +286,13 @@ export function StyleDetailContent({
             className="flex gap-2 overflow-x-auto scrollbar-hide"
           >
             {detailSections.map((section) => (
-              <Link
+              <LocalizedLink
                 key={section.href}
                 href={section.href}
                 className="inline-flex items-center px-3 py-1.5 md:px-4 md:py-2.5 min-h-[44px] sm:min-h-0 text-xs tracking-wide border border-border text-muted hover:text-foreground hover:border-foreground transition-colors whitespace-nowrap"
               >
                 {section.label}
-              </Link>
+              </LocalizedLink>
             ))}
           </nav>
         </div>
@@ -354,7 +354,7 @@ export function StyleDetailContent({
             </p>
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
               {compatibleStyles.map((compatStyle) => (
-                <Link
+                <LocalizedLink
                   key={compatStyle.slug}
                   href={`/styles/${compatStyle.slug}`}
                   className="group block border border-border hover:border-foreground transition-colors"
@@ -368,7 +368,7 @@ export function StyleDetailContent({
                     </p>
                     <p className="text-xs text-muted">{compatStyle.nameEn}</p>
                   </div>
-                </Link>
+                </LocalizedLink>
               ))}
             </div>
           </div>
@@ -388,7 +388,7 @@ export function StyleDetailContent({
             </p>
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
               {compatibleLayouts.map((layoutStyle) => (
-                <Link
+                <LocalizedLink
                   key={layoutStyle.slug}
                   href={`/styles/${layoutStyle.slug}`}
                   className="group block border border-border hover:border-foreground transition-colors"
@@ -402,7 +402,7 @@ export function StyleDetailContent({
                     </p>
                     <p className="text-xs text-muted">{layoutStyle.nameEn}</p>
                   </div>
-                </Link>
+                </LocalizedLink>
               ))}
             </div>
           </div>

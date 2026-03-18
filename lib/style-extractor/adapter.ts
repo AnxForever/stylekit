@@ -803,7 +803,8 @@ function inferCategory(text: string): StyleCategory {
   return winner && winner[1] > 0 ? winner[0] : "modern";
 }
 
-function inferTags(text: string, category: StyleCategory, styleType: StyleType): StyleTag[] {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+function inferTags(text: string, category: StyleCategory, _styleType: StyleType): StyleTag[] {
   const normalized = text.toLowerCase();
   const tags: StyleTag[] = [category];
 

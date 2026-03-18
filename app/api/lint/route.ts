@@ -2,6 +2,11 @@ import { NextRequest, NextResponse } from "next/server";
 import { lintCode, getFixSuggestions } from "@/lib/linter";
 import { getStyleLintRules, getStylesWithLintRules } from "@/lib/styles/lint-rules";
 import { verifyTrustedOrigin } from "@/lib/security/request-origin";
+import {
+  checkRateLimit,
+  createRateLimitHeaders,
+  getRequestClientKey,
+} from "@/lib/security/rate-limit";
 
 /**
  * POST /api/lint
@@ -16,6 +21,19 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(
       { error: originCheck.error },
       { status: originCheck.status ?? 403 }
+    );
+  }
+
+  const rateLimit = checkRateLimit({
+    namespace: "lint",
+    key: getRequestClientKey(request),
+    limit: 30,
+    windowMs: 60 * 1000,
+  });
+  if (!rateLimit.allowed) {
+    return NextResponse.json(
+      { error: "Too many requests. Try again later." },
+      { status: 429, headers: createRateLimitHeaders(rateLimit) },
     );
   }
 
