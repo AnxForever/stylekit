@@ -82,6 +82,17 @@ const templates: Template[] = [
     href: "/templates/anx-blog",
   },
   {
+    id: "yohaku-blog",
+    name: { zh: "余白博客", en: "Yohaku Blog" },
+    description: {
+      zh: "极简纸质美学博客，灵感源自日式余白哲学。单列阅读布局、时间线文章列表与微弹性动画。",
+      en: "Minimalist paper-textured blog inspired by Japanese Yohaku (white space) philosophy. Single-column reading layout with timeline posts and spring animations.",
+    },
+    styleSlug: "minimalist-flat",
+    type: "blog",
+    href: "/templates/yohaku-blog",
+  },
+  {
     id: "warm-dashboard",
     name: { zh: "暖色仪表盘", en: "Warm Dashboard" },
     description: {
