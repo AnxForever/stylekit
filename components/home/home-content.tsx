@@ -10,6 +10,7 @@ import { FeaturedCarousel } from "@/components/home/featured-carousel";
 import { RevealOnScroll } from "@/components/home/reveal-on-scroll";
 import { GitHubStarButton } from "@/components/github-star-button";
 import { SocialProof } from "@/components/home/social-proof";
+import { trackEvent } from "@/lib/analytics/events";
 
 const HowItWorks = dynamic(
   () => import("@/components/home/how-it-works").then((m) => ({ default: m.HowItWorks })),
@@ -33,9 +34,15 @@ import {
   type StyleScenario,
 } from "@/lib/styles/scenarios";
 import { cn } from "@/lib/utils";
+import { localizeHref } from "@/lib/i18n/routing";
 
 interface HomeContentProps {
   styles: StyleMeta[];
+  stats: {
+    styles: number;
+    animations: number;
+    templates: number;
+  };
 }
 
 const HERO_SCENARIO_ORDER: StyleScenario[] = [
@@ -55,7 +62,7 @@ const TrendingStyles = dynamic(
   }
 );
 
-export function HomeContent({ styles }: HomeContentProps) {
+export function HomeContent({ styles, stats }: HomeContentProps) {
   const { t, locale } = useI18n();
   const [activeQuickLink, setActiveQuickLink] = useState("#home-core-features");
   const [homeScrollProgress, setHomeScrollProgress] = useState(0);
@@ -329,18 +336,24 @@ export function HomeContent({ styles }: HomeContentProps) {
               <p className="text-[15px] sm:text-lg text-muted leading-relaxed max-w-lg mb-6 sm:mb-8">{t("home.description")}</p>
               <div className="flex flex-wrap items-center gap-3">
                 <Link
-                  href="/styles"
+                  href={localizeHref("/styles", locale)}
+                  onClick={() => trackEvent("cta_click", { label: "browse_styles", location: "home_hero" })}
                   className="inline-flex items-center justify-center px-6 py-3 bg-foreground text-background text-sm tracking-wide hover:bg-foreground/90 transition-colors"
                 >
                   {t("nav.styles")}
                 </Link>
                 <Link
-                  href="/templates"
+                  href={localizeHref("/templates", locale)}
+                  onClick={() => trackEvent("cta_click", { label: "browse_templates", location: "home_hero" })}
                   className="inline-flex items-center justify-center px-6 py-3 border border-border text-sm tracking-wide hover:border-foreground transition-colors"
                 >
                   {t("nav.templates")}
                 </Link>
-                <Link href="/guide" className={smallLinkClassName}>
+                <Link
+                  href={localizeHref("/guide", locale)}
+                  onClick={() => trackEvent("cta_click", { label: "open_guide", location: "home_hero" })}
+                  className={smallLinkClassName}
+                >
                   {t("nav.guide")}
                   <ArrowRight className="w-3 h-3" />
                 </Link>
@@ -353,7 +366,8 @@ export function HomeContent({ styles }: HomeContentProps) {
                   {heroScenarioEntries.map((item) => (
                     <Link
                       key={item.scenario}
-                      href={`/styles?scenario=${item.scenario}`}
+                      href={localizeHref(`/styles?scenario=${item.scenario}`, locale)}
+                      onClick={() => trackEvent("cta_click", { label: `scenario_${item.scenario}`, location: "home_scenarios" })}
                       className="inline-flex items-center gap-2 px-3 py-1.5 md:px-4 md:py-2.5 text-xs border border-border text-muted hover:text-foreground hover:border-foreground transition-colors"
                     >
                       <span>{item.label}</span>
@@ -524,7 +538,7 @@ export function HomeContent({ styles }: HomeContentProps) {
         </nav>
       </section>
 
-      <SocialProof />
+      <SocialProof stats={stats} />
 
       <section id="home-core-features" className="relative border-b border-border scroll-mt-24 bg-zinc-50/40 dark:bg-zinc-900/15">
         <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-16 bg-gradient-to-b from-background/70 to-transparent" />
@@ -550,7 +564,7 @@ export function HomeContent({ styles }: HomeContentProps) {
                     <h3 className="text-lg leading-snug mb-2">{feature.title}</h3>
                     <p className="text-sm text-muted leading-relaxed md:min-h-[4.5rem]">{feature.description}</p>
                     <Link
-                      href={feature.href}
+                      href={localizeHref(feature.href, locale)}
                       className={`mt-5 ${smallLinkClassName}`}
                     >
                       {t("home.viewDetails")}
@@ -574,7 +588,7 @@ export function HomeContent({ styles }: HomeContentProps) {
               <p className={`${sectionLabelClassName} mb-2`}>{t("home.styleCollection")}</p>
               <h2 className={sectionTitleClassName}>{t("home.styleCatalog")}</h2>
             </div>
-            <Link href="/styles" className="text-sm text-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background transition-colors flex items-center gap-1">
+            <Link href={localizeHref("/styles", locale)} className="text-sm text-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background transition-colors flex items-center gap-1">
               {t("home.viewAll")}
               <span aria-hidden="true">&rarr;</span>
             </Link>

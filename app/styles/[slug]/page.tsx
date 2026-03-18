@@ -32,20 +32,15 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const style = resolved.style;
 
   const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://stylekit.top";
-  const url = `${BASE_URL}/styles/${slug}`;
   const description = `${style.description} Includes design tokens, component recipes, and AI prompt guidance for consistent UI implementation.`;
 
   return {
     title: `${style.name} (${style.nameEn})`,
     description,
-    keywords: style.keywords,
-    alternates: {
-      canonical: url,
-    },
+    keywords: style.keywords,
     openGraph: {
       title: `${style.name} (${style.nameEn}) — StyleKit`,
       description,
-      url,
       type: "article",
       images: [
         {

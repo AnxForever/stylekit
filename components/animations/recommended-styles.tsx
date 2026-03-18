@@ -1,7 +1,7 @@
 "use client";
 
-import Link from "next/link";
 import { getStyleMetaBySlug } from "@/lib/styles/meta";
+import { LocalizedLink } from "@/components/i18n/localized-link";
 import { useI18n } from "@/lib/i18n/context";
 
 interface RecommendedStylesProps {
@@ -23,7 +23,7 @@ export function RecommendedStyles({ slugs }: RecommendedStylesProps) {
       </h2>
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-px bg-border border border-border">
         {styles.slice(0, 3).map((style) => (
-          <Link
+          <LocalizedLink
             key={style.slug}
             href={`/styles/${style.slug}`}
             className="group bg-background p-4 hover:bg-muted/20 transition-colors"
@@ -40,7 +40,7 @@ export function RecommendedStyles({ slugs }: RecommendedStylesProps) {
             <span className="text-[10px] uppercase tracking-wider text-muted">
               {style.styleType}
             </span>
-          </Link>
+          </LocalizedLink>
         ))}
       </div>
     </>

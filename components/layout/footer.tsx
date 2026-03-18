@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useI18n } from "@/lib/i18n/context";
 import { NewsletterSignup } from "@/components/newsletter/newsletter-signup";
+import { localizeHref } from "@/lib/i18n/routing";
 
 const currentYear = new Date().getFullYear();
 
@@ -23,6 +24,19 @@ export function Footer() {
         { href: "/tailwind-ui-prompts", label: "Tailwind UI Prompts" },
         { href: "/dark-mode-ui-prompts", label: "Dark Mode UI Prompts" },
       ];
+  const trustLinks = locale === "zh"
+    ? [
+        { href: "/about", label: "关于" },
+        { href: "/contact", label: "联系与支持" },
+        { href: "/privacy", label: "隐私政策" },
+        { href: "/terms", label: "服务条款" },
+      ]
+    : [
+        { href: "/about", label: "About" },
+        { href: "/contact", label: "Contact" },
+        { href: "/privacy", label: "Privacy" },
+        { href: "/terms", label: "Terms" },
+      ];
 
   return (
     <footer className="border-t border-border mt-auto">
@@ -41,31 +55,31 @@ export function Footer() {
             </p>
             <nav className="flex flex-col gap-2">
               <Link
-                href="/styles"
+                href={localizeHref("/styles", locale)}
                 className="text-sm text-foreground hover:text-accent transition-colors"
               >
                 {t("nav.styles")}
               </Link>
               <Link
-                href="/templates"
+                href={localizeHref("/templates", locale)}
                 className="text-sm text-foreground hover:text-accent transition-colors"
               >
                 {t("nav.templates")}
               </Link>
               <Link
-                href="/guide"
+                href={localizeHref("/guide", locale)}
                 className="text-sm text-foreground hover:text-accent transition-colors"
               >
                 {t("nav.guide")}
               </Link>
               <Link
-                href="/blog"
+                href={localizeHref("/blog", locale)}
                 className="text-sm text-foreground hover:text-accent transition-colors"
               >
                 {t("nav.blog")}
               </Link>
               <Link
-                href="/changelog"
+                href={localizeHref("/changelog", locale)}
                 className="text-sm text-foreground hover:text-accent transition-colors"
               >
                 {t("nav.changelog")}
@@ -81,7 +95,7 @@ export function Footer() {
               {promptLinks.map((link) => (
                 <Link
                   key={link.href}
-                  href={link.href}
+                  href={localizeHref(link.href, locale)}
                   className="text-sm text-foreground hover:text-accent transition-colors"
                 >
                   {link.label}
@@ -107,7 +121,18 @@ export function Footer() {
 
         <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-muted">
           <p>{t("footer.openSource").replace("{year}", String(currentYear))}</p>
-          <p>{t("footer.builtWith")}</p>
+          <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2">
+            {trustLinks.map((link) => (
+              <Link
+                key={link.href}
+                href={localizeHref(link.href, locale)}
+                className="hover:text-foreground transition-colors"
+              >
+                {link.label}
+              </Link>
+            ))}
+            <span>{t("footer.builtWith")}</span>
+          </div>
         </div>
       </div>
     </footer>

@@ -2,8 +2,8 @@
 
 import type { ReactNode } from "react";
 import { useState } from "react";
-import Link from "next/link";
 import { useI18n } from "@/lib/i18n/context";
+import { LocalizedLink } from "@/components/i18n/localized-link";
 import type { PromptTopic } from "@/lib/prompts/types";
 import type { StyleMeta } from "@/lib/styles/meta";
 
@@ -120,13 +120,13 @@ export function PromptTopicContent({
       {/* Breadcrumb */}
       <div className="max-w-7xl mx-auto px-6 md:px-12 pt-6">
         <nav className="flex items-center gap-2 text-xs text-muted">
-          <Link href="/" className="hover:text-foreground transition-colors">
+          <LocalizedLink href="/" className="hover:text-foreground transition-colors">
             {t("seo.breadcrumbHome")}
-          </Link>
+          </LocalizedLink>
           <span>/</span>
-          <Link href={topicIndexHref} className="hover:text-foreground transition-colors">
+          <LocalizedLink href={topicIndexHref} className="hover:text-foreground transition-colors">
             {t("seo.breadcrumbPrompts")}
-          </Link>
+          </LocalizedLink>
           <span>/</span>
           <span className="text-foreground">{title}</span>
         </nav>
@@ -209,7 +209,7 @@ export function PromptTopicContent({
               {relatedStyles.map(
                 (style) =>
                   style && (
-                    <Link
+                    <LocalizedLink
                       key={style.slug}
                       href={`/styles/${style.slug}`}
                       className="group border border-border p-4 hover:border-foreground transition-colors"
@@ -229,7 +229,7 @@ export function PromptTopicContent({
                       <p className="text-xs text-muted mt-1">
                         {style.category} / {style.styleType}
                       </p>
-                    </Link>
+                    </LocalizedLink>
                   )
               )}
             </div>
@@ -299,18 +299,18 @@ export function PromptTopicContent({
               : "StyleKit offers 120+ visual styles, each with complete design tokens, component recipes, and exportable AI Rules."}
           </p>
           <div className="flex justify-center gap-4">
-            <Link
+            <LocalizedLink
               href="/styles"
               className="inline-block border-2 border-foreground px-6 py-3 font-medium hover:bg-foreground hover:text-background transition-colors"
             >
               {isZh ? "浏览风格库" : "Browse Styles"}
-            </Link>
-            <Link
+            </LocalizedLink>
+            <LocalizedLink
               href={topicIndexHref}
               className="inline-block border border-border px-6 py-3 text-muted hover:border-foreground hover:text-foreground transition-colors"
             >
               {isZh ? "更多提示词主题" : "More Prompt Topics"}
-            </Link>
+            </LocalizedLink>
           </div>
         </div>
       </section>

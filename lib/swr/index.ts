@@ -1,6 +1,7 @@
 export { SWRProvider } from "./provider";
 export { fetcher } from "./fetcher";
 export {
+  useCatalogStyles,
   useTrendingStyles,
   usePopularCombos,
   useStyleRating,
@@ -20,6 +21,7 @@ export {
   useAdminRatings,
 } from "./hooks";
 export type {
+  CatalogStylesData,
   TopStyle,
   TrendingData,
   Combination,

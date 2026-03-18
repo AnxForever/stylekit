@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { MDXRemote } from "next-mdx-remote/rsc";
+import { LocalizedLink } from "@/components/i18n/localized-link";
 import { getAllSlugs, getPostBySlug } from "@/lib/blog";
 import { serializeJsonLd } from "@/lib/security/json-ld";
 import { generateBlogPostJsonLd, generateBreadcrumbJsonLd } from "@/lib/seo/json-ld";
@@ -67,13 +67,13 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
         <main className="flex-1">
           <article className="max-w-3xl mx-auto px-6 md:px-12 py-12 md:py-20">
-            <Link
+            <LocalizedLink
               href="/blog"
               className="inline-flex items-center gap-2 text-sm text-muted hover:text-foreground transition-colors mb-8"
             >
               <ArrowLeft className="w-4 h-4" />
               Back to Blog
-            </Link>
+            </LocalizedLink>
 
             <header className="mb-12">
               <div className="flex flex-wrap gap-2 mb-4">

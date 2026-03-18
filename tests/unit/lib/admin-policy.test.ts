@@ -8,6 +8,7 @@ import {
 
 const ORIGINAL_ADMIN_IDS = process.env.ADMIN_USER_IDS;
 const ORIGINAL_ADMIN_TOKEN = process.env.ADMIN_API_TOKEN;
+const ORIGINAL_DEV_BYPASS = process.env.ADMIN_DEV_BYPASS;
 
 afterEach(() => {
   if (ORIGINAL_ADMIN_IDS === undefined) {
@@ -20,6 +21,12 @@ afterEach(() => {
     delete process.env.ADMIN_API_TOKEN;
   } else {
     process.env.ADMIN_API_TOKEN = ORIGINAL_ADMIN_TOKEN;
+  }
+
+  if (ORIGINAL_DEV_BYPASS === undefined) {
+    delete process.env.ADMIN_DEV_BYPASS;
+  } else {
+    process.env.ADMIN_DEV_BYPASS = ORIGINAL_DEV_BYPASS;
   }
 });
 
@@ -43,9 +50,16 @@ describe("admin policy", () => {
     expect(isAdminUserId("any-user", "production")).toBe(false);
   });
 
-  it("allows in non-production when allowlist is missing", () => {
+  it("allows in non-production when allowlist is missing and ADMIN_DEV_BYPASS is set", () => {
     delete process.env.ADMIN_USER_IDS;
+    process.env.ADMIN_DEV_BYPASS = "true";
     expect(isAdminUserId("any-user", "development")).toBe(true);
+  });
+
+  it("denies in non-production when allowlist is missing and no bypass", () => {
+    delete process.env.ADMIN_USER_IDS;
+    delete process.env.ADMIN_DEV_BYPASS;
+    expect(isAdminUserId("any-user", "development")).toBe(false);
   });
 
   it("normalizes admin api token", () => {

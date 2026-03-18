@@ -46,7 +46,7 @@ export async function checkAdminApiAccess(
       };
     }
 
-    if (nodeEnv !== "production") {
+    if (nodeEnv !== "production" && process.env.ADMIN_DEV_BYPASS === "true") {
       return {
         allowed: true,
         actor: {

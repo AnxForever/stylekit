@@ -30,14 +30,10 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   const style = mapSubmissionToStyle(submission);
   if (!style) return { title: "Not Found" };
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://stylekit.top";
 
   return {
     title: `${style.name} — Community`,
     description: style.description,
-    alternates: {
-      canonical: `${baseUrl}/community/${id}`,
-    },
     robots: {
       index: false,
       follow: false,

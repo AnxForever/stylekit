@@ -25,14 +25,10 @@ export const metadata: Metadata = {
     "Next.js Tailwind prompt",
     "React Tailwind UI prompt",
   ],
-  alternates: {
-    canonical: `${BASE_URL}/tailwind-ui-prompts`,
-  },
   openGraph: {
     title: "Tailwind UI Prompts | StyleKit",
     description:
       "Copyable Tailwind UI prompts for React, Next.js, shadcn/ui, dashboards, forms, navigation, and utility-first component generation.",
-    url: `${BASE_URL}/tailwind-ui-prompts`,
     siteName: "StyleKit",
     type: "article",
   },
@@ -110,7 +106,7 @@ export default function TailwindUiPromptsPage() {
         >
           <PromptTemplatePreviewSection
             title="Example previews and starter templates"
-            description="把这些模板当作 Tailwind prompt 的结构提示：组件名、布局类、断点、状态和 design token 一起说，生成结果通常会更稳定。"
+            description="Use these templates as Tailwind prompt references by naming components, layout classes, breakpoints, states, and design tokens together."
             templates={tailwindUiTemplates}
           />
         </PromptTopicContent>

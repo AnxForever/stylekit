@@ -9,6 +9,8 @@ import { UserMenu, MobileUserMenu } from "@/components/layout/user-menu";
 import { mainNav, secondaryNav, resourcesDropdown } from "@/lib/nav-config";
 import { ChevronDown } from "lucide-react";
 import { GitHubStarButton } from "@/components/github-star-button";
+import { trackEvent } from "@/lib/analytics/events";
+import { localizeHref } from "@/lib/i18n/routing";
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -16,7 +18,7 @@ export function Header() {
   const [expandedMobileResourcesGroup, setExpandedMobileResourcesGroup] = useState<number | null>(0);
   const { setTheme, resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   const resourcesRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -38,6 +40,15 @@ export function Header() {
   const toggleTheme = () => {
     setTheme(resolvedTheme === "dark" ? "light" : "dark");
   };
+  const openCommandPalette = (location: "header" | "mobile_menu") => {
+    trackEvent("cta_click", { label: "open_search", location });
+    const event = new KeyboardEvent("keydown", {
+      key: "k",
+      metaKey: true,
+      bubbles: true,
+    });
+    document.dispatchEvent(event);
+  };
 
   const linkClass = "text-sm tracking-wide text-muted hover:text-foreground transition-colors";
 
@@ -46,7 +57,7 @@ export function Header() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-12">
         <div className="flex items-center justify-between h-16 md:h-20">
           {/* Logo / Masthead */}
-          <Link href="/" className="masthead text-lg md:text-xl">
+          <Link href={localizeHref("/", locale)} className="masthead text-lg md:text-xl">
             StyleKit
           </Link>
 
@@ -54,14 +65,7 @@ export function Header() {
           <nav className="hidden md:flex items-center gap-8">
             {/* Search Button */}
             <button
-              onClick={() => {
-                const event = new KeyboardEvent("keydown", {
-                  key: "k",
-                  metaKey: true,
-                  bubbles: true,
-                });
-                document.dispatchEvent(event);
-              }}
+              onClick={() => openCommandPalette("header")}
               className="flex items-center gap-2 px-3 py-1.5 text-sm text-muted border border-border rounded-md hover:border-foreground/50 transition-colors"
             >
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -74,7 +78,7 @@ export function Header() {
 
             {/* Main Nav Items */}
             {mainNav.map((item) => (
-              <Link key={item.href} href={item.href} className={linkClass}>
+              <Link key={item.href} href={localizeHref(item.href, locale)} className={linkClass}>
                 {t(item.labelKey)}
               </Link>
             ))}
@@ -106,7 +110,7 @@ export function Header() {
                         {group.items.map((item) => (
                           <Link
                             key={item.href}
-                            href={item.href}
+                            href={localizeHref(item.href, locale)}
                             className="block px-4 py-2 text-sm text-muted hover:text-foreground hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors"
                             onClick={() => setIsResourcesOpen(false)}
                           >
@@ -119,7 +123,7 @@ export function Header() {
                     resourcesDropdown.items.map((item) => (
                       <Link
                         key={item.href}
-                        href={item.href}
+                        href={localizeHref(item.href, locale)}
                         className="block px-4 py-2 text-sm text-muted hover:text-foreground hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors"
                         onClick={() => setIsResourcesOpen(false)}
                       >
@@ -134,7 +138,7 @@ export function Header() {
 
             {/* Secondary Nav Items */}
             {secondaryNav.map((item) => (
-              <Link key={item.href} href={item.href} className={linkClass}>
+              <Link key={item.href} href={localizeHref(item.href, locale)} className={linkClass}>
                 {t(item.labelKey)}
               </Link>
             ))}
@@ -196,12 +200,7 @@ export function Header() {
                 onClick={() => {
                   setIsMenuOpen(false);
                   setTimeout(() => {
-                    const event = new KeyboardEvent("keydown", {
-                      key: "k",
-                      metaKey: true,
-                      bubbles: true,
-                    });
-                    document.dispatchEvent(event);
+                    openCommandPalette("mobile_menu");
                   }, 100);
                 }}
                 className="flex items-center gap-2 px-3 py-2 text-sm text-muted border border-border rounded-md hover:border-foreground/50 transition-colors"
@@ -217,7 +216,7 @@ export function Header() {
               {mainNav.map((item) => (
                 <Link
                   key={item.href}
-                  href={item.href}
+                  href={localizeHref(item.href, locale)}
                   className={linkClass}
                   onClick={() => setIsMenuOpen(false)}
                 >
@@ -255,7 +254,7 @@ export function Header() {
                               {group.items.map((item) => (
                                 <Link
                                   key={item.href}
-                                  href={item.href}
+                                  href={localizeHref(item.href, locale)}
                                   className={`block py-2 ${linkClass}`}
                                   onClick={() => setIsMenuOpen(false)}
                                 >
@@ -269,7 +268,7 @@ export function Header() {
                         group.items.map((item) => (
                           <Link
                             key={item.href}
-                            href={item.href}
+                            href={localizeHref(item.href, locale)}
                             className={`block py-2 ${linkClass}`}
                             onClick={() => setIsMenuOpen(false)}
                           >
@@ -300,7 +299,7 @@ export function Header() {
                 {secondaryNav.map((item) => (
                   <Link
                     key={item.href}
-                    href={item.href}
+                    href={localizeHref(item.href, locale)}
                     className={`block py-2 ${linkClass}`}
                     onClick={() => setIsMenuOpen(false)}
                   >

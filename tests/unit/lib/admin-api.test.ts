@@ -11,6 +11,7 @@ type ServerUser = Awaited<ReturnType<typeof getServerUser>>;
 
 const ORIGINAL_ADMIN_USER_IDS = process.env.ADMIN_USER_IDS;
 const ORIGINAL_ADMIN_API_TOKEN = process.env.ADMIN_API_TOKEN;
+const ORIGINAL_DEV_BYPASS = process.env.ADMIN_DEV_BYPASS;
 
 afterEach(() => {
   mockedGetServerUser.mockReset();
@@ -25,6 +26,12 @@ afterEach(() => {
     delete process.env.ADMIN_API_TOKEN;
   } else {
     process.env.ADMIN_API_TOKEN = ORIGINAL_ADMIN_API_TOKEN;
+  }
+
+  if (ORIGINAL_DEV_BYPASS === undefined) {
+    delete process.env.ADMIN_DEV_BYPASS;
+  } else {
+    process.env.ADMIN_DEV_BYPASS = ORIGINAL_DEV_BYPASS;
   }
 });
 
@@ -87,9 +94,10 @@ describe("admin api access", () => {
     expect(result.status).toBe(403);
   });
 
-  it("allows local development fallback when admin config is missing", async () => {
+  it("allows local development fallback when admin config is missing and bypass is set", async () => {
     delete process.env.ADMIN_USER_IDS;
     delete process.env.ADMIN_API_TOKEN;
+    process.env.ADMIN_DEV_BYPASS = "true";
 
     const request = new Request("https://stylekit.top/api/admin/submissions");
     const result = await checkAdminApiAccess(request, { nodeEnv: "development" });
@@ -97,5 +105,16 @@ describe("admin api access", () => {
     expect(result.allowed).toBe(true);
     expect(result.actor).toEqual({ type: "dev-bypass", id: "dev-bypass" });
     expect(mockedGetServerUser).not.toHaveBeenCalled();
+  });
+
+  it("denies local development when bypass is not set", async () => {
+    delete process.env.ADMIN_USER_IDS;
+    delete process.env.ADMIN_API_TOKEN;
+    delete process.env.ADMIN_DEV_BYPASS;
+
+    const request = new Request("https://stylekit.top/api/admin/submissions");
+    const result = await checkAdminApiAccess(request, { nodeEnv: "development" });
+
+    expect(result.allowed).toBe(false);
   });
 });

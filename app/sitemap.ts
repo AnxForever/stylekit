@@ -5,31 +5,20 @@ import { getAllStylesMeta } from "@/lib/styles/meta";
 import { getAllAnimationsMeta } from "@/lib/animations/meta";
 import { getAllTopicSlugs } from "@/lib/prompts";
 import { getAllPosts } from "@/lib/blog";
+import {
+  getAlternateLocalePath,
+  getBaseUrl,
+  getLocaleHtmlLang,
+  LOCALES,
+} from "@/lib/i18n/routing";
 
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://stylekit.top";
+const BASE_URL = getBaseUrl();
 
 function getTemplateSlugs(): string[] {
   const templatesDir = join(process.cwd(), "app/templates");
   return readdirSync(templatesDir, { withFileTypes: true })
     .filter((directoryEntry) => directoryEntry.isDirectory())
     .map((directoryEntry) => directoryEntry.name);
-}
-
-const ALTERNATE_REFS = [
-  { hreflang: "en", href: BASE_URL },
-  { hreflang: "zh-CN", href: BASE_URL },
-  { hreflang: "x-default", href: BASE_URL },
-];
-
-function withAlternates(entry: MetadataRoute.Sitemap[number]): MetadataRoute.Sitemap[number] {
-  return {
-    ...entry,
-    alternates: {
-      languages: Object.fromEntries(
-        ALTERNATE_REFS.map((ref) => [ref.hreflang, ref.href + new URL(entry.url).pathname])
-      ),
-    },
-  };
 }
 
 export default function sitemap(): MetadataRoute.Sitemap {
@@ -44,74 +33,85 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const CONTENT_UPDATED = new Date("2026-03-15");
   const TOOLS_UPDATED = new Date("2026-03-01");
 
+  const createLocalizedEntries = (
+    pathname: string,
+    lastModified: Date,
+    changeFrequency: MetadataRoute.Sitemap[number]["changeFrequency"],
+    priority: number
+  ): MetadataRoute.Sitemap =>
+    LOCALES.map((locale) => ({
+      url: `${BASE_URL}${getAlternateLocalePath(pathname, locale)}`,
+      lastModified,
+      changeFrequency,
+      priority,
+      alternates: {
+        languages: Object.fromEntries(
+          LOCALES.map((entry) => [
+            getLocaleHtmlLang(entry),
+            `${BASE_URL}${getAlternateLocalePath(pathname, entry)}`,
+          ])
+        ),
+      },
+    }));
+
   const staticPages: MetadataRoute.Sitemap = [
-    { url: BASE_URL, lastModified: CONTENT_UPDATED, changeFrequency: "weekly", priority: 1 },
-    { url: `${BASE_URL}/styles`, lastModified: CONTENT_UPDATED, changeFrequency: "weekly", priority: 0.9 },
-    { url: `${BASE_URL}/ui-prompts`, lastModified: CONTENT_UPDATED, changeFrequency: "weekly", priority: 0.9 },
-    { url: `${BASE_URL}/landing-page-prompts`, lastModified: CONTENT_UPDATED, changeFrequency: "weekly", priority: 0.8 },
-    { url: `${BASE_URL}/dashboard-prompts`, lastModified: CONTENT_UPDATED, changeFrequency: "weekly", priority: 0.8 },
-    { url: `${BASE_URL}/tailwind-ui-prompts`, lastModified: CONTENT_UPDATED, changeFrequency: "weekly", priority: 0.8 },
-    { url: `${BASE_URL}/dark-mode-ui-prompts`, lastModified: CONTENT_UPDATED, changeFrequency: "weekly", priority: 0.8 },
-    { url: `${BASE_URL}/create-style`, lastModified: TOOLS_UPDATED, changeFrequency: "weekly", priority: 0.8 },
-    { url: `${BASE_URL}/animations`, lastModified: CONTENT_UPDATED, changeFrequency: "weekly", priority: 0.8 },
-    { url: `${BASE_URL}/templates`, lastModified: CONTENT_UPDATED, changeFrequency: "weekly", priority: 0.7 },
-    { url: `${BASE_URL}/compare`, lastModified: TOOLS_UPDATED, changeFrequency: "monthly", priority: 0.6 },
-    { url: `${BASE_URL}/blend`, lastModified: TOOLS_UPDATED, changeFrequency: "monthly", priority: 0.6 },
-    { url: `${BASE_URL}/analyze`, lastModified: TOOLS_UPDATED, changeFrequency: "monthly", priority: 0.6 },
-    { url: `${BASE_URL}/docs`, lastModified: TOOLS_UPDATED, changeFrequency: "monthly", priority: 0.6 },
-    { url: `${BASE_URL}/developers`, lastModified: TOOLS_UPDATED, changeFrequency: "monthly", priority: 0.6 },
-    { url: `${BASE_URL}/developers/api`, lastModified: TOOLS_UPDATED, changeFrequency: "monthly", priority: 0.6 },
-    { url: `${BASE_URL}/guide`, lastModified: TOOLS_UPDATED, changeFrequency: "monthly", priority: 0.6 },
-    { url: `${BASE_URL}/components`, lastModified: CONTENT_UPDATED, changeFrequency: "weekly", priority: 0.6 },
-    { url: `${BASE_URL}/about`, lastModified: TOOLS_UPDATED, changeFrequency: "monthly", priority: 0.4 },
-    { url: `${BASE_URL}/blog`, lastModified: CONTENT_UPDATED, changeFrequency: "weekly", priority: 0.7 },
-    { url: `${BASE_URL}/changelog`, lastModified: CONTENT_UPDATED, changeFrequency: "monthly", priority: 0.5 },
+    ...createLocalizedEntries("/", CONTENT_UPDATED, "weekly", 1),
+    ...createLocalizedEntries("/styles", CONTENT_UPDATED, "weekly", 0.9),
+    ...createLocalizedEntries("/ui-prompts", CONTENT_UPDATED, "weekly", 0.9),
+    ...createLocalizedEntries("/landing-page-prompts", CONTENT_UPDATED, "weekly", 0.8),
+    ...createLocalizedEntries("/dashboard-prompts", CONTENT_UPDATED, "weekly", 0.8),
+    ...createLocalizedEntries("/tailwind-ui-prompts", CONTENT_UPDATED, "weekly", 0.8),
+    ...createLocalizedEntries("/dark-mode-ui-prompts", CONTENT_UPDATED, "weekly", 0.8),
+    ...createLocalizedEntries("/create-style", TOOLS_UPDATED, "weekly", 0.8),
+    ...createLocalizedEntries("/animations", CONTENT_UPDATED, "weekly", 0.8),
+    ...createLocalizedEntries("/templates", CONTENT_UPDATED, "weekly", 0.7),
+    ...createLocalizedEntries("/compare", TOOLS_UPDATED, "monthly", 0.6),
+    ...createLocalizedEntries("/blend", TOOLS_UPDATED, "monthly", 0.6),
+    ...createLocalizedEntries("/analyze", TOOLS_UPDATED, "monthly", 0.6),
+    ...createLocalizedEntries("/docs", TOOLS_UPDATED, "monthly", 0.6),
+    ...createLocalizedEntries("/developers", TOOLS_UPDATED, "monthly", 0.6),
+    ...createLocalizedEntries("/developers/api", TOOLS_UPDATED, "monthly", 0.6),
+    ...createLocalizedEntries("/guide", TOOLS_UPDATED, "monthly", 0.6),
+    ...createLocalizedEntries("/components", CONTENT_UPDATED, "weekly", 0.6),
+    ...createLocalizedEntries("/about", TOOLS_UPDATED, "monthly", 0.4),
+    ...createLocalizedEntries("/contact", TOOLS_UPDATED, "monthly", 0.4),
+    ...createLocalizedEntries("/privacy", TOOLS_UPDATED, "yearly", 0.2),
+    ...createLocalizedEntries("/terms", TOOLS_UPDATED, "yearly", 0.2),
+    ...createLocalizedEntries("/blog", CONTENT_UPDATED, "weekly", 0.7),
+    ...createLocalizedEntries("/changelog", CONTENT_UPDATED, "monthly", 0.5),
   ];
 
-  const stylePages: MetadataRoute.Sitemap = styles.map((style) => ({
-    url: `${BASE_URL}/styles/${style.slug}`,
-    lastModified: CONTENT_UPDATED,
-    changeFrequency: "weekly" as const,
-    priority: 0.8,
-  }));
+  const stylePages: MetadataRoute.Sitemap = styles.flatMap((style) =>
+    createLocalizedEntries(`/styles/${style.slug}`, CONTENT_UPDATED, "weekly", 0.8)
+  );
 
-  const showcasePages: MetadataRoute.Sitemap = styles.map((style) => ({
-    url: `${BASE_URL}/styles/${style.slug}/showcase`,
-    lastModified: CONTENT_UPDATED,
-    changeFrequency: "monthly" as const,
-    priority: 0.6,
-  }));
+  const showcasePages: MetadataRoute.Sitemap = styles.flatMap((style) =>
+    createLocalizedEntries(`/styles/${style.slug}/showcase`, CONTENT_UPDATED, "monthly", 0.6)
+  );
 
-  const templatePages: MetadataRoute.Sitemap = getTemplateSlugs().map((slug) => ({
-    url: `${BASE_URL}/templates/${slug}`,
-    lastModified: CONTENT_UPDATED,
-    changeFrequency: "monthly" as const,
-    priority: 0.6,
-  }));
+  const templatePages: MetadataRoute.Sitemap = getTemplateSlugs().flatMap((slug) =>
+    createLocalizedEntries(`/templates/${slug}`, CONTENT_UPDATED, "monthly", 0.6)
+  );
 
   const promptPages: MetadataRoute.Sitemap = getAllTopicSlugs()
     .filter((slug) => !redirectedPromptSlugs.has(slug))
-    .map((slug) => ({
-      url: `${BASE_URL}/prompts/${slug}`,
-      lastModified: CONTENT_UPDATED,
-      changeFrequency: "weekly" as const,
-      priority: 0.8,
-    }));
+    .flatMap((slug) =>
+      createLocalizedEntries(`/prompts/${slug}`, CONTENT_UPDATED, "weekly", 0.8)
+    );
 
-  const animationPages: MetadataRoute.Sitemap = getAllAnimationsMeta().map((anim) => ({
-    url: `${BASE_URL}/animations/${anim.slug}`,
-    lastModified: CONTENT_UPDATED,
-    changeFrequency: "weekly" as const,
-    priority: 0.7,
-  }));
+  const animationPages: MetadataRoute.Sitemap = getAllAnimationsMeta().flatMap((anim) =>
+    createLocalizedEntries(`/animations/${anim.slug}`, CONTENT_UPDATED, "weekly", 0.7)
+  );
 
   const blogPosts = getAllPosts();
-  const blogPostPages: MetadataRoute.Sitemap = blogPosts.map((post) => ({
-    url: `${BASE_URL}/blog/${post.slug}`,
-    lastModified: post.date ? new Date(post.date) : CONTENT_UPDATED,
-    changeFrequency: "monthly" as const,
-    priority: 0.6,
-  }));
+  const blogPostPages: MetadataRoute.Sitemap = blogPosts.flatMap((post) =>
+    createLocalizedEntries(
+      `/blog/${post.slug}`,
+      post.date ? new Date(post.date) : CONTENT_UPDATED,
+      "monthly",
+      0.6
+    )
+  );
 
   return [
     ...staticPages,
@@ -121,5 +121,5 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...promptPages,
     ...animationPages,
     ...blogPostPages,
-  ].map(withAlternates);
+  ];
 }

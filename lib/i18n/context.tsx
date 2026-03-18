@@ -3,11 +3,16 @@
 import {
   createContext,
   useContext,
-  useState,
   useEffect,
   ReactNode,
+  useState,
 } from "react";
+import { usePathname } from "next/navigation";
 import { Locale, translations, TranslationKey } from "./translations";
+import {
+  getLocaleFromPathname,
+  LOCALE_COOKIE_NAME,
+} from "./routing";
 
 interface I18nContextType {
   locale: Locale;
@@ -17,30 +22,40 @@ interface I18nContextType {
 
 const I18nContext = createContext<I18nContextType | null>(null);
 
-const DEFAULT_LOCALE: Locale = "zh";
+const DEFAULT_LOCALE: Locale = "en";
+const LOCALE_STORAGE_KEY = "stylekit-locale";
 
-function getSavedLocale(): Locale {
+function persistLocale(locale: Locale) {
+  if (typeof window === "undefined") return;
+
   try {
-    const saved = localStorage.getItem("stylekit-locale") as Locale | null;
-    return saved === "zh" || saved === "en" ? saved : DEFAULT_LOCALE;
+    localStorage.setItem(LOCALE_STORAGE_KEY, locale);
   } catch {
-    return DEFAULT_LOCALE;
+    // Ignore localStorage access issues.
   }
+
+  document.cookie = `${LOCALE_COOKIE_NAME}=${locale}; path=/; max-age=${60 * 60 * 24 * 365}; samesite=lax`;
 }
 
-export function I18nProvider({ children }: { children: ReactNode }) {
-  const [locale, setLocaleState] = useState<Locale>(DEFAULT_LOCALE);
+export function I18nProvider({
+  children,
+  initialLocale,
+}: {
+  children: ReactNode;
+  initialLocale: Locale;
+}) {
+  const pathname = usePathname();
+  const [preferredLocale, setPreferredLocale] = useState<Locale>(initialLocale);
+  const pathnameLocale = pathname ? getLocaleFromPathname(pathname) : null;
+  const locale = pathnameLocale ?? preferredLocale ?? DEFAULT_LOCALE;
 
   useEffect(() => {
-    const saved = getSavedLocale();
-    if (saved !== DEFAULT_LOCALE) {
-      setLocaleState(saved);
-    }
-  }, []);
+    persistLocale(locale);
+  }, [locale]);
 
   const setLocale = (newLocale: Locale) => {
-    setLocaleState(newLocale);
-    localStorage.setItem("stylekit-locale", newLocale);
+    setPreferredLocale(newLocale);
+    persistLocale(newLocale);
   };
 
   const t = (key: TranslationKey): string => {

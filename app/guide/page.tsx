@@ -1,7 +1,7 @@
 "use client";
 
-import Link from "next/link";
 import { ArrowRight, Code2, Palette, WandSparkles } from "lucide-react";
+import { LocalizedLink } from "@/components/i18n/localized-link";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { useI18n } from "@/lib/i18n/context";
@@ -60,13 +60,13 @@ export default function GuidePage() {
                     <h2 className="text-xl font-medium">{step.title}</h2>
                   </div>
                   <p className="text-sm text-muted leading-relaxed mb-6">{step.description}</p>
-                  <Link
+                  <LocalizedLink
                     href={step.href}
                     className="inline-flex items-center gap-2 text-sm border border-border px-3 py-2 hover:border-foreground transition-colors"
                   >
                     {step.cta}
                     <ArrowRight className="w-4 h-4" />
-                  </Link>
+                  </LocalizedLink>
                 </article>
               ))}
             </div>
@@ -84,12 +84,12 @@ export default function GuidePage() {
                   {t("guide.apiDesc")}
                 </p>
               </div>
-              <Link
+              <LocalizedLink
                 href="/developers"
                 className="inline-flex items-center justify-center px-5 py-3 bg-foreground text-background text-sm tracking-wide hover:bg-foreground/90 transition-colors"
               >
                 {t("guide.apiCta")}
-              </Link>
+              </LocalizedLink>
             </div>
           </div>
         </section>

@@ -22,20 +22,15 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   }
 
   const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://stylekit.top";
-  const url = `${BASE_URL}/animations/${slug}`;
   const description = `${animation.descriptionEn} CSS keyframes and Tailwind utility classes included.`;
 
   return {
     title: `${animation.nameEn} - CSS Animation Pattern`,
     description,
-    keywords: animation.keywords,
-    alternates: {
-      canonical: url,
-    },
+    keywords: animation.keywords,
     openGraph: {
       title: `${animation.nameEn} Animation - StyleKit`,
       description,
-      url,
       type: "article",
       images: [
         {

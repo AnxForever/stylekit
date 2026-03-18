@@ -41,9 +41,6 @@ const REQUIRED_RECIPE_COMPONENTS = [
 ] as const;
 
 const MAX_RECIPE = 30;
-const MAX_CSS = 25;
-const MAX_DEFINITION = 30;
-const MAX_COLOR = 15;
 
 // -- Scoring Functions --------------------------------------------------------
 

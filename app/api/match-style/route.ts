@@ -2,6 +2,11 @@ import { NextRequest, NextResponse } from "next/server";
 import { importExtractorTheme } from "@/lib/migration/extractor-importer";
 import { findClosestStyles } from "@/lib/styles/style-diff";
 import { verifyTrustedOrigin } from "@/lib/security/request-origin";
+import {
+  checkRateLimit,
+  createRateLimitHeaders,
+  getRequestClientKey,
+} from "@/lib/security/rate-limit";
 
 /**
  * POST /api/match-style
@@ -18,6 +23,19 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(
       { error: originCheck.error },
       { status: originCheck.status ?? 403 }
+    );
+  }
+
+  const rateLimit = checkRateLimit({
+    namespace: "match-style",
+    key: getRequestClientKey(request),
+    limit: 20,
+    windowMs: 60 * 1000,
+  });
+  if (!rateLimit.allowed) {
+    return NextResponse.json(
+      { error: "Too many requests. Try again later." },
+      { status: 429, headers: createRateLimitHeaders(rateLimit) },
     );
   }
 

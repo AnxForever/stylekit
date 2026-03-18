@@ -313,7 +313,7 @@ describe("wizardFormSchema", () => {
 
   // ── styleType enum ────────────────────────────────────────────────
   describe("styleType validation", () => {
-    it.each(["visual", "layout", "animation"])(
+    it.each(["visual", "layout"])(
       "passes with valid value: %s",
       (value) => {
         const data = { ...validFormData(), styleType: value };

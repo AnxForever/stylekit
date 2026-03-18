@@ -19,7 +19,7 @@ export function isAdminUserId(
 ): boolean {
   const adminIds = getAdminUserIds();
   if (adminIds.length === 0) {
-    return nodeEnv !== "production";
+    return nodeEnv !== "production" && process.env.ADMIN_DEV_BYPASS === "true";
   }
 
   return adminIds.includes(userId);

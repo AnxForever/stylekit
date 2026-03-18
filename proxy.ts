@@ -10,15 +10,98 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { createServerClient } from "@supabase/ssr";
 import { isAdminUserId } from "@/lib/auth/admin-policy";
+import {
+  addLocaleToPathname,
+  DEFAULT_LOCALE,
+  detectPreferredLocale,
+  getLocaleFromPathname,
+  isLocale,
+  LOCALE_COOKIE_NAME,
+  shouldBypassLocale,
+  stripLocaleFromPathname,
+} from "@/lib/i18n/routing";
+
+function shouldUseLocalizedFilesystemRoute(pathname: string): boolean {
+  return (
+    pathname === "/" ||
+    pathname.startsWith("/styles") ||
+    pathname === "/ui-prompts" ||
+    pathname === "/landing-page-prompts" ||
+    pathname === "/dashboard-prompts" ||
+    pathname === "/tailwind-ui-prompts" ||
+    pathname === "/dark-mode-ui-prompts" ||
+    pathname.startsWith("/prompts") ||
+    pathname.startsWith("/blog") ||
+    pathname.startsWith("/animations")
+  );
+}
 
 export async function proxy(request: NextRequest) {
+  const incomingPath = request.nextUrl.pathname;
+  const localeInPath = getLocaleFromPathname(incomingPath);
+  const strippedPath = localeInPath
+    ? stripLocaleFromPathname(incomingPath)
+    : incomingPath;
+  const effectivePath = strippedPath;
+
+  if (localeInPath && shouldBypassLocale(strippedPath)) {
+    const redirectUrl = request.nextUrl.clone();
+    redirectUrl.pathname = strippedPath;
+    return NextResponse.redirect(redirectUrl);
+  }
+
+  if (!localeInPath && !shouldBypassLocale(incomingPath)) {
+    const preferredLocaleCookie = request.cookies.get(LOCALE_COOKIE_NAME)?.value;
+    const preferredLocale = isLocale(preferredLocaleCookie)
+      ? preferredLocaleCookie
+      : detectPreferredLocale(request.headers.get("accept-language"));
+    const redirectUrl = request.nextUrl.clone();
+    redirectUrl.pathname = addLocaleToPathname(incomingPath, preferredLocale || DEFAULT_LOCALE);
+    const response = NextResponse.redirect(redirectUrl);
+    response.cookies.set(LOCALE_COOKIE_NAME, preferredLocale || DEFAULT_LOCALE, {
+      path: "/",
+      sameSite: "lax",
+      maxAge: 60 * 60 * 24 * 365,
+    });
+    return response;
+  }
+
   // Block /api-test in production
   if (
     process.env.NODE_ENV === "production" &&
-    request.nextUrl.pathname.startsWith("/api-test")
+    effectivePath.startsWith("/api-test")
   ) {
     return new NextResponse("Not Found", { status: 404 });
   }
+
+  const requestHeaders = new Headers(request.headers);
+  if (localeInPath) {
+    requestHeaders.set("x-stylekit-locale", localeInPath);
+    requestHeaders.set("x-stylekit-visible-path", incomingPath);
+  } else {
+    requestHeaders.set("x-stylekit-locale", DEFAULT_LOCALE);
+    requestHeaders.set("x-stylekit-visible-path", incomingPath);
+  }
+
+  const buildResponse = () => {
+    if (localeInPath) {
+      if (shouldUseLocalizedFilesystemRoute(strippedPath)) {
+        return NextResponse.next({
+          request: { headers: requestHeaders },
+        });
+      }
+
+      const rewriteUrl = request.nextUrl.clone();
+      rewriteUrl.pathname = strippedPath;
+      return NextResponse.rewrite(rewriteUrl, {
+        request: { headers: requestHeaders },
+      });
+    }
+
+    return NextResponse.next({
+      request: { headers: requestHeaders },
+    });
+  };
 
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
@@ -27,17 +110,25 @@ export async function proxy(request: NextRequest) {
   if (!url || !key) {
     if (
       process.env.NODE_ENV === "production" &&
-      request.nextUrl.pathname.startsWith("/admin")
+      effectivePath.startsWith("/admin")
     ) {
       const redirectUrl = request.nextUrl.clone();
       redirectUrl.pathname = "/";
       return NextResponse.redirect(redirectUrl);
     }
 
-    return NextResponse.next();
+    const response = buildResponse();
+    if (localeInPath) {
+      response.cookies.set(LOCALE_COOKIE_NAME, localeInPath, {
+        path: "/",
+        sameSite: "lax",
+        maxAge: 60 * 60 * 24 * 365,
+      });
+    }
+    return response;
   }
 
-  let supabaseResponse = NextResponse.next({ request });
+  let supabaseResponse = buildResponse();
 
   const supabase = createServerClient(url, key, {
     cookies: {
@@ -48,7 +139,7 @@ export async function proxy(request: NextRequest) {
         for (const { name, value } of cookiesToSet) {
           request.cookies.set(name, value);
         }
-        supabaseResponse = NextResponse.next({ request });
+        supabaseResponse = buildResponse();
         for (const { name, value, options } of cookiesToSet) {
           supabaseResponse.cookies.set(name, value, options);
         }
@@ -69,7 +160,7 @@ export async function proxy(request: NextRequest) {
     } = await supabase.auth.getUser();
 
     // Protect /admin routes
-    if (request.nextUrl.pathname.startsWith("/admin")) {
+    if (effectivePath.startsWith("/admin")) {
       if (!user) {
         const redirectUrl = request.nextUrl.clone();
         redirectUrl.pathname = "/";
@@ -82,11 +173,19 @@ export async function proxy(request: NextRequest) {
         return NextResponse.redirect(redirectUrl);
       }
     }
-  } else if (request.nextUrl.pathname.startsWith("/admin")) {
+  } else if (effectivePath.startsWith("/admin")) {
     // No auth cookie + admin route = redirect immediately
     const redirectUrl = request.nextUrl.clone();
     redirectUrl.pathname = "/";
     return NextResponse.redirect(redirectUrl);
+  }
+
+  if (localeInPath) {
+    supabaseResponse.cookies.set(LOCALE_COOKIE_NAME, localeInPath, {
+      path: "/",
+      sameSite: "lax",
+      maxAge: 60 * 60 * 24 * 365,
+    });
   }
 
   return supabaseResponse;

@@ -9,9 +9,6 @@ export const metadata: Metadata = {
   title: "CSS Animation Patterns | Copy-Ready Code Snippets",
   description:
     "Browse CSS animation patterns with code snippets ready to copy. Each animation includes CSS keyframes and Tailwind utility classes for modern web projects.",
-  alternates: {
-    canonical: `${process.env.NEXT_PUBLIC_BASE_URL || "https://stylekit.top"}/animations`,
-  },
 };
 
 export default function AnimationsPage() {

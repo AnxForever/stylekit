@@ -13,15 +13,12 @@
  * Usage: node tools/scripts/migrate-animations.mjs
  */
 
-import { readFileSync, writeFileSync, mkdirSync, existsSync, renameSync, readdirSync } from "fs";
-import { join, basename } from "path";
+import { readFileSync, writeFileSync, mkdirSync, existsSync, readdirSync } from "fs";
+import { join } from "path";
 
 const ANIM_DIR = "lib/animations";
 const LEGACY_DIR = join(ANIM_DIR, "_legacy");
 const PREVIEW_DIR = join(ANIM_DIR, "previews");
-
-// Already migrated directories — skip these
-const SKIP = new Set(["_legacy", "previews", "scroll-page-turn", "scroll-peel-away", "flip-card"]);
 
 // Discover slugs from flat .ts files (exclude types, index, meta)
 const EXCLUDE_FILES = new Set(["types.ts", "index.ts", "meta.ts"]);
@@ -31,13 +28,6 @@ function discoverSlugs() {
     (f) => f.endsWith(".ts") && !EXCLUDE_FILES.has(f) && !f.startsWith("_")
   );
   return files.map((f) => f.replace(".ts", ""));
-}
-
-function toPascalCase(slug) {
-  return slug
-    .split("-")
-    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
-    .join("");
 }
 
 function toCamelCase(slug) {

@@ -25,14 +25,10 @@ export const metadata: Metadata = {
     "AI landing page design prompt",
     "startup landing page prompt",
   ],
-  alternates: {
-    canonical: `${BASE_URL}/landing-page-prompts`,
-  },
   openGraph: {
     title: "Landing Page Prompts | StyleKit",
     description:
       "Copyable landing page prompts for SaaS products, startup launches, waitlists, and conversion-focused website design.",
-    url: `${BASE_URL}/landing-page-prompts`,
     siteName: "StyleKit",
     type: "article",
   },
@@ -110,7 +106,7 @@ export default function LandingPagePromptsPage() {
         >
           <PromptTemplatePreviewSection
             title="Example previews and starter templates"
-            description="把这些模板当作 landing page prompt 的结构参考：hero、proof、pricing、FAQ、CTA 节奏，比单纯说“做个落地页”更容易拿到可用结果。"
+            description="Treat these templates as landing page structure references: hero, social proof, pricing, FAQ, and CTA rhythm usually produce better prompts than a generic landing page brief."
             templates={landingPageTemplates}
           />
         </PromptTopicContent>

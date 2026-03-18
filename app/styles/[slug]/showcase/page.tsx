@@ -13,17 +13,14 @@ export async function generateMetadata({
   const resolved = await resolveStyleBySlug(slug);
   if (!resolved) return { title: "Showcase Not Found" };
   const style = resolved.style;
-  const url = `${BASE_URL}/styles/${slug}/showcase`;
   const description = `Live demonstration of ${style.nameEn} design style with interactive components, color palettes, and typography.`;
   return {
     title: `${style.nameEn} Showcase`,
     description,
     keywords: [style.nameEn, "showcase", "design style", "UI components", "live demo"],
-    alternates: { canonical: url },
     openGraph: {
       title: `${style.nameEn} Showcase — StyleKit`,
       description,
-      url,
       siteName: "StyleKit",
       type: "website",
     },

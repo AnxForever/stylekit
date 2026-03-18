@@ -7,9 +7,6 @@ export const metadata: Metadata = {
   title: "Create Style",
   description:
     "Create a custom style or import style-extractor results, then reuse it in the generator.",
-  alternates: {
-    canonical: `${process.env.NEXT_PUBLIC_BASE_URL || "https://stylekit.top"}/create-style`,
-  },
 };
 
 const StyleCreatorClient = dynamic(

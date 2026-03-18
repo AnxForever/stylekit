@@ -1,10 +1,8 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+import { LocalizedLink } from "@/components/i18n/localized-link";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { promptTopics } from "@/lib/prompts";
-
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://stylekit.top";
 
 export const metadata: Metadata = {
   title: "UI Design Prompts Library",
@@ -21,14 +19,10 @@ export const metadata: Metadata = {
     "Tailwind UI prompts",
     "frontend design prompts",
   ],
-  alternates: {
-    canonical: `${BASE_URL}/prompts`,
-  },
   openGraph: {
     title: "UI Design Prompts Library | StyleKit",
     description:
       "130+ curated AI prompts for generating beautiful web interfaces. Optimized for v0, Cursor, Claude, and more.",
-    url: `${BASE_URL}/prompts`,
     siteName: "StyleKit",
     type: "website",
   },
@@ -78,7 +72,7 @@ export default function PromptsPage() {
           <div className="max-w-7xl mx-auto px-6 md:px-12 py-12 md:py-16">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {promptTopics.map((topic) => (
-                <Link
+                <LocalizedLink
                   key={topic.slug}
                   href={`/prompts/${topic.slug}`}
                   className="group border border-border p-6 hover:border-foreground transition-colors"
@@ -93,7 +87,7 @@ export default function PromptsPage() {
                     <span>{topic.prompts.length} prompts</span>
                     <span>{topic.relatedStyleSlugs.length} styles</span>
                   </div>
-                </Link>
+                </LocalizedLink>
               ))}
             </div>
           </div>
@@ -109,12 +103,12 @@ export default function PromptsPage() {
               Each prompt topic links to StyleKit styles with full design
               tokens, component recipes, and exportable AI Rules.
             </p>
-            <Link
+            <LocalizedLink
               href="/styles"
               className="inline-block border-2 border-foreground px-6 py-3 font-medium hover:bg-foreground hover:text-background transition-colors"
             >
               Browse 120+ Styles
-            </Link>
+            </LocalizedLink>
           </div>
         </section>
       </main>

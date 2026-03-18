@@ -3,6 +3,8 @@
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { Home, Palette, LayoutTemplate, Menu } from "lucide-react";
+import { useI18n } from "@/lib/i18n/context";
+import { localizeHref, stripLocaleFromPathname } from "@/lib/i18n/routing";
 
 const tabs = [
   { href: "/", icon: Home, label: "Home", match: (p: string) => p === "/" },
@@ -12,6 +14,8 @@ const tabs = [
 
 export function MobileBottomNav() {
   const pathname = usePathname();
+  const { locale } = useI18n();
+  const visiblePath = stripLocaleFromPathname(pathname || "/");
 
   const handleMenuClick = () => {
     // Dispatch Cmd+K to open command palette as "More" action
@@ -30,11 +34,11 @@ export function MobileBottomNav() {
     >
       <div className="flex items-center justify-around h-14 pb-[env(safe-area-inset-bottom)]">
         {tabs.map((tab) => {
-          const isActive = tab.match(pathname);
+          const isActive = tab.match(visiblePath);
           return (
             <Link
               key={tab.href}
-              href={tab.href}
+              href={localizeHref(tab.href, locale)}
               className={`flex flex-col items-center justify-center gap-0.5 min-w-[64px] min-h-[44px] text-xs transition-colors ${
                 isActive ? "text-foreground" : "text-muted"
               }`}

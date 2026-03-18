@@ -1,8 +1,11 @@
 import type { Metadata } from "next";
+import { readdirSync } from "fs";
+import { join } from "path";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { HomeContent } from "@/components/home/home-content";
 import { getAllStylesMeta } from "@/lib/styles/meta";
+import { getAllAnimationsMeta } from "@/lib/animations/meta";
 
 export const metadata: Metadata = {
   title: "StyleKit - UI Design Prompts, Visual Styles & AI-Friendly Design System",
@@ -15,19 +18,27 @@ export const metadata: Metadata = {
     "website style guides",
     "Tailwind UI prompts",
   ],
-  alternates: {
-    canonical: process.env.NEXT_PUBLIC_BASE_URL || "https://stylekit.top",
-  },
 };
+
+function getTemplateCount() {
+  return readdirSync(join(process.cwd(), "app/templates"), { withFileTypes: true })
+    .filter((entry) => entry.isDirectory())
+    .length;
+}
 
 export default function Home() {
   const styles = getAllStylesMeta();
+  const stats = {
+    styles: styles.length,
+    animations: getAllAnimationsMeta().length,
+    templates: getTemplateCount(),
+  };
 
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
       <main className="flex-1">
-        <HomeContent styles={styles} />
+        <HomeContent styles={styles} stats={stats} />
       </main>
       <Footer />
     </div>
