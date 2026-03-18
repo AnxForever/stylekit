@@ -17,7 +17,7 @@ export const dynamic = "force-static";
 
 export default function StylesPage() {
   const allStyles = getAllStylesMeta();
-  const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://stylekit.top";
+  const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://www.stylekit.top";
 
   const breadcrumbJsonLd = generateBreadcrumbJsonLd([
     { name: "Home", url: BASE_URL },

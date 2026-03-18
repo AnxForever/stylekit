@@ -44,7 +44,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     notFound();
   }
 
-  const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://stylekit.top";
+  const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://www.stylekit.top";
   const articleJsonLd = generateBlogPostJsonLd(post);
   const breadcrumbJsonLd = generateBreadcrumbJsonLd([
     { name: "Home", url: BASE_URL },

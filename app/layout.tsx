@@ -16,7 +16,7 @@ export const viewport: Viewport = {
   themeColor: "#000000",
 };
 
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://stylekit.top";
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://www.stylekit.top";
 const LOCALE_BOOTSTRAP_SCRIPT = `
 (() => {
   try {

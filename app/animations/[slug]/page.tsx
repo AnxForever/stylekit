@@ -21,7 +21,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     return { title: "Animation Not Found" };
   }
 
-  const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://stylekit.top";
+  const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://www.stylekit.top";
   const description = `${animation.descriptionEn} CSS keyframes and Tailwind utility classes included.`;
 
   return {
@@ -62,7 +62,7 @@ export default async function AnimationDetailPage({
     notFound();
   }
 
-  const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://stylekit.top";
+  const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://www.stylekit.top";
 
   const jsonLd = {
     "@context": "https://schema.org",
