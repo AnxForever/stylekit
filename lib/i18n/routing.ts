@@ -110,7 +110,7 @@ export function detectPreferredLocale(
 }
 
 export function getBaseUrl(): string {
-  return process.env.NEXT_PUBLIC_BASE_URL || "https://stylekit.top";
+  return process.env.NEXT_PUBLIC_BASE_URL || "https://www.stylekit.top";
 }
 
 export function getLocaleHtmlLang(locale: Locale): string {

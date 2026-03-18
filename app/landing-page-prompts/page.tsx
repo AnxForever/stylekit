@@ -9,7 +9,7 @@ import { serializeJsonLd } from "@/lib/security/json-ld";
 import { landingPageTemplates } from "@/lib/seo/prompt-template-previews";
 import { PromptTopicContent } from "@/app/prompts/[topic]/_content";
 
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://stylekit.top";
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://www.stylekit.top";
 const TOPIC_SLUG = "landing-page";
 
 export const revalidate = 86400;
