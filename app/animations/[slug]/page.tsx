@@ -4,6 +4,7 @@ import { Footer } from "@/components/layout/footer";
 import { Breadcrumb } from "@/components/ui/breadcrumb";
 import { animations, getAnimationBySlug } from "@/lib/animations";
 import { serializeJsonLd } from "@/lib/security/json-ld";
+import { getSiteBaseUrl } from "@/lib/site-url";
 import { AnimationDetailContent } from "./_content";
 
 export function generateStaticParams() {
@@ -21,7 +22,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     return { title: "Animation Not Found" };
   }
 
-  const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://www.stylekit.top";
+  const BASE_URL = getSiteBaseUrl();
   const description = `${animation.descriptionEn} CSS keyframes and Tailwind utility classes included.`;
 
   return {
@@ -62,7 +63,7 @@ export default async function AnimationDetailPage({
     notFound();
   }
 
-  const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://www.stylekit.top";
+  const BASE_URL = getSiteBaseUrl();
 
   const jsonLd = {
     "@context": "https://schema.org",

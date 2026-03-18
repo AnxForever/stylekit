@@ -7,9 +7,10 @@ import { getTopicBySlug } from "@/lib/prompts";
 import { getAllStylesMeta } from "@/lib/styles/meta";
 import { serializeJsonLd } from "@/lib/security/json-ld";
 import { dashboardTemplates } from "@/lib/seo/prompt-template-previews";
+import { getSiteBaseUrl } from "@/lib/site-url";
 import { PromptTopicContent } from "@/app/prompts/[topic]/_content";
 
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://www.stylekit.top";
+const BASE_URL = getSiteBaseUrl();
 const TOPIC_SLUG = "dashboard-design";
 
 export const revalidate = 86400;

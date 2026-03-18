@@ -1,4 +1,6 @@
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://www.stylekit.top";
+import { getSiteBaseUrl } from "@/lib/site-url";
+
+const BASE_URL = getSiteBaseUrl();
 
 function escapeXml(str: string): string {
   return str
