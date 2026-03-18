@@ -77,12 +77,22 @@ export const metadata: Metadata = {
     siteName: "StyleKit",
     title: "StyleKit - UI Design Prompts, Visual Styles & AI-Friendly Design System",
     description: "120+ visual styles with design tokens, component recipes, Tailwind-ready patterns, and AI prompts for beautiful, consistent website UI.",
+    images: [
+      {
+        url: `${BASE_URL}/opengraph-image`,
+        width: 1200,
+        height: 630,
+        alt: "StyleKit - AI-Friendly Design System",
+        type: "image/png",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "StyleKit - UI Design Prompts, Visual Styles & AI-Friendly Design System",
     description: "120+ visual styles with design tokens, component recipes, Tailwind-ready patterns, and AI prompts.",
     creator: "@stylekit",
+    images: [`${BASE_URL}/opengraph-image`],
   },
   robots: {
     index: true,
