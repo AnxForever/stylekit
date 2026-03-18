@@ -22,6 +22,10 @@ import {
 } from "@/lib/i18n/routing";
 
 function shouldUseLocalizedFilesystemRoute(pathname: string): boolean {
+  if (/^\/styles\/[^/]+\/showcase$/.test(pathname)) {
+    return false;
+  }
+
   return (
     pathname === "/" ||
     pathname.startsWith("/styles") ||
