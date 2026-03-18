@@ -92,6 +92,8 @@ export function shouldBypassLocale(pathname: string): boolean {
   if (NON_LOCALIZED_EXACT.has(normalized)) return true;
   if (normalized.startsWith("/feed/")) return true;
   if (FILE_EXTENSION_RE.test(normalized)) return true;
+  // Next.js generated image routes (opengraph-image, twitter-image, icon, etc.)
+  if (/\/(opengraph-image|twitter-image|icon)\b/.test(normalized)) return true;
 
   return NON_LOCALIZED_PREFIXES.some((prefix) => normalized.startsWith(prefix));
 }
