@@ -25,18 +25,21 @@ export function localizeMetadata(
 ): Metadata {
   const canonical = `${getBaseUrl()}${localizeHref(pathname, locale)}`;
 
-  return {
+  const result: Metadata = {
     ...metadata,
     alternates: {
       ...(metadata.alternates ?? {}),
       canonical,
       languages: getLocaleAlternates(pathname),
     },
-    openGraph: metadata.openGraph
-      ? {
-          ...metadata.openGraph,
-          url: canonical,
-        }
-      : undefined,
   };
+
+  if (metadata.openGraph) {
+    result.openGraph = {
+      ...metadata.openGraph,
+      url: canonical,
+    };
+  }
+
+  return result;
 }
