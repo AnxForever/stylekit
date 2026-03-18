@@ -8,7 +8,7 @@ import { getAllStylesMeta } from "@/lib/styles/meta";
 import { serializeJsonLd } from "@/lib/security/json-ld";
 import { PromptTopicContent } from "./_content";
 
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://stylekit.top";
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://www.stylekit.top";
 
 // ISR: revalidate daily
 export const revalidate = 86400;

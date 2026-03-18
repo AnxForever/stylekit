@@ -31,7 +31,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   }
   const style = resolved.style;
 
-  const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://stylekit.top";
+  const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://www.stylekit.top";
   const description = `${style.description} Includes design tokens, component recipes, and AI prompt guidance for consistent UI implementation.`;
 
   return {
@@ -107,7 +107,7 @@ export default async function StyleDetailPage({
     resolved.source === "static" ? getCurrentVersion(slug) : undefined;
   const changelog =
     resolved.source === "static" ? getChangelog(slug) : [];
-  const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://stylekit.top";
+  const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://www.stylekit.top";
 
   const jsonLd = generateStyleJsonLd({
     slug,

@@ -1,4 +1,4 @@
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://stylekit.top";
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://www.stylekit.top";
 
 function escapeXml(str: string): string {
   return str
