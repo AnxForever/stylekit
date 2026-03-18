@@ -5,6 +5,7 @@ import { ScrollToTop } from "@/components/ui/scroll-to-top";
 import { ClientScripts } from "@/components/layout/client-scripts";
 import { serializeJsonLd } from "@/lib/security/json-ld";
 import { MobileBottomNav } from "@/components/layout/mobile-bottom-nav";
+import { getSiteBaseUrl } from "@/lib/site-url";
 import "./globals.css";
 
 export const viewport: Viewport = {
@@ -16,7 +17,7 @@ export const viewport: Viewport = {
   themeColor: "#000000",
 };
 
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://www.stylekit.top";
+const BASE_URL = getSiteBaseUrl();
 const LOCALE_BOOTSTRAP_SCRIPT = `
 (() => {
   try {

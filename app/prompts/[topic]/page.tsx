@@ -6,9 +6,10 @@ import { Breadcrumb } from "@/components/ui/breadcrumb";
 import { promptTopics, getTopicBySlug } from "@/lib/prompts";
 import { getAllStylesMeta } from "@/lib/styles/meta";
 import { serializeJsonLd } from "@/lib/security/json-ld";
+import { getSiteBaseUrl } from "@/lib/site-url";
 import { PromptTopicContent } from "./_content";
 
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://www.stylekit.top";
+const BASE_URL = getSiteBaseUrl();
 
 // ISR: revalidate daily
 export const revalidate = 86400;

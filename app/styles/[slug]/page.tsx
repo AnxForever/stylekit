@@ -10,6 +10,7 @@ import { scoreStyle } from "@/lib/accessibility";
 import { getCurrentVersion, getChangelog } from "@/lib/versioning";
 import { serializeJsonLd } from "@/lib/security/json-ld";
 import { generateStyleJsonLd, generateBreadcrumbJsonLd } from "@/lib/seo/json-ld";
+import { getSiteBaseUrl } from "@/lib/site-url";
 import { StyleDetailContent } from "./_content";
 
 // 生成静态参数
@@ -31,7 +32,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   }
   const style = resolved.style;
 
-  const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://www.stylekit.top";
+  const BASE_URL = getSiteBaseUrl();
   const description = `${style.description} Includes design tokens, component recipes, and AI prompt guidance for consistent UI implementation.`;
 
   return {
@@ -107,7 +108,7 @@ export default async function StyleDetailPage({
     resolved.source === "static" ? getCurrentVersion(slug) : undefined;
   const changelog =
     resolved.source === "static" ? getChangelog(slug) : [];
-  const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://www.stylekit.top";
+  const BASE_URL = getSiteBaseUrl();
 
   const jsonLd = generateStyleJsonLd({
     slug,

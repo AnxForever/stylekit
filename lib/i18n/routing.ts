@@ -1,4 +1,5 @@
 import type { Locale } from "./translations";
+import { getSiteBaseUrl } from "@/lib/site-url";
 
 export const LOCALES: Locale[] = ["en", "zh"];
 export const DEFAULT_LOCALE: Locale = "en";
@@ -110,7 +111,7 @@ export function detectPreferredLocale(
 }
 
 export function getBaseUrl(): string {
-  return process.env.NEXT_PUBLIC_BASE_URL || "https://www.stylekit.top";
+  return getSiteBaseUrl();
 }
 
 export function getLocaleHtmlLang(locale: Locale): string {

@@ -6,6 +6,7 @@ import { StylesContent } from "@/components/styles/styles-content";
 import { getAllStylesMeta } from "@/lib/styles/meta";
 import { serializeJsonLd } from "@/lib/security/json-ld";
 import { generateBreadcrumbJsonLd } from "@/lib/seo/json-ld";
+import { getSiteBaseUrl } from "@/lib/site-url";
 
 export const metadata: Metadata = {
   title: "Browse 120+ UI Design Styles & AI Prompts",
@@ -17,7 +18,7 @@ export const dynamic = "force-static";
 
 export default function StylesPage() {
   const allStyles = getAllStylesMeta();
-  const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://www.stylekit.top";
+  const BASE_URL = getSiteBaseUrl();
 
   const breadcrumbJsonLd = generateBreadcrumbJsonLd([
     { name: "Home", url: BASE_URL },

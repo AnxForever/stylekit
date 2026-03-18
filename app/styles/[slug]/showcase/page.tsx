@@ -1,8 +1,9 @@
 import { notFound } from "next/navigation";
 import dynamic from "next/dynamic";
 import { resolveStyleBySlug } from "@/lib/styles/community-runtime";
+import { getSiteBaseUrl } from "@/lib/site-url";
 
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://www.stylekit.top";
+const BASE_URL = getSiteBaseUrl();
 
 export async function generateMetadata({
   params,
