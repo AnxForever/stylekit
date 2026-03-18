@@ -81,7 +81,7 @@ const nextConfig: NextConfig = {
               "style-src 'self' 'unsafe-inline'",
               "img-src 'self' data: https: blob:",
               "font-src 'self' data:",
-              "connect-src 'self' https://*.supabase.co https://connect.linux.do wss://*.supabase.co",
+              "connect-src 'self' https://*.supabase.co https://connect.linux.do wss://*.supabase.co https://api.github.com",
               "media-src 'self'",
               "frame-src 'self' https://vercel.live",
               "frame-ancestors 'self'",
