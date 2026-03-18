@@ -1,6 +1,7 @@
 "use client";
 
 import useSWR from "swr";
+import type { StyleMeta } from "@/lib/styles/meta";
 
 // ---------- Types ----------
 
@@ -136,6 +137,11 @@ interface ProfileSubmission {
   description: string | null;
 }
 
+export interface CatalogStylesData {
+  total: number;
+  styles: StyleMeta[];
+}
+
 interface ProfileSubmissionsData {
   success: boolean;
   submissions: ProfileSubmission[];
@@ -165,6 +171,13 @@ interface ProfileTitleData {
 
 export function useTrendingStyles(count = 8) {
   return useSWR<TrendingData>(`/api/analytics?top=${count}`);
+}
+
+export function useCatalogStyles() {
+  return useSWR<CatalogStylesData>("/api/styles", {
+    dedupingInterval: 30_000,
+    revalidateOnFocus: false,
+  });
 }
 
 export function usePopularCombos() {

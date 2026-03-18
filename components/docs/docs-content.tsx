@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import { LocalizedLink } from "@/components/i18n/localized-link";
 import {
   ArrowRight,
   BookOpen,
@@ -187,13 +187,13 @@ export function DocsContent() {
               <h3 className="text-2xl md:text-3xl mb-2">{t("docs.apiSection")}</h3>
               <p className="text-muted">{t("docs.apiSectionDesc")}</p>
             </div>
-            <Link
+            <LocalizedLink
               href="/developers"
               className="inline-flex items-center gap-2 px-5 py-3 bg-foreground text-background text-sm tracking-wide hover:bg-foreground/90 transition-colors"
             >
               {t("docs.viewApi")}
               <ArrowRight className="w-4 h-4" />
-            </Link>
+            </LocalizedLink>
           </div>
         </div>
       </section>

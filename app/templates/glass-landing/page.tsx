@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useState, useEffect } from "react";
 import {
   Layers,
@@ -793,12 +794,12 @@ function Footer() {
           <p>
             &copy; {year} Aura Design, Inc. All rights reserved. &middot; Part
             of{" "}
-            <a
+            <Link
               href="/templates"
               className="text-white/60 hover:text-white/80 transition-colors underline underline-offset-2"
             >
               StyleKit Templates
-            </a>
+            </Link>
           </p>
           <div className="flex items-center gap-1 text-xs">
             <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse inline-block" />

@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { LocalizedLink } from "@/components/i18n/localized-link";
 import type { BlogPost } from "@/lib/blog";
 
 interface BlogCardProps {
@@ -18,11 +18,11 @@ export function BlogCard({ post }: BlogCardProps) {
           </span>
         ))}
       </div>
-      <Link href={`/blog/${post.slug}`} className="block group">
+      <LocalizedLink href={`/blog/${post.slug}`} className="block group">
         <h2 className="text-xl font-medium mb-2 group-hover:underline underline-offset-4">
           {post.title}
         </h2>
-      </Link>
+      </LocalizedLink>
       <p className="text-sm text-muted leading-relaxed mb-4">
         {post.description}
       </p>

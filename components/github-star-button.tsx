@@ -1,37 +1,15 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useSyncExternalStore } from "react";
 import { trackEvent } from "@/lib/analytics/events";
-
-const REPO = "AnxForever/stylekit";
-const CACHE_KEY = "gh_star_count";
-const CACHE_TTL = 1000 * 60 * 30; // 30 minutes
-
-function getCachedCount(): number | null {
-  if (typeof window === "undefined") return null;
-  try {
-    const raw = localStorage.getItem(CACHE_KEY);
-    if (!raw) return null;
-    const { count, ts } = JSON.parse(raw) as { count: number; ts: number };
-    if (Date.now() - ts > CACHE_TTL) return null;
-    return count;
-  } catch {
-    return null;
-  }
-}
-
-function setCachedCount(count: number) {
-  try {
-    localStorage.setItem(CACHE_KEY, JSON.stringify({ count, ts: Date.now() }));
-  } catch {
-    // quota exceeded — ignore
-  }
-}
-
-function formatCount(n: number): string {
-  if (n >= 1000) return `${(n / 1000).toFixed(1).replace(/\.0$/, "")}k`;
-  return String(n);
-}
+import {
+  formatGitHubStars,
+  getGitHubStarsServerSnapshot,
+  getGitHubStarsSnapshot,
+  GITHUB_REPO_URL,
+  requestGitHubStars,
+  subscribeGitHubStars,
+} from "@/lib/github-stars";
 
 interface GitHubStarButtonProps {
   /** "compact" = header icon button, "default" = hero CTA style */
@@ -71,37 +49,22 @@ export function GitHubStarButton({
   variant = "default",
   className = "",
 }: GitHubStarButtonProps) {
-  const [count, setCount] = useState<number | null>(null);
+  const count = useSyncExternalStore(
+    subscribeGitHubStars,
+    getGitHubStarsSnapshot,
+    getGitHubStarsServerSnapshot
+  );
 
   useEffect(() => {
-    const cached = getCachedCount();
-    if (cached !== null) setCount(cached);
-
-    fetch(`https://api.github.com/repos/${REPO}`, {
-      headers: { Accept: "application/vnd.github.v3+json" },
-    })
-      .then((res) => {
-        if (!res.ok) throw new Error(`GitHub API ${res.status}`);
-        return res.json();
-      })
-      .then((data: { stargazers_count?: number }) => {
-        const fresh = data.stargazers_count ?? 0;
-        setCachedCount(fresh);
-        setCount(fresh);
-      })
-      .catch(() => {
-        // keep cached value or stay null
-      });
+    void requestGitHubStars();
   }, []);
 
-  const href = `https://github.com/${REPO}`;
-
-  const formattedCount = count !== null ? formatCount(count) : null;
+  const formattedCount = count !== null ? formatGitHubStars(count) : null;
 
   if (variant === "compact") {
     return (
       <a
-        href={href}
+        href={GITHUB_REPO_URL}
         target="_blank"
         rel="noopener noreferrer"
         onClick={() => trackEvent("github_click", { location: "header" })}
@@ -118,7 +81,7 @@ export function GitHubStarButton({
 
   return (
     <a
-      href={href}
+      href={GITHUB_REPO_URL}
       target="_blank"
       rel="noopener noreferrer"
       onClick={() => trackEvent("github_click", { location: "hero" })}

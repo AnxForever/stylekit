@@ -1,12 +1,10 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+import { LocalizedLink } from "@/components/i18n/localized-link";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { PromptTemplatePreviewSection } from "@/components/seo/prompt-template-preview-section";
 import { promptTopics } from "@/lib/prompts";
 import { uiPromptTemplates } from "@/lib/seo/prompt-template-previews";
-
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://stylekit.top";
 
 export const metadata: Metadata = {
   title: "UI Design Prompts Library",
@@ -20,14 +18,10 @@ export const metadata: Metadata = {
     "frontend design prompts",
     "Tailwind UI prompts",
   ],
-  alternates: {
-    canonical: `${BASE_URL}/ui-prompts`,
-  },
   openGraph: {
     title: "UI Design Prompts Library | StyleKit",
     description:
       "Copy-ready UI design prompts for websites, dashboards, landing pages, dark mode, and more.",
-    url: `${BASE_URL}/ui-prompts`,
     siteName: "StyleKit",
     type: "website",
   },
@@ -91,7 +85,7 @@ export default function UiPromptsPage() {
               UI Design Prompts Library
             </h1>
             <p className="text-lg text-muted max-w-3xl mb-8 leading-relaxed">
-              这是 StyleKit 面向广义搜索意图的 UI prompt hub。你可以从这里进入 landing page prompts、dashboard prompts、Tailwind UI prompts、dark mode prompts 等专题，把更具体的 prompt 直接带进 ChatGPT、Claude、Cursor、Claude Code 或 v0。
+              This is StyleKit&apos;s broad-match prompt hub for UI search intent. Start here, then move into more specific landing page, dashboard, Tailwind UI, and dark mode prompt collections for ChatGPT, Claude, Cursor, Claude Code, or v0.
             </p>
             <div className="flex flex-wrap gap-3 text-sm text-muted">
               <span className="border border-border px-3 py-1">{promptTopics.length} topics</span>
@@ -109,7 +103,7 @@ export default function UiPromptsPage() {
             <h2 className="text-2xl md:text-3xl mb-8">Search-friendly prompt topics</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {featuredTopics.map((topic) => (
-                <Link
+                <LocalizedLink
                   key={topic.slug}
                   href={getTopicHref(topic.slug)}
                   className="group border border-border p-6 hover:border-foreground transition-colors"
@@ -124,7 +118,7 @@ export default function UiPromptsPage() {
                     <span>{topic.prompts.length} prompts</span>
                     <span>{topic.relatedStyleSlugs.length} styles</span>
                   </div>
-                </Link>
+                </LocalizedLink>
               ))}
             </div>
           </div>
@@ -149,7 +143,7 @@ export default function UiPromptsPage() {
 
         <PromptTemplatePreviewSection
           title="Example previews and starter templates"
-          description="除了直接复制 prompt，你也可以先从现成模板反推结构，再把这些 section、layout、states 写回自己的 prompt 里。"
+          description="Use these templates as structural references, then feed their sections, layouts, and interaction states back into your prompt for more reliable output."
           templates={uiPromptTemplates}
         />
 
@@ -160,30 +154,30 @@ export default function UiPromptsPage() {
               Start with landing pages, dashboards, Tailwind UI, or dark mode if your search intent is already narrow. Specific prompt pages usually outperform generic briefs in both AI output quality and search clarity.
             </p>
             <div className="flex flex-wrap justify-center gap-3">
-              <Link
+              <LocalizedLink
                 href="/landing-page-prompts"
                 className="inline-flex items-center px-6 py-3 bg-foreground text-background text-sm tracking-wide hover:bg-foreground/90 transition-colors"
               >
                 Landing Page Prompts
-              </Link>
-              <Link
+              </LocalizedLink>
+              <LocalizedLink
                 href="/dashboard-prompts"
                 className="inline-flex items-center px-6 py-3 border border-border text-sm tracking-wide hover:border-foreground transition-colors"
               >
                 Dashboard Prompts
-              </Link>
-              <Link
+              </LocalizedLink>
+              <LocalizedLink
                 href="/tailwind-ui-prompts"
                 className="inline-flex items-center px-6 py-3 border border-border text-sm tracking-wide hover:border-foreground transition-colors"
               >
                 Tailwind UI Prompts
-              </Link>
-              <Link
+              </LocalizedLink>
+              <LocalizedLink
                 href="/dark-mode-ui-prompts"
                 className="inline-flex items-center px-6 py-3 border border-border text-sm tracking-wide hover:border-foreground transition-colors"
               >
                 Dark Mode UI Prompts
-              </Link>
+              </LocalizedLink>
             </div>
           </div>
         </section>

@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import { LocalizedLink } from "@/components/i18n/localized-link";
 import { useI18n } from "@/lib/i18n/context";
 
 export function AboutContent() {
@@ -93,18 +93,18 @@ export function AboutContent() {
             {t("about.cta.description")}
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link
+            <LocalizedLink
               href="/styles"
               className="inline-flex items-center justify-center px-6 py-3 bg-foreground text-background text-sm tracking-wide hover:bg-foreground/90 transition-colors"
             >
               {t("about.cta.browseStyles")}
-            </Link>
-            <Link
+            </LocalizedLink>
+            <LocalizedLink
               href="/components"
               className="inline-flex items-center justify-center px-6 py-3 border border-border text-sm tracking-wide hover:border-foreground transition-colors"
             >
               {t("about.cta.viewComponents")}
-            </Link>
+            </LocalizedLink>
           </div>
         </div>
       </section>

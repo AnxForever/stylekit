@@ -1,8 +1,8 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import Link from "next/link";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { LocalizedLink } from "@/components/i18n/localized-link";
 import { useI18n } from "@/lib/i18n/context";
 import type { StyleMeta } from "@/lib/styles/meta";
 import { StyleCoverPreview } from "@/components/style-preview/style-cover-preview";
@@ -122,15 +122,15 @@ export function FeaturedCarousel({ styles }: FeaturedCarouselProps) {
       }}
       className="relative outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
     >
-      <Link
+      <LocalizedLink
         href={`/styles/${featuredStyle.slug}`}
         className="block aspect-[16/11] sm:aspect-[4/3] border border-border overflow-hidden motion-safe:transition-colors hover:border-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
       >
         <StyleCoverPreview styleSlug={featuredStyle.slug} />
-      </Link>
+      </LocalizedLink>
 
       <div className="flex items-center justify-between mt-3">
-        <Link
+        <LocalizedLink
           href={`/styles/${featuredStyle.slug}`}
           className="group min-w-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
           aria-live={isFocusWithin ? "polite" : "off"}
@@ -140,7 +140,7 @@ export function FeaturedCarousel({ styles }: FeaturedCarouselProps) {
             {featuredStyle.name}
           </p>
           <p className="text-xs text-muted truncate">{featuredStyle.nameEn}</p>
-        </Link>
+        </LocalizedLink>
         <div className="flex items-center gap-3 shrink-0">
           <button
             type="button"

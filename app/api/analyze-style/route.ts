@@ -1,6 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { analyzeProjectStyle } from "@/lib/analyzer";
 import { verifyTrustedOrigin } from "@/lib/security/request-origin";
+import {
+  checkRateLimit,
+  createRateLimitHeaders,
+  getRequestClientKey,
+} from "@/lib/security/rate-limit";
 
 /**
  * POST /api/analyze-style
@@ -16,6 +21,19 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(
       { error: originCheck.error },
       { status: originCheck.status ?? 403 },
+    );
+  }
+
+  const rateLimit = checkRateLimit({
+    namespace: "analyze-style",
+    key: getRequestClientKey(request),
+    limit: 20,
+    windowMs: 60 * 1000,
+  });
+  if (!rateLimit.allowed) {
+    return NextResponse.json(
+      { error: "Too many requests. Try again later." },
+      { status: 429, headers: createRateLimitHeaders(rateLimit) },
     );
   }
 

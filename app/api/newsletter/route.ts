@@ -1,35 +1,28 @@
 import { NextResponse } from "next/server";
 import { emailSchema } from "@/lib/newsletter";
 import { getSupabaseAdmin } from "@/lib/supabase/server";
-
-const RATE_LIMIT_WINDOW_MS = 60 * 60 * 1000; // 1 hour
-const RATE_LIMIT_MAX = 3;
-const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
-
-function isRateLimited(ip: string): boolean {
-  const now = Date.now();
-  const entry = rateLimitMap.get(ip);
-
-  if (!entry || now >= entry.resetAt) {
-    rateLimitMap.set(ip, { count: 1, resetAt: now + RATE_LIMIT_WINDOW_MS });
-    return false;
-  }
-
-  entry.count++;
-  return entry.count > RATE_LIMIT_MAX;
-}
+import {
+  checkRateLimit,
+  createRateLimitHeaders,
+  getRequestClientKey,
+} from "@/lib/security/rate-limit";
 
 export async function POST(request: Request) {
   try {
-    const ip =
-      request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
-      request.headers.get("x-real-ip") ||
-      "unknown";
+    const rateLimit = checkRateLimit({
+      namespace: "newsletter",
+      key: getRequestClientKey(request),
+      limit: 3,
+      windowMs: 60 * 60 * 1000,
+    });
 
-    if (isRateLimited(ip)) {
+    if (!rateLimit.allowed) {
       return NextResponse.json(
         { success: false, error: "Too many requests. Try again later." },
-        { status: 429 }
+        {
+          status: 429,
+          headers: createRateLimitHeaders(rateLimit),
+        }
       );
     }
 
@@ -39,7 +32,10 @@ export async function POST(request: Request) {
     if (!parsed.success) {
       return NextResponse.json(
         { success: false, error: "Invalid email address" },
-        { status: 400 }
+        {
+          status: 400,
+          headers: createRateLimitHeaders(rateLimit),
+        }
       );
     }
 
@@ -50,7 +46,10 @@ export async function POST(request: Request) {
     if (!supabase) {
       return NextResponse.json(
         { success: false, error: "Newsletter service not configured" },
-        { status: 503 }
+        {
+          status: 503,
+          headers: createRateLimitHeaders(rateLimit),
+        }
       );
     }
 
@@ -58,12 +57,15 @@ export async function POST(request: Request) {
       .from("newsletter_subscribers")
       .select("email")
       .eq("email", normalizedEmail)
-      .single();
+      .maybeSingle();
 
     if (existing) {
       return NextResponse.json(
         { success: false, error: "Already subscribed" },
-        { status: 409 }
+        {
+          status: 409,
+          headers: createRateLimitHeaders(rateLimit),
+        }
       );
     }
 
@@ -74,11 +76,19 @@ export async function POST(request: Request) {
     if (error) {
       return NextResponse.json(
         { success: false, error: "Failed to subscribe" },
-        { status: 500 }
+        {
+          status: 500,
+          headers: createRateLimitHeaders(rateLimit),
+        }
       );
     }
 
-    return NextResponse.json({ success: true, message: "Subscribed" });
+    return NextResponse.json(
+      { success: true, message: "Subscribed" },
+      {
+        headers: createRateLimitHeaders(rateLimit),
+      }
+    );
   } catch {
     return NextResponse.json(
       { success: false, error: "Internal server error" },

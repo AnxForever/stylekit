@@ -1,10 +1,10 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { Loader2, LogIn, RefreshCw, Send } from "lucide-react";
+import { LocalizedLink } from "@/components/i18n/localized-link";
 import { useCommunityFeed } from "@/lib/swr";
 import { useUser } from "@/lib/auth/use-user";
 import { useI18n } from "@/lib/i18n/context";
@@ -109,21 +109,21 @@ export function CommunityContent({
             </p>
           </div>
           <div className="flex flex-wrap gap-2">
-            <Link
+            <LocalizedLink
               href="/submit"
               className="inline-flex items-center gap-2 px-4 py-2 border border-border hover:border-foreground transition-colors text-sm"
             >
               <Send className="w-4 h-4" />
               {t("community.submitCta")}
-            </Link>
+            </LocalizedLink>
             {!user ? (
-              <Link
+              <LocalizedLink
                 href="/login"
                 className="inline-flex items-center gap-2 px-4 py-2 bg-foreground text-background hover:bg-foreground/90 transition-colors text-sm"
               >
                 <LogIn className="w-4 h-4" />
                 {t("auth.signIn")}
-              </Link>
+              </LocalizedLink>
             ) : null}
           </div>
         </div>
@@ -135,7 +135,7 @@ export function CommunityContent({
               {" "}
               <span className="text-foreground font-medium">{normalizedSlug}</span>
             </span>
-            <Link
+            <LocalizedLink
               href="/community"
               onClick={() => {
                 setOffset(0);
@@ -143,7 +143,7 @@ export function CommunityContent({
               className="underline text-muted hover:text-foreground"
             >
               {t("community.clearFilter")}
-            </Link>
+            </LocalizedLink>
           </div>
         )}
 
@@ -180,13 +180,13 @@ export function CommunityContent({
             <p className="text-sm text-muted mb-4">
               {t("community.emptyDesc")}
             </p>
-            <Link
+            <LocalizedLink
               href="/submit"
               className="inline-flex items-center gap-2 px-4 py-2 bg-foreground text-background text-sm hover:bg-foreground/90 transition-colors"
             >
               <Send className="w-4 h-4" />
               {t("community.emptyAction")}
-            </Link>
+            </LocalizedLink>
           </div>
         ) : (
           <div className="space-y-6">
@@ -198,7 +198,7 @@ export function CommunityContent({
                     isRefreshing ? "opacity-75" : ""
                   }`}
                 >
-                  <Link
+                  <LocalizedLink
                     href={`/community/${item.id}`}
                     onClick={persistCommunityContext}
                     className="block aspect-[16/10] relative bg-zinc-100 dark:bg-zinc-900"
@@ -217,16 +217,16 @@ export function CommunityContent({
                         {t("community.noCover")}
                       </div>
                     )}
-                  </Link>
+                  </LocalizedLink>
                   <div className="p-4 space-y-3">
                     <div>
-                      <Link
+                      <LocalizedLink
                         href={`/community/${item.id}`}
                         onClick={persistCommunityContext}
                         className="text-lg hover:underline leading-tight"
                       >
                         {item.title}
-                      </Link>
+                      </LocalizedLink>
                       {item.titleEn && item.titleEn !== item.title && (
                         <p className="text-xs text-muted mt-1">{item.titleEn}</p>
                       )}

@@ -1,9 +1,9 @@
 "use client";
 
 import { useMemo } from "react";
-import Link from "next/link";
 import { TrendingUp, ArrowRight } from "lucide-react";
 import { RevealOnScroll } from "@/components/home/reveal-on-scroll";
+import { LocalizedLink } from "@/components/i18n/localized-link";
 import { useI18n } from "@/lib/i18n/context";
 import { useTrendingStyles } from "@/lib/swr";
 import type { StyleMeta } from "@/lib/styles/meta";
@@ -85,19 +85,19 @@ export function TrendingStyles({ styles, sectionId = "home-trending" }: Trending
               </div>
               <h2 className={sectionTitleClassName}>{t("analytics.trending.title")}</h2>
             </RevealOnScroll>
-            <Link
+            <LocalizedLink
               href="/styles"
               className={sectionLinkClassName}
             >
               {t("home.viewAll")}
               <ArrowRight className="w-3 h-3" />
-            </Link>
+            </LocalizedLink>
           </div>
 
           <div className={gridClassName}>
             {fallbackStyles.map((meta, index) => (
               <RevealOnScroll key={meta.slug} variant="upSubtle" delayMs={70 + index * 35} disableDelayOnMobile>
-                <Link
+                <LocalizedLink
                   href={`/styles/${meta.slug}`}
                   className={`${cardClassName} p-3 sm:p-4`}
                 >
@@ -119,7 +119,7 @@ export function TrendingStyles({ styles, sectionId = "home-trending" }: Trending
                       {meta.category}
                     </span>
                   )}
-                </Link>
+                </LocalizedLink>
               </RevealOnScroll>
             ))}
           </div>
@@ -147,13 +147,13 @@ export function TrendingStyles({ styles, sectionId = "home-trending" }: Trending
             </div>
             <h2 className={sectionTitleClassName}>{t("analytics.trending.title")}</h2>
           </RevealOnScroll>
-          <Link
+          <LocalizedLink
             href="/styles"
             className={sectionLinkClassName}
           >
             {t("home.viewAll")}
             <ArrowRight className="w-3 h-3" />
-          </Link>
+          </LocalizedLink>
         </div>
 
         <div className={gridClassName}>
@@ -165,7 +165,7 @@ export function TrendingStyles({ styles, sectionId = "home-trending" }: Trending
 
             return (
               <RevealOnScroll key={top.slug} variant="upSubtle" delayMs={80 + index * 35} disableDelayOnMobile>
-                <Link
+                <LocalizedLink
                   href={`/styles/${top.slug}`}
                   className={`${cardClassName} p-3 sm:p-4`}
                 >
@@ -209,7 +209,7 @@ export function TrendingStyles({ styles, sectionId = "home-trending" }: Trending
                       {meta.category}
                     </span>
                   )}
-                </Link>
+                </LocalizedLink>
               </RevealOnScroll>
             );
           })}

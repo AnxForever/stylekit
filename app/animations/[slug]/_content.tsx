@@ -1,8 +1,8 @@
 "use client";
 
-import Link from "next/link";
 import dynamic from "next/dynamic";
 import { ArrowLeft, Clock, Zap, Code } from "lucide-react";
+import { LocalizedLink } from "@/components/i18n/localized-link";
 import { useI18n } from "@/lib/i18n/context";
 import { AnimationPreview } from "@/components/animations/animation-preview";
 import type { Animation } from "@/lib/animations/types";
@@ -68,13 +68,13 @@ export function AnimationDetailContent({ animation }: AnimationDetailContentProp
       {/* Header section -- editorial style */}
       <section className="border-b border-border">
         <div className="max-w-5xl mx-auto px-6 md:px-12 py-8 md:py-12">
-          <Link
+          <LocalizedLink
             href="/animations"
             className="inline-flex items-center gap-1.5 text-sm text-muted hover:text-foreground transition-colors mb-6"
           >
             <ArrowLeft className="w-4 h-4" />
             {t("animations.backToList")}
-          </Link>
+          </LocalizedLink>
 
           <h1 className="text-3xl md:text-4xl lg:text-5xl mb-2">
             {locale === "zh" ? animation.name : animation.nameEn}
@@ -179,13 +179,13 @@ export function AnimationDetailContent({ animation }: AnimationDetailContentProp
               </h2>
               <div className="flex flex-wrap gap-2">
                 {animation.relatedAnimations.map((slug) => (
-                  <Link
+                  <LocalizedLink
                     key={slug}
                     href={`/animations/${slug}`}
                     className="px-3 py-1.5 text-sm border border-border text-foreground hover:border-foreground transition-colors"
                   >
                     {slug}
-                  </Link>
+                  </LocalizedLink>
                 ))}
               </div>
             </div>
