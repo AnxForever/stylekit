@@ -12,6 +12,7 @@ import {
   Moon,
   Target,
   TrendingUp,
+  X,
   Zap,
 } from "lucide-react";
 import { TemplateBackButton } from "@/components/templates/template-back-button";
@@ -57,8 +58,9 @@ const achievements = [
 ];
 
 export default function FitnessHealthTemplate() {
-  const [activeTab, setActiveTab] = useState<"overview" | "workouts" | "goals">("overview");
+  const [activeTab, setActiveTab] = useState<"overview" | "workouts" | "goals" | "nutrition">("overview");
   const [selectedPeriod, setSelectedPeriod] = useState("This Week");
+  const [selectedWorkout, setSelectedWorkout] = useState<number | null>(null);
 
   const maxWeekly = Math.max(...weeklyData.map((d) => d.value));
 
@@ -80,7 +82,7 @@ export default function FitnessHealthTemplate() {
             <span className="font-bold text-lg">FitPulse</span>
           </div>
           <div className="flex items-center gap-1 bg-gray-900 rounded-lg p-1">
-            {(["overview", "workouts", "goals"] as const).map((tab) => (
+            {(["overview", "workouts", "goals", "nutrition"] as const).map((tab) => (
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
@@ -207,9 +209,10 @@ export default function FitnessHealthTemplate() {
             </div>
             <div className="space-y-3">
               {workouts.map((w, i) => (
-                <div
+                <button
                   key={i}
-                  className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 bg-gray-800/50 rounded-xl hover:bg-gray-800 transition-colors"
+                  onClick={() => setSelectedWorkout(i)}
+                  className="w-full flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 bg-gray-800/50 rounded-xl hover:bg-gray-800 transition-colors text-left"
                 >
                   <div className="flex items-center gap-4">
                     <div className="w-10 h-10 rounded-xl bg-gray-800 flex items-center justify-center">
@@ -230,7 +233,7 @@ export default function FitnessHealthTemplate() {
                       {w.calories} cal
                     </span>
                   </div>
-                </div>
+                </button>
               ))}
             </div>
           </div>
@@ -298,7 +301,174 @@ export default function FitnessHealthTemplate() {
             </div>
           </div>
         )}
+
+        {/* Nutrition Tracker */}
+        {activeTab === "nutrition" && (
+          <div className="space-y-6 mb-8">
+            <div className="grid lg:grid-cols-3 gap-6">
+              {/* Macros Summary */}
+              <div className="bg-gray-900 border border-gray-800 rounded-xl p-6">
+                <h3 className="font-semibold mb-6">Today&apos;s Macros</h3>
+                <div className="space-y-5">
+                  {[
+                    { label: "Protein", current: 95, target: 140, color: "bg-blue-500", unit: "g" },
+                    { label: "Carbs", current: 180, target: 250, color: "bg-amber-500", unit: "g" },
+                    { label: "Fat", current: 52, target: 70, color: "bg-red-500", unit: "g" },
+                    { label: "Fiber", current: 18, target: 30, color: "bg-green-500", unit: "g" },
+                  ].map((macro) => (
+                    <div key={macro.label}>
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-sm">{macro.label}</span>
+                        <span className="text-xs text-gray-400">
+                          {macro.current}{macro.unit} / {macro.target}{macro.unit}
+                        </span>
+                      </div>
+                      <div className="h-2 bg-gray-800 rounded-full overflow-hidden">
+                        <div
+                          className={`h-full rounded-full ${macro.color}`}
+                          style={{ width: `${Math.min(100, (macro.current / macro.target) * 100)}%` }}
+                        />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Meal Log */}
+              <div className="lg:col-span-2 bg-gray-900 border border-gray-800 rounded-xl p-6">
+                <h3 className="font-semibold mb-6">Meal Log</h3>
+                <div className="space-y-4">
+                  {[
+                    { meal: "Breakfast", time: "7:30 AM", items: ["Oatmeal with berries", "Protein shake"], cal: 420 },
+                    { meal: "Snack", time: "10:00 AM", items: ["Greek yogurt", "Almonds"], cal: 280 },
+                    { meal: "Lunch", time: "12:30 PM", items: ["Grilled chicken salad", "Brown rice"], cal: 580 },
+                    { meal: "Post-Workout", time: "3:00 PM", items: ["Protein bar", "Banana"], cal: 320 },
+                    { meal: "Dinner", time: "7:00 PM", items: ["Salmon", "Sweet potato", "Vegetables"], cal: 650 },
+                  ].map((entry) => (
+                    <div key={entry.meal} className="flex items-start gap-4 p-3 bg-gray-800/50 rounded-xl">
+                      <div className="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center shrink-0">
+                        <Flame className="w-5 h-5 text-emerald-400" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center justify-between mb-1">
+                          <span className="font-medium text-sm">{entry.meal}</span>
+                          <span className="text-xs text-gray-500">{entry.time}</span>
+                        </div>
+                        <p className="text-xs text-gray-400">{entry.items.join(", ")}</p>
+                      </div>
+                      <span className="text-sm font-semibold text-orange-400 shrink-0">{entry.cal} cal</span>
+                    </div>
+                  ))}
+                </div>
+                <div className="mt-4 pt-4 border-t border-gray-800 flex items-center justify-between">
+                  <span className="text-sm text-gray-400">Total Calories</span>
+                  <span className="text-lg font-bold text-emerald-400">2,250 / 2,400</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Water Intake */}
+            <div className="bg-gray-900 border border-gray-800 rounded-xl p-6">
+              <h3 className="font-semibold mb-4">Water Intake</h3>
+              <div className="flex items-center gap-3">
+                {Array.from({ length: 8 }).map((_, i) => (
+                  <div
+                    key={i}
+                    className={`flex-1 h-12 rounded-lg border-2 transition-colors ${
+                      i < 5
+                        ? "bg-blue-500/20 border-blue-500/40"
+                        : "bg-gray-800 border-gray-700"
+                    }`}
+                  />
+                ))}
+                <span className="text-sm text-gray-400 shrink-0 ml-2">5/8 glasses</span>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
+
+      {/* Workout Detail Modal */}
+      {selectedWorkout !== null && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
+          <div className="bg-gray-900 border border-gray-800 rounded-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto">
+            <div className="p-6">
+              <div className="flex items-start justify-between mb-6">
+                <div>
+                  <h2 className="text-xl font-bold mb-1">{workouts[selectedWorkout].name}</h2>
+                  <p className="text-sm text-gray-500">{workouts[selectedWorkout].type} / {workouts[selectedWorkout].date}</p>
+                </div>
+                <button
+                  onClick={() => setSelectedWorkout(null)}
+                  className="p-2 hover:bg-gray-800 rounded-lg transition-colors"
+                  aria-label="Close"
+                >
+                  <X className="w-5 h-5 text-gray-400" />
+                </button>
+              </div>
+
+              <div className="grid grid-cols-3 gap-4 mb-6">
+                <div className="bg-gray-800 rounded-xl p-4 text-center">
+                  <p className="text-xs text-gray-500 mb-1">Duration</p>
+                  <p className="text-lg font-bold">{workouts[selectedWorkout].duration}</p>
+                </div>
+                <div className="bg-gray-800 rounded-xl p-4 text-center">
+                  <p className="text-xs text-gray-500 mb-1">Calories</p>
+                  <p className="text-lg font-bold text-orange-400">{workouts[selectedWorkout].calories}</p>
+                </div>
+                <div className="bg-gray-800 rounded-xl p-4 text-center">
+                  <p className="text-xs text-gray-500 mb-1">Intensity</p>
+                  <p className={`text-lg font-bold ${
+                    workouts[selectedWorkout].intensity === "High" ? "text-red-400" :
+                    workouts[selectedWorkout].intensity === "Medium" ? "text-amber-400" : "text-green-400"
+                  }`}>{workouts[selectedWorkout].intensity}</p>
+                </div>
+              </div>
+
+              <div className="mb-6">
+                <h3 className="text-sm font-semibold text-gray-400 mb-3">Exercises</h3>
+                <div className="space-y-2">
+                  {[
+                    { name: "Warm-up", sets: "1 x 5 min" },
+                    { name: "Main Exercise A", sets: "4 x 12 reps" },
+                    { name: "Main Exercise B", sets: "3 x 10 reps" },
+                    { name: "Superset Circuit", sets: "3 rounds" },
+                    { name: "Cool-down Stretch", sets: "1 x 5 min" },
+                  ].map((ex) => (
+                    <div key={ex.name} className="flex items-center justify-between p-3 bg-gray-800/50 rounded-lg">
+                      <div className="flex items-center gap-3">
+                        <div className="w-6 h-6 rounded-full bg-emerald-500/20 flex items-center justify-center">
+                          <div className="w-2 h-2 rounded-full bg-emerald-500" />
+                        </div>
+                        <span className="text-sm">{ex.name}</span>
+                      </div>
+                      <span className="text-xs text-gray-500">{ex.sets}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <h3 className="text-sm font-semibold text-gray-400 mb-3">Heart Rate</h3>
+                <div className="flex items-end gap-1 h-20">
+                  {[45, 60, 78, 92, 88, 95, 82, 70, 65, 55, 48, 42].map((v, i) => (
+                    <div
+                      key={i}
+                      className="flex-1 rounded-t bg-gradient-to-t from-red-500 to-orange-400"
+                      style={{ height: `${v}%` }}
+                    />
+                  ))}
+                </div>
+                <div className="flex justify-between mt-2 text-[10px] text-gray-600">
+                  <span>Start</span>
+                  <span>Avg: 142 bpm</span>
+                  <span>End</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Footer */}
       <footer className="border-t border-gray-800 py-10 px-4 md:px-8 mt-12">
