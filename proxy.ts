@@ -66,12 +66,10 @@ export async function proxy(request: NextRequest) {
     // They don't handle 307 well and need meta tags from the first response.
     const ua = request.headers.get("user-agent") || "";
     if (isSocialCrawler(ua)) {
-      const rewriteUrl = request.nextUrl.clone();
-      rewriteUrl.pathname = addLocaleToPathname(incomingPath, DEFAULT_LOCALE);
       const requestHeaders = new Headers(request.headers);
       requestHeaders.set("x-stylekit-locale", DEFAULT_LOCALE);
       requestHeaders.set("x-stylekit-visible-path", incomingPath);
-      return NextResponse.rewrite(rewriteUrl, {
+      return NextResponse.next({
         request: { headers: requestHeaders },
       });
     }
