@@ -21,6 +21,13 @@ import {
   stripLocaleFromPathname,
 } from "@/lib/i18n/routing";
 
+const SOCIAL_CRAWLER_RE =
+  /Twitterbot|facebookexternalhit|LinkedInBot|Slackbot|Discordbot|WhatsApp|TelegramBot|Pinterestbot|Applebot/i;
+
+function isSocialCrawler(userAgent: string): boolean {
+  return SOCIAL_CRAWLER_RE.test(userAgent);
+}
+
 function shouldUseLocalizedFilesystemRoute(pathname: string): boolean {
   if (/^\/styles\/[^/]+\/showcase$/.test(pathname)) {
     return false;
@@ -55,6 +62,20 @@ export async function proxy(request: NextRequest) {
   }
 
   if (!localeInPath && !shouldBypassLocale(incomingPath)) {
+    // Social crawlers should get content directly without locale redirect.
+    // They don't handle 307 well and need meta tags from the first response.
+    const ua = request.headers.get("user-agent") || "";
+    if (isSocialCrawler(ua)) {
+      const rewriteUrl = request.nextUrl.clone();
+      rewriteUrl.pathname = addLocaleToPathname(incomingPath, DEFAULT_LOCALE);
+      const requestHeaders = new Headers(request.headers);
+      requestHeaders.set("x-stylekit-locale", DEFAULT_LOCALE);
+      requestHeaders.set("x-stylekit-visible-path", incomingPath);
+      return NextResponse.rewrite(rewriteUrl, {
+        request: { headers: requestHeaders },
+      });
+    }
+
     const preferredLocaleCookie = request.cookies.get(LOCALE_COOKIE_NAME)?.value;
     const preferredLocale = isLocale(preferredLocaleCookie)
       ? preferredLocaleCookie
