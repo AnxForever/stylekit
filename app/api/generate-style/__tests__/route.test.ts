@@ -327,7 +327,7 @@ describe("POST /api/generate-style", () => {
     expect(response.status).toBe(500);
     await expect(response.json()).resolves.toEqual({
       code: "GENERATION_FAILED",
-      error: "Failed to generate style: boom",
+      error: "Failed to generate style. Please try again.",
     });
     expect(response.headers.get("x-stylekit-status")).toBe("500");
     expect(response.headers.get("x-stylekit-error-code")).toBe("GENERATION_FAILED");

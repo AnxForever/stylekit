@@ -14,6 +14,9 @@ export function verifyTrustedOrigin(request: Request): OriginCheckResult {
 
   const originHeader = request.headers.get("origin");
   if (!originHeader) {
+    // Non-browser clients (curl, Postman, API integrations) may omit Origin.
+    // CSRF defense relies primarily on SameSite cookies for browser sessions.
+    // Allow requests without Origin to support legitimate API usage.
     return { ok: true };
   }
 
