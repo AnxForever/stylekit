@@ -1,6 +1,8 @@
-import dynamic from "next/dynamic";
+import dynamicImport from "next/dynamic";
 
-const ShowcaseContent = dynamic(() => import("./_content"), {
+export const dynamic = "force-static";
+
+const ShowcaseContent = dynamicImport(() => import("./_content"), {
   loading: () => <div className="min-h-screen" />,
 });
 

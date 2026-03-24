@@ -1,5 +1,7 @@
 "use client";
 
+export const dynamic = "force-static";
+
 import { useState, useMemo, useCallback } from "react";
 import {
   Bell,
@@ -16,7 +18,6 @@ import {
   X,
 } from "lucide-react";
 import { TemplateBackButton } from "@/components/templates/template-back-button";
-
 const DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 const DAYS_FULL = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 const MONTHS = [

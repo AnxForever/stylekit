@@ -1,5 +1,7 @@
 "use client";
 
+export const dynamic = "force-static";
+
 import { useState } from "react";
 import {
   Heart,
@@ -22,7 +24,6 @@ import {
   X,
 } from "lucide-react";
 import { TemplateBackButton } from "@/components/templates/template-back-button";
-
 interface Track {
   id: number;
   title: string;

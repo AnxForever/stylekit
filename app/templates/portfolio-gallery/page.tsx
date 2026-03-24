@@ -1,5 +1,7 @@
 "use client";
 
+export const dynamic = "force-static";
+
 import { useState } from "react";
 import Link from "next/link";
 import {
@@ -11,7 +13,6 @@ import {
   ChevronRight,
 } from "lucide-react";
 import { TemplateBackButton } from "@/components/templates/template-back-button";
-
 // ─────────────────────────────────────────────
 // Types
 // ─────────────────────────────────────────────

@@ -1,5 +1,7 @@
 "use client";
 
+export const dynamic = "force-static";
+
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { ChevronDown, Menu, Palette, Shield, Tag, X, Zap } from "lucide-react";
@@ -11,7 +13,6 @@ import {
   BrutalSection,
 } from "@/components/ui/brutal";
 import { TemplateBackButton } from "@/components/templates/template-back-button";
-
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 const FEATURES = [

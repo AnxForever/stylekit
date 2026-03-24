@@ -1,4 +1,6 @@
-import dynamic from "next/dynamic";
+import dynamicImport from "next/dynamic";
+export const dynamic = "force-static";
+
 
 export const metadata = {
   title: "Tropical Paradise Showcase - StyleKit",
@@ -6,7 +8,7 @@ export const metadata = {
     "Live demonstration of Tropical Paradise design with sun-kissed palettes, vibrant coral and teal, and a breezy resort aesthetic.",
 };
 
-const ShowcaseContent = dynamic(() => import("./_content"), {
+const ShowcaseContent = dynamicImport(() => import("./_content"), {
   loading: () => <div className="min-h-screen" />,
 });
 

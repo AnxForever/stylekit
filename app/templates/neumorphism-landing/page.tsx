@@ -1,5 +1,7 @@
 "use client";
 
+export const dynamic = "force-static";
+
 import { useState } from "react";
 import Link from "next/link";
 import {
@@ -18,6 +20,7 @@ import {
   Globe,
 } from "lucide-react";
 import { TemplateBackButton } from "@/components/templates/template-back-button";
+
 
 // ─── Shadow constants ──────────────────────────────────────────────────────────
 const neuOut = "shadow-[6px_6px_12px_#b8bcc2,-6px_-6px_12px_#ffffff]";

@@ -1,5 +1,7 @@
 "use client";
 
+export const dynamic = "force-static";
+
 import { useState } from "react";
 import {
   BarChart3,
@@ -24,7 +26,6 @@ import {
   Info,
 } from "lucide-react";
 import { TemplateBackButton } from "@/components/templates/template-back-button";
-
 // --- Data ---
 
 const sidebarItems = [

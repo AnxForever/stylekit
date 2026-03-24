@@ -1,5 +1,7 @@
 "use client";
 
+export const dynamic = "force-static";
+
 import { useState } from "react";
 import Link from "next/link";
 import {
@@ -16,7 +18,6 @@ import {
   UtensilsCrossed,
 } from "lucide-react";
 import { TemplateBackButton } from "@/components/templates/template-back-button";
-
 const categories = [
   { name: "All Recipes", count: 48 },
   { name: "Appetizers", count: 12 },

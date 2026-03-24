@@ -1,10 +1,11 @@
 "use client";
 
+export const dynamic = "force-static";
+
 import Link from "next/link";
 import { useState } from "react";
 import { Search, X, Mail, ChevronRight } from "lucide-react";
 import { TemplateBackButton } from "@/components/templates/template-back-button";
-
 // ---------------------------------------------------------------------------
 // Types
 // ---------------------------------------------------------------------------

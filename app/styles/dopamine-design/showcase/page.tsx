@@ -1,4 +1,6 @@
-import dynamic from "next/dynamic";
+import dynamicImport from "next/dynamic";
+export const dynamic = "force-static";
+
 
 export const metadata = {
   title: "Dopamine Design Showcase - StyleKit",
@@ -6,7 +8,7 @@ export const metadata = {
     "Live demonstration of Dopamine Design: high-saturation neon colors, bold typography, pill-shaped buttons, colored shadows, and joyful energy.",
 };
 
-const ShowcaseContent = dynamic(() => import("./_content"), {
+const ShowcaseContent = dynamicImport(() => import("./_content"), {
   loading: () => <div className="min-h-screen" />,
 });
 
