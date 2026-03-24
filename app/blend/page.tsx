@@ -4,6 +4,8 @@ import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { BlendContent } from "./_content";
 
+export const dynamic = "force-static";
+
 export const metadata: Metadata = {
   title: "Blend Styles",
   description:

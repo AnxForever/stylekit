@@ -1,5 +1,7 @@
 "use client";
 
+export const dynamic = "force-static";
+
 import { useState } from "react";
 import Link from "next/link";
 import {
@@ -17,7 +19,6 @@ import {
   X,
 } from "lucide-react";
 import { TemplateBackButton } from "@/components/templates/template-back-button";
-
 const tabs = [
   { icon: User, label: "Profile" },
   { icon: Bell, label: "Notifications" },

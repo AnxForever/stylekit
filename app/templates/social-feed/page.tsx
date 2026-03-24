@@ -1,5 +1,7 @@
 "use client";
 
+export const dynamic = "force-static";
+
 import { useState, useMemo } from "react";
 import Link from "next/link";
 import {
@@ -30,7 +32,6 @@ import {
   X,
 } from "lucide-react";
 import { TemplateBackButton } from "@/components/templates/template-back-button";
-
 type ViewType = "home" | "explore" | "notifications" | "bookmarks" | "profile";
 
 interface Post {

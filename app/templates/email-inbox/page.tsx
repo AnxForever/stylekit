@@ -1,5 +1,7 @@
 "use client";
 
+export const dynamic = "force-static";
+
 import { useState } from "react";
 import {
   Archive,
@@ -19,7 +21,6 @@ import {
   X,
 } from "lucide-react";
 import { TemplateBackButton } from "@/components/templates/template-back-button";
-
 interface Email {
   id: number;
   from: string;

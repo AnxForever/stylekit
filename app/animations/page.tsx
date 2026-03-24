@@ -5,6 +5,8 @@ import { Footer } from "@/components/layout/footer";
 import { AnimationsContent } from "@/components/animations/animations-content";
 import { getAllAnimationsMeta } from "@/lib/animations/meta";
 
+export const dynamic = "force-static";
+
 export const metadata: Metadata = {
   title: "CSS Animation Patterns | Copy-Ready Code Snippets",
   description:

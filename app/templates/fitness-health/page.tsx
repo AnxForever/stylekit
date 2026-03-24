@@ -1,5 +1,7 @@
 "use client";
 
+export const dynamic = "force-static";
+
 import { useState } from "react";
 import Link from "next/link";
 import {
@@ -16,7 +18,6 @@ import {
   Zap,
 } from "lucide-react";
 import { TemplateBackButton } from "@/components/templates/template-back-button";
-
 const stats = [
   { label: "Steps", value: "8,432", target: "10,000", icon: Footprints, color: "text-blue-500", bg: "bg-blue-50", progress: 84 },
   { label: "Calories", value: "1,847", target: "2,200", icon: Flame, color: "text-orange-500", bg: "bg-orange-50", progress: 84 },

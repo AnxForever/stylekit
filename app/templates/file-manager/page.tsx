@@ -1,5 +1,7 @@
 "use client";
 
+export const dynamic = "force-static";
+
 import { useState } from "react";
 import {
   ChevronRight,
@@ -26,7 +28,6 @@ import {
   X,
 } from "lucide-react";
 import { TemplateBackButton } from "@/components/templates/template-back-button";
-
 type ViewMode = "grid" | "list";
 
 interface FileItem {

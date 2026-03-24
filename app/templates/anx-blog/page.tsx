@@ -1,5 +1,7 @@
 "use client";
 
+export const dynamic = "force-static";
+
 import { useMemo, useState, useEffect, type CSSProperties, type FormEvent } from "react";
 import Link from "next/link";
 import {
@@ -13,7 +15,6 @@ import {
   Send,
 } from "lucide-react";
 import { TemplateBackButton } from "@/components/templates/template-back-button";
-
 // ─── Types ───────────────────────────────────────────────────────────────────
 
 type NavItem = {

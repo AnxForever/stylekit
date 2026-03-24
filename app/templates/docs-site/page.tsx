@@ -1,5 +1,7 @@
 "use client";
 
+export const dynamic = "force-static";
+
 import { useState, useCallback } from "react";
 import Link from "next/link";
 import {
@@ -15,7 +17,6 @@ import {
   ChevronDown,
 } from "lucide-react";
 import { TemplateBackButton } from "@/components/templates/template-back-button";
-
 // ---------------------------------------------------------------------------
 // Types
 // ---------------------------------------------------------------------------

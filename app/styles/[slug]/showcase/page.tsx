@@ -1,7 +1,9 @@
 import { notFound } from "next/navigation";
-import dynamic from "next/dynamic";
+import dynamicImport from "next/dynamic";
 import { resolveStyleBySlug } from "@/lib/styles/community-runtime";
 import { getSiteBaseUrl } from "@/lib/site-url";
+
+export const dynamic = "force-static";
 
 const BASE_URL = getSiteBaseUrl();
 
@@ -33,7 +35,7 @@ export async function generateMetadata({
   };
 }
 
-const ShowcaseContent = dynamic(() => import("./_content"), {
+const ShowcaseContent = dynamicImport(() => import("./_content"), {
   loading: () => <div className="min-h-screen" />,
 });
 

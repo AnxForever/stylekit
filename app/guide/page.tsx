@@ -1,5 +1,7 @@
 "use client";
 
+export const dynamic = "force-static";
+
 import { ArrowRight, Code2, Palette, WandSparkles } from "lucide-react";
 import { LocalizedLink } from "@/components/i18n/localized-link";
 import { Header } from "@/components/layout/header";

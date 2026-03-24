@@ -1,4 +1,6 @@
-import dynamic from "next/dynamic";
+import dynamicImport from "next/dynamic";
+export const dynamic = "force-static";
+
 
 export const metadata = {
   title: "Terracotta Showcase - StyleKit",
@@ -6,7 +8,7 @@ export const metadata = {
     "Live demonstration of Terracotta design with warm earth tones, handcrafted textures, and Mediterranean warmth.",
 };
 
-const ShowcaseContent = dynamic(() => import("./_content"), {
+const ShowcaseContent = dynamicImport(() => import("./_content"), {
   loading: () => <div className="min-h-screen" />,
 });
 
