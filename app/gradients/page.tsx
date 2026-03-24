@@ -3,6 +3,8 @@ import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { GradientsContent } from "@/components/gradients/gradients-content";
 
+export const dynamic = "force-static";
+
 export const metadata: Metadata = {
   title: "Gradients - StyleKit",
   description:

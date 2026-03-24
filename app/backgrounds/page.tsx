@@ -3,6 +3,8 @@ import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { BackgroundsContent } from "@/components/backgrounds/backgrounds-content";
 
+export const dynamic = "force-static";
+
 export const metadata: Metadata = {
   title: "Backgrounds - StyleKit",
   description:

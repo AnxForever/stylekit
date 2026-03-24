@@ -1,4 +1,6 @@
-import dynamic from "next/dynamic";
+import dynamicImport from "next/dynamic";
+export const dynamic = "force-static";
+
 
 export const metadata = {
   title: "Op Art Showcase - StyleKit",
@@ -6,7 +8,7 @@ export const metadata = {
     "Live demonstration of Op Art design with optical illusions, geometric precision, and high-contrast black-white patterns.",
 };
 
-const ShowcaseContent = dynamic(() => import("./_content"), {
+const ShowcaseContent = dynamicImport(() => import("./_content"), {
   loading: () => <div className="min-h-screen" />,
 });
 

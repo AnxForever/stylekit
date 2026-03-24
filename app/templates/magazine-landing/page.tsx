@@ -1,5 +1,7 @@
 "use client";
 
+export const dynamic = "force-static";
+
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import {
@@ -14,7 +16,6 @@ import {
   Loader2,
 } from "lucide-react";
 import { TemplateBackButton } from "@/components/templates/template-back-button";
-
 // ─── Types ────────────────────────────────────────────────────────────────────
 
 interface Article {

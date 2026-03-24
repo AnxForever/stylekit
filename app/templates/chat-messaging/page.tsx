@@ -1,5 +1,7 @@
 "use client";
 
+export const dynamic = "force-static";
+
 import { useState, useRef, useEffect } from "react";
 import {
   Check,
@@ -25,7 +27,6 @@ import {
   X,
 } from "lucide-react";
 import { TemplateBackButton } from "@/components/templates/template-back-button";
-
 interface Message {
   id: number;
   sender: "me" | "them";

@@ -4,6 +4,8 @@ import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { promptTopics } from "@/lib/prompts";
 
+export const dynamic = "force-static";
+
 export const metadata: Metadata = {
   title: "UI Design Prompts Library",
   description:

@@ -1,5 +1,7 @@
 "use client";
 
+export const dynamic = "force-static";
+
 import { useState, useMemo } from "react";
 import {
   ArrowDown,
@@ -20,7 +22,6 @@ import {
   X,
 } from "lucide-react";
 import { TemplateBackButton } from "@/components/templates/template-back-button";
-
 // ---------------------------------------------------------------------------
 // Types
 // ---------------------------------------------------------------------------

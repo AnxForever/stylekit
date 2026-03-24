@@ -4,6 +4,8 @@ import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { CompareContent } from "./_content";
 
+export const dynamic = "force-static";
+
 export const metadata: Metadata = {
   title: "Compare Styles",
   description:

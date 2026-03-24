@@ -1,4 +1,6 @@
-import dynamic from "next/dynamic";
+import dynamicImport from "next/dynamic";
+export const dynamic = "force-static";
+
 
 export const metadata = {
   title: "GitHub Style Showcase - StyleKit",
@@ -6,7 +8,7 @@ export const metadata = {
     "Live demonstration of GitHub Style design with clean gray-scale hierarchy, blue interaction color, and developer-friendly information architecture.",
 };
 
-const ShowcaseContent = dynamic(() => import("./_content"), {
+const ShowcaseContent = dynamicImport(() => import("./_content"), {
   loading: () => <div className="min-h-screen" />,
 });
 

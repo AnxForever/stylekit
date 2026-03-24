@@ -1,8 +1,9 @@
 "use client";
 
+export const dynamic = "force-static";
+
 import { useState, useEffect, useRef, type CSSProperties } from "react";
 import { TemplateBackButton } from "@/components/templates/template-back-button";
-
 // ---------------------------------------------------------------------------
 // Types
 // ---------------------------------------------------------------------------

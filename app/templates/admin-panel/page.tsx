@@ -1,5 +1,7 @@
 "use client";
 
+export const dynamic = "force-static";
+
 import { useState } from "react";
 import {
   Bell,
@@ -21,7 +23,6 @@ import {
   Edit2,
 } from "lucide-react";
 import { TemplateBackButton } from "@/components/templates/template-back-button";
-
 // ─── Data ──────────────────────────────────────────────────────────────────
 
 const users = [
