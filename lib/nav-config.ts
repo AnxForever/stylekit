@@ -37,6 +37,7 @@ export const mainNav: NavItem[] = [
 export const resourcesDropdown: NavDropdown = {
   labelKey: "nav.resources",
   items: [
+    { href: "/component-patterns", labelKey: "nav.componentPatterns" },
     { href: "/gradients", labelKey: "nav.gradients" },
     { href: "/shadows", labelKey: "nav.shadows" },
     { href: "/typography", labelKey: "nav.typography" },
