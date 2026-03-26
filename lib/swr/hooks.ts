@@ -2,6 +2,7 @@
 
 import useSWR from "swr";
 import type { StyleMeta } from "@/lib/styles/meta";
+import type { DashboardData, DashboardRange } from "@/lib/admin/analytics-dashboard";
 
 // ---------- Types ----------
 
@@ -79,14 +80,6 @@ interface CommunityFeedQuery {
   limit?: number;
   offset?: number;
   slug?: string;
-}
-
-interface DashboardData {
-  totalEvents: number;
-  totalStyles: number;
-  topStyles: { slug: string; count: number }[];
-  eventsByType: { type: string; count: number }[];
-  recentActivity: { date: string; count: number }[];
 }
 
 interface AdminAuditActor {
@@ -208,7 +201,7 @@ export function useCommunityFeed(query: CommunityFeedQuery = {}) {
   });
 }
 
-export function useAnalyticsDashboard(range: "7d" | "30d" | "all" = "7d") {
+export function useAnalyticsDashboard(range: DashboardRange = "7d") {
   return useSWR<DashboardData>(`/api/admin/analytics?range=${range}`);
 }
 
