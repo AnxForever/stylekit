@@ -1,6 +1,8 @@
 "use client";
 
+import { Suspense } from "react";
 import dynamic from "next/dynamic";
+import { PageViewTracker } from "@/components/analytics/page-view-tracker";
 
 const Analytics = dynamic(
   () => import("@vercel/analytics/react").then((m) => ({ default: m.Analytics })),
@@ -15,6 +17,9 @@ export function ClientScripts() {
   return (
     <>
       <Analytics />
+      <Suspense fallback={null}>
+        <PageViewTracker />
+      </Suspense>
       <RegisterSW />
     </>
   );
