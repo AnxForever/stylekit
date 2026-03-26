@@ -13,8 +13,22 @@ function parseNextPath(value: string | null): string {
   return value;
 }
 
+function getPublicOrigin(request: NextRequest): string {
+  const configured = process.env.NEXT_PUBLIC_BASE_URL?.trim();
+  if (configured) {
+    try {
+      return new URL(configured).origin;
+    } catch {
+      // Fall through to request origin when env is malformed.
+    }
+  }
+
+  return new URL(request.url).origin;
+}
+
 export async function GET(request: NextRequest) {
-  const { origin, searchParams } = new URL(request.url);
+  const { searchParams } = new URL(request.url);
+  const origin = getPublicOrigin(request);
   const next = parseNextPath(searchParams.get("next"));
   const redirectUri = `${origin}/api/auth/linuxdo/callback?next=${encodeURIComponent(next)}`;
 
