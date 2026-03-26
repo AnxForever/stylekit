@@ -24,8 +24,22 @@ function parseMetadata(value: unknown): Record<string, unknown> {
   return value as Record<string, unknown>;
 }
 
+function getPublicOrigin(request: NextRequest): string {
+  const configured = process.env.NEXT_PUBLIC_BASE_URL?.trim();
+  if (configured) {
+    try {
+      return new URL(configured).origin;
+    } catch {
+      // Fall through to request origin when env is malformed.
+    }
+  }
+
+  return new URL(request.url).origin;
+}
+
 export async function GET(request: NextRequest) {
-  const { searchParams, origin } = new URL(request.url);
+  const { searchParams } = new URL(request.url);
+  const origin = getPublicOrigin(request);
   const code = searchParams.get("code");
   const next = parseNextPath(searchParams.get("next"));
   const redirectUrl = `${origin}${next}`;
