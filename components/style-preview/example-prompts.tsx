@@ -10,6 +10,7 @@ interface ExamplePromptsProps {
   styleName: string;
   styleSlug: string;
   aiRules: string;
+  aiRulesEn?: string;
 }
 
 export function ExamplePrompts({
@@ -17,6 +18,7 @@ export function ExamplePrompts({
   styleName,
   styleSlug,
   aiRules,
+  aiRulesEn,
 }: ExamplePromptsProps) {
   const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
   const { locale, t } = useI18n();
@@ -24,6 +26,7 @@ export function ExamplePrompts({
   const handleCopy = async (prompt: ExamplePrompt, index: number) => {
     const identity = buildStyleCopyIdentity({ styleName, styleSlug });
     const promptText = locale === "en" && prompt.promptEn ? prompt.promptEn : prompt.prompt;
+    const rules = locale === "en" && aiRulesEn ? aiRulesEn : aiRules;
     const separator = locale === "en"
       ? `Above are the specific requirements. Below are the ${styleName} style design rules — follow them strictly:`
       : `以上是具体需求，以下是 ${styleName} 风格的设计规范，请严格遵守：`;
@@ -35,7 +38,7 @@ ${promptText}
 ---
 ${separator}
 
-${aiRules}`;
+${rules}`;
 
     try {
       await navigator.clipboard.writeText(content);
