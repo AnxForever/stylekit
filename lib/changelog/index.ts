@@ -12,6 +12,18 @@ export interface ChangelogEntry {
 
 export const changelog: ChangelogEntry[] = [
   {
+    version: "0.13.0",
+    date: "2025-07-10",
+    title: "Localized Prompt Exports",
+    titleZh: "提示词本地化导出",
+    changes: [
+      { type: "added", description: "aiRulesEn support: English hard prompts now use localized style rules", descriptionZh: "新增 aiRulesEn 支持：英文硬性提示词现在使用本地化风格规则" },
+      { type: "fixed", description: "English hard prompt was shorter than Chinese due to missing enhancedRules fallback", descriptionZh: "修复英文硬性提示词因缺少 enhancedRules 回退导致内容比中文短的问题" },
+      { type: "added", description: "Example prompts copy correctly localized rules (aiRulesEn) in English locale", descriptionZh: "示例提示词复制时在英文语言下正确使用 aiRulesEn" },
+      { type: "changed", description: "doListEn, dontListEn, keywordsEn passed through PromptPairExporter for full EN localization", descriptionZh: "PromptPairExporter 现传递 doListEn、dontListEn、keywordsEn 实现完整英文本地化" },
+    ],
+  },
+  {
     version: "0.12.0",
     date: "2026-03-18",
     title: "Promotion Readiness and Polish",
