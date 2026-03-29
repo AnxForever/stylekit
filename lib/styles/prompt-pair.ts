@@ -5,10 +5,14 @@ export interface PromptPairInput {
   styleName: string;
   styleSlug: string;
   aiRules: string;
+  aiRulesEn?: string;
   enhancedRules?: string | null;
   doList: string[];
+  doListEn?: string[];
   dontList: string[];
+  dontListEn?: string[];
   keywords: string[];
+  keywordsEn?: string[];
 }
 
 export interface PromptPairContent {
@@ -89,7 +93,9 @@ export function buildHardPrompt(input: PromptPairInput, locale: Locale = "zh"): 
     styleName: input.styleName,
     styleSlug: input.styleSlug,
   });
-  const sourceRules = (input.enhancedRules || input.aiRules).trim();
+  const sourceRules = locale === "en" && input.aiRulesEn
+    ? input.aiRulesEn.trim()
+    : (input.enhancedRules || input.aiRules).trim();
   const text = hardPromptText[locale];
 
   return `${identity}
@@ -111,9 +117,13 @@ export function buildSoftPrompt(input: PromptPairInput, locale: Locale = "zh"): 
     styleSlug: input.styleSlug,
   });
 
-  const keywords = pickUnique(input.keywords, 6);
-  const dos = pickUnique(input.doList, 4);
-  const donts = pickUnique(input.dontList, 3);
+  const keywordSource = locale === "en" && input.keywordsEn ? input.keywordsEn : input.keywords;
+  const doSource = locale === "en" && input.doListEn ? input.doListEn : input.doList;
+  const dontSource = locale === "en" && input.dontListEn ? input.dontListEn : input.dontList;
+
+  const keywords = pickUnique(keywordSource, 6);
+  const dos = pickUnique(doSource, 4);
+  const donts = pickUnique(dontSource, 3);
   const text = softPromptText[locale];
 
   return `${identity}

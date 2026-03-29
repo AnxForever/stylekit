@@ -312,10 +312,14 @@ export function StyleDetailContent({
             styleName={style.name}
             styleSlug={style.slug}
             aiRules={style.aiRules}
+            aiRulesEn={style.aiRulesEn}
             enhancedRules={enhancedRules}
             doList={style.doList}
+            doListEn={style.doListEn}
             dontList={style.dontList}
+            dontListEn={style.dontListEn}
             keywords={style.keywords}
+            keywordsEn={style.keywordsEn}
           />
         </div>
       </section>

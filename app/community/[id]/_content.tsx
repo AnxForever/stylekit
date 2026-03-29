@@ -191,9 +191,13 @@ export function CommunitySubmissionContent({ submission, style }: Props) {
               styleName={style.name}
               styleSlug={submission.slug}
               aiRules={style.aiRules}
+              aiRulesEn={style.aiRulesEn}
               doList={style.doList}
+              doListEn={style.doListEn}
               dontList={style.dontList}
+              dontListEn={style.dontListEn}
               keywords={style.keywords}
+              keywordsEn={style.keywordsEn}
             />
           </div>
         </section>
@@ -297,6 +301,7 @@ export function CommunitySubmissionContent({ submission, style }: Props) {
               styleName={style.name}
               styleSlug={submission.slug}
               aiRules={style.aiRules}
+              aiRulesEn={style.aiRulesEn}
             />
           </div>
         </section>

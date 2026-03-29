@@ -9,10 +9,14 @@ interface PromptPairExporterProps {
   styleName: string;
   styleSlug: string;
   aiRules: string;
+  aiRulesEn?: string;
   enhancedRules?: string | null;
   doList: string[];
+  doListEn?: string[];
   dontList: string[];
+  dontListEn?: string[];
   keywords: string[];
+  keywordsEn?: string[];
 }
 
 type PromptKind = "hard" | "soft";
@@ -21,10 +25,14 @@ export function PromptPairExporter({
   styleName,
   styleSlug,
   aiRules,
+  aiRulesEn,
   enhancedRules,
   doList,
+  doListEn,
   dontList,
+  dontListEn,
   keywords,
+  keywordsEn,
 }: PromptPairExporterProps) {
   const { locale, t } = useI18n();
   const [copiedKind, setCopiedKind] = useState<PromptKind | null>(null);
@@ -35,12 +43,16 @@ export function PromptPairExporter({
         styleName,
         styleSlug,
         aiRules,
+        aiRulesEn,
         enhancedRules,
         doList,
+        doListEn,
         dontList,
+        dontListEn,
         keywords,
+        keywordsEn,
       }, locale),
-    [styleName, styleSlug, aiRules, enhancedRules, doList, dontList, keywords, locale]
+    [styleName, styleSlug, aiRules, aiRulesEn, enhancedRules, doList, doListEn, dontList, dontListEn, keywords, keywordsEn, locale]
   );
 
   const promptItems: {

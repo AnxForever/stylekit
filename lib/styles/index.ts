@@ -48,6 +48,7 @@ export interface DesignStyle {
     accent: string[];
   };
   keywords: string[];
+  keywordsEn?: string[];
 
   // 风格变体（配色方案）
   variants?: StyleVariant[];
