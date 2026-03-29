@@ -477,6 +477,14 @@ After generating code, verify:
 - Status indicators with colored dots
 - Blue accent for primary actions
 - Comfortable contrast for long sessions`,
+      promptEn: `Create a developer dashboard using Dark Mode style:
+- Sidebar navigation with slate-800 background
+- Main content on slate-900
+- Metric cards with subtle borders
+- Code blocks with syntax highlighting
+- Status indicators with colored dots
+- Blue accent for primary actions
+- Comfortable contrast for long sessions`,
     },
   {
       title: "SaaS 着陆页",
@@ -484,6 +492,7 @@ After generating code, verify:
       description: "生成 暗黑模式风格的 SaaS 产品着陆页",
       descriptionEn: "Generate a SaaS product landing page in Dark Mode style",
       prompt: `Create a SaaS landing page using Dark Mode style with hero section, feature grid, testimonials, pricing table, and footer.`,
+      promptEn: `Create a SaaS landing page using Dark Mode style with hero section, feature grid, testimonials, pricing table, and footer.`,
     },
     {
       title: "作品集展示",
@@ -491,6 +500,7 @@ After generating code, verify:
       description: "生成 暗黑模式风格的作品集页面",
       descriptionEn: "Generate a portfolio showcase in Dark Mode style",
       prompt: `Create a portfolio showcase page using Dark Mode style with project grid, about section, contact form, and consistent visual language.`,
+      promptEn: `Create a portfolio showcase page using Dark Mode style with project grid, about section, contact form, and consistent visual language.`,
     }],
 
   variants: [

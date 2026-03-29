@@ -467,6 +467,12 @@ After generating code, verify:
 3. 定价表：3 列，中间推荐列用强调色背景
 4. CTA：全宽黑色背景，白色大标题，粉色按钮
 所有元素必须：无圆角、黑色粗边框、硬边缘阴影、hover 位移效果`,
+      promptEn: `Generate a SaaS product landing page using Neo-Brutalist style with the following requirements:
+1. Hero section: large title using font-black, vivid background color (e.g. #ccff00), black thick-bordered buttons
+2. Features section: 3 cards, each with hard-edge shadow, shadow turns pink on hover
+3. Pricing table: 3 columns, recommended column uses accent color background
+4. CTA: full-width black background, large white title, pink button
+All elements must have: no rounded corners, black thick borders, hard-edge shadows, hover translate effects`,
     },
     {
       title: "博客文章页",
@@ -479,6 +485,12 @@ After generating code, verify:
 3. 侧边栏：相关文章卡片，有硬边缘阴影
 4. 分享按钮：图标按钮带黑色边框，hover 位移
 所有元素遵循 Neo-Brutalist 规范：无圆角、纯黑边框、高对比配色`,
+      promptEn: `Create a blog article page using Neo-Brutalist style with the following requirements:
+1. Top: extra-large title with font-black, author info with avatar
+2. Body text: use font-mono, moderate paragraph spacing
+3. Sidebar: related article cards with hard-edge shadows
+4. Share buttons: icon buttons with black borders, translate on hover
+All elements must follow Neo-Brutalist rules: no rounded corners, pure black borders, high-contrast colors`,
     },
     {
       title: "作品集展示",
@@ -491,6 +503,12 @@ After generating code, verify:
 3. 作品网格：2-3 列布局，每个卡片有缩略图和标题
 4. 卡片效果：黑色粗边框，hover 时阴影变色 + 轻微上移
 5. 联系区：简洁表单，输入框 focus 时出现硬阴影`,
+      promptEn: `Design a portfolio page using Neo-Brutalist style with the following requirements:
+1. Navbar: left-side Logo with font-black, right-side links with font-mono
+2. Hero: personal introduction with vivid background color blocks
+3. Project grid: 2-3 column layout, each card with thumbnail and title
+4. Card effects: black thick borders, shadow color change + slight upward shift on hover
+5. Contact section: clean form, hard shadow appears on input focus`,
     },
   ],
 };
