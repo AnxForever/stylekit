@@ -23,14 +23,17 @@ export function ExamplePrompts({
 
   const handleCopy = async (prompt: ExamplePrompt, index: number) => {
     const identity = buildStyleCopyIdentity({ styleName, styleSlug });
+    const promptText = locale === "en" && prompt.promptEn ? prompt.promptEn : prompt.prompt;
+    const separator = locale === "en"
+      ? `Above are the specific requirements. Below are the ${styleName} style design rules — follow them strictly:`
+      : `以上是具体需求，以下是 ${styleName} 风格的设计规范，请严格遵守：`;
 
-    // Copy the prompt along with a simplified version of the AI rules
     const content = `${identity}
 
-${prompt.prompt}
+${promptText}
 
 ---
-以上是具体需求，以下是 ${styleName} 风格的设计规范，请严格遵守：
+${separator}
 
 ${aiRules}`;
 
@@ -78,7 +81,9 @@ ${aiRules}`;
               {locale === "zh" ? prompt.description : prompt.descriptionEn}
             </p>
             <div className="text-xs text-muted bg-zinc-50 dark:bg-zinc-900 p-3 max-h-24 overflow-y-auto">
-              <pre className="whitespace-pre-wrap font-mono">{prompt.prompt}</pre>
+              <pre className="whitespace-pre-wrap font-mono">
+                {locale === "en" && prompt.promptEn ? prompt.promptEn : prompt.prompt}
+              </pre>
             </div>
           </div>
         ))}

@@ -405,6 +405,13 @@ After generating code, verify:
 4. Chart area: large glass panel with inset shadow, gradient overlay from top
 5. All transitions: duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]
 6. Specular sweep on card hover`,
+      promptEn: `Create a Liquid Glass dashboard with:
+1. Background: full-screen gradient from-indigo-600 via-purple-600 to-pink-500 with floating ambient orbs
+2. Top nav: fixed, bg-white/10 backdrop-blur-[60px] backdrop-saturate-[180%], border-b border-white/10
+3. Stat cards: bg-white/15 backdrop-blur-[60px], multi-layer shadows, inner luminance gradient overlay, hover lift with enhanced glow
+4. Chart area: large glass panel with inset shadow, gradient overlay from top
+5. All transitions: duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]
+6. Specular sweep on card hover`,
     },
     {
       title: "Liquid Glass Login",
@@ -418,6 +425,13 @@ After generating code, verify:
 4. Inputs: bg-white/10, inset shadow, focus glow ring
 5. Submit button: bg-white/20 with specular sweep on hover
 6. All corners rounded-2xl or rounded-3xl, spring easing transitions`,
+      promptEn: `Create a Liquid Glass login page with:
+1. Background: gradient from-violet-600 via-purple-600 to-fuchsia-500 with blurred ambient orbs
+2. Login card: centered, bg-white/12 backdrop-blur-[60px] backdrop-saturate-[180%], rounded-3xl, multi-layer shadow with inset top highlight
+3. Inner luminance: gradient overlay from-white/18 to transparent at top
+4. Inputs: bg-white/10, inset shadow, focus glow ring
+5. Submit button: bg-white/20 with specular sweep on hover
+6. All corners rounded-2xl or rounded-3xl, spring easing transitions`,
     },
     {
       title: "Liquid Glass Music Player",
@@ -425,6 +439,14 @@ After generating code, verify:
       description: "沉浸式毛玻璃音乐播放器",
       descriptionEn: "Immersive frosted glass music player",
       prompt: `Create a Liquid Glass music player with:
+1. Background: blurred album art with gradient overlay
+2. Player card: bg-white/15 backdrop-blur-[60px] backdrop-saturate-[180%], rounded-3xl
+3. Album art: rounded-2xl with glass frame border and shadow
+4. Controls: glass buttons with inner luminance, specular sweep on hover
+5. Progress bar: glass track with gradient fill, glass thumb
+6. Playlist: glass sidebar with hover-highlighted rows
+7. All transitions spring easing, multi-layer shadows throughout`,
+      promptEn: `Create a Liquid Glass music player with:
 1. Background: blurred album art with gradient overlay
 2. Player card: bg-white/15 backdrop-blur-[60px] backdrop-saturate-[180%], rounded-3xl
 3. Album art: rounded-2xl with glass frame border and shadow

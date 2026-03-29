@@ -87,6 +87,7 @@ export interface ExamplePrompt {
   description: string;  // 如 "包含 Hero、Features、Pricing"
   descriptionEn: string;
   prompt: string;       // 完整的 prompt 文本
+  promptEn?: string;    // 英文版 prompt（可选，渐进添加）
 }
 
 export interface ComponentTemplate {

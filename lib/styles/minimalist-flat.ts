@@ -325,6 +325,13 @@ TYPOGRAPHY:
 - Black and white with one accent color
 - Large typography for headings
 - Generous whitespace between sections`,
+      promptEn: `Create a designer portfolio using Minimalist Flat style:
+- Full-screen hero with name and title
+- Grid of project cards with hover color inversion
+- No shadows, no gradients
+- Black and white with one accent color
+- Large typography for headings
+- Generous whitespace between sections`,
     },
   {
       title: "SaaS 着陆页",
@@ -332,6 +339,7 @@ TYPOGRAPHY:
       description: "生成 极简扁平风风格的 SaaS 产品着陆页",
       descriptionEn: "Generate a SaaS product landing page in Minimalist Flat style",
       prompt: `Create a SaaS landing page using Minimalist Flat style with hero section, feature grid, testimonials, pricing table, and footer.`,
+      promptEn: `Create a SaaS landing page using Minimalist Flat style with hero section, feature grid, testimonials, pricing table, and footer.`,
     },
     {
       title: "作品集展示",
@@ -339,6 +347,7 @@ TYPOGRAPHY:
       description: "生成 极简扁平风风格的作品集页面",
       descriptionEn: "Generate a portfolio showcase in Minimalist Flat style",
       prompt: `Create a portfolio showcase page using Minimalist Flat style with project grid, about section, contact form, and consistent visual language.`,
+      promptEn: `Create a portfolio showcase page using Minimalist Flat style with project grid, about section, contact form, and consistent visual language.`,
     }],
 
   variants: [

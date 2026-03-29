@@ -482,6 +482,14 @@ After generating code, verify:
 5. 内部图标 group-hover 时变色或 scale-110
 6. 响应式：移动端单列，桌面端多列
 所有卡片 rounded-2xl，统一 gap-4`,
+      promptEn: `Showcase 6 core product features using Bento Grid style with the following requirements:
+1. Use CSS Grid to create an irregular grid layout
+2. Featured items span col-span-2 or row-span-2
+3. Each card contains: icon, title, short description
+4. Cards on hover: -translate-y-1 + scale-[1.01] + shadow spread
+5. Inner icons on group-hover: color change or scale-110
+6. Responsive: single column on mobile, multi-column on desktop
+All cards rounded-2xl, consistent gap-4`,
     },
     {
       title: "个人主页",
@@ -495,6 +503,13 @@ After generating code, verify:
 4. 最新项目：中等大小卡片，带缩略图
 5. 联系方式：底部全宽卡片
 网格布局参考 Apple 风格，卡片 hover 上浮 + 微放大`,
+      promptEn: `Create a personal homepage using Bento Grid style with the following requirements:
+1. Large card: personal photo + bio
+2. Social links: small square cards, one icon each, icon scale-110 and color change on hover
+3. Skills showcase: horizontal wide cards
+4. Latest projects: medium-sized cards with thumbnails
+5. Contact: full-width card at the bottom
+Grid layout inspired by Apple style, cards float up + micro-scale on hover`,
     },
     {
       title: "数据仪表盘",
@@ -508,6 +523,13 @@ After generating code, verify:
 4. 小卡片：快捷操作按钮，active:scale-95
 5. 全宽卡片：时间线或进度条
 使用 CSS Grid，所有卡片 rounded-2xl + hover 微动效`,
+      promptEn: `Design a data dashboard using Bento Grid style with the following requirements:
+1. Large card: main chart (spanning 2x2), shadow spread on hover
+2. Metric cards: key indicator numbers + trends, numbers change color on group-hover
+3. List card: recent activity or to-do items
+4. Small cards: quick action buttons, active:scale-95
+5. Full-width card: timeline or progress bar
+Use CSS Grid, all cards rounded-2xl + hover micro-animations`,
     },
   ],
 
