@@ -93,8 +93,8 @@ export function buildHardPrompt(input: PromptPairInput, locale: Locale = "zh"): 
     styleName: input.styleName,
     styleSlug: input.styleSlug,
   });
-  const sourceRules = locale === "en" && input.aiRulesEn
-    ? input.aiRulesEn.trim()
+  const sourceRules = locale === "en"
+    ? (input.enhancedRules || input.aiRulesEn || input.aiRules).trim()
     : (input.enhancedRules || input.aiRules).trim();
   const text = hardPromptText[locale];
 
