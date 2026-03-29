@@ -26,7 +26,7 @@ export function PromptPairExporter({
   dontList,
   keywords,
 }: PromptPairExporterProps) {
-  const { t } = useI18n();
+  const { locale, t } = useI18n();
   const [copiedKind, setCopiedKind] = useState<PromptKind | null>(null);
 
   const prompts = useMemo(
@@ -39,8 +39,8 @@ export function PromptPairExporter({
         doList,
         dontList,
         keywords,
-      }),
-    [styleName, styleSlug, aiRules, enhancedRules, doList, dontList, keywords]
+      }, locale),
+    [styleName, styleSlug, aiRules, enhancedRules, doList, dontList, keywords, locale]
   );
 
   const promptItems: {
