@@ -13,6 +13,8 @@ import {
   PanelLeftOpen,
   LayoutTemplate,
   ExternalLink,
+  ArrowLeftRight,
+  Download,
 } from "lucide-react";
 import { useI18n } from "@/lib/i18n/context";
 import { getStyleTokens } from "@/lib/styles/tokens-registry";
@@ -32,6 +34,8 @@ interface PlaygroundToolbarProps {
   onToggleEditor: () => void;
   onToggleTemplates: () => void;
   templatesVisible: boolean;
+  onOpenComparison?: () => void;
+  onOpenExport?: () => void;
 }
 
 export function PlaygroundToolbar({
@@ -45,6 +49,8 @@ export function PlaygroundToolbar({
   onToggleEditor,
   onToggleTemplates,
   templatesVisible,
+  onOpenComparison,
+  onOpenExport,
 }: PlaygroundToolbarProps) {
   const { t } = useI18n();
   const [copied, setCopied] = useState(false);
@@ -190,6 +196,28 @@ export function PlaygroundToolbar({
             </div>
           )}
         </div>
+
+        {/* Style Comparison */}
+        {onOpenComparison && (
+          <button
+            onClick={onOpenComparison}
+            className={btnClass}
+            title={t("playground.compare") || "Compare Styles"}
+          >
+            <ArrowLeftRight className="w-4 h-4" />
+          </button>
+        )}
+
+        {/* Export Project */}
+        {onOpenExport && (
+          <button
+            onClick={onOpenExport}
+            className={btnClass}
+            title={t("playground.export") || "Export Project"}
+          >
+            <Download className="w-4 h-4" />
+          </button>
+        )}
 
         <div className="h-4 w-px bg-border mx-1" />
 

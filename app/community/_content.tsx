@@ -3,11 +3,13 @@
 import Image from "next/image";
 import { useEffect, useMemo, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import { Loader2, LogIn, RefreshCw, Send } from "lucide-react";
+import { Loader2, LogIn, RefreshCw, Send, TrendingUp } from "lucide-react";
 import { LocalizedLink } from "@/components/i18n/localized-link";
 import { useCommunityFeed } from "@/lib/swr";
 import { useUser } from "@/lib/auth/use-user";
 import { useI18n } from "@/lib/i18n/context";
+import { SORT_OPTIONS, type SortMethod } from "@/lib/community/leaderboard";
+import { CommunityStatsCard } from "@/components/community/community-stats-card";
 
 const PAGE_SIZE = 12;
 
@@ -34,6 +36,7 @@ export function CommunityContent({
   const router = useRouter();
   const pathname = usePathname();
   const [offset, setOffset] = useState(initialOffset);
+  const [sortMethod, setSortMethod] = useState<SortMethod>("recent");
   const normalizedSlug = useMemo(
     () => initialSlug.trim().toLowerCase() || undefined,
     [initialSlug]
@@ -94,8 +97,19 @@ export function CommunityContent({
   };
 
   return (
-    <section className="border-b border-border">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-12 py-10 md:py-14">
+    <section>
+      {/* Community Stats */}
+      <CommunityStatsCard
+        stats={{
+          totalSubmissions: data?.total || 0,
+          totalCollaborators: data?.collaborators || 0,
+          recentSubmissions: data?.recentCount || 0,
+          topStyle: data?.featured || null,
+        }}
+      />
+
+      <div className="border-b border-border">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-12 py-10 md:py-14">
         <div className="flex flex-col gap-5 md:flex-row md:items-end md:justify-between mb-10">
           <div>
             <p className="text-xs tracking-[0.16em] uppercase text-muted mb-3">
@@ -146,6 +160,25 @@ export function CommunityContent({
             </LocalizedLink>
           </div>
         )}
+
+        {/* Sort Controls */}
+        <div className="mb-6 flex flex-wrap gap-2">
+          {SORT_OPTIONS.map((option) => (
+            <button
+              key={option.value}
+              onClick={() => setSortMethod(option.value)}
+              className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-sm transition-colors ${
+                sortMethod === option.value
+                  ? "bg-foreground text-background"
+                  : "border border-border hover:border-foreground"
+              }`}
+              title={option.description}
+            >
+              {option.icon}
+              {option.label}
+            </button>
+          ))}
+        </div>
 
         {error && (
           <div className="mb-6 rounded-md border border-red-300 bg-red-50 px-4 py-3 text-sm text-red-700 dark:border-red-800 dark:bg-red-950/40 dark:text-red-300 flex items-center justify-between">
