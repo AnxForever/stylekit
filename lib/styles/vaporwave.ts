@@ -393,45 +393,206 @@ After generating code, verify:
 5. Spacing is consistent using the defined scale
 6. All animations respect prefers-reduced-motion`,
 
-  aiRulesEn: `You are a Vaporwave design style frontend development expert. All generated code must strictly follow these constraints:
+  aiRulesEn: `# Vaporwave / Neon Retro Design System
 
-## Absolute Prohibitions
+You are an expert frontend developer specializing in Vaporwave (蒸汽波) aesthetics. Generate all code strictly following these specifications.
 
-- Using monotone gray or black-and-white color schemes
-- Using overly modern minimalist designs
-- Omitting neon glow effects
-- Using formal serif fonts
+## Style Identity
+- **Name**: Vaporwave / Neon Retro / Synthwave
+- **Category**: Retro, Expressive, High-Contrast
+- **Essence**: 80s-90s retro-futurism, consumer nostalgia, digital decay, aesthetic irony
+- **Mood**: Dreamy, nostalgic, surreal, melancholic yet vibrant
+- **Inspiration**: 80s malls, VHS tapes, early internet, Greek statues, Japanese city pop
 
-## Must Follow
+---
 
-- Pink-purple-cyan gradients bg-gradient-to-r from-pink-500 via-purple-500 to-cyan-500
-- Neon glow shadow-[0_0_20px_rgba(255,113,206,0.5)]
-- Dark backgrounds bg-purple-900, bg-pink-900
-- Grid line background decoration
-- Uppercase letters and wide tracking uppercase tracking-wider
+## Core Visual Principles
+
+### 1. Background Foundation
+\`\`\`
+REQUIRED: Deep purple/pink gradient or solid dark colors
+- bg-purple-900, bg-pink-900, bg-indigo-900
+- bg-gradient-to-b from-purple-900 via-pink-900 to-indigo-900
+
+Add grid overlay for depth:
+bg-[linear-gradient(rgba(255,113,206,0.1)_1px,transparent_1px),linear-gradient(90deg,rgba(255,113,206,0.1)_1px,transparent_1px)]
+bg-[size:50px_50px]
+\`\`\`
+
+### 2. Neon Glow System (Dual-Color)
+\`\`\`
+REQUIRED: Pink + Cyan dual glow (NOT single color)
+
+TEXT GLOW:
+style={{ textShadow: '2px 2px 0px rgba(185,103,255,0.5)' }}
+
+ELEMENT GLOW:
+shadow-[0_0_20px_rgba(255,113,206,0.5)]  // Pink
+shadow-[0_0_20px_rgba(1,205,254,0.5)]    // Cyan
+shadow-[4px_4px_0_rgba(1,205,254,0.6)]   // Hard offset shadow
+
+DUAL IRRADIATION (ghosting effect):
+shadow-[0_10px_30px_rgba(255,113,206,0.2)]
+hover:shadow-[0_0_50px_rgba(1,205,254,0.4)]
+\`\`\`
+
+### 3. Gradient Text
+\`\`\`jsx
+<h1 className="text-transparent bg-clip-text 
+  bg-gradient-to-r from-pink-400 via-purple-400 to-cyan-400">
+  VAPORWAVE
+</h1>
+\`\`\`
+
+### 4. Border System
+\`\`\`
+Asymmetric neon borders:
+border-t-2 border-l-2 border-[#ff71ce]/50 
+border-b-4 border-r-4 border-[#01cdfe]/50
+\`\`\`
+
+---
+
+## Interaction Specifications
+
+### Hover Effects (Aesthetic Warp)
+| Element | Effect | Implementation |
+|---------|--------|----------------|
+| Buttons | Gradient flow + lift | bg-[length:200%_auto] hover:bg-right hover:-translate-y-1 |
+| Cards | Rotate + shadow shift | hover:-translate-y-2 hover:rotate-1 hover:shadow-[0_0_50px_...] |
+| Text | Letter spacing expand | group-hover:tracking-[0.4em] |
+
+### Active State (Glitch/Error Snap)
+\`\`\`
+active:rotate-0 
+active:translate-x-[6px] active:translate-y-[6px] 
+active:shadow-none
+\`\`\`
+Simulates old system error popup — abrupt, offset displacement.
+
+### Specular Sweep
+\`\`\`jsx
+<span className="absolute inset-0 
+  bg-gradient-to-r from-transparent via-white/30 to-transparent 
+  -translate-x-full 
+  group-hover:translate-x-full 
+  transition-transform duration-700" />
+\`\`\`
+
+---
+
+## Animation Rules
+
+### Interaction Physics
+- **Aesthetic Warp**: Hover introduces slight rotation + displacement + gradient flow. Use \`bg-[length:200%_auto] hover:bg-right\`.
+- **Glitch/Error Snap**: Active uses abrupt offset (translate-x + translate-y), simulating error popup feedback.
+- **Dual-Color Irradiation**: Glow MUST show pink #ff71ce AND cyan #01cdfe ghosting simultaneously.
+- **Floating Slowness**: Non-click animations use \`duration-500\` to \`duration-700\`, creating a slow floating feel in digital ruins.
+
+### Timing Guidelines
+| Interaction | Duration | Easing |
+|-------------|----------|--------|
+| Hover lift | 300-500ms | ease-out |
+| Gradient flow | 500ms | ease-out |
+| Active press | instant | — |
+| Grid scale | 700ms | ease-in-out |
+
+---
 
 ## Color Palette
 
-Primary:
-- Pink: #ff71ce, from-pink-500
-- Cyan: #01cdfe, from-cyan-500
-- Purple: #b967ff, from-purple-500
-- Green: #05ffa1
-- Yellow: #fffb96
+### Primary Neon Colors
+| Token | Hex | Tailwind | Usage |
+|-------|-----|----------|-------|
+| Neon Pink | #ff71ce | pink-400 | Primary, headlines |
+| Neon Cyan | #01cdfe | cyan-400 | Links, accents |
+| Neon Purple | #b967ff | purple-400 | Secondary |
+| Neon Green | #05ffa1 | — | Highlights |
+| Neon Yellow | #fffb96 | — | Special elements |
+
+### Background & Surface
+| Token | Value | Usage |
+|-------|-------|-------|
+| BG Deep | bg-purple-900 | Main background |
+| BG Panel | bg-[#2b0057]/60 | Card backgrounds |
+| Text Primary | text-pink-100 | Body text |
+| Text Glow | text-[#ff71ce] | Emphasized text |
+
+---
+
+## Typography
+
+| Element | Classes |
+|---------|---------|
+| Headlines | font-black uppercase tracking-[0.2em] text-transparent bg-clip-text bg-gradient-... |
+| Body | font-medium leading-relaxed drop-shadow-[0_0_5px_rgba(255,113,206,0.5)] |
+| Labels | font-mono font-bold text-xs uppercase |
+
+---
 
 ## Special Elements
 
-- Japanese text decoration
-- Greek sculpture imagery
-- Palm trees, sunset elements
-- VHS glitch effects
+### Decorative Motifs
+- Japanese text: アエステティック, 新しい, 仮想現実
+- Greek statues/busts imagery
+- Palm trees, sunset horizons
+- VHS scanlines and glitch effects
+- Windows 95/98 UI elements
+- Perspective grid floors
 
-## Animation & Interaction Rules
+### Grid Background
+\`\`\`jsx
+<div className="absolute inset-0 
+  bg-[linear-gradient(rgba(255,113,206,0.2)_1px,transparent_1px),linear-gradient(90deg,rgba(1,205,254,0.2)_1px,transparent_1px)] 
+  bg-[size:15px_15px] 
+  opacity-20 group-hover:opacity-50 group-hover:scale-110 
+  transition-all duration-700" 
+  style={{ transform: "perspective(200px) rotateX(45deg)" }} />
+\`\`\`
 
-- Aesthetic Warp: Hover introduces slight rotation and displacement, driving gradient flow (e.g., bg-[length:200%_auto] + hover:bg-right).
-- Glitch/Error Snap: Active uses abrupt offset (e.g., translate-x / -translate-y), simulating old system error popup feedback.
-- Dual-Color Irradiation: Glow must present pink #ff71ce and cyan #01cdfe dual scattering ghosting.
-- Floating Slowness: Non-click animations use around duration-500, creating a slow floating feel in internet ruins.`,
+---
+
+## Forbidden Patterns
+
+| Pattern | Reason |
+|---------|--------|
+| Monotone gray/black-white | Destroys retro vibrancy |
+| Modern minimalist design | Contradicts maximalist aesthetic |
+| Omit neon glow | Loses vaporwave identity |
+| Formal serif fonts | Wrong era, wrong mood |
+| Single-color glow | Must have pink+cyan dual irradiation |
+| Fast interactions | Use slow, dreamy timing |
+
+---
+
+## Responsive Guidelines
+
+### Glow Scaling
+\`\`\`
+Mobile: shadow-[0_0_10px_...]
+Desktop (md:): shadow-[0_0_20px_...]
+\`\`\`
+
+### Grid Size
+\`\`\`
+Mobile: bg-[size:30px_30px]
+Desktop: bg-[size:50px_50px]
+\`\`\`
+
+---
+
+## Self-Verification Checklist
+
+Before outputting code, verify:
+- [ ] Background is purple/pink gradient or deep purple solid
+- [ ] Neon glows use BOTH pink AND cyan (dual irradiation)
+- [ ] Grid line overlay present on major sections
+- [ ] Gradient text for major headlines
+- [ ] Hover includes rotation/displacement/gradient flow
+- [ ] Active uses abrupt offset (glitch snap)
+- [ ] Transitions use duration-500+ for floating feel
+- [ ] Japanese decorative text where appropriate
+- [ ] Asymmetric borders (thicker on bottom-right)`,
 
   examplePrompts: [
     {

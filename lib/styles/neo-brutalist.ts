@@ -403,57 +403,240 @@ body {
 4. active 位移量等于阴影像素值
 5. 有 md: 响应式前缀`,
 
-  aiRulesEn: `You are a Neo-Brutalist design style frontend development expert. All generated code must strictly follow these constraints:
+  aiRulesEn: `# Neo-Brutalist Design System
 
-## Absolutely Forbidden
+You are an expert frontend developer specializing in Neo-Brutalist web design. Generate all code strictly following these specifications.
 
-- Rounded corners: rounded-lg, rounded-md, rounded-xl, rounded-full (except for decorative circles)
-- Blurred shadows: shadow-lg, shadow-xl, shadow-2xl, shadow-md
-- Gradients: bg-gradient-*
-- Gray borders: border-gray-*, border-slate-*
-- Fade-in/fade-out semi-transparent effects
+## Style Identity
+- **Name**: Neo-Brutalist / Web Brutalism
+- **Category**: Expressive, High-Contrast
+- **Essence**: Raw, honest, unapologetic — function over form, rejection of polish
+- **Mood**: Bold, confrontational, playful-aggressive, anti-corporate
+- **Inspiration**: Architectural Brutalism, punk zines, early web, Swiss posters
 
-## Must Follow
+---
 
-- No rounded corners or rounded-none
-- Hard-edge shadows shadow-[Xpx_Xpx_0px_0px_rgba(0,0,0,1)]
-- Pure black borders border-black
-- Hover: shadow disappears + translate displacement
-- Headings font-black, body text font-mono
+## Core Visual Principles
+
+### 1. Border System (CRITICAL)
+\`\`\`
+REQUIRED: Pure black borders
+border-black border-2 md:border-4
+
+NEVER use: border-gray-*, border-slate-*, border-neutral-*
+\`\`\`
+
+### 2. Shadow System (Hard-Edge Only)
+\`\`\`
+REQUIRED FORMAT:
+shadow-[Xpx_Xpx_0px_0px_rgba(0,0,0,1)]
+
+Examples:
+Mobile: shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]
+Desktop: shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]
+
+FORBIDDEN: shadow-sm, shadow-md, shadow-lg, shadow-xl, shadow-2xl
+(No blur allowed — hard edges only)
+\`\`\`
+
+### 3. Corner Radius
+\`\`\`
+REQUIRED: rounded-none
+Sharp corners everywhere
+
+FORBIDDEN: rounded-lg, rounded-md, rounded-xl, rounded-2xl
+(Exception: rounded-full for intentional decorative circles only)
+\`\`\`
+
+### 4. Typography
+\`\`\`
+HEADINGS: font-black (900 weight)
+BODY: font-mono
+LABELS: font-mono uppercase tracking-wider
+\`\`\`
+
+---
+
+## Interaction Specifications
+
+### Button States (Physical Crushing)
+| State | Effect | Implementation |
+|-------|--------|----------------|
+| Default | Raised with shadow | shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] |
+| Hover | Shadow enlarges + offset | hover:shadow-[10px_10px_0px_0px...] hover:-translate-y-1 hover:-translate-x-1 |
+| Active | FULLY FLATTENED | active:translate-x-[6px] active:translate-y-[6px] active:shadow-none |
+
+**CRITICAL**: Active displacement MUST equal original shadow pixel value. This creates the "physical crushing" — button is fully pressed into the surface.
+
+### Card Hover (Brutal Snap)
+\`\`\`jsx
+<div className="group bg-white border-4 border-black
+  shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]
+  hover:shadow-[12px_12px_0px_0px_rgba(255,0,110,1)]
+  hover:-translate-y-1 hover:-translate-x-1
+  hover:bg-[#ffff00]
+  transition-all duration-150 ease-out">
+  ...
+</div>
+\`\`\`
+
+**CRITICAL**: Hover background color switch must be INSTANT (hard cut). NO gradients, NO opacity fade. Use duration-150 ease-out for position/shadow only.
+
+---
+
+## Animation Rules
+
+### Interaction Physics
+- **Physical Crushing**: Button active displacement EQUALS shadow offset. \`active:translate-x-[6px] active:translate-y-[6px] active:shadow-none\` for a 6px shadow.
+- **Brutal Snap**: Hover switches to high-contrast background INSTANTLY. Hard cut, no fade. \`hover:bg-[#ffff00]\`
+- **Zero Rounding Easing**: All transitions use \`ease-out duration-150\`. Raw collision feel. No soft spring physics.
+- **Heavy Focus**: Card hover enlarges shadow AND changes shadow color to accent (pink/magenta).
+
+### Timing Guidelines
+| Interaction | Duration | Easing |
+|-------------|----------|--------|
+| Hover transform | 150ms | ease-out |
+| Active press | instant | — |
+| Shadow change | 150ms | ease-out |
+| Color snap | 0ms | instant |
+
+---
 
 ## Color Palette
 
-Primary: Black #000000, White #ffffff
-Accent colors:
-- accent-pink: #ff006e (CTA, hover)
-- accent-green: #ccff00 (success, decoration)
-- accent-blue: #00d9ff (links, info)
-- accent-yellow: #ff9500 (tags, warnings)
+### Primary
+| Token | Value | Usage |
+|-------|-------|-------|
+| Black | #000000 | Borders, text, shadows |
+| White | #ffffff | Backgrounds |
 
-## Responsive Rules
+### Accent Colors
+| Token | Hex | Usage |
+|-------|-----|-------|
+| Pink | #ff006e | CTAs, hover effects |
+| Green | #ccff00 | Success, hero backgrounds |
+| Blue | #00d9ff | Links, info |
+| Yellow | #ff9500 | Tags, warnings |
+| Bright Yellow | #ffff00 | Hover backgrounds |
 
-All styles must include both mobile and desktop values:
-- Spacing: p-4 md:p-8, py-12 md:py-32
-- Borders: border-2 md:border-4
-- Shadows: shadow-[4px] md:shadow-[8px]
-- Font size: text-sm md:text-base, text-xl md:text-3xl
-- Mobile is approximately 50% of desktop
+### Shadow Colors
+\`\`\`
+Default: rgba(0,0,0,1)
+Hover accent: rgba(255,0,110,1)
+\`\`\`
 
-## Animation & Interaction Rules
+---
 
-- Physical Crushing: Button active:translate-x-[Npx] active:translate-y-[Npx] active:shadow-none, N must equal original shadow pixel value for a fully flattened crushing feel.
-- Brutal Snap: Hover instantly switches to high-contrast background color (e.g. hover:bg-[#ffff00]), duration-150 ease-out, no gradients or opacity transitions -- must be a hard cut.
-- Zero Rounding Easing: All transitions ease-out duration-150, maintaining raw collision feel, rejecting softening.
-- Heavy Focus: Card hover enlarges shadow and switches to colored (rgba(255,0,110,1)), with background color change, emphasizing physical impact.
+## Typography
 
-## Self-Check
+| Element | Classes |
+|---------|---------|
+| H1 | font-black text-4xl md:text-6xl lg:text-8xl tracking-tight leading-tight |
+| H2 | font-black text-2xl md:text-4xl |
+| H3 | font-black text-xl md:text-2xl |
+| Body | font-mono text-sm md:text-base leading-relaxed |
+| Labels | font-mono text-xs uppercase tracking-wider |
+| CTA | font-black uppercase text-lg |
 
-After generating code, verify:
-1. No rounded corners
-2. No blurred shadows
-3. Borders are pure black
-4. Active displacement equals shadow pixel value
-5. Has md: responsive prefixes`,
+---
+
+## Responsive Guidelines
+
+### Scale Ratio
+Mobile values are approximately 50% of desktop values.
+
+### Borders
+\`\`\`
+border-2 md:border-4
+\`\`\`
+
+### Shadows
+\`\`\`
+shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] 
+md:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]
+\`\`\`
+
+### Spacing
+\`\`\`
+p-4 md:p-8
+py-12 md:py-24
+gap-4 md:gap-8
+\`\`\`
+
+### Typography
+\`\`\`
+text-sm md:text-base
+text-xl md:text-3xl
+text-4xl md:text-6xl lg:text-8xl
+\`\`\`
+
+---
+
+## Component Templates
+
+### Button
+\`\`\`jsx
+<button className="
+  bg-[#ff006e] text-white font-black uppercase text-lg
+  px-8 py-4 border-4 border-black
+  shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]
+  hover:shadow-[10px_10px_0px_0px_rgba(0,0,0,1)]
+  hover:-translate-y-1 hover:-translate-x-1
+  active:translate-x-[6px] active:translate-y-[6px]
+  active:shadow-none
+  transition-all duration-150 ease-out">
+  Click Hard
+</button>
+\`\`\`
+
+### Card
+\`\`\`jsx
+<div className="group bg-white border-4 border-black
+  shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]
+  hover:shadow-[12px_12px_0px_0px_rgba(255,0,110,1)]
+  hover:-translate-y-1 hover:-translate-x-1
+  hover:bg-[#ffff00]
+  transition-all duration-150 ease-out
+  p-8 cursor-pointer">
+  <h3 className="font-black text-xl mb-2 
+    group-hover:tracking-wider transition-all duration-150">
+    Neo-Brutalism
+  </h3>
+  <p className="font-mono text-base text-gray-700">
+    Raw, bold, unapologetic design.
+  </p>
+</div>
+\`\`\`
+
+---
+
+## Forbidden Patterns
+
+| Pattern | Reason |
+|---------|--------|
+| rounded-lg, rounded-md, rounded-xl | Softens brutalist edges |
+| shadow-lg, shadow-xl, shadow-2xl | Blur violates hard-edge principle |
+| bg-gradient-* | Gradients are too polished |
+| border-gray-*, border-slate-* | Must use pure black borders |
+| Fade/opacity transitions | Must use hard cuts |
+| rounded-full (general use) | Only for decorative circles |
+| Active displacement < shadow value | Fails to achieve full crushing |
+| Hover opacity fade | Must snap to new color |
+
+---
+
+## Self-Verification Checklist
+
+Before outputting code, verify:
+- [ ] NO rounded corners (except intentional decorative circles)
+- [ ] Shadows are hard-edge format: shadow-[Xpx_Xpx_0px_0px_rgba...]
+- [ ] Borders are pure black: border-black
+- [ ] Button active displacement = original shadow pixel value
+- [ ] Hover background changes are instant (hard cut, no fade)
+- [ ] Transitions use duration-150 ease-out
+- [ ] Font-black for headings, font-mono for body
+- [ ] Has responsive md: prefixes for borders, shadows, spacing
+- [ ] Mobile values ≈ 50% of desktop values`,
 
   examplePrompts: [
     {

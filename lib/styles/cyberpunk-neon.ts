@@ -267,11 +267,62 @@ SPECIAL EFFECTS:
 - Pulsing elements with animate-pulse
 - Glow intensifies on hover
 
-Animation & Interaction Rules:
-- Unstable Neon: Glow effects may carry subtle pulsing and intensity fluctuations, but must not flicker at high frequency to the point of affecting readability.
-- Glitch Press: \`:active\` should prioritize offset translation (e.g., \`translate-x\` + \`-translate-y\`) with color inversion, avoiding standard button scale feedback.
-- CRT Scanline: Large cards increase scanline density or visibility on hover, emphasizing the terminal-scanning state change.
-- Fast & Raw: Standard interaction response should use \`duration-100\` to \`duration-150\`; only scan sweeps may extend up to \`duration-300\`.`,
+---
+
+## Animation Rules
+
+### Interaction Physics
+- **Unstable Neon**: Glow effects may pulse subtly. Use \`animate-pulse\` sparingly. NO high-frequency flickering that hurts readability.
+- **Glitch Press**: Active state uses OFFSET translation + color inversion, NOT scale. Example: \`active:translate-x-[2px] active:-translate-y-[1px] active:text-fuchsia-400\`
+- **CRT Scanline**: Cards increase scanline density/visibility on hover, simulating terminal scanning.
+- **Fast & Raw**: Standard interactions use \`duration-100\` to \`duration-150\`. Only scan sweeps may use up to \`duration-300\`.
+
+### Timing Guidelines
+| Interaction | Duration | Easing |
+|-------------|----------|--------|
+| Button hover | 100-150ms | ease-out |
+| Glow pulse | 2-3s | ease-in-out (loop) |
+| Scan sweep | 150-300ms | ease-out |
+| Glitch press | instant | — |
+
+---
+
+## Typography
+
+| Element | Classes |
+|---------|---------|
+| Headers | font-mono font-bold uppercase tracking-[0.2em] |
+| Labels | text-xs font-mono uppercase tracking-wider |
+| Body | font-mono text-sm |
+| Code/Data | font-mono tabular-nums |
+
+---
+
+## Forbidden Patterns
+
+| Pattern | Reason |
+|---------|--------|
+| Light/white backgrounds | Destroys neon visibility |
+| Low saturation colors | Loses cyberpunk intensity |
+| shadow-md, shadow-lg | No blur shadows — only glow |
+| Warm color schemes | Contradicts cold tech aesthetic |
+| rounded-2xl, rounded-3xl | Too soft, not technical enough |
+| Soft/friendly language | Breaks immersion |
+| scale transforms on active | Use glitch offset instead |
+
+---
+
+## Self-Verification Checklist
+
+Before outputting code, verify:
+- [ ] Background is near-black (#0a0a0f or bg-gray-950)
+- [ ] Neon glows use shadow-[0_0_Xpx_rgba(...)] format
+- [ ] Text has textShadow glow effect where appropriate
+- [ ] High saturation colors only (cyan, magenta, yellow, green)
+- [ ] font-mono for all text elements
+- [ ] Active states use glitch offset, NOT scale
+- [ ] Rounded corners are rounded-sm or rounded-none
+- [ ] Transitions are fast: duration-100 to duration-150`,
 
   examplePrompts: [
     {
