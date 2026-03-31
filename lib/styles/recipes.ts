@@ -454,6 +454,39 @@ export function resolveRecipeStyles(recipe: StyleRecipe): {
 }
 
 /**
+ * Validate that a recipe's referenced styles exist
+ */
+export function validateRecipe(recipe: StyleRecipe): {
+  valid: boolean;
+  missingVisual: boolean;
+  missingLayout: boolean;
+  missingAnimations: string[];
+} {
+  const visualExists = styles.some((s) => s.slug === recipe.visualStyle);
+  const layoutExists = styles.some((s) => s.slug === recipe.layout);
+  const missingAnimations = (recipe.animations || []).filter(
+    (anim) => !styles.some((s) => s.slug === anim)
+  );
+
+  return {
+    valid: visualExists && layoutExists && missingAnimations.length === 0,
+    missingVisual: !visualExists,
+    missingLayout: !layoutExists,
+    missingAnimations,
+  };
+}
+
+/**
+ * Get only valid recipes (with existing style references)
+ */
+export function getValidRecipes(): StyleRecipe[] {
+  return styleRecipes.filter((recipe) => {
+    const validation = validateRecipe(recipe);
+    return validation.valid || (!validation.missingVisual && !validation.missingLayout);
+  });
+}
+
+/**
  * Search recipes by query
  */
 export function searchRecipes(query: string, maxResults = 10): StyleRecipe[] {

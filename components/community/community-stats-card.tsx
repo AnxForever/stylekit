@@ -1,4 +1,7 @@
-import { Heart, Eye, Share2, TrendingUp, Clock, Award } from "lucide-react";
+"use client";
+
+import { Heart, Eye, TrendingUp, Clock, Award, Users } from "lucide-react";
+import { useI18n } from "@/lib/i18n/context";
 
 export interface CommunityStats {
   totalSubmissions: number;
@@ -17,62 +20,92 @@ interface CommunityStatsCardProps {
 }
 
 export function CommunityStatsCard({ stats }: CommunityStatsCardProps) {
+  const { locale } = useI18n();
+  const isZh = locale === "zh";
+
   const statItems = [
     {
-      icon: <Award className="w-5 h-5" />,
-      label: "Total Styles",
+      icon: Award,
+      label: isZh ? "社区风格" : "Community Styles",
       value: stats.totalSubmissions.toLocaleString(),
-      color: "bg-blue-500/10 text-blue-600 dark:text-blue-400",
+      gradient: "from-blue-500/20 to-indigo-500/20",
+      iconColor: "text-blue-500",
     },
     {
-      icon: <TrendingUp className="w-5 h-5" />,
-      label: "Contributors",
+      icon: Users,
+      label: isZh ? "贡献者" : "Contributors",
       value: stats.totalCollaborators.toLocaleString(),
-      color: "bg-purple-500/10 text-purple-600 dark:text-purple-400",
+      gradient: "from-purple-500/20 to-pink-500/20",
+      iconColor: "text-purple-500",
     },
     {
-      icon: <Clock className="w-5 h-5" />,
-      label: "This Month",
+      icon: Clock,
+      label: isZh ? "本月新增" : "This Month",
       value: stats.recentSubmissions.toLocaleString(),
-      color: "bg-green-500/10 text-green-600 dark:text-green-400",
+      gradient: "from-emerald-500/20 to-teal-500/20",
+      iconColor: "text-emerald-500",
     },
   ];
 
   return (
-    <div className="border-b border-border">
+    <div className="border-b border-border bg-gradient-to-b from-zinc-50/50 to-transparent dark:from-zinc-900/50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-12 py-8">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-          {statItems.map((item, idx) => (
-            <div
-              key={idx}
-              className={`${item.color} border border-current/20 rounded-lg p-4 flex items-center gap-3`}
-            >
-              {item.icon}
-              <div>
-                <div className="text-xs font-semibold opacity-70">{item.label}</div>
-                <div className="text-2xl font-bold">{item.value}</div>
+        {/* Stats Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+          {statItems.map((item, idx) => {
+            const Icon = item.icon;
+            return (
+              <div
+                key={idx}
+                className={`relative overflow-hidden rounded-xl bg-gradient-to-br ${item.gradient} 
+                  border border-border/50 p-5 transition-all hover:scale-[1.02] hover:shadow-lg`}
+              >
+                <div className="flex items-center gap-4">
+                  <div className={`p-2.5 rounded-lg bg-background/80 ${item.iconColor}`}>
+                    <Icon className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <div className="text-xs font-medium text-muted uppercase tracking-wider">
+                      {item.label}
+                    </div>
+                    <div className="text-2xl font-bold tracking-tight mt-0.5">
+                      {item.value}
+                    </div>
+                  </div>
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
 
+        {/* Featured Style */}
         {stats.topStyle && (
-          <div className="border border-border rounded-lg p-4 bg-background/50 backdrop-blur-sm">
-            <div className="flex items-center gap-2 mb-2 text-xs font-semibold uppercase tracking-wider text-muted">
-              <TrendingUp className="w-4 h-4" />
-              Featured This Month
-            </div>
-            <h3 className="text-lg font-semibold mb-3">{stats.topStyle.title}</h3>
-            <div className="flex items-center justify-between">
-              <div className="text-sm text-muted">by {stats.topStyle.author}</div>
-              <div className="flex items-center gap-4 text-sm text-muted">
-                <div className="flex items-center gap-1">
-                  <Heart className="w-4 h-4" />
-                  {stats.topStyle.likes}
+          <div className="relative overflow-hidden rounded-xl border border-border bg-background/80 backdrop-blur-sm p-5">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-amber-500/10 to-transparent rounded-bl-full" />
+            
+            <div className="relative">
+              <div className="flex items-center gap-2 mb-3">
+                <TrendingUp className="w-4 h-4 text-amber-500" />
+                <span className="text-xs font-semibold uppercase tracking-wider text-amber-600 dark:text-amber-400">
+                  {isZh ? "本月精选" : "Featured This Month"}
+                </span>
+              </div>
+              
+              <h3 className="text-lg font-semibold mb-3">{stats.topStyle.title}</h3>
+              
+              <div className="flex items-center justify-between">
+                <div className="text-sm text-muted">
+                  {isZh ? "作者：" : "by "}{stats.topStyle.author}
                 </div>
-                <div className="flex items-center gap-1">
-                  <Eye className="w-4 h-4" />
-                  {stats.topStyle.views}
+                <div className="flex items-center gap-4 text-sm">
+                  <div className="flex items-center gap-1.5 text-rose-500">
+                    <Heart className="w-4 h-4" />
+                    <span className="font-medium">{stats.topStyle.likes}</span>
+                  </div>
+                  <div className="flex items-center gap-1.5 text-muted">
+                    <Eye className="w-4 h-4" />
+                    <span>{stats.topStyle.views}</span>
+                  </div>
                 </div>
               </div>
             </div>
