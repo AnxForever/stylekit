@@ -17,6 +17,7 @@ const en = {
     "nav.analyze": "Analyze",
     "nav.migrate": "Migrate",
     "nav.animations": "Animations",
+    "nav.recipes": "Recipes",
 
     // Animations page
     "animations.subtitle": "Animation Patterns",
@@ -1383,6 +1384,7 @@ const zh: { [K in keyof typeof en]: string } = {
   "nav.typography": "字体配对",
   "nav.backgrounds": "背景纹理",
   "nav.resources": "资源",
+  "nav.recipes": "配方",
 
   // Component patterns page
   "componentPatterns.subtitle": "组件样式图库",
@@ -1791,7 +1793,7 @@ const zh: { [K in keyof typeof en]: string } = {
   "profile.submissionSaving": "保存中...",
   "profile.submissionDeleting": "删除中...",
   "profile.submissionDeleteConfirm": "确定删除这条投稿吗？此操作不可撤销。",
-  "profile.submissionApprovedEditConfirm": "这条投稿已通过并可能已在站点展示，仍要保存修改吗？",
+  "profile.submissionApprovedEditConfirm": "这条投稿已通过并可能已在站点展示，仍要保存修改吗��",
   "profile.submissionApprovedDeleteConfirm": "这条已通过投稿可能已被使用，仍要删除吗？此操作不可撤销。",
   "profile.submissionEditName": "风格名称",
   "profile.submissionEditNameEn": "英文名称",

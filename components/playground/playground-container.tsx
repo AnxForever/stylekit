@@ -11,10 +11,12 @@ import { getAllArchetypes } from "@/lib/archetypes";
 import type { StyleTokens } from "@/lib/styles/tokens";
 
 import { getTemplateCode } from "@/lib/playground/template-code";
-import { PlaygroundPreview } from "./playground-preview";
+import { PlaygroundPreview, type ElementInfo } from "./playground-preview";
 import { PlaygroundToolbar } from "./playground-toolbar";
 import { StyleSwitcher } from "./style-switcher";
 import { TemplateSelector } from "./template-selector";
+import { StyleComparison } from "./style-comparison";
+import { ProjectExport } from "./project-export";
 
 const PlaygroundEditor = dynamic(
   () =>
@@ -125,7 +127,7 @@ function tokensToCSS(tokens: StyleTokens): string {
   // Build a basic CSS based on token info
   lines.push("/* StyleKit Token Overrides */");
 
-  // Typography
+  // Typography - 更完整的字体处理
   if (tokens.typography.heading.includes("font-serif")) {
     lines.push("h1, h2, h3, h4, h5, h6 { font-family: Georgia, 'Times New Roman', serif; }");
   }
@@ -136,26 +138,81 @@ function tokensToCSS(tokens: StyleTokens): string {
     lines.push("body, p { font-family: system-ui, -apple-system, sans-serif; }");
   }
 
-  // Border radius
+  // 字重处理
+  if (tokens.typography.heading.includes("font-black")) {
+    lines.push("h1, h2, h3 { font-weight: 900; }");
+  } else if (tokens.typography.heading.includes("font-bold")) {
+    lines.push("h1, h2, h3 { font-weight: 700; }");
+  } else if (tokens.typography.heading.includes("font-medium")) {
+    lines.push("h1, h2, h3 { font-weight: 500; }");
+  }
+
+  // 行高处理
+  if (tokens.typography.body.includes("leading-relaxed")) {
+    lines.push("body, p { line-height: 1.625; }");
+  } else if (tokens.typography.body.includes("leading-loose")) {
+    lines.push("body, p { line-height: 2; }");
+  }
+
+  // Border radius - 更细致的圆角处理
   if (tokens.border.radius.includes("rounded-none")) {
-    lines.push("* { --tw-border-radius: 0; }");
     lines.push("button, input, .card, [class*='rounded'] { border-radius: 0 !important; }");
   } else if (tokens.border.radius.includes("rounded-full")) {
     lines.push("button { border-radius: 9999px; }");
-  } else if (tokens.border.radius.includes("rounded-2xl") || tokens.border.radius.includes("rounded-3xl")) {
+  } else if (tokens.border.radius.includes("rounded-3xl")) {
+    lines.push("button, .card { border-radius: 1.5rem; }");
+  } else if (tokens.border.radius.includes("rounded-2xl")) {
     lines.push("button, .card { border-radius: 1rem; }");
+  } else if (tokens.border.radius.includes("rounded-xl")) {
+    lines.push("button, .card { border-radius: 0.75rem; }");
+  } else if (tokens.border.radius.includes("rounded-lg")) {
+    lines.push("button, .card { border-radius: 0.5rem; }");
   }
 
-  // Additional styling hints from token color classes
+  // 边框样式
+  if (tokens.border.style.includes("border-4") || tokens.border.style.includes("border-3")) {
+    lines.push("button, .card { border-width: 3px; }");
+  } else if (tokens.border.style.includes("border-2")) {
+    lines.push("button, .card { border-width: 2px; }");
+  }
+
+  // 阴影样式
+  if (tokens.shadow.card.includes("shadow-brutal") || tokens.shadow.card.includes("shadow-[")) {
+    // Neo-brutalist 风格阴影
+    if (tokens.shadow.card.includes("4px_4px") || tokens.shadow.card.includes("6px_6px")) {
+      lines.push(".card, button { box-shadow: 4px 4px 0px 0px rgba(0,0,0,1); }");
+      lines.push("button:hover { transform: translate(2px, 2px); box-shadow: 2px 2px 0px 0px rgba(0,0,0,1); }");
+    }
+  } else if (tokens.shadow.card.includes("shadow-lg")) {
+    lines.push(".card { box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1); }");
+  } else if (tokens.shadow.card.includes("shadow-xl")) {
+    lines.push(".card { box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1); }");
+  }
+
+  // Background color themes
   if (bgPrimary.includes("bg-black") || bgPrimary.includes("bg-zinc-950") || bgPrimary.includes("bg-gray-950")) {
     lines.push("body { background-color: #09090b; color: #fafafa; }");
+    lines.push("a { color: #60a5fa; }");
+  } else if (bgPrimary.includes("bg-zinc-900") || bgPrimary.includes("bg-gray-900")) {
+    lines.push("body { background-color: #18181b; color: #f4f4f5; }");
+  } else if (bgPrimary.includes("bg-slate-900")) {
+    lines.push("body { background-color: #0f172a; color: #f1f5f9; }");
   }
+
   if (textPrimary.includes("text-white")) {
     lines.push("body { color: #ffffff; }");
   }
   if (bgSecondary.includes("bg-zinc-900")) {
     lines.push(".card, section:nth-child(even) { background-color: #18181b; }");
+  } else if (bgSecondary.includes("bg-zinc-800")) {
+    lines.push(".card, section:nth-child(even) { background-color: #27272a; }");
   }
+
+  // 按钮过渡效果
+  lines.push("button { transition: all 0.15s ease; }");
+
+  // 链接悬停效果
+  lines.push("a:hover { opacity: 0.8; }");
 
   return lines.join("\n");
 }
@@ -197,6 +254,9 @@ export function PlaygroundContainer() {
   const [editorVisible, setEditorVisible] = useState(true);
   const [templatesVisible, setTemplatesVisible] = useState(false);
   const [editorTab, setEditorTab] = useState<EditorTab>("code");
+  const [comparisonVisible, setComparisonVisible] = useState(false);
+  const [exportVisible, setExportVisible] = useState(false);
+  const [selectedElementInfo, setSelectedElementInfo] = useState<ElementInfo | null>(null);
 
   // Get style metadata for switcher
   const stylesForSwitcher = useMemo(
@@ -268,6 +328,16 @@ export function PlaygroundContainer() {
     setCode(newCode);
   }, []);
 
+  // Handle element selection from preview inspector
+  const handleElementSelect = useCallback((info: ElementInfo | null) => {
+    setSelectedElementInfo(info);
+    // 如果选中了元素，尝试在代码中搜索相关类名
+    if (info && info.classes.length > 0) {
+      // 可以后续扩展：高亮编辑器中的相关行
+      console.log('[v0] Selected element:', info);
+    }
+  }, []);
+
   return (
     <div className="flex flex-col h-[calc(100vh-80px)]">
       {/* Toolbar */}
@@ -282,6 +352,8 @@ export function PlaygroundContainer() {
         onToggleEditor={() => setEditorVisible((v) => !v)}
         onToggleTemplates={() => setTemplatesVisible((v) => !v)}
         templatesVisible={templatesVisible}
+        onOpenComparison={() => setComparisonVisible(true)}
+        onOpenExport={() => setExportVisible(true)}
       />
 
       {/* Style switcher bar */}
@@ -377,16 +449,36 @@ export function PlaygroundContainer() {
                 maxWidth: "100%",
               }}
             >
-              <PlaygroundPreview
+<PlaygroundPreview
                 code={code}
                 styleSlug={styleSlug}
                 tokenCss={tokenCss}
                 deviceWidth={deviceWidths[deviceSize]}
+                onElementSelect={handleElementSelect}
               />
             </div>
           </div>
         </div>
       </div>
+
+      {/* Style Comparison Modal */}
+      {comparisonVisible && (
+        <StyleComparison
+          baseStyleSlug={styleSlug}
+          code={code}
+          onClose={() => setComparisonVisible(false)}
+        />
+      )}
+
+      {/* Project Export Modal */}
+      {exportVisible && (
+        <ProjectExport
+          code={code}
+          styleSlug={styleSlug}
+          templateId={templateId}
+          onClose={() => setExportVisible(false)}
+        />
+      )}
     </div>
   );
 }
