@@ -1,45 +1,47 @@
-import {
-  TrendingUp,
-  Clock,
-  Heart,
-  Zap,
-  Sparkles,
-  BarChart3,
-} from "lucide-react";
-
 export type SortMethod = "trending" | "recent" | "popular" | "hot";
 
-export interface SortOption {
+export interface SortOptionDef {
   value: SortMethod;
-  label: string;
-  icon: React.ReactNode;
-  description: string;
+  labelEn: string;
+  labelZh: string;
+  iconName: "TrendingUp" | "Clock" | "Heart" | "Zap";
+  descriptionEn: string;
+  descriptionZh: string;
 }
 
-export const SORT_OPTIONS: SortOption[] = [
+// 纯数据定义，不包含 React 组件，适合 Server Component
+export const SORT_OPTIONS_DEF: SortOptionDef[] = [
   {
     value: "trending",
-    label: "Trending",
-    icon: <TrendingUp className="w-4 h-4" />,
-    description: "Most engagement this week",
+    labelEn: "Trending",
+    labelZh: "热门趋势",
+    iconName: "TrendingUp",
+    descriptionEn: "Most engagement this week",
+    descriptionZh: "本周互动最多",
   },
   {
     value: "recent",
-    label: "Recent",
-    icon: <Clock className="w-4 h-4" />,
-    description: "Newest submissions first",
+    labelEn: "Recent",
+    labelZh: "最新发布",
+    iconName: "Clock",
+    descriptionEn: "Newest submissions first",
+    descriptionZh: "按时间倒序",
   },
   {
     value: "popular",
-    label: "Popular",
-    icon: <Heart className="w-4 h-4" />,
-    description: "Most liked all-time",
+    labelEn: "Popular",
+    labelZh: "最受欢迎",
+    iconName: "Heart",
+    descriptionEn: "Most liked all-time",
+    descriptionZh: "累计点赞最多",
   },
   {
     value: "hot",
-    label: "Hot",
-    icon: <Zap className="w-4 h-4" />,
-    description: "Rapid growth momentum",
+    labelEn: "Hot",
+    labelZh: "火速增长",
+    iconName: "Zap",
+    descriptionEn: "Rapid growth momentum",
+    descriptionZh: "增长势头最猛",
   },
 ];
 
@@ -128,36 +130,53 @@ export function sortCommunityStyles(
   }
 }
 
+export type BadgeType = "hot" | "rising" | "viral" | null;
+
+export interface EngagementBadge {
+  type: BadgeType;
+  labelEn: string;
+  labelZh: string;
+  color: string;
+  iconName: "Zap" | "TrendingUp" | "Sparkles";
+}
+
 /**
  * Calculate engagement metrics for display
+ * Returns pure data without React components for Server Component compatibility
  */
 export function calculateEngagementBadge(
   style: CommunityStyleWithStats
-): { label: string; color: string; icon: React.ReactNode } | null {
+): EngagementBadge | null {
   const totalEngagement = style.likes + style.shares * 2;
   const engagementRate = totalEngagement / Math.max(style.views, 1);
 
   if (style.trend > 50) {
     return {
-      label: "🔥 Hot",
+      type: "hot",
+      labelEn: "Hot",
+      labelZh: "火热",
       color: "bg-red-500/20 text-red-600 dark:text-red-400",
-      icon: <Zap className="w-3 h-3" />,
+      iconName: "Zap",
     };
   }
 
   if (style.trend > 25) {
     return {
-      label: "📈 Rising",
+      type: "rising",
+      labelEn: "Rising",
+      labelZh: "上升中",
       color: "bg-orange-500/20 text-orange-600 dark:text-orange-400",
-      icon: <TrendingUp className="w-3 h-3" />,
+      iconName: "TrendingUp",
     };
   }
 
   if (engagementRate > 0.05 && style.likes > 10) {
     return {
-      label: "⭐ Viral",
+      type: "viral",
+      labelEn: "Viral",
+      labelZh: "爆款",
       color: "bg-yellow-500/20 text-yellow-600 dark:text-yellow-400",
-      icon: <Sparkles className="w-3 h-3" />,
+      iconName: "Sparkles",
     };
   }
 
