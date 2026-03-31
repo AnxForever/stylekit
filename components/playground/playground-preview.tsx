@@ -5,14 +5,13 @@ import {
   Loader2, 
   ZoomIn, 
   ZoomOut, 
-  RotateCcw, 
   Maximize2, 
   Minimize2,
   MousePointer,
   Eye,
-  EyeOff,
   X
 } from "lucide-react";
+import { useI18n } from "@/lib/i18n/context";
 
 interface PlaygroundPreviewProps {
   code: string;
@@ -175,6 +174,9 @@ export function PlaygroundPreview({
   deviceWidth,
   onElementSelect,
 }: PlaygroundPreviewProps) {
+  const { locale } = useI18n();
+  const isZh = locale === "zh";
+  
   const [debouncedCode, setDebouncedCode] = useState(code);
   const [debouncedTokenCss, setDebouncedTokenCss] = useState(tokenCss);
   const [zoom, setZoom] = useState(1);
@@ -278,12 +280,12 @@ export function PlaygroundPreview({
       {/* 预览控制栏 */}
       <div className="flex items-center justify-between px-2 py-1 border-b border-border bg-zinc-50 dark:bg-zinc-900 shrink-0">
         <div className="flex items-center gap-1">
-          {/* 缩放控制 */}
+          {/* Zoom Controls */}
           <button
             onClick={handleZoomOut}
             disabled={zoom <= ZOOM_LEVELS[0]}
             className="p-1 text-muted hover:text-foreground disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
-            title="缩小"
+            title={isZh ? "缩小" : "Zoom Out"}
           >
             <ZoomOut className="w-3.5 h-3.5" />
           </button>
@@ -291,7 +293,7 @@ export function PlaygroundPreview({
           <button
             onClick={handleZoomReset}
             className="px-1.5 py-0.5 text-[10px] font-mono text-muted hover:text-foreground hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded transition-colors min-w-[40px] text-center"
-            title="重置缩放"
+            title={isZh ? "重置缩放" : "Reset Zoom"}
           >
             {Math.round(zoom * 100)}%
           </button>
@@ -300,14 +302,14 @@ export function PlaygroundPreview({
             onClick={handleZoomIn}
             disabled={zoom >= ZOOM_LEVELS[ZOOM_LEVELS.length - 1]}
             className="p-1 text-muted hover:text-foreground disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
-            title="放大"
+            title={isZh ? "放大" : "Zoom In"}
           >
             <ZoomIn className="w-3.5 h-3.5" />
           </button>
 
           <div className="w-px h-3 bg-border mx-1" />
 
-          {/* 元素检查器 */}
+          {/* Element Inspector */}
           <button
             onClick={() => setInspectorEnabled(!inspectorEnabled)}
             className={`p-1 transition-colors ${
@@ -315,18 +317,22 @@ export function PlaygroundPreview({
                 ? 'text-blue-500 bg-blue-500/10' 
                 : 'text-muted hover:text-foreground'
             }`}
-            title={inspectorEnabled ? '关闭元素检查' : '开启元素检查'}
+            title={inspectorEnabled 
+              ? (isZh ? "关闭元素检查" : "Disable Inspector") 
+              : (isZh ? "开启元素检查" : "Enable Inspector")}
           >
             <MousePointer className="w-3.5 h-3.5" />
           </button>
         </div>
 
         <div className="flex items-center gap-1">
-          {/* 全屏切换 */}
+          {/* Fullscreen Toggle */}
           <button
             onClick={toggleFullscreen}
             className="p-1 text-muted hover:text-foreground transition-colors"
-            title={isFullscreen ? '退出全屏' : '全屏预览'}
+            title={isFullscreen 
+              ? (isZh ? "退出全屏" : "Exit Fullscreen") 
+              : (isZh ? "全屏预览" : "Enter Fullscreen")}
           >
             {isFullscreen ? (
               <Minimize2 className="w-3.5 h-3.5" />
@@ -337,11 +343,11 @@ export function PlaygroundPreview({
         </div>
       </div>
 
-      {/* 加载指示器 */}
+      {/* Loading Indicator */}
       {loading && (
         <div className="absolute top-10 right-2 z-10 flex items-center gap-1.5 px-2 py-1 bg-zinc-100 dark:bg-zinc-800 rounded text-xs text-muted">
           <Loader2 className="w-3 h-3 animate-spin" />
-          <span>更新中...</span>
+          <span>{isZh ? "更新中..." : "Updating..."}</span>
         </div>
       )}
 
@@ -408,11 +414,11 @@ export function PlaygroundPreview({
         </div>
       </div>
 
-      {/* 检查器模式提示 */}
+      {/* Inspector Mode Hint */}
       {inspectorEnabled && (
         <div className="absolute bottom-3 left-1/2 -translate-x-1/2 z-10 flex items-center gap-1.5 px-3 py-1.5 bg-blue-500 text-white rounded-full text-xs shadow-lg">
           <Eye className="w-3 h-3" />
-          <span>点击元素查看类名</span>
+          <span>{isZh ? "点击元素查看类名" : "Click elements to inspect"}</span>
         </div>
       )}
     </div>

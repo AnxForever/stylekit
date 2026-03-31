@@ -3,13 +3,21 @@
 import Image from "next/image";
 import { useEffect, useMemo, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import { Loader2, LogIn, RefreshCw, Send, TrendingUp } from "lucide-react";
+import { Loader2, LogIn, RefreshCw, Send, TrendingUp, Clock, Heart, Zap } from "lucide-react";
 import { LocalizedLink } from "@/components/i18n/localized-link";
 import { useCommunityFeed } from "@/lib/swr";
 import { useUser } from "@/lib/auth/use-user";
 import { useI18n } from "@/lib/i18n/context";
-import { SORT_OPTIONS, type SortMethod } from "@/lib/community/leaderboard";
+import { SORT_OPTIONS_DEF, type SortMethod, type SortOptionDef } from "@/lib/community/leaderboard";
 import { CommunityStatsCard } from "@/components/community/community-stats-card";
+
+// Icon mapping for sort options
+const SORT_ICONS = {
+  TrendingUp: TrendingUp,
+  Clock: Clock,
+  Heart: Heart,
+  Zap: Zap,
+} as const;
 
 const PAGE_SIZE = 12;
 
@@ -163,21 +171,27 @@ export function CommunityContent({
 
         {/* Sort Controls */}
         <div className="mb-6 flex flex-wrap gap-2">
-          {SORT_OPTIONS.map((option) => (
-            <button
-              key={option.value}
-              onClick={() => setSortMethod(option.value)}
-              className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-sm transition-colors ${
-                sortMethod === option.value
-                  ? "bg-foreground text-background"
-                  : "border border-border hover:border-foreground"
-              }`}
-              title={option.description}
-            >
-              {option.icon}
-              {option.label}
-            </button>
-          ))}
+          {SORT_OPTIONS_DEF.map((option) => {
+            const Icon = SORT_ICONS[option.iconName];
+            const label = locale === "zh" ? option.labelZh : option.labelEn;
+            const description = locale === "zh" ? option.descriptionZh : option.descriptionEn;
+            
+            return (
+              <button
+                key={option.value}
+                onClick={() => setSortMethod(option.value)}
+                className={`flex items-center gap-2 px-3 py-1.5 text-sm transition-colors ${
+                  sortMethod === option.value
+                    ? "bg-foreground text-background"
+                    : "border border-border hover:border-foreground"
+                }`}
+                title={description}
+              >
+                <Icon className="w-4 h-4" />
+                {label}
+              </button>
+            );
+          })}
         </div>
 
         {error && (
@@ -358,6 +372,7 @@ export function CommunityContent({
             </div>
           </div>
         )}
+        </div>
       </div>
     </section>
   );

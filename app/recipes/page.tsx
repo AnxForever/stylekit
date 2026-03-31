@@ -37,22 +37,35 @@ export default function RecipesPage() {
         </div>
 
         {/* Hero */}
-        <section className="py-12 md:py-20 border-b border-border">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-12">
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-medium mb-4">
+        <section className="relative py-16 md:py-24 border-b border-border overflow-hidden">
+          {/* Decorative gradient */}
+          <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 via-transparent to-blue-500/5 pointer-events-none" />
+          
+          <div className="relative max-w-7xl mx-auto px-4 sm:px-6 md:px-12">
+            <div className="inline-flex items-center gap-2 px-3 py-1 mb-6 text-xs font-medium uppercase tracking-wider border border-border rounded-full bg-background/80">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+              Style + Layout + Animation
+            </div>
+            
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-semibold tracking-tight mb-5">
               Design Recipes
             </h1>
-            <p className="text-xl text-muted max-w-2xl mb-8">
+            <p className="text-lg md:text-xl text-muted max-w-2xl mb-8 leading-relaxed">
               Curated combinations of visual styles, layouts, and animations.
               Each recipe is optimized for a specific use case and includes
               reasoning for why it works.
             </p>
-            <div className="flex items-center gap-4 text-sm text-muted">
-              <span className="px-3 py-1 border border-border">
-                {allRecipes.length} Recipes
+            
+            <div className="flex flex-wrap items-center gap-3 text-sm">
+              <span className="inline-flex items-center gap-2 px-4 py-2 border border-border bg-background/80 rounded-lg">
+                <span className="w-5 h-5 rounded bg-gradient-to-br from-purple-500 to-pink-500" />
+                <span className="font-medium">{allRecipes.length}</span>
+                <span className="text-muted">Recipes</span>
               </span>
-              <span className="px-3 py-1 border border-border">
-                {allRecipes.filter((r) => r.featured).length} Featured
+              <span className="inline-flex items-center gap-2 px-4 py-2 border border-amber-500/30 bg-amber-500/5 rounded-lg">
+                <span className="w-5 h-5 rounded bg-gradient-to-br from-amber-400 to-orange-500" />
+                <span className="font-medium">{allRecipes.filter((r) => r.featured).length}</span>
+                <span className="text-muted">Featured</span>
               </span>
             </div>
           </div>
