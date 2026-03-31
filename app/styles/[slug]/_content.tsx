@@ -28,6 +28,8 @@ import type { DesignStyle } from "@/lib/styles";
 import type { AccessibilityScore } from "@/lib/accessibility";
 import type { StyleVersion } from "@/lib/versioning";
 import type { RuntimeStyleSource } from "@/lib/styles/community-runtime";
+import { getRecipesByVisualStyle, getRecipesByLayout } from "@/lib/styles/recipes";
+import { RecipeCard } from "@/components/recipes/recipe-card";
 
 interface Props {
   style: DesignStyle;
@@ -74,6 +76,11 @@ export function StyleDetailContent({
       cancelAnimationFrame(rafId);
     };
   }, [updateShowcaseScale]);
+  // Get related recipes
+  const relatedRecipes = style.styleType === "layout"
+    ? getRecipesByLayout(style.slug).slice(0, 3)
+    : getRecipesByVisualStyle(style.slug).slice(0, 3);
+
   const localizedDescription = localizedString(
     locale,
     style.description,
@@ -479,6 +486,32 @@ export function StyleDetailContent({
               </p>
               <ScoreDetail score={accessibilityScore} />
             </CollapsibleSection>
+          </div>
+        </section>
+      )}
+
+      {/* Related Recipes */}
+      {relatedRecipes.length > 0 && (
+        <section className="border-b border-border">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-12 py-12 md:py-16">
+            <p className="text-xs tracking-widest uppercase text-muted mb-4">
+              {locale === "zh" ? "设计配方" : "Design Recipes"}
+            </p>
+            <h2 className="text-2xl md:text-3xl mb-4">
+              {locale === "zh"
+                ? `使用 ${style.name} 的推荐组合`
+                : `Recommended Combinations with ${style.nameEn}`}
+            </h2>
+            <p className="text-muted mb-8 max-w-2xl">
+              {locale === "zh"
+                ? "这些精选配方将此风格与布局和动画组合，针对特定场景优化。"
+                : "These curated recipes combine this style with layouts and animations, optimized for specific use cases."}
+            </p>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {relatedRecipes.map((recipe) => (
+                <RecipeCard key={recipe.id} recipe={recipe} />
+              ))}
+            </div>
           </div>
         </section>
       )}
