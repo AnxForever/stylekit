@@ -316,7 +316,7 @@ export function StyleDetailContent({
             {t("promptPair.description").replace("{name}", style.name)}
           </p>
           <PromptPairExporter
-            styleName={style.name}
+            styleName={locale === "en" && style.nameEn ? style.nameEn : style.name}
             styleSlug={style.slug}
             aiRules={style.aiRules}
             aiRulesEn={style.aiRulesEn}
