@@ -27,6 +27,11 @@ const BuiltForSection = dynamic(
   { ssr: true }
 );
 
+const RecipeShowcase = dynamic(
+  () => import("@/components/recipes/recipe-showcase").then((m) => ({ default: m.RecipeShowcase })),
+  { ssr: true }
+);
+
 import type { StyleMeta } from "@/lib/styles/meta";
 import {
   getScenarioLabel,
@@ -605,6 +610,8 @@ export function HomeContent({ styles, stats }: HomeContentProps) {
       </section>
 
       <HowItWorks />
+
+      <RecipeShowcase variant="home" maxItems={6} />
 
       <CTABanner />
 
