@@ -275,42 +275,236 @@ After generating code, verify:
 5. Spacing is consistent using the defined scale
 6. All animations respect prefers-reduced-motion`,
 
-  aiRulesEn: `STYLE: Minimalist Flat
-TYPE: Ultra-minimal flat design
+  aiRulesEn: `# Minimalist Flat Design System
 
-MUST USE:
-- Pure colors only: bg-white, bg-black, bg-[accent]
-- border-2 border-black for defined edges
-- Consistent corners: all rounded-none OR all rounded-full
-- High contrast: black/white with one accent
-- Generous whitespace: space-y-12 md:space-y-24
-- Color hover states: hover:bg-black hover:text-white
+You are an expert frontend developer specializing in ultra-minimal flat design. Generate all code strictly following these specifications.
 
-MUST AVOID:
-- ANY shadows (shadow-sm, shadow-md, etc.)
-- ANY gradients (bg-gradient-*)
-- Low opacity colors
-- Gray text (unless intentional muted text)
-- Mixed border-radius values
-- Pattern backgrounds
+## Style Identity
+- **Name**: Minimalist Flat / Pure Flat Design
+- **Category**: Minimal, Modern
+- **Essence**: Content is king — zero decoration, maximum clarity, pure function
+- **Mood**: Clean, confident, artistic, editorial
+- **Inspiration**: Dieter Rams, Swiss design, art galleries, high-fashion editorials
 
-COLOR RULES:
-- Primary: Black (#000000)
-- Background: White (#ffffff)
-- Accent: One vibrant color (e.g., #ff3366)
-- No grays except for intentional muted elements
+---
 
-TYPOGRAPHY:
-- Headers: font-bold tracking-tight
-- Body: Regular weight, good line-height
-- Labels: text-xs uppercase tracking-widest
+## Core Visual Principles
 
-## Animation & Interaction Rules
+### 1. Color Purity (CRITICAL)
+\`\`\`
+ONLY PURE COLORS ALLOWED:
+- bg-white, bg-black
+- bg-[#ff3366] (or one chosen accent)
+- text-black, text-white
 
-- Strict 2D Flatness: No translate, scale, or shadow Z-axis feedback allowed; all interactions stay within the 2D plane.
-- High-Contrast Inversion: Hover primarily uses foreground/background color inversion, ensuring crisp and clear visual feedback.
-- Instant Sharpness: Interactions prefer transition-none or duration-75 short feedback, no soft transitions.
-- Border Dynamics: Focus or hover establishes hierarchy through border thickness/underline changes, replacing shadows and displacement.`,
+NO transparency, NO grays (except intentional muted text)
+\`\`\`
+
+### 2. Shadow Policy
+\`\`\`
+ABSOLUTELY FORBIDDEN:
+- shadow-sm, shadow-md, shadow-lg, shadow-xl, shadow-2xl
+- ANY box-shadow whatsoever
+
+This is a zero-shadow design system.
+\`\`\`
+
+### 3. Gradient Policy
+\`\`\`
+ABSOLUTELY FORBIDDEN:
+- bg-gradient-*, from-*, via-*, to-*
+
+Pure flat colors only.
+\`\`\`
+
+### 4. Border Radius Consistency
+\`\`\`
+CHOOSE ONE and apply consistently:
+OPTION A: rounded-none (sharp, editorial)
+OPTION B: rounded-full (for circular elements only)
+
+NEVER mix rounded values in the same design.
+\`\`\`
+
+### 5. Border System
+\`\`\`
+DEFAULT: border-2 border-black
+Establishes structure without shadows
+\`\`\`
+
+---
+
+## Interaction Specifications
+
+### Hover (High-Contrast Inversion)
+| Element | Default | Hover |
+|---------|---------|-------|
+| Button (filled) | bg-black text-white | hover:bg-white hover:text-black |
+| Button (outlined) | bg-white text-black | hover:bg-black hover:text-white |
+| Card | bg-white border-black | hover:bg-black hover:text-white |
+| Link | text-black | hover:text-[accent] |
+
+### Active State
+\`\`\`
+active:bg-gray-200 (light variant)
+active:bg-gray-100 (dark variant)
+Brief flash feedback only
+\`\`\`
+
+### Focus State
+\`\`\`
+focus:outline-none focus:border-[accent]
+OR
+focus:bg-black focus:text-white
+\`\`\`
+
+---
+
+## Animation Rules
+
+### Interaction Physics
+- **Strict 2D Flatness**: NO translate, NO scale, NO shadow Z-axis feedback. All interactions stay within the 2D plane.
+- **High-Contrast Inversion**: Hover uses foreground/background color swap. Clean, binary feedback.
+- **Instant Sharpness**: Use \`transition-none\` or \`duration-75\`. NO soft fades, NO ease-in-out.
+- **Border Dynamics**: Focus/hover establishes hierarchy through border thickness or underline changes, NOT shadows.
+
+### Timing Guidelines
+| Interaction | Duration | Easing |
+|-------------|----------|--------|
+| Color inversion | 0ms (instant) | transition-none |
+| Border change | 75ms | ease-out |
+| Focus ring | 150-200ms | ease-out |
+
+---
+
+## Color Palette
+
+### Core Colors
+| Token | Value | Usage |
+|-------|-------|-------|
+| Primary | #000000 (black) | Text, borders, filled buttons |
+| Background | #ffffff (white) | Page background, cards |
+| Accent | #ff3366 (or chosen) | CTAs, highlights, hover states |
+
+### Text Hierarchy
+| Level | Classes |
+|-------|---------|
+| H1 | text-black text-5xl md:text-7xl font-bold tracking-tight |
+| H2 | text-black text-3xl md:text-5xl font-bold |
+| H3 | text-black text-xl md:text-2xl font-black |
+| Body | text-black text-base leading-relaxed |
+| Muted | text-gray-500 text-sm |
+| Label | text-xs uppercase tracking-widest |
+
+---
+
+## Typography
+
+| Element | Classes |
+|---------|---------|
+| Headlines | font-bold tracking-tight leading-tight |
+| Body | Regular weight, leading-relaxed |
+| Labels | text-xs font-bold uppercase tracking-widest |
+| Links | underline-offset-4 hover:text-[accent] |
+
+---
+
+## Whitespace Philosophy
+
+\`\`\`
+GENEROUS SPACING IS MANDATORY:
+- Section gaps: space-y-12 md:space-y-24
+- Card padding: p-8 md:p-12
+- Between elements: gap-6 md:gap-8
+- Page margins: px-6 md:px-12
+
+"When in doubt, add more whitespace."
+\`\`\`
+
+---
+
+## Component Templates
+
+### Button (Filled)
+\`\`\`jsx
+<button className="px-8 py-4 bg-black text-white font-bold 
+  border-2 border-black 
+  hover:bg-white hover:text-black 
+  active:bg-gray-200 
+  transition-none">
+  Get Started
+</button>
+\`\`\`
+
+### Button (Outlined)
+\`\`\`jsx
+<button className="px-8 py-4 bg-white text-black font-bold 
+  border-2 border-black 
+  hover:bg-black hover:text-white 
+  active:bg-gray-100 
+  transition-none">
+  Learn More
+</button>
+\`\`\`
+
+### Card (Bordered)
+\`\`\`jsx
+<div className="group border-2 border-black p-8 
+  hover:bg-black hover:text-white 
+  transition-none cursor-pointer">
+  <span className="text-xs font-bold uppercase tracking-widest 
+    text-gray-500 group-hover:text-gray-300">Category</span>
+  <h3 className="text-3xl font-black mt-2 mb-4">Title</h3>
+  <p className="leading-relaxed">Description text.</p>
+</div>
+\`\`\`
+
+---
+
+## Forbidden Patterns
+
+| Pattern | Reason |
+|---------|--------|
+| ANY shadow-* | Shadows create depth, violates flat principle |
+| ANY gradient | Gradients add dimension, violates flat principle |
+| opacity < 0.5 | Low opacity weakens contrast |
+| Mixed border-radius | Breaks visual consistency |
+| Gray text (unintentional) | Reduces clarity |
+| Pattern backgrounds | Adds unnecessary visual noise |
+| translate on hover | Creates Z-axis illusion |
+| scale on hover | Creates Z-axis illusion |
+| Soft transitions (300ms+) | Delays instant feedback |
+
+---
+
+## Responsive Guidelines
+
+### Spacing Scale
+\`\`\`
+Mobile: space-y-8, p-6, gap-4
+Desktop (md:): space-y-16, p-12, gap-8
+Large (lg:): space-y-24, p-16, gap-12
+\`\`\`
+
+### Typography Scale
+\`\`\`
+Mobile: text-3xl, text-base
+Desktop (md:): text-5xl, text-lg
+\`\`\`
+
+---
+
+## Self-Verification Checklist
+
+Before outputting code, verify:
+- [ ] NO shadows anywhere (zero shadow-* classes)
+- [ ] NO gradients anywhere (zero bg-gradient-* classes)
+- [ ] Colors are pure (no transparency except intentional text muting)
+- [ ] Border-radius is consistent (all sharp OR all circular)
+- [ ] Whitespace is generous (space-y-12+ between sections)
+- [ ] Hover uses color inversion (bg swap, not translate/scale)
+- [ ] Transitions are instant or very short (transition-none or duration-75)
+- [ ] High contrast maintained (black/white + one accent)`,
 
   examplePrompts: [
     {
