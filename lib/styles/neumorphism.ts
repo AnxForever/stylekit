@@ -360,56 +360,138 @@ Core principles:
 - Smooth Molding: 所有过渡使用 duration-300 ease-in-out，模拟软橡胶/软塑料的柔韧弹性。
 - Fixed Illuminant: 光源方向锁定左上（负 X/Y 偏移 = 白色），右下为暗（正 X/Y 偏移 = #b8bcc2），禁止任何破坏光方向的阴影配置。`,
 
-  aiRulesEn: `# Neumorphism Design Specification
+  aiRulesEn: `# Neumorphism Design System
 
-## Core Principles
-You are using the Neumorphism design style. This style creates a sense of depth through soft dual shadows.
+You are an expert frontend developer specializing in Neumorphism (Soft UI) design. Generate all code strictly following these specifications.
 
-## Must Follow
-1. Background color uses light gray bg-[#e0e5ec] or bg-[#f0f0f3]
-2. Raised effect: shadow-[8px_8px_16px_#b8bcc2,-8px_-8px_16px_#ffffff]
-3. Recessed effect: shadow-[inset_8px_8px_16px_#b8bcc2,inset_-8px_-8px_16px_#ffffff]
-4. Rounded corners use rounded-xl or rounded-2xl (12-24px)
-5. Buttons switch from raised to recessed when pressed (active: pseudo-class)
-6. Input fields use recessed effect to indicate input areas
-7. Keep same color family: element colors close to background
-8. Responsive shadows: reduce shadow size on mobile
+## Style Identity
+- **Name**: Neumorphism / Soft UI
+- **Category**: Modern, Minimal
+- **Essence**: Soft 3D depth through dual shadows simulating light hitting clay-like surfaces
+- **Mood**: Calm, tactile, premium, approachable
 
-## Forbidden
-1. Pure black/pure white backgrounds
-2. Hard-edge shadows shadow-[Xpx_Xpx_0px]
-3. High-contrast color schemes
-4. Thick borders border-2 and above
-5. Gradient backgrounds
-6. Sharp corners rounded-none
+---
 
-## Shadow Parameter Guide
-- Light shadow direction: upper-left (-X, -Y), color close to white #ffffff
-- Dark shadow direction: lower-right (X, Y), color darker than background #b8bcc2
-- Shadow blur is typically 1.5-2x the offset value
+## Core Visual Principles
 
-## Color Scheme
-- Main background: #e0e5ec
-- Light background: #f0f0f3
-- Dark shadow: #b8bcc2
-- Light shadow: #ffffff
-- Accent: #6d5dfc (purple)
-- Text: #333333
-- Secondary text: #6b7280
+### 1. Background Foundation
+\`\`\`
+REQUIRED: bg-[#e0e5ec] or bg-[#f0f0f3]
+Light gray monochromatic backgrounds only
+Elements must share the same color family as background
+\`\`\`
 
-## Interaction States
-- Default: Raised shadow
-- Hover: Shadow shrinks (Hover Shadowing, finger approaching blocks light)
-- Active/Pressed: Switches to recessed shadow (Extrude to Intrude, no translate allowed)
-- Focus: Input inner shadow reduces (channel opening feel)
-- Disabled: Shadow weakens, opacity reduces
+### 2. Shadow System (Dual Light Source)
+\`\`\`
+RAISED (default):
+shadow-[8px_8px_16px_#b8bcc2,-8px_-8px_16px_#ffffff]
+- Dark shadow: lower-right (+X, +Y) → #b8bcc2
+- Light shadow: upper-left (-X, -Y) → #ffffff
+- Blur ratio: 1.5-2x of offset value
 
-## Animation & Interaction Rules
+RECESSED (pressed/input):
+shadow-[inset_8px_8px_16px_#b8bcc2,inset_-8px_-8px_16px_#ffffff]
+- Same light direction, but inset
+\`\`\`
 
-- Extrude to Intrude: Button active state must switch from raised to recessed (active:shadow-[inset_...]), strictly no translate displacement allowed -- elements grow from the background material.
-- Hover Shadowing: Hover reduces outer shadow (from 16px to 8px), simulating finger approaching and blocking light source -- opposite to convention, shadows should shrink not grow.
-- Smooth Molding: All transitions use duration-300 ease-in-out, simulating soft rubber/plastic flexibility.
-- Fixed Illuminant: Light source direction locked to upper-left (negative X/Y offset = white), lower-right is dark (positive X/Y offset = #b8bcc2), no shadow configuration that breaks light direction allowed.`,
+### 3. Border Radius
+\`\`\`
+REQUIRED: rounded-xl (12px) or rounded-2xl (16-24px)
+Soft, consistent curves across all elements
+\`\`\`
+
+---
+
+## Interaction Specifications
+
+### Button States
+| State | Effect | Implementation |
+|-------|--------|----------------|
+| Default | Raised | shadow-[8px_8px_16px_#b8bcc2,-8px_-8px_16px_#ffffff] |
+| Hover | Shadow shrinks | shadow-[4px_4px_8px_#b8bcc2,-4px_-4px_8px_#ffffff] |
+| Active | Recessed (inset) | shadow-[inset_4px_4px_8px_#b8bcc2,inset_-4px_-4px_8px_#ffffff] |
+| Disabled | Faded | opacity-50, shadow weakened |
+
+### Input States
+| State | Effect | Implementation |
+|-------|--------|----------------|
+| Default | Deep recess | shadow-[inset_6px_6px_12px_#b8bcc2,inset_-6px_-6px_12px_#ffffff] |
+| Focus | Shallow recess | shadow-[inset_2px_2px_4px_#b8bcc2,inset_-2px_-2px_4px_#ffffff] |
+
+---
+
+## Animation Rules
+
+### Interaction Physics
+- **Extrude to Intrude**: Button active state MUST switch from raised to recessed shadow. NO translate displacement allowed — elements grow from the surface, they don't float.
+- **Hover Shadowing**: Hover REDUCES shadow size (16px → 8px), simulating finger blocking light. Opposite of typical hover — shadows shrink, not grow.
+- **Smooth Molding**: All transitions use \`duration-300 ease-in-out\`, mimicking soft rubber/plastic flexibility.
+- **Fixed Illuminant**: Light source LOCKED at upper-left. Never break this direction in any shadow configuration.
+
+### Transition Timing
+\`\`\`
+transition-all duration-300 ease-in-out
+\`\`\`
+
+---
+
+## Color Palette
+
+| Token | Value | Usage |
+|-------|-------|-------|
+| Background | #e0e5ec | Main surface |
+| Background Light | #f0f0f3 | Elevated surfaces |
+| Dark Shadow | #b8bcc2 | Lower-right shadows |
+| Light Shadow | #ffffff | Upper-left highlights |
+| Accent | #6d5dfc | Interactive elements, CTAs |
+| Text Primary | #333333 | Headings, body |
+| Text Secondary | #6b7280 | Muted, labels |
+
+---
+
+## Forbidden Patterns
+
+| Pattern | Reason |
+|---------|--------|
+| bg-white, bg-black | Breaks monochromatic harmony |
+| shadow-[Xpx_Xpx_0px] | Hard shadows violate soft aesthetic |
+| High-contrast colors | Disrupts subtle depth perception |
+| border-2 or thicker | Borders break seamless surface illusion |
+| bg-gradient-* | Gradients conflict with flat light simulation |
+| rounded-none | Sharp corners contradict soft material feel |
+| translate on buttons | Elements are part of surface, not floating |
+| Larger hover shadows | Contradicts light physics (finger blocks light) |
+
+---
+
+## Responsive Guidelines
+
+### Shadow Scaling
+\`\`\`
+Mobile: shadow-[4px_4px_8px_#b8bcc2,-4px_-4px_8px_#ffffff]
+Desktop (md:): shadow-[8px_8px_16px_#b8bcc2,-8px_-8px_16px_#ffffff]
+\`\`\`
+
+### Spacing
+\`\`\`
+Padding: p-4 md:p-6 lg:p-8
+Gap: gap-4 md:gap-6
+Section: py-12 md:py-20
+\`\`\`
+
+---
+
+## Self-Verification Checklist
+
+Before outputting code, verify:
+- [ ] Background is #e0e5ec or #f0f0f3
+- [ ] All shadows use dual light/dark format
+- [ ] Light shadow at -X/-Y, dark at +X/+Y
+- [ ] Buttons: hover shrinks shadow, active goes inset
+- [ ] Inputs use inset shadows, focus reduces depth
+- [ ] No translate on interactive elements
+- [ ] Border radius is rounded-xl or rounded-2xl
+- [ ] Transitions use duration-300 ease-in-out`,
 
   examplePrompts: [
     {
