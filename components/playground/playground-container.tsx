@@ -170,22 +170,23 @@ function tokensToCSS(tokens: StyleTokens): string {
   }
 
   // 边框样式
-  if (tokens.border.style.includes("border-4") || tokens.border.style.includes("border-3")) {
+  if (tokens.border.style?.includes("border-4") || tokens.border.style?.includes("border-3")) {
     lines.push("button, .card { border-width: 3px; }");
-  } else if (tokens.border.style.includes("border-2")) {
+  } else if (tokens.border.style?.includes("border-2")) {
     lines.push("button, .card { border-width: 2px; }");
   }
 
   // 阴影样式
-  if (tokens.shadow.card.includes("shadow-brutal") || tokens.shadow.card.includes("shadow-[")) {
+  const shadowCard = tokens.shadow.sm || "";
+  if (shadowCard.includes("shadow-brutal") || shadowCard.includes("shadow-[")) {
     // Neo-brutalist 风格阴影
-    if (tokens.shadow.card.includes("4px_4px") || tokens.shadow.card.includes("6px_6px")) {
+    if (shadowCard.includes("4px_4px") || shadowCard.includes("6px_6px")) {
       lines.push(".card, button { box-shadow: 4px 4px 0px 0px rgba(0,0,0,1); }");
       lines.push("button:hover { transform: translate(2px, 2px); box-shadow: 2px 2px 0px 0px rgba(0,0,0,1); }");
     }
-  } else if (tokens.shadow.card.includes("shadow-lg")) {
+  } else if (shadowCard.includes("shadow-lg")) {
     lines.push(".card { box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1); }");
-  } else if (tokens.shadow.card.includes("shadow-xl")) {
+  } else if (shadowCard.includes("shadow-xl")) {
     lines.push(".card { box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1); }");
   }
 
