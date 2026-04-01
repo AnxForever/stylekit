@@ -28,7 +28,7 @@ export function ProjectExport({ code, styleSlug, templateId, onClose }: ProjectE
   };
 
   // Generate project files based on format
-  const generateFiles = () => {
+  const generateFiles = (): Record<string, string> => {
     const globalCss = style?.globalCss || "";
     
     if (format === "nextjs") {
