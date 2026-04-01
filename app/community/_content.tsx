@@ -110,9 +110,9 @@ export function CommunityContent({
       <CommunityStatsCard
         stats={{
           totalSubmissions: data?.total || 0,
-          totalCollaborators: data?.collaborators || 0,
-          recentSubmissions: data?.recentCount || 0,
-          topStyle: data?.featured || null,
+          totalCollaborators: 0,
+          recentSubmissions: 0,
+          topStyle: null,
         }}
       />
 
