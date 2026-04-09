@@ -31,7 +31,7 @@ export function DbStatusBanner() {
                 Supabase environment variables are missing.
                 Set <code className="rounded bg-yellow-200/60 px-1 py-0.5 text-xs dark:bg-yellow-800/40">NEXT_PUBLIC_SUPABASE_URL</code> and{" "}
                 <code className="rounded bg-yellow-200/60 px-1 py-0.5 text-xs dark:bg-yellow-800/40">SUPABASE_SERVICE_ROLE_KEY</code> in
-                your Vercel environment variables (Preview environment) and redeploy.
+                your production environment configuration, then redeploy or restart the app.
               </p>
             </>
           ) : allTablesEmpty ? (

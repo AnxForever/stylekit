@@ -13,7 +13,7 @@
 </p>
 
 <p align="center">
-  <a href="https://stylekit.top"><img src="https://img.shields.io/badge/Live-www.stylekit.top-black?style=flat-square&logo=vercel" alt="Live Site"></a>
+  <a href="https://stylekit.top"><img src="https://img.shields.io/badge/Live-www.stylekit.top-black?style=flat-square" alt="Live Site"></a>
   <a href="https://github.com/AnxForever/stylekit/stargazers"><img src="https://img.shields.io/github/stars/AnxForever/stylekit?style=flat-square&color=f59e0b" alt="Stars"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-green?style=flat-square" alt="License"></a>
   <a href="https://nextjs.org"><img src="https://img.shields.io/badge/Next.js-16-black?style=flat-square&logo=next.js" alt="Next.js 16"></a>
@@ -208,7 +208,18 @@ POST /api/match-style                 # Match code to closest style
 | Auth & DB | Supabase (OAuth, PostgreSQL) |
 | Validation | Zod 4 |
 | Testing | Vitest + Playwright |
-| Deployment | Vercel |
+| Deployment | Alibaba Cloud ECS + Nginx + systemd |
+
+## Production Deployment
+
+Current production for `www.stylekit.top` runs on an Alibaba Cloud ECS instance in Beijing.
+
+- Edge and TLS: Nginx on the ECS host
+- App process: `stylekit.service` via systemd
+- App directory: `/www/stylekit`
+- Runtime command: `pnpm start --hostname 0.0.0.0 --port 13000`
+
+`vercel.json` is no longer part of the active production deployment path and should not be treated as the source of truth for where StyleKit is hosted.
 
 ## Contributing
 
@@ -251,5 +262,4 @@ MIT — see [LICENSE](LICENSE).
   <br>
   Built by <a href="https://github.com/AnxForever">AnxForever</a>
 </p>
-
 
