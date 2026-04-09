@@ -134,6 +134,26 @@ export function Footer() {
             <span>{t("footer.builtWith")}</span>
           </div>
         </div>
+
+        <div className="mt-4 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-center text-xs text-muted">
+          <span>Stylekit前端样式库</span>
+          <a
+            href="https://stylekit.top"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:text-foreground transition-colors"
+          >
+            stylekit.top
+          </a>
+          <a
+            href="https://beian.miit.gov.cn/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:text-foreground transition-colors"
+          >
+            陕ICP备2025065501号-3
+          </a>
+        </div>
       </div>
     </footer>
   );
