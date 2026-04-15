@@ -7,6 +7,8 @@
 
 import { track } from "@vercel/analytics";
 
+const isVercel = typeof process !== "undefined" && Boolean(process.env.NEXT_PUBLIC_VERCEL);
+
 // ── Event Definitions ───────────────────────────────────────
 
 type StyleViewProps = { slug: string; source: string };
@@ -63,7 +65,9 @@ export function trackEvent<T extends EventName>(
     ? { ...properties, ...utm }
     : properties;
 
-  track(name, merged as Record<string, string | number | boolean | null>);
+  if (isVercel) {
+    track(name, merged as Record<string, string | number | boolean | null>);
+  }
   queueInternalAnalyticsEvent(name, merged);
 }
 
