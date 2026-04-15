@@ -845,20 +845,6 @@ function ConfirmCard({
             </div>
           </div>
         ) : null}
-        {planner.suggestedOptions.length > 0 ? (
-          <div className="flex gap-3">
-            <span className="w-20 shrink-0 text-xs font-medium text-muted">
-              {locale === "zh" ? "推荐风格" : "Styles"}
-            </span>
-            <div className="flex flex-wrap gap-1.5">
-              {planner.suggestedOptions.slice(0, 4).map((opt) => (
-                <span key={opt.id} className="inline-flex rounded-full bg-foreground/5 px-2.5 py-0.5 text-xs text-foreground">
-                  {opt.label}
-                </span>
-              ))}
-            </div>
-          </div>
-        ) : null}
       </div>
       <div className="mt-5 flex flex-wrap gap-3">
         <button
@@ -1055,6 +1041,7 @@ export function AgentContent() {
   const [suggestedOptions, setSuggestedOptions] = useState<AgentSuggestedOption[]>([]);
   const [draft, setDraft] = useState("");
   const [copied, setCopied] = useState(false);
+  const [confirmDismissed, setConfirmDismissed] = useState(false);
   const [loadingSessions, setLoadingSessions] = useState(true);
   const [detailLoading, setDetailLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -1258,6 +1245,7 @@ export function AgentContent() {
     setPromptSnapshot(null);
     setDecisionTrace([]);
     setSuggestedOptions([]);
+    setConfirmDismissed(false);
   }
 
   async function loadSession(sessionId: string) {
@@ -1392,6 +1380,7 @@ export function AgentContent() {
     const confirmText = locale === "zh" ? "确认，开始生成" : "Looks good, generate!";
     setDraft(confirmText);
     setSuggestedOptions([]);
+    setConfirmDismissed(true);
     setTimeout(() => {
       const form = document.querySelector<HTMLFormElement>("form");
       form?.requestSubmit();
@@ -1754,7 +1743,7 @@ export function AgentContent() {
                     </div>
                   ))}
 
-                  {!isPending && !detailLoading && planner?.phase === "confirm" && planner ? (
+                  {!isPending && !detailLoading && !confirmDismissed && planner?.phase === "confirm" && planner ? (
                     <ConfirmCard
                       planner={planner}
                       locale={locale}
