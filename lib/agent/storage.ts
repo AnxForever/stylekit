@@ -46,6 +46,11 @@ function asCodePrompt(value: unknown): AgentCodePrompt | null {
     return null;
   }
 
+  const record = value as Record<string, unknown>;
+  if (typeof record.prompt !== "string" || typeof record.styleSlug !== "string") {
+    return null;
+  }
+
   return value as AgentCodePrompt;
 }
 
