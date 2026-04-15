@@ -1238,19 +1238,16 @@ export function AgentContent() {
   return (
     <>
       <section className="border-b border-border">
-        <div className="max-w-7xl mx-auto px-6 md:px-12 py-12 md:py-16">
-          <div className="flex flex-wrap items-start justify-between gap-6">
-            <div className="max-w-3xl">
-              <p className="mb-3 text-xs uppercase tracking-[0.28em] text-muted">{t("agent.badge")}</p>
-              <h1 className="text-3xl font-semibold tracking-tight md:text-5xl">
+        <div className="max-w-7xl mx-auto px-6 md:px-12 py-8 md:py-10">
+          <div className="flex flex-wrap items-center justify-between gap-4">
+            <div className="min-w-0">
+              <p className="mb-2 text-xs uppercase tracking-[0.28em] text-muted">{t("agent.badge")}</p>
+              <h1 className="text-2xl font-semibold tracking-tight md:text-3xl">
                 {t("agent.title")}
               </h1>
-              <p className="mt-4 max-w-2xl text-sm text-muted md:text-base">
-                {t("agent.description")}
-              </p>
             </div>
-            <div className="flex items-center gap-3">
-              <div className="inline-flex items-center rounded-full border border-border p-1">
+            <div className="flex items-center gap-2">
+              <div className="inline-flex items-center rounded-full border border-border p-0.5">
                 <button
                   type="button"
                   onClick={() => setViewMode("user")}
@@ -1277,29 +1274,28 @@ export function AgentContent() {
                   {t("agent.modeBuilder")}
                 </button>
               </div>
-              <button
-                type="button"
-                onClick={() => setShowSessions((current) => !current)}
-                className="inline-flex items-center gap-2 rounded-full border border-border px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-muted/40"
-              >
-                <PanelLeft className="h-4 w-4" />
-                {showSessions
-                  ? locale === "zh"
-                    ? "隐藏会话"
-                    : "Hide History"
-                  : t("agent.history")}
-              </button>
-              <button
-                type="button"
-                onClick={() => void loadSessions()}
-                className="inline-flex items-center gap-2 rounded-full border border-border px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-muted/40"
-              >
-                <RefreshCcw className="h-4 w-4" />
-                {t("agent.refresh")}
-              </button>
+              <div className="inline-flex items-center rounded-full border border-border">
+                <button
+                  type="button"
+                  onClick={() => setShowSessions((current) => !current)}
+                  className="inline-flex items-center justify-center rounded-l-full p-2.5 text-foreground transition-colors hover:bg-muted/40"
+                  title={showSessions ? (locale === "zh" ? "隐藏会话" : "Hide History") : t("agent.history")}
+                >
+                  <PanelLeft className="h-4 w-4" />
+                </button>
+                <div className="h-4 w-px bg-border" />
+                <button
+                  type="button"
+                  onClick={() => void loadSessions()}
+                  className="inline-flex items-center justify-center rounded-r-full p-2.5 text-foreground transition-colors hover:bg-muted/40"
+                  title={t("agent.refresh")}
+                >
+                  <RefreshCcw className="h-4 w-4" />
+                </button>
+              </div>
             </div>
           </div>
-          <p className="mt-4 max-w-2xl text-sm text-muted">{modeDescription}</p>
+          <p className="mt-3 max-w-2xl text-sm text-muted">{t("agent.description")}</p>
         </div>
       </section>
 
@@ -1368,86 +1364,18 @@ export function AgentContent() {
                 </div>
               ) : !isBuilder && latestAssistantMessage ? (
                 <div className="space-y-4">
-                  <section className="rounded-2xl border border-border bg-muted/10 p-5">
-                    <div className="flex flex-wrap items-start justify-between gap-3">
-                      <div>
-                        <p className="text-[11px] uppercase tracking-[0.18em] text-muted">
-                          {locale === "zh" ? "当前需求" : "Current brief"}
-                        </p>
-                        <p className="mt-2 text-base font-medium leading-7 text-foreground">
-                          {latestUserMessage?.content || (locale === "zh" ? "等待你的描述。" : "Waiting for your brief.")}
-                        </p>
-                      </div>
-                      {latestUserMessage ? (
-                        <span className="text-xs text-muted">
-                          {formatLocaleDateTime(latestUserMessage.createdAt, locale)}
-                        </span>
-                      ) : null}
-                    </div>
-
-                    {workflow?.missingSlots.length ? (
-                      <div className="mt-4">
-                        <p className="text-xs text-muted">
-                          {locale === "zh" ? "还需要补充" : "Still need"}
-                        </p>
-                        <div className="mt-2 flex flex-wrap gap-2">
-                          {workflow.missingSlots.map((slot) => (
-                            <span
-                              key={slot}
-                              className="rounded-full border border-border bg-background px-3 py-1.5 text-xs text-foreground"
-                            >
-                              {getSlotLabel(slot, t)}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-                    ) : null}
-                  </section>
-
-                  <section className="rounded-2xl border border-border bg-background p-5">
-                    <div className="flex flex-wrap items-start justify-between gap-3">
-                      <div>
-                        <p className="text-[11px] uppercase tracking-[0.18em] text-muted">
-                          {locale === "zh" ? "Agent 结论" : "Agent conclusion"}
-                        </p>
-                        <p className="mt-2 text-sm text-muted">
-                          {locale === "zh"
-                            ? "先给出当前判断，再继续追问或细化方案。"
-                            : "A concise conclusion first, then refine through follow-up answers."}
-                        </p>
-                      </div>
-                      <span className="text-xs text-muted">
-                        {formatLocaleDateTime(latestAssistantMessage.createdAt, locale)}
-                      </span>
-                    </div>
-                    <div className="mt-4 rounded-2xl border border-border/70 bg-muted/10 p-4">
+                  <section className="animate-agent-message-in border-l-2 border-foreground/15 pl-5">
+                    <p className="text-[11px] uppercase tracking-[0.18em] text-muted">
+                      {locale === "zh" ? "Agent 结论" : "Agent conclusion"}
+                    </p>
+                    <div className="mt-3">
                       <RichMessageBody content={latestAssistantMessage.content} />
                     </div>
+                    <p className="mt-3 text-[11px] text-muted">
+                      {formatLocaleDateTime(latestAssistantMessage.createdAt, locale)}
+                    </p>
                   </section>
 
-                  {codePrompt ? (
-                    <section className="rounded-2xl border border-emerald-300/50 bg-emerald-50/60 p-5 text-emerald-950 dark:border-emerald-900 dark:bg-emerald-950/20 dark:text-emerald-100">
-                      <p className="text-[11px] uppercase tracking-[0.18em] opacity-70">
-                        {locale === "zh" ? "提示词已就绪" : "Prompt ready"}
-                      </p>
-                      <p className="mt-2 text-sm leading-6">
-                        {locale === "zh"
-                          ? "AI 编码提示词已生成，在右侧边栏查看并复制。"
-                          : "The AI coding prompt is ready. Check the sidebar to view and copy it."}
-                      </p>
-                    </section>
-                  ) : (
-                    <section className="rounded-2xl border border-border bg-background p-5">
-                      <p className="text-[11px] uppercase tracking-[0.18em] text-muted">
-                        {locale === "zh" ? "下一步" : "Next step"}
-                      </p>
-                      <p className="mt-2 text-base font-medium leading-7 text-foreground">
-                        {locale === "zh"
-                          ? "继续补充业务目标、目标用户和偏好风格，agent 会据此生成 AI 编码提示词。"
-                          : "Add business goal, audience, and preferred style so the agent can generate an AI coding prompt."}
-                      </p>
-                    </section>
-                  )}
 
                   {messages.length > 2 ? (
                     <details className="rounded-2xl border border-dashed border-border bg-background px-4 py-4 text-sm">
@@ -1541,7 +1469,7 @@ export function AgentContent() {
                   return (
                     <div
                       key={message.id}
-                      className={`flex ${isUser ? "justify-end" : "justify-start"}`}
+                      className={`flex animate-agent-message-in ${isUser ? "justify-end" : "justify-start"}`}
                     >
                       <div
                         className={`max-w-[85%] rounded-2xl px-4 py-3 ${
@@ -1570,28 +1498,35 @@ export function AgentContent() {
               )}
 
               {(isPending || detailLoading) && (
-                <div className="flex items-center gap-2 text-sm text-muted">
-                  <Loader2 className="h-4 w-4 animate-spin" />
+                <div className="flex animate-agent-message-in items-center gap-3 text-sm text-muted">
+                  {detailLoading ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <span className="inline-flex gap-1">
+                      <span className="animate-agent-thinking-dot h-1.5 w-1.5 rounded-full bg-foreground/50" style={{ animationDelay: "0ms" }} />
+                      <span className="animate-agent-thinking-dot h-1.5 w-1.5 rounded-full bg-foreground/50" style={{ animationDelay: "160ms" }} />
+                      <span className="animate-agent-thinking-dot h-1.5 w-1.5 rounded-full bg-foreground/50" style={{ animationDelay: "320ms" }} />
+                    </span>
+                  )}
                   {detailLoading ? t("agent.loadingConversation") : t("agent.thinking")}
                 </div>
               )}
             </div>
 
             <form onSubmit={handleSubmit} className="border-t border-border p-4">
-              <div className="rounded-2xl border border-border bg-background p-3">
+              <div className="rounded-2xl border border-border bg-background p-3 transition-colors focus-within:border-foreground/25 focus-within:ring-2 focus-within:ring-foreground/5">
                 <textarea
                   value={draft}
                   onChange={(event) => setDraft(event.target.value)}
-                  rows={4}
+                  rows={3}
                   className="w-full resize-none bg-transparent text-sm leading-7 outline-none placeholder:text-muted"
                   placeholder={t("agent.composerPlaceholder")}
                 />
-                <div className="mt-3 flex items-center justify-between gap-3">
-                  <p className="text-xs text-muted">{t("agent.composerHint")}</p>
+                <div className="mt-2 flex items-center justify-end">
                   <button
                     type="submit"
                     disabled={isPending || !draft.trim()}
-                    className="inline-flex items-center gap-2 rounded-full bg-foreground px-4 py-2 text-sm font-medium text-background disabled:cursor-not-allowed disabled:opacity-50"
+                    className="inline-flex items-center gap-2 rounded-full bg-foreground px-4 py-2 text-sm font-medium text-background transition-all hover:scale-[1.02] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:scale-100"
                   >
                     {isPending ? (
                       <Loader2 className="h-4 w-4 animate-spin" />
@@ -1641,7 +1576,7 @@ export function AgentContent() {
                 </div>
                 <div className="mt-3 h-2 overflow-hidden rounded-full bg-border/70">
                   <div
-                    className="h-full rounded-full bg-foreground transition-all"
+                    className="agent-progress-bar h-full rounded-full transition-all duration-700 ease-out"
                     style={{ width: `${plannerCoverage?.percent ?? 0}%` }}
                   />
                 </div>
@@ -1699,7 +1634,7 @@ export function AgentContent() {
               </div>
               <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-border/70">
                 <div
-                  className="h-full rounded-full bg-foreground transition-all"
+                  className="agent-progress-bar h-full rounded-full transition-all duration-700 ease-out"
                   style={{ width: `${plannerCoverage?.percent ?? 0}%` }}
                 />
               </div>
@@ -1715,21 +1650,21 @@ export function AgentContent() {
 
             <div className="space-y-4 p-5">
               {codePrompt ? (
-                <div className="space-y-4">
-                  <div className="rounded-xl border border-border bg-muted/15 p-3">
-                    <p className="text-sm font-medium text-foreground">{codePrompt.title}</p>
-                    <div className="mt-2 flex flex-wrap gap-2">
-                      <span className="rounded-full border border-border px-2 py-1 text-[10px] uppercase tracking-[0.18em] text-muted">
+                <div className="agent-prompt-card space-y-4 rounded-2xl border border-emerald-200/60 bg-gradient-to-b from-emerald-50/40 to-background p-4 dark:border-emerald-900/40 dark:from-emerald-950/20 dark:to-background">
+                  <div>
+                    <p className="text-base font-semibold tracking-tight text-foreground">{codePrompt.title}</p>
+                    <div className="mt-2.5 flex flex-wrap gap-1.5">
+                      <span className="inline-flex items-center rounded-full bg-foreground/8 px-2.5 py-1 text-[10px] font-medium uppercase tracking-[0.12em] text-foreground">
                         {codePrompt.templateType}
                       </span>
-                      <span className="rounded-full border border-border px-2 py-1 text-[10px] uppercase tracking-[0.18em] text-muted">
+                      <span className="inline-flex items-center rounded-full bg-foreground/8 px-2.5 py-1 text-[10px] font-medium uppercase tracking-[0.12em] text-foreground">
                         {codePrompt.styleName}
                       </span>
                     </div>
                   </div>
 
-                  <div className="rounded-xl border border-border bg-stone-950 p-4">
-                    <pre className="max-h-[400px] overflow-y-auto whitespace-pre-wrap text-xs leading-6 text-stone-200">
+                  <div className="agent-code-surface agent-code-scroll overflow-hidden rounded-xl">
+                    <pre className="max-h-[360px] overflow-y-auto p-4 font-mono text-[13px] leading-7">
                       {codePrompt.prompt}
                     </pre>
                   </div>
@@ -1741,7 +1676,11 @@ export function AgentContent() {
                       setCopied(true);
                       setTimeout(() => setCopied(false), 2000);
                     }}
-                    className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-foreground px-4 py-2.5 text-sm font-medium text-background transition-opacity hover:opacity-90"
+                    className={`inline-flex w-full items-center justify-center gap-2 rounded-full px-4 py-2.5 text-sm font-medium transition-all duration-200 ${
+                      copied
+                        ? "bg-emerald-600 text-white"
+                        : "bg-foreground text-background hover:scale-[1.01] active:scale-[0.99]"
+                    }`}
                   >
                     {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
                     {copied ? t("agent.codePromptCopied") : t("agent.codePromptCopy")}
@@ -1749,15 +1688,18 @@ export function AgentContent() {
 
                   <Link
                     href={localizeHref(`/styles/${codePrompt.styleSlug}`, locale)}
-                    className="inline-flex w-full items-center justify-center gap-2 rounded-full border border-border px-4 py-2.5 text-sm font-medium text-foreground transition-colors hover:bg-muted/40"
+                    className="inline-flex w-full items-center justify-center gap-2 rounded-full px-4 py-2 text-xs text-muted transition-colors hover:text-foreground"
                   >
                     {t("agent.codePromptViewStyle")}
-                    <ArrowRight className="h-4 w-4" />
+                    <ArrowRight className="h-3 w-3" />
                   </Link>
                 </div>
               ) : (
-                <div className="flex min-h-[120px] items-center justify-center rounded-xl border border-dashed border-border px-4 text-center text-sm text-muted">
-                  {t("agent.codePromptEmpty")}
+                <div className="flex min-h-[160px] flex-col items-center justify-center rounded-xl border border-dashed border-border/60 px-6 text-center">
+                  <div className="mb-3 inline-flex h-8 w-8 items-center justify-center rounded-full bg-muted/20">
+                    <Sparkles className="h-4 w-4 text-muted" />
+                  </div>
+                  <p className="text-sm text-muted">{t("agent.codePromptEmpty")}</p>
                 </div>
               )}
               {isBuilder && showDebug && (
