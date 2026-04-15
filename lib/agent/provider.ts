@@ -178,3 +178,106 @@ export async function requestAgentJson<T>({
   return parsed.data;
 }
 
+export async function requestAgentStream({
+  system,
+  user,
+  temperature = 0.3,
+}: {
+  system: string;
+  user: string;
+  temperature?: number;
+}): Promise<ReadableStream<string>> {
+  const config = getAgentModelConfig();
+  if (!config) {
+    throw new AgentProviderError(
+      "Agent model is not configured.",
+      "AGENT_NOT_CONFIGURED",
+      503
+    );
+  }
+
+  const response = await fetch(`${config.baseUrl}/chat/completions`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${config.apiKey}`,
+    },
+    body: JSON.stringify({
+      model: config.model,
+      temperature,
+      stream: true,
+      messages: [
+        { role: "system", content: system },
+        { role: "user", content: user },
+      ],
+    }),
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text().catch(() => "");
+    throw new AgentProviderError(
+      `Agent provider request failed${errorText ? `: ${errorText}` : "."}`,
+      "AGENT_PROVIDER_HTTP_ERROR",
+      502
+    );
+  }
+
+  if (!response.body) {
+    throw new AgentProviderError(
+      "Agent provider returned no response body.",
+      "AGENT_PROVIDER_NO_BODY",
+      502
+    );
+  }
+
+  const decoder = new TextDecoder();
+  const reader = response.body.getReader();
+
+  return new ReadableStream<string>({
+    async start(controller) {
+      let buffer = "";
+      try {
+        for (;;) {
+          const { done, value } = await reader.read();
+          if (done) {
+            controller.close();
+            return;
+          }
+
+          buffer += decoder.decode(value, { stream: true });
+
+          const lines = buffer.split("\n");
+          buffer = lines.pop() ?? "";
+
+          for (const line of lines) {
+            const trimmed = line.trim();
+            if (!trimmed || trimmed.startsWith(":")) continue;
+
+            if (trimmed === "data: [DONE]") {
+              controller.close();
+              return;
+            }
+
+            if (trimmed.startsWith("data: ")) {
+              try {
+                const json = JSON.parse(trimmed.slice(6));
+                const content = json.choices?.[0]?.delta?.content;
+                if (typeof content === "string" && content.length > 0) {
+                  controller.enqueue(content);
+                }
+              } catch {
+                // skip malformed SSE chunks
+              }
+            }
+          }
+        }
+      } catch (error) {
+        controller.error(error);
+      }
+    },
+    cancel() {
+      reader.cancel();
+    },
+  });
+}
+
