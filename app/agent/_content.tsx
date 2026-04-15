@@ -20,6 +20,7 @@ import { formatLocaleDateTime } from "@/lib/i18n/locale-copy";
 import { localizeHref } from "@/lib/i18n/routing";
 import { useUser } from "@/lib/auth/use-user";
 import type {
+  AgentChatResponse,
   AgentCodePrompt,
   AgentConsultPhase,
   AgentDecisionTraceItem,
@@ -823,13 +824,39 @@ function ConfirmCard({
         {planner.mustHave.length > 0 ? (
           <div className="flex gap-3">
             <span className="w-20 shrink-0 text-xs font-medium text-muted">{t.mustHave}</span>
-            <span className="text-sm text-foreground">{planner.mustHave.join(", ")}</span>
+            <div className="flex flex-wrap gap-1.5">
+              {planner.mustHave.map((item) => (
+                <span key={item} className="inline-flex rounded-full bg-foreground/8 px-2.5 py-0.5 text-xs text-foreground">
+                  {item}
+                </span>
+              ))}
+            </div>
           </div>
         ) : null}
         {planner.constraints.length > 0 ? (
           <div className="flex gap-3">
             <span className="w-20 shrink-0 text-xs font-medium text-muted">{t.constraints}</span>
-            <span className="text-sm text-foreground">{planner.constraints.join(", ")}</span>
+            <div className="flex flex-wrap gap-1.5">
+              {planner.constraints.map((item) => (
+                <span key={item} className="inline-flex rounded-full border border-border px-2.5 py-0.5 text-xs text-muted">
+                  {item}
+                </span>
+              ))}
+            </div>
+          </div>
+        ) : null}
+        {planner.suggestedOptions.length > 0 ? (
+          <div className="flex gap-3">
+            <span className="w-20 shrink-0 text-xs font-medium text-muted">
+              {locale === "zh" ? "推荐风格" : "Styles"}
+            </span>
+            <div className="flex flex-wrap gap-1.5">
+              {planner.suggestedOptions.slice(0, 4).map((opt) => (
+                <span key={opt.id} className="inline-flex rounded-full bg-foreground/5 px-2.5 py-0.5 text-xs text-foreground">
+                  {opt.label}
+                </span>
+              ))}
+            </div>
           </div>
         ) : null}
       </div>
@@ -1400,8 +1427,6 @@ export function AgentContent() {
       decisionTrace: [],
     };
 
-    const streamingMsgId = `stream-${Date.now()}`;
-
     setDraft("");
     setError(null);
     setMessages((current) => [...current, optimisticMessage]);
@@ -1409,7 +1434,7 @@ export function AgentContent() {
     startTransition(() => {
       void (async () => {
         try {
-          const response = await fetch("/api/agent/chat/stream", {
+          const response = await fetch("/api/agent/chat", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -1422,148 +1447,41 @@ export function AgentContent() {
             }),
           });
 
+          const payload = (await response.json()) as
+            | AgentChatResponse
+            | { success: false; error?: string };
+
           if (response.status === 503) {
             setIsUnavailable(true);
           }
 
-          if (!response.ok || !response.body) {
-            const text = await response.text().catch(() => "");
-            let errorMessage = t("agent.sendError");
-            try {
-              const parsed = JSON.parse(text.split("data: ")[1] || "{}");
-              if (parsed.error) errorMessage = parsed.error;
-            } catch {
-              /* ignore parse error */
-            }
-            throw new Error(errorMessage);
+          if (!response.ok || !("success" in payload) || !payload.success) {
+            throw new Error(("error" in payload && payload.error) || t("agent.sendError"));
           }
 
-          const reader = response.body.getReader();
-          const decoder = new TextDecoder();
-          let buffer = "";
-          let streamingContent = "";
-          let receivedMetadata = false;
+          upsertSession(payload.session);
+          setActiveSessionId(payload.sessionId);
+          setActiveSessionStatus(payload.workflowState);
+          setPlanner(payload.planner);
+          setWorkflow(payload.workflow);
+          setCodePrompt(payload.codePrompt);
+          setToolTrace(payload.toolTrace);
+          setPromptSnapshot(payload.promptSnapshot);
+          setDecisionTrace(payload.decisionTrace);
+          setSuggestedOptions(payload.suggestedOptions ?? payload.planner?.suggestedOptions ?? []);
+          setMessages((current) => {
+            const next = current.filter((item) => item.id !== optimisticMessage.id);
+            const hasUser = next.some((item) => item.id === payload.userMessage.id);
+            const hasAssistant = next.some((item) => item.id === payload.assistant.id);
 
-          for (;;) {
-            const { done, value } = await reader.read();
-            if (done) break;
-
-            buffer += decoder.decode(value, { stream: true });
-            const lines = buffer.split("\n");
-            buffer = lines.pop() ?? "";
-
-            let currentEvent = "";
-            for (const line of lines) {
-              if (line.startsWith("event: ")) {
-                currentEvent = line.slice(7).trim();
-              } else if (line.startsWith("data: ")) {
-                const dataStr = line.slice(6);
-                try {
-                  const data = JSON.parse(dataStr);
-
-                  if (currentEvent === "error") {
-                    throw new Error(data.error || t("agent.sendError"));
-                  }
-
-                  if (currentEvent === "metadata") {
-                    receivedMetadata = true;
-                    if (data.sessionId) setActiveSessionId(data.sessionId);
-                    if (data.workflowState) setActiveSessionStatus(data.workflowState);
-                    if (data.planner) setPlanner(data.planner);
-                    if (data.workflow) setWorkflow(data.workflow);
-                    if (data.codePrompt !== undefined) setCodePrompt(data.codePrompt);
-                    if (data.toolTrace) setToolTrace(data.toolTrace);
-                    if (data.promptSnapshot) setPromptSnapshot(data.promptSnapshot);
-                    if (data.decisionTrace) setDecisionTrace(data.decisionTrace);
-                    const options = data.suggestedOptions ?? data.planner?.suggestedOptions ?? [];
-                    setSuggestedOptions(options);
-
-                    /* Non-streaming: metadata includes the full assistantMessage */
-                    if (data.assistantMessage && data.assistant) {
-                      if (data.session) upsertSession(data.session);
-                      setMessages((current) => {
-                        const next = current.filter((item) => item.id !== optimisticMessage.id);
-                        const hasUser = next.some((item) => item.id === data.userMessage?.id);
-                        const hasAssistant = next.some((item) => item.id === data.assistant?.id);
-                        return [
-                          ...next,
-                          ...(hasUser ? [] : data.userMessage ? [data.userMessage] : []),
-                          ...(hasAssistant ? [] : [data.assistant]),
-                        ];
-                      });
-                    } else if (data.userMessage) {
-                      /* Streaming: replace optimistic user msg, add streaming placeholder */
-                      setMessages((current) => {
-                        const next = current.filter((item) => item.id !== optimisticMessage.id);
-                        const hasUser = next.some((item) => item.id === data.userMessage.id);
-                        return [
-                          ...next,
-                          ...(hasUser ? [] : [data.userMessage]),
-                          {
-                            id: streamingMsgId,
-                            role: "assistant" as const,
-                            content: "",
-                            createdAt: new Date().toISOString(),
-                            planner: data.planner ?? null,
-                            codePrompt: data.codePrompt ?? null,
-                            toolTrace: data.toolTrace ?? [],
-                            promptSnapshot: data.promptSnapshot ?? null,
-                            decisionTrace: data.decisionTrace ?? [],
-                          },
-                        ];
-                      });
-                    }
-                  }
-
-                  if (currentEvent === "delta" && data.content) {
-                    streamingContent += data.content;
-                    const snapshot = streamingContent;
-                    setMessages((current) =>
-                      current.map((item) =>
-                        item.id === streamingMsgId
-                          ? { ...item, content: snapshot }
-                          : item
-                      )
-                    );
-                  }
-
-                  if (currentEvent === "done") {
-                    const finalText = data.assistantMessage ?? streamingContent;
-                    if (data.assistant) {
-                      /* Replace streaming placeholder with persisted message */
-                      setMessages((current) =>
-                        current.map((item) =>
-                          item.id === streamingMsgId ? data.assistant : item
-                        )
-                      );
-                    } else {
-                      /* Fallback: just update content */
-                      setMessages((current) =>
-                        current.map((item) =>
-                          item.id === streamingMsgId
-                            ? { ...item, content: finalText }
-                            : item
-                        )
-                      );
-                    }
-                    if (data.session) upsertSession(data.session);
-                  }
-                } catch (parseError) {
-                  if (parseError instanceof Error && receivedMetadata) {
-                    throw parseError;
-                  }
-                  /* skip malformed SSE data lines during initial parsing */
-                }
-                currentEvent = "";
-              }
-            }
-          }
+            return [
+              ...next,
+              ...(hasUser ? [] : [payload.userMessage]),
+              ...(hasAssistant ? [] : [payload.assistant]),
+            ];
+          });
         } catch (submitError) {
-          setMessages((current) =>
-            current.filter(
-              (item) => item.id !== optimisticMessage.id && item.id !== streamingMsgId
-            )
-          );
+          setMessages((current) => current.filter((item) => item.id !== optimisticMessage.id));
           setDraft((current) => (current.trim().length > 0 ? current : message));
           setError(submitError instanceof Error ? submitError.message : t("agent.sendError"));
         }
@@ -2073,6 +1991,31 @@ export function AgentContent() {
                     {t("agent.codePromptViewStyle")}
                     <ArrowRight className="h-3 w-3" />
                   </Link>
+                </div>
+              ) : planner && !isBuilder ? (
+                <div className="space-y-3 rounded-xl border border-border/60 bg-muted/10 p-4">
+                  <p className="text-[11px] uppercase tracking-[0.18em] text-muted">
+                    {locale === "zh" ? "方案进度" : "Brief Progress"}
+                  </p>
+                  <div className="space-y-2">
+                    {([
+                      [locale === "zh" ? "类型" : "Type", planner.productType] as const,
+                      [locale === "zh" ? "受众" : "Audience", planner.audience] as const,
+                      [locale === "zh" ? "风格" : "Style", planner.visualTone] as const,
+                    ]).map(([label, value]) => (
+                      <div key={label} className="flex items-center gap-2">
+                        <span className="w-12 shrink-0 text-[11px] font-medium text-muted">{label}</span>
+                        <span className={`text-sm ${value ? "text-foreground" : "text-muted/40"}`}>
+                          {value || "---"}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                  <p className="text-xs text-muted">
+                    {planner.phase === "confirm" || planner.phase === "done"
+                      ? (locale === "zh" ? "准备生成..." : "Ready to generate...")
+                      : (locale === "zh" ? "正在收集信息..." : "Still gathering info...")}
+                  </p>
                 </div>
               ) : (
                 <div className="flex min-h-[160px] flex-col items-center justify-center rounded-xl border border-dashed border-border/60 px-6 text-center">
