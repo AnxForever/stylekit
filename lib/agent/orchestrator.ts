@@ -73,13 +73,13 @@ const AUDIENCE_OPTIONS: Record<Locale, AgentSuggestedOption[]> = {
 const suggestedOptionSchema = z.object({
   id: z.string().trim().min(1),
   label: z.string().trim().min(1),
-  description: z.string().trim().min(1),
+  description: z.string().trim().default(""),
 });
 
 const plannerSchema = z.object({
   ready: z.boolean(),
   phase: z.enum(["goal", "audience", "feel", "confirm", "revise", "done"]).default("goal"),
-  normalizedQuery: z.string().trim().min(1),
+  normalizedQuery: z.string().trim().default(""),
   productType: z.string().trim().default(""),
   audience: z.string().trim().default(""),
   visualTone: z.string().trim().default(""),
@@ -106,9 +106,50 @@ const responderSchema = z.object({
   assistantMessage: z.string().trim().min(1),
 });
 
+/**
+ * Normalize raw LLM JSON before schema validation.
+ * Handles common model deviations:
+ * - confirmedSlots object → flat productType/audience/visualTone fields
+ * - Missing normalizedQuery → use followUpQuestion or fallback
+ * - suggestedOptions without description → add empty description
+ */
+function normalizePlannerResponse(raw: Record<string, unknown>, userMessage: string): Record<string, unknown> {
+  const out = { ...raw };
+
+  /* Flatten confirmedSlots */
+  if (out.confirmedSlots && typeof out.confirmedSlots === "object" && !Array.isArray(out.confirmedSlots)) {
+    const slots = out.confirmedSlots as Record<string, unknown>;
+    if (!out.productType && slots.productType) out.productType = slots.productType;
+    if (!out.audience && slots.audience) out.audience = slots.audience;
+    if (!out.visualTone && slots.visualTone) out.visualTone = slots.visualTone;
+    if (!out.mustHave && slots.mustHave) out.mustHave = slots.mustHave;
+    if (!out.constraints && slots.constraints) out.constraints = slots.constraints;
+  }
+
+  /* Ensure normalizedQuery */
+  if (!out.normalizedQuery || (typeof out.normalizedQuery === "string" && !out.normalizedQuery.trim())) {
+    out.normalizedQuery = userMessage.trim().slice(0, 200) || "user query";
+  }
+
+  /* Patch suggestedOptions without description */
+  if (Array.isArray(out.suggestedOptions)) {
+    out.suggestedOptions = (out.suggestedOptions as Record<string, unknown>[]).map((opt) => ({
+      ...opt,
+      description: typeof opt.description === "string" ? opt.description : (typeof opt.label === "string" ? opt.label : ""),
+    }));
+  }
+
+  return out;
+}
+
 const DEV_AGENT_FALLBACK =
   process.env.NODE_ENV === "development" &&
   process.env.NEXT_PUBLIC_DEV_MOCK_USER === "true";
+
+function warnFallback(context: string, error: unknown): void {
+  const message = error instanceof Error ? error.message : String(error);
+  console.warn(`[agent] ${context}: LLM call failed, using dev fallback. Error: ${message}`);
+}
 
 /* ---------- P0-1: Agentic RAG — smart retrieval ---------- */
 
@@ -1023,23 +1064,20 @@ export async function runAgentTurn({
     : emptyKnowledge;
   const plannerPrompt = buildPlannerPrompt(locale, messages, phaseKnowledge, pageContext);
   let plannerFallbackUsed = false;
-  const planner = DEV_AGENT_FALLBACK
-    ? (() => {
-        plannerFallbackUsed = true;
-        return inferPlannerFallback(locale, messages, phaseKnowledge, pageContext);
-      })()
-    : await requestAgentJson({
-        schema: plannerSchema,
-        system: plannerPrompt.system,
-        user: plannerPrompt.user,
-        temperature: 0.2,
-      }).catch((error) => {
-        if (!DEV_AGENT_FALLBACK) {
-          throw error;
-        }
-        plannerFallbackUsed = true;
-        return inferPlannerFallback(locale, messages, phaseKnowledge, pageContext);
-      });
+  const planner = await requestAgentJson({
+    schema: plannerSchema,
+    system: plannerPrompt.system,
+    user: plannerPrompt.user,
+    temperature: 0.2,
+    normalize: (raw) => normalizePlannerResponse(raw, latestUserMsg),
+  }).catch((error) => {
+    if (!DEV_AGENT_FALLBACK) {
+      throw error;
+    }
+    warnFallback("planner", error);
+    plannerFallbackUsed = true;
+    return inferPlannerFallback(locale, messages, phaseKnowledge, pageContext);
+  });
 
   const workflow = buildWorkflowSnapshot({ messages, planner });
   const plannerPromptSnapshot: AgentPromptSnapshot["planner"] = {
@@ -1197,34 +1235,26 @@ export async function runAgentTurn({
     toolTrace,
   });
 
-  const response = DEV_AGENT_FALLBACK
-    ? (() => {
-        toolTrace.push({
-          tool: "devFallbackResponder",
-          ok: true,
-          meta: { reason: "development_local_agent" },
-        });
-        return buildResponderFallback({ locale, codePrompt });
-      })()
-    : await requestAgentJson({
-        schema: responderSchema,
-        system: responderPrompt.system,
-        user: responderPrompt.user,
-        temperature: 0.3,
-      }).catch((error) => {
-        if (!DEV_AGENT_FALLBACK) {
-          throw error;
-        }
-        toolTrace.push({
-          tool: "devFallbackResponder",
-          ok: true,
-          meta: {
-            reason:
-              error instanceof AgentProviderError ? error.code : "responder_schema_error",
-          },
-        });
-        return buildResponderFallback({ locale, codePrompt });
-      });
+  const response = await requestAgentJson({
+    schema: responderSchema,
+    system: responderPrompt.system,
+    user: responderPrompt.user,
+    temperature: 0.3,
+  }).catch((error) => {
+    if (!DEV_AGENT_FALLBACK) {
+      throw error;
+    }
+    warnFallback("runAgentTurn responder", error);
+    toolTrace.push({
+      tool: "devFallbackResponder",
+      ok: true,
+      meta: {
+        reason:
+          error instanceof AgentProviderError ? error.code : "responder_schema_error",
+      },
+    });
+    return buildResponderFallback({ locale, codePrompt });
+  });
 
   const decisionTrace = buildDecisionTraceForPlan({
     locale,
@@ -1313,23 +1343,20 @@ export async function runAgentTurnStreaming({
     : emptyKnowledge;
   const plannerPrompt = buildPlannerPrompt(locale, messages, phaseKnowledge, pageContext);
   let plannerFallbackUsed = false;
-  const planner = DEV_AGENT_FALLBACK
-    ? (() => {
-        plannerFallbackUsed = true;
-        return inferPlannerFallback(locale, messages, phaseKnowledge, pageContext);
-      })()
-    : await requestAgentJson({
-        schema: plannerSchema,
-        system: plannerPrompt.system,
-        user: plannerPrompt.user,
-        temperature: 0.2,
-      }).catch((error) => {
-        if (!DEV_AGENT_FALLBACK) {
-          throw error;
-        }
-        plannerFallbackUsed = true;
-        return inferPlannerFallback(locale, messages, phaseKnowledge, pageContext);
-      });
+  const planner = await requestAgentJson({
+    schema: plannerSchema,
+    system: plannerPrompt.system,
+    user: plannerPrompt.user,
+    temperature: 0.2,
+    normalize: (raw) => normalizePlannerResponse(raw, latestUserMsg),
+  }).catch((error) => {
+    if (!DEV_AGENT_FALLBACK) {
+      throw error;
+    }
+    warnFallback("planner", error);
+    plannerFallbackUsed = true;
+    return inferPlannerFallback(locale, messages, phaseKnowledge, pageContext);
+  });
 
   const workflow = buildWorkflowSnapshot({ messages, planner });
   const plannerPromptSnapshot: AgentPromptSnapshot["planner"] = {
@@ -1514,12 +1541,38 @@ export async function runAgentTurnStreaming({
     },
   };
 
-  /* DEV_AGENT_FALLBACK: return non-streaming with fallback text */
-  if (DEV_AGENT_FALLBACK) {
+  /* Try streaming the responder, fall back in dev mode */
+  try {
+    const stream = await requestAgentStream({
+      system: responderPrompt.system,
+      user: responderPrompt.user,
+      temperature: 0.3,
+    });
+
+    return {
+      streaming: true,
+      stream,
+      followUpNeeded: false,
+      workflowState: workflow.state,
+      workflow,
+      planner,
+      codePrompt,
+      suggestedOptions: [],
+      toolTrace,
+      promptSnapshot,
+      decisionTrace,
+    };
+  } catch (error) {
+    if (!DEV_AGENT_FALLBACK) {
+      throw error;
+    }
+    warnFallback("runAgentTurnStreaming responder", error);
     toolTrace.push({
       tool: "devFallbackResponder",
       ok: true,
-      meta: { reason: "development_local_agent" },
+      meta: {
+        reason: error instanceof AgentProviderError ? error.code : "responder_stream_error",
+      },
     });
     const fallback = buildResponderFallback({ locale, codePrompt });
     return {
@@ -1536,25 +1589,4 @@ export async function runAgentTurnStreaming({
       decisionTrace,
     };
   }
-
-  /* Production: stream the responder */
-  const stream = await requestAgentStream({
-    system: responderPrompt.system,
-    user: responderPrompt.user,
-    temperature: 0.3,
-  });
-
-  return {
-    streaming: true,
-    stream,
-    followUpNeeded: false,
-    workflowState: workflow.state,
-    workflow,
-    planner,
-    codePrompt,
-    suggestedOptions: [],
-    toolTrace,
-    promptSnapshot,
-    decisionTrace,
-  };
 }

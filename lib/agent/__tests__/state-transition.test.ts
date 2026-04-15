@@ -9,6 +9,7 @@ import type { AgentMessage, AgentPlannerResult } from "@/lib/agent/types";
 
 const basePlanner: AgentPlannerResult = {
   ready: true,
+  phase: "done",
   normalizedQuery: "enterprise saas dashboard",
   productType: "Enterprise SaaS Dashboard",
   audience: "Enterprise operations leaders",
@@ -16,6 +17,7 @@ const basePlanner: AgentPlannerResult = {
   mustHave: ["Primary KPIs"],
   constraints: ["Keep the first screen concise"],
   followUpQuestion: "",
+  suggestedOptions: [],
   reasoning: [],
   context: {
     targetAudience: "enterprise",
@@ -55,7 +57,7 @@ describe("state-transition", () => {
       })
     ).toEqual({
       state: "needs_input",
-      reason: "missing_slots",
+      reason: "consulting",
       missingSlots: ["audience", "constraints"],
       hadExistingPlan: false,
     });

@@ -114,11 +114,13 @@ export async function requestAgentJson<T>({
   system,
   user,
   temperature = 0.2,
+  normalize,
 }: {
   schema: z.ZodSchema<T>;
   system: string;
   user: string;
   temperature?: number;
+  normalize?: (raw: Record<string, unknown>) => Record<string, unknown>;
 }): Promise<T> {
   const config = getAgentModelConfig();
   if (!config) {
@@ -164,7 +166,21 @@ export async function requestAgentJson<T>({
   }
 
   const rawText = extractMessageContent(payload.data.choices[0]?.message?.content ?? "");
-  const parsedJson = JSON.parse(extractJsonCandidate(rawText));
+  let parsedJson: unknown;
+  try {
+    parsedJson = JSON.parse(extractJsonCandidate(rawText));
+  } catch {
+    throw new AgentProviderError(
+      "Model did not return valid JSON.",
+      "AGENT_INVALID_RESPONSE",
+      502
+    );
+  }
+
+  if (normalize && parsedJson && typeof parsedJson === "object" && !Array.isArray(parsedJson)) {
+    parsedJson = normalize(parsedJson as Record<string, unknown>);
+  }
+
   const parsed = schema.safeParse(parsedJson);
 
   if (!parsed.success) {
