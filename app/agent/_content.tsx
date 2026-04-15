@@ -20,8 +20,8 @@ import { formatLocaleDateTime } from "@/lib/i18n/locale-copy";
 import { localizeHref } from "@/lib/i18n/routing";
 import { useUser } from "@/lib/auth/use-user";
 import type {
-  AgentChatResponse,
   AgentCodePrompt,
+  AgentConsultPhase,
   AgentDecisionTraceItem,
   AgentMessage,
   AgentPageContext,
@@ -33,6 +33,7 @@ import type {
   AgentSessionDetail,
   AgentSessionSummary,
   AgentSessionStatus,
+  AgentSuggestedOption,
   AgentToolTrace,
   AgentWorkflowReason,
   AgentWorkflowSnapshot,
@@ -731,6 +732,173 @@ function PromptDiffCard({
   );
 }
 
+function SuggestedOptionsBar({
+  options,
+  onSelect,
+  disabled,
+}: {
+  options: AgentSuggestedOption[];
+  onSelect: (option: AgentSuggestedOption) => void;
+  disabled: boolean;
+}) {
+  if (options.length === 0) {
+    return null;
+  }
+
+  return (
+    <div className="flex animate-agent-message-in flex-wrap gap-2 px-1">
+      {options.map((option) => (
+        <button
+          key={option.id}
+          type="button"
+          disabled={disabled}
+          onClick={() => onSelect(option)}
+          className="group relative rounded-2xl border border-border bg-background px-4 py-2.5 text-left transition-all hover:border-foreground/20 hover:bg-muted/30 hover:shadow-sm active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50"
+        >
+          <span className="block text-sm font-medium text-foreground">{option.label}</span>
+          <span className="mt-0.5 block text-xs leading-5 text-muted">{option.description}</span>
+        </button>
+      ))}
+    </div>
+  );
+}
+
+function ConfirmCard({
+  planner,
+  locale,
+  onConfirm,
+  onEdit,
+  disabled,
+}: {
+  planner: AgentPlannerResult;
+  locale: "en" | "zh";
+  onConfirm: () => void;
+  onEdit: () => void;
+  disabled: boolean;
+}) {
+  const t = locale === "zh"
+    ? {
+        title: "需求确认",
+        siteType: "网站类型",
+        audience: "目标受众",
+        feel: "视觉方向",
+        mustHave: "必须包含",
+        constraints: "特殊要求",
+        confirm: "确认，开始生成",
+        edit: "我想改一下",
+      }
+    : {
+        title: "Brief Summary",
+        siteType: "Site Type",
+        audience: "Audience",
+        feel: "Visual Direction",
+        mustHave: "Must Include",
+        constraints: "Constraints",
+        confirm: "Looks good, generate!",
+        edit: "I want to change something",
+      };
+
+  return (
+    <div className="animate-agent-message-in rounded-2xl border border-border bg-background p-5 shadow-sm">
+      <p className="text-xs uppercase tracking-[0.22em] text-muted">{t.title}</p>
+      <div className="mt-4 space-y-3">
+        {planner.productType ? (
+          <div className="flex gap-3">
+            <span className="w-20 shrink-0 text-xs font-medium text-muted">{t.siteType}</span>
+            <span className="text-sm text-foreground">{planner.productType}</span>
+          </div>
+        ) : null}
+        {planner.audience ? (
+          <div className="flex gap-3">
+            <span className="w-20 shrink-0 text-xs font-medium text-muted">{t.audience}</span>
+            <span className="text-sm text-foreground">{planner.audience}</span>
+          </div>
+        ) : null}
+        {planner.visualTone ? (
+          <div className="flex gap-3">
+            <span className="w-20 shrink-0 text-xs font-medium text-muted">{t.feel}</span>
+            <span className="text-sm text-foreground">{planner.visualTone}</span>
+          </div>
+        ) : null}
+        {planner.mustHave.length > 0 ? (
+          <div className="flex gap-3">
+            <span className="w-20 shrink-0 text-xs font-medium text-muted">{t.mustHave}</span>
+            <span className="text-sm text-foreground">{planner.mustHave.join(", ")}</span>
+          </div>
+        ) : null}
+        {planner.constraints.length > 0 ? (
+          <div className="flex gap-3">
+            <span className="w-20 shrink-0 text-xs font-medium text-muted">{t.constraints}</span>
+            <span className="text-sm text-foreground">{planner.constraints.join(", ")}</span>
+          </div>
+        ) : null}
+      </div>
+      <div className="mt-5 flex flex-wrap gap-3">
+        <button
+          type="button"
+          disabled={disabled}
+          onClick={onConfirm}
+          className="inline-flex items-center gap-2 rounded-full bg-foreground px-5 py-2.5 text-sm font-medium text-background transition-all hover:scale-[1.02] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50"
+        >
+          <Check className="h-4 w-4" />
+          {t.confirm}
+        </button>
+        <button
+          type="button"
+          disabled={disabled}
+          onClick={onEdit}
+          className="inline-flex items-center gap-2 rounded-full border border-border px-5 py-2.5 text-sm font-medium text-foreground transition-colors hover:bg-muted/30 disabled:cursor-not-allowed disabled:opacity-50"
+        >
+          <RefreshCcw className="h-4 w-4" />
+          {t.edit}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function ChatMessageBubble({
+  locale,
+  message,
+  compact = false,
+}: {
+  locale: "en" | "zh";
+  message: AgentMessage;
+  compact?: boolean;
+}) {
+  const isUser = message.role === "user";
+
+  return (
+    <div className={`flex ${isUser ? "justify-end" : "justify-start"}`}>
+      <div className={`max-w-[88%] ${isUser ? "items-end" : "items-start"} flex flex-col gap-1.5`}>
+        <span className="px-1 text-[11px] uppercase tracking-[0.18em] text-muted">
+          {isUser ? (locale === "zh" ? "你" : "You") : "StyleKit"}
+        </span>
+        <div
+          className={`rounded-2xl px-4 py-3 ${
+            isUser
+              ? "bg-foreground text-background"
+              : "border border-border bg-background text-foreground shadow-sm"
+          }`}
+        >
+          {isUser ? (
+            <p
+              className={`whitespace-pre-wrap text-sm ${compact ? "leading-6" : "leading-7"} text-background`}
+            >
+              {message.content}
+            </p>
+          ) : (
+            <RichMessageBody content={message.content} />
+          )}
+        </div>
+        <p className="px-1 text-[11px] text-muted">
+          {formatLocaleDateTime(message.createdAt, locale)}
+        </p>
+      </div>
+    </div>
+  );
+}
+
 function SessionList({
   locale,
   sessions,
@@ -755,15 +923,15 @@ function SessionList({
   getStatusLabel: (status: AgentSessionStatus) => string;
 }) {
   return (
-    <div className="h-full overflow-hidden rounded-2xl border border-border bg-background">
-      <div className="flex items-center justify-between border-b border-border px-4 py-4">
+    <div className="h-full overflow-hidden rounded-[1.5rem] border border-border/80 bg-background">
+      <div className="flex items-center justify-between border-b border-border/80 px-4 py-4">
         <div>
-          <p className="text-xs font-medium text-foreground">{title}</p>
+          <p className="text-xs font-medium uppercase tracking-[0.18em] text-muted">{title}</p>
         </div>
         <button
           type="button"
           onClick={onNewChat}
-          className="inline-flex items-center gap-2 rounded-lg border border-border px-3 py-2 text-xs font-medium text-foreground transition-colors hover:bg-muted/30"
+          className="inline-flex items-center gap-2 rounded-full border border-border px-3 py-2 text-xs font-medium text-foreground transition-colors hover:bg-muted/30"
         >
           <MessageSquarePlus className="h-3.5 w-3.5" />
           {newChatLabel}
@@ -793,10 +961,10 @@ function SessionList({
                   key={session.id}
                   type="button"
                   onClick={() => onSelect(session.id)}
-                  className={`w-full rounded-xl border p-4 text-left transition-colors ${
+                  className={`w-full rounded-2xl border p-4 text-left transition-colors ${
                     isActive
                       ? "border-foreground bg-foreground text-background"
-                      : "border-border bg-background hover:bg-muted/30"
+                      : "border-border/80 bg-background hover:border-foreground/25 hover:bg-muted/20"
                   }`}
                 >
                   <div className="mb-2 flex items-start justify-between gap-3">
@@ -857,6 +1025,7 @@ export function AgentContent() {
   const [toolTrace, setToolTrace] = useState<AgentToolTrace[]>([]);
   const [promptSnapshot, setPromptSnapshot] = useState<AgentPromptSnapshot | null>(null);
   const [decisionTrace, setDecisionTrace] = useState<AgentDecisionTraceItem[]>([]);
+  const [suggestedOptions, setSuggestedOptions] = useState<AgentSuggestedOption[]>([]);
   const [draft, setDraft] = useState("");
   const [copied, setCopied] = useState(false);
   const [loadingSessions, setLoadingSessions] = useState(true);
@@ -866,6 +1035,22 @@ export function AgentContent() {
   const [showDebug, setShowDebug] = useState(false);
   const [isUnavailable, setIsUnavailable] = useState(false);
   const [isPending, startTransition] = useTransition();
+
+  const starterPrompts = useMemo(
+    () =>
+      locale === "zh"
+        ? [
+            "我想做一个面向开发者的 AI SaaS 首页，风格专业克制，移动端也要稳。",
+            "帮我规划一个作品集首页，想突出案例质量和个人能力，整体偏高级极简。",
+            "我要做一个企业后台 dashboard，信息密度高，但不能显得乱，优先考虑可读性。",
+          ]
+        : [
+            "I need an AI SaaS landing page for developers. Keep it professional, restrained, and mobile-safe.",
+            "Help me plan a portfolio landing page that highlights case studies and feels premium and minimal.",
+            "I need an enterprise dashboard with high information density, but it still needs to feel readable and calm.",
+          ],
+    [locale]
+  );
 
   function setViewMode(next: AgentViewMode) {
     setMode(next);
@@ -973,23 +1158,68 @@ export function AgentContent() {
     }
   }
 
-  const modeDescription = isBuilder
-    ? t("agent.modeBuilderDescription")
-    : t("agent.modeUserDescription");
-
   const plannerCoverage = planner ? getPlannerCoverage(planner) : null;
   const plannerSlots: AgentPlannerSlotSnapshot[] = planner
     ? getPlannerSlotSnapshots(planner)
     : [];
+  const showPromptPanel = isBuilder || Boolean(codePrompt);
+  const showSessionColumn = showSessions && sessions.length > 0;
+  const quickReplySuggestions = useMemo(() => {
+    if (!workflow || workflow.state !== "needs_input" || workflow.missingSlots.length === 0) {
+      return [];
+    }
+
+    const suggestions = workflow.missingSlots.flatMap((slot) => {
+      if (locale === "zh") {
+        switch (slot) {
+          case "productType":
+            return ["产品首页", "营销落地页", "后台 Dashboard"];
+          case "audience":
+            return ["面向开发者", "面向企业团队", "面向内容创作者"];
+          case "visualTone":
+            return ["专业克制", "高级极简", "大胆有冲击力"];
+          case "mustHave":
+            return ["必须有价格方案", "必须有案例/客户证言", "必须有清晰 CTA"];
+          case "constraints":
+            return ["移动端优先", "优先可访问性", "控制性能开销"];
+          default:
+            return [];
+        }
+      }
+
+      switch (slot) {
+        case "productType":
+          return ["Landing page", "Marketing site", "Dashboard"];
+        case "audience":
+          return ["For developers", "For enterprise teams", "For creators"];
+        case "visualTone":
+          return ["Professional and restrained", "Premium minimal", "Bold and expressive"];
+        case "mustHave":
+          return ["Must include pricing", "Must include case studies", "Must include a clear CTA"];
+        case "constraints":
+          return ["Mobile first", "Accessibility first", "Keep it performant"];
+        default:
+          return [];
+      }
+    });
+
+    return Array.from(new Set(suggestions)).slice(0, 6);
+  }, [locale, workflow]);
+  const composerSuggestions = useMemo(() => {
+    if (quickReplySuggestions.length > 0) {
+      return quickReplySuggestions;
+    }
+
+    if (messages.length === 0) {
+      return starterPrompts;
+    }
+
+    return [];
+  }, [messages.length, quickReplySuggestions, starterPrompts]);
   const replayEntries = useMemo(() => getReplayEntries(messages), [messages]);
   const previousPromptSnapshot = replayEntries[1]?.promptSnapshot ?? null;
   const archivedMessages = messages.slice(0, -2);
   const visibleMessages = archivedMessages.length > 0 ? messages.slice(-2) : messages;
-  const latestAssistantMessage =
-    [...messages].reverse().find((message) => message.role === "assistant") ?? null;
-  const latestUserMessage =
-    [...messages].reverse().find((message) => message.role === "user") ?? null;
-
   function resetConversationState() {
     setActiveSessionId(null);
     setActiveSessionStatus(null);
@@ -1000,6 +1230,7 @@ export function AgentContent() {
     setToolTrace([]);
     setPromptSnapshot(null);
     setDecisionTrace([]);
+    setSuggestedOptions([]);
   }
 
   async function loadSession(sessionId: string) {
@@ -1100,6 +1331,54 @@ export function AgentContent() {
     setDraft("");
     setError(null);
     setShowSessions(false);
+    setSuggestedOptions([]);
+  }
+
+  function applyDraftSuggestion(value: string) {
+    setDraft((current) => {
+      const trimmed = current.trim();
+      if (!trimmed) {
+        return value;
+      }
+
+      return `${trimmed}\n${value}`;
+    });
+  }
+
+  function handleComposerKeyDown(event: React.KeyboardEvent<HTMLTextAreaElement>) {
+    if ((event.metaKey || event.ctrlKey) && event.key === "Enter") {
+      event.preventDefault();
+      event.currentTarget.form?.requestSubmit();
+    }
+  }
+
+  function handleOptionSelect(option: AgentSuggestedOption) {
+    setDraft(option.label);
+    setSuggestedOptions([]);
+    setTimeout(() => {
+      const form = document.querySelector<HTMLFormElement>("form");
+      form?.requestSubmit();
+    }, 0);
+  }
+
+  function handleConfirm() {
+    const confirmText = locale === "zh" ? "确认，开始生成" : "Looks good, generate!";
+    setDraft(confirmText);
+    setSuggestedOptions([]);
+    setTimeout(() => {
+      const form = document.querySelector<HTMLFormElement>("form");
+      form?.requestSubmit();
+    }, 0);
+  }
+
+  function handleEditRequest() {
+    const editText = locale === "zh" ? "我想改一下" : "I want to change something";
+    setDraft(editText);
+    setSuggestedOptions([]);
+    setTimeout(() => {
+      const form = document.querySelector<HTMLFormElement>("form");
+      form?.requestSubmit();
+    }, 0);
   }
 
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
@@ -1121,6 +1400,8 @@ export function AgentContent() {
       decisionTrace: [],
     };
 
+    const streamingMsgId = `stream-${Date.now()}`;
+
     setDraft("");
     setError(null);
     setMessages((current) => [...current, optimisticMessage]);
@@ -1128,7 +1409,7 @@ export function AgentContent() {
     startTransition(() => {
       void (async () => {
         try {
-          const response = await fetch("/api/agent/chat", {
+          const response = await fetch("/api/agent/chat/stream", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -1141,30 +1422,149 @@ export function AgentContent() {
             }),
           });
 
-          const payload = (await response.json()) as
-            | AgentChatResponse
-            | { success: false; error?: string };
-
           if (response.status === 503) {
             setIsUnavailable(true);
           }
 
-          if (!response.ok || !("success" in payload) || !payload.success) {
-            throw new Error(("error" in payload && payload.error) || t("agent.sendError"));
+          if (!response.ok || !response.body) {
+            const text = await response.text().catch(() => "");
+            let errorMessage = t("agent.sendError");
+            try {
+              const parsed = JSON.parse(text.split("data: ")[1] || "{}");
+              if (parsed.error) errorMessage = parsed.error;
+            } catch {
+              /* ignore parse error */
+            }
+            throw new Error(errorMessage);
           }
 
-          upsertSession(payload.session);
-          setActiveSessionId(payload.sessionId);
-          setActiveSessionStatus(payload.workflowState);
-          setPlanner(payload.planner);
-          setWorkflow(payload.workflow);
-          setCodePrompt(payload.codePrompt);
-          setToolTrace(payload.toolTrace);
-          setPromptSnapshot(payload.promptSnapshot);
-          setDecisionTrace(payload.decisionTrace);
-          await loadSession(payload.sessionId);
+          const reader = response.body.getReader();
+          const decoder = new TextDecoder();
+          let buffer = "";
+          let streamingContent = "";
+          let receivedMetadata = false;
+
+          for (;;) {
+            const { done, value } = await reader.read();
+            if (done) break;
+
+            buffer += decoder.decode(value, { stream: true });
+            const lines = buffer.split("\n");
+            buffer = lines.pop() ?? "";
+
+            let currentEvent = "";
+            for (const line of lines) {
+              if (line.startsWith("event: ")) {
+                currentEvent = line.slice(7).trim();
+              } else if (line.startsWith("data: ")) {
+                const dataStr = line.slice(6);
+                try {
+                  const data = JSON.parse(dataStr);
+
+                  if (currentEvent === "error") {
+                    throw new Error(data.error || t("agent.sendError"));
+                  }
+
+                  if (currentEvent === "metadata") {
+                    receivedMetadata = true;
+                    if (data.sessionId) setActiveSessionId(data.sessionId);
+                    if (data.workflowState) setActiveSessionStatus(data.workflowState);
+                    if (data.planner) setPlanner(data.planner);
+                    if (data.workflow) setWorkflow(data.workflow);
+                    if (data.codePrompt !== undefined) setCodePrompt(data.codePrompt);
+                    if (data.toolTrace) setToolTrace(data.toolTrace);
+                    if (data.promptSnapshot) setPromptSnapshot(data.promptSnapshot);
+                    if (data.decisionTrace) setDecisionTrace(data.decisionTrace);
+                    const options = data.suggestedOptions ?? data.planner?.suggestedOptions ?? [];
+                    setSuggestedOptions(options);
+
+                    /* Non-streaming: metadata includes the full assistantMessage */
+                    if (data.assistantMessage && data.assistant) {
+                      if (data.session) upsertSession(data.session);
+                      setMessages((current) => {
+                        const next = current.filter((item) => item.id !== optimisticMessage.id);
+                        const hasUser = next.some((item) => item.id === data.userMessage?.id);
+                        const hasAssistant = next.some((item) => item.id === data.assistant?.id);
+                        return [
+                          ...next,
+                          ...(hasUser ? [] : data.userMessage ? [data.userMessage] : []),
+                          ...(hasAssistant ? [] : [data.assistant]),
+                        ];
+                      });
+                    } else if (data.userMessage) {
+                      /* Streaming: replace optimistic user msg, add streaming placeholder */
+                      setMessages((current) => {
+                        const next = current.filter((item) => item.id !== optimisticMessage.id);
+                        const hasUser = next.some((item) => item.id === data.userMessage.id);
+                        return [
+                          ...next,
+                          ...(hasUser ? [] : [data.userMessage]),
+                          {
+                            id: streamingMsgId,
+                            role: "assistant" as const,
+                            content: "",
+                            createdAt: new Date().toISOString(),
+                            planner: data.planner ?? null,
+                            codePrompt: data.codePrompt ?? null,
+                            toolTrace: data.toolTrace ?? [],
+                            promptSnapshot: data.promptSnapshot ?? null,
+                            decisionTrace: data.decisionTrace ?? [],
+                          },
+                        ];
+                      });
+                    }
+                  }
+
+                  if (currentEvent === "delta" && data.content) {
+                    streamingContent += data.content;
+                    const snapshot = streamingContent;
+                    setMessages((current) =>
+                      current.map((item) =>
+                        item.id === streamingMsgId
+                          ? { ...item, content: snapshot }
+                          : item
+                      )
+                    );
+                  }
+
+                  if (currentEvent === "done") {
+                    const finalText = data.assistantMessage ?? streamingContent;
+                    if (data.assistant) {
+                      /* Replace streaming placeholder with persisted message */
+                      setMessages((current) =>
+                        current.map((item) =>
+                          item.id === streamingMsgId ? data.assistant : item
+                        )
+                      );
+                    } else {
+                      /* Fallback: just update content */
+                      setMessages((current) =>
+                        current.map((item) =>
+                          item.id === streamingMsgId
+                            ? { ...item, content: finalText }
+                            : item
+                        )
+                      );
+                    }
+                    if (data.session) upsertSession(data.session);
+                  }
+                } catch (parseError) {
+                  if (parseError instanceof Error && receivedMetadata) {
+                    throw parseError;
+                  }
+                  /* skip malformed SSE data lines during initial parsing */
+                }
+                currentEvent = "";
+              }
+            }
+          }
         } catch (submitError) {
-          setMessages((current) => current.filter((item) => item.id !== optimisticMessage.id));
+          setMessages((current) =>
+            current.filter(
+              (item) => item.id !== optimisticMessage.id && item.id !== streamingMsgId
+            )
+          );
+          setDraft((current) => (current.trim().length > 0 ? current : message));
           setError(submitError instanceof Error ? submitError.message : t("agent.sendError"));
         }
       })();
@@ -1247,33 +1647,44 @@ export function AgentContent() {
               </h1>
             </div>
             <div className="flex items-center gap-2">
-              <div className="inline-flex items-center rounded-full border border-border p-0.5">
-                <button
-                  type="button"
-                  onClick={() => setViewMode("user")}
-                  aria-pressed={!isBuilder}
-                  className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium transition-colors ${
-                    !isBuilder
-                      ? "bg-foreground text-background"
-                      : "text-muted hover:text-foreground"
-                  }`}
-                >
-                  {t("agent.modeUser")}
-                </button>
+              {isBuilder ? (
+                <div className="inline-flex items-center rounded-full border border-border p-0.5">
+                  <button
+                    type="button"
+                    onClick={() => setViewMode("user")}
+                    aria-pressed={!isBuilder}
+                    className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium text-muted transition-colors hover:text-foreground"
+                  >
+                    {t("agent.modeUser")}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setViewMode("builder")}
+                    aria-pressed={isBuilder}
+                    className="inline-flex items-center gap-1.5 rounded-full bg-foreground px-3 py-1.5 text-xs font-medium text-background transition-colors"
+                  >
+                    <Wrench className="h-3 w-3" />
+                    {t("agent.modeBuilder")}
+                  </button>
+                </div>
+              ) : (
                 <button
                   type="button"
                   onClick={() => setViewMode("builder")}
-                  aria-pressed={isBuilder}
-                  className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium transition-colors ${
-                    isBuilder
-                      ? "bg-foreground text-background"
-                      : "text-muted hover:text-foreground"
-                  }`}
+                  className="inline-flex items-center gap-1.5 rounded-full border border-border px-3 py-2 text-xs font-medium text-muted transition-colors hover:text-foreground"
                 >
-                  <Wrench className="h-3 w-3" />
+                  <Wrench className="h-3.5 w-3.5" />
                   {t("agent.modeBuilder")}
                 </button>
-              </div>
+              )}
+              <button
+                type="button"
+                onClick={handleNewChat}
+                className="inline-flex items-center gap-2 rounded-full border border-border px-3 py-2 text-xs font-medium text-foreground transition-colors hover:bg-muted/30"
+              >
+                <MessageSquarePlus className="h-3.5 w-3.5" />
+                {t("agent.newChat")}
+              </button>
               <div className="inline-flex items-center rounded-full border border-border">
                 <button
                   type="button"
@@ -1295,7 +1706,9 @@ export function AgentContent() {
               </div>
             </div>
           </div>
-          <p className="mt-3 max-w-2xl text-sm text-muted">{t("agent.description")}</p>
+          {!isBuilder ? null : (
+            <p className="mt-3 max-w-2xl text-sm text-muted">{t("agent.description")}</p>
+          )}
         </div>
       </section>
 
@@ -1308,12 +1721,16 @@ export function AgentContent() {
 
         <div
           className={`grid gap-5 ${
-            showSessions
-              ? "lg:grid-cols-[280px_minmax(0,1fr)_340px]"
-              : "lg:grid-cols-[minmax(0,1fr)_340px]"
+            showSessionColumn && showPromptPanel
+              ? "lg:grid-cols-[260px_minmax(0,1fr)_360px]"
+              : showSessionColumn
+                ? "lg:grid-cols-[260px_minmax(0,1fr)]"
+                : showPromptPanel
+                  ? "lg:grid-cols-[minmax(0,1fr)_360px]"
+                  : "lg:grid-cols-[minmax(0,1fr)]"
           }`}
         >
-          <div className={`${showSessions ? "block" : "hidden"}`}>
+          <div className={`${showSessionColumn ? "block" : "hidden"}`}>
             <SessionList
               locale={locale}
               sessions={sessions}
@@ -1333,195 +1750,165 @@ export function AgentContent() {
             />
           </div>
 
-          <div className="overflow-hidden rounded-2xl border border-border bg-background">
-            <div className="border-b border-border px-5 py-4">
-              <p className="text-xs font-medium text-foreground">{t("agent.currentBrief")}</p>
-              <p className="mt-2 text-sm text-muted">{t("agent.stepGuide")}</p>
-              {(latestUserMessage || latestAssistantMessage) && (
-                <div className="mt-4 flex flex-wrap gap-2">
-                  {latestUserMessage ? (
-                    <span className="inline-flex max-w-full items-center rounded-full bg-muted/50 px-3 py-1 text-xs text-foreground">
-                      {locale === "zh" ? "当前输入：" : "Current brief:"} {latestUserMessage.content.slice(0, 36)}
-                    </span>
-                  ) : null}
-                  {activeSessionStatus ? (
-                    <span className="inline-flex items-center rounded-full bg-muted/50 px-3 py-1 text-xs text-muted-foreground">
-                      {getSimpleStatusLabel(activeSessionStatus)}
-                    </span>
-                  ) : null}
+          <div className="overflow-hidden rounded-[1.75rem] border border-border/80 bg-background shadow-[0_18px_40px_rgba(15,23,42,0.04)]">
+            <div className="border-b border-border/80 px-5 py-4">
+              <div className="mx-auto flex max-w-3xl flex-wrap items-center justify-between gap-3">
+                <div>
+                  <p className="text-sm font-medium text-foreground">
+                    {isBuilder ? t("agent.currentBrief") : t("agent.title")}
+                  </p>
+                  <p className="mt-1 text-xs text-muted">
+                    {isBuilder
+                      ? t("agent.stepGuide")
+                      : locale === "zh"
+                        ? "直接聊天，最后拿提示词。"
+                        : "Just chat, then copy the final prompt."}
+                  </p>
                 </div>
-              )}
+                {activeSessionStatus ? (
+                  <span className="inline-flex items-center rounded-full border border-border bg-muted/30 px-3 py-1 text-xs text-foreground">
+                    {isBuilder
+                      ? getStatusLabel(activeSessionStatus)
+                      : getSimpleStatusLabel(activeSessionStatus)}
+                  </span>
+                ) : null}
+              </div>
             </div>
 
-            <div className="min-h-[420px] space-y-4 px-5 py-5 md:min-h-[calc(100vh-23rem)]">
+            <div
+              className={`${
+                isBuilder ? "min-h-[420px] md:min-h-[calc(100vh-23rem)]" : "min-h-[480px] md:h-[calc(100vh-18rem)]"
+              } overflow-y-auto bg-stone-50/70 px-4 py-5 dark:bg-white/[0.03]`}
+            >
+              <div className="mx-auto max-w-3xl space-y-4">
               {messages.length === 0 ? (
-                <div className="flex h-full min-h-[320px] flex-col items-center justify-center rounded-2xl border border-dashed border-border px-6 text-center">
+                <div className="flex h-full min-h-[320px] flex-col items-center justify-center rounded-[1.5rem] border border-dashed border-border bg-background px-6 text-center">
                   <div className="mb-4 rounded-full border border-border bg-muted/20 p-4">
                     <Sparkles className="h-6 w-6 text-foreground" />
                   </div>
                   <h2 className="text-xl font-semibold">{t("agent.emptyTitle")}</h2>
                   <p className="mt-3 max-w-xl text-sm text-muted">{t("agent.emptyBody")}</p>
+                  <div className="mt-6 flex max-w-2xl flex-wrap justify-center gap-2">
+                    {starterPrompts.map((prompt) => (
+                      <button
+                        key={prompt}
+                        type="button"
+                        onClick={() => applyDraftSuggestion(prompt)}
+                        className="rounded-full border border-border bg-background px-3 py-2 text-left text-xs text-foreground transition-colors hover:bg-muted/40"
+                      >
+                        {prompt}
+                      </button>
+                    ))}
+                  </div>
                 </div>
-              ) : !isBuilder && latestAssistantMessage ? (
-                <div className="space-y-4">
-                  <section className="animate-agent-message-in border-l-2 border-foreground/15 pl-5">
-                    <p className="text-[11px] uppercase tracking-[0.18em] text-muted">
-                      {locale === "zh" ? "Agent 结论" : "Agent conclusion"}
-                    </p>
-                    <div className="mt-3">
-                      <RichMessageBody content={latestAssistantMessage.content} />
-                    </div>
-                    <p className="mt-3 text-[11px] text-muted">
-                      {formatLocaleDateTime(latestAssistantMessage.createdAt, locale)}
-                    </p>
-                  </section>
-
-
-                  {messages.length > 2 ? (
-                    <details className="rounded-2xl border border-dashed border-border bg-background px-4 py-4 text-sm">
-                      <summary className="cursor-pointer font-medium text-foreground">
-                        {locale === "zh"
-                          ? `查看完整对话（${messages.length} 条）`
-                          : `View full conversation (${messages.length})`}
-                      </summary>
-                      <div className="mt-4 space-y-3">
-                        {messages.map((message) => {
-                          const isUser = message.role === "user";
-                          return (
-                            <div
-                              key={message.id}
-                              className={`flex ${isUser ? "justify-end" : "justify-start"}`}
-                            >
-                              <div
-                                className={`max-w-[88%] rounded-2xl px-4 py-3 ${
-                                  isUser
-                                    ? "bg-foreground text-background"
-                                    : "border border-border bg-muted/15 text-foreground"
-                                }`}
-                              >
-                                {isUser ? (
-                                  <p className="whitespace-pre-wrap text-sm leading-7 text-background">
-                                    {message.content}
-                                  </p>
-                                ) : (
-                                  <RichMessageBody content={message.content} />
-                                )}
-                                <p
-                                  className={`mt-2 text-[11px] ${
-                                    isUser ? "text-background/70" : "text-muted"
-                                  }`}
-                                >
-                                  {formatLocaleDateTime(message.createdAt, locale)}
-                                </p>
-                              </div>
-                            </div>
-                          );
-                        })}
-                      </div>
-                    </details>
-                  ) : null}
-                </div>
-              ) : (
+              ) : isBuilder ? (
                 <>
                   {archivedMessages.length > 0 ? (
-                    <details className="rounded-xl border border-dashed border-border px-4 py-3 text-sm">
+                    <details className="rounded-xl border border-dashed border-border bg-background px-4 py-3 text-sm">
                       <summary className="cursor-pointer font-medium text-foreground">
                         {locale === "zh"
                           ? `查看更早的 ${archivedMessages.length} 条消息`
                           : `Show ${archivedMessages.length} earlier messages`}
                       </summary>
-                      <div className="mt-4 space-y-3">
-                        {archivedMessages.map((message) => {
-                          const isUser = message.role === "user";
-                          return (
-                            <div
-                              key={message.id}
-                              className={`flex ${isUser ? "justify-end" : "justify-start"}`}
-                            >
-                              <div
-                                className={`max-w-[85%] rounded-2xl px-4 py-3 ${
-                                  isUser
-                                    ? "bg-foreground text-background"
-                                    : "border border-border bg-muted/15 text-foreground"
-                                }`}
-                              >
-                                {isUser ? (
-                                  <p className="whitespace-pre-wrap text-sm leading-7 text-background">{message.content}</p>
-                                ) : (
-                                  <RichMessageBody content={message.content} />
-                                )}
-                                <p
-                                  className={`mt-2 text-[11px] ${
-                                    isUser ? "text-background/70" : "text-muted"
-                                  }`}
-                                >
-                                  {formatLocaleDateTime(message.createdAt, locale)}
-                                </p>
-                              </div>
-                            </div>
-                          );
-                        })}
+                      <div className="mt-4 space-y-4">
+                        {archivedMessages.map((message) => (
+                          <ChatMessageBubble
+                            key={message.id}
+                            locale={locale}
+                            message={message}
+                            compact
+                          />
+                        ))}
                       </div>
                     </details>
                   ) : null}
-                  {visibleMessages.map((message) => {
-                  const isUser = message.role === "user";
-                  return (
-                    <div
-                      key={message.id}
-                      className={`flex animate-agent-message-in ${isUser ? "justify-end" : "justify-start"}`}
-                    >
-                      <div
-                        className={`max-w-[85%] rounded-2xl px-4 py-3 ${
-                          isUser
-                            ? "bg-foreground text-background"
-                            : "border border-border bg-muted/15 text-foreground"
-                        }`}
-                      >
-                        {isUser ? (
-                          <p className="whitespace-pre-wrap text-sm leading-7 text-background">{message.content}</p>
-                        ) : (
-                          <RichMessageBody content={message.content} />
-                        )}
-                        <p
-                          className={`mt-2 text-[11px] ${
-                            isUser ? "text-background/70" : "text-muted"
-                          }`}
-                        >
-                          {formatLocaleDateTime(message.createdAt, locale)}
-                        </p>
-                      </div>
+                  {visibleMessages.map((message) => (
+                    <div key={message.id} className="animate-agent-message-in">
+                      <ChatMessageBubble locale={locale} message={message} />
                     </div>
-                  );
-                  })}
+                  ))}
                 </>
+              ) : (
+                <div className="space-y-4">
+                  {messages.map((message) => (
+                    <div key={message.id} className="animate-agent-message-in">
+                      <ChatMessageBubble locale={locale} message={message} />
+                    </div>
+                  ))}
+
+                  {!isPending && !detailLoading && planner?.phase === "confirm" && planner ? (
+                    <ConfirmCard
+                      planner={planner}
+                      locale={locale}
+                      onConfirm={handleConfirm}
+                      onEdit={handleEditRequest}
+                      disabled={isPending}
+                    />
+                  ) : null}
+
+                  {!isPending && !detailLoading && suggestedOptions.length > 0 && planner?.phase !== "confirm" ? (
+                    <SuggestedOptionsBar
+                      options={suggestedOptions}
+                      onSelect={handleOptionSelect}
+                      disabled={isPending}
+                    />
+                  ) : null}
+                </div>
               )}
 
               {(isPending || detailLoading) && (
-                <div className="flex animate-agent-message-in items-center gap-3 text-sm text-muted">
-                  {detailLoading ? (
-                    <Loader2 className="h-4 w-4 animate-spin" />
-                  ) : (
-                    <span className="inline-flex gap-1">
-                      <span className="animate-agent-thinking-dot h-1.5 w-1.5 rounded-full bg-foreground/50" style={{ animationDelay: "0ms" }} />
-                      <span className="animate-agent-thinking-dot h-1.5 w-1.5 rounded-full bg-foreground/50" style={{ animationDelay: "160ms" }} />
-                      <span className="animate-agent-thinking-dot h-1.5 w-1.5 rounded-full bg-foreground/50" style={{ animationDelay: "320ms" }} />
+                <div className="flex animate-agent-message-in justify-start">
+                  <div className="flex max-w-[88%] flex-col gap-1.5">
+                    <span className="px-1 text-[11px] uppercase tracking-[0.18em] text-muted">
+                      StyleKit
                     </span>
-                  )}
-                  {detailLoading ? t("agent.loadingConversation") : t("agent.thinking")}
+                    <div className="inline-flex items-center gap-3 rounded-2xl border border-border bg-background px-4 py-3 text-sm text-muted shadow-sm">
+                      {detailLoading ? (
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                      ) : (
+                        <span className="inline-flex gap-1">
+                          <span className="animate-agent-thinking-dot h-1.5 w-1.5 rounded-full bg-foreground/50" style={{ animationDelay: "0ms" }} />
+                          <span className="animate-agent-thinking-dot h-1.5 w-1.5 rounded-full bg-foreground/50" style={{ animationDelay: "160ms" }} />
+                          <span className="animate-agent-thinking-dot h-1.5 w-1.5 rounded-full bg-foreground/50" style={{ animationDelay: "320ms" }} />
+                        </span>
+                      )}
+                      {detailLoading ? t("agent.loadingConversation") : t("agent.thinking")}
+                    </div>
+                  </div>
                 </div>
               )}
+              </div>
             </div>
 
-            <form onSubmit={handleSubmit} className="border-t border-border p-4">
-              <div className="rounded-2xl border border-border bg-background p-3 transition-colors focus-within:border-foreground/25 focus-within:ring-2 focus-within:ring-foreground/5">
+            <form onSubmit={handleSubmit} className="border-t border-border/80 bg-background p-4">
+              <div className="mx-auto max-w-3xl rounded-[1.5rem] border border-border bg-background p-3 transition-colors focus-within:border-foreground/25 focus-within:ring-2 focus-within:ring-foreground/5">
                 <textarea
                   value={draft}
                   onChange={(event) => setDraft(event.target.value)}
+                  onKeyDown={handleComposerKeyDown}
                   rows={3}
                   className="w-full resize-none bg-transparent text-sm leading-7 outline-none placeholder:text-muted"
                   placeholder={t("agent.composerPlaceholder")}
                 />
+                <div className="mt-3 flex flex-wrap items-center justify-between gap-3">
+                  <div className="flex flex-wrap gap-2">
+                    {composerSuggestions.map((suggestion) => (
+                      <button
+                        key={suggestion}
+                        type="button"
+                        onClick={() => applyDraftSuggestion(suggestion)}
+                        className="rounded-full border border-border bg-muted/20 px-3 py-1.5 text-xs text-foreground transition-colors hover:bg-muted/40"
+                      >
+                        {suggestion}
+                      </button>
+                    ))}
+                  </div>
+                  <p className="text-xs text-muted">
+                    {locale === "zh"
+                      ? "Ctrl/Cmd + Enter 发送，Shift + Enter 换行"
+                      : "Ctrl/Cmd + Enter to send, Shift + Enter for newline"}
+                  </p>
+                </div>
                 <div className="mt-2 flex items-center justify-end">
                   <button
                     type="submit"
@@ -1540,7 +1927,8 @@ export function AgentContent() {
             </form>
           </div>
 
-          <aside className="overflow-hidden rounded-2xl border border-border bg-background">
+          {showPromptPanel ? (
+          <aside className="overflow-hidden rounded-[1.75rem] border border-border/80 bg-background shadow-[0_18px_40px_rgba(15,23,42,0.04)] lg:sticky lg:top-24 lg:h-fit">
             {isBuilder ? (
             <div className="border-b border-border px-5 py-4">
               <p className="text-xs uppercase tracking-[0.22em] text-muted">{t("agent.workflowTitle")}</p>
@@ -1622,22 +2010,14 @@ export function AgentContent() {
             </div>
             ) : (
             <div className="border-b border-border px-5 py-4">
-              <div className="flex items-center justify-between gap-3">
-                <span className="inline-flex rounded-full border border-border bg-muted/20 px-3 py-1 text-[11px] font-medium uppercase tracking-[0.18em] text-foreground">
+              <p className="text-sm font-medium text-foreground">
+                {locale === "zh" ? "提示词方案" : "Prompt Output"}
+              </p>
+              {activeSessionStatus ? (
+                <span className="mt-3 inline-flex rounded-full border border-border bg-muted/20 px-3 py-1 text-[11px] font-medium text-foreground">
                   {getSimpleStatusLabel(activeSessionStatus)}
                 </span>
-                {plannerCoverage ? (
-                  <span className="text-xs text-muted">
-                    {plannerCoverage.filledCount}/{plannerCoverage.total}
-                  </span>
-                ) : null}
-              </div>
-              <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-border/70">
-                <div
-                  className="agent-progress-bar h-full rounded-full transition-all duration-700 ease-out"
-                  style={{ width: `${plannerCoverage?.percent ?? 0}%` }}
-                />
-              </div>
+              ) : null}
             </div>
             )}
 
@@ -1650,7 +2030,7 @@ export function AgentContent() {
 
             <div className="space-y-4 p-5">
               {codePrompt ? (
-                <div className="agent-prompt-card space-y-4 rounded-2xl border border-emerald-200/60 bg-gradient-to-b from-emerald-50/40 to-background p-4 dark:border-emerald-900/40 dark:from-emerald-950/20 dark:to-background">
+                <div className="space-y-4 rounded-2xl border border-border bg-background p-4">
                   <div>
                     <p className="text-base font-semibold tracking-tight text-foreground">{codePrompt.title}</p>
                     <div className="mt-2.5 flex flex-wrap gap-1.5">
@@ -2093,6 +2473,7 @@ export function AgentContent() {
 
             </div>
           </aside>
+          ) : null}
         </div>
       </section>
     </>
