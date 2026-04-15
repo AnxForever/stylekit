@@ -1079,6 +1079,17 @@ export async function runAgentTurn({
     return inferPlannerFallback(locale, messages, phaseKnowledge, pageContext);
   });
 
+  /* --- Guard: force done when user confirmed but LLM still returned confirm --- */
+  if (
+    previousPhase === "confirm" &&
+    planner.phase === "confirm" &&
+    !planner.ready &&
+    CONFIRMATION_PATTERNS.test(latestUserMsg.trim())
+  ) {
+    planner.phase = "done";
+    planner.ready = true;
+  }
+
   const workflow = buildWorkflowSnapshot({ messages, planner });
   const plannerPromptSnapshot: AgentPromptSnapshot["planner"] = {
     system: plannerPrompt.system,
@@ -1357,6 +1368,17 @@ export async function runAgentTurnStreaming({
     plannerFallbackUsed = true;
     return inferPlannerFallback(locale, messages, phaseKnowledge, pageContext);
   });
+
+  /* --- Guard: force done when user confirmed but LLM still returned confirm --- */
+  if (
+    previousPhase === "confirm" &&
+    planner.phase === "confirm" &&
+    !planner.ready &&
+    CONFIRMATION_PATTERNS.test(latestUserMsg.trim())
+  ) {
+    planner.phase = "done";
+    planner.ready = true;
+  }
 
   const workflow = buildWorkflowSnapshot({ messages, planner });
   const plannerPromptSnapshot: AgentPromptSnapshot["planner"] = {
