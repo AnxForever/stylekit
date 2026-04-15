@@ -285,7 +285,7 @@ function buildPhaseKnowledgeContext(
       {
         slug: main.slug,
         name: locale === "zh" ? (mainStyle?.name ?? main.slug) : (mainStyle?.nameEn ?? main.slug),
-        description: mainStyle?.description ?? "",
+        description: (locale === "en" && mainStyle?.descriptionEn) ? mainStyle.descriptionEn : (mainStyle?.description ?? ""),
         score: rec.style.score,
       },
       ...rec.style.alternatives.slice(0, 3).map((alt) => {
@@ -293,7 +293,7 @@ function buildPhaseKnowledgeContext(
         return {
           slug: alt.slug,
           name: locale === "zh" ? (s?.name ?? alt.slug) : (s?.nameEn ?? alt.slug),
-          description: s?.description ?? "",
+          description: (locale === "en" && s?.descriptionEn) ? s.descriptionEn : (s?.description ?? ""),
           score: 0,
         };
       }),
