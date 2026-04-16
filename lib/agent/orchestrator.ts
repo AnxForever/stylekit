@@ -13,7 +13,7 @@ import { buildAgentProjectKnowledgeContext } from "./project-knowledge";
 import { inferTemplateType, getLocalizedTemplateTypeLabel } from "./recommendations";
 import { buildWorkflowSnapshot } from "./state-transition";
 import { getStyleMetaBySlug } from "@/lib/styles/meta";
-import { getStyleBySlug } from "@/lib/styles";
+import { getStyleBySlug, styles as stylesAll } from "@/lib/styles";
 import { templateCatalog } from "@/lib/templates/catalog";
 import { componentPatterns } from "@/lib/component-patterns";
 import { promptTopics } from "@/lib/prompts/topics";
@@ -292,15 +292,56 @@ function extractSelectedStyleSlugFromConversation(messages: AgentMessage[]): str
         normalized === id ||
         normalized === label ||
         normalized.includes(label) ||
+        label.includes(normalized) ||
         (id.length >= 3 && normalized.includes(id))
       );
     });
 
-    if (matched && getStyleBySlug(matched.id)) {
-      return matched.id;
-    }
-    return "";
+    if (!matched) return "";
+    /* Try exact slug match first, then fuzzy match label/id against known styles */
+    if (getStyleBySlug(matched.id)) return matched.id;
+    const fuzzy = fuzzyMatchStyleFromText(`${matched.id} ${matched.label}`);
+    return fuzzy;
   }
+  return "";
+}
+
+/**
+ * Fuzzy-match free-text visualTone against known styles by slug, name, and nameEn.
+ * Matches via:
+ *   - exact equality on slug/name/nameEn
+ *   - substring inclusion in either direction
+ *   - for Chinese names >= 3 chars, at least 2-char contiguous overlap
+ * Last-resort before falling back to getSmartRecommendation.
+ */
+function fuzzyMatchStyleFromText(text: string): string {
+  const normalized = text.trim().toLowerCase();
+  if (!normalized) return "";
+
+  for (const style of stylesAll) {
+    const slug = style.slug.toLowerCase();
+    const name = style.name.toLowerCase();
+    const nameEn = style.nameEn.toLowerCase();
+    if (normalized === slug || normalized === name || normalized === nameEn) {
+      return style.slug;
+    }
+    if (slug.length >= 4 && (normalized.includes(slug) || slug.includes(normalized))) return style.slug;
+    if (nameEn.length >= 4 && (normalized.includes(nameEn) || nameEn.includes(normalized))) return style.slug;
+    if (name.length >= 2 && (normalized.includes(name) || name.includes(normalized))) return style.slug;
+  }
+
+  /* Partial Chinese overlap: split name into 2-char n-grams and match against normalized */
+  for (const style of stylesAll) {
+    const name = style.name;
+    if (name.length < 3) continue;
+    /* Must share at least 2 contiguous chars AND skip generic suffix chars */
+    for (let i = 0; i < name.length - 1; i += 1) {
+      const bigram = name.slice(i, i + 2);
+      if (/^[风派格派型系感式]+$/.test(bigram)) continue;
+      if (normalized.includes(bigram)) return style.slug;
+    }
+  }
+
   return "";
 }
 
@@ -1339,7 +1380,11 @@ export async function runAgentTurn({
   );
 
   /* --- Override style with user's confirmed choice from feel phase --- */
-  const rawStyleSlug = planner.styleSlug || extractSelectedStyleSlugFromConversation(messages);
+  const rawStyleSlug =
+    planner.styleSlug ||
+    extractPlannerHistory(messages).styleSlug ||
+    extractSelectedStyleSlugFromConversation(messages) ||
+    fuzzyMatchStyleFromText(planner.visualTone);
   if (rawStyleSlug && !planner.styleSlug) {
     planner.styleSlug = rawStyleSlug;
   }
@@ -1702,7 +1747,11 @@ export async function runAgentTurnStreaming({
   );
 
   /* --- Override style with user's confirmed choice from feel phase --- */
-  const rawStyleSlug = planner.styleSlug || extractSelectedStyleSlugFromConversation(messages);
+  const rawStyleSlug =
+    planner.styleSlug ||
+    extractPlannerHistory(messages).styleSlug ||
+    extractSelectedStyleSlugFromConversation(messages) ||
+    fuzzyMatchStyleFromText(planner.visualTone);
   if (rawStyleSlug && !planner.styleSlug) {
     planner.styleSlug = rawStyleSlug;
   }
