@@ -265,6 +265,45 @@ function extractPlannerHistory(messages: AgentMessage[]): {
   return { productType, audience, visualTone, styleSlug };
 }
 
+/**
+ * Backup: scan conversation for feel-phase suggestedOptions and match the
+ * next user message against option id/label to extract the chosen style slug.
+ * Used when the LLM fails to populate planner.styleSlug.
+ */
+function extractSelectedStyleSlugFromConversation(messages: AgentMessage[]): string {
+  for (let i = messages.length - 1; i >= 0; i -= 1) {
+    const msg = messages[i];
+    if (msg.role !== "assistant" || !msg.planner) continue;
+    if (msg.planner.phase !== "feel") continue;
+    const options = msg.planner.suggestedOptions;
+    if (!options || options.length === 0) continue;
+
+    const nextUser = messages
+      .slice(i + 1)
+      .find((m) => m.role === "user")
+      ?.content?.trim();
+    if (!nextUser) return "";
+
+    const normalized = nextUser.toLowerCase();
+    const matched = options.find((opt) => {
+      const id = opt.id.toLowerCase();
+      const label = opt.label.toLowerCase();
+      return (
+        normalized === id ||
+        normalized === label ||
+        normalized.includes(label) ||
+        (id.length >= 3 && normalized.includes(id))
+      );
+    });
+
+    if (matched && getStyleBySlug(matched.id)) {
+      return matched.id;
+    }
+    return "";
+  }
+  return "";
+}
+
 function buildPhaseKnowledgeContext(
   locale: Locale,
   messages: AgentMessage[],
@@ -1300,8 +1339,12 @@ export async function runAgentTurn({
   );
 
   /* --- Override style with user's confirmed choice from feel phase --- */
-  const confirmedStyleSlug = planner.styleSlug && getStyleBySlug(planner.styleSlug)
-    ? planner.styleSlug
+  const rawStyleSlug = planner.styleSlug || extractSelectedStyleSlugFromConversation(messages);
+  if (rawStyleSlug && !planner.styleSlug) {
+    planner.styleSlug = rawStyleSlug;
+  }
+  const confirmedStyleSlug = rawStyleSlug && getStyleBySlug(rawStyleSlug)
+    ? rawStyleSlug
     : "";
   if (confirmedStyleSlug && confirmedStyleSlug !== smartRecommendation.style.item.slug) {
     const confirmedStyle = getStyleBySlug(confirmedStyleSlug)!;
@@ -1659,8 +1702,12 @@ export async function runAgentTurnStreaming({
   );
 
   /* --- Override style with user's confirmed choice from feel phase --- */
-  const confirmedStyleSlug = planner.styleSlug && getStyleBySlug(planner.styleSlug)
-    ? planner.styleSlug
+  const rawStyleSlug = planner.styleSlug || extractSelectedStyleSlugFromConversation(messages);
+  if (rawStyleSlug && !planner.styleSlug) {
+    planner.styleSlug = rawStyleSlug;
+  }
+  const confirmedStyleSlug = rawStyleSlug && getStyleBySlug(rawStyleSlug)
+    ? rawStyleSlug
     : "";
   if (confirmedStyleSlug && confirmedStyleSlug !== smartRecommendation.style.item.slug) {
     const confirmedStyle = getStyleBySlug(confirmedStyleSlug)!;
