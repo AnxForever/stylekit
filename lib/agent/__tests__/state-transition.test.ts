@@ -14,6 +14,7 @@ const basePlanner: AgentPlannerResult = {
   productType: "Enterprise SaaS Dashboard",
   audience: "Enterprise operations leaders",
   visualTone: "Professional and clear",
+  styleSlug: "",
   mustHave: ["Primary KPIs"],
   constraints: ["Keep the first screen concise"],
   followUpQuestion: "",

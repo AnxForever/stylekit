@@ -14,11 +14,27 @@ export type AgentPlannerSlot =
   | "visualTone"
   | "mustHave"
   | "constraints";
+export type AgentConsultPhase =
+  | "goal"
+  | "audience"
+  | "feel"
+  | "confirm"
+  | "revise"
+  | "done";
 export type AgentWorkflowReason =
   | "missing_slots"
+  | "consulting"
+  | "awaiting_confirmation"
+  | "revising"
   | "initial_plan_ready"
   | "plan_refined"
   | "legacy_active";
+
+export interface AgentSuggestedOption {
+  id: string;
+  label: string;
+  description: string;
+}
 
 export interface AgentPageContext {
   path?: string;
@@ -147,12 +163,14 @@ export interface AgentChatRequest {
 export interface AgentChatResponse {
   success: true;
   sessionId: string;
+  userMessage: AgentMessage;
   assistantMessage: string;
   followUpNeeded: boolean;
   workflowState: AgentSessionStatus;
   workflow: AgentWorkflowSnapshot;
   planner: AgentPlannerResult | null;
   codePrompt: AgentCodePrompt | null;
+  suggestedOptions: AgentSuggestedOption[];
   toolTrace: AgentToolTrace[];
   promptSnapshot: AgentPromptSnapshot | null;
   decisionTrace: AgentDecisionTraceItem[];
@@ -162,13 +180,16 @@ export interface AgentChatResponse {
 
 export interface AgentPlannerResult {
   ready: boolean;
+  phase: AgentConsultPhase;
   normalizedQuery: string;
   productType: string;
   audience: string;
   visualTone: string;
+  styleSlug: string;
   mustHave: string[];
   constraints: string[];
   followUpQuestion: string;
+  suggestedOptions: AgentSuggestedOption[];
   reasoning: string[];
   context: RecommendationContext;
 }

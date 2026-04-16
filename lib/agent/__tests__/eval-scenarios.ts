@@ -33,6 +33,7 @@ function makePlanner(
     productType: "",
     audience: "",
     visualTone: "",
+    styleSlug: "",
     mustHave: [],
     constraints: [],
     followUpQuestion: "",

@@ -83,6 +83,7 @@ const plannerSchema = z.object({
   productType: z.string().trim().default(""),
   audience: z.string().trim().default(""),
   visualTone: z.string().trim().default(""),
+  styleSlug: z.string().trim().default(""),
   mustHave: z.array(z.string().trim()).default([]),
   constraints: z.array(z.string().trim()).default([]),
   followUpQuestion: z.string().trim().default(""),
@@ -122,6 +123,7 @@ function normalizePlannerResponse(raw: Record<string, unknown>, userMessage: str
     if (!out.productType && slots.productType) out.productType = slots.productType;
     if (!out.audience && slots.audience) out.audience = slots.audience;
     if (!out.visualTone && slots.visualTone) out.visualTone = slots.visualTone;
+    if (!out.styleSlug && slots.styleSlug) out.styleSlug = slots.styleSlug;
     if (!out.mustHave && slots.mustHave) out.mustHave = slots.mustHave;
     if (!out.constraints && slots.constraints) out.constraints = slots.constraints;
   }
@@ -244,20 +246,23 @@ function extractPlannerHistory(messages: AgentMessage[]): {
   productType: string;
   audience: string;
   visualTone: string;
+  styleSlug: string;
 } {
   let productType = "";
   let audience = "";
   let visualTone = "";
+  let styleSlug = "";
 
   for (const message of messages) {
     if (message.role === "assistant" && message.planner) {
       if (message.planner.productType) productType = message.planner.productType;
       if (message.planner.audience) audience = message.planner.audience;
       if (message.planner.visualTone) visualTone = message.planner.visualTone;
+      if (message.planner.styleSlug) styleSlug = message.planner.styleSlug;
     }
   }
 
-  return { productType, audience, visualTone };
+  return { productType, audience, visualTone, styleSlug };
 }
 
 function buildPhaseKnowledgeContext(
@@ -402,6 +407,79 @@ function detectCurrentPhase(messages: AgentMessage[]): AgentConsultPhase {
   return lastAssistant.planner.phase;
 }
 
+/* ---------- Follow-up conversation after codePrompt generation ---------- */
+
+function getExistingCodePrompt(messages: AgentMessage[]): AgentCodePrompt | null {
+  for (let i = messages.length - 1; i >= 0; i -= 1) {
+    const msg = messages[i];
+    if (msg.role === "assistant" && msg.codePrompt) {
+      return msg.codePrompt;
+    }
+  }
+  return null;
+}
+
+function buildFollowUpPrompt(
+  locale: Locale,
+  messages: AgentMessage[],
+  codePrompt: AgentCodePrompt,
+  latestUserMsg: string,
+): { system: string; user: string } {
+  const recentMessages = messages.slice(-6).map((m) => `${m.role}: ${m.content}`).join("\n");
+
+  const system = locale === "zh"
+    ? [
+        "你是 StyleKit 的设计顾问。你刚刚帮用户完成了一次完整的需求收集并生成了代码提示词（codePrompt），现在用户想继续聊。",
+        "",
+        "身份设定：",
+        "- 你是一个经验丰富的前端设计顾问，懂 CSS、动画、布局、配色、排版",
+        "- 你了解 StyleKit 提供的 130+ 设计风格（如 glassmorphism、neo-brutalist、minimalist 等）",
+        "- 你的建议具体、可操作，不说空话",
+        "",
+        "硬性规则：",
+        "- 禁止使用 emoji，一个都不行",
+        "- 禁止重新生成 codePrompt，方案已经确定了",
+        "- 不要用 markdown 标题（#），用短段落和破折号列表即可",
+        "- 回答控制在 3-5 句话以内，除非用户明确要求详细解释",
+        "- 如果用户想修改方案，说清楚改哪里、怎么改，不要说\"可以考虑\"这种废话",
+        "- 如果用户问的东西和当前方案无关，也正常回答，不要强行扯回来",
+        "",
+        "返回格式：JSON { \"assistantMessage\": \"你的回答\" }",
+      ].join("\n")
+    : [
+        "You are a design consultant for StyleKit. You just helped the user complete a full requirements flow and generated a codePrompt. Now the user wants to continue chatting.",
+        "",
+        "Identity:",
+        "- You are an experienced frontend design consultant who knows CSS, animations, layouts, color theory, and typography",
+        "- You know StyleKit's 130+ design styles (glassmorphism, neo-brutalist, minimalist, etc.)",
+        "- Your suggestions are specific and actionable, not vague",
+        "",
+        "Hard rules:",
+        "- Never use emoji, not even one",
+        "- Never regenerate the codePrompt, the plan is finalized",
+        "- Do not use markdown headers (#), use short paragraphs and dash lists",
+        "- Keep answers to 3-5 sentences unless the user explicitly asks for detail",
+        "- If the user wants to modify the plan, say exactly what to change and how",
+        "- If the user asks something unrelated to the current plan, answer normally",
+        "",
+        "Return format: JSON { \"assistantMessage\": \"your answer\" }",
+      ].join("\n");
+
+  const user = JSON.stringify({
+    locale,
+    question: latestUserMsg,
+    existingPlan: {
+      title: codePrompt.title,
+      styleName: codePrompt.styleName,
+      styleSlug: codePrompt.styleSlug,
+      templateType: codePrompt.templateType,
+    },
+    recentMessages,
+  });
+
+  return { system, user };
+}
+
 /* ---------- Planner prompt (the core rewrite) ---------- */
 
 function buildPlannerPrompt(
@@ -437,6 +515,7 @@ function buildPlannerPrompt(
         "4. 语气友好、鼓励，像一个耐心的朋友在帮忙，不是在审问。",
         "5. 用户的回答可能很模糊或口语化，你需要理解意图并归纳到结构化字段中。",
         "6. 如果用户一开始就说了很多信息（比如同时提到了网站类型和受众），可以跳过已回答的阶段。",
+        "7. 禁止使用 emoji，一个都不行。包括 followUpQuestion 和 suggestedOptions 的 label/description 中都不允许出现任何 emoji。",
         "",
         "## 四个阶段",
         "",
@@ -459,7 +538,8 @@ function buildPlannerPrompt(
         "不要直接问'你喜欢什么风格'，而是用通俗语言描述几种具体的感觉让用户选。",
         "比如：'干净利落，大量留白，像大公司官网' 或 '有冲击力，颜色大胆抢眼' 或 '温暖亲切，圆角柔和'。",
         "每个选项用一句用户能理解的话描述，不要用'极简主义'这类专业词。",
-        "将答案填入 visualTone 字段。同时根据前三个回答，自动推断 mustHave 和 constraints。",
+        "将答案填入 visualTone 字段。同时将用户选择的选项对应的风格 slug 填入 styleSlug 字段（即 suggestedOptions 中对应选项的 id）。",
+        "同时根据前三个回答，自动推断 mustHave 和 constraints。",
         "",
         "### 阶段 4: confirm（确认）",
         "当 productType、audience、visualTone 全部填完后，进入此阶段。",
@@ -481,7 +561,7 @@ function buildPlannerPrompt(
         "",
         "### 阶段 6: done",
         "用户确认后（回复确认/OK/没问题 等），设置 ready=true，phase=done。",
-        "确保所有字段都已填充。",
+        "确保所有字段都已填充。styleSlug 必须保留之前 feel 阶段确认的值，不要清空。",
         "",
         "## 结构化快照",
         "用户消息中会包含 confirmedSlots 字段，这是之前对话中已确认的字段结构化快照。",
@@ -509,6 +589,7 @@ function buildPlannerPrompt(
         "4. Be friendly and encouraging, like a patient friend helping out, not an interrogator.",
         "5. Users may give vague or casual answers. Understand their intent and map it to structured fields.",
         "6. If the user provides a lot of information upfront (e.g., mentions both site type and audience), skip already-answered phases.",
+        "7. Never use emoji, not even one. This applies to followUpQuestion, suggestedOptions labels, and descriptions.",
         "",
         "## Four Phases",
         "",
@@ -531,7 +612,8 @@ function buildPlannerPrompt(
         "Don't just ask 'what style do you like'. Instead, describe specific feelings for the user to choose from.",
         "For example: 'Clean and sharp with lots of whitespace, like a big tech company' or 'Bold and impactful with vivid colors' or 'Warm and friendly with soft rounded corners'.",
         "Each option should be described in one sentence that a non-designer can understand.",
-        "Fill the answer into visualTone. Also auto-infer mustHave and constraints from the three answers so far.",
+        "Fill the answer into visualTone. Also set styleSlug to the style slug of the chosen option (i.e. the id from the suggestedOptions the user selected).",
+        "Also auto-infer mustHave and constraints from the three answers so far.",
         "",
         "### Phase 4: confirm",
         "When productType, audience, and visualTone are all filled, enter this phase.",
@@ -553,7 +635,7 @@ function buildPlannerPrompt(
         "",
         "### Phase 6: done",
         "After the user confirms (replies with OK/confirm/looks good/etc.), set ready=true, phase=done.",
-        "Ensure all fields are populated.",
+        "Ensure all fields are populated. styleSlug must retain the value from the feel phase, do not clear it.",
         "",
         "## Structured Snapshot",
         "The user message includes a confirmedSlots field — a structured snapshot of previously confirmed fields.",
@@ -963,6 +1045,7 @@ function inferPlannerFallback(
     productType: hasGoal ? productType : "",
     audience: hasAudience ? audience : "",
     visualTone: hasTone ? visualTone : "",
+    styleSlug: "",
     mustHave,
     constraints,
     followUpQuestion,
@@ -1052,6 +1135,50 @@ export async function runAgentTurn({
 }> {
   const latestUserMsg = getLatestUserMessage(messages);
   const previousPhase = detectCurrentPhase(messages);
+
+  /* --- Follow-up conversation: skip planner when codePrompt already exists --- */
+  const existingCodePrompt = previousPhase === "done" ? getExistingCodePrompt(messages) : null;
+  if (previousPhase === "done" && existingCodePrompt) {
+    const lastPlanner = [...messages].reverse().find((m) => m.role === "assistant" && m.planner)?.planner;
+    const followUpPrompt = buildFollowUpPrompt(locale, messages, existingCodePrompt, latestUserMsg);
+    const response = await requestAgentJson({
+      schema: responderSchema,
+      system: followUpPrompt.system,
+      user: followUpPrompt.user,
+      temperature: 0.3,
+    });
+    const planner: AgentPlannerResult = lastPlanner ?? {
+      ready: true,
+      phase: "done",
+      normalizedQuery: "",
+      productType: "",
+      audience: "",
+      visualTone: "",
+      styleSlug: "",
+      mustHave: [],
+      constraints: [],
+      followUpQuestion: "",
+      suggestedOptions: [],
+      reasoning: [],
+      context: {},
+    };
+    const workflow = buildWorkflowSnapshot({ messages, planner });
+    return {
+      assistantMessage: response.assistantMessage,
+      followUpNeeded: true,
+      workflowState: workflow.state,
+      workflow,
+      planner,
+      codePrompt: null,
+      toolTrace: [{ tool: "followUpConversation", ok: true, meta: { existingStyle: existingCodePrompt.styleSlug } }],
+      promptSnapshot: {
+        planner: { system: "", user: "", summary: ["follow-up: planner skipped"] },
+        responder: { system: followUpPrompt.system, user: followUpPrompt.user, summary: ["follow-up conversation"] },
+      },
+      decisionTrace: [],
+    };
+  }
+
   const needsRetrieval = shouldRetrieveKnowledge(previousPhase, latestUserMsg);
   const emptyKnowledge: PhaseKnowledgeContext = {
     topStyles: [],
@@ -1171,12 +1298,31 @@ export async function runAgentTurn({
     planner.normalizedQuery,
     planner.context
   );
+
+  /* --- Override style with user's confirmed choice from feel phase --- */
+  const confirmedStyleSlug = planner.styleSlug && getStyleBySlug(planner.styleSlug)
+    ? planner.styleSlug
+    : "";
+  if (confirmedStyleSlug && confirmedStyleSlug !== smartRecommendation.style.item.slug) {
+    const confirmedStyle = getStyleBySlug(confirmedStyleSlug)!;
+    smartRecommendation.style.item = {
+      slug: confirmedStyleSlug,
+      name: locale === "zh" ? confirmedStyle.name : confirmedStyle.nameEn,
+      philosophy: confirmedStyle.description,
+    };
+    smartRecommendation.style.reasons = [
+      ...smartRecommendation.style.reasons,
+      localize(locale, "用户在 feel 阶段明确选择了此风格", "User explicitly selected this style during the feel phase"),
+    ];
+  }
+
   toolTrace.push({
     tool: "getSmartRecommendation",
     ok: true,
     meta: {
       topStyle: smartRecommendation.style.item.slug,
       confidence: smartRecommendation.summary.confidence,
+      userOverride: confirmedStyleSlug || undefined,
     },
   });
 
@@ -1342,6 +1488,52 @@ export async function runAgentTurnStreaming({
 }): Promise<AgentTurnStreamingResult> {
   const latestUserMsg = getLatestUserMessage(messages);
   const previousPhase = detectCurrentPhase(messages);
+
+  /* --- Follow-up conversation: skip planner when codePrompt already exists --- */
+  const existingCodePrompt = previousPhase === "done" ? getExistingCodePrompt(messages) : null;
+  if (previousPhase === "done" && existingCodePrompt) {
+    const lastPlanner = [...messages].reverse().find((m) => m.role === "assistant" && m.planner)?.planner;
+    const followUpPrompt = buildFollowUpPrompt(locale, messages, existingCodePrompt, latestUserMsg);
+    const response = await requestAgentJson({
+      schema: responderSchema,
+      system: followUpPrompt.system,
+      user: followUpPrompt.user,
+      temperature: 0.3,
+    });
+    const planner: AgentPlannerResult = lastPlanner ?? {
+      ready: true,
+      phase: "done",
+      normalizedQuery: "",
+      productType: "",
+      audience: "",
+      visualTone: "",
+      styleSlug: "",
+      mustHave: [],
+      constraints: [],
+      followUpQuestion: "",
+      suggestedOptions: [],
+      reasoning: [],
+      context: {},
+    };
+    const workflow = buildWorkflowSnapshot({ messages, planner });
+    return {
+      streaming: false,
+      assistantMessage: response.assistantMessage,
+      followUpNeeded: true,
+      workflowState: workflow.state,
+      workflow,
+      planner,
+      codePrompt: null,
+      suggestedOptions: [],
+      toolTrace: [{ tool: "followUpConversation", ok: true, meta: { existingStyle: existingCodePrompt.styleSlug } }],
+      promptSnapshot: {
+        planner: { system: "", user: "", summary: ["follow-up: planner skipped"] },
+        responder: { system: followUpPrompt.system, user: followUpPrompt.user, summary: ["follow-up conversation"] },
+      },
+      decisionTrace: [],
+    };
+  }
+
   const needsRetrieval = shouldRetrieveKnowledge(previousPhase, latestUserMsg);
   const emptyKnowledge: PhaseKnowledgeContext = {
     topStyles: [],
@@ -1465,12 +1657,31 @@ export async function runAgentTurnStreaming({
     planner.normalizedQuery,
     planner.context
   );
+
+  /* --- Override style with user's confirmed choice from feel phase --- */
+  const confirmedStyleSlug = planner.styleSlug && getStyleBySlug(planner.styleSlug)
+    ? planner.styleSlug
+    : "";
+  if (confirmedStyleSlug && confirmedStyleSlug !== smartRecommendation.style.item.slug) {
+    const confirmedStyle = getStyleBySlug(confirmedStyleSlug)!;
+    smartRecommendation.style.item = {
+      slug: confirmedStyleSlug,
+      name: locale === "zh" ? confirmedStyle.name : confirmedStyle.nameEn,
+      philosophy: confirmedStyle.description,
+    };
+    smartRecommendation.style.reasons = [
+      ...smartRecommendation.style.reasons,
+      localize(locale, "用户在 feel 阶段明确选择了此风格", "User explicitly selected this style during the feel phase"),
+    ];
+  }
+
   toolTrace.push({
     tool: "getSmartRecommendation",
     ok: true,
     meta: {
       topStyle: smartRecommendation.style.item.slug,
       confidence: smartRecommendation.summary.confidence,
+      userOverride: confirmedStyleSlug || undefined,
     },
   });
 
