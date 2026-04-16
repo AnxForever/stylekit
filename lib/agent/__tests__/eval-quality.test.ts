@@ -11,6 +11,7 @@ const basePlanner: AgentPlannerResult = {
   productType: "Portfolio",
   audience: "Designers and creative professionals",
   visualTone: "Minimalist, clean, airy",
+  styleSlug: "",
   mustHave: ["Project gallery", "About section", "Contact form"],
   constraints: ["Keep it simple", "Mobile-friendly"],
   followUpQuestion: "",

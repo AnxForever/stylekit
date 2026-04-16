@@ -72,13 +72,16 @@ const sampleCodePrompt = {
 
 const samplePlanner: AgentPlannerResult = {
   ready: true,
+  phase: "done",
   normalizedQuery: "enterprise saas dashboard",
   productType: "SaaS dashboard",
   audience: "Enterprise buyers",
   visualTone: "Professional",
+  styleSlug: "",
   mustHave: ["Value proposition", "Primary KPIs"],
   constraints: ["Prioritize accessibility"],
   followUpQuestion: "",
+  suggestedOptions: [],
   reasoning: ["productType=dashboard", "audience=enterprise buyers"],
   context: {
     targetAudience: "enterprise",
