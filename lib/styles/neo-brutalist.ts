@@ -1,6 +1,8 @@
 import { DesignStyle } from "./index";
+import { neoBrutalistAtoms } from "./atoms";
 
 export const neoBrutalist: DesignStyle = {
+  atoms: neoBrutalistAtoms,
   slug: "neo-brutalist",
   name: "新野兽派",
   nameEn: "Neo-Brutalist",
