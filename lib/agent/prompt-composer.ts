@@ -20,7 +20,8 @@ import type { OnUsageCallback } from "./observability";
 import { buildAgentCodePrompt } from "./code-prompt";
 import { requestAgentJson, isAgentModelConfigured } from "./provider";
 import { getStyleBySlug } from "@/lib/styles";
-import { hasCompleteAtoms, readAtom, type StyleAtoms } from "@/lib/styles/atoms";
+import { hasCompleteAtoms, readAtom, type StyleAtomKey, type StyleAtoms } from "@/lib/styles/atoms";
+import { isEmptyOverrides, type AtomOverrides } from "./atom-overrides";
 
 const composedSchema = z.object({
   title: z.string().min(1),
@@ -47,8 +48,9 @@ function buildComposerSystemPrompt(locale: Locale): string {
       "3. 风格哲学要融进段落描述，而不是作为独立规则列表罗列。",
       "4. 如果素材包里提供了『多维度偏好』（布局/动效/配色/字体），**必须**把它们作为硬约束融进输出的相应段落，不能忽略。",
       "5. 如果素材包里提供了『风格原子』，**它是最高优先级的风格来源**——philosophy/layout/motion/color/typography 这些维度请以原子描述为准，其它风格规则仅作补充；forbiddens 视为不可违反的禁区。",
-      "6. 输出语言与 locale 一致（当前：zh）。",
-      "7. 不要写分析、不要写思考过程、不要 markdown 代码块围栏。",
+      "6. 当原子段里同时出现多个来源风格（形如『（来自 X 风格）』的标注），**每一维的原子只在该维度生效**，不得跨维度迁移：例如来源 A 的 motion 描述不得反向影响 color 或 layout。",
+      "7. 输出语言与 locale 一致（当前：zh）。",
+      "8. 不要写分析、不要写思考过程、不要 markdown 代码块围栏。",
       "",
       "输出严格 JSON：{\"title\": string, \"prompt\": string}。title 形如「模板类型 - 风格名」，prompt 是完整可直接喂给 coding agent 的长文本。",
     ].join("\n");
@@ -65,11 +67,84 @@ function buildComposerSystemPrompt(locale: Locale): string {
     "3. Weave style philosophy into prose, do not list it as standalone rules.",
     "4. If the materials include 'Multi-dimensional preferences' (layout/motion/color/typography), you MUST integrate them as hard constraints in the corresponding sections — do not ignore.",
     "5. If the materials include 'Style atoms', treat them as the HIGHEST-PRIORITY style source — philosophy/layout/motion/color/typography must follow the atom descriptions; other style rules only supplement. Treat forbiddens as inviolable.",
-    "6. Output language must match locale (current: en).",
-    "7. No analysis, no chain-of-thought, no markdown code fences.",
+    "6. When the atoms section lists multiple source styles (annotated like '(from X)'), each atom applies ONLY to its own dimension — do not transplant it across dimensions. For example, source A's motion description must not influence color or layout.",
+    "7. Output language must match locale (current: en).",
+    "8. No analysis, no chain-of-thought, no markdown code fences.",
     "",
     "Return strict JSON: {\"title\": string, \"prompt\": string}. title like \"<template type> - <style name>\"; prompt is a long text block ready to feed a coding agent.",
   ].join("\n");
+}
+
+/** One entry per atom dimension, already resolved to its source style name + atoms. */
+interface ResolvedAtomDimension {
+  dimension: StyleAtomKey;
+  sourceStyleName: string;
+  sourceStyleSlug: string;
+  /** True when this dimension comes from a style other than the base. */
+  fromOverride: boolean;
+  atoms: StyleAtoms;
+}
+
+interface BlendedAtomSources {
+  baseStyleName: string;
+  baseStyleSlug: string;
+  baseAtoms: StyleAtoms;
+  /** Resolved dimension → source (either base or override style). */
+  dimensions: ResolvedAtomDimension[];
+  /** True when at least one dimension was resolved to an override source. */
+  hasAnyOverride: boolean;
+}
+
+const ATOM_DIMENSIONS: readonly StyleAtomKey[] = [
+  "philosophy",
+  "layout",
+  "motion",
+  "color",
+  "typography",
+];
+
+/**
+ * Resolve blend sources per dimension. Unknown / atomless override slugs are
+ * silently ignored (that dimension falls back to base), so bad UI input never
+ * corrupts the final payload.
+ */
+function resolveAtomsForBlend(
+  baseSlug: string,
+  overrides: AtomOverrides | undefined,
+  locale: Locale
+): BlendedAtomSources | undefined {
+  const baseStyle = getStyleBySlug(baseSlug);
+  if (!baseStyle || !hasCompleteAtoms(baseStyle.atoms)) return undefined;
+
+  const baseStyleName = locale === "zh" ? baseStyle.name : baseStyle.nameEn;
+  const baseAtoms: StyleAtoms = baseStyle.atoms;
+
+  let hasAnyOverride = false;
+  const dimensions: ResolvedAtomDimension[] = ATOM_DIMENSIONS.map((dim) => {
+    const overrideSlug = overrides?.[dim]?.trim();
+    if (overrideSlug && overrideSlug !== baseSlug) {
+      const src = getStyleBySlug(overrideSlug);
+      if (src && hasCompleteAtoms(src.atoms)) {
+        hasAnyOverride = true;
+        return {
+          dimension: dim,
+          sourceStyleName: locale === "zh" ? src.name : src.nameEn,
+          sourceStyleSlug: overrideSlug,
+          fromOverride: true,
+          atoms: src.atoms,
+        };
+      }
+    }
+    return {
+      dimension: dim,
+      sourceStyleName: baseStyleName,
+      sourceStyleSlug: baseSlug,
+      fromOverride: false,
+      atoms: baseAtoms,
+    };
+  });
+
+  return { baseStyleName, baseStyleSlug: baseSlug, baseAtoms, dimensions, hasAnyOverride };
 }
 
 function buildAtomsSection(atoms: StyleAtoms, locale: Locale): string[] {
@@ -97,11 +172,44 @@ function buildAtomsSection(atoms: StyleAtoms, locale: Locale): string[] {
   return lines;
 }
 
+/**
+ * Multi-source atoms section. Each dimension line is suffixed with
+ * "(from <style>)" when it came from an override, so the LLM can see — and we
+ * can test — exactly which style drives which atom. Forbiddens come from the
+ * base style only (MVP simplification; per-dimension forbidden scoping is
+ * listed as Phase 3.2 work in docs/agent-learning/blend-ui-prototype.md §6.2).
+ */
+function buildBlendedAtomsSection(sources: BlendedAtomSources, locale: Locale): string[] {
+  const header = locale === "zh" ? "## 风格原子（最高优先级 · 多源混合）" : "## Style atoms (highest priority · blended)";
+  const labels = locale === "zh"
+    ? { philosophy: "哲学", layout: "布局", motion: "动效", color: "配色", typography: "字体", forbiddens: "禁区" }
+    : { philosophy: "Philosophy", layout: "Layout", motion: "Motion", color: "Color", typography: "Typography", forbiddens: "Forbiddens" };
+  const fromPrefix = locale === "zh" ? "来自" : "from";
+
+  const lines = [header];
+  for (const entry of sources.dimensions) {
+    const text = readAtom(entry.atoms[entry.dimension], locale);
+    const suffix = entry.fromOverride ? ` (${fromPrefix} ${entry.sourceStyleName})` : "";
+    const label = labels[entry.dimension];
+    lines.push(`- ${label}${suffix}: ${text}`);
+  }
+
+  if (sources.baseAtoms.forbiddens && sources.baseAtoms.forbiddens.length > 0) {
+    lines.push(`- ${labels.forbiddens}:`);
+    for (const f of sources.baseAtoms.forbiddens) {
+      lines.push(`  - ${readAtom(f, locale)}`);
+    }
+  }
+
+  return lines;
+}
+
 function buildComposerUserPayload(
   base: AgentCodePrompt,
   locale: Locale,
   planner: AgentPlannerResult,
-  atoms: StyleAtoms | undefined
+  atoms: StyleAtoms | undefined,
+  blendSources: BlendedAtomSources | undefined
 ): string {
   const header = locale === "zh" ? "## 素材包（请合成）" : "## Materials (compose these)";
   const noteHeader = locale === "zh" ? "## 元信息" : "## Meta";
@@ -130,7 +238,9 @@ function buildComposerUserPayload(
     `- fallbackTitle: ${base.title}`,
   ];
 
-  if (atoms) {
+  if (blendSources && blendSources.hasAnyOverride) {
+    sections.push("", ...buildBlendedAtomsSection(blendSources, locale));
+  } else if (atoms) {
     sections.push("", ...buildAtomsSection(atoms, locale));
   }
 
@@ -160,11 +270,16 @@ export async function composeAgentCodePrompt(params: {
   const rawAtoms = style?.atoms;
   const atoms: StyleAtoms | undefined = hasCompleteAtoms(rawAtoms) ? rawAtoms : undefined;
 
+  const overrides: AtomOverrides | undefined = params.planner.atomOverrides;
+  const blendSources = atoms && !isEmptyOverrides(overrides)
+    ? resolveAtomsForBlend(base.styleSlug, overrides, params.locale)
+    : undefined;
+
   try {
     const composed = await requestAgentJson({
       schema: composedSchema,
       system: buildComposerSystemPrompt(params.locale),
-      user: buildComposerUserPayload(base, params.locale, params.planner, atoms),
+      user: buildComposerUserPayload(base, params.locale, params.planner, atoms, blendSources),
       temperature: 0.7,
       onUsage: params.onUsage,
     });

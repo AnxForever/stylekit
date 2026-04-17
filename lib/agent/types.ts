@@ -18,8 +18,10 @@ export type AgentConsultPhase =
   | "goal"
   | "audience"
   | "feel"
+  | "feel-layout"
   | "confirm"
   | "revise"
+  | "refine"
   | "done";
 export type AgentWorkflowReason =
   | "missing_slots"
@@ -192,4 +194,13 @@ export interface AgentPlannerResult {
   suggestedOptions: AgentSuggestedOption[];
   reasoning: string[];
   context: RecommendationContext;
+  /* Phase 2: multi-dimensional brief — all optional, populated progressively by feel-layout / refine sub-phases. */
+  layoutHint?: string;
+  motionHint?: string;
+  colorHint?: string;
+  typographyHint?: string;
+  /* Phase 3.x: per-dimension atom source overrides for cross-style blending.
+   * Keys: StyleAtomKey; values: source style slug with hasCompleteAtoms === true.
+   * Consumed by prompt-composer to build a multi-source atoms section. */
+  atomOverrides?: import("./atom-overrides").AtomOverrides;
 }
