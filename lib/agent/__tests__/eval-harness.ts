@@ -39,6 +39,12 @@ export async function runEvalScenario(
   /* Reset modules so mocks are clean per scenario */
   vi.resetModules();
 
+  /* Disable LLM prompt composition inside eval: `requestAgentJson` is mocked
+   * below with a responder-shaped response that doesn't carry a `prompt` field,
+   * which would corrupt `codePrompt.prompt` on the composer path. Eval exercises
+   * the deterministic `buildAgentCodePrompt` fallback instead. */
+  process.env.AGENT_USE_COMPOSITION = "false";
+
   /* Build mock planner responses queue */
   let plannerCallIndex = 0;
   const plannerResponses = scenario.turns.map((turn) => turn.mockPlannerResult);
