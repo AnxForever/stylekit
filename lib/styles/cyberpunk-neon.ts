@@ -1,6 +1,8 @@
 import { DesignStyle } from "./index";
+import { cyberpunkNeonAtoms } from "./atoms";
 
 export const cyberpunkNeon: DesignStyle = {
+  atoms: cyberpunkNeonAtoms,
   slug: "cyberpunk-neon",
   name: "赛博朋克霓虹",
   nameEn: "Cyberpunk Neon",

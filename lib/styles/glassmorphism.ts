@@ -1,6 +1,8 @@
 import { DesignStyle } from "./index";
+import { glassmorphismAtoms } from "./atoms";
 
 export const glassmorphism: DesignStyle = {
+  atoms: glassmorphismAtoms,
   slug: "glassmorphism",
   name: "Liquid Glass",
   nameEn: "Liquid Glass",
