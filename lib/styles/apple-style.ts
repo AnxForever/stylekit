@@ -1,6 +1,8 @@
 import { DesignStyle } from "./index";
+import { appleStyleAtoms } from "./atoms";
 
 export const appleStyle: DesignStyle = {
+  atoms: appleStyleAtoms,
   slug: "apple-style",
   name: "Apple 风格",
   nameEn: "Apple Style",

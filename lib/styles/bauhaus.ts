@@ -1,6 +1,8 @@
 import { DesignStyle } from "./index";
+import { bauhausAtoms } from "./atoms";
 
 export const bauhaus: DesignStyle = {
+  atoms: bauhausAtoms,
   slug: "bauhaus",
   name: "包豪斯风格",
   nameEn: "Bauhaus",
