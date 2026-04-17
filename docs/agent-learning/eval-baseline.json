@@ -1,0 +1,91 @@
+{
+  "runAt": "2026-04-17T14:54:14.452Z",
+  "scenarios": [
+    {
+      "scenarioId": "happy-path",
+      "phaseProgressionAccuracy": 1,
+      "slotFillAccuracy": 1,
+      "codePromptCorrectness": 1,
+      "terminationCorrectness": 1,
+      "errorCount": 0,
+      "passed": true,
+      "totalCostUsd": 0,
+      "totalDurationMs": 10,
+      "llmCallCount": 0
+    },
+    {
+      "scenarioId": "quick-skip",
+      "phaseProgressionAccuracy": 1,
+      "slotFillAccuracy": 1,
+      "codePromptCorrectness": 1,
+      "terminationCorrectness": 1,
+      "errorCount": 0,
+      "passed": true,
+      "totalCostUsd": 0,
+      "totalDurationMs": 4,
+      "llmCallCount": 0
+    },
+    {
+      "scenarioId": "revise-loop",
+      "phaseProgressionAccuracy": 1,
+      "slotFillAccuracy": 1,
+      "codePromptCorrectness": 1,
+      "terminationCorrectness": 1,
+      "errorCount": 0,
+      "passed": true,
+      "totalCostUsd": 0,
+      "totalDurationMs": 6,
+      "llmCallCount": 0
+    },
+    {
+      "scenarioId": "non-substantive",
+      "phaseProgressionAccuracy": 1,
+      "slotFillAccuracy": 1,
+      "codePromptCorrectness": 1,
+      "terminationCorrectness": 1,
+      "errorCount": 0,
+      "passed": true,
+      "totalCostUsd": 0,
+      "totalDurationMs": 5,
+      "llmCallCount": 0
+    },
+    {
+      "scenarioId": "chinese-locale",
+      "phaseProgressionAccuracy": 1,
+      "slotFillAccuracy": 1,
+      "codePromptCorrectness": 1,
+      "terminationCorrectness": 1,
+      "errorCount": 0,
+      "passed": true,
+      "totalCostUsd": 0,
+      "totalDurationMs": 5,
+      "llmCallCount": 0
+    },
+    {
+      "scenarioId": "snapshot-integrity",
+      "phaseProgressionAccuracy": 1,
+      "slotFillAccuracy": 1,
+      "codePromptCorrectness": 1,
+      "terminationCorrectness": 1,
+      "errorCount": 0,
+      "passed": true,
+      "totalCostUsd": 0,
+      "totalDurationMs": 5,
+      "llmCallCount": 0
+    }
+  ],
+  "summary": {
+    "totalScenarios": 6,
+    "passedScenarios": 6,
+    "passRate": 1,
+    "avgPhaseProgression": 1,
+    "avgSlotFill": 1,
+    "avgCodePromptCorrectness": 1,
+    "avgTerminationCorrectness": 1,
+    "totalErrors": 0,
+    "totalCostUsd": 0,
+    "avgCostPerScenarioUsd": 0,
+    "avgDurationMs": 5.833333333333333,
+    "totalLlmCalls": 0
+  }
+}

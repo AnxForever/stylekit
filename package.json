@@ -20,6 +20,8 @@
     "test:coverage": "npx --no-install vitest run --config tests/vitest.config.ts --coverage",
     "test:style-extractor": "npx --no-install vitest run --config tests/vitest.config.ts tests/unit/style-extractor-registry.test.ts",
     "test:style-extractor:ci": "npm run check:style-extractor && npm run test:style-extractor",
+    "eval": "npx --no-install vitest run --config tests/vitest.config.ts lib/agent/__tests__/eval-scoreboard.test.ts",
+    "eval:compare": "git diff --no-color docs/agent-learning/eval-baseline.json docs/agent-learning/eval-latest.json",
     "cli": "npx --no-install tsx tools/cli/stylekit.ts",
     "mcp": "npx --no-install tsx tools/mcp/server.ts",
     "e2e": "npx playwright test --config tests/playwright.config.ts",

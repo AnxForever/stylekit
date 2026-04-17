@@ -8,6 +8,9 @@ import {
   type StackId,
 } from "@/lib/knowledge";
 import { AgentProviderError, requestAgentJson, requestAgentStream } from "./provider";
+import { runPlannerWithTools, PlannerToolLoopError } from "./planner-with-tools";
+import { runPlannerWithReflection } from "./reflector";
+import { TurnTracker, type TurnMetrics } from "./observability";
 import { buildAgentCodePrompt } from "./code-prompt";
 import { buildAgentProjectKnowledgeContext } from "./project-knowledge";
 import { inferTemplateType, getLocalizedTemplateTypeLabel } from "./recommendations";
@@ -25,6 +28,7 @@ import type {
   AgentPageContext,
   AgentPlannerResult,
   AgentPromptSnapshot,
+  AgentPromptSnapshotEntry,
   AgentSuggestedOption,
   AgentWorkflowSnapshot,
   AgentToolTrace,
@@ -147,6 +151,22 @@ function normalizePlannerResponse(raw: Record<string, unknown>, userMessage: str
 const DEV_AGENT_FALLBACK =
   process.env.NODE_ENV === "development" &&
   process.env.NEXT_PUBLIC_DEV_MOCK_USER === "true";
+
+/**
+ * Feature flag for Phase A of L2: native tool calling planner.
+ * Default ON unless explicitly disabled with AGENT_USE_TOOL_CALLING=false.
+ * Old JSON-schema planner path is preserved as fallback.
+ */
+const USE_TOOL_CALLING_PLANNER = process.env.AGENT_USE_TOOL_CALLING !== "false";
+
+/**
+ * Feature flag for L5: reflection layer on top of the planner.
+ * Default ON unless explicitly disabled. Only takes effect when tool-calling
+ * planner is also on. Skipping reflection is always safe (planner output
+ * passes through unchanged).
+ */
+const USE_REFLECTION =
+  USE_TOOL_CALLING_PLANNER && process.env.AGENT_USE_REFLECTION !== "false";
 
 function warnFallback(context: string, error: unknown): void {
   const message = error instanceof Error ? error.message : String(error);
@@ -1194,7 +1214,53 @@ function buildGreeting(locale: Locale): {
 
 /* ---------- Main orchestrator ---------- */
 
-export async function runAgentTurn({
+/**
+ * Discriminated union describing the state after prepareAgentTurn finishes.
+ *
+ * - `resolved`:          full assistant message ready (follow-up / consulting /
+ *                        confirm phases). Callers just repackage and return.
+ * - `responder_pending`: done phase. All context is ready; caller chooses
+ *                        how to run the responder (JSON vs Stream).
+ *
+ * This pattern lets both `runAgentTurn` (non-streaming) and
+ * `runAgentTurnStreaming` share the exact same preparation logic and diverge
+ * only at the final responder step.
+ */
+type AgentTurnPreparation =
+  | {
+      kind: "resolved";
+      assistantMessage: string;
+      followUpNeeded: boolean;
+      planner: AgentPlannerResult;
+      codePrompt: AgentCodePrompt | null;
+      suggestedOptions: AgentSuggestedOption[];
+      workflow: AgentWorkflowSnapshot;
+      toolTrace: AgentToolTrace[];
+      promptSnapshot: AgentPromptSnapshot;
+      decisionTrace: AgentDecisionTraceItem[];
+      turnMetrics: TurnMetrics;
+    }
+  | {
+      kind: "responder_pending";
+      planner: AgentPlannerResult;
+      codePrompt: AgentCodePrompt;
+      workflow: AgentWorkflowSnapshot;
+      toolTrace: AgentToolTrace[];
+      projectKnowledge: ReturnType<typeof buildAgentProjectKnowledgeContext>;
+      responderPrompt: { system: string; user: string };
+      plannerPromptSnapshot: AgentPromptSnapshotEntry;
+      decisionTrace: AgentDecisionTraceItem[];
+      tracker: TurnTracker;
+    };
+
+/**
+ * Shared preparation pipeline for a single agent turn.
+ * Runs: follow-up detection → planner (tool-calling or legacy) → guard rails
+ *       → phase routing → (if done) knowledge + codePrompt + responderPrompt.
+ *
+ * Does NOT invoke the final responder — that step is caller-specific.
+ */
+async function prepareAgentTurn({
   locale,
   messages,
   pageContext,
@@ -1202,17 +1268,8 @@ export async function runAgentTurn({
   locale: Locale;
   messages: AgentMessage[];
   pageContext?: AgentPageContext;
-}): Promise<{
-  assistantMessage: string;
-  followUpNeeded: boolean;
-  workflowState: AgentWorkflowSnapshot["state"];
-  workflow: AgentWorkflowSnapshot;
-  planner: AgentPlannerResult;
-  codePrompt: AgentCodePrompt | null;
-  toolTrace: AgentToolTrace[];
-  promptSnapshot: AgentPromptSnapshot;
-  decisionTrace: AgentDecisionTraceItem[];
-}> {
+}): Promise<AgentTurnPreparation> {
+  const tracker = new TurnTracker();
   const latestUserMsg = getLatestUserMessage(messages);
   const previousPhase = detectCurrentPhase(messages);
 
@@ -1226,6 +1283,8 @@ export async function runAgentTurn({
       system: followUpPrompt.system,
       user: followUpPrompt.user,
       temperature: 0.3,
+      onUsage: (event) =>
+        tracker.record({ ...event, purpose: "follow_up" }),
     });
     const planner: AgentPlannerResult = lastPlanner ?? {
       ready: true,
@@ -1244,21 +1303,24 @@ export async function runAgentTurn({
     };
     const workflow = buildWorkflowSnapshot({ messages, planner });
     return {
+      kind: "resolved",
       assistantMessage: response.assistantMessage,
       followUpNeeded: true,
-      workflowState: workflow.state,
-      workflow,
       planner,
       codePrompt: null,
+      suggestedOptions: [],
+      workflow,
       toolTrace: [{ tool: "followUpConversation", ok: true, meta: { existingStyle: existingCodePrompt.styleSlug } }],
       promptSnapshot: {
         planner: { system: "", user: "", summary: ["follow-up: planner skipped"] },
         responder: { system: followUpPrompt.system, user: followUpPrompt.user, summary: ["follow-up conversation"] },
       },
       decisionTrace: [],
+      turnMetrics: tracker.snapshot(),
     };
   }
 
+  /* --- Planner stage --- */
   const needsRetrieval = shouldRetrieveKnowledge(previousPhase, latestUserMsg);
   const emptyKnowledge: PhaseKnowledgeContext = {
     topStyles: [],
@@ -1266,25 +1328,59 @@ export async function runAgentTurn({
     matchedPatterns: [],
     matchedPromptTopics: [],
   };
-  const phaseKnowledge = needsRetrieval
-    ? buildPhaseKnowledgeContext(locale, messages, latestUserMsg)
-    : emptyKnowledge;
+  const phaseKnowledge = USE_TOOL_CALLING_PLANNER
+    ? emptyKnowledge
+    : needsRetrieval
+      ? buildPhaseKnowledgeContext(locale, messages, latestUserMsg)
+      : emptyKnowledge;
   const plannerPrompt = buildPlannerPrompt(locale, messages, phaseKnowledge, pageContext);
   let plannerFallbackUsed = false;
-  const planner = await requestAgentJson({
-    schema: plannerSchema,
-    system: plannerPrompt.system,
-    user: plannerPrompt.user,
-    temperature: 0.2,
-    normalize: (raw) => normalizePlannerResponse(raw, latestUserMsg),
-  }).catch((error) => {
-    if (!DEV_AGENT_FALLBACK) {
-      throw error;
+  let toolLoopTraces: AgentToolTrace[] = [];
+
+  const invokeLegacyPlanner = () =>
+    requestAgentJson({
+      schema: plannerSchema,
+      system: plannerPrompt.system,
+      user: plannerPrompt.user,
+      temperature: 0.2,
+      normalize: (raw) => normalizePlannerResponse(raw, latestUserMsg),
+      onUsage: (event) => tracker.record({ ...event, purpose: "planner" }),
+    });
+
+  let planner: AgentPlannerResult;
+  if (USE_TOOL_CALLING_PLANNER) {
+    try {
+      const onUsageForPlanner = (event: Parameters<NonNullable<Parameters<typeof runPlannerWithTools>[0]["onUsage"]>>[0]) =>
+        tracker.record(event);
+      const loopResult = USE_REFLECTION
+        ? await runPlannerWithReflection({ locale, messages, pageContext, onUsage: onUsageForPlanner })
+        : await runPlannerWithTools({ locale, messages, pageContext, onUsage: onUsageForPlanner });
+      planner = loopResult.planner;
+      toolLoopTraces = loopResult.toolTraces;
+      if (loopResult.toolTraces.some((t) => t.tool === "reflection")) {
+        tracker.markReflectionTriggered();
+      }
+    } catch (error) {
+      if (error instanceof PlannerToolLoopError) {
+        warnFallback("planner-tool-loop", error);
+        planner = await invokeLegacyPlanner().catch((legacyError) => {
+          if (!DEV_AGENT_FALLBACK) throw legacyError;
+          warnFallback("planner", legacyError);
+          plannerFallbackUsed = true;
+          return inferPlannerFallback(locale, messages, phaseKnowledge, pageContext);
+        });
+      } else {
+        throw error;
+      }
     }
-    warnFallback("planner", error);
-    plannerFallbackUsed = true;
-    return inferPlannerFallback(locale, messages, phaseKnowledge, pageContext);
-  });
+  } else {
+    planner = await invokeLegacyPlanner().catch((error) => {
+      if (!DEV_AGENT_FALLBACK) throw error;
+      warnFallback("planner", error);
+      plannerFallbackUsed = true;
+      return inferPlannerFallback(locale, messages, phaseKnowledge, pageContext);
+    });
+  }
 
   /* --- Guard: force done when user confirmed but LLM still returned confirm --- */
   if (
@@ -1298,62 +1394,59 @@ export async function runAgentTurn({
   }
 
   const workflow = buildWorkflowSnapshot({ messages, planner });
-  const plannerPromptSnapshot: AgentPromptSnapshot["planner"] = {
+  const plannerPromptSnapshot: AgentPromptSnapshotEntry = {
     system: plannerPrompt.system,
     user: plannerPrompt.user,
     summary: buildPlannerPromptSummary(locale, messages, pageContext),
   };
 
+  const buildEarlyToolTrace = (skippedMeta: Record<string, unknown>): AgentToolTrace[] =>
+    toolLoopTraces.length > 0
+      ? toolLoopTraces
+      : needsRetrieval
+        ? [{ tool: "phaseKnowledgeRetrieval", ok: true, meta: { stylesFound: phaseKnowledge.topStyles.length, templatesFound: phaseKnowledge.matchedTemplates.length } }]
+        : [{ tool: "phaseKnowledgeRetrieval", ok: true, meta: skippedMeta }];
+
   /* --- Consulting phases (goal, audience, feel, revise) --- */
   if (planner.phase !== "done" && planner.phase !== "confirm" && !planner.ready) {
-    const decisionTrace = buildDecisionTraceForConsulting({ locale, workflow, planner });
-    const consultingToolTrace: AgentToolTrace[] = needsRetrieval
-      ? [{ tool: "phaseKnowledgeRetrieval", ok: true, meta: { stylesFound: phaseKnowledge.topStyles.length, templatesFound: phaseKnowledge.matchedTemplates.length } }]
-      : [{ tool: "phaseKnowledgeRetrieval", ok: true, meta: { skipped: true, reason: "simple response or phase skip" } }];
     return {
+      kind: "resolved",
       assistantMessage: planner.followUpQuestion || buildGreeting(locale).message,
       followUpNeeded: true,
-      workflowState: workflow.state,
-      workflow,
       planner,
       codePrompt: null,
-      toolTrace: consultingToolTrace,
-      promptSnapshot: {
-        planner: plannerPromptSnapshot,
-        responder: null,
-      },
-      decisionTrace,
+      suggestedOptions: planner.suggestedOptions,
+      workflow,
+      toolTrace: buildEarlyToolTrace({ skipped: true, reason: "simple response or phase skip" }),
+      promptSnapshot: { planner: plannerPromptSnapshot, responder: null },
+      decisionTrace: buildDecisionTraceForConsulting({ locale, workflow, planner }),
+      turnMetrics: tracker.snapshot(),
     };
   }
 
   /* --- Confirm phase: show summary, wait for user to say OK --- */
   if (planner.phase === "confirm" && !planner.ready) {
-    const decisionTrace = buildDecisionTraceForConfirm({ locale, workflow, planner });
-    const confirmToolTrace: AgentToolTrace[] = needsRetrieval
-      ? [{ tool: "phaseKnowledgeRetrieval", ok: true, meta: { stylesFound: phaseKnowledge.topStyles.length, templatesFound: phaseKnowledge.matchedTemplates.length } }]
-      : [{ tool: "phaseKnowledgeRetrieval", ok: true, meta: { skipped: true } }];
     return {
+      kind: "resolved",
       assistantMessage: planner.followUpQuestion || localize(
         locale,
         "以上就是你的网站方向摘要，确认后我就开始生成提示词。",
         "Here's your website brief summary. Confirm and I'll generate the prompt."
       ),
       followUpNeeded: true,
-      workflowState: workflow.state,
-      workflow,
       planner,
       codePrompt: null,
-      toolTrace: confirmToolTrace,
-      promptSnapshot: {
-        planner: plannerPromptSnapshot,
-        responder: null,
-      },
-      decisionTrace,
+      suggestedOptions: planner.suggestedOptions,
+      workflow,
+      toolTrace: buildEarlyToolTrace({ skipped: true }),
+      promptSnapshot: { planner: plannerPromptSnapshot, responder: null },
+      decisionTrace: buildDecisionTraceForConfirm({ locale, workflow, planner }),
+      turnMetrics: tracker.snapshot(),
     };
   }
 
-  /* --- Done phase: generate the final code prompt --- */
-  const toolTrace: AgentToolTrace[] = [];
+  /* --- Done phase: knowledge retrieval + codePrompt + responder prep --- */
+  const toolTrace: AgentToolTrace[] = [...toolLoopTraces];
 
   if (plannerFallbackUsed) {
     toolTrace.push({
@@ -1374,10 +1467,7 @@ export async function runAgentTurn({
     },
   });
 
-  const smartRecommendation = getSmartRecommendation(
-    planner.normalizedQuery,
-    planner.context
-  );
+  const smartRecommendation = getSmartRecommendation(planner.normalizedQuery, planner.context);
 
   /* --- Override style with user's confirmed choice from feel phase --- */
   const rawStyleSlug =
@@ -1388,9 +1478,7 @@ export async function runAgentTurn({
   if (rawStyleSlug && !planner.styleSlug) {
     planner.styleSlug = rawStyleSlug;
   }
-  const confirmedStyleSlug = rawStyleSlug && getStyleBySlug(rawStyleSlug)
-    ? rawStyleSlug
-    : "";
+  const confirmedStyleSlug = rawStyleSlug && getStyleBySlug(rawStyleSlug) ? rawStyleSlug : "";
   if (confirmedStyleSlug && confirmedStyleSlug !== smartRecommendation.style.item.slug) {
     const confirmedStyle = getStyleBySlug(confirmedStyleSlug)!;
     smartRecommendation.style.item = {
@@ -1480,33 +1568,85 @@ export async function runAgentTurn({
     toolTrace,
   });
 
-  const response = await requestAgentJson({
-    schema: responderSchema,
-    system: responderPrompt.system,
-    user: responderPrompt.user,
-    temperature: 0.3,
-  }).catch((error) => {
-    if (!DEV_AGENT_FALLBACK) {
-      throw error;
-    }
-    warnFallback("runAgentTurn responder", error);
-    toolTrace.push({
-      tool: "devFallbackResponder",
-      ok: true,
-      meta: {
-        reason:
-          error instanceof AgentProviderError ? error.code : "responder_schema_error",
-      },
-    });
-    return buildResponderFallback({ locale, codePrompt });
-  });
-
   const decisionTrace = buildDecisionTraceForPlan({
     locale,
     workflow,
     codePrompt,
     toolTrace,
     smartRecommendation,
+  });
+
+  return {
+    kind: "responder_pending",
+    planner,
+    codePrompt,
+    workflow,
+    toolTrace,
+    projectKnowledge,
+    responderPrompt,
+    plannerPromptSnapshot,
+    decisionTrace,
+    tracker,
+  };
+}
+
+export async function runAgentTurn({
+  locale,
+  messages,
+  pageContext,
+}: {
+  locale: Locale;
+  messages: AgentMessage[];
+  pageContext?: AgentPageContext;
+}): Promise<{
+  assistantMessage: string;
+  followUpNeeded: boolean;
+  workflowState: AgentWorkflowSnapshot["state"];
+  workflow: AgentWorkflowSnapshot;
+  planner: AgentPlannerResult;
+  codePrompt: AgentCodePrompt | null;
+  toolTrace: AgentToolTrace[];
+  promptSnapshot: AgentPromptSnapshot;
+  decisionTrace: AgentDecisionTraceItem[];
+  turnMetrics: TurnMetrics;
+}> {
+  const prep = await prepareAgentTurn({ locale, messages, pageContext });
+
+  if (prep.kind === "resolved") {
+    return {
+      assistantMessage: prep.assistantMessage,
+      followUpNeeded: prep.followUpNeeded,
+      workflowState: prep.workflow.state,
+      workflow: prep.workflow,
+      planner: prep.planner,
+      codePrompt: prep.codePrompt,
+      toolTrace: prep.toolTrace,
+      promptSnapshot: prep.promptSnapshot,
+      decisionTrace: prep.decisionTrace,
+      turnMetrics: prep.turnMetrics,
+    };
+  }
+
+  /* --- Done phase: run JSON responder --- */
+  const { planner, codePrompt, workflow, toolTrace, responderPrompt, projectKnowledge, plannerPromptSnapshot, decisionTrace, tracker } = prep;
+
+  const response = await requestAgentJson({
+    schema: responderSchema,
+    system: responderPrompt.system,
+    user: responderPrompt.user,
+    temperature: 0.3,
+    onUsage: (event) => tracker.record({ ...event, purpose: "responder" }),
+  }).catch((error) => {
+    if (!DEV_AGENT_FALLBACK) throw error;
+    warnFallback("runAgentTurn responder", error);
+    toolTrace.push({
+      tool: "devFallbackResponder",
+      ok: true,
+      meta: {
+        reason: error instanceof AgentProviderError ? error.code : "responder_schema_error",
+      },
+    });
+    return buildResponderFallback({ locale, codePrompt });
   });
 
   return {
@@ -1532,6 +1672,7 @@ export async function runAgentTurn({
       },
     },
     decisionTrace,
+    turnMetrics: tracker.snapshot(),
   };
 }
 
@@ -1550,6 +1691,7 @@ export type AgentTurnStreamingResult =
       toolTrace: AgentToolTrace[];
       promptSnapshot: AgentPromptSnapshot;
       decisionTrace: AgentDecisionTraceItem[];
+      turnMetrics: TurnMetrics;
     }
   | {
       streaming: true;
@@ -1563,6 +1705,7 @@ export type AgentTurnStreamingResult =
       toolTrace: AgentToolTrace[];
       promptSnapshot: AgentPromptSnapshot;
       decisionTrace: AgentDecisionTraceItem[];
+      turnMetrics: TurnMetrics;
     };
 
 export async function runAgentTurnStreaming({
@@ -1574,286 +1717,27 @@ export async function runAgentTurnStreaming({
   messages: AgentMessage[];
   pageContext?: AgentPageContext;
 }): Promise<AgentTurnStreamingResult> {
-  const latestUserMsg = getLatestUserMessage(messages);
-  const previousPhase = detectCurrentPhase(messages);
+  const prep = await prepareAgentTurn({ locale, messages, pageContext });
 
-  /* --- Follow-up conversation: skip planner when codePrompt already exists --- */
-  const existingCodePrompt = previousPhase === "done" ? getExistingCodePrompt(messages) : null;
-  if (previousPhase === "done" && existingCodePrompt) {
-    const lastPlanner = [...messages].reverse().find((m) => m.role === "assistant" && m.planner)?.planner;
-    const followUpPrompt = buildFollowUpPrompt(locale, messages, existingCodePrompt, latestUserMsg);
-    const response = await requestAgentJson({
-      schema: responderSchema,
-      system: followUpPrompt.system,
-      user: followUpPrompt.user,
-      temperature: 0.3,
-    });
-    const planner: AgentPlannerResult = lastPlanner ?? {
-      ready: true,
-      phase: "done",
-      normalizedQuery: "",
-      productType: "",
-      audience: "",
-      visualTone: "",
-      styleSlug: "",
-      mustHave: [],
-      constraints: [],
-      followUpQuestion: "",
-      suggestedOptions: [],
-      reasoning: [],
-      context: {},
-    };
-    const workflow = buildWorkflowSnapshot({ messages, planner });
+  if (prep.kind === "resolved") {
     return {
       streaming: false,
-      assistantMessage: response.assistantMessage,
-      followUpNeeded: true,
-      workflowState: workflow.state,
-      workflow,
-      planner,
-      codePrompt: null,
-      suggestedOptions: [],
-      toolTrace: [{ tool: "followUpConversation", ok: true, meta: { existingStyle: existingCodePrompt.styleSlug } }],
-      promptSnapshot: {
-        planner: { system: "", user: "", summary: ["follow-up: planner skipped"] },
-        responder: { system: followUpPrompt.system, user: followUpPrompt.user, summary: ["follow-up conversation"] },
-      },
-      decisionTrace: [],
+      assistantMessage: prep.assistantMessage,
+      followUpNeeded: prep.followUpNeeded,
+      workflowState: prep.workflow.state,
+      workflow: prep.workflow,
+      planner: prep.planner,
+      codePrompt: prep.codePrompt,
+      suggestedOptions: prep.suggestedOptions,
+      toolTrace: prep.toolTrace,
+      promptSnapshot: prep.promptSnapshot,
+      decisionTrace: prep.decisionTrace,
+      turnMetrics: prep.turnMetrics,
     };
   }
 
-  const needsRetrieval = shouldRetrieveKnowledge(previousPhase, latestUserMsg);
-  const emptyKnowledge: PhaseKnowledgeContext = {
-    topStyles: [],
-    matchedTemplates: [],
-    matchedPatterns: [],
-    matchedPromptTopics: [],
-  };
-  const phaseKnowledge = needsRetrieval
-    ? buildPhaseKnowledgeContext(locale, messages, latestUserMsg)
-    : emptyKnowledge;
-  const plannerPrompt = buildPlannerPrompt(locale, messages, phaseKnowledge, pageContext);
-  let plannerFallbackUsed = false;
-  const planner = await requestAgentJson({
-    schema: plannerSchema,
-    system: plannerPrompt.system,
-    user: plannerPrompt.user,
-    temperature: 0.2,
-    normalize: (raw) => normalizePlannerResponse(raw, latestUserMsg),
-  }).catch((error) => {
-    if (!DEV_AGENT_FALLBACK) {
-      throw error;
-    }
-    warnFallback("planner", error);
-    plannerFallbackUsed = true;
-    return inferPlannerFallback(locale, messages, phaseKnowledge, pageContext);
-  });
-
-  /* --- Guard: force done when user confirmed but LLM still returned confirm --- */
-  if (
-    previousPhase === "confirm" &&
-    planner.phase === "confirm" &&
-    !planner.ready &&
-    CONFIRMATION_PATTERNS.test(latestUserMsg.trim())
-  ) {
-    planner.phase = "done";
-    planner.ready = true;
-  }
-
-  const workflow = buildWorkflowSnapshot({ messages, planner });
-  const plannerPromptSnapshot: AgentPromptSnapshot["planner"] = {
-    system: plannerPrompt.system,
-    user: plannerPrompt.user,
-    summary: buildPlannerPromptSummary(locale, messages, pageContext),
-  };
-
-  /* --- Consulting phases — return non-streaming --- */
-  if (planner.phase !== "done" && planner.phase !== "confirm" && !planner.ready) {
-    const decisionTrace = buildDecisionTraceForConsulting({ locale, workflow, planner });
-    const consultingToolTrace: AgentToolTrace[] = needsRetrieval
-      ? [{ tool: "phaseKnowledgeRetrieval", ok: true, meta: { stylesFound: phaseKnowledge.topStyles.length, templatesFound: phaseKnowledge.matchedTemplates.length } }]
-      : [{ tool: "phaseKnowledgeRetrieval", ok: true, meta: { skipped: true, reason: "simple response or phase skip" } }];
-    return {
-      streaming: false,
-      assistantMessage: planner.followUpQuestion || buildGreeting(locale).message,
-      followUpNeeded: true,
-      workflowState: workflow.state,
-      workflow,
-      planner,
-      codePrompt: null,
-      suggestedOptions: planner.suggestedOptions,
-      toolTrace: consultingToolTrace,
-      promptSnapshot: {
-        planner: plannerPromptSnapshot,
-        responder: null,
-      },
-      decisionTrace,
-    };
-  }
-
-  /* --- Confirm phase — return non-streaming --- */
-  if (planner.phase === "confirm" && !planner.ready) {
-    const decisionTrace = buildDecisionTraceForConfirm({ locale, workflow, planner });
-    const confirmToolTrace: AgentToolTrace[] = needsRetrieval
-      ? [{ tool: "phaseKnowledgeRetrieval", ok: true, meta: { stylesFound: phaseKnowledge.topStyles.length, templatesFound: phaseKnowledge.matchedTemplates.length } }]
-      : [{ tool: "phaseKnowledgeRetrieval", ok: true, meta: { skipped: true } }];
-    return {
-      streaming: false,
-      assistantMessage: planner.followUpQuestion || localize(
-        locale,
-        "以上就是你的网站方向摘要，确认后我就开始生成提示词。",
-        "Here's your website brief summary. Confirm and I'll generate the prompt."
-      ),
-      followUpNeeded: true,
-      workflowState: workflow.state,
-      workflow,
-      planner,
-      codePrompt: null,
-      suggestedOptions: planner.suggestedOptions,
-      toolTrace: confirmToolTrace,
-      promptSnapshot: {
-        planner: plannerPromptSnapshot,
-        responder: null,
-      },
-      decisionTrace,
-    };
-  }
-
-  /* --- Done phase: knowledge retrieval + code prompt + stream responder --- */
-  const toolTrace: AgentToolTrace[] = [];
-
-  if (plannerFallbackUsed) {
-    toolTrace.push({
-      tool: "devFallbackPlanner",
-      ok: true,
-      meta: { reason: "planner_schema_error" },
-    });
-  }
-
-  const knowledgeResult = searchKnowledge(planner.normalizedQuery, undefined, 4);
-  toolTrace.push({
-    tool: "searchKnowledge",
-    ok: true,
-    meta: {
-      domain: knowledgeResult.domain,
-      count: knowledgeResult.count,
-      query: planner.normalizedQuery,
-    },
-  });
-
-  const smartRecommendation = getSmartRecommendation(
-    planner.normalizedQuery,
-    planner.context
-  );
-
-  /* --- Override style with user's confirmed choice from feel phase --- */
-  const rawStyleSlug =
-    planner.styleSlug ||
-    extractPlannerHistory(messages).styleSlug ||
-    extractSelectedStyleSlugFromConversation(messages) ||
-    fuzzyMatchStyleFromText(planner.visualTone);
-  if (rawStyleSlug && !planner.styleSlug) {
-    planner.styleSlug = rawStyleSlug;
-  }
-  const confirmedStyleSlug = rawStyleSlug && getStyleBySlug(rawStyleSlug)
-    ? rawStyleSlug
-    : "";
-  if (confirmedStyleSlug && confirmedStyleSlug !== smartRecommendation.style.item.slug) {
-    const confirmedStyle = getStyleBySlug(confirmedStyleSlug)!;
-    smartRecommendation.style.item = {
-      slug: confirmedStyleSlug,
-      name: locale === "zh" ? confirmedStyle.name : confirmedStyle.nameEn,
-      philosophy: confirmedStyle.description,
-    };
-    smartRecommendation.style.reasons = [
-      ...smartRecommendation.style.reasons,
-      localize(locale, "用户在 feel 阶段明确选择了此风格", "User explicitly selected this style during the feel phase"),
-    ];
-  }
-
-  toolTrace.push({
-    tool: "getSmartRecommendation",
-    ok: true,
-    meta: {
-      topStyle: smartRecommendation.style.item.slug,
-      confidence: smartRecommendation.summary.confidence,
-      userOverride: confirmedStyleSlug || undefined,
-    },
-  });
-
-  const projectKnowledge = buildAgentProjectKnowledgeContext({
-    locale,
-    planner,
-    styleSlug: smartRecommendation.style.item.slug,
-  });
-  toolTrace.push({
-    tool: "searchProjectKnowledge",
-    ok: true,
-    meta: {
-      counts: projectKnowledge.counts,
-      selected: projectKnowledge.items.map((item) => ({
-        type: item.type,
-        title: item.title,
-        source: item.source,
-      })),
-    },
-  });
-
-  let designRecommendation: ReturnType<typeof getDesignRecommendation> | null = null;
-  try {
-    designRecommendation = getDesignRecommendation(planner.normalizedQuery, {
-      stackId: "nextjs" as StackId,
-      maxGuidelines: 3,
-    });
-    toolTrace.push({
-      tool: "getDesignRecommendation",
-      ok: true,
-      meta: {
-        productType: designRecommendation.productType,
-        hasColors: Boolean(designRecommendation.colors),
-        hasTypography: Boolean(designRecommendation.typography),
-        hasLandingPattern: Boolean(designRecommendation.landingPattern),
-        uxGuidelineCount: designRecommendation.uxGuidelines.length,
-      },
-    });
-  } catch {
-    toolTrace.push({ tool: "getDesignRecommendation", ok: false });
-  }
-
-  const codePrompt = buildAgentCodePrompt({
-    locale,
-    planner,
-    smartRecommendation,
-    projectKnowledge,
-    designRecommendation,
-  });
-
-  const responderPrompt = buildResponderPrompt({
-    locale,
-    planner: {
-      ...planner,
-      context: planner.context,
-      reasoning: [
-        ...planner.reasoning,
-        `knowledgeDomain=${knowledgeResult.domain}`,
-        `topStyle=${smartRecommendation.style.item.slug}`,
-        `topStyleScore=${smartRecommendation.style.score}`,
-        `context=${serializeContext(planner.context)}`,
-      ],
-    },
-    codePrompt,
-    projectKnowledge,
-    pageContext,
-    toolTrace,
-  });
-
-  const decisionTrace = buildDecisionTraceForPlan({
-    locale,
-    workflow,
-    codePrompt,
-    toolTrace,
-    smartRecommendation,
-  });
+  /* --- Done phase: stream the responder, fall back in dev mode --- */
+  const { planner, codePrompt, workflow, toolTrace, responderPrompt, projectKnowledge, plannerPromptSnapshot, decisionTrace, tracker } = prep;
 
   const promptSnapshot: AgentPromptSnapshot = {
     planner: plannerPromptSnapshot,
@@ -1870,14 +1754,12 @@ export async function runAgentTurnStreaming({
     },
   };
 
-  /* Try streaming the responder, fall back in dev mode */
   try {
     const stream = await requestAgentStream({
       system: responderPrompt.system,
       user: responderPrompt.user,
       temperature: 0.3,
     });
-
     return {
       streaming: true,
       stream,
@@ -1890,6 +1772,7 @@ export async function runAgentTurnStreaming({
       toolTrace,
       promptSnapshot,
       decisionTrace,
+      turnMetrics: tracker.snapshot(),
     };
   } catch (error) {
     if (!DEV_AGENT_FALLBACK) {
@@ -1899,9 +1782,7 @@ export async function runAgentTurnStreaming({
     toolTrace.push({
       tool: "devFallbackResponder",
       ok: true,
-      meta: {
-        reason: error instanceof AgentProviderError ? error.code : "responder_stream_error",
-      },
+      meta: { reason: error instanceof AgentProviderError ? error.code : "responder_stream_error" },
     });
     const fallback = buildResponderFallback({ locale, codePrompt });
     return {
@@ -1916,6 +1797,7 @@ export async function runAgentTurnStreaming({
       toolTrace,
       promptSnapshot,
       decisionTrace,
+      turnMetrics: tracker.snapshot(),
     };
   }
 }

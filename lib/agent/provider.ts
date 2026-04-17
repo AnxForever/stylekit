@@ -1,6 +1,19 @@
 import { z } from "zod";
+import type { AgentTool, ToolCall } from "./tools/types";
+import type { OnUsageCallback, LLMUsage } from "./observability";
 
 const DEFAULT_BASE_URL = "https://api.openai.com/v1";
+
+const usageSchema = z
+  .object({
+    prompt_tokens: z.number().optional(),
+    completion_tokens: z.number().optional(),
+    total_tokens: z.number().optional(),
+    prompt_tokens_details: z
+      .object({ cached_tokens: z.number().optional() })
+      .optional(),
+  })
+  .optional();
 
 const chatCompletionResponseSchema = z.object({
   choices: z.array(
@@ -18,7 +31,18 @@ const chatCompletionResponseSchema = z.object({
       }),
     })
   ),
+  usage: usageSchema,
+  model: z.string().optional(),
 });
+
+function extractUsage(raw: z.infer<typeof usageSchema>): LLMUsage {
+  return {
+    promptTokens: raw?.prompt_tokens ?? 0,
+    completionTokens: raw?.completion_tokens ?? 0,
+    totalTokens: raw?.total_tokens ?? 0,
+    cachedTokens: raw?.prompt_tokens_details?.cached_tokens,
+  };
+}
 
 export class AgentProviderError extends Error {
   code: string;
@@ -115,12 +139,14 @@ export async function requestAgentJson<T>({
   user,
   temperature = 0.2,
   normalize,
+  onUsage,
 }: {
   schema: z.ZodSchema<T>;
   system: string;
   user: string;
   temperature?: number;
   normalize?: (raw: Record<string, unknown>) => Record<string, unknown>;
+  onUsage?: OnUsageCallback;
 }): Promise<T> {
   const config = getAgentModelConfig();
   if (!config) {
@@ -131,6 +157,7 @@ export async function requestAgentJson<T>({
     );
   }
 
+  const startedAt = Date.now();
   const response = await fetch(`${config.baseUrl}/chat/completions`, {
     method: "POST",
     headers: {
@@ -163,6 +190,15 @@ export async function requestAgentJson<T>({
       "AGENT_PROVIDER_PAYLOAD_ERROR",
       502
     );
+  }
+
+  if (onUsage) {
+    onUsage({
+      purpose: "other",
+      model: payload.data.model ?? config.model,
+      usage: extractUsage(payload.data.usage),
+      durationMs: Date.now() - startedAt,
+    });
   }
 
   const rawText = extractMessageContent(payload.data.choices[0]?.message?.content ?? "");
@@ -297,3 +333,223 @@ export async function requestAgentStream({
   });
 }
 
+/* ======================================================================
+ * Tool Calling Support (Phase A of L2)
+ *
+ * OpenAI `/chat/completions` with `tools` parameter.
+ * Returns either final content or a list of tool_calls the model wants us
+ * to execute. The caller (orchestrator) is responsible for the agentic loop.
+ * ==================================================================== */
+
+/**
+ * Conversation message shape we accept for tool-enabled calls.
+ * Kept permissive because we're talking across 4 roles (system/user/assistant/tool).
+ */
+export type AgentConversationMessage =
+  | { role: "system"; content: string }
+  | { role: "user"; content: string }
+  | {
+      role: "assistant";
+      content?: string | null;
+      tool_calls?: Array<{
+        id: string;
+        type: "function";
+        function: { name: string; arguments: string };
+      }>;
+    }
+  | {
+      role: "tool";
+      tool_call_id: string;
+      content: string;
+    };
+
+export type AgentStopReason = "end_turn" | "tool_use" | "max_tokens" | "other";
+
+export interface AgentToolTurnResult {
+  stopReason: AgentStopReason;
+  /** Assistant text content, null when the model chose to call tools instead. */
+  content: string | null;
+  /** Zero when stopReason !== "tool_use". */
+  toolCalls: ToolCall[];
+  /** Raw assistant message, to be echoed back into next turn's messages array. */
+  rawAssistantMessage: {
+    role: "assistant";
+    content: string | null;
+    tool_calls?: Array<{
+      id: string;
+      type: "function";
+      function: { name: string; arguments: string };
+    }>;
+  };
+}
+
+/**
+ * Convert one AgentTool to OpenAI's `tools[].function` shape.
+ * Uses Zod 4's native `z.toJSONSchema()` — no extra deps.
+ */
+function toolToOpenAIFormat(tool: AgentTool): {
+  type: "function";
+  function: { name: string; description: string; parameters: Record<string, unknown> };
+} {
+  const paramsSchema = z.toJSONSchema(tool.parameters, { target: "draft-7" }) as Record<string, unknown>;
+  /* OpenAI expects parameters.type = "object" at top level. Zod emits it correctly
+   * for z.object schemas; defensively ensure. */
+  if (paramsSchema.type !== "object") {
+    throw new Error(
+      `Tool '${tool.name}' parameters must be a z.object schema at the top level.`
+    );
+  }
+  /* OpenAI doesn't accept $schema field in parameters. Strip it. */
+  delete paramsSchema.$schema;
+  return {
+    type: "function",
+    function: {
+      name: tool.name,
+      description: tool.description,
+      parameters: paramsSchema,
+    },
+  };
+}
+
+const toolCallResponseSchema = z.object({
+  choices: z.array(
+    z.object({
+      finish_reason: z.string().optional().nullable(),
+      message: z.object({
+        role: z.literal("assistant"),
+        content: z.string().nullable().optional(),
+        tool_calls: z
+          .array(
+            z.object({
+              id: z.string(),
+              type: z.literal("function"),
+              function: z.object({
+                name: z.string(),
+                arguments: z.string(),
+              }),
+            })
+          )
+          .optional()
+          .nullable(),
+      }),
+    })
+  ),
+  usage: usageSchema,
+  model: z.string().optional(),
+});
+
+function mapFinishReason(raw: string | null | undefined): AgentStopReason {
+  switch (raw) {
+    case "stop":
+      return "end_turn";
+    case "tool_calls":
+    case "function_call":
+      return "tool_use";
+    case "length":
+      return "max_tokens";
+    default:
+      return "other";
+  }
+}
+
+/**
+ * One-shot tool-enabled chat completion.
+ *
+ * Design: does NOT loop. Caller decides whether to execute tools and call again.
+ */
+export async function requestAgentWithTools({
+  messages,
+  tools,
+  temperature = 0.2,
+  toolChoice = "auto",
+  onUsage,
+}: {
+  messages: readonly AgentConversationMessage[];
+  tools: readonly AgentTool[];
+  temperature?: number;
+  toolChoice?: "auto" | "none" | "required";
+  onUsage?: OnUsageCallback;
+}): Promise<AgentToolTurnResult> {
+  const config = getAgentModelConfig();
+  if (!config) {
+    throw new AgentProviderError(
+      "Agent model is not configured.",
+      "AGENT_NOT_CONFIGURED",
+      503
+    );
+  }
+
+  const body: Record<string, unknown> = {
+    model: config.model,
+    temperature,
+    messages,
+  };
+  if (tools.length > 0) {
+    body.tools = tools.map(toolToOpenAIFormat);
+    body.tool_choice = toolChoice;
+  }
+
+  const startedAt = Date.now();
+  const response = await fetch(`${config.baseUrl}/chat/completions`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${config.apiKey}`,
+    },
+    body: JSON.stringify(body),
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text().catch(() => "");
+    throw new AgentProviderError(
+      `Agent provider tool call failed${errorText ? `: ${errorText}` : "."}`,
+      "AGENT_PROVIDER_HTTP_ERROR",
+      502
+    );
+  }
+
+  const parsed = toolCallResponseSchema.safeParse(await response.json());
+  if (!parsed.success) {
+    throw new AgentProviderError(
+      "Agent provider returned an unexpected tool-call payload.",
+      "AGENT_PROVIDER_PAYLOAD_ERROR",
+      502
+    );
+  }
+
+  if (onUsage) {
+    onUsage({
+      purpose: "other",
+      model: parsed.data.model ?? config.model,
+      usage: extractUsage(parsed.data.usage),
+      durationMs: Date.now() - startedAt,
+    });
+  }
+
+  const choice = parsed.data.choices[0];
+  if (!choice) {
+    throw new AgentProviderError(
+      "Agent provider returned no choices.",
+      "AGENT_PROVIDER_PAYLOAD_ERROR",
+      502
+    );
+  }
+
+  const stopReason = mapFinishReason(choice.finish_reason);
+  const toolCalls: ToolCall[] = (choice.message.tool_calls ?? []).map((call) => ({
+    id: call.id,
+    name: call.function.name,
+    argumentsJson: call.function.arguments,
+  }));
+
+  return {
+    stopReason,
+    content: choice.message.content ?? null,
+    toolCalls,
+    rawAssistantMessage: {
+      role: "assistant",
+      content: choice.message.content ?? null,
+      ...(choice.message.tool_calls ? { tool_calls: choice.message.tool_calls } : {}),
+    },
+  };
+}
