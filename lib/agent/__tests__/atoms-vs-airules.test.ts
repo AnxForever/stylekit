@@ -249,4 +249,108 @@ describe("atoms vs aiRules payload comparison (Phase 3)", () => {
       expect(args.user).not.toContain("Style atoms (highest priority)");
     });
   });
+
+  describe("Group D: multi-source blend (Phase 3.x)", () => {
+    async function captureBlendCall(
+      baseSlug: string,
+      baseName: string,
+      overrides: NonNullable<AgentPlannerResult["atomOverrides"]>,
+      locale: "en" | "zh" = "en"
+    ): Promise<ComposerCall> {
+      vi.mocked(requestAgentJson).mockResolvedValueOnce({
+        title: "t",
+        prompt: "composed blend body, long enough to pass schema validation without any trouble.",
+      } as never);
+      await composeAgentCodePrompt({
+        locale,
+        planner: { ...basePlanner, atomOverrides: overrides },
+        smartRecommendation: makeRecommendation(baseSlug, baseName),
+        projectKnowledge,
+      });
+      const args = vi.mocked(requestAgentJson).mock.calls.at(-1)?.[0];
+      if (!args) throw new Error("requestAgentJson was not called");
+      return args as ComposerCall;
+    }
+
+    it("single-dimension override tags that line with '(from <source>)' and routes to the blended header", async () => {
+      const args = await captureBlendCall("neo-brutalist", "Neo-Brutalist", {
+        motion: "cyberpunk-neon",
+      });
+      expect(args.user).toContain("Style atoms (highest priority · blended)");
+      expect(args.user).toMatch(/^- Motion \(from Cyberpunk Neon\): \S/m);
+      // Un-overridden dimensions must NOT carry the (from ...) suffix.
+      expect(args.user).toMatch(/^- Philosophy: \S/m);
+      expect(args.user).toMatch(/^- Layout: \S/m);
+      expect(args.user).toMatch(/^- Color: \S/m);
+      expect(args.user).toMatch(/^- Typography: \S/m);
+      // The non-blended header must NOT appear when an override is active.
+      expect(args.user).not.toContain("Style atoms (highest priority)\n- Philosophy");
+    });
+
+    it("empty overrides object behaves identically to the single-style atoms path", async () => {
+      const args = await captureBlendCall("neo-brutalist", "Neo-Brutalist", {});
+      expect(args.user).toContain("Style atoms (highest priority)");
+      expect(args.user).not.toContain("blended");
+      // No dimension line should carry (from ...)
+      expect(args.user).not.toMatch(/\(from /);
+    });
+
+    it("override pointing to an atomless style falls back silently (that dimension uses base)", async () => {
+      // minimalist-flat has no atoms, so it should be ignored as a source.
+      const args = await captureBlendCall("neo-brutalist", "Neo-Brutalist", {
+        color: "minimalist-flat",
+      });
+      // With no valid override, the payload should route to the single-style header.
+      expect(args.user).toContain("Style atoms (highest priority)");
+      expect(args.user).not.toContain("blended");
+      expect(args.user).not.toMatch(/\(from /);
+    });
+
+    it("multiple valid overrides all surface with (from ...) suffixes on their lines only", async () => {
+      const args = await captureBlendCall("neo-brutalist", "Neo-Brutalist", {
+        motion: "glassmorphism",
+        color: "apple-style",
+      });
+      expect(args.user).toContain("Style atoms (highest priority · blended)");
+      expect(args.user).toMatch(/^- Motion \(from Liquid Glass\): /m);
+      expect(args.user).toMatch(/^- Color \(from Apple Style\): /m);
+      // Non-overridden dimensions stay clean.
+      expect(args.user).toMatch(/^- Philosophy: \S/m);
+      expect(args.user).toMatch(/^- Layout: \S/m);
+      expect(args.user).toMatch(/^- Typography: \S/m);
+    });
+
+    it("blended Chinese payload uses the zh header and '来自' prefix", async () => {
+      const args = await captureBlendCall(
+        "neo-brutalist",
+        "Neo-Brutalist",
+        { motion: "cyberpunk-neon" },
+        "zh"
+      );
+      expect(args.user).toContain("风格原子（最高优先级 · 多源混合）");
+      expect(args.user).toMatch(/^- 动效 \(来自 [^)]+\): /m);
+    });
+
+    it("English system prompt carries the new multi-source isolation rule", async () => {
+      const args = await captureBlendCall(
+        "neo-brutalist",
+        "Neo-Brutalist",
+        { motion: "cyberpunk-neon" },
+        "en"
+      );
+      expect(args.system).toContain("multiple source styles");
+      expect(args.system).toContain("applies ONLY to its own dimension");
+    });
+
+    it("Chinese system prompt carries the new multi-source isolation rule", async () => {
+      const args = await captureBlendCall(
+        "neo-brutalist",
+        "Neo-Brutalist",
+        { motion: "cyberpunk-neon" },
+        "zh"
+      );
+      expect(args.system).toContain("多个来源风格");
+      expect(args.system).toContain("只在该维度生效");
+    });
+  });
 });
