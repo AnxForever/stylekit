@@ -185,6 +185,15 @@ describe("POST /api/agent/chat", () => {
       toolTrace: [{ tool: "searchKnowledge", ok: true }],
       promptSnapshot: samplePromptSnapshot,
       decisionTrace: [],
+      turnMetrics: {
+        totalDurationMs: 1234,
+        llmCallCount: 2,
+        totalPromptTokens: 1800,
+        totalCompletionTokens: 320,
+        totalCostUsd: 0.0032,
+        reflectionTriggered: false,
+        calls: [],
+      },
     });
     mockedListAgentSessionsForUser.mockResolvedValue([
       {
@@ -339,6 +348,15 @@ describe("POST /api/agent/chat", () => {
         responder: null,
       },
       decisionTrace: [],
+      turnMetrics: {
+        totalDurationMs: 980,
+        llmCallCount: 1,
+        totalPromptTokens: 1200,
+        totalCompletionTokens: 180,
+        totalCostUsd: 0.0018,
+        reflectionTriggered: false,
+        calls: [],
+      },
     });
     mockedListAgentSessionsForUser.mockResolvedValue([
       {

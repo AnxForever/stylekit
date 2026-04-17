@@ -1,6 +1,7 @@
 import { vi } from "vitest";
 import type { EvalScenario, EvalTurn } from "./eval-scenarios";
 import type { AgentMessage, AgentCodePrompt, AgentToolTrace } from "../types";
+import type { TurnMetrics } from "../observability";
 
 export interface EvalTurnResult {
   turnIndex: number;
@@ -9,6 +10,7 @@ export interface EvalTurnResult {
   hasCodePrompt: boolean;
   slotsFilled: string[];
   toolTrace: Array<{ tool: string; ok: boolean }>;
+  turnMetrics?: TurnMetrics;
 }
 
 export interface EvalResult {
@@ -40,10 +42,57 @@ export async function runEvalScenario(
   /* Build mock planner responses queue */
   let plannerCallIndex = 0;
   const plannerResponses = scenario.turns.map((turn) => turn.mockPlannerResult);
-
   const responderResponse = { assistantMessage: "Here is your design prompt summary." };
 
-  /* Mock the provider module */
+  /* Mock the reflector module (L5): pass-through wrapper.
+   * Eval must be deterministic — we want to test planner output as-is,
+   * not as modified by a reflection retry. Production keeps reflection active
+   * via AGENT_USE_REFLECTION env var. */
+  vi.doMock("../reflector", async (importOriginal) => {
+    const actual = await importOriginal<typeof import("../reflector")>();
+    return {
+      ...actual,
+      runPlannerWithReflection: vi.fn().mockImplementation(async (reflectionArgs) => {
+        /* Delegate directly to the mocked runPlannerWithTools */
+        const { runPlannerWithTools: mockedPlanner } = await import("../planner-with-tools");
+        return mockedPlanner(reflectionArgs);
+      }),
+    };
+  });
+
+  /* Mock the planner-with-tools module at the "seam":
+   * the orchestrator treats runPlannerWithTools as a single planner call per turn,
+   * so mocking there bypasses the entire tool loop + LLM layer. Keep the real
+   * PlannerToolLoopError class so instanceof checks still work. */
+  vi.doMock("../planner-with-tools", async (importOriginal) => {
+    const actual = await importOriginal<typeof import("../planner-with-tools")>();
+    return {
+      ...actual,
+      runPlannerWithTools: vi.fn().mockImplementation(() => {
+        const planner = plannerResponses[plannerCallIndex];
+        plannerCallIndex++;
+        return Promise.resolve({
+          planner,
+          toolTraces: [
+            {
+              tool: "mockedPlannerLoop",
+              ok: true,
+              meta: { turn: plannerCallIndex - 1, scenarioDriven: true },
+            },
+          ],
+          iterations: 1,
+          systemPrompt: "(mocked system prompt)",
+          userPrompt: "(mocked user prompt)",
+        });
+      }),
+    };
+  });
+
+  /* Mock the provider module:
+   * - requestAgentJson: used only for responder + follow-up paths (always returns responderResponse)
+   * - requestAgentStream: returns a short ReadableStream
+   * - requestAgentWithTools: stub; should NOT be invoked since runPlannerWithTools is mocked
+   */
   vi.doMock("../provider", () => ({
     AgentProviderError: class AgentProviderError extends Error {
       code: string;
@@ -54,35 +103,25 @@ export async function runEvalScenario(
         this.status = status;
       }
     },
-    requestAgentJson: vi.fn().mockImplementation(() => {
-      const result = plannerResponses[plannerCallIndex];
-      if (result) {
-        /* If this is a done-phase planner, the next call will be the responder */
-        if (result.phase === "done" && result.ready) {
-          plannerCallIndex++;
-          /* Return planner result first, then responder on second call */
-          let callCount = 0;
-          const currentPlanner = result;
-          return new Promise((resolve) => {
-            /* First call: planner */
-            resolve(currentPlanner);
-          });
-        }
-        plannerCallIndex++;
-        return Promise.resolve(result);
-      }
-      return Promise.resolve(responderResponse);
-    }),
-    requestAgentStream: vi.fn().mockImplementation(() => {
-      return Promise.resolve(
-        new ReadableStream({
+    requestAgentJson: vi.fn().mockImplementation(() => Promise.resolve(responderResponse)),
+    requestAgentStream: vi.fn().mockImplementation(() =>
+      Promise.resolve(
+        new ReadableStream<string>({
           start(controller) {
             controller.enqueue("Here is your design prompt summary.");
             controller.close();
           },
         })
-      );
-    }),
+      )
+    ),
+    requestAgentWithTools: vi.fn().mockImplementation(() =>
+      Promise.resolve({
+        stopReason: "end_turn",
+        content: null,
+        toolCalls: [],
+        rawAssistantMessage: { role: "assistant", content: null },
+      })
+    ),
     getAgentModelConfig: vi.fn().mockReturnValue({
       apiKey: "test-key",
       model: "test-model",
@@ -91,7 +130,7 @@ export async function runEvalScenario(
     isAgentModelConfigured: vi.fn().mockReturnValue(true),
   }));
 
-  /* Import orchestrator with mocked provider */
+  /* Import orchestrator with mocked deps */
   const { runAgentTurn } = await import("../orchestrator");
 
   const conversation: AgentMessage[] = [];
@@ -113,21 +152,6 @@ export async function runEvalScenario(
     };
     conversation.push(userMsg);
 
-    /* For done-phase turns, the mock needs to handle both planner + responder calls.
-       Reset the mock to return planner first, then responder. */
-    if (turn.mockPlannerResult.phase === "done" && turn.mockPlannerResult.ready) {
-      const { requestAgentJson } = await import("../provider");
-      const mockFn = requestAgentJson as ReturnType<typeof vi.fn>;
-      let doneCallCount = 0;
-      mockFn.mockImplementation(() => {
-        doneCallCount++;
-        if (doneCallCount === 1) {
-          return Promise.resolve(turn.mockPlannerResult);
-        }
-        return Promise.resolve(responderResponse);
-      });
-    }
-
     try {
       const result = await runAgentTurn({
         locale: scenario.locale,
@@ -145,6 +169,7 @@ export async function runEvalScenario(
           tool: item.tool,
           ok: item.ok,
         })),
+        turnMetrics: result.turnMetrics,
       };
 
       turnResults.push(turnResult);
