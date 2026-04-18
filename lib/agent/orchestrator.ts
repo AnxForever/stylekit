@@ -11,7 +11,7 @@ import { AgentProviderError, requestAgentJson, requestAgentStream } from "./prov
 import { runPlannerWithTools, PlannerToolLoopError } from "./planner-with-tools";
 import { runPlannerWithReflection } from "./reflector";
 import { TurnTracker, type TurnMetrics } from "./observability";
-import { buildAgentCodePrompt } from "./code-prompt";
+import { composeAgentCodePrompt } from "./prompt-composer";
 import { buildAgentProjectKnowledgeContext } from "./project-knowledge";
 import { inferTemplateType, getLocalizedTemplateTypeLabel } from "./recommendations";
 import { buildWorkflowSnapshot } from "./state-transition";
@@ -82,7 +82,7 @@ const suggestedOptionSchema = z.object({
 
 const plannerSchema = z.object({
   ready: z.boolean(),
-  phase: z.enum(["goal", "audience", "feel", "confirm", "revise", "done"]).default("goal"),
+  phase: z.enum(["goal", "audience", "feel", "feel-layout", "confirm", "revise", "refine", "done"]).default("goal"),
   normalizedQuery: z.string().trim().default(""),
   productType: z.string().trim().default(""),
   audience: z.string().trim().default(""),
@@ -208,8 +208,10 @@ function getPhaseLabel(locale: Locale, phase: AgentConsultPhase): string {
     goal: { zh: "网站目标", en: "Site Goal" },
     audience: { zh: "目标受众", en: "Target Audience" },
     feel: { zh: "视觉感觉", en: "Visual Feel" },
+    "feel-layout": { zh: "布局方向", en: "Layout Direction" },
     confirm: { zh: "确认需求", en: "Confirm Brief" },
     revise: { zh: "修改需求", en: "Revise Brief" },
+    refine: { zh: "细节微调", en: "Refine Details" },
     done: { zh: "生成完成", en: "Generation Complete" },
   };
   const label = labels[phase];
@@ -1264,10 +1266,12 @@ async function prepareAgentTurn({
   locale,
   messages,
   pageContext,
+  atomOverrides,
 }: {
   locale: Locale;
   messages: AgentMessage[];
   pageContext?: AgentPageContext;
+  atomOverrides?: import("./atom-overrides").AtomOverrides;
 }): Promise<AgentTurnPreparation> {
   const tracker = new TurnTracker();
   const latestUserMsg = getLatestUserMessage(messages);
@@ -1353,8 +1357,8 @@ async function prepareAgentTurn({
       const onUsageForPlanner = (event: Parameters<NonNullable<Parameters<typeof runPlannerWithTools>[0]["onUsage"]>>[0]) =>
         tracker.record(event);
       const loopResult = USE_REFLECTION
-        ? await runPlannerWithReflection({ locale, messages, pageContext, onUsage: onUsageForPlanner })
-        : await runPlannerWithTools({ locale, messages, pageContext, onUsage: onUsageForPlanner });
+        ? await runPlannerWithReflection({ locale, messages, pageContext, onUsage: onUsageForPlanner, atomOverrides })
+        : await runPlannerWithTools({ locale, messages, pageContext, onUsage: onUsageForPlanner, atomOverrides });
       planner = loopResult.planner;
       toolLoopTraces = loopResult.toolTraces;
       if (loopResult.toolTraces.some((t) => t.tool === "reflection")) {
@@ -1541,12 +1545,13 @@ async function prepareAgentTurn({
     toolTrace.push({ tool: "getDesignRecommendation", ok: false });
   }
 
-  const codePrompt = buildAgentCodePrompt({
+  const codePrompt = await composeAgentCodePrompt({
     locale,
     planner,
     smartRecommendation,
     projectKnowledge,
     designRecommendation,
+    onUsage: (event) => tracker.record({ ...event, purpose: "composer" }),
   });
 
   const responderPrompt = buildResponderPrompt({
@@ -1594,10 +1599,12 @@ export async function runAgentTurn({
   locale,
   messages,
   pageContext,
+  atomOverrides,
 }: {
   locale: Locale;
   messages: AgentMessage[];
   pageContext?: AgentPageContext;
+  atomOverrides?: import("./atom-overrides").AtomOverrides;
 }): Promise<{
   assistantMessage: string;
   followUpNeeded: boolean;
@@ -1610,7 +1617,7 @@ export async function runAgentTurn({
   decisionTrace: AgentDecisionTraceItem[];
   turnMetrics: TurnMetrics;
 }> {
-  const prep = await prepareAgentTurn({ locale, messages, pageContext });
+  const prep = await prepareAgentTurn({ locale, messages, pageContext, atomOverrides });
 
   if (prep.kind === "resolved") {
     return {
@@ -1712,12 +1719,14 @@ export async function runAgentTurnStreaming({
   locale,
   messages,
   pageContext,
+  atomOverrides,
 }: {
   locale: Locale;
   messages: AgentMessage[];
   pageContext?: AgentPageContext;
+  atomOverrides?: import("./atom-overrides").AtomOverrides;
 }): Promise<AgentTurnStreamingResult> {
-  const prep = await prepareAgentTurn({ locale, messages, pageContext });
+  const prep = await prepareAgentTurn({ locale, messages, pageContext, atomOverrides });
 
   if (prep.kind === "resolved") {
     return {

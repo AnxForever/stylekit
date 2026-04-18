@@ -14,6 +14,7 @@ import type {
   AgentPlannerResult,
   AgentToolTrace,
 } from "./types";
+import type { AtomOverrides } from "./atom-overrides";
 
 /* =======================================================================
  * L5 Reflection Layer
@@ -180,6 +181,7 @@ export async function runPlannerWithReflection(args: {
   messages: AgentMessage[];
   pageContext?: AgentPageContext;
   onUsage?: OnUsageCallback;
+  atomOverrides?: AtomOverrides;
 }): Promise<PlannerToolLoopResult> {
   /* First pass */
   const first = await runPlannerWithTools(args);
@@ -243,6 +245,7 @@ export async function runPlannerWithReflection(args: {
       messages: [...args.messages, feedbackMessage],
       pageContext: args.pageContext,
       onUsage: args.onUsage,
+      atomOverrides: args.atomOverrides,
     });
     return {
       planner: retry.planner,

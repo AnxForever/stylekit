@@ -24,6 +24,16 @@ const requestSchema = z.object({
       templateSlug: z.string().trim().optional(),
     })
     .optional(),
+  atomOverrides: z
+    .object({
+      philosophy: z.string().trim().optional(),
+      layout: z.string().trim().optional(),
+      motion: z.string().trim().optional(),
+      color: z.string().trim().optional(),
+      typography: z.string().trim().optional(),
+    })
+    .partial()
+    .optional(),
 });
 
 function asSessionSummary(session: AgentSessionSummary): AgentSessionSummary {
@@ -107,6 +117,7 @@ export async function POST(request: Request) {
       locale: body.locale,
       messages: conversation,
       pageContext: body.pageContext,
+      atomOverrides: body.atomOverrides,
     });
 
     const assistant = await appendAgentMessage({
@@ -128,12 +139,14 @@ export async function POST(request: Request) {
     return NextResponse.json({
       success: true,
       sessionId: session.id,
+      userMessage,
       assistantMessage: turn.assistantMessage,
       followUpNeeded: turn.followUpNeeded,
       workflowState: turn.workflowState,
       workflow: turn.workflow,
       planner: turn.planner,
       codePrompt: turn.codePrompt,
+      suggestedOptions: turn.planner?.suggestedOptions ?? [],
       toolTrace: turn.toolTrace,
       promptSnapshot: turn.promptSnapshot,
       decisionTrace: turn.decisionTrace,
