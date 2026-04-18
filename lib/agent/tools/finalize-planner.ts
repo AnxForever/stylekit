@@ -19,7 +19,7 @@ const planCardParamsSchema = z.object({
     .boolean()
     .describe("True only when phase='done' and all required slots are filled."),
   phase: z
-    .enum(["goal", "audience", "feel", "confirm", "revise", "done"])
+    .enum(["goal", "audience", "feel", "feel-layout", "confirm", "revise", "refine", "done"])
     .describe("Current consultation phase to advance to."),
   normalizedQuery: z
     .string()
@@ -68,6 +68,38 @@ const planCardParamsSchema = z.object({
     })
     .default({})
     .describe("Structured context for downstream tools like getDesignRecommendation."),
+  /* Phase 2 multi-dimensional hints — optional, filled progressively. */
+  layoutHint: z
+    .string()
+    .default("")
+    .describe("Layout direction chosen in feel-layout phase (e.g. 'Z-pattern hero', 'split grid', 'editorial long-form'). Empty until user picks."),
+  motionHint: z
+    .string()
+    .default("")
+    .describe("Motion direction chosen in refine phase (e.g. 'subtle fades', 'playful spring', 'zero motion'). Empty when skipped."),
+  colorHint: z
+    .string()
+    .default("")
+    .describe("Color preference chosen in refine phase (e.g. 'warm sunset', 'cool mono', 'high-contrast neon'). Empty when skipped."),
+  typographyHint: z
+    .string()
+    .default("")
+    .describe("Typography direction chosen in refine phase (e.g. 'editorial serif', 'tight geometric sans'). Empty when skipped."),
+  /* Phase 3.x: per-dimension atom source overrides for cross-style blending.
+   * Each value is a source style slug. Absent keys fall through to base. */
+  atomOverrides: z
+    .object({
+      philosophy: z.string().optional(),
+      layout: z.string().optional(),
+      motion: z.string().optional(),
+      color: z.string().optional(),
+      typography: z.string().optional(),
+    })
+    .partial()
+    .optional()
+    .describe(
+      "Per-dimension atom source overrides from the Blend UI. Keys: philosophy/layout/motion/color/typography; values: source style slug. Echo the confirmedSlots.atomOverrides value as-is when present; do not invent or modify entries yourself."
+    ),
 });
 
 export const finalizePlannerTool: AgentTool<typeof planCardParamsSchema> = {

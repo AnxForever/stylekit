@@ -23,6 +23,16 @@ const requestSchema = z.object({
       templateSlug: z.string().trim().optional(),
     })
     .optional(),
+  atomOverrides: z
+    .object({
+      philosophy: z.string().trim().optional(),
+      layout: z.string().trim().optional(),
+      motion: z.string().trim().optional(),
+      color: z.string().trim().optional(),
+      typography: z.string().trim().optional(),
+    })
+    .partial()
+    .optional(),
 });
 
 function sseEvent(event: string, data: unknown): string {
@@ -113,6 +123,7 @@ export async function POST(request: Request) {
       locale: body.locale,
       messages: conversation,
       pageContext: body.pageContext,
+      atomOverrides: body.atomOverrides,
     });
 
     /* --- Non-streaming result (consulting phases) --- */
@@ -261,6 +272,7 @@ export async function POST(request: Request) {
       },
     });
   } catch (error) {
+    console.error("[agent/chat/stream] Error:", error);
     const message =
       error instanceof AgentProviderError
         ? error.message

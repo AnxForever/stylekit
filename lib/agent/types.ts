@@ -160,6 +160,8 @@ export interface AgentChatRequest {
   message: string;
   locale: Locale;
   pageContext?: AgentPageContext;
+  /* Phase 3.x: per-dimension atom source overrides from the Blend UI. */
+  atomOverrides?: import("./atom-overrides").AtomOverrides;
 }
 
 export interface AgentChatResponse {
