@@ -1,6 +1,8 @@
 import { DesignStyle } from "./index";
+import { bentoGridAtoms } from "./atoms/bento-grid";
 
 export const bentoGrid: DesignStyle = {
+  atoms: bentoGridAtoms,
   slug: "bento-grid",
   name: "便当盒布局",
   nameEn: "Bento Grid",

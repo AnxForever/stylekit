@@ -1,6 +1,8 @@
 import { DesignStyle } from "./index";
+import { editorialAtoms } from "./atoms/editorial";
 
 export const editorial: DesignStyle = {
+  atoms: editorialAtoms,
   slug: "editorial",
   name: "编辑杂志风",
   nameEn: "Editorial",

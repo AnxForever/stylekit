@@ -1,6 +1,8 @@
 import { DesignStyle } from "./index";
+import { claymorphismAtoms } from "./atoms/claymorphism";
 
 export const claymorphism: DesignStyle = {
+  atoms: claymorphismAtoms,
   slug: "claymorphism",
   name: "粘土拟态",
   nameEn: "Claymorphism",

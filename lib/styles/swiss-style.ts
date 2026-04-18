@@ -1,6 +1,8 @@
 import { DesignStyle } from "./index";
+import { swissStyleAtoms } from "./atoms/swiss-style";
 
 export const swissStyle: DesignStyle = {
+  atoms: swissStyleAtoms,
   slug: "swiss-style",
   name: "瑞士国际风格",
   nameEn: "Swiss International",
