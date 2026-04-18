@@ -34,3 +34,8 @@ export { cyberpunkNeonAtoms } from "./cyberpunk-neon";
 export { glassmorphismAtoms } from "./glassmorphism";
 export { appleStyleAtoms } from "./apple-style";
 export { bauhausAtoms } from "./bauhaus";
+export { swissStyleAtoms } from "./swiss-style";
+export { claymorphismAtoms } from "./claymorphism";
+export { editorialAtoms } from "./editorial";
+export { bentoGridAtoms } from "./bento-grid";
+export { comicStyleAtoms } from "./comic-style";

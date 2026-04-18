@@ -1,6 +1,8 @@
 import { DesignStyle } from "./index";
+import { comicStyleAtoms } from "./atoms/comic-style";
 
 export const comicStyle: DesignStyle = {
+  atoms: comicStyleAtoms,
   slug: "comic-style",
   name: "漫画风格",
   nameEn: "Comic Style",
