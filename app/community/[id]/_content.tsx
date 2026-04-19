@@ -1,5 +1,6 @@
 "use client";
 
+import { useMemo } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { ScrollBackButton } from "@/components/scroll-back-button";
@@ -13,6 +14,7 @@ import { useI18n } from "@/lib/i18n/context";
 import { localizedString, localizedList } from "@/lib/styles/locale-content";
 import type { SubmissionRecord } from "@/lib/submit/reviewer";
 import type { DesignStyle } from "@/lib/styles";
+import { DesignMdRenderer, parseDesignMd } from "@/lib/design-md";
 
 interface Props {
   submission: SubmissionRecord;
@@ -56,6 +58,21 @@ export function CommunitySubmissionContent({ submission, style }: Props) {
   const author = parseAuthor(submission.formData);
   const backHref = `/community?slug=${submission.slug}`;
 
+  const designMdRaw =
+    typeof submission.formData.design_md === "string" &&
+    submission.formData.design_md.trim().length > 0
+      ? submission.formData.design_md
+      : null;
+
+  const designMdDoc = useMemo(() => {
+    if (!designMdRaw) return null;
+    try {
+      return parseDesignMd(designMdRaw);
+    } catch {
+      return null;
+    }
+  }, [designMdRaw]);
+
   return (
     <>
       {/* Hero */}
@@ -84,6 +101,11 @@ export function CommunitySubmissionContent({ submission, style }: Props) {
             <div>
               <h1 className="text-4xl md:text-5xl lg:text-6xl mb-2">
                 {style.name}
+                {designMdDoc ? (
+                  <span className="ml-3 inline-flex items-center rounded-full border border-accent/50 bg-accent/10 px-3 py-1 text-[11px] font-mono uppercase tracking-wider text-accent align-middle">
+                    DESIGN.md
+                  </span>
+                ) : null}
               </h1>
               {style.nameEn && style.nameEn !== style.name && (
                 <p className="text-xl text-muted mb-6">{style.nameEn}</p>
@@ -176,6 +198,23 @@ export function CommunitySubmissionContent({ submission, style }: Props) {
           </div>
         </div>
       </section>
+
+      {/* DESIGN.md document (when submission source is design-md) */}
+      {designMdDoc ? (
+        <section className="border-b border-border bg-foreground/[0.02]">
+          <div className="max-w-7xl mx-auto px-6 md:px-12 py-12 md:py-16">
+            <p className="text-xs tracking-widest uppercase text-muted mb-4">
+              DESIGN.md
+            </p>
+            <h2 className="text-2xl md:text-3xl mb-8">
+              {locale === "zh" ? "设计系统文档" : "Design System Document"}
+            </h2>
+            <div className="max-w-4xl">
+              <DesignMdRenderer document={designMdDoc} showFrontmatter showToc />
+            </div>
+          </div>
+        </section>
+      ) : null}
 
       {/* Prompt Pair Export */}
       {style.aiRules && (
