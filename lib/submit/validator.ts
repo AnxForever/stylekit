@@ -80,3 +80,37 @@ export const wizardFormSchema = z.object({
 );
 
 export type ValidatedWizardFormData = z.infer<typeof wizardFormSchema>;
+
+/* ---------- DESIGN.md submission (Phase 1) ---------- */
+// A lighter-weight submission path: the user pastes a DESIGN.md document
+// (Google Stitch / getdesign.md format). We keep only the bare essentials
+// for the submissions table (slug + name + category) and store the full
+// markdown inside form_data. Quality assessment happens downstream.
+
+export const designMdSubmissionSchema = z.object({
+  source: z.literal("design-md"),
+  slug: z
+    .string()
+    .min(1, "Slug is required")
+    .regex(SLUG_RE, "Slug must be lowercase letters, numbers, and hyphens"),
+  name: z.string().trim().min(1, "Name is required"),
+  nameEn: z.string().trim().optional().default(""),
+  category: z.enum(["modern", "retro", "minimal", "expressive"]).optional(),
+  description: z.string().trim().max(300).optional(),
+  design_md: z
+    .string()
+    .trim()
+    .min(200, "DESIGN.md content should be at least 200 characters"),
+  coverSvg: z.string().optional(),
+});
+
+export type ValidatedDesignMdSubmission = z.infer<typeof designMdSubmissionSchema>;
+
+export function isDesignMdSubmissionPayload(body: unknown): boolean {
+  return (
+    typeof body === "object" &&
+    body !== null &&
+    !Array.isArray(body) &&
+    (body as { source?: unknown }).source === "design-md"
+  );
+}

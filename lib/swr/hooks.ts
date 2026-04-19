@@ -67,6 +67,7 @@ interface CommunityFeedItem {
   description: string | null;
   cover: string | null;
   author: CommunityAuthor;
+  hasDesignMd: boolean;
 }
 
 interface CommunityFeedData {
