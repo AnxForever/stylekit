@@ -2,19 +2,23 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
-import { AlertCircle, CheckCircle2, FileText, Send } from "lucide-react";
+import { AlertCircle, CheckCircle2, Eye, FileText, Pencil, Send, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button/button";
 import { Input } from "@/components/ui/input/input";
 import { useUser } from "@/lib/auth/use-user";
 import { useI18n } from "@/lib/i18n/context";
 import {
   assessDesignMdQuality,
+  DesignMdRenderer,
   parseDesignMd,
   type DesignMdQualityReport,
 } from "@/lib/design-md";
+import { DESIGN_MD_TEMPLATE_SAMPLE } from "./design-md-template-sample";
 
 type Category = "modern" | "retro" | "minimal" | "expressive";
 const CATEGORY_OPTIONS: Category[] = ["modern", "retro", "minimal", "expressive"];
+
+type EditorTab = "edit" | "preview";
 
 interface FormState {
   slug: string;
@@ -41,6 +45,7 @@ export function DesignMdPasteForm() {
   const { user, loading: userLoading } = useUser();
 
   const [form, setForm] = useState<FormState>(INITIAL_STATE);
+  const [tab, setTab] = useState<EditorTab>("edit");
   const [error, setError] = useState<string | null>(null);
   const [details, setDetails] = useState<Record<string, string[]> | null>(null);
   const [submitting, setSubmitting] = useState(false);
@@ -48,13 +53,22 @@ export function DesignMdPasteForm() {
 
   const zh = locale === "zh";
 
-  const qualityReport = useMemo<DesignMdQualityReport | null>(() => {
-    if (!form.designMd.trim()) return null;
+  const parsed = useMemo(() => {
+    const raw = form.designMd.trim();
+    if (!raw) return { doc: null, report: null as DesignMdQualityReport | null, parseError: null as string | null };
     try {
       const doc = parseDesignMd(form.designMd);
-      return assessDesignMdQuality(doc);
-    } catch {
-      return null;
+      return {
+        doc,
+        report: assessDesignMdQuality(doc),
+        parseError: null,
+      };
+    } catch (err) {
+      return {
+        doc: null,
+        report: null,
+        parseError: err instanceof Error ? err.message : String(err),
+      };
     }
   }, [form.designMd]);
 
@@ -81,6 +95,11 @@ export function DesignMdPasteForm() {
   const handleDesignMdChange = (value: string) => {
     updateField("designMd", value);
     applyFrontmatterHints(value);
+  };
+
+  const handleLoadSample = () => {
+    setForm((prev) => ({ ...prev, designMd: DESIGN_MD_TEMPLATE_SAMPLE }));
+    applyFrontmatterHints(DESIGN_MD_TEMPLATE_SAMPLE);
   };
 
   const canSubmit =
@@ -126,6 +145,7 @@ export function DesignMdPasteForm() {
 
       setSuccessSlug(data.slug ?? form.slug);
       setForm(INITIAL_STATE);
+      setTab("edit");
     } catch (err) {
       setError(
         err instanceof Error
@@ -144,19 +164,24 @@ export function DesignMdPasteForm() {
       <div className="max-w-2xl mx-auto px-4 py-16 text-center">
         <CheckCircle2 className="mx-auto h-12 w-12 text-green-600" aria-hidden="true" />
         <h1 className="mt-6 text-2xl font-semibold">
-          {zh ? "投稿已提交" : "Submission received"}
+          {zh ? "投稿已进入审核队列" : "Submission queued for review"}
         </h1>
-        <p className="mt-3 text-sm text-muted">
+        <p className="mt-3 text-sm text-muted leading-relaxed">
           {zh
-            ? `我们已记录 slug 为 "${successSlug}" 的 DESIGN.md，审核通过后会出现在社区。`
-            : `We have queued your DESIGN.md for slug "${successSlug}". It will appear in the community once approved.`}
+            ? `我们已记录 slug 为 "${successSlug}" 的 DESIGN.md。审核通过后它会出现在社区页，带上 DESIGN.md 徽章。`
+            : `We have queued your DESIGN.md for slug "${successSlug}". Once approved it will appear in the community feed with a DESIGN.md badge.`}
+        </p>
+        <p className="mt-2 text-xs text-muted">
+          {zh
+            ? "审核时间通常为 1-3 天，可随时回社区页查看状态。"
+            : "Review typically takes 1-3 days; you can check the community feed any time."}
         </p>
         <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
           <Link
-            href="/community"
+            href={`/community?slug=${encodeURIComponent(successSlug)}`}
             className="inline-flex items-center justify-center h-10 px-4 text-sm bg-accent text-white hover:bg-accent/90 transition-colors"
           >
-            {zh ? "返回社区" : "Back to Community"}
+            {zh ? "去社区查看" : "View in community"}
           </Link>
           <Button
             variant="outline"
@@ -183,21 +208,9 @@ export function DesignMdPasteForm() {
         </h1>
         <p className="mt-3 text-sm text-muted leading-relaxed">
           {zh
-            ? "支持 Google Stitch 的 DESIGN.md 格式。把完整 markdown 粘到下方文本域，我们会从 frontmatter 自动读取 slug 与名称。提交后会进入人工审核队列。"
+            ? "支持 Google Stitch 的 DESIGN.md 格式。把完整 markdown 粘到下方文本域，我们会从 frontmatter 自动读取 slug 与名称。提交后进入人工审核队列。"
             : "Supports the Google Stitch DESIGN.md format. Paste the full markdown below — we will auto-read slug and name from YAML frontmatter. Submissions enter the manual review queue."}
         </p>
-        <div className="mt-4 flex flex-wrap gap-3 text-sm">
-          <Link
-            href="/docs/design-md/template"
-            className="text-accent hover:underline"
-          >
-            {zh ? "查看模板骨架" : "View template"}
-          </Link>
-          <span className="text-muted">·</span>
-          <Link href="/submit" className="text-accent hover:underline">
-            {zh ? "切回填表模式" : "Switch to guided wizard"}
-          </Link>
-        </div>
       </header>
 
       {!userLoading && !user ? (
@@ -295,30 +308,97 @@ export function DesignMdPasteForm() {
           />
         </label>
 
-        <label className="flex flex-col gap-2">
-          <span className="text-sm font-medium">
-            {zh ? "DESIGN.md 内容" : "DESIGN.md content"}
-          </span>
-          <textarea
-            value={form.designMd}
-            onChange={(e) => handleDesignMdChange(e.target.value)}
-            placeholder={
-              zh
-                ? "---\nname: Neo Brutalist\nslug: neo-brutalist\n---\n\n# Design System: ..."
-                : "---\nname: Neo Brutalist\nslug: neo-brutalist\n---\n\n# Design System: ..."
-            }
-            required
-            rows={18}
-            className="w-full font-mono text-sm bg-background border border-border p-4 focus:border-foreground focus:outline-none leading-relaxed"
-          />
+        <div className="flex flex-col gap-2">
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <span className="text-sm font-medium">
+              {zh ? "DESIGN.md 内容" : "DESIGN.md content"}
+            </span>
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={handleLoadSample}
+                className="inline-flex items-center gap-1 rounded-full border border-border px-3 py-1 text-xs text-foreground hover:bg-foreground hover:text-background transition-colors"
+              >
+                <Sparkles className="h-3 w-3" aria-hidden="true" />
+                {zh ? "加载示例 (Neo Brutalist)" : "Load sample (Neo Brutalist)"}
+              </button>
+              <div className="inline-flex rounded-full border border-border p-0.5 text-xs">
+                <button
+                  type="button"
+                  onClick={() => setTab("edit")}
+                  className={`inline-flex items-center gap-1 rounded-full px-3 py-1 transition-colors ${
+                    tab === "edit"
+                      ? "bg-foreground text-background"
+                      : "text-muted hover:text-foreground"
+                  }`}
+                  aria-pressed={tab === "edit"}
+                >
+                  <Pencil className="h-3 w-3" aria-hidden="true" />
+                  {zh ? "编辑" : "Edit"}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setTab("preview")}
+                  className={`inline-flex items-center gap-1 rounded-full px-3 py-1 transition-colors ${
+                    tab === "preview"
+                      ? "bg-foreground text-background"
+                      : "text-muted hover:text-foreground"
+                  }`}
+                  aria-pressed={tab === "preview"}
+                  disabled={!form.designMd.trim()}
+                >
+                  <Eye className="h-3 w-3" aria-hidden="true" />
+                  {zh ? "预览" : "Preview"}
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {tab === "edit" ? (
+            <textarea
+              value={form.designMd}
+              onChange={(e) => handleDesignMdChange(e.target.value)}
+              placeholder={
+                zh
+                  ? "---\nname: Neo Brutalist\nslug: neo-brutalist\n---\n\n# Design System: ..."
+                  : "---\nname: Neo Brutalist\nslug: neo-brutalist\n---\n\n# Design System: ..."
+              }
+              required
+              rows={18}
+              className="w-full font-mono text-sm bg-background border border-border p-4 focus:border-foreground focus:outline-none leading-relaxed"
+            />
+          ) : (
+            <div className="min-h-[32rem] border border-border bg-background p-4 md:p-6">
+              {parsed.doc ? (
+                <DesignMdRenderer document={parsed.doc} showFrontmatter showToc />
+              ) : parsed.parseError ? (
+                <div role="alert" className="text-sm text-red-600 dark:text-red-400">
+                  <p className="font-medium">
+                    {zh ? "预览解析失败" : "Preview parse failed"}
+                  </p>
+                  <p className="mt-1 font-mono text-xs">{parsed.parseError}</p>
+                  <p className="mt-2 text-muted">
+                    {zh
+                      ? "回到编辑 tab 修正后再试。"
+                      : "Switch back to Edit to fix and retry."}
+                  </p>
+                </div>
+              ) : (
+                <p className="text-sm text-muted">
+                  {zh ? "粘贴内容后这里会显示预览。" : "Paste content first to see a preview."}
+                </p>
+              )}
+            </div>
+          )}
+
           <span className="text-xs text-muted">
             {zh
               ? `至少 ${MIN_DESIGN_MD_LENGTH} 字符,当前 ${form.designMd.length} 字符。`
               : `Min ${MIN_DESIGN_MD_LENGTH} chars, currently ${form.designMd.length}.`}
           </span>
-        </label>
+        </div>
 
-        {qualityReport ? <QualityBadge report={qualityReport} zh={zh} /> : null}
+        {parsed.report ? <QualityBadge report={parsed.report} zh={zh} /> : null}
 
         {error ? (
           <div
