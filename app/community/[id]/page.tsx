@@ -34,10 +34,6 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   return {
     title: `${style.name} — Community`,
     description: style.description,
-    robots: {
-      index: false,
-      follow: false,
-    },
   };
 }
 
