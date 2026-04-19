@@ -8,6 +8,7 @@ import { ComponentPreview } from "@/components/style-preview/component-preview";
 import { PromptPairExporter } from "@/components/style-preview/prompt-pair-exporter";
 import { ExamplePrompts } from "@/components/style-preview/example-prompts";
 import { CodeBlock } from "@/components/style-preview/code-block";
+import { getAvatarImageSrc } from "@/lib/avatar";
 import { useI18n } from "@/lib/i18n/context";
 import { localizedString, localizedList } from "@/lib/styles/locale-content";
 import type { SubmissionRecord } from "@/lib/submit/reviewer";
@@ -95,9 +96,9 @@ export function CommunitySubmissionContent({ submission, style }: Props) {
 
               {/* Author attribution */}
               <div className="inline-flex items-center gap-3 border border-border bg-background/70 px-3 py-2 mb-6">
-                {author.avatarUrl ? (
+                {getAvatarImageSrc(author.avatarUrl) ? (
                   <Image
-                    src={author.avatarUrl}
+                    src={getAvatarImageSrc(author.avatarUrl) ?? ""}
                     alt={author.handle}
                     width={24}
                     height={24}
