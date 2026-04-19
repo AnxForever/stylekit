@@ -61,6 +61,12 @@ const nextConfig: NextConfig = {
       { source: "/linter", destination: "/generate", permanent: false },
       { source: "/playground", destination: "/generate", permanent: false },
       { source: "/api-test", destination: "/developers", permanent: false },
+      // /submit/design-md was the Phase 1 standalone URL; /submit now renders
+      // the paste form directly, so redirect the legacy path at the edge so
+      // external links keep working with a clean 308 instead of a client-side
+      // route transition.
+      { source: "/submit/design-md", destination: "/submit", permanent: true },
+      { source: "/:locale(en|zh)/submit/design-md", destination: "/:locale/submit", permanent: true },
     ];
   },
 

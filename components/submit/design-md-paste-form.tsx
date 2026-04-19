@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
-import { AlertCircle, CheckCircle2, Eye, FileText, Pencil, Send, Sparkles } from "lucide-react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { AlertCircle, CheckCircle2, Eye, FileText, Pencil, Send, Sparkles, Upload, X } from "lucide-react";
 import { Button } from "@/components/ui/button/button";
 import { Input } from "@/components/ui/input/input";
 import { useUser } from "@/lib/auth/use-user";
@@ -39,6 +39,30 @@ const INITIAL_STATE: FormState = {
 };
 
 const MIN_DESIGN_MD_LENGTH = 200;
+const DRAFT_STORAGE_KEY = "stylekit:design-md-paste-draft";
+const DRAFT_SAVE_DEBOUNCE_MS = 500;
+const MARKDOWN_FILE_PATTERN = /\.(md|markdown|txt)$/i;
+
+function slugifyName(name: string): string {
+  return name
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9\s-]+/g, "")
+    .replace(/\s+/g, "-")
+    .replace(/-+/g, "-")
+    .replace(/^-|-$/g, "");
+}
+
+function isFormEmpty(form: FormState): boolean {
+  return (
+    !form.slug &&
+    !form.name &&
+    !form.nameEn &&
+    !form.category &&
+    !form.description &&
+    !form.designMd
+  );
+}
 
 export function DesignMdPasteForm() {
   const { locale } = useI18n();
@@ -50,12 +74,71 @@ export function DesignMdPasteForm() {
   const [details, setDetails] = useState<Record<string, string[]> | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [successSlug, setSuccessSlug] = useState<string | null>(null);
+  const [slugDirty, setSlugDirty] = useState(false);
+  const [draftRestored, setDraftRestored] = useState(false);
+  const [isDraggingFile, setIsDraggingFile] = useState(false);
+
+  const formRef = useRef<HTMLFormElement>(null);
+  const dragCounter = useRef(0);
 
   const zh = locale === "zh";
 
+  // ---- Draft: restore on mount ----------------------------------------
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    try {
+      const raw = window.localStorage.getItem(DRAFT_STORAGE_KEY);
+      if (!raw) return;
+      const parsed = JSON.parse(raw) as Partial<FormState> | null;
+      if (!parsed || typeof parsed !== "object") return;
+      const restored: FormState = { ...INITIAL_STATE, ...parsed };
+      if (isFormEmpty(restored)) return;
+      setForm(restored);
+      // Any non-empty slug in the draft should be treated as user-authored
+      // so auto-slug-from-name does not overwrite it after restore.
+      if (restored.slug) setSlugDirty(true);
+      setDraftRestored(true);
+    } catch {
+      // Corrupt draft — ignore and move on.
+    }
+  }, []);
+
+  // ---- Draft: persist on change (debounced) ---------------------------
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (isFormEmpty(form)) {
+      window.localStorage.removeItem(DRAFT_STORAGE_KEY);
+      return;
+    }
+    const handle = window.setTimeout(() => {
+      try {
+        window.localStorage.setItem(DRAFT_STORAGE_KEY, JSON.stringify(form));
+      } catch {
+        // Quota or serialization failure — non-fatal.
+      }
+    }, DRAFT_SAVE_DEBOUNCE_MS);
+    return () => window.clearTimeout(handle);
+  }, [form]);
+
+  // ---- Auto-derive slug from name when user hasn't edited slug --------
+  useEffect(() => {
+    if (slugDirty) return;
+    const suggested = slugifyName(form.name);
+    if (suggested && suggested !== form.slug) {
+      setForm((prev) => ({ ...prev, slug: suggested }));
+    }
+  }, [form.name, form.slug, slugDirty]);
+
+  // ---- Parse & quality report -----------------------------------------
   const parsed = useMemo(() => {
     const raw = form.designMd.trim();
-    if (!raw) return { doc: null, report: null as DesignMdQualityReport | null, parseError: null as string | null };
+    if (!raw) {
+      return {
+        doc: null,
+        report: null as DesignMdQualityReport | null,
+        parseError: null as string | null,
+      };
+    }
     try {
       const doc = parseDesignMd(form.designMd);
       return {
@@ -76,19 +159,28 @@ export function DesignMdPasteForm() {
     setForm((prev) => ({ ...prev, [key]: value }));
   };
 
+  const updateSlug = (value: string) => {
+    setSlugDirty(true);
+    updateField("slug", value);
+  };
+
   const applyFrontmatterHints = (raw: string) => {
     try {
       const doc = parseDesignMd(raw);
       const fm = doc.frontmatter;
       if (!fm) return;
-      setForm((prev) => ({
-        ...prev,
-        slug: prev.slug || fm.slug,
-        name: prev.name || fm.name,
-        category: (prev.category || fm.category || "") as Category | "",
-      }));
+      setForm((prev) => {
+        const next = { ...prev };
+        if (!prev.slug && fm.slug) {
+          next.slug = fm.slug;
+          setSlugDirty(true);
+        }
+        if (!prev.name && fm.name) next.name = fm.name;
+        if (!prev.category && fm.category) next.category = fm.category as Category;
+        return next;
+      });
     } catch {
-      // ignore — user is still typing
+      // still typing — ignore
     }
   };
 
@@ -100,6 +192,74 @@ export function DesignMdPasteForm() {
   const handleLoadSample = () => {
     setForm((prev) => ({ ...prev, designMd: DESIGN_MD_TEMPLATE_SAMPLE }));
     applyFrontmatterHints(DESIGN_MD_TEMPLATE_SAMPLE);
+  };
+
+  const handleClearDraft = () => {
+    if (typeof window !== "undefined") {
+      window.localStorage.removeItem(DRAFT_STORAGE_KEY);
+    }
+    setForm(INITIAL_STATE);
+    setSlugDirty(false);
+    setDraftRestored(false);
+    setError(null);
+    setDetails(null);
+  };
+
+  // ---- Drag & drop .md / .markdown / .txt -----------------------------
+  const acceptFile = async (file: File) => {
+    const isMarkdown =
+      MARKDOWN_FILE_PATTERN.test(file.name) ||
+      file.type === "text/markdown" ||
+      file.type === "text/plain";
+    if (!isMarkdown) {
+      setError(
+        zh
+          ? "仅支持拖入 .md / .markdown / .txt 文件"
+          : "Only .md / .markdown / .txt files are supported"
+      );
+      return;
+    }
+    try {
+      const text = await file.text();
+      handleDesignMdChange(text);
+      setError(null);
+    } catch {
+      setError(zh ? "读取文件失败" : "Failed to read file");
+    }
+  };
+
+  const handleDragEnter = (e: React.DragEvent) => {
+    if (!Array.from(e.dataTransfer.types ?? []).includes("Files")) return;
+    e.preventDefault();
+    dragCounter.current += 1;
+    setIsDraggingFile(true);
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    if (!Array.from(e.dataTransfer.types ?? []).includes("Files")) return;
+    e.preventDefault();
+  };
+
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault();
+    dragCounter.current = Math.max(0, dragCounter.current - 1);
+    if (dragCounter.current === 0) setIsDraggingFile(false);
+  };
+
+  const handleDrop = async (e: React.DragEvent) => {
+    e.preventDefault();
+    dragCounter.current = 0;
+    setIsDraggingFile(false);
+    const file = e.dataTransfer.files?.[0];
+    if (file) await acceptFile(file);
+  };
+
+  // ---- Ctrl/Cmd+Enter submit from textarea ----------------------------
+  const handleTextareaKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if ((e.ctrlKey || e.metaKey) && e.key === "Enter") {
+      e.preventDefault();
+      formRef.current?.requestSubmit();
+    }
   };
 
   const canSubmit =
@@ -143,8 +303,13 @@ export function DesignMdPasteForm() {
         return;
       }
 
+      if (typeof window !== "undefined") {
+        window.localStorage.removeItem(DRAFT_STORAGE_KEY);
+      }
       setSuccessSlug(data.slug ?? form.slug);
       setForm(INITIAL_STATE);
+      setSlugDirty(false);
+      setDraftRestored(false);
       setTab("edit");
     } catch (err) {
       setError(
@@ -196,6 +361,10 @@ export function DesignMdPasteForm() {
     );
   }
 
+  const slugHint = !slugDirty && form.name
+    ? zh ? "已从名称自动生成，可编辑覆盖" : "Auto-generated from name — editable"
+    : null;
+
   return (
     <div className="max-w-3xl mx-auto px-4 py-12">
       <header className="mb-8">
@@ -212,6 +381,30 @@ export function DesignMdPasteForm() {
             : "Supports the Google Stitch DESIGN.md format. Paste the full markdown below — we will auto-read slug and name from YAML frontmatter. Submissions enter the manual review queue."}
         </p>
       </header>
+
+      {draftRestored ? (
+        <div
+          role="status"
+          className="mb-6 flex items-start justify-between gap-3 rounded-md border border-accent/50 bg-accent/10 p-3 text-sm"
+        >
+          <div className="flex items-start gap-2">
+            <Upload className="mt-0.5 h-4 w-4 shrink-0 text-accent" aria-hidden="true" />
+            <p>
+              {zh
+                ? "已从本地草稿恢复未提交内容。继续编辑或丢弃草稿重头开始。"
+                : "Restored your local draft. Keep editing or discard to start fresh."}
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={handleClearDraft}
+            className="inline-flex shrink-0 items-center gap-1 text-xs text-muted hover:text-foreground"
+          >
+            <X className="h-3 w-3" aria-hidden="true" />
+            {zh ? "丢弃草稿" : "Discard"}
+          </button>
+        </div>
+      ) : null}
 
       {!userLoading && !user ? (
         <div
@@ -232,21 +425,8 @@ export function DesignMdPasteForm() {
         </div>
       ) : null}
 
-      <form onSubmit={handleSubmit} className="space-y-6">
+      <form ref={formRef} onSubmit={handleSubmit} className="space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <label className="flex flex-col gap-2">
-            <span className="text-sm font-medium">
-              {zh ? "Slug (英文唯一标识)" : "Slug (unique id)"}
-            </span>
-            <Input
-              type="text"
-              value={form.slug}
-              onChange={(e) => updateField("slug", e.target.value)}
-              placeholder="neo-brutalist"
-              required
-              autoComplete="off"
-            />
-          </label>
           <label className="flex flex-col gap-2">
             <span className="text-sm font-medium">
               {zh ? "风格名称" : "Name"}
@@ -259,6 +439,22 @@ export function DesignMdPasteForm() {
               required
               autoComplete="off"
             />
+          </label>
+          <label className="flex flex-col gap-2">
+            <span className="text-sm font-medium">
+              {zh ? "Slug (英文唯一标识)" : "Slug (unique id)"}
+            </span>
+            <Input
+              type="text"
+              value={form.slug}
+              onChange={(e) => updateSlug(e.target.value)}
+              placeholder="neo-brutalist"
+              required
+              autoComplete="off"
+            />
+            {slugHint ? (
+              <span className="text-xs text-muted">{slugHint}</span>
+            ) : null}
           </label>
           <label className="flex flex-col gap-2">
             <span className="text-sm font-medium">
@@ -355,18 +551,38 @@ export function DesignMdPasteForm() {
           </div>
 
           {tab === "edit" ? (
-            <textarea
-              value={form.designMd}
-              onChange={(e) => handleDesignMdChange(e.target.value)}
-              placeholder={
-                zh
-                  ? "---\nname: Neo Brutalist\nslug: neo-brutalist\n---\n\n# Design System: ..."
-                  : "---\nname: Neo Brutalist\nslug: neo-brutalist\n---\n\n# Design System: ..."
-              }
-              required
-              rows={18}
-              className="w-full font-mono text-sm bg-background border border-border p-4 focus:border-foreground focus:outline-none leading-relaxed"
-            />
+            <div
+              onDragEnter={handleDragEnter}
+              onDragOver={handleDragOver}
+              onDragLeave={handleDragLeave}
+              onDrop={handleDrop}
+              className={`relative transition-colors ${
+                isDraggingFile ? "ring-2 ring-accent ring-offset-2 ring-offset-background" : ""
+              }`}
+            >
+              <textarea
+                value={form.designMd}
+                onChange={(e) => handleDesignMdChange(e.target.value)}
+                onKeyDown={handleTextareaKeyDown}
+                placeholder={
+                  zh
+                    ? "---\nname: Neo Brutalist\nslug: neo-brutalist\n---\n\n# Design System: ...\n\n（也可以直接把 .md 文件拖进来）"
+                    : "---\nname: Neo Brutalist\nslug: neo-brutalist\n---\n\n# Design System: ...\n\n(Or drop a .md file anywhere in this box)"
+                }
+                required
+                rows={18}
+                className="w-full font-mono text-sm bg-background border border-border p-4 focus:border-foreground focus:outline-none leading-relaxed"
+              />
+              {isDraggingFile ? (
+                <div
+                  aria-hidden="true"
+                  className="pointer-events-none absolute inset-0 flex items-center justify-center bg-accent/10 text-sm font-medium text-accent"
+                >
+                  <Upload className="mr-2 h-5 w-5" />
+                  {zh ? "松开以导入 DESIGN.md 文件" : "Drop to import DESIGN.md file"}
+                </div>
+              ) : null}
+            </div>
           ) : (
             <div className="min-h-[32rem] border border-border bg-background p-4 md:p-6">
               {parsed.doc ? (
@@ -391,11 +607,18 @@ export function DesignMdPasteForm() {
             </div>
           )}
 
-          <span className="text-xs text-muted">
-            {zh
-              ? `至少 ${MIN_DESIGN_MD_LENGTH} 字符,当前 ${form.designMd.length} 字符。`
-              : `Min ${MIN_DESIGN_MD_LENGTH} chars, currently ${form.designMd.length}.`}
-          </span>
+          <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-muted">
+            <span>
+              {zh
+                ? `至少 ${MIN_DESIGN_MD_LENGTH} 字符，当前 ${form.designMd.length} 字符。`
+                : `Min ${MIN_DESIGN_MD_LENGTH} chars, currently ${form.designMd.length}.`}
+            </span>
+            <span>
+              {zh
+                ? "支持拖入 .md 文件 · Ctrl/⌘+Enter 提交"
+                : "Drag .md file in · Ctrl/⌘+Enter to submit"}
+            </span>
+          </div>
         </div>
 
         {parsed.report ? <QualityBadge report={parsed.report} zh={zh} /> : null}
