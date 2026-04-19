@@ -67,6 +67,12 @@ export function Footer() {
                 {t("nav.templates")}
               </Link>
               <Link
+                href={localizeHref("/community", locale)}
+                className="text-sm text-foreground hover:text-accent transition-colors"
+              >
+                {t("nav.community")}
+              </Link>
+              <Link
                 href={localizeHref("/guide", locale)}
                 className="text-sm text-foreground hover:text-accent transition-colors"
               >
@@ -118,6 +124,25 @@ export function Footer() {
         </div>
 
         <hr className="my-8" />
+
+        <div className="mb-8 flex flex-col gap-4 rounded-[28px] border border-border bg-[radial-gradient(circle_at_top_left,rgba(245,158,11,0.1),transparent_35%),radial-gradient(circle_at_bottom_right,rgba(34,197,94,0.08),transparent_38%)] px-5 py-5 md:flex-row md:items-center md:justify-between md:px-6">
+          <div className="max-w-2xl">
+            <p className="text-[11px] uppercase tracking-[0.28em] text-muted">
+              {locale === "zh" ? "支持维护" : "Support Maintenance"}
+            </p>
+            <p className="mt-2 text-sm leading-7 text-muted">
+              {locale === "zh"
+                ? "如果 StyleKit 恰好帮到了你，欢迎扫码支持。金额随意，每一份心意我都很感谢。"
+                : "If StyleKit helps your workflow, voluntary support helps cover servers, domains, and ongoing upkeep."}
+            </p>
+          </div>
+          <Link
+            href={localizeHref("/contact#support-maintenance", locale)}
+            className="inline-flex shrink-0 items-center justify-center rounded-full border border-foreground px-4 py-2 text-sm transition-colors hover:bg-foreground hover:text-background"
+          >
+            {locale === "zh" ? "扫码支持 / 查看全部方式" : "Scan to support / View all options"}
+          </Link>
+        </div>
 
         <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-muted">
           <p>{t("footer.openSource").replace("{year}", String(currentYear))}</p>
