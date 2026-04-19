@@ -4,9 +4,21 @@
  * Endpoints docs: https://wiki.linux.do/Community/LinuxDoConnect
  */
 
-const AUTHORIZE_URL = "https://connect.linux.do/oauth2/authorize";
-const TOKEN_URL = "https://connect.linux.do/oauth2/token";
-const USER_URL = "https://connect.linux.do/api/user";
+// Base URL for Linux DO Connect. Override via LINUXDO_BASE_URL to route
+// server-to-server calls through a reverse proxy (e.g. Cloudflare Worker)
+// when the host network cannot reach connect.linux.do directly.
+const DEFAULT_BASE_URL = "https://connect.linux.do";
+
+function getBaseUrl(): string {
+  const raw = process.env.LINUXDO_BASE_URL?.trim();
+  if (!raw) return DEFAULT_BASE_URL;
+  return raw.replace(/\/+$/, "");
+}
+
+// Authorization URL is always served from the official host so the user's
+// browser talks to Linux DO directly; only server-to-server endpoints are
+// proxied when LINUXDO_BASE_URL is set.
+const AUTHORIZE_URL = `${DEFAULT_BASE_URL}/oauth2/authorize`;
 
 export interface LinuxDoUser {
   id: number;
@@ -61,7 +73,7 @@ export async function exchangeCodeForToken(
     grant_type: "authorization_code",
   });
 
-  const res = await fetch(TOKEN_URL, {
+  const res = await fetch(`${getBaseUrl()}/oauth2/token`, {
     method: "POST",
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
     body: body.toString(),
@@ -78,7 +90,7 @@ export async function exchangeCodeForToken(
 export async function getLinuxDoUser(
   accessToken: string,
 ): Promise<LinuxDoUser> {
-  const res = await fetch(USER_URL, {
+  const res = await fetch(`${getBaseUrl()}/api/user`, {
     headers: { Authorization: `Bearer ${accessToken}` },
   });
 
