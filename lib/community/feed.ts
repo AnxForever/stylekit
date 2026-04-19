@@ -27,6 +27,7 @@ export interface CommunityFeedItem {
   description: string | null;
   cover: string | null;
   author: CommunityAuthor;
+  hasDesignMd: boolean;
 }
 
 export interface CommunityFeedResult {
@@ -149,6 +150,7 @@ function mapItemFromSupabase(row: SupabaseSubmissionRow): CommunityFeedItem {
   const styleMeta = getStyleMetaBySlug(row.slug);
   const assets = asRecord(formData.__assets);
   const legacyAssets = asRecord(formData.assets);
+  const hasDesignMd = typeof formData.design_md === "string" && formData.design_md.trim().length > 0;
 
   return {
     id: row.id,
@@ -181,6 +183,7 @@ function mapItemFromSupabase(row: SupabaseSubmissionRow): CommunityFeedItem {
       provider: authorMeta.provider,
       userId: row.user_id ?? null,
     },
+    hasDesignMd,
   };
 }
 
@@ -190,6 +193,7 @@ function mapItemFromFile(row: FileSubmissionRow): CommunityFeedItem {
   const styleMeta = getStyleMetaBySlug(row.slug);
   const assets = asRecord(formData.__assets);
   const legacyAssets = asRecord(formData.assets);
+  const hasDesignMd = typeof formData.design_md === "string" && formData.design_md.trim().length > 0;
 
   return {
     id: row.id,
@@ -222,6 +226,7 @@ function mapItemFromFile(row: FileSubmissionRow): CommunityFeedItem {
       provider: authorMeta.provider,
       userId: row.userId ?? null,
     },
+    hasDesignMd,
   };
 }
 

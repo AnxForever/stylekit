@@ -6,6 +6,8 @@ import path from "path";
 import {
   wizardFormSchema,
   type ValidatedWizardFormData,
+  designMdSubmissionSchema,
+  isDesignMdSubmissionPayload,
 } from "@/lib/submit/validator";
 import { convertToStyleTokens, convertToDesignStyle } from "@/lib/submit/converter";
 import { validateStyleSubmissionManifest } from "@/lib/submit/manifest-validator";
@@ -306,6 +308,10 @@ export async function POST(request: Request) {
 
     const body = bodyResult.data;
 
+    if (isDesignMdSubmissionPayload(body)) {
+      return await handleDesignMdSubmission(body, user, request);
+    }
+
     const parsed = parseSubmitPayload(body);
     if (!parsed.ok) {
       return NextResponse.json(
@@ -427,6 +433,138 @@ export async function POST(request: Request) {
       success: true,
       id,
       slug: normalizedSlug,
+    });
+  } catch (error) {
+    const classified = classifySubmissionError(error);
+    return NextResponse.json(
+      {
+        success: false,
+        code: classified.code,
+        error: classified.message,
+      },
+      { status: classified.status }
+    );
+  }
+}
+
+/* ---------- DESIGN.md submission path ---------- */
+
+type AuthUser = Awaited<ReturnType<typeof getServerUser>>;
+
+async function handleDesignMdSubmission(
+  body: unknown,
+  user: NonNullable<AuthUser>,
+  request: Request
+): Promise<Response> {
+  const parsed = designMdSubmissionSchema.safeParse(body);
+  if (!parsed.success) {
+    return NextResponse.json(
+      {
+        success: false,
+        error: "DESIGN.md validation failed",
+        details: parsed.error.flatten().fieldErrors,
+      },
+      { status: 400 }
+    );
+  }
+
+  const data = parsed.data;
+  const normalizedSlug = data.slug.trim().toLowerCase();
+
+  if (getStyleBySlug(normalizedSlug)) {
+    return NextResponse.json(
+      {
+        success: false,
+        error: "This slug is already used by a built-in style.",
+      },
+      { status: 409 }
+    );
+  }
+
+  const useSupabase = isSupabaseConfigured();
+  const slugInUse = useSupabase
+    ? await hasActiveSubmissionSlugSupabase(normalizedSlug)
+    : await hasActiveSubmissionSlug(normalizedSlug);
+  if (slugInUse) {
+    return NextResponse.json(
+      {
+        success: false,
+        error: "This slug is already pending review or approved.",
+      },
+      { status: 409 }
+    );
+  }
+
+  const authorName =
+    user.user_metadata?.user_name ?? user.user_metadata?.full_name ?? "user";
+  const authorAvatarUrl = user.user_metadata?.avatar_url ?? null;
+  const authorProvider =
+    user.user_metadata?.provider ?? user.app_metadata?.provider ?? "github";
+
+  const formData: Record<string, unknown> = {
+    __source: "design-md",
+    design_md: data.design_md,
+    slug: normalizedSlug,
+    name: data.name,
+    nameEn: data.nameEn || data.name,
+    ...(data.category ? { category: data.category } : {}),
+    ...(data.description ? { description: data.description } : {}),
+    ...(data.coverSvg ? { __assets: { coverSvg: data.coverSvg } } : {}),
+    __author: {
+      userId: user.id,
+      handle: authorName,
+      avatarUrl: authorAvatarUrl,
+      provider: authorProvider,
+    },
+  };
+
+  try {
+    if (useSupabase) {
+      const ip = getClientIpAddress(request);
+      const result = await createSubmissionSupabase(
+        normalizedSlug,
+        formData,
+        {},
+        {},
+        ip,
+        user.id,
+        authorName,
+        authorAvatarUrl,
+        authorProvider
+      );
+      return NextResponse.json({
+        success: true,
+        id: result.id,
+        slug: result.slug,
+        source: "design-md",
+      });
+    }
+
+    const timestamp = Date.now();
+    const id = `${timestamp}-${normalizedSlug}`;
+    const submission = {
+      id,
+      slug: normalizedSlug,
+      submittedAt: new Date(timestamp).toISOString(),
+      status: "pending" as const,
+      userId: user.id,
+      authorName,
+      formData,
+      tokens: {},
+      designStyle: {},
+    };
+
+    if (!existsSync(SUBMISSIONS_DIR)) {
+      await mkdir(SUBMISSIONS_DIR, { recursive: true });
+    }
+    const filePath = path.join(SUBMISSIONS_DIR, `${id}.json`);
+    await writeFile(filePath, JSON.stringify(submission, null, 2), "utf-8");
+
+    return NextResponse.json({
+      success: true,
+      id,
+      slug: normalizedSlug,
+      source: "design-md",
     });
   } catch (error) {
     const classified = classifySubmissionError(error);

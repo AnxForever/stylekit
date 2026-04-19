@@ -2,6 +2,8 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 
 vi.mock("@/lib/submit/validator", () => ({
   wizardFormSchema: { safeParse: vi.fn() },
+  designMdSubmissionSchema: { safeParse: vi.fn() },
+  isDesignMdSubmissionPayload: vi.fn(() => false),
 }));
 
 vi.mock("@/lib/submit/converter", () => ({
