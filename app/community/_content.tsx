@@ -6,6 +6,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { Loader2, LogIn, RefreshCw, Send, TrendingUp, Clock, Heart, Zap } from "lucide-react";
 import { LocalizedLink } from "@/components/i18n/localized-link";
 import { useCommunityFeed } from "@/lib/swr";
+import { getAvatarImageSrc } from "@/lib/avatar";
 import { useUser } from "@/lib/auth/use-user";
 import { useI18n } from "@/lib/i18n/context";
 import { SORT_OPTIONS_DEF, type SortMethod, type SortOptionDef } from "@/lib/community/leaderboard";
@@ -287,9 +288,9 @@ export function CommunityContent({
 
                     <div className="flex items-center justify-between text-xs text-muted">
                       <div className="inline-flex items-center gap-2 min-w-0">
-                        {item.author.avatarUrl ? (
+                        {getAvatarImageSrc(item.author.avatarUrl) ? (
                           <Image
-                            src={item.author.avatarUrl}
+                            src={getAvatarImageSrc(item.author.avatarUrl) ?? ""}
                             alt={item.author.handle}
                             width={20}
                             height={20}
