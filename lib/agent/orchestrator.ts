@@ -14,12 +14,14 @@ import { TurnTracker, type TurnMetrics } from "./observability";
 import { composeAgentCodePrompt } from "./prompt-composer";
 import { buildAgentProjectKnowledgeContext } from "./project-knowledge";
 import { inferTemplateType, getLocalizedTemplateTypeLabel } from "./recommendations";
+import { searchStyleKitKnowledge } from "@/lib/rag/retriever";
 import { buildWorkflowSnapshot } from "./state-transition";
 import { getStyleMetaBySlug } from "@/lib/styles/meta";
 import { getStyleBySlug, styles as stylesAll } from "@/lib/styles";
 import { templateCatalog } from "@/lib/templates/catalog";
 import { componentPatterns } from "@/lib/component-patterns";
 import { promptTopics } from "@/lib/prompts/topics";
+import type { RagCitation, RagSearchResult } from "@/lib/rag/types";
 import type {
   AgentCodePrompt,
   AgentConsultPhase,
@@ -30,8 +32,8 @@ import type {
   AgentPromptSnapshot,
   AgentPromptSnapshotEntry,
   AgentSuggestedOption,
-  AgentWorkflowSnapshot,
   AgentToolTrace,
+  AgentWorkflowSnapshot,
 } from "./types";
 
 /* ---------- Hardcoded option catalogs for phases 1-2 ---------- */
@@ -996,6 +998,7 @@ function buildResponderPrompt({
   locale,
   planner,
   codePrompt,
+  ragContext,
   projectKnowledge,
   pageContext,
   toolTrace,
@@ -1003,6 +1006,7 @@ function buildResponderPrompt({
   locale: Locale;
   planner: AgentPlannerResult;
   codePrompt: AgentCodePrompt;
+  ragContext: RagSearchResult[];
   projectKnowledge: ReturnType<typeof buildAgentProjectKnowledgeContext>;
   pageContext?: AgentPageContext;
   toolTrace: AgentToolTrace[];
@@ -1015,11 +1019,11 @@ function buildResponderPrompt({
   return {
     system: [
       "You are StyleKit's page planning agent.",
-      "You are grounded only in the provided planner output, code prompt, project knowledge, and tool data.",
+      "You are grounded only in the provided planner output, code prompt, project knowledge, retrieved citations, and tool data.",
       "Be practical, explain tradeoffs, and keep the answer short.",
       "When the brief is ready, provide a concise summary of the page direction, the chosen style, and 1-2 key tradeoffs.",
       "Mention that a complete AI coding prompt has been generated and is available in the sidebar.",
-      "Do not invent links or styles that are not provided.",
+      "If retrieved citations are available, prefer their wording over guesses and do not invent links or styles that are not provided.",
       "Return JSON only with assistantMessage.",
       localeInstruction,
     ].join(" "),
@@ -1029,6 +1033,7 @@ function buildResponderPrompt({
         pageContext: pageContext ?? {},
         planner,
         codePrompt: { title: codePrompt.title, styleName: codePrompt.styleName, templateType: codePrompt.templateType },
+        ragContext: ragContext.map((item) => item.citation),
         projectKnowledge,
         toolTrace,
       },
@@ -1238,6 +1243,7 @@ type AgentTurnPreparation =
       suggestedOptions: AgentSuggestedOption[];
       workflow: AgentWorkflowSnapshot;
       toolTrace: AgentToolTrace[];
+      citations: RagCitation[];
       promptSnapshot: AgentPromptSnapshot;
       decisionTrace: AgentDecisionTraceItem[];
       turnMetrics: TurnMetrics;
@@ -1248,6 +1254,8 @@ type AgentTurnPreparation =
       codePrompt: AgentCodePrompt;
       workflow: AgentWorkflowSnapshot;
       toolTrace: AgentToolTrace[];
+      citations: RagCitation[];
+      ragContext: RagSearchResult[];
       projectKnowledge: ReturnType<typeof buildAgentProjectKnowledgeContext>;
       responderPrompt: { system: string; user: string };
       plannerPromptSnapshot: AgentPromptSnapshotEntry;
@@ -1315,6 +1323,7 @@ async function prepareAgentTurn({
       suggestedOptions: [],
       workflow,
       toolTrace: [{ tool: "followUpConversation", ok: true, meta: { existingStyle: existingCodePrompt.styleSlug } }],
+      citations: [],
       promptSnapshot: {
         planner: { system: "", user: "", summary: ["follow-up: planner skipped"] },
         responder: { system: followUpPrompt.system, user: followUpPrompt.user, summary: ["follow-up conversation"] },
@@ -1422,6 +1431,7 @@ async function prepareAgentTurn({
       suggestedOptions: planner.suggestedOptions,
       workflow,
       toolTrace: buildEarlyToolTrace({ skipped: true, reason: "simple response or phase skip" }),
+      citations: [],
       promptSnapshot: { planner: plannerPromptSnapshot, responder: null },
       decisionTrace: buildDecisionTraceForConsulting({ locale, workflow, planner }),
       turnMetrics: tracker.snapshot(),
@@ -1443,6 +1453,7 @@ async function prepareAgentTurn({
       suggestedOptions: planner.suggestedOptions,
       workflow,
       toolTrace: buildEarlyToolTrace({ skipped: true }),
+      citations: [],
       promptSnapshot: { planner: plannerPromptSnapshot, responder: null },
       decisionTrace: buildDecisionTraceForConfirm({ locale, workflow, planner }),
       turnMetrics: tracker.snapshot(),
@@ -1524,6 +1535,37 @@ async function prepareAgentTurn({
     },
   });
 
+  const ragQuery = [
+    planner.normalizedQuery,
+    planner.productType,
+    planner.audience,
+    planner.visualTone,
+    planner.mustHave.join(" "),
+    planner.constraints.join(" "),
+    smartRecommendation.style.item.slug,
+  ]
+    .filter(Boolean)
+    .join(" ");
+  const ragContext = searchStyleKitKnowledge({
+    query: ragQuery,
+    locale,
+    limit: 6,
+  });
+  const citations = ragContext.map((item) => item.citation);
+  toolTrace.push({
+    tool: "searchStyleKitRag",
+    ok: true,
+    meta: {
+      count: citations.length,
+      selected: citations.map((item) => ({
+        kind: item.kind,
+        title: item.title,
+        score: item.score,
+        sourcePath: item.sourcePath,
+      })),
+    },
+  });
+
   let designRecommendation: ReturnType<typeof getDesignRecommendation> | null = null;
   try {
     designRecommendation = getDesignRecommendation(planner.normalizedQuery, {
@@ -1568,6 +1610,7 @@ async function prepareAgentTurn({
       ],
     },
     codePrompt,
+    ragContext,
     projectKnowledge,
     pageContext,
     toolTrace,
@@ -1587,6 +1630,8 @@ async function prepareAgentTurn({
     codePrompt,
     workflow,
     toolTrace,
+    citations,
+    ragContext,
     projectKnowledge,
     responderPrompt,
     plannerPromptSnapshot,
@@ -1613,6 +1658,7 @@ export async function runAgentTurn({
   planner: AgentPlannerResult;
   codePrompt: AgentCodePrompt | null;
   toolTrace: AgentToolTrace[];
+  citations?: RagCitation[];
   promptSnapshot: AgentPromptSnapshot;
   decisionTrace: AgentDecisionTraceItem[];
   turnMetrics: TurnMetrics;
@@ -1628,6 +1674,7 @@ export async function runAgentTurn({
       planner: prep.planner,
       codePrompt: prep.codePrompt,
       toolTrace: prep.toolTrace,
+      citations: prep.citations,
       promptSnapshot: prep.promptSnapshot,
       decisionTrace: prep.decisionTrace,
       turnMetrics: prep.turnMetrics,
@@ -1635,7 +1682,7 @@ export async function runAgentTurn({
   }
 
   /* --- Done phase: run JSON responder --- */
-  const { planner, codePrompt, workflow, toolTrace, responderPrompt, projectKnowledge, plannerPromptSnapshot, decisionTrace, tracker } = prep;
+  const { planner, codePrompt, workflow, toolTrace, citations, responderPrompt, projectKnowledge, plannerPromptSnapshot, decisionTrace, tracker } = prep;
 
   const response = await requestAgentJson({
     schema: responderSchema,
@@ -1661,12 +1708,13 @@ export async function runAgentTurn({
     followUpNeeded: false,
     workflowState: workflow.state,
     workflow,
-    planner,
-    codePrompt,
-    toolTrace,
-    promptSnapshot: {
-      planner: plannerPromptSnapshot,
-      responder: {
+      planner,
+      codePrompt,
+      toolTrace,
+      citations,
+      promptSnapshot: {
+        planner: plannerPromptSnapshot,
+        responder: {
         system: responderPrompt.system,
         user: responderPrompt.user,
         summary: buildResponderPromptSummary({
@@ -1696,6 +1744,7 @@ export type AgentTurnStreamingResult =
       codePrompt: AgentCodePrompt | null;
       suggestedOptions: AgentSuggestedOption[];
       toolTrace: AgentToolTrace[];
+      citations?: RagCitation[];
       promptSnapshot: AgentPromptSnapshot;
       decisionTrace: AgentDecisionTraceItem[];
       turnMetrics: TurnMetrics;
@@ -1710,6 +1759,7 @@ export type AgentTurnStreamingResult =
       codePrompt: AgentCodePrompt;
       suggestedOptions: AgentSuggestedOption[];
       toolTrace: AgentToolTrace[];
+      citations?: RagCitation[];
       promptSnapshot: AgentPromptSnapshot;
       decisionTrace: AgentDecisionTraceItem[];
       turnMetrics: TurnMetrics;
@@ -1739,6 +1789,7 @@ export async function runAgentTurnStreaming({
       codePrompt: prep.codePrompt,
       suggestedOptions: prep.suggestedOptions,
       toolTrace: prep.toolTrace,
+      citations: prep.citations,
       promptSnapshot: prep.promptSnapshot,
       decisionTrace: prep.decisionTrace,
       turnMetrics: prep.turnMetrics,
@@ -1746,7 +1797,7 @@ export async function runAgentTurnStreaming({
   }
 
   /* --- Done phase: stream the responder, fall back in dev mode --- */
-  const { planner, codePrompt, workflow, toolTrace, responderPrompt, projectKnowledge, plannerPromptSnapshot, decisionTrace, tracker } = prep;
+  const { planner, codePrompt, workflow, toolTrace, citations, responderPrompt, projectKnowledge, plannerPromptSnapshot, decisionTrace, tracker } = prep;
 
   const promptSnapshot: AgentPromptSnapshot = {
     planner: plannerPromptSnapshot,
@@ -1779,6 +1830,7 @@ export async function runAgentTurnStreaming({
       codePrompt,
       suggestedOptions: [],
       toolTrace,
+      citations,
       promptSnapshot,
       decisionTrace,
       turnMetrics: tracker.snapshot(),
@@ -1804,6 +1856,7 @@ export async function runAgentTurnStreaming({
       codePrompt,
       suggestedOptions: [],
       toolTrace,
+      citations,
       promptSnapshot,
       decisionTrace,
       turnMetrics: tracker.snapshot(),

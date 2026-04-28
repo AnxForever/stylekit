@@ -193,6 +193,7 @@ export async function POST(request: Request) {
               codePrompt: turn.codePrompt,
               suggestedOptions: turn.suggestedOptions,
               toolTrace: turn.toolTrace,
+              citations: turn.citations,
               promptSnapshot: turn.promptSnapshot,
               decisionTrace: turn.decisionTrace,
             })
@@ -232,6 +233,7 @@ export async function POST(request: Request) {
             planner: turn.planner,
             codePrompt: turn.codePrompt,
             toolTrace: turn.toolTrace,
+            citations: turn.citations,
             promptSnapshot: turn.promptSnapshot,
             decisionTrace: turn.decisionTrace,
             sessionStatus: turn.workflowState,

@@ -1,5 +1,6 @@
 import type { Locale } from "@/lib/i18n/translations";
 import type { RecommendationContext } from "@/lib/knowledge";
+import type { RagCitation } from "@/lib/rag/types";
 
 export type AgentMessageRole = "user" | "assistant";
 export type AgentRecommendationType = "style" | "template" | "page";
@@ -137,6 +138,7 @@ export interface AgentMessage {
   planner: AgentPlannerResult | null;
   codePrompt: AgentCodePrompt | null;
   toolTrace: AgentToolTrace[];
+  citations?: RagCitation[];
   promptSnapshot: AgentPromptSnapshot | null;
   decisionTrace: AgentDecisionTraceItem[];
 }
@@ -176,6 +178,7 @@ export interface AgentChatResponse {
   codePrompt: AgentCodePrompt | null;
   suggestedOptions: AgentSuggestedOption[];
   toolTrace: AgentToolTrace[];
+  citations?: RagCitation[];
   promptSnapshot: AgentPromptSnapshot | null;
   decisionTrace: AgentDecisionTraceItem[];
   session: AgentSessionSummary;
