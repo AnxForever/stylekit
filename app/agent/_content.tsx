@@ -16,6 +16,7 @@ import {
   Wrench,
 } from "lucide-react";
 import { useI18n } from "@/lib/i18n/context";
+import type { TranslationKey } from "@/lib/i18n/translations";
 import { formatLocaleDateTime } from "@/lib/i18n/locale-copy";
 import { localizeHref } from "@/lib/i18n/routing";
 import { useUser } from "@/lib/auth/use-user";
@@ -39,6 +40,14 @@ import type {
   AgentWorkflowReason,
   AgentWorkflowSnapshot,
 } from "@/lib/agent/types";
+import {
+  BLENDABLE_DIMENSIONS_MVP,
+  BLENDABLE_DIMENSIONS_FULL,
+  type AtomOverrides,
+} from "@/lib/agent/atom-overrides";
+import { hasCompleteAtoms, type StyleAtomKey } from "@/lib/styles/atoms";
+import { styles as allDesignStyles } from "@/lib/styles";
+import type { DesignStyle } from "@/lib/styles";
 import { buildWorkflowSnapshot } from "@/lib/agent/state-transition";
 import {
   getPlannerCoverage,
@@ -764,6 +773,154 @@ function SuggestedOptionsBar({
   );
 }
 
+function getBlendDimensionLabel(
+  dimension: StyleAtomKey,
+  t: (key: TranslationKey) => string
+): string {
+  if (dimension === "motion") return t("agent.blend.dimensionMotion");
+  if (dimension === "color") return t("agent.blend.dimensionColor");
+  return dimension;
+}
+
+function BlendPanel({
+  baseStyleSlug,
+  overrides,
+  candidates,
+  onChange,
+  onReset,
+  disabled,
+  t,
+}: {
+  baseStyleSlug: string;
+  overrides: AtomOverrides;
+  candidates: DesignStyle[];
+  onChange: (next: AtomOverrides) => void;
+  onReset: () => void;
+  disabled: boolean;
+  t: (key: TranslationKey) => string;
+}) {
+  const [expanded, setExpanded] = useState(false);
+  const base = candidates.find((s) => s.slug === baseStyleSlug);
+  const activeCount = (Object.keys(overrides) as StyleAtomKey[]).filter(
+    (k) => typeof overrides[k] === "string" && overrides[k]!.length > 0
+  ).length;
+
+  if (!base || !hasCompleteAtoms(base.atoms)) {
+    return null;
+  }
+
+  const otherCandidates = candidates.filter(
+    (c) => c.slug !== baseStyleSlug && hasCompleteAtoms(c.atoms)
+  );
+
+  function sourceNameFor(dimension: StyleAtomKey): string {
+    const slug = overrides[dimension];
+    if (!slug) return base!.name;
+    const src = candidates.find((c) => c.slug === slug);
+    return src?.name ?? slug;
+  }
+
+  function handleSelect(dimension: StyleAtomKey, value: string) {
+    const next: AtomOverrides = { ...overrides };
+    if (value) {
+      next[dimension] = value;
+    } else {
+      delete next[dimension];
+    }
+    onChange(next);
+  }
+
+  return (
+    <div className="animate-agent-message-in rounded-2xl border border-dashed border-border bg-background/60 px-4 py-3">
+      <div className="flex items-center justify-between">
+        <button
+          type="button"
+          onClick={() => setExpanded((v) => !v)}
+          className="text-xs font-medium text-muted transition-colors hover:text-foreground"
+          disabled={disabled}
+        >
+          {expanded ? t("agent.blend.closeLink") : t("agent.blend.openLink")}
+          {activeCount > 0 ? (
+            <span className="ml-1.5 inline-flex items-center rounded-full bg-foreground/10 px-1.5 py-0.5 text-[10px] font-semibold text-foreground">
+              {activeCount}
+            </span>
+          ) : null}
+        </button>
+        {activeCount > 0 ? (
+          <button
+            type="button"
+            onClick={onReset}
+            className="text-xs text-muted underline-offset-2 transition-colors hover:text-foreground hover:underline"
+            disabled={disabled}
+          >
+            {t("agent.blend.resetLabel")}
+          </button>
+        ) : null}
+      </div>
+
+      {expanded ? (
+        <div className="mt-3 space-y-3">
+          <div>
+            <span className="block text-[10px] uppercase tracking-[0.16em] text-muted">
+              {t("agent.blend.previewLabel")}
+            </span>
+            <div className="mt-1.5 flex flex-wrap gap-1.5">
+              {BLENDABLE_DIMENSIONS_FULL.map((dim) => {
+                const highlighted = Boolean(overrides[dim]);
+                return (
+                  <span
+                    key={dim}
+                    className={`inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[11px] ${
+                      highlighted
+                        ? "border-foreground/30 bg-foreground/5 text-foreground"
+                        : "border-border bg-background text-muted"
+                    }`}
+                  >
+                    <span className="uppercase tracking-[0.14em]">{dim}</span>
+                    <span>·</span>
+                    <span className="font-medium">{sourceNameFor(dim)}</span>
+                  </span>
+                );
+              })}
+            </div>
+          </div>
+
+          <div className="grid gap-2 sm:grid-cols-2">
+            {BLENDABLE_DIMENSIONS_MVP.map((dim) => {
+              const current = overrides[dim] ?? "";
+              return (
+                <label key={dim} className="flex flex-col gap-1 text-xs">
+                  <span className="text-muted">
+                    {getBlendDimensionLabel(dim, t)}
+                    {current ? (
+                      <span className="ml-1 text-foreground/80">
+                        · {t("agent.blend.fromLabel")} {sourceNameFor(dim)}
+                      </span>
+                    ) : null}
+                  </span>
+                  <select
+                    value={current}
+                    onChange={(event) => handleSelect(dim, event.target.value)}
+                    disabled={disabled}
+                    className="rounded-xl border border-border bg-background px-2.5 py-1.5 text-xs text-foreground outline-none transition-colors focus:border-foreground/30 disabled:opacity-50"
+                  >
+                    <option value="">{t("agent.blend.pickPlaceholder")}</option>
+                    {otherCandidates.map((style) => (
+                      <option key={style.slug} value={style.slug}>
+                        {style.name}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+              );
+            })}
+          </div>
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
 function ConfirmCard({
   planner,
   locale,
@@ -880,6 +1037,7 @@ function ChatMessageBubble({
   compact?: boolean;
 }) {
   const isUser = message.role === "user";
+  const citations = message.citations ?? [];
 
   return (
     <div className={`flex ${isUser ? "justify-end" : "justify-start"}`}>
@@ -904,6 +1062,43 @@ function ChatMessageBubble({
             <RichMessageBody content={message.content} />
           )}
         </div>
+        {!isUser && citations.length > 0 ? (
+          <div className="w-full rounded-2xl border border-border/70 bg-background/70 px-4 py-3 shadow-sm">
+            <p className="text-[11px] font-medium uppercase tracking-[0.16em] text-muted">
+              {locale === "zh" ? "引用来源" : "Grounding"}
+            </p>
+            <div className="mt-2 space-y-2">
+              {citations.map((citation) => {
+                const content = (
+                  <>
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span className="text-sm font-medium text-foreground">{citation.title}</span>
+                      <span className="rounded-full border border-border px-2 py-0.5 text-[10px] uppercase tracking-[0.14em] text-muted">
+                        {citation.section}
+                      </span>
+                    </div>
+                    <p className="mt-1 text-xs leading-5 text-muted">{citation.snippet}</p>
+                    <p className="mt-1 text-[11px] text-muted">{citation.sourcePath}</p>
+                  </>
+                );
+
+                return citation.href ? (
+                  <Link
+                    key={citation.id}
+                    href={localizeHref(citation.href, locale)}
+                    className="block rounded-xl border border-border/60 px-3 py-2 transition-colors hover:bg-muted/30"
+                  >
+                    {content}
+                  </Link>
+                ) : (
+                  <div key={citation.id} className="rounded-xl border border-border/60 px-3 py-2">
+                    {content}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        ) : null}
         <p className="px-1 text-[11px] text-muted">
           {formatLocaleDateTime(message.createdAt, locale)}
         </p>
@@ -1039,6 +1234,7 @@ export function AgentContent() {
   const [promptSnapshot, setPromptSnapshot] = useState<AgentPromptSnapshot | null>(null);
   const [decisionTrace, setDecisionTrace] = useState<AgentDecisionTraceItem[]>([]);
   const [suggestedOptions, setSuggestedOptions] = useState<AgentSuggestedOption[]>([]);
+  const [atomOverrides, setAtomOverrides] = useState<AtomOverrides>({});
   const [draft, setDraft] = useState("");
   const [copied, setCopied] = useState(false);
   const [confirmDismissed, setConfirmDismissed] = useState(false);
@@ -1049,6 +1245,8 @@ export function AgentContent() {
   const [showDebug, setShowDebug] = useState(false);
   const [isUnavailable, setIsUnavailable] = useState(false);
   const [isPending, startTransition] = useTransition();
+  const [isSending, setIsSending] = useState(false);
+  const isWorking = isPending || isSending;
 
   const starterPrompts = useMemo(
     () =>
@@ -1178,58 +1376,6 @@ export function AgentContent() {
     : [];
   const showPromptPanel = isBuilder || Boolean(codePrompt);
   const showSessionColumn = showSessions && sessions.length > 0;
-  const quickReplySuggestions = useMemo(() => {
-    if (!workflow || workflow.state !== "needs_input" || workflow.missingSlots.length === 0) {
-      return [];
-    }
-
-    const suggestions = workflow.missingSlots.flatMap((slot) => {
-      if (locale === "zh") {
-        switch (slot) {
-          case "productType":
-            return ["产品首页", "营销落地页", "后台 Dashboard"];
-          case "audience":
-            return ["面向开发者", "面向企业团队", "面向内容创作者"];
-          case "visualTone":
-            return ["专业克制", "高级极简", "大胆有冲击力"];
-          case "mustHave":
-            return ["必须有价格方案", "必须有案例/客户证言", "必须有清晰 CTA"];
-          case "constraints":
-            return ["移动端优先", "优先可访问性", "控制性能开销"];
-          default:
-            return [];
-        }
-      }
-
-      switch (slot) {
-        case "productType":
-          return ["Landing page", "Marketing site", "Dashboard"];
-        case "audience":
-          return ["For developers", "For enterprise teams", "For creators"];
-        case "visualTone":
-          return ["Professional and restrained", "Premium minimal", "Bold and expressive"];
-        case "mustHave":
-          return ["Must include pricing", "Must include case studies", "Must include a clear CTA"];
-        case "constraints":
-          return ["Mobile first", "Accessibility first", "Keep it performant"];
-        default:
-          return [];
-      }
-    });
-
-    return Array.from(new Set(suggestions)).slice(0, 6);
-  }, [locale, workflow]);
-  const composerSuggestions = useMemo(() => {
-    if (quickReplySuggestions.length > 0) {
-      return quickReplySuggestions;
-    }
-
-    if (messages.length === 0) {
-      return starterPrompts;
-    }
-
-    return [];
-  }, [messages.length, quickReplySuggestions, starterPrompts]);
   const replayEntries = useMemo(() => getReplayEntries(messages), [messages]);
   const previousPromptSnapshot = replayEntries[1]?.promptSnapshot ?? null;
   const archivedMessages = messages.slice(0, -2);
@@ -1245,6 +1391,7 @@ export function AgentContent() {
     setPromptSnapshot(null);
     setDecisionTrace([]);
     setSuggestedOptions([]);
+    setAtomOverrides({});
     setConfirmDismissed(false);
   }
 
@@ -1279,6 +1426,7 @@ export function AgentContent() {
       setMessages(detail.messages);
       const nextPlanner = getLatestPlanner(detail.messages);
       setPlanner(nextPlanner);
+      setAtomOverrides(nextPlanner?.atomOverrides ?? {});
       setWorkflow(nextPlanner ? buildWorkflowSnapshot({ messages: detail.messages, planner: nextPlanner }) : null);
       setCodePrompt(getLatestCodePrompt(detail.messages));
       setToolTrace(getLatestToolTrace(detail.messages));
@@ -1361,7 +1509,7 @@ export function AgentContent() {
   }
 
   function handleComposerKeyDown(event: React.KeyboardEvent<HTMLTextAreaElement>) {
-    if ((event.metaKey || event.ctrlKey) && event.key === "Enter") {
+    if (event.key === "Enter" && !event.shiftKey) {
       event.preventDefault();
       event.currentTarget.form?.requestSubmit();
     }
@@ -1400,7 +1548,7 @@ export function AgentContent() {
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const message = draft.trim();
-    if (!message || isPending) {
+    if (!message || isWorking) {
       return;
     }
 
@@ -1412,12 +1560,14 @@ export function AgentContent() {
       planner: null,
       codePrompt: null,
       toolTrace: [],
+      citations: [],
       promptSnapshot: null,
       decisionTrace: [],
     };
 
     setDraft("");
     setError(null);
+    setIsSending(true);
     setMessages((current) => [...current, optimisticMessage]);
 
     startTransition(() => {
@@ -1433,6 +1583,8 @@ export function AgentContent() {
               message,
               locale,
               pageContext: currentPageContext,
+              atomOverrides:
+                Object.keys(atomOverrides).length > 0 ? atomOverrides : undefined,
             }),
           });
 
@@ -1452,8 +1604,13 @@ export function AgentContent() {
           setActiveSessionId(payload.sessionId);
           setActiveSessionStatus(payload.workflowState);
           setPlanner(payload.planner);
+          if (payload.planner?.atomOverrides) {
+            setAtomOverrides(payload.planner.atomOverrides);
+          }
           setWorkflow(payload.workflow);
-          setCodePrompt(payload.codePrompt);
+          if (payload.codePrompt) {
+            setCodePrompt(payload.codePrompt);
+          }
           setToolTrace(payload.toolTrace);
           setPromptSnapshot(payload.promptSnapshot);
           setDecisionTrace(payload.decisionTrace);
@@ -1473,6 +1630,8 @@ export function AgentContent() {
           setMessages((current) => current.filter((item) => item.id !== optimisticMessage.id));
           setDraft((current) => (current.trim().length > 0 ? current : message));
           setError(submitError instanceof Error ? submitError.message : t("agent.sendError"));
+        } finally {
+          setIsSending(false);
         }
       })();
     });
@@ -1743,27 +1902,39 @@ export function AgentContent() {
                     </div>
                   ))}
 
-                  {!isPending && !detailLoading && !confirmDismissed && planner?.phase === "confirm" && planner ? (
+                  {!isWorking && !detailLoading && !confirmDismissed && planner?.phase === "confirm" && planner ? (
                     <ConfirmCard
                       planner={planner}
                       locale={locale}
                       onConfirm={handleConfirm}
                       onEdit={handleEditRequest}
-                      disabled={isPending}
+                      disabled={isWorking}
                     />
                   ) : null}
 
-                  {!isPending && !detailLoading && suggestedOptions.length > 0 && planner?.phase !== "confirm" ? (
+                  {!isWorking && !detailLoading && suggestedOptions.length > 0 && planner?.phase !== "confirm" ? (
                     <SuggestedOptionsBar
                       options={suggestedOptions}
                       onSelect={handleOptionSelect}
-                      disabled={isPending}
+                      disabled={isWorking}
+                    />
+                  ) : null}
+
+                  {!isWorking && !detailLoading && planner?.phase === "feel" && planner.styleSlug ? (
+                    <BlendPanel
+                      baseStyleSlug={planner.styleSlug}
+                      overrides={atomOverrides}
+                      candidates={allDesignStyles}
+                      onChange={setAtomOverrides}
+                      onReset={() => setAtomOverrides({})}
+                      disabled={isWorking}
+                      t={t}
                     />
                   ) : null}
                 </div>
               )}
 
-              {(isPending || detailLoading) && (
+              {(isWorking || detailLoading) && (
                 <div className="flex animate-agent-message-in justify-start">
                   <div className="flex max-w-[88%] flex-col gap-1.5">
                     <span className="px-1 text-[11px] uppercase tracking-[0.18em] text-muted">
@@ -1797,37 +1968,25 @@ export function AgentContent() {
                   className="w-full resize-none bg-transparent text-sm leading-7 outline-none placeholder:text-muted"
                   placeholder={t("agent.composerPlaceholder")}
                 />
-                <div className="mt-3 flex flex-wrap items-center justify-between gap-3">
-                  <div className="flex flex-wrap gap-2">
-                    {composerSuggestions.map((suggestion) => (
-                      <button
-                        key={suggestion}
-                        type="button"
-                        onClick={() => applyDraftSuggestion(suggestion)}
-                        className="rounded-full border border-border bg-muted/20 px-3 py-1.5 text-xs text-foreground transition-colors hover:bg-muted/40"
-                      >
-                        {suggestion}
-                      </button>
-                    ))}
-                  </div>
+                <div className="mt-3 flex items-center justify-end">
                   <p className="text-xs text-muted">
                     {locale === "zh"
-                      ? "Ctrl/Cmd + Enter 发送，Shift + Enter 换行"
-                      : "Ctrl/Cmd + Enter to send, Shift + Enter for newline"}
+                      ? "Enter 发送，Shift + Enter 换行"
+                      : "Enter to send, Shift + Enter for newline"}
                   </p>
                 </div>
                 <div className="mt-2 flex items-center justify-end">
                   <button
                     type="submit"
-                    disabled={isPending || !draft.trim()}
+                    disabled={isWorking || !draft.trim()}
                     className="inline-flex items-center gap-2 rounded-full bg-foreground px-4 py-2 text-sm font-medium text-background transition-all hover:scale-[1.02] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:scale-100"
                   >
-                    {isPending ? (
+                    {isWorking ? (
                       <Loader2 className="h-4 w-4 animate-spin" />
                     ) : (
                       <Send className="h-4 w-4" />
                     )}
-                    {isPending ? t("agent.sending") : t("agent.send")}
+                    {isWorking ? t("agent.sending") : t("agent.send")}
                   </button>
                 </div>
               </div>

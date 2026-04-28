@@ -12,6 +12,7 @@ import type {
   AgentSessionSummary,
   AgentToolTrace,
 } from "./types";
+import type { RagCitation } from "@/lib/rag/types";
 
 function createIsoTimestamp(): string {
   return new Date().toISOString();
@@ -39,6 +40,10 @@ function asSessionStatus(value: unknown): AgentSessionStatus {
 
 function asToolTrace(value: unknown): AgentToolTrace[] {
   return Array.isArray(value) ? (value as AgentToolTrace[]) : [];
+}
+
+function asCitations(value: unknown): RagCitation[] {
+  return Array.isArray(value) ? (value as RagCitation[]) : [];
 }
 
 function asCodePrompt(value: unknown): AgentCodePrompt | null {
@@ -95,6 +100,7 @@ function toMessage(row: Record<string, unknown>): AgentMessage {
     planner: asPlannerResult(row.planner_json),
     codePrompt: asCodePrompt(row.plan_card_json),
     toolTrace: asToolTrace(row.tool_payload_json),
+    citations: asCitations(row.recommendations_json),
     promptSnapshot: asPromptSnapshot(row.prompt_snapshot_json),
     decisionTrace: asDecisionTrace(row.decision_trace_json),
   };
@@ -282,6 +288,7 @@ export async function appendAgentMessage({
   planner = null,
   codePrompt = null,
   toolTrace = [],
+  citations = [],
   promptSnapshot = null,
   decisionTrace = [],
   sessionStatus,
@@ -292,6 +299,7 @@ export async function appendAgentMessage({
   planner?: AgentPlannerResult | null;
   codePrompt?: AgentCodePrompt | null;
   toolTrace?: AgentToolTrace[];
+  citations?: RagCitation[];
   promptSnapshot?: AgentPromptSnapshot | null;
   decisionTrace?: AgentDecisionTraceItem[];
   sessionStatus?: AgentSessionStatus;
@@ -307,6 +315,7 @@ export async function appendAgentMessage({
       planner_json: planner,
       plan_card_json: codePrompt,
       tool_payload_json: toolTrace,
+      recommendations_json: citations,
       prompt_snapshot_json: promptSnapshot,
       decision_trace_json: decisionTrace,
       created_at: now,
@@ -337,6 +346,7 @@ export async function appendAgentMessage({
     planner_json: planner,
     plan_card_json: codePrompt,
     tool_payload_json: toolTrace,
+    recommendations_json: citations,
     prompt_snapshot_json: promptSnapshot,
     decision_trace_json: decisionTrace,
     created_at: now,
