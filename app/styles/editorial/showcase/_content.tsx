@@ -4,16 +4,16 @@ import { useRef, useEffect, useState } from "react";
 import Link from "next/link";
 
 const featuredWorks = [
-  { id: "01", title: "The Modernist", category: "Art Direction", image: "https://picsum.photos/seed/edit1/800/1000?grayscale" },
-  { id: "02", title: "Silent Space", category: "Photography", image: "https://picsum.photos/seed/edit2/800/1000?grayscale" },
-  { id: "03", title: "Lumina", category: "Brand Identity", image: "https://picsum.photos/seed/edit3/800/1000?grayscale" },
+  { id: "01", title: "The Modernist", category: "Art Direction", image: "/styles/editorial-showcase/edit1.jpg" },
+  { id: "02", title: "Silent Space", category: "Photography", image: "/styles/editorial-showcase/edit2.jpg" },
+  { id: "03", title: "Lumina", category: "Brand Identity", image: "/styles/editorial-showcase/edit3.jpg" },
 ];
 
 const projects = [
-  { id: 1, title: "Aesthetic", category: "Editorial", image: "https://picsum.photos/seed/p1/800/1200?grayscale", aspect: "aspect-[3/4]" },
-  { id: 2, title: "Form & Function", category: "Product", image: "https://picsum.photos/seed/p2/1200/800?grayscale", aspect: "aspect-[4/3]" },
-  { id: 3, title: "Monochrome", category: "Photography", image: "https://picsum.photos/seed/p3/800/800?grayscale", aspect: "aspect-square" },
-  { id: 4, title: "The Grid", category: "Web Design", image: "https://picsum.photos/seed/p4/800/1000?grayscale", aspect: "aspect-[4/5]" },
+  { id: 1, title: "Aesthetic", category: "Editorial", image: "/styles/editorial-showcase/p1.jpg", aspect: "aspect-[3/4]" },
+  { id: 2, title: "Form & Function", category: "Product", image: "/styles/editorial-showcase/p2.jpg", aspect: "aspect-[4/3]" },
+  { id: 3, title: "Monochrome", category: "Photography", image: "/styles/editorial-showcase/p3.jpg", aspect: "aspect-square" },
+  { id: 4, title: "The Grid", category: "Web Design", image: "/styles/editorial-showcase/p4.jpg", aspect: "aspect-[4/5]" },
 ];
 
 function useInView() {
@@ -168,7 +168,7 @@ export default function ShowcaseContent() {
         <div className={`clip-reveal ${heroRevealed ? "revealed" : ""} w-full aspect-[4/5] md:aspect-[21/9] bg-gray-200 overflow-hidden mb-32`}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src="https://picsum.photos/seed/editorial_hero/1920/1080?grayscale"
+            src="/styles/editorial-showcase/hero.jpg"
             alt="Editorial Hero"
             className="w-full h-full object-cover"
             style={{
@@ -265,7 +265,7 @@ export default function ShowcaseContent() {
             <div className="w-full aspect-[3/4] bg-gray-200 overflow-hidden lg:sticky lg:top-32">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src="https://picsum.photos/seed/portrait/800/1000?grayscale"
+                src="/styles/editorial-showcase/portrait.jpg"
                 alt="Portrait"
                 className="w-full h-full object-cover"
               />
