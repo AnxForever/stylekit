@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { createClient } from "@supabase/supabase-js";
+import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 import { isSupabaseConfigured } from "@/lib/submit/reviewer-supabase";
 import { getUsageStats, getTopStyles } from "@/lib/analytics";
 import { checkAdminApiAccess } from "@/lib/auth/admin-api";
@@ -144,7 +144,7 @@ async function getSupabaseDashboard(range: DashboardRange) {
   return NextResponse.json(buildAnalyticsDashboard(rows, range, contentSummary, contentTrends));
 }
 
-async function loadContentSummary(sb: any): Promise<DashboardContentSummary> {
+async function loadContentSummary(sb: SupabaseClient): Promise<DashboardContentSummary> {
   const [comments, ratings, favorites, submissionsTotal, submissionsPending, submissionsApproved, submissionsRejected, adminActions] =
     await Promise.all([
       getExactCount(sb, "style_comments"),
@@ -181,7 +181,7 @@ async function loadContentSummary(sb: any): Promise<DashboardContentSummary> {
 }
 
 async function loadContentTrends(
-  sb: any,
+  sb: SupabaseClient,
   range: DashboardRange,
   now: Date = new Date()
 ): Promise<DashboardContentTrendPoint[]> {
@@ -218,7 +218,7 @@ async function loadContentTrends(
 }
 
 async function getCountFromCandidates(
-  sb: any,
+  sb: SupabaseClient,
   candidates: readonly string[],
   filter?: {
     column: string;
@@ -236,7 +236,7 @@ async function getCountFromCandidates(
 }
 
 async function getCreatedAtRowsFromCandidates(
-  sb: any,
+  sb: SupabaseClient,
   candidates: readonly string[],
   startIso: string
 ): Promise<Array<{ created_at: string }>> {
@@ -251,7 +251,7 @@ async function getCreatedAtRowsFromCandidates(
 }
 
 async function getCreatedAtRows(
-  sb: any,
+  sb: SupabaseClient,
   table: string,
   startIso: string
 ): Promise<Array<{ created_at: string }> | null> {
@@ -283,7 +283,7 @@ function countRowsByDate(
 }
 
 async function getExactCount(
-  sb: any,
+  sb: SupabaseClient,
   table: string,
   options?: {
     filter?: {

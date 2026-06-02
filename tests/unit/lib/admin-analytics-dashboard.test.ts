@@ -98,7 +98,7 @@ describe("buildAnalyticsDashboard", () => {
     expect(payload.recentActivity).toHaveLength(7);
     expect(payload.contentTrends).toHaveLength(7);
     expect(payload.contentTrends.at(-1)).toEqual({
-      date: "2026-03-25",
+      date: "2026-03-26",
       comments: 0,
       ratings: 0,
       favorites: 0,

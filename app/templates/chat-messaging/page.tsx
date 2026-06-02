@@ -21,7 +21,6 @@ import {
   Settings,
   Smile,
   UserPlus,
-  Users,
   Video,
   Volume2,
   X,

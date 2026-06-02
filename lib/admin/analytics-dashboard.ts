@@ -252,13 +252,13 @@ export function buildAnalyticsDashboard(
 
   const displayWindowDays = getDisplayWindowDays(range);
   const displayStart = new Date(now);
-  displayStart.setHours(0, 0, 0, 0);
+  displayStart.setUTCHours(0, 0, 0, 0);
 
   const recentActivity: { date: string; count: number }[] = [];
   const normalizedContentTrends: DashboardContentTrendPoint[] = [];
   for (let index = displayWindowDays - 1; index >= 0; index -= 1) {
     const day = new Date(displayStart);
-    day.setDate(displayStart.getDate() - index);
+    day.setUTCDate(displayStart.getUTCDate() - index);
     const key = day.toISOString().slice(0, 10);
     recentActivity.push({
       date: key,
@@ -396,15 +396,15 @@ function buildTrafficSeries(
   } else {
     const days = range === "7d" ? 7 : range === "30d" ? 30 : 90;
     const start = new Date(now);
-    start.setHours(0, 0, 0, 0);
-    start.setDate(start.getDate() - (days - 1));
+    start.setUTCHours(0, 0, 0, 0);
+    start.setUTCDate(start.getUTCDate() - (days - 1));
     for (let index = 0; index < days; index += 1) {
       const bucket = new Date(start);
-      bucket.setDate(start.getDate() + index);
+      bucket.setUTCDate(start.getUTCDate() + index);
       const key = bucket.toISOString().slice(0, 10);
       bucketMap.set(key, {
         key,
-        label: `${bucket.getMonth() + 1}/${bucket.getDate()}`,
+        label: `${bucket.getUTCMonth() + 1}/${bucket.getUTCDate()}`,
         pageViews: 0,
         sessions: new Set<string>(),
       });
