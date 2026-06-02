@@ -257,7 +257,6 @@ export function PlaygroundContainer() {
   const [editorTab, setEditorTab] = useState<EditorTab>("code");
   const [comparisonVisible, setComparisonVisible] = useState(false);
   const [exportVisible, setExportVisible] = useState(false);
-  const [selectedElementInfo, setSelectedElementInfo] = useState<ElementInfo | null>(null);
 
   // Get style metadata for switcher
   const stylesForSwitcher = useMemo(
@@ -327,15 +326,6 @@ export function PlaygroundContainer() {
   // Handle editor change
   const handleCodeChange = useCallback((newCode: string) => {
     setCode(newCode);
-  }, []);
-
-  // Handle element selection from preview inspector
-  const handleElementSelect = useCallback((info: ElementInfo | null) => {
-    setSelectedElementInfo(info);
-    // 如果选中了元素，尝试在代码中搜索相关类名
-    if (info && info.classes.length > 0) {
-      // TODO: highlight related lines in the editor
-    }
   }, []);
 
   return (
@@ -454,7 +444,6 @@ export function PlaygroundContainer() {
                 styleSlug={styleSlug}
                 tokenCss={tokenCss}
                 deviceWidth={deviceWidths[deviceSize]}
-                onElementSelect={handleElementSelect}
               />
             </div>
           </div>
@@ -465,7 +454,6 @@ export function PlaygroundContainer() {
       {comparisonVisible && (
         <StyleComparison
           baseStyleSlug={styleSlug}
-          code={code}
           onClose={() => setComparisonVisible(false)}
         />
       )}

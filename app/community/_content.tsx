@@ -9,7 +9,7 @@ import { useCommunityFeed } from "@/lib/swr";
 import { getAvatarImageSrc } from "@/lib/avatar";
 import { useUser } from "@/lib/auth/use-user";
 import { useI18n } from "@/lib/i18n/context";
-import { SORT_OPTIONS_DEF, type SortMethod, type SortOptionDef } from "@/lib/community/leaderboard";
+import { SORT_OPTIONS_DEF, type SortMethod } from "@/lib/community/leaderboard";
 import { CommunityStatsCard } from "@/components/community/community-stats-card";
 
 // Icon mapping for sort options

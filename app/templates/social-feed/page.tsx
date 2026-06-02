@@ -22,13 +22,11 @@ import {
   Plus,
   Repeat2,
   Search,
-  Settings,
   Share,
   Smile,
   TrendingUp,
   User,
   UserPlus,
-  Users,
   X,
 } from "lucide-react";
 import { TemplateBackButton } from "@/components/templates/template-back-button";

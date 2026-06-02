@@ -1199,7 +1199,7 @@ export default function AntiDesignShowcase() {
                   {[
                     { label: "STYLE PAGE", href: "/styles/anti-design" },
                     { label: "ALL STYLES", href: "/styles" },
-                    { label: "TOKENS JSON", href: "/api/styles/anti-design/tokens" },
+                    { label: "SHOWCASE", href: "/styles/anti-design/showcase" },
                     { label: "SUBMIT STYLE", href: "/submit" },
                   ].map((link) => (
                     <Link

@@ -135,7 +135,7 @@ const PROJECTS: Project[] = [
     title: "Obsidian Dev Platform",
     category: "Development",
     year: "2024",
-    tags: ["Developer Tools", "API"],
+    tags: ["Internal Tools", "Platform"],
     description:
       "An internal developer portal and API management platform for a fintech infrastructure company serving 300+ engineering teams. Includes API key management, usage analytics, sandboxed testing environments, and a component-driven documentation system. Reduced developer onboarding time by 65%.",
     techStack: ["React", "Node.js", "OpenAPI", "Redis"],

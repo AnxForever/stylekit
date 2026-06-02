@@ -2,16 +2,15 @@
 
 import { useState, useMemo } from "react";
 import { ChevronDown, X, ArrowLeftRight } from "lucide-react";
-import { stylesMeta, type StyleMeta } from "@/lib/styles/meta";
+import { stylesMeta } from "@/lib/styles/meta";
 import { useI18n } from "@/lib/i18n/context";
 
 interface StyleComparisonProps {
   baseStyleSlug: string;
-  code: string;
   onClose: () => void;
 }
 
-export function StyleComparison({ baseStyleSlug, code, onClose }: StyleComparisonProps) {
+export function StyleComparison({ baseStyleSlug, onClose }: StyleComparisonProps) {
   const { locale } = useI18n();
   const [compareSlug, setCompareSlug] = useState<string>("");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
