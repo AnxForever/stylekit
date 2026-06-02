@@ -29,6 +29,7 @@ import {
   useProfileRatings,
   useProfileTitle,
 } from "@/lib/swr";
+import { getAvatarImageSrc } from "@/lib/avatar";
 import {
   EMPEROR_TITLE_TOKEN,
   EARLY_USER_TITLE_TOKEN,
@@ -197,6 +198,7 @@ export function ProfileContent() {
   const userName = user.user_metadata?.user_name ?? "";
   const fullName = user.user_metadata?.full_name ?? "";
   const avatarUrl = user.user_metadata?.avatar_url ?? "";
+  const avatarSrc = getAvatarImageSrc(avatarUrl);
   const email = user.email ?? "";
   const maskedEmail = (() => {
     if (!email.includes("@")) return "";
@@ -425,9 +427,9 @@ export function ProfileContent() {
     <div className="max-w-4xl mx-auto px-6 md:px-12 py-8 md:py-12">
       {/* Header */}
       <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6 mb-10">
-        {avatarUrl ? (
+        {avatarSrc ? (
           <Image
-            src={avatarUrl}
+            src={avatarSrc}
             alt={userName}
             width={96}
             height={96}

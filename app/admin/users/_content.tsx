@@ -18,6 +18,7 @@ import {
   Trash2,
 } from "lucide-react";
 import { useAdminUsers, type AdminUser } from "@/lib/swr";
+import { getAvatarImageSrc } from "@/lib/avatar";
 
 const PAGE_SIZE = 20;
 const PRESET_TITLE_COLORS = [
@@ -437,9 +438,9 @@ export function AdminUsersContent() {
                     <tr className="border-b border-border">
                       <td className="px-4 py-3">
                         <div className="flex items-center gap-3">
-                          {user.avatarUrl ? (
+                          {getAvatarImageSrc(user.avatarUrl) ? (
                             <Image
-                              src={user.avatarUrl}
+                              src={getAvatarImageSrc(user.avatarUrl) ?? ""}
                               alt=""
                               width={32}
                               height={32}
