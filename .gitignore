@@ -55,6 +55,8 @@ trae-rules.md
 NEO-BRUTALIST-GUIDE.md
 PHASE-5A-SUMMARY.md
 .mcp.json
+.codex
+.codex/
 .vscode/
 .claude/
 .trae/
@@ -104,6 +106,9 @@ editorial-brutalist-portfolio/
 style-extractor-dev/
 dashboards/
 .playwright-mcp/
+.worktrees/
+anthropic-ai-claude-code-*/
+anthropic-ai-claude-code-*.tgz
 
 # AI Studio exported data files
 "ai_studio_code*.txt"
