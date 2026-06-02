@@ -30,10 +30,11 @@ export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const origin = getPublicOrigin(request);
   const next = parseNextPath(searchParams.get("next"));
-  const redirectUri = `${origin}/api/auth/linuxdo/callback?next=${encodeURIComponent(next)}`;
+  const redirectUri = `${origin}/api/auth/linuxdo/callback`;
 
   try {
-    const authUrl = buildAuthorizationUrl(redirectUri);
+    const authUrl = new URL(buildAuthorizationUrl(redirectUri));
+    authUrl.searchParams.set("state", next);
     return NextResponse.redirect(authUrl);
   } catch {
     // Missing env vars — redirect home silently

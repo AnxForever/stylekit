@@ -16,13 +16,13 @@ StyleKit provides structured design systems that AI can use to generate consiste
 
 ### Path A: Reference URL -> Extract -> Generate
 
-1. Extract style evidence from a public URL: POST /api/style-extract
-2. Import/normalize in product: /create-style
+1. Paste a public reference URL in the product: /create-style
+2. Import and normalize the extracted style draft
 3. Generate output in 3 steps: /generate
 
 ### Path B: Preset Style -> Template -> Generate
 
-1. Browse preset styles: /styles or /api/styles
+1. Browse preset styles: /styles
 2. Select template and output format: /generate
 3. Edit content with live preview and download ZIP
 
@@ -50,80 +50,38 @@ StyleKit provides structured design systems that AI can use to generate consiste
 
 - **Bento Grid** (`bento-grid`) - Asymmetric grid layout, card-based
 
-## API Endpoints
-
-### Styles
-- `GET /api/styles` - List all available styles
-- `GET /api/styles/[slug]` - Get complete style pack (tokens + rules + examples)
-- `GET /api/styles/[slug]/tokens` - Get design tokens only
-- `GET /api/styles/[slug]/recipes` - Get component recipes
-- `GET /api/styles/[slug]/skill-pack` - Get SKILL.md format for AI tools
-- `POST /api/style-extract` - Extract style draft from a public URL for replication workflow
-
-### MCP Core Tools
-- `search_knowledge` - Search design knowledge domains
-- `smart_recommend` - Context-aware recommendation with scoring
-- `get_style` - Get one style with tokens and recipes
-- `list_styles` - List all styles
-- `lint_code` - Validate code against style rules
-- `get_stack_guidelines` - Get stack-specific engineering guidance
-
-### Archetypes
-- `GET /api/archetypes` - List all layout archetypes
-- `GET /api/archetypes/[id]` - Get specific archetype details
-
-### UI Plan
-- `POST /api/ui-plan/validate` - Validate a UI Plan JSON against schema
-- `GET /api/ui-plan/schema` - Get JSON Schema for UI Plan
-
-### Knowledge Base (NEW)
-- `GET /api/knowledge/search?q={query}&domain={domain}&limit={n}` - Search across all design knowledge
-- `GET /api/knowledge/recommend?q={productQuery}&stack={stackId}` - Get comprehensive design recommendation
-- `GET /api/knowledge/domains` - List all knowledge domains
-- `GET /api/knowledge/stacks` - List tech stacks with guidelines
-- `GET /api/knowledge/stacks?id={stackId}` - Get stack-specific guidelines
-
-### AI Design System Generator (NEW)
-- `POST /api/generate/design-system` - Generate complete design system package
-- `GET /api/generate/design-system` - Get available options and usage info
-
 ## Usage Examples
 
 ### Example 1: Generate a Neo-Brutalist Landing Page
 
 ```
-1. Fetch style pack: GET /api/styles/neo-brutalist
-2. Fetch landing archetype: GET /api/archetypes/landing-hero-centered
-3. Use tokens and recipes to generate components
+1. Open /styles/neo-brutalist
+2. Copy the AI rules, tokens, and component recipes from the style page
+3. Use those constraints to generate components
 4. Follow do's/don'ts from style rules
 ```
 
 ### Example 2: Create a UI Plan
 
 ```
-1. Review schema: GET /api/ui-plan/schema
-2. Create JSON plan with sections and components
-3. Validate: POST /api/ui-plan/validate
+1. Pick the target style and page template
+2. Plan sections and components before generating code
+3. Match every section to the selected style rules
 4. Generate code following the plan
 ```
 
 ### Example 3: AI Design System Generator (Recommended)
 
 ```
-1. POST /api/generate/design-system with body:
-   {
-     "productType": "SaaS dashboard",
-     "stylePreference": "auto",
-     "colorScheme": "light",
-     "stackId": "nextjs"
-   }
-2. Receive complete design system package with:
+1. Open /generate
+2. Choose product type, style preference, color scheme, and output format
+3. Use the generated package with:
    - Selected style and tokens
    - Color palette recommendations
    - Typography pairings
    - Component code examples
    - UX and stack-specific guidelines
-3. Use the aiRules for consistent code generation
+4. Use the AI rules for consistent code generation
 ```
 
 ## Design Tokens Structure
@@ -224,7 +182,7 @@ Archetypes define page structure patterns:
 2. **Respect forbidden patterns** - Never use classes/patterns in `forbidden` lists
 3. **Use recipes for consistency** - Generate components from recipes, not from scratch
 4. **Follow archetypes for layout** - Use predefined section structures
-5. **Validate UI Plans** - Create structured plan before generating code
+5. **Plan before shipping** - Create a structured plan before generating code
 6. **Check do's and don'ts** - Review style-specific rules before generation
 
 ## Technical Stack
@@ -245,13 +203,6 @@ For complete documentation with all styles, tokens, recipes, and examples:
 
 Per the llms.txt specification, these Markdown variants are available for easier parsing:
 - `/llms.md` - Structured overview with links
-- `/api/styles/[slug]/md` - Full style documentation in Markdown
-
-## Optional
-
-- [Figma MCP Integration](/docs/figma-mcp-integration.md): Import design tokens from Figma
-- [Skills Pack](/skills/): SKILL.md format for AI tools (skills.sh compatible)
-- [MCP Server](/mcp/): Model Context Protocol server for direct AI tool integration
 
 ## Support & Updates
 

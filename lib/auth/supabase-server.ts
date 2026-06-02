@@ -39,8 +39,25 @@ export async function getAuthServerClient(): Promise<SupabaseClient | null> {
 /**
  * Get the current authenticated user on the server side.
  * Returns null if not authenticated or Supabase is not configured.
+ * In development with NEXT_PUBLIC_DEV_MOCK_USER=true, returns a mock user.
  */
 export async function getServerUser() {
+  if (
+    process.env.NODE_ENV === "development" &&
+    process.env.NEXT_PUBLIC_DEV_MOCK_USER === "true"
+  ) {
+    return {
+      id: "dev-mock-user-00000000",
+      aud: "authenticated",
+      role: "authenticated",
+      email: "dev@localhost",
+      app_metadata: { provider: "mock" },
+      user_metadata: { full_name: "Dev User" },
+      identities: [],
+      created_at: new Date().toISOString(),
+    };
+  }
+
   const client = await getAuthServerClient();
   if (!client) return null;
 

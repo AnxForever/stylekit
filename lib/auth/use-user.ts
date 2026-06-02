@@ -29,16 +29,35 @@ function normalizeNextPath(nextPath?: string): string {
   return nextPath;
 }
 
-/** Check once at module level whether Supabase is available. */
-const hasClient = typeof window !== "undefined" && getAuthClient() !== null;
+const DEV_MOCK_ENABLED =
+  process.env.NODE_ENV === "development" &&
+  process.env.NEXT_PUBLIC_DEV_MOCK_USER === "true";
+
+const BROWSER_AUTH_CONFIGURED = Boolean(
+  process.env.NEXT_PUBLIC_SUPABASE_URL &&
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+);
+
+const DEV_MOCK_USER: User = {
+  id: "dev-mock-user-00000000",
+  aud: "authenticated",
+  role: "authenticated",
+  email: "dev@localhost",
+  app_metadata: { provider: "mock" },
+  user_metadata: { full_name: "Dev User" },
+  identities: [],
+  created_at: "2026-04-14T00:00:00.000Z",
+} as unknown as User;
 
 export function useUser(): AuthState {
-  const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(hasClient);
+  const [user, setUser] = useState<User | null>(DEV_MOCK_ENABLED ? DEV_MOCK_USER : null);
+  const [loading, setLoading] = useState(
+    DEV_MOCK_ENABLED ? false : BROWSER_AUTH_CONFIGURED
+  );
   const initialised = useRef(false);
 
   useEffect(() => {
-    if (initialised.current) return;
+    if (initialised.current || DEV_MOCK_ENABLED || !BROWSER_AUTH_CONFIGURED) return;
     initialised.current = true;
 
     const client = getAuthClient();

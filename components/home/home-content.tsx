@@ -1,15 +1,25 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import { startTransition, useEffect, useMemo, useRef, useState } from "react";
-import { ArrowRight, BookOpenText, Component, Sparkles, type LucideIcon } from "lucide-react";
+import { ArrowRight, ArrowUpRight, BookOpenText, Component, Heart, Sparkles, type LucideIcon } from "lucide-react";
 import { useI18n } from "@/lib/i18n/context";
 import { HomeStyleCard } from "@/components/home/home-style-card";
 import { FeaturedCarousel } from "@/components/home/featured-carousel";
 import { RevealOnScroll } from "@/components/home/reveal-on-scroll";
 import { GitHubStarButton } from "@/components/github-star-button";
 import { SocialProof } from "@/components/home/social-proof";
+import {
+  Drawer,
+  DrawerContent,
+  DrawerDescription,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { trackEvent } from "@/lib/analytics/events";
 
 const HowItWorks = dynamic(
@@ -67,6 +77,12 @@ const TrendingStyles = dynamic(
   }
 );
 
+type SupportPreviewItem = {
+  src: string;
+  title: string;
+  hint: string;
+};
+
 export function HomeContent({ styles, stats }: HomeContentProps) {
   const { t, locale } = useI18n();
   const [activeQuickLink, setActiveQuickLink] = useState("#home-core-features");
@@ -86,6 +102,7 @@ export function HomeContent({ styles, stats }: HomeContentProps) {
         .slice(0, 8),
     [styles]
   );
+  const mobileFeaturedStyles = useMemo(() => featuredStyles.slice(0, 4), [featuredStyles]);
 
   const coreFeatures: Array<{
     title: string;
@@ -129,6 +146,22 @@ export function HomeContent({ styles, stats }: HomeContentProps) {
   const heroStats = useMemo(
     () => [{ value: `${styles.length}+`, label: t("home.metricStyles") }],
     [styles.length, t]
+  );
+  const supportHref = localizeHref("/contact#support-maintenance", locale);
+  const supportPreviewItems: SupportPreviewItem[] = useMemo(
+    () => [
+      {
+        src: "/wechat-qr.png",
+        title: locale === "zh" ? "微信支付" : "WeChat Pay",
+        hint: locale === "zh" ? "微信扫码" : "Scan with WeChat",
+      },
+      {
+        src: "/alipay-qr.jpg",
+        title: locale === "zh" ? "支付宝" : "Alipay",
+        hint: locale === "zh" ? "支付宝扫码" : "Scan with Alipay",
+      },
+    ],
+    [locale]
   );
   const quickLinks = useMemo(
     () => [
@@ -393,6 +426,41 @@ export function HomeContent({ styles, stats }: HomeContentProps) {
                 <p className="text-sm text-muted">{locale === "zh" ? "开源仓库会持续更新，但对外入口先聚焦已打磨完成的浏览与参考链路。" : "The repo keeps evolving, but public entry points now focus on the polished browse-and-reference flows."}</p>
               </div>
 
+              <div className="mt-4 md:hidden">
+                <Drawer>
+                  <DrawerTrigger asChild>
+                    <button
+                      type="button"
+                      className="inline-flex items-center gap-2 rounded-full border border-foreground bg-background/90 px-4 py-2 text-sm shadow-[0_14px_40px_-24px_rgba(0,0,0,0.45)] backdrop-blur-sm transition-colors hover:bg-foreground hover:text-background"
+                    >
+                      <Heart className="h-4 w-4" />
+                      {locale === "zh" ? "支持维护" : "Support"}
+                    </button>
+                  </DrawerTrigger>
+                  <DrawerContent
+                    side="bottom"
+                    className="max-h-[88vh] overflow-y-auto rounded-t-[28px] px-4 pb-4 pt-8"
+                  >
+                    <DrawerHeader className="sr-only">
+                      <DrawerTitle>
+                        {locale === "zh" ? "支持维护" : "Support Maintenance"}
+                      </DrawerTitle>
+                      <DrawerDescription>
+                        {locale === "zh"
+                          ? "扫码支持 StyleKit 的服务器、域名和后续维护。"
+                          : "Scan to support StyleKit server, domain, and maintenance costs."}
+                      </DrawerDescription>
+                    </DrawerHeader>
+                    <HomeSupportCard
+                      locale={locale}
+                      href={supportHref}
+                      items={supportPreviewItems}
+                      variant="mobile"
+                    />
+                  </DrawerContent>
+                </Drawer>
+              </div>
+
               <ul className="mt-3.5 sm:mt-5 flex flex-wrap gap-2 sm:gap-2.5 max-w-md" aria-label={t("home.metricAriaLabel")}>
                 {heroStats.map((item) => (
                   <li
@@ -442,7 +510,35 @@ export function HomeContent({ styles, stats }: HomeContentProps) {
             </RevealOnScroll>
 
             <RevealOnScroll instant className="w-full max-w-xl md:max-w-none md:justify-self-end">
-              <FeaturedCarousel styles={featuredStyles} />
+              <div className="relative">
+                <FeaturedCarousel styles={featuredStyles} />
+                <div className="mt-4 hidden lg:flex justify-end">
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <button
+                        type="button"
+                        className="inline-flex items-center gap-2 rounded-full border border-foreground bg-background/90 px-4 py-2 text-sm shadow-[0_14px_40px_-24px_rgba(0,0,0,0.45)] backdrop-blur-sm transition-colors hover:bg-foreground hover:text-background"
+                      >
+                        <Heart className="h-4 w-4" />
+                        {locale === "zh" ? "支持维护" : "Support"}
+                      </button>
+                    </PopoverTrigger>
+                    <PopoverContent
+                      align="end"
+                      side="top"
+                      sideOffset={12}
+                      className="w-[22rem] border-0 bg-transparent p-0 shadow-none"
+                    >
+                      <HomeSupportCard
+                        locale={locale}
+                        href={supportHref}
+                        items={supportPreviewItems}
+                        variant="desktop"
+                      />
+                    </PopoverContent>
+                  </Popover>
+                </div>
+              </div>
             </RevealOnScroll>
           </div>
         </div>
@@ -543,7 +639,9 @@ export function HomeContent({ styles, stats }: HomeContentProps) {
         </nav>
       </section>
 
-      <SocialProof stats={stats} />
+      <div className="hidden md:block">
+        <SocialProof stats={stats} />
+      </div>
 
       <section id="home-core-features" className="relative border-b border-border scroll-mt-24 bg-zinc-50/40 dark:bg-zinc-900/15">
         <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-16 bg-gradient-to-b from-background/70 to-transparent" />
@@ -551,7 +649,7 @@ export function HomeContent({ styles, stats }: HomeContentProps) {
           <RevealOnScroll variant="soft" className="mb-6 sm:mb-8">
             <h2 className={sectionTitleClassName}>{t("home.coreFeatures")}</h2>
           </RevealOnScroll>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-5">
+          <div className="-mx-4 flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-2 scrollbar-hide md:mx-0 md:grid md:grid-cols-3 md:overflow-visible md:px-0 md:pb-0">
             {coreFeatures.map((feature, featureIndex) => {
               const Icon = feature.icon;
               return (
@@ -561,7 +659,7 @@ export function HomeContent({ styles, stats }: HomeContentProps) {
                   delayMs={100 + featureIndex * 70}
                   disableDelayOnMobile
                 >
-                  <article className="group relative overflow-hidden border border-border bg-background/70 p-4 sm:p-5 md:p-6 motion-safe:transition-[border-color,transform,box-shadow] motion-safe:duration-200 hover:border-foreground focus-within:border-foreground focus-within:ring-2 focus-within:ring-accent focus-within:ring-offset-2 focus-within:ring-offset-background motion-safe:hover:-translate-y-0.5">
+                  <article className="group relative min-w-[17.5rem] snap-start overflow-hidden border border-border bg-background/70 p-4 sm:p-5 md:min-w-0 md:p-6 motion-safe:transition-[border-color,transform,box-shadow] motion-safe:duration-200 hover:border-foreground focus-within:border-foreground focus-within:ring-2 focus-within:ring-accent focus-within:ring-offset-2 focus-within:ring-offset-background motion-safe:hover:-translate-y-0.5">
                     <div className="absolute inset-x-0 top-0 h-0.5 bg-gradient-to-r from-transparent via-accent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                     <div className="w-10 h-10 border border-border flex items-center justify-center text-muted group-hover:text-foreground group-hover:border-foreground transition-colors mb-4">
                       <Icon className="w-4 h-4" />
@@ -599,7 +697,21 @@ export function HomeContent({ styles, stats }: HomeContentProps) {
             </Link>
           </RevealOnScroll>
 
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-5 [content-visibility:auto] [contain-intrinsic-size:1px_680px]">
+          <div className="-mx-4 flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-2 scrollbar-hide md:hidden [content-visibility:auto] [contain-intrinsic-size:1px_320px]">
+            {mobileFeaturedStyles.map((style, styleIndex) => (
+              <RevealOnScroll
+                key={style.slug}
+                variant="upSubtle"
+                delayMs={40 + styleIndex * 20}
+                disableDelayOnMobile
+                className="w-[min(19rem,calc(100vw-2.5rem))] shrink-0 snap-start"
+              >
+                <HomeStyleCard style={style} />
+              </RevealOnScroll>
+            ))}
+          </div>
+
+          <div className="hidden md:grid md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-5 [content-visibility:auto] [contain-intrinsic-size:1px_680px]">
             {featuredStyles.map((style, styleIndex) => (
               <RevealOnScroll key={style.slug} variant="upSubtle" delayMs={60 + styleIndex * 30} disableDelayOnMobile>
                 <HomeStyleCard style={style} />
@@ -611,11 +723,21 @@ export function HomeContent({ styles, stats }: HomeContentProps) {
 
       <HowItWorks />
 
-      <RecipeShowcase variant="home" maxItems={6} />
+      <div className="md:hidden">
+        <MobileHomeSummarySection locale={locale} stats={stats} />
+      </div>
 
-      <CTABanner />
+      <div className="hidden md:block">
+        <RecipeShowcase variant="home" maxItems={6} />
+      </div>
 
-      <BuiltForSection />
+      <div className="hidden md:block">
+        <CTABanner />
+      </div>
+
+      <div className="hidden md:block">
+        <BuiltForSection />
+      </div>
     </>
   );
 }
@@ -638,6 +760,278 @@ function TrendingStylesSkeleton() {
               <div className="h-1.5 rounded bg-zinc-100 dark:bg-zinc-900" />
             </div>
           ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function HomeSupportCard({
+  locale,
+  href,
+  items,
+  variant,
+}: {
+  locale: "en" | "zh";
+  href: string;
+  items: SupportPreviewItem[];
+  variant: "desktop" | "mobile";
+}) {
+  const isDesktop = variant === "desktop";
+  const [activeMobileMethod, setActiveMobileMethod] = useState(items[0]?.src ?? "");
+  const activeMobileItem = items.find((item) => item.src === activeMobileMethod) ?? items[0];
+
+  return (
+    <div
+      className={cn(
+        "rounded-[28px] border border-border bg-[radial-gradient(circle_at_top_left,rgba(34,197,94,0.12),transparent_34%),radial-gradient(circle_at_bottom_right,rgba(37,99,235,0.12),transparent_42%)] shadow-[0_24px_70px_-34px_rgba(0,0,0,0.45)]",
+        isDesktop ? "backdrop-blur-sm bg-background/95 p-4" : "p-4 sm:p-5"
+      )}
+    >
+      {isDesktop ? (
+        <>
+          <div className="flex flex-wrap items-start justify-between gap-3">
+            <div>
+              <p className="text-[11px] uppercase tracking-[0.24em] text-muted">
+                {locale === "zh" ? "支持维护" : "Support Maintenance"}
+              </p>
+              <p className="mt-2 max-w-sm text-sm leading-7 text-muted">
+                {locale === "zh"
+                  ? "如果 StyleKit 恰好帮到了你，那我真挺开心的。欢迎扫码支持我把它继续做下去，金额随意，你的每一份心意，都是对我很大的鼓励。"
+                  : "If StyleKit helps your workflow, you can support it here to help cover servers, domains, and ongoing upkeep."}
+              </p>
+              <p className="mt-2 max-w-sm text-xs leading-6 text-muted">
+                {locale === "zh"
+                  ? "收到的支持会优先拿来给 StyleKit 续上服务器、域名和后续维护成本，也算是给我继续折腾它攒一点动力。"
+                  : "Support is prioritized for server renewals, domain renewals, and day-to-day maintenance of the public site."}
+              </p>
+            </div>
+            <Link
+              href={href}
+              onClick={() => trackEvent("cta_click", { label: "support_maintenance", location: `home_${variant}` })}
+              className="inline-flex shrink-0 items-center gap-2 rounded-full border border-foreground px-4 py-2 text-sm transition-colors hover:bg-foreground hover:text-background"
+            >
+              <Heart className="h-4 w-4" />
+              {locale === "zh" ? "扫码支持 / 查看全部方式" : "Scan to support / View all options"}
+            </Link>
+          </div>
+
+          <div className="mt-4 grid gap-3 grid-cols-2">
+            {items.map((item) => (
+              <Link
+                key={item.src}
+                href={href}
+                onClick={() => trackEvent("cta_click", { label: item.title, location: `home_support_${variant}` })}
+                className="group rounded-[22px] border border-border bg-background/90 p-3 transition-[transform,border-color] duration-200 hover:-translate-y-0.5 hover:border-foreground"
+              >
+                <div className="relative aspect-square overflow-hidden rounded-[16px] border border-border bg-white">
+                  <Image
+                    src={item.src}
+                    alt={item.title}
+                    fill
+                    className="object-contain"
+                    sizes="180px"
+                  />
+                </div>
+                <div className="mt-3 flex items-center justify-between gap-2">
+                  <div>
+                    <p className="text-sm">{item.title}</p>
+                    <p className="text-[11px] text-muted">{item.hint}</p>
+                  </div>
+                  <ArrowRight className="h-4 w-4 text-muted transition-transform duration-200 group-hover:translate-x-0.5 group-hover:text-foreground" />
+                </div>
+              </Link>
+            ))}
+          </div>
+
+          <div className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-2 text-xs text-muted">
+            <span>
+              {locale === "zh" ? "也可通过 GitHub 查看赞助入口和说明。" : "You can also use the GitHub repo funding entry."}
+            </span>
+            <a
+              href="https://github.com/AnxForever/stylekit"
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => trackEvent("cta_click", { label: "support_github_repo", location: `home_support_${variant}` })}
+              className="inline-flex items-center gap-1.5 transition-colors hover:text-foreground"
+            >
+              GitHub
+              <ArrowUpRight className="h-3.5 w-3.5" />
+            </a>
+          </div>
+        </>
+      ) : (
+        <>
+          <div className="flex items-start justify-between gap-3">
+            <div className="min-w-0">
+              <p className="text-[11px] uppercase tracking-[0.24em] text-muted">
+                {locale === "zh" ? "支持维护" : "Support Maintenance"}
+              </p>
+              <p className="mt-2 text-sm leading-6 text-muted">
+                {locale === "zh"
+                  ? "支持会优先用于服务器、域名和持续维护。手机端只展示一个二维码，切换更快。"
+                  : "Support helps cover hosting, domains, and upkeep. Mobile shows one code at a time to stay compact."}
+              </p>
+            </div>
+            <Link
+              href={href}
+              onClick={() => trackEvent("cta_click", { label: "support_maintenance", location: `home_${variant}` })}
+              className="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-foreground px-3 py-2 text-xs transition-colors hover:bg-foreground hover:text-background"
+            >
+              <Heart className="h-3.5 w-3.5" />
+              {locale === "zh" ? "全部方式" : "All options"}
+            </Link>
+          </div>
+
+          <div className="mt-4 flex flex-wrap gap-2">
+            {items.map((item) => {
+              const isActive = item.src === activeMobileItem?.src;
+              return (
+                <button
+                  key={item.src}
+                  type="button"
+                  onClick={() => {
+                    setActiveMobileMethod(item.src);
+                    trackEvent("cta_click", { label: `${item.title}_switch`, location: "home_support_mobile" });
+                  }}
+                  className={cn(
+                    "inline-flex items-center gap-2 rounded-full border px-3 py-2 text-xs transition-colors",
+                    isActive
+                      ? "border-foreground bg-foreground text-background"
+                      : "border-border bg-background/80 text-muted hover:border-foreground hover:text-foreground"
+                  )}
+                >
+                  <span>{item.title}</span>
+                  <span className={cn("text-[10px]", isActive ? "text-background/70" : "text-muted")}>
+                    {item.hint}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+
+          {activeMobileItem ? (
+            <div className="mt-4 rounded-[22px] border border-border bg-background/90 p-3">
+              <div className="relative aspect-square overflow-hidden rounded-[16px] border border-border bg-white">
+                <Image
+                  src={activeMobileItem.src}
+                  alt={activeMobileItem.title}
+                  fill
+                  className="object-contain"
+                  sizes="(max-width: 768px) 70vw, 320px"
+                />
+              </div>
+              <div className="mt-3 flex items-center justify-between gap-3">
+                <div>
+                  <p className="text-sm">{activeMobileItem.title}</p>
+                  <p className="text-[11px] text-muted">
+                    {locale === "zh" ? "切换上方按钮即可查看另一种方式" : "Use the chips above to switch methods."}
+                  </p>
+                </div>
+                <ArrowRight className="h-4 w-4 shrink-0 text-muted" />
+              </div>
+            </div>
+          ) : null}
+
+          <div className="mt-4 flex flex-wrap items-center justify-between gap-2 border-t border-border/70 pt-3 text-xs text-muted">
+            <span>
+              {locale === "zh" ? "也可走 GitHub 入口。" : "GitHub funding entry is also available."}
+            </span>
+            <a
+              href="https://github.com/AnxForever/stylekit"
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => trackEvent("cta_click", { label: "support_github_repo", location: `home_support_${variant}` })}
+              className="inline-flex items-center gap-1.5 transition-colors hover:text-foreground"
+            >
+              GitHub
+              <ArrowUpRight className="h-3.5 w-3.5" />
+            </a>
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
+
+function MobileHomeSummarySection({
+  locale,
+  stats,
+}: {
+  locale: "en" | "zh";
+  stats: {
+    styles: number;
+    animations: number;
+    templates: number;
+  };
+}) {
+  const summaryLinks = [
+    {
+      href: localizeHref("/recipes", locale),
+      label: locale === "zh" ? "设计配方" : "Recipes",
+      description: locale === "zh" ? "更完整的组合方案，单独看更轻松。" : "Browse full recipe combos on a dedicated page.",
+    },
+    {
+      href: localizeHref("/contact", locale),
+      label: locale === "zh" ? "支持与联系" : "Support",
+      description: locale === "zh" ? "问题反馈、支持方式和联系入口统一放这里。" : "Feedback, support options, and contact details in one place.",
+    },
+  ];
+
+  const statItems = [
+    { value: `${stats.styles}+`, label: locale === "zh" ? "风格" : "Styles" },
+    { value: `${stats.animations}+`, label: locale === "zh" ? "动画" : "Animations" },
+    { value: `${stats.templates}+`, label: locale === "zh" ? "模板" : "Templates" },
+  ];
+
+  return (
+    <section className="border-b border-border bg-zinc-50/35 dark:bg-zinc-900/10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
+        <div className="grid grid-cols-3 gap-2">
+          {statItems.map((item) => (
+            <div key={item.label} className="rounded-[18px] border border-border bg-background/80 px-3 py-3 text-center">
+              <p className="text-base tabular-nums leading-none">{item.value}</p>
+              <p className="mt-1 text-[10px] uppercase tracking-[0.18em] text-muted">{item.label}</p>
+            </div>
+          ))}
+        </div>
+
+        <div className="mt-5">
+          <p className="text-[11px] uppercase tracking-[0.24em] text-muted">
+            {locale === "zh" ? "继续浏览" : "Keep browsing"}
+          </p>
+          <div className="mt-3 grid gap-3">
+            {summaryLinks.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                onClick={() => trackEvent("cta_click", { label: item.label, location: "home_mobile_summary" })}
+                className="flex items-center justify-between gap-3 rounded-[20px] border border-border bg-background/90 px-4 py-4 transition-colors hover:border-foreground"
+              >
+                <div className="min-w-0">
+                  <p className="text-sm">{item.label}</p>
+                  <p className="mt-1 text-xs leading-5 text-muted">{item.description}</p>
+                </div>
+                <ArrowRight className="h-4 w-4 shrink-0 text-muted" />
+              </Link>
+            ))}
+
+            <a
+              href="https://github.com/AnxForever/stylekit"
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => trackEvent("cta_click", { label: "github_repo", location: "home_mobile_summary" })}
+              className="flex items-center justify-between gap-3 rounded-[20px] border border-border bg-background/90 px-4 py-4 transition-colors hover:border-foreground"
+            >
+              <div className="min-w-0">
+                <p className="text-sm">GitHub</p>
+                <p className="mt-1 text-xs leading-5 text-muted">
+                  {locale === "zh" ? "源码、更新和开源动态都在这里。" : "Source code, updates, and open-source context."}
+                </p>
+              </div>
+              <ArrowUpRight className="h-4 w-4 shrink-0 text-muted" />
+            </a>
+          </div>
         </div>
       </div>
     </section>

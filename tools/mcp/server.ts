@@ -7,7 +7,7 @@
  * Exposes StyleKit capabilities as tools, resources, and prompts
  * for AI assistants.
  *
- * Core tools (7):
+ * Core tools (11):
  * - search_knowledge
  * - smart_recommend
  * - get_style
@@ -15,6 +15,10 @@
  * - lint_code
  * - get_stack_guidelines
  * - submit_style
+ * - search_templates
+ * - search_component_patterns
+ * - search_prompts
+ * - get_full_recommendation
  *
  * Experimental tools (disabled by default):
  * - compose_styles
@@ -66,6 +70,10 @@ const { getArchetype } = require("./lib/archetypes");
 const { lintCode, getFixSuggestions, formatLintResult } = require("./lib/linter");
 const { scoreStyle } = require("./lib/accessibility");
 const { getCurrentVersion, getChangelog } = require("./lib/versioning");
+const { templateCatalog } = require("./lib/templates/catalog");
+const { componentPatterns } = require("./lib/component-patterns");
+const { promptTopics } = require("./lib/prompts/topics");
+const { getDesignRecommendation } = knowledge;
 
 // ---- Server setup ----
 
@@ -369,6 +377,215 @@ server.tool(
 
     return {
       content: [{ type: "text", text: JSON.stringify(report, null, 2) }],
+    };
+  }
+);
+
+// -- search_templates --
+server.tool(
+  "search_templates",
+  "Search the template catalog by type, style, or keywords. Returns matching templates with descriptions, style associations, and code paths.",
+  {
+    query: z.string().optional().describe("Search query (e.g. 'dashboard', 'portfolio', 'glassmorphism')"),
+    type: z
+      .enum([
+        "landing", "dashboard", "blog", "portfolio", "saas",
+        "ecommerce", "admin", "auth", "docs", "social",
+        "messaging", "media", "lifestyle", "education",
+      ])
+      .optional()
+      .describe("Filter by template type"),
+    styleSlug: z.string().optional().describe("Filter by style slug (e.g. 'glassmorphism')"),
+    limit: z.number().optional().default(10).describe("Max results (default: 10)"),
+  },
+  async ({ query, type, styleSlug, limit }) => {
+    let results = [...templateCatalog];
+
+    if (type) {
+      results = results.filter((t: { type: string }) => t.type === type);
+    }
+
+    if (styleSlug) {
+      results = results.filter((t: { styleSlug: string }) => t.styleSlug === styleSlug);
+    }
+
+    if (query) {
+      const queryLower = query.toLowerCase();
+      const queryTerms = queryLower.split(/\s+/).filter((t: string) => t.length > 1);
+      results = results
+        .map((t: { id: string; type: string; styleSlug: string; name: { zh: string; en: string }; description: { zh: string; en: string } }) => {
+          const text = `${t.id} ${t.type} ${t.styleSlug} ${t.name.en} ${t.name.zh} ${t.description.en} ${t.description.zh}`.toLowerCase();
+          const score = queryTerms.reduce((s: number, term: string) => s + (text.includes(term) ? 1 : 0), 0);
+          return { template: t, score };
+        })
+        .filter((item: { score: number }) => item.score > 0)
+        .sort((a: { score: number }, b: { score: number }) => b.score - a.score)
+        .map((item: { template: unknown }) => item.template);
+    }
+
+    const output = results.slice(0, limit).map((t: { id: string; type: string; styleSlug: string; name: { zh: string; en: string }; description: { zh: string; en: string }; href: string; codePath: string }) => ({
+      id: t.id,
+      type: t.type,
+      styleSlug: t.styleSlug,
+      name: t.name.en,
+      nameZh: t.name.zh,
+      description: t.description.en,
+      descriptionZh: t.description.zh,
+      href: t.href,
+      codePath: t.codePath,
+    }));
+
+    return {
+      content: [{ type: "text", text: JSON.stringify({ count: output.length, templates: output }, null, 2) }],
+    };
+  }
+);
+
+// -- search_component_patterns --
+server.tool(
+  "search_component_patterns",
+  "Search reusable UI component patterns by family, category, tags, or keywords. Each pattern includes a style association and usage context.",
+  {
+    query: z.string().optional().describe("Search query (e.g. 'sidebar', 'tabs', 'accordion')"),
+    family: z
+      .enum(["breadcrumb", "accordion", "tabs", "pagination", "sidebar-nav"])
+      .optional()
+      .describe("Filter by component family"),
+    category: z
+      .enum(["navigation", "disclosure"])
+      .optional()
+      .describe("Filter by component category"),
+    limit: z.number().optional().default(10).describe("Max results (default: 10)"),
+  },
+  async ({ query, family, category, limit }) => {
+    let results = [...componentPatterns];
+
+    if (family) {
+      results = results.filter((p: { family: string }) => p.family === family);
+    }
+
+    if (category) {
+      results = results.filter((p: { category: string }) => p.category === category);
+    }
+
+    if (query) {
+      const queryLower = query.toLowerCase();
+      const queryTerms = queryLower.split(/\s+/).filter((t: string) => t.length > 1);
+      results = results
+        .map((p: { id: string; name: string; nameZh: string; summary: string; summaryZh: string; tags: string[]; tagsZh: string[]; useCase: string; useCaseZh: string; family: string; category: string; sourceStyleSlug: string }) => {
+          const text = `${p.id} ${p.name} ${p.nameZh} ${p.summary} ${p.summaryZh} ${p.tags.join(" ")} ${p.tagsZh.join(" ")} ${p.useCase} ${p.useCaseZh} ${p.family} ${p.category} ${p.sourceStyleSlug}`.toLowerCase();
+          const score = queryTerms.reduce((s: number, term: string) => s + (text.includes(term) ? 1 : 0), 0);
+          return { pattern: p, score };
+        })
+        .filter((item: { score: number }) => item.score > 0)
+        .sort((a: { score: number }, b: { score: number }) => b.score - a.score)
+        .map((item: { pattern: unknown }) => item.pattern);
+    }
+
+    const output = results.slice(0, limit).map((p: { id: string; family: string; category: string; name: string; nameZh: string; summary: string; summaryZh: string; useCase: string; useCaseZh: string; tags: string[]; sourceStyleSlug: string; sourceHref: string }) => ({
+      id: p.id,
+      family: p.family,
+      category: p.category,
+      name: p.name,
+      nameZh: p.nameZh,
+      summary: p.summary,
+      summaryZh: p.summaryZh,
+      useCase: p.useCase,
+      useCaseZh: p.useCaseZh,
+      tags: p.tags,
+      sourceStyleSlug: p.sourceStyleSlug,
+      sourceHref: p.sourceHref,
+    }));
+
+    return {
+      content: [{ type: "text", text: JSON.stringify({ count: output.length, patterns: output }, null, 2) }],
+    };
+  }
+);
+
+// -- search_prompts --
+server.tool(
+  "search_prompts",
+  "Search curated AI prompt topics and example prompts for building frontend pages. Each topic includes prompts optimized for different AI tools (ChatGPT, Cursor, Claude, v0).",
+  {
+    query: z.string().optional().describe("Search query (e.g. 'dashboard', 'pricing page', 'hero section')"),
+    tool: z
+      .enum(["v0", "cursor", "claude", "general"])
+      .optional()
+      .describe("Filter prompts by target AI tool"),
+    limit: z.number().optional().default(5).describe("Max topic results (default: 5)"),
+  },
+  async ({ query, tool, limit }) => {
+    let topics = [...promptTopics];
+
+    if (query) {
+      const queryLower = query.toLowerCase();
+      const queryTerms = queryLower.split(/\s+/).filter((t: string) => t.length > 1);
+      topics = topics
+        .map((t: { slug: string; titleEn: string; titleZh: string; descriptionEn: string; descriptionZh: string; keywords: string[]; introEn: string }) => {
+          const text = `${t.slug} ${t.titleEn} ${t.titleZh} ${t.descriptionEn} ${t.descriptionZh} ${t.keywords.join(" ")} ${t.introEn}`.toLowerCase();
+          const score = queryTerms.reduce((s: number, term: string) => s + (text.includes(term) ? 1 : 0), 0);
+          return { topic: t, score };
+        })
+        .filter((item: { score: number }) => item.score > 0)
+        .sort((a: { score: number }, b: { score: number }) => b.score - a.score)
+        .map((item: { topic: unknown }) => item.topic);
+    }
+
+    const output = topics.slice(0, limit).map((t: { slug: string; titleEn: string; titleZh: string; descriptionEn: string; descriptionZh: string; keywords: string[]; relatedStyleSlugs: string[]; introEn: string; prompts: Array<{ titleEn: string; titleZh: string; tool: string; prompt: string }>; useCases: Array<{ titleEn: string; descriptionEn: string }> }) => {
+      const prompts = tool
+        ? t.prompts.filter((p: { tool: string }) => p.tool === tool)
+        : t.prompts;
+
+      return {
+        slug: t.slug,
+        title: t.titleEn,
+        titleZh: t.titleZh,
+        description: t.descriptionEn,
+        descriptionZh: t.descriptionZh,
+        keywords: t.keywords,
+        relatedStyleSlugs: t.relatedStyleSlugs,
+        intro: t.introEn,
+        prompts: prompts.map((p: { titleEn: string; tool: string; prompt: string }) => ({
+          title: p.titleEn,
+          tool: p.tool,
+          prompt: p.prompt,
+        })),
+        useCases: t.useCases.slice(0, 3).map((u: { titleEn: string; descriptionEn: string }) => ({
+          title: u.titleEn,
+          description: u.descriptionEn,
+        })),
+      };
+    });
+
+    return {
+      content: [{ type: "text", text: JSON.stringify({ count: output.length, topics: output }, null, 2) }],
+    };
+  }
+);
+
+// -- get_full_recommendation --
+server.tool(
+  "get_full_recommendation",
+  "Get a comprehensive design recommendation for a product query. Returns an all-in-one recommendation including style, colors, typography, landing pattern, charts, icons, UX guidelines, and optional stack guidelines.",
+  {
+    productQuery: z.string().describe(
+      "Product type or description (e.g. 'SaaS dashboard', 'fintech mobile app', 'portfolio website')"
+    ),
+    stackId: z
+      .string()
+      .optional()
+      .describe("Optional tech stack ID for stack-specific guidelines (e.g. 'nextjs', 'react', 'vue')"),
+    maxGuidelines: z.number().optional().default(5).describe("Max UX/stack guidelines per category (default: 5)"),
+  },
+  async ({ productQuery, stackId, maxGuidelines }) => {
+    const result = getDesignRecommendation(productQuery, {
+      stackId: stackId as StackId | undefined,
+      maxGuidelines,
+    });
+
+    return {
+      content: [{ type: "text", text: JSON.stringify(result, null, 2) }],
     };
   }
 );

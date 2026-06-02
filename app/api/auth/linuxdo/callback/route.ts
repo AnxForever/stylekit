@@ -24,7 +24,36 @@ function parseMetadata(value: unknown): Record<string, unknown> {
   return value as Record<string, unknown>;
 }
 
+function buildTokenRedirectUri(
+  origin: string,
+  stateValue: string | null,
+  nextValue: string | null,
+): string {
+  const callbackUrl = `${origin}/api/auth/linuxdo/callback`;
+
+  // New flow stores the post-login path in OAuth state, so the provider-facing
+  // redirect URI stays stable even if Linux DO drops custom query params.
+  if (stateValue !== null) {
+    return callbackUrl;
+  }
+
+  if (nextValue === null) {
+    return callbackUrl;
+  }
+
+  return `${callbackUrl}?next=${encodeURIComponent(parseNextPath(nextValue))}`;
+}
+
 function getPublicOrigin(request: NextRequest): string {
+  const requestOrigin = new URL(request.url).origin;
+  if (
+    process.env.NODE_ENV === "development" ||
+    requestOrigin.startsWith("http://localhost:") ||
+    requestOrigin.startsWith("http://127.0.0.1:")
+  ) {
+    return requestOrigin;
+  }
+
   const configured = process.env.NEXT_PUBLIC_BASE_URL?.trim();
   if (configured) {
     try {
@@ -34,14 +63,16 @@ function getPublicOrigin(request: NextRequest): string {
     }
   }
 
-  return new URL(request.url).origin;
+  return requestOrigin;
 }
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const origin = getPublicOrigin(request);
   const code = searchParams.get("code");
-  const next = parseNextPath(searchParams.get("next"));
+  const state = searchParams.get("state");
+  const nextParam = searchParams.get("next");
+  const next = parseNextPath(state ?? nextParam);
   const redirectUrl = `${origin}${next}`;
 
   if (!code) {
@@ -58,7 +89,7 @@ export async function GET(request: NextRequest) {
 
   try {
     // 1. Exchange code for access token
-    const redirectUri = `${origin}/api/auth/linuxdo/callback?next=${encodeURIComponent(next)}`;
+    const redirectUri = buildTokenRedirectUri(origin, state, nextParam);
     const tokenData = await exchangeCodeForToken(code, redirectUri);
 
     // 2. Get Linux DO user info
@@ -177,12 +208,8 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.redirect(redirectUrl);
   } catch (err) {
-    // Log error for debugging (server-side only, not exposed to client)
     const message = err instanceof Error ? err.message : String(err);
-    if (process.env.NODE_ENV === "development") {
-      console.error("[LinuxDo OAuth] Callback error:", message);
-    }
-    // Redirect with error indicator — always go to /login for error display
+    console.error("[LinuxDo OAuth] Callback error:", message);
     return NextResponse.redirect(`${origin}/login?auth_error=linuxdo`);
   }
 }

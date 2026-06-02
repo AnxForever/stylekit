@@ -33,20 +33,23 @@ export function RecipeShowcase({ variant = "home", maxItems = 6 }: RecipeShowcas
   const limitedRecipes = variant === "home" 
     ? displayRecipes.slice(0, maxItems) 
     : displayRecipes;
+  const mobileRecipes = variant === "home"
+    ? displayRecipes.slice(0, Math.min(maxItems, 3))
+    : limitedRecipes;
 
   return (
-    <section className="py-16 md:py-24">
+    <section className="py-10 md:py-24">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-12">
         {/* Header */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
+        <div className="mb-6 flex flex-col gap-3 md:mb-8 md:flex-row md:items-end md:justify-between">
           <div>
             <p className="text-xs tracking-widest uppercase text-muted mb-2">
               {locale === "zh" ? "设计配方" : "Design Recipes"}
             </p>
-            <h2 className="text-3xl md:text-4xl font-medium">
+            <h2 className="text-[1.75rem] font-medium leading-tight md:text-4xl">
               {locale === "zh" ? "开箱即用的风格组合" : "Ready-to-Use Style Combinations"}
             </h2>
-            <p className="text-muted mt-2 max-w-xl">
+            <p className="mt-2 max-w-xl text-sm text-muted md:text-base">
               {locale === "zh"
                 ? "我们精心策划的视觉风格 + 布局 + 动画组合，针对特定使用场景优化。"
                 : "Curated combinations of visual style + layout + animations, optimized for specific use cases."}
@@ -65,7 +68,7 @@ export function RecipeShowcase({ variant = "home", maxItems = 6 }: RecipeShowcas
         </div>
 
         {/* Use Case Tabs */}
-        <div className="flex gap-2 overflow-x-auto pb-4 mb-8 scrollbar-hide">
+        <div className="mb-6 flex gap-2 overflow-x-auto pb-3 scrollbar-hide md:mb-8">
           <button
             onClick={() => setActiveUseCase("featured")}
             className={`shrink-0 px-4 py-2 text-sm border transition-colors ${
@@ -93,15 +96,27 @@ export function RecipeShowcase({ variant = "home", maxItems = 6 }: RecipeShowcas
 
         {/* Recipe Grid */}
         {limitedRecipes.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {limitedRecipes.map((recipe) => (
-              <RecipeCard
-                key={recipe.id}
-                recipe={recipe}
-                variant={variant === "home" ? "default" : "featured"}
-              />
-            ))}
-          </div>
+          <>
+            <div className="grid grid-cols-1 gap-4 md:hidden">
+              {mobileRecipes.map((recipe) => (
+                <RecipeCard
+                  key={recipe.id}
+                  recipe={recipe}
+                  variant="compact"
+                />
+              ))}
+            </div>
+
+            <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {limitedRecipes.map((recipe) => (
+                <RecipeCard
+                  key={recipe.id}
+                  recipe={recipe}
+                  variant={variant === "home" ? "default" : "featured"}
+                />
+              ))}
+            </div>
+          </>
         ) : (
           <div className="text-center py-12 text-muted">
             {locale === "zh"

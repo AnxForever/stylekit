@@ -22,12 +22,6 @@ import { createClient } from "@supabase/supabase-js";
 import { getOrAssignSeqId } from "@/lib/auth/seq-id";
 import { GET } from "@/app/api/auth/callback/route";
 
-const ENV_SNAPSHOT = {
-  NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
-  NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
-  SUPABASE_SERVICE_ROLE_KEY: process.env.SUPABASE_SERVICE_ROLE_KEY,
-};
-
 const mockedCookies = vi.mocked(cookies);
 const mockedCreateServerClient = vi.mocked(createServerClient);
 const mockedCreateClient = vi.mocked(createClient);
@@ -35,9 +29,11 @@ const mockedGetOrAssignSeqId = vi.mocked(getOrAssignSeqId);
 
 describe("GET /api/auth/callback", () => {
   beforeEach(() => {
-    process.env.NEXT_PUBLIC_SUPABASE_URL = "https://example.supabase.co";
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY = "anon";
-    process.env.SUPABASE_SERVICE_ROLE_KEY = "service";
+    vi.stubEnv("NODE_ENV", "test");
+    vi.stubEnv("NEXT_PUBLIC_BASE_URL", "https://www.stylekit.top");
+    vi.stubEnv("NEXT_PUBLIC_SUPABASE_URL", "https://example.supabase.co");
+    vi.stubEnv("NEXT_PUBLIC_SUPABASE_ANON_KEY", "anon");
+    vi.stubEnv("SUPABASE_SERVICE_ROLE_KEY", "service");
 
     mockedCookies.mockResolvedValue({
       getAll: () => [],
@@ -47,24 +43,7 @@ describe("GET /api/auth/callback", () => {
 
   afterEach(() => {
     vi.clearAllMocks();
-
-    if (ENV_SNAPSHOT.NEXT_PUBLIC_SUPABASE_URL === undefined) {
-      delete process.env.NEXT_PUBLIC_SUPABASE_URL;
-    } else {
-      process.env.NEXT_PUBLIC_SUPABASE_URL = ENV_SNAPSHOT.NEXT_PUBLIC_SUPABASE_URL;
-    }
-
-    if (ENV_SNAPSHOT.NEXT_PUBLIC_SUPABASE_ANON_KEY === undefined) {
-      delete process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-    } else {
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY = ENV_SNAPSHOT.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-    }
-
-    if (ENV_SNAPSHOT.SUPABASE_SERVICE_ROLE_KEY === undefined) {
-      delete process.env.SUPABASE_SERVICE_ROLE_KEY;
-    } else {
-      process.env.SUPABASE_SERVICE_ROLE_KEY = ENV_SNAPSHOT.SUPABASE_SERVICE_ROLE_KEY;
-    }
+    vi.unstubAllEnvs();
   });
 
   it("keeps login successful when seq-id assignment fails", async () => {
@@ -90,7 +69,7 @@ describe("GET /api/auth/callback", () => {
     );
 
     expect(response.status).toBe(307);
-    expect(response.headers.get("location")).toBe("https://stylekit.top/profile");
+    expect(response.headers.get("location")).toBe("https://www.stylekit.top/profile");
     expect(updateUserById).not.toHaveBeenCalled();
   });
 
@@ -122,7 +101,7 @@ describe("GET /api/auth/callback", () => {
     );
 
     expect(response.status).toBe(307);
-    expect(response.headers.get("location")).toBe("https://stylekit.top/");
+    expect(response.headers.get("location")).toBe("https://www.stylekit.top/");
     expect(updateUserById).toHaveBeenCalledWith("user_2", {
       user_metadata: {
         provider: "github",
@@ -130,5 +109,26 @@ describe("GET /api/auth/callback", () => {
         seq_id: 12,
       },
     });
+  });
+
+  it("uses the request origin for localhost callbacks in development", async () => {
+    vi.stubEnv("NODE_ENV", "development");
+
+    const exchangeCodeForSession = vi.fn().mockResolvedValue({ error: null });
+    const getUser = vi.fn().mockResolvedValue({
+      data: { user: null },
+    });
+    mockedCreateServerClient.mockReturnValue({
+      auth: { exchangeCodeForSession, getUser },
+    } as unknown as ReturnType<typeof createServerClient>);
+
+    const response = await GET(
+      new Request(
+        "http://127.0.0.1:3001/api/auth/callback?code=test-code&next=%2Fprofile"
+      ) as never
+    );
+
+    expect(response.status).toBe(307);
+    expect(response.headers.get("location")).toBe("http://127.0.0.1:3001/profile");
   });
 });

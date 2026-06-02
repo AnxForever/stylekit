@@ -28,12 +28,6 @@ import { exchangeCodeForToken, getLinuxDoUser } from "@/lib/auth/linuxdo";
 import { getOrAssignSeqId } from "@/lib/auth/seq-id";
 import { GET } from "@/app/api/auth/linuxdo/callback/route";
 
-const ENV_SNAPSHOT = {
-  NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
-  NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
-  SUPABASE_SERVICE_ROLE_KEY: process.env.SUPABASE_SERVICE_ROLE_KEY,
-};
-
 const mockedCookies = vi.mocked(cookies);
 const mockedCreateServerClient = vi.mocked(createServerClient);
 const mockedCreateClient = vi.mocked(createClient);
@@ -43,9 +37,11 @@ const mockedGetOrAssignSeqId = vi.mocked(getOrAssignSeqId);
 
 describe("GET /api/auth/linuxdo/callback", () => {
   beforeEach(() => {
-    process.env.NEXT_PUBLIC_SUPABASE_URL = "https://example.supabase.co";
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY = "anon";
-    process.env.SUPABASE_SERVICE_ROLE_KEY = "service";
+    vi.stubEnv("NODE_ENV", "test");
+    vi.stubEnv("NEXT_PUBLIC_BASE_URL", "https://www.stylekit.top");
+    vi.stubEnv("NEXT_PUBLIC_SUPABASE_URL", "https://example.supabase.co");
+    vi.stubEnv("NEXT_PUBLIC_SUPABASE_ANON_KEY", "anon");
+    vi.stubEnv("SUPABASE_SERVICE_ROLE_KEY", "service");
 
     mockedCookies.mockResolvedValue({
       getAll: () => [],
@@ -55,24 +51,7 @@ describe("GET /api/auth/linuxdo/callback", () => {
 
   afterEach(() => {
     vi.clearAllMocks();
-
-    if (ENV_SNAPSHOT.NEXT_PUBLIC_SUPABASE_URL === undefined) {
-      delete process.env.NEXT_PUBLIC_SUPABASE_URL;
-    } else {
-      process.env.NEXT_PUBLIC_SUPABASE_URL = ENV_SNAPSHOT.NEXT_PUBLIC_SUPABASE_URL;
-    }
-
-    if (ENV_SNAPSHOT.NEXT_PUBLIC_SUPABASE_ANON_KEY === undefined) {
-      delete process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-    } else {
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY = ENV_SNAPSHOT.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-    }
-
-    if (ENV_SNAPSHOT.SUPABASE_SERVICE_ROLE_KEY === undefined) {
-      delete process.env.SUPABASE_SERVICE_ROLE_KEY;
-    } else {
-      process.env.SUPABASE_SERVICE_ROLE_KEY = ENV_SNAPSHOT.SUPABASE_SERVICE_ROLE_KEY;
-    }
+    vi.unstubAllEnvs();
   });
 
   it("continues login when seq-id assignment fails", async () => {
@@ -121,11 +100,66 @@ describe("GET /api/auth/linuxdo/callback", () => {
     );
 
     expect(response.status).toBe(307);
-    expect(response.headers.get("location")).toBe("https://stylekit.top/profile");
+    expect(response.headers.get("location")).toBe("https://www.stylekit.top/profile");
+    expect(mockedExchangeCodeForToken).toHaveBeenCalledWith(
+      "test-code",
+      "https://www.stylekit.top/api/auth/linuxdo/callback?next=%2Fprofile"
+    );
     expect(verifyOtp).toHaveBeenCalledWith({
       type: "magiclink",
       token_hash: "hashed-token",
     });
+  });
+
+  it("uses oauth state for the post-login path when the callback omits next", async () => {
+    mockedExchangeCodeForToken.mockResolvedValue({
+      access_token: "example_linuxdo_access_token",
+      token_type: "bearer",
+      expires_in: 3600,
+    });
+    mockedGetLinuxDoUser.mockResolvedValue({
+      id: 77,
+      username: "state-user",
+      name: "State User",
+      avatar_url: "/avatar/{size}/img.png",
+      email: null,
+      active: true,
+      trust_level: 3,
+      silenced: false,
+      api_key: "api-key",
+    });
+
+    const createUser = vi.fn().mockResolvedValue({
+      data: { user: { id: "user_linuxdo_state" } },
+      error: null,
+    });
+    const updateUserById = vi.fn().mockResolvedValue({ error: null });
+    const generateLink = vi.fn().mockResolvedValue({
+      data: { properties: { hashed_token: "hashed-token" } },
+      error: null,
+    });
+
+    mockedCreateClient.mockReturnValue({
+      auth: { admin: { createUser, listUsers: vi.fn(), updateUserById, generateLink } },
+    } as unknown as ReturnType<typeof createClient>);
+
+    const verifyOtp = vi.fn().mockResolvedValue({ error: null });
+    mockedCreateServerClient.mockReturnValue({
+      auth: { verifyOtp },
+    } as unknown as ReturnType<typeof createServerClient>);
+
+    const response = await GET(
+      new Request(
+        "https://stylekit.top/api/auth/linuxdo/callback?code=test-code&state=%2Fprofile"
+      ) as never
+    );
+
+    expect(response.status).toBe(307);
+    expect(response.headers.get("location")).toBe("https://www.stylekit.top/profile");
+    expect(mockedExchangeCodeForToken).toHaveBeenCalledWith(
+      "test-code",
+      "https://www.stylekit.top/api/auth/linuxdo/callback"
+    );
   });
 
   it("merges existing metadata when LinuxDO account already exists", async () => {
@@ -186,7 +220,7 @@ describe("GET /api/auth/linuxdo/callback", () => {
     );
 
     expect(response.status).toBe(307);
-    expect(response.headers.get("location")).toBe("https://stylekit.top/");
+    expect(response.headers.get("location")).toBe("https://www.stylekit.top/");
     expect(mockedGetOrAssignSeqId).not.toHaveBeenCalled();
     expect(updateUserById).toHaveBeenCalledWith("existing-user", {
       user_metadata: {
@@ -200,5 +234,53 @@ describe("GET /api/auth/linuxdo/callback", () => {
         linuxdo_trust_level: 5,
       },
     });
+  });
+
+  it("uses the request origin for localhost LinuxDO callbacks in development", async () => {
+    vi.stubEnv("NODE_ENV", "development");
+    mockedExchangeCodeForToken.mockResolvedValue({
+      access_token: "example_linuxdo_access_token",
+      token_type: "bearer",
+      expires_in: 3600,
+    });
+    mockedGetLinuxDoUser.mockResolvedValue({
+      id: 7,
+      username: "tester",
+      name: "Tester",
+      avatar_url: "/avatar/{size}/img.png",
+      email: null,
+      active: true,
+      trust_level: 2,
+      silenced: false,
+      api_key: "api-key",
+    });
+
+    const createUser = vi.fn().mockResolvedValue({
+      data: { user: { id: "dev-user" } },
+      error: null,
+    });
+    const updateUserById = vi.fn().mockResolvedValue({ error: null });
+    const generateLink = vi.fn().mockResolvedValue({
+      data: { properties: { hashed_token: "hashed-token" } },
+      error: null,
+    });
+
+    mockedCreateClient.mockReturnValue({
+      auth: { admin: { createUser, listUsers: vi.fn(), updateUserById, generateLink } },
+    } as unknown as ReturnType<typeof createClient>);
+
+    const verifyOtp = vi.fn().mockResolvedValue({ error: null });
+    mockedCreateServerClient.mockReturnValue({
+      auth: { verifyOtp },
+    } as unknown as ReturnType<typeof createServerClient>);
+
+    const response = await GET(
+      new Request(
+        "http://127.0.0.1:3001/api/auth/linuxdo/callback?code=test-code&next=%2Fprofile"
+      ) as never
+    );
+
+    expect(response.status).toBe(307);
+    expect(response.headers.get("location")).toBe("http://127.0.0.1:3001/profile");
   });
 });

@@ -6,6 +6,7 @@ import { ClientScripts } from "@/components/layout/client-scripts";
 import { serializeJsonLd } from "@/lib/security/json-ld";
 import { MobileBottomNav } from "@/components/layout/mobile-bottom-nav";
 import { getSiteBaseUrl } from "@/lib/site-url";
+import { getRequestLocaleContext } from "@/lib/i18n/request";
 import "./globals.css";
 
 export const viewport: Viewport = {
@@ -26,6 +27,27 @@ const LOCALE_BOOTSTRAP_SCRIPT = `
     const lang = firstSegment === "zh" ? "zh-CN" : "en";
     document.documentElement.lang = lang;
     document.documentElement.dataset.locale = firstSegment === "zh" ? "zh" : "en";
+  } catch {}
+})();
+`;
+
+const DEV_SW_CLEANUP_SCRIPT = `
+(() => {
+  try {
+    if (!("serviceWorker" in navigator)) return;
+    navigator.serviceWorker.getRegistrations().then((registrations) => {
+      registrations.forEach((registration) => {
+        void registration.unregister();
+      });
+    }).catch(() => {});
+
+    if ("caches" in window) {
+      caches.keys().then((keys) => Promise.all(
+        keys
+          .filter((key) => key.startsWith("stylekit-"))
+          .map((key) => caches.delete(key))
+      )).catch(() => {});
+    }
   } catch {}
 })();
 `;
@@ -115,13 +137,15 @@ export const metadata: Metadata = {
   category: "technology",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const { locale, htmlLang } = await getRequestLocaleContext();
+
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang={htmlLang} suppressHydrationWarning>
       <head>
         <link rel="icon" href="/favicon.ico" sizes="32x32" />
         <link rel="icon" href="/favicon-16x16.png" sizes="16x16" type="image/png" />
@@ -134,6 +158,13 @@ export default function RootLayout({
             __html: LOCALE_BOOTSTRAP_SCRIPT,
           }}
         />
+        {process.env.NODE_ENV !== "production" ? (
+          <script
+            dangerouslySetInnerHTML={{
+              __html: DEV_SW_CLEANUP_SCRIPT,
+            }}
+          />
+        ) : null}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
@@ -173,7 +204,7 @@ export default function RootLayout({
         />
       </head>
       <body className="antialiased pb-16 md:pb-0">
-        <ClientProviders initialLocale="en">
+        <ClientProviders initialLocale={locale}>
           <LazyCommandPalette />
           {children}
           <MobileBottomNav />

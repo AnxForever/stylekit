@@ -15,11 +15,13 @@ import { localizeHref } from "@/lib/i18n/routing";
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isResourcesOpen, setIsResourcesOpen] = useState(false);
+  const [isMoreOpen, setIsMoreOpen] = useState(false);
   const [expandedMobileResourcesGroup, setExpandedMobileResourcesGroup] = useState<number | null>(0);
   const { setTheme, resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   const { t, locale } = useI18n();
   const resourcesRef = useRef<HTMLDivElement>(null);
+  const moreRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect -- valid hydration pattern
@@ -31,6 +33,9 @@ export function Header() {
     function handleClickOutside(event: MouseEvent) {
       if (resourcesRef.current && !resourcesRef.current.contains(event.target as Node)) {
         setIsResourcesOpen(false);
+      }
+      if (moreRef.current && !moreRef.current.contains(event.target as Node)) {
+        setIsMoreOpen(false);
       }
     }
     document.addEventListener("mousedown", handleClickOutside);
@@ -50,7 +55,7 @@ export function Header() {
     document.dispatchEvent(event);
   };
 
-  const linkClass = "text-sm tracking-wide text-muted hover:text-foreground transition-colors";
+  const linkClass = "shrink-0 whitespace-nowrap text-sm tracking-wide text-muted hover:text-foreground transition-colors";
 
   return (
     <header className="border-b border-border">
@@ -62,18 +67,18 @@ export function Header() {
           </Link>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center gap-8">
+          <nav className="hidden lg:flex items-center gap-4 xl:gap-6">
             {/* Search Button */}
             <button
               onClick={() => openCommandPalette("header")}
-              className="flex items-center gap-2 px-3 py-1.5 text-sm text-muted border border-border rounded-md hover:border-foreground/50 transition-colors"
+              className="shrink-0 flex items-center gap-2 rounded-md border border-border px-3 py-1.5 text-sm text-muted transition-colors hover:border-foreground/50"
             >
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <circle cx="11" cy="11" r="8" />
                 <path d="m21 21-4.3-4.3" />
               </svg>
-              <span>{t("nav.search")}</span>
-              <kbd className="hidden lg:inline-flex px-1.5 py-0.5 text-[10px] text-zinc-600 dark:text-zinc-300 bg-zinc-100 dark:bg-zinc-800 rounded">Ctrl K</kbd>
+              <span className="hidden xl:inline">{t("nav.search")}</span>
+              <kbd className="hidden 2xl:inline-flex rounded bg-zinc-100 px-1.5 py-0.5 text-[10px] text-zinc-600 dark:bg-zinc-800 dark:text-zinc-300">Ctrl K</kbd>
             </button>
 
             {/* Main Nav Items */}
@@ -87,8 +92,11 @@ export function Header() {
             {(resourcesDropdown.groups?.length || resourcesDropdown.items.length) > 0 && (
             <div className="relative" ref={resourcesRef}>
               <button
-                onClick={() => setIsResourcesOpen((prev) => !prev)}
-                className={`flex items-center gap-1 text-sm tracking-wide transition-colors ${
+                onClick={() => {
+                  setIsMoreOpen(false);
+                  setIsResourcesOpen((prev) => !prev);
+                }}
+                className={`flex shrink-0 items-center gap-1 whitespace-nowrap text-sm tracking-wide transition-colors ${
                   isResourcesOpen ? "text-foreground" : "text-muted hover:text-foreground"
                 }`}
               >
@@ -137,14 +145,42 @@ export function Header() {
             )}
 
             {/* Secondary Nav Items */}
-            {secondaryNav.map((item) => (
-              <Link key={item.href} href={localizeHref(item.href, locale)} className={linkClass}>
-                {t(item.labelKey)}
-              </Link>
-            ))}
+            {secondaryNav.length > 0 && (
+              <div className="relative" ref={moreRef}>
+                <button
+                  onClick={() => {
+                    setIsResourcesOpen(false);
+                    setIsMoreOpen((prev) => !prev);
+                  }}
+                  className={`flex shrink-0 items-center gap-1 whitespace-nowrap text-sm tracking-wide transition-colors ${
+                    isMoreOpen ? "text-foreground" : "text-muted hover:text-foreground"
+                  }`}
+                >
+                  {t("nav.more")}
+                  <ChevronDown className={`h-3.5 w-3.5 transition-transform ${isMoreOpen ? "rotate-180" : ""}`} />
+                </button>
+
+                {isMoreOpen && (
+                  <div className="absolute left-0 top-full z-50 mt-2 min-w-[160px] border border-border bg-background py-2 shadow-lg">
+                    {secondaryNav.map((item) => (
+                      <Link
+                        key={item.href}
+                        href={localizeHref(item.href, locale)}
+                        className="block px-4 py-2 text-sm text-muted transition-colors hover:bg-zinc-50 hover:text-foreground dark:hover:bg-zinc-800"
+                        onClick={() => setIsMoreOpen(false)}
+                      >
+                        {t(item.labelKey)}
+                      </Link>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
 
             {/* GitHub Star Button */}
-            <GitHubStarButton variant="compact" />
+            <div className="hidden xl:block shrink-0">
+              <GitHubStarButton variant="compact" />
+            </div>
 
             {mounted && <LanguageSwitcher />}
             {mounted && (
@@ -171,7 +207,7 @@ export function Header() {
           {/* Mobile Menu Button */}
           <button
             onClick={() => setIsMenuOpen((prev) => !prev)}
-            className="md:hidden p-2 -mr-2"
+            className="lg:hidden p-2 -mr-2"
             aria-label="Toggle menu"
           >
             <svg
@@ -193,7 +229,7 @@ export function Header() {
 
         {/* Mobile Navigation */}
         {isMenuOpen && (
-          <nav className="md:hidden py-4 border-t border-border">
+          <nav className="lg:hidden py-4 border-t border-border">
             <div className="flex flex-col gap-4">
               {/* Mobile Search */}
               <button

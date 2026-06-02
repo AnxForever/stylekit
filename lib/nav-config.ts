@@ -55,7 +55,6 @@ export const toolsDropdown: NavDropdown = {
 
 // Secondary navigation
 export const secondaryNav: NavItem[] = [
-  { href: "/agent", labelKey: "nav.agent" },
   { href: "/community", labelKey: "nav.community" },
   { href: "/blog", labelKey: "nav.blog" },
   { href: "/changelog", labelKey: "nav.changelog" },

@@ -1,6 +1,6 @@
 # DESIGN.md Documentation Hub
 
-> StyleKit 的 DESIGN.md 知识库，为 Phase 1 社区复活 + Phase 2 新 Agent 开发奠基。
+> StyleKit 的 DESIGN.md 知识库，为社区投稿和风格文档标准化奠基。
 
 ## 背景一句话
 
@@ -14,13 +14,12 @@
 
 AI 生成 UI 时，DESIGN.md 告诉它"品牌 DNA 是什么"，避免千篇一律的"AI 味道"。
 
-## 三份核心文档
+## 核心文档
 
 | 文件 | 面向 | 用途 |
 |---|---|---|
 | [spec.md](./spec.md) | 工程师 / 研究者 | 格式规范、官方来源、与 StyleKit DesignStyle 的映射 |
 | [template.md](./template.md) | 社区投稿者 | 空白骨架 + Neo Brutalist 完整样例，复制即用 |
-| [agent-prompt.md](./agent-prompt.md) | Agent 开发者 | Phase 2 新 agent 的 system prompt + 对话流程 + tool catalog |
 
 ## 关键链接
 
