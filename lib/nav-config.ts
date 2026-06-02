@@ -112,6 +112,7 @@ export const mainNav: NavItem[] = [
           items: [
             { href: "/styles", labelKey: "nav.styles" },
             { href: "/animations", labelKey: "nav.animations" },
+            { href: "/animations/vocabulary", labelKey: "nav.vocabulary" },
             { href: "/recipes", labelKey: "nav.recipes" },
             { href: "/guides", labelKey: "nav.guides" },
           ],
