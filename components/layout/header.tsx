@@ -6,22 +6,126 @@ import { useTheme } from "next-themes";
 import { useI18n } from "@/lib/i18n/context";
 import { LanguageSwitcher } from "@/components/language-switcher";
 import { UserMenu, MobileUserMenu } from "@/components/layout/user-menu";
-import { mainNav, secondaryNav, resourcesDropdown } from "@/lib/nav-config";
+import { mainNav, secondaryNav, type NavDropdown, type NavItem } from "@/lib/nav-config";
 import { ChevronDown } from "lucide-react";
 import { GitHubStarButton } from "@/components/github-star-button";
 import { trackEvent } from "@/lib/analytics/events";
 import { localizeHref } from "@/lib/i18n/routing";
 
+const linkClass =
+  "shrink-0 whitespace-nowrap text-sm tracking-wide text-muted hover:text-foreground transition-colors";
+
+interface DesktopDropdownProps {
+  item: NavItem;
+  isOpen: boolean;
+  onToggle: () => void;
+  onClose: () => void;
+  registerRef: (element: HTMLDivElement | null) => void;
+}
+
+/**
+ * Single-column or multi-column mega-menu panel for desktop. Used
+ * for every mainNav entry that has a `dropdown` field (currently
+ * "Build" and "Resources"); the panel is uniform so future top-level
+ * dropdowns need no rendering changes.
+ */
+function DesktopDropdown({
+  item,
+  isOpen,
+  onToggle,
+  onClose,
+  registerRef,
+}: DesktopDropdownProps) {
+  const { t, locale } = useI18n();
+  const dropdown = item.dropdown;
+  if (!dropdown) return null;
+
+  const isWide = dropdown.width === "wide";
+  const hasGroups = (dropdown.groups?.length ?? 0) > 0;
+  const hasItems = (dropdown.items?.length ?? 0) > 0;
+
+  return (
+    <div className="relative" ref={registerRef}>
+      <button
+        onClick={onToggle}
+        className={`flex shrink-0 items-center gap-1 whitespace-nowrap text-sm tracking-wide transition-colors ${
+          isOpen ? "text-foreground" : "text-muted hover:text-foreground"
+        }`}
+        aria-expanded={isOpen}
+        aria-haspopup="menu"
+      >
+        {t(item.labelKey)}
+        <ChevronDown
+          className={`w-3.5 h-3.5 transition-transform ${isOpen ? "rotate-180" : ""}`}
+        />
+      </button>
+
+      {isOpen && (
+        <div
+          className={
+            isWide
+              ? "absolute top-full left-1/2 -translate-x-1/2 mt-2 p-6 bg-background border border-border shadow-lg z-50 grid gap-6 min-w-[640px] max-w-[800px]"
+              : "absolute top-full left-0 mt-2 py-2 min-w-[200px] bg-background border border-border shadow-lg z-50"
+          }
+          style={
+            hasGroups
+              ? {
+                  gridTemplateColumns: `repeat(${dropdown.groups?.length ?? 1}, minmax(140px, 1fr))`,
+                }
+              : undefined
+          }
+          role="menu"
+        >
+          {hasGroups &&
+            dropdown.groups!.map((group, gi) => (
+              <div key={gi} className="flex flex-col gap-1">
+                {group.groupLabelKey && (
+                  <p className="px-2 pt-1 pb-2 text-[10px] uppercase tracking-widest text-muted">
+                    {t(group.groupLabelKey)}
+                  </p>
+                )}
+                {group.items.map((subItem) => (
+                  <Link
+                    key={subItem.href}
+                    href={localizeHref(subItem.href, locale)}
+                    className="block px-2 py-1.5 text-sm text-muted hover:text-foreground hover:bg-zinc-50 dark:hover:bg-zinc-800/50 rounded transition-colors"
+                    onClick={onClose}
+                    role="menuitem"
+                  >
+                    {t(subItem.labelKey)}
+                  </Link>
+                ))}
+              </div>
+            ))}
+
+          {hasItems &&
+            dropdown.items!.map((subItem) => (
+              <Link
+                key={subItem.href}
+                href={localizeHref(subItem.href, locale)}
+                className="block px-4 py-2 text-sm text-muted hover:text-foreground hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition-colors"
+                onClick={onClose}
+                role="menuitem"
+              >
+                {t(subItem.labelKey)}
+              </Link>
+            ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isResourcesOpen, setIsResourcesOpen] = useState(false);
   const [isMoreOpen, setIsMoreOpen] = useState(false);
-  const [expandedMobileResourcesGroup, setExpandedMobileResourcesGroup] = useState<number | null>(0);
+  const [openIndex, setOpenIndex] = useState<number | null>(null);
+  const [expandedMobileGroupKey, setExpandedMobileGroupKey] = useState<string | null>(null);
   const { setTheme, resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   const { t, locale } = useI18n();
-  const resourcesRef = useRef<HTMLDivElement>(null);
   const moreRef = useRef<HTMLDivElement>(null);
+  const dropdownRefs = useRef<Array<HTMLDivElement | null>>([]);
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect -- valid hydration pattern
@@ -31,11 +135,15 @@ export function Header() {
   // Close dropdown when clicking outside
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
-      if (resourcesRef.current && !resourcesRef.current.contains(event.target as Node)) {
-        setIsResourcesOpen(false);
-      }
-      if (moreRef.current && !moreRef.current.contains(event.target as Node)) {
+      const target = event.target as Node;
+      if (moreRef.current && !moreRef.current.contains(target)) {
         setIsMoreOpen(false);
+      }
+      const clickedInsideAnyDropdown = dropdownRefs.current.some(
+        (ref) => ref && ref.contains(target)
+      );
+      if (!clickedInsideAnyDropdown) {
+        setOpenIndex(null);
       }
     }
     document.addEventListener("mousedown", handleClickOutside);
@@ -54,8 +162,6 @@ export function Header() {
     });
     document.dispatchEvent(event);
   };
-
-  const linkClass = "shrink-0 whitespace-nowrap text-sm tracking-wide text-muted hover:text-foreground transition-colors";
 
   return (
     <header className="border-b border-border">
@@ -81,80 +187,46 @@ export function Header() {
               <kbd className="hidden 2xl:inline-flex rounded bg-zinc-100 px-1.5 py-0.5 text-[10px] text-zinc-600 dark:bg-zinc-800 dark:text-zinc-300">Ctrl K</kbd>
             </button>
 
-            {/* Main Nav Items */}
-            {mainNav.map((item) => (
-              <Link key={item.href} href={localizeHref(item.href, locale)} className={linkClass}>
-                {t(item.labelKey)}
-              </Link>
-            ))}
-
-            {/* Resources Dropdown */}
-            {(resourcesDropdown.groups?.length || resourcesDropdown.items.length) > 0 && (
-            <div className="relative" ref={resourcesRef}>
-              <button
-                onClick={() => {
-                  setIsMoreOpen(false);
-                  setIsResourcesOpen((prev) => !prev);
-                }}
-                className={`flex shrink-0 items-center gap-1 whitespace-nowrap text-sm tracking-wide transition-colors ${
-                  isResourcesOpen ? "text-foreground" : "text-muted hover:text-foreground"
-                }`}
-              >
-                {t(resourcesDropdown.labelKey)}
-                <ChevronDown className={`w-3.5 h-3.5 transition-transform ${isResourcesOpen ? "rotate-180" : ""}`} />
-              </button>
-
-              {isResourcesOpen && (
-                <div className="absolute top-full left-0 mt-2 py-2 min-w-[180px] bg-background border border-border shadow-lg z-50">
-                  {resourcesDropdown.groups ? (
-                    resourcesDropdown.groups.map((group, gi) => (
-                      <div key={gi}>
-                        {gi > 0 && <hr className="my-1.5 border-border" />}
-                        {group.groupLabelKey && (
-                          <p className="px-4 pt-1.5 pb-1 text-[10px] uppercase tracking-widest text-muted">
-                            {t(group.groupLabelKey)}
-                          </p>
-                        )}
-                        {group.items.map((item) => (
-                          <Link
-                            key={item.href}
-                            href={localizeHref(item.href, locale)}
-                            className="block px-4 py-2 text-sm text-muted hover:text-foreground hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors"
-                            onClick={() => setIsResourcesOpen(false)}
-                          >
-                            {t(item.labelKey)}
-                          </Link>
-                        ))}
-                      </div>
-                    ))
-                  ) : (
-                    resourcesDropdown.items.map((item) => (
-                      <Link
-                        key={item.href}
-                        href={localizeHref(item.href, locale)}
-                        className="block px-4 py-2 text-sm text-muted hover:text-foreground hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors"
-                        onClick={() => setIsResourcesOpen(false)}
-                      >
-                        {t(item.labelKey)}
-                      </Link>
-                    ))
-                  )}
-                </div>
-              )}
-            </div>
+            {/* Main Nav Items: link or dropdown trigger */}
+            {mainNav.map((item, index) =>
+              item.dropdown ? (
+                <DesktopDropdown
+                  key={item.labelKey}
+                  item={item}
+                  isOpen={openIndex === index}
+                  onToggle={() => {
+                    setIsMoreOpen(false);
+                    setOpenIndex((prev) => (prev === index ? null : index));
+                  }}
+                  onClose={() => setOpenIndex(null)}
+                  registerRef={(el) => {
+                    dropdownRefs.current[index] = el;
+                  }}
+                />
+              ) : (
+                <Link
+                  key={item.href}
+                  href={localizeHref(item.href, locale)}
+                  className={linkClass}
+                >
+                  {t(item.labelKey)}
+                </Link>
+              )
             )}
 
-            {/* Secondary Nav Items */}
+            {/* Secondary Nav Items (More overflow) */}
             {secondaryNav.length > 0 && (
               <div className="relative" ref={moreRef}>
                 <button
                   onClick={() => {
-                    setIsResourcesOpen(false);
+                    setOpenIndex(null);
                     setIsMoreOpen((prev) => !prev);
                   }}
                   className={`flex shrink-0 items-center gap-1 whitespace-nowrap text-sm tracking-wide transition-colors ${
                     isMoreOpen ? "text-foreground" : "text-muted hover:text-foreground"
                   }`}
+                  aria-expanded={isMoreOpen}
+                  aria-haspopup="menu"
                 >
                   {t("nav.more")}
                   <ChevronDown className={`h-3.5 w-3.5 transition-transform ${isMoreOpen ? "rotate-180" : ""}`} />
@@ -248,101 +320,95 @@ export function Header() {
                 <span>{t("nav.search")}</span>
               </button>
 
-              {/* Main Nav */}
-              {mainNav.map((item) => (
-                <Link
-                  key={item.href}
-                  href={localizeHref(item.href, locale)}
-                  className={linkClass}
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  {t(item.labelKey)}
-                </Link>
-              ))}
-
-              {/* Resources Section */}
-              {(resourcesDropdown.groups?.length || resourcesDropdown.items.length) > 0 && (
-              <div className="pt-2 border-t border-border">
-                <p className="text-xs uppercase tracking-widest text-muted mb-2">
-                  {t(resourcesDropdown.labelKey)}
-                </p>
-                {resourcesDropdown.groups ? (
-                  resourcesDropdown.groups.map((group, gi) => (
-                    <div key={gi} className={gi > 0 ? "mt-3" : ""}>
-                      {group.groupLabelKey ? (
-                        <>
-                          <button
-                            onClick={() =>
-                              setExpandedMobileResourcesGroup((prev) => (prev === gi ? null : gi))
-                            }
-                            className="w-full flex items-center justify-between py-2 text-[10px] uppercase tracking-widest text-muted/70 hover:text-foreground transition-colors"
-                            aria-expanded={expandedMobileResourcesGroup === gi}
-                          >
-                            <span>{t(group.groupLabelKey)}</span>
-                            <ChevronDown
-                              className={`w-3.5 h-3.5 transition-transform ${
-                                expandedMobileResourcesGroup === gi ? "rotate-180" : ""
-                              }`}
-                            />
-                          </button>
-                          {expandedMobileResourcesGroup === gi && (
-                            <div className="mt-1">
-                              {group.items.map((item) => (
+              {/* Main Nav: link or accordion dropdown */}
+              {mainNav.map((item) => {
+                const dropdown: NavDropdown | undefined = item.dropdown;
+                if (!dropdown) {
+                  return (
+                    <Link
+                      key={item.href}
+                      href={localizeHref(item.href, locale)}
+                      className={linkClass}
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      {t(item.labelKey)}
+                    </Link>
+                  );
+                }
+                const hasGroups = (dropdown.groups?.length ?? 0) > 0;
+                return (
+                  <div key={item.labelKey} className="flex flex-col gap-1">
+                    <p className="text-xs uppercase tracking-widest text-muted">
+                      {t(item.labelKey)}
+                    </p>
+                    {hasGroups ? (
+                      dropdown.groups!.map((group) => {
+                        const groupKey = `${item.labelKey}:${group.groupLabelKey ?? "default"}`;
+                        const isOpen = expandedMobileGroupKey === groupKey;
+                        return (
+                          <div key={groupKey} className="flex flex-col">
+                            {group.groupLabelKey ? (
+                              <button
+                                onClick={() =>
+                                  setExpandedMobileGroupKey((prev) =>
+                                    prev === groupKey ? null : groupKey
+                                  )
+                                }
+                                className="w-full flex items-center justify-between py-1.5 text-[10px] uppercase tracking-widest text-muted/70 hover:text-foreground transition-colors"
+                                aria-expanded={isOpen}
+                              >
+                                <span>{t(group.groupLabelKey)}</span>
+                                <ChevronDown
+                                  className={`w-3.5 h-3.5 transition-transform ${
+                                    isOpen ? "rotate-180" : ""
+                                  }`}
+                                />
+                              </button>
+                            ) : null}
+                            {isOpen &&
+                              group.items.map((subItem) => (
                                 <Link
-                                  key={item.href}
-                                  href={localizeHref(item.href, locale)}
+                                  key={subItem.href}
+                                  href={localizeHref(subItem.href, locale)}
                                   className={`block py-2 ${linkClass}`}
                                   onClick={() => setIsMenuOpen(false)}
                                 >
-                                  {t(item.labelKey)}
+                                  {t(subItem.labelKey)}
                                 </Link>
                               ))}
-                            </div>
-                          )}
-                        </>
-                      ) : (
-                        group.items.map((item) => (
-                          <Link
-                            key={item.href}
-                            href={localizeHref(item.href, locale)}
-                            className={`block py-2 ${linkClass}`}
-                            onClick={() => setIsMenuOpen(false)}
-                          >
-                            {t(item.labelKey)}
-                          </Link>
-                        ))
-                      )}
-                    </div>
-                  ))
-                ) : (
-                  resourcesDropdown.items.map((item) => (
+                          </div>
+                        );
+                      })
+                    ) : (
+                      (dropdown.items ?? []).map((subItem) => (
+                        <Link
+                          key={subItem.href}
+                          href={localizeHref(subItem.href, locale)}
+                          className={`block py-2 ${linkClass}`}
+                          onClick={() => setIsMenuOpen(false)}
+                        >
+                          {t(subItem.labelKey)}
+                        </Link>
+                      ))
+                    )}
+                  </div>
+                );
+              })}
+
+              {/* Secondary Nav */}
+              {secondaryNav.length > 0 && (
+                <div className="pt-2 border-t border-border">
+                  {secondaryNav.map((item) => (
                     <Link
                       key={item.href}
-                      href={item.href}
+                      href={localizeHref(item.href, locale)}
                       className={`block py-2 ${linkClass}`}
                       onClick={() => setIsMenuOpen(false)}
                     >
                       {t(item.labelKey)}
                     </Link>
-                  ))
-                )}
-              </div>
-              )}
-
-              {/* Secondary Nav */}
-              {secondaryNav.length > 0 && (
-              <div className="pt-2 border-t border-border">
-                {secondaryNav.map((item) => (
-                  <Link
-                    key={item.href}
-                    href={localizeHref(item.href, locale)}
-                    className={`block py-2 ${linkClass}`}
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    {t(item.labelKey)}
-                  </Link>
-                ))}
-              </div>
+                  ))}
+                </div>
               )}
 
               {/* GitHub Star Button (Mobile) */}
