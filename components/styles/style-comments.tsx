@@ -6,6 +6,7 @@ import Link from "next/link";
 import { Check, MessageSquare, Pencil, Send, Trash2, X } from "lucide-react";
 import { useStyleComments, type Comment } from "@/lib/swr";
 import { useUser } from "@/lib/auth/use-user";
+import { getAvatarImageSrc } from "@/lib/avatar";
 import { useI18n } from "@/lib/i18n/context";
 import {
   EMPEROR_TITLE_TOKEN,
@@ -113,6 +114,7 @@ export function StyleComments({ slug }: StyleCommentsProps) {
 
   const userName = user?.user_metadata?.user_name ?? user?.user_metadata?.full_name ?? "";
   const userAvatar = user?.user_metadata?.avatar_url ?? "";
+  const userAvatarSrc = getAvatarImageSrc(userAvatar);
   const loginHref = `/login?next=${encodeURIComponent(`/styles/${slug}`)}`;
 
   const getProviderLabel = (provider: Comment["author_provider"] | undefined): string => {
@@ -285,9 +287,9 @@ export function StyleComments({ slug }: StyleCommentsProps) {
         <form onSubmit={handleSubmit} className="space-y-3">
           <div className="flex gap-3">
             <div className="flex items-center gap-2 min-w-[128px]">
-              {userAvatar ? (
+              {userAvatarSrc ? (
                 <Image
-                  src={userAvatar}
+                  src={userAvatarSrc}
                   alt={userName}
                   width={28}
                   height={28}
@@ -342,6 +344,7 @@ export function StyleComments({ slug }: StyleCommentsProps) {
             const rawTitle = comment.author_title;
             const commentTitle = getDisplayTitle(rawTitle);
             const commentName = comment.author_name?.trim() || "User";
+            const commentAvatarSrc = getAvatarImageSrc(comment.avatar_url);
             const avatarFallback = commentName.charAt(0).toUpperCase();
             const isOwner = isOwnComment(comment);
             const isEditing = editingCommentId === comment.id;
@@ -360,9 +363,9 @@ export function StyleComments({ slug }: StyleCommentsProps) {
               >
                 <div className="flex items-start justify-between gap-3 mb-1">
                   <div className="flex items-start gap-2 min-w-0">
-                    {comment.avatar_url ? (
+                    {commentAvatarSrc ? (
                       <Image
-                        src={comment.avatar_url}
+                        src={commentAvatarSrc}
                         alt={commentName}
                         width={24}
                         height={24}

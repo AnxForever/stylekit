@@ -25,6 +25,15 @@ function parseMetadata(value: unknown): Record<string, unknown> {
 }
 
 function getPublicOrigin(request: NextRequest): string {
+  const requestOrigin = new URL(request.url).origin;
+  if (
+    process.env.NODE_ENV === "development" ||
+    requestOrigin.startsWith("http://localhost:") ||
+    requestOrigin.startsWith("http://127.0.0.1:")
+  ) {
+    return requestOrigin;
+  }
+
   const configured = process.env.NEXT_PUBLIC_BASE_URL?.trim();
   if (configured) {
     try {
@@ -34,7 +43,7 @@ function getPublicOrigin(request: NextRequest): string {
     }
   }
 
-  return new URL(request.url).origin;
+  return requestOrigin;
 }
 
 export async function GET(request: NextRequest) {

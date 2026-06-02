@@ -17,7 +17,7 @@ export function HomeStyleCard({ style }: HomeStyleCardProps) {
       href={`/styles/${style.slug}`}
       className="group block border border-border bg-background motion-safe:transition-[border-color,transform,box-shadow] motion-safe:duration-200 hover:border-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background motion-safe:hover:-translate-y-0.5 motion-safe:hover:shadow-md"
     >
-      <div className="relative aspect-[4/3] overflow-hidden border-b border-border/80 bg-zinc-100 dark:bg-zinc-900">
+      <div className="relative aspect-[16/10] sm:aspect-[4/3] overflow-hidden border-b border-border/80 bg-zinc-100 dark:bg-zinc-900">
         <StyleCoverPreview
           styleSlug={style.slug}
           className="motion-safe:transition-transform motion-safe:duration-500 group-hover:scale-[1.02]"

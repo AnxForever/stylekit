@@ -1,0 +1,216 @@
+export type SupportLocaleCopy = {
+  en: string;
+  zh: string;
+};
+
+export type SupportMethod = {
+  id: string;
+  kind: "link" | "qr";
+  title: SupportLocaleCopy;
+  description: SupportLocaleCopy;
+  badge: SupportLocaleCopy;
+  actionLabel?: SupportLocaleCopy;
+  href?: string;
+  imageSrc?: string;
+  imageAlt?: SupportLocaleCopy;
+  note?: SupportLocaleCopy;
+};
+
+export const supportPageCopy = {
+  en: {
+    eyebrow: "Support Maintenance",
+    title: "Help cover servers, domains, and ongoing upkeep.",
+    description:
+      "StyleKit is maintained as an open project. If it saves you time or helps your workflow, voluntary support helps offset hosting, infrastructure, and maintenance costs.",
+    highlights: [
+      "Voluntary support only",
+      "Used for servers, domains, and upkeep",
+      "Core public access stays open",
+    ],
+    methodsTitle: "Support channels",
+    methodsDescription:
+      "Scan with Alipay or WeChat Pay, or use GitHub if you prefer to support from the repository side.",
+    transparencyTitle: "Transparency",
+    transparencyItems: [
+      "Support is optional and does not unlock the core public site.",
+      "Funds are meant to offset infrastructure, hosting, and routine maintenance.",
+      "For larger sponsorships or company support, use public GitHub channels first.",
+    ],
+  },
+  zh: {
+    eyebrow: "支持维护",
+    title: "帮助补贴服务器、域名和日常维护成本。",
+    description:
+      "StyleKit 目前主要还是我一个人在持续维护和更新。如果它恰好帮到了你，那我真挺开心的。欢迎扫码支持我把它继续做下去，金额随意，你的每一份心意，都是对我很大的鼓励。",
+    highlights: [
+      "完全自愿支持",
+      "主要用于服务器、域名与维护成本",
+      "核心公开内容保持开放",
+    ],
+    methodsTitle: "支持方式",
+    methodsDescription:
+      "微信、支付宝都可以，金额随意，按你的心意来就好。收到的支持会优先用在服务器、域名和后续维护上；如果你更习惯从仓库侧进入，也保留了 GitHub 入口。",
+    transparencyTitle: "补充说明",
+    transparencyItems: [
+      "支持完全是自愿的，不会影响站点现有公开内容的使用。",
+      "收到的支持会优先拿来支付服务器、域名、基础设施和日常维护开销。",
+      "如果你是想做更大金额的赞助，或者是企业支持，也可以先在 GitHub 公共渠道和我沟通。",
+    ],
+  },
+} as const;
+
+// Add future QR methods by placing images under public/support/ and appending
+// new items here with kind: "qr" and imageSrc set to the new asset path.
+export const supportMethods: SupportMethod[] = [
+  {
+    id: "alipay-qr",
+    kind: "qr",
+    title: {
+      en: "Alipay",
+      zh: "支付宝",
+    },
+    description: {
+      en: "Open Alipay and scan this code to support StyleKit maintenance.",
+      zh: "打开支付宝扫码即可支持 StyleKit 的持续维护，金额随意就好。",
+    },
+    badge: {
+      en: "QR",
+      zh: "扫码",
+    },
+    imageSrc: "/alipay-qr.jpg",
+    imageAlt: {
+      en: "Alipay QR code for supporting StyleKit",
+      zh: "用于支持 StyleKit 的支付宝收款二维码",
+    },
+    note: {
+      en: "Recommended for domestic users who already use Alipay.",
+      zh: "适合已经使用支付宝的用户，感谢支持。",
+    },
+  },
+  {
+    id: "wechat-qr",
+    kind: "qr",
+    title: {
+      en: "WeChat Pay",
+      zh: "微信支付",
+    },
+    description: {
+      en: "Open WeChat and scan this code to help cover hosting and infrastructure costs.",
+      zh: "打开微信扫码即可支持项目维护，也能补贴托管和基础设施成本。",
+    },
+    badge: {
+      en: "QR",
+      zh: "扫码",
+    },
+    imageSrc: "/wechat-qr.png",
+    imageAlt: {
+      en: "WeChat Pay QR code for supporting StyleKit",
+      zh: "用于支持 StyleKit 的微信支付二维码",
+    },
+    note: {
+      en: "Best for users who prefer WeChat Pay over Alipay.",
+      zh: "适合更习惯使用微信支付的用户，感谢支持。",
+    },
+  },
+  {
+    id: "github-funding",
+    kind: "link",
+    title: {
+      en: "GitHub Sponsor Entry",
+      zh: "GitHub 赞助入口",
+    },
+    description: {
+      en: "Use the repository page to access the Sponsor button or funding entry from GitHub.",
+      zh: "通过仓库主页进入 Sponsor 按钮或 Funding 入口，适合直接挂在 GitHub 页面里。",
+    },
+    badge: {
+      en: "GitHub",
+      zh: "GitHub",
+    },
+    actionLabel: {
+      en: "Open repository",
+      zh: "打开仓库主页",
+    },
+    href: "https://github.com/AnxForever/stylekit",
+    note: {
+      en: "Configured via .github/FUNDING.yml so the repo can expose a native support entry.",
+      zh: "已通过 .github/FUNDING.yml 预留，仓库可以直接展示原生支持入口。",
+    },
+  },
+  {
+    id: "custom-sponsorship",
+    kind: "link",
+    title: {
+      en: "Custom Sponsorship",
+      zh: "定制赞助",
+    },
+    description: {
+      en: "For larger sponsorships, company reimbursement, or follow-up questions, start with a public discussion thread.",
+      zh: "如果是较大金额赞助、企业报销或需要进一步沟通，可以先从公开讨论线程开始。",
+    },
+    badge: {
+      en: "Discussion",
+      zh: "讨论",
+    },
+    actionLabel: {
+      en: "Open GitHub Discussions",
+      zh: "打开 GitHub Discussions",
+    },
+    href: "https://github.com/AnxForever/stylekit/discussions",
+    note: {
+      en: "Keeps support requests and sponsor follow-up in one public place before adding more channels.",
+      zh: "在补充更多支付渠道前，先把赞助沟通和后续跟进统一放在公开渠道里。",
+    },
+  },
+];
+
+export type SupportLink = {
+  title: SupportLocaleCopy;
+  description: SupportLocaleCopy;
+  href: string;
+  external: boolean;
+  actionLabel: SupportLocaleCopy;
+};
+
+export const supportLinks: SupportLink[] = [
+  {
+    title: { en: "GitHub Discussions", zh: "GitHub Discussions" },
+    description: {
+      en: "Use for product questions, launch feedback, feature requests, and general support.",
+      zh: "适合产品咨询、发布反馈、功能建议和一般支持。",
+    },
+    href: "https://github.com/AnxForever/stylekit/discussions",
+    external: true,
+    actionLabel: { en: "Open", zh: "打开" },
+  },
+  {
+    title: { en: "GitHub Issues", zh: "GitHub Issues" },
+    description: {
+      en: "Use for reproducible bugs, broken links, data issues, or validation failures.",
+      zh: "适合可复现的 Bug、失效链接、数据问题或校验失败。",
+    },
+    href: "https://github.com/AnxForever/stylekit/issues",
+    external: true,
+    actionLabel: { en: "Open", zh: "打开" },
+  },
+  {
+    title: { en: "Repository", zh: "代码仓库" },
+    description: {
+      en: "Browse source, roadmap context, and recent changes before opening a thread.",
+      zh: "在发起讨论前，先浏览源码、路线图和最近的变更。",
+    },
+    href: "https://github.com/AnxForever/stylekit",
+    external: true,
+    actionLabel: { en: "Open", zh: "打开" },
+  },
+  {
+    title: { en: "Newsletter", zh: "订阅更新" },
+    description: {
+      en: "Follow public updates and launch notes from any footer signup form on the site.",
+      zh: "通过页脚的订阅表单关注公开更新和发布说明。",
+    },
+    href: "/",
+    external: false,
+    actionLabel: { en: "Open", zh: "打开" },
+  },
+];

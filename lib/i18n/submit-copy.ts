@@ -151,7 +151,7 @@ export const submitCopy = {
       assistantTips: "Tips for Each AI Assistant",
       claudeTip: "Claude: Use the master prompt directly. Claude handles structured JSON output well. Ask it to output the three fenced blocks in order.",
       chatgptTip: "ChatGPT: Paste the master prompt as a system message or at the start of the conversation. Ask GPT to strictly follow the JSON schema.",
-      cursorTip: "Cursor: If using StyleKit MCP, the submit_style tool can validate your manifest directly. Otherwise, paste the prompt in chat.",
+      cursorTip: "Cursor: Paste the master prompt in chat and ask it to keep the three fenced blocks in order.",
       commonErrors: "Common Mistakes to Avoid",
       commonErrorItems: [
         "Missing schemaVersion field (must be '1.0.0')",
@@ -396,7 +396,7 @@ export const submitCopy = {
       assistantTips: "各 AI 助手使用提示",
       claudeTip: "Claude：直接使用 Master Prompt。Claude 擅长结构化 JSON 输出，要求它按顺序输出三个 fenced blocks。",
       chatgptTip: "ChatGPT：将 Master Prompt 作为系统消息或对话开头粘贴，要求 GPT 严格遵循 JSON schema。",
-      cursorTip: "Cursor：如果使用 StyleKit MCP，submit_style 工具可以直接验证 manifest。否则在聊天中粘贴 prompt。",
+      cursorTip: "Cursor：在聊天中粘贴 Master Prompt，并要求它按顺序保留三个 fenced blocks。",
       commonErrors: "常见错误",
       commonErrorItems: [
         "缺少 schemaVersion 字段（必须为 '1.0.0'）",

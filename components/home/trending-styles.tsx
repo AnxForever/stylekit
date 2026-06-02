@@ -20,7 +20,7 @@ export function TrendingStyles({ styles, sectionId = "home-trending" }: Trending
   const useFallback = !isLoading && (!data?.top || data.top.length === 0);
   const sectionLinkClassName = "text-sm text-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background transition-colors flex items-center gap-1";
   const cardClassName = "group block border border-border motion-safe:transition-[border-color,transform,box-shadow] motion-safe:duration-200 hover:border-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background motion-safe:hover:-translate-y-0.5";
-  const gridClassName = "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 [content-visibility:auto] [contain-intrinsic-size:1px_560px]";
+  const gridClassName = "-mx-4 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-2 scrollbar-hide md:mx-0 md:grid md:grid-cols-3 lg:grid-cols-4 md:gap-4 md:overflow-visible md:px-0 md:pb-0 [content-visibility:auto] [contain-intrinsic-size:1px_560px]";
   const sectionLabelClassName = "text-[11px] tracking-[0.16em] uppercase text-muted";
   const sectionTitleClassName = "text-[1.6rem] sm:text-2xl md:text-3xl leading-tight tracking-tight";
 
@@ -56,7 +56,7 @@ export function TrendingStyles({ styles, sectionId = "home-trending" }: Trending
           <div className={gridClassName}>
             {Array.from({ length: 4 }).map((_, index) => (
               <RevealOnScroll key={index} variant="upSubtle" delayMs={index * 35} disableDelayOnMobile>
-                <div className="p-3 sm:p-4 border border-border animate-pulse">
+                <div className="min-w-[14.5rem] border border-border p-3 sm:p-4 md:min-w-0 animate-pulse">
                   <div className="h-4 w-2/3 bg-zinc-200 dark:bg-zinc-800 rounded mb-3" />
                   <div className="h-1.5 bg-zinc-100 dark:bg-zinc-900 mb-3" />
                   <div className="h-3 w-1/2 bg-zinc-200 dark:bg-zinc-800 rounded mb-3" />
@@ -99,7 +99,7 @@ export function TrendingStyles({ styles, sectionId = "home-trending" }: Trending
               <RevealOnScroll key={meta.slug} variant="upSubtle" delayMs={70 + index * 35} disableDelayOnMobile>
                 <LocalizedLink
                   href={`/styles/${meta.slug}`}
-                  className={`${cardClassName} p-3 sm:p-4`}
+                  className={`${cardClassName} min-w-[14.5rem] p-3 sm:p-4 md:min-w-0`}
                 >
                   <div className="flex items-center gap-2 mb-2">
                     <span className="text-xs text-muted tabular-nums">#{index + 1}</span>
@@ -167,7 +167,7 @@ export function TrendingStyles({ styles, sectionId = "home-trending" }: Trending
               <RevealOnScroll key={top.slug} variant="upSubtle" delayMs={80 + index * 35} disableDelayOnMobile>
                 <LocalizedLink
                   href={`/styles/${top.slug}`}
-                  className={`${cardClassName} p-3 sm:p-4`}
+                  className={`${cardClassName} min-w-[14.5rem] p-3 sm:p-4 md:min-w-0`}
                 >
                   <div className="flex items-center gap-2 mb-2">
                     <span className="text-xs text-muted tabular-nums">

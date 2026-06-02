@@ -12,8 +12,37 @@ export interface ChangelogEntry {
 
 export const changelog: ChangelogEntry[] = [
   {
+    version: "0.15.0",
+    date: "2026-04-15",
+    title: "Playground Revamp",
+    titleZh: "Playground 重构",
+    changes: [
+      { type: "added", description: "Full i18n coverage for animations, recipes, and playground pages", descriptionZh: "动画、配方和 Playground 页面全面 i18n 覆盖" },
+      { type: "added", description: "Site filing information in footer for regulatory compliance", descriptionZh: "页脚添加站点备案信息" },
+      { type: "changed", description: "Rewritten tokensToCSS engine and cleaned up playground imports", descriptionZh: "重写 tokensToCSS 引擎并清理 Playground 导入" },
+      { type: "fixed", description: "Validate codePrompt shape when reading from plan_card_json", descriptionZh: "修复从 plan_card_json 读取 codePrompt 时的类型校验" },
+      { type: "fixed", description: "Localized nameEn for PromptPairExporter and tightened language switcher button width", descriptionZh: "修复 PromptPairExporter 的 nameEn 本地化和语言切换按钮宽度" },
+    ],
+  },
+  {
+    version: "0.14.0",
+    date: "2026-04-01",
+    title: "Internationalization and Discovery",
+    titleZh: "国际化与风格发现",
+    changes: [
+      { type: "added", description: "Component patterns gallery with nav entry for browsing reusable UI patterns", descriptionZh: "组件模式库，支持通过导航浏览可复用 UI 模式" },
+      { type: "added", description: "Style combination recommendation system for mixing compatible styles", descriptionZh: "风格组合推荐系统，帮助混搭兼容风格" },
+      { type: "added", description: "Multi-language prompt system with unified and optimized style rule templates", descriptionZh: "多语言提示词系统，统一优化风格规则模板" },
+      { type: "added", description: "Enriched analytics dashboard with deeper traffic insights", descriptionZh: "增强分析面板，提供更深入的流量洞察" },
+      { type: "changed", description: "Staticized 150+ pages to reduce Vercel free tier usage", descriptionZh: "将 150+ 页面静态化，降低 Vercel 免费额度占用" },
+      { type: "changed", description: "Comprehensive internationalization and UX optimization pass", descriptionZh: "全面的国际化和用户体验优化" },
+      { type: "fixed", description: "OAuth redirects now use public base URL correctly", descriptionZh: "OAuth 重定向现在正确使用公共 base URL" },
+      { type: "fixed", description: "Canonical base URL normalized to www", descriptionZh: "规范 base URL 统一到 www 域名" },
+    ],
+  },
+  {
     version: "0.13.0",
-    date: "2025-07-10",
+    date: "2026-03-22",
     title: "Localized Prompt Exports",
     titleZh: "提示词本地化导出",
     changes: [

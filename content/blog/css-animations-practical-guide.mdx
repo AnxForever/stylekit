@@ -1,0 +1,82 @@
+---
+title: "CSS Animations in StyleKit: A Practical Guide to 49 Patterns"
+description: "A hands-on guide to StyleKit's animation catalog -- categories, triggers, difficulty levels, and how to choose the right animation for your project."
+date: "2026-04-10"
+author: "StyleKit Team"
+tags: ["guide", "animations", "css", "frontend"]
+---
+
+Animations are the difference between a page that feels static and one that feels alive. But implementing them well is harder than it looks. You need to choose the right easing curve, pick an appropriate duration, handle reduced-motion preferences, and avoid the classic mistake of animating everything until the page feels like a carnival. StyleKit's animation catalog exists to make this practical: 49 production-ready animation patterns, organized by category and trigger type, each with copy-paste code and a live playground.
+
+## How the Catalog is Organized
+
+Every animation in StyleKit is classified along three axes: **category**, **trigger**, and **difficulty**.
+
+**Categories** describe what the animation does:
+
+- **Entrance** (10 animations): Elements appearing on screen -- fade-in-up, scale-in, bounce-in, slide-in-left, slide-in-right, rotate-in, blur-in, zoom-in, elastic-scale, fade-in-down
+- **Exit** (4 animations): Elements leaving the screen -- fade-out-down, scale-out, slide-out-right, collapse
+- **Hover** (6 animations): Mouse interaction effects -- hover-lift, hover-glow, flip-card, border-trace, underline-draw, 3D tilt
+- **Scroll** (5 animations): Scroll-triggered effects -- scroll-reveal, parallax-float, counter-roll, scroll-page-turn, scroll-peel-away
+- **Text** (6 animations): Typography animations -- typewriter, text-gradient-flow, glitch-text, text-reveal, text-scramble, marquee-scroll
+- **Loading** (4 animations): Loading indicators -- skeleton-pulse, spinner-dots, shimmer, progress-bar
+- **Micro-interaction** (8 animations): Feedback and delight -- stagger-children, spotlight-card, magnetic-hover, shake, ripple-click, pulse, elastic-snap, pulse-ring, confetti-burst
+- **Transition** (3 animations): State changes -- crossfade, slide-swap, morph-transition
+- **Background** (2 animations): Ambient effects -- background-gradient-shift, morph-shape
+
+**Triggers** describe when the animation fires:
+
+- `on-mount` -- plays once when the element enters the DOM
+- `on-hover` -- plays when the user hovers
+- `on-click` -- plays on click interaction
+- `on-scroll` -- triggered by scroll position or IntersectionObserver
+- `continuous` -- loops indefinitely
+- `manual` -- controlled programmatically
+
+**Difficulty** ranges from beginner (pure CSS, copy-paste ready) to advanced (requires JavaScript, perspective containers, or scroll observers).
+
+## Choosing the Right Animation
+
+The most common mistake with animations is using too many. A page with fade-in-up on every section, hover-lift on every card, and text-gradient-flow on every heading creates visual noise rather than visual hierarchy. Here is a practical framework:
+
+**One entrance animation per page section.** Pick fade-in-up or blur-in for content sections. Use stagger-children if you have a grid of cards. Do not animate headers and body text separately -- animate the container once.
+
+**One hover pattern for interactive elements.** If your cards use hover-lift, stick with hover-lift everywhere. Do not mix hover-lift on cards with hover-glow on buttons and border-trace on links. Consistency matters more than variety.
+
+**Reserve advanced animations for hero sections.** Scroll-page-turn, parallax-float, and confetti-burst are attention magnets. Use them at the top of the page or at a single key moment, not throughout.
+
+**Always respect `prefers-reduced-motion`.** Every animation in StyleKit's catalog includes a note about whether it needs a reduced-motion fallback. Continuous animations and scroll-driven effects should be disabled entirely for users who request reduced motion. Entrance animations can be replaced with a simple opacity fade.
+
+## Working with Scroll-Driven Animations
+
+The scroll category deserves special attention because scroll-driven animations are technically more complex. StyleKit provides three approaches:
+
+**IntersectionObserver-based** (scroll-reveal, counter-roll): The animation triggers once when the element enters the viewport. This is the simplest approach and works well for content that should animate in as the user scrolls down.
+
+**Scroll-position-linked** (parallax-float, scroll-page-turn, scroll-peel-away): The animation progress is tied directly to scroll position. As the user scrolls, the animation advances proportionally. These require sticky positioning and careful container setup.
+
+The playground for scroll-driven animations provides a scrollable container so you can test the effect without leaving the page. Each animation's code snippet includes the complete setup -- container styles, scroll handler, and the animation itself.
+
+## Duration and Easing Guidelines
+
+Two properties make or break an animation: duration and easing.
+
+**Duration rules of thumb:**
+- Micro-interactions (hover, click feedback): 150-300ms
+- Entrance animations: 400-600ms
+- Page transitions: 300-500ms
+- Scroll-driven: tied to scroll speed, not fixed duration
+- Loading indicators: 1.5-2s per cycle
+
+**Easing choices:**
+- `ease-out` for entrances (fast start, gentle stop)
+- `ease-in` for exits (gentle start, fast finish)
+- `cubic-bezier(0.16, 1, 0.3, 1)` for spring-like entrances
+- `linear` only for continuous loops (loading, ambient)
+- Never use `ease-in` for entrances -- it feels sluggish
+
+## Getting Started
+
+Browse the full catalog at [stylekit.top/animations](https://stylekit.top/animations). Each animation has a live preview, difficulty rating, copy-paste code snippet, and a sandbox playground where you can adjust parameters. Filter by category to find entrance, exit, hover, or scroll animations. Filter by difficulty if you want pure CSS solutions without JavaScript dependencies.
+
+Start with three animations: one entrance (fade-in-up), one hover (hover-lift), and one loading indicator (shimmer). Master those three and your pages will already feel significantly more polished than the default static layout.

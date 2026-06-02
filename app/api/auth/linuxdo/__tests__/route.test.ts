@@ -10,9 +10,9 @@ import { GET } from "@/app/api/auth/linuxdo/route";
 const mockedBuildAuthorizationUrl = vi.mocked(buildAuthorizationUrl);
 
 describe("GET /api/auth/linuxdo", () => {
-  it("sanitizes invalid next values to root path", async () => {
+  it("stores the post-login path in oauth state", async () => {
     mockedBuildAuthorizationUrl.mockReturnValueOnce(
-      "https://connect.linux.do/oauth2/authorize?state=test"
+      "https://connect.linux.do/oauth2/authorize?client_id=test"
     );
 
     const response = await GET(
@@ -21,10 +21,10 @@ describe("GET /api/auth/linuxdo", () => {
 
     expect(response.status).toBe(307);
     expect(response.headers.get("location")).toBe(
-      "https://connect.linux.do/oauth2/authorize?state=test"
+      "https://connect.linux.do/oauth2/authorize?client_id=test&state=%2F"
     );
     expect(mockedBuildAuthorizationUrl).toHaveBeenCalledWith(
-      "https://stylekit.top/api/auth/linuxdo/callback?next=%2F"
+      "https://stylekit.top/api/auth/linuxdo/callback"
     );
   });
 

@@ -72,8 +72,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...createLocalizedEntries("/blend", TOOLS_UPDATED, "monthly", 0.6),
     ...createLocalizedEntries("/analyze", TOOLS_UPDATED, "monthly", 0.6),
     ...createLocalizedEntries("/docs", TOOLS_UPDATED, "monthly", 0.6),
-    ...createLocalizedEntries("/developers", TOOLS_UPDATED, "monthly", 0.6),
-    ...createLocalizedEntries("/developers/api", TOOLS_UPDATED, "monthly", 0.6),
     ...createLocalizedEntries("/guide", TOOLS_UPDATED, "monthly", 0.6),
     ...createLocalizedEntries("/components", CONTENT_UPDATED, "weekly", 0.6),
     ...createLocalizedEntries("/about", TOOLS_UPDATED, "monthly", 0.4),

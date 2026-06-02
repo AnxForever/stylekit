@@ -22,18 +22,16 @@ describe("translations consistency", () => {
     }
   });
 
-  it("contains developers page keys in both locales", () => {
+  it("contains active navigation keys in both locales", () => {
     const requiredKeys = [
-      "developers.badge",
-      "developers.title",
-      "developers.tabs.cli",
-      "developers.tabs.mcp",
-      "developers.tabs.api",
-      "developers.workflow.pathA.title",
-      "developers.workflow.pathB.title",
-      "developers.mcp.tools.search_knowledge",
-      "developers.mcp.tools.lint_code",
-      "developers.api.endpoints.styleExtract",
+      "nav.styles",
+      "nav.recipes",
+      "nav.guides",
+      "nav.animations",
+      "nav.templates",
+      "nav.community",
+      "nav.blog",
+      "nav.changelog",
     ];
 
     const zh = translations.zh as Record<string, string>;

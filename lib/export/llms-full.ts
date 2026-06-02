@@ -65,7 +65,7 @@ StyleKit provides ${styles.length} design styles with machine-readable constrain
 - **Keywords**: ${style.keywords.join(", ")}
 - **Has Tokens**: ${tokens ? "Yes" : "No"}
 - **Has Recipes**: ${recipes ? "Yes" : "No"}
-- **API**: \`/api/styles/${style.slug}\`
+- **Style Page**: \`/styles/${style.slug}\`
 
 `);
   });
@@ -268,13 +268,13 @@ ${archetype.sections.map((s) => `- \`${s.id}\`: ${s.name} (${s.layout.type})`).j
 
 #### Path A: Reference URL -> Extract -> Generate
 
-1. **Extract**: POST \`/api/style-extract\` with a public website URL
-2. **Normalize**: Import extracted draft into \`/create-style\`
+1. **Extract**: Paste a public website URL in \`/create-style\`
+2. **Normalize**: Review and refine the extracted draft in the product workflow
 3. **Generate**: Use \`/generate\` (3-step flow) to select template, edit content, and download ZIP
 
 #### Path B: Preset Style -> Template -> Generate
 
-1. **Select Style**: Choose from preset styles via \`/styles\` or \`/api/styles\`
+1. **Select Style**: Choose from preset styles via \`/styles\`
 2. **Choose Output**: Select template + output format in \`/generate\`
 3. **Edit & Download**: Complete content editing with live preview and download ZIP
 
@@ -284,29 +284,16 @@ ${archetype.sections.map((s) => `- \`${s.id}\`: ${s.name} (${s.layout.type})`).j
 2. **Never use forbidden classes** - Check forbidden lists before generating
 3. **Follow component recipes** - Use parameterized templates, not ad-hoc code
 4. **Preserve extracted evidence** - Keep palette, spacing rhythm, and motion cues from source sites
-5. **Validate before shipping** - Run lint/validation in API or CI flow
-
-### API Endpoints Reference
-
-- \`GET /api/styles\` - List all styles
-- \`GET /api/styles/[slug]\` - Get complete style pack
-- \`GET /api/styles/[slug]/tokens\` - Get tokens only
-- \`GET /api/styles/[slug]/recipes\` - Get recipes only
-- \`POST /api/style-extract\` - Extract style draft from public URL
-- \`POST /api/lint\` - Validate generated code against style rules
-- \`POST /api/knowledge/smart\` - Context-aware recommendation/compare
+5. **Review before shipping** - Check the generated UI against the selected style rules
 
 ### Example Workflow (Path A)
 
 \`\`\`
 # Replicate a reference site style and generate code
 
-1. POST /api/style-extract
-   {
-     "url": "https://example.com"
-   }
+1. Open /create-style and paste https://example.com
 
-2. Import extracted markdown/json in /create-style
+2. Review extracted markdown/json in the product flow
    -> normalize palette, tokens, and evidence
 
 3. Open /generate

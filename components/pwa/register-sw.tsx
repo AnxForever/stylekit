@@ -41,8 +41,31 @@ export function RegisterSW() {
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
-    // Register service worker
-    if ("serviceWorker" in navigator) {
+    if (!("serviceWorker" in navigator)) {
+      return;
+    }
+
+    if (process.env.NODE_ENV !== "production") {
+      navigator.serviceWorker.getRegistrations().then((registrations) => {
+        registrations.forEach((registration) => {
+          void registration.unregister();
+        });
+      }).catch(() => {
+        // ignore dev cleanup failure
+      });
+
+      if ("caches" in window) {
+        void caches.keys().then((keys) =>
+          Promise.all(
+            keys
+              .filter((key) => key.startsWith("stylekit-"))
+              .map((key) => caches.delete(key))
+          )
+        ).catch(() => {
+          // ignore dev cleanup failure
+        });
+      }
+    } else {
       navigator.serviceWorker.register("/sw.js").catch(() => {
         // SW registration failure is non-fatal
       });

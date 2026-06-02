@@ -11,6 +11,7 @@
 import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import { useUser } from "@/lib/auth/use-user";
+import { getAvatarImageSrc } from "@/lib/avatar";
 import { LocalizedLink } from "@/components/i18n/localized-link";
 import { useI18n } from "@/lib/i18n/context";
 import { LogIn, LogOut, User as UserIcon } from "lucide-react";
@@ -49,6 +50,7 @@ export function UserMenu() {
   }
 
   const avatarUrl = user.user_metadata?.avatar_url as string | undefined;
+  const avatarSrc = getAvatarImageSrc(avatarUrl);
   const displayName = (user.user_metadata?.user_name as string) ||
     (user.user_metadata?.full_name as string) ||
     user.email ||
@@ -62,9 +64,9 @@ export function UserMenu() {
         aria-label={t("auth.account")}
         aria-expanded={open}
       >
-        {avatarUrl ? (
+        {avatarSrc ? (
           <Image
-            src={avatarUrl}
+            src={avatarSrc}
             alt={displayName}
             width={28}
             height={28}
@@ -132,6 +134,7 @@ export function MobileUserMenu() {
   }
 
   const avatarUrl = user.user_metadata?.avatar_url as string | undefined;
+  const avatarSrc = getAvatarImageSrc(avatarUrl);
   const displayName = (user.user_metadata?.user_name as string) ||
     (user.user_metadata?.full_name as string) ||
     "User";
@@ -139,9 +142,9 @@ export function MobileUserMenu() {
   return (
     <div className="flex items-center justify-between">
       <div className="flex items-center gap-2">
-        {avatarUrl ? (
+        {avatarSrc ? (
           <Image
-            src={avatarUrl}
+            src={avatarSrc}
             alt={displayName}
             width={24}
             height={24}

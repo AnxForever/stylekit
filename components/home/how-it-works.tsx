@@ -24,7 +24,7 @@ export function HowItWorks() {
 
   return (
     <section className="relative border-b border-border">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-12 py-10 sm:py-12 md:py-16">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-12 py-8 sm:py-12 md:py-16">
         <RevealOnScroll variant="soft" className="mb-6 sm:mb-8">
           <p className="text-[11px] tracking-[0.16em] uppercase text-muted mb-2">
             {t("home.howItWorks.label")}
@@ -34,7 +34,7 @@ export function HowItWorks() {
           </h2>
         </RevealOnScroll>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-5">
+        <div className="-mx-4 flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-2 scrollbar-hide md:mx-0 md:grid md:grid-cols-3 md:overflow-visible md:px-0 md:pb-0">
           {steps.map((step, index) => {
             const Icon = step.icon;
             return (
@@ -44,7 +44,7 @@ export function HowItWorks() {
                 delayMs={100 + index * 70}
                 disableDelayOnMobile
               >
-                <article className="group relative border border-border bg-background/70 p-4 sm:p-5 md:p-6 motion-safe:transition-[border-color,transform] motion-safe:duration-200 hover:border-foreground motion-safe:hover:-translate-y-0.5">
+                <article className="group relative min-w-[16.5rem] snap-start border border-border bg-background/70 p-4 sm:p-5 md:min-w-0 md:p-6 motion-safe:transition-[border-color,transform] motion-safe:duration-200 hover:border-foreground motion-safe:hover:-translate-y-0.5">
                   <div className="flex items-center gap-3 mb-4">
                     <span className="text-[11px] tracking-[0.16em] text-muted tabular-nums">
                       {step.number}

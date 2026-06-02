@@ -334,8 +334,7 @@ export function PlaygroundContainer() {
     setSelectedElementInfo(info);
     // 如果选中了元素，尝试在代码中搜索相关类名
     if (info && info.classes.length > 0) {
-      // 可以后续扩展：高亮编辑器中的相关行
-      console.log('[v0] Selected element:', info);
+      // TODO: highlight related lines in the editor
     }
   }, []);
 

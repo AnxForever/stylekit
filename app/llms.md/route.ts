@@ -25,7 +25,7 @@ StyleKit provides structured design systems that AI can use to generate consiste
     const tokens = getStyleTokens(style.slug);
     const recipes = getStyleRecipes(style.slug);
     sections.push(
-      `- [${style.nameEn}](/api/styles/${style.slug}): ${style.description} (Tokens: ${tokens ? "Yes" : "No"}, Recipes: ${recipes ? "Yes" : "No"})`
+      `- [${style.nameEn}](/styles/${style.slug}): ${style.description} (Tokens: ${tokens ? "Yes" : "No"}, Recipes: ${recipes ? "Yes" : "No"})`
     );
   }
 
@@ -35,8 +35,8 @@ StyleKit provides structured design systems that AI can use to generate consiste
 
 ### Path A: Reference URL -> Extract -> Generate
 
-1. Extract style evidence from a public URL: [POST /api/style-extract](/api/style-extract)
-2. Normalize/import extracted draft in [Create Style](/create-style)
+1. Paste a public reference URL in [Create Style](/create-style)
+2. Normalize the extracted style draft in the product workflow
 3. Generate project output in [Generator](/generate)
 
 ### Path B: Preset Style -> Template -> Generate
@@ -45,34 +45,9 @@ StyleKit provides structured design systems that AI can use to generate consiste
 2. Select template and output format in [Generator](/generate)
 3. Edit content with live preview and download ZIP
 
-## API Endpoints
-
-- [All Styles](/api/styles): List all available design styles
-- [Style Details](/api/styles/[slug]): Full style metadata and examples
-- [Style Tokens](/api/styles/[slug]/tokens): Machine-readable design tokens
-- [Style Recipes](/api/styles/[slug]/recipes): Component recipe templates
-- [Style Extractor](/api/style-extract): Extract style draft from public websites
-
-## MCP Tools
-
-- search_knowledge: Search design knowledge domains
-- smart_recommend: Context-aware recommendation with scoring
-- get_style: Get one style pack (rules + tokens + recipes)
-- list_styles: List all styles
-- lint_code: Lint code against style constraints
-- get_stack_guidelines: Get stack-specific implementation guidance
-- compose_styles: Compose visual style + optional layout archetype
-- generate_context_file: Generate IDE rules files for AI coding tools
-- analyze_project_style: Detect nearest style from existing component code
-
 ## Documentation
 
 - [Full Documentation](/llms-full.txt): Complete reference with all tokens, recipes, and code examples
-
-## Optional
-
-- [Figma MCP Integration Guide](/docs/figma-mcp-integration.md): Import design tokens from Figma via MCP
-- [StyleKit Skill Pack](/api/styles/neo-brutalist/skill-pack): SKILL.md format for AI tools
 `);
 
   const content = sections.join("\n");
