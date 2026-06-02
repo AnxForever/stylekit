@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useTheme } from "next-themes";
 import { useI18n } from "@/lib/i18n/context";
 import { LanguageSwitcher } from "@/components/language-switcher";
@@ -15,11 +15,57 @@ import { localizeHref } from "@/lib/i18n/routing";
 const linkClass =
   "shrink-0 whitespace-nowrap text-sm tracking-wide text-muted hover:text-foreground transition-colors";
 
+/**
+ * Grace period between leaving the trigger and the panel collapsing.
+ * Long enough to traverse the 8px gap between trigger and panel +
+ * accidentally cross into the panel; short enough that intentional
+ * moves away still feel snappy. Mirrors GitHub / Stripe / Linear.
+ */
+const CLOSE_GRACE_MS = 150;
+
+/**
+ * Hover-driven dropdown state with a grace period before close.
+ *
+ * `openNow` cancels any pending close and forces the dropdown open.
+ * `scheduleClose` defers the actual close by CLOSE_GRACE_MS, so a
+ * cursor that briefly leaves the container (e.g. crossing the gap
+ * between trigger and panel) doesn't collapse the panel mid-traversal.
+ */
+function useHoverDropdown(
+  open: boolean,
+  onOpenChange: (open: boolean) => void,
+) {
+  const closeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const cancelClose = useCallback(() => {
+    if (closeTimerRef.current) {
+      clearTimeout(closeTimerRef.current);
+      closeTimerRef.current = null;
+    }
+  }, []);
+
+  const openNow = useCallback(() => {
+    cancelClose();
+    onOpenChange(true);
+  }, [cancelClose, onOpenChange]);
+
+  const scheduleClose = useCallback(() => {
+    cancelClose();
+    closeTimerRef.current = setTimeout(() => {
+      closeTimerRef.current = null;
+      onOpenChange(false);
+    }, CLOSE_GRACE_MS);
+  }, [cancelClose, onOpenChange]);
+
+  useEffect(() => () => cancelClose(), [cancelClose]);
+
+  return { open, openNow, scheduleClose };
+}
+
 interface DesktopDropdownProps {
   item: NavItem;
-  isOpen: boolean;
-  onToggle: () => void;
-  onClose: () => void;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
   registerRef: (element: HTMLDivElement | null) => void;
 }
 
@@ -28,16 +74,24 @@ interface DesktopDropdownProps {
  * for every mainNav entry that has a `dropdown` field (currently
  * "Build" and "Resources"); the panel is uniform so future top-level
  * dropdowns need no rendering changes.
+ *
+ * Open behavior:
+ * - Mouse: hovering the trigger OR the panel keeps it open. Leaving
+ *   both starts a 150ms close timer so the user can cross the gap
+ *   between them without the panel collapsing mid-traversal.
+ * - Keyboard: focus inside the container keeps it open; focus
+ *   leaving schedules the same close.
  */
 function DesktopDropdown({
   item,
-  isOpen,
-  onToggle,
-  onClose,
+  open,
+  onOpenChange,
   registerRef,
 }: DesktopDropdownProps) {
   const { t, locale } = useI18n();
   const dropdown = item.dropdown;
+  const { openNow, scheduleClose } = useHoverDropdown(open, onOpenChange);
+
   if (!dropdown) return null;
 
   const isWide = dropdown.width === "wide";
@@ -45,22 +99,38 @@ function DesktopDropdown({
   const hasItems = (dropdown.items?.length ?? 0) > 0;
 
   return (
-    <div className="relative" ref={registerRef}>
+    <div
+      className="relative"
+      ref={registerRef}
+      onMouseEnter={openNow}
+      onMouseLeave={scheduleClose}
+      onFocus={openNow}
+      onBlur={(event) => {
+        // relatedTarget is the element gaining focus. If it's still
+        // inside this container (e.g. tabbing from trigger into the
+        // panel), keep the dropdown open.
+        if (
+          !event.currentTarget.contains(event.relatedTarget as Node | null)
+        ) {
+          scheduleClose();
+        }
+      }}
+    >
       <button
-        onClick={onToggle}
+        type="button"
         className={`flex shrink-0 items-center gap-1 whitespace-nowrap text-sm tracking-wide transition-colors ${
-          isOpen ? "text-foreground" : "text-muted hover:text-foreground"
+          open ? "text-foreground" : "text-muted hover:text-foreground"
         }`}
-        aria-expanded={isOpen}
+        aria-expanded={open}
         aria-haspopup="menu"
       >
         {t(item.labelKey)}
         <ChevronDown
-          className={`w-3.5 h-3.5 transition-transform ${isOpen ? "rotate-180" : ""}`}
+          className={`w-3.5 h-3.5 transition-transform ${open ? "rotate-180" : ""}`}
         />
       </button>
 
-      {isOpen && (
+      {open && (
         <div
           className={
             isWide
@@ -89,7 +159,7 @@ function DesktopDropdown({
                     key={subItem.href}
                     href={localizeHref(subItem.href, locale)}
                     className="block px-2 py-1.5 text-sm text-muted hover:text-foreground hover:bg-zinc-50 dark:hover:bg-zinc-800/50 rounded transition-colors"
-                    onClick={onClose}
+                    onClick={() => onOpenChange(false)}
                     role="menuitem"
                   >
                     {t(subItem.labelKey)}
@@ -104,12 +174,87 @@ function DesktopDropdown({
                 key={subItem.href}
                 href={localizeHref(subItem.href, locale)}
                 className="block px-4 py-2 text-sm text-muted hover:text-foreground hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition-colors"
-                onClick={onClose}
+                onClick={() => onOpenChange(false)}
                 role="menuitem"
               >
                 {t(subItem.labelKey)}
               </Link>
             ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+interface MoreOverflowProps {
+  secondaryNav: NavItem[];
+  isMoreOpen: boolean;
+  onMoreOpenChange: (open: boolean) => void;
+  onCloseOtherDropdowns: () => void;
+  moreRef: React.RefObject<HTMLDivElement | null>;
+}
+
+/**
+ * Single-column "More" overflow for secondary nav. Uses the same
+ * hover + grace-period pattern as DesktopDropdown so behaviour
+ * stays consistent across all menus.
+ */
+function MoreOverflow({
+  secondaryNav,
+  isMoreOpen,
+  onMoreOpenChange,
+  onCloseOtherDropdowns,
+  moreRef,
+}: MoreOverflowProps) {
+  const { t, locale } = useI18n();
+  const { openNow, scheduleClose } = useHoverDropdown(isMoreOpen, (next) => {
+    if (next) onCloseOtherDropdowns();
+    onMoreOpenChange(next);
+  });
+
+  return (
+    <div
+      className="relative"
+      ref={moreRef}
+      onMouseEnter={openNow}
+      onMouseLeave={scheduleClose}
+      onFocus={openNow}
+      onBlur={(event) => {
+        if (!event.currentTarget.contains(event.relatedTarget as Node | null)) {
+          scheduleClose();
+        }
+      }}
+    >
+      <button
+        type="button"
+        className={`flex shrink-0 items-center gap-1 whitespace-nowrap text-sm tracking-wide transition-colors ${
+          isMoreOpen ? "text-foreground" : "text-muted hover:text-foreground"
+        }`}
+        aria-expanded={isMoreOpen}
+        aria-haspopup="menu"
+      >
+        {t("nav.more")}
+        <ChevronDown
+          className={`h-3.5 w-3.5 transition-transform ${isMoreOpen ? "rotate-180" : ""}`}
+        />
+      </button>
+
+      {isMoreOpen && (
+        <div
+          className="absolute left-0 top-full z-50 mt-2 min-w-[160px] border border-border bg-background py-2 shadow-lg"
+          role="menu"
+        >
+          {secondaryNav.map((item) => (
+            <Link
+              key={item.href}
+              href={localizeHref(item.href, locale)}
+              className="block px-4 py-2 text-sm text-muted transition-colors hover:bg-zinc-50 hover:text-foreground dark:hover:bg-zinc-800"
+              onClick={() => onMoreOpenChange(false)}
+              role="menuitem"
+            >
+              {t(item.labelKey)}
+            </Link>
+          ))}
         </div>
       )}
     </div>
@@ -193,12 +338,11 @@ export function Header() {
                 <DesktopDropdown
                   key={item.labelKey}
                   item={item}
-                  isOpen={openIndex === index}
-                  onToggle={() => {
+                  open={openIndex === index}
+                  onOpenChange={(next) => {
                     setIsMoreOpen(false);
-                    setOpenIndex((prev) => (prev === index ? null : index));
+                    setOpenIndex(next ? index : null);
                   }}
-                  onClose={() => setOpenIndex(null)}
                   registerRef={(el) => {
                     dropdownRefs.current[index] = el;
                   }}
@@ -216,37 +360,16 @@ export function Header() {
 
             {/* Secondary Nav Items (More overflow) */}
             {secondaryNav.length > 0 && (
-              <div className="relative" ref={moreRef}>
-                <button
-                  onClick={() => {
-                    setOpenIndex(null);
-                    setIsMoreOpen((prev) => !prev);
-                  }}
-                  className={`flex shrink-0 items-center gap-1 whitespace-nowrap text-sm tracking-wide transition-colors ${
-                    isMoreOpen ? "text-foreground" : "text-muted hover:text-foreground"
-                  }`}
-                  aria-expanded={isMoreOpen}
-                  aria-haspopup="menu"
-                >
-                  {t("nav.more")}
-                  <ChevronDown className={`h-3.5 w-3.5 transition-transform ${isMoreOpen ? "rotate-180" : ""}`} />
-                </button>
-
-                {isMoreOpen && (
-                  <div className="absolute left-0 top-full z-50 mt-2 min-w-[160px] border border-border bg-background py-2 shadow-lg">
-                    {secondaryNav.map((item) => (
-                      <Link
-                        key={item.href}
-                        href={localizeHref(item.href, locale)}
-                        className="block px-4 py-2 text-sm text-muted transition-colors hover:bg-zinc-50 hover:text-foreground dark:hover:bg-zinc-800"
-                        onClick={() => setIsMoreOpen(false)}
-                      >
-                        {t(item.labelKey)}
-                      </Link>
-                    ))}
-                  </div>
-                )}
-              </div>
+              <MoreOverflow
+                secondaryNav={secondaryNav}
+                isMoreOpen={isMoreOpen}
+                onMoreOpenChange={(next) => {
+                  setOpenIndex(null);
+                  setIsMoreOpen(next);
+                }}
+                onCloseOtherDropdowns={() => setOpenIndex(null)}
+                moreRef={moreRef}
+              />
             )}
 
             {/* GitHub Star Button */}
