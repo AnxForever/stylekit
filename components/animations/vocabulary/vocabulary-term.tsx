@@ -5,7 +5,7 @@ import { useI18n } from "@/lib/i18n/context";
 import { localizeHref } from "@/lib/i18n/routing";
 import { getAnimationBySlug } from "@/lib/animations";
 import { getVocabularyTermById, type VocabularyTerm } from "@/lib/animations/vocabulary";
-import { AnimationPreview } from "@/components/animations/animation-preview";
+import { MiniPreview } from "@/components/animations/mini-preview";
 
 interface VocabularyTermCardProps {
   term: VocabularyTerm;
@@ -13,11 +13,17 @@ interface VocabularyTermCardProps {
 }
 
 /**
- * One term: name + definition on the left, the canonical animation
- * preview on the right, plus a "see also" row of related patterns
- * and inline links to related terms. The preview only renders when
- * the primary example pattern still exists in the catalog, so a
- * removed animation gracefully degrades to a definition-only card.
+ * One term: name + definition, a CSS-only mini animation preview
+ * (auto-looping, no hover required), a "see also" row of related
+ * pattern links, and inline cross-references to related terms.
+ *
+ * The preview uses <MiniPreview> instead of <AnimationPreview>:
+ * - Vocabulary cards live in dense grids; the lighter CSS-only
+ *   preview is enough to communicate the motion concept
+ * - <AnimationPreview> defers to user interaction (hover/click),
+ *   which would leave most cards appearing static in a list view
+ * - Mini-preview keyframes are looped infinitely, so every card
+ *   shows its motion the moment it scrolls into view
  */
 export function VocabularyTermCard({
   term,
@@ -36,24 +42,27 @@ export function VocabularyTermCard({
   return (
     <article
       id={`term-${term.id}`}
-      className="group relative border border-border bg-background p-5 md:p-6 flex flex-col gap-4 transition-colors scroll-mt-32"
+      className="group relative border border-border bg-background p-3 md:p-4 flex flex-col gap-2.5 transition-colors scroll-mt-32"
     >
       <div>
-        <h3 className="text-lg md:text-xl font-serif tracking-tight mb-2">
+        <h3 className="text-sm md:text-base font-serif tracking-tight mb-1.5 leading-snug">
           {t(term.nameKey)}
         </h3>
-        <p className="text-sm leading-relaxed text-muted">
+        <p className="text-[11px] md:text-xs leading-snug text-muted line-clamp-3">
           {t(term.definitionKey)}
         </p>
       </div>
 
-      {primary && primaryMeta && (
-        <div className="border border-border/60 bg-muted/20">
-          <AnimationPreview slug={primary} bg="light" />
+      {primary && (
+        <div
+          className="flex items-center justify-center h-14 bg-muted/15 border-y border-border/40"
+          aria-hidden
+        >
+          <MiniPreview slug={primary} />
         </div>
       )}
 
-      <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 text-[11px] uppercase tracking-[0.18em] text-muted">
+      <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[10px] uppercase tracking-[0.18em] text-muted">
         {primary && primaryMeta && (
           <Link
             href={localizeHref(`/animations/${primaryMeta.slug}`, locale)}
@@ -84,8 +93,8 @@ export function VocabularyTermCard({
       </div>
 
       {term.relatedTerms && term.relatedTerms.length > 0 && (
-        <div className="pt-3 border-t border-border/60 text-xs text-muted">
-          <span className="uppercase tracking-[0.18em] mr-2">
+        <div className="pt-2 border-t border-border/60 text-[10px] text-muted">
+          <span className="uppercase tracking-[0.18em] mr-1.5">
             {locale === "zh" ? "相关" : "Related"}
           </span>
           {term.relatedTerms.map((id, i) => (

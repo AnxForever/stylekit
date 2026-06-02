@@ -5,6 +5,7 @@ import { useI18n } from "@/lib/i18n/context";
 import { Search } from "lucide-react";
 import { vocabulary } from "@/lib/animations/vocabulary";
 import { getAnimationBySlug } from "@/lib/animations";
+import { MiniPreviewStyles } from "@/components/animations/mini-preview";
 import { VocabularyCategorySection } from "./vocabulary-category";
 
 /**
@@ -54,6 +55,10 @@ export function VocabularyContent() {
 
   return (
     <div className="px-6 md:px-12 py-12 md:py-16">
+      {/* CSS keyframes for the 48 MiniPreview animation loops. Rendered
+          once at the page level so every term card shares the same
+          stylesheet instead of duplicating @keyframes per card. */}
+      <MiniPreviewStyles />
       <header className="mx-auto max-w-5xl mb-10 md:mb-14">
         <p className="text-[11px] uppercase tracking-[0.32em] text-muted mb-4">
           {locale === "zh" ? "动画词汇表" : "Vocabulary"}
