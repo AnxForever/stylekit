@@ -59,7 +59,8 @@ export type RecipeTag =
   | "light"
   | "animated"
   | "high-conversion"
-  | "developer-friendly";
+  | "developer-friendly"
+  | "creative";
 
 // ============ RECIPE DATA ============
 

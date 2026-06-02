@@ -1,5 +1,9 @@
 // 设计风格数据类型定义
 
+import type { StyleAtoms } from "./atoms";
+export type { StyleAtoms, StyleAtomField, StyleAtomKey } from "./atoms";
+export { readAtom, hasCompleteAtoms } from "./atoms";
+
 // Re-export lightweight metadata types and functions from meta.ts
 // Client components should import from "@/lib/styles/meta" directly
 export {
@@ -80,6 +84,9 @@ export interface DesignStyle {
 
   // 示例 Prompts（帮助用户快速上手）
   examplePrompts?: ExamplePrompt[];
+
+  // Phase 3: 可选的原子分解。填了才参与跨风格组合合成；未填的风格走 aiRules 老路径。
+  atoms?: StyleAtoms;
 }
 
 export interface ExamplePrompt {

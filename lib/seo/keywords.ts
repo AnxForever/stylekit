@@ -84,7 +84,7 @@ export const seoKeywords: KeywordData[] = [
     difficulty: 58,
     intent: "commercial",
     relatedPages: ["/create-style", "/styles"],
-    contentType: "tool",
+    contentType: "resource",
   },
   {
     term: "responsive design best practices",
