@@ -1,13 +1,19 @@
 "use client";
 
-import { useCallback, useMemo, useState, useDeferredValue } from "react";
+import { useCallback, useDeferredValue, useMemo, useState } from "react";
+import { RefreshCw, Search, Trash2 } from "lucide-react";
 import {
-  ChevronLeft,
-  ChevronRight,
-  RefreshCw,
-  Trash2,
-  Search,
-} from "lucide-react";
+  AdminButton,
+  AdminCountPill,
+  AdminEmptyState,
+  AdminErrorState,
+  AdminField,
+  AdminInput,
+  AdminLoadingState,
+  AdminPagination,
+  AdminTableShell,
+  AdminToolbar,
+} from "@/components/admin/admin-ui";
 import { useAdminComments } from "@/lib/swr";
 
 const PAGE_SIZE = 20;
@@ -32,10 +38,12 @@ export function AdminCommentsContent() {
     to: to || undefined,
   });
 
+  const comments = useMemo(() => data?.comments ?? [], [data?.comments]);
+
   const currentPage = useMemo(() => {
-    const l = data?.limit ?? PAGE_SIZE;
-    const o = data?.offset ?? offset;
-    return Math.floor(o / l) + 1;
+    const limit = data?.limit ?? PAGE_SIZE;
+    const currentOffset = data?.offset ?? offset;
+    return Math.floor(currentOffset / limit) + 1;
   }, [data?.limit, data?.offset, offset]);
 
   const totalPages = useMemo(() => {
@@ -43,10 +51,7 @@ export function AdminCommentsContent() {
     return Math.max(1, Math.ceil(data.total / data.limit));
   }, [data]);
 
-  const allVisibleIds = useMemo(
-    () => (data?.comments ?? []).map((c) => c.id),
-    [data?.comments]
-  );
+  const allVisibleIds = useMemo(() => comments.map((comment) => comment.id), [comments]);
 
   const allSelected = useMemo(
     () => allVisibleIds.length > 0 && allVisibleIds.every((id) => selectedIds.has(id)),
@@ -113,217 +118,179 @@ export function AdminCommentsContent() {
   }, []);
 
   if (isLoading) {
-    return <p className="text-muted">Loading comments...</p>;
+    return <AdminLoadingState label="Loading comments..." />;
   }
 
   if (error) {
-    return (
-      <div className="p-6 border border-red-300 bg-red-50 dark:bg-red-900/10 rounded-lg">
-        <p className="text-red-600 dark:text-red-400">{error.message}</p>
-        <button
-          onClick={() => mutate()}
-          className="mt-3 px-4 py-2 text-sm bg-foreground text-background rounded-md"
-        >
-          Retry
-        </button>
-      </div>
-    );
+    return <AdminErrorState message={error.message} onRetry={() => mutate()} />;
   }
 
   return (
-    <div className="space-y-6">
-      {/* Filter Bar */}
-      <div className="border border-border rounded-lg p-6">
-        <div className="flex flex-wrap items-end gap-4">
-          <div className="flex flex-col gap-1">
-            <label className="text-xs text-muted">Style slug</label>
-            <input
-              value={slug}
-              onChange={(e) => {
-                setSlug(e.target.value);
-                setOffset(0);
+    <div className="space-y-5">
+      <AdminToolbar
+        title="Comment queue"
+        description="Filter by style, content, and date before selecting rows for removal."
+        meta={
+          <AdminCountPill>
+            {comments.length} / {data?.total ?? 0}
+          </AdminCountPill>
+        }
+        actions={
+          <>
+            <AdminButton
+              onClick={() => {
+                void handleDelete();
               }}
-              placeholder="e.g. neo-brutalism"
-              className="h-8 w-44 rounded-md border border-border bg-background px-2.5 text-xs text-foreground placeholder:text-muted"
-            />
-          </div>
-          <div className="flex flex-col gap-1">
-            <label className="text-xs text-muted">Search content</label>
-            <div className="relative">
-              <Search className="absolute left-2 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted" />
-              <input
-                value={search}
-                onChange={(e) => {
-                  setSearch(e.target.value);
-                  setOffset(0);
-                }}
-                placeholder="Search..."
-                className="h-8 w-56 rounded-md border border-border bg-background pl-7 pr-2.5 text-xs text-foreground placeholder:text-muted"
-              />
-            </div>
-          </div>
-          <div className="flex flex-col gap-1">
-            <label className="text-xs text-muted">From</label>
-            <input
-              type="date"
-              value={from}
-              onChange={(e) => {
-                setFrom(e.target.value);
-                setOffset(0);
+              disabled={selectedIds.size === 0 || deleting}
+              tone="danger"
+            >
+              <Trash2 className="h-4 w-4" />
+              {deleting
+                ? "Deleting..."
+                : `Delete${selectedIds.size > 0 ? ` (${selectedIds.size})` : ""}`}
+            </AdminButton>
+            <AdminButton
+              onClick={() => {
+                void mutate();
               }}
-              className="h-8 rounded-md border border-border bg-background px-2.5 text-xs text-foreground"
-            />
-          </div>
-          <div className="flex flex-col gap-1">
-            <label className="text-xs text-muted">To</label>
-            <input
-              type="date"
-              value={to}
-              onChange={(e) => {
-                setTo(e.target.value);
-                setOffset(0);
-              }}
-              className="h-8 rounded-md border border-border bg-background px-2.5 text-xs text-foreground"
-            />
-          </div>
-          <button
-            onClick={resetFilters}
-            className="px-3 py-1.5 text-xs rounded-md border border-border text-muted hover:text-foreground transition-colors"
-          >
-            Reset
-          </button>
-          <button
-            onClick={() => {
-              void mutate();
+              size="icon"
+              aria-label="Refresh comments"
+            >
+              <RefreshCw className="h-4 w-4" />
+            </AdminButton>
+          </>
+        }
+      >
+        <AdminField label="Style slug" className="lg:w-56">
+          <AdminInput
+            value={slug}
+            onChange={(event) => {
+              setSlug(event.target.value);
+              setOffset(0);
             }}
-            className="p-2 text-muted hover:text-foreground transition-colors"
-            aria-label="Refresh comments"
-          >
-            <RefreshCw className="w-4 h-4" />
-          </button>
-        </div>
-      </div>
+            placeholder="e.g. neo-brutalism"
+          />
+        </AdminField>
+        <AdminField label="Search content" className="lg:w-72">
+          <div className="relative">
+            <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted" />
+            <AdminInput
+              value={search}
+              onChange={(event) => {
+                setSearch(event.target.value);
+                setOffset(0);
+              }}
+              placeholder="Comment text..."
+              className="pl-9"
+            />
+          </div>
+        </AdminField>
+        <AdminField label="From" className="lg:w-40">
+          <AdminInput
+            type="date"
+            value={from}
+            onChange={(event) => {
+              setFrom(event.target.value);
+              setOffset(0);
+            }}
+          />
+        </AdminField>
+        <AdminField label="To" className="lg:w-40">
+          <AdminInput
+            type="date"
+            value={to}
+            onChange={(event) => {
+              setTo(event.target.value);
+              setOffset(0);
+            }}
+          />
+        </AdminField>
+        <AdminButton onClick={resetFilters} className="mt-[18px]">
+          Reset
+        </AdminButton>
+      </AdminToolbar>
 
-      {/* Actions Bar */}
-      <div className="flex items-center justify-between">
-        <span className="text-xs text-muted">
-          {data?.comments.length ?? 0} / {data?.total ?? 0} comments
-        </span>
-        <button
-          onClick={() => {
-            void handleDelete();
-          }}
-          disabled={selectedIds.size === 0 || deleting}
-          className="inline-flex items-center gap-1.5 rounded-md border border-border px-3 py-1.5 text-xs text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/10 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
-        >
-          <Trash2 className="w-3.5 h-3.5" />
-          {deleting
-            ? "Deleting..."
-            : `Delete${selectedIds.size > 0 ? ` (${selectedIds.size})` : ""}`}
-        </button>
-      </div>
-
-      {/* Comments Table */}
-      {(data?.comments.length ?? 0) === 0 ? (
-        <p className="text-sm text-muted">No comments found.</p>
+      {comments.length === 0 ? (
+        <AdminEmptyState
+          title="No comments found"
+          description="Adjust filters or wait for new comments to arrive."
+        />
       ) : (
-        <div className="border border-border rounded-lg overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b border-border bg-muted/5">
-                <th className="px-4 py-3 text-left w-10">
+        <AdminTableShell>
+          <thead>
+            <tr className="border-b border-[var(--admin-border-soft)]">
+              <th className="w-10 px-4 py-3 text-left">
+                <label className="flex h-11 w-11 items-center justify-center rounded-md hover:bg-muted/10">
                   <input
                     type="checkbox"
                     checked={allSelected}
                     onChange={toggleSelectAll}
                     aria-label="Select all comments"
                   />
-                </th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-muted">
-                  Style
-                </th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-muted">
-                  Author
-                </th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-muted">
-                  Content
-                </th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-muted">
-                  Date
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {(data?.comments ?? []).map((comment) => (
-                <tr
-                  key={comment.id}
-                  className="border-b border-border/60 hover:bg-muted/5"
-                >
-                  <td className="px-4 py-3">
+                </label>
+              </th>
+              <th className="px-4 py-3 text-left">Style</th>
+              <th className="px-4 py-3 text-left">Author</th>
+              <th className="px-4 py-3 text-left">Content</th>
+              <th className="px-4 py-3 text-left">Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            {comments.map((comment) => (
+              <tr
+                key={comment.id}
+                className="border-b border-[var(--admin-border-soft)] transition-colors last:border-0 hover:bg-muted/5"
+              >
+                <td className="px-4 py-3">
+                  <label className="flex h-11 w-11 items-center justify-center rounded-md hover:bg-muted/10">
                     <input
                       type="checkbox"
                       checked={selectedIds.has(comment.id)}
                       onChange={() => toggleSelect(comment.id)}
                       aria-label={`Select comment by ${comment.author_name}`}
                     />
-                  </td>
-                  <td className="px-4 py-3 text-xs font-medium whitespace-nowrap">
-                    {comment.style_slug}
-                  </td>
-                  <td className="px-4 py-3 text-xs text-muted whitespace-nowrap">
-                    {comment.author_name}
-                  </td>
-                  <td className="px-4 py-3 text-xs text-foreground max-w-md truncate">
-                    {comment.content.length > 100
-                      ? `${comment.content.slice(0, 100)}...`
-                      : comment.content}
-                  </td>
-                  <td className="px-4 py-3 text-xs text-muted whitespace-nowrap">
-                    {new Date(comment.created_at).toLocaleString()}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+                  </label>
+                </td>
+                <td className="px-4 py-3 text-xs font-medium whitespace-nowrap">
+                  <code>{comment.style_slug}</code>
+                </td>
+                <td className="px-4 py-3 text-xs text-muted whitespace-nowrap">
+                  {comment.author_name}
+                </td>
+                <td className="max-w-lg px-4 py-3 text-xs text-foreground">
+                  <p className="line-clamp-2">{comment.content}</p>
+                </td>
+                <td className="px-4 py-3 text-xs text-muted whitespace-nowrap">
+                  {new Date(comment.created_at).toLocaleString()}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </AdminTableShell>
       )}
 
-      {/* Pagination */}
-      {(data?.total ?? 0) > 0 && (
-        <div className="flex items-center justify-between text-xs text-muted">
-          <span>
-            Page {currentPage} / {totalPages}
-          </span>
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => {
-                const prev = Math.max(0, (data?.offset ?? 0) - (data?.limit ?? PAGE_SIZE));
-                setOffset(prev);
-              }}
-              disabled={(data?.offset ?? 0) === 0}
-              className="inline-flex items-center gap-1 rounded-md border border-border px-2 py-1 disabled:opacity-40 disabled:cursor-not-allowed"
-            >
-              <ChevronLeft className="w-3.5 h-3.5" />
-              Prev
-            </button>
-            <button
-              onClick={() => {
-                const nextOffset = (data?.offset ?? 0) + (data?.limit ?? PAGE_SIZE);
-                if (nextOffset < (data?.total ?? 0)) {
-                  setOffset(nextOffset);
-                }
-              }}
-              disabled={
-                (data?.offset ?? 0) + (data?.limit ?? PAGE_SIZE) >= (data?.total ?? 0)
-              }
-              className="inline-flex items-center gap-1 rounded-md border border-border px-2 py-1 disabled:opacity-40 disabled:cursor-not-allowed"
-            >
-              Next
-              <ChevronRight className="w-3.5 h-3.5" />
-            </button>
-          </div>
-        </div>
-      )}
+      {(data?.total ?? 0) > 0 ? (
+        <AdminPagination
+          page={currentPage}
+          totalPages={totalPages}
+          summary={`Showing ${(data?.offset ?? 0) + 1}-${Math.min(
+            (data?.offset ?? 0) + (data?.limit ?? PAGE_SIZE),
+            data?.total ?? 0
+          )} of ${data?.total ?? 0}`}
+          hasPrev={(data?.offset ?? 0) > 0}
+          hasNext={(data?.offset ?? 0) + (data?.limit ?? PAGE_SIZE) < (data?.total ?? 0)}
+          onPrev={() => {
+            const prev = Math.max(0, (data?.offset ?? 0) - (data?.limit ?? PAGE_SIZE));
+            setOffset(prev);
+          }}
+          onNext={() => {
+            const nextOffset = (data?.offset ?? 0) + (data?.limit ?? PAGE_SIZE);
+            if (nextOffset < (data?.total ?? 0)) {
+              setOffset(nextOffset);
+            }
+          }}
+        />
+      ) : null}
     </div>
   );
 }

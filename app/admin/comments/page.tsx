@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { AdminPage } from "@/components/admin/admin-page";
 import { AdminCommentsContent } from "./_content";
 
 export const metadata: Metadata = {
@@ -8,12 +9,11 @@ export const metadata: Metadata = {
 
 export default function AdminCommentsPage() {
   return (
-    <>
-      <h1 className="text-3xl font-bold mb-2">Comment Moderation</h1>
-      <p className="text-muted mb-8">
-        Review and manage user comments across all styles.
-      </p>
+    <AdminPage
+      title="Comment Moderation"
+      description="Review, filter, and remove user comments across the style catalog."
+    >
       <AdminCommentsContent />
-    </>
+    </AdminPage>
   );
 }

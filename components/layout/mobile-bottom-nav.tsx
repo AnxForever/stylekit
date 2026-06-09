@@ -17,6 +17,10 @@ export function MobileBottomNav() {
   const { locale } = useI18n();
   const visiblePath = stripLocaleFromPathname(pathname || "/");
 
+  if (visiblePath.startsWith("/admin")) {
+    return null;
+  }
+
   const handleMenuClick = () => {
     // Dispatch Cmd+K to open command palette as "More" action
     const event = new KeyboardEvent("keydown", {
