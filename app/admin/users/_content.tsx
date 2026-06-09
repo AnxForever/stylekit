@@ -1,6 +1,13 @@
 "use client";
 
-import { Fragment, useCallback, useDeferredValue, useState, type CSSProperties } from "react";
+import {
+  Fragment,
+  useCallback,
+  useDeferredValue,
+  useMemo,
+  useState,
+  type CSSProperties,
+} from "react";
 import Image from "next/image";
 import {
   EMPEROR_TITLE_TOKEN,
@@ -11,12 +18,22 @@ import {
 } from "@/lib/auth/user-title-policy";
 import {
   ChevronDown,
-  ChevronLeft,
-  ChevronRight,
   ChevronUp,
   RefreshCw,
   Trash2,
 } from "lucide-react";
+import {
+  AdminButton,
+  AdminCountPill,
+  AdminEmptyState,
+  AdminErrorState,
+  AdminInput,
+  AdminLoadingState,
+  AdminPagination,
+  AdminPanel,
+  AdminTableShell,
+  AdminToolbar,
+} from "@/components/admin/admin-ui";
 import { useAdminUsers, type AdminUser } from "@/lib/swr";
 import { getAvatarImageSrc } from "@/lib/avatar";
 
@@ -137,10 +154,13 @@ export function AdminUsersContent() {
     search: deferredSearch,
   });
 
-  const users = data?.users ?? [];
+  const users = useMemo(() => data?.users ?? [], [data?.users]);
   const total = data?.total ?? 0;
 
-  const usersById = new Map(users.map((user) => [user.userId, user]));
+  const usersById = useMemo(
+    () => new Map(users.map((user) => [user.userId, user])),
+    [users]
+  );
 
   const handleSearchChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -346,41 +366,47 @@ export function AdminUsersContent() {
   const hasNext = offset + PAGE_SIZE < total;
 
   return (
-    <div>
-      <div className="flex items-center gap-3 mb-6">
-        <input
+    <div className="space-y-5">
+      <AdminToolbar
+        title="User directory"
+        description={`${total.toLocaleString()} users indexed. Search updates the table automatically.`}
+        meta={<AdminCountPill>{users.length} shown</AdminCountPill>}
+        actions={
+          <AdminButton
+            onClick={() => mutate()}
+            size="icon"
+            aria-label="Refresh users"
+          >
+            <RefreshCw className="h-4 w-4" />
+          </AdminButton>
+        }
+      >
+        <AdminInput
           type="text"
           value={search}
           onChange={handleSearchChange}
           placeholder="Search by name, user ID, or title..."
-          className="flex-1 px-4 py-2 border border-border rounded-md bg-background text-sm"
+          className="sm:max-w-md lg:w-96"
         />
-        <button
-          onClick={() => mutate()}
-          className="p-2 border border-border rounded-md hover:bg-muted/10 transition-colors"
-          title="Refresh"
-        >
-          <RefreshCw className="w-4 h-4" />
-        </button>
-      </div>
+      </AdminToolbar>
 
       {error && (
-        <p className="mb-4 rounded-md border border-red-300 bg-red-50 px-3 py-2 text-sm text-red-700 dark:border-red-800 dark:bg-red-950/40 dark:text-red-300">
-          Failed to load users.
-        </p>
+        <AdminErrorState message="Failed to load users." onRetry={() => mutate()} />
       )}
 
-      {isLoading && <p className="text-muted">Loading users...</p>}
+      {isLoading && <AdminLoadingState label="Loading users..." />}
 
       {!isLoading && !error && users.length === 0 && (
-        <p className="text-muted">No users found.</p>
+        <AdminEmptyState
+          title="No users found"
+          description="Try a different name, user ID, or title search."
+        />
       )}
 
       {!isLoading && users.length > 0 && (
-        <div className="border border-border rounded-lg overflow-x-auto">
-          <table className="w-full text-sm">
+        <AdminTableShell>
             <thead>
-              <tr className="border-b border-border bg-muted/5">
+              <tr className="border-b border-[var(--admin-border-soft)]">
                 <th className="text-left px-4 py-3 font-medium">User</th>
                 <th className="text-left px-4 py-3 font-medium">User ID</th>
                 <th className="text-left px-4 py-3 font-medium">Title</th>
@@ -435,7 +461,7 @@ export function AdminUsersContent() {
 
                 return (
                   <Fragment key={user.userId}>
-                    <tr className="border-b border-border">
+                    <tr className="border-b border-[var(--admin-border-soft)] transition-colors hover:bg-muted/5">
                       <td className="px-4 py-3">
                         <div className="flex items-center gap-3">
                           {getAvatarImageSrc(user.avatarUrl) ? (
@@ -500,9 +526,11 @@ export function AdminUsersContent() {
                       </td>
                       <td className="px-4 py-3">
                         <button
+                          type="button"
                           onClick={() => handleToggleExpand(user)}
-                          className="p-1 rounded hover:bg-muted/10 transition-colors"
-                          title={isExpanded ? "Collapse" : "Expand"}
+                          className="flex h-11 w-11 items-center justify-center rounded-md hover:bg-muted/10 transition-colors"
+                          aria-expanded={isExpanded}
+                          aria-label={`${isExpanded ? "Collapse" : "Expand"} ${user.authorName || user.userId}`}
                         >
                           {isExpanded ? (
                             <ChevronUp className="w-4 h-4" />
@@ -513,11 +541,11 @@ export function AdminUsersContent() {
                       </td>
                     </tr>
                     {isExpanded && (
-                      <tr className="border-b border-border">
-                        <td colSpan={10} className="px-4 py-3 bg-muted/5">
+                      <tr className="border-b border-[var(--admin-border-soft)]">
+                        <td colSpan={10} className="bg-muted/5 px-4 py-4">
                           <div className="space-y-3">
                             <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-[1.6fr_1fr_auto_auto_auto_auto] items-center">
-                              <input
+                              <AdminInput
                                 value={draft.customTitle}
                                 onChange={(event) =>
                                   updateDraft(
@@ -528,7 +556,6 @@ export function AdminUsersContent() {
                                 }
                                 placeholder="Custom title (optional, max 24 chars)"
                                 maxLength={24}
-                                className="px-3 py-2 text-sm border border-border rounded-md bg-background"
                               />
                               <div className="flex items-center gap-2">
                                 <input
@@ -541,10 +568,11 @@ export function AdminUsersContent() {
                                       usersById.get(user.userId) ?? user
                                     )
                                   }
-                                  className="h-9 w-11 rounded border border-border bg-background"
+                                  className="h-11 w-12 rounded-md border border-border bg-background"
                                   title="Title color"
+                                  aria-label="Title color"
                                 />
-                                <input
+                                <AdminInput
                                   value={draft.titleColor}
                                   onChange={(event) =>
                                     updateDraft(
@@ -555,9 +583,9 @@ export function AdminUsersContent() {
                                   }
                                   placeholder="#ff5a7a"
                                   maxLength={7}
-                                  className="w-full px-3 py-2 text-sm border border-border rounded-md bg-background font-mono"
+                                  className="w-full font-mono"
                                 />
-                                <button
+                                <AdminButton
                                   type="button"
                                   onClick={() =>
                                     updateDraft(
@@ -566,14 +594,14 @@ export function AdminUsersContent() {
                                       usersById.get(user.userId) ?? user
                                     )
                                   }
-                                  className="shrink-0 px-2.5 py-2 text-xs border border-border rounded-md hover:bg-muted/10 transition-colors"
+                                  className="h-10 shrink-0 px-2.5 text-xs"
                                   title="清除颜色"
                                 >
                                   清除
-                                </button>
+                                </AdminButton>
                               </div>
                               <div className="md:col-span-2 xl:col-span-2 flex items-center gap-2">
-                                <input
+                                <AdminInput
                                   value={draft.titleIconPath}
                                   onChange={(event) =>
                                     updateDraft(
@@ -584,9 +612,9 @@ export function AdminUsersContent() {
                                   }
                                   placeholder="SVG path data (optional)"
                                   maxLength={USER_TITLE_ICON_PATH_MAX_LENGTH}
-                                  className="w-full px-3 py-2 text-sm border border-border rounded-md bg-background font-mono"
+                                  className="w-full font-mono"
                                 />
-                                <button
+                                <AdminButton
                                   type="button"
                                   onClick={() =>
                                     updateDraft(
@@ -595,11 +623,11 @@ export function AdminUsersContent() {
                                       usersById.get(user.userId) ?? user
                                     )
                                   }
-                                  className="shrink-0 px-2.5 py-2 text-xs border border-border rounded-md hover:bg-muted/10 transition-colors"
+                                  className="h-10 shrink-0 px-2.5 text-xs"
                                   title="清除矢量图"
                                 >
                                   清除
-                                </button>
+                                </AdminButton>
                               </div>
                               <div className="md:col-span-2 xl:col-span-2 flex flex-wrap items-center gap-2">
                                 {PRESET_TITLE_COLORS.map((preset) => {
@@ -616,11 +644,13 @@ export function AdminUsersContent() {
                                           usersById.get(user.userId) ?? user
                                         )
                                       }
-                                      className={`inline-flex items-center gap-1.5 rounded-full border px-2 py-1 text-[11px] transition-colors ${
+                                      className={`inline-flex min-h-11 items-center gap-1.5 rounded-full border px-3 text-[11px] transition-colors ${
                                         isSelected
                                           ? "border-foreground/30 bg-muted/20"
                                           : "border-border hover:bg-muted/10"
                                       }`}
+                                      aria-pressed={isSelected}
+                                      aria-label={`Use ${preset.label} title color`}
                                     >
                                       <span
                                         className="inline-block h-3 w-3 rounded-full border border-black/15"
@@ -631,7 +661,7 @@ export function AdminUsersContent() {
                                   );
                                 })}
                               </div>
-                              <label className="inline-flex items-center gap-2 text-sm">
+                              <label className="inline-flex min-h-11 items-center gap-2 rounded-md px-2 text-sm hover:bg-muted/10">
                                 <input
                                   type="checkbox"
                                   checked={draft.isOwner}
@@ -645,7 +675,7 @@ export function AdminUsersContent() {
                                 />
                                 秦始皇
                               </label>
-                              <label className="inline-flex items-center gap-2 text-sm">
+                              <label className="inline-flex min-h-11 items-center gap-2 rounded-md px-2 text-sm hover:bg-muted/10">
                                 <input
                                   type="checkbox"
                                   checked={draft.titleEnabled}
@@ -659,25 +689,24 @@ export function AdminUsersContent() {
                                 />
                                 Title Enabled
                               </label>
-                              <button
+                              <AdminButton
                                 disabled={
                                   isSavingTitle || isDraftColorInvalid || isDraftIconInvalid
                                 }
                                 onClick={() => handleSaveTitle(user)}
-                                className="px-3 py-1.5 text-sm border border-border rounded-md hover:bg-muted/10 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+                                tone="primary"
                               >
                                 {isSavingTitle ? "Saving..." : "Save Title"}
-                              </button>
-                              <button
+                              </AdminButton>
+                              <AdminButton
                                 disabled={isSavingTitle}
                                 onClick={() => handleClearTitleRule(user)}
-                                className="px-3 py-1.5 text-sm border border-border rounded-md hover:bg-muted/10 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
                               >
                                 Clear Rule
-                              </button>
+                              </AdminButton>
                             </div>
 
-                            <div>
+                            <AdminPanel className="bg-muted/5 p-3">
                               <span
                                 className={`inline-flex items-center gap-1 rounded-full border px-2.5 py-1 text-xs font-medium ${draftBadgeClass}`}
                                 style={draftBadgeStyle}
@@ -694,29 +723,29 @@ export function AdminUsersContent() {
                                 ) : null}
                                 {draftTitleLabel}
                               </span>
-                            </div>
+                            </AdminPanel>
 
                             <div className="flex items-center gap-3">
-                              <button
+                              <AdminButton
                                 disabled={isDeleting}
                                 onClick={() =>
                                   handleDeleteContent(user.userId, "comments")
                                 }
-                                className="flex items-center gap-1.5 px-3 py-1.5 text-sm border border-red-300 text-red-700 rounded-md hover:bg-red-50 dark:border-red-800 dark:text-red-300 dark:hover:bg-red-950/40 disabled:opacity-60 disabled:cursor-not-allowed transition-colors"
+                                tone="danger"
                               >
                                 <Trash2 className="w-3.5 h-3.5" />
                                 Delete Comments
-                              </button>
-                              <button
+                              </AdminButton>
+                              <AdminButton
                                 disabled={isDeleting}
                                 onClick={() =>
                                   handleDeleteContent(user.userId, "ratings")
                                 }
-                                className="flex items-center gap-1.5 px-3 py-1.5 text-sm border border-red-300 text-red-700 rounded-md hover:bg-red-50 dark:border-red-800 dark:text-red-300 dark:hover:bg-red-950/40 disabled:opacity-60 disabled:cursor-not-allowed transition-colors"
+                                tone="danger"
                               >
                                 <Trash2 className="w-3.5 h-3.5" />
                                 Delete Ratings
-                              </button>
+                              </AdminButton>
                             </div>
 
                             {titleError ? (
@@ -741,33 +770,19 @@ export function AdminUsersContent() {
                 );
               })}
             </tbody>
-          </table>
-        </div>
+        </AdminTableShell>
       )}
 
       {total > PAGE_SIZE && (
-        <div className="flex items-center justify-between mt-4">
-          <p className="text-sm text-muted">
-            Showing {offset + 1}-{Math.min(offset + PAGE_SIZE, total)} of{" "}
-            {total}
-          </p>
-          <div className="flex items-center gap-2">
-            <button
-              disabled={!hasPrev}
-              onClick={() => setOffset((prev) => Math.max(0, prev - PAGE_SIZE))}
-              className="p-2 border border-border rounded-md hover:bg-muted/10 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-            >
-              <ChevronLeft className="w-4 h-4" />
-            </button>
-            <button
-              disabled={!hasNext}
-              onClick={() => setOffset((prev) => prev + PAGE_SIZE)}
-              className="p-2 border border-border rounded-md hover:bg-muted/10 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-            >
-              <ChevronRight className="w-4 h-4" />
-            </button>
-          </div>
-        </div>
+        <AdminPagination
+          page={Math.floor(offset / PAGE_SIZE) + 1}
+          totalPages={Math.max(1, Math.ceil(total / PAGE_SIZE))}
+          summary={`Showing ${offset + 1}-${Math.min(offset + PAGE_SIZE, total)} of ${total}`}
+          hasPrev={hasPrev}
+          hasNext={hasNext}
+          onPrev={() => setOffset((prev) => Math.max(0, prev - PAGE_SIZE))}
+          onNext={() => setOffset((prev) => prev + PAGE_SIZE)}
+        />
       )}
     </div>
   );

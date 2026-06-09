@@ -10,10 +10,20 @@ import {
   Shield,
   Gauge,
   Download,
-  ChevronLeft,
-  ChevronRight,
 } from "lucide-react";
 import Link from "next/link";
+import {
+  AdminButton,
+  AdminCountPill,
+  AdminErrorState,
+  AdminInput,
+  AdminLoadingState,
+  AdminPagination,
+  AdminPanel,
+  AdminSelect,
+  AdminTableShell,
+  AdminToolbar,
+} from "@/components/admin/admin-ui";
 import {
   useAdminGeneratorTelemetry,
   useAdminSystem,
@@ -205,20 +215,12 @@ export function AdminSystemContent() {
   }, [telemetryExportHref]);
 
   if (isLoading) {
-    return <p className="text-muted">Loading system information...</p>;
+    return <AdminLoadingState label="Loading system information..." />;
   }
 
   if (error) {
     return (
-      <div className="p-6 border border-red-300 bg-red-50 dark:bg-red-900/10 rounded-lg">
-        <p className="text-red-600 dark:text-red-400">{error.message}</p>
-        <button
-          onClick={() => mutate()}
-          className="mt-3 px-4 py-2 text-sm bg-foreground text-background rounded-md"
-        >
-          Retry
-        </button>
-      </div>
+      <AdminErrorState message={error.message} onRetry={() => mutate()} />
     );
   }
 
@@ -248,31 +250,33 @@ export function AdminSystemContent() {
   ];
 
   return (
-    <div className="space-y-8">
-      {/* Environment Section */}
-      <div>
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-semibold flex items-center gap-2">
-            <Shield className="w-5 h-5 text-muted" />
-            Environment
-          </h2>
-          <button
+    <div className="space-y-6">
+      <AdminToolbar
+        title="System controls"
+        description="Refresh environment status, database state, runtime metrics, and generator telemetry."
+        meta={<AdminCountPill>{data.environment.nodeEnv}</AdminCountPill>}
+        actions={
+          <AdminButton
             onClick={() => {
               mutate();
               mutateTelemetry();
             }}
-            className="p-2 text-muted hover:text-foreground transition-colors"
             aria-label="Refresh data"
           >
             <RefreshCw className="w-4 h-4" />
-          </button>
-        </div>
-        <div className="grid grid-cols-2 gap-4">
+            Refresh
+          </AdminButton>
+        }
+      />
+
+      <section>
+        <h2 className="mb-4 flex items-center gap-2 text-lg font-semibold">
+          <Shield className="w-5 h-5 text-muted" />
+          Environment
+        </h2>
+        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
           {envCards.map((card) => (
-            <div
-              key={card.label}
-              className="p-6 border border-border rounded-lg flex items-start gap-3"
-            >
+            <AdminPanel key={card.label} className="flex items-start gap-3 p-5">
               {card.configured ? (
                 <CheckCircle className="w-5 h-5 text-green-600 dark:text-green-400 mt-0.5 shrink-0" />
               ) : (
@@ -282,13 +286,12 @@ export function AdminSystemContent() {
                 <p className="text-sm text-muted">{card.label}</p>
                 <p className="text-base font-medium mt-1">{card.value}</p>
               </div>
-            </div>
+            </AdminPanel>
           ))}
         </div>
-      </div>
+      </section>
 
-      {/* Database Section */}
-      <div>
+      <section>
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-lg font-semibold flex items-center gap-2">
             <Database className="w-5 h-5 text-muted" />
@@ -296,14 +299,13 @@ export function AdminSystemContent() {
           </h2>
         </div>
         {!data.database.connected ? (
-          <div className="p-6 border border-border rounded-lg">
+          <AdminPanel className="p-6">
             <p className="text-muted text-sm">
               Not connected. Supabase is not configured.
             </p>
-          </div>
+          </AdminPanel>
         ) : (
-          <div className="border border-border rounded-lg overflow-hidden">
-            <table className="w-full text-sm">
+          <AdminTableShell>
               <thead>
                 <tr className="border-b border-border bg-muted/10">
                   <th className="text-left px-4 py-3 font-medium text-muted">
@@ -331,62 +333,56 @@ export function AdminSystemContent() {
                   </tr>
                 ))}
               </tbody>
-            </table>
-          </div>
+          </AdminTableShell>
         )}
-      </div>
+      </section>
 
-      {/* Runtime Section */}
-      <div>
+      <section>
         <h2 className="text-lg font-semibold flex items-center gap-2 mb-4">
           <Server className="w-5 h-5 text-muted" />
           Runtime
         </h2>
-        <div className="grid grid-cols-3 gap-4">
-          <div className="p-6 border border-border rounded-lg">
+        <div className="grid gap-4 sm:grid-cols-3">
+          <AdminPanel className="p-5">
             <p className="text-sm text-muted">Node Version</p>
             <p className="text-xl font-bold mt-1">{data.runtime.nodeVersion}</p>
-          </div>
-          <div className="p-6 border border-border rounded-lg">
+          </AdminPanel>
+          <AdminPanel className="p-5">
             <p className="text-sm text-muted">Uptime</p>
             <p className="text-xl font-bold mt-1">{uptimeDisplay}</p>
-          </div>
-          <div className="p-6 border border-border rounded-lg">
+          </AdminPanel>
+          <AdminPanel className="p-5">
             <p className="text-sm text-muted">Memory (RSS)</p>
             <p className="text-xl font-bold mt-1">{rssDisplay}</p>
-          </div>
+          </AdminPanel>
         </div>
-      </div>
+      </section>
 
-      {/* Generator Telemetry Section */}
-      <div>
+      <section>
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-lg font-semibold flex items-center gap-2">
             <Gauge className="w-5 h-5 text-muted" />
             Generator API Telemetry ({telemetryWindowLabel})
           </h2>
-          <button
+          <AdminButton
             onClick={() => {
               void handleExportTelemetryCsv();
             }}
             disabled={telemetryExporting}
-            className="inline-flex items-center gap-2 rounded-md border border-border px-3 py-2 text-xs text-muted hover:text-foreground transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            size="sm"
           >
             <Download className="w-3.5 h-3.5" />
             {telemetryExporting ? "Exporting..." : "Export CSV"}
-          </button>
+          </AdminButton>
         </div>
 
         {telemetryLoading && !telemetry ? (
-          <div className="p-6 border border-border rounded-lg">
-            <p className="text-sm text-muted">Loading generator telemetry...</p>
-          </div>
+          <AdminLoadingState label="Loading generator telemetry..." />
         ) : telemetryError ? (
-          <div className="p-6 border border-red-300 bg-red-50 dark:bg-red-900/10 rounded-lg">
-            <p className="text-sm text-red-600 dark:text-red-400">
-              Failed to load generator telemetry: {telemetryError.message}
-            </p>
-          </div>
+          <AdminErrorState
+            message={`Failed to load generator telemetry: ${telemetryError.message}`}
+            onRetry={() => mutateTelemetry()}
+          />
         ) : telemetry ? (
           <div className="space-y-4">
             {telemetryExportNotice && (
@@ -405,26 +401,26 @@ export function AdminSystemContent() {
                 <span className="text-[11px] tracking-wide uppercase text-muted">
                   Window
                 </span>
-                <select
+                <AdminSelect
                   value={telemetryWindow}
                   onChange={(event) => {
                     setTelemetryWindow(event.target.value as "60" | "1440" | "10080" | "all");
                     setTelemetryOffset(0);
                   }}
-                  className="w-full rounded-md border border-border bg-background px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-foreground/20"
+                  className="w-full text-xs"
                 >
                   <option value="60">Last 1 hour</option>
                   <option value="1440">Last 24 hours</option>
                   <option value="10080">Last 7 days</option>
                   <option value="all">All time</option>
-                </select>
+                </AdminSelect>
               </label>
 
               <label className="space-y-1">
                 <span className="text-[11px] tracking-wide uppercase text-muted">
                   Endpoint
                 </span>
-                <select
+                <AdminSelect
                   value={telemetryEndpointFilter}
                   onChange={(event) => {
                     setTelemetryEndpointFilter(
@@ -432,19 +428,19 @@ export function AdminSystemContent() {
                     );
                     setTelemetryOffset(0);
                   }}
-                  className="w-full rounded-md border border-border bg-background px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-foreground/20"
+                  className="w-full text-xs"
                 >
                   <option value="all">All endpoints</option>
                   <option value="generate-style">generate-style</option>
                   <option value="generate-design-system">generate-design-system</option>
-                </select>
+                </AdminSelect>
               </label>
 
               <label className="space-y-1">
                 <span className="text-[11px] tracking-wide uppercase text-muted">
                   Outcome
                 </span>
-                <select
+                <AdminSelect
                   value={telemetryOutcomeFilter}
                   onChange={(event) => {
                     setTelemetryOutcomeFilter(
@@ -452,19 +448,19 @@ export function AdminSystemContent() {
                     );
                     setTelemetryOffset(0);
                   }}
-                  className="w-full rounded-md border border-border bg-background px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-foreground/20"
+                  className="w-full text-xs"
                 >
                   <option value="all">All outcomes</option>
                   <option value="success">Success</option>
                   <option value="error">Error</option>
-                </select>
+                </AdminSelect>
               </label>
 
               <label className="space-y-1">
                 <span className="text-[11px] tracking-wide uppercase text-muted">
                   Fallback reason
                 </span>
-                <select
+                <AdminSelect
                   value={telemetryFallbackReasonFilter}
                   onChange={(event) => {
                     setTelemetryFallbackReasonFilter(
@@ -472,28 +468,28 @@ export function AdminSystemContent() {
                     );
                     setTelemetryOffset(0);
                   }}
-                  className="w-full rounded-md border border-border bg-background px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-foreground/20"
+                  className="w-full text-xs"
                 >
                   <option value="all">All reasons</option>
                   <option value="network-error">network-error</option>
                   <option value="invalid-payload">invalid-payload</option>
                   <option value="unexpected-status">unexpected-status</option>
                   <option value="not-modified-without-cache">not-modified-without-cache</option>
-                </select>
+                </AdminSelect>
               </label>
 
               <label className="space-y-1">
                 <span className="text-[11px] tracking-wide uppercase text-muted">
                   Error code
                 </span>
-                <input
+                <AdminInput
                   value={telemetryCodeFilter}
                   onChange={(event) => {
                     setTelemetryCodeFilter(event.target.value);
                     setTelemetryOffset(0);
                   }}
                   placeholder="e.g. RATE_LIMITED"
-                  className="w-full rounded-md border border-border bg-background px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-foreground/20"
+                  className="w-full text-xs"
                 />
               </label>
             </div>
@@ -719,111 +715,97 @@ export function AdminSystemContent() {
             </div>
 
             <div className="border border-border rounded-lg overflow-hidden">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="border-b border-border bg-muted/10">
-                    <th className="text-left px-4 py-3 font-medium text-muted">
-                      Time
-                    </th>
-                    <th className="text-left px-4 py-3 font-medium text-muted">
-                      Endpoint
-                    </th>
-                    <th className="text-left px-4 py-3 font-medium text-muted">
-                      Outcome
-                    </th>
-                    <th className="text-right px-4 py-3 font-medium text-muted">
-                      Duration
-                    </th>
-                    <th className="text-left px-4 py-3 font-medium text-muted">
-                      Code
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {telemetry.events.length === 0 ? (
-                    <tr>
-                      <td className="px-4 py-6 text-sm text-muted" colSpan={5}>
-                        No generator requests in the selected window.
-                      </td>
+              <div className="overflow-x-auto">
+                <table className="w-full min-w-[720px] text-sm">
+                  <thead>
+                    <tr className="border-b border-border bg-muted/10">
+                      <th className="text-left px-4 py-3 font-medium text-muted">
+                        Time
+                      </th>
+                      <th className="text-left px-4 py-3 font-medium text-muted">
+                        Endpoint
+                      </th>
+                      <th className="text-left px-4 py-3 font-medium text-muted">
+                        Outcome
+                      </th>
+                      <th className="text-right px-4 py-3 font-medium text-muted">
+                        Duration
+                      </th>
+                      <th className="text-left px-4 py-3 font-medium text-muted">
+                        Code
+                      </th>
                     </tr>
-                  ) : (
-                    telemetry.events.map((event) => (
-                      <tr
-                        key={`${event.timestamp}-${event.endpoint}-${event.clientHash}`}
-                        className="border-b border-border/60 last:border-b-0"
-                      >
-                        <td className="px-4 py-3 text-xs text-muted">
-                          {new Date(event.timestamp).toLocaleString()}
-                        </td>
-                        <td className="px-4 py-3 font-mono text-xs">
-                          {event.endpoint}
-                        </td>
-                        <td className="px-4 py-3 text-xs">
-                          <span
-                            className={event.outcome === "success"
-                              ? "text-green-600 dark:text-green-400"
-                              : "text-red-600 dark:text-red-400"}
-                          >
-                            {event.outcome}
-                          </span>
-                        </td>
-                        <td className="px-4 py-3 text-right tabular-nums text-xs">
-                          {event.durationMs.toFixed(2)} ms
-                        </td>
-                        <td className="px-4 py-3 font-mono text-xs text-muted">
-                          {event.code ?? "-"}
+                  </thead>
+                  <tbody>
+                    {telemetry.events.length === 0 ? (
+                      <tr>
+                        <td className="px-4 py-6 text-sm text-muted" colSpan={5}>
+                          No generator requests in the selected window.
                         </td>
                       </tr>
-                    ))
-                  )}
-                </tbody>
-              </table>
-            </div>
-
-            <div className="flex items-center justify-between text-xs text-muted">
-              <span>
-                Page {telemetryCurrentPage} / {telemetryTotalPages}
-              </span>
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={() => {
-                    const previous = Math.max(
-                      0,
-                      (telemetry?.offset ?? 0) - (telemetry?.limit ?? TELEMETRY_PAGE_SIZE)
-                    );
-                    setTelemetryOffset(previous);
-                  }}
-                  disabled={(telemetry?.offset ?? 0) === 0}
-                  className="inline-flex items-center gap-1 rounded-md border border-border px-2 py-1 disabled:opacity-40 disabled:cursor-not-allowed"
-                >
-                  <ChevronLeft className="w-3.5 h-3.5" />
-                  Prev
-                </button>
-                <button
-                  onClick={() => {
-                    if (telemetry?.nextOffset != null) {
-                      setTelemetryOffset(telemetry.nextOffset);
-                    }
-                  }}
-                  disabled={!telemetry?.hasMore}
-                  className="inline-flex items-center gap-1 rounded-md border border-border px-2 py-1 disabled:opacity-40 disabled:cursor-not-allowed"
-                >
-                  Next
-                  <ChevronRight className="w-3.5 h-3.5" />
-                </button>
+                    ) : (
+                      telemetry.events.map((event) => (
+                        <tr
+                          key={`${event.timestamp}-${event.endpoint}-${event.clientHash}`}
+                          className="border-b border-border/60 last:border-b-0"
+                        >
+                          <td className="px-4 py-3 text-xs text-muted">
+                            {new Date(event.timestamp).toLocaleString()}
+                          </td>
+                          <td className="px-4 py-3 font-mono text-xs">
+                            {event.endpoint}
+                          </td>
+                          <td className="px-4 py-3 text-xs">
+                            <span
+                              className={event.outcome === "success"
+                                ? "text-green-600 dark:text-green-400"
+                                : "text-red-600 dark:text-red-400"}
+                            >
+                              {event.outcome}
+                            </span>
+                          </td>
+                          <td className="px-4 py-3 text-right tabular-nums text-xs">
+                            {event.durationMs.toFixed(2)} ms
+                          </td>
+                          <td className="px-4 py-3 font-mono text-xs text-muted">
+                            {event.code ?? "-"}
+                          </td>
+                        </tr>
+                      ))
+                    )}
+                  </tbody>
+                </table>
               </div>
             </div>
+
+            <AdminPagination
+              page={telemetryCurrentPage}
+              totalPages={telemetryTotalPages}
+              hasPrev={(telemetry?.offset ?? 0) > 0}
+              hasNext={Boolean(telemetry?.hasMore)}
+              onPrev={() => {
+                const previous = Math.max(
+                  0,
+                  (telemetry?.offset ?? 0) - (telemetry?.limit ?? TELEMETRY_PAGE_SIZE)
+                );
+                setTelemetryOffset(previous);
+              }}
+              onNext={() => {
+                if (telemetry?.nextOffset != null) {
+                  setTelemetryOffset(telemetry.nextOffset);
+                }
+              }}
+            />
           </div>
         ) : null}
-      </div>
+      </section>
 
-      {/* Audit Section */}
-      <div>
+      <section>
         <h2 className="text-lg font-semibold flex items-center gap-2 mb-4">
           <Shield className="w-5 h-5 text-muted" />
           Audit Log
         </h2>
-        <div className="p-6 border border-border rounded-lg">
+        <AdminPanel className="p-6">
           <p className="text-sm text-muted mb-1">File Event Count</p>
           <p className="text-2xl font-bold">
             {data.audit.fileEventCount.toLocaleString()}
@@ -834,8 +816,8 @@ export function AdminSystemContent() {
           >
             View analytics dashboard
           </Link>
-        </div>
-      </div>
+        </AdminPanel>
+      </section>
     </div>
   );
 }

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { AdminPage } from "@/components/admin/admin-page";
 import { AdminSystemContent } from "./_content";
 
 export const metadata: Metadata = {
@@ -8,12 +9,11 @@ export const metadata: Metadata = {
 
 export default function AdminSystemPage() {
   return (
-    <>
-      <h1 className="text-3xl font-bold mb-2">System Overview</h1>
-      <p className="text-muted mb-8">
-        Service health, database status, and runtime information.
-      </p>
+    <AdminPage
+      title="System Overview"
+      description="Check service health, Supabase connectivity, table state, runtime information, and admin configuration."
+    >
       <AdminSystemContent />
-    </>
+    </AdminPage>
   );
 }

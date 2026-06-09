@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { AdminPage } from "@/components/admin/admin-page";
 import { AdminUsersContent } from "./_content";
 
 export const metadata: Metadata = {
@@ -8,12 +9,11 @@ export const metadata: Metadata = {
 
 export default function AdminUsersPage() {
   return (
-    <>
-      <h1 className="text-3xl font-bold mb-2">User Management</h1>
-      <p className="text-muted mb-8">
-        View user activity and manage user-generated content.
-      </p>
+    <AdminPage
+      title="User Management"
+      description="Search users, inspect activity counts, manage profile titles, and remove user-generated content."
+    >
       <AdminUsersContent />
-    </>
+    </AdminPage>
   );
 }

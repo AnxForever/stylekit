@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { AdminPage } from "@/components/admin/admin-page";
 import { AdminRatingsContent } from "./_content";
 
 export const metadata: Metadata = {
@@ -8,12 +9,11 @@ export const metadata: Metadata = {
 
 export default function AdminRatingsPage() {
   return (
-    <>
-      <h1 className="text-3xl font-bold mb-2">Rating Management</h1>
-      <p className="text-muted mb-8">
-        Monitor and manage style ratings. Detect anomalous patterns.
-      </p>
+    <AdminPage
+      title="Rating Management"
+      description="Monitor style ratings, inspect distribution patterns, and remove suspicious feedback."
+    >
       <AdminRatingsContent />
-    </>
+    </AdminPage>
   );
 }

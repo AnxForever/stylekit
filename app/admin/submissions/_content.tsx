@@ -1,6 +1,28 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import {
+  Archive,
+  CheckCircle,
+  ChevronRight,
+  Clock3,
+  Pencil,
+  RefreshCw,
+  Trash2,
+  XCircle,
+} from "lucide-react";
+import {
+  AdminBadge,
+  AdminButton,
+  AdminEmptyState,
+  AdminErrorState,
+  AdminInput,
+  AdminLoadingState,
+  AdminPanel,
+  AdminSegmentedControl,
+  AdminTextarea,
+  AdminToolbar,
+} from "@/components/admin/admin-ui";
 
 interface Submission {
   id: string;
@@ -33,6 +55,18 @@ interface FullSubmissionData {
 
 type FilterStatus = "all" | "pending" | "approved" | "rejected";
 const DETAIL_CACHE_LIMIT = 20;
+const FILTER_OPTIONS: Array<{ value: FilterStatus; label: string }> = [
+  { value: "pending", label: "Pending" },
+  { value: "approved", label: "Approved" },
+  { value: "rejected", label: "Rejected" },
+  { value: "all", label: "All" },
+];
+
+const STATUS_TONE = {
+  pending: "warning",
+  approved: "success",
+  rejected: "danger",
+} as const;
 
 export function SubmissionsReview() {
   const canRegisterToCodebase = process.env.NODE_ENV !== "production";
@@ -376,326 +410,353 @@ export function SubmissionsReview() {
     }
   }
 
-  const statusColors: Record<string, string> = {
-    pending: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300",
-    approved: "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300",
-    rejected: "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300",
-  };
+  const queueSummary = useMemo(
+    () =>
+      submissions.reduce(
+        (summary, submission) => {
+          summary[submission.status] += 1;
+          return summary;
+        },
+        { pending: 0, approved: 0, rejected: 0 }
+      ),
+    [submissions]
+  );
 
   return (
-    <div>
-      {/* Filter tabs */}
-      <div className="flex gap-2 mb-6">
-        {(["pending", "approved", "rejected", "all"] as const).map((s) => (
-          <button
-            key={s}
-            onClick={() => setFilter(s)}
-            className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
-              filter === s
-                ? "bg-foreground text-background"
-                : "bg-muted/20 text-muted hover:text-foreground"
-            }`}
-          >
-            {s.charAt(0).toUpperCase() + s.slice(1)}
-          </button>
-        ))}
-      </div>
+    <div className="space-y-5">
+      <AdminToolbar
+        title="Review queue"
+        description={`Showing ${submissions.length} ${filter === "all" ? "total" : filter} submissions. Pending ${queueSummary.pending}, approved ${queueSummary.approved}, rejected ${queueSummary.rejected}.`}
+        meta={<AdminBadge tone={filter === "pending" ? "warning" : "neutral"}>{filter}</AdminBadge>}
+        actions={
+          <>
+            <AdminSegmentedControl<FilterStatus>
+              value={filter}
+              onChange={setFilter}
+              ariaLabel="Submission status filter"
+              options={FILTER_OPTIONS}
+            />
+            <AdminButton
+              onClick={() => {
+                void fetchSubmissions();
+              }}
+              size="icon"
+              aria-label="Refresh submissions"
+            >
+              <RefreshCw className="h-4 w-4" />
+            </AdminButton>
+          </>
+        }
+      />
 
       {error && (
-        <p className="mb-4 rounded-md border border-red-300 bg-red-50 px-3 py-2 text-sm text-red-700 dark:border-red-800 dark:bg-red-950/40 dark:text-red-300">
-          {error}
-        </p>
+        <AdminErrorState message={error} onRetry={() => void fetchSubmissions()} />
       )}
 
-      {loading && <p className="text-muted">Loading submissions...</p>}
+      {loading && <AdminLoadingState label="Loading submissions..." />}
 
       {!loading && submissions.length === 0 && (
-        <p className="text-muted">No {filter !== "all" ? filter : ""} submissions found.</p>
+        <AdminEmptyState
+          title={`No ${filter !== "all" ? filter : ""} submissions found`}
+          description="Switch queues or wait for new style submissions."
+        />
       )}
 
-      {/* Submission list */}
       <div className="space-y-4">
         {submissions.map((sub) => (
-          <div
+          <AdminPanel
             key={sub.id}
-            className="border border-border rounded-lg p-6"
+            className="overflow-hidden"
           >
-            <div className="flex items-start justify-between mb-4">
-              <div>
-                <h3 className="text-lg font-semibold">
-                  {sub.formData.name || sub.slug}
-                  {sub.formData.nameEn && (
-                    <span className="text-muted font-normal ml-2">
-                      ({sub.formData.nameEn})
-                    </span>
-                  )}
-                </h3>
-                <p className="text-sm text-muted mt-1">
-                  {sub.formData.description}
-                </p>
-              </div>
-              <span
-                className={`px-3 py-1 rounded-full text-xs font-medium ${
-                  statusColors[sub.status] || ""
-                }`}
-              >
-                {sub.status}
-              </span>
-            </div>
+            <div className="grid gap-0 lg:grid-cols-[1fr_300px]">
+              <div className="min-w-0 p-4 sm:p-5">
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                  <div className="min-w-0">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <h3 className="text-base font-semibold">
+                        {sub.formData.name || sub.slug}
+                      </h3>
+                      <AdminBadge tone={STATUS_TONE[sub.status]}>{sub.status}</AdminBadge>
+                    </div>
+                    {sub.formData.nameEn ? (
+                      <p className="mt-1 text-xs text-muted">{sub.formData.nameEn}</p>
+                    ) : null}
+                    {sub.formData.description ? (
+                      <p className="mt-2 max-w-3xl text-sm leading-6 text-muted">
+                        {sub.formData.description}
+                      </p>
+                    ) : null}
+                  </div>
+                </div>
 
-            <div className="flex items-center gap-4 text-sm text-muted mb-4">
-              <span>Slug: <code className="text-foreground">{sub.slug}</code></span>
-              <span>Category: {sub.formData.category}</span>
-              <span>
-                Submitted: {new Date(sub.submittedAt).toLocaleDateString()}
-              </span>
-              {sub.authorName && (
-                <span>by <strong>@{sub.authorName}</strong></span>
-              )}
-              {sub.formData.primaryColor && (
-                <span className="flex items-center gap-1">
-                  <span
-                    className="inline-block w-3 h-3 rounded-full border border-border"
-                    style={{ backgroundColor: sub.formData.primaryColor }}
-                  />
-                  {sub.formData.primaryColor}
-                </span>
-              )}
-            </div>
+                <div className="mt-4 grid gap-2 text-xs text-muted sm:grid-cols-2 xl:grid-cols-4">
+                  <span>
+                    Slug <code className="ml-1 text-foreground">{sub.slug}</code>
+                  </span>
+                  <span>Category {sub.formData.category ?? "-"}</span>
+                  <span>
+                    Submitted {new Date(sub.submittedAt).toLocaleDateString()}
+                  </span>
+                  <span>{sub.authorName ? `by @${sub.authorName}` : "anonymous"}</span>
+                </div>
 
-            {sub.reviewNote && (
-              <p className="text-sm bg-muted/10 p-3 rounded mb-4">
-                Review note: {sub.reviewNote}
-              </p>
-            )}
-
-            {/* Detail toggle */}
-            <div className="mb-4">
-              <button
-                onClick={() => toggleDetails(sub.id)}
-                className="text-sm text-muted hover:text-foreground transition-colors flex items-center gap-1"
-              >
-                <span className="inline-block transition-transform" style={{
-                  transform: expandedId === sub.id ? "rotate(90deg)" : "rotate(0deg)",
-                }}>
-                  &#9656;
-                </span>
-                {expandedId === sub.id ? "Hide Details" : "View Details"}
-              </button>
-            </div>
-
-            {/* Expanded detail panel */}
-            {expandedId === sub.id && (
-              <div className="mb-4 border border-border rounded-md p-4 space-y-4 text-sm">
-                {detailLoadingId === sub.id && !detailCache.current.has(sub.id) ? (
-                  <p className="text-muted">Loading details...</p>
-                ) : detailCache.current.has(sub.id) ? (
-                  <SubmissionDetail data={detailCache.current.get(sub.id)!} />
-                ) : null}
-              </div>
-            )}
-
-            {/* Register button for approved submissions */}
-            {sub.status === "approved" && (
-              <div className="mb-4">
-                <p className="text-xs text-muted mb-2">
-                  Approved submissions are already live in <code>/styles/{sub.slug}</code>. Registration is optional codebase archiving.
-                </p>
-                {!canRegisterToCodebase ? (
-                  <p className="text-xs text-muted">
-                    Codebase registration is disabled in production runtime (read-only filesystem).
-                  </p>
-                ) : (
-                  <>
-                    {registeringId === sub.id && registerResult ? (
-                      <div className="border border-border rounded-md p-4 space-y-3">
-                        <p className={`text-sm font-medium ${registerResult.success ? "text-green-700 dark:text-green-400" : "text-red-700 dark:text-red-400"}`}>
-                          {registerResult.success ? "Style archived to codebase successfully" : "Registration completed with errors"}
-                        </p>
-                        {registerResult.filesWritten.length > 0 && (
-                          <div>
-                            <p className="text-xs font-medium text-muted mb-1">Files written:</p>
-                            <ul className="text-xs text-muted space-y-0.5">
-                              {registerResult.filesWritten.map((f) => (
-                                <li key={f}><code>{f}</code></li>
-                              ))}
-                            </ul>
-                          </div>
-                        )}
-                        {registerResult.registriesPatched.length > 0 && (
-                          <div>
-                            <p className="text-xs font-medium text-muted mb-1">Registries patched:</p>
-                            <ul className="text-xs text-muted space-y-0.5">
-                              {registerResult.registriesPatched.map((f) => (
-                                <li key={f}><code>{f}</code></li>
-                              ))}
-                            </ul>
-                          </div>
-                        )}
-                        {registerResult.errors.length > 0 && (
-                          <div>
-                            <p className="text-xs font-medium text-red-600 dark:text-red-400 mb-1">Errors:</p>
-                            <ul className="text-xs text-red-600 dark:text-red-400 space-y-0.5">
-                              {registerResult.errors.map((e, i) => (
-                                <li key={i}>{e}</li>
-                              ))}
-                            </ul>
-                          </div>
-                        )}
-                        <button
-                          onClick={() => { setRegisteringId(null); setRegisterResult(null); }}
-                          className="text-xs text-muted hover:text-foreground transition-colors"
-                        >
-                          Dismiss
-                        </button>
-                      </div>
-                    ) : (
-                      <button
-                        disabled={registeringId === sub.id}
-                        onClick={() => handleRegister(sub.id)}
-                        className="px-4 py-2 border-2 border-foreground rounded-md text-sm font-medium hover:bg-foreground hover:text-background disabled:opacity-60 disabled:cursor-not-allowed transition-colors"
-                      >
-                        {registeringId === sub.id ? "Registering..." : "Register to Codebase"}
-                      </button>
-                    )}
-                  </>
+                {(sub.formData.primaryColor || sub.formData.secondaryColor) && (
+                  <div className="mt-4 flex flex-wrap items-center gap-2 text-xs text-muted">
+                    {sub.formData.primaryColor ? (
+                      <span className="inline-flex items-center gap-1.5">
+                        <span
+                          className="h-4 w-4 rounded border border-[var(--admin-border-soft)]"
+                          style={{ backgroundColor: sub.formData.primaryColor }}
+                        />
+                        {sub.formData.primaryColor}
+                      </span>
+                    ) : null}
+                    {sub.formData.secondaryColor ? (
+                      <span className="inline-flex items-center gap-1.5">
+                        <span
+                          className="h-4 w-4 rounded border border-[var(--admin-border-soft)]"
+                          style={{ backgroundColor: sub.formData.secondaryColor }}
+                        />
+                        {sub.formData.secondaryColor}
+                      </span>
+                    ) : null}
+                  </div>
                 )}
-              </div>
-            )}
 
-            {sub.status === "pending" && (
-              <div>
-                {reviewingId === sub.id ? (
-                  <div className="space-y-3">
-                    <textarea
-                      value={note}
-                      onChange={(e) => setNote(e.target.value)}
-                      placeholder="Optional review note..."
-                      className="w-full p-3 border border-border rounded-md bg-background text-sm resize-none"
-                      rows={2}
+                {sub.reviewNote ? (
+                  <p className="mt-4 rounded-md border border-[var(--admin-border-soft)] bg-muted/8 p-3 text-sm">
+                    Review note: {sub.reviewNote}
+                  </p>
+                ) : null}
+
+                <div className="mt-4">
+                  <AdminButton
+                    onClick={() => {
+                      void toggleDetails(sub.id);
+                    }}
+                    size="sm"
+                    tone="ghost"
+                  >
+                    <ChevronRight
+                      className={`h-4 w-4 transition-transform ${
+                        expandedId === sub.id ? "rotate-90" : ""
+                      }`}
                     />
-                    <div className="flex gap-2">
-                      <button
-                        disabled={submitting}
-                        onClick={() => handleReview(sub.id, "approve")}
-                        className="px-4 py-2 bg-green-600 text-white rounded-md text-sm font-medium hover:bg-green-700 disabled:opacity-60 disabled:cursor-not-allowed transition-colors"
+                    {expandedId === sub.id ? "Hide details" : "View details"}
+                  </AdminButton>
+                </div>
+
+                {expandedId === sub.id && (
+                  <div className="mt-4 rounded-md border border-[var(--admin-border-soft)] bg-muted/5 p-4 text-sm">
+                    {detailLoadingId === sub.id && !detailCache.current.has(sub.id) ? (
+                      <div className="flex items-center gap-2 text-muted">
+                        <Clock3 className="h-4 w-4" />
+                        Loading details...
+                      </div>
+                    ) : detailCache.current.has(sub.id) ? (
+                      <SubmissionDetail data={detailCache.current.get(sub.id)!} />
+                    ) : null}
+                  </div>
+                )}
+
+                {editingId === sub.id ? (
+                  <div className="mt-4 space-y-2 rounded-md border border-[var(--admin-border-soft)] bg-muted/5 p-3">
+                    <AdminInput
+                      value={editName}
+                      onChange={(event) => setEditName(event.target.value)}
+                      placeholder="Style name"
+                    />
+                    <AdminInput
+                      value={editNameEn}
+                      onChange={(event) => setEditNameEn(event.target.value)}
+                      placeholder="Style name (English)"
+                    />
+                    <AdminTextarea
+                      value={editDescription}
+                      onChange={(event) => setEditDescription(event.target.value)}
+                      placeholder="Style description"
+                      rows={3}
+                      className="resize-none"
+                    />
+                    <div className="flex flex-wrap items-center gap-2">
+                      <AdminButton
+                        disabled={savingEditId === sub.id}
+                        onClick={() => handleSaveEdit(sub)}
+                        tone="primary"
                       >
-                        Approve
-                      </button>
-                      <button
-                        disabled={submitting}
-                        onClick={() => handleReview(sub.id, "reject")}
-                        className="px-4 py-2 bg-red-600 text-white rounded-md text-sm font-medium hover:bg-red-700 disabled:opacity-60 disabled:cursor-not-allowed transition-colors"
-                      >
-                        Reject
-                      </button>
-                      <button
-                        disabled={submitting}
-                        onClick={() => {
-                          setReviewingId(null);
-                          setNote("");
-                        }}
-                        className="px-4 py-2 bg-muted/20 text-foreground rounded-md text-sm font-medium hover:bg-muted/30 disabled:opacity-60 disabled:cursor-not-allowed transition-colors"
+                        {savingEditId === sub.id ? "Saving..." : "Save edit"}
+                      </AdminButton>
+                      <AdminButton
+                        disabled={savingEditId === sub.id}
+                        onClick={cancelEdit}
+                        tone="ghost"
                       >
                         Cancel
-                      </button>
+                      </AdminButton>
                     </div>
                   </div>
-                ) : (
-                  <button
-                    onClick={() => setReviewingId(sub.id)}
-                    className="px-4 py-2 border border-border rounded-md text-sm font-medium hover:bg-muted/10 transition-colors"
-                  >
-                    Review
-                  </button>
-                )}
+                ) : null}
               </div>
-            )}
 
-            {/* Admin edit */}
-            <div className="mt-4 pt-4 border-t border-border">
-              {editingId === sub.id ? (
-                <div className="space-y-2">
-                  <input
-                    value={editName}
-                    onChange={(event) => setEditName(event.target.value)}
-                    placeholder="Style name"
-                    className="w-full p-2 border border-border rounded-md bg-background text-sm"
-                  />
-                  <input
-                    value={editNameEn}
-                    onChange={(event) => setEditNameEn(event.target.value)}
-                    placeholder="Style name (English)"
-                    className="w-full p-2 border border-border rounded-md bg-background text-sm"
-                  />
-                  <textarea
-                    value={editDescription}
-                    onChange={(event) => setEditDescription(event.target.value)}
-                    placeholder="Style description"
-                    className="w-full p-2 border border-border rounded-md bg-background text-sm resize-none"
-                    rows={3}
-                  />
-                  <div className="flex items-center gap-2">
-                    <button
-                      disabled={savingEditId === sub.id}
-                      onClick={() => handleSaveEdit(sub)}
-                      className="px-3 py-1 bg-foreground text-background rounded-md text-sm font-medium hover:opacity-90 disabled:opacity-60 disabled:cursor-not-allowed transition-colors"
-                    >
-                      {savingEditId === sub.id ? "Saving..." : "Save Edit"}
-                    </button>
-                    <button
-                      disabled={savingEditId === sub.id}
-                      onClick={cancelEdit}
-                      className="px-3 py-1 text-sm text-muted hover:text-foreground transition-colors"
-                    >
-                      Cancel
-                    </button>
+              <aside className="border-t border-[var(--admin-border-soft)] bg-muted/5 p-4 lg:border-l lg:border-t-0">
+                <div className="space-y-3">
+                  {sub.status === "pending" ? (
+                    reviewingId === sub.id ? (
+                      <div className="space-y-3">
+                        <AdminTextarea
+                          value={note}
+                          onChange={(event) => setNote(event.target.value)}
+                          placeholder="Optional review note..."
+                          rows={3}
+                          className="resize-none"
+                        />
+                        <div className="grid grid-cols-2 gap-2">
+                          <AdminButton
+                            disabled={submitting}
+                            onClick={() => handleReview(sub.id, "approve")}
+                            tone="success"
+                          >
+                            <CheckCircle className="h-4 w-4" />
+                            Approve
+                          </AdminButton>
+                          <AdminButton
+                            disabled={submitting}
+                            onClick={() => handleReview(sub.id, "reject")}
+                            tone="danger"
+                          >
+                            <XCircle className="h-4 w-4" />
+                            Reject
+                          </AdminButton>
+                        </div>
+                        <AdminButton
+                          disabled={submitting}
+                          onClick={() => {
+                            setReviewingId(null);
+                            setNote("");
+                          }}
+                          tone="ghost"
+                          className="w-full"
+                        >
+                          Cancel review
+                        </AdminButton>
+                      </div>
+                    ) : (
+                      <AdminButton
+                        onClick={() => setReviewingId(sub.id)}
+                        tone="primary"
+                        className="w-full"
+                      >
+                        Review submission
+                      </AdminButton>
+                    )
+                  ) : null}
+
+                  {sub.status === "approved" ? (
+                    <div className="space-y-3">
+                      <p className="text-xs leading-5 text-muted">
+                        Live style. Codebase registration archives generated files in local development.
+                      </p>
+                      {!canRegisterToCodebase ? (
+                        <AdminBadge>Registration disabled</AdminBadge>
+                      ) : registeringId === sub.id && registerResult ? (
+                        <AdminPanel className="space-y-3 bg-muted/5 p-3">
+                          <p
+                            className={`text-sm font-medium ${
+                              registerResult.success
+                                ? "text-emerald-700 dark:text-emerald-300"
+                                : "text-rose-700 dark:text-rose-300"
+                            }`}
+                          >
+                            {registerResult.success
+                              ? "Archived to codebase"
+                              : "Registration completed with errors"}
+                          </p>
+                          {registerResult.filesWritten.length > 0 ? (
+                            <ResultList title="Files written" items={registerResult.filesWritten} />
+                          ) : null}
+                          {registerResult.registriesPatched.length > 0 ? (
+                            <ResultList
+                              title="Registries patched"
+                              items={registerResult.registriesPatched}
+                            />
+                          ) : null}
+                          {registerResult.errors.length > 0 ? (
+                            <ResultList title="Errors" items={registerResult.errors} danger />
+                          ) : null}
+                          <AdminButton
+                            onClick={() => {
+                              setRegisteringId(null);
+                              setRegisterResult(null);
+                            }}
+                            tone="ghost"
+                            size="sm"
+                          >
+                            Dismiss
+                          </AdminButton>
+                        </AdminPanel>
+                      ) : (
+                        <AdminButton
+                          disabled={registeringId === sub.id}
+                          onClick={() => handleRegister(sub.id)}
+                          tone="primary"
+                          className="w-full"
+                        >
+                          <Archive className="h-4 w-4" />
+                          {registeringId === sub.id ? "Registering..." : "Register to codebase"}
+                        </AdminButton>
+                      )}
+                    </div>
+                  ) : null}
+
+                  <AdminButton
+                    onClick={() => beginEdit(sub)}
+                    className="w-full"
+                    disabled={editingId === sub.id}
+                  >
+                    <Pencil className="h-4 w-4" />
+                    Edit submission
+                  </AdminButton>
+
+                  <div className="border-t border-[var(--admin-border-soft)] pt-3">
+                    {confirmDeleteId === sub.id ? (
+                      <div className="space-y-2">
+                        <p className="text-xs leading-5 text-rose-700 dark:text-rose-300">
+                          {sub.status === "approved"
+                            ? "Approved style may already be live. Delete anyway?"
+                            : "Delete this submission permanently?"}
+                        </p>
+                        <div className="grid grid-cols-2 gap-2">
+                          <AdminButton
+                            disabled={deletingId === sub.id}
+                            onClick={() => handleDelete(sub.id)}
+                            tone="danger"
+                          >
+                            {deletingId === sub.id ? "Deleting..." : "Confirm"}
+                          </AdminButton>
+                          <AdminButton
+                            disabled={deletingId === sub.id}
+                            onClick={() => setConfirmDeleteId(null)}
+                            tone="ghost"
+                          >
+                            Cancel
+                          </AdminButton>
+                        </div>
+                      </div>
+                    ) : (
+                      <AdminButton
+                        onClick={() => setConfirmDeleteId(sub.id)}
+                        tone="danger"
+                        className="w-full"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                        Delete
+                      </AdminButton>
+                    )}
                   </div>
                 </div>
-              ) : (
-                <button
-                  onClick={() => beginEdit(sub)}
-                  className="px-3 py-1 border border-border rounded-md text-sm font-medium hover:bg-muted/10 transition-colors"
-                >
-                  Edit Submission
-                </button>
-              )}
+              </aside>
             </div>
-
-            {/* Delete button for all statuses */}
-            <div className="mt-4 pt-4 border-t border-border">
-              {confirmDeleteId === sub.id ? (
-                <div className="flex items-center gap-2">
-                  <span className="text-sm text-red-600 dark:text-red-400">
-                    {sub.status === "approved"
-                      ? "Approved style may already be live. Delete anyway?"
-                      : "Are you sure?"}
-                  </span>
-                  <button
-                    disabled={deletingId === sub.id}
-                    onClick={() => handleDelete(sub.id)}
-                    className="px-3 py-1 bg-red-600 text-white rounded-md text-sm font-medium hover:bg-red-700 disabled:opacity-60 disabled:cursor-not-allowed transition-colors"
-                  >
-                    {deletingId === sub.id ? "Deleting..." : "Confirm Delete"}
-                  </button>
-                  <button
-                    disabled={deletingId === sub.id}
-                    onClick={() => setConfirmDeleteId(null)}
-                    className="px-3 py-1 text-sm text-muted hover:text-foreground transition-colors"
-                  >
-                    Cancel
-                  </button>
-                </div>
-              ) : (
-                <button
-                  onClick={() => setConfirmDeleteId(sub.id)}
-                  className="text-red-600 hover:text-red-700 text-sm transition-colors"
-                >
-                  Delete
-                </button>
-              )}
-            </div>
-          </div>
+          </AdminPanel>
         ))}
       </div>
     </div>
@@ -712,6 +773,39 @@ function ColorSwatch({ color, label }: { color: string; label?: string }) {
       <code className="text-xs">{color}</code>
       {label && <span className="text-xs text-muted">({label})</span>}
     </span>
+  );
+}
+
+function ResultList({
+  title,
+  items,
+  danger = false,
+}: {
+  title: string;
+  items: string[];
+  danger?: boolean;
+}) {
+  return (
+    <div>
+      <p
+        className={`mb-1 text-xs font-medium ${
+          danger ? "text-rose-700 dark:text-rose-300" : "text-muted"
+        }`}
+      >
+        {title}
+      </p>
+      <ul
+        className={`space-y-0.5 text-xs ${
+          danger ? "text-rose-700 dark:text-rose-300" : "text-muted"
+        }`}
+      >
+        {items.map((item) => (
+          <li key={item}>
+            <code>{item}</code>
+          </li>
+        ))}
+      </ul>
+    </div>
   );
 }
 

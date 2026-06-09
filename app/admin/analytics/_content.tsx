@@ -3,13 +3,21 @@
 import { useCallback, useDeferredValue, useMemo, useState } from "react";
 import type { ReactNode } from "react";
 import {
+  AdminButton,
+  AdminErrorState,
+  AdminField,
+  AdminInput,
+  AdminLoadingState,
+  AdminPagination,
+  AdminPanel,
+  AdminSegmentedControl,
+} from "@/components/admin/admin-ui";
+import {
   Activity,
   ArrowDownRight,
   ArrowUpRight,
   BarChart3,
   Bookmark,
-  ChevronLeft,
-  ChevronRight,
   Clock3,
   Copy,
   Download,
@@ -233,20 +241,12 @@ export function AnalyticsDashboard() {
   }, [auditExportHref]);
 
   if (isLoading) {
-    return <p className="text-muted">Loading analytics...</p>;
+    return <AdminLoadingState label="Loading analytics..." />;
   }
 
   if (error) {
     return (
-      <div className="rounded-2xl border border-red-300 bg-red-50 p-6 dark:bg-red-900/10">
-        <p className="text-red-600 dark:text-red-400">{error.message}</p>
-        <button
-          onClick={() => mutate()}
-          className="mt-3 rounded-md bg-foreground px-4 py-2 text-sm text-background"
-        >
-          Retry
-        </button>
-      </div>
+      <AdminErrorState message={error.message} onRetry={() => mutate()} />
     );
   }
 
@@ -280,8 +280,8 @@ export function AnalyticsDashboard() {
   ];
 
   return (
-    <div className="space-y-8">
-      <section className="rounded-3xl border border-border bg-gradient-to-br from-background via-background to-muted/20 p-6">
+    <div className="space-y-5">
+      <section className="rounded-lg border border-[var(--admin-border-soft)] bg-[var(--admin-panel)] p-4 shadow-[var(--admin-shadow)] sm:p-5">
         <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
           <div className="space-y-3">
             <div className="inline-flex items-center gap-2 rounded-full border border-border bg-muted/10 px-3 py-1 text-xs text-muted">
@@ -297,39 +297,30 @@ export function AnalyticsDashboard() {
           </div>
 
           <div className="flex flex-wrap items-center gap-2">
-            {(["24h", "7d", "30d", "90d"] as const).map((range) => (
-              <button
-                key={range}
-                onClick={() => setTimeRange(range)}
-                className={`rounded-full border px-4 py-2 text-sm font-medium transition-colors ${
-                  timeRange === range
-                    ? "border-foreground bg-foreground text-background"
-                    : "border-border bg-background text-muted hover:text-foreground"
-                }`}
-              >
-                {range === "24h"
-                  ? "24 Hours"
-                  : range === "7d"
-                    ? "7 Days"
-                    : range === "30d"
-                      ? "30 Days"
-                      : "90 Days"}
-              </button>
-            ))}
-            <button
+            <AdminSegmentedControl<TimeRange>
+              value={timeRange}
+              onChange={setTimeRange}
+              ariaLabel="Analytics time range"
+              options={[
+                { value: "24h", label: "24h" },
+                { value: "7d", label: "7d" },
+                { value: "30d", label: "30d" },
+                { value: "90d", label: "90d" },
+              ]}
+            />
+            <AdminButton
               onClick={() => {
                 void Promise.all([mutate(), mutateAudit()]);
               }}
-              className="inline-flex items-center gap-2 rounded-full border border-border bg-background px-3 py-2 text-sm text-muted transition-colors hover:text-foreground"
               aria-label="Refresh data"
             >
               <RefreshCw className="h-4 w-4" />
               Refresh
-            </button>
+            </AdminButton>
           </div>
         </div>
 
-        <div className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+        <div className="mt-5 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
           <MetricCard
             icon={BarChart3}
             label="Page views"
@@ -363,7 +354,7 @@ export function AnalyticsDashboard() {
       </section>
 
       <section className="grid gap-4 xl:grid-cols-[1.7fr_1fr]">
-        <div className="rounded-3xl border border-border bg-background p-6">
+        <div className="rounded-lg border border-[var(--admin-border-soft)] bg-[var(--admin-panel)] p-4 shadow-[var(--admin-shadow)] sm:p-5">
           <div className="flex flex-wrap items-start justify-between gap-4">
             <div>
               <p className="text-sm font-medium text-foreground">Traffic overview</p>
@@ -371,7 +362,7 @@ export function AnalyticsDashboard() {
                 Page views and visitors for the selected window.
               </p>
             </div>
-            <div className="rounded-2xl border border-border bg-muted/10 px-4 py-3 text-right">
+            <div className="rounded-lg border border-[var(--admin-border-soft)] bg-[var(--admin-input)] px-4 py-3 text-right">
               <p className="text-xs uppercase tracking-[0.2em] text-muted">Window delta</p>
               <div className="mt-1 flex items-center justify-end gap-2">
                 {renderTrendIcon(data.trend.deltaPct)}
@@ -380,7 +371,7 @@ export function AnalyticsDashboard() {
             </div>
           </div>
 
-          <div className="mt-6 rounded-2xl border border-border bg-muted/5 p-4">
+          <div className="mt-5 rounded-lg border border-[var(--admin-border-soft)] bg-[var(--admin-input)] p-3 sm:p-4">
             <LineChart
               points={data.trafficSeries.map((point) => point.pageViews)}
               secondaryPoints={data.trafficSeries.map((point) => point.visitors)}
@@ -407,7 +398,7 @@ export function AnalyticsDashboard() {
           </div>
         </div>
 
-        <div className="rounded-3xl border border-border bg-background p-6">
+        <div className="rounded-lg border border-[var(--admin-border-soft)] bg-[var(--admin-panel)] p-4 shadow-[var(--admin-shadow)] sm:p-5">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-foreground">Traffic sources</p>
@@ -870,7 +861,7 @@ export function AnalyticsDashboard() {
         </div>
       </section>
 
-      <section className="rounded-3xl border border-border bg-background p-6">
+      <AdminPanel className="p-4 sm:p-5">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
             <h2 className="text-lg font-semibold">Recent Admin Actions</h2>
@@ -886,71 +877,67 @@ export function AnalyticsDashboard() {
           </div>
         </div>
 
-        <div className="mt-5 flex flex-wrap items-center justify-between gap-3">
-          <div className="flex flex-wrap items-center gap-2">
-            {(["all", "submission.approve", "submission.reject"] as const).map((action) => (
-              <button
-                key={action}
-                onClick={() => {
-                  setAuditActionFilter(action);
-                  setAuditOffset(0);
-                }}
-                className={`rounded-full border px-3 py-1.5 text-xs transition-colors ${
-                  auditActionFilter === action
-                    ? "border-foreground bg-foreground text-background"
-                    : "border-border text-muted hover:text-foreground"
-                }`}
-              >
-                {formatAuditActionFilter(action)}
-              </button>
-            ))}
-          </div>
-
-          <div className="flex flex-wrap items-center gap-2">
-            <div className="flex items-center gap-2">
-              {(["24h", "7d", "30d", "all"] as const).map((window) => (
-                <button
-                  key={window}
-                  onClick={() => {
-                    setAuditTimeFilter(window);
-                    setAuditOffset(0);
-                  }}
-                  className={`rounded-full border px-3 py-1.5 text-xs transition-colors ${
-                    auditTimeFilter === window
-                      ? "border-foreground bg-foreground text-background"
-                      : "border-border text-muted hover:text-foreground"
-                  }`}
-                >
-                  {window === "24h"
-                    ? "24h"
-                    : window === "7d"
-                      ? "7d"
-                      : window === "30d"
-                        ? "30d"
-                        : "All"}
-                </button>
-              ))}
-            </div>
-            <input
-              value={auditSearch}
-              onChange={(event) => {
-                setAuditSearch(event.target.value);
+        <div className="mt-5 grid gap-3 lg:flex lg:flex-wrap lg:items-end lg:justify-between">
+          <div className="flex min-w-0 flex-col gap-1.5 lg:w-auto">
+            <span className="text-[11px] font-semibold uppercase tracking-[0.12em] text-muted">
+              Action
+            </span>
+            <AdminSegmentedControl<AuditActionFilter>
+              value={auditActionFilter}
+              onChange={(action) => {
+                setAuditActionFilter(action);
                 setAuditOffset(0);
               }}
-              placeholder="Search by slug, actor, ID..."
-              className="h-9 w-56 rounded-full border border-border bg-background px-3 text-xs text-foreground placeholder:text-muted"
+              options={[
+                { value: "all", label: "All Actions" },
+                { value: "submission.approve", label: "Approve" },
+                { value: "submission.reject", label: "Reject" },
+              ]}
+              ariaLabel="Audit action filter"
             />
-            <button
+          </div>
+
+          <div className="grid gap-3 sm:grid-cols-2 lg:flex lg:flex-wrap lg:items-end">
+            <div className="flex min-w-0 flex-col gap-1.5 lg:w-auto">
+              <span className="text-[11px] font-semibold uppercase tracking-[0.12em] text-muted">
+                Window
+              </span>
+              <AdminSegmentedControl<AuditTimeFilter>
+                value={auditTimeFilter}
+                onChange={(window) => {
+                  setAuditTimeFilter(window);
+                  setAuditOffset(0);
+                }}
+                options={[
+                  { value: "24h", label: "24h" },
+                  { value: "7d", label: "7d" },
+                  { value: "30d", label: "30d" },
+                  { value: "all", label: "All" },
+                ]}
+                ariaLabel="Audit time filter"
+              />
+            </div>
+            <AdminField label="Search audit" className="lg:w-64">
+              <AdminInput
+                type="search"
+                value={auditSearch}
+                onChange={(event) => {
+                  setAuditSearch(event.target.value);
+                  setAuditOffset(0);
+                }}
+                placeholder="Slug, actor, or ID"
+              />
+            </AdminField>
+            <AdminButton
               type="button"
               onClick={() => {
                 void handleExportAuditCsv();
               }}
               disabled={auditExporting}
-              className="inline-flex items-center gap-2 rounded-full border border-border px-3 py-2 text-xs text-muted transition-colors hover:text-foreground disabled:cursor-not-allowed disabled:opacity-50"
             >
               <Download className="h-3.5 w-3.5" />
               {auditExporting ? "Exporting..." : "Export CSV"}
-            </button>
+            </AdminButton>
           </div>
         </div>
 
@@ -962,7 +949,11 @@ export function AnalyticsDashboard() {
           <p className="mt-3 text-xs text-red-600 dark:text-red-400">{auditExportError}</p>
         )}
 
-        {auditLoading && <p className="mt-4 text-sm text-muted">Loading audit logs...</p>}
+        {auditLoading && (
+          <div className="mt-4">
+            <AdminLoadingState label="Loading audit logs..." />
+          </div>
+        )}
 
         {!auditLoading && auditError && (
           <p className="mt-4 text-sm text-red-600 dark:text-red-400">{auditError.message}</p>
@@ -1017,42 +1008,29 @@ export function AnalyticsDashboard() {
               })}
             </div>
 
-            <div className="mt-5 flex items-center justify-between text-xs text-muted">
-              <span>
-                Page {auditCurrentPage} / {auditTotalPages}
-              </span>
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={() => {
-                    const prev = Math.max(
-                      0,
-                      (auditData?.offset ?? 0) - (auditData?.limit ?? AUDIT_PAGE_SIZE)
-                    );
-                    setAuditOffset(prev);
-                  }}
-                  disabled={(auditData?.offset ?? 0) === 0}
-                  className="inline-flex items-center gap-1 rounded-full border border-border px-3 py-1.5 disabled:cursor-not-allowed disabled:opacity-40"
-                >
-                  <ChevronLeft className="h-3.5 w-3.5" />
-                  Prev
-                </button>
-                <button
-                  onClick={() => {
-                    if (auditData?.nextOffset != null) {
-                      setAuditOffset(auditData.nextOffset);
-                    }
-                  }}
-                  disabled={!auditData?.hasMore}
-                  className="inline-flex items-center gap-1 rounded-full border border-border px-3 py-1.5 disabled:cursor-not-allowed disabled:opacity-40"
-                >
-                  Next
-                  <ChevronRight className="h-3.5 w-3.5" />
-                </button>
-              </div>
+            <div className="mt-5">
+              <AdminPagination
+                page={auditCurrentPage}
+                totalPages={auditTotalPages}
+                hasPrev={(auditData?.offset ?? 0) > 0}
+                hasNext={Boolean(auditData?.hasMore)}
+                onPrev={() => {
+                  const prev = Math.max(
+                    0,
+                    (auditData?.offset ?? 0) - (auditData?.limit ?? AUDIT_PAGE_SIZE)
+                  );
+                  setAuditOffset(prev);
+                }}
+                onNext={() => {
+                  if (auditData?.nextOffset != null) {
+                    setAuditOffset(auditData.nextOffset);
+                  }
+                }}
+              />
             </div>
           </>
         )}
-      </section>
+      </AdminPanel>
     </div>
   );
 }
@@ -1073,9 +1051,9 @@ function MetricCard({
   badge?: ReactNode;
 }) {
   return (
-    <div className={`rounded-2xl border border-border bg-gradient-to-br ${accent} p-5`}>
+    <div className={`rounded-lg border border-[var(--admin-border-soft)] bg-gradient-to-br ${accent} p-4`}>
       <div className="flex items-start justify-between gap-3">
-        <div className="rounded-2xl border border-border bg-background/80 p-2.5">
+        <div className="rounded-md border border-[var(--admin-border-soft)] bg-background/80 p-2.5">
           <Icon className="h-4 w-4 text-foreground" />
         </div>
         {badge}
@@ -1097,7 +1075,7 @@ function MicroStat({
   detail: string;
 }) {
   return (
-    <div className="rounded-2xl border border-border bg-muted/5 p-4">
+    <div className="rounded-lg border border-[var(--admin-border-soft)] bg-muted/5 p-4">
       <p className="text-xs uppercase tracking-[0.18em] text-muted">{label}</p>
       <p className="mt-2 text-xl font-semibold">{value}</p>
       <p className="mt-1 text-xs text-muted">{detail}</p>
@@ -1174,7 +1152,7 @@ function PipelineCard({
   tone: string;
 }) {
   return (
-    <div className={`rounded-2xl border p-4 ${tone}`}>
+    <div className={`rounded-lg border p-4 ${tone}`}>
       <p className="text-xs uppercase tracking-[0.18em]">{label}</p>
       <p className="mt-2 text-2xl font-semibold">{value.toLocaleString()}</p>
     </div>
@@ -1228,58 +1206,172 @@ function LineChart({
 }) {
   const width = 640;
   const height = 220;
-  const padding = 18;
+  const padding = 22;
+  const baseline = height - padding;
   const max = Math.max(...points, ...secondaryPoints, 1);
+  const clampChartY = (value: number) => Math.min(baseline, Math.max(padding, value));
 
-  const buildPath = (values: number[]) =>
-    values
-      .map((value, index) => {
-        const x =
-          values.length === 1
-            ? width / 2
-            : padding + (index * (width - padding * 2)) / (values.length - 1);
-        const y = height - padding - ((value / max) * (height - padding * 2));
-        return `${index === 0 ? "M" : "L"} ${x} ${y}`;
-      })
-      .join(" ");
+  const buildPoints = (values: number[]) =>
+    values.map((value, index) => {
+      const x =
+        values.length === 1
+          ? width / 2
+          : padding + (index * (width - padding * 2)) / (values.length - 1);
+      const y = baseline - (value / max) * (height - padding * 2);
+      return { x, y, value };
+    });
 
-  const primaryPath = buildPath(points);
-  const secondaryPath = buildPath(secondaryPoints);
+  const buildSmoothPath = (chartPoints: Array<{ x: number; y: number }>) => {
+    if (chartPoints.length === 0) return "";
+    if (chartPoints.length === 1) {
+      return `M ${chartPoints[0].x} ${chartPoints[0].y}`;
+    }
+
+    return chartPoints.reduce((path, point, index, all) => {
+      if (index === 0) {
+        return `M ${point.x} ${point.y}`;
+      }
+
+      const previous = all[index - 1];
+      const midpointX = previous.x + (point.x - previous.x) / 2;
+      const controlOneX = midpointX;
+      const controlOneY = clampChartY(previous.y);
+      const controlTwoX = midpointX;
+      const controlTwoY = clampChartY(point.y);
+
+      return `${path} C ${controlOneX} ${controlOneY}, ${controlTwoX} ${controlTwoY}, ${point.x} ${point.y}`;
+    }, "");
+  };
+
+  const primaryPoints = buildPoints(points);
+  const secondaryChartPoints = buildPoints(secondaryPoints);
+  const primaryPath = buildSmoothPath(primaryPoints);
+  const secondaryPath = buildSmoothPath(secondaryChartPoints);
+  const primaryAreaPath =
+    primaryPoints.length > 0
+      ? `${primaryPath} L ${primaryPoints[primaryPoints.length - 1].x} ${baseline} L ${primaryPoints[0].x} ${baseline} Z`
+      : "";
+  const secondaryAreaPath =
+    secondaryChartPoints.length > 0
+      ? `${secondaryPath} L ${secondaryChartPoints[secondaryChartPoints.length - 1].x} ${baseline} L ${secondaryChartPoints[0].x} ${baseline} Z`
+      : "";
+  const peakPoint = primaryPoints.reduce(
+    (peak, point, index) =>
+      point.value > peak.point.value ? { point, index } : peak,
+    { point: primaryPoints[0] ?? { x: padding, y: baseline, value: 0 }, index: 0 }
+  );
+
+  const labelIndexes = new Set(
+    labels.length <= 6
+      ? labels.map((_, index) => index)
+      : [0, Math.floor((labels.length - 1) / 2), labels.length - 1]
+  );
 
   return (
-    <div>
-      <svg viewBox={`0 0 ${width} ${height}`} className="h-52 w-full overflow-visible">
+    <div className="rounded-lg bg-[linear-gradient(180deg,color-mix(in_srgb,var(--background)_97%,var(--foreground)_3%),transparent)] p-2">
+      <svg
+        viewBox={`0 0 ${width} ${height}`}
+        className="h-56 w-full overflow-visible"
+        role="img"
+        aria-label="Smoothed page views and visitors trend"
+      >
+        <defs>
+          <linearGradient id="traffic-pageviews-fill" x1="0" x2="0" y1="0" y2="1">
+            <stop offset="0%" stopColor="rgb(14 165 233)" stopOpacity="0.2" />
+            <stop offset="72%" stopColor="rgb(14 165 233)" stopOpacity="0.03" />
+            <stop offset="100%" stopColor="rgb(14 165 233)" stopOpacity="0" />
+          </linearGradient>
+          <linearGradient id="traffic-visitors-fill" x1="0" x2="0" y1="0" y2="1">
+            <stop offset="0%" stopColor="rgb(16 185 129)" stopOpacity="0.14" />
+            <stop offset="100%" stopColor="rgb(16 185 129)" stopOpacity="0" />
+          </linearGradient>
+          <filter id="traffic-line-soft-shadow" x="-10%" y="-20%" width="120%" height="140%">
+            <feDropShadow dx="0" dy="3" stdDeviation="3" floodOpacity="0.12" />
+          </filter>
+        </defs>
         {[0, 1, 2, 3].map((line) => {
           const y = padding + (line * (height - padding * 2)) / 3;
           return (
-            <line
-              key={line}
-              x1={padding}
-              x2={width - padding}
-              y1={y}
-              y2={y}
-              className="stroke-border/60"
-              strokeWidth="1"
-            />
+            <g key={line}>
+              <line
+                x1={padding}
+                x2={width - padding}
+                y1={y}
+                y2={y}
+                className="stroke-border/45"
+                strokeDasharray={line === 3 ? "0" : "4 8"}
+                strokeWidth="1"
+              />
+              <text
+                x={padding}
+                y={y - 6}
+                className="fill-muted text-[10px]"
+              >
+                {Math.round(max - (line * max) / 3).toLocaleString()}
+              </text>
+            </g>
           );
         })}
-        <path d={secondaryPath} fill="none" className="stroke-emerald-500/60" strokeWidth="2.5" />
-        <path d={primaryPath} fill="none" className="stroke-sky-500" strokeWidth="3" />
+        {primaryAreaPath ? <path d={primaryAreaPath} fill="url(#traffic-pageviews-fill)" /> : null}
+        {secondaryAreaPath ? <path d={secondaryAreaPath} fill="url(#traffic-visitors-fill)" /> : null}
+        <path
+          d={secondaryPath}
+          fill="none"
+          className="stroke-emerald-500/70"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth="2.5"
+        />
+        <path
+          d={primaryPath}
+          fill="none"
+          className="stroke-sky-500"
+          filter="url(#traffic-line-soft-shadow)"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth="3.5"
+        />
+        {primaryPoints.map((point, index) => {
+          const isPeak = index === peakPoint.index && point.value > 0;
+          const showPoint = isPeak || index === 0 || index === primaryPoints.length - 1;
+          if (!showPoint) return null;
+          return (
+            <g key={`point-${index}`}>
+              <circle
+                cx={point.x}
+                cy={point.y}
+                r={isPeak ? 5 : 3.5}
+                className="fill-background stroke-sky-500"
+                strokeWidth="2"
+              />
+              {isPeak ? (
+                <text
+                  x={point.x}
+                  y={Math.max(12, point.y - 12)}
+                  textAnchor="middle"
+                  className="fill-foreground text-[10px] font-semibold"
+                >
+                  Peak {point.value.toLocaleString()}
+                </text>
+              ) : null}
+            </g>
+          );
+        })}
       </svg>
-      <div className="mt-3 flex items-center justify-between gap-2 overflow-hidden text-[10px] text-muted">
+      <div className="mt-1 grid gap-2 text-[10px] text-muted" style={{ gridTemplateColumns: `repeat(${labels.length}, minmax(0, 1fr))` }}>
         {labels.map((label, index) => (
-          <span key={`${label}-${index}`} className="min-w-0 flex-1 truncate text-center">
-            {label}
+          <span key={`${label}-${index}`} className="min-w-0 truncate text-center">
+            {labelIndexes.has(index) ? label : ""}
           </span>
         ))}
       </div>
-      <div className="mt-3 flex items-center gap-4 text-xs text-muted">
+      <div className="mt-4 flex flex-wrap items-center gap-4 text-xs text-muted">
         <span className="inline-flex items-center gap-2">
-          <span className="h-2.5 w-2.5 rounded-full bg-sky-500" />
+          <span className="h-2 w-5 rounded-full bg-sky-500" />
           Page Views
         </span>
         <span className="inline-flex items-center gap-2">
-          <span className="h-2.5 w-2.5 rounded-full bg-emerald-500/70" />
+          <span className="h-2 w-5 rounded-full bg-emerald-500/70" />
           Visitors
         </span>
       </div>
@@ -1408,12 +1500,6 @@ function formatAuditAction(action: string): string {
   if (action === "submission.approve") return "Submission Approved";
   if (action === "submission.reject") return "Submission Rejected";
   return action;
-}
-
-function formatAuditActionFilter(action: AuditActionFilter): string {
-  if (action === "submission.approve") return "Approve";
-  if (action === "submission.reject") return "Reject";
-  return "All Actions";
 }
 
 function formatAuditActor(type: string, id: string): string {

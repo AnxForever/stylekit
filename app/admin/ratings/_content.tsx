@@ -1,26 +1,42 @@
 "use client";
 
 import { useCallback, useMemo, useState } from "react";
+import { AlertTriangle, RefreshCw, Star, Trash2 } from "lucide-react";
 import {
-  ChevronLeft,
-  ChevronRight,
-  RefreshCw,
-  Trash2,
-  AlertTriangle,
-} from "lucide-react";
+  AdminBadge,
+  AdminButton,
+  AdminCountPill,
+  AdminEmptyState,
+  AdminErrorState,
+  AdminField,
+  AdminInput,
+  AdminLoadingState,
+  AdminPagination,
+  AdminPanel,
+  AdminSelect,
+  AdminTableShell,
+  AdminToolbar,
+} from "@/components/admin/admin-ui";
 import { useAdminRatings } from "@/lib/swr";
 
 const PAGE_SIZE = 20;
 
-function renderStars(rating: number) {
-  return Array.from({ length: 5 }, (_, i) => (
-    <span
-      key={i}
-      className={i < rating ? "text-foreground" : "text-muted/30"}
-    >
-      *
+function RatingStars({ rating }: { rating: number }) {
+  return (
+    <span className="inline-flex items-center gap-0.5">
+      {Array.from({ length: 5 }, (_, index) => (
+        <Star
+          key={index}
+          className={`h-3.5 w-3.5 ${
+            index < rating
+              ? "fill-amber-400 text-amber-400"
+              : "fill-muted/15 text-muted/25"
+          }`}
+        />
+      ))}
+      <span className="ml-1 text-muted">{rating}/5</span>
     </span>
-  ));
+  );
 }
 
 export function AdminRatingsContent() {
@@ -39,10 +55,12 @@ export function AdminRatingsContent() {
     anomalies: anomaliesOnly,
   });
 
+  const ratings = useMemo(() => data?.ratings ?? [], [data?.ratings]);
+
   const currentPage = useMemo(() => {
-    const l = data?.limit ?? PAGE_SIZE;
-    const o = data?.offset ?? offset;
-    return Math.floor(o / l) + 1;
+    const limit = data?.limit ?? PAGE_SIZE;
+    const currentOffset = data?.offset ?? offset;
+    return Math.floor(currentOffset / limit) + 1;
   }, [data?.limit, data?.offset, offset]);
 
   const totalPages = useMemo(() => {
@@ -50,15 +68,10 @@ export function AdminRatingsContent() {
     return Math.max(1, Math.ceil(data.total / data.limit));
   }, [data]);
 
-  const allVisibleIds = useMemo(
-    () => (data?.ratings ?? []).map((r) => r.id),
-    [data?.ratings]
-  );
+  const allVisibleIds = useMemo(() => ratings.map((rating) => rating.id), [ratings]);
 
   const allSelected = useMemo(
-    () =>
-      allVisibleIds.length > 0 &&
-      allVisibleIds.every((id) => selectedIds.has(id)),
+    () => allVisibleIds.length > 0 && allVisibleIds.every((id) => selectedIds.has(id)),
     [allVisibleIds, selectedIds]
   );
 
@@ -122,257 +135,213 @@ export function AdminRatingsContent() {
 
   const maxDistCount = useMemo(() => {
     if (!data?.distribution) return 0;
-    return Math.max(...data.distribution.map((d) => d.count), 1);
+    return Math.max(...data.distribution.map((item) => item.count), 1);
   }, [data?.distribution]);
 
   if (isLoading) {
-    return <p className="text-muted">Loading ratings...</p>;
+    return <AdminLoadingState label="Loading ratings..." />;
   }
 
   if (error) {
-    return (
-      <div className="p-6 border border-red-300 bg-red-50 dark:bg-red-900/10 rounded-lg">
-        <p className="text-red-600 dark:text-red-400">{error.message}</p>
-        <button
-          onClick={() => mutate()}
-          className="mt-3 px-4 py-2 text-sm bg-foreground text-background rounded-md"
-        >
-          Retry
-        </button>
-      </div>
-    );
+    return <AdminErrorState message={error.message} onRetry={() => mutate()} />;
   }
 
   return (
-    <div className="space-y-6">
-      {/* Filter Bar */}
-      <div className="border border-border rounded-lg p-6">
-        <div className="flex flex-wrap items-end gap-4">
-          <div className="flex flex-col gap-1">
-            <label className="text-xs text-muted">Style slug</label>
-            <input
-              value={slug}
-              onChange={(e) => {
-                setSlug(e.target.value);
-                setOffset(0);
+    <div className="space-y-5">
+      <AdminToolbar
+        title="Rating queue"
+        description="Filter ratings by style, score, and anomaly state before bulk removal."
+        meta={
+          <AdminCountPill tone={anomaliesOnly ? "warning" : "neutral"}>
+            {ratings.length} / {data?.total ?? 0}
+          </AdminCountPill>
+        }
+        actions={
+          <>
+            <AdminButton
+              onClick={() => {
+                void handleDelete();
               }}
-              placeholder="e.g. neo-brutalism"
-              className="h-8 w-44 rounded-md border border-border bg-background px-2.5 text-xs text-foreground placeholder:text-muted"
-            />
-          </div>
-          <div className="flex flex-col gap-1">
-            <label className="text-xs text-muted">Rating</label>
-            <select
-              value={ratingFilter ?? ""}
-              onChange={(e) => {
-                const val = e.target.value;
-                setRatingFilter(val ? Number(val) : null);
-                setOffset(0);
-              }}
-              className="h-8 w-28 rounded-md border border-border bg-background px-2.5 text-xs text-foreground"
+              disabled={selectedIds.size === 0 || deleting}
+              tone="danger"
             >
-              <option value="">All</option>
-              <option value="1">1 star</option>
-              <option value="2">2 stars</option>
-              <option value="3">3 stars</option>
-              <option value="4">4 stars</option>
-              <option value="5">5 stars</option>
-            </select>
-          </div>
-          <button
-            onClick={() => {
-              setAnomaliesOnly((prev) => !prev);
+              <Trash2 className="h-4 w-4" />
+              {deleting
+                ? "Deleting..."
+                : `Delete${selectedIds.size > 0 ? ` (${selectedIds.size})` : ""}`}
+            </AdminButton>
+            <AdminButton
+              onClick={() => {
+                void mutate();
+              }}
+              size="icon"
+              aria-label="Refresh ratings"
+            >
+              <RefreshCw className="h-4 w-4" />
+            </AdminButton>
+          </>
+        }
+      >
+        <AdminField label="Style slug" className="lg:w-56">
+          <AdminInput
+            value={slug}
+            onChange={(event) => {
+              setSlug(event.target.value);
               setOffset(0);
             }}
-            className={`inline-flex items-center gap-1.5 h-8 px-3 rounded-md border text-xs font-medium transition-colors ${
-              anomaliesOnly
-                ? "border-yellow-500 bg-yellow-50 text-yellow-700 dark:bg-yellow-900/20 dark:text-yellow-300 dark:border-yellow-600"
-                : "border-border text-muted hover:text-foreground"
-            }`}
-          >
-            <AlertTriangle className="w-3.5 h-3.5" />
-            Anomalies
-          </button>
-          <button
-            onClick={resetFilters}
-            className="px-3 py-1.5 text-xs rounded-md border border-border text-muted hover:text-foreground transition-colors"
-          >
-            Reset
-          </button>
-          <button
-            onClick={() => {
-              void mutate();
+            placeholder="e.g. neo-brutalism"
+          />
+        </AdminField>
+        <AdminField label="Rating" className="lg:w-40">
+          <AdminSelect
+            value={ratingFilter ?? ""}
+            onChange={(event) => {
+              const nextValue = event.target.value;
+              setRatingFilter(nextValue ? Number(nextValue) : null);
+              setOffset(0);
             }}
-            className="p-2 text-muted hover:text-foreground transition-colors"
-            aria-label="Refresh ratings"
           >
-            <RefreshCw className="w-4 h-4" />
-          </button>
-        </div>
-      </div>
+            <option value="">All</option>
+            <option value="1">1 star</option>
+            <option value="2">2 stars</option>
+            <option value="3">3 stars</option>
+            <option value="4">4 stars</option>
+            <option value="5">5 stars</option>
+          </AdminSelect>
+        </AdminField>
+        <AdminButton
+          onClick={() => {
+            setAnomaliesOnly((prev) => !prev);
+            setOffset(0);
+          }}
+          tone={anomaliesOnly ? "primary" : "neutral"}
+          className="mt-[18px]"
+        >
+          <AlertTriangle className="h-4 w-4" />
+          Anomalies
+        </AdminButton>
+        <AdminButton onClick={resetFilters} className="mt-[18px]">
+          Reset
+        </AdminButton>
+      </AdminToolbar>
 
-      {/* Distribution Chart */}
-      {data?.distribution && data.distribution.length > 0 && (
-        <div className="border border-border rounded-lg p-6">
-          <h2 className="text-sm font-medium mb-4">Rating Distribution</h2>
-          <div className="space-y-2">
-            {data.distribution.map((d) => (
-              <div key={d.rating} className="flex items-center gap-3">
-                <span className="text-xs text-muted w-14 text-right">
-                  {d.rating} star{d.rating !== 1 ? "s" : ""}
-                </span>
-                <div className="flex-1 h-5 bg-muted/10 rounded overflow-hidden">
+      {data?.distribution && data.distribution.length > 0 ? (
+        <AdminPanel className="p-5">
+          <div className="mb-4 flex items-center justify-between">
+            <h2 className="text-sm font-semibold">Rating distribution</h2>
+            <AdminBadge>{data.distribution.reduce((sum, item) => sum + item.count, 0)} total</AdminBadge>
+          </div>
+          <div className="grid gap-3 md:grid-cols-5">
+            {data.distribution.map((item) => (
+              <div key={item.rating} className="rounded-md border border-[var(--admin-border-soft)] p-3">
+                <div className="flex items-center justify-between text-xs text-muted">
+                  <span>{item.rating} star{item.rating !== 1 ? "s" : ""}</span>
+                  <span className="tabular-nums">{item.count}</span>
+                </div>
+                <div className="mt-3 h-2 overflow-hidden rounded-full bg-muted/15">
                   <div
-                    className="h-full bg-foreground/20 rounded"
-                    style={{
-                      width: `${(d.count / maxDistCount) * 100}%`,
-                    }}
+                    className="h-full rounded-full bg-amber-400"
+                    style={{ width: `${(item.count / maxDistCount) * 100}%` }}
                   />
                 </div>
-                <span className="text-xs text-muted w-10">{d.count}</span>
               </div>
             ))}
           </div>
-        </div>
-      )}
+        </AdminPanel>
+      ) : null}
 
-      {/* Actions Bar */}
-      <div className="flex items-center justify-between">
-        <span className="text-xs text-muted">
-          {data?.ratings.length ?? 0} / {data?.total ?? 0} ratings
-        </span>
-        <button
-          onClick={() => {
-            void handleDelete();
-          }}
-          disabled={selectedIds.size === 0 || deleting}
-          className="inline-flex items-center gap-1.5 rounded-md border border-border px-3 py-1.5 text-xs text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/10 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
-        >
-          <Trash2 className="w-3.5 h-3.5" />
-          {deleting
-            ? "Deleting..."
-            : `Delete${selectedIds.size > 0 ? ` (${selectedIds.size})` : ""}`}
-        </button>
-      </div>
-
-      {/* Ratings Table */}
-      {(data?.ratings.length ?? 0) === 0 ? (
-        <p className="text-sm text-muted">No ratings found.</p>
+      {ratings.length === 0 ? (
+        <AdminEmptyState
+          title="No ratings found"
+          description="Adjust filters or wait for new ratings to arrive."
+        />
       ) : (
-        <div className="border border-border rounded-lg overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b border-border bg-muted/5">
-                <th className="px-4 py-3 text-left w-10">
+        <AdminTableShell>
+          <thead>
+            <tr className="border-b border-[var(--admin-border-soft)]">
+              <th className="w-10 px-4 py-3 text-left">
+                <label className="flex h-11 w-11 items-center justify-center rounded-md hover:bg-muted/10">
                   <input
                     type="checkbox"
                     checked={allSelected}
                     onChange={toggleSelectAll}
                     aria-label="Select all ratings"
                   />
-                </th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-muted">
-                  Style
-                </th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-muted">
-                  Rating
-                </th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-muted">
-                  User / Session
-                </th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-muted">
-                  IP
-                </th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-muted">
-                  Date
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {(data?.ratings ?? []).map((rating) => (
-                <tr
-                  key={rating.id}
-                  className="border-b border-border/60 hover:bg-muted/5"
-                >
-                  <td className="px-4 py-3">
+                </label>
+              </th>
+              <th className="px-4 py-3 text-left">Style</th>
+              <th className="px-4 py-3 text-left">Rating</th>
+              <th className="px-4 py-3 text-left">User / Session</th>
+              <th className="px-4 py-3 text-left">IP</th>
+              <th className="px-4 py-3 text-left">Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            {ratings.map((rating) => (
+              <tr
+                key={rating.id}
+                className="border-b border-[var(--admin-border-soft)] transition-colors last:border-0 hover:bg-muted/5"
+              >
+                <td className="px-4 py-3">
+                  <label className="flex h-11 w-11 items-center justify-center rounded-md hover:bg-muted/10">
                     <input
                       type="checkbox"
                       checked={selectedIds.has(rating.id)}
                       onChange={() => toggleSelect(rating.id)}
                       aria-label={`Select rating for ${rating.style_slug}`}
                     />
-                  </td>
-                  <td className="px-4 py-3 text-xs font-medium whitespace-nowrap">
-                    {rating.style_slug}
-                  </td>
-                  <td className="px-4 py-3 text-xs whitespace-nowrap font-mono">
-                    {renderStars(rating.rating)}{" "}
-                    <span className="text-muted">{rating.rating}/5</span>
-                  </td>
-                  <td className="px-4 py-3 text-xs text-muted whitespace-nowrap">
-                    <span className="inline-flex items-center gap-1">
-                      {anomaliesOnly && (
-                        <AlertTriangle className="w-3 h-3 text-yellow-500" />
-                      )}
-                      {rating.session_id
-                        ? rating.session_id.slice(0, 8) + "..."
-                        : rating.user_id ?? "-"}
-                    </span>
-                  </td>
-                  <td className="px-4 py-3 text-xs text-muted whitespace-nowrap">
-                    {rating.ip_address ?? "-"}
-                  </td>
-                  <td className="px-4 py-3 text-xs text-muted whitespace-nowrap">
-                    {new Date(rating.created_at).toLocaleString()}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+                  </label>
+                </td>
+                <td className="px-4 py-3 text-xs font-medium whitespace-nowrap">
+                  <code>{rating.style_slug}</code>
+                </td>
+                <td className="px-4 py-3 text-xs whitespace-nowrap">
+                  <RatingStars rating={rating.rating} />
+                </td>
+                <td className="px-4 py-3 text-xs text-muted whitespace-nowrap">
+                  <span className="inline-flex items-center gap-1.5">
+                    {anomaliesOnly ? (
+                      <AlertTriangle className="h-3.5 w-3.5 text-amber-500" />
+                    ) : null}
+                    {rating.session_id
+                      ? `${rating.session_id.slice(0, 8)}...`
+                      : rating.user_id ?? "-"}
+                  </span>
+                </td>
+                <td className="px-4 py-3 text-xs text-muted whitespace-nowrap">
+                  {rating.ip_address ?? "-"}
+                </td>
+                <td className="px-4 py-3 text-xs text-muted whitespace-nowrap">
+                  {new Date(rating.created_at).toLocaleString()}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </AdminTableShell>
       )}
 
-      {/* Pagination */}
-      {(data?.total ?? 0) > 0 && (
-        <div className="flex items-center justify-between text-xs text-muted">
-          <span>
-            Page {currentPage} / {totalPages}
-          </span>
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => {
-                const prev = Math.max(
-                  0,
-                  (data?.offset ?? 0) - (data?.limit ?? PAGE_SIZE)
-                );
-                setOffset(prev);
-              }}
-              disabled={(data?.offset ?? 0) === 0}
-              className="inline-flex items-center gap-1 rounded-md border border-border px-2 py-1 disabled:opacity-40 disabled:cursor-not-allowed"
-            >
-              <ChevronLeft className="w-3.5 h-3.5" />
-              Prev
-            </button>
-            <button
-              onClick={() => {
-                const nextOffset =
-                  (data?.offset ?? 0) + (data?.limit ?? PAGE_SIZE);
-                if (nextOffset < (data?.total ?? 0)) {
-                  setOffset(nextOffset);
-                }
-              }}
-              disabled={
-                (data?.offset ?? 0) + (data?.limit ?? PAGE_SIZE) >=
-                (data?.total ?? 0)
-              }
-              className="inline-flex items-center gap-1 rounded-md border border-border px-2 py-1 disabled:opacity-40 disabled:cursor-not-allowed"
-            >
-              Next
-              <ChevronRight className="w-3.5 h-3.5" />
-            </button>
-          </div>
-        </div>
-      )}
+      {(data?.total ?? 0) > 0 ? (
+        <AdminPagination
+          page={currentPage}
+          totalPages={totalPages}
+          summary={`Showing ${(data?.offset ?? 0) + 1}-${Math.min(
+            (data?.offset ?? 0) + (data?.limit ?? PAGE_SIZE),
+            data?.total ?? 0
+          )} of ${data?.total ?? 0}`}
+          hasPrev={(data?.offset ?? 0) > 0}
+          hasNext={(data?.offset ?? 0) + (data?.limit ?? PAGE_SIZE) < (data?.total ?? 0)}
+          onPrev={() => {
+            const prev = Math.max(0, (data?.offset ?? 0) - (data?.limit ?? PAGE_SIZE));
+            setOffset(prev);
+          }}
+          onNext={() => {
+            const nextOffset = (data?.offset ?? 0) + (data?.limit ?? PAGE_SIZE);
+            if (nextOffset < (data?.total ?? 0)) {
+              setOffset(nextOffset);
+            }
+          }}
+        />
+      ) : null}
     </div>
   );
 }

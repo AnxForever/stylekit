@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { AdminPage } from "@/components/admin/admin-page";
 import { AnalyticsDashboard } from "./_content";
 
 export const metadata: Metadata = {
@@ -8,12 +9,11 @@ export const metadata: Metadata = {
 
 export default function AdminAnalyticsPage() {
   return (
-    <>
-      <h1 className="text-3xl font-bold mb-2">Analytics Dashboard</h1>
-      <p className="text-muted mb-8">
-        Usage metrics, popular styles, and engagement trends.
-      </p>
+    <AdminPage
+      title="Analytics Dashboard"
+      description="Usage metrics, popular styles, engagement trends, and moderation trace in one operational view."
+    >
       <AnalyticsDashboard />
-    </>
+    </AdminPage>
   );
 }

@@ -7,12 +7,24 @@ import { DbStatusBanner } from "@/components/admin/db-status-banner";
 export default function AdminLayout({ children }: { children: ReactNode }) {
   return (
     <AdminSidebarProvider>
-      <div className="min-h-screen flex flex-col">
+      <style
+        dangerouslySetInnerHTML={{
+          __html: `
+            body:has(.admin-shell) {
+              padding-bottom: 0;
+            }
+            body:has(.admin-shell) > nav[aria-label="Mobile navigation"] {
+              display: none;
+            }
+          `,
+        }}
+      />
+      <div className="admin-shell min-h-screen bg-[var(--admin-canvas)] text-foreground">
         <AdminHeader />
-        <div className="flex flex-1">
+        <div className="flex min-h-screen">
           <AdminSidebar />
-          <main className="flex-1 min-w-0">
-            <div className="max-w-6xl mx-auto px-6 md:px-12 py-8 md:py-12">
+          <main className="min-w-0 flex-1 lg:pl-72">
+            <div className="mx-auto max-w-[1480px] px-3 py-4 sm:px-5 lg:px-7 lg:py-6">
               <DbStatusBanner />
               {children}
             </div>

@@ -1,13 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { X, LogOut, Sparkles } from "lucide-react";
 import { adminNavItems } from "@/lib/admin/nav";
-import { useAdminSidebar } from "./admin-sidebar-provider";
 import { useI18n } from "@/lib/i18n/context";
-import { useRouter } from "next/navigation";
 import type { TranslationKey } from "@/lib/i18n/translations";
-import { X, LogOut } from "lucide-react";
+import { useAdminSidebar } from "./admin-sidebar-provider";
 
 export function AdminSidebar() {
   const pathname = usePathname();
@@ -23,38 +22,44 @@ export function AdminSidebar() {
 
   return (
     <>
-      {/* Mobile overlay */}
-      {open && (
+      {open ? (
         <div
-          className="fixed inset-0 z-40 bg-black/40 lg:hidden"
+          className="fixed inset-0 z-40 bg-black/45 backdrop-blur-sm lg:hidden"
           onClick={close}
         />
-      )}
+      ) : null}
 
-      {/* Sidebar */}
       <aside
-        className={`fixed top-0 left-0 z-50 h-full w-60 border-r border-border bg-background transition-transform lg:static lg:translate-x-0 flex flex-col ${
+        className={`fixed left-0 top-0 z-50 flex h-full w-72 flex-col border-r border-[var(--admin-border-soft)] bg-[var(--admin-rail)] shadow-2xl shadow-black/10 backdrop-blur transition-transform lg:translate-x-0 lg:shadow-none ${
           open ? "translate-x-0" : "-translate-x-full"
         }`}
       >
-        <div className="flex items-center justify-between px-4 py-4 border-b border-border lg:py-6">
+        <div className="flex items-center justify-between border-b border-[var(--admin-border-soft)] px-4 py-4">
           <Link
             href="/admin/analytics"
-            className="text-lg font-bold"
+            className="flex min-w-0 items-center gap-3"
             onClick={close}
           >
-            Admin
+            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md border border-[var(--admin-border-soft)] bg-foreground text-background">
+              <Sparkles className="h-4 w-4" />
+            </span>
+            <span className="min-w-0">
+              <span className="block text-sm font-semibold leading-5">
+                StyleKit
+              </span>
+              <span className="block text-xs text-muted">Admin console</span>
+            </span>
           </Link>
           <button
             onClick={close}
-            className="p-1 text-muted hover:text-foreground lg:hidden"
+            className="rounded-md p-2 text-muted transition-colors hover:bg-muted/10 hover:text-foreground lg:hidden"
             aria-label="Close sidebar"
           >
-            <X className="w-5 h-5" />
+            <X className="h-5 w-5" />
           </button>
         </div>
 
-        <nav className="px-2 py-4 space-y-1 flex-1">
+        <nav className="flex-1 space-y-1 px-3 py-4">
           {adminNavItems.map((item) => {
             const isActive =
               pathname === item.href || pathname.startsWith(item.href + "/");
@@ -63,25 +68,25 @@ export function AdminSidebar() {
                 key={item.href}
                 href={item.href}
                 onClick={close}
-                className={`flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                className={`group flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium transition-colors ${
                   isActive
-                    ? "bg-foreground text-background"
-                    : "text-muted hover:text-foreground hover:bg-muted/10"
+                    ? "bg-foreground text-background shadow-sm"
+                    : "text-muted hover:bg-muted/10 hover:text-foreground"
                 }`}
               >
-                <item.icon className="w-4 h-4 shrink-0" />
+                <item.icon className="h-4 w-4 shrink-0" />
                 {t(item.labelKey as TranslationKey)}
               </Link>
             );
           })}
         </nav>
 
-        <div className="px-2 py-4 border-t border-border">
+        <div className="border-t border-[var(--admin-border-soft)] p-3">
           <button
             onClick={handleLogout}
-            className="flex items-center gap-3 px-3 py-2 w-full rounded-md text-sm font-medium text-muted hover:text-foreground hover:bg-muted/10 transition-colors"
+            className="flex w-full items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium text-muted transition-colors hover:bg-muted/10 hover:text-foreground"
           >
-            <LogOut className="w-4 h-4 shrink-0" />
+            <LogOut className="h-4 w-4 shrink-0" />
             Logout
           </button>
         </div>

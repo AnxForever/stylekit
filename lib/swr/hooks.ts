@@ -203,7 +203,11 @@ export function useCommunityFeed(query: CommunityFeedQuery = {}) {
 }
 
 export function useAnalyticsDashboard(range: DashboardRange = "7d") {
-  return useSWR<DashboardData>(`/api/admin/analytics?range=${range}`);
+  return useSWR<DashboardData>(`/api/admin/analytics?range=${range}`, {
+    keepPreviousData: true,
+    dedupingInterval: 15_000,
+    revalidateOnFocus: false,
+  });
 }
 
 interface AdminAuditQuery {
@@ -228,7 +232,11 @@ export function useAdminAuditEvents(query: AdminAuditQuery = {}) {
     params.set("search", query.search.trim());
   }
 
-  return useSWR<AdminAuditData>(`/api/admin/audit?${params.toString()}`);
+  return useSWR<AdminAuditData>(`/api/admin/audit?${params.toString()}`, {
+    keepPreviousData: true,
+    dedupingInterval: 10_000,
+    revalidateOnFocus: false,
+  });
 }
 
 export function useProfileComments(userId: string | undefined) {
@@ -288,7 +296,11 @@ export function useAdminComments(query: AdminCommentsQuery = {}) {
   if (query.from) params.set("from", query.from);
   if (query.to) params.set("to", query.to);
 
-  return useSWR<AdminCommentsData>(`/api/admin/comments?${params.toString()}`);
+  return useSWR<AdminCommentsData>(`/api/admin/comments?${params.toString()}`, {
+    keepPreviousData: true,
+    dedupingInterval: 10_000,
+    revalidateOnFocus: false,
+  });
 }
 
 // ---------- Admin Users ----------
@@ -380,7 +392,11 @@ interface AdminSystemData {
 }
 
 export function useAdminSystem() {
-  return useSWR<AdminSystemData>("/api/admin/system");
+  return useSWR<AdminSystemData>("/api/admin/system", {
+    keepPreviousData: true,
+    dedupingInterval: 15_000,
+    revalidateOnFocus: false,
+  });
 }
 
 // ---------- Admin Generator Telemetry ----------
@@ -504,7 +520,11 @@ export function useAdminGeneratorTelemetry(query: AdminGeneratorTelemetryQuery =
     params.set("groupBy", query.groupBy);
   }
 
-  return useSWR<AdminGeneratorTelemetryData>(`/api/admin/generator?${params.toString()}`);
+  return useSWR<AdminGeneratorTelemetryData>(`/api/admin/generator?${params.toString()}`, {
+    keepPreviousData: true,
+    dedupingInterval: 10_000,
+    revalidateOnFocus: false,
+  });
 }
 
 // ---------- Admin Styles ----------
@@ -546,7 +566,11 @@ export function useAdminStyles(query: AdminStylesQuery = {}) {
   if (query.search?.trim()) params.set("search", query.search.trim());
 
   const qs = params.toString();
-  return useSWR<AdminStylesData>(`/api/admin/styles${qs ? `?${qs}` : ""}`);
+  return useSWR<AdminStylesData>(`/api/admin/styles${qs ? `?${qs}` : ""}`, {
+    keepPreviousData: true,
+    dedupingInterval: 10_000,
+    revalidateOnFocus: false,
+  });
 }
 
 // ---------- Admin Ratings ----------
@@ -590,7 +614,11 @@ export function useAdminRatings(query: AdminRatingsQuery = {}) {
   if (query.rating != null) params.set("rating", String(query.rating));
   if (query.anomalies) params.set("anomalies", "true");
 
-  return useSWR<AdminRatingsData>(`/api/admin/ratings?${params.toString()}`);
+  return useSWR<AdminRatingsData>(`/api/admin/ratings?${params.toString()}`, {
+    keepPreviousData: true,
+    dedupingInterval: 10_000,
+    revalidateOnFocus: false,
+  });
 }
 
 // Re-export types

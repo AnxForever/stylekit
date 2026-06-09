@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { AdminPage } from "@/components/admin/admin-page";
 import { SubmissionsReview } from "./_content";
 
 export const metadata: Metadata = {
@@ -8,12 +9,11 @@ export const metadata: Metadata = {
 
 export default function AdminSubmissionsPage() {
   return (
-    <>
-      <h1 className="text-3xl font-bold mb-2">Style Submissions</h1>
-      <p className="text-muted mb-8">
-        Review community-submitted styles. Approve to add to the catalog or reject with feedback.
-      </p>
+    <AdminPage
+      title="Style Submissions"
+      description="Review community-submitted styles, edit metadata, archive approved entries, or reject with feedback."
+    >
       <SubmissionsReview />
-    </>
+    </AdminPage>
   );
 }

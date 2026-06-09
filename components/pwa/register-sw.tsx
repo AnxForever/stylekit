@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 import { Download, X } from "lucide-react";
 
 interface BeforeInstallPromptEvent extends Event {
@@ -36,6 +37,8 @@ function postponeReminder(durationMs: number) {
 }
 
 export function RegisterSW() {
+  const pathname = usePathname();
+  const isAdminRoute = pathname?.startsWith("/admin");
   const [deferredPrompt, setDeferredPrompt] =
     useState<BeforeInstallPromptEvent | null>(null);
   const [isVisible, setIsVisible] = useState(false);
@@ -73,6 +76,7 @@ export function RegisterSW() {
 
     // Show a lightweight install reminder only when user is eligible.
     const handler = (event: Event) => {
+      if (window.location.pathname.startsWith("/admin")) return;
       const reminderUntil = readReminderUntil();
       if (reminderUntil > Date.now()) return;
       event.preventDefault();
@@ -84,6 +88,7 @@ export function RegisterSW() {
     return () => window.removeEventListener("beforeinstallprompt", handler);
   }, []);
 
+  if (isAdminRoute) return null;
   if (!deferredPrompt || !isVisible) return null;
 
   const handleInstall = async () => {
@@ -116,14 +121,14 @@ export function RegisterSW() {
         <button
           type="button"
           onClick={handleInstall}
-          className="rounded-full bg-foreground px-2.5 py-1 text-[11px] font-medium text-background hover:opacity-90"
+          className="min-h-11 rounded-full bg-foreground px-3 text-xs font-medium text-background hover:opacity-90"
         >
           安装
         </button>
         <button
           type="button"
           onClick={handleDismiss}
-          className="rounded-full p-1 text-muted-foreground hover:text-foreground"
+          className="flex h-11 w-11 items-center justify-center rounded-full text-muted-foreground hover:text-foreground"
           aria-label="关闭安装提醒"
         >
           <X className="h-3.5 w-3.5" />

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { AdminPage } from "@/components/admin/admin-page";
 import { AdminStylesContent } from "./_content";
 
 export const metadata: Metadata = {
@@ -8,12 +9,11 @@ export const metadata: Metadata = {
 
 export default function AdminStylesPage() {
   return (
-    <>
-      <h1 className="text-3xl font-bold mb-2">Style Overview</h1>
-      <p className="text-muted mb-8">
-        Aggregated engagement metrics for all styles.
-      </p>
+    <AdminPage
+      title="Style Overview"
+      description="Scan style catalog performance by views, ratings, comments, favorites, and category."
+    >
       <AdminStylesContent />
-    </>
+    </AdminPage>
   );
 }
