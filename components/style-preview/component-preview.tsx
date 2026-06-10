@@ -140,7 +140,7 @@ function generatePreviewHTML(code: string): string {
     .replace(/\{\/\*[\s\S]*?\*\/\}/g, "")
     // Convert self-closing non-void elements: <div ... /> → <div ...></div>
     .replace(
-      new RegExp(`<(${BLOCK_ELEMENTS})((?:[^>]|"[^"]*"|'[^']*')*?)\\s*\\/>`, "g"),
+      new RegExp(`<(${BLOCK_ELEMENTS})((?:[^>"]+?|"[^"]*"|'[^']*')*?)\\s*\\/>`, "g"),
       "<$1$2></$1>"
     )
     .trim();
