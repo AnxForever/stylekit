@@ -11,6 +11,10 @@ import type { NextRequest } from "next/server";
 import { createServerClient } from "@supabase/ssr";
 import { isAdminUserId } from "@/lib/auth/admin-policy";
 import {
+  ADMIN_SESSION_COOKIE_NAME,
+  verifyAdminSessionCookieValue,
+} from "@/lib/auth/admin-session";
+import {
   addLocaleToPathname,
   DEFAULT_LOCALE,
   detectPreferredLocale,
@@ -45,6 +49,21 @@ function shouldUseLocalizedFilesystemRoute(pathname: string): boolean {
     pathname.startsWith("/blog") ||
     pathname.startsWith("/animations")
   );
+}
+
+function isAdminRoute(pathname: string): boolean {
+  return pathname === "/admin" || pathname.startsWith("/admin/");
+}
+
+function buildAdminLoginRedirect(request: NextRequest) {
+  const redirectUrl = request.nextUrl.clone();
+  redirectUrl.pathname = "/admin-login";
+  redirectUrl.search = "";
+  const currentPath = `${request.nextUrl.pathname}${request.nextUrl.search}`;
+  if (currentPath.startsWith("/admin")) {
+    redirectUrl.searchParams.set("next", currentPath);
+  }
+  return NextResponse.redirect(redirectUrl);
 }
 
 export async function proxy(request: NextRequest) {
@@ -126,6 +145,30 @@ export async function proxy(request: NextRequest) {
     });
   };
 
+  const isAdminRequest = isAdminRoute(effectivePath);
+  const adminSessionCookie = request.cookies.get(ADMIN_SESSION_COOKIE_NAME)?.value;
+  const hasAdminPasswordSession =
+    await verifyAdminSessionCookieValue(adminSessionCookie);
+
+  if (effectivePath === "/admin-login" && hasAdminPasswordSession) {
+    const redirectUrl = request.nextUrl.clone();
+    redirectUrl.pathname = "/admin/analytics";
+    redirectUrl.search = "";
+    return NextResponse.redirect(redirectUrl);
+  }
+
+  if (isAdminRequest && hasAdminPasswordSession) {
+    const response = buildResponse();
+    if (localeInPath) {
+      response.cookies.set(LOCALE_COOKIE_NAME, localeInPath, {
+        path: "/",
+        sameSite: "lax",
+        maxAge: 60 * 60 * 24 * 365,
+      });
+    }
+    return response;
+  }
+
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
@@ -133,11 +176,9 @@ export async function proxy(request: NextRequest) {
   if (!url || !key) {
     if (
       process.env.NODE_ENV === "production" &&
-      effectivePath.startsWith("/admin")
+      isAdminRequest
     ) {
-      const redirectUrl = request.nextUrl.clone();
-      redirectUrl.pathname = "/";
-      return NextResponse.redirect(redirectUrl);
+      return buildAdminLoginRedirect(request);
     }
 
     const response = buildResponse();
@@ -183,24 +224,18 @@ export async function proxy(request: NextRequest) {
     } = await supabase.auth.getUser();
 
     // Protect /admin routes
-    if (effectivePath.startsWith("/admin")) {
+    if (isAdminRequest) {
       if (!user) {
-        const redirectUrl = request.nextUrl.clone();
-        redirectUrl.pathname = "/";
-        return NextResponse.redirect(redirectUrl);
+        return buildAdminLoginRedirect(request);
       }
 
       if (!isAdminUserId(user.id)) {
-        const redirectUrl = request.nextUrl.clone();
-        redirectUrl.pathname = "/";
-        return NextResponse.redirect(redirectUrl);
+        return buildAdminLoginRedirect(request);
       }
     }
-  } else if (effectivePath.startsWith("/admin")) {
+  } else if (isAdminRequest) {
     // No auth cookie + admin route = redirect immediately
-    const redirectUrl = request.nextUrl.clone();
-    redirectUrl.pathname = "/";
-    return NextResponse.redirect(redirectUrl);
+    return buildAdminLoginRedirect(request);
   }
 
   if (localeInPath) {

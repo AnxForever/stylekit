@@ -1,9 +1,13 @@
 import { createHash, timingSafeEqual } from "node:crypto";
 import { getServerUser } from "@/lib/auth/supabase-server";
 import { getAdminApiToken, isAdminUserId } from "@/lib/auth/admin-policy";
+import {
+  ADMIN_SESSION_COOKIE_NAME,
+  verifyAdminSessionCookieValue,
+} from "@/lib/auth/admin-session";
 
 export interface AdminActor {
-  type: "user" | "token" | "dev-bypass";
+  type: "user" | "token" | "password-session" | "dev-bypass";
   id: string;
 }
 
@@ -36,13 +40,25 @@ export async function checkAdminApiAccess(
     };
   }
 
+  const adminSessionCookie = getRequestCookie(request, ADMIN_SESSION_COOKIE_NAME);
+  if (await verifyAdminSessionCookieValue(adminSessionCookie)) {
+    return {
+      allowed: true,
+      actor: {
+        type: "password-session",
+        id: "admin-password-session",
+      },
+    };
+  }
+
   const hasAuthCookie = hasSupabaseAuthCookie(request);
   if (!hasAuthCookie) {
     if (configuredToken) {
       return {
         allowed: false,
         status: 401,
-        error: "Unauthorized. Provide a valid admin token or sign in as admin.",
+        error:
+          "Unauthorized. Provide a valid admin token or sign in to the admin console.",
       };
     }
 
@@ -86,7 +102,8 @@ export async function checkAdminApiAccess(
     return {
       allowed: false,
       status: 401,
-      error: "Unauthorized. Provide a valid admin token or sign in as admin.",
+      error:
+        "Unauthorized. Provide a valid admin token or sign in to the admin console.",
     };
   }
 
@@ -119,6 +136,31 @@ function getRequestAdminToken(request: Request): string | null {
 
   const cleaned = token?.trim();
   return cleaned ? cleaned : null;
+}
+
+function getRequestCookie(request: Request, name: string): string | null {
+  const rawCookie = request.headers.get("cookie");
+  if (!rawCookie) {
+    return null;
+  }
+
+  for (const part of rawCookie.split(";")) {
+    const [rawName, ...rawValue] = part.trim().split("=");
+    if (rawName === name) {
+      const value = rawValue.join("=").trim();
+      if (!value) {
+        return null;
+      }
+
+      try {
+        return decodeURIComponent(value);
+      } catch {
+        return null;
+      }
+    }
+  }
+
+  return null;
 }
 
 function tokensMatch(expected: string, actual: string): boolean {
