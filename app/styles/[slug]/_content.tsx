@@ -17,7 +17,6 @@ import { IdeExportButtons } from "@/components/export/ide-export-buttons";
 import { VersionBadge } from "@/components/styles/version-badge";
 import { StyleRating } from "@/components/styles/style-rating";
 import { StyleComments } from "@/components/styles/style-comments";
-import { StyleSEOSection } from "@/components/style-preview/style-seo-section";
 import { CollapsibleSection } from "@/components/ui/collapsible-section";
 import { LazySection } from "@/components/ui/lazy-section";
 import { useI18n } from "@/lib/i18n/context";
@@ -54,7 +53,6 @@ export function StyleDetailContent({
   changelog,
 }: Props) {
   const { t, locale } = useI18n();
-  const [isSeoExpanded, setIsSeoExpanded] = useState(false);
   const showcaseContainerRef = useRef<HTMLDivElement>(null);
   const [showcaseScale, setShowcaseScale] = useState(0);
 
@@ -516,47 +514,6 @@ export function StyleDetailContent({
         </section>
       )}
 
-      {/* SEO Extended */}
-      <section id="style-seo" className="border-t border-border">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-12 py-12 md:py-16">
-          <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-            <div>
-              <p className="text-xs tracking-widest uppercase text-muted mb-4">
-                {locale === "zh" ? "延伸阅读" : "Further Reading"}
-              </p>
-              <h2 className="text-2xl md:text-3xl mb-3">
-                {locale === "zh"
-                  ? "更完整的提示词、FAQ 与适用场景"
-                  : "Prompt examples, FAQ, and extended use cases"}
-              </h2>
-              <p className="text-muted max-w-2xl">
-                {locale === "zh"
-                  ? "这部分更适合已经确定方向、准备继续深挖这个风格的人。"
-                  : "This section is better for readers who already like the direction and want more depth."}
-              </p>
-            </div>
-            <button
-              type="button"
-              onClick={() => setIsSeoExpanded((current) => !current)}
-              className="inline-flex items-center justify-center px-4 py-2 border border-border text-sm tracking-wide hover:border-foreground transition-colors"
-            >
-              {isSeoExpanded
-                ? (locale === "zh" ? "收起延伸内容" : "Hide extended content")
-                : (locale === "zh" ? "展开延伸内容" : "Show extended content")}
-            </button>
-          </div>
-        </div>
-      </section>
-
-      {isSeoExpanded && (
-        <StyleSEOSection
-          styleName={style.name}
-          styleNameEn={style.nameEn}
-          styleSlug={style.slug}
-          description={style.description}
-          keywords={style.keywords}
-        />
-      )}
     </>
   );
 }

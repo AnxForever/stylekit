@@ -57,6 +57,78 @@ export function MagneticButton({ children }: { children: React.ReactNode }) {
 }`,
     },
     {
+      label: "AnimeJS",
+      language: "tsx",
+      code: `"use client";
+
+import { useEffect, useRef, type MouseEvent, type ReactNode } from "react";
+
+type AnimeModule = typeof import("animejs");
+type AnimeAnimation = {
+  cancel(): unknown;
+  revert(): unknown;
+};
+
+function prefersReducedMotion() {
+  return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+}
+
+export function MagneticButton({ children }: { children: ReactNode }) {
+  const ref = useRef<HTMLButtonElement>(null);
+  const animeRef = useRef<Promise<AnimeModule> | null>(null);
+  const animationRef = useRef<AnimeAnimation | null>(null);
+
+  useEffect(() => {
+    return () => {
+      animationRef.current?.revert();
+    };
+  }, []);
+
+  function getAnime() {
+    animeRef.current ??= import("animejs");
+    return animeRef.current;
+  }
+
+  async function moveTo(x: number, y: number, duration = 180) {
+    const element = ref.current;
+    if (!element || prefersReducedMotion()) return;
+
+    const { animate } = await getAnime();
+    if (ref.current !== element) return;
+
+    animationRef.current?.cancel();
+    animationRef.current = animate(element, {
+      x,
+      y,
+      duration,
+      ease: "out(3)",
+    });
+  }
+
+  function handleMouseMove(event: MouseEvent<HTMLButtonElement>) {
+    const element = ref.current;
+    if (!element) return;
+
+    const { clientX, clientY } = event;
+    const { height, width, left, top } = element.getBoundingClientRect();
+    const x = (clientX - (left + width / 2)) * 0.3;
+    const y = (clientY - (top + height / 2)) * 0.3;
+    void moveTo(x, y);
+  }
+
+  return (
+    <button
+      ref={ref}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={() => void moveTo(0, 0, 420)}
+      className="px-6 py-3 bg-foreground text-background will-change-transform"
+    >
+      {children}
+    </button>
+  );
+}`,
+    },
+    {
       label: "Framer Motion",
       language: "tsx",
       code: `import { useRef, useState } from "react";

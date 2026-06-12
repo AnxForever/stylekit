@@ -93,6 +93,61 @@ export const elasticSnap: Animation = {
 }`,
     },
     {
+      label: "AnimeJS",
+      language: "tsx",
+      code: `"use client";
+
+import { useEffect, useRef, type ReactNode } from "react";
+
+type AnimeAnimation = {
+  cancel(): unknown;
+};
+
+function prefersReducedMotion() {
+  return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+}
+
+export function ElasticSnapButton({ children }: { children: ReactNode }) {
+  const buttonRef = useRef<HTMLButtonElement>(null);
+  const animationRef = useRef<AnimeAnimation | null>(null);
+
+  useEffect(() => {
+    return () => {
+      animationRef.current?.cancel();
+    };
+  }, []);
+
+  async function triggerSnap() {
+    const button = buttonRef.current;
+    if (!button || prefersReducedMotion()) return;
+
+    const { animate } = await import("animejs");
+    if (buttonRef.current !== button) return;
+
+    animationRef.current?.cancel();
+    button.style.transform = "";
+
+    animationRef.current = animate(button, {
+      scaleX: [1, 1.25, 0.9, 1.08, 0.97, 1],
+      scaleY: [1, 0.9, 1.08, 0.96, 1.02, 1],
+      duration: 800,
+      ease: "outElastic(1, .55)",
+    });
+  }
+
+  return (
+    <button
+      ref={buttonRef}
+      type="button"
+      onClick={() => void triggerSnap()}
+      className="will-change-transform"
+    >
+      {children}
+    </button>
+  );
+}`,
+    },
+    {
       label: "Framer Motion",
       language: "tsx",
       code: `import { motion } from "framer-motion";

@@ -38,7 +38,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   return {
     title: `${style.name} (${style.nameEn})`,
     description,
-    keywords: style.keywords,
+    keywords: style.keywords,
     openGraph: {
       title: `${style.name} (${style.nameEn}) — StyleKit`,
       description,
@@ -118,38 +118,6 @@ export default async function StyleDetailPage({
     category: style.category,
   });
 
-  // FAQ Schema for SEO
-  const faqSchema = {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    mainEntity: [
-      {
-        "@type": "Question",
-        name: `What is ${style.nameEn} design style?`,
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: style.description,
-        },
-      },
-      {
-        "@type": "Question",
-        name: `How to implement ${style.nameEn} with Tailwind CSS?`,
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: `StyleKit provides complete design tokens for ${style.nameEn} (colors, spacing, border-radius, shadows, and more) that you can export directly into your Tailwind configuration. It also offers component-level code snippets and AI Rules to quickly implement this style in your project.`,
-        },
-      },
-      {
-        "@type": "Question",
-        name: `Which AI tools support ${style.nameEn} prompts?`,
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: `AI coding tools like v0 (Vercel), Cursor, and Claude can all use ${style.nameEn} style prompts. StyleKit provides pre-formatted AI Rules that can be exported as Cursor Rules, Claude Code configs, and other formats.`,
-        },
-      },
-    ],
-  };
-
   const breadcrumbSchema = generateBreadcrumbJsonLd([
     { name: "Home", url: BASE_URL },
     { name: "Styles", url: `${BASE_URL}/styles` },
@@ -161,10 +129,6 @@ export default async function StyleDetailPage({
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: serializeJsonLd(jsonLd) }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: serializeJsonLd(faqSchema) }}
       />
       <script
         type="application/ld+json"

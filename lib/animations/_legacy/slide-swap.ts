@@ -108,6 +108,103 @@ export const slideSwap: Animation = {
 }`,
     },
     {
+      label: "AnimeJS",
+      language: "tsx",
+      code: `"use client";
+
+import { useEffect, useRef, useState, type ReactNode } from "react";
+
+type AnimeAnimation = {
+  cancel(): unknown;
+};
+
+function prefersReducedMotion() {
+  return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+}
+
+export function SlideSwap({ items }: { items: ReactNode[] }) {
+  const [active, setActive] = useState(0);
+  const [exiting, setExiting] = useState<number | null>(null);
+  const activeRef = useRef<HTMLDivElement>(null);
+  const exitingRef = useRef<HTMLDivElement>(null);
+  const activeAnimationRef = useRef<AnimeAnimation | null>(null);
+  const exitingAnimationRef = useRef<AnimeAnimation | null>(null);
+
+  useEffect(() => {
+    return () => {
+      activeAnimationRef.current?.cancel();
+      exitingAnimationRef.current?.cancel();
+    };
+  }, []);
+
+  useEffect(() => {
+    const activeElement = activeRef.current;
+    if (!activeElement || prefersReducedMotion()) return;
+
+    let cancelled = false;
+
+    async function run() {
+      const { animate } = await import("animejs");
+      if (cancelled || activeRef.current !== activeElement) return;
+
+      activeAnimationRef.current?.cancel();
+      activeAnimationRef.current = animate(activeElement, {
+        x: [30, 0],
+        opacity: [0, 1],
+        duration: 400,
+        ease: "out(4)",
+      });
+
+      const exitingElement = exitingRef.current;
+      if (!exitingElement) return;
+
+      exitingAnimationRef.current?.cancel();
+      const animation = animate(exitingElement, {
+        x: [0, -30],
+        opacity: [1, 0],
+        duration: 400,
+        ease: "out(4)",
+        onComplete: () => setExiting(null),
+      });
+      exitingAnimationRef.current = animation;
+    }
+
+    void run();
+    return () => {
+      cancelled = true;
+    };
+  }, [active, exiting]);
+
+  function next() {
+    const nextActive = (active + 1) % items.length;
+    if (prefersReducedMotion()) {
+      setExiting(null);
+      setActive(nextActive);
+      return;
+    }
+    if (exiting !== null) return;
+    setExiting(active);
+    setActive(nextActive);
+  }
+
+  return (
+    <div>
+      <div className="relative overflow-hidden">
+        {exiting !== null && (
+          <div ref={exitingRef} className="absolute inset-0">
+            {items[exiting]}
+          </div>
+        )}
+        <div ref={activeRef}>{items[active]}</div>
+      </div>
+      <button type="button" onClick={next}>
+        Next
+      </button>
+    </div>
+  );
+}`,
+    },
+    {
       label: "Framer Motion",
       language: "tsx",
       code: `import { motion, AnimatePresence } from "framer-motion";

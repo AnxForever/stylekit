@@ -98,6 +98,103 @@ export const crossfade: Animation = {
 }`,
     },
     {
+      label: "AnimeJS",
+      language: "tsx",
+      code: `"use client";
+
+import { useEffect, useRef, useState, type ReactNode } from "react";
+
+type AnimeAnimation = {
+  cancel(): unknown;
+};
+
+function prefersReducedMotion() {
+  return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+}
+
+export function CrossfadeTabs({ panels }: { panels: ReactNode[] }) {
+  const [active, setActive] = useState(0);
+  const [exiting, setExiting] = useState<number | null>(null);
+  const activeRef = useRef<HTMLDivElement>(null);
+  const exitingRef = useRef<HTMLDivElement>(null);
+  const activeAnimationRef = useRef<AnimeAnimation | null>(null);
+  const exitingAnimationRef = useRef<AnimeAnimation | null>(null);
+
+  useEffect(() => {
+    return () => {
+      activeAnimationRef.current?.cancel();
+      exitingAnimationRef.current?.cancel();
+    };
+  }, []);
+
+  useEffect(() => {
+    const activeElement = activeRef.current;
+    if (!activeElement || prefersReducedMotion()) return;
+
+    let cancelled = false;
+
+    async function run() {
+      const { animate } = await import("animejs");
+      if (cancelled || activeRef.current !== activeElement) return;
+
+      activeAnimationRef.current?.cancel();
+      activeAnimationRef.current = animate(activeElement, {
+        opacity: [0, 1],
+        duration: 500,
+        ease: "inOut(2)",
+      });
+
+      const exitingElement = exitingRef.current;
+      if (!exitingElement) return;
+
+      exitingAnimationRef.current?.cancel();
+      const animation = animate(exitingElement, {
+        opacity: [1, 0],
+        duration: 500,
+        ease: "inOut(2)",
+        onComplete: () => setExiting(null),
+      });
+      exitingAnimationRef.current = animation;
+    }
+
+    void run();
+    return () => {
+      cancelled = true;
+    };
+  }, [active, exiting]);
+
+  function select(nextActive: number) {
+    if (nextActive === active) return;
+    if (prefersReducedMotion()) {
+      setExiting(null);
+      setActive(nextActive);
+      return;
+    }
+    if (exiting !== null) return;
+    setExiting(active);
+    setActive(nextActive);
+  }
+
+  return (
+    <div>
+      {panels.map((_, index) => (
+        <button key={index} type="button" onClick={() => select(index)}>
+          Tab {index + 1}
+        </button>
+      ))}
+      <div className="relative overflow-hidden">
+        {exiting !== null && (
+          <div ref={exitingRef} className="absolute inset-0">
+            {panels[exiting]}
+          </div>
+        )}
+        <div ref={activeRef}>{panels[active]}</div>
+      </div>
+    </div>
+  );
+}`,
+    },
+    {
       label: "Framer Motion",
       language: "tsx",
       code: `import { motion, AnimatePresence } from "framer-motion";

@@ -69,17 +69,18 @@ export async function requestGitHubStars(): Promise<number | null> {
   if (typeof window === "undefined") return null;
   if (inFlight) return inFlight;
 
-  inFlight = fetch(`https://api.github.com/repos/${REPO}`, {
-    headers: { Accept: "application/vnd.github.v3+json" },
-  })
+  inFlight = fetch("/api/github-stars")
     .then((res) => {
       if (!res.ok) {
         throw new Error(`GitHub API ${res.status}`);
       }
-      return res.json() as Promise<{ stargazers_count?: number }>;
+      return res.json() as Promise<{ stargazers_count?: number | null }>;
     })
     .then((data) => {
-      const fresh = data.stargazers_count ?? 0;
+      const fresh =
+        typeof data.stargazers_count === "number" ? data.stargazers_count : null;
+      if (fresh === null) return memoryCount;
+
       memoryCount = fresh;
       setCachedCount(fresh);
       notifyListeners();

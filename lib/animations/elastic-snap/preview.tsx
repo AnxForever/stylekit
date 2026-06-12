@@ -1,34 +1,51 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef } from "react";
+import { loadAnime, prefersReducedMotion, type AnimeAnimation } from "../anime-utils";
 import { PreviewContainer } from "../previews/_shared";
 
 export function ElasticSnapPreview() {
-  const [snapping, setSnapping] = useState(false);
+  const buttonRef = useRef<HTMLButtonElement>(null);
+  const animationRef = useRef<AnimeAnimation | null>(null);
 
-  function trigger() {
-    setSnapping(true);
-    setTimeout(() => setSnapping(false), 800);
-  }
+  useEffect(() => {
+    return () => {
+      animationRef.current?.cancel();
+    };
+  }, []);
+
+  const trigger = async () => {
+    const button = buttonRef.current;
+    if (!button || prefersReducedMotion()) return;
+
+    const { animate } = await loadAnime();
+    if (buttonRef.current !== button) return;
+
+    animationRef.current?.cancel();
+    button.style.transform = "";
+
+    const animation = animate(button, {
+      scaleX: [1, 1.25, 0.9, 1.08, 0.97, 1],
+      scaleY: [1, 0.9, 1.08, 0.96, 1.02, 1],
+      duration: 800,
+      ease: "outElastic(1, .55)",
+      onComplete: () => {
+        if (animationRef.current === animation) {
+          animationRef.current = null;
+        }
+      },
+    });
+
+    animationRef.current = animation;
+  };
 
   return (
     <PreviewContainer bg="gradient">
-      <style>{`
-        @keyframes elasticSnap {
-          0% { transform: scaleX(1); }
-          30% { transform: scaleX(1.25); }
-          50% { transform: scaleX(0.9); }
-          70% { transform: scaleX(1.08); }
-          85% { transform: scaleX(0.97); }
-          100% { transform: scaleX(1); }
-        }
-        .animate-elastic-snap {
-          animation: elasticSnap 800ms cubic-bezier(0.68, -0.55, 0.27, 1.55) forwards;
-        }
-      `}</style>
       <button
-        onClick={trigger}
-        className={`rounded-lg bg-foreground px-6 py-3 text-sm font-medium text-background shadow-lg transition-colors hover:opacity-90 ${snapping ? "animate-elastic-snap" : ""}`}
+        ref={buttonRef}
+        type="button"
+        onClick={() => void trigger()}
+        className="rounded-lg bg-foreground px-6 py-3 text-sm font-medium text-background shadow-lg transition-colors hover:opacity-90 will-change-transform"
       >
         Click to snap
       </button>

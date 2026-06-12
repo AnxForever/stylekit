@@ -97,6 +97,60 @@ export const shake: Animation = {
 }`,
     },
     {
+      label: "AnimeJS",
+      language: "tsx",
+      code: `"use client";
+
+import { useEffect, useRef, type ReactNode } from "react";
+
+type AnimeAnimation = {
+  cancel(): unknown;
+};
+
+function prefersReducedMotion() {
+  return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+}
+
+export function ShakeFeedback({ children }: { children: ReactNode }) {
+  const targetRef = useRef<HTMLDivElement>(null);
+  const animationRef = useRef<AnimeAnimation | null>(null);
+
+  useEffect(() => {
+    return () => {
+      animationRef.current?.cancel();
+    };
+  }, []);
+
+  async function triggerShake() {
+    const target = targetRef.current;
+    if (!target || prefersReducedMotion()) return;
+
+    const { animate } = await import("animejs");
+    if (targetRef.current !== target) return;
+
+    animationRef.current?.cancel();
+    target.style.transform = "";
+
+    animationRef.current = animate(target, {
+      x: [0, -10, 10, -8, 8, -6, 4, -2, 0],
+      duration: 500,
+      ease: "inOut(2)",
+    });
+  }
+
+  return (
+    <div>
+      <div ref={targetRef} className="will-change-transform">
+        {children}
+      </div>
+      <button type="button" onClick={() => void triggerShake()}>
+        Trigger shake
+      </button>
+    </div>
+  );
+}`,
+    },
+    {
       label: "Framer Motion",
       language: "tsx",
       code: `import { motion } from "framer-motion";
