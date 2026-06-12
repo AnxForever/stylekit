@@ -116,7 +116,7 @@ function generateStyleFile(input: StyleScaffoldInput, exportName: string): strin
   );
 
   return [
-    `import type { DesignStyle } from "./index";`,
+    `import type { DesignStyle } from "./types";`,
     ``,
     `export const ${exportName}: DesignStyle = ${serialized};`,
     ``,

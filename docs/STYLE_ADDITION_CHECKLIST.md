@@ -225,7 +225,7 @@ Complete checklist for adding a new design style to StyleKit.
 
 ### 5.3 Visual Check
 
-- [ ] Run `npm run dev`
+- [ ] Run `pnpm run dev`
 - [ ] Visit `/styles` - verify style appears in gallery with correct cover
 - [ ] Visit `/styles/{slug}` - verify docs page loads
 - [ ] Visit `/styles/{slug}/showcase` - verify showcase renders with all sections

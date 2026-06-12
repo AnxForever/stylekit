@@ -1,4 +1,4 @@
-import { DesignStyle } from "./index";
+import type { DesignStyle } from "./types";
 
 export const generativeArt: DesignStyle = {
   slug: "generative-art",

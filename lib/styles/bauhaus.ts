@@ -1,4 +1,4 @@
-import { DesignStyle } from "./index";
+import type { DesignStyle } from "./types";
 import { bauhausAtoms } from "./atoms";
 
 export const bauhaus: DesignStyle = {

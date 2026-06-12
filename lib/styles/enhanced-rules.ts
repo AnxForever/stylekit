@@ -1,7 +1,7 @@
 // Enhanced AI Rules Generator
 // Generates comprehensive, self-validating AI instructions
 
-import type { DesignStyle } from "./index";
+import type { DesignStyle } from "./types";
 import type { StyleTokens } from "./tokens";
 
 interface EnhancedRulesOptions {

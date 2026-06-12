@@ -1,4 +1,4 @@
-import { DesignStyle } from "./index";
+import type { DesignStyle } from "./types";
 import { glassmorphismAtoms } from "./atoms";
 
 export const glassmorphism: DesignStyle = {

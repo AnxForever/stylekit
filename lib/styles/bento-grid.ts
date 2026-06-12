@@ -1,4 +1,4 @@
-import { DesignStyle } from "./index";
+import type { DesignStyle } from "./types";
 import { bentoGridAtoms } from "./atoms/bento-grid";
 
 export const bentoGrid: DesignStyle = {

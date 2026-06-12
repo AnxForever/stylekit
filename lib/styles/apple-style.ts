@@ -1,4 +1,4 @@
-import { DesignStyle } from "./index";
+import type { DesignStyle } from "./types";
 import { appleStyleAtoms } from "./atoms";
 
 export const appleStyle: DesignStyle = {

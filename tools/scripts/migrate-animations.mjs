@@ -147,4 +147,4 @@ console.log("\nNext steps:");
 console.log("  1. Delete old flat files: rm lib/animations/*.ts (keep types.ts, index.ts, meta.ts)");
 console.log("  2. Delete old preview files: rm lib/animations/previews/*-preview.tsx");
 console.log("  3. Update lib/animations/index.ts imports");
-console.log("  4. Run: npx tsc --noEmit && npm run build");
+console.log("  4. Run: pnpm run typecheck && pnpm run build");

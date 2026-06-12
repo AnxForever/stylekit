@@ -1,4 +1,4 @@
-import { DesignStyle } from "./index";
+import type { DesignStyle } from "./types";
 import { neoBrutalistAtoms } from "./atoms";
 
 export const neoBrutalist: DesignStyle = {

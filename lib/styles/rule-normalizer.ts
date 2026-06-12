@@ -1,4 +1,4 @@
-import type { DesignStyle } from "./index";
+import type { DesignStyle } from "./types";
 
 type RulePolarity = "pos" | "neg";
 type SectionKind = "required" | "forbidden" | "other";

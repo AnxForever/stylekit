@@ -1,4 +1,4 @@
-import { DesignStyle } from "./index";
+import type { DesignStyle } from "./types";
 
 export const magazineGrid: DesignStyle = {
   slug: "magazine-grid",
@@ -115,10 +115,9 @@ Core principles:
       code: `<article className="group flex flex-col gap-4 cursor-pointer">
   <a href="#" className="block">
     <div className="relative overflow-hidden rounded-lg">
-      <img
-        src="/placeholder.jpg"
-        alt="Article thumbnail"
-        className="w-full aspect-[16/10] object-cover grayscale-[20%] group-hover:grayscale-0 group-hover:scale-105 transition-all duration-500 ease-out"
+      <div
+        aria-label="Article thumbnail"
+        className="w-full aspect-[16/10] bg-[linear-gradient(135deg,#264653_0%,#2a9d8f_60%,#1a1a1a_100%)] grayscale-[20%] group-hover:grayscale-0 group-hover:scale-105 transition-all duration-500 ease-out"
       />
       <span className="absolute top-4 left-4 px-3 py-1 text-xs font-semibold uppercase bg-red-600 text-white rounded">
         Featured
@@ -241,7 +240,7 @@ Core principles:
       <article className="md:col-span-2 lg:row-span-2 group">
         <a href="#" className="block h-full">
           <div className="relative h-full min-h-[300px] rounded-xl overflow-hidden">
-            <img src="/placeholder.jpg" alt="" className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+            <div className="absolute inset-0 w-full h-full bg-[linear-gradient(135deg,#264653_0%,#2a9d8f_60%,#1a1a1a_100%)] group-hover:scale-105 transition-transform duration-500" />
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
             <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
               <span className="inline-block px-3 py-1 text-xs font-semibold uppercase bg-red-600 rounded mb-3">Featured</span>
@@ -260,7 +259,7 @@ Core principles:
       <article className="group">
         <a href="#" className="block">
           <div className="rounded-lg overflow-hidden mb-3">
-            <img src="/placeholder.jpg" alt="" className="w-full aspect-video object-cover group-hover:scale-105 transition-transform duration-300" />
+            <div className="w-full aspect-video bg-[linear-gradient(135deg,#e63946_0%,#264653_100%)] group-hover:scale-105 transition-transform duration-300" />
           </div>
           <span className="text-xs font-semibold uppercase tracking-wider text-emerald-600">Business</span>
           <h3 className="font-bold text-zinc-900 mt-1 group-hover:text-red-600 transition-colors">Secondary Article Title</h3>
@@ -270,7 +269,7 @@ Core principles:
       <article className="group">
         <a href="#" className="block">
           <div className="rounded-lg overflow-hidden mb-3">
-            <img src="/placeholder.jpg" alt="" className="w-full aspect-video object-cover group-hover:scale-105 transition-transform duration-300" />
+            <div className="w-full aspect-video bg-[linear-gradient(135deg,#e9c46a_0%,#e63946_100%)] group-hover:scale-105 transition-transform duration-300" />
           </div>
           <span className="text-xs font-semibold uppercase tracking-wider text-amber-600">Culture</span>
           <h3 className="font-bold text-zinc-900 mt-1 group-hover:text-red-600 transition-colors">Another Article Title Here</h3>
@@ -280,7 +279,7 @@ Core principles:
       <article className="group">
         <a href="#" className="block">
           <div className="rounded-lg overflow-hidden mb-3">
-            <img src="/placeholder.jpg" alt="" className="w-full aspect-video object-cover group-hover:scale-105 transition-transform duration-300" />
+            <div className="w-full aspect-video bg-[linear-gradient(135deg,#1a1a1a_0%,#264653_100%)] group-hover:scale-105 transition-transform duration-300" />
           </div>
           <span className="text-xs font-semibold uppercase tracking-wider text-blue-600">Tech</span>
           <h3 className="font-bold text-zinc-900 mt-1 group-hover:text-red-600 transition-colors">Tech News Article</h3>
@@ -290,7 +289,7 @@ Core principles:
       <article className="group">
         <a href="#" className="block">
           <div className="rounded-lg overflow-hidden mb-3">
-            <img src="/placeholder.jpg" alt="" className="w-full aspect-video object-cover group-hover:scale-105 transition-transform duration-300" />
+            <div className="w-full aspect-video bg-[linear-gradient(135deg,#2a9d8f_0%,#264653_100%)] group-hover:scale-105 transition-transform duration-300" />
           </div>
           <span className="text-xs font-semibold uppercase tracking-wider text-purple-600">Opinion</span>
           <h3 className="font-bold text-zinc-900 mt-1 group-hover:text-red-600 transition-colors">Opinion Piece Title</h3>
