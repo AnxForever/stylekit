@@ -13,6 +13,7 @@ const NON_LOCALIZED_PREFIXES = [
   "/api-test",
 ];
 const NON_LOCALIZED_EXACT = new Set([
+  "/admin-login",
   "/favicon.ico",
   "/manifest.json",
   "/robots.txt",

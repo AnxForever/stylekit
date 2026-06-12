@@ -1,0 +1,92 @@
+import { afterEach, describe, expect, it } from "vitest";
+import { DELETE, POST } from "@/app/api/admin/auth/route";
+import { ADMIN_SESSION_COOKIE_NAME } from "@/lib/auth/admin-session";
+
+const ORIGINAL_ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
+const ORIGINAL_ADMIN_PASSWORD_SHA256 = process.env.ADMIN_PASSWORD_SHA256;
+const ORIGINAL_ADMIN_SESSION_SECRET = process.env.ADMIN_SESSION_SECRET;
+const TEST_ADMIN_PASSWORD = ["correct", "password"].join("-");
+const WRONG_ADMIN_PASSWORD = ["wrong", "password"].join("-");
+const TEST_SESSION_KEY = ["test", "session", "key"].join("-");
+
+afterEach(() => {
+  if (ORIGINAL_ADMIN_PASSWORD === undefined) {
+    delete process.env.ADMIN_PASSWORD;
+  } else {
+    process.env.ADMIN_PASSWORD = ORIGINAL_ADMIN_PASSWORD;
+  }
+
+  if (ORIGINAL_ADMIN_PASSWORD_SHA256 === undefined) {
+    delete process.env.ADMIN_PASSWORD_SHA256;
+  } else {
+    process.env.ADMIN_PASSWORD_SHA256 = ORIGINAL_ADMIN_PASSWORD_SHA256;
+  }
+
+  if (ORIGINAL_ADMIN_SESSION_SECRET === undefined) {
+    delete process.env.ADMIN_SESSION_SECRET;
+  } else {
+    process.env.ADMIN_SESSION_SECRET = ORIGINAL_ADMIN_SESSION_SECRET;
+  }
+});
+
+describe("POST /api/admin/auth", () => {
+  it("sets an admin session cookie for a valid password", async () => {
+    process.env.ADMIN_PASSWORD = TEST_ADMIN_PASSWORD;
+    process.env.ADMIN_SESSION_SECRET = TEST_SESSION_KEY;
+
+    const response = await POST(
+      new Request("https://stylekit.top/api/admin/auth", {
+        method: "POST",
+        body: JSON.stringify({ password: TEST_ADMIN_PASSWORD }),
+      })
+    );
+
+    expect(response.status).toBe(200);
+    await expect(response.json()).resolves.toEqual({ ok: true });
+    const setCookie = response.headers.get("set-cookie") ?? "";
+    expect(setCookie).toContain(ADMIN_SESSION_COOKIE_NAME);
+    expect(setCookie).toContain("HttpOnly");
+    expect(setCookie.toLowerCase()).toContain("samesite=lax");
+  });
+
+  it("rejects invalid passwords", async () => {
+    process.env.ADMIN_PASSWORD = TEST_ADMIN_PASSWORD;
+    process.env.ADMIN_SESSION_SECRET = TEST_SESSION_KEY;
+
+    const response = await POST(
+      new Request("https://stylekit.top/api/admin/auth", {
+        method: "POST",
+        body: JSON.stringify({ password: WRONG_ADMIN_PASSWORD }),
+      })
+    );
+
+    expect(response.status).toBe(401);
+    expect(response.headers.get("set-cookie")).toBeNull();
+  });
+
+  it("returns service unavailable when password login is not configured", async () => {
+    delete process.env.ADMIN_PASSWORD;
+    delete process.env.ADMIN_PASSWORD_SHA256;
+    process.env.ADMIN_SESSION_SECRET = TEST_SESSION_KEY;
+
+    const response = await POST(
+      new Request("https://stylekit.top/api/admin/auth", {
+        method: "POST",
+        body: JSON.stringify({ password: TEST_ADMIN_PASSWORD }),
+      })
+    );
+
+    expect(response.status).toBe(503);
+  });
+});
+
+describe("DELETE /api/admin/auth", () => {
+  it("clears the admin session cookie", async () => {
+    const response = await DELETE();
+
+    expect(response.status).toBe(200);
+    const setCookie = response.headers.get("set-cookie") ?? "";
+    expect(setCookie).toContain(`${ADMIN_SESSION_COOKIE_NAME}=`);
+    expect(setCookie).toContain("Max-Age=0");
+  });
+});
