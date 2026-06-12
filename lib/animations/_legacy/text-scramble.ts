@@ -79,6 +79,59 @@ export const textScramble: Animation = {
 */`,
     },
     {
+      label: "AnimeJS",
+      language: "tsx",
+      code: `"use client";
+
+import { animate, scrambleText } from "animejs";
+import { useEffect, useRef } from "react";
+
+interface TextScrambleProps {
+  text: string;
+  className?: string;
+}
+
+export function TextScramble({ text, className }: TextScrambleProps) {
+  const ref = useRef<HTMLSpanElement>(null);
+
+  useEffect(() => {
+    const element = ref.current;
+    if (!element) return;
+
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      element.textContent = text;
+      return;
+    }
+
+    element.textContent = text;
+
+    const animation = animate(element, {
+      textContent: scrambleText({
+        text,
+        chars: "A-Z0-9!%#_",
+        override: "A-Z0-9!%#_",
+        from: "left",
+        cursor: "_",
+        revealRate: 42,
+        settleDuration: 320,
+        settleRate: 28,
+      }),
+    });
+
+    return () => {
+      animation.revert();
+      element.textContent = text;
+    };
+  }, [text]);
+
+  return (
+    <span ref={ref} className={className}>
+      {text}
+    </span>
+  );
+}`,
+    },
+    {
       label: "Framer Motion",
       language: "tsx",
       code: `"use client";

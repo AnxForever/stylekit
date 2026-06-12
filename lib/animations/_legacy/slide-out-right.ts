@@ -86,6 +86,67 @@ export const slideOutRight: Animation = {
 }`,
     },
     {
+      label: "AnimeJS",
+      language: "tsx",
+      code: `"use client";
+
+import { useEffect, useRef, type ReactNode } from "react";
+
+type AnimeAnimation = {
+  cancel(): unknown;
+};
+
+function prefersReducedMotion() {
+  return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+}
+
+function resetElement(element: HTMLElement) {
+  element.style.opacity = "";
+  element.style.transform = "";
+}
+
+export function SlideOutPanel({ children }: { children: ReactNode }) {
+  const panelRef = useRef<HTMLDivElement>(null);
+  const animationRef = useRef<AnimeAnimation | null>(null);
+
+  useEffect(() => {
+    return () => {
+      animationRef.current?.cancel();
+    };
+  }, []);
+
+  async function closePanel() {
+    const panel = panelRef.current;
+    if (!panel || prefersReducedMotion()) return;
+
+    const { animate } = await import("animejs");
+    if (panelRef.current !== panel) return;
+
+    animationRef.current?.cancel();
+    resetElement(panel);
+
+    animationRef.current = animate(panel, {
+      opacity: [1, 0],
+      x: ["0%", "100%"],
+      duration: 400,
+      ease: "in(2)",
+      onComplete: () => resetElement(panel),
+    });
+  }
+
+  return (
+    <div>
+      <button type="button" onClick={() => void closePanel()}>
+        Close
+      </button>
+      <div ref={panelRef} className="will-change-transform">
+        {children}
+      </div>
+    </div>
+  );
+}`,
+    },
+    {
       label: "Framer Motion",
       language: "tsx",
       code: `import { motion } from "framer-motion";

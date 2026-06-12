@@ -86,6 +86,67 @@ export const scaleOut: Animation = {
 }`,
     },
     {
+      label: "AnimeJS",
+      language: "tsx",
+      code: `"use client";
+
+import { useEffect, useRef, type ReactNode } from "react";
+
+type AnimeAnimation = {
+  cancel(): unknown;
+};
+
+function prefersReducedMotion() {
+  return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+}
+
+function resetElement(element: HTMLElement) {
+  element.style.opacity = "";
+  element.style.transform = "";
+}
+
+export function ScaleOutCard({ children }: { children: ReactNode }) {
+  const cardRef = useRef<HTMLDivElement>(null);
+  const animationRef = useRef<AnimeAnimation | null>(null);
+
+  useEffect(() => {
+    return () => {
+      animationRef.current?.cancel();
+    };
+  }, []);
+
+  async function exitCard() {
+    const card = cardRef.current;
+    if (!card || prefersReducedMotion()) return;
+
+    const { animate } = await import("animejs");
+    if (cardRef.current !== card) return;
+
+    animationRef.current?.cancel();
+    resetElement(card);
+
+    animationRef.current = animate(card, {
+      opacity: [1, 0],
+      scale: [1, 0.85],
+      duration: 300,
+      ease: "in(2)",
+      onComplete: () => resetElement(card),
+    });
+  }
+
+  return (
+    <div>
+      <button type="button" onClick={() => void exitCard()}>
+        Dismiss
+      </button>
+      <div ref={cardRef} className="will-change-transform">
+        {children}
+      </div>
+    </div>
+  );
+}`,
+    },
+    {
       label: "Framer Motion",
       language: "tsx",
       code: `import { motion } from "framer-motion";

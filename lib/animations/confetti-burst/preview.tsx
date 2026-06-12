@@ -1,84 +1,108 @@
 "use client";
 
-import { useState, useCallback, type MouseEvent } from "react";
+import { useEffect, useRef, type MouseEvent } from "react";
+import { loadAnime, prefersReducedMotion, type AnimeAnimation } from "../anime-utils";
 import { PreviewContainer } from "../previews/_shared";
 
 const COLORS = ["#ff006e", "#fb5607", "#ffbe0b", "#8338ec", "#3a86ff", "#06d6a0"];
+const PARTICLE_COUNT = 26;
 
-interface Particle {
-  id: number;
-  x: number;
-  y: number;
-  color: string;
-  dx: number;
-  dy: number;
-  spin: number;
-  shape: "circle" | "rect";
+interface ActiveParticle {
+  animation: AnimeAnimation;
+  element: HTMLSpanElement;
+}
+
+function createParticle(button: HTMLButtonElement, x: number, y: number, index: number) {
+  const particle = document.createElement("span");
+  const color = COLORS[index % COLORS.length];
+  const isCircle = Math.random() > 0.45;
+
+  particle.dataset.confettiParticle = "true";
+  particle.className = "pointer-events-none absolute block will-change-transform";
+  Object.assign(particle.style, {
+    background: color,
+    borderRadius: isCircle ? "50%" : "1px",
+    height: "8px",
+    left: `${x - 4}px`,
+    top: `${y - 4}px`,
+    width: "8px",
+    zIndex: "10",
+  });
+
+  button.appendChild(particle);
+  return particle;
 }
 
 export function ConfettiBurstPreview() {
-  const [particles, setParticles] = useState<Particle[]>([]);
+  const buttonRef = useRef<HTMLButtonElement>(null);
+  const activeParticlesRef = useRef<ActiveParticle[]>([]);
 
-  const handleClick = useCallback((e: MouseEvent<HTMLButtonElement>) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    const ox = e.clientX - rect.left;
-    const oy = e.clientY - rect.top;
+  useEffect(() => {
+    return () => {
+      activeParticlesRef.current.forEach(({ animation, element }) => {
+        animation.cancel();
+        element.remove();
+      });
+      activeParticlesRef.current = [];
+    };
+  }, []);
 
-    const newParticles: Particle[] = Array.from({ length: 24 }, (_, i) => {
-      const angle = (Math.PI * 2 * i) / 24 + (Math.random() - 0.5) * 0.6;
-      const velocity = 50 + Math.random() * 80;
-      return {
-        id: Date.now() + i,
-        x: ox,
-        y: oy,
-        color: COLORS[Math.floor(Math.random() * COLORS.length)],
-        dx: Math.cos(angle) * velocity,
-        dy: Math.sin(angle) * velocity + 100,
-        spin: Math.random() * 720 - 360,
-        shape: Math.random() > 0.5 ? "circle" : "rect",
-      };
+  const removeParticle = (particle: HTMLSpanElement) => {
+    activeParticlesRef.current = activeParticlesRef.current.filter(
+      (entry) => entry.element !== particle
+    );
+    particle.remove();
+  };
+
+  const handleClick = async (event: MouseEvent<HTMLButtonElement>) => {
+    const button = event.currentTarget;
+    const rect = button.getBoundingClientRect();
+    const originX = event.clientX - rect.left;
+    const originY = event.clientY - rect.top;
+
+    if (prefersReducedMotion()) return;
+
+    const { animate } = await loadAnime();
+    if (buttonRef.current !== button) return;
+
+    animate(button, {
+      scale: [0.97, 1],
+      duration: 220,
+      ease: "out(3)",
     });
 
-    setParticles((prev) => [...prev, ...newParticles]);
-    setTimeout(() => {
-      setParticles((prev) => prev.filter((p) => !newParticles.some((np) => np.id === p.id)));
-    }, 1300);
-  }, []);
+    Array.from({ length: PARTICLE_COUNT }, (_, index) => {
+      const angle = (Math.PI * 2 * index) / PARTICLE_COUNT + (Math.random() - 0.5) * 0.5;
+      const velocity = 58 + Math.random() * 90;
+      const particle = createParticle(button, originX, originY, index);
+      const driftX = Math.cos(angle) * velocity;
+      const driftY = Math.sin(angle) * velocity + 104;
+      const spin = Math.random() * 720 - 360;
+
+      const animation = animate(particle, {
+        x: [0, driftX],
+        y: [0, driftY],
+        rotate: ["0deg", `${spin}deg`],
+        scale: [1, 0.35],
+        opacity: [1, 0],
+        duration: 1050 + Math.random() * 220,
+        delay: index * 5,
+        ease: "out(3)",
+        onComplete: () => removeParticle(particle),
+      });
+
+      activeParticlesRef.current.push({ animation, element: particle });
+    });
+  };
 
   return (
     <PreviewContainer bg="light">
-      <style>{`
-        @keyframes confetti-demo {
-          0% { opacity: 1; transform: translate(0, 0) rotate(0deg) scale(1); }
-          100% { opacity: 0; transform: translate(var(--dx), var(--dy)) rotate(var(--spin)) scale(0.3); }
-        }
-      `}</style>
       <button
+        ref={buttonRef}
         onClick={handleClick}
-        className="relative overflow-visible px-6 py-3 bg-zinc-900 text-white text-sm font-medium rounded-lg hover:bg-zinc-800 active:scale-95 transition-all duration-100"
+        className="relative overflow-visible px-6 py-3 bg-zinc-900 text-white text-sm font-medium rounded-lg hover:bg-zinc-800 transition-colors duration-150"
       >
         Click me!
-        {particles.map((p) => (
-          <span
-            key={p.id}
-            className="pointer-events-none absolute"
-            style={{
-              left: p.x,
-              top: p.y,
-              width: 8,
-              height: 8,
-              borderRadius: p.shape === "circle" ? "50%" : "1px",
-              background: p.color,
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              ["--dx" as any]: `${p.dx}px`,
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              ["--dy" as any]: `${p.dy}px`,
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              ["--spin" as any]: `${p.spin}deg`,
-              animation: "confetti-demo 1.2s cubic-bezier(0, 0.9, 0.57, 1) forwards",
-            }}
-          />
-        ))}
       </button>
     </PreviewContainer>
   );

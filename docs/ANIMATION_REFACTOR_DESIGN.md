@@ -163,3 +163,100 @@ During migration, both formats coexist:
 - `components/ui/` stays as-is (UI primitives are separate from animations)
 - Animation detail page URL structure (`/animations/[slug]`) stays the same
 - MCP server and CLI tools — extend later, don't block on this
+
+## 10. AnimeJS Runtime Policy
+
+AnimeJS is used only where it improves the detail-page preview or the copyable
+runtime example. It is not the default animation mechanism for every motion atom.
+
+### Use AnimeJS for
+
+- Click-triggered feedback that needs cancel/replay control.
+- Hover or pointer interactions with continuously changing coordinates.
+- DOM-created particles or ripples that must be cleaned up after completion.
+- Text effects that need runtime mutation such as scrambling.
+- Exit or swap transitions where `onComplete` determines when to reset or remove state.
+- Accordion/collapse-like interactions where measured height is more accurate than CSS `max-height`.
+
+### Keep CSS for
+
+- Pure looping visual samples.
+- Simple entrance animations with no interaction state.
+- Mini previews used in listing cards and vocabulary pages.
+- Decorative gradients, shimmer, pulse, marquee, and skeleton animations.
+- Any animation where CSS keyframes are smaller, clearer, and do not need runtime cleanup.
+
+### Current AnimeJS previews
+
+- `text-scramble`
+- `magnetic-hover`
+- `confetti-burst`
+- `ripple-click`
+- `shake`
+- `elastic-snap`
+- `scale-out`
+- `slide-out-right`
+- `collapse`
+- `slide-swap`
+- `crossfade`
+
+### Implementation rules
+
+- Detail previews should import `loadAnime`, `prefersReducedMotion`, and `AnimeAnimation`
+  from `lib/animations/anime-utils.ts` when they use AnimeJS dynamically.
+- Keep AnimeJS out of global layout, listing cards, and mini previews.
+- Use dynamic `import("animejs")` for interaction-driven previews so detail pages do
+  not pay for AnimeJS until needed.
+- Static AnimeJS imports are acceptable only when a named helper such as
+  `scrambleText` must be available during the effect setup.
+- Every AnimeJS preview must cancel or revert active animations on unmount.
+- DOM-created animation nodes must remove themselves in `onComplete` and during cleanup.
+- Respect `prefers-reduced-motion`; skip motion or switch to an immediate state change.
+
+## 11. Preview Loading And Dev Chunk Recovery
+
+`components/animations/animation-preview.tsx` still uses an explicit preview map because
+Next/Turbopack needs statically analyzable dynamic imports. In development, changing
+preview modules can leave an open browser tab with a stale chunk hash. The preview loader
+therefore has two recovery layers:
+
+- The dynamic loader catches chunk failures and reloads the current URL once per session.
+- A local error boundary renders a `Reload preview` fallback instead of letting a stale
+  chunk crash the full animation detail page.
+
+When editing preview modules in dev:
+
+1. Hard refresh first if a `ChunkLoadError` appears.
+2. If it persists, stop the dev server.
+3. Remove `.next/dev` or run `pnpm run typecheck`, which removes `.next/dev`.
+4. Restart `pnpm dev`.
+5. Re-test the affected animation page in a fresh tab or isolated browser context.
+
+If stale chunks remain frequent, prefer reducing dev-time splitting for high-churn previews
+before changing production behavior.
+
+## 12. Verification Matrix
+
+Every batch that touches animation previews must verify the relevant rows below.
+
+| Scope | Evidence |
+|-------|----------|
+| Formatting | `git diff --check` exits 0 |
+| Static analysis | Targeted `eslint` exits 0 for changed TS/TSX files |
+| Types | `pnpm run typecheck` exits 0 |
+| Detail page loading | The affected `/animations/{slug}` route opens without overlay errors |
+| Code tabs | The `AnimeJS` tab appears for each AnimeJS-backed example |
+| Interaction | Click/hover/scroll changes a measurable transform, opacity, text, or DOM count |
+| Completion | Animation finishes by resetting styles or removing created DOM nodes |
+| Reduced motion | Motion is skipped or reduced when `prefers-reduced-motion: reduce` is active |
+| Console | No browser console errors or warnings after interaction |
+
+For DOM particle/ripple effects, measure node count during and after the animation. For exit
+or swap effects, measure the animated element during the transition and again after reset.
+
+## 13. Batch Selection Guidance
+
+Do not convert animations just to increase AnimeJS coverage. A good batch has two or three
+animations that share a concrete runtime need: measured dimensions, completion callbacks,
+DOM cleanup, or repeated cancel/replay behavior. A poor batch is a set of simple CSS loops
+whose previews become heavier without improving fidelity.

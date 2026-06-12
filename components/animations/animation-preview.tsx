@@ -1,8 +1,11 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import type { ComponentType } from "react";
+import { Component, type ComponentType, type ErrorInfo, type ReactNode } from "react";
 import { PreviewContainer } from "@/lib/animations/previews/_shared";
+
+const CHUNK_RELOAD_STORAGE_KEY = "stylekit:animation-preview-chunk-reload";
+type PreviewBg = "dark" | "light" | "gradient";
 
 function PreviewLoadingFallback() {
   return (
@@ -13,6 +16,111 @@ function PreviewLoadingFallback() {
       </div>
     </PreviewContainer>
   );
+}
+
+function PreviewChunkLoadFallback({ bg = "light" }: { bg?: PreviewBg }) {
+  return (
+    <PreviewContainer bg={bg}>
+      <button
+        type="button"
+        onClick={() => window.location.reload()}
+        className="border border-border px-4 py-2 text-xs text-muted transition-colors hover:border-foreground hover:text-foreground"
+      >
+        Reload preview
+      </button>
+    </PreviewContainer>
+  );
+}
+
+function isChunkLoadError(error: unknown) {
+  const record = typeof error === "object" && error !== null ? error : {};
+  const name = "name" in record ? String(record.name) : "";
+  const message = "message" in record ? String(record.message) : String(error);
+  const stack = "stack" in record ? String(record.stack) : "";
+  const details = `${name}\n${message}\n${stack}`;
+
+  return (
+    name === "ChunkLoadError" ||
+    /ChunkLoadError|Failed to load chunk|Loading chunk \d+ failed|module factory is not available/i.test(
+      details
+    )
+  );
+}
+
+function getReloadKey() {
+  return `${window.location.pathname}${window.location.search}`;
+}
+
+function clearChunkReloadMarker() {
+  if (typeof window === "undefined") return;
+
+  try {
+    const reloadKey = getReloadKey();
+    if (window.sessionStorage.getItem(CHUNK_RELOAD_STORAGE_KEY) === reloadKey) {
+      window.sessionStorage.removeItem(CHUNK_RELOAD_STORAGE_KEY);
+    }
+  } catch {
+    // sessionStorage can be unavailable in restricted browser contexts.
+  }
+}
+
+function recoverFromChunkLoadError(error: unknown): Promise<ComponentType> {
+  if (typeof window === "undefined" || !isChunkLoadError(error)) {
+    return Promise.reject(error);
+  }
+
+  try {
+    const reloadKey = getReloadKey();
+    const hasReloaded = window.sessionStorage.getItem(CHUNK_RELOAD_STORAGE_KEY) === reloadKey;
+
+    if (!hasReloaded) {
+      window.sessionStorage.setItem(CHUNK_RELOAD_STORAGE_KEY, reloadKey);
+      window.location.reload();
+      return new Promise<ComponentType>(() => undefined);
+    }
+  } catch {
+    window.location.reload();
+    return new Promise<ComponentType>(() => undefined);
+  }
+
+  return Promise.resolve(PreviewChunkLoadFallback);
+}
+
+interface PreviewErrorBoundaryProps {
+  bg: PreviewBg;
+  children: ReactNode;
+}
+
+interface PreviewErrorBoundaryState {
+  hasError: boolean;
+}
+
+class PreviewErrorBoundary extends Component<
+  PreviewErrorBoundaryProps,
+  PreviewErrorBoundaryState
+> {
+  state: PreviewErrorBoundaryState = { hasError: false };
+
+  static getDerivedStateFromError(): PreviewErrorBoundaryState {
+    return { hasError: true };
+  }
+
+  componentDidCatch(error: unknown, errorInfo: ErrorInfo) {
+    if (isChunkLoadError(error)) {
+      void recoverFromChunkLoadError(error);
+      return;
+    }
+
+    console.error(error, errorInfo);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return <PreviewChunkLoadFallback bg={this.props.bg} />;
+    }
+
+    return this.props.children;
+  }
 }
 
 /**
@@ -28,7 +136,19 @@ function PreviewLoadingFallback() {
  * TODO (Phase 4): Generate this map at build time from directory scan.
  */
 function dp(loader: () => Promise<ComponentType>) {
-  return dynamic(loader, { ssr: false, loading: () => <PreviewLoadingFallback /> });
+  return dynamic(
+    () =>
+      loader()
+        .then((component) => {
+          clearChunkReloadMarker();
+          return component;
+        })
+        .catch(recoverFromChunkLoadError),
+    {
+      ssr: false,
+      loading: () => <PreviewLoadingFallback />,
+    }
+  );
 }
 
 const previewMap: Record<string, ComponentType> = {
@@ -85,7 +205,7 @@ const previewMap: Record<string, ComponentType> = {
 
 interface AnimationPreviewProps {
   slug: string;
-  bg?: "dark" | "light" | "gradient";
+  bg?: PreviewBg;
 }
 
 export function AnimationPreview({ slug, bg = "light" }: AnimationPreviewProps) {
@@ -99,5 +219,9 @@ export function AnimationPreview({ slug, bg = "light" }: AnimationPreviewProps) 
     );
   }
 
-  return <Preview />;
+  return (
+    <PreviewErrorBoundary key={slug} bg={bg}>
+      <Preview />
+    </PreviewErrorBoundary>
+  );
 }

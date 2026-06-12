@@ -96,6 +96,79 @@ export const collapse: Animation = {
 }`,
     },
     {
+      label: "AnimeJS",
+      language: "tsx",
+      code: `"use client";
+
+import { useEffect, useRef, useState, type ReactNode } from "react";
+
+type AnimeAnimation = {
+  cancel(): unknown;
+};
+
+function prefersReducedMotion() {
+  return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+}
+
+export function CollapsePanel({ children }: { children: ReactNode }) {
+  const [isOpen, setIsOpen] = useState(true);
+  const panelRef = useRef<HTMLDivElement>(null);
+  const animationRef = useRef<AnimeAnimation | null>(null);
+
+  useEffect(() => {
+    return () => {
+      animationRef.current?.cancel();
+    };
+  }, []);
+
+  async function toggle() {
+    const panel = panelRef.current;
+    if (!panel) return;
+
+    const nextOpen = !isOpen;
+    setIsOpen(nextOpen);
+
+    if (prefersReducedMotion()) {
+      panel.style.height = nextOpen ? "auto" : "0px";
+      panel.style.opacity = nextOpen ? "1" : "0";
+      return;
+    }
+
+    const { animate } = await import("animejs");
+    if (panelRef.current !== panel) return;
+
+    animationRef.current?.cancel();
+    const startHeight = panel.getBoundingClientRect().height;
+    const targetHeight = nextOpen ? panel.scrollHeight : 0;
+    panel.style.height = startHeight + "px";
+
+    const animation = animate(panel, {
+      height: [startHeight + "px", targetHeight + "px"],
+      opacity: [Number(getComputedStyle(panel).opacity), nextOpen ? 1 : 0],
+      duration: 350,
+      ease: "inOut(3)",
+      onComplete: () => {
+        panel.style.height = nextOpen ? "auto" : "0px";
+        panel.style.opacity = nextOpen ? "1" : "0";
+      },
+    });
+
+    animationRef.current = animation;
+  }
+
+  return (
+    <div>
+      <button type="button" aria-expanded={isOpen} onClick={() => void toggle()}>
+        Toggle
+      </button>
+      <div ref={panelRef} className="overflow-hidden">
+        {children}
+      </div>
+    </div>
+  );
+}`,
+    },
+    {
       label: "Framer Motion",
       language: "tsx",
       code: `import { motion, AnimatePresence } from "framer-motion";

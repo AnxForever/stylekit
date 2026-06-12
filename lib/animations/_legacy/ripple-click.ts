@@ -103,6 +103,91 @@ export const rippleClick: Animation = {
 }`,
     },
     {
+      label: "AnimeJS",
+      language: "tsx",
+      code: `"use client";
+
+import { useCallback, useEffect, useRef, type MouseEvent, type ReactNode } from "react";
+
+type AnimeModule = typeof import("animejs");
+type AnimeAnimation = {
+  cancel(): unknown;
+};
+
+function prefersReducedMotion() {
+  return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+}
+
+export function RippleButton({ children }: { children: ReactNode }) {
+  const buttonRef = useRef<HTMLButtonElement>(null);
+  const animeRef = useRef<Promise<AnimeModule> | null>(null);
+  const activeRipplesRef = useRef<Array<{ animation: AnimeAnimation; element: HTMLSpanElement }>>([]);
+
+  useEffect(() => {
+    return () => {
+      activeRipplesRef.current.forEach(({ animation, element }) => {
+        animation.cancel();
+        element.remove();
+      });
+      activeRipplesRef.current = [];
+    };
+  }, []);
+
+  const getAnime = useCallback(() => {
+    animeRef.current ??= import("animejs");
+    return animeRef.current;
+  }, []);
+
+  const removeRipple = useCallback((ripple: HTMLSpanElement) => {
+    activeRipplesRef.current = activeRipplesRef.current.filter(
+      (entry) => entry.element !== ripple
+    );
+    ripple.remove();
+  }, []);
+
+  const spawnRipple = useCallback(
+    async (x: number, y: number) => {
+      const button = buttonRef.current;
+      if (!button || prefersReducedMotion()) return;
+
+      const { animate } = await getAnime();
+      if (buttonRef.current !== button) return;
+
+      const ripple = document.createElement("span");
+      ripple.style.cssText =
+        "position:absolute;left:" + (x - 12) + "px;top:" + (y - 12) + "px;width:24px;height:24px;border-radius:9999px;background:currentColor;opacity:0.45;pointer-events:none;will-change:transform;";
+      button.appendChild(ripple);
+
+      const animation = animate(ripple, {
+        scale: [0, 16],
+        opacity: [0.45, 0],
+        duration: 650,
+        ease: "out(2)",
+        onComplete: () => removeRipple(ripple),
+      });
+
+      activeRipplesRef.current.push({ animation, element: ripple });
+    },
+    [getAnime, removeRipple]
+  );
+
+  function handleClick(event: MouseEvent<HTMLButtonElement>) {
+    const rect = event.currentTarget.getBoundingClientRect();
+    void spawnRipple(event.clientX - rect.left, event.clientY - rect.top);
+  }
+
+  return (
+    <button
+      ref={buttonRef}
+      onClick={handleClick}
+      className="relative overflow-hidden px-6 py-3 bg-indigo-500 text-white"
+    >
+      <span className="relative z-10 pointer-events-none">{children}</span>
+    </button>
+  );
+}`,
+    },
+    {
       label: "Framer Motion",
       language: "tsx",
       code: `import { motion, AnimatePresence } from "framer-motion";

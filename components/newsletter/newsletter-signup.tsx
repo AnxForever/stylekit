@@ -1,6 +1,6 @@
 "use client";
 
-import { useId, useState } from "react";
+import { useState } from "react";
 import { z } from "zod";
 import { LocalizedLink } from "@/components/i18n/localized-link";
 import { useI18n } from "@/lib/i18n/context";
@@ -16,9 +16,10 @@ export function NewsletterSignup({ variant = "card" }: { variant?: Variant }) {
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<Status>("idle");
   const [errorMsg, setErrorMsg] = useState("");
-  const emailId = useId();
-  const helperTextId = useId();
-  const statusTextId = useId();
+  const idPrefix = `newsletter-${variant}`;
+  const emailId = `${idPrefix}-email`;
+  const helperTextId = `${idPrefix}-helper`;
+  const statusTextId = `${idPrefix}-status`;
   const legalLabel = locale === "zh"
     ? "订阅即表示您同意我们的"
     : "By subscribing, you agree to our";

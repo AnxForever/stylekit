@@ -23,10 +23,10 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   }
 
   const BASE_URL = getSiteBaseUrl();
-  const description = `${animation.descriptionEn} CSS keyframes and Tailwind utility classes included.`;
+  const description = `${animation.descriptionEn} Implementation snippets and Tailwind utility classes included.`;
 
   return {
-    title: `${animation.nameEn} - CSS Animation Pattern`,
+    title: `${animation.nameEn} - Animation Pattern`,
     description,
     keywords: animation.keywords,
     openGraph: {
@@ -68,7 +68,7 @@ export default async function AnimationDetailPage({
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "HowTo",
-    name: `${animation.nameEn} CSS Animation`,
+    name: `${animation.nameEn} Animation Pattern`,
     description: animation.descriptionEn,
     url: `${BASE_URL}/animations/${slug}`,
     step: animation.codeSnippets.map((snippet, i) => ({

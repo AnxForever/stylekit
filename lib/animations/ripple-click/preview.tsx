@@ -1,87 +1,113 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef, type MouseEvent } from "react";
+import { loadAnime, prefersReducedMotion, type AnimeAnimation } from "../anime-utils";
 import { PreviewContainer } from "../previews/_shared";
 
+interface ActiveRipple {
+  animation: AnimeAnimation;
+  element: HTMLSpanElement;
+}
+
+function createRipple(button: HTMLButtonElement, x: number, y: number) {
+  const ripple = document.createElement("span");
+
+  ripple.dataset.rippleEffect = "true";
+  ripple.className =
+    "pointer-events-none absolute block rounded-full bg-white/40 will-change-transform";
+  Object.assign(ripple.style, {
+    height: "24px",
+    left: `${x - 12}px`,
+    opacity: "0.6",
+    top: `${y - 12}px`,
+    transformOrigin: "center",
+    width: "24px",
+  });
+
+  button.appendChild(ripple);
+  return ripple;
+}
+
 export function RippleClickPreview() {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const btnRef = useRef<HTMLDivElement>(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
+  const activeRipplesRef = useRef<ActiveRipple[]>([]);
+
+  useEffect(() => {
+    return () => {
+      activeRipplesRef.current.forEach(({ animation, element }) => {
+        animation.cancel();
+        element.remove();
+      });
+      activeRipplesRef.current = [];
+    };
+  }, []);
+
+  const removeRipple = useCallback((ripple: HTMLSpanElement) => {
+    activeRipplesRef.current = activeRipplesRef.current.filter(
+      (entry) => entry.element !== ripple
+    );
+    ripple.remove();
+  }, []);
+
+  const spawnRipple = useCallback(
+    async (x: number, y: number) => {
+      const button = buttonRef.current;
+      if (!button || prefersReducedMotion()) return;
+
+      const { animate } = await loadAnime();
+      if (buttonRef.current !== button) return;
+
+      const ripple = createRipple(button, x, y);
+      const animation = animate(ripple, {
+        scale: [0, 16],
+        opacity: [0.6, 0],
+        duration: 650,
+        ease: "out(2)",
+        onComplete: () => removeRipple(ripple),
+      });
+
+      activeRipplesRef.current.push({ animation, element: ripple });
+    },
+    [removeRipple]
+  );
 
   // Auto-play ripple loop for demo
   useEffect(() => {
-    const el = containerRef.current;
-    const btn = btnRef.current;
-    if (!el || !btn) return;
+    const runDemoRipple = () => {
+      const button = buttonRef.current;
+      if (!button) return;
 
-    const spawnRipple = () => {
-      const rect = btn.getBoundingClientRect();
-      const elRect = el.getBoundingClientRect();
-      // Random position within button area
-      const x = rect.left - elRect.left + Math.random() * rect.width;
-      const y = rect.top - elRect.top + Math.random() * rect.height;
-      const ripple = document.createElement("span");
-      ripple.className = "sk-ripple-effect";
-      ripple.style.left = `${x}px`;
-      ripple.style.top = `${y}px`;
-      el.appendChild(ripple);
-      ripple.addEventListener("animationend", () => ripple.remove());
+      void spawnRipple(
+        button.clientWidth * (0.3 + Math.random() * 0.4),
+        button.clientHeight * (0.35 + Math.random() * 0.3)
+      );
     };
 
-    const timer = setInterval(spawnRipple, 1800);
-    // Fire one immediately
-    const initial = setTimeout(spawnRipple, 300);
+    const timer = setInterval(runDemoRipple, 1800);
+    const initial = setTimeout(runDemoRipple, 300);
 
     return () => {
       clearInterval(timer);
       clearTimeout(initial);
     };
-  }, []);
+  }, [spawnRipple]);
 
-  // Manual click also triggers ripple
-  const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    const el = containerRef.current;
-    if (!el) return;
-    const rect = el.getBoundingClientRect();
-    const ripple = document.createElement("span");
-    ripple.className = "sk-ripple-effect";
-    ripple.style.left = `${e.clientX - rect.left}px`;
-    ripple.style.top = `${e.clientY - rect.top}px`;
-    el.appendChild(ripple);
-    ripple.addEventListener("animationend", () => ripple.remove());
+  const handleClick = (event: MouseEvent<HTMLButtonElement>) => {
+    const rect = event.currentTarget.getBoundingClientRect();
+    void spawnRipple(event.clientX - rect.left, event.clientY - rect.top);
   };
 
   return (
     <PreviewContainer bg="light">
-      <style>{`
-        .sk-ripple-container {
-          position: relative;
-          overflow: hidden;
-        }
-        .sk-ripple-effect {
-          position: absolute;
-          width: 20px;
-          height: 20px;
-          border-radius: 50%;
-          background: rgba(255, 255, 255, 0.4);
-          transform: translate(-50%, -50%) scale(0);
-          animation: sk-ripple-expand 600ms ease-out forwards;
-          pointer-events: none;
-        }
-        @keyframes sk-ripple-expand {
-          to {
-            transform: translate(-50%, -50%) scale(20);
-            opacity: 0;
-          }
-        }
-      `}</style>
       <div className="flex flex-col items-center gap-4">
-        <div
-          ref={containerRef}
+        <button
+          ref={buttonRef}
+          type="button"
           onClick={handleClick}
-          className="sk-ripple-container px-10 py-4 bg-indigo-500 text-white text-sm cursor-pointer select-none"
+          className="relative overflow-hidden px-10 py-4 bg-indigo-500 text-white text-sm cursor-pointer select-none"
         >
-          <span ref={btnRef} className="relative z-10 pointer-events-none">Click me</span>
-        </div>
+          <span className="relative z-10 pointer-events-none">Click me</span>
+        </button>
         <span className="text-[10px] text-muted uppercase tracking-wider">Auto-playing / click to trigger</span>
       </div>
     </PreviewContainer>

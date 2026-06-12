@@ -1,54 +1,61 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { animate, scrambleText } from "animejs";
+import { useEffect, useRef } from "react";
 import { PreviewContainer, ReplayButton, useReplay } from "../previews/_shared";
 
-const CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%&*";
+const CHARS = "A-Z0-9!%#_";
 const TARGET = "STYLEKIT";
 
 function ScrambleText({ text, triggerKey }: { text: string; triggerKey: number }) {
-  const [display, setDisplay] = useState<string[]>(
-    text.split("").map(() => CHARS[Math.floor(Math.random() * CHARS.length)])
-  );
-  const [resolved, setResolved] = useState<boolean[]>(new Array(text.length).fill(false));
-
-  const scramble = useCallback(() => {
-    setDisplay(text.split("").map(() => CHARS[Math.floor(Math.random() * CHARS.length)]));
-    setResolved(new Array(text.length).fill(false));
-
-    let frame = 0;
-    const interval = setInterval(() => {
-      setDisplay((prev) =>
-        prev.map((_, i) =>
-          i <= frame ? text[i] : CHARS[Math.floor(Math.random() * CHARS.length)]
-        )
-      );
-      setResolved((prev) => prev.map((_, i) => i <= frame));
-      frame++;
-      if (frame >= text.length) clearInterval(interval);
-    }, 80);
-    return () => clearInterval(interval);
-  }, [text]);
+  const elementRef = useRef<HTMLSpanElement>(null);
 
   useEffect(() => {
-    const cleanup = scramble();
-    return cleanup;
-  }, [scramble, triggerKey]);
+    const element = elementRef.current;
+    if (!element) return;
+
+    const prefersReducedMotion =
+      typeof window.matchMedia === "function" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    if (prefersReducedMotion) {
+      element.textContent = text;
+      return;
+    }
+
+    element.textContent = text;
+    element.dataset.scrambling = "true";
+
+    const animation = animate(element, {
+      textContent: scrambleText({
+        text,
+        chars: CHARS,
+        override: CHARS,
+        from: "left",
+        cursor: "_",
+        revealRate: 42,
+        settleDuration: 320,
+        settleRate: 28,
+        seed: triggerKey + 1,
+      }),
+      onComplete: () => {
+        element.dataset.scrambling = "false";
+      },
+    });
+
+    return () => {
+      animation.revert();
+      element.textContent = text;
+      element.dataset.scrambling = "false";
+    };
+  }, [text, triggerKey]);
 
   return (
-    <span className="font-mono text-2xl font-bold tracking-widest">
-      {display.map((ch, i) => (
-        <span
-          key={`${triggerKey}-${i}`}
-          className="inline-block transition-colors duration-100"
-          style={{
-            opacity: resolved[i] ? 1 : 0.4,
-            color: resolved[i] ? "#ffffff" : "#00ffff",
-          }}
-        >
-          {ch}
-        </span>
-      ))}
+    <span
+      ref={elementRef}
+      className="font-mono text-2xl font-bold tracking-widest text-white transition-colors duration-200 data-[scrambling=true]:text-cyan-200 data-[scrambling=true]:drop-shadow-[0_0_12px_rgba(34,211,238,0.55)]"
+    >
+      {text}
     </span>
   );
 }

@@ -87,6 +87,109 @@ export const confettiBurst: Animation = {
 }`,
     },
     {
+      label: "AnimeJS",
+      language: "tsx",
+      code: `"use client";
+
+import { useEffect, useRef, type MouseEvent, type ReactNode } from "react";
+
+const COLORS = ["#ff006e", "#fb5607", "#ffbe0b", "#8338ec", "#3a86ff", "#06d6a0"];
+const PARTICLE_COUNT = 26;
+
+type AnimeModule = typeof import("animejs");
+type AnimeAnimation = {
+  cancel(): unknown;
+};
+
+function prefersReducedMotion() {
+  return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+}
+
+export function ConfettiButton({ children }: { children: ReactNode }) {
+  const buttonRef = useRef<HTMLButtonElement>(null);
+  const animeRef = useRef<Promise<AnimeModule> | null>(null);
+  const activeParticlesRef = useRef<Array<{ animation: AnimeAnimation; element: HTMLSpanElement }>>([]);
+
+  useEffect(() => {
+    return () => {
+      activeParticlesRef.current.forEach(({ animation, element }) => {
+        animation.cancel();
+        element.remove();
+      });
+      activeParticlesRef.current = [];
+    };
+  }, []);
+
+  function getAnime() {
+    animeRef.current ??= import("animejs");
+    return animeRef.current;
+  }
+
+  function createParticle(button: HTMLButtonElement, x: number, y: number, index: number) {
+    const particle = document.createElement("span");
+    particle.className = "pointer-events-none absolute block will-change-transform";
+    Object.assign(particle.style, {
+      background: COLORS[index % COLORS.length],
+      borderRadius: Math.random() > 0.45 ? "50%" : "1px",
+      height: "8px",
+      left: x - 4 + "px",
+      top: y - 4 + "px",
+      width: "8px",
+    });
+    button.appendChild(particle);
+    return particle;
+  }
+
+  function removeParticle(particle: HTMLSpanElement) {
+    activeParticlesRef.current = activeParticlesRef.current.filter(
+      (entry) => entry.element !== particle
+    );
+    particle.remove();
+  }
+
+  async function handleClick(event: MouseEvent<HTMLButtonElement>) {
+    const button = event.currentTarget;
+    const rect = button.getBoundingClientRect();
+    const originX = event.clientX - rect.left;
+    const originY = event.clientY - rect.top;
+    if (prefersReducedMotion()) return;
+
+    const { animate } = await getAnime();
+    if (buttonRef.current !== button) return;
+
+    animate(button, { scale: [0.97, 1], duration: 220, ease: "out(3)" });
+
+    Array.from({ length: PARTICLE_COUNT }, (_, index) => {
+      const angle = (Math.PI * 2 * index) / PARTICLE_COUNT + (Math.random() - 0.5) * 0.5;
+      const velocity = 58 + Math.random() * 90;
+      const particle = createParticle(button, originX, originY, index);
+      const animation = animate(particle, {
+        x: [0, Math.cos(angle) * velocity],
+        y: [0, Math.sin(angle) * velocity + 104],
+        rotate: ["0deg", Math.random() * 720 - 360 + "deg"],
+        scale: [1, 0.35],
+        opacity: [1, 0],
+        duration: 1050 + Math.random() * 220,
+        delay: index * 5,
+        ease: "out(3)",
+        onComplete: () => removeParticle(particle),
+      });
+      activeParticlesRef.current.push({ animation, element: particle });
+    });
+  }
+
+  return (
+    <button
+      ref={buttonRef}
+      onClick={handleClick}
+      className="relative overflow-visible px-6 py-3 bg-zinc-900 text-white"
+    >
+      {children}
+    </button>
+  );
+}`,
+    },
+    {
       label: "Framer Motion",
       language: "tsx",
       code: `"use client";
