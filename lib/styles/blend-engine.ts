@@ -5,7 +5,7 @@
 
 import type { StyleTokens } from "./tokens";
 import { getStyleTokens } from "./tokens-registry";
-import { styles } from "./index";
+import { styles } from "./registry";
 import {
   interpolateColorClass,
   extractHexFromClass,

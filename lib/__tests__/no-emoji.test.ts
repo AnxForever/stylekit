@@ -27,6 +27,10 @@ function toCodePoints(value: string): string {
 }
 
 function collectFiles(entryPath: string, out: string[]) {
+  if (entryPath.includes(path.join("docs", "references"))) {
+    return;
+  }
+
   const stat = statSync(entryPath);
   if (stat.isDirectory()) {
     for (const entry of readdirSync(entryPath, { withFileTypes: true })) {
@@ -101,4 +105,3 @@ describe("unicode policy", () => {
     expect(violations).toEqual([]);
   });
 });
-

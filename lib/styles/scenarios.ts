@@ -1,5 +1,5 @@
 import type { Locale } from "@/lib/i18n/translations";
-import type { StyleMeta } from "./meta";
+import type { StyleMeta } from "./meta-types";
 
 export type StyleScenario =
   | "saas"

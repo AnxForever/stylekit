@@ -1,4 +1,4 @@
-import type { DesignStyle } from "./index";
+import type { DesignStyle } from "./types";
 
 export const shopifyClean: DesignStyle = {
   slug: "shopify-clean",

@@ -1,4 +1,4 @@
-import { DesignStyle } from "./index";
+import type { DesignStyle } from "./types";
 import { claymorphismAtoms } from "./atoms/claymorphism";
 
 export const claymorphism: DesignStyle = {

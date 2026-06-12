@@ -1,6 +1,20 @@
 import { defineConfig, devices } from "@playwright/test";
 
-const BASE_URL = process.env.BASE_URL || "http://localhost:3000";
+const LOCAL_NO_PROXY_HOSTS = ["127.0.0.1", "localhost"];
+const existingNoProxy = process.env.NO_PROXY || process.env.no_proxy || "";
+const noProxyHosts = new Set(
+  existingNoProxy
+    .split(",")
+    .map((host) => host.trim())
+    .filter(Boolean)
+);
+for (const host of LOCAL_NO_PROXY_HOSTS) {
+  noProxyHosts.add(host);
+}
+process.env.NO_PROXY = [...noProxyHosts].join(",");
+process.env.no_proxy = process.env.NO_PROXY;
+
+const BASE_URL = process.env.BASE_URL || "http://127.0.0.1:3000";
 const PLAYWRIGHT_CHANNEL = process.env.PLAYWRIGHT_CHANNEL;
 
 export default defineConfig({

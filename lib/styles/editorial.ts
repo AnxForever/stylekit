@@ -1,4 +1,4 @@
-import { DesignStyle } from "./index";
+import type { DesignStyle } from "./types";
 import { editorialAtoms } from "./atoms/editorial";
 
 export const editorial: DesignStyle = {

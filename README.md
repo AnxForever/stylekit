@@ -180,6 +180,11 @@ pnpm dev
 
 Open [localhost:3000](http://localhost:3000). See [`.env.example`](.env.example) for optional Supabase and admin configuration.
 
+## Project Structure
+
+See [`docs/PROJECT_STRUCTURE.md`](docs/PROJECT_STRUCTURE.md) for the repository map, runtime flow, source boundaries, and cleanup guidance.
+See [`docs/STYLE_AUTHORING.md`](docs/STYLE_AUTHORING.md) before adding or changing catalog styles.
+
 ## API
 
 RESTful API for programmatic access. All endpoints return JSON.

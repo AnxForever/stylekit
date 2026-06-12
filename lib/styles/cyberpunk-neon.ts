@@ -1,4 +1,4 @@
-import { DesignStyle } from "./index";
+import type { DesignStyle } from "./types";
 import { cyberpunkNeonAtoms } from "./atoms";
 
 export const cyberpunkNeon: DesignStyle = {

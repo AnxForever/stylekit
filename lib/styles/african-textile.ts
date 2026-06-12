@@ -1,4 +1,4 @@
-import { DesignStyle } from "./index";
+import type { DesignStyle } from "./types";
 
 export const africanTextile: DesignStyle = {
   slug: "african-textile",

@@ -1,5 +1,5 @@
-import { getStyleBySlug as getStaticStyleBySlug } from "@/lib/styles";
-import type { ComponentTemplate, DesignStyle, ExamplePrompt } from "@/lib/styles";
+import { getStyleBySlug as getStaticStyleBySlug } from "./registry";
+import type { ComponentTemplate, DesignStyle, ExamplePrompt } from "./types";
 import { cache } from "react";
 import {
   getAllStylesMeta,
@@ -7,9 +7,9 @@ import {
   type StyleMeta,
   type StyleTag,
   type StyleType,
-} from "@/lib/styles/meta";
-import { getStyleTokens } from "@/lib/styles/tokens-registry";
-import type { StyleTokens } from "@/lib/styles/tokens";
+} from "./meta";
+import { getStyleTokens } from "./tokens-registry";
+import type { StyleTokens } from "./tokens";
 import {
   getLatestApprovedSubmissionBySlug,
   listSubmissions,
