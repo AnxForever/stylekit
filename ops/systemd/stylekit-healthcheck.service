@@ -1,0 +1,14 @@
+[Unit]
+Description=StyleKit healthcheck watchdog
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=oneshot
+Environment=PM2_APP=stylekit
+Environment=HEALTH_URL=http://127.0.0.1:13000/api/health
+Environment=TIMEOUT=5
+Environment=FAIL_THRESHOLD=2
+Environment=STATE_FILE=/run/stylekit-healthcheck.failures
+Environment=LOG_FILE=/var/log/stylekit-healthcheck.log
+ExecStart=/usr/local/bin/stylekit-healthcheck
