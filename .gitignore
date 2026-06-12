@@ -105,6 +105,8 @@ tools/scripts/refine-batch-01.mjs
 editorial-brutalist-portfolio/
 style-extractor-dev/
 dashboards/
+docs/references/
+.stylekit.top.conf.remote
 .playwright-mcp/
 .worktrees/
 anthropic-ai-claude-code-*/

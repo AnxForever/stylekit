@@ -29,9 +29,9 @@ Read and follow these files before generating code:
 ## Validation Commands
 
 ```bash
-npm run security:secrets
-npm run lint
-npx tsc --noEmit
-npm run test
-npm run build
+pnpm run security:secrets
+pnpm run lint
+pnpm run typecheck
+pnpm run test
+pnpm run build
 ```
