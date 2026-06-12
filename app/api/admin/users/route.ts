@@ -181,117 +181,128 @@ export async function GET(request: Request) {
   let seqIdMap = new Map<string, number>();
   let titleRuleMap = new Map<string, UserTitleRule>();
 
-  try {
-    const authUsers = await readAllAuthUsers(admin);
-    for (const authUser of authUsers) {
-      const authorName = resolveAuthorName(authUser);
-      const avatarUrl = resolveAvatarUrl(authUser.userMetadata);
-      const seqId = resolveMetadataSeqId(authUser.userMetadata);
-      const profileTitle = resolveMetadataProfileTitle(authUser.userMetadata);
-      const user = ensureUser(authUser.id, {
-        authorName,
-        avatarUrl,
-        seqId,
-        profileTitle,
-      });
-      if (authUser.email) {
-        userEmailMap.set(authUser.id, authUser.email.toLowerCase());
-      }
-      updateLastActive(user, authUser.lastSignInAt ?? authUser.createdAt);
+  const authUsers = await readAllAuthUsers(admin);
+  for (const authUser of authUsers) {
+    const authorName = resolveAuthorName(authUser);
+    const avatarUrl = resolveAvatarUrl(authUser.userMetadata);
+    const seqId = resolveMetadataSeqId(authUser.userMetadata);
+    const profileTitle = resolveMetadataProfileTitle(authUser.userMetadata);
+    const user = ensureUser(authUser.id, {
+      authorName,
+      avatarUrl,
+      seqId,
+      profileTitle,
+    });
+    if (authUser.email) {
+      userEmailMap.set(authUser.id, authUser.email.toLowerCase());
     }
-
-    // Fetch all independent tables in parallel
-    const [
-      commentsRows,
-      ratingsRows,
-      ...restRows
-    ] = await Promise.all([
-      readTableRows(admin, "style_comments"),
-      readTableRows(admin, "style_ratings"),
-      ...FAVORITES_TABLE_CANDIDATES.map((t) => readTableRows(admin, t)),
-      ...SUBMISSIONS_TABLE_CANDIDATES.map((t) => readTableRows(admin, t)),
-      readTableRows(admin, "user_seq_ids"),
-      readTableRows(admin, "user_titles"),
-    ]);
-
-    const favoriteResults = restRows.slice(0, FAVORITES_TABLE_CANDIDATES.length) as (TableRow[] | null)[];
-    const submissionResults = restRows.slice(
-      FAVORITES_TABLE_CANDIDATES.length,
-      FAVORITES_TABLE_CANDIDATES.length + SUBMISSIONS_TABLE_CANDIDATES.length
-    ) as (TableRow[] | null)[];
-    const userSeqRows = restRows[FAVORITES_TABLE_CANDIDATES.length + SUBMISSIONS_TABLE_CANDIDATES.length] as TableRow[] | null;
-    const userTitleRows = restRows[FAVORITES_TABLE_CANDIDATES.length + SUBMISSIONS_TABLE_CANDIDATES.length + 1] as TableRow[] | null;
-
-    if (commentsRows) {
-      for (const row of commentsRows) {
-        const userId = resolveRowUserId(row);
-        if (!userId) continue;
-        const user = ensureUser(userId, {
-          authorName: getStringField(row, "author_name") ?? undefined,
-          avatarUrl: getStringField(row, "avatar_url"),
-        });
-        user.commentCount++;
-        updateLastActive(user, resolveRowTimestamp(row));
-      }
-    }
-
-    if (ratingsRows) {
-      for (const row of ratingsRows) {
-        const userId = resolveRowUserId(row);
-        if (!userId) continue;
-        const user = ensureUser(userId);
-        user.ratingCount++;
-        updateLastActive(user, resolveRowTimestamp(row));
-      }
-    }
-
-    const seenFavoriteKeys = new Set<string>();
-    for (const favoriteRows of favoriteResults) {
-      if (!favoriteRows) continue;
-
-      for (const row of favoriteRows) {
-        const userId = resolveRowUserId(row);
-        if (!userId) continue;
-
-        const styleSlug = getStringField(row, "style_slug");
-        if (styleSlug) {
-          const dedupeKey = `${userId}::${styleSlug}`;
-          if (seenFavoriteKeys.has(dedupeKey)) {
-            updateLastActive(ensureUser(userId), resolveRowTimestamp(row));
-            continue;
-          }
-          seenFavoriteKeys.add(dedupeKey);
-        }
-
-        const user = ensureUser(userId);
-        user.favoriteCount++;
-        updateLastActive(user, resolveRowTimestamp(row));
-      }
-    }
-
-    for (const submissionRows of submissionResults) {
-      if (!submissionRows) continue;
-
-      for (const row of submissionRows) {
-        const userId = resolveRowUserId(row);
-        if (!userId) continue;
-
-        const user = ensureUser(userId, {
-          authorName: getStringField(row, "author_name") ?? undefined,
-        });
-        user.submissionCount++;
-        updateLastActive(user, resolveRowTimestamp(row));
-      }
-    }
-
-    seqIdMap = buildSeqIdMap(userSeqRows);
-    titleRuleMap = buildUserTitleRuleMap(userTitleRows);
-  } catch {
-    return NextResponse.json(
-      { error: "Failed to load users." },
-      { status: 500 }
-    );
+    updateLastActive(user, authUser.lastSignInAt ?? authUser.createdAt);
   }
+
+  // Fetch all independent tables in parallel. Each table degrades to null so
+  // schema drift or temporary read failures do not blank the admin users page.
+  const [
+    commentsRows,
+    ratingsRows,
+    ...restRows
+  ] = await Promise.all([
+    readTableRows(admin, "style_comments"),
+    readTableRows(admin, "style_ratings"),
+    ...FAVORITES_TABLE_CANDIDATES.map((t) => readTableRows(admin, t)),
+    ...SUBMISSIONS_TABLE_CANDIDATES.map((t) => readTableRows(admin, t)),
+    readTableRows(admin, "user_seq_ids"),
+    readTableRows(admin, "user_titles"),
+  ]);
+
+  const favoriteResultCount = FAVORITES_TABLE_CANDIDATES.length;
+  const submissionResultCount = SUBMISSIONS_TABLE_CANDIDATES.length;
+  const userSeqIndex = favoriteResultCount + submissionResultCount;
+  const userTitleIndex = userSeqIndex + 1;
+
+  const favoriteResults = restRows.slice(
+    0,
+    favoriteResultCount
+  ) as (TableRow[] | null)[];
+  const submissionResults = restRows.slice(
+    favoriteResultCount,
+    userSeqIndex
+  ) as (TableRow[] | null)[];
+  const userSeqRows = restRows[userSeqIndex] as TableRow[] | null;
+  const userTitleRows = restRows[userTitleIndex] as TableRow[] | null;
+
+  if (commentsRows) {
+    for (const row of commentsRows) {
+      const userId = resolveRowUserId(row);
+      if (!userId) continue;
+      const user = ensureUser(userId, {
+        authorName: getStringField(row, "author_name") ?? undefined,
+        avatarUrl: getStringField(row, "avatar_url"),
+      });
+      user.commentCount++;
+      updateLastActive(user, resolveRowTimestamp(row));
+    }
+  }
+
+  if (ratingsRows) {
+    for (const row of ratingsRows) {
+      const userId = resolveRowUserId(row);
+      if (!userId) continue;
+      const user = ensureUser(userId);
+      user.ratingCount++;
+      updateLastActive(user, resolveRowTimestamp(row));
+    }
+  }
+
+  const seenFavoriteKeys = new Set<string>();
+  for (const favoriteRows of favoriteResults) {
+    if (!favoriteRows) continue;
+
+    for (const row of favoriteRows) {
+      const userId = resolveRowUserId(row);
+      if (!userId) continue;
+
+      const styleSlug = getStringField(row, "style_slug");
+      if (styleSlug) {
+        const dedupeKey = `${userId}::${styleSlug}`;
+        if (seenFavoriteKeys.has(dedupeKey)) {
+          updateLastActive(ensureUser(userId), resolveRowTimestamp(row));
+          continue;
+        }
+        seenFavoriteKeys.add(dedupeKey);
+      }
+
+      const user = ensureUser(userId);
+      user.favoriteCount++;
+      updateLastActive(user, resolveRowTimestamp(row));
+    }
+  }
+
+  for (const submissionRows of submissionResults) {
+    if (!submissionRows) continue;
+
+    for (const row of submissionRows) {
+      const userId = resolveRowUserId(row);
+      if (!userId) continue;
+
+      const user = ensureUser(userId, {
+        authorName: getStringField(row, "author_name") ?? undefined,
+      });
+      user.submissionCount++;
+      updateLastActive(user, resolveRowTimestamp(row));
+    }
+  }
+
+  seqIdMap = buildSeqIdMap(userSeqRows);
+  if (userSeqRows) {
+    for (const row of userSeqRows) {
+      const userId = getStringField(row, "user_id");
+      const seqId = normalizePositiveInt(row.seq_id);
+      if (!userId || seqId == null) continue;
+      const user = ensureUser(userId, { seqId });
+      updateLastActive(user, resolveRowTimestamp(row));
+    }
+  }
+  titleRuleMap = buildUserTitleRuleMap(userTitleRows);
 
   let users = Array.from(usersMap.values());
 
@@ -483,12 +494,32 @@ async function readTableRows(
   admin: SupabaseLike,
   tableName: string
 ): Promise<TableRow[] | null> {
-  const { data, error } = await admin.from(tableName).select("*");
-  if (error) {
-    if (isSkippableSchemaError(error)) {
+  let result: SupabaseSelectResult;
+  try {
+    result = await admin.from(tableName).select("*");
+  } catch {
+    return null;
+  }
+
+  let { data, error } = result;
+  if (
+    error &&
+    (tableName === "user_favorites" || tableName === "style_favorites") &&
+    isSkippableSchemaError(error)
+  ) {
+    try {
+      const fallback = await admin
+        .from(tableName)
+        .select("session_id, style_slug, created_at");
+      data = fallback.data;
+      error = fallback.error;
+    } catch {
       return null;
     }
-    throw new Error(readDbErrorMessage(error));
+  }
+
+  if (error) {
+    return null;
   }
   const rows = Array.isArray(data) ? data : [];
   return rows.filter((row): row is TableRow => !!row && typeof row === "object");
@@ -503,7 +534,7 @@ function buildSeqIdMap(rows: TableRow[] | null): Map<string, number> {
   for (const row of rows) {
     const userId = getStringField(row, "user_id");
     const seqId = normalizePositiveInt(row.seq_id);
-    if (!userId || !UUID_RE.test(userId) || seqId == null) {
+    if (!userId || seqId == null) {
       continue;
     }
     map.set(userId, seqId);
@@ -511,7 +542,6 @@ function buildSeqIdMap(rows: TableRow[] | null): Map<string, number> {
 
   return map;
 }
-
 
 function toUserPayload(user: UserInfo): UserPayload {
   return {

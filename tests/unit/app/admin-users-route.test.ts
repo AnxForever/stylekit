@@ -243,4 +243,145 @@ describe("GET /api/admin/users", () => {
     expect(searchByEmailPayload.total).toBe(1);
     expect(searchByEmailPayload.users[0].userId).toBe(USER_TWO_ID);
   });
+
+  it("keeps successful table data when one admin table read fails", async () => {
+    mockedCheckAdminApiAccess.mockResolvedValue({
+      allowed: true,
+      actor: { type: "user", id: "admin" },
+    });
+
+    const listUsers = vi.fn(async () => ({
+      data: {
+        users: [
+          {
+            id: USER_ONE_ID,
+            email: "author@example.com",
+            created_at: "2026-02-20T01:00:00.000Z",
+            last_sign_in_at: null,
+            user_metadata: {},
+          },
+        ],
+      },
+      error: null,
+    }));
+
+    const tableResponses: Record<
+      string,
+      { data: unknown[] | null; error: { code?: string; message?: string } | null }
+    > = {
+      style_comments: {
+        data: [
+          {
+            session_id: `user:${USER_ONE_ID}`,
+            author_name: "Comment Author",
+            created_at: "2026-02-21T00:00:00.000Z",
+          },
+        ],
+        error: null,
+      },
+      style_ratings: {
+        data: null,
+        error: {
+          code: "42501",
+          message: "permission denied for table style_ratings",
+        },
+      },
+      user_favorites: {
+        data: null,
+        error: {
+          code: "42703",
+          message: "column user_id does not exist",
+        },
+      },
+      style_favorites: {
+        data: null,
+        error: {
+          code: "PGRST205",
+          message: "Could not find the table 'public.style_favorites' in the schema cache",
+        },
+      },
+      submissions: {
+        data: [],
+        error: null,
+      },
+      style_submissions: {
+        data: null,
+        error: {
+          code: "PGRST205",
+          message: "Could not find the table 'public.style_submissions' in the schema cache",
+        },
+      },
+      user_seq_ids: {
+        data: [
+          {
+            user_id: USER_TWO_ID,
+            seq_id: 7,
+            created_at: "2026-02-22T00:00:00.000Z",
+          },
+        ],
+        error: null,
+      },
+      user_titles: {
+        data: [],
+        error: null,
+      },
+    };
+
+    const fallbackFavorites = {
+      data: [
+        {
+          session_id: `user:${USER_ONE_ID}`,
+          style_slug: "editorial",
+          created_at: "2026-02-21T01:00:00.000Z",
+        },
+      ],
+      error: null,
+    };
+
+    const fromMock = vi.fn((tableName: string) => ({
+      select: vi.fn(async (columns: string) => {
+        if (
+          tableName === "user_favorites" &&
+          columns === "session_id, style_slug, created_at"
+        ) {
+          return fallbackFavorites;
+        }
+        return tableResponses[tableName] ?? { data: [], error: null };
+      }),
+    }));
+
+    mockedGetSupabaseAdmin.mockReturnValue({
+      from: fromMock,
+      auth: {
+        admin: {
+          listUsers,
+        },
+      },
+    } as never);
+
+    const response = await GET(
+      new Request("https://stylekit.top/api/admin/users?limit=20&offset=0")
+    );
+
+    expect(response.status).toBe(200);
+    const payload = await response.json();
+    expect(payload.total).toBe(2);
+
+    const firstUser = payload.users.find(
+      (item: { userId: string }) => item.userId === USER_ONE_ID
+    );
+    expect(firstUser).toBeTruthy();
+    expect(firstUser.authorName).toBe("author");
+    expect(firstUser.commentCount).toBe(1);
+    expect(firstUser.favoriteCount).toBe(1);
+    expect(firstUser.ratingCount).toBe(0);
+    expect(firstUser.lastActive).toBe("2026-02-21T01:00:00.000Z");
+
+    const seqOnlyUser = payload.users.find(
+      (item: { userId: string }) => item.userId === USER_TWO_ID
+    );
+    expect(seqOnlyUser).toBeTruthy();
+    expect(seqOnlyUser.seqId).toBe(7);
+    expect(seqOnlyUser.authorName).toBe("User 22222222");
+  });
 });
