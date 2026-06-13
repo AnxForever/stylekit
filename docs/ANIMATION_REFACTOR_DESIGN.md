@@ -145,11 +145,6 @@ One function, zero manual mapping. Adding a new animation = adding a directory.
 - [x] Delete old flat `lib/animations/*.ts` files (moved to `_legacy/`)
 - [x] Old preview files moved into `{slug}/preview.tsx`
 
-### Phase 4: CLI Add Command (optional, future)
-- [ ] `npx stylekit add animation scroll-page-turn`
-- [ ] Copies hook/component source to user's project
-- [ ] Respects user's project structure (configurable target dir)
-
 ## 8. Backward Compatibility
 
 During migration, both formats coexist:
@@ -162,7 +157,6 @@ During migration, both formats coexist:
 - `lib/styles/` stays as-is (animation-type styles like card-flip remain there)
 - `components/ui/` stays as-is (UI primitives are separate from animations)
 - Animation detail page URL structure (`/animations/[slug]`) stays the same
-- MCP server and CLI tools — extend later, don't block on this
 
 ## 10. AnimeJS Runtime Policy
 

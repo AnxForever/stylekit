@@ -13,7 +13,7 @@ export function LoginContent() {
   const searchParams = useSearchParams();
   const authError = searchParams.get("auth_error");
   const nextParam = searchParams.get("next");
-  const nextPath = nextParam && nextParam.startsWith("/") ? nextParam : "/profile";
+  const nextPath = nextParam && nextParam.startsWith("/") ? nextParam : "/styles";
   const [dismissed, setDismissed] = useState(false);
 
   if (loading) {

@@ -1652,10 +1652,10 @@ backgroundSize: "40px 40px"`}
                   All Styles
                 </Link>
                 <Link
-                  href="/generate"
+                  href="/templates"
                   className="text-white/60 hover:text-white transition-colors duration-[200ms] ease-out"
                 >
-                  Generate
+                  Templates
                 </Link>
               </div>
 

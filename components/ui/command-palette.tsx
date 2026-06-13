@@ -35,7 +35,6 @@ export function CommandPalette() {
     { id: "styles", type: "page", title: t("search.page.styles"), description: t("search.page.stylesDesc"), href: "/styles", keywords: ["styles", "catalog"] },
     { id: "component-patterns", type: "page", title: t("search.page.componentPatterns"), description: t("search.page.componentPatternsDesc"), href: "/component-patterns", keywords: ["components", "patterns", "breadcrumb", "accordion", "tabs", "pagination"] },
     { id: "templates", type: "page", title: t("search.page.templates"), description: t("search.page.templatesDesc"), href: "/templates", keywords: ["templates", "pages"] },
-    { id: "compare", type: "page", title: t("nav.compare"), description: t("compare.selectTwo"), href: "/compare", keywords: ["compare", "diff"] },
   ], [t]);
 
   // Get all styles and convert to search results

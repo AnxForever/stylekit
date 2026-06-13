@@ -1,17 +1,15 @@
 /**
- * Figma MCP Integration
+ * Figma token import helpers
  *
  * This module provides utilities for importing design tokens from Figma
- * via the Figma MCP Server. It converts Figma variables and styles into
- * StyleKit's token format.
- *
- * @see https://www.figma.com/blog/introducing-figma-mcp-server/
+ * variable exports. It converts Figma variables and styles into StyleKit's
+ * token format.
  */
 
 import type { StyleTokens } from "../styles/tokens";
 
 /**
- * Figma Variable types as returned by MCP Server
+ * Figma variable types.
  */
 export interface FigmaVariable {
   id: string;
@@ -42,14 +40,14 @@ export interface FigmaStyle {
 }
 
 /**
- * Figma MCP Response types
+ * Figma export response types.
  */
-export interface FigmaMCPVariablesResponse {
+export interface FigmaVariablesResponse {
   variables: Record<string, FigmaVariable>;
   collections: Record<string, FigmaVariableCollection>;
 }
 
-export interface FigmaMCPStylesResponse {
+export interface FigmaStylesResponse {
   styles: FigmaStyle[];
 }
 
@@ -197,10 +195,10 @@ export function convertFigmaRadiusToTokens(
 }
 
 /**
- * Full conversion from Figma MCP response to StyleKit tokens
+ * Full conversion from a Figma variables response to StyleKit tokens.
  */
 export function convertFigmaToStyleKitTokens(
-  response: FigmaMCPVariablesResponse,
+  response: FigmaVariablesResponse,
   options: {
     modeId?: string;
     styleName?: string;
@@ -259,7 +257,7 @@ export function convertFigmaToStyleKitTokens(
  * Generate CSS custom properties from Figma variables
  */
 export function generateCSSFromFigmaVariables(
-  response: FigmaMCPVariablesResponse,
+  response: FigmaVariablesResponse,
   modeId?: string
 ): string {
   const colors = convertFigmaColorsToTokens(response.variables, modeId);
@@ -292,7 +290,7 @@ export function generateCSSFromFigmaVariables(
  * Generate Tailwind config extension from Figma variables
  */
 export function generateTailwindConfigFromFigma(
-  response: FigmaMCPVariablesResponse,
+  response: FigmaVariablesResponse,
   modeId?: string
 ): string {
   const colors = convertFigmaColorsToTokens(response.variables, modeId);

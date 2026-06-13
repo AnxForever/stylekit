@@ -6,7 +6,6 @@
  * a formatted markdown summary suitable for posting as a PR comment.
  *
  * Usage:
- *   npx tsx tools/cli/stylekit.ts lint --style neo-brutalist --files "src/**\/*.tsx" --format json | npx tsx tools/scripts/pr-lint-comment.ts
  *   npx tsx tools/scripts/pr-lint-comment.ts --input lint-results.json
  */
 
@@ -121,7 +120,7 @@ function main(): void {
   try {
     data = JSON.parse(input);
   } catch {
-    console.error("Error: Invalid JSON input. Run stylekit lint with --format json first.");
+    console.error("Error: Invalid JSON input. Pass a lint-results.json file with the expected schema.");
     process.exit(1);
   }
 

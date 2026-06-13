@@ -24,7 +24,7 @@ interface AuthState {
 
 function normalizeNextPath(nextPath?: string): string {
   if (!nextPath || !nextPath.startsWith("/")) {
-    return "/profile";
+    return "/styles";
   }
   return nextPath;
 }

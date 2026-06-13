@@ -36,20 +36,17 @@ export async function GET(request: Request) {
 
   // Aggregate totals from per-style counters
   let totalApi = 0;
-  let totalMcp = 0;
   let totalPage = 0;
   for (const style of Object.values(stats.styles)) {
     totalApi += style.apiCalls;
-    totalMcp += style.mcpCalls;
     totalPage += style.pageViews;
   }
-  const totalEvents = totalApi + totalMcp + totalPage;
+  const totalEvents = totalApi + totalPage;
 
   // Build event type breakdown
   const eventsByType: { type: string; count: number }[] = [];
   if (totalPage > 0) eventsByType.push({ type: "page_view", count: totalPage });
   if (totalApi > 0) eventsByType.push({ type: "api_call", count: totalApi });
-  if (totalMcp > 0) eventsByType.push({ type: "mcp_call", count: totalMcp });
 
   // Generate simple recent activity from available data
   // File-based tracker doesn't store per-day history, so show empty
@@ -100,7 +97,7 @@ export async function GET(request: Request) {
       views: totalPage,
       exports: 0,
       copies: 0,
-      interactions: totalApi + totalMcp,
+      interactions: totalApi,
     },
     trafficSeries: [],
     topPages: [],

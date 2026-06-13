@@ -32,7 +32,6 @@
   <a href="https://stylekit.top/styles"><strong>Showcase</strong></a> &middot;
   <a href="https://stylekit.top/templates"><strong>Templates</strong></a> &middot;
   <a href="https://stylekit.top/animations"><strong>Animations</strong></a> &middot;
-  <a href="https://stylekit.top/developers/api"><strong>API Docs</strong></a> &middot;
   <a href="#contributing"><strong>Contributing</strong></a>
 </p>
 
@@ -74,8 +73,8 @@ StyleKit helps humans and AI generate consistent, high-quality UI code. Pick a s
 
 - **49 CSS animations** with live preview and one-click copy
 - **34 page templates** — SaaS, dashboard, e-commerce, portfolio, blog
-- **Style blender** — mix two styles into a new hybrid
-- **Side-by-side comparison** — evaluate styles head-to-head
+- **Prompt libraries** — copyable UI, landing page, dashboard, Tailwind, and dark mode prompts
+- **Design resources** — gradients, shadows, backgrounds, typography, and component patterns
 
 </td>
 <td width="50%" valign="top">
@@ -83,9 +82,9 @@ StyleKit helps humans and AI generate consistent, high-quality UI code. Pick a s
 ### Platform
 
 - **Bilingual** — full English and Chinese support
-- **Community** — ratings, comments, and style submissions
-- **OAuth** — GitHub and Google sign-in
-- **PWA** — installable, works offline, dark/light mode
+- **Localized routing** — English and Chinese public pages
+- **LLM-readable docs** — `/llms.txt`, `/llms.md`, and `/llms-full.txt`
+- **Production runbooks** — deployment, release review, and style authoring docs
 
 </td>
 </tr>
@@ -186,9 +185,9 @@ See [`docs/PROJECT_STRUCTURE.md`](docs/PROJECT_STRUCTURE.md) for the repository 
 See [`docs/STYLE_AUTHORING.md`](docs/STYLE_AUTHORING.md) before adding or changing catalog styles.
 See [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md) and [`docs/RELEASE_REVIEW.md`](docs/RELEASE_REVIEW.md) for production deployment and release review notes.
 
-## API
+## API Surface
 
-RESTful API for programmatic access. All endpoints return JSON.
+The stable JSON endpoints cover style packs, tokens, recipes, and style linting.
 
 ```
 GET  /api/styles                      # List all styles
@@ -196,13 +195,8 @@ GET  /api/styles/{slug}               # Full style pack (tokens + recipes + rule
 GET  /api/styles/{slug}/tokens        # Design tokens only
 GET  /api/styles/{slug}/recipes       # Component recipes only
 POST /api/lint                        # Lint code against a style
-POST /api/analyze-style               # Analyze existing code
 POST /api/match-style                 # Match code to closest style
 ```
-
-<p align="right">
-  <a href="https://stylekit.top/developers/api">Full API docs &rarr;</a>
-</p>
 
 ## Support This Project
 
@@ -233,7 +227,7 @@ The website support section is driven from a single config file: [`lib/site/supp
 | Framework | Next.js 16 + Turbopack |
 | UI | React 19, Radix UI, Lucide Icons |
 | Styling | Tailwind CSS 4, CVA |
-| Auth & DB | Supabase (OAuth, PostgreSQL) |
+| Auth & DB | Supabase (PostgreSQL + auth helpers) |
 | Validation | Zod 4 |
 | Testing | Vitest + Playwright |
 | Deployment | Alibaba Cloud ECS + Nginx + systemd |

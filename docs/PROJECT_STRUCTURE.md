@@ -4,7 +4,7 @@ This document is a practical map of the repository. It describes the current sou
 
 ## Overview
 
-StyleKit is a Next.js App Router application with a large design-style catalog, public UI tools, authenticated community/admin features, and a small publishable core package.
+StyleKit is a Next.js App Router application with a large design-style catalog, template/resource galleries, validation tooling, authenticated admin features, and a small publishable core package.
 
 Main runtime stack:
 
@@ -24,7 +24,7 @@ Main runtime stack:
 ├── content/                MDX/blog content
 ├── public/                 Static assets used by the app
 ├── packages/core/          Publishable @stylekit/core package
-├── tools/                  Local CLI, MCP server, validation and utility scripts
+├── tools/                  Local validation and utility scripts
 ├── tests/                  Vitest unit tests and Playwright e2e tests
 ├── docs/                   Project documentation and product/process notes
 ├── ops/                    Production operations scripts and systemd units
@@ -60,8 +60,8 @@ Important groups:
 - `app/templates/`: template gallery and individual template routes.
 - `app/animations/`, `app/backgrounds/`, `app/gradients/`, `app/shadows/`, `app/typography/`: design resource surfaces.
 - `app/admin/`: admin UI pages.
-- `app/profile/`, `app/community/`, `app/login/`: user-facing auth/community surfaces.
-- `app/api/`: route handlers for JSON APIs, auth callbacks, admin APIs, generation, linting, style export, profile/community features, and health checks.
+- `app/login/`: auth entry point. Profile, community, generator, playground, analysis, comparison, migration, and pipeline routes are hidden or redirected.
+- `app/api/`: route handlers for JSON APIs, auth callbacks, admin APIs, linting, style export, health checks, and retired endpoint responses.
 
 Pattern in use:
 
@@ -78,7 +78,7 @@ Main categories:
 - `components/layout/`: global shell, header, footer, mobile nav, user menu.
 - `components/home/`: homepage sections.
 - `components/styles/`, `components/style-preview/`, `components/showcase/`: style browsing and style detail UI.
-- `components/templates/`, `components/animations/`, `components/playground/`, `components/compare/`: major product tools.
+- `components/templates/`, `components/animations/`: primary product tools.
 - `components/admin/`: shared admin shell and admin primitives.
 - `components/ui/`: reusable low-level primitives and styled UI variants.
 - `components/providers/`, `components/pwa/`, `components/analytics/`: app-wide client integrations.
@@ -102,9 +102,9 @@ Key modules:
 - `lib/auth/`: Supabase auth, admin access, sessions, user title policy.
 - `lib/supabase/`: server clients and migrations.
 - `lib/admin/`: admin analytics/audit utilities.
-- `lib/community/`, `lib/favorites/`, `lib/profile`-adjacent modules: user/community behavior.
-- `lib/generator/`, `lib/ai-generator/`, `lib/pipeline/`: style generation and pipeline orchestration.
-- `lib/linter/`, `lib/analyzer/`, `lib/quality/`, `lib/accessibility/`: analysis and scoring engines.
+- `lib/community/`, `lib/favorites/`, `lib/profile`-adjacent modules: hidden user/community behavior used by style runtime/admin surfaces.
+- `lib/generator/`: internal scaffold/rendering helpers still used by submission registration; not a public generator product.
+- `lib/linter/`, `lib/quality/`, `lib/accessibility/`: linting and scoring engines.
 - `lib/export/`: export formats such as Tailwind preset, shadcn theme, Figma tokens, IDE rules, skill packs.
 - `lib/i18n/`: locale routing, metadata, translations, request helpers.
 - `lib/security/`, `lib/seo/`, `lib/rss/`, `lib/og/`: cross-cutting platform support.
@@ -130,8 +130,6 @@ Generated package output lives in `packages/core/dist`. It is ignored by `.gitig
 
 `tools/` contains local developer tooling:
 
-- `tools/cli/stylekit.ts`: CLI entry.
-- `tools/mcp/`: MCP server package.
 - `tools/scripts/`: checks, audits, migration/refinement scripts.
 - `tools/submission/`: submission manifest validation.
 

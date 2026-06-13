@@ -1200,7 +1200,7 @@ export default function AntiDesignShowcase() {
                     { label: "STYLE PAGE", href: "/styles/anti-design" },
                     { label: "ALL STYLES", href: "/styles" },
                     { label: "SHOWCASE", href: "/styles/anti-design/showcase" },
-                    { label: "SUBMIT STYLE", href: "/submit" },
+                    { label: "TEMPLATES", href: "/templates" },
                   ].map((link) => (
                     <Link
                       key={link.label}

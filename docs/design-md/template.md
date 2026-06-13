@@ -9,9 +9,9 @@
 ## 使用步骤
 
 1. 复制本文件到你的项目根目录，命名为 `DESIGN.md`（注意大写）
-2. 填写 YAML frontmatter（StyleKit 社区用，官方版本可不填）
+2. 填写 YAML frontmatter（用于本地归档或后续人工审核，官方版本可不填）
 3. 按章节顺序填写，保持标题层级（`##` 一级大章节）
-4. 提交到 StyleKit 社区：访问 `/submit` → 选"Paste DESIGN.md"tab
+4. 先在本地保存并人工校验；公开提交流程暂不作为主入口
 
 ## 骨架（空白可填）
 
