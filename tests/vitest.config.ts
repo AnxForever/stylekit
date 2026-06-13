@@ -19,11 +19,9 @@ export default defineConfig({
       provider: "v8",
       include: [
         "lib/styles/tokens-registry.ts",
-        "lib/styles/blend-engine.ts",
         "lib/styles/token-diff.ts",
         "lib/linter/index.ts",
         "lib/accessibility/scorer.ts",
-        "lib/style-extractor/draft-to-tokens.ts",
       ],
     },
   },

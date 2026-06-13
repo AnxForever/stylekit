@@ -2,20 +2,6 @@ import { MetadataRoute } from "next";
 import { getSiteBaseUrl } from "@/lib/site-url";
 
 const BASE_URL = getSiteBaseUrl();
-const HIDDEN_ROUTE_PREFIXES = [
-  "/generate",
-  "/generate-style",
-  "/create-style",
-  "/analyze",
-  "/compare",
-  "/blend",
-  "/migrate",
-  "/pipeline",
-  "/playground",
-  "/community",
-  "/submit",
-  "/profile",
-];
 
 export default function robots(): MetadataRoute.Robots {
   return {
@@ -23,7 +9,7 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: "*",
         allow: ["/", "/llms.md", "/llms-full.txt"],
-        disallow: ["/api/", "/admin/", "/api-test", ...HIDDEN_ROUTE_PREFIXES],
+        disallow: ["/api/", "/admin/", "/api-test"],
       },
       {
         userAgent: [
@@ -38,7 +24,6 @@ export default function robots(): MetadataRoute.Robots {
           "Applebot-Extended",
         ],
         allow: "/",
-        disallow: HIDDEN_ROUTE_PREFIXES,
       },
     ],
     sitemap: `${BASE_URL}/sitemap.xml`,
