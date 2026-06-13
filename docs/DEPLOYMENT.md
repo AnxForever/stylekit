@@ -306,6 +306,8 @@ It checks `HEALTH_URL` and records consecutive failures in `STATE_FILE`. Once fa
 Default settings:
 
 ```bash
+HOME=/root
+PM2_HOME=/root/.pm2
 PM2_APP=stylekit
 HEALTH_URL=http://127.0.0.1:13000/api/health
 TIMEOUT=5
@@ -313,6 +315,10 @@ FAIL_THRESHOLD=2
 STATE_FILE=/run/stylekit-healthcheck.failures
 LOG_FILE=/var/log/stylekit-healthcheck.log
 ```
+
+The systemd service must set `HOME=/root` and `PM2_HOME=/root/.pm2`. Without
+those variables PM2 falls back to `/etc/.pm2`, the watchdog cannot find the
+`stylekit` process, and automatic recovery fails even though PM2 is running.
 
 Install the script and units:
 
