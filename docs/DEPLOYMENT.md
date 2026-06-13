@@ -2,6 +2,115 @@
 
 This runbook describes the current production deployment shape for StyleKit.
 
+## Canonical Production Deploy
+
+Use this path unless the infrastructure has been intentionally changed. The
+production directory is an rsync target, not a git checkout.
+
+1. Verify locally:
+
+```bash
+pnpm install --frozen-lockfile
+pnpm run security:secrets
+pnpm run check:catalog
+pnpm run typecheck
+pnpm run test
+pnpm run build
+git status --short
+```
+
+2. Push the verified branch:
+
+```bash
+git push origin <branch>
+```
+
+3. Verify the production host before touching files:
+
+```bash
+getent ahostsv4 www.stylekit.top | awk 'NR == 1 { print $1 }'
+
+ssh stylekit-prod 'set -e
+hostname
+test -d /www/stylekit
+cd /www/stylekit
+test -f package.json
+grep -q "\"name\": \"stylekit\"" package.json
+pm2 describe stylekit
+test "$(pm2 jlist | node -e '\''let data="";process.stdin.on("data",c=>data+=c);process.stdin.on("end",()=>{const app=JSON.parse(data).find((item)=>item.name==="stylekit");process.stdout.write(app?.pm2_env?.pm_cwd||"")})'\'')" = "/www/stylekit"
+'
+```
+
+4. Backup and rsync the verified local checkout:
+
+```bash
+ssh stylekit-prod 'set -e
+ts=$(date +%Y%m%d%H%M%S)
+mkdir -p /www/stylekit-backups
+rsync -a --delete \
+  --exclude node_modules \
+  --exclude .next \
+  /www/stylekit/ "/www/stylekit-backups/stylekit-${ts}/"
+'
+
+rsync -az --delete \
+  --exclude .git/ \
+  --exclude .next/ \
+  --exclude node_modules/ \
+  --exclude .env.local \
+  --exclude .env.production \
+  --exclude .data/ \
+  --exclude playwright-report/ \
+  --exclude test-results/ \
+  --exclude 'packages/**/dist/' \
+  ./ stylekit-prod:/www/stylekit/
+```
+
+5. Install, validate, build, and restart on the server:
+
+```bash
+ssh stylekit-prod 'set -e
+cd /www/stylekit
+pnpm install --frozen-lockfile
+pnpm run check:catalog
+pnpm run typecheck
+pnpm run build
+pm2 restart stylekit --update-env
+pm2 save
+pm2 describe stylekit
+'
+```
+
+6. If the server is OOM-killed during `typecheck` or `build`, use the local
+   build artifact that already passed checks:
+
+```bash
+rsync -az --delete .next/ stylekit-prod:/www/stylekit/.next/
+
+ssh stylekit-prod 'set -e
+cd /www/stylekit
+pnpm install --frozen-lockfile
+pnpm run check:catalog
+pm2 restart stylekit --update-env
+pm2 save
+pm2 describe stylekit
+'
+```
+
+7. Smoke test production:
+
+```bash
+curl -fsS https://www.stylekit.top/api/health
+curl -I https://www.stylekit.top/
+curl -I https://www.stylekit.top/styles
+curl -I https://www.stylekit.top/styles/neo-brutalist
+```
+
+Do not deploy by `git pull` on the server. Do not run `security:secrets` on
+the server rsync directory because it depends on `git ls-files`. Do not use
+`aliyun-openclaw`, `aliyun-ts`, or any other local alias unless it resolves to
+the current `www.stylekit.top` production IP and passes the host preflight.
+
 ## Runtime Shape
 
 Production is a single Next.js application process behind Nginx:
@@ -271,16 +380,48 @@ Browser checks:
 
 ## Rollback
 
-Code rollback:
+Code rollback uses the same rsync deployment path as a forward deploy. Revert
+locally, verify locally, push, then rsync the verified checkout and restart PM2
+on `stylekit-prod`.
 
 ```bash
 git revert <commit>
 pnpm install --frozen-lockfile
+pnpm run security:secrets
+pnpm run check:catalog
+pnpm run typecheck
+pnpm run test
 pnpm run build
+git push origin <branch>
+
+rsync -az --delete \
+  --exclude .git/ \
+  --exclude .next/ \
+  --exclude node_modules/ \
+  --exclude .env.local \
+  --exclude .env.production \
+  --exclude .data/ \
+  --exclude playwright-report/ \
+  --exclude test-results/ \
+  --exclude 'packages/**/dist/' \
+  ./ stylekit-prod:/www/stylekit/
+
+rsync -az --delete .next/ stylekit-prod:/www/stylekit/.next/
+
+ssh stylekit-prod 'set -e
+cd /www/stylekit
+pnpm install --frozen-lockfile
+pnpm run check:catalog
 pm2 restart stylekit --update-env
+pm2 save
+pm2 describe stylekit
+'
 ```
 
-For rsync rollback, copy the latest known-good `/www/stylekit-backups/stylekit-<timestamp>/` snapshot back to `/www/stylekit/`, then run `pnpm install --frozen-lockfile`, `pnpm run build`, and `pm2 restart stylekit --update-env`.
+For rsync snapshot rollback, copy the latest known-good
+`/www/stylekit-backups/stylekit-<timestamp>/` snapshot back to `/www/stylekit/`,
+then run `pnpm install --frozen-lockfile`, `pnpm run check:catalog`, and
+`pm2 restart stylekit --update-env`.
 
 Feature rollback without reverting code:
 
