@@ -230,15 +230,15 @@ The website support section is driven from a single config file: [`lib/site/supp
 | Auth & DB | Supabase (PostgreSQL + auth helpers) |
 | Validation | Zod 4 |
 | Testing | Vitest + Playwright |
-| Deployment | Alibaba Cloud ECS + Nginx + systemd |
+| Deployment | Alibaba Cloud ECS + Nginx + PM2 |
 
 ## Production Deployment
 
 Current production for `www.stylekit.top` runs on an Alibaba Cloud ECS instance in Beijing.
 
 - Edge and TLS: Nginx on the ECS host
-- App process: `stylekit.service` via systemd
-- App directory: `/www/stylekit`
+- App process: PM2 app `stylekit`
+- App directory: `/www/stylekit` rsynced from a verified local checkout
 - Runtime command: `pnpm start --hostname 0.0.0.0 --port 13000`
 
 `vercel.json` is no longer part of the active production deployment path and should not be treated as the source of truth for where StyleKit is hosted.

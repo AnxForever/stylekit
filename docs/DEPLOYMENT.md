@@ -14,14 +14,27 @@ The current operational assumption is:
 
 - Node.js 20 or newer
 - pnpm
-- Primary process manager: `systemd` service `stylekit.service`
-- Legacy/optional process manager: PM2 app name `stylekit`
+- Production SSH alias: `stylekit-prod` (`root@59.110.91.219` from the current `www.stylekit.top` DNS)
+- App directory: `/www/stylekit`
+- Deployment model: rsync copy from the verified local checkout; `/www/stylekit` is not a git checkout
+- Process manager: PM2 app name `stylekit`
+- Legacy service file: `stylekit.service` may exist, but it is not the active runtime unless `systemctl status stylekit` says it is active
 - Nginx terminates TLS and proxies to `127.0.0.1:13000`
 - Optional systemd timer runs `ops/stylekit-healthcheck.sh`
 
 ## Production Host Preflight
 
 Do this before every server sync. Do not trust an old local SSH alias by name.
+
+Recommended local SSH config:
+
+```sshconfig
+Host stylekit-prod
+    HostName 59.110.91.219
+    User root
+    IdentityFile ~/.ssh/id_ed25519
+    IdentitiesOnly yes
+```
 
 1. Resolve the current production IP from DNS:
 
@@ -36,10 +49,10 @@ ssh stylekit-prod 'set -e
 hostname
 test -d /www/stylekit
 cd /www/stylekit
-git remote -v
-git branch --show-current
-git status --short
-systemctl status stylekit --no-pager || pm2 list
+test -f package.json
+grep -q "\"name\": \"stylekit\"" package.json
+pm2 describe stylekit
+test "$(pm2 jlist | node -e '\''let data="";process.stdin.on("data",c=>data+=c);process.stdin.on("end",()=>{const app=JSON.parse(data).find((item)=>item.name==="stylekit");process.stdout.write(app?.pm2_env?.pm_cwd||"")})'\'')" = "/www/stylekit"
 '
 ```
 
@@ -47,9 +60,8 @@ Stop if any of these are true:
 
 - The SSH host IP does not match `www.stylekit.top`.
 - `/www/stylekit` is missing.
-- The git remote is not `AnxForever/stylekit`.
-- The working tree is dirty and the changes are not understood.
-- Neither `stylekit.service` nor a PM2 `stylekit` process exists.
+- `/www/stylekit/package.json` is not the StyleKit package.
+- PM2 `stylekit` is missing or its working directory is not `/www/stylekit`.
 
 Current local aliases such as `aliyun-openclaw` and `aliyun-ts` are not deployment proof. They must only be used if their resolved host matches the production DNS and the `/www/stylekit` preflight passes.
 
@@ -101,28 +113,41 @@ git status --short
 git push origin <branch>
 ```
 
-On the production host:
+The server is not a git checkout, so deploy code with rsync from the verified local repository:
 
 ```bash
+ssh stylekit-prod 'set -e
+ts=$(date +%Y%m%d%H%M%S)
+mkdir -p /www/stylekit-backups
+rsync -a --delete \
+  --exclude node_modules \
+  --exclude .next \
+  /www/stylekit/ "/www/stylekit-backups/stylekit-${ts}/"
+'
+
+rsync -az --delete \
+  --exclude .git/ \
+  --exclude .next/ \
+  --exclude node_modules/ \
+  --exclude .env.local \
+  --exclude .env.production \
+  --exclude .data/ \
+  --exclude playwright-report/ \
+  --exclude test-results/ \
+  --exclude 'packages/**/dist/' \
+  ./ stylekit-prod:/www/stylekit/
+
+ssh stylekit-prod 'set -e
 cd /www/stylekit
-git fetch origin
-git status --short
-git pull --ff-only origin <deployed-branch>
 pnpm install --frozen-lockfile
 pnpm run security:secrets
 pnpm run check:catalog
 pnpm run typecheck
 pnpm run build
-sudo systemctl restart stylekit
-sudo systemctl status stylekit --no-pager
-```
-
-If the process is PM2-managed on that host instead of systemd:
-
-```bash
-pm2 start "pnpm run start -- -p 13000" --name stylekit
 pm2 restart stylekit --update-env
 pm2 save
+pm2 describe stylekit
+'
 ```
 
 The runtime command must remain equivalent to `next start` through pnpm on port `13000`, with the same environment loaded.
@@ -238,10 +263,10 @@ Code rollback:
 git revert <commit>
 pnpm install --frozen-lockfile
 pnpm run build
-sudo systemctl restart stylekit
+pm2 restart stylekit --update-env
 ```
 
-For PM2-managed hosts, use `pm2 restart stylekit --update-env` instead.
+For rsync rollback, copy the latest known-good `/www/stylekit-backups/stylekit-<timestamp>/` snapshot back to `/www/stylekit/`, then run `pnpm install --frozen-lockfile`, `pnpm run build`, and `pm2 restart stylekit --update-env`.
 
 Feature rollback without reverting code:
 
@@ -249,10 +274,8 @@ Feature rollback without reverting code:
 unset ADMIN_PASSWORD
 unset ADMIN_PASSWORD_SHA256
 unset ADMIN_SESSION_SECRET
-sudo systemctl restart stylekit
+pm2 restart stylekit --update-env
 ```
-
-For PM2-managed hosts, use `pm2 restart stylekit --update-env` instead.
 
 Watchdog rollback:
 
