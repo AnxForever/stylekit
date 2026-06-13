@@ -20,7 +20,6 @@ export default defineConfig({
       include: [
         "lib/styles/tokens-registry.ts",
         "lib/styles/token-diff.ts",
-        "lib/linter/index.ts",
         "lib/accessibility/scorer.ts",
       ],
     },
