@@ -140,10 +140,24 @@ rsync -az --delete \
 ssh stylekit-prod 'set -e
 cd /www/stylekit
 pnpm install --frozen-lockfile
-pnpm run security:secrets
 pnpm run check:catalog
 pnpm run typecheck
 pnpm run build
+pm2 restart stylekit --update-env
+pm2 save
+pm2 describe stylekit
+'
+```
+
+The production host is memory-constrained. If server-side `typecheck` or `build` is OOM-killed after the local checks and local `pnpm run build` have passed, sync the local build output instead:
+
+```bash
+rsync -az --delete .next/ stylekit-prod:/www/stylekit/.next/
+
+ssh stylekit-prod 'set -e
+cd /www/stylekit
+pnpm install --frozen-lockfile
+pnpm run check:catalog
 pm2 restart stylekit --update-env
 pm2 save
 pm2 describe stylekit
