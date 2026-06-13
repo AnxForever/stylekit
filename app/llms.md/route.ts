@@ -33,17 +33,17 @@ StyleKit provides structured design systems that AI can use to generate consiste
 
 ## Core Workflows
 
-### Path A: Reference URL -> Extract -> Generate
+### Path A: Style -> Rules -> Code
 
-1. Paste a public reference URL in [Create Style](/create-style)
-2. Normalize the extracted style draft in the product workflow
-3. Generate project output in [Generator](/generate)
+1. Browse preset styles in [Styles](/styles)
+2. Copy the target style tokens, component recipes, and AI rules
+3. Use those constraints in your editor or AI coding workflow
 
-### Path B: Preset Style -> Template -> Generate
+### Path B: Template -> Prompt -> Build
 
-1. Browse presets in [Styles](/styles)
-2. Select template and output format in [Generator](/generate)
-3. Edit content with live preview and download ZIP
+1. Choose a page structure from [Templates](/templates)
+2. Copy a prompt from [UI Prompts](/ui-prompts) or a focused prompt page
+3. Combine the template structure with the selected style rules
 
 ## Documentation
 

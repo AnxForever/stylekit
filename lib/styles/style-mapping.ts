@@ -2,7 +2,7 @@
  * Style Mapping Utilities
  *
  * Shared functions for mapping style recommendations to style slugs.
- * Used by both the API generate endpoint and the MCP server.
+ * Used by the API generate endpoint.
  */
 
 /**

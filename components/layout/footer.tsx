@@ -67,12 +67,6 @@ export function Footer() {
                 {t("nav.templates")}
               </Link>
               <Link
-                href={localizeHref("/community", locale)}
-                className="text-sm text-foreground hover:text-accent transition-colors"
-              >
-                {t("nav.community")}
-              </Link>
-              <Link
                 href={localizeHref("/guide", locale)}
                 className="text-sm text-foreground hover:text-accent transition-colors"
               >

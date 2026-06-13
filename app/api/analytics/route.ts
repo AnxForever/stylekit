@@ -68,7 +68,7 @@ export async function POST(request: Request) {
       );
     }
 
-    if (source === "page" || source === "api" || source === "mcp") {
+    if (source === "page" || source === "api") {
       trackStyleUsage(slug, source);
     } else {
       return NextResponse.json(
@@ -138,7 +138,7 @@ async function recordInternalAnalyticsEvent(
   }
 }
 
-function inferLegacySource(eventType: string): "page" | "api" | "mcp" | null {
+function inferLegacySource(eventType: string): "page" | "api" | null {
   if (eventType === "style_view") return "page";
   return null;
 }

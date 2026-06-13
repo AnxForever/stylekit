@@ -140,7 +140,6 @@ export const mainNav: NavItem[] = [
 // Secondary navigation: surface under the "More" overflow menu.
 // Add new community/blog/external items here, not in mainNav.
 export const secondaryNav: NavItem[] = [
-  { href: "/community", labelKey: "nav.community" },
   { href: "/blog", labelKey: "nav.blog" },
   { href: "/changelog", labelKey: "nav.changelog" },
 ];

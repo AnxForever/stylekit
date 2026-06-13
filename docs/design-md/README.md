@@ -27,7 +27,7 @@ AI 生成 UI 时，DESIGN.md 告诉它"品牌 DNA 是什么"，避免千篇一�
 - Google 官方 SKILL: <https://github.com/google-labs-code/stitch-skills/tree/main/skills/design-md>
 - VoltAgent 精选库: <https://github.com/VoltAgent/awesome-design-md>
 - 浏览器目录: <https://getdesign.md/>
-- CLI 安装: `npx getdesign@latest add <brand>`
+- 命令行安装示例: `npx getdesign@latest add <brand>`
 
 ## 研究日期
 

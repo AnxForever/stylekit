@@ -6,8 +6,6 @@
  *
  * Used by:
  * - API: /api/lint endpoint
- * - CLI: stylekit lint command
- * - MCP: lint_code tool
  */
 
 import type { StyleTokens } from "@/lib/styles/tokens";

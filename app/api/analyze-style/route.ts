@@ -1,65 +1,8 @@
-import { NextRequest, NextResponse } from "next/server";
-import { analyzeProjectStyle } from "@/lib/analyzer";
-import { verifyTrustedOrigin } from "@/lib/security/request-origin";
-import {
-  checkRateLimit,
-  createRateLimitHeaders,
-  getRequestClientKey,
-} from "@/lib/security/rate-limit";
+import { retiredEndpoint } from "@/lib/api/retired";
 
-/**
- * POST /api/analyze-style
- *
- * Analyze component code to infer which StyleKit design style best matches.
- *
- * Body: { code: string, packageJson?: string, tailwindConfig?: string }
- * Returns: AnalysisResult
- */
-export async function POST(request: NextRequest) {
-  const originCheck = verifyTrustedOrigin(request);
-  if (!originCheck.ok) {
-    return NextResponse.json(
-      { error: originCheck.error },
-      { status: originCheck.status ?? 403 },
-    );
-  }
-
-  const rateLimit = checkRateLimit({
-    namespace: "analyze-style",
-    key: getRequestClientKey(request),
-    limit: 20,
-    windowMs: 60 * 1000,
+export async function POST() {
+  return retiredEndpoint({
+    feature: "Project style analysis",
+    replacement: "/api/match-style",
   });
-  if (!rateLimit.allowed) {
-    return NextResponse.json(
-      { error: "Too many requests. Try again later." },
-      { status: 429, headers: createRateLimitHeaders(rateLimit) },
-    );
-  }
-
-  try {
-    const body = await request.json();
-    const { code, packageJson, tailwindConfig } = body;
-
-    if (!code || typeof code !== "string") {
-      return NextResponse.json(
-        { error: "Missing or invalid 'code' field" },
-        { status: 400 },
-      );
-    }
-
-    const result = analyzeProjectStyle({
-      code,
-      packageJson: typeof packageJson === "string" ? packageJson : undefined,
-      tailwindConfig:
-        typeof tailwindConfig === "string" ? tailwindConfig : undefined,
-    });
-
-    return NextResponse.json(result);
-  } catch {
-    return NextResponse.json(
-      { error: "Invalid request body" },
-      { status: 400 },
-    );
-  }
 }

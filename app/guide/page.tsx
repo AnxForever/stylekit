@@ -17,7 +17,7 @@ export default function GuidePage() {
       icon: Palette,
       title: t("guide.step1.title"),
       description: t("guide.step1.desc"),
-      href: "/create-style",
+      href: "/styles",
       cta: t("guide.step1.cta"),
     },
     {
@@ -25,7 +25,7 @@ export default function GuidePage() {
       icon: Code2,
       title: t("guide.step2.title"),
       description: t("guide.step2.desc"),
-      href: "/generate",
+      href: "/templates",
       cta: t("guide.step2.cta"),
     },
     {
@@ -33,7 +33,7 @@ export default function GuidePage() {
       icon: WandSparkles,
       title: t("guide.step3.title"),
       description: t("guide.step3.desc"),
-      href: "/generate",
+      href: "/ui-prompts",
       cta: t("guide.step3.cta"),
     },
   ];

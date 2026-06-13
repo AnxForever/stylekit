@@ -1,5 +1,5 @@
 // Shared color interpolation utilities
-// Used by both blend-engine and ai-generator for HSL-space color blending
+// Shared HSL-space color blending utilities.
 
 /** Convert hex color to HSL */
 export function hexToHsl(hex: string): { h: number; s: number; l: number } | null {

@@ -266,40 +266,38 @@ ${archetype.sections.map((s) => `- \`${s.id}\`: ${s.name} (${s.layout.type})`).j
 
 ### Core Product Flows
 
-#### Path A: Reference URL -> Extract -> Generate
+#### Path A: Style -> Rules -> Code
 
-1. **Extract**: Paste a public website URL in \`/create-style\`
-2. **Normalize**: Review and refine the extracted draft in the product workflow
-3. **Generate**: Use \`/generate\` (3-step flow) to select template, edit content, and download ZIP
+1. **Select Style**: Browse preset styles via \`/styles\`
+2. **Copy Rules**: Use the selected style's tokens, component recipes, and AI rules
+3. **Generate Elsewhere**: Apply those constraints inside your own editor or AI coding workflow
 
-#### Path B: Preset Style -> Template -> Generate
+#### Path B: Template -> Prompt -> Build
 
-1. **Select Style**: Choose from preset styles via \`/styles\`
-2. **Choose Output**: Select template + output format in \`/generate\`
-3. **Edit & Download**: Complete content editing with live preview and download ZIP
+1. **Choose Structure**: Start from a page template in \`/templates\`
+2. **Choose Prompt**: Copy a prompt from \`/ui-prompts\` or a focused prompt page
+3. **Build**: Combine the template structure with the selected style rules
 
 ### Critical Rules
 
 1. **Always use exact token classes** - Don't approximate or substitute
 2. **Never use forbidden classes** - Check forbidden lists before generating
 3. **Follow component recipes** - Use parameterized templates, not ad-hoc code
-4. **Preserve extracted evidence** - Keep palette, spacing rhythm, and motion cues from source sites
+4. **Preserve style evidence** - Keep palette, spacing rhythm, and motion cues from the selected StyleKit page
 5. **Review before shipping** - Check the generated UI against the selected style rules
 
 ### Example Workflow (Path A)
 
 \`\`\`
-# Replicate a reference site style and generate code
+# Use a StyleKit style as generation constraints
 
-1. Open /create-style and paste https://example.com
+1. Open /styles and choose a target style
 
-2. Review extracted markdown/json in the product flow
-   -> normalize palette, tokens, and evidence
+2. Copy style tokens, component recipes, and AI rules
 
-3. Open /generate
-   -> choose template and output format
-   -> edit content with live preview
-   -> download ZIP
+3. Open /templates or /ui-prompts
+   -> choose structure and prompt scaffolding
+   -> generate code inside your own coding workflow
 \`\`\`
 
 ---

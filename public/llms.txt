@@ -14,17 +14,17 @@ StyleKit provides structured design systems that AI can use to generate consiste
 
 ## Quick Start for AI Assistants
 
-### Path A: Reference URL -> Extract -> Generate
-
-1. Paste a public reference URL in the product: /create-style
-2. Import and normalize the extracted style draft
-3. Generate output in 3 steps: /generate
-
-### Path B: Preset Style -> Template -> Generate
+### Path A: Style -> Rules -> Code
 
 1. Browse preset styles: /styles
-2. Select template and output format: /generate
-3. Edit content with live preview and download ZIP
+2. Copy the target style tokens, component recipes, and AI rules
+3. Use those constraints in your editor or AI coding workflow
+
+### Path B: Template -> Prompt -> Build
+
+1. Choose a page structure from /templates
+2. Copy a prompt from /ui-prompts or a focused prompt page
+3. Combine the template structure with the selected style rules
 
 ## Available Styles
 
@@ -70,18 +70,13 @@ StyleKit provides structured design systems that AI can use to generate consiste
 4. Generate code following the plan
 ```
 
-### Example 3: AI Design System Generator (Recommended)
+### Example 3: AI Design System Workflow (Recommended)
 
 ```
-1. Open /generate
-2. Choose product type, style preference, color scheme, and output format
-3. Use the generated package with:
-   - Selected style and tokens
-   - Color palette recommendations
-   - Typography pairings
-   - Component code examples
-   - UX and stack-specific guidelines
-4. Use the AI rules for consistent code generation
+1. Open /styles and choose a target style
+2. Copy the style tokens, recipes, do's/don'ts, and AI rules
+3. Open /templates or /ui-prompts for structure and prompt scaffolding
+4. Generate code inside your own coding workflow using those constraints
 ```
 
 ## Design Tokens Structure

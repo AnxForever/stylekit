@@ -83,7 +83,7 @@ export const seoKeywords: KeywordData[] = [
     searchVolume: 3100,
     difficulty: 58,
     intent: "commercial",
-    relatedPages: ["/create-style", "/styles"],
+    relatedPages: ["/styles", "/gradients"],
     contentType: "resource",
   },
   {

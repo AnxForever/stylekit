@@ -1,7 +1,7 @@
 /**
  * Usage Analytics Tracker
  *
- * In-memory anonymous counter for tracking style usage across API, MCP, and page views.
+ * In-memory anonymous counter for tracking style usage across API and page views.
  * Privacy-first: no PII collected, only aggregate counts.
  * Persists to .data/analytics.json with debounced writes; loads on first access.
  */
@@ -12,7 +12,6 @@ import path from "path";
 export interface StyleUsageData {
   slug: string;
   apiCalls: number;
-  mcpCalls: number;
   pageViews: number;
   total: number;
   lastAccessed: string;
@@ -24,11 +23,10 @@ export interface AnalyticsData {
   updatedAt: string;
 }
 
-type Source = "api" | "mcp" | "page";
+type Source = "api" | "page";
 
 interface Counter {
   api: number;
-  mcp: number;
   page: number;
   lastAccessed: string;
 }
@@ -54,11 +52,18 @@ function loadFromDisk(): void {
 
   try {
     const raw = readFileSync(ANALYTICS_FILE, "utf-8");
-    const data = JSON.parse(raw) as PersistedData;
+    const data = JSON.parse(raw) as {
+      counters?: Record<string, Partial<Counter> & Record<string, unknown>>;
+      combinations?: Record<string, number>;
+    };
 
     if (data.counters) {
       for (const [slug, c] of Object.entries(data.counters)) {
-        counters[slug] = { ...c };
+        counters[slug] = {
+          api: c.api ?? 0,
+          page: c.page ?? 0,
+          lastAccessed: c.lastAccessed ?? new Date().toISOString(),
+        };
       }
     }
     if (data.combinations) {
@@ -105,7 +110,7 @@ function ensureLoaded(): void {
 function ensureCounter(slug: string): Counter {
   ensureLoaded();
   if (!counters[slug]) {
-    counters[slug] = { api: 0, mcp: 0, page: 0, lastAccessed: new Date().toISOString() };
+    counters[slug] = { api: 0, page: 0, lastAccessed: new Date().toISOString() };
   }
   return counters[slug];
 }
@@ -136,9 +141,8 @@ export function getUsageStats(): AnalyticsData {
     styles[slug] = {
       slug,
       apiCalls: counter.api,
-      mcpCalls: counter.mcp,
       pageViews: counter.page,
-      total: counter.api + counter.mcp + counter.page,
+      total: counter.api + counter.page,
       lastAccessed: counter.lastAccessed,
     };
   }
@@ -153,7 +157,7 @@ export function getUsageStats(): AnalyticsData {
 export function getTopStyles(limit = 10): { slug: string; total: number }[] {
   ensureLoaded();
   return Object.entries(counters)
-    .map(([slug, c]) => ({ slug, total: c.api + c.mcp + c.page }))
+    .map(([slug, c]) => ({ slug, total: c.api + c.page }))
     .sort((a, b) => b.total - a.total)
     .slice(0, limit);
 }
@@ -165,7 +169,7 @@ export function getTrendingStyles(limit = 10): { slug: string; total: number }[]
   const now = Date.now();
   return Object.entries(counters)
     .map(([slug, c]) => {
-      const total = c.api + c.mcp + c.page;
+      const total = c.api + c.page;
       const recencyMs = now - new Date(c.lastAccessed).getTime();
       const recencyBonus = Math.max(0, 1 - recencyMs / (1000 * 60 * 60 * 24)); // Decays over 24h
       return { slug, total, score: total + recencyBonus * 10 };

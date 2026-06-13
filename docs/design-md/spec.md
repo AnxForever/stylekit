@@ -151,4 +151,4 @@ license: "CC-BY-4.0"
 1. **DESIGN.md 的事实标准还在形成**：Google 官方 spec 只有 5 章节且相对简洁，VoltAgent/designproject.io 都在加扩展。**StyleKit 的 11 章节模板可以成为业界更完整的变体**。
 2. **社区机会**：VoltAgent 的 68 个 DESIGN.md 全部来自知名品牌（Vercel / Linear / Apple / SpaceX）。**StyleKit 130+ styles 如果批量导出 DESIGN.md，瞬间成为业界最大的风格库**（130 vs 68）。
 3. **agent 差异化**：Google Stitch 的 DESIGN.md skill 只做"从 Stitch 项目逆向生成"。**StyleKit 新 agent 如果支持"任意 URL / 截图 / 对话 → DESIGN.md"**，是独立产品机会。
-4. **CLI 入口**: VoltAgent 有 `npx getdesign@latest add <brand>` 这样的 CLI。**StyleKit 可以做 `npx stylekit@latest add <slug>` 对标**，直接接入现有 130+ styles。
+4. **安装入口**: VoltAgent 有 `npx getdesign@latest add <brand>` 这样的命令行入口。StyleKit 当前先聚焦 Web 投稿、导出和 API，不把未完成的本地安装能力列为现有功能。

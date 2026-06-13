@@ -13,7 +13,7 @@ A submission is ready only when all three artifacts are usable:
 Submission channels:
 
 - GitHub issue form: `.github/ISSUE_TEMPLATE/style_submission.yml`
-- StyleKit web submit flow (manifest import at `/submit`)
+- Internal/experimental web submit flow. Do not present it as a primary public entry point until the review workflow is polished.
 
 ## 2) Input checklist before prompting AI
 
@@ -144,9 +144,9 @@ Return only the required fenced blocks in order.
 2. Run repair prompt if any schema/quality issue appears.
 3. Validate locally:
    - `pnpm run submission:validate ./manifest.json`
-4. (Optional) Build a ZIP bundle:
+4. (Optional, internal) Build a ZIP bundle:
    - `POST /api/submit/bundle` with `{ "manifest": <manifest json> }`
-5. Submit via issue form or web manifest import.
+5. Submit via issue form, or use the internal manifest import flow during maintainer review.
 
 ## 8) Mapping notes (manifest -> backend)
 
@@ -157,7 +157,7 @@ Return only the required fenced blocks in order.
 - `app/api/submit/validate/route.ts`
 - `app/api/submit/bundle/route.ts`
 
-For `/submit`, paste or upload full manifest JSON directly.
+The web manifest import route is internal/experimental; paste or upload full manifest JSON there only during maintainer review.
 
 ## 9) Common failure modes
 

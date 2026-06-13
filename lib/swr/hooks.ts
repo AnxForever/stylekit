@@ -49,40 +49,6 @@ interface CommentsData {
   total: number;
 }
 
-interface CommunityAuthor {
-  handle: string;
-  avatarUrl: string | null;
-  provider: "github" | "linuxdo" | "unknown";
-  userId: string | null;
-}
-
-interface CommunityFeedItem {
-  id: string;
-  slug: string;
-  status: "approved";
-  submittedAt: string;
-  reviewedAt: string | null;
-  title: string;
-  titleEn: string | null;
-  description: string | null;
-  cover: string | null;
-  author: CommunityAuthor;
-  hasDesignMd: boolean;
-}
-
-interface CommunityFeedData {
-  items: CommunityFeedItem[];
-  total: number;
-  limit: number;
-  offset: number;
-}
-
-interface CommunityFeedQuery {
-  limit?: number;
-  offset?: number;
-  slug?: string;
-}
-
 interface AdminAuditActor {
   type: "user" | "token" | "dev-bypass";
   id: string;
@@ -109,56 +75,9 @@ interface AdminAuditData {
   nextOffset: number | null;
 }
 
-interface ProfileComment {
-  id: string;
-  style_slug: string;
-  content: string;
-  created_at: string;
-}
-
-interface ProfileCommentsData {
-  success: boolean;
-  comments: ProfileComment[];
-}
-
-interface ProfileSubmission {
-  id: string;
-  slug: string;
-  status: "pending" | "approved" | "rejected";
-  submitted_at: string;
-  name: string | null;
-  name_en: string | null;
-  description: string | null;
-}
-
 export interface CatalogStylesData {
   total: number;
   styles: StyleMeta[];
-}
-
-interface ProfileSubmissionsData {
-  success: boolean;
-  submissions: ProfileSubmission[];
-}
-
-interface ProfileRating {
-  id: string;
-  style_slug: string;
-  rating: number;
-  created_at: string;
-}
-
-interface ProfileRatingsData {
-  success: boolean;
-  ratings: ProfileRating[];
-}
-
-interface ProfileTitleData {
-  success: boolean;
-  title: string | null;
-  titleColor: string | null;
-  titleIconPath: string | null;
-  seqId: number | null;
 }
 
 // ---------- Hooks ----------
@@ -186,20 +105,6 @@ export function useStyleComments(slug: string, limit = 10) {
   return useSWR<CommentsData>(
     slug ? `/api/styles/${slug}/comments?limit=${limit}` : null
   );
-}
-
-export function useCommunityFeed(query: CommunityFeedQuery = {}) {
-  const params = new URLSearchParams();
-  params.set("limit", String(query.limit ?? 12));
-  params.set("offset", String(query.offset ?? 0));
-  if (query.slug?.trim()) {
-    params.set("slug", query.slug.trim().toLowerCase());
-  }
-  return useSWR<CommunityFeedData>(`/api/community/feed?${params.toString()}`, {
-    keepPreviousData: true,
-    dedupingInterval: 10_000,
-    revalidateOnFocus: false,
-  });
 }
 
 export function useAnalyticsDashboard(range: DashboardRange = "7d") {
@@ -237,26 +142,6 @@ export function useAdminAuditEvents(query: AdminAuditQuery = {}) {
     dedupingInterval: 10_000,
     revalidateOnFocus: false,
   });
-}
-
-export function useProfileComments(userId: string | undefined) {
-  return useSWR<ProfileCommentsData>(userId ? "/api/profile/comments" : null);
-}
-
-export function useProfileSubmissions(userId: string | undefined) {
-  return useSWR<ProfileSubmissionsData>(userId ? "/api/profile/submissions" : null, {
-    keepPreviousData: true,
-    dedupingInterval: 10_000,
-    revalidateOnFocus: false,
-  });
-}
-
-export function useProfileRatings(userId: string | undefined) {
-  return useSWR<ProfileRatingsData>(userId ? "/api/profile/ratings" : null);
-}
-
-export function useProfileTitle(userId: string | undefined) {
-  return useSWR<ProfileTitleData>(userId ? "/api/profile/title" : null);
 }
 
 // ---------- Admin Comments ----------
@@ -399,134 +284,6 @@ export function useAdminSystem() {
   });
 }
 
-// ---------- Admin Generator Telemetry ----------
-
-type AdminGeneratorEndpoint = "generate-style" | "generate-design-system";
-type AdminGeneratorOutcome = "success" | "error";
-type AdminGeneratorFallbackReason =
-  | "network-error"
-  | "invalid-payload"
-  | "unexpected-status"
-  | "not-modified-without-cache";
-type AdminGeneratorGroupBy = "none" | "fallback-reason";
-
-interface AdminGeneratorEvent {
-  endpoint: AdminGeneratorEndpoint;
-  outcome: AdminGeneratorOutcome;
-  status: number;
-  code?: string;
-  durationMs: number;
-  timestamp: string;
-  clientHash: string;
-}
-
-interface AdminGeneratorEndpointMetrics {
-  total: number;
-  success: number;
-  error: number;
-  avgDurationMs: number;
-  p95DurationMs: number;
-}
-
-interface AdminGeneratorDailyPoint {
-  date: string;
-  total: number;
-  success: number;
-  error: number;
-  avgDurationMs: number;
-  p95DurationMs: number;
-  fallback: {
-    total: number;
-    network: number;
-    invalidPayload: number;
-    unexpectedStatus: number;
-    notModifiedWithoutCache: number;
-  };
-}
-
-interface AdminGeneratorGroups {
-  fallbackReason: Array<{
-    reason: AdminGeneratorFallbackReason;
-    count: number;
-  }>;
-}
-
-interface AdminGeneratorSummary {
-  totalRequests: number;
-  successCount: number;
-  errorCount: number;
-  successRate: number;
-  avgDurationMs: number;
-  p95DurationMs: number;
-  byEndpoint: Record<AdminGeneratorEndpoint, AdminGeneratorEndpointMetrics>;
-  topErrorCodes: Array<{ code: string; count: number }>;
-  fallbackReports: {
-    total: number;
-    network: number;
-    invalidPayload: number;
-    unexpectedStatus: number;
-    notModifiedWithoutCache: number;
-  };
-  daily: AdminGeneratorDailyPoint[];
-}
-
-interface AdminGeneratorTelemetryData {
-  events: AdminGeneratorEvent[];
-  total: number;
-  limit: number;
-  offset: number;
-  hasMore: boolean;
-  nextOffset: number | null;
-  groupBy: AdminGeneratorGroupBy;
-  groups: AdminGeneratorGroups | null;
-  summary: AdminGeneratorSummary;
-}
-
-interface AdminGeneratorTelemetryQuery {
-  limit?: number;
-  offset?: number;
-  minutes?: number;
-  trendDays?: number;
-  endpoint?: AdminGeneratorEndpoint;
-  outcome?: AdminGeneratorOutcome;
-  code?: string;
-  fallbackReason?: AdminGeneratorFallbackReason;
-  groupBy?: AdminGeneratorGroupBy;
-}
-
-export function useAdminGeneratorTelemetry(query: AdminGeneratorTelemetryQuery = {}) {
-  const params = new URLSearchParams();
-  params.set("limit", String(query.limit ?? 20));
-  params.set("offset", String(query.offset ?? 0));
-  if (typeof query.minutes === "number" && Number.isFinite(query.minutes) && query.minutes > 0) {
-    params.set("minutes", String(Math.floor(query.minutes)));
-  }
-  if (typeof query.trendDays === "number" && Number.isFinite(query.trendDays) && query.trendDays > 0) {
-    params.set("trendDays", String(Math.floor(query.trendDays)));
-  }
-  if (query.endpoint) {
-    params.set("endpoint", query.endpoint);
-  }
-  if (query.outcome) {
-    params.set("outcome", query.outcome);
-  }
-  if (query.code?.trim()) {
-    params.set("code", query.code.trim());
-  }
-  if (query.fallbackReason) {
-    params.set("fallbackReason", query.fallbackReason);
-  }
-  if (query.groupBy && query.groupBy !== "none") {
-    params.set("groupBy", query.groupBy);
-  }
-
-  return useSWR<AdminGeneratorTelemetryData>(`/api/admin/generator?${params.toString()}`, {
-    keepPreviousData: true,
-    dedupingInterval: 10_000,
-    revalidateOnFocus: false,
-  });
-}
-
 // ---------- Admin Styles ----------
 
 interface AdminStyleStats {
@@ -630,22 +387,11 @@ export type {
   RatingData,
   Comment,
   CommentsData,
-  CommunityAuthor,
-  CommunityFeedItem,
-  CommunityFeedData,
-  CommunityFeedQuery,
   DashboardData,
   AdminAuditActor,
   AdminAuditEvent,
   AdminAuditData,
   AdminAuditQuery,
-  ProfileComment,
-  ProfileCommentsData,
-  ProfileSubmission,
-  ProfileSubmissionsData,
-  ProfileRating,
-  ProfileRatingsData,
-  ProfileTitleData,
   AdminComment,
   AdminCommentsData,
   AdminCommentsQuery,
@@ -658,17 +404,6 @@ export type {
   AdminSystemRuntime,
   AdminSystemAudit,
   AdminSystemData,
-  AdminGeneratorEndpoint,
-  AdminGeneratorOutcome,
-  AdminGeneratorFallbackReason,
-  AdminGeneratorGroupBy,
-  AdminGeneratorEvent,
-  AdminGeneratorEndpointMetrics,
-  AdminGeneratorDailyPoint,
-  AdminGeneratorGroups,
-  AdminGeneratorSummary,
-  AdminGeneratorTelemetryData,
-  AdminGeneratorTelemetryQuery,
   AdminStyleStats,
   AdminStyle,
   AdminStylesData,
