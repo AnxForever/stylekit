@@ -9,6 +9,15 @@ STATE_FILE="${STATE_FILE:-/run/stylekit-healthcheck.failures}"
 LOG_FILE="${LOG_FILE:-/var/log/stylekit-healthcheck.log}"
 EXPECTED_PATTERN="${EXPECTED_PATTERN:-}"
 
+if [ -z "${HOME:-}" ]; then
+  HOME="$(getent passwd "$(id -u)" 2>/dev/null | cut -d: -f6)"
+fi
+
+if [ -n "${HOME:-}" ]; then
+  export HOME
+  export PM2_HOME="${PM2_HOME:-$HOME/.pm2}"
+fi
+
 timestamp() {
   date -Is
 }
