@@ -14,9 +14,44 @@ The current operational assumption is:
 
 - Node.js 20 or newer
 - pnpm
-- PM2 app name: `stylekit`
+- Primary process manager: `systemd` service `stylekit.service`
+- Legacy/optional process manager: PM2 app name `stylekit`
 - Nginx terminates TLS and proxies to `127.0.0.1:13000`
 - Optional systemd timer runs `ops/stylekit-healthcheck.sh`
+
+## Production Host Preflight
+
+Do this before every server sync. Do not trust an old local SSH alias by name.
+
+1. Resolve the current production IP from DNS:
+
+```bash
+getent ahostsv4 www.stylekit.top | awk 'NR == 1 { print $1 }'
+```
+
+2. Connect to the host that matches the DNS result and verify it is the StyleKit host:
+
+```bash
+ssh stylekit-prod 'set -e
+hostname
+test -d /www/stylekit
+cd /www/stylekit
+git remote -v
+git branch --show-current
+git status --short
+systemctl status stylekit --no-pager || pm2 list
+'
+```
+
+Stop if any of these are true:
+
+- The SSH host IP does not match `www.stylekit.top`.
+- `/www/stylekit` is missing.
+- The git remote is not `AnxForever/stylekit`.
+- The working tree is dirty and the changes are not understood.
+- Neither `stylekit.service` nor a PM2 `stylekit` process exists.
+
+Current local aliases such as `aliyun-openclaw` and `aliyun-ts` are not deployment proof. They must only be used if their resolved host matches the production DNS and the `/www/stylekit` preflight passes.
 
 ## Required Environment
 
@@ -46,9 +81,9 @@ CSRF_TRUSTED_ORIGINS=https://www.stylekit.top
 
 Use `ADMIN_PASSWORD_SHA256` instead of `ADMIN_PASSWORD` when you do not want the plain admin password present in environment storage. `ADMIN_SESSION_SECRET` must be a long random value when admin password login is enabled.
 
-## Build And Start
+## Build And Deploy
 
-From the repository root:
+From the local repository root, before pushing:
 
 ```bash
 pnpm install --frozen-lockfile
@@ -59,7 +94,30 @@ pnpm exec vitest run --config tests/vitest.config.ts
 pnpm run build
 ```
 
-Start or restart the runtime process:
+Commit and push the verified branch:
+
+```bash
+git status --short
+git push origin <branch>
+```
+
+On the production host:
+
+```bash
+cd /www/stylekit
+git fetch origin
+git status --short
+git pull --ff-only origin <deployed-branch>
+pnpm install --frozen-lockfile
+pnpm run security:secrets
+pnpm run check:catalog
+pnpm run typecheck
+pnpm run build
+sudo systemctl restart stylekit
+sudo systemctl status stylekit --no-pager
+```
+
+If the process is PM2-managed on that host instead of systemd:
 
 ```bash
 pm2 start "pnpm run start -- -p 13000" --name stylekit
@@ -67,7 +125,7 @@ pm2 restart stylekit --update-env
 pm2 save
 ```
 
-If the process is managed by a separate systemd unit, keep the command equivalent: run `next start` through pnpm on port `13000`, with the same environment loaded.
+The runtime command must remain equivalent to `next start` through pnpm on port `13000`, with the same environment loaded.
 
 ## Health Endpoint
 
@@ -180,8 +238,10 @@ Code rollback:
 git revert <commit>
 pnpm install --frozen-lockfile
 pnpm run build
-pm2 restart stylekit --update-env
+sudo systemctl restart stylekit
 ```
+
+For PM2-managed hosts, use `pm2 restart stylekit --update-env` instead.
 
 Feature rollback without reverting code:
 
@@ -189,8 +249,10 @@ Feature rollback without reverting code:
 unset ADMIN_PASSWORD
 unset ADMIN_PASSWORD_SHA256
 unset ADMIN_SESSION_SECRET
-pm2 restart stylekit --update-env
+sudo systemctl restart stylekit
 ```
+
+For PM2-managed hosts, use `pm2 restart stylekit --update-env` instead.
 
 Watchdog rollback:
 
