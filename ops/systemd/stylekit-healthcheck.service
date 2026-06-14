@@ -10,8 +10,12 @@ Environment=PM2_HOME=/root/.pm2
 Environment=PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 Environment=PM2_APP=stylekit
 Environment=HEALTH_URL=http://127.0.0.1:13000/api/health
-Environment=TIMEOUT=5
-Environment=FAIL_THRESHOLD=2
+Environment=TIMEOUT=10
+Environment=CONNECT_TIMEOUT=2
+Environment=FAIL_THRESHOLD=3
+Environment=RESTART_COOLDOWN_SECONDS=300
 Environment=STATE_FILE=/run/stylekit-healthcheck.failures
+Environment=LAST_RESTART_FILE=/run/stylekit-healthcheck.last-restart
+Environment=LOCK_FILE=/run/stylekit-healthcheck.lock
 Environment=LOG_FILE=/var/log/stylekit-healthcheck.log
 ExecStart=/usr/local/bin/stylekit-healthcheck

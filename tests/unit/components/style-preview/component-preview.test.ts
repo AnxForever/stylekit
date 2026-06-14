@@ -1,23 +1,5 @@
 import { describe, it, expect } from "vitest";
-
-// Replicate generatePreviewHTML logic for unit testing
-const BLOCK_ELEMENTS =
-  "div|span|p|h[1-6]|section|article|nav|aside|header|footer|main|ul|ol|li|button|label|blockquote|pre|code|form|fieldset|figure|figcaption|details|summary|a|strong|em|time|address";
-
-function generatePreviewHTML(code: string): string {
-  return code
-    .replace(/className=/g, "class=")
-    .replace(/\{`([^`]*)`\}/g, "$1")
-    .replace(/\{\/\*[\s\S]*?\*\/\}/g, "")
-    .replace(
-      new RegExp(
-        `<(${BLOCK_ELEMENTS})((?:[^>"]+?|"[^"]*"|'[^']*')*?)\\s*\\/>`,
-        "g"
-      ),
-      "<$1$2></$1>"
-    )
-    .trim();
-}
+import { generatePreviewHTML } from "@/lib/style-preview/preview-html";
 
 describe("generatePreviewHTML", () => {
   it("should convert self-closing span to explicit close tag", () => {
@@ -112,5 +94,31 @@ describe("generatePreviewHTML", () => {
     const input = "<div className='foo' />";
     const result = generatePreviewHTML(input);
     expect(result).toBe("<div class='foo'></div>");
+  });
+
+  it("should not hang on rich non-self-closing component markup", () => {
+    const input = `<button
+  className="
+    px-8 py-4
+    bg-[#ff2d55]
+    text-white font-black uppercase tracking-wider text-lg
+    border-4 border-[#1c1c1e]
+    shadow-[6px_6px_0px_#00e5ff]
+    hover:bg-[#00e5ff] hover:text-[#1c1c1e]
+    hover:shadow-[8px_8px_0px_#ffea00]
+    hover:-translate-y-1
+    active:shadow-none active:translate-x-[6px] active:translate-y-[6px]
+    transition-all duration-100 ease-linear
+  "
+  style={{ transform: "rotate(-2deg) skewX(-2deg)" }}
+>
+  TAG IT
+</button>`;
+
+    const result = generatePreviewHTML(input);
+
+    expect(result).toContain("<button");
+    expect(result).toContain("</button>");
+    expect(result).not.toContain("</button></button>");
   });
 });

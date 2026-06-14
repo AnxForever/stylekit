@@ -16,6 +16,7 @@ pnpm run check:catalog
 pnpm run typecheck
 pnpm run test
 pnpm run build
+pnpm run smoke:local
 git status --short
 ```
 
@@ -75,7 +76,7 @@ pnpm install --frozen-lockfile
 pnpm run check:catalog
 pnpm run typecheck
 pnpm run build
-pm2 restart stylekit --update-env
+pm2 restart stylekit
 pm2 save
 pm2 describe stylekit
 '
@@ -91,7 +92,7 @@ ssh stylekit-prod 'set -e
 cd /www/stylekit
 pnpm install --frozen-lockfile
 pnpm run check:catalog
-pm2 restart stylekit --update-env
+pm2 restart stylekit
 pm2 save
 pm2 describe stylekit
 '
@@ -104,6 +105,7 @@ curl -fsS https://www.stylekit.top/api/health
 curl -I https://www.stylekit.top/
 curl -I https://www.stylekit.top/styles
 curl -I https://www.stylekit.top/styles/neo-brutalist
+SMOKE_BASE_URL=https://www.stylekit.top pnpm run smoke
 ```
 
 Do not deploy by `git pull` on the server. Do not run `security:secrets` on
@@ -213,6 +215,7 @@ pnpm run check:catalog
 pnpm run typecheck
 pnpm exec vitest run --config tests/vitest.config.ts
 pnpm run build
+pnpm run smoke:local
 ```
 
 Commit and push the verified branch:
@@ -252,7 +255,7 @@ pnpm install --frozen-lockfile
 pnpm run check:catalog
 pnpm run typecheck
 pnpm run build
-pm2 restart stylekit --update-env
+pm2 restart stylekit
 pm2 save
 pm2 describe stylekit
 '
@@ -267,7 +270,7 @@ ssh stylekit-prod 'set -e
 cd /www/stylekit
 pnpm install --frozen-lockfile
 pnpm run check:catalog
-pm2 restart stylekit --update-env
+pm2 restart stylekit
 pm2 save
 pm2 describe stylekit
 '
@@ -398,6 +401,7 @@ pnpm run check:catalog
 pnpm run typecheck
 pnpm run test
 pnpm run build
+pnpm run smoke:local
 git push origin <branch>
 
 rsync -az --delete \
@@ -418,7 +422,7 @@ ssh stylekit-prod 'set -e
 cd /www/stylekit
 pnpm install --frozen-lockfile
 pnpm run check:catalog
-pm2 restart stylekit --update-env
+pm2 restart stylekit
 pm2 save
 pm2 describe stylekit
 '
@@ -427,7 +431,7 @@ pm2 describe stylekit
 For rsync snapshot rollback, copy the latest known-good
 `/www/stylekit-backups/stylekit-<timestamp>/` snapshot back to `/www/stylekit/`,
 then run `pnpm install --frozen-lockfile`, `pnpm run check:catalog`, and
-`pm2 restart stylekit --update-env`.
+`pm2 restart stylekit`.
 
 Feature rollback without reverting code:
 
@@ -435,7 +439,7 @@ Feature rollback without reverting code:
 unset ADMIN_PASSWORD
 unset ADMIN_PASSWORD_SHA256
 unset ADMIN_SESSION_SECRET
-pm2 restart stylekit --update-env
+pm2 restart stylekit
 ```
 
 Watchdog rollback:
