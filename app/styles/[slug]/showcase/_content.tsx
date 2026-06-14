@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect, useMemo } from "react";
 import Link from "next/link";
 import { sanitizePreviewHtml, sanitizeCss } from "@/lib/security/sanitize-html";
+import { generatePreviewHTML } from "@/lib/style-preview/preview-html";
 import type { DesignStyle, ComponentTemplate } from "@/lib/styles";
 
 // --- Inline hooks ---
@@ -53,26 +54,6 @@ function RevealBlock({
     </div>
   );
 }
-// --- Preview HTML generation ---
-
-const BLOCK_ELEMENTS =
-  "div|span|p|h[1-6]|section|article|nav|aside|header|footer|main|ul|ol|li|button|label|blockquote|pre|code|form|fieldset|figure|figcaption|details|summary|a|strong|em|time|address";
-
-function generatePreviewHTML(code: string): string {
-  return code
-    .replace(/className=/g, "class=")
-    .replace(/\{`([^`]*)`\}/g, "$1")
-    .replace(/\{\/\*[\s\S]*?\*\/\}/g, "")
-    .replace(
-      new RegExp(
-        `<(${BLOCK_ELEMENTS})((?:[^>]|"[^"]*"|'[^']*')*?)\\s*\\/>`,
-        "g"
-      ),
-      "<$1$2></$1>"
-    )
-    .trim();
-}
-
 // --- Main component ---
 
 interface Props {

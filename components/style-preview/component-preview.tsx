@@ -5,6 +5,7 @@ import { CodeBlock } from "./code-block";
 import type { ComponentTemplate } from "@/lib/styles";
 import { useI18n } from "@/lib/i18n/context";
 import { sanitizePreviewHtml } from "@/lib/security/sanitize-html";
+import { generatePreviewHTML } from "@/lib/style-preview/preview-html";
 
 interface ComponentPreviewProps {
   components: Record<string, ComponentTemplate>;
@@ -123,25 +124,4 @@ export function ComponentPreview({
       {showCode && <CodeBlock code={activeComponent.code} />}
     </div>
   );
-}
-
-// Non-void HTML elements that must have explicit closing tags.
-// In JSX <div ... /> is valid, but browsers treat it as an unclosed <div> tag,
-// swallowing all subsequent siblings into it and breaking layout completely.
-const BLOCK_ELEMENTS =
-  "div|span|p|h[1-6]|section|article|nav|aside|header|footer|main|ul|ol|li|button|label|blockquote|pre|code|form|fieldset|figure|figcaption|details|summary|a|strong|em|time|address";
-
-// 从 JSX 代码生成可预览的 HTML
-function generatePreviewHTML(code: string): string {
-  return code
-    .replace(/className=/g, "class=")
-    .replace(/\{`([^`]*)`\}/g, "$1")
-    // Handle both single-line and multi-line JSX comments
-    .replace(/\{\/\*[\s\S]*?\*\/\}/g, "")
-    // Convert self-closing non-void elements: <div ... /> → <div ...></div>
-    .replace(
-      new RegExp(`<(${BLOCK_ELEMENTS})((?:[^>"]+?|"[^"]*"|'[^']*')*?)\\s*\\/>`, "g"),
-      "<$1$2></$1>"
-    )
-    .trim();
 }

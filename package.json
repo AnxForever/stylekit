@@ -16,6 +16,8 @@
     "check:catalog": "npx --no-install tsx tools/scripts/check-catalog-integrity.ts",
     "check:component-preview": "node tools/scripts/check-component-preview.cjs",
     "check:style-extractor": "node tools/scripts/check-style-extractor.cjs",
+    "smoke": "node tools/scripts/smoke-check.mjs",
+    "smoke:local": "node tools/scripts/smoke-next-start.mjs",
     "submission:validate": "npx --no-install tsx tools/submission/validate-manifest.ts",
     "test": "npx --no-install vitest run --config tests/vitest.config.ts",
     "test:run": "npx --no-install vitest run --config tests/vitest.config.ts",
