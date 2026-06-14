@@ -20,4 +20,22 @@ export type {
   ComponentTemplate,
 } from "./types";
 
+export type {
+  ReadinessSource,
+  ReadinessSupport,
+  ThemeMode,
+  ComponentState,
+  ReadinessComponent,
+  ReadinessCheck,
+  ComponentReadiness,
+  ReadinessCoverage,
+  FrontendReadinessProfile,
+} from "./readiness";
+export {
+  calculateReadinessCoverage,
+  getFrontendReadiness,
+  hasCuratedFrontendReadiness,
+  getCuratedReadinessSlugs,
+} from "./readiness";
+
 export { styles, getStyleBySlug } from "./registry";

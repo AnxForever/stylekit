@@ -42,9 +42,25 @@ describe("styles [slug] core routes", () => {
     );
 
     expect(response.status).toBe(200);
-    const body = (await response.json()) as { slug: string; tokens: unknown };
+    const body = (await response.json()) as {
+      slug: string;
+      tokens: unknown;
+      readiness: {
+        source: string;
+        coverage: { overall: number; darkMode: number; states: number };
+        darkMode: { support: string };
+        states: { loading: { support: string }; error: { support: string } };
+      };
+    };
     expect(body.slug).toBe("neo-brutalist");
     expect(body.tokens).toBeTruthy();
+    expect(body.readiness.source).toBe("curated");
+    expect(body.readiness.coverage.overall).toBeGreaterThan(0);
+    expect(body.readiness.coverage.darkMode).toBeGreaterThan(0);
+    expect(body.readiness.coverage.states).toBeGreaterThan(0);
+    expect(body.readiness.darkMode.support).toBe("partial");
+    expect(body.readiness.states.loading.support).toBeTruthy();
+    expect(body.readiness.states.error.support).toBeTruthy();
   });
 
   it("tokens route handles missing and valid style", async () => {

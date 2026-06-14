@@ -3,7 +3,7 @@ import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { Breadcrumb } from "@/components/ui/breadcrumb";
 import { DisableAutoScroll } from "@/components/style-preview/disable-auto-scroll";
-import { getStyleBySlug, styles } from "@/lib/styles";
+import { getFrontendReadiness, getStyleBySlug, styles } from "@/lib/styles";
 import { generateEnhancedAIRules } from "@/lib/styles/enhanced-rules";
 import { resolveStyleBySlug } from "@/lib/styles/community-runtime";
 import { scoreStyle } from "@/lib/accessibility";
@@ -108,6 +108,7 @@ export default async function StyleDetailPage({
     resolved.source === "static" ? getCurrentVersion(slug) : undefined;
   const changelog =
     resolved.source === "static" ? getChangelog(slug) : [];
+  const readiness = getFrontendReadiness(style);
   const BASE_URL = getSiteBaseUrl();
 
   const jsonLd = generateStyleJsonLd({
@@ -154,6 +155,7 @@ export default async function StyleDetailPage({
             compatibleLayouts={compatibleLayouts}
             enhancedRules={enhancedRules}
             accessibilityScore={accessibilityScore}
+            readiness={readiness}
             version={version}
             changelog={changelog}
           />
