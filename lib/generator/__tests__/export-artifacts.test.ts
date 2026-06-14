@@ -48,6 +48,7 @@ describe("generateGeneratorSupportFiles", () => {
       "stylekit.config.json",
       "CONTENT_MAP.md",
       "GENERATOR_BRIEF.md",
+      "FRONTEND_READINESS.md",
     ]);
 
     const manifest = files.find((file) => file.name === "stylekit.config.json");
@@ -59,6 +60,7 @@ describe("generateGeneratorSupportFiles", () => {
     const payload = JSON.parse(manifest.content) as {
       generator: { templateType: string; outputFormat: string };
       style: { type: string; id: string };
+      readiness: { coverage: { overall: number }; themeModes: string[] } | null;
       sections: Array<{ id: string }>;
     };
 
@@ -66,6 +68,8 @@ describe("generateGeneratorSupportFiles", () => {
     expect(payload.generator.outputFormat).toBe("html");
     expect(payload.style.type).toBe("builtin");
     expect(payload.style.id).toBe(visualStyle.slug);
+    expect(payload.readiness?.coverage.overall).toBeGreaterThan(0);
+    expect(payload.readiness?.themeModes.length).toBeGreaterThan(0);
     expect(payload.sections.length).toBeGreaterThan(0);
 
     const contentMap = files.find((file) => file.name === "CONTENT_MAP.md");
@@ -74,5 +78,9 @@ describe("generateGeneratorSupportFiles", () => {
     const brief = files.find((file) => file.name === "GENERATOR_BRIEF.md");
     expect(brief?.content).toContain("## Snapshot");
     expect(brief?.content).toContain("## Section Focus");
+
+    const readiness = files.find((file) => file.name === "FRONTEND_READINESS.md");
+    expect(readiness?.content).toContain("# Frontend Readiness");
+    expect(readiness?.content).toContain("## Required States");
   });
 });

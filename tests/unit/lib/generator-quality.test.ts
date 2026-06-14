@@ -39,6 +39,7 @@ function createSupportFiles() {
     { name: "stylekit.config.json", content: "{}", type: "json" as const },
     { name: "CONTENT_MAP.md", content: "# Content Map", type: "md" as const },
     { name: "GENERATOR_BRIEF.md", content: "# Brief", type: "md" as const },
+    { name: "FRONTEND_READINESS.md", content: "# Frontend Readiness", type: "md" as const },
   ];
 }
 

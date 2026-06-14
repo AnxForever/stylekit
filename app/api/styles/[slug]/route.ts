@@ -1,4 +1,5 @@
 import { getStyleRecipes } from "@/lib/recipes";
+import { getFrontendReadiness } from "@/lib/styles";
 import { scoreStyle } from "@/lib/accessibility";
 import { getCurrentVersion, getChangelog } from "@/lib/versioning";
 import { trackStyleUsage } from "@/lib/analytics";
@@ -58,6 +59,7 @@ export async function GET(
       recipes: recipes.recipes,
     } : null,
     compatibleWith: style.compatibleWith,
+    readiness: getFrontendReadiness(style),
     accessibility: resolved.source === "static" ? scoreStyle(slug) : null,
     version: resolved.source === "static" ? getCurrentVersion(slug) : null,
     changelog: resolved.source === "static" ? getChangelog(slug) : [],

@@ -1,3 +1,5 @@
+import { getFrontendReadiness } from "@/lib/styles";
+import type { FrontendReadinessProfile } from "@/lib/styles";
 import type { GeneratedFile, GeneratorConfig, StyleInput } from "./types";
 
 interface GeneratorManifest {
@@ -11,6 +13,13 @@ interface GeneratorManifest {
     id: string;
     name: string;
   };
+  readiness: {
+    source: FrontendReadinessProfile["source"];
+    coverage: FrontendReadinessProfile["coverage"];
+    themeModes: FrontendReadinessProfile["themeModes"];
+    darkModeSupport: FrontendReadinessProfile["darkMode"]["support"];
+    promptAddons: string[];
+  } | null;
   globalContent: GeneratorConfig["globalContent"];
   sections: Array<{
     id: string;
@@ -39,6 +48,13 @@ function buildStyleMeta(styleInput: StyleInput): GeneratorManifest["style"] {
     id: styleInput.style.id,
     name: styleInput.style.nameEn,
   };
+}
+
+function buildReadiness(styleInput: StyleInput): FrontendReadinessProfile | null {
+  if (styleInput.type === "custom") {
+    return null;
+  }
+  return getFrontendReadiness(styleInput.style);
 }
 
 function countFilledFields(content: Record<string, string>): number {
@@ -134,7 +150,11 @@ function buildGeneratorBriefMarkdown(
   return lines.join("\n");
 }
 
-function buildManifest(config: GeneratorConfig, styleInput: StyleInput): GeneratorManifest {
+function buildManifest(
+  config: GeneratorConfig,
+  styleInput: StyleInput,
+  readiness: FrontendReadinessProfile | null
+): GeneratorManifest {
   return {
     generatedAt: new Date().toISOString(),
     generator: {
@@ -142,6 +162,15 @@ function buildManifest(config: GeneratorConfig, styleInput: StyleInput): Generat
       outputFormat: config.outputFormat,
     },
     style: buildStyleMeta(styleInput),
+    readiness: readiness
+      ? {
+          source: readiness.source,
+          coverage: readiness.coverage,
+          themeModes: readiness.themeModes,
+          darkModeSupport: readiness.darkMode.support,
+          promptAddons: readiness.promptAddons,
+        }
+      : null,
     globalContent: config.globalContent,
     sections: config.sections.map((section) => ({
       id: section.id,
@@ -185,11 +214,103 @@ function buildContentMapMarkdown(config: GeneratorConfig): string {
   return lines.join("\n");
 }
 
+function buildFrontendReadinessMarkdown(
+  styleInput: StyleInput,
+  readiness: FrontendReadinessProfile | null
+): string {
+  const styleName = styleInput.type === "builtin"
+    ? styleInput.style.nameEn
+    : styleInput.style.nameEn;
+  const lines: string[] = [];
+
+  lines.push("# Frontend Readiness");
+  lines.push("");
+  lines.push(`- Style: ${styleName}`);
+
+  if (!readiness) {
+    lines.push("- Source: custom style");
+    lines.push("");
+    lines.push("This custom style does not have a curated StyleKit readiness contract yet.");
+    lines.push("Before production use, define dark mode tokens, interactive states, loading states, empty states, error states, focus-visible behavior, and reduced-motion behavior.");
+    lines.push("");
+    return lines.join("\n");
+  }
+
+  lines.push(`- Source: ${readiness.source}`);
+  lines.push(`- Overall coverage: ${readiness.coverage.overall}%`);
+  lines.push(`- Theme modes: ${readiness.themeModes.join(", ")}`);
+  lines.push("");
+
+  lines.push("## Coverage");
+  lines.push("");
+  lines.push(`- Dark mode: ${readiness.coverage.darkMode}% (${readiness.darkMode.support})`);
+  lines.push(`- UI states: ${readiness.coverage.states}%`);
+  lines.push(`- Motion: ${readiness.coverage.motion}% (${readiness.motion.support})`);
+  lines.push(`- Accessibility: ${readiness.coverage.accessibility}% (${readiness.accessibility.support})`);
+  lines.push(`- Performance: ${readiness.coverage.performance}% (${readiness.performance.support})`);
+  lines.push("");
+
+  lines.push("## Required States");
+  lines.push("");
+  for (const [state, check] of Object.entries(readiness.states)) {
+    lines.push(`- ${state}: ${check.support}`);
+  }
+  lines.push("");
+
+  lines.push("## Dark Mode");
+  lines.push("");
+  lines.push(`- Strategy: ${readiness.darkMode.strategy}`);
+  for (const item of readiness.darkMode.guidance) {
+    lines.push(`- ${item}`);
+  }
+  lines.push("");
+
+  lines.push("## Accessibility");
+  lines.push("");
+  lines.push(`- Focus: ${readiness.accessibility.focus}`);
+  lines.push(`- Target size: ${readiness.accessibility.targetSize}`);
+  lines.push(`- ARIA: ${readiness.accessibility.aria}`);
+  for (const item of readiness.accessibility.guidance) {
+    lines.push(`- ${item}`);
+  }
+  lines.push("");
+
+  lines.push("## Motion");
+  lines.push("");
+  lines.push(`- Duration: ${readiness.motion.duration}`);
+  lines.push(`- Easing: ${readiness.motion.easing}`);
+  lines.push(`- Reduced motion: ${readiness.motion.reducedMotion}`);
+  for (const item of readiness.motion.guidance) {
+    lines.push(`- ${item}`);
+  }
+  lines.push("");
+
+  lines.push("## Performance");
+  lines.push("");
+  for (const cost of readiness.performance.costs) {
+    lines.push(`- Cost: ${cost}`);
+  }
+  for (const item of readiness.performance.guidance) {
+    lines.push(`- ${item}`);
+  }
+  lines.push("");
+
+  lines.push("## Prompt Add-ons");
+  lines.push("");
+  for (const item of readiness.promptAddons) {
+    lines.push(`- ${item}`);
+  }
+  lines.push("");
+
+  return lines.join("\n");
+}
+
 export function generateGeneratorSupportFiles(
   config: GeneratorConfig,
   styleInput: StyleInput
 ): GeneratedFile[] {
-  const manifest = buildManifest(config, styleInput);
+  const readiness = buildReadiness(styleInput);
+  const manifest = buildManifest(config, styleInput, readiness);
 
   return [
     {
@@ -206,6 +327,11 @@ export function generateGeneratorSupportFiles(
       name: "GENERATOR_BRIEF.md",
       type: "md",
       content: buildGeneratorBriefMarkdown(config, styleInput),
+    },
+    {
+      name: "FRONTEND_READINESS.md",
+      type: "md",
+      content: buildFrontendReadinessMarkdown(styleInput, readiness),
     },
   ];
 }

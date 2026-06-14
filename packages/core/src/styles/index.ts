@@ -29,6 +29,27 @@ export type {
   ExamplePrompt,
 } from "@/lib/styles/index";
 
+export type {
+  /** Source of the frontend readiness profile: curated or fallback. */
+  ReadinessSource,
+  /** Support quality for a readiness area. */
+  ReadinessSupport,
+  /** Supported theme modes for a style. */
+  ThemeMode,
+  /** Production UI states tracked by the readiness layer. */
+  ComponentState,
+  /** Component families tracked by the readiness layer. */
+  ReadinessComponent,
+  /** A single readiness check with implementation guidance. */
+  ReadinessCheck,
+  /** Readiness guidance for a component family. */
+  ComponentReadiness,
+  /** Numeric coverage summary for readiness areas. */
+  ReadinessCoverage,
+  /** Full frontend readiness profile for a style. */
+  FrontendReadinessProfile,
+} from "@/lib/styles/index";
+
 // Metadata (lightweight, no component templates)
 export {
   /**
@@ -62,6 +83,22 @@ export {
    * @returns The matching {@link DesignStyle}, or `undefined` if not found.
    */
   getStyleBySlug,
+} from "@/lib/styles/index";
+
+export {
+  /**
+   * Returns the frontend readiness profile for a style, including dark mode,
+   * interaction states, motion, accessibility, and performance guidance.
+   */
+  getFrontendReadiness,
+  /**
+   * Checks whether a style has a curated readiness profile instead of fallback guidance.
+   */
+  hasCuratedFrontendReadiness,
+  /**
+   * Lists style slugs with curated frontend readiness profiles.
+   */
+  getCuratedReadinessSlugs,
 } from "@/lib/styles/index";
 
 // Token system

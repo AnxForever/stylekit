@@ -212,6 +212,7 @@ export function evaluateGeneratedFiles(
       "stylekit.config.json",
       "CONTENT_MAP.md",
       "GENERATOR_BRIEF.md",
+      "FRONTEND_READINESS.md",
     ]
     : config.outputFormat === "nextjs"
       ? [
@@ -222,6 +223,7 @@ export function evaluateGeneratedFiles(
         "stylekit.config.json",
         "CONTENT_MAP.md",
         "GENERATOR_BRIEF.md",
+        "FRONTEND_READINESS.md",
       ]
       : [
         "index.html",
@@ -229,6 +231,7 @@ export function evaluateGeneratedFiles(
         "stylekit.config.json",
         "CONTENT_MAP.md",
         "GENERATOR_BRIEF.md",
+        "FRONTEND_READINESS.md",
       ];
 
   for (const requiredFile of requiredFiles) {
