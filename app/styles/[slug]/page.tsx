@@ -11,6 +11,8 @@ import { getCurrentVersion, getChangelog } from "@/lib/versioning";
 import { serializeJsonLd } from "@/lib/security/json-ld";
 import { generateStyleJsonLd, generateBreadcrumbJsonLd } from "@/lib/seo/json-ld";
 import { getSiteBaseUrl } from "@/lib/site-url";
+import { localizedString, localizedList } from "@/lib/styles/locale-content";
+import type { Locale } from "@/lib/i18n/translations";
 import { StyleDetailContent } from "./_content";
 
 // 生成静态参数
@@ -63,8 +65,10 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
 export default async function StyleDetailPage({
   params,
+  locale = "en",
 }: {
   params: Promise<{ slug: string }>;
+  locale?: Locale;
 }) {
   const { slug } = await params;
   const resolved = await resolveStyleBySlug(slug);
@@ -110,6 +114,12 @@ export default async function StyleDetailPage({
     resolved.source === "static" ? getChangelog(slug) : [];
   const readiness = getFrontendReadiness(style);
   const BASE_URL = getSiteBaseUrl();
+
+  // Pre-compute localized content for server-side rendering (SEO)
+  const ssrDescription = localizedString(locale, style.description, style.descriptionEn);
+  const ssrPhilosophy = localizedString(locale, style.philosophy, style.philosophyEn);
+  const ssrDos = localizedList(locale, style.doList, style.doListEn);
+  const ssrDonts = localizedList(locale, style.dontList, style.dontListEn);
 
   const jsonLd = generateStyleJsonLd({
     slug,
@@ -158,6 +168,11 @@ export default async function StyleDetailPage({
             readiness={readiness}
             version={version}
             changelog={changelog}
+            ssrLocale={locale}
+            ssrDescription={ssrDescription}
+            ssrPhilosophy={ssrPhilosophy}
+            ssrDos={ssrDos}
+            ssrDonts={ssrDonts}
           />
         </main>
       </DisableAutoScroll>

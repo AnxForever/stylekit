@@ -57,10 +57,10 @@ const nextConfig: NextConfig = {
       { source: "/prompts/dashboard-design", destination: "/dashboard-prompts", permanent: true },
       { source: "/prompts/tailwind-ui", destination: "/tailwind-ui-prompts", permanent: true },
       { source: "/prompts/dark-mode", destination: "/dark-mode-ui-prompts", permanent: true },
-      { source: "/prompt-builder", destination: "/generate", permanent: false },
-      { source: "/linter", destination: "/generate", permanent: false },
-      { source: "/playground", destination: "/generate", permanent: false },
-      { source: "/api-test", destination: "/developers", permanent: false },
+      { source: "/prompt-builder", destination: "/generate", permanent: true },
+      { source: "/linter", destination: "/generate", permanent: true },
+      { source: "/playground", destination: "/generate", permanent: true },
+      { source: "/api-test", destination: "/developers", permanent: true },
       // /submit/design-md was the Phase 1 standalone URL; /submit now renders
       // the paste form directly, so redirect the legacy path at the edge so
       // external links keep working with a clean 308 instead of a client-side

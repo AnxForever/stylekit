@@ -4,6 +4,7 @@ import Page, {
 } from "@/app/styles/[slug]/page";
 import { isLocale, LOCALES } from "@/lib/i18n/routing";
 import { localizeMetadata } from "@/lib/i18n/metadata";
+import type { Locale } from "@/lib/i18n/translations";
 
 export const revalidate = 86400;
 
@@ -31,4 +32,12 @@ export async function generateMetadata({
     : metadata;
 }
 
-export default Page;
+export default async function LocaleStylePage({
+  params,
+}: {
+  params: Promise<{ locale: string; slug: string }>;
+}) {
+  const { locale, slug } = await params;
+  const validLocale: Locale = isLocale(locale) ? locale : "en";
+  return <Page params={Promise.resolve({ slug })} locale={validLocale} />;
+}

@@ -28,6 +28,7 @@ import type { FrontendReadinessProfile, ReadinessSupport } from "@/lib/styles";
 import type { AccessibilityScore } from "@/lib/accessibility";
 import type { StyleVersion } from "@/lib/versioning";
 import type { RuntimeStyleSource } from "@/lib/styles/community-runtime";
+import type { Locale } from "@/lib/i18n/translations";
 import { getRecipesByVisualStyle, getRecipesByLayout } from "@/lib/styles/recipes";
 import { RecipeCard } from "@/components/recipes/recipe-card";
 
@@ -41,6 +42,16 @@ interface Props {
   readiness: FrontendReadinessProfile;
   version?: string;
   changelog?: StyleVersion[];
+  /** SSR-precomputed locale for server-rendered hero content */
+  ssrLocale?: Locale;
+  /** SSR-precomputed localized description */
+  ssrDescription?: string;
+  /** SSR-precomputed localized philosophy */
+  ssrPhilosophy?: string;
+  /** SSR-precomputed localized do list */
+  ssrDos?: string[];
+  /** SSR-precomputed localized dont list */
+  ssrDonts?: string[];
 }
 
 function formatReadinessLabel(value: string, locale: "en" | "zh" = "en"): string {
@@ -108,8 +119,14 @@ export function StyleDetailContent({
   readiness,
   version,
   changelog,
+  ssrLocale,
+  ssrDescription,
+  ssrPhilosophy,
+  ssrDos,
+  ssrDonts,
 }: Props) {
-  const { t, locale } = useI18n();
+  const { t, locale: clientLocale } = useI18n();
+  const locale = ssrLocale ?? clientLocale;
   const showcaseContainerRef = useRef<HTMLDivElement>(null);
   const [showcaseScale, setShowcaseScale] = useState(0);
 
@@ -136,18 +153,18 @@ export function StyleDetailContent({
     ? getRecipesByLayout(style.slug).slice(0, 3)
     : getRecipesByVisualStyle(style.slug).slice(0, 3);
 
-  const localizedDescription = localizedString(
-    locale,
+  const localizedDescription = ssrDescription ?? localizedString(
+    clientLocale,
     style.description,
     style.descriptionEn
   );
-  const localizedPhilosophy = localizedString(
-    locale,
+  const localizedPhilosophy = ssrPhilosophy ?? localizedString(
+    clientLocale,
     style.philosophy,
     style.philosophyEn
   );
-  const localizedDos = localizedList(locale, style.doList, style.doListEn);
-  const localizedDonts = localizedList(locale, style.dontList, style.dontListEn);
+  const localizedDos = ssrDos ?? localizedList(clientLocale, style.doList, style.doListEn);
+  const localizedDonts = ssrDonts ?? localizedList(clientLocale, style.dontList, style.dontListEn);
   const detailSections = [
     {
       href: "#style-prompts",
