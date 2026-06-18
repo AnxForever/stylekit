@@ -198,7 +198,10 @@ export default async function RootLayout({
               "url": BASE_URL,
               "logo": `${BASE_URL}/icon.svg`,
               "description": "AI-friendly design system with 120+ visual styles, design tokens, and AI prompts.",
-              "sameAs": [],
+              "sameAs": [
+                "https://github.com/AnxForever/stylekit",
+                "https://x.com/stylekit",
+              ],
             }),
           }}
         />

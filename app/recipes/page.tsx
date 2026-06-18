@@ -4,6 +4,9 @@ import { Footer } from "@/components/layout/footer";
 import { Breadcrumb } from "@/components/ui/breadcrumb";
 import { RecipeShowcase } from "@/components/recipes/recipe-showcase";
 import { getAllRecipes } from "@/lib/styles/recipes";
+import { serializeJsonLd } from "@/lib/security/json-ld";
+import { generateBreadcrumbJsonLd } from "@/lib/seo/json-ld";
+import { getSiteBaseUrl } from "@/lib/site-url";
 
 export const metadata: Metadata = {
   title: "Design Recipes - Ready-to-Use Style Combinations | StyleKit",
@@ -21,9 +24,19 @@ export const metadata: Metadata = {
 
 export default function RecipesPage() {
   const allRecipes = getAllRecipes();
+  const BASE_URL = getSiteBaseUrl();
+
+  const breadcrumbSchema = generateBreadcrumbJsonLd([
+    { name: "Home", url: BASE_URL },
+    { name: "Recipes", url: `${BASE_URL}/recipes` },
+  ]);
 
   return (
     <div className="min-h-screen flex flex-col">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(breadcrumbSchema) }}
+      />
       <Header />
       
       <main className="flex-1">
