@@ -22,7 +22,7 @@ const linkClass =
  * accidentally cross into the panel; short enough that intentional
  * moves away still feel snappy. Mirrors GitHub / Stripe / Linear.
  */
-const CLOSE_GRACE_MS = 150;
+const CLOSE_GRACE_MS = 300;
 
 /**
  * Hover-driven dropdown state with a grace period before close.
@@ -119,7 +119,7 @@ function DesktopDropdown({
     >
       <button
         type="button"
-        className={`flex shrink-0 items-center gap-1 whitespace-nowrap text-sm tracking-wide transition-colors ${
+        className={`flex shrink-0 items-center gap-0.5 whitespace-nowrap text-sm tracking-wide transition-colors ${
           open ? "text-foreground" : "text-muted hover:text-foreground"
         }`}
         aria-expanded={open}
@@ -230,7 +230,7 @@ function MoreOverflow({
     >
       <button
         type="button"
-        className={`flex shrink-0 items-center gap-1 whitespace-nowrap text-sm tracking-wide transition-colors ${
+        className={`flex shrink-0 items-center gap-0.5 whitespace-nowrap text-sm tracking-wide transition-colors ${
           isMoreOpen ? "text-foreground" : "text-muted hover:text-foreground"
         }`}
         aria-expanded={isMoreOpen}
