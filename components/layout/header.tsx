@@ -292,6 +292,7 @@ export function Header() {
     try {
       const dismissed = localStorage.getItem("sk-announcement-dismissed");
       const latest = changelog[0]?.version;
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- reading localStorage on mount
       setHasChangelogUpdate(dismissed !== latest && Boolean(latest));
     } catch {
       // localStorage unavailable
