@@ -38,6 +38,14 @@ import { rotateIn } from "./rotate-in";
 import { shake } from "./shake";
 import { flipCard } from "./flip-card";
 import { rippleClick } from "./ripple-click";
+import { cursorAura } from "./cursor-aura";
+import { cursorTrail } from "./cursor-trail";
+import { proximityReveal } from "./proximity-reveal";
+import { textRepulsion } from "./text-repulsion";
+import { imageDistortion } from "./image-distortion";
+import { parallaxLayers } from "./parallax-layers";
+import { dragPhysics } from "./drag-physics";
+import { contextCursor } from "./context-cursor";
 import { counterRoll } from "./counter-roll";
 import { morphShape } from "./morph-shape";
 import { fadeOutDown } from "./fade-out-down";
@@ -89,6 +97,14 @@ export const animations: Animation[] = [
   shake,
   flipCard,
   rippleClick,
+  cursorAura,
+  cursorTrail,
+  proximityReveal,
+  textRepulsion,
+  imageDistortion,
+  parallaxLayers,
+  dragPhysics,
+  contextCursor,
   counterRoll,
   morphShape,
   fadeOutDown,

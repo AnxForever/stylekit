@@ -31,6 +31,41 @@ describe("prompt-pair builders", () => {
     expect(hard).toContain("BASE_RULES");
   });
 
+  it("uses English hard-rule fallback when aiRulesEn is missing", () => {
+    const hard = buildHardPrompt(
+      {
+        ...input,
+        styleName: "Editorial",
+        enhancedRules: null,
+        aiRulesEn: undefined,
+        doListEn: ["Use generous whitespace", "Keep typography hierarchy clear"],
+        dontListEn: ["Avoid crowded layouts"],
+      },
+      "en"
+    );
+
+    expect(hard).toContain("## Required Style Rules");
+    expect(hard).toContain("- Use generous whitespace");
+    expect(hard).toContain("## Forbidden Rules");
+    expect(hard).not.toContain("BASE_RULES");
+    expect(hard).not.toMatch(/[\u3400-\u9fff]/);
+  });
+
+  it("removes small Chinese parentheticals from English hard rules", () => {
+    const hard = buildHardPrompt(
+      {
+        ...input,
+        styleName: "Vaporwave",
+        enhancedRules: null,
+        aiRulesEn: "Use Vaporwave (蒸汽波) gradients and neon scan lines.",
+      },
+      "en"
+    );
+
+    expect(hard).toContain("Use Vaporwave gradients and neon scan lines.");
+    expect(hard).not.toMatch(/[\u3400-\u9fff]/);
+  });
+
   it("builds soft prompt with truncated prefer/avoid signals", () => {
     const soft = buildSoftPrompt(input);
 
@@ -43,5 +78,23 @@ describe("prompt-pair builders", () => {
     const pair = buildPromptPair(input);
     expect(pair.hardPrompt).toContain("# Hard Prompt");
     expect(pair.softPrompt).toContain("# Soft Prompt");
+  });
+
+  it("derives English style signals when keywordsEn is missing", () => {
+    const soft = buildSoftPrompt(
+      {
+        ...input,
+        styleName: "Editorial",
+        aiRulesEn: "EN_RULES",
+        doListEn: ["Use generous whitespace", "Keep typography hierarchy clear"],
+        dontListEn: ["Avoid crowded layouts"],
+        keywords: ["杂志排版", "留白", "editorial"],
+      },
+      "en"
+    );
+
+    expect(soft).toContain("- editorial");
+    expect(soft).toContain("- generous whitespace");
+    expect(soft).not.toMatch(/[\u3400-\u9fff]/);
   });
 });

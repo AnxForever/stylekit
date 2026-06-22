@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils";
 interface StyleCoverPreviewProps {
   styleSlug: string;
   className?: string;
+  interactive?: boolean;
 }
 
 // Lazy-load the heavy style-components module (154KB)
@@ -14,6 +15,7 @@ const styleComponentsPromise = import("@/lib/style-components").then(m => m.styl
 export function StyleCoverPreview({
   styleSlug,
   className,
+  interactive = true,
 }: StyleCoverPreviewProps) {
   const [renderer, setRenderer] = React.useState<(() => React.ReactNode) | null>(null);
   const [loaded, setLoaded] = React.useState(false);
@@ -45,5 +47,15 @@ export function StyleCoverPreview({
     );
   }
 
-  return <div className={cn("w-full h-full", className)}>{renderer()}</div>;
+  const content = renderer();
+
+  return (
+    <div
+      className={cn("w-full h-full", !interactive && "pointer-events-none", className)}
+      aria-hidden={!interactive}
+      inert={interactive ? undefined : true}
+    >
+      {content}
+    </div>
+  );
 }

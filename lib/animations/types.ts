@@ -9,6 +9,7 @@ export type AnimationCategory =
   | "entrance"
   | "exit"
   | "hover"
+  | "pointer"
   | "scroll"
   | "text"
   | "loading"
@@ -53,6 +54,11 @@ export interface Animation {
   relatedAnimations?: string[];
   recommendedStyles?: string[];
   playgroundMode?: PlaygroundMode;
+  intensity?: "low" | "medium" | "high";
+  input?: "pointer-fine" | "pointer-any" | "mouse" | "touch";
+  performanceNotes?: string;
+  accessibilityNotes?: string;
+  recommendedUseCases?: string[];
 }
 
 export interface AnimationMeta {
@@ -67,4 +73,6 @@ export interface AnimationMeta {
   duration: string;
   keywords: string[];
   playgroundMode?: PlaygroundMode;
+  intensity?: "low" | "medium" | "high";
+  input?: "pointer-fine" | "pointer-any" | "mouse" | "touch";
 }

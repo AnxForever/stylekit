@@ -14,6 +14,7 @@ const categoryAccentColor: Record<string, string> = {
   entrance: "#3b82f6",
   exit: "#ef4444",
   hover: "#f59e0b",
+  pointer: "#06b6d4",
   scroll: "#22c55e",
   text: "#a855f7",
   loading: "#06b6d4",
@@ -26,6 +27,7 @@ const categoryI18nMap: Record<string, string> = {
   entrance: "animations.categoryEntrance",
   exit: "animations.categoryExit",
   hover: "animations.categoryHover",
+  pointer: "animations.categoryPointer",
   scroll: "animations.categoryScroll",
   text: "animations.categoryText",
   loading: "animations.categoryLoading",
@@ -137,4 +139,3 @@ export function AnimationCard({ animation }: AnimationCardProps) {
  * CSS-only mini preview for card thumbnails.
  * Lightweight looping animations without importing full preview components.
  */
-

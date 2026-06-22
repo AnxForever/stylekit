@@ -11,6 +11,7 @@ import { FeaturedCarousel } from "@/components/home/featured-carousel";
 import { RevealOnScroll } from "@/components/home/reveal-on-scroll";
 import { GitHubStarButton } from "@/components/github-star-button";
 import { SocialProof } from "@/components/home/social-proof";
+import { ThankYouModal } from "@/components/home/thank-you-modal";
 import {
   Drawer,
   DrawerContent,
@@ -353,6 +354,7 @@ export function HomeContent({ styles, stats }: HomeContentProps) {
 
   return (
     <>
+      <ThankYouModal showOnHomepageOnly={true} />
       <section id="home-hero" className="relative border-b border-border overflow-hidden">
         <div aria-hidden className="pointer-events-none absolute inset-0">
           <div className="absolute -top-28 left-[-8rem] h-72 w-72 rounded-full bg-accent/10 blur-3xl" />

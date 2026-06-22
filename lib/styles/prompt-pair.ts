@@ -44,6 +44,113 @@ function toBulletList(values: string[]): string {
   return values.map((value) => `- ${value}`).join("\n");
 }
 
+function hasCjk(value: string): boolean {
+  return /[\u3400-\u9fff]/.test(value);
+}
+
+function cjkRatio(value: string): number {
+  const compact = value.replace(/\s/g, "");
+  if (!compact) return 0;
+  const cjkMatches = compact.match(/[\u3400-\u9fff]/g);
+  return (cjkMatches?.length ?? 0) / compact.length;
+}
+
+function sanitizeEnglishRuleSource(value: string): string | null {
+  const trimmed = value.trim();
+  if (!trimmed) return null;
+  if (!hasCjk(trimmed)) return trimmed;
+
+  const withoutCjkParentheticals = trimmed
+    .replace(/\s*[\(（][^()（）]*[\u3400-\u9fff][^()（）]*[\)）]/g, "")
+    .replace(/[ \t]+/g, " ")
+    .replace(/\n{3,}/g, "\n\n")
+    .trim();
+
+  if (withoutCjkParentheticals && !hasCjk(withoutCjkParentheticals)) {
+    return withoutCjkParentheticals;
+  }
+
+  if (cjkRatio(trimmed) > 0.03) return null;
+
+  const sanitized = withoutCjkParentheticals
+    .replace(/[\u3400-\u9fff]+/g, "")
+    .replace(/[ \t]+/g, " ")
+    .replace(/\n{3,}/g, "\n\n")
+    .trim();
+
+  return sanitized && !hasCjk(sanitized) ? sanitized : null;
+}
+
+function normalizeEnglishSignal(value: string): string | null {
+  const cleaned = value
+    .replace(/\([^)]*\)/g, "")
+    .replace(/^[*-]\s+/, "")
+    .replace(/^(use|keep|create|build|make|prefer|prioritize|maintain|ensure|apply|combine|place|set)\s+/i, "")
+    .replace(/\s+/g, " ")
+    .replace(/[.;:,]+$/g, "")
+    .trim();
+
+  if (!cleaned || hasCjk(cleaned)) return null;
+  if (cleaned.length <= 64) return cleaned;
+
+  const shortClause = cleaned.split(/\b(?:with|while|without|for|when|and|but|to)\b/i)[0]?.trim();
+  return shortClause && shortClause.length >= 3 ? shortClause : cleaned.slice(0, 64).trim();
+}
+
+function buildEnglishKeywordFallback(input: PromptPairInput): string[] {
+  const existingEnglish = input.keywords.filter((keyword) => !hasCjk(keyword));
+  const doSource = input.doListEn && input.doListEn.length > 0 ? input.doListEn : input.doList;
+  const derivedSignals = doSource
+    .map(normalizeEnglishSignal)
+    .filter((item): item is string => Boolean(item));
+  const styleNameSignal = hasCjk(input.styleName) ? [] : [input.styleName];
+
+  return [...existingEnglish, ...derivedSignals, ...styleNameSignal];
+}
+
+export function resolvePromptKeywords(
+  input: PromptPairInput,
+  locale: Locale = "zh",
+  limit = 6
+): string[] {
+  const source =
+    locale === "en"
+      ? input.keywordsEn && input.keywordsEn.length > 0
+        ? input.keywordsEn
+        : buildEnglishKeywordFallback(input)
+      : input.keywords;
+
+  return pickUnique(source, limit);
+}
+
+function buildEnglishHardRules(input: PromptPairInput): string {
+  const doSource = input.doListEn && input.doListEn.length > 0 ? input.doListEn : input.doList;
+  const dontSource = input.dontListEn && input.dontListEn.length > 0 ? input.dontListEn : input.dontList;
+  const required = pickUnique(doSource.filter((item) => !hasCjk(item)), 8);
+  const forbidden = pickUnique(dontSource.filter((item) => !hasCjk(item)), 8);
+
+  return `## Required Style Rules
+${toBulletList(required)}
+
+## Forbidden Rules
+${toBulletList(forbidden)}`;
+}
+
+function resolveHardRuleSource(input: PromptPairInput, locale: Locale): string {
+  if (locale !== "en") {
+    return (input.enhancedRules || input.aiRules).trim();
+  }
+
+  const englishSources = [input.enhancedRules, input.aiRulesEn];
+  for (const source of englishSources) {
+    if (!source) continue;
+    const sanitized = sanitizeEnglishRuleSource(source);
+    if (sanitized) return sanitized;
+  }
+
+  return buildEnglishHardRules(input);
+}
+
 const hardPromptText = {
   zh: {
     title: "# Hard Prompt",
@@ -93,9 +200,7 @@ export function buildHardPrompt(input: PromptPairInput, locale: Locale = "zh"): 
     styleName: input.styleName,
     styleSlug: input.styleSlug,
   });
-  const sourceRules = locale === "en"
-    ? (input.enhancedRules || input.aiRulesEn || input.aiRules).trim()
-    : (input.enhancedRules || input.aiRules).trim();
+  const sourceRules = resolveHardRuleSource(input, locale);
   const text = hardPromptText[locale];
 
   return `${identity}
@@ -117,11 +222,11 @@ export function buildSoftPrompt(input: PromptPairInput, locale: Locale = "zh"): 
     styleSlug: input.styleSlug,
   });
 
-  const keywordSource = locale === "en" && input.keywordsEn ? input.keywordsEn : input.keywords;
-  const doSource = locale === "en" && input.doListEn ? input.doListEn : input.doList;
-  const dontSource = locale === "en" && input.dontListEn ? input.dontListEn : input.dontList;
+  const doSource = locale === "en" && input.doListEn && input.doListEn.length > 0 ? input.doListEn : input.doList;
+  const dontSource =
+    locale === "en" && input.dontListEn && input.dontListEn.length > 0 ? input.dontListEn : input.dontList;
 
-  const keywords = pickUnique(keywordSource, 6);
+  const keywords = resolvePromptKeywords(input, locale, 6);
   const dos = pickUnique(doSource, 4);
   const donts = pickUnique(dontSource, 3);
   const text = softPromptText[locale];

@@ -364,6 +364,58 @@ a, button, [role="button"], input, select, textarea {
   touch-action: manipulation;
 }
 
+/* 光晕启用时隐藏原生光标, 让光晕替代箭头;
+   交互元素恢复各自 cursor, 不破坏可用性。*/
+body.sk-cursor-hidden { cursor: none; }
+body.sk-cursor-hidden a,
+body.sk-cursor-hidden button { cursor: pointer; }
+body.sk-cursor-hidden input,
+body.sk-cursor-hidden textarea,
+body.sk-cursor-hidden select,
+body.sk-cursor-hidden [contenteditable="true"] { cursor: text; }
+body.sk-cursor-hidden pre,
+body.sk-cursor-hidden code { cursor: auto; }
+
+/* Pointer interaction primitives */
+.sk-cursor-aura {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 60;
+  width: 34px;
+  height: 34px;
+  border: 1px solid color-mix(in srgb, var(--foreground) 18%, transparent);
+  border-radius: 9999px;
+  background:
+    radial-gradient(circle, color-mix(in srgb, var(--accent) 18%, transparent), transparent 62%);
+  opacity: 0;
+  pointer-events: none;
+  transform: translate3d(-999px, -999px, 0);
+  translate: -50% -50%;
+  transition: opacity 160ms ease-out, width 180ms ease-out, height 180ms ease-out;
+  will-change: transform, opacity;
+  mix-blend-mode: multiply;
+}
+
+.dark .sk-cursor-aura {
+  border-color: color-mix(in srgb, var(--foreground) 22%, transparent);
+  mix-blend-mode: screen;
+}
+
+.sk-spotlight-surface > .sk-spotlight-layer {
+  background:
+    radial-gradient(
+      var(--sk-spotlight-radius, 360px) circle at var(--sk-spotlight-x, 50%) var(--sk-spotlight-y, 50%),
+      rgba(var(--sk-spotlight-color, 255,255,255), var(--sk-spotlight-strength, 0.14)),
+      transparent 46%
+    );
+  opacity: var(--sk-spotlight-opacity, 0);
+}
+
+.sk-tilt-perspective {
+  perspective: 900px;
+}
+
 /* Tabular numbers utility */
 .tabular-nums {
   font-variant-numeric: tabular-nums;

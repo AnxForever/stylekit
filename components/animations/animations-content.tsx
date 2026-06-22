@@ -21,6 +21,7 @@ const categoryKeys: { key: CategoryFilter; i18nKey: string }[] = [
   { key: "entrance", i18nKey: "animations.categoryEntrance" },
   { key: "exit", i18nKey: "animations.categoryExit" },
   { key: "hover", i18nKey: "animations.categoryHover" },
+  { key: "pointer", i18nKey: "animations.categoryPointer" },
   { key: "scroll", i18nKey: "animations.categoryScroll" },
   { key: "text", i18nKey: "animations.categoryText" },
   { key: "loading", i18nKey: "animations.categoryLoading" },
@@ -59,7 +60,7 @@ function readParam<T extends string>(
 
 const validCategories: AnimationCategory[] = [
   "entrance", "exit", "hover", "scroll", "text",
-  "loading", "background", "transition", "micro-interaction",
+  "pointer", "loading", "background", "transition", "micro-interaction",
 ];
 const validTriggers: AnimationTrigger[] = [
   "on-mount", "on-scroll", "on-hover", "on-click", "continuous", "manual",

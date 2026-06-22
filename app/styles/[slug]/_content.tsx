@@ -6,7 +6,7 @@ import { LocalizedLink } from "@/components/i18n/localized-link";
 import { ScrollBackButton } from "@/components/scroll-back-button";
 import { ComponentPreview } from "@/components/style-preview/component-preview";
 import { ColorPalette } from "@/components/style-preview/color-palette";
-import { PromptPairExporter } from "@/components/style-preview/prompt-pair-exporter";
+import { AiImplementationPanel } from "@/components/style-preview/ai-implementation-panel";
 import { CodeBlock } from "@/components/style-preview/code-block";
 import { TokensExportButton } from "@/components/tokens-export-button";
 import { StyleCoverPreview } from "@/components/style-preview/style-cover-preview";
@@ -31,6 +31,8 @@ import type { RuntimeStyleSource } from "@/lib/styles/community-runtime";
 import type { Locale } from "@/lib/i18n/translations";
 import { getRecipesByVisualStyle, getRecipesByLayout } from "@/lib/styles/recipes";
 import { RecipeCard } from "@/components/recipes/recipe-card";
+import { getRoomBySlug } from "@/components/mouse-interactions/rooms/registry";
+import { GenericRoom } from "@/components/mouse-interactions/rooms/generic-room";
 
 interface Props {
   style: DesignStyle;
@@ -152,6 +154,7 @@ export function StyleDetailContent({
   const relatedRecipes = style.styleType === "layout"
     ? getRecipesByLayout(style.slug).slice(0, 3)
     : getRecipesByVisualStyle(style.slug).slice(0, 3);
+  const pointerRoom = getRoomBySlug(style.slug) ?? null;
 
   const localizedDescription = ssrDescription ?? localizedString(
     clientLocale,
@@ -168,12 +171,15 @@ export function StyleDetailContent({
   const detailSections = [
     {
       href: "#style-prompts",
-      label: locale === "zh" ? "提示词" : "Prompts",
+      label: locale === "zh" ? "AI 实现" : "AI Implementation",
     },
     {
       href: "#style-components",
       label: t("styleDetail.componentPreview"),
     },
+    ...(pointerRoom
+      ? [{ href: "#style-pointer", label: locale === "zh" ? "指针交互" : "Pointer" }]
+      : []),
     {
       href: "#frontend-readiness",
       label: locale === "zh" ? "完成度" : "Readiness",
@@ -431,19 +437,28 @@ export function StyleDetailContent({
         </div>
       </section>
 
-      {/* Prompt Pair Export — PRIMARY ACTION */}
+      {/* AI implementation documents */}
       <section id="style-prompts" className="border-b border-border scroll-mt-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-12 py-12 md:py-16">
           <p className="text-xs tracking-widest uppercase text-muted mb-4">
-            {t("promptPair.sectionLabel")}
+            {locale === "zh" ? "AI 实现文档" : "AI Implementation"}
           </p>
-          <h2 className="text-2xl md:text-3xl mb-4">{t("promptPair.title")}</h2>
+          <h2 className="text-2xl md:text-3xl mb-4">
+            {locale === "zh"
+              ? "先复制硬性提示词，需要时再看设计规范"
+              : "Copy the Hard Prompt first, then use the spec when needed"}
+          </h2>
           <p className="text-muted mb-8 max-w-2xl">
-            {t("promptPair.description").replace("{name}", style.name)}
+            {locale === "zh"
+              ? `默认用硬性提示词让 AI 直接生成前端；Design Spec 用来理解、改写和审核风格；Creative Brief 用来早期探索方向。`
+              : `Use the Hard Prompt by default to generate UI. Use the Design Spec to understand, modify, and review the style. Use the Creative Brief for early exploration.`}
           </p>
-          <PromptPairExporter
+          <AiImplementationPanel
             styleName={locale === "en" && style.nameEn ? style.nameEn : style.name}
             styleSlug={style.slug}
+            description={localizedDescription}
+            philosophy={localizedPhilosophy}
+            colors={style.colors}
             aiRules={style.aiRules}
             aiRulesEn={style.aiRulesEn}
             enhancedRules={enhancedRules}
@@ -467,6 +482,48 @@ export function StyleDetailContent({
           <ComponentPreview components={style.components} defaultShowCode={false} />
         </div>
       </section>
+
+      {/* Pointer Interactions — 仅定制动效的风格渲染 */}
+      {pointerRoom ? (
+        <section id="style-pointer" className="border-b border-border scroll-mt-24">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-12 py-12 md:py-16">
+            <p className="text-xs tracking-widest uppercase text-muted mb-4">
+              {locale === "zh" ? "指针交互气质" : "Pointer Interactions"}
+            </p>
+            <h2 className="text-2xl md:text-3xl mb-4">
+              {locale === "zh"
+                ? `${style.name}的鼠标交互`
+                : `How ${style.nameEn} moves`}
+            </h2>
+            <p className="text-muted mb-8 max-w-2xl">
+              {locale === "zh"
+                ? "这套风格定制的指针交互——同一个光标,完全不同的性格。在舞台上移动鼠标感受它。"
+                : "Pointer interactions tailored to this style — same cursor, completely different character. Move around the stage to feel it."}
+            </p>
+            <div className="overflow-hidden rounded-lg border border-border">
+              {pointerRoom.Component ? (
+                <pointerRoom.Component showHeader={false} />
+              ) : (
+                <GenericRoom config={pointerRoom} showHeader={false} />
+              )}
+            </div>
+            <div className="mt-6 flex flex-wrap items-center gap-3">
+              {pointerRoom.effects[locale === "zh" ? "zh" : "en"].map((effect) => (
+                <span key={effect} className="border border-border px-3 py-1 text-xs text-muted">
+                  {effect}
+                </span>
+              ))}
+              <LocalizedLink
+                href="/mouse-interactions"
+                className="ml-auto inline-flex items-center gap-1 text-xs text-muted hover:text-foreground transition-colors"
+              >
+                {locale === "zh" ? "在 Cursor Lab 查看全部房间" : "Explore all rooms in Cursor Lab"}
+                <ArrowRight className="w-3 h-3" />
+              </LocalizedLink>
+            </div>
+          </div>
+        </section>
+      ) : null}
 
       {/* Frontend Readiness */}
       <section id="frontend-readiness" className="border-b border-border scroll-mt-24">

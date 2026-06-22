@@ -39,6 +39,8 @@ function shouldUseLocalizedFilesystemRoute(pathname: string): boolean {
 
   return (
     pathname === "/" ||
+    pathname === "/changelog" ||
+    pathname === "/contact" ||
     pathname.startsWith("/styles") ||
     pathname === "/ui-prompts" ||
     pathname === "/landing-page-prompts" ||
