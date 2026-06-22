@@ -331,7 +331,7 @@ export function Header() {
   };
 
   return (
-    <header className="border-b border-border">
+    <header className="border-b border-border" data-cursor-aura="off">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-12">
         <div className="flex items-center justify-between h-16 md:h-20">
           {/* Logo / Masthead */}
