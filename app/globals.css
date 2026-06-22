@@ -375,8 +375,7 @@ body.sk-cursor-hidden select,
 body.sk-cursor-hidden [contenteditable="true"] { cursor: text; }
 body.sk-cursor-hidden pre,
 body.sk-cursor-hidden code { cursor: auto; }
-body.sk-cursor-hidden [data-cursor-aura="off"],
-body.sk-cursor-hidden [data-cursor-aura="off"] * { cursor: auto; }
+body.sk-cursor-hidden [data-cursor-aura="off"] { cursor: auto; }
 
 /* Pointer interaction primitives */
 .sk-cursor-aura {
