@@ -15,6 +15,7 @@ const en = {
     "nav.analyze": "Analyze",
     "nav.migrate": "Migrate",
     "nav.animations": "Animations",
+    "nav.mouseInteractions": "Mouse Interactions",
     "nav.recipes": "Recipes",
     "nav.guides": "Guides",
     "nav.more": "More",
@@ -460,6 +461,7 @@ const en = {
     "animations.categoryEntrance": "Entrance",
     "animations.categoryExit": "Exit",
     "animations.categoryHover": "Hover",
+    "animations.categoryPointer": "Pointer",
     "animations.categoryScroll": "Scroll",
     "animations.categoryText": "Text",
     "animations.categoryLoading": "Loading",
@@ -1482,6 +1484,7 @@ const zh: { [K in keyof typeof en]: string } = {
   "nav.analyze": "风格分析",
   "nav.migrate": "迁移",
   "nav.animations": "动效",
+  "nav.mouseInteractions": "鼠标交互",
 
   // Animations page
   "animations.subtitle": "动画模式",
@@ -1496,6 +1499,7 @@ const zh: { [K in keyof typeof en]: string } = {
   "animations.categoryEntrance": "入场",
   "animations.categoryExit": "退场",
   "animations.categoryHover": "悬停",
+  "animations.categoryPointer": "指针",
   "animations.categoryScroll": "滚动",
   "animations.categoryText": "文字",
   "animations.categoryLoading": "加载",

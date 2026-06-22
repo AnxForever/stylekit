@@ -3,6 +3,7 @@
 import { Suspense } from "react";
 import dynamic from "next/dynamic";
 import { PageViewTracker } from "@/components/analytics/page-view-tracker";
+import { CursorAuraProvider } from "@/components/pointer-interactions";
 
 const isVercel = Boolean(process.env.NEXT_PUBLIC_VERCEL);
 
@@ -26,6 +27,7 @@ export function ClientScripts() {
         <PageViewTracker />
       </Suspense>
       <RegisterSW />
+      <CursorAuraProvider />
     </>
   );
 }

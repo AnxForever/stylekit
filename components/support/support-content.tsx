@@ -6,6 +6,7 @@ import { ArrowUpRight, Heart, QrCode, Server } from "lucide-react";
 import { useI18n } from "@/lib/i18n/context";
 import { localizeHref } from "@/lib/i18n/routing";
 import { supportMethods, supportLinks, supportPageCopy } from "@/lib/site/support";
+import { ThankYouList } from "@/components/support/thank-you-list";
 
 export function SupportContent() {
   const { locale } = useI18n();
@@ -62,6 +63,8 @@ export function SupportContent() {
           </div>
         </div>
       </section>
+
+      <ThankYouList />
 
       <section id="support-channels" className="grid gap-4">
         <div className="max-w-3xl">

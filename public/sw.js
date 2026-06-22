@@ -1,6 +1,6 @@
 /// <reference lib="webworker" />
 
-const CACHE_NAME = "stylekit-v1";
+const CACHE_NAME = "stylekit-v2";
 const STATIC_ASSETS = ["/", "/icon.svg", "/manifest.json"];
 
 // Install: cache static shell
@@ -42,23 +42,24 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
-  // Cache-first for static assets (JS, CSS, images, fonts)
+  // Network-first for static assets (JS, CSS, images, fonts) — 新 build 优先,
+  // 避免 SW 缓存旧 CSS/JS 导致看不到更新; 离线时回退缓存。
   if (
     url.pathname.startsWith("/_next/static/") ||
     url.pathname.match(/\.(js|css|svg|png|jpg|woff2?)$/)
   ) {
     e.respondWith(
-      caches.match(request).then(
-        (cached) =>
-          cached ||
-          fetch(request).then((response) => {
-            if (response.ok) {
-              const clone = response.clone();
-              caches.open(CACHE_NAME).then((cache) => cache.put(request, clone));
-            }
-            return response;
-          })
-      )
+      fetch(request)
+        .then((response) => {
+          if (response.ok) {
+            const clone = response.clone();
+            caches.open(CACHE_NAME).then((cache) => cache.put(request, clone));
+          }
+          return response;
+        })
+        .catch(() =>
+          caches.match(request).then((cached) => cached || new Response("", { status: 504 }))
+        )
     );
     return;
   }

@@ -24,7 +24,7 @@ export const StyleCard = React.memo(function StyleCard({
   const { locale } = useI18n();
   const isCompact = variant === "compact";
   const scenarios = getStyleScenarios(style, isCompact ? 2 : 3);
-  const cardClassName = "group block border border-border motion-safe:transition-[border-color,transform,box-shadow] motion-safe:duration-200 hover:border-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background motion-safe:hover:-translate-y-0.5 motion-safe:hover:shadow-md";
+  const cardClassName = "group relative border border-border motion-safe:transition-[border-color,transform,box-shadow] motion-safe:duration-200 hover:border-foreground focus-within:border-foreground motion-safe:hover:-translate-y-0.5 motion-safe:hover:shadow-md";
 
   // 保存当前滚动位置和过滤器状态，用于返回时恢复
   const handleClick = () => {
@@ -38,13 +38,15 @@ export const StyleCard = React.memo(function StyleCard({
 
   return (
     <div className="relative">
-      <LocalizedLink
-        href={`/styles/${style.slug}`}
-        onClick={handleClick}
-        className={cardClassName}
-      >
+      <div className={cardClassName}>
+        <LocalizedLink
+          href={`/styles/${style.slug}`}
+          onClick={handleClick}
+          aria-label={`${locale === "zh" ? style.name : style.nameEn || style.name} ${locale === "zh" ? "详情" : "details"}`}
+          className="absolute inset-0 z-10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+        />
         <div className={`relative overflow-hidden ${isCompact ? "aspect-[4/3]" : "aspect-[16/9]"}`}>
-          <StyleCoverPreview styleSlug={style.slug} />
+          <StyleCoverPreview styleSlug={style.slug} interactive={false} />
 
           {style.styleType === "layout" && (
             <span className="absolute bottom-2 left-2 text-[10px] px-2 py-0.5 bg-black/60 text-white uppercase tracking-wider">
@@ -98,9 +100,9 @@ export const StyleCard = React.memo(function StyleCard({
             ))}
           </div>
         </div>
-      </LocalizedLink>
+      </div>
 
-      <div className="absolute top-2 right-2 z-10">
+      <div className="absolute top-2 right-2 z-20">
         <FavoriteButton
           slug={style.slug}
           size={isCompact ? "sm" : "md"}

@@ -16,6 +16,25 @@ export type SupportMethod = {
   note?: SupportLocaleCopy;
 };
 
+export type ThankYouEntry = {
+  id: string;
+  date: string;
+  donorLabel: SupportLocaleCopy;
+  amount?: SupportLocaleCopy;
+  receiptImage?: string;
+  celebrationImage?: string;
+  receiptAlt?: SupportLocaleCopy;
+  celebrationAlt?: SupportLocaleCopy;
+};
+
+export type ThankYouModalConfig = {
+  enabled: boolean;
+  showOnHomepageOnly: boolean;
+  dismissible: boolean;
+  title: SupportLocaleCopy;
+  description: SupportLocaleCopy;
+};
+
 export const supportPageCopy = {
   en: {
     eyebrow: "Support Maintenance",
@@ -214,3 +233,60 @@ export const supportLinks: SupportLink[] = [
     actionLabel: { en: "Open", zh: "打开" },
   },
 ];
+
+export const thankYouEntries: ThankYouEntry[] = [
+  {
+    id: "donation-2026-06-16",
+    date: "2026-06-16",
+    donorLabel: {
+      en: "Anonymous Supporter",
+      zh: "匿名支持者",
+    },
+    amount: {
+      en: "¥66.66",
+      zh: "¥66.66",
+    },
+    receiptImage: "/support/receipts/receipt-2026-06-16.png",
+    celebrationImage: "/support/thank-you/thank-meme-2026-06.jpg",
+    receiptAlt: {
+      en: "Payment receipt from supporter",
+      zh: "支持者的收款记录",
+    },
+    celebrationAlt: {
+      en: "Thank you celebration",
+      zh: "感谢庆祝",
+    },
+  },
+  {
+    id: "donation-2026-06-20",
+    date: "2026-06-20",
+    donorLabel: {
+      en: "Anonymous Supporter",
+      zh: "匿名支持者",
+    },
+    receiptImage: "/support/receipts/receipt-2026-06-20.png",
+    celebrationImage: "/support/thank-you/thank-meme-2026-06.jpg",
+    receiptAlt: {
+      en: "Payment receipt from supporter",
+      zh: "支持者的收款记录",
+    },
+    celebrationAlt: {
+      en: "Thank you celebration",
+      zh: "感谢庆祝",
+    },
+  },
+];
+
+export const thankYouModalConfig: ThankYouModalConfig = {
+  enabled: true,
+  showOnHomepageOnly: true,
+  dismissible: true,
+  title: {
+    en: "Thank You for Your Support!",
+    zh: "感谢大哥/姐姐的支持！",
+  },
+  description: {
+    en: "We recently received a generous donation. Your support helps keep StyleKit running and accessible to everyone.",
+    zh: "我去我去，赛博乞讨真的有人给我打赏了，哭辽(╥﹏╥)。感谢大哥/姐姐！！！！",
+  },
+};

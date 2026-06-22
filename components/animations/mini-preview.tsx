@@ -583,6 +583,67 @@ export function MiniPreview({ slug }: { slug: string }) {
           />
         </div>
       );
+    case "cursor-aura":
+      return (
+        <div className="relative h-12 w-16 rounded-[14px] border border-cyan-400/20 bg-zinc-950">
+          <span className="absolute left-8 top-6 h-8 w-8 -translate-x-1/2 -translate-y-1/2 rounded-full border border-cyan-200/30 bg-cyan-300/15" />
+          <span className="absolute left-7 top-5 h-1.5 w-1.5 rounded-full bg-white" />
+        </div>
+      );
+    case "cursor-trail":
+      return (
+        <div className="relative h-12 w-20 rounded-[14px] border border-cyan-400/20 bg-zinc-950">
+          {[0, 1, 2, 3].map((index) => (
+            <span
+              key={index}
+              className="absolute rounded-full bg-cyan-300"
+              style={{ left: 18 + index * 12, top: 26 - index * 3, width: 8 - index, height: 8 - index, opacity: 1 - index * 0.18 }}
+            />
+          ))}
+        </div>
+      );
+    case "proximity-reveal":
+      return (
+        <div className="flex h-10 w-20 items-center justify-between border border-zinc-200 bg-white px-2 dark:border-white/10 dark:bg-zinc-900">
+          <span className="h-2 w-8 rounded-full bg-zinc-300 dark:bg-zinc-700" />
+          <span className="h-5 w-5 border border-zinc-300 bg-zinc-50 dark:border-zinc-600 dark:bg-zinc-800" />
+        </div>
+      );
+    case "text-repulsion":
+      return (
+        <div className="flex gap-0.5 text-lg font-bold text-zinc-950 dark:text-white">
+          {["T", "Y", "P", "E"].map((letter, index) => (
+            <span key={letter} style={{ transform: `translate(${index % 2 ? 2 : -2}px, ${index === 1 ? -3 : 2}px)` }}>{letter}</span>
+          ))}
+        </div>
+      );
+    case "image-distortion":
+      return (
+        <div className="h-12 w-16 overflow-hidden border border-white/10 bg-[linear-gradient(135deg,#0f172a,#0891b2_44%,#fb923c)]">
+          <div className="h-full w-full bg-[radial-gradient(circle_at_60%_42%,rgba(255,255,255,0.42),transparent_22%)]" />
+        </div>
+      );
+    case "parallax-layers":
+      return (
+        <div className="relative h-12 w-20 overflow-hidden border border-white/10 bg-zinc-950">
+          <span className="absolute left-3 top-4 h-7 w-7 rounded-full bg-cyan-300/40" />
+          <span className="absolute left-8 top-2 h-9 w-10 border border-white/20 bg-white/10" />
+          <span className="absolute bottom-2 right-3 h-4 w-8 bg-orange-300" />
+        </div>
+      );
+    case "drag-physics":
+      return (
+        <div className="relative h-12 w-20 border border-zinc-200 bg-white dark:border-white/10 dark:bg-zinc-900">
+          <span className="absolute left-8 top-4 h-6 w-6 rotate-6 border border-zinc-950 bg-white shadow-[4px_4px_0_rgba(15,23,42,0.14)] dark:border-white dark:bg-zinc-800" />
+        </div>
+      );
+    case "context-cursor":
+      return (
+        <div className="relative h-12 w-20 border border-white/10 bg-zinc-950">
+          <span className="absolute left-3 top-3 h-6 w-7 border border-white/10 bg-white/5" />
+          <span className="absolute left-9 top-5 rounded-full bg-cyan-300 px-1.5 py-0.5 text-[8px] text-zinc-950">View</span>
+        </div>
+      );
     case "counter-roll":
       return (
         <div className="flex gap-0.5 font-mono text-base tabular-nums">
