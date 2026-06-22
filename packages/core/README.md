@@ -1,6 +1,6 @@
 # @stylekit/core
 
-StyleKit core library - design style tokens, recipes, linter, and knowledge base for AI-driven UI generation.
+StyleKit core library - design style tokens, recipes, and accessibility helpers for AI-driven UI generation.
 
 ## Installation
 
@@ -48,31 +48,6 @@ const result = renderRecipe(buttonRecipe, {
 })
 ```
 
-### Linter
-
-Validate code against style guidelines.
-
-```typescript
-import { lintCode, formatLintResult } from '@stylekit/core/linter'
-
-const result = lintCode('neo-brutalist', '<button className="rounded-full shadow-sm">')
-console.log(formatLintResult(result))
-```
-
-### Knowledge
-
-Design knowledge base with search across products, colors, typography, UX, and more.
-
-```typescript
-import { searchKnowledge, getDesignRecommendation } from '@stylekit/core/knowledge'
-
-// Search across all domains
-const results = searchKnowledge('SaaS dashboard')
-
-// Get a full design recommendation
-const recommendation = getDesignRecommendation('e-commerce landing page')
-```
-
 ### Accessibility
 
 WCAG 2.1 compliance checking for design styles.
@@ -87,20 +62,6 @@ const ratio = contrastRatio('#000000', '#ffffff') // 21
 const score = scoreStyle('neo-brutalist')
 ```
 
-### Quality
-
-Quality scoring for style definitions.
-
-```typescript
-import { scoreStyleQuality, generateQualityReport } from '@stylekit/core/quality'
-
-// Score a single style
-const score = scoreStyleQuality('glassmorphism')
-
-// Generate a full quality report
-const report = generateQualityReport()
-```
-
 ## Full Import
 
 You can also import everything from the root:
@@ -109,8 +70,6 @@ You can also import everything from the root:
 import {
   styles,
   getStyleTokens,
-  lintCode,
-  searchKnowledge,
   contrastRatio,
 } from '@stylekit/core'
 ```

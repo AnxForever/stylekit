@@ -15,15 +15,11 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
+    "types": [],
     "paths": {
       "@/*": ["../../*"]
     }
   },
-  "include": [
-    "src/**/*.ts",
-    "../../lib/accessibility/**/*.ts",
-    "../../lib/recipes/**/*.ts",
-    "../../lib/styles/**/*.ts"
-  ],
+  "include": ["src/**/*.ts"],
   "exclude": ["node_modules", "dist"]
 }
