@@ -2,35 +2,42 @@
 
 import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { changelog } from "@/lib/changelog";
 import { useI18n } from "@/lib/i18n/context";
-
-const STORAGE_KEY = "sk-announcement-dismissed";
+import {
+  CHANGELOG_SEEN_STORAGE_KEY,
+  isChangelogPath,
+  markLatestChangelogSeen,
+} from "@/lib/changelog/read-state";
 
 export function AnnouncementBanner() {
   const { t, locale } = useI18n();
+  const pathname = usePathname();
   const latest = changelog[0];
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
     if (!latest) return;
+    if (isChangelogPath(pathname)) {
+      markLatestChangelogSeen();
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- route-derived notification state
+      setVisible(false);
+      return;
+    }
+
     try {
-      const dismissed = localStorage.getItem(STORAGE_KEY);
-      // eslint-disable-next-line react-hooks/set-state-in-effect -- reading localStorage on mount
+      const dismissed = localStorage.getItem(CHANGELOG_SEEN_STORAGE_KEY);
       if (dismissed !== latest.version) setVisible(true);
     } catch {
       setVisible(true);
     }
-  }, [latest]);
+  }, [latest, pathname]);
 
   const dismiss = useCallback(() => {
     setVisible(false);
-    try {
-      localStorage.setItem(STORAGE_KEY, latest?.version ?? "");
-    } catch {
-      // ignore
-    }
-  }, [latest]);
+    markLatestChangelogSeen();
+  }, []);
 
   if (!latest || !visible) return null;
 
@@ -49,6 +56,7 @@ export function AnnouncementBanner() {
       </span>
       <Link
         href={`/${locale}/changelog`}
+        onClick={dismiss}
         className="shrink-0 underline underline-offset-2 opacity-80 hover:opacity-100 transition-opacity"
       >
         {locale === "zh" ? "详情" : "Details"}

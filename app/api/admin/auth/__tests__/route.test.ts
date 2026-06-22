@@ -64,6 +64,29 @@ describe("POST /api/admin/auth", () => {
     expect(response.headers.get("set-cookie")).toBeNull();
   });
 
+  it("rate limits repeated password attempts by client", async () => {
+    process.env.ADMIN_PASSWORD = TEST_ADMIN_PASSWORD;
+    process.env.ADMIN_SESSION_SECRET = TEST_SESSION_KEY;
+
+    let response: Response | null = null;
+    for (let attempt = 0; attempt < 11; attempt++) {
+      response = await POST(
+        new Request("https://stylekit.top/api/admin/auth", {
+          method: "POST",
+          headers: {
+            "user-agent": "admin-auth-rate-limit-test",
+            "x-forwarded-for": "203.0.113.77",
+          },
+          body: JSON.stringify({ password: WRONG_ADMIN_PASSWORD }),
+        })
+      );
+    }
+
+    expect(response?.status).toBe(429);
+    expect(response?.headers.get("retry-after")).toBeTruthy();
+    expect(response?.headers.get("set-cookie")).toBeNull();
+  });
+
   it("returns service unavailable when password login is not configured", async () => {
     delete process.env.ADMIN_PASSWORD;
     delete process.env.ADMIN_PASSWORD_SHA256;

@@ -23,12 +23,14 @@ export async function generateMetadata({
   params: Promise<{ locale: string; slug: string }>;
 }) {
   const { locale, slug } = await params;
+  const validLocale: Locale = isLocale(locale) ? locale : "en";
   const metadata = await baseGenerateMetadata({
     params: Promise.resolve({ slug }),
+    locale: validLocale,
   });
 
   return isLocale(locale)
-    ? localizeMetadata(metadata, locale, `/styles/${slug}`)
+    ? localizeMetadata(metadata, validLocale, `/styles/${slug}`)
     : metadata;
 }
 

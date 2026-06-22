@@ -5,7 +5,7 @@ import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { useI18n } from "@/lib/i18n/context";
 import { useFavorites } from "@/lib/favorites/context";
 import { StyleCard } from "@/components/home/style-card";
-import { Heart, Layers, Paintbrush, Loader2, ChevronDown, Search, X } from "lucide-react";
+import { Heart, Layers, Paintbrush, Loader2, ChevronDown, Search, X, SlidersHorizontal } from "lucide-react";
 import type { StyleMeta, StyleType, StyleTag } from "@/lib/styles/meta";
 import {
   getScenarioLabel,
@@ -89,6 +89,7 @@ export function StylesContent({ allStyles }: StylesContentProps) {
   const [sortBy, setSortBy] = useState<SortOption>(parsedSearchParams.sort);
   const [searchQuery, setSearchQuery] = useState(parsedSearchParams.query);
   const [activeScenario, setActiveScenario] = useState<StyleScenario | "all">(parsedSearchParams.scenario);
+  const [isMobileFiltersOpen, setIsMobileFiltersOpen] = useState(false);
   const [isPending, startTransition] = useTransition();
   const [tagDropdownOpen, setTagDropdownOpen] = useState(false);
   const tagDropdownRef = useRef<HTMLDivElement>(null);
@@ -439,6 +440,16 @@ export function StylesContent({ allStyles }: StylesContentProps) {
     showFavorites ||
     sortBy !== "recommended" ||
     trimmedSearchQuery.length > 0;
+  const visualStyleCount = catalogStyles.filter((style) => style.styleType === "visual").length;
+  const layoutStyleCount = catalogStyles.filter((style) => style.styleType === "layout").length;
+  const activeFilterCount = [
+    activeScenario !== "all",
+    activeType !== "all",
+    activeTags.length > 0,
+    showFavorites,
+    sortBy !== "recommended",
+    trimmedSearchQuery.length > 0,
+  ].filter(Boolean).length;
   const isFiltering =
     isPending ||
     activeScenario !== deferredActiveScenario ||
@@ -452,22 +463,51 @@ export function StylesContent({ allStyles }: StylesContentProps) {
     <>
       {/* Page Header */}
       <section className="border-b border-border">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-12 py-8 md:py-12">
-          <p className="text-xs tracking-widest uppercase text-muted mb-3">
-            {t("styles.subtitle")}
-          </p>
-          <h1 className="text-3xl md:text-4xl lg:text-5xl mb-3">
-            {t("styles.title")}
-          </h1>
-          <p className="text-base text-muted max-w-2xl">
-            {t("styles.description")}
-          </p>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-12 py-5 md:py-7">
+          <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+            <div className="max-w-2xl">
+              <p className="text-[11px] tracking-[0.18em] uppercase text-muted mb-2">
+                {t("styles.subtitle")}
+              </p>
+              <h1 className="text-2xl md:text-4xl leading-tight mb-2">
+                {t("styles.title")}
+              </h1>
+              <p className="text-sm md:text-base text-muted leading-relaxed">
+                {t("styles.description")}
+              </p>
+            </div>
+            <dl className="hidden grid-cols-3 border border-border bg-background md:grid md:min-w-[22rem]">
+              {[
+                {
+                  label: locale === "zh" ? "全部" : "Total",
+                  value: catalogStyles.length,
+                },
+                {
+                  label: t("styles.typeVisual"),
+                  value: visualStyleCount,
+                },
+                {
+                  label: t("styles.typeLayout"),
+                  value: layoutStyleCount,
+                },
+              ].map((item) => (
+                <div key={item.label} className="border-r border-border px-3 py-2.5 text-center last:border-r-0 md:px-4">
+                  <dt className="text-[10px] uppercase tracking-[0.16em] text-muted truncate">
+                    {item.label}
+                  </dt>
+                  <dd className="mt-1 text-lg leading-none tabular-nums md:text-xl">
+                    {item.value}
+                  </dd>
+                </div>
+              ))}
+            </dl>
+          </div>
         </div>
       </section>
 
       {/* Style Grid */}
       <section>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-12 py-12 md:py-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-12 py-6 md:py-8">
           <div className="mb-5 md:mb-7 space-y-3">
             <label htmlFor="styles-search" className="sr-only">
               {t("nav.search")}
@@ -499,7 +539,41 @@ export function StylesContent({ allStyles }: StylesContentProps) {
                 ? "提示：按 / 可快速聚焦搜索，按 Esc 可清空。"
                 : "Tip: press / to focus search, and Esc to clear."}
             </p>
-            <div className="flex flex-nowrap overflow-x-auto scrollbar-hide gap-2 md:flex-wrap md:overflow-visible items-center">
+            <div className="md:hidden flex items-center justify-between gap-3 border border-border bg-background px-3 py-2">
+              <button
+                type="button"
+                onClick={() => setIsMobileFiltersOpen((open) => !open)}
+                aria-expanded={isMobileFiltersOpen}
+                aria-controls="styles-scenario-filter styles-type-filter styles-tag-filter"
+                className="inline-flex min-h-[44px] items-center gap-2 text-sm"
+              >
+                <SlidersHorizontal className="h-4 w-4" />
+                {locale === "zh" ? "筛选" : "Filters"}
+                {activeFilterCount > 0 && (
+                  <span className="inline-flex h-5 min-w-5 items-center justify-center bg-foreground px-1.5 text-[11px] text-background">
+                    {activeFilterCount}
+                  </span>
+                )}
+              </button>
+              {hasActiveFilters && (
+                <button
+                  type="button"
+                  onClick={handleResetFilters}
+                  className="text-xs text-muted hover:text-foreground transition-colors"
+                >
+                  {t("styles.resetFilters")}
+                </button>
+              )}
+            </div>
+            {hasActiveFilters && activeFilterSummary.length > 0 && (
+              <p className="md:hidden text-xs text-muted line-clamp-2">
+                {activeFilterSummary}
+              </p>
+            )}
+            <div
+              id="styles-scenario-filter"
+              className={`${isMobileFiltersOpen ? "flex" : "hidden"} md:flex flex-nowrap overflow-x-auto scrollbar-hide gap-2 md:flex-wrap md:overflow-visible items-center`}
+            >
               <span className="text-[11px] tracking-[0.16em] uppercase text-muted shrink-0">
                 {locale === "zh" ? "按场景进入" : "Explore by goal"}
               </span>
@@ -533,28 +607,28 @@ export function StylesContent({ allStyles }: StylesContentProps) {
                 );
               })}
             </div>
-              {(trimmedSearchQuery.length > 0 || activeScenario !== "all") && (
-                <button
-                  type="button"
-                  onClick={() => startTransition(() => {
-                    setSearchQuery("");
-                    setActiveScenario("all");
-                    syncToUrl(activeType, activeTags, showFavorites, sortBy, "", "all");
-                  })}
-                  className="text-xs text-muted hover:text-foreground transition-colors"
-                >
-                  {locale === "zh" ? "清空搜索" : "Clear Search"}
+            {(trimmedSearchQuery.length > 0 || activeScenario !== "all") && (
+              <button
+                type="button"
+                onClick={() => startTransition(() => {
+                  setSearchQuery("");
+                  setActiveScenario("all");
+                  syncToUrl(activeType, activeTags, showFavorites, sortBy, "", "all");
+                })}
+                className={`${isMobileFiltersOpen ? "inline-flex" : "hidden"} md:inline-flex text-xs text-muted hover:text-foreground transition-colors`}
+              >
+                {locale === "zh" ? "清空搜索" : "Clear Search"}
               </button>
             )}
             {hasActiveFilters && activeFilterSummary.length > 0 && (
-              <p className="text-xs text-muted">
+              <p className="hidden md:block text-xs text-muted">
                 {locale === "zh" ? "当前筛选" : "Active filters"}: {activeFilterSummary}
               </p>
             )}
           </div>
 
           {/* Type Filter */}
-          <div className="flex flex-nowrap overflow-x-auto scrollbar-hide md:flex-wrap md:overflow-visible items-center gap-3 mb-4 text-sm">
+          <div id="styles-type-filter" className={`${isMobileFiltersOpen ? "flex" : "hidden"} md:flex flex-nowrap overflow-x-auto scrollbar-hide md:flex-wrap md:overflow-visible items-center gap-3 mb-4 text-sm`}>
             <span className="text-muted shrink-0">{t("styles.type")}:</span>
             {typeFilters.map((type) => (
               <button
@@ -588,7 +662,7 @@ export function StylesContent({ allStyles }: StylesContentProps) {
           </div>
 
           {/* Tag Filter - Dropdown */}
-          <div className="flex flex-wrap items-center gap-2 mb-8 md:mb-12 text-sm">
+          <div id="styles-tag-filter" className={`${isMobileFiltersOpen ? "flex" : "hidden"} md:flex flex-wrap items-center gap-2 mb-8 md:mb-12 text-sm`}>
             <span className="text-muted">{t("styles.tags")}:</span>
             <div ref={tagDropdownRef} className="relative">
               <button
@@ -598,7 +672,7 @@ export function StylesContent({ allStyles }: StylesContentProps) {
                 aria-expanded={tagDropdownOpen}
                 aria-haspopup="listbox"
                 aria-controls={tagDropdownOpen ? tagListboxId : undefined}
-                className="inline-flex items-center gap-2 px-3 py-1.5 border border-border hover:border-foreground transition-colors"
+                className="inline-flex min-h-[44px] sm:min-h-0 items-center gap-2 px-3 py-1.5 border border-border hover:border-foreground transition-colors"
               >
                 {activeTags.length === 0 ? (
                   <span className="text-muted">{t("styles.selectTags")}</span>
