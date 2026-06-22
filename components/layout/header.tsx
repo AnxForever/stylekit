@@ -7,6 +7,7 @@ import { useI18n } from "@/lib/i18n/context";
 import { LanguageSwitcher } from "@/components/language-switcher";
 import { UserMenu, MobileUserMenu } from "@/components/layout/user-menu";
 import { mainNav, secondaryNav, type NavDropdown, type NavItem } from "@/lib/nav-config";
+import { changelog } from "@/lib/changelog";
 import { ChevronDown } from "lucide-react";
 import { GitHubStarButton } from "@/components/github-star-button";
 import { trackEvent } from "@/lib/analytics/events";
@@ -192,6 +193,7 @@ interface MoreOverflowProps {
   onMoreOpenChange: (open: boolean) => void;
   onCloseOtherDropdowns: () => void;
   moreRef: React.RefObject<HTMLDivElement | null>;
+  hasChangelogUpdate: boolean;
 }
 
 /**
@@ -201,6 +203,7 @@ interface MoreOverflowProps {
  */
 function MoreOverflow({
   secondaryNav,
+  hasChangelogUpdate,
   isMoreOpen,
   onMoreOpenChange,
   onCloseOtherDropdowns,
@@ -234,6 +237,9 @@ function MoreOverflow({
         aria-haspopup="menu"
       >
         {t("nav.more")}
+        {hasChangelogUpdate ? (
+          <span className="w-2 h-2 rounded-full bg-red-500" />
+        ) : null}
         <ChevronDown
           className={`h-3.5 w-3.5 transition-transform ${isMoreOpen ? "rotate-180" : ""}`}
         />
@@ -248,11 +254,14 @@ function MoreOverflow({
             <Link
               key={item.href}
               href={localizeHref(item.href, locale)}
-              className="block px-4 py-2 text-sm text-muted transition-colors hover:bg-zinc-50 hover:text-foreground dark:hover:bg-zinc-800"
+              className="flex items-center gap-2 px-4 py-2 text-sm text-muted transition-colors hover:bg-zinc-50 hover:text-foreground dark:hover:bg-zinc-800"
               onClick={() => onMoreOpenChange(false)}
               role="menuitem"
             >
               {t(item.labelKey)}
+              {item.href === "/changelog" && hasChangelogUpdate ? (
+                <span className="w-2 h-2 rounded-full bg-red-500" />
+              ) : null}
             </Link>
           ))}
         </div>
@@ -268,6 +277,7 @@ export function Header() {
   const [expandedMobileGroupKey, setExpandedMobileGroupKey] = useState<string | null>(null);
   const { setTheme, resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
+  const [hasChangelogUpdate, setHasChangelogUpdate] = useState(false);
   const { t, locale } = useI18n();
   const moreRef = useRef<HTMLDivElement>(null);
   const dropdownRefs = useRef<Array<HTMLDivElement | null>>([]);
@@ -276,6 +286,17 @@ export function Header() {
     // eslint-disable-next-line react-hooks/set-state-in-effect -- valid hydration pattern
     setMounted(true);
   }, []);
+
+  useEffect(() => {
+    if (!mounted) return;
+    try {
+      const dismissed = localStorage.getItem("sk-announcement-dismissed");
+      const latest = changelog[0]?.version;
+      setHasChangelogUpdate(dismissed !== latest && Boolean(latest));
+    } catch {
+      // localStorage unavailable
+    }
+  }, [mounted]);
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -362,6 +383,7 @@ export function Header() {
             {secondaryNav.length > 0 && (
               <MoreOverflow
                 secondaryNav={secondaryNav}
+                hasChangelogUpdate={hasChangelogUpdate}
                 isMoreOpen={isMoreOpen}
                 onMoreOpenChange={(next) => {
                   setOpenIndex(null);
@@ -525,10 +547,13 @@ export function Header() {
                     <Link
                       key={item.href}
                       href={localizeHref(item.href, locale)}
-                      className={`block py-2 ${linkClass}`}
+                      className={`flex items-center gap-2 py-2 ${linkClass}`}
                       onClick={() => setIsMenuOpen(false)}
                     >
                       {t(item.labelKey)}
+                      {item.href === "/changelog" && hasChangelogUpdate ? (
+                        <span className="w-2 h-2 rounded-full bg-red-500" />
+                      ) : null}
                     </Link>
                   ))}
                 </div>
