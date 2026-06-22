@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useTheme } from "next-themes";
 import { useI18n } from "@/lib/i18n/context";
 import { LanguageSwitcher } from "@/components/language-switcher";
@@ -32,37 +32,6 @@ const CLOSE_GRACE_MS = 300;
  * cursor that briefly leaves the container (e.g. crossing the gap
  * between trigger and panel) doesn't collapse the panel mid-traversal.
  */
-function useHoverDropdown(
-  open: boolean,
-  onOpenChange: (open: boolean) => void,
-) {
-  const closeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  const cancelClose = useCallback(() => {
-    if (closeTimerRef.current) {
-      clearTimeout(closeTimerRef.current);
-      closeTimerRef.current = null;
-    }
-  }, []);
-
-  const openNow = useCallback(() => {
-    cancelClose();
-    onOpenChange(true);
-  }, [cancelClose, onOpenChange]);
-
-  const scheduleClose = useCallback(() => {
-    cancelClose();
-    closeTimerRef.current = setTimeout(() => {
-      closeTimerRef.current = null;
-      onOpenChange(false);
-    }, CLOSE_GRACE_MS);
-  }, [cancelClose, onOpenChange]);
-
-  useEffect(() => () => cancelClose(), [cancelClose]);
-
-  return { open, openNow, scheduleClose };
-}
-
 interface DesktopDropdownProps {
   item: NavItem;
   open: boolean;
@@ -91,7 +60,43 @@ function DesktopDropdown({
 }: DesktopDropdownProps) {
   const { t, locale } = useI18n();
   const dropdown = item.dropdown;
-  const { openNow, scheduleClose } = useHoverDropdown(open, onOpenChange);
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const closeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // 用原生事件替代 React onMouseEnter/Leave, 避免重渲染时脱落
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+
+    const cancel = () => {
+      if (closeTimerRef.current) {
+        clearTimeout(closeTimerRef.current);
+        closeTimerRef.current = null;
+      }
+    };
+
+    const handleEnter = () => {
+      cancel();
+      onOpenChange(true);
+    };
+
+    const handleLeave = () => {
+      cancel();
+      closeTimerRef.current = setTimeout(() => {
+        closeTimerRef.current = null;
+        onOpenChange(false);
+      }, CLOSE_GRACE_MS);
+    };
+
+    el.addEventListener("mouseenter", handleEnter);
+    el.addEventListener("mouseleave", handleLeave);
+
+    return () => {
+      el.removeEventListener("mouseenter", handleEnter);
+      el.removeEventListener("mouseleave", handleLeave);
+      cancel();
+    };
+  }, [onOpenChange]);
 
   if (!dropdown) return null;
 
@@ -99,21 +104,21 @@ function DesktopDropdown({
   const hasGroups = (dropdown.groups?.length ?? 0) > 0;
   const hasItems = (dropdown.items?.length ?? 0) > 0;
 
+  const setRefs = (el: HTMLDivElement | null) => {
+    containerRef.current = el;
+    registerRef(el);
+  };
+
   return (
     <div
       className="relative"
-      ref={registerRef}
-      onMouseEnter={openNow}
-      onMouseLeave={scheduleClose}
-      onFocus={openNow}
+      ref={setRefs}
+      onFocus={() => onOpenChange(true)}
       onBlur={(event) => {
-        // relatedTarget is the element gaining focus. If it's still
-        // inside this container (e.g. tabbing from trigger into the
-        // panel), keep the dropdown open.
         if (
           !event.currentTarget.contains(event.relatedTarget as Node | null)
         ) {
-          scheduleClose();
+          onOpenChange(false);
         }
       }}
     >
@@ -210,21 +215,61 @@ function MoreOverflow({
   moreRef,
 }: MoreOverflowProps) {
   const { t, locale } = useI18n();
-  const { openNow, scheduleClose } = useHoverDropdown(isMoreOpen, (next) => {
-    if (next) onCloseOtherDropdowns();
-    onMoreOpenChange(next);
-  });
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const closeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // 原生事件, 避免 React 重渲染时脱落
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+
+    const cancel = () => {
+      if (closeTimerRef.current) {
+        clearTimeout(closeTimerRef.current);
+        closeTimerRef.current = null;
+      }
+    };
+
+    const handleEnter = () => {
+      cancel();
+      onCloseOtherDropdowns();
+      onMoreOpenChange(true);
+    };
+
+    const handleLeave = () => {
+      cancel();
+      closeTimerRef.current = setTimeout(() => {
+        closeTimerRef.current = null;
+        onMoreOpenChange(false);
+      }, CLOSE_GRACE_MS);
+    };
+
+    el.addEventListener("mouseenter", handleEnter);
+    el.addEventListener("mouseleave", handleLeave);
+
+    return () => {
+      el.removeEventListener("mouseenter", handleEnter);
+      el.removeEventListener("mouseleave", handleLeave);
+      cancel();
+    };
+  }, [onMoreOpenChange, onCloseOtherDropdowns]);
+
+  const setRefs = (el: HTMLDivElement | null) => {
+    containerRef.current = el;
+    (moreRef as React.MutableRefObject<HTMLDivElement | null>).current = el;
+  };
 
   return (
     <div
       className="relative"
-      ref={moreRef}
-      onMouseEnter={openNow}
-      onMouseLeave={scheduleClose}
-      onFocus={openNow}
+      ref={setRefs}
+      onFocus={() => {
+        onCloseOtherDropdowns();
+        onMoreOpenChange(true);
+      }}
       onBlur={(event) => {
         if (!event.currentTarget.contains(event.relatedTarget as Node | null)) {
-          scheduleClose();
+          onMoreOpenChange(false);
         }
       }}
     >
