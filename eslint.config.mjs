@@ -15,6 +15,7 @@ const eslintConfig = defineConfig([
     // Local scratch/output directories (should never be linted).
     ".tmp/**",
     "tmp/**",
+    ".understand-anything/**",
     "coverage/**",
     ".trae/**",
     ".claude/**",

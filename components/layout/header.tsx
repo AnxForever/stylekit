@@ -1,13 +1,18 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useState, useEffect, useRef } from "react";
 import { useTheme } from "next-themes";
 import { useI18n } from "@/lib/i18n/context";
 import { LanguageSwitcher } from "@/components/language-switcher";
 import { UserMenu, MobileUserMenu } from "@/components/layout/user-menu";
 import { mainNav, secondaryNav, type NavDropdown, type NavItem } from "@/lib/nav-config";
-import { changelog } from "@/lib/changelog";
+import {
+  hasSeenLatestChangelog,
+  isChangelogPath,
+  markLatestChangelogSeen,
+} from "@/lib/changelog/read-state";
 import { ChevronDown } from "lucide-react";
 import { GitHubStarButton } from "@/components/github-star-button";
 import { trackEvent } from "@/lib/analytics/events";
@@ -197,8 +202,9 @@ interface MoreOverflowProps {
   isMoreOpen: boolean;
   onMoreOpenChange: (open: boolean) => void;
   onCloseOtherDropdowns: () => void;
-  moreRef: React.RefObject<HTMLDivElement | null>;
+  registerRef: (element: HTMLDivElement | null) => void;
   hasChangelogUpdate: boolean;
+  onChangelogSeen: () => void;
 }
 
 /**
@@ -209,10 +215,11 @@ interface MoreOverflowProps {
 function MoreOverflow({
   secondaryNav,
   hasChangelogUpdate,
+  onChangelogSeen,
   isMoreOpen,
   onMoreOpenChange,
   onCloseOtherDropdowns,
-  moreRef,
+  registerRef,
 }: MoreOverflowProps) {
   const { t, locale } = useI18n();
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -256,7 +263,7 @@ function MoreOverflow({
 
   const setRefs = (el: HTMLDivElement | null) => {
     containerRef.current = el;
-    (moreRef as React.MutableRefObject<HTMLDivElement | null>).current = el;
+    registerRef(el);
   };
 
   return (
@@ -300,7 +307,10 @@ function MoreOverflow({
               key={item.href}
               href={localizeHref(item.href, locale)}
               className="flex items-center gap-2 px-4 py-2 text-sm text-muted transition-colors hover:bg-zinc-50 hover:text-foreground dark:hover:bg-zinc-800"
-              onClick={() => onMoreOpenChange(false)}
+              onClick={() => {
+                if (item.href === "/changelog") onChangelogSeen();
+                onMoreOpenChange(false);
+              }}
               role="menuitem"
             >
               {t(item.labelKey)}
@@ -324,6 +334,7 @@ export function Header() {
   const [mounted, setMounted] = useState(false);
   const [hasChangelogUpdate, setHasChangelogUpdate] = useState(false);
   const { t, locale } = useI18n();
+  const pathname = usePathname();
   const moreRef = useRef<HTMLDivElement>(null);
   const dropdownRefs = useRef<Array<HTMLDivElement | null>>([]);
 
@@ -334,15 +345,15 @@ export function Header() {
 
   useEffect(() => {
     if (!mounted) return;
-    try {
-      const dismissed = localStorage.getItem("sk-announcement-dismissed");
-      const latest = changelog[0]?.version;
-      // eslint-disable-next-line react-hooks/set-state-in-effect -- reading localStorage on mount
-      setHasChangelogUpdate(dismissed !== latest && Boolean(latest));
-    } catch {
-      // localStorage unavailable
+    if (isChangelogPath(pathname)) {
+      markLatestChangelogSeen();
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- route-derived notification state
+      setHasChangelogUpdate(false);
+      return;
     }
-  }, [mounted]);
+
+    setHasChangelogUpdate(!hasSeenLatestChangelog());
+  }, [mounted, pathname]);
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -364,6 +375,10 @@ export function Header() {
 
   const toggleTheme = () => {
     setTheme(resolvedTheme === "dark" ? "light" : "dark");
+  };
+  const markChangelogSeen = () => {
+    markLatestChangelogSeen();
+    setHasChangelogUpdate(false);
   };
   const openCommandPalette = (location: "header" | "mobile_menu") => {
     trackEvent("cta_click", { label: "open_search", location });
@@ -430,13 +445,16 @@ export function Header() {
               <MoreOverflow
                 secondaryNav={secondaryNav}
                 hasChangelogUpdate={hasChangelogUpdate}
+                onChangelogSeen={markChangelogSeen}
                 isMoreOpen={isMoreOpen}
                 onMoreOpenChange={(next) => {
                   setOpenIndex(null);
                   setIsMoreOpen(next);
                 }}
                 onCloseOtherDropdowns={() => setOpenIndex(null)}
-                moreRef={moreRef}
+                registerRef={(el) => {
+                  moreRef.current = el;
+                }}
               />
             )}
 
@@ -594,7 +612,10 @@ export function Header() {
                       key={item.href}
                       href={localizeHref(item.href, locale)}
                       className={`flex items-center gap-2 py-2 ${linkClass}`}
-                      onClick={() => setIsMenuOpen(false)}
+                      onClick={() => {
+                        if (item.href === "/changelog") markChangelogSeen();
+                        setIsMenuOpen(false);
+                      }}
                     >
                       {t(item.labelKey)}
                       {item.href === "/changelog" && hasChangelogUpdate ? (

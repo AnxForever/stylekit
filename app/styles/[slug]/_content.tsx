@@ -168,6 +168,13 @@ export function StyleDetailContent({
   );
   const localizedDos = ssrDos ?? localizedList(clientLocale, style.doList, style.doListEn);
   const localizedDonts = ssrDonts ?? localizedList(clientLocale, style.dontList, style.dontListEn);
+  const localizedKeywords = localizedList(locale, style.keywords, style.keywordsEn);
+  const primaryStyleName = locale === "zh" ? style.name : style.nameEn || style.name;
+  const secondaryStyleName = locale === "zh" ? style.nameEn : style.name;
+  const getPrimaryName = (targetStyle: DesignStyle) =>
+    locale === "zh" ? targetStyle.name : targetStyle.nameEn || targetStyle.name;
+  const getSecondaryName = (targetStyle: DesignStyle) =>
+    locale === "zh" ? targetStyle.nameEn : targetStyle.name;
   const detailSections = [
     {
       href: "#style-prompts",
@@ -197,8 +204,8 @@ export function StyleDetailContent({
     {
       label: locale === "zh" ? "适合场景" : "Best For",
       value:
-        style.keywords.length > 0
-          ? style.keywords.slice(0, 3).join(" / ")
+        localizedKeywords.length > 0
+          ? localizedKeywords.slice(0, 3).join(" / ")
           : localizedDescription,
     },
     {
@@ -294,17 +301,19 @@ export function StyleDetailContent({
                 {t("styleDetail.catalog")}
               </LocalizedLink>
               <span>/</span>
-              <span>{style.name}</span>
+              <span>{primaryStyleName}</span>
             </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 lg:gap-16 items-start">
             <div>
               <h1 className="text-4xl md:text-5xl lg:text-6xl mb-2">
-                {style.name}
+                {primaryStyleName}
               </h1>
               <div className="flex items-center gap-3 mb-6">
-                <p className="text-xl text-muted">{style.nameEn}</p>
+                {secondaryStyleName && secondaryStyleName !== primaryStyleName && (
+                  <p className="text-xl text-muted">{secondaryStyleName}</p>
+                )}
                 {version && (
                   <VersionBadge version={version} changelog={changelog} />
                 )}
@@ -316,7 +325,7 @@ export function StyleDetailContent({
                 {localizedDescription}
               </p>
               <div className="flex flex-wrap gap-2">
-                {style.keywords.map((keyword) => (
+                {localizedKeywords.map((keyword) => (
                   <span
                     key={keyword}
                     className="text-xs px-3 py-1 bg-zinc-100 text-muted"
@@ -381,7 +390,7 @@ export function StyleDetailContent({
                     {showcaseScale > 0 && (
                       <iframe
                         src={`/styles/${style.slug}/showcase`}
-                        title={`${style.nameEn} Showcase Preview`}
+                        title={`${primaryStyleName} Showcase Preview`}
                         className="absolute top-0 left-0 w-[1280px] h-[800px] origin-top-left border-0 pointer-events-none select-none"
                         style={{ transform: `scale(${showcaseScale})` }}
                         tabIndex={-1}
@@ -454,7 +463,7 @@ export function StyleDetailContent({
               : `Use the Hard Prompt by default to generate UI. Use the Design Spec to understand, modify, and review the style. Use the Creative Brief for early exploration.`}
           </p>
           <AiImplementationPanel
-            styleName={locale === "en" && style.nameEn ? style.nameEn : style.name}
+            styleName={primaryStyleName}
             styleSlug={style.slug}
             description={localizedDescription}
             philosophy={localizedPhilosophy}
@@ -492,8 +501,8 @@ export function StyleDetailContent({
             </p>
             <h2 className="text-2xl md:text-3xl mb-4">
               {locale === "zh"
-                ? `${style.name}的鼠标交互`
-                : `How ${style.nameEn} moves`}
+                ? `${primaryStyleName}的鼠标交互`
+                : `How ${primaryStyleName} moves`}
             </h2>
             <p className="text-muted mb-8 max-w-2xl">
               {locale === "zh"
@@ -649,7 +658,7 @@ export function StyleDetailContent({
             </p>
             <h2 className="text-2xl md:text-3xl mb-4">{t("styleDetail.tryPairing")}</h2>
             <p className="text-muted mb-8 max-w-2xl">
-              {t("styleDetail.compatibleVisualDesc").replace("{name}", style.name)}
+              {t("styleDetail.compatibleVisualDesc").replace("{name}", primaryStyleName)}
             </p>
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
               {compatibleStyles.map((compatStyle) => (
@@ -663,9 +672,9 @@ export function StyleDetailContent({
                   </div>
                   <div className="p-3">
                     <p className="text-sm font-medium group-hover:text-accent transition-colors">
-                      {compatStyle.name}
+                      {getPrimaryName(compatStyle)}
                     </p>
-                    <p className="text-xs text-muted">{compatStyle.nameEn}</p>
+                    <p className="text-xs text-muted">{getSecondaryName(compatStyle)}</p>
                   </div>
                 </LocalizedLink>
               ))}
@@ -683,7 +692,7 @@ export function StyleDetailContent({
             </p>
             <h2 className="text-2xl md:text-3xl mb-4">{t("styleDetail.recommendedLayouts")}</h2>
             <p className="text-muted mb-8 max-w-2xl">
-              {t("styleDetail.compatibleLayoutDesc").replace("{name}", style.name)}
+              {t("styleDetail.compatibleLayoutDesc").replace("{name}", primaryStyleName)}
             </p>
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
               {compatibleLayouts.map((layoutStyle) => (
@@ -697,9 +706,9 @@ export function StyleDetailContent({
                   </div>
                   <div className="p-3">
                     <p className="text-sm font-medium group-hover:text-accent transition-colors">
-                      {layoutStyle.name}
+                      {getPrimaryName(layoutStyle)}
                     </p>
-                    <p className="text-xs text-muted">{layoutStyle.nameEn}</p>
+                    <p className="text-xs text-muted">{getSecondaryName(layoutStyle)}</p>
                   </div>
                 </LocalizedLink>
               ))}
@@ -787,8 +796,8 @@ export function StyleDetailContent({
             </p>
             <h2 className="text-2xl md:text-3xl mb-4">
               {locale === "zh"
-                ? `使用 ${style.name} 的推荐组合`
-                : `Recommended Combinations with ${style.nameEn}`}
+                ? `使用 ${primaryStyleName} 的推荐组合`
+                : `Recommended Combinations with ${primaryStyleName}`}
             </h2>
             <p className="text-muted mb-8 max-w-2xl">
               {locale === "zh"

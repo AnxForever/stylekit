@@ -25,6 +25,8 @@ export const StyleCard = React.memo(function StyleCard({
   const isCompact = variant === "compact";
   const scenarios = getStyleScenarios(style, isCompact ? 2 : 3);
   const cardClassName = "group relative border border-border motion-safe:transition-[border-color,transform,box-shadow] motion-safe:duration-200 hover:border-foreground focus-within:border-foreground motion-safe:hover:-translate-y-0.5 motion-safe:hover:shadow-md";
+  const primaryName = locale === "zh" ? style.name : style.nameEn || style.name;
+  const secondaryName = locale === "zh" ? style.nameEn : style.name;
 
   // 保存当前滚动位置和过滤器状态，用于返回时恢复
   const handleClick = () => {
@@ -42,7 +44,7 @@ export const StyleCard = React.memo(function StyleCard({
         <LocalizedLink
           href={`/styles/${style.slug}`}
           onClick={handleClick}
-          aria-label={`${locale === "zh" ? style.name : style.nameEn || style.name} ${locale === "zh" ? "详情" : "details"}`}
+          aria-label={`${primaryName} ${locale === "zh" ? "详情" : "details"}`}
           className="absolute inset-0 z-10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
         />
         <div className={`relative overflow-hidden ${isCompact ? "aspect-[4/3]" : "aspect-[16/9]"}`}>
@@ -68,10 +70,10 @@ export const StyleCard = React.memo(function StyleCard({
         <div className={isCompact ? "p-3 sm:p-4 md:p-5" : "p-4 md:p-6"}>
           <div className={`flex items-center gap-2 mb-2 ${isCompact ? "min-w-0" : ""}`}>
             <h3 className={`group-hover:text-accent group-focus-visible:text-accent transition-colors truncate leading-snug ${isCompact ? "text-base" : "text-lg md:text-xl"}`}>
-              {style.name}
+              {primaryName}
             </h3>
             <span className={`text-sm text-muted shrink-0 ${isCompact ? "hidden sm:inline" : ""}`}>
-              {style.nameEn}
+              {secondaryName}
             </span>
           </div>
           <p className="text-sm text-muted leading-relaxed line-clamp-2">

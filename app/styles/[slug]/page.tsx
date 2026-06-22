@@ -26,7 +26,13 @@ export function generateStaticParams() {
 export const revalidate = 86400;
 
 // 动态 metadata
-export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
+export async function generateMetadata({
+  params,
+  locale = "en",
+}: {
+  params: Promise<{ slug: string }>;
+  locale?: Locale;
+}) {
   const { slug } = await params;
   const resolved = await resolveStyleBySlug(slug);
   if (!resolved) {
@@ -35,14 +41,25 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const style = resolved.style;
 
   const BASE_URL = getSiteBaseUrl();
-  const description = `${style.description} Includes design tokens, component recipes, and AI prompt guidance for consistent UI implementation.`;
+  const primaryStyleName = locale === "zh" ? style.name : style.nameEn || style.name;
+  const secondaryStyleName = locale === "zh" ? style.nameEn : style.name;
+  const title =
+    secondaryStyleName && secondaryStyleName !== primaryStyleName
+      ? `${primaryStyleName} (${secondaryStyleName})`
+      : primaryStyleName;
+  const localizedDescription = localizedString(locale, style.description, style.descriptionEn);
+  const description =
+    locale === "zh"
+      ? `${localizedDescription} 包含设计 tokens、组件配方和 AI 提示词指南，便于稳定落地同一套 UI 风格。`
+      : `${localizedDescription} Includes design tokens, component recipes, and AI prompt guidance for consistent UI implementation.`;
+  const keywords = localizedList(locale, style.keywords, style.keywordsEn);
 
   return {
-    title: `${style.name} (${style.nameEn})`,
+    title,
     description,
-    keywords: style.keywords,
+    keywords,
     openGraph: {
-      title: `${style.name} (${style.nameEn}) — StyleKit`,
+      title: `${title} — StyleKit`,
       description,
       type: "article",
       images: [
@@ -56,7 +73,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     },
     twitter: {
       card: "summary_large_image",
-      title: `${style.name} (${style.nameEn}) — StyleKit`,
+      title: `${title} — StyleKit`,
       description,
       images: [`${BASE_URL}/styles/${slug}/opengraph-image`],
     },
