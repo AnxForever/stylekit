@@ -6,6 +6,16 @@ import {
   isAdminPasswordConfigured,
   verifyAdminPassword,
 } from "@/lib/auth/admin-session";
+import {
+  checkRateLimit,
+  createRateLimitHeaders,
+  getRequestClientKey,
+} from "@/lib/security/rate-limit";
+
+const ADMIN_LOGIN_RATE_LIMIT = {
+  limit: 10,
+  windowMs: 10 * 60 * 1000,
+};
 
 export async function POST(request: Request) {
   if (!isAdminPasswordConfigured()) {
@@ -15,11 +25,24 @@ export async function POST(request: Request) {
     );
   }
 
+  const rateLimit = checkRateLimit({
+    namespace: "admin-login",
+    key: getRequestClientKey(request),
+    ...ADMIN_LOGIN_RATE_LIMIT,
+  });
+  const rateLimitHeaders = createRateLimitHeaders(rateLimit);
+  if (!rateLimit.allowed) {
+    return NextResponse.json(
+      { error: "Too many admin login attempts. Try again later." },
+      { status: 429, headers: rateLimitHeaders }
+    );
+  }
+
   const password = await readPassword(request);
   if (!password || !(await verifyAdminPassword(password))) {
     return NextResponse.json(
       { error: "Invalid admin password." },
-      { status: 401 }
+      { status: 401, headers: rateLimitHeaders }
     );
   }
 
@@ -33,7 +56,7 @@ export async function POST(request: Request) {
     );
   }
 
-  const response = NextResponse.json({ ok: true });
+  const response = NextResponse.json({ ok: true }, { headers: rateLimitHeaders });
   response.cookies.set(ADMIN_SESSION_COOKIE_NAME, cookieValue, {
     httpOnly: true,
     sameSite: "lax",

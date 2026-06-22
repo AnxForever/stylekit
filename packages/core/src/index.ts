@@ -2,13 +2,12 @@
  * @module @stylekit/core
  *
  * Main entry point for the StyleKit core library.
- * Re-exports all sub-modules: styles, recipes, linter, knowledge,
- * accessibility, and quality.
+ * Re-exports all public sub-modules: styles, recipes, and accessibility.
  *
  * For tree-shaking, prefer importing from specific sub-modules:
  * ```ts
  * import { getStyleBySlug } from '@stylekit/core/styles'
- * import { lintCode } from '@stylekit/core/linter'
+ * import { contrastRatio } from '@stylekit/core/accessibility'
  * ```
  */
 
@@ -16,11 +15,9 @@
 
 export * from './styles'
 export * from './recipes'
-export * from './linter'
-export * from './knowledge'
 
-// Accessibility and Quality both export `scoreAllStyles`,
-// so we re-export them with explicit disambiguation.
+// Accessibility exports `scoreAllStyles`; expose it with a scoped name from
+// the root entry to avoid collisions with future scoring modules.
 export {
   hexToRgb,
   relativeLuminance,
@@ -37,13 +34,3 @@ export type {
   ReadabilityScore,
   ColorPair,
 } from './accessibility'
-
-export {
-  scoreStyleQuality,
-  scoreAllStyles as scoreAllStylesQuality,
-  generateQualityReport,
-} from './quality'
-export type {
-  QualityScore,
-  QualityReport,
-} from './quality'

@@ -1,7 +1,7 @@
 {
   "name": "@stylekit/core",
   "version": "1.0.0-beta.1",
-  "description": "StyleKit core library - design style tokens, recipes, linter, and knowledge base for 88+ UI styles",
+  "description": "StyleKit core library - design style tokens, recipes, and accessibility helpers for 120+ UI styles",
   "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
@@ -22,25 +22,10 @@
       "import": "./dist/recipes/index.js",
       "require": "./dist/recipes/index.cjs"
     },
-    "./linter": {
-      "types": "./dist/linter/index.d.ts",
-      "import": "./dist/linter/index.js",
-      "require": "./dist/linter/index.cjs"
-    },
-    "./knowledge": {
-      "types": "./dist/knowledge/index.d.ts",
-      "import": "./dist/knowledge/index.js",
-      "require": "./dist/knowledge/index.cjs"
-    },
     "./accessibility": {
       "types": "./dist/accessibility/index.d.ts",
       "import": "./dist/accessibility/index.js",
       "require": "./dist/accessibility/index.cjs"
-    },
-    "./quality": {
-      "types": "./dist/quality/index.d.ts",
-      "import": "./dist/quality/index.js",
-      "require": "./dist/quality/index.cjs"
     }
   },
   "files": [
@@ -62,7 +47,6 @@
     "tailwind",
     "react",
     "ui-styles",
-    "linter",
     "accessibility",
     "wcag",
     "design-tokens",
