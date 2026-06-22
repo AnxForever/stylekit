@@ -123,7 +123,7 @@ export function GenericRoom({
 
   return (
     <MouseStage
-      className="relative h-[440px] w-full overflow-hidden border border-border motion-safe:pointer-fine:cursor-none [&_*]:motion-safe:pointer-fine:cursor-none"
+      className="relative h-[440px] w-full overflow-hidden border border-border"
       style={{ background: stage.bg }}
     >
       {/* 装饰大字 (背景) */}

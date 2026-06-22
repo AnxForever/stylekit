@@ -3,6 +3,7 @@ import { ClientProviders } from "@/components/providers/client-providers";
 import { LazyCommandPalette } from "@/components/ui/lazy-command-palette";
 import { ScrollToTop } from "@/components/ui/scroll-to-top";
 import { ClientScripts } from "@/components/layout/client-scripts";
+import { AnnouncementBanner } from "@/components/layout/announcement-banner";
 import { serializeJsonLd } from "@/lib/security/json-ld";
 import { MobileBottomNav } from "@/components/layout/mobile-bottom-nav";
 import { getSiteBaseUrl } from "@/lib/site-url";
@@ -208,6 +209,7 @@ export default async function RootLayout({
       </head>
       <body className="antialiased pb-16 md:pb-0">
         <ClientProviders initialLocale={locale}>
+          <AnnouncementBanner />
           <LazyCommandPalette />
           {children}
           <MobileBottomNav />

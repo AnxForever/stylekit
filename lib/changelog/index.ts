@@ -12,6 +12,19 @@ export interface ChangelogEntry {
 
 export const changelog: ChangelogEntry[] = [
   {
+    version: "0.16.0",
+    date: "2026-06-22",
+    title: "Cursor Lab — 17 Interactive Rooms, GSAP Migration",
+    titleZh: "Cursor Lab — 17 间交互房间，GSAP 迁移",
+    changes: [
+      { type: "added", description: "Cursor Lab with 17 distinct pointer-interaction rooms, each matching a design style", descriptionZh: "Cursor Lab 上线，17 间各不相同的指针交互房间，每间对应一种设计风格" },
+      { type: "added", description: "12 custom mouse-interaction primitives: Warp, Mirror, Grid3D, EmblemSpin, SpeedLine, PaperLayer, GeometricFragments, and more", descriptionZh: "12 种自定义鼠标交互动效原语：Warp、Mirror、Grid3D、EmblemSpin、SpeedLine、PaperLayer、GeometricFragments 等" },
+      { type: "changed", description: "Migrated 8 core primitives from hand-rolled rAF loops to GSAP quickTo with expo.out easing", descriptionZh: "将 8 个核心原语从手写 rAF 循环迁移到 GSAP quickTo + expo.out 缓动" },
+      { type: "changed", description: "Deduplicated rooms: removed 3 near-identical rooms (macOS, Apple, African Textile), 20 → 17 unique combinations", descriptionZh: "去重房间：移除 3 间近似克隆房（macOS、Apple、African Textile），20→17 间各不相同的组合" },
+      { type: "added", description: "Announcement banner for version updates across all pages", descriptionZh: "全站版本更新公告横幅" },
+    ],
+  },
+  {
     version: "0.15.0",
     date: "2026-04-15",
     title: "Playground Revamp",

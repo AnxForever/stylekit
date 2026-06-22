@@ -104,7 +104,7 @@ export function GlassmorphismRoom({ className, showHeader = true }: RoomProps) {
       onPointerMove={onStageMove}
       onPointerLeave={onStageLeave}
       className={cn(
-        "relative h-[440px] w-full overflow-hidden border border-white/10 motion-safe:pointer-fine:cursor-none [&_*]:motion-safe:pointer-fine:cursor-none",
+        "relative h-[440px] w-full overflow-hidden border border-white/10",
         className,
       )}
       style={{
