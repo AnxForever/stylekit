@@ -16,11 +16,9 @@ export function AnnouncementBanner() {
     if (!latest) return;
     try {
       const dismissed = localStorage.getItem(STORAGE_KEY);
-      if (dismissed !== latest.version) {
-        setVisible(true);
-      }
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- reading localStorage on mount
+      if (dismissed !== latest.version) setVisible(true);
     } catch {
-      // localStorage unavailable, always show
       setVisible(true);
     }
   }, [latest]);
