@@ -1,5 +1,6 @@
 import { buildStyleCopyIdentity } from "./style-copy-identity";
 import type { Locale } from "@/lib/i18n/translations";
+import { buildSlopChecklist, NEGATIVE_PREFIX_RE } from "./slop-checklist";
 
 export interface PromptPairInput {
   styleName: string;
@@ -13,6 +14,15 @@ export interface PromptPairInput {
   dontListEn?: string[];
   keywords: string[];
   keywordsEn?: string[];
+}
+
+export interface PromptContext {
+  /** What the user is building: landing page, dashboard, app, or other */
+  projectType: string;
+  /** 3-word brand personality, e.g. "专业、温暖、极简" */
+  brandPersonality: string;
+  /** What this should NOT look like, e.g. "不要 Material Design，不要紫色" */
+  antiReferences: string;
 }
 
 export interface PromptPairContent {
@@ -151,6 +161,53 @@ function resolveHardRuleSource(input: PromptPairInput, locale: Locale): string {
   return buildEnglishHardRules(input);
 }
 
+function buildContextSection(context: PromptContext, locale: Locale): string {
+  const lines: string[] = [];
+  lines.push(locale === "zh" ? "## 项目上下文" : "## Project Context");
+
+  if (context.projectType) {
+    const label = locale === "zh" ? "项目类型" : "Project type";
+    lines.push(`- ${label}: ${context.projectType}`);
+  }
+  if (context.brandPersonality) {
+    const label = locale === "zh" ? "品牌调性" : "Brand personality";
+    lines.push(`- ${label}: ${context.brandPersonality}`);
+  }
+  if (context.antiReferences) {
+    const label = locale === "zh" ? "绝对不要" : "Anti-references";
+    lines.push(`- ${label}: ${context.antiReferences}`);
+  }
+
+  return lines.join("\n");
+}
+
+function buildAbsoluteBans(dontList: string[], locale: Locale, limit = 8): string {
+  const bans = dontList
+    .slice(0, limit)
+    .map((item) => item.trim())
+    .filter(Boolean);
+
+  if (bans.length === 0) return "";
+
+  const title =
+    locale === "zh"
+      ? "## 绝对禁止（匹配即拒绝）"
+      : "## Absolute Bans (Match and Refuse)";
+
+  const intro =
+    locale === "zh"
+      ? "以下模式一旦出现，视为风格违规——不找借口，直接重写。"
+      : "If any of the following patterns appear, it is a style violation — rewrite without exception.";
+
+  const items = bans.map((b) => {
+    // Strip leading negative markers to avoid double negation like "禁止 不要..."
+    const clean = b.replace(NEGATIVE_PREFIX_RE, "").trim();
+    return `- ${clean}`;
+  }).join("\n");
+
+  return `${title}\n\n${intro}\n\n${items}`;
+}
+
 const hardPromptText = {
   zh: {
     title: "# Hard Prompt",
@@ -195,7 +252,11 @@ const softPromptText = {
   },
 } as const;
 
-export function buildHardPrompt(input: PromptPairInput, locale: Locale = "zh"): string {
+export function buildHardPrompt(
+  input: PromptPairInput,
+  locale: Locale = "zh",
+  context?: PromptContext
+): string {
   const identity = buildStyleCopyIdentity({
     styleName: input.styleName,
     styleSlug: input.styleSlug,
@@ -203,56 +264,94 @@ export function buildHardPrompt(input: PromptPairInput, locale: Locale = "zh"): 
   const sourceRules = resolveHardRuleSource(input, locale);
   const text = hardPromptText[locale];
 
-  return `${identity}
+  // Only include bans/checklist derived from dontList when the language
+  // matches the locale (avoid injecting Chinese into English prompts).
+  const dontForLocale =
+    locale === "en"
+      ? input.dontListEn && input.dontListEn.length > 0
+        ? input.dontListEn
+        : []
+      : input.dontList;
 
-${text.title}
+  const contextBlock = context ? buildContextSection(context, locale) : "";
+  const bansBlock = buildAbsoluteBans(dontForLocale, locale);
+  const checklistBlock = buildSlopChecklist({
+    dontList: dontForLocale,
+    locale: locale === "en" ? "en" : "zh",
+  });
 
-${text.intro}
+  const parts = [
+    identity,
+    contextBlock,
+    text.title,
+    text.intro,
+    text.requirementsTitle,
+    text.requirements.map((r) => `- ${r}`).join("\n"),
+    "## Style Rules",
+    sourceRules,
+    bansBlock,
+    checklistBlock,
+  ];
 
-${text.requirementsTitle}
-${text.requirements.map((r) => `- ${r}`).join("\n")}
-
-## Style Rules
-${sourceRules}`;
+  return parts.filter(Boolean).join("\n\n");
 }
 
-export function buildSoftPrompt(input: PromptPairInput, locale: Locale = "zh"): string {
+export function buildSoftPrompt(
+  input: PromptPairInput,
+  locale: Locale = "zh",
+  context?: PromptContext
+): string {
   const identity = buildStyleCopyIdentity({
     styleName: input.styleName,
     styleSlug: input.styleSlug,
   });
 
   const doSource = locale === "en" && input.doListEn && input.doListEn.length > 0 ? input.doListEn : input.doList;
+  // For soft prompt, always merge context anti-refs — they are user-provided
+  // and language-appropriate. Base dontSource follows normal locale fallback.
   const dontSource =
     locale === "en" && input.dontListEn && input.dontListEn.length > 0 ? input.dontListEn : input.dontList;
 
   const keywords = resolvePromptKeywords(input, locale, 6);
   const dos = pickUnique(doSource, 4);
-  const donts = pickUnique(dontSource, 3);
   const text = softPromptText[locale];
 
-  return `${identity}
+  // Merge anti-references from context into the dont list
+  const contextAntiRefs = context?.antiReferences
+    ? context.antiReferences
+        .split(/[,，、;；\n]+/)
+        .map((s) => s.trim())
+        .filter(Boolean)
+    : [];
+  const mergedDonts = pickUnique([...dontSource, ...contextAntiRefs], 6);
 
-${text.title}
+  const contextBlock = context ? buildContextSection(context, locale) : "";
 
-${text.intro}
+  const parts = [
+    identity,
+    contextBlock,
+    text.title,
+    text.intro,
+    "## Style Signals",
+    toBulletList(keywords),
+    "## Prefer",
+    toBulletList(dos),
+    "## Avoid",
+    toBulletList(mergedDonts),
+    text.guidanceTitle,
+    text.guidance.map((g) => `- ${g}`).join("\n"),
+  ];
 
-## Style Signals
-${toBulletList(keywords)}
-
-## Prefer
-${toBulletList(dos)}
-
-## Avoid
-${toBulletList(donts)}
-
-${text.guidanceTitle}
-${text.guidance.map((g) => `- ${g}`).join("\n")}`;
+  return parts.filter(Boolean).join("\n\n");
 }
 
-export function buildPromptPair(input: PromptPairInput, locale: Locale = "zh"): PromptPairContent {
+export function buildPromptPair(
+  input: PromptPairInput,
+  locale: Locale = "zh",
+  context?: PromptContext
+): PromptPairContent {
   return {
-    hardPrompt: buildHardPrompt(input, locale),
-    softPrompt: buildSoftPrompt(input, locale),
+    hardPrompt: buildHardPrompt(input, locale, context),
+    softPrompt: buildSoftPrompt(input, locale, context),
   };
 }

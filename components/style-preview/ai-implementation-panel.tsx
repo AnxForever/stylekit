@@ -2,10 +2,18 @@
 
 import { useMemo, useState } from "react";
 import type { KeyboardEvent } from "react";
-import { Copy, Download } from "lucide-react";
+import { Copy, Download, ChevronDown, ChevronRight } from "lucide-react";
 import { useI18n } from "@/lib/i18n/context";
 import { buildPromptPair, resolvePromptKeywords } from "@/lib/styles/prompt-pair";
+import type { PromptContext } from "@/lib/styles/prompt-pair";
 import { trackEvent } from "@/lib/analytics/events";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface AiImplementationPanelProps {
   styleName: string;
@@ -252,6 +260,24 @@ export function AiImplementationPanel({
   const [activeTab, setActiveTab] = useState<ImplementationTab>("hard");
   const [copiedTab, setCopiedTab] = useState<ImplementationTab | null>(null);
 
+  // Project context — lightweight interview before prompt generation
+  const [contextOpen, setContextOpen] = useState(false);
+  const [projectType, setProjectType] = useState("");
+  const [brandPersonality, setBrandPersonality] = useState("");
+  const [antiReferences, setAntiReferences] = useState("");
+
+  const promptContext: PromptContext | undefined = useMemo(() => {
+    const trimmed = {
+      projectType: projectType.trim(),
+      brandPersonality: brandPersonality.trim(),
+      antiReferences: antiReferences.trim(),
+    };
+    if (!trimmed.projectType && !trimmed.brandPersonality && !trimmed.antiReferences) {
+      return undefined;
+    }
+    return trimmed;
+  }, [projectType, brandPersonality, antiReferences]);
+
   const items = useMemo<ImplementationItem[]>(() => {
     const localizedDoList = locale === "en" && doListEn && doListEn.length > 0 ? doListEn : doList;
     const localizedDontList = locale === "en" && dontListEn && dontListEn.length > 0 ? dontListEn : dontList;
@@ -269,7 +295,7 @@ export function AiImplementationPanel({
       keywordsEn,
     };
     const localizedKeywords = resolvePromptKeywords(promptInput, locale, 8);
-    const prompts = buildPromptPair(promptInput, locale);
+    const prompts = buildPromptPair(promptInput, locale, promptContext);
     const hardPrompt = addPromptPurpose({
       locale,
       kind: "hard",
@@ -366,6 +392,7 @@ export function AiImplementationPanel({
     dontListEn,
     keywords,
     keywordsEn,
+    promptContext,
   ]);
 
   const activeItem = items.find((item) => item.id === activeTab) ?? items[0];
@@ -469,6 +496,110 @@ export function AiImplementationPanel({
             </button>
           );
         })}
+      </div>
+
+      {/* Project context — lightweight pre-prompt interview */}
+      <div className="border-b border-border">
+        <button
+          type="button"
+          onClick={() => setContextOpen((prev) => !prev)}
+          className="flex w-full items-center gap-2 px-4 py-3 text-sm text-muted hover:text-foreground transition-colors"
+          aria-expanded={contextOpen}
+        >
+          {contextOpen ? (
+            <ChevronDown className="h-4 w-4" aria-hidden="true" />
+          ) : (
+            <ChevronRight className="h-4 w-4" aria-hidden="true" />
+          )}
+          <span>
+            {locale === "zh"
+              ? "项目上下文（可选 — 让提示词更精准）"
+              : "Project Context (optional — makes prompts more precise)"}
+          </span>
+          {promptContext && (
+            <span className="ml-auto text-[10px] uppercase tracking-widest text-foreground/60">
+              {locale === "zh" ? "已设置" : "Set"}
+            </span>
+          )}
+        </button>
+        {contextOpen && (
+          <div className="px-4 pb-4">
+            <p className="mb-4 text-xs text-muted">
+              {locale === "zh"
+                ? "填 2-3 个信息，提示词会自动带上你的项目约束，AI 输出会更精准。不改也不影响使用。"
+                : "Fill in 2-3 details and the prompts will carry your project constraints. AI output will be more precise. Skipping is fine."}
+            </p>
+            <div className="grid gap-4 sm:grid-cols-3">
+              <div>
+                <label
+                  htmlFor="impeccable-project-type"
+                  className="mb-1.5 block text-xs font-medium text-foreground"
+                >
+                  {locale === "zh" ? "项目类型" : "Project type"}
+                </label>
+                <Select value={projectType} onValueChange={setProjectType}>
+                  <SelectTrigger id="impeccable-project-type" className="w-full">
+                    <SelectValue placeholder={locale === "zh" ? "选择" : "Select"} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value={locale === "zh" ? "着陆页" : "Landing page"}>
+                      {locale === "zh" ? "着陆页" : "Landing page"}
+                    </SelectItem>
+                    <SelectItem value={locale === "zh" ? "仪表盘" : "Dashboard"}>
+                      {locale === "zh" ? "仪表盘" : "Dashboard"}
+                    </SelectItem>
+                    <SelectItem value={locale === "zh" ? "工具 App" : "App / Tool"}>
+                      {locale === "zh" ? "工具 App" : "App / Tool"}
+                    </SelectItem>
+                    <SelectItem value={locale === "zh" ? "其他" : "Other"}>
+                      {locale === "zh" ? "其他" : "Other"}
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <label
+                  htmlFor="impeccable-brand-personality"
+                  className="mb-1.5 block text-xs font-medium text-foreground"
+                >
+                  {locale === "zh" ? "品牌调性（3个词）" : "Brand personality (3 words)"}
+                </label>
+                <input
+                  id="impeccable-brand-personality"
+                  type="text"
+                  value={brandPersonality}
+                  onChange={(e) => setBrandPersonality(e.target.value)}
+                  placeholder={
+                    locale === "zh"
+                      ? "专业、温暖、极简"
+                      : "Professional, warm, minimal"
+                  }
+                  className="w-full border border-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted/50 focus:border-foreground focus:outline-none"
+                />
+              </div>
+              <div>
+                <label
+                  htmlFor="impeccable-anti-references"
+                  className="mb-1.5 block text-xs font-medium text-foreground"
+                >
+                  {locale === "zh" ? "绝对不要什么" : "Anti-references"}
+                </label>
+                <input
+                  id="impeccable-anti-references"
+                  type="text"
+                  value={antiReferences}
+                  onChange={(e) => setAntiReferences(e.target.value)}
+                  placeholder={
+                    locale === "zh"
+                      ? "不要 Material、不要紫色"
+                      : "No Material Design, no purple"
+                  }
+                  className="w-full border border-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted/50 focus:border-foreground focus:outline-none"
+                />
+              </div>
+            </div>
+          </div>
+        )}
       </div>
 
       <div

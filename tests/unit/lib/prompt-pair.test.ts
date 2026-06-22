@@ -97,4 +97,94 @@ describe("prompt-pair builders", () => {
     expect(soft).toContain("- generous whitespace");
     expect(soft).not.toMatch(/[\u3400-\u9fff]/);
   });
+
+  describe("with PromptContext", () => {
+    const context = {
+      projectType: "Landing page",
+      brandPersonality: "Bold, warm, minimal",
+      antiReferences: "No Material Design, no purple gradients",
+    };
+
+    it("injects project context into hard prompt", () => {
+      const hard = buildHardPrompt(
+        { ...input, dontListEn: ["Avoid shadows"], styleName: "Editorial" },
+        "en",
+        context
+      );
+
+      expect(hard).toContain("## Project Context");
+      expect(hard).toContain("- Project type: Landing page");
+      expect(hard).toContain("- Brand personality: Bold, warm, minimal");
+      expect(hard).toContain("- Anti-references: No Material Design, no purple gradients");
+    });
+
+    it("injects anti-references into soft prompt Avoid section", () => {
+      const soft = buildSoftPrompt(
+        { ...input, styleName: "Editorial", dontListEn: ["Avoid shadows"] },
+        "en",
+        context
+      );
+
+      expect(soft).toContain("No Material Design");
+      expect(soft).toContain("no purple gradients");
+    });
+
+    it("appends absolute bans section to hard prompt", () => {
+      const hard = buildHardPrompt(
+        { ...input, dontListEn: ["Avoid shadows", "No rounded corners"], styleName: "Editorial" },
+        "en",
+        context
+      );
+
+      expect(hard).toContain("## Absolute Bans (Match and Refuse)");
+      expect(hard).toContain("- shadows");
+      expect(hard).toContain("- rounded corners");
+    });
+
+    it("appends self-check checklist to hard prompt", () => {
+      const hard = buildHardPrompt(
+        { ...input, dontListEn: ["Avoid shadows"], styleName: "Editorial" },
+        "en",
+        context
+      );
+
+      expect(hard).toContain("## Self-Check (Verify Before Shipping)");
+      expect(hard).toContain("- [ ] No purple-to-blue gradients");
+      expect(hard).toContain("- [ ] No overused fonts");
+      expect(hard).toContain("- [ ] No nested cards");
+    });
+  });
+
+  describe("without PromptContext (backward compatible)", () => {
+    it("does not include project context section", () => {
+      const hard = buildHardPrompt(
+        { ...input, dontListEn: ["Avoid shadows"], styleName: "Editorial" },
+        "en"
+      );
+
+      expect(hard).not.toContain("## Project Context");
+    });
+
+    it("still includes bans and checklist for English with dontListEn", () => {
+      const hard = buildHardPrompt(
+        { ...input, dontListEn: ["Avoid shadows"], styleName: "Editorial" },
+        "en"
+      );
+
+      expect(hard).toContain("## Absolute Bans (Match and Refuse)");
+      expect(hard).toContain("## Self-Check (Verify Before Shipping)");
+    });
+
+    it("skips bans when dontList has no matching locale data", () => {
+      const hard = buildHardPrompt(
+        { ...input, dontListEn: undefined, styleName: "Editorial" },
+        "en"
+      );
+
+      // Universal checklist still appears (always locale-appropriate)
+      expect(hard).toContain("## Self-Check (Verify Before Shipping)");
+      // But bans section should be absent \u2014 no English dont items to ban
+      expect(hard).not.toContain("## Absolute Bans");
+    });
+  });
 });
