@@ -175,7 +175,7 @@ export function EditorialRoom({ className, showHeader = true }: RoomProps) {
       onPointerEnter={onMove}
       onPointerLeave={onLeave}
       className={cn(
-        "relative h-[440px] w-full overflow-hidden border border-black/15 bg-[#fafaf7] motion-safe:pointer-fine:cursor-none [&_button]:cursor-pointer [&_a]:cursor-pointer",
+        "relative h-[440px] w-full overflow-hidden border border-black/15 bg-[#fafaf7]",
         className,
       )}
     >

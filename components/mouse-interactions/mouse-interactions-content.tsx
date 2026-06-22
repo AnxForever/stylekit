@@ -52,27 +52,23 @@ export function MouseInteractionsContent() {
 
   return (
     <div className="bg-background text-foreground">
-      <section className="relative overflow-hidden border-b border-border bg-zinc-950 text-white">
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute inset-0 opacity-60"
-          style={{
-            background:
-              "radial-gradient(circle at 18% 20%, rgba(103,232,249,0.14), transparent 42%), radial-gradient(circle at 82% 78%, rgba(167,139,250,0.16), transparent 46%)",
-          }}
-        />
-        <div className="relative mx-auto max-w-7xl px-6 py-16 md:px-12 md:py-20">
-          <p className="mb-5 font-mono text-xs uppercase tracking-[0.3em] text-cyan-200/80">
+      <section className="border-b border-border bg-white dark:bg-zinc-950">
+        <div className="mx-auto max-w-7xl px-6 py-16 md:px-12 md:py-24">
+          <p className="mb-5 font-mono text-[11px] uppercase tracking-[0.28em] text-muted">
             {t.eyebrow}
           </p>
-          <h1 className="max-w-4xl text-4xl leading-[1.04] md:text-6xl">{t.title}</h1>
-          <p className="mt-6 max-w-2xl text-base leading-7 text-zinc-300">
+          <h1 className="max-w-3xl font-serif text-4xl leading-[1.08] tracking-tight md:text-5xl lg:text-6xl">
+            {t.title}
+          </h1>
+          <p className="mt-6 max-w-xl text-base leading-7 text-muted">
             {t.description}
           </p>
-          <p className="mt-4 max-w-2xl text-sm text-zinc-400">{t.desktopHint}</p>
+          <p className="mt-3 max-w-xl text-sm text-muted/60">
+            {t.desktopHint}
+          </p>
           <a
             href="#rooms"
-            className="mt-10 inline-flex items-center gap-2 border border-white/20 px-5 py-3 text-sm font-medium transition-colors hover:bg-white hover:text-zinc-950"
+            className="mt-10 inline-flex items-center gap-2 border-b-2 border-foreground pb-1 text-sm font-medium transition-opacity hover:opacity-60"
           >
             {t.chooseRoom}
             <ArrowDown className="h-4 w-4" />
