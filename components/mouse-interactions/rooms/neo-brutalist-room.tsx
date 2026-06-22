@@ -233,7 +233,7 @@ export function NeoBrutalistRoom({ className, showHeader = true }: RoomProps) {
       onPointerMove={onStageMove}
       onPointerLeave={onStageLeave}
       className={cn(
-        "relative h-[440px] w-full overflow-hidden border-[3px] border-black bg-[#f3f1ea] motion-safe:pointer-fine:cursor-none [&_button]:cursor-pointer [&_a]:cursor-pointer",
+        "relative h-[440px] w-full overflow-hidden border-[3px] border-black bg-[#f3f1ea]",
         className,
       )}
       style={{
