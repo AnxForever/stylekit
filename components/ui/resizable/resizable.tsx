@@ -236,6 +236,28 @@ export function ResizableHandle({
   const [isDragging, setIsDragging] = React.useState(false);
   const handleRef = React.useRef<HTMLDivElement>(null);
 
+  // Convert a keyboard nudge into a resize delta. Each arrow press moves
+  // the handle by ~2% of the container — small enough to feel precise,
+  // large enough to be perceptible.
+  const handleKeyDown = React.useCallback(
+    (e: React.KeyboardEvent) => {
+      if (disabled || !context || !id) return;
+      let delta = 0;
+      if (context.direction === "horizontal") {
+        if (e.key === "ArrowLeft") delta = -2;
+        else if (e.key === "ArrowRight") delta = 2;
+      } else {
+        if (e.key === "ArrowUp") delta = -2;
+        else if (e.key === "ArrowDown") delta = 2;
+      }
+      if (delta !== 0) {
+        e.preventDefault();
+        context.resize(`${id}-handle`, delta);
+      }
+    },
+    [context, id, disabled]
+  );
+
   const handleMouseDown = React.useCallback(
     (e: React.MouseEvent) => {
       if (disabled || !context || !id) return;
@@ -289,13 +311,21 @@ export function ResizableHandle({
         isHorizontal ? "w-1 cursor-col-resize" : "h-1 cursor-row-resize",
         isDragging && "bg-primary/30",
         disabled && "cursor-not-allowed opacity-50",
+        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-1",
         className
       )}
       onMouseDown={handleMouseDown}
+      onKeyDown={handleKeyDown}
       data-resize-handle
       data-direction={direction}
       role="separator"
       aria-orientation={isHorizontal ? "vertical" : "horizontal"}
+      aria-valuenow={id ? context.getPanelSize(id) : undefined}
+      aria-valuemin={0}
+      aria-valuemax={100}
+      aria-label={
+        isHorizontal ? "Resize panels horizontally" : "Resize panels vertically"
+      }
       tabIndex={disabled ? -1 : 0}
     >
       {withHandle && (
