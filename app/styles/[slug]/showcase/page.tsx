@@ -1,11 +1,9 @@
 import { notFound } from "next/navigation";
 import dynamicImport from "next/dynamic";
 import { resolveStyleBySlug } from "@/lib/styles/community-runtime";
-import { getSiteBaseUrl } from "@/lib/site-url";
+import { buildShowcaseMetadata } from "./_metadata";
 
 export const dynamic = "force-static";
-
-const BASE_URL = getSiteBaseUrl();
 
 export async function generateMetadata({
   params,
@@ -13,26 +11,7 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const resolved = await resolveStyleBySlug(slug);
-  if (!resolved) return { title: "Showcase Not Found" };
-  const style = resolved.style;
-  const description = `Live demonstration of ${style.nameEn} design style with interactive components, color palettes, and typography.`;
-  return {
-    title: `${style.nameEn} Showcase`,
-    description,
-    keywords: [style.nameEn, "showcase", "design style", "UI components", "live demo"],
-    openGraph: {
-      title: `${style.nameEn} Showcase — StyleKit`,
-      description,
-      siteName: "StyleKit",
-      type: "website",
-    },
-    twitter: {
-      card: "summary_large_image" as const,
-      title: `${style.nameEn} Showcase — StyleKit`,
-      description,
-    },
-  };
+  return buildShowcaseMetadata(slug, "en");
 }
 
 const ShowcaseContent = dynamicImport(() => import("./_content"), {
