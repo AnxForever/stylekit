@@ -35,15 +35,21 @@ PaginationItem.displayName = "PaginationItem";
 
 type PaginationLinkProps = {
   isActive?: boolean;
-} & Pick<React.ComponentProps<"a">, "href"> &
-  React.ComponentProps<"button">;
+} & Omit<React.ComponentProps<"a">, "href"> & {
+    href?: string;
+  };
 
+// Pagination is conceptually navigation between URLs, so render as an
+// anchor. The previous implementation rendered a <button> while accepting
+// href, which silently dropped the href on render — the only caller
+// (app/components/sections/pagination-section.tsx) was passing href="#"
+// expecting it to navigate. Now the href actually works.
 const PaginationLink = ({
   className,
   isActive,
   ...props
 }: PaginationLinkProps) => (
-  <button
+  <a
     aria-current={isActive ? "page" : undefined}
     className={cn(
       buttonVariants({
