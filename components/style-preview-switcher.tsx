@@ -3,15 +3,19 @@
 import { useEffect, useId, useState, startTransition } from "react";
 import Link from "next/link";
 import { useI18n } from "@/lib/i18n/context";
+import type { TranslationKey } from "@/lib/i18n/translations";
 import { getAllStylesMeta } from "@/lib/styles/meta";
 import { ChevronDown } from "lucide-react";
 
 type ComponentType = "button" | "card" | "input";
 
-const componentLabels: Record<ComponentType, string> = {
-  button: "按钮",
-  card: "卡片",
-  input: "输入框",
+// Translation keys for the three preview rows. Resolved through
+// useI18n in the component so English / Chinese users see the
+// matching label and translators only need to edit translations.ts.
+const componentLabelKeys: Record<ComponentType, TranslationKey> = {
+  button: "previewSwitcher.component.button",
+  card: "previewSwitcher.component.card",
+  input: "previewSwitcher.component.input",
 };
 
 type RenderStyleComponentFn = (
@@ -38,7 +42,7 @@ export function StylePreviewSwitcher() {
   const [selectedSlug, setSelectedSlug] = useState<string | null>(null);
   const [isOpen, setIsOpen] = useState(false);
   const [renderStyleComponent, setRenderStyleComponent] = useState<RenderStyleComponentFn | null>(null);
-  const { locale } = useI18n();
+  const { t, locale } = useI18n();
 
   const selectedStyle = styles.find((s) => s.slug === selectedSlug);
   const isPreviewLoading = Boolean(selectedSlug) && !renderStyleComponent;
@@ -70,12 +74,10 @@ export function StylePreviewSwitcher() {
       <div className="px-6 py-4 border-b border-border flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <p id={labelId} className="text-xs tracking-widest uppercase text-muted mb-1">
-            {locale === "zh" ? "风格预览" : "Style Preview"}
+            {t("previewSwitcher.title")}
           </p>
           <p className="text-sm text-muted">
-            {locale === "zh"
-              ? "查看这些组件在不同风格下的样式"
-              : "See how these components look in different styles"}
+            {t("previewSwitcher.description")}
           </p>
         </div>
 
@@ -94,9 +96,7 @@ export function StylePreviewSwitcher() {
             <span>
               {selectedStyle
                 ? selectedStyle.name
-                : locale === "zh"
-                  ? "选择风格..."
-                  : "Select style..."}
+                : t("previewSwitcher.placeholder")}
             </span>
             <ChevronDown
               className={`w-4 h-4 text-muted transition-transform ml-auto ${isOpen ? "rotate-180" : ""}`}
@@ -145,18 +145,18 @@ export function StylePreviewSwitcher() {
         <div className="p-6">
           {isPreviewLoading || !renderStyleComponent ? (
             <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-              {(Object.keys(componentLabels) as ComponentType[]).map((comp) => (
+              {(Object.keys(componentLabelKeys) as ComponentType[]).map((comp) => (
                 <div key={comp}>
-                  <p className="text-xs text-muted mb-3">{componentLabels[comp]}</p>
+                  <p className="text-xs text-muted mb-3">{t(componentLabelKeys[comp])}</p>
                   <div className="min-h-[120px] rounded-lg border border-border bg-background animate-pulse" />
                 </div>
               ))}
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {(Object.keys(componentLabels) as ComponentType[]).map((comp) => (
+              {(Object.keys(componentLabelKeys) as ComponentType[]).map((comp) => (
                 <div key={comp}>
-                  <p className="text-xs text-muted mb-3">{componentLabels[comp]}</p>
+                  <p className="text-xs text-muted mb-3">{t(componentLabelKeys[comp])}</p>
                   <div className="p-4 bg-background rounded-lg border border-border flex items-center justify-center min-h-[120px]">
                     {renderStyleComponent(selectedSlug, comp)}
                   </div>
@@ -169,24 +169,20 @@ export function StylePreviewSwitcher() {
               href={`/styles/${selectedSlug}`}
               className="text-sm text-muted hover:text-foreground transition-colors"
             >
-              {locale === "zh"
-                ? `查看 ${selectedStyle?.name} 完整文档`
-                : `View ${selectedStyle?.name} documentation`}{" "}
+              {t("previewSwitcher.viewDocs").replace("{name}", selectedStyle?.name ?? "")}{" "}
               →
             </Link>
             <Link
               href="/styles"
               className="text-sm text-muted hover:text-foreground transition-colors"
             >
-              {locale === "zh" ? "对比其他风格" : "Browse more styles"} →
+              {t("previewSwitcher.browseMore")} →
             </Link>
           </div>
         </div>
       ) : (
         <div className="p-6 text-center text-sm text-muted">
-          {locale === "zh"
-            ? "选择一个风格查看组件预览"
-            : "Select a style to preview components"}
+          {t("previewSwitcher.empty")}
         </div>
       )}
     </div>
