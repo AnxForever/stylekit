@@ -12,4 +12,11 @@ export const NEU_SHADOWS = {
   pressedMd: "shadow-[inset_6px_6px_12px_#b8bcc2,inset_-6px_-6px_12px_#ffffff]",
   hover: "shadow-[4px_4px_8px_#b8bcc2,-4px_-4px_8px_#ffffff]",
   flat: "shadow-none",
-};
+  // Prefixed variants — keep these as complete static class strings (including
+  // the hover:/active: prefix) so Tailwind's static scanner can detect them.
+  // Concatenating "hover:" + NEU_SHADOWS.hover at runtime does NOT work because
+  // the combined class string never appears as a literal in the source.
+  raisedHover: "hover:shadow-[4px_4px_8px_#b8bcc2,-4px_-4px_8px_#ffffff]",
+  raisedActive:
+    "active:shadow-[inset_4px_4px_8px_#b8bcc2,inset_-4px_-4px_8px_#ffffff]",
+} as const;

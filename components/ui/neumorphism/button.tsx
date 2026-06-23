@@ -18,8 +18,8 @@ export const NeuButton = React.forwardRef<HTMLButtonElement, NeuButtonProps>(
     const baseStyles = "bg-[#e0e5ec] font-medium rounded-xl transition-[box-shadow] duration-200 focus:outline-none";
 
     const variantStyles = {
-      default: `text-gray-700 ${NEU_SHADOWS.raised} hover:${NEU_SHADOWS.hover} active:${NEU_SHADOWS.pressed}`,
-      primary: `bg-[#6d5dfc] text-white ${NEU_SHADOWS.raised} hover:${NEU_SHADOWS.hover} active:shadow-[inset_4px_4px_8px_rgba(0,0,0,0.2)]`,
+      default: `text-gray-700 ${NEU_SHADOWS.raised} ${NEU_SHADOWS.raisedHover} ${NEU_SHADOWS.raisedActive}`,
+      primary: `bg-[#6d5dfc] text-white ${NEU_SHADOWS.raised} ${NEU_SHADOWS.raisedHover} active:shadow-[inset_4px_4px_8px_rgba(0,0,0,0.2)]`,
       flat: "text-gray-700 hover:bg-[#d1d9e6]",
     };
 
@@ -78,7 +78,7 @@ export const NeuIconButton = React.forwardRef<HTMLButtonElement, NeuIconButtonPr
     };
 
     const variantStyles = {
-      raised: `${NEU_SHADOWS.raised} hover:${NEU_SHADOWS.hover} active:${NEU_SHADOWS.pressed}`,
+      raised: `${NEU_SHADOWS.raised} ${NEU_SHADOWS.raisedHover} ${NEU_SHADOWS.raisedActive}`,
       flat: "hover:bg-[#d1d9e6]",
     };
 
