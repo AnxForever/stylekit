@@ -23,14 +23,17 @@ export const BrutalInput = React.forwardRef<HTMLInputElement, BrutalInputProps>(
     return (
       <input
         ref={ref}
+        aria-invalid={error || undefined}
         className={cn(
           "w-full font-mono",
           sizes[inputSize],
           "border-2 md:border-4 border-black bg-white",
           "focus:outline-none focus:ring-0",
+          // focus-visible (keyboard only) so mouse clicks don't trigger
+          // the heavy brutal shadow as a side-effect.
           error
-            ? "focus:shadow-[4px_4px_0px_0px_#ff006e] md:focus:shadow-[8px_8px_0px_0px_#ff006e] border-brutal-pink"
-            : "focus:shadow-[4px_4px_0px_0px_#00d9ff] md:focus:shadow-[8px_8px_0px_0px_#00d9ff]",
+            ? "focus-visible:shadow-[4px_4px_0px_0px_#ff006e] md:focus-visible:shadow-[8px_8px_0px_0px_#ff006e] border-brutal-pink"
+            : "focus-visible:shadow-[4px_4px_0px_0px_#00d9ff] md:focus-visible:shadow-[8px_8px_0px_0px_#00d9ff]",
           "transition-shadow placeholder:text-gray-400",
           className
         )}
@@ -54,14 +57,15 @@ export const BrutalTextarea = React.forwardRef<HTMLTextAreaElement, BrutalTextar
     return (
       <textarea
         ref={ref}
+        aria-invalid={error || undefined}
         className={cn(
           "w-full py-3 md:py-4 px-4 md:px-6",
           "text-base md:text-xl font-mono",
           "border-2 md:border-4 border-black bg-white",
           "focus:outline-none focus:ring-0",
           error
-            ? "focus:shadow-[4px_4px_0px_0px_#ff006e] md:focus:shadow-[8px_8px_0px_0px_#ff006e] border-brutal-pink"
-            : "focus:shadow-[4px_4px_0px_0px_#00d9ff] md:focus:shadow-[8px_8px_0px_0px_#00d9ff]",
+            ? "focus-visible:shadow-[4px_4px_0px_0px_#ff006e] md:focus-visible:shadow-[8px_8px_0px_0px_#ff006e] border-brutal-pink"
+            : "focus-visible:shadow-[4px_4px_0px_0px_#00d9ff] md:focus-visible:shadow-[8px_8px_0px_0px_#00d9ff]",
           "transition-shadow placeholder:text-gray-400 resize-none",
           className
         )}
@@ -92,7 +96,7 @@ export const BrutalSelect = React.forwardRef<HTMLSelectElement, BrutalSelectProp
             "text-base md:text-xl font-mono",
             "border-2 md:border-4 border-black bg-white",
             "focus:outline-none focus:ring-0",
-            "focus:shadow-[4px_4px_0px_0px_#00d9ff] md:focus:shadow-[8px_8px_0px_0px_#00d9ff]",
+            "focus-visible:shadow-[4px_4px_0px_0px_#00d9ff] md:focus-visible:shadow-[8px_8px_0px_0px_#00d9ff]",
             "transition-shadow appearance-none cursor-pointer",
             className
           )}
