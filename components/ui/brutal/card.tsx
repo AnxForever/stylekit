@@ -12,12 +12,17 @@ export interface BrutalCardProps extends React.HTMLAttributes<HTMLDivElement> {
 
 export const BrutalCard = React.forwardRef<HTMLDivElement, BrutalCardProps>(
   ({ className, hoverColor = "pink", children, ...props }, ref) => {
+    // Reference the semantic brutal shadow tokens defined in
+    // app/globals.css @theme block. Using a token instead of an
+    // arbitrary-value `shadow-[…#ff006e]` means future palette
+    // changes only need to update the CSS variable, not every
+    // card / button / input site.
     const hoverColors = {
-      pink: "hover:shadow-[6px_6px_0px_0px_#ff006e] md:hover:shadow-[12px_12px_0px_0px_#ff006e]",
-      green: "hover:shadow-[6px_6px_0px_0px_#ccff00] md:hover:shadow-[12px_12px_0px_0px_#ccff00]",
-      blue: "hover:shadow-[6px_6px_0px_0px_#00d9ff] md:hover:shadow-[12px_12px_0px_0px_#00d9ff]",
-      yellow: "hover:shadow-[6px_6px_0px_0px_#ff9500] md:hover:shadow-[12px_12px_0px_0px_#ff9500]",
-      orange: "hover:shadow-[6px_6px_0px_0px_#ff6b00] md:hover:shadow-[12px_12px_0px_0px_#ff6b00]",
+      pink: "hover:shadow-brutal-pink-card md:hover:shadow-brutal-pink-card-lg",
+      green: "hover:shadow-brutal-green-card md:hover:shadow-brutal-green-card-lg",
+      blue: "hover:shadow-brutal-blue-card md:hover:shadow-brutal-blue-card-lg",
+      yellow: "hover:shadow-brutal-yellow-card md:hover:shadow-brutal-yellow-card-lg",
+      orange: "hover:shadow-brutal-orange-card md:hover:shadow-brutal-orange-card-lg",
       none: "",
     };
 
@@ -26,7 +31,7 @@ export const BrutalCard = React.forwardRef<HTMLDivElement, BrutalCardProps>(
         ref={ref}
         className={cn(
           "bg-white p-4 md:p-8 border-2 md:border-4 border-black",
-          "shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] md:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]",
+          "shadow-brutal-black md:shadow-brutal-black-lg",
           hoverColors[hoverColor],
           hoverColor !== "none" && "hover:-translate-y-1 md:hover:-translate-y-2",
           "transition-[box-shadow,transform] duration-300",

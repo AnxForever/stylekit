@@ -30,10 +30,11 @@ export const BrutalInput = React.forwardRef<HTMLInputElement, BrutalInputProps>(
           "border-2 md:border-4 border-black bg-white",
           "focus:outline-none focus:ring-0",
           // focus-visible (keyboard only) so mouse clicks don't trigger
-          // the heavy brutal shadow as a side-effect.
+          // the heavy brutal shadow as a side-effect. Shadow colors
+          // come from the brutal-* tokens defined in app/globals.css.
           error
-            ? "focus-visible:shadow-[4px_4px_0px_0px_#ff006e] md:focus-visible:shadow-[8px_8px_0px_0px_#ff006e] border-brutal-pink"
-            : "focus-visible:shadow-[4px_4px_0px_0px_#00d9ff] md:focus-visible:shadow-[8px_8px_0px_0px_#00d9ff]",
+            ? "focus-visible:shadow-brutal-pink md:focus-visible:shadow-brutal-pink-lg border-brutal-pink"
+            : "focus-visible:shadow-brutal-blue md:focus-visible:shadow-brutal-blue-lg",
           "transition-shadow placeholder:text-gray-400",
           className
         )}
@@ -64,8 +65,8 @@ export const BrutalTextarea = React.forwardRef<HTMLTextAreaElement, BrutalTextar
           "border-2 md:border-4 border-black bg-white",
           "focus:outline-none focus:ring-0",
           error
-            ? "focus-visible:shadow-[4px_4px_0px_0px_#ff006e] md:focus-visible:shadow-[8px_8px_0px_0px_#ff006e] border-brutal-pink"
-            : "focus-visible:shadow-[4px_4px_0px_0px_#00d9ff] md:focus-visible:shadow-[8px_8px_0px_0px_#00d9ff]",
+            ? "focus-visible:shadow-brutal-pink md:focus-visible:shadow-brutal-pink-lg border-brutal-pink"
+            : "focus-visible:shadow-brutal-blue md:focus-visible:shadow-brutal-blue-lg",
           "transition-shadow placeholder:text-gray-400 resize-none",
           className
         )}
@@ -96,7 +97,7 @@ export const BrutalSelect = React.forwardRef<HTMLSelectElement, BrutalSelectProp
             "text-base md:text-xl font-mono",
             "border-2 md:border-4 border-black bg-white",
             "focus:outline-none focus:ring-0",
-            "focus-visible:shadow-[4px_4px_0px_0px_#00d9ff] md:focus-visible:shadow-[8px_8px_0px_0px_#00d9ff]",
+            "focus-visible:shadow-brutal-blue md:focus-visible:shadow-brutal-blue-lg",
             "transition-shadow appearance-none cursor-pointer",
             className
           )}
