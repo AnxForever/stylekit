@@ -653,9 +653,6 @@ export function SubmissionsReview() {
 
                   {sub.status === "approved" ? (
                     <div className="space-y-3">
-                      <p className="text-xs leading-5 text-muted">
-                        Live style. Codebase registration archives generated files in local development.
-                      </p>
                       {!canRegisterToCodebase ? (
                         <AdminBadge>Registration disabled</AdminBadge>
                       ) : registeringId === sub.id && registerResult ? (
@@ -695,15 +692,20 @@ export function SubmissionsReview() {
                           </AdminButton>
                         </AdminPanel>
                       ) : (
-                        <AdminButton
-                          disabled={registeringId === sub.id}
-                          onClick={() => handleRegister(sub.id)}
-                          tone="primary"
-                          className="w-full"
-                        >
-                          <Archive className="h-4 w-4" />
-                          {registeringId === sub.id ? "Registering..." : "Register to codebase"}
-                        </AdminButton>
+                        <>
+                          <p className="text-xs leading-5 text-muted">
+                            Live style. Codebase registration archives generated files in local development.
+                          </p>
+                          <AdminButton
+                            disabled={registeringId === sub.id}
+                            onClick={() => handleRegister(sub.id)}
+                            tone="primary"
+                            className="w-full"
+                          >
+                            <Archive className="h-4 w-4" />
+                            {registeringId === sub.id ? "Registering..." : "Register to codebase"}
+                          </AdminButton>
+                        </>
                       )}
                     </div>
                   ) : null}
