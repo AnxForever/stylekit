@@ -88,7 +88,7 @@ export function GradientsContent() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-6 md:px-12 py-12 md:py-16">
+    <div className="max-w-7xl mx-auto px-6 md:px-12 py-12 md:py-16" data-cursor-aura="off">
       {/* Header */}
       <div className="mb-12">
         <p className="text-xs uppercase tracking-[0.16em] text-muted mb-3">
