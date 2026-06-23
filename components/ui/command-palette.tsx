@@ -102,6 +102,10 @@ export function CommandPalette() {
     const handleKeyDown = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key === "k") {
         e.preventDefault();
+        // Reset transient state alongside re-opening so the
+        // previous query / selection don't bleed into the new session.
+        setQuery("");
+        setSelectedIndex(0);
         setOpen(true);
       }
     };
@@ -110,15 +114,9 @@ export function CommandPalette() {
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, []);
 
-  // Reset on open
-  React.useEffect(() => {
-    if (open) {
-      setQuery("");
-      setSelectedIndex(0);
-      // Focus input after dialog animation
-      setTimeout(() => inputRef.current?.focus(), 50);
-    }
-  }, [open]);
+  // Click-outside to close is handled by Radix Dialog (the Overlay
+  // triggers onOpenChange(false) on outside pointerdown). No custom
+  // global listener needed — and any added one would need cleanup.
 
   // Keyboard navigation within dialog
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -171,6 +169,13 @@ export function CommandPalette() {
         <Dialog.Content
           className="fixed left-1/2 top-[20%] z-50 w-full max-w-lg -translate-x-1/2 bg-background border border-border shadow-2xl rounded-lg overflow-hidden data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%]"
           onKeyDown={handleKeyDown}
+          onOpenAutoFocus={(e) => {
+            // Take over focus management so we can target the search
+            // input directly (Radix's default would focus the first
+            // tabbable element, which is the close-X).
+            e.preventDefault();
+            inputRef.current?.focus();
+          }}
         >
           {/* Search Input */}
           <div className="flex items-center border-b border-border px-4">
