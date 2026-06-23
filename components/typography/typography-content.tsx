@@ -33,7 +33,7 @@ export function TypographyContent() {
           p.name.toLowerCase().includes(query) ||
           p.nameZh.includes(query) ||
           p.tags.some((tag) => tag.toLowerCase().includes(query)) ||
-          p.mood.some((m) => m.toLowerCase().includes(query))
+          p.mood.some((m) => m.toLowerCase().includes(query)),
       );
     }
 
@@ -78,7 +78,6 @@ export function TypographyContent() {
 
       {/* Filters */}
       <div className="mb-8 space-y-4">
-        {/* Search */}
         <div className="relative max-w-md">
           <input
             type="text"
@@ -100,7 +99,6 @@ export function TypographyContent() {
           )}
         </div>
 
-        {/* Category Filter */}
         <div className="flex flex-wrap gap-2">
           <button
             onClick={() => setSelectedCategory("all")}
@@ -128,18 +126,16 @@ export function TypographyContent() {
         </div>
       </div>
 
-      {/* Results Count */}
       <p className="text-sm text-muted mb-6">
         {t("typography.showing")} {filteredPairings.length} {t("typography.pairings")}
       </p>
 
-      {/* Typography Grid */}
       {filteredPairings.length === 0 ? (
         <div className="text-center py-16">
           <p className="text-muted">{t("typography.noResults")}</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {filteredPairings.map((pairing) => (
             <TypographyCard
               key={pairing.id}
@@ -162,97 +158,138 @@ interface TypographyCardProps {
   locale: "zh" | "en";
 }
 
+const CATEGORY_LABEL: Record<string, string> = {
+  classic: "Classic",
+  modern: "Modern",
+  playful: "Playful",
+  editorial: "Editorial",
+  technical: "Technical",
+  elegant: "Elegant",
+};
+
 function TypographyCard({ pairing, copied, onCopy, locale }: TypographyCardProps) {
-  const [copyMode, setCopyMode] = useState<"css" | "tailwind">("css");
+  const [scale, setScale] = useState(1);
+
+  const headingFamily = `'${pairing.heading.family}', serif`;
+  const bodyFamily = `'${pairing.body.family}', sans-serif`;
 
   return (
-    <div className="group border border-border rounded-lg overflow-hidden bg-background hover:border-foreground/50 transition-colors">
-      {/* Font Preview */}
-      <div className="p-6 space-y-4 bg-gradient-to-br from-background to-muted/10">
-        {/* Heading Sample */}
-        <div>
-          <p className="text-xs text-muted mb-2">{pairing.heading.family}</p>
-          <h3
-            className="text-3xl tracking-tight"
-            style={{
-              fontFamily: `'${pairing.heading.family}', serif`,
-              fontWeight: pairing.heading.weight,
-            }}
+    <div className="group border border-border rounded-xl overflow-hidden bg-background hover:border-foreground/40 hover:shadow-lg transition-all">
+      {/* Full type-ramp preview (scales with slider) */}
+      <div
+        className="px-6 pt-6 pb-5 bg-gradient-to-br from-background to-muted/20"
+        style={{ fontSize: `${16 * scale}px` }}
+      >
+        <div className="flex items-center justify-between mb-4">
+          <span
+            className="text-[0.7rem] uppercase tracking-[0.14em] text-muted"
+            style={{ fontFamily: bodyFamily }}
           >
-            The Quick Brown Fox
-          </h3>
+            Heading · {pairing.heading.weight}
+          </span>
+          <span className="text-[0.7rem] text-muted/70">{CATEGORY_LABEL[pairing.category]}</span>
         </div>
 
-        {/* Body Sample */}
-        <div>
-          <p className="text-xs text-muted mb-2">{pairing.body.family}</p>
-          <p
-            className="text-base leading-relaxed"
-            style={{
-              fontFamily: `'${pairing.body.family}', sans-serif`,
-              fontWeight: pairing.body.weight,
-            }}
+        <h3
+          className="tracking-tight mb-2"
+          style={{ fontFamily: headingFamily, fontWeight: pairing.heading.weight, fontSize: "2em", lineHeight: 1.1 }}
+        >
+          Design Systems
+        </h3>
+        <h4
+          className="mb-4 text-muted"
+          style={{ fontFamily: headingFamily, fontWeight: pairing.heading.weight, fontSize: "1.2em", lineHeight: 1.2 }}
+        >
+          Subheading &amp; section title
+        </h4>
+
+        <p
+          className="leading-relaxed mb-4 text-muted"
+          style={{ fontFamily: bodyFamily, fontWeight: pairing.body.weight, fontSize: "0.92em", color: "hsl(var(--muted))" }}
+        >
+          The quick brown fox jumps over the lazy dog. A realistic paragraph shows how the
+          body face reads in long-form copy at a comfortable measure.
+        </p>
+
+        <div className="flex items-center gap-3 flex-wrap">
+          <span
+            className="tabular-nums"
+            style={{ fontFamily: bodyFamily, fontWeight: 600, fontSize: "1.5em" }}
           >
-            The quick brown fox jumps over the lazy dog. Pack my box with five dozen liquor jugs.
-          </p>
+            1,234.56
+          </span>
+          <span
+            className="inline-flex items-center rounded-md px-2 py-0.5 text-[0.8em] bg-foreground text-background"
+            style={{ fontFamily: bodyFamily }}
+          >
+            Action
+          </span>
+          <span
+            className="text-[0.75em] text-muted border border-border rounded px-1.5 py-0.5"
+            style={{ fontFamily: bodyFamily }}
+          >
+            Label
+          </span>
         </div>
       </div>
 
-      {/* Card Content */}
+      {/* Size slider (interactive) */}
+      <div className="px-6 py-3 border-y border-border flex items-center gap-3 bg-muted/10">
+        <span className="text-xs text-muted whitespace-nowrap">Aa</span>
+        <input
+          type="range"
+          min={0.8}
+          max={1.4}
+          step={0.05}
+          value={scale}
+          onChange={(e) => setScale(Number(e.target.value))}
+          className="flex-1 accent-foreground"
+          aria-label="Preview font scale"
+        />
+        <span className="text-xs tabular-nums text-muted whitespace-nowrap w-10 text-right">
+          {Math.round(scale * 100)}%
+        </span>
+      </div>
+
+      {/* Info + copy */}
       <div className="p-4 space-y-3">
-        {/* Name */}
-        <div>
-          <h4 className="font-semibold text-sm">
-            {locale === "zh" ? pairing.nameZh : pairing.name}
-          </h4>
-          <p className="text-xs text-muted mt-0.5">
-            {pairing.mood.join(", ")}
-          </p>
+        <div className="flex items-start justify-between gap-2">
+          <div className="min-w-0">
+            <h4 className="font-semibold text-sm truncate">
+              {locale === "zh" ? pairing.nameZh : pairing.name}
+            </h4>
+            <p className="text-xs text-muted mt-0.5 truncate">
+              {pairing.heading.family} <span className="opacity-50">·</span> {pairing.body.family}
+            </p>
+          </div>
+          <div className="flex flex-wrap gap-1 justify-end shrink-0">
+            {pairing.mood.slice(0, 2).map((m) => (
+              <span key={m} className="px-1.5 py-0.5 text-[0.65rem] rounded bg-muted/40 text-muted">
+                {m}
+              </span>
+            ))}
+          </div>
         </div>
 
-        {/* Tags */}
-        <div className="flex flex-wrap gap-1.5">
-          {pairing.tags.map((tag, i) => (
-            <span
-              key={i}
-              className="px-2 py-0.5 text-xs rounded bg-muted/30 text-muted"
-            >
-              {tag}
-            </span>
-          ))}
-        </div>
-
-        {/* Copy Buttons */}
         <div className="flex gap-2">
           <button
-            onClick={() => {
-              setCopyMode("css");
-              onCopy(pairing.css, pairing.id);
-            }}
-            className={`flex-1 px-3 py-2 text-xs font-medium rounded border transition-colors ${
-              copyMode === "css" && copied
+            onClick={() => onCopy(pairing.css, pairing.id)}
+            className={`flex-1 px-3 py-2 text-xs font-medium rounded-md border transition-colors ${
+              copied
                 ? "bg-green-500 text-white border-green-500"
                 : "bg-background text-muted border-border hover:border-foreground hover:text-foreground"
             }`}
           >
-            {copyMode === "css" && copied ? "Copied!" : "Copy CSS"}
+            {copied ? "Copied!" : "Copy CSS"}
           </button>
           <button
-            onClick={() => {
-              setCopyMode("tailwind");
-              onCopy(pairing.tailwind, pairing.id);
-            }}
-            className={`flex-1 px-3 py-2 text-xs font-medium rounded border transition-colors ${
-              copyMode === "tailwind" && copied
-                ? "bg-green-500 text-white border-green-500"
-                : "bg-background text-muted border-border hover:border-foreground hover:text-foreground"
-            }`}
+            onClick={() => onCopy(pairing.tailwind, pairing.id)}
+            className="flex-1 px-3 py-2 text-xs font-medium rounded-md border bg-background text-muted border-border hover:border-foreground hover:text-foreground transition-colors"
           >
-            {copyMode === "tailwind" && copied ? "Copied!" : "Tailwind"}
+            Tailwind
           </button>
         </div>
       </div>
     </div>
   );
 }
-

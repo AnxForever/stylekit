@@ -9,6 +9,49 @@ import {
   type GradientCategory,
 } from "@/lib/gradients";
 
+type ColorFormat = "hex" | "rgb" | "hsl";
+
+function hexToRgb(hex: string): [number, number, number] {
+  const h = hex.replace("#", "");
+  const full = h.length === 3 ? h.split("").map((c) => c + c).join("") : h;
+  return [
+    parseInt(full.substring(0, 2), 16),
+    parseInt(full.substring(2, 4), 16),
+    parseInt(full.substring(4, 6), 16),
+  ];
+}
+
+function formatColor(hex: string, fmt: ColorFormat): string {
+  const [r, g, b] = hexToRgb(hex);
+  if (fmt === "hex") return hex.toUpperCase();
+  if (fmt === "rgb") return `rgb(${r}, ${g}, ${b})`;
+  // hsl
+  const rn = r / 255;
+  const gn = g / 255;
+  const bn = b / 255;
+  const max = Math.max(rn, gn, bn);
+  const min = Math.min(rn, gn, bn);
+  const l = (max + min) / 2;
+  let hdeg = 0;
+  let s = 0;
+  if (max !== min) {
+    const d = max - min;
+    s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+    switch (max) {
+      case rn:
+        hdeg = (gn - bn) / d + (gn < bn ? 6 : 0);
+        break;
+      case gn:
+        hdeg = (bn - rn) / d + 2;
+        break;
+      default:
+        hdeg = (rn - gn) / d + 4;
+    }
+    hdeg *= 60;
+  }
+  return `hsl(${Math.round(hdeg)}, ${Math.round(s * 100)}%, ${Math.round(l * 100)}%)`;
+}
+
 export function GradientsContent() {
   const { t, locale } = useI18n();
   const [selectedCategory, setSelectedCategory] = useState<GradientCategory | "all">("all");
@@ -30,7 +73,7 @@ export function GradientsContent() {
         (g) =>
           g.name.toLowerCase().includes(query) ||
           g.nameZh.includes(query) ||
-          g.mood.some((m) => m.toLowerCase().includes(query))
+          g.mood.some((m) => m.toLowerCase().includes(query)),
       );
     }
 
@@ -61,7 +104,6 @@ export function GradientsContent() {
 
       {/* Filters */}
       <div className="mb-8 space-y-4">
-        {/* Search */}
         <div className="relative max-w-md">
           <input
             type="text"
@@ -83,7 +125,6 @@ export function GradientsContent() {
           )}
         </div>
 
-        {/* Category Filter */}
         <div className="flex flex-wrap gap-2">
           <button
             onClick={() => setSelectedCategory("all")}
@@ -111,12 +152,10 @@ export function GradientsContent() {
         </div>
       </div>
 
-      {/* Results Count */}
       <p className="text-sm text-muted mb-6">
         {t("gradients.showing")} {filteredGradients.length} {t("gradients.gradients")}
       </p>
 
-      {/* Gradient Grid */}
       {filteredGradients.length === 0 ? (
         <div className="text-center py-16">
           <p className="text-muted">{t("gradients.noResults")}</p>
@@ -127,7 +166,7 @@ export function GradientsContent() {
             <GradientCard
               key={gradient.id}
               gradient={gradient}
-              copied={copiedId === gradient.id}
+              copiedId={copiedId}
               onCopy={copyToClipboard}
               locale={locale}
             />
@@ -140,75 +179,161 @@ export function GradientsContent() {
 
 interface GradientCardProps {
   gradient: Gradient;
-  copied: boolean;
+  copiedId: string | null;
   onCopy: (text: string, id: string) => void;
   locale: "zh" | "en";
 }
 
-function GradientCard({ gradient, copied, onCopy, locale }: GradientCardProps) {
-  const [copyMode, setCopyMode] = useState<"css" | "tailwind">("css");
+function GradientCard({ gradient, copiedId, onCopy, locale }: GradientCardProps) {
+  const [angle, setAngle] = useState(gradient.angle);
+  const [format, setFormat] = useState<ColorFormat>("hex");
+  const [copiedColor, setCopiedColor] = useState<string | null>(null);
+
+  // Live CSS reflecting current angle
+  const liveCss = useMemo(() => {
+    const stops = gradient.colors
+      .map((c, i) => {
+        const pct = Math.round((i / (gradient.colors.length - 1)) * 100);
+        return `${c} ${pct}%`;
+      })
+      .join(", ");
+    return `linear-gradient(${angle}deg, ${stops})`;
+  }, [angle, gradient.colors]);
+
+  // Tailwind string reflecting current angle (keeps original from/via/to stops, only direction changes)
+  const liveTailwind = useMemo(() => {
+    const a = ((angle % 360) + 360) % 360;
+    const dirs: Array<[number, string]> = [
+      [0, "t"], [45, "tr"], [90, "r"], [135, "br"],
+      [180, "b"], [225, "bl"], [270, "l"], [315, "tl"],
+    ];
+    let best = "tr";
+    let bestDiff = 360;
+    for (const d of dirs) {
+      const diff = Math.min(Math.abs(a - d[0]), 360 - Math.abs(a - d[0]));
+      if (diff < bestDiff) {
+        bestDiff = diff;
+        best = d[1];
+      }
+    }
+    const stops = gradient.tailwind.replace(/^bg-gradient-to-\S+\s*/, "");
+    return `bg-gradient-to-${best} ${stops}`;
+  }, [angle, gradient.tailwind]);
+
+  function copyColor(hex: string) {
+    navigator.clipboard.writeText(formatColor(hex, format)).then(() => {
+      setCopiedColor(hex);
+      setTimeout(() => setCopiedColor(null), 1500);
+    });
+  }
+
+  const cssCopied = copiedId === gradient.id;
 
   return (
-    <div className="group border border-border rounded-lg overflow-hidden bg-background hover:border-foreground/50 transition-colors">
-      {/* Gradient Preview */}
-      <div
-        className="h-40 relative"
-        style={{ background: gradient.css }}
-      >
-        <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-      </div>
-
-      {/* Card Content */}
-      <div className="p-4 space-y-3">
-        {/* Name */}
-        <div>
-          <h3 className="font-semibold text-sm">
+    <div className="group border border-border rounded-xl overflow-hidden bg-background hover:border-foreground/40 hover:shadow-lg transition-all">
+      {/* Application preview: gradient on a real surface */}
+      <div className="relative h-40 overflow-hidden" style={{ background: liveCss }}>
+        <div className="absolute inset-0 bg-black/10" />
+        <div className="absolute inset-0 p-5 flex flex-col justify-end text-white">
+          <span className="text-[0.6rem] uppercase tracking-[0.18em] opacity-80 mb-1">
+            {gradient.category}
+          </span>
+          <h3 className="text-xl font-bold leading-tight drop-shadow-sm">
             {locale === "zh" ? gradient.nameZh : gradient.name}
           </h3>
-          <p className="text-xs text-muted mt-0.5">
-            {gradient.mood.join(", ")}
-          </p>
+          <p className="text-[0.7rem] opacity-85 mt-0.5">Gradient on a real surface</p>
+        </div>
+        <div className="absolute top-3 right-3">
+          <span className="inline-flex items-center rounded-full px-2 py-0.5 text-[0.6rem] font-medium bg-white/25 text-white backdrop-blur-sm">
+            {angle}°
+          </span>
+        </div>
+      </div>
+
+      {/* Angle slider */}
+      <div className="px-4 py-2.5 border-b border-border flex items-center gap-2 bg-muted/10">
+        <span className="text-xs text-muted">∠</span>
+        <input
+          type="range"
+          min={0}
+          max={360}
+          step={5}
+          value={angle}
+          onChange={(e) => setAngle(Number(e.target.value))}
+          className="flex-1 accent-foreground"
+          aria-label="Gradient angle"
+        />
+        <button
+          onClick={() => setAngle(gradient.angle)}
+          className="text-[0.65rem] text-muted hover:text-foreground underline underline-offset-2 whitespace-nowrap"
+        >
+          reset
+        </button>
+      </div>
+
+      {/* Color swatches with format switcher */}
+      <div className="p-4 space-y-3">
+        <div className="flex items-center justify-between">
+          <div className="inline-flex rounded-md border border-border overflow-hidden text-[0.65rem]">
+            {(["hex", "rgb", "hsl"] as ColorFormat[]).map((fmt) => (
+              <button
+                key={fmt}
+                onClick={() => setFormat(fmt)}
+                className={`px-2 py-1 uppercase tracking-wide transition-colors ${
+                  format === fmt
+                    ? "bg-foreground text-background"
+                    : "bg-background text-muted hover:text-foreground"
+                }`}
+              >
+                {fmt}
+              </button>
+            ))}
+          </div>
+          <span className="text-[0.65rem] text-muted">click swatch to copy</span>
         </div>
 
-        {/* Color Swatches */}
         <div className="flex gap-1.5">
-          {gradient.colors.map((color, i) => (
-            <div
+          {gradient.colors.map((c, i) => (
+            <button
               key={i}
-              className="h-6 flex-1 rounded border border-border"
-              style={{ background: color }}
-              title={color}
-            />
+              onClick={() => copyColor(c)}
+              className="flex-1 group/sw relative h-9 rounded-md border border-border overflow-hidden"
+              style={{ background: c }}
+              title={`${formatColor(c, format)} — click to copy`}
+            >
+              <span className="absolute inset-x-0 bottom-0 bg-black/55 text-white text-[0.6rem] py-0.5 font-mono tabular-nums">
+                {copiedColor === c ? "copied!" : formatColor(c, format)}
+              </span>
+            </button>
           ))}
         </div>
 
-        {/* Copy Buttons */}
-        <div className="flex gap-2">
+        {/* Mood */}
+        <div className="flex flex-wrap gap-1.5 pt-1">
+          {gradient.mood.map((m) => (
+            <span key={m} className="px-1.5 py-0.5 text-[0.65rem] rounded bg-muted/40 text-muted">
+              {m}
+            </span>
+          ))}
+        </div>
+
+        {/* Copy buttons */}
+        <div className="flex gap-2 pt-1">
           <button
-            onClick={() => {
-              setCopyMode("css");
-              onCopy(gradient.css, gradient.id);
-            }}
-            className={`flex-1 px-3 py-2 text-xs font-medium rounded border transition-colors ${
-              copyMode === "css" && copied
+            onClick={() => onCopy(liveCss, gradient.id)}
+            className={`flex-1 px-3 py-2 text-xs font-medium rounded-md border transition-colors ${
+              cssCopied
                 ? "bg-green-500 text-white border-green-500"
                 : "bg-background text-muted border-border hover:border-foreground hover:text-foreground"
             }`}
           >
-            {copyMode === "css" && copied ? "Copied!" : "Copy CSS"}
+            {cssCopied ? "Copied!" : "Copy CSS"}
           </button>
           <button
-            onClick={() => {
-              setCopyMode("tailwind");
-              onCopy(gradient.tailwind, gradient.id);
-            }}
-            className={`flex-1 px-3 py-2 text-xs font-medium rounded border transition-colors ${
-              copyMode === "tailwind" && copied
-                ? "bg-green-500 text-white border-green-500"
-                : "bg-background text-muted border-border hover:border-foreground hover:text-foreground"
-            }`}
+            onClick={() => onCopy(liveTailwind, gradient.id + "-tw")}
+            className="flex-1 px-3 py-2 text-xs font-medium rounded-md border bg-background text-muted border-border hover:border-foreground hover:text-foreground transition-colors"
           >
-            {copyMode === "tailwind" && copied ? "Copied!" : "Tailwind"}
+            Tailwind
           </button>
         </div>
       </div>
