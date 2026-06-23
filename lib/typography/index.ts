@@ -494,14 +494,17 @@ export function getTypographyCategories(): {
 }
 
 // Generate Google Fonts link for a pairing
+// Google Fonts mirror — the official fonts.googleapis.com is unreachable from CN, so we route through a mirror that also proxies the font files (gstatic). Swap here to change provider.
+const FONT_CDN = "https://fonts.loli.net";
+
 export function generateGoogleFontsLink(pairing: FontPairing): string {
   const headingFamily = pairing.heading.family.replace(/ /g, "+");
   const bodyFamily = pairing.body.family.replace(/ /g, "+");
 
   if (pairing.heading.family === pairing.body.family) {
-    return `https://fonts.googleapis.com/css2?family=${headingFamily}:wght@${pairing.body.weight};${pairing.heading.weight}&display=swap`;
+    return `${FONT_CDN}/css2?family=${headingFamily}:wght@${pairing.body.weight};${pairing.heading.weight}&display=swap`;
   }
 
-  return `https://fonts.googleapis.com/css2?family=${headingFamily}:wght@${pairing.heading.weight}&family=${bodyFamily}:wght@${pairing.body.weight}&display=swap`;
+  return `${FONT_CDN}/css2?family=${headingFamily}:wght@${pairing.heading.weight}&family=${bodyFamily}:wght@${pairing.body.weight}&display=swap`;
 }
 
