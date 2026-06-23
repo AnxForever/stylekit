@@ -1,9 +1,8 @@
-import Page, {
-  generateMetadata as baseGenerateMetadata,
-} from "@/app/styles/[slug]/showcase/page";
+import Page from "@/app/styles/[slug]/showcase/page";
 import { styles } from "@/lib/styles";
 import { isLocale, LOCALES } from "@/lib/i18n/routing";
 import { localizeMetadata } from "@/lib/i18n/metadata";
+import { buildShowcaseMetadata } from "@/app/styles/[slug]/showcase/_metadata";
 
 export function generateStaticParams() {
   return LOCALES.flatMap((locale) =>
@@ -20,13 +19,14 @@ export async function generateMetadata({
   params: Promise<{ locale: string; slug: string }>;
 }) {
   const { locale, slug } = await params;
-  const metadata = await baseGenerateMetadata({
-    params: Promise.resolve({ slug }),
-  });
+  const base = await buildShowcaseMetadata(
+    slug,
+    isLocale(locale) ? locale : "en"
+  );
 
   return isLocale(locale)
-    ? localizeMetadata(metadata, locale, `/styles/${slug}/showcase`)
-    : metadata;
+    ? localizeMetadata(base, locale, `/styles/${slug}/showcase`)
+    : base;
 }
 
 export default Page;
