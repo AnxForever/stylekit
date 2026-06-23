@@ -9,13 +9,19 @@ import { cn } from "@/lib/utils";
 export interface BrutalTabsProps {
   tabs: { id: string; label: string; content: React.ReactNode }[];
   defaultTab?: string;
+  /** Accessible label for the tablist, surfaced to screen readers. */
+  ariaLabel?: string;
 }
 
-export const BrutalTabs: React.FC<BrutalTabsProps> = ({ tabs, defaultTab }) => {
+export const BrutalTabs: React.FC<BrutalTabsProps> = ({
+  tabs,
+  defaultTab,
+  ariaLabel = "Tabs",
+}) => {
   const [activeTab, setActiveTab] = React.useState(defaultTab || tabs[0]?.id);
   const tablistRef = React.useRef<HTMLDivElement>(null);
 
-  // 键盘导航
+  // Arrow / Home / End keyboard nav between tab buttons.
   const handleKeyDown = (e: React.KeyboardEvent, currentIndex: number) => {
     let newIndex: number | null = null;
 
@@ -32,7 +38,6 @@ export const BrutalTabs: React.FC<BrutalTabsProps> = ({ tabs, defaultTab }) => {
     if (newIndex !== null) {
       e.preventDefault();
       setActiveTab(tabs[newIndex].id);
-      // 聚焦到新的 tab
       const buttons = tablistRef.current?.querySelectorAll<HTMLButtonElement>('[role="tab"]');
       buttons?.[newIndex]?.focus();
     }
@@ -44,7 +49,7 @@ export const BrutalTabs: React.FC<BrutalTabsProps> = ({ tabs, defaultTab }) => {
       <div
         ref={tablistRef}
         role="tablist"
-        aria-label="内容标签页"
+        aria-label={ariaLabel}
         className="flex border-2 md:border-4 border-black"
       >
         {tabs.map((tab, index) => (
@@ -60,6 +65,7 @@ export const BrutalTabs: React.FC<BrutalTabsProps> = ({ tabs, defaultTab }) => {
             className={cn(
               "flex-1 px-4 py-3 md:px-6 md:py-4 font-black text-sm md:text-base transition-colors",
               "border-r-2 md:border-r-4 border-black last:border-r-0",
+              "focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-brutal-pink focus-visible:ring-offset-2",
               activeTab === tab.id
                 ? "bg-black text-white"
                 : "bg-white hover:bg-brutal-green"

@@ -60,11 +60,11 @@ export interface BrutalLinkProps extends React.AnchorHTMLAttributes<HTMLAnchorEl
 export const BrutalLink = React.forwardRef<HTMLAnchorElement, BrutalLinkProps>(
   ({ className, variant = "default", children, ...props }, ref) => {
     const variants = {
-      default: "text-black hover:text-brutal-pink font-black transition-colors",
+      default: "text-black hover:text-brutal-pink font-black transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brutal-pink focus-visible:ring-offset-2 rounded-sm",
       underline:
-        "text-black underline decoration-4 decoration-brutal-pink underline-offset-4 hover:bg-brutal-pink hover:text-white transition-colors",
+        "text-black underline decoration-4 decoration-brutal-pink underline-offset-4 hover:bg-brutal-pink hover:text-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brutal-pink focus-visible:ring-offset-2 rounded-sm",
       button:
-        "inline-block px-4 py-2 bg-black text-white font-black border-2 border-black shadow-[4px_4px_0px_0px_rgba(255,0,110,1)] hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px] transition-[box-shadow,transform]",
+        "inline-block px-4 py-2 bg-black text-white font-black border-2 border-black shadow-[4px_4px_0px_0px_rgba(255,0,110,1)] hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px] transition-[box-shadow,transform] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-brutal-pink focus-visible:ring-offset-2",
     };
 
     return (
@@ -175,16 +175,18 @@ export const BrutalCodeBlock = React.forwardRef<HTMLPreElement, BrutalCodeBlockP
         </pre>
         <button
           onClick={handleCopy}
+          aria-label={copied ? "Copied" : "Copy code"}
           className={cn(
             "absolute top-2 right-2 md:top-4 md:right-4",
             "px-2 py-1 md:px-3 md:py-1.5 text-xs md:text-sm font-black",
             "border-2 border-white transition-colors",
+            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brutal-pink focus-visible:ring-offset-2 focus-visible:ring-offset-black",
             copied
               ? "bg-brutal-green text-black"
               : "bg-transparent text-white hover:bg-white hover:text-black"
           )}
         >
-          {copied ? "已复制!" : "复制"}
+          {copied ? "Copied!" : "Copy"}
         </button>
       </div>
     );
