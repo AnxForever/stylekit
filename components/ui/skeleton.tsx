@@ -1,3 +1,4 @@
+import * as React from "react";
 import { cn } from "@/lib/utils";
 
 interface SkeletonProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -6,43 +7,49 @@ interface SkeletonProps extends React.HTMLAttributes<HTMLDivElement> {
   height?: string | number;
 }
 
+// Use the project's design tokens rather than hardcoded zinc shades so
+// the placeholder color tracks the active theme. `bg-foreground/10` is
+// the same neutral used by Progress for its track.
+const SKELETON_BASE =
+  "bg-foreground/10 animate-pulse motion-reduce:animate-none";
+
+const SKELETON_VARIANT: Record<NonNullable<SkeletonProps["variant"]>, string> = {
+  text: "rounded",
+  circular: "rounded-full",
+  rectangular: "rounded",
+};
+
 /**
- * 通用骨架屏组件
- * 用于页面加载时显示占位内容，提升感知性能
+ * Generic skeleton placeholder. Wrap collections of Skeletons in a
+ * parent that carries `role="status"` and `aria-live="polite"` (e.g.
+ * the page-level Suspense fallback) so screen readers announce the
+ * loading state without re-announcing each individual placeholder.
+ *
+ * Forwards refs to match every other primitive in components/ui/.
  */
-export function Skeleton({
-  className,
-  variant = "rectangular",
-  width,
-  height,
-  style,
-  ...props
-}: SkeletonProps) {
-  const variants = {
-    text: "rounded",
-    circular: "rounded-full",
-    rectangular: "rounded",
-  };
-
-  return (
-    <div
-      className={cn(
-        "bg-zinc-200 dark:bg-zinc-700 animate-pulse",
-        variants[variant],
-        className
-      )}
-      style={{
-        width: width,
-        height: height,
-        ...style,
-      }}
-      {...props}
-    />
-  );
-}
+export const Skeleton = React.forwardRef<HTMLDivElement, SkeletonProps>(
+  function Skeleton(
+    { className, variant = "rectangular", width, height, style, ...props },
+    ref
+  ) {
+    return (
+      <div
+        ref={ref}
+        aria-hidden="true"
+        className={cn(SKELETON_BASE, SKELETON_VARIANT[variant], className)}
+        style={{
+          width: width,
+          height: height,
+          ...style,
+        }}
+        {...props}
+      />
+    );
+  }
+);
 
 /**
- * 页面标题骨架屏
+ * Page header skeleton — title + lede bar.
  */
 export function PageHeaderSkeleton() {
   return (
@@ -57,7 +64,7 @@ export function PageHeaderSkeleton() {
 }
 
 /**
- * 卡片网格骨架屏
+ * Card grid skeleton — N placeholder cards in a 1/2/3 column layout.
  */
 export function CardGridSkeleton({ count = 6 }: { count?: number }) {
   return (
@@ -80,7 +87,7 @@ export function CardGridSkeleton({ count = 6 }: { count?: number }) {
 }
 
 /**
- * 组件展示区骨架屏
+ * Component-section skeleton — title + lede + preview rectangle + CTA bar.
  */
 export function ComponentSectionSkeleton() {
   return (
@@ -94,7 +101,7 @@ export function ComponentSectionSkeleton() {
 }
 
 /**
- * 导航栏骨架屏
+ * Top-nav skeleton — logo + N link bars.
  */
 export function NavSkeleton() {
   return (
