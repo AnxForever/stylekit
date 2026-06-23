@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useI18n } from "@/lib/i18n/context";
+import type { TranslationKey } from "@/lib/i18n/translations";
 import { NewsletterSignup } from "@/components/newsletter/newsletter-signup";
 import { localizeHref } from "@/lib/i18n/routing";
 
@@ -9,34 +10,19 @@ const currentYear = new Date().getFullYear();
 
 export function Footer() {
   const { t, locale } = useI18n();
-  const promptLinks = locale === "zh"
-    ? [
-        { href: "/ui-prompts", label: "UI 设计提示词" },
-        { href: "/landing-page-prompts", label: "落地页提示词" },
-        { href: "/dashboard-prompts", label: "Dashboard 提示词" },
-        { href: "/tailwind-ui-prompts", label: "Tailwind UI 提示词" },
-        { href: "/dark-mode-ui-prompts", label: "暗黑模式提示词" },
-      ]
-    : [
-        { href: "/ui-prompts", label: "UI Design Prompts" },
-        { href: "/landing-page-prompts", label: "Landing Page Prompts" },
-        { href: "/dashboard-prompts", label: "Dashboard Prompts" },
-        { href: "/tailwind-ui-prompts", label: "Tailwind UI Prompts" },
-        { href: "/dark-mode-ui-prompts", label: "Dark Mode UI Prompts" },
-      ];
-  const trustLinks = locale === "zh"
-    ? [
-        { href: "/about", label: "关于" },
-        { href: "/contact", label: "联系与支持" },
-        { href: "/privacy", label: "隐私政策" },
-        { href: "/terms", label: "服务条款" },
-      ]
-    : [
-        { href: "/about", label: "About" },
-        { href: "/contact", label: "Contact" },
-        { href: "/privacy", label: "Privacy" },
-        { href: "/terms", label: "Terms" },
-      ];
+  const promptLinks: { href: string; labelKey: TranslationKey }[] = [
+    { href: "/ui-prompts", labelKey: "footer.prompts.uiDesign" },
+    { href: "/landing-page-prompts", labelKey: "footer.prompts.landingPage" },
+    { href: "/dashboard-prompts", labelKey: "footer.prompts.dashboard" },
+    { href: "/tailwind-ui-prompts", labelKey: "footer.prompts.tailwindUi" },
+    { href: "/dark-mode-ui-prompts", labelKey: "footer.prompts.darkMode" },
+  ];
+  const trustLinks: { href: string; labelKey: TranslationKey }[] = [
+    { href: "/about", labelKey: "footer.trust.about" },
+    { href: "/contact", labelKey: "footer.trust.contact" },
+    { href: "/privacy", labelKey: "footer.trust.privacy" },
+    { href: "/terms", labelKey: "footer.trust.terms" },
+  ];
 
   return (
     <footer className="border-t border-border mt-auto" data-cursor-aura="off">
@@ -98,7 +84,7 @@ export function Footer() {
                   href={localizeHref(link.href, locale)}
                   className="text-sm text-foreground hover:text-accent transition-colors"
                 >
-                  {link.label}
+                  {t(link.labelKey)}
                 </Link>
               ))}
               <a
@@ -122,19 +108,17 @@ export function Footer() {
         <div className="mb-8 flex flex-col gap-4 rounded-[28px] border border-border bg-[radial-gradient(circle_at_top_left,rgba(245,158,11,0.1),transparent_35%),radial-gradient(circle_at_bottom_right,rgba(34,197,94,0.08),transparent_38%)] px-5 py-5 md:flex-row md:items-center md:justify-between md:px-6">
           <div className="max-w-2xl">
             <p className="text-[11px] uppercase tracking-[0.28em] text-muted">
-              {locale === "zh" ? "支持维护" : "Support Maintenance"}
+              {t("footer.support.eyebrow")}
             </p>
             <p className="mt-2 text-sm leading-7 text-muted">
-              {locale === "zh"
-                ? "如果 StyleKit 恰好帮到了你，欢迎扫码支持。金额随意，每一份心意我都很感谢。"
-                : "If StyleKit helps your workflow, voluntary support helps cover servers, domains, and ongoing upkeep."}
+              {t("footer.support.body")}
             </p>
           </div>
           <Link
             href={localizeHref("/contact#support-maintenance", locale)}
             className="inline-flex shrink-0 items-center justify-center rounded-full border border-foreground px-4 py-2 text-sm transition-colors hover:bg-foreground hover:text-background"
           >
-            {locale === "zh" ? "扫码支持 / 查看全部方式" : "Scan to support / View all options"}
+            {t("footer.support.cta")}
           </Link>
         </div>
 
@@ -147,7 +131,7 @@ export function Footer() {
                 href={localizeHref(link.href, locale)}
                 className="hover:text-foreground transition-colors"
               >
-                {link.label}
+                {t(link.labelKey)}
               </Link>
             ))}
             <span>{t("footer.builtWith")}</span>
@@ -155,7 +139,7 @@ export function Footer() {
         </div>
 
         <div className="mt-4 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-center text-xs text-muted">
-          <span>Stylekit前端样式库</span>
+          <span>{t("footer.icp.label")}</span>
           <a
             href="https://stylekit.top"
             target="_blank"
