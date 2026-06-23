@@ -8,6 +8,7 @@
 
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
+import { cache } from "react";
 import type { SupabaseClient } from "@supabase/supabase-js";
 
 export async function getAuthServerClient(): Promise<SupabaseClient | null> {
@@ -29,7 +30,7 @@ export async function getAuthServerClient(): Promise<SupabaseClient | null> {
           }
         } catch {
           // setAll can throw in Server Components (read-only context).
-          // This is expected — the middleware will handle the refresh.
+          // The proxy layer (proxy.ts) handles the refresh.
         }
       },
     },
@@ -40,8 +41,12 @@ export async function getAuthServerClient(): Promise<SupabaseClient | null> {
  * Get the current authenticated user on the server side.
  * Returns null if not authenticated or Supabase is not configured.
  * In development with NEXT_PUBLIC_DEV_MOCK_USER=true, returns a mock user.
+ *
+ * Wrapped in React `cache()` so that Server Components reading the user
+ * during a single request share one `getUser()` network call instead of
+ * each one hitting Supabase Auth (which caused rate-limit / 429 storms).
  */
-export async function getServerUser() {
+export const getServerUser = cache(async () => {
   if (
     process.env.NODE_ENV === "development" &&
     process.env.NEXT_PUBLIC_DEV_MOCK_USER === "true"
@@ -65,4 +70,4 @@ export async function getServerUser() {
     data: { user },
   } = await client.auth.getUser();
   return user;
-}
+});
