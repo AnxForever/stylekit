@@ -31,13 +31,25 @@ export interface InputProps
   extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "size">,
     VariantProps<typeof inputVariants> {
   error?: boolean;
+  /**
+   * ID of the element (typically a `<p>`) that describes the error
+   * state. When provided together with `error={true}`, the input gets
+   * `aria-invalid="true"` and `aria-errormessage={errorMessageId}` so
+   * screen readers announce the validation message on focus.
+   */
+  errorMessageId?: string;
 }
 
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
-  ({ className, variant, inputSize, error, type, ...props }, ref) => {
+  (
+    { className, variant, inputSize, error, errorMessageId, type, ...props },
+    ref
+  ) => {
     return (
       <input
         type={type}
+        aria-invalid={error || undefined}
+        aria-errormessage={error && errorMessageId ? errorMessageId : undefined}
         className={cn(
           inputVariants({ variant, inputSize }),
           error && "border-red-500 focus:border-red-500",
