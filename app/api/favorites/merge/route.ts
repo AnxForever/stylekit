@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import type { SupabaseClient } from "@supabase/supabase-js";
 import { z } from "zod";
 import { getServerUser } from "@/lib/auth/supabase-server";
 import { isSupabaseConfigured } from "@/lib/submit/reviewer-supabase";
@@ -127,8 +128,7 @@ function getBearerToken(request: Request): string | null {
 }
 
 async function upsertFavoritesForUser(
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  sb: any,
+  sb: SupabaseClient,
   tableName: string,
   userId: string,
   slugs: string[]

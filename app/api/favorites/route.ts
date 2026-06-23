@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import type { SupabaseClient } from "@supabase/supabase-js";
 import { z } from "zod";
 import { getServerUser } from "@/lib/auth/supabase-server";
 import { isSupabaseConfigured } from "@/lib/submit/reviewer-supabase";
@@ -223,8 +224,7 @@ function buildLegacyUserSessionId(userId: string): string {
 }
 
 async function readFavoriteSlugsForUser(
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  sb: any,
+  sb: SupabaseClient,
   tableName: string,
   userId: string
 ): Promise<string[] | null> {
@@ -270,8 +270,7 @@ async function readFavoriteSlugsForUser(
 }
 
 async function insertFavoriteForUser(
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  sb: any,
+  sb: SupabaseClient,
   tableName: string,
   userId: string,
   slug: string
@@ -308,8 +307,7 @@ async function insertFavoriteForUser(
 }
 
 async function deleteFavoriteForUser(
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  sb: any,
+  sb: SupabaseClient,
   tableName: string,
   userId: string,
   slug: string
