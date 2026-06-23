@@ -353,8 +353,17 @@ export function AdminUsersContent() {
         }
 
         await mutate();
-      } catch {
-        // Error is non-fatal for UI; SWR will reflect latest state on mutate
+      } catch (deleteError) {
+        // The error is non-fatal for the UI flow (SWR will reflect
+        // server truth on mutate), but we still want a console
+        // breadcrumb so failures are visible during development
+        // and post-mortem log analysis. A future iteration should
+        // also surface this through a toast so the admin sees
+        // the failure immediately.
+        if (process.env.NODE_ENV !== "production") {
+          // eslint-disable-next-line no-console
+          console.warn("Admin: user delete request failed", deleteError);
+        }
       } finally {
         setDeletingUserId(null);
       }
