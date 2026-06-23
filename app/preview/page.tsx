@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { Suspense, useState, useMemo } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import {
@@ -51,6 +51,14 @@ function sanitizePreviewUrl(url: string | null): string {
 }
 
 export default function PreviewPage() {
+  return (
+    <Suspense fallback={null}>
+      <PreviewFrame />
+    </Suspense>
+  );
+}
+
+function PreviewFrame() {
   const { t } = useI18n();
   const searchParams = useSearchParams();
   const url = sanitizePreviewUrl(searchParams.get("url"));
