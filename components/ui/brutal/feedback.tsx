@@ -142,7 +142,8 @@ export const BrutalToast: React.FC<BrutalToastProps> = ({
         <span className="font-mono text-sm md:text-base">{message}</span>
         <button
           onClick={onClose}
-          className="font-black hover:text-brutal-pink transition-colors"
+          aria-label="Close notification"
+          className="font-black hover:text-brutal-pink transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brutal-pink focus-visible:ring-offset-2"
         >
           <X className="w-4 h-4" strokeWidth={3} />
         </button>
