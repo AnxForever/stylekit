@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { ChevronLeft } from "lucide-react";
+import { useI18n } from "@/lib/i18n/context";
 import { navigateBackOrFallback } from "@/lib/navigation/smart-back";
 
 interface ScrollBackButtonProps {
@@ -14,12 +15,14 @@ interface ScrollBackButtonProps {
 }
 
 export function ScrollBackButton({
-  label = "返回",
+  label,
   href,
   className = "",
   savedReturnUrlKey,
   fallbackHref,
 }: ScrollBackButtonProps) {
+  const { t } = useI18n();
+  const resolvedLabel = label ?? t("nav.back");
   const router = useRouter();
 
   useEffect(() => {
@@ -76,7 +79,7 @@ export function ScrollBackButton({
       className={`inline-flex items-center gap-2 px-3 py-1.5 text-sm text-muted hover:text-foreground border border-border hover:border-foreground transition-colors rounded ${className}`}
     >
       <ChevronLeft className="w-4 h-4" />
-      {label}
+      {resolvedLabel}
     </button>
   );
 }
