@@ -1,7 +1,7 @@
 "use client";
 
-import Link from "next/link";
 import { useI18n } from "@/lib/i18n/context";
+import { LocalizedLink } from "@/components/i18n/localized-link";
 
 export default function NotFound() {
   const { t } = useI18n();
@@ -19,18 +19,18 @@ export default function NotFound() {
           {t("notFound.description")}
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <Link
+          <LocalizedLink
             href="/"
             className="inline-flex items-center justify-center px-6 py-3 bg-foreground text-background text-sm tracking-wide hover:bg-foreground/90 transition-colors"
           >
             {t("notFound.backHome")}
-          </Link>
-          <Link
+          </LocalizedLink>
+          <LocalizedLink
             href="/styles"
             className="inline-flex items-center justify-center px-6 py-3 border border-border text-sm tracking-wide hover:border-foreground transition-colors"
           >
             {t("notFound.browseStyles")}
-          </Link>
+          </LocalizedLink>
         </div>
       </div>
     </div>
