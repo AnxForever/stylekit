@@ -16,7 +16,6 @@ export const viewport: Viewport = {
   maximumScale: 5,
   userScalable: true,
   viewportFit: "cover",
-  themeColor: "#000000",
 };
 
 const BASE_URL = getSiteBaseUrl();
