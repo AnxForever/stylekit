@@ -55,6 +55,31 @@
   --color-brutal-blue: var(--brutal-blue);
   --color-brutal-yellow: var(--brutal-yellow);
   --color-brutal-orange: var(--brutal-orange);
+
+  /* Neo-Brutalist Offset Shadows — semantic class names so callers
+     can write `shadow-brutal-pink` instead of repeating
+     `shadow-[4px_4px_0px_0px_#ff006e]` literals everywhere. The
+     shadow colors are derived from the brutal color CSS variables
+     so dark mode + future palette changes flow through. */
+  --shadow-brutal-pink: 4px 4px 0px 0px var(--brutal-pink);
+  --shadow-brutal-green: 4px 4px 0px 0px var(--brutal-green);
+  --shadow-brutal-blue: 4px 4px 0px 0px var(--brutal-blue);
+  --shadow-brutal-yellow: 4px 4px 0px 0px var(--brutal-yellow);
+  --shadow-brutal-orange: 4px 4px 0px 0px var(--brutal-orange);
+  --shadow-brutal-black: 4px 4px 0px 0px #000;
+  --shadow-brutal-pink-lg: 8px 8px 0px 0px var(--brutal-pink);
+  --shadow-brutal-blue-lg: 8px 8px 0px 0px var(--brutal-blue);
+  --shadow-brutal-black-lg: 8px 8px 0px 0px #000;
+  --shadow-brutal-pink-card: 6px 6px 0px 0px var(--brutal-pink);
+  --shadow-brutal-green-card: 6px 6px 0px 0px var(--brutal-green);
+  --shadow-brutal-blue-card: 6px 6px 0px 0px var(--brutal-blue);
+  --shadow-brutal-yellow-card: 6px 6px 0px 0px var(--brutal-yellow);
+  --shadow-brutal-orange-card: 6px 6px 0px 0px var(--brutal-orange);
+  --shadow-brutal-pink-card-lg: 12px 12px 0px 0px var(--brutal-pink);
+  --shadow-brutal-green-card-lg: 12px 12px 0px 0px var(--brutal-green);
+  --shadow-brutal-blue-card-lg: 12px 12px 0px 0px var(--brutal-blue);
+  --shadow-brutal-yellow-card-lg: 12px 12px 0px 0px var(--brutal-yellow);
+  --shadow-brutal-orange-card-lg: 12px 12px 0px 0px var(--brutal-orange);
 }
 
 /* Editorial/Magazine Typography */
