@@ -361,7 +361,6 @@ export function AdminUsersContent() {
         // also surface this through a toast so the admin sees
         // the failure immediately.
         if (process.env.NODE_ENV !== "production") {
-          // eslint-disable-next-line no-console
           console.warn("Admin: user delete request failed", deleteError);
         }
       } finally {

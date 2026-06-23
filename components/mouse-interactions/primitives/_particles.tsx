@@ -9,7 +9,7 @@
  * per-element exit.
  */
 
-import { useEffect, useRef, type ReactNode } from "react";
+import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { useStage } from "../_stage";
