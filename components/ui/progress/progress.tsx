@@ -46,23 +46,39 @@ export interface ProgressProps
 const Progress = React.forwardRef<
   React.ElementRef<typeof ProgressPrimitive.Root>,
   ProgressProps
->(({ className, value, size, variant, showValue, ...props }, ref) => (
-  <div className="w-full">
-    <ProgressPrimitive.Root
-      ref={ref}
-      className={cn(progressVariants({ size }), className)}
-      {...props}
-    >
-      <ProgressPrimitive.Indicator
-        className={cn(indicatorVariants({ variant }))}
-        style={{ transform: `translateX(-${100 - (value || 0)}%)` }}
-      />
-    </ProgressPrimitive.Root>
-    {showValue && (
-      <p className="text-xs text-muted mt-1 text-right">{value}%</p>
-    )}
-  </div>
-));
+>(({ className, value, max = 100, size, variant, showValue, ...props }, ref) => {
+  // Clamp value to a finite number within [0, max] so the indicator
+  // transform never produces NaN or out-of-range offsets. Radix uses
+  // these to populate aria-valuenow / aria-valuemin / aria-valuemax
+  // automatically, so screen readers get correct progress updates.
+  const safeValue =
+    typeof value === "number" && Number.isFinite(value)
+      ? Math.max(0, Math.min(value, max))
+      : 0;
+  const offsetPercent = 100 - (safeValue / max) * 100;
+
+  return (
+    <div className="w-full">
+      <ProgressPrimitive.Root
+        ref={ref}
+        value={safeValue}
+        max={max}
+        className={cn(progressVariants({ size }), className)}
+        {...props}
+      >
+        <ProgressPrimitive.Indicator
+          className={cn(indicatorVariants({ variant }))}
+          style={{ transform: `translateX(-${offsetPercent}%)` }}
+        />
+      </ProgressPrimitive.Root>
+      {showValue && (
+        <p className="text-xs text-muted mt-1 text-right">
+          {Math.round((safeValue / max) * 100)}%
+        </p>
+      )}
+    </div>
+  );
+});
 Progress.displayName = ProgressPrimitive.Root.displayName;
 
 export { Progress, progressVariants };
