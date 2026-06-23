@@ -42,7 +42,7 @@ export function StylePreviewSwitcher() {
   const [selectedSlug, setSelectedSlug] = useState<string | null>(null);
   const [isOpen, setIsOpen] = useState(false);
   const [renderStyleComponent, setRenderStyleComponent] = useState<RenderStyleComponentFn | null>(null);
-  const { t, locale } = useI18n();
+  const { t } = useI18n();
 
   const selectedStyle = styles.find((s) => s.slug === selectedSlug);
   const isPreviewLoading = Boolean(selectedSlug) && !renderStyleComponent;

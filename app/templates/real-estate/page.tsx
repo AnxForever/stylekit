@@ -116,7 +116,6 @@ type ViewMode = "browse" | "favorites" | "map";
 
 function PropertyCard({
   property: prop,
-  index,
   isFavorite,
   onToggleFavorite,
   onSelect,
