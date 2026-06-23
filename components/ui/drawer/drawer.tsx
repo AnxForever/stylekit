@@ -5,6 +5,7 @@ import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { cva, type VariantProps } from "class-variance-authority";
 import { X } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { OverlayBase } from "../_shared/overlay";
 
 const Drawer = DialogPrimitive.Root;
 
@@ -14,20 +15,11 @@ const DrawerClose = DialogPrimitive.Close;
 
 const DrawerPortal = DialogPrimitive.Portal;
 
-const DrawerOverlay = React.forwardRef<
-  React.ElementRef<typeof DialogPrimitive.Overlay>,
-  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Overlay>
->(({ className, ...props }, ref) => (
-  <DialogPrimitive.Overlay
-    ref={ref}
-    className={cn(
-      "fixed inset-0 z-50 bg-black/50 backdrop-blur-sm data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
-      className
-    )}
-    {...props}
-  />
-));
-DrawerOverlay.displayName = DialogPrimitive.Overlay.displayName;
+// Re-export the shared overlay base under the drawer-specific name so
+// existing `import { DrawerOverlay } from ".../drawer"` callers keep
+// working without churn.
+const DrawerOverlay = OverlayBase;
+DrawerOverlay.displayName = "DrawerOverlay";
 
 const drawerVariants = cva(
   "fixed z-50 gap-4 bg-background p-6 shadow-lg transition ease-in-out data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:duration-300 data-[state=open]:duration-500",

@@ -4,6 +4,7 @@ import * as React from "react";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { X } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { OverlayBase } from "../_shared/overlay";
 
 const Modal = DialogPrimitive.Root;
 
@@ -13,20 +14,11 @@ const ModalPortal = DialogPrimitive.Portal;
 
 const ModalClose = DialogPrimitive.Close;
 
-const ModalOverlay = React.forwardRef<
-  React.ElementRef<typeof DialogPrimitive.Overlay>,
-  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Overlay>
->(({ className, ...props }, ref) => (
-  <DialogPrimitive.Overlay
-    ref={ref}
-    className={cn(
-      "fixed inset-0 z-50 bg-black/50 backdrop-blur-sm data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
-      className
-    )}
-    {...props}
-  />
-));
-ModalOverlay.displayName = DialogPrimitive.Overlay.displayName;
+// Re-export the shared overlay base under the modal-specific name so
+// existing `import { ModalOverlay } from ".../modal"` callers keep
+// working without churn.
+const ModalOverlay = OverlayBase;
+ModalOverlay.displayName = "ModalOverlay";
 
 const ModalContent = React.forwardRef<
   React.ElementRef<typeof DialogPrimitive.Content>,
