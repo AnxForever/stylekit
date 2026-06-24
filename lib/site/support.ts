@@ -275,6 +275,24 @@ export const thankYouEntries: ThankYouEntry[] = [
       zh: "感谢庆祝",
     },
   },
+  {
+    id: "donation-2026-06-24",
+    date: "2026-06-24",
+    donorLabel: {
+      en: "Anonymous Supporter",
+      zh: "匿名支持者",
+    },
+    receiptImage: "/support/receipts/receipt-2026-06-24.jpg",
+    celebrationImage: "/support/thank-you/thank-meme-2026-06.jpg",
+    receiptAlt: {
+      en: "Payment receipt from supporter",
+      zh: "支持者的收款记录",
+    },
+    celebrationAlt: {
+      en: "Thank you celebration",
+      zh: "感谢庆祝",
+    },
+  },
 ];
 
 export const thankYouModalConfig: ThankYouModalConfig = {
