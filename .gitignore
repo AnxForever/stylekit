@@ -77,9 +77,12 @@ image.png
 image.jpg
 *.local.png
 
-# Generic JPEGs (receipts under public/support/receipts/ are explicit assets)
+# Generic JPEGs
 *.jpg
-!public/support/receipts/*.jpg
+
+# Support receipts — runtime content, not code
+public/support/receipts/
+public/support/thank-you/
 
 # Temporary
 .tmp/
