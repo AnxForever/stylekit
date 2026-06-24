@@ -77,39 +77,38 @@ export function ThankYouModal({ showOnHomepageOnly = true }: { showOnHomepageOnl
             </p>
           </div>
 
-          <div className="grid gap-6 md:grid-cols-[160px_minmax(0,1fr)] md:items-start">
+          {/* 图片区：单张 receipt 自适应居中 */}
+          <div className="flex flex-col items-center gap-6 sm:flex-row sm:items-start sm:justify-center">
             {celebrationEntry?.celebrationImage ? (
-              <div className="flex justify-center md:justify-start">
+              <div className="shrink-0 flex justify-center">
                 <Image
                   src={celebrationEntry.celebrationImage}
                   alt={celebrationEntry.celebrationAlt?.[locale] || "Thank you"}
-                  width={160}
-                  height={160}
-                  className="w-32 h-32 md:w-40 md:h-40 object-contain"
+                  width={200}
+                  height={200}
+                  className="w-36 h-36 sm:w-44 sm:h-44 object-contain"
                   unoptimized
                 />
               </div>
             ) : null}
 
-            <div className="grid gap-4 sm:grid-cols-2">
-              {latestEntry.receiptImage ? (
-                <figure
-                  key={latestEntry.id}
-                  className="overflow-hidden rounded-2xl border border-border bg-zinc-50 p-3 dark:bg-zinc-900/60"
-                >
-                  <div className="relative aspect-square overflow-hidden rounded-xl bg-white">
-                    <Image
-                      src={latestEntry.receiptImage}
-                      alt={latestEntry.receiptAlt?.[locale] || "Receipt"}
-                      fill
-                      className="object-contain"
-                      sizes="(max-width: 640px) 100vw, 360px"
-                      unoptimized
-                    />
-                  </div>
-                </figure>
-              ) : null}
-            </div>
+            {latestEntry.receiptImage ? (
+              <figure
+                key={latestEntry.id}
+                className="shrink-0 overflow-hidden rounded-2xl border border-border bg-zinc-50 p-3 dark:bg-zinc-900/60 max-w-sm"
+              >
+                <div className="relative w-56 sm:w-64 aspect-[3/4] overflow-hidden rounded-xl bg-white">
+                  <Image
+                    src={latestEntry.receiptImage}
+                    alt={latestEntry.receiptAlt?.[locale] || "Receipt"}
+                    fill
+                    className="object-contain"
+                    sizes="(max-width: 640px) 224px, 256px"
+                    unoptimized
+                  />
+                </div>
+              </figure>
+            ) : null}
           </div>
         </div>
       </div>
