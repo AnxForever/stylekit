@@ -65,14 +65,21 @@ PHASE-5A-SUMMARY.md
 skills/
 skills-lock.json
 
-# Screenshots
+# Screenshots (local dev / Playwright / temp)
 stylekit-*.png
+*-modal-*.png
+*-thankyou-*.png
+homepage-*.png
+contact-*.png
 
 # Local images
 image.png
 image.jpg
-*.jpg
 *.local.png
+
+# Generic JPEGs (receipts under public/support/receipts/ are explicit assets)
+*.jpg
+!public/support/receipts/*.jpg
 
 # Temporary
 .tmp/
