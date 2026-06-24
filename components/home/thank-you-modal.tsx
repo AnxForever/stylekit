@@ -25,7 +25,8 @@ export function ThankYouModal({ showOnHomepageOnly = true }: { showOnHomepageOnl
       return;
     }
 
-    const dismissed = localStorage.getItem(thankYouModalStorageKey);
+    const isPreview = new URLSearchParams(window.location.search).has("preview");
+    const dismissed = isPreview ? null : localStorage.getItem(thankYouModalStorageKey);
 
     if (!dismissed && thankYouEntries.length > 0 && thankYouModalConfig.enabled) {
       const frame = window.requestAnimationFrame(() => setIsOpen(true));
