@@ -6,9 +6,11 @@ import { X } from "lucide-react";
 import { useI18n } from "@/lib/i18n/context";
 import { thankYouEntries, thankYouModalConfig } from "@/lib/site/support";
 
-const thankYouModalStorageKey = `stylekit-thankyou-modal-dismissed:${thankYouEntries
-  .map((entry) => entry.id)
-  .join("|")}`;
+const latestEntry = [...thankYouEntries].sort(
+  (a, b) => b.date.localeCompare(a.date)
+)[0];
+
+const thankYouModalStorageKey = `stylekit-thankyou-modal-dismissed:${latestEntry.id}`;
 
 export function ThankYouModal({ showOnHomepageOnly = true }: { showOnHomepageOnly?: boolean }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -39,7 +41,10 @@ export function ThankYouModal({ showOnHomepageOnly = true }: { showOnHomepageOnl
   if (!isOpen) return null;
 
   const config = thankYouModalConfig;
-  const celebrationEntry = thankYouEntries.find((entry) => entry.celebrationImage);
+  const celebrationEntry =
+    latestEntry.celebrationImage
+      ? latestEntry
+      : thankYouEntries.find((entry) => entry.celebrationImage);
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
@@ -87,25 +92,23 @@ export function ThankYouModal({ showOnHomepageOnly = true }: { showOnHomepageOnl
             ) : null}
 
             <div className="grid gap-4 sm:grid-cols-2">
-              {thankYouEntries.map((entry) => (
-                entry.receiptImage ? (
-                  <figure
-                    key={entry.id}
-                    className="overflow-hidden rounded-2xl border border-border bg-zinc-50 p-3 dark:bg-zinc-900/60"
-                  >
-                    <div className="relative aspect-square overflow-hidden rounded-xl bg-white">
-                      <Image
-                        src={entry.receiptImage}
-                        alt={entry.receiptAlt?.[locale] || "Receipt"}
-                        fill
-                        className="object-contain"
-                        sizes="(max-width: 640px) 100vw, 360px"
-                        unoptimized
-                      />
-                    </div>
-                  </figure>
-                ) : null
-              ))}
+              {latestEntry.receiptImage ? (
+                <figure
+                  key={latestEntry.id}
+                  className="overflow-hidden rounded-2xl border border-border bg-zinc-50 p-3 dark:bg-zinc-900/60"
+                >
+                  <div className="relative aspect-square overflow-hidden rounded-xl bg-white">
+                    <Image
+                      src={latestEntry.receiptImage}
+                      alt={latestEntry.receiptAlt?.[locale] || "Receipt"}
+                      fill
+                      className="object-contain"
+                      sizes="(max-width: 640px) 100vw, 360px"
+                      unoptimized
+                    />
+                  </div>
+                </figure>
+              ) : null}
             </div>
           </div>
         </div>
