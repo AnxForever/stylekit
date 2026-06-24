@@ -84,6 +84,19 @@ image.jpg
 public/support/receipts/
 public/support/thank-you/
 
+# Agent skill packs and internal configs (maintainer tooling)
+.agents/
+.factory/
+.kiro/
+.interface-design/
+dist-skills/
+ops/
+
+# Build artifacts
+packages/core/dist/
+__pycache__/
+*.pyc
+
 # Temporary
 .tmp/
 /tmp/
