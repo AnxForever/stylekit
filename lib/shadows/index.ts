@@ -18,7 +18,8 @@ export type ShadowCategory =
   | "colored"
   | "glow"
   | "inner"
-  | "layered";
+  | "layered"
+  | "elevation";
 
 export const shadows: Shadow[] = [
   // === Soft ===
@@ -304,6 +305,112 @@ export const shadows: Shadow[] = [
     category: "layered",
     tags: ["neumorphism", "soft-ui", "raised"],
   },
+
+  // === Smooth Layered (Josh Comeau style — many stacked layers, tinted not pure black) ===
+  {
+    id: "smooth-low",
+    name: "Smooth Low",
+    nameZh: "平滑·低",
+    value: "0 1px 1.5px rgba(28,25,60,0.07), 0 2.7px 4px rgba(28,25,60,0.05), 0 6.5px 10px rgba(28,25,60,0.04), 0 12px 18px rgba(28,25,60,0.03)",
+    css: "box-shadow: 0 1px 1.5px rgba(28,25,60,0.07), 0 2.7px 4px rgba(28,25,60,0.05), 0 6.5px 10px rgba(28,25,60,0.04), 0 12px 18px rgba(28,25,60,0.03);",
+    tailwind: "shadow-[0_1px_1.5px_rgba(28,25,60,0.07),0_2.7px_4px_rgba(28,25,60,0.05),0_6.5px_10px_rgba(28,25,60,0.04),0_12px_18px_rgba(28,25,60,0.03)]",
+    category: "layered",
+    tags: ["smooth", "natural", "card"],
+  },
+  {
+    id: "smooth-medium",
+    name: "Smooth Medium",
+    nameZh: "平滑·中",
+    value: "0 1px 1.5px rgba(28,25,60,0.06), 0 3px 4px rgba(28,25,60,0.05), 0 7px 10px rgba(28,25,60,0.04), 0 14px 20px rgba(28,25,60,0.035), 0 24px 36px rgba(28,25,60,0.03)",
+    css: "box-shadow: 0 1px 1.5px rgba(28,25,60,0.06), 0 3px 4px rgba(28,25,60,0.05), 0 7px 10px rgba(28,25,60,0.04), 0 14px 20px rgba(28,25,60,0.035), 0 24px 36px rgba(28,25,60,0.03);",
+    tailwind: "shadow-[0_1px_1.5px_rgba(28,25,60,0.06),0_3px_4px_rgba(28,25,60,0.05),0_7px_10px_rgba(28,25,60,0.04),0_14px_20px_rgba(28,25,60,0.035),0_24px_36px_rgba(28,25,60,0.03)]",
+    category: "layered",
+    tags: ["smooth", "floating", "modal"],
+  },
+  {
+    id: "smooth-high",
+    name: "Smooth High",
+    nameZh: "平滑·高",
+    value: "0 1.4px 2px rgba(28,25,60,0.06), 0 3.5px 5px rgba(28,25,60,0.05), 0 8px 11px rgba(28,25,60,0.045), 0 15px 22px rgba(28,25,60,0.04), 0 28px 40px rgba(28,25,60,0.035), 0 50px 70px rgba(28,25,60,0.03)",
+    css: "box-shadow: 0 1.4px 2px rgba(28,25,60,0.06), 0 3.5px 5px rgba(28,25,60,0.05), 0 8px 11px rgba(28,25,60,0.045), 0 15px 22px rgba(28,25,60,0.04), 0 28px 40px rgba(28,25,60,0.035), 0 50px 70px rgba(28,25,60,0.03);",
+    tailwind: "shadow-[0_1.4px_2px_rgba(28,25,60,0.06),0_3.5px_5px_rgba(28,25,60,0.05),0_8px_11px_rgba(28,25,60,0.045),0_15px_22px_rgba(28,25,60,0.04),0_28px_40px_rgba(28,25,60,0.035),0_50px_70px_rgba(28,25,60,0.03)]",
+    category: "layered",
+    tags: ["smooth", "dramatic", "hero"],
+  },
+
+  // === Material Elevation (umbra + penumbra + ambient, dp 1-5) ===
+  {
+    id: "elevation-1",
+    name: "Elevation 1",
+    nameZh: "层级 1",
+    value: "0 2px 1px -1px rgba(0,0,0,0.2), 0 1px 1px 0 rgba(0,0,0,0.14), 0 1px 3px 0 rgba(0,0,0,0.12)",
+    css: "box-shadow: 0 2px 1px -1px rgba(0,0,0,0.2), 0 1px 1px 0 rgba(0,0,0,0.14), 0 1px 3px 0 rgba(0,0,0,0.12);",
+    tailwind: "shadow-[0_2px_1px_-1px_rgba(0,0,0,0.2),0_1px_1px_0_rgba(0,0,0,0.14),0_1px_3px_0_rgba(0,0,0,0.12)]",
+    category: "elevation",
+    tags: ["material", "card", "resting"],
+  },
+  {
+    id: "elevation-2",
+    name: "Elevation 2",
+    nameZh: "层级 2",
+    value: "0 3px 1px -2px rgba(0,0,0,0.2), 0 2px 2px 0 rgba(0,0,0,0.14), 0 1px 5px 0 rgba(0,0,0,0.12)",
+    css: "box-shadow: 0 3px 1px -2px rgba(0,0,0,0.2), 0 2px 2px 0 rgba(0,0,0,0.14), 0 1px 5px 0 rgba(0,0,0,0.12);",
+    tailwind: "shadow-[0_3px_1px_-2px_rgba(0,0,0,0.2),0_2px_2px_0_rgba(0,0,0,0.14),0_1px_5px_0_rgba(0,0,0,0.12)]",
+    category: "elevation",
+    tags: ["material", "button", "raised"],
+  },
+  {
+    id: "elevation-3",
+    name: "Elevation 3",
+    nameZh: "层级 3",
+    value: "0 3px 3px -2px rgba(0,0,0,0.2), 0 3px 4px 0 rgba(0,0,0,0.14), 0 1px 8px 0 rgba(0,0,0,0.12)",
+    css: "box-shadow: 0 3px 3px -2px rgba(0,0,0,0.2), 0 3px 4px 0 rgba(0,0,0,0.14), 0 1px 8px 0 rgba(0,0,0,0.12);",
+    tailwind: "shadow-[0_3px_3px_-2px_rgba(0,0,0,0.2),0_3px_4px_0_rgba(0,0,0,0.14),0_1px_8px_0_rgba(0,0,0,0.12)]",
+    category: "elevation",
+    tags: ["material", "card", "active"],
+  },
+  {
+    id: "elevation-4",
+    name: "Elevation 4",
+    nameZh: "层级 4",
+    value: "0 2px 4px -1px rgba(0,0,0,0.2), 0 4px 5px 0 rgba(0,0,0,0.14), 0 1px 10px 0 rgba(0,0,0,0.12)",
+    css: "box-shadow: 0 2px 4px -1px rgba(0,0,0,0.2), 0 4px 5px 0 rgba(0,0,0,0.14), 0 1px 10px 0 rgba(0,0,0,0.12);",
+    tailwind: "shadow-[0_2px_4px_-1px_rgba(0,0,0,0.2),0_4px_5px_0_rgba(0,0,0,0.14),0_1px_10px_0_rgba(0,0,0,0.12)]",
+    category: "elevation",
+    tags: ["material", "appbar", "snackbar"],
+  },
+  {
+    id: "elevation-5",
+    name: "Elevation 5",
+    nameZh: "层级 5",
+    value: "0 3px 5px -1px rgba(0,0,0,0.2), 0 6px 10px 0 rgba(0,0,0,0.14), 0 1px 18px 0 rgba(0,0,0,0.12)",
+    css: "box-shadow: 0 3px 5px -1px rgba(0,0,0,0.2), 0 6px 10px 0 rgba(0,0,0,0.14), 0 1px 18px 0 rgba(0,0,0,0.12);",
+    tailwind: "shadow-[0_3px_5px_-1px_rgba(0,0,0,0.2),0_6px_10px_0_rgba(0,0,0,0.14),0_1px_18px_0_rgba(0,0,0,0.12)]",
+    category: "elevation",
+    tags: ["material", "fab", "dialog"],
+  },
+
+  // === Colored Smooth (tinted multi-layer brand glows) ===
+  {
+    id: "colored-smooth-blue",
+    name: "Smooth Blue",
+    nameZh: "平滑·蓝",
+    value: "0 2px 4px rgba(37,99,235,0.1), 0 6px 12px rgba(37,99,235,0.12), 0 12px 24px rgba(37,99,235,0.14)",
+    css: "box-shadow: 0 2px 4px rgba(37,99,235,0.1), 0 6px 12px rgba(37,99,235,0.12), 0 12px 24px rgba(37,99,235,0.14);",
+    tailwind: "shadow-[0_2px_4px_rgba(37,99,235,0.1),0_6px_12px_rgba(37,99,235,0.12),0_12px_24px_rgba(37,99,235,0.14)]",
+    category: "colored",
+    tags: ["brand", "smooth", "primary"],
+  },
+  {
+    id: "colored-smooth-purple",
+    name: "Smooth Purple",
+    nameZh: "平滑·紫",
+    value: "0 2px 4px rgba(139,92,246,0.1), 0 6px 12px rgba(139,92,246,0.12), 0 12px 24px rgba(139,92,246,0.14)",
+    css: "box-shadow: 0 2px 4px rgba(139,92,246,0.1), 0 6px 12px rgba(139,92,246,0.12), 0 12px 24px rgba(139,92,246,0.14);",
+    tailwind: "shadow-[0_2px_4px_rgba(139,92,246,0.1),0_6px_12px_rgba(139,92,246,0.12),0_12px_24px_rgba(139,92,246,0.14)]",
+    category: "colored",
+    tags: ["brand", "smooth", "accent"],
+  },
 ];
 
 const categoryLabels: Record<ShadowCategory, { en: string; zh: string }> = {
@@ -314,6 +421,7 @@ const categoryLabels: Record<ShadowCategory, { en: string; zh: string }> = {
   glow: { en: "Glow", zh: "辉光" },
   inner: { en: "Inner", zh: "内阴影" },
   layered: { en: "Layered", zh: "分层" },
+  elevation: { en: "Elevation", zh: "层级" },
 };
 
 export function getShadowsByCategory(category: ShadowCategory): Shadow[] {
