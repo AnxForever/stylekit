@@ -12,21 +12,23 @@
     "README.md"
   ],
   "scripts": {
-    "build": "tsc",
+    "build": "tsup",
     "dev": "tsx watch src/index.ts",
     "clean": "rm -rf dist",
-    "test": "node scripts/smoke.mjs"
+    "test": "node scripts/smoke.mjs",
+    "prepublishOnly": "pnpm run clean && pnpm run build"
   },
   "engines": {
     "node": ">=18"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.12.0",
-    "@stylekit/core": "workspace:*",
     "zod": "^3.25.0"
   },
   "devDependencies": {
+    "@stylekit/core": "workspace:*",
     "@types/node": "^20",
+    "tsup": "^8.0.0",
     "tsx": "^4.19.0",
     "typescript": "^5"
   },
