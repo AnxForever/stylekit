@@ -12,6 +12,20 @@ export interface ChangelogEntry {
 
 export const changelog: ChangelogEntry[] = [
   {
+    version: "0.17.0",
+    date: "2026-06-29",
+    title: "Developer Tools — npm packages, shadcn registry, MCP & CLI",
+    titleZh: "开发者工具 — npm 包、shadcn registry、MCP 与 CLI",
+    changes: [
+      { type: "added", description: "shadcn registry: install any style's theme with one command — npx shadcn add https://www.stylekit.top/r/<style>.json", descriptionZh: "shadcn registry：一行命令安装任意风格的主题 — npx shadcn add https://www.stylekit.top/r/<style>.json" },
+      { type: "added", description: "stylekit-mcp: an MCP server so Claude, Cursor and Windsurf can search styles and pull tokens, recipes, and install commands", descriptionZh: "stylekit-mcp：MCP 服务器，让 Claude、Cursor、Windsurf 直接搜索风格并获取 tokens、recipes 和安装命令" },
+      { type: "added", description: "stylekit-cli: browse and install styles from your terminal", descriptionZh: "stylekit-cli：在终端浏览和安装风格" },
+      { type: "added", description: "stylekit-core: an npm SDK for programmatic access to 130+ styles, tokens, and recipes", descriptionZh: "stylekit-core：npm SDK，程序化访问 130+ 风格、tokens 和 recipes" },
+      { type: "added", description: "New /developers page with install entry points for all three tools", descriptionZh: "新增 /developers 页面，汇总三个工具的安装入口" },
+      { type: "changed", description: "Each style now derives a distinct, contrast-safe shadcn theme (light + dark) covering the full token set including charts and sidebar", descriptionZh: "每个风格现在派生独特、对比安全的 shadcn 主题（明暗双模式），覆盖完整 token 集（含 charts 和 sidebar）" },
+    ],
+  },
+  {
     version: "0.16.0",
     date: "2026-06-22",
     title: "Cursor Lab — 17 Interactive Rooms, GSAP Migration",
