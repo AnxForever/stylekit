@@ -1,5 +1,5 @@
 {
-  "name": "@stylekit/mcp",
+  "name": "stylekit-mcp",
   "version": "0.1.0",
   "description": "MCP server for StyleKit — search 120+ design styles and pull tokens, recipes, and shadcn install commands from Claude, Cursor, or Windsurf",
   "type": "module",
@@ -26,7 +26,7 @@
     "zod": "^3.25.0"
   },
   "devDependencies": {
-    "@stylekit/core": "workspace:*",
+    "stylekit-core": "workspace:*",
     "@types/node": "^20",
     "tsup": "^8.0.0",
     "tsx": "^4.19.0",

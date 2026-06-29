@@ -1,5 +1,5 @@
 {
-  "name": "@stylekit/core",
+  "name": "stylekit-core",
   "version": "1.0.0-beta.1",
   "description": "StyleKit core library - design style tokens, recipes, and accessibility helpers for 120+ UI styles",
   "type": "module",

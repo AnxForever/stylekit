@@ -1,5 +1,5 @@
 /**
- * Data access for the CLI — discovery helpers from @stylekit/core/discovery,
+ * Data access for the CLI — discovery helpers from stylekit-core/discovery,
  * with thin list/search adapters that preserve the full match `total`.
  */
 
@@ -11,20 +11,20 @@ export {
   registryUrl,
   getTokens,
   STYLEKIT_SITE_URL as SITE_URL,
-} from "@stylekit/core/discovery";
+} from "stylekit-core/discovery";
 
 export type {
   StyleSummary,
   StyleDetail,
   RecipeResult,
   DiscoveryCategory as StyleCategory,
-} from "@stylekit/core/discovery";
+} from "stylekit-core/discovery";
 
 import {
   searchStyles as coreSearch,
   type DiscoveryCategory,
   type StyleSummary,
-} from "@stylekit/core/discovery";
+} from "stylekit-core/discovery";
 
 /** List styles (optionally by category), capped at `limit`, with full total. */
 export function listStyles(

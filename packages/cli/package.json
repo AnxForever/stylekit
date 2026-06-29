@@ -1,5 +1,5 @@
 {
-  "name": "@stylekit/cli",
+  "name": "stylekit-cli",
   "version": "0.1.0",
   "description": "Command-line tool for StyleKit — browse 120+ design styles and pull tokens, recipes, and shadcn install commands from your terminal",
   "type": "module",
@@ -22,7 +22,7 @@
     "node": ">=18"
   },
   "devDependencies": {
-    "@stylekit/core": "workspace:*",
+    "stylekit-core": "workspace:*",
     "@types/node": "^20",
     "tsup": "^8.0.0",
     "tsx": "^4.19.0",

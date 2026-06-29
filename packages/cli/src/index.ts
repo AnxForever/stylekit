@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
  * StyleKit CLI — browse design styles and pull tokens, recipes, and shadcn
- * install commands from the terminal. Served offline from @stylekit/core.
+ * install commands from the terminal. Served offline from stylekit-core.
  *
  * Contract: success goes to stdout with exit 0; errors and usage go to stderr
  * with exit 1. With --json, both success and error emit JSON.

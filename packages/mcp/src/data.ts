@@ -1,5 +1,5 @@
 /**
- * Data access for the MCP tools — fully delegated to @stylekit/core/discovery.
+ * Data access for the MCP tools — fully delegated to stylekit-core/discovery.
  */
 
 export {
@@ -11,7 +11,7 @@ export {
   shadcnInstallCommand,
   registryUrl,
   STYLEKIT_SITE_URL as SITE_URL,
-} from "@stylekit/core/discovery";
+} from "stylekit-core/discovery";
 
 export type {
   StyleSummary,
@@ -19,4 +19,4 @@ export type {
   RecipeResult,
   SearchOptions,
   DiscoveryCategory as StyleCategory,
-} from "@stylekit/core/discovery";
+} from "stylekit-core/discovery";

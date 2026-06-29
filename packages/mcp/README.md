@@ -1,8 +1,8 @@
-# @stylekit/mcp
+# stylekit-mcp
 
 MCP server for [StyleKit](https://stylekit.top) — search 120+ design styles and pull design tokens, component recipes, and shadcn install commands directly from Claude, Cursor, or Windsurf.
 
-Runs locally over stdio and serves everything **offline** from the bundled `@stylekit/core`.
+Runs locally over stdio and serves everything **offline** from the bundled `stylekit-core`.
 
 ## Tools
 
@@ -25,7 +25,7 @@ Add to your MCP client config:
   "mcpServers": {
     "stylekit": {
       "command": "npx",
-      "args": ["-y", "@stylekit/mcp"]
+      "args": ["-y", "stylekit-mcp"]
     }
   }
 }

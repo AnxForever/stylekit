@@ -1,5 +1,5 @@
 /**
- * @module @stylekit/core/accessibility
+ * @module stylekit-core/accessibility
  *
  * WCAG 2.1 accessibility scoring for design styles.
  * Provides color contrast calculations, AA/AAA compliance checks,
