@@ -71,9 +71,32 @@ describe("resolveTwColor", () => {
     expect(hue <= 25 || hue >= 350).toBe(true);
   });
 
-  it("returns null for gradients and non-color utilities", () => {
+  it("returns null for bare gradient direction and non-color utilities", () => {
     expect(resolveTwColor("bg-gradient-to-r")).toBeNull();
     expect(resolveTwColor("flex")).toBeNull();
+  });
+
+  it("resolves the first color in a multi-class string", () => {
+    // e.g. glassmorphism bg: "bg-white/12 backdrop-blur-[40px] ..."
+    expect(resolveTwColor("bg-white/12 backdrop-blur-[40px]")).toBe("0 0% 100%");
+    expect(resolveTwColor("flex items-center bg-black")).toBe("0 0% 0%");
+  });
+
+  it("strips opacity modifiers before palette lookup", () => {
+    // border-cyan-400/30 must resolve cyan-400, not fall back
+    const cyan = resolveTwColor("border-cyan-400/30");
+    expect(cyan).toMatch(HSL_RE);
+    const hue = parseInt(cyan!.split(" ")[0], 10);
+    expect(hue >= 170 && hue <= 210).toBe(true); // cyan band
+  });
+
+  it("resolves the from-* stop of a gradient", () => {
+    const c = resolveTwColor(
+      "bg-gradient-to-b from-sky-300 via-sky-400 to-sky-500",
+    );
+    expect(c).toMatch(HSL_RE);
+    const hue = parseInt(c!.split(" ")[0], 10);
+    expect(hue >= 190 && hue <= 230).toBe(true); // sky band
   });
 });
 

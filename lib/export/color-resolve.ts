@@ -161,15 +161,28 @@ const COLOR_PREFIXES = [
  * Returns null when the class carries no resolvable color.
  */
 export function resolveTwColor(className: string): string | null {
-  let token = className.trim();
+  // A token may be a multi-class string — a gradient ("bg-gradient-to-b
+  // from-sky-300 ...") or a blurred glass surface ("bg-white/12 backdrop-blur").
+  // Return the first token that resolves to a concrete color.
+  for (const token of className.trim().split(/\s+/)) {
+    const hsl = resolveSingleColorClass(token);
+    if (hsl) return hsl;
+  }
+  return null;
+}
+
+function resolveSingleColorClass(raw: string): string | null {
+  let token = raw.trim();
   for (const p of COLOR_PREFIXES) {
     if (token.startsWith(p)) {
       token = token.slice(p.length);
       break;
     }
   }
+  // Strip an opacity modifier: white/12, cyan-400/30, [#fff]/50.
+  token = token.replace(/\/\d{1,3}$/, "");
 
-  // Arbitrary value: bg-[#ff006e], border-[oklch(...)], bg-[rgb(...)]
+  // Arbitrary value: [#ff006e], [oklch(...)], [rgb(...)]
   const arb = token.match(/^\[(.+)\]$/);
   if (arb) return colorToHsl(arb[1].replace(/_/g, " "));
 
@@ -179,14 +192,14 @@ export function resolveTwColor(className: string): string | null {
     return null;
   }
 
-  // Named palette: "slate-900", "gray-50", or bare "slate" (default shade 500)
+  // Named palette: "slate-900", "gray-50", or bare "slate" (default shade 500).
   const dash = token.lastIndexOf("-");
   const family = dash === -1 ? token : token.slice(0, dash);
   const shade = dash === -1 ? "500" : token.slice(dash + 1);
   const palette = (twColors as Record<string, unknown>)[family];
   if (palette && typeof palette === "object") {
-    const raw = (palette as Record<string, string>)[shade];
-    if (typeof raw === "string") return colorToHsl(raw);
+    const value = (palette as Record<string, string>)[shade];
+    if (typeof value === "string") return colorToHsl(value);
   }
   return null;
 }
