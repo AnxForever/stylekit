@@ -58,18 +58,25 @@ describe("generateShadcnTheme", () => {
     }
   });
 
-  it("applies neumorphism-specific overrides", () => {
+  it("derives neumorphism tokens (soft rounded, tinted background)", () => {
     const style = getStyleBySlug("neumorphism")!;
     const theme = generateShadcnTheme(style);
-    expect(theme.cssVars.light.radius).toBe("1rem");
-    expect(theme.cssVars.light.background).toContain("220");
+    // Derived from neumorphism's own tokens, not a hardcoded override.
+    expect(theme.cssVars.light.radius).toMatch(/rem$/);
+    expect(theme.cssVars.light.radius).not.toBe("0rem");
+    // Neumorphism uses a cool blue-grey surface, not pure white.
+    const bgHue = parseInt(theme.cssVars.light.background.split(" ")[0], 10);
+    expect(bgHue).toBeGreaterThanOrEqual(200);
+    expect(bgHue).toBeLessThanOrEqual(235);
   });
 
-  it("applies glassmorphism-specific overrides", () => {
+  it("derives glassmorphism radius from its tokens (rounded, not sharp)", () => {
     const style = getStyleBySlug("glassmorphism")!;
     const theme = generateShadcnTheme(style);
-    expect(theme.cssVars.light.radius).toBe("1rem");
-    expect(theme.cssVars.dark.radius).toBe("1rem");
+    // Radius is now derived from the style's own token, not a hardcoded override.
+    expect(theme.cssVars.light.radius).toMatch(/rem$/);
+    expect(theme.cssVars.light.radius).not.toBe("0rem");
+    expect(theme.cssVars.dark.radius).toBe(theme.cssVars.light.radius);
   });
 
   it("applies editorial-specific overrides", () => {

@@ -59,12 +59,12 @@ describe("toRegistryItem", () => {
     expect(item.cssVars.dark.primary).toBe(theme.cssVars.dark.primary);
   });
 
-  it("drops unparseable color tokens instead of emitting NaN", () => {
-    // glassmorphism's primary is rgba(...), which the current theme generator
-    // cannot convert to HSL, so it must be omitted rather than serialized as
-    // "0 NaN% NaN%". Documents a known gap — see the theme-fidelity task.
+  it("resolves glassmorphism's rgba primary (theme-fidelity fix)", () => {
+    // glassmorphism's primary is rgba(...); the theme generator now parses it
+    // (alpha ignored) into a valid HSL triplet instead of dropping it.
     const item = toRegistryItem(glass!);
-    expect(item.cssVars.light.primary).toBeUndefined();
+    expect(item.cssVars.light.primary).toBeDefined();
+    expect(item.cssVars.light.primary).toMatch(/^\d{1,3} \d{1,3}% \d{1,3}%$/);
   });
 
   it("serializes to valid JSON preserving identity", () => {
