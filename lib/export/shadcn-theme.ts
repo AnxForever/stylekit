@@ -1,7 +1,15 @@
 // shadcn/ui Theme Generator
-// Generates a shadcn-compatible theme configuration
+// Derives each style's real design tokens (colors, radius, borders) into the
+// raw CSS values a shadcn theme needs, so every style yields a distinct theme.
 
 import type { DesignStyle } from "../styles";
+import { getStyleTokens } from "../styles/tokens-registry";
+import {
+  colorToHsl,
+  hslLightness,
+  resolveTwColor,
+  twRadiusToRem,
+} from "./color-resolve";
 
 export interface ShadcnTheme {
   name: string;
@@ -11,124 +19,112 @@ export interface ShadcnTheme {
   };
 }
 
-function hexToHsl(hex: string): string {
-  // Remove # if present
-  hex = hex.replace(/^#/, "");
+// Neutral shadcn defaults, used only when a style token cannot be resolved.
+const FALLBACK = {
+  lightBg: "0 0% 100%",
+  lightFg: "0 0% 3.9%",
+  lightMuted: "0 0% 96.1%",
+  lightMutedFg: "0 0% 45.1%",
+  lightBorder: "0 0% 89.8%",
+  darkBg: "0 0% 3.9%",
+  darkFg: "0 0% 98%",
+  darkMuted: "0 0% 14.9%",
+  darkMutedFg: "0 0% 63.9%",
+  darkBorder: "0 0% 14.9%",
+  primary: "0 0% 9%",
+  radius: "0.5rem",
+};
 
-  // Parse hex
-  const r = parseInt(hex.slice(0, 2), 16) / 255;
-  const g = parseInt(hex.slice(2, 4), 16) / 255;
-  const b = parseInt(hex.slice(4, 6), 16) / 255;
+/** Resolve a value that may be a raw color (hex/rgba/oklch) OR a Tailwind class. */
+function anyColorToHsl(input?: string): string | null {
+  if (!input) return null;
+  return colorToHsl(input) ?? resolveTwColor(input);
+}
 
-  const max = Math.max(r, g, b);
-  const min = Math.min(r, g, b);
-  let h = 0;
-  let s = 0;
-  const l = (max + min) / 2;
-
-  if (max !== min) {
-    const d = max - min;
-    s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
-
-    switch (max) {
-      case r:
-        h = ((g - b) / d + (g < b ? 6 : 0)) / 6;
-        break;
-      case g:
-        h = ((b - r) / d + 2) / 6;
-        break;
-      case b:
-        h = ((r - g) / d + 4) / 6;
-        break;
-    }
-  }
-
-  return `${Math.round(h * 360)} ${Math.round(s * 100)}% ${Math.round(l * 100)}%`;
+/** Pick a readable near-black / near-white foreground for a given HSL background. */
+function readableForeground(hslBg: string): string {
+  const l = hslLightness(hslBg);
+  if (l === null) return "0 0% 98%";
+  return l >= 55 ? "0 0% 9%" : "0 0% 98%";
 }
 
 export function generateShadcnTheme(style: DesignStyle): ShadcnTheme {
-  const primary = hexToHsl(style.colors.primary);
-  const secondary = hexToHsl(style.colors.secondary);
-  const accent1 = style.colors.accent[0] ? hexToHsl(style.colors.accent[0]) : primary;
+  const tokens = getStyleTokens(style.slug);
 
-  // Base light theme
-  const lightVars: Record<string, string> = {
-    background: "0 0% 100%",
-    foreground: "0 0% 3.9%",
-    card: "0 0% 100%",
-    "card-foreground": "0 0% 3.9%",
-    popover: "0 0% 100%",
-    "popover-foreground": "0 0% 3.9%",
+  // Structural colors derived from the style's semantic tokens.
+  const bg =
+    (tokens && resolveTwColor(tokens.colors.background.primary)) ??
+    FALLBACK.lightBg;
+  const fg =
+    (tokens && resolveTwColor(tokens.colors.text.primary)) ?? FALLBACK.lightFg;
+  const muted =
+    (tokens && resolveTwColor(tokens.colors.background.secondary)) ??
+    FALLBACK.lightMuted;
+  const mutedFg =
+    (tokens && resolveTwColor(tokens.colors.text.muted)) ??
+    FALLBACK.lightMutedFg;
+  const border =
+    (tokens && resolveTwColor(tokens.border.color)) ?? FALLBACK.lightBorder;
+  const radius =
+    (tokens && twRadiusToRem(tokens.border.radius)) ?? FALLBACK.radius;
+
+  // Brand colors from the style palette (robust across hex / rgba / class).
+  const primary = anyColorToHsl(style.colors.primary) ?? FALLBACK.primary;
+  const secondary = anyColorToHsl(style.colors.secondary) ?? muted;
+  const accent = anyColorToHsl(style.colors.accent?.[0]) ?? primary;
+
+  const light: Record<string, string> = {
+    background: bg,
+    foreground: fg,
+    card: bg,
+    "card-foreground": fg,
+    popover: bg,
+    "popover-foreground": fg,
     primary,
-    "primary-foreground": "0 0% 100%",
+    "primary-foreground": readableForeground(primary),
     secondary,
-    "secondary-foreground": "0 0% 100%",
-    muted: "0 0% 96.1%",
-    "muted-foreground": "0 0% 45.1%",
-    accent: accent1,
-    "accent-foreground": "0 0% 9%",
-    destructive: "0 84.2% 60.2%",
+    "secondary-foreground": readableForeground(secondary),
+    muted,
+    "muted-foreground": mutedFg,
+    accent,
+    "accent-foreground": readableForeground(accent),
+    destructive: "0 72% 51%",
     "destructive-foreground": "0 0% 98%",
-    border: "0 0% 0%",
-    input: "0 0% 0%",
-    ring: "0 0% 3.9%",
-    radius: "0rem", // Default to no radius for brutal style
+    border,
+    input: border,
+    ring: primary,
+    radius,
   };
 
-  // Dark theme
-  const darkVars: Record<string, string> = {
-    background: "0 0% 3.9%",
-    foreground: "0 0% 98%",
-    card: "0 0% 3.9%",
-    "card-foreground": "0 0% 98%",
-    popover: "0 0% 3.9%",
-    "popover-foreground": "0 0% 98%",
+  // Dark mode keeps brand colors + radius over a neutral dark skeleton.
+  const dark: Record<string, string> = {
+    background: FALLBACK.darkBg,
+    foreground: FALLBACK.darkFg,
+    card: FALLBACK.darkBg,
+    "card-foreground": FALLBACK.darkFg,
+    popover: FALLBACK.darkBg,
+    "popover-foreground": FALLBACK.darkFg,
     primary,
-    "primary-foreground": "0 0% 9%",
+    "primary-foreground": readableForeground(primary),
     secondary,
-    "secondary-foreground": "0 0% 9%",
-    muted: "0 0% 14.9%",
-    "muted-foreground": "0 0% 63.9%",
-    accent: accent1,
-    "accent-foreground": "0 0% 98%",
+    "secondary-foreground": readableForeground(secondary),
+    muted: FALLBACK.darkMuted,
+    "muted-foreground": FALLBACK.darkMutedFg,
+    accent,
+    "accent-foreground": readableForeground(accent),
     destructive: "0 62.8% 30.6%",
     "destructive-foreground": "0 0% 98%",
-    border: "0 0% 100%",
-    input: "0 0% 100%",
-    ring: "0 0% 83.1%",
-    radius: "0rem",
+    border: FALLBACK.darkBorder,
+    input: FALLBACK.darkBorder,
+    ring: primary,
+    radius,
   };
 
-  // Style-specific adjustments
-  if (style.slug === "neumorphism") {
-    lightVars.background = "220 15% 94%";
-    lightVars.card = "220 15% 94%";
-    lightVars.border = "220 15% 85%";
-    lightVars.radius = "1rem";
-    darkVars.background = "220 15% 20%";
-    darkVars.card = "220 15% 20%";
-    darkVars.border = "220 15% 30%";
-    darkVars.radius = "1rem";
-  } else if (style.slug === "glassmorphism") {
-    lightVars.radius = "1rem";
-    darkVars.radius = "1rem";
-  } else if (style.slug === "editorial") {
-    lightVars.radius = "0rem";
-    darkVars.radius = "0rem";
-  }
-
-  return {
-    name: style.slug,
-    cssVars: {
-      light: lightVars,
-      dark: darkVars,
-    },
-  };
+  return { name: style.slug, cssVars: { light, dark } };
 }
 
 export function generateShadcnThemeJSON(style: DesignStyle): string {
-  const theme = generateShadcnTheme(style);
-  return JSON.stringify(theme, null, 2);
+  return JSON.stringify(generateShadcnTheme(style), null, 2);
 }
 
 export function generateShadcnThemeCSS(style: DesignStyle): string {
@@ -137,7 +133,6 @@ export function generateShadcnThemeCSS(style: DesignStyle): string {
   const lightVars = Object.entries(theme.cssVars.light)
     .map(([key, value]) => `    --${key}: ${value};`)
     .join("\n");
-
   const darkVars = Object.entries(theme.cssVars.dark)
     .map(([key, value]) => `    --${key}: ${value};`)
     .join("\n");
