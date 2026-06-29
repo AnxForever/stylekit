@@ -11,7 +11,7 @@ export default defineConfig({
     environment: "node",
     globals: true,
     include: ["**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}"],
-    exclude: ["node_modules", ".next", "tests/e2e", ".worktrees/**"],
+    exclude: ["**/node_modules/**", ".next", "tests/e2e", ".worktrees/**"],
     testTimeout: 30000,
     hookTimeout: 30000,
     pool: "threads",

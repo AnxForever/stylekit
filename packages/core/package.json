@@ -26,6 +26,11 @@
       "types": "./dist/accessibility/index.d.ts",
       "import": "./dist/accessibility/index.js",
       "require": "./dist/accessibility/index.cjs"
+    },
+    "./discovery": {
+      "types": "./dist/discovery/index.d.ts",
+      "import": "./dist/discovery/index.js",
+      "require": "./dist/discovery/index.cjs"
     }
   },
   "files": [

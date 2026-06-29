@@ -7,6 +7,7 @@ export default defineConfig({
     'styles/index': 'src/styles/index.ts',
     'recipes/index': 'src/recipes/index.ts',
     'accessibility/index': 'src/accessibility/index.ts',
+    'discovery/index': 'src/discovery/index.ts',
   },
   format: ['esm', 'cjs'],
   dts: true,
