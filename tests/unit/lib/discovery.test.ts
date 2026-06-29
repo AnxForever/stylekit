@@ -4,7 +4,9 @@ import {
   searchStyles,
   getStyleDetail,
   shadcnInstallCommand,
+  registryUrl,
   getComponentRecipe,
+  getTokens,
   knownSlug,
 } from "@/lib/discovery";
 
@@ -32,12 +34,14 @@ describe("discovery", () => {
     expect(total).toBeGreaterThan(5);
   });
 
-  it("gets style detail with install command and lists", () => {
+  it("gets style detail with keywords, hasRecipes, and install command", () => {
     const d = getStyleDetail("neo-brutalist");
     expect(d?.slug).toBe("neo-brutalist");
     expect(d?.shadcnInstall).toContain("/r/neo-brutalist.json");
     expect(Array.isArray(d?.doList)).toBe(true);
+    expect(Array.isArray(d?.keywords)).toBe(true);
     expect(typeof d?.hasTokens).toBe("boolean");
+    expect(typeof d?.hasRecipes).toBe("boolean");
   });
 
   it("returns null for an unknown slug", () => {
@@ -46,10 +50,18 @@ describe("discovery", () => {
     expect(knownSlug("glassmorphism")).toBe(true);
   });
 
-  it("builds the shadcn install command", () => {
-    expect(shadcnInstallCommand("synthwave")).toBe(
-      "npx shadcn add https://stylekit.top/r/synthwave.json",
+  it("builds registry URL and install command on the canonical (www) host", () => {
+    expect(registryUrl("synthwave")).toBe(
+      "https://www.stylekit.top/r/synthwave.json",
     );
+    expect(shadcnInstallCommand("synthwave")).toBe(
+      "npx shadcn add https://www.stylekit.top/r/synthwave.json",
+    );
+  });
+
+  it("returns tokens or null", () => {
+    expect(getTokens("neo-brutalist")).not.toBeNull();
+    expect(getTokens("nope-xyz")).toBeNull();
   });
 
   it("renders a component recipe", () => {

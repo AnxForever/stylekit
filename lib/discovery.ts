@@ -1,19 +1,24 @@
 /**
  * @module lib/discovery
  *
- * High-level style discovery helpers — search, detail, shadcn install command,
- * and recipe rendering — shared by @stylekit/mcp and @stylekit/cli so the data
- * layer lives in one place. Re-exported as @stylekit/core/discovery.
+ * High-level style discovery helpers — search, detail, registry URL/install
+ * command, token lookup, and recipe rendering — shared by @stylekit/mcp and
+ * @stylekit/cli so the data layer lives in one place. Re-exported as
+ * @stylekit/core/discovery.
  */
 
 import { styles, getStyleBySlug } from "./styles";
-import { getRecipe, getRecipeIds, renderRecipe } from "./recipes";
-import { hasStyleTokens } from "./styles/tokens-registry";
+import { getRecipe, getRecipeIds, hasRecipes, renderRecipe } from "./recipes";
+import { getStyleTokens, hasStyleTokens } from "./styles/tokens-registry";
 import type { DesignStyle } from "./styles";
+import type { StyleTokens } from "./styles/tokens";
+import type { StyleCategory } from "./styles/meta";
 
-export const STYLEKIT_SITE_URL = "https://stylekit.top";
+/** Canonical host (matches the site's www canonical to avoid a 301 redirect). */
+export const STYLEKIT_SITE_URL = "https://www.stylekit.top";
 
-export type DiscoveryCategory = "modern" | "retro" | "minimal" | "expressive";
+/** Reuse the canonical style category union so it can't drift. */
+export type DiscoveryCategory = StyleCategory;
 
 export interface StyleSummary {
   slug: string;
@@ -29,7 +34,9 @@ export interface StyleDetail extends StyleSummary {
   colors: { primary: string; secondary: string; accent: string[] };
   doList: string[];
   dontList: string[];
+  keywords: string[];
   hasTokens: boolean;
+  hasRecipes: boolean;
   recipeIds: string[];
   shadcnInstall: string;
   url: string;
@@ -59,13 +66,23 @@ function toSummary(s: DesignStyle): StyleSummary {
   };
 }
 
+/** The registry-item URL for a style (canonical host). */
+export function registryUrl(slug: string): string {
+  return `${STYLEKIT_SITE_URL}/r/${slug}.json`;
+}
+
 /** The one-line shadcn install command for a style's theme. */
 export function shadcnInstallCommand(slug: string): string {
-  return `npx shadcn add ${STYLEKIT_SITE_URL}/r/${slug}.json`;
+  return `npx shadcn add ${registryUrl(slug)}`;
 }
 
 export function knownSlug(slug: string): boolean {
   return getStyleBySlug(slug) !== undefined;
+}
+
+/** Design tokens for a style, or null if none are registered. */
+export function getTokens(slug: string): StyleTokens | null {
+  return getStyleTokens(slug) ?? null;
 }
 
 /**
@@ -106,7 +123,9 @@ export function getStyleDetail(slug: string): StyleDetail | null {
     colors: s.colors,
     doList: s.doListEn ?? s.doList,
     dontList: s.dontListEn ?? s.dontList,
+    keywords: s.keywordsEn ?? s.keywords,
     hasTokens: hasStyleTokens(slug),
+    hasRecipes: hasRecipes(slug),
     recipeIds: getRecipeIds(slug),
     shadcnInstall: shadcnInstallCommand(slug),
     url: `${STYLEKIT_SITE_URL}/styles/${slug}`,

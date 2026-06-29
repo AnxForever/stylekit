@@ -8,7 +8,7 @@ import {
   getComponentRecipe,
   knownSlug,
   shadcnInstallCommand,
-  SITE_URL,
+  registryUrl,
   type StyleCategory,
   type StyleSummary,
 } from "./core.js";
@@ -106,7 +106,7 @@ export function cmdAdd(slug: string, json: boolean): string {
   const command = shadcnInstallCommand(slug);
   if (json) {
     return JSON.stringify(
-      { slug, command, registryUrl: `${SITE_URL}/r/${slug}.json` },
+      { slug, command, registryUrl: registryUrl(slug) },
       null,
       2,
     );
