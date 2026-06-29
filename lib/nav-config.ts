@@ -125,6 +125,7 @@ export const mainNav: NavItem[] = [
             { href: "/gradients", labelKey: "nav.gradients" },
             { href: "/shadows", labelKey: "nav.shadows" },
             { href: "/backgrounds", labelKey: "nav.backgrounds" },
+            { href: "/color-theory", labelKey: "nav.colorTheory" },
           ],
         },
         {

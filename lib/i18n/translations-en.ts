@@ -508,6 +508,7 @@ export const en = {
     "nav.shadows": "Shadows",
     "nav.typography": "Typography",
     "nav.backgrounds": "Backgrounds",
+    "nav.colorTheory": "Color Theory",
     "nav.resources": "Resources",
     "playground.compare": "Compare Styles",
     "playground.export": "Export Project",
