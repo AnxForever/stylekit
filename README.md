@@ -198,6 +198,20 @@ POST /api/lint                        # Lint code against a style
 POST /api/match-style                 # Match code to closest style
 ```
 
+## Use in your shadcn project
+
+Every style is also published as a [shadcn registry](https://ui.shadcn.com/docs/registry) theme. Install any style's light + dark color theme into an existing shadcn project with one command:
+
+```bash
+npx shadcn add https://stylekit.top/r/glassmorphism.json
+```
+
+Swap `glassmorphism` for any slug — browse the full list at [`/registry.json`](https://stylekit.top/registry.json) or in the [styles gallery](https://stylekit.top/styles). The CLI injects the style's `cssVars` (light + dark) into your `globals.css` and works with Tailwind v4.
+
+> Prerequisite: the target project must contain a `tsconfig.json`, or the shadcn CLI exits with `Couldn't find tsconfig.json`.
+
+See [`docs/registry.md`](docs/registry.md) for the full guide.
+
 ## Support This Project
 
 If StyleKit happens to help you, that honestly means a lot.
