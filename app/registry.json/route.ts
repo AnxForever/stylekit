@@ -11,7 +11,14 @@ const CACHE_CONTROL =
  * StyleKit style available via `npx shadcn add`.
  */
 export async function GET() {
-  return NextResponse.json(toRegistryIndex(styles), {
-    headers: { "Cache-Control": CACHE_CONTROL },
-  });
+  try {
+    return NextResponse.json(toRegistryIndex(styles), {
+      headers: { "Cache-Control": CACHE_CONTROL },
+    });
+  } catch {
+    return NextResponse.json(
+      { error: "Failed to build registry index" },
+      { status: 500 },
+    );
+  }
 }

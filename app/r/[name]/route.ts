@@ -15,18 +15,25 @@ export async function GET(
   _request: Request,
   { params }: { params: Promise<{ name: string }> },
 ) {
-  const { name } = await params;
-  const slug = name.replace(/\.json$/, "");
-  const style = getStyleBySlug(slug);
+  try {
+    const { name } = await params;
+    const slug = name.replace(/\.json$/, "").toLowerCase();
+    const style = getStyleBySlug(slug);
 
-  if (!style) {
+    if (!style) {
+      return NextResponse.json(
+        { error: `Unknown style: ${slug}` },
+        { status: 404 },
+      );
+    }
+
+    return NextResponse.json(toRegistryItem(style), {
+      headers: { "Cache-Control": CACHE_CONTROL },
+    });
+  } catch {
     return NextResponse.json(
-      { error: `Unknown style: ${slug}` },
-      { status: 404 },
+      { error: "Failed to build registry item" },
+      { status: 500 },
     );
   }
-
-  return NextResponse.json(toRegistryItem(style), {
-    headers: { "Cache-Control": CACHE_CONTROL },
-  });
 }
