@@ -1,6 +1,8 @@
 // shadcn/ui Theme Generator
 // Derives each style's real design tokens (colors, radius, borders) into the
 // raw CSS values a shadcn theme needs, so every style yields a distinct theme.
+// Covers the full modern shadcn token set (surfaces, brand, charts, sidebar)
+// with contrast-safe foregrounds and a per-style dark mode.
 
 import type { DesignStyle } from "../styles";
 import { getStyleTokens } from "../styles/tokens-registry";
@@ -35,6 +37,11 @@ const FALLBACK = {
   radius: "0.5rem",
 };
 
+/** A style is "natively dark" when its own surface is a dark color. */
+const DARK_THRESHOLD = 45;
+/** Minimum lightness gap for a foreground to be legible on its background. */
+const CONTRAST_GAP = 35;
+
 /** Resolve a value that may be a raw color (hex/rgba/oklch) OR a Tailwind class. */
 function anyColorToHsl(input?: string): string | null {
   if (!input) return null;
@@ -48,21 +55,111 @@ function readableForeground(hslBg: string): string {
   return l >= 55 ? "0 0% 9%" : "0 0% 98%";
 }
 
+/** Keep the style's foreground only if it contrasts with the surface; else flip. */
+function ensureContrast(fg: string, bg: string): string {
+  const lf = hslLightness(fg);
+  const lb = hslLightness(bg);
+  if (lf === null || lb === null) return fg;
+  return Math.abs(lf - lb) >= CONTRAST_GAP ? fg : readableForeground(bg);
+}
+
+/** Rotate an HSL triplet's hue by `deg` degrees (used to spread chart colors). */
+function rotateHue(hsl: string, deg: number): string {
+  const m = hsl.match(/^(\d+) (\d+)% (\d+)%$/);
+  if (!m) return hsl;
+  const h = (parseInt(m[1], 10) + deg) % 360;
+  return `${h} ${m[2]}% ${m[3]}%`;
+}
+
+/** Five chart colors from the style's palette, padded by hue rotation. */
+function chartColors(
+  style: DesignStyle,
+  primary: string,
+  accent: string,
+): Record<string, string> {
+  const palette = [
+    primary,
+    accent,
+    ...(style.colors.accent ?? [])
+      .slice(1)
+      .map((c) => anyColorToHsl(c))
+      .filter((c): c is string => c !== null),
+  ];
+  const out: Record<string, string> = {};
+  for (let i = 0; i < 5; i++) {
+    out[`chart-${i + 1}`] = palette[i] ?? rotateHue(primary, (i + 1) * 47);
+  }
+  return out;
+}
+
+interface Surface {
+  bg: string;
+  fg: string;
+  muted: string;
+  mutedFg: string;
+  border: string;
+  radius: string;
+  primary: string;
+  secondary: string;
+  accent: string;
+  style: DesignStyle;
+}
+
+/** Assemble the full shadcn token set for one mode. */
+function buildVars(s: Surface): Record<string, string> {
+  return {
+    background: s.bg,
+    foreground: s.fg,
+    card: s.bg,
+    "card-foreground": s.fg,
+    popover: s.bg,
+    "popover-foreground": s.fg,
+    primary: s.primary,
+    "primary-foreground": readableForeground(s.primary),
+    secondary: s.secondary,
+    "secondary-foreground": readableForeground(s.secondary),
+    muted: s.muted,
+    "muted-foreground": s.mutedFg,
+    accent: s.accent,
+    "accent-foreground": readableForeground(s.accent),
+    destructive: "0 72% 51%",
+    "destructive-foreground": "0 0% 98%",
+    border: s.border,
+    input: s.border,
+    ring: s.primary,
+    ...chartColors(s.style, s.primary, s.accent),
+    // Sidebar group reuses the main surface/brand tokens for a coherent shell.
+    sidebar: s.bg,
+    "sidebar-foreground": s.fg,
+    "sidebar-primary": s.primary,
+    "sidebar-primary-foreground": readableForeground(s.primary),
+    "sidebar-accent": s.accent,
+    "sidebar-accent-foreground": readableForeground(s.accent),
+    "sidebar-border": s.border,
+    "sidebar-ring": s.primary,
+    radius: s.radius,
+  };
+}
+
 export function generateShadcnTheme(style: DesignStyle): ShadcnTheme {
   const tokens = getStyleTokens(style.slug);
 
-  // Structural colors derived from the style's semantic tokens.
+  // Structural colors from the style's semantic tokens.
   const bg =
     (tokens && resolveTwColor(tokens.colors.background.primary)) ??
     FALLBACK.lightBg;
-  const fg =
-    (tokens && resolveTwColor(tokens.colors.text.primary)) ?? FALLBACK.lightFg;
+  const fg = ensureContrast(
+    (tokens && resolveTwColor(tokens.colors.text.primary)) ?? FALLBACK.lightFg,
+    bg,
+  );
   const muted =
     (tokens && resolveTwColor(tokens.colors.background.secondary)) ??
     FALLBACK.lightMuted;
-  const mutedFg =
+  const mutedFg = ensureContrast(
     (tokens && resolveTwColor(tokens.colors.text.muted)) ??
-    FALLBACK.lightMutedFg;
+      FALLBACK.lightMutedFg,
+    muted,
+  );
   const border =
     (tokens && resolveTwColor(tokens.border.color)) ?? FALLBACK.lightBorder;
   const radius =
@@ -73,52 +170,47 @@ export function generateShadcnTheme(style: DesignStyle): ShadcnTheme {
   const secondary = anyColorToHsl(style.colors.secondary) ?? muted;
   const accent = anyColorToHsl(style.colors.accent?.[0]) ?? primary;
 
-  const light: Record<string, string> = {
-    background: bg,
-    foreground: fg,
-    card: bg,
-    "card-foreground": fg,
-    popover: bg,
-    "popover-foreground": fg,
-    primary,
-    "primary-foreground": readableForeground(primary),
-    secondary,
-    "secondary-foreground": readableForeground(secondary),
+  const light = buildVars({
+    bg,
+    fg,
     muted,
-    "muted-foreground": mutedFg,
-    accent,
-    "accent-foreground": readableForeground(accent),
-    destructive: "0 72% 51%",
-    "destructive-foreground": "0 0% 98%",
+    mutedFg,
     border,
-    input: border,
-    ring: primary,
     radius,
-  };
-
-  // Dark mode keeps brand colors + radius over a neutral dark skeleton.
-  const dark: Record<string, string> = {
-    background: FALLBACK.darkBg,
-    foreground: FALLBACK.darkFg,
-    card: FALLBACK.darkBg,
-    "card-foreground": FALLBACK.darkFg,
-    popover: FALLBACK.darkBg,
-    "popover-foreground": FALLBACK.darkFg,
     primary,
-    "primary-foreground": readableForeground(primary),
     secondary,
-    "secondary-foreground": readableForeground(secondary),
-    muted: FALLBACK.darkMuted,
-    "muted-foreground": FALLBACK.darkMutedFg,
     accent,
-    "accent-foreground": readableForeground(accent),
-    destructive: "0 62.8% 30.6%",
-    "destructive-foreground": "0 0% 98%",
-    border: FALLBACK.darkBorder,
-    input: FALLBACK.darkBorder,
-    ring: primary,
-    radius,
-  };
+    style,
+  });
+
+  // Dark mode: natively-dark styles keep their own identity in both modes;
+  // light styles get a neutral dark skeleton with brand colors preserved.
+  const nativelyDark = (hslLightness(bg) ?? 100) < DARK_THRESHOLD;
+  const dark = nativelyDark
+    ? buildVars({
+        bg,
+        fg,
+        muted,
+        mutedFg,
+        border,
+        radius,
+        primary,
+        secondary,
+        accent,
+        style,
+      })
+    : buildVars({
+        bg: FALLBACK.darkBg,
+        fg: FALLBACK.darkFg,
+        muted: FALLBACK.darkMuted,
+        mutedFg: FALLBACK.darkMutedFg,
+        border: FALLBACK.darkBorder,
+        radius,
+        primary,
+        secondary,
+        accent,
+        style,
+      });
 
   return { name: style.slug, cssVars: { light, dark } };
 }
