@@ -34,6 +34,11 @@ check(
     search.structuredContent.results.length > 0,
   "search returns structuredContent.results",
 );
+check(
+  typeof search.structuredContent?.has_more === "boolean" &&
+    search.structuredContent?.offset === 0,
+  "search returns pagination (offset + has_more)",
+);
 
 const detail = await client.callTool({
   name: "stylekit_get_style",
@@ -43,6 +48,11 @@ check(/neo-brutalist/i.test(detail.content[0].text), "get_style neo-brutalist");
 check(
   detail.structuredContent?.shadcnInstall?.includes("/r/neo-brutalist.json"),
   "get_style includes shadcn install command",
+);
+check(
+  Array.isArray(detail.structuredContent?.keywords) &&
+    typeof detail.structuredContent?.hasRecipes === "boolean",
+  "get_style returns keywords + hasRecipes",
 );
 
 const tokens = await client.callTool({
