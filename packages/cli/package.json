@@ -1,0 +1,47 @@
+{
+  "name": "@stylekit/cli",
+  "version": "0.1.0",
+  "description": "Command-line tool for StyleKit — browse 120+ design styles and pull tokens, recipes, and shadcn install commands from your terminal",
+  "type": "module",
+  "bin": {
+    "stylekit": "dist/index.js"
+  },
+  "main": "dist/index.js",
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsx src/index.ts",
+    "clean": "rm -rf dist"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "@stylekit/core": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "tsx": "^4.19.0",
+    "typescript": "^5"
+  },
+  "keywords": [
+    "stylekit",
+    "cli",
+    "design-system",
+    "design-tokens",
+    "shadcn",
+    "tailwind",
+    "ai"
+  ],
+  "license": "MIT",
+  "author": "AnxForever",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AnxForever/stylekit.git",
+    "directory": "packages/cli"
+  },
+  "homepage": "https://github.com/AnxForever/stylekit/tree/main/packages/cli#readme"
+}
