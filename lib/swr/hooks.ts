@@ -144,6 +144,75 @@ export function useAdminAuditEvents(query: AdminAuditQuery = {}) {
   });
 }
 
+// ---------- Profile ----------
+
+interface ProfileComment {
+  id: string;
+  style_slug: string;
+  content: string;
+  created_at: string;
+}
+
+interface ProfileCommentsData {
+  success: boolean;
+  comments: ProfileComment[];
+}
+
+interface ProfileSubmission {
+  id: string;
+  slug: string;
+  status: "pending" | "approved" | "rejected";
+  submitted_at: string;
+  name: string | null;
+  name_en: string | null;
+  description: string | null;
+}
+
+interface ProfileSubmissionsData {
+  success: boolean;
+  submissions: ProfileSubmission[];
+}
+
+interface ProfileRating {
+  id: string;
+  style_slug: string;
+  rating: number;
+  created_at: string;
+}
+
+interface ProfileRatingsData {
+  success: boolean;
+  ratings: ProfileRating[];
+}
+
+interface ProfileTitleData {
+  success: boolean;
+  title: string | null;
+  titleColor: string | null;
+  titleIconPath: string | null;
+  seqId: number | null;
+}
+
+export function useProfileComments(userId: string | undefined) {
+  return useSWR<ProfileCommentsData>(userId ? "/api/profile/comments" : null);
+}
+
+export function useProfileSubmissions(userId: string | undefined) {
+  return useSWR<ProfileSubmissionsData>(userId ? "/api/profile/submissions" : null, {
+    keepPreviousData: true,
+    dedupingInterval: 10_000,
+    revalidateOnFocus: false,
+  });
+}
+
+export function useProfileRatings(userId: string | undefined) {
+  return useSWR<ProfileRatingsData>(userId ? "/api/profile/ratings" : null);
+}
+
+export function useProfileTitle(userId: string | undefined) {
+  return useSWR<ProfileTitleData>(userId ? "/api/profile/title" : null);
+}
+
 // ---------- Admin Comments ----------
 
 interface AdminComment {
@@ -392,6 +461,13 @@ export type {
   AdminAuditEvent,
   AdminAuditData,
   AdminAuditQuery,
+  ProfileComment,
+  ProfileCommentsData,
+  ProfileSubmission,
+  ProfileSubmissionsData,
+  ProfileRating,
+  ProfileRatingsData,
+  ProfileTitleData,
   AdminComment,
   AdminCommentsData,
   AdminCommentsQuery,
