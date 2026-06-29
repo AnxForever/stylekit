@@ -22,7 +22,9 @@ export interface FontPairing {
   heading: FontSpec;
   body: FontSpec;
   category: TypographyCategory;
+  /** @deprecated Hand-written, lacks the system fallback chain. Use generateFontCSS(pairing). */
   css: string;
+  /** @deprecated Hand-written, needs config. Use generateTailwindTheme(pairing) for valid Tailwind v4. */
   tailwind: string;
   tags: string[];
   mood: string[];
@@ -506,5 +508,116 @@ export function generateGoogleFontsLink(pairing: FontPairing): string {
   }
 
   return `${FONT_CDN}/css2?family=${headingFamily}:wght@${pairing.heading.weight}&family=${bodyFamily}:wght@${pairing.body.weight}&display=swap`;
+}
+
+// ---------------------------------------------------------------------------
+// Font fallback stacks & code generation
+//
+// CSS/Tailwind output is generated (not hand-written) so the system-font
+// fallback chain is always present and correct. Without it, a Google Fonts CDN
+// outage drops the page to the browser default font — a real production risk.
+// Stacks mirror app/globals.css (--font-serif / --font-sans).
+// ---------------------------------------------------------------------------
+
+type GenericFamily = "serif" | "sans" | "mono";
+
+const SYSTEM_FONT_STACKS: Record<GenericFamily, string> = {
+  serif: "ui-serif, Georgia, Cambria, 'Times New Roman', Times, serif",
+  sans: "ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif",
+  mono: "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace",
+};
+
+// Each Google Font used in fontPairings mapped to its generic family. Display /
+// rounded fonts (Fredoka, Baloo 2, Comfortaa) fall back to sans rather than
+// cursive — the system cursive default (Comic Sans) is worse than a clean sans.
+const FONT_GENERIC: Record<string, GenericFamily> = {
+  "Playfair Display": "serif",
+  "Merriweather": "serif",
+  "Lora": "serif",
+  "PT Serif": "serif",
+  "Libre Baskerville": "serif",
+  "EB Garamond": "serif",
+  "Cormorant Garamond": "serif",
+  "Bodoni Moda": "serif",
+  "Crimson Text": "serif",
+  "JetBrains Mono": "mono",
+  "IBM Plex Mono": "mono",
+  "Fira Code": "mono",
+  "Source Sans 3": "sans",
+  "Open Sans": "sans",
+  "Lato": "sans",
+  "Inter": "sans",
+  "Space Grotesk": "sans",
+  "DM Sans": "sans",
+  "Montserrat": "sans",
+  "Nunito": "sans",
+  "Work Sans": "sans",
+  "Quicksand": "sans",
+  "Poppins": "sans",
+  "Raleway": "sans",
+  "Roboto": "sans",
+  "PT Sans": "sans",
+  "Libre Franklin": "sans",
+  "Karla": "sans",
+  "Josefin Sans": "sans",
+  "IBM Plex Sans": "sans",
+  "Jost": "sans",
+  "Comfortaa": "sans",
+  "Fredoka": "sans",
+  "Baloo 2": "sans",
+};
+
+function genericOf(family: string): GenericFamily {
+  return FONT_GENERIC[family] ?? "sans";
+}
+
+/** Full `font-family` value with the system fallback chain appended. */
+export function fontStack(spec: FontSpec): string {
+  return `'${spec.family}', ${SYSTEM_FONT_STACKS[genericOf(spec.family)]}`;
+}
+
+const WEIGHT_TW_CLASS: Record<number, string> = {
+  300: "font-light",
+  400: "font-normal",
+  500: "font-medium",
+  600: "font-semibold",
+  700: "font-bold",
+  800: "font-extrabold",
+  900: "font-black",
+};
+
+function weightClass(weight: number): string {
+  return WEIGHT_TW_CLASS[weight] ?? "font-normal";
+}
+
+/** Plain CSS with correct fallback chains — safe to paste into any stylesheet. */
+export function generateFontCSS(pairing: FontPairing): string {
+  return [
+    `/* Heading — ${pairing.heading.family} */`,
+    `font-family: ${fontStack(pairing.heading)};`,
+    `font-weight: ${pairing.heading.weight};`,
+    ``,
+    `/* Body — ${pairing.body.family} */`,
+    `font-family: ${fontStack(pairing.body)};`,
+    `font-weight: ${pairing.body.weight};`,
+  ].join("\n");
+}
+
+/**
+ * Tailwind v4 snippet. This project uses CSS-based config (no tailwind.config.js),
+ * so fonts are registered in an `@theme` block and consumed via utility classes.
+ */
+export function generateTailwindTheme(pairing: FontPairing): string {
+  return [
+    `/* 1. Register in your global CSS (Tailwind v4) */`,
+    `@theme {`,
+    `  --font-heading: ${fontStack(pairing.heading)};`,
+    `  --font-body: ${fontStack(pairing.body)};`,
+    `}`,
+    ``,
+    `/* 2. Use the generated utilities */`,
+    `<h1 class="font-heading ${weightClass(pairing.heading.weight)}">Heading</h1>`,
+    `<p class="font-body ${weightClass(pairing.body.weight)}">Body text</p>`,
+  ].join("\n");
 }
 
