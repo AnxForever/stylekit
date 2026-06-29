@@ -1,13 +1,13 @@
 /**
- * @module @stylekit/core
+ * @module stylekit-core
  *
  * Main entry point for the StyleKit core library.
  * Re-exports all public sub-modules: styles, recipes, and accessibility.
  *
  * For tree-shaking, prefer importing from specific sub-modules:
  * ```ts
- * import { getStyleBySlug } from '@stylekit/core/styles'
- * import { contrastRatio } from '@stylekit/core/accessibility'
+ * import { getStyleBySlug } from 'stylekit-core/styles'
+ * import { contrastRatio } from 'stylekit-core/accessibility'
  * ```
  */
 

@@ -1,5 +1,5 @@
 /**
- * @module @stylekit/core/styles
+ * @module stylekit-core/styles
  *
  * Style definitions, metadata, and token system.
  * Provides access to all registered design styles, their metadata,

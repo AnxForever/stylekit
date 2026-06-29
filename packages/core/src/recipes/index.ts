@@ -1,5 +1,5 @@
 /**
- * @module @stylekit/core/recipes
+ * @module stylekit-core/recipes
  *
  * Component recipe system for generating style-consistent UI components.
  * Recipes define parameterized component templates (button, card, input, etc.)

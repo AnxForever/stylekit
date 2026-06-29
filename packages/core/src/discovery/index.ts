@@ -1,9 +1,9 @@
 /**
- * @module @stylekit/core/discovery
+ * @module stylekit-core/discovery
  *
  * High-level style discovery: search/list, full detail, the shadcn install
  * command, and component recipe rendering. A convenience layer over the styles
- * and recipes systems, used by @stylekit/mcp and @stylekit/cli.
+ * and recipes systems, used by stylekit-mcp and stylekit-cli.
  */
 
 export {

@@ -1,11 +1,11 @@
-# @stylekit/cli
+# stylekit-cli
 
-Command-line tool for [StyleKit](https://stylekit.top) — browse 120+ design styles and pull design tokens, component recipes, and shadcn install commands straight from your terminal. Works **offline** (served from the bundled `@stylekit/core`).
+Command-line tool for [StyleKit](https://stylekit.top) — browse 120+ design styles and pull design tokens, component recipes, and shadcn install commands straight from your terminal. Works **offline** (served from the bundled `stylekit-core`).
 
 ## Usage
 
 ```bash
-npx @stylekit/cli <command> [args] [flags]
+npx stylekit-cli <command> [args] [flags]
 ```
 
 > Not yet published to npm. Until then, build locally and run `node packages/cli/dist/index.js <command>` after `pnpm build`.

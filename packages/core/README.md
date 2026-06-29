@@ -1,11 +1,11 @@
-# @stylekit/core
+# stylekit-core
 
 StyleKit core library - design style tokens, recipes, and accessibility helpers for AI-driven UI generation.
 
 ## Installation
 
 ```bash
-npm install @stylekit/core
+npm install stylekit-core
 ```
 
 ## Modules
@@ -15,7 +15,7 @@ npm install @stylekit/core
 Design style definitions, metadata, and token system.
 
 ```typescript
-import { styles, getStyleBySlug, getStyleTokens } from '@stylekit/core/styles'
+import { styles, getStyleBySlug, getStyleTokens } from 'stylekit-core/styles'
 
 // Get all styles
 const allStyles = styles
@@ -32,7 +32,7 @@ const tokens = getStyleTokens('neo-brutalist')
 Component recipe system with parameterized, composable component definitions.
 
 ```typescript
-import { getStyleRecipes, getRecipe, renderRecipe } from '@stylekit/core/recipes'
+import { getStyleRecipes, getRecipe, renderRecipe } from 'stylekit-core/recipes'
 
 // Get all recipes for a style
 const recipes = getStyleRecipes('glassmorphism')
@@ -53,7 +53,7 @@ const result = renderRecipe(buttonRecipe, {
 WCAG 2.1 compliance checking for design styles.
 
 ```typescript
-import { contrastRatio, meetsAA, scoreStyle } from '@stylekit/core/accessibility'
+import { contrastRatio, meetsAA, scoreStyle } from 'stylekit-core/accessibility'
 
 // Check contrast ratio
 const ratio = contrastRatio('#000000', '#ffffff') // 21
@@ -71,7 +71,7 @@ import {
   styles,
   getStyleTokens,
   contrastRatio,
-} from '@stylekit/core'
+} from 'stylekit-core'
 ```
 
 ## License
