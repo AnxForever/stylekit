@@ -12,19 +12,19 @@
     "README.md"
   ],
   "scripts": {
-    "build": "tsc",
+    "build": "tsup",
     "dev": "tsx src/index.ts",
     "clean": "rm -rf dist",
-    "test": "node test/smoke.mjs"
+    "test": "node test/smoke.mjs",
+    "prepublishOnly": "pnpm run clean && pnpm run build"
   },
   "engines": {
     "node": ">=18"
   },
-  "dependencies": {
-    "@stylekit/core": "workspace:*"
-  },
   "devDependencies": {
+    "@stylekit/core": "workspace:*",
     "@types/node": "^20",
+    "tsup": "^8.0.0",
     "tsx": "^4.19.0",
     "typescript": "^5"
   },
