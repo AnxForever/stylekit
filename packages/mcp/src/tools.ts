@@ -10,6 +10,7 @@ import {
   getComponentRecipe,
   knownSlug,
   shadcnInstallCommand,
+  registryUrl,
   type StyleCategory,
 } from "./data.js";
 import { toolResult, errorResult } from "./format.js";
@@ -247,7 +248,7 @@ Examples:
       const structured = {
         slug,
         command,
-        registryUrl: `https://stylekit.top/r/${slug}.json`,
+        registryUrl: registryUrl(slug),
         prerequisite: "The target project must contain a tsconfig.json.",
       };
       const text = [
