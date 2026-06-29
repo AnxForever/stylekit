@@ -24,6 +24,34 @@ const READ_ONLY = {
 
 const CATEGORIES = ["modern", "retro", "minimal", "expressive"] as const;
 
+// Shared output shapes (so clients get typed structuredContent).
+const SUMMARY_SHAPE = {
+  slug: z.string(),
+  name: z.string(),
+  nameEn: z.string(),
+  category: z.string(),
+  tags: z.array(z.string()),
+  description: z.string(),
+} as const;
+
+const DETAIL_SHAPE = {
+  ...SUMMARY_SHAPE,
+  philosophy: z.string(),
+  colors: z.object({
+    primary: z.string(),
+    secondary: z.string(),
+    accent: z.array(z.string()),
+  }),
+  doList: z.array(z.string()),
+  dontList: z.array(z.string()),
+  keywords: z.array(z.string()),
+  hasTokens: z.boolean(),
+  hasRecipes: z.boolean(),
+  recipeIds: z.array(z.string()),
+  shadcnInstall: z.string(),
+  url: z.string(),
+} as const;
+
 function unknownSlug(slug: string) {
   return errorResult(
     `Unknown style "${slug}". Use stylekit_search_styles to find a valid slug (e.g. "glassmorphism", "neo-brutalist").`,
@@ -36,18 +64,19 @@ export function registerStyleKitTools(server: McpServer): void {
     "stylekit_search_styles",
     {
       title: "Search StyleKit styles",
-      description: `Search StyleKit's 120+ design styles by keyword and/or category.
+      description: `Search StyleKit's 120+ design styles by keyword and/or category, with pagination.
 
 Args:
   - query (string, optional): matches slug, name, description, tags, keywords (case-insensitive).
   - category ('modern'|'retro'|'minimal'|'expressive', optional): restrict to one category.
-  - limit (number 1-50, default 15): max results.
+  - limit (number 1-50, default 15): page size.
+  - offset (number >=0, default 0): results to skip (for paging).
 
-Returns JSON: { total, count, results: [{ slug, name, nameEn, category, tags, description }] }.
+Returns JSON: { total, count, offset, has_more, results: [{ slug, name, nameEn, category, tags, description }] }.
 
 Examples:
   - "find a glassy frosted style" -> query: "glass"
-  - "show me retro styles" -> category: "retro"
+  - "next page of retro styles" -> category: "retro", offset: 15
   - For full tokens of one style, use stylekit_get_style_tokens instead.`,
       inputSchema: {
         query: z.string().max(100).optional().describe("Keyword to match"),
@@ -61,31 +90,52 @@ Examples:
           .min(1)
           .max(50)
           .default(15)
-          .describe("Max results"),
+          .describe("Page size"),
+        offset: z
+          .number()
+          .int()
+          .min(0)
+          .default(0)
+          .describe("Results to skip for pagination"),
+      },
+      outputSchema: {
+        total: z.number(),
+        count: z.number(),
+        offset: z.number(),
+        has_more: z.boolean(),
+        results: z.array(z.object(SUMMARY_SHAPE)),
       },
       annotations: READ_ONLY,
     },
-    async ({ query, category, limit }) => {
-      const { total, results } = searchStyles({
+    async ({ query, category, limit, offset }) => {
+      const { total, results: all } = searchStyles({
         query,
         category: category as StyleCategory | undefined,
-        limit,
       });
-      if (results.length === 0) {
+      const page = all.slice(offset, offset + limit);
+      if (page.length === 0) {
         return errorResult(
-          `No styles match${query ? ` "${query}"` : ""}${category ? ` in category "${category}"` : ""}. Try a broader query or drop the category filter.`,
+          `No styles match${query ? ` "${query}"` : ""}${category ? ` in category "${category}"` : ""}${offset ? ` at offset ${offset}` : ""}. Try a broader query, drop the category filter, or lower the offset.`,
         );
       }
+      const hasMore = offset + page.length < total;
       const lines = [
         `# StyleKit styles${query ? ` matching "${query}"` : ""}`,
-        `Found ${total} (showing ${results.length}).`,
+        `Found ${total} (showing ${page.length}${offset ? ` from offset ${offset}` : ""}).`,
         "",
-        ...results.map(
+        ...page.map(
           (r) =>
             `- **${r.nameEn}** (\`${r.slug}\`) — ${r.category} · ${r.tags.join(", ")}\n  ${r.description}`,
         ),
+        ...(hasMore ? ["", `…more available — call again with offset: ${offset + page.length}.`] : []),
       ];
-      return toolResult(lines.join("\n"), { total, count: results.length, results });
+      return toolResult(lines.join("\n"), {
+        total,
+        count: page.length,
+        offset,
+        has_more: hasMore,
+        results: page,
+      });
     },
   );
 
@@ -94,7 +144,7 @@ Examples:
     "stylekit_get_style",
     {
       title: "Get StyleKit style detail",
-      description: `Get one style's full profile: philosophy, palette, do/don't rules, and what's available (tokens, recipes, shadcn install).
+      description: `Get one style's full profile: philosophy, palette, do/don't rules, keywords, and what's available (tokens, recipes, shadcn install).
 
 Args:
   - slug (string): style identifier, e.g. "glassmorphism", "neo-brutalist".
@@ -107,6 +157,7 @@ Examples:
       inputSchema: {
         slug: z.string().min(1).describe("Style slug, e.g. 'glassmorphism'"),
       },
+      outputSchema: DETAIL_SHAPE,
       annotations: READ_ONLY,
     },
     async ({ slug }) => {
@@ -143,7 +194,7 @@ Examples:
 Args:
   - slug (string): style identifier.
 
-Returns JSON: the full StyleTokens object.
+Returns JSON: the full StyleTokens object (structuredContent).
 
 Examples:
   - "give me the spacing and border tokens for bento-grid" -> slug: "bento-grid"
@@ -163,7 +214,7 @@ Examples:
       }
       return toolResult(
         `# Design tokens for \`${slug}\`\n\n\`\`\`json\n${JSON.stringify(tokens, null, 2)}\n\`\`\``,
-        tokens as unknown as object,
+        tokens as unknown as Record<string, unknown>,
       );
     },
   );
@@ -190,6 +241,12 @@ Examples:
           .string()
           .min(1)
           .describe("Recipe id: button, card, input, ..."),
+      },
+      outputSchema: {
+        slug: z.string(),
+        component: z.string(),
+        className: z.string(),
+        code: z.string(),
       },
       annotations: READ_ONLY,
     },
@@ -240,14 +297,19 @@ Examples:
       inputSchema: {
         slug: z.string().min(1).describe("Style slug"),
       },
+      outputSchema: {
+        slug: z.string(),
+        command: z.string(),
+        registryUrl: z.string(),
+        prerequisite: z.string(),
+      },
       annotations: READ_ONLY,
     },
     async ({ slug }) => {
       if (!knownSlug(slug)) return unknownSlug(slug);
-      const command = shadcnInstallCommand(slug);
       const structured = {
         slug,
-        command,
+        command: shadcnInstallCommand(slug),
         registryUrl: registryUrl(slug),
         prerequisite: "The target project must contain a tsconfig.json.",
       };
@@ -255,7 +317,7 @@ Examples:
         `Install the **${slug}** theme into your shadcn project:`,
         "",
         "```bash",
-        command,
+        structured.command,
         "```",
         "",
         "Injects light + dark cssVars into your globals.css (Tailwind v4 compatible).",
