@@ -1,12 +1,16 @@
 // Gradient Library - Inspired by Grabient and other sources
 // Provides pre-defined gradient palettes for design systems
 
+export type GradientType = "linear" | "radial" | "conic" | "mesh";
+
 export interface Gradient {
   id: string;
   name: string;
   nameZh: string;
   colors: string[];
   angle: number;
+  /** Gradient family. Defaults to "linear" when omitted (the original palettes). */
+  type?: GradientType;
   css: string;
   tailwind: string;
   category: GradientCategory;
@@ -314,6 +318,156 @@ export const gradients: Gradient[] = [
     tailwind: "bg-gradient-to-br from-[#0f0c29] via-[#302b63] to-[#24243e]",
     category: "dark",
     mood: ["powerful", "sleek", "modern"],
+  },
+
+  // === Mesh Gradients (layered radial blobs — the modern trend) ===
+  {
+    id: "aurora-mesh",
+    name: "Aurora Mesh",
+    nameZh: "极光网格",
+    colors: ["#7c3aed", "#2563eb", "#06b6d4"],
+    angle: 0,
+    type: "mesh",
+    css: "radial-gradient(at 20% 25%, #7c3aed 0px, transparent 55%), radial-gradient(at 75% 20%, #2563eb 0px, transparent 55%), radial-gradient(at 50% 80%, #06b6d4 0px, transparent 55%), radial-gradient(at 50% 50%, #0a0e27 0px, #0a0e27 100%)",
+    tailwind: "bg-[radial-gradient(at_20%_25%,#7c3aed_0px,transparent_55%),radial-gradient(at_75%_20%,#2563eb_0px,transparent_55%),radial-gradient(at_50%_80%,#06b6d4_0px,transparent_55%),radial-gradient(at_50%_50%,#0a0e27_0px,#0a0e27_100%)]",
+    category: "cool",
+    mood: ["ethereal", "dreamy", "modern"],
+  },
+  {
+    id: "sunset-mesh",
+    name: "Sunset Mesh",
+    nameZh: "日落网格",
+    colors: ["#fb923c", "#f43f5e", "#c026d3"],
+    angle: 0,
+    type: "mesh",
+    css: "radial-gradient(at 15% 30%, #fb923c 0px, transparent 55%), radial-gradient(at 80% 25%, #f43f5e 0px, transparent 55%), radial-gradient(at 50% 85%, #c026d3 0px, transparent 55%), radial-gradient(at 50% 50%, #1a0a2e 0px, #1a0a2e 100%)",
+    tailwind: "bg-[radial-gradient(at_15%_30%,#fb923c_0px,transparent_55%),radial-gradient(at_80%_25%,#f43f5e_0px,transparent_55%),radial-gradient(at_50%_85%,#c026d3_0px,transparent_55%),radial-gradient(at_50%_50%,#1a0a2e_0px,#1a0a2e_100%)]",
+    category: "sunset",
+    mood: ["warm", "vibrant", "atmospheric"],
+  },
+  {
+    id: "neon-mesh",
+    name: "Neon Mesh",
+    nameZh: "霓虹网格",
+    colors: ["#22d3ee", "#ec4899", "#a3e635"],
+    angle: 0,
+    type: "mesh",
+    css: "radial-gradient(at 25% 25%, #22d3ee 0px, transparent 50%), radial-gradient(at 75% 30%, #ec4899 0px, transparent 50%), radial-gradient(at 50% 80%, #a3e635 0px, transparent 50%), radial-gradient(at 50% 50%, #0c0a1d 0px, #0c0a1d 100%)",
+    tailwind: "bg-[radial-gradient(at_25%_25%,#22d3ee_0px,transparent_50%),radial-gradient(at_75%_30%,#ec4899_0px,transparent_50%),radial-gradient(at_50%_80%,#a3e635_0px,transparent_50%),radial-gradient(at_50%_50%,#0c0a1d_0px,#0c0a1d_100%)]",
+    category: "neon",
+    mood: ["electric", "bold", "futuristic"],
+  },
+  {
+    id: "pastel-dream-mesh",
+    name: "Pastel Dream",
+    nameZh: "柔梦网格",
+    colors: ["#fbcfe8", "#bfdbfe", "#fef08a"],
+    angle: 0,
+    type: "mesh",
+    css: "radial-gradient(at 20% 30%, #fbcfe8 0px, transparent 55%), radial-gradient(at 80% 20%, #bfdbfe 0px, transparent 55%), radial-gradient(at 60% 80%, #fef08a 0px, transparent 55%), radial-gradient(at 50% 50%, #fdf4ff 0px, #fdf4ff 100%)",
+    tailwind: "bg-[radial-gradient(at_20%_30%,#fbcfe8_0px,transparent_55%),radial-gradient(at_80%_20%,#bfdbfe_0px,transparent_55%),radial-gradient(at_60%_80%,#fef08a_0px,transparent_55%),radial-gradient(at_50%_50%,#fdf4ff_0px,#fdf4ff_100%)]",
+    category: "pastel",
+    mood: ["soft", "gentle", "airy"],
+  },
+  {
+    id: "ocean-depth-mesh",
+    name: "Ocean Depth",
+    nameZh: "深海网格",
+    colors: ["#0ea5e9", "#14b8a6", "#6366f1"],
+    angle: 0,
+    type: "mesh",
+    css: "radial-gradient(at 30% 25%, #0ea5e9 0px, transparent 55%), radial-gradient(at 70% 35%, #14b8a6 0px, transparent 55%), radial-gradient(at 50% 85%, #6366f1 0px, transparent 55%), radial-gradient(at 50% 50%, #021526 0px, #021526 100%)",
+    tailwind: "bg-[radial-gradient(at_30%_25%,#0ea5e9_0px,transparent_55%),radial-gradient(at_70%_35%,#14b8a6_0px,transparent_55%),radial-gradient(at_50%_85%,#6366f1_0px,transparent_55%),radial-gradient(at_50%_50%,#021526_0px,#021526_100%)]",
+    category: "cool",
+    mood: ["deep", "calm", "immersive"],
+  },
+  {
+    id: "ember-glow-mesh",
+    name: "Ember Glow",
+    nameZh: "余烬网格",
+    colors: ["#ef4444", "#f97316", "#eab308"],
+    angle: 0,
+    type: "mesh",
+    css: "radial-gradient(at 25% 30%, #ef4444 0px, transparent 55%), radial-gradient(at 75% 25%, #f97316 0px, transparent 55%), radial-gradient(at 55% 80%, #eab308 0px, transparent 55%), radial-gradient(at 50% 50%, #170a05 0px, #170a05 100%)",
+    tailwind: "bg-[radial-gradient(at_25%_30%,#ef4444_0px,transparent_55%),radial-gradient(at_75%_25%,#f97316_0px,transparent_55%),radial-gradient(at_55%_80%,#eab308_0px,transparent_55%),radial-gradient(at_50%_50%,#170a05_0px,#170a05_100%)]",
+    category: "warm",
+    mood: ["fiery", "intense", "glowing"],
+  },
+  {
+    id: "cotton-candy-mesh",
+    name: "Cotton Candy",
+    nameZh: "棉花糖网格",
+    colors: ["#f9a8d4", "#d8b4fe", "#a5b4fc"],
+    angle: 0,
+    type: "mesh",
+    css: "radial-gradient(at 20% 25%, #f9a8d4 0px, transparent 55%), radial-gradient(at 80% 30%, #d8b4fe 0px, transparent 55%), radial-gradient(at 50% 80%, #a5b4fc 0px, transparent 55%), radial-gradient(at 50% 50%, #fdf2f8 0px, #fdf2f8 100%)",
+    tailwind: "bg-[radial-gradient(at_20%_25%,#f9a8d4_0px,transparent_55%),radial-gradient(at_80%_30%,#d8b4fe_0px,transparent_55%),radial-gradient(at_50%_80%,#a5b4fc_0px,transparent_55%),radial-gradient(at_50%_50%,#fdf2f8_0px,#fdf2f8_100%)]",
+    category: "pastel",
+    mood: ["sweet", "playful", "light"],
+  },
+  {
+    id: "midnight-bloom-mesh",
+    name: "Midnight Bloom",
+    nameZh: "午夜绽放",
+    colors: ["#8b5cf6", "#ec4899", "#3b82f6"],
+    angle: 0,
+    type: "mesh",
+    css: "radial-gradient(at 30% 20%, #8b5cf6 0px, transparent 55%), radial-gradient(at 70% 25%, #ec4899 0px, transparent 55%), radial-gradient(at 50% 75%, #3b82f6 0px, transparent 55%), radial-gradient(at 50% 50%, #0a0118 0px, #0a0118 100%)",
+    tailwind: "bg-[radial-gradient(at_30%_20%,#8b5cf6_0px,transparent_55%),radial-gradient(at_70%_25%,#ec4899_0px,transparent_55%),radial-gradient(at_50%_75%,#3b82f6_0px,transparent_55%),radial-gradient(at_50%_50%,#0a0118_0px,#0a0118_100%)]",
+    category: "dark",
+    mood: ["mysterious", "rich", "elegant"],
+  },
+
+  // === Radial Gradients ===
+  {
+    id: "radial-sunburst",
+    name: "Radial Sunburst",
+    nameZh: "放射朝阳",
+    colors: ["#fde047", "#f97316", "#b91c1c"],
+    angle: 0,
+    type: "radial",
+    css: "radial-gradient(circle at 50% 40%, #fde047 0%, #f97316 45%, #b91c1c 100%)",
+    tailwind: "bg-[radial-gradient(circle_at_50%_40%,#fde047_0%,#f97316_45%,#b91c1c_100%)]",
+    category: "warm",
+    mood: ["radiant", "bold", "energetic"],
+  },
+  {
+    id: "radial-spotlight",
+    name: "Radial Spotlight",
+    nameZh: "聚光灯",
+    colors: ["#a5f3fc", "#0891b2", "#164e63"],
+    angle: 0,
+    type: "radial",
+    css: "radial-gradient(circle at 50% 30%, #a5f3fc 0%, #0891b2 50%, #164e63 100%)",
+    tailwind: "bg-[radial-gradient(circle_at_50%_30%,#a5f3fc_0%,#0891b2_50%,#164e63_100%)]",
+    category: "cool",
+    mood: ["focused", "clean", "calm"],
+  },
+
+  // === Conic Gradients ===
+  {
+    id: "conic-spectrum",
+    name: "Conic Spectrum",
+    nameZh: "锥形光谱",
+    colors: ["#ef4444", "#f59e0b", "#06b6d4", "#d946ef"],
+    angle: 0,
+    type: "conic",
+    css: "conic-gradient(from 0deg at 50% 50%, #ef4444, #f59e0b, #84cc16, #06b6d4, #6366f1, #d946ef, #ef4444)",
+    tailwind: "bg-[conic-gradient(from_0deg_at_50%_50%,#ef4444,#f59e0b,#84cc16,#06b6d4,#6366f1,#d946ef,#ef4444)]",
+    category: "vibrant",
+    mood: ["spectral", "playful", "vivid"],
+  },
+  {
+    id: "conic-twilight",
+    name: "Conic Twilight",
+    nameZh: "锥形暮光",
+    colors: ["#1e3a8a", "#3b82f6", "#93c5fd"],
+    angle: 180,
+    type: "conic",
+    css: "conic-gradient(from 180deg at 50% 50%, #1e3a8a, #6366f1, #3b82f6, #93c5fd, #3b82f6, #6366f1, #1e3a8a)",
+    tailwind: "bg-[conic-gradient(from_180deg_at_50%_50%,#1e3a8a,#6366f1,#3b82f6,#93c5fd,#3b82f6,#6366f1,#1e3a8a)]",
+    category: "cool",
+    mood: ["serene", "twilight", "smooth"],
   },
 ];
 

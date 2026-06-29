@@ -189,8 +189,13 @@ function GradientCard({ gradient, copiedId, onCopy, locale }: GradientCardProps)
   const [format, setFormat] = useState<ColorFormat>("hex");
   const [copiedColor, setCopiedColor] = useState<string | null>(null);
 
-  // Live CSS reflecting current angle
+  const isLinear = !gradient.type || gradient.type === "linear";
+
+  // Live CSS: linear is angle-driven; radial/conic/mesh use the predefined css.
   const liveCss = useMemo(() => {
+    if (gradient.type && gradient.type !== "linear") {
+      return gradient.css;
+    }
     const stops = gradient.colors
       .map((c, i) => {
         const pct = Math.round((i / (gradient.colors.length - 1)) * 100);
@@ -198,10 +203,13 @@ function GradientCard({ gradient, copiedId, onCopy, locale }: GradientCardProps)
       })
       .join(", ");
     return `linear-gradient(${angle}deg, ${stops})`;
-  }, [angle, gradient.colors]);
+  }, [angle, gradient.colors, gradient.type, gradient.css]);
 
   // Tailwind string reflecting current angle (keeps original from/via/to stops, only direction changes)
   const liveTailwind = useMemo(() => {
+    if (gradient.type && gradient.type !== "linear") {
+      return gradient.tailwind;
+    }
     const a = ((angle % 360) + 360) % 360;
     const dirs: Array<[number, string]> = [
       [0, "t"], [45, "tr"], [90, "r"], [135, "br"],
@@ -218,7 +226,7 @@ function GradientCard({ gradient, copiedId, onCopy, locale }: GradientCardProps)
     }
     const stops = gradient.tailwind.replace(/^bg-gradient-to-\S+\s*/, "");
     return `bg-gradient-to-${best} ${stops}`;
-  }, [angle, gradient.tailwind]);
+  }, [angle, gradient.tailwind, gradient.type]);
 
   function copyColor(hex: string) {
     navigator.clipboard.writeText(formatColor(hex, format)).then(() => {
@@ -244,32 +252,34 @@ function GradientCard({ gradient, copiedId, onCopy, locale }: GradientCardProps)
           <p className="text-[0.7rem] opacity-85 mt-0.5">Gradient on a real surface</p>
         </div>
         <div className="absolute top-3 right-3">
-          <span className="inline-flex items-center rounded-full px-2 py-0.5 text-[0.6rem] font-medium bg-white/25 text-white backdrop-blur-sm">
-            {angle}°
+          <span className="inline-flex items-center rounded-full px-2 py-0.5 text-[0.6rem] font-medium bg-white/25 text-white backdrop-blur-sm uppercase tracking-wide">
+            {isLinear ? `${angle}°` : gradient.type}
           </span>
         </div>
       </div>
 
-      {/* Angle slider */}
-      <div className="px-4 py-2.5 border-b border-border flex items-center gap-2 bg-muted/10">
-        <span className="text-xs text-muted">∠</span>
-        <input
-          type="range"
-          min={0}
-          max={360}
-          step={5}
-          value={angle}
-          onChange={(e) => setAngle(Number(e.target.value))}
-          className="flex-1 accent-foreground"
-          aria-label="Gradient angle"
-        />
-        <button
-          onClick={() => setAngle(gradient.angle)}
-          className="text-[0.65rem] text-muted hover:text-foreground underline underline-offset-2 whitespace-nowrap"
-        >
-          reset
-        </button>
-      </div>
+      {/* Angle slider — linear gradients only */}
+      {isLinear && (
+        <div className="px-4 py-2.5 border-b border-border flex items-center gap-2 bg-muted/10">
+          <span className="text-xs text-muted">∠</span>
+          <input
+            type="range"
+            min={0}
+            max={360}
+            step={5}
+            value={angle}
+            onChange={(e) => setAngle(Number(e.target.value))}
+            className="flex-1 accent-foreground"
+            aria-label="Gradient angle"
+          />
+          <button
+            onClick={() => setAngle(gradient.angle)}
+            className="text-[0.65rem] text-muted hover:text-foreground underline underline-offset-2 whitespace-nowrap"
+          >
+            reset
+          </button>
+        </div>
+      )}
 
       {/* Color swatches with format switcher */}
       <div className="p-4 space-y-3">
