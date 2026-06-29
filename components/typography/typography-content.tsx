@@ -6,6 +6,9 @@ import {
   fontPairings,
   getTypographyCategories,
   generateGoogleFontsLink,
+  fontStack,
+  generateFontCSS,
+  generateTailwindTheme,
   type FontPairing,
   type TypographyCategory,
 } from "@/lib/typography";
@@ -170,8 +173,8 @@ const CATEGORY_LABEL: Record<string, string> = {
 function TypographyCard({ pairing, copied, onCopy, locale }: TypographyCardProps) {
   const [scale, setScale] = useState(1);
 
-  const headingFamily = `'${pairing.heading.family}', serif`;
-  const bodyFamily = `'${pairing.body.family}', sans-serif`;
+  const headingFamily = fontStack(pairing.heading);
+  const bodyFamily = fontStack(pairing.body);
 
   return (
     <div className="group border border-border rounded-xl overflow-hidden bg-background hover:border-foreground/40 hover:shadow-lg transition-all">
@@ -273,7 +276,7 @@ function TypographyCard({ pairing, copied, onCopy, locale }: TypographyCardProps
 
         <div className="flex gap-2">
           <button
-            onClick={() => onCopy(pairing.css, pairing.id)}
+            onClick={() => onCopy(generateFontCSS(pairing), pairing.id)}
             className={`flex-1 px-3 py-2 text-xs font-medium rounded-md border transition-colors ${
               copied
                 ? "bg-green-500 text-white border-green-500"
@@ -283,7 +286,7 @@ function TypographyCard({ pairing, copied, onCopy, locale }: TypographyCardProps
             {copied ? "Copied!" : "Copy CSS"}
           </button>
           <button
-            onClick={() => onCopy(pairing.tailwind, pairing.id)}
+            onClick={() => onCopy(generateTailwindTheme(pairing), pairing.id)}
             className="flex-1 px-3 py-2 text-xs font-medium rounded-md border bg-background text-muted border-border hover:border-foreground hover:text-foreground transition-colors"
           >
             Tailwind
