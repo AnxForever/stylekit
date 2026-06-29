@@ -1,0 +1,52 @@
+{
+  "name": "@stylekit/mcp",
+  "version": "0.1.0",
+  "description": "MCP server for StyleKit — search 120+ design styles and pull tokens, recipes, and shadcn install commands from Claude, Cursor, or Windsurf",
+  "type": "module",
+  "bin": {
+    "stylekit-mcp": "dist/index.js"
+  },
+  "main": "dist/index.js",
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsx watch src/index.ts",
+    "clean": "rm -rf dist"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.12.0",
+    "@stylekit/core": "workspace:*",
+    "zod": "^3.25.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "tsx": "^4.19.0",
+    "typescript": "^5"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "stylekit",
+    "design-system",
+    "design-tokens",
+    "shadcn",
+    "tailwind",
+    "ai",
+    "cursor",
+    "claude"
+  ],
+  "license": "MIT",
+  "author": "AnxForever",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AnxForever/stylekit.git",
+    "directory": "packages/mcp"
+  },
+  "homepage": "https://github.com/AnxForever/stylekit/tree/main/packages/mcp#readme"
+}
