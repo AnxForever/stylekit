@@ -1,6 +1,6 @@
 /**
  * Data access for the CLI — discovery helpers from @stylekit/core/discovery,
- * with thin list/search adapters in the shapes the commands expect.
+ * with thin list/search adapters that preserve the full match `total`.
  */
 
 export {
@@ -26,15 +26,18 @@ import {
   type StyleSummary,
 } from "@stylekit/core/discovery";
 
-/** List styles (optionally by category), capped at `limit`. */
+/** List styles (optionally by category), capped at `limit`, with full total. */
 export function listStyles(
   category?: DiscoveryCategory,
   limit?: number,
-): StyleSummary[] {
-  return coreSearch({ category, limit }).results;
+): { total: number; results: StyleSummary[] } {
+  return coreSearch({ category, limit });
 }
 
-/** Keyword search, capped at `limit`. */
-export function searchStyles(query: string, limit = 20): StyleSummary[] {
-  return coreSearch({ query, limit }).results;
+/** Keyword search, capped at `limit`, with full total. */
+export function searchStyles(
+  query: string,
+  limit?: number,
+): { total: number; results: StyleSummary[] } {
+  return coreSearch({ query, limit });
 }

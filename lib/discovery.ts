@@ -110,8 +110,11 @@ export function searchStyles(opts: SearchOptions = {}): {
     );
   }
   const total = pool.length;
-  const results = (opts.limit ? pool.slice(0, opts.limit) : pool).map(toSummary);
-  return { total, results };
+  const limited =
+    typeof opts.limit === "number" && opts.limit > 0
+      ? pool.slice(0, opts.limit)
+      : pool;
+  return { total, results: limited.map(toSummary) };
 }
 
 export function getStyleDetail(slug: string): StyleDetail | null {

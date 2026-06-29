@@ -1,4 +1,8 @@
-/** CLI command implementations. Each returns the string to print. */
+/**
+ * CLI command implementations. Each returns a CommandResult so the entry point
+ * can decide the output stream (stdout vs stderr), exit code, and format
+ * (human text vs --json) in one place.
+ */
 
 import {
   listStyles,
@@ -13,41 +17,55 @@ import {
   type StyleSummary,
 } from "./core.js";
 
+export interface CommandResult {
+  ok: boolean;
+  text: string;
+  json: unknown;
+}
+
+function ok(text: string, json: unknown): CommandResult {
+  return { ok: true, text, json };
+}
+
+function fail(text: string): CommandResult {
+  return { ok: false, text, json: { error: text } };
+}
+
+export function usageFail(usage: string): CommandResult {
+  return { ok: false, text: `Usage: ${usage}`, json: { error: `usage: ${usage}` } };
+}
+
 function summaryLine(s: StyleSummary): string {
   return `  ${s.slug.padEnd(26)} ${s.nameEn}  [${s.category}]`;
 }
 
-function unknownSlug(slug: string): string {
+function unknownSlugMsg(slug: string): string {
   return `Unknown style "${slug}". Run \`stylekit search <query>\` or \`stylekit list\` to find a slug.`;
 }
 
 export function cmdList(
   category: StyleCategory | undefined,
   limit: number | undefined,
-  json: boolean,
-): string {
-  const results = listStyles(category, limit);
-  if (json) return JSON.stringify(results, null, 2);
-  const header = `StyleKit styles${category ? ` · ${category}` : ""} (${results.length}):`;
-  return [header, "", ...results.map(summaryLine)].join("\n");
+): CommandResult {
+  const { total, results } = listStyles(category, limit);
+  const header = `StyleKit styles${category ? ` · ${category}` : ""} (${results.length} of ${total}):`;
+  return ok([header, "", ...results.map(summaryLine)].join("\n"), results);
 }
 
-export function cmdSearch(query: string, json: boolean): string {
-  const results = searchStyles(query);
-  if (json) return JSON.stringify(results, null, 2);
-  if (results.length === 0) return `No styles match "${query}".`;
-  return [
-    `Matches for "${query}" (${results.length}):`,
-    "",
-    ...results.map(summaryLine),
-  ].join("\n");
+export function cmdSearch(
+  query: string,
+  limit: number | undefined,
+): CommandResult {
+  const { total, results } = searchStyles(query, limit);
+  if (results.length === 0) return fail(`No styles match "${query}".`);
+  const header = `Matches for "${query}" (${results.length} of ${total}):`;
+  return ok([header, "", ...results.map(summaryLine)].join("\n"), results);
 }
 
-export function cmdShow(slug: string, json: boolean): string {
+export function cmdShow(slug: string): CommandResult {
   const d = getStyleDetail(slug);
-  if (!d) return unknownSlug(slug);
-  if (json) return JSON.stringify(d, null, 2);
-  return [
+  if (!d) return fail(unknownSlugMsg(slug));
+  const text = [
     `${d.nameEn} (${d.name})  [${d.category}]`,
     `slug: ${d.slug}`,
     `tags: ${d.tags.join(", ")}`,
@@ -65,32 +83,33 @@ export function cmdShow(slug: string, json: boolean): string {
     `install: ${d.shadcnInstall}`,
     `web: ${d.url}`,
   ].join("\n");
+  return ok(text, d);
 }
 
-export function cmdTokens(slug: string, _json: boolean): string {
-  if (!knownSlug(slug)) return unknownSlug(slug);
+export function cmdTokens(slug: string): CommandResult {
+  if (!knownSlug(slug)) return fail(unknownSlugMsg(slug));
   const t = getTokens(slug);
-  if (!t) return `Style "${slug}" exists but has no registered design tokens.`;
-  return JSON.stringify(t, null, 2);
+  if (!t) {
+    return fail(`Style "${slug}" exists but has no registered design tokens.`);
+  }
+  return ok(JSON.stringify(t, null, 2), t);
 }
 
 export function cmdRecipe(
   slug: string,
   component: string | undefined,
-  json: boolean,
-): string {
+): CommandResult {
   const d = getStyleDetail(slug);
-  if (!d) return unknownSlug(slug);
+  if (!d) return fail(unknownSlugMsg(slug));
   const available = d.recipeIds.join(", ") || "none";
   if (!component) {
-    return `Specify a component. Available recipes for "${slug}": ${available}.`;
+    return fail(`Specify a component. Available recipes for "${slug}": ${available}.`);
   }
   const r = getComponentRecipe(slug, component);
   if (!r) {
-    return `No "${component}" recipe for "${slug}". Available: ${available}.`;
+    return fail(`No "${component}" recipe for "${slug}". Available: ${available}.`);
   }
-  if (json) return JSON.stringify(r, null, 2);
-  return [
+  const text = [
     `${component} — ${slug}`,
     "",
     "className:",
@@ -99,21 +118,22 @@ export function cmdRecipe(
     "code:",
     r.code,
   ].join("\n");
+  return ok(text, r);
 }
 
-export function cmdAdd(slug: string, json: boolean): string {
-  if (!knownSlug(slug)) return unknownSlug(slug);
+export function cmdAdd(slug: string): CommandResult {
+  if (!knownSlug(slug)) return fail(unknownSlugMsg(slug));
   const command = shadcnInstallCommand(slug);
-  if (json) {
-    return JSON.stringify(
-      { slug, command, registryUrl: registryUrl(slug) },
-      null,
-      2,
-    );
-  }
-  return [
+  const json = {
+    slug,
+    command,
+    registryUrl: registryUrl(slug),
+    prerequisite: "The target project must contain a tsconfig.json.",
+  };
+  const text = [
     command,
     "",
     "(The target project must contain a tsconfig.json.)",
   ].join("\n");
+  return ok(text, json);
 }

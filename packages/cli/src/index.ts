@@ -2,6 +2,9 @@
 /**
  * StyleKit CLI — browse design styles and pull tokens, recipes, and shadcn
  * install commands from the terminal. Served offline from @stylekit/core.
+ *
+ * Contract: success goes to stdout with exit 0; errors and usage go to stderr
+ * with exit 1. With --json, both success and error emit JSON.
  */
 
 import { parseArgs } from "node:util";
@@ -13,10 +16,13 @@ import {
   cmdTokens,
   cmdRecipe,
   cmdAdd,
+  usageFail,
+  type CommandResult,
 } from "./commands.js";
 import type { StyleCategory } from "./core.js";
 
 const VERSION = "0.1.0";
+const CATEGORIES = ["modern", "retro", "minimal", "expressive"] as const;
 
 const HELP = `stylekit — StyleKit CLI v${VERSION}
 
@@ -31,18 +37,33 @@ Commands:
   add <slug>                 Print the shadcn install command
 
 Flags:
-  --category <c>   Filter list by category (modern|retro|minimal|expressive)
-  --limit <n>      Limit number of results
-  --json           Output JSON
+  --category <c>   Filter by category (modern|retro|minimal|expressive)
+  --limit <n>      Limit results to a positive integer
+  --json           Output JSON (errors included)
   --help, -h       Show this help
   --version, -v    Show version
 
 Examples:
   stylekit list --category retro
-  stylekit search glass
+  stylekit search glass --limit 5
   stylekit show neo-brutalist
   stylekit add synthwave
 `;
+
+function emit(result: CommandResult, json: boolean): void {
+  const out = json ? JSON.stringify(result.json, null, 2) : result.text;
+  if (result.ok) {
+    console.log(out);
+  } else {
+    console.error(out);
+    process.exitCode = 1;
+  }
+}
+
+function die(message: string): never {
+  console.error(message);
+  process.exit(1);
+}
 
 function main(): void {
   let values: Record<string, unknown>;
@@ -61,9 +82,7 @@ function main(): void {
     values = parsed.values;
     positionals = parsed.positionals;
   } catch (err) {
-    console.error(`Error: ${(err as Error).message}\n`);
-    console.error(HELP);
-    process.exit(1);
+    die(`Error: ${(err as Error).message}\n\n${HELP}`);
   }
 
   if (values.version) {
@@ -78,42 +97,62 @@ function main(): void {
   }
 
   const json = values.json === true;
-  const limitRaw = values.limit;
-  const limit =
-    typeof limitRaw === "string" ? parseInt(limitRaw, 10) : undefined;
-  const category = values.category as StyleCategory | undefined;
+
+  // Validate --limit (positive integer).
+  let limit: number | undefined;
+  if (typeof values.limit === "string") {
+    const n = Number(values.limit);
+    if (!Number.isInteger(n) || n < 1) {
+      die(`Invalid --limit "${values.limit}": must be a positive integer.`);
+    }
+    limit = n;
+  }
+
+  // Validate --category against the known set.
+  let category: StyleCategory | undefined;
+  if (typeof values.category === "string") {
+    if (!CATEGORIES.includes(values.category as (typeof CATEGORIES)[number])) {
+      die(
+        `Invalid --category "${values.category}": must be one of ${CATEGORIES.join(", ")}.`,
+      );
+    }
+    category = values.category as StyleCategory;
+  }
+
   const arg1 = positionals[1];
   const arg2 = positionals[2];
 
-  let out: string;
+  let result: CommandResult;
   switch (command) {
     case "list":
-      out = cmdList(category, limit, json);
+      result = cmdList(category, limit);
       break;
     case "search":
-      out = arg1 ? cmdSearch(arg1, json) : "Usage: stylekit search <query>";
+      result = arg1 ? cmdSearch(arg1, limit) : usageFail("stylekit search <query>");
       break;
     case "show":
-      out = arg1 ? cmdShow(arg1, json) : "Usage: stylekit show <slug>";
+      result = arg1 ? cmdShow(arg1) : usageFail("stylekit show <slug>");
       break;
     case "tokens":
-      out = arg1 ? cmdTokens(arg1, json) : "Usage: stylekit tokens <slug>";
+      result = arg1 ? cmdTokens(arg1) : usageFail("stylekit tokens <slug>");
       break;
     case "recipe":
-      out = arg1
-        ? cmdRecipe(arg1, arg2, json)
-        : "Usage: stylekit recipe <slug> <component>";
+      result = arg1
+        ? cmdRecipe(arg1, arg2)
+        : usageFail("stylekit recipe <slug> <component>");
       break;
     case "add":
-      out = arg1 ? cmdAdd(arg1, json) : "Usage: stylekit add <slug>";
+      result = arg1 ? cmdAdd(arg1) : usageFail("stylekit add <slug>");
       break;
     default:
-      console.error(`Unknown command: ${command}\n`);
-      console.error(HELP);
-      process.exit(1);
+      die(`Unknown command: ${command}\n\n${HELP}`);
   }
 
-  console.log(out);
+  try {
+    emit(result, json);
+  } catch (err) {
+    die(`Unexpected error: ${(err as Error).message}`);
+  }
 }
 
 main();
