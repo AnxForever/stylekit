@@ -10,7 +10,7 @@
  */
 
 import type { DesignStyle } from "@/lib/styles/types";
-import { toRegistryItem } from "./to-registry-item";
+import { registryItemMeta } from "./to-registry-item";
 
 export const REGISTRY_SCHEMA = "https://ui.shadcn.com/schema/registry.json";
 
@@ -42,9 +42,6 @@ export function toRegistryIndex(
     $schema: REGISTRY_SCHEMA,
     name: "stylekit",
     homepage,
-    items: styles.map((style) => {
-      const { name, type, title, description } = toRegistryItem(style);
-      return { name, type, title, description };
-    }),
+    items: styles.map(registryItemMeta),
   };
 }

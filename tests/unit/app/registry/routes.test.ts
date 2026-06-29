@@ -26,6 +26,12 @@ describe("GET /r/[name] (registry item)", () => {
     expect((await res.json()).name).toBe("neumorphism");
   });
 
+  it("resolves slugs case-insensitively", async () => {
+    const res = await itemCall("Glassmorphism.json");
+    expect(res.status).toBe(200);
+    expect((await res.json()).name).toBe("glassmorphism");
+  });
+
   it("404s for an unknown style", async () => {
     const res = await itemCall("does-not-exist.json");
     expect(res.status).toBe(404);

@@ -7,6 +7,7 @@
  * with exit 1. With --json, both success and error emit JSON.
  */
 
+import { createRequire } from "node:module";
 import { parseArgs } from "node:util";
 
 import {
@@ -21,7 +22,9 @@ import {
 } from "./commands.js";
 import type { StyleCategory } from "./core.js";
 
-const VERSION = "0.1.0";
+const VERSION = (
+  createRequire(import.meta.url)("../package.json") as { version: string }
+).version;
 const CATEGORIES = ["modern", "retro", "minimal", "expressive"] as const;
 
 const HELP = `stylekit — StyleKit CLI v${VERSION}

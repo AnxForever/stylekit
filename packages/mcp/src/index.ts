@@ -8,15 +8,21 @@
  * the bundled @stylekit/core package.
  */
 
+import { createRequire } from "node:module";
+
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 
 import { registerStyleKitTools } from "./tools.js";
 
+const { version } = createRequire(import.meta.url)("../package.json") as {
+  version: string;
+};
+
 async function main(): Promise<void> {
   const server = new McpServer({
     name: "stylekit-mcp-server",
-    version: "0.1.0",
+    version,
   });
 
   registerStyleKitTools(server);

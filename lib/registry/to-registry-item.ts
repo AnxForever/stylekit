@@ -68,15 +68,30 @@ function sanitizeVars(vars: Record<string, string>): Record<string, string> {
 /**
  * Build a shadcn `registry:theme` item for a single style.
  */
+/**
+ * Lightweight item metadata (name/type/title/description, no cssVars). Used by
+ * the registry index so it doesn't run full theme generation per style.
+ */
+export function registryItemMeta(style: DesignStyle): {
+  name: string;
+  type: "registry:theme";
+  title: string;
+  description: string;
+} {
+  return {
+    name: style.slug,
+    type: "registry:theme",
+    title: style.nameEn?.trim() || style.name,
+    description: pickDescription(style),
+  };
+}
+
 export function toRegistryItem(style: DesignStyle): RegistryItem {
   const theme = generateShadcnTheme(style);
 
   return {
     $schema: REGISTRY_ITEM_SCHEMA,
-    name: style.slug,
-    type: "registry:theme",
-    title: style.nameEn?.trim() || style.name,
-    description: pickDescription(style),
+    ...registryItemMeta(style),
     cssVars: {
       light: sanitizeVars(theme.cssVars.light),
       dark: sanitizeVars(theme.cssVars.dark),
