@@ -51,6 +51,7 @@ export interface ExternalNavItem {
 // New features belong in a dropdown, not as new top-level items.
 export const mainNav: NavItem[] = [
   { href: "/styles", labelKey: "nav.styles" },
+  { href: "/learn", labelKey: "nav.learn" },
   { href: "/templates", labelKey: "nav.templates" },
   {
     href: "/templates",

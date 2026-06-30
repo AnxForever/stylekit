@@ -4,6 +4,7 @@ export const zh: { [K in keyof typeof en]: string } = {
   ...en,
   // Navigation
   "nav.styles": "风格库",
+  "nav.learn": "前端基础",
   "nav.templates": "模板",
   "nav.community": "社区",
   "nav.generator": "生成器",
