@@ -126,6 +126,7 @@ export const mainNav: NavItem[] = [
             { href: "/shadows", labelKey: "nav.shadows" },
             { href: "/backgrounds", labelKey: "nav.backgrounds" },
             { href: "/color-theory", labelKey: "nav.colorTheory" },
+            { href: "/spacing", labelKey: "nav.spacing" },
           ],
         },
         {
