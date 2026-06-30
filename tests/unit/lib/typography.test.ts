@@ -5,6 +5,7 @@ import {
   fontStack,
   generateFontCSS,
   generateTailwindTheme,
+  pairingContrast,
 } from "@/lib/typography";
 
 describe("typography font generation", () => {
@@ -52,5 +53,49 @@ describe("typography font generation", () => {
     expect(css).toContain("--font-heading");
     expect(css).toContain("--font-body");
     expect(css).toContain("font-heading");
+  });
+});
+
+describe("typography pairing metadata", () => {
+  it("ships the expanded curated set", () => {
+    expect(fontPairings.length).toBeGreaterThanOrEqual(35);
+  });
+
+  it("includes the display and handwritten categories", () => {
+    const cats = new Set(fontPairings.map((p) => p.category));
+    expect(cats.has("display")).toBe(true);
+    expect(cats.has("handwritten")).toBe(true);
+  });
+
+  it("gives every display / handwritten face a hero preview word", () => {
+    const heroFaces = fontPairings.filter(
+      (p) => p.category === "display" || p.category === "handwritten",
+    );
+    expect(heroFaces.length).toBeGreaterThan(0);
+    for (const p of heroFaces) {
+      expect(p.previewWord, `${p.id} missing previewWord`).toBeTruthy();
+    }
+  });
+
+  it("maps display serif faces to a serif fallback (FONT_GENERIC coverage)", () => {
+    for (const id of ["fatface-abril", "fashion-dmserif", "expressive-fraunces"]) {
+      const p = fontPairings.find((x) => x.id === id);
+      expect(p, `${id} not found`).toBeDefined();
+      // Georgia appears only in the serif system stack — proves it is not the sans default.
+      expect(fontStack(p!.heading), `${id} should map to serif`).toContain("Georgia");
+    }
+  });
+});
+
+describe("pairingContrast", () => {
+  it("labels a serif heading on a sans body", () => {
+    const p = fontPairings.find((x) => x.id === "editorial-serif")!;
+    expect(pairingContrast(p)).toBe("Serif × Sans");
+  });
+
+  it("flags single-family pairings where contrast lives in weight", () => {
+    const single = fontPairings.find((p) => p.heading.family === p.body.family);
+    expect(single).toBeDefined();
+    expect(pairingContrast(single!)).toMatch(/one family/);
   });
 });

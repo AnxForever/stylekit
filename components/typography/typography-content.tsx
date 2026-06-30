@@ -9,6 +9,7 @@ import {
   fontStack,
   generateFontCSS,
   generateTailwindTheme,
+  pairingContrast,
   type FontPairing,
   type TypographyCategory,
 } from "@/lib/typography";
@@ -168,17 +169,100 @@ const CATEGORY_LABEL: Record<string, string> = {
   editorial: "Editorial",
   technical: "Technical",
   elegant: "Elegant",
+  display: "Display",
+  handwritten: "Handwritten",
 };
+
+// Character set shown in the heading face — reveals the letterform details
+// (x-height, terminals, how 0/O and g/a are drawn) that make a typeface itself.
+const CHARSET = "Aa Gg Qq Rg 0123 &?";
+
+// Personality-matched preview copy per category, so each specimen reads like the
+// kind of product the pairing is for — not the same "quick brown fox" everywhere.
+const PREVIEW_BY_CATEGORY: Record<string, { heading: string; body: string }> = {
+  classic: {
+    heading: "Timeless by Design",
+    body: "Considered typography that endures—every letterform carries the weight of tradition, set for comfortable long-form reading.",
+  },
+  modern: {
+    heading: "Built for Tomorrow",
+    body: "Clean lines and confident spacing shape interfaces that feel effortless, fast, and unmistakably current.",
+  },
+  playful: {
+    heading: "Hello, Sunshine!",
+    body: "Bright, friendly type that smiles back—made for products that keep things light and never too serious.",
+  },
+  editorial: {
+    heading: "The Morning Edition",
+    body: "Long-form reading deserves rhythm and contrast. A serif headline sets the tone; the body face carries the story.",
+  },
+  technical: {
+    heading: "System Architecture",
+    body: "Monospace precision meets readable prose—for documentation, dashboards, and code that engineers actually trust.",
+  },
+  elegant: {
+    heading: "Maison & Atelier",
+    body: "Refined contrast and graceful proportion lend a quiet luxury to fashion, beauty, and premium editorial work.",
+  },
+  display: {
+    heading: "Make a Statement",
+    body: "Oversized type that commands the page—reserve it for the single word you want remembered.",
+  },
+  handwritten: {
+    heading: "With Love",
+    body: "A personal, human touch for invitations, quotes, and brands that want to feel handmade.",
+  },
+};
+
+// Visualizes the weight gap between heading and body — the contrast that makes a
+// hierarchy hold up. If the two bars are nearly equal, the pairing reads flat.
+function WeightContrastBar({
+  headingWeight,
+  bodyWeight,
+  bodyFamily,
+}: {
+  headingWeight: number;
+  bodyWeight: number;
+  bodyFamily: string;
+}) {
+  const pct = (weight: number) => `${((weight - 100) / 800) * 100}%`;
+  return (
+    <div className="flex items-center gap-4 text-[0.7em] text-muted" style={{ fontFamily: bodyFamily }}>
+      <div className="flex-1 space-y-1">
+        <div className="flex items-center justify-between">
+          <span className="uppercase tracking-wide">Heading</span>
+          <span className="tabular-nums">{headingWeight}</span>
+        </div>
+        <div className="h-1 rounded-full bg-muted/30 overflow-hidden">
+          <div className="h-full rounded-full bg-foreground" style={{ width: pct(headingWeight) }} />
+        </div>
+      </div>
+      <div className="flex-1 space-y-1">
+        <div className="flex items-center justify-between">
+          <span className="uppercase tracking-wide">Body</span>
+          <span className="tabular-nums">{bodyWeight}</span>
+        </div>
+        <div className="h-1 rounded-full bg-muted/30 overflow-hidden">
+          <div className="h-full rounded-full bg-foreground/50" style={{ width: pct(bodyWeight) }} />
+        </div>
+      </div>
+    </div>
+  );
+}
 
 function TypographyCard({ pairing, copied, onCopy, locale }: TypographyCardProps) {
   const [scale, setScale] = useState(1);
 
   const headingFamily = fontStack(pairing.heading);
   const bodyFamily = fontStack(pairing.body);
+  const isDisplay = pairing.category === "display" || pairing.category === "handwritten";
+  const preview = PREVIEW_BY_CATEGORY[pairing.category] ?? PREVIEW_BY_CATEGORY.modern;
+  const contrast = pairingContrast(pairing);
 
   return (
     <div className="group border border-border rounded-xl overflow-hidden bg-background hover:border-foreground/40 hover:shadow-lg transition-all">
-      {/* Full type-ramp preview (scales with slider) */}
+      {/* Specimen — adapts to the typeface: display / handwritten faces star as an
+          oversized word; text pairings show a character set, headline and copy. */}
       <div
         className="px-6 pt-6 pb-5 bg-gradient-to-br from-background to-muted/20"
         style={{ fontSize: `${16 * scale}px` }}
@@ -188,52 +272,76 @@ function TypographyCard({ pairing, copied, onCopy, locale }: TypographyCardProps
             className="text-[0.7rem] uppercase tracking-[0.14em] text-muted"
             style={{ fontFamily: bodyFamily }}
           >
-            Heading · {pairing.heading.weight}
+            {CATEGORY_LABEL[pairing.category]}
           </span>
-          <span className="text-[0.7rem] text-muted/70">{CATEGORY_LABEL[pairing.category]}</span>
+          <span className="text-[0.7rem] text-muted/70 tracking-wide">{contrast}</span>
         </div>
 
-        <h3
-          className="tracking-tight mb-2"
-          style={{ fontFamily: headingFamily, fontWeight: pairing.heading.weight, fontSize: "2em", lineHeight: 1.1 }}
-        >
-          Design Systems
-        </h3>
-        <h4
-          className="mb-4 text-muted"
-          style={{ fontFamily: headingFamily, fontWeight: pairing.heading.weight, fontSize: "1.2em", lineHeight: 1.2 }}
-        >
-          Subheading &amp; section title
-        </h4>
-
-        <p
-          className="leading-relaxed mb-4 text-muted"
-          style={{ fontFamily: bodyFamily, fontWeight: pairing.body.weight, fontSize: "0.92em", color: "hsl(var(--muted))" }}
-        >
-          The quick brown fox jumps over the lazy dog. A realistic paragraph shows how the
-          body face reads in long-form copy at a comfortable measure.
-        </p>
-
-        <div className="flex items-center gap-3 flex-wrap">
-          <span
-            className="tabular-nums"
-            style={{ fontFamily: bodyFamily, fontWeight: 600, fontSize: "1.5em" }}
-          >
-            1,234.56
-          </span>
-          <span
-            className="inline-flex items-center rounded-md px-2 py-0.5 text-[0.8em] bg-foreground text-background"
-            style={{ fontFamily: bodyFamily }}
-          >
-            Action
-          </span>
-          <span
-            className="text-[0.75em] text-muted border border-border rounded px-1.5 py-0.5"
-            style={{ fontFamily: bodyFamily }}
-          >
-            Label
-          </span>
-        </div>
+        {isDisplay ? (
+          <>
+            {/* The typeface itself is the subject */}
+            <div
+              className="mb-5 break-words"
+              style={{
+                fontFamily: headingFamily,
+                fontWeight: pairing.heading.weight,
+                fontSize: "3.6em",
+                lineHeight: 0.95,
+              }}
+            >
+              {pairing.previewWord ?? preview.heading}
+            </div>
+            <div
+              className="mb-5 text-muted/80 break-words"
+              style={{
+                fontFamily: headingFamily,
+                fontWeight: pairing.heading.weight,
+                fontSize: "1.4em",
+                lineHeight: 1.2,
+              }}
+            >
+              {CHARSET}
+            </div>
+            <p
+              className="leading-relaxed text-muted"
+              style={{ fontFamily: bodyFamily, fontWeight: pairing.body.weight, fontSize: "0.9em" }}
+            >
+              {preview.body}
+            </p>
+          </>
+        ) : (
+          <>
+            {/* Character set in the heading face — letterforms up close */}
+            <div
+              className="mb-4 pb-4 border-b border-border/60 text-foreground/85 break-words"
+              style={{
+                fontFamily: headingFamily,
+                fontWeight: pairing.heading.weight,
+                fontSize: "1.5em",
+                lineHeight: 1.15,
+              }}
+            >
+              {CHARSET}
+            </div>
+            <h3
+              className="tracking-tight mb-2 break-words"
+              style={{ fontFamily: headingFamily, fontWeight: pairing.heading.weight, fontSize: "1.9em", lineHeight: 1.1 }}
+            >
+              {preview.heading}
+            </h3>
+            <p
+              className="leading-relaxed mb-4 text-muted"
+              style={{ fontFamily: bodyFamily, fontWeight: pairing.body.weight, fontSize: "0.92em" }}
+            >
+              {preview.body}
+            </p>
+            <WeightContrastBar
+              headingWeight={pairing.heading.weight}
+              bodyWeight={pairing.body.weight}
+              bodyFamily={bodyFamily}
+            />
+          </>
+        )}
       </div>
 
       {/* Size slider (interactive) */}

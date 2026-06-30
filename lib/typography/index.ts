@@ -7,7 +7,9 @@ export type TypographyCategory =
   | "playful"
   | "editorial"
   | "technical"
-  | "elegant";
+  | "elegant"
+  | "display"
+  | "handwritten";
 
 export interface FontSpec {
   family: string;
@@ -28,6 +30,12 @@ export interface FontPairing {
   tailwind: string;
   tags: string[];
   mood: string[];
+  /**
+   * Oversized hero word shown in the specimen for display / handwritten faces,
+   * where the typeface itself is the subject. Optional; text pairings fall back
+   * to the category preview copy.
+   */
+  previewWord?: string;
 }
 
 export const fontPairings: FontPairing[] = [
@@ -442,6 +450,319 @@ export const fontPairings: FontPairing[] = [
     tags: ["sans-serif", "minimalist", "chic"],
     mood: ["minimalist", "chic", "sophisticated"],
   },
+
+  // === Display ===
+  {
+    id: "impact-anton",
+    name: "Impact Anton",
+    nameZh: "力量安东",
+    heading: {
+      family: "Anton",
+      weight: 400,
+      googleFontsUrl: "https://fonts.googleapis.com/css2?family=Anton&display=swap",
+    },
+    body: {
+      family: "Inter",
+      weight: 400,
+      googleFontsUrl: "https://fonts.googleapis.com/css2?family=Inter:wght@400&display=swap",
+    },
+    category: "display",
+    css: "font-family: 'Anton', sans-serif; /* heading */\nfont-family: 'Inter', sans-serif; /* body */",
+    tailwind: "font-['Anton'] /* heading */\nfont-['Inter'] font-normal /* body */",
+    tags: ["display", "condensed", "poster"],
+    mood: ["bold", "powerful", "loud"],
+    previewWord: "IMPACT",
+  },
+  {
+    id: "fatface-abril",
+    name: "Abril Editorial",
+    nameZh: "阿布里尔社论",
+    heading: {
+      family: "Abril Fatface",
+      weight: 400,
+      googleFontsUrl: "https://fonts.googleapis.com/css2?family=Abril+Fatface&display=swap",
+    },
+    body: {
+      family: "Lato",
+      weight: 400,
+      googleFontsUrl: "https://fonts.googleapis.com/css2?family=Lato:wght@400&display=swap",
+    },
+    category: "display",
+    css: "font-family: 'Abril Fatface', serif; /* heading */\nfont-family: 'Lato', sans-serif; /* body */",
+    tailwind: "font-['Abril_Fatface'] /* heading */\nfont-['Lato'] font-normal /* body */",
+    tags: ["display", "high-contrast", "magazine"],
+    mood: ["dramatic", "editorial", "bold"],
+    previewWord: "Vogue",
+  },
+
+  // === Handwritten ===
+  {
+    id: "script-dancing",
+    name: "Dancing Elegance",
+    nameZh: "曼舞优雅",
+    heading: {
+      family: "Dancing Script",
+      weight: 700,
+      googleFontsUrl: "https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap",
+    },
+    body: {
+      family: "Lora",
+      weight: 400,
+      googleFontsUrl: "https://fonts.googleapis.com/css2?family=Lora:wght@400&display=swap",
+    },
+    category: "handwritten",
+    css: "font-family: 'Dancing Script', cursive; /* heading */\nfont-family: 'Lora', serif; /* body */",
+    tailwind: "font-['Dancing_Script'] font-bold /* heading */\nfont-['Lora'] font-normal /* body */",
+    tags: ["script", "handwritten", "elegant"],
+    mood: ["personal", "elegant", "warm"],
+    previewWord: "Bonjour",
+  },
+  {
+    id: "poster-bebas",
+    name: "Poster Bebas",
+    nameZh: "海报贝巴斯",
+    heading: {
+      family: "Bebas Neue",
+      weight: 400,
+      googleFontsUrl: "https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap",
+    },
+    body: {
+      family: "Work Sans",
+      weight: 400,
+      googleFontsUrl: "https://fonts.googleapis.com/css2?family=Work+Sans:wght@400&display=swap",
+    },
+    category: "display",
+    css: "font-family: 'Bebas Neue', sans-serif; /* heading */\nfont-family: 'Work Sans', sans-serif; /* body */",
+    tailwind: "font-['Bebas_Neue'] /* heading */\nfont-['Work_Sans'] font-normal /* body */",
+    tags: ["display", "condensed", "uppercase"],
+    mood: ["industrial", "bold", "urban"],
+    previewWord: "FUTURE",
+  },
+  {
+    id: "gothic-oswald",
+    name: "Gothic Oswald",
+    nameZh: "哥特奥斯瓦",
+    heading: {
+      family: "Oswald",
+      weight: 600,
+      googleFontsUrl: "https://fonts.googleapis.com/css2?family=Oswald:wght@600&display=swap",
+    },
+    body: {
+      family: "Merriweather",
+      weight: 400,
+      googleFontsUrl: "https://fonts.googleapis.com/css2?family=Merriweather:wght@400&display=swap",
+    },
+    category: "display",
+    css: "font-family: 'Oswald', sans-serif; /* heading */\nfont-family: 'Merriweather', serif; /* body */",
+    tailwind: "font-['Oswald'] font-semibold /* heading */\nfont-['Merriweather'] font-normal /* body */",
+    tags: ["display", "condensed", "gothic"],
+    mood: ["strong", "editorial", "vintage"],
+    previewWord: "Headlines",
+  },
+  {
+    id: "fashion-dmserif",
+    name: "Fashion DM Serif",
+    nameZh: "时尚 DM 衬线",
+    heading: {
+      family: "DM Serif Display",
+      weight: 400,
+      googleFontsUrl: "https://fonts.googleapis.com/css2?family=DM+Serif+Display&display=swap",
+    },
+    body: {
+      family: "DM Sans",
+      weight: 400,
+      googleFontsUrl: "https://fonts.googleapis.com/css2?family=DM+Sans:wght@400&display=swap",
+    },
+    category: "display",
+    css: "font-family: 'DM Serif Display', serif; /* heading */\nfont-family: 'DM Sans', sans-serif; /* body */",
+    tailwind: "font-['DM_Serif_Display'] /* heading */\nfont-['DM_Sans'] font-normal /* body */",
+    tags: ["display", "elegant", "high-contrast"],
+    mood: ["elegant", "fashion", "refined"],
+    previewWord: "Élégance",
+  },
+  {
+    id: "casual-pacifico",
+    name: "Casual Pacifico",
+    nameZh: "休闲帕西菲科",
+    heading: {
+      family: "Pacifico",
+      weight: 400,
+      googleFontsUrl: "https://fonts.googleapis.com/css2?family=Pacifico&display=swap",
+    },
+    body: {
+      family: "Nunito",
+      weight: 400,
+      googleFontsUrl: "https://fonts.googleapis.com/css2?family=Nunito:wght@400&display=swap",
+    },
+    category: "handwritten",
+    css: "font-family: 'Pacifico', cursive; /* heading */\nfont-family: 'Nunito', sans-serif; /* body */",
+    tailwind: "font-['Pacifico'] /* heading */\nfont-['Nunito'] font-normal /* body */",
+    tags: ["script", "casual", "fun"],
+    mood: ["friendly", "casual", "warm"],
+    previewWord: "Aloha",
+  },
+  {
+    id: "notes-caveat",
+    name: "Notebook Caveat",
+    nameZh: "笔记卡维特",
+    heading: {
+      family: "Caveat",
+      weight: 700,
+      googleFontsUrl: "https://fonts.googleapis.com/css2?family=Caveat:wght@700&display=swap",
+    },
+    body: {
+      family: "Open Sans",
+      weight: 400,
+      googleFontsUrl: "https://fonts.googleapis.com/css2?family=Open+Sans:wght@400&display=swap",
+    },
+    category: "handwritten",
+    css: "font-family: 'Caveat', cursive; /* heading */\nfont-family: 'Open Sans', sans-serif; /* body */",
+    tailwind: "font-['Caveat'] font-bold /* heading */\nfont-['Open_Sans'] font-normal /* body */",
+    tags: ["script", "handwritten", "casual"],
+    mood: ["personal", "casual", "authentic"],
+    previewWord: "Notes",
+  },
+  {
+    id: "romance-sacramento",
+    name: "Romance Sacramento",
+    nameZh: "浪漫萨克拉门托",
+    heading: {
+      family: "Sacramento",
+      weight: 400,
+      googleFontsUrl: "https://fonts.googleapis.com/css2?family=Sacramento&display=swap",
+    },
+    body: {
+      family: "Josefin Sans",
+      weight: 400,
+      googleFontsUrl: "https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@400&display=swap",
+    },
+    category: "handwritten",
+    css: "font-family: 'Sacramento', cursive; /* heading */\nfont-family: 'Josefin Sans', sans-serif; /* body */",
+    tailwind: "font-['Sacramento'] /* heading */\nfont-['Josefin_Sans'] font-normal /* body */",
+    tags: ["script", "monoline", "elegant"],
+    mood: ["romantic", "delicate", "elegant"],
+    previewWord: "Je t'aime",
+  },
+  {
+    id: "editorial-instrument",
+    name: "Modern Editorial",
+    nameZh: "现代社论",
+    heading: {
+      family: "Instrument Serif",
+      weight: 400,
+      googleFontsUrl: "https://fonts.googleapis.com/css2?family=Instrument+Serif&display=swap",
+    },
+    body: {
+      family: "Inter",
+      weight: 400,
+      googleFontsUrl: "https://fonts.googleapis.com/css2?family=Inter:wght@400&display=swap",
+    },
+    category: "editorial",
+    css: "font-family: 'Instrument Serif', serif; /* heading */\nfont-family: 'Inter', sans-serif; /* body */",
+    tailwind: "font-['Instrument_Serif'] /* heading */\nfont-['Inter'] font-normal /* body */",
+    tags: ["serif", "editorial", "refined"],
+    mood: ["sophisticated", "editorial", "modern"],
+  },
+  {
+    id: "expressive-bricolage",
+    name: "Expressive Bricolage",
+    nameZh: "表现力布里科",
+    heading: {
+      family: "Bricolage Grotesque",
+      weight: 700,
+      googleFontsUrl: "https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@700&display=swap",
+    },
+    body: {
+      family: "Inter",
+      weight: 400,
+      googleFontsUrl: "https://fonts.googleapis.com/css2?family=Inter:wght@400&display=swap",
+    },
+    category: "modern",
+    css: "font-family: 'Bricolage Grotesque', sans-serif; /* heading */\nfont-family: 'Inter', sans-serif; /* body */",
+    tailwind: "font-['Bricolage_Grotesque'] font-bold /* heading */\nfont-['Inter'] font-normal /* body */",
+    tags: ["sans-serif", "expressive", "contemporary"],
+    mood: ["expressive", "modern", "distinctive"],
+  },
+  {
+    id: "geometric-outfit",
+    name: "Geometric Outfit",
+    nameZh: "几何 Outfit",
+    heading: {
+      family: "Outfit",
+      weight: 600,
+      googleFontsUrl: "https://fonts.googleapis.com/css2?family=Outfit:wght@600&display=swap",
+    },
+    body: {
+      family: "Lora",
+      weight: 400,
+      googleFontsUrl: "https://fonts.googleapis.com/css2?family=Lora:wght@400&display=swap",
+    },
+    category: "elegant",
+    css: "font-family: 'Outfit', sans-serif; /* heading */\nfont-family: 'Lora', serif; /* body */",
+    tailwind: "font-['Outfit'] font-semibold /* heading */\nfont-['Lora'] font-normal /* body */",
+    tags: ["sans-serif", "geometric", "modern"],
+    mood: ["clean", "elegant", "contemporary"],
+  },
+  {
+    id: "humanist-jakarta",
+    name: "Humanist Jakarta",
+    nameZh: "人文雅加达",
+    heading: {
+      family: "Plus Jakarta Sans",
+      weight: 700,
+      googleFontsUrl: "https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@700&display=swap",
+    },
+    body: {
+      family: "Lora",
+      weight: 400,
+      googleFontsUrl: "https://fonts.googleapis.com/css2?family=Lora:wght@400&display=swap",
+    },
+    category: "modern",
+    css: "font-family: 'Plus Jakarta Sans', sans-serif; /* heading */\nfont-family: 'Lora', serif; /* body */",
+    tailwind: "font-['Plus_Jakarta_Sans'] font-bold /* heading */\nfont-['Lora'] font-normal /* body */",
+    tags: ["sans-serif", "humanist", "modern"],
+    mood: ["friendly", "modern", "professional"],
+  },
+  {
+    id: "news-newsreader",
+    name: "Reader's Digest",
+    nameZh: "悦读",
+    heading: {
+      family: "Newsreader",
+      weight: 600,
+      googleFontsUrl: "https://fonts.googleapis.com/css2?family=Newsreader:wght@600&display=swap",
+    },
+    body: {
+      family: "Inter",
+      weight: 400,
+      googleFontsUrl: "https://fonts.googleapis.com/css2?family=Inter:wght@400&display=swap",
+    },
+    category: "editorial",
+    css: "font-family: 'Newsreader', serif; /* heading */\nfont-family: 'Inter', sans-serif; /* body */",
+    tailwind: "font-['Newsreader'] font-semibold /* heading */\nfont-['Inter'] font-normal /* body */",
+    tags: ["serif", "editorial", "reading"],
+    mood: ["literary", "warm", "readable"],
+  },
+  {
+    id: "expressive-fraunces",
+    name: "Expressive Fraunces",
+    nameZh: "灵动弗朗西斯",
+    heading: {
+      family: "Fraunces",
+      weight: 600,
+      googleFontsUrl: "https://fonts.googleapis.com/css2?family=Fraunces:wght@600&display=swap",
+    },
+    body: {
+      family: "Inter",
+      weight: 400,
+      googleFontsUrl: "https://fonts.googleapis.com/css2?family=Inter:wght@400&display=swap",
+    },
+    category: "elegant",
+    css: "font-family: 'Fraunces', serif; /* heading */\nfont-family: 'Inter', sans-serif; /* body */",
+    tailwind: "font-['Fraunces'] font-semibold /* heading */\nfont-['Inter'] font-normal /* body */",
+    tags: ["serif", "expressive", "display"],
+    mood: ["characterful", "elegant", "modern"],
+  },
 ];
 
 // Get font pairings by category
@@ -475,6 +796,8 @@ export function getTypographyCategories(): {
     editorial: "社论",
     technical: "技术",
     elegant: "优雅",
+    display: "展示",
+    handwritten: "手写",
   };
 
   const categoryLabelsEn: Record<TypographyCategory, string> = {
@@ -484,6 +807,8 @@ export function getTypographyCategories(): {
     editorial: "Editorial",
     technical: "Technical",
     elegant: "Elegant",
+    display: "Display",
+    handwritten: "Handwritten",
   };
 
   const categories = [...new Set(fontPairings.map((p) => p.category))];
@@ -565,10 +890,49 @@ const FONT_GENERIC: Record<string, GenericFamily> = {
   "Comfortaa": "sans",
   "Fredoka": "sans",
   "Baloo 2": "sans",
+  // Display
+  "Anton": "sans",
+  "Abril Fatface": "serif",
+  "Bebas Neue": "sans",
+  "Oswald": "sans",
+  "DM Serif Display": "serif",
+  // Newer grotesques / sans
+  "Instrument Serif": "serif",
+  "Newsreader": "serif",
+  "Fraunces": "serif",
+  "Bricolage Grotesque": "sans",
+  "Outfit": "sans",
+  "Plus Jakarta Sans": "sans",
+  // Handwritten / script — fall back to sans (system cursive default is worse).
+  "Dancing Script": "sans",
+  "Pacifico": "sans",
+  "Caveat": "sans",
+  "Sacramento": "sans",
 };
 
 function genericOf(family: string): GenericFamily {
   return FONT_GENERIC[family] ?? "sans";
+}
+
+const GENERIC_LABEL: Record<GenericFamily, string> = {
+  serif: "Serif",
+  sans: "Sans",
+  mono: "Mono",
+};
+
+/**
+ * Human-readable "contrast with harmony" label for a pairing, derived from the
+ * generic family of each face — e.g. "Serif × Sans". When heading and body share
+ * a family, the contrast lives in weight instead, so we say "Sans · one family".
+ * Surfaces the relationship that defines whether a pairing works.
+ */
+export function pairingContrast(pairing: FontPairing): string {
+  const h = GENERIC_LABEL[genericOf(pairing.heading.family)];
+  const b = GENERIC_LABEL[genericOf(pairing.body.family)];
+  if (pairing.heading.family === pairing.body.family) {
+    return `${h} · one family`;
+  }
+  return `${h} × ${b}`;
 }
 
 /** Full `font-family` value with the system fallback chain appended. */
