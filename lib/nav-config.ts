@@ -134,6 +134,12 @@ export const mainNav: NavItem[] = [
             { href: "/typography", labelKey: "nav.typography" },
           ],
         },
+        {
+          groupLabelKey: "nav.resourcesDevelopers",
+          items: [
+            { href: "/developers", labelKey: "nav.developers" },
+          ],
+        },
       ],
     },
   },
