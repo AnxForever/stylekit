@@ -51,7 +51,6 @@ export interface ExternalNavItem {
 // New features belong in a dropdown, not as new top-level items.
 export const mainNav: NavItem[] = [
   { href: "/styles", labelKey: "nav.styles" },
-  { href: "/learn", labelKey: "nav.learn" },
   { href: "/templates", labelKey: "nav.templates" },
   {
     href: "/templates",
@@ -109,6 +108,19 @@ export const mainNav: NavItem[] = [
       width: "wide",
       groups: [
         {
+          // Design foundations — all chapters live on /learn now; these jump
+          // straight to the matching section anchor instead of standalone pages.
+          groupLabelKey: "nav.learn",
+          items: [
+            { href: "/learn#color-theory", labelKey: "nav.colorTheory" },
+            { href: "/learn#typography", labelKey: "nav.typography" },
+            { href: "/learn#type-scale", labelKey: "nav.typeScale" },
+            { href: "/learn#spacing", labelKey: "nav.spacing" },
+            { href: "/learn#design-principles", labelKey: "nav.designPrinciples" },
+            { href: "/learn#visual-hierarchy", labelKey: "nav.visualHierarchy" },
+          ],
+        },
+        {
           groupLabelKey: "nav.resourcesBrowse",
           items: [
             { href: "/styles", labelKey: "nav.styles" },
@@ -126,17 +138,6 @@ export const mainNav: NavItem[] = [
             { href: "/gradients", labelKey: "nav.gradients" },
             { href: "/shadows", labelKey: "nav.shadows" },
             { href: "/backgrounds", labelKey: "nav.backgrounds" },
-            { href: "/color-theory", labelKey: "nav.colorTheory" },
-            { href: "/spacing", labelKey: "nav.spacing" },
-            { href: "/design-principles", labelKey: "nav.designPrinciples" },
-            { href: "/visual-hierarchy", labelKey: "nav.visualHierarchy" },
-          ],
-        },
-        {
-          groupLabelKey: "nav.resourcesType",
-          items: [
-            { href: "/typography", labelKey: "nav.typography" },
-            { href: "/type-scale", labelKey: "nav.typeScale" },
           ],
         },
         {
