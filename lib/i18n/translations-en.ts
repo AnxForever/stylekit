@@ -27,6 +27,8 @@ export const en = {
     "nav.resourcesBrowse": "Browse",
     "nav.resourcesComponents": "Components",
     "nav.resourcesType": "Typography",
+    "nav.resourcesDevelopers": "Developers",
+    "nav.developers": "Tools & packages",
     "nav.colors": "Colors",
     "nav.icons": "Icons",
     "nav.illustrations": "Illustrations",
