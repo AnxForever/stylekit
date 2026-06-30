@@ -3,7 +3,7 @@
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import { startTransition, useEffect, useMemo, useRef, useState } from "react";
-import { ArrowRight, BookOpenText, Component, Heart, Sparkles, type LucideIcon } from "lucide-react";
+import { ArrowRight, Heart } from "lucide-react";
 import { useI18n } from "@/lib/i18n/context";
 import { HomeStyleCard } from "@/components/home/home-style-card";
 import { FeaturedCarousel } from "@/components/home/featured-carousel";
@@ -81,7 +81,7 @@ const TrendingStyles = dynamic(
 
 export function HomeContent({ styles, stats }: HomeContentProps) {
   const { t, locale } = useI18n();
-  const [activeQuickLink, setActiveQuickLink] = useState("#home-catalog-guide");
+  const [activeQuickLink, setActiveQuickLink] = useState("#home-style-catalog");
   const [homeScrollProgress, setHomeScrollProgress] = useState(0);
   const [isMobileQuickJumpVisible, setIsMobileQuickJumpVisible] = useState(false);
   const [isMobileScrollDown, setIsMobileScrollDown] = useState(true);
@@ -100,43 +100,12 @@ export function HomeContent({ styles, stats }: HomeContentProps) {
   );
   const mobileFeaturedStyles = useMemo(() => featuredStyles.slice(0, 4), [featuredStyles]);
 
-  const coreFeatures: Array<{
-    title: string;
-    description: string;
-    href: string;
-    icon: LucideIcon;
-  }> = [
-    {
-      title: t("nav.styles"),
-      description:
-        locale === "zh"
-          ? "先从风格目录开始，按关键词、标签和布局方向筛选成熟方案。"
-          : "Start in the style catalog and narrow by keywords, tags, and layout direction.",
-      href: "/styles",
-      icon: Sparkles,
-    },
-    {
-      title: t("nav.templates"),
-      description:
-        locale === "zh"
-          ? "直接查看可落地的页面模板，优先走已经打磨完成的参考路径。"
-          : "Open production-ready page templates instead of jumping into unfinished flows.",
-      href: "/templates",
-      icon: Component,
-    },
-    {
-      title: t("home.feature.docs.title"),
-      description: t("home.feature.docs.desc"),
-      href: "/guide",
-      icon: BookOpenText,
-    },
-  ];
   const smallLinkClassName = "inline-flex items-center gap-1.5 text-xs tracking-wide text-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background transition-colors";
   const quickJumpLinkClassName = "inline-flex items-center gap-1.5 px-2.5 py-1.5 md:px-3.5 md:py-2.5 text-[11px] md:text-xs border border-border text-muted hover:text-foreground hover:border-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background transition-[color,border-color,background-color,transform,box-shadow] duration-200 ease-out";
   const sectionLabelClassName = "text-[11px] tracking-[0.16em] uppercase text-muted";
   const sectionTitleClassName = "text-[1.6rem] sm:text-2xl md:text-3xl leading-tight tracking-tight";
   const quickLinkTargets = useMemo(
-    () => ["#home-catalog-guide", "#home-style-catalog", "#home-trending"],
+    () => ["#home-style-catalog", "#home-trending"],
     []
   );
   const heroStats = useMemo(
@@ -161,11 +130,10 @@ export function HomeContent({ styles, stats }: HomeContentProps) {
   );
   const quickLinks = useMemo(
     () => [
-      { href: quickLinkTargets[0], label: locale === "zh" ? "选择路径" : "Choose Path" },
-      { href: quickLinkTargets[1], label: t("home.styleCatalog") },
-      { href: quickLinkTargets[2], label: t("analytics.trending.title") },
+      { href: quickLinkTargets[0], label: t("home.styleCatalog") },
+      { href: quickLinkTargets[1], label: t("analytics.trending.title") },
     ],
-    [locale, quickLinkTargets, t]
+    [quickLinkTargets, t]
   );
   const heroScenarioEntries = useMemo(
     () => HERO_SCENARIO_ORDER
@@ -277,7 +245,7 @@ export function HomeContent({ styles, stats }: HomeContentProps) {
       const currentY = window.scrollY;
       const isMobileViewport = window.innerWidth < 768;
       const heroSection = document.getElementById("home-hero");
-      const startSection = document.getElementById("home-catalog-guide");
+      const startSection = document.getElementById("home-style-catalog");
       const endSection = document.getElementById("home-trending");
       if (heroSection && isMobileViewport) {
         const revealThreshold = Math.max(heroSection.offsetTop + heroSection.offsetHeight - 72, 0);
@@ -613,7 +581,7 @@ export function HomeContent({ styles, stats }: HomeContentProps) {
             )}
           </div>
           {!isMobileQuickJumpCompact && (
-            <div aria-hidden className="mt-2 grid grid-cols-4 gap-1">
+            <div aria-hidden className="mt-2 grid grid-cols-2 gap-1">
               {quickLinkTargets.map((href, index) => (
                 <div
                   key={href}
@@ -636,69 +604,6 @@ export function HomeContent({ styles, stats }: HomeContentProps) {
         </nav>
       </section>
 
-      <section id="home-catalog-guide" className="border-b border-border scroll-mt-24 bg-zinc-50/35 dark:bg-zinc-900/10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-12 py-4 md:py-8">
-          <div className="grid gap-3 md:gap-4 lg:grid-cols-[0.8fr_1.2fr] lg:items-center">
-            <RevealOnScroll variant="soft" className="min-w-0">
-              <p className={`${sectionLabelClassName} mb-1.5 md:mb-2`}>
-                {locale === "zh" ? "进入目录前" : "Before the Catalog"}
-              </p>
-              <h2 className="text-lg leading-tight md:text-2xl">
-                {locale === "zh" ? "先选路径，再看风格。" : "Pick a path, then scan styles."}
-              </h2>
-              <p className="mt-2 hidden max-w-xl text-sm leading-relaxed text-muted md:block">
-                {locale === "zh"
-                  ? "把原来分散的说明收成一条导览：目录、模板、文档三个入口足够覆盖主要决策。"
-                  : "The old explanation blocks are collapsed into three routes: catalog, templates, and docs."}
-              </p>
-            </RevealOnScroll>
-
-            <div className="grid grid-cols-3 gap-2 sm:gap-3">
-              {coreFeatures.map((feature, featureIndex) => {
-                const Icon = feature.icon;
-                return (
-                  <RevealOnScroll
-                    key={feature.title}
-                    variant="upSubtle"
-                    delayMs={60 + featureIndex * 45}
-                    disableDelayOnMobile
-                  >
-                    <Link
-                      href={localizeHref(feature.href, locale)}
-                      className="group flex h-full min-h-[5.5rem] flex-col items-center justify-center gap-2 border border-border bg-background/85 px-2 py-3 text-center transition-[border-color,transform] duration-200 hover:border-foreground motion-safe:hover:-translate-y-0.5 md:min-h-0 md:flex-row md:items-start md:justify-start md:gap-3 md:px-4 md:py-4 md:text-left"
-                    >
-                      <span className="flex h-8 w-8 shrink-0 items-center justify-center border border-border text-muted transition-colors group-hover:border-foreground group-hover:text-foreground md:mt-0.5 md:h-9 md:w-9">
-                        <Icon className="h-4 w-4" />
-                      </span>
-                      <span className="min-w-0">
-                        <span className="block text-xs leading-4 transition-colors group-hover:text-accent sm:text-sm sm:leading-5">
-                          {feature.title}
-                        </span>
-                        <span className="mt-1 hidden text-xs leading-5 text-muted md:line-clamp-2 md:block">
-                          {feature.description}
-                        </span>
-                      </span>
-                    </Link>
-                  </RevealOnScroll>
-                );
-              })}
-            </div>
-          </div>
-
-          <dl className="mt-4 hidden grid-cols-3 border border-border bg-background/80 md:grid md:max-w-xl">
-            {[
-              { value: `${stats.styles}+`, label: locale === "zh" ? "风格" : "Styles" },
-              { value: `${stats.animations}+`, label: locale === "zh" ? "动画" : "Animations" },
-              { value: `${stats.templates}+`, label: locale === "zh" ? "模板" : "Templates" },
-            ].map((item) => (
-              <div key={item.label} className="border-r border-border px-3 py-2.5 text-center last:border-r-0">
-                <dt className="text-[10px] uppercase tracking-[0.18em] text-muted">{item.label}</dt>
-                <dd className="mt-1 text-base leading-none tabular-nums md:text-lg">{item.value}</dd>
-              </div>
-            ))}
-          </dl>
-        </div>
-      </section>
 
       <section id="home-style-catalog" className="relative scroll-mt-24 bg-zinc-50/35 dark:bg-zinc-900/10">
         <div aria-hidden className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(0,0,0,0.05),transparent_55%)] dark:bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.06),transparent_55%)]" />
