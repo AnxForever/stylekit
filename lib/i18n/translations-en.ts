@@ -513,6 +513,7 @@ export const en = {
     "nav.colorTheory": "Color Theory",
     "nav.spacing": "Spacing & Grid",
     "nav.typeScale": "Type Scale",
+    "nav.designPrinciples": "Design Principles",
     "nav.resources": "Resources",
     "playground.compare": "Compare Styles",
     "playground.export": "Export Project",
