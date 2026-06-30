@@ -102,7 +102,7 @@ export function DevelopersContent() {
   const c = COPY[locale as keyof typeof COPY] ?? COPY.en;
 
   return (
-    <main className="flex-1">
+    <main className="flex-1" data-cursor-aura="off">
       <section className="relative border-b border-border">
         <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-16 md:px-12 md:py-24">
           <RevealOnScroll variant="soft">
