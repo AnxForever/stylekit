@@ -70,12 +70,6 @@ export function Footer() {
               >
                 {t("nav.changelog")}
               </Link>
-              <Link
-                href={localizeHref("/contact#feedback", locale)}
-                className="text-sm text-foreground hover:text-accent transition-colors"
-              >
-                {locale === "zh" ? "反馈" : "Feedback"}
-              </Link>
             </nav>
           </div>
 
@@ -110,6 +104,25 @@ export function Footer() {
         </div>
 
         <hr className="my-8" />
+
+        <div className="mb-6 flex flex-col gap-4 rounded-[28px] border border-foreground/15 bg-accent/[0.04] px-5 py-5 md:flex-row md:items-center md:justify-between md:px-6">
+          <div className="max-w-2xl">
+            <p className="text-[11px] uppercase tracking-[0.28em] text-muted">
+              {locale === "zh" ? "提意见" : "Feedback"}
+            </p>
+            <p className="mt-2 text-sm leading-7 text-foreground/80">
+              {locale === "zh"
+                ? "有想法、建议，或发现了问题？直接告诉我，意见会发到我邮箱。"
+                : "Have an idea, a suggestion, or found a bug? Tell me — it lands straight in my inbox."}
+            </p>
+          </div>
+          <Link
+            href={localizeHref("/contact#feedback", locale)}
+            className="inline-flex shrink-0 items-center justify-center rounded-full bg-foreground px-5 py-2.5 text-sm font-medium text-background transition-opacity hover:opacity-90"
+          >
+            {locale === "zh" ? "提个建议" : "Send feedback"}
+          </Link>
+        </div>
 
         <div className="mb-8 flex flex-col gap-4 rounded-[28px] border border-border bg-[radial-gradient(circle_at_top_left,rgba(245,158,11,0.1),transparent_35%),radial-gradient(circle_at_bottom_right,rgba(34,197,94,0.08),transparent_38%)] px-5 py-5 md:flex-row md:items-center md:justify-between md:px-6">
           <div className="max-w-2xl">
