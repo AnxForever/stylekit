@@ -70,6 +70,12 @@ export function Footer() {
               >
                 {t("nav.changelog")}
               </Link>
+              <Link
+                href={localizeHref("/contact#feedback", locale)}
+                className="text-sm text-foreground hover:text-accent transition-colors"
+              >
+                {locale === "zh" ? "反馈" : "Feedback"}
+              </Link>
             </nav>
           </div>
 

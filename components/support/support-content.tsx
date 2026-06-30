@@ -7,6 +7,7 @@ import { useI18n } from "@/lib/i18n/context";
 import { localizeHref } from "@/lib/i18n/routing";
 import { supportMethods, supportLinks, supportPageCopy } from "@/lib/site/support";
 import { ThankYouList } from "@/components/support/thank-you-list";
+import { FeedbackForm } from "@/components/feedback/feedback-form";
 
 export function SupportContent() {
   const { locale } = useI18n();
@@ -14,6 +15,27 @@ export function SupportContent() {
 
   return (
     <div className="grid gap-10 md:gap-14">
+      <section id="feedback" className="grid gap-5 scroll-mt-24">
+        <div className="max-w-2xl">
+          <p className="text-xs uppercase tracking-[0.28em] text-muted">
+            {locale === "zh" ? "提意见" : "Feedback"}
+          </p>
+          <h2 className="mt-3 text-2xl leading-tight md:text-3xl">
+            {locale === "zh"
+              ? "有想法，或发现了问题？"
+              : "Have an idea or spotted something off?"}
+          </h2>
+          <p className="mt-3 max-w-xl text-base leading-7 text-muted">
+            {locale === "zh"
+              ? "直接在这儿给我留言，想要回复就留个邮箱，意见会发到我邮箱。"
+              : "Drop a message here. Leave an email if you'd like a reply — it lands straight in my inbox."}
+          </p>
+        </div>
+        <div className="max-w-xl">
+          <FeedbackForm />
+        </div>
+      </section>
+
       <section
         id="support-maintenance"
         className="relative overflow-hidden rounded-[32px] border border-border bg-[radial-gradient(circle_at_top_left,rgba(245,158,11,0.12),transparent_38%),radial-gradient(circle_at_bottom_right,rgba(34,197,94,0.1),transparent_34%)] p-8 md:p-10"
