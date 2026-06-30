@@ -132,6 +132,7 @@ export const mainNav: NavItem[] = [
           groupLabelKey: "nav.resourcesType",
           items: [
             { href: "/typography", labelKey: "nav.typography" },
+            { href: "/type-scale", labelKey: "nav.typeScale" },
           ],
         },
         {
