@@ -128,6 +128,7 @@ export const mainNav: NavItem[] = [
             { href: "/color-theory", labelKey: "nav.colorTheory" },
             { href: "/spacing", labelKey: "nav.spacing" },
             { href: "/design-principles", labelKey: "nav.designPrinciples" },
+            { href: "/visual-hierarchy", labelKey: "nav.visualHierarchy" },
           ],
         },
         {

@@ -514,6 +514,7 @@ export const en = {
     "nav.spacing": "Spacing & Grid",
     "nav.typeScale": "Type Scale",
     "nav.designPrinciples": "Design Principles",
+    "nav.visualHierarchy": "Visual Hierarchy",
     "nav.resources": "Resources",
     "playground.compare": "Compare Styles",
     "playground.export": "Export Project",
