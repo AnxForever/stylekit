@@ -191,6 +191,11 @@ export type SupportLink = {
   actionLabel: SupportLocaleCopy;
 };
 
+// Canonical GitHub feedback channels, reused by the changelog feedback CTA.
+export const githubLinks = {
+  discussions: "https://github.com/AnxForever/stylekit/discussions",
+} as const;
+
 export const supportLinks: SupportLink[] = [
   {
     title: { en: "GitHub Discussions", zh: "GitHub Discussions" },
