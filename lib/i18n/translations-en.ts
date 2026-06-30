@@ -511,6 +511,7 @@ export const en = {
     "nav.typography": "Typography",
     "nav.backgrounds": "Backgrounds",
     "nav.colorTheory": "Color Theory",
+    "nav.typeScale": "Type Scale",
     "nav.resources": "Resources",
     "playground.compare": "Compare Styles",
     "playground.export": "Export Project",

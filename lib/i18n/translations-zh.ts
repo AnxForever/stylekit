@@ -14,6 +14,7 @@ export const zh: { [K in keyof typeof en]: string } = {
   "nav.typography": "字体配对",
   "nav.backgrounds": "背景纹理",
   "nav.colorTheory": "色彩理论",
+  "nav.typeScale": "字号阶梯",
   "nav.resources": "资源",
   "nav.recipes": "配方",
   "nav.guides": "指南",
