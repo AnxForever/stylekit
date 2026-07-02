@@ -34,7 +34,6 @@ export function CursorAuraProvider() {
     aura.className = "sk-cursor-aura";
     aura.setAttribute("aria-hidden", "true");
     document.body.appendChild(aura);
-    document.body.classList.add("sk-cursor-hidden");
     auraRef.current = aura;
 
     let frame = 0;
@@ -71,7 +70,6 @@ export function CursorAuraProvider() {
       window.removeEventListener("blur", hide);
       window.cancelAnimationFrame(frame);
       aura.remove();
-      document.body.classList.remove("sk-cursor-hidden");
       auraRef.current = null;
     };
   }, []);
