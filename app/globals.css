@@ -389,23 +389,8 @@ a, button, [role="button"], input, select, textarea {
   touch-action: manipulation;
 }
 
-/* 光晕启用时隐藏原生光标, 让光晕替代箭头;
-   交互元素恢复各自 cursor, 不破坏可用性。*/
-body.sk-cursor-hidden { cursor: none; }
-body.sk-cursor-hidden a,
-body.sk-cursor-hidden button { cursor: pointer; }
-body.sk-cursor-hidden input,
-body.sk-cursor-hidden textarea,
-body.sk-cursor-hidden select,
-body.sk-cursor-hidden [contenteditable="true"] { cursor: text; }
-
 /* range sliders need a directional cursor, not the text I-beam */
-body.sk-cursor-hidden input[type="range"],
 input[type="range"] { cursor: pointer; }
-
-body.sk-cursor-hidden pre,
-body.sk-cursor-hidden code { cursor: auto; }
-body.sk-cursor-hidden [data-cursor-aura="off"] { cursor: auto; }
 
 /* Pointer interaction primitives */
 .sk-cursor-aura {
