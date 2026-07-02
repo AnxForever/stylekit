@@ -392,32 +392,6 @@ a, button, [role="button"], input, select, textarea {
 /* range sliders need a directional cursor, not the text I-beam */
 input[type="range"] { cursor: pointer; }
 
-/* Pointer interaction primitives */
-.sk-cursor-aura {
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: 60;
-  width: 34px;
-  height: 34px;
-  border: 1px solid color-mix(in srgb, var(--foreground) 18%, transparent);
-  border-radius: 9999px;
-  background:
-    radial-gradient(circle, color-mix(in srgb, var(--accent) 18%, transparent), transparent 62%);
-  opacity: 0;
-  pointer-events: none;
-  transform: translate3d(-999px, -999px, 0);
-  translate: -50% -50%;
-  transition: opacity 160ms ease-out, width 180ms ease-out, height 180ms ease-out;
-  will-change: transform, opacity;
-  mix-blend-mode: multiply;
-}
-
-.dark .sk-cursor-aura {
-  border-color: color-mix(in srgb, var(--foreground) 22%, transparent);
-  mix-blend-mode: screen;
-}
-
 .sk-spotlight-surface > .sk-spotlight-layer {
   background:
     radial-gradient(
