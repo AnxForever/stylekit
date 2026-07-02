@@ -1,4 +1,4 @@
-export { CursorAuraProvider } from "./cursor-aura-provider";
+
 export { MagneticTarget } from "./magnetic-target";
 export { SpotlightSurface } from "./spotlight-surface";
 export { TiltSurface } from "./tilt-surface";
