@@ -49,21 +49,40 @@ const SCENARIO_OVERRIDES: Partial<Record<string, StyleScenario[]>> = {
   "full-page-scroll": ["marketing", "portfolio", "creative"],
   "split-screen": ["marketing", "portfolio", "creative"],
   "hero-fullscreen": ["marketing", "portfolio", "creative"],
+  "film-noir": ["creative", "marketing", "editorial"],
+  particle: ["creative", "marketing", "saas"],
+  "zen-garden": ["creative", "marketing"],
+
+  // --- Portfolio ---
+  // Mainstream portfolio patterns per 2024-2026 trend research:
+  // Swiss/monochrome minimal, dark elegant, brutalism, editorial,
+  // grid galleries, developer identity, resume timelines.
+  "swiss-style": ["portfolio", "editorial", "docs"],
+  monochrome: ["portfolio", "editorial", "marketing"],
+  "dark-mode": ["portfolio", "saas", "blog"],
+  "brutalist-web": ["portfolio", "creative", "blog"],
+  "asymmetric-grid": ["portfolio", "creative", "editorial"],
+  "masonry-flow": ["portfolio", "creative", "ecommerce"],
+  "timeline-vertical": ["portfolio", "docs", "dashboard"],
+  "parallax-sections": ["marketing", "portfolio", "creative"],
+  "korean-minimal": ["portfolio", "blog", "docs"],
+  "generative-art": ["creative", "portfolio"],
+  "glitch-art": ["creative", "portfolio"],
 
   // --- Editorial / Blog ---
-  editorial: ["editorial", "blog", "creative"],
-  "magazine-grid": ["editorial", "blog", "marketing"],
+  editorial: ["editorial", "portfolio", "blog"],
+  "magazine-grid": ["editorial", "portfolio", "blog"],
   "f-pattern-layout": ["blog", "editorial", "marketing"],
-  "swiss-style": ["editorial", "blog", "docs"],
   "dark-academia": ["blog", "editorial", "creative"],
   "linear-style": ["saas", "blog", "docs"],
   "scandinavian": ["portfolio", "blog", "docs"],
   "wabi-sabi": ["blog", "portfolio", "creative"],
+  "japanese-fresh": ["blog", "creative", "ecommerce"],
 
   // --- SaaS / B2B ---
   glassmorphism: ["saas", "marketing", "ecommerce"],
   neumorphism: ["saas", "marketing", "ecommerce"],
-  "z-pattern-layout": ["marketing", "portfolio", "saas"],
+  "z-pattern-layout": ["marketing", "saas"],
   "bento-grid": ["portfolio", "marketing", "dashboard"],
 
   // --- E-Commerce ---
@@ -71,7 +90,7 @@ const SCENARIO_OVERRIDES: Partial<Record<string, StyleScenario[]>> = {
   "natural-organic": ["ecommerce", "marketing", "creative"],
   "stripe-style": ["saas", "ecommerce", "docs"],
   "minimalist-flat": ["ecommerce", "portfolio", "blog"],
-  "marble-luxury": ["ecommerce", "marketing", "portfolio"],
+  "marble-luxury": ["ecommerce", "marketing"],
   "tropical-paradise": ["ecommerce", "marketing", "creative"],
 
   // --- Dashboard / Admin ---
@@ -81,15 +100,16 @@ const SCENARIO_OVERRIDES: Partial<Record<string, StyleScenario[]>> = {
   "fluent-design": ["dashboard", "admin", "saas"],
   "material-design": ["dashboard", "admin", "saas"],
   "sidebar-fixed": ["admin", "docs", "dashboard"],
-  "github-style": ["admin", "saas", "docs"],
+  "github-style": ["saas", "portfolio", "docs"],
   "notion-style": ["docs", "admin", "blog"],
 
   // --- Docs ---
   "holy-grail-layout": ["docs", "blog", "admin"],
+  blueprint: ["docs", "saas"],
 
   // --- New styles (Batch 15) ---
   "shopify-clean": ["ecommerce", "marketing", "saas"],
-  "luxury-retail": ["ecommerce", "marketing", "portfolio"],
+  "luxury-retail": ["ecommerce", "marketing"],
   "fresh-market": ["ecommerce", "marketing", "creative"],
   "data-dense": ["admin", "dashboard", "saas"],
 };
@@ -105,7 +125,11 @@ const SCENARIO_MATCHERS: Record<StyleScenario, RegExp[]> = {
     /admin|backoffice|control panel|management|后台|管理系统|管理面板|侧栏导航/i,
   ],
   portfolio: [
-    /portfolio|gallery|showcase|case study|作品集|画廊|案例|项目展示/i,
+    // Deliberately narrow: style metadata often contains generic words like
+    // "showcase" / "gallery" / "案例" (every style ships a showcase page),
+    // which used to pull unrelated styles into this scenario. Portfolio
+    // membership is curated via SCENARIO_OVERRIDES instead.
+    /portfolio|作品集|个人主页|personal site/i,
   ],
   blog: [
     /blog|article|newsletter|阅读|博客|文章|内容/i,
@@ -168,7 +192,7 @@ function scoreStyleScenarios(style: StyleMeta): Map<StyleScenario, number> {
 
   if (scores.size === 0) {
     if (style.category === "minimal") {
-      scores.set("portfolio", 3);
+      scores.set("blog", 3);
       scores.set("docs", 2);
     } else if (style.category === "modern") {
       scores.set("saas", 3);
