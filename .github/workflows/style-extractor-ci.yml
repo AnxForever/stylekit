@@ -39,8 +39,6 @@ jobs:
               - ".github/workflows/style-extractor-ci.yml"
       - uses: pnpm/action-setup@v4
         if: steps.extractor_changes.outputs.style_extractor == 'true'
-        with:
-          version: 10
       - uses: actions/setup-node@v4
         if: steps.extractor_changes.outputs.style_extractor == 'true'
         with:
