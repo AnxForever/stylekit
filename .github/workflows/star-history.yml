@@ -36,7 +36,7 @@ jobs:
           git checkout -B automation/star-history
           git add public/readme/star-history.svg
           git commit -m "docs: update star history"
-          git push --force-with-lease origin automation/star-history
+          git push --force origin automation/star-history
 
           {
             echo "Star history update branch pushed."
