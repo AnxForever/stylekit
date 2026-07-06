@@ -7,7 +7,6 @@ on:
 
 permissions:
   contents: write
-  pull-requests: write
 
 jobs:
   update-star-history:
@@ -25,12 +24,23 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Open update pull request
-        uses: peter-evans/create-pull-request@v7
-        with:
-          commit-message: "docs: update star history"
-          title: "docs: update star history"
-          body: "Automated update for the README star history SVG."
-          branch: "automation/star-history"
-          delete-branch: true
-          add-paths: "public/readme/star-history.svg"
+      - name: Push update branch
+        run: |
+          if git diff --quiet -- public/readme/star-history.svg; then
+            echo "Star history is already up to date." >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -B automation/star-history
+          git add public/readme/star-history.svg
+          git commit -m "docs: update star history"
+          git push --force-with-lease origin automation/star-history
+
+          {
+            echo "Star history update branch pushed."
+            echo
+            echo "Open a PR from:"
+            echo "https://github.com/AnxForever/stylekit/compare/main...automation/star-history"
+          } >> "$GITHUB_STEP_SUMMARY"
