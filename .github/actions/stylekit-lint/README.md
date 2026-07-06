@@ -18,7 +18,7 @@ A GitHub Action that checks your code against StyleKit design style guidelines. 
 | `style` | Style slug to lint against | Yes | - |
 | `files` | Glob pattern for files to check | Yes | `src/**/*.tsx` |
 | `fail-on-error` | Fail the action if lint errors are found | No | `true` |
-| `node-version` | Node.js version to use | No | `20` |
+| `node-version` | Node.js version to use | No | `24` |
 
 ## Available Styles
 

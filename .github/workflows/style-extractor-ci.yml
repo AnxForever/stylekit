@@ -42,7 +42,7 @@ jobs:
       - uses: actions/setup-node@v4
         if: steps.extractor_changes.outputs.style_extractor == 'true'
         with:
-          node-version: 20
+          node-version: 24
           cache: pnpm
       - run: pnpm install --frozen-lockfile
         if: steps.extractor_changes.outputs.style_extractor == 'true'
