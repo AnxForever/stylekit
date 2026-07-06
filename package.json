@@ -26,7 +26,8 @@
     "test:style-extractor:ci": "pnpm run check:style-extractor && pnpm run test:style-extractor",
     "e2e": "npx playwright test --config tests/playwright.config.ts",
     "e2e:ui": "npx playwright test --config tests/playwright.config.ts --ui",
-    "images:optimize": "node tools/scripts/optimize-images.mjs"
+    "images:optimize": "node tools/scripts/optimize-images.mjs",
+    "readme:star-history": "node tools/scripts/generate-star-history.mjs"
   },
   "dependencies": {
     "@codemirror/autocomplete": "^6.20.0",
