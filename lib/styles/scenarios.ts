@@ -211,6 +211,11 @@ const SCENARIO_ASSIGNMENTS: Record<string, StyleScenario[]> = {
   // --- Cultural pattern systems ---
   "indian-festive": ["marketing", "creative", "ecommerce"],
   "african-textile": ["creative", "marketing", "ecommerce"],
+
+  // --- Portfolio Batch 2 (2026-07-07) ---
+  "gallery-dark": ["portfolio", "blog", "creative"],
+  "studio-bold": ["portfolio", "marketing", "creative"],
+  "warm-organic": ["portfolio", "creative", "ecommerce"],
 };
 
 // Safety net for styles created outside the registry (e.g. runtime-generated
