@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="hg-stone" x1="0" y1="0" x2="0.4" y2="1">
+      <stop offset="0" stop-color="#C9C4BA"/>
+      <stop offset="1" stop-color="#8F8A7E"/>
+    </linearGradient>
+    <linearGradient id="hg-slate" x1="0" y1="0" x2="0.4" y2="1">
+      <stop offset="0" stop-color="#8E969E"/>
+      <stop offset="1" stop-color="#5A6068"/>
+    </linearGradient>
+    <linearGradient id="hg-terra" x1="0" y1="0" x2="0.4" y2="1">
+      <stop offset="0" stop-color="#B86E4E"/>
+      <stop offset="1" stop-color="#7E4630"/>
+    </linearGradient>
+    <linearGradient id="hg-sand" x1="0" y1="0" x2="0.4" y2="1">
+      <stop offset="0" stop-color="#D9CFBE"/>
+      <stop offset="1" stop-color="#B0A48E"/>
+    </linearGradient>
+    <linearGradient id="hg-sheen" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FCFCFA" stop-opacity="0.22"/>
+      <stop offset="1" stop-color="#FCFCFA" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Gallery wall -->
+  <rect width="1200" height="630" fill="#FCFCFA"/>
+
+  <!-- Nav -->
+  <text x="80" y="52" font-family="Georgia,'Times New Roman',serif" font-size="22" font-weight="400" letter-spacing="1" fill="#1A1A1A">White Room</text>
+  <text x="1120" y="50" text-anchor="end" font-family="'Inter','Helvetica Neue',Arial,sans-serif" font-size="11" letter-spacing="3" fill="#8A8A85">WORKS&#160;&#160;&#160;&#160;EXHIBITIONS&#160;&#160;&#160;&#160;VISIT</text>
+  <rect x="1146" y="41" width="4" height="4" fill="#A85A3A"/>
+  <path d="M0 80 H1200" stroke="#E8E6E1" stroke-width="1"/>
+
+  <!-- Title block -->
+  <text x="80" y="132" font-family="'Inter','Helvetica Neue',Arial,sans-serif" font-size="11" letter-spacing="4" fill="#A85A3A">NO. 01 &#8212; LAYOUT STYLE</text>
+  <text x="80" y="188" font-family="Georgia,'Times New Roman',serif" font-size="54" font-weight="400" letter-spacing="1" fill="#1A1A1A">Horizontal Gallery</text>
+  <text x="80" y="218" font-family="'Inter','Helvetica Neue',Arial,sans-serif" font-size="13" letter-spacing="2" fill="#8A8A85">&#27178;&#28378;&#30011;&#24266; &#8212; WHITE CUBE, CURATED SCROLL</text>
+  <text x="1120" y="188" text-anchor="end" font-family="'Inter','Helvetica Neue',Arial,sans-serif" font-size="11" letter-spacing="3" fill="#8A8A85">SNAP-X &#183; MANDATORY</text>
+
+  <!-- Exhibition strip: borderless works, no radius, no shadow -->
+  <!-- Work 01, aspect 4:5 -->
+  <rect x="80" y="252" width="180" height="225" fill="url(#hg-stone)"/>
+  <rect x="80" y="252" width="180" height="90" fill="url(#hg-sheen)"/>
+  <path d="M80 502 H260" stroke="#E8E6E1" stroke-width="1"/>
+  <text x="80" y="524" font-family="'Inter','Helvetica Neue',Arial,sans-serif" font-size="10" letter-spacing="3" fill="#A85A3A">NO. 01</text>
+  <text x="80" y="545" font-family="Georgia,'Times New Roman',serif" font-size="15" fill="#1A1A1A">Still Field</text>
+  <text x="80" y="563" font-family="'Inter','Helvetica Neue',Arial,sans-serif" font-size="9" letter-spacing="2" fill="#8A8A85">OIL ON LINEN, 2025</text>
+
+  <!-- Work 02, aspect 3:2 -->
+  <rect x="330" y="252" width="310" height="207" fill="url(#hg-slate)"/>
+  <rect x="330" y="252" width="310" height="83" fill="url(#hg-sheen)"/>
+  <path d="M330 502 H640" stroke="#E8E6E1" stroke-width="1"/>
+  <text x="330" y="524" font-family="'Inter','Helvetica Neue',Arial,sans-serif" font-size="10" letter-spacing="3" fill="#A85A3A">NO. 02</text>
+  <text x="330" y="545" font-family="Georgia,'Times New Roman',serif" font-size="15" fill="#1A1A1A">Northern Wall</text>
+  <text x="330" y="563" font-family="'Inter','Helvetica Neue',Arial,sans-serif" font-size="9" letter-spacing="2" fill="#8A8A85">GELATIN SILVER PRINT, 2026</text>
+
+  <!-- Work 03, aspect 4:5 -->
+  <rect x="710" y="252" width="180" height="225" fill="url(#hg-terra)"/>
+  <rect x="710" y="252" width="180" height="90" fill="url(#hg-sheen)"/>
+  <path d="M710 502 H890" stroke="#E8E6E1" stroke-width="1"/>
+  <text x="710" y="524" font-family="'Inter','Helvetica Neue',Arial,sans-serif" font-size="10" letter-spacing="3" fill="#A85A3A">NO. 03</text>
+  <text x="710" y="545" font-family="Georgia,'Times New Roman',serif" font-size="15" fill="#1A1A1A">Terra Firma II</text>
+  <text x="710" y="563" font-family="'Inter','Helvetica Neue',Arial,sans-serif" font-size="9" letter-spacing="2" fill="#8A8A85">PIGMENT ON PANEL, 2024</text>
+
+  <!-- Work 04, aspect 3:2, clipped at right edge to suggest the walk continues -->
+  <rect x="960" y="252" width="310" height="207" fill="url(#hg-sand)"/>
+  <rect x="960" y="252" width="310" height="83" fill="url(#hg-sheen)"/>
+  <path d="M960 502 H1200" stroke="#E8E6E1" stroke-width="1"/>
+  <text x="960" y="524" font-family="'Inter','Helvetica Neue',Arial,sans-serif" font-size="10" letter-spacing="3" fill="#A85A3A">NO. 04</text>
+  <text x="960" y="545" font-family="Georgia,'Times New Roman',serif" font-size="15" fill="#1A1A1A">Quiet Hours</text>
+  <text x="960" y="563" font-family="'Inter','Helvetica Neue',Arial,sans-serif" font-size="9" letter-spacing="2" fill="#8A8A85">ARCHIVAL PIGMENT, 2026</text>
+
+  <!-- Scroll progress rail -->
+  <text x="80" y="601" font-family="'Inter','Helvetica Neue',Arial,sans-serif" font-size="11" letter-spacing="3" fill="#8A8A85">01 / 08</text>
+  <path d="M170 597 H1020" stroke="#E8E6E1" stroke-width="1"/>
+  <path d="M170 597 H385" stroke="#1A1A1A" stroke-width="1"/>
+  <rect x="383" y="595" width="4" height="4" fill="#A85A3A"/>
+
+  <!-- Walk controls -->
+  <rect x="1048" y="580" width="34" height="34" fill="none" stroke="#E8E6E1" stroke-width="1"/>
+  <path d="M1071 597 H1059 M1063 592 L1058 597 L1063 602" stroke="#8A8A85" stroke-width="1" fill="none"/>
+  <rect x="1090" y="580" width="34" height="34" fill="none" stroke="#1A1A1A" stroke-width="1"/>
+  <path d="M1099 597 H1111 M1107 592 L1112 597 L1107 602" stroke="#1A1A1A" stroke-width="1" fill="none"/>
+</svg>
