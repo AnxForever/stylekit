@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" fill="none" viewBox="0 0 1200 630">
+  <path fill="#FAFAF8" d="M0 0h1200v630H0z"/>
+  <!-- Nav -->
+  <text x="76" y="62" fill="#0A0A0A" font-family="'Inter','Helvetica Neue',Arial,sans-serif" font-size="28" font-weight="900" letter-spacing="-.03em">AC</text>
+  <rect width="9" height="9" x="121" y="38" fill="#FF4D00"/>
+  <text x="620" y="58" fill="#0A0A0A" font-family="'JetBrains Mono','SF Mono',Menlo,monospace" font-size="12" letter-spacing=".22em">WORK</text>
+  <text x="710" y="58" fill="#0A0A0A" font-family="'JetBrains Mono','SF Mono',Menlo,monospace" font-size="12" letter-spacing=".22em">ABOUT</text>
+  <text x="812" y="58" fill="#0A0A0A" font-family="'JetBrains Mono','SF Mono',Menlo,monospace" font-size="12" letter-spacing=".22em">JOURNAL</text>
+  <text x="936" y="58" fill="#0A0A0A" font-family="'JetBrains Mono','SF Mono',Menlo,monospace" font-size="12" letter-spacing=".22em">CONTACT</text>
+  <rect width="10" height="10" x="1046" y="46" fill="#FF4D00"/>
+  <text x="1066" y="56" fill="#71717A" font-family="'JetBrains Mono','SF Mono',Menlo,monospace" font-size="10" letter-spacing=".2em">AVAIL.</text>
+  <path stroke="#0A0A0A" stroke-opacity=".15" d="M76 84h1048"/>
+  <!-- Kicker -->
+  <text x="76" y="126" fill="#FF4D00" font-family="'JetBrains Mono','SF Mono',Menlo,monospace" font-size="12" letter-spacing=".25em">INDEPENDENT DESIGNER — PORTFOLIO 2026</text>
+  <!-- Giant name hero: solid line + outline line -->
+  <text x="70" y="286" fill="#0A0A0A" font-family="'Inter','Helvetica Neue',Arial,sans-serif" font-size="150" font-weight="900" letter-spacing="-.05em">AVA</text>
+  <rect width="22" height="22" x="388" y="262" fill="#FF4D00"/>
+  <text x="70" y="426" fill="none" stroke="#0A0A0A" stroke-width="3" font-family="'Inter','Helvetica Neue',Arial,sans-serif" font-size="150" font-weight="900" letter-spacing="-.05em">CARTER</text>
+  <!-- Small image accent -->
+  <rect width="120" height="84" x="560" y="170" fill="#E4E4E7"/>
+  <text x="560" y="272" fill="#71717A" font-family="'JetBrains Mono','SF Mono',Menlo,monospace" font-size="10" letter-spacing=".2em">FIG.01 — ROTTERDAM</text>
+  <!-- Numbered works index (right column) -->
+  <path stroke="#0A0A0A" stroke-opacity=".15" d="M760 150h360"/>
+  <text x="760" y="184" fill="#71717A" font-family="'JetBrains Mono','SF Mono',Menlo,monospace" font-size="12" letter-spacing=".1em">01</text>
+  <text x="802" y="186" fill="#0A0A0A" font-family="'Inter','Helvetica Neue',Arial,sans-serif" font-size="24" font-weight="900" letter-spacing="-.03em">BRAND IDENTITY</text>
+  <path stroke="#0A0A0A" stroke-width="2" d="M1092 178h22m0 0-8-8m8 8-8 8"/>
+  <path stroke="#0A0A0A" stroke-opacity=".15" d="M760 214h360"/>
+  <text x="760" y="248" fill="#71717A" font-family="'JetBrains Mono','SF Mono',Menlo,monospace" font-size="12" letter-spacing=".1em">02</text>
+  <text x="802" y="250" fill="#0A0A0A" font-family="'Inter','Helvetica Neue',Arial,sans-serif" font-size="24" font-weight="900" letter-spacing="-.03em">WEB DESIGN</text>
+  <path stroke="#0A0A0A" stroke-width="2" d="M1092 242h22m0 0-8-8m8 8-8 8"/>
+  <path stroke="#0A0A0A" stroke-opacity=".15" d="M760 278h360"/>
+  <text x="760" y="312" fill="#71717A" font-family="'JetBrains Mono','SF Mono',Menlo,monospace" font-size="12" letter-spacing=".1em">03</text>
+  <text x="802" y="314" fill="#FF4D00" font-family="'Inter','Helvetica Neue',Arial,sans-serif" font-size="24" font-weight="900" letter-spacing="-.03em">ART DIRECTION</text>
+  <path stroke="#FF4D00" stroke-width="2" d="M1092 306h22m0 0-8-8m8 8-8 8"/>
+  <path stroke="#0A0A0A" stroke-opacity=".15" d="M760 342h360"/>
+  <!-- Buttons -->
+  <rect width="204" height="44" x="760" y="368" fill="#0A0A0A"/>
+  <text x="862" y="395" fill="#FAFAF8" font-family="'JetBrains Mono','SF Mono',Menlo,monospace" font-size="11" letter-spacing=".2em" text-anchor="middle">START A PROJECT</text>
+  <rect width="130" height="44" x="978" y="368" fill="none" stroke="#0A0A0A"/>
+  <text x="1043" y="395" fill="#0A0A0A" font-family="'JetBrains Mono','SF Mono',Menlo,monospace" font-size="11" letter-spacing=".2em" text-anchor="middle">ARCHIVE</text>
+  <!-- Underline input hint under hero -->
+  <text x="76" y="482" fill="#71717A" font-family="'JetBrains Mono','SF Mono',Menlo,monospace" font-size="12" letter-spacing=".22em">YOUR EMAIL</text>
+  <path stroke="#0A0A0A" stroke-opacity=".3" d="M76 494h300"/>
+  <path stroke="#FF4D00" stroke-width="2" d="M376 494h90"/>
+  <!-- Marquee band -->
+  <path fill="#0A0A0A" d="M0 516h1200v78H0z"/>
+  <text x="-14" y="571" fill="#FAFAF8" font-family="'Inter','Helvetica Neue',Arial,sans-serif" font-size="44" font-weight="900" letter-spacing="-.03em">AVAILABLE FOR WORK</text>
+  <rect width="14" height="14" x="512" y="542" fill="#FF4D00"/>
+  <text x="556" y="571" fill="none" stroke="#FAFAF8" stroke-width="1.6" font-family="'Inter','Helvetica Neue',Arial,sans-serif" font-size="44" font-weight="900" letter-spacing="-.03em">BRAND IDENTITY</text>
+  <rect width="14" height="14" x="962" y="542" fill="#FF4D00"/>
+  <text x="1006" y="571" fill="#FAFAF8" font-family="'Inter','Helvetica Neue',Arial,sans-serif" font-size="44" font-weight="900" letter-spacing="-.03em">WEB DESIGN</text>
+  <!-- Bottom meta -->
+  <text x="76" y="618" fill="#71717A" font-family="'JetBrains Mono','SF Mono',Menlo,monospace" font-size="11" letter-spacing=".2em">BASED IN ROTTERDAM — EST. 2016</text>
+  <text x="600" y="618" fill="#71717A" font-family="'JetBrains Mono','SF Mono',Menlo,monospace" font-size="11" letter-spacing=".2em" text-anchor="middle">TYPE IS THE LAYOUT</text>
+  <text x="1124" y="618" fill="#FF4D00" font-family="'JetBrains Mono','SF Mono',Menlo,monospace" font-size="11" letter-spacing=".2em" text-anchor="end">OVERSIZED TYPOGRAPHY</text>
+</svg>
