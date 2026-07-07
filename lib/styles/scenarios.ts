@@ -39,186 +39,193 @@ const SCENARIO_LABELS: Record<StyleScenario, { zh: string; en: string }> = {
   creative: { zh: "创意表达", en: "Creative" },
 };
 
-const SCENARIO_OVERRIDES: Partial<Record<string, StyleScenario[]>> = {
-  // --- Creative / Marketing ---
+// Scenario membership is fully curated: every registered style has an explicit
+// entry (1-3 scenarios, ordered by fit). Keyword-regex auto-classification was
+// retired after it repeatedly produced vocabulary matches instead of design
+// suitability (e.g. steampunk landed in "dashboard" because its description
+// mentions brass instrument gauges — 精密仪表盘).
+//
+// Curation rubric per scenario:
+// - saas/dashboard/admin: product chrome the style could realistically ship in
+// - portfolio: per 2024-2026 portfolio trend research (docs/PORTFOLIO_STYLE_RESEARCH.md)
+// - blog/editorial/docs: long-form reading / publication / knowledge-base typography
+// - ecommerce: product display and retail branding
+// - marketing: strong fit for real landing / brand / campaign pages, not merely
+//   "could theme a poster"
+// - creative: artistic and experimental expression (the library's largest bucket
+//   by nature — it holds the art-movement and pop-culture styles)
+//
+// A unit test (tests/unit/lib/scenarios.test.ts) fails the build if a
+// registered style is missing here, so new styles must be classified on entry.
+const SCENARIO_ASSIGNMENTS: Record<string, StyleScenario[]> = {
+  // --- Core visual systems ---
   "neo-brutalist": ["marketing", "creative", "portfolio"],
-  "neo-brutalist-soft": ["marketing", "creative", "saas"],
-  "neo-brutalist-playful": ["creative", "marketing", "portfolio"],
-  "retro-vintage": ["creative", "marketing", "editorial"],
+  editorial: ["editorial", "portfolio", "blog"],
+  neumorphism: ["saas", "marketing", "ecommerce"],
+  glassmorphism: ["saas", "marketing", "ecommerce"],
+  "bento-grid": ["portfolio", "marketing", "dashboard"],
+  "corporate-clean": ["saas", "admin", "dashboard"],
+  "minimalist-flat": ["portfolio", "ecommerce", "blog"],
+  "soft-ui": ["saas", "marketing", "ecommerce"],
+  "natural-organic": ["ecommerce", "marketing", "creative"],
   "modern-gradient": ["marketing", "ecommerce", "saas"],
-  "full-page-scroll": ["marketing", "portfolio", "creative"],
-  "split-screen": ["marketing", "portfolio", "creative"],
-  "hero-fullscreen": ["marketing", "portfolio", "creative"],
-  "film-noir": ["creative", "marketing", "editorial"],
-  particle: ["creative", "marketing", "saas"],
-  "zen-garden": ["creative", "marketing"],
-
-  // --- Portfolio ---
-  // Mainstream portfolio patterns per 2024-2026 trend research:
-  // Swiss/monochrome minimal, dark elegant, brutalism, editorial,
-  // grid galleries, developer identity, resume timelines.
-  "swiss-style": ["portfolio", "editorial", "docs"],
-  monochrome: ["portfolio", "editorial", "marketing"],
+  "retro-vintage": ["creative", "marketing", "editorial"],
   "dark-mode": ["portfolio", "saas", "blog"],
-  "brutalist-web": ["portfolio", "creative", "blog"],
-  "asymmetric-grid": ["portfolio", "creative", "editorial"],
+  "macos-vibrancy": ["saas", "dashboard", "marketing"],
+  "geometric-bold": ["creative", "marketing", "editorial"],
+  claymorphism: ["marketing", "saas", "creative"],
+  "notion-style": ["docs", "admin", "blog"],
+  "stripe-style": ["saas", "ecommerce", "docs"],
+  "apple-style": ["ecommerce", "saas", "marketing"],
+  bauhaus: ["creative", "editorial", "marketing"],
+  skeuomorphism: ["creative", "saas"],
+  "swiss-style": ["portfolio", "editorial", "docs"],
+  "material-design": ["dashboard", "admin", "saas"],
+  "fluent-design": ["dashboard", "admin", "saas"],
+  "liquid-glass": ["marketing", "saas", "ecommerce"],
+  "linear-style": ["saas", "blog", "docs"],
+  "github-style": ["saas", "portfolio", "docs"],
+  "sci-fi-hud": ["dashboard", "creative", "marketing"],
+  particle: ["creative", "marketing", "saas"],
+  "neon-gradient": ["marketing", "saas", "creative"],
+  solarpunk: ["marketing", "creative", "saas"],
+  "neon-tokyo": ["creative", "marketing"],
+  "dopamine-design": ["marketing", "creative"],
+
+  // --- Layouts ---
   "masonry-flow": ["portfolio", "creative", "ecommerce"],
+  "split-screen": ["marketing", "portfolio", "creative"],
+  "full-page-scroll": ["marketing", "portfolio", "creative"],
   "timeline-vertical": ["portfolio", "docs", "dashboard"],
+  "card-stack": ["marketing", "saas", "docs"],
+  "sidebar-fixed": ["admin", "docs", "dashboard"],
+  "magazine-grid": ["editorial", "portfolio", "blog"],
+  "hero-fullscreen": ["marketing", "portfolio", "creative"],
+  "f-pattern-layout": ["blog", "editorial", "marketing"],
+  "z-pattern-layout": ["marketing", "saas"],
+  "holy-grail-layout": ["docs", "blog", "admin"],
+  "dashboard-layout": ["dashboard", "admin", "saas"],
+  "asymmetric-grid": ["portfolio", "creative", "editorial"],
   "parallax-sections": ["marketing", "portfolio", "creative"],
+  "horizontal-gallery": ["portfolio", "creative", "marketing"],
+
+  // --- Portfolio-first (per portfolio trend research) ---
+  monochrome: ["portfolio", "editorial", "marketing"],
+  "brutalist-web": ["portfolio", "creative", "blog"],
+  scandinavian: ["portfolio", "blog", "docs"],
   "korean-minimal": ["portfolio", "blog", "docs"],
+  "wabi-sabi": ["blog", "portfolio", "creative"],
   "oversized-typography": ["portfolio", "marketing", "creative"],
   "developer-terminal": ["portfolio", "blog", "docs"],
-  "horizontal-gallery": ["portfolio", "creative", "marketing"],
   "latex-paper": ["portfolio", "docs", "blog"],
   "distill-style": ["portfolio", "blog", "docs"],
   "generative-art": ["creative", "portfolio"],
   "glitch-art": ["creative", "portfolio"],
+  "neo-brutalist-playful": ["creative", "marketing", "portfolio"],
 
-  // --- Editorial / Blog ---
-  editorial: ["editorial", "portfolio", "blog"],
-  "magazine-grid": ["editorial", "portfolio", "blog"],
-  "f-pattern-layout": ["blog", "editorial", "marketing"],
-  "dark-academia": ["blog", "editorial", "creative"],
-  "linear-style": ["saas", "blog", "docs"],
-  "scandinavian": ["portfolio", "blog", "docs"],
-  "wabi-sabi": ["blog", "portfolio", "creative"],
-  "japanese-fresh": ["blog", "creative", "ecommerce"],
+  // --- Dashboards / admin ---
+  "warm-dashboard": ["dashboard", "admin", "saas"],
+  "data-dense": ["admin", "dashboard", "saas"],
 
-  // --- SaaS / B2B ---
-  glassmorphism: ["saas", "marketing", "ecommerce"],
-  neumorphism: ["saas", "marketing", "ecommerce"],
-  "z-pattern-layout": ["marketing", "saas"],
-  "bento-grid": ["portfolio", "marketing", "dashboard"],
-
-  // --- E-Commerce ---
-  "apple-style": ["ecommerce", "saas", "marketing"],
-  "natural-organic": ["ecommerce", "marketing", "creative"],
-  "stripe-style": ["saas", "ecommerce", "docs"],
-  "minimalist-flat": ["ecommerce", "portfolio", "blog"],
+  // --- E-commerce / retail ---
   "marble-luxury": ["ecommerce", "marketing"],
   "tropical-paradise": ["ecommerce", "marketing", "creative"],
-
-  // --- Dashboard / Admin ---
-  "corporate-clean": ["saas", "admin", "dashboard"],
-  "dashboard-layout": ["dashboard", "admin", "saas"],
-  "warm-dashboard": ["dashboard", "admin", "saas"],
-  "fluent-design": ["dashboard", "admin", "saas"],
-  "material-design": ["dashboard", "admin", "saas"],
-  "sidebar-fixed": ["admin", "docs", "dashboard"],
-  "github-style": ["saas", "portfolio", "docs"],
-  "notion-style": ["docs", "admin", "blog"],
-
-  // --- Docs ---
-  "holy-grail-layout": ["docs", "blog", "admin"],
-  blueprint: ["docs", "saas"],
-
-  // --- New styles (Batch 15) ---
   "shopify-clean": ["ecommerce", "marketing", "saas"],
   "luxury-retail": ["ecommerce", "marketing"],
   "fresh-market": ["ecommerce", "marketing", "creative"],
-  "data-dense": ["admin", "dashboard", "saas"],
+  terracotta: ["marketing", "ecommerce", "creative"],
+
+  // --- Reading / publication ---
+  "dark-academia": ["blog", "editorial", "creative"],
+  "japanese-fresh": ["blog", "creative", "ecommerce"],
+  blueprint: ["docs", "saas"],
+  "swiss-poster": ["editorial", "creative", "marketing"],
+  constructivism: ["editorial", "creative", "marketing"],
+  "collage-art": ["editorial", "creative"],
+  "anti-design": ["creative", "editorial"],
+
+  // --- Art movements & illustration (creative/editorial, not marketing) ---
+  "art-deco": ["creative", "marketing", "ecommerce"],
+  "art-nouveau": ["creative", "editorial"],
+  surrealism: ["creative", "editorial"],
+  "ukiyo-e-digital": ["creative", "editorial"],
+  gothic: ["creative", "editorial"],
+  "watercolor-art": ["creative", "editorial"],
+  "impressionist-oil": ["creative", "editorial"],
+  "mid-century-modern": ["creative", "editorial"],
+  "op-art": ["creative", "editorial"],
+  "islamic-geometric": ["creative", "editorial"],
+  "medieval-manuscript": ["creative", "editorial"],
+  "victorian-botanical": ["creative", "editorial"],
+  cubism: ["creative", "editorial"],
+  "vhs-aesthetic": ["creative", "editorial"],
+  "frutiger-aero": ["creative", "editorial"],
+  steampunk: ["creative", "editorial"],
+  "pop-art": ["creative", "marketing"],
+
+  // --- Pop-culture & aesthetic subcultures ---
+  vaporwave: ["creative", "marketing"],
+  y2k: ["creative", "marketing", "editorial"],
+  memphis: ["creative", "marketing", "editorial"],
+  synthwave: ["creative", "marketing"],
+  outrun: ["creative", "marketing"],
+  "cyberpunk-neon": ["creative", "marketing"],
+  "acid-graphics": ["creative", "marketing"],
+  holographic: ["creative", "marketing"],
+  "arcade-crt": ["creative"],
+  "pixel-art": ["creative"],
+  "pastel-goth": ["creative"],
+  maximalism: ["creative", "marketing", "editorial"],
+  "graffiti-street": ["creative", "marketing"],
+  witchcore: ["creative", "ecommerce"],
+  cottagecore: ["creative", "ecommerce", "blog"],
+  "gothic-lolita": ["creative", "ecommerce", "marketing"],
+  risograph: ["creative", "editorial", "marketing"],
+  "film-noir": ["creative", "marketing", "editorial"],
+  "neo-brutalist-soft": ["marketing", "creative", "saas"],
+
+  // --- Anime / game aesthetics ---
+  mecha: ["creative"],
+  "cyber-chinese": ["creative"],
+  "visual-novel": ["creative"],
+  "shoujo-manga": ["creative"],
+  "cyber-anime": ["creative"],
+  "pixel-anime": ["creative"],
+  "neon-samurai": ["creative"],
+  "magic-circle": ["creative"],
+  "cyber-wafuu": ["creative"],
+  jrpg: ["creative"],
+  "cel-shading": ["creative"],
+  "comic-style": ["creative", "marketing", "editorial"],
+
+  // --- Hand-made & organic warmth ---
+  "ghibli-style": ["creative", "marketing"],
+  "sketch-style": ["creative", "marketing", "blog"],
+  "watercolor-style": ["creative", "marketing"],
+  "hand-drawn-doodle": ["creative", "marketing", "blog"],
+  "kawaii-minimal": ["creative", "saas", "ecommerce"],
+  "paper-craft": ["creative", "marketing"],
+  "zen-garden": ["creative", "marketing"],
+  "ink-wash": ["creative", "marketing", "blog"],
+
+  // --- Cultural pattern systems ---
+  "indian-festive": ["marketing", "creative", "ecommerce"],
+  "african-textile": ["creative", "marketing", "ecommerce"],
 };
 
-const SCENARIO_MATCHERS: Record<StyleScenario, RegExp[]> = {
-  saas: [
-    /saas|b2b|developer|enterprise|workspace|productivity|开发者|企业|专业|协作/i,
-  ],
-  dashboard: [
-    /dashboard|analytics|data table|report|control center|仪表盘|数据面板|分析|报表/i,
-  ],
-  admin: [
-    /admin|backoffice|control panel|management|后台|管理系统|管理面板|侧栏导航/i,
-  ],
-  portfolio: [
-    // Deliberately narrow: style metadata often contains generic words like
-    // "showcase" / "gallery" / "案例" (every style ships a showcase page),
-    // which used to pull unrelated styles into this scenario. Portfolio
-    // membership is curated via SCENARIO_OVERRIDES instead.
-    /portfolio|作品集|个人主页|personal site/i,
-  ],
-  blog: [
-    /blog|article|newsletter|阅读|博客|文章|内容/i,
-  ],
-  editorial: [
-    /editorial|magazine|newspaper|杂志|编辑|报纸|排版/i,
-  ],
-  docs: [
-    /docs|documentation|knowledge|manual|notion|文档|知识库|手册|指南/i,
-  ],
-  ecommerce: [
-    /e-?commerce|shop|store|retail|product page|checkout|电商|零售|商品|商店/i,
-  ],
-  marketing: [
-    /landing|launch|campaign|brand|branding|startup|hero|官网|品牌|活动|营销|着陆页|发布|宣传/i,
-  ],
-  creative: [
-    /creative|art|artist|fashion|studio|experimental|艺术|创意|实验|时尚|展览|机构/i,
-  ],
-};
+// Safety net for styles created outside the registry (e.g. runtime-generated
+// previews). Registered styles never reach this — the unit test guarantees it.
+const FALLBACK_SCENARIOS: StyleScenario[] = ["creative", "marketing"];
 
-function buildSearchText(style: StyleMeta): string {
-  return [
-    style.slug,
-    style.name,
-    style.nameEn,
-    style.description,
-    style.category,
-    style.styleType,
-    ...style.tags,
-    ...style.keywords,
-  ]
-    .join(" ")
-    .toLowerCase();
-}
-
-function scoreStyleScenarios(style: StyleMeta): Map<StyleScenario, number> {
-  const scores = new Map<StyleScenario, number>();
-  const searchText = buildSearchText(style);
-  const overrides = SCENARIO_OVERRIDES[style.slug] ?? [];
-
-  overrides.forEach((scenario, index) => {
-    scores.set(scenario, 100 - index * 5);
-  });
-
-  for (const scenario of STYLE_SCENARIOS) {
-    const matched = SCENARIO_MATCHERS[scenario].some((matcher) =>
-      matcher.test(searchText)
-    );
-    if (matched) {
-      scores.set(scenario, (scores.get(scenario) ?? 0) + 10);
-    }
-  }
-
-  if (style.styleType === "layout") {
-    scores.set("dashboard", (scores.get("dashboard") ?? 0) + 2);
-    scores.set("docs", (scores.get("docs") ?? 0) + 2);
-    scores.set("admin", (scores.get("admin") ?? 0) + 1);
-  }
-
-  if (scores.size === 0) {
-    if (style.category === "minimal") {
-      scores.set("blog", 3);
-      scores.set("docs", 2);
-    } else if (style.category === "modern") {
-      scores.set("saas", 3);
-      scores.set("marketing", 2);
-    } else if (style.category === "retro") {
-      scores.set("creative", 3);
-      scores.set("editorial", 2);
-    } else {
-      scores.set("creative", 3);
-      scores.set("marketing", 2);
-    }
-  }
-
-  return scores;
+export function getScenarioAssignments(): Readonly<
+  Record<string, StyleScenario[]>
+> {
+  return SCENARIO_ASSIGNMENTS;
 }
 
 export function getStyleScenarios(style: StyleMeta, limit = 3): StyleScenario[] {
-  return [...scoreStyleScenarios(style).entries()]
-    .sort((left, right) => right[1] - left[1])
-    .slice(0, limit)
-    .map(([scenario]) => scenario);
+  const assigned = SCENARIO_ASSIGNMENTS[style.slug] ?? FALLBACK_SCENARIOS;
+  return assigned.slice(0, limit);
 }
 
 export function getScenarioLabel(
