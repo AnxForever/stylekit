@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" fill="none" viewBox="0 0 1200 630">
+  <path fill="#1A1A1A" d="M0 0h1200v630H0z"/>
+  <!-- bold coral accent strip on left -->
+  <rect x="0" y="0" width="8" height="630" fill="#FF6B6B"/>
+  <!-- oversized typography -->
+  <text x="80" y="180" fill="#FFFFFF" font-family="'Inter','Segoe UI',sans-serif" font-size="120" font-weight="700" letter-spacing="-.04em">STUDIO</text>
+  <text x="80" y="250" fill="#FFFFFF" font-family="'Inter','Segoe UI',sans-serif" font-size="28" font-weight="300" letter-spacing=".08em">we make things that matter</text>
+  <!-- project grid thumbnails -->
+  <rect x="80" y="300" width="240" height="140" fill="#333333" rx="1"/>
+  <rect x="340" y="300" width="240" height="140" fill="#2D2D2D" rx="1"/>
+  <rect x="600" y="300" width="240" height="140" fill="#333333" rx="1"/>
+  <rect x="860" y="300" width="240" height="140" fill="#2D2D2D" rx="1"/>
+  <!-- project info overlay -->
+  <rect x="80" y="410" width="240" height="28" fill="#FF6B6B"/>
+  <text x="200" y="428" fill="#FFFFFF" font-family="'Inter','Segoe UI',sans-serif" font-size="10" letter-spacing=".1em" text-anchor="middle" font-weight="600">BRAND IDENTITY</text>
+  <rect x="340" y="410" width="240" height="28" fill="#FF6B6B" opacity="0.3"/>
+  <text x="460" y="428" fill="#FFFFFF" font-family="'Inter','Segoe UI',sans-serif" font-size="10" letter-spacing=".1em" text-anchor="middle">WEB DESIGN</text>
+  <rect x="600" y="410" width="240" height="28" fill="#FF6B6B" opacity="0.3"/>
+  <text x="720" y="428" fill="#FFFFFF" font-family="'Inter','Segoe UI',sans-serif" font-size="10" letter-spacing=".1em" text-anchor="middle">PRODUCT</text>
+  <rect x="860" y="410" width="240" height="28" fill="#FF6B6B" opacity="0.3"/>
+  <text x="980" y="428" fill="#FFFFFF" font-family="'Inter','Segoe UI',sans-serif" font-size="10" letter-spacing=".1em" text-anchor="middle">ART DIRECTION</text>
+  <!-- client logos placeholder bar -->
+  <path stroke="#333333" stroke-width="1" d="M80 480h1040"/>
+  <text x="100" y="510" fill="#555555" font-family="'Inter','Segoe UI',sans-serif" font-size="14" font-weight="300">ACME</text>
+  <text x="230" y="510" fill="#555555" font-family="'Inter','Segoe UI',sans-serif" font-size="14" font-weight="300">BRANDCO</text>
+  <text x="390" y="510" fill="#555555" font-family="'Inter','Segoe UI',sans-serif" font-size="14" font-weight="300">LAYER</text>
+  <text x="530" y="510" fill="#555555" font-family="'Inter','Segoe UI',sans-serif" font-size="14" font-weight="300">FRAME</text>
+  <text x="680" y="510" fill="#555555" font-family="'Inter','Segoe UI',sans-serif" font-size="14" font-weight="300">STUDIO X</text>
+  <text x="840" y="510" fill="#555555" font-family="'Inter','Segoe UI',sans-serif" font-size="14" font-weight="300">DESIGN LAB</text>
+  <text x="1020" y="510" fill="#555555" font-family="'Inter','Segoe UI',sans-serif" font-size="14" font-weight="300">VOID</text>
+  <!-- footer -->
+  <path stroke="#333333" stroke-width="1" d="M80 545h1040"/>
+  <text x="600" y="575" fill="#FF6B6B" font-family="'Inter','Segoe UI',sans-serif" font-size="12" letter-spacing=".08em" text-anchor="middle">Creative Studio · 创意工作室风</text>
+  <text x="600" y="595" fill="#555555" font-family="'Inter','Segoe UI',sans-serif" font-size="9" letter-spacing=".1em" text-anchor="middle">PORTFOLIO STYLE</text>
+</svg>
