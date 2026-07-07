@@ -222,7 +222,7 @@ For Chinese readers:
 
 > 如果 StyleKit 恰好帮到了你，欢迎扫码支持我把它继续做下去。金额随意，每一份心意我都很感谢。
 
-- Scan WeChat Pay or Alipay on the website support page
+- Tip via WeChat or Alipay on the website support page
 - GitHub repo funding entry: [`https://github.com/AnxForever/stylekit`](https://github.com/AnxForever/stylekit)
 - Website support page: [`https://stylekit.top/contact#support-maintenance`](https://stylekit.top/contact#support-maintenance)
 - Public sponsor follow-up: [`GitHub Discussions`](https://github.com/AnxForever/stylekit/discussions)
@@ -230,7 +230,7 @@ For Chinese readers:
 Current QR assets:
 
 - Alipay: [`public/alipay-qr.jpg`](public/alipay-qr.jpg)
-- WeChat Pay: [`public/wechat-qr.png`](public/wechat-qr.png)
+- WeChat Tipping: [`public/wechat-qr.png`](public/wechat-qr.png)
 
 The website support section is driven from a single config file: [`lib/site/support.ts`](lib/site/support.ts).
 

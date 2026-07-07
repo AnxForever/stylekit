@@ -117,8 +117,8 @@ export function HomeContent({ styles, stats }: HomeContentProps) {
     () => [
       {
         src: "/wechat-qr.png",
-        title: locale === "zh" ? "微信支付" : "WeChat Pay",
-        hint: locale === "zh" ? "微信扫码" : "Scan with WeChat",
+        title: locale === "zh" ? "微信赞赏码" : "WeChat Tipping",
+        hint: locale === "zh" ? "微信赞赏" : "Tip via WeChat",
       },
       {
         src: "/alipay-qr.jpg",
