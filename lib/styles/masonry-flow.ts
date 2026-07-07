@@ -10,7 +10,7 @@ export const masonryFlow: DesignStyle = {
     "Pinterest-style masonry layout with variable-height cards, achieved through CSS columns or masonry grid for a naturally flowing visual effect. Ideal for image galleries, portfolios, and social media.",
   cover: "/styles/masonry-flow.svg",
   styleType: "layout",
-  tags: ["modern", "responsive"],
+  tags: ["responsive"],
   compatibleWith: ["glassmorphism", "minimalist-flat", "soft-ui", "natural-organic", "editorial"],
   category: "modern",
   colors: {

@@ -10,7 +10,7 @@ export const luxuryRetail: DesignStyle = {
     "Premium retail aesthetic with generous whitespace, serif typography, and gold-marble accents that communicate exclusivity and refinement.",
   cover: "/styles/luxury-retail.svg",
   styleType: "visual",
-  tags: ["modern", "minimal"],
+  tags: [],
   category: "modern",
   colors: {
     primary: "#faf9f6",

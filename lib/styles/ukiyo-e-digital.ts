@@ -10,7 +10,7 @@ export const ukiyoEDigital: DesignStyle = {
     "Inspired by Japanese ukiyo-e woodblock prints, featuring indigo, vermilion, and gold leaf as primary colors, flat design, bold outlines, wave patterns, and Hokusai-style composition -- blending traditional Eastern aesthetics into modern digital interfaces.",
   cover: "/styles/ukiyo-e-digital.svg",
   styleType: "visual",
-  tags: ["retro", "expressive"],
+  tags: ["retro"],
   category: "retro",
   colors: {
     primary: "#1a3055",

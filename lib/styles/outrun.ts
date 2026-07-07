@@ -10,7 +10,7 @@ export const outrun: DesignStyle = {
     "80s sunsets, palm tree silhouettes, sports cars, grid horizons, and retro wave aesthetics. Magenta and purple neon with cyan skies -- brimming with speed and nostalgic futurism.",
   cover: "/styles/outrun.svg",
   styleType: "visual",
-  tags: ["retro", "expressive", "high-contrast"],
+  tags: ["retro", "high-contrast"],
   category: "retro",
   colors: {
     primary: "#ff006e",

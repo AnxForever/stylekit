@@ -10,7 +10,7 @@ export const africanTextile: DesignStyle = {
     "Design style inspired by West African Kente cloth and Adire tie-dye, featuring bold geometric weave patterns, earth tones clashing with vivid colors, and handcrafted textures.",
   cover: "/styles/african-textile.svg",
   styleType: "visual",
-  tags: ["expressive", "high-contrast"],
+  tags: ["high-contrast"],
   category: "expressive",
   colors: {
     primary: "#c4501f",

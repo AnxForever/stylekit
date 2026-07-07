@@ -10,7 +10,7 @@ export const vaporwave: DesignStyle = {
     "80s-90s retro-futuristic aesthetics with pink-purple gradients, neon colors, and glitch art effects. Includes Vaporwave, Synthwave, and Cyberpunk variants.",
   cover: "/styles/vaporwave.svg",
   styleType: "visual",
-  tags: ["retro", "expressive", "high-contrast"],
+  tags: ["retro", "high-contrast"],
   category: "retro",
   colors: {
     primary: "#ff71ce",

@@ -10,7 +10,7 @@ export const softUI: DesignStyle = {
     "Gentle and friendly interface style with soft shadows, rounded corners, and low-saturation colors. Ideal for consumer apps, social products, and lifestyle service apps.",
   cover: "/styles/soft-ui.svg",
   styleType: "visual",
-  tags: ["modern", "minimal"],
+  tags: [],
   category: "modern",
   colors: {
     primary: "#6366f1",

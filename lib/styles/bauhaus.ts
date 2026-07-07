@@ -12,7 +12,7 @@ export const bauhaus: DesignStyle = {
     "The design philosophy of the German Bauhaus school, emphasizing functionalism, geometric forms, and primary color usage -- a modernist classic where form follows function.",
   cover: "/styles/bauhaus.svg",
   styleType: "visual",
-  tags: ["modern", "minimal", "high-contrast"],
+  tags: ["high-contrast"],
   category: "modern",
   colors: {
     primary: "#000000",

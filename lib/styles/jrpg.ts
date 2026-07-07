@@ -10,7 +10,7 @@ export const jrpg: DesignStyle = {
     "Classic Japanese RPG menu and dialogue box aesthetics with beveled borders, gradient backgrounds, status bars, and ornate frames. Ideal for game interfaces, interactive narratives, and fantasy-style products.",
   cover: "/styles/jrpg.svg",
   styleType: "visual",
-  tags: ["expressive", "retro"],
+  tags: ["retro"],
   category: "expressive",
   colors: {
     primary: "#1e40af",

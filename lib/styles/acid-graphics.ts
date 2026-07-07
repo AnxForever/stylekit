@@ -10,7 +10,7 @@ export const acidGraphics: DesignStyle = {
     "High-saturation fluorescent colors, distorted typography, liquid flowing forms, and psychedelic visuals. Rooted in rave culture and underground club aesthetics, presenting rebellion and experimentation through intense visual impact.",
   cover: "/styles/acid-graphics.svg",
   styleType: "visual",
-  tags: ["expressive", "high-contrast", "modern"],
+  tags: ["high-contrast"],
   category: "expressive",
   colors: {
     primary: "#39ff14",

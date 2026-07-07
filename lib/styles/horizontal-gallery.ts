@@ -10,7 +10,7 @@ export const horizontalGallery: DesignStyle = {
     "A white-cube, curator-style portfolio layout. Borderless large images line up along a horizontal snap-scroll rail; whitespace acts as the gallery wall, numbered hairline captions echo museum labels, and viewing becomes a walk.",
   cover: "/styles/horizontal-gallery.svg",
   styleType: "layout",
-  tags: ["minimal", "modern", "responsive"],
+  tags: ["responsive"],
   compatibleWith: ["editorial", "minimalist-flat", "swiss-style", "luxury-retail", "wabi-sabi"],
   category: "minimal",
   colors: {

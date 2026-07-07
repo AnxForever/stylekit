@@ -10,7 +10,7 @@ export const liquidGlass: DesignStyle = {
     "Apple's revolutionary design language from WWDC 2025, creating an organic, fluid visual experience beyond traditional frosted glass through SVG refraction filters, rainbow edge halos, fluid morphing animations, and multi-layer glass stacking.",
   cover: "/styles/liquid-glass.svg",
   styleType: "visual",
-  tags: ["modern", "brand-inspired"],
+  tags: ["brand-inspired"],
   category: "modern",
   colors: {
     primary: "rgba(255, 255, 255, 0.1)",

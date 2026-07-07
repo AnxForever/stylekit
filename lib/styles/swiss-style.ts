@@ -12,7 +12,7 @@ export const swissStyle: DesignStyle = {
     "A rationalist design style originating from Switzerland, emphasizing grid systems, sans-serif typography, clear hierarchy, and objective information delivery -- a cornerstone of modern graphic design.",
   cover: "/styles/swiss-style.svg",
   styleType: "visual",
-  tags: ["modern", "minimal"],
+  tags: [],
   category: "modern",
   colors: {
     primary: "#000000",

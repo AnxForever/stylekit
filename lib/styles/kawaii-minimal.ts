@@ -10,7 +10,7 @@ export const kawaiiMinimal: DesignStyle = {
     "A gentle style blending Japanese kawaii culture with minimalist design. Soft pastel palettes, rounded shapes, airy whitespace, and delicate micro-interactions, ideal for lifestyle apps, children's products, and creative tools.",
   cover: "/styles/kawaii-minimal.svg",
   styleType: "visual",
-  tags: ["minimal", "expressive"],
+  tags: [],
   category: "minimal",
   colors: {
     primary: "#F9A8D4",

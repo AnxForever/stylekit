@@ -10,7 +10,7 @@ export const cardStack: DesignStyle = {
     "3D layout with overlapping cards, creating depth through Z-axis stacking and offsets. Ideal for carousels, step-by-step displays, and card deck selection.",
   cover: "/styles/card-stack.svg",
   styleType: "layout",
-  tags: ["modern", "expressive"],
+  tags: [],
   compatibleWith: ["glassmorphism", "neumorphism", "soft-ui", "modern-gradient", "neo-brutalist"],
   category: "expressive",
   colors: {

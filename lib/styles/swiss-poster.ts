@@ -10,7 +10,7 @@ export const swissPoster: DesignStyle = {
     "Bold typography, grid alignment, primary color blocks, and experimental layouts. Rooted in the Swiss International Style poster design tradition, building information delivery through oversized type and strong visual hierarchy. Differs from swiss-style by focusing more on poster-level experimental large-scale typography.",
   cover: "/styles/swiss-poster.svg",
   styleType: "visual",
-  tags: ["modern", "minimal", "high-contrast"],
+  tags: ["high-contrast"],
   category: "modern",
   colors: {
     primary: "#000000",

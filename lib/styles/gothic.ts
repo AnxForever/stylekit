@@ -10,7 +10,7 @@ export const gothic: DesignStyle = {
     "Medieval Gothic architectural aesthetics -- pointed arches, rose windows, manuscript decorations, and cathedral atmosphere. Deep purple and blood red palette with gold ornamental lines, filled with dark and solemn mystery.",
   cover: "/styles/gothic.svg",
   styleType: "visual",
-  tags: ["retro", "expressive", "high-contrast"],
+  tags: ["retro", "high-contrast"],
   category: "retro",
   colors: {
     primary: "#2d1b4e",

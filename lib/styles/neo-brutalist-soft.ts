@@ -10,7 +10,7 @@ export const neoBrutalistSoft: DesignStyle = {
     "A gentler version of Neo-Brutalist. Retains hard-edge shadows and no-rounded-corner characteristics, but uses softer colors, thinner borders, and milder contrast.",
   cover: "/styles/neo-brutalist-soft.svg",
   styleType: "visual",
-  tags: ["modern", "expressive"],
+  tags: [],
   category: "expressive",
   colors: {
     primary: "#1a1a1a",

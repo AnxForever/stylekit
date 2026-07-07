@@ -10,7 +10,7 @@ export const cubism: DesignStyle = {
     "The Cubism movement of Picasso and Braque, featuring geometric fragmented compositions, multi-perspective overlays, angular shapes, and subdued earth-tone palettes.",
   cover: "/styles/cubism.svg",
   styleType: "visual",
-  tags: ["expressive", "retro"],
+  tags: ["retro"],
   category: "expressive",
   colors: {
     primary: "#5c4033",

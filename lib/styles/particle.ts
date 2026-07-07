@@ -10,7 +10,7 @@ export const particle: DesignStyle = {
     "A floating particle network on deep dark tech backgrounds, using connection lines, pulses, and trails to create a sense of data flow. Ideal for tech companies, data visualization, and creative portfolios.",
   cover: "/styles/particle.svg",
   styleType: "visual",
-  tags: ["modern", "expressive"],
+  tags: [],
   category: "modern",
   colors: {
     primary: "#0a0e1a",

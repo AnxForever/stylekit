@@ -10,7 +10,7 @@ export const inkWash: DesignStyle = {
     "A design style rooted in traditional Chinese ink wash painting, creating ethereal moods through variations in ink density and moisture, with generous whitespace expressing 'vivid spirit resonance'. Ideal for cultural brands, tea ceremony, calligraphy, and Eastern aesthetics projects.",
   cover: "/styles/ink-wash.svg",
   styleType: "visual",
-  tags: ["minimal", "expressive"],
+  tags: [],
   category: "minimal",
   colors: {
     primary: "#2c2c2c",

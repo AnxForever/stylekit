@@ -10,7 +10,7 @@ export const synthwave: DesignStyle = {
     "80s retro-futuristic music aesthetic with neon pink-purple palette, grid horizon, sunset gradients, and vintage tech feel -- brimming with nostalgic visions of the future.",
   cover: "/styles/synthwave.svg",
   styleType: "visual",
-  tags: ["retro", "expressive", "high-contrast"],
+  tags: ["retro", "high-contrast"],
   category: "retro",
   colors: {
     primary: "#ff00ff",

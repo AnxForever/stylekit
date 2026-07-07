@@ -12,7 +12,7 @@ export const cyberpunkNeon: DesignStyle = {
     "A futuristic cyberpunk style with neon glow effects, dark backgrounds, and high-tech UI elements. Ideal for games, tech products, and creative studios.",
   cover: "/styles/cyberpunk-neon.svg",
   styleType: "visual",
-  tags: ["expressive", "modern", "high-contrast"],
+  tags: ["high-contrast"],
   category: "expressive",
   colors: {
     primary: "#00ffff",

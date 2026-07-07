@@ -10,7 +10,7 @@ export const y2k: DesignStyle = {
     "Early-2000s futuristic aesthetic with metallic textures, transparent plastics, bubble elements, silver and rainbow gradients, brimming with optimistic visions of the digital age.",
   cover: "/styles/y2k.svg",
   styleType: "visual",
-  tags: ["retro", "expressive"],
+  tags: ["retro"],
   category: "retro",
   colors: {
     primary: "#c0c0c0",

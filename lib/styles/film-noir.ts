@@ -10,7 +10,7 @@ export const filmNoir: DesignStyle = {
     "A dramatic visual style drawn from classic 1940-50s film noir. Extreme light-dark contrast, deep grayscale layers, diagonal shadows, and a mysterious atmosphere, suited for story-driven products, photography portfolios, and premium brands.",
   cover: "/styles/film-noir.svg",
   styleType: "visual",
-  tags: ["expressive", "high-contrast"],
+  tags: ["high-contrast"],
   category: "retro",
   colors: {
     primary: "#1a1a1a",

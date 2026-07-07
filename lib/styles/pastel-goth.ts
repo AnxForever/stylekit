@@ -10,7 +10,7 @@ export const pastelGoth: DesignStyle = {
     "A unique fusion of dark aesthetics and candy colors, pairing soft hues like pastel purple and pastel blue with gothic elements such as skulls and crosses. Dark backgrounds with pastel highlights.",
   cover: "/styles/pastel-goth.svg",
   styleType: "visual",
-  tags: ["expressive", "high-contrast"],
+  tags: ["high-contrast"],
   category: "expressive",
   colors: {
     primary: "#2d1b3d",

@@ -10,7 +10,7 @@ export const pixelArt: DesignStyle = {
     "A retro 8-bit pixel game style with no border radii, pixelated borders, hard-edge shadows, and vivid 8-bit color palettes, ideal for games, retro apps, and indie developer projects.",
   cover: "/styles/pixel-art.svg",
   styleType: "visual",
-  tags: ["retro", "expressive"],
+  tags: ["retro"],
   category: "retro",
   colors: {
     primary: "#1a1c2c",

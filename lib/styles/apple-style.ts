@@ -12,7 +12,7 @@ export const appleStyle: DesignStyle = {
     "An ultra-minimalist premium design style with generous whitespace, refined border radii, subtle shadows, and SF Pro-style typography, conveying the quality feel of high-end tech products.",
   cover: "/styles/apple-style.svg",
   styleType: "visual",
-  tags: ["minimal"],
+  tags: [],
   category: "minimal",
   colors: {
     primary: "#000000",

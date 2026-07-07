@@ -10,7 +10,7 @@ export const handDrawnDoodle: DesignStyle = {
     "Hand-drawn lines, doodle illustrations, irregular shapes, and handwritten fonts. Like designs casually sketched in a notebook -- full of creativity and fun, conveying a warm and approachable handmade feel.",
   cover: "/styles/hand-drawn-doodle.svg",
   styleType: "visual",
-  tags: ["expressive", "minimal"],
+  tags: [],
   category: "expressive",
   colors: {
     primary: "#2c2c2c",

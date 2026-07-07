@@ -10,7 +10,7 @@ export const artNouveau: DesignStyle = {
     "Organic curve aesthetics from the late 19th century, characterized by flowing vine patterns, natural floral elements, Mucha-style poster decorations, and elegant serif typography -- conveying the harmony of nature and art.",
   cover: "/styles/art-nouveau.svg",
   styleType: "visual",
-  tags: ["retro", "expressive"],
+  tags: ["retro"],
   category: "retro",
   colors: {
     primary: "#2d5016",

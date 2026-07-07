@@ -10,7 +10,7 @@ export const holyGrailLayout: DesignStyle = {
     "The classic three-column web layout consisting of a fixed header, a three-column middle section (left navigation, main content, right sidebar), and a fixed footer -- a foundational layout paradigm in web design.",
   cover: "/styles/holy-grail-layout.svg",
   styleType: "layout",
-  tags: ["modern", "responsive"],
+  tags: ["responsive"],
   compatibleWith: ["corporate-clean", "editorial", "notion-style", "minimalist-flat", "dark-mode"],
   category: "modern",
   colors: {

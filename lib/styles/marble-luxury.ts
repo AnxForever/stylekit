@@ -10,7 +10,7 @@ export const marbleLuxury: DesignStyle = {
     "High-end design style with marble textures and gold accents, featuring white marble-textured backgrounds, gold line separators, and black text. Ideal for luxury brands, hotels, and premium real estate.",
   cover: "/styles/marble-luxury.svg",
   styleType: "visual",
-  tags: ["modern", "minimal"],
+  tags: [],
   category: "modern",
   colors: {
     primary: "#1a1a1a",

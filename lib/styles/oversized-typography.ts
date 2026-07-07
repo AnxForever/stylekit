@@ -10,7 +10,7 @@ export const oversizedTypography: DesignStyle = {
     "The defining portfolio trend of 2026: type IS the layout. Names and headlines become viewport-scale heroes via fluid clamp() sizing, imagery recedes to accents, and a single international orange cuts through near-black on warm white.",
   cover: "/styles/oversized-typography.svg",
   styleType: "visual",
-  tags: ["expressive", "modern", "high-contrast"],
+  tags: ["high-contrast"],
   category: "expressive",
   colors: {
     primary: "#0A0A0A",

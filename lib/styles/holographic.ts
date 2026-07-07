@@ -10,7 +10,7 @@ export const holographic: DesignStyle = {
     "Rainbow spectrum iridescent gradient aesthetics simulating holographic prismatic refraction and dynamic light effects for an otherworldly iridescent experience.",
   cover: "/styles/holographic.svg",
   styleType: "visual",
-  tags: ["modern", "expressive", "high-contrast"],
+  tags: ["high-contrast"],
   category: "expressive",
   colors: {
     primary: "#a855f7",

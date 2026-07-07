@@ -10,7 +10,7 @@ export const retroVintage: DesignStyle = {
     "Nostalgic retro design style with vintage typography, retro color tones, and handcrafted texture elements. Ideal for cafes, vintage brands, indie magazines, and music labels.",
   cover: "/styles/retro-vintage.svg",
   styleType: "visual",
-  tags: ["retro", "expressive"],
+  tags: ["retro"],
   category: "retro",
   colors: {
     primary: "#8b4513",

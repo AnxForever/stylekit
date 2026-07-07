@@ -10,7 +10,7 @@ export const shopifyClean: DesignStyle = {
     "A clean, modern aesthetic built for independent storefronts. Product-first layouts with clear pricing hierarchy and smooth conversion paths.",
   cover: "/styles/shopify-clean.svg",
   styleType: "visual",
-  tags: ["modern", "minimal"],
+  tags: [],
   category: "modern",
   colors: {
     primary: "#ffffff",

@@ -10,7 +10,7 @@ export const popArt: DesignStyle = {
     "Bold and vivid Pop Art style inspired by Andy Warhol and Roy Lichtenstein. Thick black outlines, halftone Ben-Day dots, comic-style speech bubbles, and highly saturated color blocks. Ideal for creative brands, pop culture, and art showcases.",
   cover: "/styles/pop-art.svg",
   styleType: "visual",
-  tags: ["expressive", "retro", "high-contrast"],
+  tags: ["retro", "high-contrast"],
   category: "expressive",
   colors: {
     primary: "#ffdd00",

@@ -10,7 +10,7 @@ export const victorianBotanical: DesignStyle = {
     "Victorian-era botanical illustration style with delicate line-drawn plants, floral ornaments, and the elegance of a natural history museum. A classic pairing of dark green and gold.",
   cover: "/styles/victorian-botanical.svg",
   styleType: "visual",
-  tags: ["retro", "minimal"],
+  tags: ["retro"],
   category: "retro",
   colors: {
     primary: "#2d4a2d",

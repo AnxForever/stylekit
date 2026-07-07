@@ -10,7 +10,7 @@ export const fPatternLayout: DesignStyle = {
     "An F-pattern scanning layout based on eye-tracking research, where the user's gaze starts from the top-left, scans horizontally across the top, then moves downward, ideal for content-heavy pages, blog posts, and news listings.",
   cover: "/styles/f-pattern-layout.svg",
   styleType: "layout",
-  tags: ["modern", "responsive"],
+  tags: ["responsive"],
   compatibleWith: ["editorial", "corporate-clean", "minimalist-flat", "notion-style", "swiss-style"],
   category: "modern",
   colors: {

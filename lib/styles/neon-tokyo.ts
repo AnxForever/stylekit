@@ -10,7 +10,7 @@ export const neonTokyo: DesignStyle = {
     "Tokyo Kabukicho neon nightscape style with rain-slicked street reflections, layered neon signage, and cyberpunk urban night vibes. Unlike cyberpunk-neon's sci-fi feel, this leans toward authentic urban nightscapes.",
   cover: "/styles/neon-tokyo.svg",
   styleType: "visual",
-  tags: ["modern", "high-contrast"],
+  tags: ["high-contrast"],
   category: "modern",
   colors: {
     primary: "#ff1493",

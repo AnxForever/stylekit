@@ -10,7 +10,7 @@ export const celShading: DesignStyle = {
     "A rendering style inspired by traditional cel animation, featuring bold black outlines, flat color fills, hard shadows without gradients, and vivid saturated colors full of cartoon and game energy.",
   cover: "/styles/cel-shading.jpg",
   styleType: "visual",
-  tags: ["expressive", "high-contrast"],
+  tags: ["high-contrast"],
   category: "expressive",
   colors: {
     primary: "#1a1a2e",

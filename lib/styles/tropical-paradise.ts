@@ -10,7 +10,7 @@ export const tropicalParadise: DesignStyle = {
     "Tropical resort-inspired design with palm leaves, vivid floral colors, and a bright sun-and-sand tone. Ideal for travel, resorts, lifestyle, and food-and-beverage brands.",
   cover: "/styles/tropical-paradise.svg",
   styleType: "visual",
-  tags: ["modern", "expressive"],
+  tags: [],
   category: "modern",
   colors: {
     primary: "#00897b",

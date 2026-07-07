@@ -10,7 +10,7 @@ export const neonSamurai: DesignStyle = {
     "A collision of traditional Japanese samurai aesthetics with neon cyberpunk, weaving katana slash lines, vermillion torii gate frames, calligraphy brushstrokes, and dual-color neon glow effects -- ukiyo-e meets neon lights in a futuristic urban bushido.",
   cover: "/styles/neon-samurai.svg",
   styleType: "visual",
-  tags: ["expressive", "modern", "high-contrast"],
+  tags: ["high-contrast"],
   category: "expressive",
   colors: {
     primary: "#dc2626",

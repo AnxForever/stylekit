@@ -10,7 +10,7 @@ export const githubStyle: DesignStyle = {
     "GitHub design language style with clean interface hierarchy, a refined grayscale system, blue interactive color, monospace code fonts, and developer-friendly information architecture.",
   cover: "/styles/github-style.svg",
   styleType: "visual",
-  tags: ["modern", "brand-inspired"],
+  tags: ["brand-inspired"],
   category: "modern",
   colors: {
     primary: "#0969da",

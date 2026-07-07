@@ -10,7 +10,7 @@ export const materialDesign: DesignStyle = {
     "Google's design system based on the metaphor of paper and ink, emphasizing hierarchy, motion, bold colors, and responsive interactions -- the standard for modern mobile design.",
   cover: "/styles/material-design.svg",
   styleType: "visual",
-  tags: ["modern", "brand-inspired"],
+  tags: ["brand-inspired"],
   category: "modern",
   colors: {
     primary: "#6200ee",

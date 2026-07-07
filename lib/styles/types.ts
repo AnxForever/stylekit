@@ -1,4 +1,5 @@
 import type { StyleAtoms } from "./atoms";
+import type { StyleTag } from "./meta-types";
 
 export interface StyleVariant {
   id: string;
@@ -21,7 +22,7 @@ export interface DesignStyle {
   cover: string;
 
   styleType: "visual" | "layout";
-  tags: ("modern" | "retro" | "minimal" | "expressive" | "high-contrast" | "responsive" | "brand-inspired")[];
+  tags: StyleTag[];
   compatibleWith?: string[];
 
   category: "modern" | "retro" | "minimal" | "expressive";

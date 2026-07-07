@@ -10,7 +10,7 @@ export const notionStyle: DesignStyle = {
     "A minimalist and clean document tool style emphasizing content readability and functionality, using subtle borders, gentle hover effects, and clear typographic hierarchy.",
   cover: "/styles/notion-style.svg",
   styleType: "visual",
-  tags: ["minimal"],
+  tags: [],
   category: "minimal",
   colors: {
     primary: "#37352f",

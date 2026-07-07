@@ -10,7 +10,7 @@ export const zPatternLayout: DesignStyle = {
     "A Z-pattern scanning layout based on eye-tracking, where the gaze moves from top-left to top-right, diagonally to bottom-left, then to bottom-right, forming a Z-path. Ideal for landing pages, marketing pages, and concise information displays.",
   cover: "/styles/z-pattern-layout.svg",
   styleType: "layout",
-  tags: ["modern", "responsive"],
+  tags: ["responsive"],
   compatibleWith: ["modern-gradient", "apple-style", "stripe-style", "minimalist-flat", "corporate-clean"],
   category: "modern",
   colors: {

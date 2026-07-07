@@ -10,7 +10,7 @@ export const freshMarket: DesignStyle = {
     "E-commerce style for food, grocery, and organic brands. Warm tones with rounded cards and natural textures convey freshness and trust.",
   cover: "/styles/fresh-market.svg",
   styleType: "visual",
-  tags: ["modern", "expressive"],
+  tags: [],
   category: "modern",
   colors: {
     primary: "#fef9f0",

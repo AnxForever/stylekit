@@ -10,7 +10,7 @@ export const shoujoManga: DesignStyle = {
     "The distinctive romantic aesthetics of shoujo manga, featuring screentone texture backgrounds, flower frame decorations, ribbon banner titles, multi-point sparkle effects, lace borders, and heart elements, presented in a pink-dominant palette for a dreamy, soft visual experience.",
   cover: "/styles/shoujo-manga.svg",
   styleType: "visual",
-  tags: ["expressive", "retro"],
+  tags: ["retro"],
   category: "expressive",
   colors: {
     primary: "#ffb7c5",

@@ -10,7 +10,7 @@ export const neonGradient: DesignStyle = {
     "Vivid gradient cards on dark backgrounds with thick colored borders and neon glow effects. Ideal for tech products, SaaS landing pages, and youth-oriented brands.",
   cover: "/styles/neon-gradient.svg",
   styleType: "visual",
-  tags: ["expressive"],
+  tags: [],
   category: "expressive",
   colors: {
     primary: "#a855f7",

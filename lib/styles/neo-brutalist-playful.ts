@@ -10,7 +10,7 @@ export const neoBrutalistPlayful: DesignStyle = {
     "A lively version of Neo-Brutalist. Retains core characteristics while adding more colors, rotated/tilted elements, icon decorations, and playful micro-interactions -- ideal for youth-oriented brands.",
   cover: "/styles/neo-brutalist-playful.svg",
   styleType: "visual",
-  tags: ["expressive"],
+  tags: [],
   category: "expressive",
   colors: {
     primary: "#000000",

@@ -10,7 +10,7 @@ export const neumorphism: DesignStyle = {
     "Soft concave and convex 3D effects using dual shadows to simulate light sources. Light backgrounds with same-tone elements create a refined sense of depth.",
   cover: "/styles/neumorphism.svg",
   styleType: "visual",
-  tags: ["modern", "minimal"],
+  tags: [],
   category: "modern",
   colors: {
     primary: "#e0e5ec",

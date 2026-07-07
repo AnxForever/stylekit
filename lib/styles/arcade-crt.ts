@@ -10,7 +10,7 @@ export const arcadeCrt: DesignStyle = {
     "80-90s arcade monitor aesthetics featuring scanlines, screen curvature, neon glow, and RGB chromatic aberration effects. Ideal for gaming, retro tech, and creative projects.",
   cover: "/styles/arcade-crt.svg",
   styleType: "visual",
-  tags: ["retro", "expressive", "high-contrast"],
+  tags: ["retro", "high-contrast"],
   category: "retro",
   colors: {
     primary: "#39ff14",

@@ -10,7 +10,7 @@ export const magicCircle: DesignStyle = {
     "A fantasy visual style featuring concentric nested ring systems, hexagram geometric cores, runic inscriptions along circular paths, Flower of Life sacred geometry, golden radiant glow, and interwoven alchemical symbols.",
   cover: "/styles/magic-circle.svg",
   styleType: "visual",
-  tags: ["expressive", "modern"],
+  tags: [],
   category: "expressive",
   colors: {
     primary: "#1e1b4b",

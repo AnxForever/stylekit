@@ -10,7 +10,7 @@ export const maximalism: DesignStyle = {
     "Maximalist design -- more is more. Layered patterns, mixed fonts, saturated colors, and decorative borders. A stark contrast to minimalism, embracing richness, opulence, and visual impact.",
   cover: "/styles/maximalism.svg",
   styleType: "visual",
-  tags: ["expressive", "high-contrast"],
+  tags: ["high-contrast"],
   category: "expressive",
   colors: {
     primary: "#d4145a",

@@ -10,7 +10,7 @@ export const steampunk: DesignStyle = {
     "Victorian-era industrial machinery aesthetics with brass and copper metallic elements, gear mechanism decorations, and steam pipe rivet details. Ideal for retro sci-fi, industrial style, and creative showcase projects.",
   cover: "/styles/steampunk.svg",
   styleType: "visual",
-  tags: ["expressive", "retro", "high-contrast"],
+  tags: ["retro", "high-contrast"],
   category: "expressive",
   colors: {
     primary: "#b5a642",

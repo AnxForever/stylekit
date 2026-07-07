@@ -10,7 +10,7 @@ export const collageArt: DesignStyle = {
     "Magazine collage and mixed-media aesthetics with paper cutouts, multi-layer stacking, torn paper edges, and mixed typography, creating a visually impactful handcrafted creative experience.",
   cover: "/styles/collage-art.svg",
   styleType: "visual",
-  tags: ["expressive", "retro"],
+  tags: ["retro"],
   category: "expressive",
   colors: {
     primary: "#2d2d2d",

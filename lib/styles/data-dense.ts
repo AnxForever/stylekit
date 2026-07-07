@@ -10,7 +10,7 @@ export const dataDense: DesignStyle = {
     "High-density admin panel style with compact spacing and small components. Prioritizes data tables and operational efficiency.",
   cover: "/styles/data-dense.svg",
   styleType: "visual",
-  tags: ["modern", "minimal"],
+  tags: [],
   category: "modern",
   colors: {
     primary: "#ffffff",

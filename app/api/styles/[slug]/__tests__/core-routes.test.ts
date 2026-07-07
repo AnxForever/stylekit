@@ -105,7 +105,7 @@ describe("styles [slug] core routes", () => {
       description: "Community-submitted aurora style.",
       cover: "/styles/aurora-community/opengraph-image",
       styleType: "visual",
-      tags: ["expressive", "modern"],
+      tags: ["retro"],
       category: "expressive",
       colors: {
         primary: "#2f3cff",

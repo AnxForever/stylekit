@@ -10,7 +10,7 @@ export const darkAcademia: DesignStyle = {
     "Classical university libraries, leather-bound books, classical literature, and vintage campus aesthetics. Deep brown and dark green palette with antique gold accents -- a warm and contemplative scholarly atmosphere.",
   cover: "/styles/dark-academia.svg",
   styleType: "visual",
-  tags: ["retro", "minimal"],
+  tags: ["retro"],
   category: "retro",
   colors: {
     primary: "#3d2b1f",

@@ -10,7 +10,7 @@ export const fluentDesign: DesignStyle = {
     "Microsoft's design system integrating five key elements -- light, depth, motion, material, and scale -- to create natural and intuitive cross-platform experiences.",
   cover: "/styles/fluent-design.svg",
   styleType: "visual",
-  tags: ["modern", "brand-inspired"],
+  tags: ["brand-inspired"],
   category: "modern",
   colors: {
     primary: "#0078d4",

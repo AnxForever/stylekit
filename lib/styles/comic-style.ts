@@ -12,7 +12,7 @@ export const comicStyle: DesignStyle = {
     "A design style inspired by comic books and manga, featuring heavy ink-line borders, halftone fills, speech bubbles, action lines, and panel layouts, full of narrative and visual impact.",
   cover: "/styles/comic-style.svg",
   styleType: "visual",
-  tags: ["expressive", "high-contrast"],
+  tags: ["high-contrast"],
   category: "expressive",
   colors: {
     primary: "#1a1a1a",

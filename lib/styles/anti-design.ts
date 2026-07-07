@@ -10,7 +10,7 @@ export const antiDesign: DesignStyle = {
     "An experimental brutalist style that deliberately breaks traditional UI conventions, with ultra-thick borders, high-saturation colors, and irregular typography.",
   cover: "/styles/anti-design.svg",
   styleType: "visual",
-  tags: ["expressive", "high-contrast"],
+  tags: ["high-contrast"],
   category: "expressive",
   colors: {
     primary: "#000000",

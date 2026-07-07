@@ -10,7 +10,7 @@ export const distillStyle: DesignStyle = {
     "An academic explainer aesthetic modeled on Distill.pub: a narrow serif column carries the argument, sidenotes carry the asides, and figures break the measure to carry the evidence. Built for science blogs, researcher homepages, and scholarly portfolios.",
   cover: "/styles/distill-style.svg",
   styleType: "visual",
-  tags: ["minimal", "modern", "brand-inspired"],
+  tags: ["brand-inspired"],
   category: "minimal",
   colors: {
     primary: "#1F2933",

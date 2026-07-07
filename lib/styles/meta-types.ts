@@ -1,13 +1,19 @@
 export type StyleCategory = "modern" | "retro" | "minimal" | "expressive";
 export type StyleType = "visual" | "layout";
 export type StyleTag =
-  | "modern"
   | "retro"
-  | "minimal"
-  | "expressive"
   | "high-contrast"
   | "responsive"
-  | "brand-inspired";
+  | "brand-inspired"
+  | "dark-theme"
+  | "colorful"
+  | "hand-drawn"
+  | "glassmorphic"
+  | "gradient"
+  | "geometric"
+  | "game-ui"
+  | "anime-aesthetic"
+  | "texture-heavy";
 
 export interface StyleMeta {
   slug: string;

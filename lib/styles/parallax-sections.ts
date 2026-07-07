@@ -10,7 +10,7 @@ export const parallaxSections: DesignStyle = {
     "An immersive layout creating depth parallax effects through fixed backgrounds and scrolling content, with each full-screen section having its own background layer. Ideal for brand stories, product showcases, and immersive experience pages.",
   cover: "/styles/parallax-sections.svg",
   styleType: "layout",
-  tags: ["modern", "expressive", "responsive"],
+  tags: ["responsive"],
   compatibleWith: ["hero-fullscreen", "full-page-scroll", "editorial", "modern-gradient"],
   category: "modern",
   colors: {

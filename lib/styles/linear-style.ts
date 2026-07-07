@@ -8,7 +8,7 @@ export const linearStyle: DesignStyle = {
     "受 Linear 应用启发的极简暗色设计风格。精确的排版、克制的动效、开发者审美的极致表达。深色背景配合微妙的渐变和精细的边框。",
   cover: "/styles/linear-style.svg",
   styleType: "visual",
-  tags: ["minimal", "modern"],
+  tags: [],
   category: "minimal",
   colors: {
     primary: "#5e6ad2",

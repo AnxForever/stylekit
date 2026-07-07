@@ -10,7 +10,7 @@ export const sciFiHud: DesignStyle = {
     "A holographic display interface inspired by starship cockpits and tactical command centers. Deep space backgrounds, cyan glowing borders, translucent glass panels, and radar sweep animations create an immersive experience of operating high-tech equipment.",
   cover: "/styles/sci-fi-hud.svg",
   styleType: "visual",
-  tags: ["expressive", "modern", "high-contrast"],
+  tags: ["high-contrast"],
   category: "modern",
   colors: {
     primary: "#06B6D4",

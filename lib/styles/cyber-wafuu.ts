@@ -10,7 +10,7 @@ export const cyberWafuu: DesignStyle = {
     "A Japanese cyber aesthetic where seigaiha wave patterns merge with circuit traces, torii gate navigation frames, asanoha hemp leaf grids, kintsugi gold repair lines, and shoji screen grid panels -- traditional patterns 'hacked' by technology.",
   cover: "/styles/cyber-wafuu.svg",
   styleType: "visual",
-  tags: ["expressive", "modern", "high-contrast"],
+  tags: ["high-contrast"],
   category: "expressive",
   colors: {
     primary: "#1e3a5f",

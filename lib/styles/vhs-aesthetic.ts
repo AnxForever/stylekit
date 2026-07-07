@@ -10,7 +10,7 @@ export const vhsAesthetic: DesignStyle = {
     "80-90s VHS tape visual aesthetics with color distortion, scanline noise, and signal glitch effects. Ideal for nostalgia, retro tech, and creative video projects.",
   cover: "/styles/vhs-aesthetic.svg",
   styleType: "visual",
-  tags: ["retro", "expressive", "high-contrast"],
+  tags: ["retro", "high-contrast"],
   category: "retro",
   colors: {
     primary: "#ff00ff",

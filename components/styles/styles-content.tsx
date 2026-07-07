@@ -233,24 +233,36 @@ export function StylesContent({ allStyles }: StylesContentProps) {
 
   // Tag filter 配置
   const availableTags: StyleTag[] = [
-    "modern",
-    "expressive",
-    "minimal",
     "retro",
     "high-contrast",
     "responsive",
     "brand-inspired",
+    "dark-theme",
+    "colorful",
+    "hand-drawn",
+    "glassmorphic",
+    "gradient",
+    "geometric",
+    "game-ui",
+    "anime-aesthetic",
+    "texture-heavy",
   ];
 
   const tagLabels: Record<StyleTag, string> = useMemo(
     () => ({
-      modern: t("styles.tagModern"),
-      expressive: t("styles.tagExpressive"),
-      minimal: t("styles.tagMinimal"),
       retro: t("styles.tagRetro"),
       "high-contrast": t("styles.tagHighContrast"),
       responsive: t("styles.tagResponsive"),
       "brand-inspired": t("styles.tagBrandInspired"),
+      "dark-theme": t("styles.tagDarkTheme"),
+      colorful: t("styles.tagColorful"),
+      "hand-drawn": t("styles.tagHandDrawn"),
+      glassmorphic: t("styles.tagGlassmorphic"),
+      gradient: t("styles.tagGradient"),
+      geometric: t("styles.tagGeometric"),
+      "game-ui": t("styles.tagGameUI"),
+      "anime-aesthetic": t("styles.tagAnimeAesthetic"),
+      "texture-heavy": t("styles.tagTextureHeavy"),
     }),
     [t]
   );

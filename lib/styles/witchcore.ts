@@ -10,7 +10,7 @@ export const witchcore: DesignStyle = {
     "Occult aesthetic style with tarot cards, moon phase symbols, crystals, and herbal elements. Deep purple tones paired with golden mystical runes and shimmering stardust effects on dark backgrounds.",
   cover: "/styles/witchcore.svg",
   styleType: "visual",
-  tags: ["expressive", "high-contrast"],
+  tags: ["high-contrast"],
   category: "expressive",
   colors: {
     primary: "#4a1942",
