@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" fill="none" viewBox="0 0 1200 630">
+  <path fill="#0A0A0A" d="M0 0h1200v630H0z"/>
+  <!-- film grain texture hint: subtle gradient overlay -->
+  <rect width="1200" height="630" fill="url(#grain)" opacity="0.03"/>
+  <defs>
+    <radialGradient id="grain" cx="0.5" cy="0.5" r="0.7">
+      <stop offset="0" stop-color="#FFFFFF"/>
+      <stop offset="1" stop-color="#000000"/>
+    </radialGradient>
+  </defs>
+  <!-- full-bleed image frame (dark charcoal) -->
+  <rect x="0" y="0" width="1200" height="630" fill="#1A1A1A"/>
+  <!-- horizontal gradient overlay for text legibility -->
+  <rect x="0" y="0" width="1200" height="630" fill="url(#vignette)" opacity="0.6"/>
+  <defs>
+    <linearGradient id="vignette" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#000000"/>
+      <stop offset="0.5" stop-color="transparent"/>
+      <stop offset="1" stop-color="#000000"/>
+    </linearGradient>
+  </defs>
+  <!-- abstract image rectangles (simulating a gallery grid) -->
+  <rect x="80" y="90" width="480" height="300" fill="#2A2A2A" rx="2"/>
+  <rect x="640" y="90" width="480" height="300" fill="#222222" rx="2"/>
+  <rect x="80" y="420" width="320" height="150" fill="#252525" rx="2"/>
+  <rect x="430" y="420" width="320" height="150" fill="#1E1E1E" rx="2"/>
+  <rect x="780" y="420" width="340" height="150" fill="#282828" rx="2"/>
+  <!-- thin amber accent lines on image edges -->
+  <path stroke="#C4956A" stroke-width="1" d="M80 90h480M80 390h480"/>
+  <path stroke="#C4956A" stroke-width="1" d="M640 90h480M640 390h480"/>
+  <!-- typography overlay -->
+  <text x="600" y="65" fill="#C4956A" font-family="'Inter','Segoe UI',sans-serif" font-size="11" letter-spacing=".3em" text-anchor="middle" opacity="0.5">PORTFOLIO</text>
+  <text x="600" y="595" fill="#FFFFFF" font-family="'Inter','Segoe UI',sans-serif" font-size="14" letter-spacing=".06em" text-anchor="middle">Dark Gallery · 暗色画廊风</text>
+  <!-- bottom-right metadata hint -->
+  <text x="1100" y="610" fill="#C4956A" font-family="'SF Mono',Consolas,monospace" font-size="9" opacity="0.4">ƒ/2.8 · 24mm · 1/125s · ISO 400</text>
+  <!-- gallery navigation dots -->
+  <circle cx="560" cy="610" r="2" fill="#C4956A"/>
+  <circle cx="575" cy="610" r="2" fill="#555555"/>
+  <circle cx="590" cy="610" r="2" fill="#555555"/>
+  <circle cx="605" cy="610" r="2" fill="#555555"/>
+  <circle cx="620" cy="610" r="2" fill="#555555"/>
+</svg>
