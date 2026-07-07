@@ -21,13 +21,12 @@ describe("Card Component", () => {
   it("renders with default variant", () => {
     render(<Card data-testid="card" />);
     const card = screen.getByTestId("card");
-    expect(card).toHaveClass("border");
-    expect(card).toHaveClass("border-border");
+    expect(card).toHaveClass("shadow-surface");
   });
 
   it("renders with elevated variant", () => {
     render(<Card variant="elevated" data-testid="card" />);
-    expect(screen.getByTestId("card")).toHaveClass("shadow-lg");
+    expect(screen.getByTestId("card")).toHaveClass("shadow-surface-lg");
   });
 
   it("renders with ghost variant", () => {
