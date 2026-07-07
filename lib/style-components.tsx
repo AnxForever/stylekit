@@ -3903,6 +3903,134 @@ export const styleComponents: Record<
       </div>
     ),
   },
+  "gallery-dark": {
+    button: () => (
+      <button className="px-5 py-2 bg-transparent text-xs text-[#C4956A] tracking-[0.15em] border border-[#2A2A2A] rounded-sm hover:border-[#666666] transition-colors duration-200">
+        View Series →
+      </button>
+    ),
+    card: () => (
+      <div className="group relative overflow-hidden bg-[#1A1A1A] rounded-sm cursor-pointer w-full aspect-[4/3]">
+        <div className="absolute inset-0 bg-gradient-to-br from-[#222] to-[#151515]" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+          <div className="absolute bottom-3 left-3">
+            <p className="text-sm text-white font-medium">Edge of the City</p>
+            <p className="text-[10px] text-[#C4956A] mt-0.5">35mm · Ilford HP5</p>
+          </div>
+        </div>
+        <div className="absolute top-2 right-2 text-[9px] text-[#C4956A] font-mono">2026</div>
+      </div>
+    ),
+    input: () => (
+      <input
+        type="email"
+        placeholder="your@email.com"
+        className="w-full bg-transparent border-b border-[#2A2A2A] px-0 py-2 text-sm text-white placeholder:text-[#555555] focus:outline-none focus:border-[#C4956A] transition-colors duration-200 font-sans font-light"
+      />
+    ),
+    coverPreview: () => (
+      <div className="w-full h-full bg-[#0A0A0A] flex items-center justify-center p-4 overflow-hidden">
+        <div className="w-full max-w-[200px] relative">
+          <div className="aspect-[4/3] bg-[#1A1A1A] rounded-sm mb-2 flex items-center justify-center">
+            <div className="w-16 h-10 bg-gradient-to-br from-[#222] to-[#151515]" />
+          </div>
+          <div className="flex gap-1.5 mb-1.5">
+            <div className="flex-1 aspect-square bg-[#1A1A1A] rounded-sm" />
+            <div className="flex-1 aspect-square bg-[#1A1A1A] rounded-sm" />
+          </div>
+          <div className="h-px bg-[#1A1A1A] mb-1" />
+          <p className="text-[6px] text-[#C4956A] font-mono text-right">ƒ/2.8 · 1/125s</p>
+        </div>
+      </div>
+    ),
+  },
+  "studio-bold": {
+    button: () => (
+      <button className="px-5 py-2.5 bg-[#FF6B6B] text-white text-xs tracking-[0.08em] font-medium rounded-none hover:bg-[#E55A5A] transition-colors duration-200">
+        VIEW WORK →
+      </button>
+    ),
+    card: () => (
+      <div className="group relative overflow-hidden bg-[#222222] cursor-pointer w-full aspect-[4/3]">
+        <div className="absolute inset-0 bg-gradient-to-br from-[#2A2A2A] to-[#1A1A1A]" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
+        <div className="absolute top-3 right-3 w-6 h-6 bg-[#FF6B6B]" />
+        <div className="absolute bottom-3 left-3">
+          <span className="inline-block px-1.5 py-0.5 bg-[#FF6B6B] text-[8px] tracking-[0.1em] font-medium text-white mb-1">BRAND</span>
+          <p className="text-sm font-bold">BRØD</p>
+        </div>
+      </div>
+    ),
+    input: () => (
+      <input
+        type="text"
+        placeholder="Your email"
+        className="w-full px-3 py-2 bg-transparent border border-[#333333] text-sm text-white placeholder:text-[#555555] rounded-none focus:outline-none focus:border-[#FF6B6B] transition-colors duration-200"
+      />
+    ),
+    coverPreview: () => (
+      <div className="w-full h-full bg-[#1A1A1A] flex items-center justify-center p-4">
+        <div className="w-full max-w-[200px]">
+          <div className="flex items-start gap-1 mb-2">
+            <div className="w-1 h-10 bg-[#FF6B6B]" />
+            <div className="flex-1 space-y-0.5">
+              <div className="h-2 w-20 bg-white/80" />
+              <div className="h-2 w-14 bg-white/60" />
+            </div>
+          </div>
+          <div className="grid grid-cols-2 gap-1 mb-1.5">
+            <div className="aspect-square bg-[#222222]" />
+            <div className="aspect-square bg-[#2A2A2A]" />
+            <div className="aspect-square bg-[#2A2A2A]" />
+            <div className="aspect-square bg-[#222222]" />
+          </div>
+          <div className="flex justify-center gap-2 text-[5px] text-[#555555] tracking-[0.1em]">
+            ACME • BRANDCO • LAYER
+          </div>
+        </div>
+      </div>
+    ),
+  },
+  "warm-organic": {
+    button: () => (
+      <button className="px-5 py-2.5 bg-[#C86A4A] text-white text-sm font-sans rounded-lg shadow-[0_2px_8px_rgba(200,106,74,0.25)] hover:bg-[#B85A3A] hover:shadow-[0_4px_14px_rgba(200,106,74,0.35)] transition-all duration-200">
+        View Projects
+      </button>
+    ),
+    card: () => (
+      <div className="bg-white rounded-xl overflow-hidden shadow-[0_2px_12px_rgba(45,42,36,0.06)] w-full">
+        <div className="aspect-[4/3] bg-[#E8DED1] relative flex items-center justify-center">
+          <span className="text-[#D4BFA5] text-3xl">◐</span>
+        </div>
+        <div className="p-3">
+          <p className="text-sm font-serif font-semibold text-[#2D2A24]">Terracotta Vessels</p>
+          <p className="text-[10px] text-[#8B7D6B] mt-0.5">Product Design · 2025</p>
+        </div>
+      </div>
+    ),
+    input: () => (
+      <input
+        type="email"
+        placeholder="your@email.com"
+        className="w-full px-3 py-2.5 bg-[#E8DED1] text-sm text-[#2D2A24] placeholder:text-[#8B7D6B] rounded-lg border-0 focus:outline-none focus:ring-2 focus:ring-[#C86A4A]/40 transition-all duration-200 font-sans"
+      />
+    ),
+    coverPreview: () => (
+      <div className="w-full h-full bg-[#F5F0EB] flex items-center justify-center p-4">
+        <div className="w-full max-w-[200px] relative">
+          <div className="h-1.5 w-16 bg-[#2D2A24] mb-2" />
+          <div className="h-0.5 w-12 bg-[#C86A4A] mb-3" />
+          <div className="grid grid-cols-2 gap-1.5 mb-1.5">
+            <div className="aspect-square bg-white rounded-lg shadow-[0_1px_4px_rgba(45,42,36,0.08)]" />
+            <div className="aspect-square bg-white rounded-lg shadow-[0_1px_4px_rgba(45,42,36,0.08)]" />
+            <div className="aspect-square bg-white rounded-lg shadow-[0_1px_4px_rgba(45,42,36,0.08)]" />
+            <div className="aspect-square bg-white rounded-lg shadow-[0_1px_4px_rgba(45,42,36,0.08)]" />
+          </div>
+          <div className="w-8 h-px bg-[#C86A4A] mx-auto" />
+        </div>
+      </div>
+    ),
+  },
 };
 export function renderStyleComponent(styleSlug: string, component: ComponentType): React.ReactNode {
   const styleRenderer = styleComponents[styleSlug];
