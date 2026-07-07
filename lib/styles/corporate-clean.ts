@@ -10,7 +10,7 @@ export const corporateClean: DesignStyle = {
     "Professional and clean enterprise style emphasizing readability, consistency and trustworthiness. Ideal for B2B SaaS, corporate websites, and admin dashboards.",
   cover: "/styles/corporate-clean.svg",
   styleType: "visual",
-  tags: ["minimal", "modern"],
+  tags: [],
   category: "minimal",
   colors: {
     primary: "#1e40af",

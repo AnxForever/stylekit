@@ -10,7 +10,7 @@ export const dashboardLayout: DesignStyle = {
     "A data-driven dashboard layout featuring side navigation, top toolbar, multi-module data panels, and chart areas -- ideal for admin systems, data analytics platforms, and monitoring dashboards.",
   cover: "/styles/dashboard-layout.svg",
   styleType: "layout",
-  tags: ["modern", "responsive"],
+  tags: ["responsive"],
   compatibleWith: ["corporate-clean", "dark-mode", "minimalist-flat", "fluent-design", "material-design"],
   category: "modern",
   colors: {

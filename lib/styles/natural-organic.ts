@@ -10,7 +10,7 @@ export const naturalOrganic: DesignStyle = {
     "Warm and natural organic style with earth tones, natural textures, and handcrafted elements. Ideal for health brands, organic food, eco-friendly products, and artisan crafts.",
   cover: "/styles/natural-organic.svg",
   styleType: "visual",
-  tags: ["minimal", "modern"],
+  tags: [],
   category: "minimal",
   colors: {
     primary: "#5c4033",

@@ -10,7 +10,7 @@ export const timelineVertical: DesignStyle = {
     "Vertical timeline layout connecting time nodes through a connecting line. Ideal for displaying historical progress, project milestones, work experience, and process steps.",
   cover: "/styles/timeline-vertical.svg",
   styleType: "layout",
-  tags: ["modern", "minimal"],
+  tags: [],
   compatibleWith: ["editorial", "corporate-clean", "minimalist-flat", "soft-ui", "natural-organic"],
   category: "minimal",
   colors: {

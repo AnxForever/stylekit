@@ -10,7 +10,7 @@ export const generativeArt: DesignStyle = {
     "Algorithm-driven procedural visual aesthetics using mathematical functions, noise textures, and parametric graphics to create unique dynamic interfaces. Ideal for creative coding, data visualization, and art projects.",
   cover: "/styles/generative-art.svg",
   styleType: "visual",
-  tags: ["expressive", "modern", "high-contrast"],
+  tags: ["high-contrast"],
   category: "expressive",
   colors: {
     primary: "#7c3aed",

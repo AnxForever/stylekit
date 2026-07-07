@@ -10,7 +10,7 @@ export const stripeStyle: DesignStyle = {
     "A refined and professional fintech style featuring Stripe purple as the primary color, complemented by gradient grid backgrounds, elegant card shadows, and smooth animations, ideal for payment products and developer tools.",
   cover: "/styles/stripe-style.svg",
   styleType: "visual",
-  tags: ["modern"],
+  tags: [],
   category: "modern",
   colors: {
     primary: "#635bff",

@@ -10,7 +10,7 @@ export const opArt: DesignStyle = {
     "Op Art movement style that uses geometric patterns to create optical illusions and a sense of motion. Black-and-white contrast at its core, supplemented by vibrating color pairs.",
   cover: "/styles/op-art.svg",
   styleType: "visual",
-  tags: ["expressive", "high-contrast"],
+  tags: ["high-contrast"],
   category: "expressive",
   colors: {
     primary: "#000000",

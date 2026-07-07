@@ -10,7 +10,7 @@ export const koreanMinimal: DesignStyle = {
     "Korean minimalist design aesthetic influenced by K-beauty and Korean architecture. Soft pastel tones, generous whitespace, refined rounded corners, and restrained ornamentation.",
   cover: "/styles/korean-minimal.svg",
   styleType: "visual",
-  tags: ["minimal", "modern"],
+  tags: [],
   category: "minimal",
   colors: {
     primary: "#3d4a5c",

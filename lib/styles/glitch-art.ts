@@ -10,7 +10,7 @@ export const glitchArt: DesignStyle = {
     "An avant-garde cyberpunk aesthetic that embraces digital errors, severe chromatic aberration, and jarring screen-tearing effects.",
   cover: "/styles/glitch-art.svg",
   styleType: "visual",
-  tags: ["expressive", "modern", "high-contrast"],
+  tags: ["high-contrast"],
   category: "expressive",
   colors: {
     primary: "#00ffff",

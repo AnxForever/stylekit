@@ -10,7 +10,7 @@ export const latexPaper: DesignStyle = {
     "The typographic language of LaTeX academic papers, brought to the web: Computer Modern feel, centered title and abstract, hierarchically numbered sections, theorem environments, numbered equations, booktabs tables, and hanging-indent references. Built for research homepages, lecture notes, and scholarly portfolios.",
   cover: "/styles/latex-paper.svg",
   styleType: "visual",
-  tags: ["minimal", "retro", "high-contrast"],
+  tags: ["retro", "high-contrast"],
   category: "minimal",
   colors: {
     primary: "#111111",

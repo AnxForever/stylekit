@@ -10,7 +10,7 @@ export const watercolorStyle: DesignStyle = {
     "A design style inspired by watercolor painting, featuring soft color gradients, blurred edge effects, paper texture backgrounds, and flowing color diffusion, conveying artistry and poetry.",
   cover: "/styles/watercolor-style.svg",
   styleType: "visual",
-  tags: ["expressive", "minimal"],
+  tags: [],
   category: "expressive",
   colors: {
     primary: "#4a6fa5",

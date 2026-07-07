@@ -10,7 +10,7 @@ export const impressionistOil: DesignStyle = {
     "Inspired by Impressionist masters like Monet and Renoir, featuring bold brushstroke textures, dappled light effects, pointillist colors, and warm canvas textures for a rich, oil-painting visual experience.",
   cover: "/styles/impressionist-oil.svg",
   styleType: "visual",
-  tags: ["retro", "expressive"],
+  tags: ["retro"],
   category: "expressive",
   colors: {
     primary: "#e8a87c",

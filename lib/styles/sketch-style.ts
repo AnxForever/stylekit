@@ -10,7 +10,7 @@ export const sketchStyle: DesignStyle = {
     "A design style simulating pencil hand-drawing, with irregular line borders, paper texture backgrounds, handwritten font feel, sketch shadows, and doodle decorations, conveying a warm and approachable handcrafted texture.",
   cover: "/styles/sketch-style.svg",
   styleType: "visual",
-  tags: ["expressive", "retro"],
+  tags: ["retro"],
   category: "expressive",
   colors: {
     primary: "#2c2c2c",

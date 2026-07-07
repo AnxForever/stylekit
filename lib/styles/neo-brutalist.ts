@@ -12,7 +12,7 @@ export const neoBrutalist: DesignStyle = {
     "Bold black thick borders, hard-edge shadows, no rounded corners, high-contrast color schemes. Inspired by architectural Brutalism, emphasizing function and raw aesthetics.",
   cover: "/styles/neo-brutalist.svg",
   styleType: "visual",
-  tags: ["expressive", "high-contrast"],
+  tags: ["high-contrast"],
   category: "expressive",
   colors: {
     primary: "#000000",

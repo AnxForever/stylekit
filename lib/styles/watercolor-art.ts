@@ -10,7 +10,7 @@ export const watercolorArt: DesignStyle = {
     "Authentic watercolor aesthetics with organic bleeding edges, pigment pooling effects, paper texture overlays, and botanical watercolor accents, creating a natural and organic visual experience reminiscent of hand-painted watercolors.",
   cover: "/styles/watercolor-art.svg",
   styleType: "visual",
-  tags: ["expressive", "minimal"],
+  tags: [],
   category: "expressive",
   colors: {
     primary: "#d4a0a0",

@@ -10,7 +10,7 @@ export const solarpunk: DesignStyle = {
     "An optimistic eco-futurism style blending nature and technology in harmonious aesthetics. Organic curves, plant elements, warm gradients, and soft rounded corners. Ideal for eco-friendly, sustainable development, and green tech products.",
   cover: "/styles/solarpunk.svg",
   styleType: "visual",
-  tags: ["modern", "expressive"],
+  tags: [],
   category: "expressive",
   colors: {
     primary: "#4ade80",

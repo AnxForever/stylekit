@@ -10,7 +10,7 @@ export const macosVibrancy: DesignStyle = {
     "Native macOS dark vibrancy style. Multi-layer dark gray panels, system-level backdrop-blur, and extreme restraint create the calm, professional feel of a desktop application.",
   cover: "/styles/macos-vibrancy.svg",
   styleType: "visual",
-  tags: ["modern", "minimal"],
+  tags: [],
   category: "modern",
   colors: {
     primary: "#3a3a3c",

@@ -10,7 +10,7 @@ export const graffitiStreet: DesignStyle = {
     "Street graffiti art style with spray-paint textures, bold clashing colors, hand-lettered tags, and brick-wall backgrounds. A visual expression of urban culture and rebellious spirit.",
   cover: "/styles/graffiti-street.svg",
   styleType: "visual",
-  tags: ["expressive", "high-contrast"],
+  tags: ["high-contrast"],
   category: "expressive",
   colors: {
     primary: "#ff2d55",

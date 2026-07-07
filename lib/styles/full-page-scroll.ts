@@ -10,7 +10,7 @@ export const fullPageScroll: DesignStyle = {
     "Immersive scrolling experience where each screen fills the entire viewport, switching complete scenes on scroll. Ideal for brand stories, product introductions, and portfolio showcases.",
   cover: "/styles/full-page-scroll.svg",
   styleType: "layout",
-  tags: ["modern", "expressive"],
+  tags: [],
   compatibleWith: ["glassmorphism", "modern-gradient", "cyberpunk-neon", "minimalist-flat", "geometric-bold"],
   category: "expressive",
   colors: {

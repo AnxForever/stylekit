@@ -10,7 +10,7 @@ export const cottagecore: DesignStyle = {
     "Pastoral countryside aesthetics with floral patterns, embroidery textures, mushroom elements, and cozy homey feel. Soft serif fonts, rounded corners, and warm natural colors evoke a longing for simple rural life.",
   cover: "/styles/cottagecore.svg",
   styleType: "visual",
-  tags: ["retro", "minimal"],
+  tags: ["retro"],
   category: "retro",
   colors: {
     primary: "#5a8f5a",

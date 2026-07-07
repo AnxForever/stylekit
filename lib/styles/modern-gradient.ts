@@ -10,7 +10,7 @@ export const modernGradient: DesignStyle = {
     "Vibrant modern gradient style with colorful gradient backgrounds, glass-textured cards, and dynamic lighting effects. Ideal for startups, digital products, and event pages.",
   cover: "/styles/modern-gradient.svg",
   styleType: "visual",
-  tags: ["expressive", "modern"],
+  tags: [],
   category: "expressive",
   colors: {
     primary: "#8b5cf6",

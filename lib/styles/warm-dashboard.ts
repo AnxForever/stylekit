@@ -10,7 +10,7 @@ export const warmDashboard: DesignStyle = {
     "A warm and soft dashboard design style with coral/terracotta backgrounds, cream-white cards, and gentle shadows, creating a comfortable and professional data display experience.",
   cover: "/styles/warm-dashboard.svg",
   styleType: "visual",
-  tags: ["modern", "minimal"],
+  tags: [],
   category: "modern",
   colors: {
     primary: "#d4a088",

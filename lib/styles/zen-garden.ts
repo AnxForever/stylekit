@@ -10,7 +10,7 @@ export const zenGarden: DesignStyle = {
     "A digital interpretation of Japanese Karesansui dry landscape gardens, inspired by raked sand patterns, stone arrangements, and moss, pursuing ultimate tranquility and meditative calm. The pairing of sand white and moss green conveys the serene power of nature.",
   cover: "/styles/zen-garden.svg",
   styleType: "visual",
-  tags: ["minimal", "expressive"],
+  tags: [],
   category: "minimal",
   colors: {
     primary: "#4a5548",

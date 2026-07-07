@@ -10,7 +10,7 @@ export const mecha: DesignStyle = {
     "Design style inspired by mecha anime like Gundam/EVA -- tech panels, warning signs, mechanical textures, military green and navy blue base with warning yellow and danger red, brimming with industrial power.",
   cover: "/styles/mecha.svg",
   styleType: "visual",
-  tags: ["expressive", "modern", "high-contrast"],
+  tags: ["high-contrast"],
   category: "expressive",
   colors: {
     primary: "#1a2744",

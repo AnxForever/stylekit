@@ -10,7 +10,7 @@ export const memphis: DesignStyle = {
     "An 80s Italian design movement featuring bold geometric shapes, vivid contrasting colors, irregular forms, and playful patterns that break traditional design rules.",
   cover: "/styles/memphis.svg",
   styleType: "visual",
-  tags: ["retro", "expressive", "high-contrast"],
+  tags: ["retro", "high-contrast"],
   category: "retro",
   colors: {
     primary: "#ff6b6b",

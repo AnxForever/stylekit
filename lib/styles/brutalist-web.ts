@@ -10,7 +10,7 @@ export const brutalistWeb: DesignStyle = {
     "A return to the raw HTML aesthetics of the early 90s internet, with system fonts, blue underlined links, pure white backgrounds, and zero decoration -- content over form.",
   cover: "/styles/brutalist-web.svg",
   styleType: "visual",
-  tags: ["retro", "minimal"],
+  tags: ["retro"],
   category: "retro",
   colors: {
     primary: "#000000",

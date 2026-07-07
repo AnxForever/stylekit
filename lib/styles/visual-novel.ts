@@ -10,7 +10,7 @@ export const visualNovel: DesignStyle = {
     "A design style inspired by ADV visual novel game UI, featuring semi-transparent dialogue panels, character nameplate badges, ornate corner decorations, branching choice buttons, and save screen interfaces for an immersive interactive storytelling experience.",
   cover: "/styles/visual-novel.svg",
   styleType: "visual",
-  tags: ["modern", "expressive"],
+  tags: [],
   category: "modern",
   colors: {
     primary: "#4a5568",

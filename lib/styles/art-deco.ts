@@ -10,7 +10,7 @@ export const artDeco: DesignStyle = {
     "A luxurious design style from the 1920s-30s featuring geometric symmetrical patterns, gold decorations, elegant lines, and premium textures, conveying sophistication and prosperity.",
   cover: "/styles/art-deco.svg",
   styleType: "visual",
-  tags: ["retro", "expressive"],
+  tags: ["retro"],
   category: "retro",
   colors: {
     primary: "#d4af37",

@@ -10,7 +10,7 @@ export const indianFestive: DesignStyle = {
     "The dazzling aesthetics of Indian Diwali and Holi festivals, with rich gold ornamentation, jewel-tone palettes, and mandala motifs. Ideal for celebrations, events, and lifestyle brands.",
   cover: "/styles/indian-festive.svg",
   styleType: "visual",
-  tags: ["expressive", "high-contrast"],
+  tags: ["high-contrast"],
   category: "expressive",
   colors: {
     primary: "#e63946",

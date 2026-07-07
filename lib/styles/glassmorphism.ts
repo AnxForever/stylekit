@@ -12,7 +12,7 @@ export const glassmorphism: DesignStyle = {
     "Premium frosted glass inspired by Apple Liquid Glass. High gaussian blur, saturation boost, multi-layer inner glow and chromatic edges create the sensation of light flowing through real glass.",
   cover: "/styles/glassmorphism.svg",
   styleType: "visual",
-  tags: ["modern"],
+  tags: [],
   category: "modern",
   colors: {
     primary: "rgba(255, 255, 255, 0.15)",

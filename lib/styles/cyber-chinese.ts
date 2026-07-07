@@ -10,7 +10,7 @@ export const cyberChinese: DesignStyle = {
     "A collision and fusion of traditional Chinese aesthetics with cyberpunk sci-fi -- vermilion and gold paired with neon blue-purple, dragon-phoenix seals intertwined with neon lanterns in a futuristic Eastern fantasy.",
   cover: "/styles/cyber-chinese.svg",
   styleType: "visual",
-  tags: ["expressive", "modern", "high-contrast"],
+  tags: ["high-contrast"],
   category: "expressive",
   colors: {
     primary: "#d4553a",

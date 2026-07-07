@@ -10,7 +10,7 @@ export const ghibliStyle: DesignStyle = {
     "A design style inspired by Studio Ghibli animations, featuring warm soft tones, hand-drawn textures, natural elements, and a dreamy atmosphere that conveys healing and poetry.",
   cover: "/styles/ghibli-style.svg",
   styleType: "visual",
-  tags: ["expressive", "retro"],
+  tags: ["retro"],
   category: "expressive",
   colors: {
     primary: "#7cb9a8",

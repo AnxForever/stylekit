@@ -12,7 +12,7 @@ export const bentoGrid: DesignStyle = {
     "Irregular grid layout inspired by Japanese bento boxes, creating visual hierarchy through varied card sizes. Commonly used for portfolios and product showcases.",
   cover: "/styles/bento-grid.svg",
   styleType: "layout",
-  tags: ["modern", "responsive"],
+  tags: ["responsive"],
   compatibleWith: ["glassmorphism", "neo-brutalist", "editorial", "neumorphism"],
   category: "modern",
   colors: {

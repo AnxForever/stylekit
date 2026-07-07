@@ -10,7 +10,7 @@ export const surrealism: DesignStyle = {
     "Inspired by surrealist masters like Dali -- dreamlike scene compositions, illogical spatial relationships, melting and morphing forms, and unexpected color combinations create a mysterious and captivating visual experience.",
   cover: "/styles/surrealism.svg",
   styleType: "visual",
-  tags: ["expressive", "retro"],
+  tags: ["retro"],
   category: "expressive",
   colors: {
     primary: "#1a1a3e",

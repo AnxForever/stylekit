@@ -10,7 +10,7 @@ export const minimalistFlat: DesignStyle = {
     "Ultra-minimal flat design with no shadows or gradients, creating hierarchy through color and whitespace. Ideal for portfolios, creative agencies, and art websites.",
   cover: "/styles/minimalist-flat.svg",
   styleType: "visual",
-  tags: ["minimal", "modern"],
+  tags: [],
   category: "minimal",
   colors: {
     primary: "#000000",

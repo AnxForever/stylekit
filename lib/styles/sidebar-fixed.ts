@@ -10,7 +10,7 @@ export const sidebarFixed: DesignStyle = {
     "Application layout with a fixed sidebar navigation and scrollable main content area. Ideal for admin dashboards, documentation sites, dashboards, and SaaS applications.",
   cover: "/styles/sidebar-fixed.svg",
   styleType: "layout",
-  tags: ["modern", "responsive"],
+  tags: ["responsive"],
   compatibleWith: ["corporate-clean", "soft-ui", "dark-mode", "minimalist-flat", "neumorphism"],
   category: "modern",
   colors: {

@@ -10,7 +10,7 @@ export const geometricBold: DesignStyle = {
     "Bold geometric design with strong shape contrasts, vivid color blocks, and dynamic compositions. Ideal for art exhibitions, design agencies, and creative brands.",
   cover: "/styles/geometric-bold.svg",
   styleType: "visual",
-  tags: ["expressive", "high-contrast"],
+  tags: ["high-contrast"],
   category: "expressive",
   colors: {
     primary: "#000000",

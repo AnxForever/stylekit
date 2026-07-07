@@ -10,7 +10,7 @@ export const terracotta: DesignStyle = {
     "A Mediterranean terracotta and warm earth design style with warm clay tones, rough handcrafted textures, and natural patterns. Ideal for lifestyle brands, dining, travel, and artisan product showcases.",
   cover: "/styles/terracotta.svg",
   styleType: "visual",
-  tags: ["minimal", "modern"],
+  tags: [],
   category: "minimal",
   colors: {
     primary: "#b5654a",

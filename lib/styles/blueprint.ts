@@ -10,7 +10,7 @@ export const blueprint: DesignStyle = {
     "Engineering blueprint and technical drawing style with white lines on blue, grid coordinates, annotation lines, and dimension markers. Ideal for architecture, engineering, tech, and education.",
   cover: "/styles/blueprint.svg",
   styleType: "visual",
-  tags: ["minimal", "modern"],
+  tags: [],
   category: "minimal",
   colors: {
     primary: "#ffffff",

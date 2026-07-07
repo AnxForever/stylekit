@@ -10,7 +10,7 @@ export const japaneseFresh: DesignStyle = {
     "Centered on Ma (space) philosophy, wabi-sabi aesthetics, and extreme breathing room, using hairline borders, botanical line-drawing accents, and minimal warm neutral colors to create a serene, healing design experience.",
   cover: "/styles/japanese-fresh.svg",
   styleType: "visual",
-  tags: ["minimal", "modern"],
+  tags: [],
   category: "minimal",
   colors: {
     primary: "#64b5f6",

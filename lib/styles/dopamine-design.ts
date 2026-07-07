@@ -8,7 +8,7 @@ export const dopamineDesign: DesignStyle = {
     "高饱和度霓虹配色、大胆排版、充满能量感的视觉冲击力。2025-2026 年度设计趋势，用色彩直接刺激多巴胺分泌，让界面充满快乐和兴奋。",
   cover: "/styles/dopamine-design.svg",
   styleType: "visual",
-  tags: ["expressive", "modern", "high-contrast"],
+  tags: ["high-contrast"],
   category: "expressive",
   colors: {
     primary: "#ff006e",

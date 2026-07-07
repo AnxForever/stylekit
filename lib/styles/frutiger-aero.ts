@@ -10,7 +10,7 @@ export const frutigerAero: DesignStyle = {
     "Glass-textured aesthetics from the Windows Vista/7 era, blending sky-blue gradients, translucent frosted glass panels, and natural elements for a fresh, airy digital-nature feel.",
   cover: "/styles/frutiger-aero.svg",
   styleType: "visual",
-  tags: ["retro", "expressive"],
+  tags: ["retro"],
   category: "retro",
   colors: {
     primary: "#87CEEB",

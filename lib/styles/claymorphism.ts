@@ -12,7 +12,7 @@ export const claymorphism: DesignStyle = {
     "A soft clay-textured design that creates adorable 3D effects through extra-large border radii, combined inner and outer shadows, and gentle gradients, ideal for children's apps and playful products.",
   cover: "/styles/claymorphism.svg",
   styleType: "visual",
-  tags: ["modern", "expressive"],
+  tags: [],
   category: "modern",
   colors: {
     primary: "#f8b4d9",

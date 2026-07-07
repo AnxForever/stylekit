@@ -10,7 +10,7 @@ export const medievalManuscript: DesignStyle = {
     "Medieval illuminated manuscript style with ornate drop-cap initials, parchment textures, gold and deep-red decorative borders. Gothic blackletter combined with illustrative elements.",
   cover: "/styles/medieval-manuscript.svg",
   styleType: "visual",
-  tags: ["retro", "expressive"],
+  tags: ["retro"],
   category: "retro",
   colors: {
     primary: "#8b1a1a",

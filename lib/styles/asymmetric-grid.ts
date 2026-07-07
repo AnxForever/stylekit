@@ -10,7 +10,7 @@ export const asymmetricGrid: DesignStyle = {
     "A layout approach that breaks traditional symmetric grids, creating dynamic and engaging page structures through irregular column widths, overlapping elements, and visual tension. Ideal for creative portfolios, art exhibitions, and brand showcases.",
   cover: "/styles/asymmetric-grid.svg",
   styleType: "layout",
-  tags: ["modern", "expressive", "high-contrast"],
+  tags: ["high-contrast"],
   compatibleWith: ["editorial", "neo-brutalist", "geometric-bold", "swiss-style"],
   category: "modern",
   colors: {

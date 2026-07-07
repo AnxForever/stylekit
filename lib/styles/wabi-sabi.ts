@@ -10,7 +10,7 @@ export const wabiSabi: DesignStyle = {
     "A digital expression of Japanese Wabi-Sabi aesthetics, celebrating the beauty of imperfection, the elegance of natural aging, and the zen of extreme whitespace, conveyed through ink tones, tea hues, and paper textures.",
   cover: "/styles/wabi-sabi.svg",
   styleType: "visual",
-  tags: ["minimal", "expressive"],
+  tags: [],
   category: "minimal",
   colors: {
     primary: "#3a3a3a",

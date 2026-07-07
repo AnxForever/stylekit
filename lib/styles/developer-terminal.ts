@@ -10,7 +10,7 @@ export const developerTerminal: DesignStyle = {
     "Turn a website into a terminal session: phosphor-green mono text, prompt prefixes, paired command-and-output blocks, and a tmux status bar. Tool authenticity as developer identity.",
   cover: "/styles/developer-terminal.svg",
   styleType: "visual",
-  tags: ["modern", "high-contrast"],
+  tags: ["high-contrast"],
   category: "modern",
   colors: {
     primary: "#4AF626",

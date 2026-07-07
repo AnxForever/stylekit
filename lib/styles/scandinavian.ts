@@ -10,7 +10,7 @@ export const scandinavian: DesignStyle = {
     "Warm minimalist design rooted in Scandinavian tradition, emphasizing natural materials, generous whitespace, wood tones, and Hygge living aesthetics for a serene, cozy visual experience.",
   cover: "/styles/scandinavian.svg",
   styleType: "visual",
-  tags: ["minimal", "modern"],
+  tags: [],
   category: "minimal",
   colors: {
     primary: "#3d3d3d",

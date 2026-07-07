@@ -10,7 +10,7 @@ export const risograph: DesignStyle = {
     "The distinctive aesthetics of Risograph printing -- 2-3 color overprint effects, halftone dots, registration misalignment, and limited palette, presenting a unique print texture and handmade batch feel.",
   cover: "/styles/risograph.svg",
   styleType: "visual",
-  tags: ["expressive", "high-contrast"],
+  tags: ["high-contrast"],
   category: "expressive",
   colors: {
     primary: "#ff6b9d",

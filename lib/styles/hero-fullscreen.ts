@@ -10,7 +10,7 @@ export const heroFullscreen: DesignStyle = {
     "A hero section layout with fullscreen images or video backgrounds that captures attention through stunning visuals, ideal for brand showcases, product launches, and event promotions.",
   cover: "/styles/hero-fullscreen.svg",
   styleType: "layout",
-  tags: ["expressive", "modern"],
+  tags: [],
   compatibleWith: ["glassmorphism", "modern-gradient", "cyberpunk-neon", "minimalist-flat", "dark-mode"],
   category: "expressive",
   colors: {

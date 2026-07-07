@@ -10,7 +10,7 @@ export const pixelAnime: DesignStyle = {
     "Merging classic JRPG game UI with pixel anime aesthetics, featuring RPG dialogue boxes, status bars, pixel borders, and NES color palette for a nostalgic 8-bit game interface style.",
   cover: "/styles/pixel-anime.svg",
   styleType: "visual",
-  tags: ["retro", "expressive"],
+  tags: ["retro"],
   category: "retro",
   colors: {
     primary: "#4a90d9",

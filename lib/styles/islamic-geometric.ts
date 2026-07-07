@@ -10,7 +10,7 @@ export const islamicGeometric: DesignStyle = {
     "Islamic geometric pattern design style with precise tessellation patterns, arabesque motifs, and the classic pairing of gold and deep blue.",
   cover: "/styles/islamic-geometric.svg",
   styleType: "visual",
-  tags: ["expressive", "modern"],
+  tags: [],
   category: "expressive",
   colors: {
     primary: "#1a3a5c",

@@ -10,7 +10,7 @@ export const monochrome: DesignStyle = {
     "An ultimate monochrome design in pure black, white, and gray, building visual hierarchy through precise grayscale levels, font-weight contrast, and negative space without relying on any color. Ideal for photography, architecture, and premium brands.",
   cover: "/styles/monochrome.svg",
   styleType: "visual",
-  tags: ["minimal", "high-contrast"],
+  tags: ["high-contrast"],
   category: "minimal",
   colors: {
     primary: "#111111",

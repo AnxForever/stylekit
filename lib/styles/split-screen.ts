@@ -10,7 +10,7 @@ export const splitScreen: DesignStyle = {
     "Symmetric or asymmetric split-screen layout creating visual tension through contrast and balance. Commonly used for product showcases, brand stories, and comparison pages.",
   cover: "/styles/split-screen.svg",
   styleType: "layout",
-  tags: ["modern", "responsive"],
+  tags: ["responsive"],
   compatibleWith: ["neo-brutalist", "minimalist-flat", "editorial", "modern-gradient", "geometric-bold"],
   category: "modern",
   colors: {

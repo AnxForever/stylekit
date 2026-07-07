@@ -10,7 +10,7 @@ export const magazineGrid: DesignStyle = {
     "Multi-column grid layout inspired by print magazines, creating rich visual hierarchy through varied content block sizes. Ideal for news, blogs, and content aggregation.",
   cover: "/styles/magazine-grid.svg",
   styleType: "layout",
-  tags: ["modern", "responsive"],
+  tags: ["responsive"],
   compatibleWith: ["editorial", "minimalist-flat", "corporate-clean", "retro-vintage", "dark-mode"],
   category: "modern",
   colors: {

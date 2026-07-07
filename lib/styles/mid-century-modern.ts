@@ -10,7 +10,7 @@ export const midCenturyModern: DesignStyle = {
     "1950s Atomic Age design aesthetics with geometric patterns, organic curves, and saturated colors. Inspired by Eames chairs, atomic clocks, and starburst motifs.",
   cover: "/styles/mid-century-modern.svg",
   styleType: "visual",
-  tags: ["retro", "expressive"],
+  tags: ["retro"],
   category: "retro",
   colors: {
     primary: "#e8572a",

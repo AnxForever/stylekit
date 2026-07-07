@@ -10,7 +10,7 @@ export const skeuomorphism: DesignStyle = {
     "A digital design style that simulates real-world objects through textures, lighting, and materials to mimic physical items, bringing familiarity and intuitive experiences.",
   cover: "/styles/skeuomorphism.svg",
   styleType: "visual",
-  tags: ["retro", "expressive"],
+  tags: ["retro"],
   category: "retro",
   colors: {
     primary: "#8b7355",

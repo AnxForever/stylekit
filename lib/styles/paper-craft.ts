@@ -10,7 +10,7 @@ export const paperCraft: DesignStyle = {
     "Paper craft and paper-cut style with layered paper effects, soft shadows suggesting depth, and handmade textured edges. Ideal for children's brands, educational products, and creative studios.",
   cover: "/styles/paper-craft.svg",
   styleType: "visual",
-  tags: ["expressive", "modern"],
+  tags: [],
   category: "expressive",
   colors: {
     primary: "#e85d75",

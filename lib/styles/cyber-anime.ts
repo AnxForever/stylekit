@@ -10,7 +10,7 @@ export const cyberAnime: DesignStyle = {
     "Fusing cyberpunk sci-fi UI with anime aesthetics, featuring HUD overlays, holographic projection panels, mecha-frame borders, and multi-layer neon glow effects for a futuristic anime interface style.",
   cover: "/styles/cyber-anime.svg",
   styleType: "visual",
-  tags: ["expressive", "modern", "high-contrast"],
+  tags: ["high-contrast"],
   category: "expressive",
   colors: {
     primary: "#7c3aed",

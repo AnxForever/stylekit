@@ -31,13 +31,19 @@ const STYLE_CATEGORIES: ReadonlySet<StyleCategory> = new Set([
   "expressive",
 ]);
 const STYLE_TAGS: ReadonlySet<StyleTag> = new Set([
-  "modern",
   "retro",
-  "minimal",
-  "expressive",
   "high-contrast",
   "responsive",
   "brand-inspired",
+  "dark-theme",
+  "colorful",
+  "hand-drawn",
+  "glassmorphic",
+  "gradient",
+  "geometric",
+  "game-ui",
+  "anime-aesthetic",
+  "texture-heavy",
 ]);
 
 export type RuntimeStyleSource = "static" | "community";
@@ -106,7 +112,7 @@ function asStyleTags(value: unknown): StyleTag[] {
   const tags = asStringList(value).filter((tag): tag is StyleTag =>
     STYLE_TAGS.has(tag as StyleTag)
   );
-  return tags.length > 0 ? tags : ["modern"];
+  return tags.length > 0 ? tags : ["retro"];
 }
 
 function asStyleTokens(value: unknown): StyleTokens | null {

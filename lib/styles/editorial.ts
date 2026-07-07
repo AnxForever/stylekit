@@ -12,7 +12,7 @@ export const editorial: DesignStyle = {
     "Elegant magazine typography style with serif headings, sans-serif body text, refined whitespace and grid systems. Inspired by high-end fashion magazines and newspaper layouts. Warm cream background, soft black text, fine opacity hierarchy and animated underline interactions.",
   cover: "/styles/editorial.svg",
   styleType: "visual",
-  tags: ["minimal"],
+  tags: [],
   category: "minimal",
   colors: {
     primary: "#1C1C1C",

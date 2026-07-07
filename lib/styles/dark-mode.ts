@@ -10,7 +10,7 @@ export const darkMode: DesignStyle = {
     "Elegant dark interface design with low-contrast layering, subtle borders and highlights. Ideal for developer tools, professional applications, and night reading mode.",
   cover: "/styles/dark-mode.svg",
   styleType: "visual",
-  tags: ["modern", "minimal"],
+  tags: [],
   category: "modern",
   colors: {
     primary: "#3b82f6",

@@ -10,7 +10,7 @@ export const gothicLolita: DesignStyle = {
     "Victorian lace, black ribbons, crosses and roses in dark elegance -- a dark romantic aesthetic blending Gothic architectural ornamentation with Lolita's exquisite details.",
   cover: "/styles/gothic-lolita.svg",
   styleType: "visual",
-  tags: ["expressive", "retro"],
+  tags: ["retro"],
   category: "expressive",
   colors: {
     primary: "#4a1a4a",
