@@ -10,7 +10,13 @@ const latestEntry = [...thankYouEntries].sort(
   (a, b) => b.date.localeCompare(a.date)
 )[0];
 
-const thankYouModalStorageKey = `stylekit-thankyou-modal-dismissed:${latestEntry.id}`;
+const latestReceiptEntries = latestEntry
+  ? thankYouEntries.filter((entry) => entry.date === latestEntry.date && entry.receiptImage)
+  : [];
+
+const thankYouModalStorageKey = `stylekit-thankyou-modal-dismissed:${
+  latestReceiptEntries.map((entry) => entry.id).join(":") || latestEntry?.id || "empty"
+}`;
 
 export function ThankYouModal({ showOnHomepageOnly = true }: { showOnHomepageOnly?: boolean }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -28,7 +34,7 @@ export function ThankYouModal({ showOnHomepageOnly = true }: { showOnHomepageOnl
     const isPreview = new URLSearchParams(window.location.search).has("preview");
     const dismissed = isPreview ? null : localStorage.getItem(thankYouModalStorageKey);
 
-    if (!dismissed && thankYouEntries.length > 0 && thankYouModalConfig.enabled) {
+    if (!dismissed && latestReceiptEntries.length > 0 && thankYouModalConfig.enabled) {
       const frame = window.requestAnimationFrame(() => setIsOpen(true));
       return () => window.cancelAnimationFrame(frame);
     }
@@ -42,10 +48,6 @@ export function ThankYouModal({ showOnHomepageOnly = true }: { showOnHomepageOnl
   if (!isOpen) return null;
 
   const config = thankYouModalConfig;
-  const celebrationEntry =
-    latestEntry.celebrationImage
-      ? latestEntry
-      : thankYouEntries.find((entry) => entry.celebrationImage);
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
@@ -56,7 +58,7 @@ export function ThankYouModal({ showOnHomepageOnly = true }: { showOnHomepageOnl
       />
 
       {/* 弹窗内容 */}
-      <div className="relative max-h-[90vh] w-full max-w-4xl overflow-y-auto rounded-3xl border border-border bg-background p-6 shadow-2xl md:p-8">
+      <div className="relative max-h-[90vh] w-full max-w-5xl overflow-y-auto rounded-3xl border border-border bg-background p-6 shadow-2xl md:p-8">
         {/* 关闭按钮 */}
         <button
           onClick={handleClose}
@@ -78,38 +80,30 @@ export function ThankYouModal({ showOnHomepageOnly = true }: { showOnHomepageOnl
             </p>
           </div>
 
-          {/* 图片区：单张 receipt 自适应居中 */}
-          <div className="flex flex-col items-center gap-6 sm:flex-row sm:items-start sm:justify-center">
-            {celebrationEntry?.celebrationImage ? (
-              <div className="shrink-0 flex justify-center">
-                <Image
-                  src={celebrationEntry.celebrationImage}
-                  alt={celebrationEntry.celebrationAlt?.[locale] || "Thank you"}
-                  width={200}
-                  height={200}
-                  className="w-36 h-36 sm:w-44 sm:h-44 object-contain"
-                  unoptimized
-                />
-              </div>
-            ) : null}
-
-            {latestEntry.receiptImage ? (
+          {/* 图片区：展示最新一批 receipt */}
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {latestReceiptEntries.map((entry) => (
               <figure
-                key={latestEntry.id}
-                className="shrink-0 overflow-hidden rounded-2xl border border-border bg-zinc-50 p-3 dark:bg-zinc-900/60 max-w-sm"
+                key={entry.id}
+                className="overflow-hidden rounded-2xl border border-border bg-zinc-50 p-3 dark:bg-zinc-900/60"
               >
-                <div className="relative w-56 sm:w-64 aspect-[3/4] overflow-hidden rounded-xl bg-white">
+                <div className="relative h-56 w-full overflow-hidden rounded-xl bg-white sm:h-64">
                   <Image
-                    src={latestEntry.receiptImage}
-                    alt={latestEntry.receiptAlt?.[locale] || "Receipt"}
+                    src={entry.receiptImage!}
+                    alt={entry.receiptAlt?.[locale] || "Receipt"}
                     fill
                     className="object-contain"
-                    sizes="(max-width: 640px) 224px, 256px"
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                     unoptimized
                   />
                 </div>
+                {entry.amount ? (
+                  <figcaption className="mt-3 text-center text-sm font-medium text-foreground">
+                    {entry.amount[locale]}
+                  </figcaption>
+                ) : null}
               </figure>
-            ) : null}
+            ))}
           </div>
         </div>
       </div>

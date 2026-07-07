@@ -127,7 +127,7 @@ export function SupportContent() {
 
                 {method.kind === "qr" && method.imageSrc && method.imageAlt ? (
                   <div className="mt-6 overflow-hidden rounded-[24px] border border-border bg-zinc-50 p-3 dark:bg-zinc-900/60">
-                    <div className="relative aspect-[4/5] overflow-hidden rounded-[18px] bg-white">
+                    <div className="relative aspect-square overflow-hidden rounded-[18px] bg-white">
                       <Image
                         src={method.imageSrc}
                         alt={method.imageAlt[locale]}

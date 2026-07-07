@@ -99,7 +99,7 @@ export const supportMethods: SupportMethod[] = [
     imageSrc: "/alipay-qr.jpg",
     imageAlt: {
       en: "Alipay QR code for supporting StyleKit",
-      zh: "用于支持 StyleKit 的支付宝收款二维码",
+      zh: "用于支持 StyleKit 的支付宝扫码",
     },
     note: {
       en: "Recommended for domestic users who already use Alipay.",
@@ -110,12 +110,12 @@ export const supportMethods: SupportMethod[] = [
     id: "wechat-qr",
     kind: "qr",
     title: {
-      en: "WeChat Pay",
-      zh: "微信支付",
+      en: "WeChat Tipping",
+      zh: "微信赞赏码",
     },
     description: {
-      en: "Open WeChat and scan this code to help cover hosting and infrastructure costs.",
-      zh: "打开微信扫码即可支持项目维护，也能补贴托管和基础设施成本。",
+      en: "Scan with WeChat to tip whatever feels right. Leave a note — I read every single one.",
+      zh: "觉得有用就赞赏一下，金额随意～备注里写句话，每条我都会认真看。",
     },
     badge: {
       en: "QR",
@@ -123,12 +123,12 @@ export const supportMethods: SupportMethod[] = [
     },
     imageSrc: "/wechat-qr.png",
     imageAlt: {
-      en: "WeChat Pay QR code for supporting StyleKit",
-      zh: "用于支持 StyleKit 的微信支付二维码",
+      en: "WeChat appreciation QR code for supporting StyleKit",
+      zh: "用于支持 StyleKit 的微信赞赏码",
     },
     note: {
-      en: "Best for users who prefer WeChat Pay over Alipay.",
-      zh: "适合更习惯使用微信支付的用户，感谢支持。",
+      en: "Supports WeChat in-app tipping with a message — every note gets read.",
+      zh: "支持微信内赞赏留言，每条备注都会认真看。",
     },
   },
   {
@@ -240,6 +240,57 @@ export const supportLinks: SupportLink[] = [
 ];
 
 export const thankYouEntries: ThankYouEntry[] = [
+  {
+    id: "donation-2026-07-04-003-50",
+    date: "2026-07-04",
+    donorLabel: {
+      en: "Anonymous Supporter",
+      zh: "匿名支持者",
+    },
+    amount: {
+      en: "¥3.50",
+      zh: "¥3.50",
+    },
+    receiptImage: "/support/acknowledgments/receipt-2026-07-04-003-50.png",
+    receiptAlt: {
+      en: "Payment receipt for ¥3.50 from supporter",
+      zh: "支持者 3.50 元的收款记录",
+    },
+  },
+  {
+    id: "donation-2026-07-04-050-00",
+    date: "2026-07-04",
+    donorLabel: {
+      en: "Anonymous Supporter",
+      zh: "匿名支持者",
+    },
+    amount: {
+      en: "¥50.00",
+      zh: "¥50.00",
+    },
+    receiptImage: "/support/acknowledgments/receipt-2026-07-04-050-00.png",
+    receiptAlt: {
+      en: "Payment receipt for ¥50.00 from supporter",
+      zh: "支持者 50.00 元的收款记录",
+    },
+  },
+  {
+    id: "donation-2026-07-04-009-90",
+    date: "2026-07-04",
+    donorLabel: {
+      en: "Anonymous Supporter",
+      zh: "匿名支持者",
+    },
+    amount: {
+      en: "¥9.90",
+      zh: "¥9.90",
+    },
+    receiptImage: "/support/acknowledgments/receipt-2026-07-04-009-90.png",
+    receiptAlt: {
+      en: "Payment receipt for ¥9.90 from supporter",
+      zh: "支持者 9.90 元的收款记录",
+    },
+  },
   {
     id: "donation-2026-06-16",
     date: "2026-06-16",
