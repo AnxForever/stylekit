@@ -143,6 +143,9 @@ import { developerTerminalRecipes } from "./developer-terminal";
 import { horizontalGalleryRecipes } from "./horizontal-gallery";
 import { latexPaperRecipes } from "./latex-paper";
 import { distillStyleRecipes } from "./distill-style";
+import { studioBoldRecipes } from "./studio-bold";
+import { galleryDarkRecipes } from "./gallery-dark";
+import { warmOrganicRecipes } from "./warm-organic";
 
 // Recipe registry
 const recipeRegistry: Record<string, StyleRecipes> = {
@@ -289,6 +292,9 @@ const recipeRegistry: Record<string, StyleRecipes> = {
   "horizontal-gallery": horizontalGalleryRecipes,
   "latex-paper": latexPaperRecipes,
   "distill-style": distillStyleRecipes,
+  "studio-bold": studioBoldRecipes,
+  "gallery-dark": galleryDarkRecipes,
+  "warm-organic": warmOrganicRecipes,
 };
 
 /**

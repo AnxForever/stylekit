@@ -157,6 +157,9 @@ import { developerTerminal } from "./developer-terminal";
 import { horizontalGallery } from "./horizontal-gallery";
 import { latexPaper } from "./latex-paper";
 import { distillStyle } from "./distill-style";
+import { studioBold } from "./studio-bold";
+import { galleryDark } from "./gallery-dark";
+import { warmOrganic } from "./warm-organic";
 import { normalizeStyleRules } from "./rule-normalizer";
 
 // 风格列表
@@ -319,6 +322,9 @@ const rawStyles: DesignStyle[] = [
   horizontalGallery,
   latexPaper,
   distillStyle,
+  studioBold,
+  galleryDark,
+  warmOrganic,
 ];
 
 export const styles: DesignStyle[] = rawStyles.map((style) => normalizeStyleRules(style));

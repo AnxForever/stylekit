@@ -148,6 +148,9 @@ import { developerTerminalTokens } from "./developer-terminal-tokens";
 import { horizontalGalleryTokens } from "./horizontal-gallery-tokens";
 import { latexPaperTokens } from "./latex-paper-tokens";
 import { distillStyleTokens } from "./distill-style-tokens";
+import { studioBoldTokens } from "./studio-bold-tokens";
+import { galleryDarkTokens } from "./gallery-dark-tokens";
+import { warmOrganicTokens } from "./warm-organic-tokens";
 
 // Registry of all style tokens
 export const styleTokensRegistry: Record<string, StyleTokens> = {
@@ -297,4 +300,7 @@ export const styleTokensRegistry: Record<string, StyleTokens> = {
   "horizontal-gallery": horizontalGalleryTokens,
   "latex-paper": latexPaperTokens,
   "distill-style": distillStyleTokens,
+  "studio-bold": studioBoldTokens,
+  "gallery-dark": galleryDarkTokens,
+  "warm-organic": warmOrganicTokens,
 };
