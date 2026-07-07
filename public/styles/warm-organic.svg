@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" fill="none" viewBox="0 0 1200 630">
+  <path fill="#F5F0EB" d="M0 0h1200v630H0z"/>
+  <!-- organic background shapes -->
+  <path fill="#E8DED1" d="M0 480c200-60 500 40 800 20s350-30 400-20v150H0Z" opacity="0.6"/>
+  <path fill="#D4BFA5" d="M0 520c180-40 420 30 720 10s320-20 480 10v110H0Z" opacity="0.4"/>
+  <!-- decorative leaf/botanical branch -->
+  <path stroke="#7A8B5E" stroke-width="2.5" fill="none" d="M920 80c-4 28 12 52 36 62 16 6 34 4 44-8" opacity="0.7"/>
+  <path stroke="#7A8B5E" stroke-width="2" fill="none" d="M956 142c-6 8-2 18 8 22" opacity="0.5"/>
+  <circle cx="968" cy="150" r="3" fill="#7A8B5E" opacity="0.6"/>
+  <!-- organic curved divider -->
+  <path stroke="#C86A4A" stroke-width="2" fill="none" d="M80 160c160-20 340-20 340 0s180 20 340 0 300-20 340 0" opacity="0.5"/>
+  <!-- headline -->
+  <text x="80" y="125" fill="#2D2A24" font-family="Georgia,'Times New Roman',serif" font-size="56" font-weight="600">made by hand</text>
+  <text x="80" y="175" fill="#C86A4A" font-family="Georgia,'Times New Roman',serif" font-size="22" font-style="italic">craft · material · space</text>
+  <!-- project cards with organic feel -->
+  <rect x="80" y="240" width="320" height="180" fill="#FFFFFF" rx="12"/>
+  <rect x="92" y="252" width="296" height="120" fill="#F0E8DE" rx="8"/>
+  <rect x="92" y="384" width="140" height="24" fill="#C86A4A" rx="12"/>
+  <text x="162" y="400" fill="#FFFFFF" font-family="'Inter','Segoe UI',sans-serif" font-size="9" letter-spacing=".05em" text-anchor="middle" font-weight="600">ARCHITECTURE</text>
+  <text x="260" y="398" fill="#2D2A24" font-family="'Inter','Segoe UI',sans-serif" font-size="11" font-weight="300">Kōchi House</text>
+
+  <rect x="440" y="240" width="320" height="180" fill="#FFFFFF" rx="12"/>
+  <rect x="452" y="252" width="296" height="120" fill="#F0E8DE" rx="8"/>
+  <rect x="452" y="384" width="120" height="24" fill="#7A8B5E" rx="12"/>
+  <text x="512" y="400" fill="#FFFFFF" font-family="'Inter','Segoe UI',sans-serif" font-size="9" letter-spacing=".05em" text-anchor="middle" font-weight="600">PRODUCT</text>
+  <text x="600" y="398" fill="#2D2A24" font-family="'Inter','Segoe UI',sans-serif" font-size="11" font-weight="300">Terracotta Vessels</text>
+
+  <rect x="800" y="240" width="320" height="180" fill="#FFFFFF" rx="12"/>
+  <rect x="812" y="252" width="296" height="120" fill="#F0E8DE" rx="8"/>
+  <rect x="812" y="384" width="130" height="24" fill="#C86A4A" rx="12"/>
+  <text x="877" y="400" fill="#FFFFFF" font-family="'Inter','Segoe UI',sans-serif" font-size="9" letter-spacing=".05em" text-anchor="middle" font-weight="600">INTERIOR</text>
+  <text x="970" y="398" fill="#2D2A24" font-family="'Inter','Segoe UI',sans-serif" font-size="11" font-weight="300">Clay Studio</text>
+
+  <!-- footer -->
+  <text x="600" y="585" fill="#C86A4A" font-family="Georgia,'Times New Roman',serif" font-size="14" text-anchor="middle">Warm Organic · 暖感有机风</text>
+  <text x="600" y="610" fill="#8B7D6B" font-family="'Inter','Segoe UI',sans-serif" font-size="9" letter-spacing=".1em" text-anchor="middle">PORTFOLIO STYLE</text>
+</svg>
