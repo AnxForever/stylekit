@@ -3642,6 +3642,267 @@ export const styleComponents: Record<
       </div>
     ),
   },
+  "oversized-typography": {
+    button: () => (
+      <button className="px-8 py-4 bg-[#0A0A0A] text-[#FAFAF8] font-mono text-xs uppercase tracking-widest rounded-none border border-[#0A0A0A] hover:bg-[#FF4D00] hover:border-[#FF4D00] transition-colors duration-200">
+        Start a Project
+      </button>
+    ),
+    card: () => (
+      <div className="group border-t border-b border-[#0A0A0A]/15 py-6 bg-[#FAFAF8] cursor-pointer">
+        <div className="flex items-baseline gap-4">
+          <span className="font-mono text-sm text-[#71717A]">01</span>
+          <div className="flex-1">
+            <h3 className="text-3xl font-black uppercase tracking-tighter leading-[0.9] text-[#0A0A0A] group-hover:text-[#FF4D00] transition-colors duration-200">
+              Brand Identity
+            </h3>
+            <p className="font-mono text-xs uppercase tracking-widest text-[#71717A] mt-2">Art Direction &mdash; 2026</p>
+          </div>
+          <span className="text-2xl text-[#0A0A0A] group-hover:translate-x-2 group-hover:text-[#FF4D00] transition-all duration-200">&rarr;</span>
+        </div>
+      </div>
+    ),
+    input: () => (
+      <input
+        type="text"
+        placeholder="YOUR EMAIL"
+        className="w-full px-0 py-4 bg-transparent border-0 border-b border-[#0A0A0A]/30 rounded-none font-mono text-sm uppercase tracking-widest text-[#0A0A0A] placeholder:text-[#71717A] focus:outline-none focus:border-b-2 focus:border-[#FF4D00] transition-colors"
+      />
+    ),
+    coverPreview: () => (
+      <div className="w-full h-full bg-[#FAFAF8] flex items-center justify-center p-4">
+        <div className="w-full max-w-[200px]">
+          <p className="font-mono text-[8px] uppercase tracking-widest text-[#FF4D00] mb-1.5">Portfolio 2026</p>
+          <div className="font-black uppercase tracking-tighter leading-[0.85] text-[#0A0A0A]">
+            <span className="block text-3xl">Ava</span>
+            <span className="block text-3xl" style={{ WebkitTextStroke: "1.5px #0A0A0A", color: "transparent" }}>
+              Carter
+            </span>
+          </div>
+          <div className="h-px bg-[#0A0A0A]/15 my-2.5" />
+          <div className="flex items-center justify-between">
+            <div className="h-6 px-3 bg-[#0A0A0A] flex items-center">
+              <div className="h-1 w-10 bg-[#FAFAF8]/80" />
+            </div>
+            <span className="font-mono text-[8px] uppercase tracking-widest text-[#71717A]">01 / 03</span>
+            <div className="w-2.5 h-2.5 bg-[#FF4D00]" />
+          </div>
+        </div>
+      </div>
+    ),
+  },
+  "developer-terminal": {
+    button: () => (
+      <button className="px-4 py-1.5 font-mono text-sm bg-[#4AF626] text-[#0A0E12] font-bold rounded-sm hover:bg-[#3FD41F] transition-colors duration-150">
+        ./deploy --prod
+      </button>
+    ),
+    card: () => (
+      <div className="p-4 font-mono text-xs bg-[#0D141B] border border-[#1F2937] rounded-sm text-left space-y-1">
+        <p className="text-[#4AF626]"><span className="text-[#8BE9FD]">visitor@stylekit</span><span className="text-[#6272A4]">:~$</span> whoami</p>
+        <p className="text-[#6272A4]"># identity loaded from ~/.profile</p>
+        <p className="text-[#4AF626]">stack: <span className="text-[#8BE9FD]">[typescript, react, node]</span></p>
+      </div>
+    ),
+    input: () => (
+      <div className="flex items-center gap-2 font-mono text-xs bg-[#0A0E12] border border-[#1F2937] rounded-sm px-3 py-2 w-64">
+        <span className="shrink-0"><span className="text-[#8BE9FD]">visitor</span><span className="text-[#6272A4]">:~$</span></span>
+        <input type="text" placeholder="type a command..." className="flex-1 min-w-0 bg-transparent text-[#4AF626] placeholder:text-[#6272A4] caret-[#4AF626] focus:outline-none" />
+        <span className="w-1.5 h-3 bg-[#4AF626] animate-pulse" />
+      </div>
+    ),
+    coverPreview: () => (
+      <div className="w-full h-full bg-[#0A0E12] flex items-center justify-center p-4 font-mono">
+        <div className="w-full max-w-[200px] bg-[#0D141B] border border-[#1F2937] rounded-sm overflow-hidden">
+          <div className="flex items-center gap-1 px-2 py-1.5 border-b border-[#1F2937]">
+            <span className="w-1.5 h-1.5 rounded-sm bg-[#FF79C6]" />
+            <span className="w-1.5 h-1.5 rounded-sm bg-[#FFB86C]" />
+            <span className="w-1.5 h-1.5 rounded-sm bg-[#4AF626]" />
+            <span className="ml-1 text-[7px] text-[#6272A4]">visitor@stylekit: ~</span>
+          </div>
+          <div className="px-2 py-2 space-y-1 text-[8px] leading-tight">
+            <p className="text-[#4AF626]"><span className="text-[#8BE9FD]">visitor</span><span className="text-[#6272A4]">:~$</span> ls ~/projects</p>
+            <p className="text-[#8BE9FD]">stylekit-registry/  cli-toolbox/</p>
+            <p className="text-[#4AF626]">build [████████░░] <span className="text-[#FFB86C]">67%</span></p>
+            <p className="text-[#4AF626]"><span className="text-[#8BE9FD]">visitor</span><span className="text-[#6272A4]">:~$</span> <span className="inline-block w-1 h-2 bg-[#4AF626] animate-pulse align-middle" /></p>
+          </div>
+          <div className="flex items-center justify-between px-2 py-1 border-t border-[#1F2937] text-[7px]">
+            <span className="bg-[#4AF626] text-[#0A0E12] font-bold px-1 rounded-sm">[stylekit]</span>
+            <span className="text-[#8BE9FD]">09:41</span>
+          </div>
+        </div>
+      </div>
+    ),
+  },
+  "horizontal-gallery": {
+    button: () => (
+      <button className="px-8 py-3 bg-[#1A1A1A] text-[#FCFCFA] rounded-none text-xs font-light uppercase tracking-[0.2em] hover:bg-[#2E2E2C] transition-colors duration-300">
+        View Works
+      </button>
+    ),
+    card: () => (
+      <figure className="max-w-[240px]">
+        <div className="aspect-[4/5] bg-gradient-to-br from-[#C9C4BA] to-[#8F8A7E]" />
+        <figcaption className="mt-4 pt-3 border-t border-[#E8E6E1]">
+          <p className="text-[10px] uppercase tracking-[0.25em] text-[#A85A3A] mb-1.5">No. 01</p>
+          <p className="font-serif font-light text-base text-[#1A1A1A]">Still Field</p>
+          <p className="text-xs uppercase tracking-[0.2em] text-[#8A8A85] mt-1">Oil on Linen, 2025</p>
+        </figcaption>
+      </figure>
+    ),
+    input: () => (
+      <input
+        type="text"
+        placeholder="YOUR NAME"
+        className="w-full px-0 py-3 bg-transparent border-0 border-b border-[#E8E6E1] rounded-none text-sm text-[#1A1A1A] placeholder:text-xs placeholder:uppercase placeholder:tracking-[0.2em] placeholder:text-[#8A8A85] focus:outline-none focus:border-[#1A1A1A] transition-colors duration-300"
+      />
+    ),
+    coverPreview: () => (
+      <div className="w-full h-full bg-[#FCFCFA] flex items-center justify-center p-4 overflow-hidden">
+        <div className="w-full max-w-[220px]">
+          <div className="flex items-baseline justify-between mb-2">
+            <div className="h-2 w-16 bg-[#1A1A1A]" />
+            <div className="h-1 w-8 bg-[#A85A3A]" />
+          </div>
+          <div className="flex gap-3">
+            <div className="shrink-0 w-16">
+              <div className="h-20 bg-gradient-to-br from-[#C9C4BA] to-[#8F8A7E]" />
+              <div className="h-px bg-[#E8E6E1] mt-1.5" />
+              <div className="h-1 w-6 bg-[#A85A3A] mt-1" />
+              <div className="h-1 w-10 bg-[#8A8A85]/60 mt-1" />
+            </div>
+            <div className="shrink-0 w-24">
+              <div className="h-16 bg-gradient-to-br from-[#8E969E] to-[#5A6068]" />
+              <div className="h-px bg-[#E8E6E1] mt-1.5" />
+              <div className="h-1 w-6 bg-[#A85A3A] mt-1" />
+              <div className="h-1 w-14 bg-[#8A8A85]/60 mt-1" />
+            </div>
+            <div className="shrink-0 w-16">
+              <div className="h-20 bg-gradient-to-br from-[#B86E4E] to-[#7E4630]" />
+              <div className="h-px bg-[#E8E6E1] mt-1.5" />
+              <div className="h-1 w-6 bg-[#A85A3A] mt-1" />
+            </div>
+          </div>
+          <div className="relative h-px bg-[#E8E6E1] mt-3">
+            <div className="absolute left-0 top-0 h-px w-1/3 bg-[#1A1A1A]" />
+          </div>
+        </div>
+      </div>
+    ),
+  },
+  "latex-paper": {
+    button: () => (
+      <button className="px-6 py-2.5 bg-[#111111] text-[#FFFFFF] font-serif text-sm tracking-tight rounded-none border border-[#111111] hover:bg-[#FFFFFF] hover:text-[#111111] transition-colors duration-200">
+        Download PDF
+      </button>
+    ),
+    card: () => (
+      <div className="bg-[#F5F5F0] border-l-2 border-[#111111] rounded-none px-6 py-5 font-serif">
+        <p className="text-[15px] leading-relaxed text-[#111111]">
+          <span className="font-bold">Theorem 1.</span>{" "}
+          <span className="italic">Order, once visible, reads as credibility.</span>
+        </p>
+        <p className="text-sm text-[#6B6B66] mt-2">
+          See Section <span className="text-[#0B5394]">2.1</span> for the proof.
+        </p>
+      </div>
+    ),
+    input: () => (
+      <input
+        type="text"
+        placeholder="name@university.edu"
+        className="w-full px-3 py-2 bg-[#FFFFFF] font-serif text-sm text-[#111111] placeholder:text-[#6B6B66] placeholder:italic border border-[#D4D4D0] rounded-none focus:outline-none focus:border-[#111111] transition-colors duration-200"
+      />
+    ),
+    coverPreview: () => (
+      <div className="w-full h-full bg-[#F5F5F0] flex items-center justify-center p-4">
+        <div className="w-full max-w-[200px] bg-white border border-[#D4D4D0] px-4 py-3 font-serif">
+          <div className="h-1.5 w-24 bg-[#111111] mx-auto mb-1.5" />
+          <div className="h-1 w-16 bg-[#6B6B66]/60 mx-auto mb-2" />
+          <div className="space-y-1 px-3 mb-2">
+            <div className="h-0.5 w-full bg-[#D4D4D0]" />
+            <div className="h-0.5 w-full bg-[#D4D4D0]" />
+            <div className="h-0.5 w-2/3 bg-[#D4D4D0]" />
+          </div>
+          <p className="text-center italic text-[8px] text-[#111111] leading-none mb-2">
+            Better = (A+O)/(A+O+M+I)&nbsp;&nbsp;(1)
+          </p>
+          <div className="border-t-2 border-b-2 border-[#111111] py-1 space-y-1">
+            <div className="flex justify-between px-1">
+              <div className="h-0.5 w-8 bg-[#6B6B66]" />
+              <div className="h-0.5 w-4 bg-[#6B6B66]" />
+            </div>
+            <div className="border-t border-[#111111]" />
+            <div className="flex justify-between px-1">
+              <div className="h-0.5 w-10 bg-[#D4D4D0]" />
+              <div className="h-0.5 w-4 bg-[#D4D4D0]" />
+            </div>
+            <div className="flex justify-between px-1">
+              <div className="h-0.5 w-7 bg-[#D4D4D0]" />
+              <div className="h-0.5 w-5 bg-[#D4D4D0]" />
+            </div>
+          </div>
+          <p className="text-center text-[7px] text-[#0B5394] mt-1.5">[1] Osgood et al., 1957</p>
+        </div>
+      </div>
+    ),
+  },
+  "distill-style": {
+    button: () => (
+      <button className="px-5 py-2 bg-[#FFFFFF] font-serif text-sm text-[#2A7AE2] border border-[#E5E7EB] rounded-none hover:bg-[#F3F4F6] hover:underline underline-offset-4 transition-colors duration-200">
+        Read the paper
+      </button>
+    ),
+    card: () => (
+      <div className="bg-[#FFFFFF] border-t border-b border-[#E5E7EB] px-6 py-5 font-serif">
+        <p className="text-[15px] leading-[1.75] text-[#1F2933]">
+          Attractive quality and must-be quality are not opposite ends of one scale
+          <sup className="text-[#2A7AE2] text-xs">[1]</sup>.
+        </p>
+        <p className="text-xs text-[#6B7280] mt-3">
+          [1] Kano, N. (1984). <span className="italic">Journal of the Japanese Society for Quality Control.</span>
+        </p>
+      </div>
+    ),
+    input: () => (
+      <input
+        type="text"
+        placeholder="Search citations…"
+        className="w-full px-3 py-2 bg-[#FFFFFF] font-serif text-sm text-[#1F2933] placeholder:text-[#6B7280] placeholder:italic border-0 border-b border-[#E5E7EB] rounded-none focus:outline-none focus:border-[#2A7AE2] transition-colors duration-200"
+      />
+    ),
+    coverPreview: () => (
+      <div className="w-full h-full bg-[#FFFFFF] flex items-center justify-center p-4">
+        <div className="w-full max-w-[200px] font-serif">
+          <div className="h-1.5 w-28 bg-[#1F2933] mb-1.5" />
+          <div className="flex gap-2 items-center mb-2 pb-1.5 border-b border-[#E5E7EB]">
+            <div className="h-0.5 w-10 bg-[#6B7280]/60" />
+            <div className="h-0.5 w-8 bg-[#6B7280]/60" />
+            <div className="h-0.5 w-6 bg-[#2A7AE2]/60" />
+          </div>
+          <div className="flex gap-2">
+            <div className="flex-1 space-y-1">
+              <div className="h-0.5 w-full bg-[#D1D5DB]" />
+              <div className="h-0.5 w-full bg-[#D1D5DB]" />
+              <div className="h-0.5 w-3/4 bg-[#D1D5DB]" />
+            </div>
+            <div className="w-8 space-y-0.5 pt-0.5">
+              <div className="h-0.5 w-full bg-[#F3F4F6]" />
+              <div className="h-0.5 w-2/3 bg-[#F3F4F6]" />
+            </div>
+          </div>
+          <div className="mt-2 -mx-3 h-10 bg-[#F3F4F6] flex items-end gap-1 px-3 pb-1.5">
+            <div className="w-2 h-3 bg-[#2A7AE2]/50" />
+            <div className="w-2 h-5 bg-[#2A7AE2]/70" />
+            <div className="w-2 h-6 bg-[#E4572E]" />
+            <div className="w-2 h-4 bg-[#2A7AE2]/60" />
+            <div className="w-2 h-2 bg-[#2A7AE2]/40" />
+          </div>
+          <p className="text-[7px] text-[#6B7280] mt-1">Figure 1: Measured response by condition.</p>
+        </div>
+      </div>
+    ),
+  },
 };
 export function renderStyleComponent(styleSlug: string, component: ComponentType): React.ReactNode {
   const styleRenderer = styleComponents[styleSlug];

@@ -138,6 +138,11 @@ import { shopifyCleanRecipes } from "./shopify-clean";
 import { luxuryRetailRecipes } from "./luxury-retail";
 import { freshMarketRecipes } from "./fresh-market";
 import { dataDenseRecipes } from "./data-dense";
+import { oversizedTypographyRecipes } from "./oversized-typography";
+import { developerTerminalRecipes } from "./developer-terminal";
+import { horizontalGalleryRecipes } from "./horizontal-gallery";
+import { latexPaperRecipes } from "./latex-paper";
+import { distillStyleRecipes } from "./distill-style";
 
 // Recipe registry
 const recipeRegistry: Record<string, StyleRecipes> = {
@@ -279,6 +284,11 @@ const recipeRegistry: Record<string, StyleRecipes> = {
   "luxury-retail": luxuryRetailRecipes,
   "fresh-market": freshMarketRecipes,
   "data-dense": dataDenseRecipes,
+  "oversized-typography": oversizedTypographyRecipes,
+  "developer-terminal": developerTerminalRecipes,
+  "horizontal-gallery": horizontalGalleryRecipes,
+  "latex-paper": latexPaperRecipes,
+  "distill-style": distillStyleRecipes,
 };
 
 /**

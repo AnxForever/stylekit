@@ -66,6 +66,11 @@ const SCENARIO_OVERRIDES: Partial<Record<string, StyleScenario[]>> = {
   "timeline-vertical": ["portfolio", "docs", "dashboard"],
   "parallax-sections": ["marketing", "portfolio", "creative"],
   "korean-minimal": ["portfolio", "blog", "docs"],
+  "oversized-typography": ["portfolio", "marketing", "creative"],
+  "developer-terminal": ["portfolio", "blog", "docs"],
+  "horizontal-gallery": ["portfolio", "creative", "marketing"],
+  "latex-paper": ["portfolio", "docs", "blog"],
+  "distill-style": ["portfolio", "blog", "docs"],
   "generative-art": ["creative", "portfolio"],
   "glitch-art": ["creative", "portfolio"],
 

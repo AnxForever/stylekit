@@ -143,6 +143,11 @@ import { dataDenseTokens } from "./data-dense-tokens";
 import { freshMarketTokens } from "./fresh-market-tokens";
 import { luxuryRetailTokens } from "./luxury-retail-tokens";
 import { shopifyCleanTokens } from "./shopify-clean-tokens";
+import { oversizedTypographyTokens } from "./oversized-typography-tokens";
+import { developerTerminalTokens } from "./developer-terminal-tokens";
+import { horizontalGalleryTokens } from "./horizontal-gallery-tokens";
+import { latexPaperTokens } from "./latex-paper-tokens";
+import { distillStyleTokens } from "./distill-style-tokens";
 
 // Registry of all style tokens
 export const styleTokensRegistry: Record<string, StyleTokens> = {
@@ -287,4 +292,9 @@ export const styleTokensRegistry: Record<string, StyleTokens> = {
   "fresh-market": freshMarketTokens,
   "luxury-retail": luxuryRetailTokens,
   "shopify-clean": shopifyCleanTokens,
+  "oversized-typography": oversizedTypographyTokens,
+  "developer-terminal": developerTerminalTokens,
+  "horizontal-gallery": horizontalGalleryTokens,
+  "latex-paper": latexPaperTokens,
+  "distill-style": distillStyleTokens,
 };
