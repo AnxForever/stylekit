@@ -5,8 +5,8 @@ import { cn } from "@/lib/utils";
 const cardVariants = cva("bg-background text-foreground", {
   variants: {
     variant: {
-      default: "border border-border",
-      elevated: "shadow-lg",
+      default: "shadow-surface",
+      elevated: "shadow-surface-lg",
       ghost: "",
     },
     padding: {

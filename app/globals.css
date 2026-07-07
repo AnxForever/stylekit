@@ -392,6 +392,24 @@ a, button, [role="button"], input, select, textarea {
 /* range sliders need a directional cursor, not the text I-beam */
 input[type="range"] { cursor: pointer; }
 
+/* Surface-level shadow utilities — hairline + contact + ambient
+   Replace border+border with this stack for Card, Popover, Modal,
+   Dropdown and similar floating-surface components. The zero-blur
+   edge ring inherits foreground alpha so it adapts to both light
+   and dark themes without a hard-coded gray border. */
+@utility shadow-surface {
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--foreground) 8%, transparent),
+    0 1px 2px color-mix(in srgb, var(--foreground) 6%, transparent),
+    0 4px 12px color-mix(in srgb, var(--foreground) 8%, transparent);
+}
+@utility shadow-surface-lg {
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--foreground) 8%, transparent),
+    0 2px 4px color-mix(in srgb, var(--foreground) 6%, transparent),
+    0 8px 24px color-mix(in srgb, var(--foreground) 10%, transparent);
+}
+
 .sk-spotlight-surface > .sk-spotlight-layer {
   background:
     radial-gradient(
