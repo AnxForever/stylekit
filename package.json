@@ -27,7 +27,8 @@
     "e2e": "npx playwright test --config tests/playwright.config.ts",
     "e2e:ui": "npx playwright test --config tests/playwright.config.ts --ui",
     "images:optimize": "node tools/scripts/optimize-images.mjs",
-    "readme:star-history": "node tools/scripts/generate-star-history.mjs"
+    "readme:star-history": "node tools/scripts/generate-star-history.mjs",
+    "images:generate": "node tools/scripts/generate-style-images.mjs"
   },
   "dependencies": {
     "@codemirror/autocomplete": "^6.20.0",
