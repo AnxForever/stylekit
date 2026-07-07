@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { UnsplashAttribution } from "@/components/styles/unsplash-attribution";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -230,6 +231,9 @@ export default function GalleryDarkShowcase() {
             </div>
             <div className="h-px w-12 mx-auto bg-[#C4956A]" />
             <p className="text-[10px] text-[#444444] tracking-[0.2em]">DARK GALLERY · PORTFOLIO STYLE</p>
+            <div className="mt-6">
+              <UnsplashAttribution />
+            </div>
           </div>
         </div>
       </section>
