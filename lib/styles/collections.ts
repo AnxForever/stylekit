@@ -146,3 +146,14 @@ export function getCollectionStyles(collection: StyleCollection): StyleMeta[] {
 export function getCollectionStyleCount(collection: StyleCollection): number {
   return getCollectionStyles(collection).length;
 }
+
+/**
+ * Collections a style belongs to, by its tags. Powers the reverse link on
+ * style detail pages — closing the bidirectional topic-cluster loop
+ * (collection -> styles AND style -> collections).
+ */
+export function getCollectionsForTags(tags: StyleTag[] | undefined): StyleCollection[] {
+  if (!tags || tags.length === 0) return [];
+  const tagSet = new Set(tags);
+  return STYLE_COLLECTIONS.filter((collection) => tagSet.has(collection.tag));
+}
