@@ -13,6 +13,7 @@ import { StyleCoverPreview } from "@/components/style-preview/style-cover-previe
 import { StylePackExport } from "@/components/style-preview/style-pack-export";
 import { StyleUsePanel } from "@/components/style-preview/style-use-panel";
 import { getCollectionsForTags } from "@/lib/styles/collections";
+import { getStyleMetaBySlug } from "@/lib/styles/meta";
 import { ScoreBadge } from "@/components/accessibility/score-badge";
 import { ScoreDetail } from "@/components/accessibility/score-detail";
 import { IdeExportButtons } from "@/components/export/ide-export-buttons";
@@ -488,7 +489,9 @@ export function StyleDetailContent({
         <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-12 py-12 md:py-16">
           <StyleUsePanel slug={style.slug} name={style.name} nameEn={style.nameEn} />
           {(() => {
-            const relatedCollections = getCollectionsForTags(style.tags);
+            const relatedCollections = getCollectionsForTags(
+              getStyleMetaBySlug(style.slug)?.tags
+            );
             if (relatedCollections.length === 0) return null;
             return (
               <div className="mt-8 flex flex-wrap items-center gap-3">
