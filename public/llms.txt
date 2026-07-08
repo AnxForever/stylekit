@@ -26,6 +26,14 @@ StyleKit provides structured design systems that AI can use to generate consiste
 2. Copy a prompt from /ui-prompts or a focused prompt page
 3. Combine the template structure with the selected style rules
 
+### Path C: Browse by Theme or Color
+
+1. Browse themed collections at /collections (e.g. /collections/dark-mode,
+   /collections/retro-vintage, /collections/anime-manga, /collections/game-ui,
+   /collections/colorful-bold, /collections/hand-drawn) to find styles by intent
+2. Explore every style's palette and copy hex codes at /colors
+3. Open the chosen style page for tokens, component recipes, and AI rules
+
 ## Available Styles
 
 ### Visual Styles
