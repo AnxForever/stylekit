@@ -275,9 +275,9 @@ git commit -m "feat: add your feature"
 ## Star History
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="./public/readme/star-history-dark.svg" />
-  <source media="(prefers-color-scheme: light)" srcset="./public/readme/star-history.svg" />
-  <img alt="Star History Chart" src="./public/readme/star-history.svg" />
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/AnxForever/stylekit/main/public/readme/star-history-dark.svg" />
+  <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/AnxForever/stylekit/main/public/readme/star-history.svg" />
+  <img alt="Star History Chart" src="https://raw.githubusercontent.com/AnxForever/stylekit/main/public/readme/star-history.svg" />
 </picture>
 
 ## Contributors
