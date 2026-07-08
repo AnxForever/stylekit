@@ -19,38 +19,21 @@ jobs:
         with:
           node-version: 24
 
-      - name: Generate star history SVG (light)
-        run: |
-          npx star-history-cli AnxForever/stylekit \
-            --style xkcd \
-            --format svg \
-            --type Date \
-            --width 800 \
-            --theme light \
-            --output public/readme/star-history.svg \
-            --token "${{ secrets.GITHUB_TOKEN }}"
-
-      - name: Generate star history SVG (dark)
-        run: |
-          npx star-history-cli AnxForever/stylekit \
-            --style xkcd \
-            --format svg \
-            --type Date \
-            --width 800 \
-            --theme dark \
-            --output public/readme/star-history-dark.svg \
-            --token "${{ secrets.GITHUB_TOKEN }}"
+      - name: Generate star history SVG
+        run: node tools/scripts/generate-star-history.mjs
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Commit and push to main
         run: |
-          if git diff --quiet -- public/readme/star-history.svg public/readme/star-history-dark.svg; then
+          if git diff --quiet -- public/readme/star-history.svg; then
             echo "Star history is already up to date." >> "$GITHUB_STEP_SUMMARY"
             exit 0
           fi
 
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add public/readme/star-history.svg public/readme/star-history-dark.svg
+          git add public/readme/star-history.svg
           git commit -m "docs: update star history"
           git push origin main
 
