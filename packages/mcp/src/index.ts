@@ -2,7 +2,7 @@
 /**
  * StyleKit MCP server.
  *
- * Exposes StyleKit's 120+ design styles — search, full profiles, design tokens,
+ * Exposes StyleKit's 130+ design styles — search, full profiles, design tokens,
  * component recipes, and shadcn install commands — to MCP clients such as
  * Claude Desktop, Cursor, and Windsurf, over stdio. Data is served offline from
  * the bundled stylekit-core package.

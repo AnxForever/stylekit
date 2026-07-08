@@ -565,7 +565,7 @@ export default function GitHubStyleShowcase() {
                   <div className="p-6 prose prose-sm max-w-none">
                     <h1 className="text-2xl font-semibold text-[#1f2328] mb-2">StyleKit</h1>
                     <p className="text-sm text-[#1f2328] leading-relaxed mb-4">
-                      120+ curated design style presets with design tokens, component code, and AI rules for consistent UI generation.
+                      130+ curated design style presets with design tokens, component code, and AI rules for consistent UI generation.
                     </p>
                     <div className="flex flex-wrap gap-1.5 mb-4">
                       {["TypeScript", "Next.js", "Tailwind CSS", "Design Tokens"].map((t) => (
@@ -588,7 +588,7 @@ export default function GitHubStyleShowcase() {
                   <div className="border border-[#d0d7de] rounded-md p-4">
                     <h3 className="text-sm font-semibold text-[#1f2328] mb-2">About</h3>
                     <p className="text-sm text-[#656d76] leading-relaxed mb-4">
-                      120+ curated design style presets with tokens, component code, and AI rules.
+                      130+ curated design style presets with tokens, component code, and AI rules.
                     </p>
                     <div className="space-y-2">
                       <div className="flex items-center gap-2 text-sm text-[#656d76]">
@@ -1052,7 +1052,7 @@ focus:shadow-[0_0_0_3px_rgba(9,105,218,0.3)]`}</pre>
                       <p className="text-xs font-semibold text-[#656d76] mb-3 uppercase tracking-[0.12em]">Live demo — hover the cards</p>
                       <div className="space-y-2">
                         {[
-                          { name: "stylekit", desc: "120+ design style presets with tokens and AI rules.", lang: "TypeScript", langColor: "#3178c6", stars: "1.2k" },
+                          { name: "stylekit", desc: "130+ design style presets with tokens and AI rules.", lang: "TypeScript", langColor: "#3178c6", stars: "1.2k" },
                           { name: "claude-kit", desc: "Custom agents and skills for Claude Code productivity.", lang: "TypeScript", langColor: "#3178c6", stars: "487" },
                         ].map((repo) => (
                           <div
@@ -1225,7 +1225,7 @@ transition-all duration-150
                 <div className="space-y-4">
                   <div className="grid md:grid-cols-2 gap-4">
                     {[
-                      { name: "stylekit", owner: "AnxForever", desc: "120+ design style presets with tokens, component code, and AI rules.", lang: "TypeScript", langColor: "#3178c6", stars: "1.2k", forks: "89", updated: "2 hours ago", badge: "Public" },
+                      { name: "stylekit", owner: "AnxForever", desc: "130+ design style presets with tokens, component code, and AI rules.", lang: "TypeScript", langColor: "#3178c6", stars: "1.2k", forks: "89", updated: "2 hours ago", badge: "Public" },
                       { name: "claude-code-kit", owner: "AnxForever", desc: "Custom agents, rules, and skills for Claude Code productivity.", lang: "TypeScript", langColor: "#3178c6", stars: "487", forks: "34", updated: "1 day ago", badge: "Private" },
                     ].map((repo) => (
                       <div key={repo.name} className="group p-4 bg-white border border-[#d0d7de] rounded-md hover:bg-[#f6f8fa] hover:border-[#8c959f] transition-all duration-150 cursor-pointer">
