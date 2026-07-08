@@ -11,6 +11,7 @@ import { CodeBlock } from "@/components/style-preview/code-block";
 import { TokensExportButton } from "@/components/tokens-export-button";
 import { StyleCoverPreview } from "@/components/style-preview/style-cover-preview";
 import { StylePackExport } from "@/components/style-preview/style-pack-export";
+import { StyleUsePanel } from "@/components/style-preview/style-use-panel";
 import { ScoreBadge } from "@/components/accessibility/score-badge";
 import { ScoreDetail } from "@/components/accessibility/score-detail";
 import { IdeExportButtons } from "@/components/export/ide-export-buttons";
@@ -478,6 +479,13 @@ export function StyleDetailContent({
             keywords={style.keywords}
             keywordsEn={style.keywordsEn}
           />
+        </div>
+      </section>
+
+      {/* Use this style — conversion: registry / CLI / MCP */}
+      <section className="border-b border-border scroll-mt-24">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-12 py-12 md:py-16">
+          <StyleUsePanel slug={style.slug} name={style.name} nameEn={style.nameEn} />
         </div>
       </section>
 
