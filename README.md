@@ -213,6 +213,21 @@ Swap `glassmorphism` for any slug — browse the full list at [`/registry.json`]
 
 See [`docs/registry.md`](docs/registry.md) for the full guide.
 
+## Use as an Agent Skill
+
+Give Cursor, Claude Code, Windsurf, or any Agent-Skills-compatible coding agent
+built-in knowledge of StyleKit — how to browse styles and install them — with
+one command:
+
+```bash
+npx skills add AnxForever/stylekit
+```
+
+Your agent can then apply any of the 130+ styles on request ("make this look
+like Stripe", "cyberpunk dashboard") using the correct tokens and rules. The
+skill lives in [`SKILL.md`](SKILL.md).
+
+
 ## Support This Project
 
 If StyleKit happens to help you, that honestly means a lot.

@@ -1,6 +1,6 @@
 # StyleKit - The Most Comprehensive Style Library for AI Coding
 
-> 130+ curated visual styles with machine-readable design tokens, component recipes, and AI rules. Install any style into Cursor, Claude, or v0 with one command — via MCP (`npx stylekit-mcp`), CLI (`npx stylekit-cli add <style>`), or shadcn registry (`npx shadcn add https://www.stylekit.top/r/<style>.json`). Fully bilingual (English & 中文).
+> 130+ curated visual styles with machine-readable design tokens, component recipes, and AI rules. Install any style into Cursor, Claude, or v0 with one command — via MCP (`npx stylekit-mcp`), CLI (`npx stylekit-cli add <style>`), or shadcn registry (`npx shadcn add https://www.stylekit.top/r/<style>.json`). Give any coding agent built-in StyleKit knowledge with the Agent Skill: `npx skills add AnxForever/stylekit`. Fully bilingual (English & 中文).
 
 ## Overview
 

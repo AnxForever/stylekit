@@ -2,11 +2,11 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Boxes, Sparkles, Terminal, Copy, Check, ArrowRight } from "lucide-react";
+import { Boxes, Sparkles, Terminal, Zap, Copy, Check, ArrowRight } from "lucide-react";
 import { useI18n } from "@/lib/i18n/context";
 import { RevealOnScroll } from "@/components/home/reveal-on-scroll";
 
-const ICONS = [Boxes, Sparkles, Terminal] as const;
+const ICONS = [Boxes, Sparkles, Terminal, Zap] as const;
 
 const COPY = {
   en: {
@@ -35,6 +35,12 @@ const COPY = {
         cmd: "npx stylekit-cli add synthwave",
         foot: "list · search · show · tokens · recipe · add",
       },
+      {
+        name: "Agent Skill",
+        desc: "Give Cursor, Claude Code and Windsurf built-in StyleKit knowledge — apply any style on request.",
+        cmd: "npx skills add AnxForever/stylekit",
+        foot: "Vercel Agent Skills · works with any compatible agent",
+      },
     ],
   },
   zh: {
@@ -62,6 +68,12 @@ const COPY = {
         desc: "不离开终端，浏览风格库并获取主题。",
         cmd: "npx stylekit-cli add synthwave",
         foot: "list · search · show · tokens · recipe · add",
+      },
+      {
+        name: "Agent Skill",
+        desc: "让 Cursor、Claude Code、Windsurf 内置 StyleKit 知识——按需应用任意风格。",
+        cmd: "npx skills add AnxForever/stylekit",
+        foot: "Vercel Agent Skills · 兼容任意 agent",
       },
     ],
   },
@@ -121,7 +133,7 @@ export function DevelopersContent() {
 
       <section className="relative border-b border-border">
         <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-12 md:px-12 md:py-16">
-          <div className="grid gap-4 md:grid-cols-3">
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
             {c.cards.map((card, i) => {
               const Icon = ICONS[i] ?? Boxes;
               return (
