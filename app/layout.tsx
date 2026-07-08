@@ -58,7 +58,7 @@ export const metadata: Metadata = {
     default: "StyleKit - UI Design Prompts, Visual Styles & AI-Friendly Design System",
     template: "%s | StyleKit",
   },
-  description: "UI design prompt library and AI-friendly design system with 120+ visual styles. Export design tokens, component recipes, Tailwind-ready patterns, and AI prompts for consistent website UI generation.",
+  description: "UI design prompt library and AI-friendly design system with 130+ visual styles. Export design tokens, component recipes, Tailwind-ready patterns, and AI prompts for consistent website UI generation.",
   keywords: [
     "UI design prompts",
     "web design prompts",
@@ -99,7 +99,7 @@ export const metadata: Metadata = {
     url: BASE_URL,
     siteName: "StyleKit",
     title: "StyleKit - UI Design Prompts, Visual Styles & AI-Friendly Design System",
-    description: "120+ visual styles with design tokens, component recipes, Tailwind-ready patterns, and AI prompts for beautiful, consistent website UI.",
+    description: "130+ visual styles with design tokens, component recipes, Tailwind-ready patterns, and AI prompts for beautiful, consistent website UI.",
     images: [
       {
         url: `${BASE_URL}/opengraph-image`,
@@ -113,8 +113,8 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "StyleKit - UI Design Prompts, Visual Styles & AI-Friendly Design System",
-    description: "120+ visual styles with design tokens, component recipes, Tailwind-ready patterns, and AI prompts.",
-    creator: "@stylekit",
+    description: "130+ visual styles with design tokens, component recipes, Tailwind-ready patterns, and AI prompts.",
+    creator: "@Justice66890051",
     images: [`${BASE_URL}/opengraph-image`],
   },
   robots: {
@@ -172,7 +172,7 @@ export default async function RootLayout({
               "@context": "https://schema.org",
               "@type": "WebApplication",
               name: "StyleKit",
-              description: "AI-friendly design system with 120+ visual styles, design tokens, component recipes, and AI prompts.",
+              description: "AI-friendly design system with 130+ visual styles, design tokens, component recipes, and AI prompts.",
               url: BASE_URL,
               applicationCategory: "DesignApplication",
               operatingSystem: "Web",
@@ -197,10 +197,10 @@ export default async function RootLayout({
               "name": "StyleKit",
               "url": BASE_URL,
               "logo": `${BASE_URL}/icon.svg`,
-              "description": "AI-friendly design system with 120+ visual styles, design tokens, and AI prompts.",
+              "description": "AI-friendly design system with 130+ visual styles, design tokens, and AI prompts.",
               "sameAs": [
                 "https://github.com/AnxForever/stylekit",
-                "https://x.com/stylekit",
+                "https://x.com/Justice66890051",
               ],
             }),
           }}

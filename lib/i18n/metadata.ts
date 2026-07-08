@@ -4,18 +4,27 @@ import {
   getBaseUrl,
   getLocaleHtmlLang,
   localizeHref,
+  DEFAULT_LOCALE,
   LOCALES,
 } from "./routing";
 
 export function getLocaleAlternates(pathname: string): Record<string, string> {
   const baseUrl = getBaseUrl();
 
-  return Object.fromEntries(
-    LOCALES.map((locale) => [
-      getLocaleHtmlLang(locale),
-      `${baseUrl}${localizeHref(pathname, locale)}`,
-    ])
+  const localized = LOCALES.map(
+    (locale) =>
+      [
+        getLocaleHtmlLang(locale),
+        `${baseUrl}${localizeHref(pathname, locale)}`,
+      ] as const
   );
+
+  // x-default points search engines at the canonical fallback (default locale)
+  // when no language match is found. Required for correct international indexing.
+  return Object.fromEntries([
+    ...localized,
+    ["x-default", `${baseUrl}${localizeHref(pathname, DEFAULT_LOCALE)}`],
+  ]);
 }
 
 export function localizeMetadata(

@@ -10,9 +10,9 @@ import { generateBreadcrumbJsonLd } from "@/lib/seo/json-ld";
 import { getSiteBaseUrl } from "@/lib/site-url";
 
 export const metadata: Metadata = {
-  title: "Browse 120+ UI Design Styles & AI Prompts",
+  title: "Browse 130+ UI Design Styles & AI Prompts",
   description:
-    "Explore 120+ curated visual styles with design tokens, component recipes, Tailwind-ready patterns, and AI UI prompt guidance for websites, dashboards, and landing pages.",
+    "Explore 130+ curated visual styles with design tokens, component recipes, Tailwind-ready patterns, and AI UI prompt guidance for websites, dashboards, and landing pages.",
 };
 
 export const dynamic = "force-static";
