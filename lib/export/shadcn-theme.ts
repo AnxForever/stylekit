@@ -71,6 +71,38 @@ function rotateHue(hsl: string, deg: number): string {
   return `${h} ${m[2]}% ${m[3]}%`;
 }
 
+/** Shift an HSL triplet's lightness by `delta` percentage points (clamped 0-100). */
+function shiftLightness(hsl: string, delta: number): string {
+  const m = hsl.match(/^(\d+) (\d+)% (\d+(?:\.\d+)?)%$/);
+  if (!m) return hsl;
+  const l = Math.max(0, Math.min(100, parseFloat(m[3]) + delta));
+  return `${m[1]} ${m[2]}% ${Math.round(l * 10) / 10}%`;
+}
+
+/** True when two HSL colors are too close in lightness to be told apart. */
+function lowContrast(a: string, b: string, minGap: number): boolean {
+  const la = hslLightness(a);
+  const lb = hslLightness(b);
+  if (la === null || lb === null) return false;
+  return Math.abs(la - lb) < minGap;
+}
+
+/**
+ * Guarantee a color reads as distinct from its surface. Styles whose semantic
+ * colors flatten to near-white (e.g. Glassmorphism's translucent surfaces)
+ * would otherwise emit an invisible white-on-white border; nudge it toward the
+ * surface's opposite so the theme is usable after `shadcn add`.
+ */
+function ensureVisible(color: string, bg: string, minGap: number): string {
+  if (!lowContrast(color, bg, minGap)) return color;
+  const lb = hslLightness(bg) ?? 100;
+  return shiftLightness(bg, lb >= 50 ? -12 : 14);
+}
+
+/** Lightness gap below which a border/brand color is treated as invisible. */
+const BORDER_MIN_GAP = 8;
+const PRIMARY_MIN_GAP = 12;
+
 /** Five chart colors from the style's palette, padded by hue rotation. */
 function chartColors(
   style: DesignStyle,
@@ -107,6 +139,9 @@ interface Surface {
 
 /** Assemble the full shadcn token set for one mode. */
 function buildVars(s: Surface): Record<string, string> {
+  // A border must be visible against the surface, even when the style's own
+  // border color flattens to the same lightness as its background.
+  const border = ensureVisible(s.border, s.bg, BORDER_MIN_GAP);
   return {
     background: s.bg,
     foreground: s.fg,
@@ -124,8 +159,8 @@ function buildVars(s: Surface): Record<string, string> {
     "accent-foreground": readableForeground(s.accent),
     destructive: "0 72% 51%",
     "destructive-foreground": "0 0% 98%",
-    border: s.border,
-    input: s.border,
+    border,
+    input: border,
     ring: s.primary,
     ...chartColors(s.style, s.primary, s.accent),
     // Sidebar group reuses the main surface/brand tokens for a coherent shell.
@@ -135,7 +170,7 @@ function buildVars(s: Surface): Record<string, string> {
     "sidebar-primary-foreground": readableForeground(s.primary),
     "sidebar-accent": s.accent,
     "sidebar-accent-foreground": readableForeground(s.accent),
-    "sidebar-border": s.border,
+    "sidebar-border": border,
     "sidebar-ring": s.primary,
     radius: s.radius,
   };
@@ -166,9 +201,18 @@ export function generateShadcnTheme(style: DesignStyle): ShadcnTheme {
     (tokens && twRadiusToRem(tokens.border.radius)) ?? FALLBACK.radius;
 
   // Brand colors from the style palette (robust across hex / rgba / class).
-  const primary = anyColorToHsl(style.colors.primary) ?? FALLBACK.primary;
+  const rawPrimary = anyColorToHsl(style.colors.primary) ?? FALLBACK.primary;
   const secondary = anyColorToHsl(style.colors.secondary) ?? muted;
-  const accent = anyColorToHsl(style.colors.accent?.[0]) ?? primary;
+  const accent = anyColorToHsl(style.colors.accent?.[0]) ?? rawPrimary;
+
+  // If the brand primary is invisible on the surface (e.g. white-on-white for
+  // translucent "glass" styles), promote the most vivid accent so the primary
+  // button/ring is actually usable; fall back to a strong surface shade.
+  const primary = lowContrast(rawPrimary, bg, PRIMARY_MIN_GAP)
+    ? !lowContrast(accent, bg, PRIMARY_MIN_GAP)
+      ? accent
+      : shiftLightness(bg, (hslLightness(bg) ?? 100) >= 50 ? -72 : 72)
+    : rawPrimary;
 
   const light = buildVars({
     bg,
