@@ -25,6 +25,7 @@
 # misc
 .DS_Store
 *.pem
+*.bak
 
 # debug
 npm-debug.log*
@@ -71,6 +72,8 @@ stylekit-*.png
 *-thankyou-*.png
 homepage-*.png
 contact-*.png
+lithos-*.png
+support-*.png
 
 # Local images
 image.png
