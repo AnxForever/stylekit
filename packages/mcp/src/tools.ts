@@ -64,7 +64,7 @@ export function registerStyleKitTools(server: McpServer): void {
     "stylekit_search_styles",
     {
       title: "Search StyleKit styles",
-      description: `Search StyleKit's 120+ design styles by keyword and/or category, with pagination.
+      description: `Search StyleKit's 130+ design styles by keyword and/or category, with pagination.
 
 Args:
   - query (string, optional): matches slug, name, description, tags, keywords (case-insensitive).
