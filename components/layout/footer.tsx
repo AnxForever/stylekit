@@ -47,6 +47,12 @@ export function Footer() {
                 {t("nav.styles")}
               </Link>
               <Link
+                href={localizeHref("/colors", locale)}
+                className="text-sm text-foreground hover:text-accent transition-colors"
+              >
+                {locale === "zh" ? "配色" : "Colors"}
+              </Link>
+              <Link
                 href={localizeHref("/templates", locale)}
                 className="text-sm text-foreground hover:text-accent transition-colors"
               >
