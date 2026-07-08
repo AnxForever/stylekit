@@ -97,7 +97,7 @@ function buildSvg(repoData, stargazers) {
   const xTicks = monthTicks(start, now);
 
   // Comic Sans — the xkcd-look font that works without CSP issues
-  const FONT = '"Comic Sans MS", "Comic Sans", cursive, sans-serif';
+  const FONT = "'Comic Sans MS', 'Comic Sans', cursive, sans-serif";
 
   return `<?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">
