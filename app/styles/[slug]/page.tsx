@@ -9,7 +9,7 @@ import { resolveStyleBySlug } from "@/lib/styles/community-runtime";
 import { scoreStyle } from "@/lib/accessibility";
 import { getCurrentVersion, getChangelog } from "@/lib/versioning";
 import { serializeJsonLd } from "@/lib/security/json-ld";
-import { generateStyleJsonLd, generateBreadcrumbJsonLd } from "@/lib/seo/json-ld";
+import { generateStyleJsonLd, generateBreadcrumbJsonLd, generateStyleFaqJsonLd } from "@/lib/seo/json-ld";
 import { getSiteBaseUrl } from "@/lib/site-url";
 import { localizedString, localizedList } from "@/lib/styles/locale-content";
 import type { Locale } from "@/lib/i18n/translations";
@@ -152,6 +152,15 @@ export default async function StyleDetailPage({
     { name: style.nameEn, url: `${BASE_URL}/styles/${slug}` },
   ]);
 
+  const faqSchema = generateStyleFaqJsonLd({
+    name: locale === "zh" ? style.name : style.nameEn || style.name,
+    description: ssrDescription,
+    philosophy: ssrPhilosophy,
+    category: style.category,
+    dos: ssrDos,
+    locale,
+  });
+
   return (
     <div className="min-h-screen flex flex-col">
       <script
@@ -161,6 +170,10 @@ export default async function StyleDetailPage({
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: serializeJsonLd(breadcrumbSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(faqSchema) }}
       />
       <Header />
       <div className="container mx-auto px-4 pt-4">

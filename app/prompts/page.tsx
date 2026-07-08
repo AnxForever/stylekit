@@ -109,7 +109,7 @@ export default function PromptsPage() {
               href="/styles"
               className="inline-block border-2 border-foreground px-6 py-3 font-medium hover:bg-foreground hover:text-background transition-colors"
             >
-              Browse 120+ Styles
+              Browse 130+ Styles
             </LocalizedLink>
           </div>
         </section>

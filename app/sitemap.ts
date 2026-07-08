@@ -10,6 +10,7 @@ import {
   getAlternateLocalePath,
   getBaseUrl,
   getLocaleHtmlLang,
+  DEFAULT_LOCALE,
   LOCALES,
 } from "@/lib/i18n/routing";
 
@@ -30,9 +31,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "tailwind-ui",
     "dark-mode",
   ]);
-  // Use meaningful dates instead of current time to avoid misleading crawlers
-  const CONTENT_UPDATED = new Date("2026-03-15");
-  const TOOLS_UPDATED = new Date("2026-03-01");
+  // Content pages are regenerated on every deploy, so build time is an
+  // honest lastmod signal. Tools/legal pages change rarely, so they use a
+  // stable pinned date to avoid falsely claiming freshness on every build.
+  const CONTENT_UPDATED = new Date();
+  const TOOLS_UPDATED = new Date("2026-07-08");
 
   const createLocalizedEntries = (
     pathname: string,
@@ -46,12 +49,15 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency,
       priority,
       alternates: {
-        languages: Object.fromEntries(
-          LOCALES.map((entry) => [
-            getLocaleHtmlLang(entry),
-            `${BASE_URL}${getAlternateLocalePath(pathname, entry)}`,
-          ])
-        ),
+        languages: {
+          ...Object.fromEntries(
+            LOCALES.map((entry) => [
+              getLocaleHtmlLang(entry),
+              `${BASE_URL}${getAlternateLocalePath(pathname, entry)}`,
+            ])
+          ),
+          "x-default": `${BASE_URL}${getAlternateLocalePath(pathname, DEFAULT_LOCALE)}`,
+        },
       },
     }));
 
