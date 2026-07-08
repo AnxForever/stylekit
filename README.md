@@ -225,7 +225,8 @@ npx skills add AnxForever/stylekit
 
 Your agent can then apply any of the 130+ styles on request ("make this look
 like Stripe", "cyberpunk dashboard") using the correct tokens and rules. The
-skill lives in [`SKILL.md`](SKILL.md).
+skill lives in [`SKILL.md`](SKILL.md); see [`docs/AGENT_SKILL_GUIDE.md`](docs/AGENT_SKILL_GUIDE.md)
+for how it's built and published.
 
 
 ## Support This Project
