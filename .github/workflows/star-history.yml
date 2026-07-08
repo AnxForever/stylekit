@@ -22,7 +22,7 @@ jobs:
       - name: Generate star history SVG (light)
         run: |
           npx star-history-cli AnxForever/stylekit \
-            --style clean \
+            --style xkcd \
             --format svg \
             --type Date \
             --width 800 \
@@ -33,7 +33,7 @@ jobs:
       - name: Generate star history SVG (dark)
         run: |
           npx star-history-cli AnxForever/stylekit \
-            --style clean \
+            --style xkcd \
             --format svg \
             --type Date \
             --width 800 \
