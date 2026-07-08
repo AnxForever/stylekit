@@ -6,6 +6,7 @@ import { getAllAnimationsMeta } from "@/lib/animations/meta";
 import { getAllTopicSlugs } from "@/lib/prompts";
 import { getAllPosts } from "@/lib/blog";
 import { styleGuides } from "@/lib/seo/style-guides";
+import { getAllCollections } from "@/lib/styles/collections";
 import {
   getAlternateLocalePath,
   getBaseUrl,
@@ -65,6 +66,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...createLocalizedEntries("/", CONTENT_UPDATED, "weekly", 1),
     ...createLocalizedEntries("/styles", CONTENT_UPDATED, "weekly", 0.9),
     ...createLocalizedEntries("/colors", CONTENT_UPDATED, "weekly", 0.7),
+    ...createLocalizedEntries("/collections", CONTENT_UPDATED, "weekly", 0.7),
     ...createLocalizedEntries("/guides", CONTENT_UPDATED, "monthly", 0.8),
     ...createLocalizedEntries("/recipes", CONTENT_UPDATED, "weekly", 0.8),
     ...createLocalizedEntries("/ui-prompts", CONTENT_UPDATED, "weekly", 0.9),
@@ -120,6 +122,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
     createLocalizedEntries(`/guides/${guide.slug}`, CONTENT_UPDATED, "monthly", 0.7)
   );
 
+  const collectionPages: MetadataRoute.Sitemap = getAllCollections().flatMap((collection) =>
+    createLocalizedEntries(`/collections/${collection.slug}`, CONTENT_UPDATED, "weekly", 0.7)
+  );
+
   return [
     ...staticPages,
     ...stylePages,
@@ -129,5 +135,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...animationPages,
     ...blogPostPages,
     ...guidePages,
+    ...collectionPages,
   ];
 }
