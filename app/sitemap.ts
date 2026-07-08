@@ -64,6 +64,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const staticPages: MetadataRoute.Sitemap = [
     ...createLocalizedEntries("/", CONTENT_UPDATED, "weekly", 1),
     ...createLocalizedEntries("/styles", CONTENT_UPDATED, "weekly", 0.9),
+    ...createLocalizedEntries("/colors", CONTENT_UPDATED, "weekly", 0.7),
     ...createLocalizedEntries("/guides", CONTENT_UPDATED, "monthly", 0.8),
     ...createLocalizedEntries("/recipes", CONTENT_UPDATED, "weekly", 0.8),
     ...createLocalizedEntries("/ui-prompts", CONTENT_UPDATED, "weekly", 0.9),
