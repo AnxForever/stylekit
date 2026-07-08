@@ -25,6 +25,17 @@ export function generateStaticParams() {
 // ISR: revalidate every 24 hours
 export const revalidate = 86400;
 
+// Google truncates meta descriptions around 155-160 chars; keep the SERP snippet
+// tight while the full description still renders in the page body.
+const META_DESCRIPTION_LIMIT = 155;
+function truncateForMeta(text: string, limit = META_DESCRIPTION_LIMIT): string {
+  if (text.length <= limit) return text;
+  const slice = text.slice(0, limit - 1);
+  const lastSpace = slice.lastIndexOf(" ");
+  const clipped = lastSpace > 60 ? slice.slice(0, lastSpace) : slice;
+  return `${clipped.replace(/[\s,;.]+$/, "")}…`;
+}
+
 // 动态 metadata
 export async function generateMetadata({
   params,
@@ -53,10 +64,11 @@ export async function generateMetadata({
       ? `${localizedDescription} 包含设计 tokens、组件配方和 AI 提示词指南，便于稳定落地同一套 UI 风格。`
       : `${localizedDescription} Includes design tokens, component recipes, and AI prompt guidance for consistent UI implementation.`;
   const keywords = localizedList(locale, style.keywords, style.keywordsEn);
+  const metaDescription = truncateForMeta(description);
 
   return {
     title,
-    description,
+    description: metaDescription,
     keywords,
     openGraph: {
       title: `${title} — StyleKit`,
