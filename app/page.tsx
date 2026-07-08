@@ -12,7 +12,7 @@ export const metadata: Metadata = {
   // "StyleKit" (the brand is already in the title). Kept under ~60 chars so it
   // renders in full in the SERP with the highest-value keywords front-loaded.
   title: {
-    absolute: "StyleKit — UI Design Prompts & 130+ Visual Styles",
+    absolute: "StyleKit — 130+ UI Design Styles for AI Coding",
   },
   description:
     "Browse 130+ visual styles with design tokens, component recipes, and AI prompts. Export to Tailwind, shadcn, Figma, and IDE configs for consistent website UI generation.",
