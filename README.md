@@ -9,7 +9,8 @@
 </p>
 
 <p align="center">
-  <strong>120+ Styles. 49 Animations. 34 Templates. One Toolkit for AI-Driven UI.</strong>
+  <strong>The most comprehensive style library for AI coding.</strong><br>
+  130+ curated styles — install any into Cursor, Claude, or v0 with one command. English &amp; 中文.
 </p>
 
 <p align="center">

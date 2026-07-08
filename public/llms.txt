@@ -1,10 +1,10 @@
-# StyleKit - AI-Friendly Design System Library
+# StyleKit - The Most Comprehensive Style Library for AI Coding
 
-> A comprehensive library of design styles with machine-readable constraints, tokens, and component recipes for AI-assisted UI generation.
+> 130+ curated visual styles with machine-readable design tokens, component recipes, and AI rules. Install any style into Cursor, Claude, or v0 with one command — via MCP (`npx stylekit-mcp`), CLI (`npx stylekit-cli add <style>`), or shadcn registry (`npx shadcn add https://www.stylekit.top/r/<style>.json`). Fully bilingual (English & 中文).
 
 ## Overview
 
-StyleKit provides structured design systems that AI can use to generate consistent, high-quality user interfaces. Each style includes:
+StyleKit provides structured design systems that AI can use to generate consistent, high-quality user interfaces. With 130+ styles it is the widest curated aesthetic range available for AI code generation — spanning brand-inspired (Apple, Stripe, Linear, Notion), aesthetic (Glassmorphism, Neo-Brutalist, Cyberpunk), and cultural (Bauhaus, Ghibli, Wabi-Sabi) directions. Each style includes:
 
 - Design Tokens (colors, spacing, typography, shadows, borders)
 - Component Recipes (parameterized component templates with variants)

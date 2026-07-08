@@ -55,10 +55,10 @@ const DEV_SW_CLEANUP_SCRIPT = `
 export const metadata: Metadata = {
   metadataBase: new URL(BASE_URL),
   title: {
-    default: "StyleKit - UI Design Prompts, Visual Styles & AI-Friendly Design System",
+    default: "StyleKit - The Most Comprehensive Style Library for AI Coding",
     template: "%s | StyleKit",
   },
-  description: "UI design prompt library and AI-friendly design system with 130+ visual styles. Export design tokens, component recipes, Tailwind-ready patterns, and AI prompts for consistent website UI generation.",
+  description: "The most comprehensive style library for AI coding — 130+ curated visual styles with design tokens, component recipes, and AI rules. Install any into Cursor, Claude, or v0 with one command (MCP, CLI, shadcn registry). English & 中文.",
   keywords: [
     "UI design prompts",
     "web design prompts",
@@ -98,22 +98,22 @@ export const metadata: Metadata = {
     locale: "en_US",
     url: BASE_URL,
     siteName: "StyleKit",
-    title: "StyleKit - UI Design Prompts, Visual Styles & AI-Friendly Design System",
-    description: "130+ visual styles with design tokens, component recipes, Tailwind-ready patterns, and AI prompts for beautiful, consistent website UI.",
+    title: "StyleKit - The Most Comprehensive Style Library for AI Coding",
+    description: "130+ curated visual styles for AI coding. Install any into Cursor, Claude, or v0 with one command — via MCP, CLI, or shadcn registry. English & 中文.",
     images: [
       {
         url: `${BASE_URL}/opengraph-image`,
         width: 1200,
         height: 630,
-        alt: "StyleKit - AI-Friendly Design System",
+        alt: "StyleKit - The Most Comprehensive Style Library for AI Coding",
         type: "image/png",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "StyleKit - UI Design Prompts, Visual Styles & AI-Friendly Design System",
-    description: "130+ visual styles with design tokens, component recipes, Tailwind-ready patterns, and AI prompts.",
+    title: "StyleKit - The Most Comprehensive Style Library for AI Coding",
+    description: "130+ curated styles for AI coding. Install any into Cursor, Claude, or v0 with one command — MCP, CLI, or shadcn registry.",
     creator: "@Justice66890051",
     images: [`${BASE_URL}/opengraph-image`],
   },

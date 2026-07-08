@@ -297,11 +297,11 @@ export const zh: { [K in keyof typeof en]: string } = {
   "animations.viewCode": "查看代码",
 
   // Home page
-  "home.subtitle": "风格设计库",
+  "home.subtitle": "130+ 风格 · MCP 原生",
   "home.title.line1": "让 AI 生成的",
   "home.title.line2": "网站更加",
   "home.title.line3": "好看",
-  "home.description": "精选网页设计风格，附带文档、组件模板、代码片段与可导出的 AI 规则。",
+  "home.description": "面向 AI 编码的最全风格库——130+ 精选风格，含 design tokens、组件配方与 AI 规则。一行命令，装进 Cursor、Claude 或 v0。",
   "home.styleCollection": "风格集合",
   "home.styleCatalog": "风格目录",
   "home.viewAll": "查看全部",
