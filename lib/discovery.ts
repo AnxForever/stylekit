@@ -10,7 +10,7 @@
 import { styles, getStyleBySlug } from "./styles";
 import { getRecipe, getRecipeIds, hasRecipes, renderRecipe } from "./recipes";
 import { getStyleTokens, hasStyleTokens } from "./styles/tokens-registry";
-import { expandQueryTerms, colorIntentMatches } from "./search/synonyms";
+import { expandQueryTerms, colorIntentMatches, hasTerm } from "./search/synonyms";
 import type { DesignStyle } from "./styles";
 import type { StyleTokens } from "./styles/tokens";
 import type { StyleCategory } from "./styles/meta";
@@ -103,13 +103,13 @@ function scoreStyle(s: DesignStyle, q: string, terms: string[]): number {
   if (slug === q || name === q || zhName === q) return 100;
   if (name.includes(q) || zhName.includes(q) || slug.includes(q)) return 80;
   if (tags.some((t) => t.includes(q))) return 60;
-  if (keywords.some((k) => k.includes(q))) return 55;
-  if (desc.includes(q)) return 40;
+  if (keywords.some((k) => hasTerm(k, q))) return 55;
+  if (hasTerm(desc, q)) return 40;
 
   // Bilingual synonym expansion against the full haystack.
   const hay = [name, zhName, slug, desc, ...tags, ...keywords].join(" ");
   for (const t of terms) {
-    if (t !== q && t.length > 1 && hay.includes(t)) return 30;
+    if (t !== q && t.length > 1 && hasTerm(hay, t)) return 30;
   }
 
   // Palette colour intent ("blue" -> styles with a blue in their palette).
