@@ -14,7 +14,7 @@ import {
   type StyleScenario,
 } from "@/lib/styles/scenarios";
 import { useCatalogStyles } from "@/lib/swr";
-import { expandQueryTerms, colorIntentMatches } from "@/lib/search/synonyms";
+import { expandQueryTerms, colorIntentMatches, hasTerm } from "@/lib/search/synonyms";
 
 type TypeFilter = StyleType | "all";
 type SortOption = "recommended" | "name-asc" | "name-desc";
@@ -424,7 +424,7 @@ export function StylesContent({ allStyles }: StylesContentProps) {
 
         // Direct or bilingual-synonym match (so "professional" finds "专业",
         // "dark" finds all dark styles, etc.).
-        if (expandedSearchTerms.some((term) => term.length > 1 && searchableText.includes(term))) {
+        if (expandedSearchTerms.some((term) => term.length > 1 && hasTerm(searchableText, term))) {
           return true;
         }
 
