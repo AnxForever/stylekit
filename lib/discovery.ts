@@ -10,6 +10,7 @@
 import { styles, getStyleBySlug } from "./styles";
 import { getRecipe, getRecipeIds, hasRecipes, renderRecipe } from "./recipes";
 import { getStyleTokens, hasStyleTokens } from "./styles/tokens-registry";
+import { expandQueryTerms, colorIntentMatches } from "./search/synonyms";
 import type { DesignStyle } from "./styles";
 import type { StyleTokens } from "./styles/tokens";
 import type { StyleCategory } from "./styles/meta";
@@ -86,9 +87,43 @@ export function getTokens(slug: string): StyleTokens | null {
 }
 
 /**
+ * Relevance score for a style against a query, or 0 for no match. Higher wins.
+ * Matches the raw query first (name/slug/tag/keyword/description), then falls
+ * back to bilingual synonym expansion and palette colour intent so meaning-based
+ * queries ("professional", "dark", "blue") match even when the word is absent.
+ */
+function scoreStyle(s: DesignStyle, q: string, terms: string[]): number {
+  const name = s.nameEn.toLowerCase();
+  const zhName = s.name.toLowerCase();
+  const slug = s.slug.toLowerCase();
+  const desc = `${s.description} ${s.descriptionEn ?? ""}`.toLowerCase();
+  const tags = s.tags.map((t) => t.toLowerCase());
+  const keywords = s.keywords.map((k) => k.toLowerCase());
+
+  if (slug === q || name === q || zhName === q) return 100;
+  if (name.includes(q) || zhName.includes(q) || slug.includes(q)) return 80;
+  if (tags.some((t) => t.includes(q))) return 60;
+  if (keywords.some((k) => k.includes(q))) return 55;
+  if (desc.includes(q)) return 40;
+
+  // Bilingual synonym expansion against the full haystack.
+  const hay = [name, zhName, slug, desc, ...tags, ...keywords].join(" ");
+  for (const t of terms) {
+    if (t !== q && t.length > 1 && hay.includes(t)) return 30;
+  }
+
+  // Palette colour intent ("blue" -> styles with a blue in their palette).
+  const palette = [s.colors.primary, s.colors.secondary, ...(s.colors.accent ?? [])];
+  if (colorIntentMatches(q, palette)) return 20;
+
+  return 0;
+}
+
+/**
  * Search or list styles. With no query, returns all styles (optionally filtered
- * by category) — a plain listing. With a query, matches slug/name/description/
- * tags/keywords case-insensitively. `total` is the match count before `limit`.
+ * by category) — a plain listing. With a query, ranks styles by relevance using
+ * bilingual synonym expansion and palette colour intent. `total` is the match
+ * count before `limit`.
  */
 export function searchStyles(opts: SearchOptions = {}): {
   total: number;
@@ -98,16 +133,13 @@ export function searchStyles(opts: SearchOptions = {}): {
     ? styles.filter((s) => s.category === opts.category)
     : styles;
   if (opts.query) {
-    const q = opts.query.toLowerCase();
-    pool = pool.filter(
-      (s) =>
-        s.slug.includes(q) ||
-        s.name.toLowerCase().includes(q) ||
-        s.nameEn.toLowerCase().includes(q) ||
-        s.description.toLowerCase().includes(q) ||
-        s.tags.some((t) => t.toLowerCase().includes(q)) ||
-        s.keywords.some((k) => k.toLowerCase().includes(q)),
-    );
+    const q = opts.query.trim().toLowerCase();
+    const terms = expandQueryTerms(q);
+    pool = pool
+      .map((s) => ({ s, score: scoreStyle(s, q, terms) }))
+      .filter((x) => x.score > 0)
+      .sort((a, b) => b.score - a.score || a.s.nameEn.localeCompare(b.s.nameEn))
+      .map((x) => x.s);
   }
   const total = pool.length;
   const limited =
