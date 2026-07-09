@@ -65,7 +65,7 @@ export default function OGImage() {
               lineHeight: 1.4,
             }}
           >
-            The most comprehensive style library for AI coding
+            AI-Friendly Design System with 130+ Visual Styles
           </div>
         </div>
 
@@ -78,7 +78,7 @@ export default function OGImage() {
           }}
         >
           <div style={{ display: "flex", gap: 16 }}>
-            {["130+ Styles", "One-line install", "MCP · CLI · registry", "EN · 中文"].map(
+            {["130+ Styles", "30+ Templates", "40+ Animations", "Design Tokens"].map(
               (tag, i) => (
                 <div
                   key={i}
