@@ -14,6 +14,7 @@ import {
   type StyleScenario,
 } from "@/lib/styles/scenarios";
 import { useCatalogStyles } from "@/lib/swr";
+import { expandQueryTerms, colorIntentMatches } from "@/lib/search/synonyms";
 
 type TypeFilter = StyleType | "all";
 type SortOption = "recommended" | "name-asc" | "name-desc";
@@ -101,6 +102,10 @@ export function StylesContent({ allStyles }: StylesContentProps) {
   const deferredActiveScenario = useDeferredValue(activeScenario);
   const trimmedSearchQuery = searchQuery.trim();
   const trimmedDeferredSearchQuery = deferredSearchQuery.trim().toLowerCase();
+  const expandedSearchTerms = useMemo(
+    () => expandQueryTerms(trimmedDeferredSearchQuery),
+    [trimmedDeferredSearchQuery]
+  );
   const deferredActiveTagsKey = useDeferredValue(activeTagsKey);
   const deferredActiveTags = useMemo(
     () => (
@@ -417,7 +422,20 @@ export function StylesContent({ allStyles }: StylesContentProps) {
           .join(" ")
           .toLowerCase();
 
-        return searchableText.includes(trimmedDeferredSearchQuery);
+        // Direct or bilingual-synonym match (so "professional" finds "专业",
+        // "dark" finds all dark styles, etc.).
+        if (expandedSearchTerms.some((term) => term.length > 1 && searchableText.includes(term))) {
+          return true;
+        }
+
+        // Palette colour intent ("blue" / "蓝" matches styles with a blue in
+        // their palette even when the word never appears in their text).
+        const palette = [
+          style.colors?.primary,
+          style.colors?.secondary,
+          ...(style.colors?.accent ?? []),
+        ].filter((c): c is string => typeof c === "string");
+        return colorIntentMatches(trimmedDeferredSearchQuery, palette);
       });
 
     if (deferredSortBy === "recommended") return base;
