@@ -1,7 +1,7 @@
 {
   "name": "stylekit-mcp",
-  "version": "0.1.0",
-  "description": "MCP server for StyleKit — search 120+ design styles and pull tokens, recipes, and shadcn install commands from Claude, Cursor, or Windsurf",
+  "version": "0.1.1",
+  "description": "MCP server for StyleKit — search 130+ design styles and pull tokens, recipes, and shadcn install commands from Claude, Cursor, or Windsurf",
   "type": "module",
   "bin": {
     "stylekit-mcp": "dist/index.js"
