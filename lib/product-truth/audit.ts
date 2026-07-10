@@ -2,7 +2,11 @@ import { access, readFile } from "node:fs/promises";
 import path from "node:path";
 
 export interface ProductTruthIssue {
-  code: "missing-api-route" | "missing-redirect-target" | "unpublished-package-command";
+  code:
+    | "missing-api-route"
+    | "missing-redirect-target"
+    | "unpublished-package-command"
+    | "misleading-template-download";
   source: string;
   message: string;
 }
@@ -12,10 +16,12 @@ export interface ProductTruthReport {
 }
 
 const PUBLIC_PACKAGE_CLAIM_FILES = [
+  "SKILL.md",
   "app/developers/page.tsx",
   "components/developers/developers-content.tsx",
   "components/style-preview/style-use-panel.tsx",
   "lib/styles/collections.ts",
+  "public/llms.txt",
 ] as const;
 
 export async function auditProductTruth(rootDir: string): Promise<ProductTruthReport> {
@@ -23,6 +29,7 @@ export async function auditProductTruth(rootDir: string): Promise<ProductTruthRe
     ...(await auditReadmeApiClaims(rootDir)),
     ...(await auditRedirectTargets(rootDir)),
     ...(await auditUnpublishedPackageCommands(rootDir)),
+    ...(await auditTemplateDownloadClaim(rootDir)),
   ];
 
   return {
@@ -129,6 +136,34 @@ async function auditUnpublishedPackageCommands(rootDir: string): Promise<Product
           message: `${packageInfo.name} is advertised with npx but is not published to npm`,
         });
       }
+    }
+  }
+
+  return issues;
+}
+
+async function auditTemplateDownloadClaim(rootDir: string): Promise<ProductTruthIssue[]> {
+  const sourceRoute = "app/api/templates/[slug]/source/route.ts";
+  const routeContent = await readFile(path.join(rootDir, sourceRoute), "utf8");
+  if (!/path\.join\(TEMPLATES_DIR,\s*slug,\s*"page\.tsx"\)/s.test(routeContent)) {
+    return [];
+  }
+
+  const translationFiles = [
+    "lib/i18n/translations-en.ts",
+    "lib/i18n/translations-zh.ts",
+  ] as const;
+  const issues: ProductTruthIssue[] = [];
+
+  for (const source of translationFiles) {
+    const content = await readFile(path.join(rootDir, source), "utf8");
+    const label = content.match(/"templates\.download":\s*"([^"]+)"/)?.[1] ?? "";
+    if (!/page\.tsx|source|源码/i.test(label)) {
+      issues.push({
+        code: "misleading-template-download",
+        source,
+        message: `Template download label "${label}" does not disclose that only page.tsx source is exported`,
+      });
     }
   }
 

@@ -658,7 +658,7 @@ export const en = {
     "templates.viewSource": "View Source",
     "templates.copyCode": "Copy Code",
     "templates.copied": "Copied!",
-    "templates.download": "Download File",
+    "templates.download": "Download page.tsx",
     "templates.loadingSource": "Loading source...",
     "templates.sourceNotFound": "Source not available.",
     "styles.subtitle": "Design Style Collection",

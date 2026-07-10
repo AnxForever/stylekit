@@ -390,7 +390,7 @@ export const zh: { [K in keyof typeof en]: string } = {
   "templates.viewSource": "查看源码",
   "templates.copyCode": "复制代码",
   "templates.copied": "已复制!",
-  "templates.download": "下载文件",
+  "templates.download": "下载 page.tsx 源码",
 
   "templates.loadingSource": "加载源码中...",
   "templates.sourceNotFound": "源码暂不可用。",

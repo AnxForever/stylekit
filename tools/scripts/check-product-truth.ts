@@ -1,4 +1,4 @@
-import { auditProductTruth } from "../../lib/product-truth/audit";
+import { auditProductTruth } from "@/lib/product-truth/audit";
 
 async function main(): Promise<void> {
   const report = await auditProductTruth(process.cwd());
