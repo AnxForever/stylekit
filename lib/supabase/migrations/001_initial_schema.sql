@@ -62,10 +62,9 @@ create index idx_analytics_session on public.analytics_events(session_id);
 -- RLS for analytics
 alter table public.analytics_events enable row level security;
 
--- Anyone can insert events
-create policy "Anyone can log events"
-  on public.analytics_events for insert
-  with check (true);
+-- Analytics writes must go through the trusted server route. Service-role
+-- clients bypass RLS; public clients receive no insert policy or grant.
+revoke insert on table public.analytics_events from anon, authenticated;
 
 -- Only service role can read (dashboard)
 create policy "Service role can read analytics"

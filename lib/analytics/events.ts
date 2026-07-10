@@ -6,43 +6,28 @@
  */
 
 import { track } from "@vercel/analytics";
+import { getUtmParams } from "@/lib/analytics/utm";
+import type {
+  ClientEventName,
+  EventProperties,
+  PageViewPayload,
+} from "@/lib/analytics/event-contract";
+
+export {
+  ANALYTICS_EVENT_NAMES,
+  AUTHORITATIVE_EVENT_NAMES,
+  CLIENT_EVENT_NAMES,
+} from "@/lib/analytics/event-contract";
+export type {
+  AnalyticsEventName,
+  AuthoritativeEventName,
+  ClientEventName,
+  EventName,
+  EventProperties,
+  PageViewPayload,
+} from "@/lib/analytics/event-contract";
 
 const isVercel = typeof process !== "undefined" && Boolean(process.env.NEXT_PUBLIC_VERCEL);
-
-// ── Event Definitions ───────────────────────────────────────
-
-type StyleViewProps = { slug: string; source: string };
-type StyleExportProps = { slug: string; format: string };
-type CodeCopyProps = { slug: string; language: string };
-type AnimationViewProps = { slug: string; source: string };
-type TemplateViewProps = { slug: string; source: string };
-type NewsletterSubscribeProps = { source: string };
-type CtaClickProps = { label: string; location: string };
-type SearchProps = { query: string; results_count: number };
-type GithubClickProps = { location: string };
-
-interface EventMap {
-  style_view: StyleViewProps;
-  style_export: StyleExportProps;
-  code_copy: CodeCopyProps;
-  animation_view: AnimationViewProps;
-  template_view: TemplateViewProps;
-  newsletter_subscribe: NewsletterSubscribeProps;
-  cta_click: CtaClickProps;
-  search: SearchProps;
-  github_click: GithubClickProps;
-}
-
-export type EventName = keyof EventMap;
-export type EventProperties<T extends EventName> = EventMap[T];
-
-export interface PageViewPayload {
-  path: string;
-  hostname: string;
-  referrer: string | null;
-  referrerDomain: string | null;
-  referrerType: "direct" | "search" | "social" | "external" | "internal";
-}
 
 // ── Tracker ─────────────────────────────────────────────────
 
@@ -54,13 +39,13 @@ function isClient(): boolean {
  * Track a custom event with type-safe properties.
  * No-ops on the server. Attaches UTM params from sessionStorage if present.
  */
-export function trackEvent<T extends EventName>(
+export function trackEvent<T extends ClientEventName>(
   name: T,
   properties: EventProperties<T>
 ): void {
   if (!isClient()) return;
 
-  const utm = getStoredUtmParams();
+  const utm = getUtmParams();
   const merged = utm
     ? { ...properties, ...utm }
     : properties;
@@ -79,22 +64,11 @@ export function trackPageView(payload: PageViewPayload): void {
 
 // ── UTM helpers (inline to avoid circular deps) ─────────────
 
-const UTM_STORAGE_KEY = "stylekit_utm";
 const SESSION_STORAGE_KEY = "stylekit_session_id";
 const INTERNAL_ANALYTICS_ENDPOINT = "/api/analytics";
 
-function getStoredUtmParams(): Record<string, string> | null {
-  try {
-    const raw = sessionStorage.getItem(UTM_STORAGE_KEY);
-    if (!raw) return null;
-    return JSON.parse(raw) as Record<string, string>;
-  } catch {
-    return null;
-  }
-}
-
 function queueInternalAnalyticsEvent(
-  name: EventName | "page_view",
+  name: ClientEventName | "page_view",
   properties:
     | PageViewPayload
     | Record<string, string | number | boolean | null>
@@ -106,10 +80,6 @@ function queueInternalAnalyticsEvent(
   try {
     const payload = {
       eventType: name,
-      styleSlug: readStyleSlug(
-        name,
-        properties as EventProperties<EventName> & Record<string, string>
-      ),
       eventData: properties,
       sessionId: getOrCreateSessionId(),
     };
@@ -130,17 +100,6 @@ function queueInternalAnalyticsEvent(
   } catch {
     // Analytics failures must remain non-blocking.
   }
-}
-function readStyleSlug(
-  name: EventName | "page_view",
-  properties: Record<string, unknown>
-): string | null {
-  if (name === "style_view" || name === "style_export" || name === "code_copy") {
-    const slug = (properties as { slug?: string }).slug;
-    return typeof slug === "string" && slug.trim().length > 0 ? slug : null;
-  }
-
-  return null;
 }
 
 function getOrCreateSessionId(): string | null {

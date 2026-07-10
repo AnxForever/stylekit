@@ -10,11 +10,13 @@ import { generatePreviewHTML } from "@/lib/style-preview/preview-html";
 interface ComponentPreviewProps {
   components: Record<string, ComponentTemplate>;
   defaultShowCode?: boolean;
+  styleSlug?: string;
 }
 
 export function ComponentPreview({
   components,
   defaultShowCode = true,
+  styleSlug,
 }: ComponentPreviewProps) {
   const componentKeys = Object.keys(components);
   const [activeTab, setActiveTab] = useState(componentKeys[0]);
@@ -121,7 +123,7 @@ export function ComponentPreview({
       </div>
 
       {/* Code */}
-      {showCode && <CodeBlock code={activeComponent.code} />}
+      {showCode && <CodeBlock code={activeComponent.code} slug={styleSlug} />}
     </div>
   );
 }

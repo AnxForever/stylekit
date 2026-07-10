@@ -1,10 +1,15 @@
 // @vitest-environment happy-dom
 import "@testing-library/jest-dom/vitest";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { render } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 
-const { useI18nMock } = vi.hoisted(() => ({
+const { trackEventMock, useI18nMock } = vi.hoisted(() => ({
+  trackEventMock: vi.fn(),
   useI18nMock: vi.fn(),
+}));
+
+vi.mock("@/lib/analytics/events", () => ({
+  trackEvent: trackEventMock,
 }));
 
 vi.mock("@/lib/i18n/context", () => ({
@@ -15,11 +20,42 @@ import { ComponentPreview } from "@/components/style-preview/component-preview";
 
 describe("component preview", () => {
   beforeEach(() => {
+    trackEventMock.mockReset();
     useI18nMock.mockReturnValue({
       t: (key: string) => key,
       locale: "zh",
       setLocale: vi.fn(),
     });
+  });
+
+  it("passes the style slug to code copy analytics", async () => {
+    const writeTextMock = vi.fn().mockResolvedValue(undefined);
+    Object.defineProperty(navigator, "clipboard", {
+      value: { writeText: writeTextMock },
+      configurable: true,
+    });
+
+    render(
+      <ComponentPreview
+        styleSlug="corporate-clean"
+        components={{
+          button: {
+            name: "按钮",
+            description: "测试按钮",
+            code: "<button>Start</button>",
+          },
+        }}
+      />
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: "export.copyCode" }));
+
+    await waitFor(() =>
+      expect(trackEventMock).toHaveBeenCalledWith("code_copy", {
+        slug: "corporate-clean",
+        language: "tsx",
+      })
+    );
   });
 
   it("renders fixed-position nav snippets inside a transformed preview container", () => {

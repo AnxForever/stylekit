@@ -26,7 +26,6 @@ export function PageViewTracker() {
     trackPageView({
       path: pathname,
       hostname,
-      referrer,
       referrerDomain: getReferrerDomain(referrer),
       referrerType: classifyReferrer(referrer, hostname),
     });

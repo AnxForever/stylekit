@@ -100,8 +100,8 @@ function flushToDisk(): void {
 }
 
 // ── In-memory state ──────────────────────────────────────────
-const counters: Record<string, Counter> = {};
-const combinationCounters: Record<string, number> = {};
+const counters: Record<string, Counter> = Object.create(null) as Record<string, Counter>;
+const combinationCounters: Record<string, number> = Object.create(null) as Record<string, number>;
 
 function ensureLoaded(): void {
   loadFromDisk();
@@ -109,7 +109,7 @@ function ensureLoaded(): void {
 
 function ensureCounter(slug: string): Counter {
   ensureLoaded();
-  if (!counters[slug]) {
+  if (!Object.hasOwn(counters, slug)) {
     counters[slug] = { api: 0, page: 0, lastAccessed: new Date().toISOString() };
   }
   return counters[slug];

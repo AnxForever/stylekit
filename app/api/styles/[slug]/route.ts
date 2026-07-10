@@ -21,7 +21,6 @@ export async function GET(
   { params }: { params: Promise<{ slug: string }> }
 ) {
   const { slug } = await params;
-  trackStyleUsageNonBlocking(slug);
   const resolved = await resolveStyleBySlug(slug);
   const style = resolved?.style;
 
@@ -31,6 +30,7 @@ export async function GET(
       { status: 404 }
     );
   }
+  trackStyleUsageNonBlocking(style.slug);
 
   const tokens = resolved.tokens;
   const recipes = resolved.source === "static"

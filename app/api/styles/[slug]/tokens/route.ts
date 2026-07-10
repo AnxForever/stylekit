@@ -17,7 +17,6 @@ export async function GET(
   { params }: { params: Promise<{ slug: string }> }
 ) {
   const { slug } = await params;
-  trackStyleUsageNonBlocking(slug);
   const resolved = await resolveStyleBySlug(slug);
   const tokens = resolved?.tokens;
 
@@ -27,6 +26,7 @@ export async function GET(
       { status: 404 }
     );
   }
+  trackStyleUsageNonBlocking(resolved.style.slug);
 
   return NextResponse.json({
     styleSlug: slug,
