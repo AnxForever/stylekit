@@ -91,10 +91,10 @@ describe("publishStyleToCodebase", () => {
     const publishedPreview = previewRegistry.slice(
       previewRegistry.indexOf('"architecture-test-style": {'),
     );
-    expect(publishedPreview).toContain("button: () => (");
-    expect(publishedPreview).toContain("card: () => (");
-    expect(publishedPreview).toContain("input: () => (");
     expect(publishedPreview).toContain("coverPreview: () => (");
+    expect(publishedPreview).not.toContain("button: () => (");
+    expect(publishedPreview).not.toContain("card: () => (");
+    expect(publishedPreview).not.toContain("input: () => (");
   });
 
   it("rolls back generated files and registries when a later write fails", async () => {

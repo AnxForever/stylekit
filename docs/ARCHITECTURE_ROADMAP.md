@@ -25,6 +25,22 @@ For the next implementation cycle:
 - Treat catalog publication and delivery as the highest-leverage architecture seams.
 - Keep the modular monolith; there is no evidence that microservices would improve this product.
 
+### Non-negotiable visual-design guardrail
+
+The existing style preview cards are approved product design and are not refactor targets.
+
+- Do not change their layout, colors, typography, component appearance, content composition,
+  animation, or interaction without the product owner's explicit approval for that specific change.
+- Preserve all existing preview JSX and its rendered output during architecture and performance work.
+- Do not introduce a generic or agent-designed fallback renderer as a replacement for an existing
+  style preview.
+- Preview optimization is limited to behavior-preserving changes such as module boundaries,
+  code splitting, lazy loading, caching, and removal of duplicated non-visual infrastructure.
+- Any proposed visual change must be reviewed separately before implementation; passing unit tests
+  or improving bundle size does not constitute visual approval.
+- Before and after screenshots at fixed viewports are required for preview-loading refactors. The
+  expected result is pixel-level equivalence, apart from documented nondeterministic rendering.
+
 ## 2. Evidence summary
 
 The review found a healthy baseline with several concentrated risks:
@@ -91,7 +107,7 @@ The existing public imports remain stable during migration:
 ### Phase 0 — Restore safe catalog registration
 
 Priority: P0  
-Status: in progress
+Status: in progress; safe-publication baseline landed in `efc279ab`, review hardening remains
 
 #### Problem
 
@@ -182,27 +198,33 @@ accessibility, and readiness degrade. The storage source leaks across the seam.
 - Static and community behavior have explicit capability tests.
 - API responses and detail pages use the same fallback rules.
 
-### Phase 3 — Replace the preview mirror
+### Phase 3 — Optimize preview delivery without visual changes
 
 Priority: P1
 
 #### Problem
 
-`lib/style-components.tsx` manually mirrors style information as four JSX renderers per
-style. Catalog cards that need one cover preview load the complete 203,922-byte async chunk.
+`lib/style-components.tsx` contains the approved preview implementations. Catalog cards that
+need one cover preview load the complete 203,922-byte async chunk, even though each card renders
+only one style. The loading boundary is the problem; the existing visual output is not.
 
 #### Direction
 
-- Define a compact preview description derived from catalog data.
-- Provide one default renderer for most styles.
-- Retain bespoke adapters only where the default cannot represent the style.
-- Load bespoke preview code by style instead of as one all-style bundle.
+- Preserve the current 135 style preview outputs and their existing JSX behavior.
+- Split preview modules by style or by a measured chunking strategy without redesigning them.
+- Load only the preview code required by the current route or visible card set.
+- Keep preview lookup and loading behind a stable interface so callers do not depend on chunking.
+- Establish fixed-viewport screenshot baselines before moving implementations.
+- Treat any screenshot difference as a regression unless the product owner explicitly approves it.
 
 #### Completion criteria
 
-- Catalog pages no longer download the complete preview registry.
-- New styles receive a usable default preview without handwritten JSX.
-- Bundle size and visual regression checks are recorded before and after.
+- Catalog pages no longer download the complete preview registry when it is not needed.
+- All existing style preview cards remain pixel-equivalent at the agreed fixed viewports.
+- Layout, colors, typography, component appearance, content, animation, and interaction remain unchanged.
+- Bundle size, loading behavior, and screenshot regression results are recorded before and after.
+- A future new-style preview design remains an explicit product/design decision, not an automatic
+  generic renderer introduced by this refactor.
 
 ### Phase 4 — Remove retired Generator code
 
@@ -315,7 +337,7 @@ Relevant UI phases also run Playwright against desktop and mobile projects.
 2. `fix(catalog): make style publication safe`
 3. `refactor(catalog): deepen publication module`
 4. `refactor(styles): centralize delivery capabilities`
-5. `perf(preview): replace all-style preview bundle`
+5. `perf(preview): split preview loading with pixel-equivalent output`
 6. `refactor(generator): remove retired implementation`
 7. `refactor(i18n): centralize locale route policy`
 
