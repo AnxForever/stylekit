@@ -6,7 +6,8 @@ export interface ProductTruthIssue {
     | "missing-api-route"
     | "missing-redirect-target"
     | "unpublished-package-command"
-    | "misleading-template-download";
+    | "misleading-template-download"
+    | "retired-capability-claim";
   source: string;
   message: string;
 }
@@ -30,6 +31,7 @@ export async function auditProductTruth(rootDir: string): Promise<ProductTruthRe
     ...(await auditRedirectTargets(rootDir)),
     ...(await auditUnpublishedPackageCommands(rootDir)),
     ...(await auditTemplateDownloadClaim(rootDir)),
+    ...(await auditForbiddenPublicClaims(rootDir)),
   ];
 
   return {
@@ -163,6 +165,40 @@ async function auditTemplateDownloadClaim(rootDir: string): Promise<ProductTruth
         code: "misleading-template-download",
         source,
         message: `Template download label "${label}" does not disclose that only page.tsx source is exported`,
+      });
+    }
+  }
+
+  return issues;
+}
+
+async function auditForbiddenPublicClaims(rootDir: string): Promise<ProductTruthIssue[]> {
+  const claims = [
+    {
+      source: "README.md",
+      pattern: /\bPrompt builder\b/i,
+      message: "README advertises the retired Prompt builder as an active product",
+    },
+    {
+      source: "README.md",
+      pattern: /\bStyle linter\b/i,
+      message: "README advertises the retired Style linter as an active product",
+    },
+    {
+      source: "README.md",
+      pattern: /everything needed[^\n]*production-ready code/i,
+      message: "README overstates current content as a production-complete delivery",
+    },
+  ] as const;
+  const issues: ProductTruthIssue[] = [];
+
+  for (const claim of claims) {
+    const content = await readFile(path.join(rootDir, claim.source), "utf8");
+    if (claim.pattern.test(content)) {
+      issues.push({
+        code: "retired-capability-claim",
+        source: claim.source,
+        message: claim.message,
       });
     }
   }

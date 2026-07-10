@@ -42,7 +42,7 @@
 
 ## What is StyleKit?
 
-StyleKit helps humans and AI generate consistent, high-quality UI code. Pick a style, get structured design tokens, component recipes, and prompt templates — everything needed to go from "glassmorphism SaaS dashboard" to production-ready code.
+StyleKit helps humans and AI start from a consistent visual direction. Pick a style to get structured design tokens, component recipes, prompt guidance, and implementation references; production integration and completeness still depend on the target project.
 
 <table>
 <tr>
@@ -50,8 +50,8 @@ StyleKit helps humans and AI generate consistent, high-quality UI code. Pick a s
 
 ### Design System
 
-- **120+ visual styles** with design tokens, color palettes, and typography
-- **128 live showcases** — full-page interactive demos for every style
+- **135 visual and layout styles** with design tokens, color palettes, and typography
+- **136 live showcases** — full-page interactive demos across the catalog
 - **Component recipes** — copy-paste code for buttons, cards, inputs, and more
 - **Export anywhere** — Tailwind preset, shadcn theme, CSS variables, Figma tokens
 
@@ -60,9 +60,9 @@ StyleKit helps humans and AI generate consistent, high-quality UI code. Pick a s
 
 ### AI-Native Workflow
 
-- **Prompt builder** — Surface + Context + Constraints methodology
+- **AI implementation guidance** — hard prompt, design spec, and creative brief
 - **IDE export** — `.cursorrules`, `claude-rules`, `windsurf-rules`
-- **Style linter** — validate code against any style spec
+- **shadcn theme install** — light and dark CSS variables for existing projects
 - **llms.txt** — AI-discoverable docs at [`/llms.txt`](https://stylekit.top/llms.txt)
 
 </td>
@@ -72,8 +72,8 @@ StyleKit helps humans and AI generate consistent, high-quality UI code. Pick a s
 
 ### Creative Tools
 
-- **49 CSS animations** with live preview and one-click copy
-- **34 page templates** — SaaS, dashboard, e-commerce, portfolio, blog
+- **57 animations** with live preview and one-click copy
+- **35 page-template demos** — SaaS, dashboard, e-commerce, portfolio, blog
 - **Prompt libraries** — copyable UI, landing page, dashboard, Tailwind, and dark mode prompts
 - **Design resources** — gradients, shadows, backgrounds, typography, and component patterns
 
