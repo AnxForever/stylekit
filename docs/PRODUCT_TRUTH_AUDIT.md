@@ -20,12 +20,12 @@ Purpose: identify gaps between public promises and externally usable product beh
 | Existing 135-style catalog and preview cards | working | Catalog integrity and production build pass | Preserve existing visuals; add screenshot baselines before loading refactors |
 | Style detail prompts and rules | working | Served from the static style registry | Keep in free Explore; stop treating prompt quantity as the paid product |
 | shadcn style installation | partial | Registry item is `registry:theme` with `files: []` | Describe it as theme installation until packs ship files; build pack registry separately |
-| CLI via `npx stylekit-cli` | unpublished | Package README says it is not published to npm | Remove public install claims or publish and smoke-test the package |
-| MCP via `npx -y stylekit-mcp` | unpublished | Package README says it is not published to npm | Remove public setup claims or publish and verify real clients |
-| `/api/lint` | broken public documentation | README lists it, but no matching route exists | Remove the endpoint claim or implement it under the Validate roadmap |
-| `/api/match-style` | broken public documentation | README lists it, but no matching route exists | Remove the endpoint claim or implement it only with a defined product need |
-| Legacy prompt-builder/linter/playground redirects | broken | They redirect to `/generate`, which is not a current page | Redirect to an existing truthful surface or return an intentional retired response |
-| Legacy submission redirects | broken | They redirect to `/submit`, which is not a current route | Point to the current submission workflow or remove the stale redirect |
+| CLI | internal-only; public copy corrected | Package README says it is not published to npm; public pages now show repository-local build commands | Publish and smoke-test before restoring an `npx` claim |
+| MCP | internal-only; public copy corrected | Package README says it is not published to npm; public pages now show repository-local build commands | Publish and verify real clients before restoring an `npx` claim |
+| `/api/lint` | retired/not advertised | No matching route exists; the stale README endpoint was removed | Reintroduce only under a proven Validate product |
+| `/api/match-style` | retired/not advertised | No matching route exists; the stale README endpoint was removed | Reintroduce only with a defined paid or acquisition need |
+| Legacy prompt-builder/linter/playground redirects | resolved | Redirect targets now point to existing truthful surfaces | Keep covered by `check:product-truth` |
+| Legacy submission redirects | removed | The targets did not exist and no current public submission page replaces them | Restore only with a working public workflow |
 | Template source viewing | partial | API returns one `page.tsx` | Label as source preview rather than complete template download |
 | Template download | broken as a reusable template | Download contains one file while templates use internal and relative dependencies | Freeze additions; replace with manifest-based multi-file installation |
 | Local style image collection | internal-only and partial | 49 style directories / 96 WebP files, with minimal runtime integration | Audit origin and licenses; connect only approved assets through pack manifests |
@@ -58,6 +58,15 @@ Until the tracer-bullet pack reaches external installation:
 4. Add a reproducible script or test that verifies advertised routes and package publication claims.
 5. Establish a baseline funnel report from existing analytics.
 6. Begin the pack manifest foundation without connecting it to current preview rendering.
+
+Automated guard:
+
+```bash
+pnpm run check:product-truth
+```
+
+The check verifies README API claims, redirect destinations, and public `npx` commands for packages
+that their own package documentation marks as unpublished.
 
 ## Exit criteria
 

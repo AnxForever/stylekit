@@ -13,7 +13,7 @@ const COPY = {
     label: "For developers",
     title: "Use StyleKit in your workflow",
     intro:
-      "Every style ships as design tokens you can pull straight into your project — through shadcn, your AI editor, or the terminal.",
+      "Every style ships as design tokens you can install through shadcn. Repository-local CLI and MCP previews are available for contributors.",
     note: "These install a style's color theme — design tokens for light and dark. The component code is yours to build.",
     browse: "Browse all 130+ styles",
     cards: [
@@ -25,15 +25,15 @@ const COPY = {
       },
       {
         name: "MCP server",
-        desc: "Let Claude, Cursor and Windsurf search and apply styles while you code.",
-        cmd: "npx stylekit-mcp",
-        foot: "search · tokens · recipes · install commands",
+        desc: "Build and run the unpublished MCP package from a local StyleKit checkout.",
+        cmd: "pnpm --filter stylekit-mcp build && node packages/mcp/dist/index.js",
+        foot: "Not published to npm · contributor preview",
       },
       {
         name: "CLI",
-        desc: "Browse the catalog and grab a theme without leaving your terminal.",
-        cmd: "npx stylekit-cli add synthwave",
-        foot: "list · search · show · tokens · recipe · add",
+        desc: "Build and run the unpublished CLI package from a local StyleKit checkout.",
+        cmd: "pnpm --filter stylekit-cli build && node packages/cli/dist/index.js add synthwave",
+        foot: "Not published to npm · contributor preview",
       },
       {
         name: "Agent Skill",
@@ -47,7 +47,7 @@ const COPY = {
     label: "面向开发者",
     title: "把 StyleKit 接进你的工作流",
     intro:
-      "每个风格都以 design tokens 的形式提供，可直接拉进你的项目——通过 shadcn、AI 编辑器，或命令行。",
+      "每个风格都以 design tokens 的形式提供，可通过 shadcn 安装。CLI 与 MCP 目前仅供仓库本地开发预览。",
     note: "安装的是风格的配色主题——明暗两套 design tokens。组件代码由你自己实现。",
     browse: "浏览全部 130+ 风格",
     cards: [
@@ -59,15 +59,15 @@ const COPY = {
       },
       {
         name: "MCP server",
-        desc: "让 Claude、Cursor、Windsurf 在你写代码时直接搜索和应用风格。",
-        cmd: "npx stylekit-mcp",
-        foot: "搜索 · tokens · recipes · 安装命令",
+        desc: "在本地 StyleKit 仓库中构建并运行尚未发布的 MCP package。",
+        cmd: "pnpm --filter stylekit-mcp build && node packages/mcp/dist/index.js",
+        foot: "尚未发布到 npm · 贡献者预览",
       },
       {
         name: "CLI",
-        desc: "不离开终端，浏览风格库并获取主题。",
-        cmd: "npx stylekit-cli add synthwave",
-        foot: "list · search · show · tokens · recipe · add",
+        desc: "在本地 StyleKit 仓库中构建并运行尚未发布的 CLI package。",
+        cmd: "pnpm --filter stylekit-cli build && node packages/cli/dist/index.js add synthwave",
+        foot: "尚未发布到 npm · 贡献者预览",
       },
       {
         name: "Agent Skill",

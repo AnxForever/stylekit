@@ -39,9 +39,9 @@ export const STYLE_COLLECTIONS: StyleCollection[] = [
     introZh:
       "暗色模式不只是反转颜色——真正好的暗色界面会管理对比、层次和眩光，让每个表面在夜间依然清晰、耐看。这些风格都是暗色优先设计的，各自带有调校过的颜色 tokens、可读的表面层级，以及在深色背景上依然鲜活的强调色。选一个、复制它的 tokens，就能在你的 AI 编码工具里稳定落地暗色主题。",
     metaDescriptionEn:
-      "Curated dark mode design styles with tuned color tokens and readable contrast — for dashboards, SaaS, and dark-first UI. Copy tokens or install via shadcn, CLI, or MCP.",
+      "Curated dark mode design styles with tuned color tokens and readable contrast — for dashboards, SaaS, and dark-first UI. Copy tokens or install the theme via shadcn.",
     metaDescriptionZh:
-      "精选暗色模式设计风格，带调校过的颜色 tokens 与可读对比——适合 dashboard、SaaS 与暗色优先 UI。可复制 tokens 或通过 shadcn / CLI / MCP 安装。",
+      "精选暗色模式设计风格，带调校过的颜色 tokens 与可读对比——适合 dashboard、SaaS 与暗色优先 UI。可复制 tokens 或通过 shadcn 安装主题。",
     relatedPromptHref: "/dark-mode-ui-prompts",
     relatedPromptLabelEn: "Dark Mode UI Prompts",
     relatedPromptLabelZh: "暗色模式 UI 提示词",
@@ -90,9 +90,9 @@ export const STYLE_COLLECTIONS: StyleCollection[] = [
     introZh:
       "游戏界面在沉浸感与信息量之间取得平衡——HUD、背包、菜单，即使在动态和高压下也要清晰可读。这些风格把游戏 UI 语言带到 Web：科幻 HUD 叠层、JRPG 面板、街机 CRT 辉光、像素菜单，各自的 tokens 都为高可读性与氛围感调校过。",
     metaDescriptionEn:
-      "Curated game UI design styles — sci-fi HUD, JRPG panels, arcade CRT, and pixel menus, tuned for legibility and atmosphere. Copy tokens or install via shadcn, CLI, or MCP.",
+      "Curated game UI design styles — sci-fi HUD, JRPG panels, arcade CRT, and pixel menus, tuned for legibility and atmosphere. Copy tokens or install the theme via shadcn.",
     metaDescriptionZh:
-      "精选游戏 UI 设计风格——科幻 HUD、JRPG 面板、街机 CRT、像素菜单，为可读性与氛围调校。可复制 tokens 或通过 shadcn / CLI / MCP 安装。",
+      "精选游戏 UI 设计风格——科幻 HUD、JRPG 面板、街机 CRT、像素菜单，为可读性与氛围调校。可复制 tokens 或通过 shadcn 安装主题。",
   },
   {
     slug: "colorful-bold",

@@ -12,7 +12,7 @@ interface StyleUsePanelProps {
 
 /**
  * Conversion panel: turns a search visitor who found a style into a user of
- * StyleKit's distribution channels (shadcn registry / CLI / MCP). Placed high
+ * StyleKit's distribution channels (shadcn registry plus local CLI/MCP previews). Placed high
  * on the style detail page because these are the sticky, repeat-usage paths —
  * and the AI-distribution moat.
  */
@@ -33,17 +33,17 @@ export function StyleUsePanel({ slug, name, nameEn }: StyleUsePanelProps) {
     {
       tag: "CLI",
       desc: isZh
-        ? "不离开终端，直接拉取这个风格的主题。"
-        : "Grab this style's theme without leaving your terminal.",
-      code: `npx stylekit-cli add ${slug}`,
+        ? "贡献者可在本地仓库构建尚未发布的 CLI。"
+        : "Contributors can build the unpublished CLI from a local checkout.",
+      code: `pnpm --filter stylekit-cli build && node packages/cli/dist/index.js add ${slug}`,
       language: "bash",
     },
     {
       tag: "MCP",
       desc: isZh
-        ? `让 Claude / Cursor / Windsurf 边写代码边应用「${displayName}」。`
-        : `Let Claude, Cursor & Windsurf apply “${displayName}” while you code.`,
-      code: "npx stylekit-mcp",
+        ? `贡献者可在本地仓库预览「${displayName}」的 MCP 能力。`
+        : `Contributors can preview ${displayName} through the repository-local MCP package.`,
+      code: "pnpm --filter stylekit-mcp build && node packages/mcp/dist/index.js",
       language: "bash",
     },
   ];
