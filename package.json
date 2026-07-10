@@ -14,6 +14,7 @@
     "typecheck": "rm -rf .next/dev .next/types && npx --no-install tsc --noEmit",
     "security:secrets": "node tools/scripts/check-secrets.cjs",
     "check:catalog": "npx --no-install tsx tools/scripts/check-catalog-integrity.ts",
+    "check:product-truth": "npx --no-install tsx tools/scripts/check-product-truth.ts",
     "check:component-preview": "node tools/scripts/check-component-preview.cjs",
     "check:style-extractor": "node tools/scripts/check-style-extractor.cjs",
     "smoke": "node tools/scripts/smoke-check.mjs",

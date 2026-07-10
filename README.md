@@ -188,15 +188,13 @@ See [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md) and [`docs/RELEASE_REVIEW.md`](do
 
 ## API Surface
 
-The stable JSON endpoints cover style packs, tokens, recipes, and style linting.
+The stable JSON endpoints expose published style metadata, tokens, recipes, and rules.
 
 ```
 GET  /api/styles                      # List all styles
-GET  /api/styles/{slug}               # Full style pack (tokens + recipes + rules)
+GET  /api/styles/{slug}               # Style record (tokens + recipes + rules)
 GET  /api/styles/{slug}/tokens        # Design tokens only
 GET  /api/styles/{slug}/recipes       # Component recipes only
-POST /api/lint                        # Lint code against a style
-POST /api/match-style                 # Match code to closest style
 ```
 
 ## Use in your shadcn project
