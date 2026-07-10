@@ -37,7 +37,7 @@ describe("CodeBlock analytics", () => {
     });
   });
 
-  it("tracks a code copy only when a real style slug is available", async () => {
+  it("tracks a code copy with its real style slug when available", async () => {
     const onCopySuccess = vi.fn();
     render(
       <CodeBlock
@@ -58,12 +58,15 @@ describe("CodeBlock analytics", () => {
     expect(onCopySuccess).toHaveBeenCalledTimes(1);
   });
 
-  it("does not create an unknown-slug analytics event for generic code", async () => {
+  it("records generic code without inventing an unknown style slug", async () => {
     render(<CodeBlock code="const value = true" />);
 
     fireEvent.click(screen.getByRole("button", { name: "export.copyCode" }));
 
     await waitFor(() => expect(writeTextMock).toHaveBeenCalledWith("const value = true"));
-    expect(trackEventMock).not.toHaveBeenCalled();
+    expect(trackEventMock).toHaveBeenCalledWith("code_copy", {
+      slug: null,
+      language: "tsx",
+    });
   });
 });

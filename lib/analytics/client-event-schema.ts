@@ -46,6 +46,8 @@ const packExperimentShape = {
   pack_version: shortStringSchema,
   offer_id: opaqueIdSchema,
   source: packFunnelSourceSchema,
+  visibility_ms: z.number().int().positive().max(60 * 60 * 1000),
+  visible_ratio_bps: z.number().int().min(1).max(10_000),
 };
 const packPriceShape = {
   ...packExperimentShape,
@@ -173,8 +175,6 @@ export function readEventStyleSlug(
     eventType === "style_view" ||
     eventType === "style_export" ||
     eventType === "code_copy" ||
-    eventType === "animation_view" ||
-    eventType === "template_view" ||
     eventType === "showcase_open" ||
     eventType === "shadcn_command_copy" ||
     eventType === "catalog_impression"

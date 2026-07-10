@@ -91,6 +91,8 @@ describe("client analytics runtime schema", () => {
         pack_version: "0.1.0",
         offer_id: "founding-solo",
         source: "direct",
+        visibility_ms: 2_000,
+        visible_ratio_bps: 5_000,
         price_id: "founding-solo-cny-199",
         currency: "CNY",
         amount_minor: 19_900,
@@ -116,5 +118,20 @@ describe("client analytics runtime schema", () => {
         sessionId: null,
       }).success,
     ).toBe(false);
+  });
+
+  it("does not misclassify animation or template identifiers as style slugs", () => {
+    expect(
+      readEventStyleSlug("animation_view", {
+        slug: "fade-in-up",
+        source: "page",
+      }),
+    ).toBeNull();
+    expect(
+      readEventStyleSlug("template_view", {
+        slug: "saas-landing",
+        source: "page",
+      }),
+    ).toBeNull();
   });
 });

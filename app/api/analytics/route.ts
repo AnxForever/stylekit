@@ -10,6 +10,7 @@ import { verifyTrustedOrigin } from "@/lib/security/request-origin";
 import { getSupabaseAdmin } from "@/lib/supabase/server";
 import { z } from "zod";
 import { getStyleBySlug } from "@/lib/styles";
+import { resolveStyleBySlug } from "@/lib/styles/community-runtime";
 import {
   parseClientAnalyticsPayload,
   readEventStyleSlug,
@@ -145,15 +146,22 @@ async function recordInternalAnalyticsEvent(
   payload: ParsedClientAnalyticsPayload,
 ): Promise<
   | { ok: true }
-  | { ok: false; status: 500 | 503; error: string }
+  | { ok: false; status: 400 | 500 | 503; error: string }
 > {
   const styleSlug = readEventStyleSlug(payload.eventType, payload.eventData);
+  const resolvedStyle = styleSlug ? await resolveStyleBySlug(styleSlug) : null;
+  if (styleSlug && !resolvedStyle) {
+    return { ok: false, status: 400, error: "Unknown style slug" };
+  }
+
+  const deviceType = readDeviceType(request.headers.get("user-agent"));
   const eventData = {
     ...payload.eventData,
     browser: readBrowser(request.headers.get("user-agent")),
     os: readOs(request.headers.get("user-agent")),
-    deviceType: readDeviceType(request.headers.get("user-agent")),
+    deviceType,
     country: readCountry(request),
+    environment: readEnvironment(),
   };
 
   const supabase = getSupabaseAdmin();
@@ -171,7 +179,7 @@ async function recordInternalAnalyticsEvent(
     return { ok: false, status: 500, error: "Failed to store analytics event" };
   }
 
-  if (styleSlug && getStyleBySlug(styleSlug)) {
+  if (styleSlug && resolvedStyle) {
     const source = inferLegacySource(payload.eventType);
     if (source) {
       trackStyleUsage(styleSlug, source);
@@ -200,6 +208,13 @@ function readCountry(request: Request): string | null {
   if (!country) return null;
   const normalized = country.toUpperCase();
   return /^[A-Z]{2}$/.test(normalized) ? normalized : null;
+}
+
+function readEnvironment(): "production" | "preview" | "development" | "test" {
+  if (process.env.NODE_ENV === "test") return "test";
+  if (process.env.VERCEL_ENV === "preview") return "preview";
+  if (process.env.NODE_ENV === "development") return "development";
+  return "production";
 }
 
 function readBrowser(userAgent: string | null): string {

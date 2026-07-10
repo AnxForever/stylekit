@@ -24,9 +24,7 @@ export function CodeBlock({
     try {
       await navigator.clipboard.writeText(code);
       setCopied(true);
-      if (slug) {
-        trackEvent("code_copy", { slug, language });
-      }
+      trackEvent("code_copy", { slug: slug ?? null, language });
       onCopySuccess?.();
       setTimeout(() => setCopied(false), 2000);
     } catch {
@@ -38,9 +36,7 @@ export function CodeBlock({
       document.execCommand("copy");
       document.body.removeChild(textArea);
       setCopied(true);
-      if (slug) {
-        trackEvent("code_copy", { slug, language });
-      }
+      trackEvent("code_copy", { slug: slug ?? null, language });
       onCopySuccess?.();
       setTimeout(() => setCopied(false), 2000);
     }
