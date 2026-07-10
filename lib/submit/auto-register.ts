@@ -5,8 +5,7 @@
  * so that an approved community submission becomes a registered style.
  */
 
-import { writeFile, mkdir, readFile } from "fs/promises";
-import { existsSync } from "fs";
+import { mkdir, readFile, rm, stat, writeFile } from "fs/promises";
 import path from "path";
 import type { SubmissionRecord } from "./reviewer";
 import {
@@ -23,12 +22,42 @@ export interface AutoRegisterResult {
   errors: string[];
 }
 
+interface PreparedWrite {
+  relativePath: string;
+  content: string;
+  kind: "generated" | "registry";
+  previousContent?: string;
+}
+
+interface PublicationOptions {
+  writeFile?: typeof writeFile;
+}
+
+const REGISTRY_PATHS = {
+  styles: "lib/styles/registry.ts",
+  meta: "lib/styles/meta-registry.ts",
+  tokens: "lib/styles/tokens-registry-data.ts",
+  recipes: "lib/recipes/registry.ts",
+  previews: "lib/style-components.tsx",
+} as const;
+
+const SLUG_RE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+const HEX_COLOR_RE = /^#(?:[0-9a-f]{3}|[0-9a-f]{4}|[0-9a-f]{6}|[0-9a-f]{8})$/i;
+
 // ---------------------------------------------------------------------------
 // Main entry point
 // ---------------------------------------------------------------------------
 
 export async function autoRegisterStyle(
   submission: SubmissionRecord,
+): Promise<AutoRegisterResult> {
+  return publishStyleToCodebase(submission, process.cwd());
+}
+
+export async function publishStyleToCodebase(
+  submission: SubmissionRecord,
+  rootDir: string,
+  options: PublicationOptions = {},
 ): Promise<AutoRegisterResult> {
   const result: AutoRegisterResult = {
     success: false,
@@ -37,40 +66,34 @@ export async function autoRegisterStyle(
     errors: [],
   };
 
-  const scaffoldInput = buildScaffoldInput(submission);
-  const files = generateStyleScaffoldFiles(scaffoldInput);
-  const root = process.cwd();
+  const committedWrites: PreparedWrite[] = [];
+  const writeFileImpl = options.writeFile ?? writeFile;
 
-  // 1. Write generated files --------------------------------------------------
-  for (const file of files) {
-    const absPath = path.join(root, file.name);
-    const dir = path.dirname(absPath);
+  try {
+    const writes = await preparePublicationWrites(submission, rootDir);
 
-    try {
-      if (!existsSync(dir)) {
-        await mkdir(dir, { recursive: true });
+    for (const write of writes) {
+      const absolutePath = path.join(rootDir, write.relativePath);
+      await mkdir(path.dirname(absolutePath), { recursive: true });
+      await writeFileImpl(absolutePath, write.content, "utf8");
+      committedWrites.push(write);
+
+      if (write.kind === "registry") {
+        result.registriesPatched.push(write.relativePath);
+      } else {
+        result.filesWritten.push(write.relativePath);
       }
-      await writeFile(absPath, file.content, "utf-8");
-      result.filesWritten.push(file.name);
-    } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : String(err);
-      result.errors.push(`Failed to write ${file.name}: ${message}`);
     }
+
+    result.success = true;
+  } catch (error: unknown) {
+    result.errors.push(error instanceof Error ? error.message : String(error));
+    const rollbackErrors = await rollbackPublication(committedWrites, rootDir);
+    result.errors.push(...rollbackErrors);
+    result.filesWritten = [];
+    result.registriesPatched = [];
   }
 
-  // 2. Patch registry files ---------------------------------------------------
-  const slug = scaffoldInput.slug;
-  const exportName = slugToExportName(slug);
-  const tokensExportName = `${exportName}Tokens`;
-  const recipesExportName = `${exportName}Recipes`;
-
-  await patchMeta(root, slug, scaffoldInput, result);
-  await patchStylesIndex(root, slug, exportName, result);
-  await patchTokensRegistry(root, slug, tokensExportName, result);
-  await patchRecipesIndex(root, slug, recipesExportName, result);
-  await patchStyleComponents(root, slug, scaffoldInput, result);
-
-  result.success = result.errors.length === 0;
   return result;
 }
 
@@ -87,7 +110,7 @@ function buildScaffoldInput(submission: SubmissionRecord): StyleScaffoldInput {
   const description = String(fd.description ?? "");
   const category = (String(fd.category ?? "modern") as StyleCategory);
   const styleType = (String(fd.styleType ?? "visual") as StyleType);
-  const tags = Array.isArray(fd.tags) ? fd.tags.map(String) as StyleTag[] : ["modern" as StyleTag];
+  const tags = Array.isArray(fd.tags) ? fd.tags.map(String) as StyleTag[] : [];
   const primaryColor = String(fd.primaryColor ?? "#000000");
   const secondaryColor = String(fd.secondaryColor ?? "#ffffff");
   const accentColors = Array.isArray(fd.accentColors)
@@ -124,264 +147,289 @@ function buildScaffoldInput(submission: SubmissionRecord): StyleScaffoldInput {
   };
 }
 
-// ---------------------------------------------------------------------------
-// Generic regex-based file patcher
-// ---------------------------------------------------------------------------
+async function preparePublicationWrites(
+  submission: SubmissionRecord,
+  rootDir: string,
+): Promise<PreparedWrite[]> {
+  const input = buildScaffoldInput(submission);
+  const slug = input.slug.trim().toLowerCase();
+  if (!SLUG_RE.test(slug)) {
+    throw new Error(`Invalid style slug: ${input.slug}`);
+  }
+  input.slug = slug;
+  validateColors(input);
 
-async function patchFile(
-  filePath: string,
-  label: string,
-  pattern: RegExp,
-  buildReplacement: (content: string, match: RegExpExecArray) => string,
-  result: AutoRegisterResult,
-): Promise<void> {
-  try {
-    const content = await readFile(filePath, "utf-8");
-    const match = pattern.exec(content);
-    if (!match) {
-      result.errors.push(`${label}: insertion point not found`);
-      return;
+  const generatedWrites = generateStyleScaffoldFiles(input)
+    .filter((file) => file.name !== "scaffold/REGISTER.md")
+    .map((file) => ({
+      relativePath: file.name,
+      content: file.content,
+      kind: "generated" as const,
+    }));
+
+  for (const write of generatedWrites) {
+    if (await fileExists(path.join(rootDir, write.relativePath))) {
+      throw new Error(`Publication target already exists: ${write.relativePath}`);
     }
-    const patched = buildReplacement(content, match);
-    await writeFile(filePath, patched, "utf-8");
-    result.registriesPatched.push(label);
-  } catch (err: unknown) {
-    const message = err instanceof Error ? err.message : String(err);
-    result.errors.push(`${label}: ${message}`);
+  }
+
+  const registryContents = await Promise.all(
+    Object.values(REGISTRY_PATHS).map(async (relativePath) => ({
+      relativePath,
+      content: await readFile(path.join(rootDir, relativePath), "utf8"),
+    })),
+  );
+  const byPath = new Map(registryContents.map((item) => [item.relativePath, item.content]));
+  const exportName = slugToExportName(slug);
+  const tokensExportName = `${exportName}Tokens`;
+  const recipesExportName = `${exportName}Recipes`;
+
+  const registryWrites: PreparedWrite[] = [
+    {
+      relativePath: REGISTRY_PATHS.styles,
+      content: patchStylesRegistry(requiredContent(byPath, REGISTRY_PATHS.styles), slug, exportName),
+      kind: "registry",
+      previousContent: requiredContent(byPath, REGISTRY_PATHS.styles),
+    },
+    {
+      relativePath: REGISTRY_PATHS.meta,
+      content: patchMetaRegistry(requiredContent(byPath, REGISTRY_PATHS.meta), input),
+      kind: "registry",
+      previousContent: requiredContent(byPath, REGISTRY_PATHS.meta),
+    },
+    {
+      relativePath: REGISTRY_PATHS.tokens,
+      content: patchTokensRegistry(
+        requiredContent(byPath, REGISTRY_PATHS.tokens),
+        slug,
+        tokensExportName,
+      ),
+      kind: "registry",
+      previousContent: requiredContent(byPath, REGISTRY_PATHS.tokens),
+    },
+    {
+      relativePath: REGISTRY_PATHS.recipes,
+      content: patchRecipesRegistry(
+        requiredContent(byPath, REGISTRY_PATHS.recipes),
+        slug,
+        recipesExportName,
+      ),
+      kind: "registry",
+      previousContent: requiredContent(byPath, REGISTRY_PATHS.recipes),
+    },
+    {
+      relativePath: REGISTRY_PATHS.previews,
+      content: patchPreviewRegistry(requiredContent(byPath, REGISTRY_PATHS.previews), input),
+      kind: "registry",
+      previousContent: requiredContent(byPath, REGISTRY_PATHS.previews),
+    },
+  ];
+
+  return [...generatedWrites, ...registryWrites];
+}
+
+function validateColors(input: StyleScaffoldInput): void {
+  const colors = [
+    ["primary", input.primaryColor],
+    ["secondary", input.secondaryColor],
+    ...input.accentColors.map((color, index) => [`accent ${index + 1}`, color] as const),
+  ] as const;
+
+  for (const [label, color] of colors) {
+    if (!HEX_COLOR_RE.test(color.trim())) {
+      throw new Error(`Invalid ${label} color: ${color}`);
+    }
   }
 }
 
-// ---------------------------------------------------------------------------
-// Individual registry patchers
-// ---------------------------------------------------------------------------
+async function rollbackPublication(
+  writes: PreparedWrite[],
+  rootDir: string,
+): Promise<string[]> {
+  const errors: string[] = [];
 
-async function patchMeta(
-  root: string,
-  slug: string,
-  input: StyleScaffoldInput,
-  result: AutoRegisterResult,
-): Promise<void> {
-  const filePath = path.join(root, "lib/styles/meta.ts");
+  for (const write of [...writes].reverse()) {
+    const absolutePath = path.join(rootDir, write.relativePath);
+    try {
+      if (write.kind === "registry" && write.previousContent !== undefined) {
+        await writeFile(absolutePath, write.previousContent, "utf8");
+      } else {
+        await rm(absolutePath, { force: true });
+      }
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : String(error);
+      errors.push(`Rollback failed for ${write.relativePath}: ${message}`);
+    }
+  }
 
-  const entry = [
-    `  {`,
-    `    slug: "${slug}",`,
-    `    name: ${JSON.stringify(input.name)},`,
-    `    nameEn: ${JSON.stringify(input.nameEn)},`,
-    `    description: ${JSON.stringify(input.description)},`,
-    `    cover: "/styles/${slug}.svg",`,
-    `    styleType: "${input.styleType}",`,
-    `    tags: ${JSON.stringify(input.tags)},`,
-    `    category: "${input.category}",`,
-    `    colors: {`,
-    `      primary: "${input.primaryColor}",`,
-    `      secondary: "${input.secondaryColor}",`,
-    `      accent: ${JSON.stringify(input.accentColors)},`,
-    `    },`,
-    `    keywords: ${JSON.stringify(input.keywords)},`,
-    `  },`,
-  ].join("\n");
+  return errors;
+}
 
-  // Insert before the closing ];
-  await patchFile(
-    filePath,
-    "lib/styles/meta.ts",
-    /\n\];/,
-    (content, match) => {
-      const idx = match.index!;
-      return content.slice(0, idx) + "\n" + entry + "\n];" + content.slice(idx + match[0].length);
-    },
-    result,
+function requiredContent(contents: Map<string, string>, relativePath: string): string {
+  const content = contents.get(relativePath);
+  if (content === undefined) {
+    throw new Error(`Missing registry content: ${relativePath}`);
+  }
+  return content;
+}
+
+function insertBefore(
+  content: string,
+  marker: string,
+  insertion: string,
+  label: string,
+  useLast = false,
+): string {
+  const index = useLast ? content.lastIndexOf(marker) : content.indexOf(marker);
+  if (index === -1) {
+    throw new Error(`${label}: insertion point not found`);
+  }
+  return content.slice(0, index) + insertion + content.slice(index);
+}
+
+function assertSlugAbsent(content: string, slug: string, label: string): void {
+  if (content.includes(`"${slug}"`) || content.includes(`slug: "${slug}"`)) {
+    throw new Error(`${label}: style already registered: ${slug}`);
+  }
+}
+
+function patchStylesRegistry(content: string, slug: string, exportName: string): string {
+  const label = REGISTRY_PATHS.styles;
+  assertSlugAbsent(content, slug, label);
+  const withImport = insertBefore(
+    content,
+    "\n// 风格列表",
+    `\nimport { ${exportName} } from "./${slug}";\n`,
+    label,
+  );
+  return insertBefore(
+    withImport,
+    "\n];\n\nexport const styles",
+    `\n  ${exportName},`,
+    label,
+    true,
   );
 }
 
-async function patchStylesIndex(
-  root: string,
-  slug: string,
-  exportName: string,
-  result: AutoRegisterResult,
-): Promise<void> {
-  const filePath = path.join(root, "lib/styles/index.ts");
-  const importLine = `import { ${exportName} } from "./${slug}";`;
-
-  try {
-    let content = await readFile(filePath, "utf-8");
-
-    // Add import after the last import line
-    const lastImportIdx = content.lastIndexOf("\nimport ");
-    if (lastImportIdx === -1) {
-      result.errors.push("lib/styles/index.ts: could not find import block");
-      return;
-    }
-    const endOfImportLine = content.indexOf("\n", lastImportIdx + 1);
-    content =
-      content.slice(0, endOfImportLine + 1) +
-      `// Auto-registered\n${importLine}\n` +
-      content.slice(endOfImportLine + 1);
-
-    // Add to styles array before the closing ];
-    const arrayCloseIdx = content.lastIndexOf("\n];");
-    if (arrayCloseIdx === -1) {
-      result.errors.push("lib/styles/index.ts: could not find styles array end");
-      return;
-    }
-    content =
-      content.slice(0, arrayCloseIdx) +
-      `\n  // Auto-registered\n  ${exportName},` +
-      content.slice(arrayCloseIdx);
-
-    await writeFile(filePath, content, "utf-8");
-    result.registriesPatched.push("lib/styles/index.ts");
-  } catch (err: unknown) {
-    const message = err instanceof Error ? err.message : String(err);
-    result.errors.push(`lib/styles/index.ts: ${message}`);
-  }
+function patchMetaRegistry(content: string, input: StyleScaffoldInput): string {
+  const label = REGISTRY_PATHS.meta;
+  assertSlugAbsent(content, input.slug, label);
+  const entry = [
+    "",
+    "  {",
+    `    slug: "${input.slug}",`,
+    `    name: ${JSON.stringify(input.name)},`,
+    `    nameEn: ${JSON.stringify(input.nameEn)},`,
+    `    description: ${JSON.stringify(input.description)},`,
+    `    cover: "/styles/${input.slug}.svg",`,
+    `    styleType: "${input.styleType}",`,
+    `    tags: ${JSON.stringify(input.tags)},`,
+    `    category: "${input.category}",`,
+    "    colors: {",
+    `      primary: ${JSON.stringify(input.primaryColor)},`,
+    `      secondary: ${JSON.stringify(input.secondaryColor)},`,
+    `      accent: ${JSON.stringify(input.accentColors)},`,
+    "    },",
+    `    keywords: ${JSON.stringify(input.keywords)},`,
+    "  },",
+  ].join("\n");
+  return insertBefore(content, "\n];", entry, label, true);
 }
 
-async function patchTokensRegistry(
-  root: string,
+function patchTokensRegistry(
+  content: string,
   slug: string,
   tokensExportName: string,
-  result: AutoRegisterResult,
-): Promise<void> {
-  const filePath = path.join(root, "lib/styles/tokens-registry.ts");
-  const importLine = `import { ${tokensExportName} } from "./${slug}-tokens";`;
-
-  try {
-    let content = await readFile(filePath, "utf-8");
-
-    // Add import after the last import line
-    const lastImportIdx = content.lastIndexOf("\nimport ");
-    if (lastImportIdx === -1) {
-      result.errors.push("lib/styles/tokens-registry.ts: could not find import block");
-      return;
-    }
-    const endOfImportLine = content.indexOf("\n", lastImportIdx + 1);
-    content =
-      content.slice(0, endOfImportLine + 1) +
-      `// Auto-registered\n${importLine}\n` +
-      content.slice(endOfImportLine + 1);
-
-    // Add entry before the closing };
-    const registryCloseIdx = content.lastIndexOf("\n};");
-    if (registryCloseIdx === -1) {
-      result.errors.push("lib/styles/tokens-registry.ts: could not find registry object end");
-      return;
-    }
-    content =
-      content.slice(0, registryCloseIdx) +
-      `\n  // Auto-registered\n  "${slug}": ${tokensExportName},` +
-      content.slice(registryCloseIdx);
-
-    await writeFile(filePath, content, "utf-8");
-    result.registriesPatched.push("lib/styles/tokens-registry.ts");
-  } catch (err: unknown) {
-    const message = err instanceof Error ? err.message : String(err);
-    result.errors.push(`lib/styles/tokens-registry.ts: ${message}`);
-  }
+): string {
+  const label = REGISTRY_PATHS.tokens;
+  assertSlugAbsent(content, slug, label);
+  const withImport = insertBefore(
+    content,
+    "\n// Registry of all style tokens",
+    `\nimport { ${tokensExportName} } from "./${slug}-tokens";\n`,
+    label,
+  );
+  return insertBefore(withImport, "\n};", `\n  "${slug}": ${tokensExportName},`, label, true);
 }
 
-async function patchRecipesIndex(
-  root: string,
+function patchRecipesRegistry(
+  content: string,
   slug: string,
   recipesExportName: string,
-  result: AutoRegisterResult,
-): Promise<void> {
-  const filePath = path.join(root, "lib/recipes/index.ts");
-  const importLine = `import { ${recipesExportName} } from "./${slug}";`;
+): string {
+  const label = REGISTRY_PATHS.recipes;
+  assertSlugAbsent(content, slug, label);
+  const withImport = insertBefore(
+    content,
+    "\n// Recipe registry",
+    `\nimport { ${recipesExportName} } from "./${slug}";\n`,
+    label,
+  );
+  return insertBefore(
+    withImport,
+    "\n};\n\n/**\n * Get all recipes",
+    `\n  "${slug}": ${recipesExportName},`,
+    label,
+  );
+}
 
+function patchPreviewRegistry(content: string, input: StyleScaffoldInput): string {
+  const label = REGISTRY_PATHS.previews;
+  assertSlugAbsent(content, input.slug, label);
+  const primary = input.primaryColor.trim();
+  const secondary = input.secondaryColor.trim();
+  const accent = input.accentColors[0]?.trim() || primary;
+  const displayName = input.nameEn.trim() || input.name.trim() || input.slug;
+  const entry = [
+    "",
+    `  "${input.slug}": {`,
+    "    button: () => (",
+    `      <button className="px-5 py-2.5 rounded-lg font-medium transition-opacity hover:opacity-90" style={{ backgroundColor: "${primary}", color: "${secondary}" }}>`,
+    `        {${JSON.stringify(`${displayName} Button`)}}`,
+    "      </button>",
+    "    ),",
+    "    card: () => (",
+    `      <div className="w-full rounded-lg border p-5" style={{ backgroundColor: "${secondary}", borderColor: "${primary}", color: "${primary}" }}>`,
+    `        <h3 className="font-semibold">{${JSON.stringify(displayName)}}</h3>`,
+    "        <p className=\"mt-2 text-sm opacity-70\">Style preview card</p>",
+    "      </div>",
+    "    ),",
+    "    input: () => (",
+    `      <input className="w-full rounded-lg border px-4 py-2.5" style={{ backgroundColor: "${secondary}", borderColor: "${primary}", color: "${primary}" }} placeholder="Type here..." />`,
+    "    ),",
+    "    coverPreview: () => (",
+    `      <div className="w-full h-full flex items-center justify-center p-4" style={{ backgroundColor: "${secondary}" }}>`,
+    `        <div className="w-full max-w-[200px] rounded-lg border p-4" style={{ borderColor: "${primary}" }}>`,
+    `          <div className="text-sm font-medium mb-2" style={{ color: "${primary}" }}>{${JSON.stringify(displayName)}}</div>`,
+    `          <div className="h-px mb-3 opacity-20" style={{ backgroundColor: "${primary}" }} />`,
+    `          <p className="text-xs mb-3" style={{ color: "${accent}" }}>${input.slug}</p>`,
+    `          <button className="text-xs px-3 py-1 rounded" style={{ backgroundColor: "${primary}", color: "${secondary}" }}>View</button>`,
+    "        </div>",
+    "      </div>",
+    "    ),",
+    "  },",
+  ].join("\n");
+  return insertBefore(
+    content,
+    "\n};\nexport function renderStyleComponent",
+    entry,
+    label,
+    true,
+  );
+}
+
+async function fileExists(filePath: string): Promise<boolean> {
   try {
-    let content = await readFile(filePath, "utf-8");
-
-    // Add import after the last import line
-    const lastImportIdx = content.lastIndexOf("\nimport ");
-    if (lastImportIdx === -1) {
-      result.errors.push("lib/recipes/index.ts: could not find import block");
-      return;
+    await stat(filePath);
+    return true;
+  } catch (error: unknown) {
+    if (isNodeError(error) && error.code === "ENOENT") {
+      return false;
     }
-    const endOfImportLine = content.indexOf("\n", lastImportIdx + 1);
-    content =
-      content.slice(0, endOfImportLine + 1) +
-      `// Auto-registered\n${importLine}\n` +
-      content.slice(endOfImportLine + 1);
-
-    // Add entry before the closing }; of the recipeRegistry
-    const registryClosePattern = /\n\};\n\n\/\*\*/;
-    const registryMatch = registryClosePattern.exec(content);
-    if (registryMatch && registryMatch.index !== undefined) {
-      const insertIdx = registryMatch.index;
-      content =
-        content.slice(0, insertIdx) +
-        `\n  // Auto-registered\n  "${slug}": ${recipesExportName},` +
-        content.slice(insertIdx);
-    } else {
-      // Fallback: find the last };
-      const lastRegistryClose = content.lastIndexOf("\n};");
-      if (lastRegistryClose === -1) {
-        result.errors.push("lib/recipes/index.ts: could not find recipeRegistry object end");
-        return;
-      }
-      content =
-        content.slice(0, lastRegistryClose) +
-        `\n  // Auto-registered\n  "${slug}": ${recipesExportName},` +
-        content.slice(lastRegistryClose);
-    }
-
-    await writeFile(filePath, content, "utf-8");
-    result.registriesPatched.push("lib/recipes/index.ts");
-  } catch (err: unknown) {
-    const message = err instanceof Error ? err.message : String(err);
-    result.errors.push(`lib/recipes/index.ts: ${message}`);
+    throw error;
   }
 }
 
-async function patchStyleComponents(
-  root: string,
-  slug: string,
-  input: StyleScaffoldInput,
-  result: AutoRegisterResult,
-): Promise<void> {
-  const filePath = path.join(root, "lib/style-components.tsx");
-  const secondary = input.secondaryColor.trim();
-  const primary = input.primaryColor.trim();
-  const accent = input.accentColors[0]?.trim() || primary;
-
-  const entry = [
-    `  "${slug}": {`,
-    `    coverPreview: () => (`,
-    `      <div className="w-full h-full flex items-center justify-center p-4" style={{ backgroundColor: "${secondary}" }}>`,
-    `        <div className="w-full max-w-[200px] rounded-lg p-4" style={{ border: "1px solid ${primary}30" }}>`,
-    `          <div className="text-sm font-medium mb-2" style={{ color: "${primary}" }}>${input.nameEn.trim()}</div>`,
-    `          <div className="h-px mb-3" style={{ backgroundColor: "${primary}20" }} />`,
-    `          <p className="text-xs mb-3" style={{ color: "${accent}" }}>${slug}</p>`,
-    `          <button className="text-xs px-3 py-1 rounded" style={{ backgroundColor: "${primary}", color: "${secondary}" }}>View</button>`,
-    `        </div>`,
-    `      </div>`,
-    `    ),`,
-    `  },`,
-  ].join("\n");
-
-  try {
-    let content = await readFile(filePath, "utf-8");
-
-    // Find the closing }; of styleComponents object before the renderStyleComponent function
-    const closingPattern = /\n\};\n\n\/\/ /;
-    const closingMatch = closingPattern.exec(content);
-    if (closingMatch && closingMatch.index !== undefined) {
-      const insertIdx = closingMatch.index;
-      content =
-        content.slice(0, insertIdx) +
-        "\n" + entry +
-        content.slice(insertIdx);
-    } else {
-      result.errors.push("lib/style-components.tsx: insertion point not found");
-      return;
-    }
-
-    await writeFile(filePath, content, "utf-8");
-    result.registriesPatched.push("lib/style-components.tsx");
-  } catch (err: unknown) {
-    const message = err instanceof Error ? err.message : String(err);
-    result.errors.push(`lib/style-components.tsx: ${message}`);
-  }
+function isNodeError(error: unknown): error is NodeJS.ErrnoException {
+  return error instanceof Error && "code" in error;
 }

@@ -37,6 +37,7 @@ export function generateStyleScaffoldFiles(input: StyleScaffoldInput): Generated
   const registerGuide = generateRegisterGuideMarkdown(input, {
     exportName,
     tokensExportName,
+    recipesExportName,
   });
   const recipeFile = generateRecipeFile(input, slug, recipesExportName);
   const showcasePage = generateShowcasePage(input);
@@ -251,7 +252,7 @@ function generateCoverSvg(input: StyleScaffoldInput): string {
 
 function generateRegisterGuideMarkdown(
   input: StyleScaffoldInput,
-  names: { exportName: string; tokensExportName: string }
+  names: { exportName: string; tokensExportName: string; recipesExportName: string }
 ): string {
   const slug = input.slug.trim();
   const coverPath = `/styles/${slug}.svg`;
@@ -263,18 +264,22 @@ function generateRegisterGuideMarkdown(
     `Cover: \`${coverPath}\``,
     `Style export: \`${names.exportName}\``,
     `Tokens export: \`${names.tokensExportName}\``,
+    `Recipes export: \`${names.recipesExportName}\``,
     ``,
     `## Files Included In This ZIP`,
     ``,
     `- \`lib/styles/${slug}.ts\``,
     `- \`lib/styles/${slug}-tokens.ts\``,
+    `- \`lib/recipes/${slug}.ts\``,
     `- \`public/styles/${slug}.svg\``,
+    `- \`app/styles/${slug}/showcase/page.tsx\``,
+    `- \`app/styles/${slug}/showcase/_content.tsx\``,
     ``,
     `## Registration Snippets`,
     ``,
     `### 1) Register Style Definition`,
     ``,
-    `File: \`lib/styles/index.ts\``,
+    `File: \`lib/styles/registry.ts\``,
     ``,
     "```ts",
     `import { ${names.exportName} } from "./${slug}";`,
@@ -284,7 +289,7 @@ function generateRegisterGuideMarkdown(
     ``,
     `### 2) Register Lightweight Metadata`,
     ``,
-    `File: \`lib/styles/meta.ts\``,
+    `File: \`lib/styles/meta-registry.ts\``,
     ``,
     "```ts",
     `{`,
@@ -307,7 +312,7 @@ function generateRegisterGuideMarkdown(
     ``,
     `### 3) Register Tokens (Optional, Recommended)`,
     ``,
-    `File: \`lib/styles/tokens-registry.ts\``,
+    `File: \`lib/styles/tokens-registry-data.ts\``,
     ``,
     "```ts",
     `import { ${names.tokensExportName} } from "./${slug}-tokens";`,
@@ -317,7 +322,19 @@ function generateRegisterGuideMarkdown(
     `"${slug}": ${names.tokensExportName},`,
     "```",
     ``,
-    `### 4) Add Cover Preview Renderer`,
+    `### 4) Register Component Recipes`,
+    ``,
+    `File: \`lib/recipes/registry.ts\``,
+    ``,
+    "```ts",
+    `import { ${names.recipesExportName} } from "./${slug}";`,
+    "```",
+    ``,
+    "```ts",
+    `"${slug}": ${names.recipesExportName},`,
+    "```",
+    ``,
+    `### 5) Add Cover Preview Renderer`,
     ``,
     `File: \`lib/style-components.tsx\``,
     ``,
@@ -342,8 +359,9 @@ function generateRegisterGuideMarkdown(
     ``,
     `## Verify`,
     ``,
-    `- \`npm test\``,
-    `- \`npm run lint\``,
+    `- \`pnpm run check:catalog\``,
+    `- \`pnpm test\``,
+    `- \`pnpm run lint\``,
     ``,
   ].join("\n");
 }
@@ -490,8 +508,8 @@ function generateShowcasePage(input: StyleScaffoldInput): string {
   const nameEn = input.nameEn.trim() || input.name.trim() || input.slug.trim();
 
   return [
-    `import { Metadata } from "next";`,
-    `import { ShowcaseContent } from "./_content";`,
+    `import type { Metadata } from "next";`,
+    `import ShowcaseContent from "./_content";`,
     ``,
     `export const metadata: Metadata = {`,
     `  title: "${nameEn} Style Showcase | StyleKit",`,
@@ -694,4 +712,3 @@ function hexToRgb(hex: string): { r: number; g: number; b: number } | null {
     b: Number.parseInt(full.slice(5, 7), 16),
   };
 }
-
