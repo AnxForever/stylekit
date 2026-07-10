@@ -95,15 +95,15 @@ Complete checklist for adding a new design style to StyleKit.
 
 ## Phase 2: Registration Files (MODIFY)
 
-### 2.1 Style Index
+### 2.1 Full Style Registry
 
-- [ ] `lib/styles/index.ts`
+- [ ] `lib/styles/registry.ts`
   - Add import statement: `import { styleName } from "./{slug}";`
   - Add to `styles` array: `styleName,`
 
-### 2.2 Style Metadata
+### 2.2 Style Metadata Registry
 
-- [ ] `lib/styles/meta.ts`
+- [ ] `lib/styles/meta-registry.ts`
   - Add entry to `stylesMeta` array with:
     - `slug`, `name`, `nameEn`, `description`
     - `cover`: `/styles/{slug}.svg`
@@ -111,13 +111,19 @@ Complete checklist for adding a new design style to StyleKit.
     - `colors`: primary, secondary, accent[]
     - `keywords`: Chinese search terms
 
-### 2.3 Recipe Registry
+### 2.3 Token Registry
 
-- [ ] `lib/recipes/index.ts`
+- [ ] `lib/styles/tokens-registry-data.ts`
+  - Add import statement: `import { styleNameTokens } from "./{slug}-tokens";`
+  - Add to `styleTokensRegistry`: `"{slug}": styleNameTokens,`
+
+### 2.4 Recipe Registry
+
+- [ ] `lib/recipes/registry.ts`
   - Add import statement: `import { styleNameRecipes } from "./{slug}";`
   - Add to `recipeRegistry` object: `"{slug}": styleNameRecipes,`
 
-### 2.4 Style Components
+### 2.5 Style Components
 
 - [ ] `lib/style-components.tsx`
   - Add entry with all four component renderers:
@@ -238,16 +244,17 @@ Complete checklist for adding a new design style to StyleKit.
 | 1.1 | CREATE | `lib/styles/{slug}.ts` |
 | 1.2 | CREATE | `lib/styles/{slug}-tokens.ts` |
 | 1.3 | CREATE | `lib/recipes/{slug}.ts` |
-| 2.1 | MODIFY | `lib/styles/index.ts` |
-| 2.2 | MODIFY | `lib/styles/meta.ts` |
-| 2.3 | MODIFY | `lib/recipes/index.ts` |
-| 2.4 | MODIFY | `lib/style-components.tsx` |
+| 2.1 | MODIFY | `lib/styles/registry.ts` |
+| 2.2 | MODIFY | `lib/styles/meta-registry.ts` |
+| 2.3 | MODIFY | `lib/styles/tokens-registry-data.ts` |
+| 2.4 | MODIFY | `lib/recipes/registry.ts` |
+| 2.5 | MODIFY | `lib/style-components.tsx` |
 | 3.1 | CREATE | `app/styles/{slug}/showcase/` (directory) |
 | 3.2 | CREATE | `app/styles/{slug}/showcase/page.tsx` |
 | 3.3 | CREATE | `app/styles/{slug}/showcase/_content.tsx` |
 | 4.1 | CREATE | `public/styles/{slug}.svg` |
 
-**Total: 6 new files + 4 modified files per style**
+**Total: 6 new files + 5 modified files per style**
 
 ## Common Mistakes to Avoid
 
@@ -273,8 +280,9 @@ touch app/styles/{slug}/showcase/_content.tsx
 touch public/styles/{slug}.svg
 
 # Files to modify
-# - lib/styles/index.ts
-# - lib/styles/meta.ts
-# - lib/recipes/index.ts
+# - lib/styles/registry.ts
+# - lib/styles/meta-registry.ts
+# - lib/styles/tokens-registry-data.ts
+# - lib/recipes/registry.ts
 # - lib/style-components.tsx
 ```

@@ -92,7 +92,7 @@ Open [localhost:3000](http://localhost:3000).
 
 ## Adding a New Style
 
-This is the most common contribution. A complete style requires **6 new files + 4 modified files**.
+This is the most common contribution. A complete style requires **6 new files + 5 modified files**.
 
 > For the full step-by-step checklist, see [`STYLE_ADDITION_CHECKLIST.md`](./STYLE_ADDITION_CHECKLIST.md).
 
@@ -108,9 +108,10 @@ New files:
   public/styles/{slug}.svg          # Cover image (1200x630)
 
 Modified files:
-  lib/styles/index.ts               # Register style import
-  lib/styles/meta.ts                # Add metadata entry
-  lib/recipes/index.ts              # Register recipes
+  lib/styles/registry.ts            # Register full style definition
+  lib/styles/meta-registry.ts       # Add lightweight metadata
+  lib/styles/tokens-registry-data.ts # Register style tokens
+  lib/recipes/registry.ts           # Register recipes
   lib/style-components.tsx          # Add component renderers
 ```
 
@@ -172,4 +173,3 @@ All checks must pass. The CI pipeline runs the same checks automatically.
 ---
 
 Thank you for helping make StyleKit better.
-
