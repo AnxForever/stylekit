@@ -4,6 +4,10 @@ Status: active execution plan
 Created: 2026-07-10  
 Baseline commit: `559077988bf9fb1284182ab66b35727cbf6a5653`
 
+Product scope, monetization, feature prioritization, and flagship-pack validation are governed by
+`docs/PRODUCT_MONETIZATION_ROADMAP.md`. This document remains the architecture-supporting plan and
+must not independently expand product surfaces that the product roadmap freezes or retires.
+
 ## 1. Executive decision
 
 StyleKit should be developed primarily as an **AI coding style infrastructure product**.
