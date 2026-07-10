@@ -20,6 +20,7 @@ const UTM_KEYS = [
   "utm_content",
   "utm_term",
 ] as const;
+const MAX_UTM_VALUE_LENGTH = 160;
 
 export type UtmKey = (typeof UTM_KEYS)[number];
 export type UtmParams = Partial<Record<UtmKey, string>>;
@@ -37,7 +38,7 @@ export function parseUtmParams(search: string): UtmParams | null {
   for (const key of UTM_KEYS) {
     const value = params.get(key);
     if (value) {
-      utm[key] = value;
+      utm[key] = value.slice(0, MAX_UTM_VALUE_LENGTH);
       found = true;
     }
   }
@@ -63,7 +64,20 @@ export function getUtmParams(): UtmParams | null {
   try {
     const raw = sessionStorage.getItem(UTM_STORAGE_KEY);
     if (!raw) return null;
-    return JSON.parse(raw) as UtmParams;
+    const parsed = JSON.parse(raw) as unknown;
+    if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
+      return null;
+    }
+
+    const stored = parsed as Record<string, unknown>;
+    const utm: UtmParams = {};
+    for (const key of UTM_KEYS) {
+      const value = stored[key];
+      if (typeof value === "string" && value.trim().length > 0) {
+        utm[key] = value.slice(0, MAX_UTM_VALUE_LENGTH);
+      }
+    }
+    return Object.keys(utm).length > 0 ? utm : null;
   } catch {
     return null;
   }

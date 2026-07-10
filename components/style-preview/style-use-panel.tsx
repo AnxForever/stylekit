@@ -2,6 +2,7 @@
 
 import { CodeBlock } from "@/components/style-preview/code-block";
 import { LocalizedLink } from "@/components/i18n/localized-link";
+import { trackEvent } from "@/lib/analytics/events";
 import { useI18n } from "@/lib/i18n/context";
 
 interface StyleUsePanelProps {
@@ -76,7 +77,20 @@ export function StyleUsePanel({ slug, name, nameEn }: StyleUsePanelProps) {
               {row.tag}
             </span>
             <p className="min-h-[40px] text-sm text-muted">{row.desc}</p>
-            <CodeBlock code={row.code} language={row.language} slug={slug} />
+            <CodeBlock
+              code={row.code}
+              language={row.language}
+              slug={slug}
+              onCopySuccess={
+                row.tag === "shadcn"
+                  ? () =>
+                      trackEvent("shadcn_command_copy", {
+                        slug,
+                        source: "style_use_panel",
+                      })
+                  : undefined
+              }
+            />
           </div>
         ))}
       </div>

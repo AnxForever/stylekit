@@ -8,9 +8,15 @@ interface CodeBlockProps {
   code: string;
   language?: string;
   slug?: string;
+  onCopySuccess?: () => void;
 }
 
-export function CodeBlock({ code, language = "tsx", slug }: CodeBlockProps) {
+export function CodeBlock({
+  code,
+  language = "tsx",
+  slug,
+  onCopySuccess,
+}: CodeBlockProps) {
   const [copied, setCopied] = useState(false);
   const { t } = useI18n();
 
@@ -18,7 +24,10 @@ export function CodeBlock({ code, language = "tsx", slug }: CodeBlockProps) {
     try {
       await navigator.clipboard.writeText(code);
       setCopied(true);
-      trackEvent("code_copy", { slug: slug ?? "unknown", language });
+      if (slug) {
+        trackEvent("code_copy", { slug, language });
+      }
+      onCopySuccess?.();
       setTimeout(() => setCopied(false), 2000);
     } catch {
       // Fallback
@@ -29,7 +38,10 @@ export function CodeBlock({ code, language = "tsx", slug }: CodeBlockProps) {
       document.execCommand("copy");
       document.body.removeChild(textArea);
       setCopied(true);
-      trackEvent("code_copy", { slug: slug ?? "unknown", language });
+      if (slug) {
+        trackEvent("code_copy", { slug, language });
+      }
+      onCopySuccess?.();
       setTimeout(() => setCopied(false), 2000);
     }
   };

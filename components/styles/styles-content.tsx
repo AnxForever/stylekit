@@ -15,6 +15,7 @@ import {
 } from "@/lib/styles/scenarios";
 import { useCatalogStyles } from "@/lib/swr";
 import { expandQueryTerms, colorIntentMatches, hasTerm } from "@/lib/search/synonyms";
+import { observeCatalogImpressions } from "@/lib/analytics/catalog-impressions";
 
 type TypeFilter = StyleType | "all";
 type SortOption = "recommended" | "name-asc" | "name-desc";
@@ -82,6 +83,8 @@ export function StylesContent({ allStyles }: StylesContentProps) {
   const { data: catalogStylesData } = useCatalogStyles();
   const catalogStyles: StyleMeta[] = catalogStylesData?.styles ?? allStyles;
   const searchInputRef = useRef<HTMLInputElement>(null);
+  const catalogGridRef = useRef<HTMLDivElement>(null);
+  const seenCatalogImpressionsRef = useRef(new Set<string>());
   const hasMountedQuerySyncRef = useRef(false);
 
   const [activeType, setActiveType] = useState<TypeFilter>(parsedSearchParams.type);
@@ -458,6 +461,7 @@ export function StylesContent({ allStyles }: StylesContentProps) {
     deferredActiveType,
     deferredShowFavorites,
     deferredSortBy,
+    expandedSearchTerms,
     favoriteSet,
     styleScenarios,
     trimmedDeferredSearchQuery,
@@ -488,6 +492,46 @@ export function StylesContent({ allStyles }: StylesContentProps) {
     showFavorites !== deferredShowFavorites ||
     sortBy !== deferredSortBy ||
     activeTagsKey !== deferredActiveTagsKey;
+
+  const deferredFilterCount = [
+    deferredActiveScenario !== "all",
+    deferredActiveType !== "all",
+    deferredActiveTags.length > 0,
+    deferredShowFavorites,
+  ].filter(Boolean).length;
+  const catalogImpressionContextKey = [
+    deferredActiveScenario,
+    deferredActiveType,
+    deferredActiveTags.join(","),
+    deferredShowFavorites ? "favorites" : "all",
+    deferredSortBy,
+    trimmedDeferredSearchQuery,
+  ].join(":");
+
+  useEffect(() => {
+    const grid = catalogGridRef.current;
+    if (!grid || isFiltering || filteredStyles.length === 0) {
+      return;
+    }
+
+    return observeCatalogImpressions(
+      grid,
+      {
+        contextKey: catalogImpressionContextKey,
+        sort: deferredSortBy,
+        filterCount: deferredFilterCount,
+        queryPresent: trimmedDeferredSearchQuery.length > 0,
+      },
+      seenCatalogImpressionsRef.current,
+    );
+  }, [
+    catalogImpressionContextKey,
+    deferredFilterCount,
+    deferredSortBy,
+    filteredStyles,
+    isFiltering,
+    trimmedDeferredSearchQuery,
+  ]);
 
   return (
     <>
@@ -806,6 +850,7 @@ export function StylesContent({ allStyles }: StylesContentProps) {
 
           {/* Styles List with loading indicator */}
           <div
+            ref={catalogGridRef}
             className={`grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 md:gap-8 transition-opacity ${
               isFiltering ? "opacity-70" : ""
             }`}
@@ -821,9 +866,11 @@ export function StylesContent({ allStyles }: StylesContentProps) {
                 )}
               </div>
             ) : (
-              filteredStyles.map((style: StyleMeta) => (
+              filteredStyles.map((style: StyleMeta, index: number) => (
                 <div
                   key={style.slug}
+                  data-catalog-style-slug={style.slug}
+                  data-catalog-style-rank={index + 1}
                   className="[content-visibility:auto] [contain-intrinsic-size:1px_540px]"
                 >
                   <StyleCard style={style} variant="compact" />

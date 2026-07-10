@@ -135,7 +135,8 @@ export function CommandPalette() {
           const trimmedQuery = query.trim();
           if (trimmedQuery) {
             trackEvent("search", {
-              query: trimmedQuery.slice(0, 80),
+              query_present: true,
+              query_length: trimmedQuery.length,
               results_count: filteredResults.length,
             });
           }
@@ -221,7 +222,8 @@ export function CommandPalette() {
                           const trimmedQuery = query.trim();
                           if (trimmedQuery) {
                             trackEvent("search", {
-                              query: trimmedQuery.slice(0, 80),
+                              query_present: true,
+                              query_length: trimmedQuery.length,
                               results_count: filteredResults.length,
                             });
                           }

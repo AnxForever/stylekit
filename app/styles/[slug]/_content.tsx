@@ -273,13 +273,6 @@ export function StyleDetailContent({
 
   useEffect(() => {
     const sendAnalytics = () => {
-      fetch("/api/analytics", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ slug: style.slug, source: "page" }),
-      }).catch(() => {
-        // Analytics failure is non-blocking
-      });
       trackEvent("style_view", { slug: style.slug, source: "page" });
     };
 
@@ -341,6 +334,9 @@ export function StyleDetailContent({
               <div className="flex flex-col sm:flex-row flex-wrap gap-3 sm:gap-4 mt-6">
                 <LocalizedLink
                   href={`/styles/${style.slug}/showcase`}
+                  onClick={() =>
+                    trackEvent("showcase_open", { slug: style.slug, source: "hero" })
+                  }
                   className="inline-flex items-center justify-center px-6 py-3 bg-foreground text-background text-sm tracking-wide hover:bg-foreground/90 transition-colors"
                 >
                   {t("styleDetail.viewShowcase")}
@@ -379,6 +375,12 @@ export function StyleDetailContent({
                 </p>
                 <LocalizedLink
                   href={`/styles/${style.slug}/showcase`}
+                  onClick={() =>
+                    trackEvent("showcase_open", {
+                      slug: style.slug,
+                      source: "preview_card",
+                    })
+                  }
                   className="group block border border-border overflow-hidden hover:border-foreground transition-colors"
                 >
                   {/* Mobile: static cover image */}
@@ -520,7 +522,11 @@ export function StyleDetailContent({
             {t("styleDetail.componentTemplates")}
           </p>
           <h2 className="text-2xl md:text-3xl mb-8">{t("styleDetail.componentPreview")}</h2>
-          <ComponentPreview components={style.components} defaultShowCode={false} />
+          <ComponentPreview
+            components={style.components}
+            defaultShowCode={false}
+            styleSlug={style.slug}
+          />
         </div>
       </section>
 
