@@ -47,6 +47,10 @@ type PackExperimentProps = {
   pack_version: string;
   offer_id: string;
   source: PackFunnelSource;
+  /** Time the complete offer region met the experiment's visibility threshold. */
+  visibility_ms: number;
+  /** Visible proportion in basis points, where 10_000 means 100%. */
+  visible_ratio_bps: number;
 };
 type PackOfferProps = PackExperimentProps;
 type PackPriceProps = PackOfferProps & {

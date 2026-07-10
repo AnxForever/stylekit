@@ -26,6 +26,10 @@ vi.mock("@/lib/styles", () => ({
   getStyleBySlug: vi.fn(),
 }));
 
+vi.mock("@/lib/styles/community-runtime", () => ({
+  resolveStyleBySlug: vi.fn(),
+}));
+
 import { POST } from "@/app/api/analytics/route";
 import { trackStyleCombination, trackStyleUsage } from "@/lib/analytics";
 import { verifyTrustedOrigin } from "@/lib/security/request-origin";
@@ -36,6 +40,7 @@ import {
 } from "@/lib/security/rate-limit";
 import { getSupabaseAdmin } from "@/lib/supabase/server";
 import { getStyleBySlug } from "@/lib/styles";
+import { resolveStyleBySlug } from "@/lib/styles/community-runtime";
 
 const mockedVerifyTrustedOrigin = vi.mocked(verifyTrustedOrigin);
 const mockedCheckRateLimit = vi.mocked(checkRateLimit);
@@ -43,6 +48,7 @@ const mockedCreateRateLimitHeaders = vi.mocked(createRateLimitHeaders);
 const mockedGetRequestClientKey = vi.mocked(getRequestClientKey);
 const mockedGetSupabaseAdmin = vi.mocked(getSupabaseAdmin);
 const mockedGetStyleBySlug = vi.mocked(getStyleBySlug);
+const mockedResolveStyleBySlug = vi.mocked(resolveStyleBySlug);
 const mockedTrackStyleUsage = vi.mocked(trackStyleUsage);
 const mockedTrackStyleCombination = vi.mocked(trackStyleCombination);
 
@@ -70,6 +76,11 @@ beforeEach(() => {
     slug === "corporate-clean" || slug === "neo-brutalist"
       ? ({ slug } as never)
       : undefined,
+  );
+  mockedResolveStyleBySlug.mockImplementation(async (slug) =>
+    slug === "corporate-clean" || slug === "neo-brutalist"
+      ? ({ source: "static", style: { slug }, tokens: null } as never)
+      : null,
   );
 });
 
@@ -104,6 +115,7 @@ describe("analytics route", () => {
         os: "Unknown",
         deviceType: "desktop",
         country: null,
+        environment: "test",
       },
       style_slug: "corporate-clean",
       session_id: "123e4567-e89b-42d3-a456-426614174000",
@@ -165,6 +177,33 @@ describe("analytics route", () => {
       expect(mockedTrackStyleUsage).not.toHaveBeenCalled();
     },
   );
+
+  it("rejects a well-formed but nonexistent style in client event data", async () => {
+    const insert = vi.fn();
+    mockedGetSupabaseAdmin.mockReturnValue({
+      from: vi.fn().mockReturnValue({ insert }),
+    } as never);
+
+    const response = await POST(
+      request({
+        eventType: "catalog_impression",
+        eventData: {
+          slug: "not-in-catalog",
+          rank: 1,
+          surface: "styles_catalog",
+          page: 1,
+          sort: "recommended",
+          collection_slug: null,
+          filter_count: 0,
+          query_present: false,
+        },
+        sessionId: null,
+      }),
+    );
+
+    expect(response.status).toBe(400);
+    expect(insert).not.toHaveBeenCalled();
+  });
 
   it("accepts catalog-backed legacy usage and combinations", async () => {
     const response = await POST(

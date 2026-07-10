@@ -171,5 +171,10 @@ checkout, payment, or install-verification source exists:
 Historical data cannot be backfilled for the newly instrumented events. Their baseline begins only
 after this version is deployed. A public priced offer remains gated by explicit frontend approval.
 
+The event contract alone does not make a visitor qualified. Before a public experiment starts, the
+approved offer flow still needs stable identity assignment, ICP qualification, bot/internal/test
+exclusion, frozen visibility thresholds, and server-side deduplication. Until those exist, offer and
+price exposure events are diagnostic only and cannot enter the 200-visitor denominator.
+
 Execution materials are indexed in
 [`PRODUCT_VALIDATION_PLAYBOOK.md`](./PRODUCT_VALIDATION_PLAYBOOK.md).
