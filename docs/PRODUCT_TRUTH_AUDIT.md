@@ -4,6 +4,9 @@ Status: baseline audit for monetization Phase 0
 Created: 2026-07-10  
 Purpose: identify gaps between public promises and externally usable product behavior before selling packs
 
+The initial seven-day funnel and Pack 1 hypothesis are recorded in
+`docs/ICP_PRICE_VALIDATION_BASELINE.md`.
+
 ## Status vocabulary
 
 - **working**: an external user can use the capability as described.

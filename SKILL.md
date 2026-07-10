@@ -1,6 +1,6 @@
 ---
 name: stylekit
-description: Apply a specific, consistent visual style to frontend UI you are generating. Use when building or styling web UI (pages, components, dashboards, landing pages) and you want a named aesthetic — Glassmorphism, Neo-Brutalist, Cyberpunk, Bauhaus, Apple, Stripe, Linear, and 130+ more — instead of generic AI defaults. StyleKit gives you the design tokens, component recipes, and AI rules for each style, installable via shadcn registry, CLI, or MCP.
+description: Apply a specific, consistent visual style to frontend UI you are generating. Use when building or styling web UI (pages, components, dashboards, landing pages) and you want a named aesthetic — Glassmorphism, Neo-Brutalist, Cyberpunk, Bauhaus, Apple, Stripe, Linear, and 130+ more — instead of generic AI defaults. StyleKit gives you design tokens, component recipes, and AI rules for each style, with themes installable through the shadcn registry.
 metadata:
   homepage: https://www.stylekit.top
 ---
@@ -38,19 +38,23 @@ Each style has a `slug` (e.g. `glassmorphism`, `neo-brutalist`, `stripe-style`,
 
 ## Step 2 — Install the style
 
-Pick whichever fits the project. All three deliver the same tokens + theme.
-
 - **shadcn registry** (drop the theme into an existing shadcn/ui project):
   ```bash
   npx shadcn add https://www.stylekit.top/r/<slug>.json
   ```
-- **CLI** (grab a theme from the terminal):
+
+The repository also contains CLI and MCP packages for contributor development. They are not
+published to npm and must be built from a local StyleKit checkout:
+
+- **CLI local preview**:
   ```bash
-  npx stylekit-cli add <slug>
+  pnpm --filter stylekit-cli build
+  node packages/cli/dist/index.js add <slug>
   ```
-- **MCP** (let the agent search and apply styles while coding):
+- **MCP local preview**:
   ```bash
-  npx stylekit-mcp
+  pnpm --filter stylekit-mcp build
+  node packages/mcp/dist/index.js
   ```
 
 Full per-style spec (tokens, recipes, do/don't rules) lives at
