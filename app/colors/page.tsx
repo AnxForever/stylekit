@@ -9,9 +9,9 @@ import { getSiteBaseUrl } from "@/lib/site-url";
 const BASE_URL = getSiteBaseUrl();
 
 export const metadata: Metadata = {
-  title: "Color Palettes & Hex Codes for 130+ Design Styles",
+  title: "Color Palettes & Hex Codes for 135 Design Styles",
   description:
-    "Search and copy hex codes from 130+ curated design styles — Glassmorphism, Bauhaus, Cyberpunk, and more. Every color tagged with its style, ready for Tailwind, CSS, and AI prompts.",
+    "Search and copy hex codes from 135 curated design styles — Glassmorphism, Bauhaus, Cyberpunk, and more. Every color is tagged with its style for Tailwind, CSS, and AI prompts.",
   keywords: [
     "color palette",
     "hex codes",

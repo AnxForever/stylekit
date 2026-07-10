@@ -1,6 +1,7 @@
 import { getStyleTokens } from "@/lib/styles/tokens-registry";
 import { getStyleRecipes } from "@/lib/recipes";
 import { resolveStyleBySlug } from "@/lib/styles/community-runtime";
+import { localizedList, localizedString } from "@/lib/styles/locale-content";
 
 /**
  * /api/styles/[slug]/md - Markdown variant for LLM consumption
@@ -13,6 +14,7 @@ export async function GET(
   { params }: { params: Promise<{ slug: string }> }
 ) {
   const { slug } = await params;
+  const locale = new URL(request.url).searchParams.get("locale") === "zh" ? "zh" : "en";
   const resolved = await resolveStyleBySlug(slug);
   const style = resolved?.style;
 
@@ -26,40 +28,48 @@ export async function GET(
   const tokens = resolved.tokens ?? getStyleTokens(slug);
   const recipes =
     resolved.source === "static" ? getStyleRecipes(slug) : null;
+  const name = locale === "zh" ? style.name : style.nameEn || style.name;
+  const secondaryName = locale === "zh" ? style.nameEn : style.name;
+  const description = localizedString(locale, style.description, style.descriptionEn);
+  const philosophy = localizedString(locale, style.philosophy, style.philosophyEn);
+  const keywords = localizedList(locale, style.keywords, style.keywordsEn);
+  const doList = localizedList(locale, style.doList, style.doListEn);
+  const dontList = localizedList(locale, style.dontList, style.dontListEn);
+  const aiRules = localizedString(locale, style.aiRules, style.aiRulesEn);
 
   const sections: string[] = [];
 
   // Header
-  sections.push(`# ${style.nameEn} (${style.name})
+  sections.push(`# ${name}${secondaryName && secondaryName !== name ? ` (${secondaryName})` : ""}
 
-> ${style.description}
+> ${description}
 
 **Slug**: \`${style.slug}\`
 **Type**: ${style.styleType}
-**Keywords**: ${style.keywords.join(", ")}
+**Keywords**: ${keywords.join(", ")}
 
 ---
 
 ## Design Philosophy
 
-${style.philosophy}
+${philosophy}
 
 ---
 
 ## Do's
 
-${style.doList.map((item) => `- ${item}`).join("\n")}
+${doList.map((item) => `- ${item}`).join("\n")}
 
 ## Don'ts
 
-${style.dontList.map((item) => `- ${item}`).join("\n")}
+${dontList.map((item) => `- ${item}`).join("\n")}
 
 ---
 
 ## AI Rules
 
 \`\`\`
-${style.aiRules}
+${aiRules}
 \`\`\`
 
 ---
@@ -199,6 +209,7 @@ ${style.compatibleWith.map((s) => `- \`${s}\``).join("\n")}
   return new Response(content, {
     headers: {
       "Content-Type": "text/markdown; charset=utf-8",
+      "Content-Language": locale === "zh" ? "zh-CN" : "en",
       "Cache-Control": "public, max-age=3600, s-maxage=3600",
     },
   });

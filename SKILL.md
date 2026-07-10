@@ -1,13 +1,13 @@
 ---
 name: stylekit
-description: Apply a specific, consistent visual style to frontend UI you are generating. Use when building or styling web UI (pages, components, dashboards, landing pages) and you want a named aesthetic — Glassmorphism, Neo-Brutalist, Cyberpunk, Bauhaus, Apple, Stripe, Linear, and 130+ more — instead of generic AI defaults. StyleKit gives you design tokens, component recipes, and AI rules for each style, with themes installable through the shadcn registry.
+description: Apply a specific, consistent visual style to frontend UI you are generating. Use when building or styling web UI (pages, components, dashboards, landing pages) and you want a named aesthetic — Glassmorphism, Neo-Brutalist, Cyberpunk, Bauhaus, Apple, Stripe, Linear, and many more — instead of generic AI defaults. StyleKit gives you design tokens, component recipes, and AI rules for each style, with themes installable through the shadcn registry.
 metadata:
   homepage: https://www.stylekit.top
 ---
 
 # StyleKit
 
-StyleKit is the most comprehensive style library for AI coding: 130+ curated
+StyleKit is an open-source style library for AI coding with 135 curated
 visual styles, each with machine-readable design tokens, component recipes, and
 AI rules. Use it to make the UI you generate look like a deliberate, named style
 instead of generic AI output.

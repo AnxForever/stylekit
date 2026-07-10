@@ -9,6 +9,7 @@ import { generateBlogPostJsonLd, generateBreadcrumbJsonLd } from "@/lib/seo/json
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { getSiteBaseUrl } from "@/lib/site-url";
+import { canonicalizeEnglishMetadata } from "@/lib/i18n/metadata";
 
 interface BlogPostPageProps {
   params: Promise<{ slug: string }>;
@@ -23,7 +24,7 @@ export async function generateMetadata({ params }: BlogPostPageProps): Promise<M
   const post = getPostBySlug(slug);
   if (!post) return {};
 
-  return {
+  return canonicalizeEnglishMetadata({
     title: post.title,
     description: post.description,
     openGraph: {
@@ -31,10 +32,11 @@ export async function generateMetadata({ params }: BlogPostPageProps): Promise<M
       description: post.description,
       type: "article",
       publishedTime: post.date,
+      ...(post.modified ? { modifiedTime: post.modified } : {}),
       authors: [post.author],
       tags: post.tags,
     },
-  };
+  }, `/blog/${slug}`);
 }
 
 export default async function BlogPostPage({ params }: BlogPostPageProps) {
@@ -46,11 +48,15 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   }
 
   const BASE_URL = getSiteBaseUrl();
-  const articleJsonLd = generateBlogPostJsonLd(post);
+  const canonicalUrl = `${BASE_URL}/en/blog/${slug}`;
+  const articleJsonLd = generateBlogPostJsonLd(post, {
+    url: canonicalUrl,
+    language: "en",
+  });
   const breadcrumbJsonLd = generateBreadcrumbJsonLd([
-    { name: "Home", url: BASE_URL },
-    { name: "Blog", url: `${BASE_URL}/blog` },
-    { name: post.title, url: `${BASE_URL}/blog/${slug}` },
+    { name: "Home", url: `${BASE_URL}/en` },
+    { name: "Blog", url: `${BASE_URL}/en/blog` },
+    { name: post.title, url: canonicalUrl },
   ]);
 
   return (

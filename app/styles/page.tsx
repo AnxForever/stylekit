@@ -7,12 +7,13 @@ import { StylesContent } from "@/components/styles/styles-content";
 import { getAllStylesMeta } from "@/lib/styles/meta";
 import { serializeJsonLd } from "@/lib/security/json-ld";
 import { generateBreadcrumbJsonLd } from "@/lib/seo/json-ld";
+import { CURATED_STYLE_COUNT } from "@/lib/product/catalog-facts";
 import { getSiteBaseUrl } from "@/lib/site-url";
 
 export const metadata: Metadata = {
-  title: "Browse 130+ UI Design Styles & AI Prompts",
+  title: `Browse ${CURATED_STYLE_COUNT} UI Design Styles & AI Prompts`,
   description:
-    "Explore 130+ curated visual styles with design tokens, component recipes, Tailwind-ready patterns, and AI UI prompt guidance for websites, dashboards, and landing pages.",
+    `Explore ${CURATED_STYLE_COUNT} curated visual styles with design tokens, component recipes, Tailwind-ready patterns, and AI UI prompt guidance for websites, dashboards, and landing pages.`,
 };
 
 export const dynamic = "force-static";

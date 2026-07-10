@@ -8,6 +8,10 @@ export const metadata: Metadata = {
   title: "Profile - StyleKit",
   description:
     "View your StyleKit profile, favorites, and account information.",
+  robots: {
+    index: false,
+    follow: false,
+  },
 };
 
 export default function ProfilePage() {

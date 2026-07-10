@@ -24,7 +24,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "UI Design Prompts Library | StyleKit",
     description:
-      "130+ curated AI prompts for generating beautiful web interfaces. Optimized for v0, Cursor, Claude, and more.",
+      "Curated AI prompts for generating web interfaces across StyleKit's 135 design styles. Optimized for v0, Cursor, Claude, and more.",
     siteName: "StyleKit",
     type: "website",
   },
@@ -32,7 +32,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "UI Design Prompts Library | StyleKit",
     description:
-      "130+ curated AI prompts for generating beautiful web interfaces.",
+      "Curated AI prompts covering StyleKit's 135 design styles.",
   },
 };
 
@@ -109,7 +109,7 @@ export default function PromptsPage() {
               href="/styles"
               className="inline-block border-2 border-foreground px-6 py-3 font-medium hover:bg-foreground hover:text-background transition-colors"
             >
-              Browse 130+ Styles
+              Browse 135 Styles
             </LocalizedLink>
           </div>
         </section>

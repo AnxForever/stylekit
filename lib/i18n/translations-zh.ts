@@ -337,7 +337,7 @@ export const zh: { [K in keyof typeof en]: string } = {
   "home.howItWorks.label": "使用流程",
   "home.howItWorks.title": "三步完成从浏览到构建",
   "home.howItWorks.step1.title": "浏览风格",
-  "home.howItWorks.step1.desc": "探索 120+ 种视觉风格，支持实时预览",
+  "home.howItWorks.step1.desc": "探索 135 种视觉风格与精选预览",
   "home.howItWorks.step2.title": "导出 Token",
   "home.howItWorks.step2.desc": "获取设计 Token、Tailwind 预设或 AI 提示词",
   "home.howItWorks.step3.title": "构建一致 UI",

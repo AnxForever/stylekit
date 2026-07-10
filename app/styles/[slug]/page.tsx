@@ -9,8 +9,9 @@ import { resolveStyleBySlug } from "@/lib/styles/community-runtime";
 import { scoreStyle } from "@/lib/accessibility";
 import { getCurrentVersion, getChangelog } from "@/lib/versioning";
 import { serializeJsonLd } from "@/lib/security/json-ld";
-import { generateStyleJsonLd, generateBreadcrumbJsonLd, generateStyleFaqJsonLd } from "@/lib/seo/json-ld";
+import { generateStyleJsonLd, generateBreadcrumbJsonLd } from "@/lib/seo/json-ld";
 import { getSiteBaseUrl } from "@/lib/site-url";
+import { getAlternateLocalePath } from "@/lib/i18n/routing";
 import { localizedString, localizedList } from "@/lib/styles/locale-content";
 import type { Locale } from "@/lib/i18n/translations";
 import { StyleDetailContent } from "./_content";
@@ -149,29 +150,26 @@ export default async function StyleDetailPage({
   const ssrPhilosophy = localizedString(locale, style.philosophy, style.philosophyEn);
   const ssrDos = localizedList(locale, style.doList, style.doListEn);
   const ssrDonts = localizedList(locale, style.dontList, style.dontListEn);
+  const localizedName = locale === "zh" ? style.name : style.nameEn || style.name;
+  const localizedKeywords = localizedList(locale, style.keywords, style.keywordsEn);
+  const canonicalUrl = `${BASE_URL}${getAlternateLocalePath(`/styles/${slug}`, locale)}`;
+  const localizedHomeUrl = `${BASE_URL}${getAlternateLocalePath("/", locale)}`;
+  const localizedStylesUrl = `${BASE_URL}${getAlternateLocalePath("/styles", locale)}`;
 
   const jsonLd = generateStyleJsonLd({
-    slug,
-    nameEn: style.nameEn,
-    description: style.description,
-    keywords: style.keywords,
+    name: localizedName,
+    description: ssrDescription,
+    keywords: localizedKeywords,
     category: style.category,
+    url: canonicalUrl,
+    language: locale === "zh" ? "zh-CN" : "en",
   });
 
   const breadcrumbSchema = generateBreadcrumbJsonLd([
-    { name: "Home", url: BASE_URL },
-    { name: "Styles", url: `${BASE_URL}/styles` },
-    { name: style.nameEn, url: `${BASE_URL}/styles/${slug}` },
+    { name: locale === "zh" ? "首页" : "Home", url: localizedHomeUrl },
+    { name: locale === "zh" ? "风格" : "Styles", url: localizedStylesUrl },
+    { name: localizedName, url: canonicalUrl },
   ]);
-
-  const faqSchema = generateStyleFaqJsonLd({
-    name: locale === "zh" ? style.name : style.nameEn || style.name,
-    description: ssrDescription,
-    philosophy: ssrPhilosophy,
-    category: style.category,
-    dos: ssrDos,
-    locale,
-  });
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -182,10 +180,6 @@ export default async function StyleDetailPage({
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: serializeJsonLd(breadcrumbSchema) }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: serializeJsonLd(faqSchema) }}
       />
       <Header />
       <div className="container mx-auto px-4 pt-4">

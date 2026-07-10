@@ -5,6 +5,7 @@ import { Footer } from "@/components/layout/footer";
 import { PromptTemplatePreviewSection } from "@/components/seo/prompt-template-preview-section";
 import { promptTopics } from "@/lib/prompts";
 import { uiPromptTemplates } from "@/lib/seo/prompt-template-previews";
+import { getRequestLocaleContext } from "@/lib/i18n/request";
 
 export const metadata: Metadata = {
   title: "UI Design Prompts Library",
@@ -48,27 +49,35 @@ function getTopicHref(slug: string) {
   return `/prompts/${slug}`;
 }
 
-export default function UiPromptsPage() {
-  const featuredTopics = promptTopics.filter((topic) =>
-    ["dashboard-design", "landing-page", "tailwind-ui", "dark-mode", "glassmorphism", "neo-brutalist"].includes(topic.slug)
-  );
+export default async function UiPromptsPage() {
+  const { locale } = await getRequestLocaleContext();
+  const isZh = locale === "zh";
+  const featuredTopics = promptTopics;
 
   const toolCards = [
     {
       name: "ChatGPT / Claude",
-      description: "Best for shaping page structure, visual direction, and richer prompt briefs before implementation.",
+      description: isZh
+        ? "适合在实现前梳理页面结构、视觉方向和更完整的提示词说明。"
+        : "Best for shaping page structure, visual direction, and richer prompt briefs before implementation.",
     },
     {
       name: "Cursor / Claude Code",
-      description: "Best for converting prompt briefs into real components, refactors, and code-level UI iterations.",
+      description: isZh
+        ? "适合把提示词说明转成真实组件、重构任务和代码级 UI 迭代。"
+        : "Best for converting prompt briefs into real components, refactors, and code-level UI iterations.",
     },
     {
       name: "v0",
-      description: "Best for rapid layout generation when your prompt clearly defines sections, hierarchy, and states.",
+      description: isZh
+        ? "当提示词明确规定区块、信息层级和交互状态时，适合快速生成布局。"
+        : "Best for rapid layout generation when your prompt clearly defines sections, hierarchy, and states.",
     },
     {
-      name: "Tailwind-first workflows",
-      description: "Best when you need implementation-ready HTML, React, or Next.js UI with explicit design constraints.",
+      name: isZh ? "Tailwind 优先工作流" : "Tailwind-first workflows",
+      description: isZh
+        ? "适合生成带有明确设计约束、可继续实现的 HTML、React 或 Next.js UI。"
+        : "Best when you need implementation-ready HTML, React, or Next.js UI with explicit design constraints.",
     },
   ];
 
@@ -79,17 +88,23 @@ export default function UiPromptsPage() {
         <section className="border-b border-border">
           <div className="max-w-7xl mx-auto px-6 md:px-12 py-16 md:py-24">
             <p className="text-xs tracking-widest uppercase text-muted mb-4">
-              Prompt Library
+              {isZh ? "提示词库" : "Prompt Library"}
             </p>
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
-              UI Design Prompts Library
+              {isZh ? "UI 与前端设计提示词库" : "UI Design Prompts Library"}
             </h1>
             <p className="text-lg text-muted max-w-3xl mb-8 leading-relaxed">
-              This is StyleKit&apos;s broad-match prompt hub for UI search intent. Start here, then move into more specific landing page, dashboard, Tailwind UI, and dark mode prompt collections for ChatGPT, Claude, Cursor, Claude Code, or v0.
+              {isZh
+                ? "这里汇总适用于 UI 与前端设计的通用提示词。你可以从这里进入落地页、仪表盘、Tailwind UI 和暗色模式等专题，并将提示词用于 ChatGPT、Claude、Cursor、Claude Code 或 v0。"
+                : "This is StyleKit's broad-match prompt hub for UI search intent. Start here, then move into more specific landing page, dashboard, Tailwind UI, and dark mode prompt collections for ChatGPT, Claude, Cursor, Claude Code, or v0."}
             </p>
             <div className="flex flex-wrap gap-3 text-sm text-muted">
-              <span className="border border-border px-3 py-1">{promptTopics.length} topics</span>
-              <span className="border border-border px-3 py-1">UI / landing / dashboard</span>
+              <span className="border border-border px-3 py-1">
+                {promptTopics.length} {isZh ? "个主题" : "topics"}
+              </span>
+              <span className="border border-border px-3 py-1">
+                {isZh ? "UI / 落地页 / 仪表盘" : "UI / landing / dashboard"}
+              </span>
               <span className="border border-border px-3 py-1">ChatGPT / Claude / Cursor / v0</span>
             </div>
           </div>
@@ -98,9 +113,11 @@ export default function UiPromptsPage() {
         <section className="border-b border-border">
           <div className="max-w-7xl mx-auto px-6 md:px-12 py-12 md:py-16">
             <p className="text-xs tracking-widest uppercase text-muted mb-4">
-              Featured Topics
+              {isZh ? "提示词主题" : "Prompt Topics"}
             </p>
-            <h2 className="text-2xl md:text-3xl mb-8">Search-friendly prompt topics</h2>
+            <h2 className="text-2xl md:text-3xl mb-8">
+              {isZh ? "按具体任务选择提示词" : "Search-friendly prompt topics"}
+            </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {featuredTopics.map((topic) => (
                 <LocalizedLink
@@ -109,14 +126,16 @@ export default function UiPromptsPage() {
                   className="group border border-border p-6 hover:border-foreground transition-colors"
                 >
                   <h3 className="text-lg font-semibold mb-2 group-hover:text-foreground transition-colors">
-                    {topic.titleEn}
+                    {isZh ? topic.titleZh : topic.titleEn}
                   </h3>
                   <p className="text-sm text-muted mb-4 leading-relaxed">
-                    {featuredTopicDescriptions[topic.slug] ?? topic.descriptionEn}
+                    {isZh
+                      ? topic.descriptionZh
+                      : featuredTopicDescriptions[topic.slug] ?? topic.descriptionEn}
                   </p>
                   <div className="flex gap-3 text-xs text-muted">
-                    <span>{topic.prompts.length} prompts</span>
-                    <span>{topic.relatedStyleSlugs.length} styles</span>
+                    <span>{topic.prompts.length} {isZh ? "条提示词" : "prompts"}</span>
+                    <span>{topic.relatedStyleSlugs.length} {isZh ? "种风格" : "styles"}</span>
                   </div>
                 </LocalizedLink>
               ))}
@@ -127,9 +146,11 @@ export default function UiPromptsPage() {
         <section className="border-b border-border">
           <div className="max-w-7xl mx-auto px-6 md:px-12 py-12 md:py-16">
             <p className="text-xs tracking-widest uppercase text-muted mb-4">
-              AI Tools
+              {isZh ? "AI 工具" : "AI Tools"}
             </p>
-            <h2 className="text-2xl md:text-3xl mb-8">Where these prompts work best</h2>
+            <h2 className="text-2xl md:text-3xl mb-8">
+              {isZh ? "这些提示词适合哪些工具" : "Where these prompts work best"}
+            </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
               {toolCards.map((tool) => (
                 <article key={tool.name} className="border border-border p-5">
@@ -142,41 +163,47 @@ export default function UiPromptsPage() {
         </section>
 
         <PromptTemplatePreviewSection
-          title="Example previews and starter templates"
-          description="Use these templates as structural references, then feed their sections, layouts, and interaction states back into your prompt for more reliable output."
+          title={isZh ? "示例预览与起步模板" : "Example previews and starter templates"}
+          description={isZh
+            ? "把这些模板当作结构参考，再把区块、布局和交互状态写回提示词，让输出更明确、更稳定。"
+            : "Use these templates as structural references, then feed their sections, layouts, and interaction states back into your prompt for more reliable output."}
           templates={uiPromptTemplates}
         />
 
         <section>
           <div className="max-w-7xl mx-auto px-6 md:px-12 py-12 md:py-16 text-center">
-            <h2 className="text-2xl md:text-3xl mb-4">Need a more specific prompt category?</h2>
+            <h2 className="text-2xl md:text-3xl mb-4">
+              {isZh ? "需要更具体的提示词分类？" : "Need a more specific prompt category?"}
+            </h2>
             <p className="text-muted mb-8 max-w-2xl mx-auto">
-              Start with landing pages, dashboards, Tailwind UI, or dark mode if your search intent is already narrow. Specific prompt pages usually outperform generic briefs in both AI output quality and search clarity.
+              {isZh
+                ? "如果任务已经明确，可以直接选择落地页、仪表盘、Tailwind UI 或暗色模式。针对具体页面类型的提示词通常比宽泛描述更容易得到清晰结果。"
+                : "Start with landing pages, dashboards, Tailwind UI, or dark mode if your search intent is already narrow. Specific prompt pages usually outperform generic briefs in both AI output quality and search clarity."}
             </p>
             <div className="flex flex-wrap justify-center gap-3">
               <LocalizedLink
                 href="/landing-page-prompts"
                 className="inline-flex items-center px-6 py-3 bg-foreground text-background text-sm tracking-wide hover:bg-foreground/90 transition-colors"
               >
-                Landing Page Prompts
+                {isZh ? "落地页提示词" : "Landing Page Prompts"}
               </LocalizedLink>
               <LocalizedLink
                 href="/dashboard-prompts"
                 className="inline-flex items-center px-6 py-3 border border-border text-sm tracking-wide hover:border-foreground transition-colors"
               >
-                Dashboard Prompts
+                {isZh ? "仪表盘提示词" : "Dashboard Prompts"}
               </LocalizedLink>
               <LocalizedLink
                 href="/tailwind-ui-prompts"
                 className="inline-flex items-center px-6 py-3 border border-border text-sm tracking-wide hover:border-foreground transition-colors"
               >
-                Tailwind UI Prompts
+                {isZh ? "Tailwind UI 提示词" : "Tailwind UI Prompts"}
               </LocalizedLink>
               <LocalizedLink
                 href="/dark-mode-ui-prompts"
                 className="inline-flex items-center px-6 py-3 border border-border text-sm tracking-wide hover:border-foreground transition-colors"
               >
-                Dark Mode UI Prompts
+                {isZh ? "暗色模式提示词" : "Dark Mode UI Prompts"}
               </LocalizedLink>
             </div>
           </div>

@@ -4,7 +4,7 @@ import { Footer } from "@/components/layout/footer";
 import { DevelopersContent } from "@/components/developers/developers-content";
 
 export const metadata: Metadata = {
-  title: "For Developers — StyleKit",
+  title: "StyleKit for Developers",
   description:
     "Install StyleKit themes through the shadcn registry and explore repository-local previews of the unpublished CLI and MCP packages.",
 };

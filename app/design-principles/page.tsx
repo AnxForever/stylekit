@@ -4,7 +4,7 @@ import { Footer } from "@/components/layout/footer";
 import { DesignPrinciplesContent } from "@/components/design-principles/design-principles-content";
 
 export const metadata: Metadata = {
-  title: "Design Principles (CRAP) - StyleKit",
+  title: "Design Principles: Contrast, Repetition, Alignment & Proximity",
   description:
     "Contrast, Repetition, Alignment, Proximity — the four design principles, taught with live before/after demos, a copyable self-review checklist, and minimal code.",
 };

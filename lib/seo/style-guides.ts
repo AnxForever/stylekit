@@ -1,4 +1,5 @@
 import { Metadata } from "next";
+import { canonicalizeEnglishMetadata } from "@/lib/i18n/metadata";
 
 export interface StyleGuide {
   name: string;
@@ -288,7 +289,7 @@ export const styleGuides: Record<string, StyleGuide> = {
  * Generate SEO-optimized metadata for a style guide page
  */
 export function generateStyleGuideMetadata(guide: StyleGuide): Metadata {
-  const title = `${guide.nameEn} - Design Style Guide | StyleKit`;
+  const title = `${guide.nameEn} - Design Style Guide`;
   const description = guide.descriptionEn;
   const keywords = [
     guide.nameEn,
@@ -299,7 +300,7 @@ export function generateStyleGuideMetadata(guide: StyleGuide): Metadata {
     ...guide.references.map((r) => r.title),
   ];
 
-  return {
+  return canonicalizeEnglishMetadata({
     title,
     description,
     keywords,
@@ -307,15 +308,9 @@ export function generateStyleGuideMetadata(guide: StyleGuide): Metadata {
       title,
       description,
       type: "article",
-      url: `/guides/${guide.slug}`,
+      url: `/en/guides/${guide.slug}`,
     },
-    alternates: {
-      languages: {
-        "zh-CN": `/zh/guides/${guide.slug}`,
-        "en-US": `/en/guides/${guide.slug}`,
-      },
-    },
-  };
+  }, `/guides/${guide.slug}`);
 }
 
 /**

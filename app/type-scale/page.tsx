@@ -4,7 +4,7 @@ import { Footer } from "@/components/layout/footer";
 import { TypeScaleContent } from "@/components/type-scale/type-scale-content";
 
 export const metadata: Metadata = {
-  title: "Type Scale - StyleKit",
+  title: "Modular Type Scale",
   description:
     "Interactive modular type scale with fluid (clamp) typography: pick a base and ratio, preview every step, and copy CSS variables or Tailwind v4 tokens.",
 };

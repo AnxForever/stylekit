@@ -46,6 +46,10 @@ export async function buildShowcaseMetadata(
         title: `${title} — StyleKit`,
         description,
       },
+      robots: {
+        index: false,
+        follow: true,
+      },
     };
   }
 
@@ -75,6 +79,10 @@ export async function buildShowcaseMetadata(
       card: "summary_large_image",
       title: `${title} — StyleKit`,
       description,
+    },
+    robots: {
+      index: false,
+      follow: true,
     },
   };
 }

@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
+import { canonicalizeEnglishMetadata } from "@/lib/i18n/metadata";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = canonicalizeEnglishMetadata({
   title: "Terms of Use",
   description:
     "Basic terms for using StyleKit's public site, downloadable assets, and community features.",
-};
+}, "/terms");
 
 export default function TermsPage() {
   return (

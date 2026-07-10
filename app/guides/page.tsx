@@ -4,6 +4,7 @@ import { Footer } from "@/components/layout/footer";
 import { LocalizedLink } from "@/components/i18n/localized-link";
 import { styleGuides } from "@/lib/seo/style-guides";
 import { BookOpen, ArrowRight, Sparkles, History } from "lucide-react";
+import { canonicalizeEnglishMetadata } from "@/lib/i18n/metadata";
 
 // Color scheme for each guide
 const guideColors: Record<string, string> = {
@@ -15,8 +16,8 @@ const guideColors: Record<string, string> = {
   "cyber-wafuu": "from-red-500/20 to-cyan-500/20",
 };
 
-export const metadata: Metadata = {
-  title: "Design Style Guides - StyleKit",
+export const metadata: Metadata = canonicalizeEnglishMetadata({
+  title: "Design Style Guides",
   description:
     "Learn the history, philosophy, and best practices of popular design styles. Comprehensive guides to help you choose the right design direction for your project.",
   keywords: [
@@ -26,7 +27,7 @@ export const metadata: Metadata = {
     "design styles",
     "UI design",
   ],
-};
+}, "/guides");
 
 export default function GuidesPage() {
   const guides = Object.values(styleGuides);

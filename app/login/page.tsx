@@ -7,6 +7,10 @@ import { LoginContent } from "./_content";
 export const metadata: Metadata = {
   title: "Sign in - StyleKit",
   description: "Sign in to StyleKit with GitHub or Linux DO.",
+  robots: {
+    index: false,
+    follow: true,
+  },
 };
 
 export default function LoginPage() {

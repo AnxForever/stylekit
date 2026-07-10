@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Page, { metadata as baseMetadata } from "@/app/blog/page";
 import { isLocale } from "@/lib/i18n/routing";
-import { localizeMetadata } from "@/lib/i18n/metadata";
+import { canonicalizeEnglishMetadata } from "@/lib/i18n/metadata";
 
 export async function generateMetadata({
   params,
@@ -9,9 +9,14 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>;
 }): Promise<Metadata> {
   const { locale } = await params;
-  return isLocale(locale)
-    ? localizeMetadata(baseMetadata, locale, "/blog")
-    : baseMetadata;
+  if (!isLocale(locale)) return baseMetadata;
+
+  return {
+    ...canonicalizeEnglishMetadata(baseMetadata, "/blog"),
+    ...(locale === "zh"
+      ? { robots: { index: false, follow: true } }
+      : {}),
+  };
 }
 
 export default Page;

@@ -2,6 +2,7 @@
 title: "How to Write Better UI Prompts for AI Coding Tools"
 description: "Learn practical techniques for writing effective UI prompts that produce consistent, beautiful results with AI tools like v0, Cursor, and ChatGPT."
 date: "2026-03-15"
+modified: "2026-07-10"
 author: "StyleKit Team"
 tags: ["guide", "ai-prompts", "best-practices"]
 ---
@@ -33,7 +34,7 @@ Here is a practical framework:
 4. Do NOT: [list of forbidden patterns]
 ```
 
-This is exactly the structure StyleKit uses internally. Each of the 130+ styles in the library ships with a `doList` and `dontList` -- explicit rules that tell AI tools what to follow and what to avoid. When you export a prompt from StyleKit, these rules are baked in, so the AI gets a complete style specification rather than a vague aesthetic direction.
+This is exactly the structure StyleKit uses internally. Each of the 135 styles in the library ships with a `doList` and `dontList` -- explicit rules that tell AI tools what to follow and what to avoid. When you export a prompt from StyleKit, these rules are included, so the AI gets structured style constraints rather than only a vague aesthetic direction.
 
 ## Using Design Tokens to Ground Your Prompts
 
@@ -43,6 +44,6 @@ StyleKit structures every style around tokens for borders, shadows, typography, 
 
 ## Putting It All Together
 
-The next time you write a UI prompt, start by choosing a clear visual direction. Then translate that direction into concrete values: hex colors, pixel measurements, specific Tailwind classes, and explicit interaction rules. Add a "do not" section that rules out the generic defaults you want to avoid. If you are using StyleKit, you can skip most of this work -- browse the style library at [stylekit.top](https://stylekit.top), pick a style, and export a ready-made prompt that includes all of these details. The prompt system supports v0, Cursor, ChatGPT, Claude, and other popular AI coding tools.
+The next time you write a UI prompt, start by choosing a clear visual direction. Then translate that direction into concrete values: hex colors, pixel measurements, specific Tailwind classes, and explicit interaction rules. Add a "do not" section that rules out the generic defaults you want to avoid. If you are using StyleKit, browse the style library at [StyleKit](https://www.stylekit.top/en/styles), pick a style, and copy its constraints into your prompt. The prompt system supports v0, Cursor, ChatGPT, Claude, and other popular AI coding tools.
 
 Writing better prompts is not about being more verbose. It is about being more precise. Give the AI a clear target and clear boundaries, and the results will speak for themselves.

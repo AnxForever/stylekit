@@ -11,6 +11,10 @@ import { AdminLoginContent } from "./_content";
 export const metadata: Metadata = {
   title: "Admin sign in - StyleKit",
   description: "Sign in to the StyleKit admin console.",
+  robots: {
+    index: false,
+    follow: false,
+  },
 };
 
 export default async function AdminLoginPage() {

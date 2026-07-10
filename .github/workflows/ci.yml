@@ -45,6 +45,8 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - run: pnpm run check:catalog
+      - run: pnpm run check:product-truth
+      - run: pnpm run check:seo-truth
       - run: pnpm run test
 
   build:
@@ -60,6 +62,24 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm run build
       - run: pnpm run smoke:local
+      - name: Verify sitemap runtime invariants
+        run: |
+          pnpm start -p 3100 > /tmp/stylekit-next.log 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid" 2>/dev/null || true' EXIT
+
+          for attempt in $(seq 1 30); do
+            if curl --fail --silent http://127.0.0.1:3100/sitemap.xml > /dev/null; then
+              break
+            fi
+            if [ "$attempt" -eq 30 ]; then
+              cat /tmp/stylekit-next.log
+              exit 1
+            fi
+            sleep 1
+          done
+
+          SEO_CHECK_ORIGIN=http://127.0.0.1:3100 pnpm run check:seo-runtime
 
   e2e:
     name: E2E Tests

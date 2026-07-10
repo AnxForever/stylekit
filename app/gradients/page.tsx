@@ -6,7 +6,7 @@ import { GradientsContent } from "@/components/gradients/gradients-content";
 export const dynamic = "force-static";
 
 export const metadata: Metadata = {
-  title: "Gradients - StyleKit",
+  title: "CSS Gradient Presets",
   description:
     "Browse 40+ beautiful gradient presets for your design system. Copy CSS or Tailwind classes instantly.",
 };

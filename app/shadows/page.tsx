@@ -4,7 +4,7 @@ import { Footer } from "@/components/layout/footer";
 import { ShadowsContent } from "@/components/shadows/shadows-content";
 
 export const metadata: Metadata = {
-  title: "Shadows - StyleKit",
+  title: "CSS Box Shadow Presets",
   description:
     "Browse 30+ box-shadow presets for your design system. From soft to hard, colored to glow. Copy CSS or Tailwind instantly.",
 };
