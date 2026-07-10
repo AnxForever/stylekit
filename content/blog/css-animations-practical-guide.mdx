@@ -1,12 +1,13 @@
 ---
-title: "CSS Animations in StyleKit: A Practical Guide to 49 Patterns"
+title: "CSS Animations in StyleKit: A Practical Guide to 57 Patterns"
 description: "A hands-on guide to StyleKit's animation catalog -- categories, triggers, difficulty levels, and how to choose the right animation for your project."
 date: "2026-04-10"
+modified: "2026-07-10"
 author: "StyleKit Team"
 tags: ["guide", "animations", "css", "frontend"]
 ---
 
-Animations are the difference between a page that feels static and one that feels alive. But implementing them well is harder than it looks. You need to choose the right easing curve, pick an appropriate duration, handle reduced-motion preferences, and avoid the classic mistake of animating everything until the page feels like a carnival. StyleKit's animation catalog exists to make this practical: 49 production-ready animation patterns, organized by category and trigger type, each with copy-paste code and a live playground.
+Animations are the difference between a page that feels static and one that feels alive. But implementing them well is harder than it looks. You need to choose the right easing curve, pick an appropriate duration, handle reduced-motion preferences, and avoid the classic mistake of animating everything until the page feels like a carnival. StyleKit's animation catalog exists to make this practical: 57 documented animation patterns, organized by category and trigger type, each with code and an interactive preview.
 
 ## How the Catalog is Organized
 
@@ -14,15 +15,16 @@ Every animation in StyleKit is classified along three axes: **category**, **trig
 
 **Categories** describe what the animation does:
 
-- **Entrance** (10 animations): Elements appearing on screen -- fade-in-up, scale-in, bounce-in, slide-in-left, slide-in-right, rotate-in, blur-in, zoom-in, elastic-scale, fade-in-down
+- **Entrance** (9 animations): Elements appearing on screen
 - **Exit** (4 animations): Elements leaving the screen -- fade-out-down, scale-out, slide-out-right, collapse
-- **Hover** (6 animations): Mouse interaction effects -- hover-lift, hover-glow, flip-card, border-trace, underline-draw, 3D tilt
-- **Scroll** (5 animations): Scroll-triggered effects -- scroll-reveal, parallax-float, counter-roll, scroll-page-turn, scroll-peel-away
-- **Text** (6 animations): Typography animations -- typewriter, text-gradient-flow, glitch-text, text-reveal, text-scramble, marquee-scroll
+- **Hover** (5 animations): Hover-driven interaction effects
+- **Scroll** (4 animations): Scroll-triggered and scroll-linked effects
+- **Text** (7 animations): Typography and text-transition animations
 - **Loading** (4 animations): Loading indicators -- skeleton-pulse, spinner-dots, shimmer, progress-bar
-- **Micro-interaction** (8 animations): Feedback and delight -- stagger-children, spotlight-card, magnetic-hover, shake, ripple-click, pulse, elastic-snap, pulse-ring, confetti-burst
-- **Transition** (3 animations): State changes -- crossfade, slide-swap, morph-transition
+- **Micro-interaction** (6 animations): Feedback and short state cues
+- **Transition** (4 animations): State and content transitions
 - **Background** (2 animations): Ambient effects -- background-gradient-shift, morph-shape
+- **Pointer** (12 animations): Cursor, pointer, magnetic, and direct-manipulation effects
 
 **Triggers** describe when the animation fires:
 
@@ -77,6 +79,6 @@ Two properties make or break an animation: duration and easing.
 
 ## Getting Started
 
-Browse the full catalog at [stylekit.top/animations](https://stylekit.top/animations). Each animation has a live preview, difficulty rating, copy-paste code snippet, and a sandbox playground where you can adjust parameters. Filter by category to find entrance, exit, hover, or scroll animations. Filter by difficulty if you want pure CSS solutions without JavaScript dependencies.
+Browse the full catalog at [StyleKit Animations](https://www.stylekit.top/en/animations). Each animation has an interactive preview, difficulty rating, and code snippet. Filter by category to find entrance, exit, hover, pointer, or scroll animations. Filter by difficulty if you want pure CSS solutions without JavaScript dependencies.
 
 Start with three animations: one entrance (fade-in-up), one hover (hover-lift), and one loading indicator (shimmer). Master those three and your pages will already feel significantly more polished than the default static layout.

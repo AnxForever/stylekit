@@ -6,16 +6,17 @@ import { Footer } from "@/components/layout/footer";
 import { HomeContent } from "@/components/home/home-content";
 import { getAllStylesMeta } from "@/lib/styles/meta";
 import { getAllAnimationsMeta } from "@/lib/animations/meta";
+import { CURATED_STYLE_COUNT } from "@/lib/product/catalog-facts";
 
 export const metadata: Metadata = {
   // Use `absolute` so the root "%s | StyleKit" template does not append a second
   // "StyleKit" (the brand is already in the title). Kept under ~60 chars so it
   // renders in full in the SERP with the highest-value keywords front-loaded.
   title: {
-    absolute: "StyleKit — UI Design Prompts & 130+ Visual Styles",
+    absolute: `StyleKit — UI Design Prompts & ${CURATED_STYLE_COUNT} Visual Styles`,
   },
   description:
-    "Browse 130+ visual styles with design tokens, component recipes, and AI prompts. Export to Tailwind, shadcn, Figma, and IDE configs for consistent website UI generation.",
+    `Browse ${CURATED_STYLE_COUNT} visual styles with design tokens, component recipes, and AI prompts. Export to Tailwind, shadcn, Figma, and IDE configs for consistent website UI generation.`,
   keywords: [
     "UI design prompts",
     "web design prompts",

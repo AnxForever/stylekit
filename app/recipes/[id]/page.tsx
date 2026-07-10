@@ -9,6 +9,11 @@ import {
   getRecipeById,
   resolveRecipeStyles,
 } from "@/lib/styles/recipes";
+import { serializeJsonLd } from "@/lib/security/json-ld";
+import { generateBreadcrumbJsonLd } from "@/lib/seo/json-ld";
+import { getRequestLocaleContext } from "@/lib/i18n/request";
+import { getAlternateLocalePath } from "@/lib/i18n/routing";
+import { getSiteBaseUrl } from "@/lib/site-url";
 
 export function generateStaticParams() {
   return getAllRecipes().map((recipe) => ({
@@ -29,7 +34,7 @@ export async function generateMetadata({
   }
 
   return {
-    title: `${recipe.name} - Design Recipe | StyleKit`,
+    title: `${recipe.name} - Design Recipe`,
     description: recipe.description,
     keywords: [
       recipe.name,
@@ -54,9 +59,21 @@ export default async function RecipeDetailPage({
   }
 
   const { visual, layout } = resolveRecipeStyles(recipe);
+  const { locale } = await getRequestLocaleContext();
+  const baseUrl = getSiteBaseUrl();
+  const recipeUrl = `${baseUrl}${getAlternateLocalePath(`/recipes/${id}`, locale)}`;
+  const breadcrumbSchema = generateBreadcrumbJsonLd([
+    { name: locale === "zh" ? "首页" : "Home", url: `${baseUrl}${getAlternateLocalePath("/", locale)}` },
+    { name: locale === "zh" ? "设计配方" : "Recipes", url: `${baseUrl}${getAlternateLocalePath("/recipes", locale)}` },
+    { name: recipe.name, url: recipeUrl },
+  ]);
 
   return (
     <div className="min-h-screen flex flex-col">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(breadcrumbSchema) }}
+      />
       <Header />
 
       <main className="flex-1">

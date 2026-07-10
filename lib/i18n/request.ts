@@ -50,12 +50,16 @@ export async function getRequestLocaleContext(): Promise<RequestLocaleContext> {
     canonicalUrl: `${baseUrl}${localePath}`,
     languageAlternates: isBypassedPath
       ? {}
-      : Object.fromEntries(
-          LOCALES.map((entry) => [
+      : Object.fromEntries([
+          ...LOCALES.map((entry) => [
             getLocaleHtmlLang(entry),
             `${baseUrl}${getAlternateLocalePath(contentPath, entry)}`,
-          ])
-        ),
+          ]),
+          [
+            "x-default",
+            `${baseUrl}${getAlternateLocalePath(contentPath, DEFAULT_LOCALE)}`,
+          ],
+        ]),
     htmlLang: getLocaleHtmlLang(locale),
     openGraphLocale: getOpenGraphLocale(locale),
     baseUrl,

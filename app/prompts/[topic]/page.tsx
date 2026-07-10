@@ -8,6 +8,8 @@ import { getAllStylesMeta } from "@/lib/styles/meta";
 import { serializeJsonLd } from "@/lib/security/json-ld";
 import { getSiteBaseUrl } from "@/lib/site-url";
 import { PromptTopicContent } from "./_content";
+import { getRequestLocaleContext } from "@/lib/i18n/request";
+import { generatePromptPageSchemas } from "@/lib/seo/prompt-schema";
 
 const BASE_URL = getSiteBaseUrl();
 
@@ -62,6 +64,7 @@ export default async function PromptTopicPage({
   const { topic: slug } = await params;
   const topic = getTopicBySlug(slug);
   if (!topic) notFound();
+  const { locale } = await getRequestLocaleContext();
 
   // Resolve related styles metadata
   const allStyles = getAllStylesMeta();
@@ -69,45 +72,8 @@ export default async function PromptTopicPage({
     .map((s) => allStyles.find((st) => st.slug === s))
     .filter(Boolean);
 
-  // FAQ Schema
-  const faqSchema = {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    mainEntity: topic.faq.map((f) => ({
-      "@type": "Question",
-      name: f.questionEn,
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: f.answerEn,
-      },
-    })),
-  };
-
-  // Breadcrumb Schema
-  const breadcrumbSchema = {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    itemListElement: [
-      {
-        "@type": "ListItem",
-        position: 1,
-        name: "Home",
-        item: BASE_URL,
-      },
-      {
-        "@type": "ListItem",
-        position: 2,
-        name: "UI Prompts",
-        item: `${BASE_URL}/ui-prompts`,
-      },
-      {
-        "@type": "ListItem",
-        position: 3,
-        name: topic.titleEn,
-        item: `${BASE_URL}/prompts/${slug}`,
-      },
-    ],
-  };
+  const { faq: faqSchema, breadcrumb: breadcrumbSchema } =
+    generatePromptPageSchemas(topic, locale, `/prompts/${slug}`);
 
   return (
     <div className="min-h-screen flex flex-col">

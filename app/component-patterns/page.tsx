@@ -6,7 +6,7 @@ import { ComponentPatternsContent } from "@/components/component-patterns/compon
 export const dynamic = "force-static";
 
 export const metadata: Metadata = {
-  title: "Component Patterns - StyleKit",
+  title: "Reusable UI Component Patterns",
   description:
     "Curated component pattern gallery for breadcrumbs, accordions, tabs, pagination, and sidebar navigation. Browse reusable UI directions sourced from StyleKit showcases.",
 };

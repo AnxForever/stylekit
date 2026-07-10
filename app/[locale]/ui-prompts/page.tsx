@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Page, { metadata as baseMetadata } from "@/app/ui-prompts/page";
 import { isLocale } from "@/lib/i18n/routing";
-import { localizeMetadata } from "@/lib/i18n/metadata";
+import { getLocalizedPromptMetadata } from "@/lib/seo/prompt-metadata";
 
 export async function generateMetadata({
   params,
@@ -10,7 +10,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale } = await params;
   return isLocale(locale)
-    ? localizeMetadata(baseMetadata, locale, "/ui-prompts")
+    ? getLocalizedPromptMetadata(baseMetadata, locale, "/ui-prompts")
     : baseMetadata;
 }
 

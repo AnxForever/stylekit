@@ -4,7 +4,7 @@ import { Footer } from "@/components/layout/footer";
 import { ColorTheoryContent } from "@/components/color-theory/color-theory-content";
 
 export const metadata: Metadata = {
-  title: "Color Theory - StyleKit",
+  title: "Interactive Color Theory",
   description:
     "Interactive color theory: the HSL model, a harmony generator, a WCAG contrast checker, and a practical usage guide for designers and developers.",
 };

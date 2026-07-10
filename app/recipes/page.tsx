@@ -7,9 +7,11 @@ import { getAllRecipes } from "@/lib/styles/recipes";
 import { serializeJsonLd } from "@/lib/security/json-ld";
 import { generateBreadcrumbJsonLd } from "@/lib/seo/json-ld";
 import { getSiteBaseUrl } from "@/lib/site-url";
+import { getRequestLocaleContext } from "@/lib/i18n/request";
+import { getAlternateLocalePath } from "@/lib/i18n/routing";
 
 export const metadata: Metadata = {
-  title: "Design Recipes - Ready-to-Use Style Combinations | StyleKit",
+  title: "Design Recipes - Ready-to-Use Style Combinations",
   description:
     "Curated combinations of visual styles, layouts, and animations optimized for specific use cases. SaaS, e-commerce, portfolio, blog, and more.",
   keywords: [
@@ -22,13 +24,14 @@ export const metadata: Metadata = {
   ],
 };
 
-export default function RecipesPage() {
+export default async function RecipesPage() {
   const allRecipes = getAllRecipes();
   const BASE_URL = getSiteBaseUrl();
+  const { locale } = await getRequestLocaleContext();
 
   const breadcrumbSchema = generateBreadcrumbJsonLd([
-    { name: "Home", url: BASE_URL },
-    { name: "Recipes", url: `${BASE_URL}/recipes` },
+    { name: locale === "zh" ? "首页" : "Home", url: `${BASE_URL}${getAlternateLocalePath("/", locale)}` },
+    { name: locale === "zh" ? "设计配方" : "Recipes", url: `${BASE_URL}${getAlternateLocalePath("/recipes", locale)}` },
   ]);
 
   return (

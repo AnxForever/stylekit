@@ -8,7 +8,7 @@ export default function robots(): MetadataRoute.Robots {
     rules: [
       {
         userAgent: "*",
-        allow: ["/", "/llms.md", "/llms-full.txt"],
+        allow: ["/", "/llms.md", "/llms-full.txt", "/api/styles/*/md$"],
         disallow: ["/api/", "/admin/", "/api-test"],
       },
       {
@@ -21,12 +21,13 @@ export default function robots(): MetadataRoute.Robots {
           "Claude-Web",
           "ClaudeBot",
           "Claude-SearchBot",
+          "Claude-User",
           "Google-Extended",
           "PerplexityBot",
           "Perplexity-User",
           "Applebot-Extended",
         ],
-        allow: ["/", "/llms.md", "/llms-full.txt"],
+        allow: ["/", "/llms.md", "/llms-full.txt", "/api/styles/*/md$"],
         disallow: ["/api/", "/admin/", "/api-test"],
       },
     ],

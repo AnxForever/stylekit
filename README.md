@@ -9,8 +9,8 @@
 </p>
 
 <p align="center">
-  <strong>The most comprehensive style library for AI coding.</strong><br>
-  130+ curated styles — install any into Cursor, Claude, or v0 with one command. English &amp; 中文.
+  <strong>An open-source style library for AI coding.</strong><br>
+  135 curated styles — install a registry theme or use its constraints in Cursor, Claude, or v0. English &amp; 中文 style discovery.
 </p>
 
 <p align="center">
@@ -93,7 +93,7 @@ StyleKit helps humans and AI start from a consistent visual direction. Pick a st
 
 ## Styles
 
-120+ styles across 10+ categories. Every style includes design tokens, component code, AI rules, and a live showcase.
+135 styles across multiple visual and layout categories. Every style includes design tokens, component code, AI rules, and a curated preview.
 
 <details>
 <summary><strong>Modern / Tech</strong> — Glassmorphism, Liquid Glass, Neumorphism, Bento Grid, Fluent Design, Material Design, Linear Style ...</summary>
@@ -221,7 +221,7 @@ one command:
 npx skills add AnxForever/stylekit
 ```
 
-Your agent can then apply any of the 130+ styles on request ("make this look
+Your agent can then apply any of the 135 styles on request ("make this look
 like Stripe", "cyberpunk dashboard") using the correct tokens and rules. The
 skill lives in [`SKILL.md`](SKILL.md); see [`docs/AGENT_SKILL_GUIDE.md`](docs/AGENT_SKILL_GUIDE.md)
 for how it's built and published.

@@ -7,6 +7,7 @@ export interface BlogPost {
   title: string;
   description: string;
   date: string;
+  modified?: string;
   author: string;
   tags: string[];
   content: string;
@@ -31,6 +32,7 @@ export function getAllPosts(): BlogPost[] {
       title: String(data.title || slug),
       description: String(data.description || ""),
       date: String(data.date || ""),
+      modified: data.modified ? String(data.modified) : undefined,
       author: String(data.author || "StyleKit Team"),
       tags: Array.isArray(data.tags) ? data.tags.map(String) : [],
       content,

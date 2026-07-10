@@ -12,13 +12,16 @@ export async function GET() {
     title: "StyleKit Blog",
     description:
       "Latest articles about UI design, AI-friendly design systems, and visual styles",
-    link: `${BASE_URL}/blog`,
+    link: `${BASE_URL}/en/blog`,
+    selfUrl: `${BASE_URL}/feed.xml`,
+    language: "en-us",
     items: posts.map((post) => ({
       title: post.title,
       description: post.description,
-      link: `${BASE_URL}/blog/${post.slug}`,
+      link: `${BASE_URL}/en/blog/${post.slug}`,
       pubDate: post.date,
-      guid: `${BASE_URL}/blog/${post.slug}`,
+      guid: `${BASE_URL}/en/blog/${post.slug}`,
+      author: post.author,
     })),
   });
 

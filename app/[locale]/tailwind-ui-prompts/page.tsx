@@ -3,7 +3,7 @@ import Page, {
   metadata as baseMetadata,
 } from "@/app/tailwind-ui-prompts/page";
 import { isLocale } from "@/lib/i18n/routing";
-import { localizeMetadata } from "@/lib/i18n/metadata";
+import { getLocalizedPromptMetadata } from "@/lib/seo/prompt-metadata";
 
 export const revalidate = 86400;
 
@@ -14,7 +14,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale } = await params;
   return isLocale(locale)
-    ? localizeMetadata(baseMetadata, locale, "/tailwind-ui-prompts")
+    ? getLocalizedPromptMetadata(baseMetadata, locale, "/tailwind-ui-prompts")
     : baseMetadata;
 }
 

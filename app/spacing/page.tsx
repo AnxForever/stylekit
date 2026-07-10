@@ -4,7 +4,7 @@ import { Footer } from "@/components/layout/footer";
 import { SpacingContent } from "@/components/spacing/spacing-content";
 
 export const metadata: Metadata = {
-  title: "Spacing & Grid - StyleKit",
+  title: "Spacing Scale & Layout Grid",
   description:
     "Interactive 8-point spacing scale and 12-column layout grid: presets, a snap checker, and copyable CSS variables or Tailwind v4 tokens.",
 };

@@ -3,7 +3,7 @@ import Page, {
   generateMetadata as baseGenerateMetadata,
 } from "@/app/blog/[slug]/page";
 import { isLocale, LOCALES } from "@/lib/i18n/routing";
-import { localizeMetadata } from "@/lib/i18n/metadata";
+import { canonicalizeEnglishMetadata } from "@/lib/i18n/metadata";
 
 export function generateStaticParams() {
   return LOCALES.flatMap((locale) =>
@@ -24,9 +24,14 @@ export async function generateMetadata({
     params: Promise.resolve({ slug }),
   });
 
-  return isLocale(locale)
-    ? localizeMetadata(metadata, locale, `/blog/${slug}`)
-    : metadata;
+  if (!isLocale(locale)) return metadata;
+
+  return {
+    ...canonicalizeEnglishMetadata(metadata, `/blog/${slug}`),
+    ...(locale === "zh"
+      ? { robots: { index: false, follow: true } }
+      : {}),
+  };
 }
 
 export default Page;

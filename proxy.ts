@@ -28,19 +28,47 @@ import {
 const SOCIAL_CRAWLER_RE =
   /Twitterbot|facebookexternalhit|LinkedInBot|Slackbot|Discordbot|WhatsApp|TelegramBot|Pinterestbot|Applebot/i;
 
+const LOCALIZED_REWRITE_EXACT = new Set([
+  "/docs",
+  "/guides",
+  "/html-in-canvas",
+  "/login",
+  "/preview",
+  "/privacy",
+  "/profile",
+  "/terms",
+]);
+
+const LOCALIZED_REWRITE_PREFIXES = [
+  "/guides/",
+  "/templates/",
+];
+
 function isSocialCrawler(userAgent: string): boolean {
   return SOCIAL_CRAWLER_RE.test(userAgent);
 }
 
 function shouldUseLocalizedFilesystemRoute(pathname: string): boolean {
-  if (/^\/styles\/[^/]+\/showcase$/.test(pathname)) {
-    return false;
-  }
-
   return (
     pathname === "/" ||
     pathname === "/changelog" ||
     pathname === "/contact" ||
+    pathname === "/about" ||
+    pathname === "/backgrounds" ||
+    pathname === "/color-theory" ||
+    pathname === "/component-patterns" ||
+    pathname === "/components" ||
+    pathname === "/design-principles" ||
+    pathname === "/gradients" ||
+    pathname === "/guide" ||
+    pathname === "/learn" ||
+    pathname.startsWith("/recipes") ||
+    pathname === "/shadows" ||
+    pathname === "/spacing" ||
+    pathname === "/templates" ||
+    pathname === "/type-scale" ||
+    pathname === "/typography" ||
+    pathname === "/visual-hierarchy" ||
     pathname.startsWith("/styles") ||
     pathname === "/colors" ||
     pathname.startsWith("/collections") ||
@@ -49,9 +77,18 @@ function shouldUseLocalizedFilesystemRoute(pathname: string): boolean {
     pathname === "/dashboard-prompts" ||
     pathname === "/tailwind-ui-prompts" ||
     pathname === "/dark-mode-ui-prompts" ||
+    pathname === "/developers" ||
+    pathname === "/mouse-interactions" ||
     pathname.startsWith("/prompts") ||
     pathname.startsWith("/blog") ||
     pathname.startsWith("/animations")
+  );
+}
+
+function shouldRewriteLocalizedPath(pathname: string): boolean {
+  return (
+    LOCALIZED_REWRITE_EXACT.has(pathname) ||
+    LOCALIZED_REWRITE_PREFIXES.some((prefix) => pathname.startsWith(prefix))
   );
 }
 
@@ -89,9 +126,19 @@ export async function proxy(request: NextRequest) {
     // They don't handle 307 well and need meta tags from the first response.
     const ua = request.headers.get("user-agent") || "";
     if (isSocialCrawler(ua)) {
+      const localizedVisiblePath = addLocaleToPathname(incomingPath, DEFAULT_LOCALE);
       const requestHeaders = new Headers(request.headers);
       requestHeaders.set("x-stylekit-locale", DEFAULT_LOCALE);
-      requestHeaders.set("x-stylekit-visible-path", incomingPath);
+      requestHeaders.set("x-stylekit-visible-path", localizedVisiblePath);
+
+      if (shouldUseLocalizedFilesystemRoute(incomingPath)) {
+        const rewriteUrl = request.nextUrl.clone();
+        rewriteUrl.pathname = localizedVisiblePath;
+        return NextResponse.rewrite(rewriteUrl, {
+          request: { headers: requestHeaders },
+        });
+      }
+
       return NextResponse.next({
         request: { headers: requestHeaders },
       });
@@ -132,6 +179,12 @@ export async function proxy(request: NextRequest) {
   const buildResponse = () => {
     if (localeInPath) {
       if (shouldUseLocalizedFilesystemRoute(strippedPath)) {
+        return NextResponse.next({
+          request: { headers: requestHeaders },
+        });
+      }
+
+      if (!shouldRewriteLocalizedPath(strippedPath)) {
         return NextResponse.next({
           request: { headers: requestHeaders },
         });

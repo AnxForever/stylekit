@@ -52,6 +52,11 @@ const nextConfig: NextConfig = {
 
   async redirects() {
     return [
+      { source: "/:locale(en|zh)/prompts", destination: "/:locale/ui-prompts", permanent: true },
+      { source: "/:locale(en|zh)/prompts/landing-page", destination: "/:locale/landing-page-prompts", permanent: true },
+      { source: "/:locale(en|zh)/prompts/dashboard-design", destination: "/:locale/dashboard-prompts", permanent: true },
+      { source: "/:locale(en|zh)/prompts/tailwind-ui", destination: "/:locale/tailwind-ui-prompts", permanent: true },
+      { source: "/:locale(en|zh)/prompts/dark-mode", destination: "/:locale/dark-mode-ui-prompts", permanent: true },
       { source: "/prompts", destination: "/ui-prompts", permanent: true },
       { source: "/prompts/landing-page", destination: "/landing-page-prompts", permanent: true },
       { source: "/prompts/dashboard-design", destination: "/dashboard-prompts", permanent: true },
@@ -70,6 +75,7 @@ const nextConfig: NextConfig = {
         source: "/:path*",
         headers: [
           { key: "X-Content-Type-Options", value: "nosniff" },
+          { key: "Strict-Transport-Security", value: "max-age=31536000; includeSubDomains" },
           { key: "X-Frame-Options", value: "SAMEORIGIN" },
           { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
           { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=()" },

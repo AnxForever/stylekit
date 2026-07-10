@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
+import { canonicalizeEnglishMetadata } from "@/lib/i18n/metadata";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = canonicalizeEnglishMetadata({
   title: "Privacy Policy",
   description:
     "How StyleKit handles analytics, newsletter subscriptions, and account-related data on the public site.",
-};
+}, "/privacy");
 
 export default function PrivacyPage() {
   return (

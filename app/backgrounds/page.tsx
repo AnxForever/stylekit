@@ -6,7 +6,7 @@ import { BackgroundsContent } from "@/components/backgrounds/backgrounds-content
 export const dynamic = "force-static";
 
 export const metadata: Metadata = {
-  title: "Backgrounds - StyleKit",
+  title: "CSS Background Patterns",
   description:
     "Browse 20+ CSS background patterns for your design system. Copy CSS or Tailwind classes instantly.",
 };

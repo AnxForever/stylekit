@@ -1,12 +1,12 @@
 import { MetadataRoute } from "next";
-import { readdirSync } from "fs";
-import { join } from "path";
 import { getAllStylesMeta } from "@/lib/styles/meta";
 import { getAllAnimationsMeta } from "@/lib/animations/meta";
 import { getAllTopicSlugs } from "@/lib/prompts";
 import { getAllPosts } from "@/lib/blog";
 import { styleGuides } from "@/lib/seo/style-guides";
 import { getAllCollections } from "@/lib/styles/collections";
+import { getAllRecipes } from "@/lib/styles/recipes";
+import { templateCatalog } from "@/lib/templates/catalog";
 import {
   getAlternateLocalePath,
   getBaseUrl,
@@ -17,13 +17,6 @@ import {
 
 const BASE_URL = getBaseUrl();
 
-function getTemplateSlugs(): string[] {
-  const templatesDir = join(process.cwd(), "app/templates");
-  return readdirSync(templatesDir, { withFileTypes: true })
-    .filter((directoryEntry) => directoryEntry.isDirectory())
-    .map((directoryEntry) => directoryEntry.name);
-}
-
 export default function sitemap(): MetadataRoute.Sitemap {
   const styles = getAllStylesMeta();
   const redirectedPromptSlugs = new Set([
@@ -32,21 +25,15 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "tailwind-ui",
     "dark-mode",
   ]);
-  // Content pages are regenerated on every deploy, so build time is an
-  // honest lastmod signal. Tools/legal pages change rarely, so they use a
-  // stable pinned date to avoid falsely claiming freshness on every build.
-  const CONTENT_UPDATED = new Date();
-  const TOOLS_UPDATED = new Date("2026-07-08");
-
   const createLocalizedEntries = (
     pathname: string,
-    lastModified: Date,
+    lastModified: Date | undefined,
     changeFrequency: MetadataRoute.Sitemap[number]["changeFrequency"],
     priority: number
   ): MetadataRoute.Sitemap =>
     LOCALES.map((locale) => ({
       url: `${BASE_URL}${getAlternateLocalePath(pathname, locale)}`,
-      lastModified,
+      ...(lastModified ? { lastModified } : {}),
       changeFrequency,
       priority,
       alternates: {
@@ -62,79 +49,114 @@ export default function sitemap(): MetadataRoute.Sitemap {
       },
     }));
 
+  const createEnglishEntry = (
+    pathname: string,
+    lastModified: Date | undefined,
+    changeFrequency: MetadataRoute.Sitemap[number]["changeFrequency"],
+    priority: number
+  ): MetadataRoute.Sitemap => [{
+    url: `${BASE_URL}${getAlternateLocalePath(pathname, "en")}`,
+    ...(lastModified ? { lastModified } : {}),
+    changeFrequency,
+    priority,
+  }];
+
   const staticPages: MetadataRoute.Sitemap = [
-    ...createLocalizedEntries("/", CONTENT_UPDATED, "weekly", 1),
-    ...createLocalizedEntries("/styles", CONTENT_UPDATED, "weekly", 0.9),
-    ...createLocalizedEntries("/colors", CONTENT_UPDATED, "weekly", 0.7),
-    ...createLocalizedEntries("/collections", CONTENT_UPDATED, "weekly", 0.7),
-    ...createLocalizedEntries("/guides", CONTENT_UPDATED, "monthly", 0.8),
-    ...createLocalizedEntries("/recipes", CONTENT_UPDATED, "weekly", 0.8),
-    ...createLocalizedEntries("/ui-prompts", CONTENT_UPDATED, "weekly", 0.9),
-    ...createLocalizedEntries("/landing-page-prompts", CONTENT_UPDATED, "weekly", 0.8),
-    ...createLocalizedEntries("/dashboard-prompts", CONTENT_UPDATED, "weekly", 0.8),
-    ...createLocalizedEntries("/tailwind-ui-prompts", CONTENT_UPDATED, "weekly", 0.8),
-    ...createLocalizedEntries("/dark-mode-ui-prompts", CONTENT_UPDATED, "weekly", 0.8),
-    ...createLocalizedEntries("/animations", CONTENT_UPDATED, "weekly", 0.8),
-    ...createLocalizedEntries("/templates", CONTENT_UPDATED, "weekly", 0.7),
-    ...createLocalizedEntries("/guide", TOOLS_UPDATED, "monthly", 0.6),
-    ...createLocalizedEntries("/components", CONTENT_UPDATED, "weekly", 0.6),
-    ...createLocalizedEntries("/about", TOOLS_UPDATED, "monthly", 0.4),
-    ...createLocalizedEntries("/contact", TOOLS_UPDATED, "monthly", 0.4),
-    ...createLocalizedEntries("/privacy", TOOLS_UPDATED, "yearly", 0.2),
-    ...createLocalizedEntries("/terms", TOOLS_UPDATED, "yearly", 0.2),
-    ...createLocalizedEntries("/blog", CONTENT_UPDATED, "weekly", 0.7),
-    ...createLocalizedEntries("/changelog", CONTENT_UPDATED, "monthly", 0.5),
+    ...createLocalizedEntries("/", undefined, "weekly", 1),
+    ...createLocalizedEntries("/styles", undefined, "weekly", 0.9),
+    ...createLocalizedEntries("/colors", undefined, "weekly", 0.7),
+    ...createLocalizedEntries("/collections", undefined, "weekly", 0.7),
+    ...createEnglishEntry("/guides", undefined, "monthly", 0.8),
+    ...createLocalizedEntries("/recipes", undefined, "weekly", 0.8),
+    ...createLocalizedEntries("/ui-prompts", undefined, "weekly", 0.9),
+    ...createLocalizedEntries("/landing-page-prompts", undefined, "weekly", 0.8),
+    ...createLocalizedEntries("/dashboard-prompts", undefined, "weekly", 0.8),
+    ...createLocalizedEntries("/tailwind-ui-prompts", undefined, "weekly", 0.8),
+    ...createLocalizedEntries("/dark-mode-ui-prompts", undefined, "weekly", 0.8),
+    ...createLocalizedEntries("/animations", undefined, "weekly", 0.8),
+    ...createLocalizedEntries("/animations/vocabulary", undefined, "monthly", 0.6),
+    ...createLocalizedEntries("/templates", undefined, "weekly", 0.7),
+    ...createLocalizedEntries("/typography", undefined, "monthly", 0.7),
+    ...createLocalizedEntries("/type-scale", undefined, "monthly", 0.7),
+    ...createLocalizedEntries("/spacing", undefined, "monthly", 0.7),
+    ...createLocalizedEntries("/shadows", undefined, "monthly", 0.7),
+    ...createLocalizedEntries("/gradients", undefined, "monthly", 0.7),
+    ...createLocalizedEntries("/backgrounds", undefined, "monthly", 0.7),
+    ...createLocalizedEntries("/color-theory", undefined, "monthly", 0.7),
+    ...createLocalizedEntries("/design-principles", undefined, "monthly", 0.7),
+    ...createLocalizedEntries("/visual-hierarchy", undefined, "monthly", 0.7),
+    ...createLocalizedEntries("/component-patterns", undefined, "monthly", 0.7),
+    ...createLocalizedEntries("/learn", undefined, "monthly", 0.6),
+    ...createLocalizedEntries("/developers", undefined, "monthly", 0.6),
+    ...createLocalizedEntries("/mouse-interactions", undefined, "monthly", 0.6),
+    ...createLocalizedEntries("/guide", undefined, "monthly", 0.6),
+    ...createLocalizedEntries("/components", undefined, "weekly", 0.6),
+    ...createLocalizedEntries("/about", undefined, "monthly", 0.4),
+    ...createLocalizedEntries("/contact", undefined, "monthly", 0.4),
+    ...createEnglishEntry("/privacy", undefined, "yearly", 0.2),
+    ...createEnglishEntry("/terms", undefined, "yearly", 0.2),
+    ...createEnglishEntry("/blog", undefined, "weekly", 0.7),
+    ...createLocalizedEntries("/changelog", undefined, "monthly", 0.5),
   ];
 
   const stylePages: MetadataRoute.Sitemap = styles.flatMap((style) =>
-    createLocalizedEntries(`/styles/${style.slug}`, CONTENT_UPDATED, "weekly", 0.8)
-  );
-
-  const showcasePages: MetadataRoute.Sitemap = styles.flatMap((style) =>
-    createLocalizedEntries(`/styles/${style.slug}/showcase`, CONTENT_UPDATED, "monthly", 0.6)
-  );
-
-  const templatePages: MetadataRoute.Sitemap = getTemplateSlugs().flatMap((slug) =>
-    createLocalizedEntries(`/templates/${slug}`, CONTENT_UPDATED, "monthly", 0.6)
+    createLocalizedEntries(
+      `/styles/${style.slug}`,
+      undefined,
+      "weekly",
+      0.8
+    )
   );
 
   const promptPages: MetadataRoute.Sitemap = getAllTopicSlugs()
     .filter((slug) => !redirectedPromptSlugs.has(slug))
     .flatMap((slug) =>
-      createLocalizedEntries(`/prompts/${slug}`, CONTENT_UPDATED, "weekly", 0.8)
+      createLocalizedEntries(`/prompts/${slug}`, undefined, "weekly", 0.8)
     );
 
   const animationPages: MetadataRoute.Sitemap = getAllAnimationsMeta().flatMap((anim) =>
-    createLocalizedEntries(`/animations/${anim.slug}`, CONTENT_UPDATED, "weekly", 0.7)
+    createLocalizedEntries(`/animations/${anim.slug}`, undefined, "weekly", 0.7)
+  );
+
+  const templatePages: MetadataRoute.Sitemap = templateCatalog.flatMap((template) =>
+    createLocalizedEntries(template.href, undefined, "monthly", 0.6)
   );
 
   const blogPosts = getAllPosts();
   const blogPostPages: MetadataRoute.Sitemap = blogPosts.flatMap((post) =>
-    createLocalizedEntries(
+    createEnglishEntry(
       `/blog/${post.slug}`,
-      post.date ? new Date(post.date) : CONTENT_UPDATED,
+      post.modified
+        ? new Date(post.modified)
+        : post.date
+          ? new Date(post.date)
+          : undefined,
       "monthly",
       0.6
     )
   );
 
   const guidePages: MetadataRoute.Sitemap = Object.values(styleGuides).flatMap((guide) =>
-    createLocalizedEntries(`/guides/${guide.slug}`, CONTENT_UPDATED, "monthly", 0.7)
+    createEnglishEntry(`/guides/${guide.slug}`, undefined, "monthly", 0.7)
   );
 
   const collectionPages: MetadataRoute.Sitemap = getAllCollections().flatMap((collection) =>
-    createLocalizedEntries(`/collections/${collection.slug}`, CONTENT_UPDATED, "weekly", 0.7)
+    createLocalizedEntries(`/collections/${collection.slug}`, undefined, "weekly", 0.7)
+  );
+
+  const recipePages: MetadataRoute.Sitemap = getAllRecipes().flatMap((recipe) =>
+    createLocalizedEntries(`/recipes/${recipe.id}`, undefined, "monthly", 0.7)
   );
 
   return [
     ...staticPages,
     ...stylePages,
-    ...showcasePages,
-    ...templatePages,
     ...promptPages,
     ...animationPages,
+    ...templatePages,
     ...blogPostPages,
     ...guidePages,
     ...collectionPages,
+    ...recipePages,
   ];
 }

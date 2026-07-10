@@ -10,13 +10,14 @@ export async function GET() {
     title: "StyleKit - New Styles",
     description:
       "New visual styles added to StyleKit design system",
-    link: `${BASE_URL}/styles`,
+    link: `${BASE_URL}/en/styles`,
+    selfUrl: `${BASE_URL}/feed/styles.xml`,
+    language: "en-us",
     items: stylesMeta.map((style) => ({
       title: style.nameEn,
-      description: style.description,
-      link: `${BASE_URL}/styles/${style.slug}`,
-      pubDate: new Date().toISOString(),
-      guid: `${BASE_URL}/styles/${style.slug}`,
+      description: `Explore the ${style.nameEn} visual style, including its design constraints, component recipes, tokens, and implementation guidance.`,
+      link: `${BASE_URL}/en/styles/${style.slug}`,
+      guid: `${BASE_URL}/en/styles/${style.slug}`,
     })),
   });
 
