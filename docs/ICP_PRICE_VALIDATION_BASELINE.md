@@ -145,18 +145,31 @@ Before Pack 2 begins, Pack 1 must record:
 
 Ten customers are an initial demand signal, not proof of sustainable profitability.
 
-## 9. Missing instrumentation before the offer test
+## 9. Instrumentation status before the offer test
 
-- `showcase_open`
-- `shadcn_command_copy`
+Implemented without visual changes on 2026-07-10:
+
+- `showcase_open` on the two existing style-detail entry points;
+- `shadcn_command_copy` on successful command copy;
+- `catalog_impression` with one-based rank, sort, filter count, and no raw search query;
+- corrected `code_copy` style identity without the `unknown` sentinel;
+- strict public-event runtime validation, request limits, rate limiting, and server-derived style slugs;
+- client/authoritative trust separation so browser events cannot claim verified intent, checkout,
+  purchase, refund, or installation success.
+
+Defined in the event contract but intentionally not emitted until the corresponding approved offer,
+checkout, payment, or install-verification source exists:
+
 - `pack_offer_view`
 - `pack_price_view`
 - `pack_purchase_intent`
 - `pack_checkout_start`
 - `pack_purchase`
+- `pack_refund`
 - `pack_install_success`
-- catalog impression and rank position
-- corrected style identity for currently `unknown` copy events
 
-The next implementation slice should add this event vocabulary and instrument existing non-visual
-seams. A public priced offer remains gated by explicit frontend approval.
+Historical data cannot be backfilled for the newly instrumented events. Their baseline begins only
+after this version is deployed. A public priced offer remains gated by explicit frontend approval.
+
+Execution materials are indexed in
+[`PRODUCT_VALIDATION_PLAYBOOK.md`](./PRODUCT_VALIDATION_PLAYBOOK.md).

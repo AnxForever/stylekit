@@ -366,9 +366,11 @@ Goal: test whether the target user will pay before building a broad delivery pla
 
 Deliverables:
 
-- target-ICP interview script and structured evidence log;
+- target-ICP [interview script](./ICP_INTERVIEW_SCRIPT.md) and structured
+  [evidence log](./ICP_EVIDENCE_LOG_TEMPLATE.md);
 - one priced Pack 1 offer with explicit deliverables and license;
-- analytics for qualified offer views, soft intent, strong intent, and interview outcomes;
+- analytics for qualified offer views, soft intent, strong intent, and interview outcomes, using the
+  [price experiment runbook](./PRICE_EXPERIMENT_RUNBOOK.md);
 - a minimal checkout/deposit or manual preorder mechanism;
 - explicit visual approval before any public offer page is implemented.
 
@@ -477,12 +479,15 @@ Stop or reposition if users consume free inspiration but will not pay for implem
 
 - `style_view`
 - `showcase_open`
-- `prompt_copy`
-- `pack_view`
-- `pack_preview_run`
-- `pack_install_intent`
+- `code_copy`
+- `shadcn_command_copy`
+- `catalog_impression`
+- `pack_offer_view`
+- `pack_price_view`
 - `pack_purchase_intent`
+- `pack_checkout_start`
 - `pack_purchase`
+- `pack_refund`
 - `pack_install_success`
 - `validation_run`
 - `validation_fix_applied`
