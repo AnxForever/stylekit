@@ -1,0 +1,62 @@
+{
+  "schemaVersion": 1,
+  "experiment": {
+    "experimentId": "cc-saas-pack-price-2026-01",
+    "offerVersion": "cc-saas-pack-offer-v1",
+    "packId": "corporate-clean-saas",
+    "packVersion": "0.1.0",
+    "revisionNumber": 0,
+    "window": {
+      "start": "2026-08-01T00:00:00.000Z",
+      "end": "2026-08-31T23:59:59.000Z"
+    },
+    "variants": [
+      {
+        "id": "pack-199",
+        "currency": "CNY",
+        "amountMinor": 19900
+      },
+      {
+        "id": "pack-399",
+        "currency": "CNY",
+        "amountMinor": 39900
+      }
+    ],
+    "thresholds": {
+      "minimumQualifiedVisitors": 200,
+      "minimumVisitorsPerVariant": 100,
+      "minimumSoftIntentRateBps": 500,
+      "minimumStrongIntentRateBps": 200,
+      "maximumVariantShareBps": 5500,
+      "minimumQualifiedInterviews": 20,
+      "minimumInterviewsPerVariant": 10,
+      "minimumPriceAcceptances": 6,
+      "minimumDepositLinkRequests": 3,
+      "minimumVisibilityMs": 2000,
+      "minimumVisibleRatioBps": 5000,
+      "maximumProductionHours": 80,
+      "maximumAssetCostMinor": 150000,
+      "maximumBreakEvenUnits": 25,
+      "minimumBrandKitConversations": 5,
+      "minimumBrandKitProposals": 2,
+      "minimumBrandKitPaidCommitments": 1
+    }
+  },
+  "participants": [],
+  "onlineEvents": [],
+  "interviews": [],
+  "economicsForecast": {
+    "currency": "CNY",
+    "productionHours": 60,
+    "maintainerHourlyCostMinor": 10000,
+    "assetCostMinor": 100000,
+    "otherFixedCostMinor": 0,
+    "expectedRefundRateBps": 500,
+    "taxRateBps": 600,
+    "paymentFeeBps": 300,
+    "perOrderDeliveryCostMinor": 500,
+    "expectedSupportMinutes": 20,
+    "supportHourlyCostMinor": 6000,
+    "attributableCacMinor": 1000
+  }
+}

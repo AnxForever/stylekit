@@ -81,7 +81,45 @@
 - **转向 Private Brand Kit：** 标准 Pack 证据弱，但定制服务获得真实订金或付款。
 - **停止扩展：** 一次修订后仍未通过，或单位经济在合理售价下不可成立。
 
-## 5. 方法依据
+## 5. 机器校验
+
+实验开始前复制并冻结匿名证据文件：
+
+```bash
+cp docs/examples/product-validation-empty.json .data/product-validation.json
+pnpm run validate:product-experiment -- .data/product-validation.json
+```
+
+需要供其他工具读取时输出 JSON：
+
+```bash
+pnpm run validate:product-experiment -- .data/product-validation.json --format json
+```
+
+校验器执行以下不可移动规则：
+
+- 身份只能使用 `hmac:`、`anon:` 或低置信度 `session:` 键，拒绝邮箱等直接标识符；
+- 同一身份固定到一个变体，事件必须匹配实验、offer、变体和时间窗口；
+- 重复 `event_id` 只计一次；session-only、机器人、内部、测试、非生产和非 ICP 流量不进入分母；
+- qualified visitor 必须同时满足 offer 与价格的冻结可见时长和可见比例；
+- 只有服务端核验的价格接受/结账和支付来源能进入软/强意向；
+- 需求与预估单位经济必须同时通过，才会输出 `continue_pack_1`；样本不足始终输出
+  `inconclusive_sample`，一次修订后失败输出 `stop_expansion`。
+- 标准 Pack 未通过，但 Private Brand Kit 达到 5 次合格对话、2 次书面方案请求、至少 1 笔真实
+  不可退订金/全款且服务贡献毛利过闸时，才输出 `reposition_to_private_brand_kit`。
+
+证据文件不得提交联系人映射、姓名、邮箱、录音、逐字稿或支付卡数据。原始证据应保存在受限位置，
+仓库中的示例永远保持空样本，因此不会误授权 Pack。
+
+示例里的 `maximumBreakEvenUnits: 25` 是待维护者在实验开始前确认的经营阈值，不是已经验证的市场
+事实。修改该值、工时成本率、退款率或支持成本都必须产生新的冻结证据版本，不能在看到结果后移动。
+
+线上实验部署前还必须确认远端 Supabase 已应用
+`lib/supabase/migrations/014_lock_down_analytics_inserts.sql`。当前仓库环境没有 Supabase CLI 或数据库
+连接串，不能无侵入证明远端状态；在该迁移被核验前，公共 anon key 可能绕过分析 API，线上证据不得
+进入主结论。
+
+## 6. 方法依据
 
 这些材料采用并适配了以下外部原则：
 
@@ -91,5 +129,9 @@
   参与者需要知道研究目的、收集的数据、用途、保存时间、录音方式和退出权利。
 - [Stripe — Fulfill orders](https://docs.stripe.com/payments/checkout/fulfill-orders)：
   支付与履约应以服务端支付状态和 webhook 为准，并对同一会话进行幂等处理，而不是依赖浏览器重定向。
+- [GrowthBook JS SDK sticky assignments](https://github.com/growthbook/growthbook/blob/588462310cea98205c79b0290124dfbecc0af1bb/packages/sdk-js/src/sticky-bucket-service.ts)：
+  身份、实验版本和变体分配需要持久且可审计；重复触发不能把同一人重复计入实验。
+- [Unleash flexible rollout](https://github.com/Unleash/unleash-client-node/blob/76971008988ca91c74c71fff3a34a2dab3e44b71/src/strategy/flexible-rollout-strategy.ts)：
+  稳定身份优先于 session，随机降级不能进入主要效果结论；失败上报需要保留原计数而不是静默丢失。
 
 这些链接提供方法参考，不替代适用地区的法律、税务、消费者保护或支付合规意见。
