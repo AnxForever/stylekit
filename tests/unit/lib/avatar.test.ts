@@ -27,6 +27,16 @@ describe("avatar helpers", () => {
     );
   });
 
+  it("proxies Linux DO CDN avatar urls", () => {
+    expect(
+      getAvatarImageSrc(
+        "https://cdn.ldstatic.com/user_avatar/linux.do/anxforever/288/1837622_2.png"
+      )
+    ).toBe(
+      "/api/avatar?url=https%3A%2F%2Fcdn.ldstatic.com%2Fuser_avatar%2Flinux.do%2Fanxforever%2F288%2F1837622_2.png"
+    );
+  });
+
   it("leaves local avatar urls untouched", () => {
     expect(getAvatarImageSrc("/avatar.png")).toBe("/avatar.png");
   });

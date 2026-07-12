@@ -3,6 +3,7 @@ const EXACT_ALLOWED_AVATAR_HOSTS = new Set([
   "gravatar.com",
   "www.gravatar.com",
   "secure.gravatar.com",
+  "cdn.ldstatic.com",
   "linux.do",
   "connect.linux.do",
 ]);
@@ -13,6 +14,7 @@ const PROXIED_AVATAR_HOSTS = new Set([
   "gravatar.com",
   "www.gravatar.com",
   "secure.gravatar.com",
+  "cdn.ldstatic.com",
 ]);
 const PROXIED_AVATAR_HOST_SUFFIXES = [".gravatar.com"];
 

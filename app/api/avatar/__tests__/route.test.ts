@@ -65,4 +65,22 @@ describe("GET /api/avatar", () => {
       })
     );
   });
+
+  it("proxies Linux DO CDN avatars", async () => {
+    fetchMock.mockResolvedValue(
+      new Response("linuxdo-avatar", {
+        status: 200,
+        headers: { "content-type": "image/jpeg" },
+      })
+    );
+
+    const response = await GET(
+      new Request(
+        "https://stylekit.top/api/avatar?url=https%3A%2F%2Fcdn.ldstatic.com%2Fuser_avatar%2Flinux.do%2Fanxforever%2F288%2F1837622_2.png"
+      ) as never
+    );
+
+    expect(response.status).toBe(200);
+    expect(response.headers.get("content-type")).toBe("image/jpeg");
+  });
 });
