@@ -83,10 +83,16 @@ pm2 describe stylekit
 ```
 
 6. If the server is OOM-killed during `typecheck` or `build`, use the local
-   build artifact that already passed checks:
+   build artifact that already passed checks. The local build must use the
+   same production build-time environment, especially the `NEXT_PUBLIC_*`
+   variables used by browser authentication. Remove the temporary local env
+   copy after the build:
 
 ```bash
+scp stylekit-prod:/www/stylekit/.env.production .env.production
+pnpm run build
 rsync -az --delete .next/ stylekit-prod:/www/stylekit/.next/
+rm -f .env.production
 
 ssh stylekit-prod 'set -e
 cd /www/stylekit
@@ -264,7 +270,10 @@ pm2 describe stylekit
 The production host is memory-constrained. If server-side `typecheck` or `build` is OOM-killed after the local checks and local `pnpm run build` have passed, sync the local build output instead:
 
 ```bash
+scp stylekit-prod:/www/stylekit/.env.production .env.production
+pnpm run build
 rsync -az --delete .next/ stylekit-prod:/www/stylekit/.next/
+rm -f .env.production
 
 ssh stylekit-prod 'set -e
 cd /www/stylekit
@@ -370,6 +379,11 @@ curl -I https://www.stylekit.top/styles
 curl -I https://www.stylekit.top/styles/neo-brutalist
 curl -fsS https://www.stylekit.top/api/styles/neo-brutalist/tokens
 ```
+
+After an artifact fallback deploy, also verify in a real browser that the
+GitHub sign-in button leaves `/login` and starts the Supabase OAuth flow. A
+successful page load alone does not prove that browser auth variables were
+embedded in the build.
 
 ## Admin Login Checks
 
