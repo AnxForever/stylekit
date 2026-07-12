@@ -40,11 +40,13 @@ import { RecipeCard } from "@/components/recipes/recipe-card";
 import { getRoomBySlug } from "@/components/mouse-interactions/rooms/registry";
 import { GenericRoom } from "@/components/mouse-interactions/rooms/generic-room";
 
+type CompatibleStyleSummary = Pick<DesignStyle, "slug" | "name" | "nameEn">;
+
 interface Props {
   style: DesignStyle;
   styleSource?: RuntimeStyleSource;
-  compatibleStyles: DesignStyle[];
-  compatibleLayouts: DesignStyle[];
+  compatibleStyles: CompatibleStyleSummary[];
+  compatibleLayouts: CompatibleStyleSummary[];
   enhancedRules: string | null;
   accessibilityScore: AccessibilityScore | null;
   readiness: FrontendReadinessProfile;
@@ -52,14 +54,6 @@ interface Props {
   changelog?: StyleVersion[];
   /** SSR-precomputed locale for server-rendered hero content */
   ssrLocale?: Locale;
-  /** SSR-precomputed localized description */
-  ssrDescription?: string;
-  /** SSR-precomputed localized philosophy */
-  ssrPhilosophy?: string;
-  /** SSR-precomputed localized do list */
-  ssrDos?: string[];
-  /** SSR-precomputed localized dont list */
-  ssrDonts?: string[];
 }
 
 function formatReadinessLabel(value: string, locale: "en" | "zh" = "en"): string {
@@ -128,10 +122,6 @@ export function StyleDetailContent({
   version,
   changelog,
   ssrLocale,
-  ssrDescription,
-  ssrPhilosophy,
-  ssrDos,
-  ssrDonts,
 }: Props) {
   const { t, locale: clientLocale } = useI18n();
   const locale = ssrLocale ?? clientLocale;
@@ -162,24 +152,24 @@ export function StyleDetailContent({
     : getRecipesByVisualStyle(style.slug).slice(0, 3);
   const pointerRoom = getRoomBySlug(style.slug) ?? null;
 
-  const localizedDescription = ssrDescription ?? localizedString(
-    clientLocale,
+  const localizedDescription = localizedString(
+    locale,
     style.description,
     style.descriptionEn
   );
-  const localizedPhilosophy = ssrPhilosophy ?? localizedString(
-    clientLocale,
+  const localizedPhilosophy = localizedString(
+    locale,
     style.philosophy,
     style.philosophyEn
   );
-  const localizedDos = ssrDos ?? localizedList(clientLocale, style.doList, style.doListEn);
-  const localizedDonts = ssrDonts ?? localizedList(clientLocale, style.dontList, style.dontListEn);
+  const localizedDos = localizedList(locale, style.doList, style.doListEn);
+  const localizedDonts = localizedList(locale, style.dontList, style.dontListEn);
   const localizedKeywords = localizedList(locale, style.keywords, style.keywordsEn);
   const primaryStyleName = locale === "zh" ? style.name : style.nameEn || style.name;
   const secondaryStyleName = locale === "zh" ? style.nameEn : style.name;
-  const getPrimaryName = (targetStyle: DesignStyle) =>
+  const getPrimaryName = (targetStyle: CompatibleStyleSummary) =>
     locale === "zh" ? targetStyle.name : targetStyle.nameEn || targetStyle.name;
-  const getSecondaryName = (targetStyle: DesignStyle) =>
+  const getSecondaryName = (targetStyle: CompatibleStyleSummary) =>
     locale === "zh" ? targetStyle.nameEn : targetStyle.name;
   const detailSections = [
     {

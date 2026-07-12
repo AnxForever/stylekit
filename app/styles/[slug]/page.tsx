@@ -114,6 +114,7 @@ export default async function StyleDetailPage({
       ? style.compatibleWith
           .map((s) => getStyleBySlug(s))
           .filter((s): s is NonNullable<typeof s> => s !== undefined)
+          .map(({ slug, name, nameEn }) => ({ slug, name, nameEn }))
       : [];
 
   // Pre-compute compatible layouts for visual styles
@@ -121,7 +122,7 @@ export default async function StyleDetailPage({
     style.styleType === "visual"
       ? styles.filter(
           (s) => s.styleType === "layout" && s.compatibleWith?.includes(style.slug)
-        )
+        ).map(({ slug, name, nameEn }) => ({ slug, name, nameEn }))
       : [];
 
   // Pre-compute enhanced rules
@@ -205,10 +206,6 @@ export default async function StyleDetailPage({
             version={version}
             changelog={changelog}
             ssrLocale={locale}
-            ssrDescription={ssrDescription}
-            ssrPhilosophy={ssrPhilosophy}
-            ssrDos={ssrDos}
-            ssrDonts={ssrDonts}
           />
         </main>
       </DisableAutoScroll>
