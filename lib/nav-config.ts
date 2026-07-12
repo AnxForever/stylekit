@@ -67,13 +67,21 @@ export const mainNav: NavItem[] = [
               labelKey: "nav.blog",
               external: true,
             },
+            { href: "/learn#color-theory", labelKey: "nav.colorTheory" },
+            { href: "/learn#typography", labelKey: "nav.typography" },
+            { href: "/learn#type-scale", labelKey: "nav.typeScale" },
+            { href: "/learn#spacing", labelKey: "nav.spacing" },
+            { href: "/learn#design-principles", labelKey: "nav.designPrinciples" },
+            { href: "/learn#visual-hierarchy", labelKey: "nav.visualHierarchy" },
           ],
         },
         {
           groupLabelKey: "nav.resourcesBrowse",
           items: [
+            { href: "/styles", labelKey: "nav.styles" },
             { href: "/animations", labelKey: "nav.animations" },
             { href: "/mouse-interactions", labelKey: "nav.mouseInteractions" },
+            { href: "/animations/vocabulary", labelKey: "nav.vocabulary" },
             { href: "/recipes", labelKey: "nav.recipes" },
             { href: "/guides", labelKey: "nav.guides" },
           ],
@@ -83,6 +91,8 @@ export const mainNav: NavItem[] = [
           items: [
             { href: "/component-patterns", labelKey: "nav.componentPatterns" },
             { href: "/gradients", labelKey: "nav.gradients" },
+            { href: "/shadows", labelKey: "nav.shadows" },
+            { href: "/backgrounds", labelKey: "nav.backgrounds" },
           ],
         },
         {
