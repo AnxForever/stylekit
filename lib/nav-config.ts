@@ -52,8 +52,48 @@ export interface ExternalNavItem {
 export const mainNav: NavItem[] = [
   { href: "/styles", labelKey: "nav.styles" },
   { href: "/templates", labelKey: "nav.templates" },
-  { href: "/guides", labelKey: "nav.resources" },
-  { href: "https://anxforever.cn", labelKey: "nav.blog", external: true },
+  {
+    href: "/guides",
+    labelKey: "nav.resources",
+    dropdown: {
+      labelKey: "nav.resources",
+      width: "wide",
+      groups: [
+        {
+          groupLabelKey: "nav.learn",
+          items: [
+            {
+              href: "https://anxforever.cn",
+              labelKey: "nav.blog",
+              external: true,
+            },
+          ],
+        },
+        {
+          groupLabelKey: "nav.resourcesBrowse",
+          items: [
+            { href: "/animations", labelKey: "nav.animations" },
+            { href: "/mouse-interactions", labelKey: "nav.mouseInteractions" },
+            { href: "/recipes", labelKey: "nav.recipes" },
+            { href: "/guides", labelKey: "nav.guides" },
+          ],
+        },
+        {
+          groupLabelKey: "nav.resourcesComponents",
+          items: [
+            { href: "/component-patterns", labelKey: "nav.componentPatterns" },
+            { href: "/gradients", labelKey: "nav.gradients" },
+          ],
+        },
+        {
+          groupLabelKey: "nav.resourcesDevelopers",
+          items: [
+            { href: "/developers", labelKey: "nav.developers" },
+          ],
+        },
+      ],
+    },
+  },
 ];
 
 // Intentionally empty so the header does not render a "More" overflow menu.
