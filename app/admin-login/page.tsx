@@ -2,6 +2,8 @@ import { Suspense } from "react";
 import type { Metadata } from "next";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import { GeistMono } from "geist/font/mono";
+import { GeistSans } from "geist/font/sans";
 import {
   ADMIN_SESSION_COOKIE_NAME,
   verifyAdminSessionCookieValue,
@@ -9,8 +11,8 @@ import {
 import { AdminLoginContent } from "./_content";
 
 export const metadata: Metadata = {
-  title: "Admin sign in - StyleKit",
-  description: "Sign in to the StyleKit admin console.",
+  title: "管理后台登录 - StyleKit",
+  description: "登录 StyleKit 管理后台。",
   robots: {
     index: false,
     follow: false,
@@ -25,8 +27,10 @@ export default async function AdminLoginPage() {
   }
 
   return (
-    <Suspense>
-      <AdminLoginContent />
-    </Suspense>
+    <div className={`${GeistSans.variable} ${GeistMono.variable} admin-shell`}>
+      <Suspense>
+        <AdminLoginContent />
+      </Suspense>
+    </div>
   );
 }

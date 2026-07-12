@@ -86,9 +86,9 @@ describe("buildAnalyticsDashboard", () => {
       count: 4,
     });
     expect(payload.trend).toEqual({
-      currentTotal: 4,
-      previousTotal: 2,
-      deltaPct: 100,
+      currentTotal: 0,
+      previousTotal: 0,
+      deltaPct: null,
       windowLabel: "vs previous 7 days",
     });
     expect(payload.peakDay).toEqual({
@@ -124,5 +124,118 @@ describe("buildAnalyticsDashboard", () => {
     expect(payload.peakDay.count).toBe(0);
     expect(payload.trend.windowLabel).toBe("vs previous 90 days");
     expect(payload.trend.deltaPct).toBeNull();
+    expect(payload.registrations.inRange).toBe(0);
+    expect(payload.dataQuality.registrationsAvailable).toBe(false);
+  });
+
+  it("builds browsing transitions and registration context without claiming user attribution", () => {
+    const now = new Date("2026-03-26T12:00:00.000Z");
+    const pageView = (
+      sessionId: string,
+      path: string,
+      createdAt: string
+    ): DashboardEventRow => ({
+      style_slug: null,
+      event_type: "page_view",
+      event_data: { path },
+      created_at: createdAt,
+      session_id: sessionId,
+    });
+    const rows = [
+      pageView("sess-1", "/", "2026-03-25T10:00:00.000Z"),
+      pageView("sess-1", "/styles", "2026-03-25T10:01:00.000Z"),
+      pageView("sess-1", "/styles/editorial", "2026-03-25T10:02:00.000Z"),
+      pageView("sess-2", "/", "2026-03-24T10:00:00.000Z"),
+      pageView("sess-2", "/styles", "2026-03-24T10:01:00.000Z"),
+      pageView("sess-3", "/ui-prompts", "2026-03-23T10:00:00.000Z"),
+    ];
+
+    const payload = buildAnalyticsDashboard(
+      rows,
+      "7d",
+      CONTENT_SUMMARY,
+      [],
+      now,
+      {
+        totalUsers: 4,
+        createdAt: [
+          "2026-03-24T08:00:00.000Z",
+          "2026-03-25T08:00:00.000Z",
+          "2026-02-01T08:00:00.000Z",
+        ],
+        truncated: true,
+        available: true,
+      },
+      true
+    );
+
+    expect(payload.visitors).toBe(3);
+    expect(payload.engagedVisitors).toBe(2);
+    expect(payload.bounceRate).toBe(33.3);
+    expect(payload.trend).toEqual({
+      currentTotal: 6,
+      previousTotal: 0,
+      deltaPct: 100,
+      windowLabel: "vs previous 7 days",
+    });
+    expect(payload.topTransitions[0]).toEqual({
+      from: "/",
+      to: "/styles",
+      count: 2,
+    });
+    expect(payload.registrations.totalUsers).toBe(4);
+    expect(payload.registrations.inRange).toBe(2);
+    expect(payload.registrations.visitorRatio).toBe(66.7);
+    expect(payload.registrations.series.reduce((sum, point) => sum + point.registrations, 0)).toBe(2);
+    expect(payload.dataQuality).toEqual({
+      eventsTruncated: true,
+      registrationsTruncated: true,
+      registrationsAvailable: true,
+    });
+  });
+
+  it("bases the trend on page views and prefers the server-supplied previous window count", () => {
+    const now = new Date("2026-03-26T12:00:00.000Z");
+    const pageView = (
+      sessionId: string,
+      createdAt: string
+    ): DashboardEventRow => ({
+      style_slug: null,
+      event_type: "page_view",
+      event_data: { path: "/" },
+      created_at: createdAt,
+      session_id: sessionId,
+    });
+    const rows = [
+      pageView("sess-1", "2026-03-25T10:00:00.000Z"),
+      pageView("sess-2", "2026-03-24T10:00:00.000Z"),
+      pageView("sess-3", "2026-03-23T10:00:00.000Z"),
+      // Previous 7d window row: only counted when no server override is given.
+      pageView("sess-4", "2026-03-17T10:00:00.000Z"),
+    ];
+
+    const fallback = buildAnalyticsDashboard(rows, "7d", CONTENT_SUMMARY, [], now);
+    expect(fallback.trend.currentTotal).toBe(3);
+    expect(fallback.trend.previousTotal).toBe(1);
+    expect(fallback.trend.deltaPct).toBe(200);
+
+    const withServerCount = buildAnalyticsDashboard(
+      rows,
+      "7d",
+      CONTENT_SUMMARY,
+      [],
+      now,
+      {
+        totalUsers: 0,
+        createdAt: [],
+        truncated: false,
+        available: false,
+      },
+      false,
+      6
+    );
+    expect(withServerCount.trend.currentTotal).toBe(3);
+    expect(withServerCount.trend.previousTotal).toBe(6);
+    expect(withServerCount.trend.deltaPct).toBe(-50);
   });
 });

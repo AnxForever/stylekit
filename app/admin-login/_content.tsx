@@ -33,14 +33,14 @@ export function AdminLoginContent() {
 
       if (!response.ok) {
         const body = await response.json().catch(() => null);
-        throw new Error(body?.error ?? "Unable to sign in.");
+        throw new Error(body?.error ?? "无法登录，请检查密码后重试。");
       }
 
       router.replace(nextPath);
       router.refresh();
     } catch (loginError) {
       setError(
-        loginError instanceof Error ? loginError.message : "Unable to sign in."
+        loginError instanceof Error ? loginError.message : "无法登录，请稍后重试。"
       );
     } finally {
       setIsSubmitting(false);
@@ -48,44 +48,44 @@ export function AdminLoginContent() {
   }
 
   return (
-    <main className="min-h-screen bg-[var(--admin-canvas)] px-4 py-10 text-foreground sm:px-6">
+    <main className="min-h-screen bg-[var(--admin-canvas)] px-4 py-10 text-[var(--admin-text-primary)] sm:px-6">
       <div className="mx-auto flex min-h-[calc(100vh-5rem)] max-w-md items-center">
-        <section className="w-full rounded-lg border border-[var(--admin-border-soft)] bg-[var(--admin-panel)] p-6 shadow-[var(--admin-shadow)] sm:p-7">
+        <section className="w-full rounded-xl bg-[var(--admin-panel)] p-6 shadow-[var(--admin-shadow-medium)] sm:p-8">
           <div className="mb-6 flex items-center gap-3">
-            <div className="flex h-11 w-11 items-center justify-center rounded-md border border-[var(--admin-border-soft)] bg-foreground text-background">
+            <div className="flex h-10 w-10 items-center justify-center rounded-md bg-foreground text-background shadow-[var(--admin-shadow-border)]">
               <LockKeyhole className="h-5 w-5" />
             </div>
             <div className="min-w-0">
-              <h1 className="text-lg font-semibold leading-6">Admin console</h1>
+              <h1 className="text-xl font-semibold leading-6 tracking-[-0.4px]">管理后台</h1>
               <p className="mt-1 text-sm text-muted">StyleKit</p>
             </div>
           </div>
 
           <form className="space-y-4" onSubmit={handleSubmit}>
             <label className="block">
-              <span className="mb-1.5 block text-xs font-semibold uppercase tracking-[0.12em] text-muted">
-                Password
+              <span className="mb-1.5 block text-sm font-medium text-muted">
+                管理员密码
               </span>
               <input
                 autoComplete="current-password"
                 autoFocus
-                className="h-11 w-full rounded-md border border-[var(--admin-border-soft)] bg-[var(--admin-input)] px-3 text-sm text-foreground outline-none transition-colors placeholder:text-muted hover:border-border focus:border-foreground/35"
+                className="h-10 w-full rounded-md bg-[var(--admin-input)] px-3 text-sm text-foreground shadow-[var(--admin-shadow-border)] outline-none transition-shadow placeholder:text-[var(--admin-text-muted)] hover:shadow-[0_0_0_1px_var(--admin-border-emphasis)]"
                 name="password"
                 onChange={(event) => setPassword(event.target.value)}
-                placeholder="Enter admin password"
+                placeholder="请输入管理员密码"
                 type="password"
                 value={password}
               />
             </label>
 
             {error ? (
-              <p className="rounded-md border border-red-500/25 bg-red-500/10 px-3 py-2 text-sm text-red-600 dark:text-red-300">
+              <p className="rounded-md bg-[var(--admin-panel)] px-3 py-2 text-sm text-[var(--admin-status-red)] shadow-[var(--admin-shadow-border)]">
                 {error}
               </p>
             ) : null}
 
             <button
-              className="flex h-11 w-full items-center justify-center gap-2 rounded-md bg-foreground px-4 text-sm font-semibold text-background transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
+              className="flex h-10 w-full items-center justify-center gap-2 rounded-md bg-foreground px-4 text-sm font-normal text-background shadow-[var(--admin-shadow-border)] transition-colors hover:bg-[#2b2b2b] disabled:cursor-not-allowed disabled:opacity-60 dark:hover:bg-[#d6d6d6]"
               disabled={isSubmitting || !password}
               type="submit"
             >
@@ -94,7 +94,7 @@ export function AdminLoginContent() {
               ) : (
                 <LogIn className="h-4 w-4" />
               )}
-              Sign in
+              登录
             </button>
           </form>
         </section>

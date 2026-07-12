@@ -11,16 +11,16 @@ import {
 
 export interface AdminNavItem {
   href: string;
-  labelKey: string;
+  label: string;
   icon: LucideIcon;
 }
 
 export const adminNavItems: AdminNavItem[] = [
-  { href: "/admin/analytics", labelKey: "admin.nav.analytics", icon: BarChart3 },
-  { href: "/admin/submissions", labelKey: "admin.nav.submissions", icon: FileText },
-  { href: "/admin/comments", labelKey: "admin.nav.comments", icon: MessageSquare },
-  { href: "/admin/ratings", labelKey: "admin.nav.ratings", icon: Star },
-  { href: "/admin/styles", labelKey: "admin.nav.styles", icon: Palette },
-  { href: "/admin/users", labelKey: "admin.nav.users", icon: Users },
-  { href: "/admin/system", labelKey: "admin.nav.system", icon: Activity },
+  { href: "/admin/analytics", label: "数据分析", icon: BarChart3 },
+  { href: "/admin/submissions", label: "投稿管理", icon: FileText },
+  { href: "/admin/comments", label: "评论管理", icon: MessageSquare },
+  { href: "/admin/ratings", label: "评分管理", icon: Star },
+  { href: "/admin/styles", label: "风格总览", icon: Palette },
+  { href: "/admin/users", label: "用户管理", icon: Users },
+  { href: "/admin/system", label: "系统概况", icon: Activity },
 ];

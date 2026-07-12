@@ -1,7 +1,6 @@
 "use client";
 
 import { useAdminSystem } from "@/lib/swr";
-import { AlertTriangle } from "lucide-react";
 
 export function DbStatusBanner() {
   const { data, isLoading } = useAdminSystem();
@@ -18,40 +17,37 @@ export function DbStatusBanner() {
     connected && tables.length > 0 && tables.every((t) => t.rowCount === 0);
 
   return (
-    <div className="mb-6 rounded-lg border border-yellow-400/60 bg-yellow-50 px-4 py-3 dark:border-yellow-600/40 dark:bg-yellow-950/30">
+    <div className="mb-6 rounded-xl bg-[var(--admin-panel)] px-4 py-3 shadow-[var(--admin-shadow-border)]">
       <div className="flex items-start gap-3">
-        <AlertTriangle className="mt-0.5 h-5 w-5 shrink-0 text-yellow-600 dark:text-yellow-400" />
+        <span className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-[var(--admin-status-amber)]" />
         <div className="space-y-1 text-sm">
           {missingEnvVars ? (
             <>
-              <p className="font-medium text-yellow-800 dark:text-yellow-200">
-                Database not connected
+              <p className="font-medium text-foreground">
+                数据库未连接
               </p>
-              <p className="text-yellow-700 dark:text-yellow-300">
-                Supabase environment variables are missing.
-                Set <code className="rounded bg-yellow-200/60 px-1 py-0.5 text-xs dark:bg-yellow-800/40">NEXT_PUBLIC_SUPABASE_URL</code> and{" "}
-                <code className="rounded bg-yellow-200/60 px-1 py-0.5 text-xs dark:bg-yellow-800/40">SUPABASE_SERVICE_ROLE_KEY</code> in
-                your production environment configuration, then redeploy or restart the app.
+              <p className="text-muted">
+                缺少 Supabase 环境变量。请在生产环境配置中设置
+                <code>NEXT_PUBLIC_SUPABASE_URL</code> 和{" "}
+                <code>SUPABASE_SERVICE_ROLE_KEY</code>，然后重新部署或重启应用。
               </p>
             </>
           ) : allTablesEmpty ? (
             <>
-              <p className="font-medium text-yellow-800 dark:text-yellow-200">
-                Database connected but all tables are empty
+              <p className="font-medium text-foreground">
+                数据库已连接，但所有数据表均为空
               </p>
-              <p className="text-yellow-700 dark:text-yellow-300">
-                Supabase is configured and connected, but no data was found in any table.
-                Ensure the tables exist and contain data.
+              <p className="text-muted">
+                Supabase 已完成配置并成功连接，但所有数据表中都没有数据。请确认数据表已创建且包含数据。
               </p>
             </>
           ) : (
             <>
-              <p className="font-medium text-yellow-800 dark:text-yellow-200">
-                Database connection issue
+              <p className="font-medium text-foreground">
+                数据库连接异常
               </p>
-              <p className="text-yellow-700 dark:text-yellow-300">
-                Supabase is configured but the connection failed.
-                Check that the service role key is correct and the Supabase project is accessible.
+              <p className="text-muted">
+                Supabase 已配置，但连接失败。请检查服务角色密钥是否正确，并确认 Supabase 项目可以访问。
               </p>
             </>
           )}

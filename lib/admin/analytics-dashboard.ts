@@ -28,12 +28,26 @@ export interface DashboardContentTrendPoint {
   favorites: number;
 }
 
+export interface DashboardRegistrationInput {
+  totalUsers: number;
+  createdAt: string[];
+  truncated: boolean;
+  available: boolean;
+}
+
+export interface DashboardDataQuality {
+  eventsTruncated: boolean;
+  registrationsTruncated: boolean;
+  registrationsAvailable: boolean;
+}
+
 export interface DashboardData {
   totalEvents: number;
   totalStyles: number;
   uniqueSessions: number;
   pageViews: number;
   visitors: number;
+  engagedVisitors: number;
   bounceRate: number | null;
   avgEventsPerDay: number;
   topStyles: { slug: string; count: number; category: string | null }[];
@@ -60,6 +74,7 @@ export interface DashboardData {
     visitors: number;
   }>;
   topPages: Array<{ path: string; count: number }>;
+  topTransitions: Array<{ from: string; to: string; count: number }>;
   topReferrers: Array<{
     source: string;
     type: "direct" | "search" | "social" | "external" | "internal";
@@ -69,6 +84,17 @@ export interface DashboardData {
   topDevices: Array<{ name: string; count: number }>;
   topOperatingSystems: Array<{ name: string; count: number }>;
   topCountries: Array<{ name: string; count: number }>;
+  registrations: {
+    totalUsers: number;
+    inRange: number;
+    visitorRatio: number | null;
+    series: Array<{
+      key: string;
+      label: string;
+      registrations: number;
+    }>;
+  };
+  dataQuality: DashboardDataQuality;
   contentSummary: DashboardContentSummary;
   contentTrends: DashboardContentTrendPoint[];
 }
@@ -118,7 +144,15 @@ export function buildAnalyticsDashboard(
   range: DashboardRange,
   contentSummary: DashboardContentSummary,
   contentTrends: DashboardContentTrendPoint[] = [],
-  now: Date = new Date()
+  now: Date = new Date(),
+  registrations: DashboardRegistrationInput = {
+    totalUsers: 0,
+    createdAt: [],
+    truncated: false,
+    available: false,
+  },
+  eventsTruncated = false,
+  previousPageViews: number | null = null
 ): DashboardData {
   const usageRows = rows.filter((row) => !isAdminEvent(row.event_type));
   const pageViewRows = usageRows.filter((row) => row.event_type === "page_view");
@@ -230,6 +264,7 @@ export function buildAnalyticsDashboard(
     .map(([path, count]) => ({ path, count }))
     .sort((a, b) => b.count - a.count)
     .slice(0, 10);
+  const topTransitions = buildTopTransitions(pageViewRows);
   const topReferrers = Array.from(referrerCounts.values())
     .sort((a, b) => b.count - a.count)
     .slice(0, 10);
@@ -302,9 +337,12 @@ export function buildAnalyticsDashboard(
     now.getTime() - trendWindowDays * 2 * 24 * 60 * 60 * 1000
   );
 
+  // Trend follows the page-view metric it is displayed against. The API only
+  // loads current-window rows, so callers must supply previousPageViews for a
+  // real comparison; the in-row fallback only works when fed a 2x window.
   let currentTotal = 0;
   let previousTotal = 0;
-  for (const row of usageRows) {
+  for (const row of pageViewRows) {
     const createdAtMs = new Date(row.created_at).getTime();
     if (!Number.isFinite(createdAtMs)) continue;
 
@@ -316,6 +354,9 @@ export function buildAnalyticsDashboard(
     if (createdAtMs >= previousWindowStart.getTime()) {
       previousTotal += 1;
     }
+  }
+  if (previousPageViews != null) {
+    previousTotal = previousPageViews;
   }
 
   const deltaPct =
@@ -331,8 +372,16 @@ export function buildAnalyticsDashboard(
     pageViewsBySession.set(row.session_id, (pageViewsBySession.get(row.session_id) ?? 0) + 1);
   }
   const singlePageSessions = Array.from(pageViewsBySession.values()).filter((count) => count === 1).length;
+  const engagedVisitors = Array.from(pageViewsBySession.values()).filter((count) => count > 1).length;
   const bounceRate =
     pageViewsBySession.size > 0 ? round((singlePageSessions / pageViewsBySession.size) * 100, 1) : null;
+  const registrationSeries = buildRegistrationSeries(registrations.createdAt, range, now);
+  const registrationsInRange = registrationSeries.reduce(
+    (sum, point) => sum + point.registrations,
+    0
+  );
+  const registrationVisitorRatio =
+    visitors > 0 ? round((registrationsInRange / visitors) * 100, 1) : null;
 
   return {
     totalEvents,
@@ -340,6 +389,7 @@ export function buildAnalyticsDashboard(
     uniqueSessions,
     pageViews,
     visitors,
+    engagedVisitors,
     bounceRate,
     avgEventsPerDay,
     topStyles,
@@ -361,14 +411,61 @@ export function buildAnalyticsDashboard(
     },
     trafficSeries,
     topPages,
+    topTransitions,
     topReferrers,
     topBrowsers,
     topDevices,
     topOperatingSystems,
     topCountries,
+    registrations: {
+      totalUsers: registrations.totalUsers,
+      inRange: registrationsInRange,
+      visitorRatio: registrationVisitorRatio,
+      series: registrationSeries,
+    },
+    dataQuality: {
+      eventsTruncated,
+      registrationsTruncated: registrations.truncated,
+      registrationsAvailable: registrations.available,
+    },
     contentSummary,
     contentTrends: normalizedContentTrends,
   };
+}
+
+function buildTopTransitions(
+  rows: DashboardEventRow[]
+): DashboardData["topTransitions"] {
+  const rowsBySession = new Map<string, DashboardEventRow[]>();
+
+  for (const row of rows) {
+    if (!row.session_id) continue;
+    const sessionRows = rowsBySession.get(row.session_id) ?? [];
+    sessionRows.push(row);
+    rowsBySession.set(row.session_id, sessionRows);
+  }
+
+  const counts = new Map<string, { from: string; to: string; count: number }>();
+  for (const sessionRows of rowsBySession.values()) {
+    const ordered = sessionRows.toSorted((a, b) =>
+      a.created_at.localeCompare(b.created_at)
+    );
+
+    for (let index = 1; index < ordered.length; index += 1) {
+      const from = readEventString(ordered[index - 1], "path") ?? "/";
+      const to = readEventString(ordered[index], "path") ?? "/";
+      if (from === to) continue;
+
+      const key = `${from}\u0000${to}`;
+      const current = counts.get(key) ?? { from, to, count: 0 };
+      current.count += 1;
+      counts.set(key, current);
+    }
+  }
+
+  return Array.from(counts.values())
+    .sort((a, b) => b.count - a.count || a.from.localeCompare(b.from))
+    .slice(0, 8);
 }
 
 function buildTrafficSeries(
@@ -424,5 +521,27 @@ function buildTrafficSeries(
     label: bucket.label,
     pageViews: bucket.pageViews,
     visitors: bucket.sessions.size,
+  }));
+}
+
+function buildRegistrationSeries(
+  createdAt: string[],
+  range: DashboardRange,
+  now: Date
+): DashboardData["registrations"]["series"] {
+  const trafficBuckets = buildTrafficSeries([], range, now);
+  const counts = new Map(trafficBuckets.map((bucket) => [bucket.key, 0]));
+  const isHourly = range === "24h";
+
+  for (const value of createdAt) {
+    const key = isHourly ? value.slice(0, 13) : value.slice(0, 10);
+    if (!counts.has(key)) continue;
+    counts.set(key, (counts.get(key) ?? 0) + 1);
+  }
+
+  return trafficBuckets.map((bucket) => ({
+    key: bucket.key,
+    label: bucket.label,
+    registrations: counts.get(bucket.key) ?? 0,
   }));
 }
