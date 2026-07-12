@@ -15,6 +15,7 @@ import { getAlternateLocalePath } from "@/lib/i18n/routing";
 import { localizedString, localizedList } from "@/lib/styles/locale-content";
 import type { Locale } from "@/lib/i18n/translations";
 import { StyleDetailContent } from "./_content";
+import { StyleReadinessSection } from "./_readiness-section";
 
 // 生成静态参数
 export function generateStaticParams() {
@@ -202,7 +203,9 @@ export default async function StyleDetailPage({
             compatibleLayouts={compatibleLayouts}
             enhancedRules={enhancedRules}
             accessibilityScore={accessibilityScore}
-            readiness={readiness}
+            readinessSection={
+              <StyleReadinessSection readiness={readiness} locale={locale} />
+            }
             version={version}
             changelog={changelog}
             ssrLocale={locale}
