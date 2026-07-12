@@ -26,9 +26,9 @@ function formatUptime(seconds: number): string {
   const h = Math.floor((seconds % 86400) / 3600);
   const m = Math.floor((seconds % 3600) / 60);
   const parts: string[] = [];
-  if (d > 0) parts.push(`${d}d`);
-  if (h > 0) parts.push(`${h}h`);
-  parts.push(`${m}m`);
+  if (d > 0) parts.push(`${d} 天`);
+  if (h > 0) parts.push(`${h} 小时`);
+  parts.push(`${m} 分钟`);
   return parts.join(" ");
 }
 function formatBytes(bytes: number): string {
@@ -49,12 +49,12 @@ export function AdminSystemContent() {
   }, [data]);
 
   if (isLoading) {
-    return <AdminLoadingState label="Loading system information..." />;
+    return <AdminLoadingState label="正在加载系统信息..." />;
   }
 
   if (error) {
     return (
-      <AdminErrorState message={error.message} onRetry={() => mutate()} />
+      <AdminErrorState message="加载系统信息失败，请重试。" onRetry={() => mutate()} />
     );
   }
 
@@ -62,23 +62,23 @@ export function AdminSystemContent() {
 
   const envCards = [
     {
-      label: "Node Env",
+      label: "Node 环境",
       value: data.environment.nodeEnv,
       configured: true,
     },
     {
       label: "Supabase",
-      value: data.environment.supabaseConfigured ? "Configured" : "Not configured",
+      value: data.environment.supabaseConfigured ? "已配置" : "未配置",
       configured: data.environment.supabaseConfigured,
     },
     {
-      label: "Admin Token",
-      value: data.environment.adminTokenConfigured ? "Configured" : "Not configured",
+      label: "管理员令牌",
+      value: data.environment.adminTokenConfigured ? "已配置" : "未配置",
       configured: data.environment.adminTokenConfigured,
     },
     {
-      label: "Admin Users",
-      value: data.environment.adminUserIdsConfigured ? "Configured" : "Not configured",
+      label: "管理员用户",
+      value: data.environment.adminUserIdsConfigured ? "已配置" : "未配置",
       configured: data.environment.adminUserIdsConfigured,
     },
   ];
@@ -86,18 +86,18 @@ export function AdminSystemContent() {
   return (
     <div className="space-y-6">
       <AdminToolbar
-        title="System controls"
-        description="Refresh environment status, database state, runtime metrics, and audit log counters."
+        title="系统控制"
+        description="刷新环境状态、数据库状态、运行时指标和审计日志计数。"
         meta={<AdminCountPill>{data.environment.nodeEnv}</AdminCountPill>}
         actions={
           <AdminButton
             onClick={() => {
               mutate();
             }}
-            aria-label="Refresh data"
+            aria-label="刷新数据"
           >
             <RefreshCw className="w-4 h-4" />
-            Refresh
+            刷新
           </AdminButton>
         }
       />
@@ -105,7 +105,7 @@ export function AdminSystemContent() {
       <section>
         <h2 className="mb-4 flex items-center gap-2 text-lg font-semibold">
           <Shield className="w-5 h-5 text-muted" />
-          Environment
+          环境
         </h2>
         <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
           {envCards.map((card) => (
@@ -128,13 +128,13 @@ export function AdminSystemContent() {
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-lg font-semibold flex items-center gap-2">
             <Database className="w-5 h-5 text-muted" />
-            Database
+            数据库
           </h2>
         </div>
         {!data.database.connected ? (
           <AdminPanel className="p-6">
             <p className="text-muted text-sm">
-              Not connected. Supabase is not configured.
+              未连接。Supabase 尚未配置。
             </p>
           </AdminPanel>
         ) : (
@@ -142,10 +142,10 @@ export function AdminSystemContent() {
               <thead>
                 <tr className="border-b border-border bg-muted/10">
                   <th className="text-left px-4 py-3 font-medium text-muted">
-                    Table Name
+                    数据表名称
                   </th>
                   <th className="text-right px-4 py-3 font-medium text-muted">
-                    Row Count
+                    行数
                   </th>
                 </tr>
               </thead>
@@ -161,7 +161,7 @@ export function AdminSystemContent() {
                     <td className="px-4 py-3 text-right tabular-nums">
                       {table.rowCount >= 0
                         ? table.rowCount.toLocaleString()
-                        : "Error"}
+                        : "错误"}
                     </td>
                   </tr>
                 ))}
@@ -173,19 +173,19 @@ export function AdminSystemContent() {
       <section>
         <h2 className="text-lg font-semibold flex items-center gap-2 mb-4">
           <Server className="w-5 h-5 text-muted" />
-          Runtime
+          运行时
         </h2>
         <div className="grid gap-4 sm:grid-cols-3">
           <AdminPanel className="p-5">
-            <p className="text-sm text-muted">Node Version</p>
+            <p className="text-sm text-muted">Node 版本</p>
             <p className="text-xl font-bold mt-1">{data.runtime.nodeVersion}</p>
           </AdminPanel>
           <AdminPanel className="p-5">
-            <p className="text-sm text-muted">Uptime</p>
+            <p className="text-sm text-muted">运行时间</p>
             <p className="text-xl font-bold mt-1">{uptimeDisplay}</p>
           </AdminPanel>
           <AdminPanel className="p-5">
-            <p className="text-sm text-muted">Memory (RSS)</p>
+            <p className="text-sm text-muted">内存（RSS）</p>
             <p className="text-xl font-bold mt-1">{rssDisplay}</p>
           </AdminPanel>
         </div>
@@ -195,10 +195,10 @@ export function AdminSystemContent() {
       <section>
         <h2 className="text-lg font-semibold flex items-center gap-2 mb-4">
           <Shield className="w-5 h-5 text-muted" />
-          Audit Log
+          审计日志
         </h2>
         <AdminPanel className="p-6">
-          <p className="text-sm text-muted mb-1">File Event Count</p>
+          <p className="text-sm text-muted mb-1">文件事件数量</p>
           <p className="text-2xl font-bold">
             {data.audit.fileEventCount.toLocaleString()}
           </p>
@@ -206,7 +206,7 @@ export function AdminSystemContent() {
             href="/admin/analytics"
             className="inline-block mt-3 text-sm text-muted hover:text-foreground underline underline-offset-2 transition-colors"
           >
-            View analytics dashboard
+            查看数据分析面板
           </Link>
         </AdminPanel>
       </section>

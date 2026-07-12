@@ -281,13 +281,13 @@ export function AdminUsersContent() {
 
         if (!res.ok) {
           const body = await res.json().catch(() => null);
-          throw new Error(body?.error ?? "Failed to save title.");
+          throw new Error(body?.error ?? "保存头衔失败。");
         }
 
         await mutate();
       } catch (saveError) {
         const message =
-          saveError instanceof Error ? saveError.message : "Failed to save title.";
+          saveError instanceof Error ? saveError.message : "保存头衔失败。";
         setTitleErrors((prev) => ({ ...prev, [user.userId]: message }));
       } finally {
         setSavingTitleUserId(null);
@@ -307,7 +307,7 @@ export function AdminUsersContent() {
 
         if (!res.ok) {
           const body = await res.json().catch(() => null);
-          throw new Error(body?.error ?? "Failed to clear title rule.");
+          throw new Error(body?.error ?? "清除头衔规则失败。");
         }
 
         await mutate();
@@ -323,7 +323,7 @@ export function AdminUsersContent() {
         }));
       } catch (clearError) {
         const message =
-          clearError instanceof Error ? clearError.message : "Failed to clear title rule.";
+          clearError instanceof Error ? clearError.message : "清除头衔规则失败。";
         setTitleErrors((prev) => ({ ...prev, [user.userId]: message }));
       } finally {
         setSavingTitleUserId(null);
@@ -334,8 +334,9 @@ export function AdminUsersContent() {
 
   const handleDeleteContent = useCallback(
     async (userId: string, type: "comments" | "ratings") => {
+      const contentLabel = type === "comments" ? "评论" : "评分";
       const confirmed = window.confirm(
-        `Delete all ${type} for this user? This action cannot be undone.`
+        `确定删除该用户的全部${contentLabel}吗？此操作无法撤销。`
       );
       if (!confirmed) return;
 
@@ -349,7 +350,7 @@ export function AdminUsersContent() {
 
         if (!res.ok) {
           const body = await res.json().catch(() => null);
-          throw new Error(body?.error ?? "Failed to delete content.");
+          throw new Error(body?.error ?? "删除内容失败。");
         }
 
         await mutate();
@@ -376,14 +377,14 @@ export function AdminUsersContent() {
   return (
     <div className="space-y-5">
       <AdminToolbar
-        title="User directory"
-        description={`${total.toLocaleString()} users indexed. Search updates the table automatically.`}
-        meta={<AdminCountPill>{users.length} shown</AdminCountPill>}
+        title="用户目录"
+        description={`已收录 ${total.toLocaleString()} 位用户，搜索会自动更新表格。`}
+        meta={<AdminCountPill>当前显示 {users.length} 位</AdminCountPill>}
         actions={
           <AdminButton
             onClick={() => mutate()}
             size="icon"
-            aria-label="Refresh users"
+            aria-label="刷新用户列表"
           >
             <RefreshCw className="h-4 w-4" />
           </AdminButton>
@@ -393,37 +394,37 @@ export function AdminUsersContent() {
           type="text"
           value={search}
           onChange={handleSearchChange}
-          placeholder="Search by name, user ID, or title..."
+          placeholder="按名称、用户 ID 或头衔搜索..."
           className="sm:max-w-md lg:w-96"
         />
       </AdminToolbar>
 
       {error && (
-        <AdminErrorState message="Failed to load users." onRetry={() => mutate()} />
+        <AdminErrorState message="加载用户失败。" onRetry={() => mutate()} />
       )}
 
-      {isLoading && <AdminLoadingState label="Loading users..." />}
+      {isLoading && <AdminLoadingState label="正在加载用户..." />}
 
       {!isLoading && !error && users.length === 0 && (
         <AdminEmptyState
-          title="No users found"
-          description="Try a different name, user ID, or title search."
+          title="未找到用户"
+          description="请尝试搜索其他名称、用户 ID 或头衔。"
         />
       )}
 
       {!isLoading && users.length > 0 && (
         <AdminTableShell>
             <thead>
-              <tr className="border-b border-[var(--admin-border-soft)]">
-                <th className="text-left px-4 py-3 font-medium">User</th>
-                <th className="text-left px-4 py-3 font-medium">User ID</th>
-                <th className="text-left px-4 py-3 font-medium">Title</th>
-                <th className="text-left px-4 py-3 font-medium">ID</th>
-                <th className="text-right px-4 py-3 font-medium">Comments</th>
-                <th className="text-right px-4 py-3 font-medium">Ratings</th>
-                <th className="text-right px-4 py-3 font-medium">Favorites</th>
-                <th className="text-right px-4 py-3 font-medium">Submissions</th>
-                <th className="text-left px-4 py-3 font-medium">Last Active</th>
+              <tr>
+                <th className="text-left px-4 py-3 font-medium">用户</th>
+                <th className="text-left px-4 py-3 font-medium">用户 ID</th>
+                <th className="text-left px-4 py-3 font-medium">头衔</th>
+                <th className="text-left px-4 py-3 font-medium">编号</th>
+                <th className="text-right px-4 py-3 font-medium">评论</th>
+                <th className="text-right px-4 py-3 font-medium">评分</th>
+                <th className="text-right px-4 py-3 font-medium">收藏</th>
+                <th className="text-right px-4 py-3 font-medium">投稿</th>
+                <th className="text-left px-4 py-3 font-medium">最近活跃</th>
                 <th className="px-4 py-3" />
               </tr>
             </thead>
@@ -469,7 +470,7 @@ export function AdminUsersContent() {
 
                 return (
                   <Fragment key={user.userId}>
-                    <tr className="border-b border-[var(--admin-border-soft)] transition-colors hover:bg-muted/5">
+                    <tr className="transition-colors hover:bg-[var(--admin-input)]">
                       <td className="px-4 py-3">
                         <div className="flex items-center gap-3">
                           {getAvatarImageSrc(user.avatarUrl) ? (
@@ -487,7 +488,7 @@ export function AdminUsersContent() {
                             </div>
                           )}
                           <span className="font-medium">
-                            {user.authorName || "Unknown"}
+                            {user.authorName || "未知用户"}
                           </span>
                         </div>
                       </td>
@@ -538,7 +539,7 @@ export function AdminUsersContent() {
                           onClick={() => handleToggleExpand(user)}
                           className="flex h-11 w-11 items-center justify-center rounded-md hover:bg-muted/10 transition-colors"
                           aria-expanded={isExpanded}
-                          aria-label={`${isExpanded ? "Collapse" : "Expand"} ${user.authorName || user.userId}`}
+                          aria-label={`${isExpanded ? "收起" : "展开"}${user.authorName || user.userId}`}
                         >
                           {isExpanded ? (
                             <ChevronUp className="w-4 h-4" />
@@ -549,7 +550,7 @@ export function AdminUsersContent() {
                       </td>
                     </tr>
                     {isExpanded && (
-                      <tr className="border-b border-[var(--admin-border-soft)]">
+                      <tr>
                         <td colSpan={10} className="bg-muted/5 px-4 py-4">
                           <div className="space-y-3">
                             <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-[1.6fr_1fr_auto_auto_auto_auto] items-center">
@@ -562,7 +563,7 @@ export function AdminUsersContent() {
                                     usersById.get(user.userId) ?? user
                                   )
                                 }
-                                placeholder="Custom title (optional, max 24 chars)"
+                                placeholder="自定义头衔（可选，最多 24 个字符）"
                                 maxLength={24}
                               />
                               <div className="flex items-center gap-2">
@@ -577,8 +578,8 @@ export function AdminUsersContent() {
                                     )
                                   }
                                   className="h-11 w-12 rounded-md border border-border bg-background"
-                                  title="Title color"
-                                  aria-label="Title color"
+                                  title="头衔颜色"
+                                  aria-label="头衔颜色"
                                 />
                                 <AdminInput
                                   value={draft.titleColor}
@@ -618,7 +619,7 @@ export function AdminUsersContent() {
                                       usersById.get(user.userId) ?? user
                                     )
                                   }
-                                  placeholder="SVG path data (optional)"
+                                  placeholder="SVG 路径数据（可选）"
                                   maxLength={USER_TITLE_ICON_PATH_MAX_LENGTH}
                                   className="w-full font-mono"
                                 />
@@ -658,7 +659,7 @@ export function AdminUsersContent() {
                                           : "border-border hover:bg-muted/10"
                                       }`}
                                       aria-pressed={isSelected}
-                                      aria-label={`Use ${preset.label} title color`}
+                                      aria-label={`使用${preset.label}作为头衔颜色`}
                                     >
                                       <span
                                         className="inline-block h-3 w-3 rounded-full border border-black/15"
@@ -695,7 +696,7 @@ export function AdminUsersContent() {
                                     )
                                   }
                                 />
-                                Title Enabled
+                                启用头衔
                               </label>
                               <AdminButton
                                 disabled={
@@ -704,13 +705,13 @@ export function AdminUsersContent() {
                                 onClick={() => handleSaveTitle(user)}
                                 tone="primary"
                               >
-                                {isSavingTitle ? "Saving..." : "Save Title"}
+                                {isSavingTitle ? "正在保存..." : "保存头衔"}
                               </AdminButton>
                               <AdminButton
                                 disabled={isSavingTitle}
                                 onClick={() => handleClearTitleRule(user)}
                               >
-                                Clear Rule
+                                清除规则
                               </AdminButton>
                             </div>
 
@@ -742,7 +743,7 @@ export function AdminUsersContent() {
                                 tone="danger"
                               >
                                 <Trash2 className="w-3.5 h-3.5" />
-                                Delete Comments
+                                删除评论
                               </AdminButton>
                               <AdminButton
                                 disabled={isDeleting}
@@ -752,7 +753,7 @@ export function AdminUsersContent() {
                                 tone="danger"
                               >
                                 <Trash2 className="w-3.5 h-3.5" />
-                                Delete Ratings
+                                删除评分
                               </AdminButton>
                             </div>
 
@@ -785,7 +786,7 @@ export function AdminUsersContent() {
         <AdminPagination
           page={Math.floor(offset / PAGE_SIZE) + 1}
           totalPages={Math.max(1, Math.ceil(total / PAGE_SIZE))}
-          summary={`Showing ${offset + 1}-${Math.min(offset + PAGE_SIZE, total)} of ${total}`}
+          summary={`显示第 ${offset + 1}-${Math.min(offset + PAGE_SIZE, total)} 位，共 ${total} 位`}
           hasPrev={hasPrev}
           hasNext={hasNext}
           onPrev={() => setOffset((prev) => Math.max(0, prev - PAGE_SIZE))}

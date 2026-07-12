@@ -8,8 +8,14 @@ import {
   type DashboardContentSummary,
   type DashboardContentTrendPoint,
   type DashboardEventRow,
+  type DashboardRegistrationInput,
   type DashboardRange,
 } from "@/lib/admin/analytics-dashboard";
+
+const ANALYTICS_PAGE_SIZE = 1_000;
+const ANALYTICS_MAX_PAGES = 100;
+const AUTH_USERS_PAGE_SIZE = 1_000;
+const AUTH_USERS_MAX_PAGES = 20;
 
 export async function GET(request: Request) {
   const access = await checkAdminApiAccess(request);
@@ -69,6 +75,7 @@ export async function GET(request: Request) {
     uniqueSessions: 0,
     pageViews: totalPage,
     visitors: 0,
+    engagedVisitors: 0,
     bounceRate: null,
     avgEventsPerDay: 0,
     topStyles: topStyles.map((s) => ({
@@ -101,11 +108,23 @@ export async function GET(request: Request) {
     },
     trafficSeries: [],
     topPages: [],
+    topTransitions: [],
     topReferrers: [],
     topBrowsers: [],
     topDevices: [],
     topOperatingSystems: [],
     topCountries: [],
+    registrations: {
+      totalUsers: 0,
+      inRange: 0,
+      visitorRatio: null,
+      series: [],
+    },
+    dataQuality: {
+      eventsTruncated: false,
+      registrationsTruncated: false,
+      registrationsAvailable: false,
+    },
     contentSummary,
     contentTrends: [],
   });
@@ -118,27 +137,153 @@ async function getSupabaseDashboard(range: DashboardRange) {
     { auth: { autoRefreshToken: false, persistSession: false } }
   );
 
-  // Calculate date filter
-  let eventsQuery = sb
-    .from("analytics_events")
-    .select("style_slug,event_type,event_data,created_at,session_id");
+  const now = new Date();
   const dateFilter = getDateFilter(range);
-  if (dateFilter) {
-    eventsQuery = eventsQuery.gte("created_at", dateFilter);
-  }
-  const { data: events, error } = await eventsQuery;
-  if (error) {
+  const [eventsResult, contentSummary, contentTrends, registrations, previousPageViews] =
+    await Promise.all([
+      loadAnalyticsEvents(sb, dateFilter),
+      loadContentSummary(sb),
+      loadContentTrends(sb, range, now),
+      loadRegistrations(sb),
+      countPreviousWindowPageViews(sb, range, now),
+    ]);
+
+  if (eventsResult.error) {
     return NextResponse.json(
       { error: "Failed to load analytics data" },
       { status: 500 }
     );
   }
 
-  const rows = (events ?? []) as DashboardEventRow[];
-  const contentSummary = await loadContentSummary(sb);
-  const contentTrends = await loadContentTrends(sb, range);
+  return NextResponse.json(
+    buildAnalyticsDashboard(
+      eventsResult.rows,
+      range,
+      contentSummary,
+      contentTrends,
+      now,
+      registrations,
+      eventsResult.truncated,
+      previousPageViews
+    )
+  );
+}
 
-  return NextResponse.json(buildAnalyticsDashboard(rows, range, contentSummary, contentTrends));
+async function countPreviousWindowPageViews(
+  sb: SupabaseClient,
+  range: DashboardRange,
+  now: Date
+): Promise<number | null> {
+  const windowDays =
+    range === "24h" ? 1 : range === "7d" ? 7 : range === "30d" ? 30 : 90;
+  const windowMs = windowDays * 24 * 60 * 60 * 1000;
+  const currentStart = new Date(now.getTime() - windowMs).toISOString();
+  const previousStart = new Date(now.getTime() - windowMs * 2).toISOString();
+
+  const { count, error } = await sb
+    .from("analytics_events")
+    .select("id", { head: true, count: "exact" })
+    .eq("event_type", "page_view")
+    .gte("created_at", previousStart)
+    .lt("created_at", currentStart);
+
+  if (error) return null;
+  return count ?? 0;
+}
+
+async function loadAnalyticsEvents(
+  sb: SupabaseClient,
+  dateFilter: string | null
+): Promise<{
+  rows: DashboardEventRow[];
+  truncated: boolean;
+  error: boolean;
+}> {
+  const rows: DashboardEventRow[] = [];
+
+  for (let page = 0; page < ANALYTICS_MAX_PAGES; page += 1) {
+    const from = page * ANALYTICS_PAGE_SIZE;
+    const to = from + ANALYTICS_PAGE_SIZE - 1;
+    let query = sb
+      .from("analytics_events")
+      .select("style_slug,event_type,event_data,created_at,session_id")
+      .order("created_at", { ascending: true })
+      .range(from, to);
+
+    if (dateFilter) {
+      query = query.gte("created_at", dateFilter);
+    }
+
+    const { data, error } = await query;
+    if (error) {
+      return { rows: [], truncated: false, error: true };
+    }
+
+    const pageRows = (data ?? []) as DashboardEventRow[];
+    rows.push(...pageRows);
+    if (pageRows.length < ANALYTICS_PAGE_SIZE) {
+      return { rows, truncated: false, error: false };
+    }
+  }
+
+  return { rows, truncated: true, error: false };
+}
+
+async function loadRegistrations(
+  sb: SupabaseClient
+): Promise<DashboardRegistrationInput> {
+  const createdAt: string[] = [];
+  let totalUsers = 0;
+
+  for (let page = 1; page <= AUTH_USERS_MAX_PAGES; page += 1) {
+    let result;
+    try {
+      result = await sb.auth.admin.listUsers({
+        page,
+        perPage: AUTH_USERS_PAGE_SIZE,
+      });
+    } catch {
+      return {
+        totalUsers,
+        createdAt,
+        truncated: false,
+        available: false,
+      };
+    }
+
+    if (result.error) {
+      return {
+        totalUsers,
+        createdAt,
+        truncated: false,
+        available: false,
+      };
+    }
+
+    const users = result.data?.users ?? [];
+    totalUsers += users.length;
+    for (const user of users) {
+      if (typeof user.created_at === "string") {
+        createdAt.push(user.created_at);
+      }
+    }
+
+    if (users.length < AUTH_USERS_PAGE_SIZE) {
+      return {
+        totalUsers,
+        createdAt,
+        truncated: false,
+        available: true,
+      };
+    }
+  }
+
+  return {
+    totalUsers,
+    createdAt,
+    truncated: true,
+    available: true,
+  };
 }
 
 async function loadContentSummary(sb: SupabaseClient): Promise<DashboardContentSummary> {

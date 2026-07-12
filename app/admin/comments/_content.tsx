@@ -86,7 +86,7 @@ export function AdminCommentsContent() {
   const handleDelete = useCallback(async () => {
     if (selectedIds.size === 0) return;
     const confirmed = window.confirm(
-      `Delete ${selectedIds.size} comment${selectedIds.size > 1 ? "s" : ""}? This action cannot be undone.`
+      `确定删除选中的 ${selectedIds.size} 条评论吗？此操作不可撤销。`
     );
     if (!confirmed) return;
 
@@ -99,7 +99,7 @@ export function AdminCommentsContent() {
       });
       if (!res.ok) {
         const payload = await res.json().catch(() => null);
-        throw new Error(payload?.error ?? "Failed to delete comments.");
+        throw new Error(payload?.error ?? "删除评论失败。");
       }
       setSelectedIds(new Set());
       await mutate();
@@ -118,18 +118,18 @@ export function AdminCommentsContent() {
   }, []);
 
   if (isLoading) {
-    return <AdminLoadingState label="Loading comments..." />;
+    return <AdminLoadingState label="正在加载评论..." />;
   }
 
   if (error) {
-    return <AdminErrorState message={error.message} onRetry={() => mutate()} />;
+    return <AdminErrorState message="加载评论失败，请重试。" onRetry={() => mutate()} />;
   }
 
   return (
     <div className="space-y-5">
       <AdminToolbar
-        title="Comment queue"
-        description="Filter by style, content, and date before selecting rows for removal."
+        title="评论队列"
+        description="可按风格、内容和日期筛选，再选择需要删除的评论。"
         meta={
           <AdminCountPill>
             {comments.length} / {data?.total ?? 0}
@@ -146,32 +146,32 @@ export function AdminCommentsContent() {
             >
               <Trash2 className="h-4 w-4" />
               {deleting
-                ? "Deleting..."
-                : `Delete${selectedIds.size > 0 ? ` (${selectedIds.size})` : ""}`}
+                ? "正在删除..."
+                : `删除${selectedIds.size > 0 ? `（${selectedIds.size}）` : ""}`}
             </AdminButton>
             <AdminButton
               onClick={() => {
                 void mutate();
               }}
               size="icon"
-              aria-label="Refresh comments"
+              aria-label="刷新评论"
             >
               <RefreshCw className="h-4 w-4" />
             </AdminButton>
           </>
         }
       >
-        <AdminField label="Style slug" className="lg:w-56">
+        <AdminField label="风格标识" className="lg:w-56">
           <AdminInput
             value={slug}
             onChange={(event) => {
               setSlug(event.target.value);
               setOffset(0);
             }}
-            placeholder="e.g. neo-brutalism"
+            placeholder="例如 neo-brutalism"
           />
         </AdminField>
-        <AdminField label="Search content" className="lg:w-72">
+        <AdminField label="搜索内容" className="lg:w-72">
           <div className="relative">
             <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted" />
             <AdminInput
@@ -180,12 +180,12 @@ export function AdminCommentsContent() {
                 setSearch(event.target.value);
                 setOffset(0);
               }}
-              placeholder="Comment text..."
+              placeholder="输入评论内容..."
               className="pl-9"
             />
           </div>
         </AdminField>
-        <AdminField label="From" className="lg:w-40">
+        <AdminField label="起始日期" className="lg:w-40">
           <AdminInput
             type="date"
             value={from}
@@ -195,7 +195,7 @@ export function AdminCommentsContent() {
             }}
           />
         </AdminField>
-        <AdminField label="To" className="lg:w-40">
+        <AdminField label="截止日期" className="lg:w-40">
           <AdminInput
             type="date"
             value={to}
@@ -206,40 +206,40 @@ export function AdminCommentsContent() {
           />
         </AdminField>
         <AdminButton onClick={resetFilters} className="mt-[18px]">
-          Reset
+          重置
         </AdminButton>
       </AdminToolbar>
 
       {comments.length === 0 ? (
         <AdminEmptyState
-          title="No comments found"
-          description="Adjust filters or wait for new comments to arrive."
+          title="暂无评论"
+          description="请调整筛选条件，或等待新的评论。"
         />
       ) : (
         <AdminTableShell>
           <thead>
-            <tr className="border-b border-[var(--admin-border-soft)]">
+            <tr>
               <th className="w-10 px-4 py-3 text-left">
                 <label className="flex h-11 w-11 items-center justify-center rounded-md hover:bg-muted/10">
                   <input
                     type="checkbox"
                     checked={allSelected}
                     onChange={toggleSelectAll}
-                    aria-label="Select all comments"
+                    aria-label="选择全部评论"
                   />
                 </label>
               </th>
-              <th className="px-4 py-3 text-left">Style</th>
-              <th className="px-4 py-3 text-left">Author</th>
-              <th className="px-4 py-3 text-left">Content</th>
-              <th className="px-4 py-3 text-left">Date</th>
+              <th className="px-4 py-3 text-left">风格</th>
+              <th className="px-4 py-3 text-left">作者</th>
+              <th className="px-4 py-3 text-left">内容</th>
+              <th className="px-4 py-3 text-left">日期</th>
             </tr>
           </thead>
           <tbody>
             {comments.map((comment) => (
               <tr
                 key={comment.id}
-                className="border-b border-[var(--admin-border-soft)] transition-colors last:border-0 hover:bg-muted/5"
+                className="transition-colors hover:bg-[var(--admin-input)]"
               >
                 <td className="px-4 py-3">
                   <label className="flex h-11 w-11 items-center justify-center rounded-md hover:bg-muted/10">
@@ -247,7 +247,7 @@ export function AdminCommentsContent() {
                       type="checkbox"
                       checked={selectedIds.has(comment.id)}
                       onChange={() => toggleSelect(comment.id)}
-                      aria-label={`Select comment by ${comment.author_name}`}
+                      aria-label={`选择 ${comment.author_name} 的评论`}
                     />
                   </label>
                 </td>
@@ -273,10 +273,10 @@ export function AdminCommentsContent() {
         <AdminPagination
           page={currentPage}
           totalPages={totalPages}
-          summary={`Showing ${(data?.offset ?? 0) + 1}-${Math.min(
+          summary={`显示 ${(data?.offset ?? 0) + 1}-${Math.min(
             (data?.offset ?? 0) + (data?.limit ?? PAGE_SIZE),
             data?.total ?? 0
-          )} of ${data?.total ?? 0}`}
+          )}，共 ${data?.total ?? 0} 条`}
           hasPrev={(data?.offset ?? 0) > 0}
           hasNext={(data?.offset ?? 0) + (data?.limit ?? PAGE_SIZE) < (data?.total ?? 0)}
           onPrev={() => {

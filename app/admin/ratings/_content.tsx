@@ -103,7 +103,7 @@ export function AdminRatingsContent() {
   const handleDelete = useCallback(async () => {
     if (selectedIds.size === 0) return;
     const confirmed = window.confirm(
-      `Delete ${selectedIds.size} rating${selectedIds.size > 1 ? "s" : ""}? This action cannot be undone.`
+      `确定删除选中的 ${selectedIds.size} 条评分吗？此操作不可撤销。`
     );
     if (!confirmed) return;
 
@@ -116,7 +116,7 @@ export function AdminRatingsContent() {
       });
       if (!res.ok) {
         const payload = await res.json().catch(() => null);
-        throw new Error(payload?.error ?? "Failed to delete ratings.");
+        throw new Error(payload?.error ?? "删除评分失败。");
       }
       setSelectedIds(new Set());
       await mutate();
@@ -139,18 +139,18 @@ export function AdminRatingsContent() {
   }, [data?.distribution]);
 
   if (isLoading) {
-    return <AdminLoadingState label="Loading ratings..." />;
+    return <AdminLoadingState label="正在加载评分..." />;
   }
 
   if (error) {
-    return <AdminErrorState message={error.message} onRetry={() => mutate()} />;
+    return <AdminErrorState message="加载评分失败，请重试。" onRetry={() => mutate()} />;
   }
 
   return (
     <div className="space-y-5">
       <AdminToolbar
-        title="Rating queue"
-        description="Filter ratings by style, score, and anomaly state before bulk removal."
+        title="评分队列"
+        description="可按风格、分数和异常状态筛选，再批量删除评分。"
         meta={
           <AdminCountPill tone={anomaliesOnly ? "warning" : "neutral"}>
             {ratings.length} / {data?.total ?? 0}
@@ -167,32 +167,32 @@ export function AdminRatingsContent() {
             >
               <Trash2 className="h-4 w-4" />
               {deleting
-                ? "Deleting..."
-                : `Delete${selectedIds.size > 0 ? ` (${selectedIds.size})` : ""}`}
+                ? "正在删除..."
+                : `删除${selectedIds.size > 0 ? `（${selectedIds.size}）` : ""}`}
             </AdminButton>
             <AdminButton
               onClick={() => {
                 void mutate();
               }}
               size="icon"
-              aria-label="Refresh ratings"
+              aria-label="刷新评分"
             >
               <RefreshCw className="h-4 w-4" />
             </AdminButton>
           </>
         }
       >
-        <AdminField label="Style slug" className="lg:w-56">
+        <AdminField label="风格标识" className="lg:w-56">
           <AdminInput
             value={slug}
             onChange={(event) => {
               setSlug(event.target.value);
               setOffset(0);
             }}
-            placeholder="e.g. neo-brutalism"
+            placeholder="例如 neo-brutalism"
           />
         </AdminField>
-        <AdminField label="Rating" className="lg:w-40">
+        <AdminField label="评分" className="lg:w-40">
           <AdminSelect
             value={ratingFilter ?? ""}
             onChange={(event) => {
@@ -201,12 +201,12 @@ export function AdminRatingsContent() {
               setOffset(0);
             }}
           >
-            <option value="">All</option>
-            <option value="1">1 star</option>
-            <option value="2">2 stars</option>
-            <option value="3">3 stars</option>
-            <option value="4">4 stars</option>
-            <option value="5">5 stars</option>
+            <option value="">全部</option>
+            <option value="1">1 星</option>
+            <option value="2">2 星</option>
+            <option value="3">3 星</option>
+            <option value="4">4 星</option>
+            <option value="5">5 星</option>
           </AdminSelect>
         </AdminField>
         <AdminButton
@@ -218,29 +218,29 @@ export function AdminRatingsContent() {
           className="mt-[18px]"
         >
           <AlertTriangle className="h-4 w-4" />
-          Anomalies
+          异常评分
         </AdminButton>
         <AdminButton onClick={resetFilters} className="mt-[18px]">
-          Reset
+          重置
         </AdminButton>
       </AdminToolbar>
 
       {data?.distribution && data.distribution.length > 0 ? (
         <AdminPanel className="p-5">
           <div className="mb-4 flex items-center justify-between">
-            <h2 className="text-sm font-semibold">Rating distribution</h2>
-            <AdminBadge>{data.distribution.reduce((sum, item) => sum + item.count, 0)} total</AdminBadge>
+            <h2 className="text-sm font-semibold">评分分布</h2>
+            <AdminBadge>共 {data.distribution.reduce((sum, item) => sum + item.count, 0)} 条</AdminBadge>
           </div>
           <div className="grid gap-3 md:grid-cols-5">
             {data.distribution.map((item) => (
-              <div key={item.rating} className="rounded-md border border-[var(--admin-border-soft)] p-3">
+              <div key={item.rating} className="rounded-md p-3 shadow-[var(--admin-shadow-border)]">
                 <div className="flex items-center justify-between text-xs text-muted">
-                  <span>{item.rating} star{item.rating !== 1 ? "s" : ""}</span>
+                  <span>{item.rating} 星</span>
                   <span className="tabular-nums">{item.count}</span>
                 </div>
                 <div className="mt-3 h-2 overflow-hidden rounded-full bg-muted/15">
                   <div
-                    className="h-full rounded-full bg-amber-400"
+                    className="h-full rounded-full bg-[var(--admin-text-primary)]"
                     style={{ width: `${(item.count / maxDistCount) * 100}%` }}
                   />
                 </div>
@@ -252,35 +252,35 @@ export function AdminRatingsContent() {
 
       {ratings.length === 0 ? (
         <AdminEmptyState
-          title="No ratings found"
-          description="Adjust filters or wait for new ratings to arrive."
+          title="暂无评分"
+          description="请调整筛选条件，或等待新的评分。"
         />
       ) : (
         <AdminTableShell>
           <thead>
-            <tr className="border-b border-[var(--admin-border-soft)]">
+            <tr>
               <th className="w-10 px-4 py-3 text-left">
                 <label className="flex h-11 w-11 items-center justify-center rounded-md hover:bg-muted/10">
                   <input
                     type="checkbox"
                     checked={allSelected}
                     onChange={toggleSelectAll}
-                    aria-label="Select all ratings"
+                    aria-label="选择全部评分"
                   />
                 </label>
               </th>
-              <th className="px-4 py-3 text-left">Style</th>
-              <th className="px-4 py-3 text-left">Rating</th>
-              <th className="px-4 py-3 text-left">User / Session</th>
+              <th className="px-4 py-3 text-left">风格</th>
+              <th className="px-4 py-3 text-left">评分</th>
+              <th className="px-4 py-3 text-left">用户 / 会话</th>
               <th className="px-4 py-3 text-left">IP</th>
-              <th className="px-4 py-3 text-left">Date</th>
+              <th className="px-4 py-3 text-left">日期</th>
             </tr>
           </thead>
           <tbody>
             {ratings.map((rating) => (
               <tr
                 key={rating.id}
-                className="border-b border-[var(--admin-border-soft)] transition-colors last:border-0 hover:bg-muted/5"
+                className="transition-colors hover:bg-[var(--admin-input)]"
               >
                 <td className="px-4 py-3">
                   <label className="flex h-11 w-11 items-center justify-center rounded-md hover:bg-muted/10">
@@ -288,7 +288,7 @@ export function AdminRatingsContent() {
                       type="checkbox"
                       checked={selectedIds.has(rating.id)}
                       onChange={() => toggleSelect(rating.id)}
-                      aria-label={`Select rating for ${rating.style_slug}`}
+                      aria-label={`选择 ${rating.style_slug} 的评分`}
                     />
                   </label>
                 </td>
@@ -324,10 +324,10 @@ export function AdminRatingsContent() {
         <AdminPagination
           page={currentPage}
           totalPages={totalPages}
-          summary={`Showing ${(data?.offset ?? 0) + 1}-${Math.min(
+          summary={`显示 ${(data?.offset ?? 0) + 1}-${Math.min(
             (data?.offset ?? 0) + (data?.limit ?? PAGE_SIZE),
             data?.total ?? 0
-          )} of ${data?.total ?? 0}`}
+          )}，共 ${data?.total ?? 0} 条`}
           hasPrev={(data?.offset ?? 0) > 0}
           hasNext={(data?.offset ?? 0) + (data?.limit ?? PAGE_SIZE) < (data?.total ?? 0)}
           onPrev={() => {

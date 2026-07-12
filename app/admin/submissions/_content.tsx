@@ -56,11 +56,18 @@ interface FullSubmissionData {
 type FilterStatus = "all" | "pending" | "approved" | "rejected";
 const DETAIL_CACHE_LIMIT = 20;
 const FILTER_OPTIONS: Array<{ value: FilterStatus; label: string }> = [
-  { value: "pending", label: "Pending" },
-  { value: "approved", label: "Approved" },
-  { value: "rejected", label: "Rejected" },
-  { value: "all", label: "All" },
+  { value: "pending", label: "待审核" },
+  { value: "approved", label: "已通过" },
+  { value: "rejected", label: "已拒绝" },
+  { value: "all", label: "全部" },
 ];
+
+const STATUS_LABEL: Record<FilterStatus, string> = {
+  all: "全部",
+  pending: "待审核",
+  approved: "已通过",
+  rejected: "已拒绝",
+};
 
 const STATUS_TONE = {
   pending: "warning",
@@ -109,7 +116,7 @@ export function SubmissionsReview() {
 
       if (!res.ok) {
         const data = await res.json().catch(() => null);
-        throw new Error(data?.error ?? "Failed to load submissions.");
+        throw new Error(data?.error ?? "加载投稿失败。");
       }
 
       const data = await res.json();
@@ -117,7 +124,7 @@ export function SubmissionsReview() {
       setSubmissions(data.submissions ?? []);
     } catch (err) {
       if (signal?.aborted) return;
-      setError(err instanceof Error ? err.message : "Failed to load submissions.");
+      setError(err instanceof Error ? err.message : "加载投稿失败。");
       setSubmissions([]);
     } finally {
       if (!signal?.aborted && showLoading) {
@@ -184,7 +191,7 @@ export function SubmissionsReview() {
 
       if (!res.ok) {
         const data = await res.json().catch(() => null);
-        throw new Error(data?.error ?? "Failed to submit review.");
+        throw new Error(data?.error ?? "提交审核失败。");
       }
 
       const payload = (await res.json().catch(() => null)) as
@@ -220,7 +227,7 @@ export function SubmissionsReview() {
       setNote("");
       void fetchSubmissions(undefined, { showLoading: false });
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to submit review.");
+      setError(err instanceof Error ? err.message : "提交审核失败。");
     } finally {
       setSubmitting(false);
     }
@@ -245,15 +252,15 @@ export function SubmissionsReview() {
       if (!res.ok) {
         if (payload?.details) {
           setRegisterResult(payload.details);
-          setError(payload.error ?? "Auto-registration completed with errors.");
+          setError(payload.error ?? "自动注册完成，但存在错误。");
           return;
         }
-        throw new Error(payload?.error ?? "Failed to register style.");
+        throw new Error(payload?.error ?? "注册风格失败。");
       }
 
       setRegisterResult(payload?.result ?? (data as RegisterResult));
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to register style.");
+      setError(err instanceof Error ? err.message : "注册风格失败。");
       setRegisteringId(null);
     }
   }
@@ -276,7 +283,7 @@ export function SubmissionsReview() {
   async function handleSaveEdit(submission: Submission) {
     if (submission.status === "approved") {
       const confirmed = window.confirm(
-        "This submission is approved and may already be live. Save admin edits anyway?"
+        "这条投稿已通过审核，可能已经上线。仍要保存管理端修改吗？"
       );
       if (!confirmed) {
         return;
@@ -299,7 +306,7 @@ export function SubmissionsReview() {
     }
 
     if (Object.keys(updates).length === 0) {
-      setError("Please provide at least one non-empty field.");
+      setError("请至少填写一个非空字段。");
       return;
     }
 
@@ -314,7 +321,7 @@ export function SubmissionsReview() {
 
       if (!res.ok) {
         const data = await res.json().catch(() => null);
-        throw new Error(data?.error ?? "Failed to update submission.");
+        throw new Error(data?.error ?? "更新投稿失败。");
       }
 
       const updatesForList: Partial<Submission["formData"]> = {};
@@ -342,7 +349,7 @@ export function SubmissionsReview() {
       cancelEdit();
       void fetchSubmissions(undefined, { showLoading: false });
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to update submission.");
+      setError(err instanceof Error ? err.message : "更新投稿失败。");
     } finally {
       setSavingEditId(null);
     }
@@ -359,7 +366,7 @@ export function SubmissionsReview() {
 
       if (!res.ok) {
         const data = await res.json().catch(() => null);
-        throw new Error(data?.error ?? "Failed to delete submission.");
+        throw new Error(data?.error ?? "删除投稿失败。");
       }
 
       setSubmissions((current) => current.filter((item) => item.id !== id));
@@ -373,7 +380,7 @@ export function SubmissionsReview() {
       setConfirmDeleteId(null);
       void fetchSubmissions(undefined, { showLoading: false });
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to delete submission.");
+      setError(err instanceof Error ? err.message : "删除投稿失败。");
     } finally {
       setDeletingId(null);
     }
@@ -398,12 +405,12 @@ export function SubmissionsReview() {
     try {
       const res = await fetch(`/api/admin/submissions/${id}`);
       if (!res.ok) {
-        throw new Error("Failed to load submission details.");
+        throw new Error("加载投稿详情失败。");
       }
       const data = (await res.json()) as FullSubmissionData;
       upsertDetailCache(id, data);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to load details.");
+      setError(err instanceof Error ? err.message : "加载详情失败。");
       setExpandedId((current) => (current === id ? null : current));
     } finally {
       setDetailLoadingId((current) => (current === id ? null : current));
@@ -425,15 +432,15 @@ export function SubmissionsReview() {
   return (
     <div className="space-y-5">
       <AdminToolbar
-        title="Review queue"
-        description={`Showing ${submissions.length} ${filter === "all" ? "total" : filter} submissions. Pending ${queueSummary.pending}, approved ${queueSummary.approved}, rejected ${queueSummary.rejected}.`}
-        meta={<AdminBadge tone={filter === "pending" ? "warning" : "neutral"}>{filter}</AdminBadge>}
+        title="审核队列"
+        description={`当前显示 ${submissions.length} 条${filter === "all" ? "" : STATUS_LABEL[filter]}投稿。待审核 ${queueSummary.pending} 条，已通过 ${queueSummary.approved} 条，已拒绝 ${queueSummary.rejected} 条。`}
+        meta={<AdminBadge tone={filter === "pending" ? "warning" : "neutral"}>{STATUS_LABEL[filter]}</AdminBadge>}
         actions={
           <>
             <AdminSegmentedControl<FilterStatus>
               value={filter}
               onChange={setFilter}
-              ariaLabel="Submission status filter"
+              ariaLabel="投稿状态筛选"
               options={FILTER_OPTIONS}
             />
             <AdminButton
@@ -441,7 +448,7 @@ export function SubmissionsReview() {
                 void fetchSubmissions();
               }}
               size="icon"
-              aria-label="Refresh submissions"
+              aria-label="刷新投稿"
             >
               <RefreshCw className="h-4 w-4" />
             </AdminButton>
@@ -453,12 +460,12 @@ export function SubmissionsReview() {
         <AdminErrorState message={error} onRetry={() => void fetchSubmissions()} />
       )}
 
-      {loading && <AdminLoadingState label="Loading submissions..." />}
+      {loading && <AdminLoadingState label="正在加载投稿..." />}
 
       {!loading && submissions.length === 0 && (
         <AdminEmptyState
-          title={`No ${filter !== "all" ? filter : ""} submissions found`}
-          description="Switch queues or wait for new style submissions."
+          title={`暂无${filter !== "all" ? STATUS_LABEL[filter] : ""}投稿`}
+          description="可以切换审核队列，或等待新的风格投稿。"
         />
       )}
 
@@ -476,7 +483,7 @@ export function SubmissionsReview() {
                       <h3 className="text-base font-semibold">
                         {sub.formData.name || sub.slug}
                       </h3>
-                      <AdminBadge tone={STATUS_TONE[sub.status]}>{sub.status}</AdminBadge>
+                      <AdminBadge tone={STATUS_TONE[sub.status]}>{STATUS_LABEL[sub.status]}</AdminBadge>
                     </div>
                     {sub.formData.nameEn ? (
                       <p className="mt-1 text-xs text-muted">{sub.formData.nameEn}</p>
@@ -491,13 +498,13 @@ export function SubmissionsReview() {
 
                 <div className="mt-4 grid gap-2 text-xs text-muted sm:grid-cols-2 xl:grid-cols-4">
                   <span>
-                    Slug <code className="ml-1 text-foreground">{sub.slug}</code>
+                    标识 <code className="ml-1 text-foreground">{sub.slug}</code>
                   </span>
-                  <span>Category {sub.formData.category ?? "-"}</span>
+                  <span>分类 {sub.formData.category ?? "-"}</span>
                   <span>
-                    Submitted {new Date(sub.submittedAt).toLocaleDateString()}
+                    提交于 {new Date(sub.submittedAt).toLocaleDateString()}
                   </span>
-                  <span>{sub.authorName ? `by @${sub.authorName}` : "anonymous"}</span>
+                  <span>{sub.authorName ? `来自 @${sub.authorName}` : "匿名投稿"}</span>
                 </div>
 
                 {(sub.formData.primaryColor || sub.formData.secondaryColor) && (
@@ -524,8 +531,8 @@ export function SubmissionsReview() {
                 )}
 
                 {sub.reviewNote ? (
-                  <p className="mt-4 rounded-md border border-[var(--admin-border-soft)] bg-muted/8 p-3 text-sm">
-                    Review note: {sub.reviewNote}
+                  <p className="mt-4 rounded-md bg-[var(--admin-input)] p-3 text-sm shadow-[var(--admin-shadow-border)]">
+                    审核备注：{sub.reviewNote}
                   </p>
                 ) : null}
 
@@ -542,16 +549,16 @@ export function SubmissionsReview() {
                         expandedId === sub.id ? "rotate-90" : ""
                       }`}
                     />
-                    {expandedId === sub.id ? "Hide details" : "View details"}
+                    {expandedId === sub.id ? "收起详情" : "查看详情"}
                   </AdminButton>
                 </div>
 
                 {expandedId === sub.id && (
-                  <div className="mt-4 rounded-md border border-[var(--admin-border-soft)] bg-muted/5 p-4 text-sm">
+                  <div className="mt-4 rounded-md bg-[var(--admin-input)] p-4 text-sm shadow-[var(--admin-shadow-border)]">
                     {detailLoadingId === sub.id && !detailCache.current.has(sub.id) ? (
                       <div className="flex items-center gap-2 text-muted">
                         <Clock3 className="h-4 w-4" />
-                        Loading details...
+                        正在加载详情...
                       </div>
                     ) : detailCache.current.has(sub.id) ? (
                       <SubmissionDetail data={detailCache.current.get(sub.id)!} />
@@ -560,21 +567,21 @@ export function SubmissionsReview() {
                 )}
 
                 {editingId === sub.id ? (
-                  <div className="mt-4 space-y-2 rounded-md border border-[var(--admin-border-soft)] bg-muted/5 p-3">
+                  <div className="mt-4 space-y-2 rounded-md bg-[var(--admin-input)] p-3 shadow-[var(--admin-shadow-border)]">
                     <AdminInput
                       value={editName}
                       onChange={(event) => setEditName(event.target.value)}
-                      placeholder="Style name"
+                      placeholder="风格名称"
                     />
                     <AdminInput
                       value={editNameEn}
                       onChange={(event) => setEditNameEn(event.target.value)}
-                      placeholder="Style name (English)"
+                      placeholder="风格英文名称"
                     />
                     <AdminTextarea
                       value={editDescription}
                       onChange={(event) => setEditDescription(event.target.value)}
-                      placeholder="Style description"
+                      placeholder="风格描述"
                       rows={3}
                       className="resize-none"
                     />
@@ -584,21 +591,21 @@ export function SubmissionsReview() {
                         onClick={() => handleSaveEdit(sub)}
                         tone="primary"
                       >
-                        {savingEditId === sub.id ? "Saving..." : "Save edit"}
+                        {savingEditId === sub.id ? "正在保存..." : "保存修改"}
                       </AdminButton>
                       <AdminButton
                         disabled={savingEditId === sub.id}
                         onClick={cancelEdit}
                         tone="ghost"
                       >
-                        Cancel
+                        取消
                       </AdminButton>
                     </div>
                   </div>
                 ) : null}
               </div>
 
-              <aside className="border-t border-[var(--admin-border-soft)] bg-muted/5 p-4 lg:border-l lg:border-t-0">
+              <aside className="bg-[var(--admin-input)] p-4 shadow-[0_-1px_0_0_var(--admin-border-soft)] lg:shadow-[-1px_0_0_0_var(--admin-border-soft)]">
                 <div className="space-y-3">
                   {sub.status === "pending" ? (
                     reviewingId === sub.id ? (
@@ -606,7 +613,7 @@ export function SubmissionsReview() {
                         <AdminTextarea
                           value={note}
                           onChange={(event) => setNote(event.target.value)}
-                          placeholder="Optional review note..."
+                          placeholder="审核备注（可选）..."
                           rows={3}
                           className="resize-none"
                         />
@@ -617,7 +624,7 @@ export function SubmissionsReview() {
                             tone="success"
                           >
                             <CheckCircle className="h-4 w-4" />
-                            Approve
+                            通过
                           </AdminButton>
                           <AdminButton
                             disabled={submitting}
@@ -625,7 +632,7 @@ export function SubmissionsReview() {
                             tone="danger"
                           >
                             <XCircle className="h-4 w-4" />
-                            Reject
+                            拒绝
                           </AdminButton>
                         </div>
                         <AdminButton
@@ -637,7 +644,7 @@ export function SubmissionsReview() {
                           tone="ghost"
                           className="w-full"
                         >
-                          Cancel review
+                          取消审核
                         </AdminButton>
                       </div>
                     ) : (
@@ -646,7 +653,7 @@ export function SubmissionsReview() {
                         tone="primary"
                         className="w-full"
                       >
-                        Review submission
+                        审核投稿
                       </AdminButton>
                     )
                   ) : null}
@@ -654,7 +661,7 @@ export function SubmissionsReview() {
                   {sub.status === "approved" ? (
                     <div className="space-y-3">
                       {!canRegisterToCodebase ? (
-                        <AdminBadge>Registration disabled</AdminBadge>
+                        <AdminBadge>注册功能已禁用</AdminBadge>
                       ) : registeringId === sub.id && registerResult ? (
                         <AdminPanel className="space-y-3 bg-muted/5 p-3">
                           <p
@@ -665,20 +672,20 @@ export function SubmissionsReview() {
                             }`}
                           >
                             {registerResult.success
-                              ? "Archived to codebase"
-                              : "Registration completed with errors"}
+                              ? "已归档到代码库"
+                              : "注册完成，但存在错误"}
                           </p>
                           {registerResult.filesWritten.length > 0 ? (
-                            <ResultList title="Files written" items={registerResult.filesWritten} />
+                            <ResultList title="已写入文件" items={registerResult.filesWritten} />
                           ) : null}
                           {registerResult.registriesPatched.length > 0 ? (
                             <ResultList
-                              title="Registries patched"
+                              title="已更新注册表"
                               items={registerResult.registriesPatched}
                             />
                           ) : null}
                           {registerResult.errors.length > 0 ? (
-                            <ResultList title="Errors" items={registerResult.errors} danger />
+                            <ResultList title="错误" items={registerResult.errors} danger />
                           ) : null}
                           <AdminButton
                             onClick={() => {
@@ -688,13 +695,13 @@ export function SubmissionsReview() {
                             tone="ghost"
                             size="sm"
                           >
-                            Dismiss
+                            关闭
                           </AdminButton>
                         </AdminPanel>
                       ) : (
                         <>
                           <p className="text-xs leading-5 text-muted">
-                            Live style. Codebase registration archives generated files in local development.
+                            已上线风格。代码库注册会在本地开发环境中归档生成的文件。
                           </p>
                           <AdminButton
                             disabled={registeringId === sub.id}
@@ -703,7 +710,7 @@ export function SubmissionsReview() {
                             className="w-full"
                           >
                             <Archive className="h-4 w-4" />
-                            {registeringId === sub.id ? "Registering..." : "Register to codebase"}
+                            {registeringId === sub.id ? "正在注册..." : "注册到代码库"}
                           </AdminButton>
                         </>
                       )}
@@ -716,16 +723,16 @@ export function SubmissionsReview() {
                     disabled={editingId === sub.id}
                   >
                     <Pencil className="h-4 w-4" />
-                    Edit submission
+                    编辑投稿
                   </AdminButton>
 
-                  <div className="border-t border-[var(--admin-border-soft)] pt-3">
+                  <div className="pt-3 shadow-[0_-1px_0_0_var(--admin-border-soft)]">
                     {confirmDeleteId === sub.id ? (
                       <div className="space-y-2">
                         <p className="text-xs leading-5 text-rose-700 dark:text-rose-300">
                           {sub.status === "approved"
-                            ? "Approved style may already be live. Delete anyway?"
-                            : "Delete this submission permanently?"}
+                            ? "已通过的风格可能已经上线，仍要删除吗？"
+                            : "要永久删除这条投稿吗？"}
                         </p>
                         <div className="grid grid-cols-2 gap-2">
                           <AdminButton
@@ -733,14 +740,14 @@ export function SubmissionsReview() {
                             onClick={() => handleDelete(sub.id)}
                             tone="danger"
                           >
-                            {deletingId === sub.id ? "Deleting..." : "Confirm"}
+                            {deletingId === sub.id ? "正在删除..." : "确认"}
                           </AdminButton>
                           <AdminButton
                             disabled={deletingId === sub.id}
                             onClick={() => setConfirmDeleteId(null)}
                             tone="ghost"
                           >
-                            Cancel
+                            取消
                           </AdminButton>
                         </div>
                       </div>
@@ -751,7 +758,7 @@ export function SubmissionsReview() {
                         className="w-full"
                       >
                         <Trash2 className="h-4 w-4" />
-                        Delete
+                        删除
                       </AdminButton>
                     )}
                   </div>
@@ -871,51 +878,51 @@ function SubmissionDetail({ data }: { data: FullSubmissionData }) {
   return (
     <div className="space-y-4">
       {/* Colors */}
-      <DetailSection title="Colors">
+      <DetailSection title="颜色">
         <div className="flex flex-wrap">
-          {primaryColor && <ColorSwatch color={primaryColor} label="primary" />}
-          {secondaryColor && <ColorSwatch color={secondaryColor} label="secondary" />}
-          {background && <ColorSwatch color={background} label="bg" />}
-          {foreground && <ColorSwatch color={foreground} label="fg" />}
-          {muted && <ColorSwatch color={muted} label="muted" />}
+          {primaryColor && <ColorSwatch color={primaryColor} label="主色" />}
+          {secondaryColor && <ColorSwatch color={secondaryColor} label="辅助色" />}
+          {background && <ColorSwatch color={background} label="背景色" />}
+          {foreground && <ColorSwatch color={foreground} label="前景色" />}
+          {muted && <ColorSwatch color={muted} label="弱化色" />}
           {accentColors.map((c, i) => (
-            <ColorSwatch key={i} color={c} label={`accent ${i + 1}`} />
+            <ColorSwatch key={i} color={c} label={`强调色 ${i + 1}`} />
           ))}
         </div>
       </DetailSection>
 
       {/* Typography */}
       {(headingFont || bodyFont) && (
-        <DetailSection title="Typography">
+        <DetailSection title="排版">
           <div className="grid grid-cols-2 gap-x-6 gap-y-1 text-xs">
-            {headingFont && <div><span className="text-muted">Heading:</span> {headingFont}</div>}
-            {bodyFont && <div><span className="text-muted">Body:</span> {bodyFont}</div>}
-            {fontSizeBase && <div><span className="text-muted">Size base:</span> {fontSizeBase}</div>}
-            {fontSizeHeading && <div><span className="text-muted">Size heading:</span> {fontSizeHeading}</div>}
-            {fontSizeSmall && <div><span className="text-muted">Size small:</span> {fontSizeSmall}</div>}
-            {fontWeightNormal && <div><span className="text-muted">Weight normal:</span> {fontWeightNormal}</div>}
-            {fontWeightBold && <div><span className="text-muted">Weight bold:</span> {fontWeightBold}</div>}
-            {lineHeightNormal && <div><span className="text-muted">LH normal:</span> {lineHeightNormal}</div>}
-            {lineHeightTight && <div><span className="text-muted">LH tight:</span> {lineHeightTight}</div>}
+            {headingFont && <div><span className="text-muted">标题字体：</span> {headingFont}</div>}
+            {bodyFont && <div><span className="text-muted">正文字体：</span> {bodyFont}</div>}
+            {fontSizeBase && <div><span className="text-muted">基础字号：</span> {fontSizeBase}</div>}
+            {fontSizeHeading && <div><span className="text-muted">标题字号：</span> {fontSizeHeading}</div>}
+            {fontSizeSmall && <div><span className="text-muted">小号字号：</span> {fontSizeSmall}</div>}
+            {fontWeightNormal && <div><span className="text-muted">常规字重：</span> {fontWeightNormal}</div>}
+            {fontWeightBold && <div><span className="text-muted">粗体字重：</span> {fontWeightBold}</div>}
+            {lineHeightNormal && <div><span className="text-muted">常规行高：</span> {lineHeightNormal}</div>}
+            {lineHeightTight && <div><span className="text-muted">紧凑行高：</span> {lineHeightTight}</div>}
           </div>
         </DetailSection>
       )}
 
       {/* Spacing & Border */}
       {(borderRadius || spacingSm) && (
-        <DetailSection title="Spacing / Border">
+        <DetailSection title="间距与边框">
           <div className="grid grid-cols-2 gap-x-6 gap-y-1 text-xs">
-            {borderRadius && <div><span className="text-muted">Border radius:</span> {borderRadius}</div>}
-            {spacingSm && <div><span className="text-muted">Spacing sm:</span> {spacingSm}</div>}
-            {spacingMd && <div><span className="text-muted">Spacing md:</span> {spacingMd}</div>}
-            {spacingLg && <div><span className="text-muted">Spacing lg:</span> {spacingLg}</div>}
+            {borderRadius && <div><span className="text-muted">圆角：</span> {borderRadius}</div>}
+            {spacingSm && <div><span className="text-muted">小间距：</span> {spacingSm}</div>}
+            {spacingMd && <div><span className="text-muted">中间距：</span> {spacingMd}</div>}
+            {spacingLg && <div><span className="text-muted">大间距：</span> {spacingLg}</div>}
           </div>
         </DetailSection>
       )}
 
       {/* Design */}
       {(philosophy || keywords.length > 0 || tags.length > 0 || styleType) && (
-        <DetailSection title="Design">
+        <DetailSection title="设计">
           {philosophy && <p className="text-xs mb-2">{philosophy}</p>}
           {keywords.length > 0 && (
             <div className="flex flex-wrap gap-1 mb-2">
@@ -931,17 +938,17 @@ function SubmissionDetail({ data }: { data: FullSubmissionData }) {
               ))}
             </div>
           )}
-          {styleType && <p className="text-xs text-muted">Style type: {styleType}</p>}
+          {styleType && <p className="text-xs text-muted">风格类型：{styleType}</p>}
         </DetailSection>
       )}
 
       {/* Rules */}
       {(doList.length > 0 || dontList.length > 0 || aiRules.length > 0) && (
-        <DetailSection title="Rules">
+        <DetailSection title="规则">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {doList.length > 0 && (
               <div>
-                <p className="text-xs font-medium text-green-700 dark:text-green-400 mb-1">Do</p>
+                <p className="text-xs font-medium text-green-700 dark:text-green-400 mb-1">推荐</p>
                 <ul className="text-xs space-y-0.5 list-disc list-inside">
                   {doList.map((item, i) => <li key={i}>{item}</li>)}
                 </ul>
@@ -949,7 +956,7 @@ function SubmissionDetail({ data }: { data: FullSubmissionData }) {
             )}
             {dontList.length > 0 && (
               <div>
-                <p className="text-xs font-medium text-red-700 dark:text-red-400 mb-1">Don&apos;t</p>
+                <p className="text-xs font-medium text-red-700 dark:text-red-400 mb-1">禁止</p>
                 <ul className="text-xs space-y-0.5 list-disc list-inside">
                   {dontList.map((item, i) => <li key={i}>{item}</li>)}
                 </ul>
@@ -957,7 +964,7 @@ function SubmissionDetail({ data }: { data: FullSubmissionData }) {
             )}
             {aiRules.length > 0 && (
               <div>
-                <p className="text-xs font-medium mb-1">AI Rules</p>
+                <p className="text-xs font-medium mb-1">AI 规则</p>
                 <ul className="text-xs space-y-0.5 list-disc list-inside">
                   {aiRules.map((item, i) => <li key={i}>{item}</li>)}
                 </ul>
@@ -969,22 +976,22 @@ function SubmissionDetail({ data }: { data: FullSubmissionData }) {
 
       {/* Components */}
       {(buttonCode || cardCode || inputCode) && (
-        <DetailSection title="Components">
+        <DetailSection title="组件">
           {buttonCode && (
             <div className="mb-3">
-              <p className="text-xs font-medium text-muted mb-1">Button</p>
+              <p className="text-xs font-medium text-muted mb-1">按钮</p>
               <pre className="text-xs bg-muted/10 border border-border rounded p-3 overflow-x-auto whitespace-pre-wrap">{buttonCode}</pre>
             </div>
           )}
           {cardCode && (
             <div className="mb-3">
-              <p className="text-xs font-medium text-muted mb-1">Card</p>
+              <p className="text-xs font-medium text-muted mb-1">卡片</p>
               <pre className="text-xs bg-muted/10 border border-border rounded p-3 overflow-x-auto whitespace-pre-wrap">{cardCode}</pre>
             </div>
           )}
           {inputCode && (
             <div>
-              <p className="text-xs font-medium text-muted mb-1">Input</p>
+              <p className="text-xs font-medium text-muted mb-1">输入框</p>
               <pre className="text-xs bg-muted/10 border border-border rounded p-3 overflow-x-auto whitespace-pre-wrap">{inputCode}</pre>
             </div>
           )}

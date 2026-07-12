@@ -24,28 +24,35 @@ type SortField = "name" | "views" | "rating" | "comments" | "favorites";
 type SortOrder = "asc" | "desc";
 
 const CATEGORIES = [
-  { value: "", label: "All" },
-  { value: "modern", label: "Modern" },
-  { value: "retro", label: "Retro" },
-  { value: "minimal", label: "Minimal" },
-  { value: "expressive", label: "Expressive" },
+  { value: "", label: "全部" },
+  { value: "modern", label: "现代" },
+  { value: "retro", label: "复古" },
+  { value: "minimal", label: "极简" },
+  { value: "expressive", label: "表现力" },
 ] as const;
 
+const CATEGORY_LABELS: Record<string, string> = Object.fromEntries(
+  CATEGORIES.filter((category) => category.value).map((category) => [
+    category.value,
+    category.label,
+  ])
+);
+
 const SORT_OPTIONS: { value: SortField; label: string }[] = [
-  { value: "name", label: "Name" },
-  { value: "views", label: "Views" },
-  { value: "rating", label: "Avg Rating" },
-  { value: "comments", label: "Comments" },
-  { value: "favorites", label: "Favorites" },
+  { value: "name", label: "名称" },
+  { value: "views", label: "浏览量" },
+  { value: "rating", label: "平均评分" },
+  { value: "comments", label: "评论数" },
+  { value: "favorites", label: "收藏数" },
 ];
 
 const TABLE_COLUMNS = [
-  { field: "name" as SortField, label: "Name" },
-  { field: null, label: "Category" },
-  { field: "views" as SortField, label: "Views" },
-  { field: "rating" as SortField, label: "Avg Rating" },
-  { field: "comments" as SortField, label: "Comments" },
-  { field: "favorites" as SortField, label: "Favorites" },
+  { field: "name" as SortField, label: "名称" },
+  { field: null, label: "分类" },
+  { field: "views" as SortField, label: "浏览量" },
+  { field: "rating" as SortField, label: "平均评分" },
+  { field: "comments" as SortField, label: "评论数" },
+  { field: "favorites" as SortField, label: "收藏数" },
 ] as const;
 
 function ColorSwatch({
@@ -56,7 +63,7 @@ function ColorSwatch({
   const allColors = [colors.primary, colors.secondary, ...colors.accent].filter(Boolean);
 
   return (
-    <div className="flex overflow-hidden rounded-md border border-[var(--admin-border-soft)]">
+    <div className="flex overflow-hidden rounded-md shadow-[var(--admin-shadow-border)]">
       {allColors.slice(0, 4).map((color, index) => (
         <span
           key={`${color}-${index}`}
@@ -119,56 +126,56 @@ export function AdminStylesContent() {
   };
 
   if (isLoading) {
-    return <AdminLoadingState label="Loading style catalog..." />;
+    return <AdminLoadingState label="正在加载风格目录..." />;
   }
 
   if (error) {
-    return <AdminErrorState message={error.message} onRetry={() => mutate()} />;
+    return <AdminErrorState message="加载风格目录失败，请重试。" onRetry={() => mutate()} />;
   }
 
   return (
     <div className="space-y-5">
       <AdminToolbar
-        title="Catalog performance"
-        description="Compare style engagement, inspect palettes, and switch between visual review and dense ranking."
-        meta={<AdminCountPill>{styles.length} styles</AdminCountPill>}
+        title="目录表现"
+        description="比较风格互动数据、查看配色，并在网格预览与紧凑排名之间切换。"
+        meta={<AdminCountPill>{styles.length} 种风格</AdminCountPill>}
         actions={
           <>
             <AdminSegmentedControl<ViewMode>
               value={viewMode}
               onChange={setViewMode}
-              ariaLabel="Style view mode"
+              ariaLabel="风格查看模式"
               options={[
                 {
                   value: "grid",
                   label: <LayoutGrid className="h-4 w-4" />,
-                  ariaLabel: "Grid view",
+                  ariaLabel: "网格视图",
                 },
                 {
                   value: "table",
                   label: <List className="h-4 w-4" />,
-                  ariaLabel: "Table view",
+                  ariaLabel: "表格视图",
                 },
               ]}
             />
             <AdminButton
               onClick={() => mutate()}
               size="icon"
-              aria-label="Refresh data"
+              aria-label="刷新数据"
             >
               <RefreshCw className="h-4 w-4" />
             </AdminButton>
           </>
         }
       >
-        <AdminField label="Search" className="lg:w-72">
+        <AdminField label="搜索" className="lg:w-72">
           <AdminInput
             value={search}
             onChange={(event) => setSearch(event.target.value)}
-            placeholder="Name or slug..."
+            placeholder="输入名称或标识..."
           />
         </AdminField>
-        <AdminField label="Category" className="lg:w-44">
+        <AdminField label="分类" className="lg:w-44">
           <AdminSelect
             value={category}
             onChange={(event) => setCategory(event.target.value)}
@@ -180,7 +187,7 @@ export function AdminStylesContent() {
             ))}
           </AdminSelect>
         </AdminField>
-        <AdminField label="Sort by" className="lg:w-44">
+        <AdminField label="排序方式" className="lg:w-44">
           <AdminSelect
             value={sort}
             onChange={(event) => setSort(event.target.value as SortField)}
@@ -201,26 +208,26 @@ export function AdminStylesContent() {
           ) : (
             <ArrowDownAZ className="h-4 w-4" />
           )}
-          {order === "asc" ? "Asc" : "Desc"}
+          {order === "asc" ? "升序" : "降序"}
         </AdminButton>
       </AdminToolbar>
 
       {styles.length > 0 ? (
         <div className="grid gap-3 sm:grid-cols-3">
           <AdminPanel className="p-4">
-            <p className="text-xs text-muted">Total views</p>
+            <p className="text-xs text-muted">总浏览量</p>
             <p className="mt-1 text-xl font-semibold tabular-nums">
               {totals.views.toLocaleString()}
             </p>
           </AdminPanel>
           <AdminPanel className="p-4">
-            <p className="text-xs text-muted">Comments</p>
+            <p className="text-xs text-muted">评论数</p>
             <p className="mt-1 text-xl font-semibold tabular-nums">
               {totals.comments.toLocaleString()}
             </p>
           </AdminPanel>
           <AdminPanel className="p-4">
-            <p className="text-xs text-muted">Favorites</p>
+            <p className="text-xs text-muted">收藏数</p>
             <p className="mt-1 text-xl font-semibold tabular-nums">
               {totals.favorites.toLocaleString()}
             </p>
@@ -230,8 +237,8 @@ export function AdminStylesContent() {
 
       {styles.length === 0 ? (
         <AdminEmptyState
-          title="No styles match the current filters"
-          description="Try another search term, category, or sort mode."
+          title="没有符合当前筛选条件的风格"
+          description="请尝试其他搜索词、分类或排序方式。"
         />
       ) : null}
 
@@ -249,7 +256,9 @@ export function AdminStylesContent() {
                     <p className="truncate text-sm font-semibold">{style.name}</p>
                     <p className="mt-1 truncate text-xs text-muted">{style.nameEn}</p>
                   </div>
-                  <AdminBadge className="capitalize">{style.category}</AdminBadge>
+                  <AdminBadge className="capitalize">
+                    {CATEGORY_LABELS[style.category] ?? style.category}
+                  </AdminBadge>
                 </div>
 
                 <div className="mt-4 flex items-center justify-between gap-3">
@@ -259,25 +268,25 @@ export function AdminStylesContent() {
 
                 <div className="mt-4 grid grid-cols-4 gap-2 text-xs">
                   <div>
-                    <p className="text-muted">Views</p>
+                    <p className="text-muted">浏览</p>
                     <p className="mt-1 font-semibold tabular-nums">
                       {style.stats.views.toLocaleString()}
                     </p>
                   </div>
                   <div>
-                    <p className="text-muted">Rating</p>
+                    <p className="text-muted">评分</p>
                     <p className="mt-1 font-semibold tabular-nums">
                       {formatRating(style.stats.avgRating)}
                     </p>
                   </div>
                   <div>
-                    <p className="text-muted">Comments</p>
+                    <p className="text-muted">评论</p>
                     <p className="mt-1 font-semibold tabular-nums">
                       {style.stats.totalComments}
                     </p>
                   </div>
                   <div>
-                    <p className="text-muted">Favs</p>
+                    <p className="text-muted">收藏</p>
                     <p className="mt-1 font-semibold tabular-nums">
                       {style.stats.totalFavorites}
                     </p>
@@ -292,7 +301,7 @@ export function AdminStylesContent() {
       {viewMode === "table" && styles.length > 0 ? (
         <AdminTableShell>
           <thead>
-            <tr className="border-b border-[var(--admin-border-soft)]">
+            <tr>
               {TABLE_COLUMNS.map((col) => (
                 <th
                   key={col.label}
@@ -327,7 +336,7 @@ export function AdminStylesContent() {
             {styles.map((style) => (
               <tr
                 key={style.slug}
-                className="border-b border-[var(--admin-border-soft)] transition-colors last:border-0 hover:bg-muted/5"
+                className="transition-colors hover:bg-[var(--admin-input)]"
               >
                 <td className="px-4 py-3">
                   <div className="flex items-center gap-3">
@@ -339,7 +348,9 @@ export function AdminStylesContent() {
                   </div>
                 </td>
                 <td className="px-4 py-3">
-                  <AdminBadge className="capitalize">{style.category}</AdminBadge>
+                  <AdminBadge className="capitalize">
+                    {CATEGORY_LABELS[style.category] ?? style.category}
+                  </AdminBadge>
                 </td>
                 <td className="px-4 py-3 text-muted tabular-nums">
                   {style.stats.views.toLocaleString()}

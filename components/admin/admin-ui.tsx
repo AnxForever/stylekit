@@ -2,13 +2,14 @@
 
 import type {
   ButtonHTMLAttributes,
+  HTMLAttributes,
   InputHTMLAttributes,
   ReactNode,
   SelectHTMLAttributes,
   TextareaHTMLAttributes,
 } from "react";
 import { useId } from "react";
-import { Loader2, RefreshCw } from "lucide-react";
+import { AlertCircle, Loader2, RefreshCw } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 function fieldNameFromId(id: string) {
@@ -18,16 +19,15 @@ function fieldNameFromId(id: string) {
 export function AdminPanel({
   children,
   className = "",
-}: {
-  children: ReactNode;
-  className?: string;
-}) {
+  ...props
+}: HTMLAttributes<HTMLDivElement>) {
   return (
     <div
       className={cn(
-        "rounded-lg border border-[var(--admin-border-soft)] bg-[var(--admin-panel)] shadow-[var(--admin-shadow)]",
+        "rounded-xl bg-[var(--admin-panel)] shadow-[var(--admin-shadow-border)]",
         className
       )}
+      {...props}
     >
       {children}
     </div>
@@ -56,7 +56,7 @@ export function AdminSection({
           <div className="min-w-0">
             <div className="flex flex-wrap items-center gap-2">
               {title ? (
-                <h2 className="text-sm font-semibold text-foreground">{title}</h2>
+                <h2 className="text-sm font-medium text-foreground">{title}</h2>
               ) : null}
               {badge}
             </div>
@@ -96,7 +96,7 @@ export function AdminToolbar({
       <div className="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
         <div className="min-w-0">
           <div className="flex flex-wrap items-center gap-2">
-            <p className="text-sm font-semibold text-foreground">{title}</p>
+            <p className="text-sm font-medium text-foreground">{title}</p>
             {meta}
           </div>
           {description ? (
@@ -131,7 +131,7 @@ export function AdminField({
 }) {
   return (
     <label className={cn("flex min-w-0 flex-col gap-1.5", className)}>
-      <span className="text-[11px] font-semibold uppercase tracking-[0.12em] text-muted">
+      <span className="text-xs font-medium text-[var(--admin-text-secondary)]">
         {label}
       </span>
       {children}
@@ -153,7 +153,7 @@ export function AdminInput({
       id={inputId}
       name={name ?? fieldNameFromId(inputId)}
       className={cn(
-        "h-11 min-w-0 rounded-md border border-[var(--admin-border-soft)] bg-[var(--admin-input)] px-3 text-sm text-foreground placeholder:text-muted transition-colors hover:border-border focus:border-foreground/35",
+        "h-10 min-w-0 rounded-md bg-[var(--admin-input)] px-3 text-sm text-foreground shadow-[var(--admin-shadow-border)] outline-none transition-shadow placeholder:text-[var(--admin-text-muted)] hover:shadow-[0_0_0_1px_var(--admin-border-emphasis)]",
         className
       )}
       {...props}
@@ -175,7 +175,7 @@ export function AdminSelect({
       id={selectId}
       name={name ?? fieldNameFromId(selectId)}
       className={cn(
-        "h-11 min-w-0 rounded-md border border-[var(--admin-border-soft)] bg-[var(--admin-input)] px-3 text-sm text-foreground transition-colors hover:border-border focus:border-foreground/35",
+        "h-10 min-w-0 rounded-md bg-[var(--admin-input)] px-3 text-sm text-foreground shadow-[var(--admin-shadow-border)] outline-none transition-shadow hover:shadow-[0_0_0_1px_var(--admin-border-emphasis)]",
         className
       )}
       {...props}
@@ -197,7 +197,7 @@ export function AdminTextarea({
       id={textareaId}
       name={name ?? fieldNameFromId(textareaId)}
       className={cn(
-        "min-w-0 rounded-md border border-[var(--admin-border-soft)] bg-[var(--admin-input)] px-3 py-2 text-sm text-foreground placeholder:text-muted transition-colors hover:border-border focus:border-foreground/35",
+        "min-w-0 rounded-md bg-[var(--admin-input)] px-3 py-2 text-sm text-foreground shadow-[var(--admin-shadow-border)] outline-none transition-shadow placeholder:text-[var(--admin-text-muted)] hover:shadow-[0_0_0_1px_var(--admin-border-emphasis)]",
         className
       )}
       {...props}
@@ -232,7 +232,7 @@ export function AdminEmptyState({
 }) {
   return (
     <AdminPanel className="p-8 text-center">
-      <p className="text-sm font-semibold text-foreground">{title}</p>
+      <p className="text-sm font-medium text-foreground">{title}</p>
       {description ? (
         <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-muted">
           {description}
@@ -244,14 +244,19 @@ export function AdminEmptyState({
 }
 
 export function AdminLoadingState({
-  label = "Loading data...",
+  label = "正在加载数据...",
 }: {
   label?: string;
 }) {
   return (
-    <AdminPanel className="p-5">
+    <AdminPanel
+      className="p-5"
+      role="status"
+      aria-live="polite"
+      aria-busy="true"
+    >
       <div className="flex items-center gap-3 text-sm text-muted">
-        <Loader2 className="h-4 w-4 animate-spin" />
+        <Loader2 className="h-4 w-4 animate-spin" strokeWidth={1.5} />
         {label}
       </div>
       <div className="mt-4 space-y-2">
@@ -270,15 +275,20 @@ export function AdminErrorState({
   onRetry: () => void;
 }) {
   return (
-    <div className="rounded-lg border border-rose-500/25 bg-rose-500/8 p-5">
-      <p className="text-sm font-medium text-rose-700 dark:text-rose-300">
-        {message}
+    <AdminPanel className="p-5" role="alert">
+      <p className="flex items-center gap-2 text-sm font-medium text-foreground">
+        <AlertCircle
+          className="h-4 w-4 text-[var(--admin-status-red)]"
+          strokeWidth={1.5}
+        />
+        无法加载当前内容
       </p>
+      <p className="mt-2 text-sm text-muted">{message}</p>
       <AdminButton onClick={onRetry} className="mt-3" size="sm">
-        <RefreshCw className="h-3.5 w-3.5" />
-        Retry
+        <RefreshCw className="h-3.5 w-3.5" strokeWidth={1.5} />
+        重试
       </AdminButton>
-    </div>
+    </AdminPanel>
   );
 }
 
@@ -313,27 +323,25 @@ export function AdminBadge({
   tone?: AdminBadgeTone;
   className?: string;
 }) {
-  const toneClass =
-    tone === "primary"
-      ? "border-foreground/20 bg-foreground text-background"
-      : tone === "success"
-        ? "border-emerald-500/25 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300"
-        : tone === "warning"
-          ? "border-amber-500/30 bg-amber-500/10 text-amber-700 dark:text-amber-300"
-          : tone === "danger"
-            ? "border-rose-500/25 bg-rose-500/10 text-rose-700 dark:text-rose-300"
-            : tone === "info"
-              ? "border-sky-500/25 bg-sky-500/10 text-sky-700 dark:text-sky-300"
-              : "border-[var(--admin-border-soft)] bg-muted/8 text-muted";
+  const dotClass =
+    tone === "success"
+      ? "bg-[var(--admin-status-green)]"
+      : tone === "warning"
+        ? "bg-[var(--admin-status-amber)]"
+        : tone === "danger"
+          ? "bg-[var(--admin-status-red)]"
+          : tone === "info" || tone === "primary"
+            ? "bg-[var(--admin-status-blue)]"
+            : "bg-[var(--admin-text-muted)]";
 
   return (
     <span
       className={cn(
-        "inline-flex h-6 items-center gap-1.5 rounded-md border px-2 text-xs font-medium",
-        toneClass,
+        "inline-flex h-6 items-center gap-1.5 rounded-md bg-[var(--admin-panel)] px-2 text-xs font-medium text-[var(--admin-text-secondary)] shadow-[var(--admin-shadow-border)]",
         className
       )}
     >
+      <span className={cn("h-2 w-2 shrink-0 rounded-full", dotClass)} aria-hidden="true" />
       {children}
     </span>
   );
@@ -354,26 +362,26 @@ export function AdminButton({
 }) {
   const toneClass =
     tone === "primary"
-      ? "border-foreground bg-foreground text-background hover:opacity-90"
+      ? "bg-foreground text-background shadow-[var(--admin-shadow-border)] hover:bg-[var(--admin-primary-hover)]"
       : tone === "danger"
-        ? "border-rose-500/30 text-rose-700 hover:bg-rose-500/10 dark:text-rose-300"
+        ? "text-[var(--admin-status-red)] shadow-[var(--admin-shadow-border)] hover:bg-[var(--admin-input)]"
         : tone === "success"
-          ? "border-emerald-600 bg-emerald-600 text-white hover:bg-emerald-700"
+          ? "bg-foreground text-background shadow-[var(--admin-shadow-border)] hover:bg-[var(--admin-primary-hover)]"
           : tone === "ghost"
-            ? "border-transparent text-muted hover:bg-muted/10 hover:text-foreground"
-            : "border-[var(--admin-border-soft)] text-muted hover:bg-muted/10 hover:text-foreground";
+            ? "text-muted hover:bg-[var(--admin-hover)] hover:text-foreground"
+            : "bg-[var(--admin-panel)] text-muted shadow-[var(--admin-shadow-border)] hover:bg-[var(--admin-hover)] hover:text-foreground";
 
   const sizeClass =
     size === "sm"
-      ? "min-h-11 rounded-md px-3 text-xs"
+      ? "h-11 rounded-md px-3 text-xs sm:h-8"
       : size === "icon"
-        ? "h-11 w-11 rounded-md px-0"
-        : "h-11 rounded-md px-3 text-sm";
+        ? "h-11 w-11 rounded-md px-0 sm:h-10 sm:w-10"
+        : "h-11 rounded-md px-3 text-sm sm:h-10";
 
   return (
     <button
       className={cn(
-        "inline-flex shrink-0 items-center justify-center gap-2 border font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-45",
+        "inline-flex shrink-0 items-center justify-center gap-2 font-normal transition-colors disabled:cursor-not-allowed disabled:opacity-45",
         toneClass,
         sizeClass,
         className
@@ -405,7 +413,7 @@ export function AdminSegmentedControl<TValue extends string>({
   return (
     <div
       className={cn(
-        "inline-flex rounded-md border border-[var(--admin-border-soft)] bg-[var(--admin-input)] p-0.5",
+        "inline-flex rounded-md bg-[var(--admin-input)] p-0.5 shadow-[var(--admin-shadow-border)]",
         className
       )}
       role="group"
@@ -419,10 +427,10 @@ export function AdminSegmentedControl<TValue extends string>({
             type="button"
             onClick={() => onChange(option.value)}
             className={cn(
-              "inline-flex min-h-11 min-w-[44px] items-center justify-center gap-2 rounded-[5px] px-3 text-sm font-medium transition-colors",
+              "inline-flex min-h-11 min-w-11 items-center justify-center gap-2 rounded-[5px] px-3 text-sm font-normal transition-colors sm:min-h-9 sm:min-w-10",
               active
-                ? "bg-foreground text-background shadow-sm"
-                : "text-muted hover:bg-muted/10 hover:text-foreground"
+                ? "bg-[var(--admin-panel)] text-foreground shadow-[var(--admin-shadow-small)]"
+                : "text-muted hover:bg-[var(--admin-hover)] hover:text-foreground"
             )}
             aria-label={option.ariaLabel}
             aria-pressed={active}
@@ -454,15 +462,15 @@ export function AdminPagination({
 }) {
   return (
     <div className="flex flex-col gap-3 text-xs text-muted sm:flex-row sm:items-center sm:justify-between">
-      <span>{summary ?? `Page ${page} / ${totalPages}`}</span>
+      <span>{summary ?? `第 ${page} / ${totalPages} 页`}</span>
       <div className="flex items-center gap-2">
         <AdminButton
           disabled={!hasPrev}
           onClick={onPrev}
           size="sm"
-          aria-label="Previous page"
+          aria-label="上一页"
         >
-          Prev
+          上一页
         </AdminButton>
         <span className="min-w-16 text-center tabular-nums">
           {page} / {totalPages}
@@ -471,9 +479,9 @@ export function AdminPagination({
           disabled={!hasNext}
           onClick={onNext}
           size="sm"
-          aria-label="Next page"
+          aria-label="下一页"
         >
-          Next
+          下一页
         </AdminButton>
       </div>
     </div>

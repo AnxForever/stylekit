@@ -9,20 +9,20 @@ interface AdminPageProps {
 }
 
 export function AdminPage({
-  eyebrow = "StyleKit Admin",
+  eyebrow = "StyleKit 管理后台",
   title,
   description,
   actions,
   children,
 }: AdminPageProps) {
   return (
-    <div className="space-y-5">
-      <header className="flex flex-col gap-3 border-b border-[var(--admin-border-soft)] pb-5 lg:flex-row lg:items-end lg:justify-between">
+    <div className="space-y-6">
+      <header className="flex flex-col gap-4 pb-2 lg:flex-row lg:items-end lg:justify-between">
         <div className="min-w-0">
-          <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-muted">
+          <p className="text-sm font-medium tracking-[-0.02em] text-muted">
             {eyebrow}
           </p>
-          <h1 className="mt-2 text-2xl font-semibold tracking-normal text-foreground">
+          <h1 className="mt-2 text-[32px] font-semibold leading-10 tracking-[-0.64px] text-foreground">
             {title}
           </h1>
           <p className="mt-2 max-w-3xl text-sm leading-6 text-muted">
