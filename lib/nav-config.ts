@@ -47,116 +47,17 @@ export interface ExternalNavItem {
 }
 
 // Main navigation items shown directly in the nav bar.
-// Stable top-level surface — keep this list short (3-5 items).
-// New features belong in a dropdown, not as new top-level items.
+// Keep this surface intentionally minimal. Detailed categories and filters
+// belong inside their destination pages instead of in header dropdowns.
 export const mainNav: NavItem[] = [
   { href: "/styles", labelKey: "nav.styles" },
   { href: "/templates", labelKey: "nav.templates" },
-  {
-    href: "/templates",
-    labelKey: "nav.build",
-    dropdown: {
-      labelKey: "nav.build",
-      width: "wide",
-      // "What can I build?" — every entry jumps to /templates?type=X
-      // where the page already filters by type. No new routes needed.
-      groups: [
-        {
-          groupLabelKey: "nav.buildMain",
-          items: [
-            { href: "/templates?type=landing", labelKey: "templates.typeLanding" },
-            { href: "/templates?type=portfolio", labelKey: "templates.typePortfolio" },
-            { href: "/templates?type=blog", labelKey: "templates.typeBlog" },
-            { href: "/templates?type=docs", labelKey: "templates.typeDocs" },
-          ],
-        },
-        {
-          groupLabelKey: "nav.buildApps",
-          items: [
-            { href: "/templates?type=dashboard", labelKey: "templates.typeDashboard" },
-            { href: "/templates?type=saas", labelKey: "templates.typeSaas" },
-            { href: "/templates?type=admin", labelKey: "templates.typeAdmin" },
-            { href: "/templates?type=auth", labelKey: "templates.typeAuth" },
-          ],
-        },
-        {
-          groupLabelKey: "nav.buildCommerce",
-          items: [
-            { href: "/templates?type=ecommerce", labelKey: "templates.typeEcommerce" },
-            { href: "/templates?type=pricing", labelKey: "nav.buildPricing" },
-            { href: "/templates?type=social", labelKey: "templates.typeSocial" },
-            { href: "/templates?type=messaging", labelKey: "templates.typeMessaging" },
-          ],
-        },
-        {
-          groupLabelKey: "nav.buildMedia",
-          items: [
-            { href: "/templates?type=media", labelKey: "templates.typeMedia" },
-            { href: "/templates?type=lifestyle", labelKey: "templates.typeLifestyle" },
-            { href: "/templates?type=education", labelKey: "templates.typeEducation" },
-            { href: "/templates", labelKey: "nav.buildAll" },
-          ],
-        },
-      ],
-    },
-  },
-  {
-    href: "/templates",
-    labelKey: "nav.resources",
-    dropdown: {
-      labelKey: "nav.resources",
-      width: "wide",
-      groups: [
-        {
-          // Design foundations — all chapters live on /learn now; these jump
-          // straight to the matching section anchor instead of standalone pages.
-          groupLabelKey: "nav.learn",
-          items: [
-            { href: "/learn#color-theory", labelKey: "nav.colorTheory" },
-            { href: "/learn#typography", labelKey: "nav.typography" },
-            { href: "/learn#type-scale", labelKey: "nav.typeScale" },
-            { href: "/learn#spacing", labelKey: "nav.spacing" },
-            { href: "/learn#design-principles", labelKey: "nav.designPrinciples" },
-            { href: "/learn#visual-hierarchy", labelKey: "nav.visualHierarchy" },
-          ],
-        },
-        {
-          groupLabelKey: "nav.resourcesBrowse",
-          items: [
-            { href: "/styles", labelKey: "nav.styles" },
-            { href: "/animations", labelKey: "nav.animations" },
-            { href: "/mouse-interactions", labelKey: "nav.mouseInteractions" },
-            { href: "/animations/vocabulary", labelKey: "nav.vocabulary" },
-            { href: "/recipes", labelKey: "nav.recipes" },
-            { href: "/guides", labelKey: "nav.guides" },
-          ],
-        },
-        {
-          groupLabelKey: "nav.resourcesComponents",
-          items: [
-            { href: "/component-patterns", labelKey: "nav.componentPatterns" },
-            { href: "/gradients", labelKey: "nav.gradients" },
-            { href: "/shadows", labelKey: "nav.shadows" },
-            { href: "/backgrounds", labelKey: "nav.backgrounds" },
-          ],
-        },
-        {
-          groupLabelKey: "nav.resourcesDevelopers",
-          items: [
-            { href: "/developers", labelKey: "nav.developers" },
-          ],
-        },
-      ],
-    },
-  },
+  { href: "/guides", labelKey: "nav.resources" },
+  { href: "https://anxforever.cn", labelKey: "nav.blog", external: true },
 ];
 
-// Secondary navigation: surface under the "More" overflow menu.
-// Add new community/blog/external items here, not in mainNav.
-export const secondaryNav: NavItem[] = [
-  { href: "/blog", labelKey: "nav.blog" },
-  { href: "/changelog", labelKey: "nav.changelog" },
-];
+// Intentionally empty so the header does not render a "More" overflow menu.
+export const secondaryNav: NavItem[] = [];
 
 export const externalNav: ExternalNavItem[] = [
   {
