@@ -3,7 +3,6 @@
 
 import type { DesignStyle } from "../styles";
 import type { StyleTokens } from "../styles/tokens";
-import { getCurrentVersion } from "../versioning";
 import JSZip from "jszip";
 import { exportStyleTokens } from "./figma-tokens";
 import { generateTailwindPresetJS } from "./tailwind-preset";
@@ -28,7 +27,7 @@ export function generateStylePack(
   tokens?: StyleTokens,
   options?: StylePackOptions
 ): StylePackFile[] {
-  const version = options?.version ?? getCurrentVersion(style.slug);
+  const version = options?.version ?? "0.0.0";
   const files: StylePackFile[] = [
     {
       name: "Metadata",
@@ -110,12 +109,20 @@ export function downloadFile(file: StylePackFile): void {
   URL.revokeObjectURL(url);
 }
 
-export function downloadAllAsZip(style: DesignStyle, tokens?: StyleTokens): void {
-  void downloadAllAsZipAsync(style, tokens);
+export function downloadAllAsZip(
+  style: DesignStyle,
+  tokens?: StyleTokens,
+  options?: StylePackOptions
+): void {
+  void downloadAllAsZipAsync(style, tokens, options);
 }
 
-async function downloadAllAsZipAsync(style: DesignStyle, tokens?: StyleTokens): Promise<void> {
-  const files = generateStylePack(style, tokens);
+async function downloadAllAsZipAsync(
+  style: DesignStyle,
+  tokens?: StyleTokens,
+  options?: StylePackOptions
+): Promise<void> {
+  const files = generateStylePack(style, tokens, options);
   const zip = new JSZip();
 
   for (const file of files) {

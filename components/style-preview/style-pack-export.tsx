@@ -11,6 +11,7 @@ import { Download, Check, Package, FileJson, FileCode, Palette, Code2, Copy, Boo
 
 interface StylePackExportProps {
   style: DesignStyle;
+  version?: string;
 }
 
 const iconMap: Record<string, React.ReactNode> = {
@@ -22,7 +23,7 @@ const iconMap: Record<string, React.ReactNode> = {
   skill: <BookOpen className="w-5 h-5" />,
 };
 
-export function StylePackExport({ style }: StylePackExportProps) {
+export function StylePackExport({ style, version }: StylePackExportProps) {
   const { t, locale } = useI18n();
   const tokens = getStyleTokens(style.slug);
   const [downloadedFiles, setDownloadedFiles] = useState<Set<string>>(new Set());
@@ -37,7 +38,7 @@ export function StylePackExport({ style }: StylePackExportProps) {
   }, []);
 
   const files = useMemo(() => {
-    const packFiles = generateStylePack(style, tokens);
+    const packFiles = generateStylePack(style, tokens, { version });
     const skillPackInfo = getSkillPackFileInfo(style);
     const skillPackContent = generateSkillPack({ style, tokens });
 
@@ -53,7 +54,7 @@ export function StylePackExport({ style }: StylePackExportProps) {
     };
 
     return [...packFiles, skillFile];
-  }, [style, tokens]);
+  }, [style, tokens, version]);
 
   const handleDownload = (file: StylePackFile) => {
     downloadFile(file);
@@ -61,7 +62,7 @@ export function StylePackExport({ style }: StylePackExportProps) {
   };
 
   const handleDownloadAll = () => {
-    downloadAllAsZip(style, tokens);
+    downloadAllAsZip(style, tokens, { version });
     setDownloadedFiles(new Set(files.map((file) => file.filename)));
   };
 
