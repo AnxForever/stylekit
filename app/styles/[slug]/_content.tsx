@@ -32,7 +32,10 @@ import type { AccessibilityScore } from "@/lib/accessibility";
 import type { StyleVersion } from "@/lib/versioning";
 import type { RuntimeStyleSource } from "@/lib/styles/community-runtime";
 import type { Locale } from "@/lib/i18n/translations";
-import { getRecipesByVisualStyle, getRecipesByLayout } from "@/lib/styles/recipes";
+import {
+  getRecipesByLayout,
+  getRecipesByVisualStyle,
+} from "@/lib/styles/recipe-selectors";
 import { RecipeCard } from "@/components/recipes/recipe-card";
 import { getRoomBySlug } from "@/components/mouse-interactions/rooms/registry";
 import { GenericRoom } from "@/components/mouse-interactions/rooms/generic-room";
@@ -778,7 +781,7 @@ export function StyleDetailContent({
             <p className="text-muted mb-8 max-w-2xl">
               {t("styleDetail.exportStylePackDesc")}
             </p>
-            <StylePackExport style={style} />
+            <StylePackExport style={style} version={version} />
           </div>
         </div>
       </section>
