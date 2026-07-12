@@ -169,6 +169,7 @@ function DesktopDropdown({
                   <Link
                     key={subItem.href}
                     href={localizeHref(subItem.href, locale)}
+                    prefetch={false}
                     className="block px-2 py-1.5 text-sm text-muted hover:text-foreground hover:bg-zinc-50 dark:hover:bg-zinc-800/50 rounded transition-colors"
                     onClick={() => onOpenChange(false)}
                     role="menuitem"
@@ -184,6 +185,7 @@ function DesktopDropdown({
               <Link
                 key={subItem.href}
                 href={localizeHref(subItem.href, locale)}
+                prefetch={false}
                 className="block px-4 py-2 text-sm text-muted hover:text-foreground hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition-colors"
                 onClick={() => onOpenChange(false)}
                 role="menuitem"
@@ -306,6 +308,7 @@ function MoreOverflow({
             <Link
               key={item.href}
               href={localizeHref(item.href, locale)}
+              prefetch={false}
               className="flex items-center gap-2 px-4 py-2 text-sm text-muted transition-colors hover:bg-zinc-50 hover:text-foreground dark:hover:bg-zinc-800"
               onClick={() => {
                 if (item.href === "/changelog") onChangelogSeen();
@@ -579,6 +582,7 @@ export function Header() {
                                 <Link
                                   key={subItem.href}
                                   href={localizeHref(subItem.href, locale)}
+                                  prefetch={false}
                                   className={`block py-2 ${linkClass}`}
                                   onClick={() => setIsMenuOpen(false)}
                                 >
@@ -593,6 +597,7 @@ export function Header() {
                         <Link
                           key={subItem.href}
                           href={localizeHref(subItem.href, locale)}
+                          prefetch={false}
                           className={`block py-2 ${linkClass}`}
                           onClick={() => setIsMenuOpen(false)}
                         >
@@ -611,6 +616,7 @@ export function Header() {
                     <Link
                       key={item.href}
                       href={localizeHref(item.href, locale)}
+                      prefetch={false}
                       className={`flex items-center gap-2 py-2 ${linkClass}`}
                       onClick={() => {
                         if (item.href === "/changelog") markChangelogSeen();

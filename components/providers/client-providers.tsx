@@ -8,6 +8,7 @@ import { FavoritesProvider } from "@/lib/favorites/context";
 import { PageTransition } from "@/components/page-transition";
 import { SWRProvider } from "@/lib/swr/provider";
 import { UtmProvider } from "@/components/analytics/utm-provider";
+import { AuthProvider } from "@/lib/auth/use-user";
 
 interface ClientProvidersProps {
   children: React.ReactNode;
@@ -30,13 +31,15 @@ export function ClientProviders({ children, initialLocale }: ClientProvidersProp
       <I18nProvider initialLocale={initialLocale}>
         <HtmlLangUpdater />
         <SWRProvider>
-          <FavoritesProvider>
-            <UtmProvider>
-              <PageTransition>
-                {children}
-              </PageTransition>
-            </UtmProvider>
-          </FavoritesProvider>
+          <AuthProvider>
+            <FavoritesProvider>
+              <UtmProvider>
+                <PageTransition>
+                  {children}
+                </PageTransition>
+              </UtmProvider>
+            </FavoritesProvider>
+          </AuthProvider>
         </SWRProvider>
       </I18nProvider>
     </ThemeProvider>

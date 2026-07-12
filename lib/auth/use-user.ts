@@ -10,11 +10,20 @@
  * so callers can treat it as "always unauthenticated" without errors.
  */
 
-import { useEffect, useState, useCallback, useRef } from "react";
+import {
+  createContext,
+  createElement,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+  type ReactNode,
+} from "react";
 import type { User } from "@supabase/supabase-js";
 import { getAuthClient } from "./supabase-browser";
 
-interface AuthState {
+export interface AuthState {
   user: User | null;
   loading: boolean;
   signInWithGitHub: (nextPath?: string) => Promise<void>;
@@ -33,10 +42,12 @@ const DEV_MOCK_ENABLED =
   process.env.NODE_ENV === "development" &&
   process.env.NEXT_PUBLIC_DEV_MOCK_USER === "true";
 
-const BROWSER_AUTH_CONFIGURED = Boolean(
-  process.env.NEXT_PUBLIC_SUPABASE_URL &&
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-);
+function isBrowserAuthConfigured(): boolean {
+  return Boolean(
+    process.env.NEXT_PUBLIC_SUPABASE_URL &&
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+  );
+}
 
 const DEV_MOCK_USER: User = {
   id: "dev-mock-user-00000000",
@@ -49,45 +60,62 @@ const DEV_MOCK_USER: User = {
   created_at: "2026-04-14T00:00:00.000Z",
 } as unknown as User;
 
-export function useUser(): AuthState {
+const AuthContext = createContext<AuthState | null>(null);
+
+export function AuthProvider({ children }: { children: ReactNode }) {
+  const browserAuthConfigured = isBrowserAuthConfigured();
+  const authClient =
+    !DEV_MOCK_ENABLED && browserAuthConfigured ? getAuthClient() : null;
   const [user, setUser] = useState<User | null>(DEV_MOCK_ENABLED ? DEV_MOCK_USER : null);
   const [loading, setLoading] = useState(
-    DEV_MOCK_ENABLED ? false : BROWSER_AUTH_CONFIGURED
+    DEV_MOCK_ENABLED ? false : Boolean(authClient)
   );
-  const initialised = useRef(false);
 
   useEffect(() => {
-    if (initialised.current || DEV_MOCK_ENABLED || !BROWSER_AUTH_CONFIGURED) return;
-    initialised.current = true;
+    if (!authClient) return;
 
-    const client = getAuthClient();
-    if (!client) return;
+    let cancelled = false;
 
     // Try fast path first (local cookies), then verify with server if needed
-    client.auth.getSession().then(({ data: { session } }) => {
-      if (session?.user) {
-        // Session exists locally — show user immediately, then verify in background
+    void authClient.auth
+      .getSession()
+      .then(async ({ data: { session }, error }) => {
+        if (cancelled) return;
+        if (error || !session?.user) {
+          setUser(null);
+          setLoading(false);
+          return;
+        }
+
+        // Session exists locally — show user immediately, then verify in background.
         setUser(session.user);
         setLoading(false);
-        client.auth.getUser().then(({ data: { user: verified } }) => {
-          if (verified) {
-            setUser(verified);
-          } else {
-            // Server says session is invalid — clear it
-            setUser(null);
-          }
-        });
-      } else {
-        // No local session — user is not logged in
-        setLoading(false);
-      }
-    });
+
+        const {
+          data: { user: verified },
+          error: verificationError,
+        } = await authClient.auth.getUser();
+
+        // A transient verification failure should not erase a usable local
+        // session. Auth state changes will still clear an invalid session.
+        if (!cancelled && !verificationError) {
+          setUser(verified ?? null);
+        }
+      })
+      .catch(() => {
+        if (!cancelled) {
+          setUser(null);
+          setLoading(false);
+        }
+      });
 
     // Subscribe to auth changes
     const {
       data: { subscription },
-    } = client.auth.onAuthStateChange((_event, session) => {
+    } = authClient.auth.onAuthStateChange((_event, session) => {
+      if (cancelled) return;
       setUser(session?.user ?? null);
+      setLoading(false);
 
       // Clean up OAuth query params (?code=...) from the URL after sign-in
       if (_event === "SIGNED_IN" && window.location.search.includes("code=")) {
@@ -95,8 +123,11 @@ export function useUser(): AuthState {
       }
     });
 
-    return () => subscription.unsubscribe();
-  }, []);
+    return () => {
+      cancelled = true;
+      subscription.unsubscribe();
+    };
+  }, [authClient]);
 
   const signInWithGitHub = useCallback(async (nextPath?: string) => {
     const client = getAuthClient();
@@ -124,5 +155,18 @@ export function useUser(): AuthState {
     setUser(null);
   }, []);
 
-  return { user, loading, signInWithGitHub, signInWithLinuxDo, signOut };
+  const value = useMemo(
+    () => ({ user, loading, signInWithGitHub, signInWithLinuxDo, signOut }),
+    [user, loading, signInWithGitHub, signInWithLinuxDo, signOut]
+  );
+
+  return createElement(AuthContext.Provider, { value }, children);
+}
+
+export function useUser(): AuthState {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error("useUser must be used within an AuthProvider");
+  }
+  return context;
 }
