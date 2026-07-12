@@ -62,6 +62,8 @@ const DEV_MOCK_USER: User = {
 
 const AuthContext = createContext<AuthState | null>(null);
 
+const SESSION_INITIALIZATION_TIMEOUT_MS = 4_000;
+
 export function AuthProvider({ children }: { children: ReactNode }) {
   const browserAuthConfigured = isBrowserAuthConfigured();
   const authClient =
@@ -75,12 +77,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (!authClient) return;
 
     let cancelled = false;
+    const initializationTimeout = window.setTimeout(() => {
+      if (!cancelled) {
+        setLoading(false);
+      }
+    }, SESSION_INITIALIZATION_TIMEOUT_MS);
 
     // Try fast path first (local cookies), then verify with server if needed
     void authClient.auth
       .getSession()
       .then(async ({ data: { session }, error }) => {
         if (cancelled) return;
+        window.clearTimeout(initializationTimeout);
         if (error || !session?.user) {
           setUser(null);
           setLoading(false);
@@ -103,6 +111,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         }
       })
       .catch(() => {
+        window.clearTimeout(initializationTimeout);
         if (!cancelled) {
           setUser(null);
           setLoading(false);
@@ -125,6 +134,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     return () => {
       cancelled = true;
+      window.clearTimeout(initializationTimeout);
       subscription.unsubscribe();
     };
   }, [authClient]);

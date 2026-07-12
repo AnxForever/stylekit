@@ -1,6 +1,6 @@
 /** @vitest-environment jsdom */
 
-import { render, screen, waitFor } from "@testing-library/react";
+import { act, render, screen, waitFor } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import type { User } from "@supabase/supabase-js";
 
@@ -110,5 +110,36 @@ describe("AuthProvider", () => {
     await waitFor(() => {
       expect(screen.getByTestId("consumer").textContent).toBe("anonymous");
     });
+  });
+
+  it("leaves the loading state when session initialization hangs", async () => {
+    vi.useFakeTimers();
+    const getSession = vi.fn().mockReturnValue(new Promise(() => {}));
+    const onAuthStateChange = vi.fn().mockReturnValue({
+      data: { subscription: { unsubscribe: vi.fn() } },
+    });
+
+    mocks.getAuthClient.mockReturnValue({
+      auth: {
+        getSession,
+        getUser: vi.fn(),
+        onAuthStateChange,
+        signInWithOAuth: vi.fn(),
+        signOut: vi.fn(),
+      },
+    });
+
+    render(
+      <AuthProvider>
+        <Consumer label="consumer" />
+      </AuthProvider>
+    );
+
+    expect(screen.getByTestId("consumer").textContent).toBe("loading");
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(4_000);
+    });
+    expect(screen.getByTestId("consumer").textContent).toBe("anonymous");
+    vi.useRealTimers();
   });
 });
