@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import { mainNav, secondaryNav } from "@/lib/nav-config";
 
 describe("primary navigation", () => {
-  it("keeps a complete resources dropdown without a build menu", () => {
+  it("keeps resources grouped without foundations or a build menu", () => {
     expect(mainNav.map((item) => item.labelKey)).toEqual([
       "nav.styles",
       "nav.templates",
@@ -18,14 +18,15 @@ describe("primary navigation", () => {
     );
 
     expect(resources?.dropdown?.width).toBe("wide");
+    expect(resources?.dropdown?.groups?.map((group) => group.groupLabelKey)).toEqual([
+      "nav.more",
+      "nav.resourcesBrowse",
+      "nav.resourcesComponents",
+      "nav.resourcesDevelopers",
+    ]);
     expect(resourceItems?.map((item) => item.labelKey)).toEqual([
       "nav.blog",
-      "nav.colorTheory",
-      "nav.typography",
-      "nav.typeScale",
-      "nav.spacing",
-      "nav.designPrinciples",
-      "nav.visualHierarchy",
+      "nav.changelog",
       "nav.styles",
       "nav.animations",
       "nav.mouseInteractions",
