@@ -42,42 +42,49 @@ export function Footer() {
             <nav className="flex flex-col gap-2">
               <Link
                 href={localizeHref("/styles", locale)}
+                prefetch={false}
                 className="text-sm text-foreground hover:text-accent transition-colors"
               >
                 {t("nav.styles")}
               </Link>
               <Link
                 href={localizeHref("/colors", locale)}
+                prefetch={false}
                 className="text-sm text-foreground hover:text-accent transition-colors"
               >
                 {locale === "zh" ? "配色" : "Colors"}
               </Link>
               <Link
                 href={localizeHref("/collections", locale)}
+                prefetch={false}
                 className="text-sm text-foreground hover:text-accent transition-colors"
               >
                 {locale === "zh" ? "主题合集" : "Collections"}
               </Link>
               <Link
                 href={localizeHref("/templates", locale)}
+                prefetch={false}
                 className="text-sm text-foreground hover:text-accent transition-colors"
               >
                 {t("nav.templates")}
               </Link>
               <Link
                 href={localizeHref("/guide", locale)}
+                prefetch={false}
                 className="text-sm text-foreground hover:text-accent transition-colors"
               >
                 {t("nav.guide")}
               </Link>
               <Link
                 href={localizeHref("/blog", locale)}
+                prefetch={false}
                 className="text-sm text-foreground hover:text-accent transition-colors"
               >
                 {t("nav.blog")}
               </Link>
               <Link
                 href={localizeHref("/changelog", locale)}
+                prefetch={false}
                 className="text-sm text-foreground hover:text-accent transition-colors"
               >
                 {t("nav.changelog")}
@@ -94,6 +101,7 @@ export function Footer() {
                 <Link
                   key={link.href}
                   href={localizeHref(link.href, locale)}
+                  prefetch={false}
                   className="text-sm text-foreground hover:text-accent transition-colors"
                 >
                   {t(link.labelKey)}
@@ -130,6 +138,7 @@ export function Footer() {
           </div>
           <Link
             href={localizeHref("/contact#feedback", locale)}
+            prefetch={false}
             className="inline-flex shrink-0 items-center justify-center rounded-full bg-foreground px-5 py-2.5 text-sm font-medium text-background transition-opacity hover:opacity-90"
           >
             {locale === "zh" ? "提个建议" : "Send feedback"}
@@ -147,6 +156,7 @@ export function Footer() {
           </div>
           <Link
             href={localizeHref("/contact#support-maintenance", locale)}
+            prefetch={false}
             className="inline-flex shrink-0 items-center justify-center rounded-full border border-foreground px-4 py-2 text-sm transition-colors hover:bg-foreground hover:text-background"
           >
             {t("footer.support.cta")}
@@ -160,6 +170,7 @@ export function Footer() {
               <Link
                 key={link.href}
                 href={localizeHref(link.href, locale)}
+                prefetch={false}
                 className="hover:text-foreground transition-colors"
               >
                 {t(link.labelKey)}

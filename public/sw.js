@@ -33,11 +33,20 @@ self.addEventListener("fetch", (event) => {
   const { request } = e;
   const url = new URL(request.url);
 
+  // Let Next.js own React Server Component navigation and prefetch traffic.
+  // Intercepting these short-lived requests adds service-worker overhead and
+  // can mix route payloads from different builds without improving offline UX.
+  const isNextDataRequest =
+    request.headers.get("RSC") === "1" ||
+    request.headers.get("Next-Router-Prefetch") === "1" ||
+    url.searchParams.has("_rsc");
+
   // Skip non-GET, API, and analytics requests
   if (
     request.method !== "GET" ||
     url.pathname.startsWith("/api/") ||
-    url.pathname.startsWith("/_next/webpack")
+    url.pathname.startsWith("/_next/webpack") ||
+    isNextDataRequest
   ) {
     return;
   }
