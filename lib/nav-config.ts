@@ -60,19 +60,14 @@ export const mainNav: NavItem[] = [
       width: "wide",
       groups: [
         {
-          groupLabelKey: "nav.learn",
+          groupLabelKey: "nav.more",
           items: [
             {
               href: "https://anxforever.cn",
               labelKey: "nav.blog",
               external: true,
             },
-            { href: "/learn#color-theory", labelKey: "nav.colorTheory" },
-            { href: "/learn#typography", labelKey: "nav.typography" },
-            { href: "/learn#type-scale", labelKey: "nav.typeScale" },
-            { href: "/learn#spacing", labelKey: "nav.spacing" },
-            { href: "/learn#design-principles", labelKey: "nav.designPrinciples" },
-            { href: "/learn#visual-hierarchy", labelKey: "nav.visualHierarchy" },
+            { href: "/changelog", labelKey: "nav.changelog" },
           ],
         },
         {
