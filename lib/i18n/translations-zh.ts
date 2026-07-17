@@ -217,9 +217,9 @@ export const zh: { [K in keyof typeof en]: string } = {
   "backgrounds.noResults": "没有找到匹配的纹理。",
 
   // Typography page
-  "typography.subtitle": "字体配对库",
-  "typography.title": "字体配对集合",
-  "typography.description": "精选字体配对方案，预览标题与正文组合效果，一键复制 CSS 或 Tailwind 代码。",
+  "typography.subtitle": "精选字体方向",
+  "typography.title": "有明确气质的字体",
+  "typography.description": "经过重新筛选的开源字体组合，针对真实界面风格而设计。比较字形、了解适用场景，并复制可直接使用的 CSS 或 Tailwind 字体令牌。",
   "typography.searchPlaceholder": "搜索字体配对...",
   "typography.filterAll": "全部",
   "typography.showing": "共",
@@ -298,7 +298,7 @@ export const zh: { [K in keyof typeof en]: string } = {
 
   // Home page
   "home.subtitle": "风格设计库",
-  "home.title.line1": "让 AI 生成的",
+  "home.title.line1": "让你的",
   "home.title.line2": "网站更加",
   "home.title.line3": "好看",
   "home.description": "精选网页设计风格，附带文档、组件模板、代码片段与可导出的 AI 规则。",
@@ -369,6 +369,7 @@ export const zh: { [K in keyof typeof en]: string } = {
   "templates.typeMedia": "媒体",
   "templates.typeLifestyle": "生活",
   "templates.typeEducation": "教育",
+  "templates.typePricing": "定价",
   "templates.typeFilterAriaLabel": "模板类型筛选",
   "templates.results": "个模板",
   "templates.backToList": "返回模板",
@@ -381,7 +382,7 @@ export const zh: { [K in keyof typeof en]: string } = {
   "templates.filterHint": "提示：再次点击当前选中的类型即可清除该筛选。",
   "templates.keyboardHint": "提示：可用方向键、Home/End 或 PageUp/PageDown 在模板卡片间移动。",
   "templates.openTemplate": "查看模板",
-  "templates.empty": "该分类下暂时没有模��。",
+  "templates.empty": "该分类下暂时没有模板。",
   "templates.emptySearch": "没有匹配当前搜索词的模板。",
   "templates.searchPlaceholder": "按名称、风格或关键词搜索模板",
   "templates.searchHint": "提示：按 / 可快速聚焦搜索，按 Esc 可清空搜索。",

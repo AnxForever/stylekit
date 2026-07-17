@@ -46,8 +46,9 @@
   --color-accent-foreground: var(--accent-foreground);
   --color-muted: var(--muted);
   --color-border: var(--border);
-  --font-serif: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
-  --font-sans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-serif: var(--font-display-active);
+  --font-sans: var(--font-body-active);
+  --font-mono: var(--font-mono-active);
 
   /* Neo-Brutalist Colors */
   --color-brutal-pink: var(--brutal-pink);
@@ -84,18 +85,88 @@
 
 /* Editorial/Magazine Typography */
 body {
+  --font-display-active: var(--font-public-display), "Songti SC", "STSong", ui-serif, Georgia, serif;
+  --font-body-active: var(--font-public-sans), "PingFang SC", "Microsoft YaHei", ui-sans-serif, system-ui, sans-serif;
+  --font-mono-active: var(--font-public-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  --font-serif: var(--font-display-active);
+  --font-sans: var(--font-body-active);
+  --font-mono: var(--font-mono-active);
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+  font-family: var(--font-body-active);
+  font-optical-sizing: auto;
+  font-kerning: normal;
+  font-feature-settings: "kern" 1, "liga" 1;
   overflow-x: hidden;
 }
 
-/* Headings use serif font */
+/* Public headings use the display face. Showcase routes override the same
+   semantic variables with a style-specific pairing in app/layout.tsx. */
 h1, h2, h3, h4, h5, h6 {
-  font-family: var(--font-serif), ui-serif, Georgia, serif;
-  font-weight: 400;
+  font-family: var(--font-display-active);
+  font-optical-sizing: auto;
+  font-weight: 500;
   letter-spacing: -0.02em;
   text-wrap: balance;
+}
+
+/* English homepage: flourished display with a calligraphic accent.
+   Functional copy remains on the body face, so the script never carries UI. */
+.home-hero-title-en {
+  font-family: var(--font-home-editorial), "Playfair Display", Georgia, "Times New Roman", serif;
+  font-weight: 700;
+  font-kerning: normal;
+  font-feature-settings: "kern" 1, "liga" 1, "dlig" 1;
+  letter-spacing: -0.015em;
+  line-height: 1.05;
+}
+
+.home-hero-script-en {
+  display: inline-block;
+  margin-top: 0.08em;
+  padding-right: 0.16em;
+  font-family: var(--font-home-script), "Snell Roundhand", "Segoe Script", cursive;
+  font-size: 1.14em;
+  font-style: normal;
+  font-weight: 400;
+  letter-spacing: 0;
+  line-height: 0.9;
+  transform: rotate(-1.5deg) translateY(0.04em);
+  transform-origin: left center;
+}
+
+/* Keep the Latin acronym in the Chinese headline crisp. Without this scoped
+   override it inherits the high-contrast display face and the A reads as Λ. */
+.home-hero-ai-zh {
+  display: inline-block;
+  margin-inline: 0.04em;
+  font-family: var(--font-public-sans), "PingFang SC", "Microsoft YaHei", sans-serif;
+  font-size: 0.86em;
+  font-style: normal;
+  font-weight: 650;
+  letter-spacing: -0.055em;
+  line-height: 1;
+  transform: translateY(-0.015em);
+}
+
+@media (max-width: 639px) {
+  .home-hero-title-en {
+    letter-spacing: -0.005em;
+    line-height: 1.08;
+  }
+
+  .home-hero-script-en {
+    font-size: 1.1em;
+  }
+
+  .home-hero-ai-zh {
+    font-size: 0.88em;
+  }
+}
+
+p,
+li {
+  text-wrap: pretty;
 }
 
 /* Selection style */
@@ -133,7 +204,8 @@ pre {
 }
 
 code {
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-family: var(--font-mono-active);
+  font-variant-ligatures: none;
 }
 
 .admin-shell {
@@ -168,6 +240,7 @@ code {
   font-family: var(--font-geist-sans), "PingFang SC", "Microsoft YaHei", ui-sans-serif, system-ui, sans-serif;
   font-feature-settings: "liga" 1, "tnum" 1, "cv02" 1, "cv03" 1;
 }
+
 
 .admin-shell h1,
 .admin-shell h2,
