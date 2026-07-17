@@ -1,4 +1,12 @@
+import type { CSSProperties } from "react";
 import type { Metadata, Viewport } from "next";
+import {
+  Albert_Sans,
+  Bodoni_Moda,
+  Playfair_Display,
+  Fragment_Mono,
+  Parisienne,
+} from "next/font/google";
 import { ClientProviders } from "@/components/providers/client-providers";
 import { LazyCommandPalette } from "@/components/ui/lazy-command-palette";
 import { ScrollToTop } from "@/components/ui/scroll-to-top";
@@ -10,7 +18,56 @@ import { getSiteBaseUrl } from "@/lib/site-url";
 import { getRequestLocaleContext } from "@/lib/i18n/request";
 import { buildSiteMetadata } from "@/lib/seo/site-metadata";
 import { CURATED_STYLE_COUNT } from "@/lib/product/catalog-facts";
+import { getShowcaseTypographyProfile } from "@/lib/typography/showcase-profiles";
+import { ShowcaseTypographyRuntime } from "@/components/typography/showcase-typography-runtime";
 import "./globals.css";
+
+const publicSans = Albert_Sans({
+  subsets: ["latin", "latin-ext"],
+  weight: "variable",
+  display: "swap",
+  variable: "--font-public-sans",
+});
+
+const publicDisplay = Bodoni_Moda({
+  subsets: ["latin", "latin-ext"],
+  weight: "variable",
+  style: ["normal", "italic"],
+  axes: ["opsz"],
+  display: "swap",
+  variable: "--font-public-display",
+});
+
+const publicMono = Fragment_Mono({
+  subsets: ["latin", "latin-ext"],
+  weight: "400",
+  display: "swap",
+  variable: "--font-public-mono",
+});
+
+const homeEditorial = Playfair_Display({
+  subsets: ["latin", "latin-ext"],
+  weight: ["500", "600", "700"],
+  style: ["normal", "italic"],
+  display: "swap",
+  variable: "--font-home-editorial",
+});
+
+const homeScript = Parisienne({
+  subsets: ["latin", "latin-ext"],
+  weight: "400",
+  display: "swap",
+  variable: "--font-home-script",
+});
+
+const productFontVariables = {
+  "--font-body-active":
+    '"PingFang SC", "Microsoft YaHei", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
+  "--font-display-active":
+    '"PingFang SC", "Microsoft YaHei", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
+  "--font-mono-active":
+    "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace",
+} as CSSProperties;
 
 export const viewport: Viewport = {
   width: "device-width",
@@ -63,7 +120,20 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const { locale, htmlLang } = await getRequestLocaleContext();
+  const { locale, htmlLang, contentPath } = await getRequestLocaleContext();
+  const showcaseTypography = getShowcaseTypographyProfile(contentPath);
+  const isProductSurface = /^\/(?:admin|admin-login|login|profile|validation|workspace)(?:\/|$)/.test(
+    contentPath
+  );
+  const showcaseFontVariables = showcaseTypography
+    ? ({
+        "--font-body-active": showcaseTypography.bodyStack,
+        "--font-display-active": showcaseTypography.displayStack,
+        "--font-mono-active": showcaseTypography.monoStack,
+      } as CSSProperties)
+    : undefined;
+  const routeFontVariables = showcaseFontVariables ??
+    (isProductSurface ? productFontVariables : undefined);
 
   return (
     <html lang={htmlLang} suppressHydrationWarning>
@@ -74,6 +144,19 @@ export default async function RootLayout({
         <link rel="icon" href="/icon.svg" type="image/svg+xml" />
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
         <link rel="manifest" href="/manifest.json" />
+        <script
+          defer
+          src="https://vibeloft.ai/telemetry/v1.js"
+          data-vl-product-id="89414aab-7920-4854-8720-5ef041561792"
+          data-vl-auth-key="vl_web.grGnbaTxVblO8tSKoOK8zC-726z3_2htURIvubBSPXM"
+        ></script>
+        {showcaseTypography ? (
+          <link
+            rel="stylesheet"
+            href={showcaseTypography.stylesheetUrl}
+            data-showcase-font-profile={showcaseTypography.id}
+          />
+        ) : null}
         <script
           dangerouslySetInnerHTML={{
             __html: LOCALE_BOOTSTRAP_SCRIPT,
@@ -152,8 +235,14 @@ export default async function RootLayout({
           }}
         />
       </head>
-      <body className="antialiased pb-16 md:pb-0">
+      <body
+        className={`${publicSans.variable} ${publicDisplay.variable} ${publicMono.variable} ${homeEditorial.variable} ${homeScript.variable} antialiased pb-16 md:pb-0`}
+        data-showcase-font={showcaseTypography?.id}
+        data-product-font={isProductSurface ? "true" : undefined}
+        style={routeFontVariables}
+      >
         <ClientProviders initialLocale={locale}>
+          <ShowcaseTypographyRuntime />
           <AnnouncementBanner />
           <LazyCommandPalette />
           {children}
