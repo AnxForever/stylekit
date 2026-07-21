@@ -403,7 +403,7 @@ export function AdminUsersContent() {
         <AdminErrorState message="加载用户失败。" onRetry={() => mutate()} />
       )}
 
-      {isLoading && <AdminLoadingState label="正在加载用户..." />}
+      {isLoading && !data && <AdminLoadingState label="正在加载用户..." />}
 
       {!isLoading && !error && users.length === 0 && (
         <AdminEmptyState
@@ -412,7 +412,7 @@ export function AdminUsersContent() {
         />
       )}
 
-      {!isLoading && users.length > 0 && (
+      {users.length > 0 && (
         <AdminTableShell>
             <thead>
               <tr>
@@ -471,23 +471,26 @@ export function AdminUsersContent() {
                 return (
                   <Fragment key={user.userId}>
                     <tr className="transition-colors hover:bg-[var(--admin-input)]">
-                      <td className="px-4 py-3">
-                        <div className="flex items-center gap-3">
+                      <td className="w-[15rem] max-w-[15rem] px-4 py-3">
+                        <div className="flex min-w-0 items-center gap-3">
                           {getAvatarImageSrc(user.avatarUrl) ? (
                             <Image
                               src={getAvatarImageSrc(user.avatarUrl) ?? ""}
                               alt=""
                               width={32}
                               height={32}
-                              className="w-8 h-8 rounded-full"
+                              className="h-8 w-8 shrink-0 rounded-full"
                               unoptimized
                             />
                           ) : (
-                            <div className="w-8 h-8 rounded-full bg-muted/20 flex items-center justify-center text-xs text-muted">
+                            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-muted/20 text-xs text-muted">
                               {user.authorName?.charAt(0)?.toUpperCase() || "?"}
                             </div>
                           )}
-                          <span className="font-medium">
+                          <span
+                            className="min-w-0 truncate font-medium"
+                            title={user.authorName || "未知用户"}
+                          >
                             {user.authorName || "未知用户"}
                           </span>
                         </div>

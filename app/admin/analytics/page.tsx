@@ -1,23 +1,23 @@
-import type { Metadata } from "next";
-import { Suspense } from "react";
-import { AdminPage } from "@/components/admin/admin-page";
-import { AnalyticsDashboard, DashboardSkeleton } from "./_content";
+import { AnalyticsPage, createAnalyticsMetadata } from "./_page";
+import { analyticsRangeSchema } from "@/lib/admin/analytics-api-contract";
+import { getAnalyticsOverviewSnapshot } from "@/lib/admin/analytics-overview-server";
 
-export const metadata: Metadata = {
-  title: "网站数据分析 - StyleKit 管理后台",
-  description: "查看流量、浏览路径、注册情况和产品使用行为。",
-};
+export const metadata = createAnalyticsMetadata("overview");
 
-export default function AdminAnalyticsPage() {
+export default async function AdminAnalyticsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ range?: string }>;
+}) {
+  const params = await searchParams;
+  const parsedRange = analyticsRangeSchema.safeParse(params.range ?? "7d");
+  const range = parsedRange.success ? parsedRange.data : "7d";
+  const snapshot = await getAnalyticsOverviewSnapshot(range);
   return (
-    <AdminPage
-      eyebrow="网站洞察"
-      title="数据分析"
-      description="了解谁在访问 StyleKit、他们浏览了什么、从哪里进入，以及访问流量是否转化为注册用户。"
-    >
-      <Suspense fallback={<DashboardSkeleton />}>
-        <AnalyticsDashboard />
-      </Suspense>
-    </AdminPage>
+    <AnalyticsPage
+      view="overview"
+      initialRange={range}
+      initialOverview={snapshot ?? undefined}
+    />
   );
 }

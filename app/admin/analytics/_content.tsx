@@ -39,8 +39,11 @@ import type {
   DashboardContentTrendPoint,
 } from "@/lib/admin/analytics-dashboard";
 import { useAdminAuditEvents, useAnalyticsDashboard } from "@/lib/swr";
+import { prefetchAnalyticsView } from "@/lib/swr/analytics-prefetch";
+import type { AnalyticsRange } from "@/lib/admin/analytics-api-contract";
 
 type TimeRange = "24h" | "7d" | "30d" | "90d";
+export type AnalyticsView = "overview" | "traffic" | "content" | "users" | "audit";
 type AuditActionFilter = "all" | "submission.approve" | "submission.reject";
 type AuditTimeFilter = "24h" | "7d" | "30d" | "all";
 type IconComponent = ComponentType<SVGProps<SVGSVGElement>>;
@@ -48,7 +51,50 @@ type IconComponent = ComponentType<SVGProps<SVGSVGElement>>;
 const AUDIT_PAGE_SIZE = 8;
 const ZH_REGION_NAMES = new Intl.DisplayNames(["zh-CN"], { type: "region" });
 
-export function AnalyticsDashboard() {
+const ANALYTICS_VIEWS: Array<{ href: string; label: string; view: AnalyticsView }> = [
+  { href: "/admin/analytics", label: "概览", view: "overview" },
+  { href: "/admin/analytics/traffic", label: "流量", view: "traffic" },
+  { href: "/admin/analytics/content", label: "内容", view: "content" },
+  { href: "/admin/analytics/users", label: "用户", view: "users" },
+  { href: "/admin/analytics/audit", label: "审计", view: "audit" },
+];
+
+export function AnalyticsSectionNav({
+  view,
+  range,
+}: {
+  view: AnalyticsView;
+  range?: TimeRange;
+}) {
+  return (
+    <nav aria-label="数据分析分区" className="overflow-x-auto">
+      <div className="flex min-w-max gap-1 rounded-lg bg-[var(--admin-input)] p-1 shadow-[var(--admin-shadow-border)]">
+        {ANALYTICS_VIEWS.map((item) => (
+          <Link
+            key={item.view}
+            href={range ? `${item.href}?range=${range}` : item.href}
+            aria-current={view === item.view ? "page" : undefined}
+            onMouseEnter={() => void prefetchAnalyticsView(item.view, (range ?? "7d") as AnalyticsRange)}
+            onFocus={() => void prefetchAnalyticsView(item.view, (range ?? "7d") as AnalyticsRange)}
+            className={`rounded-md px-3 py-2 text-sm transition-colors ${
+              view === item.view
+                ? "bg-[var(--admin-panel)] font-medium text-foreground shadow-[var(--admin-shadow-small)]"
+                : "text-muted hover:bg-[var(--admin-hover)] hover:text-foreground"
+            }`}
+          >
+            {item.label}
+          </Link>
+        ))}
+      </div>
+    </nav>
+  );
+}
+
+export function AnalyticsSyncStatus({ syncing, generatedAt }: { syncing: boolean; generatedAt?: string }) {
+  return <p className="text-right text-[11px] text-[var(--admin-text-muted)]" role="status" aria-live="polite">{syncing ? "正在后台同步最新数据…" : generatedAt ? `数据更新于 ${new Date(generatedAt).toLocaleString("zh-CN")}` : "数据已同步"}</p>;
+}
+
+export function AnalyticsDashboard({ view = "overview" }: { view?: AnalyticsView }) {
   const searchParams = useSearchParams();
   const [timeRange, setTimeRange] = useState<TimeRange>(() =>
     parseTimeRange(searchParams.get("range"))
@@ -176,12 +222,14 @@ export function AnalyticsDashboard() {
 
   return (
     <div className="space-y-6">
+      <AnalyticsSectionNav view={view} />
+
       <AdminPanel className="p-4 sm:p-5">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
           <div>
-            <p className="text-sm font-medium text-foreground">网站概览</p>
+            <p className="text-sm font-medium text-foreground">{getViewTitle(view)}</p>
             <p className="mt-1 max-w-2xl text-sm leading-6 text-muted">
-              查看访问、浏览、注册以及需要你关注的产品信号。
+              {getViewDescription(view)}
             </p>
           </div>
           <div className="flex flex-wrap items-center gap-2">
@@ -231,7 +279,7 @@ export function AnalyticsDashboard() {
         />
       )}
 
-      <AdminPanel className="p-5 sm:p-6">
+      <AdminPanel className={`${sectionVisibility(view, ["overview", "users"])} p-5 sm:p-6`}>
         <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-4">
           <Metric
             icon={BarChart3}
@@ -269,7 +317,7 @@ export function AnalyticsDashboard() {
         </div>
       </AdminPanel>
 
-      <div className="grid gap-6 xl:grid-cols-[1.7fr_1fr]">
+      <div className={`${sectionVisibility(view, ["overview", "users"])} grid gap-6 xl:grid-cols-[1.7fr_1fr]`}>
         <AdminPanel className="p-5 sm:p-6">
           <SectionHeading
             title="访问趋势"
@@ -322,7 +370,7 @@ export function AnalyticsDashboard() {
         </AdminPanel>
       </div>
 
-      <div className="grid gap-6 xl:grid-cols-2">
+      <div className={`${sectionVisibility(view, ["traffic"])} grid gap-6 xl:grid-cols-2`}>
         <AdminPanel className="p-5 sm:p-6">
           <SectionHeading
             title="热门页面"
@@ -365,7 +413,7 @@ export function AnalyticsDashboard() {
         </AdminPanel>
       </div>
 
-      <div className="grid gap-6 xl:grid-cols-[1.35fr_1fr]">
+      <div className={`${sectionVisibility(view, ["traffic", "users"])} grid gap-6 xl:grid-cols-[1.35fr_1fr]`}>
         <AdminPanel className="p-5 sm:p-6">
           <SectionHeading
             title="常见浏览路径"
@@ -421,7 +469,7 @@ export function AnalyticsDashboard() {
         </AdminPanel>
       </div>
 
-      <div className="grid gap-6 xl:grid-cols-3">
+      <div className={`${sectionVisibility(view, ["traffic"])} grid gap-6 xl:grid-cols-3`}>
         <PlatformPanel
           title="浏览器"
           icon={Monitor}
@@ -443,7 +491,7 @@ export function AnalyticsDashboard() {
         />
       </div>
 
-      <div className="grid gap-6 xl:grid-cols-[1.15fr_0.85fr]">
+      <div className={`${sectionVisibility(view, ["content"])} grid gap-6 xl:grid-cols-[1.15fr_0.85fr]`}>
         <AdminPanel className="p-5 sm:p-6">
           <SectionHeading
             title="热门风格"
@@ -477,12 +525,14 @@ export function AnalyticsDashboard() {
         </AdminPanel>
       </div>
 
-      <ContentOpsPanel
-        summary={data.contentSummary}
-        trends={data.contentTrends}
-      />
+      <div className={sectionVisibility(view, ["content"])}>
+        <ContentOpsPanel
+          summary={data.contentSummary}
+          trends={data.contentTrends}
+        />
+      </div>
 
-      <AdminPanel className="p-5 sm:p-6">
+      <AdminPanel className={`${sectionVisibility(view, ["audit"])} p-5 sm:p-6`}>
         <div className="flex flex-col gap-4 xl:flex-row xl:items-start xl:justify-between">
           <SectionHeading
             title="最近管理操作"
@@ -626,6 +676,26 @@ export function AnalyticsDashboard() {
       </AdminPanel>
     </div>
   );
+}
+
+function sectionVisibility(view: AnalyticsView, visibleIn: AnalyticsView[]): string {
+  return visibleIn.includes(view) ? "" : "hidden";
+}
+
+function getViewTitle(view: AnalyticsView): string {
+  if (view === "traffic") return "流量洞察";
+  if (view === "content") return "内容表现";
+  if (view === "users") return "用户与转化";
+  if (view === "audit") return "操作审计";
+  return "经营概览";
+}
+
+function getViewDescription(view: AnalyticsView): string {
+  if (view === "traffic") return "查看访问来源、热门页面、浏览路径以及终端分布。";
+  if (view === "content") return "判断哪些风格和内容行为正在产生真实的使用意向。";
+  if (view === "users") return "跟踪访客深度、注册趋势以及访问到注册的转化。";
+  if (view === "audit") return "检索管理操作、确认操作者，并导出审计记录。";
+  return "用少量核心指标快速判断网站状态和需要关注的变化。";
 }
 
 function Metric({

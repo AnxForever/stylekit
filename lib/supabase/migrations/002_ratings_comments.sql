@@ -61,7 +61,8 @@ create policy "Anyone can read comments"
 -- ============================================
 -- View: style_rating_summary
 -- ============================================
-create or replace view public.style_rating_summary as
+create or replace view public.style_rating_summary
+with (security_invoker = true) as
 select
   style_slug,
   count(*)::int as total_ratings,
