@@ -3,24 +3,13 @@
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import { startTransition, useEffect, useMemo, useRef, useState } from "react";
-import { ArrowRight, Heart } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { useI18n } from "@/lib/i18n/context";
 import { HomeStyleCard } from "@/components/home/home-style-card";
 import { FeaturedCarousel } from "@/components/home/featured-carousel";
 import { RevealOnScroll } from "@/components/home/reveal-on-scroll";
 import { GitHubStarButton } from "@/components/github-star-button";
-import { ThankYouModal } from "@/components/home/thank-you-modal";
-import {
-  Drawer,
-  DrawerContent,
-  DrawerDescription,
-  DrawerHeader,
-  DrawerTitle,
-  DrawerTrigger,
-} from "@/components/ui/drawer";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { trackEvent } from "@/lib/analytics/events";
-import { HomeSupportCard, type SupportPreviewItem } from "./_support-card";
 import { MobileHomeSummarySection } from "./_mobile-summary";
 import { TrendingStylesSkeleton } from "./_skeletons";
 
@@ -81,6 +70,8 @@ const TrendingStyles = dynamic(
 
 export function HomeContent({ styles, stats }: HomeContentProps) {
   const { t, locale } = useI18n();
+  const heroTitleLine1 = t("home.title.line1");
+  const [heroTitleBeforeAi, heroTitleAfterAi] = heroTitleLine1.split("AI");
   const [activeQuickLink, setActiveQuickLink] = useState("#home-style-catalog");
   const [homeScrollProgress, setHomeScrollProgress] = useState(0);
   const [isMobileQuickJumpVisible, setIsMobileQuickJumpVisible] = useState(false);
@@ -104,6 +95,8 @@ export function HomeContent({ styles, stats }: HomeContentProps) {
   const quickJumpLinkClassName = "inline-flex items-center gap-1.5 px-2.5 py-1.5 md:px-3.5 md:py-2.5 text-[11px] md:text-xs border border-border text-muted hover:text-foreground hover:border-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background transition-[color,border-color,background-color,transform,box-shadow] duration-200 ease-out";
   const sectionLabelClassName = "text-[11px] tracking-[0.16em] uppercase text-muted";
   const sectionTitleClassName = "text-[1.6rem] sm:text-2xl md:text-3xl leading-tight tracking-tight";
+  const deferredBelowFoldClassName =
+    "[content-visibility:auto] [contain-intrinsic-size:auto_720px]";
   const quickLinkTargets = useMemo(
     () => ["#home-style-catalog", "#home-trending"],
     []
@@ -111,22 +104,6 @@ export function HomeContent({ styles, stats }: HomeContentProps) {
   const heroStats = useMemo(
     () => [{ value: `${styles.length}+`, label: t("home.metricStyles") }],
     [styles.length, t]
-  );
-  const supportHref = localizeHref("/contact#support-maintenance", locale);
-  const supportPreviewItems: SupportPreviewItem[] = useMemo(
-    () => [
-      {
-        src: "/wechat-qr.png",
-        title: locale === "zh" ? "微信赞赏码" : "WeChat Tipping",
-        hint: locale === "zh" ? "微信赞赏" : "Tip via WeChat",
-      },
-      {
-        src: "/alipay-qr.jpg",
-        title: locale === "zh" ? "支付宝" : "Alipay",
-        hint: locale === "zh" ? "支付宝扫码" : "Scan with Alipay",
-      },
-    ],
-    [locale]
   );
   const quickLinks = useMemo(
     () => [
@@ -317,38 +294,56 @@ export function HomeContent({ styles, stats }: HomeContentProps) {
 
   return (
     <>
-      <ThankYouModal showOnHomepageOnly={true} />
-      <section id="home-hero" className="relative border-b border-border overflow-hidden">
-        <div aria-hidden className="pointer-events-none absolute inset-0">
-          <div className="absolute -top-28 left-[-8rem] h-72 w-72 rounded-full bg-accent/10 blur-3xl" />
-          <div className="absolute bottom-[-9rem] right-[-4rem] h-72 w-72 rounded-full bg-foreground/10 blur-3xl" />
-          <div className="absolute inset-0 bg-[linear-gradient(to_bottom,transparent,rgba(0,0,0,0.04))] dark:bg-[linear-gradient(to_bottom,transparent,rgba(255,255,255,0.04))]" />
-        </div>
-
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 md:px-12 py-10 sm:py-16 md:py-20">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 sm:gap-10 md:gap-12 lg:gap-16 items-center">
+      <section id="home-hero" className="home-hero-surface relative overflow-hidden border-b border-border">
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 md:px-12 pt-10 sm:pt-16 md:pt-20">
+          <div className="grid grid-cols-1 md:grid-cols-[minmax(0,0.88fr)_minmax(0,1.12fr)] gap-9 sm:gap-12 md:gap-14 lg:gap-20 items-center">
             <RevealOnScroll instant>
-              <p className={`${sectionLabelClassName} mb-4`}>{t("home.subtitle")}</p>
-              <h1 className="text-[2rem] sm:text-4xl md:text-5xl lg:text-6xl leading-[1.05] tracking-tight max-w-[11ch] mb-4 sm:mb-6">
-                {t("home.title.line1")}
+              <div className="mb-5 flex items-center gap-3">
+                <span aria-hidden className="h-px w-8 bg-accent" />
+                <p className={sectionLabelClassName}>{t("home.subtitle")}</p>
+              </div>
+              <h1
+                className={cn(
+                  "text-[2.4rem] sm:text-5xl md:text-[3.4rem] lg:text-[4.2rem] leading-[0.98] tracking-tight mb-5 sm:mb-7",
+                  locale === "en" ? "home-hero-title-en max-w-[17ch]" : "max-w-[11ch]"
+                )}
+              >
+                {locale === "en" ? (
+                  <span className="home-hero-editorial-line-en">{heroTitleLine1}</span>
+                ) : locale === "zh" && heroTitleAfterAi !== undefined ? (
+                  <>
+                    {heroTitleBeforeAi}
+                    <span className="home-hero-ai-zh">AI</span>
+                    {heroTitleAfterAi}
+                  </>
+                ) : (
+                  heroTitleLine1
+                )}
                 <br />
-                {t("home.title.line2")}
+                {locale === "en" ? (
+                  <span className="home-hero-editorial-line-en">{t("home.title.line2")}</span>
+                ) : (
+                  t("home.title.line2")
+                )}
                 <br />
-                <span className="italic">{t("home.title.line3")}</span>
+                <span className={cn("italic", locale === "en" && "home-hero-editorial-accent-en")}>
+                  {t("home.title.line3")}
+                </span>
               </h1>
-              <p className="text-[15px] sm:text-lg text-muted leading-relaxed max-w-lg mb-6 sm:mb-8">{t("home.description")}</p>
+              <p className="max-w-[34rem] text-[15px] sm:text-[17px] text-muted leading-7 sm:leading-8 mb-7 sm:mb-9">{t("home.description")}</p>
               <div className="flex flex-wrap items-center gap-3">
                 <Link
                   href={localizeHref("/styles", locale)}
                   onClick={() => trackEvent("cta_click", { label: "browse_styles", location: "home_hero" })}
-                  className="inline-flex items-center justify-center px-6 py-3 bg-foreground text-background text-sm tracking-wide hover:bg-foreground/90 transition-colors"
+                  className="group inline-flex min-h-11 items-center justify-center gap-2 bg-foreground px-5 text-sm tracking-wide text-background transition-colors hover:bg-accent"
                 >
                   {t("nav.styles")}
+                  <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
                 </Link>
                 <Link
                   href={localizeHref("/templates", locale)}
                   onClick={() => trackEvent("cta_click", { label: "browse_templates", location: "home_hero" })}
-                  className="inline-flex items-center justify-center px-6 py-3 border border-border text-sm tracking-wide hover:border-foreground transition-colors"
+                  className="inline-flex min-h-11 items-center justify-center border border-foreground/30 px-5 text-sm tracking-wide transition-colors hover:border-foreground hover:bg-background"
                 >
                   {t("nav.templates")}
                 </Link>
@@ -361,81 +356,15 @@ export function HomeContent({ styles, stats }: HomeContentProps) {
                   <ArrowRight className="w-3 h-3" />
                 </Link>
               </div>
-              <div className="mt-5">
-                <p className={`${sectionLabelClassName} mb-2`}>
-                  {locale === "zh" ? "按场景开始" : "Start by Scenario"}
-                </p>
-                <div className="flex flex-wrap gap-2">
-                  {heroScenarioEntries.map((item) => (
-                    <Link
-                      key={item.scenario}
-                      href={localizeHref(`/styles?scenario=${item.scenario}`, locale)}
-                      onClick={() => trackEvent("cta_click", { label: `scenario_${item.scenario}`, location: "home_scenarios" })}
-                      className="inline-flex items-center gap-2 px-3 py-1.5 md:px-4 md:py-2.5 text-xs border border-border text-muted hover:text-foreground hover:border-foreground transition-colors"
-                    >
-                      <span>{item.label}</span>
-                      <span className="text-[10px] text-muted tabular-nums">
-                        {item.count}
-                      </span>
-                    </Link>
-                  ))}
-                </div>
-                <p className="mt-2 text-xs text-muted">
-                  {locale === "zh"
-                    ? "模板页也已接入同一套场景筛选。"
-                    : "Templates now follow the same scenario filters."}
-                </p>
-              </div>
-              <div className="mt-4 flex flex-wrap items-center gap-3">
-                <GitHubStarButton />
-                <p className="text-sm text-muted">{locale === "zh" ? "开源仓库会持续更新，但对外入口先聚焦已打磨完成的浏览与参考链路。" : "The repo keeps evolving, but public entry points now focus on the polished browse-and-reference flows."}</p>
-              </div>
-
-              <div className="mt-4 md:hidden">
-                <Drawer>
-                  <DrawerTrigger asChild>
-                    <button
-                      type="button"
-                      className="inline-flex items-center gap-2 rounded-full border border-foreground bg-background/90 px-4 py-2 text-sm shadow-[0_14px_40px_-24px_rgba(0,0,0,0.45)] backdrop-blur-sm transition-colors hover:bg-foreground hover:text-background"
-                    >
-                      <Heart className="h-4 w-4" />
-                      {locale === "zh" ? "支持维护" : "Support"}
-                    </button>
-                  </DrawerTrigger>
-                  <DrawerContent
-                    side="bottom"
-                    className="max-h-[88vh] overflow-y-auto rounded-t-[28px] px-4 pb-4 pt-8"
-                  >
-                    <DrawerHeader className="sr-only">
-                      <DrawerTitle>
-                        {locale === "zh" ? "支持维护" : "Support Maintenance"}
-                      </DrawerTitle>
-                      <DrawerDescription>
-                        {locale === "zh"
-                          ? "扫码支持 StyleKit 的服务器、域名和后续维护。"
-                          : "Scan to support StyleKit server, domain, and maintenance costs."}
-                      </DrawerDescription>
-                    </DrawerHeader>
-                    <HomeSupportCard
-                      locale={locale}
-                      href={supportHref}
-                      items={supportPreviewItems}
-                      variant="mobile"
-                    />
-                  </DrawerContent>
-                </Drawer>
-              </div>
-
-              <ul className="mt-3.5 sm:mt-5 flex flex-wrap gap-2 sm:gap-2.5 max-w-md" aria-label={t("home.metricAriaLabel")}>
+              <ul className="mt-7 flex flex-wrap items-center gap-4" aria-label={t("home.metricAriaLabel")}>
                 {heroStats.map((item) => (
-                  <li
-                    key={item.label}
-                    className="border border-border bg-background/70 px-2.5 sm:px-3 py-2 sm:py-2.5"
-                  >
-                    <p className="text-sm sm:text-base leading-none mb-1">{item.value}</p>
-                    <p className="text-[10px] sm:text-[11px] text-muted leading-tight">{item.label}</p>
+                  <li key={item.label} className="flex items-baseline gap-2">
+                    <p className="font-mono text-lg leading-none tabular-nums tracking-tight">{item.value}</p>
+                    <p className="text-[11px] uppercase tracking-[0.12em] text-muted">{item.label}</p>
                   </li>
                 ))}
+                <li aria-hidden className="h-4 w-px bg-border" />
+                <li className="hidden sm:block"><GitHubStarButton /></li>
               </ul>
 
               <nav className="mt-5 sm:mt-6 hidden md:block" aria-label={t("home.quickJump")}>
@@ -475,37 +404,28 @@ export function HomeContent({ styles, stats }: HomeContentProps) {
             </RevealOnScroll>
 
             <RevealOnScroll instant className="w-full max-w-xl md:max-w-none md:justify-self-end">
-              <div className="relative">
-                <FeaturedCarousel styles={featuredStyles} />
-                <div className="mt-4 hidden lg:flex justify-end">
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <button
-                        type="button"
-                        className="inline-flex items-center gap-2 rounded-full border border-foreground bg-background/90 px-4 py-2 text-sm shadow-[0_14px_40px_-24px_rgba(0,0,0,0.45)] backdrop-blur-sm transition-colors hover:bg-foreground hover:text-background"
-                      >
-                        <Heart className="h-4 w-4" />
-                        {locale === "zh" ? "支持维护" : "Support"}
-                      </button>
-                    </PopoverTrigger>
-                    <PopoverContent
-                      align="end"
-                      side="top"
-                      sideOffset={12}
-                      className="w-[22rem] border-0 bg-transparent p-0 shadow-none"
-                    >
-                      <HomeSupportCard
-                        locale={locale}
-                        href={supportHref}
-                        items={supportPreviewItems}
-                        variant="desktop"
-                      />
-                    </PopoverContent>
-                  </Popover>
-                </div>
-              </div>
+              <FeaturedCarousel styles={featuredStyles} />
             </RevealOnScroll>
           </div>
+
+          <nav className="mt-10 border-t border-border/80 sm:mt-14 md:mt-20" aria-label={locale === "zh" ? "按场景浏览" : "Browse by scenario"}>
+            <div className="flex overflow-x-auto scrollbar-hide">
+              <div className="flex min-w-max items-center border-r border-border/80 px-4 py-4 pl-0 sm:py-5">
+                <p className={sectionLabelClassName}>{locale === "zh" ? "按场景浏览" : "Browse by scenario"}</p>
+              </div>
+              {heroScenarioEntries.map((item, index) => (
+                <Link
+                  key={item.scenario}
+                  href={localizeHref(`/styles?scenario=${item.scenario}`, locale)}
+                  onClick={() => trackEvent("cta_click", { label: `scenario_${item.scenario}`, location: "home_scenarios" })}
+                  className="group flex min-w-[8.5rem] items-center justify-between gap-5 border-r border-border/80 px-4 py-4 text-sm transition-colors hover:bg-foreground hover:text-background sm:min-w-[9.5rem] sm:py-5"
+                >
+                  <span><span className="mr-2 text-[10px] tabular-nums text-muted group-hover:text-background/60">0{index + 1}</span>{item.label}</span>
+                  <span className="text-[10px] tabular-nums text-muted group-hover:text-background/60">{item.count}</span>
+                </Link>
+              ))}
+            </div>
+          </nav>
         </div>
       </section>
 
@@ -605,7 +525,13 @@ export function HomeContent({ styles, stats }: HomeContentProps) {
       </section>
 
 
-      <section id="home-style-catalog" className="relative scroll-mt-24 bg-zinc-50/35 dark:bg-zinc-900/10">
+      <section
+        id="home-style-catalog"
+        className={cn(
+          "relative scroll-mt-24 bg-zinc-50/35 dark:bg-zinc-900/10",
+          deferredBelowFoldClassName
+        )}
+      >
         <div aria-hidden className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(0,0,0,0.05),transparent_55%)] dark:bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.06),transparent_55%)]" />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-12 py-7 sm:py-12 md:py-16">
           <RevealOnScroll variant="soft" className="flex items-end justify-between gap-3 mb-5 sm:mb-8">
@@ -643,23 +569,27 @@ export function HomeContent({ styles, stats }: HomeContentProps) {
         </div>
       </section>
 
-      <TrendingStyles styles={styles} sectionId="home-trending" />
+      <div className={deferredBelowFoldClassName}>
+        <TrendingStyles styles={styles} sectionId="home-trending" />
+      </div>
 
-      <HowItWorks />
+      <div className={deferredBelowFoldClassName}>
+        <HowItWorks />
+      </div>
 
-      <div className="md:hidden">
+      <div className={cn("md:hidden", deferredBelowFoldClassName)}>
         <MobileHomeSummarySection locale={locale} stats={stats} />
       </div>
 
-      <div className="hidden md:block">
+      <div className={cn("hidden md:block", deferredBelowFoldClassName)}>
         <RecipeShowcase variant="home" maxItems={6} />
       </div>
 
-      <div className="hidden md:block">
+      <div className={cn("hidden md:block", deferredBelowFoldClassName)}>
         <CTABanner />
       </div>
 
-      <div className="hidden md:block">
+      <div className={cn("hidden md:block", deferredBelowFoldClassName)}>
         <BuiltForSection />
       </div>
     </>

@@ -2,10 +2,9 @@ import type { CSSProperties } from "react";
 import type { Metadata, Viewport } from "next";
 import {
   Albert_Sans,
-  Bodoni_Moda,
   Playfair_Display,
   Fragment_Mono,
-  Parisienne,
+  Noto_Serif_SC,
 } from "next/font/google";
 import { ClientProviders } from "@/components/providers/client-providers";
 import { LazyCommandPalette } from "@/components/ui/lazy-command-palette";
@@ -29,11 +28,10 @@ const publicSans = Albert_Sans({
   variable: "--font-public-sans",
 });
 
-const publicDisplay = Bodoni_Moda({
+const publicDisplay = Playfair_Display({
   subsets: ["latin", "latin-ext"],
-  weight: "variable",
+  weight: ["500", "600", "700"],
   style: ["normal", "italic"],
-  axes: ["opsz"],
   display: "swap",
   variable: "--font-public-display",
 });
@@ -45,19 +43,16 @@ const publicMono = Fragment_Mono({
   variable: "--font-public-mono",
 });
 
-const homeEditorial = Playfair_Display({
-  subsets: ["latin", "latin-ext"],
+// Chinese serif companion for Playfair Display headings. Google Fonts serves
+// CJK faces as unicode-range slices, so browsers only fetch the glyph blocks
+// actually used on the page. preload: false — CJK slice preloading would push
+// dozens of <link rel=preload> tags.
+const publicDisplayZh = Noto_Serif_SC({
+  subsets: ["latin"],
   weight: ["500", "600", "700"],
-  style: ["normal", "italic"],
   display: "swap",
-  variable: "--font-home-editorial",
-});
-
-const homeScript = Parisienne({
-  subsets: ["latin", "latin-ext"],
-  weight: "400",
-  display: "swap",
-  variable: "--font-home-script",
+  preload: false,
+  variable: "--font-public-display-zh",
 });
 
 const productFontVariables = {
@@ -236,7 +231,7 @@ export default async function RootLayout({
         />
       </head>
       <body
-        className={`${publicSans.variable} ${publicDisplay.variable} ${publicMono.variable} ${homeEditorial.variable} ${homeScript.variable} antialiased pb-16 md:pb-0`}
+        className={`${publicSans.variable} ${publicDisplay.variable} ${publicMono.variable} ${publicDisplayZh.variable} antialiased pb-16 md:pb-0`}
         data-showcase-font={showcaseTypography?.id}
         data-product-font={isProductSurface ? "true" : undefined}
         style={routeFontVariables}

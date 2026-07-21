@@ -161,7 +161,7 @@ When generating UI components, always:
           </button>
 
           {isDropdownOpen && (
-            <div className="absolute z-20 top-full left-0 right-0 mt-1 border border-border bg-background shadow-lg max-h-64 overflow-y-auto">
+            <div className="absolute z-20 top-full left-0 right-0 mt-1 origin-top border border-border bg-background shadow-lg max-h-64 overflow-y-auto motion-safe:animate-dropdown-enter">
               {stylesMeta.map((style) => (
                 <button
                   key={style.slug}
