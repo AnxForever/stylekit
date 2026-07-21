@@ -5,6 +5,7 @@ import { getUsageStats, getTopStyles } from "@/lib/analytics";
 import { checkAdminApiAccess } from "@/lib/auth/admin-api";
 import {
   buildAnalyticsDashboard,
+  type DashboardData,
   type DashboardContentSummary,
   type DashboardContentTrendPoint,
   type DashboardEventRow,
@@ -16,6 +17,12 @@ const ANALYTICS_PAGE_SIZE = 1_000;
 const ANALYTICS_MAX_PAGES = 100;
 const AUTH_USERS_PAGE_SIZE = 1_000;
 const AUTH_USERS_MAX_PAGES = 20;
+const DASHBOARD_CACHE_TTL_MS = 60_000;
+
+const dashboardCache = new Map<
+  DashboardRange,
+  { expiresAt: number; payload: DashboardData }
+>();
 
 export async function GET(request: Request) {
   const access = await checkAdminApiAccess(request);
@@ -131,6 +138,13 @@ export async function GET(request: Request) {
 }
 
 async function getSupabaseDashboard(range: DashboardRange) {
+  const cached = dashboardCache.get(range);
+  if (cached && cached.expiresAt > Date.now()) {
+    return NextResponse.json(cached.payload, {
+      headers: { "X-StyleKit-Analytics-Cache": "HIT" },
+    });
+  }
+
   const sb = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.SUPABASE_SERVICE_ROLE_KEY!,
@@ -155,18 +169,24 @@ async function getSupabaseDashboard(range: DashboardRange) {
     );
   }
 
-  return NextResponse.json(
-    buildAnalyticsDashboard(
-      eventsResult.rows,
-      range,
-      contentSummary,
-      contentTrends,
-      now,
-      registrations,
-      eventsResult.truncated,
-      previousPageViews
-    )
+  const payload = buildAnalyticsDashboard(
+    eventsResult.rows,
+    range,
+    contentSummary,
+    contentTrends,
+    now,
+    registrations,
+    eventsResult.truncated,
+    previousPageViews
   );
+  dashboardCache.set(range, {
+    expiresAt: Date.now() + DASHBOARD_CACHE_TTL_MS,
+    payload,
+  });
+
+  return NextResponse.json(payload, {
+    headers: { "X-StyleKit-Analytics-Cache": "MISS" },
+  });
 }
 
 async function countPreviousWindowPageViews(
@@ -199,14 +219,14 @@ async function loadAnalyticsEvents(
   truncated: boolean;
   error: boolean;
 }> {
-  const rows: DashboardEventRow[] = [];
-
-  for (let page = 0; page < ANALYTICS_MAX_PAGES; page += 1) {
+  const loadPage = async (page: number, includeCount = false) => {
     const from = page * ANALYTICS_PAGE_SIZE;
     const to = from + ANALYTICS_PAGE_SIZE - 1;
     let query = sb
       .from("analytics_events")
-      .select("style_slug,event_type,event_data,created_at,session_id")
+      .select("style_slug,event_type,event_data,created_at,session_id", {
+        count: includeCount ? "exact" : undefined,
+      })
       .order("created_at", { ascending: true })
       .range(from, to);
 
@@ -214,19 +234,38 @@ async function loadAnalyticsEvents(
       query = query.gte("created_at", dateFilter);
     }
 
-    const { data, error } = await query;
-    if (error) {
-      return { rows: [], truncated: false, error: true };
-    }
+    return query;
+  };
 
-    const pageRows = (data ?? []) as DashboardEventRow[];
-    rows.push(...pageRows);
-    if (pageRows.length < ANALYTICS_PAGE_SIZE) {
-      return { rows, truncated: false, error: false };
-    }
+  const firstPage = await loadPage(0, true);
+  if (firstPage.error) {
+    return { rows: [], truncated: false, error: true };
   }
 
-  return { rows, truncated: true, error: false };
+  const totalRows = firstPage.count ?? firstPage.data?.length ?? 0;
+  const totalPages = Math.ceil(totalRows / ANALYTICS_PAGE_SIZE);
+  const pagesToLoad = Math.min(totalPages, ANALYTICS_MAX_PAGES);
+  const remainingPages = Array.from(
+    { length: Math.max(0, pagesToLoad - 1) },
+    (_, index) => index + 1
+  );
+  const remainingResults = await Promise.all(
+    remainingPages.map((page) => loadPage(page))
+  );
+
+  if (remainingResults.some((result) => result.error)) {
+    return { rows: [], truncated: false, error: true };
+  }
+
+  const rows = [firstPage, ...remainingResults].flatMap(
+    (result) => (result.data ?? []) as DashboardEventRow[]
+  );
+
+  return {
+    rows,
+    truncated: totalPages > ANALYTICS_MAX_PAGES,
+    error: false,
+  };
 }
 
 async function loadRegistrations(
