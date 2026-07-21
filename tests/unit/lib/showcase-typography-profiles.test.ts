@@ -21,6 +21,15 @@ describe("showcase typography profiles", () => {
     expect(playful?.pairing.heading.family).toBe("Dela Gothic One");
   });
 
+  it("gives the nocturne glassmorphism showcase an editorial serif", () => {
+    const nocturne = getShowcaseTypographyProfile(
+      "/styles/glassmorphism/showcase"
+    );
+
+    expect(nocturne?.id).toBe("catalog");
+    expect(nocturne?.pairing.heading.family).toBe("Gloock");
+  });
+
   it("does not load a showcase font profile on ordinary public pages", () => {
     expect(getShowcaseTypographyProfile("/styles")).toBeNull();
     expect(getShowcaseTypographyProfile("/styles/editorial")).toBeNull();
