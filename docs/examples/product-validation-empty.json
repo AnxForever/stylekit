@@ -1,8 +1,21 @@
 {
   "schemaVersion": 1,
+  "datasetStatus": "template",
+  "capturedAt": "2026-07-10T16:00:00.000Z",
+  "sealedAt": null,
   "experiment": {
-    "experimentId": "cc-saas-pack-price-2026-01",
-    "offerVersion": "cc-saas-pack-offer-v1",
+    "experimentId": "cc-saas-pack-price-2026-02",
+    "offerVersion": "cc-saas-pack-offer-v2",
+    "offerSnapshot": {
+      "artifactPath": "docs/examples/corporate-clean-saas-offer-v2.json",
+      "sha256": "sha256:99ea80f21a0429ab6443cfbf6b075a40697fa1067167a1afb03a5a769ce4fd19"
+    },
+    "contractVersions": {
+      "qualification": "qualified-visitor-v1",
+      "bot": "bot-exclusion-v1",
+      "assignment": "sticky-price-assignment-v1",
+      "authoritative": "authoritative-evidence-v1"
+    },
     "packId": "corporate-clean-saas",
     "packVersion": "0.1.0",
     "revisionNumber": 0,
@@ -12,14 +25,14 @@
     },
     "variants": [
       {
-        "id": "pack-199",
+        "id": "pack-29",
         "currency": "CNY",
-        "amountMinor": 19900
+        "amountMinor": 2900
       },
       {
-        "id": "pack-399",
+        "id": "pack-49",
         "currency": "CNY",
-        "amountMinor": 39900
+        "amountMinor": 4900
       }
     ],
     "thresholds": {

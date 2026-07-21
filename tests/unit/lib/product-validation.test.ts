@@ -8,13 +8,32 @@ import {
 
 const START = "2026-08-01T00:00:00.000Z";
 const END = "2026-08-31T23:59:59.000Z";
+const CLOSED_AT = "2026-09-01T00:00:02.000Z";
+const ACTIVE_AT = "2026-08-20T00:00:00.000Z";
+
+function evaluateClosed(bundle: ProductValidationBundle) {
+  return evaluateProductValidation(bundle, { evaluatedAt: CLOSED_AT });
+}
 
 function baseBundle(): ProductValidationBundle {
   return {
     schemaVersion: 1,
+    datasetStatus: "sealed",
+    capturedAt: "2026-09-01T00:00:00.000Z",
+    sealedAt: "2026-09-01T00:00:01.000Z",
     experiment: {
       experimentId: "cc-saas-pack-price-2026-01",
       offerVersion: "cc-saas-pack-offer-v1",
+      offerSnapshot: {
+        artifactPath: "docs/examples/corporate-clean-saas-offer-v1.json",
+        sha256: "sha256:f23b9c43f29fa9c2f9639354df4bc1bcd8fe769c5447bf2a128bc944e09bcee7",
+      },
+      contractVersions: {
+        qualification: "qualified-visitor-v1",
+        bot: "bot-exclusion-v1",
+        assignment: "sticky-price-assignment-v1",
+        authoritative: "authoritative-evidence-v1",
+      },
       packId: "corporate-clean-saas",
       packVersion: "0.1.0",
       revisionNumber: 0,
@@ -127,7 +146,126 @@ function addQualifiedParticipant(
   }
 }
 
+function addVerifiedPurchase(
+  bundle: ProductValidationBundle,
+  participantIndex: number,
+) {
+  const participant = bundle.participants[participantIndex];
+  if (!participant) throw new Error("Missing participant for verified purchase");
+
+  bundle.onlineEvents.push({
+    eventId: `evt-purchase-${participantIndex}`,
+    type: "pack_purchase",
+    occurredAt: "2026-08-10T10:05:00.000Z",
+    identityKey: participant.identityKey,
+    experimentId: bundle.experiment.experimentId,
+    offerVersion: bundle.experiment.offerVersion,
+    variantId: participant.variantId,
+    trust: "payment_provider",
+    purchaseId: `purchase-${participantIndex}`,
+    purchaseKind: "full",
+    amountMinor:
+      bundle.experiment.variants.find(
+        (variant) => variant.id === participant.variantId,
+      )?.amountMinor ?? 0,
+  });
+}
+
 describe("product validation evidence contract", () => {
+  it("accepts authenticated accounts only with a non-PII HMAC identity", () => {
+    const valid = baseBundle();
+    valid.participants.push({
+      identityKey: `hmac:${"a".repeat(64)}`,
+      identityConfidence: "authenticated_account",
+      icpStatus: "qualified",
+      variantId: "pack-199",
+      assignedAt: START,
+      sourceChannel: "direct",
+      environment: "production",
+      isBot: false,
+      isInternal: false,
+      isTest: false,
+    });
+    expect(productValidationBundleSchema.safeParse(valid).success).toBe(true);
+
+    const invalid = baseBundle();
+    invalid.participants.push({
+      ...valid.participants[0],
+      identityKey: "anon:0000000000000000",
+    });
+    expect(productValidationBundleSchema.safeParse(invalid).success).toBe(false);
+  });
+
+  it("enforces dataset lifecycle timestamps and keeps templates evidence-free", () => {
+    const collecting = baseBundle();
+    collecting.datasetStatus = "collecting";
+    collecting.sealedAt = null;
+    expect(productValidationBundleSchema.safeParse(collecting).success).toBe(true);
+
+    collecting.sealedAt = collecting.capturedAt;
+    expect(productValidationBundleSchema.safeParse(collecting).success).toBe(false);
+
+    const templateWithEvidence = baseBundle();
+    templateWithEvidence.datasetStatus = "template";
+    templateWithEvidence.sealedAt = null;
+    addQualifiedParticipant(templateWithEvidence, 1, "pack-199");
+    expect(productValidationBundleSchema.safeParse(templateWithEvidence).success).toBe(false);
+
+    const sealedTooEarly = baseBundle();
+    sealedTooEarly.sealedAt = "2026-08-31T23:59:59.000Z";
+    expect(productValidationBundleSchema.safeParse(sealedTooEarly).success).toBe(false);
+  });
+
+  it("requires a repository-local offer artifact and a canonical SHA-256", () => {
+    const unsafePath = baseBundle();
+    unsafePath.experiment.offerSnapshot.artifactPath = "../offer.json";
+    expect(productValidationBundleSchema.safeParse(unsafePath).success).toBe(false);
+
+    const invalidHash = baseBundle();
+    invalidHash.experiment.offerSnapshot.sha256 = "8db19133";
+    expect(productValidationBundleSchema.safeParse(invalidHash).success).toBe(false);
+  });
+
+  it("rejects interview conclusions without consent, a frozen offer hash, and hashed evidence", () => {
+    const bundle = baseBundle();
+    const legacyBooleanOnly = {
+      interviewId: "INT-202608-999",
+      occurredAt: "2026-08-12T10:00:00.000Z",
+      icpStatus: "qualified",
+      primaryVariantId: "pack-199",
+      priceAccepted: true,
+      depositLinkRequested: false,
+      checkoutStarted: false,
+      nonRefundableDepositPaid: false,
+      protocolDeviation: false,
+      withdrawn: false,
+    };
+    const raw = { ...bundle, interviews: [legacyBooleanOnly] };
+    expect(productValidationBundleSchema.safeParse(raw).success).toBe(false);
+
+    const wrongOffer = baseBundle();
+    wrongOffer.interviews.push({
+      interviewId: "INT-202608-998",
+      occurredAt: "2026-08-12T10:00:00.000Z",
+      participantIdentityKey: `hmac:${"9".repeat(64)}`,
+      icpStatus: "qualified",
+      primaryVariantId: "pack-199",
+      offerSnapshotSha256: `sha256:${"8".repeat(64)}`,
+      contactVerificationMethod: "manual_interview",
+      evidenceLogSha256: `sha256:${"7".repeat(64)}`,
+      evidenceSource: "interview_notes",
+      reviewedBy: "reviewer:test",
+      consentRecorded: true,
+      priceAccepted: true,
+      depositLinkRequested: false,
+      checkoutStarted: false,
+      nonRefundableDepositPaid: false,
+      protocolDeviation: false,
+      withdrawn: false,
+    });
+    expect(productValidationBundleSchema.safeParse(wrongOffer).success).toBe(false);
+  });
+
   it("rejects direct personal identifiers and duplicate participant identities", () => {
     const bundle = baseBundle();
     bundle.participants.push(
@@ -178,7 +316,7 @@ describe("product validation evidence contract", () => {
       isTest: false,
     });
 
-    const result = evaluateProductValidation(bundle);
+    const result = evaluateClosed(bundle);
     expect(result.online.qualifiedVisitors).toBe(1);
     expect(result.online.softIntentPeople).toBe(1);
     expect(result.online.exclusions.sessionOnly).toBe(1);
@@ -198,7 +336,7 @@ describe("product validation evidence contract", () => {
       addQualifiedParticipant(bundle, index, variantId, commitment);
     }
 
-    const result = evaluateProductValidation(bundle);
+    const result = evaluateClosed(bundle);
     expect(result.online.status).toBe("pass");
     expect(result.online.qualifiedVisitors).toBe(200);
     expect(result.online.softIntentRateBps).toBe(500);
@@ -206,7 +344,8 @@ describe("product validation evidence contract", () => {
     expect(result.online.variants["pack-199"].status).toBe("pass");
     expect(result.online.variants["pack-399"].status).toBe("pass");
     expect(result.economics.status).toBe("pass");
-    expect(result.decision).toBe("continue_pack_1");
+    expect(result.economics.basis).toBe("forecast");
+    expect(result.decision).toBe("proceed_to_paid_pilot");
   });
 
   it("passes the documented interview path without counting edge or deviated interviews", () => {
@@ -215,8 +354,15 @@ describe("product validation evidence contract", () => {
       bundle.interviews.push({
         interviewId: `INT-202608-${String(index + 1).padStart(3, "0")}`,
         occurredAt: "2026-08-12T10:00:00.000Z",
+        participantIdentityKey: `hmac:${index.toString(16).padStart(64, "0")}`,
         icpStatus: index === 20 ? "edge" : "qualified",
         primaryVariantId: index % 2 === 0 ? "pack-199" : "pack-399",
+        offerSnapshotSha256: bundle.experiment.offerSnapshot.sha256,
+        contactVerificationMethod: "manual_interview",
+        evidenceLogSha256: `sha256:${(index + 1).toString(16).padStart(64, "0")}`,
+        evidenceSource: "interview_notes",
+        reviewedBy: "reviewer:test",
+        consentRecorded: true,
         priceAccepted: index < 6,
         depositLinkRequested: index < 3,
         checkoutStarted: false,
@@ -226,12 +372,139 @@ describe("product validation evidence contract", () => {
       });
     }
 
-    const result = evaluateProductValidation(bundle);
+    const result = evaluateClosed(bundle);
     expect(result.interviews.qualifiedInterviews).toBe(20);
     expect(result.interviews.priceAcceptances).toBe(6);
     expect(result.interviews.depositLinkRequests).toBe(3);
     expect(result.interviews.status).toBe("pass");
+    expect(result.interviews.nonRefundableDeposits).toBe(0);
+    expect(result.decision).toBe("proceed_to_paid_pilot");
+  });
+
+  it("continues Pack 1 only after paid evidence aligns with a demand and forecast-viable price", () => {
+    const bundle = baseBundle();
+    for (let index = 0; index < 200; index += 1) {
+      const variantId = index < 100 ? "pack-199" : "pack-399";
+      const withinVariant = index % 100;
+      addQualifiedParticipant(
+        bundle,
+        index,
+        variantId,
+        withinVariant < 2 ? "strong" : withinVariant < 5 ? "soft" : "none",
+      );
+    }
+    addVerifiedPurchase(bundle, 150);
+
+    const result = evaluateClosed(bundle);
+    expect(result.online.purchasers).toBe(1);
+    expect(result.economics.variants["pack-399"].status).toBe("pass");
     expect(result.decision).toBe("continue_pack_1");
+  });
+
+  it("does not combine paid evidence from a forecast-failing price with another price", () => {
+    const bundle = baseBundle();
+    for (let index = 0; index < 200; index += 1) {
+      const variantId = index < 100 ? "pack-199" : "pack-399";
+      const withinVariant = index % 100;
+      addQualifiedParticipant(
+        bundle,
+        index,
+        variantId,
+        withinVariant < 2 ? "strong" : withinVariant < 5 ? "soft" : "none",
+      );
+    }
+    addVerifiedPurchase(bundle, 0);
+
+    const result = evaluateClosed(bundle);
+    expect(result.online.purchasers).toBe(1);
+    expect(result.economics.variants["pack-199"].status).toBe("fail");
+    expect(result.decision).toBe("proceed_to_paid_pilot");
+    expect(result.issues.map((issue) => issue.code)).toContain(
+      "NO_SHARED_PAID_EVIDENCE_VARIANT",
+    );
+  });
+
+  it("accepts a non-refundable interview deposit as aligned paid evidence", () => {
+    const bundle = baseBundle();
+    for (let index = 0; index < 20; index += 1) {
+      const isPaidPack399Interview = index === 1;
+      bundle.interviews.push({
+        interviewId: `INT-202608-${String(index + 1).padStart(3, "0")}`,
+        occurredAt: "2026-08-12T10:00:00.000Z",
+        participantIdentityKey: `hmac:${index.toString(16).padStart(64, "0")}`,
+        icpStatus: "qualified",
+        primaryVariantId: index % 2 === 0 ? "pack-199" : "pack-399",
+        offerSnapshotSha256: bundle.experiment.offerSnapshot.sha256,
+        contactVerificationMethod: "manual_interview",
+        evidenceLogSha256: `sha256:${(index + 1).toString(16).padStart(64, "0")}`,
+        evidenceSource: "interview_notes",
+        reviewedBy: "reviewer:test",
+        consentRecorded: true,
+        priceAccepted: index < 6,
+        depositLinkRequested: index < 3,
+        checkoutStarted: isPaidPack399Interview,
+        nonRefundableDepositPaid: isPaidPack399Interview,
+        protocolDeviation: false,
+        withdrawn: false,
+      });
+    }
+
+    const result = evaluateClosed(bundle);
+    expect(result.interviews.nonRefundableDeposits).toBe(1);
+    expect(result.decision).toBe("continue_pack_1");
+  });
+
+  it("withholds final decisions until the frozen experiment window is closed", () => {
+    const bundle = baseBundle();
+    bundle.datasetStatus = "collecting";
+    bundle.capturedAt = ACTIVE_AT;
+    bundle.sealedAt = null;
+    for (let index = 0; index < 200; index += 1) {
+      const variantId = index < 100 ? "pack-199" : "pack-399";
+      const withinVariant = index % 100;
+      addQualifiedParticipant(
+        bundle,
+        index,
+        variantId,
+        withinVariant < 2 ? "strong" : withinVariant < 5 ? "soft" : "none",
+      );
+    }
+    addVerifiedPurchase(bundle, 150);
+
+    const result = evaluateProductValidation(bundle, { evaluatedAt: ACTIVE_AT });
+    expect(result.experimentWindow.status).toBe("active");
+    expect(result.decision).toBe("experiment_in_progress");
+    expect(result.issues.map((issue) => issue.code)).toContain(
+      "EXPERIMENT_WINDOW_NOT_CLOSED",
+    );
+  });
+
+  it("cannot authorize continuation from future-dated evidence", () => {
+    const bundle = baseBundle();
+    bundle.datasetStatus = "collecting";
+    bundle.capturedAt = "2026-07-11T00:00:00.000Z";
+    bundle.sealedAt = null;
+    for (let index = 0; index < 200; index += 1) {
+      const variantId = index < 100 ? "pack-199" : "pack-399";
+      const withinVariant = index % 100;
+      addQualifiedParticipant(
+        bundle,
+        index,
+        variantId,
+        withinVariant < 2 ? "strong" : withinVariant < 5 ? "soft" : "none",
+      );
+    }
+    addVerifiedPurchase(bundle, 150);
+
+    const result = evaluateProductValidation(bundle, {
+      evaluatedAt: "2026-07-11T00:00:00.000Z",
+    });
+    expect(result.experimentWindow.status).toBe("not_started");
+    expect(result.decision).toBe("inconclusive_sample");
+    expect(result.online.qualifiedVisitors).toBe(0);
+    expect(result.issues.map((issue) => issue.code)).toContain(
+      "EVIDENCE_AFTER_EVALUATION_TIME",
+    );
   });
 
   it("does not authorize Pack 1 when the sample is incomplete", () => {
@@ -240,7 +513,7 @@ describe("product validation evidence contract", () => {
       addQualifiedParticipant(bundle, index, index < 10 ? "pack-199" : "pack-399", "strong");
     }
 
-    const result = evaluateProductValidation(bundle);
+    const result = evaluateClosed(bundle);
     expect(result.online.status).toBe("inconclusive");
     expect(result.interviews.status).toBe("inconclusive");
     expect(result.decision).toBe("inconclusive_sample");
@@ -253,7 +526,7 @@ describe("product validation evidence contract", () => {
       addQualifiedParticipant(bundle, index, index < 100 ? "pack-199" : "pack-399");
     }
 
-    const result = evaluateProductValidation(bundle);
+    const result = evaluateClosed(bundle);
     expect(result.online.status).toBe("fail");
     expect(result.online.softIntentPeople).toBe(0);
     expect(result.decision).toBe("stop_expansion");
@@ -266,8 +539,15 @@ describe("product validation evidence contract", () => {
       bundle.interviews.push({
         interviewId: `INT-202608-${String(index + 1).padStart(3, "0")}`,
         occurredAt: "2026-08-12T10:00:00.000Z",
+        participantIdentityKey: `hmac:${index.toString(16).padStart(64, "0")}`,
         icpStatus: "qualified",
         primaryVariantId: index % 2 === 0 ? "pack-199" : "pack-399",
+        offerSnapshotSha256: bundle.experiment.offerSnapshot.sha256,
+        contactVerificationMethod: "manual_interview",
+        evidenceLogSha256: `sha256:${(index + 1).toString(16).padStart(64, "0")}`,
+        evidenceSource: "interview_notes",
+        reviewedBy: "reviewer:test",
+        consentRecorded: true,
         priceAccepted: index < 6,
         depositLinkRequested: index < 3,
         checkoutStarted: false,
@@ -277,7 +557,7 @@ describe("product validation evidence contract", () => {
       });
     }
 
-    const result = evaluateProductValidation(bundle);
+    const result = evaluateClosed(bundle);
     expect(result.interviews.status).toBe("pass");
     expect(result.economics.status).toBe("fail");
     expect(result.decision).toBe("revise_offer_once");
@@ -298,7 +578,7 @@ describe("product validation evidence contract", () => {
       addQualifiedParticipant(bundle, index, variantId, commitment);
     }
 
-    const result = evaluateProductValidation(bundle);
+    const result = evaluateClosed(bundle);
     expect(result.online.variants["pack-199"].status).toBe("pass");
     expect(result.online.variants["pack-399"].status).toBe("fail");
     expect(result.economics.variants["pack-199"].status).toBe("fail");
@@ -326,7 +606,7 @@ describe("product validation evidence contract", () => {
       identityKey: bundle.participants[1].identityKey,
     });
 
-    const result = evaluateProductValidation(bundle);
+    const result = evaluateClosed(bundle);
     expect(result.online.status).toBe("pass");
     expect(result.decision).toBe("inconclusive_sample");
     expect(result.issues.map((issue) => issue.code)).toContain(
@@ -368,7 +648,7 @@ describe("product validation evidence contract", () => {
       minimumContributionMarginBps: 3_000,
     };
 
-    const result = evaluateProductValidation(bundle);
+    const result = evaluateClosed(bundle);
     expect(result.online.status).toBe("fail");
     expect(result.brandKit.status).toBe("pass");
     expect(result.brandKit.economicsStatus).toBe("pass");
@@ -377,11 +657,14 @@ describe("product validation evidence contract", () => {
 
   it("renders a deterministic report with the gate decision and no identities", () => {
     const bundle = baseBundle();
-    const result = evaluateProductValidation(bundle);
+    const result = evaluateClosed(bundle);
     const report = renderProductValidationReport(result);
 
     expect(report).toContain("Decision: inconclusive_sample");
+    expect(report).toContain("Experiment window: closed");
     expect(report).toContain("Qualified visitors: 0 / 200");
+    expect(report).toContain("Economics basis: forecast");
+    expect(report).toContain("Forecast status: pass");
     expect(report).not.toContain("identityKey");
   });
 });

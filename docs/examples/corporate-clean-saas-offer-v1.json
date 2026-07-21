@@ -1,0 +1,65 @@
+{
+  "schemaVersion": 1,
+  "offerVersion": "cc-saas-pack-offer-v1",
+  "sealedAt": "2026-07-10T16:00:00.000Z",
+  "pack": {
+    "id": "corporate-clean-saas",
+    "version": "0.1.0",
+    "name": "Corporate Clean SaaS Production Pack",
+    "outcome": "在干净的 Next.js 项目中安装一个克制、完整、可响应的 B2B SaaS 数据工作区切片，并包含 AI 生成界面经常遗漏的关键状态。",
+    "status": "preview",
+    "primaryDelivery": "registry",
+    "publicSaleAuthorized": false
+  },
+  "icp": {
+    "summary": "使用 Next.js、React、Tailwind、shadcn/ui 与 AI 编码工具构建 B2B SaaS 的独立开发者或小型产品团队；具备开发资源购买决策权或直接影响力，且未来 90 天内有真实生产项目。"
+  },
+  "deliverables": [
+    "完整可运行的中文 B2B SaaS 数据工作区页面",
+    "响应式侧边栏、移动导航、指标、收入趋势、转化漏斗与账户表格",
+    "Overview、Loading、Empty、Error 与 Success 状态",
+    "键盘、触屏、辅助技术与 prefers-reduced-motion 交互契约",
+    "Scoped CSS Module，不覆盖目标项目全局视觉",
+    "StyleKit 自有 SVG 产品主视觉，无第三方图片、字体、图标或动画运行时",
+    "Registry 安装交付、README、商业许可草案与第三方声明"
+  ],
+  "compatibility": {
+    "next": "16.1.6",
+    "react": "19.2.3",
+    "tailwind": "4.1.x optional; scoped CSS Modules are self-contained",
+    "shadcn": "4.13.0 registry client; no shadcn component dependency",
+    "conflictPolicy": "fail"
+  },
+  "commercialTerms": {
+    "licenseId": "stylekit-pro-v1",
+    "licenseReviewStatus": "draft_requires_final_review",
+    "commercialUse": true,
+    "maximumContributors": 5,
+    "updateMonths": 12,
+    "installationSupportDays": 30,
+    "refundPolicy": "若 Pack 在声明的干净项目兼容范围内无法完成生产构建，且 StyleKit 在合理支持流程后仍无法解决，可申请退还本 Pack 购买金额；客户自行修改、依赖冲突或超出兼容范围的环境不在保证内。",
+    "deliveryTiming": "本快照仅用于私下访谈与价格验证；公开销售仍未获授权。验证通过、商业条款完成审核并开放销售后，已核验付款的购买者获得 Registry 安装交付。"
+  },
+  "variants": [
+    {
+      "id": "pack-199",
+      "currency": "CNY",
+      "amountMinor": 19900
+    },
+    {
+      "id": "pack-399",
+      "currency": "CNY",
+      "amountMinor": 39900
+    }
+  ],
+  "priceIsolation": {
+    "onlyVariable": "amountMinor",
+    "sharedOfferFields": [
+      "pack",
+      "icp",
+      "deliverables",
+      "compatibility",
+      "commercialTerms"
+    ]
+  }
+}

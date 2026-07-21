@@ -5,6 +5,7 @@ import {
   productValidationBundleSchema,
   renderProductValidationReport,
 } from "@/lib/product-validation";
+import { verifyValidationOfferSnapshot } from "@/lib/product-validation/verify-offer-snapshot";
 
 type OutputFormat = "json" | "markdown";
 
@@ -47,6 +48,19 @@ async function main(): Promise<void> {
       console.error("[validate:product-experiment] Invalid evidence bundle:");
       for (const issue of parsed.error.issues) {
         console.error(`- ${issue.path.join(".") || "root"}: ${issue.message}`);
+      }
+      process.exitCode = 1;
+      return;
+    }
+
+    const offerVerification = await verifyValidationOfferSnapshot(
+      process.cwd(),
+      parsed.data,
+    );
+    if (!offerVerification.ok) {
+      console.error("[validate:product-experiment] Invalid frozen offer snapshot:");
+      for (const issue of offerVerification.issues) {
+        console.error(`- ${issue.code}: ${issue.message}`);
       }
       process.exitCode = 1;
       return;

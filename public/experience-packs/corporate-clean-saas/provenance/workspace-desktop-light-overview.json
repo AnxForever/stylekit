@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "assetId": "workspace-desktop-light-overview",
+  "assetPath": "/experience-packs/corporate-clean-saas/evidence/workspace-desktop-light-overview.webp",
+  "originType": "owned",
+  "provider": "StyleKit deterministic browser capture",
+  "creator": "StyleKit",
+  "sourceRoute": "/admin/visual-lab/corporate-clean-saas",
+  "sourceFiles": [
+    "experience-packs/corporate-clean-saas/files/components/corporate-clean/corporate-clean-saas.tsx",
+    "experience-packs/corporate-clean-saas/files/components/corporate-clean/corporate-clean.module.css",
+    "experience-packs/corporate-clean-saas/files/lib/corporate-clean/data.ts"
+  ],
+  "capturedAt": "2026-07-11T01:19:02.895Z",
+  "viewport": {
+    "width": 1600,
+    "height": 1200
+  },
+  "theme": "浅色",
+  "state": "概览",
+  "reducedMotion": true,
+  "description": "Corporate Clean SaaS workspace in the light overview state at a desktop viewport.",
+  "width": 1280,
+  "height": 1201,
+  "format": "webp",
+  "bytes": 49838,
+  "contentHash": "sha256:0bc3efadf5f1820630282cdd6394c7f64d8c738c85b328c1dff9b6ec526e70d8",
+  "thirdPartyInputs": [],
+  "trademarkReview": true,
+  "likenessReview": true,
+  "customerDataReview": true,
+  "purpose": "pack-marketing-evidence",
+  "distributable": false,
+  "auditStatus": "approved",
+  "notes": "Generated from the same self-contained source delivered by the internal registry preview; no stock photography or external product screenshot is used.",
+  "auditedBy": "StyleKit internal product audit",
+  "auditedAt": "2026-07-11T12:00:00.000Z"
+}

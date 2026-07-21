@@ -20,6 +20,21 @@ const identityKeySchema = z
 const basisPointsSchema = z.number().int().min(0).max(10_000);
 const positiveMoneySchema = z.number().int().positive().max(1_000_000_000_000);
 const nonNegativeMoneySchema = z.number().int().nonnegative().max(1_000_000_000_000);
+const sha256Schema = z
+  .string()
+  .regex(/^sha256:[0-9a-f]{64}$/, "Use a sha256:<64 lowercase hex> content hash");
+const repositoryArtifactPathSchema = z
+  .string()
+  .min(1)
+  .max(240)
+  .regex(/^[A-Za-z0-9._/-]+\.json$/, "Use a repository-relative JSON artifact path")
+  .refine(
+    (value) =>
+      !value.startsWith("/") &&
+      !value.includes("\\") &&
+      value.split("/").every((segment) => segment !== "" && segment !== "." && segment !== ".."),
+    "Artifact path must stay inside the repository",
+  );
 
 export const validationVariantSchema = z
   .object({
@@ -29,10 +44,81 @@ export const validationVariantSchema = z
   })
   .strict();
 
+export const validationOfferSnapshotReferenceSchema = z
+  .object({
+    artifactPath: repositoryArtifactPathSchema,
+    sha256: sha256Schema,
+  })
+  .strict();
+
+export const validationContractVersionsSchema = z
+  .object({
+    qualification: identifierSchema,
+    bot: identifierSchema,
+    assignment: identifierSchema,
+    authoritative: identifierSchema,
+  })
+  .strict();
+
+export const validationOfferSnapshotArtifactSchema = z
+  .object({
+    schemaVersion: z.literal(1),
+    offerVersion: identifierSchema,
+    sealedAt: z.iso.datetime(),
+    pack: z
+      .object({
+        id: packIdSchema,
+        version: z.string().min(1).max(80),
+        name: z.string().min(1).max(160),
+        outcome: z.string().min(1).max(1_000),
+        status: z.literal("preview"),
+        primaryDelivery: z.literal("registry"),
+        publicSaleAuthorized: z.literal(false),
+      })
+      .strict(),
+    icp: z
+      .object({
+        summary: z.string().min(1).max(2_000),
+      })
+      .strict(),
+    deliverables: z.array(z.string().min(1).max(500)).min(1).max(100),
+    compatibility: z
+      .object({
+        next: z.string().min(1).max(80),
+        react: z.string().min(1).max(80),
+        tailwind: z.string().min(1).max(160),
+        shadcn: z.string().min(1).max(160),
+        conflictPolicy: z.literal("fail"),
+      })
+      .strict(),
+    commercialTerms: z
+      .object({
+        licenseId: identifierSchema,
+        licenseReviewStatus: z.literal("draft_requires_final_review"),
+        commercialUse: z.literal(true),
+        maximumContributors: z.number().int().positive().max(10_000),
+        updateMonths: z.number().int().nonnegative().max(120),
+        installationSupportDays: z.number().int().nonnegative().max(3_650),
+        refundPolicy: z.string().min(1).max(2_000),
+        deliveryTiming: z.string().min(1).max(1_000),
+      })
+      .strict(),
+    variants: z.array(validationVariantSchema).min(2).max(8),
+    priceIsolation: z
+      .object({
+        onlyVariable: z.literal("amountMinor"),
+        sharedOfferFields: z.array(z.string().min(1).max(160)).min(1).max(100),
+      })
+      .strict(),
+  })
+  .strict();
+
 export const validationExperimentSchema = z
   .object({
     experimentId: identifierSchema,
     offerVersion: identifierSchema,
+    offerSnapshot: validationOfferSnapshotReferenceSchema,
+    contractVersions: validationContractVersionsSchema,
     packId: packIdSchema,
     packVersion: z.string().min(1).max(80),
     revisionNumber: z.number().int().min(0).max(1),
@@ -147,6 +233,7 @@ export const validationParticipantSchema = z
   .object({
     identityKey: identityKeySchema,
     identityConfidence: z.enum([
+      "authenticated_account",
       "verified_contact_hmac",
       "anonymous",
       "session_only",
@@ -171,13 +258,14 @@ export const validationParticipantSchema = z
   .strict()
   .superRefine((participant, ctx) => {
     if (
-      participant.identityConfidence === "verified_contact_hmac" &&
+      (participant.identityConfidence === "authenticated_account" ||
+        participant.identityConfidence === "verified_contact_hmac") &&
       !participant.identityKey.startsWith("hmac:")
     ) {
       ctx.addIssue({
         code: "custom",
         path: ["identityKey"],
-        message: "Verified contact identities require a one-way HMAC key",
+        message: "Authenticated and verified-contact identities require a one-way HMAC key",
       });
     }
     if (
@@ -283,8 +371,24 @@ export const validationInterviewSchema = z
       .string()
       .regex(/^INT-[0-9]{6}-[0-9]{3,6}$/),
     occurredAt: z.iso.datetime(),
+    participantIdentityKey: identityKeySchema,
     icpStatus: z.enum(["qualified", "edge", "not_qualified"]),
     primaryVariantId: identifierSchema.nullable(),
+    offerSnapshotSha256: sha256Schema,
+    contactVerificationMethod: z.enum([
+      "authenticated_account",
+      "verified_email",
+      "manual_interview",
+    ]),
+    evidenceLogSha256: sha256Schema,
+    evidenceSource: z.enum([
+      "interview_notes",
+      "transcript",
+      "payment_provider",
+      "manual_reconciliation",
+    ]),
+    reviewedBy: identifierSchema,
+    consentRecorded: z.literal(true),
     priceAccepted: z.boolean(),
     depositLinkRequested: z.boolean(),
     checkoutStarted: z.boolean(),
@@ -294,6 +398,16 @@ export const validationInterviewSchema = z
   })
   .strict()
   .superRefine((interview, ctx) => {
+    if (
+      interview.priceAccepted &&
+      interview.primaryVariantId === null
+    ) {
+      ctx.addIssue({
+        code: "custom",
+        path: ["primaryVariantId"],
+        message: "Price acceptance requires the frozen primary price variant",
+      });
+    }
     if (interview.depositLinkRequested && !interview.priceAccepted) {
       ctx.addIssue({
         code: "custom",
@@ -401,6 +515,9 @@ export const brandKitForecastSchema = z
 export const productValidationBundleSchema = z
   .object({
     schemaVersion: z.literal(1),
+    datasetStatus: z.enum(["template", "collecting", "sealed"]),
+    capturedAt: z.iso.datetime(),
+    sealedAt: z.iso.datetime().nullable(),
     experiment: validationExperimentSchema,
     participants: z.array(validationParticipantSchema).max(1_000_000),
     onlineEvents: z.array(validationOnlineEventSchema).max(10_000_000),
@@ -415,6 +532,44 @@ export const productValidationBundleSchema = z
     const participantIds = new Set<string>();
     const interviewIds = new Set<string>();
     const brandLeadIds = new Set<string>();
+
+    if (bundle.datasetStatus === "sealed" && bundle.sealedAt === null) {
+      ctx.addIssue({
+        code: "custom",
+        path: ["sealedAt"],
+        message: "A sealed dataset requires sealedAt",
+      });
+    }
+    if (bundle.datasetStatus !== "sealed" && bundle.sealedAt !== null) {
+      ctx.addIssue({
+        code: "custom",
+        path: ["sealedAt"],
+        message: "Only a sealed dataset may set sealedAt",
+      });
+    }
+    if (
+      bundle.sealedAt !== null &&
+      Date.parse(bundle.sealedAt) < Date.parse(bundle.capturedAt)
+    ) {
+      ctx.addIssue({
+        code: "custom",
+        path: ["sealedAt"],
+        message: "sealedAt cannot be earlier than capturedAt",
+      });
+    }
+    if (
+      bundle.datasetStatus === "template" &&
+      (bundle.participants.length > 0 ||
+        bundle.onlineEvents.length > 0 ||
+        bundle.interviews.length > 0 ||
+        (bundle.brandKitEvidence?.length ?? 0) > 0)
+    ) {
+      ctx.addIssue({
+        code: "custom",
+        path: ["datasetStatus"],
+        message: "A template dataset cannot contain collected evidence",
+      });
+    }
 
     for (const [index, variant] of bundle.experiment.variants.entries()) {
       if (variant.currency !== bundle.economicsForecast.currency) {
@@ -454,6 +609,16 @@ export const productValidationBundleSchema = z
       }
       interviewIds.add(interview.interviewId);
       if (
+        interview.offerSnapshotSha256 !==
+        bundle.experiment.offerSnapshot.sha256
+      ) {
+        ctx.addIssue({
+          code: "custom",
+          path: ["interviews", index, "offerSnapshotSha256"],
+          message: "Interview evidence must reference the frozen offer snapshot",
+        });
+      }
+      if (
         interview.primaryVariantId &&
         !variantIds.has(interview.primaryVariantId)
       ) {
@@ -488,6 +653,9 @@ export const productValidationBundleSchema = z
   });
 
 export type ProductValidationBundle = z.infer<typeof productValidationBundleSchema>;
+export type ValidationOfferSnapshotArtifact = z.infer<
+  typeof validationOfferSnapshotArtifactSchema
+>;
 export type ValidationExperiment = z.infer<typeof validationExperimentSchema>;
 export type ValidationParticipant = z.infer<typeof validationParticipantSchema>;
 export type ValidationOnlineEvent = z.infer<typeof validationOnlineEventSchema>;
