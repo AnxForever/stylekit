@@ -34,6 +34,7 @@ describe("primary navigation", () => {
       "nav.recipes",
       "nav.guides",
       "nav.componentPatterns",
+      "nav.typography",
       "nav.gradients",
       "nav.shadows",
       "nav.backgrounds",

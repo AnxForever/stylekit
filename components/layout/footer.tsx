@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { ArrowRight, Github, Heart, MessageSquareText } from "lucide-react";
 import { useI18n } from "@/lib/i18n/context";
 import type { TranslationKey } from "@/lib/i18n/translations";
 import { NewsletterSignup } from "@/components/newsletter/newsletter-signup";
@@ -25,67 +26,78 @@ export function Footer() {
   ];
 
   return (
-    <footer className="border-t border-border mt-auto" data-cursor-aura="off">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-12 py-12 md:py-16">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 md:gap-12">
-          <div>
-            <p className="masthead text-lg mb-4">StyleKit</p>
-            <p className="text-sm text-muted leading-relaxed">
-              {t("footer.tagline")}
-            </p>
+    <footer
+      className="mt-auto border-t border-zinc-800 bg-zinc-950 text-zinc-100 [--background:#18181b] [--border:#3f3f46] [--foreground:#fafafa] [--muted:#a1a1aa] dark:bg-black dark:[--background:#09090b]"
+      data-cursor-aura="off"
+    >
+      <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 md:px-12 md:py-14">
+        <div className="grid grid-cols-1 gap-10 border-b border-white/15 pb-10 md:grid-cols-[1.35fr_0.75fr_0.95fr_1.35fr] md:gap-10 md:pb-14">
+          <div className="max-w-sm">
+            <p className="masthead text-xl text-white">StyleKit</p>
+            <p className="mt-5 text-sm leading-7 text-zinc-400">{t("footer.tagline")}</p>
+            <a
+              href="https://github.com/AnxForever/stylekit"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-7 inline-flex items-center gap-2 text-sm text-zinc-300 transition-colors hover:text-white"
+            >
+              <Github className="h-4 w-4" />
+              {t("footer.githubRepo")}
+              <ArrowRight className="h-3.5 w-3.5" />
+            </a>
           </div>
 
           <div>
-            <p className="text-xs tracking-widest uppercase text-muted mb-4">
+            <p className="mb-5 text-[10px] uppercase tracking-[0.18em] text-zinc-500">
               {t("footer.navigation")}
             </p>
-            <nav className="flex flex-col gap-2">
+            <nav className="flex flex-col gap-3">
               <Link
                 href={localizeHref("/styles", locale)}
                 prefetch={false}
-                className="text-sm text-foreground hover:text-accent transition-colors"
+                className="text-sm text-zinc-300 transition-colors hover:text-white"
               >
                 {t("nav.styles")}
               </Link>
               <Link
                 href={localizeHref("/colors", locale)}
                 prefetch={false}
-                className="text-sm text-foreground hover:text-accent transition-colors"
+                className="text-sm text-zinc-300 transition-colors hover:text-white"
               >
                 {locale === "zh" ? "配色" : "Colors"}
               </Link>
               <Link
                 href={localizeHref("/collections", locale)}
                 prefetch={false}
-                className="text-sm text-foreground hover:text-accent transition-colors"
+                className="text-sm text-zinc-300 transition-colors hover:text-white"
               >
                 {locale === "zh" ? "主题合集" : "Collections"}
               </Link>
               <Link
                 href={localizeHref("/templates", locale)}
                 prefetch={false}
-                className="text-sm text-foreground hover:text-accent transition-colors"
+                className="text-sm text-zinc-300 transition-colors hover:text-white"
               >
                 {t("nav.templates")}
               </Link>
               <Link
                 href={localizeHref("/guide", locale)}
                 prefetch={false}
-                className="text-sm text-foreground hover:text-accent transition-colors"
+                className="text-sm text-zinc-300 transition-colors hover:text-white"
               >
                 {t("nav.guide")}
               </Link>
               <Link
-                href={localizeHref("/blog", locale)}
+                href="https://anxforever.cn"
                 prefetch={false}
-                className="text-sm text-foreground hover:text-accent transition-colors"
+                className="text-sm text-zinc-300 transition-colors hover:text-white"
               >
                 {t("nav.blog")}
               </Link>
               <Link
                 href={localizeHref("/changelog", locale)}
                 prefetch={false}
-                className="text-sm text-foreground hover:text-accent transition-colors"
+                className="text-sm text-zinc-300 transition-colors hover:text-white"
               >
                 {t("nav.changelog")}
               </Link>
@@ -93,85 +105,64 @@ export function Footer() {
           </div>
 
           <div>
-            <p className="text-xs tracking-widest uppercase text-muted mb-4">
+            <p className="mb-5 text-[10px] uppercase tracking-[0.18em] text-zinc-500">
               {t("footer.resources")}
             </p>
-            <nav className="flex flex-col gap-2">
+            <nav className="flex flex-col gap-3">
               {promptLinks.map((link) => (
                 <Link
                   key={link.href}
                   href={localizeHref(link.href, locale)}
                   prefetch={false}
-                  className="text-sm text-foreground hover:text-accent transition-colors"
+                  className="text-sm text-zinc-300 transition-colors hover:text-white"
                 >
                   {t(link.labelKey)}
                 </Link>
               ))}
-              <a
-                href="https://github.com/AnxForever/stylekit"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-sm text-foreground hover:text-accent transition-colors"
-              >
-                {t("footer.githubRepo")}
-              </a>
             </nav>
           </div>
 
-          <div>
+          <div className="border-white/15 md:border-l md:pl-8">
             <NewsletterSignup variant="inline" />
           </div>
         </div>
 
-        <hr className="my-8" />
-
-        <div className="mb-6 flex flex-col gap-4 rounded-[28px] border border-foreground/15 bg-accent/[0.04] px-5 py-5 md:flex-row md:items-center md:justify-between md:px-6">
-          <div className="max-w-2xl">
-            <p className="text-[11px] uppercase tracking-[0.28em] text-muted">
-              {locale === "zh" ? "提意见" : "Feedback"}
-            </p>
-            <p className="mt-2 text-sm leading-7 text-foreground/80">
-              {locale === "zh"
-                ? "有想法、建议，或发现了问题？直接告诉我，意见会发到我邮箱。"
-                : "Have an idea, a suggestion, or found a bug? Tell me — it lands straight in my inbox."}
-            </p>
-          </div>
+        <div className="grid border-b border-white/15 md:grid-cols-2">
           <Link
             href={localizeHref("/contact#feedback", locale)}
             prefetch={false}
-            className="inline-flex shrink-0 items-center justify-center rounded-full bg-foreground px-5 py-2.5 text-sm font-medium text-background transition-opacity hover:opacity-90"
+            className="group flex items-center gap-4 border-b border-white/15 py-6 transition-colors hover:bg-white/[0.04] md:border-b-0 md:border-r md:px-6 md:first:pl-0"
           >
-            {locale === "zh" ? "提个建议" : "Send feedback"}
+            <MessageSquareText className="h-5 w-5 shrink-0 text-zinc-500 transition-colors group-hover:text-white" />
+            <span className="min-w-0 flex-1">
+              <span className="block text-sm text-white">{locale === "zh" ? "反馈与建议" : "Feedback"}</span>
+              <span className="mt-1 block text-xs leading-5 text-zinc-500">{locale === "zh" ? "告诉我们哪里还可以更好" : "Tell us what could work better"}</span>
+            </span>
+            <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
           </Link>
-        </div>
-
-        <div className="mb-8 flex flex-col gap-4 rounded-[28px] border border-border bg-[radial-gradient(circle_at_top_left,rgba(245,158,11,0.1),transparent_35%),radial-gradient(circle_at_bottom_right,rgba(34,197,94,0.08),transparent_38%)] px-5 py-5 md:flex-row md:items-center md:justify-between md:px-6">
-          <div className="max-w-2xl">
-            <p className="text-[11px] uppercase tracking-[0.28em] text-muted">
-              {t("footer.support.eyebrow")}
-            </p>
-            <p className="mt-2 text-sm leading-7 text-muted">
-              {t("footer.support.body")}
-            </p>
-          </div>
           <Link
             href={localizeHref("/contact#support-maintenance", locale)}
             prefetch={false}
-            className="inline-flex shrink-0 items-center justify-center rounded-full border border-foreground px-4 py-2 text-sm transition-colors hover:bg-foreground hover:text-background"
+            className="group flex items-center gap-4 py-6 transition-colors hover:bg-white/[0.04] md:px-6 md:last:pr-0"
           >
-            {t("footer.support.cta")}
+            <Heart className="h-5 w-5 shrink-0 text-zinc-500 transition-colors group-hover:text-white" />
+            <span className="min-w-0 flex-1">
+              <span className="block text-sm text-white">{t("footer.support.eyebrow")}</span>
+              <span className="mt-1 block text-xs leading-5 text-zinc-500">{t("footer.support.body")}</span>
+            </span>
+            <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
           </Link>
         </div>
 
-        <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-muted">
+        <div className="flex flex-col items-start justify-between gap-4 pt-7 text-xs text-zinc-500 md:flex-row md:items-center">
           <p>{t("footer.openSource").replace("{year}", String(currentYear))}</p>
-          <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2">
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
             {trustLinks.map((link) => (
               <Link
                 key={link.href}
                 href={localizeHref(link.href, locale)}
                 prefetch={false}
-                className="hover:text-foreground transition-colors"
+                className="transition-colors hover:text-white"
               >
                 {t(link.labelKey)}
               </Link>
@@ -180,13 +171,13 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="mt-4 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-center text-xs text-muted">
+        <div className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-zinc-600 md:justify-end">
           <span>{t("footer.icp.label")}</span>
           <a
             href="https://stylekit.top"
             target="_blank"
             rel="noopener noreferrer"
-            className="hover:text-foreground transition-colors"
+            className="transition-colors hover:text-white"
           >
             stylekit.top
           </a>
@@ -194,7 +185,7 @@ export function Footer() {
             href="https://beian.miit.gov.cn/"
             target="_blank"
             rel="noopener noreferrer"
-            className="hover:text-foreground transition-colors"
+            className="transition-colors hover:text-white"
           >
             陕ICP备2025065501号-3
           </a>

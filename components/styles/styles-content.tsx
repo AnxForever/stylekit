@@ -19,6 +19,8 @@ import { observeCatalogImpressions } from "@/lib/analytics/catalog-impressions";
 
 type TypeFilter = StyleType | "all";
 type SortOption = "recommended" | "name-asc" | "name-desc";
+const INITIAL_VISIBLE_STYLE_COUNT = 24;
+const VISIBLE_STYLE_COUNT_STEP = 24;
 
 interface StylesContentProps {
   allStyles: StyleMeta[];
@@ -86,6 +88,7 @@ export function StylesContent({ allStyles }: StylesContentProps) {
   const catalogGridRef = useRef<HTMLDivElement>(null);
   const seenCatalogImpressionsRef = useRef(new Set<string>());
   const hasMountedQuerySyncRef = useRef(false);
+  const hasMountedVisibleCountRef = useRef(false);
 
   const [activeType, setActiveType] = useState<TypeFilter>(parsedSearchParams.type);
   const [activeTags, setActiveTags] = useState<StyleTag[]>(parsedSearchParams.tags);
@@ -96,6 +99,7 @@ export function StylesContent({ allStyles }: StylesContentProps) {
   const [isMobileFiltersOpen, setIsMobileFiltersOpen] = useState(false);
   const [isPending, startTransition] = useTransition();
   const [tagDropdownOpen, setTagDropdownOpen] = useState(false);
+  const [visibleStyleCount, setVisibleStyleCount] = useState(INITIAL_VISIBLE_STYLE_COUNT);
   const tagDropdownRef = useRef<HTMLDivElement>(null);
   const activeTagsKey = activeTags.join(",");
   const deferredActiveType = useDeferredValue(activeType);
@@ -150,6 +154,7 @@ export function StylesContent({ allStyles }: StylesContentProps) {
   useEffect(() => {
     const savedScroll = sessionStorage.getItem("styles-scroll-position");
     if (savedScroll) {
+      setVisibleStyleCount(Number.MAX_SAFE_INTEGER);
       const y = parseInt(savedScroll, 10);
       // 使用更大的延迟以确保：
       // 1. DOM 完全渲染
@@ -466,6 +471,11 @@ export function StylesContent({ allStyles }: StylesContentProps) {
     styleScenarios,
     trimmedDeferredSearchQuery,
   ]);
+  const visibleStyles = useMemo(
+    () => filteredStyles.slice(0, visibleStyleCount),
+    [filteredStyles, visibleStyleCount]
+  );
+  const hasMoreStyles = visibleStyles.length < filteredStyles.length;
 
   const hasActiveFilters =
     activeScenario !== "all" ||
@@ -509,6 +519,15 @@ export function StylesContent({ allStyles }: StylesContentProps) {
   ].join(":");
 
   useEffect(() => {
+    if (!hasMountedVisibleCountRef.current) {
+      hasMountedVisibleCountRef.current = true;
+      return;
+    }
+
+    setVisibleStyleCount(INITIAL_VISIBLE_STYLE_COUNT);
+  }, [catalogImpressionContextKey]);
+
+  useEffect(() => {
     const grid = catalogGridRef.current;
     if (!grid || isFiltering || filteredStyles.length === 0) {
       return;
@@ -528,7 +547,8 @@ export function StylesContent({ allStyles }: StylesContentProps) {
     catalogImpressionContextKey,
     deferredFilterCount,
     deferredSortBy,
-    filteredStyles,
+    filteredStyles.length,
+    visibleStyles,
     isFiltering,
     trimmedDeferredSearchQuery,
   ]);
@@ -814,8 +834,12 @@ export function StylesContent({ allStyles }: StylesContentProps) {
 
           <div className="flex flex-wrap items-center justify-between gap-3 mb-6 pb-4 border-b border-border">
             <div className="flex items-center gap-3">
-              <p className="text-sm text-muted">
-                {filteredStyles.length} {t("styles.results")}
+              <p className="text-sm text-muted" aria-live="polite" aria-atomic="true">
+                {visibleStyles.length < filteredStyles.length
+                  ? locale === "zh"
+                    ? `已显示 ${visibleStyles.length} / ${filteredStyles.length} 个结果`
+                    : `Showing ${visibleStyles.length} of ${filteredStyles.length} results`
+                  : `${filteredStyles.length} ${t("styles.results")}`}
               </p>
               {isFiltering && (
                 <span className="inline-flex items-center gap-1.5 text-xs text-muted">
@@ -850,6 +874,7 @@ export function StylesContent({ allStyles }: StylesContentProps) {
 
           {/* Styles List with loading indicator */}
           <div
+            id="styles-catalog-grid"
             ref={catalogGridRef}
             className={`grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 md:gap-8 transition-opacity ${
               isFiltering ? "opacity-70" : ""
@@ -866,7 +891,7 @@ export function StylesContent({ allStyles }: StylesContentProps) {
                 )}
               </div>
             ) : (
-              filteredStyles.map((style: StyleMeta, index: number) => (
+              visibleStyles.map((style: StyleMeta, index: number) => (
                 <div
                   key={style.slug}
                   data-catalog-style-slug={style.slug}
@@ -878,6 +903,22 @@ export function StylesContent({ allStyles }: StylesContentProps) {
               ))
             )}
           </div>
+          {hasMoreStyles ? (
+            <div className="mt-8 flex justify-center">
+              <button
+                type="button"
+                onClick={() =>
+                  setVisibleStyleCount((current) =>
+                    Math.min(current + VISIBLE_STYLE_COUNT_STEP, filteredStyles.length)
+                  )
+                }
+                className="inline-flex min-h-[48px] items-center justify-center border border-foreground bg-background px-6 py-3 text-sm tracking-wide text-foreground transition-colors hover:bg-foreground hover:text-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                aria-controls="styles-catalog-grid"
+              >
+                {locale === "zh" ? "加载更多风格" : "Load more styles"}
+              </button>
+            </div>
+          ) : null}
         </div>
       </section>
 

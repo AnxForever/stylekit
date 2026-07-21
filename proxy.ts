@@ -114,6 +114,9 @@ export async function proxy(request: NextRequest) {
     ? stripLocaleFromPathname(incomingPath)
     : incomingPath;
   const effectivePath = strippedPath;
+  const localeCookieValue = request.cookies.get(LOCALE_COOKIE_NAME)?.value;
+  const requestLocale =
+    localeInPath ?? (isLocale(localeCookieValue) ? localeCookieValue : DEFAULT_LOCALE);
 
   if (localeInPath && shouldBypassLocale(strippedPath)) {
     const redirectUrl = request.nextUrl.clone();
@@ -144,9 +147,8 @@ export async function proxy(request: NextRequest) {
       });
     }
 
-    const preferredLocaleCookie = request.cookies.get(LOCALE_COOKIE_NAME)?.value;
-    const preferredLocale = isLocale(preferredLocaleCookie)
-      ? preferredLocaleCookie
+    const preferredLocale = isLocale(localeCookieValue)
+      ? localeCookieValue
       : detectPreferredLocale(request.headers.get("accept-language"));
     const redirectUrl = request.nextUrl.clone();
     redirectUrl.pathname = addLocaleToPathname(incomingPath, preferredLocale || DEFAULT_LOCALE);
@@ -172,34 +174,42 @@ export async function proxy(request: NextRequest) {
     requestHeaders.set("x-stylekit-locale", localeInPath);
     requestHeaders.set("x-stylekit-visible-path", incomingPath);
   } else {
-    requestHeaders.set("x-stylekit-locale", DEFAULT_LOCALE);
+    requestHeaders.set("x-stylekit-locale", requestLocale);
     requestHeaders.set("x-stylekit-visible-path", incomingPath);
   }
+
+  const finalizeResponse = (response: NextResponse) => {
+    if (effectivePath === "/api/workspace" || effectivePath.startsWith("/api/workspace/")) {
+      response.headers.set("Cache-Control", "private, no-store");
+      response.headers.set("Pragma", "no-cache");
+    }
+    return response;
+  };
 
   const buildResponse = () => {
     if (localeInPath) {
       if (shouldUseLocalizedFilesystemRoute(strippedPath)) {
-        return NextResponse.next({
+        return finalizeResponse(NextResponse.next({
           request: { headers: requestHeaders },
-        });
+        }));
       }
 
       if (!shouldRewriteLocalizedPath(strippedPath)) {
-        return NextResponse.next({
+        return finalizeResponse(NextResponse.next({
           request: { headers: requestHeaders },
-        });
+        }));
       }
 
       const rewriteUrl = request.nextUrl.clone();
       rewriteUrl.pathname = strippedPath;
-      return NextResponse.rewrite(rewriteUrl, {
+      return finalizeResponse(NextResponse.rewrite(rewriteUrl, {
         request: { headers: requestHeaders },
-      });
+      }));
     }
 
-    return NextResponse.next({
+    return finalizeResponse(NextResponse.next({
       request: { headers: requestHeaders },
-    });
+    }));
   };
 
   const isAdminRequest = isAdminRoute(effectivePath);
@@ -215,6 +225,21 @@ export async function proxy(request: NextRequest) {
   }
 
   if (isAdminRequest && hasAdminPasswordSession) {
+    const response = buildResponse();
+    if (localeInPath) {
+      response.cookies.set(LOCALE_COOKIE_NAME, localeInPath, {
+        path: "/",
+        sameSite: "lax",
+        maxAge: 60 * 60 * 24 * 365,
+      });
+    }
+    return response;
+  }
+
+  const hasAdminDevBypass =
+    process.env.NODE_ENV !== "production" &&
+    process.env.ADMIN_DEV_BYPASS === "true";
+  if (isAdminRequest && hasAdminDevBypass) {
     const response = buildResponse();
     if (localeInPath) {
       response.cookies.set(LOCALE_COOKIE_NAME, localeInPath, {

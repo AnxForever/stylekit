@@ -13,6 +13,7 @@ production directory is an rsync target, not a git checkout.
 pnpm install --frozen-lockfile
 pnpm run security:secrets
 pnpm run check:catalog
+pnpm run check:support-assets
 pnpm run typecheck
 pnpm run test
 pnpm run build
@@ -61,10 +62,24 @@ rsync -az --delete \
   --exclude .env.local \
   --exclude .env.production \
   --exclude .data/ \
+  --exclude public/support/receipts/ \
+  --exclude public/support/thank-you/ \
   --exclude playwright-report/ \
   --exclude test-results/ \
   --exclude 'packages/**/dist/' \
   ./ stylekit-prod:/www/stylekit/
+```
+
+`public/support/receipts/` and `public/support/thank-you/` are runtime-only
+support assets. The standard sync excludes them so `--delete` cannot remove
+them from production. To add or restore those files, verify and sync them
+explicitly without `--delete`:
+
+```bash
+pnpm run check:support-assets -- --require-runtime
+ssh stylekit-prod 'mkdir -p /www/stylekit/public/support/receipts /www/stylekit/public/support/thank-you'
+rsync -az public/support/receipts/ stylekit-prod:/www/stylekit/public/support/receipts/
+rsync -az public/support/thank-you/ stylekit-prod:/www/stylekit/public/support/thank-you/
 ```
 
 5. Install, validate, build, and restart on the server:
@@ -76,7 +91,7 @@ pnpm install --frozen-lockfile
 pnpm run check:catalog
 pnpm run typecheck
 pnpm run build
-pm2 restart stylekit
+pm2 startOrReload ecosystem.config.cjs --only stylekit --update-env
 pm2 save
 pm2 describe stylekit
 '
@@ -98,7 +113,7 @@ ssh stylekit-prod 'set -e
 cd /www/stylekit
 pnpm install --frozen-lockfile
 pnpm run check:catalog
-pm2 restart stylekit
+pm2 startOrReload ecosystem.config.cjs --only stylekit --update-env
 pm2 save
 pm2 describe stylekit
 '
@@ -182,6 +197,162 @@ Stop if any of these are true:
 
 Current local aliases such as `aliyun-openclaw` and `aliyun-ts` are not deployment proof. They must only be used if their resolved host matches the production DNS and the `/www/stylekit` preflight passes.
 
+## Emergency Access With Alibaba Cloud CLI
+
+Use Alibaba Cloud OAuth and Cloud Assistant when TCP port 22 is reachable but
+SSH authentication or the application is unresponsive. OAuth credentials stay
+in the local CLI profile and must never be committed to the repository.
+
+```bash
+aliyun configure --mode OAuth --profile stylekit-prod
+```
+
+Choose the China site, set the default region to `cn-beijing`, and complete the
+browser authorization. Verify the account and locate the production instance
+before running commands:
+
+```bash
+aliyun sts GetCallerIdentity --profile stylekit-prod
+aliyun ecs DescribeInstances \
+  --RegionId cn-beijing \
+  --profile stylekit-prod
+aliyun ecs DescribeCloudAssistantStatus \
+  --RegionId cn-beijing \
+  --InstanceId.1 i-2zeg61g7xvaauggrkjd6 \
+  --profile stylekit-prod
+```
+
+The current production instance is `i-2zeg61g7xvaauggrkjd6` with public IP
+`59.110.91.219`. Use `ecs RunCommand` for recovery diagnostics and `ecs
+SendFile` for small files. `SendFile` accepts at most 32 KB after Base64
+encoding, so larger binary assets must be split, transferred, reassembled, and
+verified with SHA-256 before installation.
+
+After Cloud Assistant restores SSH, return to the normal `stylekit-prod` SSH
+preflight. Do not store OAuth tokens, temporary access keys, tunnel tokens, or
+command output containing credentials in the repository.
+
+## Runtime Memory Guardrails
+
+Production must run StyleKit from [`ecosystem.config.cjs`](../ecosystem.config.cjs)
+instead of `pm2 start npm -- start`. The ecosystem file makes PM2 monitor the
+actual Next.js process, limits the V8 heap to 384 MB, and requests a controlled
+restart if resident memory exceeds 512 MB. This protects the 1.8 GB host from a
+global OOM while leaving headroom for Nginx, n8n, the blog, and system agents.
+
+```bash
+cd /www/stylekit
+pm2 startOrReload ecosystem.config.cjs --only stylekit --update-env
+pm2 save
+pm2 describe stylekit
+```
+
+`startOrReload` is safe only after the PM2 entry already points to the Next.js
+binary. When migrating an older entry whose script is `/usr/bin/npm`, perform a
+clean one-time replacement so PM2 does not append the ecosystem arguments to
+`npm start`:
+
+```bash
+cd /www/stylekit
+pm2 delete stylekit
+pm2 start ecosystem.config.cjs --only stylekit --update-env
+pm2 save
+```
+
+Verify that PM2's process PID is the `next-server` PID and that no `npm start`
+wrapper remains:
+
+```bash
+pm2 pid stylekit
+ps -eo pid,ppid,rss,args | grep -E '[n]ext-server|[n]pm start'
+```
+
+For post-change stability checks, require all of the following:
+
+- the PM2 script is `node_modules/next/dist/bin/next`;
+- `restart_time` and `unstable_restarts` remain zero from the new baseline;
+- resident memory remains below 512 MB;
+- `/api/health` remains successful;
+- the kernel reports no new `Out of memory: Killed process` event.
+
+## n8n Stability Budget
+
+n8n is a sibling service on the same 1.8 GB host and therefore shares the OOM
+risk with StyleKit. Its Compose project lives at `/opt/n8n`. Keep the image
+pinned to the verified version instead of `latest`, retain bounded execution
+history, and cap production concurrency:
+
+```yaml
+image: docker.n8n.io/n8nio/n8n:2.29.10
+dns:
+  - 100.100.2.136
+  - 100.100.2.138
+  - 223.5.5.5
+extra_hosts:
+  - "anxforever.cn:host-gateway"
+  - "www.stylekit.top:host-gateway"
+  - "grok.baxfor.fun:host-gateway"
+environment:
+  - EXECUTIONS_DATA_PRUNE=true
+  - EXECUTIONS_DATA_MAX_AGE=168
+  - EXECUTIONS_DATA_PRUNE_MAX_COUNT=200
+  - EXECUTIONS_DATA_SAVE_ON_SUCCESS=none
+  - EXECUTIONS_DATA_SAVE_ON_ERROR=all
+  - EXECUTIONS_DATA_SAVE_MANUAL_EXECUTIONS=true
+  - N8N_CONCURRENCY_PRODUCTION_LIMIT=1
+mem_limit: 512m
+memswap_limit: 512m
+cpus: 0.75
+cpu_shares: 256
+pids_limit: 128
+oom_score_adj: 500
+```
+
+The uptime workflow must not download full page bodies. Use `HEAD` for the
+StyleKit and anxforever.cn targets, and use `GET https://grok.baxfor.fun/health`
+for the grok target because that service does not support `HEAD`. Configure the
+HTTP Request node with three attempts, a two-second delay between attempts, and
+a 20-second timeout. Keep the existing rule that requires two consecutive
+failed workflow runs before sending an alert.
+
+All monitored hostnames currently resolve to the same production instance.
+Mapping them to Docker's `host-gateway` preserves HTTPS hostname, certificate,
+Nginx routing, and application checks while avoiding unreliable public-IP
+hairpin routing and intermittent container DNS failures.
+
+Do not run a second full n8n container alongside production on this host. The
+combined memory and Task Broker load can delay StyleKit, SSH, and Cloud
+Assistant. For a one-off workflow test, stop production, run the workflow
+serially, and always bring production back up:
+
+```bash
+cd /opt/n8n
+docker compose stop n8n
+docker compose run --rm --no-deps -T n8n execute \
+  --id=site-uptime-monitor \
+  --rawOutput
+docker compose up -d n8n
+```
+
+Do not retain routine n8n backups on this host. The execution data is
+disposable operational history, and duplicate database copies consume scarce
+disk space without protecting the other projects. Stop n8n before database
+maintenance, validate the live database in place, and remove temporary copies
+immediately after the maintenance operation.
+
+After any Compose or database maintenance:
+
+```bash
+cd /opt/n8n
+docker compose config --quiet
+docker compose up -d --force-recreate n8n
+docker inspect n8n --format '{{.State.Health.Status}} {{.RestartCount}} {{.State.OOMKilled}}'
+docker stats --no-stream n8n
+curl -fsS http://127.0.0.1:5678/healthz
+curl -fsS https://anxforever.cn/n8n/ >/dev/null
+sqlite3 -readonly data/database.sqlite 'PRAGMA integrity_check;'
+```
+
 ## Required Environment
 
 Core app variables:
@@ -218,6 +389,7 @@ From the local repository root, before pushing:
 pnpm install --frozen-lockfile
 pnpm run security:secrets
 pnpm run check:catalog
+pnpm run check:support-assets
 pnpm run typecheck
 pnpm exec vitest run --config tests/vitest.config.ts
 pnpm run build
@@ -250,6 +422,8 @@ rsync -az --delete \
   --exclude .env.local \
   --exclude .env.production \
   --exclude .data/ \
+  --exclude public/support/receipts/ \
+  --exclude public/support/thank-you/ \
   --exclude playwright-report/ \
   --exclude test-results/ \
   --exclude 'packages/**/dist/' \
@@ -261,7 +435,7 @@ pnpm install --frozen-lockfile
 pnpm run check:catalog
 pnpm run typecheck
 pnpm run build
-pm2 restart stylekit
+pm2 startOrReload ecosystem.config.cjs --only stylekit --update-env
 pm2 save
 pm2 describe stylekit
 '
@@ -279,7 +453,7 @@ ssh stylekit-prod 'set -e
 cd /www/stylekit
 pnpm install --frozen-lockfile
 pnpm run check:catalog
-pm2 restart stylekit
+pm2 startOrReload ecosystem.config.cjs --only stylekit --update-env
 pm2 save
 pm2 describe stylekit
 '
@@ -412,6 +586,7 @@ git revert <commit>
 pnpm install --frozen-lockfile
 pnpm run security:secrets
 pnpm run check:catalog
+pnpm run check:support-assets
 pnpm run typecheck
 pnpm run test
 pnpm run build
@@ -425,6 +600,8 @@ rsync -az --delete \
   --exclude .env.local \
   --exclude .env.production \
   --exclude .data/ \
+  --exclude public/support/receipts/ \
+  --exclude public/support/thank-you/ \
   --exclude playwright-report/ \
   --exclude test-results/ \
   --exclude 'packages/**/dist/' \
@@ -436,7 +613,7 @@ ssh stylekit-prod 'set -e
 cd /www/stylekit
 pnpm install --frozen-lockfile
 pnpm run check:catalog
-pm2 restart stylekit
+pm2 startOrReload ecosystem.config.cjs --only stylekit --update-env
 pm2 save
 pm2 describe stylekit
 '
@@ -445,7 +622,7 @@ pm2 describe stylekit
 For rsync snapshot rollback, copy the latest known-good
 `/www/stylekit-backups/stylekit-<timestamp>/` snapshot back to `/www/stylekit/`,
 then run `pnpm install --frozen-lockfile`, `pnpm run check:catalog`, and
-`pm2 restart stylekit`.
+`pm2 startOrReload ecosystem.config.cjs --only stylekit --update-env`.
 
 Feature rollback without reverting code:
 
@@ -453,7 +630,7 @@ Feature rollback without reverting code:
 unset ADMIN_PASSWORD
 unset ADMIN_PASSWORD_SHA256
 unset ADMIN_SESSION_SECRET
-pm2 restart stylekit
+pm2 startOrReload ecosystem.config.cjs --only stylekit --update-env
 ```
 
 Watchdog rollback:

@@ -9,6 +9,8 @@ const FILE_EXTENSION_RE = /\.[^/]+$/;
 const NON_LOCALIZED_PREFIXES = [
   "/api",
   "/admin",
+  "/validation",
+  "/workspace",
   "/_next",
   "/api-test",
 ];
@@ -92,6 +94,10 @@ export function shouldBypassLocale(pathname: string): boolean {
   const normalized = normalizePathname(pathname);
 
   if (NON_LOCALIZED_EXACT.has(normalized)) return true;
+  // Curated Showcase pages have dedicated per-style implementations. Routing
+  // them through /[locale]/styles/[slug]/showcase replaces that approved page
+  // with the generic dynamic fallback.
+  if (/^\/styles\/[^/]+\/showcase$/.test(normalized)) return true;
   if (normalized.startsWith("/feed/")) return true;
   if (FILE_EXTENSION_RE.test(normalized)) return true;
   // Next.js generated image routes (opengraph-image, twitter-image, icon, etc.)

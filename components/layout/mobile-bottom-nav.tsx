@@ -2,27 +2,44 @@
 
 import { usePathname } from "next/navigation";
 import Link from "next/link";
-import { Home, Palette, LayoutTemplate, Menu } from "lucide-react";
+import { Home, Palette, LayoutTemplate, Search } from "lucide-react";
 import { useI18n } from "@/lib/i18n/context";
 import { localizeHref, stripLocaleFromPathname } from "@/lib/i18n/routing";
-
-const tabs = [
-  { href: "/", icon: Home, label: "Home", match: (p: string) => p === "/" },
-  { href: "/styles", icon: Palette, label: "Styles", match: (p: string) => p.startsWith("/styles") },
-  { href: "/templates", icon: LayoutTemplate, label: "Templates", match: (p: string) => p.startsWith("/templates") },
-] as const;
 
 export function MobileBottomNav() {
   const pathname = usePathname();
   const { locale } = useI18n();
   const visiblePath = stripLocaleFromPathname(pathname || "/");
+  const tabs = [
+    {
+      href: "/",
+      icon: Home,
+      label: locale === "zh" ? "首页" : "Home",
+      match: (path: string) => path === "/",
+    },
+    {
+      href: "/styles",
+      icon: Palette,
+      label: locale === "zh" ? "风格" : "Styles",
+      match: (path: string) => path.startsWith("/styles"),
+    },
+    {
+      href: "/templates",
+      icon: LayoutTemplate,
+      label: locale === "zh" ? "模板" : "Templates",
+      match: (path: string) => path.startsWith("/templates"),
+    },
+  ] as const;
 
-  if (visiblePath.startsWith("/admin")) {
+  if (
+    visiblePath.startsWith("/admin") ||
+    visiblePath.startsWith("/validation/") ||
+    visiblePath.startsWith("/workspace")
+  ) {
     return null;
   }
 
-  const handleMenuClick = () => {
-    // Dispatch Cmd+K to open command palette as "More" action
+  const handleSearchClick = () => {
     const event = new KeyboardEvent("keydown", {
       key: "k",
       metaKey: true,
@@ -34,7 +51,7 @@ export function MobileBottomNav() {
   return (
     <nav
       className="fixed bottom-0 inset-x-0 z-40 md:hidden border-t border-border bg-background/95 supports-[backdrop-filter]:bg-background/75 backdrop-blur"
-      aria-label="Mobile navigation"
+      aria-label={locale === "zh" ? "移动导航" : "Mobile navigation"}
     >
       <div className="flex items-center justify-around h-14 pb-[env(safe-area-inset-bottom)]">
         {tabs.map((tab) => {
@@ -43,22 +60,24 @@ export function MobileBottomNav() {
             <Link
               key={tab.href}
               href={localizeHref(tab.href, locale)}
-              className={`flex flex-col items-center justify-center gap-0.5 min-w-[64px] min-h-[44px] text-xs transition-colors ${
+              aria-current={isActive ? "page" : undefined}
+              className={`flex min-h-[44px] min-w-[64px] flex-col items-center justify-center gap-0.5 text-xs transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-accent ${
                 isActive ? "text-foreground" : "text-muted"
               }`}
             >
-              <tab.icon className="w-5 h-5" />
+              <tab.icon className="w-5 h-5" aria-hidden="true" />
               <span>{tab.label}</span>
             </Link>
           );
         })}
         <button
           type="button"
-          onClick={handleMenuClick}
-          className="flex flex-col items-center justify-center gap-0.5 min-w-[64px] min-h-[44px] text-xs text-muted transition-colors"
+          onClick={handleSearchClick}
+          className="flex min-h-[44px] min-w-[64px] flex-col items-center justify-center gap-0.5 text-xs text-muted transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-accent"
+          aria-label={locale === "zh" ? "搜索" : "Search"}
         >
-          <Menu className="w-5 h-5" />
-          <span>More</span>
+          <Search className="w-5 h-5" aria-hidden="true" />
+          <span>{locale === "zh" ? "搜索" : "Search"}</span>
         </button>
       </div>
     </nav>

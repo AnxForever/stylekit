@@ -1,5 +1,10 @@
 // Black-box CLI test: spawn the built bin and assert stdout/stderr/exit code.
 import { execFileSync } from "node:child_process";
+import { readFileSync } from "node:fs";
+
+const packageVersion = JSON.parse(
+  readFileSync(new URL("../package.json", import.meta.url), "utf8"),
+).version;
 
 let failures = 0;
 function check(cond, label) {
@@ -20,7 +25,10 @@ function run(args) {
 
 // --- happy paths (stdout, exit 0) ---
 let r = run(["--version"]);
-check(r.code === 0 && r.stdout.trim() === "0.1.0", "--version -> 0.1.0");
+check(
+  r.code === 0 && r.stdout.trim() === packageVersion,
+  `--version -> ${packageVersion}`,
+);
 
 r = run(["list", "--category", "retro", "--limit", "3"]);
 const listRows = r.stdout.split("\n").filter((l) => l.startsWith("  "));

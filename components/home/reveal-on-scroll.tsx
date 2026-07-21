@@ -87,7 +87,10 @@ export function RevealOnScroll({
           ? null
           : [
               "motion-reduce:opacity-100",
-              isVisible ? revealVariants[variant] : "opacity-0",
+              // Keep server-rendered and not-yet-observed content readable.
+              // Motion is an enhancement applied on entry, never a requirement
+              // for the page to become visible.
+              isVisible ? revealVariants[variant] : null,
             ]
       )}
     >

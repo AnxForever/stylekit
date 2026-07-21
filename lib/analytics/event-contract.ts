@@ -211,4 +211,9 @@ export interface PageViewPayload {
   hostname: string;
   referrerDomain: string | null;
   referrerType: "direct" | "search" | "social" | "external" | "internal";
+  utm_source?: string;
+  utm_medium?: string;
+  utm_campaign?: string;
+  utm_content?: string;
+  utm_term?: string;
 }

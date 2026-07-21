@@ -271,9 +271,9 @@ These are validation ranges, not permanent pricing commitments.
 - Add no full billing or entitlement platform initially.
 - Show a concrete Pack 1 offer containing price, exact deliverables, framework support, license,
   update boundary, refund policy, and expected delivery date.
-- A **qualified visitor** is a deduplicated non-bot session from the target ICP that views the price,
+- A **qualified visitor** is a deduplicated, non-PII participant identity that passes the frozen ICP questionnaire, is not bot/internal/test traffic, and completes the required offer and price visibility thresholds,
   deliverables, and license during the 30-day window.
-- A **soft purchase intent** requires a verified email and explicit acceptance of the displayed price.
+- A **soft purchase intent** requires an authenticated account or separately verified contact identity plus explicit acceptance of the exact displayed price, frozen Offer hash, license, update scope, refund policy, and delivery terms.
 - A **strong purchase intent** requires checkout start, a paid preorder, or a non-refundable deposit.
 - Success threshold: at least 5% soft intent and at least 2% strong intent from 200 qualified visitors.
 - Interview evidence is tracked separately: at least 20 target-ICP interviews, with at least 6 users
@@ -283,7 +283,7 @@ These are validation ranges, not permanent pricing commitments.
 
 ### Experiment 2 — Founding single-pack sale
 
-- Target range: CNY 99–199 per pack.
+- Current first-Pack validation: CNY 29 founding price versus CNY 49 standard price with identical scope. CNY 99–199 is reserved for later, broader Packs after paid installation evidence exists.
 - Offer a defined license, deliverables, support boundary, and update policy.
 - Time box: 45 days from Pack 1 availability.
 - Ten customers are an initial demand signal, not proof of sustainable profitability.
@@ -293,7 +293,7 @@ These are validation ranges, not permanent pricing commitments.
 
 ### Experiment 3 — Founders All Access
 
-- Target range: CNY 399–699 one-time during validation.
+- Later All Access hypothesis: CNY 149–299 one-time. It must use a separate Offer and experiment and must not be mixed into the current CNY 29/CNY 49 standard Pack denominator.
 - Test only after Pack 1 has real paid customers.
 - Include existing flagship packs and a clearly bounded set of future drops.
 - Do not promise lifetime production that creates an unsustainable content obligation.

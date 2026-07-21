@@ -1,4 +1,10 @@
-import { getLocaleFromPathname, localizeHref } from "@/lib/i18n/routing";
+import {
+  getLocaleFromPathname,
+  isLocale,
+  localizeHref,
+  LOCALE_COOKIE_NAME,
+} from "@/lib/i18n/routing";
+import { hasUsableAppHistory } from "@/lib/navigation/browser-history";
 
 interface RouterLike {
   back(): void;
@@ -33,23 +39,27 @@ function readSavedReturnUrl(key: string): string | null {
   }
 }
 
-function canUseBrowserBack(): boolean {
-  if (typeof window === "undefined") {
-    return false;
+function readLocaleCookie(): "en" | "zh" | null {
+  if (typeof document === "undefined" || !document.cookie) {
+    return null;
   }
 
-  if (window.history.length <= 1) {
-    return false;
-  }
+  const prefix = `${LOCALE_COOKIE_NAME}=`;
+  const rawValue = document.cookie
+    .split(";")
+    .map((part) => part.trim())
+    .find((part) => part.startsWith(prefix))
+    ?.slice(prefix.length);
 
-  if (!document.referrer) {
-    return true;
+  if (!rawValue) {
+    return null;
   }
 
   try {
-    return new URL(document.referrer).origin === window.location.origin;
+    const value = decodeURIComponent(rawValue);
+    return isLocale(value) ? value : null;
   } catch {
-    return false;
+    return null;
   }
 }
 
@@ -58,8 +68,21 @@ function localizeForCurrentPath(href: string): string {
     return href;
   }
 
-  const locale = getLocaleFromPathname(window.location.pathname);
+  const locale =
+    getLocaleFromPathname(window.location.pathname) ?? readLocaleCookie();
   return locale ? localizeHref(href, locale) : href;
+}
+
+export function isSemanticBackLabel(label: string): boolean {
+  const normalized = label.replace(/\s+/g, " ").trim();
+  if (!normalized) {
+    return false;
+  }
+
+  return (
+    /^(?:back(?:\s+to)?\b|返回|回到|戻る)/i.test(normalized) ||
+    /^(?:←|⟵|‹|«)\s*\S/.test(normalized)
+  );
 }
 
 export function navigateBackOrFallback(
@@ -72,6 +95,11 @@ export function navigateBackOrFallback(
     savedReturnUrlKey,
     consumeSavedReturnUrl = true,
   } = options;
+
+  if (hasUsableAppHistory()) {
+    router.back();
+    return;
+  }
 
   if (savedReturnUrlKey) {
     const savedUrl = readSavedReturnUrl(savedReturnUrlKey);
@@ -86,11 +114,6 @@ export function navigateBackOrFallback(
 
   if (href) {
     router.push(localizeForCurrentPath(href));
-    return;
-  }
-
-  if (canUseBrowserBack()) {
-    router.back();
     return;
   }
 

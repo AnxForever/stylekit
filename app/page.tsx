@@ -7,6 +7,7 @@ import { HomeContent } from "@/components/home/home-content";
 import { getAllStylesMeta } from "@/lib/styles/meta";
 import { getAllAnimationsMeta } from "@/lib/animations/meta";
 import { CURATED_STYLE_COUNT } from "@/lib/product/catalog-facts";
+import { HOME_SOCIAL_IMAGE } from "@/lib/seo/site-metadata";
 
 export const metadata: Metadata = {
   // Use `absolute` so the root "%s | StyleKit" template does not append a second
@@ -24,6 +25,17 @@ export const metadata: Metadata = {
     "website style guides",
     "Tailwind UI prompts",
   ],
+  openGraph: {
+    images: [
+      {
+        url: HOME_SOCIAL_IMAGE.path,
+        width: HOME_SOCIAL_IMAGE.width,
+        height: HOME_SOCIAL_IMAGE.height,
+        alt: HOME_SOCIAL_IMAGE.alt,
+        type: "image/png",
+      },
+    ],
+  },
 };
 
 function getTemplateCount() {

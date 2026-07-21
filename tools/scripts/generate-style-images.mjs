@@ -4,10 +4,15 @@
  * Style Image Generator — Unsplash Edition
  *
  * Searches Unsplash for representative photos matching each style's
- * aesthetic keywords, caches them to public/images/styles/{slug}/.
+ * aesthetic keywords, caches them to public/images/styles/{slug}/, and writes
+ * a provenance record beside every downloaded image.
+ *
+ * IMPORTANT: these files are internal visual-research inputs. They are not
+ * approved for paid redistribution and must not be promoted into an
+ * Experience Pack without a separate rights audit.
  *
  * Usage:
- *   pnpm images:generate
+ *   STYLEKIT_UNSPLASH_RESEARCH_ACK=internal-only pnpm images:generate
  *
  * Rate limits:
  *   Demo: 50 req/hour  → runs in batches with auto-wait
@@ -27,6 +32,7 @@ const STATE_FILE = join(ROOT, ".images-generate-state.json");
 
 const UNSPLASH_API = "https://api.unsplash.com/search/photos";
 const UNSPLASH_ACCESS_KEY = process.env.UNSPLASH_ACCESS_KEY;
+const UNSPLASH_RESEARCH_ACK = process.env.STYLEKIT_UNSPLASH_RESEARCH_ACK;
 const IMAGES_PER_STYLE = 2;
 
 // Map each style slug to search queries that produce fitting photos.
@@ -232,10 +238,86 @@ async function downloadImage(url, filePath) {
   if (!resp.ok) throw new Error(`Download failed: ${resp.status}`);
   const buffer = Buffer.from(await resp.arrayBuffer());
   await writeFile(filePath, buffer);
+  return buffer;
+}
+
+async function triggerUnsplashDownload(downloadLocation) {
+  try {
+    const response = await fetch(downloadLocation, {
+      headers: {
+        Authorization: `Client-ID ${UNSPLASH_ACCESS_KEY}`,
+        "Accept-Version": "v1",
+      },
+    });
+    return response.ok;
+  } catch {
+    return false;
+  }
+}
+
+function withUnsplashAttribution(url) {
+  const parsed = new URL(url);
+  parsed.searchParams.set("utm_source", "stylekit");
+  parsed.searchParams.set("utm_medium", "referral");
+  return parsed.toString();
+}
+
+function buildProvenance({ photo, query, assetPath, buffer, downloadTracked }) {
+  return {
+    schemaVersion: 1,
+    provider: "unsplash",
+    assetPath,
+    photoId: photo.id,
+    query,
+    creator: {
+      name: photo.user?.name || "Unknown",
+      username: photo.user?.username || "unknown",
+      profileUrl: withUnsplashAttribution(
+        photo.user?.links?.html || "https://unsplash.com/",
+      ),
+    },
+    sourceUrl: withUnsplashAttribution(
+      photo.links?.html || `https://unsplash.com/photos/${photo.id}`,
+    ),
+    downloadLocation: photo.links.download_location,
+    acquiredAt: new Date().toISOString(),
+    contentHash: `sha256:${createHash("sha256").update(buffer).digest("hex")}`,
+    original: {
+      width: photo.width,
+      height: photo.height,
+    },
+    delivery: {
+      format: "webp",
+      requestedWidth: 1920,
+      quality: 85,
+    },
+    usage: {
+      purpose: "internal-visual-research",
+      distributable: false,
+      auditStatus: "pending",
+    },
+    tracking: {
+      downloadEndpointTriggered: downloadTracked,
+    },
+    evidence: {
+      apiDocumentation: "https://unsplash.com/documentation",
+      apiGuidelines: "https://help.unsplash.com/api-guidelines/unsplash-api-guidelines",
+      downloadGuideline: "https://help.unsplash.com/api-guidelines/guideline-triggering-a-download",
+    },
+  };
 }
 
 // ---- Main ----
 async function main() {
+  if (UNSPLASH_RESEARCH_ACK !== "internal-only") {
+    console.error(
+      "Error: Unsplash API images are restricted to internal visual research in StyleKit.\n" +
+        "The API requires hotlinking for public application display, and these cached files are not paid-pack assets.\n" +
+        "Re-run with STYLEKIT_UNSPLASH_RESEARCH_ACK=internal-only only if you accept that boundary.",
+    );
+    process.exit(1);
+  }
+
   if (!UNSPLASH_ACCESS_KEY) {
     console.error(
       "Error: UNSPLASH_ACCESS_KEY not set.\n" +
@@ -324,26 +406,34 @@ async function main() {
 
       const count = Math.min(IMAGES_PER_STYLE, results.length);
       for (let j = 0; j < count; j++) {
-        const imgUrl = results[j].urls.raw + "&w=1920&q=85&fm=webp";
+        const photo = results[j];
+        const imgUrl = photo.urls.raw + "&w=1920&q=85&fm=webp";
+        const fileName = `${String(j + 1).padStart(2, "0")}.webp`;
         const filePath = join(
           styleDir,
-          `${String(j + 1).padStart(2, "0")}.webp`
+          fileName,
         );
-        await downloadImage(imgUrl, filePath);
+        const buffer = await downloadImage(imgUrl, filePath);
+        const downloadTracked = await triggerUnsplashDownload(
+          photo.links.download_location,
+        );
+        const provenancePath = filePath.replace(/\.webp$/i, ".provenance.json");
+        const provenance = buildProvenance({
+          photo,
+          query,
+          assetPath: `/images/styles/${slug}/${fileName}`,
+          buffer,
+          downloadTracked,
+        });
+        await writeFile(provenancePath, `${JSON.stringify(provenance, null, 2)}\n`);
         console.log(`  → ${filePath}`);
+        console.log(`  → ${provenancePath}`);
+        if (!downloadTracked) {
+          console.warn(`  ⚠ Unsplash download endpoint was not acknowledged for ${photo.id}`);
+        }
       }
 
       generated++;
-
-      // Track download for attribution (required by Unsplash TOS)
-      for (let j = 0; j < count; j++) {
-        const downloadUrl = results[j].links.download_location;
-        try {
-          await fetch(downloadUrl, {
-            headers: { Authorization: `Client-ID ${UNSPLASH_ACCESS_KEY}` },
-          });
-        } catch {} // best-effort tracking
-      }
 
       state.completed[slug] = true;
       state.current = i;

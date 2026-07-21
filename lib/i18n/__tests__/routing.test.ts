@@ -40,6 +40,9 @@ describe("i18n routing helpers", () => {
     expect(shouldBypassLocale("/admin-login")).toBe(true);
     expect(shouldBypassLocale("/robots.txt")).toBe(true);
     expect(shouldBypassLocale("/feed/styles.xml")).toBe(true);
+    expect(shouldBypassLocale("/styles/corporate-clean/showcase")).toBe(true);
+    expect(shouldBypassLocale("/styles/neo-brutalist/showcase")).toBe(true);
+    expect(shouldBypassLocale("/styles/corporate-clean")).toBe(false);
     expect(shouldBypassLocale("/styles")).toBe(false);
     expect(shouldBypassLocale("/")).toBe(false);
   });

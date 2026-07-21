@@ -16,6 +16,10 @@ export function AnnouncementBanner() {
   const pathname = usePathname();
   const latest = changelog[0];
   const [visible, setVisible] = useState(false);
+  const isIsolatedSurface =
+    pathname.includes("/admin") ||
+    pathname.startsWith("/validation/") ||
+    pathname.startsWith("/workspace");
 
   useEffect(() => {
     if (!latest) return;
@@ -39,13 +43,14 @@ export function AnnouncementBanner() {
     markLatestChangelogSeen();
   }, []);
 
-  if (!latest || !visible) return null;
+  if (!latest || !visible || isIsolatedSurface) return null;
 
   const title = locale === "zh" && latest.titleZh ? latest.titleZh : latest.title;
 
   return (
     <div
       role="banner"
+      data-site-announcement
       className="sticky top-0 z-50 flex items-center justify-center gap-3 px-4 py-2.5 text-sm font-medium bg-foreground text-background"
     >
       <span className="hidden sm:inline text-xs tracking-widest uppercase opacity-60">

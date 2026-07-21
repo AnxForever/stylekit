@@ -298,7 +298,7 @@ export const zh: { [K in keyof typeof en]: string } = {
 
   // Home page
   "home.subtitle": "风格设计库",
-  "home.title.line1": "让你的",
+  "home.title.line1": "让 AI 生成的",
   "home.title.line2": "网站更加",
   "home.title.line3": "好看",
   "home.description": "精选网页设计风格，附带文档、组件模板、代码片段与可导出的 AI 规则。",

@@ -69,7 +69,7 @@ export function RegisterSW() {
         });
       }
     } else {
-      navigator.serviceWorker.register("/sw.js").catch(() => {
+      navigator.serviceWorker.register("/sw.js", { updateViaCache: "none" }).catch(() => {
         // SW registration failure is non-fatal
       });
     }

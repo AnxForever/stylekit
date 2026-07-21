@@ -444,6 +444,9 @@ export async function listCatalogStylesMeta(): Promise<StyleMeta[]> {
       name: mappedStyle.name,
       nameEn: mappedStyle.nameEn,
       description: mappedStyle.description,
+      descriptionEn:
+        mappedStyle.descriptionEn ||
+        `Explore the visual language, layout principles, and interaction patterns of ${mappedStyle.nameEn}.`,
       cover: mappedStyle.cover,
       category: mappedStyle.category,
       styleType: mappedStyle.styleType,

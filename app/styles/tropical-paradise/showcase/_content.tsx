@@ -302,6 +302,7 @@ export default function ShowcaseContent() {
             {/* Back to StyleKit */}
             <Link
               href="/"
+              data-back-navigation="true"
               className="flex items-center gap-2 text-white/80 hover:text-white transition-colors duration-300 text-sm font-bold tracking-wide"
             >
               <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4">

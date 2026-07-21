@@ -82,6 +82,7 @@ image.jpg
 
 # Generic JPEGs
 *.jpg
+!public/alipay-qr.jpg
 
 # Support receipts — runtime content, not code
 public/support/receipts/

@@ -1,0 +1,60 @@
+<svg width="1600" height="1000" viewBox="0 0 1600 1000" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <title>StyleKit Curatorial Frame identity presentation</title>
+  <defs>
+    <g id="mark">
+      <path
+        fill="currentColor"
+        stroke="currentColor"
+        stroke-width="4"
+        stroke-linejoin="round"
+        d="M491 220C491 326 416 387 268 403C162 414 109 458 108 534C107 619 154 663 251 665C350 666 399 626 408 526H438V705H410C407 695 400 690 390 690C369 690 325 707 274 707C208 707 152 691 106 659C52 622 25 567 25 498C25 396 96 337 238 320C290 314 331 300 361 275C393 247 409 212 409 168C408 127 391 94 356 69C322 46 281 33 235 32C195 31 138 48 112 69C85 92 69 129 65 183H35L34 24C95 1 150 -10 197 -10C278 -10 345 8 398 43C460 84 491 143 491 220Z"
+        transform="translate(12 456) scale(.6 -.6)"
+      />
+      <path
+        fill="currentColor"
+        fill-rule="evenodd"
+        clip-rule="evenodd"
+        d="M304 66H348V222L431 74H480L374 257L494 448H439L348 300V448H304V66ZM418 100H456L396 212H376Z"
+      />
+    </g>
+  </defs>
+
+  <rect width="1600" height="1000" fill="#E9E4DA"/>
+
+  <rect x="70" y="66" width="570" height="570" fill="#F4F0E7" stroke="#11100E" stroke-width="2"/>
+  <g transform="translate(99 95) scale(.92)" color="#11100E">
+    <use href="#mark"/>
+  </g>
+
+  <rect x="688" y="66" width="842" height="570" fill="#11100E"/>
+  <g transform="translate(955 95) scale(.62)" color="#F4F0E7">
+    <use href="#mark"/>
+  </g>
+
+  <rect x="730" y="430" width="758" height="165" fill="#F4F0E7"/>
+  <rect x="770" y="441" width="73" height="143" fill="#11100E"/>
+  <g transform="translate(854 448) scale(.25)" color="#11100E">
+    <use href="#mark"/>
+  </g>
+  <text x="1000" y="524" fill="#11100E" font-family="Arial, sans-serif" font-size="50" font-weight="500" letter-spacing="12">STYLEKIT</text>
+  <line x1="1002" y1="541" x2="1350" y2="541" stroke="#11100E"/>
+  <text x="1003" y="569" fill="#4B4842" font-family="Arial, sans-serif" font-size="11" font-weight="600" letter-spacing="4">CURATED VISUAL STYLE ARCHIVE</text>
+  <rect x="1408" y="441" width="40" height="143" fill="#11100E"/>
+
+  <text x="97" y="707" fill="#11100E" font-family="Arial, sans-serif" font-size="20" font-weight="600" letter-spacing="7">STYLEKIT / IDENTITY 02</text>
+  <text x="94" y="792" fill="#11100E" font-family="Georgia, 'Times New Roman', serif" font-size="76">Curatorial Frame</text>
+  <text x="98" y="846" fill="#4B4842" font-family="Arial, sans-serif" font-size="22">A high-contrast S meets a geometric K.</text>
+  <text x="98" y="880" fill="#4B4842" font-family="Arial, sans-serif" font-size="22">The cut aperture turns the monogram into a frame for many styles.</text>
+
+  <line x1="760" y1="711" x2="1472" y2="711" stroke="#11100E" stroke-width="2"/>
+  <text x="760" y="758" fill="#11100E" font-family="Arial, sans-serif" font-size="18" font-weight="700" letter-spacing="5">DESIGNED TO HOLD, NOT COMPETE</text>
+  <text x="760" y="807" fill="#4B4842" font-family="Arial, sans-serif" font-size="21">Monochrome at the core. Color belongs to the style being curated.</text>
+  <text x="760" y="840" fill="#4B4842" font-family="Arial, sans-serif" font-size="21">Editorial at large scale. Clear and recognizable at 32 px.</text>
+
+  <rect x="760" y="882" width="32" height="32" fill="#11100E"/>
+  <text x="806" y="906" fill="#11100E" font-family="Arial, sans-serif" font-size="16" letter-spacing="2">INK #11100E</text>
+  <rect x="1008" y="882" width="32" height="32" fill="#F4F0E7" stroke="#77736B" stroke-width="2"/>
+  <text x="1055" y="906" fill="#11100E" font-family="Arial, sans-serif" font-size="16" letter-spacing="2">PAPER #F4F0E7</text>
+  <rect x="1303" y="882" width="32" height="32" fill="#C8FF00" stroke="#77736B"/>
+  <text x="1350" y="906" fill="#11100E" font-family="Arial, sans-serif" font-size="16" letter-spacing="2">INDEX #C8FF00</text>
+</svg>

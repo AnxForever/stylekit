@@ -110,6 +110,7 @@ const pageViewDataSchema = z
     hostname: z.string().trim().min(1).max(253),
     referrerDomain: z.string().trim().min(1).max(253).nullable(),
     referrerType: z.enum(["direct", "search", "social", "external", "internal"]),
+    ...utmShape,
   })
   .strict();
 

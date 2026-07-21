@@ -309,6 +309,7 @@ export default function ShowcaseContent() {
           {/* Back to StyleKit */}
           <Link
             href="/"
+            data-back-navigation="true"
             className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-gradient-to-r from-purple-500 to-pink-500 text-white text-sm font-medium hover:shadow-[0_0_20px_rgba(168,85,247,0.5)] hover:-translate-y-0.5 transition-all duration-300"
           >
             <ArrowRightIcon className="w-3.5 h-3.5 rotate-180" />

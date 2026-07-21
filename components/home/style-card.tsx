@@ -27,6 +27,7 @@ export const StyleCard = React.memo(function StyleCard({
   const cardClassName = "group relative border border-border motion-safe:transition-[border-color,transform,box-shadow] motion-safe:duration-200 hover:border-foreground focus-within:border-foreground motion-safe:hover:-translate-y-0.5 motion-safe:hover:shadow-md";
   const primaryName = locale === "zh" ? style.name : style.nameEn || style.name;
   const secondaryName = locale === "zh" ? style.nameEn : style.name;
+  const description = locale === "zh" ? style.description : style.descriptionEn;
 
   // 保存当前滚动位置和过滤器状态，用于返回时恢复
   const handleClick = () => {
@@ -77,7 +78,7 @@ export const StyleCard = React.memo(function StyleCard({
             </span>
           </div>
           <p className="text-sm text-muted leading-relaxed line-clamp-2">
-            {style.description}
+            {description}
           </p>
           {scenarios.length > 0 && (
             <div className="flex flex-wrap gap-1.5 mt-3">

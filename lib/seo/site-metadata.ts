@@ -2,6 +2,13 @@ import type { Metadata } from "next";
 import type { RequestLocaleContext } from "@/lib/i18n/request";
 import { CURATED_STYLE_COUNT } from "@/lib/product/catalog-facts";
 
+export const HOME_SOCIAL_IMAGE = {
+  path: "/social-preview-home-v1.png",
+  width: 1200,
+  height: 630,
+  alt: "StyleKit homepage showing the visual style library and design preview",
+} as const;
+
 export function buildSiteMetadata(context: RequestLocaleContext): Metadata {
   const description = `UI design prompt library and AI-friendly design system with ${CURATED_STYLE_COUNT} curated visual styles. Export design tokens, component recipes, Tailwind-ready patterns, and AI prompts for consistent website UI generation.`;
   const socialDescription = `${CURATED_STYLE_COUNT} curated visual styles with design tokens, component recipes, Tailwind-ready patterns, and AI prompts for beautiful, consistent website UI.`;
@@ -54,10 +61,10 @@ export function buildSiteMetadata(context: RequestLocaleContext): Metadata {
       description: socialDescription,
       images: [
         {
-          url: `${context.baseUrl}/opengraph-image`,
-          width: 1200,
-          height: 630,
-          alt: "StyleKit - AI-Friendly Design System",
+          url: `${context.baseUrl}${HOME_SOCIAL_IMAGE.path}`,
+          width: HOME_SOCIAL_IMAGE.width,
+          height: HOME_SOCIAL_IMAGE.height,
+          alt: HOME_SOCIAL_IMAGE.alt,
           type: "image/png",
         },
       ],
@@ -67,7 +74,14 @@ export function buildSiteMetadata(context: RequestLocaleContext): Metadata {
       title: "StyleKit - UI Design Prompts, Visual Styles & AI-Friendly Design System",
       description: socialDescription,
       creator: "@Justice66890051",
-      images: [`${context.baseUrl}/opengraph-image`],
+      images: [
+        {
+          url: `${context.baseUrl}${HOME_SOCIAL_IMAGE.path}`,
+          alt: HOME_SOCIAL_IMAGE.alt,
+          width: HOME_SOCIAL_IMAGE.width,
+          height: HOME_SOCIAL_IMAGE.height,
+        },
+      ],
     },
     verification: {
       google: process.env.GOOGLE_SITE_VERIFICATION || "2f16e5aff2dd3b60",

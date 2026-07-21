@@ -11,6 +11,7 @@ interface HomeStyleCardProps {
 export function HomeStyleCard({ style }: HomeStyleCardProps) {
   const { locale } = useI18n();
   const scenarios = getStyleScenarios(style, 2);
+  const description = locale === "zh" ? style.description : style.descriptionEn;
   const cardClassName = "group relative border border-border bg-background motion-safe:transition-[border-color,transform,box-shadow] motion-safe:duration-200 hover:border-foreground focus-within:border-foreground motion-safe:hover:-translate-y-0.5 motion-safe:hover:shadow-md";
 
   return (
@@ -48,7 +49,7 @@ export function HomeStyleCard({ style }: HomeStyleCardProps) {
           </span>
         </div>
         <p className="line-clamp-2 text-sm text-muted leading-relaxed">
-          {style.description}
+          {description}
         </p>
         <div className="mt-3 flex flex-wrap gap-1.5">
           {scenarios.map((scenario) => (
