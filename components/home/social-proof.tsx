@@ -60,7 +60,7 @@ export function SocialProof({ stats }: SocialProofProps) {
                 disableDelayOnMobile
               >
                 <div className="text-center">
-                  <p className="text-2xl sm:text-3xl md:text-4xl tabular-nums tracking-tight mb-1">
+                  <p className="font-mono text-2xl sm:text-3xl md:text-4xl tabular-nums tracking-tight mb-1">
                     {stat.value}
                   </p>
                   <p className="text-xs sm:text-sm text-muted tracking-wide">

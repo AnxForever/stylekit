@@ -85,9 +85,9 @@
 
 /* Editorial/Magazine Typography */
 body {
-  --font-display-active: var(--font-public-display), "Songti SC", "STSong", ui-serif, Georgia, serif;
+  --font-display-active: var(--font-public-display), var(--font-public-display-zh), "Songti SC", "STSong", "SimSun", ui-serif, Georgia, serif;
   --font-body-active: var(--font-public-sans), "PingFang SC", "Microsoft YaHei", ui-sans-serif, system-ui, sans-serif;
-  --font-mono-active: var(--font-public-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  --font-mono-active: var(--font-public-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "PingFang SC", "Microsoft YaHei", monospace;
   --font-serif: var(--font-display-active);
   --font-sans: var(--font-body-active);
   --font-mono: var(--font-mono-active);
@@ -110,58 +110,91 @@ h1, h2, h3, h4, h5, h6 {
   text-wrap: balance;
 }
 
-/* English homepage: flourished display with a calligraphic accent.
-   Functional copy remains on the body face, so the script never carries UI. */
+/* English homepage: the same refined serif voice used by Editorial previews.
+   Functional copy remains on the body face to preserve scanning clarity. */
 .home-hero-title-en {
-  font-family: var(--font-home-editorial), "Playfair Display", Georgia, "Times New Roman", serif;
-  font-weight: 700;
+  font-family: var(--font-public-display), "Playfair Display", Georgia, "Times New Roman", serif;
+  font-weight: 500;
   font-kerning: normal;
   font-feature-settings: "kern" 1, "liga" 1, "dlig" 1;
-  letter-spacing: -0.015em;
-  line-height: 1.05;
+  letter-spacing: -0.012em;
+  line-height: 1;
 }
 
-.home-hero-script-en {
+.home-hero-editorial-line-en {
   display: inline-block;
-  margin-top: 0.08em;
-  padding-right: 0.16em;
-  font-family: var(--font-home-script), "Snell Roundhand", "Segoe Script", cursive;
-  font-size: 1.14em;
+  white-space: nowrap;
+  font-family: inherit;
+  font-size: 1em;
   font-style: normal;
-  font-weight: 400;
-  letter-spacing: 0;
-  line-height: 0.9;
-  transform: rotate(-1.5deg) translateY(0.04em);
-  transform-origin: left center;
+  font-weight: 500;
+  letter-spacing: -0.012em;
+  line-height: 0.96;
 }
 
-/* Keep the Latin acronym in the Chinese headline crisp. Without this scoped
-   override it inherits the high-contrast display face and the A reads as Λ. */
+.home-hero-editorial-accent-en {
+  display: inline-block;
+  margin-top: 0.04em;
+  padding-right: 0.08em;
+  font-family: inherit;
+  font-size: 1.06em;
+  font-style: italic;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  line-height: 0.96;
+  transform: none;
+}
+
+/* Preserve the Chinese homepage acronym exactly as it appeared before the
+   typography overhaul: the original system serif stack and heading metrics. */
 .home-hero-ai-zh {
   display: inline-block;
-  margin-inline: 0.04em;
-  font-family: var(--font-public-sans), "PingFang SC", "Microsoft YaHei", sans-serif;
-  font-size: 0.86em;
+  margin-inline: 0;
+  font-family: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+  font-size: 1em;
   font-style: normal;
-  font-weight: 650;
-  letter-spacing: -0.055em;
+  font-weight: 400;
+  letter-spacing: -0.02em;
   line-height: 1;
-  transform: translateY(-0.015em);
+  transform: none;
+}
+
+.home-hero-surface {
+  background-color: var(--background);
+  background-image:
+    linear-gradient(to right, color-mix(in srgb, var(--foreground) 4%, transparent) 1px, transparent 1px),
+    linear-gradient(to bottom, color-mix(in srgb, var(--foreground) 4%, transparent) 1px, transparent 1px);
+  background-size: 48px 48px;
+  background-position: center top;
+}
+
+.home-hero-surface::after {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, var(--background) 0%, transparent 30%, transparent 70%, var(--background) 100%);
+  content: "";
+  pointer-events: none;
+}
+
+.home-hero-surface > * {
+  z-index: 1;
 }
 
 @media (max-width: 639px) {
   .home-hero-title-en {
-    letter-spacing: -0.005em;
-    line-height: 1.08;
+    letter-spacing: -0.008em;
+    line-height: 1.02;
   }
 
-  .home-hero-script-en {
-    font-size: 1.1em;
+  .home-hero-editorial-line-en {
+    font-size: 0.96em;
+    line-height: 0.96;
   }
 
-  .home-hero-ai-zh {
-    font-size: 0.88em;
+  .home-hero-editorial-accent-en {
+    font-size: 1.06em;
   }
+
 }
 
 p,
@@ -351,7 +384,7 @@ code {
 }
 
 ::view-transition-new(root) {
-  animation: fade-in 150ms ease-in;
+  animation: fade-in 150ms ease-out;
 }
 
 @keyframes fade-out {
@@ -449,6 +482,21 @@ code {
   to { opacity: 1; }
 }
 
+@keyframes home-feature-swap {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes home-feature-swap-soft {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes dropdown-enter {
+  from { opacity: 0; transform: scale(0.97) translateY(-4px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
 @keyframes home-segment-pulse {
   0%, 100% { opacity: 0.72; }
   50% { opacity: 1; }
@@ -470,6 +518,9 @@ code {
   --animate-home-reveal-up: home-reveal-up 520ms cubic-bezier(0.22, 1, 0.36, 1) both;
   --animate-home-reveal-up-subtle: home-reveal-up-subtle 420ms cubic-bezier(0.22, 1, 0.36, 1) both;
   --animate-home-reveal-soft: home-reveal-soft 360ms ease-out both;
+  --animate-home-feature-swap: home-feature-swap 320ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  --animate-home-feature-swap-soft: home-feature-swap-soft 240ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  --animate-dropdown-enter: dropdown-enter 160ms cubic-bezier(0.22, 1, 0.36, 1) both;
   --animate-home-segment-pulse: home-segment-pulse 1.8s ease-in-out infinite;
   --animate-home-quick-jump-pop: home-quick-jump-pop 320ms cubic-bezier(0.22, 1, 0.36, 1) both;
   --animate-home-support-float: home-support-float 5.2s ease-in-out infinite;

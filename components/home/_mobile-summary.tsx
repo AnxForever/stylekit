@@ -48,7 +48,7 @@ export function MobileHomeSummarySection({
         <div className="grid grid-cols-3 gap-2">
           {statItems.map((item) => (
             <div key={item.label} className="rounded-[18px] border border-border bg-background/80 px-3 py-3 text-center">
-              <p className="text-base tabular-nums leading-none">{item.value}</p>
+              <p className="font-mono text-base tabular-nums leading-none">{item.value}</p>
               <p className="mt-1 text-[10px] uppercase tracking-[0.18em] text-muted">{item.label}</p>
             </div>
           ))}

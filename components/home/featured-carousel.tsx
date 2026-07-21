@@ -120,43 +120,51 @@ export function FeaturedCarousel({ styles }: FeaturedCarouselProps) {
           setIsFocusWithin(false);
         }
       }}
-      className="relative outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+      className="group/feature relative outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
     >
+      <div className="mb-3 flex items-center justify-between border-b border-border pb-3">
+        <p className="text-[10px] uppercase tracking-[0.18em] text-muted">{t("home.featuredRegionLabel")}</p>
+        <span className="font-mono text-[10px] tabular-nums text-muted">SK / {String(normalizedIndex + 1).padStart(2, "0")}</span>
+      </div>
       <LocalizedLink
         href={`/styles/${featuredStyle.slug}`}
-        className="block aspect-[16/11] sm:aspect-[4/3] border border-border overflow-hidden motion-safe:transition-colors hover:border-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+        className="relative block aspect-[16/11] overflow-hidden border border-foreground/20 bg-background p-2 shadow-[10px_10px_0_color-mix(in_srgb,var(--foreground)_7%,transparent)] motion-safe:transition-[border-color,transform,box-shadow] hover:-translate-y-0.5 hover:border-foreground hover:shadow-[14px_14px_0_color-mix(in_srgb,var(--foreground)_9%,transparent)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background sm:aspect-[4/3] sm:p-3"
       >
-        <StyleCoverPreview styleSlug={featuredStyle.slug} />
+        <div key={featuredStyle.slug} className="h-full overflow-hidden border border-border motion-safe:animate-home-feature-swap">
+          <StyleCoverPreview styleSlug={featuredStyle.slug} />
+        </div>
+        <span className="absolute bottom-4 right-4 bg-background px-2 py-1 font-mono text-[9px] uppercase tracking-[0.12em] text-foreground shadow-surface sm:bottom-5 sm:right-5">
+          Live preview
+        </span>
       </LocalizedLink>
 
-      <div className="flex items-center justify-between mt-3">
+      <div className="mt-5 flex items-end justify-between gap-4">
         <LocalizedLink
           href={`/styles/${featuredStyle.slug}`}
           className="group min-w-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
           aria-live={isFocusWithin ? "polite" : "off"}
           aria-atomic="true"
         >
-          <p className="text-sm font-medium group-hover:text-accent transition-colors truncate">
-            {featuredStyle.name}
-          </p>
-          <p className="text-xs text-muted truncate">{featuredStyle.nameEn}</p>
+          <div key={featuredStyle.slug} className="motion-safe:animate-home-feature-swap-soft">
+            <p className="font-serif text-xl leading-none transition-colors group-hover:text-accent sm:text-2xl">
+              {featuredStyle.name}
+            </p>
+            <p className="mt-1 text-xs uppercase tracking-[0.1em] text-muted truncate">{featuredStyle.nameEn}</p>
+          </div>
         </LocalizedLink>
         <div className="flex items-center gap-3 shrink-0">
           <button
             type="button"
             onClick={prevStyle}
-            className="w-9 h-9 flex items-center justify-center border border-border hover:border-foreground hover:bg-foreground/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-1 focus-visible:ring-offset-background transition-colors"
+            className="w-9 h-9 flex items-center justify-center border border-border hover:border-foreground hover:bg-foreground/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-1 focus-visible:ring-offset-background motion-safe:transition-[transform,border-color,background-color] motion-safe:duration-150 motion-safe:active:scale-[0.96]"
             aria-label={t("home.featuredPrevStyle")}
           >
             <ChevronLeft className="w-4 h-4" />
           </button>
-          <span className="text-sm text-muted tabular-nums min-w-[3.5rem] text-center" aria-live={isFocusWithin ? "polite" : "off"} aria-atomic="true">
-            {normalizedIndex + 1} / {styles.length}
-          </span>
           <button
             type="button"
             onClick={nextStyle}
-            className="w-9 h-9 flex items-center justify-center border border-border hover:border-foreground hover:bg-foreground/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-1 focus-visible:ring-offset-background transition-colors"
+            className="w-9 h-9 flex items-center justify-center border border-border hover:border-foreground hover:bg-foreground/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-1 focus-visible:ring-offset-background motion-safe:transition-[transform,border-color,background-color] motion-safe:duration-150 motion-safe:active:scale-[0.96]"
             aria-label={t("home.featuredNextStyle")}
           >
             <ChevronRight className="w-4 h-4" />
@@ -165,14 +173,17 @@ export function FeaturedCarousel({ styles }: FeaturedCarouselProps) {
       </div>
 
       {styles.length > 1 && (
-        <div className="mt-3 space-y-2">
-          <div className="h-1 w-full bg-border/70 overflow-hidden" aria-hidden="true">
+        <div className="mt-4 flex items-center gap-4">
+          <div className="h-px flex-1 overflow-hidden bg-border" aria-hidden="true">
             <div
-              className="h-full bg-foreground/70 transition-[width] duration-500 ease-out"
+              className="h-full bg-accent transition-[width] duration-500 ease-out"
               style={{ width: `${progressPercent}%` }}
             />
           </div>
-          <div className="flex items-center gap-1.5" role="group" aria-label={t("home.featuredSlideNav")}>
+          <span className="min-w-[3rem] text-right font-mono text-[10px] tabular-nums text-muted" aria-live={isFocusWithin ? "polite" : "off"}>
+            {String(normalizedIndex + 1).padStart(2, "0")} / {String(styles.length).padStart(2, "0")}
+          </span>
+          <div className="sr-only" role="group" aria-label={t("home.featuredSlideNav")}>
             {styles.map((style, index) => {
               const isActive = index === normalizedIndex;
               return (

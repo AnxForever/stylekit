@@ -25,12 +25,14 @@ export function LanguageSwitcher() {
             const currentPath = typeof window === "undefined"
               ? pathname || "/"
               : `${window.location.pathname}${window.location.search}${window.location.hash}`;
-            router.push(localizeHref(currentPath, lang.code));
+            // scroll: false — swapping locale keeps the reader's place on the page.
+            router.push(localizeHref(currentPath, lang.code), { scroll: false });
           }}
+          aria-pressed={locale === lang.code}
           className={`w-9 py-1 text-center transition-colors ${
             locale === lang.code
               ? "bg-foreground text-background"
-              : "hover:bg-zinc-100 dark:hover:bg-zinc-800"
+              : "hover:bg-foreground/5 hover:text-foreground text-muted"
           }`}
         >
           {lang.label}
