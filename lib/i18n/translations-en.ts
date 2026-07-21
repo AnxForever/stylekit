@@ -637,6 +637,7 @@ export const en = {
     "templates.typeMedia": "Media",
     "templates.typeLifestyle": "Lifestyle",
     "templates.typeEducation": "Education",
+    "templates.typePricing": "Pricing",
     "templates.typeFilterAriaLabel": "Template type filter",
     "templates.results": "templates",
     "templates.backToList": "Back to Templates",
