@@ -3,8 +3,9 @@ import dynamicImport from "next/dynamic";
 export const dynamic = "force-static";
 
 export const metadata = {
-  title: "Glassmorphism Showcase - StyleKit",
-  description: "Live demonstration of Glassmorphism design style with frosted glass effects and backdrop blur.",
+  title: "Nocturne Glassmorphism Showcase - StyleKit",
+  description:
+    "Colorless glass over deep night scenes: gaussian blur, directional edge light, film grain, and a single champagne accent. Live Nocturne Glassmorphism demo.",
 };
 
 const ShowcaseContent = dynamicImport(() => import("./_content"), {
