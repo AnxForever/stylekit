@@ -21,19 +21,17 @@ describe("typography font generation", () => {
     }
   });
 
-  it("sans fonts never fall back to serif (Inter)", () => {
-    const inter = fontPairings.find((p) => p.heading.family === "Inter");
-    expect(inter).toBeDefined();
-    const stack = fontStack(inter!.heading);
-    expect(stack).toContain("'Inter'");
+  it("sans fonts never fall back to serif", () => {
+    const sans = fontPairings.find((p) => p.heading.family === "Bricolage Grotesque");
+    expect(sans).toBeDefined();
+    const stack = fontStack(sans!.heading);
+    expect(stack).toContain("'Bricolage Grotesque'");
     expect(stack).toContain("sans-serif");
     expect(stack).not.toMatch(/,\s*serif$/);
   });
 
-  it("serif fonts fall back to a serif stack (Playfair Display)", () => {
-    const serif = fontPairings.find(
-      (p) => p.heading.family === "Playfair Display",
-    );
+  it("serif fonts fall back to a serif stack", () => {
+    const serif = fontPairings.find((p) => p.heading.family === "Gloock");
     expect(fontStack(serif!.heading)).toMatch(/Georgia.*serif$/);
   });
 
@@ -57,8 +55,9 @@ describe("typography font generation", () => {
 });
 
 describe("typography pairing metadata", () => {
-  it("ships the expanded curated set", () => {
-    expect(fontPairings.length).toBeGreaterThanOrEqual(35);
+  it("ships a deliberately edited catalog", () => {
+    expect(fontPairings.length).toBeGreaterThanOrEqual(15);
+    expect(fontPairings.length).toBeLessThanOrEqual(20);
   });
 
   it("includes the display and handwritten categories", () => {
@@ -78,24 +77,43 @@ describe("typography pairing metadata", () => {
   });
 
   it("maps display serif faces to a serif fallback (FONT_GENERIC coverage)", () => {
-    for (const id of ["fatface-abril", "fashion-dmserif", "expressive-fraunces"]) {
+    for (const id of ["gallery-gloock", "literary-alegreya", "gothic-grenze"]) {
       const p = fontPairings.find((x) => x.id === id);
       expect(p, `${id} not found`).toBeDefined();
       // Georgia appears only in the serif system stack — proves it is not the sans default.
       expect(fontStack(p!.heading), `${id} should map to serif`).toContain("Georgia");
     }
   });
+
+  it("removes the overused font defaults from the refreshed catalog", () => {
+    const rejected = new Set([
+      "Inter",
+      "Playfair Display",
+      "Lora",
+      "Fraunces",
+      "Instrument Serif",
+      "DM Sans",
+      "Space Grotesk",
+    ]);
+
+    for (const pairing of fontPairings) {
+      expect(rejected.has(pairing.heading.family), pairing.id).toBe(false);
+      expect(rejected.has(pairing.body.family), pairing.id).toBe(false);
+      expect(pairing.license).toBe("OFL");
+      expect(pairing.sourceUrl).toContain("fonts.google.com/specimen/");
+      expect(pairing.bestFor.length).toBeGreaterThan(10);
+    }
+  });
 });
 
 describe("pairingContrast", () => {
   it("labels a serif heading on a sans body", () => {
-    const p = fontPairings.find((x) => x.id === "editorial-serif")!;
+    const p = fontPairings.find((x) => x.id === "gallery-gloock")!;
     expect(pairingContrast(p)).toBe("Serif × Sans");
   });
 
-  it("flags single-family pairings where contrast lives in weight", () => {
-    const single = fontPairings.find((p) => p.heading.family === p.body.family);
-    expect(single).toBeDefined();
-    expect(pairingContrast(single!)).toMatch(/one family/);
+  it("labels mono and sans pairings accurately", () => {
+    const technical = fontPairings.find((p) => p.id === "signal-fragment")!;
+    expect(pairingContrast(technical)).toBe("Mono × Sans");
   });
 });

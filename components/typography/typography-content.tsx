@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 import { useI18n } from "@/lib/i18n/context";
 import {
   fontPairings,
@@ -19,7 +19,6 @@ export function TypographyContent() {
   const [selectedCategory, setSelectedCategory] = useState<TypographyCategory | "all">("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [copiedId, setCopiedId] = useState<string | null>(null);
-  const [loadedFonts, setLoadedFonts] = useState<Set<string>>(new Set());
 
   const categories = useMemo(() => getTypographyCategories(), []);
 
@@ -44,20 +43,6 @@ export function TypographyContent() {
     return result;
   }, [selectedCategory, searchQuery]);
 
-  // Load Google Fonts dynamically for visible pairings
-  useEffect(() => {
-    filteredPairings.forEach((pairing) => {
-      const fontKey = `${pairing.heading.family}-${pairing.body.family}`;
-      if (!loadedFonts.has(fontKey)) {
-        const link = document.createElement("link");
-        link.rel = "stylesheet";
-        link.href = generateGoogleFontsLink(pairing);
-        document.head.appendChild(link);
-        setLoadedFonts((prev) => new Set(prev).add(fontKey));
-      }
-    });
-  }, [filteredPairings, loadedFonts]);
-
   function copyToClipboard(text: string, id: string) {
     navigator.clipboard.writeText(text).then(() => {
       setCopiedId(id);
@@ -66,16 +51,16 @@ export function TypographyContent() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-6 md:px-12 py-12 md:py-16" data-cursor-aura="off">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-12 py-12 md:py-20" data-cursor-aura="off">
       {/* Header */}
-      <div className="mb-12">
+      <div className="mb-12 border-b border-border pb-10 md:pb-12">
         <p className="text-xs uppercase tracking-[0.16em] text-muted mb-3">
           {t("typography.subtitle")}
         </p>
-        <h1 className="text-3xl md:text-4xl font-bold tracking-tight mb-4">
+        <h1 className="text-4xl md:text-6xl leading-[0.98] tracking-[-0.03em] mb-5 max-w-[12ch]">
           {t("typography.title")}
         </h1>
-        <p className="text-muted leading-relaxed max-w-2xl">
+        <p className="text-muted text-base md:text-lg leading-relaxed max-w-[65ch]">
           {t("typography.description")}
         </p>
       </div>
@@ -88,7 +73,7 @@ export function TypographyContent() {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder={t("typography.searchPlaceholder")}
-            className="w-full px-4 py-2.5 border border-border rounded-lg bg-background text-sm focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent"
+            className="w-full px-4 py-3 border border-border bg-background text-sm focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent"
           />
           {searchQuery && (
             <button
@@ -106,7 +91,7 @@ export function TypographyContent() {
         <div className="flex flex-wrap gap-2">
           <button
             onClick={() => setSelectedCategory("all")}
-            className={`px-4 py-2 text-sm rounded-lg border transition-colors ${
+            className={`px-4 py-2 text-sm border transition-colors ${
               selectedCategory === "all"
                 ? "bg-foreground text-background border-foreground"
                 : "bg-background text-muted border-border hover:border-foreground hover:text-foreground"
@@ -118,7 +103,7 @@ export function TypographyContent() {
             <button
               key={cat.category}
               onClick={() => setSelectedCategory(cat.category)}
-              className={`px-4 py-2 text-sm rounded-lg border transition-colors ${
+              className={`px-4 py-2 text-sm border transition-colors ${
                 selectedCategory === cat.category
                   ? "bg-foreground text-background border-foreground"
                   : "bg-background text-muted border-border hover:border-foreground hover:text-foreground"
@@ -139,7 +124,7 @@ export function TypographyContent() {
           <p className="text-muted">{t("typography.noResults")}</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-px border border-border bg-border">
           {filteredPairings.map((pairing) => (
             <TypographyCard
               key={pairing.id}
@@ -162,7 +147,7 @@ interface TypographyCardProps {
   locale: "zh" | "en";
 }
 
-const CATEGORY_LABEL: Record<string, string> = {
+const CATEGORY_LABEL: Record<TypographyCategory, string> = {
   classic: "Classic",
   modern: "Modern",
   playful: "Playful",
@@ -182,7 +167,7 @@ const CHARSET = "Aa Gg Qq Rg 0123 &?";
 const PREVIEW_BY_CATEGORY: Record<string, { heading: string; body: string }> = {
   classic: {
     heading: "Timeless by Design",
-    body: "Considered typography that endures—every letterform carries the weight of tradition, set for comfortable long-form reading.",
+    body: "Considered typography that endures. Every letterform carries tradition while remaining comfortable for long-form reading.",
   },
   modern: {
     heading: "Built for Tomorrow",
@@ -190,7 +175,7 @@ const PREVIEW_BY_CATEGORY: Record<string, { heading: string; body: string }> = {
   },
   playful: {
     heading: "Hello, Sunshine!",
-    body: "Bright, friendly type that smiles back—made for products that keep things light and never too serious.",
+    body: "Bright, friendly type for products that keep the experience light without becoming childish.",
   },
   editorial: {
     heading: "The Morning Edition",
@@ -198,7 +183,7 @@ const PREVIEW_BY_CATEGORY: Record<string, { heading: string; body: string }> = {
   },
   technical: {
     heading: "System Architecture",
-    body: "Monospace precision meets readable prose—for documentation, dashboards, and code that engineers actually trust.",
+    body: "Monospace precision meets readable prose for documentation, dashboards, and dependable technical interfaces.",
   },
   elegant: {
     heading: "Maison & Atelier",
@@ -206,13 +191,48 @@ const PREVIEW_BY_CATEGORY: Record<string, { heading: string; body: string }> = {
   },
   display: {
     heading: "Make a Statement",
-    body: "Oversized type that commands the page—reserve it for the single word you want remembered.",
+    body: "Oversized type commands the page. Reserve it for the short phrase you want remembered.",
   },
   handwritten: {
     heading: "With Love",
     body: "A personal, human touch for invitations, quotes, and brands that want to feel handmade.",
   },
 };
+
+function usePairingFont(pairing: FontPairing) {
+  const specimenRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    const element = specimenRef.current;
+    if (!element || typeof IntersectionObserver === "undefined") return;
+
+    const fontKey = `${pairing.heading.family}:${pairing.heading.weight}|${pairing.body.family}:${pairing.body.weight}`;
+    const selector = `link[data-stylekit-font="${CSS.escape(fontKey)}"]`;
+
+    const loadFont = () => {
+      if (document.head.querySelector(selector)) return;
+      const link = document.createElement("link");
+      link.rel = "stylesheet";
+      link.href = generateGoogleFontsLink(pairing);
+      link.dataset.stylekitFont = fontKey;
+      document.head.appendChild(link);
+    };
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (!entries.some((entry) => entry.isIntersecting)) return;
+        loadFont();
+        observer.disconnect();
+      },
+      { rootMargin: "320px 0px" }
+    );
+
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, [pairing]);
+
+  return specimenRef;
+}
 
 // Visualizes the weight gap between heading and body — the contrast that makes a
 // hierarchy hold up. If the two bars are nearly equal, the pairing reads flat.
@@ -252,6 +272,7 @@ function WeightContrastBar({
 
 function TypographyCard({ pairing, copied, onCopy, locale }: TypographyCardProps) {
   const [scale, setScale] = useState(1);
+  const specimenRef = usePairingFont(pairing);
 
   const headingFamily = fontStack(pairing.heading);
   const bodyFamily = fontStack(pairing.body);
@@ -260,21 +281,21 @@ function TypographyCard({ pairing, copied, onCopy, locale }: TypographyCardProps
   const contrast = pairingContrast(pairing);
 
   return (
-    <div className="group border border-border rounded-xl overflow-hidden bg-background hover:border-foreground/40 hover:shadow-lg transition-all">
+    <article ref={specimenRef} className="group overflow-hidden bg-background">
       {/* Specimen — adapts to the typeface: display / handwritten faces star as an
           oversized word; text pairings show a character set, headline and copy. */}
       <div
-        className="px-6 pt-6 pb-5 bg-gradient-to-br from-background to-muted/20"
+        className="min-h-[22rem] px-6 py-7 md:px-8 md:py-8 bg-background"
         style={{ fontSize: `${16 * scale}px` }}
       >
-        <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center justify-between gap-4 mb-10 border-b border-border pb-3">
           <span
             className="text-[0.7rem] uppercase tracking-[0.14em] text-muted"
             style={{ fontFamily: bodyFamily }}
           >
             {CATEGORY_LABEL[pairing.category]}
           </span>
-          <span className="text-[0.7rem] text-muted/70 tracking-wide">{contrast}</span>
+          <span className="text-[0.7rem] text-muted tracking-wide">{contrast}</span>
         </div>
 
         {isDisplay ? (
@@ -285,8 +306,9 @@ function TypographyCard({ pairing, copied, onCopy, locale }: TypographyCardProps
               style={{
                 fontFamily: headingFamily,
                 fontWeight: pairing.heading.weight,
-                fontSize: "3.6em",
-                lineHeight: 0.95,
+                fontSize: "clamp(3rem, 8vw, 5.4rem)",
+                lineHeight: 0.9,
+                letterSpacing: "-0.035em",
               }}
             >
               {pairing.previewWord ?? preview.heading}
@@ -296,7 +318,7 @@ function TypographyCard({ pairing, copied, onCopy, locale }: TypographyCardProps
               style={{
                 fontFamily: headingFamily,
                 fontWeight: pairing.heading.weight,
-                fontSize: "1.4em",
+                fontSize: "1.2em",
                 lineHeight: 1.2,
               }}
             >
@@ -324,8 +346,8 @@ function TypographyCard({ pairing, copied, onCopy, locale }: TypographyCardProps
               {CHARSET}
             </div>
             <h3
-              className="tracking-tight mb-2 break-words"
-              style={{ fontFamily: headingFamily, fontWeight: pairing.heading.weight, fontSize: "1.9em", lineHeight: 1.1 }}
+              className="mb-3 break-words"
+              style={{ fontFamily: headingFamily, fontWeight: pairing.heading.weight, fontSize: "2.15em", lineHeight: 1.02, letterSpacing: "-0.025em" }}
             >
               {preview.heading}
             </h3>
@@ -363,29 +385,50 @@ function TypographyCard({ pairing, copied, onCopy, locale }: TypographyCardProps
       </div>
 
       {/* Info + copy */}
-      <div className="p-4 space-y-3">
+      <div className="p-5 md:p-6 space-y-4">
         <div className="flex items-start justify-between gap-2">
           <div className="min-w-0">
-            <h4 className="font-semibold text-sm truncate">
+            <h4 className="font-sans font-semibold text-base truncate">
               {locale === "zh" ? pairing.nameZh : pairing.name}
             </h4>
             <p className="text-xs text-muted mt-0.5 truncate">
               {pairing.heading.family} <span className="opacity-50">·</span> {pairing.body.family}
             </p>
           </div>
-          <div className="flex flex-wrap gap-1 justify-end shrink-0">
+          <div className="flex flex-wrap gap-1.5 justify-end shrink-0">
             {pairing.mood.slice(0, 2).map((m) => (
-              <span key={m} className="px-1.5 py-0.5 text-[0.65rem] rounded bg-muted/40 text-muted">
+              <span key={m} className="px-2 py-1 text-[0.65rem] border border-border text-muted">
                 {m}
               </span>
             ))}
           </div>
         </div>
 
+        <div className="space-y-2 text-sm leading-relaxed">
+          <p className="text-foreground">
+            {locale === "zh" ? pairing.bestForZh : pairing.bestFor}
+          </p>
+          <p className="text-muted">
+            {locale === "zh" ? pairing.descriptionZh : pairing.description}
+          </p>
+        </div>
+
+        <div className="flex items-center justify-between gap-3 border-t border-border pt-3 text-xs text-muted">
+          <span>{pairing.license} open-source license</span>
+          <a
+            href={pairing.sourceUrl}
+            target="_blank"
+            rel="noreferrer"
+            className="text-foreground underline underline-offset-4 hover:text-accent"
+          >
+            Google Fonts
+          </a>
+        </div>
+
         <div className="flex gap-2">
           <button
             onClick={() => onCopy(generateFontCSS(pairing), pairing.id)}
-            className={`flex-1 px-3 py-2 text-xs font-medium rounded-md border transition-colors ${
+            className={`flex-1 px-3 py-2.5 text-xs font-medium border transition-colors ${
               copied
                 ? "bg-green-500 text-white border-green-500"
                 : "bg-background text-muted border-border hover:border-foreground hover:text-foreground"
@@ -395,12 +438,12 @@ function TypographyCard({ pairing, copied, onCopy, locale }: TypographyCardProps
           </button>
           <button
             onClick={() => onCopy(generateTailwindTheme(pairing), pairing.id)}
-            className="flex-1 px-3 py-2 text-xs font-medium rounded-md border bg-background text-muted border-border hover:border-foreground hover:text-foreground transition-colors"
+            className="flex-1 px-3 py-2.5 text-xs font-medium border bg-background text-muted border-border hover:border-foreground hover:text-foreground transition-colors"
           >
             Tailwind
           </button>
         </div>
       </div>
-    </div>
+    </article>
   );
 }

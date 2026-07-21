@@ -4,9 +4,9 @@ import { Footer } from "@/components/layout/footer";
 import { TypographyContent } from "@/components/typography/typography-content";
 
 export const metadata: Metadata = {
-  title: "Typography & Font Pairings",
+  title: "Curated Font Pairings",
   description:
-    "Browse 20+ curated font pairings for your design system. Copy CSS or Tailwind classes instantly.",
+    "Explore a curated collection of expressive open-source font pairings for editorial, technical, playful, elegant, and display-focused interfaces.",
 };
 
 export default function TypographyPage() {
