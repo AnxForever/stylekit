@@ -142,6 +142,63 @@ export const assetProvenanceSchema = z
     }
   });
 
+export const assetProvenanceSnapshotSchema = z
+  .object({
+    schemaVersion: z.number().int().positive().optional(),
+    assetId: identifierSchema,
+    assetPath: publicAssetPathSchema.optional(),
+    originType: z.enum(["owned", "commissioned", "licensed", "ai-generated"]),
+    provider: z.string().min(1).optional(),
+    creator: z.string().min(1),
+    createdAt: z.iso.datetime().optional(),
+    capturedAt: z.iso.datetime().optional(),
+    method: z.string().min(1).optional(),
+    sourceRoute: routeSchema.optional(),
+    sourceFiles: z.array(packRelativeFileSchema).optional(),
+    thirdPartyInputs: z.array(z.string()).default([]),
+    trademarkReview: z.boolean(),
+    likenessReview: z.boolean(),
+    artistImitationReview: z.boolean().optional(),
+    customerDataReview: z.boolean().optional(),
+    auditStatus: z.enum(["pending", "approved", "rejected"]),
+    auditedBy: z.string().min(1).optional(),
+    auditedAt: z.iso.datetime().optional(),
+    width: z.number().int().positive().optional(),
+    height: z.number().int().positive().optional(),
+    format: z.string().min(1).optional(),
+    bytes: z.number().int().nonnegative().optional(),
+    contentHash: contentHashSchema.optional(),
+    purpose: z.string().min(1).optional(),
+    distributable: z.boolean().optional(),
+    notes: z.string().optional(),
+  })
+  .passthrough()
+  .superRefine((snapshot, ctx) => {
+    if (snapshot.auditStatus === "approved") {
+      if (!snapshot.auditedBy || !snapshot.auditedAt) {
+        ctx.addIssue({
+          code: "custom",
+          path: ["auditedBy"],
+          message: "Approved evidence snapshots require auditor identity and timestamp",
+        });
+      }
+      if (!snapshot.trademarkReview || !snapshot.likenessReview) {
+        ctx.addIssue({
+          code: "custom",
+          path: ["trademarkReview"],
+          message: "Approved evidence snapshots require trademark and likeness review",
+        });
+      }
+      if (snapshot.originType === "ai-generated" && !snapshot.artistImitationReview) {
+        ctx.addIssue({
+          code: "custom",
+          path: ["artistImitationReview"],
+          message: "Approved AI evidence requires artist-imitation review",
+        });
+      }
+    }
+  });
+
 export const experienceAssetSchema = z
   .object({
     id: identifierSchema,
@@ -164,6 +221,14 @@ export const experienceAssetSchema = z
     width: z.number().int().positive().optional(),
     height: z.number().int().positive().optional(),
     contentHash: contentHashSchema.optional(),
+    performance: z
+      .object({
+        budgetBytes: z.number().int().positive().max(10_000_000),
+        loading: z.enum(["eager", "lazy", "on-demand"]),
+        responsive: z.boolean(),
+        animated: z.boolean(),
+      })
+      .strict(),
     creator: z.string().min(1),
     sourceUrl: z.url(),
     upstreamRights: assetUpstreamRightsSchema,
@@ -198,12 +263,28 @@ export const experienceAssetSchema = z
       }
     }
 
+    if (asset.provenance.auditStatus === "approved" && !asset.contentHash) {
+      ctx.addIssue({
+        code: "custom",
+        path: ["contentHash"],
+        message: "Approved assets require a content hash",
+      });
+    }
+
     const needsDimensions = ["image", "video", "svg", "illustration"].includes(asset.kind);
     if (needsDimensions && (!asset.width || !asset.height)) {
       ctx.addIssue({
         code: "custom",
         path: ["width"],
         message: "Visual assets require width and height metadata",
+      });
+    }
+
+    if (asset.role === "hero" && asset.performance.loading === "lazy") {
+      ctx.addIssue({
+        code: "custom",
+        path: ["performance", "loading"],
+        message: "Hero evidence must be eager or explicitly on-demand, not lazy",
       });
     }
 
@@ -259,11 +340,46 @@ export const motionRecipeSchema = z
         preferredProperties: z.array(z.enum(["transform", "opacity", "filter"])).min(1),
         layoutAnimation: z.boolean(),
         continuous: z.boolean(),
+        pausesWhenOffscreen: z.boolean(),
+        pausesWhenPageHidden: z.boolean(),
         notes: z.string().optional(),
       })
       .strict(),
+    controls: z
+      .object({
+        userCanPause: z.boolean(),
+        userCanReplay: z.boolean(),
+      })
+      .strict(),
   })
-  .strict();
+  .strict()
+  .superRefine((motion, ctx) => {
+    const longRunning = motion.durationMs + motion.delayMs > 5_000;
+    if ((motion.performance.continuous || motion.repeat === "infinite" || longRunning) && !motion.controls.userCanPause) {
+      ctx.addIssue({
+        code: "custom",
+        path: ["controls", "userCanPause"],
+        message: "Continuous, repeating, or longer-than-five-second motion requires a pause control",
+      });
+    }
+    if (motion.repeat === "infinite" && !motion.performance.continuous) {
+      ctx.addIssue({
+        code: "custom",
+        path: ["performance", "continuous"],
+        message: "Infinite motion must be declared continuous",
+      });
+    }
+    if (
+      motion.performance.continuous &&
+      (!motion.performance.pausesWhenOffscreen || !motion.performance.pausesWhenPageHidden)
+    ) {
+      ctx.addIssue({
+        code: "custom",
+        path: ["performance", "pausesWhenOffscreen"],
+        message: "Continuous motion must pause offscreen and when the page is hidden",
+      });
+    }
+  });
 
 export const interactionPatternSchema = z
   .object({
@@ -294,6 +410,20 @@ export const interactionPatternSchema = z
         message: "Functional interactions require keyboard support",
       });
     }
+    if (!interaction.inputs.includes("assistive-technology")) {
+      ctx.addIssue({
+        code: "custom",
+        path: ["inputs"],
+        message: "Functional interactions require an assistive-technology contract",
+      });
+    }
+    if (!interaction.states.some((state) => state.toLowerCase() === "focus")) {
+      ctx.addIssue({
+        code: "custom",
+        path: ["states"],
+        message: "Functional interactions require an explicit focus state",
+      });
+    }
     if (interaction.inputs.includes("keyboard") && !interaction.keyboardContract?.trim()) {
       ctx.addIssue({
         code: "custom",
@@ -306,6 +436,43 @@ export const interactionPatternSchema = z
         code: "custom",
         path: ["touchContract"],
         message: "Touch-supported interactions require a touch contract",
+      });
+    }
+  });
+
+export const evidenceSceneSchema = z
+  .object({
+    id: identifierSchema,
+    assetRef: identifierSchema,
+    kind: z.enum(["overview", "responsive", "state", "detail", "motion", "deliverable"]),
+    device: z.enum(["desktop", "mobile", "tablet", "any"]),
+    theme: z.enum(["light", "dark", "system", "any"]),
+    state: z.string().min(1).max(80),
+    caption: z.string().min(1).max(240),
+  })
+  .strict();
+
+export const evidenceClaimSchema = z
+  .object({
+    id: identifierSchema,
+    statement: z.string().min(1).max(240),
+    evidenceRefs: z.array(identifierSchema).default([]),
+    installableRefs: z.array(identifierSchema).default([]),
+    motionRefs: z.array(identifierSchema).default([]),
+    interactionRefs: z.array(identifierSchema).default([]),
+  })
+  .strict()
+  .superRefine((claim, ctx) => {
+    const proofCount =
+      claim.evidenceRefs.length +
+      claim.installableRefs.length +
+      claim.motionRefs.length +
+      claim.interactionRefs.length;
+    if (proofCount === 0) {
+      ctx.addIssue({
+        code: "custom",
+        path: ["evidenceRefs"],
+        message: "Commercial claims require at least one evidence or deliverable reference",
       });
     }
   });
@@ -354,6 +521,7 @@ function addDuplicateIssues(
 export const styleExperiencePackSchema = z
   .object({
     slug: identifierSchema,
+    styleSlug: identifierSchema,
     version: semverSchema,
     tier: z.enum(["free", "pro"]),
     status: z.enum(["draft", "preview", "published", "retired"]),
@@ -364,9 +532,18 @@ export const styleExperiencePackSchema = z
         generatedApprovedForPublic: z.boolean().default(false),
       })
       .strict(),
+    presentation: z
+      .object({
+        title: z.string().min(1).max(120),
+        summary: z.string().min(1).max(500),
+        categories: z.array(identifierSchema).min(1).max(12),
+      })
+      .strict(),
     assets: z.array(experienceAssetSchema).default([]),
     motion: z.array(motionRecipeSchema).default([]),
     interactions: z.array(interactionPatternSchema).default([]),
+    evidence: z.array(evidenceSceneSchema).default([]),
+    claims: z.array(evidenceClaimSchema).default([]),
     blocks: z.array(experienceBlockSchema).default([]),
     templates: z.array(experienceTemplateSchema).default([]),
     compatibility: z
@@ -432,20 +609,37 @@ export const styleExperiencePackSchema = z
       });
     }
 
+    if (pack.tier === "pro" && ["preview", "published"].includes(pack.status)) {
+      if (pack.evidence.length === 0) {
+        ctx.addIssue({
+          code: "custom",
+          path: ["evidence"],
+          message: "Preview and published Pro packs require product evidence scenes",
+        });
+      }
+      if (pack.claims.length === 0) {
+        ctx.addIssue({
+          code: "custom",
+          path: ["claims"],
+          message: "Preview and published Pro packs require evidence-backed claims",
+        });
+      }
+    }
+
     if (pack.status === "published") {
       pack.assets.forEach((asset, index) => {
-        if (asset.distributable && asset.provenance.auditStatus !== "approved") {
+        if (asset.provenance.auditStatus !== "approved") {
           ctx.addIssue({
             code: "custom",
             path: ["assets", index, "provenance", "auditStatus"],
-            message: "Published distributable assets require approved provenance",
+            message: "Published assets require approved provenance",
           });
         }
-        if (asset.distributable && !asset.contentHash) {
+        if (!asset.contentHash) {
           ctx.addIssue({
             code: "custom",
             path: ["assets", index, "contentHash"],
-            message: "Published distributable assets require a content hash",
+            message: "Published assets require a content hash",
           });
         }
       });
@@ -459,6 +653,8 @@ export const styleExperiencePackSchema = z
       "interaction id",
       ctx,
     );
+    addDuplicateIssues(pack.evidence.map((item) => item.id), ["evidence"], "evidence id", ctx);
+    addDuplicateIssues(pack.claims.map((item) => item.id), ["claims"], "claim id", ctx);
     addDuplicateIssues(
       [...pack.blocks, ...pack.templates].map((item) => item.id),
       ["installables"],
@@ -473,6 +669,38 @@ export const styleExperiencePackSchema = z
     const assetIds = new Set(pack.assets.map((asset) => asset.id));
     const motionIds = new Set(pack.motion.map((motion) => motion.id));
     const interactionIds = new Set(pack.interactions.map((interaction) => interaction.id));
+    const evidenceIds = new Set(pack.evidence.map((scene) => scene.id));
+    const installableIds = new Set(
+      [...pack.blocks, ...pack.templates].map((installable) => installable.id),
+    );
+
+    pack.evidence.forEach((scene, index) => {
+      if (!assetIds.has(scene.assetRef)) {
+        ctx.addIssue({
+          code: "custom",
+          path: ["evidence", index, "assetRef"],
+          message: `Unknown evidence asset reference: ${scene.assetRef}`,
+        });
+      }
+    });
+
+    pack.claims.forEach((claim, claimIndex) => {
+      const checkClaimRefs = (refs: string[], ids: Set<string>, field: string) => {
+        refs.forEach((ref, refIndex) => {
+          if (!ids.has(ref)) {
+            ctx.addIssue({
+              code: "custom",
+              path: ["claims", claimIndex, field, refIndex],
+              message: `Unknown ${field} reference: ${ref}`,
+            });
+          }
+        });
+      };
+      checkClaimRefs(claim.evidenceRefs, evidenceIds, "evidenceRefs");
+      checkClaimRefs(claim.installableRefs, installableIds, "installableRefs");
+      checkClaimRefs(claim.motionRefs, motionIds, "motionRefs");
+      checkClaimRefs(claim.interactionRefs, interactionIds, "interactionRefs");
+    });
 
     const installables = [...pack.blocks, ...pack.templates];
     installables.forEach((item, itemIndex) => {
@@ -513,6 +741,8 @@ export type PackCustomerLicense = z.infer<typeof packCustomerLicenseSchema>;
 export type ExperienceAsset = z.infer<typeof experienceAssetSchema>;
 export type MotionRecipe = z.infer<typeof motionRecipeSchema>;
 export type InteractionPattern = z.infer<typeof interactionPatternSchema>;
+export type EvidenceScene = z.infer<typeof evidenceSceneSchema>;
+export type EvidenceClaim = z.infer<typeof evidenceClaimSchema>;
 export type ExperienceBlock = z.infer<typeof experienceBlockSchema>;
 export type ExperienceTemplate = z.infer<typeof experienceTemplateSchema>;
 export type StyleExperiencePack = z.infer<typeof styleExperiencePackSchema>;

@@ -6,8 +6,11 @@ import {
 } from "@/lib/product-validation/schema";
 
 export type GateStatus = "pass" | "fail" | "inconclusive";
+export type ExperimentWindowStatus = "not_started" | "active" | "closed";
 export type ProductValidationDecision =
   | "continue_pack_1"
+  | "proceed_to_paid_pilot"
+  | "experiment_in_progress"
   | "revise_offer_once"
   | "stop_expansion"
   | "reposition_to_private_brand_kit"
@@ -32,6 +35,16 @@ export interface ProductValidationResult {
   experimentId: string;
   offerVersion: string;
   evaluatedAt: string;
+  experimentWindow: {
+    start: string;
+    end: string;
+    status: ExperimentWindowStatus;
+  };
+  dataset: {
+    status: ProductValidationBundle["datasetStatus"];
+    capturedAt: string;
+    sealedAt: string | null;
+  };
   decision: ProductValidationDecision;
   demandStatus: GateStatus;
   online: {
@@ -76,6 +89,7 @@ export interface ProductValidationResult {
     >;
   };
   economics: {
+    basis: "forecast";
     status: "pass" | "fail";
     currency: "CNY" | "USD";
     fixedCostMinor: number;
@@ -147,13 +161,37 @@ function validVisibilityEvent(
   );
 }
 
+interface ProductValidationEvaluationOptions {
+  evaluatedAt?: string;
+}
+
+function resolveEvaluationTime(value: string | undefined): {
+  iso: string;
+  timestamp: number;
+} {
+  const timestamp = value === undefined ? Date.now() : Date.parse(value);
+  if (!Number.isFinite(timestamp)) {
+    throw new RangeError("evaluatedAt must be a valid ISO date-time");
+  }
+  return { iso: new Date(timestamp).toISOString(), timestamp };
+}
+
 export function evaluateProductValidation(
   input: ProductValidationBundle,
+  options: ProductValidationEvaluationOptions = {},
 ): ProductValidationResult {
   const bundle = productValidationBundleSchema.parse(input);
   const { experiment } = bundle;
   const start = Date.parse(experiment.window.start);
   const end = Date.parse(experiment.window.end);
+  const evaluation = resolveEvaluationTime(options.evaluatedAt);
+  const evidenceEnd = Math.min(end, evaluation.timestamp);
+  const experimentWindowStatus: ExperimentWindowStatus =
+    evaluation.timestamp < start
+      ? "not_started"
+      : evaluation.timestamp < end
+        ? "active"
+        : "closed";
   const variantIds = new Set(experiment.variants.map((variant) => variant.id));
   const participantById = new Map(
     bundle.participants.map((participant) => [participant.identityKey, participant]),
@@ -163,7 +201,56 @@ export function evaluateProductValidation(
   const eventById = new Map<string, ValidationOnlineEvent>();
   let duplicateEventIds = 0;
 
+  if (experimentWindowStatus !== "closed") {
+    issues.push({
+      code: "EXPERIMENT_WINDOW_NOT_CLOSED",
+      severity: "warning",
+      message: `Experiment window is ${experimentWindowStatus}; final decisions are withheld until ${experiment.window.end}`,
+    });
+  }
+  if (bundle.datasetStatus !== "sealed") {
+    issues.push({
+      code: "DATASET_NOT_SEALED",
+      severity: "warning",
+      message: `Dataset is ${bundle.datasetStatus}; final decisions require a sealed dataset`,
+    });
+  }
+  const datasetAvailableAtEvaluation =
+    bundle.datasetStatus === "sealed" &&
+    bundle.sealedAt !== null &&
+    Date.parse(bundle.capturedAt) <= evaluation.timestamp &&
+    Date.parse(bundle.sealedAt) <= evaluation.timestamp;
+  if (bundle.datasetStatus === "sealed" && !datasetAvailableAtEvaluation) {
+    issues.push({
+      code: "DATASET_NOT_AVAILABLE_AT_EVALUATION_TIME",
+      severity: "error",
+      message: "The sealed dataset was captured or sealed after the evaluation time",
+    });
+  }
+
+  const futureEvidenceCount =
+    bundle.participants.filter(
+      (participant) => Date.parse(participant.assignedAt) > evaluation.timestamp,
+    ).length +
+    bundle.onlineEvents.filter(
+      (event) => Date.parse(event.occurredAt) > evaluation.timestamp,
+    ).length +
+    bundle.interviews.filter(
+      (interview) => Date.parse(interview.occurredAt) > evaluation.timestamp,
+    ).length +
+    (bundle.brandKitEvidence ?? []).filter(
+      (evidence) => Date.parse(evidence.occurredAt) > evaluation.timestamp,
+    ).length;
+  if (futureEvidenceCount > 0) {
+    issues.push({
+      code: "EVIDENCE_AFTER_EVALUATION_TIME",
+      severity: "error",
+      message: `${futureEvidenceCount} evidence records occur after the evaluation time and were excluded`,
+    });
+  }
+
   for (const event of bundle.onlineEvents) {
+    if (Date.parse(event.occurredAt) > evaluation.timestamp) continue;
     const existingEvent = eventById.get(event.eventId);
     if (existingEvent) {
       duplicateEventIds += 1;
@@ -245,7 +332,7 @@ export function evaluateProductValidation(
       participant,
       variantIds,
       start,
-      end,
+      evidenceEnd,
     );
     if (exclusion) {
       exclusions[exclusion] += 1;
@@ -353,7 +440,7 @@ export function evaluateProductValidation(
       interview.icpStatus === "qualified" &&
       !interview.protocolDeviation &&
       !interview.withdrawn &&
-      isWithinWindow(interview.occurredAt, start, end),
+      isWithinWindow(interview.occurredAt, start, evidenceEnd),
   );
   const qualifiedInterviews = eligibleInterviews.length;
   const priceAcceptances = eligibleInterviews.filter(
@@ -465,7 +552,7 @@ export function evaluateProductValidation(
     issues.push({
       code: "ECONOMICS_GATE_FAILED",
       severity: "error",
-      message: "The frozen production budget or break-even gate is not viable",
+      message: "The frozen forecast production budget or break-even gate is not viable",
     });
   }
 
@@ -480,7 +567,7 @@ export function evaluateProductValidation(
       evidence.qualified &&
       !evidence.protocolDeviation &&
       !evidence.withdrawn &&
-      isWithinWindow(evidence.occurredAt, start, end),
+      isWithinWindow(evidence.occurredAt, start, evidenceEnd),
   );
   const brandKitQualifiedConversations = eligibleBrandKitEvidence.length;
   const brandKitProposalRequests = eligibleBrandKitEvidence.filter(
@@ -559,15 +646,57 @@ export function evaluateProductValidation(
       message: "No single price variant passes both demand and economics",
     });
   }
+  const paidEvidenceVariantIds = new Set<string>();
+  for (const [variantId, purchaserIds] of purchasersByVariant.entries()) {
+    if (purchaserIds.size > 0) paidEvidenceVariantIds.add(variantId);
+  }
+  for (const interview of eligibleInterviews) {
+    if (
+      interview.nonRefundableDepositPaid &&
+      interview.primaryVariantId !== null
+    ) {
+      paidEvidenceVariantIds.add(interview.primaryVariantId);
+    }
+  }
+  const hasSharedPaidEvidenceVariant = Array.from(
+    paidEvidenceVariantIds,
+  ).some(
+    (variantId) =>
+      demandPassingVariantIds.has(variantId) &&
+      economicsVariants[variantId]?.status === "pass",
+  );
+  const paidPilotReady =
+    demandStatus === "pass" &&
+    economicsStatus === "pass" &&
+    hasSharedDemandEconomicsVariant;
+  if (paidPilotReady && !hasSharedPaidEvidenceVariant) {
+    issues.push({
+      code:
+        purchasers + nonRefundableDeposits === 0
+          ? "PAID_EVIDENCE_REQUIRED"
+          : "NO_SHARED_PAID_EVIDENCE_VARIANT",
+      severity: "warning",
+      message:
+        purchasers + nonRefundableDeposits === 0
+          ? "Intent and forecast economics authorize only a paid pilot; continuation requires a verified purchase or non-refundable deposit"
+          : "Paid evidence does not align with a price variant that passes both demand and forecast economics",
+    });
+  }
   const hasIntegrityError = issues.some(
     (issue) =>
       issue.severity === "error" &&
       issue.code !== "ECONOMICS_GATE_FAILED" &&
       issue.code !== "NO_SHARED_DEMAND_ECONOMICS_VARIANT",
   );
+  const finalDecisionReady =
+    experimentWindowStatus === "closed" && datasetAvailableAtEvaluation;
   const decision: ProductValidationDecision =
     hasIntegrityError
       ? "inconclusive_sample"
+      : !finalDecisionReady
+        ? demandStatus === "inconclusive"
+          ? "inconclusive_sample"
+          : "experiment_in_progress"
       : demandStatus !== "pass" &&
           brandKitStatus === "pass" &&
           brandKitEconomicsStatus === "pass"
@@ -577,7 +706,9 @@ export function evaluateProductValidation(
       : demandStatus === "pass" &&
           economicsStatus === "pass" &&
           hasSharedDemandEconomicsVariant
-        ? "continue_pack_1"
+        ? hasSharedPaidEvidenceVariant
+          ? "continue_pack_1"
+          : "proceed_to_paid_pilot"
         : experiment.revisionNumber === 0
           ? "revise_offer_once"
           : "stop_expansion";
@@ -585,7 +716,17 @@ export function evaluateProductValidation(
   return {
     experimentId: experiment.experimentId,
     offerVersion: experiment.offerVersion,
-    evaluatedAt: experiment.window.end,
+    evaluatedAt: evaluation.iso,
+    experimentWindow: {
+      start: experiment.window.start,
+      end: experiment.window.end,
+      status: experimentWindowStatus,
+    },
+    dataset: {
+      status: bundle.datasetStatus,
+      capturedAt: bundle.capturedAt,
+      sealedAt: bundle.sealedAt,
+    },
     decision,
     demandStatus,
     online: {
@@ -615,6 +756,7 @@ export function evaluateProductValidation(
       variants: interviewVariants,
     },
     economics: {
+      basis: "forecast",
       status: economicsStatus,
       currency: bundle.economicsForecast.currency,
       fixedCostMinor,

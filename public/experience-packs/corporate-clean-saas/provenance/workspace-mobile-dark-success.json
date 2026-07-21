@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "assetId": "workspace-mobile-dark-success",
+  "assetPath": "/experience-packs/corporate-clean-saas/evidence/workspace-mobile-dark-success.webp",
+  "originType": "owned",
+  "provider": "StyleKit deterministic browser capture",
+  "creator": "StyleKit",
+  "sourceRoute": "/admin/visual-lab/corporate-clean-saas",
+  "sourceFiles": [
+    "experience-packs/corporate-clean-saas/files/components/corporate-clean/corporate-clean-saas.tsx",
+    "experience-packs/corporate-clean-saas/files/components/corporate-clean/corporate-clean.module.css",
+    "experience-packs/corporate-clean-saas/files/lib/corporate-clean/data.ts"
+  ],
+  "capturedAt": "2026-07-11T01:19:06.951Z",
+  "viewport": {
+    "width": 430,
+    "height": 932
+  },
+  "theme": "深色",
+  "state": "成功",
+  "reducedMotion": true,
+  "description": "Corporate Clean SaaS workspace in the dark success state at a mobile viewport.",
+  "width": 398,
+  "height": 1876,
+  "format": "webp",
+  "bytes": 32704,
+  "contentHash": "sha256:605420915afdcfd07d4409aa39ad6bb11116f6f5862fe88b64ca51c0a093341b",
+  "thirdPartyInputs": [],
+  "trademarkReview": true,
+  "likenessReview": true,
+  "customerDataReview": true,
+  "purpose": "pack-marketing-evidence",
+  "distributable": false,
+  "auditStatus": "approved",
+  "notes": "Generated from the same self-contained source delivered by the internal registry preview; no stock photography or external product screenshot is used.",
+  "auditedBy": "StyleKit internal product audit",
+  "auditedAt": "2026-07-11T12:00:00.000Z"
+}

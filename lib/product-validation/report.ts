@@ -12,6 +12,12 @@ export function renderProductValidationReport(
     "",
     `Offer version: ${result.offerVersion}`,
     `Evaluated at: ${result.evaluatedAt}`,
+    `Experiment window: ${result.experimentWindow.status}`,
+    `Window start: ${result.experimentWindow.start}`,
+    `Window end: ${result.experimentWindow.end}`,
+    `Dataset status: ${result.dataset.status}`,
+    `Dataset captured at: ${result.dataset.capturedAt}`,
+    `Dataset sealed at: ${result.dataset.sealedAt ?? "not sealed"}`,
     `Decision: ${result.decision}`,
     "",
     "## Online evidence",
@@ -48,17 +54,18 @@ export function renderProductValidationReport(
 
   lines.push(
     "",
-    "## Economics forecast",
+    "## Economics forecast (not observed actuals)",
     "",
-    `Status: ${result.economics.status}`,
+    `Economics basis: ${result.economics.basis}`,
+    `Forecast status: ${result.economics.status}`,
     `Currency: ${result.economics.currency}`,
-    `Fixed cost (minor units): ${result.economics.fixedCostMinor}`,
-    `Maximum accepted break-even units: ${result.economics.maximumBreakEvenUnits}`,
+    `Forecast fixed cost (minor units): ${result.economics.fixedCostMinor}`,
+    `Maximum accepted forecast break-even units: ${result.economics.maximumBreakEvenUnits}`,
   );
 
   for (const [variantId, variant] of Object.entries(result.economics.variants)) {
     lines.push(
-      `- ${variantId}: contribution ${variant.contributionMinor}, margin ${formatRate(variant.contributionMarginBps)}, break-even ${variant.breakEvenUnits ?? "never"}, ${variant.status}`,
+      `- ${variantId}: forecast contribution ${variant.contributionMinor}, forecast margin ${formatRate(variant.contributionMarginBps)}, forecast break-even ${variant.breakEvenUnits ?? "never"}, ${variant.status}`,
     );
   }
 

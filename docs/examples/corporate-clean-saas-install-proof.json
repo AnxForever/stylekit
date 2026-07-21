@@ -1,0 +1,270 @@
+{
+  "schemaVersion": 1,
+  "pack": "corporate-clean-saas",
+  "status": "passed",
+  "startedAt": "2026-07-11T02:32:43.381Z",
+  "finishedAt": "2026-07-11T02:32:54.241Z",
+  "durationMs": 10860,
+  "source": {
+    "repositoryCommit": "21f35a8fd646b4698eecdf2201e3e4a467511e33",
+    "repositoryDirty": true,
+    "registryItemSha256": "sha256:bc01ec44f3d0c841d6a41c41f3bf89137b6b0c7222edd7f90968e74cf200b539",
+    "registryFileCount": 12
+  },
+  "environment": {
+    "platform": "linux",
+    "architecture": "x64",
+    "node": "v22.21.1",
+    "pnpm": "11.5.3"
+  },
+  "expectedVersions": {
+    "next": "16.1.6",
+    "react": "19.2.3",
+    "reactDom": "19.2.3",
+    "tailwindcss": "4.1.18",
+    "tailwindPostcss": "4.1.18",
+    "typescript": "5.9.3",
+    "typesNode": "20.19.31",
+    "typesReact": "19.2.13",
+    "typesReactDom": "19.2.3",
+    "pnpm": "11.5.3"
+  },
+  "installedVersions": {
+    "next": "16.1.6",
+    "react": "19.2.3",
+    "react-dom": "19.2.3",
+    "tailwindcss": "4.1.18",
+    "@tailwindcss/postcss": "4.1.18",
+    "typescript": "5.9.3",
+    "@types/node": "20.19.31",
+    "@types/react": "19.2.13",
+    "@types/react-dom": "19.2.3"
+  },
+  "temporaryProject": {
+    "path": "/tmp/corporate-clean-saas-install-GTzUcv",
+    "retained": false,
+    "cleanupPolicy": "removed after verification"
+  },
+  "conflictPolicy": {
+    "mode": "fail",
+    "overwritesAllowed": false,
+    "checkedTargets": 12
+  },
+  "commands": [
+    {
+      "label": "read repository commit",
+      "command": "\"git\" \"rev-parse\" \"HEAD\"",
+      "cwd": ".",
+      "startedAt": "2026-07-11T02:32:43.382Z",
+      "finishedAt": "2026-07-11T02:32:43.387Z",
+      "durationMs": 5,
+      "exitCode": 0,
+      "signal": null,
+      "stdoutTail": "21f35a8fd646b4698eecdf2201e3e4a467511e33\n",
+      "stderrTail": ""
+    },
+    {
+      "label": "read repository status",
+      "command": "\"git\" \"status\" \"--porcelain\"",
+      "cwd": ".",
+      "startedAt": "2026-07-11T02:32:43.388Z",
+      "finishedAt": "2026-07-11T02:32:43.397Z",
+      "durationMs": 9,
+      "exitCode": 0,
+      "signal": null,
+      "stdoutTail": "[omitted 4821 bytes; sha256:3c833bef070e47e26bce86191a1d4894f707f452f0cb34d5cd4a614a7ef3d00c]",
+      "stderrTail": ""
+    },
+    {
+      "label": "verify pnpm version",
+      "command": "\"pnpm\" \"--version\"",
+      "cwd": ".",
+      "startedAt": "2026-07-11T02:32:43.398Z",
+      "finishedAt": "2026-07-11T02:32:43.686Z",
+      "durationMs": 288,
+      "exitCode": 0,
+      "signal": null,
+      "stdoutTail": "11.5.3\n",
+      "stderrTail": ""
+    },
+    {
+      "label": "compile deterministic registry item",
+      "command": "\"pnpm\" \"exec\" \"tsx\" \"-e\" \"import { corporateCleanSaasPack } from './lib/experience-packs/manifests/corporate-clean-saas';\\nimport { toExperiencePackRegistryItemJSON } from './lib/experience-packs/server/registry-item';\\nvoid (async () => {\\n  const first = await toExperiencePackRegistryItemJSON(process.cwd(), corporateCleanSaasPack);\\n  const second = await toExperiencePackRegistryItemJSON(process.cwd(), corporateCleanSaasPack);\\n  process.stdout.write(JSON.stringify({ first, second }));\\n})();\"",
+      "cwd": ".",
+      "startedAt": "2026-07-11T02:32:43.686Z",
+      "finishedAt": "2026-07-11T02:32:44.388Z",
+      "durationMs": 702,
+      "exitCode": 0,
+      "signal": null,
+      "stdoutTail": "[omitted 140326 bytes; sha256:0fe4e2ab02902f269218e661bc36f0047e3fdf5d375bb467a55ae37b35181a0e]",
+      "stderrTail": ""
+    },
+    {
+      "label": "resolve exact dependency lockfile",
+      "command": "\"pnpm\" \"install\" \"--lockfile-only\" \"--no-frozen-lockfile\" \"--prefer-offline\"",
+      "cwd": "../../../tmp/corporate-clean-saas-install-GTzUcv",
+      "startedAt": "2026-07-11T02:32:44.404Z",
+      "finishedAt": "2026-07-11T02:32:45.716Z",
+      "durationMs": 1312,
+      "exitCode": 0,
+      "signal": null,
+      "stdoutTail": "Progress: resolved 1, reused 0, downloaded 0, added 0\nProgress: resolved 98, reused 0, downloaded 0, added 0, done\n\nDone in 1.2s using pnpm v11.5.3\n",
+      "stderrTail": ""
+    },
+    {
+      "label": "install from frozen lockfile",
+      "command": "\"pnpm\" \"install\" \"--frozen-lockfile\" \"--prefer-offline\"",
+      "cwd": "../../../tmp/corporate-clean-saas-install-GTzUcv",
+      "startedAt": "2026-07-11T02:32:45.716Z",
+      "finishedAt": "2026-07-11T02:32:46.493Z",
+      "durationMs": 777,
+      "exitCode": 0,
+      "signal": null,
+      "stdoutTail": "Lockfile is up to date, resolution step is skipped\nProgress: resolved 1, reused 0, downloaded 0, added 0\nPackages: +47\n+++++++++++++++++++++++++++++++++++++++++++++++\nProgress: resolved 47, reused 47, downloaded 0, added 47, done\n.../sharp@0.34.5/node_modules/sharp install$ node install/check.js || npm run build\n.../sharp@0.34.5/node_modules/sharp install: Done\n\ndependencies:\n+ next 16.1.6\n+ react 19.2.3\n+ react-dom 19.2.3\n\ndevDependencies:\n+ @tailwindcss/postcss 4.1.18\n+ @types/node 20.19.31\n+ @types/react 19.2.13\n+ @types/react-dom 19.2.3\n+ tailwindcss 4.1.18\n+ typescript 5.9.3\n\nDone in 720ms using pnpm v11.5.3\n",
+      "stderrTail": ""
+    },
+    {
+      "label": "typecheck clean project",
+      "command": "\"pnpm\" \"run\" \"typecheck\"",
+      "cwd": "../../../tmp/corporate-clean-saas-install-GTzUcv",
+      "startedAt": "2026-07-11T02:32:46.496Z",
+      "finishedAt": "2026-07-11T02:32:47.792Z",
+      "durationMs": 1296,
+      "exitCode": 0,
+      "signal": null,
+      "stdoutTail": "",
+      "stderrTail": "$ tsc --noEmit\n"
+    },
+    {
+      "label": "build clean project",
+      "command": "\"pnpm\" \"run\" \"build\"",
+      "cwd": "../../../tmp/corporate-clean-saas-install-GTzUcv",
+      "startedAt": "2026-07-11T02:32:47.792Z",
+      "finishedAt": "2026-07-11T02:32:51.513Z",
+      "durationMs": 3721,
+      "exitCode": 0,
+      "signal": null,
+      "stdoutTail": "WARNING: No build cache found. Please configure build caching for faster rebuilds. Read more: https://nextjs.org/docs/messages/no-cache\n▲ Next.js 16.1.6 (Turbopack)\n\n  Creating an optimized production build ...\n✓ Compiled successfully in 1216.1ms\n  Running TypeScript ...\n\n  We detected TypeScript in your project and reconfigured your tsconfig.json file for you.\n  The following suggested values were added to your tsconfig.json. These values can be changed to fit your project's needs:\n\n  \t- include was updated to add '.next/dev/types/**/*.ts'\n\n  Collecting page data using 7 workers ...\n  Generating static pages using 7 workers (0/3) ...\n✓ Generating static pages using 7 workers (3/3) in 202.5ms\n  Finalizing page optimization ...\n\nRoute (app)\n┌ ○ /_not-found\n└ ○ /corporate-clean\n\n\n○  (Static)  prerendered as static content\n\n",
+      "stderrTail": "$ next build\n"
+    },
+    {
+      "label": "start production server",
+      "command": "\"pnpm\" \"exec\" \"next\" \"start\" \"-H\" \"127.0.0.1\" \"-p\" \"43757\"",
+      "cwd": "../../../tmp/corporate-clean-saas-install-GTzUcv",
+      "startedAt": "2026-07-11T02:32:51.517Z",
+      "finishedAt": "2026-07-11T02:32:54.082Z",
+      "durationMs": 2565,
+      "exitCode": null,
+      "signal": "SIGTERM",
+      "stdoutTail": "▲ Next.js 16.1.6\n- Local:         http://127.0.0.1:43757\n- Network:       http://127.0.0.1:43757\n\n✓ Starting...\n✓ Ready in 112ms\n",
+      "stderrTail": ""
+    },
+    {
+      "label": "curl corporate-clean production route",
+      "command": "\"curl\" \"--fail-with-body\" \"--silent\" \"--show-error\" \"--max-time\" \"10\" \"--output\" \"/tmp/corporate-clean-saas-install-GTzUcv/corporate-clean-response.html\" \"--write-out\" \"%{http_code}\" \"http://127.0.0.1:43757/corporate-clean\"",
+      "cwd": "../../../tmp/corporate-clean-saas-install-GTzUcv",
+      "startedAt": "2026-07-11T02:32:52.263Z",
+      "finishedAt": "2026-07-11T02:32:52.290Z",
+      "durationMs": 27,
+      "exitCode": 0,
+      "signal": null,
+      "stdoutTail": "200",
+      "stderrTail": ""
+    }
+  ],
+  "artifacts": {
+    "registryFiles": [
+      {
+        "target": "app/corporate-clean/error.tsx",
+        "bytes": 550,
+        "sha256": "sha256:146515c61788477cdf61d2e43b13cb54ca4b08fbb49ea9eb216170a6feff7639"
+      },
+      {
+        "target": "app/corporate-clean/loading.tsx",
+        "bytes": 423,
+        "sha256": "sha256:5f8b799f49378242de3433299fdd4b9ae7b5afeadabcabc0fa71bc7085f0594d"
+      },
+      {
+        "target": "app/corporate-clean/page.tsx",
+        "bytes": 175,
+        "sha256": "sha256:34ab1cc337a4f84c28e93b68a5f2e168fadcfb73999b4a5aace4db0ce87f5dd3"
+      },
+      {
+        "target": "components/corporate-clean/corporate-clean-saas.tsx",
+        "bytes": 11069,
+        "sha256": "sha256:26133fbf307133c5bc226cf65ded714f9558c1a0dd54d94f9199f4a794fd332b"
+      },
+      {
+        "target": "components/corporate-clean/corporate-clean.module.css",
+        "bytes": 14803,
+        "sha256": "sha256:6ca22a15c42b22cecfd3990d611548a0b5cfbc403e1c2fcc749105c2b63e35a0"
+      },
+      {
+        "target": "lib/corporate-clean/data.ts",
+        "bytes": 7961,
+        "sha256": "sha256:00b2307dc3055a4113f93280a25bb094f34414361bd3560acc454f8466ac228a"
+      },
+      {
+        "target": "LICENSE.md",
+        "bytes": 1338,
+        "sha256": "sha256:9862eeaf658c67d8be876f94f42e4e5c6bef80c8fab3631ff2daab60379b804c"
+      },
+      {
+        "target": "public/experience-packs/corporate-clean-saas/assets/product-shell.svg",
+        "bytes": 5402,
+        "sha256": "sha256:1c81e885eb93a2220183a3f4749ecf0ff64335734765610c2363ea0365aee7c1"
+      },
+      {
+        "target": "public/experience-packs/corporate-clean-saas/provenance/product-shell.json",
+        "bytes": 564,
+        "sha256": "sha256:35ffd995722c16bc7f2012bf1213e9b90d7f616a9b65f913cce8138a79e31923"
+      },
+      {
+        "target": "README.md",
+        "bytes": 1564,
+        "sha256": "sha256:428e0dd0b41be724eea2553766701b01a286d8236d63c7ff5b67bd4bad4cc633"
+      },
+      {
+        "target": "STYLEKIT_PACK.json",
+        "bytes": 10059,
+        "sha256": "sha256:82e502fe8b04b7c35799435f13ca61d99c71e8b0a1788530f0f8424d3848c2a9"
+      },
+      {
+        "target": "THIRD_PARTY_NOTICES.md",
+        "bytes": 396,
+        "sha256": "sha256:bd92e404160892c2c018dc99e01adc70e3b9ff67cc7e1570b440ac20d334cc73"
+      }
+    ],
+    "lockfile": {
+      "bytes": 31818,
+      "sha256": "sha256:043ddf6322eb5a5b77d558ba2868f74f422eabc7ab37e92293dba59ed4569f9e"
+    },
+    "buildId": "BIHZ4pOsUXKUx9xa4UVVG",
+    "response": {
+      "url": "/corporate-clean",
+      "status": 200,
+      "bytes": 17064,
+      "sha256": "sha256:e14a2fcd16d6993a022987de72b9b6cb1d8368fa92e1cd4640d6450f4c1bb6dd",
+      "containsDashboardHeading": true
+    }
+  },
+  "browserSmoke": {
+    "skipped": false,
+    "desktop": {
+      "heading": "经营概览",
+      "errorRecovery": true
+    },
+    "mobile": {
+      "clientWidth": 390,
+      "scrollWidth": 390,
+      "menuOpenAndClose": true
+    },
+    "reducedMotion": {
+      "dashboardAnimationName": "none"
+    },
+    "keyboard": {
+      "spaceActivatesStateControl": true
+    }
+  },
+  "error": null
+}

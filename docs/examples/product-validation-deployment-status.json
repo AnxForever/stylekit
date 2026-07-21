@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "checkedAt": "2026-07-11T07:19:00+08:00",
+  "experimentId": "cc-saas-pack-price-2026-02",
+  "offerVersion": "cc-saas-pack-offer-v2",
+  "experimentLifecycle": "planned",
+  "repository": {
+    "migration015Present": true,
+    "validationSurfacePresent": true,
+    "authoritativeExportPresent": true,
+    "offerSnapshotVerified": true
+  },
+  "runtime": {
+    "productValidationHmacSecretConfiguredInEnvLocal": false,
+    "remoteMigration015Applied": true,
+    "remoteProbeErrorCode": null,
+    "commercialLicenseReview": "draft_requires_final_review",
+    "verifiedPriceIntentEnabled": false,
+    "checkoutProviderConfigured": false
+  },
+  "evidence": {
+    "qualifiedVisitors": 0,
+    "qualifiedInterviews": 0,
+    "purchases": 0,
+    "decision": "inconclusive_sample"
+  },
+  "safeState": "collection_blocked_pending_secret_and_commercial_approval"
+}
