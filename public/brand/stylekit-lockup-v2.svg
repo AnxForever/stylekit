@@ -1,0 +1,17 @@
+<svg width="1200" height="320" viewBox="0 0 1200 320" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <title>StyleKit primary lockup</title>
+  <g transform="translate(38 28) scale(.515625)" color="#11100E">
+    <path
+      fill="currentColor"
+      stroke="currentColor"
+      stroke-width="4"
+      stroke-linejoin="round"
+      d="M491 220C491 326 416 387 268 403C162 414 109 458 108 534C107 619 154 663 251 665C350 666 399 626 408 526H438V705H410C407 695 400 690 390 690C369 690 325 707 274 707C208 707 152 691 106 659C52 622 25 567 25 498C25 396 96 337 238 320C290 314 331 300 361 275C393 247 409 212 409 168C408 127 391 94 356 69C322 46 281 33 235 32C195 31 138 48 112 69C85 92 69 129 65 183H35L34 24C95 1 150 -10 197 -10C278 -10 345 8 398 43C460 84 491 143 491 220Z"
+      transform="translate(12 456) scale(.6 -.6)"
+    />
+    <path fill="currentColor" fill-rule="evenodd" clip-rule="evenodd" d="M304 66H348V222L431 74H480L374 257L494 448H439L348 300V448H304V66ZM418 100H456L396 212H376Z"/>
+  </g>
+  <text x="350" y="196" fill="#11100E" font-family="Inter Display, Inter, Arial, sans-serif" font-size="112" font-weight="500" letter-spacing="18">STYLEKIT</text>
+  <line x1="356" y1="226" x2="1137" y2="226" stroke="#11100E" stroke-width="2"/>
+  <text x="358" y="269" fill="#4B4842" font-family="Inter, Arial, sans-serif" font-size="22" font-weight="500" letter-spacing="7">CURATED VISUAL STYLE ARCHIVE</text>
+</svg>

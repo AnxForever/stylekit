@@ -50,6 +50,24 @@ export default function PrivacyPage() {
                 You can avoid newsletter signup, choose not to create an account, and clear locally stored preferences in your browser. If you need help with a newsletter subscription or public profile data, use the contact options on the support page.
               </p>
             </article>
+            <article>
+              <h2 className="text-2xl mb-3">Pack price research</h2>
+              <p className="text-muted leading-relaxed">
+                An isolated, noindex research page may test whether a narrowly defined audience accepts one server-assigned Pack price. With explicit research consent, we store only the necessary qualification answers, assigned price group, visibility evidence, and acceptance state. We do not ask for a company name, project code, customer information, or raw email in the analytics evidence store. A random first-party cookie is converted on the server into a keyed HMAC or anonymous identifier; although de-identified, it remains linkable research data and is handled as personal data.
+              </p>
+            </article>
+            <article>
+              <h2 className="text-2xl mb-3">Research retention and withdrawal</h2>
+              <p className="text-muted leading-relaxed">
+                Contact mappings, if introduced after separate approval, should be removed within 90 days after the experiment ends. De-identified research evidence is reviewed for deletion no later than 12 months after the experiment, while payment and tax records follow separate legal retention duties. On the research page you can withdraw this browser and delete its online research events. The minimal participant record remains marked as withdrawn so it cannot silently re-enter the sample; linked interview evidence is excluded. Clearing the browser cookie alone does not delete server evidence.
+              </p>
+            </article>
+            <article>
+              <h2 className="text-2xl mb-3">Research processors</h2>
+              <p className="text-muted leading-relaxed">
+                Vercel may deliver the page and process operational logs, while Supabase stores the restricted research records. Email or payment providers are not part of the current research flow; if they are later enabled, their role, data fields, and retention will be disclosed before verified contact or payment evidence is collected.
+              </p>
+            </article>
           </div>
         </section>
       </main>

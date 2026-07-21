@@ -25,7 +25,7 @@ import {
   type TemplateCatalogType,
 } from "@/lib/templates/catalog";
 
-type TemplateTypeFilter = "all" | TemplateCatalogType;
+type TemplateTypeFilter = "all" | TemplateCatalogType | "pricing";
 type TemplateSort = "recommended" | "name-asc" | "name-desc";
 const templates = templateCatalog;
 
@@ -62,7 +62,7 @@ function getTemplateGridColumns() {
   return 1;
 }
 
-function templateTypeToTranslationKey(type: TemplateCatalogType) {
+function templateTypeToTranslationKey(type: TemplateTypeFilter) {
   switch (type) {
     case "landing":
       return "templates.typeLanding";
@@ -92,6 +92,8 @@ function templateTypeToTranslationKey(type: TemplateCatalogType) {
       return "templates.typeLifestyle";
     case "education":
       return "templates.typeEducation";
+    case "pricing":
+      return "templates.typePricing";
     default:
       return "templates.typeAll";
   }
@@ -275,7 +277,10 @@ export default function TemplatesPage() {
         deferredActiveScenario === "all" ||
         getTemplateScenarios(template).includes(deferredActiveScenario)
       ))
-      .filter((template) => deferredActiveType === "all" || template.type === deferredActiveType)
+      .filter((template) => (
+        deferredActiveType === "all" ||
+        (deferredActiveType === "pricing" ? template.id === "pricing-page" : template.type === deferredActiveType)
+      ))
       .filter((template) => {
         if (!normalizedQuery) return true;
 

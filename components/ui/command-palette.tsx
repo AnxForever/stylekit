@@ -178,6 +178,10 @@ export function CommandPalette() {
             inputRef.current?.focus();
           }}
         >
+          <Dialog.Title className="sr-only">
+            {locale === "zh" ? "搜索 StyleKit" : "Search StyleKit"}
+          </Dialog.Title>
+
           {/* Search Input */}
           <div className="flex items-center border-b border-border px-4">
             <Search className="w-4 h-4 text-muted shrink-0" />
@@ -193,10 +197,12 @@ export function CommandPalette() {
               className="flex-1 px-3 py-4 bg-transparent text-sm outline-none placeholder:text-muted"
             />
             <button
+              type="button"
               onClick={() => setOpen(false)}
               className="p-1 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded"
+              aria-label={locale === "zh" ? "关闭搜索" : "Close search"}
             >
-              <X className="w-4 h-4 text-muted" />
+              <X className="w-4 h-4 text-muted" aria-hidden="true" />
             </button>
           </div>
 

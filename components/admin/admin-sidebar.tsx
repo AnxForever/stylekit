@@ -6,6 +6,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { X, LogOut } from "lucide-react";
 import { adminNavItems } from "@/lib/admin/nav";
 import { useAdminSidebar } from "./admin-sidebar-provider";
+import { prefetchAdminView, prefetchCommonAdminViews } from "@/lib/swr/admin-prefetch";
 
 export function AdminSidebar() {
   const pathname = usePathname();
@@ -25,6 +26,10 @@ export function AdminSidebar() {
     document.addEventListener("keydown", handleKeyDown);
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, [open, close]);
+
+  useEffect(() => {
+    void prefetchCommonAdminViews();
+  }, []);
 
   const handleLogout = async () => {
     await fetch("/api/admin/auth", { method: "DELETE" });
@@ -86,6 +91,8 @@ export function AdminSidebar() {
                 href={item.href}
                 onClick={close}
                 aria-current={isActive ? "page" : undefined}
+                onMouseEnter={() => { router.prefetch(item.href); void prefetchAdminView(item.href); }}
+                onFocus={() => { router.prefetch(item.href); void prefetchAdminView(item.href); }}
                 className={`group flex h-9 items-center gap-3 rounded-md px-3 text-sm font-normal transition-colors ${
                   isActive
                     ? "bg-[var(--admin-hover)] text-foreground"

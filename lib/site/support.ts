@@ -360,7 +360,7 @@ export const thankYouModalConfig: ThankYouModalConfig = {
     zh: "感谢大哥/姐姐的支持！",
   },
   description: {
-    en: "We recently received a generous donation. Your support helps keep StyleKit running and accessible to everyone.",
-    zh: "我去我去，赛博乞讨真的有人给我打赏了，哭辽(╥﹏╥)。感谢大哥/姐姐！！！！",
+    en: "Real people recently chose to support StyleKit. Thank you — every contribution goes first toward hosting, domains, and the patient work of keeping the archive useful.",
+    zh: "最近真的有人选择支持 StyleKit。谢谢每一份心意——它会优先用于服务器、域名，以及把这个视觉档案持续维护好的耐心工作。",
   },
 };

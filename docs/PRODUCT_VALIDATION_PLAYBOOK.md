@@ -103,7 +103,7 @@ pnpm run validate:product-experiment -- .data/product-validation.json --format j
 - 重复 `event_id` 只计一次；session-only、机器人、内部、测试、非生产和非 ICP 流量不进入分母；
 - qualified visitor 必须同时满足 offer 与价格的冻结可见时长和可见比例；
 - 只有服务端核验的价格接受/结账和支付来源能进入软/强意向；
-- 需求与预估单位经济必须同时通过，才会输出 `continue_pack_1`；样本不足始终输出
+- 需求与预估单位经济通过后，若只有意向证据，最多输出 `proceed_to_paid_pilot`；只有实验窗口结束、数据封存且存在与可行价格变体对齐的真实付款或不可退订金证据时，才可能输出 `continue_pack_1`。样本不足始终输出
   `inconclusive_sample`，一次修订后失败输出 `stop_expansion`。
 - 标准 Pack 未通过，但 Private Brand Kit 达到 5 次合格对话、2 次书面方案请求、至少 1 笔真实
   不可退订金/全款且服务贡献毛利过闸时，才输出 `reposition_to_private_brand_kit`。
@@ -115,7 +115,7 @@ pnpm run validate:product-experiment -- .data/product-validation.json --format j
 事实。修改该值、工时成本率、退款率或支持成本都必须产生新的冻结证据版本，不能在看到结果后移动。
 
 线上实验部署前还必须确认远端 Supabase 已应用
-`lib/supabase/migrations/014_lock_down_analytics_inserts.sql`。当前仓库环境没有 Supabase CLI 或数据库
+`lib/supabase/migrations/014_lock_down_analytics_inserts.sql`。当前仓库环境没有 Supabase CLI、项目 link 或直接数据库连接；仅有受限的远端只读探测能力，
 连接串，不能无侵入证明远端状态；在该迁移被核验前，公共 anon key 可能绕过分析 API，线上证据不得
 进入主结论。
 

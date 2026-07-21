@@ -17,25 +17,27 @@ function generateNextPackageJson(siteName: string): string {
       name: sanitizePackageName(siteName),
       private: true,
       version: "0.1.0",
+      type: "module",
+      packageManager: "pnpm@11.5.3",
       scripts: {
         dev: "next dev",
         build: "next build",
         start: "next start",
-        lint: "next lint",
+        typecheck: "tsc --noEmit",
       },
       dependencies: {
-        next: "^16.1.6",
-        react: "^19.2.3",
-        "react-dom": "^19.2.3",
+        next: "16.1.6",
+        react: "19.2.3",
+        "react-dom": "19.2.3",
       },
       devDependencies: {
-        typescript: "^5.5.3",
-        "@types/node": "^20.0.0",
-        "@types/react": "^19.0.0",
-        "@types/react-dom": "^19.0.0",
-        tailwindcss: "^3.4.7",
-        postcss: "^8.4.40",
-        autoprefixer: "^10.4.20",
+        typescript: "5.9.3",
+        "@types/node": "20.19.43",
+        "@types/react": "19.2.17",
+        "@types/react-dom": "19.2.3",
+        tailwindcss: "3.4.19",
+        postcss: "8.5.16",
+        autoprefixer: "10.5.2",
       },
     },
     null,
@@ -59,14 +61,20 @@ function generateNextTsConfig(): string {
         moduleResolution: "bundler",
         resolveJsonModule: true,
         isolatedModules: true,
-        jsx: "preserve",
+        jsx: "react-jsx",
         incremental: true,
         plugins: [{ name: "next" }],
         paths: {
           "@/*": ["./*"],
         },
       },
-      include: ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+      include: [
+        "next-env.d.ts",
+        "**/*.ts",
+        "**/*.tsx",
+        ".next/types/**/*.ts",
+        ".next/dev/types/**/*.ts",
+      ],
       exclude: ["node_modules"],
     },
     null,
@@ -86,8 +94,10 @@ export default nextConfig;
 function generateNextEnvDts(): string {
   return `/// <reference types="next" />
 /// <reference types="next/image-types/global" />
+import "./.next/types/routes.d.ts";
 
-// NOTE: This file should not be edited.
+// NOTE: This file should not be edited
+// see https://nextjs.org/docs/app/api-reference/config/typescript for more information.
 `;
 }
 
@@ -121,13 +131,13 @@ function generateNextReadme(config: GeneratorConfig, styleInput: StyleInput): st
 
   return `# ${config.globalContent.siteName || "StyleKit Next.js Site"}
 
-Generated with [StyleKit](https://stylekit.dev) using the **${styleName}** style.
+Generated with [StyleKit](https://stylekit.top) using the **${styleName}** style.
 
 ## Getting Started
 
 \`\`\`bash
-npm install
-npm run dev
+pnpm install
+pnpm dev
 \`\`\`
 
 Then open [http://localhost:3000](http://localhost:3000).
@@ -135,8 +145,9 @@ Then open [http://localhost:3000](http://localhost:3000).
 ## Build for Production
 
 \`\`\`bash
-npm run build
-npm run start
+pnpm typecheck
+pnpm build
+pnpm start
 \`\`\`
 
 ## Stack

@@ -58,8 +58,8 @@ export function trackEvent<T extends ClientEventName>(
 
 export function trackPageView(payload: PageViewPayload): void {
   if (!isClient()) return;
-
-  queueInternalAnalyticsEvent("page_view", payload);
+  const utm = getUtmParams();
+  queueInternalAnalyticsEvent("page_view", utm ? { ...payload, ...utm } : payload);
 }
 
 // ── UTM helpers (inline to avoid circular deps) ─────────────

@@ -4,6 +4,35 @@
 - 实验对象：Corporate Clean SaaS Production Pack；Private Brand Kit 作为独立服务实验
 - 相关入口：[PRODUCT_VALIDATION_PLAYBOOK.md](./PRODUCT_VALIDATION_PLAYBOOK.md)
 
+## 当前实现状态（2026-07-11）
+
+已在不修改首页、现有卡片和 135 个预览的前提下完成隔离基础设施：
+
+- 直接链接页面：`/validation/corporate-clean-saas`；中文、`noindex`、不进入导航，只展示服务器分配的一个价格。
+- `POST /api/product-validation/session`：30 天 HttpOnly 第一方身份、服务器粘性分流、冻结价格上下文。
+- `POST /api/product-validation/qualify`：逐项保存冻结 ICP 的必要布尔条件，不收集公司名或项目机密。
+- `POST /api/product-validation/exposure`：只接受达到 50% / 2 秒冻结阈值的幂等 Offer 与价格曝光。
+- `POST /api/product-validation/intent`：只允许登录账户、合格 ICP、完整曝光和当前条款版本产生服务端意向证据。
+- `GET /api/admin/product-validation/export`：导出去标识化 Validation Bundle，并提供内容 SHA-256。
+- `POST /api/admin/product-validation/interviews`：只接受管理员提交的去标识化访谈结果；必须包含同意记录、冻结 Offer hash 和原始笔记/转写文件的 SHA-256，不能只手填价格接受布尔值。
+- 数据库迁移：`015_product_validation.sql`；参与者和事件表启用 RLS，`anon` 与 `authenticated` 无直接权限。
+- Offer artifact：`docs/examples/corporate-clean-saas-offer-v1.json`；评估 CLI 会核验真实文件、SHA-256 和语义一致性。
+
+这些代码存在不等于实验已经开始。当前仍有以下硬闸门：
+
+1. 实验窗口为 2026-08-01 至 2026-08-31，窗口外曝光和意向接口拒绝采集。
+2. 商业许可仍是 `draft_requires_final_review`，因此 E2 已验证价格接受在服务端保持锁定。
+3. 没有真实支付或订金 Provider，仓库不会把按钮点击或订金链接请求写成 `pack_checkout_start`。
+4. 生产环境必须设置至少 32 字符的 `PRODUCT_VALIDATION_HMAC_SECRET`，并实际应用迁移 015。
+5. 当前样本仍为 0/200、0/20、0 付费，决策保持 `inconclusive_sample`。
+
+最近一次只读生产核验记录在
+[`product-validation-deployment-status.json`](./examples/product-validation-deployment-status.json)。
+截至该记录，远端 PostgREST 对三张验证表返回 `PGRST205`，说明仓库中的迁移 015 尚未应用到远端；
+不得把“迁移文件存在”写成“生产数据库已准备好”。
+
+评估器已经修复零付款假阳性：意向闸门最多进入 `proceed_to_paid_pilot`；没有付款证据、未结束窗口或未封存数据集时，绝不会输出 `continue_pack_1`。
+
 ## 1. 决策与非目标
 
 本实验判断：目标 ICP 在看到完整条款后，是否对 CNY 199 或 CNY 399 的标准 Pack 采取可验证行动；

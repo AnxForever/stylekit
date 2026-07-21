@@ -12,7 +12,10 @@ import {
   generateStyleJsonLd,
 } from "@/lib/seo/json-ld";
 import { getLocalizedPromptMetadata } from "@/lib/seo/prompt-metadata";
-import { buildSiteMetadata } from "@/lib/seo/site-metadata";
+import {
+  buildSiteMetadata,
+  HOME_SOCIAL_IMAGE,
+} from "@/lib/seo/site-metadata";
 import { generateRss } from "@/lib/rss";
 
 const BASE_URL = "https://www.stylekit.top";
@@ -46,6 +49,30 @@ describe("SEO truth invariants", () => {
     expect(metadata.openGraph).not.toHaveProperty("url");
     expect(metadata.openGraph).toMatchObject({ locale: "zh_CN" });
     expect(metadata.description).toContain(`${CURATED_STYLE_COUNT} curated visual styles`);
+  });
+
+  it("uses a real PNG homepage capture for large social cards", () => {
+    const metadata = buildSiteMetadata(requestContext("en", "/en"));
+    const expectedImage = `${BASE_URL}${HOME_SOCIAL_IMAGE.path}`;
+
+    expect(metadata.openGraph?.images).toEqual([
+      expect.objectContaining({
+        url: expectedImage,
+        width: 1200,
+        height: 630,
+        type: "image/png",
+      }),
+    ]);
+    expect(metadata.twitter).toMatchObject({
+      card: "summary_large_image",
+      images: [
+        expect.objectContaining({
+          url: expectedImage,
+          width: 1200,
+          height: 630,
+        }),
+      ],
+    });
   });
 
   it("always aligns localized Open Graph and canonical URLs", () => {

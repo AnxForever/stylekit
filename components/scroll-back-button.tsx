@@ -47,27 +47,13 @@ export function ScrollBackButton({
       sessionStorage.setItem(`scroll-${pathname}`, window.scrollY.toString());
     }
 
-    // 返回到styles列表页面时，尝试恢复之前保存的URL（包含过滤器参数）
     if (href) {
-      if (savedReturnUrlKey) {
-        navigateBackOrFallback(router, {
-          href,
-          savedReturnUrlKey,
-          fallbackHref: fallbackHref ?? href,
-        });
-        return;
-      }
-
-      // 如果指定了href，检查是否有保存的styles列表URL
-      if (href === "/styles") {
-        navigateBackOrFallback(router, {
-          href,
-          savedReturnUrlKey: "styles-return-url",
-          fallbackHref: "/styles",
-        });
-        return;
-      }
-      router.push(href);
+      navigateBackOrFallback(router, {
+        href,
+        savedReturnUrlKey:
+          savedReturnUrlKey ?? (href === "/styles" ? "styles-return-url" : undefined),
+        fallbackHref: fallbackHref ?? href,
+      });
     } else {
       navigateBackOrFallback(router, { fallbackHref: fallbackHref ?? "/" });
     }

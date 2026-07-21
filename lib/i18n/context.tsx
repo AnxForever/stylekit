@@ -37,6 +37,27 @@ function persistLocale(locale: Locale) {
   document.cookie = `${LOCALE_COOKIE_NAME}=${locale}; path=/; max-age=${60 * 60 * 24 * 365}; samesite=lax`;
 }
 
+function readPersistedLocale(): Locale | null {
+  if (typeof window === "undefined") return null;
+
+  const cookiePrefix = `${LOCALE_COOKIE_NAME}=`;
+  const cookieLocale = document.cookie
+    .split(";")
+    .map((part) => part.trim())
+    .find((part) => part.startsWith(cookiePrefix))
+    ?.slice(cookiePrefix.length);
+  if (cookieLocale === "en" || cookieLocale === "zh") {
+    return cookieLocale;
+  }
+
+  try {
+    const storedLocale = localStorage.getItem(LOCALE_STORAGE_KEY);
+    return storedLocale === "en" || storedLocale === "zh" ? storedLocale : null;
+  } catch {
+    return null;
+  }
+}
+
 export function I18nProvider({
   children,
   initialLocale,
@@ -50,8 +71,19 @@ export function I18nProvider({
   const locale = pathnameLocale ?? preferredLocale ?? DEFAULT_LOCALE;
 
   useEffect(() => {
+    if (!pathnameLocale) {
+      const persistedLocale = readPersistedLocale();
+      if (persistedLocale && persistedLocale !== preferredLocale) {
+        const timeoutId = window.setTimeout(() => {
+          setPreferredLocale(persistedLocale);
+        }, 0);
+        return () => window.clearTimeout(timeoutId);
+      }
+    }
+
     persistLocale(locale);
-  }, [locale]);
+    return undefined;
+  }, [locale, pathnameLocale, preferredLocale]);
 
   const setLocale = (newLocale: Locale) => {
     setPreferredLocale(newLocale);

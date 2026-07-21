@@ -408,6 +408,7 @@ export default function ShowcaseContent() {
 
             <Link
               href="/"
+              data-back-navigation="true"
               className="font-serif text-xs text-[#3a3a3a]/40 tracking-[0.2em] transition-opacity duration-1000 hover:opacity-100 opacity-60 flex items-center gap-2"
             >
               <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round">

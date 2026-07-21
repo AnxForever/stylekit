@@ -45,7 +45,9 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - run: pnpm run check:catalog
+      - run: pnpm run check:support-assets
       - run: pnpm run check:product-truth
+      - run: pnpm run check:experience-packs
       - run: pnpm run check:seo-truth
       - run: pnpm run test
 
@@ -84,7 +86,6 @@ jobs:
   e2e:
     name: E2E Tests
     runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request'
     needs: build
     steps:
       - uses: actions/checkout@v4

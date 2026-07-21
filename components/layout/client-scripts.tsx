@@ -3,6 +3,7 @@
 import { Suspense } from "react";
 import dynamic from "next/dynamic";
 import { PageViewTracker } from "@/components/analytics/page-view-tracker";
+import { BackNavigationRuntime } from "@/components/navigation/back-navigation-runtime";
 
 const isVercel = Boolean(process.env.NEXT_PUBLIC_VERCEL);
 
@@ -21,6 +22,7 @@ const RegisterSW = dynamic(
 export function ClientScripts() {
   return (
     <>
+      <BackNavigationRuntime />
       <Analytics />
       <Suspense fallback={null}>
         <PageViewTracker />

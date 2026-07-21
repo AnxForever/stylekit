@@ -2,28 +2,21 @@
 
 import { usePathname, useRouter } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
+import { navigateBackOrFallback } from "@/lib/navigation/smart-back";
 
 export function ShowcaseBackBar() {
   const pathname = usePathname();
   const router = useRouter();
 
-  const match = pathname.match(/^\/styles\/([^/]+)\/showcase\/?$/);
+  const match = pathname.match(/^\/(?:en\/|zh\/)?styles\/([^/]+)\/showcase\/?$/);
   if (!match) return null;
 
   const slug = match[1];
 
   const handleClick = () => {
-    // Use browser back when the previous page is same-origin (instant navigation)
-    const canGoBack =
-      window.history.length > 1 &&
-      (!document.referrer ||
-        new URL(document.referrer).origin === window.location.origin);
-
-    if (canGoBack) {
-      router.back();
-    } else {
-      router.push(`/styles/${slug}`);
-    }
+    navigateBackOrFallback(router, {
+      fallbackHref: `/styles/${slug}`,
+    });
   };
 
   return (

@@ -72,6 +72,16 @@ const nextConfig: NextConfig = {
   async headers() {
     return [
       {
+        source: "/validation/:path*",
+        headers: [
+          {
+            key: "X-Robots-Tag",
+            value: "noindex, nofollow, noarchive, nosnippet",
+          },
+          { key: "Cache-Control", value: "private, no-store" },
+        ],
+      },
+      {
         source: "/:path*",
         headers: [
           { key: "X-Content-Type-Options", value: "nosniff" },
@@ -83,11 +93,11 @@ const nextConfig: NextConfig = {
             key: "Content-Security-Policy",
             value: [
               "default-src 'self'",
-              "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
-              "style-src 'self' 'unsafe-inline'",
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://vibeloft.ai",
+              "style-src 'self' 'unsafe-inline' https://fonts.loli.net",
               "img-src 'self' data: https: blob:",
-              "font-src 'self' data:",
-              "connect-src 'self' https://*.supabase.co https://connect.linux.do wss://*.supabase.co https://api.github.com",
+              "font-src 'self' data: https://gstatic.loli.net",
+              "connect-src 'self' https://*.supabase.co https://connect.linux.do wss://*.supabase.co https://api.github.com https://api.vibeloft.ai",
               "media-src 'self'",
               "frame-src 'self'",
               "frame-ancestors 'self'",

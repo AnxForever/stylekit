@@ -1,12 +1,13 @@
 "use client";
 
-import { useEffect, useRef, useState, useCallback, type ReactNode } from "react";
+import { useEffect, useRef, useState, useCallback, useMemo, type ReactNode } from "react";
 import { ArrowRight } from "lucide-react";
 import { LocalizedLink } from "@/components/i18n/localized-link";
 import { ScrollBackButton } from "@/components/scroll-back-button";
 import { ComponentPreview } from "@/components/style-preview/component-preview";
 import { ColorPalette } from "@/components/style-preview/color-palette";
 import { AiImplementationPanel } from "@/components/style-preview/ai-implementation-panel";
+import { HardPromptCopyButton } from "@/components/style-preview/hard-prompt-copy-button";
 import { CodeBlock } from "@/components/style-preview/code-block";
 import { TokensExportButton } from "@/components/tokens-export-button";
 import { StyleCoverPreview } from "@/components/style-preview/style-cover-preview";
@@ -24,7 +25,9 @@ import { CollapsibleSection } from "@/components/ui/collapsible-section";
 import { LazySection } from "@/components/ui/lazy-section";
 import { useI18n } from "@/lib/i18n/context";
 import { localizedString, localizedList } from "@/lib/styles/locale-content";
+import { buildPromptPair } from "@/lib/styles/prompt-pair";
 import { trackEvent } from "@/lib/analytics/events";
+import { addPromptPurpose } from "@/components/style-preview/_prompt-builders";
 
 import type { DesignStyle } from "@/lib/styles";
 import type { AccessibilityScore } from "@/lib/accessibility";
@@ -111,6 +114,27 @@ export function StyleDetailContent({
   const localizedKeywords = localizedList(locale, style.keywords, style.keywordsEn);
   const primaryStyleName = locale === "zh" ? style.name : style.nameEn || style.name;
   const secondaryStyleName = locale === "zh" ? style.nameEn : style.name;
+  const hardPromptContent = useMemo(() => {
+    const promptInput = {
+      styleName: primaryStyleName,
+      styleSlug: style.slug,
+      aiRules: style.aiRules,
+      aiRulesEn: style.aiRulesEn,
+      enhancedRules,
+      doList: style.doList,
+      doListEn: style.doListEn,
+      dontList: style.dontList,
+      dontListEn: style.dontListEn,
+      keywords: style.keywords,
+      keywordsEn: style.keywordsEn,
+    };
+
+    return addPromptPurpose({
+      locale,
+      kind: "hard",
+      content: buildPromptPair(promptInput, locale).hardPrompt,
+    });
+  }, [enhancedRules, locale, primaryStyleName, style]);
   const getPrimaryName = (targetStyle: CompatibleStyleSummary) =>
     locale === "zh" ? targetStyle.name : targetStyle.nameEn || targetStyle.name;
   const getSecondaryName = (targetStyle: CompatibleStyleSummary) =>
@@ -218,12 +242,17 @@ export function StyleDetailContent({
               </div>
 
               <div className="flex flex-col sm:flex-row flex-wrap gap-3 sm:gap-4 mt-6">
+                <HardPromptCopyButton
+                  content={hardPromptContent}
+                  locale={locale}
+                  slug={style.slug}
+                />
                 <LocalizedLink
                   href={`/styles/${style.slug}/showcase`}
                   onClick={() =>
                     trackEvent("showcase_open", { slug: style.slug, source: "hero" })
                   }
-                  className="inline-flex items-center justify-center px-6 py-3 bg-foreground text-background text-sm tracking-wide hover:bg-foreground/90 transition-colors"
+                  className="inline-flex min-h-[48px] items-center justify-center border border-border px-6 py-3 text-sm tracking-wide transition-colors hover:border-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                 >
                   {t("styleDetail.viewShowcase")}
                 </LocalizedLink>

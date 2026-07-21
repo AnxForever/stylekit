@@ -20,6 +20,7 @@ export interface StyleMeta {
   name: string;
   nameEn: string;
   description: string;
+  descriptionEn: string;
   cover: string;
   category: StyleCategory;
   styleType: StyleType;

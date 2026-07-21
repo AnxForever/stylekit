@@ -1,22 +1,8 @@
 import type { Metadata } from "next";
-import { Header } from "@/components/layout/header";
-import { Footer } from "@/components/layout/footer";
-import { DesignPrinciplesContent } from "@/components/design-principles/design-principles-content";
+import { permanentRedirect } from "next/navigation";
 
-export const metadata: Metadata = {
-  title: "Design Principles: Contrast, Repetition, Alignment & Proximity",
-  description:
-    "Contrast, Repetition, Alignment, Proximity — the four design principles, taught with live before/after demos, a copyable self-review checklist, and minimal code.",
-};
+export const metadata: Metadata = { title: "Design Principles" };
 
 export default function DesignPrinciplesPage() {
-  return (
-    <div className="min-h-screen flex flex-col">
-      <Header />
-      <main className="flex-1">
-        <DesignPrinciplesContent />
-      </main>
-      <Footer />
-    </div>
-  );
+  permanentRedirect("https://anxforever.cn/blog/frontend-foundations-design-principles");
 }

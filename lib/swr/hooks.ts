@@ -3,6 +3,15 @@
 import useSWR from "swr";
 import type { StyleMeta } from "@/lib/styles/meta";
 import type { DashboardData, DashboardRange } from "@/lib/admin/analytics-dashboard";
+import type {
+  AnalyticsBreakdown,
+  AnalyticsBreakdownDimension,
+  AnalyticsContent,
+  AnalyticsEvents,
+  AnalyticsOverview,
+  AnalyticsRange,
+  AnalyticsRegistrations,
+} from "@/lib/admin/analytics-api-contract";
 
 // ---------- Types ----------
 
@@ -50,7 +59,7 @@ interface CommentsData {
 }
 
 interface AdminAuditActor {
-  type: "user" | "token" | "dev-bypass";
+  type: "user" | "token" | "dev-bypass" | "password-session";
   id: string;
 }
 
@@ -115,6 +124,76 @@ export function useAnalyticsDashboard(range: DashboardRange = "7d") {
   });
 }
 
+export function useAnalyticsOverview(
+  range: AnalyticsRange = "7d",
+  fallbackData?: AnalyticsOverview
+) {
+  return useSWR<AnalyticsOverview>(`/api/admin/analytics/overview?range=${range}`, {
+    fallbackData,
+    keepPreviousData: true,
+    dedupingInterval: 300_000,
+    revalidateOnFocus: false,
+  });
+}
+
+export function useAnalyticsBreakdown(
+  range: AnalyticsRange,
+  dimension: AnalyticsBreakdownDimension,
+  limit = 10,
+  fallbackData?: AnalyticsBreakdown
+) {
+  const params = new URLSearchParams({
+    range,
+    dimension,
+    limit: String(limit),
+  });
+  return useSWR<AnalyticsBreakdown>(
+    `/api/admin/analytics/breakdown?${params.toString()}`,
+    {
+      fallbackData,
+      keepPreviousData: true,
+      dedupingInterval: 300_000,
+      revalidateOnFocus: false,
+    }
+  );
+}
+
+export function useAnalyticsRegistrations(
+  range: AnalyticsRange,
+  fallbackData?: AnalyticsRegistrations
+) {
+  return useSWR<AnalyticsRegistrations>(
+    `/api/admin/analytics/registrations?range=${range}`,
+    {
+      fallbackData,
+      keepPreviousData: true,
+      dedupingInterval: 300_000,
+      revalidateOnFocus: false,
+    }
+  );
+}
+
+export function useAnalyticsContent(
+  range: AnalyticsRange,
+  fallbackData?: AnalyticsContent
+) {
+  return useSWR<AnalyticsContent>(`/api/admin/analytics/content?range=${range}`, {
+    fallbackData,
+    keepPreviousData: true,
+    dedupingInterval: 300_000,
+    revalidateOnFocus: false,
+  });
+}
+
+export function useAnalyticsEvents(range: AnalyticsRange, fallbackData?: AnalyticsEvents) {
+  return useSWR<AnalyticsEvents>(`/api/admin/analytics/events?range=${range}`, {
+    fallbackData,
+    keepPreviousData: true,
+    dedupingInterval: 300_000,
+    revalidateOnFocus: false,
+  });
+}
+
 interface AdminAuditQuery {
   limit?: number;
   offset?: number;
@@ -123,7 +202,10 @@ interface AdminAuditQuery {
   search?: string;
 }
 
-export function useAdminAuditEvents(query: AdminAuditQuery = {}) {
+export function useAdminAuditEvents(
+  query: AdminAuditQuery = {},
+  fallbackData?: AdminAuditData
+) {
   const params = new URLSearchParams();
   params.set("limit", String(query.limit ?? 20));
   params.set("offset", String(query.offset ?? 0));
@@ -138,6 +220,7 @@ export function useAdminAuditEvents(query: AdminAuditQuery = {}) {
   }
 
   return useSWR<AdminAuditData>(`/api/admin/audit?${params.toString()}`, {
+    fallbackData,
     keepPreviousData: true,
     dedupingInterval: 10_000,
     revalidateOnFocus: false,
@@ -298,9 +381,9 @@ export function useAdminUsers(query: AdminUsersQuery = {}) {
   if (query.search?.trim()) params.set("search", query.search.trim());
 
   return useSWR<AdminUsersData>(`/api/admin/users?${params.toString()}`, {
-    refreshInterval: 10000,
-    revalidateOnFocus: true,
-    revalidateOnReconnect: true,
+    dedupingInterval: 300_000,
+    revalidateOnFocus: false,
+    revalidateOnReconnect: false,
     keepPreviousData: true,
   });
 }
@@ -394,7 +477,7 @@ export function useAdminStyles(query: AdminStylesQuery = {}) {
   const qs = params.toString();
   return useSWR<AdminStylesData>(`/api/admin/styles${qs ? `?${qs}` : ""}`, {
     keepPreviousData: true,
-    dedupingInterval: 10_000,
+    dedupingInterval: 300_000,
     revalidateOnFocus: false,
   });
 }
