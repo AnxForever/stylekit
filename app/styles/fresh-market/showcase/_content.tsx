@@ -180,10 +180,10 @@ export default function FreshMarketShowcaseContent() {
             <span className="text-xl font-bold text-[#2d5016]">FreshMarket</span>
           </div>
           <div className="hidden md:flex items-center gap-6 text-sm text-[#8b4513]">
-            <span className="hover:text-[#2d5016] transition-colors cursor-pointer">Produce</span>
-            <span className="hover:text-[#2d5016] transition-colors cursor-pointer">Dairy</span>
-            <span className="hover:text-[#2d5016] transition-colors cursor-pointer">Bakery</span>
-            <span className="hover:text-[#2d5016] transition-colors cursor-pointer">Recipes</span>
+            <a href="#featured-products" className="hover:text-[#2d5016] transition-colors">Produce</a>
+            <a href="#featured-products" className="hover:text-[#2d5016] transition-colors">Dairy</a>
+            <a href="#featured-products" className="hover:text-[#2d5016] transition-colors">Bakery</a>
+            <a href="#recipes" className="hover:text-[#2d5016] transition-colors">Recipes</a>
           </div>
           <div className="flex items-center gap-3">
             <div className="relative">
@@ -255,7 +255,7 @@ export default function FreshMarketShowcaseContent() {
 
       {/* ── 5. Product Grid ───────────────────────────────────── */}
       <RevealBlock delay={0.25}>
-        <section className="max-w-5xl mx-auto px-4 mt-10">
+        <section id="featured-products" className="max-w-5xl mx-auto px-4 mt-10 scroll-mt-16">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-2xl font-bold text-[#2d5016]">Featured Products</h2>
             <button className="text-sm text-[#e8722a] font-medium hover:underline">View all</button>
@@ -302,7 +302,7 @@ export default function FreshMarketShowcaseContent() {
 
       {/* ── 6. Recipe Suggestion Cards ────────────────────────── */}
       <RevealBlock delay={0.1}>
-        <section className="max-w-5xl mx-auto px-4 mt-14">
+        <section id="recipes" className="max-w-5xl mx-auto px-4 mt-14 scroll-mt-16">
           <h2 className="text-2xl font-bold text-[#2d5016] mb-6">Recipe Ideas</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
             {recipes.map((recipe) => (

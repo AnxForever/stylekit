@@ -181,7 +181,7 @@ export default function BrutalistWebShowcase() {
       >
         <div className="max-w-4xl mx-auto">
           <h1
-            className="font-serif font-bold text-black"
+            className="[font-family:Georgia,Times,serif] font-bold text-black"
             style={{ fontSize: "2.5rem", lineHeight: 1.1, marginBottom: "0.5rem" }}
           >
             Welcome to the Web (circa 1994)
@@ -278,7 +278,7 @@ export default function BrutalistWebShowcase() {
       >
         <div className="max-w-4xl mx-auto">
           <h2
-            className="font-serif font-bold text-black"
+            className="[font-family:Georgia,Times,serif] font-bold text-black"
             style={{ fontSize: "1.5rem", marginBottom: "0.25rem" }}
           >
             Component Reference
@@ -452,7 +452,7 @@ export default function BrutalistWebShowcase() {
                       key={card.title}
                       style={{ border: "1px solid #000000", padding: "0.75rem", background: "#ffffff" }}
                     >
-                      <h3 className="font-serif font-bold text-black" style={{ fontSize: "1.0625rem", marginBottom: "0.25rem" }}>
+                      <h3 className="[font-family:Georgia,Times,serif] font-bold text-black" style={{ fontSize: "1.0625rem", marginBottom: "0.25rem" }}>
                         {card.title}
                       </h3>
                       <p className="font-mono text-sm text-black" style={{ marginBottom: "0.5rem" }}>
@@ -647,7 +647,7 @@ export default function BrutalistWebShowcase() {
       >
         <div className="max-w-4xl mx-auto">
           <h2
-            className="font-serif font-bold text-black"
+            className="[font-family:Georgia,Times,serif] font-bold text-black"
             style={{ fontSize: "1.5rem", marginBottom: "0.25rem" }}
           >
             Link Color Reference
@@ -761,7 +761,7 @@ export default function BrutalistWebShowcase() {
       >
         <div className="max-w-4xl mx-auto">
           <h2
-            className="font-serif font-bold text-black"
+            className="[font-family:Georgia,Times,serif] font-bold text-black"
             style={{ fontSize: "1.5rem", marginBottom: "0.25rem" }}
           >
             Typography Specimen
@@ -774,28 +774,28 @@ export default function BrutalistWebShowcase() {
             {/* Headings */}
             <div style={{ borderBottom: "1px solid #000000", marginBottom: "1rem", paddingBottom: "1rem" }}>
               <p className="font-mono text-xs text-black" style={{ marginBottom: "0.5rem" }}>
-                Heading scale — font-serif (Times New Roman, Georgia):
+                Heading scale — Georgia / Times New Roman serif stack:
               </p>
               <h1
-                className="font-serif font-bold text-black"
+                className="[font-family:Georgia,Times,serif] font-bold text-black"
                 style={{ fontSize: "2.25rem", lineHeight: 1.1, marginBottom: "0.25rem" }}
               >
                 H1 — Page Title (36px)
               </h1>
               <h2
-                className="font-serif font-bold text-black"
+                className="[font-family:Georgia,Times,serif] font-bold text-black"
                 style={{ fontSize: "1.75rem", lineHeight: 1.15, marginBottom: "0.25rem" }}
               >
                 H2 — Section Heading (28px)
               </h2>
               <h3
-                className="font-serif font-bold text-black"
+                className="[font-family:Georgia,Times,serif] font-bold text-black"
                 style={{ fontSize: "1.375rem", lineHeight: 1.2, marginBottom: "0.25rem" }}
               >
                 H3 — Subsection (22px)
               </h3>
               <h4
-                className="font-serif font-bold text-black"
+                className="[font-family:Georgia,Times,serif] font-bold text-black"
                 style={{ fontSize: "1.0625rem", lineHeight: 1.3, marginBottom: "0" }}
               >
                 H4 — Minor Heading (17px)
@@ -869,7 +869,7 @@ export default function BrutalistWebShowcase() {
       >
         <div className="max-w-4xl mx-auto">
           <h2
-            className="font-serif font-bold text-black"
+            className="[font-family:Georgia,Times,serif] font-bold text-black"
             style={{ fontSize: "1.5rem", marginBottom: "0.25rem" }}
           >
             Authentic 90s Web Elements
@@ -896,13 +896,13 @@ export default function BrutalistWebShowcase() {
                     gap: "8px",
                   }}
                 >
-                  <span className="font-serif font-bold text-black text-sm">
+                  <span className="[font-family:Georgia,Times,serif] font-bold text-black text-sm">
                     *** UNDER CONSTRUCTION ***
                   </span>
                   <span className="font-mono text-black text-xs">
                     This page is not yet complete. Please check back later. Thank you for your patience.
                   </span>
-                  <span className="font-serif font-bold text-black text-sm">
+                  <span className="[font-family:Georgia,Times,serif] font-bold text-black text-sm">
                     *** UNDER CONSTRUCTION ***
                   </span>
                 </div>
@@ -927,7 +927,7 @@ export default function BrutalistWebShowcase() {
                       background: "#ffffff",
                     }}
                   >
-                    <span className="font-serif font-bold text-black" style={{ fontSize: "0.75rem" }}>
+                    <span className="[font-family:Georgia,Times,serif] font-bold text-black" style={{ fontSize: "0.75rem" }}>
                       Netscape N
                     </span>
                   </div>
@@ -1070,7 +1070,7 @@ export default function BrutalistWebShowcase() {
       >
         <div className="max-w-4xl mx-auto">
           <h2
-            className="font-serif font-bold text-black"
+            className="[font-family:Georgia,Times,serif] font-bold text-black"
             style={{ fontSize: "1.5rem", marginBottom: "0.25rem" }}
           >
             Brutalist Web Design Guidelines
@@ -1184,7 +1184,7 @@ export default function BrutalistWebShowcase() {
       >
         <div className="max-w-4xl mx-auto">
           <h2
-            className="font-serif font-bold text-black"
+            className="[font-family:Georgia,Times,serif] font-bold text-black"
             style={{ fontSize: "1.5rem", marginBottom: "0.25rem" }}
           >
             Guestbook
@@ -1205,7 +1205,7 @@ export default function BrutalistWebShowcase() {
 
           {/* Existing entries */}
           <div style={{ marginBottom: "1.5rem" }}>
-            <p className="font-serif font-bold text-black" style={{ fontSize: "1rem", marginBottom: "0.5rem" }}>
+            <p className="[font-family:Georgia,Times,serif] font-bold text-black" style={{ fontSize: "1rem", marginBottom: "0.5rem" }}>
               Recent Entries ({GUESTBOOK_ENTRIES.length} of 847 total)
             </p>
             {GUESTBOOK_ENTRIES.map((entry, idx) => (
@@ -1221,7 +1221,7 @@ export default function BrutalistWebShowcase() {
                 }}
               >
                 <div className="flex items-baseline gap-3" style={{ marginBottom: "4px" }}>
-                  <span className="font-serif font-bold text-black" style={{ fontSize: "0.9375rem" }}>
+                  <span className="[font-family:Georgia,Times,serif] font-bold text-black" style={{ fontSize: "0.9375rem" }}>
                     {entry.name}
                   </span>
                   <span className="font-mono text-xs text-black">
@@ -1262,7 +1262,7 @@ export default function BrutalistWebShowcase() {
 
           {/* Submit new entry */}
           <div>
-            <p className="font-serif font-bold text-black" style={{ fontSize: "1rem", marginBottom: "0.75rem" }}>
+            <p className="[font-family:Georgia,Times,serif] font-bold text-black" style={{ fontSize: "1rem", marginBottom: "0.75rem" }}>
               Add Your Entry
             </p>
             {guestSubmitted ? (

@@ -465,13 +465,19 @@ export default function ShowcaseContent() {
 
             {/* Nav links */}
             <nav className="hidden md:flex items-center gap-8">
-              {["Network", "Components", "Colors", "Docs"].map((item) => (
-                <span
+              {[
+                ["Network", "#network"],
+                ["Components", "#components"],
+                ["Colors", "#colors"],
+                ["Docs", "#rules"],
+              ].map(([item, href]) => (
+                <a
                   key={item}
-                  className="text-sm text-white/40 hover:text-[#64c8ff] transition-colors duration-200 cursor-pointer font-mono"
+                  href={href}
+                  className="text-sm text-white/40 hover:text-[#64c8ff] transition-colors duration-200 font-mono"
                 >
                   {item}
-                </span>
+                </a>
               ))}
             </nav>
 
@@ -601,7 +607,7 @@ export default function ShowcaseContent() {
       {/* ============================================================ */}
       {/* 3. Network Visualization                                      */}
       {/* ============================================================ */}
-      <section className="py-20 md:py-28 px-6 md:px-12 max-w-7xl mx-auto">
+      <section id="network" className="scroll-mt-16 py-20 md:py-28 px-6 md:px-12 max-w-7xl mx-auto">
         <RevealBlock className="mb-10">
           <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6">
             <div>
@@ -761,7 +767,7 @@ export default function ShowcaseContent() {
       {/* ============================================================ */}
       {/* 4. Component Showcase                                         */}
       {/* ============================================================ */}
-      <section className="py-20 md:py-28 px-6 md:px-12 max-w-7xl mx-auto">
+      <section id="components" className="scroll-mt-16 py-20 md:py-28 px-6 md:px-12 max-w-7xl mx-auto">
         <RevealBlock className="mb-12">
           <span className="font-mono text-xs tracking-[0.3em] uppercase text-[#a78bfa] block mb-3">
             Section 03
@@ -940,7 +946,7 @@ export default function ShowcaseContent() {
       {/* ============================================================ */}
       {/* 5. Color System                                               */}
       {/* ============================================================ */}
-      <section className="py-20 md:py-28 px-6 md:px-12 max-w-7xl mx-auto">
+      <section id="colors" className="scroll-mt-16 py-20 md:py-28 px-6 md:px-12 max-w-7xl mx-auto">
         <RevealBlock className="mb-12">
           <span className="font-mono text-xs tracking-[0.3em] uppercase text-[#64ffc8] block mb-3">
             Section 04
@@ -1156,7 +1162,7 @@ export default function ShowcaseContent() {
       {/* ============================================================ */}
       {/* 7. Do / Don't Rules                                          */}
       {/* ============================================================ */}
-      <section className="py-20 md:py-28 px-6 md:px-12 max-w-7xl mx-auto">
+      <section id="rules" className="scroll-mt-16 py-20 md:py-28 px-6 md:px-12 max-w-7xl mx-auto">
         <RevealBlock className="mb-12">
           <span className="font-mono text-xs tracking-[0.3em] uppercase text-white/30 block mb-3">
             Section 06

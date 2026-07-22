@@ -172,6 +172,7 @@ export default function ShowcaseContent() {
   return (
     <div className="min-h-screen text-gray-700" style={{ backgroundColor: "#fff5f7", fontFamily: "'Georgia', serif" }}>
       <style>{`
+        html { scroll-behavior: smooth; }
         @keyframes shoujo-float {
           0%,100% { transform: translateY(0px) rotate(0deg); }
           33% { transform: translateY(-10px) rotate(5deg); }
@@ -227,11 +228,11 @@ export default function ShowcaseContent() {
           {/* Nav links */}
           <nav style={{ display: "flex", alignItems: "center", gap: 28 }}>
             {["Chapter", "Palette", "Components", "Screentone", "Typography"].map((item) => (
-              <span key={item} style={{ fontSize: 13, color: "#b06080", cursor: "pointer", transition: "color 0.2s" }}
+              <a key={item} href={`#${item.toLowerCase()}`} style={{ fontSize: 13, color: "#b06080", textDecoration: "none", transition: "color 0.2s" }}
                 onMouseEnter={e => (e.currentTarget.style.color = "#e879a0")}
                 onMouseLeave={e => (e.currentTarget.style.color = "#b06080")}>
                 {item}
-              </span>
+              </a>
             ))}
           </nav>
 
@@ -395,7 +396,7 @@ export default function ShowcaseContent() {
       </section>
 
       {/* ===== CHAPTER PAGES — Manga Panel Grid ===== */}
-      <section style={{ padding: "80px 24px", backgroundColor: "#fce7f3" }}>
+      <section id="chapter" className="scroll-mt-16" style={{ padding: "80px 24px", backgroundColor: "#fce7f3" }}>
         <div style={{ maxWidth: 1100, margin: "0 auto" }}>
           <RevealBlock className="" delay={0}>
             <div style={{ textAlign: "center", marginBottom: 48 }}>
@@ -524,7 +525,7 @@ export default function ShowcaseContent() {
       </section>
 
       {/* ===== SPARKLE PALETTE ===== */}
-      <section style={{ padding: "80px 24px", backgroundColor: "#fff5f7" }}>
+      <section id="palette" className="scroll-mt-16" style={{ padding: "80px 24px", backgroundColor: "#fff5f7" }}>
         <div style={{ maxWidth: 1100, margin: "0 auto" }}>
           <RevealBlock>
             <div style={{ textAlign: "center", marginBottom: 56 }}>
@@ -591,7 +592,7 @@ export default function ShowcaseContent() {
       </section>
 
       {/* ===== COMPONENT STAGE — Ribbon banner tabs ===== */}
-      <section style={{ padding: "80px 24px", backgroundColor: "#fce7f3" }}>
+      <section id="components" className="scroll-mt-16" style={{ padding: "80px 24px", backgroundColor: "#fce7f3" }}>
         <div style={{ maxWidth: 1100, margin: "0 auto" }}>
           <RevealBlock>
             <div style={{ textAlign: "center", marginBottom: 48 }}>
@@ -830,7 +831,7 @@ export default function ShowcaseContent() {
       </section>
 
       {/* ===== SCREENTONE GALLERY ===== */}
-      <section style={{ padding: "80px 24px", backgroundColor: "#fff5f7" }}>
+      <section id="screentone" className="scroll-mt-16" style={{ padding: "80px 24px", backgroundColor: "#fff5f7" }}>
         <div style={{ maxWidth: 1100, margin: "0 auto" }}>
           <RevealBlock>
             <div style={{ textAlign: "center", marginBottom: 56 }}>
@@ -890,7 +891,7 @@ export default function ShowcaseContent() {
       </section>
 
       {/* ===== TYPOGRAPHY ROMANCE ===== */}
-      <section style={{ padding: "80px 24px", backgroundColor: "#fce7f3" }}>
+      <section id="typography" className="scroll-mt-16" style={{ padding: "80px 24px", backgroundColor: "#fce7f3" }}>
         <div style={{ maxWidth: 1100, margin: "0 auto" }}>
           <RevealBlock>
             <div style={{ textAlign: "center", marginBottom: 56 }}>

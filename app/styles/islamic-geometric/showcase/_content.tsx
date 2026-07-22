@@ -290,6 +290,7 @@ export default function ShowcaseContent() {
         .ig-spin-slow { animation: ig-spin-slow 20s linear infinite; }
         .ig-pulse-gold { animation: ig-pulse-gold 3s ease-in-out infinite; }
         .ig-transition { transition: all 0.5s ease-out; }
+        html { scroll-behavior: smooth; }
       `}</style>
 
       {/* ================================================================ */}
@@ -308,12 +309,13 @@ export default function ShowcaseContent() {
           {/* Center nav */}
           <nav className="hidden md:flex items-center gap-1">
             {["Palette", "Components", "Interactions", "App Demo", "Philosophy"].map((item) => (
-              <span
+              <a
                 key={item}
-                className="px-3 py-1.5 text-sm text-[#f5ecd7]/60 hover:text-[#c9a74e] cursor-pointer ig-transition tracking-wide"
+                href={`#${item.toLowerCase().replace(/\s+/g, "-")}`}
+                className="px-3 py-1.5 text-sm text-[#f5ecd7]/60 hover:text-[#c9a74e] ig-transition tracking-wide"
               >
                 {item}
-              </span>
+              </a>
             ))}
           </nav>
 
@@ -460,7 +462,7 @@ export default function ShowcaseContent() {
       {/* ================================================================ */}
       {/* 3. COLOR PALETTE                                                 */}
       {/* ================================================================ */}
-      <section className="py-20 md:py-28 px-5 md:px-10 bg-[#f5ecd7]">
+      <section id="palette" className="scroll-mt-16 py-20 md:py-28 px-5 md:px-10 bg-[#f5ecd7]">
         <div className="max-w-6xl mx-auto">
           <RevealBlock className="mb-4 text-center">
             <span className="text-xs font-semibold tracking-[0.25em] uppercase text-[#c9a74e] block mb-3">
@@ -561,7 +563,7 @@ export default function ShowcaseContent() {
       {/* ================================================================ */}
       {/* 4. COMPONENT GALLERY                                             */}
       {/* ================================================================ */}
-      <section className="py-20 md:py-28 px-5 md:px-10 bg-[#1a3a5c]" style={tessellationStyle}>
+      <section id="components" className="scroll-mt-16 py-20 md:py-28 px-5 md:px-10 bg-[#1a3a5c]" style={tessellationStyle}>
         <div className="max-w-6xl mx-auto">
           <RevealBlock className="mb-4 text-center">
             <span className="text-xs font-semibold tracking-[0.25em] uppercase text-[#c9a74e] block mb-3">
@@ -854,7 +856,7 @@ export default function ShowcaseContent() {
       {/* ================================================================ */}
       {/* 5. AI RULES INTERACTIVE DEMOS                                    */}
       {/* ================================================================ */}
-      <section className="py-20 md:py-28 px-5 md:px-10 bg-[#f5ecd7]">
+      <section id="interactions" className="scroll-mt-16 py-20 md:py-28 px-5 md:px-10 bg-[#f5ecd7]">
         <div className="max-w-6xl mx-auto">
           <RevealBlock className="mb-4 text-center">
             <span className="text-xs font-semibold tracking-[0.25em] uppercase text-[#c9a74e] block mb-3">
@@ -1179,7 +1181,7 @@ export default function ShowcaseContent() {
       {/* ================================================================ */}
       {/* 6. APP DEMO — Exhibition Hall                                    */}
       {/* ================================================================ */}
-      <section className="py-20 md:py-28 px-5 md:px-10 bg-[#1a3a5c]" style={tessellationStyle}>
+      <section id="app-demo" className="scroll-mt-16 py-20 md:py-28 px-5 md:px-10 bg-[#1a3a5c]" style={tessellationStyle}>
         <div className="max-w-6xl mx-auto">
           <RevealBlock className="mb-4 text-center">
             <span className="text-xs font-semibold tracking-[0.25em] uppercase text-[#c9a74e] block mb-3">
@@ -1293,7 +1295,7 @@ export default function ShowcaseContent() {
       {/* ================================================================ */}
       {/* 7. DO / DON'T RULES                                              */}
       {/* ================================================================ */}
-      <section className="py-20 md:py-28 px-5 md:px-10 bg-[#f5ecd7]">
+      <section id="philosophy" className="scroll-mt-16 py-20 md:py-28 px-5 md:px-10 bg-[#f5ecd7]">
         <div className="max-w-6xl mx-auto">
           <RevealBlock className="mb-4 text-center">
             <span className="text-xs font-semibold tracking-[0.25em] uppercase text-[#c9a74e] block mb-3">

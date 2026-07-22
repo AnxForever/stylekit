@@ -175,10 +175,10 @@ export default function ShopifyCleanShowcaseContent() {
                   <span className="text-xl font-semibold tracking-tight text-[#1a1a1a]">STORE</span>
                 </div>
                 <div className="hidden md:flex items-center gap-6 text-sm text-[#6b7280]">
-                  <span className="hover:text-[#1a1a1a] transition-colors cursor-pointer">Shop</span>
-                  <span className="hover:text-[#1a1a1a] transition-colors cursor-pointer">Collections</span>
-                  <span className="hover:text-[#1a1a1a] transition-colors cursor-pointer">About</span>
-                  <span className="hover:text-[#1a1a1a] transition-colors cursor-pointer">Journal</span>
+                  <a href="#shop" className="hover:text-[#1a1a1a] transition-colors">Shop</a>
+                  <a href="#collections" className="hover:text-[#1a1a1a] transition-colors">Collections</a>
+                  <a href="#about" className="hover:text-[#1a1a1a] transition-colors">About</a>
+                  <a href="#journal" className="hover:text-[#1a1a1a] transition-colors">Journal</a>
                 </div>
               </div>
               <div className="flex items-center gap-4">
@@ -219,7 +219,7 @@ export default function ShopifyCleanShowcaseContent() {
 
       {/* ── Section 3: Category Tabs ──────────────────────────────────── */}
       <RevealBlock>
-        <section className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 pt-12 md:pt-16">
+        <section id="collections" className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 pt-12 md:pt-16 scroll-mt-16">
           <div className="flex items-center gap-2 overflow-x-auto pb-4">
             {categories.map((cat) => (
               <button
@@ -240,7 +240,7 @@ export default function ShopifyCleanShowcaseContent() {
 
       {/* ── Section 4: Product Grid ──────────────────────────────────────── */}
       <RevealBlock>
-        <section className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 py-8 md:py-12">
+        <section id="shop" className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 py-8 md:py-12 scroll-mt-16">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredProducts.map((product, i) => (
               <RevealBlock key={product.name} delay={i * 0.08}>
@@ -507,7 +507,7 @@ export default function ShopifyCleanShowcaseContent() {
 
       {/* ── Section 11: Testimonials ──────────────────────────────────────── */}
       <RevealBlock>
-        <section className="bg-[#f7f7f8] py-12 md:py-16">
+        <section id="journal" className="bg-[#f7f7f8] py-12 md:py-16 scroll-mt-16">
           <div className="max-w-6xl mx-auto px-4 md:px-6 lg:px-8">
             <h2 className="text-2xl md:text-3xl font-semibold tracking-tight text-center mb-10">What Our Merchants Say</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -534,7 +534,7 @@ export default function ShopifyCleanShowcaseContent() {
 
       {/* ── Section 12: Rules Summary ─────────────────────────────────────── */}
       <RevealBlock>
-        <section className="max-w-4xl mx-auto px-4 md:px-6 lg:px-8 py-12 md:py-16">
+        <section id="about" className="max-w-4xl mx-auto px-4 md:px-6 lg:px-8 py-12 md:py-16 scroll-mt-16">
           <h2 className="text-2xl font-semibold tracking-tight mb-6">Shopify Clean Design Rules</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="bg-white rounded-lg border border-[#e3e3e3] p-6">

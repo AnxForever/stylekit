@@ -149,9 +149,6 @@ export default async function StyleDetailPage({
 
   // Pre-compute localized content for server-side rendering (SEO)
   const ssrDescription = localizedString(locale, style.description, style.descriptionEn);
-  const ssrPhilosophy = localizedString(locale, style.philosophy, style.philosophyEn);
-  const ssrDos = localizedList(locale, style.doList, style.doListEn);
-  const ssrDonts = localizedList(locale, style.dontList, style.dontListEn);
   const localizedName = locale === "zh" ? style.name : style.nameEn || style.name;
   const localizedKeywords = localizedList(locale, style.keywords, style.keywordsEn);
   const canonicalUrl = `${BASE_URL}${getAlternateLocalePath(`/styles/${slug}`, locale)}`;
