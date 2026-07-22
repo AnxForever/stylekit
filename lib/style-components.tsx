@@ -195,41 +195,41 @@ export const styleComponents: Record<
   },
   glassmorphism: {
     button: () => (
-      <div className="p-4 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl">
-        <button className="px-6 py-3 bg-white/20 backdrop-blur-md text-white font-medium rounded-lg border border-white/30 hover:bg-white/30 transition-all">
+      <div className="p-4 rounded-xl bg-[#0B1322] [background-image:radial-gradient(120px_circle_at_80%_20%,rgba(124,156,196,0.35),transparent_65%)]">
+        <button className="px-6 py-3 bg-white/10 backdrop-blur-md text-white font-medium rounded-2xl border border-white/20 shadow-[inset_0_1px_0_rgba(255,255,255,0.25)] hover:bg-white/15 hover:border-white/35 transition-all">
           点击按钮
         </button>
       </div>
     ),
     card: () => (
-      <div className="p-4 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl">
-        <div className="p-6 bg-white/15 backdrop-blur-xl rounded-xl border border-white/20">
-          <h3 className="font-semibold text-lg mb-2 text-white">Glassmorphism Card</h3>
-          <p className="text-sm text-white/70">毛玻璃透明效果</p>
+      <div className="p-4 rounded-xl bg-[#0B1322] [background-image:radial-gradient(140px_circle_at_85%_15%,rgba(124,156,196,0.3),transparent_65%),radial-gradient(120px_circle_at_10%_90%,rgba(51,81,122,0.35),transparent_65%)]">
+        <div className="p-6 bg-white/8 backdrop-blur-xl rounded-2xl border border-white/15 shadow-[inset_0_1px_0_rgba(255,255,255,0.22)]">
+          <h3 className="font-semibold text-lg mb-2 text-white">Nocturne Glass</h3>
+          <p className="text-sm text-white/60">夜景毛玻璃，玻璃只借光不带色</p>
         </div>
       </div>
     ),
     input: () => (
-      <div className="p-4 bg-gradient-to-br from-pink-500 to-orange-400 rounded-xl">
+      <div className="p-4 rounded-xl bg-[#0B1322] [background-image:radial-gradient(120px_circle_at_20%_20%,rgba(228,184,99,0.18),transparent_60%)]">
         <input
           type="text"
           placeholder="输入内容..."
-          className="w-full px-4 py-3 bg-white/10 backdrop-blur-md rounded-lg border border-white/20 text-white placeholder-white/50 focus:outline-none focus:border-white/40"
+          className="w-full px-4 py-3 bg-white/6 backdrop-blur-md rounded-2xl border border-white/15 text-white placeholder-white/35 shadow-[inset_0_1px_0_rgba(255,255,255,0.15)] focus:outline-none focus:border-white/35"
         />
       </div>
     ),
     coverPreview: () => (
-      <div className="w-full h-full bg-gradient-to-br from-purple-600 via-pink-500 to-orange-400 flex items-center justify-center p-4">
+      <div className="w-full h-full bg-[#0B1322] [background-image:radial-gradient(180px_circle_at_85%_10%,rgba(124,156,196,0.32),transparent_60%),radial-gradient(160px_circle_at_8%_90%,rgba(51,81,122,0.35),transparent_60%),radial-gradient(120px_circle_at_35%_45%,rgba(228,184,99,0.12),transparent_55%)] flex items-center justify-center p-4">
         <div className="w-full max-w-[200px]">
-          <div className="bg-white/15 backdrop-blur-xl rounded-2xl border border-white/25 p-4 shadow-xl">
-            <div className="font-semibold text-base mb-2 text-white">Glass Card</div>
-            <p className="text-xs text-white/70 mb-3">毛玻璃透明效果</p>
+          <div className="bg-white/8 backdrop-blur-xl rounded-2xl border border-white/15 p-4 shadow-[0_16px_40px_rgba(3,7,18,0.5),inset_0_1px_0_rgba(255,255,255,0.22)]">
+            <div className="font-semibold text-base mb-2 text-white">Nocturne Glass</div>
+            <p className="text-xs text-white/60 mb-3">玻璃无色，色彩属于夜景</p>
             <div className="flex gap-2">
-              <button className="bg-white/20 backdrop-blur-md text-white text-xs font-medium px-4 py-2 rounded-lg border border-white/30">
+              <button className="bg-[#E4B863]/15 text-[#F3DCA8] text-xs font-medium px-4 py-2 rounded-lg border border-[#E4B863]/40">
                 Button
               </button>
-              <div className="w-8 h-8 rounded-full bg-white/20 backdrop-blur-md border border-white/30 flex items-center justify-center">
-                <div className="w-2.5 h-2.5 bg-white rounded-full" />
+              <div className="w-8 h-8 rounded-full bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center">
+                <div className="w-2.5 h-2.5 bg-[#7C9CC4] rounded-full" />
               </div>
             </div>
           </div>
@@ -3283,6 +3283,61 @@ export const styleComponents: Record<
             <div className="flex-1 h-1 bg-[#c4501f]" />
           </div>
           <p className="text-[#f0c75e]/70 text-xs">Bold woven patterns</p>
+        </div>
+      </div>
+    ),
+  },
+  "kinetic-typography": {
+    button: () => (
+      <div className="p-4 bg-[#0B0B0C] rounded-xl">
+        <button className="px-6 py-3 bg-[#FF4D00] text-[#0B0B0C] text-sm font-semibold uppercase tracking-[0.15em] rounded-none hover:bg-[#F4F1EB] transition-colors duration-500">
+          Enter Motion
+        </button>
+      </div>
+    ),
+    card: () => (
+      <div className="p-5 bg-[#0B0B0C] rounded-xl">
+        <div className="border-t border-[#F4F1EB]/15 pt-4">
+          <span className="block font-mono text-[10px] text-[#F4F1EB]/40 mb-2">01</span>
+          <h3 className="text-2xl font-extrabold text-[#F4F1EB] tracking-tight leading-none mb-2">
+            Weight Is <span className="text-[#FF4D00]">Volume</span>
+          </h3>
+          <p className="text-xs text-[#F4F1EB]/55">字重即音量，文字即界面</p>
+        </div>
+      </div>
+    ),
+    input: () => (
+      <div className="p-4 bg-[#0B0B0C] rounded-xl">
+        <input
+          type="text"
+          placeholder="Type here"
+          className="w-full bg-transparent py-3 text-lg text-[#F4F1EB] placeholder-[#F4F1EB]/25 border-b border-[#F4F1EB]/20 rounded-none focus:outline-none focus:border-[#FF4D00] transition-colors"
+        />
+      </div>
+    ),
+    coverPreview: () => (
+      <div className="w-full h-full bg-[#0B0B0C] flex flex-col justify-between p-4 overflow-hidden">
+        <div className="font-mono text-[9px] uppercase tracking-[0.3em] text-[#F4F1EB]/40">
+          Kinetic Type<span className="text-[#FF4D00]">*</span>
+        </div>
+        <div className="leading-[0.9] tracking-tight text-[#F4F1EB]">
+          <span className="block text-2xl font-light">WORDS</span>
+          <span className="block text-3xl font-extrabold">
+            IN <span className="text-[#FF4D00]">MOTION</span>
+          </span>
+        </div>
+        <div className="space-y-2">
+          <div className="whitespace-nowrap font-mono text-[9px] uppercase tracking-[0.25em] text-[#F4F1EB]/35">
+            Stagger · Breathe · Stretch · Marquee · Stagger · Breathe
+          </div>
+          <div className="flex gap-2">
+            <span className="px-3 py-1.5 bg-[#FF4D00] text-[#0B0B0C] text-[9px] font-semibold uppercase tracking-[0.15em]">
+              Play
+            </span>
+            <span className="px-3 py-1.5 border border-[#F4F1EB]/25 text-[#F4F1EB] text-[9px] font-semibold uppercase tracking-[0.15em]">
+              Specimen
+            </span>
+          </div>
         </div>
       </div>
     ),

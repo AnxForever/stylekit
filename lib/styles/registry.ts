@@ -106,6 +106,7 @@ import { zenGarden } from "./zen-garden";
 // New styles - Batch 9 (Competitive analysis)
 import { sciFiHud } from "./sci-fi-hud";
 import { kawaiiMinimal } from "./kawaii-minimal";
+import { kineticTypography } from "./kinetic-typography";
 import { filmNoir } from "./film-noir";
 // New styles - Batch 10
 import { arcadeCrt } from "./arcade-crt";
@@ -268,6 +269,7 @@ const rawStyles: DesignStyle[] = [
   // New styles - Batch 9 (Competitive analysis)
   sciFiHud,
   kawaiiMinimal,
+  kineticTypography,
   filmNoir,
   // New styles - Batch 10
   arcadeCrt,

@@ -1733,6 +1733,25 @@ export const stylesMeta: StyleMeta[] = [
     keywords: ["非洲", "Kente", "编织", "扎染", "纺织", "大地", "手工"],
   },
   {
+    slug: "kinetic-typography",
+    name: "动力学排印",
+    nameEn: "Kinetic Typography",
+    description:
+      "文字即界面的动态排印风格。墨黑舞台上，可变字体的字重与字宽成为动画本体：逐字登场、字重呼吸、滚动速度拉伸字宽，唯一的信号橙负责指路。",
+    descriptionEn:
+      "Type is the interface. On an ink-black stage the variable font itself becomes the animation: staggered mask entrances, breathing weights, scroll-stretched widths — and one signal orange.",
+    cover: "/styles/kinetic-typography.svg",
+    styleType: "visual",
+    tags: [],
+    category: "expressive",
+    colors: {
+      primary: "#0B0B0C",
+      secondary: "#F4F1EB",
+      accent: ["#FF4D00", "#141416", "#8A857B"],
+    },
+    keywords: ["动态排印", "可变字体", "文字动画", "跑马灯", "动效"],
+  },
+  {
     slug: "korean-minimal",
     name: "韩式极简",
     nameEn: "Korean Minimal",

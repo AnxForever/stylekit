@@ -98,6 +98,7 @@ import { neonGradientTokens } from "./neon-gradient-tokens";
 import { liquidGlassTokens } from "./liquid-glass-tokens";
 import { sciFiHudTokens } from "./sci-fi-hud-tokens";
 import { kawaiiMinimalTokens } from "./kawaii-minimal-tokens";
+import { kineticTypographyTokens } from "./kinetic-typography-tokens";
 import { filmNoirTokens } from "./film-noir-tokens";
 import { arcadeCrtTokens } from "./arcade-crt-tokens";
 import { frutigerAeroTokens } from "./frutiger-aero-tokens";
@@ -250,6 +251,7 @@ export const styleTokensRegistry: Record<string, StyleTokens> = {
   "liquid-glass": liquidGlassTokens,
   "sci-fi-hud": sciFiHudTokens,
   "kawaii-minimal": kawaiiMinimalTokens,
+  "kinetic-typography": kineticTypographyTokens,
   "film-noir": filmNoirTokens,
   "arcade-crt": arcadeCrtTokens,
   "frutiger-aero": frutigerAeroTokens,
