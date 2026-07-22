@@ -190,6 +190,7 @@ export default function ShowcaseContent() {
   return (
     <div className="min-h-screen bg-[#0a0a0a] font-sans text-white overflow-x-hidden">
       <style>{`
+        html { scroll-behavior: smooth; }
         @keyframes outrun-grid-scroll {
           from { background-position: 0 0; }
           to { background-position: 0 60px; }
@@ -283,13 +284,20 @@ export default function ShowcaseContent() {
 
           {/* Center nav */}
           <nav className="hidden md:flex items-center gap-1">
-            {["Palette", "Components", "AI Rules", "Do / Don't", "Footer"].map((item) => (
-              <span
+            {[
+              ["Palette", "#palette"],
+              ["Components", "#components"],
+              ["AI Rules", "#ai-rules"],
+              ["Do / Don't", "#do-dont"],
+              ["Footer", "#footer"],
+            ].map(([item, href]) => (
+              <a
                 key={item}
-                className="px-3 py-1.5 rounded-sm text-xs text-[#a020f0]/70 hover:text-[#ff006e] hover:bg-[#ff006e]/10 cursor-pointer transition-all duration-200 font-mono uppercase tracking-wider"
+                href={href}
+                className="px-3 py-1.5 rounded-sm text-xs text-[#a020f0]/70 hover:text-[#ff006e] hover:bg-[#ff006e]/10 transition-all duration-200 font-mono uppercase tracking-wider"
               >
                 {item}
-              </span>
+              </a>
             ))}
           </nav>
 
@@ -518,7 +526,7 @@ export default function ShowcaseContent() {
       {/* ================================================================ */}
       {/* 3. COLOR PALETTE                                                  */}
       {/* ================================================================ */}
-      <section className="py-20 md:py-28 px-5 md:px-10 bg-[#0a0a0a]">
+      <section id="palette" className="scroll-mt-16 py-20 md:py-28 px-5 md:px-10 bg-[#0a0a0a]">
         <div className="max-w-6xl mx-auto">
           <RevealBlock className="mb-4">
             <span className="text-xs font-mono uppercase tracking-[0.25em] text-[#ff006e] block mb-3">
@@ -623,7 +631,7 @@ export default function ShowcaseContent() {
       {/* ================================================================ */}
       {/* 4. COMPONENT GALLERY                                             */}
       {/* ================================================================ */}
-      <section className="py-20 md:py-28 px-5 md:px-10">
+      <section id="components" className="scroll-mt-16 py-20 md:py-28 px-5 md:px-10">
         <div
           className="absolute left-0 right-0 h-px"
           style={{ background: "linear-gradient(90deg, transparent, #ff006e, #00d4ff, transparent)" }}
@@ -1000,7 +1008,7 @@ export default function ShowcaseContent() {
       {/* ================================================================ */}
       {/* 5. AIRULES INTERACTIVE DEMOS                                     */}
       {/* ================================================================ */}
-      <section className="py-20 md:py-28 px-5 md:px-10">
+      <section id="ai-rules" className="scroll-mt-16 py-20 md:py-28 px-5 md:px-10">
         <div className="max-w-6xl mx-auto">
           <RevealBlock className="mb-4">
             <span className="text-xs font-mono uppercase tracking-[0.25em] text-[#a020f0] block mb-3">
@@ -1510,7 +1518,7 @@ export default function ShowcaseContent() {
       {/* ================================================================ */}
       {/* 7. DO / DON'T RULES                                              */}
       {/* ================================================================ */}
-      <section className="py-20 md:py-28 px-5 md:px-10">
+      <section id="do-dont" className="scroll-mt-16 py-20 md:py-28 px-5 md:px-10">
         <div className="max-w-6xl mx-auto">
           <RevealBlock className="mb-4">
             <span className="text-xs font-mono uppercase tracking-[0.25em] text-[#ff6b35] block mb-3">
@@ -1703,7 +1711,7 @@ export default function ShowcaseContent() {
       {/* ================================================================ */}
       {/* 8. FOOTER                                                         */}
       {/* ================================================================ */}
-      <footer className="relative bg-[#0a0a0a] border-t border-[#ff006e]/20 overflow-hidden">
+      <footer id="footer" className="scroll-mt-16 relative bg-[#0a0a0a] border-t border-[#ff006e]/20 overflow-hidden">
         {/* Top neon divider */}
         <div
           className="absolute top-0 left-0 right-0 h-px"

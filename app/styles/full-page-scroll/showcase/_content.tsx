@@ -222,6 +222,7 @@ export default function ShowcaseContent() {
         .fps-fade-up-anim {
           animation: fps-fade-up 0.6s cubic-bezier(0.16,1,0.3,1) forwards;
         }
+        html { scroll-behavior: smooth; }
       `}</style>
 
       {/* ================================================================ */}
@@ -241,13 +242,19 @@ export default function ShowcaseContent() {
 
           {/* Center nav */}
           <nav className="hidden md:flex items-center gap-1">
-            {["Palette", "Components", "AI Rules", "Philosophy"].map((item) => (
-              <span
-                key={item}
-                className="px-3 py-1.5 rounded-full text-xs text-white/50 hover:text-white hover:bg-white/10 cursor-pointer transition-all duration-300"
+            {[
+              { label: "Palette", href: "#palette" },
+              { label: "Components", href: "#components" },
+              { label: "AI Rules", href: "#ai-rules" },
+              { label: "Philosophy", href: "#philosophy" },
+            ].map((item) => (
+              <a
+                key={item.label}
+                href={item.href}
+                className="px-3 py-1.5 rounded-full text-xs text-white/50 hover:text-white hover:bg-white/10 transition-all duration-300"
               >
-                {item}
-              </span>
+                {item.label}
+              </a>
             ))}
           </nav>
 
@@ -545,7 +552,7 @@ export default function ShowcaseContent() {
       {/* ================================================================ */}
       {/* 4. COLOR PALETTE                                                   */}
       {/* ================================================================ */}
-      <section className="py-20 md:py-28 px-5 md:px-10 border-t border-white/10">
+      <section id="palette" className="py-20 md:py-28 px-5 md:px-10 border-t border-white/10 scroll-mt-16">
         <div className="max-w-7xl mx-auto">
           <RevealBlock className="mb-4">
             <span className="text-xs font-semibold tracking-[0.2em] uppercase text-pink-400 block mb-3">
@@ -659,7 +666,7 @@ export default function ShowcaseContent() {
       {/* ================================================================ */}
       {/* 5. COMPONENTS DEMO (4 tabs)                                       */}
       {/* ================================================================ */}
-      <section className="py-20 md:py-28 px-5 md:px-10 border-t border-white/10">
+      <section id="components" className="py-20 md:py-28 px-5 md:px-10 border-t border-white/10 scroll-mt-16">
         <div className="max-w-7xl mx-auto">
           <RevealBlock className="mb-4">
             <span className="text-xs font-semibold tracking-[0.2em] uppercase text-teal-400 block mb-3">
@@ -933,7 +940,7 @@ export default function ShowcaseContent() {
       {/* ================================================================ */}
       {/* 6. AI RULES — 4 INTERACTIVE DEMOS                                 */}
       {/* ================================================================ */}
-      <section className="py-20 md:py-28 px-5 md:px-10 border-t border-white/10">
+      <section id="ai-rules" className="py-20 md:py-28 px-5 md:px-10 border-t border-white/10 scroll-mt-16">
         <div className="max-w-7xl mx-auto">
           <RevealBlock className="mb-4">
             <span className="text-xs font-semibold tracking-[0.2em] uppercase text-amber-400 block mb-3">
@@ -1344,7 +1351,7 @@ export default function ShowcaseContent() {
       {/* ================================================================ */}
       {/* 7. DO / DON'T RULES                                               */}
       {/* ================================================================ */}
-      <section className="py-20 md:py-28 px-5 md:px-10 border-t border-white/10">
+      <section id="philosophy" className="py-20 md:py-28 px-5 md:px-10 border-t border-white/10 scroll-mt-16">
         <div className="max-w-7xl mx-auto">
           <RevealBlock className="mb-4">
             <span className="text-xs font-semibold tracking-[0.2em] uppercase text-indigo-400 block mb-3">

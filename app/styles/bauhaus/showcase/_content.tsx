@@ -151,6 +151,7 @@ export default function ShowcaseContent() {
   return (
     <div className="min-h-screen bg-white text-black font-sans overflow-x-hidden">
       <style>{`
+        html { scroll-behavior: smooth; }
         @keyframes bauhaus-pulse {
           0%, 100% { transform: scale(1); }
           50% { transform: scale(1.06); }
@@ -183,13 +184,14 @@ export default function ShowcaseContent() {
           {/* Center nav */}
           <nav className="hidden md:flex items-center gap-0">
             {["Palette", "Components", "AI Rules", "Philosophy", "App"].map((item, i) => (
-              <span
+              <a
                 key={item}
-                className="group relative px-4 py-2 text-xs font-black uppercase tracking-widest text-black border-l-2 border-black hover:bg-black hover:text-white cursor-pointer transition-colors duration-150"
+                href={`#${item.toLowerCase().replace(/\s+/g, "-")}`}
+                className="group relative px-4 py-2 text-xs font-black uppercase tracking-widest text-black border-l-2 border-black hover:bg-black hover:text-white transition-colors duration-150"
                 style={{ borderLeftColor: i === 0 ? "transparent" : "#000000" }}
               >
                 {item}
-              </span>
+              </a>
             ))}
           </nav>
 
@@ -345,7 +347,7 @@ export default function ShowcaseContent() {
       {/* ================================================================ */}
       {/* 3. COLOR PALETTE                                                 */}
       {/* ================================================================ */}
-      <section className="py-24 md:py-32 px-5 md:px-10 bg-black border-t-4 border-white">
+      <section id="palette" className="scroll-mt-16 py-24 md:py-32 px-5 md:px-10 bg-black border-t-4 border-white">
         <div className="max-w-7xl mx-auto">
           <RevealBlock className="mb-4">
             <span className="text-xs font-black tracking-[0.3em] uppercase text-yellow-400 block mb-4">
@@ -504,7 +506,7 @@ export default function ShowcaseContent() {
       {/* ================================================================ */}
       {/* 4. COMPONENT GALLERY                                             */}
       {/* ================================================================ */}
-      <section className="py-24 md:py-32 px-5 md:px-10 bg-white border-t-4 border-black">
+      <section id="components" className="scroll-mt-16 py-24 md:py-32 px-5 md:px-10 bg-white border-t-4 border-black">
         <div className="max-w-7xl mx-auto">
           <RevealBlock className="mb-4">
             <span className="text-xs font-black tracking-[0.3em] uppercase text-red-600 block mb-4">
@@ -847,7 +849,7 @@ export default function ShowcaseContent() {
       {/* ================================================================ */}
       {/* 5. AI RULES — INTERACTIVE DEMOS (all 5 named rules)             */}
       {/* ================================================================ */}
-      <section className="py-24 md:py-32 px-5 md:px-10 bg-white border-t-4 border-black">
+      <section id="ai-rules" className="scroll-mt-16 py-24 md:py-32 px-5 md:px-10 bg-white border-t-4 border-black">
         <div className="max-w-7xl mx-auto">
           <RevealBlock className="mb-4">
             <span className="text-xs font-black tracking-[0.3em] uppercase text-blue-600 block mb-4">
@@ -1346,7 +1348,7 @@ export default function ShowcaseContent() {
       {/* ================================================================ */}
       {/* 6. APP DEMO — Design Studio Dashboard                           */}
       {/* ================================================================ */}
-      <section className="py-24 md:py-32 px-5 md:px-10 bg-black border-t-4 border-white">
+      <section id="app" className="scroll-mt-16 py-24 md:py-32 px-5 md:px-10 bg-black border-t-4 border-white">
         <div className="max-w-7xl mx-auto">
           <RevealBlock className="mb-4">
             <span className="text-xs font-black tracking-[0.3em] uppercase text-red-600 block mb-4">
@@ -1505,7 +1507,7 @@ export default function ShowcaseContent() {
       {/* ================================================================ */}
       {/* 7. DO / DON'T — Design Philosophy                               */}
       {/* ================================================================ */}
-      <section className="py-24 md:py-32 px-5 md:px-10 bg-white border-t-4 border-black">
+      <section id="philosophy" className="scroll-mt-16 py-24 md:py-32 px-5 md:px-10 bg-white border-t-4 border-black">
         <div className="max-w-7xl mx-auto">
           <RevealBlock className="mb-4">
             <span className="text-xs font-black tracking-[0.3em] uppercase text-black block mb-4">

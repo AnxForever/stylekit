@@ -173,6 +173,7 @@ export default function ShowcaseContent() {
   return (
     <div className="min-h-screen bg-[#fdf6ee] font-sans text-[#2d2d2d] overflow-x-hidden">
       <style>{`
+        html { scroll-behavior: smooth; }
         @keyframes paper-float {
           0%, 100% { transform: translateY(0px) rotate(0deg); }
           33% { transform: translateY(-6px) rotate(1deg); }
@@ -226,12 +227,13 @@ export default function ShowcaseContent() {
           {/* Center nav */}
           <nav className="hidden md:flex items-center gap-1">
             {["Palette", "Components", "Layers", "Rules", "Philosophy"].map((item) => (
-              <span
+              <a
                 key={item}
-                className="px-3 py-1.5 rounded-lg text-sm text-[#666666] hover:text-[#e85d75] hover:bg-white hover:-translate-y-0.5 hover:shadow-[2px_2px_0px_rgba(0,0,0,0.06)] cursor-pointer transition-all duration-200 ease-out"
+                href={`#${item.toLowerCase()}`}
+                className="px-3 py-1.5 rounded-lg text-sm text-[#666666] hover:text-[#e85d75] hover:bg-white hover:-translate-y-0.5 hover:shadow-[2px_2px_0px_rgba(0,0,0,0.06)] transition-all duration-200 ease-out"
               >
                 {item}
-              </span>
+              </a>
             ))}
           </nav>
 
@@ -364,7 +366,7 @@ export default function ShowcaseContent() {
       {/* ================================================================ */}
       {/* 3. COLOR PALETTE                                                 */}
       {/* ================================================================ */}
-      <section className="py-20 md:py-28 px-5 md:px-10">
+      <section id="palette" className="scroll-mt-16 py-20 md:py-28 px-5 md:px-10">
         <div className="max-w-6xl mx-auto">
           <RevealBlock className="mb-4">
             <span className="text-xs font-bold tracking-[0.2em] uppercase text-[#5cb8a5] block mb-3">
@@ -465,7 +467,7 @@ export default function ShowcaseContent() {
       {/* ================================================================ */}
       {/* 4. COMPONENT GALLERY (4 tabs)                                    */}
       {/* ================================================================ */}
-      <section className="py-20 md:py-28 px-5 md:px-10">
+      <section id="components" className="scroll-mt-16 py-20 md:py-28 px-5 md:px-10">
         <div className="max-w-6xl mx-auto">
           <RevealBlock className="mb-4">
             <span className="text-xs font-bold tracking-[0.2em] uppercase text-[#6b7fb5] block mb-3">
@@ -781,7 +783,7 @@ export default function ShowcaseContent() {
       {/* ================================================================ */}
       {/* 5. AI RULES — 4 INTERACTIVE DEMOS                               */}
       {/* ================================================================ */}
-      <section className="py-20 md:py-28 px-5 md:px-10 bg-white">
+      <section id="layers" className="scroll-mt-16 py-20 md:py-28 px-5 md:px-10 bg-white">
         <div className="max-w-6xl mx-auto">
           <RevealBlock className="mb-4">
             <span className="text-xs font-bold tracking-[0.2em] uppercase text-[#e85d75] block mb-3">
@@ -1304,7 +1306,7 @@ export default function ShowcaseContent() {
       {/* ================================================================ */}
       {/* 7. DO / DON'T RULES                                             */}
       {/* ================================================================ */}
-      <section className="py-20 md:py-28 px-5 md:px-10 bg-white">
+      <section id="rules" className="scroll-mt-16 py-20 md:py-28 px-5 md:px-10 bg-white">
         <div className="max-w-6xl mx-auto">
           <RevealBlock className="mb-4">
             <span className="text-xs font-bold tracking-[0.2em] uppercase text-[#6b7fb5] block mb-3">
@@ -1323,7 +1325,7 @@ export default function ShowcaseContent() {
           </RevealBlock>
 
           {/* Philosophy cards */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+          <div id="philosophy" className="scroll-mt-16 grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
             {[
               {
                 icon: <LayersIcon className="w-8 h-8" />,

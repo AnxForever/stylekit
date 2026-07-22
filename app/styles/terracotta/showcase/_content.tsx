@@ -429,12 +429,13 @@ export default function TerracottaShowcase() {
           {/* Nav links */}
           <div className="hidden md:flex items-center gap-8">
             {navLinks.map((link) => (
-              <button
+              <a
                 key={link}
+                href={`#${link.toLowerCase()}`}
                 className="text-sm text-[#7a6350]/70 hover:text-[#b5654a] transition-colors duration-300 font-medium"
               >
                 {link}
-              </button>
+              </a>
             ))}
           </div>
 
@@ -452,7 +453,7 @@ export default function TerracottaShowcase() {
       {/* ============================================================ */}
       {/* 2. HERO                                                       */}
       {/* ============================================================ */}
-      <section className="relative py-32 overflow-hidden bg-[#faf5ef]">
+      <section id="craft" className="relative py-32 overflow-hidden bg-[#faf5ef] scroll-mt-16">
         <OliveBlobTopRight />
         <TerraCottaBlobBottomLeft />
 
@@ -763,7 +764,7 @@ export default function TerracottaShowcase() {
       {/* ============================================================ */}
       {/* 4. COLOR PALETTE                                              */}
       {/* ============================================================ */}
-      <section className="py-24 bg-[#faf5ef]">
+      <section id="palette" className="py-24 bg-[#faf5ef] scroll-mt-16">
         <div className="max-w-6xl mx-auto px-6">
           <RevealBlock>
             <div className="mb-3">
@@ -800,7 +801,7 @@ export default function TerracottaShowcase() {
       {/* ============================================================ */}
       {/* 5. POTTERY WORKSHOP DEMO                                      */}
       {/* ============================================================ */}
-      <section className="py-24 bg-[#d4a373]/08" style={{ background: "rgba(212,163,115,0.06)" }}>
+      <section id="workshop" className="py-24 bg-[#d4a373]/08 scroll-mt-16" style={{ background: "rgba(212,163,115,0.06)" }}>
         <div className="max-w-6xl mx-auto px-6">
           <RevealBlock>
             <div className="mb-3">
@@ -998,7 +999,7 @@ export default function TerracottaShowcase() {
       {/* ============================================================ */}
       {/* 8. COLLECTION SHOWCASE                                        */}
       {/* ============================================================ */}
-      <section className="py-24 bg-[#faf5ef]">
+      <section id="collection" className="py-24 bg-[#faf5ef] scroll-mt-16">
         <div className="max-w-6xl mx-auto px-6">
           <RevealBlock>
             <div className="mb-3">
@@ -1166,7 +1167,7 @@ export default function TerracottaShowcase() {
       {/* ============================================================ */}
       {/* 9. FOOTER                                                     */}
       {/* ============================================================ */}
-      <footer className="bg-[#faf5ef] border-t border-[#d4a373]/30 py-14">
+      <footer id="about" className="bg-[#faf5ef] border-t border-[#d4a373]/30 py-14 scroll-mt-16">
         <div className="max-w-6xl mx-auto px-6">
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-8">
             {/* Brand */}

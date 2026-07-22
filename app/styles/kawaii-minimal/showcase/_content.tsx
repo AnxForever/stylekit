@@ -250,6 +250,7 @@ export default function ShowcaseContent() {
         .kawaii-bounce-in-anim {
           animation: kawaii-bounce-in 0.5s cubic-bezier(0.34,1.56,0.64,1) forwards;
         }
+        html { scroll-behavior: smooth; }
       `}</style>
 
       {/* ================================================================ */}
@@ -268,12 +269,13 @@ export default function ShowcaseContent() {
           {/* Center nav */}
           <nav className="hidden md:flex items-center gap-1">
             {["Palette", "Components", "Animations", "App Demo", "Philosophy"].map((item) => (
-              <span
+              <a
                 key={item}
-                className="px-3 py-1.5 rounded-full text-sm text-gray-500 hover:text-pink-500 hover:bg-pink-50 cursor-pointer kawaii-spring hover:scale-[1.04] active:scale-[0.95]"
+                href={`#${item.toLowerCase().replace(/\s+/g, "-")}`}
+                className="px-3 py-1.5 rounded-full text-sm text-gray-500 hover:text-pink-500 hover:bg-pink-50 kawaii-spring hover:scale-[1.04] active:scale-[0.95]"
               >
                 {item}
-              </span>
+              </a>
             ))}
           </nav>
 
@@ -450,7 +452,7 @@ export default function ShowcaseContent() {
       {/* ================================================================ */}
       {/* 3. COLOR PALETTE                                                 */}
       {/* ================================================================ */}
-      <section className="py-20 md:py-28 px-5 md:px-10">
+      <section id="palette" className="scroll-mt-16 py-20 md:py-28 px-5 md:px-10">
         <div className="max-w-6xl mx-auto">
           <RevealBlock className="mb-4">
             <span className="text-xs font-semibold tracking-[0.2em] uppercase text-[#F9A8D4] block mb-3">
@@ -547,7 +549,7 @@ export default function ShowcaseContent() {
       {/* ================================================================ */}
       {/* 4. COMPONENT GALLERY (4 tabs)                                    */}
       {/* ================================================================ */}
-      <section className="py-20 md:py-28 px-5 md:px-10">
+      <section id="components" className="scroll-mt-16 py-20 md:py-28 px-5 md:px-10">
         <div className="max-w-6xl mx-auto">
           <RevealBlock className="mb-4">
             <span className="text-xs font-semibold tracking-[0.2em] uppercase text-[#A78BFA] block mb-3">
@@ -855,7 +857,7 @@ export default function ShowcaseContent() {
       {/* ================================================================ */}
       {/* 5. ANIMATION & INTERACTION RULES DEMO                           */}
       {/* ================================================================ */}
-      <section className="py-20 md:py-28 px-5 md:px-10">
+      <section id="animations" className="scroll-mt-16 py-20 md:py-28 px-5 md:px-10">
         <div className="max-w-6xl mx-auto">
           <RevealBlock className="mb-4">
             <span className="text-xs font-semibold tracking-[0.2em] uppercase text-[#67E8F9] block mb-3">
@@ -1017,7 +1019,7 @@ export default function ShowcaseContent() {
       {/* ================================================================ */}
       {/* 6. KAWAII APP UI DEMO — Habit Tracker                           */}
       {/* ================================================================ */}
-      <section className="py-20 md:py-28 px-5 md:px-10">
+      <section id="app-demo" className="scroll-mt-16 py-20 md:py-28 px-5 md:px-10">
         <div className="max-w-6xl mx-auto">
           <RevealBlock className="mb-4">
             <span className="text-xs font-semibold tracking-[0.2em] uppercase text-[#F9A8D4] block mb-3">
@@ -1183,7 +1185,7 @@ export default function ShowcaseContent() {
       {/* ================================================================ */}
       {/* 7. DESIGN PHILOSOPHY — 3 principle cards                        */}
       {/* ================================================================ */}
-      <section className="py-20 md:py-28 px-5 md:px-10">
+      <section id="philosophy" className="scroll-mt-16 py-20 md:py-28 px-5 md:px-10">
         <div className="max-w-6xl mx-auto">
           <RevealBlock className="mb-4">
             <span className="text-xs font-semibold tracking-[0.2em] uppercase text-[#FDE68A] block mb-3">

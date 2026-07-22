@@ -193,6 +193,7 @@ export default function HorizontalGalleryShowcaseContent() {
       <style>{`
         .hg-strip { scrollbar-width: none; -ms-overflow-style: none; }
         .hg-strip::-webkit-scrollbar { display: none; }
+        html { scroll-behavior: smooth; }
       `}</style>
 
       {/* ── Section 1: Navigation ────────────────────────────────────────── */}
@@ -210,10 +211,10 @@ export default function HorizontalGalleryShowcaseContent() {
             <span className="font-serif font-light text-lg tracking-wide">White Room</span>
           </div>
           <div className="hidden md:flex items-center gap-10 text-[11px] uppercase tracking-[0.2em] text-[#8A8A85]">
-            <span className="text-[#1A1A1A] cursor-pointer">Works</span>
-            <span className="hover:text-[#1A1A1A] transition-colors duration-300 cursor-pointer">Exhibitions</span>
-            <span className="hover:text-[#1A1A1A] transition-colors duration-300 cursor-pointer">Artists</span>
-            <span className="hover:text-[#1A1A1A] transition-colors duration-300 cursor-pointer">Visit</span>
+            <a href="#works" className="text-[#1A1A1A]">Works</a>
+            <a href="#exhibitions" className="hover:text-[#1A1A1A] transition-colors duration-300">Exhibitions</a>
+            <a href="#artists" className="hover:text-[#1A1A1A] transition-colors duration-300">Artists</a>
+            <a href="#visit" className="hover:text-[#1A1A1A] transition-colors duration-300">Visit</a>
           </div>
           <p className="text-[10px] uppercase tracking-[0.25em] text-[#A85A3A]">Est. 1998</p>
         </div>
@@ -221,7 +222,7 @@ export default function HorizontalGalleryShowcaseContent() {
 
       {/* ── Section 2: Hero ──────────────────────────────────────────────── */}
       <RevealBlock>
-        <header className="px-6 md:px-20 pt-20 md:pt-28 pb-16 md:pb-20">
+        <header id="exhibitions" className="scroll-mt-16 px-6 md:px-20 pt-20 md:pt-28 pb-16 md:pb-20">
           <p className="text-[10px] uppercase tracking-[0.25em] text-[#A85A3A] mb-6">Current Exhibition</p>
           <h1 className="font-serif font-light text-5xl md:text-7xl lg:text-8xl leading-[1.05] tracking-wide max-w-4xl">
             The Weight of Quiet Things
@@ -249,7 +250,7 @@ export default function HorizontalGalleryShowcaseContent() {
       </RevealBlock>
 
       {/* ── Section 3: The Horizontal Gallery Strip (core) ───────────────── */}
-      <section className="border-t border-[#E8E6E1] py-16 md:py-24">
+      <section id="works" className="scroll-mt-16 border-t border-[#E8E6E1] py-16 md:py-24">
         <RevealBlock>
           <div
             ref={stripRef}
@@ -460,7 +461,7 @@ export default function HorizontalGalleryShowcaseContent() {
 
       {/* ── Section 8: Cards ─────────────────────────────────────────────── */}
       <RevealBlock>
-        <section className="border-t border-[#E8E6E1] px-6 md:px-20 py-16 md:py-24">
+        <section id="artists" className="scroll-mt-16 border-t border-[#E8E6E1] px-6 md:px-20 py-16 md:py-24">
           <div className="flex items-baseline justify-between mb-12">
             <h2 className="font-serif font-light text-3xl tracking-wide">Three Ways to Hang</h2>
             <p className="text-[10px] uppercase tracking-[0.25em] text-[#8A8A85] hidden sm:block">Cards</p>
@@ -568,7 +569,7 @@ export default function HorizontalGalleryShowcaseContent() {
 
       {/* ── Section 10: RSVP Form ────────────────────────────────────────── */}
       <RevealBlock>
-        <section className="border-t border-[#E8E6E1] px-6 md:px-20 py-16 md:py-24">
+        <section id="visit" className="scroll-mt-16 border-t border-[#E8E6E1] px-6 md:px-20 py-16 md:py-24">
           <div className="grid grid-cols-1 md:grid-cols-12 gap-12 md:gap-16">
             <div className="md:col-span-4">
               <p className="text-[10px] uppercase tracking-[0.25em] text-[#A85A3A] mb-4">Private View</p>

@@ -156,13 +156,19 @@ export default function MonochromeShowcase() {
             MONOCHROME
           </span>
           <div className="hidden md:flex items-center gap-10">
-            {["System", "Components", "Typography", "Composition"].map((item) => (
-              <span
-                key={item}
-                className="text-xs tracking-[0.15em] uppercase text-[#666666] hover:text-[#111111] transition-colors duration-700 cursor-pointer"
+            {[
+              { label: "System", href: "#system" },
+              { label: "Components", href: "#components" },
+              { label: "Typography", href: "#typography" },
+              { label: "Composition", href: "#composition" },
+            ].map((item) => (
+              <a
+                key={item.label}
+                href={item.href}
+                className="text-xs tracking-[0.15em] uppercase text-[#666666] hover:text-[#111111] transition-colors duration-700"
               >
-                {item}
-              </span>
+                {item.label}
+              </a>
             ))}
           </div>
           <Link
@@ -239,7 +245,7 @@ export default function MonochromeShowcase() {
       </section>
 
       {/* ── 3. COMPONENTS DEMO ─────────────────────────────────────────────── */}
-      <section className="py-32 bg-[#ffffff] border-b border-[#e5e5e5]">
+      <section id="components" className="scroll-mt-16 py-32 bg-[#ffffff] border-b border-[#e5e5e5]">
         <div className="max-w-6xl mx-auto px-8">
           <RevealBlock className="mb-16">
             <p className="text-xs font-light tracking-[0.4em] uppercase text-[#999999] mb-4">
@@ -496,7 +502,7 @@ export default function MonochromeShowcase() {
       </section>
 
       {/* ── 4. GRAYSCALE SYSTEM ─────────────────────────────────────────────── */}
-      <section className="py-32 bg-[#f5f5f5] border-b border-[#e5e5e5]" ref={paletteRef}>
+      <section id="system" className="scroll-mt-16 py-32 bg-[#f5f5f5] border-b border-[#e5e5e5]" ref={paletteRef}>
         <div className="max-w-6xl mx-auto px-8">
           <RevealBlock className="mb-16">
             <p className="text-xs font-light tracking-[0.4em] uppercase text-[#999999] mb-4">
@@ -575,7 +581,7 @@ export default function MonochromeShowcase() {
       </section>
 
       {/* ── 5. TYPOGRAPHY HIERARCHY ─────────────────────────────────────────── */}
-      <section className="py-32 bg-[#ffffff] border-b border-[#e5e5e5]">
+      <section id="typography" className="scroll-mt-16 py-32 bg-[#ffffff] border-b border-[#e5e5e5]">
         <div className="max-w-6xl mx-auto px-8">
           <RevealBlock className="mb-16">
             <p className="text-xs font-light tracking-[0.4em] uppercase text-[#999999] mb-4">
@@ -627,7 +633,7 @@ export default function MonochromeShowcase() {
       </section>
 
       {/* ── 6. COMPOSITION DEMO ─────────────────────────────────────────────── */}
-      <section className="py-32 bg-[#111111] border-b border-[#333333]">
+      <section id="composition" className="scroll-mt-16 py-32 bg-[#111111] border-b border-[#333333]">
         <div className="max-w-6xl mx-auto px-8">
           <RevealBlock className="mb-16">
             <p className="text-xs font-light tracking-[0.4em] uppercase text-[#666666] mb-4">

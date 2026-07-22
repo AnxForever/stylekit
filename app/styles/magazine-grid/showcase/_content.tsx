@@ -236,6 +236,7 @@ export default function ShowcaseContent() {
   return (
     <div className="min-h-screen bg-[#fafafa] font-sans text-[#1a1a1a] overflow-x-hidden">
       <style>{`
+        html { scroll-behavior: smooth; }
         @keyframes mg-breaking {
           0%   { transform: translateX(0); }
           100% { transform: translateX(-50%); }
@@ -287,13 +288,20 @@ export default function ShowcaseContent() {
           </div>
 
           <nav className="hidden md:flex items-center gap-1">
-            {["Palette", "Grid Demo", "Components", "aiRules", "Philosophy"].map((item) => (
-              <span
-                key={item}
-                className="px-3 py-1.5 text-xs font-semibold uppercase tracking-wider text-zinc-500 hover:text-[#1a1a1a] hover:bg-zinc-100 cursor-pointer transition-colors duration-150"
+            {[
+              { label: "Palette", href: "#palette" },
+              { label: "Grid Demo", href: "#grid-demo" },
+              { label: "Components", href: "#components" },
+              { label: "aiRules", href: "#ai-rules" },
+              { label: "Philosophy", href: "#philosophy" },
+            ].map((item) => (
+              <a
+                key={item.label}
+                href={item.href}
+                className="px-3 py-1.5 text-xs font-semibold uppercase tracking-wider text-zinc-500 hover:text-[#1a1a1a] hover:bg-zinc-100 transition-colors duration-150"
               >
-                {item}
-              </span>
+                {item.label}
+              </a>
             ))}
           </nav>
 
@@ -522,7 +530,7 @@ export default function ShowcaseContent() {
       {/* ================================================================ */}
       {/* 3. COLOR PALETTE                                                 */}
       {/* ================================================================ */}
-      <section className="py-20 md:py-28 px-5 md:px-10 border-b-2 border-[#1a1a1a]">
+      <section id="palette" className="scroll-mt-16 py-20 md:py-28 px-5 md:px-10 border-b-2 border-[#1a1a1a]">
         <div className="max-w-7xl mx-auto">
           <RevealBlock className="mb-3">
             <span className="text-xs font-bold uppercase tracking-[0.2em] text-[#e63946] block mb-3">
@@ -601,7 +609,7 @@ export default function ShowcaseContent() {
       {/* ================================================================ */}
       {/* 4. COMPONENT GALLERY                                             */}
       {/* ================================================================ */}
-      <section className="py-20 md:py-28 px-5 md:px-10 border-b-2 border-[#1a1a1a]">
+      <section id="components" className="scroll-mt-16 py-20 md:py-28 px-5 md:px-10 border-b-2 border-[#1a1a1a]">
         <div className="max-w-7xl mx-auto">
           <RevealBlock className="mb-4">
             <span className="text-xs font-bold uppercase tracking-[0.2em] text-[#2a9d8f] block mb-3">
@@ -853,7 +861,7 @@ export default function ShowcaseContent() {
       {/* ================================================================ */}
       {/* 5. AIRULES INTERACTIVE DEMOS                                     */}
       {/* ================================================================ */}
-      <section className="py-20 md:py-28 px-5 md:px-10 bg-[#1a1a1a] border-b-2 border-[#e63946]">
+      <section id="ai-rules" className="scroll-mt-16 py-20 md:py-28 px-5 md:px-10 bg-[#1a1a1a] border-b-2 border-[#e63946]">
         <div className="max-w-7xl mx-auto">
           <RevealBlock className="mb-4">
             <span className="text-xs font-bold uppercase tracking-[0.2em] text-[#e63946] block mb-3">
@@ -1157,7 +1165,7 @@ export default function ShowcaseContent() {
       {/* ================================================================ */}
       {/* 6. FULL MAGAZINE GRID LAYOUT DEMO                               */}
       {/* ================================================================ */}
-      <section className="py-20 md:py-28 px-5 md:px-10 border-b-2 border-[#1a1a1a]">
+      <section id="grid-demo" className="scroll-mt-16 py-20 md:py-28 px-5 md:px-10 border-b-2 border-[#1a1a1a]">
         <div className="max-w-7xl mx-auto">
           <RevealBlock className="mb-4">
             <span className="text-xs font-bold uppercase tracking-[0.2em] text-[#264653] block mb-3">
@@ -1319,7 +1327,7 @@ export default function ShowcaseContent() {
       {/* ================================================================ */}
       {/* 7. DO / DON'T DESIGN RULES                                       */}
       {/* ================================================================ */}
-      <section className="py-20 md:py-28 px-5 md:px-10 border-b-2 border-[#1a1a1a]">
+      <section id="philosophy" className="scroll-mt-16 py-20 md:py-28 px-5 md:px-10 border-b-2 border-[#1a1a1a]">
         <div className="max-w-7xl mx-auto">
           <RevealBlock className="mb-4">
             <span className="text-xs font-bold uppercase tracking-[0.2em] text-[#e9c46a] block mb-3">

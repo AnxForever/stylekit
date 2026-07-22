@@ -249,6 +249,7 @@ export default function ShowcaseContent() {
   return (
     <div className="min-h-screen bg-[#f6f9fc] font-sans text-[#0a2540] overflow-x-hidden">
       <style>{`
+        html { scroll-behavior: smooth; }
         @keyframes stripe-float {
           0%, 100% { transform: translateY(0px) rotate(-1deg); }
           50% { transform: translateY(-12px) rotate(1deg); }
@@ -294,12 +295,13 @@ export default function ShowcaseContent() {
           {/* Center nav links */}
           <nav className="hidden md:flex items-center gap-1">
             {["Hero", "Pricing", "Anatomy", "Components", "Interactions"].map((item) => (
-              <span
+              <a
                 key={item}
-                className="px-3 py-1.5 rounded-lg text-sm text-[#425466] hover:text-[#0a2540] hover:bg-[#f6f9fc] cursor-pointer transition-all duration-[200ms] ease-out"
+                href={`#${item.toLowerCase()}`}
+                className="px-3 py-1.5 rounded-lg text-sm text-[#425466] hover:text-[#0a2540] hover:bg-[#f6f9fc] transition-all duration-[200ms] ease-out"
               >
                 {item}
-              </span>
+              </a>
             ))}
           </nav>
 
@@ -335,7 +337,7 @@ export default function ShowcaseContent() {
       {/* ============================================================== */}
       {/* 2. HERO                                                        */}
       {/* ============================================================== */}
-      <section className="relative pt-28 md:pt-36 pb-24 px-5 md:px-10 overflow-hidden min-h-screen flex items-center">
+      <section id="hero" className="relative pt-28 md:pt-36 pb-24 px-5 md:px-10 overflow-hidden min-h-screen flex items-center scroll-mt-16">
         {/* Grid background */}
         <div className="absolute inset-0" style={gridBg} />
 
@@ -621,7 +623,7 @@ export default function ShowcaseContent() {
       {/* ============================================================== */}
       {/* 3. LIVE DEMO — Stripe-style pricing page                       */}
       {/* ============================================================== */}
-      <section className="py-20 md:py-28 px-5 md:px-10 bg-white relative overflow-hidden">
+      <section id="pricing" className="py-20 md:py-28 px-5 md:px-10 bg-white relative overflow-hidden scroll-mt-16">
         {/* Grid bg */}
         <div className="absolute inset-0 opacity-50" style={gridBg} />
 
@@ -760,7 +762,7 @@ export default function ShowcaseContent() {
       {/* ============================================================== */}
       {/* 4. STYLE ANATOMY — Color tokens, shadow levels, grid code      */}
       {/* ============================================================== */}
-      <section className="py-20 md:py-28 px-5 md:px-10 bg-[#f6f9fc]">
+      <section id="anatomy" className="py-20 md:py-28 px-5 md:px-10 bg-[#f6f9fc] scroll-mt-16">
         <div className="max-w-6xl mx-auto">
           <RevealBlock className="mb-4">
             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#635bff]/10 text-[#635bff] text-xs font-semibold tracking-[0.12em] uppercase mb-4">
@@ -877,7 +879,7 @@ backgroundSize: "40px 40px"`}
       {/* ============================================================== */}
       {/* 5. COMPONENT GALLERY — 4 tabs                                  */}
       {/* ============================================================== */}
-      <section className="py-20 md:py-28 px-5 md:px-10 bg-white">
+      <section id="components" className="py-20 md:py-28 px-5 md:px-10 bg-white scroll-mt-16">
         <div className="max-w-6xl mx-auto">
           <RevealBlock className="mb-4">
             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#635bff]/10 text-[#635bff] text-xs font-semibold tracking-[0.12em] uppercase mb-4">
@@ -1209,7 +1211,7 @@ backgroundSize: "40px 40px"`}
       {/* ============================================================== */}
       {/* 6. ANIMATION & INTERACTION RULES — 4 interactive demo cards    */}
       {/* ============================================================== */}
-      <section className="py-20 md:py-28 px-5 md:px-10 bg-[#f6f9fc] relative overflow-hidden">
+      <section id="interactions" className="py-20 md:py-28 px-5 md:px-10 bg-[#f6f9fc] relative overflow-hidden scroll-mt-16">
         <div className="absolute inset-0 opacity-40" style={gridBg} />
 
         <div className="relative max-w-6xl mx-auto">

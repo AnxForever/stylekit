@@ -202,6 +202,7 @@ export default function ShowcaseContent() {
   return (
     <div className="min-h-screen bg-white font-sans text-black overflow-x-hidden">
       <style>{`
+        html { scroll-behavior: smooth; }
         @keyframes brutal-bounce {
           0%, 100% { transform: translateY(0) rotate(-2deg); }
           50% { transform: translateY(-10px) rotate(2deg); }
@@ -246,10 +247,12 @@ export default function ShowcaseContent() {
           <nav className="hidden md:flex items-center gap-1">
             {(["Palette", "Components", "aiRules", "Do/Don't"] as const).map((item, i) => {
               const navColors = [RED, TEAL, MINT, CORAL];
+              const navHrefs = ["#palette", "#components", "#ai-rules", "#do-dont"];
               return (
-                <span
+                <a
                   key={item}
-                  className="font-black text-sm px-3 py-1 border-2 border-transparent hover:border-black transition-all duration-200 cursor-pointer"
+                  href={navHrefs[i]}
+                  className="font-black text-sm px-3 py-1 border-2 border-transparent hover:border-black transition-all duration-200"
                   onMouseEnter={(e) => {
                     (e.currentTarget as HTMLElement).style.backgroundColor = navColors[i];
                   }}
@@ -258,7 +261,7 @@ export default function ShowcaseContent() {
                   }}
                 >
                   {item}
-                </span>
+                </a>
               );
             })}
           </nav>
@@ -384,7 +387,7 @@ export default function ShowcaseContent() {
       {/* ================================================================ */}
       {/* 3. COLOR PALETTE                                                 */}
       {/* ================================================================ */}
-      <section className="py-20 md:py-28 px-4 md:px-8 bg-white border-b-4 border-black">
+      <section id="palette" className="scroll-mt-16 py-20 md:py-28 px-4 md:px-8 bg-white border-b-4 border-black">
         <div className="max-w-6xl mx-auto">
           <RevealBlock className="mb-3">
             <div className="font-black text-xs uppercase tracking-widest bg-[#ff6b6b] text-white inline-block px-3 py-1 border-2 border-black mb-4">
@@ -480,7 +483,7 @@ export default function ShowcaseContent() {
       {/* ================================================================ */}
       {/* 4. COMPONENT GALLERY (4 tabs)                                    */}
       {/* ================================================================ */}
-      <section className="py-20 md:py-28 px-4 md:px-8 bg-[#95e1d3] border-b-4 border-black">
+      <section id="components" className="scroll-mt-16 py-20 md:py-28 px-4 md:px-8 bg-[#95e1d3] border-b-4 border-black">
         <div className="max-w-6xl mx-auto">
           <RevealBlock className="mb-3">
             <div className="font-black text-xs uppercase tracking-widest bg-black text-[#ffe66d] inline-block px-3 py-1 border-2 border-black mb-4">
@@ -818,7 +821,7 @@ export default function ShowcaseContent() {
       {/* ================================================================ */}
       {/* 5. aiRules INTERACTIVE DEMO                                      */}
       {/* ================================================================ */}
-      <section className="py-20 md:py-28 px-4 md:px-8 bg-[#ffe66d] border-b-4 border-black">
+      <section id="ai-rules" className="scroll-mt-16 py-20 md:py-28 px-4 md:px-8 bg-[#ffe66d] border-b-4 border-black">
         <div className="max-w-6xl mx-auto">
           <RevealBlock className="mb-3">
             <div className="font-black text-xs uppercase tracking-widest bg-[#ff6b6b] text-white inline-block px-3 py-1 border-2 border-black mb-4">
@@ -1195,7 +1198,7 @@ export default function ShowcaseContent() {
       {/* ================================================================ */}
       {/* 7. DO / DON'T RULES                                              */}
       {/* ================================================================ */}
-      <section className="py-20 md:py-28 px-4 md:px-8 bg-[#f38181] border-b-4 border-black">
+      <section id="do-dont" className="scroll-mt-16 py-20 md:py-28 px-4 md:px-8 bg-[#f38181] border-b-4 border-black">
         <div className="max-w-6xl mx-auto">
           <RevealBlock className="mb-3">
             <div className="font-black text-xs uppercase tracking-widest bg-black text-[#f38181] inline-block px-3 py-1 border-2 border-black mb-4">

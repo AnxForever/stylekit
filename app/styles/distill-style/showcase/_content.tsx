@@ -345,9 +345,9 @@ export default function DistillStyleShowcaseContent() {
                 </span>
               </div>
               <div className="hidden md:flex items-center gap-6 text-sm text-[#6B7280]">
-                <span className="hover:text-[#2A7AE2] hover:underline underline-offset-4 transition-colors cursor-pointer">Articles</span>
-                <span className="hover:text-[#2A7AE2] hover:underline underline-offset-4 transition-colors cursor-pointer">Archive</span>
-                <span className="hover:text-[#2A7AE2] hover:underline underline-offset-4 transition-colors cursor-pointer">Submit</span>
+                <a href="#articles" className="hover:text-[#2A7AE2] hover:underline underline-offset-4 transition-colors">Articles</a>
+                <a href="#archive" className="hover:text-[#2A7AE2] hover:underline underline-offset-4 transition-colors">Archive</a>
+                <a href="#submit" className="hover:text-[#2A7AE2] hover:underline underline-offset-4 transition-colors">Submit</a>
                 <span className="text-[11px] uppercase tracking-[0.14em] text-[#9CA3AF]">ISSN 2026-0705</span>
               </div>
             </div>
@@ -357,7 +357,7 @@ export default function DistillStyleShowcaseContent() {
 
       {/* ── Section 2: Article header with byline block ────────────────────── */}
       <RevealBlock>
-        <header className="max-w-[42rem] mx-auto px-4 md:px-6 pt-14 md:pt-20">
+        <header id="articles" className="max-w-[42rem] mx-auto px-4 md:px-6 pt-14 md:pt-20 scroll-mt-16">
           <div className="flex flex-wrap items-center gap-2 mb-6">
             {["cs.HC", "stat.AP", "设计科学", "Peer-Reviewed"].map((tag) => (
               <span
@@ -805,7 +805,7 @@ export default function DistillStyleShowcaseContent() {
 
       {/* ── Section 15: Appendix B - Review form ───────────────────────────── */}
       <RevealBlock>
-        <section className="max-w-[42rem] mx-auto px-4 md:px-6 pt-14">
+        <section id="submit" className="max-w-[42rem] mx-auto px-4 md:px-6 pt-14 scroll-mt-16">
           <SectionHeading no="B" zh="审稿意见表" en="Review Form" />
           <div className="mt-6 border border-[#E5E7EB] rounded-md p-5 md:p-6 space-y-4 bg-white">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -909,7 +909,7 @@ export default function DistillStyleShowcaseContent() {
 
       {/* ── Section 17: References footer ──────────────────────────────────── */}
       <RevealBlock>
-        <footer className="mt-16 bg-[#F3F4F6] border-t border-[#E5E7EB]">
+        <footer id="archive" className="mt-16 bg-[#F3F4F6] border-t border-[#E5E7EB] scroll-mt-16">
           <div className="max-w-[42rem] mx-auto px-4 md:px-6 py-12">
             <p className="text-[11px] uppercase tracking-[0.16em] text-[#6B7280] mb-4">参考文献 · References</p>
             <ol className="space-y-2.5">

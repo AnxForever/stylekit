@@ -566,9 +566,9 @@ export default function ShowcaseContent() {
             {/* Nav items — active shows concave */}
             <nav className="flex items-center gap-1">
               {NAV_ITEMS.map((item) => (
-                <button
+                <a
                   key={item}
-                  type="button"
+                  href={`#${item.toLowerCase()}`}
                   onClick={() => setActiveNav(item)}
                   className={`px-3 py-1.5 rounded-lg text-xs font-medium duration-300 ease-in-out ${
                     activeNav === item
@@ -577,7 +577,7 @@ export default function ShowcaseContent() {
                   }`}
                 >
                   {item}
-                </button>
+                </a>
               ))}
             </nav>
 
@@ -693,7 +693,7 @@ export default function ShowcaseContent() {
       {/* ============================================================ */}
       {/* 3. LIGHT SOURCE DEMO                                           */}
       {/* ============================================================ */}
-      <section className="py-20 md:py-28 px-6 md:px-12 max-w-7xl mx-auto">
+      <section id="design" className="scroll-mt-16 py-20 md:py-28 px-6 md:px-12 max-w-7xl mx-auto">
         <RevealBlock className="mb-10">
           <SectionTitle accent="Physics">Light Source</SectionTitle>
           <p className="text-gray-400 text-sm max-w-md leading-relaxed">
@@ -752,7 +752,7 @@ export default function ShowcaseContent() {
       {/* ============================================================ */}
       {/* 4. COMPONENT SHOWCASE                                          */}
       {/* ============================================================ */}
-      <section className="py-20 md:py-28 px-6 md:px-12 max-w-7xl mx-auto">
+      <section id="components" className="scroll-mt-16 py-20 md:py-28 px-6 md:px-12 max-w-7xl mx-auto">
         <RevealBlock className="mb-12">
           <SectionTitle accent="Showcase">Components</SectionTitle>
           <p className="text-gray-400 text-sm max-w-md leading-relaxed">
@@ -909,7 +909,7 @@ export default function ShowcaseContent() {
       {/* ============================================================ */}
       {/* 5. COLOR SYSTEM                                                */}
       {/* ============================================================ */}
-      <section className="py-20 md:py-28 px-6 md:px-12 max-w-7xl mx-auto">
+      <section id="colors" className="scroll-mt-16 py-20 md:py-28 px-6 md:px-12 max-w-7xl mx-auto">
         <RevealBlock className="mb-12">
           <SectionTitle accent="System">Color</SectionTitle>
           <p className="text-gray-400 text-sm max-w-md leading-relaxed">
@@ -963,7 +963,7 @@ export default function ShowcaseContent() {
       {/* ============================================================ */}
       {/* 6. CARD EXAMPLES                                               */}
       {/* ============================================================ */}
-      <section className="py-20 md:py-28 px-6 md:px-12 max-w-7xl mx-auto">
+      <section id="cards" className="scroll-mt-16 py-20 md:py-28 px-6 md:px-12 max-w-7xl mx-auto">
         <RevealBlock className="mb-12">
           <SectionTitle accent="Examples">Card</SectionTitle>
           <p className="text-gray-400 text-sm max-w-md leading-relaxed">
@@ -987,7 +987,7 @@ export default function ShowcaseContent() {
       {/* ============================================================ */}
       {/* 7. DO / DON'T RULES                                            */}
       {/* ============================================================ */}
-      <section className="py-20 md:py-28 px-6 md:px-12 max-w-7xl mx-auto">
+      <section id="rules" className="scroll-mt-16 py-20 md:py-28 px-6 md:px-12 max-w-7xl mx-auto">
         <RevealBlock className="mb-12">
           <SectionTitle accent="Rules">Design</SectionTitle>
           <p className="text-gray-400 text-sm max-w-md leading-relaxed">

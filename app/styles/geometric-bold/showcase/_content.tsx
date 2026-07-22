@@ -188,6 +188,7 @@ export default function ShowcaseContent() {
         }
         .geo-rotate-cw  { animation: geo-rotate-cw  10s linear infinite; }
         .geo-rotate-ccw { animation: geo-rotate-ccw 14s linear infinite; }
+        html { scroll-behavior: smooth; }
       `}</style>
 
       {/* ================================================================ */}
@@ -206,12 +207,13 @@ export default function ShowcaseContent() {
           {/* Center nav */}
           <nav className="hidden md:flex items-center">
             {["Palette", "Components", "Animations", "Projects", "Rules"].map((item) => (
-              <span
+              <a
                 key={item}
-                className="px-4 py-3 text-xs font-black uppercase tracking-widest text-white/50 hover:text-white hover:bg-white/10 cursor-pointer transition-colors duration-100 ease-linear"
+                href={`#${item.toLowerCase()}`}
+                className="px-4 py-3 text-xs font-black uppercase tracking-widest text-white/50 hover:text-white hover:bg-white/10 transition-colors duration-100 ease-linear"
               >
                 {item}
-              </span>
+              </a>
             ))}
           </nav>
 
@@ -367,7 +369,7 @@ export default function ShowcaseContent() {
       {/* ================================================================ */}
       {/* 3. COLOR PALETTE                                                 */}
       {/* ================================================================ */}
-      <section className="py-20 md:py-28 px-5 md:px-10 bg-white">
+      <section id="palette" className="scroll-mt-16 py-20 md:py-28 px-5 md:px-10 bg-white">
         <div className="max-w-6xl mx-auto">
           <RevealBlock className="mb-4">
             <span className="text-xs font-black tracking-[0.3em] uppercase text-red-500 block mb-4">
@@ -469,7 +471,7 @@ export default function ShowcaseContent() {
       {/* ================================================================ */}
       {/* 4. COMPONENT GALLERY                                             */}
       {/* ================================================================ */}
-      <section className="py-20 md:py-28 px-5 md:px-10 bg-black">
+      <section id="components" className="scroll-mt-16 py-20 md:py-28 px-5 md:px-10 bg-black">
         <div className="max-w-6xl mx-auto">
           <RevealBlock className="mb-4">
             <span className="text-xs font-black tracking-[0.3em] uppercase text-yellow-300 block mb-4">
@@ -779,7 +781,7 @@ export default function ShowcaseContent() {
       {/* ================================================================ */}
       {/* 5. ANIMATION & INTERACTION RULES — all 4 named aiRules          */}
       {/* ================================================================ */}
-      <section className="py-20 md:py-28 px-5 md:px-10 bg-white">
+      <section id="animations" className="scroll-mt-16 py-20 md:py-28 px-5 md:px-10 bg-white">
         <div className="max-w-6xl mx-auto">
           <RevealBlock className="mb-4">
             <span className="text-xs font-black tracking-[0.3em] uppercase text-blue-600 block mb-4">
@@ -1067,7 +1069,7 @@ export default function ShowcaseContent() {
       {/* ================================================================ */}
       {/* 6. PROJECT GRID                                                  */}
       {/* ================================================================ */}
-      <section className="py-20 md:py-28 px-5 md:px-10 bg-black">
+      <section id="projects" className="scroll-mt-16 py-20 md:py-28 px-5 md:px-10 bg-black">
         <div className="max-w-6xl mx-auto">
           <RevealBlock className="mb-4">
             <span className="text-xs font-black tracking-[0.3em] uppercase text-red-500 block mb-4">
@@ -1316,7 +1318,7 @@ export default function ShowcaseContent() {
       {/* ================================================================ */}
       {/* 9. DESIGN RULES — DO &amp; DON'T                                 */}
       {/* ================================================================ */}
-      <section className="py-20 md:py-28 px-5 md:px-10 bg-red-500">
+      <section id="rules" className="scroll-mt-16 py-20 md:py-28 px-5 md:px-10 bg-red-500">
         <div className="max-w-6xl mx-auto">
           <RevealBlock className="mb-4">
             <span className="text-xs font-black tracking-[0.3em] uppercase text-white/60 block mb-4">

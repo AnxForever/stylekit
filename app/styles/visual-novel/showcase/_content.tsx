@@ -165,7 +165,7 @@ const DO_RULES = [
   "L-shaped corner decorations using absolute-positioned spans",
   "Character nameplates as colored badge strips — -top-4 left-6",
   "Frosted glass choice buttons with shimmer on hover",
-  "Serif fonts (font-serif) for all in-world dialog text",
+  "Serif fonts (Georgia stack) for all in-world dialog text",
   "Atmospheric gradients for scene backgrounds",
   "Indigo accent (#6366f1) as the primary UI interaction color",
 ];
@@ -325,13 +325,13 @@ export default function ShowcaseContent() {
             Chapter I
           </div>
           <h1
-            className="font-serif text-[#1a202c]/75 mb-3"
+            className="[font-family:Georgia,Times,serif] text-[#1a202c]/75 mb-3"
             style={{ fontSize: "clamp(2.2rem,6vw,4rem)", fontWeight: 400, letterSpacing: "0.03em", lineHeight: 1.2 }}
           >
             視覚小説風
           </h1>
           <p
-            className="font-serif italic text-[#1a202c]/50 max-w-md mx-auto"
+            className="[font-family:Georgia,Times,serif] italic text-[#1a202c]/50 max-w-md mx-auto"
             style={{ fontSize: "clamp(0.95rem,2vw,1.15rem)", lineHeight: 1.7 }}
           >
             ADV visual novel aesthetics — translucent dialog panels, character nameplates,
@@ -374,7 +374,7 @@ export default function ShowcaseContent() {
                 ▼
               </div>
               <p
-                className="font-serif text-white/85 leading-relaxed tracking-wide"
+                className="[font-family:Georgia,Times,serif] text-white/85 leading-relaxed tracking-wide"
                 style={{ fontSize: "clamp(0.95rem,1.8vw,1.1rem)" }}
               >
                 "The sky burned amber as evening claimed the town. Two figures stood beneath
@@ -407,7 +407,7 @@ export default function ShowcaseContent() {
                 Section 01 — Story Branches
               </div>
               <h2
-                className="font-serif text-[#f7fafc] font-normal mb-3"
+                className="[font-family:Georgia,Times,serif] text-[#f7fafc] font-normal mb-3"
                 style={{ fontSize: "clamp(1.5rem,4vw,2.2rem)" }}
               >
                 Chapter Selection
@@ -420,7 +420,7 @@ export default function ShowcaseContent() {
 
           <RevealBlock delay={0.1}>
             <div
-              className="font-serif italic text-center text-white/45 mb-8"
+              className="[font-family:Georgia,Times,serif] italic text-center text-white/45 mb-8"
               style={{ fontSize: "1rem" }}
             >
               "The story awaits. Which chapter will you open?"
@@ -456,7 +456,7 @@ export default function ShowcaseContent() {
                         </div>
                       )}
                       {activeChapter === ch.id && (
-                        <div className="mt-2 font-serif italic text-sm text-white/55 leading-relaxed">
+                        <div className="mt-2 [font-family:Georgia,Times,serif] italic text-sm text-white/55 leading-relaxed">
                           {ch.desc}
                         </div>
                       )}
@@ -487,7 +487,7 @@ export default function ShowcaseContent() {
                 Section 02 — Dialog System
               </div>
               <h2
-                className="font-serif text-[#f7fafc] font-normal mb-3"
+                className="[font-family:Georgia,Times,serif] text-[#f7fafc] font-normal mb-3"
                 style={{ fontSize: "clamp(1.5rem,4vw,2.2rem)" }}
               >
                 ADV Dialog Box
@@ -603,7 +603,7 @@ export default function ShowcaseContent() {
 
                 {/* Dialog text */}
                 <p
-                  className="font-serif text-white/88 leading-relaxed tracking-wide mb-4"
+                  className="[font-family:Georgia,Times,serif] text-white/88 leading-relaxed tracking-wide mb-4"
                   style={{
                     fontSize: "clamp(0.9rem,1.8vw,1.05rem)",
                     minHeight: 72,
@@ -674,7 +674,7 @@ export default function ShowcaseContent() {
                       ▼
                     </div>
                     <p
-                      className="font-serif text-white/88 leading-relaxed tracking-wide"
+                      className="[font-family:Georgia,Times,serif] text-white/88 leading-relaxed tracking-wide"
                       style={{ fontSize: "0.9rem" }}
                     >
                       {c.lines[0]}
@@ -702,7 +702,7 @@ export default function ShowcaseContent() {
                 Section 03 — Component Library
               </div>
               <h2
-                className="font-serif text-[#f7fafc] font-normal mb-3"
+                className="[font-family:Georgia,Times,serif] text-[#f7fafc] font-normal mb-3"
                 style={{ fontSize: "clamp(1.5rem,4vw,2.2rem)" }}
               >
                 Component Showcase
@@ -845,7 +845,7 @@ export default function ShowcaseContent() {
                       >
                         ▼
                       </div>
-                      <p className="font-serif text-white/90 text-xl leading-relaxed tracking-wide">
+                      <p className="[font-family:Georgia,Times,serif] text-white/90 text-xl leading-relaxed tracking-wide">
                         "The cherry blossoms are beautiful this time of year..."
                       </p>
                     </div>
@@ -866,7 +866,7 @@ export default function ShowcaseContent() {
                     <input
                       type="text"
                       placeholder="Enter your name..."
-                      className="w-full font-serif text-white/85 rounded outline-none focus:border-[#6366f1]/50 transition-colors duration-200"
+                      className="w-full [font-family:Georgia,Times,serif] text-white/85 rounded outline-none focus:border-[#6366f1]/50 transition-colors duration-200"
                       style={{
                         padding: "10px 14px",
                         background: "rgba(26,32,44,0.75)",
@@ -884,7 +884,7 @@ export default function ShowcaseContent() {
                     <textarea
                       rows={3}
                       placeholder="Leave a note for this save..."
-                      className="w-full font-serif text-white/75 rounded outline-none resize-none focus:border-[#6366f1]/50 transition-colors duration-200"
+                      className="w-full [font-family:Georgia,Times,serif] text-white/75 rounded outline-none resize-none focus:border-[#6366f1]/50 transition-colors duration-200"
                       style={{
                         padding: "10px 14px",
                         background: "rgba(26,32,44,0.75)",
@@ -940,7 +940,7 @@ export default function ShowcaseContent() {
                 Section 04 — Color System
               </div>
               <h2
-                className="font-serif text-[#f7fafc] font-normal mb-3"
+                className="[font-family:Georgia,Times,serif] text-[#f7fafc] font-normal mb-3"
                 style={{ fontSize: "clamp(1.5rem,4vw,2.2rem)" }}
               >
                 Palette
@@ -1013,13 +1013,13 @@ export default function ShowcaseContent() {
                 Section 05 — Design Rules
               </div>
               <h2
-                className="font-serif text-[#f7fafc] font-normal mb-3"
+                className="[font-family:Georgia,Times,serif] text-[#f7fafc] font-normal mb-3"
                 style={{ fontSize: "clamp(1.5rem,4vw,2.2rem)" }}
               >
                 The Tutorial
               </h2>
               <p
-                className="font-serif italic text-white/40 max-w-sm mx-auto leading-relaxed"
+                className="[font-family:Georgia,Times,serif] italic text-white/40 max-w-sm mx-auto leading-relaxed"
                 style={{ fontSize: "0.95rem" }}
               >
                 "Pay attention — these rules will serve you well on this journey."
@@ -1053,7 +1053,7 @@ export default function ShowcaseContent() {
                   <div className="absolute bottom-3 right-3 w-4 h-4 border-r border-b border-[#10b981]/35" />
 
                   <div
-                    className="font-serif italic text-white/45 mb-6 leading-relaxed"
+                    className="[font-family:Georgia,Times,serif] italic text-white/45 mb-6 leading-relaxed"
                     style={{ fontSize: "0.875rem" }}
                   >
                     "These are the principles that keep the world coherent..."
@@ -1108,7 +1108,7 @@ export default function ShowcaseContent() {
                   <div className="absolute bottom-3 right-3 w-4 h-4 border-r border-b border-[#ec4899]/32" />
 
                   <div
-                    className="font-serif italic text-white/45 mb-6 leading-relaxed"
+                    className="[font-family:Georgia,Times,serif] italic text-white/45 mb-6 leading-relaxed"
                     style={{ fontSize: "0.875rem" }}
                   >
                     "...and these are the mistakes that break the immersion."
@@ -1165,7 +1165,7 @@ export default function ShowcaseContent() {
 
         <RevealBlock delay={0}>
           <div
-            className="font-serif italic text-white/55 mb-4"
+            className="[font-family:Georgia,Times,serif] italic text-white/55 mb-4"
             style={{ fontSize: "clamp(1.3rem,3.5vw,2rem)" }}
           >
             To be continued...

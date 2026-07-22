@@ -366,10 +366,10 @@ export default function GitHubStyleShowcase() {
           </div>
 
           <div className="hidden md:flex items-center gap-4 text-sm text-[#e6edf3] font-semibold ml-2">
-            <span className="hover:text-white transition-colors duration-100 cursor-pointer">Pull requests</span>
-            <span className="hover:text-white transition-colors duration-100 cursor-pointer">Issues</span>
-            <span className="hover:text-white transition-colors duration-100 cursor-pointer">Marketplace</span>
-            <span className="hover:text-white transition-colors duration-100 cursor-pointer">Explore</span>
+            <a href="#pull-requests" className="hover:text-white transition-colors duration-100">Pull requests</a>
+            <a href="#pull-requests" className="hover:text-white transition-colors duration-100">Issues</a>
+            <a href="#component-gallery" className="hover:text-white transition-colors duration-100">Marketplace</a>
+            <a href="#color-system" className="hover:text-white transition-colors duration-100">Explore</a>
           </div>
 
           <div className="ml-auto flex items-center gap-3">
@@ -489,7 +489,7 @@ export default function GitHubStyleShowcase() {
         {/* ================================================================ */}
         {/* 3. REPO TAB CONTENT — Code / Issues / Pulls                      */}
         {/* ================================================================ */}
-        <section className="max-w-7xl mx-auto px-4 py-6">
+        <section id="pull-requests" className="scroll-mt-16 max-w-7xl mx-auto px-4 py-6">
 
           {/* ---- Code Tab ---- */}
           {activeRepoTab === "code" && (
@@ -1139,7 +1139,7 @@ transition-all duration-150
         {/* ================================================================ */}
         {/* 6. COMPONENT GALLERY                                              */}
         {/* ================================================================ */}
-        <section className="py-12 border-t border-[#d0d7de]">
+        <section id="component-gallery" className="scroll-mt-16 py-12 border-t border-[#d0d7de]">
           <div className="max-w-7xl mx-auto px-4">
             <RevealBlock delay={0}>
               <div className="mb-6">
@@ -1339,7 +1339,7 @@ transition-all duration-150
         {/* ================================================================ */}
         {/* 7. COLOR SYSTEM                                                    */}
         {/* ================================================================ */}
-        <section className="py-12 bg-[#f6f8fa] border-t border-[#d0d7de]">
+        <section id="color-system" className="scroll-mt-16 py-12 bg-[#f6f8fa] border-t border-[#d0d7de]">
           <div className="max-w-7xl mx-auto px-4">
             <RevealBlock delay={0}>
               <div className="mb-6">

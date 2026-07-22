@@ -244,6 +244,7 @@ export default function ShowcaseContent() {
         .graf-hard-btn { transition: all 0.1s linear; }
         .graf-hard-btn:hover { transform: translate(-2px, -2px); }
         .graf-hard-btn:active { transform: translate(6px, 6px); box-shadow: none !important; }
+        html { scroll-behavior: smooth; }
       `}</style>
 
       {/* ================================================================ */}
@@ -265,12 +266,13 @@ export default function ShowcaseContent() {
           {/* Center nav */}
           <nav className="hidden md:flex items-center gap-1">
             {["Palette", "Crew", "Components", "Animations", "Manifesto"].map((item) => (
-              <span
+              <a
                 key={item}
-                className="px-3 py-1.5 text-sm font-black uppercase tracking-wider text-white/60 hover:text-[#ff2d55] cursor-pointer transition-colors duration-100"
+                href={`#${item.toLowerCase()}`}
+                className="px-3 py-1.5 text-sm font-black uppercase tracking-wider text-white/60 hover:text-[#ff2d55] transition-colors duration-100"
               >
                 {item}
-              </span>
+              </a>
             ))}
           </nav>
 
@@ -429,7 +431,7 @@ export default function ShowcaseContent() {
       {/* ================================================================ */}
       {/* 3. COLOR PALETTE                                                 */}
       {/* ================================================================ */}
-      <section className="py-20 md:py-28 px-5 md:px-10 bg-[#111113]">
+      <section id="palette" className="scroll-mt-16 py-20 md:py-28 px-5 md:px-10 bg-[#111113]">
         <div className="max-w-6xl mx-auto">
           <RevealBlock className="mb-4">
             <span className="text-xs font-black tracking-[0.35em] uppercase text-[#ff2d55] block mb-3">
@@ -534,7 +536,7 @@ export default function ShowcaseContent() {
       {/* ================================================================ */}
       {/* 4. CREW WALL                                                     */}
       {/* ================================================================ */}
-      <section className="py-20 md:py-28 px-5 md:px-10 relative">
+      <section id="crew" className="scroll-mt-16 py-20 md:py-28 px-5 md:px-10 relative">
         <div
           className="absolute inset-0 opacity-[0.025] pointer-events-none"
           style={{
@@ -614,7 +616,7 @@ export default function ShowcaseContent() {
       {/* ================================================================ */}
       {/* 5. COMPONENT GALLERY (4 tabs)                                    */}
       {/* ================================================================ */}
-      <section className="py-20 md:py-28 px-5 md:px-10 bg-[#111113]">
+      <section id="components" className="scroll-mt-16 py-20 md:py-28 px-5 md:px-10 bg-[#111113]">
         <div className="max-w-6xl mx-auto">
           <RevealBlock className="mb-4">
             <span className="text-xs font-black tracking-[0.35em] uppercase text-[#ffea00] block mb-3">
@@ -1043,7 +1045,7 @@ export default function ShowcaseContent() {
       {/* ================================================================ */}
       {/* 7. ANIMATION & INTERACTION RULES DEMO                           */}
       {/* ================================================================ */}
-      <section className="py-20 md:py-28 px-5 md:px-10 bg-[#111113]">
+      <section id="animations" className="scroll-mt-16 py-20 md:py-28 px-5 md:px-10 bg-[#111113]">
         <div className="max-w-6xl mx-auto">
           <RevealBlock className="mb-4">
             <span className="text-xs font-black tracking-[0.35em] uppercase text-[#b620e0] block mb-3">
@@ -1413,7 +1415,7 @@ export default function ShowcaseContent() {
       {/* ================================================================ */}
       {/* 9. MANIFESTO                                                     */}
       {/* ================================================================ */}
-      <section className="py-20 md:py-28 px-5 md:px-10 bg-[#111113]">
+      <section id="manifesto" className="scroll-mt-16 py-20 md:py-28 px-5 md:px-10 bg-[#111113]">
         <div className="max-w-6xl mx-auto">
           <RevealBlock className="mb-4">
             <span className="text-xs font-black tracking-[0.35em] uppercase text-[#ff2d55] block mb-3">

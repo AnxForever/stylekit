@@ -310,6 +310,7 @@ export default function ShowcaseContent() {
   return (
     <div className="min-h-screen bg-zinc-50 font-sans text-zinc-800 overflow-x-hidden">
       <style>{`
+        html { scroll-behavior: smooth; }
         @keyframes sf-slide-in {
           from { opacity: 0; transform: translateX(-16px); }
           to { opacity: 1; transform: translateX(0); }
@@ -344,13 +345,21 @@ export default function ShowcaseContent() {
 
           {/* Center nav items */}
           <nav className="hidden md:flex items-center gap-1">
-            {["Layout", "Live Demo", "Anatomy", "Components", "Interactions", "Rules"].map((item) => (
-              <span
-                key={item}
-                className="px-3 py-1.5 rounded-md text-sm text-zinc-500 hover:text-zinc-900 hover:bg-zinc-100 cursor-pointer transition-colors duration-150"
+            {[
+              { href: "#layout", label: "Layout" },
+              { href: "#live-demo", label: "Live Demo" },
+              { href: "#anatomy", label: "Anatomy" },
+              { href: "#components", label: "Components" },
+              { href: "#interactions", label: "Interactions" },
+              { href: "#rules", label: "Rules" },
+            ].map(({ href, label }) => (
+              <a
+                key={href}
+                href={href}
+                className="px-3 py-1.5 rounded-md text-sm text-zinc-500 hover:text-zinc-900 hover:bg-zinc-100 transition-colors duration-150"
               >
-                {item}
-              </span>
+                {label}
+              </a>
             ))}
           </nav>
 
@@ -368,7 +377,7 @@ export default function ShowcaseContent() {
       {/* ================================================================ */}
       {/* 2. HERO — sidebar layout diagram + breakpoints                   */}
       {/* ================================================================ */}
-      <section className="relative pt-24 pb-20 px-5 md:px-10 overflow-hidden">
+      <section id="layout" className="relative pt-24 pb-20 px-5 md:px-10 overflow-hidden scroll-mt-16">
         {/* Subtle grid background */}
         <div
           className="absolute inset-0 pointer-events-none"
@@ -527,7 +536,7 @@ export default function ShowcaseContent() {
       {/* ================================================================ */}
       {/* 3. LIVE SIDEBAR DEMO                                             */}
       {/* ================================================================ */}
-      <section className="py-20 md:py-28 px-5 md:px-10">
+      <section id="live-demo" className="py-20 md:py-28 px-5 md:px-10 scroll-mt-16">
         <div className="max-w-7xl mx-auto">
           <RevealBlock className="mb-4">
             <span className="text-xs font-semibold tracking-[0.2em] uppercase text-blue-500 block mb-3">
@@ -926,7 +935,7 @@ export default function ShowcaseContent() {
       {/* ================================================================ */}
       {/* 4. LAYOUT ANATOMY                                                */}
       {/* ================================================================ */}
-      <section className="py-20 md:py-28 px-5 md:px-10 bg-white border-y border-zinc-200">
+      <section id="anatomy" className="py-20 md:py-28 px-5 md:px-10 bg-white border-y border-zinc-200 scroll-mt-16">
         <div className="max-w-7xl mx-auto">
           <RevealBlock className="mb-4">
             <span className="text-xs font-semibold tracking-[0.2em] uppercase text-emerald-500 block mb-3">
@@ -1057,7 +1066,7 @@ export default function ShowcaseContent() {
       {/* ================================================================ */}
       {/* 5. COMPONENT GALLERY — 4 tabs                                    */}
       {/* ================================================================ */}
-      <section className="py-20 md:py-28 px-5 md:px-10">
+      <section id="components" className="py-20 md:py-28 px-5 md:px-10 scroll-mt-16">
         <div className="max-w-7xl mx-auto">
           <RevealBlock className="mb-4">
             <span className="text-xs font-semibold tracking-[0.2em] uppercase text-amber-500 block mb-3">
@@ -1386,7 +1395,7 @@ export default function ShowcaseContent() {
       {/* ================================================================ */}
       {/* 6. ANIMATION & INTERACTION RULES DEMO                            */}
       {/* ================================================================ */}
-      <section className="py-20 md:py-28 px-5 md:px-10 bg-white border-y border-zinc-200">
+      <section id="interactions" className="py-20 md:py-28 px-5 md:px-10 bg-white border-y border-zinc-200 scroll-mt-16">
         <div className="max-w-7xl mx-auto">
           <RevealBlock className="mb-4">
             <span className="text-xs font-semibold tracking-[0.2em] uppercase text-blue-500 block mb-3">
@@ -1576,7 +1585,7 @@ export default function ShowcaseContent() {
       {/* ================================================================ */}
       {/* 7. DESIGN RULES DO / DON'T                                       */}
       {/* ================================================================ */}
-      <section className="py-20 md:py-28 px-5 md:px-10">
+      <section id="rules" className="py-20 md:py-28 px-5 md:px-10 scroll-mt-16">
         <div className="max-w-7xl mx-auto">
           <RevealBlock className="mb-4">
             <span className="text-xs font-semibold tracking-[0.2em] uppercase text-zinc-400 block mb-3">
