@@ -295,6 +295,11 @@ export function HomeContent({ styles, stats }: HomeContentProps) {
   return (
     <>
       <section id="home-hero" className="home-hero-surface relative overflow-hidden border-b border-border">
+        <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
+          <div className="absolute -top-28 left-[-8rem] h-72 w-72 rounded-full bg-accent/10 blur-3xl" />
+          <div className="absolute bottom-[-9rem] right-[-4rem] h-72 w-72 rounded-full bg-foreground/10 blur-3xl" />
+          <div className="absolute inset-0 bg-[linear-gradient(to_bottom,transparent,rgba(0,0,0,0.04))] dark:bg-[linear-gradient(to_bottom,transparent,rgba(255,255,255,0.04))]" />
+        </div>
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 md:px-12 pt-10 sm:pt-16 md:pt-20">
           <div className="grid grid-cols-1 md:grid-cols-[minmax(0,0.88fr)_minmax(0,1.12fr)] gap-9 sm:gap-12 md:gap-14 lg:gap-20 items-center">
             <RevealOnScroll instant>
