@@ -82,6 +82,9 @@ export function StylesContent({ allStyles }: StylesContentProps) {
     () => parseStylesSearchParams(searchParams),
     [searchParams]
   );
+  // Visual regression runs (?visual-baseline=1) need every catalog card in the
+  // DOM at once; pagination would hide all but the first page from snapshots.
+  const isVisualBaseline = searchParams.get("visual-baseline") === "1";
   const { data: catalogStylesData } = useCatalogStyles();
   const catalogStyles: StyleMeta[] = catalogStylesData?.styles ?? allStyles;
   const searchInputRef = useRef<HTMLInputElement>(null);
@@ -472,8 +475,8 @@ export function StylesContent({ allStyles }: StylesContentProps) {
     trimmedDeferredSearchQuery,
   ]);
   const visibleStyles = useMemo(
-    () => filteredStyles.slice(0, visibleStyleCount),
-    [filteredStyles, visibleStyleCount]
+    () => (isVisualBaseline ? filteredStyles : filteredStyles.slice(0, visibleStyleCount)),
+    [filteredStyles, visibleStyleCount, isVisualBaseline]
   );
   const hasMoreStyles = visibleStyles.length < filteredStyles.length;
 

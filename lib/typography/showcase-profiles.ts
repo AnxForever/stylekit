@@ -117,6 +117,7 @@ const PROFILE_SLUGS: Record<ProfileId, readonly string[]> = {
     "dopamine-design",
     "geometric-bold",
     "graffiti-street",
+    "kinetic-typography",
     "neo-brutalist",
     "neo-brutalist-playful",
     "neo-brutalist-soft",

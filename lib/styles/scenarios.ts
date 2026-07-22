@@ -204,6 +204,7 @@ const SCENARIO_ASSIGNMENTS: Record<string, StyleScenario[]> = {
   "watercolor-style": ["creative", "marketing"],
   "hand-drawn-doodle": ["creative", "marketing", "blog"],
   "kawaii-minimal": ["creative", "saas", "ecommerce"],
+  "kinetic-typography": ["creative", "marketing", "portfolio"],
   "paper-craft": ["creative", "marketing"],
   "zen-garden": ["creative", "marketing"],
   "ink-wash": ["creative", "marketing", "blog"],

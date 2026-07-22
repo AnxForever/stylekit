@@ -121,6 +121,7 @@ import { monochromeRecipes } from "./monochrome";
 // New styles - Batch 12
 import { sciFiHudRecipes } from "./sci-fi-hud";
 import { kawaiiMinimalRecipes } from "./kawaii-minimal";
+import { kineticTypographyRecipes } from "./kinetic-typography";
 import { filmNoirRecipes } from "./film-noir";
 import { arcadeCrtRecipes } from "./arcade-crt";
 import { frutigerAeroRecipes } from "./frutiger-aero";
@@ -269,6 +270,7 @@ const recipeRegistry: Record<string, StyleRecipes> = {
   // New styles - Batch 12
   "sci-fi-hud": sciFiHudRecipes,
   "kawaii-minimal": kawaiiMinimalRecipes,
+  "kinetic-typography": kineticTypographyRecipes,
   "film-noir": filmNoirRecipes,
   "arcade-crt": arcadeCrtRecipes,
   "frutiger-aero": frutigerAeroRecipes,
