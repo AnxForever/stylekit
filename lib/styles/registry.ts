@@ -76,6 +76,7 @@ import { handDrawnDoodle } from "./hand-drawn-doodle";
 import { swissPoster } from "./swiss-poster";
 import { watercolorArt } from "./watercolor-art";
 import { impressionistOil } from "./impressionist-oil";
+import { immersivePhoto } from "./immersive-photo";
 import { collageArt } from "./collage-art";
 import { glitchArt } from "./glitch-art";
 import { visualNovel } from "./visual-novel";
@@ -241,6 +242,7 @@ const rawStyles: DesignStyle[] = [
   swissPoster,
   watercolorArt,
   impressionistOil,
+  immersivePhoto,
   collageArt,
   glitchArt,
   visualNovel,

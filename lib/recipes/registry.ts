@@ -67,6 +67,7 @@ import { handDrawnDoodleRecipes } from "./hand-drawn-doodle";
 import { swissPosterRecipes } from "./swiss-poster";
 import { watercolorArtRecipes } from "./watercolor-art";
 import { impressionistOilRecipes } from "./impressionist-oil";
+import { immersivePhotoRecipes } from "./immersive-photo";
 import { collageArtRecipes } from "./collage-art";
 import { glitchArtRecipes } from "./glitch-art";
 import { visualNovelRecipes } from "./visual-novel";
@@ -218,6 +219,7 @@ const recipeRegistry: Record<string, StyleRecipes> = {
   "swiss-poster": swissPosterRecipes,
   "watercolor-art": watercolorArtRecipes,
   "impressionist-oil": impressionistOilRecipes,
+  "immersive-photo": immersivePhotoRecipes,
   "collage-art": collageArtRecipes,
   "glitch-art": glitchArtRecipes,
   "visual-novel": visualNovelRecipes,

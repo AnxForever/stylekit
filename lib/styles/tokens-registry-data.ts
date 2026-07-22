@@ -74,6 +74,7 @@ import { handDrawnDoodleTokens } from "./hand-drawn-doodle-tokens";
 import { swissPosterTokens } from "./swiss-poster-tokens";
 import { watercolorArtTokens } from "./watercolor-art-tokens";
 import { impressionistOilTokens } from "./impressionist-oil-tokens";
+import { immersivePhotoTokens } from "./immersive-photo-tokens";
 import { collageArtTokens } from "./collage-art-tokens";
 import { glitchArtTokens } from "./glitch-art-tokens";
 import { visualNovelTokens } from "./visual-novel-tokens";
@@ -228,6 +229,7 @@ export const styleTokensRegistry: Record<string, StyleTokens> = {
   "swiss-poster": swissPosterTokens,
   "watercolor-art": watercolorArtTokens,
   "impressionist-oil": impressionistOilTokens,
+  "immersive-photo": immersivePhotoTokens,
   "collage-art": collageArtTokens,
   "glitch-art": glitchArtTokens,
   "visual-novel": visualNovelTokens,

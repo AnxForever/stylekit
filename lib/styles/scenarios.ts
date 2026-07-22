@@ -154,6 +154,7 @@ const SCENARIO_ASSIGNMENTS: Record<string, StyleScenario[]> = {
   gothic: ["creative", "editorial"],
   "watercolor-art": ["creative", "editorial"],
   "impressionist-oil": ["creative", "editorial"],
+  "immersive-photo": ["creative", "marketing", "portfolio"],
   "mid-century-modern": ["creative", "editorial"],
   "op-art": ["creative", "editorial"],
   "islamic-geometric": ["creative", "editorial"],
