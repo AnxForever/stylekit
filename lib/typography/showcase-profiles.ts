@@ -64,6 +64,7 @@ const PROFILE_SLUGS: Record<ProfileId, readonly string[]> = {
     "marble-luxury",
     "monochrome",
     "oversized-typography",
+    "parallax-editorial",
     "victorian-botanical",
   ],
   literary: [

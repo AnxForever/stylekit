@@ -1544,6 +1544,25 @@ export const stylesMeta: StyleMeta[] = [
     keywords: ["particles", "network", "connections", "floating", "tech", "nodes", "constellation"],
   },
   {
+    slug: "parallax-editorial",
+    name: "视差杂志",
+    nameEn: "Parallax Editorial",
+    description:
+      "有物理纵深的杂志排版。暖纸底色上，前景与背景层以不同速率滚动制造景深；sticky 图文交错、章节编号、首字下沉，把长内容读成一场有节奏的翻页。",
+    descriptionEn:
+      "Editorial layout with physical depth. On warm paper, foreground and background scroll at different rates to build parallax; sticky interlock, chapter numbers and drop caps pace long-form like a magazine.",
+    cover: "/styles/parallax-editorial.svg",
+    styleType: "layout",
+    tags: [],
+    category: "expressive",
+    colors: {
+      primary: "#1A1712",
+      secondary: "#F5F0E6",
+      accent: ["#B3401F", "#2E2A22", "#C9BBA0"],
+    },
+    keywords: ["视差", "杂志", "编辑排版", "景深", "滚动", "首字下沉"],
+  },
+  {
     slug: "vhs-aesthetic",
     name: "VHS美学",
     nameEn: "VHS Aesthetic",

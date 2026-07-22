@@ -1,6 +1,6 @@
 {
   "baselineCommit": "774f9943",
-  "count": 136,
+  "count": 137,
   "slugs": [
     "acid-graphics",
     "african-textile",
@@ -96,6 +96,7 @@
     "outrun",
     "oversized-typography",
     "paper-craft",
+    "parallax-editorial",
     "parallax-sections",
     "particle",
     "pastel-goth",

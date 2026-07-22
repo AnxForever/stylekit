@@ -119,6 +119,7 @@ import { brutalistWeb } from "./brutalist-web";
 import { holographic } from "./holographic";
 import { generativeArt } from "./generative-art";
 import { particle } from "./particle";
+import { parallaxEditorial } from "./parallax-editorial";
 import { vhsAesthetic } from "./vhs-aesthetic";
 // New styles - Terracotta
 import { terracotta } from "./terracotta";
@@ -282,6 +283,7 @@ const rawStyles: DesignStyle[] = [
   holographic,
   generativeArt,
   particle,
+  parallaxEditorial,
   vhsAesthetic,
   // New styles - Terracotta
   terracotta,
