@@ -121,6 +121,7 @@ import { inkWashRecipes } from "./ink-wash";
 import { monochromeRecipes } from "./monochrome";
 // New styles - Batch 12
 import { sciFiHudRecipes } from "./sci-fi-hud";
+import { scrollytellingRecipes } from "./scrollytelling";
 import { kawaiiMinimalRecipes } from "./kawaii-minimal";
 import { kineticTypographyRecipes } from "./kinetic-typography";
 import { filmNoirRecipes } from "./film-noir";
@@ -271,6 +272,7 @@ const recipeRegistry: Record<string, StyleRecipes> = {
   "monochrome": monochromeRecipes,
   // New styles - Batch 12
   "sci-fi-hud": sciFiHudRecipes,
+  "scrollytelling": scrollytellingRecipes,
   "kawaii-minimal": kawaiiMinimalRecipes,
   "kinetic-typography": kineticTypographyRecipes,
   "film-noir": filmNoirRecipes,

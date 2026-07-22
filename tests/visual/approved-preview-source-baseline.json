@@ -2,11 +2,11 @@
   "baselineCommit": "774f9943",
   "algorithm": "sha256",
   "files": {
-    "lib/style-components.tsx": "14a4de89a30036814bf55d9c52b39e367dc48b580d8e51e564b111b84b6a2586",
+    "lib/style-components.tsx": "0fd612b6ac6a15d64898d20f3ee08885465a93a22d7cba8e418b6e0dfe649895",
     "components/style-preview/style-cover-preview.tsx": "9ab40b562ecb8e72dfd525a4bff6bcd9f6b411edcde691df73978dad91ef635f",
     "components/home/style-card.tsx": "afac9505ac735e913d18fa141bf82e9507fad63ea148deeefda08aea322120ea",
     "components/home/home-style-card.tsx": "5ae03404f13f709af7424ed38fd6857f34b2e3bd11b11c67a5daa36cec7559d5",
     "components/home/featured-carousel.tsx": "32b8cae0957e6fe5fecc99e048629180c645a51d12393a1c1b8b23b5be3ef01d",
-    "lib/styles/meta-registry.ts": "d8885b6c6ad2512ea750b8c65530d72c8092f0964c7d5e96e3faa39f5f820c56"
+    "lib/styles/meta-registry.ts": "74a14d900501d8d0ad334b53fe8690f41403e466a68a762c47ebfcddff03424f"
   }
 }

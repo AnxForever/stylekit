@@ -105,6 +105,7 @@ import { wabiSabi } from "./wabi-sabi";
 import { zenGarden } from "./zen-garden";
 // New styles - Batch 9 (Competitive analysis)
 import { sciFiHud } from "./sci-fi-hud";
+import { scrollytelling } from "./scrollytelling";
 import { kawaiiMinimal } from "./kawaii-minimal";
 import { kineticTypography } from "./kinetic-typography";
 import { filmNoir } from "./film-noir";
@@ -269,6 +270,7 @@ const rawStyles: DesignStyle[] = [
   zenGarden,
   // New styles - Batch 9 (Competitive analysis)
   sciFiHud,
+  scrollytelling,
   kawaiiMinimal,
   kineticTypography,
   filmNoir,
