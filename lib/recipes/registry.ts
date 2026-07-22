@@ -134,6 +134,7 @@ import { antiDesignRecipes } from "./anti-design";
 import { vhsAestheticRecipes } from "./vhs-aesthetic";
 import { scandinavianRecipes } from "./scandinavian";
 import { celShadingRecipes } from "./cel-shading";
+import { cinematicVideoHeroRecipes } from "./cinematic-video-hero";
 import { wabiSabiRecipes } from "./wabi-sabi";
 // New styles - Batch 13
 import { linearStyleRecipes } from "./linear-style";
@@ -286,6 +287,7 @@ const recipeRegistry: Record<string, StyleRecipes> = {
   "vhs-aesthetic": vhsAestheticRecipes,
   "scandinavian": scandinavianRecipes,
   "cel-shading": celShadingRecipes,
+  "cinematic-video-hero": cinematicVideoHeroRecipes,
   "wabi-sabi": wabiSabiRecipes,
   // New styles - Batch 13
   "linear-style": linearStyleRecipes,

@@ -113,6 +113,7 @@ import { vhsAestheticTokens } from "./vhs-aesthetic-tokens";
 // Style-optimization batch tokens
 import { scandinavianTokens } from "./scandinavian-tokens";
 import { celShadingTokens } from "./cel-shading-tokens";
+import { cinematicVideoHeroTokens } from "./cinematic-video-hero-tokens";
 import { wabiSabiTokens } from "./wabi-sabi-tokens";
 // New styles - Batch 12
 import { inkWashTokens } from "./ink-wash-tokens";
@@ -269,6 +270,7 @@ export const styleTokensRegistry: Record<string, StyleTokens> = {
   // Style-optimization
   "scandinavian": scandinavianTokens,
   "cel-shading": celShadingTokens,
+  "cinematic-video-hero": cinematicVideoHeroTokens,
   "wabi-sabi": wabiSabiTokens,
   // New styles - Batch 12
   "ink-wash": inkWashTokens,

@@ -102,6 +102,7 @@ import { liquidGlass } from "./liquid-glass";
 // New styles - from style-optimization
 import { scandinavian } from "./scandinavian";
 import { celShading } from "./cel-shading";
+import { cinematicVideoHero } from "./cinematic-video-hero";
 import { wabiSabi } from "./wabi-sabi";
 import { zenGarden } from "./zen-garden";
 // New styles - Batch 9 (Competitive analysis)
@@ -268,6 +269,7 @@ const rawStyles: DesignStyle[] = [
   // New styles - from style-optimization
   scandinavian,
   celShading,
+  cinematicVideoHero,
   wabiSabi,
   zenGarden,
   // New styles - Batch 9 (Competitive analysis)
