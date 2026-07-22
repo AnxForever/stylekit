@@ -1,0 +1,54 @@
+<svg viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg">
+  <!-- Dark feature stage -->
+  <rect width="1200" height="630" fill="#0E1116" />
+
+  <!-- Sticky canvas panel (left) -->
+  <g transform="translate(60,90)">
+    <rect x="0" y="0" width="600" height="450" rx="10" fill="#141A22" stroke="#FFFFFF" stroke-opacity="0.1" />
+    <!-- baseline -->
+    <line x1="40" y1="380" x2="560" y2="380" stroke="#F7F5F0" stroke-opacity="0.15" />
+    <!-- falling line (now muted paper) -->
+    <polyline points="40,90 114,150 188,130 262,220 336,260 410,320 484,350 560,370" fill="none" stroke="#F7F5F0" stroke-opacity="0.5" stroke-width="3.5" />
+    <!-- rising signal line -->
+    <polyline points="40,340 114,300 188,270 262,210 336,180 410,130 484,90 560,60" fill="none" stroke="#2F6FED" stroke-width="3.5" />
+    <!-- crossover marker -->
+    <line x1="262" y1="40" x2="262" y2="380" stroke="#E8503A" stroke-width="1.5" stroke-dasharray="5 5" stroke-opacity="0.7" />
+    <circle cx="262" cy="215" r="9" fill="#E8503A" />
+    <text x="278" y="56" fill="#E8503A" font-size="15" font-family="ui-monospace, monospace">crossover</text>
+    <!-- end dots -->
+    <circle cx="560" cy="370" r="7" fill="#F7F5F0" />
+    <circle cx="560" cy="60" r="7" fill="#2F6FED" />
+    <!-- year axis -->
+    <g fill="#F7F5F0" fill-opacity="0.4" font-size="13" font-family="ui-monospace, monospace" text-anchor="middle">
+      <text x="40" y="410">'17</text><text x="188" y="410">'19</text><text x="336" y="410">'21</text><text x="484" y="410">'23</text>
+    </g>
+  </g>
+
+  <!-- Step narration (right) -->
+  <g transform="translate(720,120)">
+    <text x="0" y="0" font-family="ui-monospace, monospace" font-size="16" fill="#2F6FED" letter-spacing="3">STEP 03 / 05</text>
+    <!-- rail -->
+    <rect x="-24" y="20" width="3" height="230" fill="#2F6FED" />
+    <circle cx="-22.5" cy="44" r="8" fill="#2F6FED" />
+    <text x="0" y="70" font-family="Archivo, ui-sans-serif, sans-serif" font-size="46" font-weight="800" fill="#F7F5F0" letter-spacing="-1">They cross</text>
+    <text x="0" y="120" font-family="Archivo, ui-sans-serif, sans-serif" font-size="19" fill="#F7F5F0" opacity="0.7">Around 2020 the lines meet and swap</text>
+    <text x="0" y="148" font-family="Archivo, ui-sans-serif, sans-serif" font-size="19" fill="#F7F5F0" opacity="0.7">order &#8212; the crossover is the story.</text>
+
+    <!-- count-up figure -->
+    <text x="0" y="240" font-family="Archivo, ui-sans-serif, sans-serif" font-size="72" font-weight="800" fill="#E8503A">1,240</text>
+    <text x="200" y="240" font-family="Archivo, ui-sans-serif, sans-serif" font-size="24" fill="#F7F5F0" opacity="0.5">cross the line</text>
+
+    <!-- progress dots -->
+    <g transform="translate(0,290)">
+      <rect x="0" y="0" width="60" height="5" rx="2.5" fill="#FFFFFF" opacity="0.15" />
+      <rect x="72" y="0" width="60" height="5" rx="2.5" fill="#FFFFFF" opacity="0.15" />
+      <rect x="144" y="0" width="60" height="5" rx="2.5" fill="#2F6FED" />
+      <rect x="216" y="0" width="60" height="5" rx="2.5" fill="#FFFFFF" opacity="0.15" />
+      <rect x="288" y="0" width="60" height="5" rx="2.5" fill="#FFFFFF" opacity="0.15" />
+    </g>
+  </g>
+
+  <!-- top progress rule -->
+  <rect x="0" y="0" width="1200" height="4" fill="#FFFFFF" opacity="0.08" />
+  <rect x="0" y="0" width="620" height="4" fill="#2F6FED" />
+</svg>

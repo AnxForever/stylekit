@@ -98,6 +98,7 @@ import { warmDashboardTokens } from "./warm-dashboard-tokens";
 import { neonGradientTokens } from "./neon-gradient-tokens";
 import { liquidGlassTokens } from "./liquid-glass-tokens";
 import { sciFiHudTokens } from "./sci-fi-hud-tokens";
+import { scrollytellingTokens } from "./scrollytelling-tokens";
 import { kawaiiMinimalTokens } from "./kawaii-minimal-tokens";
 import { kineticTypographyTokens } from "./kinetic-typography-tokens";
 import { filmNoirTokens } from "./film-noir-tokens";
@@ -252,6 +253,7 @@ export const styleTokensRegistry: Record<string, StyleTokens> = {
   "neon-gradient": neonGradientTokens,
   "liquid-glass": liquidGlassTokens,
   "sci-fi-hud": sciFiHudTokens,
+  "scrollytelling": scrollytellingTokens,
   "kawaii-minimal": kawaiiMinimalTokens,
   "kinetic-typography": kineticTypographyTokens,
   "film-noir": filmNoirTokens,

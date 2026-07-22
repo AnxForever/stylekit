@@ -1406,6 +1406,25 @@ export const stylesMeta: StyleMeta[] = [
     keywords: ["科幻", "HUD", "全息", "雷达", "指挥中心", "太空", "发光边框", "数据流"],
   },
   {
+    slug: "scrollytelling",
+    name: "滚动叙事",
+    nameEn: "Scrollytelling",
+    description:
+      "滚动就是叙事进度条。sticky 画布钉在视口，文字步骤划过时触发画布状态切换——数字跳动、图形变形、图层点亮，信息随阅读进度一帧帧揭示，像数据长报道。",
+    descriptionEn:
+      "Scrolling is the narrative timeline. A sticky canvas pins to the viewport while text steps trigger discrete state changes — numbers count, shapes morph, layers light up, revealing the story frame by frame like a data feature.",
+    cover: "/styles/scrollytelling.svg",
+    styleType: "layout",
+    tags: ["dark-theme"],
+    category: "expressive",
+    colors: {
+      primary: "#0E1116",
+      secondary: "#F7F5F0",
+      accent: ["#2F6FED", "#E8503A", "#1C2530"],
+    },
+    keywords: ["滚动叙事", "数据故事", "步进", "揭示", "长报道", "sticky"],
+  },
+  {
     slug: "kawaii-minimal",
     name: "可爱极简",
     nameEn: "Kawaii Minimal",

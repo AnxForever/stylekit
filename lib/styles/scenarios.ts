@@ -86,6 +86,7 @@ const SCENARIO_ASSIGNMENTS: Record<string, StyleScenario[]> = {
   "linear-style": ["saas", "blog", "docs"],
   "github-style": ["saas", "portfolio", "docs"],
   "sci-fi-hud": ["dashboard", "creative", "marketing"],
+  "scrollytelling": ["editorial", "marketing", "creative"],
   particle: ["creative", "marketing", "saas"],
   "parallax-editorial": ["editorial", "portfolio", "marketing"],
   "neon-gradient": ["marketing", "saas", "creative"],
