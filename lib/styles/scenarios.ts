@@ -87,6 +87,7 @@ const SCENARIO_ASSIGNMENTS: Record<string, StyleScenario[]> = {
   "github-style": ["saas", "portfolio", "docs"],
   "sci-fi-hud": ["dashboard", "creative", "marketing"],
   particle: ["creative", "marketing", "saas"],
+  "parallax-editorial": ["editorial", "portfolio", "marketing"],
   "neon-gradient": ["marketing", "saas", "creative"],
   solarpunk: ["marketing", "creative", "saas"],
   "neon-tokyo": ["creative", "marketing"],

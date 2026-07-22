@@ -91,6 +91,7 @@ import { neonGradientRecipes } from "./neon-gradient";
 import { liquidGlassRecipes } from "./liquid-glass";
 // New styles - Batch 9
 import { particleRecipes } from "./particle";
+import { parallaxEditorialRecipes } from "./parallax-editorial";
 // New styles - Batch 10
 import { terracottaRecipes } from "./terracotta";
 import { brutalistWebRecipes } from "./brutalist-web";
@@ -240,6 +241,7 @@ const recipeRegistry: Record<string, StyleRecipes> = {
   "liquid-glass": liquidGlassRecipes,
   // New styles - Batch 9
   particle: particleRecipes,
+  "parallax-editorial": parallaxEditorialRecipes,
   // New styles - Batch 10
   "terracotta": terracottaRecipes,
   "brutalist-web": brutalistWebRecipes,

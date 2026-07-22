@@ -92,6 +92,7 @@ import { jrpgTokens } from "./jrpg-tokens";
 import { asymmetricGridTokens } from "./asymmetric-grid-tokens";
 import { parallaxSectionsTokens } from "./parallax-sections-tokens";
 import { particleTokens } from "./particle-tokens";
+import { parallaxEditorialTokens } from "./parallax-editorial-tokens";
 // Batch 7-11 style tokens
 import { warmDashboardTokens } from "./warm-dashboard-tokens";
 import { neonGradientTokens } from "./neon-gradient-tokens";
@@ -245,6 +246,7 @@ export const styleTokensRegistry: Record<string, StyleTokens> = {
   "parallax-sections": parallaxSectionsTokens,
   // Particle System
   "particle": particleTokens,
+  "parallax-editorial": parallaxEditorialTokens,
   // Batch 7-11
   "warm-dashboard": warmDashboardTokens,
   "neon-gradient": neonGradientTokens,
