@@ -1054,6 +1054,25 @@ export const stylesMeta: StyleMeta[] = [
     keywords: ["油画", "印象派", "笔触", "光影", "莫奈", "色彩", "画布"],
   },
   {
+    slug: "immersive-photo",
+    name: "沉浸摄影",
+    nameEn: "Immersive Photo",
+    description:
+      "摄影即界面。全幅大图铺满视口，文字压在可读性遮罩上浮起；缓慢的 Ken Burns 推拉让静照呼吸，模糊占位先行、真图渐显。图是内容不是背景。",
+    descriptionEn:
+      "Photography is the interface. Full-bleed images fill the viewport with text over readability scrims; a slow Ken Burns drift lets stills breathe, a blur-up placeholder loads first and the real frame fades in.",
+    cover: "/styles/immersive-photo.svg",
+    styleType: "visual",
+    tags: ["dark-theme"],
+    category: "expressive",
+    colors: {
+      primary: "#0C0D10",
+      secondary: "#F4F1EA",
+      accent: ["#E8B04B", "#1A1C22", "#B8BCC4"],
+    },
+    keywords: ["沉浸", "摄影", "全幅", "大图", "遮罩", "Ken Burns"],
+  },
+  {
     slug: "collage-art",
     name: "拼贴艺术风",
     nameEn: "Collage Art",
