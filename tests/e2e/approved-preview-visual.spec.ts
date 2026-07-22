@@ -23,7 +23,7 @@ test.describe("approved preview visual baseline", () => {
     reducedMotion: "reduce",
   });
 
-  test("keeps all 139 approved cover previews pixel-stable", async ({ page }) => {
+  test("keeps all 140 approved cover previews pixel-stable", async ({ page }) => {
     test.setTimeout(10 * 60 * 1000);
     await page.goto("/styles?visual-baseline=1", { waitUntil: "networkidle" });
     await stabilizeCatalogChrome(page);

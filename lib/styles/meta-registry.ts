@@ -1086,6 +1086,25 @@ export const stylesMeta: StyleMeta[] = [
     keywords: ["拼贴", "剪贴", "混合材质", "多层", "杂志", "撕纸", "混搭"],
   },
   {
+    slug: "cinematic-video-hero",
+    name: "电影视频首屏",
+    nameEn: "Cinematic Video Hero",
+    description:
+      "以短循环视频开场的电影级首屏。海报帧先出作 LCP，视频进视口才静音自动播、无缝循环；文字压可读性遮罩，暗场调色营造预告片般的沉浸开场。",
+    descriptionEn:
+      "A cinematic opener led by a short looping video. A poster frame paints first as the LCP; the muted video autoplays and loops only in view; dark grading builds a trailer-like immersive entrance.",
+    cover: "/styles/cinematic-video-hero.svg",
+    styleType: "visual",
+    tags: ["dark-theme"],
+    category: "expressive",
+    colors: {
+      primary: "#05060A",
+      secondary: "#F3EFE8",
+      accent: ["#E4C063", "#141821", "#9AA6B8"],
+    },
+    keywords: ["电影感", "视频背景", "首屏", "循环", "海报帧", "预告片"],
+  },
+  {
     slug: "glitch-art",
     name: "故障艺术风",
     nameEn: "Glitch Art",

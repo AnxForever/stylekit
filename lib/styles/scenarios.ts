@@ -199,6 +199,7 @@ const SCENARIO_ASSIGNMENTS: Record<string, StyleScenario[]> = {
   "cyber-wafuu": ["creative"],
   jrpg: ["creative"],
   "cel-shading": ["creative"],
+  "cinematic-video-hero": ["marketing", "creative", "portfolio"],
   "comic-style": ["creative", "marketing", "editorial"],
 
   // --- Hand-made & organic warmth ---

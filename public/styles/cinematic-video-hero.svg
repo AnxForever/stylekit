@@ -1,0 +1,47 @@
+<svg viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="b1" cx="0.22" cy="0.62" r="0.5"><stop offset="0" stop-color="#1E3A5F"/><stop offset="1" stop-color="#05060A" stop-opacity="0"/></radialGradient>
+    <radialGradient id="b2" cx="0.74" cy="0.34" r="0.45"><stop offset="0" stop-color="#7A3B5E"/><stop offset="1" stop-color="#05060A" stop-opacity="0"/></radialGradient>
+    <radialGradient id="b3" cx="0.52" cy="0.8" r="0.4"><stop offset="0" stop-color="#C9743B"/><stop offset="1" stop-color="#05060A" stop-opacity="0"/></radialGradient>
+    <radialGradient id="vig" cx="0.5" cy="0.45" r="0.62"><stop offset="0.35" stop-color="#05060A" stop-opacity="0"/><stop offset="1" stop-color="#05060A" stop-opacity="0.72"/></radialGradient>
+    <linearGradient id="scrim" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#05060A" stop-opacity="0.8"/><stop offset="0.5" stop-color="#05060A" stop-opacity="0.15"/><stop offset="1" stop-color="#05060A" stop-opacity="0.4"/></linearGradient>
+    <filter id="grain"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" stitchTiles="stitch"/><feColorMatrix type="saturate" values="0"/></filter>
+  </defs>
+
+  <!-- aurora-mesh footage -->
+  <rect width="1200" height="630" fill="#05060A"/>
+  <rect width="1200" height="630" fill="url(#b1)"/>
+  <rect width="1200" height="630" fill="url(#b2)"/>
+  <rect width="1200" height="630" fill="url(#b3)"/>
+  <rect width="1200" height="630" fill="url(#vig)"/>
+  <rect width="1200" height="630" filter="url(#grain)" opacity="0.05"/>
+  <rect width="1200" height="630" fill="url(#scrim)"/>
+
+  <!-- letterbox bars -->
+  <rect x="0" y="0" width="1200" height="40" fill="#05060A"/>
+  <rect x="0" y="590" width="1200" height="40" fill="#05060A"/>
+
+  <!-- nav -->
+  <text x="60" y="82" font-family="Archivo, ui-sans-serif, sans-serif" font-size="22" font-weight="600" fill="#FFFFFF">Aurora Studios</text>
+  <text x="1010" y="80" font-family="Archivo, ui-sans-serif, sans-serif" font-size="15" fill="#FFFFFF" opacity="0.75">Reel &#183; Craft</text>
+
+  <!-- center play chip -->
+  <circle cx="600" cy="300" r="46" fill="#FFFFFF" fill-opacity="0.14" stroke="#FFFFFF" stroke-opacity="0.32"/>
+  <path d="M586 278 L586 322 L622 300 Z" fill="#FFFFFF"/>
+
+  <!-- headline block -->
+  <text x="60" y="470" font-family="ui-monospace, monospace" font-size="16" fill="#E4C063" letter-spacing="5">NOW SCREENING</text>
+  <text x="58" y="540" font-family="Archivo, ui-sans-serif, sans-serif" font-size="70" font-weight="700" fill="#FFFFFF" letter-spacing="-1.5">Some stories only move</text>
+
+  <!-- gold CTA + frosted secondary -->
+  <g transform="translate(60,556)">
+    <rect x="0" y="0" width="200" height="24" rx="12" fill="#E4C063"/>
+    <text x="24" y="17" font-family="Archivo, ui-sans-serif, sans-serif" font-size="13" font-weight="600" fill="#05060A">Watch the film &#9654;</text>
+  </g>
+
+  <!-- format badge -->
+  <g transform="translate(1000,540)" font-family="ui-monospace, monospace" font-size="12" fill="#9AA6B8">
+    <text x="0" y="0">webm + poster</text>
+    <text x="0" y="20">preload=none</text>
+  </g>
+</svg>
