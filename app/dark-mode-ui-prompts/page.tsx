@@ -16,28 +16,30 @@ const TOPIC_SLUG = "dark-mode";
 export const revalidate = 86400;
 
 export const metadata: Metadata = {
-  title: "Dark Mode UI Prompts",
+  title: "Dark Mode UI Prompts for ChatGPT, Claude, Cursor & v0",
   description:
-    "Copyable dark mode UI prompts for dashboards, SaaS apps, media interfaces, and dark-first design systems with strong contrast and readable surfaces.",
+    "Copy-paste dark mode UI prompts for ChatGPT, Claude, Cursor, Claude Code, and v0. Ready-made dark dashboard, SaaS, and app prompts with surface elevation, WCAG-AA contrast, and single-accent color systems.",
   keywords: [
     "dark mode UI prompts",
+    "dark mode prompt for ChatGPT",
     "dark theme design prompt",
     "dark mode dashboard prompt",
-    "dark UI design system",
     "dark mode Tailwind prompt",
+    "dark mode prompt for v0",
+    "dark UI design system",
   ],
   openGraph: {
-    title: "Dark Mode UI Prompts | StyleKit",
+    title: "Dark Mode UI Prompts for ChatGPT, Claude, Cursor & v0 | StyleKit",
     description:
-      "Copyable dark mode UI prompts for dashboards, SaaS apps, media interfaces, and dark-first design systems with strong contrast and readable surfaces.",
+      "Copy-paste dark mode UI prompts for ChatGPT, Claude, Cursor, Claude Code, and v0 — dark dashboards, SaaS apps, and design systems with proper surface elevation and readable contrast.",
     siteName: "StyleKit",
     type: "article",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Dark Mode UI Prompts | StyleKit",
+    title: "Dark Mode UI Prompts for ChatGPT, Claude, Cursor & v0 | StyleKit",
     description:
-      "Copyable dark mode UI prompts for dashboards, SaaS apps, media interfaces, and dark-first design systems with strong contrast and readable surfaces.",
+      "Copy-paste dark mode UI prompts for ChatGPT, Claude, Cursor, Claude Code, and v0 — dark dashboards, SaaS apps, and design systems with readable contrast.",
   },
 };
 
