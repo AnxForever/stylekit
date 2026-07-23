@@ -24,10 +24,10 @@ const BANNED_DISCOVERY_PATTERNS = [
 async function main(): Promise<void> {
   const issues: SeoTruthIssue[] = [];
 
-  if (CURATED_STYLE_COUNT !== 135) {
+  if (CURATED_STYLE_COUNT !== 140) {
     issues.push({
       source: "lib/product/catalog-facts.ts",
-      message: `approved catalog baseline is 135 styles, found ${CURATED_STYLE_COUNT}`,
+      message: `approved catalog baseline is 140 styles, found ${CURATED_STYLE_COUNT}`,
     });
   }
 
