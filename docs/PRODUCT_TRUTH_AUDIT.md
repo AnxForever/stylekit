@@ -20,7 +20,7 @@ The initial seven-day funnel and Pack 1 hypothesis are recorded in
 
 | Capability or promise | Status | Evidence | Required action |
 | --- | --- | --- | --- |
-| Existing 135-style catalog and preview cards | working | Catalog integrity and production build pass | Preserve existing visuals; add screenshot baselines before loading refactors |
+| Existing 136-style catalog and preview cards | working | Catalog integrity and production build pass | Preserve existing visuals; add screenshot baselines before loading refactors |
 | Style detail prompts and rules | working | Served from the static style registry | Keep in free Explore; stop treating prompt quantity as the paid product |
 | shadcn style installation | partial | Registry item is `registry:theme` with `files: []` | Describe it as theme installation until packs ship files; build pack registry separately |
 | CLI | internal-only; public copy corrected | Package README says it is not published to npm; public pages now show repository-local build commands | Publish and smoke-test before restoring an `npx` claim |
