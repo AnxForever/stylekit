@@ -36,6 +36,7 @@ test.describe("approved preview visual baseline", () => {
       const cover = item.locator("div.relative.overflow-hidden").first();
 
       await cover.scrollIntoViewIfNeeded();
+      await expect(cover.locator('[data-preview-ready="true"]')).toBeVisible();
       await expect.soft(cover, slug).toHaveScreenshot(`${slug}-cover.png`, {
         animations: "disabled",
         caret: "hide",
@@ -59,6 +60,9 @@ test.describe("approved preview visual baseline", () => {
     const link = item.locator('a[aria-label$="详情"], a[aria-label$="details"]').first();
 
     await item.scrollIntoViewIfNeeded();
+    await expect(
+      item.locator('div.relative.overflow-hidden [data-preview-ready="true"]'),
+    ).toBeVisible();
     await expect(card).toHaveScreenshot("shared-card-default.png", {
       animations: "disabled",
       caret: "hide",

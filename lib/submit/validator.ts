@@ -71,6 +71,7 @@ export const wizardFormSchema = z.object({
   buttonCode: z.string(),
   cardCode: z.string(),
   inputCode: z.string(),
+  previewModule: z.string().optional(),
   navCode: z.string().optional(),
   heroCode: z.string().optional(),
   footerCode: z.string().optional(),

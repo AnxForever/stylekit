@@ -205,6 +205,7 @@ accessibility, and readiness degrade. The storage source leaks across the seam.
 ### Phase 3 — Optimize preview delivery without visual changes
 
 Priority: P1
+Status: complete (2026-07-25)
 
 #### Problem
 
@@ -214,7 +215,7 @@ only one style. The loading boundary is the problem; the existing visual output 
 
 #### Direction
 
-- Preserve the current 136 style preview outputs and their existing JSX behavior.
+- Preserve the current 140 style preview outputs and their existing JSX behavior.
 - Split preview modules by style or by a measured chunking strategy without redesigning them.
 - Load only the preview code required by the current route or visible card set.
 - Keep preview lookup and loading behind a stable interface so callers do not depend on chunking.
@@ -229,6 +230,11 @@ only one style. The loading boundary is the problem; the existing visual output 
 - Bundle size, loading behavior, and screenshot regression results are recorded before and after.
 - A future new-style preview design remains an explicit product/design decision, not an automatic
   generic renderer introduced by this refactor.
+
+Implementation evidence: the production catalog now loads 3 preview chunks (5,197 uncompressed
+bytes) in the fixed desktop initial viewport, instead of the previous 203,922-byte monolithic
+preview chunk. The 140 approved preview outputs pass the desktop/mobile pixel baseline and the
+shared card state baselines.
 
 ### Phase 4 — Remove retired Generator code
 

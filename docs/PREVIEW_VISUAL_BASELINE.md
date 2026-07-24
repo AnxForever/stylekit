@@ -1,6 +1,6 @@
 # Approved Preview Visual Baseline
 
-The 135 existing StyleKit preview designs are approved product assets. Their visual baseline is
+The 140 existing StyleKit preview designs are approved product assets. Their visual baseline is
 compare-only: normal development and CI may compare screenshots, but may not record or update them.
 
 ## Coverage
@@ -39,3 +39,11 @@ Changing an approved screenshot requires all of the following:
 5. source-hash baseline updates only for the approved files.
 
 Product, architecture, performance, dependency, or refactor approval does not imply visual approval.
+
+## Preview delivery measurement
+
+The production build keeps the approved preview implementations intact while moving them behind
+per-style lazy boundaries. At the fixed desktop catalog viewport, the initial page load fetched 3
+preview chunks totaling 5,197 uncompressed bytes; the build contains 140 per-style preview chunks
+between 690 and 4,061 bytes. The previous single preview chunk was 203,922 bytes uncompressed.
+These measurements are implementation evidence only; the screenshot files remain compare-only.

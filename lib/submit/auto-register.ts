@@ -38,7 +38,8 @@ const REGISTRY_PATHS = {
   meta: "lib/styles/meta-registry.ts",
   tokens: "lib/styles/tokens-registry-data.ts",
   recipes: "lib/recipes/registry.ts",
-  previews: "lib/style-components.tsx",
+  previewRegistry: "lib/style-preview/registry.ts",
+  previewDelivery: "lib/style-preview/delivery.ts",
 } as const;
 
 const SLUG_RE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
@@ -125,6 +126,7 @@ function buildScaffoldInput(submission: SubmissionRecord): StyleScaffoldInput {
   const buttonCode = String(fd.buttonCode ?? "");
   const cardCode = String(fd.cardCode ?? "");
   const inputCode = String(fd.inputCode ?? "");
+  const previewModule = typeof fd.previewModule === "string" ? fd.previewModule : undefined;
 
   return {
     name,
@@ -144,6 +146,7 @@ function buildScaffoldInput(submission: SubmissionRecord): StyleScaffoldInput {
     buttonCode,
     cardCode,
     inputCode,
+    previewModule,
   };
 }
 
@@ -158,6 +161,7 @@ async function preparePublicationWrites(
   }
   input.slug = slug;
   validateColors(input);
+  validatePreviewModule(input.previewModule, slug);
 
   const generatedWrites = generateStyleScaffoldFiles(input)
     .filter((file) => file.name !== "scaffold/REGISTER.md")
@@ -183,6 +187,7 @@ async function preparePublicationWrites(
   const exportName = slugToExportName(slug);
   const tokensExportName = `${exportName}Tokens`;
   const recipesExportName = `${exportName}Recipes`;
+  const previewExportName = `${exportName}Preview`;
 
   const registryWrites: PreparedWrite[] = [
     {
@@ -218,10 +223,23 @@ async function preparePublicationWrites(
       previousContent: requiredContent(byPath, REGISTRY_PATHS.recipes),
     },
     {
-      relativePath: REGISTRY_PATHS.previews,
-      content: patchPreviewRegistry(requiredContent(byPath, REGISTRY_PATHS.previews), input),
+      relativePath: REGISTRY_PATHS.previewRegistry,
+      content: patchPreviewEagerRegistry(
+        requiredContent(byPath, REGISTRY_PATHS.previewRegistry),
+        slug,
+        previewExportName,
+      ),
       kind: "registry",
-      previousContent: requiredContent(byPath, REGISTRY_PATHS.previews),
+      previousContent: requiredContent(byPath, REGISTRY_PATHS.previewRegistry),
+    },
+    {
+      relativePath: REGISTRY_PATHS.previewDelivery,
+      content: patchPreviewDeliveryRegistry(
+        requiredContent(byPath, REGISTRY_PATHS.previewDelivery),
+        slug,
+      ),
+      kind: "registry",
+      previousContent: requiredContent(byPath, REGISTRY_PATHS.previewDelivery),
     },
   ];
 
@@ -239,6 +257,20 @@ function validateColors(input: StyleScaffoldInput): void {
     if (!HEX_COLOR_RE.test(color.trim())) {
       throw new Error(`Invalid ${label} color: ${color}`);
     }
+  }
+}
+
+function validatePreviewModule(source: string | undefined, slug: string): void {
+  const previewModule = source?.trim() ?? "";
+  if (!previewModule) {
+    throw new Error(
+      `Approved preview module required for ${slug}; publication will not invent a fallback renderer.`,
+    );
+  }
+  if (previewModule.includes(`TODO(${slug})`) || !previewModule.includes("coverPreview")) {
+    throw new Error(
+      `Approved preview module required for ${slug}; replace the scaffold TODO with an approved coverPreview.`,
+    );
   }
 }
 
@@ -373,34 +405,41 @@ function patchRecipesRegistry(
   );
 }
 
-function patchPreviewRegistry(content: string, input: StyleScaffoldInput): string {
-  const label = REGISTRY_PATHS.previews;
-  assertSlugAbsent(content, input.slug, label);
-  const primary = input.primaryColor.trim();
-  const secondary = input.secondaryColor.trim();
-  const accent = input.accentColors[0]?.trim() || primary;
-  const displayName = input.nameEn.trim() || input.name.trim() || input.slug;
-  const entry = [
-    "",
-    `  "${input.slug}": {`,
-    "    coverPreview: () => (",
-    `      <div className="w-full h-full flex items-center justify-center p-4" style={{ backgroundColor: "${secondary}" }}>`,
-    `        <div className="w-full max-w-[200px] rounded-lg p-4" style={{ border: "1px solid ${primary}30" }}>`,
-    `          <div className="text-sm font-medium mb-2" style={{ color: "${primary}" }}>{${JSON.stringify(displayName)}}</div>`,
-    `          <div className="h-px mb-3" style={{ backgroundColor: "${primary}20" }} />`,
-    `          <p className="text-xs mb-3" style={{ color: "${accent}" }}>{${JSON.stringify(input.slug)}}</p>`,
-    `          <button className="text-xs px-3 py-1 rounded" style={{ backgroundColor: "${primary}", color: "${secondary}" }}>View</button>`,
-    "        </div>",
-    "      </div>",
-    "    ),",
-    "  },",
-  ].join("\n");
-  return insertBefore(
+function patchPreviewEagerRegistry(
+  content: string,
+  slug: string,
+  previewExportName: string,
+): string {
+  const label = REGISTRY_PATHS.previewRegistry;
+  assertSlugAbsent(content, slug, label);
+  const withImport = insertBefore(
     content,
-    "\n};\nexport function renderStyleComponent",
-    entry,
+    "\n// End style preview imports",
+    `import ${previewExportName} from "./styles/${slug}";\n`,
     label,
-    true,
+  );
+  return insertBefore(
+    withImport,
+    "\n  // End style preview entries",
+    `  "${slug}": ${previewExportName},\n`,
+    label,
+  );
+}
+
+function patchPreviewDeliveryRegistry(content: string, slug: string): string {
+  const label = REGISTRY_PATHS.previewDelivery;
+  assertSlugAbsent(content, slug, label);
+  const withLoader = insertBefore(
+    content,
+    "\n  // End style preview loaders",
+    `  "${slug}": () => import("./styles/${slug}").then((module) => module.default),\n`,
+    label,
+  );
+  return insertBefore(
+    withLoader,
+    "\n  // End style preview slugs",
+    `  "${slug}",\n`,
+    label,
   );
 }
 
