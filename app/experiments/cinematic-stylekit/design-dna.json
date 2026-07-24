@@ -1,0 +1,155 @@
+{
+  "meta": {
+    "name": "StyleKit Curatorial Frame",
+    "description": "The existing StyleKit brand DNA extracted from the homepage, style catalog, brand lockup, and implementation tokens.",
+    "source_references": [
+      "public/launch/overseas/home-en.png",
+      "public/launch/overseas/styles-en.png",
+      "public/brand/stylekit-logo-presentation-v2.png",
+      "components/home/home-content.tsx",
+      "components/home/home-style-card.tsx",
+      "app/globals.css"
+    ],
+    "created_at": "2026-07-22"
+  },
+  "design_system": {
+    "color": {
+      "palette_type": "complementary neutral-plus-signal",
+      "primary": { "hex": "#11100E", "role": "ink, typography, primary actions, framing" },
+      "secondary": { "hex": "#F4F0E7", "role": "paper, editorial canvas, reverse typography" },
+      "accent": { "hex": "#C8FF00", "role": "index signal and selected style emphasis" },
+      "neutral": {
+        "scale": ["#11100E", "#33312D", "#66635D", "#9A968E", "#D8D4CB", "#F4F0E7", "#FAFAFA"],
+        "usage": "Monochrome structure stays quiet so each curated style can introduce its own palette."
+      },
+      "semantic": { "success": "#178A4A", "warning": "#C57923", "error": "#E63946", "info": "#2563EB" },
+      "surface": { "background": "#FAFAFA", "card": "#FFFFFF", "elevated": "#F4F0E7" },
+      "contrast_strategy": "Dark-on-paper dominant with black reverse bands and one fluorescent index accent."
+    },
+    "typography": {
+      "type_scale": {
+        "display": { "size": "clamp(3.5rem, 7vw, 7rem)", "weight": "500", "line_height": "0.96", "tracking": "-0.02em" },
+        "heading_1": { "size": "clamp(2.75rem, 5vw, 5rem)", "weight": "500", "line_height": "1", "tracking": "-0.02em" },
+        "heading_2": { "size": "clamp(2rem, 3.5vw, 3.5rem)", "weight": "500", "line_height": "1.05", "tracking": "-0.02em" },
+        "heading_3": { "size": "1.25rem", "weight": "500", "line_height": "1.3", "tracking": "-0.01em" },
+        "body": { "size": "1rem", "weight": "400", "line_height": "1.7", "tracking": "0" },
+        "body_small": { "size": "0.875rem", "weight": "400", "line_height": "1.65", "tracking": "0" },
+        "caption": { "size": "0.6875rem", "weight": "400", "line_height": "1.5", "tracking": "0.08em" },
+        "overline": { "size": "0.6875rem", "weight": "400", "line_height": "1.5", "tracking": "0.2em" }
+      },
+      "font_families": {
+        "heading": "Playfair Display, Noto Serif SC, Songti SC, serif",
+        "body": "Albert Sans, PingFang SC, Microsoft YaHei, sans-serif",
+        "mono": "Fragment Mono, SFMono-Regular, Consolas, monospace"
+      },
+      "font_style_notes": "Editorial serif establishes curation and taste; neutral sans supports product scanning; mono labels index the archive."
+    },
+    "spacing": {
+      "base_unit": "4px",
+      "scale": ["4px", "8px", "12px", "16px", "24px", "32px", "48px", "64px", "96px", "128px"],
+      "content_density": "comfortable",
+      "section_rhythm": "Large editorial hero, compact index rails, then systematic catalog grids."
+    },
+    "layout": {
+      "grid_system": "Editorial 12-column grid with visible registration lines",
+      "max_content_width": "1184px",
+      "columns": "12 desktop, 6 tablet, 1-2 mobile",
+      "gutter": "16-24px",
+      "breakpoints": ["640px", "768px", "1024px", "1280px"],
+      "alignment_tendency": "mixed asymmetric hero with strict catalog grid"
+    },
+    "shape": {
+      "border_radius": { "small": "0", "medium": "0", "large": "0", "pill": "999px" },
+      "border_usage": "subtle 1px",
+      "divider_style": "fine neutral registration rules"
+    },
+    "elevation": {
+      "shadow_style": "hard editorial offset used sparingly",
+      "levels": { "low": "0 1px 2px rgba(17,16,14,.06)", "medium": "10px 10px 0 rgba(17,16,14,.07)", "high": "14px 14px 0 rgba(17,16,14,.09)" },
+      "depth_cues": "Borders, offset frames, overlapping specimen sheets, and preview color contrast."
+    },
+    "iconography": { "style": "minimal outline", "stroke_weight": "1.5-2px", "size_scale": ["16px", "20px", "24px"], "preferred_set": "Lucide plus custom SK monogram" },
+    "motion": {
+      "easing": "cubic-bezier(0.22, 1, 0.36, 1)",
+      "duration_scale": { "micro": "150ms", "normal": "300ms", "macro": "700ms" },
+      "entrance_pattern": "Subtle fade/translate and specimen-sheet reveal",
+      "exit_pattern": "Quick fade or direct state switch",
+      "philosophy": "minimal functional"
+    },
+    "components": {
+      "button_style": "Square black primary, outlined secondary, compact mono utility actions",
+      "input_style": "Square 1px border with visible focus ring",
+      "card_style": "Square specimen frame with live style preview, palette strip, and indexed metadata",
+      "navigation_pattern": "Centered editorial masthead with restrained utility controls",
+      "modal_style": "Paper surface with strong border and high-contrast controls",
+      "list_style": "Catalog grid and indexed horizontal scenario rail",
+      "component_notes": "The shell behaves like an archive or gallery system; the preview area is allowed to inherit the curated style."
+    }
+  },
+  "design_style": {
+    "aesthetic": {
+      "mood": ["curated", "clear", "editorial", "confident", "open"],
+      "visual_metaphor": "A curatorial frame and living visual style archive",
+      "era_influence": "Contemporary editorial publishing and Swiss catalog systems",
+      "genre": "editorial design-tool catalog",
+      "personality_traits": ["knowledgeable", "selective", "practical", "welcoming"],
+      "adjectives": ["monochrome", "indexed", "modular", "typographic", "pluralistic"]
+    },
+    "visual_language": {
+      "complexity": "moderate",
+      "ornamentation": "subtle accents",
+      "whitespace_usage": "Generous paper margins separate product explanation from dense style previews.",
+      "visual_weight_distribution": "Large serif promise balanced by a colorful live preview specimen.",
+      "focal_strategy": "distributed interest through curated style specimens",
+      "contrast_level": "high",
+      "texture_usage": "Subtle paper/grid texture; no cinematic material rendering in the product shell."
+    },
+    "composition": {
+      "hierarchy_method": "typographic hierarchy and framed live previews",
+      "balance_type": "asymmetric hero, symmetric catalog rhythm",
+      "flow_direction": "Promise to proof to searchable archive",
+      "grouping_strategy": "Overlines and numbered rails label each content family.",
+      "negative_space_role": "Keeps the curatorial frame neutral so individual styles remain legible."
+    },
+    "imagery": {
+      "photo_treatment": "Product screenshots and real UI previews are primary; generated imagery must be visibly assigned to a specific style example.",
+      "illustration_style": "Varies by curated style and never defines the global shell.",
+      "graphic_elements": "Grid lines, SK aperture, palette strips, numbered labels, and specimen frames",
+      "pattern_usage": "Low-contrast editorial grid",
+      "image_shape": "Square-cornered 16:10 or 4:3 specimen frames"
+    },
+    "interaction_feel": {
+      "feedback_style": "Direct border, inverse-color, and small positional feedback",
+      "hover_behavior": "Card lift by 2px, stronger border, preview scale around 1.02",
+      "transition_personality": "snappy",
+      "loading_style": "Skeleton or static specimen frame that preserves layout",
+      "microinteraction_density": "low to medium"
+    },
+    "brand_voice_in_ui": {
+      "tone": "curatorial, useful, and specific",
+      "formality": "professional but approachable",
+      "cta_style": "direct imperative",
+      "empty_state_approach": "Offer a next filter, style, or prompt to explore.",
+      "error_tone": "Plain-language explanation with a concrete recovery action."
+    }
+  },
+  "visual_effects": {
+    "overview": { "effect_intensity": "subtle-accent", "performance_tier": "lightweight", "fallback_strategy": "Static CSS layout with all previews and content visible", "primary_technology": "CSS and React" },
+    "background_effects": { "type": "none", "description": "Static editorial grid only", "technology": "CSS", "params": { "color_palette": ["#FAFAFA", "#E5E5E5"], "speed": "0", "density": "48px grid", "opacity": "0.04", "blend_mode": "normal" } },
+    "particle_systems": { "enabled": false, "type": "custom", "description": "No particles", "technology": "none", "params": { "count": 0, "shape": "none", "size_range": "0", "movement_pattern": "none", "color_behavior": "none", "interaction": "none", "spawn_area": "none" } },
+    "3d_elements": { "enabled": false, "type": "abstract-geometry", "description": "No global 3D scene", "technology": "none", "params": { "renderer": "none", "lighting": "none", "camera": "none", "materials": [], "geometry": "none", "post_processing": [], "interaction_model": "none" } },
+    "shader_effects": { "enabled": false, "type": "custom-GLSL", "description": "No shaders", "technology": "none", "params": { "uniforms": {}, "vertex_manipulation": "none", "fragment_output": "none", "noise_type": "none", "distortion": "none" } },
+    "scroll_effects": {
+      "parallax": { "enabled": false, "layers": "0", "depth_range": "0", "speed_curve": "none" },
+      "scroll_triggered_animations": { "enabled": true, "trigger_points": ["80% viewport"], "animation_type": "subtle fade-up and specimen reveal", "scrub_behavior": "triggered once" },
+      "scroll_morphing": { "enabled": false, "description": "Style changes occur inside framed previews, not across the global shell." }
+    },
+    "text_effects": { "type": "none", "description": "Typography remains stable and readable", "technology": "CSS", "params": { "split_strategy": "none", "animation_per_unit": "none", "stagger": "0", "effect_style": "none" } },
+    "cursor_effects": { "enabled": false, "type": "none", "description": "Native cursor", "params": { "shape": "native", "size": "native", "blend_mode": "normal", "trail": "none", "interaction_zone": "none" } },
+    "image_effects": { "type": "none", "description": "Preview scale is the only image treatment", "technology": "CSS", "params": { "filter_pipeline": "none", "hover_transform": "scale(1.02)", "reveal_animation": "subtle opacity", "distortion_type": "none" } },
+    "glassmorphism_neumorphism": { "enabled": false, "style": "none", "params": { "blur_radius": "0", "transparency": "0", "border_treatment": "none globally", "shadow_type": "none", "light_source_angle": "none" } },
+    "canvas_drawings": { "enabled": false, "type": "none", "description": "No canvas", "technology": "none", "params": { "draw_method": "none", "animation_loop": "none", "color_scheme": "none", "responsiveness": "not applicable", "interaction": "none" } },
+    "svg_animations": { "enabled": false, "type": "none", "description": "SK monogram and utility icons stay static", "params": { "animation_method": "none", "path_morphing": "none", "stroke_animation": "none", "filter_effects": "none" } },
+    "composite_notes": "The StyleKit shell should hold rather than compete. Color, illustration, photographic treatment, glass, brutalism, and other effects belong inside the curated preview frames. The global experience stays fast, paper-like, typographic, and product-evidential."
+  }
+}

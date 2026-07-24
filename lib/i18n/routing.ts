@@ -9,6 +9,7 @@ const FILE_EXTENSION_RE = /\.[^/]+$/;
 const NON_LOCALIZED_PREFIXES = [
   "/api",
   "/admin",
+  "/experiments",
   "/validation",
   "/workspace",
   "/_next",

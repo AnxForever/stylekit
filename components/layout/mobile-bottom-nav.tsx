@@ -33,6 +33,7 @@ export function MobileBottomNav() {
 
   if (
     visiblePath.startsWith("/admin") ||
+    visiblePath.startsWith("/experiments") ||
     visiblePath.startsWith("/validation/") ||
     visiblePath.startsWith("/workspace")
   ) {
