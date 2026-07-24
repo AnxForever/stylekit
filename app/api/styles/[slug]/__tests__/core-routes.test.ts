@@ -12,6 +12,14 @@ vi.mock("@/lib/styles/community-runtime", async (importOriginal) => {
   };
 });
 
+vi.mock("@/lib/style-delivery", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("@/lib/style-delivery")>();
+  return {
+    ...actual,
+    resolveStyleDelivery: vi.fn(actual.resolveStyleDelivery),
+  };
+});
+
 import { GET as getStyleDetail } from "@/app/api/styles/[slug]/route";
 import { GET as getStyleTokens } from "@/app/api/styles/[slug]/tokens/route";
 import { GET as getStyleRecipes } from "@/app/api/styles/[slug]/recipes/route";
@@ -21,10 +29,12 @@ import { GET as getCursorRules } from "@/app/api/styles/[slug]/cursorrules/route
 import { GET as getSkillPack } from "@/app/api/styles/[slug]/skill-pack/route";
 import { GET as getVersions } from "@/app/api/styles/[slug]/versions/route";
 import { resolveStyleBySlug } from "@/lib/styles/community-runtime";
+import { resolveStyleDelivery } from "@/lib/style-delivery";
 import type { DesignStyle } from "@/lib/styles";
 
 const params = (slug: string) => Promise.resolve({ slug });
 const mockedResolveStyleBySlug = vi.mocked(resolveStyleBySlug);
+const mockedResolveStyleDelivery = vi.mocked(resolveStyleDelivery);
 
 describe("styles [slug] core routes", () => {
   it("style detail returns 404 for missing slug", async () => {
@@ -158,6 +168,7 @@ describe("styles [slug] core routes", () => {
     expect(body.recipes.button).toBeTruthy();
     expect(body.recipes.button.variants.default).toBeTruthy();
     expect(body.recipes.button.skeleton.structure).toContain("Aurora");
+    expect(mockedResolveStyleDelivery).toHaveBeenCalledWith("aurora-community");
   });
 
   it("markdown route returns markdown content", async () => {

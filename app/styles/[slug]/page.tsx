@@ -3,11 +3,9 @@ import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { Breadcrumb } from "@/components/ui/breadcrumb";
 import { DisableAutoScroll } from "@/components/style-preview/disable-auto-scroll";
-import { getFrontendReadiness, getStyleBySlug, styles } from "@/lib/styles";
+import { getStyleBySlug, styles } from "@/lib/styles";
 import { generateEnhancedAIRules } from "@/lib/styles/enhanced-rules";
-import { resolveStyleBySlug } from "@/lib/styles/community-runtime";
-import { scoreStyle } from "@/lib/accessibility";
-import { getCurrentVersion, getChangelog } from "@/lib/versioning";
+import { resolveStyleDelivery } from "@/lib/style-delivery";
 import { serializeJsonLd } from "@/lib/security/json-ld";
 import { generateStyleJsonLd, generateBreadcrumbJsonLd } from "@/lib/seo/json-ld";
 import { getSiteBaseUrl } from "@/lib/site-url";
@@ -47,11 +45,11 @@ export async function generateMetadata({
   locale?: Locale;
 }) {
   const { slug } = await params;
-  const resolved = await resolveStyleBySlug(slug);
-  if (!resolved) {
+  const delivery = await resolveStyleDelivery(slug);
+  if (!delivery) {
     return { title: "Style Not Found" };
   }
-  const style = resolved.style;
+  const style = delivery.style;
 
   const BASE_URL = getSiteBaseUrl();
   const primaryStyleName = locale === "zh" ? style.name : style.nameEn || style.name;
@@ -102,12 +100,12 @@ export default async function StyleDetailPage({
   locale?: Locale;
 }) {
   const { slug } = await params;
-  const resolved = await resolveStyleBySlug(slug);
+  const delivery = await resolveStyleDelivery(slug);
 
-  if (!resolved) {
+  if (!delivery) {
     notFound();
   }
-  const { style } = resolved;
+  const { style, capabilities } = delivery;
 
   // Pre-compute compatible styles for layout patterns
   const compatibleStyles =
@@ -127,24 +125,18 @@ export default async function StyleDetailPage({
       : [];
 
   // Pre-compute enhanced rules
-  const enhancedRules = resolved.tokens
+  const enhancedRules = capabilities.tokens
     ? generateEnhancedAIRules({
         style,
-        tokens: resolved.tokens,
+        tokens: capabilities.tokens,
         format: "full",
       })
     : null;
 
-  // Pre-compute accessibility score
-  const accessibilityScore =
-    resolved.source === "static" ? scoreStyle(slug) : null;
-
-  // Pre-compute version info
-  const version =
-    resolved.source === "static" ? getCurrentVersion(slug) : undefined;
-  const changelog =
-    resolved.source === "static" ? getChangelog(slug) : [];
-  const readiness = getFrontendReadiness(style);
+  const accessibilityScore = capabilities.accessibility;
+  const version = capabilities.versioning?.current;
+  const changelog = capabilities.versioning?.versions ?? [];
+  const readiness = capabilities.readiness;
   const BASE_URL = getSiteBaseUrl();
 
   // Pre-compute localized content for server-side rendering (SEO)
@@ -195,7 +187,7 @@ export default async function StyleDetailPage({
         <main className="flex-1">
           <StyleDetailContent
             style={style}
-            styleSource={resolved.source}
+            hasIdeExports={capabilities.exports.ideConfigs}
             compatibleStyles={compatibleStyles}
             compatibleLayouts={compatibleLayouts}
             enhancedRules={enhancedRules}

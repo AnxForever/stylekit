@@ -1,6 +1,4 @@
-import { getStyleTokens } from "@/lib/styles/tokens-registry";
-import { getStyleRecipes } from "@/lib/recipes";
-import { resolveStyleBySlug } from "@/lib/styles/community-runtime";
+import { resolveStyleDelivery } from "@/lib/style-delivery";
 import { localizedList, localizedString } from "@/lib/styles/locale-content";
 
 /**
@@ -15,8 +13,8 @@ export async function GET(
 ) {
   const { slug } = await params;
   const locale = new URL(request.url).searchParams.get("locale") === "zh" ? "zh" : "en";
-  const resolved = await resolveStyleBySlug(slug);
-  const style = resolved?.style;
+  const delivery = await resolveStyleDelivery(slug);
+  const style = delivery?.style;
 
   if (!style) {
     return new Response("# Error\n\nStyle not found", {
@@ -25,9 +23,9 @@ export async function GET(
     });
   }
 
-  const tokens = resolved.tokens ?? getStyleTokens(slug);
-  const recipes =
-    resolved.source === "static" ? getStyleRecipes(slug) : null;
+  const { capabilities } = delivery;
+  const tokens = capabilities.tokens;
+  const recipes = capabilities.recipes;
   const name = locale === "zh" ? style.name : style.nameEn || style.name;
   const secondaryName = locale === "zh" ? style.nameEn : style.name;
   const description = localizedString(locale, style.description, style.descriptionEn);
