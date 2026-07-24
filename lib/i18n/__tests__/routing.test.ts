@@ -37,6 +37,7 @@ describe("i18n routing helpers", () => {
   it("detects bypass paths correctly", () => {
     expect(shouldBypassLocale("/api/styles")).toBe(true);
     expect(shouldBypassLocale("/admin/users")).toBe(true);
+    expect(shouldBypassLocale("/experiments/cinematic-stylekit")).toBe(true);
     expect(shouldBypassLocale("/admin-login")).toBe(true);
     expect(shouldBypassLocale("/robots.txt")).toBe(true);
     expect(shouldBypassLocale("/feed/styles.xml")).toBe(true);
