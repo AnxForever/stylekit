@@ -1,12 +1,37 @@
+import { readdirSync } from "node:fs";
+import path from "node:path";
 import { describe, expect, it } from "vitest";
 import {
   addLocaleToPathname,
   detectPreferredLocale,
+  getIndexableLocalesForPath,
   getLocaleFromPathname,
+  getLocaleRouteStrategy,
+  LOCALES,
   localizeHref,
   shouldBypassLocale,
   stripLocaleFromPathname,
 } from "@/lib/i18n/routing";
+
+function listLocalizedPagePaths(
+  directory = path.join(process.cwd(), "app/[locale]"),
+  segments: string[] = [],
+): string[] {
+  return readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
+    if (entry.isDirectory()) {
+      return listLocalizedPagePaths(path.join(directory, entry.name), [
+        ...segments,
+        entry.name,
+      ]);
+    }
+
+    if (entry.name !== "page.tsx") return [];
+    const routeSegments = segments.map((segment) =>
+      segment.startsWith("[") ? "example" : segment
+    );
+    return [routeSegments.length > 0 ? `/${routeSegments.join("/")}` : "/"];
+  });
+}
 
 describe("i18n routing helpers", () => {
   it("reads locale prefixes from pathnames", () => {
@@ -52,5 +77,44 @@ describe("i18n routing helpers", () => {
     expect(detectPreferredLocale("zh-CN,zh;q=0.9,en;q=0.8")).toBe("zh");
     expect(detectPreferredLocale("en-US,en;q=0.9")).toBe("en");
     expect(detectPreferredLocale(null)).toBe("en");
+  });
+
+  it("keeps every app/[locale] page reachable through the route policy", () => {
+    for (const pathname of listLocalizedPagePaths()) {
+      const expected = /^\/styles\/[^/]+\/showcase$/.test(pathname)
+        ? "bypass"
+        : "filesystem";
+      expect(getLocaleRouteStrategy(pathname), pathname).toBe(expected);
+    }
+  });
+
+  it("classifies shared rewrites and sitemap locale availability", () => {
+    expect(getLocaleRouteStrategy("/guides")).toBe("rewrite");
+    expect(getLocaleRouteStrategy("/guides/neumorphism")).toBe("rewrite");
+    expect(getLocaleRouteStrategy("/templates/saas-landing")).toBe("rewrite");
+    expect(getLocaleRouteStrategy("/liquid-glass")).toBe("filesystem");
+
+    expect(getIndexableLocalesForPath("/styles/neo-brutalist")).toEqual(LOCALES);
+    expect(getIndexableLocalesForPath("/blog/example")).toEqual(["en"]);
+    expect(getIndexableLocalesForPath("/guides/neumorphism")).toEqual(["en"]);
+    expect(getIndexableLocalesForPath("/login")).toEqual([]);
+    expect(getIndexableLocalesForPath("/styles/neo-brutalist/showcase")).toEqual([]);
+  });
+
+  it("builds the same route matrix for English and Chinese", () => {
+    const paths = [
+      "/",
+      "/liquid-glass",
+      "/styles/neo-brutalist",
+      "/templates/saas-landing",
+    ];
+
+    for (const locale of LOCALES) {
+      for (const pathname of paths) {
+        const localized = addLocaleToPathname(pathname, locale);
+        expect(getLocaleFromPathname(localized)).toBe(locale);
+        expect(stripLocaleFromPathname(localized)).toBe(pathname);
+      }
+    }
   });
 });

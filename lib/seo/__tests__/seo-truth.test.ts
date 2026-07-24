@@ -165,6 +165,8 @@ describe("SEO truth invariants", () => {
     expect(urls.some((url) => url.includes("/showcase"))).toBe(false);
     expect(urls.some((url) => /\/zh\/(blog|guides)(?:\/|$)/.test(url))).toBe(false);
     expect(urls).toContain(`${BASE_URL}/en/recipes/saas-modern-glass`);
+    expect(urls).toContain(`${BASE_URL}/en/liquid-glass`);
+    expect(urls).toContain(`${BASE_URL}/zh/liquid-glass`);
   });
 
   it("allows search crawlers and the read-only style Markdown route", () => {

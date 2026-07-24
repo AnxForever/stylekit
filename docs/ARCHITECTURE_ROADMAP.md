@@ -298,6 +298,8 @@ standalone product.
 
 Priority: P2
 
+Status: complete (2026-07-25)
+
 #### Problem
 
 Locale behavior is distributed across `proxy.ts`, `lib/i18n/routing.ts`, 24 locale route
@@ -315,6 +317,18 @@ by the proxy filesystem-route allowlist.
 - Adding a localized page changes one policy location.
 - Every localized sitemap URL is covered by a route test.
 - Locale modules cannot become unreachable silently.
+
+Implementation evidence:
+
+- `lib/i18n/routing.ts` now owns the filesystem, rewrite, bypass, and sitemap-locale
+  classification consumed by the proxy and sitemap.
+- The previously unreachable `/[locale]/liquid-glass` page is selected by the filesystem policy,
+  while `/[locale]/guides` and guide detail aliases consistently rewrite to the shared English
+  implementation.
+- Route-matrix tests scan every `app/[locale]/**/page.tsx` module and fail if a future locale page
+  is not reachable. Sitemap generation validates every emitted path against the same policy.
+- Template metadata moved out of `app/templates/layout.tsx`, keeping the layout within Next.js
+  allowed export fields and restoring a complete production build under Webpack.
 
 ### Phase 6 — Improve existing resource quality
 

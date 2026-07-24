@@ -19,6 +19,8 @@ import {
   DEFAULT_LOCALE,
   detectPreferredLocale,
   getLocaleFromPathname,
+  shouldRewriteLocalizedPath,
+  shouldUseLocalizedFilesystemRoute,
   isLocale,
   LOCALE_COOKIE_NAME,
   shouldBypassLocale,
@@ -28,68 +30,8 @@ import {
 const SOCIAL_CRAWLER_RE =
   /Twitterbot|facebookexternalhit|LinkedInBot|Slackbot|Discordbot|WhatsApp|TelegramBot|Pinterestbot|Applebot/i;
 
-const LOCALIZED_REWRITE_EXACT = new Set([
-  "/docs",
-  "/guides",
-  "/html-in-canvas",
-  "/login",
-  "/preview",
-  "/privacy",
-  "/profile",
-  "/terms",
-]);
-
-const LOCALIZED_REWRITE_PREFIXES = [
-  "/guides/",
-  "/templates/",
-];
-
 function isSocialCrawler(userAgent: string): boolean {
   return SOCIAL_CRAWLER_RE.test(userAgent);
-}
-
-function shouldUseLocalizedFilesystemRoute(pathname: string): boolean {
-  return (
-    pathname === "/" ||
-    pathname === "/changelog" ||
-    pathname === "/contact" ||
-    pathname === "/about" ||
-    pathname === "/backgrounds" ||
-    pathname === "/color-theory" ||
-    pathname === "/component-patterns" ||
-    pathname === "/components" ||
-    pathname === "/design-principles" ||
-    pathname === "/gradients" ||
-    pathname === "/guide" ||
-    pathname === "/learn" ||
-    pathname.startsWith("/recipes") ||
-    pathname === "/shadows" ||
-    pathname === "/spacing" ||
-    pathname === "/templates" ||
-    pathname === "/type-scale" ||
-    pathname === "/typography" ||
-    pathname === "/visual-hierarchy" ||
-    pathname.startsWith("/styles") ||
-    pathname === "/colors" ||
-    pathname.startsWith("/collections") ||
-    pathname === "/ui-prompts" ||
-    pathname === "/landing-page-prompts" ||
-    pathname === "/dashboard-prompts" ||
-    pathname === "/tailwind-ui-prompts" ||
-    pathname === "/dark-mode-ui-prompts" ||
-    pathname === "/developers" ||
-    pathname === "/mouse-interactions" ||
-    pathname.startsWith("/prompts") ||
-    pathname.startsWith("/blog") ||
-    pathname.startsWith("/animations")
-  );
-}
-
-function shouldRewriteLocalizedPath(pathname: string): boolean {
-  return (
-    LOCALIZED_REWRITE_EXACT.has(pathname) ||
-    LOCALIZED_REWRITE_PREFIXES.some((prefix) => pathname.startsWith(prefix))
-  );
 }
 
 function isAdminRoute(pathname: string): boolean {
