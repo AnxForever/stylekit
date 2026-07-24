@@ -6,6 +6,7 @@ const nextConfig: NextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
   compress: true,
+  serverExternalPackages: ["isomorphic-dompurify"],
 
   images: {
     formats: ["image/avif", "image/webp"],
