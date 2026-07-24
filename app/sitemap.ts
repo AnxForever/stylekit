@@ -10,6 +10,7 @@ import { templateCatalog } from "@/lib/templates/catalog";
 import {
   getAlternateLocalePath,
   getBaseUrl,
+  getIndexableLocalesForPath,
   getLocaleHtmlLang,
   DEFAULT_LOCALE,
   LOCALES,
@@ -25,13 +26,31 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "tailwind-ui",
     "dark-mode",
   ]);
+  const requireSitemapLocales = (
+    pathname: string,
+    expected: "all" | "en"
+  ): readonly (typeof LOCALES[number])[] => {
+    const locales = getIndexableLocalesForPath(pathname);
+    const valid = expected === "all"
+      ? locales.length === LOCALES.length
+      : locales.length === 1 && locales[0] === DEFAULT_LOCALE;
+
+    if (!valid) {
+      throw new Error(
+        `[sitemap] ${pathname} is not registered for the expected ${expected} locale set`
+      );
+    }
+
+    return locales;
+  };
+
   const createLocalizedEntries = (
     pathname: string,
     lastModified: Date | undefined,
     changeFrequency: MetadataRoute.Sitemap[number]["changeFrequency"],
     priority: number
   ): MetadataRoute.Sitemap =>
-    LOCALES.map((locale) => ({
+    requireSitemapLocales(pathname, "all").map((locale) => ({
       url: `${BASE_URL}${getAlternateLocalePath(pathname, locale)}`,
       ...(lastModified ? { lastModified } : {}),
       changeFrequency,
@@ -54,12 +73,17 @@ export default function sitemap(): MetadataRoute.Sitemap {
     lastModified: Date | undefined,
     changeFrequency: MetadataRoute.Sitemap[number]["changeFrequency"],
     priority: number
-  ): MetadataRoute.Sitemap => [{
-    url: `${BASE_URL}${getAlternateLocalePath(pathname, "en")}`,
-    ...(lastModified ? { lastModified } : {}),
-    changeFrequency,
-    priority,
-  }];
+  ): MetadataRoute.Sitemap => {
+    // English-only pages remain reachable through the locale alias but do not
+    // advertise a translated alternate.
+    requireSitemapLocales(pathname, "en");
+    return [{
+      url: `${BASE_URL}${getAlternateLocalePath(pathname, "en")}`,
+      ...(lastModified ? { lastModified } : {}),
+      changeFrequency,
+      priority,
+    }];
+  };
 
   const staticPages: MetadataRoute.Sitemap = [
     ...createLocalizedEntries("/", undefined, "weekly", 1),
@@ -87,6 +111,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...createLocalizedEntries("/visual-hierarchy", undefined, "monthly", 0.7),
     ...createLocalizedEntries("/component-patterns", undefined, "monthly", 0.7),
     ...createLocalizedEntries("/learn", undefined, "monthly", 0.6),
+    ...createLocalizedEntries("/liquid-glass", undefined, "weekly", 0.7),
     ...createLocalizedEntries("/developers", undefined, "monthly", 0.6),
     ...createLocalizedEntries("/mouse-interactions", undefined, "monthly", 0.6),
     ...createLocalizedEntries("/guide", undefined, "monthly", 0.6),

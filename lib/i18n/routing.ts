@@ -5,6 +5,104 @@ export const LOCALES: Locale[] = ["en", "zh"];
 export const DEFAULT_LOCALE: Locale = "en";
 export const LOCALE_COOKIE_NAME = "stylekit-locale";
 
+export type LocaleRouteMode = "filesystem" | "rewrite";
+export type LocaleSitemapLocales = "all" | "en" | "none";
+
+export interface LocaleRouteRule {
+  readonly id: string;
+  readonly mode: LocaleRouteMode;
+  readonly sitemapLocales: LocaleSitemapLocales;
+  readonly exact: readonly string[];
+  readonly prefixes: readonly string[];
+}
+
+/**
+ * The single source of truth for locale-prefixed public routes.
+ *
+ * `filesystem` routes resolve under `app/[locale]` while `rewrite` routes
+ * resolve to an English-only or shared root implementation. `sitemapLocales`
+ * describes which language variants are indexable; it is intentionally
+ * separate from reachability because some shared pages are English-only.
+ */
+export const LOCALE_ROUTE_POLICY = [
+  {
+    id: "localized-pages",
+    mode: "filesystem",
+    sitemapLocales: "all",
+    exact: [
+      "/",
+      "/about",
+      "/backgrounds",
+      "/changelog",
+      "/color-theory",
+      "/colors",
+      "/component-patterns",
+      "/components",
+      "/contact",
+      "/dark-mode-ui-prompts",
+      "/dashboard-prompts",
+      "/design-principles",
+      "/developers",
+      "/gradients",
+      "/guide",
+      "/landing-page-prompts",
+      "/learn",
+      "/liquid-glass",
+      "/mouse-interactions",
+      "/shadows",
+      "/spacing",
+      "/tailwind-ui-prompts",
+      "/templates",
+      "/type-scale",
+      "/typography",
+      "/ui-prompts",
+      "/visual-hierarchy",
+    ],
+    prefixes: ["/animations", "/collections", "/prompts", "/recipes", "/styles"],
+  },
+  {
+    id: "english-blog",
+    mode: "filesystem",
+    sitemapLocales: "en",
+    exact: [],
+    prefixes: ["/blog"],
+  },
+  {
+    id: "localized-template-details",
+    mode: "rewrite",
+    sitemapLocales: "all",
+    exact: [],
+    prefixes: ["/templates"],
+  },
+  {
+    id: "english-guides",
+    mode: "rewrite",
+    sitemapLocales: "en",
+    exact: ["/guides"],
+    prefixes: ["/guides"],
+  },
+  {
+    id: "english-indexable-aliases",
+    mode: "rewrite",
+    sitemapLocales: "en",
+    exact: ["/privacy", "/terms"],
+    prefixes: [],
+  },
+  {
+    id: "shared-noindex-aliases",
+    mode: "rewrite",
+    sitemapLocales: "none",
+    exact: [
+      "/docs",
+      "/html-in-canvas",
+      "/login",
+      "/preview",
+      "/profile",
+    ],
+    prefixes: [],
+  },
+] as const satisfies readonly LocaleRouteRule[];
+
 const FILE_EXTENSION_RE = /\.[^/]+$/;
 const NON_LOCALIZED_PREFIXES = [
   "/api",
@@ -26,6 +124,8 @@ const NON_LOCALIZED_EXACT = new Set([
   "/opengraph-image",
 ]);
 
+export type LocaleRouteStrategy = LocaleRouteMode | "bypass" | "unmatched";
+
 export function isLocale(value: string | null | undefined): value is Locale {
   return value === "en" || value === "zh";
 }
@@ -35,6 +135,44 @@ export function normalizePathname(pathname: string): string {
   if (pathname === "/") return pathname;
 
   return pathname.endsWith("/") ? pathname.slice(0, -1) || "/" : pathname;
+}
+
+function matchesRouteRule(pathname: string, rule: LocaleRouteRule): boolean {
+  const normalized = normalizePathname(pathname);
+  if (rule.exact.includes(normalized)) return true;
+
+  return rule.prefixes.some((prefix) => {
+    const normalizedPrefix = normalizePathname(prefix);
+    return (
+      normalized === normalizedPrefix ||
+      normalized.startsWith(`${normalizedPrefix}/`)
+    );
+  });
+}
+
+export function getLocaleRouteRule(pathname: string): LocaleRouteRule | null {
+  return LOCALE_ROUTE_POLICY.find((rule) => matchesRouteRule(pathname, rule)) ?? null;
+}
+
+export function getLocaleRouteStrategy(pathname: string): LocaleRouteStrategy {
+  if (shouldBypassLocale(pathname)) return "bypass";
+  return getLocaleRouteRule(pathname)?.mode ?? "unmatched";
+}
+
+export function getIndexableLocalesForPath(pathname: string): readonly Locale[] {
+  if (shouldBypassLocale(pathname)) return [];
+
+  const rule = getLocaleRouteRule(pathname);
+  if (!rule || rule.sitemapLocales === "none") return [];
+  return rule.sitemapLocales === "all" ? LOCALES : [DEFAULT_LOCALE];
+}
+
+export function shouldUseLocalizedFilesystemRoute(pathname: string): boolean {
+  return getLocaleRouteStrategy(pathname) === "filesystem";
+}
+
+export function shouldRewriteLocalizedPath(pathname: string): boolean {
+  return getLocaleRouteStrategy(pathname) === "rewrite";
 }
 
 export function getLocaleFromPathname(pathname: string): Locale | null {
