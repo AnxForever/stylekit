@@ -15,6 +15,24 @@ Every production style must have these entries:
 
 Do not add a style to only one registry. The style is not complete until the full style, metadata, recipes, tokens, and cover asset all agree on the same slug.
 
+## Publication Workflow
+
+Trusted authoring and admin tooling should call the single publication seam:
+
+```ts
+import { publishStyle } from "@/lib/style-publication";
+
+const result = await publishStyle(input, process.cwd());
+```
+
+`input` is a `StyleScaffoldInput` and must include an explicitly authored, product-approved
+`previewModule` with `coverPreview`. The publication module plans every generated file and all six
+registry projections before it writes, then rolls back completed writes if commit fails. Callers
+must not invoke the internal plan or commit modules directly.
+
+The registry paths below remain useful for review and recovery, but normal publication should not
+patch them independently.
+
 ## Naming Rules
 
 - Use lowercase kebab-case slugs, for example `neo-brutalist`.

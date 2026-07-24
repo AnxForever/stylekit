@@ -1,10 +1,15 @@
 #!/usr/bin/env tsx
 
 import { existsSync } from "node:fs";
+import { cp, mkdtemp, mkdir, rm } from "node:fs/promises";
+import os from "node:os";
 import path from "node:path";
 import { getStylesWithRecipes, getStyleRecipes } from "../../lib/recipes";
 import { styles, stylesMeta } from "../../lib/styles";
 import { hasStyleTokens } from "../../lib/styles/tokens-registry";
+import { publishStyle } from "../../lib/style-publication";
+import { STYLE_PUBLICATION_REGISTRIES } from "../../lib/style-publication/plan";
+import type { StyleScaffoldInput } from "../../lib/scaffold/style-scaffold";
 
 const PROJECT_ROOT = process.cwd();
 const REQUIRED_COMPONENTS = ["button", "card", "input"] as const;
@@ -132,8 +137,72 @@ function validateCatalog(): Issue[] {
   return issues;
 }
 
-function main(): void {
-  const issues = validateCatalog();
+const PUBLICATION_PROBE: StyleScaffoldInput = {
+  name: "Catalog Publication Probe",
+  nameEn: "Catalog Publication Probe",
+  slug: "catalog-publication-probe",
+  description: "Internal dry-run input for catalog publication checks.",
+  category: "modern",
+  styleType: "visual",
+  tags: ["responsive"],
+  primaryColor: "#111111",
+  secondaryColor: "#ffffff",
+  accentColors: ["#ff006e"],
+  keywords: ["catalog", "publication"],
+  philosophy: "Keep catalog projections coherent.",
+  doList: ["Plan before writing."],
+  dontList: ["Do not mutate the repository during checks."],
+  buttonCode: "<button>Probe</button>",
+  cardCode: "<div>Probe</div>",
+  inputCode: "<input />",
+  previewModule: `import type { StylePreviewComponents } from "../types";
+
+const preview = {
+  coverPreview: () => <div data-catalog-publication-probe="true" />,
+} satisfies StylePreviewComponents;
+
+export default preview;
+`,
+};
+
+async function validatePublicationInterface(): Promise<Issue[]> {
+  const rootDir = await mkdtemp(path.join(os.tmpdir(), "stylekit-catalog-publication-"));
+  try {
+    await Promise.all(
+      Object.values(STYLE_PUBLICATION_REGISTRIES).map(async (relativePath) => {
+        const destination = path.join(rootDir, relativePath);
+        await mkdir(path.dirname(destination), { recursive: true });
+        await cp(path.join(PROJECT_ROOT, relativePath), destination);
+      }),
+    );
+    const result = await publishStyle(PUBLICATION_PROBE, rootDir);
+
+    if (!result.success) {
+      return [{ message: `Publication interface dry run failed: ${result.errors.join("; ")}` }];
+    }
+    if (result.filesWritten.length !== 7 || result.registriesPatched.length !== 6) {
+      return [
+        {
+          message: `Publication interface wrote ${result.filesWritten.length} generated files and ${result.registriesPatched.length} registry projections; expected 7 and 6.`,
+        },
+      ];
+    }
+    return [];
+  } catch (error: unknown) {
+    return [
+      {
+        message: `Publication interface dry run failed: ${
+          error instanceof Error ? error.message : String(error)
+        }`,
+      },
+    ];
+  } finally {
+    await rm(rootDir, { recursive: true, force: true });
+  }
+}
+
+async function main(): Promise<void> {
+  const issues = [...validateCatalog(), ...(await validatePublicationInterface())];
 
   if (issues.length === 0) {
     console.log(
@@ -150,4 +219,4 @@ function main(): void {
   process.exitCode = 1;
 }
 
-main();
+void main();
