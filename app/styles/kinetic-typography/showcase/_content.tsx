@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { type CSSProperties, useState, useRef, useEffect } from "react";
 import Link from "next/link";
 
 /* ------------------------------------------------------------------ */
@@ -13,6 +13,16 @@ const BONE = "#F4F1EB";
 const SIGNAL = "#FF4D00";
 const EASE = "cubic-bezier(0.22,1,0.36,1)";
 const FONT_DISPLAY = '"Anybody", "Archivo", ui-sans-serif, system-ui, sans-serif';
+
+type MaskRiseUnitStyle = CSSProperties & {
+  "--kt-rise-name": string;
+  "--kt-rise-duration": string;
+  "--kt-rise-delay": string;
+};
+
+function formatSeconds(value: number) {
+  return `${Number(value.toFixed(3))}s`;
+}
 
 /* ------------------------------------------------------------------ */
 /*  Inline hooks                                                       */
@@ -71,22 +81,24 @@ function MaskRise({
   return (
     <span className={className} aria-label={text}>
       <span aria-hidden="true">
-        {units.map((u, i) => (
-          <span key={`${replayKey}-${i}`} className="inline-block overflow-hidden align-bottom">
-            <span
-              className="kt-rise-unit inline-block"
-              style={{
-                transform: "translateY(110%)",
-                animation: active ? `kt-rise ${duration}s ${EASE} both` : "none",
-                animationDelay: `${delay + i * stagger}s`,
-                color: accent.includes(u.replace(/[^A-Za-z]/g, "")) ? SIGNAL : undefined,
-              }}
-            >
-              {u === " " ? " " : u}
+        {units.map((u, i) => {
+          const riseUnitStyle: MaskRiseUnitStyle = {
+            transform: "translateY(110%)",
+            "--kt-rise-name": active ? "kt-rise" : "none",
+            "--kt-rise-duration": formatSeconds(duration),
+            "--kt-rise-delay": formatSeconds(delay + i * stagger),
+            color: accent.includes(u.replace(/[^A-Za-z]/g, "")) ? SIGNAL : undefined,
+          };
+
+          return (
+            <span key={`${replayKey}-${i}`} className="inline-block overflow-hidden align-bottom">
+              <span className="kt-rise-unit inline-block" style={riseUnitStyle}>
+                {u === " " ? " " : u}
+              </span>
+              {per === "word" && i < units.length - 1 ? <span className="inline-block">{" "}</span> : null}
             </span>
-            {per === "word" && i < units.length - 1 ? <span className="inline-block">{" "}</span> : null}
-          </span>
-        ))}
+          );
+        })}
       </span>
     </span>
   );
@@ -332,6 +344,13 @@ export default function ShowcaseContent() {
         @keyframes kt-breathe {
           from { font-variation-settings: "wght" 300; }
           to { font-variation-settings: "wght" 800; }
+        }
+        .kt-rise-unit {
+          animation-name: var(--kt-rise-name);
+          animation-duration: var(--kt-rise-duration);
+          animation-timing-function: cubic-bezier(0.22,1,0.36,1);
+          animation-fill-mode: both;
+          animation-delay: var(--kt-rise-delay);
         }
         .kt-breathe { animation: kt-breathe 2.4s ease-in-out infinite alternate; }
         .kt-marquee { overflow: hidden; white-space: nowrap; }
