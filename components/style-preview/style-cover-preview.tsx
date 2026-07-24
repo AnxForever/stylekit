@@ -2,6 +2,10 @@
 
 import * as React from "react";
 import { cn } from "@/lib/utils";
+import {
+  loadStylePreview,
+  preloadStylePreviews,
+} from "@/lib/style-preview/delivery";
 
 interface StyleCoverPreviewProps {
   styleSlug: string;
@@ -9,34 +13,85 @@ interface StyleCoverPreviewProps {
   interactive?: boolean;
 }
 
-// Lazy-load the heavy style-components module (154KB)
-const styleComponentsPromise = import("@/lib/style-components").then(m => m.styleComponents);
-
 export function StyleCoverPreview({
   styleSlug,
   className,
   interactive = true,
 }: StyleCoverPreviewProps) {
-  const [renderer, setRenderer] = React.useState<(() => React.ReactNode) | null>(null);
-  const [loaded, setLoaded] = React.useState(false);
+  const [resolvedPreview, setResolvedPreview] = React.useState<{
+    slug: string;
+    renderer: (() => React.ReactNode) | null;
+  } | null>(null);
+  const containerRef = React.useRef<HTMLDivElement>(null);
+  const hasResolvedPreview = resolvedPreview?.slug === styleSlug;
+  const renderer = hasResolvedPreview ? resolvedPreview.renderer : null;
 
   React.useEffect(() => {
-    styleComponentsPromise.then(components => {
-      const r = components[styleSlug]?.coverPreview;
-      if (r) setRenderer(() => r);
-      setLoaded(true);
-    });
+    let cancelled = false;
+    let started = false;
+
+    const loadPreview = () => {
+      if (started) return;
+      started = true;
+
+      loadStylePreview(styleSlug).then((preview) => {
+        if (cancelled) return;
+        const nextRenderer = preview?.coverPreview ?? null;
+        setResolvedPreview({ slug: styleSlug, renderer: nextRenderer });
+      });
+    };
+
+    const node = containerRef.current;
+
+    const isVisualBaselineRoute =
+      typeof window !== "undefined" &&
+      new URLSearchParams(window.location.search).has("visual-baseline");
+    if (isVisualBaselineRoute) {
+      preloadStylePreviews().then(loadPreview);
+      return () => {
+        cancelled = true;
+      };
+    }
+
+    if (!node || typeof IntersectionObserver === "undefined") {
+      loadPreview();
+      return () => {
+        cancelled = true;
+      };
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((entry) => entry.isIntersecting)) {
+          loadPreview();
+          observer.disconnect();
+        }
+      },
+      { rootMargin: "400px" },
+    );
+    observer.observe(node);
+
+    return () => {
+      cancelled = true;
+      observer.disconnect();
+    };
   }, [styleSlug]);
 
-  if (!loaded) {
+  if (!hasResolvedPreview) {
     return (
-      <div className={cn("w-full h-full bg-zinc-100 dark:bg-zinc-800 animate-pulse", className)} />
+      <div
+        ref={containerRef}
+        data-preview-ready="false"
+        className={cn("w-full h-full bg-zinc-100 dark:bg-zinc-800 animate-pulse", className)}
+      />
     );
   }
 
   if (!renderer) {
     return (
       <div
+        ref={containerRef}
+        data-preview-ready="error"
         className={cn(
           "w-full h-full bg-zinc-100 flex items-center justify-center",
           className
@@ -51,6 +106,8 @@ export function StyleCoverPreview({
 
   return (
     <div
+      ref={containerRef}
+      data-preview-ready="true"
       className={cn("w-full h-full", !interactive && "pointer-events-none", className)}
       aria-hidden={!interactive}
       inert={interactive ? undefined : true}

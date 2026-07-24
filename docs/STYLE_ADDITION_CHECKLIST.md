@@ -123,14 +123,20 @@ Complete checklist for adding a new design style to StyleKit.
   - Add import statement: `import { styleNameRecipes } from "./{slug}";`
   - Add to `recipeRegistry` object: `"{slug}": styleNameRecipes,`
 
-### 2.5 Style Components
+### 2.5 Preview Module
 
-- [ ] `lib/style-components.tsx`
-  - Add entry with all four component renderers:
-    - `button`: Interactive button component
-    - `card`: Card/container component
-    - `input`: Text input component
-    - `coverPreview`: Miniaturized UI preview for gallery
+- [ ] `lib/style-preview/styles/{slug}.tsx`
+  - Export preview renderers explicitly authored and approved for this style
+  - Keep the existing visual contract unchanged when editing an approved style
+  - Include `coverPreview`; add `button`, `card`, and `input` when the style supports them
+  - Do not leave the generated TODO placeholder in a publication request
+
+### 2.6 Preview Delivery Registries
+
+- [ ] `lib/style-preview/registry.ts`
+  - Add the preview module import and `{slug}` entry
+- [ ] `lib/style-preview/delivery.ts`
+  - Add the lazy loader and `{slug}` to `stylePreviewSlugs`
 
 ## Phase 3: Showcase Pages (CREATE)
 
@@ -248,19 +254,21 @@ Complete checklist for adding a new design style to StyleKit.
 | 2.2 | MODIFY | `lib/styles/meta-registry.ts` |
 | 2.3 | MODIFY | `lib/styles/tokens-registry-data.ts` |
 | 2.4 | MODIFY | `lib/recipes/registry.ts` |
-| 2.5 | MODIFY | `lib/style-components.tsx` |
+| 2.5 | CREATE | `lib/style-preview/styles/{slug}.tsx` |
+| 2.6 | MODIFY | `lib/style-preview/registry.ts` |
+| 2.7 | MODIFY | `lib/style-preview/delivery.ts` |
 | 3.1 | CREATE | `app/styles/{slug}/showcase/` (directory) |
 | 3.2 | CREATE | `app/styles/{slug}/showcase/page.tsx` |
 | 3.3 | CREATE | `app/styles/{slug}/showcase/_content.tsx` |
 | 4.1 | CREATE | `public/styles/{slug}.svg` |
 
-**Total: 6 new files + 5 modified files per style**
+**Total: 7 new files + 6 modified files per style**
 
 ## Common Mistakes to Avoid
 
 1. **Forgetting showcase pages** - Always create both `page.tsx` and `_content.tsx`
 2. **Cover SVG shows only text** - MUST show UI components
-3. **Missing coverPreview in style-components** - Required for gallery preview
+3. **Missing coverPreview in the preview module** - Required for gallery preview
 4. **Mismatched slugs** - Use exact same slug everywhere
 5. **Missing imports** - Remember to add to index.ts files
 6. **Non-interactive showcase** - Add useState hooks for tabs, dropdowns, etc.
@@ -284,5 +292,6 @@ touch public/styles/{slug}.svg
 # - lib/styles/meta-registry.ts
 # - lib/styles/tokens-registry-data.ts
 # - lib/recipes/registry.ts
-# - lib/style-components.tsx
+# - lib/style-preview/registry.ts
+# - lib/style-preview/delivery.ts
 ```

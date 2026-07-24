@@ -12,8 +12,18 @@ const REGISTRY_FILES = [
   "lib/styles/meta-registry.ts",
   "lib/styles/tokens-registry-data.ts",
   "lib/recipes/registry.ts",
-  "lib/style-components.tsx",
+  "lib/style-preview/registry.ts",
+  "lib/style-preview/delivery.ts",
 ] as const;
+
+const APPROVED_PREVIEW_MODULE = `import type { StylePreviewComponents } from "../types";
+
+const preview = {
+  coverPreview: () => <div data-approved-preview="architecture-test-style" />,
+} satisfies StylePreviewComponents;
+
+export default preview;
+`;
 
 const submission: SubmissionRecord = {
   id: "sub-architecture-test",
@@ -37,6 +47,7 @@ const submission: SubmissionRecord = {
     buttonCode: "<button>Test</button>",
     cardCode: "<div>Card</div>",
     inputCode: "<input />",
+    previewModule: APPROVED_PREVIEW_MODULE,
   },
   tokens: {},
   designStyle: {},
@@ -75,7 +86,8 @@ describe("publishStyleToCodebase", () => {
       ["lib/styles/meta-registry.ts", 'slug: "architecture-test-style"'],
       ["lib/styles/tokens-registry-data.ts", '"architecture-test-style": architectureTestStyleTokens'],
       ["lib/recipes/registry.ts", '"architecture-test-style": architectureTestStyleRecipes'],
-      ["lib/style-components.tsx", '"architecture-test-style": {'],
+      ["lib/style-preview/registry.ts", 'architectureTestStylePreview from "./styles/architecture-test-style"'],
+      ["lib/style-preview/delivery.ts", '"architecture-test-style": () => import("./styles/architecture-test-style")'],
     ] as const;
 
     for (const [relativePath, expectedText] of registryAssertions) {
@@ -84,17 +96,15 @@ describe("publishStyleToCodebase", () => {
       );
     }
 
-    const previewRegistry = await readFile(
-      path.join(rootDir, "lib/style-components.tsx"),
+    const previewModule = await readFile(
+      path.join(rootDir, "lib/style-preview/styles/architecture-test-style.tsx"),
       "utf8",
     );
-    const publishedPreview = previewRegistry.slice(
-      previewRegistry.indexOf('"architecture-test-style": {'),
-    );
-    expect(publishedPreview).toContain("coverPreview: () => (");
-    expect(publishedPreview).not.toContain("button: () => (");
-    expect(publishedPreview).not.toContain("card: () => (");
-    expect(publishedPreview).not.toContain("input: () => (");
+    expect(previewModule).toBe(APPROVED_PREVIEW_MODULE.trim());
+    expect(previewModule).toContain('data-approved-preview="architecture-test-style"');
+    expect(previewModule).not.toContain("button: () => (");
+    expect(previewModule).not.toContain("card: () => (");
+    expect(previewModule).not.toContain("input: () => (");
   });
 
   it("rolls back generated files and registries when a later write fails", async () => {
@@ -126,6 +136,9 @@ describe("publishStyleToCodebase", () => {
     ).rejects.toMatchObject({ code: "ENOENT" });
     await expect(
       stat(path.join(rootDir, "lib/styles/architecture-test-style-tokens.ts")),
+    ).rejects.toMatchObject({ code: "ENOENT" });
+    await expect(
+      stat(path.join(rootDir, "lib/style-preview/styles/architecture-test-style.tsx")),
     ).rejects.toMatchObject({ code: "ENOENT" });
     await expect(readFile(path.join(rootDir, "lib/styles/registry.ts"), "utf8")).resolves.toBe(
       stylesRegistryBefore,
@@ -202,6 +215,19 @@ describe("publishStyleToCodebase", () => {
       stat(path.join(rootDir, "lib/styles/unsafe-color-style.ts")),
     ).rejects.toMatchObject({ code: "ENOENT" });
   });
+
+  it("requires an explicitly approved preview before publication", async () => {
+    const missingPreviewSubmission = structuredClone(submission);
+    delete missingPreviewSubmission.formData.previewModule;
+
+    const result = await publishStyleToCodebase(missingPreviewSubmission, rootDir);
+
+    expect(result.success).toBe(false);
+    expect(result.errors[0]).toContain("Approved preview module required");
+    await expect(
+      stat(path.join(rootDir, "lib/styles/architecture-test-style.ts")),
+    ).rejects.toMatchObject({ code: "ENOENT" });
+  });
 });
 
 describe("style scaffold registration guide", () => {
@@ -230,7 +256,11 @@ describe("style scaffold registration guide", () => {
     expect(guide?.content).toContain("lib/styles/meta-registry.ts");
     expect(guide?.content).toContain("lib/styles/tokens-registry-data.ts");
     expect(guide?.content).toContain("lib/recipes/registry.ts");
+    expect(guide?.content).toContain("lib/style-preview/styles/architecture-test-style.tsx");
+    expect(guide?.content).toContain("Publication refuses");
+    expect(guide?.content).not.toContain("coverPreview: () => (");
     expect(guide?.content).not.toContain("File: `lib/styles/index.ts`");
     expect(guide?.content).not.toContain("File: `lib/styles/meta.ts`");
+    expect(guide?.content).not.toContain("File: `lib/style-components.tsx`");
   });
 });

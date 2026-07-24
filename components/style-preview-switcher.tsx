@@ -5,6 +5,8 @@ import Link from "next/link";
 import { useI18n } from "@/lib/i18n/context";
 import type { TranslationKey } from "@/lib/i18n/translations";
 import { getAllStylesMeta } from "@/lib/styles/meta";
+import { loadStylePreview } from "@/lib/style-preview/delivery";
+import type { StylePreviewComponents } from "@/lib/style-preview/types";
 import { ChevronDown } from "lucide-react";
 
 type ComponentType = "button" | "card" | "input";
@@ -18,22 +20,6 @@ const componentLabelKeys: Record<ComponentType, TranslationKey> = {
   input: "previewSwitcher.component.input",
 };
 
-type RenderStyleComponentFn = (
-  styleSlug: string,
-  component: ComponentType
-) => React.ReactNode;
-
-let renderStyleComponentPromise: Promise<RenderStyleComponentFn> | null = null;
-
-function loadRenderStyleComponent(): Promise<RenderStyleComponentFn> {
-  if (!renderStyleComponentPromise) {
-    renderStyleComponentPromise = import("@/lib/style-components").then(
-      (module) => module.renderStyleComponent as RenderStyleComponentFn
-    );
-  }
-  return renderStyleComponentPromise;
-}
-
 export function StylePreviewSwitcher() {
   const styles = getAllStylesMeta();
   const labelId = useId();
@@ -41,32 +27,33 @@ export function StylePreviewSwitcher() {
   const listboxId = useId();
   const [selectedSlug, setSelectedSlug] = useState<string | null>(null);
   const [isOpen, setIsOpen] = useState(false);
-  const [renderStyleComponent, setRenderStyleComponent] = useState<RenderStyleComponentFn | null>(null);
+  const [loadedPreview, setLoadedPreview] = useState<{
+    slug: string;
+    preview: StylePreviewComponents | null;
+  } | null>(null);
   const { t } = useI18n();
 
   const selectedStyle = styles.find((s) => s.slug === selectedSlug);
-  const isPreviewLoading = Boolean(selectedSlug) && !renderStyleComponent;
+  const hasLoadedSelectedPreview = loadedPreview?.slug === selectedSlug;
+  const selectedPreview =
+    hasLoadedSelectedPreview ? loadedPreview.preview : null;
+  const isPreviewLoading = Boolean(selectedSlug) && !hasLoadedSelectedPreview;
 
   useEffect(() => {
-    if (!selectedSlug || renderStyleComponent) {
-      return;
-    }
-
     let cancelled = false;
 
-    loadRenderStyleComponent()
-      .then((renderFn) => {
-        if (cancelled) {
-          return;
+    if (selectedSlug) {
+      loadStylePreview(selectedSlug).then((preview) => {
+        if (!cancelled) {
+          setLoadedPreview({ slug: selectedSlug, preview });
         }
-
-        setRenderStyleComponent(() => renderFn);
       });
+    }
 
     return () => {
       cancelled = true;
     };
-  }, [renderStyleComponent, selectedSlug]);
+  }, [selectedSlug]);
 
   return (
     <div className="border border-border bg-zinc-50 dark:bg-zinc-900/50">
@@ -143,7 +130,7 @@ export function StylePreviewSwitcher() {
       {/* Preview Content */}
       {selectedSlug ? (
         <div className="p-6">
-          {isPreviewLoading || !renderStyleComponent ? (
+          {isPreviewLoading ? (
             <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
               {(Object.keys(componentLabelKeys) as ComponentType[]).map((comp) => (
                 <div key={comp}>
@@ -152,17 +139,21 @@ export function StylePreviewSwitcher() {
                 </div>
               ))}
             </div>
-          ) : (
+          ) : selectedPreview ? (
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {(Object.keys(componentLabelKeys) as ComponentType[]).map((comp) => (
                 <div key={comp}>
                   <p className="text-xs text-muted mb-3">{t(componentLabelKeys[comp])}</p>
                   <div className="p-4 bg-background rounded-lg border border-border flex items-center justify-center min-h-[120px]">
-                    {renderStyleComponent(selectedSlug, comp)}
+                    {selectedPreview[comp]?.() ?? (
+                      <div className="text-muted text-sm">暂无此组件</div>
+                    )}
                   </div>
                 </div>
               ))}
             </div>
+          ) : (
+            <div className="py-8 text-center text-sm text-muted">暂无预览</div>
           )}
           <div className="mt-6 flex items-center justify-between">
             <Link

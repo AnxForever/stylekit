@@ -92,7 +92,7 @@ Open [localhost:3000](http://localhost:3000).
 
 ## Adding a New Style
 
-This is the most common contribution. A complete style requires **6 new files + 5 modified files**.
+This is the most common contribution. A complete style requires **7 new files + 6 modified files**.
 
 > For the full step-by-step checklist, see [`STYLE_ADDITION_CHECKLIST.md`](./STYLE_ADDITION_CHECKLIST.md).
 
@@ -106,13 +106,15 @@ New files:
   app/styles/{slug}/showcase/page.tsx       # Showcase page wrapper
   app/styles/{slug}/showcase/_content.tsx   # Showcase content (400+ lines, 12+ sections)
   public/styles/{slug}.svg          # Cover image (1200x630)
+  lib/style-preview/styles/{slug}.tsx # Approved preview module
 
 Modified files:
   lib/styles/registry.ts            # Register full style definition
   lib/styles/meta-registry.ts       # Add lightweight metadata
   lib/styles/tokens-registry-data.ts # Register style tokens
   lib/recipes/registry.ts           # Register recipes
-  lib/style-components.tsx          # Add component renderers
+  lib/style-preview/registry.ts     # Eager preview compatibility registry
+  lib/style-preview/delivery.ts     # Lazy preview loader and slug registry
 ```
 
 **Key rules:**

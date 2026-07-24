@@ -19,6 +19,8 @@ export interface StyleScaffoldInput {
   buttonCode: string;
   cardCode: string;
   inputCode: string;
+  /** Product-approved preview module source. Empty values produce a blocked TODO scaffold. */
+  previewModule?: string;
 }
 
 export function generateStyleScaffoldFiles(input: StyleScaffoldInput): GeneratedFile[] {
@@ -42,6 +44,7 @@ export function generateStyleScaffoldFiles(input: StyleScaffoldInput): Generated
   const recipeFile = generateRecipeFile(input, slug, recipesExportName);
   const showcasePage = generateShowcasePage(input);
   const showcaseContent = generateShowcaseContent(input, slug);
+  const previewModule = input.previewModule?.trim() || generatePreviewPlaceholder(slug);
 
   return [
     { name: `lib/styles/${slug}.ts`, content: styleFile, type: "ts" },
@@ -51,6 +54,7 @@ export function generateStyleScaffoldFiles(input: StyleScaffoldInput): Generated
     { name: `lib/recipes/${slug}.ts`, content: recipeFile, type: "ts" },
     { name: `app/styles/${slug}/showcase/page.tsx`, content: showcasePage, type: "ts" },
     { name: `app/styles/${slug}/showcase/_content.tsx`, content: showcaseContent, type: "ts" },
+    { name: `lib/style-preview/styles/${slug}.tsx`, content: previewModule, type: "ts" },
   ];
 }
 
@@ -250,6 +254,19 @@ function generateCoverSvg(input: StyleScaffoldInput): string {
   ].join("\n");
 }
 
+function generatePreviewPlaceholder(slug: string): string {
+  return [
+    `import type { StylePreviewComponents } from "../types";`,
+    ``,
+    `// TODO(${slug}): add a product-approved coverPreview before publication.`,
+    `// This intentionally renders no fallback design.`,
+    `const preview = {} satisfies StylePreviewComponents;`,
+    ``,
+    `export default preview;`,
+    ``,
+  ].join("\n");
+}
+
 function generateRegisterGuideMarkdown(
   input: StyleScaffoldInput,
   names: { exportName: string; tokensExportName: string; recipesExportName: string }
@@ -274,6 +291,7 @@ function generateRegisterGuideMarkdown(
     `- \`public/styles/${slug}.svg\``,
     `- \`app/styles/${slug}/showcase/page.tsx\``,
     `- \`app/styles/${slug}/showcase/_content.tsx\``,
+    `- \`lib/style-preview/styles/${slug}.tsx\``,
     ``,
     `## Registration Snippets`,
     ``,
@@ -334,27 +352,33 @@ function generateRegisterGuideMarkdown(
     `"${slug}": ${names.recipesExportName},`,
     "```",
     ``,
-    `### 5) Add Cover Preview Renderer`,
+    `### 5) Author the Approved Cover Preview`,
     ``,
-    `File: \`lib/style-components.tsx\``,
+    `File: \`lib/style-preview/styles/${slug}.tsx\``,
     ``,
-    "```tsx",
-    `"${slug}": {`,
-    `  coverPreview: () => (`,
-    `    <div className="w-full h-full flex items-center justify-center p-4" style={{ backgroundColor: "${input.secondaryColor.trim()}" }}>`,
-    `      <div className="w-full max-w-[240px]">`,
-    `        <div className="h-14 rounded-xl" style={{ backgroundColor: "${input.primaryColor.trim()}" }} />`,
-    `        <div className="mt-3 h-10 rounded-xl" style={{ backgroundColor: "${input.accentColors[0]?.trim() || input.primaryColor.trim()}", opacity: 0.35 }} />`,
-    `        <div className="mt-4 flex items-center justify-between">`,
-    `          <div className="text-[10px] font-semibold tracking-[0.22em]" style={{ color: "${pickTextColor(input.secondaryColor.trim())}" }}>`,
-    `            ${escapeJsxText(slug.toUpperCase())}`,
-    `          </div>`,
-    `          <div className="h-2 w-10 rounded-full" style={{ backgroundColor: "${input.accentColors[1]?.trim() || input.primaryColor.trim()}" }} />`,
-    `        </div>`,
-    `      </div>`,
-    `    </div>`,
-    `  ),`,
-    `},`,
+    `Replace the TODO scaffold with JSX reviewed and approved for this style. Publication refuses`,
+    `the placeholder and never invents a generic renderer on behalf of the author.`,
+    ``,
+    `### 6) Register Preview Delivery`,
+    ``,
+    `The eager compatibility registry keeps legacy imports working:`,
+    ``,
+    `File: \`lib/style-preview/registry.ts\``,
+    ``,
+    "```ts",
+    `import preview from "./styles/${slug}";`,
+    ``,
+    `"${slug}": preview,`,
+    "```",
+    ``,
+    `The delivery registry keeps catalog loading per-style:`,
+    ``,
+    `File: \`lib/style-preview/delivery.ts\``,
+    ``,
+    "```ts",
+    `"${slug}": () => import("./styles/${slug}").then((module) => module.default),`,
+    ``,
+    `"${slug}",`,
     "```",
     ``,
     `## Verify`,
@@ -683,10 +707,6 @@ function escapeXml(value: string): string {
     .replace(/>/g, "&gt;")
     .replace(/\"/g, "&quot;")
     .replace(/'/g, "&apos;");
-}
-
-function escapeJsxText(value: string): string {
-  return value.replace(/</g, "&lt;").replace(/>/g, "&gt;");
 }
 
 function pickTextColor(backgroundHex: string): string {
