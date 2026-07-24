@@ -1,5 +1,5 @@
 import { trackStyleUsage } from "@/lib/analytics";
-import { resolveStyleBySlug } from "@/lib/styles/community-runtime";
+import { resolveStyleDelivery } from "@/lib/style-delivery";
 import { after, NextResponse } from "next/server";
 
 function trackStyleUsageNonBlocking(slug: string): void {
@@ -17,8 +17,8 @@ export async function GET(
   { params }: { params: Promise<{ slug: string }> }
 ) {
   const { slug } = await params;
-  const resolved = await resolveStyleBySlug(slug);
-  const tokens = resolved?.tokens;
+  const delivery = await resolveStyleDelivery(slug);
+  const tokens = delivery?.capabilities.tokens;
 
   if (!tokens) {
     return NextResponse.json(
@@ -26,7 +26,7 @@ export async function GET(
       { status: 404 }
     );
   }
-  trackStyleUsageNonBlocking(resolved.style.slug);
+  trackStyleUsageNonBlocking(delivery.style.slug);
 
   return NextResponse.json({
     styleSlug: slug,

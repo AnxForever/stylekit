@@ -218,6 +218,20 @@ accessibility, and readiness degrade. The storage source leaks across the seam.
 - Static and community behavior have explicit capability tests.
 - API responses and detail pages use the same fallback rules.
 
+Status: complete (2026-07-25)
+
+Implementation evidence:
+
+- `lib/style-delivery` now exposes `resolveStyleDelivery`, which assembles tokens, recipes,
+  readiness, accessibility, version history, and export capabilities for both static catalog
+  styles and approved community submissions.
+- The style detail page and core style APIs consume the delivery result instead of reaching into
+  source-specific registries. Community recipe synthesis lives in the delivery module and is no
+  longer duplicated in the recipes route.
+- Static and community capability behavior is covered by focused delivery tests; core route tests
+  exercise the public delivery seam while preserving the existing HTTP payload shape and page
+  rendering conditions.
+
 ### Phase 3 — Optimize preview delivery without visual changes
 
 Priority: P1

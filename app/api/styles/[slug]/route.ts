@@ -1,9 +1,5 @@
-import { getStyleRecipes } from "@/lib/recipes";
-import { getFrontendReadiness } from "@/lib/styles";
-import { scoreStyle } from "@/lib/accessibility";
-import { getCurrentVersion, getChangelog } from "@/lib/versioning";
 import { trackStyleUsage } from "@/lib/analytics";
-import { resolveStyleBySlug } from "@/lib/styles/community-runtime";
+import { resolveStyleDelivery } from "@/lib/style-delivery";
 import { after, NextResponse } from "next/server";
 
 function trackStyleUsageNonBlocking(slug: string): void {
@@ -21,8 +17,8 @@ export async function GET(
   { params }: { params: Promise<{ slug: string }> }
 ) {
   const { slug } = await params;
-  const resolved = await resolveStyleBySlug(slug);
-  const style = resolved?.style;
+  const delivery = await resolveStyleDelivery(slug);
+  const style = delivery?.style;
 
   if (!style) {
     return NextResponse.json(
@@ -32,13 +28,12 @@ export async function GET(
   }
   trackStyleUsageNonBlocking(style.slug);
 
-  const tokens = resolved.tokens;
-  const recipes = resolved.source === "static"
-    ? getStyleRecipes(slug)
-    : null;
+  const { capabilities } = delivery;
+  const tokens = capabilities.tokens;
+  const recipes = capabilities.recipes;
 
   return NextResponse.json({
-    source: resolved.source,
+    source: delivery.source,
     slug: style.slug,
     name: style.name,
     nameEn: style.nameEn,
@@ -59,9 +54,9 @@ export async function GET(
       recipes: recipes.recipes,
     } : null,
     compatibleWith: style.compatibleWith,
-    readiness: getFrontendReadiness(style),
-    accessibility: resolved.source === "static" ? scoreStyle(slug) : null,
-    version: resolved.source === "static" ? getCurrentVersion(slug) : null,
-    changelog: resolved.source === "static" ? getChangelog(slug) : [],
+    readiness: capabilities.readiness,
+    accessibility: capabilities.accessibility,
+    version: capabilities.versioning?.current ?? null,
+    changelog: capabilities.versioning?.versions ?? [],
   });
 }

@@ -1,7 +1,4 @@
-import { getStyleTokens } from "@/lib/styles/tokens-registry";
-import { getStyleRecipes } from "@/lib/recipes";
-import { getStyleVersion } from "@/lib/versioning";
-import { resolveStyleBySlug } from "@/lib/styles/community-runtime";
+import { resolveStyleDelivery } from "@/lib/style-delivery";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(
@@ -9,8 +6,8 @@ export async function GET(
   { params }: { params: Promise<{ slug: string }> }
 ) {
   const { slug } = await params;
-  const resolved = await resolveStyleBySlug(slug);
-  const style = resolved?.style;
+  const delivery = await resolveStyleDelivery(slug);
+  const style = delivery?.style;
 
   if (!style) {
     return NextResponse.json(
@@ -19,7 +16,7 @@ export async function GET(
     );
   }
 
-  const history = getStyleVersion(slug);
+  const history = delivery.capabilities.versioning;
   if (!history) {
     return NextResponse.json(
       { error: "No version history found" },
@@ -43,9 +40,7 @@ export async function GET(
 
     // For now all versions point to the same current data,
     // since we only have 1.0.0. Future versions will store snapshots.
-    const tokens = resolved.tokens ?? getStyleTokens(slug);
-    const recipes =
-      resolved.source === "static" ? getStyleRecipes(slug) : null;
+    const { tokens, recipes } = delivery.capabilities;
 
     return NextResponse.json({
       slug,

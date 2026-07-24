@@ -32,7 +32,6 @@ import { addPromptPurpose } from "@/components/style-preview/_prompt-builders";
 import type { DesignStyle } from "@/lib/styles";
 import type { AccessibilityScore } from "@/lib/accessibility";
 import type { StyleVersion } from "@/lib/versioning";
-import type { RuntimeStyleSource } from "@/lib/styles/community-runtime";
 import type { Locale } from "@/lib/i18n/translations";
 import {
   getRecipesByLayout,
@@ -46,7 +45,7 @@ type CompatibleStyleSummary = Pick<DesignStyle, "slug" | "name" | "nameEn">;
 
 interface Props {
   style: DesignStyle;
-  styleSource?: RuntimeStyleSource;
+  hasIdeExports?: boolean;
   compatibleStyles: CompatibleStyleSummary[];
   compatibleLayouts: CompatibleStyleSummary[];
   enhancedRules: string | null;
@@ -60,7 +59,7 @@ interface Props {
 
 export function StyleDetailContent({
   style,
-  styleSource = "static",
+  hasIdeExports = true,
   compatibleStyles,
   compatibleLayouts,
   enhancedRules,
@@ -571,7 +570,7 @@ export function StyleDetailContent({
       {/* Export Tools */}
       <section id="style-exports" className="border-b border-border scroll-mt-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-12 py-12 md:py-16">
-          {styleSource === "static" && (
+          {hasIdeExports && (
             <div className="mb-12">
               <p className="text-xs tracking-widest uppercase text-muted mb-4">
                 {t("ideExport.section")}
