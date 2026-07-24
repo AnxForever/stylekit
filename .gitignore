@@ -111,6 +111,7 @@ __pycache__/
 /data/
 
 # Workspace build outputs and generated reports
+/output/
 packages/**/node_modules/
 packages/**/dist/
 .spec-workflow/
