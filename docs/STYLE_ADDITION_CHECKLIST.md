@@ -95,6 +95,12 @@ Complete checklist for adding a new design style to StyleKit.
 
 ## Phase 2: Registration Files (MODIFY)
 
+Preferred workflow: submit one `StyleScaffoldInput` through `publishStyle` from
+`@/lib/style-publication`. It plans and validates every projection before commit and rolls back a
+partial commit. Treat the registry items below as review assertions or manual recovery steps, not
+independent publication operations. The input must contain an explicitly approved `previewModule`;
+publication never invents a generic preview.
+
 ### 2.1 Full Style Registry
 
 - [ ] `lib/styles/registry.ts`

@@ -111,7 +111,7 @@ The existing public imports remain stable during migration:
 ### Phase 0 — Restore safe catalog registration
 
 Priority: P0  
-Status: in progress; safe-publication baseline landed in `efc279ab`, review hardening remains
+Status: complete (2026-07-25); safe-publication baseline and publication-module hardening are landed.
 
 #### Problem
 
@@ -158,6 +158,8 @@ source, so a registration can create invalid TypeScript even if registry patchin
 
 Priority: P1
 
+Status: complete (2026-07-25)
+
 #### Problem
 
 Adding one style requires maintainers to understand multiple registries and duplicated
@@ -178,6 +180,20 @@ to create.
 - Registry consistency is guaranteed before commit.
 - Catalog checks test the publication interface as well as final registry state.
 - Style addition documentation names current files only.
+
+Implementation evidence:
+
+- `lib/style-publication` now exposes one `publishStyle` seam, keeps plan/commit internal, and leaves
+  the submission route as a thin adapter.
+- Planning is side-effect-free, validates all six registry projections, rejects duplicate targets,
+  and requires an explicitly approved `coverPreview` module.
+- Registry insertion points are located from parsed TypeScript declarations while documented marker
+  comments remain compatibility guards for maintainers.
+- Commit failures restore completed registry writes and remove newly generated files.
+- Public-interface tests cover planning, missing markers, duplicate slugs, and full rollback against
+  copies of the current registry shapes.
+- `pnpm run check:catalog` publishes a probe into an isolated temporary registry copy before
+  reporting success; the repository itself remains untouched.
 
 ### Phase 2 — Deepen the Style delivery module
 
