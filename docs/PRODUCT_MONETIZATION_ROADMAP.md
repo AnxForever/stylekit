@@ -29,7 +29,7 @@ Skills are not separate products. They are delivery layers inside this loop.
 
 ### 2.1 Existing preview protection
 
-- The current 135 style preview cards are approved visual assets.
+- The current 136 style preview cards are approved visual assets.
 - The frozen code baseline is commit `774f9943`; the approved slug inventory lives in
   `tests/visual/approved-preview-baseline.json`.
 - Do not change their layout, color, typography, composition, animation, or interaction without
@@ -75,7 +75,7 @@ Generated previews are allowed only for future styles and unfinished drafts.
 ### 2.4 Scope discipline
 
 - Do not add a new resource category unless it strengthens Explore, Apply, or Validate.
-- Do not expand all 135 styles mechanically.
+- Do not expand all 136 styles mechanically.
 - Do not build billing infrastructure before a sellable pack and a purchase-intent test exist.
 - Do not advertise a CLI, MCP server, route, template download, or validation capability that is not
   actually usable by an external user.
@@ -96,7 +96,7 @@ accessibility, performance, and preservation of existing approved preview work
 
 The project has strong content volume and weak paid-product depth.
 
-- The catalog has 135 styles and 136 showcases, but style data has no distributable asset manifest.
+- The catalog has 136 styles and 136 showcases, but style data has no distributable asset manifest.
 - The shadcn registry currently ships theme variables and no component files.
 - Image generation has produced partial local coverage, but assets are not consistently connected to
   style pages, registry output, CLI/MCP delivery, or license metadata.
@@ -523,7 +523,7 @@ Every paid pack must pass:
 
 - Redesigning existing style preview cards.
 - Rewriting all showcases.
-- Adding image assets to all 135 styles before validation.
+- Adding image assets to all 136 styles before validation.
 - Launching a generic stock-image marketplace.
 - Expanding standalone prompt, animation, template, or learning encyclopedias.
 - Building subscriptions, team administration, or enterprise compliance before a paid pack is proven.

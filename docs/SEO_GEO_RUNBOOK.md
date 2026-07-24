@@ -2,7 +2,7 @@
 
 ## Objective
 
-Make StyleKit discoverable for high-intent searches around frontend styles, web/UI design styles, and AI UI prompts without changing the approved frontend design or any of the 135 curated previews.
+Make StyleKit discoverable for high-intent searches around frontend styles, web/UI design styles, and AI UI prompts without changing the approved frontend design or any of the 136 curated previews.
 
 SEO work in this project is limited to routing, canonical and language signals, metadata, structured data, machine-readable discovery files, factual content, and non-visual copy localization. Existing preview JSX, layout, colors, typography, animation, and interaction design remain protected.
 
@@ -50,7 +50,7 @@ GEO is treated as retrieval clarity and factual trust, not as a proprietary scor
 
 ## Factual baselines
 
-- Approved curated style count: 135.
+- Approved curated style count: 136.
 - Current animation catalog count: 57.
 - Every catalog style is checked for metadata, tokens, recipes, component examples, and a cover asset.
 - Existing curated previews are protected and are not automatically regenerated.

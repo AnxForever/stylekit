@@ -9,8 +9,8 @@
 </p>
 
 <p align="center">
-  <strong>An open-source style library for AI coding.</strong><br>
-  135 curated styles — install a registry theme or use its constraints in Cursor, Claude, or v0. English &amp; 中文 style discovery.
+  <strong>Open-source visual styles, tokens, and AI prompts for less generic AI-generated UI.</strong><br>
+  136 curated styles — install a shadcn theme or use its constraints in Cursor, Claude Code, v0, or Windsurf. English &amp; 中文 style discovery.
 </p>
 
 <p align="center">
@@ -50,7 +50,7 @@ StyleKit helps humans and AI start from a consistent visual direction. Pick a st
 
 ### Design System
 
-- **135 visual and layout styles** with design tokens, color palettes, and typography
+- **136 visual and layout styles** with design tokens, color palettes, and typography
 - **136 live showcases** — full-page interactive demos across the catalog
 - **Component recipes** — copy-paste code for buttons, cards, inputs, and more
 - **Export anywhere** — Tailwind preset, shadcn theme, CSS variables, Figma tokens
@@ -93,7 +93,7 @@ StyleKit helps humans and AI start from a consistent visual direction. Pick a st
 
 ## Styles
 
-135 styles across multiple visual and layout categories. Every style includes design tokens, component code, AI rules, and a curated preview.
+136 styles across multiple visual and layout categories. Every style includes design tokens, component code, AI rules, and a curated preview.
 
 <details>
 <summary><strong>Modern / Tech</strong> — Glassmorphism, Liquid Glass, Neumorphism, Bento Grid, Fluent Design, Material Design, Linear Style ...</summary>
@@ -221,7 +221,7 @@ one command:
 npx skills add AnxForever/stylekit
 ```
 
-Your agent can then apply any of the 135 styles on request ("make this look
+Your agent can then apply any of the 136 styles on request ("make this look
 like Stripe", "cyberpunk dashboard") using the correct tokens and rules. The
 skill lives in [`SKILL.md`](SKILL.md); see [`docs/AGENT_SKILL_GUIDE.md`](docs/AGENT_SKILL_GUIDE.md)
 for how it's built and published.

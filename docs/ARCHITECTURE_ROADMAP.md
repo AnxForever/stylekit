@@ -49,7 +49,7 @@ The existing style preview cards are approved product design and are not refacto
 
 The review found a healthy baseline with several concentrated risks:
 
-- Catalog integrity passes for 135 styles.
+- Catalog integrity passes for 136 styles.
 - 6,380 unit tests pass.
 - TypeScript passes in strict mode.
 - ESLint reports no errors and four warnings.
@@ -214,7 +214,7 @@ only one style. The loading boundary is the problem; the existing visual output 
 
 #### Direction
 
-- Preserve the current 135 style preview outputs and their existing JSX behavior.
+- Preserve the current 136 style preview outputs and their existing JSX behavior.
 - Split preview modules by style or by a measured chunking strategy without redesigning them.
 - Load only the preview code required by the current route or visible card set.
 - Keep preview lookup and loading behind a stable interface so callers do not depend on chunking.
