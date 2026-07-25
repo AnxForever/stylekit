@@ -1,7 +1,7 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import { ArrowLeft } from "lucide-react";
+import { usePathname, useRouter } from "next/navigation";
+import { ArrowLeft, Download } from "lucide-react";
 import { useI18n } from "@/lib/i18n/context";
 import { navigateBackOrFallback } from "@/lib/navigation/smart-back";
 
@@ -63,22 +63,38 @@ export function TemplateBackButton({
 }: TemplateBackButtonProps) {
   const { t } = useI18n();
   const router = useRouter();
+  const pathname = usePathname();
   const style = variantStyles[variant];
+  // Template pages live at /templates/<slug> (locale prefix possible).
+  const slug = pathname?.match(/\/templates\/([a-z0-9-]+)/)?.[1];
 
   return (
-    <button
-      type="button"
-      onClick={() =>
-        navigateBackOrFallback(router, {
-          href: "/templates",
-          savedReturnUrlKey: "templates-return-url",
-          fallbackHref: "/templates",
-        })
-      }
-      className={`fixed top-3 right-4 z-[9999] inline-flex items-center gap-2 px-4 py-2.5 transition-all duration-200 ${style}`}
-    >
-      <ArrowLeft className="w-4 h-4" />
-      <span className="hidden sm:inline">{t("templates.backToList")}</span>
-    </button>
+    <div className="fixed top-3 right-4 z-[9999] flex items-center gap-2">
+      {slug ? (
+        <a
+          href={`/api/templates/${slug}/download`}
+          title={t("templates.download")}
+          aria-label={t("templates.download")}
+          className={`inline-flex items-center gap-2 px-4 py-2.5 transition-all duration-200 ${style}`}
+        >
+          <Download className="w-4 h-4" />
+          <span className="hidden md:inline">{t("templates.download")}</span>
+        </a>
+      ) : null}
+      <button
+        type="button"
+        onClick={() =>
+          navigateBackOrFallback(router, {
+            href: "/templates",
+            savedReturnUrlKey: "templates-return-url",
+            fallbackHref: "/templates",
+          })
+        }
+        className={`inline-flex items-center gap-2 px-4 py-2.5 transition-all duration-200 ${style}`}
+      >
+        <ArrowLeft className="w-4 h-4" />
+        <span className="hidden sm:inline">{t("templates.backToList")}</span>
+      </button>
+    </div>
   );
 }
