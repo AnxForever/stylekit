@@ -145,10 +145,20 @@ async function auditUnpublishedPackageCommands(rootDir: string): Promise<Product
 }
 
 async function auditTemplateDownloadClaim(rootDir: string): Promise<ProductTruthIssue[]> {
-  const sourceRoute = "app/api/templates/[slug]/source/route.ts";
-  const routeContent = await readFile(path.join(rootDir, sourceRoute), "utf8");
-  if (!/path\.join\(TEMPLATES_DIR,\s*slug,\s*"page\.tsx"\)/s.test(routeContent)) {
-    return [];
+  // The download button links to the zip route. The label may promise a full
+  // project only while that route still bundles the scaffold plus every
+  // template file; if it regresses to a single-file export, the label must
+  // disclose that again.
+  const downloadRoute = "app/api/templates/[slug]/download/route.ts";
+  const downloadRoutePath = path.join(rootDir, downloadRoute);
+  if (await fileExists(downloadRoutePath)) {
+    const downloadContent = await readFile(downloadRoutePath, "utf8");
+    if (
+      downloadContent.includes("JSZip") &&
+      downloadContent.includes("buildScaffoldFiles")
+    ) {
+      return [];
+    }
   }
 
   const translationFiles = [
