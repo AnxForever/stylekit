@@ -22,7 +22,9 @@ const MANIFEST_PATH = path.join(ROOT, "lib", "templates", "covers.generated.ts")
 const args = process.argv.slice(2);
 const baseIndex = args.indexOf("--base");
 const BASE = baseIndex >= 0 ? args[baseIndex + 1] : "http://localhost:13998";
-const onlySlugs = args.filter((arg, i) => !arg.startsWith("--") && i !== baseIndex + 1);
+const onlySlugs = args.filter(
+  (arg, i) => !arg.startsWith("--") && (baseIndex < 0 || i !== baseIndex + 1)
+);
 
 async function catalogSlugs() {
   const catalog = await readFile(path.join(ROOT, "lib", "templates", "catalog.ts"), "utf-8");

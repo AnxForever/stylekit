@@ -2,1046 +2,1037 @@
 
 export const dynamic = "force-static";
 
-import { useState, useMemo, useCallback } from "react";
-import Link from "next/link";
+import { useState, type FormEvent, type ReactNode } from "react";
 import {
-  ArrowLeft,
+  ArrowRight,
+  ArrowUpRight,
+  Check,
   Heart,
+  Leaf,
+  Mail,
+  Menu,
   Minus,
   Plus,
   Search,
+  ShieldCheck,
   ShoppingBag,
   Star,
-  Trash2,
   Truck,
-  RefreshCw,
-  Shield,
   X,
 } from "lucide-react";
+import { Familjen_Grotesk, Space_Mono } from "next/font/google";
 import { TemplateBackButton } from "@/components/templates/template-back-button";
-// ---------------------------------------------------------------------------
-// Types
-// ---------------------------------------------------------------------------
 
-type ViewName = "shop" | "product" | "cart";
+const display = Familjen_Grotesk({ subsets: ["latin"] });
+const mono = Space_Mono({ weight: ["400", "700"], subsets: ["latin"] });
 
-interface ProductColor {
-  name: string;
-  hex: string;
-}
+/* ------------------------------------------------------------------ */
+/* Palette                                                             */
+/* ------------------------------------------------------------------ */
+
+const SAFFRON = "#E8A317";
+const INK = "#1B1712";
+const SHADOW = "#241f16";
+
+/* ------------------------------------------------------------------ */
+/* Types + Content                                                     */
+/* ------------------------------------------------------------------ */
+
+type ProductKind =
+  | "arcLamp"
+  | "tableLamp"
+  | "loungeChair"
+  | "barStool"
+  | "speaker"
+  | "turntable"
+  | "watch"
+  | "carafe";
+
+type Category = "Lighting" | "Seating" | "Audio" | "Objects";
 
 interface Product {
   id: string;
   name: string;
-  nameCn: string;
+  sku: string;
+  category: Category;
+  kind: ProductKind;
   price: number;
-  originalPrice: number;
+  material: string;
   rating: number;
-  reviewCount: number;
-  category: string;
-  colors: ProductColor[];
-  images: string[];
-  features: string[];
+  reviews: number;
+  color: string;
   badge?: string;
 }
 
-interface Review {
-  author: string;
-  rating: number;
-  text: string;
-  date: string;
-}
-
-interface CartItem {
-  productId: string;
-  colorIndex: number;
-  quantity: number;
-}
-
-// ---------------------------------------------------------------------------
-// Mock Data
-// ---------------------------------------------------------------------------
-
-const CATEGORIES = ["All", "Audio", "Wearable", "Accessories", "Smart Home"] as const;
+const FILTERS: ("All" | Category)[] = ["All", "Lighting", "Seating", "Audio", "Objects"];
 
 const PRODUCTS: Product[] = [
   {
-    id: "headphones-pro",
-    name: "Premium Wireless Headphones",
-    nameCn: "旗舰无线降噪耳机",
-    price: 2999,
-    originalPrice: 3599,
+    id: "halo-arc",
+    name: "Halo Arc Lamp",
+    sku: "MG-L01",
+    category: "Lighting",
+    kind: "arcLamp",
+    price: 340,
+    material: "Powder-coated steel, linen shade",
     rating: 4.8,
-    reviewCount: 1247,
-    category: "Audio",
-    colors: [
-      { name: "Midnight Black", hex: "#1a1a1a" },
-      { name: "Cloud White", hex: "#f5f5f0" },
-      { name: "Ocean Blue", hex: "#2563eb" },
-    ],
-    images: [
-      "bg-gradient-to-br from-gray-800 to-gray-900",
-      "bg-gradient-to-br from-gray-700 to-gray-800",
-      "bg-gradient-to-br from-gray-600 to-gray-700",
-    ],
-    features: ["40 小时续航", "主动降噪 (ANC)", "Hi-Res Audio 认证", "多点连接", "触控操作"],
-    badge: "Best Seller",
+    reviews: 214,
+    color: "#9B8A52",
+    badge: "Signature",
   },
   {
-    id: "earbuds-lite",
-    name: "Compact Wireless Earbuds",
-    nameCn: "轻巧真无线耳塞",
-    price: 799,
-    originalPrice: 999,
-    rating: 4.5,
-    reviewCount: 832,
-    category: "Audio",
-    colors: [
-      { name: "White", hex: "#f5f5f0" },
-      { name: "Black", hex: "#1a1a1a" },
-    ],
-    images: ["bg-gradient-to-br from-sky-100 to-sky-200"],
-    features: ["24 小时续航", "IPX5 防水", "通话降噪", "蓝牙 5.3"],
-  },
-  {
-    id: "smartwatch-x",
-    name: "Smart Watch X Series",
-    nameCn: "智能手表 X 系列",
-    price: 1999,
-    originalPrice: 2499,
+    id: "ridge-table",
+    name: "Ridge Table Lamp",
+    sku: "MG-L04",
+    category: "Lighting",
+    kind: "tableLamp",
+    price: 190,
+    material: "Turned ash, cotton shade",
     rating: 4.6,
-    reviewCount: 654,
-    category: "Wearable",
-    colors: [
-      { name: "Silver", hex: "#c0c0c0" },
-      { name: "Gold", hex: "#d4a857" },
-      { name: "Space Gray", hex: "#4a4a4a" },
-    ],
-    images: ["bg-gradient-to-br from-slate-200 to-slate-300"],
-    features: ["健康监测", "GPS 定位", "NFC 支付", "7 天续航"],
+    reviews: 132,
+    color: "#BC7B54",
+  },
+  {
+    id: "perch-lounge",
+    name: "Perch Lounge Chair",
+    sku: "MG-S02",
+    category: "Seating",
+    kind: "loungeChair",
+    price: 890,
+    material: "Solid oak, full-grain leather",
+    rating: 4.9,
+    reviews: 96,
+    color: "#B0674A",
+    badge: "Best seller",
+  },
+  {
+    id: "tuck-stool",
+    name: "Tuck Bar Stool",
+    sku: "MG-S07",
+    category: "Seating",
+    kind: "barStool",
+    price: 240,
+    material: "Solid oak, woven cord seat",
+    rating: 4.5,
+    reviews: 178,
+    color: "#7D8B66",
+  },
+  {
+    id: "monolith-speaker",
+    name: "Monolith Bookshelf Speaker",
+    sku: "MG-A03",
+    category: "Audio",
+    kind: "speaker",
+    price: 520,
+    material: "Walnut cabinet, silk dome",
+    rating: 4.7,
+    reviews: 88,
+    color: "#4C4C55",
+  },
+  {
+    id: "revox-turntable",
+    name: "Revox Turntable",
+    sku: "MG-A08",
+    category: "Audio",
+    kind: "turntable",
+    price: 460,
+    material: "Aluminium platter, MDF plinth",
+    rating: 4.6,
+    reviews: 74,
+    color: "#5E7688",
     badge: "New",
   },
   {
-    id: "speaker-mini",
-    name: "Portable Bluetooth Speaker",
-    nameCn: "便携蓝牙音箱",
-    price: 499,
-    originalPrice: 599,
+    id: "meridian-watch",
+    name: "Meridian Field Watch",
+    sku: "MG-O05",
+    category: "Objects",
+    kind: "watch",
+    price: 280,
+    material: "Brushed steel, calf leather",
+    rating: 4.8,
+    reviews: 203,
+    color: "#414C3C",
+  },
+  {
+    id: "vessel-carafe",
+    name: "Vessel Glass Carafe",
+    sku: "MG-O11",
+    category: "Objects",
+    kind: "carafe",
+    price: 68,
+    material: "Mouth-blown borosilicate",
     rating: 4.4,
-    reviewCount: 1893,
-    category: "Audio",
-    colors: [
-      { name: "Forest Green", hex: "#2d5a27" },
-      { name: "Coral", hex: "#ff6b6b" },
-      { name: "Navy", hex: "#1e3a5f" },
-    ],
-    images: ["bg-gradient-to-br from-emerald-100 to-emerald-200"],
-    features: ["IPX7 防水", "12 小时续航", "TWS 串联", "免提通话"],
-  },
-  {
-    id: "fitness-band",
-    name: "Fitness Tracker Band",
-    nameCn: "运动健康手环",
-    price: 399,
-    originalPrice: 499,
-    rating: 4.3,
-    reviewCount: 2156,
-    category: "Wearable",
-    colors: [
-      { name: "Black", hex: "#1a1a1a" },
-      { name: "Mint", hex: "#98d8c8" },
-    ],
-    images: ["bg-gradient-to-br from-violet-100 to-violet-200"],
-    features: ["心率监测", "睡眠追踪", "14 天续航", "50m 防水"],
-  },
-  {
-    id: "charging-pad",
-    name: "Wireless Charging Pad",
-    nameCn: "无线充电板",
-    price: 199,
-    originalPrice: 249,
-    rating: 4.7,
-    reviewCount: 943,
-    category: "Accessories",
-    colors: [
-      { name: "White", hex: "#f5f5f0" },
-      { name: "Black", hex: "#1a1a1a" },
-    ],
-    images: ["bg-gradient-to-br from-amber-50 to-amber-100"],
-    features: ["15W 快充", "Qi 兼容", "LED 指示灯", "超薄设计"],
-  },
-  {
-    id: "smart-plug",
-    name: "Wi-Fi Smart Plug",
-    nameCn: "智能 Wi-Fi 插座",
-    price: 129,
-    originalPrice: 169,
-    rating: 4.2,
-    reviewCount: 3421,
-    category: "Smart Home",
-    colors: [{ name: "White", hex: "#f5f5f0" }],
-    images: ["bg-gradient-to-br from-blue-50 to-blue-100"],
-    features: ["语音控制", "定时开关", "用电统计", "远程控制"],
-  },
-  {
-    id: "usb-hub",
-    name: "USB-C Hub 7-in-1",
-    nameCn: "七合一 USB-C 拓展坞",
-    price: 349,
-    originalPrice: 429,
-    rating: 4.5,
-    reviewCount: 578,
-    category: "Accessories",
-    colors: [
-      { name: "Space Gray", hex: "#4a4a4a" },
-      { name: "Silver", hex: "#c0c0c0" },
-    ],
-    images: ["bg-gradient-to-br from-gray-100 to-gray-200"],
-    features: ["4K HDMI", "100W PD 充电", "SD 读卡器", "千兆网口"],
-    badge: "Hot",
-  },
-  {
-    id: "desk-lamp",
-    name: "Smart LED Desk Lamp",
-    nameCn: "智能 LED 台灯",
-    price: 599,
-    originalPrice: 699,
-    rating: 4.6,
-    reviewCount: 412,
-    category: "Smart Home",
-    colors: [
-      { name: "White", hex: "#f5f5f0" },
-      { name: "Black", hex: "#1a1a1a" },
-    ],
-    images: ["bg-gradient-to-br from-yellow-50 to-orange-50"],
-    features: ["色温调节", "亮度调节", "护眼模式", "手势控制"],
+    reviews: 156,
+    color: "#B98C4A",
+    badge: "Last few",
   },
 ];
 
-const REVIEWS: Review[] = [
+const HERO = PRODUCTS[0];
+const FEATURED = PRODUCTS[2];
+
+const MATERIALS_MARQUEE = [
+  "Solid oak",
+  "Mouth-blown glass",
+  "Powder-coated steel",
+  "Full-grain leather",
+  "Turned ash",
+  "Brushed steel",
+  "Woven cord",
+  "Silk-dome drivers",
+];
+
+const FEATURED_SPECS: { label: string; value: string }[] = [
+  { label: "Dimensions", value: "72 × 78 × 84 cm" },
+  { label: "Seat height", value: "38 cm" },
+  { label: "Frame", value: "Solid white oak" },
+  { label: "Upholstery", value: "Aniline leather" },
+  { label: "Weight", value: "14 kg" },
+  { label: "Warranty", value: "10 years" },
+];
+
+const FEATURED_MATERIALS = ["White oak", "Aniline leather", "Brass fixings", "Wool webbing"];
+
+const STANDARDS: { icon: typeof ShieldCheck; title: string; body: string }[] = [
   {
-    author: "音频发烧友",
-    rating: 5,
-    text: "音质非常出色，降噪效果一流。佩戴舒适，长时间使用也不累。",
-    date: "2025-01-15",
+    icon: ShieldCheck,
+    title: "Ten-year warranty",
+    body: "Every joint, finish, and driver is covered for a decade. We ship spare parts and repair kits before we ever suggest a replacement.",
   },
   {
-    author: "通勤党",
-    rating: 4,
-    text: "地铁上降噪效果很好，续航也够用。唯一不足是有点重。",
-    date: "2025-01-10",
+    icon: Leaf,
+    title: "Honest materials",
+    body: "Solid wood, real metal, mouth-blown glass. No veneer, no plastic pretending to be brass. What you see is the whole object.",
   },
   {
-    author: "设计师",
-    rating: 5,
-    text: "颜值很高，做工精细。蓝牙连接稳定，延迟很低。",
-    date: "2024-12-28",
+    icon: Truck,
+    title: "Considered delivery",
+    body: "Flat-packed with care, carbon-offset on every route, and complimentary over $150. We collect your old pieces for recycling too.",
   },
 ];
 
-type SortOption = "default" | "price-asc" | "price-desc";
+const TESTIMONIALS: { quote: string; name: string; role: string }[] = [
+  {
+    quote:
+      "The arc lamp is the first thing guests notice and the last thing they forget. Six months in, it still feels like a small daily luxury.",
+    name: "Nora Whitfield",
+    role: "Interior stylist, London",
+  },
+  {
+    quote:
+      "I have bought a lot of so-called design furniture that fell apart in a year. The Perch chair is the one my back and my landlord both approve of.",
+    name: "Daniel Osei",
+    role: "Architect, Accra",
+  },
+  {
+    quote:
+      "Ordered the carafe on a whim and ended up furnishing half my kitchen. This catalog is dangerous in the most well-made way.",
+    name: "Maya Lindqvist",
+    role: "Home cook, Malmö",
+  },
+];
 
-// ---------------------------------------------------------------------------
-// Helper Components
-// ---------------------------------------------------------------------------
+const FOOTER_COLS: { title: string; links: string[] }[] = [
+  { title: "Shop", links: ["Lighting", "Seating", "Audio", "Objects", "Gift cards"] },
+  { title: "Studio", links: ["Our story", "Materials", "Makers", "Journal"] },
+  { title: "Support", links: ["Shipping", "Returns", "Care guide", "Contact"] },
+  { title: "Legal", links: ["Privacy", "Terms", "Warranty"] },
+];
 
-function StarRating({ rating, size = "w-4 h-4" }: { rating: number; size?: string }) {
+const NAV_LINKS: { label: string; href: string }[] = [
+  { label: "Catalog", href: "#catalog" },
+  { label: "Lighting", href: "#catalog" },
+  { label: "Seating", href: "#catalog" },
+  { label: "Standards", href: "#standards" },
+];
+
+function money(value: number): string {
+  return "$" + value.toLocaleString("en-US");
+}
+
+/* ------------------------------------------------------------------ */
+/* Product silhouettes — deliberate CSS/SVG catalog illustrations      */
+/* ------------------------------------------------------------------ */
+
+function ProductArt({ kind, color, className = "" }: { kind: ProductKind; color: string; className?: string }) {
+  const svg = (children: ReactNode) => (
+    <svg viewBox="0 0 200 200" className={className} aria-hidden="true">
+      {children}
+    </svg>
+  );
+
+  switch (kind) {
+    case "arcLamp":
+      return svg(
+        <>
+          <ellipse cx="66" cy="182" rx="30" ry="6" fill={SHADOW} opacity="0.06" />
+          <ellipse cx="66" cy="183" rx="20" ry="4" fill={SHADOW} opacity="0.10" />
+          <rect x="44" y="166" width="44" height="14" rx="6" fill={color} />
+          <rect x="44" y="166" width="44" height="5" rx="4" fill="#ffffff" opacity="0.16" />
+          <rect x="60" y="150" width="9" height="18" rx="3" fill={color} />
+          <path d="M64 154 C 62 70, 104 40, 152 50" fill="none" stroke={color} strokeWidth="7" strokeLinecap="round" />
+          <rect x="147" y="43" width="10" height="9" rx="2" fill={color} />
+          <path d="M133 50 a19 15 0 0 0 38 0 z" fill={color} />
+          <path d="M133 50 a19 15 0 0 0 38 0" fill="none" stroke="#000000" strokeWidth="1.5" opacity="0.12" />
+          <path d="M139 52 a13 11 0 0 0 12 8" fill="none" stroke="#ffffff" strokeWidth="2.5" strokeLinecap="round" opacity="0.22" />
+        </>,
+      );
+    case "tableLamp":
+      return svg(
+        <>
+          <ellipse cx="100" cy="182" rx="30" ry="6" fill={SHADOW} opacity="0.06" />
+          <ellipse cx="100" cy="183" rx="20" ry="4" fill={SHADOW} opacity="0.10" />
+          <ellipse cx="100" cy="176" rx="24" ry="6" fill={color} />
+          <ellipse cx="100" cy="174" rx="24" ry="6" fill="#ffffff" opacity="0.12" />
+          <rect x="96" y="110" width="8" height="66" rx="3" fill={color} />
+          <rect x="100" y="110" width="4" height="66" fill="#000000" opacity="0.12" />
+          <path d="M72 110 L128 110 L118 66 Q100 60 82 66 Z" fill={color} />
+          <path d="M72 110 L128 110 L124 103 L76 103 Z" fill="#000000" opacity="0.14" />
+          <path d="M84 106 L90 70" stroke="#ffffff" strokeWidth="4" strokeLinecap="round" opacity="0.16" />
+          <circle cx="100" cy="60" r="4" fill={color} />
+        </>,
+      );
+    case "loungeChair":
+      return svg(
+        <>
+          <ellipse cx="102" cy="182" rx="54" ry="8" fill={SHADOW} opacity="0.07" />
+          <ellipse cx="102" cy="183" rx="40" ry="5" fill={SHADOW} opacity="0.10" />
+          <line x1="74" y1="128" x2="62" y2="176" stroke={color} strokeWidth="6" strokeLinecap="round" />
+          <line x1="132" y1="128" x2="144" y2="176" stroke={color} strokeWidth="6" strokeLinecap="round" />
+          <line x1="96" y1="126" x2="88" y2="174" stroke={color} strokeWidth="5" strokeLinecap="round" opacity="0.8" />
+          <line x1="126" y1="124" x2="132" y2="172" stroke={color} strokeWidth="5" strokeLinecap="round" opacity="0.8" />
+          <rect x="60" y="110" width="84" height="22" rx="10" fill={color} />
+          <rect x="60" y="110" width="84" height="9" rx="9" fill="#ffffff" opacity="0.16" />
+          <rect x="60" y="126" width="84" height="6" rx="3" fill="#000000" opacity="0.12" />
+          <rect x="120" y="54" width="22" height="68" rx="10" fill={color} transform="rotate(13 131 90)" />
+          <rect x="120" y="54" width="9" height="68" rx="9" fill="#ffffff" opacity="0.14" transform="rotate(13 131 90)" />
+        </>,
+      );
+    case "barStool":
+      return svg(
+        <>
+          <ellipse cx="100" cy="182" rx="44" ry="7" fill={SHADOW} opacity="0.07" />
+          <ellipse cx="100" cy="183" rx="30" ry="4" fill={SHADOW} opacity="0.10" />
+          <line x1="86" y1="98" x2="70" y2="176" stroke={color} strokeWidth="6" strokeLinecap="round" />
+          <line x1="114" y1="98" x2="130" y2="176" stroke={color} strokeWidth="6" strokeLinecap="round" />
+          <line x1="94" y1="96" x2="88" y2="172" stroke={color} strokeWidth="5" strokeLinecap="round" opacity="0.78" />
+          <line x1="108" y1="96" x2="116" y2="172" stroke={color} strokeWidth="5" strokeLinecap="round" opacity="0.78" />
+          <ellipse cx="100" cy="140" rx="30" ry="7" fill="none" stroke={color} strokeWidth="4" opacity="0.85" />
+          <ellipse cx="100" cy="99" rx="34" ry="10" fill="#000000" opacity="0.14" />
+          <ellipse cx="100" cy="92" rx="34" ry="10" fill={color} />
+          <ellipse cx="100" cy="90" rx="34" ry="9" fill="#ffffff" opacity="0.14" />
+        </>,
+      );
+    case "speaker":
+      return svg(
+        <>
+          <ellipse cx="100" cy="182" rx="42" ry="7" fill={SHADOW} opacity="0.07" />
+          <ellipse cx="100" cy="183" rx="30" ry="4" fill={SHADOW} opacity="0.10" />
+          <rect x="64" y="40" width="72" height="140" rx="8" fill={color} />
+          <rect x="64" y="40" width="16" height="140" rx="8" fill="#ffffff" opacity="0.06" />
+          <rect x="120" y="40" width="16" height="140" rx="8" fill="#000000" opacity="0.10" />
+          <circle cx="100" cy="70" r="10" fill="#000000" opacity="0.18" />
+          <circle cx="100" cy="70" r="6" fill={color} />
+          <circle cx="100" cy="68" r="6" fill="#ffffff" opacity="0.12" />
+          <circle cx="100" cy="132" r="26" fill="#000000" opacity="0.16" />
+          <circle cx="100" cy="132" r="20" fill={color} />
+          <circle cx="100" cy="132" r="20" fill="#000000" opacity="0.12" />
+          <circle cx="100" cy="130" r="6" fill="#000000" opacity="0.28" />
+        </>,
+      );
+    case "turntable":
+      return svg(
+        <>
+          <ellipse cx="100" cy="176" rx="58" ry="8" fill={SHADOW} opacity="0.07" />
+          <ellipse cx="100" cy="177" rx="44" ry="5" fill={SHADOW} opacity="0.10" />
+          <rect x="42" y="120" width="116" height="40" rx="8" fill={color} />
+          <rect x="42" y="120" width="116" height="10" rx="8" fill="#ffffff" opacity="0.10" />
+          <rect x="42" y="150" width="116" height="10" rx="8" fill="#000000" opacity="0.12" />
+          <rect x="52" y="160" width="12" height="6" rx="2" fill="#000000" opacity="0.30" />
+          <rect x="136" y="160" width="12" height="6" rx="2" fill="#000000" opacity="0.30" />
+          <ellipse cx="88" cy="118" rx="40" ry="13" fill="#000000" opacity="0.18" />
+          <ellipse cx="88" cy="114" rx="40" ry="13" fill={color} />
+          <ellipse cx="88" cy="114" rx="40" ry="13" fill="#000000" opacity="0.16" />
+          <ellipse cx="88" cy="114" rx="26" ry="8" fill="none" stroke="#ffffff" strokeWidth="1" opacity="0.14" />
+          <ellipse cx="88" cy="114" rx="9" ry="3" fill={SAFFRON} />
+          <circle cx="140" cy="112" r="5" fill="#000000" opacity="0.32" />
+          <line x1="140" y1="112" x2="104" y2="112" stroke="#000000" strokeWidth="3" strokeLinecap="round" opacity="0.42" />
+          <rect x="99" y="109" width="8" height="7" rx="2" fill="#000000" opacity="0.45" transform="rotate(20 103 113)" />
+        </>,
+      );
+    case "watch":
+      return svg(
+        <>
+          <ellipse cx="100" cy="180" rx="30" ry="6" fill={SHADOW} opacity="0.07" />
+          <path d="M86 66 L114 66 L110 26 Q100 22 90 26 Z" fill={color} />
+          <path d="M86 134 L114 134 L110 176 Q100 180 90 176 Z" fill={color} />
+          <line x1="92" y1="34" x2="92" y2="60" stroke="#ffffff" strokeWidth="1.5" strokeLinecap="round" strokeDasharray="2 3" opacity="0.28" />
+          <line x1="108" y1="34" x2="108" y2="60" stroke="#ffffff" strokeWidth="1.5" strokeLinecap="round" strokeDasharray="2 3" opacity="0.28" />
+          <line x1="92" y1="142" x2="92" y2="168" stroke="#ffffff" strokeWidth="1.5" strokeLinecap="round" strokeDasharray="2 3" opacity="0.28" />
+          <line x1="108" y1="142" x2="108" y2="168" stroke="#ffffff" strokeWidth="1.5" strokeLinecap="round" strokeDasharray="2 3" opacity="0.28" />
+          <circle cx="100" cy="100" r="36" fill="#000000" opacity="0.14" />
+          <rect x="133" y="94" width="9" height="12" rx="2" fill={color} />
+          <circle cx="100" cy="100" r="34" fill={color} />
+          <circle cx="100" cy="100" r="27" fill="#F4EFE3" />
+          <circle cx="100" cy="100" r="27" fill="none" stroke="#000000" strokeWidth="1" opacity="0.12" />
+          <rect x="99" y="76" width="2" height="6" rx="1" fill="#2A261E" opacity="0.55" />
+          <rect x="99" y="118" width="2" height="6" rx="1" fill="#2A261E" opacity="0.55" />
+          <rect x="76" y="99" width="6" height="2" rx="1" fill="#2A261E" opacity="0.55" />
+          <rect x="118" y="99" width="6" height="2" rx="1" fill="#2A261E" opacity="0.55" />
+          <line x1="100" y1="100" x2="100" y2="84" stroke="#2A261E" strokeWidth="3" strokeLinecap="round" />
+          <line x1="100" y1="100" x2="115" y2="106" stroke="#2A261E" strokeWidth="2.5" strokeLinecap="round" />
+          <line x1="100" y1="100" x2="89" y2="111" stroke={SAFFRON} strokeWidth="1.6" strokeLinecap="round" />
+          <circle cx="100" cy="100" r="3" fill="#2A261E" />
+        </>,
+      );
+    case "carafe":
+      return svg(
+        <>
+          <ellipse cx="100" cy="180" rx="30" ry="6" fill={SHADOW} opacity="0.07" />
+          <path
+            d="M78 92 C 74 108, 68 120, 68 140 C 68 164, 82 176, 100 176 C 118 176, 132 164, 132 140 C 132 120, 126 108, 122 92 Z"
+            fill={color}
+            fillOpacity="0.34"
+            stroke={color}
+            strokeOpacity="0.55"
+            strokeWidth="2"
+          />
+          <path
+            d="M70 140 C 70 164, 83 174, 100 174 C 117 174, 130 164, 130 140 C 130 148, 118 152, 100 152 C 82 152, 70 148, 70 140 Z"
+            fill={color}
+            fillOpacity="0.58"
+          />
+          <rect x="90" y="60" width="20" height="34" fill={color} fillOpacity="0.30" stroke={color} strokeOpacity="0.55" strokeWidth="2" />
+          <ellipse cx="100" cy="58" rx="15" ry="4" fill={color} fillOpacity="0.30" stroke={color} strokeOpacity="0.55" strokeWidth="1.5" />
+          <path d="M84 104 C 80 120, 78 140, 84 158" fill="none" stroke="#ffffff" strokeOpacity="0.5" strokeWidth="4" strokeLinecap="round" />
+          <path d="M93 100 C 91 118, 91 140, 94 156" fill="none" stroke="#ffffff" strokeOpacity="0.25" strokeWidth="2" strokeLinecap="round" />
+        </>,
+      );
+    default:
+      return null;
+  }
+}
+
+function ProductStage({
+  kind,
+  color,
+  className = "",
+  artClassName = "w-[74%] max-w-[260px]",
+}: {
+  kind: ProductKind;
+  color: string;
+  className?: string;
+  artClassName?: string;
+}) {
   return (
-    <div className="flex">
-      {Array.from({ length: 5 }).map((_, i) => (
-        <Star
-          key={i}
-          className={`${size} ${
-            i < Math.floor(rating) ? "text-amber-400 fill-amber-400" : "text-gray-200"
-          }`}
-        />
-      ))}
+    <div className={`relative flex items-center justify-center ${className}`}>
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0"
+        style={{
+          background: "radial-gradient(58% 48% at 50% 46%, rgba(232,163,23,0.20), rgba(232,163,23,0) 66%)",
+        }}
+      />
+      <div
+        aria-hidden
+        className="pointer-events-none absolute bottom-[8%] left-1/2 h-px w-3/5 -translate-x-1/2"
+        style={{ background: "linear-gradient(90deg, transparent, rgba(27,23,18,0.18), transparent)" }}
+      />
+      <ProductArt kind={kind} color={color} className={`relative z-10 ${artClassName}`} />
     </div>
   );
 }
 
-function DiscountBadge({ price, originalPrice }: { price: number; originalPrice: number }) {
-  const pct = Math.round(((originalPrice - price) / originalPrice) * 100);
+/* ------------------------------------------------------------------ */
+/* Small helpers                                                       */
+/* ------------------------------------------------------------------ */
+
+function Stars({ rating, className = "" }: { rating: number; className?: string }) {
   return (
-    <span className="px-2 py-1 bg-red-50 text-red-600 text-xs font-semibold rounded">
-      -{pct}%
+    <span className={`inline-flex items-center gap-0.5 ${className}`} aria-label={`Rated ${rating} out of 5`}>
+      {[0, 1, 2, 3, 4].map((i) => {
+        const active = i < Math.round(rating);
+        return (
+          <Star
+            key={i}
+            className="h-3.5 w-3.5"
+            strokeWidth={1.5}
+            style={{ fill: active ? SAFFRON : "transparent", color: active ? SAFFRON : "#C9C0AC" }}
+          />
+        );
+      })}
     </span>
   );
 }
 
-// ---------------------------------------------------------------------------
-// Navigation Bar
-// ---------------------------------------------------------------------------
-
-function NavBar({
-  view,
-  cartCount,
-  onNavigate,
-}: {
-  view: ViewName;
-  cartCount: number;
-  onNavigate: (v: ViewName) => void;
-}) {
+function Wordmark() {
   return (
-    <nav className="border-b border-gray-100 sticky top-0 bg-white/95 backdrop-blur-sm z-30">
-      <div className="max-w-7xl mx-auto px-4 md:px-8 py-4 flex items-center justify-between">
-        <button
-          onClick={() => onNavigate("shop")}
-          className="text-xl font-bold hover:opacity-70 transition-opacity"
-        >
-          STORE
-        </button>
-        <div className="hidden md:flex items-center gap-8 text-sm">
-          <button
-            onClick={() => onNavigate("shop")}
-            className={`transition-colors ${
-              view === "shop" ? "text-gray-900 font-medium" : "text-gray-600 hover:text-gray-900"
-            }`}
-          >
-            Shop
-          </button>
-          <button
-            onClick={() => onNavigate("cart")}
-            className={`transition-colors ${
-              view === "cart" ? "text-gray-900 font-medium" : "text-gray-600 hover:text-gray-900"
-            }`}
-          >
-            Cart
-          </button>
-        </div>
-        <button
-          className="relative p-2 hover:bg-gray-50 rounded-lg transition-colors"
-          aria-label="Shopping cart"
-          onClick={() => onNavigate("cart")}
-        >
-          <ShoppingBag className="w-5 h-5" />
-          {cartCount > 0 && (
-            <span className="absolute -top-1 -right-1 w-5 h-5 bg-black text-white text-[10px] font-bold flex items-center justify-center rounded-full">
-              {cartCount > 99 ? "99+" : cartCount}
-            </span>
-          )}
-        </button>
-      </div>
-    </nav>
+    <a href="#top" className="flex items-center gap-2.5">
+      <span className="grid h-8 w-8 place-items-center rounded-[7px] bg-[#E8A317]">
+        <svg viewBox="0 0 24 24" className="h-4 w-4" aria-hidden="true">
+          <circle cx="12" cy="9" r="4.6" fill={INK} />
+          <rect x="4" y="16" width="16" height="2.4" rx="1.2" fill={INK} />
+        </svg>
+      </span>
+      <span className={`${mono.className} text-[15px] font-bold tracking-[0.24em] text-[#1B1712]`}>MONO GOODS</span>
+    </a>
   );
 }
 
-// ---------------------------------------------------------------------------
-// Shop View
-// ---------------------------------------------------------------------------
+/* ------------------------------------------------------------------ */
+/* Page                                                                */
+/* ------------------------------------------------------------------ */
 
-function ShopView({
-  onSelectProduct,
-  onAddToCart,
-}: {
-  onSelectProduct: (id: string) => void;
-  onAddToCart: (productId: string) => void;
-}) {
-  const [category, setCategory] = useState<string>("All");
-  const [search, setSearch] = useState("");
-  const [sort, setSort] = useState<SortOption>("default");
-
-  const filtered = useMemo(() => {
-    let result = PRODUCTS;
-
-    if (category !== "All") {
-      result = result.filter((p) => p.category === category);
-    }
-
-    if (search.trim()) {
-      const q = search.trim().toLowerCase();
-      result = result.filter(
-        (p) =>
-          p.name.toLowerCase().includes(q) ||
-          p.nameCn.includes(q) ||
-          p.category.toLowerCase().includes(q)
-      );
-    }
-
-    if (sort === "price-asc") {
-      result = [...result].sort((a, b) => a.price - b.price);
-    } else if (sort === "price-desc") {
-      result = [...result].sort((a, b) => b.price - a.price);
-    }
-
-    return result;
-  }, [category, search, sort]);
-
-  return (
-    <div className="max-w-7xl mx-auto px-4 md:px-8 py-8">
-      {/* Hero */}
-      <div className="mb-10">
-        <h1 className="text-3xl md:text-4xl font-bold mb-2">Discover</h1>
-        <p className="text-gray-500">Find your next favorite gadget</p>
-      </div>
-
-      {/* Search & Sort */}
-      <div className="flex flex-col sm:flex-row gap-4 mb-6">
-        <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-          <input
-            type="text"
-            placeholder="Search products..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-black/10 focus:border-gray-400 transition-all"
-          />
-          {search && (
-            <button
-              onClick={() => setSearch("")}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
-              aria-label="Clear search"
-            >
-              <X className="w-4 h-4" />
-            </button>
-          )}
-        </div>
-        <select
-          value={sort}
-          onChange={(e) => setSort(e.target.value as SortOption)}
-          className="px-4 py-2.5 border border-gray-200 rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-black/10 cursor-pointer"
-        >
-          <option value="default">Sort: Default</option>
-          <option value="price-asc">Price: Low to High</option>
-          <option value="price-desc">Price: High to Low</option>
-        </select>
-      </div>
-
-      {/* Category Tabs */}
-      <div className="flex gap-2 mb-8 overflow-x-auto pb-2">
-        {CATEGORIES.map((cat) => (
-          <button
-            key={cat}
-            onClick={() => setCategory(cat)}
-            className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-colors ${
-              category === cat
-                ? "bg-black text-white"
-                : "bg-gray-100 text-gray-600 hover:bg-gray-200"
-            }`}
-          >
-            {cat}
-          </button>
-        ))}
-      </div>
-
-      {/* Product Grid */}
-      {filtered.length === 0 ? (
-        <div className="text-center py-20 text-gray-400">
-          <p className="text-lg mb-2">No products found</p>
-          <p className="text-sm">Try adjusting your search or filters</p>
-        </div>
-      ) : (
-        <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {filtered.map((product) => (
-            <div key={product.id} className="group">
-              <button
-                onClick={() => onSelectProduct(product.id)}
-                className="w-full text-left"
-              >
-                <div
-                  className={`aspect-square ${product.images[0]} rounded-xl mb-3 flex items-center justify-center relative overflow-hidden group-hover:scale-[1.02] transition-transform`}
-                >
-                  <span className="text-5xl font-bold text-white/20">
-                    {product.nameCn[0]}
-                  </span>
-                  {product.badge && (
-                    <span className="absolute top-3 left-3 px-2.5 py-1 bg-black text-white text-[10px] font-semibold rounded-full uppercase tracking-wide">
-                      {product.badge}
-                    </span>
-                  )}
-                </div>
-                <h3 className="text-sm font-medium mb-1 group-hover:underline">
-                  {product.nameCn}
-                </h3>
-                <p className="text-xs text-gray-400 mb-2">{product.name}</p>
-              </button>
-              <div className="flex items-center justify-between">
-                <div className="flex items-baseline gap-2">
-                  <span className="text-sm font-bold">
-                    ¥{product.price.toLocaleString()}
-                  </span>
-                  {product.originalPrice > product.price && (
-                    <span className="text-xs text-gray-400 line-through">
-                      ¥{product.originalPrice.toLocaleString()}
-                    </span>
-                  )}
-                </div>
-                <button
-                  onClick={() => onAddToCart(product.id)}
-                  className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
-                  aria-label={`Add ${product.nameCn} to cart`}
-                >
-                  <Plus className="w-4 h-4" />
-                </button>
-              </div>
-              <div className="flex items-center gap-1 mt-1">
-                <StarRating rating={product.rating} size="w-3 h-3" />
-                <span className="text-xs text-gray-400">({product.reviewCount})</span>
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
-    </div>
-  );
-}
-
-// ---------------------------------------------------------------------------
-// Product Detail View
-// ---------------------------------------------------------------------------
-
-function ProductDetailView({
-  productId,
-  onBack,
-  onAddToCart,
-}: {
-  productId: string;
-  onBack: () => void;
-  onAddToCart: (productId: string, colorIndex: number, quantity: number) => void;
-}) {
-  const product = PRODUCTS.find((p) => p.id === productId);
-  const [selectedColor, setSelectedColor] = useState(0);
-  const [selectedImage, setSelectedImage] = useState(0);
-  const [quantity, setQuantity] = useState(1);
+export default function EcommerceProductTemplate() {
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [category, setCategory] = useState<"All" | Category>("All");
+  const [cart, setCart] = useState(0);
+  const [addedId, setAddedId] = useState<string | null>(null);
+  const [qty, setQty] = useState(1);
   const [liked, setLiked] = useState(false);
-  const [addedFeedback, setAddedFeedback] = useState(false);
+  const [email, setEmail] = useState("");
+  const [subscribed, setSubscribed] = useState(false);
 
-  if (!product) {
-    return (
-      <div className="max-w-7xl mx-auto px-4 md:px-8 py-20 text-center text-gray-400">
-        Product not found.
-      </div>
-    );
-  }
+  const visible = category === "All" ? PRODUCTS : PRODUCTS.filter((product) => product.category === category);
 
-  const handleAddToCart = () => {
-    onAddToCart(product.id, selectedColor, quantity);
-    setAddedFeedback(true);
-    setTimeout(() => setAddedFeedback(false), 1500);
+  const addToCart = (id: string, amount = 1) => {
+    setCart((count) => count + amount);
+    setAddedId(id);
+    window.setTimeout(() => setAddedId((current) => (current === id ? null : current)), 1300);
   };
 
-  const relatedProducts = PRODUCTS.filter(
-    (p) => p.id !== product.id && p.category === product.category
-  ).slice(0, 4);
+  const subscribe = (event: FormEvent) => {
+    event.preventDefault();
+    if (email.trim()) {
+      setSubscribed(true);
+    }
+  };
 
   return (
-    <>
-      {/* Breadcrumb */}
-      <div className="max-w-7xl mx-auto px-4 md:px-8 py-4">
-        <nav className="flex items-center gap-2 text-sm text-gray-400" aria-label="Breadcrumb">
-          <button
-            onClick={onBack}
-            className="flex items-center gap-1 text-gray-600 hover:text-gray-900 transition-colors"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            Shop
-          </button>
-          <span className="mx-1">/</span>
-          <span>{product.category}</span>
-          <span className="mx-1">/</span>
-          <span className="text-gray-900">{product.nameCn}</span>
-        </nav>
+    <div
+      id="top"
+      className={`${display.className} min-h-screen bg-[#F5F1E6] text-[#1B1712] antialiased selection:bg-[#E8A317] selection:text-[#1B1712]`}
+    >
+      <TemplateBackButton variant="minimalist" />
+
+      <style>{`
+        @keyframes mg-rise { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+        @keyframes mg-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+        @keyframes mg-marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+        .mg-rise { opacity: 0; animation: mg-rise 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
+        .mg-float { animation: mg-float 6s ease-in-out infinite; }
+        .mg-marquee { animation: mg-marquee 34s linear infinite; }
+        @media (prefers-reduced-motion: reduce) {
+          .mg-rise { animation: none; opacity: 1; }
+          .mg-float { animation: none; }
+          .mg-marquee { animation: none; }
+        }
+      `}</style>
+
+      {/* ── Announcement bar ────────────────────────────────────── */}
+      <div className="bg-[#1B1712] text-[#F5F1E6]">
+        <div className={`${mono.className} mx-auto flex max-w-6xl items-center justify-center gap-2.5 px-5 py-2 text-center text-[11px] tracking-[0.16em] md:px-8`}>
+          <Truck className="h-3.5 w-3.5 text-[#E8A317]" strokeWidth={2} />
+          COMPLIMENTARY CARBON-NEUTRAL SHIPPING ON ORDERS OVER $150
+        </div>
       </div>
 
-      {/* Product Section */}
-      <section className="max-w-7xl mx-auto px-4 md:px-8 pb-20">
-        <div className="grid lg:grid-cols-2 gap-12 lg:gap-16">
-          {/* Images */}
-          <div>
-            <div
-              className={`aspect-square rounded-2xl ${product.images[selectedImage]} flex items-center justify-center mb-4`}
+      {/* ── Nav ─────────────────────────────────────────────────── */}
+      <header className="sticky top-0 z-40 border-b border-[#E6DFCE] bg-[#F5F1E6]/85 backdrop-blur-md">
+        <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-5 md:px-8">
+          <Wordmark />
+
+          <nav className="hidden items-center gap-8 md:flex">
+            {NAV_LINKS.map((link) => (
+              <a
+                key={link.label}
+                href={link.href}
+                className="text-sm text-[#6E6656] transition-colors hover:text-[#1B1712]"
+              >
+                {link.label}
+              </a>
+            ))}
+          </nav>
+
+          <div className="flex items-center gap-1.5">
+            <button
+              type="button"
+              aria-label="Search the catalog"
+              className="grid h-9 w-9 place-items-center rounded-full text-[#6E6656] transition-colors hover:bg-[#EAE3D2] hover:text-[#1B1712]"
             >
-              <div className="w-48 h-48 bg-white/10 rounded-full flex items-center justify-center">
-                <span className="text-white/30 text-6xl font-bold">
-                  {product.nameCn[0]}
+              <Search className="h-[18px] w-[18px]" strokeWidth={1.75} />
+            </button>
+            <a
+              href="#catalog"
+              aria-label={`Cart, ${cart} item${cart === 1 ? "" : "s"}`}
+              className="relative grid h-9 w-9 place-items-center rounded-full text-[#1B1712] transition-colors hover:bg-[#EAE3D2]"
+            >
+              <ShoppingBag className="h-[18px] w-[18px]" strokeWidth={1.75} />
+              {cart > 0 && (
+                <span className={`${mono.className} absolute -right-0.5 -top-0.5 grid h-4 min-w-4 place-items-center rounded-full bg-[#E8A317] px-1 text-[10px] font-bold text-[#1B1712]`}>
+                  {cart > 99 ? "99" : cart}
                 </span>
-              </div>
+              )}
+            </a>
+            <button
+              type="button"
+              onClick={() => setMenuOpen(!menuOpen)}
+              aria-label="Toggle menu"
+              className="grid h-9 w-9 place-items-center rounded-full text-[#1B1712] transition-colors hover:bg-[#EAE3D2] md:hidden"
+            >
+              {menuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+            </button>
+          </div>
+        </div>
+
+        {menuOpen && (
+          <nav className="border-t border-[#E6DFCE] px-5 py-3 md:hidden">
+            {NAV_LINKS.map((link) => (
+              <a
+                key={link.label}
+                href={link.href}
+                onClick={() => setMenuOpen(false)}
+                className="block py-2.5 text-sm text-[#4A4438]"
+              >
+                {link.label}
+              </a>
+            ))}
+          </nav>
+        )}
+      </header>
+
+      {/* ── Hero ────────────────────────────────────────────────── */}
+      <section className="relative border-b border-[#E6DFCE]">
+        <div className="mx-auto grid max-w-6xl items-center gap-12 px-5 pb-16 pt-14 md:grid-cols-[1.05fr_0.95fr] md:gap-8 md:px-8 md:pb-24 md:pt-20">
+          <div>
+            <p className={`${mono.className} mg-rise mb-6 flex items-center gap-2.5 text-[11px] tracking-[0.22em] text-[#6E6656]`}>
+              <span className="inline-block h-1.5 w-1.5 rounded-full bg-[#E8A317]" />
+              MONO GOODS — DESIGN OBJECTS SINCE 2016
+            </p>
+            <h1 className="mg-rise text-[2.7rem] font-semibold leading-[1.02] tracking-[-0.02em] md:text-[4.1rem]" style={{ animationDelay: "80ms" }}>
+              A short catalog of
+              <br />
+              things <span className="text-[#E8A317]">worth keeping</span>.
+            </h1>
+            <p className="mg-rise mt-6 max-w-md text-base leading-relaxed text-[#5A5346] md:text-lg" style={{ animationDelay: "160ms" }}>
+              Lighting, seating, and tabletop pieces made from honest materials and built to be
+              repaired, not replaced. Photographed plainly, priced fairly, shipped anywhere.
+            </p>
+            <div className="mg-rise mt-8 flex flex-wrap items-center gap-4" style={{ animationDelay: "240ms" }}>
+              <a
+                href="#catalog"
+                className="group inline-flex items-center gap-2 rounded-full bg-[#1B1712] px-6 py-3.5 text-sm font-semibold text-[#F5F1E6] transition-transform hover:-translate-y-0.5"
+              >
+                Browse the catalog
+                <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+              </a>
+              <a
+                href="#standards"
+                className="inline-flex items-center gap-1.5 border-b border-[#C9C0AC] pb-1 text-sm text-[#5A5346] transition-colors hover:border-[#E8A317] hover:text-[#1B1712]"
+              >
+                Read our standards
+                <ArrowUpRight className="h-3.5 w-3.5" />
+              </a>
             </div>
-            {product.images.length > 1 && (
-              <div className="flex gap-3">
-                {product.images.map((img, i) => (
-                  <button
-                    key={i}
-                    onClick={() => setSelectedImage(i)}
-                    className={`w-20 h-20 rounded-lg ${img} transition-all ${
-                      selectedImage === i
-                        ? "ring-2 ring-black ring-offset-2"
-                        : "opacity-60 hover:opacity-80"
-                    }`}
-                    aria-label={`View image ${i + 1}`}
-                  />
-                ))}
-              </div>
-            )}
+            <p className={`${mono.className} mg-rise mt-8 text-[11px] tracking-[0.14em] text-[#98907E]`} style={{ animationDelay: "320ms" }}>
+              FREE SHIPPING OVER $150 · 10-YEAR WARRANTY · 60-DAY RETURNS
+            </p>
           </div>
 
-          {/* Details */}
-          <div>
-            <div className="flex items-center gap-2 mb-4">
-              <StarRating rating={product.rating} />
-              <span className="text-sm text-gray-500">
-                {product.rating} ({product.reviewCount} reviews)
-              </span>
-            </div>
+          {/* Hero product staged large */}
+          <div className="mg-rise relative" style={{ animationDelay: "180ms" }}>
+            <div className="relative mx-auto aspect-square w-full max-w-md rounded-[28px] border border-[#E6DFCE] bg-[#FBF8F0] shadow-[0_40px_80px_-48px_rgba(27,23,18,0.5)]">
+              <div className="mg-float h-full w-full">
+                <ProductStage kind={HERO.kind} color={HERO.color} className="h-full w-full" artClassName="w-[68%] max-w-[300px]" />
+              </div>
 
-            <h1 className="text-3xl md:text-4xl font-bold mb-2">{product.nameCn}</h1>
-            <p className="text-gray-500 mb-6">{product.name}</p>
-
-            <div className="flex items-baseline gap-3 mb-8">
-              <span className="text-3xl font-bold">
-                ¥{product.price.toLocaleString()}
-              </span>
-              {product.originalPrice > product.price && (
-                <>
-                  <span className="text-lg text-gray-400 line-through">
-                    ¥{product.originalPrice.toLocaleString()}
-                  </span>
-                  <DiscountBadge price={product.price} originalPrice={product.originalPrice} />
-                </>
-              )}
-            </div>
-
-            {/* Color Selection */}
-            {product.colors.length > 1 && (
-              <div className="mb-8">
-                <p className="text-sm font-medium mb-3">
-                  Color: {product.colors[selectedColor].name}
-                </p>
-                <div className="flex gap-3">
-                  {product.colors.map((color, i) => (
-                    <button
-                      key={color.name}
-                      onClick={() => setSelectedColor(i)}
-                      className={`w-10 h-10 rounded-full transition-all ${
-                        selectedColor === i
-                          ? "ring-2 ring-black ring-offset-2"
-                          : "hover:ring-2 hover:ring-gray-300 hover:ring-offset-1"
-                      }`}
-                      style={{ backgroundColor: color.hex }}
-                      aria-label={color.name}
-                    />
-                  ))}
+              {/* Price tag */}
+              <div className="absolute right-5 top-6 rotate-3">
+                <div className="rounded-lg border border-[#E6DFCE] bg-[#F5F1E6] px-3.5 py-2 shadow-sm">
+                  <p className={`${mono.className} text-[10px] tracking-[0.14em] text-[#98907E]`}>{HERO.sku}</p>
+                  <p className={`${mono.className} text-lg font-bold text-[#1B1712]`}>{money(HERO.price)}</p>
                 </div>
               </div>
-            )}
 
-            {/* Quantity */}
-            <div className="mb-8">
-              <p className="text-sm font-medium mb-3">Quantity</p>
-              <div className="inline-flex items-center border border-gray-200 rounded-lg">
-                <button
-                  onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                  className="p-3 hover:bg-gray-50 transition-colors"
-                  aria-label="Decrease quantity"
-                >
-                  <Minus className="w-4 h-4" />
-                </button>
-                <span className="w-12 text-center font-medium">{quantity}</span>
-                <button
-                  onClick={() => setQuantity(quantity + 1)}
-                  className="p-3 hover:bg-gray-50 transition-colors"
-                  aria-label="Increase quantity"
-                >
-                  <Plus className="w-4 h-4" />
-                </button>
+              {/* Spec pill */}
+              <div className={`${mono.className} absolute bottom-6 left-6 rounded-full border border-[#E6DFCE] bg-[#F5F1E6]/90 px-3 py-1.5 text-[10px] tracking-[0.12em] text-[#5A5346] backdrop-blur-sm`}>
+                DIMMABLE · 3000K · E27
               </div>
             </div>
 
-            {/* Actions */}
-            <div className="flex gap-4 mb-8">
+            {/* Hero add action */}
+            <div className="mt-5 flex items-center justify-between gap-4 rounded-2xl border border-[#E6DFCE] bg-[#FBF8F0] px-5 py-4">
+              <div>
+                <p className="text-sm font-semibold">{HERO.name}</p>
+                <p className="text-xs text-[#7A7266]">{HERO.material}</p>
+              </div>
               <button
-                onClick={handleAddToCart}
-                className={`flex-1 py-4 font-semibold rounded-lg transition-colors flex items-center justify-center gap-2 ${
-                  addedFeedback
-                    ? "bg-emerald-600 text-white"
-                    : "bg-black text-white hover:bg-gray-800"
+                type="button"
+                onClick={() => addToCart(HERO.id)}
+                className={`inline-flex shrink-0 items-center gap-2 rounded-full px-4 py-2.5 text-sm font-semibold transition-colors ${
+                  addedId === HERO.id ? "bg-[#3F6B3A] text-white" : "bg-[#E8A317] text-[#1B1712] hover:bg-[#d0910f]"
                 }`}
               >
-                <ShoppingBag className="w-5 h-5" />
-                {addedFeedback ? "Added!" : "Add to Cart"}
+                {addedId === HERO.id ? <Check className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
+                {addedId === HERO.id ? "Added" : "Add to bag"}
               </button>
-              <button
-                onClick={() => setLiked(!liked)}
-                className={`p-4 border rounded-lg transition-colors ${
-                  liked
-                    ? "border-red-200 bg-red-50 text-red-500"
-                    : "border-gray-200 hover:border-gray-300"
-                }`}
-                aria-label="Add to wishlist"
-              >
-                <Heart className={`w-5 h-5 ${liked ? "fill-red-500" : ""}`} />
-              </button>
-            </div>
-
-            {/* Features */}
-            <div className="space-y-3 mb-8">
-              {product.features.map((feat) => (
-                <div key={feat} className="flex items-center gap-3 text-sm">
-                  <div className="w-5 h-5 bg-emerald-50 rounded-full flex items-center justify-center">
-                    <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full" />
-                  </div>
-                  {feat}
-                </div>
-              ))}
-            </div>
-
-            {/* Trust Badges */}
-            <div className="grid grid-cols-3 gap-4 p-4 bg-gray-50 rounded-xl">
-              <div className="text-center">
-                <Truck className="w-5 h-5 mx-auto mb-1 text-gray-600" />
-                <p className="text-xs text-gray-500">Free Shipping</p>
-              </div>
-              <div className="text-center">
-                <RefreshCw className="w-5 h-5 mx-auto mb-1 text-gray-600" />
-                <p className="text-xs text-gray-500">30-Day Return</p>
-              </div>
-              <div className="text-center">
-                <Shield className="w-5 h-5 mx-auto mb-1 text-gray-600" />
-                <p className="text-xs text-gray-500">2-Year Warranty</p>
-              </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Reviews */}
-      <section className="border-t border-gray-100 py-16 px-4 md:px-8">
-        <div className="max-w-7xl mx-auto">
-          <h2 className="text-2xl font-bold mb-8">Customer Reviews</h2>
-          <div className="grid md:grid-cols-3 gap-6">
-            {REVIEWS.map((review) => (
-              <div key={review.author} className="p-6 border border-gray-100 rounded-xl">
-                <div className="flex mb-3">
-                  <StarRating rating={review.rating} />
+      {/* ── Materials marquee ───────────────────────────────────── */}
+      <section className="overflow-hidden border-b border-[#E6DFCE] bg-[#EFE9DA] py-4">
+        <div className="mg-marquee flex w-max items-center gap-10 pr-10">
+          {[...MATERIALS_MARQUEE, ...MATERIALS_MARQUEE].map((material, i) => (
+            <span key={i} className={`${mono.className} flex items-center gap-10 whitespace-nowrap text-xs tracking-[0.18em] text-[#8A8270]`}>
+              {material.toUpperCase()}
+              <span className="h-1 w-1 rounded-full bg-[#E8A317]" />
+            </span>
+          ))}
+        </div>
+      </section>
+
+      {/* ── Catalog: filters + grid ─────────────────────────────── */}
+      <section id="catalog" className="border-b border-[#E6DFCE]">
+        <div className="mx-auto max-w-6xl px-5 py-16 md:px-8 md:py-24">
+          <div className="mb-10 flex flex-wrap items-end justify-between gap-6">
+            <div>
+              <p className={`${mono.className} mb-4 text-[11px] tracking-[0.22em] text-[#E8A317]`}>THE CATALOG</p>
+              <h2 className="max-w-xl text-4xl font-semibold leading-[1.05] tracking-[-0.01em] md:text-5xl">
+                Eight objects, chosen slowly.
+              </h2>
+            </div>
+            <p className="max-w-sm text-sm leading-relaxed text-[#6E6656]">
+              We add a piece only when it earns its place. Filter by room, or take the whole
+              collection — everything is designed to sit together.
+            </p>
+          </div>
+
+          {/* Filter chips */}
+          <div className="mb-10 flex flex-wrap gap-2.5">
+            {FILTERS.map((filter) => {
+              const active = category === filter;
+              return (
+                <button
+                  key={filter}
+                  type="button"
+                  onClick={() => setCategory(filter)}
+                  className={`rounded-full border px-4 py-2 text-sm font-medium transition-colors ${
+                    active
+                      ? "border-[#1B1712] bg-[#1B1712] text-[#F5F1E6]"
+                      : "border-[#E0D9C6] bg-transparent text-[#5A5346] hover:border-[#1B1712]"
+                  }`}
+                >
+                  {filter}
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Product grid */}
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            {visible.map((product) => (
+              <article
+                key={product.id}
+                className="group flex flex-col overflow-hidden rounded-2xl border border-[#E6DFCE] bg-[#FBF8F0] transition-shadow hover:shadow-[0_28px_50px_-32px_rgba(27,23,18,0.45)]"
+              >
+                <div className="relative">
+                  <ProductStage
+                    kind={product.kind}
+                    color={product.color}
+                    className="aspect-square w-full transition-transform duration-500 group-hover:scale-[1.03]"
+                  />
+                  {product.badge && (
+                    <span className={`${mono.className} absolute left-4 top-4 rounded-full bg-[#1B1712] px-2.5 py-1 text-[9px] font-bold uppercase tracking-[0.12em] text-[#F5F1E6]`}>
+                      {product.badge}
+                    </span>
+                  )}
+                  <span className={`${mono.className} absolute right-4 top-4 text-[10px] tracking-[0.14em] text-[#A79E89]`}>
+                    {product.sku}
+                  </span>
                 </div>
-                <p className="text-sm text-gray-600 mb-4">{review.text}</p>
-                <div className="flex items-center justify-between text-xs text-gray-400">
-                  <span className="font-medium text-gray-700">{review.author}</span>
-                  <span>{review.date}</span>
+
+                <div className="flex flex-1 flex-col border-t border-[#EEE7D6] p-5">
+                  <div className="mb-1 flex items-center justify-between gap-2">
+                    <h3 className="text-[15px] font-semibold leading-tight">{product.name}</h3>
+                  </div>
+                  <p className="mb-3 text-xs leading-relaxed text-[#7A7266]">{product.material}</p>
+                  <div className="mb-4 flex items-center gap-2">
+                    <Stars rating={product.rating} />
+                    <span className={`${mono.className} text-[11px] text-[#98907E]`}>
+                      {product.rating} · {product.reviews}
+                    </span>
+                  </div>
+
+                  <div className="mt-auto flex items-center justify-between gap-3">
+                    <span className={`${mono.className} text-lg font-bold text-[#1B1712]`}>{money(product.price)}</span>
+                    <button
+                      type="button"
+                      onClick={() => addToCart(product.id)}
+                      className={`inline-flex items-center gap-1.5 rounded-full px-3.5 py-2 text-xs font-semibold transition-colors ${
+                        addedId === product.id
+                          ? "bg-[#3F6B3A] text-white"
+                          : "bg-[#1B1712] text-[#F5F1E6] hover:bg-[#E8A317] hover:text-[#1B1712]"
+                      }`}
+                      aria-label={`Add ${product.name} to bag`}
+                    >
+                      {addedId === product.id ? <Check className="h-3.5 w-3.5" /> : <Plus className="h-3.5 w-3.5" />}
+                      {addedId === product.id ? "Added" : "Add"}
+                    </button>
+                  </div>
                 </div>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Featured deep-dive ──────────────────────────────────── */}
+      <section id="featured" className="border-b border-[#E6DFCE] bg-[#FBF8F0]">
+        <div className="mx-auto grid max-w-6xl items-center gap-12 px-5 py-16 md:grid-cols-2 md:gap-16 md:px-8 md:py-24">
+          {/* Staged product */}
+          <div className="relative order-1 aspect-square w-full rounded-[28px] border border-[#E6DFCE] bg-[#F5F1E6]">
+            <ProductStage kind={FEATURED.kind} color={FEATURED.color} className="h-full w-full" artClassName="w-[80%] max-w-[380px]" />
+            <div className="absolute left-6 top-6">
+              <p className={`${mono.className} text-[10px] tracking-[0.18em] text-[#98907E]`}>{FEATURED.sku}</p>
+              <p className={`${mono.className} text-[11px] tracking-[0.12em] text-[#5A5346]`}>MADE TO ORDER</p>
+            </div>
+          </div>
+
+          {/* Detail */}
+          <div className="order-2">
+            <p className={`${mono.className} mb-4 text-[11px] tracking-[0.22em] text-[#E8A317]`}>FEATURED · SEATING</p>
+            <h2 className="text-4xl font-semibold leading-[1.05] tracking-[-0.01em] md:text-[3.2rem]">{FEATURED.name}</h2>
+
+            <div className="mt-4 flex flex-wrap items-center gap-4">
+              <span className={`${mono.className} text-2xl font-bold text-[#1B1712]`}>{money(FEATURED.price)}</span>
+              <span className="text-sm text-[#7A7266]">or $75/mo for 12 months</span>
+              <span className="flex items-center gap-2">
+                <Stars rating={FEATURED.rating} />
+                <span className={`${mono.className} text-[11px] text-[#98907E]`}>{FEATURED.reviews} reviews</span>
+              </span>
+            </div>
+
+            <p className="mt-6 max-w-lg text-[15px] leading-relaxed text-[#5A5346]">
+              A low, leaning lounge chair built around a solid oak frame and a single panel of
+              full-grain leather that only softens with the years. Every part is designed to be
+              re-strung and re-oiled — so it ages into the room instead of out of it.
+            </p>
+
+            {/* Specs */}
+            <div className="mt-8 grid grid-cols-2 gap-x-6 gap-y-4 border-t border-[#EAE3D2] pt-6 sm:grid-cols-3">
+              {FEATURED_SPECS.map((spec) => (
+                <div key={spec.label}>
+                  <p className={`${mono.className} text-[10px] uppercase tracking-[0.14em] text-[#98907E]`}>{spec.label}</p>
+                  <p className="mt-1 text-sm font-medium text-[#1B1712]">{spec.value}</p>
+                </div>
+              ))}
+            </div>
+
+            {/* Materials */}
+            <div className="mt-7">
+              <p className={`${mono.className} mb-3 text-[10px] uppercase tracking-[0.16em] text-[#98907E]`}>Materials</p>
+              <div className="flex flex-wrap gap-2">
+                {FEATURED_MATERIALS.map((material) => (
+                  <span key={material} className="rounded-full border border-[#E0D9C6] px-3 py-1.5 text-xs text-[#5A5346]">
+                    {material}
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            {/* Buy row */}
+            <div className="mt-8 flex flex-wrap items-center gap-3">
+              <div className="inline-flex items-center rounded-full border border-[#E0D9C6] bg-[#F5F1E6]">
+                <button
+                  type="button"
+                  onClick={() => setQty(Math.max(1, qty - 1))}
+                  className="grid h-11 w-11 place-items-center rounded-full text-[#5A5346] transition-colors hover:text-[#1B1712]"
+                  aria-label="Decrease quantity"
+                >
+                  <Minus className="h-4 w-4" />
+                </button>
+                <span className={`${mono.className} w-8 text-center text-sm font-bold`}>{qty}</span>
+                <button
+                  type="button"
+                  onClick={() => setQty(qty + 1)}
+                  className="grid h-11 w-11 place-items-center rounded-full text-[#5A5346] transition-colors hover:text-[#1B1712]"
+                  aria-label="Increase quantity"
+                >
+                  <Plus className="h-4 w-4" />
+                </button>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => addToCart(FEATURED.id, qty)}
+                className={`inline-flex flex-1 items-center justify-center gap-2 rounded-full px-6 py-3.5 text-sm font-semibold transition-colors sm:flex-none ${
+                  addedId === FEATURED.id ? "bg-[#3F6B3A] text-white" : "bg-[#1B1712] text-[#F5F1E6] hover:bg-[#E8A317] hover:text-[#1B1712]"
+                }`}
+              >
+                {addedId === FEATURED.id ? <Check className="h-4 w-4" /> : <ShoppingBag className="h-4 w-4" />}
+                {addedId === FEATURED.id ? "Added to bag" : `Add to bag — ${money(FEATURED.price * qty)}`}
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setLiked(!liked)}
+                aria-pressed={liked}
+                aria-label="Save to wishlist"
+                className={`grid h-12 w-12 place-items-center rounded-full border transition-colors ${
+                  liked ? "border-[#E8A317] bg-[#FBEFCF] text-[#C98C10]" : "border-[#E0D9C6] text-[#5A5346] hover:border-[#1B1712]"
+                }`}
+              >
+                <Heart className="h-5 w-5" style={{ fill: liked ? "#E8A317" : "transparent" }} />
+              </button>
+            </div>
+
+            <p className={`${mono.className} mt-5 text-[11px] tracking-[0.1em] text-[#98907E]`}>
+              MADE TO ORDER · SHIPS IN 3–4 WEEKS · FREE WHITE-GLOVE DELIVERY
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Our standards ───────────────────────────────────────── */}
+      <section id="standards" className="bg-[#1B1712] text-[#F5F1E6]">
+        <div className="mx-auto max-w-6xl px-5 py-16 md:px-8 md:py-24">
+          <div className="mb-12 flex flex-wrap items-end justify-between gap-6">
+            <h2 className="max-w-lg text-4xl font-semibold leading-[1.05] tracking-[-0.01em] md:text-5xl">
+              The standards behind every object.
+            </h2>
+            <p className="max-w-sm text-sm leading-relaxed text-[#B8B0A0]">
+              We would rather make fewer things properly. These three promises apply to every piece
+              in the catalog, from the $68 carafe to the $890 chair.
+            </p>
+          </div>
+
+          <div className="grid gap-px overflow-hidden rounded-2xl bg-[#3A342A] sm:grid-cols-3">
+            {STANDARDS.map((standard) => (
+              <div key={standard.title} className="bg-[#1B1712] p-8">
+                <span className="mb-6 inline-grid h-11 w-11 place-items-center rounded-full bg-[#E8A317]">
+                  <standard.icon className="h-5 w-5 text-[#1B1712]" strokeWidth={2} />
+                </span>
+                <h3 className="mb-2.5 text-xl font-semibold">{standard.title}</h3>
+                <p className="text-sm leading-relaxed text-[#B8B0A0]">{standard.body}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Related Products */}
-      {relatedProducts.length > 0 && (
-        <section className="border-t border-gray-100 py-16 px-4 md:px-8">
-          <div className="max-w-7xl mx-auto">
-            <h2 className="text-2xl font-bold mb-8">You May Also Like</h2>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-              {relatedProducts.map((item) => (
-                <button
-                  key={item.id}
-                  onClick={() => {
-                    setSelectedColor(0);
-                    setSelectedImage(0);
-                    setQuantity(1);
-                    window.scrollTo({ top: 0, behavior: "smooth" });
-                  }}
-                  className="group text-left"
-                >
-                  <div
-                    className={`aspect-square ${item.images[0]} rounded-xl mb-3 flex items-center justify-center group-hover:scale-[1.02] transition-transform`}
-                  >
-                    <span className="text-4xl text-white/20 font-bold">
-                      {item.nameCn[0]}
-                    </span>
-                  </div>
-                  <h3 className="text-sm font-medium">{item.nameCn}</h3>
-                  <p className="text-sm text-gray-500">
-                    ¥{item.price.toLocaleString()}
-                  </p>
-                </button>
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
-    </>
-  );
-}
-
-// ---------------------------------------------------------------------------
-// Cart View
-// ---------------------------------------------------------------------------
-
-function CartView({
-  items,
-  onUpdateQuantity,
-  onRemoveItem,
-  onNavigate,
-}: {
-  items: CartItem[];
-  onUpdateQuantity: (index: number, quantity: number) => void;
-  onRemoveItem: (index: number) => void;
-  onNavigate: (view: ViewName, productId?: string) => void;
-}) {
-  const resolvedItems = items.map((item) => ({
-    ...item,
-    product: PRODUCTS.find((p) => p.id === item.productId),
-  }));
-
-  const subtotal = resolvedItems.reduce((sum, item) => {
-    if (!item.product) return sum;
-    return sum + item.product.price * item.quantity;
-  }, 0);
-
-  const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
-
-  if (items.length === 0) {
-    return (
-      <div className="max-w-3xl mx-auto px-4 md:px-8 py-20 text-center">
-        <ShoppingBag className="w-16 h-16 mx-auto mb-6 text-gray-200" />
-        <h2 className="text-2xl font-bold mb-2">Your cart is empty</h2>
-        <p className="text-gray-500 mb-8">
-          Looks like you have not added anything to your cart yet.
-        </p>
-        <button
-          onClick={() => onNavigate("shop")}
-          className="px-8 py-3 bg-black text-white font-semibold rounded-lg hover:bg-gray-800 transition-colors"
-        >
-          Continue Shopping
-        </button>
-      </div>
-    );
-  }
-
-  return (
-    <div className="max-w-3xl mx-auto px-4 md:px-8 py-8">
-      <h1 className="text-2xl md:text-3xl font-bold mb-2">Shopping Cart</h1>
-      <p className="text-gray-500 mb-8">
-        {totalItems} {totalItems === 1 ? "item" : "items"}
-      </p>
-
-      {/* Cart Items */}
-      <div className="space-y-6 mb-10">
-        {resolvedItems.map((item, index) => {
-          if (!item.product) return null;
-          const color = item.product.colors[item.colorIndex] ?? item.product.colors[0];
-          return (
-            <div
-              key={`${item.productId}-${item.colorIndex}-${index}`}
-              className="flex gap-4 p-4 border border-gray-100 rounded-xl"
-            >
-              {/* Thumbnail */}
-              <button
-                onClick={() => onNavigate("product", item.productId)}
-                className={`w-24 h-24 shrink-0 rounded-lg ${item.product.images[0]} flex items-center justify-center`}
-              >
-                <span className="text-2xl font-bold text-white/20">
-                  {item.product.nameCn[0]}
-                </span>
-              </button>
-
-              {/* Info */}
-              <div className="flex-1 min-w-0">
-                <button
-                  onClick={() => onNavigate("product", item.productId)}
-                  className="text-sm font-medium hover:underline text-left"
-                >
-                  {item.product.nameCn}
-                </button>
-                <p className="text-xs text-gray-400 mt-0.5">{color.name}</p>
-                <p className="text-sm font-bold mt-2">
-                  ¥{item.product.price.toLocaleString()}
-                </p>
-
-                {/* Quantity Controls */}
-                <div className="flex items-center gap-3 mt-3">
-                  <div className="inline-flex items-center border border-gray-200 rounded-lg">
-                    <button
-                      onClick={() => onUpdateQuantity(index, Math.max(1, item.quantity - 1))}
-                      className="p-1.5 hover:bg-gray-50 transition-colors"
-                      aria-label="Decrease quantity"
-                    >
-                      <Minus className="w-3 h-3" />
-                    </button>
-                    <span className="w-8 text-center text-sm font-medium">
-                      {item.quantity}
-                    </span>
-                    <button
-                      onClick={() => onUpdateQuantity(index, item.quantity + 1)}
-                      className="p-1.5 hover:bg-gray-50 transition-colors"
-                      aria-label="Increase quantity"
-                    >
-                      <Plus className="w-3 h-3" />
-                    </button>
-                  </div>
-                  <button
-                    onClick={() => onRemoveItem(index)}
-                    className="p-1.5 text-gray-400 hover:text-red-500 transition-colors"
-                    aria-label="Remove item"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </button>
+      {/* ── Testimonials ────────────────────────────────────────── */}
+      <section className="border-b border-[#E6DFCE]">
+        <div className="mx-auto max-w-6xl px-5 py-16 md:px-8 md:py-24">
+          <p className={`${mono.className} mb-12 text-[11px] tracking-[0.22em] text-[#E8A317]`}>FROM THE OWNERS</p>
+          <div className="grid gap-10 md:grid-cols-3 md:gap-8">
+            {TESTIMONIALS.map((testimonial) => (
+              <figure key={testimonial.name} className="flex flex-col justify-between">
+                <div>
+                  <Stars rating={5} className="mb-5" />
+                  <blockquote className="text-lg leading-[1.4] text-[#2E2A22]">&ldquo;{testimonial.quote}&rdquo;</blockquote>
                 </div>
-              </div>
-
-              {/* Line Total */}
-              <div className="text-right shrink-0">
-                <p className="text-sm font-bold">
-                  ¥{(item.product.price * item.quantity).toLocaleString()}
-                </p>
-              </div>
-            </div>
-          );
-        })}
-      </div>
-
-      {/* Summary */}
-      <div className="border-t border-gray-100 pt-6 space-y-4">
-        <div className="flex justify-between text-sm text-gray-500">
-          <span>Subtotal</span>
-          <span>¥{subtotal.toLocaleString()}</span>
+                <figcaption className="mt-7 border-t border-[#E6DFCE] pt-4">
+                  <p className="text-sm font-semibold">{testimonial.name}</p>
+                  <p className={`${mono.className} mt-1 text-[11px] tracking-wide text-[#98907E]`}>{testimonial.role}</p>
+                </figcaption>
+              </figure>
+            ))}
+          </div>
         </div>
-        <div className="flex justify-between text-sm text-gray-500">
-          <span>Shipping</span>
-          <span className="text-emerald-600">Free</span>
-        </div>
-        <div className="flex justify-between text-lg font-bold pt-4 border-t border-gray-100">
-          <span>Total</span>
-          <span>¥{subtotal.toLocaleString()}</span>
-        </div>
-      </div>
+      </section>
 
-      {/* Actions */}
-      <div className="mt-8 space-y-3">
-        <button className="w-full py-4 bg-black text-white font-semibold rounded-lg hover:bg-gray-800 transition-colors">
-          Checkout
-        </button>
-        <button
-          onClick={() => onNavigate("shop")}
-          className="w-full py-4 border border-gray-200 font-semibold rounded-lg hover:bg-gray-50 transition-colors"
-        >
-          Continue Shopping
-        </button>
-      </div>
-    </div>
-  );
-}
-
-// ---------------------------------------------------------------------------
-// Main Component
-// ---------------------------------------------------------------------------
-
-export default function EcommerceProductTemplate() {
-  const [view, setView] = useState<ViewName>("shop");
-  const [selectedProductId, setSelectedProductId] = useState<string>("");
-  const [cart, setCart] = useState<CartItem[]>([]);
-
-  const cartCount = useMemo(
-    () => cart.reduce((sum, item) => sum + item.quantity, 0),
-    [cart]
-  );
-
-  const handleNavigate = useCallback((v: ViewName, productId?: string) => {
-    setView(v);
-    if (productId) {
-      setSelectedProductId(productId);
-    }
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  }, []);
-
-  const handleSelectProduct = useCallback(
-    (id: string) => {
-      setSelectedProductId(id);
-      handleNavigate("product", id);
-    },
-    [handleNavigate]
-  );
-
-  const handleAddToCartQuick = useCallback((productId: string) => {
-    setCart((prev) => {
-      const existing = prev.findIndex(
-        (item) => item.productId === productId && item.colorIndex === 0
-      );
-      if (existing >= 0) {
-        return prev.map((item, i) =>
-          i === existing ? { ...item, quantity: item.quantity + 1 } : item
-        );
-      }
-      return [...prev, { productId, colorIndex: 0, quantity: 1 }];
-    });
-  }, []);
-
-  const handleAddToCartDetailed = useCallback(
-    (productId: string, colorIndex: number, quantity: number) => {
-      setCart((prev) => {
-        const existing = prev.findIndex(
-          (item) => item.productId === productId && item.colorIndex === colorIndex
-        );
-        if (existing >= 0) {
-          return prev.map((item, i) =>
-            i === existing ? { ...item, quantity: item.quantity + quantity } : item
-          );
-        }
-        return [...prev, { productId, colorIndex, quantity }];
-      });
-    },
-    []
-  );
-
-  const handleUpdateQuantity = useCallback((index: number, quantity: number) => {
-    setCart((prev) => prev.map((item, i) => (i === index ? { ...item, quantity } : item)));
-  }, []);
-
-  const handleRemoveItem = useCallback((index: number) => {
-    setCart((prev) => prev.filter((_, i) => i !== index));
-  }, []);
-
-  return (
-    <div className="min-h-screen bg-white text-gray-900">
-      <NavBar view={view} cartCount={cartCount} onNavigate={handleNavigate} />
-
-      {view === "shop" && (
-        <ShopView onSelectProduct={handleSelectProduct} onAddToCart={handleAddToCartQuick} />
-      )}
-
-      {view === "product" && (
-        <ProductDetailView
-          productId={selectedProductId}
-          onBack={() => handleNavigate("shop")}
-          onAddToCart={handleAddToCartDetailed}
+      {/* ── Newsletter ──────────────────────────────────────────── */}
+      <section className="relative overflow-hidden border-b border-[#E6DFCE] bg-[#FBF8F0]">
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0"
+          style={{ background: "radial-gradient(ellipse 55% 70% at 50% 120%, rgba(232,163,23,0.16), transparent 62%)" }}
         />
-      )}
-
-      {view === "cart" && (
-        <CartView
-          items={cart}
-          onUpdateQuantity={handleUpdateQuantity}
-          onRemoveItem={handleRemoveItem}
-          onNavigate={handleNavigate}
-        />
-      )}
-
-      {/* Footer */}
-      <footer className="border-t border-gray-100 py-12 px-4 md:px-8 mt-8">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
-          <p className="text-sm text-gray-400">
-            Copyright 2025 STORE. Part of{" "}
-            <Link
-              href="/templates"
-              className="text-gray-600 hover:text-black transition-colors"
-            >
-              StyleKit Templates
-            </Link>
+        <div className="relative mx-auto max-w-2xl px-5 py-20 text-center md:px-8 md:py-28">
+          <p className={`${mono.className} mb-5 text-[11px] tracking-[0.22em] text-[#E8A317]`}>THE STUDIO LIST</p>
+          <h2 className="mx-auto max-w-xl text-4xl font-semibold leading-[1.05] tracking-[-0.01em] md:text-5xl">
+            First look at new objects.
+          </h2>
+          <p className="mx-auto mt-5 max-w-md text-[15px] leading-relaxed text-[#5A5346]">
+            Restocks, workshop notes, and the occasional half-finished idea. Join and take ten
+            percent off your first order — no daily emails, we promise.
           </p>
-          <div className="flex gap-6 text-sm text-gray-400">
-            <a href="#" className="hover:text-gray-600">
-              Privacy
-            </a>
-            <a href="#" className="hover:text-gray-600">
-              Terms
-            </a>
-            <a href="#" className="hover:text-gray-600">
-              Support
-            </a>
+
+          {subscribed ? (
+            <div className="mx-auto mt-9 flex max-w-md items-center justify-center gap-3 rounded-full border border-[#CDE0C7] bg-[#EBF3E7] px-6 py-4 text-sm font-medium text-[#3F6B3A]">
+              <Check className="h-4 w-4" />
+              You&apos;re on the list — check your inbox for the code.
+            </div>
+          ) : (
+            <form onSubmit={subscribe} className="mx-auto mt-9 flex max-w-md flex-col gap-3 sm:flex-row">
+              <div className="relative flex-1">
+                <Mail className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[#98907E]" />
+                <input
+                  type="email"
+                  required
+                  value={email}
+                  onChange={(event) => setEmail(event.target.value)}
+                  placeholder="you@studio.com"
+                  aria-label="Email address"
+                  className="w-full rounded-full border border-[#E0D9C6] bg-[#F5F1E6] py-3.5 pl-11 pr-4 text-sm text-[#1B1712] outline-none transition-colors placeholder:text-[#A79E89] focus:border-[#E8A317]"
+                />
+              </div>
+              <button
+                type="submit"
+                className="inline-flex items-center justify-center gap-2 rounded-full bg-[#1B1712] px-6 py-3.5 text-sm font-semibold text-[#F5F1E6] transition-colors hover:bg-[#E8A317] hover:text-[#1B1712]"
+              >
+                Subscribe
+                <ArrowRight className="h-4 w-4" />
+              </button>
+            </form>
+          )}
+          <p className={`${mono.className} mt-5 text-[10px] tracking-[0.12em] text-[#A79E89]`}>NO SPAM · UNSUBSCRIBE ANYTIME</p>
+        </div>
+      </section>
+
+      {/* ── Footer ──────────────────────────────────────────────── */}
+      <footer className="bg-[#F5F1E6]">
+        <div className="mx-auto max-w-6xl px-5 py-16 md:px-8">
+          <div className="grid gap-10 md:grid-cols-[1.4fr_repeat(4,0.7fr)]">
+            <div>
+              <Wordmark />
+              <p className="mt-5 max-w-[17rem] text-sm leading-relaxed text-[#6E6656]">
+                A small studio making design objects from honest materials — built to be repaired,
+                kept, and handed on.
+              </p>
+              <p className={`${mono.className} mt-5 text-[11px] tracking-[0.14em] text-[#98907E]`}>COPENHAGEN · SINCE 2016</p>
+            </div>
+            {FOOTER_COLS.map((col) => (
+              <nav key={col.title}>
+                <p className={`${mono.className} mb-4 text-[10px] tracking-[0.2em] text-[#98907E]`}>{col.title.toUpperCase()}</p>
+                {col.links.map((link) => (
+                  <a key={link} href="#" className="block py-1.5 text-sm text-[#5A5346] transition-colors hover:text-[#1B1712]">
+                    {link}
+                  </a>
+                ))}
+              </nav>
+            ))}
+          </div>
+
+          <div className="mt-14 flex flex-wrap items-center justify-between gap-4 border-t border-[#E6DFCE] pt-6">
+            <p className={`${mono.className} text-[11px] tracking-[0.08em] text-[#98907E]`}>© 2026 MONO GOODS STUDIO</p>
+            <div className="flex flex-wrap items-center gap-5">
+              <a href="#" className={`${mono.className} text-[11px] tracking-[0.12em] text-[#98907E] transition-colors hover:text-[#1B1712]`}>
+                INSTAGRAM
+              </a>
+              <a href="#" className={`${mono.className} text-[11px] tracking-[0.12em] text-[#98907E] transition-colors hover:text-[#1B1712]`}>
+                PINTEREST
+              </a>
+              <a href="#" className={`${mono.className} text-[11px] tracking-[0.12em] text-[#98907E] transition-colors hover:text-[#1B1712]`}>
+                JOURNAL
+              </a>
+            </div>
           </div>
         </div>
       </footer>
-      <TemplateBackButton variant="modern" />
     </div>
   );
 }

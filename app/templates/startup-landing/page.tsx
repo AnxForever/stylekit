@@ -3,672 +3,948 @@
 export const dynamic = "force-static";
 
 import { useState } from "react";
-import Link from "next/link";
 import {
   ArrowRight,
+  ArrowUpRight,
+  Box,
+  Boxes,
   Check,
+  Gauge,
+  GitPullRequest,
+  KeyRound,
+  LineChart,
+  Menu,
+  Plus,
+  RotateCcw,
   X,
-  ChevronDown,
-  Zap,
-  Globe,
-  BarChart3,
-  GitBranch,
-  DollarSign,
-  Server,
-  Loader2,
 } from "lucide-react";
+import { Bricolage_Grotesque, JetBrains_Mono } from "next/font/google";
 import { TemplateBackButton } from "@/components/templates/template-back-button";
-// --- Data ---
 
-const comparisonFeatures = [
+const display = Bricolage_Grotesque({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800"],
+});
+const mono = JetBrains_Mono({ subsets: ["latin"], weight: ["400", "500", "600"] });
+
+/* ------------------------------------------------------------------ */
+/* Content                                                             */
+/* ------------------------------------------------------------------ */
+
+const NAV_LINKS = [
+  { label: "Platform", href: "#platform" },
+  { label: "How it works", href: "#how" },
+  { label: "Pricing", href: "#pricing" },
+  { label: "Docs", href: "#faq" },
+];
+
+const LOGOS = ["Halcyon", "Northgate", "Corvus", "Basalt", "Fathom", "Ironclad"];
+
+interface Stage {
+  name: string;
+  note: string | null;
+  time: string;
+}
+
+const STAGES: Stage[] = [
+  { name: "Resolve cache", note: "HIT", time: "0.4s" },
+  { name: "Install dependencies", note: null, time: "2.1s" },
+  { name: "Typecheck", note: null, time: "3.8s" },
+  { name: "Unit tests · 1,284", note: null, time: "6.2s" },
+  { name: "Build bundle", note: null, time: "4.7s" },
+  { name: "Deploy preview", note: "URL", time: "1.3s" },
+];
+
+const STEPS = [
   {
-    name: "Deployment Time",
-    icon: Zap,
-    nexus: "Under 30 seconds",
-    traditional: "30-60 minutes",
-    nexusOk: true,
-    traditionalOk: false,
+    n: "01",
+    title: "Connect your repository",
+    body: "Point Foundry at any GitHub, GitLab, or Bitbucket repo. It reads your existing config and proposes a working pipeline in under a minute — no starting from a blank YAML file.",
   },
   {
-    name: "Auto-Scaling",
-    icon: Server,
-    nexus: "Instant, zero config",
-    traditional: "Manual provisioning",
-    nexusOk: true,
-    traditionalOk: false,
+    n: "02",
+    title: "Foundry warms the cache",
+    body: "Dependencies, compiled artifacts, and test results are fingerprinted and shared across every branch. From the second build onward, up to 94% of the work is simply reused.",
   },
   {
-    name: "Monitoring & Alerts",
-    icon: BarChart3,
-    nexus: "Built-in AI anomaly detection",
-    traditional: "Third-party setup required",
-    nexusOk: true,
-    traditionalOk: false,
-  },
-  {
-    name: "CI/CD Integration",
-    icon: GitBranch,
-    nexus: "Native, push-to-deploy",
-    traditional: "Complex pipeline config",
-    nexusOk: true,
-    traditionalOk: false,
-  },
-  {
-    name: "Cost Management",
-    icon: DollarSign,
-    nexus: "Predictive budgets + alerts",
-    traditional: "Surprise bills monthly",
-    nexusOk: true,
-    traditionalOk: false,
-  },
-  {
-    name: "Global CDN",
-    icon: Globe,
-    nexus: "300+ edge nodes worldwide",
-    traditional: "Manual CDN setup",
-    nexusOk: true,
-    traditionalOk: false,
+    n: "03",
+    title: "Ship on every push",
+    body: "Each commit fans out across the runner fleet in parallel. Green checks and a live preview URL land back in the pull request before you have finished reading the diff.",
   },
 ];
 
-const pricingTiers = [
+const FEATURES = [
   {
-    name: "Starter",
-    monthlyPrice: 0,
-    yearlyPrice: 0,
-    description: "Perfect for side projects and early experiments.",
-    badge: null,
-    features: [
-      "Up to 3 projects",
-      "5 GB storage",
-      "100K API requests/month",
-      "Community support",
-      "Basic analytics",
-      "1 team member",
-    ],
-    cta: "Start for free",
-    highlight: false,
+    icon: Gauge,
+    tag: "PARALLEL",
+    title: "Parallel by default",
+    body: "Every job fans out across up to 80 runners at once. A suite that ran twelve minutes end to end comes back in ninety seconds, with no config to write.",
   },
   {
-    name: "Growth",
-    monthlyPrice: 29,
-    yearlyPrice: 23,
-    description: "For growing teams shipping production-grade products.",
-    badge: "Most Popular",
+    icon: Boxes,
+    tag: "CACHE",
+    title: "Remote caching",
+    body: "A content-addressed cache shared across your whole team. Change one file and Foundry rebuilds one file, never the other nine hundred it already knows.",
+  },
+  {
+    icon: GitPullRequest,
+    tag: "PREVIEW",
+    title: "Preview environments",
+    body: "Every pull request gets its own fully deployed URL that tears itself down on merge. Reviewers stop queueing for the single shared staging box.",
+  },
+  {
+    icon: RotateCcw,
+    tag: "ROLLBACK",
+    title: "One-command rollback",
+    body: "Each build is immutable and addressable. Promote or roll back to any previous green build in one command — no rebuild, no guessing which commit was good.",
+  },
+  {
+    icon: LineChart,
+    tag: "INSIGHTS",
+    title: "Build insights",
+    body: "See which step is slow, which test flakes, and which dependency bloated the bundle — trended across every run, not just the one that happened to break.",
+  },
+  {
+    icon: KeyRound,
+    tag: "SECRETS",
+    title: "Scoped secrets",
+    body: "Encrypted secrets are injected at runtime, scoped per environment, and never written to disk or printed to a log. Every access lands in one audit timeline.",
+  },
+];
+
+const METRICS = [
+  {
+    value: "18",
+    suffix: "s",
+    label: "median pipeline from cold cache to green check, measured across every customer build",
+  },
+  {
+    value: "94",
+    suffix: "%",
+    label: "average cache reuse once a repository is warm, so most work never runs a second time",
+  },
+  {
+    value: "80",
+    suffix: "×",
+    label: "runners a single build can fan out to on demand, with no reserved capacity to plan",
+  },
+  {
+    value: "99.98",
+    suffix: "%",
+    label: "control-plane uptime over the trailing twelve months, public status page included",
+  },
+];
+
+const TESTIMONIALS = [
+  {
+    quote:
+      "Our CI went from a fourteen-minute wait to under a minute. People stopped drifting into Slack while builds ran, and our merge throughput nearly doubled in a quarter.",
+    name: "Dana Whitfield",
+    role: "Staff Engineer, Halcyon",
+    initials: "DW",
+  },
+  {
+    quote:
+      "The remote cache paid for the plan by itself. We were rebuilding the whole monorepo on every pull request; now the second build is basically free.",
+    name: "Marcus Bello",
+    role: "Platform Lead, Northgate",
+    initials: "MB",
+  },
+  {
+    quote:
+      "Preview environments ended our staging queue for good. Every PR ships to its own URL, reviewers click through in seconds, and nothing collides anymore.",
+    name: "Sofia Krause",
+    role: "Head of Engineering, Corvus",
+    initials: "SK",
+  },
+];
+
+interface Plan {
+  name: string;
+  monthly: number | null;
+  yearly: number | null;
+  blurb: string;
+  features: string[];
+  cta: string;
+  featured: boolean;
+}
+
+const PLANS: Plan[] = [
+  {
+    name: "Hobby",
+    monthly: 0,
+    yearly: 0,
+    blurb: "For solo projects and open source. Free forever, no card.",
     features: [
-      "Unlimited projects",
-      "100 GB storage",
-      "10M API requests/month",
-      "Priority email support",
-      "Advanced analytics",
-      "Up to 10 team members",
-      "Custom domains",
-      "CI/CD integrations",
+      "1 concurrent build",
+      "3,000 build minutes / mo",
+      "7-day build history",
+      "Community support",
+      "Unlimited public repos",
     ],
-    cta: "Get started",
-    highlight: true,
+    cta: "Start free",
+    featured: false,
+  },
+  {
+    name: "Team",
+    monthly: 40,
+    yearly: 32,
+    blurb: "For teams shipping to production every day of the week.",
+    features: [
+      "Up to 80 concurrent runners",
+      "50,000 build minutes / mo",
+      "Remote caching across branches",
+      "Preview environments",
+      "90-day build history",
+      "Slack and email support",
+    ],
+    cta: "Start 14-day trial",
+    featured: true,
   },
   {
     name: "Enterprise",
-    monthlyPrice: 99,
-    yearlyPrice: 79,
-    description: "For organisations that need power, security, and compliance.",
-    badge: null,
+    monthly: null,
+    yearly: null,
+    blurb: "For fleets with scale, compliance, and SLA requirements.",
     features: [
-      "Everything in Growth",
-      "Unlimited storage",
-      "Unlimited API requests",
-      "Dedicated Slack support",
-      "SOC 2 & HIPAA ready",
-      "Unlimited team members",
-      "SSO / SAML",
-      "Custom SLAs",
-      "On-prem option available",
+      "Unlimited concurrency",
+      "Self-hosted runners",
+      "SSO, SCIM, and audit log",
+      "Single-tenant option",
+      "Dedicated support engineer",
+      "99.99% uptime SLA",
     ],
     cta: "Contact sales",
-    highlight: false,
+    featured: false,
   },
 ];
 
-const faqs = [
+const FAQS = [
   {
-    q: "How do I get access to the beta?",
-    a: "Join the waitlist using your name and email below. We are rolling out access in batches every two weeks. Most waitlist members receive an invite within 30 days.",
+    q: "How is Foundry faster than the CI I run today?",
+    a: "Two levers. Every job fans out across up to 80 runners in parallel, and build artifacts and test results are cached content-addressably across branches. Most teams see cold builds drop three to four times and warm builds drop ten times or more.",
   },
   {
-    q: "Will pricing change when Nexus leaves beta?",
-    a: "Beta users lock in their tier price for the first 12 months post-launch — guaranteed. We will give at least 60 days notice before any pricing change.",
+    q: "Do I have to rewrite my pipeline to switch?",
+    a: "No. Foundry reads your existing GitHub Actions, CircleCI, or GitLab config and runs it as-is on day one. You opt into native caching and parallelism incrementally, one job at a time, whenever you are ready.",
   },
   {
-    q: "What tech stack does Nexus run on?",
-    a: "Nexus is built on a Rust-based runtime with a globally distributed edge network powered by Anycast routing. The control plane is TypeScript / Next.js, and the inference layer uses our proprietary model fine-tuned on infrastructure ops.",
+    q: "What exactly is a build minute?",
+    a: "One minute of one runner. A pipeline that fans out to twenty runners for thirty seconds spends ten build minutes. Steps that hit the cache and get skipped cost nothing at all.",
   },
   {
-    q: "How does Nexus handle data security?",
-    a: "All data is encrypted at rest (AES-256) and in transit (TLS 1.3). We are SOC 2 Type II certified and support bring-your-own-key (BYOK) encryption for Enterprise plans.",
+    q: "Can I run builds on my own hardware?",
+    a: "Yes. Team and Enterprise plans support self-hosted runners registered to your account, so jobs execute inside your network while the control plane, caching, and dashboards stay fully managed.",
   },
   {
-    q: "Can I migrate from my existing platform?",
-    a: "Yes. We provide a CLI migration tool that supports importing from Vercel, Railway, Render, Heroku, and bare Kubernetes clusters. Most migrations complete in under 15 minutes.",
+    q: "How are secrets and credentials handled?",
+    a: "Secrets are encrypted at rest, scoped per environment, and injected into a job only when it declares them. They are never written to disk or printed to a log, and every access is recorded in an audit timeline.",
   },
   {
-    q: "What kind of support is included?",
-    a: "Starter has access to community forums and docs. Growth gets priority email with a 24-hour SLA. Enterprise gets a dedicated Slack channel and a named customer success engineer.",
+    q: "Is there really a free tier for open source?",
+    a: "Yes. Public repositories get unlimited build minutes on the Hobby plan, permanently. Fast CI should be table stakes for the commons, not a line item on an invoice.",
   },
 ];
 
-// --- Types ---
+const FOOTER_COLS = [
+  { title: "Platform", links: ["Pipelines", "Remote cache", "Preview envs", "Runners", "Insights"] },
+  { title: "Developers", links: ["Docs", "API reference", "CLI", "Status", "Changelog"] },
+  { title: "Company", links: ["About", "Customers", "Careers", "Blog"] },
+  { title: "Legal", links: ["Privacy", "Terms", "Security", "DPA"] },
+];
 
-type BillingCycle = "monthly" | "yearly";
-type WaitlistState = "idle" | "loading" | "success" | "error";
-
-interface WaitlistForm {
-  name: string;
-  email: string;
-}
-
-interface WaitlistErrors {
-  name?: string;
-  email?: string;
-}
-
-// --- Main Component ---
+/* ------------------------------------------------------------------ */
+/* Page                                                                */
+/* ------------------------------------------------------------------ */
 
 export default function StartupLandingTemplate() {
-  const [billingCycle, setBillingCycle] = useState<BillingCycle>("monthly");
-  const [openFaq, setOpenFaq] = useState<number | null>(null);
-  const [waitlistForm, setWaitlistForm] = useState<WaitlistForm>({ name: "", email: "" });
-  const [waitlistErrors, setWaitlistErrors] = useState<WaitlistErrors>({});
-  const [waitlistState, setWaitlistState] = useState<WaitlistState>("idle");
-  const [successEmail, setSuccessEmail] = useState("");
-
-  function toggleFaq(index: number) {
-    setOpenFaq((prev) => (prev === index ? null : index));
-  }
-
-  function validateWaitlist(): boolean {
-    const errors: WaitlistErrors = {};
-    if (!waitlistForm.name.trim()) {
-      errors.name = "Name is required.";
-    }
-    if (!waitlistForm.email.trim()) {
-      errors.email = "Email is required.";
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(waitlistForm.email.trim())) {
-      errors.email = "Please enter a valid email address.";
-    }
-    setWaitlistErrors(errors);
-    return Object.keys(errors).length === 0;
-  }
-
-  function handleWaitlistSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    if (!validateWaitlist()) return;
-    setWaitlistState("loading");
-    const submittedEmail = waitlistForm.email.trim();
-    setTimeout(() => {
-      setSuccessEmail(submittedEmail);
-      setWaitlistState("success");
-      setWaitlistForm({ name: "", email: "" });
-    }, 1500);
-  }
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [yearly, setYearly] = useState(true);
+  const [openFaq, setOpenFaq] = useState<number | null>(0);
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a] text-white">
+    <div
+      className={`${display.className} min-h-screen bg-[#FAFAF7] text-[#111110] antialiased selection:bg-[#1D4ED8] selection:text-white`}
+    >
+      <TemplateBackButton variant="minimalist" />
 
-      {/* ─── Fixed Nav ─── */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-[#0a0a0a]/85 backdrop-blur-xl border-b border-white/[0.06]">
-        <div className="max-w-6xl mx-auto px-4 md:px-8 py-4 flex items-center justify-between">
-          <Link href="/templates/startup-landing" className="flex items-center gap-2">
-            <span className="w-7 h-7 rounded-lg bg-gradient-to-br from-violet-500 to-cyan-500 flex items-center justify-center text-xs font-black">
-              N
+      <style>{`
+        @keyframes fd-rise { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+        @keyframes fd-blink { 0%, 49% { opacity: 1; } 50%, 100% { opacity: 0; } }
+        .fd-rise { opacity: 0; animation: fd-rise 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
+        .fd-blink { animation: fd-blink 1.1s step-end infinite; }
+        @media (prefers-reduced-motion: reduce) {
+          .fd-rise { animation: none; opacity: 1; transform: none; }
+          .fd-blink { animation: none; opacity: 1; }
+        }
+      `}</style>
+
+      {/* ── Nav ─────────────────────────────────────────────────── */}
+      <header className="sticky top-0 z-40 border-b border-[#111110]/10 bg-[#FAFAF7]/85 backdrop-blur-md">
+        <div className="mx-auto flex h-16 max-w-6xl items-center justify-between border-x border-[#111110]/10 px-5 md:h-[70px] md:px-10">
+          <a href="#" className="flex items-center gap-2.5">
+            <span className="grid h-7 w-7 place-items-center bg-[#1D4ED8]">
+              <Box className="h-4 w-4 text-white" strokeWidth={2.5} />
             </span>
-            <span className="text-lg font-bold tracking-tight">Nexus</span>
-          </Link>
-          <div className="hidden md:flex items-center gap-8">
-            <a href="#features" className="text-sm text-white/50 hover:text-white transition-colors">Features</a>
-            <a href="#pricing" className="text-sm text-white/50 hover:text-white transition-colors">Pricing</a>
-            <a href="#faq" className="text-sm text-white/50 hover:text-white transition-colors">FAQ</a>
-            <a href="#" className="text-sm text-white/50 hover:text-white transition-colors">Docs</a>
-          </div>
-          <a
-            href="#waitlist"
-            className="px-5 py-2 bg-gradient-to-r from-violet-600 to-violet-500 text-white text-sm font-semibold rounded-full hover:opacity-90 transition-opacity shadow-lg shadow-violet-600/20"
-          >
-            Join Waitlist
+            <span className="text-[17px] font-extrabold tracking-[-0.02em]">Foundry</span>
           </a>
-        </div>
-      </nav>
 
-      {/* ─── Hero ─── */}
-      <section className="pt-36 pb-28 px-4 md:px-8 relative overflow-hidden">
-        {/* Gradient orbs */}
-        <div className="pointer-events-none absolute -top-10 left-1/2 -translate-x-[65%] w-[600px] h-[600px] bg-violet-600/18 rounded-full blur-[140px]" />
-        <div className="pointer-events-none absolute top-1/2 right-0 w-[440px] h-[440px] bg-cyan-500/10 rounded-full blur-[120px]" />
-
-        <div className="max-w-4xl mx-auto text-center relative">
-          {/* Badge */}
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-violet-500/10 border border-violet-500/25 rounded-full mb-8">
-            <span className="w-1.5 h-1.5 bg-violet-400 rounded-full animate-pulse" />
-            <span className="text-xs font-semibold text-violet-300 uppercase tracking-widest">Public Beta</span>
-          </div>
-
-          {/* Headline */}
-          <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight leading-[1.08] mb-6">
-            The AI platform
-            <br />
-            <span className="bg-gradient-to-r from-violet-400 via-fuchsia-400 to-cyan-400 bg-clip-text text-transparent">
-              developers trust
-            </span>
-          </h1>
-
-          {/* Subtitle */}
-          <p className="text-lg md:text-xl text-white/40 max-w-2xl mx-auto mb-10 leading-relaxed">
-            Nexus brings intelligent infrastructure, instant deployments, and AI-powered observability into a single platform — so you can ship with confidence.
-          </p>
-
-          {/* CTAs */}
-          <div className="flex flex-col sm:flex-row justify-center gap-4">
-            <a
-              href="#waitlist"
-              className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-gradient-to-r from-violet-600 to-violet-500 text-white font-semibold rounded-full hover:opacity-90 transition-opacity shadow-xl shadow-violet-600/30"
-            >
-              Join the Waitlist
-              <ArrowRight className="w-4 h-4" />
-            </a>
-            <a
-              href="#features"
-              className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-white/5 border border-white/10 text-white font-semibold rounded-full hover:bg-white/10 transition-colors"
-            >
-              See how it works
-            </a>
-          </div>
-
-          {/* Metrics */}
-          <div className="mt-20 grid grid-cols-3 gap-6 max-w-lg mx-auto">
-            {[
-              { value: "10K+", label: "Active devs" },
-              { value: "50ms", label: "P99 latency" },
-              { value: "99.99%", label: "Uptime SLA" },
-            ].map((m) => (
-              <div key={m.label} className="text-center">
-                <div className="text-2xl md:text-3xl font-extrabold bg-gradient-to-r from-white to-white/70 bg-clip-text text-transparent">
-                  {m.value}
-                </div>
-                <div className="text-xs text-white/30 mt-1 uppercase tracking-wider">{m.label}</div>
-              </div>
+          <nav className="hidden items-center gap-9 md:flex">
+            {NAV_LINKS.map((link) => (
+              <a
+                key={link.label}
+                href={link.href}
+                className={`${mono.className} text-[13px] text-[#111110]/60 transition-colors hover:text-[#111110]`}
+              >
+                {link.label}
+              </a>
             ))}
+          </nav>
+
+          <div className="hidden items-center gap-5 md:flex">
+            <a
+              href="#"
+              className={`${mono.className} text-[13px] text-[#111110]/60 transition-colors hover:text-[#111110]`}
+            >
+              Sign in
+            </a>
+            <a
+              href="#pricing"
+              className="group inline-flex items-center gap-1.5 bg-[#111110] px-4 py-2 text-sm font-semibold text-[#FAFAF7] transition-colors hover:bg-[#1D4ED8]"
+            >
+              Start free
+              <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
+            </a>
           </div>
+
+          <button
+            type="button"
+            onClick={() => setMenuOpen((v) => !v)}
+            aria-label="Toggle menu"
+            aria-expanded={menuOpen}
+            className="text-[#111110] md:hidden"
+          >
+            {menuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+          </button>
         </div>
-      </section>
 
-      {/* ─── Features Comparison Table ─── */}
-      <section id="features" className="py-24 px-4 md:px-8">
-        <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-14">
-            <p className="text-xs font-bold text-violet-400 uppercase tracking-widest mb-3">Why Nexus</p>
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              Built different, by design
-            </h2>
-            <p className="text-white/40 max-w-xl mx-auto text-base">
-              See exactly how Nexus stacks up against stitching together traditional infrastructure.
-            </p>
-          </div>
-
-          <div className="overflow-x-auto rounded-2xl border border-white/[0.07] bg-white/[0.02]">
-            <table className="w-full min-w-[640px] text-sm">
-              <thead>
-                <tr className="border-b border-white/[0.07]">
-                  <th className="text-left px-6 py-4 text-white/40 font-medium w-1/3">Feature</th>
-                  <th className="px-6 py-4 text-center">
-                    <span className="inline-flex items-center gap-1.5 text-violet-300 font-semibold">
-                      <span className="w-5 h-5 rounded bg-gradient-to-br from-violet-500 to-cyan-500 flex items-center justify-center text-[10px] font-black">N</span>
-                      Nexus
-                    </span>
-                  </th>
-                  <th className="px-6 py-4 text-center text-white/30 font-medium">Traditional</th>
-                </tr>
-              </thead>
-              <tbody>
-                {comparisonFeatures.map((row, i) => (
-                  <tr
-                    key={row.name}
-                    className={`border-b border-white/[0.05] transition-colors hover:bg-white/[0.025] ${
-                      i === comparisonFeatures.length - 1 ? "border-b-0" : ""
-                    }`}
-                  >
-                    <td className="px-6 py-4">
-                      <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-lg bg-violet-500/10 flex items-center justify-center flex-shrink-0">
-                          <row.icon className="w-4 h-4 text-violet-400" />
-                        </div>
-                        <span className="font-medium text-white/80">{row.name}</span>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 text-center">
-                      <div className="flex flex-col items-center gap-1.5">
-                        <span className="w-5 h-5 rounded-full bg-emerald-500/15 flex items-center justify-center">
-                          <Check className="w-3 h-3 text-emerald-400" />
-                        </span>
-                        <span className="text-xs text-emerald-400/80">{row.nexus}</span>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 text-center">
-                      <div className="flex flex-col items-center gap-1.5">
-                        <span className="w-5 h-5 rounded-full bg-red-500/10 flex items-center justify-center">
-                          <X className="w-3 h-3 text-red-400" />
-                        </span>
-                        <span className="text-xs text-white/30">{row.traditional}</span>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </section>
-
-      {/* ─── Pricing ─── */}
-      <section id="pricing" className="py-24 px-4 md:px-8 relative">
-        <div className="pointer-events-none absolute top-0 left-1/2 -translate-x-1/2 w-[500px] h-[400px] bg-violet-600/10 rounded-full blur-[120px]" />
-
-        <div className="max-w-5xl mx-auto relative">
-          <div className="text-center mb-12">
-            <p className="text-xs font-bold text-violet-400 uppercase tracking-widest mb-3">Pricing</p>
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">Simple, transparent pricing</h2>
-            <p className="text-white/40 max-w-xl mx-auto text-base mb-8">
-              No hidden fees. No surprise bills. Cancel any time.
-            </p>
-
-            {/* Billing toggle */}
-            <div className="inline-flex items-center gap-1 p-1 bg-white/[0.05] border border-white/[0.08] rounded-full">
-              <button
-                onClick={() => setBillingCycle("monthly")}
-                className={`px-5 py-2 text-sm font-semibold rounded-full transition-all ${
-                  billingCycle === "monthly"
-                    ? "bg-violet-600 text-white shadow-lg shadow-violet-600/30"
-                    : "text-white/40 hover:text-white/70"
-                }`}
+        {menuOpen && (
+          <nav className="border-t border-[#111110]/10 bg-[#FAFAF7] px-5 py-4 md:hidden">
+            {NAV_LINKS.map((link) => (
+              <a
+                key={link.label}
+                href={link.href}
+                onClick={() => setMenuOpen(false)}
+                className={`${mono.className} block py-2.5 text-sm text-[#111110]/70`}
               >
-                Monthly
-              </button>
-              <button
-                onClick={() => setBillingCycle("yearly")}
-                className={`px-5 py-2 text-sm font-semibold rounded-full transition-all flex items-center gap-2 ${
-                  billingCycle === "yearly"
-                    ? "bg-violet-600 text-white shadow-lg shadow-violet-600/30"
-                    : "text-white/40 hover:text-white/70"
-                }`}
-              >
-                Yearly
-                <span className="text-[10px] px-1.5 py-0.5 bg-emerald-500/20 text-emerald-400 rounded-full font-bold">
-                  -20%
+                {link.label}
+              </a>
+            ))}
+            <a
+              href="#pricing"
+              onClick={() => setMenuOpen(false)}
+              className="mt-3 block bg-[#111110] px-4 py-2.5 text-center text-sm font-semibold text-[#FAFAF7]"
+            >
+              Start free
+            </a>
+          </nav>
+        )}
+      </header>
+
+      <main>
+        {/* ── Hero ──────────────────────────────────────────────── */}
+        <section className="relative overflow-hidden border-b border-[#111110]/10">
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-0"
+            style={{
+              backgroundImage:
+                "linear-gradient(#111110 1px, transparent 1px), linear-gradient(90deg, #111110 1px, transparent 1px)",
+              backgroundSize: "64px 64px",
+              opacity: 0.03,
+              maskImage: "radial-gradient(ellipse 80% 70% at 72% 34%, black, transparent 78%)",
+              WebkitMaskImage: "radial-gradient(ellipse 80% 70% at 72% 34%, black, transparent 78%)",
+            }}
+          />
+          <div className="relative mx-auto grid max-w-6xl border-x border-[#111110]/10 md:grid-cols-[1.08fr_0.92fr]">
+            {/* Copy */}
+            <div className="border-b border-[#111110]/10 px-5 py-14 md:border-b-0 md:border-r md:px-10 md:py-24">
+              <div className="fd-rise flex items-center gap-2.5">
+                <span className="h-2 w-2 bg-[#1D4ED8]" />
+                <span className={`${mono.className} text-[11px] tracking-[0.22em] text-[#111110]/55`}>
+                  CI / CD PLATFORM
                 </span>
-              </button>
-            </div>
-          </div>
+              </div>
 
-          <div className="grid md:grid-cols-3 gap-6">
-            {pricingTiers.map((tier) => {
-              const price = billingCycle === "monthly" ? tier.monthlyPrice : tier.yearlyPrice;
-              return (
-                <div
-                  key={tier.name}
-                  className={`relative rounded-2xl p-7 flex flex-col ${
-                    tier.highlight
-                      ? "bg-gradient-to-b from-violet-600/20 to-violet-600/5 border border-violet-500/40 shadow-xl shadow-violet-600/10"
-                      : "bg-white/[0.03] border border-white/[0.07]"
-                  }`}
+              <h1
+                className="fd-rise mt-6 text-[2.5rem] font-extrabold leading-[1.02] tracking-[-0.03em] sm:text-[3rem] md:text-[3.5rem] lg:text-[3.9rem]"
+                style={{ animationDelay: "80ms" }}
+              >
+                Ship on every push.
+                <br />
+                Wait on <span className="text-[#1D4ED8]">nothing.</span>
+              </h1>
+
+              <p
+                className="fd-rise mt-6 max-w-xl text-[15px] leading-relaxed text-[#111110]/60 md:text-[17px]"
+                style={{ animationDelay: "160ms" }}
+              >
+                Foundry fans every pipeline across up to 80 runners and reuses a warm cache across all
+                your branches — so a full build lands green in seconds, not the twelve-minute wait your
+                old CI trained you to expect.
+              </p>
+
+              <div
+                className="fd-rise mt-8 flex flex-wrap items-center gap-3"
+                style={{ animationDelay: "240ms" }}
+              >
+                <a
+                  href="#pricing"
+                  className="group inline-flex items-center gap-2 bg-[#111110] px-6 py-3.5 text-sm font-semibold text-[#FAFAF7] transition-colors hover:bg-[#1D4ED8]"
                 >
-                  {tier.badge && (
-                    <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                      <span className="px-3 py-1 bg-gradient-to-r from-violet-600 to-fuchsia-500 text-white text-xs font-bold rounded-full shadow-lg shadow-violet-600/30">
-                        {tier.badge}
+                  Start building free
+                  <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+                </a>
+                <a
+                  href="#how"
+                  className={`${mono.className} group inline-flex items-center gap-1.5 border-b border-[#111110]/25 pb-1 text-[13px] text-[#111110]/70 transition-colors hover:border-[#1D4ED8] hover:text-[#111110]`}
+                >
+                  Read the docs
+                  <ArrowUpRight className="h-3.5 w-3.5 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+                </a>
+              </div>
+
+              <p
+                className={`${mono.className} fd-rise mt-9 flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] tracking-[0.1em] text-[#111110]/40`}
+                style={{ animationDelay: "320ms" }}
+              >
+                <span>NO CARD REQUIRED</span>
+                <span className="text-[#111110]/20">/</span>
+                <span>3,000 FREE BUILD MINUTES</span>
+                <span className="text-[#111110]/20">/</span>
+                <span>SOC 2 TYPE II</span>
+              </p>
+            </div>
+
+            {/* Terminal — pure-CSS build pipeline */}
+            <div className="relative flex items-center px-5 py-14 md:px-10 md:py-24">
+              <div className="fd-rise relative w-full" style={{ animationDelay: "200ms" }}>
+                <div className="border border-[#111110]/15 bg-[#0C0C0A] text-[#EDECE4] shadow-[0_30px_60px_-32px_rgba(17,17,16,0.55)]">
+                  {/* title bar */}
+                  <div className="flex items-center justify-between border-b border-white/10 px-4 py-2.5">
+                    <div className="flex items-center gap-2">
+                      <span className="h-2 w-2 bg-[#1D4ED8]" />
+                      <span className={`${mono.className} text-[11px] tracking-wide text-white/60`}>
+                        foundry-ci · build #4021
                       </span>
                     </div>
-                  )}
-
-                  <div className="mb-5">
-                    <p className="text-white font-bold text-lg mb-1">{tier.name}</p>
-                    <p className="text-white/40 text-sm leading-relaxed">{tier.description}</p>
+                    <span className={`${mono.className} text-[11px] text-white/40`}>main</span>
                   </div>
 
-                  <div className="mb-6">
-                    <div className="flex items-end gap-1">
-                      <span className="text-4xl font-extrabold text-white">
-                        {price === 0 ? "Free" : `$${price}`}
-                      </span>
-                      {price > 0 && (
-                        <span className="text-white/30 text-sm mb-1">/mo</span>
-                      )}
+                  {/* body */}
+                  <div className={`${mono.className} px-4 py-4 text-[12.5px] leading-relaxed`}>
+                    <div className="flex gap-2 text-white/80">
+                      <span className="text-[#1D4ED8]">$</span> foundry run --pipeline ci
                     </div>
-                    {billingCycle === "yearly" && price > 0 && (
-                      <p className="text-xs text-emerald-400 mt-1">Billed annually</p>
+                    <div className="mt-1 text-white/35">→ 6 stages · 12 runners · cache warm</div>
+
+                    <div className="mt-3 space-y-2">
+                      {STAGES.map((stage, i) => (
+                        <div
+                          key={stage.name}
+                          className="fd-rise flex items-center gap-2.5"
+                          style={{ animationDelay: `${380 + i * 90}ms` }}
+                        >
+                          <Check className="h-3.5 w-3.5 shrink-0 text-[#22C55E]" strokeWidth={3} />
+                          <span className="shrink-0 text-white/80">{stage.name}</span>
+                          {stage.note && (
+                            <span className="shrink-0 bg-[#1D4ED8]/20 px-1.5 text-[10px] text-[#8AB0FF]">
+                              {stage.note}
+                            </span>
+                          )}
+                          <span className="h-px flex-1 border-b border-dotted border-white/15" />
+                          <span className="shrink-0 text-white/45">{stage.time}</span>
+                        </div>
+                      ))}
+                    </div>
+
+                    <div className="mt-3 flex items-center gap-1.5 text-white/80">
+                      <Check className="h-3.5 w-3.5 text-[#22C55E]" strokeWidth={3} />
+                      <span>pipeline passed</span>
+                      <span className="fd-blink ml-0.5 inline-block h-3.5 w-[7px] bg-white/70" />
+                    </div>
+                  </div>
+
+                  {/* footer */}
+                  <div className="flex items-center justify-between border-t border-white/10 px-4 py-2.5">
+                    <span className={`${mono.className} text-[11px] text-[#22C55E]`}>PASSED · 18.5s</span>
+                    <span className={`${mono.className} text-[11px] text-white/40`}>94% CACHE HIT</span>
+                  </div>
+                </div>
+
+                {/* annotation chip */}
+                <div className="absolute -bottom-6 -left-3 hidden border border-[#111110]/15 bg-[#FAFAF7] px-4 py-3 shadow-[0_16px_30px_-18px_rgba(17,17,16,0.4)] sm:block">
+                  <p className={`${mono.className} text-[10px] tracking-[0.18em] text-[#111110]/45`}>
+                    MEDIAN BUILD
+                  </p>
+                  <p className="text-2xl font-bold leading-none">
+                    18<span className="text-[#1D4ED8]">s</span>
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ── Logo strip ────────────────────────────────────────── */}
+        <section className="border-b border-[#111110]/10">
+          <div className="mx-auto max-w-6xl border-x border-[#111110]/10 px-5 py-8 md:px-10">
+            <div className="flex flex-col gap-6 md:flex-row md:items-center md:gap-10">
+              <p className={`${mono.className} shrink-0 text-[11px] tracking-[0.2em] text-[#111110]/45`}>
+                SHIPPING FASTER AT
+              </p>
+              <div className="grid grid-cols-2 gap-x-8 gap-y-4 sm:grid-cols-3 md:flex md:flex-1 md:items-center md:justify-between">
+                {LOGOS.map((logo) => (
+                  <span
+                    key={logo}
+                    className="text-[15px] font-semibold tracking-tight text-[#111110]/40 transition-colors hover:text-[#111110]"
+                  >
+                    {logo}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ── How it works ──────────────────────────────────────── */}
+        <section id="how" className="border-b border-[#111110]/10">
+          <div className="mx-auto max-w-6xl border-x border-[#111110]/10 px-5 py-16 md:px-10 md:py-24">
+            <div className="mb-12 grid gap-6 md:grid-cols-[0.9fr_1.1fr] md:items-end">
+              <div>
+                <div className="flex items-center gap-3">
+                  <span className={`${mono.className} text-[11px] tracking-[0.2em] text-[#1D4ED8]`}>01</span>
+                  <span className="h-px w-8 bg-[#1D4ED8]" />
+                  <span className={`${mono.className} text-[11px] tracking-[0.2em] text-[#111110]/45`}>
+                    HOW IT WORKS
+                  </span>
+                </div>
+                <h2 className="mt-5 text-3xl font-bold tracking-[-0.02em] md:text-[2.7rem] md:leading-[1.05]">
+                  From repo to green check in three moves.
+                </h2>
+              </div>
+              <p className="text-[15px] leading-relaxed text-[#111110]/55 md:self-end md:pb-2 md:pl-10">
+                No YAML rewrite, no migration weekend. Foundry adopts the pipeline you already run and
+                makes it fast, one job at a time — you keep shipping the entire way.
+              </p>
+            </div>
+
+            <div className="border-t border-[#111110]/10">
+              {STEPS.map((step) => (
+                <div
+                  key={step.n}
+                  className="group grid gap-4 border-b border-[#111110]/10 py-8 md:grid-cols-[auto_1fr_1.4fr] md:items-baseline md:gap-10 md:py-10"
+                >
+                  <span
+                    className={`${mono.className} text-5xl font-medium text-[#111110]/15 transition-colors group-hover:text-[#1D4ED8] md:text-6xl`}
+                  >
+                    {step.n}
+                  </span>
+                  <h3 className="text-xl font-semibold tracking-[-0.01em] md:text-2xl">{step.title}</h3>
+                  <p className="text-[15px] leading-relaxed text-[#111110]/55">{step.body}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ── Features ──────────────────────────────────────────── */}
+        <section id="platform" className="border-b border-[#111110]/10">
+          <div className="mx-auto max-w-6xl border-x border-[#111110]/10 px-5 py-16 md:px-10 md:py-24">
+            <div className="mb-12 grid gap-6 md:grid-cols-[1fr_1fr] md:items-end">
+              <div>
+                <div className="flex items-center gap-3">
+                  <span className={`${mono.className} text-[11px] tracking-[0.2em] text-[#1D4ED8]`}>02</span>
+                  <span className="h-px w-8 bg-[#1D4ED8]" />
+                  <span className={`${mono.className} text-[11px] tracking-[0.2em] text-[#111110]/45`}>
+                    THE PLATFORM
+                  </span>
+                </div>
+                <h2 className="mt-5 text-3xl font-bold tracking-[-0.02em] md:text-[2.7rem] md:leading-[1.05]">
+                  Six primitives. One fast build.
+                </h2>
+              </div>
+              <p className="text-[15px] leading-relaxed text-[#111110]/55 md:self-end md:pb-2 md:pl-10">
+                Caching, parallelism, previews, rollback, insights, and secrets — built into the runner,
+                not bolted on with plugins and glue scripts you have to maintain.
+              </p>
+            </div>
+
+            <div className="grid border-l border-t border-[#111110]/10 sm:grid-cols-2 lg:grid-cols-3">
+              {FEATURES.map((feature) => (
+                <article
+                  key={feature.tag}
+                  className="group border-b border-r border-[#111110]/10 p-7 transition-colors hover:bg-white md:p-8"
+                >
+                  <div className="mb-6 flex items-center justify-between">
+                    <span className="grid h-10 w-10 place-items-center border border-[#111110]/15 transition-colors group-hover:border-[#1D4ED8] group-hover:bg-[#1D4ED8]">
+                      <feature.icon
+                        className="h-[18px] w-[18px] text-[#111110] transition-colors group-hover:text-white"
+                        strokeWidth={1.75}
+                      />
+                    </span>
+                    <span className={`${mono.className} text-[10px] tracking-[0.2em] text-[#111110]/30`}>
+                      {feature.tag}
+                    </span>
+                  </div>
+                  <h3 className="mb-2.5 text-lg font-semibold tracking-[-0.01em]">{feature.title}</h3>
+                  <p className="text-[14px] leading-relaxed text-[#111110]/55">{feature.body}</p>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ── Metrics band ──────────────────────────────────────── */}
+        <section className="border-b border-[#111110]/10 bg-[#0C0C0A] text-[#FAFAF7]">
+          <div className="mx-auto max-w-6xl px-5 py-14 md:px-10 md:py-20">
+            <div className="mb-10 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+              <div>
+                <div className="flex items-center gap-3">
+                  <span className="h-2 w-2 bg-[#1D4ED8]" />
+                  <span className={`${mono.className} text-[11px] tracking-[0.22em] text-white/50`}>
+                    MEASURED IN PRODUCTION
+                  </span>
+                </div>
+                <h2 className="mt-4 max-w-md text-2xl font-semibold tracking-[-0.01em] md:text-[1.9rem] md:leading-[1.15]">
+                  Numbers our customers actually see, not the ones on a slide.
+                </h2>
+              </div>
+              <p className={`${mono.className} text-[11px] tracking-wide text-white/35`}>TRAILING 12 MONTHS</p>
+            </div>
+
+            <div className="grid grid-cols-1 gap-px border border-white/10 bg-white/10 sm:grid-cols-2 lg:grid-cols-4">
+              {METRICS.map((metric) => (
+                <div key={metric.label} className="bg-[#0C0C0A] p-7 md:p-8">
+                  <p className={`${mono.className} text-4xl font-medium tracking-tight md:text-5xl`}>
+                    {metric.value}
+                    <span className="text-[#1D4ED8]">{metric.suffix}</span>
+                  </p>
+                  <p className="mt-3 text-[13px] leading-snug text-white/50">{metric.label}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ── Testimonials ──────────────────────────────────────── */}
+        <section id="customers" className="border-b border-[#111110]/10">
+          <div className="mx-auto max-w-6xl border-x border-[#111110]/10 px-5 py-16 md:px-10 md:py-24">
+            <div className="mb-12 grid gap-6 md:grid-cols-[1fr_1fr] md:items-end">
+              <div>
+                <div className="flex items-center gap-3">
+                  <span className={`${mono.className} text-[11px] tracking-[0.2em] text-[#1D4ED8]`}>03</span>
+                  <span className="h-px w-8 bg-[#1D4ED8]" />
+                  <span className={`${mono.className} text-[11px] tracking-[0.2em] text-[#111110]/45`}>
+                    FIELD NOTES
+                  </span>
+                </div>
+                <h2 className="mt-5 text-3xl font-bold tracking-[-0.02em] md:text-[2.7rem] md:leading-[1.05]">
+                  Teams that stopped waiting on CI.
+                </h2>
+              </div>
+              <p className="text-[15px] leading-relaxed text-[#111110]/55 md:self-end md:pb-2 md:pl-10">
+                A minute saved on every build compounds across a hundred engineers and a thousand merges
+                a week. Here is what that felt like on the ground.
+              </p>
+            </div>
+
+            <div className="grid gap-px border border-[#111110]/10 bg-[#111110]/10 md:grid-cols-3">
+              {TESTIMONIALS.map((testimonial) => (
+                <figure key={testimonial.name} className="flex flex-col justify-between bg-[#FAFAF7] p-7 md:p-8">
+                  <blockquote className="text-[17px] leading-[1.5] text-[#111110]/85 md:text-lg">
+                    &ldquo;{testimonial.quote}&rdquo;
+                  </blockquote>
+                  <figcaption className="mt-7 flex items-center gap-3 border-t border-[#111110]/10 pt-5">
+                    <span
+                      className={`${mono.className} grid h-9 w-9 place-items-center bg-[#111110] text-xs font-semibold text-[#FAFAF7]`}
+                    >
+                      {testimonial.initials}
+                    </span>
+                    <div>
+                      <p className="text-sm font-semibold">{testimonial.name}</p>
+                      <p className={`${mono.className} text-[11px] text-[#111110]/45`}>{testimonial.role}</p>
+                    </div>
+                  </figcaption>
+                </figure>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ── Pricing ───────────────────────────────────────────── */}
+        <section id="pricing" className="border-b border-[#111110]/10">
+          <div className="mx-auto max-w-6xl border-x border-[#111110]/10 px-5 py-16 md:px-10 md:py-24">
+            <div className="mb-12 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+              <div>
+                <div className="flex items-center gap-3">
+                  <span className={`${mono.className} text-[11px] tracking-[0.2em] text-[#1D4ED8]`}>04</span>
+                  <span className="h-px w-8 bg-[#1D4ED8]" />
+                  <span className={`${mono.className} text-[11px] tracking-[0.2em] text-[#111110]/45`}>
+                    PRICING
+                  </span>
+                </div>
+                <h2 className="mt-5 text-3xl font-bold tracking-[-0.02em] md:text-[2.7rem] md:leading-[1.05]">
+                  Priced by the build, not the seat.
+                </h2>
+              </div>
+
+              <div className={`${mono.className} flex items-center gap-3 text-[11px] tracking-[0.12em]`}>
+                <span className={yearly ? "text-[#111110]/40" : "text-[#111110]"}>MONTHLY</span>
+                <button
+                  type="button"
+                  role="switch"
+                  aria-checked={yearly}
+                  aria-label="Toggle billing period"
+                  onClick={() => setYearly((v) => !v)}
+                  className="relative h-6 w-11 border border-[#111110]/25 transition-colors hover:border-[#111110]/45"
+                >
+                  <span
+                    className={`absolute top-1/2 h-3.5 w-3.5 -translate-y-1/2 bg-[#1D4ED8] transition-all ${
+                      yearly ? "left-[calc(100%-1.2rem)]" : "left-1"
+                    }`}
+                  />
+                </button>
+                <span className={yearly ? "text-[#111110]" : "text-[#111110]/40"}>
+                  YEARLY <span className="text-[#1D4ED8]">-20%</span>
+                </span>
+              </div>
+            </div>
+
+            <div className="grid border-l border-t border-[#111110]/10 lg:grid-cols-3">
+              {PLANS.map((plan) => (
+                <article
+                  key={plan.name}
+                  className={`flex flex-col border-b border-r border-[#111110]/10 p-8 ${
+                    plan.featured ? "bg-[#111110] text-[#FAFAF7]" : ""
+                  }`}
+                >
+                  <div className="mb-5 flex items-center justify-between">
+                    <h3 className={`${mono.className} text-xs tracking-[0.18em]`}>{plan.name.toUpperCase()}</h3>
+                    {plan.featured && (
+                      <span
+                        className={`${mono.className} bg-[#1D4ED8] px-2 py-0.5 text-[10px] font-medium text-white`}
+                      >
+                        MOST TEAMS
+                      </span>
                     )}
                   </div>
 
-                  <ul className="space-y-3 mb-8 flex-1">
-                    {tier.features.map((feature) => (
-                      <li key={feature} className="flex items-start gap-2.5 text-sm text-white/60">
-                        <Check className="w-4 h-4 text-violet-400 flex-shrink-0 mt-0.5" />
+                  <p
+                    className={`mb-6 min-h-10 text-[14px] leading-relaxed ${
+                      plan.featured ? "text-white/55" : "text-[#111110]/55"
+                    }`}
+                  >
+                    {plan.blurb}
+                  </p>
+
+                  <div className="mb-7">
+                    {plan.monthly === null ? (
+                      <span className="text-4xl font-bold tracking-tight">Custom</span>
+                    ) : (
+                      <span className="flex items-baseline gap-1.5">
+                        <span className={`${mono.className} text-5xl font-semibold tracking-tight`}>
+                          ${yearly ? plan.yearly : plan.monthly}
+                        </span>
+                        <span
+                          className={`${mono.className} text-sm ${
+                            plan.featured ? "text-white/50" : "text-[#111110]/45"
+                          }`}
+                        >
+                          /mo
+                        </span>
+                      </span>
+                    )}
+                  </div>
+
+                  <ul
+                    className={`mb-9 space-y-3 border-t pt-6 ${
+                      plan.featured ? "border-white/15" : "border-[#111110]/10"
+                    }`}
+                  >
+                    {plan.features.map((feature) => (
+                      <li
+                        key={feature}
+                        className={`flex items-start gap-2.5 text-[14px] ${
+                          plan.featured ? "text-white/80" : "text-[#111110]/75"
+                        }`}
+                      >
+                        <Check className="mt-0.5 h-4 w-4 shrink-0 text-[#1D4ED8]" strokeWidth={2.5} />
                         {feature}
                       </li>
                     ))}
                   </ul>
 
                   <a
-                    href="#waitlist"
-                    className={`w-full py-3 text-sm font-semibold rounded-xl text-center transition-all ${
-                      tier.highlight
-                        ? "bg-gradient-to-r from-violet-600 to-violet-500 text-white hover:opacity-90 shadow-lg shadow-violet-600/25"
-                        : "bg-white/[0.07] border border-white/[0.1] text-white hover:bg-white/[0.12]"
+                    href="#"
+                    className={`mt-auto inline-flex items-center justify-center gap-2 px-5 py-3 text-sm font-semibold transition-colors ${
+                      plan.featured
+                        ? "bg-[#1D4ED8] text-white hover:bg-[#2563EB]"
+                        : "border border-[#111110]/20 text-[#111110] hover:border-[#1D4ED8] hover:text-[#1D4ED8]"
                     }`}
                   >
-                    {tier.cta}
+                    {plan.cta}
                   </a>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      </section>
+                </article>
+              ))}
+            </div>
 
-      {/* ─── FAQ ─── */}
-      <section id="faq" className="py-24 px-4 md:px-8">
-        <div className="max-w-2xl mx-auto">
-          <div className="text-center mb-14">
-            <p className="text-xs font-bold text-violet-400 uppercase tracking-widest mb-3">FAQ</p>
-            <h2 className="text-3xl md:text-4xl font-bold">Frequently asked questions</h2>
-          </div>
-
-          <div className="space-y-3">
-            {faqs.map((faq, index) => {
-              const isOpen = openFaq === index;
-              return (
-                <div
-                  key={index}
-                  className={`rounded-xl border transition-colors ${
-                    isOpen
-                      ? "bg-white/[0.04] border-white/[0.12]"
-                      : "bg-white/[0.02] border-white/[0.06] hover:border-white/[0.1]"
-                  }`}
-                >
-                  <button
-                    onClick={() => toggleFaq(index)}
-                    className="w-full flex items-center justify-between px-6 py-4 text-left"
-                  >
-                    <span className="font-medium text-white/90 text-sm pr-4">{faq.q}</span>
-                    <ChevronDown
-                      className={`w-4 h-4 text-white/40 flex-shrink-0 transition-transform duration-200 ${
-                        isOpen ? "rotate-180" : ""
-                      }`}
-                    />
-                  </button>
-                  {isOpen && (
-                    <div className="px-6 pb-5">
-                      <p className="text-sm text-white/40 leading-relaxed">{faq.a}</p>
-                    </div>
-                  )}
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      </section>
-
-      {/* ─── Waitlist CTA ─── */}
-      <section id="waitlist" className="py-24 px-4 md:px-8 relative">
-        <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
-          <div className="w-[600px] h-[400px] bg-violet-600/12 rounded-full blur-[130px]" />
-        </div>
-
-        <div className="max-w-xl mx-auto relative">
-          <div className="text-center mb-10">
-            <p className="text-xs font-bold text-violet-400 uppercase tracking-widest mb-3">Get Early Access</p>
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              Join{" "}
-              <span className="bg-gradient-to-r from-violet-400 to-cyan-400 bg-clip-text text-transparent">
-                10,000+ developers
-              </span>
-              <br />
-              on the waitlist
-            </h2>
-            <p className="text-white/40 text-base leading-relaxed">
-              Be first to know when we open the doors. Beta users get 3 months free on any paid plan.
+            <p className={`${mono.className} mt-6 text-[11px] tracking-wide text-[#111110]/40`}>
+              ALL PLANS INCLUDE UNLIMITED SEATS · OPEN-FORMAT EXPORT · NO EGRESS FEES
             </p>
           </div>
+        </section>
 
-          {waitlistState === "success" ? (
-            <div className="rounded-2xl border border-emerald-500/30 bg-emerald-500/[0.07] px-8 py-10 text-center">
-              <div className="w-12 h-12 rounded-full bg-emerald-500/15 flex items-center justify-center mx-auto mb-4">
-                <Check className="w-6 h-6 text-emerald-400" />
+        {/* ── FAQ ───────────────────────────────────────────────── */}
+        <section id="faq" className="border-b border-[#111110]/10">
+          <div className="mx-auto grid max-w-6xl gap-10 border-x border-[#111110]/10 px-5 py-16 md:grid-cols-[0.85fr_1.15fr] md:px-10 md:py-24">
+            <div>
+              <div className="flex items-center gap-3">
+                <span className={`${mono.className} text-[11px] tracking-[0.2em] text-[#1D4ED8]`}>05</span>
+                <span className="h-px w-8 bg-[#1D4ED8]" />
+                <span className={`${mono.className} text-[11px] tracking-[0.2em] text-[#111110]/45`}>
+                  QUESTIONS
+                </span>
               </div>
-              <p className="text-white font-semibold text-lg mb-2">You&apos;re on the list!</p>
-              <p className="text-white/50 text-sm">
-                We&apos;ll notify you at{" "}
-                <span className="text-emerald-400 font-medium">{successEmail}</span> when your
-                spot is ready.
+              <h2 className="mt-5 text-3xl font-bold tracking-[-0.02em] md:text-[2.7rem] md:leading-[1.05]">
+                Answers, before you ask.
+              </h2>
+              <p className="mt-5 max-w-xs text-[15px] leading-relaxed text-[#111110]/55">
+                Still curious? The docs go deep on every pipeline primitive, and engineers answer the
+                shared inbox within a business day.
               </p>
-            </div>
-          ) : (
-            <form
-              onSubmit={handleWaitlistSubmit}
-              noValidate
-              className="rounded-2xl border border-white/[0.08] bg-white/[0.03] px-6 md:px-8 py-8 space-y-4"
-            >
-              {/* Name field */}
-              <div>
-                <label className="block text-xs font-semibold text-white/50 uppercase tracking-wider mb-2">
-                  Your name
-                </label>
-                <input
-                  type="text"
-                  value={waitlistForm.name}
-                  onChange={(e) => {
-                    setWaitlistForm((f) => ({ ...f, name: e.target.value }));
-                    if (waitlistErrors.name) setWaitlistErrors((err) => ({ ...err, name: undefined }));
-                  }}
-                  placeholder="Ada Lovelace"
-                  className={`w-full px-4 py-3 bg-white/[0.05] border rounded-xl text-sm text-white placeholder:text-white/20 focus:outline-none transition-colors ${
-                    waitlistErrors.name
-                      ? "border-red-500/60 focus:border-red-500"
-                      : "border-white/[0.1] focus:border-violet-500/60"
-                  }`}
-                />
-                {waitlistErrors.name && (
-                  <p className="text-xs text-red-400 mt-1.5">{waitlistErrors.name}</p>
-                )}
-              </div>
-
-              {/* Email field */}
-              <div>
-                <label className="block text-xs font-semibold text-white/50 uppercase tracking-wider mb-2">
-                  Email address
-                </label>
-                <input
-                  type="email"
-                  value={waitlistForm.email}
-                  onChange={(e) => {
-                    setWaitlistForm((f) => ({ ...f, email: e.target.value }));
-                    if (waitlistErrors.email) setWaitlistErrors((err) => ({ ...err, email: undefined }));
-                  }}
-                  placeholder="ada@lovelace.dev"
-                  className={`w-full px-4 py-3 bg-white/[0.05] border rounded-xl text-sm text-white placeholder:text-white/20 focus:outline-none transition-colors ${
-                    waitlistErrors.email
-                      ? "border-red-500/60 focus:border-red-500"
-                      : "border-white/[0.1] focus:border-violet-500/60"
-                  }`}
-                />
-                {waitlistErrors.email && (
-                  <p className="text-xs text-red-400 mt-1.5">{waitlistErrors.email}</p>
-                )}
-              </div>
-
-              {/* Submit */}
-              <button
-                type="submit"
-                disabled={waitlistState === "loading"}
-                className="w-full mt-2 py-3.5 bg-gradient-to-r from-violet-600 to-violet-500 text-white font-semibold rounded-xl hover:opacity-90 transition-opacity disabled:opacity-70 flex items-center justify-center gap-2 shadow-lg shadow-violet-600/25"
+              <a
+                href="#"
+                className={`${mono.className} group mt-6 inline-flex items-center gap-1.5 border-b border-[#111110]/25 pb-1 text-[13px] text-[#111110]/70 transition-colors hover:border-[#1D4ED8] hover:text-[#111110]`}
               >
-                {waitlistState === "loading" ? (
-                  <>
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                    Joining...
-                  </>
-                ) : (
-                  <>
-                    Request Access
-                    <ArrowRight className="w-4 h-4" />
-                  </>
-                )}
-              </button>
-
-              <p className="text-center text-xs text-white/20 pt-1">
-                No spam, ever. Unsubscribe at any time.
-              </p>
-            </form>
-          )}
-        </div>
-      </section>
-
-      {/* ─── Footer ─── */}
-      <footer className="border-t border-white/[0.05] py-10 px-4 md:px-8 mt-8">
-        <div className="max-w-6xl mx-auto">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-6 mb-8">
-            <div className="flex items-center gap-2">
-              <span className="w-6 h-6 rounded-md bg-gradient-to-br from-violet-500 to-cyan-500 flex items-center justify-center text-[10px] font-black">
-                N
-              </span>
-              <span className="text-sm font-bold">Nexus</span>
+                Read the full docs
+                <ArrowUpRight className="h-3.5 w-3.5 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+              </a>
             </div>
-            <div className="flex flex-wrap justify-center gap-x-8 gap-y-2 text-sm text-white/30">
-              <a href="#features" className="hover:text-white/60 transition-colors">Features</a>
-              <a href="#pricing" className="hover:text-white/60 transition-colors">Pricing</a>
-              <a href="#faq" className="hover:text-white/60 transition-colors">FAQ</a>
-              <a href="#" className="hover:text-white/60 transition-colors">Docs</a>
-              <a href="#" className="hover:text-white/60 transition-colors">Blog</a>
-              <a href="#" className="hover:text-white/60 transition-colors">Privacy</a>
-              <a href="#" className="hover:text-white/60 transition-colors">Terms</a>
-            </div>
-            <div className="flex gap-5 text-sm text-white/20">
-              <a href="#" className="hover:text-white/50 transition-colors">Twitter / X</a>
-              <a href="#" className="hover:text-white/50 transition-colors">GitHub</a>
-              <a href="#" className="hover:text-white/50 transition-colors">Discord</a>
+
+            <div className="border-t border-[#111110]/10">
+              {FAQS.map((faq, index) => {
+                const isOpen = openFaq === index;
+                return (
+                  <div key={faq.q} className="border-b border-[#111110]/10">
+                    <button
+                      type="button"
+                      onClick={() => setOpenFaq(isOpen ? null : index)}
+                      aria-expanded={isOpen}
+                      className="flex w-full items-center justify-between gap-4 py-5 text-left"
+                    >
+                      <span className="text-[15px] font-semibold md:text-base">{faq.q}</span>
+                      <Plus
+                        className={`h-4 w-4 shrink-0 transition-transform duration-200 ${
+                          isOpen ? "rotate-45 text-[#1D4ED8]" : "text-[#111110]/40"
+                        }`}
+                        strokeWidth={2}
+                      />
+                    </button>
+                    {isOpen && (
+                      <p className="pb-6 pr-6 text-[14px] leading-relaxed text-[#111110]/55">{faq.a}</p>
+                    )}
+                  </div>
+                );
+              })}
             </div>
           </div>
-          <div className="border-t border-white/[0.05] pt-6 text-center">
-            <p className="text-xs text-white/20">
-              &copy; 2026 Nexus. Part of{" "}
-              <Link href="/templates" className="text-white/30 hover:text-violet-400 transition-colors">
-                StyleKit Templates
-              </Link>
-              . All rights reserved.
+        </section>
+
+        {/* ── Final CTA ─────────────────────────────────────────── */}
+        <section className="border-b border-[#111110]/10 bg-[#0C0C0A] text-[#FAFAF7]">
+          <div className="mx-auto max-w-6xl px-5 py-20 md:px-10 md:py-28">
+            <div className="grid gap-10 md:grid-cols-[1.25fr_0.75fr] md:items-end">
+              <div>
+                <div className="flex items-center gap-3">
+                  <span className="h-2 w-2 bg-[#1D4ED8]" />
+                  <span className={`${mono.className} text-[11px] tracking-[0.22em] text-white/50`}>
+                    START BUILDING
+                  </span>
+                </div>
+                <h2 className="mt-5 text-4xl font-bold tracking-[-0.02em] md:text-6xl md:leading-[1.02]">
+                  Your next build is
+                  <br />
+                  already <span className="text-[#1D4ED8]">warm.</span>
+                </h2>
+              </div>
+
+              <div className="flex flex-col items-start gap-4 md:items-end">
+                <a
+                  href="#pricing"
+                  className="group inline-flex items-center gap-2 bg-[#FAFAF7] px-7 py-4 text-sm font-semibold text-[#0C0C0A] transition-colors hover:bg-[#1D4ED8] hover:text-white"
+                >
+                  Start building free
+                  <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+                </a>
+                <span className={`${mono.className} text-[11px] tracking-wide text-white/40`}>
+                  10 MINUTES TO YOUR FIRST GREEN CHECK
+                </span>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      {/* ── Footer ──────────────────────────────────────────────── */}
+      <footer className="bg-[#FAFAF7]">
+        <div className="mx-auto max-w-6xl border-x border-[#111110]/10 px-5 py-14 md:px-10 md:py-16">
+          <div className="grid gap-10 md:grid-cols-[1.4fr_repeat(4,0.75fr)]">
+            <div>
+              <a href="#" className="flex items-center gap-2.5">
+                <span className="grid h-7 w-7 place-items-center bg-[#1D4ED8]">
+                  <Box className="h-4 w-4 text-white" strokeWidth={2.5} />
+                </span>
+                <span className="text-[17px] font-extrabold tracking-[-0.02em]">Foundry</span>
+              </a>
+              <p className="mt-5 max-w-[17rem] text-[14px] leading-relaxed text-[#111110]/50">
+                The build platform for teams that ship on every push. Parallel runners, a warm cache,
+                and previews on every pull request.
+              </p>
+              <p className={`${mono.className} mt-6 flex items-center gap-2 text-[11px] tracking-wide text-[#111110]/45`}>
+                <span className="h-1.5 w-1.5 bg-[#22C55E]" />
+                ALL RUNNERS OPERATIONAL
+              </p>
+            </div>
+
+            {FOOTER_COLS.map((col) => (
+              <nav key={col.title}>
+                <p className={`${mono.className} mb-4 text-[11px] tracking-[0.2em] text-[#111110]/35`}>
+                  {col.title.toUpperCase()}
+                </p>
+                {col.links.map((link) => (
+                  <a
+                    key={link}
+                    href="#"
+                    className="block py-1.5 text-[14px] text-[#111110]/55 transition-colors hover:text-[#111110]"
+                  >
+                    {link}
+                  </a>
+                ))}
+              </nav>
+            ))}
+          </div>
+
+          <div className="mt-12 flex flex-wrap items-center justify-between gap-4 border-t border-[#111110]/10 pt-6">
+            <p className={`${mono.className} text-[11px] tracking-wide text-[#111110]/40`}>
+              &copy; 2026 FOUNDRY, INC.
+            </p>
+            <p className={`${mono.className} text-[11px] tracking-[0.14em] text-[#111110]/40`}>
+              BUILT FOR TEAMS THAT SHIP
             </p>
           </div>
         </div>
       </footer>
-
-      <TemplateBackButton variant="modern" />
     </div>
   );
 }
