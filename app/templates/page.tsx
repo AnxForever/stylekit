@@ -367,19 +367,11 @@ export default function TemplatesPage() {
     setTimeout(() => setCopied(false), 2000);
   }, [fetchSource]);
 
-  const handleDownload = useCallback(async (slug: string) => {
-    const code = sourceCache.current[slug] ?? await fetchSource(slug);
-    if (!code) return;
-    const blob = new Blob([code], { type: "text/plain" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `${slug}.tsx`;
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    URL.revokeObjectURL(url);
-  }, [fetchSource]);
+  // Full-project ZIP: the API packages the template with a runnable Next.js
+  // scaffold, so a plain navigation triggers the browser's native download.
+  const handleDownload = useCallback((slug: string) => {
+    window.location.assign(`/api/templates/${slug}/download`);
+  }, []);
 
   useEffect(() => {
     const dialog = dialogRef.current;
@@ -615,9 +607,6 @@ export default function TemplatesPage() {
                   {t("templates.activeFiltersLabel")}: {activeFilterSummary}
                 </p>
               )}
-              <p className="text-xs text-muted">
-                {t("templates.keyboardHint")}
-              </p>
             </div>
 
             <div className={`grid sm:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6 transition-opacity ${isFiltering ? "opacity-75" : ""}`}>
@@ -724,7 +713,7 @@ export default function TemplatesPage() {
                         type="button"
                         onClick={() => handleDownload(slug)}
                         title={t("templates.download")}
-                        className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-muted border border-border hover:border-foreground hover:text-foreground transition-colors"
+                        className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium border border-foreground text-foreground hover:bg-foreground hover:text-background transition-colors"
                       >
                         <Download className="w-3.5 h-3.5" />
                         {t("templates.download")}
