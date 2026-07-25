@@ -21,28 +21,54 @@ import { ThankYouModal } from "@/components/home/thank-you-modal";
 describe("ThankYouModal", () => {
   beforeEach(() => {
     window.history.replaceState({}, "", "/zh");
+    window.localStorage.clear();
     document.body.style.overflow = "";
     trackEventMock.mockReset();
     useI18nMock.mockReturnValue({ locale: "zh" });
   });
 
-  it("keeps the homepage visible until the visitor opens the supporter ledger", async () => {
+  it("auto-opens once for a new donation batch and stays closed after dismissal", async () => {
+    const { unmount } = render(<ThankYouModal />);
+
+    // Fresh visitor (no dismissal recorded): the ledger announces itself.
+    const dialog = await screen.findByRole("dialog");
+    expect(dialog).toBeInTheDocument();
+    expect(document.body.style.overflow).toBe("hidden");
+
+    fireEvent.click(screen.getByRole("button", { name: "关闭" }));
+    await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument());
+
+    // Same batch, next visit: dismissal is remembered, no auto-open.
+    unmount();
     render(<ThankYouModal />);
-
-    const trigger = await screen.findByRole("button", { name: /感谢 3 位近期支持者/ });
+    await screen.findByRole("button", { name: /感谢 \d+ 位近期支持者/ });
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+  });
 
+  it("re-opens from the trigger and tracks the click", async () => {
+    render(<ThankYouModal />);
+    await screen.findByRole("dialog");
+    fireEvent.click(screen.getByRole("button", { name: "关闭" }));
+    await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument());
+
+    const trigger = screen.getByRole("button", { name: /感谢 \d+ 位近期支持者/ });
     fireEvent.click(trigger);
 
     expect(screen.getByRole("dialog")).toBeInTheDocument();
-    expect(document.body.style.overflow).toBe("hidden");
     expect(trackEventMock).toHaveBeenCalledWith("cta_click", {
       label: "recent_supporters",
       location: "home_hero",
     });
   });
 
-  it("supports direct links and closes with Escape", async () => {
+  it("supports direct links even after dismissal and closes with Escape", async () => {
+    // Dismiss the current batch first.
+    const { unmount } = render(<ThankYouModal />);
+    await screen.findByRole("dialog");
+    fireEvent.click(screen.getByRole("button", { name: "关闭" }));
+    await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument());
+    unmount();
+
     window.history.replaceState({}, "", "/zh?support=thanks");
     render(<ThankYouModal />);
 

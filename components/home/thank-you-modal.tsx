@@ -8,13 +8,30 @@ import { trackEvent } from "@/lib/analytics/events";
 import { thankYouEntries, thankYouModalConfig } from "@/lib/site/support";
 import { cn } from "@/lib/utils";
 
-const latestEntry = [...thankYouEntries].sort(
-  (a, b) => b.date.localeCompare(a.date)
-)[0];
+// Entries screenshotted within a week of the newest one count as the same
+// "batch" — donations usually arrive and get recorded in clusters.
+const RECENT_WINDOW_MS = 7 * 24 * 60 * 60 * 1000;
+
+const sortedReceiptEntries = [...thankYouEntries]
+  .filter((entry) => entry.receiptImage)
+  .sort((a, b) => b.date.localeCompare(a.date));
+
+const latestEntry = sortedReceiptEntries[0];
 
 const latestReceiptEntries = latestEntry
-  ? thankYouEntries.filter((entry) => entry.date === latestEntry.date && entry.receiptImage)
+  ? sortedReceiptEntries
+      .filter(
+        (entry) =>
+          Date.parse(latestEntry.date) - Date.parse(entry.date) <= RECENT_WINDOW_MS
+      )
+      .slice(0, 6)
   : [];
+
+// Keyed by the newest entry so every new donation batch invalidates the old
+// dismissal and the ledger announces itself exactly once more.
+const dismissStorageKey = latestEntry
+  ? `stylekit-thankyou-modal-dismissed:${latestEntry.id}`
+  : "stylekit-thankyou-modal-dismissed";
 
 interface ThankYouModalProps {
   showOnHomepageOnly?: boolean;
@@ -31,6 +48,14 @@ export function ThankYouModal({
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const { locale } = useI18n();
 
+  const rememberDismissal = () => {
+    try {
+      window.localStorage.setItem(dismissStorageKey, Date.now().toString());
+    } catch {
+      // Storage can be unavailable (private mode); the modal just re-opens next visit.
+    }
+  };
+
   useEffect(() => {
     const pathname = window.location.pathname;
     const isHome = pathname === "/" || pathname === "/en" || pathname === "/zh";
@@ -41,13 +66,21 @@ export function ThankYouModal({
 
     if (!eligible) return;
 
-    // Direct links can open the ledger, but regular visitors are never
-    // interrupted on arrival. The homepage itself remains the first impression.
+    // Auto-open once per donation batch: a fresh batch means a fresh storage
+    // key, so returning visitors see the new supporters exactly one more time.
+    // Direct links (?support=thanks) always open regardless of dismissal.
     const shouldOpenFromLink =
       new URLSearchParams(window.location.search).get("support") === "thanks";
+    let dismissed: string | null = null;
+    try {
+      dismissed = window.localStorage.getItem(dismissStorageKey);
+    } catch {
+      dismissed = null;
+    }
+
     const frame = window.requestAnimationFrame(() => {
       setIsEligible(true);
-      if (shouldOpenFromLink) setIsOpen(true);
+      if (shouldOpenFromLink || !dismissed) setIsOpen(true);
     });
 
     return () => window.cancelAnimationFrame(frame);
@@ -62,6 +95,7 @@ export function ThankYouModal({
 
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key !== "Escape") return;
+      rememberDismissal();
       setIsOpen(false);
       triggerRef.current?.focus();
     };
@@ -71,6 +105,7 @@ export function ThankYouModal({
       document.body.style.overflow = previousOverflow;
       window.removeEventListener("keydown", handleKeyDown);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen]);
 
   const handleOpen = () => {
@@ -82,6 +117,7 @@ export function ThankYouModal({
   };
 
   const handleClose = () => {
+    rememberDismissal();
     setIsOpen(false);
     window.requestAnimationFrame(() => triggerRef.current?.focus());
   };
@@ -158,13 +194,13 @@ export function ThankYouModal({
                 </p>
                 <p className="mt-6 border-l-2 border-foreground pl-4 text-xs leading-6 text-muted">
                   {locale === "zh"
-                    ? "支持记录仅用于表达感谢；首页不会再自动弹出打断浏览。"
-                    : "The ledger is here to say thanks. It no longer interrupts the homepage automatically."}
+                    ? "这批记录关闭后不会再自动弹出；下次有新的支持时会再出现一次。"
+                    : "Once closed, this batch stays quiet — the ledger returns only when new support arrives."}
                 </p>
               </div>
 
               <div className="-mx-5 flex snap-x snap-mandatory gap-3 overflow-x-auto px-5 pb-2 sm:mx-0 sm:grid sm:grid-cols-3 sm:overflow-visible sm:px-0 sm:pb-0">
-                {latestReceiptEntries.map((entry, index) => (
+                {latestReceiptEntries.map((entry) => (
                   <figure
                     key={entry.id}
                     className="w-[76vw] max-w-[18rem] shrink-0 snap-center border border-border bg-zinc-50 p-3 dark:bg-zinc-900/60 sm:w-auto sm:max-w-none"
@@ -180,7 +216,7 @@ export function ThankYouModal({
                       />
                     </div>
                     <figcaption className="mt-3 flex items-center justify-between gap-2 text-xs">
-                      <span className="text-muted">0{index + 1}</span>
+                      <span className="text-muted">{entry.date}</span>
                       <span className="font-medium text-foreground">
                         {entry.amount?.[locale]}
                       </span>
