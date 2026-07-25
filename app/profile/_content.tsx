@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useMemo, useState, type CSSProperties } from "react";
+import { useEffect, useMemo, useState, type CSSProperties } from "react";
 import {
   ExternalLink,
   Github,
@@ -31,7 +31,8 @@ import {
   SITE_OWNER_TITLE_TOKEN,
 } from "@/lib/auth/user-title-policy";
 import { LocalizedLink } from "@/components/i18n/localized-link";
-import { StyleCard } from "@/components/home/style-card";
+import { FavoriteButton } from "@/components/favorite-button";
+import { StyleCoverPreview } from "@/components/style-preview/style-cover-preview";
 import type { StyleMeta } from "@/lib/styles/meta";
 
 const HEX_COLOR_RE = /^#[0-9a-f]{6}$/i;
@@ -130,33 +131,57 @@ function asPositiveInt(value: unknown): number | null {
   return null;
 }
 
-function SectionHeading({
-  index,
-  label,
-  count,
-}: {
-  index: string;
-  label: string;
-  count?: number;
-}) {
+const TAB_KEYS = ["favorites", "comments", "ratings", "submissions"] as const;
+type TabKey = (typeof TAB_KEYS)[number];
+
+function isTabKey(value: string): value is TabKey {
+  return (TAB_KEYS as readonly string[]).includes(value);
+}
+
+function FavoriteTile({ style }: { style: StyleMeta }) {
+  const { locale } = useI18n();
+  const primaryName = locale === "zh" ? style.name : style.nameEn || style.name;
+  const secondaryName = locale === "zh" ? style.nameEn : style.name;
+
   return (
-    <div className="mb-8">
-      <p className="font-mono text-xs tracking-widest text-muted mb-3">{index}</p>
-      <h2 className="text-2xl md:text-3xl">
-        {label}
-        {typeof count === "number" && (
-          <span className="ml-3 font-mono text-sm text-muted tabular-nums align-middle">
-            {count}
-          </span>
-        )}
-      </h2>
+    <div className="group relative border border-border hover:border-foreground transition-colors">
+      <LocalizedLink
+        href={`/styles/${style.slug}`}
+        aria-label={primaryName}
+        className="absolute inset-0 z-10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+      />
+      <div className="relative aspect-video overflow-hidden">
+        <StyleCoverPreview styleSlug={style.slug} interactive={false} />
+      </div>
+      {style.colors && (
+        <div className="h-1 flex">
+          <div className="flex-1" style={{ backgroundColor: style.colors.primary }} />
+          <div className="flex-1" style={{ backgroundColor: style.colors.secondary }} />
+          {style.colors.accent?.slice(0, 2).map((color, i) => (
+            <div key={color || i} className="flex-1" style={{ backgroundColor: color }} />
+          ))}
+        </div>
+      )}
+      <div className="flex items-baseline gap-2 px-3 py-2.5 min-w-0">
+        <span className="text-sm truncate group-hover:text-accent transition-colors">
+          {primaryName}
+        </span>
+        <span className="text-xs text-muted truncate">{secondaryName}</span>
+      </div>
+      <div className="absolute top-1.5 right-1.5 z-20">
+        <FavoriteButton
+          slug={style.slug}
+          size="sm"
+          className="bg-white/80 dark:bg-black/50 backdrop-blur-sm"
+        />
+      </div>
     </div>
   );
 }
 
 function EmptyNote({ children }: { children: React.ReactNode }) {
   return (
-    <p className="border border-border px-6 py-12 text-center text-muted">
+    <p className="border border-border px-5 py-10 text-center text-sm text-muted">
       {children}
     </p>
   );
@@ -171,6 +196,7 @@ export function ProfileContent({ allStyles }: ProfileContentProps) {
   const { favorites } = useFavorites();
   const { t, locale } = useI18n();
   const [showEmail, setShowEmail] = useState(false);
+  const [activeTab, setActiveTab] = useState<TabKey>("favorites");
   const { data: commentsData, isLoading: commentsLoading } = useProfileComments(user?.id);
   const { data: ratingsData, isLoading: ratingsLoading } = useProfileRatings(user?.id);
   const { data: submissionsData, mutate: mutateSubmissions, isLoading: submissionsLoading } = useProfileSubmissions(user?.id);
@@ -181,6 +207,18 @@ export function ProfileContent({ allStyles }: ProfileContentProps) {
   const [editSubmissionDescription, setEditSubmissionDescription] = useState("");
   const [submissionActionBusyId, setSubmissionActionBusyId] = useState<string | null>(null);
   const [submissionActionError, setSubmissionActionError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const hash = window.location.hash.replace("#", "");
+    if (isTabKey(hash)) {
+      setActiveTab(hash);
+    }
+  }, []);
+
+  const selectTab = (key: TabKey) => {
+    setActiveTab(key);
+    window.history.replaceState(null, "", `#${key}`);
+  };
 
   const styleMetaBySlug = useMemo(
     () => new Map(allStyles.map((style) => [style.slug, style])),
@@ -197,25 +235,21 @@ export function ProfileContent({ allStyles }: ProfileContentProps) {
 
   if (loading) {
     return (
-      <div className="max-w-5xl mx-auto px-6 md:px-12 py-12 md:py-16">
-        <div className="animate-pulse">
-          <div className="h-3 w-16 bg-muted/20 mb-8" />
-          <div className="flex items-end gap-6">
-            <div className="w-24 h-24 rounded-full bg-muted/20" />
-            <div className="space-y-3">
-              <div className="h-9 w-56 bg-muted/20" />
-              <div className="h-4 w-40 bg-muted/20" />
+      <div className="max-w-4xl mx-auto px-6 md:px-10 py-10 md:py-14">
+        <div className="animate-pulse flex flex-col md:flex-row gap-8 md:gap-12">
+          <div className="md:w-56 md:shrink-0 space-y-4">
+            <div className="w-20 h-20 rounded-full bg-muted/20" />
+            <div className="h-6 w-36 bg-muted/20" />
+            <div className="h-3 w-28 bg-muted/20" />
+            <div className="h-3 w-32 bg-muted/20" />
+          </div>
+          <div className="flex-1 space-y-6">
+            <div className="h-8 w-full max-w-sm bg-muted/20" />
+            <div className="grid grid-cols-2 gap-3">
+              {Array.from({ length: 4 }).map((_, i) => (
+                <div key={i} className="aspect-video bg-muted/10" />
+              ))}
             </div>
-          </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-px mt-12">
-            {Array.from({ length: 4 }).map((_, i) => (
-              <div key={i} className="h-24 bg-muted/10" />
-            ))}
-          </div>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 mt-12">
-            {Array.from({ length: 3 }).map((_, i) => (
-              <div key={i} className="aspect-[4/3] bg-muted/10" />
-            ))}
           </div>
         </div>
       </div>
@@ -224,25 +258,21 @@ export function ProfileContent({ allStyles }: ProfileContentProps) {
 
   if (!user) {
     return (
-      <section className="border-b border-border">
-        <div className="max-w-3xl mx-auto px-6 md:px-12 py-24 md:py-32 text-center">
-          <p className="text-xs uppercase tracking-widest text-muted mb-6">
-            {t("profile.pageLabel")}
-          </p>
-          <User className="w-10 h-10 text-muted mx-auto mb-6" aria-hidden="true" />
-          <h1 className="text-3xl md:text-4xl mb-4">
-            {t("profile.notLoggedIn")}
-          </h1>
-          <p className="text-muted mb-10">{t("profile.signInPrompt")}</p>
-          <Link
-            href="/login"
-            className="inline-flex items-center gap-2 border border-foreground px-8 py-3 text-sm uppercase tracking-widest hover:bg-foreground hover:text-background transition-colors"
-          >
-            <LogIn className="w-4 h-4" aria-hidden="true" />
-            {t("auth.signIn")}
-          </Link>
-        </div>
-      </section>
+      <div className="max-w-4xl mx-auto px-6 md:px-10 py-20 md:py-28 text-center">
+        <p className="text-xs uppercase tracking-widest text-muted mb-6">
+          {t("profile.pageLabel")}
+        </p>
+        <User className="w-8 h-8 text-muted mx-auto mb-5" aria-hidden="true" />
+        <h1 className="text-2xl md:text-3xl mb-3">{t("profile.notLoggedIn")}</h1>
+        <p className="text-sm text-muted mb-8">{t("profile.signInPrompt")}</p>
+        <Link
+          href="/login"
+          className="inline-flex items-center gap-2 border border-foreground px-6 py-2.5 text-sm uppercase tracking-widest hover:bg-foreground hover:text-background transition-colors"
+        >
+          <LogIn className="w-4 h-4" aria-hidden="true" />
+          {t("auth.signIn")}
+        </Link>
+      </div>
     );
   }
 
@@ -467,79 +497,70 @@ export function ProfileContent({ allStyles }: ProfileContentProps) {
     }
   }
 
-  const stats = [
+  const tabs: Array<{ key: TabKey; label: string; count: string }> = [
     {
-      anchor: "profile-favorites",
+      key: "favorites",
       label: t("profile.statsFavorites"),
-      value: String(favorites.length),
-      delay: 0,
+      count: String(favorites.length),
     },
     {
-      anchor: "profile-comments",
+      key: "comments",
       label: t("profile.statsComments"),
-      value: commentsLoading ? "–" : String(comments.length),
-      delay: 60,
+      count: commentsLoading ? "–" : String(comments.length),
     },
     {
-      anchor: "profile-ratings",
+      key: "ratings",
       label: t("profile.statsRatings"),
-      value: ratingsLoading ? "–" : String(ratings.length),
-      delay: 120,
+      count: ratingsLoading ? "–" : String(ratings.length),
     },
     {
-      anchor: "profile-submissions",
+      key: "submissions",
       label: t("profile.statsSubmissions"),
-      value: submissionsLoading ? "–" : String(submissions.length),
-      delay: 180,
+      count: submissionsLoading ? "–" : String(submissions.length),
     },
-  ];
-
-  const statCellBorders = [
-    "",
-    "border-l border-border",
-    "border-t border-border md:border-t-0 md:border-l",
-    "border-l border-t border-border md:border-t-0",
   ];
 
   return (
-    <div>
-      {/* Masthead */}
-      <section className="border-b border-border">
-        <div className="max-w-5xl mx-auto px-6 md:px-12 pt-12 md:pt-16 pb-10 md:pb-14">
-          <p className="text-xs uppercase tracking-widest text-muted mb-8 motion-safe:animate-home-reveal-soft">
-            {t("profile.pageLabel")}
-          </p>
-          <div className="flex flex-col sm:flex-row items-center sm:items-end gap-6 md:gap-8 motion-safe:animate-home-reveal-up">
-            {avatarSrc ? (
-              <Image
-                src={avatarSrc}
-                alt={userName}
-                width={96}
-                height={96}
-                priority
-                unoptimized
-                className="w-24 h-24 rounded-full border border-border shrink-0"
-              />
-            ) : (
-              <div className="w-24 h-24 rounded-full border border-border bg-muted/10 flex items-center justify-center shrink-0">
-                <User className="w-10 h-10 text-muted" aria-hidden="true" />
-              </div>
-            )}
-
-            <div className="min-w-0 flex-1 text-center sm:text-left">
-              <div className="flex flex-col sm:flex-row sm:items-baseline sm:gap-3">
-                <h1 className="text-3xl md:text-5xl leading-tight break-words">
-                  {userName}
+    <div className="max-w-4xl mx-auto px-6 md:px-10 py-10 md:py-14 motion-safe:animate-home-reveal-soft">
+      <div className="flex flex-col md:flex-row gap-8 md:gap-12">
+        {/* Identity rail */}
+        <aside className="md:w-56 md:shrink-0">
+          <div className="md:sticky md:top-24">
+            <p className="text-[11px] uppercase tracking-widest text-muted mb-5">
+              {t("profile.pageLabel")}
+            </p>
+            <div className="flex flex-row md:flex-col items-center md:items-start gap-4">
+              {avatarSrc ? (
+                <Image
+                  src={avatarSrc}
+                  alt={userName}
+                  width={80}
+                  height={80}
+                  priority
+                  unoptimized
+                  className="w-16 h-16 md:w-20 md:h-20 rounded-full border border-border shrink-0"
+                />
+              ) : (
+                <div className="w-16 h-16 md:w-20 md:h-20 rounded-full border border-border bg-muted/10 flex items-center justify-center shrink-0">
+                  <User className="w-7 h-7 text-muted" aria-hidden="true" />
+                </div>
+              )}
+              <div className="min-w-0">
+                <h1 className="text-xl md:text-2xl leading-snug break-words">
+                  {userName || fullName}
                 </h1>
+                {fullName && userName && fullName !== userName && (
+                  <p className="text-sm text-muted mt-0.5">{fullName}</p>
+                )}
                 {profileTitleLabel && (
                   <span
-                    className={`mt-2 sm:mt-0 self-center sm:self-auto inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-medium shrink-0 ${profileTitleBadgeClass.className}`}
+                    className={`mt-2 inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-medium ${profileTitleBadgeClass.className}`}
                     style={profileTitleBadgeClass.style}
                   >
                     {profileTitleIconPath ? (
                       <svg
                         viewBox="0 0 40 40"
-                        className="h-3.5 w-3.5 fill-current"
+                        className="h-3 w-3 fill-current"
                         aria-hidden="true"
                         focusable="false"
                       >
@@ -550,433 +571,382 @@ export function ProfileContent({ allStyles }: ProfileContentProps) {
                   </span>
                 )}
               </div>
-              {fullName && fullName !== userName && (
-                <p className="text-base text-muted mt-1">{fullName}</p>
-              )}
-              {email && showEmail && (
-                <p className="font-mono text-sm text-muted mt-1">{email}</p>
-              )}
-              <div className="mt-4 flex flex-wrap items-center justify-center sm:justify-start gap-x-6 gap-y-2 text-sm text-muted">
-                {createdAt && (
-                  <span className="inline-flex items-center gap-1.5">
-                    <Calendar className="w-4 h-4" aria-hidden="true" />
+            </div>
+
+            <dl className="mt-5 border-t border-border pt-5 space-y-2.5 text-[13px]">
+              {createdAt && (
+                <div className="flex items-center gap-2 text-muted">
+                  <Calendar className="w-3.5 h-3.5 shrink-0" aria-hidden="true" />
+                  <span className="min-w-0">
                     {t("profile.memberSince")} {createdAt}
                   </span>
-                )}
-                {userName && (
+                </div>
+              )}
+              {userName && (
+                <div className="flex items-center gap-2 text-muted">
+                  {isLinuxDo ? (
+                    <LogIn className="w-3.5 h-3.5 shrink-0" aria-hidden="true" />
+                  ) : (
+                    <Github className="w-3.5 h-3.5 shrink-0" aria-hidden="true" />
+                  )}
                   <a
                     href={profileUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 hover:text-foreground transition-colors"
+                    className="inline-flex items-center gap-1 min-w-0 hover:text-foreground transition-colors"
                   >
-                    {isLinuxDo ? (
-                      <LogIn className="w-4 h-4" aria-hidden="true" />
-                    ) : (
-                      <Github className="w-4 h-4" aria-hidden="true" />
-                    )}
-                    {profileLabel}
-                    <ExternalLink className="w-3 h-3" aria-hidden="true" />
+                    <span className="truncate">{profileLabel}</span>
+                    <ExternalLink className="w-3 h-3 shrink-0" aria-hidden="true" />
                   </a>
-                )}
+                </div>
+              )}
+              <div className="flex items-center justify-between gap-3">
+                <dt className="text-muted">{t("profile.provider")}</dt>
+                <dd>{providerLabel}</dd>
               </div>
-            </div>
+              <div className="flex items-center justify-between gap-3">
+                <dt className="text-muted">{t("profile.userId")}</dt>
+                <dd className="font-mono tabular-nums">
+                  #{profileSeqId ?? user.id.slice(0, 8)}
+                </dd>
+              </div>
+              {email && (
+                <div className="flex items-center justify-between gap-3 min-w-0">
+                  <dt className="text-muted shrink-0">{t("profile.email")}</dt>
+                  <dd className="inline-flex items-center gap-1.5 min-w-0">
+                    <span className="font-mono text-xs truncate">
+                      {showEmail ? email : maskedEmail || t("profile.emailHidden")}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => setShowEmail((current) => !current)}
+                      className="inline-flex items-center text-muted hover:text-foreground transition-colors"
+                      aria-label={showEmail ? t("profile.hideEmail") : t("profile.showEmail")}
+                    >
+                      {showEmail ? (
+                        <EyeOff className="w-3.5 h-3.5" aria-hidden="true" />
+                      ) : (
+                        <Eye className="w-3.5 h-3.5" aria-hidden="true" />
+                      )}
+                    </button>
+                  </dd>
+                </div>
+              )}
+            </dl>
           </div>
-        </div>
-      </section>
+        </aside>
 
-      {/* Stats folio strip */}
-      <section className="border-b border-border" aria-label={t("profile.stats")}>
-        <div className="max-w-5xl mx-auto px-6 md:px-12">
-          <div className="grid grid-cols-2 md:grid-cols-4">
-            {stats.map((stat, index) => (
-              <a
-                key={stat.anchor}
-                href={`#${stat.anchor}`}
-                className={`group flex flex-col gap-1.5 py-8 md:py-10 pr-4 md:px-6 md:first:pl-0 motion-safe:animate-home-reveal-up-subtle ${statCellBorders[index]} ${index % 2 === 1 ? "pl-4 md:pl-6" : ""}`}
-                style={{ animationDelay: `${stat.delay}ms` }}
-              >
-                <span className="font-serif text-3xl md:text-4xl tabular-nums leading-none group-hover:text-accent transition-colors">
-                  {stat.value}
-                </span>
-                <span className="text-[11px] uppercase tracking-[0.18em] text-muted">
-                  {stat.label}
-                </span>
-              </a>
-            ))}
+        {/* Content */}
+        <div className="flex-1 min-w-0">
+          <div
+            role="tablist"
+            aria-label={t("profile.stats")}
+            className="flex gap-6 border-b border-border overflow-x-auto scrollbar-hide"
+          >
+            {tabs.map((tab) => {
+              const isActive = activeTab === tab.key;
+              return (
+                <button
+                  key={tab.key}
+                  type="button"
+                  role="tab"
+                  id={`tab-${tab.key}`}
+                  aria-selected={isActive}
+                  aria-controls={`panel-${tab.key}`}
+                  onClick={() => selectTab(tab.key)}
+                  className={`relative pb-3 text-sm whitespace-nowrap transition-colors ${
+                    isActive ? "text-foreground" : "text-muted hover:text-foreground"
+                  }`}
+                >
+                  {tab.label}
+                  <span className="ml-1.5 font-mono text-xs text-muted tabular-nums">
+                    {tab.count}
+                  </span>
+                  {isActive && (
+                    <span className="absolute inset-x-0 -bottom-px h-px bg-foreground" />
+                  )}
+                </button>
+              );
+            })}
           </div>
-        </div>
-      </section>
 
-      {/* Favorites */}
-      <section id="profile-favorites" className="border-b border-border scroll-mt-24">
-        <div className="max-w-5xl mx-auto px-6 md:px-12 py-10 md:py-14">
-          <div className="flex items-end justify-between gap-4">
-            <SectionHeading
-              index="01"
-              label={t("profile.favorites")}
-              count={favorites.length}
-            />
-            {favorites.length > 0 && (
-              <LocalizedLink
-                href="/styles"
-                className="mb-8 hidden sm:inline text-sm text-muted underline-offset-4 hover:text-foreground hover:underline transition-colors"
-              >
-                {t("profile.browseStyles")}
-              </LocalizedLink>
+          <div
+            role="tabpanel"
+            id={`panel-${activeTab}`}
+            aria-labelledby={`tab-${activeTab}`}
+            className="pt-6"
+          >
+            {activeTab === "favorites" && (
+              <>
+                {favorites.length === 0 ? (
+                  <div className="border border-border px-5 py-12 text-center">
+                    <p className="text-sm text-muted mb-5">{t("profile.noFavorites")}</p>
+                    <LocalizedLink
+                      href="/styles"
+                      className="inline-flex items-center gap-2 border border-border px-4 py-2 text-sm hover:border-foreground transition-colors"
+                    >
+                      {t("profile.browseStyles")}
+                    </LocalizedLink>
+                  </div>
+                ) : (
+                  <>
+                    <div className="grid grid-cols-2 gap-3 sm:gap-4">
+                      {favorites.map((slug) => {
+                        const meta = styleMetaBySlug.get(slug);
+                        if (meta) {
+                          return <FavoriteTile key={slug} style={meta} />;
+                        }
+                        return (
+                          <LocalizedLink
+                            key={slug}
+                            href={`/styles/${slug}`}
+                            className="group flex flex-col justify-center border border-border p-4 hover:border-foreground transition-colors"
+                          >
+                            <p className="text-sm truncate group-hover:text-accent transition-colors">
+                              {slug}
+                            </p>
+                            <p className="text-xs text-muted mt-1">
+                              {t("profile.viewStyle")}
+                            </p>
+                          </LocalizedLink>
+                        );
+                      })}
+                    </div>
+                    <div className="mt-5 text-right">
+                      <LocalizedLink
+                        href="/styles"
+                        className="text-sm text-muted underline-offset-4 hover:text-foreground hover:underline transition-colors"
+                      >
+                        {t("profile.browseStyles")}
+                      </LocalizedLink>
+                    </div>
+                  </>
+                )}
+              </>
+            )}
+
+            {activeTab === "comments" && (
+              <>
+                {commentsLoading ? (
+                  <div className="divide-y divide-border border-y border-border animate-pulse">
+                    {Array.from({ length: 3 }).map((_, i) => (
+                      <div key={i} className="py-3.5 space-y-2">
+                        <div className="h-4 w-32 bg-muted/20" />
+                        <div className="h-3 w-full bg-muted/20" />
+                      </div>
+                    ))}
+                  </div>
+                ) : comments.length === 0 ? (
+                  <EmptyNote>{t("profile.noComments")}</EmptyNote>
+                ) : (
+                  <div className="divide-y divide-border border-y border-border">
+                    {comments.map((comment) => (
+                      <div
+                        key={comment.id}
+                        className="py-3.5 grid gap-1 sm:grid-cols-[1fr_auto] sm:gap-4"
+                      >
+                        <div className="min-w-0">
+                          <LocalizedLink
+                            href={`/styles/${comment.style_slug}`}
+                            className="text-sm hover:text-accent transition-colors"
+                          >
+                            {styleDisplayName(comment.style_slug)}
+                          </LocalizedLink>
+                          <p className="text-[13px] text-muted line-clamp-2 mt-0.5">
+                            {comment.content}
+                          </p>
+                        </div>
+                        <span className="font-mono text-xs text-muted tabular-nums">
+                          {formatDate(comment.created_at)}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </>
+            )}
+
+            {activeTab === "ratings" && (
+              <>
+                {ratingsLoading ? (
+                  <div className="divide-y divide-border border-y border-border animate-pulse">
+                    {Array.from({ length: 4 }).map((_, i) => (
+                      <div key={i} className="py-3 flex justify-between">
+                        <div className="h-4 w-28 bg-muted/20" />
+                        <div className="h-4 w-24 bg-muted/20" />
+                      </div>
+                    ))}
+                  </div>
+                ) : ratings.length === 0 ? (
+                  <EmptyNote>{t("profile.noRatings")}</EmptyNote>
+                ) : (
+                  <div className="divide-y divide-border border-y border-border">
+                    {ratings.map((r) => (
+                      <div
+                        key={r.id}
+                        className="py-3 flex items-center justify-between gap-3"
+                      >
+                        <LocalizedLink
+                          href={`/styles/${r.style_slug}`}
+                          className="text-sm truncate hover:text-accent transition-colors"
+                        >
+                          {styleDisplayName(r.style_slug)}
+                        </LocalizedLink>
+                        <div className="flex items-center gap-3 shrink-0">
+                          <div className="flex gap-0.5">
+                            {Array.from({ length: 5 }).map((_, i) => (
+                              <Star
+                                key={i}
+                                className={`w-3.5 h-3.5 ${
+                                  i < r.rating
+                                    ? "fill-amber-400 text-amber-400"
+                                    : "text-muted/30"
+                                }`}
+                              />
+                            ))}
+                          </div>
+                          <span className="font-mono text-xs text-muted tabular-nums">
+                            {formatDate(r.created_at)}
+                          </span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </>
+            )}
+
+            {activeTab === "submissions" && (
+              <>
+                {submissionActionError && (
+                  <p className="mb-3 border border-red-300 bg-red-50 px-3 py-2 text-sm text-red-700 dark:border-red-800 dark:bg-red-950/40 dark:text-red-300">
+                    {submissionActionError}
+                  </p>
+                )}
+
+                {submissionsLoading ? (
+                  <div className="space-y-3 animate-pulse">
+                    {Array.from({ length: 2 }).map((_, i) => (
+                      <div key={i} className="border border-border p-3.5 space-y-2.5">
+                        <div className="flex justify-between">
+                          <div className="h-4 w-32 bg-muted/20" />
+                          <div className="h-3 w-20 bg-muted/20" />
+                        </div>
+                        <div className="h-3 w-full bg-muted/20" />
+                      </div>
+                    ))}
+                  </div>
+                ) : submissions.length === 0 ? (
+                  <EmptyNote>{t("profile.noSubmissions")}</EmptyNote>
+                ) : (
+                  <div className="space-y-3">
+                    {submissions.map((sub) => (
+                      <div
+                        key={sub.id}
+                        className="border border-border p-3.5 md:p-4 space-y-2.5"
+                      >
+                        <div className="flex items-center justify-between gap-3">
+                          <div className="flex items-center gap-2.5 min-w-0">
+                            <LocalizedLink
+                              href={`/styles/${sub.slug}`}
+                              className="text-sm hover:text-accent transition-colors truncate"
+                            >
+                              {sub.name_en || sub.name || sub.slug}
+                            </LocalizedLink>
+                            <span
+                              className={`text-[11px] font-medium px-2 py-0.5 rounded-full shrink-0 ${
+                                statusColors[sub.status] ?? ""
+                              }`}
+                            >
+                              {t(`profile.submissionStatus.${sub.status}`)}
+                            </span>
+                          </div>
+                          <span className="font-mono text-xs text-muted tabular-nums shrink-0">
+                            {formatDate(sub.submitted_at)}
+                          </span>
+                        </div>
+
+                        {(sub.description || sub.slug) && (
+                          <p className="text-xs text-muted line-clamp-2">
+                            {sub.description || sub.slug}
+                          </p>
+                        )}
+
+                        {editingSubmissionId === sub.id ? (
+                          <div className="space-y-2">
+                            <input
+                              value={editSubmissionName}
+                              onChange={(event) => setEditSubmissionName(event.target.value)}
+                              placeholder={t("profile.submissionEditName")}
+                              className="w-full border border-border bg-background px-3 py-1.5 text-sm focus:border-foreground focus:outline-none transition-colors"
+                            />
+                            <input
+                              value={editSubmissionNameEn}
+                              onChange={(event) => setEditSubmissionNameEn(event.target.value)}
+                              placeholder={t("profile.submissionEditNameEn")}
+                              className="w-full border border-border bg-background px-3 py-1.5 text-sm focus:border-foreground focus:outline-none transition-colors"
+                            />
+                            <textarea
+                              value={editSubmissionDescription}
+                              onChange={(event) => setEditSubmissionDescription(event.target.value)}
+                              placeholder={t("profile.submissionEditDescription")}
+                              className="w-full border border-border bg-background px-3 py-1.5 text-sm focus:border-foreground focus:outline-none transition-colors"
+                              rows={3}
+                            />
+                            <div className="flex gap-2">
+                              <button
+                                type="button"
+                                onClick={() => void saveSubmissionEdit(sub)}
+                                disabled={submissionActionBusyId === sub.id}
+                                className="inline-flex items-center gap-1.5 border border-border px-2.5 py-1 text-[11px] uppercase tracking-wider hover:border-foreground transition-colors disabled:opacity-60"
+                              >
+                                {submissionActionBusyId === sub.id
+                                  ? t("profile.submissionSaving")
+                                  : t("profile.submissionSave")}
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => setEditingSubmissionId(null)}
+                                disabled={submissionActionBusyId === sub.id}
+                                className="inline-flex items-center gap-1.5 border border-border px-2.5 py-1 text-[11px] uppercase tracking-wider hover:border-foreground transition-colors disabled:opacity-60"
+                              >
+                                {t("profile.submissionCancel")}
+                              </button>
+                            </div>
+                          </div>
+                        ) : (
+                          <div className="flex gap-2">
+                            <button
+                              type="button"
+                              onClick={() => beginEditSubmission(sub)}
+                              disabled={submissionActionBusyId === sub.id}
+                              className="inline-flex items-center gap-1.5 border border-border px-2.5 py-1 text-[11px] uppercase tracking-wider hover:border-foreground transition-colors disabled:opacity-60"
+                            >
+                              <Pencil className="w-3 h-3" aria-hidden="true" />
+                              {t("profile.submissionEdit")}
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => void deleteSubmission(sub)}
+                              disabled={submissionActionBusyId === sub.id}
+                              className="inline-flex items-center gap-1.5 border border-red-300 px-2.5 py-1 text-[11px] uppercase tracking-wider text-red-700 hover:border-red-500 transition-colors dark:border-red-800 dark:text-red-300 disabled:opacity-60"
+                            >
+                              <Trash2 className="w-3 h-3" aria-hidden="true" />
+                              {submissionActionBusyId === sub.id
+                                ? t("profile.submissionDeleting")
+                                : t("profile.submissionDelete")}
+                            </button>
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </>
             )}
           </div>
-
-          {favorites.length === 0 ? (
-            <div className="border border-border px-6 py-14 text-center">
-              <p className="text-muted mb-6">{t("profile.noFavorites")}</p>
-              <LocalizedLink
-                href="/styles"
-                className="inline-flex items-center gap-2 border border-border px-5 py-2.5 text-sm hover:border-foreground transition-colors"
-              >
-                {t("profile.browseStyles")}
-              </LocalizedLink>
-            </div>
-          ) : (
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5">
-              {favorites.map((slug) => {
-                const meta = styleMetaBySlug.get(slug);
-                if (meta) {
-                  return <StyleCard key={slug} style={meta} variant="compact" />;
-                }
-                return (
-                  <LocalizedLink
-                    key={slug}
-                    href={`/styles/${slug}`}
-                    className="group flex flex-col justify-center border border-border p-4 md:p-5 hover:border-foreground transition-colors"
-                  >
-                    <p className="group-hover:text-accent transition-colors truncate">
-                      {slug}
-                    </p>
-                    <p className="text-sm text-muted mt-1">
-                      {t("profile.viewStyle")}
-                    </p>
-                  </LocalizedLink>
-                );
-              })}
-            </div>
-          )}
         </div>
-      </section>
-
-      {/* Comments ledger */}
-      <section id="profile-comments" className="border-b border-border scroll-mt-24">
-        <div className="max-w-5xl mx-auto px-6 md:px-12 py-10 md:py-14">
-          <SectionHeading
-            index="02"
-            label={t("profile.comments")}
-            count={comments.length}
-          />
-
-          {commentsLoading ? (
-            <div className="border-t border-border animate-pulse">
-              {Array.from({ length: 3 }).map((_, i) => (
-                <div key={i} className="border-b border-border py-4 space-y-2">
-                  <div className="h-4 w-32 bg-muted/20" />
-                  <div className="h-4 w-full bg-muted/20" />
-                </div>
-              ))}
-            </div>
-          ) : comments.length === 0 ? (
-            <EmptyNote>{t("profile.noComments")}</EmptyNote>
-          ) : (
-            <div className="border-t border-border">
-              {comments.map((comment) => (
-                <div
-                  key={comment.id}
-                  className="grid gap-1 border-b border-border py-4 sm:grid-cols-[1fr_auto] sm:gap-6"
-                >
-                  <div className="min-w-0">
-                    <LocalizedLink
-                      href={`/styles/${comment.style_slug}`}
-                      className="text-sm font-medium hover:text-accent transition-colors"
-                    >
-                      {styleDisplayName(comment.style_slug)}
-                    </LocalizedLink>
-                    <p className="text-sm text-muted line-clamp-2 mt-1">
-                      {comment.content}
-                    </p>
-                  </div>
-                  <span className="font-mono text-xs text-muted tabular-nums">
-                    {formatDate(comment.created_at)}
-                  </span>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-      </section>
-
-      {/* Ratings */}
-      <section id="profile-ratings" className="border-b border-border scroll-mt-24">
-        <div className="max-w-5xl mx-auto px-6 md:px-12 py-10 md:py-14">
-          <SectionHeading
-            index="03"
-            label={t("profile.ratings")}
-            count={ratings.length}
-          />
-
-          {ratingsLoading ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 animate-pulse">
-              {Array.from({ length: 4 }).map((_, i) => (
-                <div key={i} className="flex items-center justify-between border border-border px-4 py-3">
-                  <div className="h-4 w-24 bg-muted/20" />
-                  <div className="h-4 w-20 bg-muted/20" />
-                </div>
-              ))}
-            </div>
-          ) : ratings.length === 0 ? (
-            <EmptyNote>{t("profile.noRatings")}</EmptyNote>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-              {ratings.map((r) => (
-                <div
-                  key={r.id}
-                  className="flex items-center justify-between gap-3 border border-border px-4 py-3"
-                >
-                  <LocalizedLink
-                    href={`/styles/${r.style_slug}`}
-                    className="text-sm font-medium truncate hover:text-accent transition-colors"
-                  >
-                    {styleDisplayName(r.style_slug)}
-                  </LocalizedLink>
-                  <div className="flex items-center gap-3 shrink-0">
-                    <div className="flex gap-0.5">
-                      {Array.from({ length: 5 }).map((_, i) => (
-                        <Star
-                          key={i}
-                          className={`w-3.5 h-3.5 ${
-                            i < r.rating
-                              ? "fill-amber-400 text-amber-400"
-                              : "text-muted/30"
-                          }`}
-                        />
-                      ))}
-                    </div>
-                    <span className="font-mono text-xs text-muted tabular-nums">
-                      {formatDate(r.created_at)}
-                    </span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-      </section>
-
-      {/* Submissions */}
-      <section id="profile-submissions" className="border-b border-border scroll-mt-24">
-        <div className="max-w-5xl mx-auto px-6 md:px-12 py-10 md:py-14">
-          <SectionHeading
-            index="04"
-            label={t("profile.submissions")}
-            count={submissions.length}
-          />
-
-          {submissionActionError && (
-            <p className="mb-4 border border-red-300 bg-red-50 px-3 py-2 text-sm text-red-700 dark:border-red-800 dark:bg-red-950/40 dark:text-red-300">
-              {submissionActionError}
-            </p>
-          )}
-
-          {submissionsLoading ? (
-            <div className="space-y-3 animate-pulse">
-              {Array.from({ length: 2 }).map((_, i) => (
-                <div key={i} className="border border-border px-4 py-4 space-y-3">
-                  <div className="flex justify-between">
-                    <div className="h-4 w-32 bg-muted/20" />
-                    <div className="h-3 w-20 bg-muted/20" />
-                  </div>
-                  <div className="h-3 w-full bg-muted/20" />
-                </div>
-              ))}
-            </div>
-          ) : submissions.length === 0 ? (
-            <EmptyNote>{t("profile.noSubmissions")}</EmptyNote>
-          ) : (
-            <div className="space-y-3">
-              {submissions.map((sub) => (
-                <div
-                  key={sub.id}
-                  className="border border-border p-4 md:p-5 space-y-3"
-                >
-                  <div className="flex items-center justify-between gap-3">
-                    <div className="flex items-center gap-3 min-w-0">
-                      <LocalizedLink
-                        href={`/styles/${sub.slug}`}
-                        className="text-sm font-medium hover:text-accent transition-colors truncate"
-                      >
-                        {sub.name_en || sub.name || sub.slug}
-                      </LocalizedLink>
-                      <span
-                        className={`text-xs font-medium px-2 py-0.5 rounded-full shrink-0 ${
-                          statusColors[sub.status] ?? ""
-                        }`}
-                      >
-                        {t(`profile.submissionStatus.${sub.status}`)}
-                      </span>
-                    </div>
-                    <span className="font-mono text-xs text-muted tabular-nums shrink-0">
-                      {formatDate(sub.submitted_at)}
-                    </span>
-                  </div>
-
-                  {(sub.description || sub.slug) && (
-                    <p className="text-xs text-muted line-clamp-2">
-                      {sub.description || sub.slug}
-                    </p>
-                  )}
-
-                  {editingSubmissionId === sub.id ? (
-                    <div className="space-y-2">
-                      <input
-                        value={editSubmissionName}
-                        onChange={(event) => setEditSubmissionName(event.target.value)}
-                        placeholder={t("profile.submissionEditName")}
-                        className="w-full border border-border bg-background px-3 py-2 text-sm focus:border-foreground focus:outline-none transition-colors"
-                      />
-                      <input
-                        value={editSubmissionNameEn}
-                        onChange={(event) => setEditSubmissionNameEn(event.target.value)}
-                        placeholder={t("profile.submissionEditNameEn")}
-                        className="w-full border border-border bg-background px-3 py-2 text-sm focus:border-foreground focus:outline-none transition-colors"
-                      />
-                      <textarea
-                        value={editSubmissionDescription}
-                        onChange={(event) => setEditSubmissionDescription(event.target.value)}
-                        placeholder={t("profile.submissionEditDescription")}
-                        className="w-full border border-border bg-background px-3 py-2 text-sm focus:border-foreground focus:outline-none transition-colors"
-                        rows={3}
-                      />
-                      <div className="flex gap-2">
-                        <button
-                          type="button"
-                          onClick={() => void saveSubmissionEdit(sub)}
-                          disabled={submissionActionBusyId === sub.id}
-                          className="inline-flex items-center gap-1.5 border border-border px-3 py-1.5 text-xs uppercase tracking-wider hover:border-foreground transition-colors disabled:opacity-60"
-                        >
-                          {submissionActionBusyId === sub.id
-                            ? t("profile.submissionSaving")
-                            : t("profile.submissionSave")}
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => setEditingSubmissionId(null)}
-                          disabled={submissionActionBusyId === sub.id}
-                          className="inline-flex items-center gap-1.5 border border-border px-3 py-1.5 text-xs uppercase tracking-wider hover:border-foreground transition-colors disabled:opacity-60"
-                        >
-                          {t("profile.submissionCancel")}
-                        </button>
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="flex gap-2">
-                      <button
-                        type="button"
-                        onClick={() => beginEditSubmission(sub)}
-                        disabled={submissionActionBusyId === sub.id}
-                        className="inline-flex items-center gap-1.5 border border-border px-3 py-1.5 text-xs uppercase tracking-wider hover:border-foreground transition-colors disabled:opacity-60"
-                      >
-                        <Pencil className="w-3.5 h-3.5" aria-hidden="true" />
-                        {t("profile.submissionEdit")}
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => void deleteSubmission(sub)}
-                        disabled={submissionActionBusyId === sub.id}
-                        className="inline-flex items-center gap-1.5 border border-red-300 px-3 py-1.5 text-xs uppercase tracking-wider text-red-700 hover:border-red-500 transition-colors dark:border-red-800 dark:text-red-300 disabled:opacity-60"
-                      >
-                        <Trash2 className="w-3.5 h-3.5" aria-hidden="true" />
-                        {submissionActionBusyId === sub.id
-                          ? t("profile.submissionDeleting")
-                          : t("profile.submissionDelete")}
-                      </button>
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-      </section>
-
-      {/* Account colophon */}
-      <section className="border-b border-border">
-        <div className="max-w-5xl mx-auto px-6 md:px-12 py-10 md:py-14">
-          <SectionHeading index="05" label={t("profile.accountInfo")} />
-          <div className="border border-border divide-y divide-border">
-            <div className="flex items-center justify-between gap-4 px-4 md:px-5 py-3.5">
-              <span className="text-sm text-muted">{t("profile.provider")}</span>
-              <span className="text-sm inline-flex items-center gap-1.5">
-                {isLinuxDo ? (
-                  <LogIn className="w-4 h-4" aria-hidden="true" />
-                ) : (
-                  <Github className="w-4 h-4" aria-hidden="true" />
-                )}
-                {providerLabel}
-              </span>
-            </div>
-            <div className="flex items-center justify-between gap-4 px-4 md:px-5 py-3.5">
-              <span className="text-sm text-muted">{t("profile.userId")}</span>
-              <span className="font-mono text-sm tabular-nums">
-                #{profileSeqId ?? user.id.slice(0, 8)}
-              </span>
-            </div>
-            <div className="flex items-center justify-between gap-4 px-4 md:px-5 py-3.5">
-              <span className="text-sm text-muted">{t("profile.userTitle")}</span>
-              {profileTitleLabel ? (
-                <span
-                  className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium ${profileTitleBadgeClass.className}`}
-                  style={profileTitleBadgeClass.style}
-                >
-                  {profileTitleIconPath ? (
-                    <svg
-                      viewBox="0 0 40 40"
-                      className="h-3.5 w-3.5 fill-current"
-                      aria-hidden="true"
-                      focusable="false"
-                    >
-                      <path d={profileTitleIconPath} />
-                    </svg>
-                  ) : null}
-                  {profileTitleLabel}
-                </span>
-              ) : (
-                <span className="text-sm text-muted">
-                  {t("profile.userTitleNone")}
-                </span>
-              )}
-            </div>
-            <div className="flex items-center justify-between gap-4 px-4 md:px-5 py-3.5">
-              <span className="text-sm text-muted">{t("profile.email")}</span>
-              <span className="inline-flex items-center gap-2 min-w-0">
-                <span className="font-mono text-sm truncate">
-                  {showEmail ? email : maskedEmail || t("profile.emailHidden")}
-                </span>
-                {email && (
-                  <button
-                    type="button"
-                    onClick={() => setShowEmail((current) => !current)}
-                    className="inline-flex items-center text-muted hover:text-foreground transition-colors"
-                    aria-label={showEmail ? t("profile.hideEmail") : t("profile.showEmail")}
-                  >
-                    {showEmail ? (
-                      <EyeOff className="w-4 h-4" aria-hidden="true" />
-                    ) : (
-                      <Eye className="w-4 h-4" aria-hidden="true" />
-                    )}
-                  </button>
-                )}
-              </span>
-            </div>
-          </div>
-        </div>
-      </section>
+      </div>
     </div>
   );
 }
