@@ -631,6 +631,8 @@ export const zh: { [K in keyof typeof en]: string } = {
   "profile.statsRatings": "评分",
   "profile.statsSubmissions": "投稿",
   "profile.statsFavorites": "收藏",
+  "profile.pageLabel": "个人主页",
+  "profile.browseStyles": "去逛风格库",
   "profile.ratings": "我的评分",
   "profile.noRatings": "还没有评分。去给风格打分吧！",
   "profile.emailHidden": "\u5df2\u9690\u85cf",

@@ -2,19 +2,14 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState, type CSSProperties } from "react";
+import { useMemo, useState, type CSSProperties } from "react";
 import {
-  Heart,
   ExternalLink,
   Github,
   User,
   Calendar,
-  Shield,
   LogIn,
-  MessageSquare,
   Star,
-  Send,
-  BarChart3,
   Eye,
   EyeOff,
   Pencil,
@@ -35,6 +30,9 @@ import {
   EARLY_USER_TITLE_TOKEN,
   SITE_OWNER_TITLE_TOKEN,
 } from "@/lib/auth/user-title-policy";
+import { LocalizedLink } from "@/components/i18n/localized-link";
+import { StyleCard } from "@/components/home/style-card";
+import type { StyleMeta } from "@/lib/styles/meta";
 
 const HEX_COLOR_RE = /^#[0-9a-f]{6}$/i;
 const SVG_PATH_RE = /^[MmLlHhVvCcSsQqTtAaZz0-9eE+.,\-\s]+$/;
@@ -132,7 +130,43 @@ function asPositiveInt(value: unknown): number | null {
   return null;
 }
 
-export function ProfileContent() {
+function SectionHeading({
+  index,
+  label,
+  count,
+}: {
+  index: string;
+  label: string;
+  count?: number;
+}) {
+  return (
+    <div className="mb-8">
+      <p className="font-mono text-xs tracking-widest text-muted mb-3">{index}</p>
+      <h2 className="text-2xl md:text-3xl">
+        {label}
+        {typeof count === "number" && (
+          <span className="ml-3 font-mono text-sm text-muted tabular-nums align-middle">
+            {count}
+          </span>
+        )}
+      </h2>
+    </div>
+  );
+}
+
+function EmptyNote({ children }: { children: React.ReactNode }) {
+  return (
+    <p className="border border-border px-6 py-12 text-center text-muted">
+      {children}
+    </p>
+  );
+}
+
+interface ProfileContentProps {
+  allStyles: StyleMeta[];
+}
+
+export function ProfileContent({ allStyles }: ProfileContentProps) {
   const { user, loading } = useUser();
   const { favorites } = useFavorites();
   const { t, locale } = useI18n();
@@ -148,25 +182,41 @@ export function ProfileContent() {
   const [submissionActionBusyId, setSubmissionActionBusyId] = useState<string | null>(null);
   const [submissionActionError, setSubmissionActionError] = useState<string | null>(null);
 
+  const styleMetaBySlug = useMemo(
+    () => new Map(allStyles.map((style) => [style.slug, style])),
+    [allStyles]
+  );
+
+  const styleDisplayName = (slug: string): string => {
+    const meta = styleMetaBySlug.get(slug);
+    if (!meta) {
+      return slug;
+    }
+    return locale === "zh" ? meta.name : meta.nameEn || meta.name;
+  };
+
   if (loading) {
     return (
-      <div className="max-w-4xl mx-auto px-6 md:px-12 py-8 md:py-12">
-        <div className="animate-pulse space-y-6">
-          <div className="flex items-center gap-6">
+      <div className="max-w-5xl mx-auto px-6 md:px-12 py-12 md:py-16">
+        <div className="animate-pulse">
+          <div className="h-3 w-16 bg-muted/20 mb-8" />
+          <div className="flex items-end gap-6">
             <div className="w-24 h-24 rounded-full bg-muted/20" />
             <div className="space-y-3">
-              <div className="h-7 w-48 bg-muted/20 rounded" />
-              <div className="h-4 w-32 bg-muted/20 rounded" />
-              <div className="h-4 w-56 bg-muted/20 rounded" />
+              <div className="h-9 w-56 bg-muted/20" />
+              <div className="h-4 w-40 bg-muted/20" />
             </div>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-px mt-12">
             {Array.from({ length: 4 }).map((_, i) => (
-              <div key={i} className="h-20 bg-muted/20 rounded-lg" />
+              <div key={i} className="h-24 bg-muted/10" />
             ))}
           </div>
-          <div className="h-48 bg-muted/20 rounded" />
-          <div className="h-32 bg-muted/20 rounded" />
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 mt-12">
+            {Array.from({ length: 3 }).map((_, i) => (
+              <div key={i} className="aspect-[4/3] bg-muted/10" />
+            ))}
+          </div>
         </div>
       </div>
     );
@@ -174,24 +224,25 @@ export function ProfileContent() {
 
   if (!user) {
     return (
-      <div className="max-w-4xl mx-auto px-6 md:px-12 py-8 md:py-12">
-        <div className="flex flex-col items-center justify-center py-24 text-center">
-          <User className="w-16 h-16 text-muted-foreground mb-4" />
-          <h1 className="text-2xl font-bold text-foreground mb-2">
+      <section className="border-b border-border">
+        <div className="max-w-3xl mx-auto px-6 md:px-12 py-24 md:py-32 text-center">
+          <p className="text-xs uppercase tracking-widest text-muted mb-6">
+            {t("profile.pageLabel")}
+          </p>
+          <User className="w-10 h-10 text-muted mx-auto mb-6" aria-hidden="true" />
+          <h1 className="text-3xl md:text-4xl mb-4">
             {t("profile.notLoggedIn")}
           </h1>
-          <p className="text-muted-foreground mb-6">
-            {t("profile.signInPrompt")}
-          </p>
+          <p className="text-muted mb-10">{t("profile.signInPrompt")}</p>
           <Link
             href="/login"
-            className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-foreground text-background font-medium hover:opacity-90 transition-opacity"
+            className="inline-flex items-center gap-2 border border-foreground px-8 py-3 text-sm uppercase tracking-widest hover:bg-foreground hover:text-background transition-colors"
           >
-            <LogIn className="w-5 h-5" />
+            <LogIn className="w-4 h-4" aria-hidden="true" />
             {t("auth.signIn")}
           </Link>
         </div>
-      </div>
+      </section>
     );
   }
 
@@ -417,457 +468,512 @@ export function ProfileContent() {
   }
 
   const stats = [
-    { label: t("profile.statsFavorites"), value: favorites.length, icon: Heart },
-    { label: t("profile.statsComments"), value: comments.length, icon: MessageSquare },
-    { label: t("profile.statsRatings"), value: ratings.length, icon: Star },
-    { label: t("profile.statsSubmissions"), value: submissions.length, icon: Send },
+    {
+      anchor: "profile-favorites",
+      label: t("profile.statsFavorites"),
+      value: String(favorites.length),
+      delay: 0,
+    },
+    {
+      anchor: "profile-comments",
+      label: t("profile.statsComments"),
+      value: commentsLoading ? "–" : String(comments.length),
+      delay: 60,
+    },
+    {
+      anchor: "profile-ratings",
+      label: t("profile.statsRatings"),
+      value: ratingsLoading ? "–" : String(ratings.length),
+      delay: 120,
+    },
+    {
+      anchor: "profile-submissions",
+      label: t("profile.statsSubmissions"),
+      value: submissionsLoading ? "–" : String(submissions.length),
+      delay: 180,
+    },
+  ];
+
+  const statCellBorders = [
+    "",
+    "border-l border-border",
+    "border-t border-border md:border-t-0 md:border-l",
+    "border-l border-t border-border md:border-t-0",
   ];
 
   return (
-    <div className="max-w-4xl mx-auto px-6 md:px-12 py-8 md:py-12">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6 mb-10">
-        {avatarSrc ? (
-          <Image
-            src={avatarSrc}
-            alt={userName}
-            width={96}
-            height={96}
-            priority
-            unoptimized
-            className="w-24 h-24 rounded-full border-2 border-border"
-          />
-        ) : (
-          <div className="w-24 h-24 rounded-full border-2 border-border bg-muted/20 flex items-center justify-center">
-            <User className="w-10 h-10 text-muted-foreground" />
-          </div>
-        )}
+    <div>
+      {/* Masthead */}
+      <section className="border-b border-border">
+        <div className="max-w-5xl mx-auto px-6 md:px-12 pt-12 md:pt-16 pb-10 md:pb-14">
+          <p className="text-xs uppercase tracking-widest text-muted mb-8 motion-safe:animate-home-reveal-soft">
+            {t("profile.pageLabel")}
+          </p>
+          <div className="flex flex-col sm:flex-row items-center sm:items-end gap-6 md:gap-8 motion-safe:animate-home-reveal-up">
+            {avatarSrc ? (
+              <Image
+                src={avatarSrc}
+                alt={userName}
+                width={96}
+                height={96}
+                priority
+                unoptimized
+                className="w-24 h-24 rounded-full border border-border shrink-0"
+              />
+            ) : (
+              <div className="w-24 h-24 rounded-full border border-border bg-muted/10 flex items-center justify-center shrink-0">
+                <User className="w-10 h-10 text-muted" aria-hidden="true" />
+              </div>
+            )}
 
-        <div className="text-center sm:text-left">
-          <h1 className="text-2xl md:text-3xl font-bold text-foreground">
-            {userName}
-          </h1>
-          {profileTitleLabel && (
-            <div className="mt-2 flex justify-center sm:justify-start">
-              <span
-                className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-medium ${profileTitleBadgeClass.className}`}
-                style={profileTitleBadgeClass.style}
-              >
-                {profileTitleIconPath ? (
-                  <svg
-                    viewBox="0 0 40 40"
-                    className="h-3.5 w-3.5 fill-current"
-                    aria-hidden="true"
-                    focusable="false"
+            <div className="min-w-0 flex-1 text-center sm:text-left">
+              <div className="flex flex-col sm:flex-row sm:items-baseline sm:gap-3">
+                <h1 className="text-3xl md:text-5xl leading-tight break-words">
+                  {userName}
+                </h1>
+                {profileTitleLabel && (
+                  <span
+                    className={`mt-2 sm:mt-0 self-center sm:self-auto inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-medium shrink-0 ${profileTitleBadgeClass.className}`}
+                    style={profileTitleBadgeClass.style}
                   >
-                    <path d={profileTitleIconPath} />
-                  </svg>
-                ) : null}
-                {profileTitleLabel}
-              </span>
-            </div>
-          )}
-          {fullName && fullName !== userName && (
-            <p className="text-lg text-muted-foreground mt-1">{fullName}</p>
-          )}
-          {email && showEmail && (
-            <p className="text-sm text-muted-foreground mt-1">{email}</p>
-          )}
-          {createdAt && (
-            <p className="flex items-center gap-1.5 text-sm text-muted-foreground mt-2 justify-center sm:justify-start">
-              <Calendar className="w-4 h-4" />
-              {t("profile.memberSince")} {createdAt}
-            </p>
-          )}
-          {userName && (
-            <a
-              href={profileUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors mt-2"
-            >
-              {isLinuxDo ? (
-                <LogIn className="w-4 h-4" />
-              ) : (
-                <Github className="w-4 h-4" />
+                    {profileTitleIconPath ? (
+                      <svg
+                        viewBox="0 0 40 40"
+                        className="h-3.5 w-3.5 fill-current"
+                        aria-hidden="true"
+                        focusable="false"
+                      >
+                        <path d={profileTitleIconPath} />
+                      </svg>
+                    ) : null}
+                    {profileTitleLabel}
+                  </span>
+                )}
+              </div>
+              {fullName && fullName !== userName && (
+                <p className="text-base text-muted mt-1">{fullName}</p>
               )}
-              {profileLabel}
-              <ExternalLink className="w-3 h-3" />
-            </a>
-          )}
-        </div>
-      </div>
-
-      {/* Stats Overview */}
-      <section className="mb-10">
-        <h2 className="flex items-center gap-2 text-xl font-semibold text-foreground mb-4">
-          <BarChart3 className="w-5 h-5" />
-          {t("profile.stats")}
-        </h2>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          {stats.map((stat) => (
-            <div
-              key={stat.label}
-              className="rounded-lg border border-border bg-background p-4 text-center"
-            >
-              <stat.icon className="w-5 h-5 text-muted-foreground mx-auto mb-2" />
-              <p className="text-2xl font-bold text-foreground">{stat.value}</p>
-              <p className="text-xs text-muted-foreground mt-1">{stat.label}</p>
+              {email && showEmail && (
+                <p className="font-mono text-sm text-muted mt-1">{email}</p>
+              )}
+              <div className="mt-4 flex flex-wrap items-center justify-center sm:justify-start gap-x-6 gap-y-2 text-sm text-muted">
+                {createdAt && (
+                  <span className="inline-flex items-center gap-1.5">
+                    <Calendar className="w-4 h-4" aria-hidden="true" />
+                    {t("profile.memberSince")} {createdAt}
+                  </span>
+                )}
+                {userName && (
+                  <a
+                    href={profileUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 hover:text-foreground transition-colors"
+                  >
+                    {isLinuxDo ? (
+                      <LogIn className="w-4 h-4" aria-hidden="true" />
+                    ) : (
+                      <Github className="w-4 h-4" aria-hidden="true" />
+                    )}
+                    {profileLabel}
+                    <ExternalLink className="w-3 h-3" aria-hidden="true" />
+                  </a>
+                )}
+              </div>
             </div>
-          ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Stats folio strip */}
+      <section className="border-b border-border" aria-label={t("profile.stats")}>
+        <div className="max-w-5xl mx-auto px-6 md:px-12">
+          <div className="grid grid-cols-2 md:grid-cols-4">
+            {stats.map((stat, index) => (
+              <a
+                key={stat.anchor}
+                href={`#${stat.anchor}`}
+                className={`group flex flex-col gap-1.5 py-8 md:py-10 pr-4 md:px-6 md:first:pl-0 motion-safe:animate-home-reveal-up-subtle ${statCellBorders[index]} ${index % 2 === 1 ? "pl-4 md:pl-6" : ""}`}
+                style={{ animationDelay: `${stat.delay}ms` }}
+              >
+                <span className="font-serif text-3xl md:text-4xl tabular-nums leading-none group-hover:text-accent transition-colors">
+                  {stat.value}
+                </span>
+                <span className="text-[11px] uppercase tracking-[0.18em] text-muted">
+                  {stat.label}
+                </span>
+              </a>
+            ))}
+          </div>
         </div>
       </section>
 
       {/* Favorites */}
-      <section className="mb-10">
-        <h2 className="flex items-center gap-2 text-xl font-semibold text-foreground mb-4">
-          <Heart className="w-5 h-5" />
-          {t("profile.favorites")} ({favorites.length})
-        </h2>
-
-        {favorites.length === 0 ? (
-          <p className="text-muted-foreground py-8 text-center">
-            {t("profile.noFavorites")}
-          </p>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {favorites.map((slug) => (
-              <Link
-                key={slug}
-                href={`/styles/${slug}`}
-                className="group block rounded-lg border border-border bg-background p-4 hover:border-foreground/20 transition-colors"
+      <section id="profile-favorites" className="border-b border-border scroll-mt-24">
+        <div className="max-w-5xl mx-auto px-6 md:px-12 py-10 md:py-14">
+          <div className="flex items-end justify-between gap-4">
+            <SectionHeading
+              index="01"
+              label={t("profile.favorites")}
+              count={favorites.length}
+            />
+            {favorites.length > 0 && (
+              <LocalizedLink
+                href="/styles"
+                className="mb-8 hidden sm:inline text-sm text-muted underline-offset-4 hover:text-foreground hover:underline transition-colors"
               >
-                <p className="font-medium text-foreground group-hover:underline">
-                  {slug}
-                </p>
-                <p className="text-sm text-muted-foreground mt-1">
-                  {t("profile.viewStyle")}
-                </p>
-              </Link>
-            ))}
+                {t("profile.browseStyles")}
+              </LocalizedLink>
+            )}
           </div>
-        )}
+
+          {favorites.length === 0 ? (
+            <div className="border border-border px-6 py-14 text-center">
+              <p className="text-muted mb-6">{t("profile.noFavorites")}</p>
+              <LocalizedLink
+                href="/styles"
+                className="inline-flex items-center gap-2 border border-border px-5 py-2.5 text-sm hover:border-foreground transition-colors"
+              >
+                {t("profile.browseStyles")}
+              </LocalizedLink>
+            </div>
+          ) : (
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5">
+              {favorites.map((slug) => {
+                const meta = styleMetaBySlug.get(slug);
+                if (meta) {
+                  return <StyleCard key={slug} style={meta} variant="compact" />;
+                }
+                return (
+                  <LocalizedLink
+                    key={slug}
+                    href={`/styles/${slug}`}
+                    className="group flex flex-col justify-center border border-border p-4 md:p-5 hover:border-foreground transition-colors"
+                  >
+                    <p className="group-hover:text-accent transition-colors truncate">
+                      {slug}
+                    </p>
+                    <p className="text-sm text-muted mt-1">
+                      {t("profile.viewStyle")}
+                    </p>
+                  </LocalizedLink>
+                );
+              })}
+            </div>
+          )}
+        </div>
       </section>
 
-      {/* My Comments */}
-      <section className="mb-10">
-        <h2 className="flex items-center gap-2 text-xl font-semibold text-foreground mb-4">
-          <MessageSquare className="w-5 h-5" />
-          {t("profile.comments")} ({comments.length})
-        </h2>
+      {/* Comments ledger */}
+      <section id="profile-comments" className="border-b border-border scroll-mt-24">
+        <div className="max-w-5xl mx-auto px-6 md:px-12 py-10 md:py-14">
+          <SectionHeading
+            index="02"
+            label={t("profile.comments")}
+            count={comments.length}
+          />
 
-        {commentsLoading ? (
-          <div className="space-y-3 animate-pulse">
-            {Array.from({ length: 3 }).map((_, i) => (
-              <div key={i} className="rounded-lg border border-border p-4 space-y-2">
-                <div className="flex justify-between">
-                  <div className="h-4 w-24 bg-muted/20 rounded" />
-                  <div className="h-3 w-20 bg-muted/20 rounded" />
+          {commentsLoading ? (
+            <div className="border-t border-border animate-pulse">
+              {Array.from({ length: 3 }).map((_, i) => (
+                <div key={i} className="border-b border-border py-4 space-y-2">
+                  <div className="h-4 w-32 bg-muted/20" />
+                  <div className="h-4 w-full bg-muted/20" />
                 </div>
-                <div className="h-4 w-full bg-muted/20 rounded" />
-              </div>
-            ))}
-          </div>
-        ) : comments.length === 0 ? (
-          <p className="text-muted-foreground py-8 text-center">
-            {t("profile.noComments")}
-          </p>
-        ) : (
-          <div className="space-y-3">
-            {comments.map((comment) => (
-              <div
-                key={comment.id}
-                className="rounded-lg border border-border bg-background p-4"
-              >
-                <div className="flex items-center justify-between mb-2">
-                  <Link
-                    href={`/styles/${comment.style_slug}`}
-                    className="text-sm font-medium text-foreground hover:underline"
-                  >
-                    {comment.style_slug}
-                  </Link>
-                  <span className="text-xs text-muted-foreground">
+              ))}
+            </div>
+          ) : comments.length === 0 ? (
+            <EmptyNote>{t("profile.noComments")}</EmptyNote>
+          ) : (
+            <div className="border-t border-border">
+              {comments.map((comment) => (
+                <div
+                  key={comment.id}
+                  className="grid gap-1 border-b border-border py-4 sm:grid-cols-[1fr_auto] sm:gap-6"
+                >
+                  <div className="min-w-0">
+                    <LocalizedLink
+                      href={`/styles/${comment.style_slug}`}
+                      className="text-sm font-medium hover:text-accent transition-colors"
+                    >
+                      {styleDisplayName(comment.style_slug)}
+                    </LocalizedLink>
+                    <p className="text-sm text-muted line-clamp-2 mt-1">
+                      {comment.content}
+                    </p>
+                  </div>
+                  <span className="font-mono text-xs text-muted tabular-nums">
                     {formatDate(comment.created_at)}
                   </span>
                 </div>
-                <p className="text-sm text-muted-foreground line-clamp-2">
-                  {comment.content}
-                </p>
-              </div>
-            ))}
-          </div>
-        )}
+              ))}
+            </div>
+          )}
+        </div>
       </section>
 
-      {/* My Ratings */}
-      <section className="mb-10">
-        <h2 className="flex items-center gap-2 text-xl font-semibold text-foreground mb-4">
-          <Star className="w-5 h-5" />
-          {t("profile.ratings")} ({ratings.length})
-        </h2>
+      {/* Ratings */}
+      <section id="profile-ratings" className="border-b border-border scroll-mt-24">
+        <div className="max-w-5xl mx-auto px-6 md:px-12 py-10 md:py-14">
+          <SectionHeading
+            index="03"
+            label={t("profile.ratings")}
+            count={ratings.length}
+          />
 
-        {ratingsLoading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 animate-pulse">
-            {Array.from({ length: 4 }).map((_, i) => (
-              <div key={i} className="flex items-center justify-between rounded-lg border border-border px-4 py-3">
-                <div className="h-4 w-24 bg-muted/20 rounded" />
-                <div className="h-4 w-20 bg-muted/20 rounded" />
-              </div>
-            ))}
-          </div>
-        ) : ratings.length === 0 ? (
-          <p className="text-muted-foreground py-8 text-center">
-            {t("profile.noRatings")}
-          </p>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-            {ratings.map((r) => (
-              <div
-                key={r.id}
-                className="flex items-center justify-between rounded-lg border border-border bg-background px-4 py-3"
-              >
-                <Link
-                  href={`/styles/${r.style_slug}`}
-                  className="text-sm font-medium text-foreground hover:underline"
+          {ratingsLoading ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 animate-pulse">
+              {Array.from({ length: 4 }).map((_, i) => (
+                <div key={i} className="flex items-center justify-between border border-border px-4 py-3">
+                  <div className="h-4 w-24 bg-muted/20" />
+                  <div className="h-4 w-20 bg-muted/20" />
+                </div>
+              ))}
+            </div>
+          ) : ratings.length === 0 ? (
+            <EmptyNote>{t("profile.noRatings")}</EmptyNote>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              {ratings.map((r) => (
+                <div
+                  key={r.id}
+                  className="flex items-center justify-between gap-3 border border-border px-4 py-3"
                 >
-                  {r.style_slug}
-                </Link>
-                <div className="flex items-center gap-2">
-                  <div className="flex gap-0.5">
-                    {Array.from({ length: 5 }).map((_, i) => (
-                      <Star
-                        key={i}
-                        className={`w-3.5 h-3.5 ${
-                          i < r.rating
-                            ? "fill-amber-400 text-amber-400"
-                            : "text-muted-foreground/30"
-                        }`}
-                      />
-                    ))}
-                  </div>
-                  <span className="text-xs text-muted-foreground">
-                    {formatDate(r.created_at)}
-                  </span>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-      </section>
-
-      {/* My Submissions */}
-      <section className="mb-10">
-        <h2 className="flex items-center gap-2 text-xl font-semibold text-foreground mb-4">
-          <Send className="w-5 h-5" />
-          {t("profile.submissions")} ({submissions.length})
-        </h2>
-
-        {submissionActionError && (
-          <p className="mb-3 rounded-md border border-red-300 bg-red-50 px-3 py-2 text-sm text-red-700 dark:border-red-800 dark:bg-red-950/40 dark:text-red-300">
-            {submissionActionError}
-          </p>
-        )}
-
-        {submissionsLoading ? (
-          <div className="space-y-3 animate-pulse">
-            {Array.from({ length: 2 }).map((_, i) => (
-              <div key={i} className="rounded-lg border border-border px-4 py-3 space-y-3">
-                <div className="flex justify-between">
-                  <div className="h-4 w-32 bg-muted/20 rounded" />
-                  <div className="h-3 w-20 bg-muted/20 rounded" />
-                </div>
-                <div className="h-3 w-full bg-muted/20 rounded" />
-              </div>
-            ))}
-          </div>
-        ) : submissions.length === 0 ? (
-          <p className="text-muted-foreground py-8 text-center">
-            {t("profile.noSubmissions")}
-          </p>
-        ) : (
-          <div className="space-y-3">
-            {submissions.map((sub) => (
-              <div
-                key={sub.id}
-                className="rounded-lg border border-border bg-background px-4 py-3 space-y-3"
-              >
-                <div className="flex items-center justify-between gap-3">
-                  <div className="flex items-center gap-3 min-w-0">
-                    <Link
-                      href={`/styles/${sub.slug}`}
-                      className="text-sm font-medium text-foreground hover:underline truncate"
-                    >
-                      {sub.name_en || sub.name || sub.slug}
-                    </Link>
-                    <span
-                      className={`text-xs font-medium px-2 py-0.5 rounded-full shrink-0 ${
-                        statusColors[sub.status] ?? ""
-                      }`}
-                    >
-                      {t(`profile.submissionStatus.${sub.status}`)}
+                  <LocalizedLink
+                    href={`/styles/${r.style_slug}`}
+                    className="text-sm font-medium truncate hover:text-accent transition-colors"
+                  >
+                    {styleDisplayName(r.style_slug)}
+                  </LocalizedLink>
+                  <div className="flex items-center gap-3 shrink-0">
+                    <div className="flex gap-0.5">
+                      {Array.from({ length: 5 }).map((_, i) => (
+                        <Star
+                          key={i}
+                          className={`w-3.5 h-3.5 ${
+                            i < r.rating
+                              ? "fill-amber-400 text-amber-400"
+                              : "text-muted/30"
+                          }`}
+                        />
+                      ))}
+                    </div>
+                    <span className="font-mono text-xs text-muted tabular-nums">
+                      {formatDate(r.created_at)}
                     </span>
                   </div>
-                  <span className="text-xs text-muted-foreground shrink-0">
-                    {formatDate(sub.submitted_at)}
-                  </span>
                 </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </section>
 
-                {(sub.description || sub.slug) && (
-                  <p className="text-xs text-muted-foreground line-clamp-2">
-                    {sub.description || sub.slug}
-                  </p>
-                )}
+      {/* Submissions */}
+      <section id="profile-submissions" className="border-b border-border scroll-mt-24">
+        <div className="max-w-5xl mx-auto px-6 md:px-12 py-10 md:py-14">
+          <SectionHeading
+            index="04"
+            label={t("profile.submissions")}
+            count={submissions.length}
+          />
 
-                {editingSubmissionId === sub.id ? (
-                  <div className="space-y-2">
-                    <input
-                      value={editSubmissionName}
-                      onChange={(event) => setEditSubmissionName(event.target.value)}
-                      placeholder={t("profile.submissionEditName")}
-                      className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm"
-                    />
-                    <input
-                      value={editSubmissionNameEn}
-                      onChange={(event) => setEditSubmissionNameEn(event.target.value)}
-                      placeholder={t("profile.submissionEditNameEn")}
-                      className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm"
-                    />
-                    <textarea
-                      value={editSubmissionDescription}
-                      onChange={(event) => setEditSubmissionDescription(event.target.value)}
-                      placeholder={t("profile.submissionEditDescription")}
-                      className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm"
-                      rows={3}
-                    />
+          {submissionActionError && (
+            <p className="mb-4 border border-red-300 bg-red-50 px-3 py-2 text-sm text-red-700 dark:border-red-800 dark:bg-red-950/40 dark:text-red-300">
+              {submissionActionError}
+            </p>
+          )}
+
+          {submissionsLoading ? (
+            <div className="space-y-3 animate-pulse">
+              {Array.from({ length: 2 }).map((_, i) => (
+                <div key={i} className="border border-border px-4 py-4 space-y-3">
+                  <div className="flex justify-between">
+                    <div className="h-4 w-32 bg-muted/20" />
+                    <div className="h-3 w-20 bg-muted/20" />
+                  </div>
+                  <div className="h-3 w-full bg-muted/20" />
+                </div>
+              ))}
+            </div>
+          ) : submissions.length === 0 ? (
+            <EmptyNote>{t("profile.noSubmissions")}</EmptyNote>
+          ) : (
+            <div className="space-y-3">
+              {submissions.map((sub) => (
+                <div
+                  key={sub.id}
+                  className="border border-border p-4 md:p-5 space-y-3"
+                >
+                  <div className="flex items-center justify-between gap-3">
+                    <div className="flex items-center gap-3 min-w-0">
+                      <LocalizedLink
+                        href={`/styles/${sub.slug}`}
+                        className="text-sm font-medium hover:text-accent transition-colors truncate"
+                      >
+                        {sub.name_en || sub.name || sub.slug}
+                      </LocalizedLink>
+                      <span
+                        className={`text-xs font-medium px-2 py-0.5 rounded-full shrink-0 ${
+                          statusColors[sub.status] ?? ""
+                        }`}
+                      >
+                        {t(`profile.submissionStatus.${sub.status}`)}
+                      </span>
+                    </div>
+                    <span className="font-mono text-xs text-muted tabular-nums shrink-0">
+                      {formatDate(sub.submitted_at)}
+                    </span>
+                  </div>
+
+                  {(sub.description || sub.slug) && (
+                    <p className="text-xs text-muted line-clamp-2">
+                      {sub.description || sub.slug}
+                    </p>
+                  )}
+
+                  {editingSubmissionId === sub.id ? (
+                    <div className="space-y-2">
+                      <input
+                        value={editSubmissionName}
+                        onChange={(event) => setEditSubmissionName(event.target.value)}
+                        placeholder={t("profile.submissionEditName")}
+                        className="w-full border border-border bg-background px-3 py-2 text-sm focus:border-foreground focus:outline-none transition-colors"
+                      />
+                      <input
+                        value={editSubmissionNameEn}
+                        onChange={(event) => setEditSubmissionNameEn(event.target.value)}
+                        placeholder={t("profile.submissionEditNameEn")}
+                        className="w-full border border-border bg-background px-3 py-2 text-sm focus:border-foreground focus:outline-none transition-colors"
+                      />
+                      <textarea
+                        value={editSubmissionDescription}
+                        onChange={(event) => setEditSubmissionDescription(event.target.value)}
+                        placeholder={t("profile.submissionEditDescription")}
+                        className="w-full border border-border bg-background px-3 py-2 text-sm focus:border-foreground focus:outline-none transition-colors"
+                        rows={3}
+                      />
+                      <div className="flex gap-2">
+                        <button
+                          type="button"
+                          onClick={() => void saveSubmissionEdit(sub)}
+                          disabled={submissionActionBusyId === sub.id}
+                          className="inline-flex items-center gap-1.5 border border-border px-3 py-1.5 text-xs uppercase tracking-wider hover:border-foreground transition-colors disabled:opacity-60"
+                        >
+                          {submissionActionBusyId === sub.id
+                            ? t("profile.submissionSaving")
+                            : t("profile.submissionSave")}
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setEditingSubmissionId(null)}
+                          disabled={submissionActionBusyId === sub.id}
+                          className="inline-flex items-center gap-1.5 border border-border px-3 py-1.5 text-xs uppercase tracking-wider hover:border-foreground transition-colors disabled:opacity-60"
+                        >
+                          {t("profile.submissionCancel")}
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
                     <div className="flex gap-2">
                       <button
                         type="button"
-                        onClick={() => void saveSubmissionEdit(sub)}
+                        onClick={() => beginEditSubmission(sub)}
                         disabled={submissionActionBusyId === sub.id}
-                        className="inline-flex items-center gap-1 rounded-md border border-border px-3 py-1.5 text-xs hover:border-foreground disabled:opacity-60"
+                        className="inline-flex items-center gap-1.5 border border-border px-3 py-1.5 text-xs uppercase tracking-wider hover:border-foreground transition-colors disabled:opacity-60"
                       >
-                        {submissionActionBusyId === sub.id
-                          ? t("profile.submissionSaving")
-                          : t("profile.submissionSave")}
+                        <Pencil className="w-3.5 h-3.5" aria-hidden="true" />
+                        {t("profile.submissionEdit")}
                       </button>
                       <button
                         type="button"
-                        onClick={() => setEditingSubmissionId(null)}
+                        onClick={() => void deleteSubmission(sub)}
                         disabled={submissionActionBusyId === sub.id}
-                        className="inline-flex items-center gap-1 rounded-md border border-border px-3 py-1.5 text-xs hover:border-foreground disabled:opacity-60"
+                        className="inline-flex items-center gap-1.5 border border-red-300 px-3 py-1.5 text-xs uppercase tracking-wider text-red-700 hover:border-red-500 transition-colors dark:border-red-800 dark:text-red-300 disabled:opacity-60"
                       >
-                        {t("profile.submissionCancel")}
+                        <Trash2 className="w-3.5 h-3.5" aria-hidden="true" />
+                        {submissionActionBusyId === sub.id
+                          ? t("profile.submissionDeleting")
+                          : t("profile.submissionDelete")}
                       </button>
                     </div>
-                  </div>
-                ) : (
-                  <div className="flex gap-2">
-                    <button
-                      type="button"
-                      onClick={() => beginEditSubmission(sub)}
-                      disabled={submissionActionBusyId === sub.id}
-                      className="inline-flex items-center gap-1 rounded-md border border-border px-3 py-1.5 text-xs hover:border-foreground disabled:opacity-60"
-                    >
-                      <Pencil className="w-3.5 h-3.5" />
-                      {t("profile.submissionEdit")}
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => void deleteSubmission(sub)}
-                      disabled={submissionActionBusyId === sub.id}
-                      className="inline-flex items-center gap-1 rounded-md border border-red-300 px-3 py-1.5 text-xs text-red-700 hover:border-red-500 dark:border-red-800 dark:text-red-300 disabled:opacity-60"
-                    >
-                      <Trash2 className="w-3.5 h-3.5" />
-                      {submissionActionBusyId === sub.id
-                        ? t("profile.submissionDeleting")
-                        : t("profile.submissionDelete")}
-                    </button>
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
-        )}
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
       </section>
 
-      {/* Account Info */}
-      <section>
-        <h2 className="flex items-center gap-2 text-xl font-semibold text-foreground mb-4">
-          <Shield className="w-5 h-5" />
-          {t("profile.accountInfo")}
-        </h2>
-        <div className="rounded-lg border border-border bg-background divide-y divide-border">
-          <div className="flex justify-between px-4 py-3">
-            <span className="text-sm text-muted-foreground">
-              {t("profile.provider")}
-            </span>
-            <span className="text-sm font-medium text-foreground flex items-center gap-1.5">
-              {isLinuxDo ? (
-                <LogIn className="w-4 h-4" />
-              ) : (
-                <Github className="w-4 h-4" />
-              )}
-              {providerLabel}
-            </span>
-          </div>
-          <div className="flex justify-between px-4 py-3">
-            <span className="text-sm text-muted-foreground">
-              {t("profile.userId")}
-            </span>
-            <span className="text-sm font-mono text-foreground">
-              #{profileSeqId ?? user.id.slice(0, 8)}
-            </span>
-          </div>
-          <div className="flex justify-between px-4 py-3">
-            <span className="text-sm text-muted-foreground">
-              {t("profile.userTitle")}
-            </span>
-            {profileTitleLabel ? (
-              <span
-                className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium ${profileTitleBadgeClass.className}`}
-                style={profileTitleBadgeClass.style}
-              >
-                {profileTitleIconPath ? (
-                  <svg
-                    viewBox="0 0 40 40"
-                    className="h-3.5 w-3.5 fill-current"
-                    aria-hidden="true"
-                    focusable="false"
-                  >
-                    <path d={profileTitleIconPath} />
-                  </svg>
-                ) : null}
-                {profileTitleLabel}
+      {/* Account colophon */}
+      <section className="border-b border-border">
+        <div className="max-w-5xl mx-auto px-6 md:px-12 py-10 md:py-14">
+          <SectionHeading index="05" label={t("profile.accountInfo")} />
+          <div className="border border-border divide-y divide-border">
+            <div className="flex items-center justify-between gap-4 px-4 md:px-5 py-3.5">
+              <span className="text-sm text-muted">{t("profile.provider")}</span>
+              <span className="text-sm inline-flex items-center gap-1.5">
+                {isLinuxDo ? (
+                  <LogIn className="w-4 h-4" aria-hidden="true" />
+                ) : (
+                  <Github className="w-4 h-4" aria-hidden="true" />
+                )}
+                {providerLabel}
               </span>
-            ) : (
-              <span className="text-sm text-muted-foreground">
-                {t("profile.userTitleNone")}
+            </div>
+            <div className="flex items-center justify-between gap-4 px-4 md:px-5 py-3.5">
+              <span className="text-sm text-muted">{t("profile.userId")}</span>
+              <span className="font-mono text-sm tabular-nums">
+                #{profileSeqId ?? user.id.slice(0, 8)}
               </span>
-            )}
-          </div>
-          <div className="flex justify-between px-4 py-3">
-            <span className="text-sm text-muted-foreground">
-              {t("profile.email")}
-            </span>
-            <span className="inline-flex items-center gap-2">
-              <span className="text-sm text-foreground">
-                {showEmail ? email : maskedEmail || t("profile.emailHidden")}
-              </span>
-              {email && (
-                <button
-                  type="button"
-                  onClick={() => setShowEmail((current) => !current)}
-                  className="inline-flex items-center text-muted-foreground hover:text-foreground transition-colors"
-                  aria-label={showEmail ? t("profile.hideEmail") : t("profile.showEmail")}
+            </div>
+            <div className="flex items-center justify-between gap-4 px-4 md:px-5 py-3.5">
+              <span className="text-sm text-muted">{t("profile.userTitle")}</span>
+              {profileTitleLabel ? (
+                <span
+                  className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium ${profileTitleBadgeClass.className}`}
+                  style={profileTitleBadgeClass.style}
                 >
-                  {showEmail ? (
-                    <EyeOff className="w-4 h-4" />
-                  ) : (
-                    <Eye className="w-4 h-4" />
-                  )}
-                </button>
+                  {profileTitleIconPath ? (
+                    <svg
+                      viewBox="0 0 40 40"
+                      className="h-3.5 w-3.5 fill-current"
+                      aria-hidden="true"
+                      focusable="false"
+                    >
+                      <path d={profileTitleIconPath} />
+                    </svg>
+                  ) : null}
+                  {profileTitleLabel}
+                </span>
+              ) : (
+                <span className="text-sm text-muted">
+                  {t("profile.userTitleNone")}
+                </span>
               )}
-            </span>
+            </div>
+            <div className="flex items-center justify-between gap-4 px-4 md:px-5 py-3.5">
+              <span className="text-sm text-muted">{t("profile.email")}</span>
+              <span className="inline-flex items-center gap-2 min-w-0">
+                <span className="font-mono text-sm truncate">
+                  {showEmail ? email : maskedEmail || t("profile.emailHidden")}
+                </span>
+                {email && (
+                  <button
+                    type="button"
+                    onClick={() => setShowEmail((current) => !current)}
+                    className="inline-flex items-center text-muted hover:text-foreground transition-colors"
+                    aria-label={showEmail ? t("profile.hideEmail") : t("profile.showEmail")}
+                  >
+                    {showEmail ? (
+                      <EyeOff className="w-4 h-4" aria-hidden="true" />
+                    ) : (
+                      <Eye className="w-4 h-4" aria-hidden="true" />
+                    )}
+                  </button>
+                )}
+              </span>
+            </div>
           </div>
         </div>
       </section>

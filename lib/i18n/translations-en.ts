@@ -890,6 +890,8 @@ export const en = {
     "profile.statsRatings": "Ratings",
     "profile.statsSubmissions": "Submissions",
     "profile.statsFavorites": "Favorites",
+    "profile.pageLabel": "Profile",
+    "profile.browseStyles": "Browse styles",
     "profile.ratings": "My Ratings",
     "profile.noRatings": "No ratings yet. Rate some styles!",
     "profile.emailHidden": "Hidden",
