@@ -1048,7 +1048,7 @@ export default function RealEstateTemplate() {
             ))}
           </div>
           <div className="mt-14 flex flex-wrap items-center justify-between gap-4 border-t border-[#F7F6F3]/10 pt-6">
-            <p className={`${mono.className} text-[11px] text-[#F7F6F3]/35`}>© 2026 HAUS PROPERTY, LLC.</p>
+            <p className={`${mono.className} text-[11px] text-[#F7F6F3]/35`}>&copy; 2026 HAUS PROPERTY, LLC.</p>
             <p className={`${mono.className} text-[11px] tracking-[0.16em] text-[#F7F6F3]/35`}>BY APPOINTMENT · CA DRE #01998271</p>
           </div>
         </div>

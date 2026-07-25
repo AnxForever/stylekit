@@ -1014,7 +1014,7 @@ export default function TravelBookingTemplate() {
           </div>
 
           <div className="mt-14 flex flex-wrap items-center justify-between gap-4 border-t border-[#F6F1E7]/10 pt-6">
-            <p className={`${mono.className} text-[11px] text-[#F6F1E7]/40`}>© 2026 WAYFARE TRAVEL CO. · ISSUE 14</p>
+            <p className={`${mono.className} text-[11px] text-[#F6F1E7]/40`}>&copy; 2026 WAYFARE TRAVEL CO. · ISSUE 14</p>
             <p className="text-[11px] text-[#F6F1E7]/40">
               Part of{" "}
               <a href="https://www.stylekit.top/templates" className="text-[#E08B4C] underline-offset-4 transition-colors hover:text-[#F6F1E7] hover:underline">

@@ -1018,7 +1018,7 @@ export default function EcommerceProductTemplate() {
           </div>
 
           <div className="mt-14 flex flex-wrap items-center justify-between gap-4 border-t border-[#E6DFCE] pt-6">
-            <p className={`${mono.className} text-[11px] tracking-[0.08em] text-[#98907E]`}>© 2026 MONO GOODS STUDIO</p>
+            <p className={`${mono.className} text-[11px] tracking-[0.08em] text-[#98907E]`}>&copy; 2026 MONO GOODS STUDIO</p>
             <div className="flex flex-wrap items-center gap-5">
               <a href="#" className={`${mono.className} text-[11px] tracking-[0.12em] text-[#98907E] transition-colors hover:text-[#1B1712]`}>
                 INSTAGRAM
