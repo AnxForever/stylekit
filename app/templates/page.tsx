@@ -3,6 +3,7 @@
 export const dynamic = "force-static";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useCallback, useDeferredValue, useEffect, useMemo, useRef, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Check, ClipboardCopy, Code2, Download, Loader2, X } from "lucide-react";
@@ -24,6 +25,7 @@ import {
   type TemplateCatalogEntry,
   type TemplateCatalogType,
 } from "@/lib/templates/catalog";
+import { templateCoverSlugs } from "@/lib/templates/covers.generated";
 
 type TemplateTypeFilter = "all" | TemplateCatalogType | "pricing";
 type TemplateSort = "recommended" | "name-asc" | "name-desc";
@@ -645,11 +647,22 @@ export default function TemplatesPage() {
                       className="block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                     >
                       <div className="aspect-[16/10] relative overflow-hidden bg-zinc-100 dark:bg-zinc-900">
-                        {previewColors && (
-                          <TemplateCoverPreview
-                            templateId={template.id}
-                            colors={previewColors}
+                        {templateCoverSlugs.has(slug) ? (
+                          <Image
+                            src={`/templates/covers/${slug}.webp`}
+                            alt={`${templateName} preview`}
+                            fill
+                            className="object-cover object-top transition-transform duration-500 group-hover:scale-[1.03]"
+                            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                            unoptimized
                           />
+                        ) : (
+                          previewColors && (
+                            <TemplateCoverPreview
+                              templateId={template.id}
+                              colors={previewColors}
+                            />
+                          )
                         )}
                         <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent px-4 py-3">
                           <span className="text-white text-sm font-medium">{templateName}</span>

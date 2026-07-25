@@ -3,833 +3,665 @@
 export const dynamic = "force-static";
 
 import { useState } from "react";
-import Link from "next/link";
 import {
+  Activity,
   ArrowRight,
-  BarChart3,
+  ArrowUpRight,
+  BellRing,
   Check,
-  CheckCircle,
   ChevronDown,
-  ChevronLeft,
-  ChevronRight,
-  Cloud,
-  Loader2,
-  Lock,
+  GitBranch,
+  Globe2,
   Menu,
+  Radar,
+  ShieldCheck,
+  Terminal,
+  Waypoints,
   X,
-  Zap,
 } from "lucide-react";
+import { IBM_Plex_Mono, Instrument_Sans, Instrument_Serif } from "next/font/google";
 import { TemplateBackButton } from "@/components/templates/template-back-button";
-const features = [
+
+const serif = Instrument_Serif({ weight: "400", style: ["normal", "italic"], subsets: ["latin"] });
+const sans = Instrument_Sans({ subsets: ["latin"] });
+const mono = IBM_Plex_Mono({ weight: ["400", "500"], subsets: ["latin"] });
+
+/* ------------------------------------------------------------------ */
+/* Content                                                             */
+/* ------------------------------------------------------------------ */
+
+const NAV_LINKS = ["Platform", "Pricing", "Customers", "Docs"];
+
+const LOGOS = ["Northwind", "Ferrostack", "Opaline", "Kessler & Co", "Bidwell", "Tectonic", "Mireille"];
+
+const LOG_LINES = [
+  { time: "14:02:11", level: "ok", text: "deploy prod-eu-1 · 214ms · healthy" },
+  { time: "14:02:14", level: "ok", text: "edge cache warmed · 41 regions" },
+  { time: "14:02:19", level: "warn", text: "p99 latency +12ms · api/checkout" },
+  { time: "14:02:23", level: "ok", text: "auto-rollback armed · threshold 0.5%" },
+  { time: "14:02:31", level: "ok", text: "traffic shift 10% -> 100% complete" },
+];
+
+const SPARK = [42, 38, 51, 44, 62, 58, 71, 66, 54, 47, 52, 45, 41, 39, 44, 40];
+
+const FEATURES = [
   {
-    icon: Zap,
-    title: "Lightning Fast",
-    desc: "Sub-millisecond response times with global CDN acceleration and edge caching.",
-    color: "bg-blue-500",
+    icon: Radar,
+    title: "Latency cartography",
+    body: "Every request traced across regions and plotted before your coffee cools. p50 to p99.9, no sampling excuses.",
+    tag: "TRACE",
   },
   {
-    icon: Lock,
-    title: "Enterprise Security",
-    desc: "SOC 2 compliant, end-to-end encryption, and fine-grained permission controls.",
-    color: "bg-emerald-500",
+    icon: GitBranch,
+    title: "Deploys that watch themselves",
+    body: "Ship behind an automatic canary. Meridian compares error budgets in real time and rolls back before users notice.",
+    tag: "DEPLOY",
   },
   {
-    icon: Cloud,
-    title: "Cloud Native",
-    desc: "Auto-scaling infrastructure, zero ops overhead, and 99.99% SLA guaranteed.",
-    color: "bg-violet-500",
+    icon: BellRing,
+    title: "Alerts with taste",
+    body: "One page per incident, grouped by cause — not forty duplicate pings at 3 a.m. Your on-call will send flowers.",
+    tag: "ALERT",
   },
   {
-    icon: BarChart3,
-    title: "Real-time Analytics",
-    desc: "Live dashboards, custom reports, and AI-driven insights for smarter decisions.",
-    color: "bg-amber-500",
+    icon: Globe2,
+    title: "41 regions, one clock",
+    body: "Synthetic probes from every continent, reconciled to a single timeline so 'slow in Sydney' is a fact, not a vibe.",
+    tag: "PROBE",
+  },
+  {
+    icon: Terminal,
+    title: "Query like you mean it",
+    body: "A real query language over logs, traces, and metrics together. Pipe, filter, aggregate — answers in milliseconds.",
+    tag: "QUERY",
+  },
+  {
+    icon: ShieldCheck,
+    title: "Audit-grade history",
+    body: "Every deploy, alert, and config change is immutable and exportable. SOC 2 auditors leave early.",
+    tag: "AUDIT",
   },
 ];
 
-type Plan = {
-  name: string;
-  monthlyPrice: number;
-  yearlyPrice: number;
-  desc: string;
-  features: string[];
-  popular: boolean;
-};
+const METRICS = [
+  { value: "99.995%", label: "uptime measured across customer fleet, trailing 12 months" },
+  { value: "38ms", label: "median query response over 1.2 trillion indexed events" },
+  { value: "4min", label: "average time from regression to automatic rollback" },
+  { value: "12,400+", label: "production services reporting into Meridian today" },
+];
 
-const plans: Plan[] = [
+const TESTIMONIALS = [
   {
-    name: "Starter",
-    monthlyPrice: 29,
-    yearlyPrice: 23,
-    desc: "Perfect for small teams getting started",
-    features: ["5 team members", "10GB storage", "Basic analytics", "Email support"],
-    popular: false,
+    quote:
+      "We replaced three dashboards and an entire pager rotation spreadsheet. Incidents feel boring now, which is the highest compliment I can give.",
+    name: "Ana Reyes",
+    role: "VP Infrastructure, Ferrostack",
   },
   {
-    name: "Pro",
-    monthlyPrice: 79,
-    yearlyPrice: 63,
-    desc: "Built for growing teams that need more",
+    quote:
+      "The canary rollbacks paid for the contract in the first month. One bad deploy caught at 0.4% traffic — that would have been our worst outage of the year.",
+    name: "Tobias Lindqvist",
+    role: "Staff SRE, Northwind",
+  },
+  {
+    quote:
+      "Finally a vendor whose query language doesn't fight back. Our juniors were productive on day one.",
+    name: "Priya Natarajan",
+    role: "Head of Platform, Opaline",
+  },
+];
+
+const PLANS = [
+  {
+    name: "Instrument",
+    monthly: 0,
+    yearly: 0,
+    blurb: "For side projects and small services finding their pulse.",
+    features: ["3 services", "7-day retention", "Community support", "2 synthetic probes"],
+    cta: "Start free",
+    featured: false,
+  },
+  {
+    name: "Observatory",
+    monthly: 89,
+    yearly: 74,
+    blurb: "For teams running production and sleeping at night.",
     features: [
-      "25 team members",
-      "100GB storage",
-      "Advanced analytics",
-      "Priority support",
-      "API access",
-      "Custom domains",
+      "Unlimited services",
+      "13-month retention",
+      "Canary deploys + auto-rollback",
+      "41-region probes",
+      "Incident timeline & postmortems",
     ],
-    popular: true,
+    cta: "Start 14-day trial",
+    featured: true,
   },
   {
-    name: "Enterprise",
-    monthlyPrice: 199,
-    yearlyPrice: 159,
-    desc: "For large organizations at scale",
-    features: [
-      "Unlimited members",
-      "Unlimited storage",
-      "Full analytics suite",
-      "Dedicated account manager",
-      "SLA guarantee",
-      "Private deployment",
-    ],
-    popular: false,
+    name: "Meridian Line",
+    monthly: null,
+    yearly: null,
+    blurb: "For fleets with compliance teeth and single-tenant needs.",
+    features: ["Single-tenant deployment", "Custom retention", "SSO / SCIM / audit export", "Dedicated engineer"],
+    cta: "Talk to us",
+    featured: false,
   },
 ];
 
-const testimonials = [
+const FAQS = [
   {
-    name: "Sarah Chen",
-    role: "CTO, TechCorp",
-    text: "After migrating to this platform our development velocity tripled. The API design is elegant and the documentation is comprehensive.",
-    avatar: "SC",
+    q: "How long does instrumentation take?",
+    a: "Most teams see first traces in under ten minutes. We ship OpenTelemetry-native SDKs and an agent that auto-discovers common runtimes — no code changes for the standard path.",
   },
   {
-    name: "Alex Kim",
-    role: "VP Engineering, DataFlow",
-    text: "Stability and performance far exceeded our expectations. The support team responds fast and has a near 100% resolution rate.",
-    avatar: "AK",
+    q: "What happens to my data if I leave?",
+    a: "Full export in open formats (OTLP, Parquet) at any time, on any plan, including free. Retention is your contract, not our leverage.",
   },
   {
-    name: "Maria Lopez",
-    role: "Lead Developer, Startup.io",
-    text: "As an early-stage team, we need rapid iteration. This tool lets us focus on the product rather than infrastructure.",
-    avatar: "ML",
+    q: "Do you charge per seat?",
+    a: "No. Observability read access should be universal — engineers, support, product. Pricing scales with ingested volume only.",
+  },
+  {
+    q: "Can Meridian run in our VPC?",
+    a: "The Meridian Line plan deploys single-tenant into your cloud account with the same feature set and our team operating it under your controls.",
   },
 ];
 
-type FaqItem = {
-  question: string;
-  answer: string;
-};
-
-const faqItems: FaqItem[] = [
-  {
-    question: "How does the free trial work?",
-    answer:
-      "You get 14 days of full access to all Pro features — no credit card required. At the end of the trial you can choose a plan or your account moves to a read-only state until you decide.",
-  },
-  {
-    question: "Can I change plans later?",
-    answer:
-      "Yes, absolutely. You can upgrade or downgrade your plan at any time from your account settings. Changes take effect immediately and we prorate the billing so you only pay for what you use.",
-  },
-  {
-    question: "What payment methods do you accept?",
-    answer:
-      "We accept all major credit and debit cards (Visa, Mastercard, Amex, Discover) as well as PayPal. Enterprise customers can also pay via bank transfer or invoice.",
-  },
-  {
-    question: "Is there a discount for larger teams?",
-    answer:
-      "Yes. Teams with 5 or more seats automatically receive a 15% discount on top of any existing plan pricing. Contact our sales team to set up a custom arrangement for very large organizations.",
-  },
-  {
-    question: "Can I cancel anytime?",
-    answer:
-      "Absolutely — no lock-in, no cancellation fees. Cancel from your account dashboard at any time. You retain access until the end of your current billing period and we never charge you again.",
-  },
+const FOOTER_COLS = [
+  { title: "Platform", links: ["Tracing", "Deploys", "Alerting", "Probes", "Query"] },
+  { title: "Company", links: ["About", "Customers", "Careers", "Press kit"] },
+  { title: "Resources", links: ["Docs", "API reference", "Status", "Changelog"] },
+  { title: "Legal", links: ["Privacy", "Terms", "DPA", "Subprocessors"] },
 ];
 
-type WaitlistState = "idle" | "loading" | "success";
-type BillingCycle = "monthly" | "yearly";
+/* ------------------------------------------------------------------ */
+/* Page                                                                */
+/* ------------------------------------------------------------------ */
 
 export default function SaasLandingTemplate() {
-  // Nav
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
-  // Hero waitlist form
-  const [waitlistEmail, setWaitlistEmail] = useState("");
-  const [waitlistError, setWaitlistError] = useState("");
-  const [waitlistState, setWaitlistState] = useState<WaitlistState>("idle");
-
-  // Pricing billing toggle
-  const [billingCycle, setBillingCycle] = useState<BillingCycle>("monthly");
-
-  // Testimonial carousel
-  const [activeTestimonial, setActiveTestimonial] = useState(0);
-
-  // FAQ accordion
-  const [openFaq, setOpenFaq] = useState<number | null>(null);
-
-  // Waitlist handlers
-  function handleWaitlistSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    if (!waitlistEmail.includes("@")) {
-      setWaitlistError("Please enter a valid email address.");
-      return;
-    }
-    setWaitlistError("");
-    setWaitlistState("loading");
-    setTimeout(() => {
-      setWaitlistState("success");
-    }, 1400);
-  }
-
-  // Testimonial carousel handlers
-  function prevTestimonial() {
-    setActiveTestimonial((prev) =>
-      prev === 0 ? testimonials.length - 1 : prev - 1
-    );
-  }
-
-  function nextTestimonial() {
-    setActiveTestimonial((prev) =>
-      prev === testimonials.length - 1 ? 0 : prev + 1
-    );
-  }
-
-  // FAQ toggle
-  function toggleFaq(index: number) {
-    setOpenFaq((prev) => (prev === index ? null : index));
-  }
-
-  // Price display helper
-  function getDisplayPrice(plan: Plan): string {
-    const price =
-      billingCycle === "monthly" ? plan.monthlyPrice : plan.yearlyPrice;
-    return `$${price}`;
-  }
-
-  function getOriginalPrice(plan: Plan): string {
-    return `$${plan.monthlyPrice}`;
-  }
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [yearly, setYearly] = useState(true);
+  const [openFaq, setOpenFaq] = useState<number | null>(0);
 
   return (
-    <div className="min-h-screen bg-white text-gray-900">
-      {/* Navigation */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-lg border-b border-gray-100">
-        <div className="max-w-6xl mx-auto px-4 md:px-8 py-4 flex items-center justify-between">
-          <Link
-            href="/templates/saas-landing"
-            className="text-xl font-bold text-gray-900"
-          >
-            <span className="text-blue-600">Saas</span>Kit
-          </Link>
-          <div className="hidden md:flex items-center gap-8">
-            <a
-              href="#features"
-              className="text-sm text-gray-600 hover:text-gray-900 transition-colors"
-            >
-              Features
+    <div
+      className={`${sans.className} min-h-screen bg-[#0B0B0E] text-[#EDEAE0] antialiased selection:bg-[#FF4D00] selection:text-[#0B0B0E]`}
+    >
+      <TemplateBackButton variant="dark" />
+      <style>{`
+        @keyframes mdn-rise { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
+        @keyframes mdn-marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+        @keyframes mdn-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
+        .mdn-rise { opacity: 0; animation: mdn-rise 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
+        .mdn-marquee { animation: mdn-marquee 28s linear infinite; }
+        .mdn-pulse { animation: mdn-pulse 2.4s ease-in-out infinite; }
+        @media (prefers-reduced-motion: reduce) {
+          .mdn-rise { animation: none; opacity: 1; }
+          .mdn-marquee { animation: none; }
+          .mdn-pulse { animation: none; }
+        }
+      `}</style>
+
+      {/* Grain + grid atmosphere */}
+      <div
+        aria-hidden
+        className="pointer-events-none fixed inset-0 z-0 opacity-[0.5]"
+        style={{
+          backgroundImage:
+            "linear-gradient(rgba(237,234,224,0.035) 1px, transparent 1px), linear-gradient(90deg, rgba(237,234,224,0.035) 1px, transparent 1px)",
+          backgroundSize: "72px 72px",
+          maskImage: "radial-gradient(ellipse 90% 60% at 50% 0%, black 30%, transparent 75%)",
+          WebkitMaskImage: "radial-gradient(ellipse 90% 60% at 50% 0%, black 30%, transparent 75%)",
+        }}
+      />
+
+      {/* ── Nav ─────────────────────────────────────────────────── */}
+      <header className="sticky top-0 z-40 border-b border-[#EDEAE0]/10 bg-[#0B0B0E]/85 backdrop-blur-md">
+        <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-5 md:px-8">
+          <a href="#" className="flex items-center gap-2.5">
+            <span className="grid h-7 w-7 place-items-center bg-[#FF4D00]">
+              <Waypoints className="h-4 w-4 text-[#0B0B0E]" strokeWidth={2.5} />
+            </span>
+            <span className={`${mono.className} text-sm font-medium tracking-[0.18em]`}>MERIDIAN</span>
+          </a>
+
+          <nav className="hidden items-center gap-8 md:flex">
+            {NAV_LINKS.map((link) => (
+              <a
+                key={link}
+                href="#"
+                className="text-sm text-[#EDEAE0]/60 transition-colors hover:text-[#EDEAE0]"
+              >
+                {link}
+              </a>
+            ))}
+          </nav>
+
+          <div className="hidden items-center gap-3 md:flex">
+            <a href="#" className="text-sm text-[#EDEAE0]/60 transition-colors hover:text-[#EDEAE0]">
+              Sign in
             </a>
             <a
               href="#pricing"
-              className="text-sm text-gray-600 hover:text-gray-900 transition-colors"
+              className="group inline-flex items-center gap-1.5 bg-[#EDEAE0] px-4 py-2 text-sm font-medium text-[#0B0B0E] transition-colors hover:bg-[#FF4D00]"
             >
-              Pricing
+              Get started
+              <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
             </a>
-            <a
-              href="#testimonials"
-              className="text-sm text-gray-600 hover:text-gray-900 transition-colors"
-            >
-              Testimonials
-            </a>
-            <a
-              href="#faq"
-              className="text-sm text-gray-600 hover:text-gray-900 transition-colors"
-            >
-              FAQ
-            </a>
-            <button className="px-5 py-2.5 bg-gradient-to-r from-blue-600 to-violet-600 text-white text-sm font-medium rounded-lg hover:opacity-90 transition-opacity shadow-sm">
-              Get Started
-            </button>
           </div>
+
           <button
-            className="md:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            type="button"
+            onClick={() => setMenuOpen(!menuOpen)}
             aria-label="Toggle menu"
+            className="md:hidden"
           >
-            {mobileMenuOpen ? (
-              <X className="w-5 h-5" />
-            ) : (
-              <Menu className="w-5 h-5" />
-            )}
+            {menuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </button>
         </div>
 
-        {/* Mobile menu overlay */}
-        {mobileMenuOpen && (
-          <div className="md:hidden border-t border-gray-100 bg-white px-4 py-4 space-y-1">
-            <a
-              href="#features"
-              className="block px-3 py-2 text-sm text-gray-600 rounded-lg hover:bg-gray-50 transition-colors"
-              onClick={() => setMobileMenuOpen(false)}
-            >
-              Features
+        {menuOpen && (
+          <nav className="border-t border-[#EDEAE0]/10 px-5 py-4 md:hidden">
+            {NAV_LINKS.map((link) => (
+              <a key={link} href="#" className="block py-2.5 text-sm text-[#EDEAE0]/70">
+                {link}
+              </a>
+            ))}
+            <a href="#pricing" className="mt-3 block bg-[#EDEAE0] px-4 py-2.5 text-center text-sm font-medium text-[#0B0B0E]">
+              Get started
             </a>
-            <a
-              href="#pricing"
-              className="block px-3 py-2 text-sm text-gray-600 rounded-lg hover:bg-gray-50 transition-colors"
-              onClick={() => setMobileMenuOpen(false)}
-            >
-              Pricing
-            </a>
-            <a
-              href="#testimonials"
-              className="block px-3 py-2 text-sm text-gray-600 rounded-lg hover:bg-gray-50 transition-colors"
-              onClick={() => setMobileMenuOpen(false)}
-            >
-              Testimonials
-            </a>
-            <a
-              href="#faq"
-              className="block px-3 py-2 text-sm text-gray-600 rounded-lg hover:bg-gray-50 transition-colors"
-              onClick={() => setMobileMenuOpen(false)}
-            >
-              FAQ
-            </a>
-            <div className="pt-2">
-              <button className="w-full px-5 py-2.5 bg-gradient-to-r from-blue-600 to-violet-600 text-white text-sm font-medium rounded-lg hover:opacity-90 transition-opacity">
-                Get Started
-              </button>
-            </div>
-          </div>
+          </nav>
         )}
-      </nav>
+      </header>
 
-      {/* Hero */}
-      <section className="pt-32 pb-20 px-4 md:px-8">
-        <div className="max-w-4xl mx-auto text-center">
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-50 border border-blue-100 rounded-full mb-8">
-            <span className="w-2 h-2 bg-blue-500 rounded-full animate-pulse" />
-            <span className="text-sm text-blue-700 font-medium">
-              v3.0 -- New Release
-            </span>
-          </div>
-          <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight leading-[1.1] mb-6">
-            Build faster,
-            <br />
-            <span className="bg-gradient-to-r from-blue-600 to-violet-600 bg-clip-text text-transparent">
-              ship smarter
-            </span>
-          </h1>
-          <p className="text-lg md:text-xl text-gray-500 max-w-2xl mx-auto mb-10">
-            The all-in-one platform for modern teams. Streamline your workflow,
-            automate deployments, and scale with confidence.
-          </p>
-
-          {/* Waitlist form */}
-          <div className="max-w-md mx-auto mb-6">
-            {waitlistState === "success" ? (
-              <div className="flex items-center justify-center gap-3 py-4 px-6 bg-emerald-50 border border-emerald-200 rounded-2xl">
-                <CheckCircle className="w-5 h-5 text-emerald-500 shrink-0" />
-                <p className="text-sm font-medium text-emerald-700">
-                  You are on the list. We will be in touch soon.
-                </p>
-              </div>
-            ) : (
-              <form
-                onSubmit={handleWaitlistSubmit}
-                noValidate
-                className="flex flex-col sm:flex-row gap-3"
-              >
-                <div className="flex-1">
-                  <input
-                    type="email"
-                    value={waitlistEmail}
-                    onChange={(e) => {
-                      setWaitlistEmail(e.target.value);
-                      if (waitlistError) setWaitlistError("");
-                    }}
-                    placeholder="Enter your work email"
-                    disabled={waitlistState === "loading"}
-                    className={`w-full px-4 py-3 text-sm border rounded-xl outline-none transition-all ${
-                      waitlistError
-                        ? "border-red-400 focus:ring-2 focus:ring-red-200"
-                        : "border-gray-200 focus:border-blue-400 focus:ring-2 focus:ring-blue-100"
-                    } disabled:opacity-60`}
-                  />
-                  {waitlistError && (
-                    <p className="mt-1.5 text-xs text-red-500 text-left">
-                      {waitlistError}
-                    </p>
-                  )}
-                </div>
-                <button
-                  type="submit"
-                  disabled={waitlistState === "loading"}
-                  className="px-6 py-3 bg-gradient-to-r from-blue-600 to-violet-600 text-white text-sm font-semibold rounded-xl hover:opacity-90 transition-opacity shadow-lg shadow-blue-600/25 disabled:opacity-70 flex items-center justify-center gap-2 shrink-0"
-                >
-                  {waitlistState === "loading" ? (
-                    <>
-                      <Loader2 className="w-4 h-4 animate-spin" />
-                      Joining...
-                    </>
-                  ) : (
-                    <>
-                      Join Waitlist
-                      <ArrowRight className="w-4 h-4" />
-                    </>
-                  )}
-                </button>
-              </form>
-            )}
-          </div>
-
-          <div className="flex flex-col sm:flex-row justify-center gap-4">
-            <button className="px-8 py-4 bg-gray-900 text-white font-semibold rounded-xl hover:bg-gray-800 transition-colors shadow-lg">
-              Start Free Trial
-              <ArrowRight className="inline w-4 h-4 ml-2" />
-            </button>
-            <button className="px-8 py-4 border border-gray-200 text-gray-700 font-semibold rounded-xl hover:border-gray-300 hover:bg-gray-50 transition-colors">
-              Book a Demo
-            </button>
-          </div>
-          <p className="mt-4 text-sm text-gray-400">
-            No credit card required. 14-day free trial included.
-          </p>
-        </div>
-      </section>
-
-      {/* Logos */}
-      <section className="py-12 border-y border-gray-100">
-        <div className="max-w-6xl mx-auto px-4 md:px-8">
-          <p className="text-center text-sm text-gray-400 mb-8">
-            Trusted by 1,000+ companies worldwide
-          </p>
-          <div className="flex flex-wrap justify-center items-center gap-x-12 gap-y-6">
-            {["TechCorp", "DataFlow", "CloudBase", "ScaleUp", "DevOps.io"].map(
-              (name) => (
-                <span
-                  key={name}
-                  className="text-lg font-bold text-gray-300 tracking-tight"
-                >
-                  {name}
-                </span>
-              )
-            )}
-          </div>
-        </div>
-      </section>
-
-      {/* Features */}
-      <section id="features" className="py-20 px-4 md:px-8">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16">
-            <p className="text-sm font-semibold text-blue-600 uppercase tracking-wider mb-3">
-              Features
+      {/* ── Hero ────────────────────────────────────────────────── */}
+      <section className="relative z-10 border-b border-[#EDEAE0]/10">
+        <div className="mx-auto grid max-w-6xl gap-14 px-5 pb-20 pt-16 md:grid-cols-[1.05fr_0.95fr] md:items-center md:px-8 md:pb-28 md:pt-24">
+          <div>
+            <p className={`${mono.className} mdn-rise mb-6 flex items-center gap-2.5 text-xs tracking-[0.22em] text-[#FF4D00]`}>
+              <span className="mdn-pulse inline-block h-1.5 w-1.5 rounded-full bg-[#FF4D00]" />
+              OBSERVABILITY, INSTRUMENT-GRADE
             </p>
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              Everything you need to scale
-            </h2>
-            <p className="text-gray-500 max-w-xl mx-auto">
-              Powerful features designed for modern development teams who move fast.
+            <h1
+              className={`${serif.className} mdn-rise text-[2.9rem] leading-[1.02] md:text-[4.4rem]`}
+              style={{ animationDelay: "80ms" }}
+            >
+              Your production,
+              <br />
+              <em className="text-[#FF4D00]">measured</em> like it
+              <br />
+              matters.
+            </h1>
+            <p
+              className="mdn-rise mt-7 max-w-md text-base leading-relaxed text-[#EDEAE0]/60 md:text-lg"
+              style={{ animationDelay: "160ms" }}
+            >
+              Meridian traces every request, audits every deploy, and rolls back the bad ones
+              before your customers ever feel them.
             </p>
-          </div>
-          <div className="grid md:grid-cols-2 gap-8">
-            {features.map((f) => (
-              <div
-                key={f.title}
-                className="p-8 border border-gray-100 rounded-2xl hover:border-gray-200 hover:shadow-lg transition-all group"
+            <div className="mdn-rise mt-9 flex flex-wrap items-center gap-4" style={{ animationDelay: "240ms" }}>
+              <a
+                href="#pricing"
+                className="group inline-flex items-center gap-2 bg-[#FF4D00] px-6 py-3.5 text-sm font-semibold text-[#0B0B0E] transition-transform hover:-translate-y-0.5"
               >
-                <div
-                  className={`w-12 h-12 ${f.color} rounded-xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform`}
-                >
-                  <f.icon className="w-6 h-6 text-white" />
-                </div>
-                <h3 className="text-xl font-semibold mb-2">{f.title}</h3>
-                <p className="text-gray-500 leading-relaxed">{f.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Pricing */}
-      <section id="pricing" className="py-20 px-4 md:px-8 bg-gray-50">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-10">
-            <p className="text-sm font-semibold text-blue-600 uppercase tracking-wider mb-3">
-              Pricing
-            </p>
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              Simple, transparent pricing
-            </h2>
-            <p className="text-gray-500 mb-8">
-              No hidden fees. Cancel anytime.
-            </p>
-
-            {/* Billing cycle toggle */}
-            <div className="inline-flex items-center bg-white border border-gray-200 rounded-xl p-1 shadow-sm">
-              <button
-                onClick={() => setBillingCycle("monthly")}
-                className={`px-5 py-2 text-sm font-medium rounded-lg transition-all ${
-                  billingCycle === "monthly"
-                    ? "bg-gray-900 text-white shadow-sm"
-                    : "text-gray-500 hover:text-gray-700"
-                }`}
+                Start measuring
+                <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+              </a>
+              <a
+                href="#platform"
+                className={`${mono.className} inline-flex items-center gap-2 border-b border-[#EDEAE0]/30 pb-1 text-sm text-[#EDEAE0]/70 transition-colors hover:border-[#FF4D00] hover:text-[#EDEAE0]`}
               >
-                Monthly
-              </button>
-              <button
-                onClick={() => setBillingCycle("yearly")}
-                className={`px-5 py-2 text-sm font-medium rounded-lg transition-all flex items-center gap-2 ${
-                  billingCycle === "yearly"
-                    ? "bg-gray-900 text-white shadow-sm"
-                    : "text-gray-500 hover:text-gray-700"
-                }`}
-              >
-                Yearly
-                <span
-                  className={`text-xs px-2 py-0.5 rounded-full font-semibold ${
-                    billingCycle === "yearly"
-                      ? "bg-emerald-500 text-white"
-                      : "bg-emerald-100 text-emerald-700"
-                  }`}
-                >
-                  20% off
-                </span>
-              </button>
+                Read the tour
+                <ArrowUpRight className="h-3.5 w-3.5" />
+              </a>
             </div>
+            <p className={`${mono.className} mdn-rise mt-8 text-[11px] tracking-wide text-[#EDEAE0]/35`} style={{ animationDelay: "320ms" }}>
+              FREE FOR 3 SERVICES · NO CARD · OTLP-NATIVE
+            </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-            {plans.map((plan) => (
-              <div
-                key={plan.name}
-                className={`p-8 rounded-2xl relative ${
-                  plan.popular
-                    ? "bg-gradient-to-b from-blue-600 to-violet-600 text-white ring-4 ring-blue-600/20 scale-105 shadow-xl"
-                    : "bg-white border border-gray-200 shadow-sm"
-                }`}
-              >
-                {plan.popular && (
-                  <span className="inline-block text-xs font-semibold bg-white/20 px-3 py-1 rounded-full mb-4">
-                    Most Popular
-                  </span>
-                )}
-                <h3 className="text-xl font-bold mb-1">{plan.name}</h3>
-                <p
-                  className={`text-sm mb-6 ${
-                    plan.popular ? "text-blue-100" : "text-gray-500"
-                  }`}
-                >
-                  {plan.desc}
-                </p>
-
-                {/* Price display */}
-                <div className="mb-6">
-                  {billingCycle === "yearly" ? (
-                    <div className="flex items-end gap-2">
-                      <span className="text-4xl font-bold">
-                        {getDisplayPrice(plan)}
-                      </span>
-                      <div className="pb-1">
-                        <span
-                          className={`text-lg font-normal ${
-                            plan.popular ? "text-blue-100" : "text-gray-400"
-                          }`}
-                        >
-                          /mo
-                        </span>
-                        <div
-                          className={`text-sm line-through ${
-                            plan.popular ? "text-blue-200" : "text-gray-400"
-                          }`}
-                        >
-                          {getOriginalPrice(plan)}/mo
-                        </div>
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="text-4xl font-bold">
-                      {getDisplayPrice(plan)}
-                      <span
-                        className={`text-lg font-normal ${
-                          plan.popular ? "text-blue-100" : "text-gray-400"
-                        }`}
-                      >
-                        /mo
-                      </span>
-                    </div>
-                  )}
-                  {billingCycle === "yearly" && (
-                    <p
-                      className={`text-xs mt-1 ${
-                        plan.popular ? "text-blue-100" : "text-emerald-600"
-                      }`}
-                    >
-                      Billed yearly — save ${(plan.monthlyPrice - plan.yearlyPrice) * 12}/yr
-                    </p>
-                  )}
-                </div>
-
-                <ul className="space-y-3 mb-8">
-                  {plan.features.map((feat) => (
-                    <li key={feat} className="flex items-center gap-2 text-sm">
-                      <Check
-                        className={`w-4 h-4 shrink-0 ${
-                          plan.popular ? "text-blue-200" : "text-blue-600"
-                        }`}
-                      />
-                      {feat}
-                    </li>
-                  ))}
-                </ul>
-                <button
-                  className={`w-full py-3 rounded-xl font-semibold text-sm transition-all ${
-                    plan.popular
-                      ? "bg-white text-blue-600 hover:bg-blue-50 shadow-sm"
-                      : "bg-gradient-to-r from-blue-600 to-violet-600 text-white hover:opacity-90 shadow-sm"
-                  }`}
-                >
-                  Get Started
-                </button>
+          {/* Status panel — pure CSS product art */}
+          <div className="mdn-rise relative" style={{ animationDelay: "200ms" }}>
+            <div aria-hidden className="absolute -inset-6 bg-[#FF4D00]/10 blur-3xl" />
+            <div className="relative border border-[#EDEAE0]/15 bg-[#101014] shadow-[0_40px_80px_-40px_rgba(0,0,0,0.9)]">
+              {/* Panel header */}
+              <div className="flex items-center justify-between border-b border-[#EDEAE0]/10 px-4 py-3">
+                <span className={`${mono.className} text-[11px] tracking-[0.18em] text-[#EDEAE0]/50`}>
+                  PROD-EU-1 · LIVE
+                </span>
+                <span className="flex items-center gap-1.5">
+                  <span className="mdn-pulse h-1.5 w-1.5 rounded-full bg-[#4ADE80]" />
+                  <span className={`${mono.className} text-[11px] text-[#4ADE80]`}>HEALTHY</span>
+                </span>
               </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Testimonials Carousel */}
-      <section id="testimonials" className="py-20 px-4 md:px-8">
-        <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-16">
-            <p className="text-sm font-semibold text-blue-600 uppercase tracking-wider mb-3">
-              Testimonials
-            </p>
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              Loved by teams everywhere
-            </h2>
-            <p className="text-gray-500">
-              See what engineering leaders say about SaasKit.
-            </p>
-          </div>
-
-          {/* Carousel */}
-          <div className="relative">
-            <div className="overflow-hidden rounded-2xl">
-              <div
-                className="flex transition-transform duration-300 ease-in-out"
-                style={{
-                  transform: `translateX(-${activeTestimonial * 100}%)`,
-                }}
-              >
-                {testimonials.map((t, index) => (
+              {/* Sparkline */}
+              <div className="border-b border-[#EDEAE0]/10 px-4 py-4">
+                <div className="mb-2 flex items-baseline justify-between">
+                  <span className={`${mono.className} text-[11px] text-[#EDEAE0]/40`}>p99 latency</span>
+                  <span className={`${mono.className} text-lg text-[#EDEAE0]`}>
+                    138<span className="text-[#EDEAE0]/40">ms</span>
+                  </span>
+                </div>
+                <div className="flex h-14 items-end gap-1">
+                  {SPARK.map((h, i) => (
+                    <div
+                      key={i}
+                      className="flex-1"
+                      style={{
+                        height: `${h}%`,
+                        backgroundColor: i === 6 ? "#FF4D00" : "rgba(237,234,224,0.22)",
+                      }}
+                    />
+                  ))}
+                </div>
+              </div>
+              {/* Log stream */}
+              <div className="px-4 py-3">
+                {LOG_LINES.map((line, i) => (
                   <div
-                    key={t.name}
-                    className="min-w-full px-2"
-                    aria-hidden={index !== activeTestimonial}
+                    key={i}
+                    className={`${mono.className} mdn-rise flex gap-3 py-1.5 text-[11.5px] leading-snug`}
+                    style={{ animationDelay: `${400 + i * 120}ms` }}
                   >
-                    <div className="p-10 bg-gray-50 border border-gray-100 rounded-2xl text-center">
-                      {/* Avatar */}
-                      <div className="w-14 h-14 rounded-full bg-gradient-to-br from-blue-500 to-violet-500 flex items-center justify-center text-white font-bold text-lg mx-auto mb-6">
-                        {t.avatar}
-                      </div>
-                      {/* Stars */}
-                      <div className="flex justify-center gap-1 mb-6">
-                        {Array.from({ length: 5 }).map((_, i) => (
-                          <svg
-                            key={i}
-                            className="w-5 h-5 text-amber-400 fill-current"
-                            viewBox="0 0 20 20"
-                          >
-                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                          </svg>
-                        ))}
-                      </div>
-                      <p className="text-gray-700 text-lg leading-relaxed mb-8 max-w-2xl mx-auto">
-                        &ldquo;{t.text}&rdquo;
-                      </p>
-                      <div>
-                        <div className="font-semibold text-gray-900">
-                          {t.name}
-                        </div>
-                        <div className="text-sm text-gray-400">{t.role}</div>
-                      </div>
-                    </div>
+                    <span className="shrink-0 text-[#EDEAE0]/30">{line.time}</span>
+                    <span
+                      className={`shrink-0 ${line.level === "warn" ? "text-[#FF4D00]" : "text-[#4ADE80]"}`}
+                    >
+                      {line.level === "warn" ? "WARN" : "  OK"}
+                    </span>
+                    <span className="text-[#EDEAE0]/70">{line.text}</span>
                   </div>
                 ))}
               </div>
+              {/* Panel footer */}
+              <div className="flex items-center justify-between border-t border-[#EDEAE0]/10 px-4 py-2.5">
+                <span className={`${mono.className} text-[10px] tracking-[0.16em] text-[#EDEAE0]/30`}>
+                  41 REGIONS REPORTING
+                </span>
+                <Activity className="h-3.5 w-3.5 text-[#EDEAE0]/30" />
+              </div>
             </div>
+          </div>
+        </div>
+      </section>
 
-            {/* Prev / Next arrows */}
-            <button
-              onClick={prevTestimonial}
-              className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 md:-translate-x-6 w-10 h-10 rounded-full bg-white border border-gray-200 shadow-md flex items-center justify-center hover:bg-gray-50 transition-colors"
-              aria-label="Previous testimonial"
+      {/* ── Logo marquee ────────────────────────────────────────── */}
+      <section className="relative z-10 overflow-hidden border-b border-[#EDEAE0]/10 py-7">
+        <div className="mdn-marquee flex w-max items-center gap-16 pr-16">
+          {[...LOGOS, ...LOGOS].map((logo, i) => (
+            <span
+              key={i}
+              className={`${serif.className} whitespace-nowrap text-xl italic text-[#EDEAE0]/30`}
             >
-              <ChevronLeft className="w-5 h-5 text-gray-600" />
-            </button>
-            <button
-              onClick={nextTestimonial}
-              className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 md:translate-x-6 w-10 h-10 rounded-full bg-white border border-gray-200 shadow-md flex items-center justify-center hover:bg-gray-50 transition-colors"
-              aria-label="Next testimonial"
-            >
-              <ChevronRight className="w-5 h-5 text-gray-600" />
-            </button>
+              {logo}
+            </span>
+          ))}
+        </div>
+      </section>
+
+      {/* ── Features bento ──────────────────────────────────────── */}
+      <section id="platform" className="relative z-10 border-b border-[#EDEAE0]/10">
+        <div className="mx-auto max-w-6xl px-5 py-20 md:px-8 md:py-28">
+          <div className="mb-14 flex flex-wrap items-end justify-between gap-6">
+            <div>
+              <p className={`${mono.className} mb-4 text-xs tracking-[0.22em] text-[#FF4D00]`}>THE INSTRUMENTS</p>
+              <h2 className={`${serif.className} max-w-xl text-4xl leading-[1.05] md:text-5xl`}>
+                Six instruments. <em>One</em> timeline.
+              </h2>
+            </div>
+            <p className="max-w-sm text-sm leading-relaxed text-[#EDEAE0]/50">
+              Traces, deploys, alerts, probes, queries, and audit — reconciled to a single clock so
+              cause and effect stop playing hide and seek.
+            </p>
           </div>
 
-          {/* Dot indicators */}
-          <div className="flex justify-center gap-2 mt-8">
-            {testimonials.map((_, index) => (
-              <button
-                key={index}
-                onClick={() => setActiveTestimonial(index)}
-                className={`transition-all rounded-full ${
-                  index === activeTestimonial
-                    ? "w-6 h-2.5 bg-blue-600"
-                    : "w-2.5 h-2.5 bg-gray-300 hover:bg-gray-400"
-                }`}
-                aria-label={`Go to testimonial ${index + 1}`}
-              />
+          <div className="grid gap-px bg-[#EDEAE0]/10 sm:grid-cols-2 lg:grid-cols-3">
+            {FEATURES.map((feature) => (
+              <article
+                key={feature.tag}
+                className="group relative bg-[#0B0B0E] p-7 transition-colors hover:bg-[#101014]"
+              >
+                <div className="mb-6 flex items-center justify-between">
+                  <feature.icon className="h-5 w-5 text-[#EDEAE0]/70 transition-colors group-hover:text-[#FF4D00]" strokeWidth={1.5} />
+                  <span className={`${mono.className} text-[10px] tracking-[0.2em] text-[#EDEAE0]/25`}>
+                    {feature.tag}
+                  </span>
+                </div>
+                <h3 className="mb-2.5 text-lg font-medium">{feature.title}</h3>
+                <p className="text-sm leading-relaxed text-[#EDEAE0]/50">{feature.body}</p>
+              </article>
             ))}
           </div>
         </div>
       </section>
 
-      {/* FAQ */}
-      <section id="faq" className="py-20 px-4 md:px-8 bg-gray-50">
-        <div className="max-w-3xl mx-auto">
-          <div className="text-center mb-16">
-            <p className="text-sm font-semibold text-blue-600 uppercase tracking-wider mb-3">
-              FAQ
-            </p>
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              Frequently asked questions
-            </h2>
-            <p className="text-gray-500">
-              Everything you need to know before getting started.
-            </p>
+      {/* ── Metrics band ────────────────────────────────────────── */}
+      <section className="relative z-10 border-b border-[#EDEAE0]/10 bg-[#EDEAE0] text-[#0B0B0E]">
+        <div className="mx-auto grid max-w-6xl gap-px overflow-hidden px-5 py-16 sm:grid-cols-2 md:px-8 md:py-20 lg:grid-cols-4">
+          {METRICS.map((metric) => (
+            <div key={metric.value} className="border-l border-[#0B0B0E]/15 py-2 pl-5 pr-4">
+              <p className={`${mono.className} text-3xl font-medium tracking-tight md:text-4xl`}>{metric.value}</p>
+              <p className="mt-2.5 text-[13px] leading-snug text-[#0B0B0E]/60">{metric.label}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ── Testimonials ────────────────────────────────────────── */}
+      <section className="relative z-10 border-b border-[#EDEAE0]/10">
+        <div className="mx-auto max-w-6xl px-5 py-20 md:px-8 md:py-28">
+          <p className={`${mono.className} mb-14 text-xs tracking-[0.22em] text-[#FF4D00]`}>FIELD REPORTS</p>
+          <div className="grid gap-12 md:grid-cols-3 md:gap-8">
+            {TESTIMONIALS.map((testimonial) => (
+              <figure key={testimonial.name} className="flex flex-col justify-between">
+                <blockquote className={`${serif.className} text-xl leading-[1.35] text-[#EDEAE0]/90 md:text-[1.35rem]`}>
+                  &ldquo;{testimonial.quote}&rdquo;
+                </blockquote>
+                <figcaption className="mt-7 border-t border-[#EDEAE0]/15 pt-4">
+                  <p className="text-sm font-medium">{testimonial.name}</p>
+                  <p className={`${mono.className} mt-1 text-[11px] tracking-wide text-[#EDEAE0]/40`}>
+                    {testimonial.role}
+                  </p>
+                </figcaption>
+              </figure>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Pricing ─────────────────────────────────────────────── */}
+      <section id="pricing" className="relative z-10 border-b border-[#EDEAE0]/10">
+        <div className="mx-auto max-w-6xl px-5 py-20 md:px-8 md:py-28">
+          <div className="mb-12 flex flex-wrap items-end justify-between gap-6">
+            <div>
+              <p className={`${mono.className} mb-4 text-xs tracking-[0.22em] text-[#FF4D00]`}>PRICING</p>
+              <h2 className={`${serif.className} text-4xl leading-[1.05] md:text-5xl`}>
+                Pay for volume. <em>Never</em> for eyes.
+              </h2>
+            </div>
+            <div className={`${mono.className} flex items-center gap-3 text-xs`}>
+              <span className={yearly ? "text-[#EDEAE0]/40" : "text-[#EDEAE0]"}>MONTHLY</span>
+              <button
+                type="button"
+                role="switch"
+                aria-checked={yearly}
+                onClick={() => setYearly(!yearly)}
+                className="relative h-6 w-11 border border-[#EDEAE0]/30 transition-colors"
+              >
+                <span
+                  className={`absolute top-1/2 h-3.5 w-3.5 -translate-y-1/2 bg-[#FF4D00] transition-all ${
+                    yearly ? "left-[calc(100%-1.2rem)]" : "left-1"
+                  }`}
+                />
+              </button>
+              <span className={yearly ? "text-[#EDEAE0]" : "text-[#EDEAE0]/40"}>
+                YEARLY <span className="text-[#FF4D00]">-17%</span>
+              </span>
+            </div>
           </div>
 
-          <div className="space-y-3">
-            {faqItems.map((item, index) => (
-              <div
-                key={index}
-                className="bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-sm"
+          <div className="grid gap-6 lg:grid-cols-3">
+            {PLANS.map((plan) => (
+              <article
+                key={plan.name}
+                className={`flex flex-col border p-8 ${
+                  plan.featured
+                    ? "border-[#FF4D00] bg-[#101014] shadow-[0_30px_60px_-30px_rgba(255,77,0,0.35)]"
+                    : "border-[#EDEAE0]/15"
+                }`}
               >
-                <button
-                  onClick={() => toggleFaq(index)}
-                  className="w-full flex items-center justify-between px-6 py-5 text-left hover:bg-gray-50 transition-colors"
-                  aria-expanded={openFaq === index}
+                <div className="mb-6 flex items-center justify-between">
+                  <h3 className={`${mono.className} text-sm tracking-[0.18em]`}>{plan.name.toUpperCase()}</h3>
+                  {plan.featured && (
+                    <span className={`${mono.className} bg-[#FF4D00] px-2 py-0.5 text-[10px] font-medium text-[#0B0B0E]`}>
+                      MOST TEAMS
+                    </span>
+                  )}
+                </div>
+                <p className="mb-6 min-h-10 text-sm leading-relaxed text-[#EDEAE0]/50">{plan.blurb}</p>
+                <p className="mb-8">
+                  {plan.monthly === null ? (
+                    <span className={`${serif.className} text-4xl italic`}>Custom</span>
+                  ) : (
+                    <>
+                      <span className={`${mono.className} text-5xl font-medium tracking-tight`}>
+                        ${yearly ? plan.yearly : plan.monthly}
+                      </span>
+                      <span className={`${mono.className} text-sm text-[#EDEAE0]/40`}> /mo</span>
+                    </>
+                  )}
+                </p>
+                <ul className="mb-10 space-y-3">
+                  {plan.features.map((feature) => (
+                    <li key={feature} className="flex items-start gap-2.5 text-sm text-[#EDEAE0]/75">
+                      <Check className="mt-0.5 h-4 w-4 shrink-0 text-[#FF4D00]" strokeWidth={2.5} />
+                      {feature}
+                    </li>
+                  ))}
+                </ul>
+                <a
+                  href="#"
+                  className={`mt-auto inline-flex items-center justify-center gap-2 px-5 py-3 text-sm font-semibold transition-colors ${
+                    plan.featured
+                      ? "bg-[#FF4D00] text-[#0B0B0E] hover:bg-[#EDEAE0]"
+                      : "border border-[#EDEAE0]/25 text-[#EDEAE0] hover:border-[#FF4D00] hover:text-[#FF4D00]"
+                  }`}
                 >
-                  <span className="font-semibold text-gray-900 pr-4">
-                    {item.question}
-                  </span>
+                  {plan.cta}
+                </a>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── FAQ ─────────────────────────────────────────────────── */}
+      <section className="relative z-10 border-b border-[#EDEAE0]/10">
+        <div className="mx-auto grid max-w-6xl gap-12 px-5 py-20 md:grid-cols-[0.8fr_1.2fr] md:px-8 md:py-28">
+          <div>
+            <p className={`${mono.className} mb-4 text-xs tracking-[0.22em] text-[#FF4D00]`}>QUESTIONS</p>
+            <h2 className={`${serif.className} text-4xl leading-[1.05] md:text-5xl`}>
+              Asked, <em>answered.</em>
+            </h2>
+            <p className="mt-5 max-w-xs text-sm leading-relaxed text-[#EDEAE0]/50">
+              Anything else — engineers answer the shared inbox within a business day.
+            </p>
+          </div>
+          <div className="divide-y divide-[#EDEAE0]/10 border-y border-[#EDEAE0]/10">
+            {FAQS.map((faq, index) => (
+              <div key={faq.q}>
+                <button
+                  type="button"
+                  onClick={() => setOpenFaq(openFaq === index ? null : index)}
+                  aria-expanded={openFaq === index}
+                  className="flex w-full items-center justify-between gap-4 py-5 text-left"
+                >
+                  <span className="text-base font-medium">{faq.q}</span>
                   <ChevronDown
-                    className={`w-5 h-5 text-gray-400 shrink-0 transition-transform duration-200 ${
-                      openFaq === index ? "rotate-180" : ""
+                    className={`h-4 w-4 shrink-0 text-[#EDEAE0]/40 transition-transform ${
+                      openFaq === index ? "rotate-180 text-[#FF4D00]" : ""
                     }`}
                   />
                 </button>
-                <div
-                  className={`overflow-hidden transition-all duration-200 ease-in-out ${
-                    openFaq === index ? "max-h-48" : "max-h-0"
-                  }`}
-                >
-                  <p className="px-6 pb-5 text-sm text-gray-600 leading-relaxed">
-                    {item.answer}
-                  </p>
-                </div>
+                {openFaq === index && (
+                  <p className="pb-6 pr-8 text-sm leading-relaxed text-[#EDEAE0]/55">{faq.a}</p>
+                )}
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* CTA */}
-      <section className="py-20 px-4 md:px-8 bg-gradient-to-r from-blue-600 to-violet-600">
-        <div className="max-w-3xl mx-auto text-center">
-          <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
-            Ready to get started?
+      {/* ── CTA ─────────────────────────────────────────────────── */}
+      <section className="relative z-10 overflow-hidden border-b border-[#EDEAE0]/10">
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0"
+          style={{
+            backgroundImage: "radial-gradient(ellipse 60% 80% at 50% 120%, rgba(255,77,0,0.22), transparent 65%)",
+          }}
+        />
+        <div className="relative mx-auto max-w-6xl px-5 py-24 text-center md:px-8 md:py-32">
+          <p className={`${mono.className} mb-6 text-xs tracking-[0.22em] text-[#FF4D00]`}>BEGIN CALIBRATION</p>
+          <h2 className={`${serif.className} mx-auto max-w-2xl text-4xl leading-[1.05] md:text-6xl`}>
+            Stop guessing. <em className="text-[#FF4D00]">Start measuring.</em>
           </h2>
-          <p className="text-blue-100 mb-8 text-lg">
-            Join thousands of teams already using SaasKit to ship faster.
-          </p>
-          <div className="flex flex-col sm:flex-row justify-center gap-4">
-            <button className="px-8 py-4 bg-white text-blue-600 font-bold rounded-xl hover:bg-blue-50 transition-colors shadow-lg">
-              Start Your Free Trial
-              <ArrowRight className="inline w-4 h-4 ml-2" />
-            </button>
-            <button className="px-8 py-4 border border-white/30 text-white font-semibold rounded-xl hover:bg-white/10 transition-colors">
-              Talk to Sales
-            </button>
+          <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
+            <a
+              href="#"
+              className="group inline-flex items-center gap-2 bg-[#EDEAE0] px-7 py-4 text-sm font-semibold text-[#0B0B0E] transition-colors hover:bg-[#FF4D00]"
+            >
+              Create free account
+              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+            </a>
+            <span className={`${mono.className} text-[11px] tracking-wide text-[#EDEAE0]/35`}>
+              10 MIN TO FIRST TRACE
+            </span>
           </div>
-          <p className="mt-4 text-sm text-blue-200">
-            14-day free trial. No credit card required. Cancel anytime.
-          </p>
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="py-12 px-4 md:px-8 border-t border-gray-100">
-        <div className="max-w-6xl mx-auto">
-          <div className="flex flex-col md:flex-row items-start justify-between gap-8 mb-8">
+      {/* ── Footer ──────────────────────────────────────────────── */}
+      <footer className="relative z-10">
+        <div className="mx-auto max-w-6xl px-5 py-16 md:px-8">
+          <div className="grid gap-10 md:grid-cols-[1.2fr_repeat(4,0.7fr)]">
             <div>
-              <div className="text-xl font-bold text-gray-900 mb-2">
-                <span className="text-blue-600">Saas</span>Kit
-              </div>
-              <p className="text-sm text-gray-400 max-w-xs">
-                The all-in-one platform for modern teams. Ship faster with confidence.
+              <a href="#" className="flex items-center gap-2.5">
+                <span className="grid h-7 w-7 place-items-center bg-[#FF4D00]">
+                  <Waypoints className="h-4 w-4 text-[#0B0B0E]" strokeWidth={2.5} />
+                </span>
+                <span className={`${mono.className} text-sm font-medium tracking-[0.18em]`}>MERIDIAN</span>
+              </a>
+              <p className="mt-5 max-w-[16rem] text-sm leading-relaxed text-[#EDEAE0]/40">
+                Instrument-grade observability for teams who treat production like a promise.
               </p>
             </div>
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-8 text-sm">
-              <div>
-                <p className="font-semibold text-gray-700 mb-3">Product</p>
-                <div className="space-y-2">
-                  <a href="#features" className="block text-gray-400 hover:text-gray-600 transition-colors">Features</a>
-                  <a href="#pricing" className="block text-gray-400 hover:text-gray-600 transition-colors">Pricing</a>
-                  <a href="#faq" className="block text-gray-400 hover:text-gray-600 transition-colors">FAQ</a>
-                </div>
-              </div>
-              <div>
-                <p className="font-semibold text-gray-700 mb-3">Company</p>
-                <div className="space-y-2">
-                  <a href="#" className="block text-gray-400 hover:text-gray-600 transition-colors">About</a>
-                  <a href="#" className="block text-gray-400 hover:text-gray-600 transition-colors">Blog</a>
-                  <a href="#" className="block text-gray-400 hover:text-gray-600 transition-colors">Careers</a>
-                </div>
-              </div>
-              <div>
-                <p className="font-semibold text-gray-700 mb-3">Connect</p>
-                <div className="space-y-2">
-                  <a href="#" className="block text-gray-400 hover:text-gray-600 transition-colors">Twitter</a>
-                  <a href="#" className="block text-gray-400 hover:text-gray-600 transition-colors">GitHub</a>
-                  <a href="#" className="block text-gray-400 hover:text-gray-600 transition-colors">Discord</a>
-                </div>
-              </div>
-            </div>
+            {FOOTER_COLS.map((col) => (
+              <nav key={col.title}>
+                <p className={`${mono.className} mb-4 text-[11px] tracking-[0.2em] text-[#EDEAE0]/35`}>
+                  {col.title.toUpperCase()}
+                </p>
+                {col.links.map((link) => (
+                  <a
+                    key={link}
+                    href="#"
+                    className="block py-1.5 text-sm text-[#EDEAE0]/55 transition-colors hover:text-[#EDEAE0]"
+                  >
+                    {link}
+                  </a>
+                ))}
+              </nav>
+            ))}
           </div>
-          <div className="border-t border-gray-100 pt-6 flex flex-col md:flex-row items-center justify-between gap-4">
-            <p className="text-sm text-gray-400">
-              Copyright 2025 SaasKit. Part of{" "}
-              <Link
-                href="/templates"
-                className="text-gray-600 hover:text-blue-600 transition-colors"
-              >
-                StyleKit Templates
-              </Link>
+          <div className="mt-14 flex flex-wrap items-center justify-between gap-4 border-t border-[#EDEAE0]/10 pt-6">
+            <p className={`${mono.className} text-[11px] text-[#EDEAE0]/30`}>
+              © 2026 MERIDIAN SYSTEMS, INC.
             </p>
-            <p className="text-sm text-gray-400">
-              Privacy Policy &middot; Terms of Service
+            <p className={`${mono.className} text-[11px] tracking-[0.16em] text-[#EDEAE0]/30`}>
+              ALL SYSTEMS NOMINAL
             </p>
           </div>
         </div>
       </footer>
-
-      <TemplateBackButton variant="modern" />
     </div>
   );
 }
