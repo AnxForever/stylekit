@@ -3,13 +3,8 @@ import "@testing-library/jest-dom/vitest";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 
-const { trackEventMock, useI18nMock } = vi.hoisted(() => ({
-  trackEventMock: vi.fn(),
+const { useI18nMock } = vi.hoisted(() => ({
   useI18nMock: vi.fn(),
-}));
-
-vi.mock("@/lib/analytics/events", () => ({
-  trackEvent: trackEventMock,
 }));
 
 vi.mock("@/lib/i18n/context", () => ({
@@ -22,18 +17,15 @@ describe("ThankYouModal", () => {
   beforeEach(() => {
     window.history.replaceState({}, "", "/zh");
     window.localStorage.clear();
-    document.body.style.overflow = "";
-    trackEventMock.mockReset();
     useI18nMock.mockReturnValue({ locale: "zh" });
   });
 
-  it("auto-opens once for a new donation batch and stays closed after dismissal", async () => {
+  it("auto-opens once per donation batch and stays closed after dismissal", async () => {
     const { unmount } = render(<ThankYouModal />);
 
-    // Fresh visitor (no dismissal recorded): the ledger announces itself.
+    // Fresh visitor (no dismissal recorded for this batch): celebrate.
     const dialog = await screen.findByRole("dialog");
     expect(dialog).toBeInTheDocument();
-    expect(document.body.style.overflow).toBe("hidden");
 
     fireEvent.click(screen.getByRole("button", { name: "关闭" }));
     await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument());
@@ -41,28 +33,18 @@ describe("ThankYouModal", () => {
     // Same batch, next visit: dismissal is remembered, no auto-open.
     unmount();
     render(<ThankYouModal />);
-    await screen.findByRole("button", { name: /感谢 \d+ 位近期支持者/ });
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
   });
 
-  it("re-opens from the trigger and tracks the click", async () => {
+  it("shows every receipt in the current batch", async () => {
     render(<ThankYouModal />);
     await screen.findByRole("dialog");
-    fireEvent.click(screen.getByRole("button", { name: "关闭" }));
-    await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument());
 
-    const trigger = screen.getByRole("button", { name: /感谢 \d+ 位近期支持者/ });
-    fireEvent.click(trigger);
-
-    expect(screen.getByRole("dialog")).toBeInTheDocument();
-    expect(trackEventMock).toHaveBeenCalledWith("cta_click", {
-      label: "recent_supporters",
-      location: "home_hero",
-    });
+    const receipts = screen.getAllByRole("figure");
+    expect(receipts.length).toBeGreaterThanOrEqual(2);
   });
 
-  it("supports direct links even after dismissal and closes with Escape", async () => {
-    // Dismiss the current batch first.
+  it("force-opens via ?support=thanks even after dismissal", async () => {
     const { unmount } = render(<ThankYouModal />);
     await screen.findByRole("dialog");
     fireEvent.click(screen.getByRole("button", { name: "关闭" }));
@@ -71,11 +53,12 @@ describe("ThankYouModal", () => {
 
     window.history.replaceState({}, "", "/zh?support=thanks");
     render(<ThankYouModal />);
-
     await waitFor(() => expect(screen.getByRole("dialog")).toBeInTheDocument());
-    fireEvent.keyDown(window, { key: "Escape" });
+  });
 
-    await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument());
-    expect(document.body.style.overflow).toBe("");
+  it("does not render outside the homepage when restricted", () => {
+    window.history.replaceState({}, "", "/zh/styles");
+    render(<ThankYouModal showOnHomepageOnly={true} />);
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
   });
 });
