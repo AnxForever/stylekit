@@ -290,6 +290,34 @@ export const promptTopics: PromptTopic[] = [
         prompt:
           "Generate a React component library with dark mode first design. Create: Card, Button, Input, Badge, Table, and Modal components. Each component must use CSS custom properties for colors so they work in both dark and light themes. Dark palette: background #09090b, surface #18181b, border #27272a, text #fafafa, muted #a1a1aa. Light palette: background #ffffff, surface #f4f4f5, border #e4e4e7, text #09090b, muted #71717a. Use Tailwind CSS with the dark: modifier.",
       },
+      {
+        titleEn: "Dark Mode SaaS Landing Page",
+        titleZh: "暗黑模式 SaaS 落地页",
+        tool: "general",
+        prompt:
+          "Design a dark mode SaaS landing page with a hero, feature grid, testimonial strip, and pricing CTA. Palette: base background #09090b, alternate section #101013, cards #18181b with 1px borders #27272a. Text: #fafafa for headings, #d4d4d8 for body, #a1a1aa for captions. Use a single accent emerald #10b981 only for the primary CTA, the logo mark, and one highlighted metric per section. Hero headline at 64px with 1.05 line-height and a subtle radial glow behind the accent word. All text must pass WCAG AA contrast.",
+      },
+      {
+        titleEn: "Dark Mode Mobile App for ChatGPT",
+        titleZh: "ChatGPT 暗黑模式移动应用",
+        tool: "general",
+        prompt:
+          "Design a dark mode mobile app UI for a habit tracker. Use a true dark palette: background #0b0b0f, surface #15151c, raised surface #1d1d27. Bottom tab bar with 4 icons: active tab in accent violet #8b5cf6, inactive tabs at 40% opacity. Cards have 16px radius and a soft inner highlight (1px top border rgba(255,255,255,0.06)) instead of heavy shadows. Progress rings use the accent over a 12% opacity track. Typography: 17px body, 28px semibold titles. Keep all interactive elements at 44px minimum touch targets and body text at 87% opacity.",
+      },
+      {
+        titleEn: "Dark Mode Login Page for Claude",
+        titleZh: "Claude 暗黑模式登录页",
+        tool: "claude",
+        prompt:
+          "Generate a React dark mode authentication page with login and signup states toggled in place. Split layout: the left panel shows a subtle animated gradient (deep blue #1e3a8a fading to black) with the product tagline; the right panel holds the form on background #0a0a0a. Inputs: background #171717, border #262626, focus ring 2px in accent amber #f59e0b, floating labels #a3a3a3. The primary button uses the amber accent with #0a0a0a text; social login buttons are outline style with #404040 borders. Include inline validation states (error #ef4444, success #22c55e) and ensure all form text meets 4.5:1 contrast.",
+      },
+      {
+        titleEn: "Dark Mode Pricing Page for Cursor",
+        titleZh: "Cursor 暗黑模式定价页",
+        tool: "cursor",
+        prompt:
+          "Build a Next.js dark mode pricing page with three tiers using Tailwind. Page background #050505, tier cards #111111 with border #1f1f1f. Highlight the middle Pro tier: scale-105, border in accent orange #f97316, and a small Most Popular badge. Price numerals use tabular-nums at 48px; feature lists use check icons in the accent at 70% opacity. Add a monthly/yearly billing toggle with a smooth sliding indicator; yearly prices show the strikethrough monthly equivalent in #525252. Place an FAQ accordion below the tiers with border-t dividers #1f1f1f. All text must be WCAG AA compliant.",
+      },
     ],
     useCases: [
       {
@@ -349,6 +377,22 @@ export const promptTopics: PromptTopic[] = [
           "For developer tools, media apps, and creative platforms, consider dark-first design. For business, e-commerce, and content-heavy sites, light-first is usually better. The key is to design both simultaneously using CSS custom properties / design tokens, so neither mode is an afterthought. StyleKit provides dual-mode tokens for all styles.",
         answerZh:
           "对于开发者工具、媒体应用和创意平台，可以考虑暗色优先。对于商务、电商和内容密集型网站，通常浅色优先更好。关键是使用 CSS 自定义属性 / design tokens 同时设计两种模式，让两者都不是事后补充。StyleKit 为所有风格提供双模式 tokens。",
+      },
+      {
+        questionEn: "What colors work best for dark mode backgrounds?",
+        questionZh: "暗黑模式背景用什么颜色最好？",
+        answerEn:
+          "Avoid pure black (#000000) for large backgrounds — it causes halation on OLED screens and makes elevation impossible. Use a near-black range instead: #0a0a0a to #121212 for the base layer, then raise surfaces in steps (#181818, #1e1e1e, #242424). If you want warmth, add 2-4% of a hue: a blue-tinted dark like #0b0d12 feels cooler, a warm dark like #12100e feels softer. Reserve saturated colors for accents only, and desaturate them 15-20% compared to light mode.",
+        answerZh:
+          "大面积背景避免使用纯黑（#000000）——在 OLED 屏幕上会产生光晕，且无法实现层级。改用近黑区间：基础层用 #0a0a0a 至 #121212，然后按阶梯抬升表面（#181818、#1e1e1e、#242424）。想要温度感可以加入 2-4% 的色相：带蓝的暗色如 #0b0d12 更冷峻，暖暗色如 #12100e 更柔和。饱和色只留给强调色，且相比浅色模式降低 15-20% 饱和度。",
+      },
+      {
+        questionEn: "How do I make dark mode accessible (WCAG)?",
+        questionZh: "如何让暗黑模式满足 WCAG 无障碍标准？",
+        answerEn:
+          "Three rules cover most failures: body text needs 4.5:1 contrast (large text 3:1) against its surface — on a #121212 background that means at least #a7a7a7; never use pure white at 100% opacity for long body text, 87% opacity (#ffffffde) reduces glare while staying compliant; and do not rely on color alone for states — pair error red with an icon or text label, since 8% of men have some color vision deficiency. Test with the prefers-contrast media query and provide a high-contrast variant if your accent gets close to the limit.",
+        answerZh:
+          "三条规则覆盖大多数问题：正文文字相对所在表面需要 4.5:1 对比度（大文字 3:1）——在 #121212 背景上意味着至少 #a7a7a7；长正文不要用 100% 不透明度纯白，87% 不透明度（#ffffffde）既减少眩光又保持合规；状态不能仅靠颜色区分——错误红要搭配图标或文字标签，因为 8% 的男性有不同程度的色觉缺陷。用 prefers-contrast 媒体查询测试，如果强调色接近临界值就提供高对比度变体。",
       },
     ],
   },
