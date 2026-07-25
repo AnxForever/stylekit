@@ -654,7 +654,7 @@ export default function SaasLandingTemplate() {
           </div>
           <div className="mt-14 flex flex-wrap items-center justify-between gap-4 border-t border-[#EDEAE0]/10 pt-6">
             <p className={`${mono.className} text-[11px] text-[#EDEAE0]/30`}>
-              © 2026 MERIDIAN SYSTEMS, INC.
+              &copy; 2026 MERIDIAN SYSTEMS, INC.
             </p>
             <p className={`${mono.className} text-[11px] tracking-[0.16em] text-[#EDEAE0]/30`}>
               ALL SYSTEMS NOMINAL

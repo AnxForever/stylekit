@@ -881,7 +881,7 @@ export default function GlassLandingPage() {
               ))}
             </div>
             <div className="mt-14 flex flex-wrap items-center justify-between gap-4 border-t border-white/[0.06] pt-6">
-              <p className={`${mono.className} text-[11px] text-[#E7F2F0]/30`}>© 2026 NOCTURNE AUDIO</p>
+              <p className={`${mono.className} text-[11px] text-[#E7F2F0]/30`}>&copy; 2026 NOCTURNE AUDIO</p>
               <p className={`${mono.className} flex items-center gap-2 text-[11px] tracking-[0.14em] text-[#E7F2F0]/30`}>
                 <span className="noc-pulse h-1.5 w-1.5 rounded-full bg-[#7DE3E0]" />
                 MASTERED IN THE DARK
