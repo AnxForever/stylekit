@@ -241,6 +241,40 @@ export const supportLinks: SupportLink[] = [
 
 export const thankYouEntries: ThankYouEntry[] = [
   {
+    id: "donation-2026-07-18-008-88",
+    date: "2026-07-18",
+    donorLabel: {
+      en: "Quickbeam",
+      zh: "Quickbeam",
+    },
+    amount: {
+      en: "¥8.88",
+      zh: "¥8.88",
+    },
+    receiptImage: "/support/acknowledgments/receipt-2026-07-18-008-88.jpg",
+    receiptAlt: {
+      en: "Payment receipt for ¥8.88 from Quickbeam",
+      zh: "Quickbeam 8.88 元的赞赏记录",
+    },
+  },
+  {
+    id: "donation-2026-07-16-088-00",
+    date: "2026-07-16",
+    donorLabel: {
+      en: "Huihui",
+      zh: "辉辉",
+    },
+    amount: {
+      en: "¥88.00",
+      zh: "¥88.00",
+    },
+    receiptImage: "/support/acknowledgments/receipt-2026-07-16-088-00.jpg",
+    receiptAlt: {
+      en: "Payment receipt for ¥88.00 from Huihui",
+      zh: "辉辉 88.00 元的赞赏记录",
+    },
+  },
+  {
     id: "donation-2026-07-04-003-50",
     date: "2026-07-04",
     donorLabel: {
