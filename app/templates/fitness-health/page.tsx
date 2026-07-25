@@ -180,11 +180,11 @@ export default function FitnessHealthTemplate() {
                   <option>This Month</option>
                 </select>
               </div>
-              <div className="flex items-end justify-between gap-3 h-40">
+              <div className="flex items-stretch justify-between gap-3 h-40">
                 {weeklyData.map((d) => (
                   <div key={d.day} className="flex-1 flex flex-col items-center gap-2">
                     <span className="text-xs text-gray-400">{d.value}%</span>
-                    <div className="w-full bg-gray-800 rounded-t-lg relative" style={{ height: "100%" }}>
+                    <div className="w-full flex-1 bg-gray-800 rounded-t-lg relative">
                       <div
                         className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-emerald-500 to-emerald-400 rounded-t-lg transition-all"
                         style={{ height: `${(d.value / maxWeekly) * 100}%` }}

@@ -181,7 +181,7 @@ function OverviewView({
 
           {/* Chart */}
           <div className="relative">
-            <div className="flex items-end gap-1.5 h-52">
+            <div className="flex items-stretch gap-1.5 h-52">
               {chartData.map((value, i) => {
                 const isHovered = hoveredBar === i;
                 const heightPct = (value / maxValue) * 100;
@@ -345,7 +345,7 @@ function AnalyticsView({
         <div className="lg:col-span-3 bg-white rounded-2xl shadow-xl shadow-black/[0.04] p-6">
           <h2 className="text-lg font-semibold text-gray-800 mb-0.5">流量趋势</h2>
           <p className="text-xs text-gray-400 mb-6">全年页面访问量分布</p>
-          <div className="flex items-end gap-3 h-52">
+          <div className="flex items-stretch gap-3 h-52">
             {analyticsChartData.map((value, i) => {
               const isHovered = hoveredBar === i;
               return (
