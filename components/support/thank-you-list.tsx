@@ -13,13 +13,13 @@ export function ThankYouList() {
   if (thankYouEntries.length === 0) return null;
 
   return (
-    <section id="thank-you-list" className="grid gap-6">
+    <section id="thank-you-list" className="grid gap-4">
       {/* 标题 */}
       <div className="max-w-3xl">
         <p className="text-xs uppercase tracking-[0.28em] text-muted">
           {locale === "zh" ? "鸣谢名单" : "Acknowledgments"}
         </p>
-        <p className="mt-3 text-base leading-7 text-muted md:text-lg">
+        <p className="mt-2 text-sm leading-6 text-muted">
           {locale === "zh"
             ? "感谢所有支持 StyleKit 维护与开发的朋友们。"
             : "Thank you to everyone who has supported StyleKit's maintenance and development."}
@@ -27,11 +27,11 @@ export function ThankYouList() {
       </div>
 
       {/* 图片网格 - 只显示收款截图，统一尺寸 */}
-      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+      <div className="grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-4">
         {thankYouEntries.map((entry) => (
           <div
             key={entry.id}
-            className="group relative overflow-hidden rounded-[28px] border border-border bg-background shadow-sm transition-all hover:shadow-md"
+            className="group relative overflow-hidden rounded-[18px] border border-border bg-background shadow-sm transition-all hover:shadow-md"
           >
             {/* 只显示收款截图 - 固定宽高比 */}
             {entry.receiptImage && (
@@ -44,7 +44,7 @@ export function ThankYouList() {
                   alt={entry.receiptAlt?.[locale] || "Receipt"}
                   fill
                   className="object-contain"
-                  sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"
+                  sizes="(max-width: 768px) 50vw, (max-width: 1280px) 33vw, 25vw"
                   unoptimized
                 />
               </button>
