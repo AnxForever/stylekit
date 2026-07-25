@@ -12,6 +12,7 @@ import { GitHubStarButton } from "@/components/github-star-button";
 import { trackEvent } from "@/lib/analytics/events";
 import { MobileHomeSummarySection } from "./_mobile-summary";
 import { TrendingStylesSkeleton } from "./_skeletons";
+import { ThankYouModal } from "@/components/home/thank-you-modal";
 
 const HowItWorks = dynamic(
   () => import("@/components/home/how-it-works").then((m) => ({ default: m.HowItWorks })),
@@ -294,6 +295,7 @@ export function HomeContent({ styles, stats }: HomeContentProps) {
 
   return (
     <>
+      <ThankYouModal showOnHomepageOnly={true} />
       <section id="home-hero" className="home-hero-surface relative overflow-hidden border-b border-border">
         <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
           <div className="absolute -top-28 left-[-8rem] h-72 w-72 rounded-full bg-accent/10 blur-3xl" />
