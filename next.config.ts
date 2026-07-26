@@ -37,6 +37,13 @@ const nextConfig: NextConfig = {
   },
 
   experimental: {
+    // Client Router Cache for back/forward: without this every back navigation
+    // refetches the RSC payload (dynamic default is 0), which makes returning
+    // to long pages feel slow and breaks scroll restoration timing.
+    staleTimes: {
+      dynamic: 60,
+      static: 300,
+    },
     optimizePackageImports: [
       "lucide-react",
       "@radix-ui/react-accordion",
