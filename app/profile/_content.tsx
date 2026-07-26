@@ -235,9 +235,9 @@ export function ProfileContent({ allStyles }: ProfileContentProps) {
 
   if (loading) {
     return (
-      <div className="max-w-4xl mx-auto px-6 md:px-10 py-10 md:py-14">
-        <div className="animate-pulse flex flex-col md:flex-row gap-8 md:gap-12">
-          <div className="md:w-56 md:shrink-0 space-y-4">
+      <div className="max-w-6xl mx-auto px-6 md:px-12 py-10 md:py-14">
+        <div className="animate-pulse flex flex-col md:flex-row gap-8 md:gap-14">
+          <div className="md:w-64 md:shrink-0 space-y-4">
             <div className="w-20 h-20 rounded-full bg-muted/20" />
             <div className="h-6 w-36 bg-muted/20" />
             <div className="h-3 w-28 bg-muted/20" />
@@ -245,8 +245,8 @@ export function ProfileContent({ allStyles }: ProfileContentProps) {
           </div>
           <div className="flex-1 space-y-6">
             <div className="h-8 w-full max-w-sm bg-muted/20" />
-            <div className="grid grid-cols-2 gap-3">
-              {Array.from({ length: 4 }).map((_, i) => (
+            <div className="grid grid-cols-2 lg:grid-cols-3 gap-3">
+              {Array.from({ length: 6 }).map((_, i) => (
                 <div key={i} className="aspect-video bg-muted/10" />
               ))}
             </div>
@@ -521,10 +521,10 @@ export function ProfileContent({ allStyles }: ProfileContentProps) {
   ];
 
   return (
-    <div className="max-w-4xl mx-auto px-6 md:px-10 py-10 md:py-14 motion-safe:animate-home-reveal-soft">
-      <div className="flex flex-col md:flex-row gap-8 md:gap-12">
+    <div className="max-w-6xl mx-auto px-6 md:px-12 py-10 md:py-14 motion-safe:animate-home-reveal-soft">
+      <div className="flex flex-col md:flex-row gap-8 md:gap-14 md:min-h-[55vh]">
         {/* Identity rail */}
-        <aside className="md:w-56 md:shrink-0">
+        <aside className="md:w-64 md:shrink-0">
           <div className="md:sticky md:top-24">
             <p className="text-[11px] uppercase tracking-widest text-muted mb-5">
               {t("profile.pageLabel")}
@@ -690,7 +690,7 @@ export function ProfileContent({ allStyles }: ProfileContentProps) {
                   </div>
                 ) : (
                   <>
-                    <div className="grid grid-cols-2 gap-3 sm:gap-4">
+                    <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
                       {favorites.map((slug) => {
                         const meta = styleMetaBySlug.get(slug);
                         if (meta) {
@@ -780,11 +780,11 @@ export function ProfileContent({ allStyles }: ProfileContentProps) {
                 ) : ratings.length === 0 ? (
                   <EmptyNote>{t("profile.noRatings")}</EmptyNote>
                 ) : (
-                  <div className="divide-y divide-border border-y border-border">
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
                     {ratings.map((r) => (
                       <div
                         key={r.id}
-                        className="py-3 flex items-center justify-between gap-3"
+                        className="flex items-center justify-between gap-3 border border-border px-4 py-3"
                       >
                         <LocalizedLink
                           href={`/styles/${r.style_slug}`}
