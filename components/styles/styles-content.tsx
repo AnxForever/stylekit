@@ -157,19 +157,46 @@ export function StylesContent({ allStyles }: StylesContentProps) {
   useEffect(() => {
     const savedScroll = sessionStorage.getItem("styles-scroll-position");
     if (savedScroll) {
-      setVisibleStyleCount(Number.MAX_SAFE_INTEGER);
+      // 只恢复到离开时的可见数量（而非全量 140+），返回渲染量减半以上
+      const savedCount = parseInt(
+        sessionStorage.getItem("styles-visible-count") ?? "",
+        10
+      );
+      setVisibleStyleCount(
+        Number.isFinite(savedCount) && savedCount > INITIAL_VISIBLE_STYLE_COUNT
+          ? savedCount
+          : Number.MAX_SAFE_INTEGER
+      );
       const y = parseInt(savedScroll, 10);
-      // 使用更大的延迟以确保：
-      // 1. DOM 完全渲染
-      // 2. 所有state都已稳定
-      // 3. 列表已根据filter重新排列
-      setTimeout(() => {
-        window.scrollTo({ top: y, behavior: "instant" });
-      }, 150);
+      // 等列表高度真正容得下目标位置再滚动（最多约 30 帧），
+      // 替代固定 150ms 延迟——慢设备上定时器常在布局就位前触发导致落点错位
+      let attempts = 0;
+      const tryScroll = () => {
+        attempts += 1;
+        const maxY =
+          document.documentElement.scrollHeight - window.innerHeight;
+        if (maxY >= y || attempts > 30) {
+          window.scrollTo({ top: y, behavior: "instant" });
+          return;
+        }
+        requestAnimationFrame(tryScroll);
+      };
+      requestAnimationFrame(tryScroll);
       // 恢复后清除，避免刷新页面也滚动
       sessionStorage.removeItem("styles-scroll-position");
     }
   }, []);
+
+  // 记录当前可见数量，供返回恢复时精确还原（点击卡片时 scrollY 由 StyleCard 写入）
+  useEffect(() => {
+    if (typeof window === "undefined") {
+      return;
+    }
+    sessionStorage.setItem(
+      "styles-visible-count",
+      String(Math.min(visibleStyleCount, catalogStyles.length))
+    );
+  }, [visibleStyleCount, catalogStyles.length]);
 
   // 兜底恢复 filter 状态：当从 showcase 直接跳到 /styles 时（绕过 ScrollBackButton）
   useEffect(() => {
