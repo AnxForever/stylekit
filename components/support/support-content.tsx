@@ -99,7 +99,7 @@ export function SupportContent() {
         <div>
           <p className="max-w-2xl text-sm leading-6 text-muted">{copy.methodsDescription}</p>
 
-          <div className="mt-6 grid border border-border md:grid-cols-3">
+          <div className="mt-6 grid border border-border md:grid-cols-2">
             {supportMethods.map((method, i) => {
               const title = method.title[locale];
               const description = method.description[locale];
@@ -110,7 +110,7 @@ export function SupportContent() {
               return (
                 <article
                   key={method.id}
-                  className={`flex h-full flex-col p-5 ${i > 0 ? "border-t border-border md:border-l md:border-t-0" : ""}`}
+                  className={`flex h-full flex-col border-border p-5 ${i > 0 ? "border-t" : ""} ${i % 2 === 1 ? "md:border-l" : ""} ${i >= 2 ? "md:border-t" : "md:border-t-0"}`}
                 >
                   <div className="mb-4 flex items-center justify-between gap-4">
                     <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted">
