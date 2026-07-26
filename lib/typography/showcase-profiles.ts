@@ -1,4 +1,3 @@
-import { getStyleMetaBySlug } from "@/lib/styles/meta";
 import {
   fontStack,
   generateGoogleFontsUrl,
@@ -172,15 +171,37 @@ const profileBySlug = new Map(
   )
 );
 
+// Static stand-in for the former style-meta category fallback
+// (minimal -> catalog, retro -> retro, expressive -> poster, modern or
+// unknown -> atelier). Importing the full meta registry here pulled the
+// whole bilingual catalog into the shared layout client bundle, so the
+// mapping is inlined for the slugs missing from PROFILE_SLUGS. When a new
+// style ships without a PROFILE_SLUGS entry and its category is not
+// "modern", add it here to keep the same profile it would have resolved to.
+const FALLBACK_PROFILE_BY_SLUG: Record<string, ProfileId> = {
+  "card-stack": "poster",
+  "cinematic-video-hero": "poster",
+  "full-page-scroll": "poster",
+  "hand-drawn-doodle": "poster",
+  "hero-fullscreen": "poster",
+  "horizontal-gallery": "catalog",
+  "immersive-photo": "poster",
+  "magic-circle": "poster",
+  "memphis": "retro",
+  "op-art": "poster",
+  "pastel-goth": "poster",
+  "scrollytelling": "poster",
+  "skeuomorphism": "retro",
+  "terracotta": "catalog",
+  "timeline-vertical": "catalog",
+  "ukiyo-e-digital": "retro",
+};
+
 function resolveProfileId(slug: string): ProfileId {
   const explicit = profileBySlug.get(slug);
   if (explicit) return explicit;
 
-  const category = getStyleMetaBySlug(slug)?.category;
-  if (category === "minimal") return "catalog";
-  if (category === "retro") return "retro";
-  if (category === "expressive") return "poster";
-  return "atelier";
+  return FALLBACK_PROFILE_BY_SLUG[slug] ?? "atelier";
 }
 
 function getProfileMono(profileId: ProfileId): FontSpec {
