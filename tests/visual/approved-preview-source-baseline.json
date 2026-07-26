@@ -1,5 +1,5 @@
 {
-  "baselineCommit": "774f9943",
+  "baselineCommit": "dee759c2",
   "algorithm": "sha256",
   "files": {
     "components/home/featured-carousel.tsx": "32b8cae0957e6fe5fecc99e048629180c645a51d12393a1c1b8b23b5be3ef01d",
@@ -8,8 +8,8 @@
     "components/style-preview-switcher.tsx": "2208c8d4e0619aa83b28ed71d3ae63f57fda529aabc68b0b0eb0c774bfb8d968",
     "components/style-preview/style-cover-preview.tsx": "6d480d6d3d6b3bc7dc89d0d04dc39912c6d2dca8277756e6e438b3d1a9af079b",
     "lib/style-components.tsx": "2ee32bee110d37e2d62191cc1b036f5579f99ba4c1c10524a46b4e24fbaa53f2",
-    "lib/style-preview/delivery.ts": "d2b7dfba3a3c63e72f67754913168c54581b0309591c2efc07b9262142822ddd",
-    "lib/style-preview/registry.ts": "2c3bc5da28b87113e67d0acd5b88608da8e299d85114580e6912466c865571b5",
+    "lib/style-preview/delivery.ts": "3f1f433a7eaab0ee5fddaf6583547ad157c5544a4077aee1f4f7ccb22b706d4b",
+    "lib/style-preview/registry.ts": "9c21dd6fd38ad0560220ddf78cce84bae96028592976127331892493262e9e8b",
     "lib/style-preview/styles/acid-graphics.tsx": "a33b227b99efd079a3d1226728bbe749c91e7fa6f3400015cf1db5b0ba1659c0",
     "lib/style-preview/styles/african-textile.tsx": "721d7bbb1d6e3069a800dcd2e74e86d7d482251fe84bed34fe9c1aecaee7c278",
     "lib/style-preview/styles/anti-design.tsx": "abbb86110665bcc994760fd077f8253a4813ac779a09f23d0f6dda085e40a1f7",
@@ -76,8 +76,10 @@
     "lib/style-preview/styles/kinetic-typography.tsx": "186043e523e92372ab3ba16e3c91643a9302955eae036f8adc418c10d2534ce7",
     "lib/style-preview/styles/korean-minimal.tsx": "1538c24e37fd838c586a59aabf97b5edb217f9e2268b27cff9b0fdd5c7a3abe2",
     "lib/style-preview/styles/latex-paper.tsx": "bd9a569b92ad41add554a44dc8c729e79a6b8be099ccfde5468f1c0f443af7a7",
+    "lib/style-preview/styles/launch-keynote.tsx": "f36704058e5da756476328da7434f245acc479bff6758e4006d69c3c30e64803",
     "lib/style-preview/styles/linear-style.tsx": "d99bdaf248a800bbb4dac9d80a0539903f1fc52938f6b4a4f43c0bfa50ba26cd",
     "lib/style-preview/styles/liquid-glass.tsx": "a46cfe93e6d201e22f65fac2700294fd3eaa502083073bec1d7594807f3c47fe",
+    "lib/style-preview/styles/luxe-lookbook.tsx": "8e37512d9ebe684e74951a9389f0d1ac1550e64cb150bf3ac7f7849ac117ff40",
     "lib/style-preview/styles/luxury-retail.tsx": "c118017246738b5d08dc633afbf6e0b54e2d5bbfd5f8d17d376753a1e9d59327",
     "lib/style-preview/styles/macos-vibrancy.tsx": "ce56b04e750d909ddd0fdaf3ef4b91e0b984c18660f6e0eda87887ffd1f9d2e8",
     "lib/style-preview/styles/magazine-grid.tsx": "f75e868dac5bc4f8cc992b364b1862b683d6cde433026b49e62e61c703e2ffb4",
@@ -118,6 +120,7 @@
     "lib/style-preview/styles/scandinavian.tsx": "f88095f415eb2e43f96be833300130d54db84647a4ee59af8df4a66ddeceb5a2",
     "lib/style-preview/styles/sci-fi-hud.tsx": "21823103598e9c09cb9382d5c7586734bfb67f8885d109d8ce395245313fa9f0",
     "lib/style-preview/styles/scrollytelling.tsx": "49c990a9a74f07b8600efabe5243daae2e631197bcf8b5c21458577dc7413480",
+    "lib/style-preview/styles/shader-gradient.tsx": "d36ab367e36dbde3e8218e03ec0f2554dc3952d06ff134be8f35632c0d89f1d7",
     "lib/style-preview/styles/shopify-clean.tsx": "0c9d07141be68402f6d95d4e878a56162fa3371f5782638c2625227de23941ef",
     "lib/style-preview/styles/shoujo-manga.tsx": "0d397d8016bf8bf12fc9795eb01bae1298c4df3ff0ca69ff86b2fdcb83248842",
     "lib/style-preview/styles/sidebar-fixed.tsx": "7e693578d94f370da41f0a61c04bffe1e9c62f2466392ff576607e17a76ed5eb",
@@ -151,6 +154,6 @@
     "lib/style-preview/styles/z-pattern-layout.tsx": "45735dc9271bc545c30dfa994303ae911adac343307c522808962de987face78",
     "lib/style-preview/styles/zen-garden.tsx": "b10338b2e55a267e8be31f8e6bcb458092aabbab3b2aee39f6aef76ec884c5d8",
     "lib/style-preview/types.ts": "4d508c6dc39554bd4a15e410186d6424c1165134bb799beca4ce655378b97b06",
-    "lib/styles/meta-registry.ts": "14bb8c8b65a5346a640651f0862239b92b216093d9d5e07d68766c6370e0e74c"
+    "lib/styles/meta-registry.ts": "58ef041446420fb835f701153abd1878953d10648cbbf65bbdf833a660010169"
   }
 }

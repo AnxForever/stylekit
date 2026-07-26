@@ -1,6 +1,6 @@
 {
-  "baselineCommit": "774f9943",
-  "count": 140,
+  "baselineCommit": "dee759c2",
+  "count": 143,
   "slugs": [
     "acid-graphics",
     "african-textile",
@@ -68,8 +68,10 @@
     "kinetic-typography",
     "korean-minimal",
     "latex-paper",
+    "launch-keynote",
     "linear-style",
     "liquid-glass",
+    "luxe-lookbook",
     "luxury-retail",
     "macos-vibrancy",
     "magazine-grid",
@@ -110,6 +112,7 @@
     "scandinavian",
     "sci-fi-hud",
     "scrollytelling",
+    "shader-gradient",
     "shopify-clean",
     "shoujo-manga",
     "sidebar-fixed",
