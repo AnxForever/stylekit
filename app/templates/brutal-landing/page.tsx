@@ -140,6 +140,7 @@ export default function BrutalLandingTemplate() {
           <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between border-b-2 border-black">
             <Link
               href="/templates/brutal-landing"
+              prefetch={false}
               className="font-black text-2xl"
               onClick={() => setMobileMenuOpen(false)}
             >
@@ -184,7 +185,7 @@ export default function BrutalLandingTemplate() {
       {/* Navigation */}
       <nav className="fixed top-0 left-0 right-0 z-50 bg-[#ccff00] border-b-4 border-black">
         <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
-          <Link href="/templates/brutal-landing" className="font-black text-2xl">
+          <Link href="/templates/brutal-landing" prefetch={false} className="font-black text-2xl">
             BRUTAL<span className="text-[#ff006e]">.</span>
           </Link>
           <div className="hidden md:flex items-center gap-6">

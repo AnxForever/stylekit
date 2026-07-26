@@ -439,7 +439,7 @@ export default function PricingPageTemplate() {
       {/* Navigation */}
       <nav className="border-b border-gray-100 sticky top-0 bg-white/90 backdrop-blur-sm z-10">
         <div className="max-w-6xl mx-auto px-4 md:px-8 py-4 flex items-center justify-between">
-          <Link href="/templates/pricing-page" className="text-xl font-bold tracking-tight">
+          <Link href="/templates/pricing-page" prefetch={false} className="text-xl font-bold tracking-tight">
             StyleKit
           </Link>
           <nav className="hidden md:flex items-center gap-6 text-sm text-gray-500">

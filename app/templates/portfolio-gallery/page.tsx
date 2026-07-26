@@ -520,6 +520,7 @@ export default function PortfolioGalleryTemplate() {
           {/* Logo */}
           <Link
             href="/templates/portfolio-gallery"
+            prefetch={false}
             className="text-lg font-bold tracking-wider hover:text-white/80 transition-colors"
           >
             STUDIO<span className="text-violet-400">.</span>

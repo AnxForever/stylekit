@@ -230,6 +230,7 @@ export default function NeumorphismLandingTemplate() {
           {/* Logo */}
           <Link
             href="/templates/neumorphism-landing"
+            prefetch={false}
             className="flex items-center gap-2 text-xl font-bold text-gray-800 select-none"
           >
             <div
