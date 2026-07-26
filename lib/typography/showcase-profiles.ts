@@ -92,6 +92,7 @@ const PROFILE_SLUGS: Record<ProfileId, readonly string[]> = {
     "paper-craft",
     "risograph",
     "surrealism",
+    "warm-organic",
     "watercolor-art",
     "watercolor-style",
     "zen-garden",
