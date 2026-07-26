@@ -34,6 +34,52 @@ interface Project {
   client: string;
 }
 
+/** Category-keyed CSS art layered over each project's gradient. */
+function ProjectArt({ project }: { project: Project }) {
+  const seed = Number.parseInt(project.id, 10) % 3;
+  const drift = seed === 0 ? "left-[18%]" : seed === 1 ? "left-[34%]" : "left-[50%]";
+  return (
+    <div aria-hidden="true" className="absolute inset-0">
+      {project.category === "Design" && (
+        <>
+          <span className={`absolute top-[22%] ${drift} h-[38%] w-[28%] rounded-full bg-white/15`} />
+          <span className="absolute top-[36%] left-[40%] h-[36%] w-[26%] rounded-full bg-black/20" />
+          <span className="absolute inset-x-[12%] top-1/2 h-px bg-white/30" />
+          <span className="absolute inset-y-[16%] left-1/2 w-px bg-white/20" />
+        </>
+      )}
+      {project.category === "Development" && (
+        <div className="absolute inset-x-[16%] inset-y-[20%] rounded-lg border border-white/25 bg-black/25">
+          <div className="flex items-center gap-1.5 border-b border-white/15 px-3 py-2">
+            <span className="h-1.5 w-1.5 rounded-full bg-white/40" />
+            <span className="h-1.5 w-1.5 rounded-full bg-white/30" />
+            <span className="h-1.5 w-1.5 rounded-full bg-white/20" />
+          </div>
+          <div className="space-y-2 p-3">
+            <span className="block h-1.5 w-3/4 rounded bg-white/30" />
+            <span className={`block h-1.5 rounded bg-white/20 ${seed === 0 ? "w-1/2" : "w-2/3"}`} />
+            <span className="block h-1.5 w-1/3 rounded bg-white/40" />
+          </div>
+        </div>
+      )}
+      {project.category === "Branding" && (
+        <>
+          <span className="absolute left-1/2 top-[24%] aspect-square h-[32%] -translate-x-1/2 rounded-full border-2 border-white/40" />
+          <span className="absolute left-1/2 top-[63%] h-1 w-[26%] -translate-x-1/2 bg-white/40" />
+          <span className="absolute left-1/2 top-[71%] h-1 w-[16%] -translate-x-1/2 bg-white/25" />
+        </>
+      )}
+      {project.category === "Motion" && (
+        <>
+          <span className="absolute left-[28%] top-[28%] aspect-square h-[42%] rounded-full border-2 border-dashed border-white/30" />
+          <span className="absolute left-[36%] top-[22%] aspect-square h-[42%] rounded-full border border-white/20" />
+          <span className="absolute left-[16%] top-[60%] h-0.5 w-[52%] -rotate-12 bg-gradient-to-r from-white/50 to-transparent" />
+        </>
+      )}
+    </div>
+  );
+}
+
 // ─────────────────────────────────────────────
 // Data
 // ─────────────────────────────────────────────
@@ -247,6 +293,7 @@ function ProjectCard({
         <div
           className={`absolute inset-0 ${project.color} transition-transform duration-500 group-hover:scale-105`}
         />
+        <ProjectArt project={project} />
         {/* Large initial */}
         <span className="absolute inset-0 flex items-center justify-center text-[7rem] font-black text-white/10 select-none leading-none">
           {project.title[0]}
@@ -298,8 +345,10 @@ function ProjectRow({
     >
       {/* Color swatch */}
       <div
-        className={`w-10 h-10 md:w-12 md:h-12 rounded-lg shrink-0 ${project.color}`}
-      />
+        className={`relative w-10 h-10 md:w-12 md:h-12 rounded-lg shrink-0 overflow-hidden ${project.color}`}
+      >
+        <ProjectArt project={project} />
+      </div>
 
       {/* Number */}
       <span className="hidden md:block font-mono text-xs text-white/30 w-6 shrink-0">
@@ -351,6 +400,7 @@ function ProjectModal({
       <div className="relative z-10 w-full max-w-3xl max-h-[90vh] overflow-y-auto rounded-2xl bg-[#111111] border border-white/10 shadow-2xl">
         {/* Header color block */}
         <div className={`relative aspect-video w-full ${project.color} rounded-t-2xl overflow-hidden`}>
+          <ProjectArt project={project} />
           <span className="absolute inset-0 flex items-center justify-center text-[10rem] font-black text-white/10 select-none leading-none">
             {project.title[0]}
           </span>
