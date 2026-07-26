@@ -94,6 +94,53 @@ const badges = [
   { name: "Note Taker", description: "Write 20 notes", icon: FileText, earned: false },
 ];
 
+function CourseThumb({ category }: { category: string }) {
+  if (category === "Programming") {
+    return (
+      <div className="absolute inset-0 flex items-center justify-center gap-3" aria-hidden="true">
+        <span className="font-mono text-5xl font-bold text-white/25 select-none">{"{"}</span>
+        <div className="flex flex-col gap-1.5">
+          <div className="h-1.5 w-16 rounded-full bg-white/40" />
+          <div className="h-1.5 w-10 rounded-full bg-white/25 ml-3" />
+          <div className="h-1.5 w-14 rounded-full bg-white/30 ml-3" />
+          <div className="h-1.5 w-8 rounded-full bg-white/20" />
+        </div>
+        <span className="font-mono text-5xl font-bold text-white/25 select-none">{"}"}</span>
+      </div>
+    );
+  }
+  if (category === "Design") {
+    return (
+      <div className="absolute inset-0 flex items-center justify-center" aria-hidden="true">
+        <div className="relative w-24 h-16">
+          <div className="absolute left-0 top-1/2 -translate-y-1/2 w-14 h-14 rounded-full bg-pink-300/50 mix-blend-screen" />
+          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-14 h-14 rounded-full bg-purple-300/50 mix-blend-screen" />
+          <div className="absolute right-0 top-1/2 -translate-y-1/2 w-14 h-14 rounded-full bg-white/40 mix-blend-screen" />
+        </div>
+      </div>
+    );
+  }
+  if (category === "Data Science") {
+    return (
+      <div className="absolute inset-0 flex items-end justify-center gap-2 pb-6" aria-hidden="true">
+        <div className="w-4 h-6 rounded-t bg-white/25" />
+        <div className="w-4 h-12 rounded-t bg-white/40" />
+        <div className="w-4 h-8 rounded-t bg-white/30" />
+        <div className="w-4 h-16 rounded-t bg-white/50" />
+        <div className="w-4 h-10 rounded-t bg-white/35" />
+      </div>
+    );
+  }
+  return (
+    <div className="absolute inset-0 flex flex-col items-center justify-center gap-1.5" aria-hidden="true">
+      <div className="h-3 w-24 rounded-full bg-white/50" />
+      <div className="h-3 rounded-full bg-white/35" style={{ width: "4.5rem" }} />
+      <div className="h-3 w-12 rounded-full bg-white/25" />
+      <div className="h-3 w-6 rounded-full bg-white/15" />
+    </div>
+  );
+}
+
 export default function LearningCourseTemplate() {
   const [selectedCourse, setSelectedCourse] = useState(0);
   const [activeView, setActiveView] = useState<"courses" | "player">("courses");
@@ -176,8 +223,8 @@ export default function LearningCourseTemplate() {
                     selectedCourse === i ? "border-indigo-300 shadow-md" : "border-gray-100"
                   }`}
                 >
-                  <div className={`h-32 ${c.gradient} flex items-center justify-center relative`}>
-                    <Play className="w-10 h-10 text-white/20" />
+                  <div className={`h-32 ${c.gradient} relative overflow-hidden`}>
+                    <CourseThumb category={c.category} />
                     <span className="absolute top-3 left-3 px-2 py-0.5 bg-white/20 backdrop-blur-sm rounded text-white text-xs font-medium">
                       {c.category}
                     </span>
@@ -246,8 +293,11 @@ export default function LearningCourseTemplate() {
             {/* Main: Video + Notes */}
             <main className="flex-1 min-w-0">
               {/* Video Player Placeholder */}
-              <div className={`aspect-video rounded-xl ${course.gradient} flex items-center justify-center mb-6 relative`}>
-                <button className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/30 transition-colors">
+              <div className={`aspect-video rounded-xl ${course.gradient} flex items-center justify-center mb-6 relative overflow-hidden`}>
+                <div className="opacity-40">
+                  <CourseThumb category={course.category} />
+                </div>
+                <button className="relative w-16 h-16 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/30 transition-colors">
                   <Play className="w-8 h-8 text-white ml-1" />
                 </button>
                 <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/50 to-transparent p-6">
