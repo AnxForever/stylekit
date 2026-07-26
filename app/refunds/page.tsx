@@ -74,7 +74,7 @@ export default function RefundsPage() {
               <p className="text-muted leading-relaxed">
                 Paid orders may be processed by a merchant-of-record partner (such as
                 Paddle), which acts as the seller of record for the transaction. In
-                that case refunds are issued through the partner's checkout and support
+                that case refunds are issued through the partner&apos;s checkout and support
                 flow, and their buyer terms apply alongside this policy. We will always
                 help you route a request to the right place.
               </p>
