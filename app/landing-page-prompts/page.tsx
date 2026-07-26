@@ -31,6 +31,7 @@ export const metadata: Metadata = {
     description:
       "Copyable landing page prompts for SaaS products, startup launches, waitlists, and conversion-focused website design.",
     siteName: "StyleKit",
+    images: [{ url: "/social-preview-home-v1.png", width: 1200, height: 630 }],
     type: "article",
   },
   twitter: {

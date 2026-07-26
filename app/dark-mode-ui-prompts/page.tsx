@@ -18,7 +18,7 @@ export const revalidate = 86400;
 export const metadata: Metadata = {
   title: "Dark Mode UI Prompts for ChatGPT, Claude, Cursor & v0",
   description:
-    "Copy-paste dark mode UI prompts for ChatGPT, Claude, Cursor, Claude Code, and v0. Ready-made dark dashboard, SaaS, and app prompts with surface elevation, WCAG-AA contrast, and single-accent color systems.",
+    "Copy-paste dark mode UI prompts for ChatGPT, Claude, Cursor, and v0 — dark dashboards, SaaS apps, and design systems with WCAG-AA contrast.",
   keywords: [
     "dark mode UI prompts",
     "dark mode prompt for ChatGPT",
@@ -33,6 +33,7 @@ export const metadata: Metadata = {
     description:
       "Copy-paste dark mode UI prompts for ChatGPT, Claude, Cursor, Claude Code, and v0 — dark dashboards, SaaS apps, and design systems with proper surface elevation and readable contrast.",
     siteName: "StyleKit",
+    images: [{ url: "/social-preview-home-v1.png", width: 1200, height: 630 }],
     type: "article",
   },
   twitter: {

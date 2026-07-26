@@ -54,10 +54,16 @@ export async function generateMetadata({
   const BASE_URL = getSiteBaseUrl();
   const primaryStyleName = locale === "zh" ? style.name : style.nameEn || style.name;
   const secondaryStyleName = locale === "zh" ? style.nameEn : style.name;
+  const intentSuffix =
+    style.styleType === "layout"
+      ? "Layout — AI Prompts & Tokens"
+      : "UI Style — AI Prompts & Tokens";
   const title =
-    secondaryStyleName && secondaryStyleName !== primaryStyleName
-      ? `${primaryStyleName} (${secondaryStyleName})`
-      : primaryStyleName;
+    locale === "zh"
+      ? secondaryStyleName && secondaryStyleName !== primaryStyleName
+        ? `${primaryStyleName} (${secondaryStyleName})`
+        : primaryStyleName
+      : `${primaryStyleName} ${intentSuffix}`;
   const localizedDescription = localizedString(locale, style.description, style.descriptionEn);
   const description =
     locale === "zh"

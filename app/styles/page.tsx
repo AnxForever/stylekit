@@ -13,7 +13,14 @@ import { getSiteBaseUrl } from "@/lib/site-url";
 export const metadata: Metadata = {
   title: `Browse ${CURATED_STYLE_COUNT} UI Design Styles & AI Prompts`,
   description:
-    `Explore ${CURATED_STYLE_COUNT} curated visual styles with design tokens, component recipes, Tailwind-ready patterns, and AI UI prompt guidance for websites, dashboards, and landing pages.`,
+    `Explore ${CURATED_STYLE_COUNT} curated visual styles with design tokens, component recipes, Tailwind-ready patterns, and AI UI prompt guidance for websites and dashboards.`,
+  openGraph: {
+    title: `Browse ${CURATED_STYLE_COUNT} UI Design Styles & AI Prompts | StyleKit`,
+    description: `Explore ${CURATED_STYLE_COUNT} curated visual styles with design tokens, component recipes, and AI UI prompts.`,
+    siteName: "StyleKit",
+    images: [{ url: "/social-preview-home-v1.png", width: 1200, height: 630 }],
+    type: "website",
+  },
 };
 
 export const dynamic = "force-static";
