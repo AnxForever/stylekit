@@ -1,12 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { z } from "zod";
 import { LocalizedLink } from "@/components/i18n/localized-link";
 import { useI18n } from "@/lib/i18n/context";
 import { trackEvent } from "@/lib/analytics/events";
-
-const clientEmailSchema = z.string().email();
 
 type Variant = "inline" | "card";
 type Status = "idle" | "loading" | "success" | "error";
@@ -35,10 +32,19 @@ export function NewsletterSignup({ variant = "card" }: { variant?: Variant }) {
     e.preventDefault();
     setErrorMsg("");
 
-    const result = clientEmailSchema.safeParse(email);
-    if (!result.success) {
+    // Zod is loaded on demand so it stays out of the first-load bundle;
+    // validation only ever runs at submit time.
+    try {
+      const { z } = await import("zod");
+      const result = z.string().email().safeParse(email);
+      if (!result.success) {
+        setStatus("error");
+        setErrorMsg(t("newsletter.invalidEmail"));
+        return;
+      }
+    } catch {
       setStatus("error");
-      setErrorMsg(t("newsletter.invalidEmail"));
+      setErrorMsg(t("newsletter.error"));
       return;
     }
 

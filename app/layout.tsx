@@ -18,7 +18,7 @@ import { getRequestLocaleContext } from "@/lib/i18n/request";
 import { buildSiteMetadata } from "@/lib/seo/site-metadata";
 import { CURATED_STYLE_COUNT } from "@/lib/product/catalog-facts";
 import { getShowcaseTypographyProfile } from "@/lib/typography/showcase-profiles";
-import { ShowcaseTypographyRuntime } from "@/components/typography/showcase-typography-runtime";
+import { LazyShowcaseTypographyRuntime } from "@/components/typography/lazy-showcase-typography-runtime";
 import "./globals.css";
 
 const publicSans = Albert_Sans({
@@ -237,7 +237,7 @@ export default async function RootLayout({
         style={routeFontVariables}
       >
         <ClientProviders initialLocale={locale}>
-          <ShowcaseTypographyRuntime />
+          <LazyShowcaseTypographyRuntime />
           <AnnouncementBanner />
           <LazyCommandPalette />
           {children}

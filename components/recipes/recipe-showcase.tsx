@@ -9,9 +9,8 @@ import {
   getFeaturedRecipes,
   getAllUseCases,
   getRecipesByUseCase,
-  type StyleRecipe,
-  type UseCase,
-} from "@/lib/styles/recipes";
+} from "@/lib/styles/recipe-selectors";
+import type { StyleRecipe, UseCase } from "@/lib/styles/recipe-types";
 
 interface RecipeShowcaseProps {
   variant?: "home" | "full";
