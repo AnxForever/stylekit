@@ -3,13 +3,23 @@
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import { startTransition, useEffect, useMemo, useRef, useState } from "react";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Heart } from "lucide-react";
 import { useI18n } from "@/lib/i18n/context";
 import { HomeStyleCard } from "@/components/home/home-style-card";
 import { FeaturedCarousel } from "@/components/home/featured-carousel";
 import { RevealOnScroll } from "@/components/home/reveal-on-scroll";
 import { GitHubStarButton } from "@/components/github-star-button";
+import {
+  Drawer,
+  DrawerContent,
+  DrawerDescription,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { trackEvent } from "@/lib/analytics/events";
+import { HomeSupportCard, type SupportPreviewItem } from "./_support-card";
 import { MobileHomeSummarySection } from "./_mobile-summary";
 import { TrendingStylesSkeleton } from "./_skeletons";
 import { ThankYouModal } from "@/components/home/thank-you-modal";
@@ -112,6 +122,22 @@ export function HomeContent({ styles, stats }: HomeContentProps) {
       { href: quickLinkTargets[1], label: t("analytics.trending.title") },
     ],
     [quickLinkTargets, t]
+  );
+  const supportHref = localizeHref("/contact#support-maintenance", locale);
+  const supportPreviewItems: SupportPreviewItem[] = useMemo(
+    () => [
+      {
+        src: "/wechat-qr.png",
+        title: locale === "zh" ? "微信赞赏码" : "WeChat Tipping",
+        hint: locale === "zh" ? "微信赞赏" : "Tip via WeChat",
+      },
+      {
+        src: "/alipay-qr.jpg",
+        title: locale === "zh" ? "支付宝" : "Alipay",
+        hint: locale === "zh" ? "支付宝扫码" : "Scan with Alipay",
+      },
+    ],
+    [locale]
   );
   const heroScenarioEntries = useMemo(
     () => HERO_SCENARIO_ORDER
@@ -411,7 +437,69 @@ export function HomeContent({ styles, stats }: HomeContentProps) {
             </RevealOnScroll>
 
             <RevealOnScroll instant className="w-full max-w-xl md:max-w-none md:justify-self-end">
-              <FeaturedCarousel styles={featuredStyles} />
+              <div className="relative">
+                <FeaturedCarousel styles={featuredStyles} />
+                <div className="mt-4 flex justify-end lg:hidden">
+                  <Drawer>
+                    <DrawerTrigger asChild>
+                      <button
+                        type="button"
+                        className="inline-flex items-center gap-2 rounded-full border border-foreground bg-background/90 px-4 py-2 text-sm shadow-[0_14px_40px_-24px_rgba(0,0,0,0.45)] backdrop-blur-sm transition-colors hover:bg-foreground hover:text-background"
+                      >
+                        <Heart className="h-4 w-4" />
+                        {locale === "zh" ? "支持维护" : "Support"}
+                      </button>
+                    </DrawerTrigger>
+                    <DrawerContent
+                      side="bottom"
+                      className="max-h-[88vh] overflow-y-auto rounded-t-[28px] px-4 pb-4 pt-8"
+                    >
+                      <DrawerHeader className="sr-only">
+                        <DrawerTitle>
+                          {locale === "zh" ? "支持维护" : "Support Maintenance"}
+                        </DrawerTitle>
+                        <DrawerDescription>
+                          {locale === "zh"
+                            ? "扫码支持 StyleKit 的服务器、域名和后续维护。"
+                            : "Scan to support StyleKit server, domain, and maintenance costs."}
+                        </DrawerDescription>
+                      </DrawerHeader>
+                      <HomeSupportCard
+                        locale={locale}
+                        href={supportHref}
+                        items={supportPreviewItems}
+                        variant="mobile"
+                      />
+                    </DrawerContent>
+                  </Drawer>
+                </div>
+                <div className="mt-4 hidden lg:flex justify-end">
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <button
+                        type="button"
+                        className="inline-flex items-center gap-2 rounded-full border border-foreground bg-background/90 px-4 py-2 text-sm shadow-[0_14px_40px_-24px_rgba(0,0,0,0.45)] backdrop-blur-sm transition-colors hover:bg-foreground hover:text-background"
+                      >
+                        <Heart className="h-4 w-4" />
+                        {locale === "zh" ? "支持维护" : "Support"}
+                      </button>
+                    </PopoverTrigger>
+                    <PopoverContent
+                      align="end"
+                      side="top"
+                      sideOffset={12}
+                      className="w-[22rem] border-0 bg-transparent p-0 shadow-none"
+                    >
+                      <HomeSupportCard
+                        locale={locale}
+                        href={supportHref}
+                        items={supportPreviewItems}
+                        variant="desktop"
+                      />
+                    </PopoverContent>
+                  </Popover>
+                </div>
+              </div>
             </RevealOnScroll>
           </div>
 
