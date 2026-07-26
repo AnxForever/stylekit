@@ -32,6 +32,41 @@ import {
 import { TemplateBackButton } from "@/components/templates/template-back-button";
 type ViewType = "home" | "explore" | "notifications" | "bookmarks" | "profile";
 
+const avatarPalette = [
+  "bg-blue-500",
+  "bg-violet-500",
+  "bg-rose-500",
+  "bg-emerald-500",
+  "bg-amber-500",
+  "bg-cyan-600",
+  "bg-fuchsia-500",
+  "bg-teal-500",
+] as const;
+
+function avatarColor(seed: string): string {
+  let hash = 0;
+  for (let i = 0; i < seed.length; i++) {
+    hash = (hash * 31 + seed.charCodeAt(i)) % 997;
+  }
+  return avatarPalette[hash % avatarPalette.length];
+}
+
+function Avatar({
+  initials,
+  className,
+}: {
+  initials: string;
+  className: string;
+}) {
+  return (
+    <div
+      className={`rounded-full ${avatarColor(initials)} flex items-center justify-center text-white font-bold shrink-0 ${className}`}
+    >
+      {initials}
+    </div>
+  );
+}
+
 interface Post {
   id: number;
   author: string;
@@ -39,7 +74,7 @@ interface Post {
   avatar: string;
   time: string;
   content: string;
-  image?: boolean;
+  image?: "editor" | "sunrise";
   likes: number;
   comments: number;
   reposts: number;
@@ -95,7 +130,7 @@ const initialPosts: Post[] = [
     time: "4h",
     content:
       "Hot take: TypeScript strict mode should be the default for every project. The initial friction pays off tenfold in maintainability.",
-    image: true,
+    image: "editor",
     likes: 1203,
     comments: 187,
     reposts: 312,
@@ -111,7 +146,7 @@ const initialPosts: Post[] = [
     time: "5h",
     content:
       "Beautiful sunrise from my morning run today. Sometimes the best debugging happens away from the keyboard.",
-    image: true,
+    image: "sunrise",
     likes: 542,
     comments: 28,
     reposts: 15,
@@ -220,6 +255,71 @@ function getNotificationIcon(type: Notification["type"]) {
     case "repost": return { icon: Repeat2, color: "text-green-500", bg: "bg-green-50" };
     case "mention": return { icon: MessageCircle, color: "text-blue-500", bg: "bg-blue-50" };
   }
+}
+
+function PostImage({ kind }: { kind: NonNullable<Post["image"]> }) {
+  if (kind === "editor") {
+    // Code editor screenshot: window chrome + syntax-colored line bars
+    return (
+      <div className="mb-3 rounded-2xl overflow-hidden border border-gray-200 bg-slate-900 h-48">
+        <div className="flex items-center gap-1.5 px-4 py-2.5 bg-slate-800 border-b border-slate-700">
+          <span className="w-2.5 h-2.5 rounded-full bg-red-400" />
+          <span className="w-2.5 h-2.5 rounded-full bg-amber-400" />
+          <span className="w-2.5 h-2.5 rounded-full bg-green-400" />
+          <span className="ml-3 h-2 w-24 rounded-full bg-slate-600" />
+        </div>
+        <div className="p-4 space-y-2.5 font-mono">
+          <div className="flex gap-2">
+            <span className="h-2 w-10 rounded-full bg-violet-400" />
+            <span className="h-2 w-24 rounded-full bg-sky-400" />
+            <span className="h-2 w-8 rounded-full bg-slate-600" />
+          </div>
+          <div className="flex gap-2 pl-5">
+            <span className="h-2 w-16 rounded-full bg-emerald-400" />
+            <span className="h-2 w-6 rounded-full bg-slate-600" />
+            <span className="h-2 w-20 rounded-full bg-amber-300" />
+          </div>
+          <div className="flex gap-2 pl-5">
+            <span className="h-2 w-12 rounded-full bg-sky-400" />
+            <span className="h-2 w-28 rounded-full bg-slate-600" />
+          </div>
+          <div className="flex gap-2 pl-10">
+            <span className="h-2 w-20 rounded-full bg-rose-400" />
+            <span className="h-2 w-10 rounded-full bg-emerald-400" />
+          </div>
+          <div className="flex gap-2 pl-5">
+            <span className="h-2 w-8 rounded-full bg-violet-400" />
+          </div>
+          <div className="mt-3 inline-flex items-center gap-2 rounded-md bg-slate-800 border border-emerald-500/40 px-3 py-1.5">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+            <span className="text-[10px] font-bold text-emerald-300 tracking-wide">
+              &quot;strict&quot;: true
+            </span>
+          </div>
+        </div>
+      </div>
+    );
+  }
+  // Sunrise: banded sky, glowing sun disc, ridge silhouettes over water
+  return (
+    <div className="mb-3 rounded-2xl overflow-hidden border border-gray-200 h-48 relative bg-gradient-to-b from-indigo-300 via-orange-200 to-amber-100">
+      <div className="absolute left-1/2 top-[38%] -translate-x-1/2 -translate-y-1/2 w-24 h-24 rounded-full bg-amber-200/60 blur-md" />
+      <div className="absolute left-1/2 top-[38%] -translate-x-1/2 -translate-y-1/2 w-14 h-14 rounded-full bg-gradient-to-b from-yellow-200 to-orange-400" />
+      <div
+        className="absolute inset-x-0 bottom-16 h-10 bg-orange-900/30"
+        style={{ clipPath: "polygon(0 100%, 0 60%, 18% 25%, 34% 70%, 52% 15%, 70% 55%, 86% 30%, 100% 65%, 100% 100%)" }}
+      />
+      <div
+        className="absolute inset-x-0 bottom-12 h-12 bg-orange-950/50"
+        style={{ clipPath: "polygon(0 100%, 0 45%, 15% 75%, 30% 30%, 48% 65%, 65% 20%, 82% 60%, 100% 40%, 100% 100%)" }}
+      />
+      <div className="absolute inset-x-0 bottom-0 h-12 bg-gradient-to-b from-orange-300 to-amber-500/80">
+        <div className="absolute left-1/2 -translate-x-1/2 top-1 w-20 h-1 rounded-full bg-yellow-100/80" />
+        <div className="absolute left-1/2 -translate-x-1/2 top-4 w-32 h-1 rounded-full bg-yellow-100/50" />
+        <div className="absolute left-1/2 -translate-x-1/2 top-7 w-44 h-1 rounded-full bg-yellow-100/30" />
+      </div>
+    </div>
+  );
 }
 
 export default function SocialFeedTemplate() {
@@ -370,9 +470,7 @@ export default function SocialFeedTemplate() {
       className="border-b border-gray-200 p-4 hover:bg-gray-50/50 transition-colors"
     >
       <div className="flex gap-3">
-        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center text-white font-bold text-sm shrink-0">
-          {post.avatar}
-        </div>
+        <Avatar initials={post.avatar} className="w-10 h-10 text-sm" />
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-1 mb-0.5">
             <span className="font-bold text-[15px] truncate">{post.author}</span>
@@ -385,11 +483,7 @@ export default function SocialFeedTemplate() {
           <p className="text-[15px] text-gray-900 leading-relaxed mb-3 whitespace-pre-wrap">
             {post.content}
           </p>
-          {post.image && (
-            <div className="mb-3 rounded-2xl overflow-hidden border border-gray-200 bg-gradient-to-br from-blue-100 via-purple-50 to-pink-100 h-48 flex items-center justify-center">
-              <ImageIcon className="w-8 h-8 text-gray-300" />
-            </div>
-          )}
+          {post.image && <PostImage kind={post.image} />}
           <div className="flex items-center justify-between max-w-md text-gray-500">
             <button className="flex items-center gap-1.5 group">
               <span className="p-2 rounded-full group-hover:bg-blue-50 group-hover:text-blue-500 transition-colors">
@@ -469,9 +563,7 @@ export default function SocialFeedTemplate() {
       </div>
       <div className="border-b border-gray-200 p-4">
         <div className="flex gap-3">
-          <div className="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center text-white font-bold text-sm shrink-0">
-            {profile.avatar}
-          </div>
+          <Avatar initials={profile.avatar} className="w-10 h-10 text-sm" />
           <div className="flex-1">
             <textarea
               value={newPost}
@@ -565,9 +657,7 @@ export default function SocialFeedTemplate() {
               key={user.handle}
               className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition-colors"
             >
-              <div className="w-12 h-12 rounded-full bg-gradient-to-br from-green-400 to-blue-500 flex items-center justify-center text-white font-bold text-sm shrink-0">
-                {user.avatar}
-              </div>
+              <Avatar initials={user.avatar} className="w-12 h-12 text-sm" />
               <div className="flex-1 min-w-0">
                 <div className="font-bold text-sm truncate">{user.name}</div>
                 <div className="text-xs text-gray-500 truncate">{user.handle}</div>
@@ -636,9 +726,7 @@ export default function SocialFeedTemplate() {
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-start gap-2">
-                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center text-white font-bold text-xs shrink-0">
-                      {notification.avatar}
-                    </div>
+                    <Avatar initials={notification.avatar} className="w-8 h-8 text-xs" />
                     <div className="flex-1 min-w-0">
                       <p className="text-[15px]">
                         <span className="font-bold">{notification.user}</span>{" "}
@@ -706,7 +794,7 @@ export default function SocialFeedTemplate() {
 
       {/* Avatar and edit button */}
       <div className="px-4 relative">
-        <div className="w-20 h-20 rounded-full bg-blue-500 flex items-center justify-center text-white font-bold text-2xl border-4 border-white -mt-10 relative z-10">
+        <div className={`w-20 h-20 rounded-full ${avatarColor(profile.avatar)} flex items-center justify-center text-white font-bold text-2xl border-4 border-white -mt-10 relative z-10`}>
           {profile.avatar}
         </div>
         <button
@@ -810,11 +898,8 @@ export default function SocialFeedTemplate() {
           <Menu className="w-5 h-5" />
         </button>
         <span className="text-lg font-bold text-blue-500">SocialKit</span>
-        <button
-          onClick={() => navigateTo("profile")}
-          className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white text-xs font-bold"
-        >
-          {profile.avatar}
+        <button onClick={() => navigateTo("profile")} aria-label="Profile">
+          <Avatar initials={profile.avatar} className="w-8 h-8 text-xs" />
         </button>
       </header>
 
@@ -975,9 +1060,7 @@ export default function SocialFeedTemplate() {
             onClick={() => navigateTo("profile")}
             className="mt-4 px-3 py-3 flex items-center gap-3 hover:bg-gray-100 rounded-full cursor-pointer w-full text-left"
           >
-            <div className="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center text-white font-bold text-sm">
-              {profile.avatar}
-            </div>
+            <Avatar initials={profile.avatar} className="w-10 h-10 text-sm" />
             <div className="flex-1 min-w-0">
               <div className="font-semibold text-sm truncate">{profile.name}</div>
               <div className="text-xs text-gray-500 truncate">{profile.handle}</div>
