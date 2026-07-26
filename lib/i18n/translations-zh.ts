@@ -633,6 +633,8 @@ export const zh: { [K in keyof typeof en]: string } = {
   "profile.statsFavorites": "收藏",
   "profile.pageLabel": "个人主页",
   "profile.browseStyles": "去逛风格库",
+  "profile.loadFailed": "这部分内容加载失败，刷新页面重试。",
+  "profile.showAll": "显示全部 {count} 条",
   "profile.ratings": "我的评分",
   "profile.noRatings": "还没有评分。去给风格打分吧！",
   "profile.emailHidden": "\u5df2\u9690\u85cf",

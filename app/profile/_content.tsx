@@ -9,6 +9,7 @@ import {
   User,
   Calendar,
   LogIn,
+  LogOut,
   Star,
   Eye,
   EyeOff,
@@ -134,6 +135,8 @@ function asPositiveInt(value: unknown): number | null {
 const TAB_KEYS = ["favorites", "comments", "ratings", "submissions"] as const;
 type TabKey = (typeof TAB_KEYS)[number];
 
+const LIST_PREVIEW_COUNT = 12;
+
 function isTabKey(value: string): value is TabKey {
   return (TAB_KEYS as readonly string[]).includes(value);
 }
@@ -192,14 +195,16 @@ interface ProfileContentProps {
 }
 
 export function ProfileContent({ allStyles }: ProfileContentProps) {
-  const { user, loading } = useUser();
+  const { user, loading, signOut } = useUser();
   const { favorites } = useFavorites();
   const { t, locale } = useI18n();
   const [showEmail, setShowEmail] = useState(false);
   const [activeTab, setActiveTab] = useState<TabKey>("favorites");
-  const { data: commentsData, isLoading: commentsLoading } = useProfileComments(user?.id);
-  const { data: ratingsData, isLoading: ratingsLoading } = useProfileRatings(user?.id);
-  const { data: submissionsData, mutate: mutateSubmissions, isLoading: submissionsLoading } = useProfileSubmissions(user?.id);
+  const [showAllComments, setShowAllComments] = useState(false);
+  const [showAllRatings, setShowAllRatings] = useState(false);
+  const { data: commentsData, isLoading: commentsLoading, error: commentsError } = useProfileComments(user?.id);
+  const { data: ratingsData, isLoading: ratingsLoading, error: ratingsError } = useProfileRatings(user?.id);
+  const { data: submissionsData, mutate: mutateSubmissions, isLoading: submissionsLoading, error: submissionsError } = useProfileSubmissions(user?.id);
   const { data: profileTitleData } = useProfileTitle(user?.id);
   const [editingSubmissionId, setEditingSubmissionId] = useState<string | null>(null);
   const [editSubmissionName, setEditSubmissionName] = useState("");
@@ -218,6 +223,21 @@ export function ProfileContent({ allStyles }: ProfileContentProps) {
   const selectTab = (key: TabKey) => {
     setActiveTab(key);
     window.history.replaceState(null, "", `#${key}`);
+  };
+
+  const onTabListKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+    if (event.key !== "ArrowRight" && event.key !== "ArrowLeft") {
+      return;
+    }
+    event.preventDefault();
+    const index = TAB_KEYS.indexOf(activeTab);
+    const nextIndex =
+      event.key === "ArrowRight"
+        ? (index + 1) % TAB_KEYS.length
+        : (index + TAB_KEYS.length - 1) % TAB_KEYS.length;
+    const nextKey = TAB_KEYS[nextIndex];
+    selectTab(nextKey);
+    document.getElementById(`tab-${nextKey}`)?.focus();
   };
 
   const styleMetaBySlug = useMemo(
@@ -348,6 +368,8 @@ export function ProfileContent({ allStyles }: ProfileContentProps) {
   const comments = commentsData?.comments ?? [];
   const ratings = ratingsData?.ratings ?? [];
   const submissions = submissionsData?.submissions ?? [];
+  const visibleComments = showAllComments ? comments : comments.slice(0, LIST_PREVIEW_COUNT);
+  const visibleRatings = showAllRatings ? ratings : ratings.slice(0, LIST_PREVIEW_COUNT);
 
   const statusColors: Record<string, string> = {
     pending: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300",
@@ -633,6 +655,15 @@ export function ProfileContent({ allStyles }: ProfileContentProps) {
                 </div>
               )}
             </dl>
+
+            <button
+              type="button"
+              onClick={() => void signOut()}
+              className="mt-6 inline-flex w-full items-center justify-center gap-1.5 border border-border px-3 py-1.5 text-[11px] uppercase tracking-wider text-muted hover:border-foreground hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+            >
+              <LogOut className="w-3 h-3" aria-hidden="true" />
+              {t("auth.signOut")}
+            </button>
           </div>
         </aside>
 
@@ -641,6 +672,7 @@ export function ProfileContent({ allStyles }: ProfileContentProps) {
           <div
             role="tablist"
             aria-label={t("profile.stats")}
+            onKeyDown={onTabListKeyDown}
             className="flex gap-6 border-b border-border overflow-x-auto scrollbar-hide"
           >
             {tabs.map((tab) => {
@@ -653,6 +685,7 @@ export function ProfileContent({ allStyles }: ProfileContentProps) {
                   id={`tab-${tab.key}`}
                   aria-selected={isActive}
                   aria-controls={`panel-${tab.key}`}
+                  tabIndex={isActive ? 0 : -1}
                   onClick={() => selectTab(tab.key)}
                   className={`relative pb-3 text-sm whitespace-nowrap transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent ${
                     isActive ? "text-foreground" : "text-muted hover:text-foreground"
@@ -727,7 +760,9 @@ export function ProfileContent({ allStyles }: ProfileContentProps) {
 
             {activeTab === "comments" && (
               <>
-                {commentsLoading ? (
+                {commentsError ? (
+                  <EmptyNote>{t("profile.loadFailed")}</EmptyNote>
+                ) : commentsLoading ? (
                   <div className="divide-y divide-border border-y border-border animate-pulse">
                     {Array.from({ length: 3 }).map((_, i) => (
                       <div key={i} className="py-3.5 space-y-2">
@@ -739,8 +774,9 @@ export function ProfileContent({ allStyles }: ProfileContentProps) {
                 ) : comments.length === 0 ? (
                   <EmptyNote>{t("profile.noComments")}</EmptyNote>
                 ) : (
-                  <div className="divide-y divide-border border-y border-border">
-                    {comments.map((comment) => (
+                  <>
+                    <div className="divide-y divide-border border-y border-border">
+                      {visibleComments.map((comment) => (
                       <div
                         key={comment.id}
                         className="py-3.5 grid gap-1 sm:grid-cols-[1fr_auto] sm:gap-4"
@@ -761,14 +797,28 @@ export function ProfileContent({ allStyles }: ProfileContentProps) {
                         </span>
                       </div>
                     ))}
-                  </div>
+                    </div>
+                    {!showAllComments && comments.length > LIST_PREVIEW_COUNT && (
+                      <div className="mt-4 text-center">
+                        <button
+                          type="button"
+                          onClick={() => setShowAllComments(true)}
+                          className="border border-border px-4 py-1.5 text-xs uppercase tracking-wider text-muted hover:border-foreground hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+                        >
+                          {t("profile.showAll").replace("{count}", String(comments.length))}
+                        </button>
+                      </div>
+                    )}
+                  </>
                 )}
               </>
             )}
 
             {activeTab === "ratings" && (
               <>
-                {ratingsLoading ? (
+                {ratingsError ? (
+                  <EmptyNote>{t("profile.loadFailed")}</EmptyNote>
+                ) : ratingsLoading ? (
                   <div className="divide-y divide-border border-y border-border animate-pulse">
                     {Array.from({ length: 4 }).map((_, i) => (
                       <div key={i} className="py-3 flex justify-between">
@@ -780,8 +830,9 @@ export function ProfileContent({ allStyles }: ProfileContentProps) {
                 ) : ratings.length === 0 ? (
                   <EmptyNote>{t("profile.noRatings")}</EmptyNote>
                 ) : (
-                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
-                    {ratings.map((r) => (
+                  <>
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
+                      {visibleRatings.map((r) => (
                       <div
                         key={r.id}
                         className="flex items-center justify-between gap-3 border border-border px-4 py-3"
@@ -811,7 +862,19 @@ export function ProfileContent({ allStyles }: ProfileContentProps) {
                         </div>
                       </div>
                     ))}
-                  </div>
+                    </div>
+                    {!showAllRatings && ratings.length > LIST_PREVIEW_COUNT && (
+                      <div className="mt-4 text-center">
+                        <button
+                          type="button"
+                          onClick={() => setShowAllRatings(true)}
+                          className="border border-border px-4 py-1.5 text-xs uppercase tracking-wider text-muted hover:border-foreground hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+                        >
+                          {t("profile.showAll").replace("{count}", String(ratings.length))}
+                        </button>
+                      </div>
+                    )}
+                  </>
                 )}
               </>
             )}
@@ -827,7 +890,9 @@ export function ProfileContent({ allStyles }: ProfileContentProps) {
                   </p>
                 )}
 
-                {submissionsLoading ? (
+                {submissionsError ? (
+                  <EmptyNote>{t("profile.loadFailed")}</EmptyNote>
+                ) : submissionsLoading ? (
                   <div className="space-y-3 animate-pulse">
                     {Array.from({ length: 2 }).map((_, i) => (
                       <div key={i} className="border border-border p-3.5 space-y-2.5">
