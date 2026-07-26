@@ -18,6 +18,7 @@ export const dataDense: DesignStyle = {
     accent: ["#3b82f6", "#ef4444", "#22c55e", "#64748b"],
   },
   keywords: ["后台管理", "数据表格", "高密度", "管理面板", "运营", "admin", "modern", "contemporary", "sleek", "现代"],
+  keywordsEn: ["data dense", "high density ui", "compact ui", "data table design", "admin panel", "dense dashboard", "enterprise ui", "information density", "compact spacing", "operational dashboard", "back office ui"],
 
   philosophy: `Data Dense 是一种效率优先的管理界面设计语言。
 
@@ -266,6 +267,28 @@ Core principles:
 
 ## Responsive
 - Mobile: horizontal scroll for tables, stacked cards for KPIs
+- Desktop: full table view with inline actions`,
+
+  aiRulesEn: `You are a Data Dense admin panel design expert.
+
+## Absolute Rules
+- Maximize information density: table rows use py-2 or less
+- All table text must be text-sm or text-xs
+- Numbers and IDs must use font-mono
+- Status must be color-coded (green=active, yellow=pending, red=error, blue=info)
+- Buttons must stay small: px-2.5 py-1 text-xs
+- Table headers must be uppercase text-[10px] tracking-wide
+
+## Forbidden
+- Large padding (p-6 and above)
+- Large rounded corners (rounded-xl and above)
+- Decorative gradients or heavy shadows
+- Large font sizes in data areas
+- Hiding frequent actions inside menus
+- Large whitespace gaps
+
+## Responsive
+- Mobile: tables scroll horizontally, KPI cards stack vertically
 - Desktop: full table view with inline actions`,
 
   examplePrompts: [
