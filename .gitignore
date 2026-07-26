@@ -93,6 +93,10 @@ public/support/thank-you/
 public/images/styles/*
 !public/images/styles/immersive-photo/
 !public/images/styles/immersive-photo/**
+!public/images/styles/luxe-lookbook/
+!public/images/styles/luxe-lookbook/**
+!public/images/styles/launch-keynote/
+!public/images/styles/launch-keynote/**
 public/launch/overseas/
 .images-generate-state.json
 

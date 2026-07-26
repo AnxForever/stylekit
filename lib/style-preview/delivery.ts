@@ -144,6 +144,9 @@ const stylePreviewLoaders: Record<string, StylePreviewLoader> = {
   "gallery-dark": () => import("./styles/gallery-dark").then((module) => module.default),
   "studio-bold": () => import("./styles/studio-bold").then((module) => module.default),
   "warm-organic": () => import("./styles/warm-organic").then((module) => module.default),
+  "launch-keynote": () => import("./styles/launch-keynote").then((module) => module.default),
+  "luxe-lookbook": () => import("./styles/luxe-lookbook").then((module) => module.default),
+  "shader-gradient": () => import("./styles/shader-gradient").then((module) => module.default),
   // End style preview loaders
 };
 
@@ -292,6 +295,9 @@ export const stylePreviewSlugs = Object.freeze([
   "gallery-dark",
   "studio-bold",
   "warm-organic",
+  "launch-keynote",
+  "luxe-lookbook",
+  "shader-gradient",
   // End style preview slugs
 ]);
 

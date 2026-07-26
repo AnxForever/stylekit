@@ -151,6 +151,9 @@ import { distillStyleRecipes } from "./distill-style";
 import { studioBoldRecipes } from "./studio-bold";
 import { galleryDarkRecipes } from "./gallery-dark";
 import { warmOrganicRecipes } from "./warm-organic";
+import { launchKeynoteRecipes } from "./launch-keynote";
+import { luxeLookbookRecipes } from "./luxe-lookbook";
+import { shaderGradientRecipes } from "./shader-gradient";
 
 // Recipe registry
 const recipeRegistry: Record<string, StyleRecipes> = {
@@ -305,6 +308,9 @@ const recipeRegistry: Record<string, StyleRecipes> = {
   "studio-bold": studioBoldRecipes,
   "gallery-dark": galleryDarkRecipes,
   "warm-organic": warmOrganicRecipes,
+  "launch-keynote": launchKeynoteRecipes,
+  "luxe-lookbook": luxeLookbookRecipes,
+  "shader-gradient": shaderGradientRecipes,
 };
 
 /**

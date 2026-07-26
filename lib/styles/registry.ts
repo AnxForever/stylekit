@@ -165,6 +165,9 @@ import { distillStyle } from "./distill-style";
 import { studioBold } from "./studio-bold";
 import { galleryDark } from "./gallery-dark";
 import { warmOrganic } from "./warm-organic";
+import { launchKeynote } from "./launch-keynote";
+import { luxeLookbook } from "./luxe-lookbook";
+import { shaderGradient } from "./shader-gradient";
 import { normalizeStyleRules } from "./rule-normalizer";
 
 // 风格列表
@@ -335,6 +338,9 @@ const rawStyles: DesignStyle[] = [
   studioBold,
   galleryDark,
   warmOrganic,
+  launchKeynote,
+  luxeLookbook,
+  shaderGradient,
 ];
 
 export const styles: DesignStyle[] = rawStyles.map((style) => normalizeStyleRules(style));

@@ -221,6 +221,9 @@ const SCENARIO_ASSIGNMENTS: Record<string, StyleScenario[]> = {
   "gallery-dark": ["portfolio", "blog", "creative"],
   "studio-bold": ["portfolio", "marketing", "creative"],
   "warm-organic": ["portfolio", "creative", "ecommerce"],
+  "launch-keynote": ["marketing", "saas", "creative"],
+  "luxe-lookbook": ["ecommerce", "marketing", "portfolio"],
+  "shader-gradient": ["saas", "marketing", "creative"],
 };
 
 // Safety net for styles created outside the registry (e.g. runtime-generated

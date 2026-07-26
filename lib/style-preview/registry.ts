@@ -86,6 +86,9 @@ import preview082 from "./styles/neon-gradient";
 import preview083 from "./styles/liquid-glass";
 import preview084 from "./styles/scandinavian";
 import preview085 from "./styles/cinematic-video-hero";
+import preview140 from "./styles/launch-keynote";
+import preview141 from "./styles/luxe-lookbook";
+import preview142 from "./styles/shader-gradient";
 import preview086 from "./styles/cel-shading";
 import preview087 from "./styles/wabi-sabi";
 import preview088 from "./styles/scrollytelling";
@@ -284,5 +287,8 @@ export const styleComponents: Record<string, StylePreviewComponents> = {
   "gallery-dark": preview137,
   "studio-bold": preview138,
   "warm-organic": preview139,
+  "launch-keynote": preview140,
+  "luxe-lookbook": preview141,
+  "shader-gradient": preview142,
   // End style preview entries
 };
