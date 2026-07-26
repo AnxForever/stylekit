@@ -99,7 +99,7 @@ function InputField({
           onChange={(e) => onChange(e.target.value)}
           placeholder={placeholder}
           autoComplete={autoComplete}
-          className={`w-full pl-10 pr-${rightElement ? "10" : "4"} py-2.5 rounded-xl border text-sm transition-all duration-200 bg-white outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 ${
+          className={`w-full pl-10 pr-${rightElement ? "10" : "4"} py-2.5 rounded-xl border text-sm transition-all duration-200 bg-white outline-none focus:ring-2 focus:ring-emerald-600/20 focus:border-emerald-600 ${
             error
               ? "border-red-400 bg-red-50/30 focus:ring-red-400/20 focus:border-red-400"
               : "border-gray-200 hover:border-gray-300"
@@ -197,21 +197,29 @@ function PasswordStrengthBar({ password }: { password: string }) {
 
 function LeftPanel() {
   return (
-    <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-indigo-600 via-indigo-700 to-violet-800 flex-col justify-between relative overflow-hidden p-12">
-      {/* Decorative circles */}
-      <div className="absolute top-[-60px] right-[-60px] w-72 h-72 bg-white/5 rounded-full" />
-      <div className="absolute top-1/3 right-[-40px] w-48 h-48 bg-white/5 rounded-full" />
-      <div className="absolute bottom-[-40px] right-1/4 w-64 h-64 bg-white/5 rounded-full" />
-      <div className="absolute top-1/2 left-[-30px] w-36 h-36 bg-violet-500/20 rounded-full" />
-      <div className="absolute bottom-1/4 left-[-20px] w-24 h-24 bg-indigo-300/10 rounded-full" />
+    <div className="hidden lg:flex lg:w-1/2 flex-col justify-between relative overflow-hidden p-12 bg-[#0B3B2D]">
+      {/* Night glow */}
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_20%_10%,rgba(232,196,104,0.12),transparent_55%)]" />
+
+      {/* Ring constellation */}
+      <div className="absolute top-16 right-14 w-40 h-40 rounded-full border border-white/10" />
+      <div className="absolute top-28 right-28 w-64 h-64 rounded-full border border-white/[0.06]" />
+      <div className="absolute top-24 right-24 w-2 h-2 rounded-full bg-[#E8C468]" />
+      <div className="absolute top-48 right-12 w-1.5 h-1.5 rounded-full bg-white/40" />
+      <div className="absolute top-64 right-40 w-1 h-1 rounded-full bg-white/30" />
+
+      {/* Layered hill silhouettes */}
+      <div className="absolute -bottom-28 -left-24 right-[-20%] h-72 rounded-[100%] bg-[#0E4736]" />
+      <div className="absolute -bottom-40 left-[15%] right-[-30%] h-72 rounded-[100%] bg-[#124F3C]" />
+      <div className="absolute -bottom-52 left-[45%] right-[-40%] h-72 rounded-[100%] bg-[#175A44]" />
 
       {/* Logo */}
       <div className="relative z-10">
         <div className="flex items-center gap-2.5">
-          <div className="w-9 h-9 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-sm border border-white/20">
-            <Sparkles className="w-5 h-5 text-white" />
+          <div className="w-9 h-9 rounded-xl flex items-center justify-center border border-white/20 bg-white/10">
+            <Sparkles className="w-5 h-5 text-[#E8C468]" />
           </div>
-          <span className="text-white text-xl font-bold tracking-tight">Lumino</span>
+          <span className="text-white text-xl font-bold tracking-tight">Arbor</span>
         </div>
       </div>
 
@@ -219,49 +227,49 @@ function LeftPanel() {
       <div className="relative z-10 space-y-6">
         <div>
           <h2 className="text-4xl font-bold text-white leading-tight">
-            Bring your
+            Grow ideas into
             <br />
-            ideas to light.
+            shipped work.
           </h2>
-          <p className="mt-4 text-indigo-200 text-base leading-relaxed max-w-sm">
-            Lumino helps creative teams manage projects, track progress, and ship
-            beautiful work — all in one luminous workspace.
+          <p className="mt-4 text-emerald-100/80 text-base leading-relaxed max-w-sm">
+            Arbor helps creative teams manage projects, track progress, and ship
+            beautiful work — one calm, focused workspace.
           </p>
         </div>
 
         {/* Stat / testimonial cards */}
         <div className="space-y-3">
-          <div className="bg-white/10 backdrop-blur-sm border border-white/15 rounded-2xl p-4 flex items-start gap-3">
-            <div className="w-8 h-8 bg-indigo-400/30 rounded-lg flex items-center justify-center flex-shrink-0">
-              <Users className="w-4 h-4 text-indigo-200" />
+          <div className="bg-white/[0.07] border border-white/10 rounded-2xl p-4 flex items-start gap-3">
+            <div className="w-8 h-8 bg-emerald-300/20 rounded-lg flex items-center justify-center flex-shrink-0">
+              <Users className="w-4 h-4 text-emerald-100" />
             </div>
             <div>
               <p className="text-white text-sm font-semibold">Loved by 40,000+ creators</p>
-              <p className="text-indigo-300 text-xs mt-0.5">
-                &ldquo;Lumino transformed how our studio collaborates on campaigns.&rdquo;
+              <p className="text-emerald-100/60 text-xs mt-0.5">
+                &ldquo;Arbor transformed how our studio collaborates on campaigns.&rdquo;
               </p>
             </div>
           </div>
 
-          <div className="bg-white/10 backdrop-blur-sm border border-white/15 rounded-2xl p-4 flex items-start gap-3">
-            <div className="w-8 h-8 bg-violet-400/30 rounded-lg flex items-center justify-center flex-shrink-0">
-              <BarChart3 className="w-4 h-4 text-violet-200" />
+          <div className="bg-white/[0.07] border border-white/10 rounded-2xl p-4 flex items-start gap-3">
+            <div className="w-8 h-8 bg-emerald-300/20 rounded-lg flex items-center justify-center flex-shrink-0">
+              <BarChart3 className="w-4 h-4 text-emerald-100" />
             </div>
             <div>
               <p className="text-white text-sm font-semibold">Projects ship 2x faster</p>
-              <p className="text-indigo-300 text-xs mt-0.5">
+              <p className="text-emerald-100/60 text-xs mt-0.5">
                 Real-time dashboards keep every milestone visible and on track.
               </p>
             </div>
           </div>
 
-          <div className="bg-white/10 backdrop-blur-sm border border-white/15 rounded-2xl p-4 flex items-start gap-3">
-            <div className="w-8 h-8 bg-pink-400/20 rounded-lg flex items-center justify-center flex-shrink-0">
-              <Zap className="w-4 h-4 text-pink-200" />
+          <div className="bg-white/[0.07] border border-white/10 rounded-2xl p-4 flex items-start gap-3">
+            <div className="w-8 h-8 bg-[#E8C468]/20 rounded-lg flex items-center justify-center flex-shrink-0">
+              <Zap className="w-4 h-4 text-[#E8C468]" />
             </div>
             <div>
               <p className="text-white text-sm font-semibold">Free to start, no credit card</p>
-              <p className="text-indigo-300 text-xs mt-0.5">
+              <p className="text-emerald-100/60 text-xs mt-0.5">
                 Upgrade when your team is ready. Cancel any time, no questions.
               </p>
             </div>
@@ -271,8 +279,8 @@ function LeftPanel() {
 
       {/* Footer note */}
       <div className="relative z-10">
-        <p className="text-indigo-400 text-xs">
-          &copy; {new Date().getFullYear()} Lumino, Inc. &middot; All rights reserved.
+        <p className="text-emerald-100/40 text-xs">
+          &copy; {new Date().getFullYear()} Arbor, Inc. &middot; All rights reserved.
         </p>
       </div>
     </div>
@@ -318,7 +326,7 @@ function LoginView({ onSwitch }: { onSwitch: (v: AuthView) => void }) {
           <p className="text-gray-500 text-sm mt-1">Redirecting you to your workspace...</p>
         </div>
         <div className="w-48 h-1.5 bg-gray-100 rounded-full overflow-hidden">
-          <div className="h-full bg-gradient-to-r from-indigo-500 to-violet-600 rounded-full animate-[progress_2.5s_linear_forwards]" />
+          <div className="h-full bg-gradient-to-r from-emerald-600 to-emerald-500 rounded-full animate-[progress_2.5s_linear_forwards]" />
         </div>
       </div>
     );
@@ -327,7 +335,7 @@ function LoginView({ onSwitch }: { onSwitch: (v: AuthView) => void }) {
   return (
     <form onSubmit={handleSubmit} noValidate className="space-y-5">
       <div className="space-y-1">
-        <h1 className="text-2xl font-bold text-gray-900">Sign in to Lumino</h1>
+        <h1 className="text-2xl font-bold text-gray-900">Sign in to Arbor</h1>
         <p className="text-gray-500 text-sm">Welcome back &mdash; let&apos;s pick up where you left off.</p>
       </div>
 
@@ -384,14 +392,14 @@ function LoginView({ onSwitch }: { onSwitch: (v: AuthView) => void }) {
             type="checkbox"
             checked={form.remember}
             onChange={(e) => setForm({ ...form, remember: e.target.checked })}
-            className="w-4 h-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+            className="w-4 h-4 rounded border-gray-300 text-emerald-700 focus:ring-emerald-600"
           />
           <span className="text-sm text-gray-600">Remember me</span>
         </label>
         <button
           type="button"
           onClick={() => onSwitch("forgot")}
-          className="text-sm text-indigo-600 hover:text-indigo-700 font-medium transition-colors"
+          className="text-sm text-emerald-700 hover:text-emerald-800 font-medium transition-colors"
         >
           Forgot password?
         </button>
@@ -400,7 +408,7 @@ function LoginView({ onSwitch }: { onSwitch: (v: AuthView) => void }) {
       <button
         type="submit"
         disabled={state === "loading"}
-        className="w-full flex items-center justify-center gap-2 py-2.5 px-4 bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white text-sm font-semibold rounded-xl shadow-lg shadow-indigo-500/25 hover:shadow-indigo-500/40 transition-all duration-200 disabled:opacity-70 disabled:cursor-not-allowed"
+        className="w-full flex items-center justify-center gap-2 py-2.5 px-4 bg-emerald-700 hover:bg-emerald-800 text-white text-sm font-semibold rounded-xl shadow-lg shadow-emerald-900/20 hover:shadow-emerald-900/30 transition-all duration-200 disabled:opacity-70 disabled:cursor-not-allowed"
       >
         {state === "loading" ? (
           <>
@@ -423,7 +431,7 @@ function LoginView({ onSwitch }: { onSwitch: (v: AuthView) => void }) {
         <button
           type="button"
           onClick={() => onSwitch("register")}
-          className="text-indigo-600 hover:text-indigo-700 font-medium transition-colors"
+          className="text-emerald-700 hover:text-emerald-800 font-medium transition-colors"
         >
           Create one free
         </button>
@@ -469,8 +477,8 @@ function RegisterView({ onSwitch }: { onSwitch: (v: AuthView) => void }) {
   if (state === "success") {
     return (
       <div className="flex flex-col items-center justify-center text-center space-y-4 py-12">
-        <div className="w-16 h-16 bg-indigo-100 rounded-full flex items-center justify-center">
-          <Mail className="w-8 h-8 text-indigo-600" />
+        <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center">
+          <Mail className="w-8 h-8 text-emerald-700" />
         </div>
         <div>
           <h3 className="text-xl font-semibold text-gray-900">Account created!</h3>
@@ -481,7 +489,7 @@ function RegisterView({ onSwitch }: { onSwitch: (v: AuthView) => void }) {
         <button
           type="button"
           onClick={() => onSwitch("login")}
-          className="text-indigo-600 hover:text-indigo-700 text-sm font-medium transition-colors"
+          className="text-emerald-700 hover:text-emerald-800 text-sm font-medium transition-colors"
         >
           Back to sign in
         </button>
@@ -493,7 +501,7 @@ function RegisterView({ onSwitch }: { onSwitch: (v: AuthView) => void }) {
     <form onSubmit={handleSubmit} noValidate className="space-y-4">
       <div className="space-y-1">
         <h1 className="text-2xl font-bold text-gray-900">Create your account</h1>
-        <p className="text-gray-500 text-sm">Start your free Lumino workspace today.</p>
+        <p className="text-gray-500 text-sm">Start your free Arbor workspace today.</p>
       </div>
 
       <InputField
@@ -574,15 +582,15 @@ function RegisterView({ onSwitch }: { onSwitch: (v: AuthView) => void }) {
             type="checkbox"
             checked={form.terms}
             onChange={(e) => setForm({ ...form, terms: e.target.checked })}
-            className="mt-0.5 w-4 h-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 flex-shrink-0"
+            className="mt-0.5 w-4 h-4 rounded border-gray-300 text-emerald-700 focus:ring-emerald-600 flex-shrink-0"
           />
           <span className="text-sm text-gray-600">
-            I agree to Lumino&apos;s{" "}
-            <span className="text-indigo-600 font-medium hover:text-indigo-700 cursor-pointer">
+            I agree to Arbor&apos;s{" "}
+            <span className="text-emerald-700 font-medium hover:text-emerald-800 cursor-pointer">
               Terms of Service
             </span>{" "}
             and{" "}
-            <span className="text-indigo-600 font-medium hover:text-indigo-700 cursor-pointer">
+            <span className="text-emerald-700 font-medium hover:text-emerald-800 cursor-pointer">
               Privacy Policy
             </span>
           </span>
@@ -598,7 +606,7 @@ function RegisterView({ onSwitch }: { onSwitch: (v: AuthView) => void }) {
       <button
         type="submit"
         disabled={state === "loading"}
-        className="w-full flex items-center justify-center gap-2 py-2.5 px-4 bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white text-sm font-semibold rounded-xl shadow-lg shadow-indigo-500/25 hover:shadow-indigo-500/40 transition-all duration-200 disabled:opacity-70 disabled:cursor-not-allowed"
+        className="w-full flex items-center justify-center gap-2 py-2.5 px-4 bg-emerald-700 hover:bg-emerald-800 text-white text-sm font-semibold rounded-xl shadow-lg shadow-emerald-900/20 hover:shadow-emerald-900/30 transition-all duration-200 disabled:opacity-70 disabled:cursor-not-allowed"
       >
         {state === "loading" ? (
           <>
@@ -621,7 +629,7 @@ function RegisterView({ onSwitch }: { onSwitch: (v: AuthView) => void }) {
         <button
           type="button"
           onClick={() => onSwitch("login")}
-          className="text-indigo-600 hover:text-indigo-700 font-medium transition-colors"
+          className="text-emerald-700 hover:text-emerald-800 font-medium transition-colors"
         >
           Sign in
         </button>
@@ -657,8 +665,8 @@ function ForgotView({ onSwitch }: { onSwitch: (v: AuthView) => void }) {
   if (state === "success") {
     return (
       <div className="flex flex-col items-center justify-center text-center space-y-4 py-12">
-        <div className="w-16 h-16 bg-indigo-100 rounded-full flex items-center justify-center">
-          <Mail className="w-8 h-8 text-indigo-600" />
+        <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center">
+          <Mail className="w-8 h-8 text-emerald-700" />
         </div>
         <div>
           <h3 className="text-xl font-semibold text-gray-900">Reset link sent!</h3>
@@ -669,7 +677,7 @@ function ForgotView({ onSwitch }: { onSwitch: (v: AuthView) => void }) {
         <button
           type="button"
           onClick={() => onSwitch("login")}
-          className="text-indigo-600 hover:text-indigo-700 text-sm font-medium transition-colors"
+          className="text-emerald-700 hover:text-emerald-800 text-sm font-medium transition-colors"
         >
           Back to sign in
         </button>
@@ -701,7 +709,7 @@ function ForgotView({ onSwitch }: { onSwitch: (v: AuthView) => void }) {
       <button
         type="submit"
         disabled={state === "loading"}
-        className="w-full flex items-center justify-center gap-2 py-2.5 px-4 bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white text-sm font-semibold rounded-xl shadow-lg shadow-indigo-500/25 hover:shadow-indigo-500/40 transition-all duration-200 disabled:opacity-70 disabled:cursor-not-allowed"
+        className="w-full flex items-center justify-center gap-2 py-2.5 px-4 bg-emerald-700 hover:bg-emerald-800 text-white text-sm font-semibold rounded-xl shadow-lg shadow-emerald-900/20 hover:shadow-emerald-900/30 transition-all duration-200 disabled:opacity-70 disabled:cursor-not-allowed"
       >
         {state === "loading" ? (
           <>
@@ -724,7 +732,7 @@ function ForgotView({ onSwitch }: { onSwitch: (v: AuthView) => void }) {
         <button
           type="button"
           onClick={() => onSwitch("login")}
-          className="text-indigo-600 hover:text-indigo-700 font-medium transition-colors"
+          className="text-emerald-700 hover:text-emerald-800 font-medium transition-colors"
         >
           Back to sign in
         </button>
@@ -749,10 +757,10 @@ export default function AuthPagesTemplate() {
         <div className="w-full max-w-md">
           {/* Mobile logo */}
           <div className="flex items-center gap-2 mb-8 lg:hidden">
-            <div className="w-8 h-8 bg-gradient-to-br from-indigo-600 to-violet-600 rounded-lg flex items-center justify-center">
+            <div className="w-8 h-8 bg-emerald-700 rounded-lg flex items-center justify-center">
               <Sparkles className="w-4 h-4 text-white" />
             </div>
-            <span className="text-gray-900 text-lg font-bold tracking-tight">Lumino</span>
+            <span className="text-gray-900 text-lg font-bold tracking-tight">Arbor</span>
           </div>
 
           {/* View switcher tabs */}
@@ -785,7 +793,7 @@ export default function AuthPagesTemplate() {
           {/* Footer */}
           <p className="mt-6 text-center text-xs text-gray-400">
             Protected by industry-standard encryption.{" "}
-            <span className="text-gray-500">Lumino never sells your data.</span>
+            <span className="text-gray-500">Arbor never sells your data.</span>
           </p>
         </div>
       </div>
