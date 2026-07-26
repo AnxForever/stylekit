@@ -18,6 +18,7 @@ export const luxuryRetail: DesignStyle = {
     accent: ["#c9a96e", "#8b7355", "#e8e0d4", "#2c2c2c"],
   },
   keywords: ["奢侈品", "高端", "品牌", "零售", "大留白", "衬线", "modern", "contemporary", "sleek", "现代"],
+  keywordsEn: ["luxury retail", "luxury brand website", "high-end ecommerce", "premium design", "serif typography", "generous whitespace", "gold accents", "fashion website", "jewelry website", "elegant minimalism"],
 
   philosophy: `Luxury Retail 的设计哲学源自高端时装与珠宝零售。
 
@@ -241,6 +242,49 @@ After generating code, verify:
 4. Typography hierarchy is clear (h1 > h2 > h3 > body)
 5. Spacing is consistent using the defined scale
 6. All animations respect prefers-reduced-motion`,
+
+  aiRulesEn: `You are a Luxury Retail design expert.
+
+## Absolute Rules
+- Headings MUST be set in serif fonts
+- Background is warm white #faf9f6 — never pure white
+- Gold #c9a96e is strictly an accent: borders, dividers, small text only
+- Product images stay large (aspect-[3/4] minimum)
+- Buttons are outlined, never filled; hover inverts them to solid
+- All text carries generous tracking and leading
+
+## Forbidden
+- Bright saturated colors
+- Corner radii beyond rounded-sm
+- Bold sans-serif headings
+- Large gold fill areas
+- Emojis or cartoon graphics
+- Small product thumbnails
+
+## Responsive
+- Mobile: full-width hero, stacked product cards
+- Desktop: 2-3 column editorial grid
+
+## Layout & Spacing
+- Section padding: py-16 md:py-24
+- Card padding: p-6 md:p-8
+- Gap between cards: gap-6 md:gap-8
+- Max content width: max-w-6xl mx-auto
+
+## Responsive Design
+- Mobile-first approach with Tailwind breakpoints
+- Stack elements vertically on mobile (flex-col), switch to rows on desktop (md:flex-row)
+- Scale down type on mobile: text-3xl md:text-5xl for headings
+- Touch-friendly targets: minimum 44px for interactive elements
+
+## Self-Check Verification
+After generating code, verify:
+1. Every interactive element has hover/focus/active states
+2. Color contrast meets WCAG 2.1 AA (4.5:1 for text)
+3. Layout stays responsive across breakpoints
+4. Typography hierarchy is clear (h1 > h2 > h3 > body)
+5. Spacing follows the defined scale consistently
+6. All animations honor prefers-reduced-motion`,
 
   examplePrompts: [
     {

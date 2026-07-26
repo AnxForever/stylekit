@@ -179,6 +179,30 @@ Design principles:
     },
   },
 
+  examplePrompts: [
+    {
+      title: "建筑师作品集",
+      titleEn: "Architect Portfolio",
+      description: "生成 暖感有机风的建筑事务所作品集主页",
+      descriptionEn: "Generate an architecture studio portfolio homepage in Warm Organic style",
+      prompt: `Create an architecture studio portfolio homepage using Warm Organic style with a serif hero on a bg-[#F5F0EB] paper background, a project card grid with warm shadows, terracotta CTAs, olive project tags, and a sand-toned footer.`,
+    },
+    {
+      title: "陶艺工作室着陆页",
+      titleEn: "Ceramics Studio Landing Page",
+      description: "生成 暖感有机风的陶艺工作室着陆页",
+      descriptionEn: "Generate a ceramics studio landing page in Warm Organic style",
+      prompt: `Create a ceramics studio landing page using Warm Organic style with a hero section, process story, product gallery, a workshop signup form with warm inputs, and organic dot dividers.`,
+    },
+    {
+      title: "室内设计案例页",
+      titleEn: "Interior Design Case Study",
+      description: "生成 暖感有机风的室内设计项目案例页",
+      descriptionEn: "Generate an interior design case study page in Warm Organic style",
+      prompt: `Create an interior design case study page using Warm Organic style with rounded warm-bordered imagery, serif section headings, a material palette strip, and a terracotta contact CTA.`,
+    },
+  ],
+
   globalCss: `/* Warm Organic Global Styles */
 
 /* Signature warm shadow (claymorphism-lite) */
@@ -338,4 +362,54 @@ After generating code, verify:
 4. Body text is #2D2A24 not #000000
 5. Only accent colors present: terracotta #C86A4A and olive #7A8B5E
 6. All neutral tones lean warm (sand, clay, paper tones)`,
+
+  aiRulesEn: `You are a Warm Organic design expert building earthy, handcrafted portfolio interfaces. Every piece of generated code must obey these constraints:
+
+## Absolute Rules
+
+- Page background is bg-[#F5F0EB] (unbleached paper); cards and panels use bg-[#E8DED1] (sand) or translucent bg-white/60
+- All text uses text-[#2D2A24] (deep warm brown) — pure black #000000 is never allowed
+- Terracotta is the primary accent: bg-[#C86A4A] / text-[#C86A4A] on buttons, links, and CTAs
+- Olive green is the secondary accent: bg-[#7A8B5E] / text-[#7A8B5E] on tags, natural elements, and secondary emphasis
+- Clay carries the neutrals: bg-[#D4BFA5] for subtle surfaces, border-[#D4BFA5] for hairline dividers
+- Corner radius is rounded-lg as the standard — never larger than rounded-lg, never smaller than rounded-md
+- Shadows are warm brown rgba(45,42,36,0.12), never cold gray; the card shadow is shadow-[0_4px_20px_-4px_rgba(45,42,36,0.10)]
+- Headings use font-serif font-medium or font-sans font-light tracking-wide
+- Body copy uses font-sans text-[#2D2A24] leading-relaxed
+- Dividers use border-[#D4BFA5] at opacity-60 so they stay warm-toned, never cool gray
+- Decorative accents are small circular dots (w-2 h-2 rounded-full) tinted terracotta or olive
+
+## Forbidden
+
+- Cool grays such as #999 or #6B7280 — every neutral must lean warm
+- Sharp rounded-none corners or tiny rounded-sm radii
+- Cold shadows built on #000 or cool gray
+- Saturated neons or cool blues (no cyan, no electric blue)
+- Glassmorphism (backdrop-blur plus translucent white)
+- Pure black #000000 on any text
+- Gradients drifting toward cool tones
+
+## Layout & Spacing
+
+- Sections: py-16 md:py-24
+- Containers: max-w-5xl, or max-w-4xl for prose
+- Card grids: gap-6 md:gap-8
+- Card padding: p-5 md:p-6
+- Centered prose column: max-w-3xl mx-auto
+
+## Responsive
+
+- Mobile: single column with compact card padding
+- Tablet (768px+): two-column project card grids
+- Desktop (1024px+): wider cards, richer shadows, more generous whitespace
+
+## Self-Check
+
+Verify after generating:
+1. Every color belongs to the warm organic palette — no cool grays, no neons
+2. Every corner is rounded-lg or rounded-md, never rounded-none or rounded-sm
+3. Every shadow uses warm brown rgba(45,42,36,*), never #000 or cool gray
+4. Body text is #2D2A24, not #000000
+5. Terracotta #C86A4A and olive #7A8B5E are the only accents present
+6. Every neutral leans warm (paper, sand, clay tones)`,
 };

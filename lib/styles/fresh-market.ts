@@ -18,6 +18,7 @@ export const freshMarket: DesignStyle = {
     accent: ["#e8722a", "#f5c542", "#8b4513", "#d4e4bc"],
   },
   keywords: ["生鲜", "食品", "有机", "电商", "暖色", "自然", "modern", "contemporary", "sleek", "现代"],
+  keywordsEn: ["fresh market", "organic food", "grocery ecommerce", "farmers market", "warm color palette", "food website", "rounded cards", "natural textures", "produce shop", "ecommerce homepage"],
 
   philosophy: `Fresh Market 的灵感来源于农贸集市和有机食品店。
 
@@ -271,6 +272,48 @@ After generating code, verify:
 4. Typography hierarchy is clear (h1 > h2 > h3 > body)
 5. Spacing is consistent using the defined scale
 6. All animations respect prefers-reduced-motion`,
+
+  aiRulesEn: `You are an expert frontend developer specializing in Fresh Market, a warm food and grocery e-commerce style. All generated code must strictly follow these constraints:
+
+## Absolute Rules
+- Every surface sits on warm cream bg-[#fef9f0] — never cold white or gray backgrounds
+- Round every corner: rounded-lg is the minimum, rounded-2xl is preferred for cards
+- Deep green #2d5016 carries headings and freshness signals
+- Pumpkin orange #e8722a is reserved for CTAs and moments of energy
+- Never render pure black text — substitute deep brown #8b4513 or deep green #2d5016
+- Product imagery must be large and appetizing
+
+## Forbidden
+- Cool blue or gray backgrounds
+- Sharp corners (rounded-none)
+- Pure black text
+- Neon or fluorescent colors
+- Industrial or geometric typefaces
+
+## Responsive
+- Mobile: single-column flow with large product images
+- Desktop: 3-4 column product grid
+
+## Layout & Spacing
+- Section padding: py-16 md:py-24
+- Card padding: p-6 md:p-8
+- Gap between cards: gap-6 md:gap-8
+- Max content width: max-w-6xl mx-auto
+
+## Responsive Design
+- Build mobile-first with Tailwind breakpoints
+- Stack elements vertically on mobile (flex-col), switch to rows on desktop (md:flex-row)
+- Scale headings down on mobile: text-3xl md:text-5xl
+- Keep interactive targets touch-friendly at a minimum of 44px
+
+## Self-Check Verification
+After generating code, confirm:
+1. Every interactive element has hover/focus/active states
+2. Color contrast meets WCAG 2.1 AA (4.5:1 for text)
+3. Layout adapts cleanly across breakpoints
+4. Typography hierarchy reads clearly (h1 > h2 > h3 > body)
+5. Spacing stays consistent with the defined scale
+6. Animations respect prefers-reduced-motion`,
 
   examplePrompts: [
     {
