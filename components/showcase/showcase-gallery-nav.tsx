@@ -36,8 +36,12 @@ export function ShowcaseGalleryNav() {
   const [prevSlug, prevName] = neighbors.prev;
   const [nextSlug, nextName] = neighbors.next;
 
+  // Quiet by default so the pager never fights 143 different showcase designs:
+  // idle state is a bare translucent chevron with a dark drop shadow (legible
+  // on any background, near-invisible presence); the glass pill and the
+  // neighbor name only materialize on hover or keyboard focus.
   const buttonClass =
-    "group pointer-events-auto flex h-10 w-10 sm:h-11 sm:w-11 items-center justify-center rounded-full bg-black/50 text-white/90 shadow-lg backdrop-blur-md transition-colors hover:bg-black/80 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-white/70";
+    "group pointer-events-auto flex h-10 w-10 items-center justify-center rounded-full text-white/60 transition-all duration-150 [filter:drop-shadow(0_1px_3px_rgba(0,0,0,0.9))] hover:bg-black/60 hover:text-white hover:backdrop-blur-md hover:[filter:none] hover:shadow-lg focus:outline-none focus-visible:bg-black/60 focus-visible:text-white focus-visible:[filter:none] focus-visible:ring-2 focus-visible:ring-white/70";
   const labelClass =
     "pointer-events-none absolute top-1/2 hidden max-w-[11rem] -translate-y-1/2 truncate whitespace-nowrap rounded-full bg-black/80 px-3 py-1.5 text-xs text-white opacity-0 shadow-lg backdrop-blur-md transition-opacity duration-150 group-hover:opacity-100 group-focus-visible:opacity-100 sm:block";
 
