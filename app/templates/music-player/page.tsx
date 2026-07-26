@@ -35,17 +35,59 @@ interface Track {
 }
 
 const playlist: Track[] = [
-  { id: 1, title: "Midnight City", artist: "M83", album: "Hurry Up, We Are Dreaming", duration: "4:03", liked: true, color: "from-indigo-600 to-purple-700" },
-  { id: 2, title: "Electric Feel", artist: "MGMT", album: "Oracular Spectacular", duration: "3:49", liked: false, color: "from-green-500 to-teal-600" },
-  { id: 3, title: "Intro", artist: "The xx", album: "xx", duration: "2:07", liked: true, color: "from-gray-700 to-gray-900" },
-  { id: 4, title: "Tame Impala", artist: "Let It Happen", album: "Currents", duration: "7:46", liked: false, color: "from-pink-500 to-rose-600" },
-  { id: 5, title: "Retrograde", artist: "James Blake", album: "Overgrown", duration: "3:42", liked: false, color: "from-blue-600 to-cyan-700" },
-  { id: 6, title: "Crystalised", artist: "The xx", album: "xx", duration: "3:22", liked: true, color: "from-gray-600 to-gray-800" },
-  { id: 7, title: "Digital Love", artist: "Daft Punk", album: "Discovery", duration: "4:58", liked: false, color: "from-yellow-500 to-orange-600" },
-  { id: 8, title: "Eventually", artist: "Tame Impala", album: "Currents", duration: "5:18", liked: false, color: "from-pink-400 to-rose-500" },
-  { id: 9, title: "Something About Us", artist: "Daft Punk", album: "Discovery", duration: "3:52", liked: true, color: "from-amber-500 to-orange-600" },
-  { id: 10, title: "Youth", artist: "Daughter", album: "If You Leave", duration: "4:24", liked: false, color: "from-slate-600 to-slate-800" },
+  { id: 1, title: "Neon Meridian", artist: "Velvet Arcade", album: "Night Circuit", duration: "4:03", liked: true, color: "from-indigo-600 to-purple-700" },
+  { id: 2, title: "Electric Bloom", artist: "Glass Fauna", album: "Chlorophyll", duration: "3:49", liked: false, color: "from-green-500 to-teal-600" },
+  { id: 3, title: "First Light", artist: "Monochrome", album: "Grey Rooms", duration: "2:07", liked: true, color: "from-gray-700 to-gray-900" },
+  { id: 4, title: "Let It Unfold", artist: "Paper Tides", album: "Currents of June", duration: "7:46", liked: false, color: "from-pink-500 to-rose-600" },
+  { id: 5, title: "Retrograde Motion", artist: "Cobalt Sons", album: "Overgrowth", duration: "3:42", liked: false, color: "from-blue-600 to-cyan-700" },
+  { id: 6, title: "Crystalline", artist: "Monochrome", album: "Grey Rooms", duration: "3:22", liked: true, color: "from-gray-600 to-gray-800" },
+  { id: 7, title: "Analog Love", artist: "Circuit Royale", album: "Rediscovery", duration: "4:58", liked: false, color: "from-yellow-500 to-orange-600" },
+  { id: 8, title: "Eventually, Everything", artist: "Paper Tides", album: "Currents of June", duration: "5:18", liked: false, color: "from-pink-400 to-rose-500" },
+  { id: 9, title: "Something About Midnight", artist: "Circuit Royale", album: "Rediscovery", duration: "3:52", liked: true, color: "from-amber-500 to-orange-600" },
+  { id: 10, title: "Youth in Amber", artist: "Low Meadow", album: "If Fields Could Speak", duration: "4:24", liked: false, color: "from-slate-600 to-slate-800" },
 ];
+
+/** Generative album art: motif keyed by track id, tinted by the track gradient. */
+function AlbumArt({ id, color, className = "" }: { id: number; color: string; className?: string }) {
+  const motif = id % 5;
+  return (
+    <div aria-hidden="true" className={`relative overflow-hidden bg-gradient-to-br ${color} ${className}`}>
+      {motif === 0 && (
+        <div className="absolute inset-0 flex items-center justify-center">
+          <span className="absolute h-3/4 w-3/4 rounded-full border-2 border-white/25" />
+          <span className="absolute h-1/2 w-1/2 rounded-full border border-white/35" />
+          <span className="absolute h-[12%] w-[12%] rounded-full bg-white/80" />
+        </div>
+      )}
+      {motif === 1 && (
+        <div className="absolute inset-x-[16%] inset-y-[26%] flex items-center gap-[6%]">
+          {[42, 72, 55, 92, 64, 80, 46].map((height, i) => (
+            <span key={i} className="flex-1 rounded-full bg-white/60" style={{ height: `${height}%` }} />
+          ))}
+        </div>
+      )}
+      {motif === 2 && (
+        <>
+          <span className="absolute left-1/2 top-[24%] h-[46%] w-[46%] -translate-x-1/2 rounded-full bg-white/70" />
+          <span className="absolute inset-x-0 bottom-0 h-[34%] bg-black/30" />
+        </>
+      )}
+      {motif === 3 && (
+        <>
+          <span className="absolute left-1/2 top-1/2 h-1/2 w-1/2 -translate-x-1/2 -translate-y-1/2 rotate-45 border-2 border-white/50" />
+          <span className="absolute left-1/2 top-1/2 h-1/4 w-1/4 -translate-x-1/2 -translate-y-1/2 rotate-45 bg-white/30" />
+        </>
+      )}
+      {motif === 4 && (
+        <>
+          <span className="absolute -right-1/4 -top-1/4 h-3/4 w-3/4 rounded-full border-4 border-white/25" />
+          <span className="absolute -bottom-1/4 -left-1/4 h-3/4 w-3/4 rounded-full border-4 border-white/25" />
+          <span className="absolute left-[45%] top-[45%] h-[10%] w-[10%] rounded-full bg-white/70" />
+        </>
+      )}
+    </div>
+  );
+}
 
 const recentPlaylists = [
   { name: "Chill Vibes", tracks: 42, color: "from-violet-500 to-purple-600" },
@@ -128,10 +170,17 @@ export default function MusicPlayerTemplate() {
           {/* Now Playing Hero */}
           <div className={`mx-4 md:mx-6 mt-2 p-6 md:p-8 rounded-2xl bg-gradient-to-br ${track.color} relative overflow-hidden`}>
             <div className="absolute inset-0 bg-black/20" />
-            <div className="relative z-10">
-              <p className="text-xs uppercase tracking-widest text-white/60 mb-2">Now Playing</p>
-              <h1 className="text-2xl md:text-3xl font-bold mb-1">{track.title}</h1>
-              <p className="text-white/70">{track.artist} &middot; {track.album}</p>
+            <div className="relative z-10 flex items-center gap-5 md:gap-7">
+              <AlbumArt
+                id={track.id}
+                color={track.color}
+                className="h-20 w-20 shrink-0 rounded-xl ring-1 ring-white/25 md:h-28 md:w-28"
+              />
+              <div className="min-w-0">
+                <p className="text-xs uppercase tracking-widest text-white/60 mb-2">Now Playing</p>
+                <h1 className="text-2xl md:text-3xl font-bold mb-1 truncate">{track.title}</h1>
+                <p className="text-white/70 truncate">{track.artist} &middot; {track.album}</p>
+              </div>
             </div>
           </div>
 
@@ -164,7 +213,7 @@ export default function MusicPlayerTemplate() {
                       <Play className="w-3.5 h-3.5 mx-auto" />
                     )}
                   </span>
-                  <div className={`w-10 h-10 rounded bg-gradient-to-br ${t.color} shrink-0`} />
+                  <AlbumArt id={t.id} color={t.color} className="w-10 h-10 rounded shrink-0" />
                   <div className="flex-1 min-w-0">
                     <p className={`text-sm font-medium truncate ${i === currentTrack ? "text-green-400" : "text-white"}`}>
                       {t.title}
@@ -197,7 +246,7 @@ export default function MusicPlayerTemplate() {
       <div className="bg-gray-900 border-t border-gray-800 px-4 py-3 flex items-center gap-4 z-30">
         {/* Track Info */}
         <div className="flex items-center gap-3 w-48 lg:w-64 shrink-0">
-          <div className={`w-12 h-12 rounded-lg bg-gradient-to-br ${track.color} shrink-0`} />
+          <AlbumArt id={track.id} color={track.color} className="w-12 h-12 rounded-lg shrink-0" />
           <div className="min-w-0 hidden sm:block">
             <p className="text-sm font-medium text-white truncate">{track.title}</p>
             <p className="text-xs text-gray-400 truncate">{track.artist}</p>
@@ -320,7 +369,7 @@ function SidebarContent({ recentPlaylists }: { recentPlaylists: { name: string; 
             key={pl.name}
             className="w-full flex items-center gap-3 p-2 rounded-lg hover:bg-gray-800/50 transition-colors text-left"
           >
-            <div className={`w-10 h-10 rounded bg-gradient-to-br ${pl.color} shrink-0`} />
+            <AlbumArt id={pl.name.length} color={pl.color} className="w-10 h-10 rounded shrink-0" />
             <div className="min-w-0">
               <p className="text-sm font-medium text-gray-200 truncate">{pl.name}</p>
               <p className="text-xs text-gray-500">{pl.tracks} tracks</p>
