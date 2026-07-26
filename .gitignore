@@ -85,8 +85,16 @@ image.jpg
 !public/alipay-qr.jpg
 
 # Support receipts — runtime content, not code
+public/support/acknowledgments/
 public/support/receipts/
 public/support/thank-you/
+
+# Maintainer-only generated and promotional media
+public/images/styles/*
+!public/images/styles/immersive-photo/
+!public/images/styles/immersive-photo/**
+public/launch/overseas/
+.images-generate-state.json
 
 # Agent skill packs and internal configs (maintainer tooling)
 .agents/
