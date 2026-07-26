@@ -87,7 +87,7 @@ function FilmStage({ playing, className = "" }: { playing: boolean; className?: 
       io = new IntersectionObserver(
         ([e]) => {
           if (e.isIntersecting) {
-            v.load();
+            if (v.readyState === 0) v.load();
             v.play().catch(() => {});
           } else {
             v.pause();

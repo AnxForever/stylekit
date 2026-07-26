@@ -103,8 +103,12 @@ function ScrubStage() {
             if (cancelled) return;
             setLoaded((n) => n + 1);
           };
-          // A failed frame simply never becomes .complete-with-data;
-          // the scrub keeps the last good frame it drew.
+          // A failed frame still advances the gate so the loading
+          // overlay clears; the scrub keeps the last good frame it drew.
+          img.onerror = () => {
+            if (cancelled) return;
+            setLoaded((n) => n + 1);
+          };
           img.src = frameSrc(i);
           frames.current[i] = img;
         }

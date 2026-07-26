@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect, useCallback } from "react";
+import { useState, useRef, useEffect, useCallback, useMemo } from "react";
 import Link from "next/link";
 
 /* ------------------------------------------------------------------ */
@@ -120,21 +120,36 @@ function ShaderCanvas({
   className?: string;
 }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [contextGen, setContextGen] = useState(0);
 
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
+    const onContextLost = (event: Event) => {
+      event.preventDefault();
+    };
+    const onContextRestored = () => {
+      setContextGen((generation) => generation + 1);
+    };
+    canvas.addEventListener("webglcontextlost", onContextLost);
+    canvas.addEventListener("webglcontextrestored", onContextRestored);
+
+    const removeContextListeners = () => {
+      canvas.removeEventListener("webglcontextlost", onContextLost);
+      canvas.removeEventListener("webglcontextrestored", onContextRestored);
+    };
+
     const gl = (canvas.getContext("webgl") ||
       canvas.getContext("experimental-webgl")) as WebGLRenderingContext | null;
-    if (!gl) return; // CSS fallback under the canvas stays visible
+    if (!gl) return removeContextListeners; // CSS fallback under the canvas stays visible
 
     const vs = compile(gl, gl.VERTEX_SHADER, VERT);
     const fs = compile(gl, gl.FRAGMENT_SHADER, FRAG);
-    if (!vs || !fs) return;
+    if (!vs || !fs) return removeContextListeners;
 
     const prog = gl.createProgram();
-    if (!prog) return;
+    if (!prog) return removeContextListeners;
     gl.attachShader(prog, vs);
     gl.attachShader(prog, fs);
     gl.linkProgram(prog);
@@ -218,13 +233,15 @@ function ShaderCanvas({
       io.disconnect();
       stop();
       window.removeEventListener("resize", onResize);
+      canvas.removeEventListener("webglcontextlost", onContextLost);
+      canvas.removeEventListener("webglcontextrestored", onContextRestored);
       if (drawStaticRef) drawStaticRef.current = null;
       gl.deleteProgram(prog);
       gl.deleteShader(vs);
       gl.deleteShader(fs);
       gl.deleteBuffer(buf);
     };
-  }, [refs, drawStaticRef]);
+  }, [refs, drawStaticRef, contextGen]);
 
   return <canvas ref={canvasRef} aria-hidden="true" className={`sg-canvas ${className}`} />;
 }
@@ -337,7 +354,10 @@ export default function ShowcaseContent() {
   const grainRef = useRef(0.3);
   const drawStaticRef = useRef<(() => void) | null>(null);
 
-  const refs: UniformRefs = { speed: speedRef, blend: blendRef, grain: grainRef };
+  const refs = useMemo<UniformRefs>(
+    () => ({ speed: speedRef, blend: blendRef, grain: grainRef }),
+    []
+  );
 
   const onSpeed = useCallback((v: number) => {
     speedRef.current = v;
