@@ -411,16 +411,16 @@ export const templateCatalog: TemplateCatalogEntry[] = [
   }),
   defineTemplate({
     id: "crm-frosted-glass",
-    name: { zh: "毛玻璃 CRM 面板", en: "Frosted Glass CRM Dashboard" },
+    name: { zh: "KONTUR 纸感 CRM", en: "KONTUR Ledger CRM" },
     description: {
-      zh: "磨砂玻璃效果的 CRM 管理面板，包含联系人管理、销售目标和团队绩效。",
-      en: "Frosted glass CRM dashboard with contact management, sales targets, and team performance.",
+      zh: "瑞士账本气质的纸感 CRM 工作台：销售管线看板、联系人台账、纯 CSS 营收图表与活动时间线。",
+      en: "Swiss-ledger CRM workspace on warm paper: pipeline kanban, contact ledger, pure-CSS revenue chart, and an activity timeline.",
     },
     styleSlug: "crm-frosted-glass",
     coverColors: {
-      primary: "#0ea5e9",
-      secondary: "#334155",
-      accent: ["#22d3ee", "#a78bfa", "#0f172a"],
+      primary: "#1E5C42",
+      secondary: "#F4F2EC",
+      accent: ["#B7791F", "#16150F", "#DAD5C8"],
     },
     type: "dashboard",
     href: "/templates/crm-frosted-glass",
