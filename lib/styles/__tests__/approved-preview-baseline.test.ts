@@ -5,7 +5,7 @@ import { stylesMeta } from "@/lib/styles/meta-registry";
 
 describe("approved preview baseline", () => {
   it("keeps the frozen catalog slug inventory explicit", () => {
-    expect(baseline.baselineCommit).toBe("774f9943");
+    expect(baseline.baselineCommit).toBe("dee759c2");
     expect(baseline.slugs).toHaveLength(baseline.count);
     expect(new Set(baseline.slugs).size).toBe(baseline.count);
   });
