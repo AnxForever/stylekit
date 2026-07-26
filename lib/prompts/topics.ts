@@ -56,6 +56,34 @@ export const promptTopics: PromptTopic[] = [
         prompt:
           "Generate a complete dashboard layout as a React component with TypeScript. Requirements: responsive grid layout using CSS Grid, dark/light theme support via CSS custom properties, sidebar navigation with nested menu items, metric cards with trend indicators (up/down arrows + percentage), chart placeholders using recharts, and a sortable data table. Follow accessibility best practices with proper ARIA roles. Use Tailwind CSS for styling.",
       },
+      {
+        titleEn: "Finance Dashboard with Dark Sidebar",
+        titleZh: "深色侧边栏金融仪表盘",
+        tool: "general",
+        prompt:
+          "Design a finance dashboard with a dark sidebar (#0f172a) and a light content area (#f8fafc). Sidebar: 256px wide, nav labels in #94a3b8, active item with a #3b82f6 left border and #1e293b background. Content: 4 KPI cards showing balance, income, expenses, and savings rate, each with a 12-point sparkline. Numbers use tabular-nums at 28px semibold; positive deltas in #16a34a, negative in #dc2626, always paired with an arrow icon so color is not the only signal. Cards on white with 1px #e2e8f0 borders, 24px padding, 24px grid gap. Include a transactions table with zebra rows (#f1f5f9) and right-aligned amounts.",
+      },
+      {
+        titleEn: "Mobile-First Analytics for v0",
+        titleZh: "v0 移动优先分析面板",
+        tool: "v0",
+        prompt:
+          "Create a mobile-first analytics dashboard with shadcn/ui. On mobile: a bottom tab bar (4 items, 56px tall, 44px minimum touch targets), stacked full-width metric cards, and horizontally scrollable chart cards with scroll-snap. On md and up: switch to a 12-column grid with a collapsible left sidebar. Palette: background #fafafa, cards #ffffff with border #e5e5e5, single accent indigo #4f46e5 for active states and chart lines. Typography: Inter, 14px body, 24px card values. Charts must include visible axis labels at 12px #737373 and pass 4.5:1 contrast for all text.",
+      },
+      {
+        titleEn: "Realtime Ops Dashboard for Cursor",
+        titleZh: "Cursor 实时运维仪表盘",
+        tool: "cursor",
+        prompt:
+          "Build a realtime operations dashboard in Next.js with Tailwind and Recharts. Dark theme: background #09090b, panels #131316 with 1px #26262b borders, 8px radius. Status semantics: healthy #22c55e, degraded #f59e0b, down #ef4444, each shown as a dot plus a text label (never color alone). Layout: a top status strip of 6 service tiles, a large streaming line chart with a 60-second window, and a log feed in JetBrains Mono 13px with #a1a1aa timestamps. Use aria-live=polite on the log feed, 16px grid gaps, and a pulsing dot animation limited to transform and opacity for performance.",
+      },
+      {
+        titleEn: "HR Admin Panel for Claude",
+        titleZh: "Claude 人事管理后台",
+        tool: "claude",
+        prompt:
+          "Generate an HR admin panel as a React TypeScript component. Layout: 240px sidebar with grouped nav sections (People, Payroll, Settings) using 11px uppercase #6b7280 group labels, plus a content area with a sticky header holding breadcrumbs and a search input. Include an employee table with avatar, name, department badge, and status pill; pills use tinted backgrounds (#dcfce7 with #166534 text for active, #fee2e2 with #991b1b for offboarding) to keep 4.5:1 contrast. Row height 56px, cell padding 16px, header row #f9fafb. Add a slide-over detail drawer (480px) with labeled field groups on a 24px vertical rhythm. Font: Inter throughout.",
+      },
     ],
     useCases: [
       {
@@ -116,6 +144,22 @@ export const promptTopics: PromptTopic[] = [
         answerZh:
           "最常见且有效的布局是固定侧边栏（200-280px）搭配可滚动的主内容区。内容区使用 12 列网格，第一行放指标卡片（每个占 3-4 列），第二行放图表，底部放全宽数据表。该模式在侧边栏在移动端折叠为图标时，能在各种屏幕尺寸下良好运行。",
       },
+      {
+        questionEn: "How many metrics should a dashboard show at once?",
+        questionZh: "仪表盘一次应该展示多少个指标？",
+        answerEn:
+          "Show 4-6 primary KPIs above the fold; research on scannability suggests users reliably compare at most 5-7 values at a glance. Put one number per card at 24-32px, with the trend delta as secondary text at 13-14px. Everything else belongs in charts or tables below, or behind a date-range or segment filter. If stakeholders ask for 15 metrics, group them into tabs (Overview, Revenue, Engagement) rather than shrinking cards — a dashboard where every number is small is a dashboard where no number gets read.",
+        answerZh:
+          "首屏展示 4-6 个核心 KPI 即可；可扫视性研究表明用户一眼最多能可靠比较 5-7 个数值。每张卡片只放一个 24-32px 的主数字，趋势变化作为 13-14px 的次要文字。其余内容应放在下方的图表或表格中，或收进日期范围、分群筛选器里。如果需求方要 15 个指标，用标签页分组（概览、营收、活跃）而不是缩小卡片——每个数字都很小的仪表盘，等于没有数字被真正读到。",
+      },
+      {
+        questionEn: "How do I choose chart colors for a dashboard?",
+        questionZh: "仪表盘的图表配色如何选择？",
+        answerEn:
+          "Use one brand accent (e.g. #3b82f6) for the primary series, then derive categorical colors by rotating hue while keeping similar lightness, capping at 6 series per chart. For sequential data (heatmaps), vary lightness of a single hue instead of mixing hues. Reserve red and green strictly for negative/positive semantics, and always pair them with icons or labels for color-blind users. Gridlines and axes should stay quiet: #e5e7eb lines with #6b7280 labels on light themes. Test every text-on-color combination against the 4.5:1 WCAG AA ratio.",
+        answerZh:
+          "主数据系列使用一个品牌强调色（如 #3b82f6），分类色在保持相近明度的前提下旋转色相派生，每张图表最多 6 个系列。顺序型数据（热力图）应变化单一色相的明度而非混用多个色相。红色和绿色严格保留给负向/正向语义，并始终搭配图标或文字标签照顾色盲用户。网格线和坐标轴要低调：浅色主题下用 #e5e7eb 线条配 #6b7280 标签。所有文字与色块的组合都要通过 WCAG AA 的 4.5:1 对比度检测。",
+      },
     ],
   },
   {
@@ -172,6 +216,34 @@ export const promptTopics: PromptTopic[] = [
         tool: "claude",
         prompt:
           "Generate a complete landing page as a React component. Include: responsive hero with headline (48px desktop, 32px mobile), description paragraph, and primary CTA button. Feature section with 2x3 grid of cards, each with an icon, title, and description. Social proof section with company logos and a stat bar (e.g., '10K+ users'). Testimonial cards with star ratings. Final CTA with contrasting background color. All sections should have consistent max-w-6xl centering and py-24 spacing. Use Tailwind CSS.",
+      },
+      {
+        titleEn: "Mobile App Waitlist Page",
+        titleZh: "移动应用候补名单页",
+        tool: "general",
+        prompt:
+          "Design a waitlist landing page for a mobile app. Single viewport-height hero: headline at 56px/1.1 in a variable-weight sans (Inter or Geist), subheadline at 18px #52525b, and an email capture form (input + button in one pill, 56px tall) as the only CTA. Right side shows a phone mockup at a slight -6 degree rotation with a soft #a78bfa glow. Palette: background #fafafa, text #18181b, accent violet #7c3aed. Below the fold: a 3-step 'How it works' row and a live counter of signups. Form needs a visible label, autocomplete=email, and a 2px focus ring at 3:1 contrast against the background.",
+      },
+      {
+        titleEn: "Developer Tool Landing for v0",
+        titleZh: "v0 开发者工具落地页",
+        tool: "v0",
+        prompt:
+          "Create a landing page for a CLI developer tool with shadcn/ui. Dark hero: background #0a0a0a, headline 60px in Geist with a #22d3ee gradient accent on one word, and an install command block (JetBrains Mono 14px, background #171717, copy button with a 'Copied' toast). Below: a tabbed code demo (npm/pnpm/yarn), a 3-column feature grid with 20px Lucide icons, a terminal-style testimonial section, and GitHub star count badge. Section spacing py-24, max-w-5xl. Keep body text #a1a1aa at minimum 4.5:1 contrast and give the copy button an aria-label.",
+      },
+      {
+        titleEn: "Ebook Lead Magnet Page for Cursor",
+        titleZh: "Cursor 电子书引流页",
+        tool: "cursor",
+        prompt:
+          "Build a Next.js landing page for a free ebook download. Two-column hero: left has an eyebrow label (13px uppercase tracking-wide #b45309), a 48px serif headline (Fraunces or Playfair Display), 5 bullet points with check icons of what readers learn, and a form (name + email, stacked, 48px inputs); right shows a 3D book cover mockup with a #fbbf24 back-glow. Palette: cream background #fffbeb, ink text #292524, amber accent #d97706. Add a testimonial strip with 3 quotes and an author bio section with a 96px round photo. Validate email inline with error text in #b91c1c plus an icon, and keep labels visible (no placeholder-only fields).",
+      },
+      {
+        titleEn: "Agency Services Landing for Claude",
+        titleZh: "Claude 服务机构落地页",
+        tool: "claude",
+        prompt:
+          "Generate a design agency landing page as a React component. Structure: oversized hero headline at clamp(48px, 8vw, 96px) in a grotesque font with -0.03em letter-spacing, a marquee strip of client names, a services list as full-width rows (72px tall, border-t #e4e4e7) that expand on hover to reveal a description, a case study grid with 4:3 image cards and hover zoom (scale 1.03, 400ms ease-out), and a footer CTA reading 'Start a project' at 40px. Palette: white #ffffff, near-black #111111, one accent chartreuse #bef264 for hover states and selection. Respect prefers-reduced-motion by disabling the marquee and hover zoom.",
       },
     ],
     useCases: [
@@ -232,6 +304,22 @@ export const promptTopics: PromptTopic[] = [
           "Key conversion tactics: use a single, clear CTA per section; add social proof near CTAs; reduce form fields to the minimum; use directional cues (arrows, eye gaze in photos) pointing toward CTAs; ensure page loads under 3 seconds; and A/B test headlines and button copy. Mobile optimization is critical since most traffic is mobile.",
         answerZh:
           "关键转化策略：每个区块使用单一、清晰的 CTA；在 CTA 附近添加社会证明；将表单字段减到最少；使用方向线索（箭头、照片中的视线）指向 CTA；确保页面 3 秒内加载完成；A/B 测试标题和按钮文案。移动端优化至关重要，因为大部分流量来自手机。",
+      },
+      {
+        questionEn: "How long should a landing page be?",
+        questionZh: "落地页应该做多长？",
+        answerEn:
+          "Match length to commitment level. For a free signup or waitlist, a short page (hero + 3 features + CTA, roughly 1-2 screens) converts best because the ask is small. For paid products above roughly 50 USD/month, longer pages of 6-8 sections outperform because visitors need objections answered: add testimonials, a comparison table, security badges, and an FAQ. A practical rule: every extra section must answer a real objection, not repeat the pitch. Track scroll depth — if 80% of visitors never reach a section, cut it or move it up.",
+        answerZh:
+          "页面长度要匹配用户的决策成本。免费注册或候补名单类，短页面（Hero + 3 个功能点 + CTA，约 1-2 屏）转化最好，因为用户付出的成本很小。对约 50 美元/月以上的付费产品，6-8 个区块的长页面表现更好，因为访客需要打消疑虑：加入用户评价、对比表格、安全认证徽章和 FAQ。实用原则：每增加一个区块都必须回应一个真实的顾虑，而不是重复卖点。追踪滚动深度——如果 80% 的访客到不了某个区块，就删掉它或往上移。",
+      },
+      {
+        questionEn: "What font sizes should I use on a landing page?",
+        questionZh: "落地页应该使用多大的字号？",
+        answerEn:
+          "A dependable scale: hero headline clamp(36px, 6vw, 64px) with 1.1 line-height and -0.02em letter-spacing; section headings 30-36px; card titles 18-20px; body text 16-18px with 1.6 line-height; captions and eyebrows 13-14px. Never let body text drop below 16px on mobile — it hurts readability and iOS zooms form inputs under 16px. Keep line length at 60-75 characters using max-w-prose or max-w-2xl. Use font weight (600-700 for headings, 400 for body) rather than more sizes to build hierarchy; two weights and five sizes cover an entire page.",
+        answerZh:
+          "一套可靠的字号体系：Hero 标题 clamp(36px, 6vw, 64px)，行高 1.1，字距 -0.02em；区块标题 30-36px；卡片标题 18-20px；正文 16-18px，行高 1.6；说明文字和眉标 13-14px。移动端正文永远不要低于 16px——既影响可读性，iOS 还会对小于 16px 的表单输入自动缩放。用 max-w-prose 或 max-w-2xl 把行长控制在 60-75 字符。层级靠字重（标题 600-700、正文 400）而不是堆更多字号；两个字重加五个字号就能覆盖整个页面。",
       },
     ],
   },
@@ -450,6 +538,34 @@ export const promptTopics: PromptTopic[] = [
         prompt:
           "Generate React components with glassmorphism styling. Create GlassCard, GlassButton, GlassInput, GlassModal, and GlassNavbar components. Each uses: backdrop-filter: blur(16px), background: rgba(255,255,255,0.1), border: 1px solid rgba(255,255,255,0.18). Include hover states that increase background opacity. Support both light glass (white-based) and dark glass (black-based) variants. Use Tailwind CSS with custom utility classes.",
       },
+      {
+        titleEn: "Glass Music Player",
+        titleZh: "玻璃质感音乐播放器",
+        tool: "general",
+        prompt:
+          "Design a glassmorphism music player card. The album art fills the card background; the control panel sits on top as a glass layer: background rgba(255,255,255,0.12), backdrop-filter blur(20px) saturate(160%), border 1px solid rgba(255,255,255,0.25), border-radius 24px. Progress bar: 4px track at rgba(255,255,255,0.2) with a solid #ffffff fill and a 12px thumb. Track title 18px semibold white, artist 14px at 70% opacity. Play button: 56px solid white circle with dark icon for contrast; skip buttons are glass circles. Ensure all controls have aria-labels and at least 44px touch targets, and keep text over blur at 4.5:1 contrast by darkening the glass behind it if needed.",
+      },
+      {
+        titleEn: "Glass Pricing Cards for v0",
+        titleZh: "v0 玻璃定价卡片",
+        tool: "v0",
+        prompt:
+          "Build a glassmorphism pricing section with shadcn/ui. Background: a fixed mesh gradient of #7c3aed, #2563eb, and #0ea5e9 orbs on #0f0a1e. Three tier cards: backdrop-blur-2xl bg-white/10 border border-white/20 rounded-3xl p-8, with the Pro tier using bg-white/15 and a brighter border-white/40 plus a solid white CTA button with #1e1b4b text. Price at 48px tabular-nums in white, features as a list with check icons at 80% opacity. Card hover lifts with translate-y-1 and increases background to /15 over 200ms. Keep body copy at white/85 minimum for contrast and give the section a solid fallback background via @supports not (backdrop-filter: blur(1px)).",
+      },
+      {
+        titleEn: "Glass Onboarding Flow for Cursor",
+        titleZh: "Cursor 玻璃引导流程",
+        tool: "cursor",
+        prompt:
+          "Create a 3-step onboarding flow in Next.js with a glassmorphism panel centered over an animated gradient (conic-gradient rotating slowly between #f472b6, #818cf8, #34d399, 30s linear, paused under prefers-reduced-motion). Panel: 480px wide, rgba(255,255,255,0.08) with blur(24px), 1px rgba(255,255,255,0.18) border, 28px radius, 40px padding. Step indicator: three 8px dots, active dot stretches to a 24px pill in white. Inputs are darker glass (rgba(0,0,0,0.2)) so white text hits 4.5:1, with white/90 labels above, never placeholder-only. Buttons: primary solid white with dark text, secondary glass outline. Animate step transitions with a 250ms fade and 16px slide.",
+      },
+      {
+        titleEn: "Glass Weather Widget for Claude",
+        titleZh: "Claude 玻璃天气组件",
+        tool: "claude",
+        prompt:
+          "Generate a React weather widget with glassmorphism styling and TypeScript props for condition, temperature, and hourly forecast. Container: 360px card, background rgba(255,255,255,0.14), backdrop-filter blur(18px), border 1px solid rgba(255,255,255,0.28), border-radius 20px, over a sky gradient that shifts by condition (clear: #38bdf8 to #0369a1; night: #1e293b to #020617). Temperature at 64px light weight, condition label 16px at 85% opacity, hourly row of 6 glass chips (rgba(255,255,255,0.1), 12px radius) with 13px labels. Use SVG weather icons with 1.5px white strokes. Include role=region with an aria-label like 'Current weather', and a solid rgba(30,41,59,0.9) fallback when backdrop-filter is unsupported.",
+      },
     ],
     useCases: [
       {
@@ -501,6 +617,22 @@ export const promptTopics: PromptTopic[] = [
           "backdrop-filter can impact rendering performance, especially with large blur values on mobile devices. Mitigation strategies: limit blur to 12-20px, avoid nesting multiple glass layers, use will-change: transform on glass elements, and provide a solid-color fallback for browsers that don't support backdrop-filter. Modern browsers handle it well for typical use cases.",
         answerZh:
           "backdrop-filter 可能影响渲染性能，尤其是在移动设备上使用大模糊值时。缓解策略：限制模糊值为 12-20px、避免嵌套多个玻璃层、在玻璃元素上使用 will-change: transform、为不支持 backdrop-filter 的浏览器提供纯色回退。现代浏览器在典型使用场景下处理良好。",
+      },
+      {
+        questionEn: "How much backdrop blur should I use for glassmorphism?",
+        questionZh: "玻璃拟态的 backdrop blur 应该用多大？",
+        answerEn:
+          "The sweet spot is blur(12px) to blur(24px). Below 8px the background stays legible and competes with foreground text; above 30px the surface reads as solid frosted plastic and you lose the glass illusion while paying the full rendering cost. Scale with element size: small chips and buttons look right at 10-12px, cards at 16-20px, full-screen modals and navbars at 20-24px. Pair blur with saturate(150%-180%) so colors bleeding through stay vivid instead of washing out gray. On mobile, drop one step (e.g. 20px to 12px) to protect frame rate.",
+        answerZh:
+          "最佳区间是 blur(12px) 到 blur(24px)。低于 8px 时背景仍然清晰可辨，会和前景文字抢注意力；超过 30px 表面就像不透明的磨砂塑料，玻璃错觉消失了，渲染开销却一分不少。按元素尺寸调整：小型标签和按钮 10-12px 合适，卡片 16-20px，全屏弹窗和导航栏 20-24px。将 blur 与 saturate(150%-180%) 搭配，让透出的色彩保持鲜活而不是发灰。移动端整体降一档（如 20px 降到 12px）以保住帧率。",
+      },
+      {
+        questionEn: "Why does my glassmorphism effect look muddy or invisible?",
+        questionZh: "为什么我的玻璃拟态效果看起来浑浊或没有效果？",
+        answerEn:
+          "Three usual causes. First, the background is too flat: glass needs a colorful gradient or image behind it — over solid white or gray, blur has nothing to diffuse, so add gradient orbs or a mesh background. Second, the fill opacity is wrong: rgba(255,255,255,0.4) or higher hides the background entirely; stay in the 0.08-0.2 range. Third, the border is missing: the 1px solid rgba(255,255,255,0.2) edge is what sells the pane of glass — without it, the card melts into the backdrop. Also confirm backdrop-filter is not being ignored because an ancestor sets overflow with a transform, which breaks it in some browsers.",
+        answerZh:
+          "常见原因有三个。第一，背景太平：玻璃需要背后有彩色渐变或图像——在纯白或纯灰上，blur 没有东西可以扩散，应加入渐变光斑或 mesh 背景。第二，填充不透明度不对：rgba(255,255,255,0.4) 以上会完全遮住背景，应保持在 0.08-0.2 区间。第三，缺少边框：1px solid rgba(255,255,255,0.2) 的边缘正是「玻璃片」质感的来源——没有它卡片会融进背景里。另外确认 backdrop-filter 没有失效：某些浏览器中祖先元素同时设置 overflow 和 transform 会破坏该属性。",
       },
     ],
   },
@@ -559,6 +691,34 @@ export const promptTopics: PromptTopic[] = [
         prompt:
           "Generate a React component library with strict minimalist principles. Components: Page, Section, Heading, Text, Link, List, Image, Divider. Constraints: maximum 2 font sizes per component, no box shadows, no gradients, border-radius max 4px, only black/white/gray palette. Section spacing should follow a consistent scale (16, 32, 48, 64, 96px). Include a prose/article layout component optimized for long-form reading with comfortable line length (60-75 characters).",
       },
+      {
+        titleEn: "Minimal Product Landing",
+        titleZh: "极简产品落地页",
+        tool: "general",
+        prompt:
+          "Design a minimalist landing page for a single hardware product. Structure: a text-only header (product name left, one Buy link right), a hero that is just the product photo on #fafafa with 120px of vertical padding, one headline at 40px medium weight in Suisse-style grotesque (Inter works), and a 18px #525252 paragraph capped at 55 characters per line. Below: a specs list as a two-column definition table with 1px #e5e5e5 row dividers and 20px row padding, then a single centered black CTA button (#111111, white text, no radius). No icons, no cards, no gradients. Total palette: #fafafa, #111111, #525252, #e5e5e5.",
+      },
+      {
+        titleEn: "Minimal Pricing Page for v0",
+        titleZh: "v0 极简定价页",
+        tool: "v0",
+        prompt:
+          "Create a minimalist pricing page with shadcn/ui. Two plans only, presented as side-by-side columns separated by a single 1px vertical zinc-200 divider — no cards, no borders around plans. Plan name 14px uppercase tracking-widest zinc-500, price 56px light weight zinc-950 with 16px /month suffix, features as a plain list with 12px gaps and en-dashes instead of check icons. One black button per plan (the free plan gets an outline button). Page: max-w-3xl centered, 96px top padding, background white. Add a single-line FAQ link at the bottom in zinc-500 underlined. Ensure focus states use a visible 2px zinc-950 outline.",
+      },
+      {
+        titleEn: "Minimal Docs Site for Cursor",
+        titleZh: "Cursor 极简文档站",
+        tool: "cursor",
+        prompt:
+          "Build a minimalist documentation site in Next.js. Left sidebar: 220px, text-only links at 14px, current page marked by weight (600) and color #111111 versus #737373 — no background pills. Content: max-w-2xl, 17px/1.75 body in a humanist sans, headings only two sizes (28px and 20px), code blocks in 14px JetBrains Mono on #f5f5f5 with no border and 4px radius. Links underlined with text-underline-offset 3px, one accent #2563eb used only for links. Spacing scale strictly 8/16/24/40/64px. Include keyboard-accessible skip-to-content link and a search input styled as a bare 1px-underline field.",
+      },
+      {
+        titleEn: "Minimal Mobile Habit App for Claude",
+        titleZh: "Claude 极简移动习惯应用",
+        tool: "claude",
+        prompt:
+          "Generate a minimalist mobile habit tracker screen as a React component. Background #ffffff, one accent #16a34a used solely for completed states. Header: the date in 15px #737373 over a 32px medium-weight greeting. Habit list: full-width rows 64px tall separated by 1px #f0f0f0 hairlines, each with habit name 17px #111111 and a 28px tap-to-complete circle outline that fills with the accent and a checkmark on completion (150ms ease-out scale). No cards, no shadows, no tab bar icons with labels removed — keep 11px labels under the 3 tab icons for accessibility. All touch targets at least 44px; completed state must also show a strikethrough so color is not the only indicator.",
+      },
     ],
     useCases: [
       {
@@ -610,6 +770,22 @@ export const promptTopics: PromptTopic[] = [
           "System fonts (Inter, SF Pro, Segoe UI) are ideal for their clean geometry. For headings, consider clean serif fonts (Playfair Display, Cormorant) for contrast. Monospace fonts (JetBrains Mono, Fira Code) work well for code-centric or technical minimal designs. Limit to 1-2 font families maximum.",
         answerZh:
           "系统字体（Inter、SF Pro、Segoe UI）因其干净的几何形状而理想。标题可考虑干净的衬线字体（Playfair Display、Cormorant）以形成对比。等宽字体（JetBrains Mono、Fira Code）适合代码中心或技术类极简设计。最多限制 1-2 个字体家族。",
+      },
+      {
+        questionEn: "How much whitespace is right for minimalist design?",
+        questionZh: "极简设计的留白应该留多少？",
+        answerEn:
+          "Anchor whitespace to a scale and to type size rather than taste. A workable system: section padding 96-128px vertical on desktop (64px mobile), 40-64px between unrelated blocks, 16-24px between related items, and 8px within a component. Line-height carries micro-whitespace: 1.6-1.8 for body, 1.1-1.2 for large headings. The governing rule is proximity — spacing inside a group must be visibly smaller than spacing between groups, at least a 2:1 ratio, or the layout reads as scattered instead of calm. When something feels empty, tighten the internal spacing before adding elements.",
+        answerZh:
+          "留白应锚定在一套间距体系和字号上，而不是凭感觉。一套可行的系统：桌面端区块上下内边距 96-128px（移动端 64px），无关块之间 40-64px，相关条目之间 16-24px，组件内部 8px。行高承担微观留白：正文 1.6-1.8，大标题 1.1-1.2。核心规则是亲密性——组内间距必须明显小于组间间距，至少 2:1 的比例，否则布局会显得涣散而不是宁静。当页面感觉空洞时，先收紧组内间距，而不是添加元素。",
+      },
+      {
+        questionEn: "Can minimalist design use color?",
+        questionZh: "极简设计可以使用彩色吗？",
+        answerEn:
+          "Yes — minimalism restricts the number of colors, not color itself. The reliable formula is one dominant neutral pair (e.g. #fafafa background with #171717 text), one gray for secondary text (#737373), and exactly one accent applied to a single job: links, or primary buttons, or completed states — never all three. A saturated accent like #2563eb or #dc2626 gains power precisely because it appears rarely; if the accent shows up in every section it stops being an accent. Bold monochrome backgrounds (a full #1d4ed8 hero with white text) are also legitimately minimalist as long as the composition stays sparse.",
+        answerZh:
+          "可以——极简限制的是颜色的数量，不是颜色本身。可靠的公式：一对主中性色（如 #fafafa 背景配 #171717 文字），一个次要文字灰（#737373），以及恰好一个强调色，且只承担一种职责：链接、主按钮或完成状态——绝不同时承担三种。#2563eb 或 #dc2626 这样的饱和强调色，正因为出现得少才有力量；如果每个区块都有强调色，它就不再是强调色了。大胆的单色背景（整屏 #1d4ed8 Hero 配白字）同样是正统的极简，只要构图保持克制。",
       },
     ],
   },
@@ -669,6 +845,34 @@ export const promptTopics: PromptTopic[] = [
         prompt:
           "Generate React components with a retro computing aesthetic inspired by classic Macintosh and early Windows. Window component with title bar (gradient), close/minimize/maximize buttons, and content area. Use bitmap-style fonts (monospace), a limited 16-color palette, pixel-perfect borders (1px solid), and dithering patterns using CSS background-image. Include: Window, MenuBar, Button (beveled 3D effect), TextField, and ScrollBar components.",
       },
+      {
+        titleEn: "70s Funk Blog",
+        titleZh: "70 年代放克博客",
+        tool: "general",
+        prompt:
+          "Design a 1970s-inspired blog homepage. Palette: burnt orange #d35400, mustard #e1ad01, avocado green #6b8e23, and cream #f5e6c8 as the page background with deep brown #3e2723 text. Typography: a chunky rounded display font (Cooper Black style) for the masthead at 64px, and a readable serif at 18px/1.7 for post excerpts. Use thick 3px brown borders, pill-shaped category tags, a repeating wavy-stripe divider (SVG) between sections, and slightly rotated polaroid-style post thumbnails with tape corners. Keep body text on cream at 7:1 contrast and reserve the loudest colors for headings and tags only.",
+      },
+      {
+        titleEn: "Frutiger Aero Dashboard for v0",
+        titleZh: "v0 Frutiger Aero 仪表盘",
+        tool: "v0",
+        prompt:
+          "Create a Frutiger Aero-style personal dashboard with shadcn/ui. Background: a glossy sky gradient from #7ec8e3 to #d0f0fd with a faint grass-green bottom edge #8bc34a and floating bubble highlights (radial-gradient circles at 20% white opacity). Cards: white at 70% opacity with 20px radius, a 1px inner white highlight border, and a glossy top sheen via a linear-gradient overlay from rgba(255,255,255,0.6) to transparent at 40% height. Accent: aqua #00b4d8 for buttons with a subtle bevel. Typography: Segoe UI or Frutiger-like humanist sans, 15px body #1a3c4e. Include a weather widget, media card, and clock, all with soft drop shadows (0 8px 24px rgba(0,60,90,0.15)).",
+      },
+      {
+        titleEn: "Arcade CRT Leaderboard for Cursor",
+        titleZh: "Cursor 街机 CRT 排行榜",
+        tool: "cursor",
+        prompt:
+          "Build an arcade CRT-style leaderboard page in Next.js. Background pure #000000 with a scanline overlay (repeating-linear-gradient, 3px period, rgba(255,255,255,0.04)) and a vignette via radial-gradient. Text in phosphor green #33ff33 using the Press Start 2P font: title 24px with a soft text-shadow glow (0 0 8px #33ff3388), score rows 14px with 20px line spacing and dotted leader lines between rank, name, and score. Top 3 ranks get amber #ffb000. Add a blinking INSERT COIN prompt (1s step animation, disabled under prefers-reduced-motion) and a curved-screen effect using a slight border-radius and inner box-shadow. Provide a plain high-contrast fallback list for screen readers.",
+      },
+      {
+        titleEn: "90s Web Revival Page for Claude",
+        titleZh: "Claude 90 年代网页复兴",
+        tool: "claude",
+        prompt:
+          "Generate a deliberately 90s-web-revival personal homepage as a React component that stays accessible. Background: a subtle tiled pattern (CSS gradient checker in #c0c0c0 and #d4d4d4). Content in a centered 760px table-like layout with beveled panels: border styles outset 2px, backgrounds #e0e0e0, headings in navy #000080 Times-style serif at 28px. Include an animated-look marquee banner implemented with CSS transform (pausable, honoring prefers-reduced-motion), a visitor counter widget with seven-segment digits, 88x31 pixel badge links in the footer, and a guestbook form with classic gray inset inputs. Keep real link contrast at #0000ee on light gray and all images with alt text.",
+      },
     ],
     useCases: [
       {
@@ -720,6 +924,22 @@ export const promptTopics: PromptTopic[] = [
           "Yes. Retro aesthetics cycle in and out of trend, with Y2K and Frutiger Aero seeing major revivals in 2024-2026. Retro styles work because they create emotional connections through nostalgia and stand out from the sea of clean, modern designs. The key is interpreting retro elements through modern web standards rather than literally recreating old interfaces.",
         answerZh:
           "是的。复古美学不断循环流行，Y2K 和 Frutiger Aero 在 2024-2026 年经历了重大复兴。复古风格有效是因为它们通过怀旧感建立情感连接，并从大量干净的现代设计中脱颖而出。关键是通过现代网页标准来诠释复古元素，而非原封不动地重建旧界面。",
+      },
+      {
+        questionEn: "What fonts should I use for retro web design?",
+        questionZh: "复古网页设计应该用什么字体？",
+        answerEn:
+          "Match the font to the era. 70s: chunky rounded display faces (Cooper Black; Google alternative Chango or Shrikhand). 80s synthwave: chrome-style geometric display like Monoton or Audiowide for titles. Y2K: rounded techno faces such as Orbitron or Comfortaa. Terminal/arcade: VT323 or Press Start 2P. Early GUI: pixel or system-style fonts like Silkscreen. The critical rule: use the era font for headings and logos only, and pair it with a neutral readable body font (16px+ system sans or serif) — full paragraphs in display or pixel fonts fail both readability and accessibility.",
+        answerZh:
+          "字体要对准年代。70 年代：厚重圆润的展示字体（Cooper Black；Google 替代品 Chango、Shrikhand）。80 年代 Synthwave：Monoton、Audiowide 这类金属感几何标题字体。Y2K：Orbitron、Comfortaa 等圆润科技字体。终端/街机：VT323 或 Press Start 2P。早期 GUI：Silkscreen 这类像素系统字体。关键规则：年代字体只用于标题和 Logo，正文搭配中性易读字体（16px 以上的系统无衬线或衬线）——整段使用展示体或像素体在可读性和无障碍上都不合格。",
+      },
+      {
+        questionEn: "How do I make retro design accessible?",
+        questionZh: "如何让复古设计满足无障碍要求？",
+        answerEn:
+          "Retro palettes and effects often fight WCAG, so audit deliberately. Check every text/background pair against 4.5:1 — neon pink #ff006e on dark #0a0015 passes, but neon on neon fails, so put glowing colors in text-shadow while keeping the fill lighter. Cap flashing or blinking animations at under 3 flashes per second and disable scanlines, glitch, and marquee effects under prefers-reduced-motion. Keep pixel and display fonts out of body text. Chromatic aberration and noise overlays should sit at low opacity (under 0.08) so they never obscure content, and interactive controls still need visible focus rings even inside a CRT aesthetic.",
+        answerZh:
+          "复古配色和特效经常与 WCAG 冲突，必须刻意审计。每一组文字/背景都要过 4.5:1 检测——霓虹粉 #ff006e 配深底 #0a0015 能通过，但霓虹配霓虹会失败，发光效果应放进 text-shadow 而把填充色调亮。闪烁动画控制在每秒 3 次以下，并在 prefers-reduced-motion 下关闭扫描线、故障和跑马灯效果。像素体和展示体不进正文。色差和噪点覆层保持低不透明度（0.08 以下），确保不遮挡内容；交互控件即使在 CRT 美学里也要有可见的焦点环。",
       },
     ],
   },
@@ -779,6 +999,34 @@ export const promptTopics: PromptTopic[] = [
         prompt:
           "Generate a React component that creates a manga-panel-style page layout. The layout should arrange content blocks like manga panels: varying sizes, some full-width for dramatic moments, some in 2-3 column grids for dialogue scenes. Each panel has a thick black border (3px), slight rotation on hover (-1 to 1 degree), and supports both image and text content. Include speech bubble components with the classic manga tail style. Use CSS Grid for the panel arrangement.",
       },
+      {
+        titleEn: "Kawaii Cafe Landing Page",
+        titleZh: "可爱风咖啡店落地页",
+        tool: "general",
+        prompt:
+          "Design a kawaii-style landing page for an anime-themed cafe. Palette: strawberry pink #ffb7c5, cream #fff5eb background, mint #a8e6cf, and cocoa brown #6d4c41 for text so contrast stays readable. Typography: a rounded friendly sans (M PLUS Rounded 1c) with headings at 40px and 24px letter-spacing 0.02em. Hero: mascot illustration on the right, wobbly blob background shapes (border-radius 60% 40% 55% 45%), and a pill CTA in pink with a 2px cocoa border and a 2px offset hard shadow. Menu cards: 20px radius, pastel headers, dashed dividers. Add floating sakura petals with a slow CSS drift animation, disabled under prefers-reduced-motion.",
+      },
+      {
+        titleEn: "Shounen Battle Event Page for v0",
+        titleZh: "v0 少年热血活动页",
+        tool: "v0",
+        prompt:
+          "Create a high-energy shounen anime event landing page with shadcn/ui. Palette: hero red #e63946, gold #ffb703, ink black #14110f background, off-white #faf3e0 text. The hero headline uses a heavy italic condensed font at 72px, clipped by a diagonal slash (clip-path polygon) with manga speed lines radiating from center as an SVG background. Section breaks are 4-degree skewed bands; countdown timer digits at 56px gold tabular-nums on black cards with 3px red borders. CTA button: gold with black text, hover state shifts 4px with a hard red shadow. Keep all text on black at 4.5:1 contrast and provide static alternatives when prefers-reduced-motion is set.",
+      },
+      {
+        titleEn: "Anime Streaming App for Cursor",
+        titleZh: "Cursor 动漫流媒体应用",
+        tool: "cursor",
+        prompt:
+          "Build an anime streaming app home screen in Next.js with Tailwind. Dark cinema base #0f0f13 with cards #1a1a22 and 12px radius. Hero carousel: full-bleed key art with a bottom gradient to #0f0f13, show title in a bold display font at 44px, and genre chips (12px, background rgba(255,255,255,0.08)). Content rows: horizontal scroll with scroll-snap, 2:3 poster cards that scale to 1.05 on hover with a #ff4d6d glow ring, episode progress bars 3px in #ff4d6d. Typography: 15px body #b8b8c4, white titles. Add keyboard navigation for the carousel (arrow keys plus visible focus ring) and lazy-load posters with a blur-up placeholder.",
+      },
+      {
+        titleEn: "Shoujo Manga Blog for Claude",
+        titleZh: "Claude 少女漫画博客",
+        tool: "claude",
+        prompt:
+          "Generate a shoujo manga-inspired blog layout as a React component. Palette: blush #fde2e4 background, rose #e56b6f accents, plum #4a2545 text for readable contrast, and gold #d4a373 details. Decorate section corners with sparkle and rose SVG motifs at 10% opacity so they never obscure text. Post cards: white with a 2px rose border, 18px radius, a ribbon-shaped category tag, and a halftone screentone dot pattern (radial-gradient 2px dots) in card headers. Typography: an elegant serif (Cormorant) for 32px titles paired with a 16px/1.7 humanist sans body. Include a featured-post hero with a soft radial glow and hover states that lift cards 4px over 200ms ease-out.",
+      },
     ],
     useCases: [
       {
@@ -830,6 +1078,22 @@ export const promptTopics: PromptTopic[] = [
           "Yes, AI tools like v0, Cursor, and Claude can generate anime-inspired layouts, color schemes, and component structures. However, they work best with detailed style prompts specifying the exact anime sub-genre (Ghibli, cyberpunk, shoujo, etc.), color palette, and visual elements. StyleKit provides pre-built anime style tokens and prompts that help AI tools generate more authentic anime-style interfaces.",
         answerZh:
           "可以，v0、Cursor 和 Claude 等 AI 工具能生成动漫风格的布局、色彩方案和组件结构。但它们在使用详细的风格提示词时效果最好，需要指定确切的动漫子类型（吉卜力、赛博朋克、少女等）、色彩配板和视觉元素。StyleKit 提供预建的动漫风格 tokens 和提示词，帮助 AI 工具生成更地道的动漫风格界面。",
+      },
+      {
+        questionEn: "What color palettes work for anime-style websites?",
+        questionZh: "动漫风格网站适合什么配色？",
+        answerEn:
+          "Pick the palette by sub-genre, then enforce contrast. Kawaii/shoujo: pastels like #ffb7c5 pink and #a8e6cf mint, but pair them with a dark warm text color (#4a2545 or #6d4c41) instead of white, which fails contrast on pastel. Cyber anime: near-black base #0d0d13 with 2-3 neon accents (#ff3366, #00ccff) used for glows and borders, not body text. Ghibli/natural: desaturated sky #87ceeb, meadow #7cb342, cream #fff8e1. Whatever the genre, limit accents to 3, keep large areas low-saturation, and verify every text pairing at 4.5:1 — high-saturation anime colors are the most common WCAG failure point.",
+        answerZh:
+          "按子类型选配色，再强制校验对比度。可爱/少女系：#ffb7c5 粉、#a8e6cf 薄荷等粉彩色，但文字要配深暖色（#4a2545 或 #6d4c41）而不是白色——白字在粉彩底上过不了对比度。赛博动漫：近黑底 #0d0d13 配 2-3 个霓虹强调色（#ff3366、#00ccff），只用于发光和边框，不进正文。吉卜力/自然系：低饱和的天空蓝 #87ceeb、草地绿 #7cb342、奶油色 #fff8e1。无论哪种类型，强调色不超过 3 个，大面积区域保持低饱和，每组文字配色都要过 4.5:1——高饱和动漫色是最常见的 WCAG 翻车点。",
+      },
+      {
+        questionEn: "How do I add manga speed lines and screentones with CSS?",
+        questionZh: "如何用 CSS 实现漫画速度线和网点效果？",
+        answerEn:
+          "Screentones (halftone dots) are one line: background-image: radial-gradient(circle, #00000022 1.5px, transparent 1.5px) with background-size: 8px 8px; shrink the size to 4-6px for a finer tone. Radial speed lines use repeating-conic-gradient(from 0deg, #111 0deg 2deg, transparent 2deg 8deg) centered on the focal point, masked with a radial-gradient so the center stays clear for content. Horizontal motion lines: repeating-linear-gradient(90deg, ...) with varied stripe widths. Keep all of these as decorative background layers at 5-15% opacity, mark containers aria-hidden where purely decorative, and never place body text directly on an unmasked pattern.",
+        answerZh:
+          "网点（半调圆点）一行即可：background-image: radial-gradient(circle, #00000022 1.5px, transparent 1.5px)，background-size: 8px 8px；把尺寸缩到 4-6px 可得到更细腻的网点。放射状速度线用 repeating-conic-gradient(from 0deg, #111 0deg 2deg, transparent 2deg 8deg) 以焦点为圆心，再叠一层 radial-gradient 遮罩让中心留白放内容。水平动势线用 repeating-linear-gradient(90deg, ...) 并变化条纹宽度。这些都应作为 5-15% 不透明度的装饰性背景层，纯装饰容器加 aria-hidden，且绝不把正文直接放在未遮罩的图案上。",
       },
     ],
   },
