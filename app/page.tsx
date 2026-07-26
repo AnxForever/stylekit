@@ -17,7 +17,7 @@ export const metadata: Metadata = {
     absolute: `StyleKit — UI Design Prompts & ${CURATED_STYLE_COUNT} Visual Styles`,
   },
   description:
-    `Browse ${CURATED_STYLE_COUNT} visual styles with design tokens, component recipes, and AI prompts. Export to Tailwind, shadcn, Figma, and IDE configs for consistent website UI generation.`,
+    `Browse ${CURATED_STYLE_COUNT} visual styles with design tokens, component recipes, and AI prompts. Export to Tailwind, shadcn, Figma, and IDE configs.`,
   keywords: [
     "UI design prompts",
     "web design prompts",

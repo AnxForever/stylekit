@@ -31,6 +31,7 @@ export const metadata: Metadata = {
     description:
       "Copyable Tailwind UI prompts for React, Next.js, shadcn/ui, dashboards, forms, navigation, and utility-first component generation.",
     siteName: "StyleKit",
+    images: [{ url: "/social-preview-home-v1.png", width: 1200, height: 630 }],
     type: "article",
   },
   twitter: {

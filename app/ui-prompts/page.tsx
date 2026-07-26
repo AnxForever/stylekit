@@ -10,7 +10,7 @@ import { getRequestLocaleContext } from "@/lib/i18n/request";
 export const metadata: Metadata = {
   title: "UI Design Prompts Library",
   description:
-    "Copy-ready UI design prompts for websites, dashboards, landing pages, dark mode, Tailwind UI, and more. Browse prompts optimized for ChatGPT, Claude, Cursor, v0, and frontend codegen workflows.",
+    "Copy-ready UI design prompts for websites, dashboards, landing pages, dark mode, and Tailwind UI — optimized for ChatGPT, Claude, Cursor, and v0.",
   keywords: [
     "UI design prompts",
     "web UI prompts",
@@ -24,6 +24,7 @@ export const metadata: Metadata = {
     description:
       "Copy-ready UI design prompts for websites, dashboards, landing pages, dark mode, and more.",
     siteName: "StyleKit",
+    images: [{ url: "/social-preview-home-v1.png", width: 1200, height: 630 }],
     type: "website",
   },
   twitter: {
