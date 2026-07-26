@@ -1,0 +1,15 @@
+{
+  "name": "stylekit-remotion-assets",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Remotion asset workshop: renders video/frame-sequence assets for StyleKit showcases",
+  "scripts": {
+    "render": "remotion render"
+  },
+  "dependencies": {
+    "@remotion/cli": "4.0.290",
+    "react": "19.0.0",
+    "react-dom": "19.0.0",
+    "remotion": "4.0.290"
+  }
+}
