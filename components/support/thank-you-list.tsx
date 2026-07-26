@@ -13,25 +13,30 @@ export function ThankYouList() {
   if (thankYouEntries.length === 0) return null;
 
   return (
-    <section id="thank-you-list" className="grid gap-4">
-      {/* 标题 */}
-      <div className="max-w-3xl">
-        <p className="text-xs uppercase tracking-[0.28em] text-muted">
+    <section
+      id="thank-you-list"
+      className="scroll-mt-24 border-t border-border py-10 md:grid md:grid-cols-[200px_minmax(0,1fr)] md:gap-10 md:py-14"
+    >
+      <div className="mb-4 md:mb-0">
+        <p className="font-mono text-[10px] uppercase tracking-[0.28em] text-muted">
+          <span className="tabular-nums text-muted/70">03</span>
+          <span className="mx-2 text-muted/50">·</span>
           {locale === "zh" ? "鸣谢名单" : "Acknowledgments"}
         </p>
-        <p className="mt-2 text-sm leading-6 text-muted">
+      </div>
+      <div>
+        <p className="max-w-2xl text-sm leading-6 text-muted">
           {locale === "zh"
             ? "感谢所有支持 StyleKit 维护与开发的朋友们。"
             : "Thank you to everyone who has supported StyleKit's maintenance and development."}
         </p>
-      </div>
 
-      {/* 图片网格 - 只显示收款截图，统一尺寸 */}
-      <div className="grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-4">
+        {/* 图片网格 - 只显示收款截图，统一尺寸 */}
+        <div className="mt-6 grid grid-cols-2 gap-px border border-border bg-border md:grid-cols-4">
         {thankYouEntries.map((entry) => (
           <div
             key={entry.id}
-            className="group relative overflow-hidden rounded-[18px] border border-border bg-background shadow-sm transition-all hover:shadow-md"
+            className="group relative overflow-hidden bg-background"
           >
             {/* 只显示收款截图 - 固定宽高比 */}
             {entry.receiptImage && (
@@ -51,6 +56,7 @@ export function ThankYouList() {
             )}
           </div>
         ))}
+        </div>
       </div>
 
       {/* Lightbox 模态框 */}
