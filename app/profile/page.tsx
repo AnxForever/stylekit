@@ -24,9 +24,9 @@ export default function ProfilePage() {
       <main className="flex-1" data-cursor-aura="off">
         <Suspense
           fallback={
-            <div className="max-w-4xl mx-auto px-6 md:px-10 py-10 md:py-14">
-              <div className="animate-pulse flex flex-col md:flex-row gap-8 md:gap-12">
-                <div className="md:w-56 md:shrink-0 space-y-4">
+            <div className="max-w-6xl mx-auto px-6 md:px-12 py-10 md:py-14">
+              <div className="animate-pulse flex flex-col md:flex-row gap-8 md:gap-14">
+                <div className="md:w-64 md:shrink-0 space-y-4">
                   <div className="w-20 h-20 rounded-full bg-muted/20" />
                   <div className="h-6 w-36 bg-muted/20" />
                   <div className="h-3 w-28 bg-muted/20" />
@@ -34,8 +34,8 @@ export default function ProfilePage() {
                 </div>
                 <div className="flex-1 space-y-6">
                   <div className="h-8 w-full max-w-sm bg-muted/20" />
-                  <div className="grid grid-cols-2 gap-3">
-                    {Array.from({ length: 4 }).map((_, i) => (
+                  <div className="grid grid-cols-2 lg:grid-cols-3 gap-3">
+                    {Array.from({ length: 6 }).map((_, i) => (
                       <div key={i} className="aspect-video bg-muted/10" />
                     ))}
                   </div>
