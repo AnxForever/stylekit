@@ -29,6 +29,8 @@ export function Footer({ compact = false }: { compact?: boolean }) {
     { href: "/contact", labelKey: "footer.trust.contact" },
     { href: "/privacy", labelKey: "footer.trust.privacy" },
     { href: "/terms", labelKey: "footer.trust.terms" },
+    { href: "/support", labelKey: "footer.trust.support" },
+    { href: "/refunds", labelKey: "footer.trust.refunds" },
   ];
   const navLinks: { href: string; label: string; external?: boolean }[] = [
     { href: "/styles", label: t("nav.styles") },

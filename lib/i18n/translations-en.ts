@@ -819,6 +819,8 @@ export const en = {
     "footer.trust.contact": "Contact",
     "footer.trust.privacy": "Privacy",
     "footer.trust.terms": "Terms",
+    "footer.trust.support": "Support Us",
+    "footer.trust.refunds": "Refunds",
     "footer.support.eyebrow": "Support Maintenance",
     "footer.support.body": "If StyleKit helps your workflow, voluntary support helps cover servers, domains, and ongoing upkeep.",
     "footer.support.cta": "Scan to support / View all options",
