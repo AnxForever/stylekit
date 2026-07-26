@@ -163,7 +163,7 @@ export function StylesContent({ allStyles }: StylesContentProps) {
         10
       );
       setVisibleStyleCount(
-        Number.isFinite(savedCount) && savedCount > INITIAL_VISIBLE_STYLE_COUNT
+        Number.isFinite(savedCount) && savedCount >= INITIAL_VISIBLE_STYLE_COUNT
           ? savedCount
           : Number.MAX_SAFE_INTEGER
       );
