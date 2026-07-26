@@ -554,6 +554,8 @@ export const zh: { [K in keyof typeof en]: string } = {
   "footer.trust.contact": "联系与支持",
   "footer.trust.privacy": "隐私政策",
   "footer.trust.terms": "服务条款",
+  "footer.trust.support": "支持我们",
+  "footer.trust.refunds": "退款政策",
   "footer.support.eyebrow": "支持维护",
   "footer.support.body": "如果 StyleKit 恰好帮到了你，欢迎扫码支持。金额随意，每一份心意我都很感谢。",
   "footer.support.cta": "扫码支持 / 查看全部方式",
