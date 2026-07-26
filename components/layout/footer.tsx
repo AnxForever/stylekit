@@ -1,13 +1,19 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowRight, Github, Heart, MessageSquareText } from "lucide-react";
+import { ArrowRight, ArrowUpRight, Github, Heart, MessageSquareText } from "lucide-react";
 import { useI18n } from "@/lib/i18n/context";
 import type { TranslationKey } from "@/lib/i18n/translations";
 import { NewsletterSignup } from "@/components/newsletter/newsletter-signup";
 import { localizeHref } from "@/lib/i18n/routing";
 
 const currentYear = new Date().getFullYear();
+
+const sectionLabelClassName =
+  "font-mono text-[10px] uppercase tracking-[0.28em] text-zinc-500";
+
+const footerLinkClassName =
+  "text-sm text-zinc-400 transition-colors hover:text-white focus-visible:outline-none focus-visible:text-white";
 
 export function Footer({ compact = false }: { compact?: boolean }) {
   const { t, locale } = useI18n();
@@ -23,6 +29,15 @@ export function Footer({ compact = false }: { compact?: boolean }) {
     { href: "/contact", labelKey: "footer.trust.contact" },
     { href: "/privacy", labelKey: "footer.trust.privacy" },
     { href: "/terms", labelKey: "footer.trust.terms" },
+  ];
+  const navLinks: { href: string; label: string; external?: boolean }[] = [
+    { href: "/styles", label: t("nav.styles") },
+    { href: "/colors", label: locale === "zh" ? "配色" : "Colors" },
+    { href: "/collections", label: locale === "zh" ? "主题合集" : "Collections" },
+    { href: "/templates", label: t("nav.templates") },
+    { href: "/guide", label: t("nav.guide") },
+    { href: "https://anxforever.cn", label: t("nav.blog"), external: true },
+    { href: "/changelog", label: t("nav.changelog") },
   ];
 
   if (compact) {
@@ -63,91 +78,81 @@ export function Footer({ compact = false }: { compact?: boolean }) {
       className="mt-auto border-t border-zinc-800 bg-zinc-950 text-zinc-100 [--background:#18181b] [--border:#3f3f46] [--foreground:#fafafa] [--muted:#a1a1aa] dark:bg-black dark:[--background:#09090b]"
       data-cursor-aura="off"
     >
-      <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 md:px-12 md:py-14">
-        <div className="grid grid-cols-1 gap-10 border-b border-white/15 pb-10 md:grid-cols-[1.35fr_0.75fr_0.95fr_1.35fr] md:gap-10 md:pb-14">
-          <div className="max-w-sm">
-            <p className="masthead text-xl text-white">StyleKit</p>
-            <p className="mt-5 text-sm leading-7 text-zinc-400">{t("footer.tagline")}</p>
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 md:px-12">
+        {/* Colophon strip */}
+        <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-2 border-b border-white/10 py-4">
+          <p className={sectionLabelClassName}>
+            {locale === "zh" ? "刊末信息" : "Colophon"}
+            <span className="mx-2 text-zinc-700">/</span>
+            <span className="tabular-nums">SK — {currentYear}</span>
+          </p>
+          <p className={sectionLabelClassName}>{t("footer.builtWith")}</p>
+        </div>
+
+        {/* Editorial grid */}
+        <div className="grid border-b border-white/10 md:grid-cols-12">
+          <div className="py-8 md:col-span-4 md:py-12 md:pr-10">
+            <p className="masthead text-lg text-white">StyleKit</p>
+            <p className="mt-6 font-serif text-[1.45rem] italic leading-[1.45] text-zinc-200 md:text-[1.6rem]">
+              {t("footer.tagline")}
+            </p>
             <a
               href="https://github.com/AnxForever/stylekit"
               target="_blank"
               rel="noopener noreferrer"
-              className="mt-7 inline-flex items-center gap-2 text-sm text-zinc-300 transition-colors hover:text-white"
+              className="group mt-8 inline-flex items-center gap-2.5 font-mono text-[11px] uppercase tracking-[0.22em] text-zinc-400 transition-colors hover:text-white"
             >
               <Github className="h-4 w-4" />
               {t("footer.githubRepo")}
-              <ArrowRight className="h-3.5 w-3.5" />
+              <ArrowUpRight className="h-3.5 w-3.5 transition-transform duration-200 ease-out group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
             </a>
           </div>
 
-          <div>
-            <p className="mb-5 text-[10px] uppercase tracking-[0.18em] text-zinc-500">
+          <div className="border-t border-white/10 py-8 md:col-span-2 md:border-l md:border-t-0 md:py-12 md:pl-8">
+            <p className={sectionLabelClassName}>
+              <span className="tabular-nums text-zinc-600">01</span>
+              <span className="mx-2 text-zinc-700">·</span>
               {t("footer.navigation")}
             </p>
-            <nav className="flex flex-col gap-3">
-              <Link
-                href={localizeHref("/styles", locale)}
-                prefetch={false}
-                className="text-sm text-zinc-300 transition-colors hover:text-white"
-              >
-                {t("nav.styles")}
-              </Link>
-              <Link
-                href={localizeHref("/colors", locale)}
-                prefetch={false}
-                className="text-sm text-zinc-300 transition-colors hover:text-white"
-              >
-                {locale === "zh" ? "配色" : "Colors"}
-              </Link>
-              <Link
-                href={localizeHref("/collections", locale)}
-                prefetch={false}
-                className="text-sm text-zinc-300 transition-colors hover:text-white"
-              >
-                {locale === "zh" ? "主题合集" : "Collections"}
-              </Link>
-              <Link
-                href={localizeHref("/templates", locale)}
-                prefetch={false}
-                className="text-sm text-zinc-300 transition-colors hover:text-white"
-              >
-                {t("nav.templates")}
-              </Link>
-              <Link
-                href={localizeHref("/guide", locale)}
-                prefetch={false}
-                className="text-sm text-zinc-300 transition-colors hover:text-white"
-              >
-                {t("nav.guide")}
-              </Link>
-              <Link
-                href="https://anxforever.cn"
-                prefetch={false}
-                className="text-sm text-zinc-300 transition-colors hover:text-white"
-              >
-                {t("nav.blog")}
-              </Link>
-              <Link
-                href={localizeHref("/changelog", locale)}
-                prefetch={false}
-                className="text-sm text-zinc-300 transition-colors hover:text-white"
-              >
-                {t("nav.changelog")}
-              </Link>
+            <nav className="mt-6 flex flex-col gap-3">
+              {navLinks.map((link) =>
+                link.external ? (
+                  <a
+                    key={link.href}
+                    href={link.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={footerLinkClassName}
+                  >
+                    {link.label}
+                  </a>
+                ) : (
+                  <Link
+                    key={link.href}
+                    href={localizeHref(link.href, locale)}
+                    prefetch={false}
+                    className={footerLinkClassName}
+                  >
+                    {link.label}
+                  </Link>
+                )
+              )}
             </nav>
           </div>
 
-          <div>
-            <p className="mb-5 text-[10px] uppercase tracking-[0.18em] text-zinc-500">
+          <div className="border-t border-white/10 py-8 md:col-span-3 md:border-l md:border-t-0 md:py-12 md:pl-8">
+            <p className={sectionLabelClassName}>
+              <span className="tabular-nums text-zinc-600">02</span>
+              <span className="mx-2 text-zinc-700">·</span>
               {t("footer.resources")}
             </p>
-            <nav className="flex flex-col gap-3">
+            <nav className="mt-6 flex flex-col gap-3">
               {promptLinks.map((link) => (
                 <Link
                   key={link.href}
                   href={localizeHref(link.href, locale)}
                   prefetch={false}
-                  className="text-sm text-zinc-300 transition-colors hover:text-white"
+                  className={footerLinkClassName}
                 >
                   {t(link.labelKey)}
                 </Link>
@@ -155,39 +160,60 @@ export function Footer({ compact = false }: { compact?: boolean }) {
             </nav>
           </div>
 
-          <div className="border-white/15 md:border-l md:pl-8">
-            <NewsletterSignup variant="inline" />
+          <div className="border-t border-white/10 py-8 md:col-span-3 md:border-l md:border-t-0 md:py-12 md:pl-8">
+            <p className={sectionLabelClassName}>
+              <span className="tabular-nums text-zinc-600">03</span>
+              <span className="mx-2 text-zinc-700">·</span>
+              {locale === "zh" ? "订阅" : "Dispatch"}
+            </p>
+            <div className="mt-6">
+              <NewsletterSignup variant="inline" />
+            </div>
           </div>
         </div>
 
-        <div className="grid border-b border-white/15 md:grid-cols-2">
+        {/* Index rows */}
+        <div className="grid border-b border-white/10 md:grid-cols-2">
           <Link
             href={localizeHref("/contact#feedback", locale)}
             prefetch={false}
-            className="group flex items-center gap-4 border-b border-white/15 py-6 transition-colors hover:bg-white/[0.04] md:border-b-0 md:border-r md:px-6 md:first:pl-0"
+            className="group flex items-center gap-5 border-b border-white/10 py-7 transition-colors hover:bg-white/[0.04] md:border-b-0 md:border-r md:pr-8"
           >
-            <MessageSquareText className="h-5 w-5 shrink-0 text-zinc-500 transition-colors group-hover:text-white" />
-            <span className="min-w-0 flex-1">
-              <span className="block text-sm text-white">{locale === "zh" ? "反馈与建议" : "Feedback"}</span>
-              <span className="mt-1 block text-xs leading-5 text-zinc-500">{locale === "zh" ? "告诉我们哪里还可以更好" : "Tell us what could work better"}</span>
+            <span className="font-mono text-[11px] tabular-nums tracking-[0.2em] text-zinc-600 transition-colors group-hover:text-zinc-400">
+              04
             </span>
-            <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+            <MessageSquareText className="h-[18px] w-[18px] shrink-0 text-zinc-500 transition-colors group-hover:text-white" />
+            <span className="min-w-0 flex-1">
+              <span className="block text-sm text-white">
+                {locale === "zh" ? "反馈与建议" : "Feedback"}
+              </span>
+              <span className="mt-1 block text-xs leading-5 text-zinc-500">
+                {locale === "zh" ? "告诉我们哪里还可以更好" : "Tell us what could work better"}
+              </span>
+            </span>
+            <ArrowRight className="h-4 w-4 text-zinc-500 transition-all duration-200 ease-out group-hover:translate-x-1 group-hover:text-white" />
           </Link>
           <Link
             href={localizeHref("/contact#support-maintenance", locale)}
             prefetch={false}
-            className="group flex items-center gap-4 py-6 transition-colors hover:bg-white/[0.04] md:px-6 md:last:pr-0"
+            className="group flex items-center gap-5 py-7 transition-colors hover:bg-white/[0.04] md:pl-8"
           >
-            <Heart className="h-5 w-5 shrink-0 text-zinc-500 transition-colors group-hover:text-white" />
+            <span className="font-mono text-[11px] tabular-nums tracking-[0.2em] text-zinc-600 transition-colors group-hover:text-zinc-400">
+              05
+            </span>
+            <Heart className="h-[18px] w-[18px] shrink-0 text-zinc-500 transition-colors group-hover:text-white" />
             <span className="min-w-0 flex-1">
               <span className="block text-sm text-white">{t("footer.support.eyebrow")}</span>
-              <span className="mt-1 block text-xs leading-5 text-zinc-500">{t("footer.support.body")}</span>
+              <span className="mt-1 block text-xs leading-5 text-zinc-500">
+                {t("footer.support.body")}
+              </span>
             </span>
-            <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+            <ArrowRight className="h-4 w-4 text-zinc-500 transition-all duration-200 ease-out group-hover:translate-x-1 group-hover:text-white" />
           </Link>
         </div>
 
-        <div className="flex flex-col items-start justify-between gap-4 pt-7 text-xs text-zinc-500 md:flex-row md:items-center">
+        {/* Baseline */}
+        <div className="flex flex-col items-start justify-between gap-x-6 gap-y-2 py-6 font-mono text-[11px] text-zinc-500 md:flex-row md:items-center">
           <p>{t("footer.openSource").replace("{year}", String(currentYear))}</p>
           <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
             {trustLinks.map((link) => (
@@ -200,29 +226,31 @@ export function Footer({ compact = false }: { compact?: boolean }) {
                 {t(link.labelKey)}
               </Link>
             ))}
-            <span>{t("footer.builtWith")}</span>
+            <span className="text-zinc-700">/</span>
+            <a
+              href="https://beian.miit.gov.cn/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="transition-colors hover:text-white"
+            >
+              陕ICP备2025065501号-3
+            </a>
           </div>
         </div>
+      </div>
 
-        <div className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-zinc-600 md:justify-end">
-          <span>{t("footer.icp.label")}</span>
-          <a
-            href="https://stylekit.top"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="transition-colors hover:text-white"
-          >
-            stylekit.top
-          </a>
-          <a
-            href="https://beian.miit.gov.cn/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="transition-colors hover:text-white"
-          >
-            陕ICP备2025065501号-3
-          </a>
-        </div>
+      {/* Ghost masthead */}
+      <div aria-hidden="true" className="pointer-events-none select-none overflow-hidden border-t border-white/10">
+        <p
+          className="whitespace-nowrap text-center font-serif uppercase leading-[0.72] tracking-[0.1em] text-white/[0.05]"
+          style={{
+            fontSize: "clamp(4.25rem, 15.5vw, 13.5rem)",
+            transform: "translateY(26%)",
+            WebkitTextStroke: "1px rgba(255,255,255,0.13)",
+          }}
+        >
+          StyleKit
+        </p>
       </div>
     </footer>
   );
