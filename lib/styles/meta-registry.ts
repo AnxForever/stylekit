@@ -2305,4 +2305,61 @@ export const stylesMeta: StyleMeta[] = [
     },
     keywords: ["有机", "温暖", "自然", "大地色", "陶土", "作品集", "手工", "建筑师"],
   },
+  {
+    slug: "launch-keynote",
+    name: "发布会主题",
+    nameEn: "Launch Keynote",
+    description:
+      "苹果发布会式的产品揭幕美学：纯黑舞台、发光产品、超大紧字距标题、唯一电蓝强调。招牌技法是滚动逐帧序列——一个 sticky 画布随滚动播放预渲染的产品动画，一屏一产品一句话，像万亿市值的产品页。",
+    descriptionEn:
+      "An Apple-keynote product-reveal aesthetic: a pitch-black stage, luminous product imagery, huge tight-tracking headlines and one electric-blue accent. The signature is a scroll-scrubbed frame sequence - a sticky canvas plays a pre-rendered product animation as you scroll, one product and one message per viewport, like a trillion-dollar product page.",
+    cover: "/styles/launch-keynote.svg",
+    styleType: "visual",
+    tags: [],
+    category: "modern",
+    colors: {
+      primary: "#000000",
+      secondary: "#F5F5F7",
+      accent: ["#2997FF", "#1D1D1F", "#86868B"],
+    },
+    keywords: ["keynote", "apple", "product launch", "scroll scrub", "frame sequence", "发布会", "产品发布", "滚动逐帧", "揭幕", "纯黑舞台"],
+  },
+  {
+    slug: "luxe-lookbook",
+    name: "奢华画册",
+    nameEn: "Luxe Lookbook",
+    description:
+      "时装屋数字旗舰的高级定制美学：瓷白底、墨黑字、一支哑光金；超大高对比 Didone 衬线做标题，通栏丝绸动态视频首屏，画册网格悬停揭图。留白即奢侈，克制即高级，数字如艺术品——像一家敢为一件大衣标价四千欧元的时装屋。",
+    descriptionEn:
+      "The couture aesthetic of a fashion maison's digital flagship: a porcelain ground, ink-noir type, one muted gold; oversized high-contrast Didone serif display, a full-bleed silk-motion film hero, and a lookbook grid with hover image reveals. Absence is the luxury, restraint is the polish, numerals become art -- a house that charges four thousand euros for a coat.",
+    cover: "/styles/luxe-lookbook.svg",
+    styleType: "visual",
+    tags: [],
+    category: "expressive",
+    colors: {
+      primary: "#141210",
+      secondary: "#F7F5F1",
+      accent: ["#9A7B4F", "#E8E3DB", "#6B6259"],
+    },
+    keywords: ["奢华", "时装", "画册", "高级定制", "编辑排版", "衬线", "留白", "瓷白", "哑光金", "极简奢侈", "maison", "lookbook"],
+  },
+  {
+    slug: "shader-gradient",
+    name: "着色器渐变",
+    nameEn: "Shader Gradient",
+    description:
+      "以实时 WebGL 片元着色器驱动的流动网格渐变作背景的高端 SaaS 美学。近黑画布上一层缓慢呼吸的虹彩渐变场，冻毛玻璃内容面板悬浮其上，干净现代无衬线配一支明亮强调色——Stripe / Linear / Vercel 首屏的活体渐变。",
+    descriptionEn:
+      "A premium SaaS aesthetic built on a real-time WebGL fragment-shader mesh gradient. A slowly breathing iridescent field flows across a near-black canvas while frosted-glass panels float above it, paired with a clean modern sans and a single bright accent - the living-gradient look of Stripe, Linear, and Vercel heroes.",
+    cover: "/styles/shader-gradient.svg",
+    styleType: "visual",
+    tags: [],
+    category: "modern",
+    colors: {
+      primary: "#08090D",
+      secondary: "#EDEEF2",
+      accent: ["#7C5CFF", "#22D3EE", "#F472B6"],
+    },
+    keywords: ["shader", "webgl", "gradient", "mesh gradient", "fragment shader", "living background", "iridescent", "着色器", "渐变", "流体渐变", "网格渐变", "首屏背景", "高端 SaaS"],
+  },
 ];

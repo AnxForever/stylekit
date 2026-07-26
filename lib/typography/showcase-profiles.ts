@@ -37,6 +37,8 @@ type ProfileId = keyof typeof PROFILE_PAIRINGS;
 const PROFILE_SLUGS: Record<ProfileId, readonly string[]> = {
   atelier: [
     "apple-style",
+    "launch-keynote",
+    "shader-gradient",
     "bento-grid",
     "corporate-clean",
     "fluent-design",
@@ -56,6 +58,7 @@ const PROFILE_SLUGS: Record<ProfileId, readonly string[]> = {
   ],
   catalog: [
     "art-deco",
+    "luxe-lookbook",
     "editorial",
     "gallery-dark",
     "glassmorphism",

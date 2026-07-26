@@ -156,6 +156,9 @@ import { distillStyleTokens } from "./distill-style-tokens";
 import { studioBoldTokens } from "./studio-bold-tokens";
 import { galleryDarkTokens } from "./gallery-dark-tokens";
 import { warmOrganicTokens } from "./warm-organic-tokens";
+import { launchKeynoteTokens } from "./launch-keynote-tokens";
+import { luxeLookbookTokens } from "./luxe-lookbook-tokens";
+import { shaderGradientTokens } from "./shader-gradient-tokens";
 
 // Registry of all style tokens
 export const styleTokensRegistry: Record<string, StyleTokens> = {
@@ -313,4 +316,7 @@ export const styleTokensRegistry: Record<string, StyleTokens> = {
   "studio-bold": studioBoldTokens,
   "gallery-dark": galleryDarkTokens,
   "warm-organic": warmOrganicTokens,
+  "launch-keynote": launchKeynoteTokens,
+  "luxe-lookbook": luxeLookbookTokens,
+  "shader-gradient": shaderGradientTokens,
 };
