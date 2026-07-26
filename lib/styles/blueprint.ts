@@ -18,6 +18,7 @@ export const blueprint: DesignStyle = {
     accent: ["#4a90d9", "#ff6b35", "#a0c4e8", "#b071e4"],
   },
   keywords: ["蓝图", "工程", "技术", "图纸", "网格", "标注", "坐标", "minimal", "clean", "simple"],
+  keywordsEn: ["blueprint", "blueprint ui", "engineering drawing", "technical drawing", "cyanotype", "schematic", "drafting", "grid coordinates", "annotation lines", "architecture website"],
 
   philosophy: `Blueprint（工程蓝图）的设计灵感来自传统的氰版蓝图印刷工艺和现代工程制图。蓝色底色上的白色线条是其最具标志性的视觉特征，网格系统、标注线和尺寸标记赋予界面精确、专业、可信赖的气质。
 

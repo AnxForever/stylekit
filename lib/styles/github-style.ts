@@ -18,6 +18,7 @@ export const githubStyle: DesignStyle = {
     accent: ["#1f883d", "#9a6700", "#cf222e", "#1d7f98"],
   },
   keywords: ["GitHub", "开发者", "代码", "简洁", "灰度", "蓝色", "设计系统", "modern", "contemporary", "sleek"],
+  keywordsEn: ["GitHub style", "GitHub design system", "Primer design system", "developer tool ui", "monospace font", "grayscale palette", "code syntax highlighting", "documentation site", "developer portfolio", "clean minimal interface"],
 
   philosophy: `GitHub Style 是一种源于 GitHub 平台的设计语言，为全球数以千万计的开发者提供清晰、高效、无干扰的工作界面。它的设计哲学是"让内容说话"。
 

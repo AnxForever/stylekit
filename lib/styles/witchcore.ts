@@ -18,6 +18,7 @@ export const witchcore: DesignStyle = {
     accent: ["#c9a74e", "#7b68ae", "#3d8b6e", "#6bc15e"],
   },
   keywords: ["巫术", "神秘", "塔罗", "月相", "水晶", "符文", "暗黑", "expressive", "bold", "vibrant"],
+  keywordsEn: ["witchcore", "witchy aesthetic", "occult design", "tarot", "moon phases", "celestial", "mystical UI", "crystals", "runes", "dark purple and gold", "esoteric", "magic theme"],
 
   philosophy: `Witchcore（巫术核心）设计灵感源自神秘学、塔罗牌与自然魔法传统，通过深邃的暗紫色调与闪烁的金色符文，构建一个充满仪式感与神秘力量的视觉世界。
 

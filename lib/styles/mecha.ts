@@ -18,6 +18,7 @@ export const mecha: DesignStyle = {
     accent: ["#fbbf24", "#ef4444", "#56ed40", "#069006"],
   },
   keywords: ["机甲", "高达", "EVA", "科技面板", "警告", "工业", "军事", "expressive", "bold", "vibrant"],
+  keywordsEn: ["mecha", "mecha ui", "Gundam", "Evangelion", "sci-fi hud", "cockpit interface", "control panel ui", "warning stripes", "military industrial design", "hazard yellow", "anime ui"],
 
   philosophy: `Mecha（机甲风）是源自日本机甲动画（高达、EVA等）的设计美学，融合军事工业风和科幻面板界面。
 

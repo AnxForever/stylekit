@@ -18,6 +18,7 @@ export const magicCircle: DesignStyle = {
     accent: ["#fbbf24", "#e2e8f0", "#818cf8", "#56ed40"],
   },
   keywords: ["魔法阵", "符文", "神秘", "奇幻", "光效", "几何", "魔法", "同心圆", "六芒星"],
+  keywordsEn: ["magic circle", "summoning circle", "sacred geometry", "runes", "hexagram", "Flower of Life", "alchemy symbols", "fantasy ui", "arcane design", "glowing rings", "mystical", "occult aesthetic"],
 
   philosophy: `Magic Circle draws from the arcane tradition of geometric summoning circles, weaving precision geometry with radiant light effects.
 

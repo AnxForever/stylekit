@@ -18,6 +18,7 @@ export const modernGradient: DesignStyle = {
     accent: ["#06b6d4", "#ec4899", "#f59e0b", "#8587ff"],
   },
   keywords: ["渐变", "现代", "活力", "创业", "数字", "动态", "科技感", "expressive", "bold", "vibrant"],
+  keywordsEn: ["modern gradient", "gradient design", "gradient background", "mesh gradient", "vibrant colors", "glass cards", "dynamic lighting", "colorful ui", "startup landing page", "SaaS website", "hero section"],
 
   philosophy: `Modern Gradient 风格通过丰富的渐变色彩和光影效果创造视觉冲击力和活力感。
 

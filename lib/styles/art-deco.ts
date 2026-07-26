@@ -18,6 +18,7 @@ export const artDeco: DesignStyle = {
     accent: ["#c9a227", "#2d2d44", "#f5f5dc", "#4bc542"],
   },
   keywords: ["装饰艺术", "奢华", "金色", "几何", "1920年代", "优雅", "高端", "retro", "vintage", "nostalgic"],
+  keywordsEn: ["Art Deco", "Art Deco website", "1920s design", "Gatsby style", "gold and black", "geometric patterns", "sunburst motif", "luxury branding", "vintage luxury", "gold foil", "elegant typography"],
 
   philosophy: `Art Deco（装饰艺术）是1920-30年代流行的设计风格，融合了现代主义的几何形式与传统工艺的奢华感。
 

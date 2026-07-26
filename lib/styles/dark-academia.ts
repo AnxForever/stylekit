@@ -18,6 +18,7 @@ export const darkAcademia: DesignStyle = {
     accent: ["#8b7355", "#f5f0e1", "#5c4033", "#647f53"],
   },
   keywords: ["暗黑学院", "古典", "图书馆", "文学", "大学", "皮革", "手稿", "retro", "vintage", "nostalgic"],
+  keywordsEn: ["dark academia", "dark academia aesthetic", "classical library", "Gothic", "vintage scholarly", "leather texture", "antique gold", "Victorian", "serif typography", "literary website", "moody brown palette"],
 
   philosophy: `Dark Academia（暗黑学院风）是一种以古典教育、文学和建筑为核心的美学流派，融合了古希腊罗马文化、哥特式建筑和维多利亚时代学术氛围。
 

@@ -18,6 +18,7 @@ export const paperCraft: DesignStyle = {
     accent: ["#5cb8a5", "#f5c040", "#6b7fb5", "#81a7e2"],
   },
   keywords: ["纸艺", "剪纸", "手作", "层叠", "阴影", "创意", "质感", "expressive", "bold", "vibrant"],
+  keywordsEn: ["paper craft", "papercut design", "layered paper effect", "origami", "handmade collage", "paper texture", "soft layered shadows", "craft aesthetic", "scrapbook style", "kids website design", "educational website"],
 
   philosophy: `Paper Craft（纸艺手作）的设计灵感来自剪纸艺术、折纸和手工拼贴。通过层叠的纸张效果、柔和的投影和不规则的手作边缘，创造出温暖、有触感的视觉体验。
 

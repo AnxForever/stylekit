@@ -20,6 +20,7 @@ export const comicStyle: DesignStyle = {
     accent: ["#ff3333", "#ffcc00", "#3366ff", "#33cc33"],
   },
   keywords: ["漫画", "manga", "网点", "对话气泡", "分镜", "动作线", "墨线", "expressive", "bold", "vibrant"],
+  keywordsEn: ["comic style", "comic book ui", "manga", "halftone dots", "speech bubbles", "ink outlines", "comic panels", "action lines", "pop art comic", "Ben-Day dots"],
 
   philosophy: `Comic Style 是一种源自漫画书和日式漫画的设计风格，通过浓重的墨线边框、半调网点、对话气泡和动态线条，将界面变成生动的漫画面板。
 

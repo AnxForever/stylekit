@@ -18,6 +18,7 @@ export const jrpg: DesignStyle = {
     accent: ["#fbbf24", "#f0f9ff", "#22c55e", "#56ed40"],
   },
   keywords: ["RPG", "菜单", "属性", "道具栏", "奇幻", "对话框", "血条", "经验值", "expressive", "bold"],
+  keywordsEn: ["JRPG", "RPG menu", "dialogue box", "health bar", "beveled borders", "game hud", "fantasy game", "retro game interface", "Final Fantasy menu", "inventory screen", "status window"],
 
   philosophy: `JRPG 风格源自经典日式角色扮演游戏的菜单与 UI 设计，通过斜面边框、渐变背景和精致框架重现复古游戏体验。
 

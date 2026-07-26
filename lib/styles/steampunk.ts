@@ -18,6 +18,7 @@ export const steampunk: DesignStyle = {
     accent: ["#b87333", "#f5f0e1", "#4a4a4a", "#5a9025"],
   },
   keywords: ["蒸汽朋克", "齿轮", "黄铜", "铜质", "工业", "发条", "维多利亚", "铆钉", "expressive", "bold"],
+  keywordsEn: ["steampunk", "steampunk ui", "Victorian industrial", "brass and copper", "gears", "clockwork", "retro sci-fi", "retro futurism", "mechanical design", "rivets", "industrial aesthetic"],
 
   philosophy: `Steampunk 风格源自维多利亚时代工业革命的美学想象，通过黄铜/铜质金属质感、齿轮机关元素和精密的机械细节创造复古未来感。
 

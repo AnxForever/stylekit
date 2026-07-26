@@ -18,6 +18,7 @@ export const fluentDesign: DesignStyle = {
     accent: ["#ffb900", "#e81123", "#00cc6a", "#3bf022"],
   },
   keywords: ["Fluent", "微软", "亚克力", "Reveal", "光效", "深度", "动效", "modern", "contemporary", "sleek"],
+  keywordsEn: ["Fluent Design", "Microsoft Fluent", "acrylic material", "reveal highlight", "Windows 11 ui", "backdrop blur", "depth and light", "fluent ui", "motion design", "desktop app ui"],
 
   philosophy: `Fluent Design System（流利设计系统）是微软于 2017 年推出的设计语言，旨在创造跨设备的一致体验。
 

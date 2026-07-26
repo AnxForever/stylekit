@@ -18,6 +18,7 @@ export const liquidGlass: DesignStyle = {
     accent: ["#ff6b6b", "#4ecdc4", "#a855f7", "#007AFF", "#FF2D55"],
   },
   keywords: ["Apple", "Liquid Glass", "流动玻璃", "彩虹边缘", "折射", "多层堆叠", "WWDC 2025"],
+  keywordsEn: ["liquid glass", "Apple Liquid Glass", "glassmorphism", "frosted glass", "glass ui", "refraction effect", "SVG displacement filter", "backdrop blur", "rainbow edge glow", "fluid morphing", "WWDC 2025"],
 
   philosophy: `Liquid Glass（流动玻璃）是 Apple WWDC 2025 发布的革命性设计语言，超越传统毛玻璃效果，通过光线折射、彩虹边缘和流体动画创造出真正有机、流动的视觉体验。
 

@@ -18,6 +18,7 @@ export const parallaxEditorial: DesignStyle = {
     accent: ["#B3401F", "#2E2A22", "#C9BBA0"],
   },
   keywords: ["parallax", "editorial", "magazine", "scroll", "depth", "drop cap", "sticky", "视差", "杂志", "编辑排版", "景深", "滚动"],
+  keywordsEn: ["parallax editorial", "magazine layout website", "parallax scrolling", "editorial design", "scroll depth effect", "drop cap typography", "sticky sections", "long-form article design", "print-inspired web design", "layered scrolling"],
 
   philosophy: `视差杂志的信条：滚动是翻页，深度是版面的第四维。当前景与背景以不同速率移动，平面的网页第一次有了纸张的厚度——读者不是划过屏幕，而是穿过一叠正在错位滑动的版面。
 

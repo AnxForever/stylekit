@@ -19,6 +19,7 @@ export const asymmetricGrid: DesignStyle = {
     accent: ["#ff3366", "#00d4ff", "#ffcc00", "#b45700"],
   },
   keywords: ["非对称", "网格", "不规则", "动态", "张力", "重叠", "创意", "modern", "contemporary", "sleek"],
+  keywordsEn: ["asymmetric grid", "broken grid layout", "asymmetrical layout", "irregular grid", "overlapping elements", "CSS grid", "editorial layout", "creative portfolio", "visual tension", "dynamic layout"],
 
   philosophy: `Asymmetric Grid 打破传统网格的均匀分布，通过不等宽列、元素重叠和留白对比创造视觉张力。
 

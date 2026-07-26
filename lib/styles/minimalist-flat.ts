@@ -18,6 +18,7 @@ export const minimalistFlat: DesignStyle = {
     accent: ["#ff3366", "#00d4aa", "#ffcc00", "#b45700"],
   },
   keywords: ["极简", "扁平", "无阴影", "作品集", "创意", "艺术", "minimal", "clean", "simple", "留白"],
+  keywordsEn: ["minimalist flat design", "flat design", "minimalism", "flat ui", "clean ui", "whitespace", "no shadows", "simple layout", "portfolio website", "creative agency", "content first design"],
 
   philosophy: `Minimalist Flat 风格追求设计的本质，去除一切不必要的装饰，让内容成为主角。
 

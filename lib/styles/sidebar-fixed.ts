@@ -19,6 +19,7 @@ export const sidebarFixed: DesignStyle = {
     accent: ["#3b82f6", "#10b981", "#f59e0b", "#ef4444"],
   },
   keywords: ["侧边栏", "后台", "管理", "导航", "仪表盘", "应用", "modern", "contemporary", "sleek", "现代"],
+  keywordsEn: ["fixed sidebar layout", "sidebar navigation", "admin dashboard layout", "app shell", "dashboard ui", "side menu", "persistent navigation", "docs sidebar", "two-column layout", "SaaS dashboard", "collapsible sidebar"],
 
   philosophy: `Fixed Sidebar（固定侧边栏布局）是应用型界面的经典布局，提供持久可见的导航同时最大化内容展示空间。
 

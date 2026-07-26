@@ -18,6 +18,7 @@ export const particle: DesignStyle = {
     accent: ["#e0e8ff", "#64c8ff", "#64ffc8", "#a78bfa"],
   },
   keywords: ["particles", "network", "connections", "floating", "tech", "nodes", "constellation", "modern", "contemporary", "sleek"],
+  keywordsEn: ["particle system", "particle background", "particles.js", "constellation effect", "particle network", "canvas animation", "connected dots", "floating particles", "tech landing page", "data flow", "dark tech background"],
 
   philosophy: `A living network of floating particles and connection lines creates a sense of data flowing through space — tech-forward yet organic and mesmerizing.
 

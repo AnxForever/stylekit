@@ -18,6 +18,7 @@ export const watercolorStyle: DesignStyle = {
     accent: ["#e8a87c", "#85cdca", "#c38d94", "#d4a373"],
   },
   keywords: ["水彩", "渐变", "柔和", "纸张", "艺术", "流动", "诗意", "expressive", "bold", "vibrant"],
+  keywordsEn: ["watercolor", "soft gradients", "blurred edges", "watercolor background", "pastel wash", "flowing colors", "paper texture", "artistic UI", "poetic design", "watercolor website"],
 
   philosophy: `Watercolor Style 是一种模拟水彩画效果的设计风格，通过柔和的颜色渐变、模糊的边缘和流动的色彩扩散，为界面注入艺术气息和诗意感受。
 

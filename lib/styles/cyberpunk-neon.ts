@@ -20,6 +20,7 @@ export const cyberpunkNeon: DesignStyle = {
     accent: ["#ff00ff", "#ffff00", "#00ff00", "#ff0506"],
   },
   keywords: ["赛博朋克", "霓虹", "未来", "发光", "游戏", "科技", "expressive", "bold", "vibrant", "表现力"],
+  keywordsEn: ["cyberpunk", "neon glow", "cyberpunk ui", "futuristic interface", "sci-fi", "game ui", "dark background", "high contrast", "glowing buttons", "tech landing page", "night city aesthetic"],
 
   philosophy: `Cyberpunk Neon 风格来源于赛博朋克科幻美学，通过霓虹发光、深色背景和高对比度创造未来感。
 

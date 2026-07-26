@@ -19,6 +19,7 @@ export const parallaxSections: DesignStyle = {
     accent: ["#3b82f6", "#93c5fd", "#0ea5e9", "#c559f0"],
   },
   keywords: ["视差", "滚动", "深度", "层次", "沉浸", "固定背景", "全屏", "modern", "contemporary", "sleek"],
+  keywordsEn: ["parallax sections", "parallax scrolling website", "background-attachment fixed", "full-screen sections", "immersive landing page", "brand story website", "scroll depth effect", "hero parallax", "layered backgrounds", "scroll animation"],
 
   philosophy: `Parallax Sections 通过背景与前景的差速滚动创造深度感，让用户在滚动中体验层次分明的视觉旅程。
 

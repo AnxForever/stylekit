@@ -18,6 +18,7 @@ export const pastelGoth: DesignStyle = {
     accent: ["#d4a5e3", "#7ec8c8", "#f5a5b8", "#b8a5f5"],
   },
   keywords: ["粉彩哥特", "柔暗", "糖果色", "骷髅", "十字架", "暗色", "粉紫", "expressive", "bold", "vibrant"],
+  keywordsEn: ["pastel goth", "kawaii goth", "creepy cute", "gothic aesthetic", "Tumblr aesthetic", "dark pastel palette", "pastel purple", "soft grunge", "goth website design", "candy colors dark theme"],
 
   philosophy: `Pastel Goth（粉彩哥特）是2010年代从Tumblr亚文化中诞生的独特美学流派，将传统哥特的暗黑元素与甜美的糖果色彩进行了颠覆性的融合。
 

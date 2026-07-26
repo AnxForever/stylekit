@@ -20,6 +20,7 @@ export const claymorphism: DesignStyle = {
     accent: ["#a7f3d0", "#c4b5fd", "#fcd34d", "#b6e9ff"],
   },
   keywords: ["粘土", "3D", "可爱", "柔软", "圆润", "儿童", "趣味", "modern", "contemporary", "sleek"],
+  keywordsEn: ["claymorphism", "clay ui", "clay effect", "soft 3D", "inner shadow", "big border radius", "cute ui", "playful design", "kids app", "pastel gradient"],
 
   philosophy: `Claymorphism（粘土拟态）是一种模拟粘土或橡皮泥质感的 UI 设计风格，通过超大圆角、内外阴影组合和柔和的渐变色彩，创造出柔软、可爱的 3D 立体效果。
 

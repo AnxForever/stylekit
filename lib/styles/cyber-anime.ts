@@ -18,6 +18,7 @@ export const cyberAnime: DesignStyle = {
     accent: ["#06d6a0", "#ff006e", "#38bdf8", "#51b1ff"],
   },
   keywords: ["赛博动漫", "HUD", "全息", "霓虹", "机甲", "神经数据流", "expressive", "bold", "vibrant", "表现力"],
+  keywordsEn: ["cyber anime", "anime ui", "HUD interface", "mecha", "holographic ui", "sci-fi dashboard", "neon glow", "scan lines", "futuristic hud", "game ui", "cyberpunk anime"],
 
   philosophy: `Cyber Anime fuses cyberpunk HUD interfaces with anime's expressive power. Every panel is a data terminal, every border a mecha frame.
 

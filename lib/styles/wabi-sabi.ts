@@ -18,6 +18,7 @@ export const wabiSabi: DesignStyle = {
     accent: ["#8a9a7b", "#b5a78c", "#8b6f4e", "#799d91"],
   },
   keywords: ["侘寂", "日式", "禅", "不完美", "留白", "Ma", "纸张", "自然", "东方"],
+  keywordsEn: ["wabi-sabi", "wabi sabi design", "Japanese minimalism", "zen aesthetic", "imperfect beauty", "negative space", "paper texture", "ink wash", "earth tones", "Japanese web design", "organic imperfection"],
 
   philosophy: `侘寂（Wabi-Sabi）是日本传统美学中最深层的哲学概念。
 

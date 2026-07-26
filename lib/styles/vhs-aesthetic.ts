@@ -29,6 +29,7 @@ export const vhsAesthetic: DesignStyle = {
     "nostalgia",
     "chromatic aberration",
   ],
+  keywordsEn: ["VHS aesthetic", "VHS effect", "analog horror", "scanlines", "chromatic aberration", "tracking error", "CRT screen", "90s nostalgia", "retro video", "camcorder overlay", "analog glitch"],
 
   philosophy: `VHS Aesthetic 再现了80-90年代VHS磁带的模拟温暖感与美丽缺陷。
 

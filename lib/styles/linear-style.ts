@@ -16,6 +16,7 @@ export const linearStyle: DesignStyle = {
     accent: ["#f2c94c", "#27ae60", "#eb5757", "#2d9cdb"],
   },
   keywords: ["Linear", "极简", "暗色", "开发者", "精确", "工具", "minimal", "clean", "simple", "留白"],
+  keywordsEn: ["Linear style", "Linear app design", "dark ui", "dark mode", "developer tool aesthetic", "SaaS landing page", "minimal dark theme", "subtle gradients", "precise typography", "product website"],
 
   philosophy: `Linear Style 源自备受开发者推崇的项目管理工具 Linear。其设计理念是"每一个像素都有目的"。
 

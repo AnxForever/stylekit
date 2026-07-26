@@ -19,6 +19,7 @@ export const splitScreen: DesignStyle = {
     accent: ["#ff4757", "#2ed573", "#1e90ff", "#ffa502"],
   },
   keywords: ["分屏", "对比", "左右布局", "对称", "品牌", "展示", "modern", "contemporary", "sleek", "现代"],
+  keywordsEn: ["split screen", "split screen layout", "split layout", "side by side layout", "two column hero", "50/50 layout", "comparison page", "dual panel", "asymmetric split", "product showcase", "landing page"],
 
   philosophy: `Split Screen（分屏布局）是一种将视口分为两个或多个区域的布局方式，通过对比创造视觉张力和叙事效果。
 

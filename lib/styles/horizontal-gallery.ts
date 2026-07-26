@@ -19,6 +19,7 @@ export const horizontalGallery: DesignStyle = {
     accent: ["#A85A3A", "#8A8A85", "#E8E6E1", "#2E2E2C"],
   },
   keywords: ["横滚", "画廊", "策展", "白盒", "作品集", "留白", "horizontal scroll", "gallery", "white cube", "portfolio", "minimal", "极简"],
+  keywordsEn: ["horizontal gallery", "horizontal scroll website", "scroll snap", "white cube", "art gallery website", "museum website", "photography portfolio", "exhibition website", "curated showcase", "minimal gallery"],
 
   philosophy: `Horizontal Gallery（横滚画廊）把网页想象成一座白盒美术馆（White Cube）：观看不是向下刷信息流，而是沿着一条展线向前步行，每一步停在一件作品正前方。
 

@@ -18,6 +18,7 @@ export const sciFiHud: DesignStyle = {
     accent: ["#0EA5E9", "#22D3EE", "#22C55E", "#9e74ff"],
   },
   keywords: ["科幻", "HUD", "全息", "雷达", "指挥中心", "太空", "发光边框", "数据流", "modern", "contemporary"],
+  keywordsEn: ["sci-fi HUD", "HUD interface", "heads-up display", "futuristic ui", "FUI", "holographic ui", "glowing borders", "radar screen", "space command center", "scanline effect", "sci-fi dashboard", "game hud"],
 
   philosophy: `Sci-Fi HUD 风格源自电影、游戏中的未来科技界面，核心在于"信息即界面"。
 

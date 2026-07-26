@@ -20,6 +20,7 @@ export const appleStyle: DesignStyle = {
     accent: ["#0071e3", "#34c759", "#ff3b30", "#a13ff6"],
   },
   keywords: ["Apple", "极简", "高端", "科技", "产品", "留白", "精致", "minimal", "clean", "simple"],
+  keywordsEn: ["Apple style", "Apple design", "minimalist website", "premium minimal", "SF Pro font", "generous whitespace", "clean ui", "product landing page", "subtle shadows", "rounded corners", "Cupertino design"],
 
   philosophy: `Apple Style 是一种源于 Apple 设计语言的极致简约风格，通过大量留白、精致的细节和克制的配色，传达高端科技产品的品质感和信任感。
 

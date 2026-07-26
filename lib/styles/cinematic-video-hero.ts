@@ -18,6 +18,7 @@ export const cinematicVideoHero: DesignStyle = {
     accent: ["#E4C063", "#141821", "#9AA6B8"],
   },
   keywords: ["cinematic", "video hero", "background video", "loop", "poster", "trailer", "电影感", "视频背景", "首屏", "循环"],
+  keywordsEn: ["video hero", "cinematic hero", "background video", "hero video section", "video landing page", "autoplay loop", "poster frame", "video banner", "dark cinematic", "trailer style"],
 
   philosophy: `电影视频首屏的信条：开场是一部预告片，不是一张幻灯片。视频给静态页面注入时间感——光在流动、雾在飘、色在呼吸——但它必须先让位于性能：海报帧秒开，视频悄悄补上。
 

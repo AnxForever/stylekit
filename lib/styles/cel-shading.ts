@@ -18,6 +18,7 @@ export const celShading: DesignStyle = {
     accent: ["#e63946", "#4ea8de", "#2ecc71", "#f1c40f"],
   },
   keywords: ["赛璐璐", "卡通", "轮廓线", "平面阴影", "动画", "游戏", "toon", "bold", "expressive", "vibrant"],
+  keywordsEn: ["cel shading", "toon shading", "cartoon ui", "bold outlines", "flat shading", "hard shadows", "anime style", "comic outline", "game ui", "saturated colors"],
 
   philosophy: `赛璐璐动画风（Cel Shading / Toon Shading）模拟传统手绘动画的视觉效果。
 

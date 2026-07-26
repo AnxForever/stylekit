@@ -19,6 +19,7 @@ export const fullPageScroll: DesignStyle = {
     accent: ["#6366f1", "#ec4899", "#14b8a6", "#f59e0b"],
   },
   keywords: ["全屏", "滚动", "沉浸式", "场景", "品牌", "故事", "expressive", "bold", "vibrant", "表现力"],
+  keywordsEn: ["full page scroll", "fullscreen sections", "scroll snap", "one page website", "immersive scrolling", "section-based layout", "brand storytelling", "scroll-driven", "presentation website", "product showcase"],
 
   philosophy: `Full Page Scroll（全屏滚动布局）是一种将每个内容区块扩展到整个视口的布局方式，创造电影般的叙事体验。
 

@@ -18,6 +18,7 @@ export const materialDesign: DesignStyle = {
     accent: ["#ff0266", "#ffde03", "#00c853", "#c12700"],
   },
   keywords: ["Material", "Google", "层次", "动效", "海拔", "涟漪", "卡片", "modern", "contemporary", "sleek"],
+  keywordsEn: ["Material Design", "Material UI", "Google design system", "elevation shadows", "ripple effect", "floating action button", "material components", "Android ui", "card layout", "motion design", "mobile app design"],
 
   philosophy: `Material Design（材料设计）是 Google 在 2014 年推出的设计语言，将数字界面比作有物理属性的纸张和墨水。
 

@@ -18,6 +18,7 @@ export const filmNoir: DesignStyle = {
     accent: ["#c41e3a", "#8b7355", "#d4af37", "#7c3e00"],
   },
   keywords: ["黑色电影", "明暗对比", "光影", "戏剧", "复古", "神秘", "高对比", "retro", "vintage", "nostalgic"],
+  keywordsEn: ["film noir", "noir aesthetic", "black and white", "chiaroscuro", "high contrast", "dramatic shadows", "monochrome", "1940s cinema", "moody dark theme", "spotlight effect", "photography portfolio"],
 
   philosophy: `Film Noir 风格取自 1940-50 年代好莱坞黑色电影的视觉语言。
 

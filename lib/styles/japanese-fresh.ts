@@ -18,6 +18,7 @@ export const japaneseFresh: DesignStyle = {
     accent: ["#98d8c8", "#ffb7c5", "#b8d4e3", "#b0cdf3"],
   },
   keywords: ["Ma", "侘寂", "留白", "发丝边框", "植物线描", "呼吸感", "minimal", "clean", "simple", "极简"],
+  keywordsEn: ["Japanese minimalism", "wabi-sabi", "Ma spacing", "japandi", "hairline borders", "botanical line art", "warm neutrals", "zen aesthetic", "calm design", "airy layout"],
 
   philosophy: `Japanese Fresh embodies Ma (space between) and wabi-sabi (beauty in imperfection). Design is not about what you add, but what you allow to breathe.
 

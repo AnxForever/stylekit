@@ -19,6 +19,7 @@ export const cardStack: DesignStyle = {
     accent: ["#6c5ce7", "#00cec9", "#fd79a8", "#ffeaa7"],
   },
   keywords: ["卡片", "堆叠", "立体", "层叠", "轮播", "3D", "expressive", "bold", "vibrant", "表现力"],
+  keywordsEn: ["card stack", "stacked cards", "card deck", "3D cards", "card carousel", "swipeable cards", "z-axis layering", "overlapping cards", "depth effect", "onboarding cards"],
 
   philosophy: `Card Stack（卡片堆叠布局）是一种利用 Z 轴创造深度感的布局方式，多张卡片前后重叠，形成视觉层次。
 

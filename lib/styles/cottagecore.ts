@@ -18,6 +18,7 @@ export const cottagecore: DesignStyle = {
     accent: ["#f5d75f", "#8b7355", "#d4a0a0", "#7ff77e"],
   },
   keywords: ["田园", "乡村", "花卉", "刺绣", "蘑菇", "温馨", "手工", "retro", "vintage", "nostalgic"],
+  keywordsEn: ["cottagecore", "cottagecore aesthetic", "pastoral", "countryside", "floral pattern", "rustic", "farmhouse", "cozy web design", "vintage botanical", "embroidery texture", "warm earth tones"],
 
   philosophy: `Cottagecore（田园核）是一种浪漫化田园乡村生活的美学运动，起源于2010年代末的互联网文化。
 

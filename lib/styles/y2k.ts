@@ -18,6 +18,7 @@ export const y2k: DesignStyle = {
     accent: ["#00ffff", "#ff00ff", "#87ceeb", "#93c4ff"],
   },
   keywords: ["Y2K", "千禧", "未来主义", "金属", "透明", "气泡", "2000年代", "retro", "vintage", "nostalgic"],
+  keywordsEn: ["Y2K", "Y2K aesthetic", "retro futurism", "early 2000s design", "chrome metallic", "iridescent gradient", "holographic", "transparent plastic", "bubble elements", "cyber Y2K", "rainbow gradient", "nostalgic web design"],
 
   philosophy: `Y2K（千禧风格）是1990年代末至2000年代初的设计美学，反映了人们对新千年和数字未来的乐观想象。
 

@@ -19,6 +19,7 @@ export const holyGrailLayout: DesignStyle = {
     accent: ["#3b82f6", "#10b981", "#f59e0b", "#ef4444"],
   },
   keywords: ["三栏", "圣杯", "经典", "页头", "页脚", "侧边栏", "导航", "modern", "contemporary", "sleek"],
+  keywordsEn: ["holy grail layout", "three column layout", "classic web layout", "CSS grid", "flexbox", "sidebar navigation", "fixed header and footer", "responsive layout", "news website", "blog layout"],
 
   philosophy: `Holy Grail Layout 是Web设计中追求已久的经典布局方案，包含固定的页头页脚和三列中间内容区。这个名字来源于CSS布局早期实现这种布局的困难程度。
 

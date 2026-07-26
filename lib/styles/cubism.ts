@@ -18,6 +18,7 @@ export const cubism: DesignStyle = {
     accent: ["#8b7355", "#3d5c6e", "#9b3d25", "#647f53"],
   },
   keywords: ["立体主义", "毕加索", "几何", "碎片", "多视角", "棱角", "大地色", "expressive", "bold", "vibrant"],
+  keywordsEn: ["cubism", "cubist design", "Picasso", "geometric fragments", "abstract art", "angular shapes", "multi-perspective", "avant-garde", "earth tones", "collage layout", "art movement"],
 
   philosophy: `Cubism（立体主义）是20世纪最具革命性的艺术运动之一，由毕加索和布拉克于1907年前后开创。它彻底打破了文艺复兴以来的单点透视传统，用几何碎片和多视角叠加重新定义了视觉表达。
 

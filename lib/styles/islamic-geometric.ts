@@ -18,6 +18,7 @@ export const islamicGeometric: DesignStyle = {
     accent: ["#c9a74e", "#2d7d46", "#8b2332", "#6bc15e"],
   },
   keywords: ["伊斯兰", "几何", "镶嵌", "阿拉伯", "花纹", "纹理", "expressive", "bold", "vibrant", "表现力"],
+  keywordsEn: ["Islamic geometric patterns", "arabesque", "tessellation", "Arabic pattern", "Moroccan design", "girih", "eight-pointed star", "sacred geometry", "gold and blue", "Middle Eastern design", "mosaic"],
 
   philosophy: `伊斯兰几何艺术是人类文明中最精密的装饰体系之一，跨越千年仍令人叹服。它基于严格的数学原理——正多边形的镶嵌（tessellation）、星形多角图案、阿拉伯式卷草纹——构建出无限延展的视觉宇宙。
 

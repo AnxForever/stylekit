@@ -18,6 +18,7 @@ export const scandinavian: DesignStyle = {
     accent: ["#5a7a6b", "#7ba0b8", "#c9a88c", "#607683"],
   },
   keywords: ["北欧", "斯堪的纳维亚", "Hygge", "木质", "自然", "温暖", "留白", "舒适", "minimal", "clean"],
+  keywordsEn: ["scandinavian design", "nordic minimalism", "hygge", "scandi style", "warm minimalism", "natural wood tones", "muted color palette", "airy whitespace", "danish design", "cozy aesthetic", "clean minimal ui"],
 
   philosophy: `北欧极简风（Scandinavian Minimalism）源自丹麦、瑞典、挪威、芬兰等北欧国家的设计传统。
 

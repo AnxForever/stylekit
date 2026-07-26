@@ -18,6 +18,7 @@ export const acidGraphics: DesignStyle = {
     accent: ["#e6ff00", "#a020f0", "#ff6ec7", "#00ffff"],
   },
   keywords: ["酸性", "迷幻", "荧光", "扭曲", "锐舞", "Op-Art", "赛博", "expressive", "bold", "vibrant"],
+  keywordsEn: ["acid graphics", "acid design", "psychedelic design", "rave aesthetic", "rave poster", "y2k aesthetic", "fluorescent colors", "acid green", "distorted typography", "experimental typography", "chrome text", "op art"],
 
   philosophy: `Acid Graphics 源于90年代锐舞文化和地下俱乐部场景，融合了赛博朋克、迷幻艺术和实验排版。
 

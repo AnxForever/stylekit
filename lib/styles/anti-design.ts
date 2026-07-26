@@ -26,6 +26,7 @@ export const antiDesign: DesignStyle = {
     "punk",
     "rebellious",
   "expressive", "vibrant", "表现力"],
+  keywordsEn: ["anti-design", "brutalist web design", "neo brutalism", "punk aesthetic", "experimental ui", "thick black borders", "hard shadows", "clashing colors", "rotated text", "raw design"],
 
   philosophy: `Anti-Design deliberately breaks every UI convention. Where traditional design seeks harmony, Anti-Design seeks visual conflict.
 

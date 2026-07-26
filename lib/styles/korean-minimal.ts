@@ -18,6 +18,7 @@ export const koreanMinimal: DesignStyle = {
     accent: ["#d4a5a5", "#a8c5b8", "#e8d4b8", "#b9b08a"],
   },
   keywords: ["韩式", "极简", "K-beauty", "留白", "粉彩", "克制", "精致", "minimal", "clean", "simple"],
+  keywordsEn: ["Korean minimalism", "K-beauty", "minimal web design", "pastel colors", "soft ui", "generous whitespace", "rounded corners", "clean aesthetic", "Korean web design", "beauty brand", "skincare website"],
 
   philosophy: `Korean Minimal（韩式极简）源自韩国当代设计美学中对"留白"与"克制"的深度追求，融合了K-beauty的柔和质感和韩国现代建筑的简洁线条。
 

@@ -18,6 +18,7 @@ export const retroVintage: DesignStyle = {
     accent: ["#c94c4c", "#2e4a3f", "#d4a373", "#816904"],
   },
   keywords: ["复古", "怀旧", "老式", "手工", "咖啡馆", "独立", "文艺", "retro", "vintage", "nostalgic"],
+  keywordsEn: ["retro vintage", "vintage web design", "retro design", "nostalgic aesthetic", "vintage typography", "aged paper texture", "mid-century design", "cafe website design", "old-school branding", "indie magazine"],
 
   philosophy: `Retro Vintage 风格从20世纪中期的设计美学中汲取灵感，通过复古排版、做旧纹理和怀旧色调创造温暖的时光感。
 

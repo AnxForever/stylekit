@@ -18,6 +18,7 @@ export const graffitiStreet: DesignStyle = {
     accent: ["#00e5ff", "#ffea00", "#b620e0", "#ff6d00"],
   },
   keywords: ["涂鸦", "街头", "喷漆", "撞色", "都市", "反叛", "标签", "expressive", "bold", "vibrant"],
+  keywordsEn: ["graffiti style", "street art", "spray paint effect", "urban design", "hip hop aesthetic", "graffiti font", "wildstyle", "brick wall texture", "stencil", "streetwear branding", "bold clashing colors"],
 
   philosophy: `涂鸦街头（Graffiti Street）风格源自20世纪60年代纽约地铁和费城街头的涂鸦文化，是嘻哈文化四大元素之一。从早期的简单"tag"签名到后来的"wildstyle"和"piece"（masterpiece），涂鸦始终是城市青年自我表达和反叛精神的象征。
 

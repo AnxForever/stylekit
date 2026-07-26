@@ -18,6 +18,7 @@ export const sketchStyle: DesignStyle = {
     accent: ["#e74c3c", "#3498db", "#27ae60", "#f39c12"],
   },
   keywords: ["手绘", "铅笔", "素描", "纸张", "手写", "涂鸦", "不规则", "expressive", "bold", "vibrant"],
+  keywordsEn: ["hand-drawn ui", "sketch style", "pencil sketch", "doodle design", "sketchy borders", "handwritten font", "paper texture", "sketchbook aesthetic", "notebook style", "wireframe sketch", "hand-drawn portfolio"],
 
   philosophy: `Sketch Style 是一种模拟手绘铅笔素描的设计风格，通过不规则的线条、纸张纹理和手写感元素，为数字界面注入温暖的手工质感。
 

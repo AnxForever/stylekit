@@ -18,6 +18,7 @@ export const neonSamurai: DesignStyle = {
     accent: ["#a020f0", "#38bdf8", "#fbbf24", "#ff1253"],
   },
   keywords: ["霓虹武士", "赛博武士", "日本", "霓虹", "传统融合", "动作", "刀锋", "鸟居", "expressive", "bold"],
+  keywordsEn: ["neon samurai", "japanese cyberpunk", "katana slash", "torii gate", "bushido", "neon glow", "ukiyo-e", "brush strokes", "diagonal accents", "dark theme", "gaming ui"],
 
   philosophy: `Neon Samurai fuses Japanese bushido aesthetics with cyberpunk neon luminance, forging a style of relentless tension and kinetic energy.
 

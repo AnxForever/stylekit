@@ -19,6 +19,7 @@ export const zPatternLayout: DesignStyle = {
     accent: ["#6366f1", "#06b6d4", "#f59e0b", "#ec4899"],
   },
   keywords: ["Z型", "着陆页", "营销", "视觉引导", "CTA", "扫描路径", "modern", "contemporary", "sleek", "现代"],
+  keywordsEn: ["z-pattern layout", "z-pattern", "eye tracking design", "visual scanning path", "landing page layout", "CTA placement", "visual hierarchy", "marketing page design", "hero section layout", "conversion focused design"],
 
   philosophy: `Z-Pattern Layout 基于用户在视觉简洁页面上的自然扫描路径。视线从左上角（logo/品牌）移到右上角（CTA），然后斜穿到左下角，最后移至右下角（最终CTA）。
 
