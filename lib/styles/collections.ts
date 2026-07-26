@@ -126,6 +126,105 @@ export const STYLE_COLLECTIONS: StyleCollection[] = [
     metaDescriptionZh:
       "精选手绘与涂鸦设计风格——涂鸦点缀、潦草笔触、温暖不完美的边缘，用 tokens 保持一致。可复制或一键安装。",
   },
+  {
+    slug: "glassmorphism",
+    tag: "glassmorphic",
+    titleEn: "Glassmorphism Design Styles",
+    titleZh: "玻璃拟态设计风格",
+    headlineEn: "Glassmorphism & Frosted Glass UI Styles",
+    headlineZh: "玻璃拟态与磨砂玻璃 UI 风格",
+    introEn:
+      "Glassmorphism layers translucent surfaces over rich backgrounds — frosted blur, thin light borders, and careful elevation that make interfaces feel physical and premium. Done badly it turns to mud; these styles get the recipe right, with tuned backdrop blur, contrast-safe text on glass, and tokens that keep every layer legible in both light and dark.",
+    introZh:
+      "玻璃拟态在丰富的背景上叠加半透明表面——磨砂模糊、细亮边框、讲究的层级，让界面产生实体感与高级感。做不好就是一团浆糊；这些风格把配方调对了：合适的 backdrop blur、玻璃上对比安全的文字，以及让每一层在明暗模式下都清晰的 tokens。",
+    metaDescriptionEn:
+      "Curated glassmorphism design styles — frosted blur, light borders, and legible glass layers with tuned tokens. Copy tokens or install the theme via shadcn.",
+    metaDescriptionZh:
+      "精选玻璃拟态设计风格——磨砂模糊、亮色细边、清晰可读的玻璃层级与调校 tokens。可复制 tokens 或通过 shadcn 安装主题。",
+    relatedPromptHref: "/prompts/glassmorphism",
+    relatedPromptLabelEn: "Glassmorphism UI Prompts",
+    relatedPromptLabelZh: "玻璃拟态 UI 提示词",
+  },
+  {
+    slug: "gradient",
+    tag: "gradient",
+    titleEn: "Gradient Design Styles",
+    titleZh: "渐变设计风格",
+    headlineEn: "Gradient-Driven Design Styles",
+    headlineZh: "以渐变为主角的设计风格",
+    introEn:
+      "Gradients moved past the flat-design ban and came back with discipline — aurora meshes, soft duotones, and deep radial glows that give interfaces atmosphere without wrecking readability. These styles use gradients as a system, not a decoration: consistent stops, controlled saturation, and text layers that always keep their contrast.",
+    introZh:
+      "渐变熬过了扁平化时代的封杀，带着纪律回归——极光网格、柔和双色调、深邃的径向辉光，为界面营造氛围而不破坏可读性。这些风格把渐变当作系统而非装饰：一致的色标、克制的饱和度，以及始终保住对比度的文字层。",
+    metaDescriptionEn:
+      "Curated gradient design styles — aurora mesh, duotone, and radial glow palettes used as a system with contrast-safe text. Copy tokens or install instantly.",
+    metaDescriptionZh:
+      "精选渐变设计风格——极光网格、双色调、径向辉光，作为系统使用并保证文字对比。可复制 tokens 或一键安装。",
+  },
+  {
+    slug: "geometric",
+    tag: "geometric",
+    titleEn: "Geometric Design Styles",
+    titleZh: "几何设计风格",
+    headlineEn: "Geometric & Grid-Built Design Styles",
+    headlineZh: "几何与网格构成的设计风格",
+    introEn:
+      "Geometric design builds interfaces from primitives — circles, grids, diagonals, and modular blocks arranged with mathematical intent. From Bauhaus and Swiss rationalism to art deco ornament and isometric depth, these styles turn structure itself into the visual identity, with tokens that keep proportions consistent across every component.",
+    introZh:
+      "几何设计用基本形构建界面——圆、网格、斜线与模块化色块，以数学化的意图排布。从包豪斯与瑞士理性主义，到装饰艺术的纹样与等距立体感，这些风格让结构本身成为视觉识别，tokens 保证比例在每个组件上都一致。",
+    metaDescriptionEn:
+      "Curated geometric design styles — Bauhaus, Swiss grid, art deco, and isometric systems built from primitives with consistent proportions. Copy or install instantly.",
+    metaDescriptionZh:
+      "精选几何设计风格——包豪斯、瑞士网格、装饰艺术、等距立体，用基本形与一致比例构建。可复制或一键安装。",
+  },
+  {
+    slug: "textured",
+    tag: "texture-heavy",
+    titleEn: "Textured & Tactile Design Styles",
+    titleZh: "质感肌理设计风格",
+    headlineEn: "Textured & Tactile Design Styles",
+    headlineZh: "有质感、可触摸的设计风格",
+    introEn:
+      "Texture is what separates a sterile interface from one you want to touch — paper grain, fabric weave, risograph ink, grain overlays, and embossed surfaces that give pixels a material memory. These styles apply texture with restraint and purpose, so the tactility adds warmth and identity without hurting performance or legibility.",
+    introZh:
+      "质感是无菌界面与想伸手触摸的界面之间的分水岭——纸张颗粒、织物纹理、Riso 油墨、噪点叠层、浮雕表面，让像素拥有材质记忆。这些风格克制而有目的地使用质感，让触感带来温度与识别度，同时不牺牲性能与可读性。",
+    metaDescriptionEn:
+      "Curated textured design styles — paper grain, risograph, fabric, and grain overlays applied with restraint for warmth and identity. Copy tokens or install instantly.",
+    metaDescriptionZh:
+      "精选质感肌理设计风格——纸张颗粒、Riso 印刷、织物与噪点叠层，克制使用带来温度与识别度。可复制 tokens 或一键安装。",
+  },
+  {
+    slug: "high-contrast",
+    tag: "high-contrast",
+    titleEn: "High-Contrast Design Styles",
+    titleZh: "高对比设计风格",
+    headlineEn: "High-Contrast & Statement Design Styles",
+    headlineZh: "高对比 · 强表达设计风格",
+    introEn:
+      "High contrast is both an aesthetic stance and an accessibility win — thick borders, hard shadows, and palettes that hit WCAG ratios without trying. From neo-brutalism to bold editorial black-and-white, these styles make hierarchy unmistakable: every action, heading, and state reads instantly, even in sunlight, even for low-vision users.",
+    introZh:
+      "高对比既是审美立场，也是无障碍红利——粗边框、硬阴影、天然满足 WCAG 对比率的配色。从新野兽派到黑白编辑排版，这些风格让层级毫不含糊：每个操作、标题与状态都能瞬间读清，烈日下如此，低视力用户亦然。",
+    metaDescriptionEn:
+      "Curated high-contrast design styles — neo-brutalism, bold editorial, and hard-shadow systems that pass WCAG ratios by design. Copy tokens or install instantly.",
+    metaDescriptionZh:
+      "精选高对比设计风格——新野兽派、黑白编辑风、硬阴影系统，天生满足 WCAG 对比率。可复制 tokens 或一键安装。",
+  },
+  {
+    slug: "brand-inspired",
+    tag: "brand-inspired",
+    titleEn: "Brand-Inspired Design Styles",
+    titleZh: "知名品牌风格解构",
+    headlineEn: "Design Styles Inspired by Famous Product Aesthetics",
+    headlineZh: "解构知名产品美学的设计风格",
+    introEn:
+      "Great product aesthetics are studied, not copied — the restraint of Cupertino minimalism, the elevation logic of material surfaces, the confidence of Swiss corporate identity. These styles distill what makes famous design languages work into original, reusable token systems, so you can apply the same discipline to your own product without imitating anyone's trade dress.",
+    introZh:
+      "对优秀产品美学应当研究，而非照抄——库比蒂诺式极简的克制、材质表面的层级逻辑、瑞士企业识别的笃定。这些风格把知名设计语言的成立原理提炼为原创、可复用的 token 系统，让你把同样的纪律用在自己的产品上，而不是模仿任何人的商业外观。",
+    metaDescriptionEn:
+      "Curated design styles inspired by famous product aesthetics — the principles behind Apple-like minimalism, material elevation, and Swiss identity, as original token systems.",
+    metaDescriptionZh:
+      "精选解构知名产品美学的设计风格——苹果式极简、材质层级、瑞士识别背后的原理，做成原创 token 系统。",
+  },
 ];
 
 export function getAllCollections(): StyleCollection[] {
