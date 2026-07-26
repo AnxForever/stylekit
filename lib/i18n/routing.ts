@@ -85,7 +85,7 @@ export const LOCALE_ROUTE_POLICY = [
     id: "english-indexable-aliases",
     mode: "rewrite",
     sitemapLocales: "en",
-    exact: ["/privacy", "/terms"],
+    exact: ["/privacy", "/terms", "/refunds", "/support"],
     prefixes: [],
   },
   {
