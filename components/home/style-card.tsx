@@ -1,6 +1,7 @@
+/// <reference types="react/canary" />
 "use client";
 
-import React from "react";
+import React, { ViewTransition } from "react";
 import { FavoriteButton } from "@/components/favorite-button";
 import { LocalizedLink } from "@/components/i18n/localized-link";
 import { StyleCoverPreview } from "@/components/style-preview/style-cover-preview";
@@ -48,15 +49,27 @@ export const StyleCard = React.memo(function StyleCard({
           aria-label={`${primaryName} ${locale === "zh" ? "详情" : "details"}`}
           className="absolute inset-0 z-10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
         />
-        <div className={`relative overflow-hidden ${isCompact ? "aspect-[4/3]" : "aspect-[16/9]"}`}>
-          <StyleCoverPreview styleSlug={style.slug} interactive={false} />
+        {/*
+          Shared-element transition to the style detail cover. Only the
+          share (pair) animation is active; enter/exit/update are disabled
+          so grid filtering (transition-based) never animates covers.
+        */}
+        <ViewTransition
+          name={`style-cover-${style.slug}`}
+          enter="none"
+          exit="none"
+          update="none"
+        >
+          <div className={`relative overflow-hidden ${isCompact ? "aspect-[4/3]" : "aspect-[16/9]"}`}>
+            <StyleCoverPreview styleSlug={style.slug} interactive={false} />
 
-          {style.styleType === "layout" && (
-            <span className="absolute bottom-2 left-2 text-[10px] px-2 py-0.5 bg-black/60 text-white uppercase tracking-wider">
-              Layout
-            </span>
-          )}
-        </div>
+            {style.styleType === "layout" && (
+              <span className="absolute bottom-2 left-2 text-[10px] px-2 py-0.5 bg-black/60 text-white uppercase tracking-wider">
+                Layout
+              </span>
+            )}
+          </div>
+        </ViewTransition>
 
         {style.colors && (
           <div className="h-1.5 flex">

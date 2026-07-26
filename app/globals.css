@@ -599,4 +599,14 @@ input[type="range"] { cursor: pointer; }
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
+
+  /* View Transitions render on their own pseudo-element tree, which the
+     universal selector above cannot reach. Zero them out so navigations
+     (including the shared style-cover morph) swap instantly. */
+  ::view-transition-group(*),
+  ::view-transition-image-pair(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
 }

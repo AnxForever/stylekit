@@ -1,0 +1,183 @@
+// Ordered showcase gallery sequence - mirrors lib/styles/meta-registry.ts.
+//
+// This module is intentionally tiny (slug + English display name only) so
+// client components can flip between showcases without pulling the full
+// style meta registry into the bundle. Keep entries in the exact catalog
+// order of stylesMeta. The unit test in
+// lib/styles/__tests__/showcase-sequence.test.ts fails if this list drifts
+// from getAllStylesMeta(), so update it whenever a style is added, removed,
+// or reordered in the registry.
+
+export type ShowcaseSequenceEntry = readonly [slug: string, name: string];
+
+export const SHOWCASE_SEQUENCE: readonly ShowcaseSequenceEntry[] = [
+  ["neo-brutalist", "Neo-Brutalist"],
+  ["editorial", "Editorial"],
+  ["neumorphism", "Neumorphism"],
+  ["glassmorphism", "Glassmorphism"],
+  ["bento-grid", "Bento Grid"],
+  ["corporate-clean", "Corporate Clean"],
+  ["minimalist-flat", "Minimalist Flat"],
+  ["soft-ui", "Soft UI"],
+  ["natural-organic", "Natural Organic"],
+  ["modern-gradient", "Modern Gradient"],
+  ["retro-vintage", "Retro Vintage"],
+  ["dark-mode", "Dark Mode"],
+  ["macos-vibrancy", "macOS Vibrancy"],
+  ["geometric-bold", "Geometric Bold"],
+  ["masonry-flow", "Masonry Flow"],
+  ["split-screen", "Split Screen"],
+  ["full-page-scroll", "Full Page Scroll"],
+  ["timeline-vertical", "Vertical Timeline"],
+  ["card-stack", "Card Stack"],
+  ["sidebar-fixed", "Fixed Sidebar"],
+  ["magazine-grid", "Magazine Grid"],
+  ["hero-fullscreen", "Fullscreen Hero"],
+  ["claymorphism", "Claymorphism"],
+  ["notion-style", "Notion Style"],
+  ["stripe-style", "Stripe Style"],
+  ["apple-style", "Apple Style"],
+  ["pixel-art", "Pixel Art"],
+  ["vaporwave", "Neon Retro"],
+  ["y2k", "Y2K"],
+  ["memphis", "Memphis"],
+  ["art-deco", "Art Deco"],
+  ["bauhaus", "Bauhaus"],
+  ["skeuomorphism", "Skeuomorphism"],
+  ["swiss-style", "Swiss International"],
+  ["ghibli-style", "Ghibli Style"],
+  ["material-design", "Material Design"],
+  ["fluent-design", "Fluent Design"],
+  ["comic-style", "Comic Style"],
+  ["sketch-style", "Sketch Style"],
+  ["watercolor-style", "Watercolor Style"],
+  ["f-pattern-layout", "F-Pattern Layout"],
+  ["z-pattern-layout", "Z-Pattern Layout"],
+  ["holy-grail-layout", "Holy Grail Layout"],
+  ["dashboard-layout", "Dashboard Layout"],
+  ["cyberpunk-neon", "Cyberpunk Neon"],
+  ["synthwave", "Synthwave"],
+  ["neo-brutalist-soft", "Neo-Brutalist Soft"],
+  ["neo-brutalist-playful", "Neo-Brutalist Playful"],
+  ["art-nouveau", "Art Nouveau"],
+  ["surrealism", "Surrealism"],
+  ["ukiyo-e-digital", "Ukiyo-e Digital"],
+  ["gothic", "Gothic"],
+  ["outrun", "Outrun"],
+  ["dark-academia", "Dark Academia"],
+  ["cottagecore", "Cottagecore"],
+  ["risograph", "Risograph"],
+  ["mecha", "Mecha"],
+  ["gothic-lolita", "Gothic Lolita"],
+  ["cyber-chinese", "Cyber Chinese"],
+  ["acid-graphics", "Acid Graphics"],
+  ["hand-drawn-doodle", "Hand-Drawn Doodle"],
+  ["swiss-poster", "Swiss Poster"],
+  ["watercolor-art", "Watercolor Art"],
+  ["impressionist-oil", "Impressionist Oil"],
+  ["immersive-photo", "Immersive Photo"],
+  ["collage-art", "Collage Art"],
+  ["cinematic-video-hero", "Cinematic Video Hero"],
+  ["glitch-art", "Glitch Art"],
+  ["visual-novel", "Visual Novel"],
+  ["shoujo-manga", "Shoujo Manga"],
+  ["cyber-anime", "Cyber Anime"],
+  ["pixel-anime", "Pixel Anime"],
+  ["japanese-fresh", "Japanese Fresh"],
+  ["neon-samurai", "Neon Samurai"],
+  ["magic-circle", "Magic Circle"],
+  ["cyber-wafuu", "Cyber Wafuu"],
+  ["steampunk", "Steampunk"],
+  ["pop-art", "Pop Art"],
+  ["solarpunk", "Solarpunk"],
+  ["jrpg", "JRPG"],
+  ["asymmetric-grid", "Asymmetric Grid"],
+  ["parallax-sections", "Parallax Sections"],
+  ["warm-dashboard", "Warm Dashboard"],
+  ["neon-gradient", "Neon Gradient"],
+  ["liquid-glass", "Apple Liquid Glass"],
+  ["scandinavian", "Scandinavian Minimalism"],
+  ["cel-shading", "Cel Shading"],
+  ["wabi-sabi", "Wabi-Sabi"],
+  ["zen-garden", "Zen Garden"],
+  ["sci-fi-hud", "Sci-Fi HUD"],
+  ["scrollytelling", "Scrollytelling"],
+  ["kawaii-minimal", "Kawaii Minimal"],
+  ["film-noir", "Film Noir"],
+  ["arcade-crt", "Arcade CRT"],
+  ["frutiger-aero", "Frutiger Aero"],
+  ["anti-design", "Anti-Design"],
+  ["holographic", "Holographic"],
+  ["generative-art", "Generative Art"],
+  ["particle", "Particle System"],
+  ["parallax-editorial", "Parallax Editorial"],
+  ["vhs-aesthetic", "VHS Aesthetic"],
+  ["ink-wash", "Ink Wash"],
+  ["monochrome", "Monochrome"],
+  ["terracotta", "Terracotta"],
+  ["brutalist-web", "Brutalist Web"],
+  ["mid-century-modern", "Mid-Century Modern"],
+  ["constructivism", "Constructivism"],
+  ["op-art", "Op Art"],
+  ["islamic-geometric", "Islamic Geometric"],
+  ["indian-festive", "Indian Festive"],
+  ["african-textile", "African Textile"],
+  ["kinetic-typography", "Kinetic Typography"],
+  ["korean-minimal", "Korean Minimal"],
+  ["pastel-goth", "Pastel Goth"],
+  ["maximalism", "Maximalism"],
+  ["medieval-manuscript", "Medieval Manuscript"],
+  ["graffiti-street", "Graffiti Street"],
+  ["marble-luxury", "Marble Luxury"],
+  ["victorian-botanical", "Victorian Botanical"],
+  ["cubism", "Cubism"],
+  ["tropical-paradise", "Tropical Paradise"],
+  ["github-style", "GitHub Style"],
+  ["witchcore", "Witchcore"],
+  ["neon-tokyo", "Neon Tokyo"],
+  ["paper-craft", "Paper Craft"],
+  ["blueprint", "Blueprint"],
+  ["dopamine-design", "Dopamine Design"],
+  ["linear-style", "Linear Style"],
+  ["shopify-clean", "Shopify Clean"],
+  ["luxury-retail", "Luxury Retail"],
+  ["fresh-market", "Fresh Market"],
+  ["data-dense", "Data Dense"],
+  ["oversized-typography", "Oversized Typography"],
+  ["developer-terminal", "Developer Terminal"],
+  ["horizontal-gallery", "Horizontal Gallery"],
+  ["latex-paper", "LaTeX Paper"],
+  ["distill-style", "Distill Style"],
+  ["gallery-dark", "Dark Gallery"],
+  ["studio-bold", "Creative Studio"],
+  ["warm-organic", "Warm Organic"],
+  ["launch-keynote", "Launch Keynote"],
+  ["luxe-lookbook", "Luxe Lookbook"],
+  ["shader-gradient", "Shader Gradient"],
+];
+
+export interface ShowcaseNeighbors {
+  index: number;
+  total: number;
+  prev: ShowcaseSequenceEntry;
+  next: ShowcaseSequenceEntry;
+}
+
+/**
+ * Returns the wrap-around gallery neighbors for a showcase slug, or null
+ * when the slug is not part of the catalog sequence.
+ */
+export function getShowcaseNeighbors(slug: string): ShowcaseNeighbors | null {
+  const total = SHOWCASE_SEQUENCE.length;
+  const index = SHOWCASE_SEQUENCE.findIndex((entry) => entry[0] === slug);
+  if (index === -1 || total < 2) {
+    return null;
+  }
+
+  return {
+    index,
+    total,
+    prev: SHOWCASE_SEQUENCE[(index - 1 + total) % total],
+    next: SHOWCASE_SEQUENCE[(index + 1) % total],
+  };
+}

@@ -37,6 +37,10 @@ const nextConfig: NextConfig = {
   },
 
   experimental: {
+    // Shared-element View Transitions (styles list cover -> detail cover).
+    // Pages opt in via React's <ViewTransition>; browsers without the API
+    // fall back to instant navigation.
+    viewTransition: true,
     // Client Router Cache for back/forward: without this every back navigation
     // refetches the RSC payload (dynamic default is 0), which makes returning
     // to long pages feel slow and breaks scroll restoration timing.

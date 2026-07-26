@@ -1,6 +1,8 @@
+/// <reference types="react/canary" />
 "use client";
 
-import { useEffect, useRef, useState, useCallback, useMemo, type ReactNode } from "react";
+import { useEffect, useRef, useState, useCallback, useMemo, ViewTransition, type ReactNode } from "react";
+import dynamic from "next/dynamic";
 import { ArrowRight } from "lucide-react";
 import { LocalizedLink } from "@/components/i18n/localized-link";
 import { ScrollBackButton } from "@/components/scroll-back-button";
@@ -11,7 +13,6 @@ import { HardPromptCopyButton } from "@/components/style-preview/hard-prompt-cop
 import { CodeBlock } from "@/components/style-preview/code-block";
 import { TokensExportButton } from "@/components/tokens-export-button";
 import { StyleCoverPreview } from "@/components/style-preview/style-cover-preview";
-import { StylePackExport } from "@/components/style-preview/style-pack-export";
 import { StyleUsePanel } from "@/components/style-preview/style-use-panel";
 import { getCollectionsForTags } from "@/lib/styles/collections";
 import { getStyleMetaBySlug } from "@/lib/styles/meta";
@@ -40,6 +41,18 @@ import {
 import { RecipeCard } from "@/components/recipes/recipe-card";
 import { getRoomBySlug } from "@/components/mouse-interactions/rooms/registry";
 import { GenericRoom } from "@/components/mouse-interactions/rooms/generic-room";
+
+// StylePackExport statically fans out to the full design-token registry
+// (every *-tokens.ts) plus JSZip. Loading it via next/dynamic keeps that
+// subtree out of the page's synchronous first-load bundle; SSR output is
+// unchanged because the component still renders on the server.
+const StylePackExport = dynamic(
+  () =>
+    import("@/components/style-preview/style-pack-export").then(
+      (m) => m.StylePackExport
+    ),
+  { ssr: true }
+);
 
 type CompatibleStyleSummary = Pick<DesignStyle, "slug" | "name" | "nameEn">;
 
@@ -297,27 +310,42 @@ export function StyleDetailContent({
                   }
                   className="group block border border-border overflow-hidden hover:border-foreground transition-colors"
                 >
-                  {/* Mobile: static cover image */}
-                  <div className="md:hidden aspect-[16/10] bg-zinc-100 dark:bg-zinc-900 overflow-hidden">
-                    <StyleCoverPreview styleSlug={style.slug} />
-                  </div>
-                  {/* Desktop: live iframe preview */}
-                  <div
-                    ref={showcaseContainerRef}
-                    className="hidden md:block aspect-[16/10] bg-zinc-100 dark:bg-zinc-900 overflow-hidden relative"
+                  {/*
+                    Shared-element transition: pairs with the list card cover
+                    (same style-cover-<slug> name). The plain wrapper div gives
+                    the boundary a single always-rendered DOM child; only the
+                    responsive cover inside it is visible at a given viewport.
+                  */}
+                  <ViewTransition
+                    name={`style-cover-${style.slug}`}
+                    enter="none"
+                    exit="none"
+                    update="none"
                   >
-                    {showcaseScale > 0 && (
-                      <iframe
-                        src={`/styles/${style.slug}/showcase`}
-                        title={`${primaryStyleName} Showcase Preview`}
-                        className="absolute top-0 left-0 w-[1280px] h-[800px] origin-top-left border-0 pointer-events-none select-none"
-                        style={{ transform: `scale(${showcaseScale})` }}
-                        tabIndex={-1}
-                        loading="lazy"
-                        aria-hidden="true"
-                      />
-                    )}
-                  </div>
+                    <div>
+                      {/* Mobile: static cover image */}
+                      <div className="md:hidden aspect-[16/10] bg-zinc-100 dark:bg-zinc-900 overflow-hidden">
+                        <StyleCoverPreview styleSlug={style.slug} />
+                      </div>
+                      {/* Desktop: live iframe preview */}
+                      <div
+                        ref={showcaseContainerRef}
+                        className="hidden md:block aspect-[16/10] bg-zinc-100 dark:bg-zinc-900 overflow-hidden relative"
+                      >
+                        {showcaseScale > 0 && (
+                          <iframe
+                            src={`/styles/${style.slug}/showcase`}
+                            title={`${primaryStyleName} Showcase Preview`}
+                            className="absolute top-0 left-0 w-[1280px] h-[800px] origin-top-left border-0 pointer-events-none select-none"
+                            style={{ transform: `scale(${showcaseScale})` }}
+                            tabIndex={-1}
+                            loading="lazy"
+                            aria-hidden="true"
+                          />
+                        )}
+                      </div>
+                    </div>
+                  </ViewTransition>
                   <div className="flex items-center justify-between gap-4 p-4 border-t border-border">
                     <div>
                       <p className="text-sm">
