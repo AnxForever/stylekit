@@ -8,18 +8,21 @@ import { getShowcaseNeighbors } from "@/lib/styles/showcase-sequence";
 /**
  * Floating prev/next gallery navigation for showcase pages.
  *
- * Mounted globally via app/styles/layout.tsx (the same mechanism the former
- * ShowcaseBackBar used) and self-hides on non-showcase routes. Right-aligned
- * counterpart to the per-style back links, letting visitors flip through the
- * whole catalog without returning to the list. Order and wrap-around come
- * from lib/styles/showcase-sequence.ts, which stays deliberately tiny so the
- * full style meta registry never enters this client bundle.
+ * Mounted via app/styles/layout.tsx AND app/[locale]/styles/layout.tsx and
+ * self-hides on non-showcase routes. Rendered as two edge buttons vertically
+ * centered on the viewport sides (standard gallery pager position) so it
+ * never overlaps the per-showcase back links and headers at the top of each
+ * page, nor ScrollToTop / the mobile bottom nav in the corners. Order and
+ * wrap-around come from lib/styles/showcase-sequence.ts, which stays
+ * deliberately tiny so the full style meta registry never enters this client
+ * bundle.
  *
  * Labels intentionally avoid leading "Back"/arrow glyphs and the anchors set
  * data-back-navigation="false" so the smart-back click interceptor in
  * lib/navigation/smart-back.ts never hijacks them. No global keyboard
  * bindings: several showcases (e.g. gallery-dark) use arrow keys for their
- * own lightboxes.
+ * own lightboxes. z-40 keeps showcase-internal overlays (lightboxes, modals)
+ * able to layer above the pager.
  */
 export function ShowcaseGalleryNav() {
   const pathname = usePathname();
@@ -33,39 +36,39 @@ export function ShowcaseGalleryNav() {
   const [prevSlug, prevName] = neighbors.prev;
   const [nextSlug, nextName] = neighbors.next;
 
+  const buttonClass =
+    "group pointer-events-auto flex h-10 w-10 sm:h-11 sm:w-11 items-center justify-center rounded-full bg-black/50 text-white/90 shadow-lg backdrop-blur-md transition-colors hover:bg-black/80 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-white/70";
+  const labelClass =
+    "pointer-events-none absolute top-1/2 hidden max-w-[11rem] -translate-y-1/2 truncate whitespace-nowrap rounded-full bg-black/80 px-3 py-1.5 text-xs text-white opacity-0 shadow-lg backdrop-blur-md transition-opacity duration-150 group-hover:opacity-100 group-focus-visible:opacity-100 sm:block";
+
   return (
-    <div className="fixed top-0 left-0 right-0 z-[9999] pointer-events-none">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-4 flex justify-end">
-        <nav
-          aria-label="Showcase gallery navigation"
-          className="pointer-events-auto flex items-stretch bg-black/60 text-white backdrop-blur-md rounded-full shadow-lg divide-x divide-white/20 overflow-hidden"
+    <nav aria-label="Showcase gallery navigation">
+      <div className="fixed left-2 sm:left-3 top-1/2 z-40 -translate-y-1/2">
+        <LocalizedLink
+          href={`/styles/${prevSlug}/showcase`}
+          prefetch={false}
+          aria-label={`Previous style: ${prevName}`}
+          title={`Previous style: ${prevName}`}
+          data-back-navigation="false"
+          className={`${buttonClass} relative`}
         >
-          <LocalizedLink
-            href={`/styles/${prevSlug}/showcase`}
-            prefetch={false}
-            aria-label={`Previous style: ${prevName}`}
-            data-back-navigation="false"
-            className="flex items-center gap-1.5 pl-3.5 pr-3 py-2 text-sm hover:bg-black/80 transition-colors"
-          >
-            <ChevronLeft className="w-4 h-4 shrink-0" aria-hidden="true" />
-            <span className="hidden sm:inline max-w-[8.5rem] truncate">
-              {prevName}
-            </span>
-          </LocalizedLink>
-          <LocalizedLink
-            href={`/styles/${nextSlug}/showcase`}
-            prefetch={false}
-            aria-label={`Next style: ${nextName}`}
-            data-back-navigation="false"
-            className="flex items-center gap-1.5 pl-3 pr-3.5 py-2 text-sm hover:bg-black/80 transition-colors"
-          >
-            <span className="hidden sm:inline max-w-[8.5rem] truncate">
-              {nextName}
-            </span>
-            <ChevronRight className="w-4 h-4 shrink-0" aria-hidden="true" />
-          </LocalizedLink>
-        </nav>
+          <ChevronLeft className="h-5 w-5" aria-hidden="true" />
+          <span className={`${labelClass} left-full ml-2`}>{prevName}</span>
+        </LocalizedLink>
       </div>
-    </div>
+      <div className="fixed right-2 sm:right-3 top-1/2 z-40 -translate-y-1/2">
+        <LocalizedLink
+          href={`/styles/${nextSlug}/showcase`}
+          prefetch={false}
+          aria-label={`Next style: ${nextName}`}
+          title={`Next style: ${nextName}`}
+          data-back-navigation="false"
+          className={`${buttonClass} relative`}
+        >
+          <ChevronRight className="h-5 w-5" aria-hidden="true" />
+          <span className={`${labelClass} right-full mr-2`}>{nextName}</span>
+        </LocalizedLink>
+      </div>
+    </nav>
   );
 }
