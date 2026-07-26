@@ -47,7 +47,7 @@ export default function ProfilePage() {
           <ProfileContent allStyles={allStyles} />
         </Suspense>
       </main>
-      <Footer />
+      <Footer compact />
     </div>
   );
 }

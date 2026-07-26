@@ -620,7 +620,7 @@ export function ProfileContent({ allStyles }: ProfileContentProps) {
                     <button
                       type="button"
                       onClick={() => setShowEmail((current) => !current)}
-                      className="inline-flex items-center text-muted hover:text-foreground transition-colors"
+                      className="inline-flex items-center text-muted hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
                       aria-label={showEmail ? t("profile.hideEmail") : t("profile.showEmail")}
                     >
                       {showEmail ? (
@@ -654,7 +654,7 @@ export function ProfileContent({ allStyles }: ProfileContentProps) {
                   aria-selected={isActive}
                   aria-controls={`panel-${tab.key}`}
                   onClick={() => selectTab(tab.key)}
-                  className={`relative pb-3 text-sm whitespace-nowrap transition-colors ${
+                  className={`relative pb-3 text-sm whitespace-nowrap transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent ${
                     isActive ? "text-foreground" : "text-muted hover:text-foreground"
                   }`}
                 >
@@ -819,7 +819,10 @@ export function ProfileContent({ allStyles }: ProfileContentProps) {
             {activeTab === "submissions" && (
               <>
                 {submissionActionError && (
-                  <p className="mb-3 border border-red-300 bg-red-50 px-3 py-2 text-sm text-red-700 dark:border-red-800 dark:bg-red-950/40 dark:text-red-300">
+                  <p
+                    aria-live="polite"
+                    className="mb-3 border border-red-300 bg-red-50 px-3 py-2 text-sm text-red-700 dark:border-red-800 dark:bg-red-950/40 dark:text-red-300"
+                  >
                     {submissionActionError}
                   </p>
                 )}
@@ -878,18 +881,24 @@ export function ProfileContent({ allStyles }: ProfileContentProps) {
                               value={editSubmissionName}
                               onChange={(event) => setEditSubmissionName(event.target.value)}
                               placeholder={t("profile.submissionEditName")}
+                              name="submissionName"
+                              autoComplete="off"
                               className="w-full border border-border bg-background px-3 py-1.5 text-sm focus:border-foreground focus:outline-none transition-colors"
                             />
                             <input
                               value={editSubmissionNameEn}
                               onChange={(event) => setEditSubmissionNameEn(event.target.value)}
                               placeholder={t("profile.submissionEditNameEn")}
+                              name="submissionNameEn"
+                              autoComplete="off"
+                              spellCheck={false}
                               className="w-full border border-border bg-background px-3 py-1.5 text-sm focus:border-foreground focus:outline-none transition-colors"
                             />
                             <textarea
                               value={editSubmissionDescription}
                               onChange={(event) => setEditSubmissionDescription(event.target.value)}
                               placeholder={t("profile.submissionEditDescription")}
+                              name="submissionDescription"
                               className="w-full border border-border bg-background px-3 py-1.5 text-sm focus:border-foreground focus:outline-none transition-colors"
                               rows={3}
                             />
@@ -898,7 +907,7 @@ export function ProfileContent({ allStyles }: ProfileContentProps) {
                                 type="button"
                                 onClick={() => void saveSubmissionEdit(sub)}
                                 disabled={submissionActionBusyId === sub.id}
-                                className="inline-flex items-center gap-1.5 border border-border px-2.5 py-1 text-[11px] uppercase tracking-wider hover:border-foreground transition-colors disabled:opacity-60"
+                                className="inline-flex items-center gap-1.5 border border-border px-2.5 py-1 text-[11px] uppercase tracking-wider hover:border-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent disabled:opacity-60"
                               >
                                 {submissionActionBusyId === sub.id
                                   ? t("profile.submissionSaving")
@@ -908,7 +917,7 @@ export function ProfileContent({ allStyles }: ProfileContentProps) {
                                 type="button"
                                 onClick={() => setEditingSubmissionId(null)}
                                 disabled={submissionActionBusyId === sub.id}
-                                className="inline-flex items-center gap-1.5 border border-border px-2.5 py-1 text-[11px] uppercase tracking-wider hover:border-foreground transition-colors disabled:opacity-60"
+                                className="inline-flex items-center gap-1.5 border border-border px-2.5 py-1 text-[11px] uppercase tracking-wider hover:border-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent disabled:opacity-60"
                               >
                                 {t("profile.submissionCancel")}
                               </button>
@@ -920,7 +929,7 @@ export function ProfileContent({ allStyles }: ProfileContentProps) {
                               type="button"
                               onClick={() => beginEditSubmission(sub)}
                               disabled={submissionActionBusyId === sub.id}
-                              className="inline-flex items-center gap-1.5 border border-border px-2.5 py-1 text-[11px] uppercase tracking-wider hover:border-foreground transition-colors disabled:opacity-60"
+                              className="inline-flex items-center gap-1.5 border border-border px-2.5 py-1 text-[11px] uppercase tracking-wider hover:border-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent disabled:opacity-60"
                             >
                               <Pencil className="w-3 h-3" aria-hidden="true" />
                               {t("profile.submissionEdit")}
@@ -929,7 +938,7 @@ export function ProfileContent({ allStyles }: ProfileContentProps) {
                               type="button"
                               onClick={() => void deleteSubmission(sub)}
                               disabled={submissionActionBusyId === sub.id}
-                              className="inline-flex items-center gap-1.5 border border-red-300 px-2.5 py-1 text-[11px] uppercase tracking-wider text-red-700 hover:border-red-500 transition-colors dark:border-red-800 dark:text-red-300 disabled:opacity-60"
+                              className="inline-flex items-center gap-1.5 border border-red-300 px-2.5 py-1 text-[11px] uppercase tracking-wider text-red-700 hover:border-red-500 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent dark:border-red-800 dark:text-red-300 disabled:opacity-60"
                             >
                               <Trash2 className="w-3 h-3" aria-hidden="true" />
                               {submissionActionBusyId === sub.id

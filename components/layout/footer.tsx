@@ -9,7 +9,7 @@ import { localizeHref } from "@/lib/i18n/routing";
 
 const currentYear = new Date().getFullYear();
 
-export function Footer() {
+export function Footer({ compact = false }: { compact?: boolean }) {
   const { t, locale } = useI18n();
   const promptLinks: { href: string; labelKey: TranslationKey }[] = [
     { href: "/ui-prompts", labelKey: "footer.prompts.uiDesign" },
@@ -24,6 +24,39 @@ export function Footer() {
     { href: "/privacy", labelKey: "footer.trust.privacy" },
     { href: "/terms", labelKey: "footer.trust.terms" },
   ];
+
+  if (compact) {
+    return (
+      <footer
+        className="mt-auto border-t border-border"
+        data-cursor-aura="off"
+      >
+        <div className="mx-auto flex max-w-7xl flex-col items-start justify-between gap-3 px-4 py-6 text-xs text-muted sm:px-6 md:flex-row md:items-center md:px-12">
+          <p>{t("footer.openSource").replace("{year}", String(currentYear))}</p>
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+            {trustLinks.map((link) => (
+              <Link
+                key={link.href}
+                href={localizeHref(link.href, locale)}
+                prefetch={false}
+                className="transition-colors hover:text-foreground"
+              >
+                {t(link.labelKey)}
+              </Link>
+            ))}
+            <a
+              href="https://beian.miit.gov.cn/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="transition-colors hover:text-foreground"
+            >
+              陕ICP备2025065501号-3
+            </a>
+          </div>
+        </div>
+      </footer>
+    );
+  }
 
   return (
     <footer
