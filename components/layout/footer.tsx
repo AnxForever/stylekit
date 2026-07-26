@@ -89,6 +89,46 @@ export function Footer({ compact = false }: { compact?: boolean }) {
           <p className={sectionLabelClassName}>{t("footer.builtWith")}</p>
         </div>
 
+        {/* Index rows */}
+        <div className="grid border-b border-white/10 md:grid-cols-2">
+          <Link
+            href={localizeHref("/contact#feedback", locale)}
+            prefetch={false}
+            className="group flex items-center gap-5 border-b border-white/10 py-7 transition-colors hover:bg-white/[0.04] md:border-b-0 md:border-r md:pr-8"
+          >
+            <span className="font-mono text-[11px] tabular-nums tracking-[0.2em] text-zinc-600 transition-colors group-hover:text-zinc-400">
+              01
+            </span>
+            <MessageSquareText className="h-[18px] w-[18px] shrink-0 text-zinc-500 transition-colors group-hover:text-white" />
+            <span className="min-w-0 flex-1">
+              <span className="block text-sm text-white">
+                {locale === "zh" ? "反馈与建议" : "Feedback"}
+              </span>
+              <span className="mt-1 block text-xs leading-5 text-zinc-500">
+                {locale === "zh" ? "告诉我们哪里还可以更好" : "Tell us what could work better"}
+              </span>
+            </span>
+            <ArrowRight className="h-4 w-4 text-zinc-500 transition-all duration-200 ease-out group-hover:translate-x-1 group-hover:text-white" />
+          </Link>
+          <Link
+            href={localizeHref("/contact#support-maintenance", locale)}
+            prefetch={false}
+            className="group flex items-center gap-5 py-7 transition-colors hover:bg-white/[0.04] md:pl-8"
+          >
+            <span className="font-mono text-[11px] tabular-nums tracking-[0.2em] text-zinc-600 transition-colors group-hover:text-zinc-400">
+              02
+            </span>
+            <Heart className="h-[18px] w-[18px] shrink-0 text-zinc-500 transition-colors group-hover:text-white" />
+            <span className="min-w-0 flex-1">
+              <span className="block text-sm text-white">{t("footer.support.eyebrow")}</span>
+              <span className="mt-1 block text-xs leading-5 text-zinc-500">
+                {t("footer.support.body")}
+              </span>
+            </span>
+            <ArrowRight className="h-4 w-4 text-zinc-500 transition-all duration-200 ease-out group-hover:translate-x-1 group-hover:text-white" />
+          </Link>
+        </div>
+
         {/* Editorial grid */}
         <div className="grid border-b border-white/10 md:grid-cols-12">
           <div className="py-8 md:col-span-4 md:py-12 md:pr-10">
@@ -110,7 +150,7 @@ export function Footer({ compact = false }: { compact?: boolean }) {
 
           <div className="border-t border-white/10 py-8 md:col-span-2 md:border-l md:border-t-0 md:py-12 md:pl-8">
             <p className={sectionLabelClassName}>
-              <span className="tabular-nums text-zinc-600">01</span>
+              <span className="tabular-nums text-zinc-600">03</span>
               <span className="mx-2 text-zinc-700">·</span>
               {t("footer.navigation")}
             </p>
@@ -142,7 +182,7 @@ export function Footer({ compact = false }: { compact?: boolean }) {
 
           <div className="border-t border-white/10 py-8 md:col-span-3 md:border-l md:border-t-0 md:py-12 md:pl-8">
             <p className={sectionLabelClassName}>
-              <span className="tabular-nums text-zinc-600">02</span>
+              <span className="tabular-nums text-zinc-600">04</span>
               <span className="mx-2 text-zinc-700">·</span>
               {t("footer.resources")}
             </p>
@@ -162,7 +202,7 @@ export function Footer({ compact = false }: { compact?: boolean }) {
 
           <div className="border-t border-white/10 py-8 md:col-span-3 md:border-l md:border-t-0 md:py-12 md:pl-8">
             <p className={sectionLabelClassName}>
-              <span className="tabular-nums text-zinc-600">03</span>
+              <span className="tabular-nums text-zinc-600">05</span>
               <span className="mx-2 text-zinc-700">·</span>
               {locale === "zh" ? "订阅" : "Dispatch"}
             </p>
@@ -170,46 +210,6 @@ export function Footer({ compact = false }: { compact?: boolean }) {
               <NewsletterSignup variant="inline" />
             </div>
           </div>
-        </div>
-
-        {/* Index rows */}
-        <div className="grid border-b border-white/10 md:grid-cols-2">
-          <Link
-            href={localizeHref("/contact#feedback", locale)}
-            prefetch={false}
-            className="group flex items-center gap-5 border-b border-white/10 py-7 transition-colors hover:bg-white/[0.04] md:border-b-0 md:border-r md:pr-8"
-          >
-            <span className="font-mono text-[11px] tabular-nums tracking-[0.2em] text-zinc-600 transition-colors group-hover:text-zinc-400">
-              04
-            </span>
-            <MessageSquareText className="h-[18px] w-[18px] shrink-0 text-zinc-500 transition-colors group-hover:text-white" />
-            <span className="min-w-0 flex-1">
-              <span className="block text-sm text-white">
-                {locale === "zh" ? "反馈与建议" : "Feedback"}
-              </span>
-              <span className="mt-1 block text-xs leading-5 text-zinc-500">
-                {locale === "zh" ? "告诉我们哪里还可以更好" : "Tell us what could work better"}
-              </span>
-            </span>
-            <ArrowRight className="h-4 w-4 text-zinc-500 transition-all duration-200 ease-out group-hover:translate-x-1 group-hover:text-white" />
-          </Link>
-          <Link
-            href={localizeHref("/contact#support-maintenance", locale)}
-            prefetch={false}
-            className="group flex items-center gap-5 py-7 transition-colors hover:bg-white/[0.04] md:pl-8"
-          >
-            <span className="font-mono text-[11px] tabular-nums tracking-[0.2em] text-zinc-600 transition-colors group-hover:text-zinc-400">
-              05
-            </span>
-            <Heart className="h-[18px] w-[18px] shrink-0 text-zinc-500 transition-colors group-hover:text-white" />
-            <span className="min-w-0 flex-1">
-              <span className="block text-sm text-white">{t("footer.support.eyebrow")}</span>
-              <span className="mt-1 block text-xs leading-5 text-zinc-500">
-                {t("footer.support.body")}
-              </span>
-            </span>
-            <ArrowRight className="h-4 w-4 text-zinc-500 transition-all duration-200 ease-out group-hover:translate-x-1 group-hover:text-white" />
-          </Link>
         </div>
 
         {/* Baseline */}

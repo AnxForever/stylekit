@@ -24,23 +24,8 @@ import { MobileHomeSummarySection } from "./_mobile-summary";
 import { TrendingStylesSkeleton } from "./_skeletons";
 import { ThankYouModal } from "@/components/home/thank-you-modal";
 
-const HowItWorks = dynamic(
-  () => import("@/components/home/how-it-works").then((m) => ({ default: m.HowItWorks })),
-  { ssr: true }
-);
-
-const CTABanner = dynamic(
-  () => import("@/components/home/cta-banner").then((m) => ({ default: m.CTABanner })),
-  { ssr: true }
-);
-
 const BuiltForSection = dynamic(
   () => import("@/components/home/built-for-section").then((m) => ({ default: m.BuiltForSection })),
-  { ssr: true }
-);
-
-const RecipeShowcase = dynamic(
-  () => import("@/components/recipes/recipe-showcase").then((m) => ({ default: m.RecipeShowcase })),
   { ssr: true }
 );
 
@@ -668,20 +653,8 @@ export function HomeContent({ styles, stats }: HomeContentProps) {
         <TrendingStyles styles={styles} sectionId="home-trending" />
       </div>
 
-      <div className={deferredBelowFoldClassName}>
-        <HowItWorks />
-      </div>
-
       <div className={cn("md:hidden", deferredBelowFoldClassName)}>
         <MobileHomeSummarySection locale={locale} stats={stats} />
-      </div>
-
-      <div className={cn("hidden md:block", deferredBelowFoldClassName)}>
-        <RecipeShowcase variant="home" maxItems={6} />
-      </div>
-
-      <div className={cn("hidden md:block", deferredBelowFoldClassName)}>
-        <CTABanner />
       </div>
 
       <div className={cn("hidden md:block", deferredBelowFoldClassName)}>

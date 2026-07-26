@@ -19,12 +19,17 @@ describe("public UX priority contract", () => {
     expect(source).not.toContain("<span>More</span>");
   });
 
-  it("keeps support prompts out of the mobile hero's core discovery path", async () => {
+  it("anchors the support entry below the featured carousel, after discovery", async () => {
     const source = await read("components/home/home-content.tsx");
 
-    // The hero no longer hosts support/tipping UI at all; discovery stays primary.
-    expect(source).not.toContain("HomeSupportCard");
-    expect(source).not.toContain("<Drawer");
+    // Owner decision 2026-07-26: the support button lives directly under the
+    // featured carousel (desktop popover + mobile drawer) and must not be lost
+    // in future homepage redesigns; discovery still leads, support follows.
+    expect(source).toContain("<HomeSupportCard");
+    expect(source.indexOf("<FeaturedCarousel")).toBeGreaterThan(-1);
+    expect(source.indexOf("<HomeSupportCard")).toBeGreaterThan(
+      source.indexOf("<FeaturedCarousel")
+    );
     expect(source).toContain('className="mt-5 sm:mt-6 hidden md:block"');
   });
 
