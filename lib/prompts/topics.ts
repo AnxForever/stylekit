@@ -1151,6 +1151,34 @@ export const promptTopics: PromptTopic[] = [
         prompt:
           "Generate a complete enterprise web application shell with React and TypeScript. Include: authenticated layout with top bar (user menu, notifications, org switcher), sidebar navigation with collapsible sections, breadcrumb navigation, page header with action buttons, and a content area. Build reusable components: DataTable with sorting/filtering/pagination, StatCard, PageHeader, EmptyState, and ConfirmDialog. Use Tailwind CSS with a professional blue-gray color scheme.",
       },
+      {
+        titleEn: "SaaS Pricing Page",
+        titleZh: "SaaS 定价页",
+        tool: "general",
+        prompt:
+          "Design a SaaS pricing page that converts. Three tier cards on a #f8fafc section background: cards in #ffffff with 1px #e2e8f0 borders and 12px radius. Highlight the Pro tier with a 2px #2563eb border and a small 'Recommended' badge. Prices in 48px Inter semibold with tabular-nums; per-seat caption in 14px #64748b. Annual/monthly toggle with a 'Save 20%' pill in #dcfce7/#166534. Below the cards, a feature comparison table with sticky header row and check icons in #2563eb. End with an enterprise CTA band on #0f172a with white text. All text must meet WCAG AA 4.5:1 contrast.",
+      },
+      {
+        titleEn: "Docs Site for v0",
+        titleZh: "v0 文档站",
+        tool: "v0",
+        prompt:
+          "Build a developer documentation site using shadcn/ui. Three-column layout: left sidebar nav (240px, collapsible groups, active link with blue-600 text and blue-50 background), center content column (max-w-3xl, prose styling with 16px/1.75 body), right 'On this page' outline (200px, scroll-spy highlighting). Code blocks in #0f172a with a copy button and language tab. Callout components for Note/Warning/Danger using blue-50, amber-50, red-50 backgrounds with 4px left borders. Top bar with search trigger (Cmd+K hint) and version selector. Keyboard navigable throughout with visible focus rings in blue-500.",
+      },
+      {
+        titleEn: "Onboarding Flow for Cursor",
+        titleZh: "Cursor 引导流程",
+        tool: "cursor",
+        prompt:
+          "Build a SaaS onboarding flow in Next.js with Tailwind. Four steps: workspace name, team invites, integration selection, and a success screen. Centered card (max-w-lg) on gray-50 background, white card with shadow-sm and 16px radius. Progress bar at top: 4px height, blue-600 fill animating width with transition-all duration-500. Inputs with gray-300 borders, focus:ring-2 focus:ring-blue-500. Integration step shows a 3x2 grid of logo cards with checkbox selection (selected state: blue-600 border + blue-50 background). Back link in gray-500, primary button in blue-600 hover:blue-700. Announce step changes with aria-live for screen readers.",
+      },
+      {
+        titleEn: "Customer Portal for Claude",
+        titleZh: "Claude 客户门户",
+        tool: "claude",
+        prompt:
+          "Generate a React customer billing portal with TypeScript and Tailwind. Pages: subscription overview (current plan card with usage meters), invoice history (DataTable with status badges: paid #16a34a, pending #d97706, failed #dc2626 — each paired with an icon, never color alone), and payment methods (card list with brand icons and a default indicator). Usage meters: 8px rounded bars, gray-100 track, blue-600 fill, amber-500 above 80%, red-600 above 95%, with exact numbers as text. Typography: Inter, 24px page titles, 14px table text. Layout: max-w-5xl with 32px section spacing. Include empty and loading states for every list.",
+      },
     ],
     useCases: [
       {
@@ -1202,6 +1230,22 @@ export const promptTopics: PromptTopic[] = [
           "Stripe's design language is characterized by: gradient mesh backgrounds, clean sans-serif typography, generous whitespace, code snippets as visual elements, subtle animations on scroll, and a blue-to-purple color gradient accent. It balances technical credibility (showing real code) with visual polish (smooth gradients, micro-animations). StyleKit's Stripe Style preset captures these patterns.",
         answerZh:
           "Stripe 的设计语言特点是：渐变网格背景、干净的无衬线排版、充足的留白、代码片段作为视觉元素、滚动时的微妙动画、以及蓝到紫的渐变色强调。它在技术可信度（展示真实代码）和视觉精致度（平滑渐变、微动画）之间取得平衡。StyleKit 的 Stripe Style 预设捕捉了这些模式。",
+      },
+      {
+        questionEn: "What fonts do SaaS companies use?",
+        questionZh: "SaaS 公司都用什么字体？",
+        answerEn:
+          "The dominant choice is Inter — used or forked by Figma, Vercel, and GitHub — because its tall x-height stays readable at 13-14px UI sizes. Common alternatives: system font stacks (fastest, zero layout shift), Geist (Vercel), Soehne (Stripe), and IBM Plex Sans. A reliable recipe: Inter for UI and body at 400/500/600 weights, tighter letter-spacing (-0.02em) on headings above 32px, and enable tabular-nums via font-variant-numeric for prices and data tables so digits align vertically.",
+        answerZh:
+          "主流选择是 Inter——Figma、Vercel、GitHub 都在使用或衍生它——因为较高的 x-height 让它在 13-14px 的 UI 字号下依然清晰。常见替代：系统字体栈（最快、零布局偏移）、Geist（Vercel）、Soehne（Stripe）、IBM Plex Sans。可靠配方：UI 和正文用 Inter 的 400/500/600 字重，32px 以上的标题加 -0.02em 的紧缩字距，价格和数据表格通过 font-variant-numeric 启用 tabular-nums 让数字垂直对齐。",
+      },
+      {
+        questionEn: "How much whitespace should a SaaS landing page have?",
+        questionZh: "SaaS 落地页应该留多少留白？",
+        answerEn:
+          "More than feels comfortable in the editor. Practical values: 96-128px vertical padding between major sections (py-24 to py-32 in Tailwind), 24px minimum gap between cards, 64-80px between a section heading and its content grid, and body copy constrained to 640-720px width (65-75 characters per line). Inside cards, use 24-32px padding. The single most common amateur mistake is 40-48px section spacing — doubling it instantly reads as more premium without changing anything else.",
+        answerZh:
+          "要比在编辑器里看着舒服的量更多。实用数值：主要区块之间垂直留 96-128px（Tailwind 的 py-24 到 py-32）、卡片间距最少 24px、区块标题与内容网格之间 64-80px、正文宽度限制在 640-720px（每行 65-75 字符）。卡片内部用 24-32px 内边距。最常见的业余错误是区块间距只留 40-48px——把它翻倍，其他什么都不改，页面立刻显得更高级。",
       },
     ],
   },
@@ -1259,6 +1303,34 @@ export const promptTopics: PromptTopic[] = [
         prompt:
           "Generate a neo-brutalist React component library with TypeScript. Components: BrutalButton (variants: primary/secondary/danger, all with thick borders and hard shadows), BrutalCard (no radius, thick border, accent color strip at top), BrutalInput (thick bottom border only, monospace placeholder), BrutalBadge (inline-block, uppercase, small, colored background), BrutalModal (centered, thick border, no backdrop blur - use a solid color overlay instead). All interactive elements shift shadow on click (4px 4px to 2px 2px). Use Tailwind CSS.",
       },
+      {
+        titleEn: "Brutalist Landing Page",
+        titleZh: "野兽派落地页",
+        tool: "general",
+        prompt:
+          "Design a neo-brutalist product landing page for a budgeting app. Background #fef6e4, all blocks with 3px solid #000 borders, zero border-radius, shadow 6px 6px 0px #000. Hero: 96px uppercase condensed headline in #000, a sticker-style badge rotated -6deg in #ff006e with white text, and a CTA button in #ccff00 that shifts to 3px 3px shadow on press. Feature section: three cards in alternating #8ecae6, #ffb703, #ffffff backgrounds. Marquee strip of repeating text between sections. Footer as one giant bordered block. Body text 18px monospace; keep contrast at least 4.5:1 — never place #ccff00 text on white.",
+      },
+      {
+        titleEn: "Brutalist Pricing Page for v0",
+        titleZh: "v0 野兽派定价页",
+        tool: "v0",
+        prompt:
+          "Build a neo-brutalist pricing page with shadcn/ui, overriding all radii to 0. Three tier cards with 3px black borders and 5px 5px 0px #000 shadows on a #f4f1ea background: Free on #ffffff, Pro on #ffde59 with a 'BEST DEAL' banner strip crossing the top corner at -4deg, Team on #a2d2ff. Prices in 56px black extra-bold; feature rows separated by 2px dashed black dividers with X or check glyphs. Billing toggle styled as a chunky physical switch (2px border, hard shadow, instant snap — no easing). Comparison table below with a solid black header row and white uppercase text. Focus states: 3px offset black outline for keyboard users.",
+      },
+      {
+        titleEn: "Brutalist Mobile App for Cursor",
+        titleZh: "Cursor 野兽派移动应用",
+        tool: "cursor",
+        prompt:
+          "Create a neo-brutalist habit tracker mobile UI in Next.js, mobile-first at 390px width. Palette: background #fffbeb, black #111111, accents #f97316 and #22d3ee. Every card: 2px solid black border, 4px 4px 0px #111 shadow, radius 0. Top bar: app name in 24px uppercase monospace with a hand-drawn-style underline SVG. Habit cards as a vertical stack with 16px gaps; tapping toggles a fat 28px checkbox that fills black with a white check, no transition (instant, mechanical). Streak counter in a rotated 3deg badge. Bottom tab bar: 4 equal cells divided by 2px black rules, active cell inverted to black/white. Touch targets minimum 48px.",
+      },
+      {
+        titleEn: "Brutalist Docs Site for Claude",
+        titleZh: "Claude 野兽派文档站",
+        tool: "claude",
+        prompt:
+          "Generate a neo-brutalist documentation site in React with TypeScript. Layout: fixed 260px sidebar with a 3px black right border on #e9ff70 background, nav links as uppercase monospace 14px with a solid black square marker for the active page. Content area on #ffffff, max-w-3xl, headings with #ff006e highlight bars behind them. Code blocks: #111111 background, #ccff00 monospace text, 3px black border, 5px 5px 0px #ff006e shadow, and a bordered COPY button top-right. Tables with 2px black borders on every cell. Blockquote-style callouts on #8ecae6 with a bold 'NOTE:' prefix. Skip-to-content link and 3px black focus outlines for accessibility.",
+      },
     ],
     useCases: [
       {
@@ -1310,6 +1382,22 @@ export const promptTopics: PromptTopic[] = [
           "Brutalist design can be highly accessible due to its high contrast and clear visual hierarchy. The bold borders and stark color differences actually help users with low vision. However, watch for: sufficient color contrast ratios (especially with bright accent colors), readable font sizes (monospace can be smaller than expected), and clear focus indicators. Avoid rotation or overlap that makes content hard to read.",
         answerZh:
           "由于高对比度和清晰的视觉层级，野兽派设计可以是高度可访问的。大胆的边框和鲜明的色彩差异实际上帮助弱视用户。但需注意：充足的色彩对比度（尤其是明亮的强调色）、可读的字号（等宽字体可能比预期更小）、清晰的焦点指示器。避免使内容难以阅读的旋转或重叠。",
+      },
+      {
+        questionEn: "How thick should neo-brutalist borders be?",
+        questionZh: "新野兽派边框应该多粗？",
+        answerEn:
+          "The sweet spot is 2-4px solid black. Use 2px for dense UI (inputs, table cells, badges), 3px as your default for cards and buttons, and 4-5px only for hero-level containers or the page frame itself. Keep the width consistent per element class — mixing 2px and 3px on sibling cards reads as a bug, not a choice. Match shadow offset to border weight: a 3px border pairs with a 4-6px hard shadow (box-shadow: 5px 5px 0px #000, no blur). Below 2px the style collapses into generic flat design; above 6px it starts eating usable space on mobile.",
+        answerZh:
+          "最佳区间是 2-4px 的黑色实线。密集 UI（输入框、表格单元、徽标）用 2px，卡片和按钮默认 3px，4-5px 只留给 hero 级容器或页面外框。同类元素的边框粗细要保持一致——同级卡片混用 2px 和 3px 会被读成 bug 而不是设计选择。阴影偏移要与边框粗细匹配：3px 边框配 4-6px 硬阴影（box-shadow: 5px 5px 0px #000，无模糊）。低于 2px 风格会塌成普通扁平设计；超过 6px 在移动端会开始吞掉可用空间。",
+      },
+      {
+        questionEn: "What color palettes work for neo-brutalism?",
+        questionZh: "新野兽派适合什么配色？",
+        answerEn:
+          "Start from a warm off-white base (#fef6e4, #fffbeb, or #f4f1ea — pure white feels too clinical) plus solid black #000 for every border and most text. Then add 2-3 loud accents from this proven set: hot pink #ff006e, acid yellow #ccff00, orange #f97316, sky #8ecae6, lime #a7f432. Rules: accents go on backgrounds and stickers, never on body text; black text sits on every accent (all of these pass 4.5:1 with black); and rotate accents per card rather than mixing several inside one component.",
+        answerZh:
+          "从暖调米白底色出发（#fef6e4、#fffbeb 或 #f4f1ea——纯白显得太冷冰冰），加上用于所有边框和大部分文字的纯黑 #000。然后从这组验证过的颜色里挑 2-3 个高声量强调色：荧光粉 #ff006e、酸性黄 #ccff00、橙 #f97316、天蓝 #8ecae6、青柠 #a7f432。规则：强调色用于背景和贴纸元素，绝不用于正文文字；每个强调色上都放黑色文字（以上颜色配黑字都能通过 4.5:1）；强调色按卡片轮换，而不是在同一组件里混用多个。",
       },
     ],
   },
@@ -1368,6 +1456,34 @@ export const promptTopics: PromptTopic[] = [
         prompt:
           "Generate React components with a Japanese ink wash (sumi-e) design aesthetic. Use: grayscale palette with warm undertones (#1a1a1a to #f5f0e8), ink-brush stroke dividers (SVG paths with organic curves), varying ink opacity for text hierarchy (100%, 70%, 40%). Components: PageSection (with ample Ma spacing), InkDivider (decorative separator), FadeInOnScroll wrapper, QuoteBlock (vertical text option for Japanese quotes). Spacing scale: 16, 32, 64, 96, 128px. All transitions should feel like brush strokes - slightly ease-out with 400ms duration.",
       },
+      {
+        titleEn: "Ryokan Booking Page",
+        titleZh: "旅馆预订页",
+        tool: "general",
+        prompt:
+          "Design a booking landing page for a traditional ryokan. Background: washi off-white #f7f3ec; text: sumi charcoal #2f2b28; accents: indigo #264573 for links and matcha #7d8b6e for the reserve button. Hero: full-bleed photograph with a vertical Japanese title on the right edge and a thin 1px #d8d0c2 rule framing the booking card. Booking card: date and guest fields with underline-only inputs, 48px tall, labels in 13px letter-spaced uppercase. Sections separated by 120px of white space, room cards in a 2-column grid with 4:3 photos and serif titles at 22px. Reserve button must keep 4.5:1 contrast (white text on #5c6b4f, the darkened matcha).",
+      },
+      {
+        titleEn: "Tea Brand Store for v0",
+        titleZh: "v0 茶品牌商店",
+        tool: "v0",
+        prompt:
+          "Create a Japanese tea e-commerce storefront with shadcn/ui. Palette: kinari base #f5f0e8, sumi text #1f1d1a, hojicha brown #8a6f52 accents, sakura #e8c4c4 used only for a seasonal badge. Product grid: 3 columns with 48px gaps, square photos on subtle paper-texture cards, product names in a serif at 18px with 0.05em letter-spacing, prices in a light sans. Product page: single column max-w-2xl, brewing instructions as a numbered list with 2.0 line-height, temperature and steep time in a bordered spec table. Cart drawer slides in over 500ms ease-out. Buttons: outlined 1px #1f1d1a, filling on hover over 300ms. Alt text on every product image.",
+      },
+      {
+        titleEn: "Haiku Journal for Cursor",
+        titleZh: "Cursor 俳句日记",
+        tool: "cursor",
+        prompt:
+          "Build a haiku journaling app in Next.js. Layout: single centered column, max-width 560px, on #faf7f0. Each entry card: no border, separated only by 96px of vertical space and a small hand-drawn SVG dot ornament. Haiku text: serif 20px, line-height 2.2, centered, ink #33302c at 90% opacity; date below in 12px letter-spaced #9a938a. Compose view: a borderless textarea with a 5-7-5 syllable counter that turns #b0543f only when exceeded (paired with a text hint, not color alone). Save action triggers a slow 700ms ink-fade transition. Optional vertical writing mode using writing-mode: vertical-rl for display. Keyboard shortcuts documented in a minimal help sheet.",
+      },
+      {
+        titleEn: "Zen Meditation Mobile App for Claude",
+        titleZh: "Claude 禅意冥想移动应用",
+        tool: "claude",
+        prompt:
+          "Generate a React Native-style mobile meditation UI in React with TypeScript. Screens: today (one session card, nothing else), timer, and history. Palette: stone #ece7dd background, moss #6f7d62, ink #2d2a26, one warm accent kitsune #b39355 for the single primary action per screen. Timer screen: a thin 2px circular progress ring animating over the session length, centered remaining time in a light 48px serif, and nothing else on screen (Ma principle). History: a vertical list where each day is a small filled or hollow circle — include day labels for screen readers. All motion 600-800ms ease-in-out; respect prefers-reduced-motion by replacing animation with opacity fades. Touch targets 48px minimum.",
+      },
     ],
     useCases: [
       {
@@ -1419,6 +1535,22 @@ export const promptTopics: PromptTopic[] = [
           "Traditional Japanese colors (Nihon no dentoshoku) offer a rich palette: kinari (raw silk off-white #f5f0e8), sumi (ink black #1a1a1a), matcha (tea green #7d8b6e), sakura (cherry blossom pink #f0c0c0), ai (indigo blue #264573), and kitsune (fox brown #c4a961). Use muted, desaturated versions and pair warm neutrals as the dominant tones.",
         answerZh:
           "日本传统色（日本の伝統色）提供丰富的配色：生成（生丝白 #f5f0e8）、墨（墨黑 #1a1a1a）、抹茶（茶绿 #7d8b6e）、樱（樱花粉 #f0c0c0）、蓝（蓝色 #264573）、狐（狐棕 #c4a961）。使用柔和、低饱和度的版本，以暖中性色作为主导色调。",
+      },
+      {
+        questionEn: "What fonts pair well with Japanese aesthetic web design?",
+        questionZh: "哪些字体适合日式美学网页设计？",
+        answerEn:
+          "For Latin text, pair a light humanist serif for headings (Cormorant Garamond, EB Garamond at 300-400 weight) with a quiet sans for UI (Zen Kaku Gothic New, Noto Sans at 300-400). For Japanese text, Noto Serif JP for editorial content and Zen Kaku Gothic for interfaces; Shippori Mincho adds a classical feel. Key settings matter more than the font itself: line-height 1.9-2.2, letter-spacing 0.02-0.05em on headings, font-weight rarely above 500, and body size 16-18px. Avoid heavy geometric sans faces — their mechanical evenness fights the organic, handcrafted tone.",
+        answerZh:
+          "拉丁文字部分，标题用轻盈的人文衬线（Cormorant Garamond、EB Garamond 的 300-400 字重），UI 用安静的无衬线（Zen Kaku Gothic New、Noto Sans 的 300-400）。日文部分，编辑内容用 Noto Serif JP，界面用 Zen Kaku Gothic；Shippori Mincho 更具古典气息。关键设置比字体本身更重要：行高 1.9-2.2、标题字距 0.02-0.05em、字重很少超过 500、正文 16-18px。避免厚重的几何无衬线——它们机械的均匀感与有机手工的调性相冲。",
+      },
+      {
+        questionEn: "How is Japanese minimalism different from Western minimalism?",
+        questionZh: "日式极简与西方极简有何不同？",
+        answerEn:
+          "Western minimalism (Swiss/Bauhaus lineage) is about reduction to geometric order: strict grids, pure white #ffffff, sharp black, symmetry, and sans-serif precision. Japanese minimalism is about emptiness with warmth: off-white paper tones (#f5f0e8), asymmetric balance (a hero image offset to one side with Ma filling the rest), organic textures, serifs and brush-like details, and slower, softer motion (500-800ms vs 150-250ms). Practically: Swiss minimal uses a 12-column grid filled edge to edge; Japanese minimal might use one column at 60% width with deliberate empty space carrying as much meaning as the content.",
+        answerZh:
+          "西方极简（瑞士/包豪斯血统）是向几何秩序做减法：严格网格、纯白 #ffffff、锐利的黑、对称、无衬线的精确。日式极简是带温度的留空：米白纸色（#f5f0e8）、不对称平衡（主图偏向一侧，剩余空间由「间」填满）、有机纹理、衬线与笔触感细节、更慢更柔的动效（500-800ms 对比 150-250ms）。实际来说：瑞士极简用 12 列网格铺满页面；日式极简可能只用一列 60% 宽度，刻意的空白与内容本身承载同等的意义。",
       },
     ],
   },
@@ -1477,6 +1609,34 @@ export const promptTopics: PromptTopic[] = [
         prompt:
           "Generate React components with cyberpunk glitch aesthetics. Create: GlitchText (CSS animation that randomly shifts text-shadow in RGB channels), NeonButton (glowing border + text, pulse animation on hover), HUDCard (angular clip-path corners, animated border trace on mount), DataStream (scrolling text ticker with monospace font), and CyberInput (underline-only with blinking cursor and cyan accent). Include a useGlitch() hook that randomly triggers visual glitch effects at intervals. Use Tailwind CSS with custom animations.",
       },
+      {
+        titleEn: "Cyberpunk Game Landing Page",
+        titleZh: "赛博朋克游戏落地页",
+        tool: "general",
+        prompt:
+          "Design a landing page for a cyberpunk video game. Base #05050a with a faint scanline overlay at 3% opacity. Hero: full-viewport keyart with the title in a stencil display font at 96px, cyan #00f0ff outer glow (text-shadow 0 0 20px), and a magenta #ff0080 glitch double-exposure that fires every 6 seconds. Nav: monospace uppercase, 13px, letter-spacing 0.25em, active link with an animated bracket [ ] wrapper. Sections: feature panels with clip-path cut corners and 1px cyan borders, a system-requirements table styled as a terminal readout, and a preorder CTA in solid #ff0080 with black text (7.2:1 contrast). Respect prefers-reduced-motion by disabling glitch and scanline animations.",
+      },
+      {
+        titleEn: "Cyberpunk Music Player for v0",
+        titleZh: "v0 赛博朋克音乐播放器",
+        tool: "v0",
+        prompt:
+          "Build a synthwave music player with shadcn/ui. Background: vertical gradient #0a0a14 to #1a0a2e with a perspective grid floor in #ff2d78 at 30% opacity. Player card: clip-path angled corners, 1px #2de2e6 border with 0 0 12px glow. Album art framed by animated corner brackets. Waveform visualizer: 48 bars in a cyan-to-magenta gradient reacting to a mock amplitude array. Controls: circular play button with pulsing neon ring, skip buttons as outlined triangles. Track title in monospace uppercase with a marquee scroll when overflowing. Progress bar: 4px track in #1f1f33, #2de2e6 fill, and a diamond-shaped thumb. Label every control with aria-label since icons are abstract.",
+      },
+      {
+        titleEn: "Cyberpunk Admin Panel for Cursor",
+        titleZh: "Cursor 赛博朋克管理后台",
+        tool: "cursor",
+        prompt:
+          "Build a cyberpunk admin panel in Next.js with Tailwind. Shell: left rail 64px wide with icon-only nav, icons in #7dd3fc turning #00f5ff with glow when active; main area on #0a0f1e with an 8px grid. Data tables: monospace 13px, header row with 1px bottom border in #00f5ff at 40% opacity, row hover raising background to #101830. Status chips: ONLINE #39ff14, DEGRADED #ffe600, OFFLINE #ff3b3b — each chip also shows its text label, never color alone. Charts use the neon palette on transparent backgrounds with 1px grid lines at 10% white. Modals slide in as HUD panels with an animated border trace over 400ms. Keep body text #d6e4ff at 14px for 4.5:1 contrast against the navy base.",
+      },
+      {
+        titleEn: "Cyberpunk Portfolio for Claude",
+        titleZh: "Claude 赛博朋克作品集",
+        tool: "claude",
+        prompt:
+          "Generate a React portfolio site styled as a hacker terminal. Boot sequence: three lines of monospace text typing out over 2 seconds, skippable with any key press. Layout: max-w-4xl on #050508, all text in JetBrains Mono. Section headers rendered as shell prompts ('> projects --list') in #39ff14. Project cards: 1px #1f2937 border that ignites to #00f5ff with 0 0 16px glow on hover, tags as bracketed tokens in #ffe600. About section as a fake 'whoami' output block. Contact form inputs styled as command-line fields with a blinking block cursor. Include a visible-focus state (2px #ff0080 outline) and a 'disable effects' toggle that turns off all glows and animations.",
+      },
     ],
     useCases: [
       {
@@ -1528,6 +1688,22 @@ export const promptTopics: PromptTopic[] = [
           "Classic cyberpunk neon palette: cyan (#00f5ff), hot pink/magenta (#ff0080), electric purple (#bf00ff), neon green (#39ff14), and warning yellow (#ffe600). Use these sparingly against dark backgrounds (#0a0a0f to #1a1a2e). Apply glow effects via box-shadow and text-shadow with the same neon color at varying blur levels (10px, 20px, 40px).",
         answerZh:
           "经典赛博朋克霓虹配色：青色（#00f5ff）、玫红/品红（#ff0080）、电紫（#bf00ff）、霓虹绿（#39ff14）和警告黄（#ffe600）。在深色背景（#0a0a0f 至 #1a1a2e）上谨慎使用。通过 box-shadow 和 text-shadow 施加发光效果，使用不同模糊级别（10px、20px、40px）的相同霓虹色。",
+      },
+      {
+        questionEn: "How do I make neon glow effects accessible?",
+        questionZh: "如何让霓虹发光效果满足无障碍要求？",
+        answerEn:
+          "Four rules: first, contrast is measured on the text color itself, not the glow — cyan #00f5ff on #0a0a0f passes easily (13:1), but magenta #ff0080 on dark navy only reaches about 4.6:1, so reserve it for large text or backgrounds with black text. Second, glow blurs text edges; compensate with 500-600 font weight and never glow body text below 18px — glow headings and accents only. Third, wrap flicker and glitch loops in @media (prefers-reduced-motion: reduce) and keep any flashing under 3 flashes per second (WCAG 2.3.1 seizure threshold). Fourth, status colors need text labels, since neon palettes are brutal for color-blind users.",
+        answerZh:
+          "四条规则：第一，对比度按文字本身颜色计算，不算光晕——#00f5ff 青色在 #0a0a0f 上轻松通过（13:1），但 #ff0080 品红在深藏蓝上只有约 4.6:1，应留给大字或配黑字的背景使用。第二，光晕会模糊文字边缘；用 500-600 字重补偿，且 18px 以下的正文绝不加光晕——只给标题和强调元素发光。第三，闪烁和故障循环要包在 @media (prefers-reduced-motion: reduce) 里，任何闪烁保持每秒 3 次以下（WCAG 2.3.1 癫痫阈值）。第四，状态色必须配文字标签，霓虹配色对色盲用户非常不友好。",
+      },
+      {
+        questionEn: "What fonts are used in cyberpunk interfaces?",
+        questionZh: "赛博朋克界面用什么字体？",
+        answerEn:
+          "Monospace is the backbone: JetBrains Mono, IBM Plex Mono, or Share Tech Mono for data, labels, and body text at 13-15px. For display headings, use angular or stencil faces: Orbitron, Rajdhani, Chakra Petch, or Michroma at 600-700 weight. The signature treatment: uppercase everything structural, letter-spacing 0.15-0.25em on labels, and tabular figures for counters. Pair exactly one display face with one mono — adding a third font breaks the terminal illusion. Avoid rounded humanist fonts (Inter, Nunito); their softness contradicts the hard-edged HUD language.",
+        answerZh:
+          "等宽字体是骨架：数据、标签和正文用 JetBrains Mono、IBM Plex Mono 或 Share Tech Mono，13-15px。展示型标题用棱角或镂空字体：Orbitron、Rajdhani、Chakra Petch 或 Michroma，600-700 字重。标志性处理：结构性文字全大写、标签字距 0.15-0.25em、计数器用等宽数字。严格搭配一个展示字体加一个等宽字体——引入第三种字体会打破终端幻觉。避免圆润的人文字体（Inter、Nunito），它们的柔和感与硬朗的 HUD 语言相矛盾。",
       },
     ],
   },
@@ -1586,6 +1762,34 @@ export const promptTopics: PromptTopic[] = [
         prompt:
           "Generate a Tailwind CSS configuration with a complete design token system. Include: custom color palette (primary, secondary, accent, success, warning, danger, each with 50-950 shades), spacing scale extending the default (adding 18, 22, 30 for fine-grained control), custom font family stack (sans, serif, mono), border-radius tokens (none, sm, md, lg, xl, full), box-shadow tokens (sm, md, lg, xl, glow), and custom animation tokens (fade-in, slide-up, scale-in). Also create CSS custom properties that mirror the tokens for use in non-Tailwind contexts. Output as a tailwind.config.ts file.",
       },
+      {
+        titleEn: "Tailwind v4 Theme Setup",
+        titleZh: "Tailwind v4 主题配置",
+        tool: "general",
+        prompt:
+          "Set up a Tailwind CSS v4 project theme using the CSS-first configuration (no tailwind.config.js). In globals.css: '@import \"tailwindcss\";' followed by an @theme block defining --color-brand-50 through --color-brand-950 (base #4f46e5), --font-sans: 'Inter', system-ui, --radius-card: 1rem, and --spacing-section: 6rem. Add a custom dark variant with '@custom-variant dark (&:where(.dark, .dark *))'. Demonstrate usage: a hero section with bg-brand-600 text-white, cards using rounded-[--radius-card], and section padding py-[--spacing-section]. Include one @utility definition for a text-balance helper. All interactive elements need focus-visible:ring-2 ring-brand-500.",
+      },
+      {
+        titleEn: "Dashboard Shell for v0",
+        titleZh: "v0 仪表盘外壳",
+        tool: "v0",
+        prompt:
+          "Create a responsive dashboard shell with shadcn/ui and Tailwind. Desktop: CSS grid 'grid-cols-[240px_1fr]' with a sidebar (border-r border-zinc-200 dark:border-zinc-800, nav items 'flex items-center gap-3 rounded-md px-3 py-2 text-sm hover:bg-zinc-100 dark:hover:bg-zinc-800', active item bg-zinc-100 font-medium). Mobile: sidebar becomes a shadcn Sheet triggered from the top bar. Top bar: h-14 with breadcrumbs, a search input (w-64, pl-9 with an absolute icon), and an avatar dropdown. Content: 'p-6 lg:p-8 space-y-6' with a 4-card stat row 'grid gap-4 sm:grid-cols-2 lg:grid-cols-4'. Sidebar nav needs aria-current on the active link.",
+      },
+      {
+        titleEn: "Marketing Page Sections for Cursor",
+        titleZh: "Cursor 营销页区块",
+        tool: "cursor",
+        prompt:
+          "Build three reusable marketing sections in Next.js with Tailwind. Hero: 'py-24 lg:py-32' with headline 'text-5xl lg:text-6xl font-bold tracking-tight text-balance', subtext 'mt-6 text-lg text-zinc-600 max-w-2xl mx-auto', dual CTAs (primary bg-zinc-900 text-white, secondary ring-1 ring-zinc-300). Logo cloud: 'grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-8 items-center' with grayscale logos gaining color on hover. Feature bento: 'grid lg:grid-cols-3 gap-4' where the first card spans lg:col-span-2, each 'rounded-2xl bg-zinc-50 p-8 ring-1 ring-zinc-200'. Dark mode via dark: variants throughout; headings must maintain 4.5:1 contrast in both themes.",
+      },
+      {
+        titleEn: "Data Table Component for Claude",
+        titleZh: "Claude 数据表格组件",
+        tool: "claude",
+        prompt:
+          "Generate a reusable TypeScript DataTable component styled purely with Tailwind. Wrapper: 'overflow-x-auto rounded-lg ring-1 ring-zinc-200 dark:ring-zinc-800'. Table: 'w-full text-sm', header 'bg-zinc-50 dark:bg-zinc-900 text-left text-xs font-medium uppercase tracking-wide text-zinc-500', cells 'px-4 py-3 border-t border-zinc-100 dark:border-zinc-800'. Features: sortable columns (chevron icons with aria-sort on th), row selection with a checkbox column, zebra striping via odd:bg-zinc-50/50, sticky header with 'sticky top-0', numeric columns right-aligned with tabular-nums, and a pagination footer 'flex items-center justify-between px-4 py-3'. Provide loading skeleton rows and an empty state. Use scope=\"col\" on headers for screen readers.",
+      },
     ],
     useCases: [
       {
@@ -1637,6 +1841,22 @@ export const promptTopics: PromptTopic[] = [
           "StyleKit provides 135 visual styles, each with Tailwind-compatible design tokens (colors, spacing, border-radius, shadows, typography). You can export these tokens directly into your Tailwind workflow, use them as AI prompts for code generation, or copy individual component recipes with Tailwind classes. StyleKit bridges the gap between design intent and Tailwind implementation.",
         answerZh:
           "StyleKit 提供 135 种视觉风格，每种都有 Tailwind 兼容的 design tokens（颜色、间距、圆角、阴影、排版）。你可以把这些 tokens 用于 Tailwind 工作流、AI 代码生成提示词，或复制带有 Tailwind 类名的组件配方。StyleKit 连接了设计意图与 Tailwind 实现之间的桥梁。",
+      },
+      {
+        questionEn: "What changed in Tailwind CSS v4?",
+        questionZh: "Tailwind CSS v4 有哪些变化？",
+        answerEn:
+          "Tailwind v4 moves configuration from tailwind.config.js into CSS: you import with '@import \"tailwindcss\"' and define tokens in an @theme block as CSS variables (--color-brand-500, --font-display, --breakpoint-3xl). Custom utilities use @utility, custom variants use @custom-variant, and every design token is automatically exposed as a native CSS variable you can read with var(). The engine (Oxide) is significantly faster, content detection is automatic (no content array), and arbitrary values plus container queries are built in. Most v3 utility classes work unchanged; the migration mainly touches config, plugins, and @apply usage.",
+        answerZh:
+          "Tailwind v4 把配置从 tailwind.config.js 移进了 CSS：通过 '@import \"tailwindcss\"' 引入，在 @theme 块中以 CSS 变量定义 tokens（--color-brand-500、--font-display、--breakpoint-3xl）。自定义工具类用 @utility，自定义变体用 @custom-variant，且每个 design token 都自动暴露为原生 CSS 变量，可用 var() 读取。新引擎（Oxide）显著更快，内容检测自动完成（不再需要 content 数组），任意值和容器查询均为内置。大多数 v3 工具类无需改动；迁移主要涉及配置、插件和 @apply 的用法。",
+      },
+      {
+        questionEn: "Should I use @apply in Tailwind?",
+        questionZh: "Tailwind 中该不该用 @apply？",
+        answerEn:
+          "Sparingly. The Tailwind team's guidance: extract repeated patterns into framework components (a React Button), not into @apply classes — components keep markup, logic, and styles together, while @apply recreates the naming and cache-invalidation problems utility CSS was designed to avoid. Legitimate uses: styling third-party markup you cannot edit (rendered markdown, CMS output), and small global primitives like a shared focus ring. In v4, @apply inside separate files needs '@reference \"../app.css\"' to see your theme. If a class string repeats three or more times, reach for a component or a cva() variant map first.",
+        answerZh:
+          "要克制。Tailwind 团队的指导意见：把重复模式提取为框架组件（比如 React 的 Button），而不是 @apply 类——组件让标记、逻辑和样式聚合在一起，而 @apply 会重新制造工具类 CSS 本来要避免的命名和缓存失效问题。正当用途：给无法编辑的第三方标记设置样式（渲染后的 markdown、CMS 输出），以及共享焦点环这类小型全局基元。v4 中，独立文件里的 @apply 需要 '@reference \"../app.css\"' 才能读到主题。如果一个类名字符串重复三次以上，优先考虑组件或 cva() 变体映射。",
       },
     ],
   },
