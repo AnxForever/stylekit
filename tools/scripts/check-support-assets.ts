@@ -6,6 +6,7 @@ import { supportMethods, thankYouEntries } from "../../lib/site/support";
 const projectRoot = resolve(process.cwd());
 const requireRuntimeAssets = process.argv.includes("--require-runtime");
 const runtimeAssetPrefixes = [
+  "/support/acknowledgments/",
   "/support/receipts/",
   "/support/thank-you/",
 ] as const;

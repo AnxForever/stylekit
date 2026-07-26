@@ -46,7 +46,7 @@ const DIRECTIONS: Direction[] = [
     titleAccent: "而不是填充物。",
     summary:
       "通过人物轮廓、留白和文字尺度共同建立第一眼记忆，再用克制的滚动揭示解释真实页面、组件与交付物。",
-    image: "/images/styles/editorial/01.webp",
+    image: "/styles/editorial.svg",
     imageAlt: "黑白时尚人物造型研究图",
     objectPosition: "64% 50%",
     assetVerdict: "视觉质量较强，商业来源待审计",
@@ -64,7 +64,7 @@ const DIRECTIONS: Direction[] = [
     titleAccent: "再展示界面。",
     summary:
       "用一张强氛围图承担视觉高潮，界面信息保持冷静清晰；只保留轻量镜头漂移和指针响应，避免廉价霓虹堆叠。",
-    image: "/images/styles/cyberpunk-neon/01.webp",
+    image: "/styles/cyberpunk-neon.svg",
     imageAlt: "橙色与青色霓虹照亮的未来城市研究图",
     objectPosition: "50% 48%",
     assetVerdict: "氛围强，授权与性能均需闸门",
@@ -82,7 +82,7 @@ const DIRECTIONS: Direction[] = [
     titleAccent: "多给产品证据。",
     summary:
       "现有办公室图库只能作为反例。收费级 B2B 展示应改用原创产品场景、数据界面和可信业务结果，图片服务于购买判断。",
-    image: "/images/styles/corporate-clean/02.webp",
+    image: "/styles/corporate-clean.svg",
     imageAlt: "普通办公室人物图库研究图",
     objectPosition: "68% 50%",
     assetVerdict: "图库感明显，不进入收费候选",

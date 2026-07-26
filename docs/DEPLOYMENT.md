@@ -62,6 +62,8 @@ rsync -az --delete \
   --exclude .env.local \
   --exclude .env.production \
   --exclude .data/ \
+  --exclude public/launch/overseas/ \
+  --exclude public/support/acknowledgments/ \
   --exclude public/support/receipts/ \
   --exclude public/support/thank-you/ \
   --exclude playwright-report/ \
@@ -70,17 +72,22 @@ rsync -az --delete \
   ./ stylekit-prod:/www/stylekit/
 ```
 
-`public/support/receipts/` and `public/support/thank-you/` are runtime-only
-support assets. The standard sync excludes them so `--delete` cannot remove
-them from production. To add or restore those files, verify and sync them
-explicitly without `--delete`:
+`public/support/acknowledgments/`, `public/support/receipts/`, and
+`public/support/thank-you/` are runtime-only support assets. The standard sync
+excludes them so `--delete` cannot remove them from production. To add or
+restore those files, verify and sync them explicitly without `--delete`:
 
 ```bash
 pnpm run check:support-assets -- --require-runtime
-ssh stylekit-prod 'mkdir -p /www/stylekit/public/support/receipts /www/stylekit/public/support/thank-you'
+ssh stylekit-prod 'mkdir -p /www/stylekit/public/support/acknowledgments /www/stylekit/public/support/receipts /www/stylekit/public/support/thank-you'
+rsync -az public/support/acknowledgments/ stylekit-prod:/www/stylekit/public/support/acknowledgments/
 rsync -az public/support/receipts/ stylekit-prod:/www/stylekit/public/support/receipts/
 rsync -az public/support/thank-you/ stylekit-prod:/www/stylekit/public/support/thank-you/
 ```
+
+`public/launch/overseas/` contains maintainer-generated campaign media rather
+than application runtime assets. Keep it out of Git and sync individual files
+to external hosting only when a campaign still references them.
 
 5. Install, validate, build, and restart on the server:
 
@@ -422,6 +429,8 @@ rsync -az --delete \
   --exclude .env.local \
   --exclude .env.production \
   --exclude .data/ \
+  --exclude public/launch/overseas/ \
+  --exclude public/support/acknowledgments/ \
   --exclude public/support/receipts/ \
   --exclude public/support/thank-you/ \
   --exclude playwright-report/ \
@@ -600,6 +609,8 @@ rsync -az --delete \
   --exclude .env.local \
   --exclude .env.production \
   --exclude .data/ \
+  --exclude public/launch/overseas/ \
+  --exclude public/support/acknowledgments/ \
   --exclude public/support/receipts/ \
   --exclude public/support/thank-you/ \
   --exclude playwright-report/ \
