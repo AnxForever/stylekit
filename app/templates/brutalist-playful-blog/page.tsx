@@ -341,6 +341,7 @@ export default function BrutalistPlayfulBlogTemplate() {
         <div className="max-w-6xl mx-auto px-4 md:px-8 lg:px-12 py-4 flex items-center justify-between">
           <Link
             href="/templates/brutalist-playful-blog"
+            prefetch={false}
             className="border-4 border-black bg-black px-3 py-1 text-lg font-black text-[#ccff00] shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
           >
             BRUTAL BLOG

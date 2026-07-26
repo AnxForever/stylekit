@@ -2,7 +2,6 @@
 
 export const dynamic = "force-static";
 
-import Link from "next/link";
 import Image from "next/image";
 import { useCallback, useDeferredValue, useEffect, useMemo, useRef, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
@@ -12,6 +11,7 @@ import { Footer } from "@/components/layout/footer";
 import { getAllStylesMeta } from "@/lib/styles/meta";
 import { TemplatesFilter } from "@/components/templates/templates-filter";
 import { TemplateCoverPreview } from "@/components/templates/template-cover-preview";
+import { LocalizedLink } from "@/components/i18n/localized-link";
 import { useI18n } from "@/lib/i18n/context";
 import { pickLocale } from "@/lib/i18n/locale-copy";
 import {
@@ -633,7 +633,7 @@ export default function TemplatesPage() {
                     key={template.id}
                     className="group border border-border hover:border-foreground focus-within:border-foreground transition-colors [content-visibility:auto] [contain-intrinsic-size:1px_520px]"
                   >
-                    <Link
+                    <LocalizedLink
                       href={template.href}
                       ref={(element) => {
                         templateCardRefs.current[index] = element;
@@ -700,7 +700,7 @@ export default function TemplatesPage() {
                           {t("templates.openTemplate")} &rarr;
                         </p>
                       </div>
-                    </Link>
+                    </LocalizedLink>
 
                     {/* Action buttons */}
                     <div className="flex items-center gap-1 px-4 pb-4 md:px-5 md:pb-5 pt-0">

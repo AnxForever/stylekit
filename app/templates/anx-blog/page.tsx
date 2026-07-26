@@ -636,6 +636,7 @@ export default function AnxBlogTemplate() {
           <div className="mx-auto flex max-w-7xl items-center justify-between gap-4">
             <Link
               href="/templates/anx-blog"
+              prefetch={false}
               className="-rotate-1 border-2 border-black bg-black px-2 py-1 text-lg font-black tracking-tight text-white md:text-2xl"
             >
               DEV_AVANT_GARDE

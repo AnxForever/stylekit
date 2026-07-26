@@ -758,7 +758,7 @@ export default function DocsSiteTemplate() {
             >
               {sidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
-            <Link href="/templates/docs-site" className="flex items-center gap-2 font-semibold">
+            <Link href="/templates/docs-site" prefetch={false} className="flex items-center gap-2 font-semibold">
               <Book className="w-5 h-5 text-indigo-600" />
               <span className="text-gray-900">DocKit</span>
             </Link>

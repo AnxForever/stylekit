@@ -587,7 +587,7 @@ export default function MagazineLandingTemplate() {
 
             {/* Masthead */}
             <div className="py-7 md:py-10 text-center border-b border-zinc-100">
-              <Link href="/templates/magazine-landing" className="inline-block group">
+              <Link href="/templates/magazine-landing" prefetch={false} className="inline-block group">
                 <h1 className="font-serif text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight text-zinc-900 group-hover:text-red-600 transition-colors">
                   The Broadsheet
                 </h1>

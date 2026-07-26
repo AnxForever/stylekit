@@ -189,7 +189,7 @@ export default function SettingsPageTemplate() {
       {/* Navigation */}
       <nav className="bg-white border-b border-gray-200">
         <div className="max-w-6xl mx-auto px-4 md:px-8 py-4 flex items-center justify-between">
-          <Link href="/templates/settings-page" className="text-xl font-bold">
+          <Link href="/templates/settings-page" prefetch={false} className="text-xl font-bold">
             Settings
           </Link>
           <Link
