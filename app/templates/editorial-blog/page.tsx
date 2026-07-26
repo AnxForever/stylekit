@@ -227,13 +227,106 @@ interface ArticleCardProps {
   onClick: (article: Article) => void;
 }
 
+const ART_PALETTES: Record<Article["category"], { paper: string; ink: string; wash: string }> = {
+  Design: { paper: "#FAF7F2", ink: "#9F1239", wash: "#FBE3E8" },
+  Technology: { paper: "#F4F7FA", ink: "#1D4ED8", wash: "#DBEAFE" },
+  Business: { paper: "#FAF6EE", ink: "#B45309", wash: "#FDE9C8" },
+  Culture: { paper: "#F2F8F4", ink: "#047857", wash: "#D1FAE5" },
+};
+
+/**
+ * Generative editorial cover: the motif comes from the category, the
+ * composition variant from the article id, so no two covers repeat.
+ */
+function ArticleArt({ article, tall = false }: { article: Article; tall?: boolean }) {
+  const palette = ART_PALETTES[article.category];
+  const variant = article.id % 3;
+  const initial = article.title.charAt(0);
+  const shift = variant === 0 ? "left-6" : variant === 1 ? "left-1/3" : "left-1/2";
+  const tilt = variant === 0 ? "rotate-6" : variant === 1 ? "-rotate-3" : "rotate-12";
+
+  return (
+    <div
+      aria-hidden="true"
+      className={`relative w-full overflow-hidden border-b border-zinc-200 ${tall ? "aspect-[4/5]" : "aspect-[16/9]"}`}
+      style={{ backgroundColor: palette.paper }}
+    >
+      {/* paper grain */}
+      <div
+        className="absolute inset-0 opacity-40"
+        style={{
+          backgroundImage: `repeating-linear-gradient(0deg, transparent, transparent 3px, ${palette.wash} 3px, ${palette.wash} 4px)`,
+        }}
+      />
+      {article.category === "Design" && (
+        <>
+          <span
+            className={`absolute -top-6 font-serif italic leading-none select-none ${shift} ${tall ? "text-[11rem]" : "text-[8rem]"}`}
+            style={{ color: palette.ink, opacity: 0.85 }}
+          >
+            {initial}
+          </span>
+          <span
+            className={`absolute bottom-4 right-6 block rounded-full mix-blend-multiply ${tall ? "h-24 w-24" : "h-16 w-16"}`}
+            style={{ backgroundColor: palette.wash, border: `1px solid ${palette.ink}` }}
+          />
+        </>
+      )}
+      {article.category === "Technology" && (
+        <>
+          <div
+            className="absolute inset-4"
+            style={{
+              backgroundImage: `linear-gradient(${palette.wash} 1px, transparent 1px), linear-gradient(90deg, ${palette.wash} 1px, transparent 1px)`,
+              backgroundSize: "28px 28px",
+            }}
+          />
+          <span className={`absolute top-1/3 ${shift} h-2 w-2 rounded-full`} style={{ backgroundColor: palette.ink }} />
+          <span className="absolute top-1/3 left-6 right-10 h-px" style={{ backgroundColor: palette.ink, opacity: 0.5 }} />
+          <span className="absolute bottom-6 right-8 h-10 w-10 rounded-full border" style={{ borderColor: palette.ink }} />
+          <span className="absolute bottom-6 right-8 h-10 w-10 rounded-full border translate-x-2 -translate-y-2 opacity-40" style={{ borderColor: palette.ink }} />
+        </>
+      )}
+      {article.category === "Business" && (
+        <div className="absolute inset-x-8 bottom-0 top-1/4 flex items-end gap-2">
+          {[34, 58, 44, 76, 62, 92].map((height, i) => (
+            <span
+              key={i}
+              className="flex-1"
+              style={{
+                height: `${height}%`,
+                backgroundColor: (i + variant) % 3 === 0 ? palette.ink : palette.wash,
+                border: `1px solid ${palette.ink}`,
+                borderBottom: "none",
+                opacity: (i + variant) % 3 === 0 ? 0.9 : 1,
+              }}
+            />
+          ))}
+        </div>
+      )}
+      {article.category === "Culture" && (
+        <>
+          <span className={`absolute top-6 h-20 w-20 rounded-full mix-blend-multiply ${shift}`} style={{ backgroundColor: palette.wash }} />
+          <span className={`absolute top-10 h-20 w-20 rounded-full mix-blend-multiply ${tilt} ${variant === 2 ? "left-1/4" : "left-1/2"}`} style={{ backgroundColor: palette.ink, opacity: 0.25 }} />
+          <span className="absolute bottom-5 left-6 right-6 h-px" style={{ backgroundColor: palette.ink, opacity: 0.5 }} />
+          <span className="absolute bottom-8 left-6 font-serif italic text-sm" style={{ color: palette.ink }}>
+            No. {article.id}
+          </span>
+        </>
+      )}
+    </div>
+  );
+}
+
 function ArticleCard({ article, onClick }: ArticleCardProps) {
   return (
     <button
       type="button"
       onClick={() => onClick(article)}
-      className="group text-left w-full border border-zinc-200 bg-white hover:border-zinc-400 transition-all duration-200 p-6 flex flex-col gap-4"
+      className="group text-left w-full border border-zinc-200 bg-white hover:border-zinc-400 transition-all duration-200 flex flex-col"
     >
+      <ArticleArt article={article} />
+      <div className="p-6 flex flex-col gap-4 flex-1">
       <div className="flex items-center justify-between">
         <CategoryBadge category={article.category} />
         <span className="text-[10px] text-zinc-400 tracking-wide">
@@ -270,6 +363,7 @@ function ArticleCard({ article, onClick }: ArticleCardProps) {
             {tag}
           </span>
         ))}
+      </div>
       </div>
     </button>
   );
@@ -541,7 +635,10 @@ export default function EditorialBlogPage() {
               </div>
 
               <div className="md:col-span-4 hidden md:flex flex-col gap-3">
-                <div className="h-px bg-zinc-900 w-16 mb-2" />
+                <div className="border border-zinc-200">
+                  <ArticleArt article={featuredArticle} tall />
+                </div>
+                <div className="h-px bg-zinc-900 w-16 mb-2 mt-3" />
                 <div className="flex flex-wrap gap-2">
                   {featuredArticle.tags.map((tag) => (
                     <span
