@@ -107,7 +107,7 @@ export function FeedbackForm() {
         rows={4}
         required
         disabled={status === "loading"}
-        className="w-full resize-y rounded-md border border-border bg-background px-3 py-2 text-sm leading-relaxed placeholder:text-muted focus:outline-none focus:ring-1 focus:ring-accent"
+        className="w-full resize-y border border-border bg-background px-3.5 py-3 text-sm leading-relaxed placeholder:text-muted transition-colors focus:border-foreground focus:outline-none"
       />
       <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
         <label htmlFor="feedback-email" className="sr-only">
@@ -122,12 +122,12 @@ export function FeedbackForm() {
           autoComplete="email"
           inputMode="email"
           disabled={status === "loading"}
-          className="min-w-0 flex-1 rounded-md border border-border bg-background px-3 py-2 text-sm placeholder:text-muted focus:outline-none focus:ring-1 focus:ring-accent"
+          className="min-w-0 flex-1 border border-border bg-background px-3.5 py-2 text-sm placeholder:text-muted transition-colors focus:border-foreground focus:outline-none"
         />
         <button
           type="submit"
           disabled={status === "loading"}
-          className="min-h-11 shrink-0 rounded-md bg-foreground px-5 py-2 text-sm font-medium text-background transition-opacity hover:opacity-90 disabled:opacity-50"
+          className="min-h-11 shrink-0 border border-foreground bg-foreground px-6 py-2 text-sm font-medium text-background transition-colors hover:bg-transparent hover:text-foreground disabled:opacity-50 disabled:hover:bg-foreground disabled:hover:text-background"
         >
           {status === "loading" ? c.sending : c.submit}
         </button>

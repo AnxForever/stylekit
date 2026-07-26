@@ -20,24 +20,28 @@ export default function ContactPage() {
     <div className="min-h-screen flex flex-col">
       <Header />
       <main className="flex-1">
-        <section className="relative overflow-hidden border-b border-border bg-[radial-gradient(circle_at_top_right,rgba(37,99,235,0.08),transparent_38%),radial-gradient(circle_at_bottom_left,rgba(245,158,11,0.08),transparent_35%)]">
-          <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-foreground/10 to-transparent" />
-          <div className="max-w-5xl mx-auto px-6 md:px-12 py-16 md:py-24">
-            <div className="flex items-center gap-3 mb-4">
-              <span className="inline-flex items-center gap-1.5 rounded-full border border-border/80 bg-background/80 px-3 py-1 text-[11px] uppercase tracking-[0.24em] text-muted backdrop-blur">
+        <section className="border-b border-border">
+          <div className="mx-auto max-w-5xl px-6 md:px-12">
+            <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-2 border-b border-border/80 py-4">
+              <p className="inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.28em] text-muted">
                 <Heart className="h-3 w-3" />
                 Support
-              </span>
+              </p>
+              <p className="font-mono text-[10px] uppercase tracking-[0.28em] text-muted">
+                SK / Correspondence
+              </p>
             </div>
-            <h1 className="text-4xl md:text-5xl leading-tight mb-5">Contact & Support</h1>
-            <p className="text-base md:text-lg text-muted leading-relaxed max-w-3xl">
-              StyleKit currently handles support through public channels. Use the path that best matches your question so launch issues, product feedback, and maintenance support can be triaged quickly.
-            </p>
+            <div className="py-12 md:py-16">
+              <h1 className="text-4xl leading-tight md:text-5xl">Contact & Support</h1>
+              <p className="mt-5 max-w-3xl text-base leading-relaxed text-muted md:text-lg">
+                StyleKit currently handles support through public channels. Use the path that best matches your question so launch issues, product feedback, and maintenance support can be triaged quickly.
+              </p>
+            </div>
           </div>
         </section>
 
         <section>
-          <div className="max-w-5xl mx-auto px-6 md:px-12 py-12 md:py-16">
+          <div className="mx-auto max-w-5xl px-6 md:px-12">
             <SupportContent />
           </div>
         </section>
