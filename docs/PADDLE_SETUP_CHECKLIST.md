@@ -17,13 +17,20 @@
 
 ## 你需要亲手做的事（按顺序）
 
-### 第 0 步：Ko-fi 占位（5 分钟，可选但推荐）
+### 第 0 步：Ko-fi 占位（进行中）
 
-1. 用邮箱在 ko-fi.com 注册创作者账号（页面名建议 stylekit 或 anxforever）。
-2. 把页面链接告诉 Claude，填入 `app/support/page.tsx` 顶部的 `KOFI_URL` 常量，
-   国际支持区块会自动从"建设中"切换为 Ko-fi 按钮。
-3. 注意：Ko-fi 提现走 PayPal，中国大陆提现手续费高（电汇约 $35/笔），
-   小额先攒着，它的作用是"外国人熟悉的打赏入口"，主力通道等 Paddle。
+1. [x] Ko-fi 账号已注册：https://ko-fi.com/anxforever（2026-07-26）
+2. [ ] **绑定收款方式（当前卡点）**：Ko-fi 收款二选一——Stripe（大陆个人开不了，
+      放弃）或 PayPal。需先注册 PayPal 国际版个人账户（paypal.com，大陆手机号 +
+      身份证 + 国内银行卡即可注册，能接收境外个人付款），再到 Ko-fi ->
+      Settings -> Payment options 绑定。
+3. [ ] 绑定后告诉 Claude 做一笔小额真实测试，确认收款闭环走通，再点亮
+      `app/support/page.tsx` 的 `KOFI_URL`。**未绑定前绝不挂按钮**——访客付款
+      会在最后一步失败，比没有更伤。
+4. 定位提醒：Ko-fi 只是"外国人熟悉的打赏曝光位"。**Paddle 不依赖 PayPal/Stripe
+   账号**（它自己是收单方，提现走 Payoneer）——所以就算 PayPal 不想弄，
+   直接跳到第 1 步走 Paddle 也完全成立。
+5. 提现注意：Ko-fi -> PayPal 的钱提现到国内成本高（电汇约 $35/笔），小额先攒着。
 
 ### 第 1 步：注册准备（材料清单）
 

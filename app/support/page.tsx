@@ -6,9 +6,11 @@ import { LocalizedLink } from "@/components/i18n/localized-link";
 import { getRequestLocaleContext } from "@/lib/i18n/request";
 
 // International card-payment support is being set up through a
-// merchant-of-record (Paddle). Once a Ko-fi page exists, paste its URL here
-// (e.g. "https://ko-fi.com/yourname") and the international block switches
-// from the "coming soon" note to a live support button automatically.
+// merchant-of-record (Paddle). A Ko-fi page is registered at
+// https://ko-fi.com/anxforever but MUST NOT be linked here until a payout
+// method (PayPal) is connected in Ko-fi - without it, visitor payments fail
+// at the final step. Once connected and verified with a real test payment,
+// set KOFI_URL to that address and the block switches to a live button.
 const KOFI_URL = "";
 
 export const metadata: Metadata = {
