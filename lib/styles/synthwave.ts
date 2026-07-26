@@ -18,6 +18,7 @@ export const synthwave: DesignStyle = {
     accent: ["#ff6ec7", "#7b68ee", "#ff1493", "#f67d50"],
   },
   keywords: ["合成波", "80年代", "霓虹", "复古未来", "网格", "日落", "retro", "vintage", "nostalgic", "复古"],
+  keywordsEn: ["synthwave", "retrowave", "outrun", "80s retro", "neon grid", "grid horizon", "sunset gradient", "retro futurism", "neon pink purple", "vaporwave"],
 
   philosophy: `Synthwave（合成波）是一种源于2000年代中期的电子音乐流派和视觉美学，致敬80年代的科幻电影、电子游戏和合成器音乐。
 

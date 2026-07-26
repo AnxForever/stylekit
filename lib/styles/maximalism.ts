@@ -18,6 +18,7 @@ export const maximalism: DesignStyle = {
     accent: ["#ffbe0b", "#3a86ff", "#8338ec", "#06d6a0"],
   },
   keywords: ["极繁", "华丽", "层叠", "混搭", "饱和", "装饰", "丰富", "expressive", "bold", "vibrant"],
+  keywordsEn: ["maximalism", "maximalist design", "more is more", "layered patterns", "clashing colors", "mixed typography", "decorative borders", "eclectic", "visual overload", "bold web design", "ornate"],
 
   philosophy: `极繁主义（Maximalism）是对极简主义的直接反叛。它相信"更多就是更多"，拒绝留白的克制，拥抱层叠、装饰和视觉丰富性。从巴洛克宫殿到波西米亚室内设计，极繁主义一直是人类表达欲望的自然产物。
 

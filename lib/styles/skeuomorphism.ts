@@ -18,6 +18,7 @@ export const skeuomorphism: DesignStyle = {
     accent: ["#c9a227", "#5c4033", "#2e5a3c", "#4bc542"],
   },
   keywords: ["拟物", "写实", "纹理", "质感", "真实", "3D", "阴影", "retro", "vintage", "nostalgic"],
+  keywordsEn: ["skeuomorphism", "skeuomorphic design", "realistic ui", "3D buttons", "leather texture", "brushed metal", "embossed effect", "early iOS design", "tactile interface", "realistic shadows", "vintage Apple ui"],
 
   philosophy: `Skeuomorphism（拟物设计）是一种模拟真实世界物体外观和行为的设计方法，曾在早期 iOS 和数字产品中广泛使用。
 

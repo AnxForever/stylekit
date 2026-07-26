@@ -18,6 +18,7 @@ export const arcadeCrt: DesignStyle = {
     accent: ["#ff00ff", "#00ffff", "#ff2a2a", "#FFFF00", "#ff8533"],
   },
   keywords: ["CRT", "scanlines", "retro gaming", "arcade", "pixel", "neon glow", "chromatic aberration", "retro", "vintage", "nostalgic"],
+  keywordsEn: ["CRT effect", "arcade style", "scanlines", "retro gaming ui", "CRT screen", "neon glow", "chromatic aberration", "pixel font", "80s arcade", "phosphor glow", "screen curvature", "retro game website"],
 
   philosophy: `Arcade CRT 风格再现了80-90年代街机CRT显示器的怀旧辉光。
 

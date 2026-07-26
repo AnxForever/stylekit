@@ -18,6 +18,7 @@ export const surrealism: DesignStyle = {
     accent: ["#d4a574", "#c38d94", "#4a3f6b", "#90ba6d"],
   },
   keywords: ["超现实", "梦境", "Dali", "融化", "不合逻辑", "潜意识", "奇幻", "expressive", "bold", "vibrant"],
+  keywordsEn: ["surrealism", "surrealist design", "dreamlike ui", "Dali inspired", "melting shapes", "dream logic", "distorted forms", "abstract art website", "subconscious", "artistic portfolio"],
 
   philosophy: `Surrealism（超现实主义）是20世纪初的艺术运动，致力于释放潜意识的创造力，打破理性与非理性的界限。
 

@@ -18,6 +18,7 @@ export const macosVibrancy: DesignStyle = {
     accent: ["#0a84ff", "#30d158", "#ff9f0a", "#ff453a"],
   },
   keywords: ["macOS", "原生", "暗色", "毛玻璃", "桌面", "vibrancy", "侧边栏", "modern", "contemporary", "sleek"],
+  keywordsEn: ["macOS vibrancy", "macOS design", "frosted glass sidebar", "backdrop blur", "translucent panels", "dark mode ui", "desktop app design", "native app aesthetic", "Apple design language", "glassmorphism", "dashboard"],
 
   philosophy: `macOS Vibrancy 是 Apple 桌面应用设计语言的 Web 还原。它的核心不是炫技，而是克制。
 

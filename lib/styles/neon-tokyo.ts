@@ -18,6 +18,7 @@ export const neonTokyo: DesignStyle = {
     accent: ["#00f0ff", "#ff6b00", "#bc13fe", "#97b6ff"],
   },
   keywords: ["霓虹", "东京", "夜景", "歌舞伎町", "都市", "招牌", "倒影", "modern", "contemporary", "sleek"],
+  keywordsEn: ["neon Tokyo", "Tokyo nightscape", "Kabukicho", "Shinjuku", "neon signs", "city night", "rain reflections", "urban neon", "cyberpunk city", "dark theme", "japanese nightlife"],
 
   philosophy: `Neon Tokyo（霓虹东京）灵感源自东京歌舞伎町、新宿和涩谷的霓虹夜景。不同于 Cyberpunk Neon 的科幻未来感，这个风格更贴近真实的都市夜色——雨后的街道倒映着层叠的霓虹招牌，暖色与冷色交织在潮湿的沥青上。
 

@@ -18,6 +18,7 @@ export const artNouveau: DesignStyle = {
     accent: ["#c9a227", "#8b6db5", "#4a7c3f", "#4bc542"],
   },
   keywords: ["新艺术", "有机曲线", "藤蔓", "花卉", "Mucha", "装饰", "自然", "retro", "vintage", "nostalgic"],
+  keywordsEn: ["Art Nouveau", "Art Nouveau website", "Mucha style", "organic curves", "floral ornament", "vine patterns", "whiplash line", "vintage poster", "decorative border", "botanical illustration", "ornamental design"],
 
   philosophy: `Art Nouveau（新艺术运动）是19世纪末至20世纪初的国际性艺术运动，以自然界的有机形态为灵感，将装饰艺术推向极致。
 

@@ -18,6 +18,7 @@ export const naturalOrganic: DesignStyle = {
     accent: ["#8b9d77", "#d4a373", "#e9e0d4", "#75a191"],
   },
   keywords: ["自然", "有机", "大地色", "手工", "健康", "环保", "可持续", "minimal", "clean", "simple"],
+  keywordsEn: ["organic design", "natural design", "earth tones", "organic shapes", "natural textures", "eco-friendly design", "handcrafted feel", "warm neutrals", "wellness brand", "organic food website", "sustainable branding"],
 
   philosophy: `Natural Organic 风格从自然界汲取灵感，通过大地色系、有机形状和自然纹理创造温暖亲切的体验。
 

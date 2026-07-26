@@ -18,6 +18,7 @@ export const warmDashboard: DesignStyle = {
     accent: ["#4a9d9a", "#e8b86d", "#c17767", "#6b8e8e"],
   },
   keywords: ["暖色", "仪表盘", "珊瑚色", "赤陶", "奶油白", "数据可视化", "舒适", "modern", "contemporary", "sleek"],
+  keywordsEn: ["warm dashboard", "dashboard design", "terracotta", "coral palette", "cream white cards", "soft shadows", "data visualization", "warm color scheme", "admin panel", "cozy UI"],
 
   philosophy: `Warm Dashboard（暖色仪表盘）是一种温暖、专业的界面设计风格，通过暖色调背景和柔和的卡片设计，让数据展示更加亲和友好。
 

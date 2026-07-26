@@ -18,6 +18,7 @@ export const ukiyoEDigital: DesignStyle = {
     accent: ["#d4553a", "#c9a227", "#2a5a8c", "#747800"],
   },
   keywords: ["浮世绘", "木版画", "北斋", "波浪", "和风", "扁平", "东方美学", "retro", "vintage", "nostalgic"],
+  keywordsEn: ["ukiyo-e", "Japanese woodblock print", "Hokusai", "great wave", "ukiyo-e web design", "Japanese art style", "flat illustration", "bold outlines", "wave pattern", "Edo period", "indigo and vermilion"],
 
   philosophy: `Ukiyo-e Digital（浮世绘数字风）将江户时代的木版画艺术转化为现代数字设计语言，保留其独特的扁平透视和色彩分区技法。
 

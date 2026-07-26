@@ -18,6 +18,7 @@ export const terracotta: DesignStyle = {
     accent: ["#d4a373", "#7a6350", "#8b9d77", "#8fb86a"],
   },
   keywords: ["赤陶", "地中海", "暖调", "大地色", "手工", "陶土", "自然", "温暖", "minimal", "clean"],
+  keywordsEn: ["terracotta", "terracotta color palette", "earth tones", "warm color palette", "Mediterranean design", "clay tones", "handcrafted texture", "artisan", "rustic web design", "lifestyle brand"],
 
   philosophy: `赤陶暖调（Terracotta）源自地中海沿岸数千年的陶艺传统，将烧制泥土的温暖色泽融入数字设计。
 

@@ -18,6 +18,7 @@ export const watercolorArt: DesignStyle = {
     accent: ["#7bb8d4", "#8cc5a8", "#c3a0d4", "#e8c87a"],
   },
   keywords: ["水彩", "晕染", "透明", "纸张", "颜料", "池化", "植物", "有机", "expressive", "bold"],
+  keywordsEn: ["watercolor art", "watercolor painting", "paint bleed", "pigment pooling", "botanical watercolor", "wet on wet", "hand painted", "organic edges", "paper texture", "watercolor illustration", "artistic web design"],
 
   philosophy: `水彩艺术风格追求真实水彩画的自然有机美学，强调颜料在湿纸上的流动、渗透和池化效果。
 

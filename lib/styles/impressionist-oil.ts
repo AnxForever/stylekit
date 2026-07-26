@@ -27,6 +27,7 @@ export const impressionistOil: DesignStyle = {
     "画布",
     "impasto",
   "expressive", "bold"],
+  keywordsEn: ["impressionist design", "oil painting style", "Monet", "brushstroke texture", "canvas texture", "impasto", "painterly ui", "dappled light", "pointillism", "artist portfolio"],
 
   philosophy: `油画印象派风格汲取19世纪法国印象派绘画的精髓，强调光影变化和色彩的即兴表达。
 

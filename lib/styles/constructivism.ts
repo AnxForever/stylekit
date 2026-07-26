@@ -18,6 +18,7 @@ export const constructivism: DesignStyle = {
     accent: ["#1a1a1a", "#d4a843", "#8b4513", "#1a1a1a"],
   },
   keywords: ["构成主义", "苏联", "海报", "几何", "宣传", "对角线", "retro", "vintage", "nostalgic", "复古"],
+  keywordsEn: ["constructivism", "Russian constructivism", "Soviet poster", "agitprop", "propaganda poster", "diagonal composition", "red and black", "avant-garde", "geometric poster", "Rodchenko"],
 
   philosophy: `构成主义（Constructivism）起源于1910年代的俄国先锋派艺术运动，在1920-30年代的苏联达到高峰。它主张"艺术为社会服务"，将视觉设计视为传达信息和动员大众的工具。
 

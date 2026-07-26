@@ -18,6 +18,7 @@ export const handDrawnDoodle: DesignStyle = {
     accent: ["#ff6b6b", "#4ecdc4", "#ffd93d", "#a98d16"],
   },
   keywords: ["手绘", "涂鸦", "笔记本", "虚线", "标记笔", "胶带", "图钉", "expressive", "bold", "vibrant"],
+  keywordsEn: ["hand-drawn", "doodle style", "sketch illustration", "handwritten font", "notebook aesthetic", "scribble", "hand-drawn border", "marker pen texture", "scrapbook elements", "playful illustration", "sketchnote"],
 
   philosophy: `Hand-Drawn Doodle 风格模拟手工绘制的质感，营造温暖、亲切、创意十足的视觉体验。
 

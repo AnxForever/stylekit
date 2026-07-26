@@ -18,6 +18,7 @@ export const pixelArt: DesignStyle = {
     accent: ["#ff004d", "#00e436", "#29adff", "#ffec27"],
   },
   keywords: ["像素", "8-bit", "复古", "游戏", "怀旧", "独立", "retro", "vintage", "nostalgic", "pixel"],
+  keywordsEn: ["pixel art", "8-bit design", "retro game website", "pixelated ui", "pixel font", "hard-edge shadows", "8-bit color palette", "image-rendering pixelated", "arcade style", "indie game website"],
 
   philosophy: `Pixel Art 是一种源于早期电子游戏的复古设计风格，通过像素化的视觉元素、硬边阴影和鲜明的 8-bit 配色，唤起对经典游戏的怀旧情感。
 

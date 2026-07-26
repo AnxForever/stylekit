@@ -18,6 +18,7 @@ export const tropicalParadise: DesignStyle = {
     accent: ["#ff6f61", "#ffc107", "#4caf50", "#a09314"],
   },
   keywords: ["热带", "天堂", "棕榈", "花卉", "阳光", "度假", "明快", "modern", "contemporary", "sleek"],
+  keywordsEn: ["tropical design", "tropical paradise", "palm leaves", "resort website", "travel website design", "vibrant colors", "summer vibes", "beach theme", "exotic floral", "vacation landing page"],
 
   philosophy: `Tropical Paradise（热带天堂）风格汲取热带岛屿的自然色彩与度假氛围，将阳光、海洋、棕榈叶和热带花卉的鲜活能量注入数字界面。
 

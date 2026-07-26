@@ -18,6 +18,7 @@ export const opArt: DesignStyle = {
     accent: ["#ff3300", "#0066ff", "#ffcc00", "#5e6d00"],
   },
   keywords: ["光学", "幻觉", "视觉", "运动感", "几何", "黑白", "振动", "expressive", "bold", "vibrant"],
+  keywordsEn: ["op art", "optical art", "optical illusion", "Bridget Riley", "Victor Vasarely", "geometric patterns", "black and white", "moire patterns", "concentric circles", "checkerboard", "visual vibration", "1960s art"],
 
   philosophy: `Op Art（光学艺术）兴起于1960年代，以Bridget Riley和Victor Vasarely为代表。它利用精密的几何图案在二维平面上制造运动、振动和深度的视觉幻象，挑战观者的感知系统。
 

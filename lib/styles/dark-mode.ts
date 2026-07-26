@@ -18,6 +18,7 @@ export const darkMode: DesignStyle = {
     accent: ["#22c55e", "#f59e0b", "#ef4444", "#2ab5e5"],
   },
   keywords: ["暗黑", "深色", "夜间", "开发", "专业", "护眼", "modern", "contemporary", "sleek", "现代"],
+  keywordsEn: ["dark mode", "dark theme", "night mode", "dark ui design", "developer tools ui", "low contrast layering", "subtle borders", "eye strain reduction", "dark dashboard", "professional dark interface"],
 
   philosophy: `Dark Mode 设计强调在深色背景上创造舒适的阅读体验和清晰的信息层次。
 

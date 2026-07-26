@@ -19,6 +19,7 @@ export const magazineGrid: DesignStyle = {
     accent: ["#e63946", "#2a9d8f", "#e9c46a", "#264653"],
   },
   keywords: ["杂志", "多栏", "新闻", "博客", "内容", "网格", "modern", "contemporary", "sleek", "现代"],
+  keywordsEn: ["magazine grid", "magazine layout", "editorial design", "multi-column grid", "CSS grid", "news website design", "blog layout", "featured article", "visual hierarchy", "print-inspired", "responsive grid"],
 
   philosophy: `Magazine Grid（杂志网格布局）借鉴传统印刷杂志的排版智慧，通过多栏和混合尺寸内容块创造专业的编辑效果。
 

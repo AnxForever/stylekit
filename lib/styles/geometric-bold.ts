@@ -18,6 +18,7 @@ export const geometricBold: DesignStyle = {
     accent: ["#ff0000", "#0000ff", "#ffff00", "#6c3b00"],
   },
   keywords: ["几何", "大胆", "色块", "艺术", "创意", "设计", "先锋", "expressive", "bold", "vibrant"],
+  keywordsEn: ["geometric bold", "geometric design", "bold shapes", "Bauhaus", "Constructivism", "color blocks", "abstract geometry", "hard edges", "avant-garde", "design agency", "poster design"],
 
   philosophy: `Geometric Bold 风格受包豪斯和构成主义艺术的影响，通过简单但强烈的几何形状创造视觉冲击。
 

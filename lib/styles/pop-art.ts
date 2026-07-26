@@ -18,6 +18,7 @@ export const popArt: DesignStyle = {
     accent: ["#00bfff", "#000000", "#ffffff", "#a486ff"],
   },
   keywords: ["波普", "Warhol", "Lichtenstein", "半色调", "漫画", "粗体", "网点", "对话泡泡", "expressive", "bold"],
+  keywordsEn: ["pop art", "Andy Warhol style", "Roy Lichtenstein", "halftone dots", "Ben-Day dots", "comic book style", "speech bubbles", "bold outlines", "1960s design", "comic ui", "saturated color blocks"],
 
   philosophy: `Pop Art 风格来源于 20 世纪 60 年代的波普艺术运动，以 Andy Warhol 和 Roy Lichtenstein 为代表，通过大胆色块、粗黑轮廓和半色调网点创造视觉冲击。
 

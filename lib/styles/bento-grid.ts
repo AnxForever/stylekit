@@ -21,6 +21,7 @@ export const bentoGrid: DesignStyle = {
     accent: ["#3b82f6", "#8b5cf6", "#ec4899", "#f97316"],
   },
   keywords: ["网格", "卡片", "不规则", "作品集", "现代", "modern", "contemporary", "sleek", "简洁", "bento"],
+  keywordsEn: ["bento grid", "bento layout", "bento box design", "card grid", "modular layout", "CSS grid", "feature grid", "portfolio grid", "product showcase", "dashboard cards"],
 
   philosophy: `Bento Grid（便当盒布局）是一种源于日式便当盒分隔设计的现代布局风格。通过不同尺寸的卡片在网格中的组合排列，创造出既有秩序又富有变化的视觉效果。
 

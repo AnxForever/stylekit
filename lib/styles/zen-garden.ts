@@ -18,6 +18,7 @@ export const zenGarden: DesignStyle = {
     accent: ["#8a9a7b", "#c4bba8", "#7a7062", "#799d91"],
   },
   keywords: ["枯山水", "日式", "禅", "砂纹", "石组", "苔藓", "冥想", "庭园", "karesansui"],
+  keywordsEn: ["zen garden", "karesansui", "Japanese zen design", "dry landscape garden", "raked sand pattern", "Japanese minimalism", "wabi-sabi", "meditation app design", "tranquil ui", "moss green palette", "zen aesthetic"],
 
   philosophy: `枯山水（Karesansui）是日本禅宗庭园的最高表现形式。
 

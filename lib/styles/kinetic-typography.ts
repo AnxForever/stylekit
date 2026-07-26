@@ -18,6 +18,7 @@ export const kineticTypography: DesignStyle = {
     accent: ["#FF4D00", "#141416", "#8A857B"],
   },
   keywords: ["kinetic typography", "variable font", "motion", "stagger", "marquee", "type-driven", "动态排印", "可变字体", "文字动画"],
+  keywordsEn: ["kinetic typography", "animated typography", "text animation", "variable fonts", "staggered text reveal", "marquee text", "big type", "scroll-driven animation", "motion design", "type-driven layout", "landing page"],
 
   philosophy: `动力学排印的信条：文字不是排上去的，是登场的。当文字本身成为唯一主角，动效就不再是装饰，而是语气——字重是音量，字宽是呼吸，入场节奏是断句。
 

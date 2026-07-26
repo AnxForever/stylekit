@@ -19,6 +19,7 @@ export const dashboardLayout: DesignStyle = {
     accent: ["#6366f1", "#10b981", "#f59e0b", "#ef4444"],
   },
   keywords: ["仪表盘", "数据", "面板", "图表", "监控", "后台", "分析", "modern", "contemporary", "sleek"],
+  keywordsEn: ["dashboard", "dashboard layout", "admin panel", "data visualization", "analytics dashboard", "side navigation", "KPI cards", "charts", "monitoring ui", "admin template", "grid layout"],
 
   philosophy: `Dashboard Layout 是一种以数据展示为核心的布局方案，通过侧边导航、多模块数据面板和灵活的网格系统，让用户高效地监控和分析多维数据。
 

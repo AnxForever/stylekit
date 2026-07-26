@@ -19,6 +19,7 @@ export const fPatternLayout: DesignStyle = {
     accent: ["#e63946", "#457b9d", "#2a9d8f", "#e9c46a"],
   },
   keywords: ["F型", "眼动", "内容优先", "扫描", "阅读", "博客", "新闻", "modern", "contemporary", "sleek"],
+  keywordsEn: ["f-pattern layout", "f-shaped scanning", "eye tracking", "reading pattern", "content-heavy layout", "blog layout", "news website", "ux layout patterns", "scannable content", "left-aligned layout"],
 
   philosophy: `F-Pattern Layout 基于尼尔森·诺曼集团的眼动追踪研究，用户浏览网页时视线呈 F 形移动：先水平扫描顶部内容，再向下移动后进行第二次水平扫描（较短），最后垂直向下浏览左侧。
 

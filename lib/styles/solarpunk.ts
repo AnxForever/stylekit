@@ -18,6 +18,7 @@ export const solarpunk: DesignStyle = {
     accent: ["#38bdf8", "#a16207", "#fef3c7", "#b692ff"],
   },
   keywords: ["生态未来", "可持续", "绿色科技", "植物", "太阳能", "有机", "自然", "乐观", "expressive", "bold"],
+  keywordsEn: ["solarpunk", "solarpunk aesthetic", "eco futurism", "sustainable design", "green tech", "organic shapes", "botanical elements", "solar energy", "nature-inspired ui", "optimistic future", "green energy dashboard", "eco friendly website"],
 
   philosophy: `Solarpunk 风格源自对未来的乐观想象，描绘人与自然和谐共存的世界。通过有机曲线、植物元素和温暖色调传递希望与生机。
 

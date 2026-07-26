@@ -20,6 +20,7 @@ export const neoBrutalist: DesignStyle = {
     accent: ["#ff006e", "#ccff00", "#00d9ff", "#ff9500"],
   },
   keywords: ["粗边框", "硬阴影", "无圆角", "高对比", "功能主义", "expressive", "bold", "vibrant", "表现力", "张力"],
+  keywordsEn: ["neo-brutalism", "neubrutalism", "brutalist web design", "bold borders", "hard shadows", "no rounded corners", "high contrast", "raw aesthetics", "brutalist ui", "black outlines", "landing page"],
 
   // 风格变体
   variants: [

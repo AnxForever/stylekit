@@ -18,6 +18,7 @@ export const stripeStyle: DesignStyle = {
     accent: ["#00d4ff", "#7a73ff", "#80e9ff", "#9f9aff"],
   },
   keywords: ["Stripe", "金融", "支付", "SaaS", "开发者", "专业", "科技", "modern", "contemporary", "sleek"],
+  keywordsEn: ["Stripe design", "Stripe style website", "fintech ui", "SaaS landing page", "gradient mesh", "payment page design", "developer tools", "purple gradient", "layered card shadows", "tech startup landing page"],
 
   philosophy: `Stripe Style 是一种源于 Stripe 的精致设计风格，以其标志性的紫色和专业的视觉语言著称。通过渐变网格背景、精致的卡片阴影和流畅的动画，传达信任感和技术实力。
 

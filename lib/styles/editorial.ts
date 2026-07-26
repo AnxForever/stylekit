@@ -20,6 +20,7 @@ export const editorial: DesignStyle = {
     accent: ["#1C1C1C", "#6b7280", "#1c1c1c", "#816d70"],
   },
   keywords: ["杂志排版", "衬线字体", "优雅留白", "网格系统", "极简主义", "作品集", "单色", "minimal", "clean", "simple"],
+  keywordsEn: ["editorial design", "magazine layout", "serif typography", "print-inspired", "grid system", "whitespace", "typography-driven", "fashion magazine", "blog design", "portfolio"],
 
   philosophy: `Editorial（编辑杂志风）设计风格源于传统印刷媒体的排版美学，特别是高端时尚杂志和报纸的设计语言。这种风格强调内容的层次结构、精致的字体搭配和大量留白。
 

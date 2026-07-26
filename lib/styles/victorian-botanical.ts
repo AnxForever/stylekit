@@ -18,6 +18,7 @@ export const victorianBotanical: DesignStyle = {
     accent: ["#8b6914", "#6b3a3a", "#3d5c3d", "#308323"],
   },
   keywords: ["维多利亚", "植物", "插画", "花卉", "自然", "线描", "博物馆", "retro", "vintage", "nostalgic"],
+  keywordsEn: ["Victorian botanical", "botanical illustration", "vintage botanical print", "natural history illustration", "floral line art", "antique floral", "herbarium", "engraving style", "dark green and gold", "Victorian design", "vintage floral website"],
 
   philosophy: `Victorian Botanical（维多利亚植物学）风格源于19世纪英国维多利亚时代的自然历史研究热潮。当时的植物学家和插画师用精细的线描记录世界各地的植物标本，这些插画不仅是科学文献，更是艺术珍品。
 

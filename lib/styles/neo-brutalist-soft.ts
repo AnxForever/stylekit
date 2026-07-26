@@ -18,6 +18,7 @@ export const neoBrutalistSoft: DesignStyle = {
     accent: ["#f472b6", "#a3e635", "#38bdf8", "#fbbf24"],
   },
   keywords: ["柔和野兽派", "温和对比", "浅色阴影", "细边框", "淡彩", "expressive", "bold", "vibrant", "表现力", "张力"],
+  keywordsEn: ["soft neobrutalism", "soft brutalism", "neo-brutalism", "pastel brutalist", "pastel colors", "thin borders", "hard shadows", "muted contrast", "gentle ui", "note-taking app", "minimal blog"],
 
   philosophy: `Neo-Brutalist Soft（柔和野兽派）是原版 Neo-Brutalist 的温和变体。它保留了核心的结构特征——无圆角、硬边缘阴影、hover 位移效果——但通过以下方式软化了视觉冲击：
 

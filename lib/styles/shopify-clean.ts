@@ -18,6 +18,7 @@ export const shopifyClean: DesignStyle = {
     accent: ["#008060", "#1a1a1a", "#e3e3e3", "#ffd700"],
   },
   keywords: ["电商", "独立站", "产品展示", "购物车", "DTC", "Shopify", "modern", "contemporary", "sleek", "现代"],
+  keywordsEn: ["Shopify style", "clean ecommerce design", "online store ui", "DTC website", "product grid layout", "product page design", "minimal storefront", "conversion focused design", "shopping cart ui", "trust badges", "ecommerce landing page"],
 
   philosophy: `Shopify Clean 是一种以转化为导向的电商设计语言。
 

@@ -19,6 +19,7 @@ export const masonryFlow: DesignStyle = {
     accent: ["#e94560", "#16c79a", "#ffd460", "#7579e7"],
   },
   keywords: ["瀑布流", "Pinterest", "不等高", "图片墙", "作品集", "gallery", "modern", "contemporary", "sleek", "现代"],
+  keywordsEn: ["masonry layout", "masonry grid", "Pinterest style", "waterfall layout", "CSS columns", "variable height cards", "image gallery", "photo wall", "portfolio grid", "infinite scroll", "responsive gallery"],
 
   philosophy: `Masonry Flow（瀑布流布局）是一种模仿砖墙砌筑方式的布局，卡片按列排列，高度不一，形成自然流动的视觉效果。
 

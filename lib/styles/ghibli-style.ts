@@ -18,6 +18,7 @@ export const ghibliStyle: DesignStyle = {
     accent: ["#e8a87c", "#85cdca", "#c38d94", "#9ec069"],
   },
   keywords: ["吉卜力", "宫崎骏", "手绘", "治愈", "自然", "梦幻", "动画", "expressive", "bold", "vibrant"],
+  keywordsEn: ["Ghibli style", "Studio Ghibli aesthetic", "Miyazaki", "anime illustration", "hand-drawn texture", "watercolor illustration", "whimsical design", "storybook illustration", "nature-inspired palette", "cozy aesthetic", "dreamy landing page"],
 
   philosophy: `Ghibli Style（吉卜力风格）受日本吉卜力工作室动画影响，以温暖、治愈、富有诗意的视觉语言著称。
 

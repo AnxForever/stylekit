@@ -28,6 +28,7 @@ export const brutalistWeb: DesignStyle = {
     "minimal",
     "content-first",
   ],
+  keywordsEn: ["brutalist web design", "web brutalism", "raw html", "90s web", "unstyled html", "system fonts", "blue links", "content-first", "lo-fi", "plain text website"],
 
   philosophy: `Brutalist Web embraces the raw aesthetics of the early 1990s internet. Content is king; decoration is irrelevant.
 

@@ -18,6 +18,7 @@ export const outrun: DesignStyle = {
     accent: ["#00d4ff", "#0a0a0a", "#ff6b35", "#9f9aff"],
   },
   keywords: ["Outrun", "复古未来", "80年代", "日落", "跑车", "棕榈树", "霓虹", "retro", "vintage", "nostalgic"],
+  keywordsEn: ["outrun", "synthwave", "retrowave", "80s retro", "neon sunset", "grid horizon", "palm trees", "retro futurism", "vaporwave", "Miami Vice", "chrome text", "arcade"],
 
   philosophy: `Outrun 是一种根植于80年代流行文化的视觉美学，命名自同名电子游戏。它将夕阳、跑车、棕榈树和霓虹灯光融为一体，创造出一种永恒的复古未来主义视觉语言。
 

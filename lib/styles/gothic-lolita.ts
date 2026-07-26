@@ -18,6 +18,7 @@ export const gothicLolita: DesignStyle = {
     accent: ["#e5e5e5", "#1a1a1a", "#6b2d5b", "#e5e5e5"],
   },
   keywords: ["哥特", "萝莉塔", "维多利亚", "蕾丝", "暗黑优雅", "玫瑰", "十字架", "expressive", "bold", "vibrant"],
+  keywordsEn: ["gothic lolita", "lolita fashion", "Victorian lace", "Harajuku fashion", "dark elegance", "ornate frame", "rose motif", "vintage doll aesthetic", "dark feminine design", "gothic romance"],
 
   philosophy: `Gothic Lolita（哥特萝莉）是一种融合维多利亚时代与哥特美学的视觉风格，起源于日本街头时尚。
 

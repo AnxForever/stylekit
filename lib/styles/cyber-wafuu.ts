@@ -18,6 +18,7 @@ export const cyberWafuu: DesignStyle = {
     accent: ["#c41e3a", "#c9a227", "#38bdf8", "#7c3e00"],
   },
   keywords: ["赛博和风", "数字和风", "青海波", "金继ぎ", "障子", "鸟居", "麻叶纹", "电路", "expressive", "bold"],
+  keywordsEn: ["cyber wafuu", "japanese cyberpunk", "wafu design", "seigaiha pattern", "kintsugi", "torii gate", "asanoha pattern", "shoji grid", "neo-japanese", "neon Tokyo", "japanese web design"],
 
   philosophy: `Cyber Wafuu reimagines traditional Japanese visual culture through digital disruption, creating a sophisticated fusion where heritage patterns are "hacked" by technology.
 

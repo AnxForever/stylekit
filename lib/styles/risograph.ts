@@ -18,6 +18,7 @@ export const risograph: DesignStyle = {
     accent: ["#ff8a00", "#22c55e", "#48c200", "#a38bff"],
   },
   keywords: ["Risograph", "印刷", "套印", "半调", "网点", "错位", "手工", "expressive", "bold", "vibrant"],
+  keywordsEn: ["risograph", "riso print", "riso aesthetic", "overprint effect", "halftone texture", "misregistration", "limited color palette", "zine design", "fluorescent ink", "grainy texture", "screen print style"],
 
   philosophy: `Risograph 是一种源于日本的快速印刷技术，因其独特的视觉效果而被艺术家和设计师广泛采用。
 

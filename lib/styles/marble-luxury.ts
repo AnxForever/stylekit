@@ -18,6 +18,7 @@ export const marbleLuxury: DesignStyle = {
     accent: ["#c9a96e", "#8a7968", "#e8e0d6", "#85bd73"],
   },
   keywords: ["大理石", "奢华", "金色", "高端", "纹理", "精致", "品牌", "modern", "contemporary", "sleek"],
+  keywordsEn: ["marble luxury", "marble texture", "gold accents", "luxury website design", "high-end branding", "elegant serif", "hotel website", "real estate website", "premium aesthetic", "marble background"],
 
   philosophy: `大理石奢华（Marble Luxury）设计风格源自高端建筑和室内设计的材质美学。大理石自古罗马时代起便是权力、财富和永恒之美的象征，其天然纹理中的灰色脉络与温暖白色基底形成了独一无二的视觉韵律。
 

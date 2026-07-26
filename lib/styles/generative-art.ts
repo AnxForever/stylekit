@@ -30,6 +30,7 @@ export const generativeArt: DesignStyle = {
     "算法",
     "程序化",
   ],
+  keywordsEn: ["generative art", "creative coding", "algorithmic design", "procedural graphics", "perlin noise", "particle systems", "fractals", "p5.js", "code art", "data visualization", "parametric design"],
 
   philosophy: `Generative Art 风格源自创意编码与算法美学，每一个视觉元素都由数学函数和程序化规则生成。
 

@@ -18,6 +18,7 @@ export const vaporwave: DesignStyle = {
     accent: ["#05ffa1", "#b967ff", "#fffb96", "#47d9ff"],
   },
   keywords: ["蒸汽波", "复古未来", "霓虹", "80年代", "故障艺术", "赛博", "合成波", "赛博朋克", "vaporwave", "synthwave", "cyberpunk"],
+  keywordsEn: ["vaporwave", "synthwave", "retrowave", "neon retro", "80s aesthetic", "cyberpunk", "neon gradient", "glitch art", "retro futurism", "outrun", "neon grid", "vaporwave website"],
 
   // 风格变体
   variants: [

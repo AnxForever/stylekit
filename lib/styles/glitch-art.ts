@@ -18,6 +18,7 @@ export const glitchArt: DesignStyle = {
     accent: ["#ff00ff", "#ffff00", "#ffffff", "#ff0506"],
   },
   keywords: ["故障", "像素", "RGB分离", "扫描线", "数字损坏", "位移", "VHS", "通道分离", "expressive", "bold"],
+  keywordsEn: ["glitch art", "glitch effect", "RGB split", "chromatic aberration", "scanlines", "VHS aesthetic", "datamosh", "screen tear", "cyberpunk", "digital distortion", "glitch text animation"],
 
   philosophy: `Glitch Art 是一种拥抱数字错误与技术故障的艺术形式，将系统崩溃和数据损坏转化为视觉表达。完美是数字世界的幻觉——我们在断裂的代码、丢失的帧和剧烈失同步的像素中发现美。
 

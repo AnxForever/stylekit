@@ -18,6 +18,7 @@ export const immersivePhoto: DesignStyle = {
     accent: ["#E8B04B", "#1A1C22", "#B8BCC4"],
   },
   keywords: ["immersive", "photography", "full-bleed", "ken burns", "scrim", "hero image", "沉浸", "摄影", "全幅", "大图", "遮罩"],
+  keywordsEn: ["immersive photography", "full-bleed images", "fullscreen hero", "Ken Burns effect", "text over image", "scrim overlay", "photo essay", "photography website", "blur-up placeholder", "visual storytelling"],
 
   philosophy: `沉浸摄影的信条：照片不是配图，是主角。当一张全幅大图铺满视口，界面就退居其后——文字只是压在光影上的说明，UI 是为了不挡住照片而存在。
 

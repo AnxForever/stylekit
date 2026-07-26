@@ -18,6 +18,7 @@ export const notionStyle: DesignStyle = {
     accent: ["#2eaadc", "#eb5757", "#0f7b6c", "#a083ff"],
   },
   keywords: ["Notion", "文档", "极简", "清爽", "工具", "协作", "笔记", "minimal", "clean", "simple"],
+  keywordsEn: ["Notion style", "Notion ui", "document tool", "minimal ui", "clean design", "note-taking app", "productivity tool", "workspace ui", "sidebar navigation", "kanban board", "subtle borders", "typography hierarchy"],
 
   philosophy: `Notion Style 是一种源于 Notion 应用的极简设计风格，强调内容的可读性和功能的直观性。通过微妙的视觉元素和清晰的层级结构，让用户专注于内容本身。
 

@@ -18,6 +18,7 @@ export const frutigerAero: DesignStyle = {
     accent: ["#ffffff", "#e0f2fe", "#34d399", "#7dd3fc"],
   },
   keywords: ["aero glass", "translucent", "sky blue", "glossy", "Vista", "Y2K", "nature", "bubbles", "retro", "vintage"],
+  keywordsEn: ["Frutiger Aero", "aero glass", "Windows Vista aesthetic", "glossy ui", "sky blue gradient", "translucent glass", "frosted glass", "Y2K design", "glossy buttons", "nature tech", "bubbles"],
 
   philosophy: `Frutiger Aero draws inspiration from the Windows Vista/7 Aero glass aesthetic -- sky-blue gradients, frosted glass panels, water droplets, and a feeling of floating in clean air.
 

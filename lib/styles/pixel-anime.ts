@@ -18,6 +18,7 @@ export const pixelAnime: DesignStyle = {
     accent: ["#ff6b6b", "#ffd93d", "#50c878", "#a98d16"],
   },
   keywords: ["像素动漫", "JRPG", "8-bit", "RPG对话框", "像素", "NES色板", "retro", "vintage", "nostalgic", "复古"],
+  keywordsEn: ["pixel anime", "JRPG ui", "retro game ui", "rpg dialogue box", "8-bit interface", "16-bit menu", "NES color palette", "pixel borders", "game hud design", "retro rpg aesthetic"],
 
   philosophy: `Pixel Anime merges classic JRPG game UI with pixel-art anime aesthetics. Every element feels like it belongs in a 16-bit RPG menu screen.
 

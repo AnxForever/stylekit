@@ -18,6 +18,7 @@ export const indianFestive: DesignStyle = {
     accent: ["#ff9f1c", "#7b2d8e", "#2a9d8f", "#d4af37"],
   },
   keywords: ["印度", "排灯节", "色彩节", "曼荼罗", "金色", "宝石色", "节庆", "expressive", "bold", "vibrant"],
+  keywordsEn: ["Indian festive design", "Diwali", "Holi", "mandala pattern", "jewel tones", "gold ornamentation", "South Asian design", "rangoli", "festival website", "wedding website", "vibrant colors"],
 
   philosophy: `Indian Festive（印度节庆）汲取排灯节（Diwali）和色彩节（Holi）的绚烂视觉语言，将南亚次大陆数千年的色彩传统转化为现代数字界面。
 

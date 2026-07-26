@@ -18,6 +18,7 @@ export const neoBrutalistPlayful: DesignStyle = {
     accent: ["#ff6b6b", "#4ecdc4", "#ffe66d", "#95e1d3", "#f38181"],
   },
   keywords: ["俏皮野兽派", "多彩", "倾斜元素", "图标", "年轻化", "expressive", "bold", "vibrant", "表现力", "张力"],
+  keywordsEn: ["playful neobrutalism", "neo-brutalism", "colorful brutalist", "rotated elements", "tilted cards", "hard shadows", "bold borders", "sticker decorations", "playful ui", "youthful branding", "fun landing page"],
 
   philosophy: `Neo-Brutalist Playful（俏皮野兽派）是原版 Neo-Brutalist 的活泼变体。在保持硬边缘、无圆角的结构基础上，通过以下方式增加趣味性：
 

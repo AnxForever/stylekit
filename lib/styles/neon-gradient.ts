@@ -18,6 +18,7 @@ export const neonGradient: DesignStyle = {
     accent: ["#f472b6", "#22d3ee", "#a3e635", "#fbbf24", "#fb7185"],
   },
   keywords: ["霓虹", "渐变", "深色", "发光", "科技", "SaaS", "年轻化", "expressive", "bold", "vibrant"],
+  keywordsEn: ["neon gradient", "gradient ui", "neon glow", "dark background", "gradient cards", "glowing borders", "vibrant colors", "saas landing page", "tech startup", "futuristic ui"],
 
   philosophy: `Neon Gradient（霓虹渐变）是一种大胆、现代的设计风格，在深色背景上使用鲜艳的渐变色卡片和粗彩色边框，营造出未来感和科技感。
 

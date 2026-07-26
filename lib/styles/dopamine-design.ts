@@ -16,6 +16,7 @@ export const dopamineDesign: DesignStyle = {
     accent: ["#ffbe0b", "#3a86ff", "#06d6a0", "#fb5607"],
   },
   keywords: ["多巴胺", "高饱和", "霓虹", "快乐", "大胆", "能量", "expressive", "bold", "vibrant", "表现力"],
+  keywordsEn: ["dopamine design", "vibrant colors", "high saturation", "neon gradient", "bold typography", "colorful ui", "playful design", "maximalism", "gen z aesthetic", "landing page"],
 
   philosophy: `Dopamine Design 是 2025-2026 年最火热的设计趋势，核心理念是通过高饱和度色彩、大胆排版和充满能量的视觉元素直接刺激用户的愉悦感。
 

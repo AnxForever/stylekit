@@ -18,6 +18,7 @@ export const cyberChinese: DesignStyle = {
     accent: ["#00d4ff", "#a020f0", "#0a0a0a", "#9f9aff"],
   },
   keywords: ["赛博朋克", "中华风", "霓虹", "龙凤", "印章", "灯笼", "未来东方", "expressive", "bold", "vibrant"],
+  keywordsEn: ["cyber chinese", "chinese cyberpunk", "guochao", "neo-chinese style", "oriental futurism", "neon lantern", "vermilion and gold", "dragon phoenix motif", "east asian web design", "futuristic oriental"],
 
   philosophy: `Cyber Chinese（赛博中华）是传统中国美学与赛博朋克科幻风格的融合，在暗色基底上用霓虹光效重新演绎东方经典元素。
 

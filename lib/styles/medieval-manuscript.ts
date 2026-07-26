@@ -18,6 +18,7 @@ export const medievalManuscript: DesignStyle = {
     accent: ["#c9a74e", "#2d4a2d", "#3d2b1f", "#6bc15e"],
   },
   keywords: ["中世纪", "手抄本", "泥金", "花体", "羊皮纸", "哥特字体", "装饰", "retro", "vintage", "nostalgic"],
+  keywordsEn: ["medieval manuscript", "illuminated manuscript", "blackletter", "gothic typography", "drop cap", "parchment texture", "gold leaf", "ornate borders", "calligraphy", "vellum", "medieval web design"],
 
   philosophy: `中世纪泥金手抄本（Illuminated Manuscript）是西方书籍艺术的巅峰形态，诞生于修道院的缮写室中。每一页都是信仰与美学的结合——金箔装饰的首字母、精细的藤蔓纹样、深红与深绿的矿物颜料，以及羊皮纸特有的温暖质感。
 

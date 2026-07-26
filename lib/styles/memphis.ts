@@ -18,6 +18,7 @@ export const memphis: DesignStyle = {
     accent: ["#48dbfb", "#ff9ff3", "#1dd1a1", "#5f27cd"],
   },
   keywords: ["孟菲斯", "几何", "撞色", "80年代", "波普", "图案", "大胆", "retro", "vintage", "nostalgic"],
+  keywordsEn: ["Memphis design", "Memphis Group", "80s design", "postmodern design", "geometric shapes", "squiggle patterns", "clashing colors", "playful ui", "Ettore Sottsass", "retro pop", "bold patterns"],
 
   philosophy: `Memphis（孟菲斯）是1980年代由意大利设计师 Ettore Sottsass 创立的设计运动，以打破传统、拥抱混乱和趣味性著称。
 

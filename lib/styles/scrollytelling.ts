@@ -18,6 +18,7 @@ export const scrollytelling: DesignStyle = {
     accent: ["#2F6FED", "#E8503A", "#1C2530"],
   },
   keywords: ["scrollytelling", "scroll", "narrative", "data story", "sticky", "step", "reveal", "滚动叙事", "数据故事", "步进", "揭示"],
+  keywordsEn: ["scrollytelling", "scroll-driven storytelling", "scroll animation", "sticky scroll", "data journalism", "narrative visualization", "scroll-triggered reveal", "long-form feature", "interactive story", "reading progress bar", "stepper layout"],
 
   philosophy: `滚动叙事的信条：滚动不是浏览，是播放。当读者向下滚动，他们不是在翻页，而是在推动一条时间线——每个滚动位置对应故事的一帧，sticky 画布是舞台，文字步骤是旁白。
 

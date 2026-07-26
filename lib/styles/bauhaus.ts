@@ -20,6 +20,7 @@ export const bauhaus: DesignStyle = {
     accent: ["#ff0000", "#ffcc00", "#0000ff", "#6c3b00"],
   },
   keywords: ["包豪斯", "功能主义", "几何", "原色", "现代主义", "极简", "modern", "contemporary", "sleek", "现代"],
+  keywordsEn: ["Bauhaus", "Bauhaus design", "geometric shapes", "primary colors", "functionalism", "form follows function", "modernist design", "red yellow blue", "geometric poster", "minimal geometric", "German design"],
 
   philosophy: `Bauhaus（包豪斯）是1919年在德国创立的设计学派，其核心理念"形式追随功能"深刻影响了现代设计。
 

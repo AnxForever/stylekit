@@ -18,6 +18,7 @@ export const swissPoster: DesignStyle = {
     accent: ["#ff0000", "#0057b8", "#ffcc00", "#6c3b00"],
   },
   keywords: ["海报", "大字体", "网格", "实验排版", "国际主义", "12列网格", "色块", "modern", "contemporary", "sleek"],
+  keywordsEn: ["Swiss poster", "Swiss poster design", "oversized typography", "big type", "experimental typography", "typographic poster", "International Typographic Style", "grid layout", "color blocks", "bold typography", "poster layout"],
 
   philosophy: `Swiss Poster 风格源于瑞士国际主义设计运动的海报传统，追求极致的排版表现力。
 

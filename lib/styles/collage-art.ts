@@ -27,6 +27,7 @@ export const collageArt: DesignStyle = {
     "混搭",
     "washi",
   "expressive", "bold"],
+  keywordsEn: ["collage art", "paper collage", "paper cutout", "torn paper", "mixed media", "scrapbook", "magazine cutout", "washi tape", "zine aesthetic", "Dadaism", "layered textures"],
 
   philosophy: `拼贴艺术风格源于达达主义和波普艺术的混合媒材传统，强调不同材料、字体和图像的碰撞与融合。
 

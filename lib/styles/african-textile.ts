@@ -18,6 +18,7 @@ export const africanTextile: DesignStyle = {
     accent: ["#f0c75e", "#1a5632", "#e8d5b5", "#80e671"],
   },
   keywords: ["非洲", "Kente", "编织", "扎染", "纺织", "大地", "手工", "expressive", "bold", "vibrant"],
+  keywordsEn: ["African textile design", "African pattern", "Kente cloth", "Adire tie-dye", "tribal pattern", "geometric weave", "woven texture", "earth tones", "terracotta", "ethnic design", "Afrocentric design"],
 
   philosophy: `African Textile（非洲纺织）以西非的Kente编织布和Adire靛蓝扎染为灵感源泉，将数百年的纺织工艺传统转化为充满生命力的数字设计语言。
 

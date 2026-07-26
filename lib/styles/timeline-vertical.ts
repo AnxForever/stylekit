@@ -19,6 +19,7 @@ export const timelineVertical: DesignStyle = {
     accent: ["#3b82f6", "#10b981", "#f59e0b", "#ef4444"],
   },
   keywords: ["时间线", "历程", "里程碑", "流程", "步骤", "进度", "minimal", "clean", "simple", "极简"],
+  keywordsEn: ["vertical timeline", "timeline layout", "timeline ui", "milestones", "roadmap design", "process steps", "company history page", "career timeline", "changelog design", "step by step"],
 
   philosophy: `Vertical Timeline（垂直时间线布局）是一种用于展示时间序列或流程步骤的布局方式，通过视觉连接线引导阅读。
 

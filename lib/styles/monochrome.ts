@@ -18,6 +18,7 @@ export const monochrome: DesignStyle = {
     accent: ["#666666", "#999999", "#cccccc", "#666666"],
   },
   keywords: ["单色", "黑白", "灰阶", "极简", "无色彩", "高级感", "摄影", "建筑", "minimal", "clean"],
+  keywordsEn: ["monochrome", "black and white design", "grayscale", "monochromatic ui", "high contrast", "negative space", "typography driven design", "achromatic design", "photography portfolio", "architecture website", "premium branding"],
 
   philosophy: `单色极简（Monochrome）是对色彩的彻底放弃，仅凭黑、白、灰三者的精确调度构建完整的视觉层次。
 

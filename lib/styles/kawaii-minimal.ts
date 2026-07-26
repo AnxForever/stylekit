@@ -18,6 +18,7 @@ export const kawaiiMinimal: DesignStyle = {
     accent: ["#A78BFA", "#67E8F9", "#FDE68A", "#f47abd"],
   },
   keywords: ["可爱", "极简", "粉彩", "圆润", "温柔", "日系", "卡哇伊", "minimal", "clean", "simple"],
+  keywordsEn: ["kawaii", "cute design", "pastel colors", "rounded corners", "soft ui", "cute minimalism", "children's app", "lifestyle app", "micro-interactions", "friendly interface"],
 
   philosophy: `Kawaii Minimal 风格融合日本可爱文化的温暖感与北欧极简主义的克制感。
 

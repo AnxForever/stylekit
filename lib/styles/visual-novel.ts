@@ -18,6 +18,7 @@ export const visualNovel: DesignStyle = {
     accent: ["#6366f1", "#ec4899", "#10b981", "#d948bb"],
   },
   keywords: ["视觉小说", "ADV对话框", "铭牌", "立绘", "选项", "游戏UI", "交互故事", "装饰边角", "modern", "contemporary"],
+  keywordsEn: ["visual novel", "visual novel UI", "dialogue box", "ADV game", "character sprite", "dating sim interface", "choice buttons", "interactive fiction", "game UI design", "anime game UI", "nameplate badge"],
 
   philosophy: `Visual Novel 风格源于日本ADV（Adventure）视觉小说游戏的UI设计，强调叙事沉浸感和角色互动。
 

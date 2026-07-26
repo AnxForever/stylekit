@@ -18,6 +18,7 @@ export const shoujoManga: DesignStyle = {
     accent: ["#c4b5fd", "#fde68a", "#fecdd3", "#f8a9d7"],
   },
   keywords: ["少女漫画", "樱花", "网点", "花框", "缎带", "闪光", "蕾丝", "爱心", "浪漫"],
+  keywordsEn: ["shoujo manga", "shojo aesthetic", "manga style ui", "screentone pattern", "sakura pink", "kawaii design", "romantic anime", "sparkle effects", "ribbon banner", "flower frame", "pastel pink palette", "girly aesthetic"],
 
   philosophy: `Shoujo Manga 风格源于日本少女漫画的经典视觉语言，以浪漫、梦幻、柔美为核心。
 

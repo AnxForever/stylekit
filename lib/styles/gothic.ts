@@ -18,6 +18,7 @@ export const gothic: DesignStyle = {
     accent: ["#c9a227", "#0a0a0a", "#4a2d6e", "#4bc542"],
   },
   keywords: ["哥特", "中世纪", "大教堂", "尖拱", "玫瑰窗", "黑暗", "神秘", "retro", "vintage", "nostalgic"],
+  keywordsEn: ["gothic design", "gothic aesthetic", "medieval", "blackletter font", "gothic architecture", "illuminated manuscript", "ornamental border", "rose window", "dark moody palette", "dark romanticism"],
 
   philosophy: `Gothic（哥特式）设计灵感源自中世纪晚期的大教堂建筑和手抄本装饰艺术，强调垂直线条、尖拱结构和精致的装饰纹样。
 

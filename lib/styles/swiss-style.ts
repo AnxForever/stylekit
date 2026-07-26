@@ -20,6 +20,7 @@ export const swissStyle: DesignStyle = {
     accent: ["#ff0000", "#0057b8", "#ffcc00", "#6c3b00"],
   },
   keywords: ["瑞士", "国际主义", "网格", "Helvetica", "理性", "排版", "极简", "modern", "contemporary", "sleek"],
+  keywordsEn: ["Swiss style", "Swiss design", "International Typographic Style", "Helvetica", "grid system", "sans-serif typography", "rational design", "typographic hierarchy", "modernist design", "minimalist layout"],
 
   philosophy: `Swiss International Style（瑞士国际风格）是20世纪50年代在瑞士发展起来的设计运动，强调清晰、客观、理性的视觉传达。
 

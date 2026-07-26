@@ -18,6 +18,7 @@ export const inkWash: DesignStyle = {
     accent: ["#6b7b6e", "#a89279", "#c4b9a8", "#697a7c"],
   },
   keywords: ["水墨", "国画", "留白", "意境", "东方", "书法", "文化", "气韵", "minimal", "clean"],
+  keywordsEn: ["ink wash painting", "Chinese ink painting", "sumi-e", "calligraphy", "brush strokes", "negative space", "zen design", "East Asian aesthetics", "monochrome", "tea ceremony website"],
 
   philosophy: `水墨画风（Ink Wash）源自中国传统绘画的千年美学体系，以"墨分五色"诠释万象。
 

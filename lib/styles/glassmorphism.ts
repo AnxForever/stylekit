@@ -20,6 +20,7 @@ export const glassmorphism: DesignStyle = {
     accent: ["#0B1322", "#33517A", "#7C9CC4", "#E4B863"],
   },
   keywords: ["glassmorphism", "frosted", "blur", "refraction", "translucent", "nocturne", "modern", "premium", "玻璃拟态", "夜景", "毛玻璃"],
+  keywordsEn: ["glassmorphism", "frosted glass", "backdrop blur", "backdrop-filter css", "translucent ui", "glass card", "liquid glass", "dark glass theme", "film grain", "glassmorphic dashboard"],
 
   philosophy: `玻璃拟态的本质是光学，不是配色。真实的玻璃没有颜色——它只是借用、弯曲、柔化背后的光。这也是 Apple 在 Liquid Glass 材质规范里坚持的原则：玻璃从内容层取色，自己保持中性。
 

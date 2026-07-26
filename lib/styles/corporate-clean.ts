@@ -18,6 +18,7 @@ export const corporateClean: DesignStyle = {
     accent: ["#3b82f6", "#64748b", "#10b981", "#c559f0"],
   },
   keywords: ["企业", "专业", "简洁", "B2B", "SaaS", "后台", "Dashboard", "minimal", "clean", "simple"],
+  keywordsEn: ["corporate clean", "corporate design", "enterprise ui", "B2B SaaS", "professional website", "clean ui", "admin dashboard", "business website", "SaaS landing page", "trustworthy design"],
 
   philosophy: `Corporate Clean 设计风格源于现代企业软件的设计语言，强调专业性、可信度和高效的信息传达。
 

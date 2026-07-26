@@ -18,6 +18,7 @@ export const neumorphism: DesignStyle = {
     accent: ["#6d5dfc", "#ff6b6b", "#4ecdc4", "#ffe66d"],
   },
   keywords: ["立体感", "双重阴影", "柔和", "浅色系", "内凹外凸", "modern", "contemporary", "sleek", "现代", "简洁"],
+  keywordsEn: ["neumorphism", "neomorphism", "soft ui", "soft shadows", "dual shadows", "embossed", "inset shadow", "extruded", "skeuomorphism", "light theme", "3d buttons", "smart home dashboard"],
 
   philosophy: `Neumorphism（新拟物派）是一种介于扁平设计和拟物设计之间的风格，通过柔和的阴影创造出元素从背景中"挤压"或"凹陷"的视觉效果。
 

@@ -29,6 +29,7 @@ export const holographic: DesignStyle = {
     "虹彩",
     "棱镜",
   ],
+  keywordsEn: ["holographic", "iridescent", "holo foil", "rainbow gradient", "prismatic effect", "color spectrum", "conic gradient", "pearlescent", "color-shifting", "Y2K aesthetic", "shimmer effect"],
 
   philosophy: `Holographic（全息渐变）模拟全息箔片的棱镜之美——彩虹光谱渐变随视角变化而流转，营造超凡脱俗的虹彩体验。
 

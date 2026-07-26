@@ -18,6 +18,7 @@ export const midCenturyModern: DesignStyle = {
     accent: ["#2a6e5e", "#c4a35a", "#3d3d3d", "#44628c"],
   },
   keywords: ["中世纪", "原子时代", "有机曲线", "星芒", "复古现代", "retro", "vintage", "nostalgic", "复古", "怀旧"],
+  keywordsEn: ["mid-century modern", "atomic age design", "1950s retro", "starburst pattern", "organic curves", "Eames", "Googie", "space age design", "boomerang shapes", "vintage modernism", "retro branding"],
 
   philosophy: `Mid-Century Modern（中世纪现代主义）是20世纪40-60年代盛行的设计运动，诞生于战后乐观主义与太空时代的交汇点。它追求形式与功能的完美统一，相信好的设计应该服务于日常生活。
 

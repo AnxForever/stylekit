@@ -19,6 +19,7 @@ export const heroFullscreen: DesignStyle = {
     accent: ["#ff6b6b", "#4ecdc4", "#ffe66d", "#6c5ce7"],
   },
   keywords: ["全屏", "英雄区", "大图", "视频", "品牌", "震撼", "expressive", "bold", "vibrant", "表现力"],
+  keywordsEn: ["fullscreen hero", "hero section", "hero image", "video background", "fullscreen background image", "100vh", "above the fold", "immersive landing page", "brand showcase", "product launch page"],
 
   philosophy: `Fullscreen Hero（全屏英雄区布局）是一种以视觉冲击力为核心的布局方式，用全屏图片或视频创造沉浸式第一印象。
 

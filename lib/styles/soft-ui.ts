@@ -18,6 +18,7 @@ export const softUI: DesignStyle = {
     accent: ["#ec4899", "#10b981", "#f59e0b", "#d15d1a"],
   },
   keywords: ["柔和", "圆润", "友好", "消费类", "App", "社交", "生活服务", "modern", "contemporary", "sleek"],
+  keywordsEn: ["soft ui", "soft design", "rounded corners", "friendly interface", "soft shadows", "pastel colors", "consumer app design", "approachable ui", "mobile app landing page", "gentle gradients", "rounded buttons"],
 
   philosophy: `Soft UI 设计风格强调友好、亲和、舒适的视觉体验，让用户感到放松和愉悦。
 
