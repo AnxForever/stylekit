@@ -2,12 +2,12 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
-import { PromptTemplatePreviewSection } from "@/components/seo/prompt-template-preview-section";
 import { getTopicBySlug } from "@/lib/prompts";
 import { getAllStylesMeta } from "@/lib/styles/meta";
 import { serializeJsonLd } from "@/lib/security/json-ld";
 import { darkModeTemplates } from "@/lib/seo/prompt-template-previews";
-import { PromptTopicContent } from "@/app/prompts/[topic]/_content";
+import { darkMode } from "@/lib/styles/dark-mode";
+import { DarkModeFlagshipContent } from "@/app/dark-mode-ui-prompts/_content";
 import { getRequestLocaleContext } from "@/lib/i18n/request";
 import { generatePromptPageSchemas } from "@/lib/seo/prompt-schema";
 
@@ -52,7 +52,7 @@ export default async function DarkModeUiPromptsPage() {
   const allStyles = getAllStylesMeta();
   const relatedStyles = topic.relatedStyleSlugs
     .map((slug) => allStyles.find((style) => style.slug === slug))
-    .filter(Boolean);
+    .filter((style): style is NonNullable<typeof style> => Boolean(style));
 
   const { faq: faqSchema, breadcrumb: breadcrumbSchema } =
     generatePromptPageSchemas(topic, locale, "/dark-mode-ui-prompts");
@@ -69,17 +69,13 @@ export default async function DarkModeUiPromptsPage() {
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: serializeJsonLd(breadcrumbSchema) }}
         />
-        <PromptTopicContent
+        <DarkModeFlagshipContent
           topic={topic}
           relatedStyles={relatedStyles}
-          topicIndexHref="/ui-prompts"
-        >
-          <PromptTemplatePreviewSection
-            title="Example previews and starter templates"
-            description="Use these templates to reverse-engineer dark UI hierarchy: base surfaces, elevated panels, borders, readable contrast, and accent rhythm."
-            templates={darkModeTemplates}
-          />
-        </PromptTopicContent>
+          doList={locale === "zh" ? darkMode.doList : (darkMode.doListEn ?? darkMode.doList)}
+          dontList={locale === "zh" ? darkMode.dontList : (darkMode.dontListEn ?? darkMode.dontList)}
+          templates={darkModeTemplates}
+        />
       </main>
       <Footer />
     </div>
