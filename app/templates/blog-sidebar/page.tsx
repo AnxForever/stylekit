@@ -9,7 +9,6 @@ import {
   Clock,
   Search,
   Tag,
-  User,
   X,
   Loader2,
   CheckCircle,
@@ -153,6 +152,174 @@ const allTags = [
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 type SubscribeState = "idle" | "loading" | "success";
+
+const AVATAR_COLORS = [
+  "bg-emerald-600",
+  "bg-cyan-600",
+  "bg-teal-600",
+  "bg-slate-600",
+  "bg-sky-700",
+  "bg-emerald-800",
+];
+
+function authorInitials(name: string): string {
+  return name
+    .split(" ")
+    .map((part) => part.charAt(0))
+    .join("")
+    .slice(0, 2)
+    .toUpperCase();
+}
+
+function authorColor(name: string): string {
+  let hash = 0;
+  for (let i = 0; i < name.length; i++) {
+    hash = (hash * 31 + name.charCodeAt(i)) % 997;
+  }
+  return AVATAR_COLORS[hash % AVATAR_COLORS.length] ?? "bg-emerald-600";
+}
+
+function AuthorAvatar({ name, size = "sm" }: { name: string; size?: "sm" | "md" }) {
+  return (
+    <span
+      aria-hidden="true"
+      className={`${authorColor(name)} ${
+        size === "md" ? "w-7 h-7 text-[11px]" : "w-5 h-5 text-[9px]"
+      } rounded-full inline-flex items-center justify-center font-semibold text-white tracking-wide shrink-0 select-none`}
+    >
+      {authorInitials(name)}
+    </span>
+  );
+}
+
+/* Pure-CSS editorial art per post topic. Keyed by post title. */
+function PostArt({ title, className = "" }: { title: string; className?: string }) {
+  if (title === "Building Design Systems at Scale") {
+    // Token swatch grid with a type specimen
+    return (
+      <div className={`relative overflow-hidden bg-emerald-950 ${className}`}>
+        <div className="absolute inset-0 grid grid-cols-6 grid-rows-4 gap-px p-6 opacity-90">
+          {Array.from({ length: 24 }).map((_, i) => (
+            <div
+              key={i}
+              className={
+                i % 7 === 0
+                  ? "bg-emerald-400/70 rounded-sm"
+                  : i % 5 === 0
+                    ? "bg-cyan-400/40 rounded-sm"
+                    : "bg-white/5 rounded-sm"
+              }
+            />
+          ))}
+        </div>
+        <span className="absolute bottom-3 left-5 text-emerald-100 font-black text-5xl leading-none select-none">
+          Aa
+        </span>
+        <span className="absolute top-3 right-5 text-emerald-300/60 text-[10px] font-mono tracking-widest select-none">
+          TOKENS / 24
+        </span>
+      </div>
+    );
+  }
+  if (title === "The Future of CSS") {
+    // Nested container-query outlines
+    return (
+      <div className={`relative overflow-hidden bg-cyan-950 ${className}`}>
+        <div className="absolute inset-5 border border-cyan-400/50 rounded-lg" />
+        <div className="absolute inset-x-10 top-9 bottom-5 border border-cyan-300/35 rounded-lg" />
+        <div className="absolute right-14 top-1/2 -translate-y-1/2 w-16 h-16 border border-emerald-300/60 rounded-full" />
+        <span className="absolute bottom-4 left-8 text-cyan-200 font-mono text-sm select-none">
+          @container
+        </span>
+        <span className="absolute top-4 left-8 text-cyan-400/50 font-mono text-[10px] select-none">
+          @layer base, components;
+        </span>
+      </div>
+    );
+  }
+  if (title === "React Server Components Deep Dive") {
+    // Server shell with client islands
+    return (
+      <div className={`relative overflow-hidden bg-slate-900 ${className}`}>
+        <div className="absolute inset-5 rounded-lg border border-slate-600" />
+        <div className="absolute left-9 top-9 w-1/3 h-2 rounded-full bg-slate-600/70" />
+        <div className="absolute left-9 top-14 w-1/2 h-2 rounded-full bg-slate-700/70" />
+        <div className="absolute right-10 top-10 w-8 h-8 rounded-full bg-cyan-400/80" />
+        <div className="absolute right-16 bottom-8 w-5 h-5 rounded-full bg-emerald-400/80" />
+        <div className="absolute left-10 bottom-8 w-4 h-4 rounded-full bg-cyan-300/60" />
+        <span className="absolute bottom-3 left-1/2 -translate-x-1/2 text-slate-400 font-mono text-[10px] select-none">
+          &quot;use client&quot; islands
+        </span>
+      </div>
+    );
+  }
+  if (title === "Typography in Web Design") {
+    // Cropped serif specimen with baseline rules
+    return (
+      <div className={`relative overflow-hidden bg-stone-100 ${className}`}>
+        <div className="absolute inset-x-6 top-1/4 border-t border-stone-300" />
+        <div className="absolute inset-x-6 top-2/4 border-t border-stone-300" />
+        <div className="absolute inset-x-6 top-3/4 border-t border-emerald-400/60" />
+        <span className="absolute -bottom-6 left-4 font-serif italic text-stone-800 text-8xl leading-none select-none">
+          Rg
+        </span>
+        <span className="absolute top-3 right-5 text-stone-400 font-mono text-[10px] tracking-widest select-none">
+          1.5 LEADING
+        </span>
+      </div>
+    );
+  }
+  if (title === "Core Web Vitals and Performance Optimization") {
+    // Mini bar chart with threshold line
+    return (
+      <div className={`relative overflow-hidden bg-gray-900 ${className}`}>
+        <div className="absolute inset-x-8 bottom-10 top-8 flex items-end gap-2">
+          {[38, 62, 45, 80, 55, 70, 30, 90, 48].map((h, i) => (
+            <div
+              key={i}
+              style={{ height: `${h}%` }}
+              className={`flex-1 rounded-t-sm ${
+                h > 65 ? "bg-emerald-400" : "bg-gray-600"
+              }`}
+            />
+          ))}
+        </div>
+        <div className="absolute inset-x-8 bottom-[52%] border-t border-dashed border-cyan-400/60" />
+        <span className="absolute bottom-3 left-8 text-gray-400 font-mono text-[10px] select-none">
+          LCP · INP · CLS
+        </span>
+      </div>
+    );
+  }
+  if (title === "TypeScript Generics in Practice") {
+    // Angle-bracket type specimen
+    return (
+      <div className={`relative overflow-hidden bg-sky-950 ${className}`}>
+        <span className="absolute left-6 top-1/2 -translate-y-1/2 text-sky-500/30 font-black text-8xl select-none">
+          {"<"}
+        </span>
+        <span className="absolute right-6 top-1/2 -translate-y-1/2 text-sky-500/30 font-black text-8xl select-none">
+          {">"}
+        </span>
+        <span className="absolute inset-0 flex items-center justify-center font-mono font-bold text-4xl text-sky-200 select-none">
+          T
+        </span>
+        <span className="absolute bottom-3 left-1/2 -translate-x-1/2 text-sky-400/60 font-mono text-[10px] select-none">
+          K extends keyof T
+        </span>
+      </div>
+    );
+  }
+  // Fallback: duotone diagonal split
+  return (
+    <div className={`relative overflow-hidden bg-emerald-900 ${className}`}>
+      <div className="absolute -right-1/4 -top-1/2 w-full h-[200%] bg-cyan-800 rotate-12" />
+      <span className="absolute bottom-3 left-5 text-white/60 font-black text-4xl select-none">
+        {title.charAt(0)}
+      </span>
+    </div>
+  );
+}
 
 export default function BlogSidebarTemplate() {
   const [activeCategory, setActiveCategory] = useState<string>("All");
@@ -340,10 +507,11 @@ export default function BlogSidebarTemplate() {
                     onClick={() => setSelectedArticle(featuredPost)}
                     className="block w-full mb-10 group text-left"
                   >
-                    <div className="bg-gradient-to-br from-emerald-400 to-cyan-500 rounded-xl h-56 mb-5 flex items-center justify-center relative overflow-hidden">
-                      <span className="text-white/20 text-9xl font-black select-none">
-                        F
-                      </span>
+                    <div className="relative rounded-xl h-56 mb-5 overflow-hidden">
+                      <PostArt
+                        title={featuredPost.title}
+                        className="absolute inset-0"
+                      />
                       <span className="absolute bottom-4 right-4 text-xs text-white/70 bg-black/20 px-2.5 py-1 rounded-full backdrop-blur-sm">
                         Click to read
                       </span>
@@ -358,8 +526,8 @@ export default function BlogSidebarTemplate() {
                       {featuredPost.excerpt}
                     </p>
                     <div className="flex flex-wrap items-center gap-4 text-xs text-gray-400">
-                      <span className="flex items-center gap-1">
-                        <User className="w-3.5 h-3.5" />
+                      <span className="flex items-center gap-1.5">
+                        <AuthorAvatar name={featuredPost.author} />
                         {featuredPost.author}
                       </span>
                       <span className="flex items-center gap-1">
@@ -386,34 +554,45 @@ export default function BlogSidebarTemplate() {
                       onClick={() => setSelectedArticle(post)}
                       className="block w-full text-left group bg-white rounded-xl p-6 border border-gray-100 hover:border-emerald-200 hover:shadow-sm transition-all"
                     >
-                      <div className="flex items-center gap-3 mb-3">
-                        <span className="text-xs font-medium text-gray-500 bg-gray-100 px-2.5 py-1 rounded-full">
-                          {post.category}
-                        </span>
-                        <span className="text-xs text-gray-400">
-                          {post.readTime}
-                        </span>
-                      </div>
-                      <h3 className="text-lg font-semibold mb-2 group-hover:text-emerald-600 transition-colors">
-                        {post.title}
-                      </h3>
-                      <p className="text-sm text-gray-500 leading-relaxed mb-4">
-                        {post.excerpt}
-                      </p>
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-3 text-xs text-gray-400">
-                          <span>{post.author}</span>
-                          <span>{post.date}</span>
-                        </div>
-                        <div className="flex gap-1.5">
-                          {post.tags.slice(0, 2).map((tag) => (
-                            <span
-                              key={tag}
-                              className="text-xs text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full"
-                            >
-                              {tag}
+                      <div className="flex gap-5">
+                        <PostArt
+                          title={post.title}
+                          className="hidden sm:block w-32 h-28 rounded-lg shrink-0"
+                        />
+                        <div className="min-w-0 flex-1">
+                          <div className="flex items-center gap-3 mb-3">
+                            <span className="text-xs font-medium text-gray-500 bg-gray-100 px-2.5 py-1 rounded-full">
+                              {post.category}
                             </span>
-                          ))}
+                            <span className="text-xs text-gray-400">
+                              {post.readTime}
+                            </span>
+                          </div>
+                          <h3 className="text-lg font-semibold mb-2 group-hover:text-emerald-600 transition-colors">
+                            {post.title}
+                          </h3>
+                          <p className="text-sm text-gray-500 leading-relaxed mb-4">
+                            {post.excerpt}
+                          </p>
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-3 text-xs text-gray-400">
+                              <span className="flex items-center gap-1.5">
+                                <AuthorAvatar name={post.author} />
+                                {post.author}
+                              </span>
+                              <span>{post.date}</span>
+                            </div>
+                            <div className="flex gap-1.5">
+                              {post.tags.slice(0, 2).map((tag) => (
+                                <span
+                                  key={tag}
+                                  className="text-xs text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full"
+                                >
+                                  {tag}
+                                </span>
+                              ))}
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </button>
@@ -639,10 +818,11 @@ export default function BlogSidebarTemplate() {
         >
           <div className="relative bg-white rounded-2xl w-full max-w-2xl my-8 shadow-2xl">
             {/* Modal Header */}
-            <div className="bg-gradient-to-br from-emerald-400 to-cyan-500 rounded-t-2xl h-36 flex items-center justify-center relative">
-              <span className="text-white/20 text-7xl font-black select-none">
-                {selectedArticle.category.charAt(0)}
-              </span>
+            <div className="relative rounded-t-2xl h-36 overflow-hidden">
+              <PostArt
+                title={selectedArticle.title}
+                className="absolute inset-0"
+              />
               <button
                 onClick={() => setSelectedArticle(null)}
                 className="absolute top-4 right-4 w-8 h-8 bg-black/20 hover:bg-black/40 text-white rounded-full flex items-center justify-center transition-colors"
@@ -675,9 +855,9 @@ export default function BlogSidebarTemplate() {
 
               {/* Meta */}
               <div className="flex flex-wrap items-center gap-4 text-xs text-gray-400 mb-6 pb-6 border-b border-gray-100">
-                <span className="flex items-center gap-1">
-                  <User className="w-3.5 h-3.5" />
-                  {selectedArticle.author}
+                <span className="flex items-center gap-1.5">
+                  <AuthorAvatar name={selectedArticle.author} size="md" />
+                  <span className="text-gray-600">{selectedArticle.author}</span>
                 </span>
                 <span className="flex items-center gap-1">
                   <Calendar className="w-3.5 h-3.5" />
