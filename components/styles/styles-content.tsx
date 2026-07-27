@@ -157,7 +157,7 @@ export function StylesContent({ allStyles }: StylesContentProps) {
   useEffect(() => {
     const savedScroll = sessionStorage.getItem("styles-scroll-position");
     if (savedScroll) {
-      // 只恢复到离开时的可见数量（而非全量 140+），返回渲染量减半以上
+      // 只恢复到离开时的可见数量（而非全量 143+），返回渲染量减半以上
       const savedCount = parseInt(
         sessionStorage.getItem("styles-visible-count") ?? "",
         10
