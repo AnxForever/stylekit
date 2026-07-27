@@ -4,6 +4,7 @@ import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { getTopicBySlug } from "@/lib/prompts";
 import { getAllStylesMeta } from "@/lib/styles/meta";
+import { CURATED_STYLE_COUNT } from "@/lib/product/catalog-facts";
 import { serializeJsonLd } from "@/lib/security/json-ld";
 import { darkModeTemplates } from "@/lib/seo/prompt-template-previews";
 import { darkMode } from "@/lib/styles/dark-mode";
@@ -72,6 +73,7 @@ export default async function DarkModeUiPromptsPage() {
         <DarkModeFlagshipContent
           topic={topic}
           relatedStyles={relatedStyles}
+          curatedStyleCount={CURATED_STYLE_COUNT}
           doList={locale === "zh" ? darkMode.doList : (darkMode.doListEn ?? darkMode.doList)}
           dontList={locale === "zh" ? darkMode.dontList : (darkMode.dontListEn ?? darkMode.dontList)}
           templates={darkModeTemplates}

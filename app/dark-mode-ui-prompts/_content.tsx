@@ -161,12 +161,14 @@ export function DarkModeFlagshipContent({
   doList,
   dontList,
   templates,
+  curatedStyleCount,
 }: {
   topic: PromptTopic;
   relatedStyles: StyleMeta[];
   doList: string[];
   dontList: string[];
   templates: PromptTemplatePreview[];
+  curatedStyleCount: number;
 }) {
   const { locale } = useI18n();
   const isZh = locale === "zh";
@@ -655,8 +657,8 @@ export function DarkModeFlagshipContent({
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
             <p className="max-w-md text-sm leading-[1.8]" style={{ color: INK.muted }}>
               {isZh
-                ? "还想要别的方向？浏览全部 140 种设计风格，或回到提示词总库。"
-                : "Need a different direction? Browse all 140 design styles, or head back to the prompt library."}
+                ? `还想要别的方向？浏览全部 ${curatedStyleCount} 种设计风格，或回到提示词总库。`
+                : `Need a different direction? Browse all ${curatedStyleCount} design styles, or head back to the prompt library.`}
             </p>
             <div className="flex gap-3 shrink-0">
               <LocalizedLink
@@ -664,7 +666,7 @@ export function DarkModeFlagshipContent({
                 className="font-mono text-[11px] tracking-[0.14em] uppercase px-5 py-3 transition-colors duration-150 hover:brightness-110 focus:outline-none focus-visible:ring-1 focus-visible:ring-[#7aa7f8]"
                 style={{ backgroundColor: INK.accent, color: "#0a0a0c" }}
               >
-                {isZh ? "140 种风格" : "140 styles"}
+                {isZh ? `${curatedStyleCount} 种风格` : `${curatedStyleCount} styles`}
               </LocalizedLink>
               <LocalizedLink
                 href="/ui-prompts"

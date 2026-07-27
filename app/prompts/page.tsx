@@ -3,6 +3,7 @@ import { LocalizedLink } from "@/components/i18n/localized-link";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { promptTopics } from "@/lib/prompts";
+import { CURATED_STYLE_COUNT } from "@/lib/product/catalog-facts";
 
 export const dynamic = "force-static";
 
@@ -24,7 +25,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "UI Design Prompts Library | StyleKit",
     description:
-      "Curated AI prompts for generating web interfaces across StyleKit's 135 design styles. Optimized for v0, Cursor, Claude, and more.",
+      `Curated AI prompts for generating web interfaces across StyleKit's ${CURATED_STYLE_COUNT} design styles. Optimized for v0, Cursor, Claude, and more.`,
     siteName: "StyleKit",
     type: "website",
   },
@@ -32,7 +33,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "UI Design Prompts Library | StyleKit",
     description:
-      "Curated AI prompts covering StyleKit's 135 design styles.",
+      `Curated AI prompts covering StyleKit's ${CURATED_STYLE_COUNT} design styles.`,
   },
 };
 
@@ -109,7 +110,7 @@ export default function PromptsPage() {
               href="/styles"
               className="inline-block border-2 border-foreground px-6 py-3 font-medium hover:bg-foreground hover:text-background transition-colors"
             >
-              Browse 135 Styles
+              Browse {CURATED_STYLE_COUNT} Styles
             </LocalizedLink>
           </div>
         </section>

@@ -5,6 +5,7 @@ import { Footer } from "@/components/layout/footer";
 import { Breadcrumb } from "@/components/ui/breadcrumb";
 import { promptTopics, getTopicBySlug } from "@/lib/prompts";
 import { getAllStylesMeta } from "@/lib/styles/meta";
+import { CURATED_STYLE_COUNT } from "@/lib/product/catalog-facts";
 import { serializeJsonLd } from "@/lib/security/json-ld";
 import { getSiteBaseUrl } from "@/lib/site-url";
 import { PromptTopicContent } from "./_content";
@@ -32,7 +33,7 @@ export async function generateMetadata({
   return {
     title: topic.titleEn,
     description: topic.descriptionEn,
-    keywords: topic.keywords,
+    keywords: topic.keywords,
     openGraph: {
       title: `${topic.titleEn} | StyleKit`,
       description: topic.descriptionEn,
@@ -100,7 +101,7 @@ export default async function PromptTopicPage({
             __html: serializeJsonLd(breadcrumbSchema),
           }}
         />
-        <PromptTopicContent topic={topic} relatedStyles={relatedStyles} />
+        <PromptTopicContent topic={topic} relatedStyles={relatedStyles} curatedStyleCount={CURATED_STYLE_COUNT} />
       </main>
       <Footer />
     </div>

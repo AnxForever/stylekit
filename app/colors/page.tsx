@@ -5,13 +5,14 @@ import { ColorsExplorer } from "@/components/colors/colors-explorer";
 import { getAllStyleColors, getUniqueSwatchCount } from "@/lib/styles/colors";
 import { serializeJsonLd } from "@/lib/security/json-ld";
 import { getSiteBaseUrl } from "@/lib/site-url";
+import { CURATED_STYLE_COUNT } from "@/lib/product/catalog-facts";
 
 const BASE_URL = getSiteBaseUrl();
 
 export const metadata: Metadata = {
-  title: "Color Palettes & Hex Codes for 140 Design Styles",
+  title: `Color Palettes & Hex Codes for ${CURATED_STYLE_COUNT} Design Styles`,
   description:
-    "Search and copy hex codes from 140 curated design styles — Glassmorphism, Bauhaus, Cyberpunk, and more. Every color is tagged with its style for Tailwind, CSS, and AI prompts.",
+    `Search and copy hex codes from ${CURATED_STYLE_COUNT} curated design styles — Glassmorphism, Bauhaus, Cyberpunk, and more. Every color is tagged with its style for Tailwind, CSS, and AI prompts.`,
   keywords: [
     "color palette",
     "hex codes",

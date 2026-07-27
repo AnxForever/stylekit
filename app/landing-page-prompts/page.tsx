@@ -5,6 +5,7 @@ import { Footer } from "@/components/layout/footer";
 import { PromptTemplatePreviewSection } from "@/components/seo/prompt-template-preview-section";
 import { getTopicBySlug } from "@/lib/prompts";
 import { getAllStylesMeta } from "@/lib/styles/meta";
+import { CURATED_STYLE_COUNT } from "@/lib/product/catalog-facts";
 import { serializeJsonLd } from "@/lib/security/json-ld";
 import { landingPageTemplates } from "@/lib/seo/prompt-template-previews";
 import { PromptTopicContent } from "@/app/prompts/[topic]/_content";
@@ -70,6 +71,7 @@ export default async function LandingPagePromptsPage() {
         <PromptTopicContent
           topic={topic}
           relatedStyles={relatedStyles}
+          curatedStyleCount={CURATED_STYLE_COUNT}
           topicIndexHref="/ui-prompts"
         >
           <PromptTemplatePreviewSection
