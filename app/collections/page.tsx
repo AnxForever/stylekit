@@ -10,13 +10,14 @@ import { serializeJsonLd } from "@/lib/security/json-ld";
 import { getSiteBaseUrl } from "@/lib/site-url";
 import { getRequestLocaleContext } from "@/lib/i18n/request";
 import { getAlternateLocalePath } from "@/lib/i18n/routing";
+import { CURATED_STYLE_COUNT } from "@/lib/product/catalog-facts";
 
 const BASE_URL = getSiteBaseUrl();
 
 export const metadata: Metadata = {
   title: "Design Style Collections by Theme",
   description:
-    "Browse 135 design styles grouped by theme — dark mode, retro & vintage, anime, game UI, bold color, and hand-drawn. Find the right style by intent, then copy constraints or install a registry theme through shadcn.",
+    `Browse ${CURATED_STYLE_COUNT} design styles grouped by theme — dark mode, retro & vintage, anime, game UI, bold color, and hand-drawn. Find the right style by intent, then copy constraints or install a registry theme through shadcn.`,
   keywords: [
     "design style collections",
     "dark mode styles",

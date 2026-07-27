@@ -609,7 +609,7 @@ export const en = {
     "home.howItWorks.label": "How It Works",
     "home.howItWorks.title": "From browsing to building in 3 steps",
     "home.howItWorks.step1.title": "Browse Styles",
-    "home.howItWorks.step1.desc": "Explore 135 visual styles with curated previews",
+    "home.howItWorks.step1.desc": "Explore 143 visual styles with curated previews",
     "home.howItWorks.step2.title": "Export Tokens",
     "home.howItWorks.step2.desc": "Get design tokens, Tailwind presets, or AI prompts",
     "home.howItWorks.step3.title": "Build Consistent UI",

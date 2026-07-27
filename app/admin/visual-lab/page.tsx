@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { AdminPage } from "@/components/admin/admin-page";
 import { PremiumVisualLab } from "./_content";
+import { CURATED_STYLE_COUNT } from "@/lib/product/catalog-facts";
 
 export const metadata: Metadata = {
   title: "视觉实验室 - StyleKit 管理后台",
@@ -16,7 +17,7 @@ export default function AdminVisualLabPage() {
     <AdminPage
       eyebrow="收费级视觉研究"
       title="视觉实验室"
-      description="只在隔离环境验证图片、动画和交互如何提高风格展示的付费感；不会修改现有卡片、公开页面或 135 个预览。"
+      description={`只在隔离环境验证图片、动画和交互如何提高风格展示的付费感；不会修改现有卡片、公开页面或 ${CURATED_STYLE_COUNT} 个预览。`}
     >
       <PremiumVisualLab />
     </AdminPage>
