@@ -9,6 +9,7 @@ import { resolveStyleDelivery } from "@/lib/style-delivery";
 import { serializeJsonLd } from "@/lib/security/json-ld";
 import { generateStyleJsonLd, generateBreadcrumbJsonLd } from "@/lib/seo/json-ld";
 import { buildStyleFaq, generateFaqJsonLd } from "@/lib/seo/style-faq";
+import { getStyleSeoOverride } from "@/lib/seo/style-seo-overrides";
 import { getSiteBaseUrl } from "@/lib/site-url";
 import { getAlternateLocalePath } from "@/lib/i18n/routing";
 import { localizedString, localizedList } from "@/lib/styles/locale-content";
@@ -72,15 +73,18 @@ export async function generateMetadata({
       ? `${localizedDescription} 包含设计 tokens、组件配方和 AI 提示词指南，便于稳定落地同一套 UI 风格。`
       : `${localizedDescription} Includes design tokens, component recipes, and AI prompt guidance for consistent UI implementation.`;
   const keywords = localizedList(locale, style.keywords, style.keywordsEn);
-  const metaDescription = truncateForMeta(description);
+  const override = getStyleSeoOverride(slug, locale);
+  const finalTitle = override.title ?? title;
+  const finalDescription = override.description ?? description;
+  const metaDescription = truncateForMeta(finalDescription);
 
   return {
-    title,
+    title: finalTitle,
     description: metaDescription,
     keywords,
     openGraph: {
-      title: `${title} — StyleKit`,
-      description,
+      title: `${finalTitle} — StyleKit`,
+      description: finalDescription,
       type: "article",
       images: [
         {
@@ -93,8 +97,8 @@ export async function generateMetadata({
     },
     twitter: {
       card: "summary_large_image",
-      title: `${title} — StyleKit`,
-      description,
+      title: `${finalTitle} — StyleKit`,
+      description: finalDescription,
       images: [`${BASE_URL}/styles/${slug}/opengraph-image`],
     },
   };
