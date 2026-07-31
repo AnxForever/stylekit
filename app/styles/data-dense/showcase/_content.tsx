@@ -2,6 +2,7 @@
 
 import { useRef, useState, useEffect } from "react";
 import Link from "next/link";
+import { ShortcutHint } from "@/lib/platform/shortcut-hint";
 
 // ─── Hooks ────────────────────────────────────────────────────────────────────
 
@@ -510,18 +511,18 @@ export default function DataDenseShowcaseContent() {
               <p className="text-xs font-semibold text-[#1e293b] mb-2">Keyboard Shortcuts</p>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-x-4 gap-y-1.5">
                 {[
-                  { keys: "Ctrl+K", desc: "Search" },
-                  { keys: "Ctrl+N", desc: "New record" },
-                  { keys: "Ctrl+S", desc: "Save" },
-                  { keys: "Ctrl+/", desc: "Help" },
-                  { keys: "Esc", desc: "Close modal" },
-                  { keys: "J / K", desc: "Navigate rows" },
-                  { keys: "E", desc: "Edit selected" },
-                  { keys: "Del", desc: "Delete selected" },
+                  { keys: "K", desc: "Search", mod: true },
+                  { keys: "N", desc: "New record", mod: true },
+                  { keys: "S", desc: "Save", mod: true },
+                  { keys: "/", desc: "Help", mod: true },
+                  { keys: "Esc", desc: "Close modal", mod: false },
+                  { keys: "J / K", desc: "Navigate rows", mod: false },
+                  { keys: "E", desc: "Edit selected", mod: false },
+                  { keys: "Del", desc: "Delete selected", mod: false },
                 ].map((shortcut) => (
                   <div key={shortcut.keys} className="flex items-center gap-2">
                     <kbd className="px-1.5 py-0.5 text-[10px] font-mono bg-[#f8fafc] border border-[#e2e8f0] rounded text-[#64748b]">
-                      {shortcut.keys}
+                      {shortcut.mod ? <ShortcutHint keys={shortcut.keys} /> : shortcut.keys}
                     </kbd>
                     <span className="text-[10px] text-[#94a3b8]">{shortcut.desc}</span>
                   </div>

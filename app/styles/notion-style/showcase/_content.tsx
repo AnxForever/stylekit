@@ -1,6 +1,7 @@
 "use client";
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
+import { ShortcutHint } from "@/lib/platform/shortcut-hint";
 
 /* ------------------------------------------------------------------ */
 /*  useInView hook                                                      */
@@ -524,7 +525,7 @@ export default function NotionStyleShowcase() {
                 <path d="M10.5 10.5l-2-2" stroke="currentColor" strokeWidth="1" strokeLinecap="round" />
               </svg>
               Search
-              <span className="ml-auto text-[10px] text-[#37352f]/30">⌘K</span>
+              <span className="ml-auto text-[10px] text-[#37352f]/30"><ShortcutHint keys="K" /></span>
             </button>
 
             {/* Favorites section */}

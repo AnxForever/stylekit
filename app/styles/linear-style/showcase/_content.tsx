@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
+import { ShortcutHint } from "@/lib/platform/shortcut-hint";
 
 /* ------------------------------------------------------------------ */
 /*  useInView hook                                                      */
@@ -403,7 +404,7 @@ export default function ShowcaseContent() {
           >
             <SearchIcon className="w-3.5 h-3.5 text-zinc-500" />
             <span className="text-xs text-zinc-500">Search...</span>
-            <Kbd>&#8984;K</Kbd>
+            <Kbd><ShortcutHint keys="K" /></Kbd>
           </button>
         </div>
       </header>
@@ -445,7 +446,7 @@ export default function ShowcaseContent() {
                 className="px-5 py-2.5 border border-white/10 bg-white/[0.03] text-zinc-300 text-sm font-medium rounded-lg hover:bg-white/[0.06] transition-colors duration-150 flex items-center gap-2"
               >
                 <span>Quick start</span>
-                <Kbd>&#8984;K</Kbd>
+                <Kbd><ShortcutHint keys="K" /></Kbd>
               </button>
             </div>
           </div>
