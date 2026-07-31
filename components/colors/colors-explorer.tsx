@@ -22,21 +22,27 @@ function Swatch({
   copied: boolean;
 }) {
   return (
-    <button
-      type="button"
-      onClick={() => onCopy(hex)}
-      className="group/swatch flex flex-col items-stretch text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-foreground"
-      title={`${label} · ${hex}`}
-      aria-label={`Copy ${hex}`}
-    >
-      <span
-        className="aspect-square w-full border border-border transition-transform group-hover/swatch:scale-[1.03]"
-        style={{ backgroundColor: hex }}
-      />
-      <span className="mt-1 font-mono text-[11px] text-muted group-hover/swatch:text-foreground">
+    <div className="group/swatch flex flex-col items-stretch text-left">
+      <button
+        type="button"
+        onClick={() => onCopy(hex)}
+        className="focus:outline-none focus-visible:ring-2 focus-visible:ring-foreground"
+        title={`${label} · ${hex}`}
+        aria-label={`Copy ${hex}`}
+      >
+        <span
+          className="block aspect-square w-full border border-border transition-transform group-hover/swatch:scale-[1.03]"
+          style={{ backgroundColor: hex }}
+        />
+      </button>
+      <LocalizedLink
+        href={`/colors/${hex.replace("#", "")}`}
+        className="mt-1 font-mono text-[11px] text-muted hover:underline group-hover/swatch:text-foreground"
+        aria-label={`${hex} color details`}
+      >
         {copied ? "✓" : hex}
-      </span>
-    </button>
+      </LocalizedLink>
+    </div>
   );
 }
 

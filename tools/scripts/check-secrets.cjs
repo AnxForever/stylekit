@@ -102,7 +102,16 @@ const FORBIDDEN_PATH_RULES = [
   },
   {
     name: "Credentials file tracked in git",
-    test: (file) => /(^|\/)(?:\.npmrc|\.pypirc|\.netrc)$/i.test(file),
+    test: (file) => /(^|\/)(?:\.pypirc|\.netrc)$/i.test(file),
+  },
+  {
+    // .npmrc is only a problem when it embeds auth material; plain config
+    // like "ignore-workspace=true" is safe to track.
+    name: "npm config with credentials tracked in git",
+    test: (file, content) =>
+      /(^|\/)\.npmrc$/i.test(file) &&
+      typeof content === "string" &&
+      /(_auth|_authToken|_password|:username|password\s*=)/i.test(content),
   },
   {
     name: "Service account credential file tracked in git",
@@ -136,7 +145,15 @@ function main() {
 
   for (const file of files) {
     for (const rule of FORBIDDEN_PATH_RULES) {
-      if (rule.test(file)) {
+      let ruleContent;
+      if (rule.test.length > 1) {
+        try {
+          ruleContent = fs.readFileSync(file, "utf8");
+        } catch {
+          ruleContent = undefined;
+        }
+      }
+      if (rule.test(file, ruleContent)) {
         findings.push({
           file,
           type: rule.name,

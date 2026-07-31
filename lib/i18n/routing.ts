@@ -82,6 +82,13 @@ export const LOCALE_ROUTE_POLICY = [
     prefixes: ["/guides"],
   },
   {
+    id: "english-color-details",
+    mode: "rewrite",
+    sitemapLocales: "en",
+    exact: [],
+    prefixes: ["/colors"],
+  },
+  {
     id: "english-indexable-aliases",
     mode: "rewrite",
     sitemapLocales: "en",
