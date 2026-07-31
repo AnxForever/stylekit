@@ -7,6 +7,7 @@ import { styleGuides } from "@/lib/seo/style-guides";
 import { getAllCollections } from "@/lib/styles/collections";
 import { getAllRecipes } from "@/lib/styles/recipes";
 import { templateCatalog } from "@/lib/templates/catalog";
+import { getAllDetailSwatches, hexToSlug } from "@/lib/styles/color-detail";
 import {
   getAlternateLocalePath,
   getBaseUrl,
@@ -173,6 +174,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
     createLocalizedEntries(`/recipes/${recipe.id}`, undefined, "monthly", 0.7)
   );
 
+  const colorDetailPages: MetadataRoute.Sitemap = getAllDetailSwatches().flatMap(
+    (hex) => createEnglishEntry(`/colors/${hexToSlug(hex)}`, undefined, "monthly", 0.4)
+  );
+
   return [
     ...staticPages,
     ...stylePages,
@@ -183,5 +188,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...guidePages,
     ...collectionPages,
     ...recipePages,
+    ...colorDetailPages,
   ];
 }
