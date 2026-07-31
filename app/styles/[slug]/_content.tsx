@@ -64,6 +64,7 @@ interface Props {
   enhancedRules: string | null;
   accessibilityScore: AccessibilityScore | null;
   readinessSection: ReactNode;
+  faqSection?: ReactNode;
   version?: string;
   changelog?: StyleVersion[];
   /** SSR-precomputed locale for server-rendered hero content */
@@ -78,6 +79,7 @@ export function StyleDetailContent({
   enhancedRules,
   accessibilityScore,
   readinessSection,
+  faqSection,
   version,
   changelog,
   ssrLocale,
@@ -516,6 +518,8 @@ export function StyleDetailContent({
 
       {/* Frontend Readiness */}
       {readinessSection}
+
+      {faqSection}
 
       {/* Global CSS */}
       <section className="border-b border-border">

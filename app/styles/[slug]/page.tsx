@@ -8,12 +8,14 @@ import { generateEnhancedAIRules } from "@/lib/styles/enhanced-rules";
 import { resolveStyleDelivery } from "@/lib/style-delivery";
 import { serializeJsonLd } from "@/lib/security/json-ld";
 import { generateStyleJsonLd, generateBreadcrumbJsonLd } from "@/lib/seo/json-ld";
+import { buildStyleFaq, generateFaqJsonLd } from "@/lib/seo/style-faq";
 import { getSiteBaseUrl } from "@/lib/site-url";
 import { getAlternateLocalePath } from "@/lib/i18n/routing";
 import { localizedString, localizedList } from "@/lib/styles/locale-content";
 import type { Locale } from "@/lib/i18n/translations";
 import { StyleDetailContent } from "./_content";
 import { StyleReadinessSection } from "./_readiness-section";
+import { StyleFaqSection } from "./_faq-section";
 
 // 生成静态参数
 export function generateStaticParams() {
@@ -168,6 +170,9 @@ export default async function StyleDetailPage({
     { name: localizedName, url: canonicalUrl },
   ]);
 
+  const faqs = buildStyleFaq(style, locale);
+  const faqSchema = generateFaqJsonLd(faqs, canonicalUrl);
+
   return (
     <div className="min-h-screen flex flex-col">
       <script
@@ -177,6 +182,10 @@ export default async function StyleDetailPage({
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: serializeJsonLd(breadcrumbSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(faqSchema) }}
       />
       <Header />
       <div className="container mx-auto px-4 pt-4">
@@ -200,6 +209,13 @@ export default async function StyleDetailPage({
             accessibilityScore={accessibilityScore}
             readinessSection={
               <StyleReadinessSection readiness={readiness} locale={locale} />
+            }
+            faqSection={
+              <StyleFaqSection
+                faqs={faqs}
+                styleName={localizedName}
+                locale={locale}
+              />
             }
             version={version}
             changelog={changelog}
