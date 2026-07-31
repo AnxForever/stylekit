@@ -169,6 +169,9 @@ export function StyleDetailContent({
       href: "#frontend-readiness",
       label: locale === "zh" ? "完成度" : "Readiness",
     },
+    ...(faqSection
+      ? [{ href: "#style-faq", label: locale === "zh" ? "常见问题" : "FAQ" }]
+      : []),
     {
       href: "#style-exports",
       label: locale === "zh" ? "导出工具" : "Exports",
