@@ -2,6 +2,12 @@
 @plugin "tailwindcss-animate";
 @plugin "@tailwindcss/typography";
 
+/* next-themes uses `attribute="class"` (toggles a `.dark` class on <html>).
+   Tailwind v4's default `dark:` variant follows `prefers-color-scheme`,
+   which decouples from the active theme class. Pin it to the `.dark`
+   class so `dark:` utilities track the site theme, not the OS setting. */
+@custom-variant dark (&:where(.dark, .dark *));
+
 /* Fix: Chrome 120+ changed <details> to use ::details-content pseudo-element
    with content-visibility:hidden. The old md:!block trick no longer works.
    Force details content visible on desktop so CollapsibleSection works. */
