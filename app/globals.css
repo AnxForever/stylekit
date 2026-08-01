@@ -2,6 +2,16 @@
 @plugin "tailwindcss-animate";
 @plugin "@tailwindcss/typography";
 
+/* The 143 style definitions and component recipes embed Tailwind classes
+   inside code-snippet strings. They are only live-rendered on the style
+   detail / showcase / recipe routes, which load their own scoped utility
+   sheets (app/styles/[slug]/snippet-utilities.css, app/recipes/
+   recipe-utilities.css). Excluding them here keeps ~1MB of one-off
+   arbitrary utilities out of the global stylesheet every page pays for. */
+@source not "../lib/styles";
+@source not "../lib/recipes";
+@source not "./templates";
+
 /* next-themes uses `attribute="class"` (toggles a `.dark` class on <html>).
    Tailwind v4's default `dark:` variant follows `prefers-color-scheme`,
    which decouples from the active theme class. Pin it to the `.dark`

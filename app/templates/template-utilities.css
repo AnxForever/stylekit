@@ -1,0 +1,11 @@
+/* Scoped utility sheet for the standalone template demo pages under
+   app/templates/. Excluded from the global sheet (see app/globals.css);
+   ships only when a template route renders. This file lives at the
+   app/templates/ level on purpose: the ZIP download API only collects
+   files inside each template's own directory, so it is never exported. */
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/utilities.css" layer(utilities) source(none);
+@plugin "tailwindcss-animate";
+@plugin "@tailwindcss/typography";
+@custom-variant dark (&:where(.dark, .dark *));
+@source "./";

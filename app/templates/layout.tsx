@@ -4,6 +4,7 @@ import { templateCatalog } from "@/lib/templates/catalog";
 import { baseTemplateMetadata } from "@/lib/templates/metadata";
 import { getRequestLocaleContext } from "@/lib/i18n/request";
 import { applyRequestMetadata } from "@/lib/i18n/metadata";
+import "./template-utilities.css";
 
 export async function generateMetadata(): Promise<Metadata> {
   const context = await getRequestLocaleContext();
