@@ -50,6 +50,22 @@ function defineTemplate(
 }
 
 export const templateCatalog: TemplateCatalogEntry[] = [
+  {
+    id: "nextdevtpl",
+    name: { zh: "NextDevTpl · SaaS 全栈模板", en: "NextDevTpl · SaaS Starter" },
+    description: {
+      zh: "开源 Next.js 16 SaaS 启动模板：认证、支付、积分、邮件、存储、工单与多部署目标，按需组合生成独立项目。",
+      en: "Open-source Next.js 16 SaaS starter with auth, payments, credits, mail, storage, support tickets, and multiple deploy targets, composed per project.",
+    },
+    styleSlug: "",
+    type: "saas",
+    href: "https://nextdevtpl.chaosyn.com",
+    codePath: "",
+    external: {
+      repoUrl: "https://github.com/evepupil/NextDevTpl",
+      siteUrl: "https://nextdevtpl.chaosyn.com",
+    },
+  },
   defineTemplate({
     id: "brutal-landing",
     name: { zh: "野兽派落地页", en: "Brutal Landing Page" },
@@ -171,22 +187,6 @@ export const templateCatalog: TemplateCatalogEntry[] = [
     type: "saas",
     href: "/templates/saas-landing",
   }),
-  {
-    id: "nextdevtpl",
-    name: { zh: "NextDevTpl · SaaS 全栈模板", en: "NextDevTpl · SaaS Starter" },
-    description: {
-      zh: "开源 Next.js 16 SaaS 启动模板：认证、支付、积分、邮件、存储、工单与多部署目标，按需组合生成独立项目。",
-      en: "Open-source Next.js 16 SaaS starter with auth, payments, credits, mail, storage, support tickets, and multiple deploy targets, composed per project.",
-    },
-    styleSlug: "",
-    type: "saas",
-    href: "https://nextdevtpl.chaosyn.com",
-    codePath: "",
-    external: {
-      repoUrl: "https://github.com/evepupil/NextDevTpl",
-      siteUrl: "https://nextdevtpl.chaosyn.com",
-    },
-  },
   defineTemplate({
     id: "ecommerce-product",
     name: { zh: "电商产品页", en: "E-Commerce Product Page" },
