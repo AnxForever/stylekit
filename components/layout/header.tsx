@@ -14,6 +14,7 @@ import {
   markLatestChangelogSeen,
 } from "@/lib/changelog/read-state";
 import { ChevronDown } from "lucide-react";
+import { ShortcutHint } from "@/components/ui/shortcut-hint";
 import { GitHubStarButton } from "@/components/github-star-button";
 import { trackEvent } from "@/lib/analytics/events";
 import { localizeHref } from "@/lib/i18n/routing";
@@ -414,7 +415,7 @@ export function Header() {
                 <path d="m21 21-4.3-4.3" />
               </svg>
               <span className="hidden xl:inline">{t("nav.search")}</span>
-              <kbd className="hidden 2xl:inline-flex rounded bg-zinc-100 px-1.5 py-0.5 text-[10px] text-zinc-600 dark:bg-zinc-800 dark:text-zinc-300">Ctrl K</kbd>
+              <kbd className="hidden 2xl:inline-flex rounded bg-zinc-100 px-1.5 py-0.5 text-[10px] text-zinc-600 dark:bg-zinc-800 dark:text-zinc-300"><ShortcutHint keys="K" separator=" " /></kbd>
             </button>
 
             {/* Main Nav Items: link or dropdown trigger */}
