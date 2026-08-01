@@ -103,6 +103,13 @@ export function AnimationsContent({ allAnimations }: AnimationsContentProps) {
     (key: CategoryFilter) => {
       setCategory(key);
       syncURL(key, trigger, difficulty, search);
+      // With the sticky bar you can switch category from deep in the page;
+      // jump back to the top of the results so the change is visible.
+      if (typeof window !== "undefined" && window.scrollY > 320) {
+        document
+          .getElementById("animations-results-top")
+          ?.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
     },
     [trigger, difficulty, search, syncURL]
   );
@@ -203,8 +210,9 @@ export function AnimationsContent({ allAnimations }: AnimationsContentProps) {
       {/* Filters + Grid */}
       <section>
         <div className="max-w-7xl mx-auto px-6 md:px-12 py-12 md:py-16">
-          {/* Single-row filter bar */}
-          <div className="flex flex-wrap items-center gap-3 mb-8">
+          {/* Single-row filter bar — sticky so any category is one click away
+              no matter how deep the user has scrolled. */}
+          <div className="sticky top-0 z-30 -mt-2 mb-8 flex flex-wrap items-center gap-3 border-b border-border bg-background py-3">
             {/* Category pills -- scrollable */}
             <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar">
               {categoryKeys.map((item) => (
@@ -329,6 +337,7 @@ export function AnimationsContent({ allAnimations }: AnimationsContentProps) {
           </div>
 
           {/* Grid */}
+          <div id="animations-results-top" className="scroll-mt-24">
           {filtered.length > 0 ? (
             isGrouped ? (
               <div className="space-y-12 md:space-y-14">
@@ -365,6 +374,7 @@ export function AnimationsContent({ allAnimations }: AnimationsContentProps) {
               </p>
             </div>
           )}
+          </div>
         </div>
       </section>
     </>

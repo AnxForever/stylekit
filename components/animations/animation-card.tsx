@@ -25,9 +25,6 @@ const categoryAccentColor: Record<string, string> = {
   "micro-interaction": "#14b8a6",
 };
 
-/** Categories whose preview should only run while the user hovers the card. */
-const hoverGatedCategories = new Set(["hover", "pointer", "micro-interaction"]);
-
 const triggerI18nMap: Record<string, string> = {
   "on-mount": "animations.triggerOnMount",
   "on-scroll": "animations.triggerOnScroll",
@@ -47,7 +44,6 @@ export function AnimationCard({ animation }: AnimationCardProps) {
   const [replayKey, setReplayKey] = useState(0);
 
   const accentColor = categoryAccentColor[animation.category] || "#71717a";
-  const hoverGated = hoverGatedCategories.has(animation.category);
   const name = locale === "zh" ? animation.name : animation.nameEn;
   const secondaryName = locale === "zh" ? animation.nameEn : animation.name;
 
@@ -79,11 +75,7 @@ export function AnimationCard({ animation }: AnimationCardProps) {
         className="block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
       >
         <div className="sk-preview-canvas relative aspect-[4/3] overflow-hidden border-b border-border">
-          <div
-            className={`absolute inset-0 flex items-center justify-center ${
-              hoverGated ? "sk-preview-gated" : ""
-            }`}
-          >
+          <div className="absolute inset-0 flex items-center justify-center">
             <div key={replayKey} className="scale-[1.75]">
               <MiniPreview slug={animation.slug} />
             </div>
@@ -97,11 +89,6 @@ export function AnimationCard({ animation }: AnimationCardProps) {
           <span className="absolute right-2.5 top-2.5 font-mono text-[10px] tabular-nums tracking-wide text-muted">
             {animation.duration}
           </span>
-          {hoverGated && (
-            <span className="absolute bottom-2.5 right-2.5 border border-border bg-background/85 px-1.5 py-0.5 text-[9px] uppercase tracking-[0.18em] text-muted backdrop-blur-sm transition-opacity group-hover:opacity-0">
-              {t("animations.hoverToPlay")}
-            </span>
-          )}
         </div>
 
         <div className="min-w-0 px-3 pb-0 pt-2.5 md:px-3.5">

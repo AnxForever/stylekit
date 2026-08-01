@@ -26,15 +26,8 @@ export function MiniPreviewStyles() {
         background-image: radial-gradient(circle, rgba(255, 255, 255, 0.09) 1px, transparent 1px);
       }
 
-      /* Hover-triggered categories keep semantic honesty: preview holds its
-         first frame until the card is actually hovered. */
-      .sk-preview-gated [class*="sk-mini-"] {
-        animation-play-state: paused;
-      }
-      .group:hover .sk-preview-gated [class*="sk-mini-"],
-      .group:focus-within .sk-preview-gated [class*="sk-mini-"] {
-        animation-play-state: running;
-      }
+      /* Hover replays: the card remounts the preview on pointer enter, so
+         loops restart from zero when the user actually engages a card. */
 
       @media (prefers-reduced-motion: reduce) {
         .sk-mini-anim {
@@ -450,6 +443,142 @@ export function MiniPreviewStyles() {
         50% { transform: perspective(220px) rotateX(-8deg) rotateY(12deg); }
       }
       .sk-mini-tilt-card { animation: sk-mini-tilt 3s ease-in-out infinite; transform-style: preserve-3d; }
+
+      /* --- Simulated-cursor choreography for pointer-driven effects.
+             A tiny cursor dot tours the scene while the effect responds in
+             sync, so pointer interactions read as a looping screen recording. */
+      .sk-mini-cur {
+        position: absolute;
+        width: 9px;
+        height: 9px;
+        border-radius: 9999px;
+        background: #fff;
+        box-shadow: 0 0 0 1.5px rgba(15, 23, 42, 0.85), 0 2px 6px rgba(15, 23, 42, 0.35);
+        z-index: 3;
+        pointer-events: none;
+      }
+
+      @keyframes sk-mini-trailpath {
+        0%, 100% { transform: translate(0px, 0px); }
+        25% { transform: translate(36px, -9px); }
+        50% { transform: translate(56px, 8px); }
+        75% { transform: translate(22px, 13px); }
+      }
+      .sk-mini-trail-cur { animation: sk-mini-trailpath 2.8s ease-in-out infinite; }
+      .sk-mini-trail-d1 { animation: sk-mini-trailpath 2.8s ease-in-out infinite 0.12s; }
+      .sk-mini-trail-d2 { animation: sk-mini-trailpath 2.8s ease-in-out infinite 0.24s; }
+      .sk-mini-trail-d3 { animation: sk-mini-trailpath 2.8s ease-in-out infinite 0.36s; }
+
+      @keyframes sk-mini-aurapath {
+        0%, 100% { transform: translate(6px, 4px); }
+        40% { transform: translate(44px, 12px); }
+        70% { transform: translate(26px, -4px); }
+      }
+      .sk-mini-aura-cur { animation: sk-mini-aurapath 3.2s ease-in-out infinite; }
+      .sk-mini-aura-glow { animation: sk-mini-aurapath 3.2s ease-in-out infinite 0.08s; }
+
+      @keyframes sk-mini-proxcur {
+        0%, 100% { transform: translate(-4px, 16px); }
+        45%, 62% { transform: translate(34px, 8px); }
+      }
+      .sk-mini-prox-cur { animation: sk-mini-proxcur 3.2s ease-in-out infinite; }
+      @keyframes sk-mini-proxitem {
+        0%, 22%, 88%, 100% { opacity: 0.14; filter: blur(3px); }
+        45%, 64% { opacity: 1; filter: blur(0); }
+      }
+      .sk-mini-prox-item { animation: sk-mini-proxitem 3.2s ease-in-out infinite; }
+
+      @keyframes sk-mini-repelcur {
+        0%, 100% { transform: translate(-12px, 8px); }
+        50% { transform: translate(62px, 8px); }
+      }
+      .sk-mini-repel-cur { animation: sk-mini-repelcur 3.2s ease-in-out infinite; }
+      @keyframes sk-mini-repel-a {
+        0%, 20%, 80%, 100% { transform: translateY(0) scale(1); }
+        10%, 90% { transform: translateY(-8px) scale(1.12); }
+      }
+      @keyframes sk-mini-repel-b {
+        0%, 12%, 36%, 64%, 88%, 100% { transform: translateY(0) scale(1); }
+        23%, 77% { transform: translateY(-8px) scale(1.12); }
+      }
+      @keyframes sk-mini-repel-c {
+        0%, 24%, 48%, 76%, 100% { transform: translateY(0) scale(1); }
+        36%, 64% { transform: translateY(-8px) scale(1.12); }
+      }
+      @keyframes sk-mini-repel-d {
+        0%, 38%, 62%, 100% { transform: translateY(0) scale(1); }
+        50% { transform: translateY(-8px) scale(1.12); }
+      }
+      .sk-mini-repel-1 { animation: sk-mini-repel-a 3.2s ease-in-out infinite; display: inline-block; }
+      .sk-mini-repel-2 { animation: sk-mini-repel-b 3.2s ease-in-out infinite; display: inline-block; }
+      .sk-mini-repel-3 { animation: sk-mini-repel-c 3.2s ease-in-out infinite; display: inline-block; }
+      .sk-mini-repel-4 { animation: sk-mini-repel-d 3.2s ease-in-out infinite; display: inline-block; }
+
+      @keyframes sk-mini-distcur {
+        0%, 100% { transform: translate(4px, 6px); }
+        50% { transform: translate(50px, 28px); }
+      }
+      .sk-mini-dist-cur { animation: sk-mini-distcur 3.2s ease-in-out infinite; }
+      @keyframes sk-mini-disttile {
+        0%, 14%, 86%, 100% { transform: none; }
+        35% { transform: skewX(-7deg) scaleY(1.06); }
+        55% { transform: skewX(5deg) scaleY(0.95); }
+        70% { transform: skewX(-2deg) scaleY(1.02); }
+      }
+      .sk-mini-dist-tile { animation: sk-mini-disttile 3.2s ease-in-out infinite; }
+
+      @keyframes sk-mini-parcur {
+        0%, 100% { transform: translate(6px, 38px); }
+        50% { transform: translate(62px, 38px); }
+      }
+      .sk-mini-par-cur { animation: sk-mini-parcur 3.6s ease-in-out infinite; }
+      @keyframes sk-mini-parback {
+        0%, 100% { transform: translateX(0); }
+        50% { transform: translateX(-4px); }
+      }
+      @keyframes sk-mini-parmid {
+        0%, 100% { transform: translateX(0); }
+        50% { transform: translateX(-9px); }
+      }
+      @keyframes sk-mini-parfront {
+        0%, 100% { transform: translateX(0); }
+        50% { transform: translateX(-15px); }
+      }
+      .sk-mini-par-back { animation: sk-mini-parback 3.6s ease-in-out infinite; }
+      .sk-mini-par-mid { animation: sk-mini-parmid 3.6s ease-in-out infinite; }
+      .sk-mini-par-front { animation: sk-mini-parfront 3.6s ease-in-out infinite; }
+
+      @keyframes sk-mini-dragcur {
+        0%, 100% { transform: translate(-8px, -12px); }
+        18% { transform: translate(0px, 0px); }
+        55% { transform: translate(28px, 7px); }
+        72% { transform: translate(38px, -14px); }
+      }
+      .sk-mini-drag-cur { animation: sk-mini-dragcur 3.6s ease-in-out infinite; }
+      @keyframes sk-mini-dragcard {
+        0%, 18% { transform: translate(0, 0) rotate(0); }
+        55% { transform: translate(28px, 7px) rotate(9deg); }
+        66% { transform: translate(-5px, -2px) rotate(-3deg); }
+        76% { transform: translate(3px, 1px) rotate(1.5deg); }
+        84%, 100% { transform: translate(0, 0) rotate(0); }
+      }
+      .sk-mini-drag-card { animation: sk-mini-dragcard 3.6s ease-in-out infinite; }
+
+      @keyframes sk-mini-ctxcur {
+        0%, 100% { transform: translate(2px, 4px); }
+        35%, 70% { transform: translate(40px, 16px); }
+      }
+      .sk-mini-ctx-cur { animation: sk-mini-ctxcur 3.6s ease-in-out infinite; }
+      @keyframes sk-mini-ctxdot {
+        0%, 32%, 74%, 100% { opacity: 1; transform: scale(1); }
+        40%, 68% { opacity: 0; transform: scale(0.4); }
+      }
+      .sk-mini-ctx-dot { animation: sk-mini-ctxdot 3.6s ease-in-out infinite; }
+      @keyframes sk-mini-ctxpill {
+        0%, 34%, 72%, 100% { opacity: 0; transform: scale(0.5); }
+        42%, 66% { opacity: 1; transform: scale(1); }
+      }
+      .sk-mini-ctx-pill { animation: sk-mini-ctxpill 3.6s ease-in-out infinite; transform-origin: center; }
     `}</style>
   );
 }
@@ -636,63 +765,76 @@ export function MiniPreview({ slug }: { slug: string }) {
       );
     case "cursor-aura":
       return (
-        <div className="relative h-12 w-16 rounded-[14px] border border-cyan-400/20 bg-zinc-950">
-          <span className="absolute left-8 top-6 h-8 w-8 -translate-x-1/2 -translate-y-1/2 rounded-full border border-cyan-200/30 bg-cyan-300/15" />
-          <span className="absolute left-7 top-5 h-1.5 w-1.5 rounded-full bg-white" />
+        <div className="relative h-14 w-24 overflow-hidden rounded-[14px] border border-cyan-400/20 bg-zinc-950">
+          <span className="sk-mini-aura-glow absolute left-0 top-0 h-9 w-9 -translate-x-1/2 rounded-full bg-cyan-300/25 blur-[6px]" />
+          <span className="sk-mini-aura-glow absolute left-0 top-0 h-5 w-5 rounded-full border border-cyan-200/40 bg-cyan-300/20" style={{ marginLeft: 2, marginTop: 2 }} />
+          <span className="sk-mini-cur sk-mini-aura-cur left-0 top-0" style={{ width: 7, height: 7, marginLeft: 8, marginTop: 8 }} />
         </div>
       );
     case "cursor-trail":
       return (
-        <div className="relative h-12 w-20 rounded-[14px] border border-cyan-400/20 bg-zinc-950">
-          {[0, 1, 2, 3].map((index) => (
-            <span
-              key={index}
-              className="absolute rounded-full bg-cyan-300"
-              style={{ left: 18 + index * 12, top: 26 - index * 3, width: 8 - index, height: 8 - index, opacity: 1 - index * 0.18 }}
-            />
-          ))}
+        <div className="relative h-14 w-24 overflow-hidden rounded-[14px] border border-cyan-400/20 bg-zinc-950">
+          <span className="sk-mini-trail-d3 absolute left-3 top-6 h-1 w-1 rounded-full bg-cyan-300/30" />
+          <span className="sk-mini-trail-d2 absolute left-3 top-6 h-1.5 w-1.5 rounded-full bg-cyan-300/45" />
+          <span className="sk-mini-trail-d1 absolute left-3 top-6 h-2 w-2 rounded-full bg-cyan-300/70" />
+          <span className="sk-mini-cur sk-mini-trail-cur left-3 top-6" style={{ width: 8, height: 8 }} />
         </div>
       );
     case "proximity-reveal":
       return (
-        <div className="flex h-10 w-20 items-center justify-between border border-zinc-200 bg-white px-2 dark:border-white/10 dark:bg-zinc-900">
-          <span className="h-2 w-8 rounded-full bg-zinc-300 dark:bg-zinc-700" />
-          <span className="h-5 w-5 border border-zinc-300 bg-zinc-50 dark:border-zinc-600 dark:bg-zinc-800" />
+        <div className="relative h-14 w-24 overflow-hidden border border-zinc-200 bg-white dark:border-white/10 dark:bg-zinc-900">
+          <div className="sk-mini-prox-item absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 space-y-1">
+            <span className="block h-2 w-12 rounded-full bg-zinc-800 dark:bg-zinc-100" />
+            <span className="block h-1.5 w-8 rounded-full bg-zinc-400 dark:bg-zinc-500" />
+          </div>
+          <span className="sk-mini-cur sk-mini-prox-cur left-1 top-1" />
         </div>
       );
     case "text-repulsion":
       return (
-        <div className="flex gap-0.5 text-lg font-bold text-zinc-950 dark:text-white">
-          {["T", "Y", "P", "E"].map((letter, index) => (
-            <span key={letter} style={{ transform: `translate(${index % 2 ? 2 : -2}px, ${index === 1 ? -3 : 2}px)` }}>{letter}</span>
-          ))}
+        <div className="relative flex h-14 w-24 items-center justify-center gap-0.5 overflow-hidden border border-zinc-200 bg-white text-lg font-bold text-zinc-950 dark:border-white/10 dark:bg-zinc-900 dark:text-white">
+          <span className="sk-mini-repel-1">T</span>
+          <span className="sk-mini-repel-2">Y</span>
+          <span className="sk-mini-repel-3">P</span>
+          <span className="sk-mini-repel-4">E</span>
+          <span className="sk-mini-cur sk-mini-repel-cur left-1 top-4" />
         </div>
       );
     case "image-distortion":
       return (
-        <div className="h-12 w-16 overflow-hidden border border-white/10 bg-[linear-gradient(135deg,#0f172a,#0891b2_44%,#fb923c)]">
-          <div className="h-full w-full bg-[radial-gradient(circle_at_60%_42%,rgba(255,255,255,0.42),transparent_22%)]" />
+        <div className="relative h-14 w-24 overflow-hidden border border-white/10">
+          <div className="sk-mini-dist-tile h-full w-full bg-[linear-gradient(135deg,#0f172a,#0891b2_44%,#fb923c)]">
+            <div className="h-full w-full bg-[radial-gradient(circle_at_60%_42%,rgba(255,255,255,0.42),transparent_26%)]" />
+          </div>
+          <span className="sk-mini-cur sk-mini-dist-cur left-1 top-1" />
         </div>
       );
     case "parallax-layers":
       return (
-        <div className="relative h-12 w-20 overflow-hidden border border-white/10 bg-zinc-950">
-          <span className="absolute left-3 top-4 h-7 w-7 rounded-full bg-cyan-300/40" />
-          <span className="absolute left-8 top-2 h-9 w-10 border border-white/20 bg-white/10" />
-          <span className="absolute bottom-2 right-3 h-4 w-8 bg-orange-300" />
+        <div className="relative h-14 w-24 overflow-hidden border border-white/10 bg-zinc-950">
+          <span className="sk-mini-par-back absolute left-4 top-5 h-7 w-7 rounded-full bg-cyan-300/30" />
+          <span className="sk-mini-par-mid absolute left-10 top-2 h-10 w-11 border border-white/25 bg-white/10" />
+          <span className="sk-mini-par-front absolute bottom-2 right-3 h-4 w-9 bg-orange-300" />
+          <span className="sk-mini-cur sk-mini-par-cur left-1 top-1" style={{ width: 7, height: 7 }} />
         </div>
       );
     case "drag-physics":
       return (
-        <div className="relative h-12 w-20 border border-zinc-200 bg-white dark:border-white/10 dark:bg-zinc-900">
-          <span className="absolute left-8 top-4 h-6 w-6 rotate-6 border border-zinc-950 bg-white shadow-[4px_4px_0_rgba(15,23,42,0.14)] dark:border-white dark:bg-zinc-800" />
+        <div className="relative h-14 w-24 overflow-hidden border border-zinc-200 bg-white dark:border-white/10 dark:bg-zinc-900">
+          <span className="sk-mini-drag-card absolute left-5 top-4 h-7 w-7 border border-zinc-950 bg-white shadow-[4px_4px_0_rgba(15,23,42,0.14)] dark:border-white dark:bg-zinc-800" />
+          <span className="sk-mini-cur sk-mini-drag-cur left-7 top-6" style={{ width: 8, height: 8 }} />
         </div>
       );
     case "context-cursor":
       return (
-        <div className="relative h-12 w-20 border border-white/10 bg-zinc-950">
-          <span className="absolute left-3 top-3 h-6 w-7 border border-white/10 bg-white/5" />
-          <span className="absolute left-9 top-5 rounded-full bg-cyan-300 px-1.5 py-0.5 text-[8px] text-zinc-950">View</span>
+        <div className="relative h-14 w-24 overflow-hidden border border-white/10 bg-zinc-950">
+          <span className="absolute left-8 top-3 h-8 w-10 border border-white/15 bg-white/5" />
+          <span className="sk-mini-ctx-cur absolute left-1 top-1">
+            <span className="sk-mini-cur sk-mini-ctx-dot" style={{ position: "relative", display: "block" }} />
+            <span className="sk-mini-ctx-pill absolute -left-2 -top-1 rounded-full bg-cyan-300 px-1.5 py-0.5 text-[8px] font-medium text-zinc-950">
+              View
+            </span>
+          </span>
         </div>
       );
     case "counter-roll":

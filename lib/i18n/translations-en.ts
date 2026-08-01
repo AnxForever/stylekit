@@ -483,7 +483,6 @@ export const en = {
     "animations.copyCode": "Copy",
     "animations.copied": "Copied!",
     "animations.copyCss": "Copy CSS",
-    "animations.hoverToPlay": "Hover",
     "animations.replay": "Replay",
     "animations.duration": "Duration",
     "animations.easing": "Easing",

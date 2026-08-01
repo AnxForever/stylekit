@@ -276,7 +276,6 @@ export const zh: { [K in keyof typeof en]: string } = {
   "animations.copyCode": "复制",
   "animations.copied": "已复制!",
   "animations.copyCss": "复制 CSS",
-  "animations.hoverToPlay": "悬停播放",
   "animations.replay": "重播",
   "animations.duration": "持续时间",
   "animations.easing": "缓动函数",
