@@ -5,6 +5,7 @@ import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { useI18n } from "@/lib/i18n/context";
 import { useFavorites } from "@/lib/favorites/context";
 import { StyleCard } from "@/components/home/style-card";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Heart, Layers, Paintbrush, Loader2, ChevronDown, Search, X, SlidersHorizontal } from "lucide-react";
 import type { StyleMeta, StyleType, StyleTag } from "@/lib/styles/meta";
 import {
@@ -881,16 +882,19 @@ export function StylesContent({ allStyles }: StylesContentProps) {
               <label htmlFor="styles-sort" className="text-sm text-muted">
                 {t("styles.sort")}:
               </label>
-              <select
-                id="styles-sort"
-                value={sortBy}
-                onChange={(event) => handleSortChange(event.target.value as SortOption)}
-                className="h-9 md:h-11 px-3 text-sm border border-border bg-background focus:outline-none focus:border-foreground transition-colors"
-              >
-                <option value="recommended">{t("styles.sortRecommended")}</option>
-                <option value="name-asc">{t("styles.sortNameAsc")}</option>
-                <option value="name-desc">{t("styles.sortNameDesc")}</option>
-              </select>
+              <Select value={sortBy} onValueChange={(value) => handleSortChange(value as SortOption)}>
+                <SelectTrigger
+                  id="styles-sort"
+                  className="h-9 md:h-11 w-auto min-w-[9rem] gap-2 px-3 transition-colors"
+                >
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="recommended">{t("styles.sortRecommended")}</SelectItem>
+                  <SelectItem value="name-asc">{t("styles.sortNameAsc")}</SelectItem>
+                  <SelectItem value="name-desc">{t("styles.sortNameDesc")}</SelectItem>
+                </SelectContent>
+              </Select>
               {hasActiveFilters && (
                 <button
                   onClick={handleResetFilters}
