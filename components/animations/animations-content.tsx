@@ -152,6 +152,35 @@ export function AnimationsContent({ allAnimations }: AnimationsContentProps) {
 
   const isSearching = search !== deferredSearch;
   const hasSecondaryFilters = trigger !== "all" || difficulty !== "all";
+  // With no active filter or search, group by category so 60 animations scan
+  // as titled sections instead of one undifferentiated wall.
+  const isGrouped =
+    category === "all" &&
+    trigger === "all" &&
+    difficulty === "all" &&
+    !deferredSearch.trim();
+
+  const groupedSections = useMemo(() => {
+    if (!isGrouped) return [];
+    return validCategories
+      .map((key) => ({
+        key,
+        items: filtered.filter((a) => a.category === key),
+      }))
+      .filter((section) => section.items.length > 0);
+  }, [isGrouped, filtered]);
+
+  const gridClassName =
+    "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-5";
+
+  const renderCard = (anim: AnimationMeta) => (
+    <div
+      key={anim.slug}
+      className="[content-visibility:auto] [contain-intrinsic-size:1px_340px]"
+    >
+      <AnimationCard animation={anim} />
+    </div>
+  );
 
   return (
     <>
@@ -301,16 +330,34 @@ export function AnimationsContent({ allAnimations }: AnimationsContentProps) {
 
           {/* Grid */}
           {filtered.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filtered.map((anim) => (
-                <div
-                  key={anim.slug}
-                  className="[content-visibility:auto] [contain-intrinsic-size:1px_380px]"
-                >
-                  <AnimationCard animation={anim} />
-                </div>
-              ))}
-            </div>
+            isGrouped ? (
+              <div className="space-y-12 md:space-y-14">
+                {groupedSections.map((section) => (
+                  <section
+                    key={section.key}
+                    id={`category-${section.key}`}
+                    className="scroll-mt-24"
+                  >
+                    <div className="mb-5 flex items-baseline gap-3 border-b border-border pb-2">
+                      <h2 className="text-xs uppercase tracking-[0.2em]">
+                        {t(
+                          (categoryKeys.find((c) => c.key === section.key)
+                            ?.i18nKey ?? "animations.filterAll") as Parameters<typeof t>[0]
+                        )}
+                      </h2>
+                      <span className="font-mono text-xs tabular-nums text-muted">
+                        {String(section.items.length).padStart(2, "0")}
+                      </span>
+                    </div>
+                    <div className={gridClassName}>
+                      {section.items.map(renderCard)}
+                    </div>
+                  </section>
+                ))}
+              </div>
+            ) : (
+              <div className={gridClassName}>{filtered.map(renderCard)}</div>
+            )
           ) : (
             <div className="text-center py-16">
               <p className="text-muted">

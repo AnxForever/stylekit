@@ -16,10 +16,33 @@ export const previewPanelClass =
 export function MiniPreviewStyles() {
   return (
     <style>{`
+      /* Animations-index card canvas: subtle dot grid so the motion reads
+         against a drafting-table surface instead of a flat void. */
+      .sk-preview-canvas {
+        background-image: radial-gradient(circle, rgba(15, 23, 42, 0.08) 1px, transparent 1px);
+        background-size: 16px 16px;
+      }
+      .dark .sk-preview-canvas {
+        background-image: radial-gradient(circle, rgba(255, 255, 255, 0.09) 1px, transparent 1px);
+      }
+
+      /* Hover-triggered categories keep semantic honesty: preview holds its
+         first frame until the card is actually hovered. */
+      .sk-preview-gated [class*="sk-mini-"] {
+        animation-play-state: paused;
+      }
+      .group:hover .sk-preview-gated [class*="sk-mini-"],
+      .group:focus-within .sk-preview-gated [class*="sk-mini-"] {
+        animation-play-state: running;
+      }
+
       @media (prefers-reduced-motion: reduce) {
         .sk-mini-anim {
           animation: none !important;
           transition: none !important;
+        }
+        [class*="sk-mini-"] {
+          animation-play-state: paused !important;
         }
       }
 
@@ -421,6 +444,12 @@ export function MiniPreviewStyles() {
         65%, 100% { opacity: 0.9; transform: rotate(-6deg) translateY(0); }
       }
       .sk-mini-ann-note { animation: sk-mini-ann-note 2.5s ease-in-out infinite; }
+
+      @keyframes sk-mini-tilt {
+        0%, 100% { transform: perspective(220px) rotateX(8deg) rotateY(-12deg); }
+        50% { transform: perspective(220px) rotateX(-8deg) rotateY(12deg); }
+      }
+      .sk-mini-tilt-card { animation: sk-mini-tilt 3s ease-in-out infinite; transform-style: preserve-3d; }
     `}</style>
   );
 }
@@ -937,6 +966,13 @@ export function MiniPreview({ slug }: { slug: string }) {
           <span className="sk-mini-anim sk-mini-ann-note absolute -bottom-4 left-6 font-serif text-[8px] italic text-amber-700">
             this!
           </span>
+        </div>
+      );
+    case "tilt-3d":
+      return (
+        <div className={`${previewPanelClass} sk-mini-tilt-card h-12 w-16 rounded-[10px] bg-gradient-to-br from-indigo-100 to-indigo-200 dark:from-indigo-500/30 dark:to-indigo-700/25`}>
+          <div className="absolute inset-x-2 top-2 h-1 rounded bg-black/10 dark:bg-white/15" />
+          <div className="absolute left-2 top-4 h-1 w-6 rounded bg-black/10 dark:bg-white/10" />
         </div>
       );
     default:
