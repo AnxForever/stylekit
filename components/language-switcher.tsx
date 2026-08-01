@@ -1,5 +1,6 @@
 "use client";
 
+import { Languages } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import { useI18n } from "@/lib/i18n/context";
 import { Locale } from "@/lib/i18n/translations";
@@ -10,34 +11,24 @@ export function LanguageSwitcher() {
   const pathname = usePathname();
   const router = useRouter();
 
-  const languages: { code: Locale; label: string }[] = [
-    { code: "zh", label: "中" },
-    { code: "en", label: "EN" },
-  ];
+  const target: Locale = locale === "zh" ? "en" : "zh";
+  const label = locale === "zh" ? "Switch to English" : "切换到中文";
 
   return (
-    <div className="flex items-center border border-border rounded-md overflow-hidden text-xs">
-      {languages.map((lang) => (
-        <button
-          key={lang.code}
-          onClick={() => {
-            setLocale(lang.code);
-            const currentPath = typeof window === "undefined"
-              ? pathname || "/"
-              : `${window.location.pathname}${window.location.search}${window.location.hash}`;
-            // scroll: false — swapping locale keeps the reader's place on the page.
-            router.push(localizeHref(currentPath, lang.code), { scroll: false });
-          }}
-          aria-pressed={locale === lang.code}
-          className={`w-9 py-1 text-center transition-colors ${
-            locale === lang.code
-              ? "bg-foreground text-background"
-              : "hover:bg-foreground/5 hover:text-foreground text-muted"
-          }`}
-        >
-          {lang.label}
-        </button>
-      ))}
-    </div>
+    <button
+      onClick={() => {
+        setLocale(target);
+        const currentPath = typeof window === "undefined"
+          ? pathname || "/"
+          : `${window.location.pathname}${window.location.search}${window.location.hash}`;
+        // scroll: false — swapping locale keeps the reader's place on the page.
+        router.push(localizeHref(currentPath, target), { scroll: false });
+      }}
+      aria-label={label}
+      title={label}
+      className="p-2 text-muted hover:text-foreground transition-colors"
+    >
+      <Languages size={18} strokeWidth={1.5} aria-hidden="true" />
+    </button>
   );
 }
