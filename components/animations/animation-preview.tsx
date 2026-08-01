@@ -207,6 +207,9 @@ const previewMap: Record<string, ComponentType> = {
   "text-scramble": dp(() => import("@/lib/animations/text-scramble/preview").then((m) => m.TextScramblePreview)),
   "tilt-3d": dp(() => import("@/lib/animations/tilt-3d/preview").then((m) => m.Tilt3dPreview)),
   "typewriter": dp(() => import("@/lib/animations/typewriter/preview").then((m) => m.TypewriterPreview)),
+  "border-beam": dp(() => import("@/lib/animations/border-beam/preview").then((m) => m.BorderBeamPreview)),
+  "handwriting-reveal": dp(() => import("@/lib/animations/handwriting-reveal/preview").then((m) => m.HandwritingRevealPreview)),
+  "hand-drawn-annotation": dp(() => import("@/lib/animations/hand-drawn-annotation/preview").then((m) => m.HandDrawnAnnotationPreview)),
   "underline-draw": dp(() => import("@/lib/animations/underline-draw/preview").then((m) => m.UnderlineDrawPreview)),
   "zoom-in": dp(() => import("@/lib/animations/zoom-in/preview").then((m) => m.ZoomInPreview)),
 };

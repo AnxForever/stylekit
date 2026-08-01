@@ -399,6 +399,28 @@ export function MiniPreviewStyles() {
 
       .sk-mini-page-turn { animation: sk-mini-page-turn 3.5s ease-in-out infinite; transform-origin: left center; backface-visibility: hidden; }
       .sk-mini-peel { animation: sk-mini-peel 3.5s ease-in-out infinite; transform-origin: bottom left; }
+
+      @keyframes sk-mini-beam {
+        to { transform: rotate(360deg); }
+      }
+      .sk-mini-beam-spin { animation: sk-mini-beam 2.5s linear infinite; }
+
+      @keyframes sk-mini-write {
+        0% { stroke-dashoffset: 1; }
+        60%, 100% { stroke-dashoffset: 0; }
+      }
+      .sk-mini-write { stroke-dasharray: 1; animation: sk-mini-write 2.5s ease-in-out infinite; }
+
+      @keyframes sk-mini-ann-sweep {
+        0% { background-size: 0% 70%; }
+        45%, 100% { background-size: 100% 70%; }
+      }
+      .sk-mini-ann { animation: sk-mini-ann-sweep 2.5s ease-in-out infinite; }
+      @keyframes sk-mini-ann-note {
+        0%, 40% { opacity: 0; transform: rotate(-6deg) translateY(3px); }
+        65%, 100% { opacity: 0.9; transform: rotate(-6deg) translateY(0); }
+      }
+      .sk-mini-ann-note { animation: sk-mini-ann-note 2.5s ease-in-out infinite; }
     `}</style>
   );
 }
@@ -889,6 +911,32 @@ export function MiniPreview({ slug }: { slug: string }) {
           <div className="absolute inset-0 -z-10 flex items-center justify-center rounded-[12px] border border-black/10 bg-gradient-to-br from-amber-50 to-orange-100 dark:border-white/10 dark:from-amber-200 dark:to-orange-200">
             <div className="h-1 w-6 rounded-full bg-amber-800/20" />
           </div>
+        </div>
+      );
+    case "border-beam":
+      return (
+        <div className="relative h-10 w-16 overflow-hidden rounded-lg">
+          <div className="sk-mini-anim sk-mini-beam-spin absolute left-1/2 top-1/2 h-24 w-24 -translate-x-1/2 -translate-y-1/2 [background:conic-gradient(transparent_0deg_300deg,#7c3aed_330deg,#38bdf8_355deg,transparent_360deg)]" />
+          <div className="absolute inset-[2px] flex items-center justify-center rounded-[6px] bg-zinc-900">
+            <span className="text-[9px] text-zinc-400">Beam</span>
+          </div>
+        </div>
+      );
+    case "handwriting-reveal":
+      return (
+        <svg className="h-10 w-16 text-zinc-700 dark:text-zinc-200" viewBox="0 0 64 40" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+          <path pathLength="1" className="sk-mini-anim sk-mini-write" d="M14 8 C13 16 12 26 12 32 M12 22 C17 17 23 18 24 23 C25 28 24 31 23 32 M38 20 C38 25 38 29 38 32 M38 12 C38 12.5 38 13 38 13.5 M52 10 C53 18 53 24 52 28" />
+        </svg>
+      );
+    case "hand-drawn-annotation":
+      return (
+        <div className="relative">
+          <span className="sk-mini-anim sk-mini-ann rounded-sm px-0.5 text-[10px] text-zinc-700 [background:linear-gradient(rgba(255,176,0,0.35)_0_0)_left_center/0%_70%_no-repeat] dark:text-zinc-200">
+            annotate
+          </span>
+          <span className="sk-mini-anim sk-mini-ann-note absolute -bottom-4 left-6 font-serif text-[8px] italic text-amber-700">
+            this!
+          </span>
         </div>
       );
     default:

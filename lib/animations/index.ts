@@ -68,6 +68,9 @@ import { progressBar } from "./progress-bar";
 import { elasticScale } from "./elastic-scale";
 import { pulseRing } from "./pulse-ring";
 import { textScramble } from "./text-scramble";
+import { borderBeam } from "./border-beam";
+import { handwritingReveal } from "./handwriting-reveal";
+import { handDrawnAnnotation } from "./hand-drawn-annotation";
 import { tilt3d } from "./tilt-3d";
 import { confettiBurst } from "./confetti-burst";
 import { scrollPageTurn } from "./scroll-page-turn";
@@ -131,6 +134,9 @@ export const animations: Animation[] = [
   confettiBurst,
   scrollPageTurn,
   scrollPeelAway,
+  borderBeam,
+  handwritingReveal,
+  handDrawnAnnotation,
 ];
 
 export function getAllAnimations(): Animation[] {
