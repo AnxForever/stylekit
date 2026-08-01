@@ -19,6 +19,7 @@ import { buildSiteMetadata } from "@/lib/seo/site-metadata";
 import { CURATED_STYLE_COUNT } from "@/lib/product/catalog-facts";
 import { getShowcaseTypographyProfile } from "@/lib/typography/showcase-profiles";
 import { LazyShowcaseTypographyRuntime } from "@/components/typography/lazy-showcase-typography-runtime";
+import { ShowcaseBackBar } from "@/components/showcase/showcase-back-bar";
 import "./globals.css";
 
 const publicSans = Albert_Sans({
@@ -241,6 +242,7 @@ export default async function RootLayout({
           <AnnouncementBanner />
           <LazyCommandPalette />
           {children}
+          <ShowcaseBackBar />
           <MobileBottomNav />
           <ScrollToTop />
         </ClientProviders>
