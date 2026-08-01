@@ -13,6 +13,7 @@ import {
   type FontPairing,
   type TypographyCategory,
 } from "@/lib/typography";
+import { AddToKitButton } from "@/components/kit/add-to-kit-button";
 
 export function TypographyContent() {
   const { t, locale } = useI18n();
@@ -442,6 +443,12 @@ function TypographyCard({ pairing, copied, onCopy, locale }: TypographyCardProps
           >
             Tailwind
           </button>
+          <AddToKitButton
+            type="font-pairing"
+            slug={pairing.id}
+            variant="labeled"
+            className="px-3 py-2.5 text-xs tracking-normal normal-case"
+          />
         </div>
       </div>
     </article>

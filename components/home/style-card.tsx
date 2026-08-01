@@ -3,6 +3,7 @@
 
 import React, { ViewTransition } from "react";
 import { FavoriteButton } from "@/components/favorite-button";
+import { AddToKitButton } from "@/components/kit/add-to-kit-button";
 import { LocalizedLink } from "@/components/i18n/localized-link";
 import { StyleCoverPreview } from "@/components/style-preview/style-cover-preview";
 import { useI18n } from "@/lib/i18n/context";
@@ -118,7 +119,13 @@ export const StyleCard = React.memo(function StyleCard({
         </div>
       </div>
 
-      <div className="absolute top-2 right-2 z-20">
+      <div className="absolute top-2 right-2 z-20 flex items-center gap-1">
+        <AddToKitButton
+          type="style"
+          slug={style.slug}
+          size={isCompact ? "sm" : "md"}
+          className="bg-white/80 dark:bg-black/50 backdrop-blur-sm"
+        />
         <FavoriteButton
           slug={style.slug}
           size={isCompact ? "sm" : "md"}

@@ -5,6 +5,7 @@ import { I18nProvider } from "@/lib/i18n/context";
 import type { Locale } from "@/lib/i18n/translations";
 import { HtmlLangUpdater } from "@/components/i18n/html-lang-updater";
 import { FavoritesProvider } from "@/lib/favorites/context";
+import { KitProvider } from "@/lib/kit/context";
 import { PageTransition } from "@/components/page-transition";
 import { SWRProvider } from "@/lib/swr/provider";
 import { UtmProvider } from "@/components/analytics/utm-provider";
@@ -33,11 +34,13 @@ export function ClientProviders({ children, initialLocale }: ClientProvidersProp
         <SWRProvider>
           <AuthProvider>
             <FavoritesProvider>
+              <KitProvider>
               <UtmProvider>
                 <PageTransition>
                   {children}
                 </PageTransition>
               </UtmProvider>
+              </KitProvider>
             </FavoritesProvider>
           </AuthProvider>
         </SWRProvider>

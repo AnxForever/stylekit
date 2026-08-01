@@ -48,6 +48,7 @@ export const LOCALE_ROUTE_POLICY = [
       "/landing-page-prompts",
       "/learn",
       "/liquid-glass",
+      "/launch",
       "/mouse-interactions",
       "/shadows",
       "/spacing",
@@ -102,6 +103,7 @@ export const LOCALE_ROUTE_POLICY = [
     exact: [
       "/docs",
       "/html-in-canvas",
+      "/kit",
       "/login",
       "/preview",
       "/profile",

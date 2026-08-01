@@ -16,6 +16,7 @@ import {
 import { ChevronDown } from "lucide-react";
 import { ShortcutHint } from "@/components/ui/shortcut-hint";
 import { GitHubStarButton } from "@/components/github-star-button";
+import { KitNavButton } from "@/components/kit/kit-nav-button";
 import { trackEvent } from "@/lib/analytics/events";
 import { localizeHref } from "@/lib/i18n/routing";
 
@@ -467,6 +468,7 @@ export function Header() {
               <GitHubStarButton variant="compact" />
             </div>
 
+            {mounted && <KitNavButton />}
             {mounted && <LanguageSwitcher />}
             {mounted && (
               <button
@@ -532,6 +534,15 @@ export function Header() {
                 </svg>
                 <span>{t("nav.search")}</span>
               </button>
+
+              {/* Kit Builder entry */}
+              <Link
+                href="/kit"
+                onClick={() => setIsMenuOpen(false)}
+                className="text-sm tracking-wide text-muted hover:text-foreground transition-colors"
+              >
+                {locale === "zh" ? "我的工具箱" : "My Kit"}
+              </Link>
 
               {/* Main Nav: link or accordion dropdown */}
               {mainNav.map((item) => {

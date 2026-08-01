@@ -6,6 +6,7 @@ import { Check, ClipboardCopy } from "lucide-react";
 import { useI18n } from "@/lib/i18n/context";
 import type { AnimationMeta } from "@/lib/animations/types";
 import { MiniPreview, MiniPreviewStyles } from "./mini-preview";
+import { AddToKitButton } from "@/components/kit/add-to-kit-button";
 
 interface AnimationCardProps {
   animation: AnimationMeta;
@@ -107,20 +108,23 @@ export function AnimationCard({ animation }: AnimationCardProps) {
             ? t("animations.copied")
             : t(triggerI18nMap[animation.trigger] as Parameters<typeof t>[0])}
         </span>
-        <button
-          type="button"
-          onClick={handleCopyCss}
-          title={t("animations.copyCss")}
-          aria-label={`${t("animations.copyCss")} - ${name}`}
-          className="inline-flex items-center gap-1.5 border border-border px-2 py-1 text-[10px] uppercase tracking-[0.14em] text-muted transition-colors hover:border-foreground hover:text-foreground"
-        >
-          {copied ? (
-            <Check className="h-3 w-3 text-green-600 dark:text-green-400" />
-          ) : (
-            <ClipboardCopy className="h-3 w-3" />
-          )}
-          CSS
-        </button>
+        <div className="flex items-center gap-1.5">
+          <AddToKitButton type="animation" slug={animation.slug} variant="labeled" />
+          <button
+            type="button"
+            onClick={handleCopyCss}
+            title={t("animations.copyCss")}
+            aria-label={`${t("animations.copyCss")} - ${name}`}
+            className="inline-flex items-center gap-1.5 border border-border px-2 py-1 text-[10px] uppercase tracking-[0.14em] text-muted transition-colors hover:border-foreground hover:text-foreground"
+          >
+            {copied ? (
+              <Check className="h-3 w-3 text-green-600 dark:text-green-400" />
+            ) : (
+              <ClipboardCopy className="h-3 w-3" />
+            )}
+            CSS
+          </button>
+        </div>
       </div>
     </div>
   );
