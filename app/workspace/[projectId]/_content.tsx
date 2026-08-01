@@ -3,11 +3,9 @@
 import Link from "next/link";
 import { FormEvent, useCallback, useEffect, useMemo, useState } from "react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { StylePicker, NO_STYLE, type PickerStyle } from "@/components/workspace/style-picker";
 
-// Radix Select forbids empty-string item values; this sentinel maps to null on submit.
-const NO_STYLE = "__none__";
-
-type StyleOption = { slug: string; name: string; nameEn: string };
+type StyleOption = PickerStyle;
 type Project = {
   id: string; name: string; description: string; project_type: string; stack: string[];
   brief: { audience?: string; primaryGoal?: string; requiredPages?: string[]; requiredStates?: string[]; brandPersonality?: string[]; antiReferences?: string[]; notes?: string };
@@ -28,6 +26,9 @@ export function WorkspaceProjectEditor({ projectId, styles, supportedStyles }: {
   const [workingAction, setWorkingAction] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  // Mirrors the uncontrolled projectType select once the user changes it, so
+  // the style picker recommends by the type currently chosen in the form.
+  const [projectTypeHint, setProjectTypeHint] = useState<string | null>(null);
 
   const load = useCallback(async () => {
     setLoading(true); setError(null);
@@ -147,7 +148,7 @@ export function WorkspaceProjectEditor({ projectId, styles, supportedStyles }: {
         <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_300px]">
           <form onSubmit={save} className="grid gap-6 border border-border p-6">
             <div><h2 className="text-xl font-medium">项目规格</h2><p className="mt-1 text-sm text-muted">每次保存都会创建不可覆盖的新版本。</p></div>
-            <div className="grid gap-4 sm:grid-cols-2"><Field label="项目名称"><input name="name" required defaultValue={project.name} className="workspace-input" /></Field><Field label="项目类型"><Select name="projectType" defaultValue={project.project_type}><SelectTrigger className="px-3"><SelectValue /></SelectTrigger><SelectContent><SelectItem value="dashboard">数据后台</SelectItem><SelectItem value="landing">落地页</SelectItem><SelectItem value="app">工具 App</SelectItem><SelectItem value="portfolio">作品集</SelectItem><SelectItem value="blog">博客</SelectItem><SelectItem value="other">其他</SelectItem></SelectContent></Select></Field></div>
+            <div className="grid gap-4 sm:grid-cols-2"><Field label="项目名称"><input name="name" required defaultValue={project.name} className="workspace-input" /></Field><Field label="项目类型"><Select name="projectType" defaultValue={project.project_type} onValueChange={setProjectTypeHint}><SelectTrigger className="px-3"><SelectValue /></SelectTrigger><SelectContent><SelectItem value="dashboard">数据后台</SelectItem><SelectItem value="landing">落地页</SelectItem><SelectItem value="app">工具 App</SelectItem><SelectItem value="portfolio">作品集</SelectItem><SelectItem value="blog">博客</SelectItem><SelectItem value="other">其他</SelectItem></SelectContent></Select></Field></div>
             <Field label="项目说明"><textarea name="description" rows={2} defaultValue={project.description} className="workspace-input" /></Field>
             <Field label="目标用户"><input name="audience" defaultValue={project.brief?.audience ?? ""} className="workspace-input" /></Field>
             <Field label="主要目标"><textarea name="primaryGoal" rows={2} defaultValue={project.brief?.primaryGoal ?? ""} className="workspace-input" /></Field>
@@ -155,7 +156,7 @@ export function WorkspaceProjectEditor({ projectId, styles, supportedStyles }: {
             <Field label="页面清单"><input name="requiredPages" defaultValue={project.brief?.requiredPages?.join("，") ?? ""} className="workspace-input" /></Field>
             <Field label="必要状态"><div className="grid grid-cols-2 gap-2 sm:grid-cols-5">{requiredStates.map(([value,label]) => <label key={value} className="flex min-h-11 items-center gap-2 border border-border px-3 text-sm"><input type="checkbox" name={`state:${value}`} defaultChecked={project.brief?.requiredStates?.includes(value)} />{label}</label>)}</div></Field>
             <div className="grid gap-4 sm:grid-cols-2"><Field label="品牌调性"><input name="brandPersonality" defaultValue={project.brief?.brandPersonality?.join("，") ?? ""} className="workspace-input" /></Field><Field label="绝对不要"><input name="antiReferences" defaultValue={project.brief?.antiReferences?.join("，") ?? ""} className="workspace-input" /></Field></div>
-            <Field label="风格方向"><Select name="selectedStyleSlug" defaultValue={project.selected_style_slug ?? NO_STYLE}><SelectTrigger className="px-3"><SelectValue /></SelectTrigger><SelectContent><SelectItem value={NO_STYLE}>尚未选择</SelectItem>{styles.map((style) => <SelectItem key={style.slug} value={style.slug}>{style.name} / {style.nameEn}</SelectItem>)}</SelectContent></Select></Field>
+            <Field label="风格方向"><StylePicker styles={styles} defaultValue={project.selected_style_slug} noneLabel="尚未选择" projectType={projectTypeHint ?? project.project_type} supportedSlugs={supportedStyles} /></Field>
             <Field label="其他约束"><textarea name="notes" rows={3} defaultValue={project.brief?.notes ?? ""} className="workspace-input" /></Field>
             <Field label="本次修改说明（可选）"><input name="changeSummary" maxLength={240} className="workspace-input" placeholder="例如：补充移动端状态和账户页面" /></Field>
             <div className="flex items-center gap-4"><button disabled={saving || project.status === "archived"} className="h-11 bg-foreground px-5 text-sm font-medium text-background disabled:opacity-50">{saving ? "正在保存…" : "保存新版本"}</button><span aria-live="polite" className="text-sm text-muted">{message}</span></div>

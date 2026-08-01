@@ -3,11 +3,9 @@
 import Link from "next/link";
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { StylePicker, NO_STYLE, type PickerStyle } from "@/components/workspace/style-picker";
 
-// Radix Select forbids empty-string item values; this sentinel maps to null on submit.
-const NO_STYLE = "__none__";
-
-type StyleOption = { slug: string; name: string; nameEn: string };
+type StyleOption = PickerStyle;
 type ProjectRow = {
   id: string;
   name: string;
@@ -33,6 +31,9 @@ export function WorkspaceHome({ styles }: { styles: StyleOption[] }) {
   const [projects, setProjects] = useState<ProjectRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [creating, setCreating] = useState(false);
+  // Mirrors the uncontrolled projectType select so the style picker can
+  // pre-filter recommendations by the type currently chosen in the form.
+  const [projectTypeHint, setProjectTypeHint] = useState("dashboard");
   const [error, setError] = useState<string | null>(null);
   const [query, setQuery] = useState("");
 
@@ -133,14 +134,14 @@ export function WorkspaceHome({ styles }: { styles: StyleOption[] }) {
           <form className="mt-6 grid gap-4" onSubmit={createProject}>
             <Field label="项目名称"><input name="name" required maxLength={120} className="workspace-input" placeholder="例如：客户数据后台" /></Field>
             <Field label="一句话说明"><textarea name="description" maxLength={2000} rows={2} className="workspace-input" placeholder="这个产品解决什么问题" /></Field>
-            <Field label="项目类型"><Select name="projectType" defaultValue="dashboard" required><SelectTrigger className="px-3"><SelectValue /></SelectTrigger><SelectContent><SelectItem value="dashboard">数据后台</SelectItem><SelectItem value="landing">落地页</SelectItem><SelectItem value="app">工具 App</SelectItem><SelectItem value="portfolio">作品集</SelectItem><SelectItem value="blog">博客</SelectItem><SelectItem value="other">其他</SelectItem></SelectContent></Select></Field>
+            <Field label="项目类型"><Select name="projectType" defaultValue="dashboard" onValueChange={setProjectTypeHint} required><SelectTrigger className="px-3"><SelectValue /></SelectTrigger><SelectContent><SelectItem value="dashboard">数据后台</SelectItem><SelectItem value="landing">落地页</SelectItem><SelectItem value="app">工具 App</SelectItem><SelectItem value="portfolio">作品集</SelectItem><SelectItem value="blog">博客</SelectItem><SelectItem value="other">其他</SelectItem></SelectContent></Select></Field>
             <Field label="技术栈"><div className="grid grid-cols-2 gap-2">{stackOptions.map(([value, label]) => <label key={value} className="flex items-center gap-2 border border-border px-3 py-2 text-sm"><input type="checkbox" name={`stack:${value}`} defaultChecked={["nextjs", "typescript", "tailwind"].includes(value)} />{label}</label>)}</div></Field>
             <Field label="目标用户"><input name="audience" className="workspace-input" placeholder="谁会使用它" /></Field>
             <Field label="主要目标"><textarea name="primaryGoal" rows={2} className="workspace-input" placeholder="用户进入产品后最重要的任务" /></Field>
             <Field label="需要的页面"><input name="requiredPages" className="workspace-input" placeholder="概览，账户，设置" /></Field>
             <Field label="品牌调性"><input name="brandPersonality" className="workspace-input" placeholder="专业，克制，可信" /></Field>
             <Field label="绝对不要"><input name="antiReferences" className="workspace-input" placeholder="不要紫色渐变，不要玻璃拟态" /></Field>
-            <Field label="选择现有风格"><Select name="selectedStyleSlug" defaultValue={NO_STYLE}><SelectTrigger className="px-3"><SelectValue /></SelectTrigger><SelectContent><SelectItem value={NO_STYLE}>稍后选择</SelectItem>{styles.map((style) => <SelectItem key={style.slug} value={style.slug}>{style.name} / {style.nameEn}</SelectItem>)}</SelectContent></Select></Field>
+            <Field label="选择现有风格"><StylePicker styles={styles} noneLabel="稍后选择" projectType={projectTypeHint} /></Field>
             <Field label="其他约束"><textarea name="notes" rows={3} className="workspace-input" placeholder="移动端、无障碍、数据密度等要求" /></Field>
             <button disabled={creating} className="h-11 bg-foreground px-4 text-sm font-medium text-background disabled:opacity-50">{creating ? "正在创建…" : "创建并进入项目"}</button>
           </form>
