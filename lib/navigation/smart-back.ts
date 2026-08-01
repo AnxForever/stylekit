@@ -4,7 +4,7 @@ import {
   localizeHref,
   LOCALE_COOKIE_NAME,
 } from "@/lib/i18n/routing";
-import { hasUsableAppHistory } from "@/lib/navigation/browser-history";
+import { hasUsableAppHistory, getPreviousAppHistoryPath } from "@/lib/navigation/browser-history";
 
 interface RouterLike {
   back(): void;
@@ -85,6 +85,19 @@ export function isSemanticBackLabel(label: string): boolean {
   );
 }
 
+// Reduce a path to its locale-free pathname so "/zh/styles" and "/styles?x=1"
+// compare as the same destination.
+function normalizeComparablePath(path: string): string {
+  let pathname = path;
+  try {
+    pathname = new URL(path, "https://internal.invalid").pathname;
+  } catch {
+    // keep the raw value
+  }
+  pathname = pathname.replace(/^\/(en|zh)(?=\/|$)/, "").replace(/\/+$/, "");
+  return pathname === "" ? "/" : pathname;
+}
+
 export function navigateBackOrFallback(
   router: RouterLike,
   options: SmartBackOptions = {}
@@ -97,8 +110,21 @@ export function navigateBackOrFallback(
   } = options;
 
   if (hasUsableAppHistory()) {
-    router.back();
-    return;
+    // A semantic back control promises a destination. Only reuse browser
+    // history when the previous entry actually is that destination -
+    // otherwise (e.g. showcase -> detail -> "back to catalog", where the
+    // previous entry is the showcase) honor the label and navigate forward.
+    const semanticTarget = options.href ?? options.fallbackHref ?? null;
+    const previousPath = semanticTarget ? getPreviousAppHistoryPath() : null;
+    if (
+      !semanticTarget ||
+      previousPath === null ||
+      normalizeComparablePath(previousPath) ===
+        normalizeComparablePath(semanticTarget)
+    ) {
+      router.back();
+      return;
+    }
   }
 
   if (savedReturnUrlKey) {

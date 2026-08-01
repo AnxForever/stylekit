@@ -1,4 +1,5 @@
 const APP_HISTORY_INDEX_KEY = "__stylekitAppHistoryIndex";
+const APP_HISTORY_PATHS_KEY = "__stylekitAppHistoryPaths";
 const PATCH_FLAG = "__stylekitAppHistoryPatched";
 
 type PatchedHistory = History & {
@@ -32,6 +33,30 @@ function hasSameOriginReferrer(): boolean {
   }
 }
 
+function readHistoryPaths(): Record<string, string> {
+  if (typeof window === "undefined") {
+    return {};
+  }
+  try {
+    const raw = sessionStorage.getItem(APP_HISTORY_PATHS_KEY);
+    const parsed: unknown = raw ? JSON.parse(raw) : {};
+    return isRecord(parsed) ? (parsed as Record<string, string>) : {};
+  } catch {
+    return {};
+  }
+}
+
+function writeHistoryPath(index: number, path: string): void {
+  try {
+    const paths = readHistoryPaths();
+    paths[String(index)] = path;
+    sessionStorage.setItem(APP_HISTORY_PATHS_KEY, JSON.stringify(paths));
+  } catch {
+    // Session storage unavailable (privacy mode) - direction checks degrade
+    // gracefully to plain history behavior.
+  }
+}
+
 export function getAppHistoryIndex(): number | null {
   if (typeof window === "undefined") {
     return null;
@@ -60,6 +85,18 @@ export function hasUsableAppHistory(): boolean {
   return hasSameOriginReferrer();
 }
 
+// The pathname the previous history entry showed, if the tracker recorded it.
+// Lets smart-back verify that going "back" actually points where a semantic
+// back link promises to go.
+export function getPreviousAppHistoryPath(): string | null {
+  const index = getAppHistoryIndex();
+  if (index === null || index <= 0) {
+    return null;
+  }
+  const value = readHistoryPaths()[String(index - 1)];
+  return typeof value === "string" ? value : null;
+}
+
 export function installAppHistoryTracking(): () => void {
   if (typeof window === "undefined") {
     return () => undefined;
@@ -79,15 +116,21 @@ export function installAppHistoryTracking(): () => void {
       ""
     );
   }
+  const initialIndex = getAppHistoryIndex();
+  if (initialIndex !== null) {
+    writeHistoryPath(initialIndex, window.location.pathname);
+  }
 
   const trackedPushState: History["pushState"] = (data, unused, url) => {
     const currentIndex = getAppHistoryIndex() ?? 0;
     originalPushState(withHistoryIndex(data, currentIndex + 1), unused, url);
+    writeHistoryPath(currentIndex + 1, window.location.pathname);
   };
 
   const trackedReplaceState: History["replaceState"] = (data, unused, url) => {
     const currentIndex = getAppHistoryIndex() ?? 0;
     originalReplaceState(withHistoryIndex(data, currentIndex), unused, url);
+    writeHistoryPath(currentIndex, window.location.pathname);
   };
 
   history.pushState = trackedPushState;

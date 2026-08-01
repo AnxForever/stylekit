@@ -114,6 +114,42 @@ describe("navigateBackOrFallback", () => {
     expect(router.push).not.toHaveBeenCalled();
   });
 
+  it("navigates forward when the previous entry is not the promised destination", () => {
+    installBrowserState({
+      pathname: "/styles/glassmorphism",
+      historyLength: 4,
+      historyState: { __stylekitAppHistoryIndex: 2 },
+      savedEntries: {
+        __stylekitAppHistoryPaths: JSON.stringify({
+          "1": "/styles/glassmorphism/showcase",
+        }),
+      },
+    });
+    const router = { back: vi.fn(), push: vi.fn() };
+
+    navigateBackOrFallback(router, { fallbackHref: "/styles" });
+
+    expect(router.back).not.toHaveBeenCalled();
+    expect(router.push).toHaveBeenCalledWith("/styles");
+  });
+
+  it("still uses history when the previous entry matches across locale prefixes", () => {
+    installBrowserState({
+      pathname: "/styles/glassmorphism",
+      historyLength: 4,
+      historyState: { __stylekitAppHistoryIndex: 2 },
+      savedEntries: {
+        __stylekitAppHistoryPaths: JSON.stringify({ "1": "/zh/styles" }),
+      },
+    });
+    const router = { back: vi.fn(), push: vi.fn() };
+
+    navigateBackOrFallback(router, { fallbackHref: "/styles" });
+
+    expect(router.back).toHaveBeenCalledOnce();
+    expect(router.push).not.toHaveBeenCalled();
+  });
+
   it("uses the locale cookie for an unprefixed Showcase fallback", () => {
     installBrowserState({
       pathname: "/styles/neo-brutalist/showcase",
