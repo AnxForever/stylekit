@@ -5,7 +5,11 @@ import path from "node:path";
 
 const SNAPSHOT_DIR = path.join(process.cwd(), ".data");
 const SNAPSHOT_FILE = path.join(SNAPSHOT_DIR, "admin-analytics-snapshots.json");
-const MAX_AGE_MS = 24 * 60 * 60 * 1000;
+// Snapshots are the degraded-mode fallback when the analytics RPCs fail; a
+// successful refresh always overwrites them, so a long TTL only ever surfaces
+// stale-but-labeled data (generatedAt is shown in the UI) instead of a blank
+// dashboard during a multi-day outage.
+const MAX_AGE_MS = 7 * 24 * 60 * 60 * 1000;
 
 interface Entry { writtenAt: number; value: unknown }
 type SnapshotStore = Record<string, Entry>;
