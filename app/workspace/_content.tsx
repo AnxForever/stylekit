@@ -2,6 +2,10 @@
 
 import Link from "next/link";
 import { FormEvent, useEffect, useMemo, useState } from "react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+
+// Radix Select forbids empty-string item values; this sentinel maps to null on submit.
+const NO_STYLE = "__none__";
 
 type StyleOption = { slug: string; name: string; nameEn: string };
 type ProjectRow = {
@@ -68,7 +72,7 @@ export function WorkspaceHome({ styles }: { styles: StyleOption[] }) {
         name: form.get("name"),
         description: form.get("description"),
         projectType: form.get("projectType"),
-        selectedStyleSlug: form.get("selectedStyleSlug") || null,
+        selectedStyleSlug: form.get("selectedStyleSlug") === NO_STYLE ? null : form.get("selectedStyleSlug") || null,
         stack: stackOptions.filter(([value]) => form.get(`stack:${value}`) === "on").map(([value]) => value),
         brief: {
           audience: form.get("audience"),
@@ -129,14 +133,14 @@ export function WorkspaceHome({ styles }: { styles: StyleOption[] }) {
           <form className="mt-6 grid gap-4" onSubmit={createProject}>
             <Field label="项目名称"><input name="name" required maxLength={120} className="workspace-input" placeholder="例如：客户数据后台" /></Field>
             <Field label="一句话说明"><textarea name="description" maxLength={2000} rows={2} className="workspace-input" placeholder="这个产品解决什么问题" /></Field>
-            <Field label="项目类型"><select name="projectType" required className="workspace-input"><option value="dashboard">数据后台</option><option value="landing">落地页</option><option value="app">工具 App</option><option value="portfolio">作品集</option><option value="blog">博客</option><option value="other">其他</option></select></Field>
+            <Field label="项目类型"><Select name="projectType" defaultValue="dashboard" required><SelectTrigger className="px-3"><SelectValue /></SelectTrigger><SelectContent><SelectItem value="dashboard">数据后台</SelectItem><SelectItem value="landing">落地页</SelectItem><SelectItem value="app">工具 App</SelectItem><SelectItem value="portfolio">作品集</SelectItem><SelectItem value="blog">博客</SelectItem><SelectItem value="other">其他</SelectItem></SelectContent></Select></Field>
             <Field label="技术栈"><div className="grid grid-cols-2 gap-2">{stackOptions.map(([value, label]) => <label key={value} className="flex items-center gap-2 border border-border px-3 py-2 text-sm"><input type="checkbox" name={`stack:${value}`} defaultChecked={["nextjs", "typescript", "tailwind"].includes(value)} />{label}</label>)}</div></Field>
             <Field label="目标用户"><input name="audience" className="workspace-input" placeholder="谁会使用它" /></Field>
             <Field label="主要目标"><textarea name="primaryGoal" rows={2} className="workspace-input" placeholder="用户进入产品后最重要的任务" /></Field>
             <Field label="需要的页面"><input name="requiredPages" className="workspace-input" placeholder="概览，账户，设置" /></Field>
             <Field label="品牌调性"><input name="brandPersonality" className="workspace-input" placeholder="专业，克制，可信" /></Field>
             <Field label="绝对不要"><input name="antiReferences" className="workspace-input" placeholder="不要紫色渐变，不要玻璃拟态" /></Field>
-            <Field label="选择现有风格"><select name="selectedStyleSlug" className="workspace-input"><option value="">稍后选择</option>{styles.map((style) => <option key={style.slug} value={style.slug}>{style.name} / {style.nameEn}</option>)}</select></Field>
+            <Field label="选择现有风格"><Select name="selectedStyleSlug" defaultValue={NO_STYLE}><SelectTrigger className="px-3"><SelectValue /></SelectTrigger><SelectContent><SelectItem value={NO_STYLE}>稍后选择</SelectItem>{styles.map((style) => <SelectItem key={style.slug} value={style.slug}>{style.name} / {style.nameEn}</SelectItem>)}</SelectContent></Select></Field>
             <Field label="其他约束"><textarea name="notes" rows={3} className="workspace-input" placeholder="移动端、无障碍、数据密度等要求" /></Field>
             <button disabled={creating} className="h-11 bg-foreground px-4 text-sm font-medium text-background disabled:opacity-50">{creating ? "正在创建…" : "创建并进入项目"}</button>
           </form>
