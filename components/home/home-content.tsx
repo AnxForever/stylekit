@@ -23,6 +23,7 @@ import { HomeSupportCard, type SupportPreviewItem } from "./_support-card";
 import { MobileHomeSummarySection } from "./_mobile-summary";
 import { TrendingStylesSkeleton } from "./_skeletons";
 import { ThankYouModal } from "@/components/home/thank-you-modal";
+import { FriendPromoBanner } from "@/components/home/friend-promo-banner";
 
 const BuiltForSection = dynamic(
   () => import("@/components/home/built-for-section").then((m) => ({ default: m.BuiltForSection })),
@@ -307,6 +308,7 @@ export function HomeContent({ styles, stats }: HomeContentProps) {
   return (
     <>
       <ThankYouModal showOnHomepageOnly={true} />
+      <FriendPromoBanner />
       <section id="home-hero" className="home-hero-surface relative overflow-hidden border-b border-border">
         <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
           <div className="absolute -top-28 left-[-8rem] h-72 w-72 rounded-full bg-accent/10 blur-3xl" />

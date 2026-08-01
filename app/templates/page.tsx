@@ -5,7 +5,7 @@ export const dynamic = "force-static";
 import Image from "next/image";
 import { useCallback, useDeferredValue, useEffect, useMemo, useRef, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { Check, ClipboardCopy, Code2, Download, Loader2, X } from "lucide-react";
+import { Check, ClipboardCopy, Code2, Download, ExternalLink, Github, Loader2, X } from "lucide-react";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { getAllStylesMeta } from "@/lib/styles/meta";
@@ -626,7 +626,94 @@ export default function TemplatesPage() {
                 const styleLabel = locale === "zh"
                   ? style?.name || style?.nameEn || "风格"
                   : style?.nameEn || style?.name || "Style";
-                const slug = template.href.split("/").filter(Boolean).pop() ?? "";
+                const slug = template.external
+                  ? template.id
+                  : template.href.split("/").filter(Boolean).pop() ?? "";
+
+                if (template.external) {
+                  return (
+                    <div
+                      key={template.id}
+                      className="group border border-border hover:border-foreground focus-within:border-foreground transition-colors [content-visibility:auto] [contain-intrinsic-size:1px_520px]"
+                    >
+                      <a
+                        href={template.external.siteUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        ref={(element) => {
+                          templateCardRefs.current[index] = element;
+                        }}
+                        onKeyDown={(event) => handleTemplateCardKeyDown(event, index)}
+                        aria-label={`${templateName} - ${t("templates.visitSite")}`}
+                        className="block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                      >
+                        <div className="aspect-[16/10] relative overflow-hidden bg-zinc-100 dark:bg-zinc-900">
+                          {templateCoverSlugs.has(slug) && (
+                            <Image
+                              src={`/templates/covers/${slug}.webp`}
+                              alt={`${templateName} preview`}
+                              fill
+                              className="object-cover object-top transition-transform duration-500 group-hover:scale-[1.03]"
+                              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                              unoptimized
+                            />
+                          )}
+                          <span className="absolute left-3 top-3 border border-foreground bg-background/90 px-2 py-1 text-[10px] uppercase tracking-[0.16em] backdrop-blur-sm">
+                            {t("templates.communityPick")}
+                          </span>
+                          <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent px-4 py-3">
+                            <span className="text-white text-sm font-medium">{templateName}</span>
+                          </div>
+                        </div>
+
+                        <div className="p-4 md:p-5">
+                          <div className="flex flex-wrap items-center gap-2 mb-3">
+                            <span className="text-xs px-2 py-0.5 bg-zinc-100 dark:bg-zinc-800 text-muted">
+                              {t(templateTypeToTranslationKey(template.type))}
+                            </span>
+                            <span className="text-xs px-2 py-0.5 bg-zinc-100 dark:bg-zinc-800 text-muted">
+                              {t("templates.badgeOpenSource")}
+                            </span>
+                          </div>
+
+                          <h3 className="text-lg mb-2 group-hover:text-accent transition-colors">
+                            {templateName}
+                          </h3>
+                          <p className="text-sm text-muted leading-relaxed line-clamp-2">
+                            {templateDescription}
+                          </p>
+
+                          <p className="text-xs tracking-wide mt-4 group-hover:text-accent transition-colors">
+                            {t("templates.visitSite")} &#8599;
+                          </p>
+                        </div>
+                      </a>
+
+                      <div className="flex items-center gap-1 px-4 pb-4 md:px-5 md:pb-5 pt-0">
+                        <a
+                          href={template.external.repoUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          title={t("templates.viewOnGitHub")}
+                          className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium border border-foreground text-foreground hover:bg-foreground hover:text-background transition-colors"
+                        >
+                          <Github className="w-3.5 h-3.5" />
+                          GitHub
+                        </a>
+                        <a
+                          href={template.external.siteUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          title={t("templates.visitSite")}
+                          className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-muted border border-border hover:border-foreground hover:text-foreground transition-colors"
+                        >
+                          <ExternalLink className="w-3.5 h-3.5" />
+                          {t("templates.visitSite")}
+                        </a>
+                      </div>
+                    </div>
+                  );
+                }
 
                 return (
                   <div

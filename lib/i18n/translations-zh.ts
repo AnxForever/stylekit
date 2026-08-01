@@ -392,6 +392,10 @@ export const zh: { [K in keyof typeof en]: string } = {
   "templates.copyCode": "复制代码",
   "templates.copied": "已复制!",
   "templates.download": "下载完整项目",
+  "templates.communityPick": "友情推荐",
+  "templates.badgeOpenSource": "开源项目",
+  "templates.visitSite": "访问官网",
+  "templates.viewOnGitHub": "在 GitHub 查看",
 
   "templates.loadingSource": "加载源码中...",
   "templates.sourceNotFound": "源码暂不可用。",

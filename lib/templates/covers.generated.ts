@@ -23,6 +23,7 @@ export const templateCoverSlugs = new Set<string>([
   "minimalist-portfolio",
   "music-player",
   "neumorphism-landing",
+  "nextdevtpl",
   "portfolio-gallery",
   "pricing-page",
   "real-estate",

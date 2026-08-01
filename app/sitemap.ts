@@ -144,9 +144,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
     createLocalizedEntries(`/animations/${anim.slug}`, undefined, "weekly", 0.7)
   );
 
-  const templatePages: MetadataRoute.Sitemap = templateCatalog.flatMap((template) =>
-    createLocalizedEntries(template.href, undefined, "monthly", 0.6)
-  );
+  const templatePages: MetadataRoute.Sitemap = templateCatalog
+    .filter((template) => !template.external)
+    .flatMap((template) =>
+      createLocalizedEntries(template.href, undefined, "monthly", 0.6)
+    );
 
   const blogPosts = getAllPosts();
   const blogPostPages: MetadataRoute.Sitemap = blogPosts.flatMap((post) =>
