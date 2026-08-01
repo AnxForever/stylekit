@@ -438,12 +438,6 @@ export function MiniPreviewStyles() {
       }
       .sk-mini-ann-note { animation: sk-mini-ann-note 2.5s ease-in-out infinite; }
 
-      @keyframes sk-mini-tilt {
-        0%, 100% { transform: perspective(220px) rotateX(8deg) rotateY(-12deg); }
-        50% { transform: perspective(220px) rotateX(-8deg) rotateY(12deg); }
-      }
-      .sk-mini-tilt-card { animation: sk-mini-tilt 3s ease-in-out infinite; transform-style: preserve-3d; }
-
       /* --- Simulated-cursor choreography for pointer-driven effects.
              A tiny cursor dot tours the scene while the effect responds in
              sync, so pointer interactions read as a looping screen recording. */
@@ -587,20 +581,42 @@ export function MiniPreview({ slug }: { slug: string }) {
   switch (slug) {
     case "fade-in-up":
       return (
-        <div className={`${previewPanelClass} sk-mini-fade-up h-10 w-14 rounded-[14px] bg-gradient-to-br from-sky-100 to-sky-200 dark:from-sky-500/30 dark:to-sky-700/25`}>
-          <div className="absolute left-2 right-2 top-2 h-1 rounded-full bg-white/65 dark:bg-white/15" />
-          <div className="absolute bottom-2 left-2 h-1.5 w-7 rounded-full bg-white/55 dark:bg-white/10" />
+        <div className="relative h-16 w-24 overflow-hidden rounded-md border border-zinc-200 bg-zinc-50 dark:border-white/10 dark:bg-zinc-950">
+          <div className="absolute inset-x-2 top-2 space-y-1">
+            <div className="h-1 w-10 rounded-full bg-zinc-300 dark:bg-zinc-700" />
+            <div className="h-1 w-14 rounded-full bg-zinc-200 dark:bg-zinc-800" />
+          </div>
+          <div className="sk-mini-anim sk-mini-fade-up absolute inset-x-2 bottom-2 flex items-center gap-1.5 rounded-[4px] border border-zinc-200 bg-white px-1.5 py-1 shadow-sm dark:border-white/10 dark:bg-zinc-800">
+            <span className="h-1.5 w-1.5 rounded-full bg-green-500" />
+            <span className="text-[7px] font-medium leading-none text-zinc-700 dark:text-zinc-200">Saved</span>
+          </div>
         </div>
       );
     case "scale-in":
       return (
-        <div className={`${previewPanelClass} sk-mini-scale-in flex h-11 w-11 items-center justify-center rounded-[16px] bg-gradient-to-br from-violet-100 to-fuchsia-100 dark:from-violet-500/28 dark:to-fuchsia-500/18`}>
-          <div className="h-4 w-4 rounded-full border border-white/70 bg-white/60 dark:border-white/20 dark:bg-white/10" />
+        <div className="relative h-16 w-24 overflow-hidden rounded-md border border-zinc-200 bg-white dark:border-white/10 dark:bg-zinc-950">
+          <div className="absolute inset-0 bg-zinc-900/20 dark:bg-black/45" />
+          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+            <div className="sk-mini-anim sk-mini-scale-in w-16 rounded-[5px] border border-zinc-200 bg-white p-1.5 shadow-lg dark:border-white/10 dark:bg-zinc-800">
+              <div className="h-1 w-8 rounded-full bg-zinc-500 dark:bg-zinc-300" />
+              <div className="mt-1 h-1 w-11 rounded-full bg-zinc-200 dark:bg-zinc-600" />
+              <div className="mt-1.5 flex gap-1">
+                <span className="h-2.5 w-6 rounded-[3px] bg-blue-600" />
+                <span className="h-2.5 w-6 rounded-[3px] border border-zinc-300 dark:border-zinc-600" />
+              </div>
+            </div>
+          </div>
         </div>
       );
     case "hover-lift":
       return (
-        <div className={`${previewPanelClass} sk-mini-hover-lift h-9 w-14 rounded-[14px] bg-gradient-to-b from-amber-100 to-orange-100 dark:from-amber-500/28 dark:to-orange-500/22`} />
+        <div className="sk-mini-anim sk-mini-hover-lift w-16 overflow-hidden rounded-[5px] border border-zinc-200 bg-white dark:border-white/10 dark:bg-zinc-800">
+          <div className="h-6 w-full bg-[linear-gradient(160deg,#1e3a5f,#2d6a8f_50%,#e8a854)]" />
+          <div className="space-y-1 p-1.5">
+            <div className="h-1 w-9 rounded-full bg-zinc-500 dark:bg-zinc-300" />
+            <div className="h-1 w-6 rounded-full bg-zinc-200 dark:bg-zinc-600" />
+          </div>
+        </div>
       );
     case "typewriter":
       return (
@@ -612,22 +628,41 @@ export function MiniPreview({ slug }: { slug: string }) {
       );
     case "skeleton-pulse":
       return (
-        <div className="w-full max-w-[112px] space-y-1.5 px-4">
-          <div className="h-2 rounded-full bg-zinc-200/90 animate-pulse dark:bg-zinc-700/80" />
-          <div className="h-2 w-4/5 rounded-full bg-zinc-200/90 animate-pulse dark:bg-zinc-700/80" />
-          <div className="h-2 w-2/3 rounded-full bg-zinc-200/90 animate-pulse dark:bg-zinc-700/80" />
+        <div className="w-20 rounded-[5px] border border-zinc-200 bg-white p-1.5 dark:border-white/10 dark:bg-zinc-800">
+          <div className="flex items-center gap-1.5">
+            <span className="h-4 w-4 shrink-0 animate-pulse rounded-full bg-zinc-200 dark:bg-zinc-700" />
+            <div className="flex-1 space-y-1">
+              <div className="h-1 animate-pulse rounded-full bg-zinc-200 dark:bg-zinc-700" />
+              <div className="h-1 w-3/5 animate-pulse rounded-full bg-zinc-200 dark:bg-zinc-700" />
+            </div>
+          </div>
+          <div className="mt-1.5 h-5 animate-pulse rounded-[3px] bg-zinc-200 dark:bg-zinc-700" />
         </div>
       );
     case "fade-in-down":
       return (
-        <div className={`${previewPanelClass} sk-mini-fade-down h-10 w-14 rounded-[14px] bg-gradient-to-br from-blue-100 to-cyan-100 dark:from-blue-500/28 dark:to-cyan-500/20`}>
-          <div className="absolute left-2 right-2 bottom-2 h-1 rounded-full bg-white/65 dark:bg-white/12" />
+        <div className="w-20">
+          <div className="flex items-center gap-1 rounded-t-[4px] border border-zinc-200 bg-white px-1.5 py-1 dark:border-white/10 dark:bg-zinc-800">
+            <span className="h-1 w-4 rounded-full bg-zinc-500 dark:bg-zinc-300" />
+            <span className="ml-auto h-1 w-2 rounded-full bg-zinc-300 dark:bg-zinc-600" />
+          </div>
+          <div className="sk-mini-anim sk-mini-fade-down mt-0.5 space-y-1 rounded-b-[4px] border border-zinc-200 bg-white p-1.5 shadow-md dark:border-white/10 dark:bg-zinc-800">
+            <div className="h-1 w-10 rounded-full bg-zinc-400 dark:bg-zinc-500" />
+            <div className="h-1 w-8 rounded-full bg-zinc-200 dark:bg-zinc-700" />
+            <div className="h-1 w-11 rounded-full bg-zinc-200 dark:bg-zinc-700" />
+          </div>
         </div>
       );
     case "slide-in-left":
       return (
-        <div className={`${previewPanelClass} sk-mini-slide-left h-9 w-14 rounded-[14px] bg-gradient-to-r from-emerald-100 to-teal-100 dark:from-emerald-500/25 dark:to-teal-500/18`}>
-          <div className="absolute inset-y-2 left-2 w-1 rounded-full bg-white/60 dark:bg-white/12" />
+        <div className="relative h-16 w-24 overflow-hidden rounded-md border border-zinc-200 bg-white dark:border-white/10 dark:bg-zinc-900">
+          <div className="absolute right-2 top-2 h-1 w-8 rounded-full bg-zinc-200 dark:bg-zinc-700" />
+          <div className="absolute right-2 top-5 h-1 w-6 rounded-full bg-zinc-100 dark:bg-zinc-800" />
+          <div className="sk-mini-anim sk-mini-slide-left absolute bottom-0 left-0 top-0 w-9 space-y-1 border-r border-zinc-200 bg-zinc-50 p-1.5 shadow-md dark:border-white/10 dark:bg-zinc-800">
+            <div className="h-1 w-5 rounded-full bg-zinc-500 dark:bg-zinc-300" />
+            <div className="h-1 w-6 rounded-full bg-zinc-300 dark:bg-zinc-600" />
+            <div className="h-1 w-4 rounded-full bg-zinc-300 dark:bg-zinc-600" />
+          </div>
         </div>
       );
     case "hover-glow":
@@ -638,21 +673,27 @@ export function MiniPreview({ slug }: { slug: string }) {
       );
     case "scroll-reveal":
       return (
-        <div className="space-y-1.5">
-            {[0, 0.3, 0.6].map((d) => (
-              <div
-                key={d}
-                className="sk-mini-anim sk-mini-reveal h-2 w-16 rounded-full bg-green-200/90 dark:bg-green-500/25"
-                style={{ animationDelay: `${d}s` }}
-              />
-            ))}
+        <div className="h-16 w-24 space-y-1 overflow-hidden rounded-md border border-zinc-200 bg-zinc-50 p-1.5 dark:border-white/10 dark:bg-zinc-950">
+          {[0, 0.3, 0.6].map((d) => (
+            <div
+              key={d}
+              className="sk-mini-anim sk-mini-reveal flex items-center gap-1.5 rounded-[3px] border border-zinc-200 bg-white p-1 dark:border-white/10 dark:bg-zinc-800"
+              style={{ animationDelay: `${d}s` }}
+            >
+              <span className="h-2.5 w-2.5 shrink-0 rounded-[2px] bg-zinc-200 dark:bg-zinc-700" />
+              <span className="h-1 w-10 rounded-full bg-zinc-300 dark:bg-zinc-600" />
+            </div>
+          ))}
         </div>
       );
     case "parallax-float":
       return (
-        <div className="relative h-14 w-20">
-          <div className="sk-mini-anim sk-mini-float-a absolute left-1 top-1 h-7 w-7 rounded-full bg-violet-200/90 shadow-[0_18px_26px_-24px_rgba(124,58,237,0.9)] dark:bg-violet-500/25" />
-          <div className="sk-mini-anim sk-mini-float-b absolute right-1 top-5 h-4 w-4 rounded-[8px] bg-pink-200/90 shadow-[0_18px_26px_-24px_rgba(236,72,153,0.9)] dark:bg-pink-500/25" />
+        <div className="relative h-16 w-24 overflow-hidden rounded-md border border-zinc-200 bg-white dark:border-white/10 dark:bg-zinc-900">
+          <div className="sk-mini-anim sk-mini-float-a absolute -right-1 -top-1 h-9 w-9 rounded-full bg-[linear-gradient(160deg,#2d6a8f,#e8a854)] opacity-80" />
+          <div className="sk-mini-anim sk-mini-float-b absolute bottom-2 left-2 w-12 rounded-[4px] border border-zinc-200 bg-white p-1 shadow-md dark:border-white/10 dark:bg-zinc-800">
+            <div className="h-1 w-8 rounded-full bg-zinc-500 dark:bg-zinc-300" />
+            <div className="mt-0.5 h-1 w-5 rounded-full bg-zinc-200 dark:bg-zinc-600" />
+          </div>
         </div>
       );
     case "text-gradient-flow":
@@ -672,75 +713,106 @@ export function MiniPreview({ slug }: { slug: string }) {
       );
     case "spinner-dots":
       return (
-        <div className="inline-flex gap-1.5">
+        <div className="flex items-center gap-2 rounded-[5px] bg-zinc-900 px-3 py-2 dark:bg-white">
+          <span className="inline-flex gap-1">
             {["-0.32s", "-0.16s", "0s"].map((d) => (
               <span
                 key={d}
-                className="sk-mini-anim sk-mini-dot h-2.5 w-2.5 rounded-full bg-zinc-800 dark:bg-zinc-200"
+                className="sk-mini-anim sk-mini-dot h-1.5 w-1.5 rounded-full bg-white dark:bg-zinc-900"
                 style={{ animationDelay: d }}
               />
             ))}
+          </span>
+          <span className="text-[8px] font-medium leading-none text-zinc-300 dark:text-zinc-600">Loading</span>
         </div>
       );
     case "background-gradient-shift":
       return (
         <div
-          className="sk-mini-anim sk-mini-bg-shift h-12 w-20 rounded-[16px] border border-white/40 shadow-[0_18px_32px_-24px_rgba(15,23,42,0.9)] dark:border-white/10"
+          className="sk-mini-anim sk-mini-bg-shift relative h-14 w-24 overflow-hidden rounded-md border border-white/30 dark:border-white/10"
           style={{
-            background: "linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab)",
+            background: "linear-gradient(-45deg, #1e3a5f, #4c1d95, #0e7490, #155e75)",
             backgroundSize: "400% 400%",
           }}
-        />
+        >
+          <div className="absolute bottom-2 left-2 space-y-1">
+            <div className="h-1.5 w-12 rounded-full bg-white/85" />
+            <div className="h-1 w-8 rounded-full bg-white/45" />
+          </div>
+        </div>
       );
     case "stagger-children":
       return (
-        <div className="space-y-1">
-            {[0, 0.15, 0.3, 0.45].map((d) => (
-              <div
-                key={d}
-                className="sk-mini-anim sk-mini-stagger h-2 w-16 rounded-full bg-teal-200/90 dark:bg-teal-500/22"
-                style={{ animationDelay: `${d}s` }}
+        <div className="w-20 space-y-1 rounded-[5px] border border-zinc-200 bg-white p-1.5 shadow-md dark:border-white/10 dark:bg-zinc-800">
+          {[0, 0.15, 0.3, 0.45].map((d, i) => (
+            <div
+              key={d}
+              className="sk-mini-anim sk-mini-stagger flex items-center gap-1.5"
+              style={{ animationDelay: `${d}s` }}
+            >
+              <span className="h-2 w-2 shrink-0 rounded-[2px] bg-zinc-200 dark:bg-zinc-600" />
+              <span
+                className="h-1 rounded-full bg-zinc-300 dark:bg-zinc-500"
+                style={{ width: [40, 30, 44, 24][i] }}
               />
-            ))}
+            </div>
+          ))}
         </div>
       );
     case "blur-in":
       return (
-        <div className={`${previewPanelClass} sk-mini-blur-in h-10 w-14 rounded-[14px] bg-gradient-to-br from-indigo-100 to-slate-100 dark:from-indigo-500/28 dark:to-slate-500/20`} />
+        <div className="h-14 w-20 overflow-hidden rounded-[5px] border border-zinc-200 dark:border-white/10">
+          <div className="sk-mini-anim sk-mini-blur-in h-full w-full bg-[linear-gradient(200deg,#312e52,#7c5f9e_55%,#e8a0a0)]" />
+        </div>
       );
     case "spotlight-card":
       return (
-        <div className="relative h-12 w-20 overflow-hidden rounded-[16px] border border-white/10 bg-zinc-900 shadow-[0_20px_32px_-26px_rgba(0,0,0,0.95)]">
-          <div className="absolute inset-x-2 top-2 h-px bg-white/10" />
-            <div
-              className="sk-mini-anim sk-mini-spotlight absolute inset-y-0 -left-8 w-20"
-              style={{
-                background: "radial-gradient(circle at center, rgba(255,255,255,0.24), transparent 60%)",
-              }}
-            />
+        <div className="relative h-13 w-20 overflow-hidden rounded-[8px] border border-white/10 bg-zinc-900 shadow-[0_20px_32px_-26px_rgba(0,0,0,0.95)]">
+          <div className="absolute left-2 top-2 h-1 w-9 rounded-full bg-white/25" />
+          <div className="absolute left-2 top-4.5 h-1 w-12 rounded-full bg-white/15" />
+          <div className="absolute bottom-2 left-2 h-2.5 w-7 rounded-[3px] bg-white/10" />
+          <div
+            className="sk-mini-anim sk-mini-spotlight absolute inset-y-0 -left-8 w-20"
+            style={{
+              background: "radial-gradient(circle at center, rgba(255,255,255,0.24), transparent 60%)",
+            }}
+          />
         </div>
       );
     case "magnetic-hover":
       return (
-          <div
-            className="sk-mini-anim sk-mini-magnetic rounded-full bg-foreground px-4 py-2 text-[10px] uppercase tracking-[0.2em] text-background shadow-[0_16px_28px_-24px_rgba(15,23,42,0.9)]"
-          />
+        <div className="sk-mini-anim sk-mini-magnetic rounded-[6px] bg-foreground px-4 py-2 text-[9px] font-medium uppercase tracking-[0.16em] text-background shadow-[0_16px_28px_-24px_rgba(15,23,42,0.9)]">
+          Buy now
+        </div>
       );
     case "bounce-in":
       return (
-        <div className={`${previewPanelClass} sk-mini-bounce flex h-10 w-10 items-center justify-center rounded-[16px] bg-gradient-to-br from-rose-200 to-pink-300 dark:from-rose-500/28 dark:to-pink-500/22`}>
-          <div className="h-3 w-3 rounded-full bg-white/70 dark:bg-white/15" />
+        <div className="relative">
+          <div className="flex h-9 w-9 items-center justify-center rounded-[7px] border border-zinc-200 bg-white dark:border-white/10 dark:bg-zinc-800">
+            <span className="block h-3.5 w-3 rounded-[2px] border-2 border-zinc-400 border-t-[3px] dark:border-zinc-400" />
+          </div>
+          <span className="sk-mini-anim sk-mini-bounce absolute -right-1.5 -top-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[7px] font-bold leading-none text-white">
+            3
+          </span>
         </div>
       );
     case "slide-in-right":
       return (
-        <div className={`${previewPanelClass} sk-mini-slide-right h-9 w-14 rounded-[14px] bg-gradient-to-l from-cyan-100 to-blue-100 dark:from-cyan-500/25 dark:to-blue-500/18`}>
-          <div className="absolute inset-y-2 right-2 w-1 rounded-full bg-white/60 dark:bg-white/12" />
+        <div className="relative h-16 w-24 overflow-hidden rounded-md border border-zinc-200 bg-white dark:border-white/10 dark:bg-zinc-900">
+          <div className="absolute left-2 top-2 h-1 w-8 rounded-full bg-zinc-200 dark:bg-zinc-700" />
+          <div className="absolute left-2 top-5 h-1 w-6 rounded-full bg-zinc-100 dark:bg-zinc-800" />
+          <div className="sk-mini-anim sk-mini-slide-right absolute bottom-0 right-0 top-0 w-10 space-y-1 border-l border-zinc-200 bg-zinc-50 p-1.5 shadow-md dark:border-white/10 dark:bg-zinc-800">
+            <div className="h-1 w-6 rounded-full bg-zinc-500 dark:bg-zinc-300" />
+            <div className="h-3 w-full rounded-[3px] bg-zinc-200 dark:bg-zinc-700" />
+            <div className="h-1 w-5 rounded-full bg-zinc-300 dark:bg-zinc-600" />
+          </div>
         </div>
       );
     case "rotate-in":
       return (
-        <div className={`${previewPanelClass} sk-mini-rotate h-10 w-10 rounded-[14px] bg-gradient-to-br from-amber-200 to-orange-300 dark:from-amber-500/28 dark:to-orange-500/22`} />
+        <div className="sk-mini-anim sk-mini-rotate flex h-9 w-9 items-center justify-center rounded-[8px] bg-zinc-900 shadow-md dark:bg-white">
+          <span className="text-[13px] font-bold leading-none text-white dark:text-zinc-900">S</span>
+        </div>
       );
     case "shake":
       return (
@@ -750,8 +822,12 @@ export function MiniPreview({ slug }: { slug: string }) {
       );
     case "flip-card":
       return (
-        <div className={`${previewPanelClass} sk-mini-flip h-10 w-14 rounded-[14px] bg-gradient-to-br from-violet-200 to-purple-300 dark:from-violet-500/28 dark:to-purple-500/22`}>
-          <div className="absolute inset-2 border border-white/50 dark:border-white/10 rounded-[8px]" />
+        <div style={{ perspective: 300 }}>
+          <div className={`${previewPanelClass} sk-mini-flip h-12 w-9 rounded-[6px] bg-white p-1 dark:bg-zinc-800`}>
+            <div className="h-5 w-full rounded-[3px] bg-[linear-gradient(160deg,#1e3a5f,#2d6a8f_50%,#e8a854)]" />
+            <div className="mt-1 h-1 w-5 rounded-full bg-zinc-400 dark:bg-zinc-400" />
+            <div className="mt-0.5 h-1 w-4 rounded-full bg-zinc-200 dark:bg-zinc-600" />
+          </div>
         </div>
       );
     case "ripple-click":
@@ -839,41 +915,69 @@ export function MiniPreview({ slug }: { slug: string }) {
       );
     case "counter-roll":
       return (
-        <div className="flex gap-0.5 font-mono text-base tabular-nums">
-          {["9", "8", "7"].map((n, i) => (
-            <span key={i} className="inline-block overflow-hidden h-[1.3em]">
-              <span
-                className="sk-mini-anim sk-mini-counter inline-block"
-                style={{ animationDelay: `${i * 0.15}s` }}
-              >
-                {n}
+        <div className="flex flex-col items-center gap-1 rounded-[5px] border border-zinc-200 bg-white px-3 py-2 dark:border-white/10 dark:bg-zinc-800">
+          <div className="flex gap-0.5 font-mono text-base font-semibold tabular-nums">
+            {["9", "8", "7"].map((n, i) => (
+              <span key={i} className="inline-block overflow-hidden h-[1.3em]">
+                <span
+                  className="sk-mini-anim sk-mini-counter inline-block"
+                  style={{ animationDelay: `${i * 0.15}s` }}
+                >
+                  {n}
+                </span>
               </span>
-            </span>
-          ))}
+            ))}
+          </div>
+          <span className="text-[7px] uppercase tracking-[0.22em] text-zinc-400">Users</span>
         </div>
       );
     case "morph-shape":
       return (
-        <div
-          className="sk-mini-anim sk-mini-morph h-12 w-12 bg-gradient-to-br from-teal-300 to-cyan-400 shadow-[0_16px_28px_-22px_rgba(6,182,212,0.8)] dark:from-teal-500/40 dark:to-cyan-500/30"
-        />
+        <div className="relative h-16 w-24 overflow-hidden rounded-md border border-zinc-200 bg-white dark:border-white/10 dark:bg-zinc-900">
+          <div className="sk-mini-anim sk-mini-morph absolute -right-2 -top-2 h-11 w-11 bg-gradient-to-br from-teal-300 to-cyan-400 opacity-70 dark:from-teal-500/45 dark:to-cyan-500/35" />
+          <div className="absolute bottom-2 left-2 space-y-1">
+            <div className="h-1.5 w-12 rounded-full bg-zinc-800 dark:bg-zinc-100" />
+            <div className="h-1 w-8 rounded-full bg-zinc-300 dark:bg-zinc-600" />
+          </div>
+        </div>
       );
     case "fade-out-down":
       return (
-        <div className={`${previewPanelClass} sk-mini-fade-out-down h-10 w-14 rounded-[14px] bg-gradient-to-br from-red-100 to-rose-200 dark:from-red-500/28 dark:to-rose-500/20`}>
-          <div className="absolute left-2 right-2 top-2 h-1 rounded-full bg-white/65 dark:bg-white/12" />
+        <div className="relative h-16 w-24 overflow-hidden rounded-md border border-zinc-200 bg-zinc-50 dark:border-white/10 dark:bg-zinc-950">
+          <div className="absolute inset-x-2 top-2 space-y-1">
+            <div className="h-1 w-10 rounded-full bg-zinc-300 dark:bg-zinc-700" />
+            <div className="h-1 w-14 rounded-full bg-zinc-200 dark:bg-zinc-800" />
+          </div>
+          <div className="sk-mini-anim sk-mini-fade-out-down absolute inset-x-2 bottom-2 flex items-center gap-1.5 rounded-[4px] border border-zinc-200 bg-white px-1.5 py-1 shadow-sm dark:border-white/10 dark:bg-zinc-800">
+            <span className="h-1.5 w-1.5 rounded-full bg-zinc-400" />
+            <span className="text-[7px] font-medium leading-none text-zinc-700 dark:text-zinc-200">Dismissed</span>
+          </div>
         </div>
       );
     case "scale-out":
       return (
-        <div className={`${previewPanelClass} sk-mini-scale-out flex h-11 w-11 items-center justify-center rounded-[16px] bg-gradient-to-br from-orange-100 to-amber-200 dark:from-orange-500/28 dark:to-amber-500/20`}>
-          <div className="h-4 w-4 rounded-full bg-white/60 dark:bg-white/12" />
+        <div className="relative h-16 w-24 overflow-hidden rounded-md border border-zinc-200 bg-white dark:border-white/10 dark:bg-zinc-950">
+          <div className="absolute inset-0 bg-zinc-900/10 dark:bg-black/30" />
+          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+            <div className="sk-mini-anim sk-mini-scale-out w-16 rounded-[5px] border border-zinc-200 bg-white p-1.5 shadow-lg dark:border-white/10 dark:bg-zinc-800">
+              <div className="flex items-center justify-between">
+                <div className="h-1 w-8 rounded-full bg-zinc-500 dark:bg-zinc-300" />
+                <span className="text-[8px] leading-none text-zinc-400">×</span>
+              </div>
+              <div className="mt-1 h-1 w-11 rounded-full bg-zinc-200 dark:bg-zinc-600" />
+            </div>
+          </div>
         </div>
       );
     case "slide-out-right":
       return (
-        <div className={`${previewPanelClass} sk-mini-slide-out-r h-9 w-14 rounded-[14px] bg-gradient-to-r from-red-100 to-pink-100 dark:from-red-500/25 dark:to-pink-500/18`}>
-          <div className="absolute inset-y-2 right-2 w-1 rounded-full bg-white/60 dark:bg-white/12" />
+        <div className="relative h-16 w-24 overflow-hidden rounded-md border border-zinc-200 bg-white dark:border-white/10 dark:bg-zinc-900">
+          <div className="absolute left-2 top-2 h-1 w-8 rounded-full bg-zinc-200 dark:bg-zinc-700" />
+          <div className="absolute left-2 top-5 h-1 w-6 rounded-full bg-zinc-100 dark:bg-zinc-800" />
+          <div className="sk-mini-anim sk-mini-slide-out-r absolute bottom-0 right-0 top-0 w-10 space-y-1 border-l border-zinc-200 bg-zinc-50 p-1.5 shadow-md dark:border-white/10 dark:bg-zinc-800">
+            <div className="h-1 w-6 rounded-full bg-zinc-500 dark:bg-zinc-300" />
+            <div className="h-3 w-full rounded-[3px] bg-zinc-200 dark:bg-zinc-700" />
+          </div>
         </div>
       );
     case "collapse":
@@ -893,19 +997,23 @@ export function MiniPreview({ slug }: { slug: string }) {
       );
     case "crossfade":
       return (
-        <div className="relative h-10 w-16 overflow-hidden rounded-[14px] border border-black/10 shadow-[0_14px_28px_-22px_rgba(15,23,42,0.9)] dark:border-white/10">
-          <div className="sk-mini-anim sk-mini-crossfade-a absolute inset-0 flex items-center justify-center bg-gradient-to-br from-indigo-100 to-violet-200 dark:from-indigo-500/30 dark:to-violet-500/20">
-            <div className="h-4 w-4 rounded-full bg-indigo-400/60 dark:bg-indigo-300/30" />
+        <div className="relative h-13 w-20">
+          <div className="relative h-12 w-20 overflow-hidden rounded-[5px] border border-zinc-200 dark:border-white/10">
+            <div className="sk-mini-anim sk-mini-crossfade-a absolute inset-0 bg-[linear-gradient(160deg,#1e3a5f,#2d6a8f_50%,#e8a854)]" />
+            <div className="sk-mini-crossfade-b h-full w-full bg-[linear-gradient(200deg,#312e52,#7c5f9e_55%,#e8a0a0)]" />
           </div>
-          <div className="sk-mini-crossfade-b flex items-center justify-center bg-gradient-to-br from-pink-100 to-rose-200 dark:from-pink-500/30 dark:to-rose-500/20">
-            <div className="h-3 w-6 rounded-[6px] bg-pink-400/60 dark:bg-pink-300/30" />
+          <div className="absolute -bottom-1 left-1/2 flex -translate-x-1/2 gap-1">
+            <span className="h-1 w-1 rounded-full bg-zinc-400" />
+            <span className="h-1 w-1 rounded-full bg-zinc-300 dark:bg-zinc-600" />
           </div>
         </div>
       );
     case "slide-swap":
       return (
-        <div className={`${previewPanelClass} sk-mini-slide-swap h-9 w-14 rounded-[14px] bg-gradient-to-r from-sky-100 to-indigo-100 dark:from-sky-500/25 dark:to-indigo-500/18`}>
-          <div className="absolute inset-2 border border-white/50 dark:border-white/10 rounded-[8px]" />
+        <div className="relative h-12 w-20 overflow-hidden rounded-[5px] border border-zinc-200 bg-white dark:border-white/10 dark:bg-zinc-900">
+          <div className="sk-mini-anim sk-mini-slide-swap absolute inset-1 rounded-[3px] bg-[linear-gradient(160deg,#1e3a5f,#2d6a8f_50%,#e8a854)]">
+            <div className="absolute bottom-1 left-1 h-1 w-7 rounded-full bg-white/70" />
+          </div>
         </div>
       );
     case "morph-transition":
@@ -957,8 +1065,8 @@ export function MiniPreview({ slug }: { slug: string }) {
       );
     case "elastic-scale":
       return (
-        <div className={`${previewPanelClass} sk-mini-elastic flex h-10 w-10 items-center justify-center rounded-[16px] bg-gradient-to-br from-emerald-200 to-teal-300 dark:from-emerald-500/28 dark:to-teal-500/22`}>
-          <span className="text-[10px] font-bold text-emerald-700 dark:text-emerald-200">!</span>
+        <div className="sk-mini-anim sk-mini-elastic flex h-9 w-9 items-center justify-center rounded-full bg-blue-600 text-white shadow-lg">
+          <span className="text-sm font-light leading-none">+</span>
         </div>
       );
     case "pulse-ring":
@@ -974,17 +1082,21 @@ export function MiniPreview({ slug }: { slug: string }) {
       );
     case "zoom-in":
       return (
-        <div className={`${previewPanelClass} sk-mini-zoom-in h-11 w-11 rounded-[16px] bg-gradient-to-br from-sky-200 to-blue-300 dark:from-sky-500/28 dark:to-blue-500/22`}>
-          <div className="absolute inset-2 border border-white/50 dark:border-white/10 rounded-[10px]" />
-          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-3 w-3 rounded-full bg-white/60 dark:bg-white/15" />
+        <div className="h-14 w-20 overflow-hidden rounded-[5px] border border-zinc-200 dark:border-white/10">
+          <div className="sk-mini-anim sk-mini-zoom-in h-full w-full bg-[linear-gradient(160deg,#1e3a5f,#2d6a8f_45%,#e8a854_85%,#d97742)]" />
         </div>
       );
     case "marquee-scroll":
       return (
-        <div className="w-20 overflow-hidden">
-          <div className="sk-mini-anim sk-mini-marquee flex whitespace-nowrap gap-3">
-            {["A", "B", "C", "D", "A", "B", "C", "D"].map((l, i) => (
-              <span key={i} className="inline-flex h-4 w-4 shrink-0 items-center justify-center rounded-[6px] bg-purple-200/90 text-[8px] font-bold text-purple-600 dark:bg-purple-500/25 dark:text-purple-300">{l}</span>
+        <div className="w-22 overflow-hidden border-y border-zinc-200 py-1 dark:border-white/10">
+          <div className="sk-mini-anim sk-mini-marquee flex whitespace-nowrap gap-2">
+            {["ACME", "NOVA", "ORBIT", "ZEN", "ACME", "NOVA", "ORBIT", "ZEN"].map((brand, i) => (
+              <span
+                key={i}
+                className="shrink-0 text-[7px] font-bold tracking-[0.14em] text-zinc-400 dark:text-zinc-500"
+              >
+                {brand}
+              </span>
             ))}
           </div>
         </div>
@@ -1108,13 +1220,6 @@ export function MiniPreview({ slug }: { slug: string }) {
           <span className="sk-mini-anim sk-mini-ann-note absolute -bottom-4 left-6 font-serif text-[8px] italic text-amber-700">
             this!
           </span>
-        </div>
-      );
-    case "tilt-3d":
-      return (
-        <div className={`${previewPanelClass} sk-mini-tilt-card h-12 w-16 rounded-[10px] bg-gradient-to-br from-indigo-100 to-indigo-200 dark:from-indigo-500/30 dark:to-indigo-700/25`}>
-          <div className="absolute inset-x-2 top-2 h-1 rounded bg-black/10 dark:bg-white/15" />
-          <div className="absolute left-2 top-4 h-1 w-6 rounded bg-black/10 dark:bg-white/10" />
         </div>
       );
     default:
