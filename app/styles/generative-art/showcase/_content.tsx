@@ -297,7 +297,8 @@ export default function ShowcaseContent() {
 
           {/* Back link */}
           <Link
-            href="/"
+            href="/styles/generative-art"
+            data-back-navigation="true"
             className="flex items-center gap-1.5 px-4 py-2 rounded font-mono text-xs uppercase tracking-[0.15em] text-violet-300 border border-violet-500/40 hover:border-violet-400 hover:text-white hover:shadow-[0_0_14px_rgba(124,58,237,0.3)] transition-all duration-200 ease-linear"
           >
             <span>←</span>

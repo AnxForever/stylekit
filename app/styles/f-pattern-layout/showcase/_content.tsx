@@ -356,7 +356,8 @@ export default function ShowcaseContent() {
         <div className="max-w-6xl mx-auto px-5 md:px-10 flex items-center justify-between h-14">
           {/* Logo + style name */}
           <Link
-            href="/"
+            href="/styles/f-pattern-layout"
+            data-back-navigation="true"
             className="flex items-center gap-2.5 text-sm font-medium transition-colors duration-150"
             style={{ color: PRIMARY }}
           >

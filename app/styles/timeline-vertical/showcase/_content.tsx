@@ -310,7 +310,8 @@ export default function ShowcaseContent() {
 
           {/* CTA — back to StyleKit */}
           <Link
-            href="/"
+            href="/styles/timeline-vertical"
+            data-back-navigation="true"
             className="flex items-center gap-1.5 px-4 py-2 rounded-full bg-[#1e293b] text-white text-xs font-semibold hover:bg-[#3b82f6] transition-all duration-200 ease-out"
           >
             <span>&#8592;</span>

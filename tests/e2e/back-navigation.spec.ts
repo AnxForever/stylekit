@@ -32,7 +32,7 @@ test.describe("semantic back navigation", () => {
     await expect(page).toHaveURL(/\/styles\/masonry-flow\/showcase$/);
 
     await page
-      .locator('header a[href="/"]')
+      .locator('header a[href="/styles/masonry-flow"]')
       .filter({ hasText: /^StyleKit$/ })
       .click();
 

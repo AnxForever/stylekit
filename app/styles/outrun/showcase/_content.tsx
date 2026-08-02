@@ -303,7 +303,8 @@ export default function ShowcaseContent() {
 
           {/* StyleKit back link */}
           <Link
-            href="/"
+            href="/styles/outrun"
+            data-back-navigation="true"
             className="group relative flex items-center gap-1.5 px-4 py-2 rounded-sm text-sm font-mono uppercase tracking-widest text-[#00d4ff] border border-[#00d4ff]/40 hover:border-[#00d4ff] hover:shadow-[0_0_15px_rgba(0,212,255,0.4),inset_0_0_10px_rgba(0,212,255,0.1)] active:bg-[#00d4ff]/10 transition-all duration-200"
           >
             <span>&#8592;</span>

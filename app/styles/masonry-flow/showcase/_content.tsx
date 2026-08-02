@@ -409,7 +409,7 @@ export default function ShowcaseContent() {
 
           {/* Back to StyleKit CTA */}
           <Link
-            href="/"
+            href="/styles/masonry-flow"
             data-back-navigation="true"
             className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium text-white transition-all duration-200 hover:-translate-y-0.5"
             style={{

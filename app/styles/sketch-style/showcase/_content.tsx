@@ -281,7 +281,8 @@ export default function ShowcaseContent() {
       >
         <div className="max-w-6xl mx-auto px-5 md:px-10 flex items-center justify-between h-14">
           <Link
-            href="/"
+            href="/styles/sketch-style"
+            data-back-navigation="true"
             className="flex items-center gap-2 font-serif italic text-[#2c2c2c] hover:text-[#e74c3c] transition-colors duration-150"
           >
             <span className="text-lg">&#8592;</span>

@@ -306,7 +306,8 @@ export default function ShowcaseContent() {
           </nav>
 
           <Link
-            href="/"
+            href="/styles/magazine-grid"
+            data-back-navigation="true"
             className="flex items-center gap-1.5 px-4 py-2 bg-[#1a1a1a] text-white text-xs font-semibold uppercase tracking-wider hover:bg-[#e63946] transition-colors duration-200"
           >
             <span>←</span>

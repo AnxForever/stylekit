@@ -302,7 +302,8 @@ export default function ShowcaseContent() {
 
           {/* Back link */}
           <Link
-            href="/"
+            href="/styles/natural-organic"
+            data-back-navigation="true"
             className="flex items-center gap-1.5 px-4 py-2 text-sm font-medium transition-all duration-500 ease-in-out hover:translate-y-0.5"
             style={{
               backgroundColor: "#5c4033",

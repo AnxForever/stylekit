@@ -279,7 +279,8 @@ export default function ShowcaseContent() {
 
           {/* Back to StyleKit */}
           <Link
-            href="/"
+            href="/styles/art-deco"
+            data-back-navigation="true"
             className="flex items-center gap-2 px-5 py-2 border border-yellow-600/60 text-yellow-400 text-sm tracking-[0.15em] uppercase hover:border-yellow-400 hover:text-yellow-200 hover:bg-yellow-500/10 deco-medium-transition"
           >
             <span>&#8592;</span>

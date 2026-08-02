@@ -290,7 +290,8 @@ export default function ShowcaseContent() {
 
           {/* Back link */}
           <Link
-            href="/"
+            href="/styles/mecha"
+            data-back-navigation="true"
             className="flex items-center gap-1.5 px-3 py-1.5 text-xs uppercase tracking-widest font-bold transition-all duration-100 ease-linear"
             style={{
               color: NAVY,

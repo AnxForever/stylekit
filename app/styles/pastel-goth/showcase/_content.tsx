@@ -368,7 +368,7 @@ export default function ShowcaseContent() {
 
             {/* Left: back link */}
             <Link
-              href="/"
+              href="/styles/pastel-goth"
               data-back-navigation="true"
               className="flex items-center gap-2 text-[#b8a5f5]/50 hover:text-[#d4a5e3] transition-colors duration-300 text-sm font-bold tracking-wide group"
             >

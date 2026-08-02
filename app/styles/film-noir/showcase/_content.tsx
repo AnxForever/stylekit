@@ -318,7 +318,8 @@ export default function FilmNoirShowcaseContent() {
         <div className="relative max-w-7xl mx-auto px-6 md:px-12 h-16 flex items-center justify-between gap-6">
           {/* Left — back link */}
           <Link
-            href="/"
+            href="/styles/film-noir"
+            data-back-navigation="true"
             className="font-sans text-xs uppercase tracking-[0.22em] text-neutral-500 hover:text-neutral-200 transition-colors duration-500"
           >
             &larr;&nbsp;Back to StyleKit

@@ -278,7 +278,8 @@ export default function ShowcaseContent() {
 
           {/* StyleKit back link */}
           <Link
-            href="/"
+            href="/styles/graffiti-street"
+            data-back-navigation="true"
             className="flex items-center gap-1.5 px-4 py-2 border-4 border-[#ffea00] text-[#ffea00] text-sm font-black uppercase shadow-[4px_4px_0px_#b620e0] graf-hard-btn"
           >
             <span>&#8592;</span>

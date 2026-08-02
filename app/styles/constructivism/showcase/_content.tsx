@@ -221,7 +221,8 @@ export default function ShowcaseContent() {
 
           {/* Back link */}
           <Link
-            href="/"
+            href="/styles/constructivism"
+            data-back-navigation="true"
             className="group relative flex items-center gap-2 px-5 py-2 overflow-hidden font-black uppercase text-xs tracking-wider transition-all duration-75 ease-linear hover:translate-x-[3px] hover:translate-y-[3px]"
             style={{
               color: PAPER,

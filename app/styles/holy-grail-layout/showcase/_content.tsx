@@ -265,7 +265,8 @@ export default function ShowcaseContent() {
         <div className="max-w-7xl mx-auto px-5 md:px-10 flex items-center justify-between h-14">
           {/* Back to StyleKit */}
           <Link
-            href="/"
+            href="/styles/holy-grail-layout"
+            data-back-navigation="true"
             className="flex items-center gap-2 text-sm text-gray-500 hover:text-[#1e293b] transition-colors duration-150"
           >
             <span className="text-base leading-none">&larr;</span>

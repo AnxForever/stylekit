@@ -260,7 +260,8 @@ export default function ShowcaseContent() {
 
           {/* Back link */}
           <Link
-            href="/"
+            href="/styles/full-page-scroll"
+            data-back-navigation="true"
             className="flex items-center gap-1.5 px-4 py-2 rounded-full bg-white text-black text-xs font-semibold hover:bg-indigo-100 transition-all duration-300 hover:scale-105 active:scale-95"
           >
             <span>&#8592;</span>

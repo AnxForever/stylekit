@@ -219,7 +219,8 @@ export default function ShowcaseContent() {
 
           {/* Back link */}
           <Link
-            href="/"
+            href="/styles/geometric-bold"
+            data-back-navigation="true"
             className="flex items-center gap-2 px-4 py-2 bg-red-500 text-white text-xs font-black uppercase tracking-widest border-4 border-white hover:bg-white hover:text-black transition-colors duration-100 ease-linear"
           >
             <span>&#8592;</span>

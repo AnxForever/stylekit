@@ -342,7 +342,8 @@ export default function ShowcaseContent() {
 
           {/* Back link */}
           <Link
-            href="/"
+            href="/styles/mid-century-modern"
+            data-back-navigation="true"
             className="flex items-center gap-1.5 px-4 py-2 rounded-lg border-2 font-semibold uppercase tracking-wider text-sm mcm-analog-btn"
             style={{
               backgroundColor: MCM.orange,

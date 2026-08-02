@@ -365,7 +365,8 @@ export default function ShowcaseContent() {
 
           {/* CTA — back to StyleKit */}
           <Link
-            href="/"
+            href="/styles/sidebar-fixed"
+            data-back-navigation="true"
             className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-[#1e293b] text-white text-sm font-medium hover:bg-zinc-700 transition-colors duration-150"
           >
             <span>&#8592;</span>

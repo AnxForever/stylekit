@@ -301,7 +301,7 @@ export default function ShowcaseContent() {
           <div className="flex items-center justify-between h-16 md:h-18">
             {/* Back to StyleKit */}
             <Link
-              href="/"
+              href="/styles/tropical-paradise"
               data-back-navigation="true"
               className="flex items-center gap-2 text-white/80 hover:text-white transition-colors duration-300 text-sm font-bold tracking-wide"
             >

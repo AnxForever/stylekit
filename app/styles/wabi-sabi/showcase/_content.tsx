@@ -407,7 +407,7 @@ export default function ShowcaseContent() {
           <div className="flex items-center justify-between h-14 md:h-16">
 
             <Link
-              href="/"
+              href="/styles/wabi-sabi"
               data-back-navigation="true"
               className="font-serif text-xs text-[#3a3a3a]/40 tracking-[0.2em] transition-opacity duration-1000 hover:opacity-100 opacity-60 flex items-center gap-2"
             >

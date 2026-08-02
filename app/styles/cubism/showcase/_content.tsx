@@ -193,7 +193,8 @@ export default function ShowcaseContent() {
 
           {/* Back link */}
           <Link
-            href="/"
+            href="/styles/cubism"
+            data-back-navigation="true"
             className="flex items-center gap-1.5 px-4 py-2 text-sm font-bold uppercase tracking-wider rounded-sm border-2 transition-[transform,box-shadow] duration-150"
             style={{
               backgroundColor: CB.terra,

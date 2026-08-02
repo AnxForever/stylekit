@@ -281,7 +281,8 @@ export default function ShowcaseContent() {
 
           {/* StyleKit back link */}
           <Link
-            href="/"
+            href="/styles/kawaii-minimal"
+            data-back-navigation="true"
             className="flex items-center gap-1.5 px-4 py-2 rounded-full bg-[#F9A8D4] text-white text-sm font-medium shadow-[0_4px_0_#f472b6] hover:translate-y-[2px] hover:shadow-[0_2px_0_#f472b6] hover:scale-x-[1.04] hover:scale-y-[0.97] active:translate-y-[4px] active:shadow-none active:scale-[0.94] transition-all duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)]"
           >
             <span>←</span>

@@ -239,7 +239,8 @@ export default function ShowcaseContent() {
 
           {/* Back to StyleKit */}
           <Link
-            href="/"
+            href="/styles/paper-craft"
+            data-back-navigation="true"
             className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#e85d75] text-white text-sm font-bold shadow-[3px_3px_0px_rgba(45,45,45,0.15)] hover:-translate-y-1 hover:-translate-x-0.5 hover:shadow-[5px_5px_0px_rgba(45,45,45,0.15)] active:translate-y-0.5 active:translate-x-0.5 active:shadow-[1px_1px_0px_rgba(45,45,45,0.2)] transition-all duration-200 ease-out -rotate-[0.5deg] hover:rotate-0"
           >
             <span>←</span>

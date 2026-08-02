@@ -209,7 +209,8 @@ export default function ShowcaseContent() {
 
           {/* Back link */}
           <Link
-            href="/"
+            href="/styles/marble-luxury"
+            data-back-navigation="true"
             className="text-xs tracking-[0.2em] uppercase transition-all duration-500"
             style={{ color: "#8a7968" }}
           >

@@ -308,7 +308,8 @@ export default function ShowcaseContent() {
           {/* CTA + back link */}
           <div className="flex items-center gap-3">
             <Link
-              href="/"
+              href="/styles/stripe-style"
+              data-back-navigation="true"
               className="text-sm text-[#425466] hover:text-[#635bff] transition-colors duration-[200ms] ease-out hidden md:block"
             >
               ← Back

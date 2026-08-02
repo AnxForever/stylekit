@@ -321,7 +321,8 @@ export default function ShowcaseContent() {
 
           {/* Back link */}
           <Link
-            href="/"
+            href="/styles/islamic-geometric"
+            data-back-navigation="true"
             className="relative flex items-center gap-2 px-5 py-2 border border-[#c9a74e]/50 text-[#c9a74e] text-sm font-medium tracking-wider hover:border-[#c9a74e] hover:shadow-[0_0_12px_rgba(201,167,78,0.25)] ig-transition rounded-lg overflow-hidden"
           >
             <CornerFrame size={8} color="#c9a74e" />
