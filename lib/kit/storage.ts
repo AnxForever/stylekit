@@ -78,6 +78,32 @@ function normalizeKit(value: unknown): Kit | null {
 }
 
 /**
+ * Normalizes an arbitrary kit array (from storage or the sync API), dropping
+ * malformed entries and capping the count. Deduplicates ids defensively.
+ */
+export function normalizeKits(values: unknown): Kit[] {
+  if (!Array.isArray(values)) return [];
+  const seen = new Set<string>();
+  const kits: Kit[] = [];
+  for (const value of values) {
+    const kit = normalizeKit(value);
+    if (!kit || seen.has(kit.id)) continue;
+    seen.add(kit.id);
+    kits.push(kit);
+    if (kits.length >= MAX_KITS) break;
+  }
+  return kits;
+}
+
+/** Picks a valid activeKitId, falling back to the first kit. */
+export function resolveActiveKitId(kits: Kit[], candidate: unknown): string {
+  if (typeof candidate === "string" && kits.some((k) => k.id === candidate)) {
+    return candidate;
+  }
+  return kits[0]?.id ?? "";
+}
+
+/**
  * Reads the multi-kit collection, migrating a legacy v1 single-kit snapshot
  * on first run. Always returns at least one kit and a valid activeKitId.
  */
@@ -86,15 +112,9 @@ export function readKitCollection(): { kits: Kit[]; activeKitId: string } {
     const savedV2 = localStorage.getItem(KIT_COLLECTION_KEY);
     if (savedV2) {
       const parsed = JSON.parse(savedV2) as Partial<KitCollectionSnapshot>;
-      const kits = Array.isArray(parsed.kits)
-        ? parsed.kits.map(normalizeKit).filter((k): k is Kit => k !== null).slice(0, MAX_KITS)
-        : [];
+      const kits = normalizeKits(parsed.kits);
       if (kits.length > 0) {
-        const activeKitId =
-          typeof parsed.activeKitId === "string" && kits.some((k) => k.id === parsed.activeKitId)
-            ? parsed.activeKitId
-            : kits[0].id;
-        return { kits, activeKitId };
+        return { kits, activeKitId: resolveActiveKitId(kits, parsed.activeKitId) };
       }
     }
   } catch {

@@ -19,6 +19,7 @@ export function KitSwitcher() {
     renameKit,
     deleteKit,
     switchKit,
+    syncing,
   } = useKit();
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState("");
@@ -117,6 +118,12 @@ export function KitSwitcher() {
               ? "删除此工具箱"
               : "Delete this kit"}
       </button>
+
+      {syncing && (
+        <span className="w-full sm:w-auto sm:ml-2 font-mono text-[10px] uppercase tracking-[0.14em] text-muted">
+          {zh ? "云端同步中…" : "Syncing…"}
+        </span>
+      )}
     </div>
   );
 }
