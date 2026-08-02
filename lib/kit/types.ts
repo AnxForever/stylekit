@@ -1,7 +1,14 @@
 // Kit Builder - unified asset addressing across the whole library.
 // A KitItem is a typed pointer ({type}:{slug}) into one of the asset registries.
 
-export const KIT_ITEM_TYPES = ["style", "animation", "font-pairing"] as const;
+export const KIT_ITEM_TYPES = [
+  "style",
+  "animation",
+  "font-pairing",
+  "gradient",
+  "shadow",
+  "background",
+] as const;
 
 export type KitItemType = (typeof KIT_ITEM_TYPES)[number];
 

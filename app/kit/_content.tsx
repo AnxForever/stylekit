@@ -8,6 +8,9 @@ import type { KitItem, KitItemType } from "@/lib/kit/types";
 import { getStyleMetaBySlug } from "@/lib/styles/meta";
 import { animationsMeta } from "@/lib/animations/meta";
 import { fontPairings } from "@/lib/typography";
+import { getGradientById } from "@/lib/gradients";
+import { getShadowById } from "@/lib/shadows";
+import { getBackgroundById } from "@/lib/backgrounds";
 import { buildKitHints } from "@/lib/kit/hints";
 import { encodeKitToSearch } from "@/lib/kit/share";
 import { KitCombinationPreview } from "@/components/kit/kit-combination-preview";
@@ -20,18 +23,31 @@ interface ResolvedRow {
   detail: string;
 }
 
-const SECTION_ORDER: KitItemType[] = ["style", "animation", "font-pairing"];
+const SECTION_ORDER: KitItemType[] = [
+  "style",
+  "animation",
+  "font-pairing",
+  "gradient",
+  "shadow",
+  "background",
+];
 
 const SECTION_LABELS: Record<KitItemType, { zh: string; en: string }> = {
   style: { zh: "设计风格", en: "Styles" },
   animation: { zh: "动效", en: "Animations" },
   "font-pairing": { zh: "字体配对", en: "Font Pairings" },
+  gradient: { zh: "渐变", en: "Gradients" },
+  shadow: { zh: "阴影", en: "Shadows" },
+  background: { zh: "背景纹理", en: "Backgrounds" },
 };
 
 const BROWSE_LINKS: { type: KitItemType; href: string; zh: string; en: string }[] = [
   { type: "style", href: "/styles", zh: "浏览风格库", en: "Browse styles" },
   { type: "animation", href: "/animations", zh: "浏览动效库", en: "Browse animations" },
   { type: "font-pairing", href: "/typography", zh: "浏览字体配对", en: "Browse font pairings" },
+  { type: "gradient", href: "/gradients", zh: "浏览渐变库", en: "Browse gradients" },
+  { type: "shadow", href: "/shadows", zh: "浏览阴影库", en: "Browse shadows" },
+  { type: "background", href: "/backgrounds", zh: "浏览背景纹理", en: "Browse backgrounds" },
 ];
 
 function resolveRow(item: KitItem, locale: string): ResolvedRow {
@@ -55,13 +71,43 @@ function resolveRow(item: KitItem, locale: string): ResolvedRow {
       detail: meta ? `${meta.category} · ${meta.duration}` : "",
     };
   }
-  const pairing = fontPairings.find((p) => p.id === item.slug);
+  if (item.type === "font-pairing") {
+    const pairing = fontPairings.find((p) => p.id === item.slug);
+    return {
+      item,
+      name: (locale === "zh" ? pairing?.nameZh : pairing?.name) ?? item.slug,
+      secondaryName: (locale === "zh" ? pairing?.name : pairing?.nameZh) ?? "",
+      href: "/typography",
+      detail: pairing ? `${pairing.heading.family} · ${pairing.body.family}` : "",
+    };
+  }
+  if (item.type === "gradient") {
+    const gradient = getGradientById(item.slug);
+    return {
+      item,
+      name: (locale === "zh" ? gradient?.nameZh : gradient?.name) ?? item.slug,
+      secondaryName: "",
+      href: "/gradients",
+      detail: gradient?.category ?? "",
+    };
+  }
+  if (item.type === "shadow") {
+    const shadow = getShadowById(item.slug);
+    return {
+      item,
+      name: (locale === "zh" ? shadow?.nameZh : shadow?.name) ?? item.slug,
+      secondaryName: "",
+      href: "/shadows",
+      detail: shadow?.category ?? "",
+    };
+  }
+  const background = getBackgroundById(item.slug);
   return {
     item,
-    name: (locale === "zh" ? pairing?.nameZh : pairing?.name) ?? item.slug,
-    secondaryName: (locale === "zh" ? pairing?.name : pairing?.nameZh) ?? "",
-    href: "/typography",
-    detail: pairing ? `${pairing.heading.family} · ${pairing.body.family}` : "",
+    name: (locale === "zh" ? background?.nameZh : background?.name) ?? item.slug,
+    secondaryName: "",
+    href: "/backgrounds",
+    detail: background?.category ?? "",
   };
 }
 

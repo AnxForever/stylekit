@@ -23,7 +23,7 @@ describe("normalizeKitItems", () => {
     const items = normalizeKitItems([
       { type: "style", slug: "glassmorphism", addedAt: at },
       { type: "style", slug: "glassmorphism", addedAt: at },
-      { type: "gradient", slug: "sunset", addedAt: at },
+      { type: "color", slug: "sunset", addedAt: at },
       { type: "style", slug: "Bad Slug!", addedAt: at },
       "style:glassmorphism",
       null,
@@ -53,11 +53,17 @@ describe("resolveKitItems", () => {
       { type: "style", slug: "does-not-exist", addedAt: at },
       { type: "animation", slug: "fade-in-up", addedAt: at },
       { type: "font-pairing", slug: "gallery-gloock", addedAt: at },
+      { type: "gradient", slug: "sunrise-warmth", addedAt: at },
+      { type: "shadow", slug: "soft-sm", addedAt: at },
+      { type: "background", slug: "dot-grid", addedAt: at },
     ];
     const kit = resolveKitItems(items);
     expect(kit.styles.map((s) => s.slug)).toEqual(["glassmorphism"]);
     expect(kit.animations.map((a) => a.slug)).toEqual(["fade-in-up"]);
     expect(kit.fontPairings.map((p) => p.id)).toEqual(["gallery-gloock"]);
+    expect(kit.gradients.map((g) => g.id)).toEqual(["sunrise-warmth"]);
+    expect(kit.shadows.map((s) => s.id)).toEqual(["soft-sm"]);
+    expect(kit.backgrounds.map((b) => b.id)).toEqual(["dot-grid"]);
     expect(kit.missing).toEqual(["style:does-not-exist"]);
   });
 });
@@ -68,6 +74,9 @@ describe("buildKitFiles", () => {
     { type: "style", slug: "neo-brutalist", addedAt: at },
     { type: "animation", slug: "fade-in-up", addedAt: at },
     { type: "font-pairing", slug: "gallery-gloock", addedAt: at },
+    { type: "gradient", slug: "sunrise-warmth", addedAt: at },
+    { type: "shadow", slug: "soft-sm", addedAt: at },
+    { type: "background", slug: "dot-grid", addedAt: at },
   ];
   const files = buildKitFiles(items, { generatedAt: "2026-08-01" });
   const paths = files.map((f) => f.path);
@@ -100,6 +109,19 @@ describe("buildKitFiles", () => {
       { generatedAt: "2026-08-01" }
     );
     expect(withoutFonts.map((f) => f.path)).not.toContain("fonts.md");
+  });
+
+  it("emits surfaces.css with gradient/shadow/background rules", () => {
+    expect(paths).toContain("surfaces.css");
+    const surfaces = fileByPath("surfaces.css")!.content;
+    expect(surfaces).toContain(".bg-sunrise-warmth");
+    expect(surfaces).toContain(".shadow-soft-sm");
+    expect(surfaces).toContain(".pattern-dot-grid");
+    const withoutSurfaces = buildKitFiles(
+      [{ type: "style", slug: "glassmorphism", addedAt: at }],
+      { generatedAt: "2026-08-01" }
+    );
+    expect(withoutSurfaces.map((f) => f.path)).not.toContain("surfaces.css");
   });
 
   it("synthesizes one coherent prompt: first style is base, second is accent", () => {

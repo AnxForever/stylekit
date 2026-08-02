@@ -11,13 +11,55 @@ import { buildKitHints } from "@/lib/kit/hints";
 import { getStyleMetaBySlug } from "@/lib/styles/meta";
 import { animationsMeta } from "@/lib/animations/meta";
 import { fontPairings } from "@/lib/typography";
+import { getGradientById } from "@/lib/gradients";
+import { getShadowById } from "@/lib/shadows";
+import { getBackgroundById } from "@/lib/backgrounds";
 import { KitCombinationPreview } from "@/components/kit/kit-combination-preview";
 
 const TYPE_LABELS: Record<KitItem["type"], { zh: string; en: string }> = {
   style: { zh: "设计风格", en: "Styles" },
   animation: { zh: "动效", en: "Animations" },
   "font-pairing": { zh: "字体配对", en: "Font Pairings" },
+  gradient: { zh: "渐变", en: "Gradients" },
+  shadow: { zh: "阴影", en: "Shadows" },
+  background: { zh: "背景纹理", en: "Backgrounds" },
 };
+
+const TYPE_HREF: Record<KitItem["type"], (slug: string) => string> = {
+  style: (slug) => `/styles/${slug}`,
+  animation: (slug) => `/animations/${slug}`,
+  "font-pairing": () => "/typography",
+  gradient: () => "/gradients",
+  shadow: () => "/shadows",
+  background: () => "/backgrounds",
+};
+
+function resolveName(item: KitItem, zh: boolean): string {
+  switch (item.type) {
+    case "style": {
+      const m = getStyleMetaBySlug(item.slug);
+      return (zh ? m?.name : m?.nameEn) ?? item.slug;
+    }
+    case "animation": {
+      const m = animationsMeta.find((a) => a.slug === item.slug);
+      return (zh ? m?.name : m?.nameEn) ?? item.slug;
+    }
+    case "font-pairing":
+      return fontPairings.find((p) => p.id === item.slug)?.name ?? item.slug;
+    case "gradient": {
+      const g = getGradientById(item.slug);
+      return (zh ? g?.nameZh : g?.name) ?? item.slug;
+    }
+    case "shadow": {
+      const s = getShadowById(item.slug);
+      return (zh ? s?.nameZh : s?.name) ?? item.slug;
+    }
+    default: {
+      const b = getBackgroundById(item.slug);
+      return (zh ? b?.nameZh : b?.name) ?? item.slug;
+    }
+  }
+}
 
 export function SharedKitContent() {
   const { locale } = useI18n();
@@ -150,7 +192,7 @@ export function SharedKitContent() {
           </div>
 
           <div className="space-y-8">
-            {(["style", "animation", "font-pairing"] as const).map((type) => {
+            {(["style", "animation", "font-pairing", "gradient", "shadow", "background"] as const).map((type) => {
               const group = items.filter((item) => item.type === type);
               if (group.length === 0) return null;
               return (
@@ -160,41 +202,22 @@ export function SharedKitContent() {
                     <span className="ml-2 tabular-nums">({group.length})</span>
                   </h2>
                   <ul className="border-t border-border">
-                    {group.map((item) => {
-                      const href =
-                        item.type === "style"
-                          ? `/styles/${item.slug}`
-                          : item.type === "animation"
-                            ? `/animations/${item.slug}`
-                            : "/typography";
-                      const name =
-                        item.type === "style"
-                          ? (zh
-                              ? getStyleMetaBySlug(item.slug)?.name
-                              : getStyleMetaBySlug(item.slug)?.nameEn) ?? item.slug
-                          : item.type === "animation"
-                            ? (zh
-                                ? animationsMeta.find((a) => a.slug === item.slug)?.name
-                                : animationsMeta.find((a) => a.slug === item.slug)?.nameEn) ??
-                              item.slug
-                            : fontPairings.find((p) => p.id === item.slug)?.name ?? item.slug;
-                      return (
-                        <li
-                          key={`${item.type}:${item.slug}`}
-                          className="border-b border-border py-3 flex items-center justify-between gap-4"
+                    {group.map((item) => (
+                      <li
+                        key={`${item.type}:${item.slug}`}
+                        className="border-b border-border py-3 flex items-center justify-between gap-4"
+                      >
+                        <LocalizedLink
+                          href={TYPE_HREF[item.type](item.slug)}
+                          className="text-sm hover:text-accent transition-colors"
                         >
-                          <LocalizedLink
-                            href={href}
-                            className="text-sm hover:text-accent transition-colors"
-                          >
-                            {name}
-                          </LocalizedLink>
-                          <span className="font-mono text-[10px] uppercase tracking-wide text-muted">
-                            {item.slug}
-                          </span>
-                        </li>
-                      );
-                    })}
+                          {resolveName(item, zh)}
+                        </LocalizedLink>
+                        <span className="font-mono text-[10px] uppercase tracking-wide text-muted">
+                          {item.slug}
+                        </span>
+                      </li>
+                    ))}
                   </ul>
                 </section>
               );

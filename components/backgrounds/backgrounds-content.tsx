@@ -8,6 +8,7 @@ import {
   type BackgroundPattern,
   type BackgroundCategory,
 } from "@/lib/backgrounds";
+import { AddToKitButton } from "@/components/kit/add-to-kit-button";
 
 export function BackgroundsContent() {
   const { t, locale } = useI18n();
@@ -199,6 +200,7 @@ function BackgroundCard({ background, copied, onCopy, locale }: BackgroundCardPr
           >
             {copyMode === "tailwind" && copied ? "Copied!" : "Tailwind"}
           </button>
+          <AddToKitButton type="background" slug={background.id} size="md" />
         </div>
       </div>
     </div>

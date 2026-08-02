@@ -8,6 +8,7 @@ import {
   type Shadow,
   type ShadowCategory,
 } from "@/lib/shadows";
+import { AddToKitButton } from "@/components/kit/add-to-kit-button";
 
 export function ShadowsContent() {
   const { t, locale } = useI18n();
@@ -165,6 +166,7 @@ function ShadowCard({ shadow, darkBg, copied, onCopy, locale }: ShadowCardProps)
           >
             {copyMode === "tailwind" && copied ? "Copied!" : "Tailwind"}
           </button>
+          <AddToKitButton type="shadow" slug={shadow.id} size="md" />
         </div>
       </div>
     </div>

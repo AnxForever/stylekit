@@ -8,6 +8,7 @@ import {
   type Gradient,
   type GradientCategory,
 } from "@/lib/gradients";
+import { AddToKitButton } from "@/components/kit/add-to-kit-button";
 
 type ColorFormat = "hex" | "rgb" | "hsl";
 
@@ -345,6 +346,7 @@ function GradientCard({ gradient, copiedId, onCopy, locale }: GradientCardProps)
           >
             Tailwind
           </button>
+          <AddToKitButton type="gradient" slug={gradient.id} size="md" />
         </div>
       </div>
     </div>

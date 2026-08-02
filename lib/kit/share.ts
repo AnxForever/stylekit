@@ -11,6 +11,9 @@ const PARAM_BY_TYPE: Record<KitItemType, string> = {
   style: "s",
   animation: "a",
   "font-pairing": "f",
+  gradient: "g",
+  shadow: "d",
+  background: "b",
 };
 
 export function encodeKitToSearch(items: KitItem[]): string {

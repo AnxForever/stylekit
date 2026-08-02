@@ -16,6 +16,9 @@ import {
   fontStack,
   type FontPairing,
 } from "@/lib/typography";
+import { getGradientById, type Gradient } from "@/lib/gradients";
+import { getShadowById, type Shadow } from "@/lib/shadows";
+import { getBackgroundById, type BackgroundPattern } from "@/lib/backgrounds";
 import { exportStyleTokens } from "@/lib/export/figma-tokens";
 import { generateTailwindPresetJS } from "@/lib/export/tailwind-preset";
 import type { KitItem } from "./types";
@@ -29,6 +32,9 @@ export interface ResolvedKit {
   styles: DesignStyle[];
   animations: Animation[];
   fontPairings: FontPairing[];
+  gradients: Gradient[];
+  shadows: Shadow[];
+  backgrounds: BackgroundPattern[];
   missing: string[];
 }
 
@@ -36,6 +42,9 @@ export function resolveKitItems(items: KitItem[]): ResolvedKit {
   const styles: DesignStyle[] = [];
   const animations: Animation[] = [];
   const fontPairings: FontPairing[] = [];
+  const gradients: Gradient[] = [];
+  const shadows: Shadow[] = [];
+  const backgrounds: BackgroundPattern[] = [];
   const missing: string[] = [];
 
   for (const item of items) {
@@ -47,14 +56,26 @@ export function resolveKitItems(items: KitItem[]): ResolvedKit {
       const animation = getAnimationBySlug(item.slug);
       if (animation) animations.push(animation);
       else missing.push(`animation:${item.slug}`);
-    } else {
+    } else if (item.type === "font-pairing") {
       const pairing = getFontPairingById(item.slug);
       if (pairing) fontPairings.push(pairing);
       else missing.push(`font-pairing:${item.slug}`);
+    } else if (item.type === "gradient") {
+      const gradient = getGradientById(item.slug);
+      if (gradient) gradients.push(gradient);
+      else missing.push(`gradient:${item.slug}`);
+    } else if (item.type === "shadow") {
+      const shadow = getShadowById(item.slug);
+      if (shadow) shadows.push(shadow);
+      else missing.push(`shadow:${item.slug}`);
+    } else {
+      const background = getBackgroundById(item.slug);
+      if (background) backgrounds.push(background);
+      else missing.push(`background:${item.slug}`);
     }
   }
 
-  return { styles, animations, fontPairings, missing };
+  return { styles, animations, fontPairings, gradients, shadows, backgrounds, missing };
 }
 
 function noteFor(items: KitItem[], type: KitItem["type"], slug: string): string | undefined {
@@ -135,6 +156,44 @@ function synthesizePrompt(kit: ResolvedKit, items: KitItem[]): string {
     lines.push("");
   }
 
+  if (kit.gradients.length || kit.shadows.length || kit.backgrounds.length) {
+    lines.push("## Surfaces");
+    lines.push("");
+    lines.push(
+      "Use these surface treatments (ready-to-paste CSS is in `surfaces.css`):"
+    );
+    lines.push("");
+    for (const gradient of kit.gradients) {
+      lines.push(`- Gradient "${gradient.name}": \`${gradient.css}\``);
+    }
+    for (const shadow of kit.shadows) {
+      lines.push(`- Shadow "${shadow.name}": \`box-shadow: ${shadow.value}\``);
+    }
+    for (const background of kit.backgrounds) {
+      lines.push(`- Background "${background.name}": \`background-image: ${background.css}\``);
+    }
+    lines.push("");
+  }
+
+  const surfaces: string[] = [];
+  for (const gradient of kit.gradients) {
+    surfaces.push(`- Gradient "${gradient.name}": \`${gradient.css}\``);
+  }
+  for (const shadow of kit.shadows) {
+    surfaces.push(`- Shadow "${shadow.name}": \`${shadow.value}\``);
+  }
+  for (const background of kit.backgrounds) {
+    surfaces.push(`- Background "${background.name}": \`background-image: ${background.css};\``);
+  }
+  if (surfaces.length > 0) {
+    lines.push("## Surfaces");
+    lines.push("");
+    lines.push("Apply these gradients, shadows and background patterns where appropriate:");
+    lines.push("");
+    lines.push(...surfaces);
+    lines.push("");
+  }
+
   return lines.join("\n");
 }
 
@@ -203,6 +262,33 @@ function buildDesignSpec(kit: ResolvedKit, items: KitItem[]): string {
     lines.push("");
   }
 
+  if (kit.gradients.length > 0) {
+    lines.push("## Gradients");
+    lines.push("");
+    for (const gradient of kit.gradients) {
+      lines.push(`- **${gradient.name}**: \`${gradient.css}\``);
+    }
+    lines.push("");
+  }
+
+  if (kit.shadows.length > 0) {
+    lines.push("## Shadows");
+    lines.push("");
+    for (const shadow of kit.shadows) {
+      lines.push(`- **${shadow.name}**: \`${shadow.value}\``);
+    }
+    lines.push("");
+  }
+
+  if (kit.backgrounds.length > 0) {
+    lines.push("## Background Patterns");
+    lines.push("");
+    for (const background of kit.backgrounds) {
+      lines.push(`- **${background.name}**: \`background-image: ${background.css};\``);
+    }
+    lines.push("");
+  }
+
   return lines.join("\n");
 }
 
@@ -213,6 +299,11 @@ function buildReadme(kit: ResolvedKit, generatedAt: string): string {
       `${kit.animations.length} animation${kit.animations.length > 1 ? "s" : ""}`,
     kit.fontPairings.length &&
       `${kit.fontPairings.length} font pairing${kit.fontPairings.length > 1 ? "s" : ""}`,
+    kit.gradients.length &&
+      `${kit.gradients.length} gradient${kit.gradients.length > 1 ? "s" : ""}`,
+    kit.shadows.length && `${kit.shadows.length} shadow${kit.shadows.length > 1 ? "s" : ""}`,
+    kit.backgrounds.length &&
+      `${kit.backgrounds.length} background${kit.backgrounds.length > 1 ? "s" : ""}`,
   ]
     .filter(Boolean)
     .join(", ");
@@ -231,6 +322,9 @@ function buildReadme(kit: ResolvedKit, generatedAt: string): string {
     "- `tokens/` — per-style design tokens (Figma Tokens / Tokens Studio compatible) and Tailwind presets.",
     "- `animations/` — production-ready CSS / React code for each selected animation.",
     "- `fonts.md` — font loading snippets (Google Fonts links, CSS, Tailwind v4 theme).",
+    ...(kit.gradients.length || kit.shadows.length || kit.backgrounds.length
+      ? ["- `surfaces.css` — ready-to-use gradients, shadows and background patterns."]
+      : []),
     "",
     "## Suggested workflow",
     "",
@@ -242,6 +336,30 @@ function buildReadme(kit: ResolvedKit, generatedAt: string): string {
       ? ["> Note: some items could not be resolved and were skipped: " + kit.missing.join(", "), ""]
       : []),
   ].join("\n");
+}
+
+function buildSurfacesFile(kit: ResolvedKit): string {
+  const lines: string[] = [
+    "/* StyleKit Design Kit — surfaces",
+    "   Gradients, shadows and background patterns as ready-to-use CSS. */",
+    "",
+  ];
+  for (const gradient of kit.gradients) {
+    lines.push(`/* Gradient: ${gradient.name} */`);
+    lines.push(`.bg-${gradient.id} { background: ${gradient.css}; }`);
+    lines.push("");
+  }
+  for (const shadow of kit.shadows) {
+    lines.push(`/* Shadow: ${shadow.name} */`);
+    lines.push(`.shadow-${shadow.id} { box-shadow: ${shadow.value}; }`);
+    lines.push("");
+  }
+  for (const background of kit.backgrounds) {
+    lines.push(`/* Background pattern: ${background.name} */`);
+    lines.push(`.pattern-${background.id} { background-image: ${background.css}; }`);
+    lines.push("");
+  }
+  return lines.join("\n");
 }
 
 function buildFontsFile(pairings: FontPairing[]): string {
@@ -311,6 +429,10 @@ export function buildKitFiles(items: KitItem[], options?: BuildKitOptions): KitF
 
   if (kit.fontPairings.length > 0) {
     files.push({ path: "fonts.md", content: buildFontsFile(kit.fontPairings) });
+  }
+
+  if (kit.gradients.length || kit.shadows.length || kit.backgrounds.length) {
+    files.push({ path: "surfaces.css", content: buildSurfacesFile(kit) });
   }
 
   return files;
