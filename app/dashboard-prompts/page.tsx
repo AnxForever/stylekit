@@ -32,7 +32,7 @@ export const metadata: Metadata = {
     description:
       "Copyable dashboard UI prompts for analytics, admin panels, KPI cards, charts, tables, and responsive data-heavy interfaces.",
     siteName: "StyleKit",
-    images: [{ url: "/social-preview-home-v1.png", width: 1200, height: 630 }],
+    images: [{ url: "/social-preview-home-v2.png", width: 1200, height: 630 }],
     type: "article",
   },
   twitter: {

@@ -18,7 +18,7 @@ export const metadata: Metadata = {
     title: `Browse ${CURATED_STYLE_COUNT} UI Design Styles & AI Prompts | StyleKit`,
     description: `Explore ${CURATED_STYLE_COUNT} curated visual styles with design tokens, component recipes, and AI UI prompts.`,
     siteName: "StyleKit",
-    images: [{ url: "/social-preview-home-v1.png", width: 1200, height: 630 }],
+    images: [{ url: "/social-preview-home-v2.png", width: 1200, height: 630 }],
     type: "website",
   },
 };

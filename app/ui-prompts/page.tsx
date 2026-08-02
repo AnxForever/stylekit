@@ -24,7 +24,7 @@ export const metadata: Metadata = {
     description:
       "Copy-ready UI design prompts for websites, dashboards, landing pages, dark mode, and more.",
     siteName: "StyleKit",
-    images: [{ url: "/social-preview-home-v1.png", width: 1200, height: 630 }],
+    images: [{ url: "/social-preview-home-v2.png", width: 1200, height: 630 }],
     type: "website",
   },
   twitter: {

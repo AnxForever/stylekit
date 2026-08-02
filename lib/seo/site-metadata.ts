@@ -3,7 +3,7 @@ import type { RequestLocaleContext } from "@/lib/i18n/request";
 import { CURATED_STYLE_COUNT } from "@/lib/product/catalog-facts";
 
 export const HOME_SOCIAL_IMAGE = {
-  path: "/social-preview-home-v1.png",
+  path: "/social-preview-home-v2.png",
   width: 1200,
   height: 630,
   alt: "StyleKit homepage showing the visual style library and design preview",

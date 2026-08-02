@@ -9,7 +9,7 @@ export const baseTemplateMetadata: Metadata = {
     description:
       "35 page templates for SaaS landing, admin, e-commerce, portfolio, and blog — preview live, download as runnable projects.",
     siteName: "StyleKit",
-    images: [{ url: "/social-preview-home-v1.png", width: 1200, height: 630 }],
+    images: [{ url: "/social-preview-home-v2.png", width: 1200, height: 630 }],
     type: "website",
   },
 };
