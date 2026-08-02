@@ -60,20 +60,8 @@ export const mainNav: NavItem[] = [
       width: "wide",
       groups: [
         {
-          groupLabelKey: "nav.more",
-          items: [
-            {
-              href: "https://anxforever.cn",
-              labelKey: "nav.blog",
-              external: true,
-            },
-            { href: "/changelog", labelKey: "nav.changelog" },
-          ],
-        },
-        {
           groupLabelKey: "nav.resourcesBrowse",
           items: [
-            { href: "/styles", labelKey: "nav.styles" },
             { href: "/animations", labelKey: "nav.animations" },
             { href: "/mouse-interactions", labelKey: "nav.mouseInteractions" },
             { href: "/recipes", labelKey: "nav.recipes" },

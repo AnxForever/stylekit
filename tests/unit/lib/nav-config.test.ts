@@ -19,15 +19,11 @@ describe("primary navigation", () => {
 
     expect(resources?.dropdown?.width).toBe("wide");
     expect(resources?.dropdown?.groups?.map((group) => group.groupLabelKey)).toEqual([
-      "nav.more",
       "nav.resourcesBrowse",
       "nav.resourcesComponents",
       "nav.resourcesDevelopers",
     ]);
     expect(resourceItems?.map((item) => item.labelKey)).toEqual([
-      "nav.blog",
-      "nav.changelog",
-      "nav.styles",
       "nav.animations",
       "nav.mouseInteractions",
       "nav.recipes",
@@ -36,15 +32,6 @@ describe("primary navigation", () => {
       "nav.componentPatterns",
       "nav.learn",
       "nav.developers",
-    ]);
-    expect(
-      resourceItems?.filter((item) => item.labelKey === "nav.blog")
-    ).toEqual([
-      {
-        href: "https://anxforever.cn",
-        labelKey: "nav.blog",
-        external: true,
-      },
     ]);
     expect(secondaryNav).toEqual([]);
   });

@@ -38,6 +38,14 @@ export function Footer({ compact = false }: { compact?: boolean }) {
     { href: "/collections", label: locale === "zh" ? "主题合集" : "Collections" },
     { href: "/templates", label: t("nav.templates") },
     { href: "/guide", label: t("nav.guide") },
+  ];
+  // Secondary links moved out of the header Resources dropdown to keep it lean.
+  const moreLinks: { href: string; label: string; external?: boolean }[] = [
+    { href: "/animations", label: t("nav.animations") },
+    { href: "/recipes", label: t("nav.recipes") },
+    { href: "/mouse-interactions", label: t("nav.mouseInteractions") },
+    { href: "/animations/vocabulary", label: t("nav.vocabulary") },
+    { href: "/learn", label: t("nav.learn") },
     { href: "https://anxforever.cn", label: t("nav.blog"), external: true },
     { href: "/changelog", label: t("nav.changelog") },
   ];
@@ -182,9 +190,41 @@ export function Footer({ compact = false }: { compact?: boolean }) {
             </nav>
           </div>
 
-          <div className="border-t border-white/10 py-8 md:col-span-3 md:border-l md:border-t-0 md:py-12 md:pl-8">
+          <div className="border-t border-white/10 py-8 md:col-span-2 md:border-l md:border-t-0 md:py-12 md:pl-8">
             <p className={sectionLabelClassName}>
               <span className="tabular-nums text-zinc-600">04</span>
+              <span className="mx-2 text-zinc-700">·</span>
+              {locale === "zh" ? "更多" : "Explore"}
+            </p>
+            <nav className="mt-6 flex flex-col gap-3">
+              {moreLinks.map((link) =>
+                link.external ? (
+                  <a
+                    key={link.href}
+                    href={link.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={footerLinkClassName}
+                  >
+                    {link.label}
+                  </a>
+                ) : (
+                  <Link
+                    key={link.href}
+                    href={localizeHref(link.href, locale)}
+                    prefetch={false}
+                    className={footerLinkClassName}
+                  >
+                    {link.label}
+                  </Link>
+                )
+              )}
+            </nav>
+          </div>
+
+          <div className="border-t border-white/10 py-8 md:col-span-2 md:border-l md:border-t-0 md:py-12 md:pl-8">
+            <p className={sectionLabelClassName}>
+              <span className="tabular-nums text-zinc-600">05</span>
               <span className="mx-2 text-zinc-700">·</span>
               {t("footer.resources")}
             </p>
@@ -202,9 +242,9 @@ export function Footer({ compact = false }: { compact?: boolean }) {
             </nav>
           </div>
 
-          <div className="border-t border-white/10 py-8 md:col-span-3 md:border-l md:border-t-0 md:py-12 md:pl-8">
+          <div className="border-t border-white/10 py-8 md:col-span-2 md:border-l md:border-t-0 md:py-12 md:pl-8">
             <p className={sectionLabelClassName}>
-              <span className="tabular-nums text-zinc-600">05</span>
+              <span className="tabular-nums text-zinc-600">06</span>
               <span className="mx-2 text-zinc-700">·</span>
               {locale === "zh" ? "订阅" : "Dispatch"}
             </p>
