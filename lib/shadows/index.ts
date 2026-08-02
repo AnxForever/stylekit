@@ -411,6 +411,70 @@ export const shadows: Shadow[] = [
     category: "colored",
     tags: ["brand", "smooth", "accent"],
   },
+
+  // === Batch 2: smooth layered shadows (Josh Comeau method: stacked layers
+  // at growing offset/blur for realistic, soft depth). Low/medium/high
+  // elevation pairs at two light intensities. ===
+  {
+    id: "smooth-low",
+    name: "Smooth Low",
+    nameZh: "平滑低",
+    value:
+      "0 0.5px 0.6px rgba(0,0,0,0.07), 0 1.3px 1.6px -0.6px rgba(0,0,0,0.07), 0 2.9px 3.6px -1.2px rgba(0,0,0,0.07)",
+    css: "box-shadow: 0 0.5px 0.6px rgba(0,0,0,0.07), 0 1.3px 1.6px -0.6px rgba(0,0,0,0.07), 0 2.9px 3.6px -1.2px rgba(0,0,0,0.07);",
+    tailwind:
+      "shadow-[0_0.5px_0.6px_rgba(0,0,0,0.07),0_1.3px_1.6px_-0.6px_rgba(0,0,0,0.07),0_2.9px_3.6px_-1.2px_rgba(0,0,0,0.07)]",
+    category: "layered",
+    tags: ["smooth", "card", "realistic"],
+  },
+  {
+    id: "smooth-medium",
+    name: "Smooth Medium",
+    nameZh: "平滑中",
+    value:
+      "0 0.6px 0.7px rgba(0,0,0,0.07), 0 2px 2.5px -0.4px rgba(0,0,0,0.07), 0 3.8px 4.7px -0.8px rgba(0,0,0,0.07), 0 6.7px 8.4px -1.2px rgba(0,0,0,0.07), 0 11.5px 14.4px -1.7px rgba(0,0,0,0.07)",
+    css: "box-shadow: 0 0.6px 0.7px rgba(0,0,0,0.07), 0 2px 2.5px -0.4px rgba(0,0,0,0.07), 0 3.8px 4.7px -0.8px rgba(0,0,0,0.07), 0 6.7px 8.4px -1.2px rgba(0,0,0,0.07), 0 11.5px 14.4px -1.7px rgba(0,0,0,0.07);",
+    tailwind:
+      "shadow-[0_0.6px_0.7px_rgba(0,0,0,0.07),0_2px_2.5px_-0.4px_rgba(0,0,0,0.07),0_3.8px_4.7px_-0.8px_rgba(0,0,0,0.07),0_6.7px_8.4px_-1.2px_rgba(0,0,0,0.07),0_11.5px_14.4px_-1.7px_rgba(0,0,0,0.07)]",
+    category: "layered",
+    tags: ["smooth", "panel", "realistic"],
+  },
+  {
+    id: "smooth-high",
+    name: "Smooth High",
+    nameZh: "平滑高",
+    value:
+      "0 0.7px 0.8px rgba(0,0,0,0.06), 0 2.4px 3px -0.3px rgba(0,0,0,0.06), 0 4.5px 5.6px -0.6px rgba(0,0,0,0.06), 0 7.5px 9.4px -0.9px rgba(0,0,0,0.06), 0 12.3px 15.4px -1.2px rgba(0,0,0,0.06), 0 19.5px 24.4px -1.5px rgba(0,0,0,0.06), 0 30px 37.5px -1.8px rgba(0,0,0,0.06)",
+    css: "box-shadow: 0 0.7px 0.8px rgba(0,0,0,0.06), 0 2.4px 3px -0.3px rgba(0,0,0,0.06), 0 4.5px 5.6px -0.6px rgba(0,0,0,0.06), 0 7.5px 9.4px -0.9px rgba(0,0,0,0.06), 0 12.3px 15.4px -1.2px rgba(0,0,0,0.06), 0 19.5px 24.4px -1.5px rgba(0,0,0,0.06), 0 30px 37.5px -1.8px rgba(0,0,0,0.06);",
+    tailwind:
+      "shadow-[0_0.7px_0.8px_rgba(0,0,0,0.06),0_2.4px_3px_-0.3px_rgba(0,0,0,0.06),0_4.5px_5.6px_-0.6px_rgba(0,0,0,0.06),0_7.5px_9.4px_-0.9px_rgba(0,0,0,0.06),0_12.3px_15.4px_-1.2px_rgba(0,0,0,0.06),0_19.5px_24.4px_-1.5px_rgba(0,0,0,0.06),0_30px_37.5px_-1.8px_rgba(0,0,0,0.06)]",
+    category: "layered",
+    tags: ["smooth", "modal", "floating"],
+  },
+  {
+    id: "smooth-crisp",
+    name: "Smooth Crisp",
+    nameZh: "平滑清晰",
+    value:
+      "0 1px 1.1px rgba(0,0,0,0.11), 0 2.5px 2.8px -0.8px rgba(0,0,0,0.11), 0 6.1px 6.9px -1.7px rgba(0,0,0,0.11), 0 14.8px 16.7px -2.5px rgba(0,0,0,0.11)",
+    css: "box-shadow: 0 1px 1.1px rgba(0,0,0,0.11), 0 2.5px 2.8px -0.8px rgba(0,0,0,0.11), 0 6.1px 6.9px -1.7px rgba(0,0,0,0.11), 0 14.8px 16.7px -2.5px rgba(0,0,0,0.11);",
+    tailwind:
+      "shadow-[0_1px_1.1px_rgba(0,0,0,0.11),0_2.5px_2.8px_-0.8px_rgba(0,0,0,0.11),0_6.1px_6.9px_-1.7px_rgba(0,0,0,0.11),0_14.8px_16.7px_-2.5px_rgba(0,0,0,0.11)]",
+    category: "layered",
+    tags: ["smooth", "crisp", "product"],
+  },
+  {
+    id: "elevation-6",
+    name: "Elevation 6",
+    nameZh: "层级 6",
+    value:
+      "0 11px 15px -7px rgba(0,0,0,0.2), 0 24px 38px 3px rgba(0,0,0,0.14), 0 9px 46px 8px rgba(0,0,0,0.12)",
+    css: "box-shadow: 0 11px 15px -7px rgba(0,0,0,0.2), 0 24px 38px 3px rgba(0,0,0,0.14), 0 9px 46px 8px rgba(0,0,0,0.12);",
+    tailwind:
+      "shadow-[0_11px_15px_-7px_rgba(0,0,0,0.2),0_24px_38px_3px_rgba(0,0,0,0.14),0_9px_46px_8px_rgba(0,0,0,0.12)]",
+    category: "elevation",
+    tags: ["material", "modal", "overlay"],
+  },
 ];
 
 const categoryLabels: Record<ShadowCategory, { en: string; zh: string }> = {

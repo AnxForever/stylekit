@@ -170,6 +170,19 @@ function BackgroundCard({ background, copied, onCopy, locale }: BackgroundCardPr
           <p className="text-xs text-muted mt-0.5">
             {background.tags.join(", ")}
           </p>
+          {background.attribution && (
+            <p className="text-[10px] text-muted/70 mt-1">
+              {background.attribution.source} ·{" "}
+              <a
+                href={background.attribution.url}
+                target="_blank"
+                rel="noreferrer"
+                className="underline underline-offset-2 hover:text-foreground"
+              >
+                {background.attribution.license}
+              </a>
+            </p>
+          )}
         </div>
 
         {/* Copy Buttons */}
