@@ -17,13 +17,6 @@ const footerLinkClassName =
 
 export function Footer({ compact = false }: { compact?: boolean }) {
   const { t, locale } = useI18n();
-  const promptLinks: { href: string; labelKey: TranslationKey }[] = [
-    { href: "/ui-prompts", labelKey: "footer.prompts.uiDesign" },
-    { href: "/landing-page-prompts", labelKey: "footer.prompts.landingPage" },
-    { href: "/dashboard-prompts", labelKey: "footer.prompts.dashboard" },
-    { href: "/tailwind-ui-prompts", labelKey: "footer.prompts.tailwindUi" },
-    { href: "/dark-mode-ui-prompts", labelKey: "footer.prompts.darkMode" },
-  ];
   const trustLinks: { href: string; labelKey: TranslationKey }[] = [
     { href: "/about", labelKey: "footer.trust.about" },
     { href: "/contact", labelKey: "footer.trust.contact" },
@@ -32,22 +25,22 @@ export function Footer({ compact = false }: { compact?: boolean }) {
     { href: "/support", labelKey: "footer.trust.support" },
     { href: "/refunds", labelKey: "footer.trust.refunds" },
   ];
-  const navLinks: { href: string; label: string; external?: boolean }[] = [
+  // Footer navigation, rebuilt for less density: two lean columns instead of
+  // four packed ones. Explore = product surfaces; Learn = reading + updates.
+  const exploreLinks: { href: string; label: string; external?: boolean }[] = [
     { href: "/styles", label: t("nav.styles") },
-    { href: "/colors", label: locale === "zh" ? "配色" : "Colors" },
-    { href: "/collections", label: locale === "zh" ? "主题合集" : "Collections" },
     { href: "/templates", label: t("nav.templates") },
-    { href: "/guide", label: t("nav.guide") },
-  ];
-  // Secondary links moved out of the header Resources dropdown to keep it lean.
-  const moreLinks: { href: string; label: string; external?: boolean }[] = [
     { href: "/animations", label: t("nav.animations") },
-    { href: "/recipes", label: t("nav.recipes") },
-    { href: "/mouse-interactions", label: t("nav.mouseInteractions") },
-    { href: "/animations/vocabulary", label: t("nav.vocabulary") },
+    { href: "/resources", label: t("nav.resourceLibrary") },
+    { href: "/ui-prompts", label: locale === "zh" ? "提示词库" : "Prompts" },
+    { href: "/collections", label: locale === "zh" ? "主题合集" : "Collections" },
+  ];
+  const learnLinks: { href: string; label: string; external?: boolean }[] = [
     { href: "/learn", label: t("nav.learn") },
-    { href: "https://anxforever.cn", label: t("nav.blog"), external: true },
+    { href: "/guide", label: t("nav.guide") },
+    { href: "/recipes", label: t("nav.recipes") },
     { href: "/changelog", label: t("nav.changelog") },
+    { href: "https://anxforever.cn", label: t("nav.blog"), external: true },
   ];
 
   if (compact) {
@@ -160,83 +153,17 @@ export function Footer({ compact = false }: { compact?: boolean }) {
 
           <div className="border-t border-white/10 py-8 md:col-span-2 md:border-l md:border-t-0 md:py-12 md:pl-8">
             <p className={sectionLabelClassName}>
-              <span className="tabular-nums text-zinc-600">03</span>
-              <span className="mx-2 text-zinc-700">·</span>
-              {t("footer.navigation")}
+              {locale === "zh" ? "浏览" : "Explore"}
             </p>
             <nav className="mt-6 flex flex-col gap-3">
-              {navLinks.map((link) =>
-                link.external ? (
-                  <a
-                    key={link.href}
-                    href={link.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={footerLinkClassName}
-                  >
-                    {link.label}
-                  </a>
-                ) : (
-                  <Link
-                    key={link.href}
-                    href={localizeHref(link.href, locale)}
-                    prefetch={false}
-                    className={footerLinkClassName}
-                  >
-                    {link.label}
-                  </Link>
-                )
-              )}
-            </nav>
-          </div>
-
-          <div className="border-t border-white/10 py-8 md:col-span-2 md:border-l md:border-t-0 md:py-12 md:pl-8">
-            <p className={sectionLabelClassName}>
-              <span className="tabular-nums text-zinc-600">04</span>
-              <span className="mx-2 text-zinc-700">·</span>
-              {locale === "zh" ? "更多" : "Explore"}
-            </p>
-            <nav className="mt-6 flex flex-col gap-3">
-              {moreLinks.map((link) =>
-                link.external ? (
-                  <a
-                    key={link.href}
-                    href={link.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={footerLinkClassName}
-                  >
-                    {link.label}
-                  </a>
-                ) : (
-                  <Link
-                    key={link.href}
-                    href={localizeHref(link.href, locale)}
-                    prefetch={false}
-                    className={footerLinkClassName}
-                  >
-                    {link.label}
-                  </Link>
-                )
-              )}
-            </nav>
-          </div>
-
-          <div className="border-t border-white/10 py-8 md:col-span-2 md:border-l md:border-t-0 md:py-12 md:pl-8">
-            <p className={sectionLabelClassName}>
-              <span className="tabular-nums text-zinc-600">05</span>
-              <span className="mx-2 text-zinc-700">·</span>
-              {t("footer.resources")}
-            </p>
-            <nav className="mt-6 flex flex-col gap-3">
-              {promptLinks.map((link) => (
+              {exploreLinks.map((link) => (
                 <Link
                   key={link.href}
                   href={localizeHref(link.href, locale)}
                   prefetch={false}
                   className={footerLinkClassName}
                 >
-                  {t(link.labelKey)}
+                  {link.label}
                 </Link>
               ))}
             </nav>
@@ -244,11 +171,44 @@ export function Footer({ compact = false }: { compact?: boolean }) {
 
           <div className="border-t border-white/10 py-8 md:col-span-2 md:border-l md:border-t-0 md:py-12 md:pl-8">
             <p className={sectionLabelClassName}>
-              <span className="tabular-nums text-zinc-600">06</span>
-              <span className="mx-2 text-zinc-700">·</span>
-              {locale === "zh" ? "订阅" : "Dispatch"}
+              {locale === "zh" ? "学习与动态" : "Learn"}
             </p>
-            <div className="mt-6">
+            <nav className="mt-6 flex flex-col gap-3">
+              {learnLinks.map((link) =>
+                link.external ? (
+                  <a
+                    key={link.href}
+                    href={link.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={footerLinkClassName}
+                  >
+                    {link.label}
+                  </a>
+                ) : (
+                  <Link
+                    key={link.href}
+                    href={localizeHref(link.href, locale)}
+                    prefetch={false}
+                    className={footerLinkClassName}
+                  >
+                    {link.label}
+                  </Link>
+                )
+              )}
+            </nav>
+          </div>
+
+          <div className="border-t border-white/10 py-8 md:col-span-4 md:border-l md:border-t-0 md:py-12 md:pl-8">
+            <p className={sectionLabelClassName}>
+              {locale === "zh" ? "订阅动态" : "Dispatch"}
+            </p>
+            <p className="mt-4 text-sm leading-relaxed text-zinc-400 max-w-xs">
+              {locale === "zh"
+                ? "新风格、模板与工具上线时，第一时间收到通知。"
+                : "Get notified when new styles, templates and tools ship."}
+            </p>
+            <div className="mt-5 max-w-sm">
               <NewsletterSignup variant="inline" />
             </div>
           </div>

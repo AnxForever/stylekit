@@ -77,9 +77,11 @@ export const mainNav: NavItem[] = [
           ],
         },
         {
-          groupLabelKey: "nav.resourcesDevelopers",
+          groupLabelKey: "nav.more",
           items: [
             { href: "/developers", labelKey: "nav.developers" },
+            { href: "/changelog", labelKey: "nav.changelog" },
+            { href: "https://anxforever.cn", labelKey: "nav.blog", external: true },
           ],
         },
       ],
