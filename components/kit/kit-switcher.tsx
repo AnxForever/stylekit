@@ -3,6 +3,13 @@
 import { useState } from "react";
 import { useKit } from "@/lib/kit/context";
 import { useI18n } from "@/lib/i18n/context";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 /**
  * Multi-kit switcher for the workbench header: pick the active kit,
@@ -35,7 +42,7 @@ export function KitSwitcher() {
 
   return (
     <div className="flex flex-wrap items-center gap-2 mb-6">
-      {editing ? (
+      {editing && (
         <input
           autoFocus
           value={draft}
@@ -49,25 +56,29 @@ export function KitSwitcher() {
           className="bg-transparent border border-foreground px-2.5 py-1.5 text-sm text-foreground focus:outline-none"
           aria-label={zh ? "重命名工具箱" : "Rename kit"}
         />
-      ) : (
-        <label className="sr-only" htmlFor="kit-switcher">
-          {zh ? "选择工具箱" : "Select kit"}
-        </label>
       )}
 
       {!editing && (
-        <select
-          id="kit-switcher"
-          value={activeKitId}
-          onChange={(e) => switchKit(e.target.value)}
-          className="bg-background border border-border px-2.5 py-1.5 text-sm text-foreground focus:border-foreground focus:outline-none"
-        >
-          {kits.map((kit) => (
-            <option key={kit.id} value={kit.id}>
-              {kit.name} ({kit.items.length})
-            </option>
-          ))}
-        </select>
+        <>
+          <label className="sr-only" htmlFor="kit-switcher">
+            {zh ? "选择工具箱" : "Select kit"}
+          </label>
+          <Select value={activeKitId} onValueChange={(value) => switchKit(value)}>
+            <SelectTrigger
+              id="kit-switcher"
+              className="h-auto w-auto min-w-[10rem] gap-2 py-1.5 px-2.5 text-sm"
+            >
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {kits.map((kit) => (
+                <SelectItem key={kit.id} value={kit.id}>
+                  {kit.name} ({kit.items.length})
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </>
       )}
 
       {!editing && (

@@ -95,12 +95,17 @@ export function KitProvider({ children }: { children: ReactNode }) {
   }, [kits, activeKitId, hydrated]);
 
   // Signed-in: merge local kits with the cloud once, then adopt the union.
+  // Key on the stable user id (not the user object) — supabase emits a fresh
+  // user object from getSession() then getUser() with the same id, and keying
+  // on the object would cancel the in-flight sync and strand the spinner.
+  const userId = user?.id ?? null;
   useEffect(() => {
-    if (!hydrated || !user) {
-      if (!user) mergedUserIdRef.current = null;
+    if (!hydrated) return;
+    if (!userId) {
+      mergedUserIdRef.current = null;
+      setSyncing(false);
       return;
     }
-    const userId = user.id;
     if (mergedUserIdRef.current === userId) return;
     mergedUserIdRef.current = userId;
 
@@ -125,20 +130,22 @@ export function KitProvider({ children }: { children: ReactNode }) {
       } catch {
         // Offline or misconfigured: local storage keeps working.
       } finally {
-        if (!cancelled) setSyncing(false);
+        // Always clear — dedup on userId means no overlapping run for the
+        // same user, so an unconditional clear can't hide a live sync.
+        setSyncing(false);
       }
     })();
 
     return () => {
       cancelled = true;
     };
-    // Only re-run when the signed-in user changes, not on every edit.
+    // Only re-run when the signed-in user id changes, not on every edit.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user, hydrated]);
+  }, [userId, hydrated]);
 
   // Push local changes to the cloud (debounced) for signed-in users.
   useEffect(() => {
-    if (!hydrated || !user) return;
+    if (!hydrated || !userId) return;
     if (skipNextPushRef.current) {
       skipNextPushRef.current = false;
       return;
@@ -151,7 +158,7 @@ export function KitProvider({ children }: { children: ReactNode }) {
       }).catch(() => {});
     }, 1200);
     return () => window.clearTimeout(handle);
-  }, [kits, activeKitId, hydrated, user]);
+  }, [kits, activeKitId, hydrated, userId]);
 
   const activeKit = useMemo(
     () => kits.find((kit) => kit.id === activeKitId) ?? kits[0] ?? null,
