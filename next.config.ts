@@ -64,6 +64,11 @@ const nextConfig: NextConfig = {
 
   async redirects() {
     return [
+      {
+        source: "/:locale(en|zh)/styles/:slug/showcase",
+        destination: "/styles/:slug/showcase",
+        permanent: true,
+      },
       { source: "/:locale(en|zh)/prompts", destination: "/:locale/ui-prompts", permanent: true },
       { source: "/:locale(en|zh)/prompts/landing-page", destination: "/:locale/landing-page-prompts", permanent: true },
       { source: "/:locale(en|zh)/prompts/dashboard-design", destination: "/:locale/dashboard-prompts", permanent: true },
@@ -78,11 +83,30 @@ const nextConfig: NextConfig = {
       { source: "/linter", destination: "/developers", permanent: true },
       { source: "/playground", destination: "/styles", permanent: true },
       { source: "/api-test", destination: "/developers", permanent: true },
+      // Asset libraries merged into the unified /resources page (2026-08).
+      // 301 the standalone routes to the matching sidebar section.
+      { source: "/:locale(en|zh)/typography", destination: "/:locale/resources?tab=typography", permanent: true },
+      { source: "/:locale(en|zh)/gradients", destination: "/:locale/resources?tab=gradients", permanent: true },
+      { source: "/:locale(en|zh)/shadows", destination: "/:locale/resources?tab=shadows", permanent: true },
+      { source: "/:locale(en|zh)/backgrounds", destination: "/:locale/resources?tab=backgrounds", permanent: true },
+      { source: "/typography", destination: "/resources?tab=typography", permanent: true },
+      { source: "/gradients", destination: "/resources?tab=gradients", permanent: true },
+      { source: "/shadows", destination: "/resources?tab=shadows", permanent: true },
+      { source: "/backgrounds", destination: "/resources?tab=backgrounds", permanent: true },
     ];
   },
 
   async headers() {
     return [
+      {
+        source: "/styles/:slug/showcase",
+        headers: [
+          {
+            key: "X-Robots-Tag",
+            value: "noindex, follow",
+          },
+        ],
+      },
       {
         source: "/validation/:path*",
         headers: [
@@ -120,13 +144,13 @@ const nextConfig: NextConfig = {
         ],
       },
       {
-        source: "/(.*)\\.(js|css|woff2?|ttf|ico|svg)",
+        source: "/sw.js",
         headers: [
-          { key: "Cache-Control", value: "public, max-age=31536000, immutable" },
+          { key: "Cache-Control", value: "no-cache, no-store, must-revalidate" },
         ],
       },
       {
-        source: "/(.*)\\.(png|jpg|jpeg|gif|webp|avif)",
+        source: "/(.*)\\.(png|jpg|jpeg|gif|webp|avif|svg|ico)",
         headers: [
           { key: "Cache-Control", value: "public, max-age=86400, stale-while-revalidate=604800" },
         ],

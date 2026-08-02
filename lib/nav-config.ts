@@ -76,7 +76,6 @@ export const mainNav: NavItem[] = [
             { href: "/styles", labelKey: "nav.styles" },
             { href: "/animations", labelKey: "nav.animations" },
             { href: "/mouse-interactions", labelKey: "nav.mouseInteractions" },
-            { href: "/animations/vocabulary", labelKey: "nav.vocabulary" },
             { href: "/recipes", labelKey: "nav.recipes" },
             { href: "/guides", labelKey: "nav.guides" },
           ],
@@ -84,11 +83,9 @@ export const mainNav: NavItem[] = [
         {
           groupLabelKey: "nav.resourcesComponents",
           items: [
+            { href: "/resources", labelKey: "nav.resourceLibrary" },
             { href: "/component-patterns", labelKey: "nav.componentPatterns" },
-            { href: "/typography", labelKey: "nav.typography" },
-            { href: "/gradients", labelKey: "nav.gradients" },
-            { href: "/shadows", labelKey: "nav.shadows" },
-            { href: "/backgrounds", labelKey: "nav.backgrounds" },
+            { href: "/learn", labelKey: "nav.learn" },
           ],
         },
         {

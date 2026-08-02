@@ -30,14 +30,11 @@ describe("primary navigation", () => {
       "nav.styles",
       "nav.animations",
       "nav.mouseInteractions",
-      "nav.vocabulary",
       "nav.recipes",
       "nav.guides",
+      "nav.resourceLibrary",
       "nav.componentPatterns",
-      "nav.typography",
-      "nav.gradients",
-      "nav.shadows",
-      "nav.backgrounds",
+      "nav.learn",
       "nav.developers",
     ]);
     expect(

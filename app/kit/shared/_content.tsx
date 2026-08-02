@@ -28,10 +28,10 @@ const TYPE_LABELS: Record<KitItem["type"], { zh: string; en: string }> = {
 const TYPE_HREF: Record<KitItem["type"], (slug: string) => string> = {
   style: (slug) => `/styles/${slug}`,
   animation: (slug) => `/animations/${slug}`,
-  "font-pairing": () => "/typography",
-  gradient: () => "/gradients",
-  shadow: () => "/shadows",
-  background: () => "/backgrounds",
+  "font-pairing": () => "/resources?tab=typography",
+  gradient: () => "/resources?tab=gradients",
+  shadow: () => "/resources?tab=shadows",
+  background: () => "/resources?tab=backgrounds",
 };
 
 function resolveName(item: KitItem, zh: boolean): string {
