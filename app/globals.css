@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "./tailwind-theme-tokens.css";
 @plugin "tailwindcss-animate";
 @plugin "@tailwindcss/typography";
 
@@ -55,49 +56,8 @@
   --border: #374151;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-accent: var(--accent);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-muted: var(--muted);
-  --color-border: var(--border);
-  --font-serif: var(--font-display-active);
-  --font-sans: var(--font-body-active);
-  --font-mono: var(--font-mono-active);
-
-  /* Neo-Brutalist Colors */
-  --color-brutal-pink: var(--brutal-pink);
-  --color-brutal-green: var(--brutal-green);
-  --color-brutal-blue: var(--brutal-blue);
-  --color-brutal-yellow: var(--brutal-yellow);
-  --color-brutal-orange: var(--brutal-orange);
-
-  /* Neo-Brutalist Offset Shadows — semantic class names so callers
-     can write `shadow-brutal-pink` instead of repeating
-     `shadow-[4px_4px_0px_0px_#ff006e]` literals everywhere. The
-     shadow colors are derived from the brutal color CSS variables
-     so dark mode + future palette changes flow through. */
-  --shadow-brutal-pink: 4px 4px 0px 0px var(--brutal-pink);
-  --shadow-brutal-green: 4px 4px 0px 0px var(--brutal-green);
-  --shadow-brutal-blue: 4px 4px 0px 0px var(--brutal-blue);
-  --shadow-brutal-yellow: 4px 4px 0px 0px var(--brutal-yellow);
-  --shadow-brutal-orange: 4px 4px 0px 0px var(--brutal-orange);
-  --shadow-brutal-black: 4px 4px 0px 0px #000;
-  --shadow-brutal-pink-lg: 8px 8px 0px 0px var(--brutal-pink);
-  --shadow-brutal-blue-lg: 8px 8px 0px 0px var(--brutal-blue);
-  --shadow-brutal-black-lg: 8px 8px 0px 0px #000;
-  --shadow-brutal-pink-card: 6px 6px 0px 0px var(--brutal-pink);
-  --shadow-brutal-green-card: 6px 6px 0px 0px var(--brutal-green);
-  --shadow-brutal-blue-card: 6px 6px 0px 0px var(--brutal-blue);
-  --shadow-brutal-yellow-card: 6px 6px 0px 0px var(--brutal-yellow);
-  --shadow-brutal-orange-card: 6px 6px 0px 0px var(--brutal-orange);
-  --shadow-brutal-pink-card-lg: 12px 12px 0px 0px var(--brutal-pink);
-  --shadow-brutal-green-card-lg: 12px 12px 0px 0px var(--brutal-green);
-  --shadow-brutal-blue-card-lg: 12px 12px 0px 0px var(--brutal-blue);
-  --shadow-brutal-yellow-card-lg: 12px 12px 0px 0px var(--brutal-yellow);
-  --shadow-brutal-orange-card-lg: 12px 12px 0px 0px var(--brutal-orange);
-}
+/* Theme tokens + brutal shadows moved to ./tailwind-theme-tokens.css so the
+   scoped snippet sheets compile against the same theme. */
 
 /* Editorial/Magazine Typography */
 body {
@@ -570,23 +530,8 @@ a, button, [role="button"], input, select, textarea {
 /* range sliders need a directional cursor, not the text I-beam */
 input[type="range"] { cursor: pointer; }
 
-/* Surface-level shadow utilities — hairline + contact + ambient
-   Replace border+border with this stack for Card, Popover, Modal,
-   Dropdown and similar floating-surface components. The zero-blur
-   edge ring inherits foreground alpha so it adapts to both light
-   and dark themes without a hard-coded gray border. */
-@utility shadow-surface {
-  box-shadow:
-    0 0 0 1px color-mix(in srgb, var(--foreground) 8%, transparent),
-    0 1px 2px color-mix(in srgb, var(--foreground) 6%, transparent),
-    0 4px 12px color-mix(in srgb, var(--foreground) 8%, transparent);
-}
-@utility shadow-surface-lg {
-  box-shadow:
-    0 0 0 1px color-mix(in srgb, var(--foreground) 8%, transparent),
-    0 2px 4px color-mix(in srgb, var(--foreground) 6%, transparent),
-    0 8px 24px color-mix(in srgb, var(--foreground) 10%, transparent);
-}
+/* shadow-surface / shadow-surface-lg utilities moved to
+   ./tailwind-theme-tokens.css (shared with scoped snippet sheets). */
 
 .sk-spotlight-surface > .sk-spotlight-layer {
   background:
