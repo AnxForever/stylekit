@@ -1,9 +1,0 @@
-/* Scoped utility sheet for component recipes. Class names live inside
-   recipe definition strings in lib/recipes/*.ts, which are excluded from
-   the global sheet (see app/globals.css). Ships only on /recipes routes. */
-@import "tailwindcss/theme.css" layer(theme);
-@import "tailwindcss/utilities.css" layer(utilities) source(none);
-@plugin "tailwindcss-animate";
-@plugin "@tailwindcss/typography";
-@custom-variant dark (&:where(.dark, .dark *));
-@source "../../lib/recipes";
