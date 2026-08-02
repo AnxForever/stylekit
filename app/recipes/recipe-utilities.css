@@ -3,7 +3,6 @@
    the global sheet (see app/globals.css). Ships only on /recipes routes. */
 @import "tailwindcss/theme.css" layer(theme);
 @import "tailwindcss/utilities.css" layer(utilities) source(none);
-@import "../tailwind-theme-tokens.css";
 @plugin "tailwindcss-animate";
 @plugin "@tailwindcss/typography";
 @custom-variant dark (&:where(.dark, .dark *));
