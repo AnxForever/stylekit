@@ -75,3 +75,17 @@ describe("moveKitItemToFront", () => {
     expect(moveKitItemToFront(items, "style", "zzz")).toBe(items);
   });
 });
+
+describe("buildKitHints interactive flag", () => {
+  it("words the two-style hint for read-only contexts", () => {
+    const hints = buildKitHints({
+      styleCount: 2,
+      fontPairingCount: 0,
+      animations: [],
+      interactive: false,
+    });
+    const hint = hints.find((h) => h.tone === "info");
+    expect(hint?.en).toContain("Import to your kit");
+    expect(hint?.en).not.toContain("Click a style name");
+  });
+});

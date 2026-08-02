@@ -17,7 +17,8 @@ interface KitCombinationPreviewProps {
   animations: AnimationMeta[];
   fontPairing: FontPairing | null;
   hints: KitHint[];
-  onMakePrimary: (slug: string) => void;
+  /** Omit for read-only contexts (e.g. shared kit page): chips stop swapping. */
+  onMakePrimary?: (slug: string) => void;
 }
 
 /** Pick black/white text for a given hex background (YIQ luminance). */
@@ -101,20 +102,23 @@ export function KitCombinationPreview({
               <button
                 key={style.slug}
                 type="button"
-                onClick={() => index !== 0 && onMakePrimary(style.slug)}
+                disabled={!onMakePrimary}
+                onClick={() => index !== 0 && onMakePrimary?.(style.slug)}
                 title={
                   index === 0
                     ? zh
                       ? "当前主风格"
                       : "Current base style"
-                    : zh
-                      ? "设为主风格"
-                      : "Set as base style"
+                    : onMakePrimary
+                      ? zh
+                        ? "设为主风格"
+                        : "Set as base style"
+                      : undefined
                 }
                 className={
                   index === 0
                     ? "border border-foreground bg-foreground text-background px-2.5 py-1 text-[10px] uppercase tracking-[0.14em]"
-                    : "border border-border px-2.5 py-1 text-[10px] uppercase tracking-[0.14em] text-muted hover:border-foreground hover:text-foreground transition-colors"
+                    : `border border-border px-2.5 py-1 text-[10px] uppercase tracking-[0.14em] text-muted ${onMakePrimary ? "hover:border-foreground hover:text-foreground transition-colors" : ""}`
                 }
               >
                 {zh ? style.name : style.nameEn || style.name}

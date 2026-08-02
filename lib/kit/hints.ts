@@ -16,11 +16,13 @@ export interface KitHintInput {
   styleCount: number;
   fontPairingCount: number;
   animations: Pick<AnimationMeta, "category" | "intensity">[];
+  /** Whether the reader can reorder styles in this context (default true). */
+  interactive?: boolean;
 }
 
 export function buildKitHints(input: KitHintInput): KitHint[] {
   const hints: KitHint[] = [];
-  const { styleCount, fontPairingCount, animations } = input;
+  const { styleCount, fontPairingCount, animations, interactive = true } = input;
 
   if (styleCount > 2) {
     hints.push({
@@ -31,8 +33,12 @@ export function buildKitHints(input: KitHintInput): KitHint[] {
   } else if (styleCount === 2) {
     hints.push({
       tone: "info",
-      zh: "双风格混搭：第一个是主风格，第二个作点缀。点击上方风格名可切换主次。",
-      en: "Two styles: the first acts as the base, the second as an accent. Click a style name above to swap.",
+      zh: interactive
+        ? "双风格混搭：第一个是主风格，第二个作点缀。点击上方风格名可切换主次。"
+        : "双风格混搭：第一个是主风格，第二个作点缀。导入自己的工具箱后可切换主次。",
+      en: interactive
+        ? "Two styles: the first acts as the base, the second as an accent. Click a style name above to swap."
+        : "Two styles: the first acts as the base, the second as an accent. Import to your kit to swap them.",
     });
   }
 

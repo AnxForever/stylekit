@@ -9,6 +9,7 @@ import { getStyleMetaBySlug } from "@/lib/styles/meta";
 import { animationsMeta } from "@/lib/animations/meta";
 import { fontPairings } from "@/lib/typography";
 import { buildKitHints } from "@/lib/kit/hints";
+import { encodeKitToSearch } from "@/lib/kit/share";
 import { KitCombinationPreview } from "@/components/kit/kit-combination-preview";
 
 interface ResolvedRow {
@@ -69,6 +70,7 @@ export function KitContent() {
   const { items, count, removeItem, updateNote, makePrimary, clearKit } = useKit();
   const [exporting, setExporting] = useState(false);
   const [promptCopied, setPromptCopied] = useState(false);
+  const [linkCopied, setLinkCopied] = useState(false);
   const [confirmClear, setConfirmClear] = useState(false);
 
   const zh = locale === "zh";
@@ -133,6 +135,19 @@ export function KitContent() {
       await navigator.clipboard.writeText(prompt.content);
       setPromptCopied(true);
       setTimeout(() => setPromptCopied(false), 1600);
+    } catch {
+      // clipboard unavailable
+    }
+  };
+
+  const handleCopyShareLink = async () => {
+    if (count === 0) return;
+    const path = locale === "zh" ? "/zh/kit/shared" : "/en/kit/shared";
+    const url = `${window.location.origin}${path}?${encodeKitToSearch(items)}`;
+    try {
+      await navigator.clipboard.writeText(url);
+      setLinkCopied(true);
+      setTimeout(() => setLinkCopied(false), 1600);
     } catch {
       // clipboard unavailable
     }
@@ -218,6 +233,13 @@ export function KitContent() {
                 : zh
                   ? "复制合成提示词"
                   : "Copy merged prompt"}
+            </button>
+            <button
+              type="button"
+              onClick={handleCopyShareLink}
+              className="border border-border px-4 py-2 text-xs uppercase tracking-[0.14em] text-muted hover:border-foreground hover:text-foreground transition-colors"
+            >
+              {linkCopied ? (zh ? "链接已复制" : "Link copied") : zh ? "分享这套搭配" : "Share this kit"}
             </button>
             <button
               type="button"

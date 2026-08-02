@@ -104,6 +104,7 @@ export const LOCALE_ROUTE_POLICY = [
       "/docs",
       "/html-in-canvas",
       "/kit",
+      "/kit/shared",
       "/login",
       "/preview",
       "/profile",
