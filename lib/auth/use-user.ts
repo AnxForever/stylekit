@@ -27,7 +27,11 @@ export interface AuthState {
   user: User | null;
   loading: boolean;
   signInWithGitHub: (nextPath?: string) => Promise<void>;
-  signInWithLinuxDo: (nextPath?: string) => void;
+  signInWithLinuxDo: (nextPath?: string) => Promise<void>;
+  /** Send a 6-digit OTP to `email`. Throws on failure (e.g. SMTP not configured). */
+  signInWithEmailOtp: (email: string) => Promise<void>;
+  /** Verify the emailed OTP `token` for `email` and establish a session. */
+  verifyEmailOtp: (email: string, token: string) => Promise<void>;
   signOut: () => Promise<void>;
 }
 
@@ -152,9 +156,36 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     });
   }, []);
 
-  const signInWithLinuxDo = useCallback((nextPath?: string) => {
+  const signInWithLinuxDo = useCallback(async (nextPath?: string) => {
     const safeNextPath = normalizeNextPath(nextPath);
     window.location.href = `/api/auth/linuxdo?next=${encodeURIComponent(safeNextPath)}`;
+  }, []);
+
+  const signInWithEmailOtp = useCallback(async (email: string) => {
+    const client = getAuthClient();
+    if (!client) {
+      throw new Error("Auth is not configured");
+    }
+    // `shouldCreateUser: true` lets first-time email visitors register on the
+    // spot, matching how GitHub/LinuxDo auto-provision on first sign-in.
+    const { error } = await client.auth.signInWithOtp({
+      email,
+      options: { shouldCreateUser: true },
+    });
+    if (error) throw error;
+  }, []);
+
+  const verifyEmailOtp = useCallback(async (email: string, token: string) => {
+    const client = getAuthClient();
+    if (!client) {
+      throw new Error("Auth is not configured");
+    }
+    const { error } = await client.auth.verifyOtp({
+      email,
+      token,
+      type: "email",
+    });
+    if (error) throw error;
   }, []);
 
   const signOut = useCallback(async () => {
@@ -166,8 +197,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const value = useMemo(
-    () => ({ user, loading, signInWithGitHub, signInWithLinuxDo, signOut }),
-    [user, loading, signInWithGitHub, signInWithLinuxDo, signOut]
+    () => ({
+      user,
+      loading,
+      signInWithGitHub,
+      signInWithLinuxDo,
+      signInWithEmailOtp,
+      verifyEmailOtp,
+      signOut,
+    }),
+    [
+      user,
+      loading,
+      signInWithGitHub,
+      signInWithLinuxDo,
+      signInWithEmailOtp,
+      verifyEmailOtp,
+      signOut,
+    ]
   );
 
   return createElement(AuthContext.Provider, { value }, children);
