@@ -12,6 +12,19 @@ export interface ChangelogEntry {
 
 export const changelog: ChangelogEntry[] = [
   {
+    version: "0.18.0",
+    date: "2026-08-02",
+    title: "Kit Builder — collect styles, animations & fonts, export one design kit",
+    titleZh: "Kit Builder 我的工具箱 — 跨类型收集风格、动效与字体，一键导出设计包",
+    changes: [
+      { type: "added", description: "Add to Kit buttons on style, animation and font pairing cards — collect assets across the whole library while you browse", descriptionZh: "风格、动效、字体配对卡片新增「+ Kit」收集按钮 — 边逛边把中意的素材收进工具箱" },
+      { type: "added", description: "My Kit workbench at /kit: grouped list with per-item notes, plus a header entry with a live item count", descriptionZh: "工具箱工作台 /kit：按类型分组、每项可写备注；导航栏新增实时计数入口" },
+      { type: "added", description: "One-click Design Kit export: a ZIP with one merged AI prompt (multiple styles blend as base + accents), a unified design spec, per-style Figma tokens, Tailwind presets, animation code and font loading snippets", descriptionZh: "一键导出设计包 ZIP：多风格智能合成的单份 AI 提示词（主风格+点缀）、统一设计规范、每风格 Figma tokens 与 Tailwind 预设、动效代码、字体引入片段" },
+      { type: "added", description: "Copy merged prompt directly from the workbench for Cursor / v0 / Claude workflows", descriptionZh: "工作台可直接复制合成提示词，投喂 Cursor / v0 / Claude" },
+      { type: "changed", description: "Global stylesheet trimmed 31% (2.3MB to 1.6MB per page) by route-scoping snippet utilities — faster first paint on every page", descriptionZh: "全局样式表瘦身 31%（每页 2.3MB→1.6MB），代码串工具类按路由分域加载 — 全站首屏更快" },
+    ],
+  },
+  {
     version: "0.17.0",
     date: "2026-06-29",
     title: "Developer Tools — npm packages, shadcn registry, MCP & CLI",
