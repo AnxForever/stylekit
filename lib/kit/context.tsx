@@ -10,7 +10,7 @@ import {
   type ReactNode,
 } from "react";
 import type { KitItem, KitItemType } from "./types";
-import { kitItemKey, normalizeKitItems, readKitFromStorage, writeKitToStorage } from "./storage";
+import { kitItemKey, moveKitItemToFront, normalizeKitItems, readKitFromStorage, writeKitToStorage } from "./storage";
 
 interface KitContextType {
   items: KitItem[];
@@ -20,6 +20,7 @@ interface KitContextType {
   toggleItem: (type: KitItemType, slug: string) => void;
   hasItem: (type: KitItemType, slug: string) => boolean;
   updateNote: (type: KitItemType, slug: string, note: string) => void;
+  makePrimary: (type: KitItemType, slug: string) => void;
   clearKit: () => void;
 }
 
@@ -83,6 +84,10 @@ export function KitProvider({ children }: { children: ReactNode }) {
     );
   }, []);
 
+  const makePrimary = useCallback((type: KitItemType, slug: string) => {
+    setItems((prev) => moveKitItemToFront(prev, type, slug));
+  }, []);
+
   const clearKit = useCallback(() => setItems([]), []);
 
   const value = useMemo(
@@ -94,9 +99,10 @@ export function KitProvider({ children }: { children: ReactNode }) {
       toggleItem,
       hasItem,
       updateNote,
+      makePrimary,
       clearKit,
     }),
-    [items, addItem, removeItem, toggleItem, hasItem, updateNote, clearKit]
+    [items, addItem, removeItem, toggleItem, hasItem, updateNote, makePrimary, clearKit]
   );
 
   return <KitContext.Provider value={value}>{children}</KitContext.Provider>;

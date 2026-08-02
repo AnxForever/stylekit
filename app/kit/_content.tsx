@@ -8,6 +8,8 @@ import type { KitItem, KitItemType } from "@/lib/kit/types";
 import { getStyleMetaBySlug } from "@/lib/styles/meta";
 import { animationsMeta } from "@/lib/animations/meta";
 import { fontPairings } from "@/lib/typography";
+import { buildKitHints } from "@/lib/kit/hints";
+import { KitCombinationPreview } from "@/components/kit/kit-combination-preview";
 
 interface ResolvedRow {
   item: KitItem;
@@ -64,7 +66,7 @@ function resolveRow(item: KitItem, locale: string): ResolvedRow {
 
 export function KitContent() {
   const { locale } = useI18n();
-  const { items, count, removeItem, updateNote, clearKit } = useKit();
+  const { items, count, removeItem, updateNote, makePrimary, clearKit } = useKit();
   const [exporting, setExporting] = useState(false);
   const [promptCopied, setPromptCopied] = useState(false);
   const [confirmClear, setConfirmClear] = useState(false);
@@ -77,6 +79,31 @@ export function KitContent() {
       rows: items.filter((item) => item.type === type).map((item) => resolveRow(item, locale)),
     })).filter((section) => section.rows.length > 0);
   }, [items, locale]);
+
+  const preview = useMemo(() => {
+    const styles = items
+      .filter((item) => item.type === "style")
+      .map((item) => getStyleMetaBySlug(item.slug))
+      .filter((style): style is NonNullable<typeof style> => Boolean(style));
+    const animations = items
+      .filter((item) => item.type === "animation")
+      .map((item) => animationsMeta.find((a) => a.slug === item.slug))
+      .filter((a): a is NonNullable<typeof a> => Boolean(a));
+    const pairings = items
+      .filter((item) => item.type === "font-pairing")
+      .map((item) => fontPairings.find((p) => p.id === item.slug))
+      .filter((p): p is NonNullable<typeof p> => Boolean(p));
+    return {
+      styles,
+      animations,
+      fontPairing: pairings[0] ?? null,
+      hints: buildKitHints({
+        styleCount: styles.length,
+        fontPairingCount: pairings.length,
+        animations,
+      }),
+    };
+  }, [items]);
 
   const handleExport = async () => {
     if (count === 0 || exporting) return;
@@ -156,6 +183,14 @@ export function KitContent() {
         </div>
       ) : (
         <>
+          <KitCombinationPreview
+            styles={preview.styles}
+            animations={preview.animations}
+            fontPairing={preview.fontPairing}
+            hints={preview.hints}
+            onMakePrimary={(slug) => makePrimary("style", slug)}
+          />
+
           <div className="flex flex-wrap items-center gap-2 mb-8">
             <button
               type="button"

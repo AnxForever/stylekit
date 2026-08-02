@@ -63,4 +63,19 @@ export function writeKitToStorage(items: KitItem[]) {
   }
 }
 
+/**
+ * Moves one item to the front of the list. The export engine and the
+ * combination preview both treat the first style in insertion order as
+ * the primary/base style, so "set as primary" is a reorder.
+ */
+export function moveKitItemToFront(
+  items: KitItem[],
+  type: KitItem["type"],
+  slug: string
+): KitItem[] {
+  const target = items.find((item) => item.type === type && item.slug === slug);
+  if (!target) return items;
+  return [target, ...items.filter((item) => item !== target)];
+}
+
 export { kitItemKey };
