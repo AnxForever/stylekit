@@ -14,6 +14,7 @@ import { getBackgroundById } from "@/lib/backgrounds";
 import { buildKitHints } from "@/lib/kit/hints";
 import { encodeKitToSearch } from "@/lib/kit/share";
 import { KitCombinationPreview } from "@/components/kit/kit-combination-preview";
+import { KitSwitcher } from "@/components/kit/kit-switcher";
 
 interface ResolvedRow {
   item: KitItem;
@@ -222,6 +223,8 @@ export function KitContent() {
             : "Collect styles, animations and font pairings across the site, then export them as one coherent design kit: a merged AI prompt, design spec, tokens and ready-to-use code."}
         </p>
       </header>
+
+      <KitSwitcher />
 
       {count === 0 ? (
         <div className="border border-dashed border-border px-6 py-14 text-center">

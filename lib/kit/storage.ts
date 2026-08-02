@@ -1,9 +1,14 @@
-import type { KitItem, KitItemType, KitSnapshot } from "./types";
+import type { Kit, KitCollectionSnapshot, KitItem, KitItemType, KitSnapshot } from "./types";
 import { KIT_ITEM_TYPES, kitItemKey } from "./types";
 
+/** Legacy single-kit key (v1). Read for one-time migration, then left alone. */
 export const KIT_STORAGE_KEY = "stylekit-kit-v1";
+/** Multi-kit collection key (v2). */
+export const KIT_COLLECTION_KEY = "stylekit-kits-v2";
 
 const SLUG_RE = /^[a-z0-9]+(?:[-_][a-z0-9]+)*$/;
+const KIT_ID_RE = /^[a-z0-9]+$/;
+const MAX_KITS = 20;
 
 function isKitItemType(value: unknown): value is KitItemType {
   return typeof value === "string" && (KIT_ITEM_TYPES as readonly string[]).includes(value);
@@ -40,7 +45,69 @@ export function normalizeKitItems(values: unknown): KitItem[] {
   return normalized;
 }
 
-export function readKitFromStorage(): KitItem[] {
+export function newKitId(): string {
+  return Math.random().toString(36).slice(2, 10);
+}
+
+export function makeKit(name: string, items: KitItem[] = []): Kit {
+  return {
+    id: newKitId(),
+    name: sanitizeKitName(name),
+    items,
+    updatedAt: new Date().toISOString(),
+  };
+}
+
+export function sanitizeKitName(name: string): string {
+  const trimmed = name.trim().slice(0, 60);
+  return trimmed || "Untitled kit";
+}
+
+function normalizeKit(value: unknown): Kit | null {
+  if (typeof value !== "object" || value === null) return null;
+  const candidate = value as Record<string, unknown>;
+  const id = typeof candidate.id === "string" && KIT_ID_RE.test(candidate.id) ? candidate.id : null;
+  if (!id) return null;
+  return {
+    id,
+    name: sanitizeKitName(typeof candidate.name === "string" ? candidate.name : ""),
+    items: normalizeKitItems(candidate.items),
+    updatedAt:
+      typeof candidate.updatedAt === "string" ? candidate.updatedAt : new Date(0).toISOString(),
+  };
+}
+
+/**
+ * Reads the multi-kit collection, migrating a legacy v1 single-kit snapshot
+ * on first run. Always returns at least one kit and a valid activeKitId.
+ */
+export function readKitCollection(): { kits: Kit[]; activeKitId: string } {
+  try {
+    const savedV2 = localStorage.getItem(KIT_COLLECTION_KEY);
+    if (savedV2) {
+      const parsed = JSON.parse(savedV2) as Partial<KitCollectionSnapshot>;
+      const kits = Array.isArray(parsed.kits)
+        ? parsed.kits.map(normalizeKit).filter((k): k is Kit => k !== null).slice(0, MAX_KITS)
+        : [];
+      if (kits.length > 0) {
+        const activeKitId =
+          typeof parsed.activeKitId === "string" && kits.some((k) => k.id === parsed.activeKitId)
+            ? parsed.activeKitId
+            : kits[0].id;
+        return { kits, activeKitId };
+      }
+    }
+  } catch {
+    // fall through to migration / default
+  }
+
+  // Migrate legacy v1 single kit if present.
+  const migrated = readLegacyKit();
+  const kit = makeKit("My kit", migrated);
+  return { kits: [kit], activeKitId: kit.id };
+}
+
+function readLegacyKit(): KitItem[] {
   try {
     const saved = localStorage.getItem(KIT_STORAGE_KEY);
     if (!saved) return [];
@@ -54,14 +121,20 @@ export function readKitFromStorage(): KitItem[] {
   }
 }
 
-export function writeKitToStorage(items: KitItem[]) {
+export function writeKitCollection(kits: Kit[], activeKitId: string) {
   try {
-    const snapshot: KitSnapshot = { version: 1, items };
-    localStorage.setItem(KIT_STORAGE_KEY, JSON.stringify(snapshot));
+    const snapshot: KitCollectionSnapshot = {
+      version: 2,
+      kits: kits.slice(0, MAX_KITS),
+      activeKitId,
+    };
+    localStorage.setItem(KIT_COLLECTION_KEY, JSON.stringify(snapshot));
   } catch {
-    // Storage full or unavailable; the in-memory state still works for the session.
+    // Storage full or unavailable; in-memory state still works this session.
   }
 }
+
+export { MAX_KITS };
 
 /**
  * Moves one item to the front of the list. The export engine and the

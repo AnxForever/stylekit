@@ -9,12 +9,26 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import type { KitItem, KitItemType } from "./types";
-import { kitItemKey, moveKitItemToFront, normalizeKitItems, readKitFromStorage, writeKitToStorage } from "./storage";
+import type { Kit, KitItem, KitItemType } from "./types";
+import {
+  kitItemKey,
+  makeKit,
+  moveKitItemToFront,
+  normalizeKitItems,
+  readKitCollection,
+  sanitizeKitName,
+  writeKitCollection,
+  MAX_KITS,
+} from "./storage";
 
 interface KitContextType {
+  /** Items of the active kit. */
   items: KitItem[];
   count: number;
+  kits: Kit[];
+  activeKitId: string;
+  activeKitName: string;
+  maxKits: number;
   addItem: (type: KitItemType, slug: string) => void;
   removeItem: (type: KitItemType, slug: string) => void;
   toggleItem: (type: KitItemType, slug: string) => void;
@@ -22,19 +36,26 @@ interface KitContextType {
   updateNote: (type: KitItemType, slug: string, note: string) => void;
   makePrimary: (type: KitItemType, slug: string) => void;
   clearKit: () => void;
+  // Multi-kit management
+  createKit: (name?: string) => void;
+  renameKit: (id: string, name: string) => void;
+  deleteKit: (id: string) => void;
+  switchKit: (id: string) => void;
 }
 
 const KitContext = createContext<KitContextType | null>(null);
 
 export function KitProvider({ children }: { children: ReactNode }) {
-  const [items, setItems] = useState<KitItem[]>([]);
+  const [kits, setKits] = useState<Kit[]>([]);
+  const [activeKitId, setActiveKitId] = useState<string>("");
   const [hydrated, setHydrated] = useState(false);
 
-  // Hydrate from localStorage after mount (deferred to a task so SSR markup
-  // and the first client render agree, and to satisfy set-state-in-effect).
+  // Hydrate (and migrate v1 -> v2) after mount so SSR/CSR markup agree.
   useEffect(() => {
     const id = window.setTimeout(() => {
-      setItems(readKitFromStorage());
+      const { kits: loaded, activeKitId: active } = readKitCollection();
+      setKits(loaded);
+      setActiveKitId(active);
       setHydrated(true);
     }, 0);
     return () => window.clearTimeout(id);
@@ -42,20 +63,48 @@ export function KitProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (!hydrated) return;
-    writeKitToStorage(items);
-  }, [items, hydrated]);
+    writeKitCollection(kits, activeKitId);
+  }, [kits, activeKitId, hydrated]);
 
-  const addItem = useCallback((type: KitItemType, slug: string) => {
-    setItems((prev) => {
-      const key = `${type}:${slug}`;
-      if (prev.some((item) => kitItemKey(item) === key)) return prev;
-      return normalizeKitItems([...prev, { type, slug, addedAt: new Date().toISOString() }]);
-    });
-  }, []);
+  const activeKit = useMemo(
+    () => kits.find((kit) => kit.id === activeKitId) ?? kits[0] ?? null,
+    [kits, activeKitId]
+  );
+  const items = activeKit?.items ?? [];
 
-  const removeItem = useCallback((type: KitItemType, slug: string) => {
-    setItems((prev) => prev.filter((item) => !(item.type === type && item.slug === slug)));
-  }, []);
+  /** Applies a transform to the active kit's items and bumps updatedAt. */
+  const updateActiveItems = useCallback(
+    (transform: (items: KitItem[]) => KitItem[]) => {
+      setKits((prev) =>
+        prev.map((kit) =>
+          kit.id === activeKitId
+            ? { ...kit, items: transform(kit.items), updatedAt: new Date().toISOString() }
+            : kit
+        )
+      );
+    },
+    [activeKitId]
+  );
+
+  const addItem = useCallback(
+    (type: KitItemType, slug: string) => {
+      updateActiveItems((prev) => {
+        const key = `${type}:${slug}`;
+        if (prev.some((item) => kitItemKey(item) === key)) return prev;
+        return normalizeKitItems([...prev, { type, slug, addedAt: new Date().toISOString() }]);
+      });
+    },
+    [updateActiveItems]
+  );
+
+  const removeItem = useCallback(
+    (type: KitItemType, slug: string) => {
+      updateActiveItems((prev) =>
+        prev.filter((item) => !(item.type === type && item.slug === slug))
+      );
+    },
+    [updateActiveItems]
+  );
 
   const hasItem = useCallback(
     (type: KitItemType, slug: string) =>
@@ -74,26 +123,74 @@ export function KitProvider({ children }: { children: ReactNode }) {
     [items, addItem, removeItem]
   );
 
-  const updateNote = useCallback((type: KitItemType, slug: string, note: string) => {
-    setItems((prev) =>
-      prev.map((item) =>
-        item.type === type && item.slug === slug
-          ? { ...item, note: note.trim() ? note.slice(0, 500) : undefined }
-          : item
-      )
+  const updateNote = useCallback(
+    (type: KitItemType, slug: string, note: string) => {
+      updateActiveItems((prev) =>
+        prev.map((item) =>
+          item.type === type && item.slug === slug
+            ? { ...item, note: note.trim() ? note.slice(0, 500) : undefined }
+            : item
+        )
+      );
+    },
+    [updateActiveItems]
+  );
+
+  const makePrimary = useCallback(
+    (type: KitItemType, slug: string) => {
+      updateActiveItems((prev) => moveKitItemToFront(prev, type, slug));
+    },
+    [updateActiveItems]
+  );
+
+  const clearKit = useCallback(() => {
+    updateActiveItems(() => []);
+  }, [updateActiveItems]);
+
+  const createKit = useCallback((name?: string) => {
+    setKits((prev) => {
+      if (prev.length >= MAX_KITS) return prev;
+      const kit = makeKit(name ?? `Kit ${prev.length + 1}`);
+      setActiveKitId(kit.id);
+      return [...prev, kit];
+    });
+  }, []);
+
+  const renameKit = useCallback((id: string, name: string) => {
+    setKits((prev) =>
+      prev.map((kit) => (kit.id === id ? { ...kit, name: sanitizeKitName(name) } : kit))
     );
   }, []);
 
-  const makePrimary = useCallback((type: KitItemType, slug: string) => {
-    setItems((prev) => moveKitItemToFront(prev, type, slug));
+  const deleteKit = useCallback((id: string) => {
+    setKits((prev) => {
+      if (prev.length <= 1) {
+        // Never leave the user with zero kits; clear the last one instead.
+        return prev.map((kit) =>
+          kit.id === id ? { ...kit, items: [], updatedAt: new Date().toISOString() } : kit
+        );
+      }
+      const next = prev.filter((kit) => kit.id !== id);
+      setActiveKitId((current) => (current === id ? next[0].id : current));
+      return next;
+    });
   }, []);
 
-  const clearKit = useCallback(() => setItems([]), []);
+  const switchKit = useCallback(
+    (id: string) => {
+      if (kits.some((kit) => kit.id === id)) setActiveKitId(id);
+    },
+    [kits]
+  );
 
   const value = useMemo(
     () => ({
       items,
       count: items.length,
+      kits,
+      activeKitId: activeKit?.id ?? "",
+      activeKitName: activeKit?.name ?? "",
+      maxKits: MAX_KITS,
       addItem,
       removeItem,
       toggleItem,
@@ -101,8 +198,27 @@ export function KitProvider({ children }: { children: ReactNode }) {
       updateNote,
       makePrimary,
       clearKit,
+      createKit,
+      renameKit,
+      deleteKit,
+      switchKit,
     }),
-    [items, addItem, removeItem, toggleItem, hasItem, updateNote, makePrimary, clearKit]
+    [
+      items,
+      kits,
+      activeKit,
+      addItem,
+      removeItem,
+      toggleItem,
+      hasItem,
+      updateNote,
+      makePrimary,
+      clearKit,
+      createKit,
+      renameKit,
+      deleteKit,
+      switchKit,
+    ]
   );
 
   return <KitContext.Provider value={value}>{children}</KitContext.Provider>;

@@ -19,9 +19,25 @@ export interface KitItem {
   note?: string;
 }
 
+/** A single named kit. The first style in `items` is the base style. */
+export interface Kit {
+  id: string;
+  name: string;
+  items: KitItem[];
+  updatedAt: string;
+}
+
+/** Legacy single-kit snapshot (localStorage key stylekit-kit-v1). */
 export interface KitSnapshot {
   version: 1;
   items: KitItem[];
+}
+
+/** Multi-kit snapshot (localStorage key stylekit-kits-v2). */
+export interface KitCollectionSnapshot {
+  version: 2;
+  kits: Kit[];
+  activeKitId: string;
 }
 
 export function kitItemKey(item: Pick<KitItem, "type" | "slug">): string {
