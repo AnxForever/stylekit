@@ -7,7 +7,6 @@ import {
   useEffect,
   ReactNode,
   useCallback,
-  useRef,
 } from "react";
 import { useUser } from "@/lib/auth/use-user";
 import { getAuthClient } from "@/lib/auth/supabase-browser";
@@ -23,7 +22,10 @@ interface FavoritesContextType {
 
 const FavoritesContext = createContext<FavoritesContextType | null>(null);
 
-const STORAGE_KEY = "stylekit-favorites-v1";
+// Anonymous favorites are intentionally separate from authenticated accounts.
+// Never merge this list into a user account: browser storage is shared when
+// people switch between Google, NodeLoc, and other providers.
+const STORAGE_KEY = "stylekit-favorites-anonymous-v2";
 const SLUG_RE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
 async function fetchWithAuth(input: RequestInfo | URL, init: RequestInit = {}) {
@@ -60,10 +62,6 @@ function normalizeFavorites(values: unknown): string[] {
   return normalized;
 }
 
-function mergeFavoriteLists(...lists: string[][]): string[] {
-  return normalizeFavorites(lists.flat());
-}
-
 function readLocalFavorites(): string[] {
   try {
     const saved = localStorage.getItem(STORAGE_KEY);
@@ -90,51 +88,27 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
   const [favorites, setFavorites] = useState<string[]>([]);
   const [mounted, setMounted] = useState(false);
   const [syncing, setSyncing] = useState(false);
-  const mergedUserIdRef = useRef<string | null>(null);
-
-  // Authenticated mode: load favorites from server
+  // Authenticated mode: load only the current user's server favorites.
+  // Anonymous local favorites must not be copied into another account when
+  // the user switches providers in the same browser.
   useEffect(() => {
     if (!user || !mounted) return;
-    const userId = user.id;
 
     let cancelled = false;
+    setFavorites([]);
     setSyncing(true);
 
     async function loadServerFavorites() {
       try {
-        const localSlugs = readLocalFavorites();
-
-        // Merge once per logged-in user per page session.
-        if (mergedUserIdRef.current !== userId && localSlugs.length > 0) {
-          mergedUserIdRef.current = userId;
-          await fetchWithAuth("/api/favorites/merge", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ slugs: localSlugs }),
-          });
-        }
-
         const res = await fetchWithAuth("/api/favorites");
         if (!res.ok) return;
         const data = await res.json();
         if (!cancelled && data.success && Array.isArray(data.favorites)) {
           const serverSlugs = normalizeFavorites(data.favorites);
-          const mergedSlugs = mergeFavoriteLists(serverSlugs, localSlugs);
-          setFavorites(mergedSlugs);
-
-          // If server still misses local slugs, retry best-effort upsert.
-          const serverSet = new Set(serverSlugs);
-          const missingLocal = localSlugs.filter((slug) => !serverSet.has(slug));
-          if (missingLocal.length > 0) {
-            void fetchWithAuth("/api/favorites/merge", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ slugs: missingLocal }),
-            }).catch(() => {});
-          }
+          setFavorites(serverSlugs);
         }
       } catch {
-        // Network error, keep current state
+        // Network error, keep the account-scoped state empty.
       } finally {
         if (!cancelled) setSyncing(false);
       }
@@ -148,17 +122,17 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     setMounted(true);
     if (!user) {
-      mergedUserIdRef.current = null;
       setFavorites(readLocalFavorites());
     }
   }, [user]);
 
-  // Persist a local shadow copy for both anonymous and authenticated users.
+  // Persist only anonymous favorites. Authenticated favorites live on the
+  // server and must not be copied between accounts through localStorage.
   useEffect(() => {
-    if (mounted) {
+    if (mounted && !user) {
       writeLocalFavorites(favorites);
     }
-  }, [favorites, mounted]);
+  }, [favorites, mounted, user]);
 
   const addFavorite = useCallback((slug: string) => {
     setFavorites((prev) => {
