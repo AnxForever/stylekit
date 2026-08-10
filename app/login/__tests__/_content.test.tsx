@@ -10,7 +10,7 @@ const { authMock, routerMock } = vi.hoisted(() => ({
     loading: false,
     signInWithGitHub: vi.fn(),
     signInWithLinuxDo: vi.fn(),
-    signInWithGoogle: vi.fn(),
+    signInWithNodeLoc: vi.fn(),
     signInWithPassword: vi.fn(),
     signUpWithPassword: vi.fn(),
     signInWithEmailOtp: vi.fn(),
@@ -58,7 +58,7 @@ const translations: Record<string, string> = {
   "auth.social": "Continue with a social account",
   "auth.signInWithGitHub": "Sign in with GitHub",
   "auth.signInWithLinuxDo": "Sign in with Linux DO",
-  "auth.signInWithGoogle": "Sign in with Google",
+  "auth.signInWithNodeLoc": "Sign in with NodeLoc",
   "auth.termsPrefix": "By continuing, you agree to",
   "auth.termsLink": "Terms",
   "auth.and": "and",
@@ -107,8 +107,8 @@ vi.mock("next/link", () => ({
 }));
 
 vi.mock("@/components/auth/brand-marks", () => ({
-  GoogleMark: () => null,
   LinuxDoMark: () => null,
+  NodeLocMark: () => null,
 }));
 
 vi.mock("@/components/profile/xiaohei-note", () => ({
@@ -134,6 +134,13 @@ describe("LoginContent authentication modes", () => {
     expect(screen.getByLabelText(/Email address/)).toHaveAttribute("autocomplete", "email");
     expect(screen.getByLabelText(/Password/)).toHaveAttribute("autocomplete", "current-password");
     expect(screen.getByRole("button", { name: /email code instead/i })).toBeInTheDocument();
+  });
+
+  it("shows NodeLoc in place of Google in the social sign-in row", () => {
+    render(<LoginContent />);
+
+    expect(screen.getByRole("button", { name: "Sign in with NodeLoc" })).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Sign in with Google" })).not.toBeInTheDocument();
   });
 
   it("switches the login page locale and preserves the current route", () => {
@@ -211,6 +218,6 @@ describe("LoginContent authentication modes", () => {
 
     expect(screen.getByRole("button", { name: "Sign in with GitHub" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Sign in with Linux DO" })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Sign in with Google" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Sign in with NodeLoc" })).toBeInTheDocument();
   });
 });

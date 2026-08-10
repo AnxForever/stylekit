@@ -27,7 +27,7 @@ import {
   Eye,
   EyeOff,
 } from "lucide-react";
-import { GoogleMark, LinuxDoMark } from "@/components/auth/brand-marks";
+import { LinuxDoMark, NodeLocMark } from "@/components/auth/brand-marks";
 import { XiaoheiLoading } from "@/components/profile/xiaohei-note";
 const LoginBrandInk = dynamic(
   () => import("@/components/auth/login-brand-ink").then((module) => module.LoginBrandInk),
@@ -50,7 +50,7 @@ export function LoginContent() {
     loading: authLoading,
     signInWithGitHub,
     signInWithLinuxDo,
-    signInWithGoogle,
+    signInWithNodeLoc,
     signInWithPassword,
     signUpWithPassword,
     signInWithEmailOtp,
@@ -68,7 +68,7 @@ export function LoginContent() {
   // Which social provider is mid-redirect, so the buttons can show a spinner
   // and lock out double-clicks during the (visible) OAuth navigation delay.
   const [pendingProvider, setPendingProvider] = useState<
-    "github" | "linuxdo" | "google" | null
+    "github" | "linuxdo" | "nodeloc" | null
   >(null);
   // next-themes resolves the actual theme only on the client. Gate the
   // theme-dependent icon on mount so the server and first client render agree
@@ -94,6 +94,8 @@ export function LoginContent() {
   const errorMessage =
     authError === "linuxdo"
       ? t("auth.errorLinuxDo")
+      : authError === "nodeloc"
+        ? t("auth.errorNodeLoc")
       : authError
         ? t("auth.errorGeneric")
         : null;
@@ -221,11 +223,11 @@ export function LoginContent() {
     }
   };
 
-  const handleGoogle = async () => {
+  const handleNodeLoc = async () => {
     if (pendingProvider) return;
-    setPendingProvider("google");
+    setPendingProvider("nodeloc");
     try {
-      await signInWithGoogle(nextPath);
+      await signInWithNodeLoc(nextPath);
     } catch {
       setPendingProvider(null);
     }
@@ -839,6 +841,24 @@ export function LoginContent() {
 
           <button
             type="button"
+            onClick={handleNodeLoc}
+            disabled={pendingProvider !== null}
+            aria-busy={pendingProvider === "nodeloc"}
+            aria-label={t("auth.signInWithNodeLoc")}
+            className="group flex min-h-11 w-full cursor-pointer items-center justify-center gap-2 rounded-xl border border-border bg-background/70 px-2.5 py-2.5 text-xs font-medium text-foreground shadow-none transition-[border-color,background-color,transform,box-shadow] duration-200 hover:-translate-y-0.5 hover:border-foreground hover:bg-foreground/[0.04] hover:shadow-md disabled:cursor-not-allowed disabled:opacity-60 motion-reduce:transform-none"
+          >
+            {pendingProvider === "nodeloc" ? (
+              <Loader2 className="h-4 w-4 shrink-0 animate-spin" />
+            ) : (
+              <NodeLocMark className="h-4 w-4 shrink-0" />
+            )}
+            <span className="truncate">
+              {pendingProvider === "nodeloc" ? t("auth.redirecting") : "NodeLoc"}
+            </span>
+          </button>
+
+          <button
+            type="button"
             onClick={handleLinuxDo}
             disabled={pendingProvider !== null}
             aria-busy={pendingProvider === "linuxdo"}
@@ -852,24 +872,6 @@ export function LoginContent() {
             )}
             <span className="truncate">
               {pendingProvider === "linuxdo" ? t("auth.redirecting") : "Linux DO"}
-            </span>
-          </button>
-
-          <button
-            type="button"
-            onClick={handleGoogle}
-            disabled={pendingProvider !== null}
-            aria-busy={pendingProvider === "google"}
-            aria-label={t("auth.signInWithGoogle")}
-            className="group flex min-h-11 w-full cursor-pointer items-center justify-center gap-2 rounded-xl border border-border bg-background/70 px-2.5 py-2.5 text-xs font-medium text-foreground shadow-none transition-[border-color,background-color,transform,box-shadow] duration-200 hover:-translate-y-0.5 hover:border-foreground hover:bg-foreground/[0.04] hover:shadow-md disabled:cursor-not-allowed disabled:opacity-60 motion-reduce:transform-none"
-          >
-            {pendingProvider === "google" ? (
-              <Loader2 className="h-4 w-4 shrink-0 animate-spin" />
-            ) : (
-              <GoogleMark className="h-4 w-4 shrink-0" />
-            )}
-            <span className="truncate">
-              {pendingProvider === "google" ? t("auth.redirecting") : "Google"}
             </span>
           </button>
         </div>
@@ -919,8 +921,8 @@ export function LoginContent() {
             label={
               pendingProvider === "linuxdo"
                 ? t("auth.signInWithLinuxDo")
-                : pendingProvider === "google"
-                  ? t("auth.signInWithGoogle")
+                : pendingProvider === "nodeloc"
+                  ? t("auth.signInWithNodeLoc")
                   : t("auth.signInWithGitHub")
             }
             detail={t("auth.redirecting")}

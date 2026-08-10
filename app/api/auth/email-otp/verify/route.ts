@@ -24,6 +24,8 @@ const verifySchema = z.object({
   code: z.string().regex(/^\d{6}$/),
 });
 
+const EXTERNAL_AUTH_PROVIDERS = new Set(["google", "github", "linuxdo", "nodeloc"]);
+
 export async function POST(request: Request) {
   const rateLimit = checkRateLimit({
     namespace: "email-otp-verify",
@@ -102,9 +104,19 @@ export async function POST(request: Request) {
         throw new Error(listError?.message ?? createError.message);
       }
       userId = existing.id;
+      const existingProvider =
+        typeof existing.user_metadata?.provider === "string"
+          ? existing.user_metadata.provider
+          : typeof existing.app_metadata?.provider === "string"
+            ? existing.app_metadata.provider
+            : null;
       metadata = {
         ...(existing.user_metadata ?? {}),
         ...userMetadata,
+        provider:
+          existingProvider && EXTERNAL_AUTH_PROVIDERS.has(existingProvider)
+            ? existingProvider
+            : userMetadata.provider,
       };
       const { error: updateError } = await adminClient.auth.admin.updateUserById(
         existing.id,

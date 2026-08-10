@@ -34,6 +34,25 @@ export function LinuxDoMark({ className }: MarkProps) {
   );
 }
 
+/** NodeLoc identity mark: a compact N monogram for the OAuth provider. */
+export function NodeLocMark({ className }: MarkProps) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      className={className}
+      role="img"
+      aria-hidden="true"
+      focusable="false"
+    >
+      <rect x="2" y="2" width="20" height="20" rx="5" fill="currentColor" />
+      <path
+        d="M7 17V7h2.1l5.8 6.3V7H17v10h-2.1L9.1 10.7V17H7Z"
+        fill="var(--background)"
+      />
+    </svg>
+  );
+}
+
 /** Google identity mark using the official four-color G geometry. */
 export function GoogleMark({ className }: MarkProps) {
   return (

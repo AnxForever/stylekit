@@ -119,10 +119,14 @@ export function StyleComments({ slug }: StyleCommentsProps) {
 
   const getProviderLabel = (provider: Comment["author_provider"] | undefined): string => {
     switch (provider) {
+      case "google":
+        return t("styleComments.providerGoogle");
       case "github":
         return t("styleComments.providerGitHub");
       case "linuxdo":
         return t("styleComments.providerLinuxDo");
+      case "nodeloc":
+        return t("styleComments.providerNodeLoc");
       default:
         return t("styleComments.providerUnknown");
     }

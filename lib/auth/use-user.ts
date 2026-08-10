@@ -28,6 +28,7 @@ export interface AuthState {
   loading: boolean;
   signInWithGitHub: (nextPath?: string) => Promise<void>;
   signInWithLinuxDo: (nextPath?: string) => Promise<void>;
+  signInWithNodeLoc: (nextPath?: string) => Promise<void>;
   signInWithGoogle: (nextPath?: string) => Promise<void>;
   signInWithPassword: (email: string, password: string) => Promise<void>;
   signUpWithPassword: (
@@ -184,6 +185,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     window.location.href = `/api/auth/linuxdo?next=${encodeURIComponent(safeNextPath)}`;
   }, []);
 
+  const signInWithNodeLoc = useCallback(async (nextPath?: string) => {
+    const safeNextPath = normalizeNextPath(nextPath);
+    window.location.href = `/api/auth/nodeloc?next=${encodeURIComponent(safeNextPath)}`;
+  }, []);
+
   const signInWithPassword = useCallback(async (email: string, password: string) => {
     const client = getAuthClient();
     if (!client) throw new Error("Auth is not configured");
@@ -294,6 +300,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       loading,
       signInWithGitHub,
       signInWithLinuxDo,
+      signInWithNodeLoc,
       signInWithGoogle,
       signInWithPassword,
       signUpWithPassword,
@@ -307,6 +314,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       loading,
       signInWithGitHub,
       signInWithLinuxDo,
+      signInWithNodeLoc,
       signInWithGoogle,
       signInWithPassword,
       signUpWithPassword,

@@ -396,16 +396,30 @@ export function ProfileContent({ allStyles }: ProfileContentProps) {
     user.app_metadata?.provider ||
     "github";
   const isLinuxDo = provider === "linuxdo";
+  const isNodeLoc = provider === "nodeloc";
+  const isGoogle = provider === "google";
 
-  const profileUrl = isLinuxDo
-    ? `https://linux.do/u/${userName}`
-    : `https://github.com/${userName}`;
-  const profileLabel = isLinuxDo
-    ? t("profile.linuxdoProfile")
-    : t("profile.githubProfile");
-  const providerLabel = isLinuxDo
-    ? t("profile.providerLinuxDo")
-    : t("profile.providerGitHub");
+  const profileUrl = isNodeLoc
+    ? `https://www.nodeloc.com/u/${userName}`
+    : isGoogle
+      ? "https://myaccount.google.com/"
+    : isLinuxDo
+      ? `https://linux.do/u/${userName}`
+      : `https://github.com/${userName}`;
+  const profileLabel = isNodeLoc
+    ? t("profile.nodeLocProfile")
+    : isGoogle
+      ? t("profile.googleProfile")
+    : isLinuxDo
+      ? t("profile.linuxdoProfile")
+      : t("profile.githubProfile");
+  const providerLabel = isNodeLoc
+    ? t("profile.providerNodeLoc")
+    : isGoogle
+      ? t("profile.providerGoogle")
+    : isLinuxDo
+      ? t("profile.providerLinuxDo")
+      : t("profile.providerGitHub");
   const rawProfileTitle =
     profileTitleData?.title ??
     (typeof user.user_metadata?.user_title === "string"

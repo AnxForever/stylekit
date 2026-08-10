@@ -31,7 +31,7 @@ const commentSchema = z.object({
 const slugSchema = z.string().regex(SLUG_RE);
 const DB_NOT_READY_CODES = new Set(["42P01", "42703", "42883", "PGRST204", "PGRST205"]);
 
-type AuthorProvider = "github" | "linuxdo" | "unknown";
+type AuthorProvider = "google" | "github" | "linuxdo" | "nodeloc" | "unknown";
 
 interface DbErrorLike {
   code?: string | null;
@@ -115,7 +115,12 @@ function asPositiveInt(value: unknown): number | null {
 }
 
 function normalizeProvider(value: unknown): AuthorProvider {
-  if (value === "github" || value === "linuxdo") {
+  if (
+    value === "google" ||
+    value === "github" ||
+    value === "linuxdo" ||
+    value === "nodeloc"
+  ) {
     return value;
   }
   return "unknown";
