@@ -1,139 +1,67 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { usePathname } from "next/navigation";
-import { Download, X } from "lucide-react";
+import { useEffect } from "react";
 
-interface BeforeInstallPromptEvent extends Event {
-  prompt(): Promise<void>;
-  userChoice: Promise<{ outcome: "accepted" | "dismissed" }>;
-}
-
-const INSTALL_REMINDER_KEY = "stylekit:pwa-install-reminder-until";
-const REMIND_LATER_MS = 1000 * 60 * 60 * 24 * 30;
-const ACCEPTED_MS = 1000 * 60 * 60 * 24 * 365;
-
-function readReminderUntil() {
-  try {
-    const value = window.localStorage.getItem(INSTALL_REMINDER_KEY);
-    if (!value) return 0;
-    const timestamp = Number.parseInt(value, 10);
-    if (Number.isNaN(timestamp)) return 0;
-    return timestamp;
-  } catch {
-    return 0;
-  }
-}
-
-function postponeReminder(durationMs: number) {
-  try {
-    window.localStorage.setItem(
-      INSTALL_REMINDER_KEY,
-      String(Date.now() + durationMs),
-    );
-  } catch {
-    // ignore persistence failures
-  }
-}
-
+/**
+ * Registers the production service worker without showing an install prompt.
+ * The site should keep its offline/PWA capabilities, while installation stays
+ * an explicit browser action instead of a persistent floating control.
+ */
 export function RegisterSW() {
-  const pathname = usePathname();
-  const isAdminRoute = pathname?.startsWith("/admin");
-  const [deferredPrompt, setDeferredPrompt] =
-    useState<BeforeInstallPromptEvent | null>(null);
-  const [isVisible, setIsVisible] = useState(false);
-
   useEffect(() => {
     if (!("serviceWorker" in navigator)) {
       return;
     }
 
-    if (process.env.NODE_ENV !== "production") {
-      navigator.serviceWorker.getRegistrations().then((registrations) => {
-        registrations.forEach((registration) => {
-          void registration.unregister();
-        });
-      }).catch(() => {
-        // ignore dev cleanup failure
-      });
+    const registerServiceWorker = () => {
+      if (process.env.NODE_ENV !== "production") {
+        navigator.serviceWorker
+          .getRegistrations()
+          .then((registrations) => {
+            registrations.forEach((registration) => {
+              void registration.unregister();
+            });
+          })
+          .catch(() => {
+            // ignore dev cleanup failure
+          });
 
-      if ("caches" in window) {
-        void caches.keys().then((keys) =>
-          Promise.all(
-            keys
-              .filter((key) => key.startsWith("stylekit-"))
-              .map((key) => caches.delete(key))
-          )
-        ).catch(() => {
-          // ignore dev cleanup failure
-        });
+        if ("caches" in window) {
+          void caches
+            .keys()
+            .then((keys) =>
+              Promise.all(
+                keys
+                  .filter((key) => key.startsWith("stylekit-"))
+                  .map((key) => caches.delete(key)),
+              ),
+            )
+            .catch(() => {
+              // ignore dev cleanup failure
+            });
+        }
+      } else {
+        navigator.serviceWorker
+          .register("/sw.js", { updateViaCache: "none" })
+          .catch(() => {
+            // SW registration failure is non-fatal
+          });
       }
-    } else {
-      navigator.serviceWorker.register("/sw.js", { updateViaCache: "none" }).catch(() => {
-        // SW registration failure is non-fatal
-      });
-    }
-
-    // Show a lightweight install reminder only when user is eligible.
-    const handler = (event: Event) => {
-      if (window.location.pathname.startsWith("/admin")) return;
-      const reminderUntil = readReminderUntil();
-      if (reminderUntil > Date.now()) return;
-      event.preventDefault();
-      setDeferredPrompt(event as BeforeInstallPromptEvent);
-      setIsVisible(true);
     };
 
-    window.addEventListener("beforeinstallprompt", handler);
-    return () => window.removeEventListener("beforeinstallprompt", handler);
+    let idleId: number | null = null;
+    let timeoutId: number | null = null;
+    if (typeof window.requestIdleCallback === "function") {
+      idleId = window.requestIdleCallback(registerServiceWorker, { timeout: 2000 });
+    } else {
+      timeoutId = window.setTimeout(registerServiceWorker, 1000);
+    }
+
+    return () => {
+      if (idleId !== null) window.cancelIdleCallback(idleId);
+      if (timeoutId !== null) window.clearTimeout(timeoutId);
+    };
   }, []);
 
-  if (isAdminRoute) return null;
-  if (!deferredPrompt || !isVisible) return null;
-
-  const handleInstall = async () => {
-    try {
-      await deferredPrompt.prompt();
-      const choice = await deferredPrompt.userChoice;
-      if (choice.outcome === "accepted") {
-        postponeReminder(ACCEPTED_MS);
-        setDeferredPrompt(null);
-        setIsVisible(false);
-        return;
-      }
-      postponeReminder(REMIND_LATER_MS);
-    } catch {
-      postponeReminder(REMIND_LATER_MS);
-    }
-    setIsVisible(false);
-  };
-
-  const handleDismiss = () => {
-    postponeReminder(REMIND_LATER_MS);
-    setIsVisible(false);
-  };
-
-  return (
-    <div className="fixed bottom-6 right-6 z-40">
-      <div className="flex items-center gap-2 rounded-full border border-border bg-background/95 px-3 py-2 shadow-sm backdrop-blur">
-        <Download className="h-4 w-4 text-muted-foreground" />
-        <p className="text-xs text-foreground">可安装为桌面应用</p>
-        <button
-          type="button"
-          onClick={handleInstall}
-          className="min-h-11 rounded-full bg-foreground px-3 text-xs font-medium text-background hover:opacity-90"
-        >
-          安装
-        </button>
-        <button
-          type="button"
-          onClick={handleDismiss}
-          className="flex h-11 w-11 items-center justify-center rounded-full text-muted-foreground hover:text-foreground"
-          aria-label="关闭安装提醒"
-        >
-          <X className="h-3.5 w-3.5" />
-        </button>
-      </div>
-    </div>
-  );
+  return null;
 }

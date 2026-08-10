@@ -4,13 +4,13 @@ import { useState } from "react";
 import Image from "next/image";
 import { X } from "lucide-react";
 import { useI18n } from "@/lib/i18n/context";
-import { thankYouEntries } from "@/lib/site/support";
+import type { ThankYouEntry } from "@/lib/site/support";
 
-export function ThankYouList() {
+export function ThankYouList({ entries }: { entries: ThankYouEntry[] }) {
   const { locale } = useI18n();
   const [lightboxImage, setLightboxImage] = useState<string | null>(null);
 
-  if (thankYouEntries.length === 0) return null;
+  if (entries.length === 0) return null;
 
   return (
     <section
@@ -33,7 +33,7 @@ export function ThankYouList() {
 
         {/* 图片网格 - 只显示收款截图，统一尺寸 */}
         <div className="mt-6 grid grid-cols-2 gap-px border border-border bg-border md:grid-cols-4">
-        {thankYouEntries.map((entry) => (
+        {entries.map((entry) => (
           <div
             key={entry.id}
             className="group relative overflow-hidden bg-background"

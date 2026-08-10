@@ -80,6 +80,63 @@ describe("client analytics runtime schema", () => {
     expect(JSON.stringify(parsed)).not.toContain("query\"");
   });
 
+  it.each([
+    "project_brief_generated",
+    "project_brief_copy",
+    "project_brief_download",
+  ])("accepts aggregate-only %s metadata and derives its style slug", (eventType) => {
+    const parsed = parseClientAnalyticsPayload({
+      eventType,
+      eventData: {
+        slug: "neo-brutalist",
+        locale: "en",
+        project_type: "dashboard",
+        stack_count: 3,
+        required_item_count: 3,
+        state_count: 5,
+        optional_field_count: 6,
+        completion_tier: "complete",
+        source: "style_detail",
+      },
+      sessionId: null,
+    });
+
+    expect(parsed.success).toBe(true);
+    if (!parsed.success) return;
+    expect(readEventStyleSlug(parsed.data.eventType, parsed.data.eventData)).toBe(
+      "neo-brutalist",
+    );
+  });
+
+  it("rejects free-form project brief data and impossible counts", () => {
+    const base = {
+      slug: "neo-brutalist",
+      locale: "zh",
+      project_type: "app",
+      stack_count: 2,
+      required_item_count: 1,
+      state_count: 1,
+      optional_field_count: 4,
+      completion_tier: "complete",
+      source: "style_detail",
+    };
+
+    expect(
+      parseClientAnalyticsPayload({
+        eventType: "project_brief_generated",
+        eventData: { ...base, audience: "private customer name" },
+        sessionId: null,
+      }).success,
+    ).toBe(false);
+    expect(
+      parseClientAnalyticsPayload({
+        eventType: "project_brief_generated",
+        eventData: { ...base, required_item_count: 13 },
+        sessionId: null,
+      }).success,
+    ).toBe(false);
+  });
+
   it("accepts a complete price exposure and rejects invalid money", () => {
     const payload = {
       eventType: "pack_price_view",

@@ -1,0 +1,59 @@
+{
+  "schemaVersion": "knowledge-resource-v1",
+  "id": "plasmic",
+  "name": "Plasmic",
+  "nameEn": "Plasmic",
+  "resourceKind": "design-to-code-tool",
+  "sourceUrl": "https://www.plasmic.app/",
+  "repositoryUrl": "https://github.com/plasmicapp/plasmic",
+  "sourceRef": "master",
+  "license": {
+    "classification": "pending",
+    "spdx": "MIT/AGPL-3.0",
+    "name": "Mixed repository licensing",
+    "termsUrl": "https://github.com/plasmicapp/plasmic/blob/master/LICENSE.md",
+    "commercialUse": false,
+    "modificationAllowed": false,
+    "redistributionAllowed": false,
+    "attributionRequired": true,
+    "attributionText": "License scope must be reviewed per repository directory before any mirroring or reuse.",
+    "notes": "The repository documents different licensing for platform and non-platform areas."
+  },
+  "mirror": { "mode": "none" },
+  "provenance": {
+    "originType": "external-open-source",
+    "creator": "Plasmic",
+    "acquiredAt": "2026-08-03T00:00:00.000Z",
+    "evidenceUrls": ["https://github.com/plasmicapp/plasmic"],
+    "modificationStatus": "untouched"
+  },
+  "knowledge": {
+    "summary": "An open-source visual builder that integrates React components and codebases with visual editing, code generation, and design guardrails.",
+    "summaryEn": "An open-source visual builder that integrates React components and codebases with visual editing, code generation, and design guardrails.",
+    "useCases": ["Codebase-integrated visual editing", "React component registration", "Design system guardrails"],
+    "limitations": ["Mixed licensing requires directory-level review before any code or full project mirror is considered."],
+    "tags": ["visual-builder", "react", "codegen", "design-system", "codebase-integration"],
+    "frameworks": ["React", "Next.js"],
+    "relatedStyleSlugs": [],
+    "extractedTopics": ["visual builder", "code generation", "component registration"]
+  },
+  "quality": {
+    "score": 78,
+    "documentationReviewed": true,
+    "runtimeVerified": false,
+    "accessibilityReviewed": false,
+    "performanceReviewed": false,
+    "notes": ["Mixed-license candidate; no mirroring or code reuse is approved."]
+  },
+  "security": {
+    "secretScan": "pending",
+    "dependencyAudit": "pending",
+    "sbomStatus": "pending",
+    "criticalFindings": 0,
+    "notes": []
+  },
+  "usagePolicy": "retrieval-only",
+  "reviewStatus": "pending",
+  "publicationStatus": "unpublished",
+  "updatedAt": "2026-08-03T00:00:00.000Z"
+}

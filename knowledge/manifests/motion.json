@@ -1,0 +1,61 @@
+{
+  "schemaVersion": "knowledge-resource-v1",
+  "id": "motion",
+  "name": "Motion",
+  "nameEn": "Motion",
+  "resourceKind": "animation",
+  "sourceUrl": "https://motion.dev/",
+  "repositoryUrl": "https://github.com/motiondivision/motion",
+  "sourceRef": "main",
+  "license": {
+    "classification": "allowlisted",
+    "spdx": "MIT",
+    "name": "MIT License",
+    "termsUrl": "https://github.com/motiondivision/motion/blob/main/LICENSE.md",
+    "commercialUse": true,
+    "modificationAllowed": true,
+    "redistributionAllowed": true,
+    "attributionRequired": true,
+    "attributionText": "Motion is licensed under the MIT License."
+  },
+  "mirror": { "mode": "none" },
+  "provenance": {
+    "originType": "external-open-source",
+    "creator": "Motion Division",
+    "acquiredAt": "2026-08-03T00:00:00.000Z",
+    "evidenceUrls": [
+      "https://github.com/motiondivision/motion",
+      "https://github.com/motiondivision/motion/blob/main/LICENSE.md"
+    ],
+    "modificationStatus": "untouched"
+  },
+  "knowledge": {
+    "summary": "Open-source animation library for React, JavaScript, and Vue with springs, gestures, layout transitions, timelines, and scroll-linked effects.",
+    "summaryEn": "Open-source animation library for React, JavaScript, and Vue with springs, gestures, layout transitions, timelines, and scroll-linked effects.",
+    "useCases": ["React and Vue motion patterns", "Page transitions and micro-interactions", "Scroll-linked and gesture-driven effects"],
+    "limitations": ["Animation choices still need product context and reduced-motion handling.", "Premium Motion+ material is outside the open-source candidate scope."],
+    "tags": ["animation", "motion", "react", "vue", "gestures", "scroll"],
+    "frameworks": ["React", "Vue", "JavaScript"],
+    "relatedStyleSlugs": [],
+    "extractedTopics": ["springs", "layout transitions", "gestures", "scroll-linked animation", "reduced motion"]
+  },
+  "quality": {
+    "score": 88,
+    "documentationReviewed": true,
+    "runtimeVerified": false,
+    "accessibilityReviewed": false,
+    "performanceReviewed": false,
+    "notes": ["Candidate source record only; no code has been mirrored or approved for generation."]
+  },
+  "security": {
+    "secretScan": "pending",
+    "dependencyAudit": "pending",
+    "sbomStatus": "pending",
+    "criticalFindings": 0,
+    "notes": []
+  },
+  "usagePolicy": "retrieval-only",
+  "reviewStatus": "pending",
+  "publicationStatus": "unpublished",
+  "updatedAt": "2026-08-03T00:00:00.000Z"
+}

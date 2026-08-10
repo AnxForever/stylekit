@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { evaluateProductValidationReadiness } from "@/lib/product-validation/readiness";
+import { isPackCheckoutConfigured } from "@/lib/product-validation/checkout";
 
 const readyInput = {
   hmacSecretConfigured: true,
@@ -21,6 +22,12 @@ const readyInput = {
 };
 
 describe("product validation production readiness", () => {
+  it("requires the explicit checkout marker instead of guessing from provider keys", () => {
+    expect(isPackCheckoutConfigured({ PACK_CHECKOUT_PROVIDER: "" })).toBe(false);
+    expect(isPackCheckoutConfigured({ PACK_CHECKOUT_PROVIDER: "  " })).toBe(false);
+    expect(isPackCheckoutConfigured({ PACK_CHECKOUT_PROVIDER: "manual-reconciled" })).toBe(true);
+  });
+
   it("reports ready only when every authority and storage gate is available", () => {
     const report = evaluateProductValidationReadiness(readyInput);
     expect(report.status).toBe("ready");

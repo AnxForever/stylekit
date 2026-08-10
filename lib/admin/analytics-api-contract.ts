@@ -3,6 +3,9 @@ import { z } from "zod";
 export const analyticsRangeSchema = z.enum(["24h", "7d", "30d", "90d"]);
 export type AnalyticsRange = z.infer<typeof analyticsRangeSchema>;
 
+/** Version emitted by migration 031 when brief actions are in the intent aggregate. */
+export const PROJECT_BRIEF_ANALYTICS_SIGNAL_VERSION = 2;
+
 const nullableNumber = z.number().nullable();
 
 export const analyticsOverviewSchema = z.object({
@@ -98,6 +101,9 @@ export type AnalyticsRegistrations = z.infer<
 >;
 
 export const analyticsContentSchema = z.object({
+  implementationIntentVersion: z
+    .literal(PROJECT_BRIEF_ANALYTICS_SIGNAL_VERSION)
+    .optional(),
   summary: z.object({
     comments: z.number(),
     ratings: z.number(),

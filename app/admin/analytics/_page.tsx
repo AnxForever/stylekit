@@ -33,7 +33,7 @@ const PAGE_COPY: Record<AnalyticsView, { title: string; description: string }> =
   },
   audit: {
     title: "操作审计",
-    description: "检索审核操作、确认操作者，并导出符合筛选条件的记录。",
+    description: "检索投稿、赞助公告和内容管理操作，并导出符合筛选条件的记录。",
   },
 };
 

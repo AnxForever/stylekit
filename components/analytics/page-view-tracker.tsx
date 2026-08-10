@@ -23,12 +23,27 @@ export function PageViewTracker() {
     const referrer = document.referrer || null;
     const hostname = window.location.hostname;
 
-    trackPageView({
-      path: pathname,
-      hostname,
-      referrerDomain: getReferrerDomain(referrer),
-      referrerType: classifyReferrer(referrer, hostname),
-    });
+    const trackCurrentPage = () => {
+      trackPageView({
+        path: pathname,
+        hostname,
+        referrerDomain: getReferrerDomain(referrer),
+        referrerType: classifyReferrer(referrer, hostname),
+      });
+    };
+
+    let idleId: number | null = null;
+    let timeoutId: number | null = null;
+    if (typeof window.requestIdleCallback === "function") {
+      idleId = window.requestIdleCallback(trackCurrentPage, { timeout: 1500 });
+    } else {
+      timeoutId = window.setTimeout(trackCurrentPage, 250);
+    }
+
+    return () => {
+      if (idleId !== null) window.cancelIdleCallback(idleId);
+      if (timeoutId !== null) window.clearTimeout(timeoutId);
+    };
   }, [pathname, searchParams]);
 
   return null;

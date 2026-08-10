@@ -11,6 +11,7 @@ import {
   updateSubmissionFormDataSupabase,
 } from "@/lib/submit/reviewer-supabase";
 import { checkAdminApiAccess } from "@/lib/auth/admin-api";
+import { recordAdminAuditEvent } from "@/lib/admin/audit-log";
 import { verifyTrustedOrigin } from "@/lib/security/request-origin";
 import { parseJsonBodyWithLimit } from "@/lib/security/json-body";
 
@@ -161,6 +162,13 @@ export async function DELETE(
       );
     }
 
+    await recordAdminAuditEvent(_request, {
+      action: "submission.delete",
+      targetType: "submission",
+      targetId: id,
+      actor: access.actor,
+      metadata: { storage: "supabase" },
+    });
     return NextResponse.json({ success: true, id });
   }
 
@@ -175,6 +183,13 @@ export async function DELETE(
 
   try {
     await unlink(filePath);
+    await recordAdminAuditEvent(_request, {
+      action: "submission.delete",
+      targetType: "submission",
+      targetId: id,
+      actor: access.actor,
+      metadata: { storage: "file" },
+    });
     return NextResponse.json({ success: true, id });
   } catch {
     return NextResponse.json(
@@ -254,6 +269,13 @@ export async function PATCH(
       );
     }
 
+    await recordAdminAuditEvent(request, {
+      action: "submission.update",
+      targetType: "submission",
+      targetId: id,
+      actor: access.actor,
+      metadata: { fields: Object.keys(payload.data), storage: "supabase" },
+    });
     return NextResponse.json({ success: true, submission: updated });
   }
 
@@ -292,6 +314,13 @@ export async function PATCH(
     };
     await writeFile(filePath, JSON.stringify(nextRecord, null, 2), "utf-8");
 
+    await recordAdminAuditEvent(request, {
+      action: "submission.update",
+      targetType: "submission",
+      targetId: id,
+      actor: access.actor,
+      metadata: { fields: Object.keys(payload.data), storage: "file" },
+    });
     return NextResponse.json({ success: true, submission: nextRecord });
   } catch {
     return NextResponse.json(

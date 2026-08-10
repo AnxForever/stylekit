@@ -2,6 +2,11 @@
 @plugin "tailwindcss-animate";
 @plugin "@tailwindcss/typography";
 
+/* Background registry values are copyable Tailwind snippets, not runtime
+   classes. Keep their embedded SVG data URLs out of Tailwind's source scan so
+   webpack does not try to resolve them as local CSS modules. */
+@source not "../lib/backgrounds/index.ts";
+
 /* next-themes uses `attribute="class"` (toggles a `.dark` class on <html>).
    Tailwind v4's default `dark:` variant follows `prefers-color-scheme`,
    which decouples from the active theme class. Pin it to the `.dark`

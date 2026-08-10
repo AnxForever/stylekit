@@ -1,0 +1,61 @@
+{
+  "schemaVersion": "knowledge-resource-v1",
+  "id": "lucide",
+  "name": "Lucide",
+  "nameEn": "Lucide",
+  "resourceKind": "icon",
+  "sourceUrl": "https://lucide.dev/",
+  "repositoryUrl": "https://github.com/lucide-icons/lucide",
+  "sourceRef": "main",
+  "license": {
+    "classification": "allowlisted",
+    "spdx": "ISC",
+    "name": "ISC License",
+    "termsUrl": "https://github.com/lucide-icons/lucide/blob/main/LICENSE",
+    "commercialUse": true,
+    "modificationAllowed": true,
+    "redistributionAllowed": true,
+    "attributionRequired": true,
+    "attributionText": "Lucide is licensed under the ISC License; some icons include Feather-derived MIT notices."
+  },
+  "mirror": { "mode": "none" },
+  "provenance": {
+    "originType": "external-open-source",
+    "creator": "Lucide contributors",
+    "acquiredAt": "2026-08-03T00:00:00.000Z",
+    "evidenceUrls": [
+      "https://github.com/lucide-icons/lucide",
+      "https://github.com/lucide-icons/lucide/blob/main/LICENSE"
+    ],
+    "modificationStatus": "untouched"
+  },
+  "knowledge": {
+    "summary": "A consistent open-source SVG icon toolkit with official packages for React, Vue, Svelte, Solid, Angular, Astro, and other frontend environments.",
+    "summaryEn": "A consistent open-source SVG icon toolkit with official packages for React, Vue, Svelte, Solid, Angular, Astro, and other frontend environments.",
+    "useCases": ["Product interface iconography", "Themeable SVG icons", "Cross-framework icon integration"],
+    "limitations": ["Brand logos are intentionally outside the core library.", "The license file contains Feather-derived icons with a separate MIT notice that must be preserved when redistributing the library."],
+    "tags": ["icons", "svg", "react", "vue", "svelte", "design-systems"],
+    "frameworks": ["React", "Vue", "Svelte", "Solid", "Angular", "Astro"],
+    "relatedStyleSlugs": [],
+    "extractedTopics": ["SVG", "icon consistency", "stroke width", "cross-framework packages", "attribution"]
+  },
+  "quality": {
+    "score": 87,
+    "documentationReviewed": true,
+    "runtimeVerified": false,
+    "accessibilityReviewed": false,
+    "performanceReviewed": false,
+    "notes": ["Candidate source record only; license scope requires preserving both ISC and Feather-derived MIT notices."]
+  },
+  "security": {
+    "secretScan": "pending",
+    "dependencyAudit": "pending",
+    "sbomStatus": "pending",
+    "criticalFindings": 0,
+    "notes": []
+  },
+  "usagePolicy": "retrieval-only",
+  "reviewStatus": "pending",
+  "publicationStatus": "unpublished",
+  "updatedAt": "2026-08-03T00:00:00.000Z"
+}

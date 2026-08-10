@@ -143,6 +143,12 @@ import preview136 from "./styles/distill-style";
 import preview137 from "./styles/gallery-dark";
 import preview138 from "./styles/studio-bold";
 import preview139 from "./styles/warm-organic";
+import pastelUiPreview from "./styles/pastel-ui";
+import mobileEditorialPreview from "./styles/mobile-editorial";
+import softUtilityPreview from "./styles/soft-utility";
+
+
+
 // End style preview imports
 
 export const styleComponents: Record<string, StylePreviewComponents> = {
@@ -291,4 +297,7 @@ export const styleComponents: Record<string, StylePreviewComponents> = {
   "luxe-lookbook": preview141,
   "shader-gradient": preview142,
   // End style preview entries
+  "pastel-ui": pastelUiPreview,
+  "mobile-editorial": mobileEditorialPreview,
+  "soft-utility": softUtilityPreview,
 };

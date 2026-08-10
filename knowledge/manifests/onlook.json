@@ -1,0 +1,58 @@
+{
+  "schemaVersion": "knowledge-resource-v1",
+  "id": "onlook",
+  "name": "Onlook",
+  "nameEn": "Onlook",
+  "resourceKind": "design-to-code-tool",
+  "sourceUrl": "https://docs.onlook.com/",
+  "repositoryUrl": "https://github.com/onlook-dev/onlook",
+  "sourceRef": "main",
+  "license": {
+    "classification": "allowlisted",
+    "spdx": "Apache-2.0",
+    "name": "Apache License 2.0",
+    "termsUrl": "https://github.com/onlook-dev/onlook/blob/main/LICENSE.md",
+    "commercialUse": true,
+    "modificationAllowed": true,
+    "redistributionAllowed": true,
+    "attributionRequired": true,
+    "attributionText": "Onlook is licensed under the Apache License 2.0."
+  },
+  "mirror": { "mode": "none" },
+  "provenance": {
+    "originType": "external-open-source",
+    "creator": "Onlook",
+    "acquiredAt": "2026-08-03T00:00:00.000Z",
+    "evidenceUrls": ["https://github.com/onlook-dev/onlook"],
+    "modificationStatus": "untouched"
+  },
+  "knowledge": {
+    "summary": "An open-source visual-first code editor for building and editing React applications with a browser visual editor, code integration, and design tokens.",
+    "summaryEn": "An open-source visual-first code editor for building and editing React applications with a browser visual editor, code integration, and design tokens.",
+    "useCases": ["Visual editing of React projects", "Design token workflows", "Design-to-code research"],
+    "limitations": ["The project is broader than StyleKit's resource catalog and requires separate runtime review."],
+    "tags": ["visual-editor", "react", "nextjs", "tailwind", "design-tokens"],
+    "frameworks": ["React", "Next.js", "Tailwind CSS"],
+    "relatedStyleSlugs": [],
+    "extractedTopics": ["DOM to code mapping", "visual editing", "design tokens"]
+  },
+  "quality": {
+    "score": 80,
+    "documentationReviewed": true,
+    "runtimeVerified": false,
+    "accessibilityReviewed": false,
+    "performanceReviewed": false,
+    "notes": ["Candidate source record only."]
+  },
+  "security": {
+    "secretScan": "pending",
+    "dependencyAudit": "pending",
+    "sbomStatus": "pending",
+    "criticalFindings": 0,
+    "notes": []
+  },
+  "usagePolicy": "retrieval-only",
+  "reviewStatus": "pending",
+  "publicationStatus": "unpublished",
+  "updatedAt": "2026-08-03T00:00:00.000Z"
+}

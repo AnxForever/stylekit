@@ -1,5 +1,6 @@
 import type { CSSProperties } from "react";
 import type { Metadata, Viewport } from "next";
+import Script from "next/script";
 import {
   Albert_Sans,
   Playfair_Display,
@@ -20,6 +21,7 @@ import { CURATED_STYLE_COUNT } from "@/lib/product/catalog-facts";
 import { getShowcaseTypographyProfile } from "@/lib/typography/showcase-profiles";
 import { LazyShowcaseTypographyRuntime } from "@/components/typography/lazy-showcase-typography-runtime";
 import { ShowcaseBackBar } from "@/components/showcase/showcase-back-bar";
+import { getSiteAnnouncement } from "@/lib/site-announcements";
 import "./globals.css";
 
 const publicSans = Albert_Sans({
@@ -117,6 +119,7 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const { locale, htmlLang, contentPath } = await getRequestLocaleContext();
+  const announcement = await getSiteAnnouncement(locale === "zh" ? "zh-CN" : "en");
   const showcaseTypography = getShowcaseTypographyProfile(contentPath);
   const isProductSurface = /^\/(?:admin|admin-login|login|profile|validation|workspace)(?:\/|$)/.test(
     contentPath
@@ -140,12 +143,13 @@ export default async function RootLayout({
         <link rel="icon" href="/icon.svg" type="image/svg+xml" />
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
         <link rel="manifest" href="/manifest.json" />
-        <script
-          defer
+        <Script
+          id="vibeloft-telemetry"
+          strategy="lazyOnload"
           src="https://vibeloft.ai/telemetry/v1.js"
           data-vl-product-id="89414aab-7920-4854-8720-5ef041561792"
           data-vl-auth-key="vl_web.grGnbaTxVblO8tSKoOK8zC-726z3_2htURIvubBSPXM"
-        ></script>
+        />
         {showcaseTypography ? (
           <link
             rel="stylesheet"
@@ -239,7 +243,7 @@ export default async function RootLayout({
       >
         <ClientProviders initialLocale={locale}>
           <LazyShowcaseTypographyRuntime />
-          <AnnouncementBanner />
+        <AnnouncementBanner announcement={announcement} />
           <LazyCommandPalette />
           {children}
           <ShowcaseBackBar />

@@ -1,0 +1,12 @@
+.frame { --aura-line: #5149cf; --aura-accent: #ef6b7a; position: relative; isolation: isolate; overflow: visible; border: 1px solid color-mix(in srgb, var(--aura-line) 30%, currentColor 70%); }
+.canvas { position: absolute; z-index: -1; inset: -1px; pointer-events: none; opacity: .92; }
+.content { position: relative; z-index: 1; }
+.frameLines { position: absolute; z-index: 2; inset: -1px; pointer-events: none; }
+.corner { position: absolute; width: 18px; height: 18px; border-color: var(--aura-line); opacity: .68; }
+.topLeft { top: -1px; left: -1px; border-top: 2px solid; border-left: 2px solid; }
+.topRight { top: -1px; right: -1px; border-top: 2px solid; border-right: 2px solid; }
+.bottomLeft { bottom: -1px; left: -1px; border-bottom: 2px solid; border-left: 2px solid; }
+.bottomRight { right: -1px; bottom: -1px; border-right: 2px solid; border-bottom: 2px solid; }
+.tickRail { position: absolute; top: 22%; right: -1px; width: 8px; height: 31%; border-right: 1px solid color-mix(in srgb, var(--aura-line) 70%, transparent); background: repeating-linear-gradient(to bottom, transparent 0, transparent 14px, color-mix(in srgb, var(--aura-accent) 65%, transparent) 14px, color-mix(in srgb, var(--aura-accent) 65%, transparent) 15px); opacity: .7; }
+.marker { position: absolute; right: 17%; bottom: -3px; width: 5px; height: 5px; border-radius: 999px; background: var(--aura-accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--aura-accent) 18%, transparent); }
+@media (prefers-reduced-motion: reduce) { .canvas { opacity: 0; } }

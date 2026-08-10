@@ -1,5 +1,6 @@
 export { SWRProvider } from "./provider";
 export { fetcher } from "./fetcher";
+export type { ApiFetcherError } from "./fetcher";
 export {
   useCatalogStyles,
   useTrendingStyles,
@@ -20,6 +21,12 @@ export {
   useAdminComments,
   useAdminUsers,
   useAdminSystem,
+  useAdminSystemPreflight,
+  useAdminOperations,
+  useAdminProductValidation,
+  useAdminKnowledgeResources,
+  useAdminKnowledgeReviews,
+  useAdminKnowledgePublications,
   useAdminStyles,
   useAdminRatings,
 } from "./hooks";
@@ -56,6 +63,11 @@ export type {
   AdminSystemRuntime,
   AdminSystemAudit,
   AdminSystemData,
+  AdminOperationsData,
+  ProductValidationAdminData,
+  KnowledgeAdminResourcesData,
+  KnowledgeAdminReviewsData,
+  KnowledgeAdminPublicationsData,
   AdminStyleStats,
   AdminStyle,
   AdminStylesData,
@@ -65,3 +77,6 @@ export type {
   AdminRatingsData,
   AdminRatingsQuery,
 } from "./hooks";
+export type { OperationsQueueItem } from "@/lib/admin/operations-queue";
+export type { AdminAuditAction } from "@/lib/admin/audit-contract";
+export type { AdminSystemPreflightData } from "@/lib/admin/system-preflight";

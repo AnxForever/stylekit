@@ -13,9 +13,6 @@ import { HardPromptCopyButton } from "@/components/style-preview/hard-prompt-cop
 import { CodeBlock } from "@/components/style-preview/code-block";
 import { TokensExportButton } from "@/components/tokens-export-button";
 import { StyleCoverPreview } from "@/components/style-preview/style-cover-preview";
-import { StyleUsePanel } from "@/components/style-preview/style-use-panel";
-import { getCollectionsForTags } from "@/lib/styles/collections";
-import { getStyleMetaBySlug } from "@/lib/styles/meta";
 import { ScoreBadge } from "@/components/accessibility/score-badge";
 import { ScoreDetail } from "@/components/accessibility/score-detail";
 import { IdeExportButtons } from "@/components/export/ide-export-buttons";
@@ -23,7 +20,6 @@ import { VersionBadge } from "@/components/styles/version-badge";
 import { StyleRating } from "@/components/styles/style-rating";
 import { StyleComments } from "@/components/styles/style-comments";
 import { CollapsibleSection } from "@/components/ui/collapsible-section";
-import { LazySection } from "@/components/ui/lazy-section";
 import { useI18n } from "@/lib/i18n/context";
 import { localizedString, localizedList } from "@/lib/styles/locale-content";
 import { buildPromptPair } from "@/lib/styles/prompt-pair";
@@ -159,6 +155,10 @@ export function StyleDetailContent({
       label: locale === "zh" ? "AI 实现" : "AI Implementation",
     },
     {
+      href: "#style-feedback",
+      label: t("styleDetail.ratingsFeedback"),
+    },
+    {
       href: "#style-components",
       label: t("styleDetail.componentPreview"),
     },
@@ -175,10 +175,6 @@ export function StyleDetailContent({
     {
       href: "#style-exports",
       label: locale === "zh" ? "导出工具" : "Exports",
-    },
-    {
-      href: "#style-feedback",
-      label: t("styleDetail.ratingsFeedback"),
     },
   ];
   const summaryCards = [
@@ -433,32 +429,17 @@ export function StyleDetailContent({
         </div>
       </section>
 
-      {/* Use this style — conversion: registry / CLI / MCP */}
-      <section className="border-b border-border scroll-mt-24">
+      {/* Community — keep feedback close to the prompt users act on */}
+      <section id="style-feedback" className="border-b border-border scroll-mt-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-12 py-12 md:py-16">
-          <StyleUsePanel slug={style.slug} name={style.name} nameEn={style.nameEn} />
-          {(() => {
-            const relatedCollections = getCollectionsForTags(
-              getStyleMetaBySlug(style.slug)?.tags
-            );
-            if (relatedCollections.length === 0) return null;
-            return (
-              <div className="mt-8 flex flex-wrap items-center gap-3">
-                <span className="text-xs uppercase tracking-widest text-muted">
-                  {locale === "zh" ? "所属合集" : "Part of"}
-                </span>
-                {relatedCollections.map((collection) => (
-                  <LocalizedLink
-                    key={collection.slug}
-                    href={`/collections/${collection.slug}`}
-                    className="border border-border px-3 py-1.5 text-sm transition-colors hover:border-foreground hover:text-foreground"
-                  >
-                    {locale === "zh" ? collection.titleZh : collection.titleEn}
-                  </LocalizedLink>
-                ))}
-              </div>
-            );
-          })()}
+          <p className="text-xs tracking-widest uppercase text-muted mb-4">
+            {t("community.label")}
+          </p>
+          <h2 className="text-2xl md:text-3xl mb-6">{t("styleDetail.ratingsFeedback")}</h2>
+          <div className="mb-8">
+            <StyleRating slug={style.slug} />
+          </div>
+          <StyleComments slug={style.slug} />
         </div>
       </section>
 
@@ -629,22 +610,6 @@ export function StyleDetailContent({
           </div>
         </div>
       </section>
-
-      {/* Community */}
-      <LazySection>
-        <section id="style-feedback" className="border-b border-border scroll-mt-24">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-12 py-12 md:py-16">
-            <p className="text-xs tracking-widest uppercase text-muted mb-4">
-              {t("community.label")}
-            </p>
-            <h2 className="text-2xl md:text-3xl mb-6">{t("styleDetail.ratingsFeedback")}</h2>
-            <div className="mb-8">
-              <StyleRating slug={style.slug} />
-            </div>
-            <StyleComments slug={style.slug} />
-          </div>
-        </section>
-      </LazySection>
 
       {/* Philosophy — condensed, collapsed */}
       <section className="border-b border-border">

@@ -4,10 +4,11 @@ import {
   loadStylePreview,
   stylePreviewSlugs,
 } from "@/lib/style-preview/delivery";
+import { isPendingStyleSlug } from "@/lib/styles/review-status";
 
 describe("style preview delivery", () => {
   it("exposes every approved preview through one delivery interface", async () => {
-    expect([...stylePreviewSlugs].sort()).toEqual(
+    expect(stylePreviewSlugs.filter((slug) => !isPendingStyleSlug(slug)).sort()).toEqual(
       [...approvedPreviews.slugs].sort()
     );
 
@@ -17,6 +18,13 @@ describe("style preview delivery", () => {
     expect(preview?.card).toBeTypeOf("function");
     expect(preview?.input).toBeTypeOf("function");
     expect(preview?.coverPreview).toBeTypeOf("function");
+  });
+
+  it("keeps pending previews loadable without treating them as approved", async () => {
+    expect(isPendingStyleSlug("pastel-ui")).toBe(true);
+    await expect(loadStylePreview("pastel-ui")).resolves.toMatchObject({
+      coverPreview: expect.any(Function),
+    });
   });
 
   it("returns null for a slug outside the approved registry", async () => {

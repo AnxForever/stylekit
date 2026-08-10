@@ -4,6 +4,15 @@ import useSWR from "swr";
 import type { StyleMeta } from "@/lib/styles/meta";
 import type { DashboardData, DashboardRange } from "@/lib/admin/analytics-dashboard";
 import type {
+  KnowledgeAdminPublicationsData,
+  KnowledgeAdminResourcesData,
+  KnowledgeAdminReviewsData,
+} from "@/lib/knowledge";
+import type { ProductValidationAdminData } from "@/lib/admin/product-validation";
+import type { OperationsQueueItem } from "@/lib/admin/operations-queue";
+import type { AdminSystemPreflightData } from "@/lib/admin/system-preflight";
+import type { AdminAuditAction } from "@/lib/admin/audit-contract";
+import type {
   AnalyticsBreakdown,
   AnalyticsBreakdownDimension,
   AnalyticsContent,
@@ -197,7 +206,7 @@ export function useAnalyticsEvents(range: AnalyticsRange, fallbackData?: Analyti
 interface AdminAuditQuery {
   limit?: number;
   offset?: number;
-  action?: "submission.approve" | "submission.reject" | "all";
+  action?: AdminAuditAction;
   days?: number | "all";
   search?: string;
 }
@@ -428,12 +437,97 @@ interface AdminSystemData {
   audit: AdminSystemAudit;
 }
 
+export interface AdminOperationsData {
+  generatedAt: string;
+  windowDays: number;
+  database: {
+    status: "connected" | "degraded" | "not_configured";
+  };
+  queue: {
+    pendingSubmissions: number | null;
+    pendingKnowledgeReviews: number | null;
+    unpublishedSupport: number | null;
+    items: OperationsQueueItem[];
+  };
+  signals: {
+    recentComments: number | null;
+    recentRatings: number | null;
+    newsletterSubscribers: number | null;
+    publishedSupport: number | null;
+  };
+  latestSupport: Array<{
+    id: string;
+    donated_on: string;
+    donor_label: string;
+    amount: string | null;
+    published: boolean;
+  }>;
+  recentAudit: Array<{
+    id: string;
+    action: string;
+    targetType: string;
+    targetId: string | null;
+    createdAt: string;
+  }>;
+  runtime: {
+    nodeVersion: string;
+    uptime: number;
+    memoryRss: number;
+  };
+}
+
 export function useAdminSystem() {
   return useSWR<AdminSystemData>("/api/admin/system", {
     keepPreviousData: true,
     dedupingInterval: 15_000,
     revalidateOnFocus: false,
   });
+}
+
+export function useAdminSystemPreflight() {
+  return useSWR<AdminSystemPreflightData>("/api/admin/system/preflight", {
+    keepPreviousData: true,
+    dedupingInterval: 15_000,
+    revalidateOnFocus: false,
+  });
+}
+
+export function useAdminOperations() {
+  return useSWR<AdminOperationsData>("/api/admin/operations", {
+    keepPreviousData: true,
+    dedupingInterval: 15_000,
+    revalidateOnFocus: false,
+  });
+}
+
+export function useAdminProductValidation() {
+  return useSWR<ProductValidationAdminData>("/api/admin/product-validation", {
+    keepPreviousData: true,
+    dedupingInterval: 15_000,
+    revalidateOnFocus: false,
+  });
+}
+
+export function useAdminKnowledgeResources() {
+  return useSWR<KnowledgeAdminResourcesData>("/api/admin/knowledge/resources", {
+    keepPreviousData: true,
+    dedupingInterval: 15_000,
+    revalidateOnFocus: false,
+  });
+}
+
+export function useAdminKnowledgeReviews(resourceId: string | null) {
+  return useSWR<KnowledgeAdminReviewsData>(
+    resourceId ? `/api/admin/knowledge/reviews?resourceId=${encodeURIComponent(resourceId)}` : null,
+    { keepPreviousData: true, dedupingInterval: 10_000, revalidateOnFocus: false },
+  );
+}
+
+export function useAdminKnowledgePublications(resourceId: string | null) {
+  return useSWR<KnowledgeAdminPublicationsData>(
+    resourceId ? `/api/admin/knowledge/publications?resourceId=${encodeURIComponent(resourceId)}` : null,
+    { keepPreviousData: true, dedupingInterval: 10_000, revalidateOnFocus: false },
+  );
 }
 
 // ---------- Admin Styles ----------
@@ -532,6 +626,10 @@ export function useAdminRatings(query: AdminRatingsQuery = {}) {
 
 // Re-export types
 export type {
+  ProductValidationAdminData,
+  KnowledgeAdminPublicationsData,
+  KnowledgeAdminResourcesData,
+  KnowledgeAdminReviewsData,
   TopStyle,
   TrendingData,
   Combination,

@@ -22,6 +22,30 @@ describe("workspace generation workflow", () => {
     expect(first.files).toEqual(second.files);
     expect(first.files.some((file) => file.name === "app/page.tsx")).toBe(true);
     expect(first.quality.errors).toEqual([]);
+    expect(first.knowledge).toEqual({ schemaVersion: "knowledge-generation-context-v1", references: [] });
+  });
+
+  it("records only the generator-approved knowledge references supplied by the server", () => {
+    const generation = generateWorkspaceProject({
+      name: "Knowledge-aware Dashboard",
+      description: "A dashboard grounded by an approved component source.",
+      projectType: "dashboard",
+      stack: ["nextjs", "typescript"],
+      brief: { ...brief, requiredStates: [...brief.requiredStates] },
+      selectedStyleSlug: "neo-brutalist",
+      target: "nextjs",
+      generatedAt: "2026-07-11T00:00:00.000Z",
+      knowledgeReferences: [{
+        id: "approved-source",
+        name: "Approved Source",
+        summary: "Reviewed context.",
+        tags: ["components"],
+        sourceUrl: "https://example.com/source",
+        usagePolicy: "generator-approved",
+      }],
+    });
+
+    expect(generation.knowledge.references.map((reference) => reference.id)).toEqual(["approved-source"]);
   });
 
   it("pins the verified toolchain instead of resolving a different install over time", () => {

@@ -8,6 +8,7 @@ import { getAllStylesMeta } from "@/lib/styles/meta";
 import { getAllAnimationsMeta } from "@/lib/animations/meta";
 import { CURATED_STYLE_COUNT } from "@/lib/product/catalog-facts";
 import { HOME_SOCIAL_IMAGE } from "@/lib/seo/site-metadata";
+import { getPublishedThankYouEntries } from "@/lib/support/acknowledgments";
 
 export const metadata: Metadata = {
   // Use `absolute` so the root "%s | StyleKit" template does not append a second
@@ -17,7 +18,7 @@ export const metadata: Metadata = {
     absolute: `StyleKit — UI Design Prompts & ${CURATED_STYLE_COUNT} Visual Styles`,
   },
   description:
-    `Browse ${CURATED_STYLE_COUNT} visual styles with design tokens, component recipes, and AI prompts. Export to Tailwind, shadcn, Figma, and IDE configs.`,
+    `Browse ${CURATED_STYLE_COUNT} visual styles with design tokens, component recipes, and AI prompts. Export to Tailwind, shadcn, Figma, and AI coding tools.`,
   keywords: [
     "UI design prompts",
     "web design prompts",
@@ -44,8 +45,9 @@ function getTemplateCount() {
     .length;
 }
 
-export default function Home() {
+export default async function Home() {
   const styles = getAllStylesMeta();
+  const thankYouEntries = await getPublishedThankYouEntries();
   const stats = {
     styles: styles.length,
     animations: getAllAnimationsMeta().length,
@@ -56,7 +58,7 @@ export default function Home() {
     <div className="min-h-screen flex flex-col">
       <Header />
       <main className="flex-1">
-        <HomeContent styles={styles} stats={stats} />
+        <HomeContent styles={styles} stats={stats} thankYouEntries={thankYouEntries} />
       </main>
       <Footer />
     </div>

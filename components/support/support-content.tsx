@@ -8,6 +8,7 @@ import { localizeHref } from "@/lib/i18n/routing";
 import { supportMethods, supportLinks, supportPageCopy } from "@/lib/site/support";
 import { ThankYouList } from "@/components/support/thank-you-list";
 import { FeedbackForm } from "@/components/feedback/feedback-form";
+import type { ThankYouEntry } from "@/lib/site/support";
 
 export const supportRailLabelClassName =
   "font-mono text-[10px] uppercase tracking-[0.28em] text-muted";
@@ -22,7 +23,7 @@ function SectionRail({ index, label }: { index: string; label: string }) {
   );
 }
 
-export function SupportContent() {
+export function SupportContent({ thankYouEntries }: { thankYouEntries: ThankYouEntry[] }) {
   const { locale } = useI18n();
   const copy = supportPageCopy[locale];
 
@@ -87,7 +88,7 @@ export function SupportContent() {
         </div>
       </section>
 
-      <ThankYouList />
+      <ThankYouList entries={thankYouEntries} />
 
       <section
         id="support-channels"

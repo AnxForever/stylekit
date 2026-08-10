@@ -41,7 +41,9 @@ describe("VibeLoft telemetry integration", () => {
     const layout = await read("app/layout.tsx");
 
     expect(combinedSource.split(SCRIPT_URL)).toHaveLength(2);
-    expect(layout).toContain('defer\n          src="https://vibeloft.ai/telemetry/v1.js"');
+    expect(layout).toMatch(
+      /strategy="lazyOnload"[\s\S]*src="https:\/\/vibeloft\.ai\/telemetry\/v1\.js"/,
+    );
     expect(layout).toContain(`data-vl-product-id="${PRODUCT_ID}"`);
     expect(layout.match(/data-vl-auth-key="vl_web\.[A-Za-z0-9_-]{43}"/g)).toHaveLength(1);
     expect(layout).not.toContain("data-vl-endpoint");

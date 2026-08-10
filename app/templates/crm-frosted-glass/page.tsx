@@ -1,5 +1,3 @@
-export const dynamic = "force-static";
-
 import { Archivo, IBM_Plex_Mono, Instrument_Serif } from "next/font/google";
 import { TemplateBackButton } from "@/components/templates/template-back-button";
 

@@ -4,6 +4,8 @@ import { preload } from "swr";
 import { fetcher } from "./fetcher";
 
 const DATA_KEYS: Record<string, string[]> = {
+  "/admin/operations": ["/api/admin/operations"],
+  "/admin/validation": ["/api/admin/product-validation"],
   "/admin/styles": ["/api/admin/styles?sort=name&order=desc"],
   "/admin/users": ["/api/admin/users?limit=20&offset=0"],
   "/admin/comments": ["/api/admin/comments?limit=20&offset=0"],

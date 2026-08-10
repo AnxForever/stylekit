@@ -81,6 +81,129 @@ export function Footer({ compact = false }: { compact?: boolean }) {
       className="mt-auto border-t border-zinc-800 bg-zinc-950 text-zinc-100 [--background:#18181b] [--border:#3f3f46] [--foreground:#fafafa] [--muted:#a1a1aa] dark:bg-black dark:[--background:#09090b]"
       data-cursor-aura="off"
     >
+      {/* Mobile footer: keep the first view compact and move secondary links
+          into native disclosure groups so the page does not end in a wall of links. */}
+      <div className="mx-auto max-w-7xl px-4 py-7 md:hidden">
+        <div className="flex items-start justify-between gap-4">
+          <div className="min-w-0">
+            <p className="masthead text-lg text-white">StyleKit</p>
+            <p className="mt-2 max-w-[18rem] text-xs leading-relaxed text-zinc-400">
+              {t("footer.tagline")}
+            </p>
+          </div>
+          <a
+            href="https://github.com/AnxForever/stylekit"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={t("footer.githubRepo")}
+            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/15 text-zinc-400 transition-colors hover:border-white/40 hover:text-white"
+          >
+            <Github className="h-4 w-4" />
+          </a>
+        </div>
+
+        <div className="mt-6 grid grid-cols-2 gap-2">
+          <Link
+            href={localizeHref("/contact#feedback", locale)}
+            prefetch={false}
+            className="flex min-h-10 items-center justify-center rounded-lg border border-white/10 px-3 text-xs text-zinc-300 transition-colors hover:border-white/30 hover:text-white"
+          >
+            {locale === "zh" ? "反馈建议" : "Feedback"}
+          </Link>
+          <Link
+            href={localizeHref("/contact#support-maintenance", locale)}
+            prefetch={false}
+            className="flex min-h-10 items-center justify-center rounded-lg border border-white/10 px-3 text-xs text-zinc-300 transition-colors hover:border-white/30 hover:text-white"
+          >
+            {t("footer.support.eyebrow")}
+          </Link>
+        </div>
+
+        <div className="mt-6 divide-y divide-white/10 border-y border-white/10">
+          <details className="group">
+            <summary className="flex cursor-pointer list-none items-center justify-between py-3 text-xs font-mono uppercase tracking-[0.2em] text-zinc-400 marker:hidden">
+              {locale === "zh" ? "浏览" : "Explore"}
+              <span className="text-base leading-none text-zinc-600 transition-transform group-open:rotate-45">+</span>
+            </summary>
+            <nav className="grid grid-cols-2 gap-x-4 gap-y-2 pb-4">
+              {exploreLinks.map((link) => (
+                <Link
+                  key={link.href}
+                  href={localizeHref(link.href, locale)}
+                  prefetch={false}
+                  className="py-1 text-xs text-zinc-400 transition-colors hover:text-white"
+                >
+                  {link.label}
+                </Link>
+              ))}
+            </nav>
+          </details>
+
+          <details className="group">
+            <summary className="flex cursor-pointer list-none items-center justify-between py-3 text-xs font-mono uppercase tracking-[0.2em] text-zinc-400 marker:hidden">
+              {locale === "zh" ? "学习与更新" : "Learn"}
+              <span className="text-base leading-none text-zinc-600 transition-transform group-open:rotate-45">+</span>
+            </summary>
+            <nav className="grid grid-cols-2 gap-x-4 gap-y-2 pb-4">
+              {learnLinks.map((link) =>
+                link.external ? (
+                  <a
+                    key={link.href}
+                    href={link.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="py-1 text-xs text-zinc-400 transition-colors hover:text-white"
+                  >
+                    {link.label}
+                  </a>
+                ) : (
+                  <Link
+                    key={link.href}
+                    href={localizeHref(link.href, locale)}
+                    prefetch={false}
+                    className="py-1 text-xs text-zinc-400 transition-colors hover:text-white"
+                  >
+                    {link.label}
+                  </Link>
+                )
+              )}
+            </nav>
+          </details>
+
+          <details className="group">
+            <summary className="flex cursor-pointer list-none items-center justify-between py-3 text-xs font-mono uppercase tracking-[0.2em] text-zinc-400 marker:hidden">
+              {locale === "zh" ? "关于与政策" : "Trust"}
+              <span className="text-base leading-none text-zinc-600 transition-transform group-open:rotate-45">+</span>
+            </summary>
+            <nav className="grid grid-cols-2 gap-x-4 gap-y-2 pb-4">
+              {trustLinks.map((link) => (
+                <Link
+                  key={link.href}
+                  href={localizeHref(link.href, locale)}
+                  prefetch={false}
+                  className="py-1 text-xs text-zinc-400 transition-colors hover:text-white"
+                >
+                  {t(link.labelKey)}
+                </Link>
+              ))}
+            </nav>
+          </details>
+        </div>
+
+        <div className="mt-6 flex items-center justify-between gap-3 font-mono text-[10px] text-zinc-600">
+          <p>{t("footer.openSource").replace("{year}", String(currentYear))}</p>
+          <a
+            href="https://beian.miit.gov.cn/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="transition-colors hover:text-white"
+          >
+            闄旾CP澶?025065501鍙?3
+          </a>
+        </div>
+      </div>
+
+      <div className="hidden md:block">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 md:px-12">
         {/* Colophon strip */}
         <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-2 border-b border-white/10 py-4">
@@ -253,6 +376,7 @@ export function Footer({ compact = false }: { compact?: boolean }) {
         >
           StyleKit
         </p>
+      </div>
       </div>
     </footer>
   );

@@ -68,28 +68,11 @@ export function AiImplementationPanel({
   const [activeTab, setActiveTab] = useState<ImplementationTab>("hard");
   const [copiedTab, setCopiedTab] = useState<ImplementationTab | null>(null);
 
-  // Project context — lightweight interview before prompt generation
   const [contextOpen, setContextOpen] = useState(false);
-  const [projectType, setProjectType] = useState("");
-  const [brandPersonality, setBrandPersonality] = useState("");
-  const [antiReferences, setAntiReferences] = useState("");
+  const [promptContext, setPromptContext] = useState<PromptContext | undefined>();
 
-  const promptContext: PromptContext | undefined = useMemo(() => {
-    const trimmed = {
-      projectType: projectType.trim(),
-      brandPersonality: brandPersonality.trim(),
-      antiReferences: antiReferences.trim(),
-    };
-    if (!trimmed.projectType && !trimmed.brandPersonality && !trimmed.antiReferences) {
-      return undefined;
-    }
-    return trimmed;
-  }, [projectType, brandPersonality, antiReferences]);
-
-  const items = useMemo<ImplementationItem[]>(() => {
-    const localizedDoList = locale === "en" && doListEn && doListEn.length > 0 ? doListEn : doList;
-    const localizedDontList = locale === "en" && dontListEn && dontListEn.length > 0 ? dontListEn : dontList;
-    const promptInput = {
+  const promptInput = useMemo(
+    () => ({
       styleName,
       styleSlug,
       aiRules,
@@ -101,7 +84,25 @@ export function AiImplementationPanel({
       dontListEn,
       keywords,
       keywordsEn,
-    };
+    }),
+    [
+      styleName,
+      styleSlug,
+      aiRules,
+      aiRulesEn,
+      enhancedRules,
+      doList,
+      doListEn,
+      dontList,
+      dontListEn,
+      keywords,
+      keywordsEn,
+    ],
+  );
+
+  const items = useMemo<ImplementationItem[]>(() => {
+    const localizedDoList = locale === "en" && doListEn && doListEn.length > 0 ? doListEn : doList;
+    const localizedDontList = locale === "en" && dontListEn && dontListEn.length > 0 ? dontListEn : dontList;
     const localizedKeywords = resolvePromptKeywords(promptInput, locale, 8);
     const prompts = buildPromptPair(promptInput, locale, promptContext);
     const hardPrompt = addPromptPurpose({
@@ -191,15 +192,11 @@ export function AiImplementationPanel({
     description,
     philosophy,
     colors,
-    aiRules,
-    aiRulesEn,
-    enhancedRules,
     doList,
     doListEn,
     dontList,
     dontListEn,
-    keywords,
-    keywordsEn,
+    promptInput,
     promptContext,
   ]);
 
@@ -311,13 +308,8 @@ export function AiImplementationPanel({
         locale={locale}
         open={contextOpen}
         onToggle={() => setContextOpen((prev) => !prev)}
-        hasContext={!!promptContext}
-        projectType={projectType}
-        brandPersonality={brandPersonality}
-        antiReferences={antiReferences}
-        onProjectTypeChange={setProjectType}
-        onBrandPersonalityChange={setBrandPersonality}
-        onAntiReferencesChange={setAntiReferences}
+        style={promptInput}
+        onPromptContextChange={setPromptContext}
       />
 
       <div

@@ -64,6 +64,34 @@ describe("POST /api/admin/auth", () => {
     expect(response.headers.get("set-cookie")).toBeNull();
   });
 
+  it("accepts the SHA-256 password configuration without plaintext storage", async () => {
+    delete process.env.ADMIN_PASSWORD;
+    process.env.ADMIN_PASSWORD_SHA256 =
+      "9246aa9be8de7b40d64eb664986430793b6cc13a19d2a456981e44f28303f9cf";
+    process.env.ADMIN_SESSION_SECRET = TEST_SESSION_KEY;
+
+    const invalidResponse = await POST(
+      new Request("https://stylekit.top/api/admin/auth", {
+        method: "POST",
+        body: JSON.stringify({ password: WRONG_ADMIN_PASSWORD }),
+      })
+    );
+
+    expect(invalidResponse.status).toBe(401);
+
+    const validResponse = await POST(
+      new Request("https://stylekit.top/api/admin/auth", {
+        method: "POST",
+        body: JSON.stringify({ password: TEST_ADMIN_PASSWORD }),
+      })
+    );
+
+    expect(validResponse.status).toBe(200);
+    expect(validResponse.headers.get("set-cookie")).toContain(
+      ADMIN_SESSION_COOKIE_NAME
+    );
+  });
+
   it("rate limits repeated password attempts by client", async () => {
     process.env.ADMIN_PASSWORD = TEST_ADMIN_PASSWORD;
     process.env.ADMIN_SESSION_SECRET = TEST_SESSION_KEY;

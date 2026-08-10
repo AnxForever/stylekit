@@ -161,7 +161,7 @@ export async function proxy(request: NextRequest) {
 
   if (effectivePath === "/admin-login" && hasAdminPasswordSession) {
     const redirectUrl = request.nextUrl.clone();
-    redirectUrl.pathname = "/admin/analytics";
+    redirectUrl.pathname = "/admin/operations";
     redirectUrl.search = "";
     return NextResponse.redirect(redirectUrl);
   }

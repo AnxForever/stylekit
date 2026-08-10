@@ -1,0 +1,258 @@
+.root {
+  min-height: 100vh;
+  padding: 24px clamp(20px, 5vw, 80px) 80px;
+  color: #1c1c1c;
+  background:
+    radial-gradient(circle at 8% 10%, rgba(99, 102, 241, 0.12), transparent 24rem),
+    radial-gradient(circle at 92% 16%, rgba(251, 113, 133, 0.1), transparent 26rem),
+    #f6f3ed;
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1180px;
+  margin: 0 auto;
+  border-bottom: 1px solid rgba(28, 28, 28, 0.14);
+  padding-bottom: 18px;
+  font-size: 11px;
+  letter-spacing: 0.16em;
+}
+
+.brand {
+  color: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-decoration: none;
+}
+
+.brand span {
+  color: #fb7185;
+}
+
+.navCenter,
+.navLink,
+.eyebrow,
+.meta,
+.frameHeader,
+.frameFooter,
+.kicker,
+.notes span {
+  color: rgba(28, 28, 28, 0.56);
+  font-size: 10px;
+  letter-spacing: 0.16em;
+}
+
+.navLink {
+  color: inherit;
+  text-decoration: none;
+}
+
+.hero {
+  display: grid;
+  grid-template-columns: minmax(0, 0.88fr) minmax(420px, 1.12fr);
+  align-items: center;
+  gap: clamp(42px, 8vw, 130px);
+  max-width: 1180px;
+  min-height: min(720px, calc(100vh - 88px));
+  margin: 0 auto;
+}
+
+.intro h1 {
+  max-width: 520px;
+  margin: 20px 0 24px;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(54px, 7vw, 104px);
+  font-weight: 400;
+  line-height: 0.9;
+  letter-spacing: -0.07em;
+}
+
+.intro h1 em {
+  color: #4f46e5;
+  font-style: italic;
+}
+
+.lead {
+  max-width: 430px;
+  color: rgba(28, 28, 28, 0.68);
+  font-size: 15px;
+  line-height: 1.8;
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 22px;
+  margin-top: 34px;
+}
+
+.profileFrame {
+  min-height: 470px;
+  color: #1c1c1c;
+}
+
+.profileInner {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 470px;
+  padding: clamp(24px, 4vw, 48px);
+}
+
+.frameHeader,
+.frameFooter {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.profileIdentity {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  margin: 72px 0 60px;
+}
+
+.avatar {
+  display: grid;
+  width: 82px;
+  height: 82px;
+  place-items: center;
+  border: 1px solid rgba(28, 28, 28, 0.7);
+  background: #1c1c1c;
+  color: #f6f3ed;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 24px;
+  box-shadow: 6px 6px 0 #fb7185;
+}
+
+.kicker {
+  margin-bottom: 8px;
+}
+
+.profileIdentity h2 {
+  margin: 0 0 8px;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(30px, 4vw, 48px);
+  font-weight: 400;
+  letter-spacing: -0.04em;
+}
+
+.muted {
+  margin: 0;
+  color: rgba(28, 28, 28, 0.6);
+  font-size: 13px;
+}
+
+.profileStats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  border-top: 1px solid rgba(28, 28, 28, 0.14);
+  border-bottom: 1px solid rgba(28, 28, 28, 0.14);
+}
+
+.profileStats > div {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  padding: 16px 14px;
+}
+
+.profileStats > div + div {
+  border-left: 1px solid rgba(28, 28, 28, 0.14);
+}
+
+.profileStats strong {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 30px;
+  font-weight: 400;
+}
+
+.profileStats span {
+  color: rgba(28, 28, 28, 0.56);
+  font-size: 11px;
+}
+
+.liveDot::before {
+  display: inline-block;
+  width: 5px;
+  height: 5px;
+  margin: 0 7px 1px 0;
+  border-radius: 50%;
+  background: #fb7185;
+  content: "";
+}
+
+.notes {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  max-width: 1180px;
+  margin: 0 auto;
+  border-top: 1px solid rgba(28, 28, 28, 0.14);
+  padding-top: 22px;
+}
+
+.notes p {
+  max-width: 280px;
+  margin: 12px 0 0;
+  color: rgba(28, 28, 28, 0.65);
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+@media (max-width: 860px) {
+  .hero {
+    grid-template-columns: 1fr;
+    gap: 48px;
+    padding: 72px 0 80px;
+  }
+
+  .intro h1 {
+    font-size: clamp(56px, 14vw, 92px);
+  }
+
+  .profileFrame {
+    min-height: 420px;
+  }
+
+  .profileInner {
+    min-height: 420px;
+  }
+}
+
+@media (max-width: 560px) {
+  .root {
+    padding-inline: 16px;
+  }
+
+  .navCenter {
+    display: none;
+  }
+
+  .profileIdentity {
+    align-items: flex-start;
+    flex-direction: column;
+    margin: 54px 0 44px;
+  }
+
+  .profileStats > div {
+    padding-inline: 9px;
+  }
+
+  .profileStats strong {
+    font-size: 24px;
+  }
+
+  .profileStats span {
+    font-size: 10px;
+  }
+
+  .notes {
+    grid-template-columns: 1fr;
+    gap: 22px;
+  }
+}

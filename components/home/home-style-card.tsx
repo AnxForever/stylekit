@@ -12,9 +12,17 @@ import { getScenarioLabel, getStyleScenarios } from "@/lib/styles/scenarios";
 
 interface HomeStyleCardProps {
   style: StyleMeta;
+  /**
+   * Whether this instance owns the shared-element view-transition boundary.
+   * The home Style Catalog mounts two lists at once (mobile carousel +
+   * desktop grid) and the first few slugs overlap. Two `<ViewTransition>`
+   * with the same name mounted simultaneously makes React abort the morph,
+   * so only the list visible at the current breakpoint enables it.
+   */
+  enableViewTransition?: boolean;
 }
 
-export function HomeStyleCard({ style }: HomeStyleCardProps) {
+export function HomeStyleCard({ style, enableViewTransition = true }: HomeStyleCardProps) {
   const { locale } = useI18n();
   const scenarios = getStyleScenarios(style, 2);
   const description = locale === "zh" ? style.description : style.descriptionEn;
@@ -22,6 +30,16 @@ export function HomeStyleCard({ style }: HomeStyleCardProps) {
   const secondaryName = locale === "zh" ? style.nameEn : style.name;
   const shouldShowSecondaryName = Boolean(secondaryName && secondaryName !== primaryName);
   const cardClassName = "group relative border border-border bg-background motion-safe:transition-[border-color,transform,box-shadow] motion-safe:duration-200 hover:border-foreground focus-within:border-foreground motion-safe:hover:-translate-y-0.5 motion-safe:hover:shadow-md";
+
+  const cover = (
+    <div className="relative aspect-[16/10] sm:aspect-[4/3] overflow-hidden border-b border-border/80 bg-zinc-100 dark:bg-zinc-900">
+      <StyleCoverPreview
+        styleSlug={style.slug}
+        interactive={false}
+        className="motion-safe:transition-transform motion-safe:duration-500 group-hover:scale-[1.02]"
+      />
+    </div>
+  );
 
   return (
     <div className="relative">
@@ -33,21 +51,21 @@ export function HomeStyleCard({ style }: HomeStyleCardProps) {
         />
         {/* Shared-element transition into the style detail cover — same pair
             name as StyleCard on /styles so home cards get the identical
-            click-through animation. Enter/exit/update stay disabled. */}
-        <ViewTransition
-          name={`style-cover-${style.slug}`}
-          enter="none"
-          exit="none"
-          update="none"
-        >
-          <div className="relative aspect-[16/10] sm:aspect-[4/3] overflow-hidden border-b border-border/80 bg-zinc-100 dark:bg-zinc-900">
-            <StyleCoverPreview
-              styleSlug={style.slug}
-              interactive={false}
-              className="motion-safe:transition-transform motion-safe:duration-500 group-hover:scale-[1.02]"
-            />
-          </div>
-        </ViewTransition>
+            click-through animation. Only the list visible at the current
+            breakpoint owns the boundary (see enableViewTransition) so the
+            hidden duplicate list doesn't clash on the same name. */}
+        {enableViewTransition ? (
+          <ViewTransition
+            name={`style-cover-${style.slug}`}
+            enter="none"
+            exit="none"
+            update="none"
+          >
+            {cover}
+          </ViewTransition>
+        ) : (
+          cover
+        )}
 
         {style.colors && (
           <div className="h-1.5 flex">

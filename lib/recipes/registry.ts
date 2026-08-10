@@ -154,6 +154,12 @@ import { warmOrganicRecipes } from "./warm-organic";
 import { launchKeynoteRecipes } from "./launch-keynote";
 import { luxeLookbookRecipes } from "./luxe-lookbook";
 import { shaderGradientRecipes } from "./shader-gradient";
+import { pastelUiRecipes } from "./pastel-ui";
+import { mobileEditorialRecipes } from "./mobile-editorial";
+import { softUtilityRecipes } from "./soft-utility";
+
+
+
 
 // Recipe registry
 const recipeRegistry: Record<string, StyleRecipes> = {
@@ -311,6 +317,9 @@ const recipeRegistry: Record<string, StyleRecipes> = {
   "launch-keynote": launchKeynoteRecipes,
   "luxe-lookbook": luxeLookbookRecipes,
   "shader-gradient": shaderGradientRecipes,
+  "pastel-ui": pastelUiRecipes,
+  "mobile-editorial": mobileEditorialRecipes,
+  "soft-utility": softUtilityRecipes,
 };
 
 /**

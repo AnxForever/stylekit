@@ -19,7 +19,7 @@ export async function generateMetadata({
           absolute: "StyleKit — AI 前端设计风格与 UI 提示词工具",
         },
         description:
-          `StyleKit 收录 ${CURATED_STYLE_COUNT} 种网页与 UI 设计风格，并提供 design tokens、组件配方以及适用于 ChatGPT、Claude、Cursor、Claude Code 和 v0 的前端提示词。`,
+          `StyleKit 收录 ${CURATED_STYLE_COUNT} 种网页与 UI 设计风格，并提供 design tokens、组件配方以及适用于 ChatGPT、Claude、Cursor、Claude Code、Codex 和 v0 的前端提示词。`,
         keywords: [
           "StyleKit",
           "AI 前端设计",

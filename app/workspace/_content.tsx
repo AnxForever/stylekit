@@ -103,7 +103,10 @@ export function WorkspaceHome({ styles }: { styles: StyleOption[] }) {
             <Link href="/" className="text-sm text-muted hover:text-foreground">StyleKit</Link>
             <h1 className="mt-1 text-2xl font-semibold tracking-tight">项目工作区</h1>
           </div>
-          <span className="rounded-full border border-border px-3 py-1 text-xs text-muted">SaaS 核心 · 免费构建中</span>
+          <div className="flex items-center gap-3">
+            <Link href="/style-advisor" className="border border-border px-3 py-2 text-xs text-muted transition-colors hover:border-foreground hover:text-foreground focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2">AI 风格顾问</Link>
+            <span className="rounded-full border border-border px-3 py-1 text-xs text-muted">SaaS 核心 · 免费构建中</span>
+          </div>
         </div>
       </header>
 

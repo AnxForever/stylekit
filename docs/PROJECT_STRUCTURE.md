@@ -103,7 +103,9 @@ Key modules:
 - `lib/supabase/`: server clients and migrations.
 - `lib/admin/`: admin analytics/audit utilities.
 - `lib/community/`, `lib/favorites/`, `lib/profile`-adjacent modules: hidden user/community behavior used by style runtime/admin surfaces.
-- `lib/generator/`: internal scaffold/rendering helpers still used by submission registration; not a public generator product.
+- `lib/generator/`: legacy template/rendering helpers still used by the verified Workspace
+  generation path; not a public generator wizard. Phase 4 of the architecture roadmap tracks
+  extracting that narrow dependency before this directory can be removed.
 - `lib/linter/`, `lib/quality/`, `lib/accessibility/`: linting and scoring engines.
 - `lib/export/`: export formats such as Tailwind preset, shadcn theme, Figma tokens, IDE rules, skill packs.
 - `lib/i18n/`: locale routing, metadata, translations, request helpers.

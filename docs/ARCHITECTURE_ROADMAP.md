@@ -270,15 +270,19 @@ shared card state baselines.
 
 Priority: P2
 
+Status: pending dependency extraction; do not delete `lib/generator` yet.
+
 #### Problem
 
 The public generator surfaces were retired in June 2026, but the implementation and tests
-remain. The only non-test dependency is a small generated-file type used by the style
-scaffold module.
+remain. The workspace generation path still imports the template/configuration and renderer
+interfaces from `lib/generator`, so the module is not yet removable. Template downloads also
+remain a separate live export path and must not be conflated with the retired public wizard.
 
 #### Direction
 
-- Move the small file-output type to the scaffold/publication module.
+- First extract the narrow workspace generator contract and its four verified style adapters into
+  a live workspace module; move the small file-output type to the scaffold/publication module.
 - Delete unused renderers, scenario storage, ZIP code, templates, and generator-only tests.
 - Do not restore the old generator wizard as part of architecture cleanup.
 
@@ -293,6 +297,10 @@ standalone product.
 - No production import references `lib/generator`.
 - Documentation no longer describes retired code as active runtime behavior.
 - Unit tests remain focused on live product interfaces.
+
+Current evidence: `lib/workspace/generation.ts` imports `getTemplateByType`, validation, and
+Next.js renderer functions from `lib/generator`; the extraction step must land before the final
+no-production-import criterion can be claimed.
 
 ### Phase 5 — Centralize locale route policy
 

@@ -144,6 +144,17 @@ export const templateCatalog: TemplateCatalogEntry[] = [
     href: "/templates/minimalist-portfolio",
   }),
   defineTemplate({
+    id: "editorial-profile-archive",
+    name: { zh: "Editorial Profile Archive", en: "Editorial Profile Archive" },
+    description: {
+      zh: "为设计师、创作者和研究者准备的编辑风个人档案与作品集模板，包含光晕边框、精选作品、活动记录和联系模块。",
+      en: "Editorial personal archive for designers, makers, and researchers, with an aura frame, selected work, activity log, and contact module.",
+    },
+    styleSlug: "editorial",
+    type: "portfolio",
+    href: "/templates/editorial-profile-archive",
+  }),
+  defineTemplate({
     id: "magazine-landing",
     name: { zh: "杂志风落地页", en: "Magazine Landing" },
     description: {

@@ -13,6 +13,13 @@ function parseNextPath(value: string | null): string {
   return value;
 }
 
+function buildLoginErrorUrl(origin: string, next: string): string {
+  const loginUrl = new URL("/login", origin);
+  loginUrl.searchParams.set("auth_error", "linuxdo");
+  if (next !== "/") loginUrl.searchParams.set("next", next);
+  return loginUrl.toString();
+}
+
 function getPublicOrigin(request: NextRequest): string {
   const configured = process.env.NEXT_PUBLIC_BASE_URL?.trim();
   if (configured) {
@@ -38,6 +45,6 @@ export async function GET(request: NextRequest) {
     return NextResponse.redirect(authUrl);
   } catch {
     // Missing env vars — redirect home silently
-    return NextResponse.redirect(`${origin}/`);
+    return NextResponse.redirect(buildLoginErrorUrl(origin, next));
   }
 }

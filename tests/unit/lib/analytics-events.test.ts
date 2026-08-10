@@ -15,6 +15,9 @@ describe("analytics event contract", () => {
     expect(CLIENT_EVENT_NAMES).toEqual(expect.arrayContaining([
       "showcase_open",
       "shadcn_command_copy",
+      "project_brief_generated",
+      "project_brief_copy",
+      "project_brief_download",
       "pack_offer_view",
       "pack_price_view",
       "catalog_impression",
@@ -66,6 +69,31 @@ describe("analytics event contract", () => {
       filter_count: number;
       query_present: boolean;
     }>();
+  });
+
+  it("limits project brief events to enums and aggregate counts", () => {
+    expectTypeOf<EventProperties<"project_brief_generated">>().toEqualTypeOf<{
+      slug: string;
+      locale: "zh" | "en";
+      project_type:
+        | "landing"
+        | "dashboard"
+        | "app"
+        | "portfolio"
+        | "blog"
+        | "commerce"
+        | "other";
+      stack_count: number;
+      required_item_count: number;
+      state_count: number;
+      optional_field_count: number;
+      completion_tier: "core" | "guided" | "complete";
+      source: "style_detail";
+    }>();
+    expectTypeOf<EventProperties<"project_brief_copy">>()
+      .toEqualTypeOf<EventProperties<"project_brief_generated">>();
+    expectTypeOf<EventProperties<"project_brief_download">>()
+      .toEqualTypeOf<EventProperties<"project_brief_generated">>();
   });
 
   it("keeps verified outcomes out of the browser tracking API", () => {

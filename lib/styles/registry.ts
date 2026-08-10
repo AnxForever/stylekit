@@ -169,6 +169,12 @@ import { launchKeynote } from "./launch-keynote";
 import { luxeLookbook } from "./luxe-lookbook";
 import { shaderGradient } from "./shader-gradient";
 import { normalizeStyleRules } from "./rule-normalizer";
+import { pastelUi } from "./pastel-ui";
+import { mobileEditorial } from "./mobile-editorial";
+import { softUtility } from "./soft-utility";
+
+
+
 
 // 风格列表
 const rawStyles: DesignStyle[] = [
@@ -341,6 +347,9 @@ const rawStyles: DesignStyle[] = [
   launchKeynote,
   luxeLookbook,
   shaderGradient,
+  pastelUi,
+  mobileEditorial,
+  softUtility,
 ];
 
 export const styles: DesignStyle[] = rawStyles.map((style) => normalizeStyleRules(style));

@@ -5,6 +5,7 @@ import { parseJsonBodyWithLimit } from "@/lib/security/json-body";
 import { verifyTrustedOrigin } from "@/lib/security/request-origin";
 import { checkRateLimit, createRateLimitHeaders } from "@/lib/security/rate-limit";
 import { getSupabaseAdmin } from "@/lib/supabase/server";
+import { retrieveGeneratorKnowledge } from "@/lib/knowledge";
 import {
   createWorkspaceProjectSchema,
   generateWorkspaceProject,
@@ -56,10 +57,16 @@ export async function POST(request: Request, { params }: { params: Promise<{ pro
   });
   if (!project.success) return NextResponse.json({ success: false, error: "项目规格不完整，无法生成。" }, { status: 422 });
   try {
+    const generatorKnowledge = await retrieveGeneratorKnowledge([
+      project.data.name,
+      project.data.description,
+      project.data.brief.primaryGoal,
+    ].filter(Boolean).join(" "));
     const generation = generateWorkspaceProject({
       ...project.data,
       target: parsed.data.target,
       generatedAt: new Date().toISOString(),
+      knowledgeReferences: generatorKnowledge,
     });
     const snapshot = { ...project.data, status: "active" as const, generation };
     const admin = getSupabaseAdmin();

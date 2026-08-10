@@ -5,6 +5,8 @@ import {
   RefreshCw,
   CheckCircle,
   XCircle,
+  AlertTriangle,
+  ClipboardCheck,
   Database,
   Server,
   Shield,
@@ -12,6 +14,7 @@ import {
 import Link from "next/link";
 import {
   AdminButton,
+  AdminBadge,
   AdminCountPill,
   AdminErrorState,
   AdminLoadingState,
@@ -19,7 +22,8 @@ import {
   AdminTableShell,
   AdminToolbar,
 } from "@/components/admin/admin-ui";
-import { useAdminSystem } from "@/lib/swr";
+import { useAdminSystem, useAdminSystemPreflight } from "@/lib/swr";
+import type { SystemPreflightStatus } from "@/lib/admin/system-preflight";
 
 function formatUptime(seconds: number): string {
   const d = Math.floor(seconds / 86400);
@@ -37,6 +41,12 @@ function formatBytes(bytes: number): string {
 
 export function AdminSystemContent() {
   const { data, error, isLoading, mutate } = useAdminSystem();
+  const {
+    data: preflightData,
+    error: preflightError,
+    isLoading: preflightLoading,
+    mutate: mutatePreflight,
+  } = useAdminSystemPreflight();
 
   const uptimeDisplay = useMemo(() => {
     if (!data) return "";
@@ -83,6 +93,15 @@ export function AdminSystemContent() {
     },
   ];
 
+  const preflightMeta: Record<
+    SystemPreflightStatus,
+    { label: string; tone: "success" | "warning" | "danger" }
+  > = {
+    ready: { label: "可继续验收", tone: "success" },
+    warning: { label: "需要确认", tone: "warning" },
+    blocked: { label: "当前阻断", tone: "danger" },
+  };
+
   return (
     <div className="space-y-6">
       <AdminToolbar
@@ -93,6 +112,7 @@ export function AdminSystemContent() {
           <AdminButton
             onClick={() => {
               mutate();
+              mutatePreflight();
             }}
             aria-label="刷新数据"
           >
@@ -101,6 +121,87 @@ export function AdminSystemContent() {
           </AdminButton>
         }
       />
+
+      <section>
+        <div className="mb-4 flex items-center justify-between gap-3">
+          <h2 className="flex items-center gap-2 text-lg font-semibold">
+            <ClipboardCheck className="h-5 w-5 text-muted" />
+            发布前检查
+          </h2>
+          {preflightData ? (
+            <AdminBadge tone={preflightMeta[preflightData.overall].tone}>
+              {preflightMeta[preflightData.overall].label}
+            </AdminBadge>
+          ) : null}
+        </div>
+        {preflightError ? (
+          <AdminPanel className="p-5" role="alert">
+            <p className="text-sm text-[var(--admin-status-red)]">
+              发布预检加载失败，请刷新系统信息后重试。
+            </p>
+          </AdminPanel>
+        ) : preflightLoading && !preflightData ? (
+          <AdminPanel className="p-5">
+            <p className="text-sm text-muted">正在检查认证、数据表和运维工具...</p>
+          </AdminPanel>
+        ) : preflightData ? (
+          <AdminPanel className="divide-y divide-border/60 overflow-hidden">
+            <div className="px-5 py-4">
+              <p className="text-sm font-medium">
+                这是只读闸门，不会执行迁移、上传或部署。
+              </p>
+              <p className="mt-1 text-xs leading-5 text-muted">
+                绿色表示已验证，琥珀色表示需要人工确认，红色表示必需条件尚未满足。
+              </p>
+            </div>
+            {preflightData.checks.map((check) => {
+              const Icon =
+                check.status === "ready"
+                  ? CheckCircle
+                  : check.status === "blocked"
+                    ? XCircle
+                    : AlertTriangle;
+              const iconClass =
+                check.status === "ready"
+                  ? "text-[var(--admin-status-green)]"
+                  : check.status === "blocked"
+                    ? "text-[var(--admin-status-red)]"
+                    : "text-[var(--admin-status-amber)]";
+              return (
+                <div key={check.id} className="grid gap-3 px-5 py-4 lg:grid-cols-[minmax(0,1fr)_minmax(260px,0.8fr)]">
+                  <div className="flex min-w-0 gap-3">
+                    <Icon className={`mt-0.5 h-5 w-5 shrink-0 ${iconClass}`} />
+                    <div className="min-w-0">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <p className="text-sm font-medium">{check.label}</p>
+                        <span className="text-[11px] uppercase tracking-[0.12em] text-muted">
+                          {check.severity === "required"
+                            ? "required"
+                            : check.severity === "manual"
+                              ? "manual"
+                              : "recommended"}
+                        </span>
+                      </div>
+                      <p className="mt-1 text-sm leading-6 text-muted">{check.summary}</p>
+                      {check.migration ? (
+                        <p className="mt-2 break-words font-mono text-[11px] leading-5 text-muted">
+                          {check.migration}
+                        </p>
+                      ) : null}
+                    </div>
+                  </div>
+                  <div className="lg:border-l lg:border-border/60 lg:pl-5">
+                    <p className="text-xs font-medium uppercase tracking-[0.12em] text-muted">
+                      下一步
+                    </p>
+                    <p className="mt-1 text-sm leading-6 text-foreground/80">{check.nextStep}</p>
+                  </div>
+                </div>
+              );
+            })}
+          </AdminPanel>
+        ) : null}
+      </section>
 
       <section>
         <h2 className="mb-4 flex items-center gap-2 text-lg font-semibold">

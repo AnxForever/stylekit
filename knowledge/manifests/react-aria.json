@@ -1,0 +1,61 @@
+{
+  "schemaVersion": "knowledge-resource-v1",
+  "id": "react-aria",
+  "name": "React Aria",
+  "nameEn": "React Aria",
+  "resourceKind": "accessibility-guideline",
+  "sourceUrl": "https://react-spectrum.adobe.com/react-aria/",
+  "repositoryUrl": "https://github.com/adobe/react-spectrum",
+  "sourceRef": "main",
+  "license": {
+    "classification": "allowlisted",
+    "spdx": "Apache-2.0",
+    "name": "Apache License 2.0",
+    "termsUrl": "https://github.com/adobe/react-spectrum/blob/main/LICENSE",
+    "commercialUse": true,
+    "modificationAllowed": true,
+    "redistributionAllowed": true,
+    "attributionRequired": true,
+    "attributionText": "React Aria is licensed under the Apache License 2.0."
+  },
+  "mirror": { "mode": "none" },
+  "provenance": {
+    "originType": "external-open-source",
+    "creator": "Adobe",
+    "acquiredAt": "2026-08-03T00:00:00.000Z",
+    "evidenceUrls": [
+      "https://github.com/adobe/react-spectrum",
+      "https://github.com/adobe/react-spectrum/blob/main/LICENSE"
+    ],
+    "modificationStatus": "untouched"
+  },
+  "knowledge": {
+    "summary": "React hooks and components that encode accessible behavior, keyboard interactions, internationalization, and adaptive patterns for custom design systems.",
+    "summaryEn": "React hooks and components that encode accessible behavior, keyboard interactions, internationalization, and adaptive patterns for custom design systems.",
+    "useCases": ["Accessible custom components", "Keyboard and screen-reader behavior", "Internationalized and adaptive interfaces"],
+    "limitations": ["Accessibility behavior still needs project-level testing in the final composition.", "The repository contains multiple libraries with different integration boundaries."],
+    "tags": ["accessibility", "react", "aria", "internationalization", "design-systems"],
+    "frameworks": ["React"],
+    "relatedStyleSlugs": [],
+    "extractedTopics": ["WAI-ARIA", "keyboard navigation", "screen readers", "internationalization", "adaptive UI"]
+  },
+  "quality": {
+    "score": 90,
+    "documentationReviewed": true,
+    "runtimeVerified": false,
+    "accessibilityReviewed": false,
+    "performanceReviewed": false,
+    "notes": ["Candidate source record only; the repository contains multiple packages that require scoped review."]
+  },
+  "security": {
+    "secretScan": "pending",
+    "dependencyAudit": "pending",
+    "sbomStatus": "pending",
+    "criticalFindings": 0,
+    "notes": []
+  },
+  "usagePolicy": "retrieval-only",
+  "reviewStatus": "pending",
+  "publicationStatus": "unpublished",
+  "updatedAt": "2026-08-03T00:00:00.000Z"
+}

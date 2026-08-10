@@ -22,7 +22,7 @@
 
 1. 实验窗口为 2026-08-01 至 2026-08-31，窗口外曝光和意向接口拒绝采集。
 2. 商业许可仍是 `draft_requires_final_review`，因此 E2 已验证价格接受在服务端保持锁定。
-3. 没有真实支付或订金 Provider，仓库不会把按钮点击或订金链接请求写成 `pack_checkout_start`。
+3. 没有真实支付或订金 Provider，`PACK_CHECKOUT_PROVIDER` 保持为空；仓库不会把按钮点击或订金链接请求写成 `pack_checkout_start`。
 4. 生产环境必须设置至少 32 字符的 `PRODUCT_VALIDATION_HMAC_SECRET`，并实际应用迁移 015。
 5. 当前样本仍为 0/200、0/20、0 付费，决策保持 `inconclusive_sample`。
 

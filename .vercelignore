@@ -1,0 +1,16 @@
+.git
+.next
+.tmp
+tmp
+node_modules
+examples/bailian-stylekit/out
+examples/bailian-stylekit/run.ts
+examples/bailian-stylekit/README.md
+examples/bailian-stylekit/fixtures/request.txt
+examples/bailian-stylekit/.gitignore
+output
+generated-images
+video
+.understand-anything
+.playwright-mcp
+playwright-report

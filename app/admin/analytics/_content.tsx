@@ -32,6 +32,7 @@ import {
   AdminLoadingState,
   AdminPagination,
   AdminPanel,
+  AdminSelect,
   AdminSegmentedControl,
 } from "@/components/admin/admin-ui";
 import type {
@@ -41,10 +42,15 @@ import type {
 import { useAdminAuditEvents, useAnalyticsDashboard } from "@/lib/swr";
 import { prefetchAnalyticsView } from "@/lib/swr/analytics-prefetch";
 import type { AnalyticsRange } from "@/lib/admin/analytics-api-contract";
+import {
+  ADMIN_AUDIT_ACTION_OPTIONS,
+  getAdminAuditActionLabel,
+  getAdminAuditActionTone,
+  type AdminAuditAction,
+} from "@/lib/admin/audit-contract";
 
 type TimeRange = "24h" | "7d" | "30d" | "90d";
 export type AnalyticsView = "overview" | "traffic" | "content" | "users" | "audit";
-type AuditActionFilter = "all" | "submission.approve" | "submission.reject";
 type AuditTimeFilter = "24h" | "7d" | "30d" | "all";
 type IconComponent = ComponentType<SVGProps<SVGSVGElement>>;
 
@@ -100,7 +106,7 @@ export function AnalyticsDashboard({ view = "overview" }: { view?: AnalyticsView
     parseTimeRange(searchParams.get("range"))
   );
   const [auditActionFilter, setAuditActionFilter] =
-    useState<AuditActionFilter>("all");
+    useState<AdminAuditAction>("all");
   const [auditTimeFilter, setAuditTimeFilter] =
     useState<AuditTimeFilter>("7d");
   const [auditOffset, setAuditOffset] = useState(0);
@@ -536,22 +542,24 @@ export function AnalyticsDashboard({ view = "overview" }: { view?: AnalyticsView
         <div className="flex flex-col gap-4 xl:flex-row xl:items-start xl:justify-between">
           <SectionHeading
             title="最近管理操作"
-            description="查看审核、驳回和操作者，并导出筛选后的审计记录。"
+            description="查看后台变更、操作者和目标，并导出筛选后的审计记录。"
           />
-          <div className="flex flex-wrap items-center gap-2">
-            <AdminSegmentedControl<AuditActionFilter>
-              value={auditActionFilter}
-              onChange={(value) => {
-                setAuditActionFilter(value);
-                setAuditOffset(0);
-              }}
-              ariaLabel="审计操作筛选"
-              options={[
-                { value: "all", label: "全部" },
-                { value: "submission.approve", label: "已通过" },
-                { value: "submission.reject", label: "已驳回" },
-              ]}
-            />
+          <div className="flex flex-wrap items-end gap-3">
+            <label className="flex min-w-[200px] flex-col gap-1.5">
+              <span className="text-xs font-medium text-[var(--admin-text-secondary)]">操作类型</span>
+              <AdminSelect
+                value={auditActionFilter}
+                onChange={(event) => {
+                  setAuditActionFilter(event.target.value as AdminAuditAction);
+                  setAuditOffset(0);
+                }}
+                aria-label="审计操作筛选"
+              >
+                {[...ADMIN_AUDIT_ACTION_OPTIONS].map((option) => (
+                  <option key={option.value} value={option.value}>{option.label}</option>
+                ))}
+              </AdminSelect>
+            </label>
             <AdminSegmentedControl<AuditTimeFilter>
               value={auditTimeFilter}
               onChange={(value) => {
@@ -630,12 +638,10 @@ export function AnalyticsDashboard({ view = "overview" }: { view?: AnalyticsView
                       <p className="flex items-center gap-2 text-sm font-medium text-foreground">
                         <span
                           className={`h-2 w-2 rounded-full ${
-                            event.action === "submission.reject"
-                              ? "bg-[var(--admin-status-red)]"
-                              : "bg-[var(--admin-status-green)]"
+                            getAuditActionDotClass(event.action)
                           }`}
                         />
-                        {formatAuditAction(event.action)}
+                        {getAdminAuditActionLabel(event.action)}
                       </p>
                       <p className="mt-1 truncate text-xs text-muted">
                         {formatAuditActor(event.actor.type, event.actor.id)} · {event.targetType}
@@ -1343,10 +1349,12 @@ function formatDelta(deltaPct: number | null): string {
   return `${deltaPct > 0 ? "+" : ""}${deltaPct.toFixed(1)}%`;
 }
 
-function formatAuditAction(action: string): string {
-  if (action === "submission.approve") return "投稿已通过";
-  if (action === "submission.reject") return "投稿已驳回";
-  return action.replace(/_/g, " ");
+function getAuditActionDotClass(action: string): string {
+  const tone = getAdminAuditActionTone(action);
+  if (tone === "danger") return "bg-[var(--admin-status-red)]";
+  if (tone === "info") return "bg-[var(--admin-status-blue)]";
+  if (tone === "success") return "bg-[var(--admin-status-green)]";
+  return "bg-[var(--admin-text-muted)]";
 }
 
 function formatAuditActor(type: string, id: string): string {

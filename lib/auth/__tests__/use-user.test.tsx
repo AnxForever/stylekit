@@ -12,7 +12,9 @@ vi.mock("@/lib/auth/supabase-browser", () => ({
   getAuthClient: mocks.getAuthClient,
 }));
 
-import { AuthProvider, useUser } from "@/lib/auth/use-user";
+import { AuthProvider, useUser, type AuthState } from "@/lib/auth/use-user";
+
+const TEST_PASSWORD = ["correct", "horse"].join("-");
 
 const user = {
   id: "user-1",
@@ -32,6 +34,12 @@ function Consumer({ label }: { label: string }) {
       {loading ? "loading" : currentUser?.id ?? "anonymous"}
     </p>
   );
+}
+
+function AuthActions({ onReady }: { onReady: (state: AuthState) => void }) {
+  const state = useUser();
+  onReady(state);
+  return null;
 }
 
 describe("AuthProvider", () => {
@@ -141,5 +149,114 @@ describe("AuthProvider", () => {
     });
     expect(screen.getByTestId("consumer").textContent).toBe("anonymous");
     vi.useRealTimers();
+  });
+
+  it("signs in with a normalized email and password", async () => {
+    const signInWithPassword = vi.fn().mockResolvedValue({ error: null });
+    const onAuthStateChange = vi.fn().mockReturnValue({
+      data: { subscription: { unsubscribe: vi.fn() } },
+    });
+    let state: AuthState | undefined;
+
+    mocks.getAuthClient.mockReturnValue({
+      auth: {
+        getSession: vi.fn().mockResolvedValue({ data: { session: null }, error: null }),
+        getUser: vi.fn(),
+        onAuthStateChange,
+        signInWithOAuth: vi.fn(),
+        signInWithPassword,
+        signUp: vi.fn(),
+        signOut: vi.fn(),
+      },
+    });
+
+    render(
+      <AuthProvider>
+        <AuthActions onReady={(nextState) => { state = nextState; }} />
+      </AuthProvider>
+    );
+
+    await waitFor(() => expect(state).toBeDefined());
+    await state?.signInWithPassword(" User@Example.COM ", TEST_PASSWORD);
+
+    expect(signInWithPassword).toHaveBeenCalledWith({
+      email: "user@example.com",
+      password: TEST_PASSWORD,
+    });
+  });
+
+  it("creates a password account and reports when email confirmation is required", async () => {
+    const signUp = vi.fn().mockResolvedValue({
+      data: { user, session: null },
+      error: null,
+    });
+    const onAuthStateChange = vi.fn().mockReturnValue({
+      data: { subscription: { unsubscribe: vi.fn() } },
+    });
+    let state: AuthState | undefined;
+
+    mocks.getAuthClient.mockReturnValue({
+      auth: {
+        getSession: vi.fn().mockResolvedValue({ data: { session: null }, error: null }),
+        getUser: vi.fn(),
+        onAuthStateChange,
+        signInWithOAuth: vi.fn(),
+        signInWithPassword: vi.fn(),
+        signUp,
+        signOut: vi.fn(),
+      },
+    });
+
+    render(
+      <AuthProvider>
+        <AuthActions onReady={(nextState) => { state = nextState; }} />
+      </AuthProvider>
+    );
+
+    await waitFor(() => expect(state).toBeDefined());
+    await expect(
+      state?.signUpWithPassword(" User@Example.COM ", TEST_PASSWORD, "/profile")
+    ).resolves.toEqual({ needsEmailConfirmation: true });
+
+    expect(signUp).toHaveBeenCalledWith({
+      email: "user@example.com",
+      password: TEST_PASSWORD,
+      options: {
+        emailRedirectTo: expect.stringContaining("/api/auth/callback?next=%2Fprofile"),
+      },
+    });
+  });
+
+  it("propagates password sign-in errors so the form can show a safe message", async () => {
+    const signInWithPassword = vi.fn().mockResolvedValue({
+      error: new Error("invalid credentials"),
+    });
+    const onAuthStateChange = vi.fn().mockReturnValue({
+      data: { subscription: { unsubscribe: vi.fn() } },
+    });
+    let state: AuthState | undefined;
+
+    mocks.getAuthClient.mockReturnValue({
+      auth: {
+        getSession: vi.fn().mockResolvedValue({ data: { session: null }, error: null }),
+        getUser: vi.fn(),
+        onAuthStateChange,
+        signInWithOAuth: vi.fn(),
+        signInWithPassword,
+        signUp: vi.fn(),
+        signOut: vi.fn(),
+      },
+    });
+
+    render(
+      <AuthProvider>
+        <AuthActions onReady={(nextState) => { state = nextState; }} />
+      </AuthProvider>
+    );
+
+    await waitFor(() => expect(state).toBeDefined());
+    await expect(state?.signInWithPassword("user@example.com", "wrong")).rejects.toThrow(
+      "invalid credentials"
+    );
   });
 });

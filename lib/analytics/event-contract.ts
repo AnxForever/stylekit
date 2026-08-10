@@ -30,6 +30,24 @@ type ShadcnCommandCopyProps = {
   slug: string;
   source: "style_use_panel";
 };
+type ProjectBriefEventProps = {
+  slug: string;
+  locale: "zh" | "en";
+  project_type:
+    | "landing"
+    | "dashboard"
+    | "app"
+    | "portfolio"
+    | "blog"
+    | "commerce"
+    | "other";
+  stack_count: number;
+  required_item_count: number;
+  state_count: number;
+  optional_field_count: number;
+  completion_tier: "core" | "guided" | "complete";
+  source: "style_detail";
+};
 
 type PackFunnelSource =
   | "style_detail"
@@ -98,6 +116,9 @@ interface ClientEventMap {
   github_click: GithubClickProps;
   showcase_open: ShowcaseOpenProps;
   shadcn_command_copy: ShadcnCommandCopyProps;
+  project_brief_generated: ProjectBriefEventProps;
+  project_brief_copy: ProjectBriefEventProps;
+  project_brief_download: ProjectBriefEventProps;
   pack_offer_view: PackOfferProps;
   pack_price_view: PackPriceProps;
   catalog_impression: CatalogImpressionProps;
@@ -176,6 +197,9 @@ export const CLIENT_EVENT_NAMES = [
   "github_click",
   "showcase_open",
   "shadcn_command_copy",
+  "project_brief_generated",
+  "project_brief_copy",
+  "project_brief_download",
   "pack_offer_view",
   "pack_price_view",
   "catalog_impression",

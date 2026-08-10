@@ -1,0 +1,12 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="630" fill="#fff8f0"/>
+  <rect x="96" y="96" width="1008" height="438" rx="36" fill="#d9c7ff" opacity="0.18"/>
+  <rect x="124" y="132" width="952" height="368" rx="28" fill="#cbefdf" opacity="0.14"/>
+  <rect x="156" y="168" width="888" height="296" rx="22" fill="#fff8f0" stroke="#66508f" stroke-width="6"/>
+  <rect x="196" y="210" width="240" height="18" rx="9" fill="#66508f" opacity="0.9"/>
+  <rect x="196" y="248" width="140" height="14" rx="7" fill="#66508f" opacity="0.6"/>
+  <rect x="196" y="422" width="200" height="16" rx="8" fill="#66508f" opacity="0.35"/>
+  <rect x="420" y="406" width="400" height="44" rx="22" fill="#d9c7ff" opacity="0.25" stroke="#66508f" stroke-width="4"/>
+  <text x="600" y="340" font-family="system-ui, -apple-system, sans-serif" font-size="72" text-anchor="middle" fill="#0f172a" font-weight="700">Pastel App UI</text>
+  <text x="600" y="392" font-family="system-ui, -apple-system, sans-serif" font-size="22" text-anchor="middle" fill="#0f172a" opacity="0.75" letter-spacing="6">PASTEL-UI</text>
+</svg>

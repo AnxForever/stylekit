@@ -3,7 +3,8 @@ import "@testing-library/jest-dom/vitest";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 
-const { useI18nMock } = vi.hoisted(() => ({
+const { trackEventMock, useI18nMock } = vi.hoisted(() => ({
+  trackEventMock: vi.fn(),
   useI18nMock: vi.fn(),
 }));
 
@@ -12,7 +13,7 @@ vi.mock("@/lib/i18n/context", () => ({
 }));
 
 vi.mock("@/lib/analytics/events", () => ({
-  trackEvent: vi.fn(),
+  trackEvent: trackEventMock,
 }));
 
 import { AiImplementationPanel } from "@/components/style-preview/ai-implementation-panel";
@@ -42,6 +43,7 @@ describe("AiImplementationPanel", () => {
   const writeTextMock = vi.fn();
 
   beforeEach(() => {
+    trackEventMock.mockReset();
     writeTextMock.mockReset();
     writeTextMock.mockResolvedValue(undefined);
 
@@ -169,5 +171,143 @@ describe("AiImplementationPanel", () => {
     expect(creativeBrief).toContain("## Style Signals");
     expect(creativeBrief).toContain("- bold");
     expect(creativeBrief).not.toMatch(/[\u3400-\u9fff]/);
+  });
+
+  it("requires three core fields before generating a project brief", () => {
+    render(<AiImplementationPanel {...baseProps} />);
+
+    fireEvent.click(screen.getByRole("button", { name: /项目实施简报/ }));
+    fireEvent.click(screen.getByRole("button", { name: "生成实施简报" }));
+
+    expect(screen.getByRole("alert")).toHaveTextContent(
+      "请完成项目类型、主要用户和核心任务"
+    );
+    expect(screen.getByText("请选择项目类型。")).toBeInTheDocument();
+    expect(trackEventMock).not.toHaveBeenCalledWith(
+      "project_brief_generated",
+      expect.anything(),
+    );
+  });
+
+  it("marks a generated project brief stale when the interface locale changes", async () => {
+    const { rerender } = render(<AiImplementationPanel {...baseProps} />);
+
+    fireEvent.click(screen.getByRole("button", { name: /项目实施简报/ }));
+    fireEvent.click(screen.getByRole("combobox", { name: /项目类型/ }));
+    fireEvent.click(await screen.findByRole("option", { name: "数据后台" }));
+    fireEvent.change(screen.getByLabelText(/主要用户/), {
+      target: { value: "小型物流团队的运营主管" },
+    });
+    fireEvent.change(screen.getByLabelText(/核心任务/), {
+      target: { value: "查看延误订单并分配负责人" },
+    });
+    fireEvent.click(screen.getByRole("button", { name: "生成实施简报" }));
+
+    expect(screen.queryByText(/Fields changed/)).not.toBeInTheDocument();
+
+    useI18nMock.mockReturnValue({
+      t: (key: string) => key,
+      locale: "en",
+      setLocale: vi.fn(),
+    });
+    rerender(<AiImplementationPanel {...baseProps} />);
+
+    expect(
+      screen.getByText("Fields changed. Update the brief before using it."),
+    ).toBeInTheDocument();
+    expect(screen.queryByText("实施简报已生成。")).not.toBeInTheDocument();
+  });
+
+  it("generates, copies, downloads, marks stale, and clears an aggregate-only project brief", async () => {
+    const objectUrlSpy = vi.spyOn(URL, "createObjectURL").mockReturnValue("blob:brief");
+    const revokeSpy = vi.spyOn(URL, "revokeObjectURL").mockImplementation(() => {});
+    const originalCreateElement = document.createElement.bind(document);
+    const anchorClicks: HTMLAnchorElement[] = [];
+    const createElementSpy = vi
+      .spyOn(document, "createElement")
+      .mockImplementation((tagName: string) => {
+        const element = originalCreateElement(tagName);
+        if (tagName === "a") {
+          Object.defineProperty(element, "click", {
+            value: vi.fn(),
+            configurable: true,
+          });
+          anchorClicks.push(element as HTMLAnchorElement);
+        }
+        return element;
+      });
+
+    render(<AiImplementationPanel {...baseProps} />);
+
+    fireEvent.click(screen.getByRole("button", { name: /项目实施简报/ }));
+    const projectType = screen.getByRole("combobox", { name: /项目类型/ });
+    fireEvent.click(projectType);
+    fireEvent.click(await screen.findByRole("option", { name: "数据后台" }));
+
+    fireEvent.change(screen.getByLabelText(/主要用户/), {
+      target: { value: "小型物流团队的运营主管" },
+    });
+    fireEvent.change(screen.getByLabelText(/核心任务/), {
+      target: { value: "查看延误订单并分配负责人" },
+    });
+    fireEvent.click(screen.getByRole("button", { name: "生成实施简报" }));
+
+    expect(screen.getByText("实施简报已生成。")).toBeInTheDocument();
+    expect(screen.getByText((content) => content.includes("## 核心任务"))).toBeInTheDocument();
+    expect(screen.getByText((content) => content.includes("小型物流团队的运营主管"))).toBeInTheDocument();
+
+    const generatedCall = trackEventMock.mock.calls.find(
+      ([eventName]) => eventName === "project_brief_generated",
+    );
+    expect(generatedCall).toEqual([
+      "project_brief_generated",
+      {
+        slug: "neo-brutalist",
+        locale: "zh",
+        project_type: "dashboard",
+        stack_count: 0,
+        required_item_count: 0,
+        state_count: 0,
+        optional_field_count: 0,
+        completion_tier: "core",
+        source: "style_detail",
+      },
+    ]);
+    expect(JSON.stringify(generatedCall)).not.toContain("小型物流团队");
+    expect(JSON.stringify(generatedCall)).not.toContain("查看延误订单");
+
+    writeTextMock.mockClear();
+    fireEvent.click(screen.getByRole("button", { name: "复制简报" }));
+    await waitFor(() => expect(writeTextMock).toHaveBeenCalledTimes(1));
+    expect(writeTextMock.mock.calls[0]?.[0]).toContain("# 项目实施简报");
+    expect(trackEventMock).toHaveBeenCalledWith(
+      "project_brief_copy",
+      generatedCall?.[1],
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: "下载简报" }));
+    expect(anchorClicks.at(-1)?.download).toBe(
+      "neo-brutalist-project-implementation-brief.md",
+    );
+    expect(revokeSpy).toHaveBeenCalledWith("blob:brief");
+    expect(trackEventMock).toHaveBeenCalledWith(
+      "project_brief_download",
+      generatedCall?.[1],
+    );
+
+    fireEvent.change(screen.getByLabelText(/核心任务/), {
+      target: { value: "查看延误订单、分配负责人并确认结果" },
+    });
+    expect(screen.getByText("字段已修改，请更新简报。")).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole("button", { name: "清空" }));
+    expect(screen.getByText("项目上下文已清空。")).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "复制简报" })).not.toBeInTheDocument();
+    expect(screen.getByLabelText(/主要用户/)).toHaveValue("");
+    expect(screen.getByLabelText(/核心任务/)).toHaveValue("");
+
+    createElementSpy.mockRestore();
+    objectUrlSpy.mockRestore();
+    revokeSpy.mockRestore();
   });
 });

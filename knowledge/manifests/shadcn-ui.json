@@ -1,0 +1,70 @@
+{
+  "schemaVersion": "knowledge-resource-v1",
+  "id": "shadcn-ui",
+  "name": "shadcn/ui",
+  "nameEn": "shadcn/ui",
+  "resourceKind": "component-library",
+  "sourceUrl": "https://ui.shadcn.com/docs",
+  "repositoryUrl": "https://github.com/shadcn-ui/ui",
+  "sourceRef": "main",
+  "license": {
+    "classification": "allowlisted",
+    "spdx": "MIT",
+    "name": "MIT License",
+    "termsUrl": "https://github.com/shadcn-ui/ui/blob/main/LICENSE.md",
+    "commercialUse": true,
+    "modificationAllowed": true,
+    "redistributionAllowed": true,
+    "attributionRequired": true,
+    "attributionText": "shadcn/ui is licensed under the MIT License."
+  },
+  "mirror": {
+    "mode": "none"
+  },
+  "provenance": {
+    "originType": "external-open-source",
+    "creator": "shadcn",
+    "acquiredAt": "2026-08-03T00:00:00.000Z",
+    "evidenceUrls": [
+      "https://github.com/shadcn-ui/ui",
+      "https://github.com/shadcn-ui/ui/blob/main/LICENSE.md"
+    ],
+    "modificationStatus": "untouched"
+  },
+  "knowledge": {
+    "summary": "An open-code component and code distribution system that provides customizable accessible UI building blocks for frontend projects.",
+    "summaryEn": "An open-code component and code distribution system that provides customizable accessible UI building blocks for frontend projects.",
+    "useCases": [
+      "React and Next.js component composition",
+      "Accessible UI primitives",
+      "Code-owned design system foundations"
+    ],
+    "limitations": [
+      "The resource is not a complete application generator.",
+      "Components still require project-level composition and visual direction."
+    ],
+    "tags": ["components", "accessible", "react", "nextjs", "tailwind", "open-code"],
+    "frameworks": ["React", "Next.js", "Tailwind CSS"],
+    "relatedStyleSlugs": [],
+    "extractedTopics": ["component composition", "code distribution", "accessibility", "design systems"]
+  },
+  "quality": {
+    "score": 80,
+    "documentationReviewed": true,
+    "runtimeVerified": false,
+    "accessibilityReviewed": false,
+    "performanceReviewed": false,
+    "notes": ["Candidate source record only; no code has been mirrored or approved for generation."]
+  },
+  "security": {
+    "secretScan": "pending",
+    "dependencyAudit": "pending",
+    "sbomStatus": "pending",
+    "criticalFindings": 0,
+    "notes": []
+  },
+  "usagePolicy": "retrieval-only",
+  "reviewStatus": "pending",
+  "publicationStatus": "unpublished",
+  "updatedAt": "2026-08-03T00:00:00.000Z"
+}

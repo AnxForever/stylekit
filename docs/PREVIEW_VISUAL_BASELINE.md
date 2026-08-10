@@ -1,6 +1,7 @@
 # Approved Preview Visual Baseline
 
-The 140 existing StyleKit preview designs are approved product assets. Their visual baseline is
+The 143 approved StyleKit preview designs are approved product assets. Three additional
+implementations remain in the pending review lane. The approved visual baseline is
 compare-only: normal development and CI may compare screenshots, but may not record or update them.
 
 ## Coverage
@@ -40,10 +41,16 @@ Changing an approved screenshot requires all of the following:
 
 Product, architecture, performance, dependency, or refactor approval does not imply visual approval.
 
+## Pending preview lane
+
+An implementation may exist before its visual assets are approved. The current pending styles are
+declared in `lib/styles/review-status.ts`; they remain available for local review, but are excluded
+from the approved screenshot/source contract until the owner explicitly approves their baselines.
+This separation prevents new work from silently changing the frozen visual inventory.
+
 ## Preview delivery measurement
 
-The production build keeps the approved preview implementations intact while moving them behind
-per-style lazy boundaries. At the fixed desktop catalog viewport, the initial page load fetched 3
-preview chunks totaling 5,197 uncompressed bytes; the build contains 140 per-style preview chunks
-between 690 and 4,061 bytes. The previous single preview chunk was 203,922 bytes uncompressed.
-These measurements are implementation evidence only; the screenshot files remain compare-only.
+The production build keeps the approved preview implementations intact while moving each style
+implementation behind a per-style lazy boundary. The current catalog contains 143 approved
+implementations plus 3 pending implementations; these measurements are implementation evidence
+only, and the screenshot files remain compare-only.

@@ -3,6 +3,7 @@ import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { SupportContent } from "@/components/support/support-content";
 import { Heart } from "lucide-react";
+import { getPublishedThankYouEntries } from "@/lib/support/acknowledgments";
 
 export const metadata: Metadata = {
   title: "Contact & Support",
@@ -15,7 +16,9 @@ export const metadata: Metadata = {
   },
 };
 
-export default function ContactPage() {
+export default async function ContactPage() {
+  const thankYouEntries = await getPublishedThankYouEntries();
+
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
@@ -42,7 +45,7 @@ export default function ContactPage() {
 
         <section>
           <div className="mx-auto max-w-5xl px-6 md:px-12">
-            <SupportContent />
+            <SupportContent thankYouEntries={thankYouEntries} />
           </div>
         </section>
       </main>

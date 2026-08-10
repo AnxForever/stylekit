@@ -154,6 +154,9 @@ export const SHOWCASE_SEQUENCE: readonly ShowcaseSequenceEntry[] = [
   ["launch-keynote", "Launch Keynote"],
   ["luxe-lookbook", "Luxe Lookbook"],
   ["shader-gradient", "Shader Gradient"],
+  ["pastel-ui", "Pastel App UI"],
+  ["mobile-editorial", "Mobile Editorial"],
+  ["soft-utility", "Soft Utility"],
 ];
 
 export interface ShowcaseNeighbors {

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { FormEvent, useCallback, useEffect, useMemo, useState } from "react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { StylePicker, NO_STYLE, type PickerStyle } from "@/components/workspace/style-picker";
+import { StyleAdvisor } from "@/components/bailian/style-advisor";
 
 type StyleOption = PickerStyle;
 type Project = {
@@ -26,6 +27,7 @@ export function WorkspaceProjectEditor({ projectId, styles, supportedStyles }: {
   const [workingAction, setWorkingAction] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [selectedStyleSlug, setSelectedStyleSlug] = useState<string | null>(null);
   // Mirrors the uncontrolled projectType select once the user changes it, so
   // the style picker recommends by the type currently chosen in the form.
   const [projectTypeHint, setProjectTypeHint] = useState<string | null>(null);
@@ -45,6 +47,7 @@ export function WorkspaceProjectEditor({ projectId, styles, supportedStyles }: {
       if (!revisionsResponse.ok) throw new Error(revisionsPayload.error ?? "版本读取失败");
       if (!exportsResponse.ok) throw new Error(exportsPayload.error ?? "导出记录读取失败");
       setProject(projectPayload.project);
+      setSelectedStyleSlug(projectPayload.project.selected_style_slug ?? null);
       setRevisions(revisionsPayload.revisions ?? []);
       setExports(exportsPayload.exports ?? []);
     } catch (loadError) { setError(loadError instanceof Error ? loadError.message : "项目读取失败"); }
@@ -60,14 +63,14 @@ export function WorkspaceProjectEditor({ projectId, styles, supportedStyles }: {
       ["技术栈", project.stack.length > 0],
       ["页面清单", (project.brief?.requiredPages?.length ?? 0) > 0],
       ["必要状态", (project.brief?.requiredStates?.length ?? 0) >= 4],
-      ["风格方向", Boolean(project.selected_style_slug)],
+      ["风格方向", Boolean(selectedStyleSlug)],
     ] as const;
-  }, [project]);
+  }, [project, selectedStyleSlug]);
 
   const canGenerate = Boolean(
     project?.project_type === "dashboard" &&
-    project.selected_style_slug &&
-    supportedStyles.includes(project.selected_style_slug),
+    selectedStyleSlug &&
+    supportedStyles.includes(selectedStyleSlug),
   );
 
   async function save(event: FormEvent<HTMLFormElement>) {
@@ -156,7 +159,7 @@ export function WorkspaceProjectEditor({ projectId, styles, supportedStyles }: {
             <Field label="页面清单"><input name="requiredPages" defaultValue={project.brief?.requiredPages?.join("，") ?? ""} className="workspace-input" /></Field>
             <Field label="必要状态"><div className="grid grid-cols-2 gap-2 sm:grid-cols-5">{requiredStates.map(([value,label]) => <label key={value} className="flex min-h-11 items-center gap-2 border border-border px-3 text-sm"><input type="checkbox" name={`state:${value}`} defaultChecked={project.brief?.requiredStates?.includes(value)} />{label}</label>)}</div></Field>
             <div className="grid gap-4 sm:grid-cols-2"><Field label="品牌调性"><input name="brandPersonality" defaultValue={project.brief?.brandPersonality?.join("，") ?? ""} className="workspace-input" /></Field><Field label="绝对不要"><input name="antiReferences" defaultValue={project.brief?.antiReferences?.join("，") ?? ""} className="workspace-input" /></Field></div>
-            <Field label="风格方向"><StylePicker styles={styles} defaultValue={project.selected_style_slug} noneLabel="尚未选择" projectType={projectTypeHint ?? project.project_type} supportedSlugs={supportedStyles} /></Field>
+            <Field label="风格方向"><StylePicker styles={styles} value={selectedStyleSlug} onValueChange={setSelectedStyleSlug} defaultValue={project.selected_style_slug} noneLabel="尚未选择" projectType={projectTypeHint ?? project.project_type} supportedSlugs={supportedStyles} /></Field>
             <Field label="其他约束"><textarea name="notes" rows={3} defaultValue={project.brief?.notes ?? ""} className="workspace-input" /></Field>
             <Field label="本次修改说明（可选）"><input name="changeSummary" maxLength={240} className="workspace-input" placeholder="例如：补充移动端状态和账户页面" /></Field>
             <div className="flex items-center gap-4"><button disabled={saving || project.status === "archived"} className="h-11 bg-foreground px-5 text-sm font-medium text-background disabled:opacity-50">{saving ? "正在保存…" : "保存新版本"}</button><span aria-live="polite" className="text-sm text-muted">{message}</span></div>
@@ -164,7 +167,14 @@ export function WorkspaceProjectEditor({ projectId, styles, supportedStyles }: {
           </form>
 
           <aside className="grid h-fit gap-6">
-            <section className="border border-border p-5"><h2 className="font-medium">风格参考</h2>{project.selected_style_slug ? <><p className="mt-2 text-sm text-muted">项目引用原风格，不复制或修改 Showcase。</p><Link className="mt-4 inline-block text-sm underline underline-offset-4" href={`/styles/${project.selected_style_slug}`}>查看风格详情</Link><br/><Link className="mt-2 inline-block text-sm underline underline-offset-4" href={`/styles/${project.selected_style_slug}/showcase`}>查看原 Showcase</Link></> : <p className="mt-2 text-sm text-muted">保存前可以选择一个现有风格方向。</p>}</section>
+            <StyleAdvisor
+              initialRequest={project.description || project.brief?.primaryGoal}
+              onApplyStyle={(styleSlug) => {
+                setSelectedStyleSlug(styleSlug);
+                setMessage(`已应用 ${styleSlug}，保存版本后生效。`);
+              }}
+            />
+            <section className="border border-border p-5"><h2 className="font-medium">风格参考</h2>{selectedStyleSlug ? <><p className="mt-2 text-sm text-muted">项目引用原风格，不复制或修改 Showcase。</p><Link className="mt-4 inline-block text-sm underline underline-offset-4" href={`/styles/${selectedStyleSlug}`}>查看风格详情</Link><br/><Link className="mt-2 inline-block text-sm underline underline-offset-4" href={`/styles/${selectedStyleSlug}/showcase`}>查看原 Showcase</Link></> : <p className="mt-2 text-sm text-muted">保存前可以选择一个现有风格方向。</p>}</section>
             <section className="border border-border p-5"><h2 className="font-medium">真实生成</h2><p className="mt-2 text-sm text-muted">当前仅开放通过干净生产构建的 Next.js 数据后台与 4 个专用风格。</p><button type="button" onClick={() => void generate()} disabled={!canGenerate || workingAction !== null || project.current_revision_number === 0} className="mt-4 min-h-11 w-full border border-foreground px-3 text-sm font-medium disabled:opacity-40">{workingAction === "generate" ? "正在生成…" : "生成 Next.js 工程"}</button>{!canGenerate ? <p className="mt-2 text-xs text-amber-700">当前项目类型或风格尚未通过工程验证，不会降级生成。</p> : null}{project.current_revision_number === 0 ? <p className="mt-2 text-xs text-muted">请先保存第一个项目版本。</p> : null}</section>
             <section className="border border-border p-5"><h2 className="font-medium">版本历史</h2>{revisions.length === 0 ? <p className="mt-2 text-sm text-muted">保存后会生成第一个不可变版本。</p> : <ol className="mt-3 grid gap-3">{revisions.map((revision) => <li key={revision.id} className="border-t border-border pt-3"><div className="flex justify-between text-sm"><strong>v{revision.revision_number}</strong><span className="text-muted">{new Date(revision.created_at).toLocaleString("zh-CN")}</span></div><p className="mt-1 text-xs text-muted">{revision.change_summary || sourceLabel(revision.source)}</p><div className="mt-2 flex gap-3"><button type="button" className="text-xs underline disabled:opacity-40" disabled={workingAction !== null || revision.revision_number === project.current_revision_number} onClick={() => void restore(revision.revision_number)}>{workingAction === `restore:${revision.revision_number}` ? "恢复中…" : "恢复为新版本"}</button>{revision.source === "generation" ? <button type="button" className="text-xs underline disabled:opacity-40" disabled={workingAction !== null} onClick={() => void createExport(revision.revision_number)}>{workingAction === `export:${revision.revision_number}` ? "导出中…" : "创建并下载 ZIP"}</button> : null}</div></li>)}</ol>}</section>
             <section className="border border-border p-5"><h2 className="font-medium">导出记录</h2>{exports.length === 0 ? <p className="mt-2 text-sm text-muted">生成版本后才能创建可追溯导出。</p> : <ol className="mt-3 grid gap-3">{exports.map((item) => <li key={item.id} className="border-t border-border pt-3 text-xs"><div className="flex justify-between"><strong>v{item.revision_number} · {item.file_count} 文件</strong><span>{item.status}</span></div><code className="mt-1 block break-all text-muted">{item.artifact_sha256}</code><a className="mt-2 inline-block underline" href={`/api/workspace/exports/${item.id}/download`}>重新下载并校验</a></li>)}</ol>}</section>

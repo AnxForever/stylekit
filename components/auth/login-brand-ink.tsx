@@ -101,11 +101,13 @@ const FRAG = /* glsl */ `
     vec3 amber  = vec3(0.85, 0.47, 0.02);
 
     // Start from white paper; each ink multiplies the paper toward its color.
+    // Diluted strengths (no boost) keep the pale watercolor wash of the first
+    // version — lots of white breathing through, pigments only lightly tinting.
     vec3 col = vec3(1.0);
-    col *= mix(vec3(1.0), indigo, clamp(f1 * 1.05, 0.0, 1.0) * 0.85);
-    col *= mix(vec3(1.0), rose,   clamp(f2 * 1.05, 0.0, 1.0) * 0.82);
-    col *= mix(vec3(1.0), teal,   clamp(f3 * 1.05, 0.0, 1.0) * 0.78);
-    col *= mix(vec3(1.0), amber,  clamp(f4 * 1.05, 0.0, 1.0) * 0.70);
+    col *= mix(vec3(1.0), indigo, clamp(f1, 0.0, 1.0) * 0.55);
+    col *= mix(vec3(1.0), rose,   clamp(f2, 0.0, 1.0) * 0.50);
+    col *= mix(vec3(1.0), teal,   clamp(f3, 0.0, 1.0) * 0.48);
+    col *= mix(vec3(1.0), amber,  clamp(f4, 0.0, 1.0) * 0.42);
 
     // Faint paper grain so flats never band.
     float grain = (hash(uv * u_res * 0.5 + t) - 0.5) * 0.02;

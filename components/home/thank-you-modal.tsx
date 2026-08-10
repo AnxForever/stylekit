@@ -1,39 +1,52 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import { X } from "lucide-react";
 import { useI18n } from "@/lib/i18n/context";
-import { thankYouEntries, thankYouModalConfig } from "@/lib/site/support";
+import {
+  thankYouEntries as legacyThankYouEntries,
+  thankYouModalConfig,
+  type ThankYouEntry,
+} from "@/lib/site/support";
 
 // Entries recorded within a week of the newest one count as the same donation
 // batch and celebrate together (screenshots usually arrive in clusters).
 const RECENT_WINDOW_MS = 7 * 24 * 60 * 60 * 1000;
 
-const sortedReceiptEntries = [...thankYouEntries]
-  .filter((entry) => entry.receiptImage)
-  .sort((a, b) => b.date.localeCompare(a.date));
-
-const latestEntry = sortedReceiptEntries[0];
-
-const latestReceiptEntries = latestEntry
-  ? sortedReceiptEntries
-      .filter(
-        (entry) =>
-          Date.parse(latestEntry.date) - Date.parse(entry.date) <= RECENT_WINDOW_MS
-      )
-      .slice(0, 6)
-  : [];
-
-// Keyed by the newest entry so each new donation batch pops the modal exactly
-// once more for returning visitors.
-const thankYouModalStorageKey = latestEntry
-  ? `stylekit-thankyou-modal-dismissed:${latestEntry.id}`
-  : "stylekit-thankyou-modal-dismissed";
-
-export function ThankYouModal({ showOnHomepageOnly = true }: { showOnHomepageOnly?: boolean }) {
+export function ThankYouModal({
+  showOnHomepageOnly = true,
+  entries,
+}: {
+  showOnHomepageOnly?: boolean;
+  entries?: ThankYouEntry[];
+}) {
   const [isOpen, setIsOpen] = useState(false);
   const { locale } = useI18n();
+  const resolvedEntries = entries ?? legacyThankYouEntries;
+  const sortedReceiptEntries = useMemo(
+    () =>
+      resolvedEntries
+        .filter((entry) => entry.receiptImage)
+        .sort((a, b) => b.date.localeCompare(a.date)),
+    [resolvedEntries]
+  );
+  const latestEntry = sortedReceiptEntries[0];
+  const latestReceiptEntries = useMemo(
+    () =>
+      latestEntry
+        ? sortedReceiptEntries
+            .filter(
+              (entry) =>
+                Date.parse(latestEntry.date) - Date.parse(entry.date) <= RECENT_WINDOW_MS
+            )
+            .slice(0, 6)
+        : [],
+    [latestEntry, sortedReceiptEntries]
+  );
+  const thankYouModalStorageKey = latestEntry
+    ? `stylekit-thankyou-modal-dismissed:${latestEntry.id}`
+    : "stylekit-thankyou-modal-dismissed";
 
   useEffect(() => {
     // 检查是否为首页
@@ -57,7 +70,7 @@ export function ThankYouModal({ showOnHomepageOnly = true }: { showOnHomepageOnl
       const frame = window.requestAnimationFrame(() => setIsOpen(true));
       return () => window.cancelAnimationFrame(frame);
     }
-  }, [showOnHomepageOnly]);
+  }, [latestReceiptEntries.length, showOnHomepageOnly, thankYouModalStorageKey]);
 
   const handleClose = () => {
     setIsOpen(false);
@@ -74,7 +87,7 @@ export function ThankYouModal({ showOnHomepageOnly = true }: { showOnHomepageOnl
   const celebrationEntry =
     latestEntry?.celebrationImage
       ? latestEntry
-      : thankYouEntries.find((entry) => entry.celebrationImage);
+      : resolvedEntries.find((entry) => entry.celebrationImage);
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">

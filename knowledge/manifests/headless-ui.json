@@ -1,0 +1,61 @@
+{
+  "schemaVersion": "knowledge-resource-v1",
+  "id": "headless-ui",
+  "name": "Headless UI",
+  "nameEn": "Headless UI",
+  "resourceKind": "component-library",
+  "sourceUrl": "https://headlessui.com/",
+  "repositoryUrl": "https://github.com/tailwindlabs/headlessui",
+  "sourceRef": "main",
+  "license": {
+    "classification": "allowlisted",
+    "spdx": "MIT",
+    "name": "MIT License",
+    "termsUrl": "https://github.com/tailwindlabs/headlessui/blob/main/LICENSE",
+    "commercialUse": true,
+    "modificationAllowed": true,
+    "redistributionAllowed": true,
+    "attributionRequired": true,
+    "attributionText": "Headless UI is licensed under the MIT License."
+  },
+  "mirror": { "mode": "none" },
+  "provenance": {
+    "originType": "external-open-source",
+    "creator": "Tailwind Labs",
+    "acquiredAt": "2026-08-03T00:00:00.000Z",
+    "evidenceUrls": [
+      "https://github.com/tailwindlabs/headlessui",
+      "https://github.com/tailwindlabs/headlessui/blob/main/LICENSE"
+    ],
+    "modificationStatus": "untouched"
+  },
+  "knowledge": {
+    "summary": "Unstyled accessible React and Vue components designed to pair with Tailwind CSS while leaving visual styling under application control.",
+    "summaryEn": "Unstyled accessible React and Vue components designed to pair with Tailwind CSS while leaving visual styling under application control.",
+    "useCases": ["Tailwind component composition", "Accessible menus, dialogs, listboxes, and comboboxes", "React and Vue application primitives"],
+    "limitations": ["It does not provide a complete visual design system.", "Tailwind conventions and project-level styling remain necessary."],
+    "tags": ["components", "accessibility", "react", "vue", "tailwind"],
+    "frameworks": ["React", "Vue", "Tailwind CSS"],
+    "relatedStyleSlugs": [],
+    "extractedTopics": ["unstyled components", "keyboard navigation", "Tailwind integration", "accessible interactions"]
+  },
+  "quality": {
+    "score": 84,
+    "documentationReviewed": true,
+    "runtimeVerified": false,
+    "accessibilityReviewed": false,
+    "performanceReviewed": false,
+    "notes": ["Candidate source record only; no code has been mirrored or approved for generation."]
+  },
+  "security": {
+    "secretScan": "pending",
+    "dependencyAudit": "pending",
+    "sbomStatus": "pending",
+    "criticalFindings": 0,
+    "notes": []
+  },
+  "usagePolicy": "retrieval-only",
+  "reviewStatus": "pending",
+  "publicationStatus": "unpublished",
+  "updatedAt": "2026-08-03T00:00:00.000Z"
+}

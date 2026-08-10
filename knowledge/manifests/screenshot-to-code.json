@@ -1,0 +1,58 @@
+{
+  "schemaVersion": "knowledge-resource-v1",
+  "id": "screenshot-to-code",
+  "name": "Screenshot to Code",
+  "nameEn": "Screenshot to Code",
+  "resourceKind": "design-to-code-tool",
+  "sourceUrl": "https://github.com/abi/screenshot-to-code",
+  "repositoryUrl": "https://github.com/abi/screenshot-to-code",
+  "sourceRef": "main",
+  "license": {
+    "classification": "allowlisted",
+    "spdx": "MIT",
+    "name": "MIT License",
+    "termsUrl": "https://github.com/abi/screenshot-to-code/blob/main/LICENSE",
+    "commercialUse": true,
+    "modificationAllowed": true,
+    "redistributionAllowed": true,
+    "attributionRequired": true,
+    "attributionText": "Screenshot to Code is licensed under the MIT License."
+  },
+  "mirror": { "mode": "none" },
+  "provenance": {
+    "originType": "external-open-source",
+    "creator": "abi",
+    "acquiredAt": "2026-08-03T00:00:00.000Z",
+    "evidenceUrls": ["https://github.com/abi/screenshot-to-code"],
+    "modificationStatus": "untouched"
+  },
+  "knowledge": {
+    "summary": "An open-source tool that converts screenshots, mockups, Figma designs, and screen recordings into frontend code across several stacks.",
+    "summaryEn": "An open-source tool that converts screenshots, mockups, Figma designs, and screen recordings into frontend code across several stacks.",
+    "useCases": ["Visual reference analysis", "Screenshot-to-code workflows", "Frontend generation evaluation"],
+    "limitations": ["Visual reconstruction does not by itself provide a canonical design system or license-aware StylePack."],
+    "tags": ["screenshot-to-code", "react", "vue", "tailwind", "visual-reference"],
+    "frameworks": ["React", "Vue", "Tailwind CSS", "Bootstrap"],
+    "relatedStyleSlugs": [],
+    "extractedTopics": ["screenshot analysis", "asset extraction", "visual regression"]
+  },
+  "quality": {
+    "score": 82,
+    "documentationReviewed": true,
+    "runtimeVerified": false,
+    "accessibilityReviewed": false,
+    "performanceReviewed": false,
+    "notes": ["Candidate source record only."]
+  },
+  "security": {
+    "secretScan": "pending",
+    "dependencyAudit": "pending",
+    "sbomStatus": "pending",
+    "criticalFindings": 0,
+    "notes": []
+  },
+  "usagePolicy": "retrieval-only",
+  "reviewStatus": "pending",
+  "publicationStatus": "unpublished",
+  "updatedAt": "2026-08-03T00:00:00.000Z"
+}

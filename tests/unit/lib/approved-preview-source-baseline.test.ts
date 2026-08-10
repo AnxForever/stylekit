@@ -5,6 +5,7 @@ import { describe, expect, it } from "vitest";
 import sourceBaseline from "@/tests/visual/approved-preview-source-baseline.json";
 import approvedPreviews from "@/tests/visual/approved-preview-baseline.json";
 import snapshotBaseline from "@/tests/visual/approved-preview-snapshot-hashes.json";
+import { PENDING_STYLE_SLUGS } from "@/lib/styles/review-status";
 
 const ROOT = process.cwd();
 const SNAPSHOT_DIRECTORY = path.join(
@@ -13,6 +14,14 @@ const SNAPSHOT_DIRECTORY = path.join(
 );
 
 describe("approved preview source baseline", () => {
+  it("keeps the pending preview lane explicit", () => {
+    expect(PENDING_STYLE_SLUGS).toEqual([
+      "mobile-editorial",
+      "pastel-ui",
+      "soft-utility",
+    ]);
+  });
+
   it("fails immediately when approved preview sources change", async () => {
     expect(sourceBaseline.baselineCommit).toBe(approvedPreviews.baselineCommit);
     expect(sourceBaseline.algorithm).toBe("sha256");

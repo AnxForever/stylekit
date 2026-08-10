@@ -17,6 +17,13 @@ function parseNextPath(value: string | null): string {
   return value;
 }
 
+function buildLoginErrorUrl(origin: string, next: string): string {
+  const loginUrl = new URL("/login", origin);
+  loginUrl.searchParams.set("auth_error", "linuxdo");
+  if (next !== "/") loginUrl.searchParams.set("next", next);
+  return loginUrl.toString();
+}
+
 function parseMetadata(value: unknown): Record<string, unknown> {
   if (!value || typeof value !== "object" || Array.isArray(value)) {
     return {};
@@ -76,6 +83,9 @@ export async function GET(request: NextRequest) {
   const redirectUrl = `${origin}${next}`;
 
   if (!code) {
+    if (searchParams.get("error")) {
+      return NextResponse.redirect(buildLoginErrorUrl(origin, next));
+    }
     return NextResponse.redirect(redirectUrl);
   }
 
@@ -210,6 +220,6 @@ export async function GET(request: NextRequest) {
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);
     console.error("[LinuxDo OAuth] Callback error:", message);
-    return NextResponse.redirect(`${origin}/login?auth_error=linuxdo`);
+    return NextResponse.redirect(buildLoginErrorUrl(origin, next));
   }
 }

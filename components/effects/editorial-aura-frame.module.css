@@ -1,0 +1,177 @@
+.frame {
+  --aura-line: #6366f1;
+  --aura-accent: #fb7185;
+  position: relative;
+  isolation: isolate;
+  overflow: visible;
+  border: 1px solid color-mix(in srgb, var(--aura-line) 30%, currentColor 70%);
+  background: color-mix(in srgb, canvas 88%, transparent);
+}
+
+.canvas {
+  position: absolute;
+  z-index: -1;
+  inset: -1px;
+  width: calc(100% + 2px);
+  height: calc(100% + 2px);
+  pointer-events: none;
+  opacity: 0.92;
+}
+
+.content {
+  position: relative;
+  z-index: 1;
+}
+
+.railSvg {
+  position: absolute;
+  z-index: 2;
+  inset: -1px;
+  width: calc(100% + 2px);
+  height: calc(100% + 2px);
+  overflow: visible;
+  pointer-events: none;
+}
+
+.railFrame,
+.railScan {
+  fill: none;
+  vector-effect: non-scaling-stroke;
+}
+
+.railFrame {
+  stroke: color-mix(in srgb, var(--aura-line) 34%, transparent);
+  stroke-width: 0.7;
+  stroke-dasharray: 1 5;
+  opacity: 0.7;
+}
+
+.railScan {
+  stroke: var(--aura-accent);
+  stroke-width: 1.1;
+  stroke-linecap: round;
+  stroke-dasharray: 20 180;
+  opacity: 0.82;
+  animation: rail-scan 9s linear infinite;
+}
+
+.railDot {
+  fill: var(--aura-accent);
+  opacity: 0.75;
+  animation: rail-dot 9s ease-in-out infinite;
+}
+
+.frameLines {
+  position: absolute;
+  z-index: 2;
+  inset: -1px;
+  pointer-events: none;
+}
+
+.corner {
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  border-color: var(--aura-line);
+  opacity: 0.68;
+}
+
+.topLeft {
+  top: -1px;
+  left: -1px;
+  border-top: 2px solid;
+  border-left: 2px solid;
+}
+
+.topRight {
+  top: -1px;
+  right: -1px;
+  border-top: 2px solid;
+  border-right: 2px solid;
+}
+
+.bottomLeft {
+  bottom: -1px;
+  left: -1px;
+  border-bottom: 2px solid;
+  border-left: 2px solid;
+}
+
+.bottomRight {
+  right: -1px;
+  bottom: -1px;
+  border-right: 2px solid;
+  border-bottom: 2px solid;
+}
+
+.tickRail {
+  position: absolute;
+  top: 22%;
+  right: -1px;
+  width: 8px;
+  height: 31%;
+  border-right: 1px solid color-mix(in srgb, var(--aura-line) 70%, transparent);
+  background: repeating-linear-gradient(
+    to bottom,
+    transparent 0,
+    transparent 14px,
+    color-mix(in srgb, var(--aura-accent) 65%, transparent) 14px,
+    color-mix(in srgb, var(--aura-accent) 65%, transparent) 15px
+  );
+  opacity: 0.7;
+}
+
+.marker {
+  position: absolute;
+  right: 17%;
+  bottom: -3px;
+  width: 5px;
+  height: 5px;
+  border-radius: 999px;
+  background: var(--aura-accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--aura-accent) 18%, transparent);
+}
+
+@keyframes rail-scan {
+  from {
+    stroke-dashoffset: 0;
+  }
+  to {
+    stroke-dashoffset: -200;
+  }
+}
+
+@keyframes rail-dot {
+  0%,
+  100% {
+    opacity: 0.3;
+    transform: translate(0, 0);
+  }
+  50% {
+    opacity: 0.9;
+    transform: translate(20px, 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .canvas {
+    opacity: 0;
+  }
+
+  .railScan,
+  .railDot {
+    animation: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .railFrame {
+    opacity: 0.42;
+  }
+
+  .railScan,
+  .railDot {
+    animation: none;
+    opacity: 0.5;
+  }
+}

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, type ComponentType } from "react";
+import { useState, type ComponentType } from "react";
 import { useSearchParams } from "next/navigation";
 import { useI18n } from "@/lib/i18n/context";
 import { TypographyContent } from "@/components/typography/typography-content";
@@ -62,22 +62,23 @@ export function ResourcesContent() {
   const { locale } = useI18n();
   const tx = (zh: string, en: string) => (locale === "zh" ? zh : en);
   const searchParams = useSearchParams();
-  const [active, setActive] = useState<string>(SECTIONS[0].id);
+  const fromQuery = searchParams.get("tab");
+  const fromHash =
+    typeof window !== "undefined" ? window.location.hash.replace("#", "") : "";
+  const requestedSection = [fromQuery, fromHash].find(
+    (id): id is string => Boolean(id && VALID_IDS.has(id)),
+  );
+  const [selectedSection, setSelectedSection] = useState<string | null>(null);
 
   // Land on the right section from ?tab= (301 targets) or #hash (deep links).
-  useEffect(() => {
-    const fromQuery = searchParams.get("tab");
-    const fromHash =
-      typeof window !== "undefined" ? window.location.hash.replace("#", "") : "";
-    const target = [fromQuery, fromHash].find((id) => id && VALID_IDS.has(id));
-    if (target) setActive(target);
-  }, [searchParams]);
+  // A user click takes precedence for the rest of the current page session.
+  const active = selectedSection ?? requestedSection ?? SECTIONS[0].id;
 
   const activeSection = SECTIONS.find((s) => s.id === active) ?? SECTIONS[0];
   const ActiveComp = activeSection.Comp;
 
   const selectSection = (id: string) => {
-    setActive(id);
+    setSelectedSection(id);
     if (typeof window !== "undefined") {
       window.history.replaceState(null, "", `#${id}`);
     }

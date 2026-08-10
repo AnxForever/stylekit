@@ -26,6 +26,9 @@
 .DS_Store
 *.pem
 *.bak
+client_secret_*.json
+client_secret_*.json:*
+*.Zone.Identifier
 
 # debug
 npm-debug.log*
@@ -68,6 +71,7 @@ skills-lock.json
 
 # Screenshots (local dev / Playwright / temp)
 stylekit-*.png
+login-*.png
 *-modal-*.png
 *-thankyou-*.png
 homepage-*.png
@@ -79,6 +83,11 @@ support-*.png
 image.png
 image.jpg
 *.local.png
+
+# Local generation workspaces and demo media
+/examples/
+/generated-images/
+/video/
 
 # Generic JPEGs
 *.jpg
@@ -106,7 +115,16 @@ public/launch/overseas/
 .kiro/
 .interface-design/
 dist-skills/
-ops/
+ops/*
+!ops/
+!ops/stylekit-healthcheck.sh
+!ops/cleanup-stylekit-server.sh
+!ops/verify-stylekit-production.sh
+!ops/systemd/
+!ops/systemd/stylekit-healthcheck.service
+!ops/systemd/stylekit-healthcheck.timer
+!ops/systemd/stylekit-cleanup.service
+!ops/systemd/stylekit-cleanup.timer
 
 # Build artifacts
 packages/core/dist/

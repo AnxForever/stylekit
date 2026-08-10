@@ -28,7 +28,7 @@ describe("GET /api/auth/linuxdo", () => {
     );
   });
 
-  it("falls back to home when auth url cannot be built", async () => {
+  it("returns to login when auth url cannot be built", async () => {
     mockedBuildAuthorizationUrl.mockImplementationOnce(() => {
       throw new Error("missing credentials");
     });
@@ -38,6 +38,8 @@ describe("GET /api/auth/linuxdo", () => {
     );
 
     expect(response.status).toBe(307);
-    expect(response.headers.get("location")).toBe("https://stylekit.top/");
+    expect(response.headers.get("location")).toBe(
+      "https://stylekit.top/login?auth_error=linuxdo&next=%2Fprofile"
+    );
   });
 });

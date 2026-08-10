@@ -57,6 +57,8 @@ export function StylePicker({
   styles,
   name = "selectedStyleSlug",
   defaultValue = null,
+  value,
+  onValueChange,
   noneLabel,
   projectType,
   supportedSlugs,
@@ -64,6 +66,8 @@ export function StylePicker({
   styles: PickerStyle[];
   name?: string;
   defaultValue?: string | null;
+  value?: string | null;
+  onValueChange?: (value: string | null) => void;
   noneLabel: string;
   projectType?: string;
   supportedSlugs?: string[];
@@ -77,9 +81,10 @@ export function StylePicker({
   const [filter, setFilter] = useState<Filter>(recommendedScenarios ? "recommended" : "all");
   const searchRef = useRef<HTMLInputElement>(null);
 
+  const selectedValue = value === undefined ? selected : value;
   const selectedStyle = useMemo(
-    () => styles.find((style) => style.slug === selected) ?? null,
-    [styles, selected]
+    () => styles.find((style) => style.slug === selectedValue) ?? null,
+    [styles, selectedValue]
   );
 
   const filtered = useMemo(() => {
@@ -100,13 +105,14 @@ export function StylePicker({
   }, [styles, query, filter, recommendedScenarios]);
 
   const pick = (slug: string | null) => {
-    setSelected(slug);
+    if (value === undefined) setSelected(slug);
+    onValueChange?.(slug);
     setOpen(false);
   };
 
   return (
     <>
-      <input type="hidden" name={name} value={selected ?? NO_STYLE} />
+      <input type="hidden" name={name} value={selectedValue ?? NO_STYLE} />
       <button
         type="button"
         onClick={() => {
@@ -182,7 +188,7 @@ export function StylePicker({
           <div className="max-h-[55vh] overflow-y-auto p-4">
             <div className="mb-3 flex items-center justify-between text-xs text-muted">
               <span aria-live="polite">{filtered.length} 个风格</span>
-              {selected && (
+              {selectedValue && (
                 <button
                   type="button"
                   onClick={() => pick(null)}
@@ -197,7 +203,7 @@ export function StylePicker({
             ) : (
               <ul className="grid grid-cols-2 gap-2 sm:grid-cols-3">
                 {filtered.map((style) => {
-                  const isSelected = style.slug === selected;
+                  const isSelected = style.slug === selectedValue;
                   return (
                     <li key={style.slug}>
                       <button

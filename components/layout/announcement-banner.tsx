@@ -3,18 +3,12 @@
 import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { changelog } from "@/lib/changelog";
 import { useI18n } from "@/lib/i18n/context";
-import {
-  CHANGELOG_SEEN_STORAGE_KEY,
-  isChangelogPath,
-  markLatestChangelogSeen,
-} from "@/lib/changelog/read-state";
+import type { SiteAnnouncement } from "@/lib/site-announcements";
 
-export function AnnouncementBanner() {
+export function AnnouncementBanner({ announcement = null }: { announcement?: SiteAnnouncement | null }) {
   const { t, locale } = useI18n();
   const pathname = usePathname();
-  const latest = changelog[0];
   const [visible, setVisible] = useState(false);
   const isIsolatedSurface =
     pathname.includes("/admin") ||
@@ -22,30 +16,33 @@ export function AnnouncementBanner() {
     pathname.startsWith("/workspace");
 
   useEffect(() => {
-    if (!latest) return;
-    if (isChangelogPath(pathname)) {
-      markLatestChangelogSeen();
+    if (!announcement) return;
+    if (pathname === announcement.ctaHref || pathname?.endsWith("/changelog")) {
       // eslint-disable-next-line react-hooks/set-state-in-effect -- route-derived notification state
       setVisible(false);
       return;
     }
 
     try {
-      const dismissed = localStorage.getItem(CHANGELOG_SEEN_STORAGE_KEY);
-      if (dismissed !== latest.version) setVisible(true);
+      const dismissed = localStorage.getItem(getDismissKey(announcement.id));
+      if (dismissed !== "1") setVisible(true);
     } catch {
       setVisible(true);
     }
-  }, [latest, pathname]);
+  }, [announcement, pathname]);
 
   const dismiss = useCallback(() => {
     setVisible(false);
-    markLatestChangelogSeen();
-  }, []);
+    if (!announcement) return;
+    try {
+      localStorage.setItem(getDismissKey(announcement.id), "1");
+    } catch {
+      // localStorage may be unavailable in private or restricted contexts.
+    }
+  }, [announcement]);
 
-  if (!latest || !visible || isIsolatedSurface) return null;
-
-  const title = locale === "zh" && latest.titleZh ? latest.titleZh : latest.title;
+  if (!announcement || !visible || isIsolatedSurface) return null;
+  const ctaLabel = announcement.ctaLabel || (locale === "zh" ? "查看详情" : "View details");
 
   return (
     <div
@@ -57,14 +54,22 @@ export function AnnouncementBanner() {
         {t("changelog.badge")}
       </span>
       <span className="truncate max-w-md">
-        v{latest.version} — {title}
+        {announcement.title}
       </span>
+      {announcement.body ? (
+        <span
+          className="hidden max-w-xl truncate text-xs font-normal opacity-70 md:inline"
+          title={announcement.body}
+        >
+          {announcement.body}
+        </span>
+      ) : null}
       <Link
-        href={`/${locale}/changelog`}
+        href={announcement.ctaHref || `/${locale}/changelog`}
         onClick={dismiss}
         className="shrink-0 underline underline-offset-2 opacity-80 hover:opacity-100 transition-opacity"
       >
-        {locale === "zh" ? "详情" : "Details"}
+        {ctaLabel}
       </Link>
       <button
         type="button"
@@ -78,4 +83,8 @@ export function AnnouncementBanner() {
       </button>
     </div>
   );
+}
+
+function getDismissKey(id: string): string {
+  return `sk-site-announcement-dismissed:${id}`;
 }

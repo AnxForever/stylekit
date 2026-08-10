@@ -124,6 +124,75 @@ describe("analytics route", () => {
     expect(JSON.stringify(insert.mock.calls)).not.toContain("Mozilla/5.0");
   });
 
+  it("stores project brief generation with aggregate metadata only", async () => {
+    const insert = vi.fn().mockResolvedValue({ error: null });
+    mockedGetSupabaseAdmin.mockReturnValue({
+      from: vi.fn().mockReturnValue({ insert }),
+    } as never);
+
+    const response = await POST(
+      request({
+        eventType: "project_brief_generated",
+        eventData: {
+          slug: "neo-brutalist",
+          locale: "zh",
+          project_type: "app",
+          stack_count: 2,
+          required_item_count: 3,
+          state_count: 4,
+          optional_field_count: 5,
+          completion_tier: "complete",
+          source: "style_detail",
+        },
+        sessionId: null,
+      }),
+    );
+
+    expect(response.status).toBe(200);
+    expect(insert).toHaveBeenCalledWith(
+      expect.objectContaining({
+        event_type: "project_brief_generated",
+        style_slug: "neo-brutalist",
+        event_data: expect.objectContaining({
+          slug: "neo-brutalist",
+          project_type: "app",
+          required_item_count: 3,
+        }),
+      }),
+    );
+    expect(JSON.stringify(insert.mock.calls)).not.toContain("audience");
+    expect(JSON.stringify(insert.mock.calls)).not.toContain("primaryGoal");
+  });
+
+  it("rejects raw project brief text before storage", async () => {
+    const insert = vi.fn();
+    mockedGetSupabaseAdmin.mockReturnValue({
+      from: vi.fn().mockReturnValue({ insert }),
+    } as never);
+
+    const response = await POST(
+      request({
+        eventType: "project_brief_copy",
+        eventData: {
+          slug: "neo-brutalist",
+          locale: "en",
+          project_type: "dashboard",
+          stack_count: 0,
+          required_item_count: 0,
+          state_count: 0,
+          optional_field_count: 0,
+          completion_tier: "core",
+          source: "style_detail",
+          generated_markdown: "private implementation brief",
+        },
+        sessionId: null,
+      }),
+    );
+
+    expect(response.status).toBe(400);
+    expect(insert).not.toHaveBeenCalled();
+  });
+
   it.each([
     "pack_purchase_intent",
     "pack_checkout_start",

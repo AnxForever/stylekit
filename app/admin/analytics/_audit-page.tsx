@@ -9,18 +9,24 @@ import {
   AdminInput,
   AdminPagination,
   AdminPanel,
+  AdminSelect,
   AdminSegmentedControl,
 } from "@/components/admin/admin-ui";
+import {
+  ADMIN_AUDIT_ACTION_OPTIONS,
+  getAdminAuditActionLabel,
+  getAdminAuditActionTone,
+  type AdminAuditAction,
+} from "@/lib/admin/audit-contract";
 import { useAdminAuditEvents } from "@/lib/swr";
 import type { AdminAuditData } from "@/lib/swr";
 import { AnalyticsSectionNav, AnalyticsSyncStatus } from "./_content";
 
-type ActionFilter = "all" | "submission.approve" | "submission.reject";
 type TimeFilter = "24h" | "7d" | "30d" | "all";
 const PAGE_SIZE = 12;
 
 export function AnalyticsAuditPage({ initialData }: { initialData?: AdminAuditData }) {
-  const [action, setAction] = useState<ActionFilter>("all");
+  const [action, setAction] = useState<AdminAuditAction>("all");
   const [time, setTime] = useState<TimeFilter>("7d");
   const [search, setSearch] = useState("");
   const [offset, setOffset] = useState(0);
@@ -58,17 +64,22 @@ export function AnalyticsAuditPage({ initialData }: { initialData?: AdminAuditDa
               审计日志独立于访问分析，不读取 analytics_events。
             </p>
           </div>
-          <div className="flex flex-wrap gap-2">
-            <AdminSegmentedControl<ActionFilter>
-              value={action}
-              onChange={(value) => { setAction(value); setOffset(0); }}
-              ariaLabel="审计操作筛选"
-              options={[
-                { value: "all", label: "全部" },
-                { value: "submission.approve", label: "已通过" },
-                { value: "submission.reject", label: "已驳回" },
-              ]}
-            />
+          <div className="flex flex-wrap items-end gap-3">
+            <label className="flex min-w-[220px] flex-col gap-1.5">
+              <span className="text-xs font-medium text-[var(--admin-text-secondary)]">操作类型</span>
+              <AdminSelect
+                value={action}
+                onChange={(event) => {
+                  setAction(event.target.value as AdminAuditAction);
+                  setOffset(0);
+                }}
+                aria-label="审计操作筛选"
+              >
+                {[...ADMIN_AUDIT_ACTION_OPTIONS].map((option) => (
+                  <option key={option.value} value={option.value}>{option.label}</option>
+                ))}
+              </AdminSelect>
+            </label>
             <AdminSegmentedControl<TimeFilter>
               value={time}
               onChange={(value) => { setTime(value); setOffset(0); }}
@@ -124,9 +135,9 @@ export function AnalyticsAuditPage({ initialData }: { initialData?: AdminAuditDa
                     <div className="min-w-0">
                       <p className="flex items-center gap-2 text-sm font-medium text-foreground">
                         <span
-                          className={`h-2 w-2 rounded-full ${event.action === "submission.reject" ? "bg-[var(--admin-status-red)]" : "bg-[var(--admin-status-green)]"}`}
+                          className={`h-2 w-2 rounded-full ${auditActionDotClass(event.action)}`}
                         />
-                        {formatAction(event.action)}
+                        {getAdminAuditActionLabel(event.action)}
                       </p>
                       <p className="mt-1 truncate font-mono text-xs text-muted">
                         {event.actor.type}:{event.actor.id} · {event.targetType}
@@ -163,8 +174,10 @@ export function AnalyticsAuditPage({ initialData }: { initialData?: AdminAuditDa
   );
 }
 
-function formatAction(action: string): string {
-  if (action === "submission.approve") return "通过投稿";
-  if (action === "submission.reject") return "拒绝投稿";
-  return action;
+function auditActionDotClass(action: string): string {
+  const tone = getAdminAuditActionTone(action);
+  if (tone === "danger") return "bg-[var(--admin-status-red)]";
+  if (tone === "info") return "bg-[var(--admin-status-blue)]";
+  if (tone === "success") return "bg-[var(--admin-status-green)]";
+  return "bg-[var(--admin-text-muted)]";
 }

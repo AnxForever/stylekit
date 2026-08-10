@@ -1,0 +1,8 @@
+[Unit]
+Description=Clean generated StyleKit backups and build residue
+After=local-fs.target
+
+[Service]
+Type=oneshot
+Environment=STYLEKIT_CLEANUP_DRY_RUN=0
+ExecStart=/usr/local/bin/stylekit-cleanup-server

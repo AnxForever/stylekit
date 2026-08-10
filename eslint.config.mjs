@@ -10,6 +10,7 @@ const eslintConfig = defineConfig([
     // Default ignores of eslint-config-next:
     ".next/**",
     "out/**",
+    "**/out/**",
     "build/**",
     "next-env.d.ts",
     // Local scratch/output directories (should never be linted).
@@ -25,7 +26,7 @@ const eslintConfig = defineConfig([
     // Utility scripts (node/cjs) are outside the app lint scope.
     "tools/scripts/**/*.cjs",
     // Published package build artifacts.
-    "packages/core/dist/**",
+    "packages/**/dist/**",
     // GitHub Actions scripts (CJS).
     ".github/**",
     // Standalone portfolio demo (Vite app, not part of Next.js).

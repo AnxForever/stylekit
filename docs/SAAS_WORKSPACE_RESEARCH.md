@@ -123,7 +123,9 @@ StyleKit 工作区的专属结构是“交付准备轨”：
 
 ### 需要改造
 
-- `lib/generator` 当前没有产品调用点，且多数风格只是替换颜色，不能直接开放。
+- `lib/generator` 不是公开生成器产品，但 Workspace 的已验证生成路径仍调用其中的模板与
+  renderer；多数风格只是替换颜色，不能直接开放。删除前必须先完成架构路线图 Phase 4 的
+  依赖抽取。
 - `buildDesignSpec` 含跨风格硬编码规则，会违背 Glassmorphism、Apple 等风格。
 - ZIP 需要固定文件顺序、时间戳和哈希，才能保证同 Revision 得到相同产物。
 - 生成项目的直接运行与构建依赖必须使用精确版本，并声明 `packageManager`；当前 ZIP 尚未携带 lockfile，因此每次发布前仍需执行干净安装、构建和 HTTP 运行验证，不能把直接依赖固定误称为完整传递依赖锁定。

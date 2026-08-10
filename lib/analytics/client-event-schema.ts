@@ -55,6 +55,25 @@ const packPriceShape = {
   currency: z.enum(["CNY", "USD"]),
   amount_minor: nonNegativeIntegerSchema,
 };
+const projectBriefShape = {
+  slug: slugSchema,
+  locale: z.enum(["zh", "en"]),
+  project_type: z.enum([
+    "landing",
+    "dashboard",
+    "app",
+    "portfolio",
+    "blog",
+    "commerce",
+    "other",
+  ]),
+  stack_count: z.number().int().min(0).max(8),
+  required_item_count: z.number().int().min(0).max(12),
+  state_count: z.number().int().min(0).max(5),
+  optional_field_count: z.number().int().min(0).max(6),
+  completion_tier: z.enum(["core", "guided", "complete"]),
+  source: z.literal("style_detail"),
+};
 
 const clientEventDataSchemas = {
   style_view: eventDataSchema({ slug: slugSchema, source: shortStringSchema }),
@@ -84,6 +103,9 @@ const clientEventDataSchemas = {
     slug: slugSchema,
     source: z.literal("style_use_panel"),
   }),
+  project_brief_generated: eventDataSchema(projectBriefShape),
+  project_brief_copy: eventDataSchema(projectBriefShape),
+  project_brief_download: eventDataSchema(projectBriefShape),
   pack_offer_view: eventDataSchema(packExperimentShape),
   pack_price_view: eventDataSchema(packPriceShape),
   catalog_impression: eventDataSchema({
@@ -178,6 +200,9 @@ export function readEventStyleSlug(
     eventType === "code_copy" ||
     eventType === "showcase_open" ||
     eventType === "shadcn_command_copy" ||
+    eventType === "project_brief_generated" ||
+    eventType === "project_brief_copy" ||
+    eventType === "project_brief_download" ||
     eventType === "catalog_impression"
   ) {
     const slug = eventData.slug;

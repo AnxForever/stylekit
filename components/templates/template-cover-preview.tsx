@@ -284,6 +284,7 @@ const TEMPLATE_LAYOUT_MAP: Record<string, string> = {
   "anx-blog": "blog-brutal",
   "warm-dashboard": "dashboard",
   "minimalist-portfolio": "portfolio",
+  "editorial-profile-archive": "portfolio",
   "magazine-landing": "magazine",
   "neumorphism-landing": "neumorphism",
   "brutalist-playful-blog": "blog-brutal",

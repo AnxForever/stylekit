@@ -148,6 +148,9 @@ const stylePreviewLoaders: Record<string, StylePreviewLoader> = {
   "luxe-lookbook": () => import("./styles/luxe-lookbook").then((module) => module.default),
   "shader-gradient": () => import("./styles/shader-gradient").then((module) => module.default),
   // End style preview loaders
+  "pastel-ui": () => import("./styles/pastel-ui").then((module) => module.default),
+  "mobile-editorial": () => import("./styles/mobile-editorial").then((module) => module.default),
+  "soft-utility": () => import("./styles/soft-utility").then((module) => module.default),
 };
 
 const previewPromises = new Map<string, Promise<StylePreviewComponents>>();
@@ -299,6 +302,9 @@ export const stylePreviewSlugs = Object.freeze([
   "luxe-lookbook",
   "shader-gradient",
   // End style preview slugs
+  "pastel-ui",
+  "mobile-editorial",
+  "soft-utility",
 ]);
 
 export function loadStylePreview(

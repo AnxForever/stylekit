@@ -51,6 +51,9 @@ function generateNextTsConfig(): string {
       compilerOptions: {
         target: "ES2022",
         lib: ["dom", "dom.iterable", "esnext"],
+        // Keep generated projects isolated from ambient @types packages in a
+        // parent workspace when they are verified from inside this repo.
+        types: ["node", "react", "react-dom"],
         allowJs: false,
         skipLibCheck: true,
         strict: true,

@@ -37,6 +37,9 @@ const nextConfig: NextConfig = {
   },
 
   experimental: {
+    // Keep production artifact generation deterministic on the constrained
+    // local/CI builders used by the deployment runbook.
+    cpus: 1,
     // Shared-element View Transitions (styles list cover -> detail cover).
     // Pages opt in via React's <ViewTransition>; browsers without the API
     // fall back to instant navigation.

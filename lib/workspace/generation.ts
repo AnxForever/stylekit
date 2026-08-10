@@ -13,6 +13,7 @@ import {
   type TemplateType,
 } from "@/lib/generator";
 import { getStyleBySlug } from "@/lib/styles";
+import type { KnowledgeAdvisorReference } from "@/lib/knowledge";
 import type { CreateWorkspaceProjectInput } from "./schema";
 
 export const WORKSPACE_GENERATOR_VERSION = "workspace-generator-v1" as const;
@@ -63,7 +64,11 @@ function sha256(content: string): string {
   return `sha256:${createHash("sha256").update(content).digest("hex")}`;
 }
 
-export function generateWorkspaceProject(input: CreateWorkspaceProjectInput & { target: Target; generatedAt: string }) {
+export function generateWorkspaceProject(input: CreateWorkspaceProjectInput & {
+  target: Target;
+  generatedAt: string;
+  knowledgeReferences?: KnowledgeAdvisorReference[];
+}) {
   const templateType = templateForProject(input.projectType);
   if (templateType !== "dashboard" || input.target !== "nextjs") {
     throw new WorkspaceGenerationError(
@@ -106,6 +111,10 @@ export function generateWorkspaceProject(input: CreateWorkspaceProjectInput & { 
     target: input.target,
     templateType,
     styleSlug: selected.slug,
+    knowledge: {
+      schemaVersion: "knowledge-generation-context-v1" as const,
+      references: input.knowledgeReferences ?? [],
+    },
     files: files.map((file) => ({ ...file, sha256: sha256(file.content) })),
     quality: { errors: quality.errors, warnings: [...validation.warnings.map((issue) => issue.message), ...quality.warnings] },
   };

@@ -38,6 +38,7 @@ import {
 } from "@/lib/styles/scenarios";
 import { cn } from "@/lib/utils";
 import { localizeHref } from "@/lib/i18n/routing";
+import type { ThankYouEntry } from "@/lib/site/support";
 
 interface HomeContentProps {
   styles: StyleMeta[];
@@ -46,6 +47,7 @@ interface HomeContentProps {
     animations: number;
     templates: number;
   };
+  thankYouEntries: ThankYouEntry[];
 }
 
 const HERO_SCENARIO_ORDER: StyleScenario[] = [
@@ -65,7 +67,7 @@ const TrendingStyles = dynamic(
   }
 );
 
-export function HomeContent({ styles, stats }: HomeContentProps) {
+export function HomeContent({ styles, stats, thankYouEntries }: HomeContentProps) {
   const { t, locale } = useI18n();
   const heroTitleLine1 = t("home.title.line1");
   const [heroTitleBeforeAi, heroTitleAfterAi] = heroTitleLine1.split("AI");
@@ -87,6 +89,24 @@ export function HomeContent({ styles, stats }: HomeContentProps) {
     [styles]
   );
   const mobileFeaturedStyles = useMemo(() => featuredStyles.slice(0, 4), [featuredStyles]);
+
+  // The Style Catalog renders two lists at once — a mobile carousel and a
+  // desktop grid — whose leading slugs overlap. Two <ViewTransition> boundaries
+  // sharing a name mounted together make React abort the shared-element morph,
+  // so only the list visible at the current breakpoint owns the boundary.
+  // Toggling <ViewTransition> emits no DOM node, so this stays hydration-safe.
+  const [isDesktopViewport, setIsDesktopViewport] = useState(() =>
+    typeof window !== "undefined"
+      ? window.matchMedia("(min-width: 768px)").matches
+      : true
+  );
+  useEffect(() => {
+    const mq = window.matchMedia("(min-width: 768px)");
+    const sync = () => setIsDesktopViewport(mq.matches);
+    sync();
+    mq.addEventListener("change", sync);
+    return () => mq.removeEventListener("change", sync);
+  }, []);
 
   const smallLinkClassName = "inline-flex items-center gap-1.5 text-xs tracking-wide text-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background transition-colors";
   const quickJumpLinkClassName = "inline-flex items-center gap-1.5 px-2.5 py-1.5 md:px-3.5 md:py-2.5 text-[11px] md:text-xs border border-border text-muted hover:text-foreground hover:border-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background transition-[color,border-color,background-color,transform,box-shadow] duration-200 ease-out";
@@ -307,7 +327,7 @@ export function HomeContent({ styles, stats }: HomeContentProps) {
 
   return (
     <>
-      <ThankYouModal showOnHomepageOnly={true} />
+      <ThankYouModal showOnHomepageOnly={true} entries={thankYouEntries} />
       <FriendPromoBanner />
       <section id="home-hero" className="home-hero-surface relative overflow-hidden border-b border-border">
         <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
@@ -373,6 +393,14 @@ export function HomeContent({ styles, stats }: HomeContentProps) {
                   className={smallLinkClassName}
                 >
                   {t("nav.guide")}
+                  <ArrowRight className="w-3 h-3" />
+                </Link>
+                <Link
+                  href={localizeHref("/launch", locale)}
+                  onClick={() => trackEvent("cta_click", { label: "open_launch", location: "home_hero" })}
+                  className={smallLinkClassName}
+                >
+                  {t("home.launch")}
                   <ArrowRight className="w-3 h-3" />
                 </Link>
               </div>
@@ -636,7 +664,7 @@ export function HomeContent({ styles, stats }: HomeContentProps) {
                 disableDelayOnMobile
                 className="w-[min(19rem,calc(100vw-2.5rem))] shrink-0 snap-start"
               >
-                <HomeStyleCard style={style} />
+                <HomeStyleCard style={style} enableViewTransition={!isDesktopViewport} />
               </RevealOnScroll>
             ))}
           </div>
@@ -644,7 +672,7 @@ export function HomeContent({ styles, stats }: HomeContentProps) {
           <div className="hidden md:grid md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-5 [content-visibility:auto] [contain-intrinsic-size:1px_680px]">
             {featuredStyles.map((style, styleIndex) => (
               <RevealOnScroll key={style.slug} variant="upSubtle" delayMs={60 + styleIndex * 30} disableDelayOnMobile>
-                <HomeStyleCard style={style} />
+                <HomeStyleCard style={style} enableViewTransition={isDesktopViewport} />
               </RevealOnScroll>
             ))}
           </div>

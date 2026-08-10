@@ -2,6 +2,31 @@
 
 This runbook describes the current production deployment shape for StyleKit.
 
+## Mandatory local release gate
+
+Before any production migration or deployment, the operator must explicitly
+confirm that payment and receipts have been checked. The gate is intentionally
+closed by default:
+
+```bash
+pnpm run verify:release
+```
+
+This exits immediately unless `STYLEKIT_PAYMENT_CONFIRMED=1` is present. After
+confirmation, run it as:
+
+```bash
+STYLEKIT_PAYMENT_CONFIRMED=1 pnpm run verify:release
+```
+
+The command runs local secret, runtime-config, lint, product-truth, catalog,
+asset, Experience Pack, clean-install, workspace-generation, type, unit,
+visual-regression, and build checks. Runtime-config verifies password hashing,
+session configuration, Supabase variable pairing, and local environment-file
+permissions without printing secrets. It does not connect to SSH, rsync files, restart PM2, apply
+Supabase migrations, upload storage objects, or write to any remote service. A
+successful gate is necessary but does not itself deploy anything.
+
 ## Canonical Production Deploy
 
 Use this path unless the infrastructure has been intentionally changed. The
@@ -89,29 +114,29 @@ rsync -az public/support/thank-you/ stylekit-prod:/www/stylekit/public/support/t
 than application runtime assets. Keep it out of Git and sync individual files
 to external hosting only when a campaign still references them.
 
-5. Install, validate, build, and restart on the server:
+5. Install dependencies and validate the synced source on the server. Do not
+   build on the production host:
 
 ```bash
 ssh stylekit-prod 'set -e
 cd /www/stylekit
 pnpm install --frozen-lockfile
 pnpm run check:catalog
-pnpm run typecheck
-pnpm run build
 pm2 startOrReload ecosystem.config.cjs --only stylekit --update-env
 pm2 save
 pm2 describe stylekit
 '
 ```
 
-6. If the server is OOM-killed during `typecheck` or `build`, use the local
-   build artifact that already passed checks. The local build must use the
-   same production build-time environment, especially the `NEXT_PUBLIC_*`
+6. Build locally and sync the verified production artifact. This is required;
+   never fall back to a server-side production build. The local build must use
+   the same production build-time environment, especially the `NEXT_PUBLIC_*`
    variables used by browser authentication. Remove the temporary local env
    copy after the build:
 
 ```bash
 scp stylekit-prod:/www/stylekit/.env.production .env.production
+pnpm run typecheck
 pnpm run build
 rsync -az --delete .next/ stylekit-prod:/www/stylekit/.next/
 rm -f .env.production
@@ -372,6 +397,14 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=
 SUPABASE_SERVICE_ROLE_KEY=
 ```
 
+Email sign-in sends a numeric verification code through SMTP. Set
+`AUTH_SMTP_HOST`, `AUTH_SMTP_PORT`, `AUTH_SMTP_USER`, `AUTH_SMTP_PASS`, and
+optionally `AUTH_SMTP_FROM` in the server environment. If the `AUTH_SMTP_*`
+variables are omitted, the login flow reuses the existing `FEEDBACK_SMTP_*`
+settings. `EMAIL_OTP_SECRET` is optional when
+`SUPABASE_SERVICE_ROLE_KEY` is present, but a separate long random secret is
+recommended.
+
 Admin access variables:
 
 ```bash
@@ -387,6 +420,20 @@ CSRF_TRUSTED_ORIGINS=https://www.stylekit.top
 ```
 
 Use `ADMIN_PASSWORD_SHA256` instead of `ADMIN_PASSWORD` when you do not want the plain admin password present in environment storage. `ADMIN_SESSION_SECRET` must be a long random value when admin password login is enabled.
+
+For a password migration, calculate the digest on a trusted local machine and
+update the server environment in one maintenance window. Do not put the
+password or digest in the repository, a deployment command, or a backup:
+
+```bash
+STYLEKIT_ADMIN_PASSWORD='set-this-only-in-your-local-shell'
+printf '%s' "$STYLEKIT_ADMIN_PASSWORD" | sha256sum
+unset STYLEKIT_ADMIN_PASSWORD
+```
+
+Set the resulting digest as `ADMIN_PASSWORD_SHA256`, remove `ADMIN_PASSWORD`,
+then restart the application only after the local hash-mode auth test and the
+production login check both pass.
 
 ## Build And Deploy
 
@@ -442,18 +489,21 @@ ssh stylekit-prod 'set -e
 cd /www/stylekit
 pnpm install --frozen-lockfile
 pnpm run check:catalog
-pnpm run typecheck
-pnpm run build
 pm2 startOrReload ecosystem.config.cjs --only stylekit --update-env
 pm2 save
 pm2 describe stylekit
 '
 ```
 
-The production host is memory-constrained. If server-side `typecheck` or `build` is OOM-killed after the local checks and local `pnpm run build` have passed, sync the local build output instead:
+The production host is memory-constrained. Always run `typecheck` and
+`build` locally with the production environment, then sync the generated
+`.next/` artifact separately. Confirm that the completed local artifact
+contains `.next/BUILD_ID` before syncing. Do not run a production build on
+the server.
 
 ```bash
 scp stylekit-prod:/www/stylekit/.env.production .env.production
+pnpm run typecheck
 pnpm run build
 rsync -az --delete .next/ stylekit-prod:/www/stylekit/.next/
 rm -f .env.production
@@ -467,6 +517,12 @@ pm2 save
 pm2 describe stylekit
 '
 ```
+
+The local build must use the same production build-time environment,
+especially the `NEXT_PUBLIC_*` variables used by browser authentication.
+Remove the temporary local env copy immediately after the build. If the local
+build fails, fix and re-verify locally before syncing; do not fall back to a
+server-side build.
 
 The runtime command must remain equivalent to `next start` through pnpm on port `13000`, with the same environment loaded.
 
@@ -531,6 +587,34 @@ Inspect it:
 systemctl status stylekit-healthcheck.timer
 journalctl -u stylekit-healthcheck.service -n 100 --no-pager
 tail -n 100 /var/log/stylekit-healthcheck.log
+```
+
+## Storage Cleanup
+
+The repository includes `ops/cleanup-stylekit-server.sh`. It only recognizes
+timestamped full backups, known dashboard build backups, generated `.next-*`
+residue, and the DNF cache. It defaults to preview mode:
+
+```bash
+STYLEKIT_CLEANUP_DRY_RUN=1 /usr/local/bin/stylekit-cleanup-server
+```
+
+After reviewing the exact paths, run it with
+`STYLEKIT_CLEANUP_DRY_RUN=0`. The optional systemd units run the same cleanup
+weekly and retain one full backup plus two dashboard build backups:
+
+```bash
+sudo install -m 0755 ops/cleanup-stylekit-server.sh /usr/local/bin/stylekit-cleanup-server
+sudo install -m 0644 ops/systemd/stylekit-cleanup.service /etc/systemd/system/stylekit-cleanup.service
+sudo install -m 0644 ops/systemd/stylekit-cleanup.timer /etc/systemd/system/stylekit-cleanup.timer
+sudo systemctl daemon-reload
+sudo systemctl enable --now stylekit-cleanup.timer
+```
+
+Before any production change, use the read-only smoke check:
+
+```bash
+./ops/verify-stylekit-production.sh
 ```
 
 Disable it:

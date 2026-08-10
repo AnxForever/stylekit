@@ -1,0 +1,61 @@
+{
+  "schemaVersion": "knowledge-resource-v1",
+  "id": "radix-primitives",
+  "name": "Radix Primitives",
+  "nameEn": "Radix Primitives",
+  "resourceKind": "component-library",
+  "sourceUrl": "https://www.radix-ui.com/primitives",
+  "repositoryUrl": "https://github.com/radix-ui/primitives",
+  "sourceRef": "main",
+  "license": {
+    "classification": "allowlisted",
+    "spdx": "MIT",
+    "name": "MIT License",
+    "termsUrl": "https://github.com/radix-ui/primitives/blob/main/LICENSE",
+    "commercialUse": true,
+    "modificationAllowed": true,
+    "redistributionAllowed": true,
+    "attributionRequired": true,
+    "attributionText": "Radix Primitives is licensed under the MIT License."
+  },
+  "mirror": { "mode": "none" },
+  "provenance": {
+    "originType": "external-open-source",
+    "creator": "WorkOS / Radix UI",
+    "acquiredAt": "2026-08-03T00:00:00.000Z",
+    "evidenceUrls": [
+      "https://github.com/radix-ui/primitives",
+      "https://github.com/radix-ui/primitives/blob/main/LICENSE"
+    ],
+    "modificationStatus": "untouched"
+  },
+  "knowledge": {
+    "summary": "Accessible, unstyled React primitives for composing custom design systems with reliable keyboard, focus, and interaction behavior.",
+    "summaryEn": "Accessible, unstyled React primitives for composing custom design systems with reliable keyboard, focus, and interaction behavior.",
+    "useCases": ["Accessible component foundations", "Custom design systems", "Dialog, menu, popover, and navigation patterns"],
+    "limitations": ["Primitives provide behavior rather than a finished visual language.", "Runtime and accessibility verification is still required before generator approval."],
+    "tags": ["components", "accessibility", "react", "primitives", "design-systems"],
+    "frameworks": ["React"],
+    "relatedStyleSlugs": [],
+    "extractedTopics": ["keyboard interaction", "focus management", "unstyled primitives", "composition"]
+  },
+  "quality": {
+    "score": 86,
+    "documentationReviewed": true,
+    "runtimeVerified": false,
+    "accessibilityReviewed": false,
+    "performanceReviewed": false,
+    "notes": ["Candidate source record only; no code has been mirrored or approved for generation."]
+  },
+  "security": {
+    "secretScan": "pending",
+    "dependencyAudit": "pending",
+    "sbomStatus": "pending",
+    "criticalFindings": 0,
+    "notes": []
+  },
+  "usagePolicy": "retrieval-only",
+  "reviewStatus": "pending",
+  "publicationStatus": "unpublished",
+  "updatedAt": "2026-08-03T00:00:00.000Z"
+}

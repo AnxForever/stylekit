@@ -159,6 +159,12 @@ import { warmOrganicTokens } from "./warm-organic-tokens";
 import { launchKeynoteTokens } from "./launch-keynote-tokens";
 import { luxeLookbookTokens } from "./luxe-lookbook-tokens";
 import { shaderGradientTokens } from "./shader-gradient-tokens";
+import { pastelUiTokens } from "./pastel-ui-tokens";
+import { mobileEditorialTokens } from "./mobile-editorial-tokens";
+import { softUtilityTokens } from "./soft-utility-tokens";
+
+
+
 
 // Registry of all style tokens
 export const styleTokensRegistry: Record<string, StyleTokens> = {
@@ -319,4 +325,7 @@ export const styleTokensRegistry: Record<string, StyleTokens> = {
   "launch-keynote": launchKeynoteTokens,
   "luxe-lookbook": luxeLookbookTokens,
   "shader-gradient": shaderGradientTokens,
+  "pastel-ui": pastelUiTokens,
+  "mobile-editorial": mobileEditorialTokens,
+  "soft-utility": softUtilityTokens,
 };

@@ -28,10 +28,18 @@ export interface AuthState {
   loading: boolean;
   signInWithGitHub: (nextPath?: string) => Promise<void>;
   signInWithLinuxDo: (nextPath?: string) => Promise<void>;
-  /** Send a 6-digit OTP to `email`. Throws on failure (e.g. SMTP not configured). */
+  signInWithGoogle: (nextPath?: string) => Promise<void>;
+  signInWithPassword: (email: string, password: string) => Promise<void>;
+  signUpWithPassword: (
+    email: string,
+    password: string,
+    nextPath?: string,
+  ) => Promise<{ needsEmailConfirmation: boolean }>;
+  /** Send a 6-digit OTP to `email` through the app SMTP service. */
   signInWithEmailOtp: (email: string) => Promise<void>;
-  /** Verify the emailed OTP `token` for `email` and establish a session. */
+  /** Verify the emailed OTP for `email` and establish a session. */
   verifyEmailOtp: (email: string, token: string) => Promise<void>;
+  updateProfile: (profile: { displayName: string; avatarUrl: string }) => Promise<User>;
   signOut: () => Promise<void>;
 }
 
@@ -148,12 +156,27 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (!client) return;
     const safeNextPath = normalizeNextPath(nextPath);
 
-    await client.auth.signInWithOAuth({
+    const { error } = await client.auth.signInWithOAuth({
       provider: "github",
       options: {
         redirectTo: `${window.location.origin}/api/auth/callback?next=${encodeURIComponent(safeNextPath)}`,
       },
     });
+    if (error) throw error;
+  }, []);
+
+  const signInWithGoogle = useCallback(async (nextPath?: string) => {
+    const client = getAuthClient();
+    if (!client) return;
+    const safeNextPath = normalizeNextPath(nextPath);
+
+    const { error } = await client.auth.signInWithOAuth({
+      provider: "google",
+      options: {
+        redirectTo: `${window.location.origin}/api/auth/callback?next=${encodeURIComponent(safeNextPath)}`,
+      },
+    });
+    if (error) throw error;
   }, []);
 
   const signInWithLinuxDo = useCallback(async (nextPath?: string) => {
@@ -161,32 +184,101 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     window.location.href = `/api/auth/linuxdo?next=${encodeURIComponent(safeNextPath)}`;
   }, []);
 
-  const signInWithEmailOtp = useCallback(async (email: string) => {
+  const signInWithPassword = useCallback(async (email: string, password: string) => {
     const client = getAuthClient();
-    if (!client) {
-      throw new Error("Auth is not configured");
-    }
-    // `shouldCreateUser: true` lets first-time email visitors register on the
-    // spot, matching how GitHub/LinuxDo auto-provision on first sign-in.
-    const { error } = await client.auth.signInWithOtp({
-      email,
-      options: { shouldCreateUser: true },
+    if (!client) throw new Error("Auth is not configured");
+
+    const { error } = await client.auth.signInWithPassword({
+      email: email.trim().toLowerCase(),
+      password,
     });
     if (error) throw error;
   }, []);
 
-  const verifyEmailOtp = useCallback(async (email: string, token: string) => {
+  const signUpWithPassword = useCallback(async (
+    email: string,
+    password: string,
+    nextPath?: string,
+  ) => {
     const client = getAuthClient();
-    if (!client) {
-      throw new Error("Auth is not configured");
-    }
-    const { error } = await client.auth.verifyOtp({
-      email,
-      token,
-      type: "email",
+    if (!client) throw new Error("Auth is not configured");
+
+    const { data, error } = await client.auth.signUp({
+      email: email.trim().toLowerCase(),
+      password,
+      options: {
+        emailRedirectTo: `${window.location.origin}/api/auth/callback?next=${encodeURIComponent(normalizeNextPath(nextPath))}`,
+      },
     });
     if (error) throw error;
+    if (data.session?.user) setUser(data.session.user);
+    return { needsEmailConfirmation: !data.session };
   }, []);
+
+  const signInWithEmailOtp = useCallback(async (email: string) => {
+    const response = await fetch("/api/auth/email-otp/send", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email }),
+    });
+    if (!response.ok) {
+      const body = (await response.json().catch(() => null)) as { error?: string } | null;
+      throw new Error(body?.error ?? "Failed to send verification code");
+    }
+  }, []);
+
+  const verifyEmailOtp = useCallback(async (email: string, token: string) => {
+    const response = await fetch("/api/auth/email-otp/verify", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, code: token }),
+    });
+    if (!response.ok) {
+      const body = (await response.json().catch(() => null)) as { error?: string } | null;
+      throw new Error(body?.error ?? "Could not verify email code");
+    }
+  }, []);
+
+  const updateProfile = useCallback(async ({ displayName, avatarUrl }: {
+    displayName: string;
+    avatarUrl: string;
+  }) => {
+    const client = getAuthClient();
+    if (!client || !user) {
+      throw new Error("Auth is not configured");
+    }
+
+    const normalizedName = displayName.trim();
+    if (normalizedName.length > 60) {
+      throw new Error("Display name is too long");
+    }
+
+    const normalizedAvatarUrl = avatarUrl.trim();
+    if (normalizedAvatarUrl) {
+      let parsedAvatarUrl: URL;
+      try {
+        parsedAvatarUrl = new URL(normalizedAvatarUrl);
+      } catch {
+        throw new Error("Avatar URL is invalid");
+      }
+      if (parsedAvatarUrl.protocol !== "https:" || normalizedAvatarUrl.length > 2048) {
+        throw new Error("Avatar URL is invalid");
+      }
+    }
+
+    const { data, error } = await client.auth.updateUser({
+      data: {
+        ...(user.user_metadata ?? {}),
+        display_name: normalizedName,
+        avatar_url: normalizedAvatarUrl,
+      },
+    });
+    if (error || !data.user) {
+      throw error ?? new Error("Could not update profile");
+    }
+    setUser(data.user);
+    return data.user;
+  }, [user]);
 
   const signOut = useCallback(async () => {
     const client = getAuthClient();
@@ -202,8 +294,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       loading,
       signInWithGitHub,
       signInWithLinuxDo,
+      signInWithGoogle,
+      signInWithPassword,
+      signUpWithPassword,
       signInWithEmailOtp,
       verifyEmailOtp,
+      updateProfile,
       signOut,
     }),
     [
@@ -211,8 +307,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       loading,
       signInWithGitHub,
       signInWithLinuxDo,
+      signInWithGoogle,
+      signInWithPassword,
+      signUpWithPassword,
       signInWithEmailOtp,
       verifyEmailOtp,
+      updateProfile,
       signOut,
     ]
   );

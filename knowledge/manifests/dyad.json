@@ -1,0 +1,59 @@
+{
+  "schemaVersion": "knowledge-resource-v1",
+  "id": "dyad",
+  "name": "Dyad",
+  "nameEn": "Dyad",
+  "resourceKind": "design-to-code-tool",
+  "sourceUrl": "https://dyad.sh/",
+  "repositoryUrl": "https://github.com/dyad-sh/dyad",
+  "sourceRef": "main",
+  "license": {
+    "classification": "pending",
+    "spdx": "Apache-2.0/FSL-1.1-ALv2",
+    "name": "Mixed repository licensing",
+    "termsUrl": "https://github.com/dyad-sh/dyad/blob/main/LICENSE",
+    "commercialUse": false,
+    "modificationAllowed": false,
+    "redistributionAllowed": false,
+    "attributionRequired": true,
+    "attributionText": "License scope must be reviewed between the open-source and pro directories.",
+    "notes": "The repository documents Apache-2.0 for most code and a different license for src/pro."
+  },
+  "mirror": { "mode": "none" },
+  "provenance": {
+    "originType": "external-open-source",
+    "creator": "Dyad",
+    "acquiredAt": "2026-08-03T00:00:00.000Z",
+    "evidenceUrls": ["https://github.com/dyad-sh/dyad"],
+    "modificationStatus": "untouched"
+  },
+  "knowledge": {
+    "summary": "A local open-source AI app builder focused on privacy, user-owned API keys, and avoiding hosted platform lock-in.",
+    "summaryEn": "A local open-source AI app builder focused on privacy, user-owned API keys, and avoiding hosted platform lock-in.",
+    "useCases": ["Local AI app building", "BYOK provider workflows", "AI builder architecture research"],
+    "limitations": ["The repository has mixed licensing and is broader than StyleKit's visual resource layer."],
+    "tags": ["local", "byok", "ai-app-builder", "deepseek", "qwen"],
+    "frameworks": ["React", "TypeScript"],
+    "relatedStyleSlugs": [],
+    "extractedTopics": ["local runtime", "provider abstraction", "project generation"]
+  },
+  "quality": {
+    "score": 78,
+    "documentationReviewed": true,
+    "runtimeVerified": false,
+    "accessibilityReviewed": false,
+    "performanceReviewed": false,
+    "notes": ["Mixed-license candidate; no mirroring or code reuse is approved."]
+  },
+  "security": {
+    "secretScan": "pending",
+    "dependencyAudit": "pending",
+    "sbomStatus": "pending",
+    "criticalFindings": 0,
+    "notes": []
+  },
+  "usagePolicy": "retrieval-only",
+  "reviewStatus": "pending",
+  "publicationStatus": "unpublished",
+  "updatedAt": "2026-08-03T00:00:00.000Z"
+}

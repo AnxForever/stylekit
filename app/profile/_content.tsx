@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useEffect, useMemo, useState, type CSSProperties } from "react";
 import {
   ExternalLink,
+  ArrowRight,
   Github,
   User,
   Calendar,
@@ -14,6 +15,9 @@ import {
   Eye,
   EyeOff,
   Pencil,
+  Save,
+  Upload,
+  X,
   Trash2,
 } from "lucide-react";
 import { useUser } from "@/lib/auth/use-user";
@@ -34,25 +38,35 @@ import {
 import { LocalizedLink } from "@/components/i18n/localized-link";
 import { FavoriteButton } from "@/components/favorite-button";
 import { StyleCoverPreview } from "@/components/style-preview/style-cover-preview";
+import { XiaoheiLoading } from "@/components/profile/xiaohei-note";
+import { EditorialAuraFrame } from "@/components/effects/editorial-aura-frame";
 import type { StyleMeta } from "@/lib/styles/meta";
+import {
+  Modal,
+  ModalContent,
+  ModalDescription,
+  ModalFooter,
+  ModalHeader,
+  ModalTitle,
+} from "@/components/ui/modal/modal";
 
 const HEX_COLOR_RE = /^#[0-9a-f]{6}$/i;
 const SVG_PATH_RE = /^[MmLlHhVvCcSsQqTtAaZz0-9eE+.,\-\s]+$/;
 
 function getTitleBadgeClass(title: string): string {
   if (title === EMPEROR_TITLE_TOKEN) {
-    return "border-amber-300/80 bg-amber-100 text-amber-800 dark:border-amber-700 dark:bg-amber-900/40 dark:text-amber-200";
+    return "border-amber-300/60 bg-amber-50 text-amber-800 shadow-[0_1px_2px_rgba(120,80,0,0.08)] dark:border-amber-700/60 dark:bg-amber-950/30 dark:text-amber-200";
   }
 
   if (title === EARLY_USER_TITLE_TOKEN) {
-    return "border-sky-300/80 bg-sky-100 text-sky-800 dark:border-sky-700 dark:bg-sky-900/40 dark:text-sky-200";
+    return "border-sky-300/60 bg-sky-50 text-sky-800 shadow-[0_1px_2px_rgba(0,80,120,0.08)] dark:border-sky-700/60 dark:bg-sky-950/30 dark:text-sky-200";
   }
 
   if (title === SITE_OWNER_TITLE_TOKEN) {
-    return "border-violet-300/80 bg-violet-100 text-violet-800 dark:border-violet-700 dark:bg-violet-900/40 dark:text-violet-200";
+    return "border-violet-300/60 bg-violet-50 text-violet-800 shadow-[0_1px_2px_rgba(80,40,140,0.08)] dark:border-violet-700/60 dark:bg-violet-950/30 dark:text-violet-200";
   }
 
-  return "border-rose-300/80 bg-rose-100 text-rose-800 dark:border-rose-700 dark:bg-rose-900/40 dark:text-rose-200";
+  return "border-rose-300/60 bg-rose-50 text-rose-800 shadow-[0_1px_2px_rgba(140,30,60,0.08)] dark:border-rose-700/60 dark:bg-rose-950/30 dark:text-rose-200";
 }
 
 function normalizeHexColor(value: string | null | undefined): string | null {
@@ -93,9 +107,10 @@ function getTitleBadgeAppearance(
   return {
     className: "border",
     style: {
-      backgroundColor: normalizedColor,
-      borderColor: normalizedColor,
+      backgroundColor: `color-mix(in srgb, ${normalizedColor} 12%, transparent)`,
+      borderColor: `color-mix(in srgb, ${normalizedColor} 38%, transparent)`,
       color: pickBadgeTextColor(normalizedColor),
+      boxShadow: `0 1px 2px color-mix(in srgb, ${normalizedColor} 12%, transparent)`,
     },
   };
 }
@@ -136,6 +151,9 @@ const TAB_KEYS = ["favorites", "comments", "ratings", "submissions"] as const;
 type TabKey = (typeof TAB_KEYS)[number];
 
 const LIST_PREVIEW_COUNT = 12;
+const MAX_AVATAR_FILE_SIZE = 5 * 1024 * 1024;
+const AVATAR_FILE_TYPES = "image/jpeg,image/png,image/webp";
+const PROFILE_AURA_ACCENT = ["#6366f1", "#fb7185", "#2dd4bf"] as const;
 
 function isTabKey(value: string): value is TabKey {
   return (TAB_KEYS as readonly string[]).includes(value);
@@ -195,7 +213,7 @@ interface ProfileContentProps {
 }
 
 export function ProfileContent({ allStyles }: ProfileContentProps) {
-  const { user, loading, signOut } = useUser();
+  const { user, loading, updateProfile, signOut } = useUser();
   const { favorites } = useFavorites();
   const { t, locale } = useI18n();
   const [showEmail, setShowEmail] = useState(false);
@@ -212,6 +230,14 @@ export function ProfileContent({ allStyles }: ProfileContentProps) {
   const [editSubmissionDescription, setEditSubmissionDescription] = useState("");
   const [submissionActionBusyId, setSubmissionActionBusyId] = useState<string | null>(null);
   const [submissionActionError, setSubmissionActionError] = useState<string | null>(null);
+  const [editingProfile, setEditingProfile] = useState(false);
+  const [profileNameDraft, setProfileNameDraft] = useState("");
+  const [profileAvatarDraft, setProfileAvatarDraft] = useState("");
+  const [profileAvatarFile, setProfileAvatarFile] = useState<File | null>(null);
+  const [profileAvatarPreview, setProfileAvatarPreview] = useState<string | null>(null);
+  const [profileAvatarRemoved, setProfileAvatarRemoved] = useState(false);
+  const [profileSaveState, setProfileSaveState] = useState<"idle" | "saving" | "saved" | "error">("idle");
+  const [profileSaveError, setProfileSaveError] = useState<string | null>(null);
 
   useEffect(() => {
     const hash = window.location.hash.replace("#", "");
@@ -219,6 +245,17 @@ export function ProfileContent({ allStyles }: ProfileContentProps) {
       setActiveTab(hash);
     }
   }, []);
+
+  useEffect(() => {
+    if (!profileAvatarFile) {
+      setProfileAvatarPreview(null);
+      return;
+    }
+
+    const previewUrl = URL.createObjectURL(profileAvatarFile);
+    setProfileAvatarPreview(previewUrl);
+    return () => URL.revokeObjectURL(previewUrl);
+  }, [profileAvatarFile]);
 
   const selectTab = (key: TabKey) => {
     setActiveTab(key);
@@ -256,42 +293,74 @@ export function ProfileContent({ allStyles }: ProfileContentProps) {
   if (loading) {
     return (
       <div className="max-w-6xl mx-auto px-6 md:px-12 py-10 md:py-14">
-        <div className="animate-pulse flex flex-col md:flex-row gap-8 md:gap-14">
-          <div className="md:w-64 md:shrink-0 space-y-4">
-            <div className="w-20 h-20 rounded-full bg-muted/20" />
-            <div className="h-6 w-36 bg-muted/20" />
-            <div className="h-3 w-28 bg-muted/20" />
-            <div className="h-3 w-32 bg-muted/20" />
-          </div>
-          <div className="flex-1 space-y-6">
-            <div className="h-8 w-full max-w-sm bg-muted/20" />
-            <div className="grid grid-cols-2 lg:grid-cols-3 gap-3">
-              {Array.from({ length: 6 }).map((_, i) => (
-                <div key={i} className="aspect-video bg-muted/10" />
-              ))}
-            </div>
-          </div>
-        </div>
+        <XiaoheiLoading locale={locale} />
       </div>
     );
   }
 
   if (!user) {
     return (
-      <div className="max-w-4xl mx-auto px-6 md:px-10 py-20 md:py-28 text-center">
-        <p className="text-xs uppercase tracking-widest text-muted mb-6">
-          {t("profile.pageLabel")}
-        </p>
-        <User className="w-8 h-8 text-muted mx-auto mb-5" aria-hidden="true" />
-        <h1 className="text-2xl md:text-3xl mb-3">{t("profile.notLoggedIn")}</h1>
-        <p className="text-sm text-muted mb-8">{t("profile.signInPrompt")}</p>
-        <Link
-          href="/login"
-          className="inline-flex items-center gap-2 border border-foreground px-6 py-2.5 text-sm uppercase tracking-widest hover:bg-foreground hover:text-background transition-colors"
-        >
-          <LogIn className="w-4 h-4" aria-hidden="true" />
-          {t("auth.signIn")}
-        </Link>
+      <div className="mx-auto flex min-h-[calc(100vh-4rem)] max-w-5xl items-center px-4 py-12 sm:px-6 md:px-10">
+        <section className="relative w-full overflow-hidden rounded-[2rem] border border-border bg-background/80 p-6 shadow-[0_24px_80px_-48px_var(--foreground)] backdrop-blur-sm sm:p-10 md:p-14">
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute -right-20 -top-24 h-64 w-64 rounded-full bg-accent/10 blur-3xl"
+          />
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute -bottom-28 -left-16 h-56 w-56 rounded-full bg-foreground/[0.04] blur-2xl"
+          />
+          <div className="relative grid gap-10 md:grid-cols-[minmax(0,1fr)_13rem] md:items-center md:gap-16">
+            <div>
+              <div className="mb-7 flex items-center gap-3">
+                <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-foreground text-background shadow-[4px_4px_0_var(--accent)]">
+                  <User className="h-5 w-5" aria-hidden="true" />
+                </span>
+                <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-muted">
+                  {t("profile.pageLabel")}
+                </p>
+              </div>
+              <p className="mb-3 font-mono text-[10px] uppercase tracking-[0.24em] text-muted">
+                01 / {t("auth.account")}
+              </p>
+              <h1 className="max-w-xl font-serif text-3xl leading-[1.08] sm:text-4xl md:text-5xl">
+                {t("profile.notLoggedIn")}
+              </h1>
+              <p className="mt-5 max-w-md text-sm leading-relaxed text-muted">
+                {t("profile.signInPrompt")}
+              </p>
+              <div className="mt-8 flex flex-wrap items-center gap-3">
+                <Link
+                  href="/login"
+                  className="group inline-flex min-h-11 items-center gap-2 rounded-full bg-foreground px-5 py-3 text-sm font-medium text-background transition-[transform,opacity] hover:-translate-y-0.5 hover:opacity-90 motion-reduce:transform-none"
+                >
+                  <LogIn className="h-4 w-4" aria-hidden="true" />
+                  {t("auth.signIn")}
+                  <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
+                </Link>
+                <LocalizedLink
+                  href="/styles"
+                  className="inline-flex min-h-11 items-center gap-2 rounded-full border border-border px-5 py-3 text-sm text-muted transition-colors hover:border-foreground/40 hover:text-foreground"
+                >
+                  {t("nav.styles")}
+                </LocalizedLink>
+              </div>
+            </div>
+
+            <div aria-hidden="true" className="relative mx-auto hidden h-44 w-44 md:block">
+              <div className="absolute inset-4 rounded-full border border-border/80" />
+              <div className="absolute inset-10 rounded-full border border-dashed border-border" />
+              <div className="absolute inset-0 flex items-center justify-center">
+                <span className="font-serif text-7xl text-foreground/[0.08]">SK</span>
+              </div>
+              <span className="absolute right-0 top-5 h-2 w-2 rounded-full bg-accent" />
+              <span className="absolute bottom-8 left-4 h-1.5 w-1.5 rounded-full bg-foreground/30" />
+              <span className="absolute bottom-2 right-8 font-mono text-[9px] tracking-[0.2em] text-muted">
+                {t("auth.signIn")}
+              </span>
+            </div>
+          </div>
+        </section>
       </div>
     );
   }
@@ -301,6 +370,11 @@ export function ProfileContent({ allStyles }: ProfileContentProps) {
   const avatarUrl = user.user_metadata?.avatar_url ?? "";
   const avatarSrc = getAvatarImageSrc(avatarUrl);
   const email = user.email ?? "";
+  const customDisplayName =
+    typeof user.user_metadata?.display_name === "string"
+      ? user.user_metadata.display_name.trim()
+      : "";
+  const displayName = customDisplayName || fullName || userName || email || "User";
   const maskedEmail = (() => {
     if (!email.includes("@")) return "";
     const [local, domain] = email.split("@");
@@ -364,6 +438,78 @@ export function ProfileContent({ allStyles }: ProfileContentProps) {
   const profileSeqId =
     asPositiveInt(profileTitleData?.seqId) ??
     asPositiveInt(user.user_metadata?.seq_id);
+
+  const beginProfileEdit = () => {
+    setProfileNameDraft(
+      typeof user.user_metadata?.display_name === "string"
+        ? user.user_metadata.display_name
+        : "",
+    );
+    setProfileAvatarDraft(typeof avatarUrl === "string" ? avatarUrl : "");
+    setProfileAvatarFile(null);
+    setProfileAvatarPreview(null);
+    setProfileAvatarRemoved(false);
+    setProfileSaveError(null);
+    setProfileSaveState("idle");
+    setEditingProfile(true);
+  };
+
+  const saveProfile = async () => {
+    setProfileSaveState("saving");
+    setProfileSaveError(null);
+    try {
+      let nextAvatarUrl = profileAvatarDraft;
+      if (profileAvatarFile) {
+        const formData = new FormData();
+        formData.append("file", profileAvatarFile);
+        const response = await fetch("/api/profile/avatar", {
+          method: "POST",
+          body: formData,
+        });
+        const body = (await response.json().catch(() => null)) as { avatarUrl?: string; error?: string } | null;
+        if (!response.ok || !body?.avatarUrl) {
+          throw new Error(body?.error ?? t("profile.avatarUploadFailed"));
+        }
+        nextAvatarUrl = body.avatarUrl;
+      } else if (profileAvatarRemoved) {
+        await fetch("/api/profile/avatar", { method: "DELETE" });
+        nextAvatarUrl = "";
+      }
+
+      await updateProfile({
+        displayName: profileNameDraft,
+        avatarUrl: nextAvatarUrl,
+      });
+      setProfileAvatarDraft(nextAvatarUrl);
+      setProfileAvatarFile(null);
+      setProfileAvatarPreview(null);
+      setProfileAvatarRemoved(false);
+      setProfileSaveState("saved");
+      setEditingProfile(false);
+    } catch (error) {
+      setProfileSaveState("error");
+      setProfileSaveError(error instanceof Error ? error.message : t("profile.saveFailed"));
+    }
+  };
+
+  const handleAvatarFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0] ?? null;
+    event.target.value = "";
+    if (!file) return;
+
+    if (!AVATAR_FILE_TYPES.split(",").includes(file.type)) {
+      setProfileSaveError(t("profile.avatarFileTypeInvalid"));
+      return;
+    }
+    if (file.size > MAX_AVATAR_FILE_SIZE) {
+      setProfileSaveError(t("profile.avatarFileTooLarge"));
+      return;
+    }
+
+    setProfileSaveError(null);
+    setProfileAvatarFile(file);
+    setProfileAvatarRemoved(false);
+  };
 
   const comments = commentsData?.comments ?? [];
   const ratings = ratingsData?.ratings ?? [];
@@ -543,100 +689,252 @@ export function ProfileContent({ allStyles }: ProfileContentProps) {
   ];
 
   return (
-    <div className="max-w-6xl mx-auto px-6 md:px-12 py-10 md:py-14 motion-safe:animate-home-reveal-soft">
-      <div className="flex flex-col md:flex-row gap-8 md:gap-14 md:min-h-[55vh]">
+    <EditorialAuraFrame
+      className="mx-auto max-w-7xl"
+      accent={PROFILE_AURA_ACCENT}
+      intensity="subtle"
+      label="Personal archive ambient frame"
+    >
+      <div className="min-h-[calc(100vh-4rem)] bg-[#f5f2ec] bg-[radial-gradient(circle_at_4%_8%,rgba(91,92,190,0.10),transparent_22rem),radial-gradient(circle_at_96%_18%,rgba(226,76,112,0.08),transparent_24rem)] px-4 py-8 sm:px-6 sm:py-10 lg:px-10 md:py-14 dark:bg-[#101313] dark:bg-[radial-gradient(circle_at_4%_8%,rgba(91,92,190,0.12),transparent_22rem),radial-gradient(circle_at_96%_18%,rgba(226,76,112,0.08),transparent_24rem)] motion-safe:animate-home-reveal-soft">
+      <div className="grid gap-6 lg:grid-cols-[19rem_minmax(0,1fr)] lg:gap-8">
         {/* Identity rail */}
-        <aside className="md:w-64 md:shrink-0">
-          <div className="md:sticky md:top-24">
-            <p className="text-[11px] uppercase tracking-widest text-muted mb-5">
+        <aside className="min-w-0">
+          <div className="relative overflow-hidden rounded-2xl border border-border/80 bg-background p-5 shadow-[0_12px_40px_-28px_rgba(0,0,0,0.45)] md:sticky md:top-24">
+            <div
+              aria-hidden="true"
+              className="relative -mx-5 -mt-5 mb-6 h-24 overflow-hidden border-b border-border/70 bg-[#f1eee7] dark:bg-[#171b1b]"
+            >
+              <div className="absolute -left-8 -top-16 h-40 w-40 rounded-full bg-indigo-300/35 blur-3xl dark:bg-indigo-400/15" />
+              <div className="absolute left-1/3 -top-10 h-36 w-36 rounded-full bg-rose-300/30 blur-3xl dark:bg-rose-400/15" />
+              <div className="absolute -right-8 top-4 h-36 w-36 rounded-full bg-teal-300/30 blur-3xl dark:bg-teal-400/15" />
+              <div className="absolute bottom-3 left-5 text-[9px] font-medium uppercase tracking-[0.28em] text-foreground/55">
+                StyleKit / Personal archive
+              </div>
+              <div className="absolute bottom-3 right-5 font-mono text-[10px] text-foreground/45">01—26</div>
+            </div>
+            <p className="mb-6 text-[10px] uppercase tracking-[0.2em] text-muted">
               {t("profile.pageLabel")}
             </p>
-            <div className="flex flex-row md:flex-col items-center md:items-start gap-4">
+            <div className="flex flex-col items-start gap-5">
               {avatarSrc ? (
                 <Image
                   src={avatarSrc}
-                  alt={userName}
-                  width={80}
-                  height={80}
+                  alt={displayName}
+                  width={96}
+                  height={96}
                   priority
                   unoptimized
-                  className="w-16 h-16 md:w-20 md:h-20 rounded-full border border-border shrink-0"
+                  className="h-20 w-20 shrink-0 rounded-full border border-border object-cover ring-4 ring-muted/10 md:h-24 md:w-24"
                 />
               ) : (
-                <div className="w-16 h-16 md:w-20 md:h-20 rounded-full border border-border bg-muted/10 flex items-center justify-center shrink-0">
-                  <User className="w-7 h-7 text-muted" aria-hidden="true" />
+                <div className="flex h-20 w-20 shrink-0 items-center justify-center rounded-full border border-border bg-muted/10 ring-4 ring-muted/10 md:h-24 md:w-24">
+                  <User className="h-8 w-8 text-muted" aria-hidden="true" />
                 </div>
               )}
               <div className="min-w-0">
-                <h1 className="text-xl md:text-2xl leading-snug break-words">
-                  {userName || fullName}
+                <h1 className="break-words text-2xl leading-tight tracking-tight md:text-3xl">
+                  {displayName}
                 </h1>
-                {fullName && userName && fullName !== userName && (
-                  <p className="text-sm text-muted mt-0.5">{fullName}</p>
-                )}
-                {profileTitleLabel && (
-                  <span
-                    className={`mt-2 inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-medium ${profileTitleBadgeClass.className}`}
-                    style={profileTitleBadgeClass.style}
-                  >
-                    {profileTitleIconPath ? (
-                      <svg
-                        viewBox="0 0 40 40"
-                        className="h-3 w-3 fill-current"
-                        aria-hidden="true"
-                        focusable="false"
+                {fullName && fullName !== displayName ? <p className="mt-1 text-sm text-muted">{fullName}</p> : null}
+                {(userName || profileTitleLabel) && (
+                  <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-2">
+                    {userName && (
+                      <a
+                        href={profileUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex max-w-full items-center gap-1 text-xs text-muted transition-colors hover:text-foreground"
                       >
-                        <path d={profileTitleIconPath} />
-                      </svg>
-                    ) : null}
-                    {profileTitleLabel}
-                  </span>
+                        <span className="truncate">{profileLabel}</span>
+                        <ExternalLink className="h-3 w-3 shrink-0" aria-hidden="true" />
+                      </a>
+                    )}
+                    {profileTitleLabel && (
+                      <span
+                        className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[10px] font-medium tracking-[0.04em] ${profileTitleBadgeClass.className}`}
+                        style={profileTitleBadgeClass.style}
+                      >
+                        {profileTitleIconPath ? (
+                          <svg
+                            viewBox="0 0 40 40"
+                            className="h-3 w-3 fill-current opacity-80"
+                            aria-hidden="true"
+                            focusable="false"
+                          >
+                            <path d={profileTitleIconPath} />
+                          </svg>
+                        ) : (
+                          <span className="h-1 w-1 rounded-full bg-current opacity-55" aria-hidden="true" />
+                        )}
+                        {profileTitleLabel}
+                      </span>
+                    )}
+                  </div>
                 )}
               </div>
             </div>
 
-            <dl className="mt-5 border-t border-border pt-5 space-y-2.5 text-[13px]">
-              {createdAt && (
-                <div className="flex items-center gap-2 text-muted">
-                  <Calendar className="w-3.5 h-3.5 shrink-0" aria-hidden="true" />
-                  <span className="min-w-0">
-                    {t("profile.memberSince")} {createdAt}
-                  </span>
-                </div>
-              )}
-              {userName && (
-                <div className="flex items-center gap-2 text-muted">
-                  {isLinuxDo ? (
-                    <LogIn className="w-3.5 h-3.5 shrink-0" aria-hidden="true" />
-                  ) : (
-                    <Github className="w-3.5 h-3.5 shrink-0" aria-hidden="true" />
-                  )}
-                  <a
-                    href={profileUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1 min-w-0 hover:text-foreground transition-colors"
+            {editingProfile ? (
+              <Modal
+                open={editingProfile}
+                onOpenChange={(open) => {
+                  if (profileSaveState !== "saving") {
+                    setEditingProfile(open);
+                  }
+                }}
+              >
+                <ModalContent className="max-h-[min(44rem,calc(100vh-2rem))] max-w-2xl overflow-y-auto rounded-2xl border border-border bg-[#fbfaf7] p-0 shadow-[0_24px_80px_-32px_rgba(21,24,24,0.55)] dark:bg-[#121616]">
+                  <ModalHeader className="relative overflow-hidden border-b border-border bg-[#f1eee7] px-6 py-7 pr-14 dark:bg-[#171b1b] sm:px-8">
+                    <div aria-hidden="true" className="pointer-events-none absolute -right-10 -top-16 h-48 w-48 rounded-full bg-rose-300/25 blur-3xl dark:bg-rose-400/10" />
+                    <div aria-hidden="true" className="pointer-events-none absolute right-24 -top-20 h-44 w-44 rounded-full bg-indigo-300/25 blur-3xl dark:bg-indigo-400/10" />
+                    <div className="relative flex items-center gap-2 text-[10px] uppercase tracking-[0.2em] text-muted">
+                      <span className="h-1.5 w-1.5 rounded-full bg-indigo-400" />
+                      <span className="h-1.5 w-1.5 rounded-full bg-rose-400" />
+                      <span className="h-1.5 w-1.5 rounded-full bg-teal-400" />
+                      <span>{t("profile.pageLabel")}</span>
+                    </div>
+                    <ModalTitle className="mt-2 text-2xl tracking-tight">{t("profile.editProfile")}</ModalTitle>
+                    <ModalDescription className="relative mt-2 max-w-md text-sm leading-relaxed">
+                      {t("profile.editProfileDescription")}
+                    </ModalDescription>
+                  </ModalHeader>
+                  <form
+                    onSubmit={(event) => {
+                      event.preventDefault();
+                      void saveProfile();
+                    }}
+                    className="space-y-6 px-6 py-6 sm:px-8"
                   >
-                    <span className="truncate">{profileLabel}</span>
-                    <ExternalLink className="w-3 h-3 shrink-0" aria-hidden="true" />
-                  </a>
+                <label htmlFor="profile-display-name" className="block text-sm text-foreground">
+                  <span className="text-xs text-muted">{t("profile.displayName")}</span>
+                  <input
+                    id="profile-display-name"
+                    value={profileNameDraft}
+                    onChange={(event) => setProfileNameDraft(event.target.value)}
+                    maxLength={60}
+                    autoComplete="name"
+                    className="mt-2 min-h-11 w-full rounded-lg border border-border bg-transparent px-3 py-2 text-sm text-foreground outline-none transition-colors focus:border-foreground focus:ring-2 focus:ring-accent/20"
+                    placeholder={t("profile.displayNamePlaceholder")}
+                  />
+                </label>
+                <div className="border-t border-border pt-5">
+                  <p className="text-xs text-muted">{t("profile.avatar")}</p>
+                  <div className="mt-2 flex flex-col gap-4 rounded-xl border border-dashed border-foreground/20 bg-muted/5 p-4 sm:flex-row sm:items-center">
+                    <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-full border border-border bg-muted/10 ring-4 ring-background">
+                      {(profileAvatarPreview || (!profileAvatarRemoved && avatarSrc)) ? (
+                        <Image
+                          src={profileAvatarPreview || avatarSrc || ""}
+                          alt=""
+                          fill
+                          sizes="80px"
+                          unoptimized
+                          className="object-cover"
+                        />
+                      ) : (
+                        <User className="absolute inset-0 m-auto h-5 w-5 text-muted" aria-hidden="true" />
+                      )}
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <div className="flex flex-wrap gap-2">
+                        <input
+                          id="profile-avatar-file"
+                          type="file"
+                          accept={AVATAR_FILE_TYPES}
+                          onChange={handleAvatarFileChange}
+                          className="sr-only"
+                        />
+                        <label
+                          htmlFor="profile-avatar-file"
+                          className="inline-flex min-h-10 cursor-pointer items-center gap-1.5 rounded-lg border border-foreground px-3 py-2 text-xs text-foreground transition-colors hover:bg-foreground hover:text-background focus-within:outline-none focus-within:ring-2 focus-within:ring-accent"
+                        >
+                          <Upload className="h-3.5 w-3.5" aria-hidden="true" />
+                          {profileAvatarFile ? t("profile.changeAvatar") : t("profile.chooseAvatar")}
+                        </label>
+                        {(profileAvatarFile || (!profileAvatarRemoved && avatarSrc)) && (
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setProfileAvatarFile(null);
+                              setProfileAvatarRemoved(true);
+                              setProfileAvatarDraft("");
+                              setProfileSaveError(null);
+                            }}
+                            className="inline-flex min-h-10 items-center gap-1.5 rounded-lg border border-border px-3 py-2 text-xs text-muted transition-colors hover:border-foreground hover:text-foreground"
+                          >
+                            <X className="h-3.5 w-3.5" aria-hidden="true" />
+                            {t("profile.removeAvatar")}
+                          </button>
+                        )}
+                      </div>
+                      <p className="mt-2 text-[11px] leading-relaxed text-muted">{t("profile.avatarHint")}</p>
+                    </div>
+                  </div>
+                </div>
+                {profileSaveError && (
+                  <p role="alert" className="rounded-lg border border-red-300 bg-red-50 px-3 py-2 text-xs leading-relaxed text-red-700 dark:border-red-800 dark:bg-red-950/40 dark:text-red-300">
+                    {profileSaveError}
+                  </p>
+                )}
+                  <ModalFooter className="-mx-6 -mb-6 mt-2 gap-2 border-t border-border bg-muted/5 px-6 py-4 sm:-mx-8 sm:-mb-6 sm:px-8">
+                    <button
+                      type="button"
+                      onClick={() => setEditingProfile(false)}
+                      disabled={profileSaveState === "saving"}
+                      className="min-h-10 rounded-lg border border-border px-4 py-2 text-sm text-muted transition-colors hover:border-foreground hover:text-foreground disabled:opacity-50"
+                    >
+                      {t("profile.cancel")}
+                    </button>
+                    <button
+                      type="submit"
+                      disabled={profileSaveState === "saving"}
+                      className="inline-flex min-h-10 items-center justify-center gap-1.5 rounded-lg bg-foreground px-5 py-2 text-sm text-background transition-colors hover:bg-foreground/85 disabled:cursor-wait disabled:opacity-50"
+                    >
+                      <Save className="h-3.5 w-3.5" aria-hidden="true" />
+                      {profileSaveState === "saving" ? t("profile.saving") : t("profile.save")}
+                    </button>
+                  </ModalFooter>
+                  </form>
+                </ModalContent>
+              </Modal>
+            ) : (
+              <button
+                type="button"
+                onClick={beginProfileEdit}
+                className="mt-6 inline-flex min-h-10 w-full items-center justify-center gap-1.5 rounded-lg bg-foreground px-3 py-2 text-xs font-medium text-background transition-colors hover:bg-foreground/85 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+              >
+                <Pencil className="h-3 w-3" aria-hidden="true" />
+                {t("profile.editProfile")}
+              </button>
+            )}
+
+            <dl className="mt-6 grid gap-4 border-t border-border pt-5 text-[13px]">
+              {createdAt && (
+                <div>
+                  <dt className="text-[10px] uppercase tracking-[0.16em] text-muted">{t("profile.memberSince")}</dt>
+                  <dd className="mt-1 flex items-center gap-1.5 text-sm">
+                    <Calendar className="h-3.5 w-3.5 text-muted" aria-hidden="true" />
+                    {createdAt}
+                  </dd>
                 </div>
               )}
-              <div className="flex items-center justify-between gap-3">
-                <dt className="text-muted">{t("profile.provider")}</dt>
-                <dd>{providerLabel}</dd>
+              <div>
+                <dt className="text-[10px] uppercase tracking-[0.16em] text-muted">{t("profile.provider")}</dt>
+                <dd className="mt-1 flex items-center gap-1.5 text-sm">
+                  {isLinuxDo ? <LogIn className="h-3.5 w-3.5 text-muted" aria-hidden="true" /> : <Github className="h-3.5 w-3.5 text-muted" aria-hidden="true" />}
+                  {providerLabel}
+                </dd>
               </div>
-              <div className="flex items-center justify-between gap-3">
-                <dt className="text-muted">{t("profile.userId")}</dt>
-                <dd className="font-mono tabular-nums">
+              <div>
+                <dt className="text-[10px] uppercase tracking-[0.16em] text-muted">{t("profile.userId")}</dt>
+                <dd className="mt-1 font-mono text-sm tabular-nums">
                   #{profileSeqId ?? user.id.slice(0, 8)}
                 </dd>
               </div>
               {email && (
-                <div className="flex items-center justify-between gap-3 min-w-0">
-                  <dt className="text-muted shrink-0">{t("profile.email")}</dt>
-                  <dd className="inline-flex items-center gap-1.5 min-w-0">
-                    <span className="font-mono text-xs truncate">
+                <div className="min-w-0">
+                  <dt className="text-[10px] uppercase tracking-[0.16em] text-muted">{t("profile.email")}</dt>
+                  <dd className="mt-1 inline-flex min-w-0 items-center gap-1.5">
+                    <span className="truncate font-mono text-xs">
                       {showEmail ? email : maskedEmail || t("profile.emailHidden")}
                     </span>
                     <button
@@ -659,7 +957,7 @@ export function ProfileContent({ allStyles }: ProfileContentProps) {
             <button
               type="button"
               onClick={() => void signOut()}
-              className="mt-6 inline-flex w-full items-center justify-center gap-1.5 border border-border px-3 py-1.5 text-[11px] uppercase tracking-wider text-muted hover:border-foreground hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+              className="mt-6 inline-flex min-h-9 w-full items-center justify-center gap-1.5 rounded-lg border border-border px-3 py-1.5 text-xs text-muted transition-colors hover:border-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
             >
               <LogOut className="w-3 h-3" aria-hidden="true" />
               {t("auth.signOut")}
@@ -668,12 +966,22 @@ export function ProfileContent({ allStyles }: ProfileContentProps) {
         </aside>
 
         {/* Content */}
-        <div className="flex-1 min-w-0">
+        <div className="min-w-0 rounded-2xl border border-border/80 bg-background p-4 shadow-[0_12px_40px_-28px_rgba(0,0,0,0.45)] sm:p-6 lg:p-7">
+          <div className="mb-6 flex flex-col gap-3 border-b border-border pb-5 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <p className="text-[10px] uppercase tracking-[0.2em] text-muted">StyleKit / Archive</p>
+              <h2 className="mt-2 text-2xl tracking-tight md:text-3xl">{t("profile.collectionTitle")}</h2>
+              <p className="mt-2 max-w-xl text-sm leading-relaxed text-muted">{t("profile.collectionDescription")}</p>
+            </div>
+            <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-muted sm:pb-1">
+              No. {profileSeqId ?? user.id.slice(0, 8)} / 2026
+            </p>
+          </div>
           <div
             role="tablist"
             aria-label={t("profile.stats")}
             onKeyDown={onTabListKeyDown}
-            className="flex gap-6 border-b border-border overflow-x-auto scrollbar-hide"
+            className="grid grid-cols-2 gap-1 rounded-xl bg-muted/10 p-1 sm:grid-cols-4"
           >
             {tabs.map((tab) => {
               const isActive = activeTab === tab.key;
@@ -687,17 +995,14 @@ export function ProfileContent({ allStyles }: ProfileContentProps) {
                   aria-controls={`panel-${tab.key}`}
                   tabIndex={isActive ? 0 : -1}
                   onClick={() => selectTab(tab.key)}
-                  className={`relative pb-3 text-sm whitespace-nowrap transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent ${
-                    isActive ? "text-foreground" : "text-muted hover:text-foreground"
+                  className={`flex min-h-10 w-full items-center justify-between gap-3 rounded-lg px-3 py-2 text-sm whitespace-nowrap transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent ${
+                    isActive ? "bg-background text-foreground shadow-sm" : "text-muted hover:bg-background/70 hover:text-foreground"
                   }`}
                 >
                   {tab.label}
-                  <span className="ml-1.5 font-mono text-xs text-muted tabular-nums">
+                  <span className="rounded-full bg-muted/10 px-1.5 font-mono text-[11px] text-muted tabular-nums">
                     {tab.count}
                   </span>
-                  {isActive && (
-                    <span className="absolute inset-x-0 -bottom-px h-px bg-foreground" />
-                  )}
                 </button>
               );
             })}
@@ -707,7 +1012,7 @@ export function ProfileContent({ allStyles }: ProfileContentProps) {
             role="tabpanel"
             id={`panel-${activeTab}`}
             aria-labelledby={`tab-${activeTab}`}
-            className="pt-6"
+            className="pt-5 sm:pt-7"
           >
             {activeTab === "favorites" && (
               <>
@@ -723,7 +1028,7 @@ export function ProfileContent({ allStyles }: ProfileContentProps) {
                   </div>
                 ) : (
                   <>
-                    <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
                       {favorites.map((slug) => {
                         const meta = styleMetaBySlug.get(slug);
                         if (meta) {
@@ -733,7 +1038,7 @@ export function ProfileContent({ allStyles }: ProfileContentProps) {
                           <LocalizedLink
                             key={slug}
                             href={`/styles/${slug}`}
-                            className="group flex flex-col justify-center border border-border p-4 hover:border-foreground transition-colors"
+                            className="group flex flex-col justify-center rounded-xl border border-border p-4 transition-colors hover:border-foreground"
                           >
                             <p className="text-sm truncate group-hover:text-accent transition-colors">
                               {slug}
@@ -835,7 +1140,7 @@ export function ProfileContent({ allStyles }: ProfileContentProps) {
                       {visibleRatings.map((r) => (
                       <div
                         key={r.id}
-                        className="flex items-center justify-between gap-3 border border-border px-4 py-3"
+                        className="flex items-center justify-between gap-3 rounded-xl border border-border bg-background px-4 py-3 transition-colors hover:border-foreground/40"
                       >
                         <LocalizedLink
                           href={`/styles/${r.style_slug}`}
@@ -911,7 +1216,7 @@ export function ProfileContent({ allStyles }: ProfileContentProps) {
                     {submissions.map((sub) => (
                       <div
                         key={sub.id}
-                        className="border border-border p-3.5 md:p-4 space-y-2.5"
+                        className="space-y-2.5 rounded-xl border border-border p-4 transition-colors hover:border-foreground/40 md:p-5"
                       >
                         <div className="flex items-center justify-between gap-3">
                           <div className="flex items-center gap-2.5 min-w-0">
@@ -1021,6 +1326,7 @@ export function ProfileContent({ allStyles }: ProfileContentProps) {
           </div>
         </div>
       </div>
-    </div>
+      </div>
+    </EditorialAuraFrame>
   );
 }

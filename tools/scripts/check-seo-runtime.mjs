@@ -84,6 +84,24 @@ async function main() {
     }
   }
 
+  const showcasePath = "/styles/art-nouveau/showcase";
+  const showcaseResponse = await fetchManual(showcasePath);
+  if (showcaseResponse.status !== 200) {
+    issues.push(`${showcasePath}: expected 200, got ${showcaseResponse.status}`);
+  } else if (!/\bnoindex\b/i.test(showcaseResponse.headers.get("x-robots-tag") || "")) {
+    issues.push(`${showcasePath}: missing X-Robots-Tag noindex`);
+  }
+
+  for (const locale of ["en", "zh"]) {
+    const localizedShowcasePath = `/${locale}${showcasePath}`;
+    const response = await fetchManual(localizedShowcasePath);
+    if (response.status !== 308 || response.headers.get("location") !== showcasePath) {
+      issues.push(
+        `${localizedShowcasePath}: expected 308 to ${showcasePath}, got ${response.status} to ${response.headers.get("location")}`
+      );
+    }
+  }
+
   for (const pathname of ["/", "/styles", "/styles/corporate-clean", "/templates/saas-landing"]) {
     const response = await fetchManual(pathname, "Applebot/0.1");
     if (response.status !== 200) {

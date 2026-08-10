@@ -25,6 +25,10 @@ vi.mock("@/lib/auth/admin-api", () => ({
   checkAdminApiAccess: vi.fn(),
 }));
 
+vi.mock("@/lib/admin/audit-log", () => ({
+  recordAdminAuditEvent: vi.fn(),
+}));
+
 vi.mock("@/lib/security/request-origin", () => ({
   verifyTrustedOrigin: vi.fn(),
 }));
@@ -44,6 +48,7 @@ import {
   updateSubmissionFormDataSupabase,
 } from "@/lib/submit/reviewer-supabase";
 import { checkAdminApiAccess } from "@/lib/auth/admin-api";
+import { recordAdminAuditEvent } from "@/lib/admin/audit-log";
 import { verifyTrustedOrigin } from "@/lib/security/request-origin";
 import { parseJsonBodyWithLimit } from "@/lib/security/json-body";
 
@@ -57,6 +62,7 @@ const mockedGetSubmissionSupabase = vi.mocked(getSubmissionSupabase);
 const mockedIsSupabaseConfigured = vi.mocked(isSupabaseConfigured);
 const mockedUpdateSubmissionFormDataSupabase = vi.mocked(updateSubmissionFormDataSupabase);
 const mockedCheckAdminApiAccess = vi.mocked(checkAdminApiAccess);
+const mockedRecordAdminAuditEvent = vi.mocked(recordAdminAuditEvent);
 const mockedVerifyTrustedOrigin = vi.mocked(verifyTrustedOrigin);
 const mockedParseJsonBodyWithLimit = vi.mocked(parseJsonBodyWithLimit);
 
@@ -210,6 +216,15 @@ describe("DELETE /api/admin/submissions/[id]", () => {
       id: "sub-2",
     });
     expect(mockedUnlink).toHaveBeenCalledTimes(1);
+    expect(mockedRecordAdminAuditEvent).toHaveBeenCalledWith(
+      expect.any(Request),
+      expect.objectContaining({
+        action: "submission.delete",
+        targetType: "submission",
+        targetId: "sub-2",
+        metadata: { storage: "file" },
+      }),
+    );
   });
 
   it("deletes submission from supabase when configured", async () => {
@@ -233,6 +248,15 @@ describe("DELETE /api/admin/submissions/[id]", () => {
       id: "sub-4",
     });
     expect(mockedDeleteSubmissionSupabase).toHaveBeenCalledWith("sub-4");
+    expect(mockedRecordAdminAuditEvent).toHaveBeenCalledWith(
+      expect.any(Request),
+      expect.objectContaining({
+        action: "submission.delete",
+        targetType: "submission",
+        targetId: "sub-4",
+        metadata: { storage: "supabase" },
+      }),
+    );
   });
 });
 
@@ -312,6 +336,15 @@ describe("PATCH /api/admin/submissions/[id]", () => {
         extra: "keep",
       },
     });
+    expect(mockedRecordAdminAuditEvent).toHaveBeenCalledWith(
+      expect.any(Request),
+      expect.objectContaining({
+        action: "submission.update",
+        targetType: "submission",
+        targetId: "sub-5",
+        metadata: { fields: ["name", "description"], storage: "supabase" },
+      }),
+    );
   });
 
   it("updates file-based submission when supabase is disabled", async () => {
@@ -349,5 +382,14 @@ describe("PATCH /api/admin/submissions/[id]", () => {
 
     expect(response.status).toBe(200);
     expect(mockedWriteFile).toHaveBeenCalledTimes(1);
+    expect(mockedRecordAdminAuditEvent).toHaveBeenCalledWith(
+      expect.any(Request),
+      expect.objectContaining({
+        action: "submission.update",
+        targetType: "submission",
+        targetId: "sub-file-1",
+        metadata: { fields: ["nameEn"], storage: "file" },
+      }),
+    );
   });
 });

@@ -3,6 +3,7 @@ import { createClient } from "@supabase/supabase-js";
 import validationBaseline from "@/docs/examples/product-validation-empty.json";
 import { productValidationBundleSchema } from "@/lib/product-validation/schema";
 import { evaluateProductValidationReadiness } from "@/lib/product-validation/readiness";
+import { isPackCheckoutConfigured } from "@/lib/product-validation/checkout";
 import { verifyValidationOfferSnapshot } from "@/lib/product-validation/verify-offer-snapshot";
 import { getExperimentLifecycle } from "@/lib/product-validation/server";
 
@@ -74,12 +75,7 @@ async function main() {
     licenseReviewStatus: offer?.commercialTerms.licenseReviewStatus ?? "missing",
     publicSaleAuthorized: offer?.pack.publicSaleAuthorized ?? false,
     experimentLifecycle: getExperimentLifecycle(),
-    checkoutProviderConfigured: Boolean(
-      process.env.STRIPE_SECRET_KEY?.trim() ||
-      process.env.LEMON_SQUEEZY_API_KEY?.trim() ||
-      process.env.PADDLE_API_KEY?.trim() ||
-      process.env.PRODUCT_VALIDATION_MANUAL_CHECKOUT_ENABLED === "true",
-    ),
+    checkoutProviderConfigured: isPackCheckoutConfigured(),
     qualifiedVisitors,
     qualifiedInterviews,
     minimumQualifiedVisitors: bundle.experiment.thresholds.minimumQualifiedVisitors,

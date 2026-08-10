@@ -162,6 +162,19 @@ describe("GET /api/auth/linuxdo/callback", () => {
     );
   });
 
+  it("returns to login when the provider denies authorization", async () => {
+    const response = await GET(
+      new Request(
+        "https://stylekit.top/api/auth/linuxdo/callback?error=access_denied&state=%2Fworkspace"
+      ) as never
+    );
+
+    expect(response.status).toBe(307);
+    expect(response.headers.get("location")).toBe(
+      "https://www.stylekit.top/login?auth_error=linuxdo&next=%2Fworkspace"
+    );
+  });
+
   it("merges existing metadata when LinuxDO account already exists", async () => {
     mockedExchangeCodeForToken.mockResolvedValue({
       access_token: "example_linuxdo_access_token",

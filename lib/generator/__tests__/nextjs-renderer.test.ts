@@ -60,6 +60,15 @@ describe("generateNextjsFiles", () => {
     expect(fileNames).not.toContain("src/App.tsx");
     expect(fileNames).not.toContain("src/main.tsx");
     expect(fileNames).not.toContain("vite.config.ts");
+
+    const tsconfig = files.find((file) => file.name === "tsconfig.json");
+    expect(tsconfig).toBeTruthy();
+    if (tsconfig) {
+      const parsed = JSON.parse(tsconfig.content) as {
+        compilerOptions?: { types?: string[] };
+      };
+      expect(parsed.compilerOptions?.types).toEqual(["node", "react", "react-dom"]);
+    }
   });
 
   it("uses dashboard route group for dashboard templates", () => {

@@ -57,7 +57,7 @@ export function AdminSidebar() {
       >
         <div className="flex h-16 items-center justify-between px-4 shadow-[0_1px_0_0_var(--admin-border-soft)]">
           <Link
-            href="/admin/analytics"
+            href="/admin/operations"
             className="flex min-w-0 items-center gap-2.5 rounded-md px-1 py-1"
             onClick={close}
           >

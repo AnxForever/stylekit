@@ -1,0 +1,49 @@
+.paper {
+  position: absolute;
+  left: 21%;
+  bottom: 24%;
+  width: 15%;
+  aspect-ratio: 1.45;
+  border: 1px solid rgb(28 28 28 / 0.35);
+  background: rgb(255 253 248 / 0.9);
+  box-shadow: 2px 2px 0 rgb(28 28 28 / 0.08);
+  transform: rotate(-5deg);
+  transform-origin: center;
+  pointer-events: none;
+}
+
+.paper::after {
+  content: "";
+  position: absolute;
+  left: 18%;
+  top: 34%;
+  width: 42%;
+  height: 1px;
+  background: rgb(91 92 190 / 0.6);
+  box-shadow: 0 4px 0 rgb(226 76 112 / 0.55);
+}
+
+.loadingDot {
+  display: block;
+  border-radius: 9999px;
+  animation: xiaohei-loading-dot 1.2s ease-in-out infinite;
+}
+
+@keyframes xiaohei-loading-dot {
+  0%,
+  100% {
+    opacity: 0.3;
+    transform: translateY(0) scale(0.85);
+  }
+
+  50% {
+    opacity: 1;
+    transform: translateY(-3px) scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .loadingDot {
+    animation: none;
+  }
+}

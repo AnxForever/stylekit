@@ -1,5 +1,13 @@
 import { expect, test, type Page } from "@playwright/test";
+import { PENDING_STYLE_SLUGS } from "@/lib/styles/review-status";
 import approvedPreviews from "../visual/approved-preview-baseline.json";
+
+const APPROVED_CATALOG_SELECTOR = [
+  "[data-catalog-style-slug]",
+  ...PENDING_STYLE_SLUGS.map(
+    (slug) => `:not([data-catalog-style-slug="${slug}"])`,
+  ),
+].join("");
 
 async function stabilizeCatalogChrome(page: Page) {
   await page.addStyleTag({
@@ -28,7 +36,7 @@ test.describe("approved preview visual baseline", () => {
     await page.goto("/styles?visual-baseline=1", { waitUntil: "networkidle" });
     await stabilizeCatalogChrome(page);
 
-    const catalogItems = page.locator("[data-catalog-style-slug]");
+    const catalogItems = page.locator(APPROVED_CATALOG_SELECTOR);
     await expect(catalogItems).toHaveCount(approvedPreviews.count);
 
     for (const slug of approvedPreviews.slugs) {
