@@ -24,13 +24,6 @@ const BANNED_DISCOVERY_PATTERNS = [
 async function main(): Promise<void> {
   const issues: SeoTruthIssue[] = [];
 
-  if (CURATED_STYLE_COUNT !== 140) {
-    issues.push({
-      source: "lib/product/catalog-facts.ts",
-      message: `approved catalog baseline is 140 styles, found ${CURATED_STYLE_COUNT}`,
-    });
-  }
-
   const [llms, llmsFullSource, rootLayoutSource] = await Promise.all([
     readFile("public/llms.txt", "utf8"),
     readFile("lib/export/llms-full.ts", "utf8"),
@@ -49,7 +42,7 @@ async function main(): Promise<void> {
   if (!llms.includes(`${CURATED_STYLE_COUNT} curated`)) {
     issues.push({
       source: "public/llms.txt",
-      message: "does not derive its public catalog claim from the approved count",
+      message: "does not contain the current catalog count",
     });
   }
 

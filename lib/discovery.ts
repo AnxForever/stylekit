@@ -10,6 +10,7 @@
 import { styles, getStyleBySlug } from "./styles";
 import { getRecipe, getRecipeIds, hasRecipes, renderRecipe } from "./recipes";
 import { getStyleTokens, hasStyleTokens } from "./styles/tokens-registry";
+import { getStyleQuality, type StyleQuality } from "./styles/quality";
 import { expandQueryTerms, colorIntentMatches, hasTerm } from "./search/synonyms";
 import type { DesignStyle } from "./styles";
 import type { StyleTokens } from "./styles/tokens";
@@ -41,6 +42,7 @@ export interface StyleDetail extends StyleSummary {
   recipeIds: string[];
   shadcnInstall: string;
   url: string;
+  quality: StyleQuality;
 }
 
 export interface RecipeResult {
@@ -164,6 +166,7 @@ export function getStyleDetail(slug: string): StyleDetail | null {
     recipeIds: getRecipeIds(slug),
     shadcnInstall: shadcnInstallCommand(slug),
     url: `${STYLEKIT_SITE_URL}/styles/${slug}`,
+    quality: getStyleQuality(s),
   };
 }
 

@@ -7,7 +7,7 @@ metadata:
 
 # StyleKit
 
-StyleKit is an open-source style library for AI coding with 135 curated
+StyleKit is an open-source style library for AI coding with 146 curated
 visual styles, each with machine-readable design tokens, component recipes, and
 AI rules. Use it to make the UI you generate look like a deliberate, named style
 instead of generic AI output.

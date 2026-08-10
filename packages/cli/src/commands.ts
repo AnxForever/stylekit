@@ -23,16 +23,26 @@ export interface CommandResult {
   json: unknown;
 }
 
+interface CommandError {
+  error: string;
+  code: string;
+}
+
 function ok(text: string, json: unknown): CommandResult {
   return { ok: true, text, json };
 }
 
-function fail(text: string): CommandResult {
-  return { ok: false, text, json: { error: text } };
+function fail(text: string, code = "COMMAND_ERROR"): CommandResult {
+  const json: CommandError = { error: text, code };
+  return { ok: false, text, json };
 }
 
 export function usageFail(usage: string): CommandResult {
-  return { ok: false, text: `Usage: ${usage}`, json: { error: `usage: ${usage}` } };
+  return {
+    ok: false,
+    text: `Usage: ${usage}`,
+    json: { error: `Usage: ${usage}`, code: "USAGE" },
+  };
 }
 
 function summaryLine(s: StyleSummary): string {
@@ -49,7 +59,10 @@ export function cmdList(
 ): CommandResult {
   const { total, results } = listStyles(category, limit);
   const header = `StyleKit styles${category ? ` · ${category}` : ""} (${results.length} of ${total}):`;
-  return ok([header, "", ...results.map(summaryLine)].join("\n"), results);
+  return ok(
+    [header, "", ...results.map(summaryLine)].join("\n"),
+    { total, count: results.length, results },
+  );
 }
 
 export function cmdSearch(
@@ -59,7 +72,10 @@ export function cmdSearch(
   const { total, results } = searchStyles(query, limit);
   if (results.length === 0) return fail(`No styles match "${query}".`);
   const header = `Matches for "${query}" (${results.length} of ${total}):`;
-  return ok([header, "", ...results.map(summaryLine)].join("\n"), results);
+  return ok(
+    [header, "", ...results.map(summaryLine)].join("\n"),
+    { total, count: results.length, results },
+  );
 }
 
 export function cmdShow(slug: string): CommandResult {
@@ -80,6 +96,7 @@ export function cmdShow(slug: string): CommandResult {
     ...d.dontList.map((x) => `  - ${x}`),
     "",
     `tokens: ${d.hasTokens ? "yes" : "no"}   recipes: ${d.recipeIds.join(", ") || "none"}`,
+    `quality: ${d.quality.tier}   readiness: ${d.quality.capabilities.readiness}   accessibility: ${d.quality.accessibilityScore ?? "n/a"}`,
     `install: ${d.shadcnInstall}`,
     `web: ${d.url}`,
   ].join("\n");

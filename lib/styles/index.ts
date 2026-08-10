@@ -31,12 +31,19 @@ export type {
   ReadinessCoverage,
   FrontendReadinessProfile,
 } from "./readiness";
+export type {
+  CapabilityStatus,
+  StyleCapabilities,
+  StyleQuality,
+  StyleQualityTier,
+} from "./quality";
 export {
   calculateReadinessCoverage,
   getFrontendReadiness,
   hasCuratedFrontendReadiness,
   getCuratedReadinessSlugs,
 } from "./readiness";
+export { getStyleQuality } from "./quality";
 
 export { styles, getStyleBySlug } from "./registry";
 

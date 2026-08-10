@@ -63,12 +63,17 @@ function emit(result: CommandResult, json: boolean): void {
   }
 }
 
-function die(message: string): never {
-  console.error(message);
+function die(message: string, json: boolean, code: string): never {
+  console.error(
+    json
+      ? JSON.stringify({ error: message, code }, null, 2)
+      : message,
+  );
   process.exit(1);
 }
 
 function main(): void {
+  const jsonRequested = process.argv.slice(2).includes("--json");
   let values: Record<string, unknown>;
   let positionals: string[];
   try {
@@ -85,7 +90,7 @@ function main(): void {
     values = parsed.values;
     positionals = parsed.positionals;
   } catch (err) {
-    die(`Error: ${(err as Error).message}\n\n${HELP}`);
+    die(`Error: ${(err as Error).message}\n\n${HELP}`, jsonRequested, "INVALID_ARGUMENTS");
   }
 
   if (values.version) {
@@ -106,7 +111,11 @@ function main(): void {
   if (typeof values.limit === "string") {
     const n = Number(values.limit);
     if (!Number.isInteger(n) || n < 1) {
-      die(`Invalid --limit "${values.limit}": must be a positive integer.`);
+      die(
+        `Invalid --limit "${values.limit}": must be a positive integer.`,
+        json,
+        "INVALID_LIMIT",
+      );
     }
     limit = n;
   }
@@ -117,6 +126,8 @@ function main(): void {
     if (!CATEGORIES.includes(values.category as (typeof CATEGORIES)[number])) {
       die(
         `Invalid --category "${values.category}": must be one of ${CATEGORIES.join(", ")}.`,
+        json,
+        "INVALID_CATEGORY",
       );
     }
     category = values.category as StyleCategory;
@@ -148,13 +159,13 @@ function main(): void {
       result = arg1 ? cmdAdd(arg1) : usageFail("stylekit add <slug>");
       break;
     default:
-      die(`Unknown command: ${command}\n\n${HELP}`);
+      die(`Unknown command: ${command}\n\n${HELP}`, json, "UNKNOWN_COMMAND");
   }
 
   try {
     emit(result, json);
   } catch (err) {
-    die(`Unexpected error: ${(err as Error).message}`);
+    die(`Unexpected error: ${(err as Error).message}`, json, "UNEXPECTED_ERROR");
   }
 }
 

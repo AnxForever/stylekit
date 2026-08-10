@@ -62,6 +62,22 @@ const ratio = contrastRatio('#000000', '#ffffff') // 21
 const score = scoreStyle('neo-brutalist')
 ```
 
+### Quality and capability metadata
+
+Discovery details and style packs expose machine-readable coverage signals so
+integrations can distinguish curated readiness from baseline catalog coverage:
+
+```typescript
+import { getStyleDetail } from 'stylekit-core/discovery'
+
+const detail = getStyleDetail('neo-brutalist')
+console.log(detail?.quality)
+// { tier, capabilities, accessibilityScore, flags }
+```
+
+These signals describe available artifacts and review coverage. They are not a
+guarantee that generated UI is production-ready or automatically WCAG compliant.
+
 ## Full Import
 
 You can also import everything from the root:

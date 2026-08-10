@@ -1,6 +1,6 @@
 # stylekit-cli
 
-Command-line tool for [StyleKit](https://stylekit.top) — browse 120+ design styles and pull design tokens, component recipes, and shadcn install commands straight from your terminal. Works **offline** (served from the bundled `stylekit-core`).
+Command-line tool for [StyleKit](https://stylekit.top) — browse 146 design styles and pull design tokens, component recipes, and shadcn install commands straight from your terminal. Works **offline** (served from the bundled `stylekit-core`).
 
 ## Usage
 
@@ -8,7 +8,7 @@ Command-line tool for [StyleKit](https://stylekit.top) — browse 120+ design st
 npx stylekit-cli <command> [args] [flags]
 ```
 
-> Not yet published to npm. Until then, build locally and run `node packages/cli/dist/index.js <command>` after `pnpm build`.
+> Not yet published to npm. Until then, from the repository root run `pnpm --filter stylekit-cli build`, then run `node packages/cli/dist/index.js <command>`.
 
 ## Commands
 
@@ -16,12 +16,12 @@ npx stylekit-cli <command> [args] [flags]
 |---------|--------------|
 | `list` | List all styles (`--category <c>`, `--limit <n>`) |
 | `search <query>` | Search styles by keyword |
-| `show <slug>` | Show a style's full detail (philosophy, palette, do/don't) |
+| `show <slug>` | Show a style's full detail (philosophy, palette, do/don't, quality signals) |
 | `tokens <slug>` | Print a style's design tokens as JSON |
 | `recipe <slug> <component>` | Print a rendered component recipe (className + code) |
 | `add <slug>` | Print the `npx shadcn add` command for the style's theme |
 
-Every command accepts `--json` for machine-readable output. `--help` / `--version` are available.
+Every command accepts `--json` for machine-readable output. List/search JSON uses a `{ total, count, results }` envelope; errors use `{ error, code }`. `--help` / `--version` are available.
 
 ## Examples
 

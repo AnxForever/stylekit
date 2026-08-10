@@ -1,6 +1,7 @@
 import { getRecipeIds, hasRecipes } from "@/lib/recipes";
 import { z } from "zod";
 import { getFrontendReadiness } from "./readiness";
+import { getStyleQuality } from "./quality";
 import { getStyleBySlug } from "./registry";
 import { getStyleTokens } from "./tokens-registry";
 
@@ -45,6 +46,7 @@ export const stylePackSchema = z.object({
     ids: z.array(z.string()),
   }).strict(),
   readiness: z.unknown(),
+  quality: z.unknown(),
 }).strict();
 
 export type StylePack = z.infer<typeof stylePackSchema>;
@@ -93,6 +95,7 @@ export function getStylePack(slug: string): StylePack | null {
       ids: getRecipeIds(slug),
     },
     readiness: getFrontendReadiness(style),
+    quality: getStyleQuality(style),
   } satisfies StylePack;
 
   return stylePackSchema.parse(pack);

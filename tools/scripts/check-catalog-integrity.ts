@@ -7,6 +7,7 @@ import path from "node:path";
 import { getStylesWithRecipes, getStyleRecipes } from "../../lib/recipes";
 import { styles, stylesMeta } from "../../lib/styles";
 import { hasStyleTokens } from "../../lib/styles/tokens-registry";
+import { getStyleQuality } from "../../lib/styles/quality";
 import { publishStyle } from "../../lib/style-publication";
 import { STYLE_PUBLICATION_REGISTRIES } from "../../lib/style-publication/plan";
 import type { StyleScaffoldInput } from "../../lib/scaffold/style-scaffold";
@@ -132,6 +133,11 @@ function validateCatalog(): Issue[] {
     if (!hasStyleTokens(style.slug)) {
       issues.push({ slug: style.slug, message: "Missing style token definition." });
     }
+
+    const quality = getStyleQuality(style);
+    if (!quality.tier || !Array.isArray(quality.flags)) {
+      issues.push({ slug: style.slug, message: "Missing style quality metadata." });
+    }
   }
 
   return issues;
@@ -205,8 +211,11 @@ async function main(): Promise<void> {
   const issues = [...validateCatalog(), ...(await validatePublicationInterface())];
 
   if (issues.length === 0) {
+    const curatedReadiness = styles.filter(
+      (style) => getStyleQuality(style).tier === "curated",
+    ).length;
     console.log(
-      `[check:catalog] PASS - ${styles.length} styles have metadata, recipes, tokens, components, and cover assets.`
+      `[check:catalog] PASS - ${styles.length} styles have metadata, recipes, tokens, components, cover assets, and quality metadata (${curatedReadiness} curated readiness profiles).`
     );
     return;
   }

@@ -48,7 +48,7 @@ Values are stored as bare HSL channels (for example `0 0% 100%`). When you insta
 
 A slug is the kebab-case identifier in a style's URL, for example `glassmorphism`, `neo-brutalist`, or `bento-grid` (`https://stylekit.top/styles/neo-brutalist`).
 
-You can list every available style — all 120+ — from the registry index:
+You can list every available style — all 146 — from the registry index:
 
 ```bash
 curl https://stylekit.top/registry.json

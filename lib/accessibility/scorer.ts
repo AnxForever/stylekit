@@ -1,7 +1,7 @@
 // Accessibility Scoring Engine
 // Analyzes design styles for WCAG 2.1 compliance
 
-import { getStyleBySlug, styles } from "@/lib/styles";
+import { getStyleBySlug, styles } from "@/lib/styles/registry";
 import { getStyleTokens } from "@/lib/styles/tokens-registry";
 import type { StyleTokens } from "@/lib/styles/tokens";
 import {

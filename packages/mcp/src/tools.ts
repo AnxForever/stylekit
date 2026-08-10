@@ -50,7 +50,94 @@ const DETAIL_SHAPE = {
   recipeIds: z.array(z.string()),
   shadcnInstall: z.string(),
   url: z.string(),
+  quality: z.object({
+    tier: z.enum(["curated", "baseline"]),
+    capabilities: z.object({
+      tokens: z.enum(["complete", "partial", "fallback", "missing"]),
+      recipes: z.enum(["complete", "partial", "fallback", "missing"]),
+      componentCode: z.enum(["complete", "partial", "fallback", "missing"]),
+      variants: z.enum(["complete", "partial", "fallback", "missing"]),
+      readiness: z.enum(["curated", "fallback"]),
+      darkMode: z.enum(["complete", "partial", "fallback", "missing"]),
+      accessibility: z.enum(["scored", "unavailable"]),
+    }),
+    accessibilityScore: z.number().nullable(),
+    flags: z.array(z.string()),
+  }),
 } as const;
+
+const STYLE_TOKENS_SHAPE = z.object({
+  border: z.object({
+    width: z.string(),
+    color: z.string(),
+    radius: z.string(),
+    style: z.string().optional(),
+  }),
+  shadow: z.object({
+    sm: z.string(),
+    md: z.string(),
+    lg: z.string(),
+    none: z.string(),
+    hover: z.string(),
+    focus: z.string(),
+    colored: z.record(z.string(), z.string()).optional(),
+  }),
+  interaction: z.object({
+    hoverScale: z.string().optional(),
+    hoverTranslate: z.string().optional(),
+    hoverOpacity: z.string().optional(),
+    transition: z.string(),
+    active: z.string().optional(),
+  }),
+  typography: z.object({
+    heading: z.string(),
+    subtitle: z.string().optional(),
+    body: z.string(),
+    mono: z.string().optional(),
+    sizes: z.object({
+      hero: z.string(),
+      h1: z.string(),
+      h2: z.string(),
+      h3: z.string(),
+      body: z.string(),
+      small: z.string(),
+    }),
+    neonStroke: z.record(z.string(), z.unknown()).optional(),
+  }),
+  spacing: z.object({
+    section: z.string(),
+    container: z.string(),
+    card: z.string(),
+    gap: z.object({ sm: z.string(), md: z.string(), lg: z.string() }),
+  }),
+  colors: z.object({
+    background: z.object({
+      primary: z.string(),
+      secondary: z.string(),
+      accent: z.array(z.string()),
+    }),
+    text: z.object({
+      primary: z.string(),
+      secondary: z.string(),
+      muted: z.string(),
+    }),
+    button: z.object({
+      primary: z.string(),
+      secondary: z.string(),
+      danger: z.string().optional(),
+    }),
+  }),
+  forbidden: z.object({
+    classes: z.array(z.string()),
+    patterns: z.array(z.string()),
+    reasons: z.record(z.string(), z.string()),
+  }),
+  required: z.object({
+    button: z.array(z.string()),
+    card: z.array(z.string()),
+    input: z.array(z.string()),
+  }),
+});
 
 function unknownSlug(slug: string) {
   return errorResult(
@@ -64,7 +151,7 @@ export function registerStyleKitTools(server: McpServer): void {
     "stylekit_search_styles",
     {
       title: "Search StyleKit styles",
-      description: `Search StyleKit's 130+ design styles by keyword and/or category, with pagination.
+      description: `Search StyleKit's 146 design styles by keyword and/or category, with pagination.
 
 Args:
   - query (string, optional): matches slug, name, description, tags, keywords (case-insensitive).
@@ -149,7 +236,7 @@ Examples:
 Args:
   - slug (string): style identifier, e.g. "glassmorphism", "neo-brutalist".
 
-Returns JSON: { slug, name, nameEn, category, tags, description, philosophy, colors, doList, dontList, keywords, hasTokens, hasRecipes, recipeIds, shadcnInstall, url }.
+Returns JSON: { slug, name, nameEn, category, tags, description, philosophy, colors, doList, dontList, keywords, hasTokens, hasRecipes, recipeIds, shadcnInstall, url, quality }.
 
 Examples:
   - "how should I use neo-brutalist?" -> slug: "neo-brutalist"
@@ -202,6 +289,7 @@ Examples:
       inputSchema: {
         slug: z.string().min(1).describe("Style slug"),
       },
+      outputSchema: STYLE_TOKENS_SHAPE,
       annotations: READ_ONLY,
     },
     async ({ slug }) => {

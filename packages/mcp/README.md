@@ -1,6 +1,6 @@
 # stylekit-mcp
 
-MCP server for [StyleKit](https://stylekit.top) — search 120+ design styles and pull design tokens, component recipes, and shadcn install commands directly from Claude, Cursor, or Windsurf.
+MCP server for [StyleKit](https://stylekit.top) — search 146 design styles and pull design tokens, component recipes, and shadcn install commands directly from Claude, Cursor, or Windsurf.
 
 Runs locally over stdio and serves everything **offline** from the bundled `stylekit-core`.
 
@@ -11,14 +11,14 @@ All tools are read-only.
 | Tool | What it does |
 |------|--------------|
 | `stylekit_search_styles` | Search styles by keyword and/or category |
-| `stylekit_get_style` | Full style profile: philosophy, palette, do/don't rules, what's available |
-| `stylekit_get_style_tokens` | Design tokens: border, shadow, typography, spacing, colors |
+| `stylekit_get_style` | Full style profile: philosophy, palette, do/don't rules, quality/capability signals |
+| `stylekit_get_style_tokens` | Typed design tokens: border, shadow, typography, spacing, colors |
 | `stylekit_get_component_recipe` | Rendered component `className` + JSX (button/card/input) |
 | `stylekit_get_shadcn_install` | The `npx shadcn add` command for a style's theme |
 
 ## Setup
 
-Add to your MCP client config:
+After publishing, add the following to your MCP client config:
 
 ```json
 {
@@ -35,7 +35,7 @@ Add to your MCP client config:
 - **Cursor**: `.cursor/mcp.json`
 - **Windsurf**: the Windsurf MCP config
 
-> Not yet published to npm. Until then, build locally and point your client at the absolute path:
+Until the package is published, build locally and point your client at the absolute path:
 >
 > ```json
 > {
@@ -56,7 +56,7 @@ The agent calls `stylekit_search_styles` → `stylekit_get_component_recipe` →
 ## Development
 
 ```bash
-pnpm build              # compile to dist/
+pnpm --filter stylekit-mcp build # compile to dist/
 node scripts/smoke.mjs  # smoke-test all tools over stdio
 ```
 

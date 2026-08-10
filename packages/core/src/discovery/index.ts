@@ -24,3 +24,9 @@ export type {
   RecipeResult,
   SearchOptions,
 } from "@/lib/discovery";
+export type {
+  CapabilityStatus,
+  StyleCapabilities,
+  StyleQuality,
+  StyleQualityTier,
+} from "@/lib/styles/quality";

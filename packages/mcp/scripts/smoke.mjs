@@ -54,12 +54,21 @@ check(
     typeof detail.structuredContent?.hasRecipes === "boolean",
   "get_style returns keywords + hasRecipes",
 );
+check(
+  detail.structuredContent?.quality?.capabilities?.readiness === "curated" &&
+    Array.isArray(detail.structuredContent?.quality?.flags),
+  "get_style returns quality capabilities",
+);
 
 const tokens = await client.callTool({
   name: "stylekit_get_style_tokens",
   arguments: { slug: "neo-brutalist" },
 });
 check(/radius|border/i.test(tokens.content[0].text), "get_style_tokens returns tokens");
+check(
+  typeof tokens.structuredContent?.colors?.background?.primary === "string",
+  "get_style_tokens returns typed structured tokens",
+);
 
 const recipe = await client.callTool({
   name: "stylekit_get_component_recipe",

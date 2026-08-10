@@ -15,7 +15,7 @@ const COPY = {
     intro:
       "Every style ships as design tokens you can install through shadcn. Repository-local CLI and MCP previews are available for contributors.",
     note: "These install a style's color theme — design tokens for light and dark. The component code is yours to build.",
-    browse: "Browse all 130+ styles",
+    browse: "Browse all 146 styles",
     cards: [
       {
         name: "shadcn registry",
@@ -49,7 +49,7 @@ const COPY = {
     intro:
       "每个风格都以 design tokens 的形式提供，可通过 shadcn 安装。CLI 与 MCP 目前仅供仓库本地开发预览。",
     note: "安装的是风格的配色主题——明暗两套 design tokens。组件代码由你自己实现。",
-    browse: "浏览全部 130+ 风格",
+    browse: "浏览全部 146 风格",
     cards: [
       {
         name: "shadcn registry",

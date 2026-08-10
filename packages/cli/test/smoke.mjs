@@ -80,6 +80,18 @@ check(
   "--limit abc -> exit 1",
 );
 
+r = run(["list", "--limit", "abc", "--json"]);
+let invalidLimitJson = null;
+try {
+  invalidLimitJson = JSON.parse(r.stderr);
+} catch {
+  /* ignore */
+}
+check(
+  r.code === 1 && invalidLimitJson?.code === "INVALID_LIMIT",
+  "--limit abc --json -> structured JSON error",
+);
+
 r = run(["list", "--limit", "0"]);
 check(r.code === 1, "--limit 0 -> exit 1");
 
@@ -93,6 +105,18 @@ r = run(["search"]);
 check(
   r.code === 1 && r.stderr.includes("Usage"),
   "search with no query -> usage on stderr + exit 1",
+);
+
+r = run(["list", "--limit", "2", "--json"]);
+let listJson = null;
+try {
+  listJson = JSON.parse(r.stdout);
+} catch {
+  /* ignore */
+}
+check(
+  r.code === 0 && listJson?.count === 2 && listJson?.total >= 2,
+  "list --json -> total/count/results envelope",
 );
 
 console.log(
