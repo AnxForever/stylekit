@@ -1,5 +1,6 @@
 // Enhanced AI Rules Generator
-// Generates comprehensive, self-validating AI instructions
+// Generates comprehensive, self-validating AI instructions from each style's
+// own tokens and rules. No visual treatment is hard-coded here.
 
 import type { DesignStyle } from "./types";
 import type { StyleTokens } from "./tokens";
@@ -17,8 +18,8 @@ export function generateEnhancedAIRules({ style, tokens, format }: EnhancedRules
     generateForbiddenRules(tokens),
     generateRequiredPatterns(tokens),
     generateBeforeAfterExamples(style, tokens),
-    generateSkeletonTemplates(),
-    generateSelfCheckList(),
+    generateSkeletonTemplates(style, tokens),
+    generateSelfCheckList(style, tokens),
     generateExamplePrompts(style),
   ];
 
@@ -27,11 +28,11 @@ export function generateEnhancedAIRules({ style, tokens, format }: EnhancedRules
       generateHeader(style),
       generateTokenDictionary(tokens),
       generateForbiddenRules(tokens),
-      generateSelfCheckList(),
+      generateSelfCheckList(style, tokens),
     ].join("\n\n");
   }
 
-  return sections.join("\n\n---\n\n");
+  return sections.filter(Boolean).join("\n\n---\n\n");
 }
 
 function generateHeader(style: DesignStyle): string {
@@ -65,7 +66,9 @@ function generateTokenDictionary(tokens: StyleTokens): string {
 
 ### 交互效果
 \`\`\`
-悬停位移: ${tokens.interaction.hoverTranslate}
+悬停位移: ${tokens.interaction.hoverTranslate ?? "（无）"}
+悬停缩放: ${tokens.interaction.hoverScale ?? "（无）"}
+悬停透明度: ${tokens.interaction.hoverOpacity ?? "（无）"}
 过渡动画: ${tokens.interaction.transition}
 ${tokens.interaction.active ? `按下状态: ${tokens.interaction.active}` : ""}
 \`\`\`
@@ -74,6 +77,7 @@ ${tokens.interaction.active ? `按下状态: ${tokens.interaction.active}` : ""}
 \`\`\`
 标题: ${tokens.typography.heading}
 正文: ${tokens.typography.body}
+${tokens.typography.mono ? `等宽: ${tokens.typography.mono}` : ""}
 \`\`\`
 
 ### 字号
@@ -91,17 +95,32 @@ H3:    ${tokens.typography.sizes.h3}
 Section: ${tokens.spacing.section}
 容器:    ${tokens.spacing.container}
 卡片:    ${tokens.spacing.card}
+小间距:  ${tokens.spacing.gap.sm}
+中间距:  ${tokens.spacing.gap.md}
+大间距:  ${tokens.spacing.gap.lg}
+\`\`\`
+
+### 颜色角色
+\`\`\`
+背景主色: ${tokens.colors.background.primary}
+背景辅色: ${tokens.colors.background.secondary}
+背景强调色: ${tokens.colors.background.accent.join(", ") || "（无）"}
+正文主色: ${tokens.colors.text.primary}
+正文辅色: ${tokens.colors.text.secondary}
+正文弱化色: ${tokens.colors.text.muted}
+按钮主色: ${tokens.colors.button.primary}
+按钮辅色: ${tokens.colors.button.secondary}
 \`\`\``;
 }
 
 function generateForbiddenRules(tokens: StyleTokens): string {
   const forbiddenList = tokens.forbidden.classes
     .slice(0, 20)
-    .map(cls => `- \`${cls}\``)
+    .map((cls) => `- \`${cls}\``)
     .join("\n");
 
   const patternList = tokens.forbidden.patterns
-    .map(p => `- 匹配 \`${p}\``)
+    .map((pattern) => `- 匹配 \`${pattern}\``)
     .join("\n");
 
   const reasonList = Object.entries(tokens.forbidden.reasons)
@@ -113,13 +132,13 @@ function generateForbiddenRules(tokens: StyleTokens): string {
 以下 class 在本风格中**绝对禁止使用**，生成时必须检查并避免：
 
 ### 禁止的 Class
-${forbiddenList}
+${forbiddenList || "- （当前风格没有登记的禁止 class）"}
 
 ### 禁止的模式
-${patternList}
+${patternList || "- （当前风格没有登记的禁止模式）"}
 
 ### 禁止原因
-${reasonList}
+${reasonList || "- 以当前风格的设计规则为准。"}
 
 > WARNING: 如果你的代码中包含以上任何 class，必须立即替换。`;
 }
@@ -144,66 +163,82 @@ ${tokens.required.input.join("\n")}
 }
 
 function generateBeforeAfterExamples(style: DesignStyle, tokens: StyleTokens): string {
-  return `## [COMPARE] 错误 vs 正确对比
+  const buttonClasses = tokens.required.button.join(" ");
+  const cardClasses = tokens.required.card.join(" ");
+  const inputClasses = tokens.required.input.join(" ");
+  const primaryButton = tokens.colors.button.primary;
+
+  return `## [COMPARE] ${style.nameEn} 错误 vs 正确对比
+
+以下错误示例只代表“未经过当前风格适配的通用默认值”，不要把错误示例当成视觉建议。
 
 ### 按钮
 
-[WRONG] **错误示例**（使用了圆角和模糊阴影）：
+[WRONG] **错误示例**（通用组件库默认样式，不要直接复制）：
 \`\`\`html
-<button class="rounded-lg shadow-lg bg-blue-500 text-white px-4 py-2 hover:bg-blue-600">
+<button class="{GENERIC_LIBRARY_BUTTON_DEFAULT}">
   点击我
 </button>
 \`\`\`
 
-[CORRECT] **正确示例**（使用硬边缘、无圆角、位移效果）：
+[CORRECT] **正确示例**（使用 ${style.nameEn} 的 token）：
 \`\`\`html
-<button class="${tokens.required.button.join(" ")} bg-[#ff006e] text-white px-4 py-2 md:px-6 md:py-3">
+<button class="${buttonClasses} ${primaryButton}">
   点击我
 </button>
 \`\`\`
 
 ### 卡片
 
-[WRONG] **错误示例**（使用了渐变和圆角）：
+[WRONG] **错误示例**（未经当前风格适配的通用卡片）：
 \`\`\`html
-<div class="rounded-xl shadow-2xl bg-gradient-to-r from-purple-500 to-pink-500 p-6">
-  <h3 class="text-xl font-semibold">标题</h3>
+<div class="{GENERIC_LIBRARY_CARD_DEFAULT}">
+  <h3>{TITLE}</h3>
 </div>
 \`\`\`
 
-[CORRECT] **正确示例**（纯色背景、硬边缘阴影）：
+[CORRECT] **正确示例**（使用 ${style.nameEn} 的 card token）：
 \`\`\`html
-<div class="${tokens.required.card.join(" ")} ${tokens.spacing.card}">
-  <h3 class="${tokens.typography.heading} ${tokens.typography.sizes.h3}">标题</h3>
+<div class="${cardClasses} ${tokens.spacing.card}">
+  <h3 class="${tokens.typography.heading} ${tokens.typography.sizes.h3}">{TITLE}</h3>
 </div>
 \`\`\`
 
 ### 输入框
 
-[WRONG] **错误示例**（灰色边框、圆角）：
+[WRONG] **错误示例**（未经当前风格适配的通用输入框）：
 \`\`\`html
-<input class="rounded-md border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-blue-500" />
+<input class="{GENERIC_LIBRARY_INPUT_DEFAULT}" />
 \`\`\`
 
-[CORRECT] **正确示例**（黑色粗边框、聚焦阴影）：
+[CORRECT] **正确示例**（使用 ${style.nameEn} 的 input token）：
 \`\`\`html
-<input class="${tokens.required.input.join(" ")} px-3 py-2 md:px-4 md:py-3" placeholder="请输入..." />
+<input class="${inputClasses}" placeholder="{PLACEHOLDER}" />
 \`\`\``;
 }
 
-function generateSkeletonTemplates(): string {
-  return `## [TEMPLATES] 页面骨架模板
+function generateSkeletonTemplates(style: DesignStyle, tokens: StyleTokens): string {
+  const primaryBackground = tokens.colors.background.primary;
+  const secondaryBackground = tokens.colors.background.secondary;
+  const accentBackground = tokens.colors.background.accent[0] ?? primaryBackground;
+  const primaryText = tokens.colors.text.primary;
+  const secondaryText = tokens.colors.text.secondary;
+  const buttonClasses = `${tokens.required.button.join(" ")} ${tokens.colors.button.primary}`;
+  const cardClasses = `${tokens.required.card.join(" ")} ${tokens.spacing.card}`;
+  const inputClasses = tokens.required.input.join(" ");
 
-使用以下模板生成页面，只需替换 \`{PLACEHOLDER}\` 部分：
+  return `## [TEMPLATES] ${style.nameEn} 页面骨架模板
+
+以下骨架只使用当前风格的 token。替换 \`{PLACEHOLDER}\` 时，不要移除或替换这些 token：
 
 ### 导航栏骨架
 \`\`\`html
-<nav class="bg-white border-b-2 md:border-b-4 border-black px-4 md:px-8 py-3 md:py-4">
-  <div class="flex items-center justify-between max-w-6xl mx-auto">
-    <a href="/" class="font-black text-xl md:text-2xl tracking-wider">
+<nav class="${primaryBackground} ${primaryText} ${tokens.border.width} ${tokens.border.color} ${tokens.spacing.container}">
+  <div class="flex items-center justify-between max-w-6xl mx-auto ${tokens.spacing.gap.md}">
+    <a href="/" class="${tokens.typography.heading} ${tokens.typography.sizes.h3}">
       {LOGO_TEXT}
     </a>
-    <div class="flex gap-4 md:gap-8 font-mono text-sm md:text-base">
+    <div class="flex ${tokens.spacing.gap.md} ${tokens.typography.body} ${tokens.typography.sizes.small}">
       {NAV_LINKS}
     </div>
   </div>
@@ -212,15 +247,15 @@ function generateSkeletonTemplates(): string {
 
 ### Hero 区块骨架
 \`\`\`html
-<section class="min-h-[60vh] md:min-h-[80vh] flex items-center px-4 md:px-8 py-12 md:py-0 bg-{ACCENT_COLOR} border-b-2 md:border-b-4 border-black">
+<section class="${accentBackground} ${primaryText} ${tokens.spacing.section} ${tokens.spacing.container}">
   <div class="max-w-4xl mx-auto">
-    <h1 class="font-black text-4xl md:text-6xl lg:text-8xl leading-tight tracking-tight mb-4 md:mb-6">
+    <h1 class="${tokens.typography.heading} ${tokens.typography.sizes.hero}">
       {HEADLINE}
     </h1>
-    <p class="font-mono text-base md:text-xl max-w-xl mb-6 md:mb-8">
+    <p class="${tokens.typography.body} ${tokens.typography.sizes.body} max-w-xl">
       {SUBHEADLINE}
     </p>
-    <button class="bg-black text-white font-black px-6 py-3 md:px-8 md:py-4 border-2 md:border-4 border-black shadow-[4px_4px_0px_0px_rgba(255,0,110,1)] md:shadow-[8px_8px_0px_0px_rgba(255,0,110,1)] hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px] transition-all text-sm md:text-base">
+    <button class="${buttonClasses}">
       {CTA_TEXT}
     </button>
   </div>
@@ -229,32 +264,37 @@ function generateSkeletonTemplates(): string {
 
 ### 卡片网格骨架
 \`\`\`html
-<section class="py-12 md:py-24 px-4 md:px-8">
+<section class="${primaryBackground} ${primaryText} ${tokens.spacing.section} ${tokens.spacing.container}">
   <div class="max-w-6xl mx-auto">
-    <h2 class="font-black text-2xl md:text-4xl mb-8 md:mb-12">{SECTION_TITLE}</h2>
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+    <h2 class="${tokens.typography.heading} ${tokens.typography.sizes.h2}">{SECTION_TITLE}</h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 ${tokens.spacing.gap.md}">
       <!-- Card template - repeat for each card -->
-      <div class="bg-white border-2 md:border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] md:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] p-4 md:p-6 hover:shadow-[4px_4px_0px_0px_rgba(255,0,110,1)] md:hover:shadow-[8px_8px_0px_0px_rgba(255,0,110,1)] hover:-translate-y-1 transition-all">
-        <h3 class="font-black text-lg md:text-xl mb-2">{CARD_TITLE}</h3>
-        <p class="font-mono text-sm md:text-base text-gray-700">{CARD_DESCRIPTION}</p>
+      <div class="${cardClasses}">
+        <h3 class="${tokens.typography.heading} ${tokens.typography.sizes.h3}">{CARD_TITLE}</h3>
+        <p class="${tokens.typography.body} ${tokens.typography.sizes.body} ${tokens.colors.text.muted}">{CARD_DESCRIPTION}</p>
       </div>
     </div>
   </div>
 </section>
 \`\`\`
 
+### 表单输入骨架
+\`\`\`html
+<input class="${inputClasses}" placeholder="{PLACEHOLDER}" />
+\`\`\`
+
 ### 页脚骨架
 \`\`\`html
-<footer class="bg-black text-white py-12 md:py-16 px-4 md:px-8 border-t-2 md:border-t-4 border-black">
+<footer class="${secondaryBackground} ${secondaryText} ${tokens.spacing.section} ${tokens.spacing.container}">
   <div class="max-w-6xl mx-auto">
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+    <div class="grid grid-cols-1 md:grid-cols-3 ${tokens.spacing.gap.lg}">
       <div>
-        <span class="font-black text-xl md:text-2xl">{LOGO_TEXT}</span>
-        <p class="font-mono text-sm mt-4 text-gray-400">{TAGLINE}</p>
+        <span class="${tokens.typography.heading} ${tokens.typography.sizes.h3}">{LOGO_TEXT}</span>
+        <p class="${tokens.typography.body} ${tokens.typography.sizes.small}">{TAGLINE}</p>
       </div>
       <div>
-        <h4 class="font-black text-lg mb-4">{COLUMN_TITLE}</h4>
-        <ul class="space-y-2 font-mono text-sm text-gray-400">
+        <h4 class="${tokens.typography.heading} ${tokens.typography.sizes.h3}">{COLUMN_TITLE}</h4>
+        <ul class="${tokens.typography.body} ${tokens.typography.sizes.small}">
           {FOOTER_LINKS}
         </ul>
       </div>
@@ -264,42 +304,39 @@ function generateSkeletonTemplates(): string {
 \`\`\``;
 }
 
-function generateSelfCheckList(): string {
-  return `## [CHECKLIST] 生成后自检清单
+function generateSelfCheckList(style: DesignStyle, tokens: StyleTokens): string {
+  const requiredChecks = [
+    `按钮包含：\`${tokens.required.button.join(" ")}\``,
+    `卡片包含：\`${tokens.required.card.join(" ")}\``,
+    `输入框包含：\`${tokens.required.input.join(" ")}\``,
+  ];
+  const forbiddenChecks = tokens.forbidden.classes
+    .slice(0, 8)
+    .map((item) => `没有使用 \`${item}\``);
+  const requiredStyleRules = style.doList.slice(0, 5);
+  const forbiddenStyleRules = style.dontList.slice(0, 5);
 
-**在输出代码前，必须逐项验证以下每一条。如有违反，立即修正后再输出：**
+  return `## [CHECKLIST] ${style.nameEn} 生成后自检清单
 
-### 1. 圆角检查
-- [ ] 搜索代码中的 \`rounded-\`
-- [ ] 确认只有 \`rounded-none\` 或无圆角
-- [ ] 如果发现 \`rounded-lg\`、\`rounded-md\` 等，替换为 \`rounded-none\`
+**输出代码前，逐项验证当前风格的 token 和规则。如有违反，先修正再交付：**
 
-### 2. 阴影检查
-- [ ] 搜索代码中的 \`shadow-\`
-- [ ] 确认只使用 \`shadow-[Xpx_Xpx_0px_0px_rgba(...)]\` 格式
-- [ ] 如果发现 \`shadow-lg\`、\`shadow-xl\` 等，替换为正确格式
+### Token 检查
+${requiredChecks.map((item) => `- [ ] ${item}`).join("\n")}
 
-### 3. 边框检查
-- [ ] 搜索代码中的 \`border-\`
-- [ ] 确认边框颜色是 \`border-black\`
-- [ ] 如果发现 \`border-gray-*\`、\`border-slate-*\`，替换为 \`border-black\`
+### 禁止项检查
+${forbiddenChecks.length > 0 ? forbiddenChecks.map((item) => `- [ ] ${item}`).join("\n") : "- [ ] 没有使用当前风格禁止的 class 或模式"}
 
-### 4. 交互检查
-- [ ] 所有按钮都有 \`hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px]\`
-- [ ] 所有卡片都有 hover 效果（阴影变色或位移）
-- [ ] 都包含 \`transition-all\`
+### 风格规则检查
+${requiredStyleRules.length > 0 ? requiredStyleRules.map((item) => `- [ ] ${item}`).join("\n") : "- [ ] 遵循当前风格的核心规则"}
 
-### 5. 响应式检查
-- [ ] 边框有 \`border-2 md:border-4\`
-- [ ] 阴影有 \`shadow-[4px...] md:shadow-[8px...]\`
-- [ ] 间距有 \`p-4 md:p-6\` 或类似的响应式值
-- [ ] 字号有 \`text-sm md:text-base\` 或类似的响应式值
+### 风格漂移检查
+${forbiddenStyleRules.length > 0 ? forbiddenStyleRules.map((item) => `- [ ] 没有违反：${item}`).join("\n") : "- [ ] 没有引入与当前风格冲突的默认样式"}
 
-### 6. 字体检查
-- [ ] 标题使用 \`font-black\`
-- [ ] 正文使用 \`font-mono\`
-
-> CRITICAL: **如果任何一项检查不通过，必须修正后重新生成代码。**`;
+### 通用交付检查
+- [ ] 响应式布局在手机、平板和桌面下稳定，没有横向溢出
+- [ ] 所有交互元素有清晰焦点、可访问名称和 reduced-motion 方案
+- [ ] 文本对比度达到 WCAG AA，且没有用颜色单独传递状态
+- [ ] 结果仍然能够一眼识别为 ${style.nameEn}，没有混入其他风格的模板`;
 }
 
 function generateExamplePrompts(style: DesignStyle): string {
@@ -308,7 +345,7 @@ function generateExamplePrompts(style: DesignStyle): string {
   }
 
   const promptList = style.examplePrompts
-    .map((p, i) => `### ${i + 1}. ${p.title}\n\n${p.description}\n\n\`\`\`\n${p.prompt}\n\`\`\``)
+    .map((prompt, index) => `### ${index + 1}. ${prompt.title}\n\n${prompt.description}\n\n\`\`\`\n${prompt.prompt}\n\`\`\``)
     .join("\n\n");
 
   return `## [EXAMPLES] 示例 Prompt
