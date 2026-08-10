@@ -99,7 +99,9 @@ export async function POST(request: Request) {
     if (createError) {
       const { data: listData, error: listError } =
         await adminClient.auth.admin.listUsers({ page: 1, perPage: 1000 });
-      const existing = listData?.users?.find((user) => user.email === email);
+      const existing = listData?.users?.find(
+        (user) => typeof user.email === "string" && normalizeEmail(user.email) === email,
+      );
       if (listError || !existing) {
         throw new Error(listError?.message ?? createError.message);
       }
