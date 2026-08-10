@@ -37,6 +37,7 @@ import {
 import { RecipeCard } from "@/components/recipes/recipe-card";
 import { getRoomBySlug } from "@/components/mouse-interactions/rooms/registry";
 import { GenericRoom } from "@/components/mouse-interactions/rooms/generic-room";
+import { ShowcaseDownloadButton } from "@/components/showcase/showcase-download-button";
 
 // StylePackExport statically fans out to the full design-token registry
 // (every *-tokens.ts) plus JSZip. Loading it via next/dynamic keeps that
@@ -260,15 +261,7 @@ export function StyleDetailContent({
                   locale={locale}
                   slug={style.slug}
                 />
-                <LocalizedLink
-                  href={`/styles/${style.slug}/showcase`}
-                  onClick={() =>
-                    trackEvent("showcase_open", { slug: style.slug, source: "hero" })
-                  }
-                  className="inline-flex min-h-[48px] items-center justify-center border border-border px-6 py-3 text-sm tracking-wide transition-colors hover:border-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-                >
-                  {t("styleDetail.viewShowcase")}
-                </LocalizedLink>
+                <ShowcaseDownloadButton slug={style.slug} />
                 <LocalizedLink
                   href={`/templates?style=${style.slug}`}
                   className="inline-flex items-center gap-2 justify-center px-6 py-3 border border-border text-sm tracking-wide hover:border-foreground transition-colors"
