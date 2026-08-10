@@ -7,7 +7,7 @@ describe("prepareShowcaseSnapshot", () => {
       "<!doctype html>",
       "<html><head><link rel=\"modulepreload\" href=\"/chunk.js\"></head>",
       "<body>",
-      '<section style="opacity:0;transform:translateY(32px);transition:opacity 0.7s">Showcase</section>',
+      '<section style="opacity:0;transform:translateY(16px);transition:opacity 0.7s">Showcase</section>',
       "<script>window.__NEXT_DATA__ = {};</script>",
       "</body></html>",
     ].join("");

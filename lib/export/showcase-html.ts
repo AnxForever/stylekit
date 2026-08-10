@@ -1,5 +1,5 @@
-const DOWNLOAD_REVEAL_STYLE =
-  "[style*=\"translateY(32px)\"]{opacity:1!important;transform:translateY(0)!important;transition:none!important}";
+export const SHOWCASE_DOWNLOAD_REVEAL_STYLE =
+  "[style*=\"opacity:0\"][style*=\"translateY(\"],[style*=\"opacity: 0\"][style*=\"translateY(\"]{opacity:1!important;transform:translateY(0)!important;transition:none!important}";
 
 function escapeAttribute(value: string): string {
   return value
@@ -17,7 +17,7 @@ function escapeAttribute(value: string): string {
 export function prepareShowcaseSnapshot(html: string, baseHref: string): string {
   const downloadHead =
     `<base href="${escapeAttribute(baseHref)}">` +
-    `<style data-stylekit-showcase-download>${DOWNLOAD_REVEAL_STYLE}</style>`;
+    `<style data-stylekit-showcase-download>${SHOWCASE_DOWNLOAD_REVEAL_STYLE}</style>`;
   const withHead = html.replace(/<head>/i, `<head>${downloadHead}`);
 
   return withHead
