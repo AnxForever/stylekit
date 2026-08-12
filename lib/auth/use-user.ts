@@ -21,6 +21,7 @@ import {
   type ReactNode,
 } from "react";
 import type { User } from "@supabase/supabase-js";
+import { sanitizeNextPath } from "@/lib/auth/next-path";
 import { getAuthClient } from "./supabase-browser";
 
 export interface AuthState {
@@ -45,10 +46,7 @@ export interface AuthState {
 }
 
 function normalizeNextPath(nextPath?: string): string {
-  if (!nextPath || !nextPath.startsWith("/")) {
-    return "/styles";
-  }
-  return nextPath;
+  return sanitizeNextPath(nextPath, "/styles");
 }
 
 const DEV_MOCK_ENABLED =

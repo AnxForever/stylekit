@@ -7,7 +7,6 @@ import {
   clearOtpCookie,
   EMAIL_OTP_COOKIE,
   normalizeEmail,
-  setOtpCookie,
   verifyOtpChallenge,
 } from "@/lib/auth/email-otp";
 import { getOrAssignSeqId } from "@/lib/auth/seq-id";
@@ -54,7 +53,7 @@ export async function POST(request: Request) {
     const email = normalizeEmail(parsed.data.email);
     const cookieStore = await cookies();
     const cookieValue = cookieStore.get(EMAIL_OTP_COOKIE)?.value;
-    const verification = verifyOtpChallenge(cookieValue, email, parsed.data.code);
+    const verification = await verifyOtpChallenge(cookieValue, email, parsed.data.code);
 
     if (!verification.valid) {
       const response = NextResponse.json(
@@ -67,9 +66,7 @@ export async function POST(request: Request) {
         },
         { status: 400, headers },
       );
-      if (verification.retryCookieValue) {
-        setOtpCookie(response, verification.retryCookieValue);
-      }
+      if (verification.reason !== "invalid") clearOtpCookie(response);
       return response;
     }
 

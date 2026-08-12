@@ -27,6 +27,7 @@ import {
   Eye,
   EyeOff,
 } from "lucide-react";
+import { sanitizeNextPath } from "@/lib/auth/next-path";
 import { LinuxDoMark, NodeLocMark } from "@/components/auth/brand-marks";
 import { XiaoheiLoading } from "@/components/profile/xiaohei-note";
 const LoginBrandInk = dynamic(
@@ -63,7 +64,7 @@ export function LoginContent() {
   const searchParams = useSearchParams();
   const authError = searchParams.get("auth_error");
   const nextParam = searchParams.get("next");
-  const nextPath = nextParam && nextParam.startsWith("/") ? nextParam : "/styles";
+  const nextPath = sanitizeNextPath(nextParam, "/styles");
   const [dismissed, setDismissed] = useState(false);
   // Which social provider is mid-redirect, so the buttons can show a spinner
   // and lock out double-clicks during the (visible) OAuth navigation delay.

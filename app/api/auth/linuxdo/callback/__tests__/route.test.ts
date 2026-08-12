@@ -26,6 +26,10 @@ import { createServerClient } from "@supabase/ssr";
 import { createClient } from "@supabase/supabase-js";
 import { exchangeCodeForToken, getLinuxDoUser } from "@/lib/auth/linuxdo";
 import { getOrAssignSeqId } from "@/lib/auth/seq-id";
+import {
+  LINUXDO_NEXT_COOKIE,
+  LINUXDO_STATE_COOKIE,
+} from "@/lib/auth/linuxdo-cookies";
 import { GET } from "@/app/api/auth/linuxdo/callback/route";
 
 const mockedCookies = vi.mocked(cookies);
@@ -34,6 +38,27 @@ const mockedCreateClient = vi.mocked(createClient);
 const mockedExchangeCodeForToken = vi.mocked(exchangeCodeForToken);
 const mockedGetLinuxDoUser = vi.mocked(getLinuxDoUser);
 const mockedGetOrAssignSeqId = vi.mocked(getOrAssignSeqId);
+
+function callbackRequest(
+  url: string,
+  options: { state?: string; next?: string } = {},
+) {
+  const request = new Request(url) as Request & {
+    cookies: { get: (name: string) => { value: string } | undefined };
+  };
+  const state = options.state ?? "state-token";
+  const next = options.next ?? "/profile";
+  Object.defineProperty(request, "cookies", {
+    value: {
+      get(name: string) {
+        if (name === LINUXDO_STATE_COOKIE) return { value: state };
+        if (name === LINUXDO_NEXT_COOKIE) return { value: encodeURIComponent(next) };
+        return undefined;
+      },
+    },
+  });
+  return request as never;
+}
 
 describe("GET /api/auth/linuxdo/callback", () => {
   beforeEach(() => {
@@ -94,16 +119,16 @@ describe("GET /api/auth/linuxdo/callback", () => {
     } as unknown as ReturnType<typeof createServerClient>);
 
     const response = await GET(
-      new Request(
-        "https://stylekit.top/api/auth/linuxdo/callback?code=test-code&next=%2Fprofile"
-      ) as never
+      callbackRequest(
+        "https://stylekit.top/api/auth/linuxdo/callback?code=test-code&state=state-token"
+      ),
     );
 
     expect(response.status).toBe(307);
     expect(response.headers.get("location")).toBe("https://www.stylekit.top/profile");
     expect(mockedExchangeCodeForToken).toHaveBeenCalledWith(
       "test-code",
-      "https://www.stylekit.top/api/auth/linuxdo/callback?next=%2Fprofile"
+      "https://www.stylekit.top/api/auth/linuxdo/callback"
     );
     expect(verifyOtp).toHaveBeenCalledWith({
       type: "magiclink",
@@ -149,9 +174,9 @@ describe("GET /api/auth/linuxdo/callback", () => {
     } as unknown as ReturnType<typeof createServerClient>);
 
     const response = await GET(
-      new Request(
-        "https://stylekit.top/api/auth/linuxdo/callback?code=test-code&state=%2Fprofile"
-      ) as never
+      callbackRequest(
+        "https://stylekit.top/api/auth/linuxdo/callback?code=test-code&state=state-token"
+      ),
     );
 
     expect(response.status).toBe(307);
@@ -164,9 +189,10 @@ describe("GET /api/auth/linuxdo/callback", () => {
 
   it("returns to login when the provider denies authorization", async () => {
     const response = await GET(
-      new Request(
-        "https://stylekit.top/api/auth/linuxdo/callback?error=access_denied&state=%2Fworkspace"
-      ) as never
+      callbackRequest(
+        "https://stylekit.top/api/auth/linuxdo/callback?error=access_denied&state=state-token",
+        { next: "/workspace" },
+      ),
     );
 
     expect(response.status).toBe(307);
@@ -227,9 +253,10 @@ describe("GET /api/auth/linuxdo/callback", () => {
     } as unknown as ReturnType<typeof createServerClient>);
 
     const response = await GET(
-      new Request(
-        "https://stylekit.top/api/auth/linuxdo/callback?code=test-code&next=dashboard"
-      ) as never
+      callbackRequest(
+        "https://stylekit.top/api/auth/linuxdo/callback?code=test-code&state=state-token",
+        { next: "dashboard" },
+      ),
     );
 
     expect(response.status).toBe(307);
@@ -288,9 +315,9 @@ describe("GET /api/auth/linuxdo/callback", () => {
     } as unknown as ReturnType<typeof createServerClient>);
 
     const response = await GET(
-      new Request(
-        "http://127.0.0.1:3001/api/auth/linuxdo/callback?code=test-code&next=%2Fprofile"
-      ) as never
+      callbackRequest(
+        "http://127.0.0.1:3001/api/auth/linuxdo/callback?code=test-code&state=state-token"
+      ),
     );
 
     expect(response.status).toBe(307);

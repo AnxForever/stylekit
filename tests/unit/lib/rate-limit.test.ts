@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import {
   checkRateLimit,
   createRateLimitHeaders,
@@ -6,6 +6,10 @@ import {
 } from "@/lib/security/rate-limit";
 
 describe("rate-limit utility", () => {
+  afterEach(() => {
+    vi.unstubAllEnvs();
+  });
+
   it("blocks requests after limit is reached", () => {
     const namespace = `test:${Date.now()}`;
     const key = "127.0.0.1:ua";
@@ -51,6 +55,7 @@ describe("rate-limit utility", () => {
   });
 
   it("extracts client key from request headers", () => {
+    vi.stubEnv("TRUSTED_CLIENT_IP_HEADER", "x-forwarded-for");
     const request = new Request("https://example.com/api/test", {
       headers: {
         "x-forwarded-for": "203.0.113.10, 203.0.113.11",
@@ -59,7 +64,14 @@ describe("rate-limit utility", () => {
     });
 
     const key = getRequestClientKey(request);
-    expect(key).toContain("203.0.113.10");
-    expect(key).toContain("StyleKit-Test/1.0");
+    expect(key).toBe("ip:203.0.113.11");
+  });
+
+  it("does not trust client IP headers until a proxy header is configured", () => {
+    const request = new Request("https://example.com/api/test", {
+      headers: { "x-forwarded-for": "203.0.113.10" },
+    });
+
+    expect(getRequestClientKey(request)).toBe("ip:unknown");
   });
 });

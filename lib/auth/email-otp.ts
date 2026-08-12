@@ -1,14 +1,18 @@
-import { createHmac, randomInt, timingSafeEqual } from "node:crypto";
+import { createHmac, randomBytes, randomInt, timingSafeEqual } from "node:crypto";
+import {
+  consumeOtpChallengeState,
+  createOtpChallengeState,
+} from "@/lib/auth/email-otp-store";
 
 export const EMAIL_OTP_COOKIE = "stylekit-email-otp";
 export const EMAIL_OTP_TTL_SECONDS = 10 * 60;
 export const EMAIL_OTP_MAX_ATTEMPTS = 5;
 
 interface OtpChallenge {
+  id: string;
   email: string;
   digest: string;
   expiresAt: number;
-  attempts: number;
 }
 
 function getSecret(): string {
@@ -57,10 +61,11 @@ function decodeChallenge(value: string | undefined): OtpChallenge | null {
       Buffer.from(payload, "base64url").toString(),
     ) as Partial<OtpChallenge>;
     if (
+      typeof parsed.id !== "string" ||
+      parsed.id.length === 0 ||
       typeof parsed.email !== "string" ||
       typeof parsed.digest !== "string" ||
-      typeof parsed.expiresAt !== "number" ||
-      typeof parsed.attempts !== "number"
+      typeof parsed.expiresAt !== "number"
     ) {
       return null;
     }
@@ -74,61 +79,59 @@ export function normalizeEmail(value: string): string {
   return value.trim().toLowerCase();
 }
 
-export function createOtpChallenge(email: string): {
+export async function createOtpChallenge(email: string): Promise<{
   code: string;
   cookieValue: string;
-} {
+}> {
   const normalizedEmail = normalizeEmail(email);
   const code = String(randomInt(0, 1_000_000)).padStart(6, "0");
   const challenge: OtpChallenge = {
+    id: randomBytes(16).toString("hex"),
     email: normalizedEmail,
     digest: digestCode(normalizedEmail, code),
     expiresAt: Date.now() + EMAIL_OTP_TTL_SECONDS * 1000,
-    attempts: 0,
   };
+
+  await createOtpChallengeState({
+    id: challenge.id,
+    email: challenge.email,
+    digest: challenge.digest,
+    expiresAt: challenge.expiresAt,
+  });
 
   return { code, cookieValue: encodeChallenge(challenge) };
 }
 
-export function verifyOtpChallenge(
+export async function verifyOtpChallenge(
   cookieValue: string | undefined,
   email: string,
   code: string,
-):
+): Promise<
   | { valid: true }
   | {
       valid: false;
       reason: "missing" | "expired" | "attempts" | "invalid";
-      retryCookieValue?: string;
-    } {
+    }
+> {
   const challenge = decodeChallenge(cookieValue);
   if (!challenge) return { valid: false, reason: "missing" };
   if (challenge.expiresAt <= Date.now()) {
     return { valid: false, reason: "expired" };
   }
-  if (challenge.attempts >= EMAIL_OTP_MAX_ATTEMPTS) {
-    return { valid: false, reason: "attempts" };
-  }
-
   const expectedDigest = digestCode(normalizeEmail(email), code);
-  const actualBuffer = Buffer.from(challenge.digest);
-  const expectedBuffer = Buffer.from(expectedDigest);
-  const valid =
-    challenge.email === normalizeEmail(email) &&
-    actualBuffer.length === expectedBuffer.length &&
-    timingSafeEqual(actualBuffer, expectedBuffer);
+  const result = await consumeOtpChallengeState({
+    id: challenge.id,
+    email: normalizeEmail(email),
+    digest: expectedDigest,
+    maxAttempts: EMAIL_OTP_MAX_ATTEMPTS,
+  });
 
-  if (valid) return { valid: true };
+  if (result === "valid") return { valid: true };
+  if (result === "attempts") return { valid: false, reason: "attempts" };
+  if (result === "expired") return { valid: false, reason: "expired" };
+  if (result === "missing") return { valid: false, reason: "missing" };
 
-  const nextChallenge = {
-    ...challenge,
-    attempts: challenge.attempts + 1,
-  };
-  return {
-    valid: false,
-    reason: "invalid",
-    retryCookieValue: encodeChallenge(nextChallenge),
-  };
+  return { valid: false, reason: "invalid" };
 }
 
 export function setOtpCookie(response: Response, cookieValue: string): void {
