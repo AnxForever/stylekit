@@ -1,4 +1,6 @@
-import replayIntent from "@/examples/bailian-stylekit/fixtures/style-intent.json";
+// Must live inside the tracked source tree: `/examples/` is gitignored, so
+// importing the fixture from there breaks `next build` on any clean clone.
+import replayIntent from "@/lib/bailian/fixtures/style-intent.json";
 import {
   BailianClientError,
   type StyleIntentProvider,

@@ -6,7 +6,7 @@ import { buildWorkspaceZip, generateWorkspaceProject } from "@/lib/workspace";
 import { getStylePack } from "@/lib/styles";
 
 const scriptDir = path.dirname(fileURLToPath(import.meta.url));
-const fixturePath = path.resolve(scriptDir, "../../examples/bailian-stylekit/fixtures/style-intent.json");
+const fixturePath = path.resolve(scriptDir, "../../lib/bailian/fixtures/style-intent.json");
 
 async function main() {
   const rawIntent = JSON.parse(await readFile(fixturePath, "utf8"));

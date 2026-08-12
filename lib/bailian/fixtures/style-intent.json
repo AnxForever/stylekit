@@ -1,0 +1,33 @@
+{
+  "schemaVersion": "style-intent-v1",
+  "styleSlug": "glassmorphism",
+  "confidence": 0.82,
+  "rationale": [
+    "Layered translucent surfaces separate risk signals from background data without adding hard borders.",
+    "A cool, low-saturation palette keeps red and amber severity badges the highest-contrast elements on screen.",
+    "Depth cues map naturally onto a drill-down flow from portfolio to individual account."
+  ],
+  "projectType": "dashboard",
+  "brief": {
+    "audience": "B2B revenue and risk operations analysts monitoring account health across a large customer portfolio.",
+    "primaryGoal": "Surface accounts whose risk score moved materially this week and let an analyst triage them without leaving the dashboard.",
+    "requiredPages": [
+      "Portfolio overview",
+      "Account detail",
+      "Risk signal breakdown",
+      "Watchlist"
+    ],
+    "requiredStates": ["loading", "empty", "error", "success"],
+    "brandPersonality": ["calm", "precise", "trustworthy"],
+    "antiReferences": [
+      "Consumer fintech gamification",
+      "Dense trading terminal chrome"
+    ],
+    "notes": "Severity colour must stay legible against translucent panels; verify contrast on both light and dark backdrops."
+  },
+  "constraints": [
+    "Risk severity must never be encoded by colour alone.",
+    "Primary table has to stay readable at 1280px width.",
+    "No blocking full-screen loaders on the overview route."
+  ]
+}
