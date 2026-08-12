@@ -5,6 +5,7 @@ import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { useI18n } from "@/lib/i18n/context";
 import { useFavorites } from "@/lib/favorites/context";
 import { StyleCard } from "@/components/home/style-card";
+import { LocalizedLink } from "@/components/i18n/localized-link";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Heart, Layers, Paintbrush, Loader2, ChevronDown, Search, X, SlidersHorizontal } from "lucide-react";
 import type { StyleMeta, StyleType, StyleTag } from "@/lib/styles/meta";
@@ -627,6 +628,32 @@ export function StylesContent({ allStyles }: StylesContentProps) {
               ))}
             </dl>
           </div>
+        </div>
+      </section>
+
+      <section className="border-b border-border" aria-labelledby="style-library-guide">
+        <div className="mx-auto grid max-w-7xl gap-6 px-4 py-8 sm:px-6 md:grid-cols-[1.4fr_1fr] md:px-12 md:py-10">
+          <div>
+            <h2 id="style-library-guide" className="text-xl md:text-2xl">
+              {locale === "zh" ? "如何选择网页设计风格" : "How to choose a web design style"}
+            </h2>
+            <p className="mt-3 max-w-2xl text-sm leading-relaxed text-muted">
+              {locale === "zh"
+                ? "先按产品场景筛选，再打开单个风格查看色板、字体、组件配方和 AI 实现规则。确定视觉方向后，可以继续使用提示词库或模板完成页面。"
+                : "Start with a product scenario, then open a style to compare its palette, typography, component recipes, and AI implementation rules. Move from a visual direction to prompts or a runnable template when you are ready to build."}
+            </p>
+          </div>
+          <nav aria-label={locale === "zh" ? "设计资源导航" : "Design resource navigation"} className="grid gap-2 text-sm">
+            <LocalizedLink href="/collections" className="border border-border px-4 py-3 transition-colors hover:border-foreground">
+              {locale === "zh" ? "按主题浏览风格合集 →" : "Browse style collections by theme →"}
+            </LocalizedLink>
+            <LocalizedLink href="/ui-prompts" className="border border-border px-4 py-3 transition-colors hover:border-foreground">
+              {locale === "zh" ? "使用 UI 与前端提示词 →" : "Use UI and frontend prompts →"}
+            </LocalizedLink>
+            <LocalizedLink href="/templates" className="border border-border px-4 py-3 transition-colors hover:border-foreground">
+              {locale === "zh" ? "查看 Next.js 页面模板 →" : "Explore Next.js page templates →"}
+            </LocalizedLink>
+          </nav>
         </div>
       </section>
 
