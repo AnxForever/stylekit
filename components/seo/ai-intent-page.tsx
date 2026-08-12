@@ -18,6 +18,10 @@ export type AiIntentPageKey =
   | "ai-ui-design"
   | "ai-web-design"
   | "ai-frontend-design"
+  | "ai-generated-website-fix"
+  | "ai-web-design-tools"
+  | "ai-ui-generator"
+  | "ai-frontend-workflow"
   | "avoid-ai-slop"
   | "claude-code-ui-design"
   | "codex-ui-design";
@@ -45,14 +49,338 @@ const TOOL_LABELS: Record<AiIntentPageKey, string> = {
   "ai-ui-design": "AI coding tools",
   "ai-web-design": "AI web design",
   "ai-frontend-design": "AI frontend design",
+  "ai-generated-website-fix": "AI generated website fix",
+  "ai-web-design-tools": "AI web design tools",
+  "ai-ui-generator": "AI UI generator",
+  "ai-frontend-workflow": "AI frontend workflow",
   "avoid-ai-slop": "AI slop prevention",
   "claude-code-ui-design": "Claude Code",
   "codex-ui-design": "Codex",
 };
 
+function getPracticalCopy(
+  key: Extract<AiIntentPageKey, "ai-generated-website-fix" | "ai-web-design-tools" | "ai-ui-generator" | "ai-frontend-workflow">,
+  locale: Locale,
+): AiIntentCopy {
+  if (locale === "zh") {
+    if (key === "ai-generated-website-fix") {
+      return {
+        title: "AI 生成网站不好看怎么办？前端 UI 修复清单",
+        description: "AI 生成的网站不好看，通常不是代码问题，而是视觉方向、内容层级和组件状态不清楚。用这份前端 UI 修复清单逐项改进 AI 网页。",
+        h1: "AI 生成网站不好看怎么办？",
+        intro: "如果 AI 生成的网站看起来像模板，不要只让它‘再设计得好看一点’。先定位配色、排版、布局、内容和组件状态的问题，再用具体规则要求 AI 修改。",
+        eyebrow: "FIX AI-GENERATED UI",
+        primaryCta: "选择一个视觉风格",
+        secondaryCta: "复制 UI 提示词",
+        includedTitle: "AI 生成网页难看的 4 个常见原因",
+        included: [
+          { title: "只有形容词，没有规则", body: "modern、premium、科技感不能直接指导代码。AI 需要颜色、字体、间距、边框、阴影和圆角等可执行的值。" },
+          { title: "首屏没有内容层级", body: "标题、说明、主动作和辅助信息没有优先级，页面就会变成卡片和按钮的堆叠。" },
+          { title: "组件没有状态", body: "只描述默认状态，没有 hover、focus、loading、empty、error 和 disabled 状态，界面会显得像静态截图。" },
+          { title: "没有禁止项", body: "不告诉 AI 不要使用蓝紫渐变、过度圆角、无意义图标或重复卡片，它通常会回到训练数据里的平均答案。" },
+        ],
+        workflowTitle: "一套可复用的 AI 网页修复流程",
+        workflow: [
+          "先截图或描述最明显的三个问题：视觉方向、信息层级和组件细节，不要笼统地说‘不好看’。",
+          "从 StyleKit 选择一个风格，复制颜色、排版、间距、边框、阴影和禁止项，作为修改约束。",
+          "让 AI 先改页面结构和内容层级，再改视觉 tokens，最后补齐交互状态和移动端布局。",
+          "用真实内容、不同屏幕尺寸、键盘操作和空数据状态验收，确认修改不是只优化了首屏截图。",
+        ],
+        stylesTitle: "用 StyleKit 把‘不好看’变成可执行的修复规则",
+        stylesBody: "StyleKit 的风格页提供设计 tokens、组件配方和 AI 规则。你可以把它们作为现有页面的改版约束，而不是让 AI 每轮重新猜一套视觉风格。",
+        relatedTitle: "下一步从这里开始",
+        related: [
+          { label: "避免 AI Slop", href: "/avoid-ai-slop", body: "识别默认 AI UI 的视觉惯性，并加入反模板约束。" },
+          { label: "AI 前端设计", href: "/ai-frontend-design", body: "把页面目标、组件边界和验收标准写进前端 brief。" },
+          { label: "AI UI 生成器指南", href: "/ai-ui-generator", body: "了解如何让 AI 生成更完整、更一致的 UI 界面。" },
+        ],
+        faq: [
+          { question: "为什么 AI 生成的网站总是很像？", answer: "因为需求通常只有行业、页面类型和几个形容词，没有规定具体视觉 tokens、内容层级、组件状态和禁止项。模型自然会回到常见的 SaaS 模板。" },
+          { question: "应该重新生成整个网站吗？", answer: "通常不应该。先保留信息架构和真实内容，按页面结构、视觉 tokens、组件状态和响应式问题分阶段修复，结果更容易控制。" },
+          { question: "StyleKit 能修复已有的 AI 网页吗？", answer: "可以。选择一个风格后，把它的 Hard Prompt、tokens 和禁止项放进改版上下文，让 AI 针对已有代码做可检查的修改。" },
+        ],
+      };
+    }
+
+    if (key === "ai-web-design-tools") {
+      return {
+        title: "AI 网页设计工具怎么选？从提示词到前端代码",
+        description: "AI 网页设计工具选择指南：比较 AI 设计、网页生成、UI 提示词和 AI 编码工作流，帮助你从想法生成可维护的前端页面。",
+        h1: "AI 网页设计工具怎么选？",
+        intro: "不同 AI 网页设计工具解决的不是同一个问题。有的适合探索视觉方向，有的适合生成页面，有的适合把设计规则落实成 React 和 Tailwind 代码。先按工作阶段选择，才能避免工具越多结果越乱。",
+        eyebrow: "AI WEB DESIGN TOOLS",
+        primaryCta: "浏览网页设计风格",
+        secondaryCta: "查看 AI 提示词库",
+        includedTitle: "选择 AI 网页设计工具时看什么？",
+        included: [
+          { title: "能否控制视觉系统", body: "工具是否支持颜色、字体、间距、边框、圆角、阴影和动效规则，而不只是输入一句‘做得现代一点’。" },
+          { title: "能否处理真实页面状态", body: "检查它是否能覆盖响应式布局、loading、empty、error、focus、disabled 和真实内容密度。" },
+          { title: "能否进入代码工作流", body: "确认输出是否适合 React、Next.js、Tailwind CSS 或你的组件库，而不是只能得到一张无法维护的截图。" },
+        ],
+        workflowTitle: "AI 网页设计工具的 4 阶段工作流",
+        workflow: [
+          "用文字或参考图明确页面目标、用户和内容结构，先解决‘做什么’。",
+          "用 StyleKit 选择视觉方向，确定颜色、字体、间距、组件和禁止项，解决‘看起来像什么’。",
+          "用 AI 工具生成页面骨架和组件，再让 AI 按区块实现 React、Next.js 或 Tailwind 代码。",
+          "在浏览器中用真实内容和移动端检查结果，回到代码中修复具体问题，而不是反复随机生成。",
+        ],
+        stylesTitle: "工具只是执行层，设计规则才是稳定性来源",
+        stylesBody: "AI 网页设计工具容易把页面带回平均模板。StyleKit 把设计风格、tokens、组件规则和前端提示词放在一起，让不同工具共享同一套视觉上下文。",
+        relatedTitle: "配套资源",
+        related: [
+          { label: "AI 前端工作流", href: "/ai-frontend-workflow", body: "从页面 brief 到 React、Next.js 和 Tailwind 实现。" },
+          { label: "AI 生成网页修复", href: "/ai-generated-website-fix", body: "解决 AI 网页生成后常见的模板感和视觉漂移。" },
+          { label: "Tailwind UI 提示词", href: "/tailwind-ui-prompts", body: "直接使用实现导向的 Tailwind CSS UI prompts。" },
+        ],
+        faq: [
+          { question: "AI 网页设计工具和 AI 建站工具一样吗？", answer: "不完全一样。AI 建站工具强调快速得到完整站点；AI 网页设计工具还要解决视觉探索、页面结构、组件状态和后续代码实现。" },
+          { question: "选择工具前要不要先选风格？", answer: "建议先确定一个可执行的视觉方向。没有风格规则时，不同工具会各自生成一套默认 UI，最终很难保持一致。" },
+          { question: "StyleKit 是 AI 网页设计工具吗？", answer: "StyleKit 更像 AI 前端设计上下文和风格系统：提供风格、tokens、组件配方和提示词，配合你正在使用的 AI 设计或编码工具完成实现。" },
+        ],
+      };
+    }
+
+    if (key === "ai-ui-generator") {
+      return {
+        title: "AI 生成 UI 界面：从页面结构到可用前端",
+        description: "学习如何用 AI 生成 UI 界面：先确定页面结构、视觉 tokens、组件状态和响应式规则，再生成更一致的 React、Next.js 和 Tailwind 前端。",
+        h1: "AI 生成 UI 界面：不要只生成一张好看的图",
+        intro: "AI 生成 UI 的关键不是让模型一次产出更多组件，而是让它理解页面任务、信息层级和交互状态。StyleKit 帮你把视觉方向变成可以直接交给 AI 的 UI 规则。",
+        eyebrow: "AI UI GENERATION",
+        primaryCta: "选择 UI 设计风格",
+        secondaryCta: "复制 UI 提示词",
+        includedTitle: "一份可用的 AI UI 生成需求包含什么？",
+        included: [
+          { title: "页面结构", body: "明确导航、首屏、内容区、主要动作、辅助信息和 footer 的关系，不让 AI 自由堆叠区块。" },
+          { title: "设计 tokens", body: "给出颜色、字体层级、间距尺度、边框、阴影、圆角和暗色模式规则，让组件拥有统一语言。" },
+          { title: "交互状态", body: "要求 AI 同时处理 hover、focus、active、loading、empty、error 和 disabled，避免只生成静态默认态。" },
+        ],
+        workflowTitle: "AI 生成 UI 的正确顺序",
+        workflow: [
+          "先写页面目标和用户任务，再列出页面区块与组件清单。",
+          "从 StyleKit 选择风格，把具体 tokens 和禁止项加入 prompt。",
+          "让 AI 先生成可访问的结构和内容，再实现视觉细节与动效。",
+          "用真实数据、移动端断点和键盘操作验收，针对问题逐项修复。",
+        ],
+        stylesTitle: "让 UI 生成从平均答案变成有判断的界面",
+        stylesBody: "StyleKit 提供 140+ 网页和 UI 风格，每个方向都有设计说明、组件规则和可导出的 AI 提示词，适合在 UI 生成前先锁定视觉语言。",
+        relatedTitle: "继续生成更稳定的 UI",
+        related: [
+          { label: "AI 网页设计", href: "/ai-web-design", body: "从页面目标、视觉系统和实现约束开始。" },
+          { label: "UI 提示词库", href: "/ui-prompts", body: "按落地页、仪表盘、暗色模式和 Tailwind UI 选择 prompts。" },
+          { label: "AI 生成网页修复", href: "/ai-generated-website-fix", body: "修复 AI 生成 UI 的模板感、层级和状态缺失。" },
+        ],
+        faq: [
+          { question: "AI 生成 UI 和 AI 生成网页有什么区别？", answer: "AI 生成网页通常关注完整页面，AI 生成 UI 更关注页面中的组件、状态、层级和可复用性。两者都需要先定义视觉系统，才能避免结果漂移。" },
+          { question: "如何让 AI 生成的 UI 不像模板？", answer: "使用明确的风格、具体的 tokens、真实内容层级和禁止项，并要求 AI 输出完整交互状态，而不是只生成一组圆角卡片。" },
+          { question: "AI 生成 UI 可以直接用于生产吗？", answer: "生成结果仍需要代码审查、响应式检查、可访问性检查和真实数据测试。StyleKit 的规则可以减少视觉漂移，但不能替代工程验收。" },
+        ],
+      };
+    }
+
+    return {
+      title: "AI 前端工作流：从网页想法到 React 与 Tailwind",
+      description: "一套 AI 前端工作流：从页面 brief、视觉风格和 UI 提示词开始，到 React、Next.js、Tailwind CSS 组件实现与质量验收。",
+      h1: "AI 前端工作流：从想法到可维护代码",
+      intro: "AI 前端开发的难点不是生成第一版代码，而是让页面在多轮修改后仍然保持结构清晰、视觉一致、响应式可用。把设计规则、组件边界和验收条件放进同一条工作流，结果会稳定很多。",
+      eyebrow: "AI FRONTEND WORKFLOW",
+      primaryCta: "开始 AI 前端设计",
+      secondaryCta: "浏览前端提示词",
+      includedTitle: "AI 前端工作流的 4 个核心输入",
+      included: [
+        { title: "产品与页面 brief", body: "写清用户、任务、内容优先级和主要转化动作，先决定页面为什么存在。" },
+        { title: "视觉规则", body: "用 StyleKit 固定色板、字体、间距、边框、阴影、圆角和动效，不让每轮生成重新猜风格。" },
+        { title: "组件与状态", body: "定义组件边界、数据结构、响应式规则和 loading、empty、error、focus 等状态。" },
+        { title: "验收清单", body: "用真实内容、移动端、键盘操作、可访问性和视觉一致性逐项检查输出。" },
+      ],
+      workflowTitle: "推荐的 AI 前端开发顺序",
+      workflow: [
+        "先让 AI 总结页面目标、信息架构和组件树，确认它理解了需求。",
+        "再提供 StyleKit 风格规则和技术约束，要求先完成结构与可访问性。",
+        "按区块实现视觉细节，保持同一份 tokens 和组件状态规则，不要每轮推翻整个页面。",
+        "用浏览器和真实数据验收，把问题拆成具体任务交给 AI 修复并复查。",
+      ],
+      stylesTitle: "AI 编程工具需要设计上下文，而不只是代码上下文",
+      stylesBody: "代码工具能生成组件，但不一定知道页面应该保持什么视觉判断。StyleKit 将风格、tokens、组件配方和提示词组合成可复用的前端设计上下文。",
+      relatedTitle: "工作流入口",
+      related: [
+        { label: "AI 前端设计", href: "/ai-frontend-design", body: "先定义页面目标、视觉系统和实现约束。" },
+        { label: "AI 生成 UI", href: "/ai-ui-generator", body: "从结构、tokens 和状态开始生成可用 UI。" },
+        { label: "AI 网页设计工具", href: "/ai-web-design-tools", body: "按探索、生成、编码和验收阶段选择工具。" },
+      ],
+      faq: [
+        { question: "AI 前端工作流和直接让 AI 写代码有什么区别？", answer: "工作流会先固定页面目标、视觉规则、组件边界和验收标准，再分阶段实现。直接让 AI 写代码速度快，但更容易出现结构混乱、样式漂移和重复重写。" },
+        { question: "应该一次让 AI 生成整个网站吗？", answer: "复杂网站不建议一次生成。先做信息架构和组件骨架，再按页面或区块实现，AI 更容易理解上下文，也更方便人工验收。" },
+        { question: "哪些技术栈适合这套工作流？", answer: "React、Next.js、Tailwind CSS 和 shadcn/ui 都适合。关键不是固定技术栈，而是让设计 tokens、组件状态和验收规则可复用。" },
+      ],
+    };
+  }
+
+  if (key === "ai-generated-website-fix") {
+    return {
+      title: "Fix an AI-Generated Website That Looks Bad",
+      description: "A practical checklist for fixing generic AI-generated websites with better hierarchy, visual tokens, component states, and responsive frontend rules.",
+      h1: "How to fix an AI-generated website that looks bad",
+      intro: "Do not ask the AI to make the page ‘prettier’. Diagnose hierarchy, visual direction, content, and component states, then apply explicit frontend rules.",
+      eyebrow: "FIX AI-GENERATED UI",
+      primaryCta: "Choose a visual style",
+      secondaryCta: "Copy UI prompts",
+      includedTitle: "Four common reasons AI websites look bad",
+      included: [
+        { title: "Adjectives without rules", body: "Modern and premium do not specify colors, typography, spacing, borders, shadows, or radii." },
+        { title: "Weak first-viewport hierarchy", body: "The headline, primary action, supporting proof, and content structure have no clear priority." },
+        { title: "Missing component states", body: "A static default state is not a production UI. Include hover, focus, loading, empty, error, and disabled states." },
+        { title: "No avoid list", body: "Tell the AI which generic gradients, icons, card patterns, or spacing habits must not appear." },
+      ],
+      workflowTitle: "A repeatable AI website repair workflow",
+      workflow: [
+        "Name the three most visible problems instead of saying only that the page looks bad.",
+        "Choose one StyleKit direction and add its tokens, component rules, and avoid list to the revision context.",
+        "Fix structure and hierarchy first, then visual tokens, then interaction states and mobile behavior.",
+        "Review real content, breakpoints, keyboard behavior, and empty data instead of judging only a hero screenshot.",
+      ],
+      stylesTitle: "Turn ‘bad’ into checkable frontend rules",
+      stylesBody: "StyleKit provides design tokens, component recipes, and AI rules that can be used to revise existing code without asking the model to invent a new visual system every round.",
+      relatedTitle: "Continue with StyleKit",
+      related: [
+        { label: "Avoid AI slop", href: "/avoid-ai-slop", body: "Recognize generic AI UI patterns and add anti-template constraints." },
+        { label: "AI frontend design", href: "/ai-frontend-design", body: "Turn page intent, boundaries, and acceptance criteria into a brief." },
+        { label: "AI UI generator guide", href: "/ai-ui-generator", body: "Generate interfaces from structure, tokens, and states." },
+      ],
+      faq: [
+        { question: "Why do AI-generated websites look so similar?", answer: "The prompt usually describes only the industry and page type. Without visual tokens, hierarchy, component states, and avoid rules, the model falls back to common SaaS defaults." },
+        { question: "Should I regenerate the whole site?", answer: "Usually no. Keep real content and information architecture, then repair structure, tokens, states, and responsive behavior in stages." },
+        { question: "Can StyleKit fix an existing AI-generated site?", answer: "Yes. Copy a style’s hard prompt, tokens, and avoid rules into the revision context and ask the AI to make targeted changes to the existing code." },
+      ],
+    };
+  }
+
+  if (key === "ai-web-design-tools") {
+    return {
+      title: "How to Choose AI Web Design Tools",
+      description: "Compare AI design, website generation, UI prompting, and AI coding workflows to move from a web idea to maintainable React and Tailwind frontend code.",
+      h1: "How to choose AI web design tools",
+      intro: "AI web design tools solve different stages of the same workflow. Choose by whether you need visual exploration, page generation, design constraints, or production frontend code.",
+      eyebrow: "AI WEB DESIGN TOOLS",
+      primaryCta: "Browse web design styles",
+      secondaryCta: "Explore UI prompts",
+      includedTitle: "What should an AI web design tool handle?",
+      included: [
+        { title: "Visual system control", body: "Can you specify colors, typography, spacing, borders, radii, shadows, and motion beyond a generic adjective?" },
+        { title: "Real page states", body: "Can it handle responsive behavior, loading, empty, error, focus, disabled, and realistic content density?" },
+        { title: "A path to code", body: "Can its output enter a React, Next.js, Tailwind, or component-library workflow instead of remaining a screenshot?" },
+      ],
+      workflowTitle: "A four-stage AI web design workflow",
+      workflow: [
+        "Define the page goal, audience, and content structure before choosing a tool.",
+        "Choose a StyleKit direction and lock colors, typography, components, and avoid rules.",
+        "Generate the page skeleton and implement it section by section in your frontend stack.",
+        "Test real content and mobile behavior, then send targeted fixes back to the AI.",
+      ],
+      stylesTitle: "Tools are the execution layer; design rules create consistency",
+      stylesBody: "StyleKit keeps visual direction, tokens, component recipes, and frontend prompts together so different AI tools can work from the same design context.",
+      relatedTitle: "Related workflows",
+      related: [
+        { label: "AI frontend workflow", href: "/ai-frontend-workflow", body: "Move from page brief to React, Next.js, and Tailwind implementation." },
+        { label: "Fix AI-generated websites", href: "/ai-generated-website-fix", body: "Repair generic output and visual drift after generation." },
+        { label: "Tailwind UI prompts", href: "/tailwind-ui-prompts", body: "Use implementation-oriented prompts for Tailwind CSS UI." },
+      ],
+      faq: [
+        { question: "Are AI web design tools and AI website builders the same?", answer: "Not exactly. Website builders emphasize getting a complete site quickly; web design workflows also cover visual exploration, structure, component states, and maintainable implementation." },
+        { question: "Should I choose a visual style before choosing a tool?", answer: "Usually yes. Without explicit design rules, each tool invents its own default UI and the results are difficult to keep consistent." },
+        { question: "Is StyleKit an AI web design tool?", answer: "StyleKit is a design context and style system for AI workflows. It provides styles, tokens, component recipes, and prompts that work alongside design and coding tools." },
+      ],
+    };
+  }
+
+  if (key === "ai-ui-generator") {
+    return {
+      title: "AI UI Generation: From Page Structure to Frontend",
+      description: "Generate more usable UI with page structure, visual tokens, component states, and responsive rules for React, Next.js, and Tailwind frontend work.",
+      h1: "AI UI generation: do not generate only a pretty screenshot",
+      intro: "The quality of AI-generated UI depends on whether the model understands the page task, information hierarchy, and interaction states—not how many components it generates in one pass.",
+      eyebrow: "AI UI GENERATION",
+      primaryCta: "Choose a UI style",
+      secondaryCta: "Copy UI prompts",
+      includedTitle: "What belongs in a usable AI UI request?",
+      included: [
+        { title: "Page structure", body: "Define navigation, hero, content, primary action, supporting information, and footer relationships." },
+        { title: "Design tokens", body: "Specify color, type hierarchy, spacing, borders, shadows, radii, and dark-mode behavior." },
+        { title: "Interaction states", body: "Ask for hover, focus, active, loading, empty, error, and disabled states—not just the default view." },
+      ],
+      workflowTitle: "The right order for AI UI generation",
+      workflow: [
+        "Write the page goal and user task, then list sections and components.",
+        "Choose one StyleKit direction and add concrete tokens and avoid rules.",
+        "Have the AI build accessible structure and real content before visual details and motion.",
+        "Review real data, mobile breakpoints, and keyboard behavior, then fix specific issues.",
+      ],
+      stylesTitle: "Move UI generation beyond the average answer",
+      stylesBody: "StyleKit offers 140+ web and UI directions with design guidance, component rules, and exportable AI prompts for locking visual language before generation.",
+      relatedTitle: "Generate more consistent UI",
+      related: [
+        { label: "AI web design", href: "/ai-web-design", body: "Start with page intent, visual systems, and implementation rules." },
+        { label: "UI prompt library", href: "/ui-prompts", body: "Choose prompts for landing pages, dashboards, dark mode, and Tailwind UI." },
+        { label: "Fix AI-generated websites", href: "/ai-generated-website-fix", body: "Repair hierarchy, states, and generic visual output." },
+      ],
+      faq: [
+        { question: "What is the difference between AI UI generation and AI website generation?", answer: "AI website generation focuses on producing a complete page. AI UI generation focuses more closely on reusable components, states, hierarchy, and consistency." },
+        { question: "How do I stop AI-generated UI from looking generic?", answer: "Use a clear style, concrete tokens, real content hierarchy, and an explicit avoid list. Require complete interaction states instead of a set of rounded default cards." },
+        { question: "Can AI-generated UI go straight to production?", answer: "It still needs code review, responsive checks, accessibility checks, and real-data testing. Design rules reduce drift but do not replace engineering validation." },
+      ],
+    };
+  }
+
+  return {
+    title: "AI Frontend Workflow: From Web Idea to React and Tailwind",
+    description: "A practical AI frontend workflow from page brief and visual style to React, Next.js, Tailwind CSS components, and quality checks.",
+    h1: "AI frontend workflow: from idea to maintainable code",
+    intro: "The hard part of AI frontend development is not generating the first version. It is keeping structure, visual consistency, responsiveness, and maintainability through multiple rounds of changes.",
+    eyebrow: "AI FRONTEND WORKFLOW",
+    primaryCta: "Start AI frontend design",
+    secondaryCta: "Browse frontend prompts",
+    includedTitle: "Four inputs for an AI frontend workflow",
+    included: [
+      { title: "Product and page brief", body: "Define the user, task, content priorities, and primary action before writing components." },
+      { title: "Visual rules", body: "Lock palette, type, spacing, borders, shadows, radii, and motion with StyleKit instead of re-deciding every round." },
+      { title: "Components and states", body: "Define boundaries, data shape, responsive rules, and loading, empty, error, and focus states." },
+      { title: "Acceptance checklist", body: "Review real content, mobile behavior, keyboard operation, accessibility, and visual consistency." },
+    ],
+    workflowTitle: "A recommended AI frontend development order",
+    workflow: [
+      "Ask the AI to summarize the page goal, information architecture, and component tree before implementation.",
+      "Provide StyleKit rules and technical constraints, then build accessible structure first.",
+      "Implement visual details section by section while reusing the same tokens and component states.",
+      "Test in the browser with real data, split issues into targeted fixes, and review the result again.",
+    ],
+    stylesTitle: "AI coding tools need design context, not only code context",
+    stylesBody: "AI can generate components without knowing the visual decisions they must preserve. StyleKit combines styles, tokens, component recipes, and prompts into reusable frontend design context.",
+    relatedTitle: "Workflow entry points",
+    related: [
+      { label: "AI frontend design", href: "/ai-frontend-design", body: "Define page intent, visual systems, and implementation constraints." },
+      { label: "AI UI generation", href: "/ai-ui-generator", body: "Generate usable UI from structure, tokens, and states." },
+      { label: "AI web design tools", href: "/ai-web-design-tools", body: "Choose tools by exploration, generation, coding, and review stage." },
+    ],
+    faq: [
+      { question: "How is an AI frontend workflow different from asking AI to write code?", answer: "It fixes the page goal, visual rules, component boundaries, and acceptance criteria before implementation, then delivers the page in reviewable stages." },
+      { question: "Should AI generate the whole site at once?", answer: "For complex sites, no. Start with information architecture and a component skeleton, then implement pages or sections so the output is easier to review." },
+      { question: "Which stacks work with this workflow?", answer: "React, Next.js, Tailwind CSS, and shadcn/ui all work well. The important part is making tokens, states, and acceptance rules reusable." },
+    ],
+  };
+}
+
 function getCopy(key: AiIntentPageKey, locale: Locale): AiIntentCopy {
   const isZh = locale === "zh";
   const tool = TOOL_LABELS[key];
+
+  if (
+    key === "ai-generated-website-fix" ||
+    key === "ai-web-design-tools" ||
+    key === "ai-ui-generator" ||
+    key === "ai-frontend-workflow"
+  ) {
+    return getPracticalCopy(key, locale);
+  }
 
   if (isZh) {
     if (key === "ai-web-design") {
@@ -82,6 +410,7 @@ function getCopy(key: AiIntentPageKey, locale: Locale): AiIntentCopy {
         related: [
           { label: "AI UI 设计入口", href: "/ai-ui-design", body: "了解如何把风格约束交给 ChatGPT、Claude Code 或 Codex。" },
           { label: "AI 前端设计", href: "/ai-frontend-design", body: "把页面目标、组件边界和实现约束交给 AI 前端工作流。" },
+          { label: "AI 网页设计工具", href: "/ai-web-design-tools", body: "按探索、生成、编码和验收阶段选择合适的工具。" },
           { label: "UI 提示词库", href: "/ui-prompts", body: "按落地页、仪表盘、Tailwind UI 和暗色模式选择提示词。" },
           { label: "Tailwind UI 提示词", href: "/tailwind-ui-prompts", body: "把设计规则落到 React、Next.js 和 Tailwind CSS 实现。" },
         ],
@@ -121,6 +450,7 @@ function getCopy(key: AiIntentPageKey, locale: Locale): AiIntentCopy {
         related: [
           { label: "AI 网页设计", href: "/ai-web-design", body: "从页面目标和视觉系统开始组织 AI 网页设计需求。" },
           { label: "AI UI 设计", href: "/ai-ui-design", body: "为 ChatGPT、Claude Code 和 Codex 选择可复用的 UI 设计约束。" },
+          { label: "AI 前端工作流", href: "/ai-frontend-workflow", body: "从 brief、组件树到 React、Next.js 和 Tailwind 实现。" },
           { label: "UI 提示词库", href: "/ui-prompts", body: "按网页、仪表盘、落地页和 Tailwind UI 复制前端提示词。" },
         ],
         faq: [
@@ -158,6 +488,7 @@ function getCopy(key: AiIntentPageKey, locale: Locale): AiIntentCopy {
         related: [
           { label: "AI 网页设计", href: "/ai-web-design", body: "从页面目标和视觉系统开始组织 AI 前端 brief。" },
           { label: "AI 前端设计", href: "/ai-frontend-design", body: "把 AI 生成网页代码拆成可维护、可验收的组件工作流。" },
+          { label: "AI 生成网页修复", href: "/ai-generated-website-fix", body: "解决 AI 网页生成后的模板感、层级和状态缺失。" },
           { label: "UI 设计风格库", href: "/styles", body: "选择一个有明确视觉语言的风格，而不是继续堆形容词。" },
           { label: "UI 提示词库", href: "/ui-prompts", body: "直接复制页面结构、组件状态和实现约束。" },
         ],
@@ -241,6 +572,7 @@ function getCopy(key: AiIntentPageKey, locale: Locale): AiIntentCopy {
       related: [
         { label: "AI UI design hub", href: "/ai-ui-design", body: "Learn how to give style constraints to ChatGPT, Claude Code, or Codex." },
         { label: "AI frontend design", href: "/ai-frontend-design", body: "Turn page intent, component boundaries, and implementation rules into an AI workflow." },
+        { label: "AI web design tools", href: "/ai-web-design-tools", body: "Choose tools by exploration, generation, coding, and review stage." },
         { label: "UI prompt library", href: "/ui-prompts", body: "Choose prompts for landing pages, dashboards, Tailwind UI, and dark mode." },
         { label: "Tailwind UI prompts", href: "/tailwind-ui-prompts", body: "Translate design rules into React, Next.js, and Tailwind CSS implementation." },
       ],
@@ -309,6 +641,7 @@ function getCopy(key: AiIntentPageKey, locale: Locale): AiIntentCopy {
       related: [
         { label: "AI web design", href: "/ai-web-design", body: "Organize an AI frontend brief around page intent and a visual system." },
         { label: "AI frontend design", href: "/ai-frontend-design", body: "Turn AI-generated web code into a reviewable, maintainable frontend workflow." },
+        { label: "Fix AI-generated websites", href: "/ai-generated-website-fix", body: "Repair hierarchy, visual tokens, and component states after generation." },
         { label: "UI design styles", href: "/styles", body: "Choose a direction with a real visual language instead of stacking adjectives." },
         { label: "UI prompt library", href: "/ui-prompts", body: "Copy page structure, component states, and implementation constraints." },
       ],
@@ -407,6 +740,14 @@ export function getAiIntentMetadata(
       ? ["AI 网页设计", "AI 生成网页", "AI 网页设计工具", "AI 网站设计", "网页设计提示词", "AI 前端 UI"]
       : key === "ai-frontend-design"
         ? ["AI 前端设计", "AI 前端开发", "前端 AI 工作流", "前端 AI 编程工具", "AI 生成网页代码", "AI 网站制作工具"]
+        : key === "ai-generated-website-fix"
+          ? ["AI 生成网站不好看", "AI 生成网页不好看怎么办", "AI 网站设计不好看", "AI 网页生成修复", "AI 前端设计规范"]
+          : key === "ai-web-design-tools"
+            ? ["AI 网页设计工具", "AI 网站设计工具", "AI 网页制作工具", "AI 网站生成器", "AI 做网页设计"]
+            : key === "ai-ui-generator"
+              ? ["AI 生成 UI", "AI 生成 UI 界面", "AI UI 生成器", "AI 界面设计", "AI UI 设计工具"]
+              : key === "ai-frontend-workflow"
+                ? ["AI 前端工作流", "AI 前端开发", "前端 AI 工作流", "前端 AI 编程工具", "AI 生成网页代码"]
         : key === "avoid-ai-slop"
           ? ["AI 生成网站不好看", "AI 生成网页不好看怎么办", "避免 AI 味", "AI 前端设计规范", "AI UI 提示词"]
           : ["AI UI 设计", "AI UI 提示词", "网页设计提示词", "AI 界面设计", "前端提示词", "设计 tokens"]
