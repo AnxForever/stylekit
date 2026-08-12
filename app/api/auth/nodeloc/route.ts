@@ -5,10 +5,11 @@
 import { randomBytes } from "node:crypto";
 import { NextResponse, type NextRequest } from "next/server";
 import { buildAuthorizationUrl } from "@/lib/auth/nodeloc";
-
-export const NODELOC_STATE_COOKIE = "stylekit-nodeloc-oauth-state";
-export const NODELOC_NEXT_COOKIE = "stylekit-nodeloc-oauth-next";
-export const NODELOC_CALLBACK_PATH = "/api/auth/nodeloc/callback";
+import {
+  NODELOC_CALLBACK_PATH,
+  NODELOC_NEXT_COOKIE,
+  NODELOC_STATE_COOKIE,
+} from "@/lib/auth/nodeloc-cookies";
 
 function parseNextPath(value: string | null): string {
   if (!value || !value.startsWith("/") || value.startsWith("//")) {

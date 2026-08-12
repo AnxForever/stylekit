@@ -34,7 +34,7 @@ import {
   NODELOC_CALLBACK_PATH,
   NODELOC_NEXT_COOKIE,
   NODELOC_STATE_COOKIE,
-} from "@/app/api/auth/nodeloc/route";
+} from "@/lib/auth/nodeloc-cookies";
 
 const mockedCookies = vi.mocked(cookies);
 const mockedCreateServerClient = vi.mocked(createServerClient);
