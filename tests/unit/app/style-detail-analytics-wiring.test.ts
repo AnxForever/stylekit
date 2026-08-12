@@ -8,12 +8,22 @@ describe("style detail analytics wiring", () => {
     "utf8"
   );
 
-  it("tracks both existing showcase entry points with distinct sources", () => {
-    expect(source).toContain(
-      'trackEvent("showcase_open", { slug: style.slug, source: "hero" })'
-    );
+  it("tracks the preview-card showcase entry point", () => {
+    // The hero "View Showcase" link moved into <ShowcaseDownloadButton> when
+    // the hero CTA became a snapshot download, so the detail page itself now
+    // has a single showcase_open source: the live preview card.
     expect(source).toContain('source: "preview_card"');
-    expect(source.match(/trackEvent\("showcase_open"/g)).toHaveLength(2);
+    expect(source.match(/trackEvent\("showcase_open"/g)).toHaveLength(1);
+  });
+
+  it("tracks the hero showcase download entry point", () => {
+    const downloadButton = readFileSync(
+      path.join(process.cwd(), "components/showcase/showcase-download-button.tsx"),
+      "utf8"
+    );
+    // The hero entry point now downloads a snapshot rather than opening the
+    // showcase; that action is what carries analytics from the hero.
+    expect(downloadButton).toContain('trackEvent("style_export"');
   });
 
   it("threads the current style slug into the component code preview", () => {
