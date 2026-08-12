@@ -26,6 +26,9 @@ https://www.stylekit.top/en/ai-frontend-workflow?utm_source={source}&utm_medium=
 AI web design tools guide:
 https://www.stylekit.top/en/ai-web-design-tools?utm_source={source}&utm_medium=community&utm_campaign=ai-frontend-seo-2026-08&utm_content={content}
 
+AI frontend style article:
+https://www.stylekit.top/en/blog/ai-frontend-style-constraints?utm_source={source}&utm_medium=community&utm_campaign=ai-frontend-seo-2026-08&utm_content={content}
+
 Chinese AI frontend guide:
 https://www.stylekit.top/zh/ai-frontend-workflow?utm_source={source}&utm_medium=community&utm_campaign=ai-frontend-seo-2026-08&utm_content={content}
 
