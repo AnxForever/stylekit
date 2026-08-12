@@ -51,7 +51,7 @@ describe("POST /api/auth/email-otp/verify", () => {
       getAll: vi.fn().mockReturnValue([]),
       set: vi.fn(),
     } as unknown as Awaited<ReturnType<typeof cookies>>);
-    mockedVerifyOtpChallenge.mockReturnValue({ valid: true });
+    mockedVerifyOtpChallenge.mockResolvedValue({ valid: true });
     mockedGetOrAssignSeqId.mockRejectedValue(new Error("not configured"));
   });
 

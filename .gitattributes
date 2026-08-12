@@ -1,0 +1,19 @@
+# Keep text files byte-stable across Windows and Unix checkouts.
+* text=auto eol=lf
+
+# Integrity-checked experience packs and registry artifacts must retain their
+# exact bytes. Binary assets must never be line-ending converted.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.webp binary
+*.avif binary
+*.ico binary
+*.woff binary
+*.woff2 binary
+*.ttf binary
+*.otf binary
+*.mp4 binary
+*.webm binary
+*.zip binary

@@ -72,7 +72,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const { code, cookieValue } = createOtpChallenge(email);
+    const { code, cookieValue } = await createOtpChallenge(email);
     const transporter = nodemailer.createTransport({
       host: smtp.host,
       port: smtp.port,

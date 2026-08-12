@@ -66,13 +66,18 @@ export function createRateLimitHeaders(
 }
 
 export function getRequestClientKey(request: Request): string {
-  const forwarded = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim();
-  const realIp = request.headers.get("x-real-ip")?.trim();
-  const cfIp = request.headers.get("cf-connecting-ip")?.trim();
-  const userAgent = request.headers.get("user-agent")?.trim() ?? "unknown";
+  const configuredHeader = process.env.TRUSTED_CLIENT_IP_HEADER?.trim();
+  if (!configuredHeader) return "ip:unknown";
 
-  const ip = cfIp || realIp || forwarded || "unknown";
-  return `${ip}:${userAgent.slice(0, 120)}`;
+  const raw = request.headers.get(configuredHeader);
+  if (!raw) return "ip:unknown";
+
+  const entries = raw
+    .split(",")
+    .map((entry) => entry.trim())
+    .filter(Boolean);
+  const ip = entries.at(-1) || "unknown";
+  return `ip:${ip}`;
 }
 
 function cleanupExpiredBuckets(now: number): void {

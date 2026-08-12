@@ -1,0 +1,28 @@
+{
+  "schemaVersion": "style-intent-v1",
+  "styleSlug": "glassmorphism",
+  "confidence": 0.87,
+  "rationale": [
+    "Layered panels can separate account-risk groups without losing dashboard density.",
+    "The style supports a premium SaaS workspace while keeping the hierarchy explicit."
+  ],
+  "projectType": "dashboard",
+  "brief": {
+    "audience": "B2B SaaS operators",
+    "primaryGoal": "Review account risk quickly",
+    "requiredPages": ["Overview"],
+    "requiredStates": ["loading", "empty", "error", "success"],
+    "brandPersonality": ["clear", "reliable", "focused"],
+    "antiReferences": [
+      "decorative gradients",
+      "noisy illustrations",
+      "low-contrast text"
+    ],
+    "notes": "The generated result must work on desktop and mobile."
+  },
+  "constraints": [
+    "Use StyleKit canonical tokens and recipes.",
+    "Keep contrast and state messaging readable.",
+    "Do not invent final colors or component code in the model response."
+  ]
+}

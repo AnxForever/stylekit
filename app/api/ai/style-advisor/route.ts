@@ -1,4 +1,4 @@
-import replayIntent from "@/examples/bailian-stylekit/fixtures/style-intent.json";
+import replayIntent from "@/lib/bailian/fixtures/style-intent.json";
 import {
   BailianClientError,
   type StyleIntentProvider,

@@ -10,7 +10,7 @@ import { GET } from "@/app/api/auth/linuxdo/route";
 const mockedBuildAuthorizationUrl = vi.mocked(buildAuthorizationUrl);
 
 describe("GET /api/auth/linuxdo", () => {
-  it("stores the post-login path in oauth state", async () => {
+  it("stores an unguessable state and binds the post-login path to a cookie", async () => {
     mockedBuildAuthorizationUrl.mockReturnValueOnce(
       "https://connect.linux.do/oauth2/authorize?client_id=test"
     );
@@ -20,8 +20,13 @@ describe("GET /api/auth/linuxdo", () => {
     );
 
     expect(response.status).toBe(307);
-    expect(response.headers.get("location")).toBe(
-      "https://connect.linux.do/oauth2/authorize?client_id=test&state=%2F"
+    const location = new URL(response.headers.get("location")!);
+    expect(location.origin + location.pathname).toBe(
+      "https://connect.linux.do/oauth2/authorize",
+    );
+    expect(location.searchParams.get("state")).toMatch(/^[0-9a-f]{64}$/);
+    expect(response.headers.get("set-cookie")).toContain(
+      "stylekit-linuxdo-oauth-next=",
     );
     expect(mockedBuildAuthorizationUrl).toHaveBeenCalledWith(
       "https://stylekit.top/api/auth/linuxdo/callback"

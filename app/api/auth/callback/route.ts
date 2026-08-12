@@ -11,10 +11,10 @@ import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 import { NextResponse, type NextRequest } from "next/server";
 import { getOrAssignSeqId } from "@/lib/auth/seq-id";
+import { sanitizeNextPath } from "@/lib/auth/next-path";
 
 function parseNextPath(value: string | null): string {
-  if (!value || !value.startsWith("/")) return "/";
-  return value;
+  return sanitizeNextPath(value, "/");
 }
 
 function parseMetadata(value: unknown): Record<string, unknown> {
