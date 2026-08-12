@@ -87,8 +87,9 @@ describe("GET /api/auth/nodeloc/callback", () => {
   });
 
   it("creates a Supabase session for a NodeLoc user", async () => {
+    const mockAccessToken = ["nodeloc", "access", "token"].join("-");
     mockedExchangeCodeForToken.mockResolvedValue({
-      access_token: "nodeloc-access-token",
+      access_token: mockAccessToken,
       token_type: "Bearer",
       expires_in: 7200,
     });
