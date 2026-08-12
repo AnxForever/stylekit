@@ -44,6 +44,16 @@
 
 StyleKit helps humans and AI start from a consistent visual direction. Pick a style to get structured design tokens, component recipes, prompt guidance, and implementation references; production integration and completeness still depend on the target project.
 
+## AI frontend resources
+
+If you are using AI to design or build a frontend, these focused guides cover the practical workflow:
+
+- [Fix an AI-generated website that looks bad](https://www.stylekit.top/en/ai-generated-website-fix) — visual hierarchy, spacing, typography, and component consistency.
+- [How to choose AI web design tools](https://www.stylekit.top/en/ai-web-design-tools) — compare prompt, design, and code-generation workflows.
+- [AI UI generation](https://www.stylekit.top/en/ai-ui-generator) — turn a page brief into a usable interface structure.
+- [AI frontend workflow](https://www.stylekit.top/en/ai-frontend-workflow) — move from idea to React, Tailwind, and implementation constraints.
+- Chinese guides: [AI 网页设计工具](https://www.stylekit.top/zh/ai-web-design-tools) · [AI 前端工作流](https://www.stylekit.top/zh/ai-frontend-workflow)
+
 <table>
 <tr>
 <td width="50%" valign="top">
