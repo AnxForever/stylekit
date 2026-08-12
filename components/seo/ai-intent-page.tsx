@@ -16,10 +16,8 @@ import type { Locale } from "@/lib/i18n/translations";
 
 export type AiIntentPageKey =
   | "ai-ui-design"
-  | "cursor-ui-design"
   | "claude-code-ui-design"
-  | "codex-ui-design"
-  | "v0-ui-design";
+  | "codex-ui-design";
 
 interface AiIntentCopy {
   title: string;
@@ -42,10 +40,8 @@ interface AiIntentCopy {
 
 const TOOL_LABELS: Record<AiIntentPageKey, string> = {
   "ai-ui-design": "AI coding tools",
-  "cursor-ui-design": "Cursor",
   "claude-code-ui-design": "Claude Code",
   "codex-ui-design": "Codex",
-  "v0-ui-design": "v0",
 };
 
 function getCopy(key: AiIntentPageKey, locale: Locale): AiIntentCopy {
@@ -59,7 +55,7 @@ function getCopy(key: AiIntentPageKey, locale: Locale): AiIntentCopy {
         ? "AI UI 设计风格与前端提示词"
         : `${tool} UI 设计风格与提示词`,
       description: key === "ai-ui-design"
-        ? "为 ChatGPT、Claude、Cursor、Codex 和 v0 选择网页 UI 风格，获取设计 tokens、组件约束和可直接改写的前端提示词。"
+        ? "为 ChatGPT、Claude Code 和 Codex 选择网页 UI 风格，获取设计 tokens、组件约束和可直接改写的前端提示词。"
         : `为 ${tool} 准备更稳定的网页 UI 生成 brief：从 StyleKit 选择视觉风格、设计 tokens、组件配方和可复制的前端提示词。`,
       h1: key === "ai-ui-design"
         ? "AI UI 设计：先选风格，再让 AI 写界面"
@@ -103,7 +99,7 @@ function getCopy(key: AiIntentPageKey, locale: Locale): AiIntentCopy {
       ? "AI UI Design Styles & Frontend Prompts"
       : `${tool} UI Design Styles & Prompts`,
     description: key === "ai-ui-design"
-      ? "Choose web UI styles for ChatGPT, Claude, Cursor, Codex, and v0. Get design tokens, component constraints, and reusable frontend prompts for consistent interfaces."
+      ? "Choose web UI styles for ChatGPT, Claude Code, and Codex. Get design tokens, component constraints, and reusable frontend prompts for consistent interfaces."
       : `Create more consistent web interfaces with ${tool}: choose a StyleKit direction, then use its design tokens, component recipes, and frontend prompt constraints.`,
     h1: key === "ai-ui-design"
       ? "AI UI design: choose the style before the AI writes the interface"

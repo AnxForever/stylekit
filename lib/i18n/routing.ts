@@ -54,7 +54,6 @@ export const LOCALE_ROUTE_POLICY = [
       "/components",
       "/contact",
       "/codex-ui-design",
-      "/cursor-ui-design",
       "/dark-mode-ui-prompts",
       "/dashboard-prompts",
       "/developers",
@@ -69,7 +68,6 @@ export const LOCALE_ROUTE_POLICY = [
       "/tailwind-ui-prompts",
       "/templates",
       "/ui-prompts",
-      "/v0-ui-design",
     ],
     prefixes: [
       "/animations",
