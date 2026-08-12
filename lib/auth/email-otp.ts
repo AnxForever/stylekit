@@ -1,14 +1,65 @@
-import { createHmac, randomInt, timingSafeEqual } from "node:crypto";
+import { createHmac, randomBytes, randomInt, timingSafeEqual } from "node:crypto";
 
 export const EMAIL_OTP_COOKIE = "stylekit-email-otp";
 export const EMAIL_OTP_TTL_SECONDS = 10 * 60;
 export const EMAIL_OTP_MAX_ATTEMPTS = 5;
 
 interface OtpChallenge {
+  /** Per-challenge nonce; the attempt budget is tracked server-side under it. */
+  jti: string;
   email: string;
   digest: string;
   expiresAt: number;
+  /**
+   * Kept only so previously issued cookies stay decodable. The value is not
+   * trusted — a client can always replay an older cookie to reset it, so the
+   * authoritative counter lives in `challengeState` below.
+   */
   attempts: number;
+}
+
+interface ChallengeState {
+  attempts: number;
+  consumed: boolean;
+  expiresAt: number;
+}
+
+/**
+ * Server-side attempt ledger, keyed by the challenge nonce.
+ *
+ * The signed cookie alone cannot bound guesses: it is held by the client, so
+ * replaying the pristine copy resets any counter baked into it and turns the
+ * 6-digit code into an unlimited brute force. Anchoring the counter here means
+ * every replay of the same cookie lands on the same budget.
+ */
+const challengeState = new Map<string, ChallengeState>();
+const CLEANUP_EVERY_HITS = 100;
+let hitCounter = 0;
+
+function readChallengeState(jti: string, expiresAt: number): ChallengeState {
+  hitCounter += 1;
+  if (hitCounter % CLEANUP_EVERY_HITS === 0) {
+    const now = Date.now();
+    for (const [key, state] of challengeState.entries()) {
+      if (state.expiresAt <= now) {
+        challengeState.delete(key);
+      }
+    }
+  }
+
+  const existing = challengeState.get(jti);
+  if (existing) {
+    return existing;
+  }
+
+  const created: ChallengeState = { attempts: 0, consumed: false, expiresAt };
+  challengeState.set(jti, created);
+  return created;
+}
+
+/** Test seam: drops all tracked challenges. */
+export function resetEmailOtpState(): void {
+  challengeState.clear();
 }
 
 function getSecret(): string {
@@ -57,6 +108,8 @@ function decodeChallenge(value: string | undefined): OtpChallenge | null {
       Buffer.from(payload, "base64url").toString(),
     ) as Partial<OtpChallenge>;
     if (
+      typeof parsed.jti !== "string" ||
+      parsed.jti.length === 0 ||
       typeof parsed.email !== "string" ||
       typeof parsed.digest !== "string" ||
       typeof parsed.expiresAt !== "number" ||
@@ -80,12 +133,20 @@ export function createOtpChallenge(email: string): {
 } {
   const normalizedEmail = normalizeEmail(email);
   const code = String(randomInt(0, 1_000_000)).padStart(6, "0");
+  const expiresAt = Date.now() + EMAIL_OTP_TTL_SECONDS * 1000;
   const challenge: OtpChallenge = {
+    jti: randomBytes(16).toString("hex"),
     email: normalizedEmail,
     digest: digestCode(normalizedEmail, code),
-    expiresAt: Date.now() + EMAIL_OTP_TTL_SECONDS * 1000,
+    expiresAt,
     attempts: 0,
   };
+
+  challengeState.set(challenge.jti, {
+    attempts: 0,
+    consumed: false,
+    expiresAt,
+  });
 
   return { code, cookieValue: encodeChallenge(challenge) };
 }
@@ -106,7 +167,14 @@ export function verifyOtpChallenge(
   if (challenge.expiresAt <= Date.now()) {
     return { valid: false, reason: "expired" };
   }
-  if (challenge.attempts >= EMAIL_OTP_MAX_ATTEMPTS) {
+
+  const state = readChallengeState(challenge.jti, challenge.expiresAt);
+  // A code that already signed someone in must not be replayable for the rest
+  // of its TTL.
+  if (state.consumed) {
+    return { valid: false, reason: "expired" };
+  }
+  if (state.attempts >= EMAIL_OTP_MAX_ATTEMPTS) {
     return { valid: false, reason: "attempts" };
   }
 
@@ -118,11 +186,15 @@ export function verifyOtpChallenge(
     actualBuffer.length === expectedBuffer.length &&
     timingSafeEqual(actualBuffer, expectedBuffer);
 
-  if (valid) return { valid: true };
+  if (valid) {
+    state.consumed = true;
+    return { valid: true };
+  }
 
+  state.attempts += 1;
   const nextChallenge = {
     ...challenge,
-    attempts: challenge.attempts + 1,
+    attempts: state.attempts,
   };
   return {
     valid: false,

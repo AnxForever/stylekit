@@ -65,14 +65,48 @@ export function createRateLimitHeaders(
   };
 }
 
+/**
+ * Identify the caller for rate-limiting purposes.
+ *
+ * Only headers a trusted reverse proxy appends may be used. `cf-connecting-ip`,
+ * `x-real-ip` and the *leftmost* `x-forwarded-for` entry are all written by the
+ * client, so keying on them lets an attacker mint a fresh bucket per request
+ * and defeat the limit entirely. nginx's `$proxy_add_x_forwarded_for` appends
+ * the real peer to the end of `x-forwarded-for`, so the rightmost entry is the
+ * one the proxy vouches for.
+ *
+ * Set `TRUSTED_CLIENT_IP_HEADER` when fronted by a CDN that publishes the
+ * client IP in its own header (e.g. `cf-connecting-ip` behind Cloudflare).
+ * Without a proxy there is no trustworthy source, and callers share one bucket
+ * rather than each getting an unlimited one.
+ *
+ * The User-Agent is deliberately excluded: it is client-controlled, so folding
+ * it into the key multiplies every quota by the number of strings an attacker
+ * cares to send.
+ */
 export function getRequestClientKey(request: Request): string {
-  const forwarded = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim();
-  const realIp = request.headers.get("x-real-ip")?.trim();
-  const cfIp = request.headers.get("cf-connecting-ip")?.trim();
-  const userAgent = request.headers.get("user-agent")?.trim() ?? "unknown";
+  return `ip:${readTrustedClientIp(request) ?? "unknown"}`;
+}
 
-  const ip = cfIp || realIp || forwarded || "unknown";
-  return `${ip}:${userAgent.slice(0, 120)}`;
+function readTrustedClientIp(request: Request): string | null {
+  const configuredHeader = process.env.TRUSTED_CLIENT_IP_HEADER?.trim();
+  if (configuredHeader) {
+    return lastHeaderEntry(request, configuredHeader);
+  }
+
+  return lastHeaderEntry(request, "x-forwarded-for");
+}
+
+function lastHeaderEntry(request: Request, headerName: string): string | null {
+  const raw = request.headers.get(headerName);
+  if (!raw) return null;
+
+  const entries = raw
+    .split(",")
+    .map((entry) => entry.trim())
+    .filter(Boolean);
+
+  return entries.length > 0 ? entries[entries.length - 1] : null;
 }
 
 function cleanupExpiredBuckets(now: number): void {

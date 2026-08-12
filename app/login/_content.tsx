@@ -6,6 +6,7 @@ import dynamic from "next/dynamic";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useTheme } from "next-themes";
 import { useUser } from "@/lib/auth/use-user";
+import { sanitizeNextPath } from "@/lib/auth/next-path";
 import { useI18n } from "@/lib/i18n/context";
 import { localizeHref } from "@/lib/i18n/routing";
 import { CURATED_STYLE_COUNT } from "@/lib/product/catalog-facts";
@@ -63,7 +64,7 @@ export function LoginContent() {
   const searchParams = useSearchParams();
   const authError = searchParams.get("auth_error");
   const nextParam = searchParams.get("next");
-  const nextPath = nextParam && nextParam.startsWith("/") ? nextParam : "/styles";
+  const nextPath = sanitizeNextPath(nextParam);
   const [dismissed, setDismissed] = useState(false);
   // Which social provider is mid-redirect, so the buttons can show a spinner
   // and lock out double-clicks during the (visible) OAuth navigation delay.

@@ -10,11 +10,38 @@ import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 import { NextResponse, type NextRequest } from "next/server";
 import { exchangeCodeForToken, getLinuxDoUser } from "@/lib/auth/linuxdo";
+import {
+  LINUXDO_CALLBACK_PATH,
+  LINUXDO_NEXT_COOKIE,
+  LINUXDO_STATE_COOKIE,
+} from "@/app/api/auth/linuxdo/route";
 import { getOrAssignSeqId } from "@/lib/auth/seq-id";
+import { sanitizeNextPath } from "@/lib/auth/next-path";
 
 function parseNextPath(value: string | null): string {
-  if (!value || !value.startsWith("/")) return "/";
-  return value;
+  return sanitizeNextPath(value, "/");
+}
+
+function decodeNextPath(value: string | null): string {
+  if (!value) return "/";
+  try {
+    return parseNextPath(decodeURIComponent(value));
+  } catch {
+    return "/";
+  }
+}
+
+function clearOAuthCookies(response: NextResponse): NextResponse {
+  const options = {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax" as const,
+    maxAge: 0,
+    path: LINUXDO_CALLBACK_PATH,
+  };
+  response.cookies.set(LINUXDO_STATE_COOKIE, "", options);
+  response.cookies.set(LINUXDO_NEXT_COOKIE, "", options);
+  return response;
 }
 
 function buildLoginErrorUrl(origin: string, next: string): string {
@@ -29,26 +56,6 @@ function parseMetadata(value: unknown): Record<string, unknown> {
     return {};
   }
   return value as Record<string, unknown>;
-}
-
-function buildTokenRedirectUri(
-  origin: string,
-  stateValue: string | null,
-  nextValue: string | null,
-): string {
-  const callbackUrl = `${origin}/api/auth/linuxdo/callback`;
-
-  // New flow stores the post-login path in OAuth state, so the provider-facing
-  // redirect URI stays stable even if Linux DO drops custom query params.
-  if (stateValue !== null) {
-    return callbackUrl;
-  }
-
-  if (nextValue === null) {
-    return callbackUrl;
-  }
-
-  return `${callbackUrl}?next=${encodeURIComponent(parseNextPath(nextValue))}`;
 }
 
 function getPublicOrigin(request: NextRequest): string {
@@ -78,15 +85,28 @@ export async function GET(request: NextRequest) {
   const origin = getPublicOrigin(request);
   const code = searchParams.get("code");
   const state = searchParams.get("state");
-  const nextParam = searchParams.get("next");
-  const next = parseNextPath(state ?? nextParam);
+  const expectedState = request.cookies.get(LINUXDO_STATE_COOKIE)?.value ?? null;
+  const next = decodeNextPath(
+    request.cookies.get(LINUXDO_NEXT_COOKIE)?.value ?? null,
+  );
   const redirectUrl = `${origin}${next}`;
 
   if (!code) {
     if (searchParams.get("error")) {
-      return NextResponse.redirect(buildLoginErrorUrl(origin, next));
+      return clearOAuthCookies(
+        NextResponse.redirect(buildLoginErrorUrl(origin, next)),
+      );
     }
-    return NextResponse.redirect(redirectUrl);
+    return clearOAuthCookies(NextResponse.redirect(redirectUrl));
+  }
+
+  // Reject any callback we did not initiate: without this an attacker can
+  // hand a victim's browser their own authorization code and silently sign
+  // the victim into the attacker's account.
+  if (!state || !expectedState || state !== expectedState) {
+    return clearOAuthCookies(
+      NextResponse.redirect(buildLoginErrorUrl(origin, next)),
+    );
   }
 
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -94,13 +114,15 @@ export async function GET(request: NextRequest) {
   const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
   if (!supabaseUrl || !supabaseAnonKey || !serviceRoleKey) {
-    return NextResponse.redirect(redirectUrl);
+    return clearOAuthCookies(NextResponse.redirect(redirectUrl));
   }
 
   try {
     // 1. Exchange code for access token
-    const redirectUri = buildTokenRedirectUri(origin, state, nextParam);
-    const tokenData = await exchangeCodeForToken(code, redirectUri);
+    const tokenData = await exchangeCodeForToken(
+      code,
+      `${origin}${LINUXDO_CALLBACK_PATH}`,
+    );
 
     // 2. Get Linux DO user info
     const ldUser = await getLinuxDoUser(tokenData.access_token);
@@ -216,10 +238,12 @@ export async function GET(request: NextRequest) {
       throw new Error(`OTP verification failed: ${verifyError.message}`);
     }
 
-    return NextResponse.redirect(redirectUrl);
+    return clearOAuthCookies(NextResponse.redirect(redirectUrl));
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);
     console.error("[LinuxDo OAuth] Callback error:", message);
-    return NextResponse.redirect(buildLoginErrorUrl(origin, next));
+    return clearOAuthCookies(
+      NextResponse.redirect(buildLoginErrorUrl(origin, next)),
+    );
   }
 }

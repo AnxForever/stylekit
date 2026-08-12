@@ -22,6 +22,7 @@ import {
 } from "react";
 import type { User } from "@supabase/supabase-js";
 import { getAuthClient } from "./supabase-browser";
+import { sanitizeNextPath } from "./next-path";
 
 export interface AuthState {
   user: User | null;
@@ -45,10 +46,7 @@ export interface AuthState {
 }
 
 function normalizeNextPath(nextPath?: string): string {
-  if (!nextPath || !nextPath.startsWith("/")) {
-    return "/styles";
-  }
-  return nextPath;
+  return sanitizeNextPath(nextPath);
 }
 
 const DEV_MOCK_ENABLED =

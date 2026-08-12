@@ -21,6 +21,7 @@ vi.mock("@/lib/auth/seq-id", () => ({
   getOrAssignSeqId: vi.fn(),
 }));
 
+import { NextRequest } from "next/server";
 import { cookies } from "next/headers";
 import { createServerClient } from "@supabase/ssr";
 import { createClient } from "@supabase/supabase-js";
@@ -34,6 +35,30 @@ const mockedCreateClient = vi.mocked(createClient);
 const mockedExchangeCodeForToken = vi.mocked(exchangeCodeForToken);
 const mockedGetLinuxDoUser = vi.mocked(getLinuxDoUser);
 const mockedGetOrAssignSeqId = vi.mocked(getOrAssignSeqId);
+
+const STATE = "a".repeat(64);
+
+/**
+ * Build a callback request carrying the state/next cookies that
+ * /api/auth/linuxdo sets when it starts the flow.
+ */
+function callbackRequest(
+  url: string,
+  options: { state?: string | null; next?: string } = {}
+): NextRequest {
+  const { state = STATE, next } = options;
+  const cookiePairs: string[] = [];
+  if (state !== null) {
+    cookiePairs.push(`stylekit-linuxdo-oauth-state=${state}`);
+  }
+  if (next !== undefined) {
+    cookiePairs.push(`stylekit-linuxdo-oauth-next=${encodeURIComponent(next)}`);
+  }
+
+  return new NextRequest(url, {
+    headers: cookiePairs.length ? { cookie: cookiePairs.join("; ") } : {},
+  });
+}
 
 describe("GET /api/auth/linuxdo/callback", () => {
   beforeEach(() => {
@@ -94,8 +119,9 @@ describe("GET /api/auth/linuxdo/callback", () => {
     } as unknown as ReturnType<typeof createServerClient>);
 
     const response = await GET(
-      new Request(
-        "https://stylekit.top/api/auth/linuxdo/callback?code=test-code&next=%2Fprofile"
+      callbackRequest(
+        `https://stylekit.top/api/auth/linuxdo/callback?code=test-code&state=${STATE}`,
+        { next: "/profile" }
       ) as never
     );
 
@@ -103,7 +129,7 @@ describe("GET /api/auth/linuxdo/callback", () => {
     expect(response.headers.get("location")).toBe("https://www.stylekit.top/profile");
     expect(mockedExchangeCodeForToken).toHaveBeenCalledWith(
       "test-code",
-      "https://www.stylekit.top/api/auth/linuxdo/callback?next=%2Fprofile"
+      "https://www.stylekit.top/api/auth/linuxdo/callback"
     );
     expect(verifyOtp).toHaveBeenCalledWith({
       type: "magiclink",
@@ -111,7 +137,36 @@ describe("GET /api/auth/linuxdo/callback", () => {
     });
   });
 
-  it("uses oauth state for the post-login path when the callback omits next", async () => {
+  it("rejects a callback whose state does not match the cookie", async () => {
+    const response = await GET(
+      callbackRequest(
+        "https://stylekit.top/api/auth/linuxdo/callback?code=attacker-code&state=" +
+          "b".repeat(64),
+        { next: "/profile" }
+      ) as never
+    );
+
+    expect(response.status).toBe(307);
+    expect(response.headers.get("location")).toBe(
+      "https://www.stylekit.top/login?auth_error=linuxdo&next=%2Fprofile"
+    );
+    // The attacker's authorization code must never be redeemed.
+    expect(mockedExchangeCodeForToken).not.toHaveBeenCalled();
+  });
+
+  it("rejects a callback with no state cookie at all", async () => {
+    const response = await GET(
+      callbackRequest(
+        `https://stylekit.top/api/auth/linuxdo/callback?code=attacker-code&state=${STATE}`,
+        { state: null }
+      ) as never
+    );
+
+    expect(response.status).toBe(307);
+    expect(mockedExchangeCodeForToken).not.toHaveBeenCalled();
+  });
+
+  it("uses the stored next cookie for the post-login path", async () => {
     mockedExchangeCodeForToken.mockResolvedValue({
       access_token: "example_linuxdo_access_token",
       token_type: "bearer",
@@ -149,8 +204,9 @@ describe("GET /api/auth/linuxdo/callback", () => {
     } as unknown as ReturnType<typeof createServerClient>);
 
     const response = await GET(
-      new Request(
-        "https://stylekit.top/api/auth/linuxdo/callback?code=test-code&state=%2Fprofile"
+      callbackRequest(
+        `https://stylekit.top/api/auth/linuxdo/callback?code=test-code&state=${STATE}`,
+        { next: "/profile" }
       ) as never
     );
 
@@ -164,8 +220,9 @@ describe("GET /api/auth/linuxdo/callback", () => {
 
   it("returns to login when the provider denies authorization", async () => {
     const response = await GET(
-      new Request(
-        "https://stylekit.top/api/auth/linuxdo/callback?error=access_denied&state=%2Fworkspace"
+      callbackRequest(
+        "https://stylekit.top/api/auth/linuxdo/callback?error=access_denied",
+        { next: "/workspace" }
       ) as never
     );
 
@@ -227,12 +284,14 @@ describe("GET /api/auth/linuxdo/callback", () => {
     } as unknown as ReturnType<typeof createServerClient>);
 
     const response = await GET(
-      new Request(
-        "https://stylekit.top/api/auth/linuxdo/callback?code=test-code&next=dashboard"
+      callbackRequest(
+        `https://stylekit.top/api/auth/linuxdo/callback?code=test-code&state=${STATE}`,
+        { next: "dashboard" }
       ) as never
     );
 
     expect(response.status).toBe(307);
+    // "dashboard" has no leading slash, so the stored path falls back to "/".
     expect(response.headers.get("location")).toBe("https://www.stylekit.top/");
     expect(mockedGetOrAssignSeqId).not.toHaveBeenCalled();
     expect(updateUserById).toHaveBeenCalledWith("existing-user", {
@@ -249,7 +308,9 @@ describe("GET /api/auth/linuxdo/callback", () => {
     });
   });
 
-  it("uses the request origin for localhost LinuxDO callbacks in development", async () => {
+  // NextRequest normalizes 127.0.0.1 to localhost, so this asserts the
+  // localhost branch of getPublicOrigin; both share the same code path.
+  it("uses the request origin for local LinuxDO callbacks in development", async () => {
     vi.stubEnv("NODE_ENV", "development");
     mockedExchangeCodeForToken.mockResolvedValue({
       access_token: "example_linuxdo_access_token",
@@ -288,12 +349,13 @@ describe("GET /api/auth/linuxdo/callback", () => {
     } as unknown as ReturnType<typeof createServerClient>);
 
     const response = await GET(
-      new Request(
-        "http://127.0.0.1:3001/api/auth/linuxdo/callback?code=test-code&next=%2Fprofile"
+      callbackRequest(
+        `http://localhost:3001/api/auth/linuxdo/callback?code=test-code&state=${STATE}`,
+        { next: "/profile" }
       ) as never
     );
 
     expect(response.status).toBe(307);
-    expect(response.headers.get("location")).toBe("http://127.0.0.1:3001/profile");
+    expect(response.headers.get("location")).toBe("http://localhost:3001/profile");
   });
 });

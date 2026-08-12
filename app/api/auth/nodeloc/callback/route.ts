@@ -19,12 +19,10 @@ import {
   NODELOC_STATE_COOKIE,
 } from "@/app/api/auth/nodeloc/route";
 import { getOrAssignSeqId } from "@/lib/auth/seq-id";
+import { sanitizeNextPath } from "@/lib/auth/next-path";
 
 function parseNextPath(value: string | null): string {
-  if (!value || !value.startsWith("/") || value.startsWith("//")) {
-    return "/styles";
-  }
-  return value;
+  return sanitizeNextPath(value);
 }
 
 function decodeNextPath(value: string | null): string {
