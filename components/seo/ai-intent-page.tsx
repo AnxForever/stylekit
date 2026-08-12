@@ -16,6 +16,8 @@ import type { Locale } from "@/lib/i18n/translations";
 
 export type AiIntentPageKey =
   | "ai-ui-design"
+  | "ai-web-design"
+  | "avoid-ai-slop"
   | "claude-code-ui-design"
   | "codex-ui-design";
 
@@ -40,6 +42,8 @@ interface AiIntentCopy {
 
 const TOOL_LABELS: Record<AiIntentPageKey, string> = {
   "ai-ui-design": "AI coding tools",
+  "ai-web-design": "AI web design",
+  "avoid-ai-slop": "AI slop prevention",
   "claude-code-ui-design": "Claude Code",
   "codex-ui-design": "Codex",
 };
@@ -49,6 +53,80 @@ function getCopy(key: AiIntentPageKey, locale: Locale): AiIntentCopy {
   const tool = TOOL_LABELS[key];
 
   if (isZh) {
+    if (key === "ai-web-design") {
+      return {
+        title: "AI 网页设计与前端 UI 生成指南",
+        description: "学习如何用 AI 做网页设计和前端 UI：先定义页面目标与视觉系统，再生成可维护、响应式、可访问的 React 和 Tailwind 界面。",
+        h1: "AI 网页设计：让 AI 生成真正能用的前端",
+        intro: "AI 可以快速生成页面，但默认结果往往缺少层次、状态和明确的视觉方向。StyleKit 把网页设计需求拆成风格、tokens、组件和验收规则，帮助你把想法变成更稳定的前端提示词。",
+        eyebrow: "AI WEB DESIGN WORKFLOW",
+        primaryCta: "选择网页设计风格",
+        secondaryCta: "浏览前端提示词",
+        includedTitle: "一份好的 AI 网页设计 brief 应该包含什么？",
+        included: [
+          { title: "页面目标", body: "说明用户是谁、页面要完成什么任务，以及首屏需要传达的核心信息。" },
+          { title: "视觉系统", body: "明确色板、字体层级、间距、边框、圆角、阴影和动效强度，避免只说‘高级’或‘现代’。" },
+          { title: "实现约束", body: "补上组件结构、响应式规则、加载与空状态、键盘操作和可访问性验收条件。" },
+        ],
+        workflowTitle: "从想法到 AI 前端的 4 个步骤",
+        workflow: [
+          "先写清页面目标、目标用户和内容层级，再决定使用落地页、仪表盘、作品集还是应用界面结构。",
+          "从 StyleKit 选择一个视觉方向，把颜色、字体、间距、组件和禁止项加入 brief。",
+          "让 AI 先输出页面结构和组件清单，再分区实现，不要一开始就要求生成一整个复杂网站。",
+        ],
+        stylesTitle: "用具体视觉语言控制 AI 输出",
+        stylesBody: "AI 网页设计的质量取决于输入是否可执行。StyleKit 的风格页提供设计 tokens、组件配方和前端提示词，让视觉判断变成 AI 可以遵循的规则。",
+        relatedTitle: "继续使用 StyleKit",
+        related: [
+          { label: "AI UI 设计入口", href: "/ai-ui-design", body: "了解如何把风格约束交给 ChatGPT、Claude Code 或 Codex。" },
+          { label: "UI 提示词库", href: "/ui-prompts", body: "按落地页、仪表盘、Tailwind UI 和暗色模式选择提示词。" },
+          { label: "Tailwind UI 提示词", href: "/tailwind-ui-prompts", body: "把设计规则落到 React、Next.js 和 Tailwind CSS 实现。" },
+        ],
+        faq: [
+          { question: "AI 网页设计和 AI 网站生成有什么区别？", answer: "AI 网站生成通常强调快速产出完整页面；AI 网页设计更关注页面目标、视觉系统、组件一致性和后续可维护性。StyleKit 主要解决后者。" },
+          { question: "为什么 AI 生成的网页经常看起来很像？", answer: "因为提示词通常只描述行业和页面类型，没有规定视觉方向、内容层级、组件状态和禁止项。明确的设计约束能减少默认模板感。" },
+          { question: "StyleKit 能配合哪些 AI 编码工具？", answer: "StyleKit 的输出是通用的设计 tokens、组件规则和前端提示词，可以作为 ChatGPT、Claude Code、Codex 等工具的上下文。" },
+        ],
+      };
+    }
+
+    if (key === "avoid-ai-slop") {
+      return {
+        title: "避免 AI Slop：AI 前端界面设计规范与提示词",
+        description: "解决 AI 生成界面千篇一律的问题：用具体的网页风格、设计 tokens、组件状态和验收清单，生成不像模板的前端 UI。",
+        h1: "避免 AI Slop：让 AI 生成的前端不像模板",
+        intro: "所谓 AI slop，通常不是代码不能运行，而是每个页面都像同一套默认 SaaS 模板：蓝紫渐变、圆角卡片、无意义的图标和缺少内容层级。StyleKit 帮你把‘不要普通’改写成可执行的设计规则。",
+        eyebrow: "ANTI-AI-SLOP UI SYSTEM",
+        primaryCta: "浏览独特 UI 风格",
+        secondaryCta: "获取反模板提示词",
+        includedTitle: "AI Slop 通常从哪里产生？",
+        included: [
+          { title: "模糊的视觉要求", body: "只说 modern、clean 或 premium，AI 只能回到训练数据中最常见的平均答案。" },
+          { title: "没有内容层级", body: "页面先堆卡片和按钮，却没有先决定叙事顺序、信息密度和真正的主要动作。" },
+          { title: "没有反向验收", body: "不告诉 AI 哪些默认元素不能出现，也没有检查移动端、焦点状态和空数据状态。" },
+        ],
+        workflowTitle: "一次 AI UI 迭代的反模板流程",
+        workflow: [
+          "先指出当前页面最像 AI 默认模板的 3 个地方：配色、布局、字体或组件处理。",
+          "选择一个明确风格，并写出必须使用的 tokens、组件状态和必须避免的视觉惯性。",
+          "让 AI 逐区重构，再用内容层级、响应式、可访问性和一致性清单验收，而不是只看首屏截图。",
+        ],
+        stylesTitle: "不要只说‘有设计感’，要给 AI 一套可检查的规则",
+        stylesBody: "StyleKit 的风格库覆盖极简、编辑、野兽派、瑞士、复古、玻璃拟态等不同方向。每个方向都可以转换成颜色、排版、布局、组件和交互约束。",
+        relatedTitle: "用这些页面摆脱默认 AI UI",
+        related: [
+          { label: "AI 网页设计", href: "/ai-web-design", body: "从页面目标和视觉系统开始组织 AI 前端 brief。" },
+          { label: "UI 设计风格库", href: "/styles", body: "选择一个有明确视觉语言的风格，而不是继续堆形容词。" },
+          { label: "UI 提示词库", href: "/ui-prompts", body: "直接复制页面结构、组件状态和实现约束。" },
+        ],
+        faq: [
+          { question: "什么是 AI slop？", answer: "AI slop 通常指大量生成、缺少独特判断和内容价值的 AI 产物。在前端里常表现为相同的渐变、圆角卡片、默认字体、装饰性图标和没有真实信息层级的页面。" },
+          { question: "如何让 AI 生成的 UI 更有设计感？", answer: "不要只要求‘好看’。选择一个明确风格，规定色彩与排版，说明内容层级和组件状态，再加入‘不要出现什么’的反向约束。" },
+          { question: "反 AI Slop 提示词适合什么工具？", answer: "适合 ChatGPT、Claude Code、Codex 等能生成或修改前端代码的工具。提示词本身不绑定某个模型，关键是设计规则足够具体。" },
+        ],
+      };
+    }
+
     const toolName = key === "ai-ui-design" ? "AI 编码工具" : tool;
     return {
       title: key === "ai-ui-design"
@@ -95,6 +173,107 @@ function getCopy(key: AiIntentPageKey, locale: Locale): AiIntentCopy {
   }
 
   return {
+    ...(key === "ai-web-design" ? {
+      title: "AI Web Design & Frontend UI Generation Guide",
+      description: "Learn how to use AI for web design and frontend UI: define page goals and a visual system first, then generate maintainable, responsive React and Tailwind interfaces.",
+      h1: "AI web design: make the AI generate a usable frontend",
+      intro: "AI can generate a page quickly, but default output often lacks hierarchy, states, and a clear visual point of view. StyleKit turns web design requirements into style, tokens, components, and acceptance rules you can reuse in frontend prompts.",
+      eyebrow: "AI WEB DESIGN WORKFLOW",
+      primaryCta: "Choose a web design style",
+      secondaryCta: "Browse frontend prompts",
+      includedTitle: "What belongs in a good AI web design brief?",
+      included: [
+        { title: "Page intent", body: "Define the audience, the job the page must do, and the message the first viewport needs to communicate." },
+        { title: "Visual system", body: "Specify palette, type hierarchy, spacing, borders, radii, shadows, and motion instead of saying only ‘modern’ or ‘premium’." },
+        { title: "Implementation rules", body: "Add component structure, responsive behavior, loading and empty states, keyboard behavior, and accessibility checks." },
+      ],
+      workflowTitle: "A four-step AI frontend workflow",
+      workflow: [
+        "Write the page goal, audience, and content hierarchy before choosing a landing page, dashboard, portfolio, or app structure.",
+        "Choose one StyleKit direction and add its colors, type, spacing, components, and avoid list to the brief.",
+        "Ask the AI to outline the page structure and component list first, then implement sections instead of generating a complex site in one shot.",
+      ],
+      stylesTitle: "Control AI output with specific visual language",
+      stylesBody: "AI web design quality depends on whether the input can be executed. StyleKit provides design tokens, component recipes, and frontend prompt guidance that turn visual judgment into rules an AI can follow.",
+      relatedTitle: "Continue with StyleKit",
+      related: [
+        { label: "AI UI design hub", href: "/ai-ui-design", body: "Learn how to give style constraints to ChatGPT, Claude Code, or Codex." },
+        { label: "UI prompt library", href: "/ui-prompts", body: "Choose prompts for landing pages, dashboards, Tailwind UI, and dark mode." },
+        { label: "Tailwind UI prompts", href: "/tailwind-ui-prompts", body: "Translate design rules into React, Next.js, and Tailwind CSS implementation." },
+      ],
+      faq: [
+        { question: "What is the difference between AI web design and an AI website generator?", answer: "AI website generators emphasize producing a complete page quickly. AI web design focuses on page intent, visual systems, component consistency, and maintainability. StyleKit is built for the latter." },
+        { question: "Why do AI-generated websites often look the same?", answer: "Prompts usually describe only the industry and page type, so the model falls back to common defaults. Explicit visual direction, hierarchy, component states, and avoid rules reduce that template effect." },
+        { question: "Which AI coding tools work with StyleKit?", answer: "StyleKit outputs general design tokens, component rules, and frontend prompts that can be used as context with ChatGPT, Claude Code, Codex, and other code-generating tools." },
+      ],
+    } : key === "avoid-ai-slop" ? {
+      title: "Avoid AI Slop: Frontend UI Design Rules & Prompts",
+      description: "Stop AI-generated interfaces from looking generic. Use specific web styles, design tokens, component states, and acceptance checks to create frontend UI with a point of view.",
+      h1: "Avoid AI slop: make AI-generated frontend UI feel intentional",
+      intro: "AI slop is rarely about broken code. It is the default SaaS look: blue-purple gradients, rounded cards, decorative icons, and no content hierarchy. StyleKit turns ‘make it less generic’ into concrete design rules an AI can execute.",
+      eyebrow: "ANTI-AI-SLOP UI SYSTEM",
+      primaryCta: "Browse distinctive UI styles",
+      secondaryCta: "Get anti-template prompts",
+      includedTitle: "Where does AI slop come from?",
+      included: [
+        { title: "Vague visual direction", body: "Words like modern, clean, or premium leave the AI with the most common average answer from its training data." },
+        { title: "No content hierarchy", body: "The page starts stacking cards and buttons before deciding the narrative order, information density, and primary action." },
+        { title: "No reverse checklist", body: "The prompt does not say which defaults must not appear, or check mobile, focus, and empty-data states." },
+      ],
+      workflowTitle: "An anti-template workflow for one UI iteration",
+      workflow: [
+        "Name the three places where the current page feels most generic: palette, layout, typography, or component treatment.",
+        "Choose one clear style and specify the tokens, component states, and visual defaults that must be avoided.",
+        "Refactor section by section, then verify hierarchy, responsive behavior, accessibility, and consistency instead of judging only the hero screenshot.",
+      ],
+      stylesTitle: "Do not say ‘make it distinctive’; give the AI checkable rules",
+      stylesBody: "StyleKit covers minimal, editorial, neo-brutalist, Swiss, retro, glassmorphic, and other directions. Each can be translated into color, type, layout, component, and interaction constraints.",
+      relatedTitle: "Use these pages to escape default AI UI",
+      related: [
+        { label: "AI web design", href: "/ai-web-design", body: "Organize an AI frontend brief around page intent and a visual system." },
+        { label: "UI design styles", href: "/styles", body: "Choose a direction with a real visual language instead of stacking adjectives." },
+        { label: "UI prompt library", href: "/ui-prompts", body: "Copy page structure, component states, and implementation constraints." },
+      ],
+      faq: [
+        { question: "What is AI slop?", answer: "AI slop describes high-volume AI output with little distinctive judgment or useful content. In frontend UI it often looks like the same gradients, rounded cards, default fonts, decorative icons, and weak information hierarchy." },
+        { question: "How do I make AI-generated UI more distinctive?", answer: "Do not ask only for something beautiful. Choose a clear style, specify color and type, explain the content hierarchy and component states, then add constraints describing what must not appear." },
+        { question: "Which tools can use anti-AI-slop prompts?", answer: "They work with code-generating tools such as ChatGPT, Claude Code, and Codex. The prompt is model-agnostic; the important part is that the design rules are specific." },
+      ],
+    } : {
+      title: "AI UI Design Styles & Frontend Prompts",
+      description: "Choose web UI styles for ChatGPT, Claude Code, and Codex. Get design tokens, component constraints, and reusable frontend prompts for consistent interfaces.",
+      h1: "AI UI design: choose the style before the AI writes the interface",
+      intro: "StyleKit turns visual direction into constraints an AI coding tool can execute: palette, typography, spacing, radii, shadows, interaction, and responsive rules. Choose a style first, then reuse the same brief across different coding tools.",
+      eyebrow: "AI-FIRST DESIGN WORKFLOW",
+      primaryCta: "Browse UI design styles",
+      secondaryCta: "Explore UI prompts",
+      includedTitle: "What belongs in an executable UI design brief?",
+      included: [
+        { title: "Visual rules", body: "Palette, type scale, spacing baseline, radii, borders, shadows, and light/dark behavior—not just an adjective like modern." },
+        { title: "Component constraints", body: "Describe navigation, cards, buttons, forms, tables, and empty states as reusable behavior so the AI has fewer chances to drift." },
+        { title: "Acceptance criteria", body: "Add responsive breakpoints, accessibility, interaction states, and things to avoid so the result has a measurable target." },
+      ],
+      workflowTitle: "A practical AI coding workflow",
+      workflow: [
+        "Choose one visual direction from the style catalog and open its colors, tokens, and component guidance.",
+        "Combine the page goal, audience, content structure, and style constraints into one brief instead of asking for something merely ‘premium’.",
+        "Build the information architecture and component skeleton first, then implement visual details and verify mobile and keyboard behavior.",
+      ],
+      stylesTitle: "Start with constraints, not random inspiration",
+      stylesBody: "Each style page can become context for an AI coding session. Pick one direction, then adapt density and components to the page scenario instead of stacking conflicting style adjectives into one prompt.",
+      relatedTitle: "Continue exploring",
+      related: [
+        { label: "UI prompt library", href: "/ui-prompts", body: "Find reusable frontend prompts by page type and visual theme." },
+        { label: "Tailwind UI prompts", href: "/tailwind-ui-prompts", body: "Translate style constraints into Tailwind CSS classes and component structure." },
+        { label: "Developer resources", href: "/developers", body: "Explore the shadcn registry, tokens, and React-oriented resources." },
+      ],
+      faq: [
+        { question: "Can AI coding tools use StyleKit directly?", answer: "Copy the design rules and prompt guidance from StyleKit into your coding context. StyleKit is not tied to one model; its purpose is to make design constraints readable, reusable, and testable." },
+        { question: "Why is a style name alone not enough?", answer: "A style name expresses a direction, not an implementation. Specific colors, type, spacing, component states, and responsive rules make the output less likely to drift from page to page." },
+        { question: "What projects is StyleKit useful for?", answer: "Landing pages, SaaS products, dashboards, portfolios, admin tools, and component libraries that need a consistent visual language—especially when AI assists with implementation." },
+      ],
+    }),
+    ...(key === "ai-web-design" || key === "avoid-ai-slop" ? {} : {
     title: key === "ai-ui-design"
       ? "AI UI Design Styles & Frontend Prompts"
       : `${tool} UI Design Styles & Prompts`,
@@ -119,7 +298,7 @@ function getCopy(key: AiIntentPageKey, locale: Locale): AiIntentCopy {
     workflowTitle: `A practical ${tool} workflow`,
     workflow: [
       "Choose one visual direction from the style catalog and open its colors, tokens, and component guidance.",
-      "Combine the page goal, audience, content structure, and style constraints into one brief instead of asking for something merely ‘premium’.\n",
+      "Combine the page goal, audience, content structure, and style constraints into one brief instead of asking for something merely ‘premium’.",
       `Ask ${tool} to build the information architecture and component skeleton first, then implement visual details and verify mobile and keyboard behavior.`,
     ],
     stylesTitle: "Start with constraints, not random inspiration",
@@ -135,6 +314,7 @@ function getCopy(key: AiIntentPageKey, locale: Locale): AiIntentCopy {
       { question: "Why is a style name alone not enough?", answer: "‘Glassmorphism’ or ‘minimal’ expresses a direction, not an implementation. Specific colors, type, spacing, component states, and responsive rules make the output less likely to drift from page to page." },
       { question: "What projects is StyleKit useful for?", answer: "Landing pages, SaaS products, dashboards, portfolios, admin tools, and component libraries that need a consistent visual language—especially when AI assists with implementation." },
     ],
+    }),
   };
 }
 
