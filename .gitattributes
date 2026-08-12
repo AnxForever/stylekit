@@ -1,0 +1,24 @@
+# Check every text file out with LF, on every platform.
+#
+# Experience packs, registry items and product-validation artifacts are pinned
+# by SHA-256 over their raw bytes. Without this, a Windows clone (core.autocrlf
+# defaults to true) rewrites LF to CRLF on checkout, every one of those digests
+# changes, and integrity verification fails — both in the test suite and at
+# runtime in assertExperiencePackVerified().
+* text=auto eol=lf
+
+# Binaries must never be line-ending converted.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.webp binary
+*.avif binary
+*.ico binary
+*.woff binary
+*.woff2 binary
+*.ttf binary
+*.otf binary
+*.mp4 binary
+*.webm binary
+*.zip binary
