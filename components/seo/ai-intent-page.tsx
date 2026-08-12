@@ -17,6 +17,7 @@ import type { Locale } from "@/lib/i18n/translations";
 export type AiIntentPageKey =
   | "ai-ui-design"
   | "ai-web-design"
+  | "ai-frontend-design"
   | "avoid-ai-slop"
   | "claude-code-ui-design"
   | "codex-ui-design";
@@ -43,6 +44,7 @@ interface AiIntentCopy {
 const TOOL_LABELS: Record<AiIntentPageKey, string> = {
   "ai-ui-design": "AI coding tools",
   "ai-web-design": "AI web design",
+  "ai-frontend-design": "AI frontend design",
   "avoid-ai-slop": "AI slop prevention",
   "claude-code-ui-design": "Claude Code",
   "codex-ui-design": "Codex",
@@ -79,6 +81,7 @@ function getCopy(key: AiIntentPageKey, locale: Locale): AiIntentCopy {
         relatedTitle: "继续使用 StyleKit",
         related: [
           { label: "AI UI 设计入口", href: "/ai-ui-design", body: "了解如何把风格约束交给 ChatGPT、Claude Code 或 Codex。" },
+          { label: "AI 前端设计", href: "/ai-frontend-design", body: "把页面目标、组件边界和实现约束交给 AI 前端工作流。" },
           { label: "UI 提示词库", href: "/ui-prompts", body: "按落地页、仪表盘、Tailwind UI 和暗色模式选择提示词。" },
           { label: "Tailwind UI 提示词", href: "/tailwind-ui-prompts", body: "把设计规则落到 React、Next.js 和 Tailwind CSS 实现。" },
         ],
@@ -86,6 +89,44 @@ function getCopy(key: AiIntentPageKey, locale: Locale): AiIntentCopy {
           { question: "AI 网页设计和 AI 网站生成有什么区别？", answer: "AI 网站生成通常强调快速产出完整页面；AI 网页设计更关注页面目标、视觉系统、组件一致性和后续可维护性。StyleKit 主要解决后者。" },
           { question: "为什么 AI 生成的网页经常看起来很像？", answer: "因为提示词通常只描述行业和页面类型，没有规定视觉方向、内容层级、组件状态和禁止项。明确的设计约束能减少默认模板感。" },
           { question: "StyleKit 能配合哪些 AI 编码工具？", answer: "StyleKit 的输出是通用的设计 tokens、组件规则和前端提示词，可以作为 ChatGPT、Claude Code、Codex 等工具的上下文。" },
+        ],
+      };
+    }
+
+    if (key === "ai-frontend-design") {
+      return {
+        title: "AI 前端设计与 AI 网页生成工作流",
+        description: "围绕 AI 前端设计、AI 前端开发和 AI 生成网页代码建立可复用工作流：用 StyleKit 约束页面结构、视觉系统、组件状态与响应式实现。",
+        h1: "AI 前端设计：让 AI 生成可维护的网页代码",
+        intro: "AI 能生成代码，不代表它理解了你的页面。StyleKit 把 AI 前端设计拆成页面目标、视觉 tokens、组件边界和验收标准，帮助你从‘做一个好看的网页’变成一份 AI 真正能执行的前端 brief。",
+        eyebrow: "AI FRONTEND DESIGN WORKFLOW",
+        primaryCta: "选择前端设计风格",
+        secondaryCta: "获取前端提示词",
+        includedTitle: "AI 前端设计 brief 应该写清楚什么？",
+        included: [
+          { title: "页面与用户任务", body: "说明用户是谁、页面要解决什么问题、首屏主动作是什么，以及不同设备上的内容优先级。" },
+          { title: "视觉与组件规则", body: "给出颜色、字体、间距、圆角、边框、阴影、组件状态和禁止项，避免 AI 回到默认模板。" },
+          { title: "代码与体验约束", body: "明确 React、Next.js、Tailwind CSS、响应式断点、键盘操作、加载状态和空状态等实现要求。" },
+        ],
+        workflowTitle: "从 AI 网页想法到前端代码的 4 步",
+        workflow: [
+          "先描述页面目标、目标用户和内容层级，再决定是落地页、仪表盘、作品集还是产品界面。",
+          "从 StyleKit 选择一个视觉方向，把设计 tokens、组件配方和必须避免的默认样式加入提示词。",
+          "让 AI 先输出信息架构、页面区块和组件清单，再逐块生成代码，不要一次性生成无法验收的整站。",
+          "最后检查移动端、交互状态、可访问性、真实内容密度和组件一致性，再要求 AI 修复具体问题。",
+        ],
+        stylesTitle: "前端 AI 工作流的关键是可执行的设计语言",
+        stylesBody: "‘高级’‘现代’和‘有科技感’不能直接约束代码。StyleKit 的风格页把设计方向转换成颜色、排版、布局、组件和交互规则，让 AI 生成的网页更容易保持一致。",
+        relatedTitle: "继续使用 StyleKit",
+        related: [
+          { label: "AI 网页设计", href: "/ai-web-design", body: "从页面目标和视觉系统开始组织 AI 网页设计需求。" },
+          { label: "AI UI 设计", href: "/ai-ui-design", body: "为 ChatGPT、Claude Code 和 Codex 选择可复用的 UI 设计约束。" },
+          { label: "UI 提示词库", href: "/ui-prompts", body: "按网页、仪表盘、落地页和 Tailwind UI 复制前端提示词。" },
+        ],
+        faq: [
+          { question: "AI 前端设计和 AI 建站有什么区别？", answer: "AI 建站更强调快速生成一个完整网站；AI 前端设计还要处理页面目标、组件边界、视觉系统、交互状态、响应式和后续维护。StyleKit 主要帮助你完成后者。" },
+          { question: "为什么 AI 生成的网页代码经常看起来一样？", answer: "因为提示词只写了行业和页面类型，没有写清视觉规则、内容层级、组件状态和禁止项。明确的设计 tokens 和验收条件能显著减少模板化结果。" },
+          { question: "StyleKit 可以配合哪些前端 AI 工具？", answer: "StyleKit 的设计 tokens、组件规则和提示词可以作为 ChatGPT、Claude Code、Codex 以及其他 AI 前端工具的上下文，不绑定单一模型。" },
         ],
       };
     }
@@ -116,6 +157,7 @@ function getCopy(key: AiIntentPageKey, locale: Locale): AiIntentCopy {
         relatedTitle: "用这些页面摆脱默认 AI UI",
         related: [
           { label: "AI 网页设计", href: "/ai-web-design", body: "从页面目标和视觉系统开始组织 AI 前端 brief。" },
+          { label: "AI 前端设计", href: "/ai-frontend-design", body: "把 AI 生成网页代码拆成可维护、可验收的组件工作流。" },
           { label: "UI 设计风格库", href: "/styles", body: "选择一个有明确视觉语言的风格，而不是继续堆形容词。" },
           { label: "UI 提示词库", href: "/ui-prompts", body: "直接复制页面结构、组件状态和实现约束。" },
         ],
@@ -198,6 +240,7 @@ function getCopy(key: AiIntentPageKey, locale: Locale): AiIntentCopy {
       relatedTitle: "Continue with StyleKit",
       related: [
         { label: "AI UI design hub", href: "/ai-ui-design", body: "Learn how to give style constraints to ChatGPT, Claude Code, or Codex." },
+        { label: "AI frontend design", href: "/ai-frontend-design", body: "Turn page intent, component boundaries, and implementation rules into an AI workflow." },
         { label: "UI prompt library", href: "/ui-prompts", body: "Choose prompts for landing pages, dashboards, Tailwind UI, and dark mode." },
         { label: "Tailwind UI prompts", href: "/tailwind-ui-prompts", body: "Translate design rules into React, Next.js, and Tailwind CSS implementation." },
       ],
@@ -205,6 +248,40 @@ function getCopy(key: AiIntentPageKey, locale: Locale): AiIntentCopy {
         { question: "What is the difference between AI web design and an AI website generator?", answer: "AI website generators emphasize producing a complete page quickly. AI web design focuses on page intent, visual systems, component consistency, and maintainability. StyleKit is built for the latter." },
         { question: "Why do AI-generated websites often look the same?", answer: "Prompts usually describe only the industry and page type, so the model falls back to common defaults. Explicit visual direction, hierarchy, component states, and avoid rules reduce that template effect." },
         { question: "Which AI coding tools work with StyleKit?", answer: "StyleKit outputs general design tokens, component rules, and frontend prompts that can be used as context with ChatGPT, Claude Code, Codex, and other code-generating tools." },
+      ],
+    } : key === "ai-frontend-design" ? {
+      title: "AI Frontend Design & Web Code Generation Workflow",
+      description: "Build a practical AI frontend workflow with page intent, visual systems, component constraints, and responsive React or Tailwind implementation rules.",
+      h1: "AI frontend design: generate web code you can maintain",
+      intro: "AI can generate code without understanding the page. StyleKit turns frontend design into page intent, visual tokens, component boundaries, and acceptance criteria that AI coding tools can execute and reuse.",
+      eyebrow: "AI FRONTEND DESIGN WORKFLOW",
+      primaryCta: "Choose a frontend design style",
+      secondaryCta: "Get frontend prompts",
+      includedTitle: "What belongs in an AI frontend design brief?",
+      included: [
+        { title: "Page and user task", body: "Define the audience, the problem the page solves, the primary action, and content priorities across devices." },
+        { title: "Visual and component rules", body: "Specify colors, type, spacing, radii, borders, shadows, component states, and defaults to avoid." },
+        { title: "Code and experience constraints", body: "State the React, Next.js, Tailwind CSS, responsive, keyboard, loading, and empty-state requirements." },
+      ],
+      workflowTitle: "From an AI web idea to frontend code",
+      workflow: [
+        "Describe the page goal, audience, and content hierarchy before choosing a landing page, dashboard, portfolio, or product interface.",
+        "Choose one StyleKit direction and add its design tokens, component recipes, and avoid list to the prompt.",
+        "Ask the AI to outline information architecture, sections, and components first, then implement the page in reviewable parts.",
+        "Verify mobile behavior, interaction states, accessibility, content density, and component consistency before requesting targeted fixes.",
+      ],
+      stylesTitle: "Make frontend AI workflows use executable design language",
+      stylesBody: "Words like premium, modern, and futuristic do not constrain code. StyleKit translates a visual direction into color, type, layout, component, and interaction rules that AI can follow.",
+      relatedTitle: "Continue with StyleKit",
+      related: [
+        { label: "AI web design", href: "/ai-web-design", body: "Organize AI web design requests around page intent and a visual system." },
+        { label: "AI UI design", href: "/ai-ui-design", body: "Choose reusable UI constraints for ChatGPT, Claude Code, and Codex." },
+        { label: "UI prompt library", href: "/ui-prompts", body: "Copy frontend prompts for websites, dashboards, landing pages, and Tailwind UI." },
+      ],
+      faq: [
+        { question: "What is the difference between AI frontend design and an AI website builder?", answer: "AI website builders emphasize producing a complete website quickly. AI frontend design also covers page intent, component boundaries, visual systems, interaction states, responsive behavior, and maintainability." },
+        { question: "Why does AI-generated frontend code look so similar?", answer: "Prompts often mention only the industry and page type. Explicit visual rules, content hierarchy, component states, and avoid constraints reduce the default template effect." },
+        { question: "Which AI frontend tools can use StyleKit?", answer: "StyleKit tokens, component rules, and prompts can be used as context with ChatGPT, Claude Code, Codex, and other AI coding tools." },
       ],
     } : key === "avoid-ai-slop" ? {
       title: "Avoid AI Slop: Frontend UI Design Rules & Prompts",
@@ -231,6 +308,7 @@ function getCopy(key: AiIntentPageKey, locale: Locale): AiIntentCopy {
       relatedTitle: "Use these pages to escape default AI UI",
       related: [
         { label: "AI web design", href: "/ai-web-design", body: "Organize an AI frontend brief around page intent and a visual system." },
+        { label: "AI frontend design", href: "/ai-frontend-design", body: "Turn AI-generated web code into a reviewable, maintainable frontend workflow." },
         { label: "UI design styles", href: "/styles", body: "Choose a direction with a real visual language instead of stacking adjectives." },
         { label: "UI prompt library", href: "/ui-prompts", body: "Copy page structure, component states, and implementation constraints." },
       ],
@@ -273,7 +351,7 @@ function getCopy(key: AiIntentPageKey, locale: Locale): AiIntentCopy {
         { question: "What projects is StyleKit useful for?", answer: "Landing pages, SaaS products, dashboards, portfolios, admin tools, and component libraries that need a consistent visual language—especially when AI assists with implementation." },
       ],
     }),
-    ...(key === "ai-web-design" || key === "avoid-ai-slop" ? {} : {
+    ...(key === "ai-web-design" || key === "ai-frontend-design" || key === "avoid-ai-slop" ? {} : {
     title: key === "ai-ui-design"
       ? "AI UI Design Styles & Frontend Prompts"
       : `${tool} UI Design Styles & Prompts`,
@@ -324,18 +402,27 @@ export function getAiIntentMetadata(
 ): Metadata {
   const resolvedLocale = isLocale(locale) ? locale : "en";
   const copy = getCopy(key, resolvedLocale);
-  return localizeMetadata(
-    {
-      title: copy.title,
-      description: copy.description,
-      keywords: [
+  const keywords = resolvedLocale === "zh"
+    ? key === "ai-web-design"
+      ? ["AI 网页设计", "AI 生成网页", "AI 网页设计工具", "AI 网站设计", "网页设计提示词", "AI 前端 UI"]
+      : key === "ai-frontend-design"
+        ? ["AI 前端设计", "AI 前端开发", "前端 AI 工作流", "前端 AI 编程工具", "AI 生成网页代码", "AI 网站制作工具"]
+        : key === "avoid-ai-slop"
+          ? ["AI 生成网站不好看", "AI 生成网页不好看怎么办", "避免 AI 味", "AI 前端设计规范", "AI UI 提示词"]
+          : ["AI UI 设计", "AI UI 提示词", "网页设计提示词", "AI 界面设计", "前端提示词", "设计 tokens"]
+    : [
         "AI UI design",
         "frontend prompts",
         "web design styles",
         TOOL_LABELS[key],
         "design tokens",
         "Tailwind CSS",
-      ],
+      ];
+  return localizeMetadata(
+    {
+      title: copy.title,
+      description: copy.description,
+      keywords,
       openGraph: {
         title: `${copy.title} | StyleKit`,
         description: copy.description,

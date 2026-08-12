@@ -20,6 +20,10 @@ export async function generateMetadata({
         keywords: [
           "AI UI 提示词",
           "AI 前端提示词",
+          "AI 前端设计",
+          "AI 生成网页",
+          "AI 生成网页代码",
+          "AI 网站生成器",
           "网页设计提示词",
           "网站设计提示词",
           "Tailwind UI 提示词",

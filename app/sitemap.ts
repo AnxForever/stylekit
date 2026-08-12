@@ -96,6 +96,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...createLocalizedEntries("/ui-prompts", undefined, "weekly", 0.9),
     ...createLocalizedEntries("/ai-ui-design", undefined, "weekly", 0.9),
     ...createLocalizedEntries("/ai-web-design", undefined, "weekly", 0.9),
+    ...createLocalizedEntries("/ai-frontend-design", undefined, "weekly", 0.9),
     ...createLocalizedEntries("/avoid-ai-slop", undefined, "monthly", 0.8),
     ...createLocalizedEntries("/claude-code-ui-design", undefined, "monthly", 0.8),
     ...createLocalizedEntries("/codex-ui-design", undefined, "monthly", 0.8),

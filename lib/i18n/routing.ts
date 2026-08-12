@@ -47,6 +47,7 @@ export const LOCALE_ROUTE_POLICY = [
       "/about",
       "/ai-ui-design",
       "/ai-web-design",
+      "/ai-frontend-design",
       "/backgrounds",
       "/changelog",
       "/claude-code-ui-design",
