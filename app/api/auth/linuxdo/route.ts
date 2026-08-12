@@ -8,11 +8,12 @@
 import { randomBytes } from "node:crypto";
 import { NextResponse, type NextRequest } from "next/server";
 import { buildAuthorizationUrl } from "@/lib/auth/linuxdo";
+import {
+  LINUXDO_CALLBACK_PATH,
+  LINUXDO_NEXT_COOKIE,
+  LINUXDO_STATE_COOKIE,
+} from "@/lib/auth/linuxdo-cookies";
 import { sanitizeNextPath } from "@/lib/auth/next-path";
-
-export const LINUXDO_STATE_COOKIE = "stylekit-linuxdo-oauth-state";
-export const LINUXDO_NEXT_COOKIE = "stylekit-linuxdo-oauth-next";
-export const LINUXDO_CALLBACK_PATH = "/api/auth/linuxdo/callback";
 
 function parseNextPath(value: string | null): string {
   return sanitizeNextPath(value, "/");

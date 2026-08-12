@@ -17,7 +17,7 @@ import {
   NODELOC_CALLBACK_PATH,
   NODELOC_NEXT_COOKIE,
   NODELOC_STATE_COOKIE,
-} from "@/app/api/auth/nodeloc/route";
+} from "@/lib/auth/nodeloc-cookies";
 import { getOrAssignSeqId } from "@/lib/auth/seq-id";
 import { sanitizeNextPath } from "@/lib/auth/next-path";
 

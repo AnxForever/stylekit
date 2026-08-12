@@ -1,0 +1,129 @@
+---
+title: "How to Make AI-Generated Frontend UI Look Less Generic"
+description: "A practical workflow for using visual style constraints, design tokens, and component rules to improve AI-generated React and Tailwind interfaces."
+date: "2026-08-12"
+modified: "2026-08-12"
+author: "StyleKit Team"
+tags: ["ai-frontend", "ui-design", "design-tokens", "react", "tailwind"]
+---
+
+AI can generate a working frontend in minutes. It can also produce a page that feels strangely familiar: a centered hero, rounded white cards, a blue gradient, three columns, and a generic dashboard shell.
+
+The problem is usually not that the model cannot write React or Tailwind. The problem is that a short request such as “make a modern landing page” leaves the visual decisions unspecified. When the design space is open, the model falls back to patterns that are common in its training data.
+
+The reliable fix is to give the implementation a visual direction before asking for code.
+
+## Start with a visual system, not an adjective
+
+Words such as “modern”, “premium”, and “clean” are useful as a starting point, but they are not implementation rules. A frontend model needs a small system it can apply consistently:
+
+- typography: font family, scale, weight, and line height;
+- color: page background, surface, text, muted text, border, and accent;
+- geometry: radius, border width, spacing rhythm, and container width;
+- depth: shadow, blur, texture, or a deliberate lack of them;
+- interaction: hover, focus, active, and disabled states;
+- exclusions: patterns that would make the page drift back toward generic SaaS UI.
+
+For example, replace “make it bold and editorial” with rules such as:
+
+```text
+Use an editorial layout with a warm paper background, a narrow reading measure,
+large serif headlines, visible 1px rules, asymmetric section spacing, and one
+high-contrast accent color. Keep cards flat. Do not use glass blur, gradient
+hero backgrounds, pill-shaped buttons, or equal-width dashboard tiles.
+```
+
+The important part is not the length. It is the fact that each instruction can be checked in the rendered page.
+
+## Give the model constraints it can reuse
+
+The same decisions should appear in the hero, navigation, cards, forms, and footer. Design tokens are useful because they turn a visual idea into reusable values:
+
+```css
+:root {
+  --background: #f6f1e8;
+  --foreground: #1c1917;
+  --muted: #78716c;
+  --accent: #d94801;
+  --border: #292524;
+  --radius: 0;
+  --shadow: 6px 6px 0 #292524;
+}
+```
+
+Then make the prompt refer to those values instead of inventing a new choice for every component:
+
+```text
+Use the provided tokens everywhere. Every major section must share the same
+container width and spacing rhythm. Use the accent only for primary actions,
+selected states, and important labels. Never introduce a second accent color.
+```
+
+This reduces visual drift. It also makes the generated code easier to review because inconsistent values become obvious.
+
+## Specify the page structure before the component details
+
+AI often generates attractive individual cards but a weak page hierarchy. Define the sequence of information first:
+
+```text
+Page structure:
+1. Header with product name, two text links, and one primary action.
+2. Hero with one sentence of positioning, one supporting paragraph, and one CTA.
+3. Proof section with three short facts, not three decorative cards.
+4. Feature section with one dominant example and two supporting details.
+5. FAQ with visible questions and concise answers.
+6. Footer with product links and a short statement of scope.
+```
+
+After the hierarchy is clear, describe only the components that need special treatment. This gives the model a better chance of preserving the relationship between sections instead of optimizing each block independently.
+
+## Add negative constraints deliberately
+
+Positive instructions tell the model what to add. Negative constraints protect the visual identity from common defaults. They are especially useful when the output keeps returning to the same patterns:
+
+```text
+Do not use:
+- a blue-purple gradient as the primary visual;
+- rounded cards on every section;
+- more than one large headline above the fold;
+- decorative icons that do not explain a feature;
+- hover animations that move the layout or reduce readability;
+- placeholder copy such as “revolutionize your workflow”.
+```
+
+Negative constraints should be specific and testable. “Do not make it ugly” is not useful. “Do not use blurred glass surfaces” is useful.
+
+## Review the result in four passes
+
+Do not ask the model to redesign everything after one glance. Review the page in passes so each correction has a clear target.
+
+### 1. Hierarchy
+
+Can a visitor identify what the product does, who it is for, and what to do next without reading every section? If not, fix content order and type scale before adding decoration.
+
+### 2. Consistency
+
+Check repeated components: buttons, cards, inputs, tags, and navigation items. They should share the same radius, border logic, spacing rhythm, and state behavior unless a deliberate exception is documented.
+
+### 3. Contrast and states
+
+Check body text, muted text, focus rings, disabled controls, error messages, and hover states. A visually distinctive page still needs readable text and usable keyboard states.
+
+### 4. Implementation quality
+
+Remove duplicated values, replace one-off magic numbers with tokens, and check mobile behavior. A style system is useful only when it survives a smaller viewport and a second page.
+
+## A practical workflow for React and Tailwind
+
+The workflow I use is:
+
+1. Choose a visual direction from a style reference.
+2. Extract the tokens and the “do” and “do not” rules.
+3. Write the page structure in plain language.
+4. Ask the AI tool to implement one page shell and one representative component.
+5. Review the result against hierarchy, consistency, contrast, and implementation quality.
+6. Feed back only the failed rules, then expand to the remaining sections.
+
+StyleKit is designed around this workflow. Its [visual style library](https://www.stylekit.top/en/styles) provides named directions, while the [AI UI prompts](https://www.stylekit.top/en/ui-prompts) and [AI frontend workflow guide](https://www.stylekit.top/en/ai-frontend-workflow) turn those directions into implementation guidance. If the first result looks wrong, the [AI-generated website repair checklist](https://www.stylekit.top/en/ai-generated-website-fix) is a useful review pass.
+
+The goal is not to force every generated page into the same style. The goal is to make the intended style explicit enough that the model can make consistent decisions, and precise enough that you can tell where the output failed.

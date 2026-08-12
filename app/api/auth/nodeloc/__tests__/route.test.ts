@@ -7,9 +7,11 @@ vi.mock("@/lib/auth/nodeloc", () => ({
 import { buildAuthorizationUrl } from "@/lib/auth/nodeloc";
 import {
   GET,
+} from "@/app/api/auth/nodeloc/route";
+import {
   NODELOC_NEXT_COOKIE,
   NODELOC_STATE_COOKIE,
-} from "@/app/api/auth/nodeloc/route";
+} from "@/lib/auth/nodeloc-cookies";
 
 const mockedBuildAuthorizationUrl = vi.mocked(buildAuthorizationUrl);
 

@@ -14,7 +14,7 @@ import {
   LINUXDO_CALLBACK_PATH,
   LINUXDO_NEXT_COOKIE,
   LINUXDO_STATE_COOKIE,
-} from "@/app/api/auth/linuxdo/route";
+} from "@/lib/auth/linuxdo-cookies";
 import { getOrAssignSeqId } from "@/lib/auth/seq-id";
 import { sanitizeNextPath } from "@/lib/auth/next-path";
 
