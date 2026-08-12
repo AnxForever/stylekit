@@ -94,6 +94,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...createEnglishEntry("/guides", undefined, "monthly", 0.8),
     ...createLocalizedEntries("/recipes", undefined, "weekly", 0.8),
     ...createLocalizedEntries("/ui-prompts", undefined, "weekly", 0.9),
+    ...createLocalizedEntries("/ai-ui-design", undefined, "weekly", 0.9),
+    ...createLocalizedEntries("/ai-web-design", undefined, "weekly", 0.9),
+    ...createLocalizedEntries("/ai-frontend-design", undefined, "weekly", 0.9),
+    ...createLocalizedEntries("/avoid-ai-slop", undefined, "monthly", 0.8),
+    ...createLocalizedEntries("/claude-code-ui-design", undefined, "monthly", 0.8),
+    ...createLocalizedEntries("/codex-ui-design", undefined, "monthly", 0.8),
     ...createLocalizedEntries("/landing-page-prompts", undefined, "weekly", 0.8),
     ...createLocalizedEntries("/dashboard-prompts", undefined, "weekly", 0.8),
     ...createLocalizedEntries("/tailwind-ui-prompts", undefined, "weekly", 0.8),
@@ -102,11 +108,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...createLocalizedEntries("/animations/vocabulary", undefined, "monthly", 0.6),
     ...createLocalizedEntries("/templates", undefined, "weekly", 0.7),
     ...createLocalizedEntries("/resources", undefined, "weekly", 0.7),
-    ...createLocalizedEntries("/type-scale", undefined, "monthly", 0.7),
-    ...createLocalizedEntries("/spacing", undefined, "monthly", 0.7),
-    ...createLocalizedEntries("/color-theory", undefined, "monthly", 0.7),
-    ...createLocalizedEntries("/design-principles", undefined, "monthly", 0.7),
-    ...createLocalizedEntries("/visual-hierarchy", undefined, "monthly", 0.7),
     ...createLocalizedEntries("/component-patterns", undefined, "monthly", 0.7),
     ...createLocalizedEntries("/learn", undefined, "monthly", 0.6),
     ...createLocalizedEntries("/liquid-glass", undefined, "weekly", 0.7),
@@ -142,7 +143,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
   );
 
   const templatePages: MetadataRoute.Sitemap = templateCatalog
-    .filter((template) => !template.external)
+    .filter(
+      (template) =>
+        !template.external && template.href !== "/templates/editorial-profile-archive"
+    )
     .flatMap((template) =>
       createLocalizedEntries(template.href, undefined, "monthly", 0.6)
     );
