@@ -9,9 +9,16 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>;
 }): Promise<Metadata> {
   const { locale } = await params;
-  return isLocale(locale)
-    ? localizeMetadata(baseMetadata, locale, "/developers")
+  if (!isLocale(locale)) return baseMetadata;
+  const localized = locale === "zh"
+    ? {
+        ...baseMetadata,
+        title: "StyleKit 开发者工具与 shadcn 主题",
+        description: "通过 shadcn registry 安装 StyleKit 主题，查看设计 tokens、组件配方和适合 React 项目的开发者资源。",
+        keywords: ["shadcn 主题", "StyleKit 开发者", "React 设计系统", "Tailwind 主题", "设计 tokens"],
+      }
     : baseMetadata;
+  return localizeMetadata(localized, locale, "/developers");
 }
 
 export default Page;

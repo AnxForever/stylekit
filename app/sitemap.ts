@@ -102,11 +102,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...createLocalizedEntries("/animations/vocabulary", undefined, "monthly", 0.6),
     ...createLocalizedEntries("/templates", undefined, "weekly", 0.7),
     ...createLocalizedEntries("/resources", undefined, "weekly", 0.7),
-    ...createLocalizedEntries("/type-scale", undefined, "monthly", 0.7),
-    ...createLocalizedEntries("/spacing", undefined, "monthly", 0.7),
-    ...createLocalizedEntries("/color-theory", undefined, "monthly", 0.7),
-    ...createLocalizedEntries("/design-principles", undefined, "monthly", 0.7),
-    ...createLocalizedEntries("/visual-hierarchy", undefined, "monthly", 0.7),
     ...createLocalizedEntries("/component-patterns", undefined, "monthly", 0.7),
     ...createLocalizedEntries("/learn", undefined, "monthly", 0.6),
     ...createLocalizedEntries("/liquid-glass", undefined, "weekly", 0.7),
@@ -142,7 +137,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
   );
 
   const templatePages: MetadataRoute.Sitemap = templateCatalog
-    .filter((template) => !template.external)
+    .filter(
+      (template) =>
+        !template.external && template.href !== "/templates/editorial-profile-archive"
+    )
     .flatMap((template) =>
       createLocalizedEntries(template.href, undefined, "monthly", 0.6)
     );

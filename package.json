@@ -33,6 +33,7 @@
     "test:style-advisor-live": "npx --no-install tsx tools/scripts/test-style-advisor-live.ts",
     "check:seo-truth": "npx --no-install tsx tools/scripts/check-seo-truth.ts",
     "check:seo-runtime": "node tools/scripts/check-seo-runtime.mjs",
+    "submit:indexnow": "node tools/scripts/submit-indexnow.mjs",
     "validate:product-experiment": "npx --no-install tsx tools/scripts/evaluate-product-validation.ts",
     "check:component-preview": "node tools/scripts/check-component-preview.cjs",
     "check:style-extractor": "node tools/scripts/check-style-extractor.cjs",

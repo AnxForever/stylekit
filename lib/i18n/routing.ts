@@ -26,6 +26,19 @@ export interface LocaleRouteRule {
  */
 export const LOCALE_ROUTE_POLICY = [
   {
+    id: "redirected-foundations",
+    mode: "filesystem",
+    sitemapLocales: "none",
+    exact: [
+      "/color-theory",
+      "/design-principles",
+      "/spacing",
+      "/type-scale",
+      "/visual-hierarchy",
+    ],
+    prefixes: [],
+  },
+  {
     id: "localized-pages",
     mode: "filesystem",
     sitemapLocales: "all",
@@ -34,14 +47,12 @@ export const LOCALE_ROUTE_POLICY = [
       "/about",
       "/backgrounds",
       "/changelog",
-      "/color-theory",
       "/colors",
       "/component-patterns",
       "/components",
       "/contact",
       "/dark-mode-ui-prompts",
       "/dashboard-prompts",
-      "/design-principles",
       "/developers",
       "/guide",
       "/landing-page-prompts",
@@ -50,13 +61,10 @@ export const LOCALE_ROUTE_POLICY = [
       "/launch",
       "/mouse-interactions",
       "/resources",
-      "/spacing",
       "/style-advisor",
       "/tailwind-ui-prompts",
       "/templates",
-      "/type-scale",
       "/ui-prompts",
-      "/visual-hierarchy",
     ],
     prefixes: [
       "/animations",
