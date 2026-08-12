@@ -7,13 +7,9 @@ describe("style detail analytics wiring", () => {
     path.join(process.cwd(), "app/styles/[slug]/_content.tsx"),
     "utf8"
   );
-
-  it("tracks both existing showcase entry points with distinct sources", () => {
-    expect(source).toContain(
-      'trackEvent("showcase_open", { slug: style.slug, source: "hero" })'
-    );
+  it("tracks the existing showcase preview entry point", () => {
     expect(source).toContain('source: "preview_card"');
-    expect(source.match(/trackEvent\("showcase_open"/g)).toHaveLength(2);
+    expect(source.match(/trackEvent\("showcase_open"/g)).toHaveLength(1);
   });
 
   it("threads the current style slug into the component code preview", () => {
