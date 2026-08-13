@@ -94,6 +94,23 @@ export async function POST(request: Request) {
     const body = parsedBody.data;
     const internalPayload = parseClientAnalyticsPayload(body);
     if (internalPayload.success) {
+      // Catalog impressions are high-volume passive telemetry. Keep them in
+      // Vercel Analytics, but do not persist every card exposure in Postgres.
+      // This protects the database quota without changing user-facing behavior.
+      if (internalPayload.data.eventType === "catalog_impression") {
+        const catalogStyleSlug = readEventStyleSlug(
+          internalPayload.data.eventType,
+          internalPayload.data.eventData,
+        );
+        if (catalogStyleSlug && !(await resolveStyleBySlug(catalogStyleSlug))) {
+          return NextResponse.json(
+            { success: false, error: "Unknown style slug" },
+            { status: 400, headers: rateLimitHeaders },
+          );
+        }
+        return NextResponse.json({ success: true }, { headers: rateLimitHeaders });
+      }
+
       const result = await recordInternalAnalyticsEvent(request, internalPayload.data);
       if (!result.ok) {
         return NextResponse.json(
