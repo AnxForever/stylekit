@@ -10,7 +10,7 @@ import { getRequestLocaleContext } from "@/lib/i18n/request";
 export const metadata: Metadata = {
   title: "UI Design Prompts Library",
   description:
-    "Copy-ready UI design prompts for websites, dashboards, landing pages, dark mode, and Tailwind UI — optimized for ChatGPT, Claude, Cursor, and v0.",
+    "Copy-ready UI design prompts for websites, dashboards, landing pages, dark mode, and Tailwind UI — ready for ChatGPT, Claude, Claude Code, and Codex.",
   keywords: [
     "UI design prompts",
     "web UI prompts",
@@ -63,16 +63,16 @@ export default async function UiPromptsPage() {
         : "Best for shaping page structure, visual direction, and richer prompt briefs before implementation.",
     },
     {
-      name: "Cursor / Claude Code",
+      name: "Claude Code",
       description: isZh
         ? "适合把提示词说明转成真实组件、重构任务和代码级 UI 迭代。"
         : "Best for converting prompt briefs into real components, refactors, and code-level UI iterations.",
     },
     {
-      name: "v0",
+      name: "Codex",
       description: isZh
-        ? "当提示词明确规定区块、信息层级和交互状态时，适合快速生成布局。"
-        : "Best for rapid layout generation when your prompt clearly defines sections, hierarchy, and states.",
+        ? "适合在代码库中执行完整的 UI 实现、修改和验证。"
+        : "Best for implementing, editing, and verifying a complete UI inside a codebase.",
     },
     {
       name: isZh ? "Tailwind 优先工作流" : "Tailwind-first workflows",
@@ -96,8 +96,8 @@ export default async function UiPromptsPage() {
             </h1>
             <p className="text-lg text-muted max-w-3xl mb-8 leading-relaxed">
               {isZh
-                ? "这里汇总适用于 UI 与前端设计的通用提示词。你可以从这里进入落地页、仪表盘、Tailwind UI 和暗色模式等专题，并将提示词用于 ChatGPT、Claude、Cursor、Claude Code 或 v0。"
-                : "This is StyleKit's broad-match prompt hub for UI search intent. Start here, then move into more specific landing page, dashboard, Tailwind UI, and dark mode prompt collections for ChatGPT, Claude, Cursor, Claude Code, or v0."}
+                ? "这里汇总适用于 UI 与前端设计的通用提示词。你可以从这里进入落地页、仪表盘、Tailwind UI 和暗色模式等专题，并将提示词用于 ChatGPT、Claude、Claude Code 或 Codex。"
+                : "StyleKit is an open-source library of copy-ready UI design prompts for AI coding. Start with a broad brief, then choose a focused collection for landing pages, dashboards, Tailwind UI, or dark mode in ChatGPT, Claude, Claude Code, or Codex."}
             </p>
             <div className="flex flex-wrap gap-3 text-sm text-muted">
               <span className="border border-border px-3 py-1">
@@ -106,7 +106,7 @@ export default async function UiPromptsPage() {
               <span className="border border-border px-3 py-1">
                 {isZh ? "UI / 落地页 / 仪表盘" : "UI / landing / dashboard"}
               </span>
-              <span className="border border-border px-3 py-1">ChatGPT / Claude / Cursor / v0</span>
+              <span className="border border-border px-3 py-1">ChatGPT / Claude / Claude Code / Codex</span>
             </div>
           </div>
         </section>

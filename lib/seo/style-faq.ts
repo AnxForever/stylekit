@@ -94,8 +94,8 @@ export function buildStyleFaq(style: DesignStyle, locale: Locale): StyleFaqItem[
         : `How do I prompt AI to generate ${name} UI?`,
     answer:
       locale === "zh"
-        ? `复制本页提供的 AI 提示词（含设计 tokens 与组件规则），粘贴到 ChatGPT、Claude、Cursor 或 v0。提示词中应包含关键词：${keywords.slice(0, 4).join("、")}。`
-        : `Copy the ready-made AI prompt on this page — it bundles the design tokens and component rules — and paste it into ChatGPT, Claude, Cursor, or v0. Effective prompts include the keywords: ${keywords.slice(0, 4).join(", ")}.`,
+        ? `复制本页提供的 AI 提示词（含设计 tokens 与组件规则），粘贴到 ChatGPT、Claude、Claude Code 或 Codex。提示词中应包含关键词：${keywords.slice(0, 4).join("、")}。`
+        : `Copy the ready-made AI prompt on this page — it bundles the design tokens and component rules — and paste it into ChatGPT, Claude, Claude Code, or Codex. Effective prompts include the keywords: ${keywords.slice(0, 4).join(", ")}.`,
   });
 
   return faqs;

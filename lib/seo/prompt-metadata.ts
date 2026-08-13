@@ -16,25 +16,25 @@ const ZH_PROMPT_METADATA: Record<
   "/ui-prompts": {
     title: "UI 设计提示词库",
     description:
-      "可直接复制的中文 UI 设计提示词，覆盖网站、仪表盘、落地页、暗色模式与 Tailwind UI，适用于 ChatGPT、Claude、Cursor、Claude Code 和 v0。",
-    keywords: ["UI 设计提示词", "网页设计提示词", "前端提示词", "ChatGPT UI 提示词", "Claude UI 提示词", "Cursor 前端提示词", "v0 提示词"],
+      "可直接复制的中文 UI 设计提示词，覆盖网站、仪表盘、落地页、暗色模式与 Tailwind UI，适用于 ChatGPT、Claude、Claude Code 和 Codex。",
+    keywords: ["UI 设计提示词", "网页设计提示词", "前端提示词", "ChatGPT UI 提示词", "Claude UI 提示词", "Claude Code UI 提示词", "Codex 前端提示词"],
   },
   "/landing-page-prompts": {
     title: "落地页设计提示词",
     description:
-      "用于 SaaS、产品发布、定价页和营销网站的落地页设计提示词，可复制到 ChatGPT、Claude、Cursor、Claude Code 与 v0。",
-    keywords: ["落地页提示词", "Landing Page 提示词", "SaaS 网页设计", "营销页面提示词", "v0 落地页"],
+      "用于 SaaS、产品发布、定价页和营销网站的落地页设计提示词，可复制到 ChatGPT、Claude、Claude Code 与 Codex。",
+    keywords: ["落地页提示词", "Landing Page 提示词", "SaaS 网页设计", "营销页面提示词", "AI 落地页设计"],
   },
   "/dashboard-prompts": {
     title: "仪表盘 UI 设计提示词",
     description:
-      "面向数据仪表盘、后台管理、KPI 卡片、图表和复杂数据界面的 UI 提示词，适用于 ChatGPT、Claude、Cursor 与 v0。",
+      "面向数据仪表盘、后台管理、KPI 卡片、图表和复杂数据界面的 UI 提示词，适用于 ChatGPT、Claude、Claude Code 与 Codex。",
     keywords: ["仪表盘提示词", "后台 UI 提示词", "Dashboard UI", "数据可视化提示词", "管理后台设计"],
   },
   "/tailwind-ui-prompts": {
     title: "Tailwind CSS UI 提示词",
     description:
-      "生成 React、Next.js、Tailwind CSS 与 shadcn/ui 界面的前端提示词，适用于 ChatGPT、Claude、Cursor、Claude Code 和 v0。",
+      "生成 React、Next.js、Tailwind CSS 与 shadcn/ui 界面的前端提示词，适用于 ChatGPT、Claude、Claude Code 和 Codex。",
     keywords: ["Tailwind UI 提示词", "Tailwind CSS 提示词", "shadcn 提示词", "React UI 提示词", "Next.js 前端提示词"],
   },
   "/dark-mode-ui-prompts": {

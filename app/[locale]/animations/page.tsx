@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Page, { metadata as baseMetadata } from "@/app/animations/page";
+import Page, { animationsMetadata as baseMetadata } from "@/app/animations/page";
 import { isLocale } from "@/lib/i18n/routing";
 import { localizeMetadata } from "@/lib/i18n/metadata";
 

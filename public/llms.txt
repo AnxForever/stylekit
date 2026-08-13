@@ -1,15 +1,15 @@
 # StyleKit
 
-> StyleKit is an open-source UI design style and prompt library. Its catalog currently contains 146 curated visual and layout styles. Every catalog style includes machine-readable design tokens, component recipes, AI rules, and React + Tailwind examples.
+> StyleKit is an open-source visual style library for AI-generated web interfaces. Its catalog currently contains 146 curated visual and layout styles. Every catalog style includes machine-readable design tokens, component recipes, AI rules, and React + Tailwind examples.
 
-StyleKit helps developers give ChatGPT, Claude, Cursor, Claude Code, v0, and other coding tools concrete visual constraints instead of relying on a vague style name. The public site supports English and Chinese style discovery; some editorial content is English-only and is identified as such by its canonical URL.
+StyleKit helps developers give ChatGPT, Claude, Claude Code, Codex, and other coding tools concrete visual constraints instead of relying on a vague style name. The public site supports English and Chinese style discovery; some editorial content is English-only and is identified as such by its canonical URL.
 
 ## Start Here
 
 - [English style catalog](https://www.stylekit.top/en/styles): Browse all 146 UI and web design styles.
 - [中文前端风格库](https://www.stylekit.top/zh/styles): 浏览网页设计风格、UI 风格与实现约束。
 - [UI design prompt library](https://www.stylekit.top/en/ui-prompts): Copy prompt structures for websites, dashboards, landing pages, dark mode, and Tailwind UI.
-- [中文 UI 与前端提示词](https://www.stylekit.top/zh/ui-prompts): 面向 ChatGPT、Claude、Cursor、Claude Code 与 v0 的提示词入口。
+- [中文 UI 与前端提示词](https://www.stylekit.top/zh/ui-prompts): 面向 ChatGPT、Claude、Claude Code 与 Codex 的提示词入口。
 - [Page templates](https://www.stylekit.top/en/templates): Browse complete page structures without replacing the curated style previews.
 - [Theme collections](https://www.stylekit.top/en/collections): Find styles by dark mode, retro, game UI, anime, hand-drawn, and other themes.
 - [Color catalog](https://www.stylekit.top/en/colors): Browse and copy palettes from the style catalog.

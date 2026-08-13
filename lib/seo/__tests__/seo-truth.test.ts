@@ -48,7 +48,7 @@ describe("SEO truth invariants", () => {
     expect(metadata.alternates?.canonical).toBeUndefined();
     expect(metadata.openGraph).not.toHaveProperty("url");
     expect(metadata.openGraph).toMatchObject({ locale: "zh_CN" });
-    expect(metadata.description).toContain(`${CURATED_STYLE_COUNT} curated visual styles`);
+    expect(metadata.description).toContain(`Browse ${CURATED_STYLE_COUNT} curated styles`);
   });
 
   it("uses a real PNG homepage capture for large social cards", () => {
@@ -113,7 +113,7 @@ describe("SEO truth invariants", () => {
 
     expect(metadata.title).toBe("UI 设计提示词库");
     expect(metadata.description).toContain("ChatGPT");
-    expect(metadata.description).toContain("Cursor");
+    expect(metadata.description).toContain("Claude Code");
     expect(metadata.alternates?.canonical).toBe(`${BASE_URL}/zh/ui-prompts`);
   });
 
@@ -164,6 +164,7 @@ describe("SEO truth invariants", () => {
     expect(urls.some((url) => url.includes("["))).toBe(false);
     expect(urls.some((url) => url.includes("/showcase"))).toBe(false);
     expect(urls.some((url) => /\/zh\/(blog|guides)(?:\/|$)/.test(url))).toBe(false);
+    expect(urls.some((url) => /\/(color-theory|design-principles|spacing|type-scale|visual-hierarchy)(?:$|\/)/.test(url))).toBe(false);
     expect(urls).toContain(`${BASE_URL}/en/recipes/saas-modern-glass`);
     expect(urls).toContain(`${BASE_URL}/en/liquid-glass`);
     expect(urls).toContain(`${BASE_URL}/zh/liquid-glass`);
