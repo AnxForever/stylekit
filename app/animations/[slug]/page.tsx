@@ -3,6 +3,8 @@ import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { Breadcrumb } from "@/components/ui/breadcrumb";
 import { animations, getAnimationBySlug } from "@/lib/animations";
+import { getRequestLocaleContext } from "@/lib/i18n/request";
+import { applyRequestMetadata } from "@/lib/i18n/metadata";
 import { serializeJsonLd } from "@/lib/security/json-ld";
 import { getSiteBaseUrl } from "@/lib/site-url";
 import { AnimationDetailContent } from "./_content";
@@ -22,15 +24,20 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     return { title: "Animation Not Found" };
   }
 
+  const context = await getRequestLocaleContext();
+  const isZh = context.locale === "zh";
   const BASE_URL = getSiteBaseUrl();
-  const description = `${animation.descriptionEn} Implementation snippets and Tailwind utility classes included.`;
+  const name = isZh ? animation.name : animation.nameEn;
+  const description = isZh
+    ? `${animation.description}，包含可复制的实现片段与 Tailwind 工具类。`
+    : `${animation.descriptionEn} Implementation snippets and Tailwind utility classes included.`;
 
-  return {
-    title: `${animation.nameEn} - Animation Pattern`,
+  return applyRequestMetadata({
+    title: isZh ? `${name} - CSS 动画模式` : `${name} - Animation Pattern`,
     description,
-    keywords: animation.keywords,
+    keywords: animation.keywords,
     openGraph: {
-      title: `${animation.nameEn} Animation - StyleKit`,
+      title: isZh ? `${name} 动画 - StyleKit` : `${name} Animation - StyleKit`,
       description,
       type: "article",
       images: [
@@ -38,17 +45,17 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
           url: `${BASE_URL}/animations/${slug}/opengraph-image`,
           width: 1200,
           height: 630,
-          alt: `${animation.nameEn} animation preview`,
+          alt: `${name} animation preview`,
         },
       ],
     },
     twitter: {
       card: "summary_large_image",
-      title: `${animation.nameEn} Animation - StyleKit`,
+      title: isZh ? `${name} 动画 - StyleKit` : `${name} Animation - StyleKit`,
       description,
       images: [`${BASE_URL}/animations/${slug}/opengraph-image`],
     },
-  };
+  }, context);
 }
 
 export default async function AnimationDetailPage({
@@ -63,14 +70,18 @@ export default async function AnimationDetailPage({
     notFound();
   }
 
+  const context = await getRequestLocaleContext();
+  const isZh = context.locale === "zh";
   const BASE_URL = getSiteBaseUrl();
+  const name = isZh ? animation.name : animation.nameEn;
+  const description = isZh ? animation.description : animation.descriptionEn;
 
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "HowTo",
-    name: `${animation.nameEn} Animation Pattern`,
-    description: animation.descriptionEn,
-    url: `${BASE_URL}/animations/${slug}`,
+    name: isZh ? `${name} 动画模式` : `${name} Animation Pattern`,
+    description,
+    url: context.canonicalUrl,
     step: animation.codeSnippets.map((snippet, i) => ({
       "@type": "HowToStep",
       position: i + 1,
@@ -83,9 +94,9 @@ export default async function AnimationDetailPage({
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Home", item: BASE_URL },
-      { "@type": "ListItem", position: 2, name: "Animations", item: `${BASE_URL}/animations` },
-      { "@type": "ListItem", position: 3, name: animation.nameEn, item: `${BASE_URL}/animations/${slug}` },
+      { "@type": "ListItem", position: 1, name: isZh ? "首页" : "Home", item: `${BASE_URL}/${isZh ? "zh" : "en"}` },
+      { "@type": "ListItem", position: 2, name: isZh ? "动画" : "Animations", item: `${BASE_URL}/${isZh ? "zh" : "en"}/animations` },
+      { "@type": "ListItem", position: 3, name, item: context.canonicalUrl },
     ],
   };
 
@@ -103,9 +114,9 @@ export default async function AnimationDetailPage({
       <div className="container mx-auto px-4 pt-4">
         <Breadcrumb
           items={[
-            { label: "Home", href: "/" },
-            { label: "Animations", href: "/animations" },
-            { label: animation.nameEn },
+            { label: isZh ? "首页" : "Home", href: "/" },
+            { label: isZh ? "动画" : "Animations", href: "/animations" },
+            { label: name },
           ]}
         />
       </div>

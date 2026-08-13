@@ -10,8 +10,8 @@ export const HOME_SOCIAL_IMAGE = {
 } as const;
 
 export function buildSiteMetadata(context: RequestLocaleContext): Metadata {
-  const description = `UI design prompt library and AI-friendly design system with ${CURATED_STYLE_COUNT} curated visual styles. Export design tokens, component recipes, Tailwind-ready patterns, and AI prompts for consistent website UI generation.`;
-  const socialDescription = `${CURATED_STYLE_COUNT} curated visual styles with design tokens, component recipes, Tailwind-ready patterns, and AI prompts for beautiful, consistent website UI.`;
+  const description = `StyleKit is an open-source visual style library for AI-generated web interfaces. Browse ${CURATED_STYLE_COUNT} curated styles, then export design tokens, component recipes, Tailwind-ready patterns, and AI prompts for consistent website UI.`;
+  const socialDescription = `An open-source visual style library for AI-generated web interfaces: ${CURATED_STYLE_COUNT} curated styles, design tokens, component recipes, and AI prompts.`;
   return {
     metadataBase: new URL(context.baseUrl),
     title: {
@@ -31,9 +31,9 @@ export function buildSiteMetadata(context: RequestLocaleContext): Metadata {
       "Glassmorphism",
       "Neumorphism",
       "AI coding",
+      "AI coding assistants",
       "design tokens",
       "React components",
-      "v0 prompts",
       "shadcn/ui",
       "web design",
     ],
