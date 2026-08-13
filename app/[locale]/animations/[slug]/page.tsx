@@ -1,4 +1,4 @@
-import { animations } from "@/lib/animations";
+import { animations, getAnimationBySlug } from "@/lib/animations";
 import Page, {
   generateMetadata as baseGenerateMetadata,
 } from "@/app/animations/[slug]/page";
@@ -26,8 +26,32 @@ export async function generateMetadata({
     params: Promise.resolve({ slug }),
   });
 
+  const animation = getAnimationBySlug(slug);
+  if (!animation) return metadata;
+
+  const isZh = locale === "zh";
+  const name = isZh ? animation.name : animation.nameEn;
+  const description = isZh
+    ? `${animation.description}，包含可复制的实现片段与 Tailwind 工具类。`
+    : `${animation.descriptionEn} Implementation snippets and Tailwind utility classes included.`;
+  const localized = {
+    ...metadata,
+    title: isZh ? `${name} - CSS 动画模式` : `${name} - Animation Pattern`,
+    description,
+    openGraph: {
+      ...(metadata.openGraph ?? {}),
+      title: isZh ? `${name} 动画 - StyleKit` : `${name} Animation - StyleKit`,
+      description,
+    },
+    twitter: {
+      ...(metadata.twitter ?? {}),
+      title: isZh ? `${name} 动画 - StyleKit` : `${name} Animation - StyleKit`,
+      description,
+    },
+  };
+
   return isLocale(locale)
-    ? localizeMetadata(metadata, locale, `/animations/${slug}`)
+    ? localizeMetadata(localized, locale, `/animations/${slug}`)
     : metadata;
 }
 
