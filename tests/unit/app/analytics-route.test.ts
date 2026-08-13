@@ -274,6 +274,33 @@ describe("analytics route", () => {
     expect(insert).not.toHaveBeenCalled();
   });
 
+  it("acknowledges catalog impressions without persisting passive telemetry", async () => {
+    const insert = vi.fn();
+    mockedGetSupabaseAdmin.mockReturnValue({
+      from: vi.fn().mockReturnValue({ insert }),
+    } as never);
+
+    const response = await POST(
+      request({
+        eventType: "catalog_impression",
+        eventData: {
+          slug: "corporate-clean",
+          rank: 1,
+          surface: "styles_catalog",
+          page: 1,
+          sort: "recommended",
+          collection_slug: null,
+          filter_count: 0,
+          query_present: false,
+        },
+        sessionId: null,
+      }),
+    );
+
+    expect(response.status).toBe(200);
+    expect(insert).not.toHaveBeenCalled();
+  });
+
   it("accepts catalog-backed legacy usage and combinations", async () => {
     const response = await POST(
       request({ slug: "corporate-clean", slugB: "neo-brutalist", source: "api" }),
