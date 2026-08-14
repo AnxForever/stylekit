@@ -9,8 +9,8 @@
 </p>
 
 <p align="center">
-  <strong>Open-source visual styles, tokens, and AI prompts for less generic AI-generated UI.</strong><br>
-  146 curated styles — install a shadcn theme or use its constraints in Cursor, Claude Code, v0, or Windsurf. English &amp; 中文 style discovery.
+  <strong>StyleKit is an open-source visual style library for AI-generated web interfaces.</strong><br>
+  Browse 146 curated styles, then use design tokens, component recipes, Tailwind-ready constraints, and copy-ready prompts in React, Cursor, Claude Code, v0, or Windsurf. English &amp; 中文.
 </p>
 
 <p align="center">
@@ -30,9 +30,9 @@
 </p>
 
 <p align="center">
-  <a href="https://stylekit.top/styles"><strong>Showcase</strong></a> &middot;
-  <a href="https://stylekit.top/templates"><strong>Templates</strong></a> &middot;
-  <a href="https://stylekit.top/animations"><strong>Animations</strong></a> &middot;
+  <a href="https://www.stylekit.top/en/styles"><strong>Styles</strong></a> &middot;
+  <a href="https://www.stylekit.top/en/templates"><strong>Templates</strong></a> &middot;
+  <a href="https://www.stylekit.top/en/animations"><strong>Animations</strong></a> &middot;
   <a href="#contributing"><strong>Contributing</strong></a>
 </p>
 
@@ -42,7 +42,7 @@
 
 ## What is StyleKit?
 
-StyleKit helps humans and AI start from a consistent visual direction. Pick a style to get structured design tokens, component recipes, prompt guidance, and implementation references; production integration and completeness still depend on the target project.
+StyleKit helps developers and AI coding tools start from a consistent visual direction. Pick a named style to get structured design tokens, component recipes, prompt guidance, and implementation references for a website or dashboard; production integration and completeness still depend on the target project.
 
 ## AI frontend resources
 
@@ -103,7 +103,7 @@ If you are using AI to design or build a frontend, these focused guides cover th
 
 ## Styles
 
-146 styles across multiple visual and layout categories. Every style includes design tokens, component code, AI rules, and a curated preview.
+146 visual and layout styles across multiple categories. Every style includes design tokens, component code, AI rules, and a curated preview.
 
 <details>
 <summary><strong>Modern / Tech</strong> — Glassmorphism, Liquid Glass, Neumorphism, Bento Grid, Fluent Design, Material Design, Linear Style ...</summary>
@@ -176,7 +176,7 @@ Warm, organic, and calming. Earthy palettes, soft textures, and generous whitesp
 </details>
 
 <p align="center">
-  <a href="https://stylekit.top/styles"><strong>Browse all styles &rarr;</strong></a>
+  <a href="https://www.stylekit.top/en/styles"><strong>Browse all styles &rarr;</strong></a>
 </p>
 
 ## Quick Start
@@ -215,7 +215,7 @@ Every style is also published as a [shadcn registry](https://ui.shadcn.com/docs/
 npx shadcn add https://stylekit.top/r/glassmorphism.json
 ```
 
-Swap `glassmorphism` for any slug — browse the full list at [`/registry.json`](https://stylekit.top/registry.json) or in the [styles gallery](https://stylekit.top/styles). The CLI injects the style's `cssVars` (light + dark) into your `globals.css` and works with Tailwind v4.
+Swap `glassmorphism` for any slug — browse the full list at [`/registry.json`](https://www.stylekit.top/registry.json) or in the [styles gallery](https://www.stylekit.top/en/styles). The CLI injects the style's `cssVars` (light + dark) into your `globals.css` and works with Tailwind v4.
 
 > Prerequisite: the target project must contain a `tsconfig.json`, or the shadcn CLI exits with `Couldn't find tsconfig.json`.
 

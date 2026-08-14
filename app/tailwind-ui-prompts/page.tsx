@@ -17,9 +17,9 @@ const TOPIC_SLUG = "tailwind-ui";
 export const revalidate = 86400;
 
 export const metadata: Metadata = {
-  title: "Tailwind UI Prompts",
+  title: "Tailwind CSS UI Prompts for React and Next.js",
   description:
-    "Copyable Tailwind UI prompts for React, Next.js, shadcn/ui, dashboards, forms, navigation, and utility-first component generation.",
+    "Copy-ready Tailwind CSS UI prompts for React, Next.js, shadcn/ui, dashboards, forms, navigation, responsive layouts, and accessible component generation.",
   keywords: [
     "Tailwind UI prompts",
     "Tailwind CSS prompt",
@@ -28,18 +28,18 @@ export const metadata: Metadata = {
     "React Tailwind UI prompt",
   ],
   openGraph: {
-    title: "Tailwind UI Prompts | StyleKit",
+    title: "Tailwind CSS UI Prompts for React and Next.js | StyleKit",
     description:
-      "Copyable Tailwind UI prompts for React, Next.js, shadcn/ui, dashboards, forms, navigation, and utility-first component generation.",
+      "Copy-ready Tailwind CSS UI prompts for React, Next.js, shadcn/ui, dashboards, forms, navigation, and responsive components.",
     siteName: "StyleKit",
     images: [{ url: "/social-preview-home-v2.png", width: 1200, height: 630 }],
     type: "article",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Tailwind UI Prompts | StyleKit",
+    title: "Tailwind CSS UI Prompts for React and Next.js | StyleKit",
     description:
-      "Copyable Tailwind UI prompts for React, Next.js, shadcn/ui, dashboards, forms, navigation, and utility-first component generation.",
+      "Copy-ready Tailwind CSS UI prompts for React, Next.js, shadcn/ui, dashboards, forms, navigation, and responsive components.",
   },
 };
 
@@ -76,7 +76,7 @@ export default async function TailwindUiPromptsPage() {
         >
           <PromptTemplatePreviewSection
             title="Example previews and starter templates"
-            description="Use these templates as Tailwind prompt references by naming components, layout classes, breakpoints, states, and design tokens together."
+            description="Use these templates as Tailwind CSS prompt references by naming components, layout classes, breakpoints, states, and design tokens together."
             templates={tailwindUiTemplates}
           />
         </PromptTopicContent>

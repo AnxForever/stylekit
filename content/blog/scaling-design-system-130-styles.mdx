@@ -1,5 +1,5 @@
 ---
-title: "Scaling a Design System to 135 Styles: What We Learned"
+title: "Scaling a Design System as StyleKit Grew: What We Learned"
 description: "Lessons from growing StyleKit's style library -- how we maintain quality, consistency, and usability as the collection scales."
 date: "2026-04-05"
 modified: "2026-07-10"
@@ -7,7 +7,7 @@ author: "StyleKit Team"
 tags: ["design-system", "architecture", "lessons-learned"]
 ---
 
-When StyleKit launched, it had around 30 styles. Today the catalog contains 135. Scaling a style library by more than 4x sounds like it should be straightforward -- just add more styles, right? In practice, every new style introduced problems we did not anticipate at 30. Naming collisions, token inconsistencies, quality variance, discovery friction, and the growing difficulty of checking that every style exposes the same required artifacts. This post shares what we learned and the systems we built to keep the library useful as it grew.
+When StyleKit launched, it had around 30 styles. As the catalog grew, scaling the library by more than 4x proved to be more than a matter of adding entries. Every new style introduced problems we did not anticipate at 30: naming collisions, token inconsistencies, quality variance, discovery friction, and the growing difficulty of checking that every style exposes the same required artifacts. This post shares what we learned and the systems we built to keep the library useful as it grew.
 
 ## The Quality Problem
 
@@ -19,7 +19,7 @@ Visual distinctiveness still requires editorial review. Automated checks can pro
 
 ## The Discovery Problem
 
-At 30 styles, a simple grid works. Scroll through, find something you like, done. At 135 styles, a grid becomes overwhelming. Users would scroll through dozens of cards, develop decision fatigue, and either pick whatever caught their eye first or give up and use a style they already knew.
+At 30 styles, a simple grid works. Scroll through, find something you like, done. As the catalog grew, a grid became overwhelming. Users would scroll through dozens of cards, develop decision fatigue, and either pick whatever caught their eye first or give up and use a style they already knew.
 
 We addressed this in three ways. First, **scenario-based discovery**: instead of browsing by name, users can describe what they are building (SaaS landing page, portfolio, e-commerce store) and get a filtered set of styles that match their use case. This mapping is maintained in a scenario database that links page types to compatible style characteristics.
 
@@ -37,7 +37,7 @@ We solved this by establishing reference ranges for each token. A "medium shadow
 
 ## The Internationalization Challenge
 
-StyleKit serves users in English and Chinese, and each style has localized metadata: name, description, do/don't lists, and AI rules. At 30 styles, maintaining two language versions was manageable. At 135, it became a significant burden. A single update to a style's English do-list meant a corresponding Chinese update, and these frequently fell out of sync.
+StyleKit serves users in English and Chinese, and each style has localized metadata: name, description, do/don't lists, and AI rules. At 30 styles, maintaining two language versions was manageable. As the catalog grew, it became a significant burden. A single update to a style's English do-list meant a corresponding Chinese update, and these frequently fell out of sync.
 
 The solution was adding dedicated English fields (`aiRulesEn`, `doListEn`, `dontListEn`, `keywordsEn`) as optional overrides alongside the Chinese defaults. The prompt export system checks the user's locale and selects the appropriate version automatically. If an English field is not defined, it falls back to the Chinese version. This approach lets us progressively translate styles without blocking any features on incomplete translations.
 
@@ -45,6 +45,6 @@ The solution was adding dedicated English fields (`aiRulesEn`, `doListEn`, `dont
 
 If we were starting over, three things would change. First, we would introduce executable catalog contracts from day one rather than retrofitting them after the library grew. Early permissiveness creates technical debt that compounds. Second, we would standardize token value ranges before the first external contribution rather than after discovering inconsistencies. Third, we would build scenario-based discovery earlier -- it turned out to be more important for usability than any individual style improvement.
 
-The meta-lesson is that a design system library is not just a collection of definitions. It is a product with its own UX problems: search, discovery, quality assurance, and consistency. The styles are the content; the systems around them determine whether that content is actually usable. At 135 styles, the systems matter more than any individual style.
+The meta-lesson is that a design system library is not just a collection of definitions. It is a product with its own UX problems: search, discovery, quality assurance, and consistency. The styles are the content; the systems around them determine whether that content is actually usable. At catalog scale, the systems matter more than any individual style.
 
 You can explore the catalog at [StyleKit](https://www.stylekit.top/en/styles) and inspect the constraints and curated preview attached to each style.

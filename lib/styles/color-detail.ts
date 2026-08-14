@@ -307,3 +307,17 @@ export function getColorDetail(input: string): ColorDetail | null {
     neighbors,
   };
 }
+
+/**
+ * Return detail data only for colors that are part of the published library.
+ *
+ * The generic getColorDetail helper intentionally supports arbitrary hex
+ * values for internal color calculations. Public programmatic pages must use
+ * this bounded variant so a crawler cannot create an unbounded stream of
+ * dynamically rendered color pages.
+ */
+export function getCuratedColorDetail(input: string): ColorDetail | null {
+  const normalized = normalizeHexInput(input);
+  if (!normalized || !getAllDetailSwatches().includes(normalized)) return null;
+  return getColorDetail(normalized);
+}

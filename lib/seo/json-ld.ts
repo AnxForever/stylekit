@@ -3,6 +3,31 @@ import { getSiteBaseUrl } from "@/lib/site-url";
 
 const BASE_URL = getSiteBaseUrl();
 
+export function generateAboutPageJsonLd(options: {
+  url: string;
+  language: "en" | "zh-CN";
+  description: string;
+}) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "AboutPage",
+    "@id": `${options.url}#aboutpage`,
+    url: options.url,
+    name: "About StyleKit",
+    description: options.description,
+    inLanguage: options.language,
+    mainEntity: {
+      "@id": `${BASE_URL}/#organization`,
+    },
+    isPartOf: {
+      "@id": `${BASE_URL}/#website`,
+    },
+    publisher: {
+      "@id": `${BASE_URL}/#organization`,
+    },
+  };
+}
+
 interface StyleJsonLdInput {
   name: string;
   description: string;

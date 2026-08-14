@@ -20,14 +20,30 @@ const BANNED_DISCOVERY_PATTERNS = [
   /widest curated/i,
   /Fully bilingual/i,
 ];
+const PUBLIC_SEO_SOURCES = [
+  "README.md",
+  "app/about/layout.tsx",
+  "app/layout.tsx",
+  "content/blog/ai-ui-prompts-guide.mdx",
+  "content/blog/design-tokens-explained.mdx",
+  "content/blog/glassmorphism-vs-neo-brutalist.mdx",
+  "content/blog/hello-world.mdx",
+  "content/blog/scaling-design-system-130-styles.mdx",
+  "lib/i18n/translations-en.ts",
+  "lib/i18n/translations-zh.ts",
+  "lib/prompts/topics.ts",
+  "lib/seo/site-metadata.ts",
+];
+const STALE_PUBLIC_COUNT_PATTERN = /\b(?:135|136|140|143)\s*(?:\+|styles?|visual|种|curated)|\b(?:135|136|140|143)-style/i;
 
 async function main(): Promise<void> {
   const issues: SeoTruthIssue[] = [];
 
-  const [llms, llmsFullSource, rootLayoutSource] = await Promise.all([
+  const [llms, llmsFullSource, rootLayoutSource, publicSeoSources] = await Promise.all([
     readFile("public/llms.txt", "utf8"),
     readFile("lib/export/llms-full.ts", "utf8"),
     readFile("app/layout.tsx", "utf8"),
+    Promise.all(PUBLIC_SEO_SOURCES.map(async (source) => [source, await readFile(source, "utf8")] as const)),
   ]);
 
   for (const pattern of BANNED_DISCOVERY_PATTERNS) {
@@ -43,6 +59,22 @@ async function main(): Promise<void> {
     issues.push({
       source: "public/llms.txt",
       message: "does not contain the current catalog count",
+    });
+  }
+
+  for (const [source, content] of publicSeoSources) {
+    if (STALE_PUBLIC_COUNT_PATTERN.test(content)) {
+      issues.push({
+        source,
+        message: "contains a stale public catalog count; use CURATED_STYLE_COUNT or count-free evergreen copy",
+      });
+    }
+  }
+
+  if (!llms.includes("open-source visual style library for AI-generated web interfaces")) {
+    issues.push({
+      source: "public/llms.txt",
+      message: "does not contain the canonical StyleKit positioning statement",
     });
   }
 
