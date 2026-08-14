@@ -116,7 +116,7 @@ async function fetchWithRetry(
 
   const detail = lastError instanceof Error ? `: ${lastError.message}` : "";
   throw new StandaloneShowcaseError(
-    `Could not download ${resourceType} from ${url.hostname}${detail}`,
+    `Could not download ${resourceType} from ${url.hostname}${url.pathname}${detail}`,
   );
 }
 
@@ -142,7 +142,7 @@ async function fetchDataUrl(url: URL, context: ResourceContext): Promise<string>
     }, "resource");
     if (!response.ok) {
       throw new StandaloneShowcaseError(
-        `Could not download resource (${response.status}): ${url.hostname}`,
+        `Could not download resource (${response.status}): ${url.hostname}${url.pathname}`,
       );
     }
 
