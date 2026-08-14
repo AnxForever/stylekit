@@ -24,11 +24,19 @@ export class StandaloneShowcaseError extends Error {
 
 interface StandaloneExportOptions {
   origin: string;
+  /**
+   * Base URL actually used to download same-origin resources, e.g. a loopback
+   * address. Behind a reverse proxy the public origin reconstructed from the
+   * request is unreliable for self-fetching (TLS/port mismatches), so bytes
+   * are fetched internally while URL semantics stay on the public origin.
+   */
+  internalBaseUrl?: string;
   signal?: AbortSignal;
 }
 
 interface ResourceContext {
   origin: string;
+  internalBaseUrl: string | null;
   signal?: AbortSignal;
   cache: Map<string, Promise<string>>;
   resourceCount: number;
@@ -59,6 +67,11 @@ function resolveResource(value: string | null, baseUrl: string): URL | null {
 
 function isAllowedResource(url: URL, origin: string): boolean {
   return url.origin === origin || EXTERNAL_RESOURCE_HOSTS.has(url.hostname);
+}
+
+function toFetchTarget(url: URL, context: ResourceContext): URL {
+  if (!context.internalBaseUrl || url.origin !== context.origin) return url;
+  return new URL(`${url.pathname}${url.search}`, context.internalBaseUrl);
 }
 
 function inferContentType(url: URL): string {
@@ -122,7 +135,7 @@ async function fetchDataUrl(url: URL, context: ResourceContext): Promise<string>
   context.resourceCount += 1;
 
   const pending = (async () => {
-    const response = await fetchWithRetry(url, {
+    const response = await fetchWithRetry(toFetchTarget(url, context), {
       headers: { Accept: "*/*" },
       cache: "no-store",
       signal: context.signal,
@@ -261,6 +274,7 @@ export async function buildStandaloneShowcaseZip(
 ): Promise<Uint8Array> {
   const context: ResourceContext = {
     origin: new URL(options.origin).origin,
+    internalBaseUrl: options.internalBaseUrl ?? null,
     signal: options.signal,
     cache: new Map(),
     resourceCount: 0,
@@ -284,7 +298,7 @@ export async function buildStandaloneShowcaseZip(
       if (!resource) {
         throw new StandaloneShowcaseError("Invalid stylesheet resource");
       }
-      const response = await fetchWithRetry(resource, {
+      const response = await fetchWithRetry(toFetchTarget(resource, context), {
         headers: { Accept: "text/css" },
         cache: "no-store",
         signal: context.signal,

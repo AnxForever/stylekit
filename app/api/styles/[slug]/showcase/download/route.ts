@@ -1,9 +1,22 @@
 import { buildStandaloneShowcaseZip, StandaloneShowcaseError } from "@/lib/export/standalone-showcase";
+import { getSiteBaseUrl } from "@/lib/site-url";
 
 export const runtime = "nodejs";
 
+// Behind the nginx reverse proxy the origin reconstructed from request.url is
+// unreliable (it can report the public host with the internal port and an
+// https scheme, so self-fetches perform TLS handshakes against a plaintext
+// port). All same-origin bytes are therefore fetched over loopback while the
+// canonical site origin is kept for URL semantics.
+function getInternalOrigin(): string {
+  return (
+    process.env.SHOWCASE_INTERNAL_ORIGIN ??
+    `http://127.0.0.1:${process.env.PORT ?? "3000"}`
+  );
+}
+
 export async function GET(
-  request: Request,
+  _request: Request,
   { params }: { params: Promise<{ slug: string }> },
 ) {
   const { slug } = await params;
@@ -11,9 +24,9 @@ export async function GET(
     return Response.json({ error: "Invalid style slug" }, { status: 400 });
   }
 
-  const requestUrl = new URL(request.url);
-  const origin = requestUrl.origin;
-  const pageUrl = new URL(`/styles/${slug}/showcase`, origin);
+  const origin = getSiteBaseUrl();
+  const internalOrigin = getInternalOrigin();
+  const pageUrl = new URL(`/styles/${slug}/showcase`, internalOrigin);
 
   try {
     const pageResponse = await fetch(pageUrl, {
@@ -27,6 +40,7 @@ export async function GET(
 
     const zip = await buildStandaloneShowcaseZip(await pageResponse.text(), {
       origin,
+      internalBaseUrl: internalOrigin,
       signal: AbortSignal.timeout(90_000),
     });
     const body = new ArrayBuffer(zip.byteLength);

@@ -74,4 +74,43 @@ describe("buildStandaloneShowcaseZip", () => {
       ),
     ).rejects.toThrow(StandaloneShowcaseError);
   });
+
+  it("downloads same-origin resources via the internal base URL", async () => {
+    const requested: string[] = [];
+    const fetchMock = vi.fn(async (input: RequestInfo | URL) => {
+      const url = String(input);
+      requested.push(url);
+      if (url.endsWith("/style.css")) {
+        return new Response(".hero { color: #fff; }", {
+          headers: { "content-type": "text/css" },
+        });
+      }
+      if (url.endsWith("/texture.png")) {
+        return new Response(new Uint8Array([1, 2, 3]), {
+          headers: { "content-type": "image/png" },
+        });
+      }
+      if (url.includes("picsum.photos")) {
+        return new Response(new Uint8Array([7, 8, 9]), {
+          headers: { "content-type": "image/jpeg" },
+        });
+      }
+      throw new Error(`Unexpected resource: ${url}`);
+    });
+    vi.stubGlobal("fetch", fetchMock);
+
+    const archive = await buildStandaloneShowcaseZip(
+      `<html><head><link rel="stylesheet" href="/style.css"></head>
+      <body><img src="${origin}/texture.png"><img src="https://picsum.photos/320/200"></body></html>`,
+      { origin, internalBaseUrl: "http://127.0.0.1:13000" },
+    );
+    const zip = await JSZip.loadAsync(archive);
+    const html = await zip.file("index.html")?.async("string");
+
+    expect(html).toContain("data:image/png;base64,AQID");
+    expect(requested).toContain("http://127.0.0.1:13000/style.css");
+    expect(requested).toContain("http://127.0.0.1:13000/texture.png");
+    expect(requested).toContain("https://picsum.photos/320/200");
+    expect(requested.every((url) => !url.startsWith(origin))).toBe(true);
+  });
 });
