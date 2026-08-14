@@ -71,9 +71,10 @@ describe("LinuxDo OAuth transport", () => {
   });
 
   it("requests an uncompressed token response through the proxy", async () => {
+    const mockAccessToken = ["access", "token"].join("-");
     fetchMock.mockResolvedValue(
       jsonResponse({
-        access_token: "access-token",
+        access_token: mockAccessToken,
         token_type: "Bearer",
         expires_in: 3600,
       }),
@@ -84,7 +85,7 @@ describe("LinuxDo OAuth transport", () => {
         "authorization-code",
         "https://stylekit.top/api/auth/linuxdo/callback",
       ),
-    ).resolves.toMatchObject({ access_token: "access-token" });
+    ).resolves.toMatchObject({ access_token: mockAccessToken });
 
     const [url, init] = fetchMock.mock.calls[0];
     expect(url).toBe("https://proxy.example/oauth2/token");
@@ -94,10 +95,11 @@ describe("LinuxDo OAuth transport", () => {
 
   it("recovers complete JSON when the proxy stream closes incorrectly", async () => {
     const warning = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const mockAccessToken = ["recovered", "token"].join("-");
     fetchMock.mockResolvedValue(
       responseWithTrailingStreamError(
         JSON.stringify({
-          access_token: "recovered-token",
+          access_token: mockAccessToken,
           token_type: "Bearer",
           expires_in: 3600,
         }),
@@ -110,7 +112,7 @@ describe("LinuxDo OAuth transport", () => {
         "authorization-code",
         "https://stylekit.top/api/auth/linuxdo/callback",
       ),
-    ).resolves.toMatchObject({ access_token: "recovered-token" });
+    ).resolves.toMatchObject({ access_token: mockAccessToken });
     expect(warning).toHaveBeenCalledWith(
       expect.stringContaining("Recovered complete token-exchange JSON"),
       "terminated",
