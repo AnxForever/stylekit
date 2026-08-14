@@ -2,7 +2,7 @@
  * Next.js 16 proxy (replaces middleware).
  *
  * 1. Blocks /api-test in production.
- * 2. Refreshes Supabase auth session on every request (keeps cookies fresh).
+ * 2. Refreshes Supabase auth sessions when a session cookie is present.
  * 3. Protects /admin/* routes — redirects unauthenticated users to home.
  */
 
@@ -36,6 +36,19 @@ function isSocialCrawler(userAgent: string): boolean {
 
 function isAdminRoute(pathname: string): boolean {
   return pathname === "/admin" || pathname.startsWith("/admin/");
+}
+
+function shouldRefreshAuthSession(pathname: string): boolean {
+  // Analytics is intentionally anonymous and can be called many times during
+  // a single page view. Refreshing a stale auth cookie for every analytics
+  // event creates a server-IP refresh storm and can exhaust Supabase Auth's
+  // per-IP token bucket, which then blocks real login callbacks.
+  return pathname !== "/api/analytics";
+}
+
+function isSupabaseAuthCookie(name: string): boolean {
+  // @supabase/ssr appends .0, .1, ... when a session is split across cookies.
+  return name.startsWith("sb-") && /-auth-token(?:\.\d+)?$/.test(name);
 }
 
 function buildAdminLoginRedirect(request: NextRequest) {
@@ -216,6 +229,18 @@ export async function proxy(request: NextRequest) {
     return response;
   }
 
+  if (!isAdminRequest && !shouldRefreshAuthSession(effectivePath)) {
+    const response = buildResponse();
+    if (localeInPath) {
+      response.cookies.set(LOCALE_COOKIE_NAME, localeInPath, {
+        path: "/",
+        sameSite: "lax",
+        maxAge: 60 * 60 * 24 * 365,
+      });
+    }
+    return response;
+  }
+
   let supabaseResponse = buildResponse();
 
   const supabase = createServerClient(url, key, {
@@ -238,22 +263,24 @@ export async function proxy(request: NextRequest) {
   // Check if user has an auth cookie — skip network call for anonymous visitors
   const hasAuthCookie = request.cookies
     .getAll()
-    .some((c) => c.name.startsWith("sb-") && c.name.endsWith("-auth-token"));
+    .some((cookie) => isSupabaseAuthCookie(cookie.name));
 
   if (hasAuthCookie) {
-    // getUser() validates & refreshes the session server-side, keeping cookies alive.
-    // Only called when an auth cookie exists, so anonymous visitors pay zero cost.
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
+    // getClaims() refreshes expired sessions but validates current ES256 JWTs
+    // locally using the project's cached JWKS. Unlike getUser(), it does not
+    // make an Auth API request on every page/API request.
+    const { data, error } = await supabase.auth.getClaims();
+    const userId = !error && typeof data?.claims.sub === "string"
+      ? data.claims.sub
+      : null;
 
     // Protect /admin routes
     if (isAdminRequest) {
-      if (!user) {
+      if (!userId) {
         return buildAdminLoginRedirect(request);
       }
 
-      if (!isAdminUserId(user.id)) {
+      if (!isAdminUserId(userId)) {
         return buildAdminLoginRedirect(request);
       }
     }
