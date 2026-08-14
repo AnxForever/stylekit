@@ -50,6 +50,30 @@ function getAttribute(attributes: string, name: string): string | null {
   return match?.[2] ?? null;
 }
 
+/**
+ * Attribute values arrive HTML-entity-encoded (React escapes quotes inside
+ * style attributes as &quot;), so CSS and URL parsing must run on the decoded
+ * value and re-encode before writing back into the markup.
+ */
+function decodeHtmlAttribute(value: string): string {
+  return value
+    .replace(/&quot;/g, '"')
+    .replace(/&#x27;/gi, "'")
+    .replace(/&#39;/g, "'")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&amp;/g, "&");
+}
+
+function encodeHtmlAttribute(value: string): string {
+  return value
+    .replace(/&/g, "&amp;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#x27;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+}
+
 function resolveResource(value: string | null, baseUrl: string): URL | null {
   const raw = value?.trim();
   if (!raw || raw.startsWith("#") || /^(data|blob|javascript|mailto|tel):/i.test(raw)) {
@@ -216,8 +240,12 @@ async function inlineStyleAttributes(
     html,
     /(\sstyle=["'])(.*?)(["'])/gis,
     async (full, prefix, css, suffix) => {
-      const rewritten = await inlineCss(css, context.origin, context);
-      return `${prefix}${rewritten}${suffix}`;
+      const rewritten = await inlineCss(
+        decodeHtmlAttribute(css),
+        context.origin,
+        context,
+      );
+      return `${prefix}${encodeHtmlAttribute(rewritten)}${suffix}`;
     },
   );
 }
@@ -234,7 +262,10 @@ async function inlineMediaAttributes(
         tag,
         /\b(src|poster|href|xlink:href)=["']([^"']+)["']/gi,
         async (full, name, rawUrl) => {
-          const resource = resolveResource(rawUrl, context.origin);
+          const resource = resolveResource(
+            decodeHtmlAttribute(rawUrl),
+            context.origin,
+          );
           if (!resource) return full;
           const dataUrl = await fetchDataUrl(resource, context);
           return `${name}="${dataUrl}"`;
@@ -246,7 +277,7 @@ async function inlineMediaAttributes(
     result,
     /\b(srcset)=["']([^"']+)["']/gi,
     async (full, name, value) => {
-      const candidates = value.split(",");
+      const candidates = decodeHtmlAttribute(value).split(",");
       const rewritten = [];
       for (const candidate of candidates) {
         const [rawUrl, ...descriptor] = candidate.trim().split(/\s+/);
@@ -294,7 +325,10 @@ export async function buildStandaloneShowcaseZip(
       if (!rel?.split(/\s+/).includes("stylesheet")) return "";
 
       const href = getAttribute(attributes, "href");
-      const resource = resolveResource(href, context.origin);
+      const resource = resolveResource(
+        href === null ? null : decodeHtmlAttribute(href),
+        context.origin,
+      );
       if (!resource) {
         throw new StandaloneShowcaseError("Invalid stylesheet resource");
       }

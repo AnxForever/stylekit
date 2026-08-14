@@ -75,6 +75,44 @@ describe("buildStandaloneShowcaseZip", () => {
     ).rejects.toThrow(StandaloneShowcaseError);
   });
 
+  it("skips entity-encoded data URIs in style attributes without fetching", async () => {
+    const fetchMock = vi.fn(async () => {
+      throw new Error("no fetch expected");
+    });
+    vi.stubGlobal("fetch", fetchMock);
+
+    const svgValue =
+      "url(&quot;data:image/svg+xml,%3Csvg%20viewBox=%220%200%20256%20256%22%3E%3C/svg%3E&quot;)";
+    const archive = await buildStandaloneShowcaseZip(
+      `<html><body><div style="background-image:${svgValue};opacity:0.5">x</div></body></html>`,
+      { origin },
+    );
+    const zip = await JSZip.loadAsync(archive);
+    const html = await zip.file("index.html")?.async("string");
+
+    expect(fetchMock).not.toHaveBeenCalled();
+    expect(html).toContain("data:image/svg+xml");
+    expect(html).toContain("opacity:0.5");
+  });
+
+  it("decodes entity-encoded ampersands before fetching media URLs", async () => {
+    const requested: string[] = [];
+    const fetchMock = vi.fn(async (input: RequestInfo | URL) => {
+      requested.push(String(input));
+      return new Response(new Uint8Array([1, 2, 3]), {
+        headers: { "content-type": "image/jpeg" },
+      });
+    });
+    vi.stubGlobal("fetch", fetchMock);
+
+    await buildStandaloneShowcaseZip(
+      '<html><body><img src="https://images.unsplash.com/photo-1?w=320&amp;q=80"></body></html>',
+      { origin },
+    );
+
+    expect(requested).toContain("https://images.unsplash.com/photo-1?w=320&q=80");
+  });
+
   it("downloads same-origin resources via the internal base URL", async () => {
     const requested: string[] = [];
     const fetchMock = vi.fn(async (input: RequestInfo | URL) => {
