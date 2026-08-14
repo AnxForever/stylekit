@@ -7,9 +7,15 @@ describe("style detail analytics wiring", () => {
     path.join(process.cwd(), "app/styles/[slug]/_content.tsx"),
     "utf8"
   );
-  it("tracks the existing showcase preview entry point", () => {
+  const downloadButton = readFileSync(
+    path.join(process.cwd(), "components/showcase/showcase-download-button.tsx"),
+    "utf8"
+  );
+
+  it("tracks the remaining showcase entry point and download separately", () => {
     expect(source).toContain('source: "preview_card"');
     expect(source.match(/trackEvent\("showcase_open"/g)).toHaveLength(1);
+    expect(downloadButton).toContain('trackEvent("style_export", { slug, format: "showcase-zip" })');
   });
 
   it("threads the current style slug into the component code preview", () => {
