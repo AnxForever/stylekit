@@ -81,8 +81,10 @@ describe("buildStandaloneShowcaseZip", () => {
     });
     vi.stubGlobal("fetch", fetchMock);
 
+    // Real-world sample: mixed encoding with entity quotes and raw
+    // parentheses inside the data URI (an SVG filter's url(#n) reference).
     const svgValue =
-      "url(&quot;data:image/svg+xml,%3Csvg%20viewBox=%220%200%20256%20256%22%3E%3C/svg%3E&quot;)";
+      "url(&quot;data:image/svg+xml,%3Csvg xmlns=&#x27;http://www.w3.org/2000/svg&#x27;%3E%3Cfilter id=&#x27;n&#x27;%3E%3C/filter%3E%3Crect filter=&#x27;url(%23n)&#x27;/%3E%3C/svg%3E&quot;)";
     const archive = await buildStandaloneShowcaseZip(
       `<html><body><div style="background-image:${svgValue};opacity:0.5">x</div></body></html>`,
       { origin },

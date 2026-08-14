@@ -76,7 +76,12 @@ function encodeHtmlAttribute(value: string): string {
 
 function resolveResource(value: string | null, baseUrl: string): URL | null {
   const raw = value?.trim();
-  if (!raw || raw.startsWith("#") || /^(data|blob|javascript|mailto|tel):/i.test(raw)) {
+  if (
+    !raw ||
+    raw.startsWith("#") ||
+    /^%23/i.test(raw) ||
+    /^(data|blob|javascript|mailto|tel):/i.test(raw)
+  ) {
     return null;
   }
 
@@ -220,10 +225,14 @@ async function inlineCss(
   baseUrl: string,
   context: ResourceContext,
 ): Promise<string> {
+  // Quoted url() strings are matched atomically: data URIs may legally
+  // contain raw parentheses (e.g. an SVG filter's url(#n)) that must not be
+  // parsed as separate references.
   return replaceAsync(
     css,
-    /url\(\s*(["']?)([^)"']+)\1\s*\)/gi,
-    async (full, _quote, rawUrl) => {
+    /url\(\s*(?:"([^"]*)"|'([^']*)'|([^)"']+))\s*\)/gi,
+    async (full, doubleQuoted, singleQuoted, bare) => {
+      const rawUrl = doubleQuoted ?? singleQuoted ?? bare;
       const resource = resolveResource(rawUrl, baseUrl);
       if (!resource) return full;
       const dataUrl = await fetchDataUrl(resource, context);
