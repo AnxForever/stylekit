@@ -216,6 +216,10 @@ export const zh: { [K in keyof typeof en]: string } = {
   "backgrounds.showing": "共",
   "backgrounds.patterns": "个纹理",
   "backgrounds.noResults": "没有找到匹配的纹理。",
+  "backgrounds.webglBadge": "WebGL / 动态背景",
+  "backgrounds.webglTitle": "信号仪器——WebGL 动态背景组件",
+  "backgrounds.webglDesc": "两个可直接嵌入的 three.js 背景组件（着色器场 + 数字星图），提供完整源码，默认遵循动效偏好。",
+  "backgrounds.webglCta": "进入实验室",
 
   // Typography page
   "typography.subtitle": "精选字体方向",

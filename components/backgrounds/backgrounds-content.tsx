@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import Link from "next/link";
 import { useI18n } from "@/lib/i18n/context";
 import {
   backgrounds,
@@ -60,6 +61,23 @@ export function BackgroundsContent() {
           {t("backgrounds.description")}
         </p>
       </div>
+
+      {/* WebGL lab entry */}
+      <Link
+        href="/experiments/webgl-lab"
+        className="group mb-12 flex flex-wrap items-center justify-between gap-4 rounded-lg border border-border bg-[#0a0a0a] px-6 py-5 text-[#e9e7dc] transition-colors hover:border-[#ccff00]"
+      >
+        <div className="min-w-0">
+          <p className="mb-1 font-mono text-[10px] uppercase tracking-[0.16em] text-[#ccff00]">
+            {t("backgrounds.webglBadge")}
+          </p>
+          <p className="font-medium">{t("backgrounds.webglTitle")}</p>
+          <p className="mt-1 text-sm text-[#98a0a0]">{t("backgrounds.webglDesc")}</p>
+        </div>
+        <span className="shrink-0 font-mono text-xs uppercase tracking-[0.12em] text-[#98a0a0] transition-colors group-hover:text-[#ccff00]">
+          {t("backgrounds.webglCta")} →
+        </span>
+      </Link>
 
       {/* Filters */}
       <div className="mb-8 space-y-4">

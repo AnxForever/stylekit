@@ -1,8 +1,11 @@
 import type { Metadata } from "next";
+import { readFile } from "node:fs/promises";
+import path from "node:path";
 import Link from "next/link";
 
 import { ConstellationField, ShaderField } from "@/components/effects";
 
+import { SourcePanel } from "./source-panel";
 import styles from "./webgl-lab.module.css";
 
 export const dynamic = "force-static";
@@ -12,11 +15,25 @@ export const metadata: Metadata = {
   description: "可复用的 WebGL、GLSL 与 Three.js 组件实验室。",
 };
 
+// The page is force-static: these reads run at build time on the machine that
+// owns the source tree, so production never touches the filesystem.
+function readSource(relativePath: string): Promise<string> {
+  return readFile(path.join(process.cwd(), relativePath), "utf8");
+}
+
 function SignalLabel({ children }: { children: React.ReactNode }) {
   return <span className={styles.signalLabel}>{children}</span>;
 }
 
-export default function WebglLabPage() {
+export default async function WebglLabPage() {
+  const [shaderTsx, shaderCss, constellationTsx, constellationCss] =
+    await Promise.all([
+      readSource("components/effects/shader-field.tsx"),
+      readSource("components/effects/shader-field.module.css"),
+      readSource("components/effects/constellation-field.tsx"),
+      readSource("components/effects/constellation-field.module.css"),
+    ]);
+
   return (
     <main className={styles.root}>
       <nav className={styles.nav} aria-label="实验页导航">
@@ -108,6 +125,55 @@ export default function WebglLabPage() {
               <p>一个 Points draw call，点精灵由 GLSL 控制大小与闪烁，适合做数据状态、档案和作品集背景。</p>
             </div>
           </article>
+        </div>
+      </section>
+
+      <section className={styles.sourceSection} aria-labelledby="source-title">
+        <div className={styles.sectionIntro}>
+          <SignalLabel>GET THE SOURCE</SignalLabel>
+          <h2 id="source-title">Take the instruments.</h2>
+          <p>
+            两个组件 MIT 开源、自包含：把 .tsx 与 .module.css 两个文件复制进项目即可使用。
+            依赖 three@0.180 与 React 19，&quot;use client&quot; 组件，离屏、隐藏标签页与
+            prefers-reduced-motion 时自动停帧。
+          </p>
+        </div>
+        <p className={styles.sourceNote}>
+          DEPS — <b>pnpm add three@0.180.0</b> / REACT 19 / NEXT APP ROUTER READY
+        </p>
+        <div className={styles.sourceGrid}>
+          <SourcePanel
+            label="01 / FRAGMENT"
+            title="SHADER FIELD"
+            files={[
+              { name: "shader-field.tsx", code: shaderTsx },
+              { name: "shader-field.module.css", code: shaderCss },
+            ]}
+            usage={`import { ShaderField } from "@/components/effects";
+
+<ShaderField
+  accent={["#ff6b6b", "#0a0a0a", "#00d9ff"]}
+  intensity="medium"
+  speed="medium"
+  label="Ambient signal field"
+/>`}
+          />
+          <SourcePanel
+            label="02 / VERTEX"
+            title="CONSTELLATION"
+            files={[
+              { name: "constellation-field.tsx", code: constellationTsx },
+              { name: "constellation-field.module.css", code: constellationCss },
+            ]}
+            usage={`import { ConstellationField } from "@/components/effects";
+
+<ConstellationField
+  color="#ccff00"
+  density="dense"
+  pointSize={2.4}
+  label="Digital star chart"
+/>`}
+          />
         </div>
       </section>
 
