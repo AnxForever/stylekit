@@ -121,6 +121,29 @@ h1, h2, h3, h4, h5, h6 {
   text-wrap: balance;
 }
 
+/* Style covers are miniature design specimens, not public-site headings.
+   Keep the global editorial heading treatment from flattening previews that
+   intentionally rely on their own font utilities (or on inherited weight). */
+.style-cover-preview :where(h1, h2, h3, h4, h5, h6) {
+  font-family: inherit;
+  font-optical-sizing: inherit;
+  font-weight: inherit;
+  letter-spacing: inherit;
+  text-wrap: inherit;
+}
+
+.style-cover-preview :where(.font-serif) {
+  font-family: var(--font-display-active);
+}
+
+.style-cover-preview :where(.font-sans) {
+  font-family: var(--font-body-active);
+}
+
+.style-cover-preview :where(.font-mono) {
+  font-family: var(--font-mono-active);
+}
+
 /* English homepage: the same refined serif voice used by Editorial previews.
    Functional copy remains on the body face to preserve scanning clarity. */
 .home-hero-title-en {

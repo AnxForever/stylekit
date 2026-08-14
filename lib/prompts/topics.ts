@@ -1838,9 +1838,9 @@ export const promptTopics: PromptTopic[] = [
         questionEn: "How does StyleKit work with Tailwind CSS?",
         questionZh: "StyleKit 如何与 Tailwind CSS 配合？",
         answerEn:
-          "StyleKit provides 143 visual styles, each with Tailwind-compatible design tokens (colors, spacing, border-radius, shadows, typography). You can export these tokens directly into your Tailwind workflow, use them as AI prompts for code generation, or copy individual component recipes with Tailwind classes. StyleKit bridges the gap between design intent and Tailwind implementation.",
+          "StyleKit provides a curated catalog of visual styles, each with Tailwind-compatible design tokens (colors, spacing, border-radius, shadows, typography). You can export these tokens into your Tailwind workflow, use them as AI prompts for code generation, or copy individual component recipes with Tailwind classes. StyleKit bridges the gap between design intent and Tailwind implementation.",
         answerZh:
-          "StyleKit 提供 143 种视觉风格，每种都有 Tailwind 兼容的 design tokens（颜色、间距、圆角、阴影、排版）。你可以把这些 tokens 用于 Tailwind 工作流、AI 代码生成提示词，或复制带有 Tailwind 类名的组件配方。StyleKit 连接了设计意图与 Tailwind 实现之间的桥梁。",
+          "StyleKit 提供一个持续维护的视觉风格目录，每种风格都有 Tailwind 兼容的 design tokens（颜色、间距、圆角、阴影、排版）。你可以把这些 tokens 用于 Tailwind 工作流、AI 代码生成提示词，或复制带有 Tailwind 类名的组件配方。StyleKit 连接了设计意图与 Tailwind 实现之间的桥梁。",
       },
       {
         questionEn: "What changed in Tailwind CSS v4?",

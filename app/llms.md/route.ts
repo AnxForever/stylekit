@@ -17,7 +17,7 @@ export async function GET() {
 
   sections.push(`# StyleKit
 
-> Open-source UI style and prompt library with ${styles.length} curated styles and machine-readable constraints for AI-assisted UI generation.
+> Open-source visual style library for AI-generated web interfaces with ${styles.length} curated styles and machine-readable constraints.
 
 StyleKit provides structured design systems that AI can use to generate consistent, high-quality user interfaces.
 

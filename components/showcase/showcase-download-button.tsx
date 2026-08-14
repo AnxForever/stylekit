@@ -1,11 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { Check, ExternalLink, FileArchive, FileCode, LoaderCircle } from "lucide-react";
+import { Check, ExternalLink, FileArchive, LoaderCircle } from "lucide-react";
 import { useI18n } from "@/lib/i18n/context";
 import { trackEvent } from "@/lib/analytics/events";
-import { prepareShowcaseSnapshot } from "@/lib/export/showcase-html";
-import { buildShowcasePackage } from "@/lib/export/showcase-package";
 import { LocalizedLink } from "@/components/i18n/localized-link";
 
 interface ShowcaseDownloadButtonProps {
@@ -13,44 +11,33 @@ interface ShowcaseDownloadButtonProps {
 }
 
 type DownloadState = "idle" | "downloading" | "downloaded" | "error";
-type DownloadKind = "html" | "zip";
 
 /**
- * Downloads either a self-contained-ish offline ZIP or a lightweight HTML
- * snapshot. External resources that reject browser fetching remain online.
+ * Downloads either a complete offline ZIP or a lightweight HTML snapshot.
  */
 export function ShowcaseDownloadButton({ slug }: ShowcaseDownloadButtonProps) {
   const { t } = useI18n();
   const [state, setState] = useState<DownloadState>("idle");
 
-  async function handleDownload(kind: DownloadKind) {
+  async function handleDownload() {
     if (state === "downloading") return;
 
     setState("downloading");
-    trackEvent("style_export", { slug, format: `showcase-${kind}` });
+    trackEvent("style_export", { slug, format: "showcase-zip" });
 
     try {
-      const response = await fetch(`/styles/${encodeURIComponent(slug)}/showcase`, {
-        headers: { Accept: "text/html" },
-      });
-
+      const response = await fetch(
+        `/api/styles/${encodeURIComponent(slug)}/showcase/download`,
+      );
       if (!response.ok) {
-        throw new Error(`Showcase request failed with ${response.status}`);
+        throw new Error(`Showcase export failed with ${response.status}`);
       }
-
-      const html = await response.text();
-      const baseHref = `${window.location.origin}/`;
-      const blob =
-        kind === "zip"
-          ? (await buildShowcasePackage(html, window.location.origin)).blob
-          : new Blob([prepareShowcaseSnapshot(html, baseHref)], {
-              type: "text/html;charset=utf-8",
-            });
+      const blob = await response.blob();
 
       const url = URL.createObjectURL(blob);
       const anchor = document.createElement("a");
       anchor.href = url;
-      anchor.download = `${slug}-showcase.${kind === "zip" ? "zip" : "html"}`;
+      anchor.download = `${slug}-showcase.zip`;
       document.body.appendChild(anchor);
       anchor.click();
       anchor.remove();
@@ -76,7 +63,7 @@ export function ShowcaseDownloadButton({ slug }: ShowcaseDownloadButtonProps) {
     <div className="flex flex-wrap items-center gap-2" aria-live="polite">
       <button
         type="button"
-        onClick={() => handleDownload("zip")}
+        onClick={handleDownload}
         disabled={state === "downloading"}
         className="inline-flex min-h-[48px] items-center justify-center gap-2 border border-border px-6 py-3 text-sm tracking-wide transition-colors hover:border-foreground disabled:cursor-wait disabled:opacity-70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
       >
@@ -88,15 +75,6 @@ export function ShowcaseDownloadButton({ slug }: ShowcaseDownloadButtonProps) {
           <FileArchive className="h-4 w-4" aria-hidden="true" />
         )}
         {label}
-      </button>
-      <button
-        type="button"
-        onClick={() => handleDownload("html")}
-        disabled={state === "downloading"}
-        className="inline-flex min-h-[48px] items-center justify-center gap-2 border border-border px-4 py-3 text-sm tracking-wide text-muted transition-colors hover:border-foreground hover:text-foreground disabled:cursor-wait disabled:opacity-70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-      >
-        <FileCode className="h-4 w-4" aria-hidden="true" />
-        {t("styleDetail.downloadShowcaseHtml")}
       </button>
       <LocalizedLink
         href={`/styles/${slug}/showcase`}

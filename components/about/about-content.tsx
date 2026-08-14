@@ -5,6 +5,12 @@ import { useI18n } from "@/lib/i18n/context";
 
 export function AboutContent() {
   const { t } = useI18n();
+  const artifactItems = [
+    ["about.artifacts.tokens.title", "about.artifacts.tokens.desc"],
+    ["about.artifacts.rules.title", "about.artifacts.rules.desc"],
+    ["about.artifacts.recipes.title", "about.artifacts.recipes.desc"],
+    ["about.artifacts.examples.title", "about.artifacts.examples.desc"],
+  ] as const;
 
   return (
     <main className="flex-1">
@@ -21,6 +27,26 @@ export function AboutContent() {
           <p className="text-lg md:text-xl text-muted leading-relaxed max-w-2xl">
             {t("about.hero.description")}
           </p>
+        </div>
+      </section>
+
+      <section className="border-b border-border">
+        <div className="max-w-4xl mx-auto px-6 md:px-12 py-16 md:py-24">
+          <p className="text-xs tracking-widest uppercase text-muted mb-8">
+            {t("about.artifacts.badge")}
+          </p>
+          <h2 className="text-2xl md:text-3xl mb-4">{t("about.artifacts.title")}</h2>
+          <p className="text-muted leading-relaxed max-w-3xl mb-10">
+            {t("about.artifacts.description")}
+          </p>
+          <div className="grid md:grid-cols-2 gap-8">
+            {artifactItems.map(([titleKey, descriptionKey]) => (
+              <div key={titleKey} className="border border-border p-6">
+                <h3 className="text-xl mb-3">{t(titleKey)}</h3>
+                <p className="text-sm text-muted leading-relaxed">{t(descriptionKey)}</p>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 

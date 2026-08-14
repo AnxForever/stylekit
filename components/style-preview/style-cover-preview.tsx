@@ -108,7 +108,11 @@ export function StyleCoverPreview({
     <div
       ref={containerRef}
       data-preview-ready="true"
-      className={cn("w-full h-full", !interactive && "pointer-events-none", className)}
+      className={cn(
+        "style-cover-preview w-full h-full",
+        !interactive && "pointer-events-none",
+        className,
+      )}
       aria-hidden={!interactive}
       inert={interactive ? undefined : true}
     >

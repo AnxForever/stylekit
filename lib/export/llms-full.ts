@@ -40,7 +40,7 @@ This file is generated from the current StyleKit catalog. It summarizes all styl
   // Overview
   sections.push(`## 1. Overview
 
-StyleKit provides ${styles.length} curated design styles with machine-readable constraints:
+StyleKit is an open-source visual style library for AI-generated web interfaces. It provides ${styles.length} curated design styles with machine-readable constraints:
 
 - **Design Tokens**: Precise Tailwind class mappings for borders, shadows, colors, typography
 - **Component Recipes**: Parameterized templates with variants (button, card, input, etc.)

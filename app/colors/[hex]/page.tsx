@@ -7,7 +7,7 @@ import { LocalizedLink } from "@/components/i18n/localized-link";
 import { CopyValueRow } from "@/components/colors/copy-value-row";
 import {
   getAllDetailSwatches,
-  getColorDetail,
+  getCuratedColorDetail,
   hexToSlug,
   normalizeHexInput,
   type ColorDetail,
@@ -19,7 +19,9 @@ import { getSiteBaseUrl } from "@/lib/site-url";
 const BASE_URL = getSiteBaseUrl();
 
 export const revalidate = 86400;
-export const dynamicParams = true;
+// Only the curated swatches returned by generateStaticParams are public pages.
+// This prevents arbitrary HEX URLs from triggering on-demand SSR/ISR work.
+export const dynamicParams = false;
 
 export function generateStaticParams(): { hex: string }[] {
   return getAllDetailSwatches().map((hex) => ({ hex: hexToSlug(hex) }));
@@ -31,7 +33,7 @@ interface PageProps {
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { hex: slug } = await params;
-  const detail = getColorDetail(slug);
+  const detail = getCuratedColorDetail(slug);
   if (!detail) return { title: "Color not found" };
 
   const hex = detail.hex;
@@ -106,7 +108,7 @@ export default async function ColorDetailPage({ params }: PageProps) {
     permanentRedirect(`/colors/${canonicalSlug}`);
   }
 
-  const detail = getColorDetail(normalized);
+  const detail = getCuratedColorDetail(normalized);
   if (!detail) notFound();
 
   const jsonLd = {

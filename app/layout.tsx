@@ -177,7 +177,7 @@ export default async function RootLayout({
               "@type": "WebApplication",
               "@id": `${BASE_URL}/#webapplication`,
               name: "StyleKit",
-              description: `AI-friendly design system with ${CURATED_STYLE_COUNT} curated visual styles, design tokens, component recipes, and AI prompts.`,
+              description: `Open-source visual style library for AI-generated web interfaces with ${CURATED_STYLE_COUNT} curated styles, design tokens, component recipes, and AI prompts.`,
               url: BASE_URL,
               applicationCategory: "DesignApplication",
               operatingSystem: "Web",
@@ -210,7 +210,7 @@ export default async function RootLayout({
                 "@type": "ImageObject",
                 "url": `${BASE_URL}/icon-512x512.png`,
               },
-              "description": `AI-friendly design system with ${CURATED_STYLE_COUNT} curated visual styles, design tokens, and AI prompts.`,
+              "description": `Open-source visual style library for AI-generated web interfaces with ${CURATED_STYLE_COUNT} curated styles, design tokens, and AI prompts.`,
               "sameAs": [
                 "https://github.com/AnxForever/stylekit",
                 "https://x.com/Justice66890051",

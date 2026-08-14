@@ -3,6 +3,7 @@ import {
   contrastRatio,
   getAllDetailSwatches,
   getColorDetail,
+  getCuratedColorDetail,
   hexToRgb,
   hexToSlug,
   nearestTailwindToken,
@@ -119,6 +120,11 @@ describe("getColorDetail", () => {
     const detail = getColorDetail("#123456")!;
     expect(detail.usedBy).toHaveLength(0);
     expect(detail.neighbors.length).toBeGreaterThan(0);
+  });
+
+  it("rejects arbitrary hex values from the public curated-page surface", () => {
+    expect(getCuratedColorDetail("#123456")).toBeNull();
+    expect(getCuratedColorDetail("667eea")?.hex).toBe("#667eea");
   });
 });
 

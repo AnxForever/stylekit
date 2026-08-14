@@ -1,0 +1,51 @@
+.field {
+  --constellation-color: #ccff00;
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  min-height: 280px;
+  background:
+    radial-gradient(circle at 50% 46%, color-mix(in srgb, var(--constellation-color) 8%, transparent), transparent 28%),
+    #101316;
+}
+
+.field::before {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background-image: radial-gradient(color-mix(in srgb, var(--constellation-color) 38%, transparent) 0.75px, transparent 0.75px);
+  background-size: 24px 24px;
+  opacity: 0.08;
+  content: "";
+}
+
+.canvas,
+.horizon {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.canvas { z-index: -1; }
+
+.horizon {
+  z-index: 0;
+  opacity: 0.48;
+  background:
+    linear-gradient(90deg, transparent 49.8%, color-mix(in srgb, var(--constellation-color) 34%, transparent) 50%, transparent 50.2%),
+    linear-gradient(0deg, transparent 49.8%, color-mix(in srgb, var(--constellation-color) 34%, transparent) 50%, transparent 50.2%);
+  mask-image: radial-gradient(ellipse at center, black, transparent 68%);
+}
+
+.content {
+  position: relative;
+  z-index: 1;
+  height: 100%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .canvas { opacity: 0; }
+  .horizon { opacity: 0.28; }
+}
