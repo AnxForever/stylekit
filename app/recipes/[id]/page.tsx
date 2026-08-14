@@ -15,6 +15,8 @@ import { getRequestLocaleContext } from "@/lib/i18n/request";
 import { getAlternateLocalePath } from "@/lib/i18n/routing";
 import { getSiteBaseUrl } from "@/lib/site-url";
 
+export const dynamicParams = false;
+
 export function generateStaticParams() {
   return getAllRecipes().map((recipe) => ({
     id: recipe.id,

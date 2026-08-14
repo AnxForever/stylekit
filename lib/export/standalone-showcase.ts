@@ -103,6 +103,61 @@ function toFetchTarget(url: URL, context: ResourceContext): URL {
   return new URL(`${url.pathname}${url.search}`, context.internalBaseUrl);
 }
 
+/**
+ * Codepoints of the document's rendered text (tags and style/script blocks
+ * removed). Used to drop @font-face unicode-range slices no glyph on the page
+ * can ever hit — a CJK font alone otherwise contributes 100+ subset files.
+ */
+function extractTextCodepoints(html: string): Set<number> {
+  const text = decodeHtmlAttribute(
+    html
+      .replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi, " ")
+      .replace(/<[^>]*>/g, " "),
+  );
+  const codepoints = new Set<number>();
+  for (const character of text) {
+    const codepoint = character.codePointAt(0);
+    if (codepoint !== undefined) codepoints.add(codepoint);
+  }
+  return codepoints;
+}
+
+function parseUnicodeRanges(value: string): Array<[number, number]> {
+  const ranges: Array<[number, number]> = [];
+  for (const token of value.split(",")) {
+    const match = token
+      .trim()
+      .toUpperCase()
+      .match(/^U\+([0-9A-F?]{1,6})(?:-([0-9A-F]{1,6}))?$/);
+    if (!match) continue;
+    if (match[1].includes("?")) {
+      ranges.push([
+        parseInt(match[1].replace(/\?/g, "0"), 16),
+        parseInt(match[1].replace(/\?/g, "F"), 16),
+      ]);
+    } else {
+      const start = parseInt(match[1], 16);
+      ranges.push([start, match[2] ? parseInt(match[2], 16) : start]);
+    }
+  }
+  return ranges;
+}
+
+function pruneUnusedFontFaces(css: string, codepoints: Set<number>): string {
+  return css.replace(/@font-face\s*\{[^{}]*\}/gi, (block) => {
+    const rangeValue = block.match(/unicode-range\s*:\s*([^;}]+)/i)?.[1];
+    if (!rangeValue) return block;
+    const ranges = parseUnicodeRanges(rangeValue);
+    if (ranges.length === 0) return block;
+    for (const codepoint of codepoints) {
+      for (const [start, end] of ranges) {
+        if (codepoint >= start && codepoint <= end) return block;
+      }
+    }
+    return "";
+  });
+}
+
 function inferContentType(url: URL): string {
   const extension = url.pathname.split(".").pop()?.toLowerCase();
   const types: Record<string, string> = {
@@ -326,6 +381,8 @@ export async function buildStandaloneShowcaseZip(
     .replace(/<base\b[^>]*>/gi, "")
     .replace(/<link\b[^>]*rel=["'](?:modulepreload|preload)["'][^>]*>/gi, "");
 
+  const documentCodepoints = extractTextCodepoints(output);
+
   output = await replaceAsync(
     output,
     /<link\b([^>]*)>/gi,
@@ -349,7 +406,10 @@ export async function buildStandaloneShowcaseZip(
       if (!response.ok) {
         throw new StandaloneShowcaseError(`Could not download stylesheet: ${resource.hostname}`);
       }
-      const css = await response.text();
+      const css = pruneUnusedFontFaces(
+        await response.text(),
+        documentCodepoints,
+      );
       const rewritten = await inlineCss(css, resource.href, context);
       return `<style data-stylekit-standalone-css>${rewritten}</style>`;
     },
@@ -359,7 +419,11 @@ export async function buildStandaloneShowcaseZip(
     output,
     /<style\b([^>]*)>([\s\S]*?)<\/style>/gi,
     async (full, attributes, css) => {
-      const rewritten = await inlineCss(css, context.origin, context);
+      const rewritten = await inlineCss(
+        pruneUnusedFontFaces(css, documentCodepoints),
+        context.origin,
+        context,
+      );
       return `<style${attributes}>${rewritten}</style>`;
     },
   );

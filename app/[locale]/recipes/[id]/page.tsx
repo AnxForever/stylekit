@@ -5,6 +5,8 @@ import { getAllRecipes } from "@/lib/styles/recipes";
 import { isLocale, LOCALES } from "@/lib/i18n/routing";
 import { localizeMetadata } from "@/lib/i18n/metadata";
 
+export const dynamicParams = false;
+
 export function generateStaticParams() {
   return LOCALES.flatMap((locale) =>
     getAllRecipes().map((recipe) => ({ locale, id: recipe.id }))

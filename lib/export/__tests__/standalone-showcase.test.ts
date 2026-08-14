@@ -115,6 +115,68 @@ describe("buildStandaloneShowcaseZip", () => {
     expect(requested).toContain("https://images.unsplash.com/photo-1?w=320&q=80");
   });
 
+  it("prunes font-face slices whose unicode-range the page never uses", async () => {
+    const requested: string[] = [];
+    const fetchMock = vi.fn(async (input: RequestInfo | URL) => {
+      const url = String(input);
+      requested.push(url);
+      if (url.endsWith("/fonts.css")) {
+        return new Response(
+          [
+            "@font-face{font-family:A;src:url(/latin.woff2);unicode-range:U+0000-00FF}",
+            "@font-face{font-family:A;src:url(/cjk.woff2);unicode-range:U+4E00-9FFF}",
+            "@font-face{font-family:A;src:url(/wild.woff2);unicode-range:U+FB??}",
+            "@font-face{font-family:B;src:url(/norange.woff2)}",
+            ".hero{font-family:A,B}",
+          ].join(""),
+          { headers: { "content-type": "text/css" } },
+        );
+      }
+      return new Response(new Uint8Array([1, 2, 3]), {
+        headers: { "content-type": "font/woff2" },
+      });
+    });
+    vi.stubGlobal("fetch", fetchMock);
+
+    const archive = await buildStandaloneShowcaseZip(
+      '<html><head><link rel="stylesheet" href="/fonts.css"></head><body><p class="hero">Hello</p></body></html>',
+      { origin },
+    );
+    const zip = await JSZip.loadAsync(archive);
+    const html = await zip.file("index.html")?.async("string");
+
+    expect(requested.some((url) => url.endsWith("/latin.woff2"))).toBe(true);
+    expect(requested.some((url) => url.endsWith("/norange.woff2"))).toBe(true);
+    expect(requested.some((url) => url.endsWith("/cjk.woff2"))).toBe(false);
+    expect(requested.some((url) => url.endsWith("/wild.woff2"))).toBe(false);
+    expect(html).not.toContain("U+4E00-9FFF");
+  });
+
+  it("keeps CJK font-face slices when the page contains matching glyphs", async () => {
+    const requested: string[] = [];
+    const fetchMock = vi.fn(async (input: RequestInfo | URL) => {
+      const url = String(input);
+      requested.push(url);
+      if (url.endsWith("/fonts.css")) {
+        return new Response(
+          "@font-face{font-family:A;src:url(/cjk.woff2);unicode-range:U+4E00-9FFF}",
+          { headers: { "content-type": "text/css" } },
+        );
+      }
+      return new Response(new Uint8Array([1, 2, 3]), {
+        headers: { "content-type": "font/woff2" },
+      });
+    });
+    vi.stubGlobal("fetch", fetchMock);
+
+    await buildStandaloneShowcaseZip(
+      '<html><head><link rel="stylesheet" href="/fonts.css"></head><body><p>风格</p></body></html>',
+      { origin },
+    );
+
+    expect(requested.some((url) => url.endsWith("/cjk.woff2"))).toBe(true);
+  });
+
   it("downloads same-origin resources via the internal base URL", async () => {
     const requested: string[] = [];
     const fetchMock = vi.fn(async (input: RequestInfo | URL) => {

@@ -8,6 +8,7 @@ import { localizeMetadata } from "@/lib/i18n/metadata";
 import type { Locale } from "@/lib/i18n/translations";
 
 export const revalidate = 86400;
+export const dynamicParams = false;
 
 export function generateStaticParams() {
   return LOCALES.flatMap((locale) =>

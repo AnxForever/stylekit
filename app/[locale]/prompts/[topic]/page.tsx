@@ -6,6 +6,7 @@ import { isLocale, LOCALES } from "@/lib/i18n/routing";
 import { localizeMetadata } from "@/lib/i18n/metadata";
 
 export const revalidate = 86400;
+export const dynamicParams = false;
 
 export function generateStaticParams() {
   return LOCALES.flatMap((locale) =>

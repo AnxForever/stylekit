@@ -27,6 +27,7 @@ export function generateStaticParams() {
 
 // ISR: revalidate every 24 hours
 export const revalidate = 86400;
+export const dynamicParams = false;
 
 // Google truncates meta descriptions around 155-160 chars; keep the SERP snippet
 // tight while the full description still renders in the page body.
