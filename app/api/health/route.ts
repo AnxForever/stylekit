@@ -8,14 +8,13 @@ const NO_STORE_HEADERS = {
 };
 
 export function GET() {
+  // Public surface only: runtime details (node version, memory, uptime) are
+  // reconnaissance fodder and were removed after the 2026-08-16 security
+  // audit. PM2/ssh remain the operational channels for that data.
   return NextResponse.json(
     {
       status: "ok",
       service: "stylekit",
-      timestamp: new Date().toISOString(),
-      uptime: process.uptime(),
-      nodeVersion: process.version,
-      memory: process.memoryUsage(),
     },
     { headers: NO_STORE_HEADERS }
   );
