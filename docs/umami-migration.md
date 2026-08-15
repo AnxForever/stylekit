@@ -19,13 +19,23 @@ domestic cloud server.
 ## Architecture
 
 ```
-visitor browser ──┬──> www.stylekit.top     (old server, unchanged except one script tag)
-                  └──> stats.stylekit.top  (new server: Umami app + its own PG)
+visitor browser ──> www.stylekit.top (old Aliyun server, filed OK)
+                        │  /umami/*  (nginx location, Host = $proxy_host)
+                        ▼
+                   117.72.199.116:3001 (JD Cloud, Umami BASE_PATH=/umami)
 ```
 
-- New server: domestic cloud, < 2 GiB RAM → source deploy (local build →
+- New server: JD Cloud 2C2G, < 2 GiB RAM → source deploy (local build →
   rsync → PM2), NOT Docker.
-- Old server stays untouched; only the root layout gains the Umami script.
+- JD Cloud blocks any Host not exactly in the MIIT filing DB (even non-80
+  ports, `Server: JDTP` 403 page). Umami therefore rides the filed
+  `www.stylekit.top` host under `/umami/`; the nginx proxy does NOT set
+  Host (defaults to `$proxy_host`, i.e. the IP, which JDTP lets through).
+- nginx on old server adds exact-match locations `/umami` and `/umami/`
+  → 302 `/umami/dashboard` to break Next basePath's trailing-slash
+  308/301 redirect loop.
+- After JD Cloud ICP admission completes, DNS can point
+  `stats.stylekit.top` straight at the new server (optional).
 
 ## Scope (verified against code)
 
