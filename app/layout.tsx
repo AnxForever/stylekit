@@ -150,6 +150,15 @@ export default async function RootLayout({
           data-vl-product-id="89414aab-7920-4854-8720-5ef041561792"
           data-vl-auth-key="vl_web.grGnbaTxVblO8tSKoOK8zC-726z3_2htURIvubBSPXM"
         />
+        {process.env.NEXT_PUBLIC_UMAMI_SCRIPT_URL &&
+        process.env.NEXT_PUBLIC_UMAMI_WEBSITE_ID ? (
+          <Script
+            id="umami-analytics"
+            strategy="afterInteractive"
+            src={process.env.NEXT_PUBLIC_UMAMI_SCRIPT_URL}
+            data-website-id={process.env.NEXT_PUBLIC_UMAMI_WEBSITE_ID}
+          />
+        ) : null}
         {showcaseTypography ? (
           <link
             rel="stylesheet"

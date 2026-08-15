@@ -29,10 +29,38 @@ export type {
 
 const isVercel = typeof process !== "undefined" && Boolean(process.env.NEXT_PUBLIC_VERCEL);
 
+declare global {
+  interface Window {
+    /** Umami tracker global, injected by the self-hosted script.js. */
+    umami?: {
+      track: (
+        nameOrPayload: string | Record<string, unknown>,
+        data?: Record<string, unknown>
+      ) => void;
+    };
+  }
+}
+
 // ── Tracker ─────────────────────────────────────────────────
 
 function isClient(): boolean {
   return typeof window !== "undefined";
+}
+
+/**
+ * Forward an event to the self-hosted Umami instance.
+ * The tracker script loads lazily; events fired before it arrives are dropped
+ * by design — analytics failures must never block the page.
+ */
+function trackWithUmami(
+  name: string,
+  data: Record<string, string | number | boolean | null>
+): void {
+  try {
+    window.umami?.track(name, data as Record<string, unknown>);
+  } catch {
+    // Analytics failures must remain non-blocking.
+  }
 }
 
 /**
@@ -53,6 +81,9 @@ export function trackEvent<T extends ClientEventName>(
   if (isVercel) {
     track(name, merged as Record<string, string | number | boolean | null>);
   }
+  // Umami manages UTM at the session level itself, so forward the raw
+  // properties without the merged UTM fields.
+  trackWithUmami(name, properties);
   queueInternalAnalyticsEvent(name, merged);
 }
 
