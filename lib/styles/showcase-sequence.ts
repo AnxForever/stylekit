@@ -14,7 +14,6 @@ export const SHOWCASE_SEQUENCE: readonly ShowcaseSequenceEntry[] = [
   ["neo-brutalist", "Neo-Brutalist"],
   ["editorial", "Editorial"],
   ["neumorphism", "Neumorphism"],
-  ["glassmorphism", "Glassmorphism"],
   ["bento-grid", "Bento Grid"],
   ["corporate-clean", "Corporate Clean"],
   ["minimalist-flat", "Minimalist Flat"],
@@ -36,6 +35,7 @@ export const SHOWCASE_SEQUENCE: readonly ShowcaseSequenceEntry[] = [
   ["claymorphism", "Claymorphism"],
   ["notion-style", "Notion Style"],
   ["stripe-style", "Stripe Style"],
+  ["glassmorphism", "Glassmorphism"],
   ["apple-style", "Apple Style"],
   ["pixel-art", "Pixel Art"],
   ["vaporwave", "Neon Retro"],
@@ -159,17 +159,6 @@ export const SHOWCASE_SEQUENCE: readonly ShowcaseSequenceEntry[] = [
   ["soft-utility", "Soft Utility"],
 ];
 
-export interface ShowcaseNeighbors {
-  index: number;
-  total: number;
-  prev: ShowcaseSequenceEntry;
-  next: ShowcaseSequenceEntry;
-}
-
-/**
- * Returns the wrap-around gallery neighbors for a showcase slug, or null
- * when the slug is not part of the catalog sequence.
- */
 export function getShowcaseNeighbors(slug: string): ShowcaseNeighbors | null {
   const total = SHOWCASE_SEQUENCE.length;
   const index = SHOWCASE_SEQUENCE.findIndex((entry) => entry[0] === slug);

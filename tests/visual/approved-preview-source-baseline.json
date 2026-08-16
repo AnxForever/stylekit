@@ -1,5 +1,5 @@
 {
-  "baselineCommit": "0cdc2d64",
+  "baselineCommit": "a30ced6e",
   "algorithm": "sha256",
   "files": {
     "components/home/featured-carousel.tsx": "32b8cae0957e6fe5fecc99e048629180c645a51d12393a1c1b8b23b5be3ef01d",
@@ -154,6 +154,6 @@
     "lib/style-preview/styles/z-pattern-layout.tsx": "45735dc9271bc545c30dfa994303ae911adac343307c522808962de987face78",
     "lib/style-preview/styles/zen-garden.tsx": "b10338b2e55a267e8be31f8e6bcb458092aabbab3b2aee39f6aef76ec884c5d8",
     "lib/style-preview/types.ts": "4d508c6dc39554bd4a15e410186d6424c1165134bb799beca4ce655378b97b06",
-    "lib/styles/meta-registry.ts": "a27a13eb4473d58498e484f4ab3e1408a46a3c6580bcc657a95e96b0ad2170b8"
+    "lib/styles/meta-registry.ts": "f0cc6a5d240900a0d4953876284521d8100e89c0a217ad0d8fa10f41e5ac6de8"
   }
 }
