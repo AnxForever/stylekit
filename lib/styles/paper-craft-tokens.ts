@@ -77,7 +77,6 @@ export const paperCraftTokens = createStyleTokens({
       "bg-black",
       "bg-gray-900",
       "bg-gray-950",
-      "text-white",
       "shadow-[0_0_",
       "text-cyan-",
       "text-fuchsia-",

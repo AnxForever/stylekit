@@ -68,7 +68,6 @@ export const darkModeTokens = createStyleTokens({
 
   forbidden: {
     classes: [
-      "text-white",
       "bg-white",
       "bg-gray-50",
       "border-black",

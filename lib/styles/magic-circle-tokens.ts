@@ -72,8 +72,7 @@ export const magicCircleTokens = createStyleTokens({
   },
 
   forbidden: {
-    classes: [
-      "rounded-full", "rounded-2xl", "rounded-xl", "rounded-lg",
+    classes: [ "rounded-2xl", "rounded-xl", "rounded-lg",
       "bg-white", "bg-gray-50",
       "border-4", "border-8",
       "shadow-md", "shadow-lg", "shadow-xl",

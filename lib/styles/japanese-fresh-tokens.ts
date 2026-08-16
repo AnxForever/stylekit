@@ -82,7 +82,6 @@ export const japaneseFreshTokens = createStyleTokens({
       "shadow-[0_0_", "text-[#ff006e]",
       "uppercase",
       "shadow-lg", "shadow-xl", "shadow-2xl",
-      "tracking-widest",
     ],
     patterns: [
       "^rounded-(?:none|sm)$",

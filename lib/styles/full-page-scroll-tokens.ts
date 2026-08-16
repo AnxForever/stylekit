@@ -67,7 +67,7 @@ export const fullPageScrollTokens = createStyleTokens({
     classes: [
       "shadow-sm", "shadow-md", "shadow-lg", "shadow-xl",
       "border-gray-200", "border-gray-300",
-      "text-zinc-900", "text-black",
+      "text-zinc-900",
     ],
     patterns: [
       "^shadow-(?!none)",

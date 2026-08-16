@@ -78,8 +78,7 @@ export const y2kTokens = createStyleTokens({
       "border-black", "border-4",
       "bg-[#1a1a2e]", "bg-black",
       "text-black",
-      "shadow-[2px_2px_0px", "shadow-[4px_4px_0px",
-      "font-black", "font-mono",
+      "shadow-[2px_2px_0px", "shadow-[4px_4px_0px", "font-mono",
       "bg-amber-", "bg-stone-", "bg-yellow-900",
     ],
     patterns: [

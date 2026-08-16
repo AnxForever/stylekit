@@ -10,6 +10,13 @@
 
 export type ShowcaseSequenceEntry = readonly [slug: string, name: string];
 
+export interface ShowcaseNeighbors {
+  index: number;
+  total: number;
+  prev: ShowcaseSequenceEntry;
+  next: ShowcaseSequenceEntry;
+}
+
 export const SHOWCASE_SEQUENCE: readonly ShowcaseSequenceEntry[] = [
   ["neo-brutalist", "Neo-Brutalist"],
   ["editorial", "Editorial"],

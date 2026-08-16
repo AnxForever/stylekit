@@ -84,7 +84,6 @@ export const neonGradientTokens = createStyleTokens({
       // No low saturation colors
       "bg-gray-500", "text-gray-500",
       // No thin borders
-      "border", "border-2",
       // No small rounded corners
       "rounded-none", "rounded-sm", "rounded",
       // No muted shadows

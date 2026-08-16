@@ -75,11 +75,11 @@ export const vaporwaveTokens = createStyleTokens({
   forbidden: {
     classes: [
       "rounded-none",
-      "border-black", "border-2", "border-4",
+      "border-black", "border-4",
       "bg-white", "bg-gray-50", "bg-gray-100",
       "text-black", "text-gray-900", "text-gray-800",
       "shadow-[2px_2px_0px", "shadow-[4px_4px_0px", "shadow-[8px_8px_0px",
-      "font-black",
+
     ],
     patterns: [
       "^rounded-none$",

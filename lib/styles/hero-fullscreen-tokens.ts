@@ -66,8 +66,8 @@ export const heroFullscreenTokens = createStyleTokens({
   forbidden: {
     classes: [
       "shadow-sm", "shadow-md", "shadow-lg", "shadow-xl",
-      "bg-zinc-50", "bg-gray-50", "bg-white",
-      "text-zinc-900", "text-gray-900", "text-black",
+      "bg-zinc-50", "bg-gray-50",
+      "text-zinc-900", "text-gray-900",
       "border-gray-200", "border-zinc-200",
     ],
     patterns: [

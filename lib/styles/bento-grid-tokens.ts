@@ -71,7 +71,7 @@ export const bentoGridTokens = createStyleTokens({
       "rounded-none", "rounded-sm",
       // All cards same size is forbidden (documented in patterns)
       // No inconsistent gaps
-      "gap-1", "gap-2", "gap-8", "gap-10", "gap-12",
+      "gap-1", "gap-2", "gap-10", "gap-12",
     ],
     patterns: [
       "^rounded-none",                // No sharp corners

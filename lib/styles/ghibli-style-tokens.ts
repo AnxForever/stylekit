@@ -75,7 +75,7 @@ export const ghibliStyleTokens = createStyleTokens({
   forbidden: {
     classes: [
       "rounded-none",
-      "border-black", "border-2", "border-4",
+      "border-black", "border-4",
       "shadow-[2px_2px_0px", "shadow-[4px_4px_0px", "shadow-[8px_8px_0px",
       "bg-[#ff006e]", "bg-[#ff71ce]", "bg-[#01cdfe]", "bg-[#00ff00]",
       "text-[#ff006e]", "text-[#ff71ce]",

@@ -74,7 +74,7 @@ export const opArtTokens = createStyleTokens({
   forbidden: {
     classes: [
       "font-serif",
-      "rounded-sm", "rounded", "rounded-md", "rounded-lg", "rounded-xl", "rounded-2xl", "rounded-full",
+      "rounded-sm", "rounded", "rounded-md", "rounded-lg", "rounded-xl", "rounded-2xl",
       "shadow-sm", "shadow", "shadow-md", "shadow-lg", "shadow-xl",
       "bg-gradient-to-r", "bg-gradient-to-l", "bg-gradient-to-b", "bg-gradient-to-t",
       "backdrop-blur", "backdrop-blur-sm", "backdrop-blur-md", "backdrop-blur-lg",

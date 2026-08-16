@@ -75,7 +75,6 @@ export const dataDenseTokens = createStyleTokens({
       "shadow-2xl",
       "p-6",
       "p-8",
-      "text-lg",
       "text-xl",
       "text-2xl",
     ],

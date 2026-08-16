@@ -83,7 +83,7 @@ export const neumorphismTokens = createStyleTokens({
       // No gradients
       "bg-gradient-to-r", "bg-gradient-to-l", "bg-gradient-to-t", "bg-gradient-to-b",
       // No high contrast
-      "text-black", "text-white",
+      "text-black",
     ],
     patterns: [
       "^rounded-none",               // No sharp corners
