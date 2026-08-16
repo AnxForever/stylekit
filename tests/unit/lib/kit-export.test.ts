@@ -132,6 +132,7 @@ describe("buildKitFiles", () => {
     expect(prompt).toContain("## Typography");
     expect(prompt).toContain("## Motion");
     expect(prompt).toContain("prefers-reduced-motion");
+    expect(prompt.match(/^## Surfaces$/gm)).toHaveLength(1);
   });
 
   it("includes palette and do/don't lists in the design spec", () => {

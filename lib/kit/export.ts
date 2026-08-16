@@ -156,25 +156,6 @@ function synthesizePrompt(kit: ResolvedKit, items: KitItem[]): string {
     lines.push("");
   }
 
-  if (kit.gradients.length || kit.shadows.length || kit.backgrounds.length) {
-    lines.push("## Surfaces");
-    lines.push("");
-    lines.push(
-      "Use these surface treatments (ready-to-paste CSS is in `surfaces.css`):"
-    );
-    lines.push("");
-    for (const gradient of kit.gradients) {
-      lines.push(`- Gradient "${gradient.name}": \`${gradient.css}\``);
-    }
-    for (const shadow of kit.shadows) {
-      lines.push(`- Shadow "${shadow.name}": \`box-shadow: ${shadow.value}\``);
-    }
-    for (const background of kit.backgrounds) {
-      lines.push(`- Background "${background.name}": \`background-image: ${background.css}\``);
-    }
-    lines.push("");
-  }
-
   const surfaces: string[] = [];
   for (const gradient of kit.gradients) {
     surfaces.push(`- Gradient "${gradient.name}": \`${gradient.css}\``);
@@ -188,7 +169,7 @@ function synthesizePrompt(kit: ResolvedKit, items: KitItem[]): string {
   if (surfaces.length > 0) {
     lines.push("## Surfaces");
     lines.push("");
-    lines.push("Apply these gradients, shadows and background patterns where appropriate:");
+    lines.push("Use these surface treatments where appropriate (ready-to-paste CSS is in `surfaces.css`):");
     lines.push("");
     lines.push(...surfaces);
     lines.push("");

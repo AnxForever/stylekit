@@ -3,6 +3,7 @@
 import { CodeBlock } from "@/components/style-preview/code-block";
 import { LocalizedLink } from "@/components/i18n/localized-link";
 import { trackEvent } from "@/lib/analytics/events";
+import { getDeveloperToolkitCapability } from "@/lib/developer-toolkit";
 import { useI18n } from "@/lib/i18n/context";
 
 interface StyleUsePanelProps {
@@ -21,6 +22,8 @@ export function StyleUsePanel({ slug, name, nameEn }: StyleUsePanelProps) {
   const { locale } = useI18n();
   const isZh = locale === "zh";
   const displayName = isZh ? name : nameEn;
+  const cli = getDeveloperToolkitCapability("cli");
+  const mcp = getDeveloperToolkitCapability("mcp");
 
   const rows = [
     {
@@ -34,17 +37,17 @@ export function StyleUsePanel({ slug, name, nameEn }: StyleUsePanelProps) {
     {
       tag: "CLI",
       desc: isZh
-        ? "贡献者可在本地仓库构建尚未发布的 CLI。"
-        : "Contributors can build the unpublished CLI from a local checkout.",
-      code: `pnpm --filter stylekit-cli build && node packages/cli/dist/index.js add ${slug}`,
+        ? `公开 Beta CLI（v${cli.publicVersion}）可离线浏览风格并输出安装命令。`
+        : `Use the public beta CLI (v${cli.publicVersion}) offline to browse styles and print install commands.`,
+      code: cli.command.replace("synthwave", slug),
       language: "bash",
     },
     {
       tag: "MCP",
       desc: isZh
-        ? `贡献者可在本地仓库预览「${displayName}」的 MCP 能力。`
-        : `Contributors can preview ${displayName} through the repository-local MCP package.`,
-      code: "pnpm --filter stylekit-mcp build && node packages/mcp/dist/index.js",
+        ? `通过公开 Beta MCP（v${mcp.publicVersion}）在兼容客户端中查询「${displayName}」。`
+        : `Query ${displayName} through the public beta MCP (v${mcp.publicVersion}) in a compatible client.`,
+      code: mcp.command,
       language: "bash",
     },
   ];

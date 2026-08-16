@@ -7,10 +7,25 @@ import {
   getGradientCategories,
   type Gradient,
   type GradientCategory,
+  type GradientType,
 } from "@/lib/gradients";
 import { AddToKitButton } from "@/components/kit/add-to-kit-button";
+import type { TranslationKey } from "@/lib/i18n/translations";
 
 type ColorFormat = "hex" | "rgb" | "hsl";
+
+const GRADIENT_TYPES: Array<{
+  value: GradientType;
+  labelKey: TranslationKey;
+  hintKey: TranslationKey;
+}> = [
+  { value: "linear", labelKey: "gradients.type.linear", hintKey: "gradients.type.linearHint" },
+  { value: "radial", labelKey: "gradients.type.radial", hintKey: "gradients.type.radialHint" },
+  { value: "conic", labelKey: "gradients.type.conic", hintKey: "gradients.type.conicHint" },
+  { value: "mesh", labelKey: "gradients.type.mesh", hintKey: "gradients.type.meshHint" },
+];
+
+const ALL_GRADIENT_TYPE_HINT: TranslationKey = "gradients.type.allHint";
 
 function hexToRgb(hex: string): [number, number, number] {
   const h = hex.replace("#", "");
@@ -56,6 +71,7 @@ function formatColor(hex: string, fmt: ColorFormat): string {
 export function GradientsContent() {
   const { t, locale } = useI18n();
   const [selectedCategory, setSelectedCategory] = useState<GradientCategory | "all">("all");
+  const [selectedType, setSelectedType] = useState<GradientType | "all">("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [copiedId, setCopiedId] = useState<string | null>(null);
 
@@ -66,6 +82,10 @@ export function GradientsContent() {
 
     if (selectedCategory !== "all") {
       result = result.filter((g) => g.category === selectedCategory);
+    }
+
+    if (selectedType !== "all") {
+      result = result.filter((g) => (g.type ?? "linear") === selectedType);
     }
 
     if (searchQuery.trim()) {
@@ -79,7 +99,7 @@ export function GradientsContent() {
     }
 
     return result;
-  }, [selectedCategory, searchQuery]);
+  }, [selectedCategory, selectedType, searchQuery]);
 
   function copyToClipboard(text: string, id: string) {
     navigator.clipboard.writeText(text).then(() => {
@@ -101,6 +121,53 @@ export function GradientsContent() {
         <p className="text-muted leading-relaxed max-w-2xl">
           {t("gradients.description")}
         </p>
+
+        <div className="mt-7 border-y border-border py-4">
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="mr-1 text-[0.65rem] uppercase tracking-[0.16em] text-muted">
+              {t("gradients.type")}
+            </span>
+            <button
+              type="button"
+              onClick={() => setSelectedType("all")}
+              aria-pressed={selectedType === "all"}
+              className={`px-2.5 py-1 text-xs border transition-colors ${
+                selectedType === "all"
+                  ? "border-foreground bg-foreground text-background"
+                  : "border-border text-muted hover:border-foreground hover:text-foreground"
+              }`}
+            >
+              {t("gradients.filterAll")} ({gradients.length})
+            </button>
+            {GRADIENT_TYPES.map((type) => {
+              const count = gradients.filter((gradient) => (gradient.type ?? "linear") === type.value).length;
+              const active = selectedType === type.value;
+              return (
+                <button
+                  key={type.value}
+                  type="button"
+                  onClick={() => setSelectedType(type.value)}
+                  aria-pressed={active}
+                  className={`px-2.5 py-1 text-xs border transition-colors ${
+                    active
+                      ? "border-foreground bg-foreground text-background"
+                      : "border-border text-muted hover:border-foreground hover:text-foreground"
+                  }`}
+                >
+                  {t(type.labelKey)} <span className="tabular-nums opacity-60">{count}</span>
+                </button>
+              );
+            })}
+          </div>
+          <p className="mt-3 max-w-2xl text-xs leading-relaxed text-muted">
+            {t(selectedType === "all"
+              ? ALL_GRADIENT_TYPE_HINT
+              : GRADIENT_TYPES.find((type) => type.value === selectedType)?.hintKey ?? ALL_GRADIENT_TYPE_HINT)}
+            {selectedType !== "linear" && (
+              <span className="ml-2 text-muted/70">{t("gradients.tailwindNote")}</span>
+            )}
+          </p>
+        </div>
       </div>
 
       {/* Filters */}
@@ -170,6 +237,10 @@ export function GradientsContent() {
               copiedId={copiedId}
               onCopy={copyToClipboard}
               locale={locale}
+              typeLabel={t(
+                GRADIENT_TYPES.find((type) => type.value === (gradient.type ?? "linear"))?.labelKey ??
+                  "gradients.type.linear",
+              )}
             />
           ))}
         </div>
@@ -183,9 +254,11 @@ interface GradientCardProps {
   copiedId: string | null;
   onCopy: (text: string, id: string) => void;
   locale: "zh" | "en";
+  typeLabel: string;
 }
 
-function GradientCard({ gradient, copiedId, onCopy, locale }: GradientCardProps) {
+function GradientCard({ gradient, copiedId, onCopy, locale, typeLabel }: GradientCardProps) {
+  const { t } = useI18n();
   const [angle, setAngle] = useState(gradient.angle);
   const [format, setFormat] = useState<ColorFormat>("hex");
   const [copiedColor, setCopiedColor] = useState<string | null>(null);
@@ -237,6 +310,12 @@ function GradientCard({ gradient, copiedId, onCopy, locale }: GradientCardProps)
   }
 
   const cssCopied = copiedId === gradient.id;
+  const tailwindCopied = copiedId === `${gradient.id}-tw`;
+  const copyLabel = t("gradients.copyCss");
+  const tailwindLabel = t("gradients.copyTailwind");
+  const copiedLabel = t("gradients.copied");
+  const swatchLabel = t("gradients.copySwatch");
+  const resetLabel = t("gradients.resetAngle");
 
   return (
     <div className="group border border-border rounded-xl overflow-hidden bg-background hover:border-foreground/40 hover:shadow-lg transition-all">
@@ -250,11 +329,13 @@ function GradientCard({ gradient, copiedId, onCopy, locale }: GradientCardProps)
           <h3 className="text-xl font-bold leading-tight drop-shadow-sm">
             {locale === "zh" ? gradient.nameZh : gradient.name}
           </h3>
-          <p className="text-[0.7rem] opacity-85 mt-0.5">Gradient on a real surface</p>
+          <p className="text-[0.7rem] opacity-85 mt-0.5">
+            {t("gradients.previewLabel")}
+          </p>
         </div>
         <div className="absolute top-3 right-3">
           <span className="inline-flex items-center rounded-full px-2 py-0.5 text-[0.6rem] font-medium bg-white/25 text-white backdrop-blur-sm uppercase tracking-wide">
-            {isLinear ? `${angle}°` : gradient.type}
+            {isLinear ? `${angle}° · ${typeLabel}` : typeLabel}
           </span>
         </div>
       </div>
@@ -271,13 +352,14 @@ function GradientCard({ gradient, copiedId, onCopy, locale }: GradientCardProps)
             value={angle}
             onChange={(e) => setAngle(Number(e.target.value))}
             className="flex-1 accent-foreground"
-            aria-label="Gradient angle"
+            aria-label={t("gradients.angle")}
           />
           <button
+            type="button"
             onClick={() => setAngle(gradient.angle)}
             className="text-[0.65rem] text-muted hover:text-foreground underline underline-offset-2 whitespace-nowrap"
           >
-            reset
+            {resetLabel}
           </button>
         </div>
       )}
@@ -289,6 +371,7 @@ function GradientCard({ gradient, copiedId, onCopy, locale }: GradientCardProps)
             {(["hex", "rgb", "hsl"] as ColorFormat[]).map((fmt) => (
               <button
                 key={fmt}
+                type="button"
                 onClick={() => setFormat(fmt)}
                 className={`px-2 py-1 uppercase tracking-wide transition-colors ${
                   format === fmt
@@ -300,20 +383,22 @@ function GradientCard({ gradient, copiedId, onCopy, locale }: GradientCardProps)
               </button>
             ))}
           </div>
-          <span className="text-[0.65rem] text-muted">click swatch to copy</span>
+          <span className="text-[0.65rem] text-muted">{swatchLabel}</span>
         </div>
 
         <div className="flex gap-1.5">
           {gradient.colors.map((c, i) => (
             <button
               key={i}
+              type="button"
               onClick={() => copyColor(c)}
               className="flex-1 group/sw relative h-9 rounded-md border border-border overflow-hidden"
               style={{ background: c }}
-              title={`${formatColor(c, format)} — click to copy`}
+              title={`${formatColor(c, format)} — ${swatchLabel}`}
+              aria-label={`${formatColor(c, format)} — ${swatchLabel}`}
             >
               <span className="absolute inset-x-0 bottom-0 bg-black/55 text-white text-[0.6rem] py-0.5 font-mono tabular-nums">
-                {copiedColor === c ? "copied!" : formatColor(c, format)}
+                {copiedColor === c ? copiedLabel : formatColor(c, format)}
               </span>
             </button>
           ))}
@@ -331,6 +416,7 @@ function GradientCard({ gradient, copiedId, onCopy, locale }: GradientCardProps)
         {/* Copy buttons */}
         <div className="flex gap-2 pt-1">
           <button
+            type="button"
             onClick={() => onCopy(liveCss, gradient.id)}
             className={`flex-1 px-3 py-2 text-xs font-medium rounded-md border transition-colors ${
               cssCopied
@@ -338,13 +424,18 @@ function GradientCard({ gradient, copiedId, onCopy, locale }: GradientCardProps)
                 : "bg-background text-muted border-border hover:border-foreground hover:text-foreground"
             }`}
           >
-            {cssCopied ? "Copied!" : "Copy CSS"}
+            {cssCopied ? copiedLabel : copyLabel}
           </button>
           <button
+            type="button"
             onClick={() => onCopy(liveTailwind, gradient.id + "-tw")}
-            className="flex-1 px-3 py-2 text-xs font-medium rounded-md border bg-background text-muted border-border hover:border-foreground hover:text-foreground transition-colors"
+            className={`flex-1 px-3 py-2 text-xs font-medium rounded-md border transition-colors ${
+              tailwindCopied
+                ? "bg-green-500 text-white border-green-500"
+                : "bg-background text-muted border-border hover:border-foreground hover:text-foreground"
+            }`}
           >
-            Tailwind
+            {tailwindCopied ? copiedLabel : tailwindLabel}
           </button>
           <AddToKitButton type="gradient" slug={gradient.id} size="md" />
         </div>
