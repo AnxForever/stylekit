@@ -1,5 +1,5 @@
 {
-  "baselineCommit": "a30ced6e",
+  "baselineCommit": "3cafbfe6",
   "algorithm": "sha256",
   "files": {
     "components/home/featured-carousel.tsx": "32b8cae0957e6fe5fecc99e048629180c645a51d12393a1c1b8b23b5be3ef01d",
