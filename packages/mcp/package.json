@@ -1,6 +1,6 @@
 {
   "name": "stylekit-mcp",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "MCP server for StyleKit — search 146 design styles and pull tokens, recipes, and shadcn install commands from Claude, Cursor, or Windsurf",
   "type": "module",
   "bin": {

@@ -126,28 +126,38 @@ function scoreStyle(s: DesignStyle, q: string, terms: string[]): number {
  * by category) — a plain listing. With a query, ranks styles by relevance using
  * bilingual synonym expansion and palette colour intent. `total` is the match
  * count before `limit`.
+ *
+ * `pool` overrides the catalogue being searched. It exists so a caller holding
+ * fresher data — the published packages fetch the live catalogue, whose
+ * contents outgrow whatever snapshot they were built with — can reuse this
+ * ranking rather than reimplementing it. Reimplementing would put scoring in
+ * two places and guarantee they drift.
  */
-export function searchStyles(opts: SearchOptions = {}): {
+export function searchStyles(
+  opts: SearchOptions = {},
+  pool?: readonly DesignStyle[],
+): {
   total: number;
   results: StyleSummary[];
 } {
-  let pool: DesignStyle[] = opts.category
-    ? styles.filter((s) => s.category === opts.category)
-    : styles;
+  const catalogue: readonly DesignStyle[] = pool ?? styles;
+  let candidates: DesignStyle[] = opts.category
+    ? catalogue.filter((s) => s.category === opts.category)
+    : [...catalogue];
   if (opts.query) {
     const q = opts.query.trim().toLowerCase();
     const terms = expandQueryTerms(q);
-    pool = pool
+    candidates = candidates
       .map((s) => ({ s, score: scoreStyle(s, q, terms) }))
       .filter((x) => x.score > 0)
       .sort((a, b) => b.score - a.score || a.s.nameEn.localeCompare(b.s.nameEn))
       .map((x) => x.s);
   }
-  const total = pool.length;
+  const total = candidates.length;
   const limited =
     typeof opts.limit === "number" && opts.limit > 0
-      ? pool.slice(0, opts.limit)
-      : pool;
+      ? candidates.slice(0, opts.limit)
+      : candidates;
   return { total, results: limited.map(toSummary) };
 }
 

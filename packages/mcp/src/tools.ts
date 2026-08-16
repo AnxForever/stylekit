@@ -9,6 +9,10 @@ import {
   getTokens,
   getComponentRecipe,
   knownSlug,
+  searchStylesLive,
+  getStyleDetailLive,
+  getTokensLive,
+  knownSlugLive,
   shadcnInstallCommand,
   registryUrl,
   lintStyleCode,
@@ -198,10 +202,11 @@ Examples:
       annotations: READ_ONLY,
     },
     async ({ query, category, limit, offset }) => {
-      const { total, results: all } = searchStyles({
+      const search = await searchStylesLive({
         query,
         category: category as StyleCategory | undefined,
       });
+      const { total, results: all } = search.data;
       const page = all.slice(offset, offset + limit);
       if (page.length === 0) {
         return errorResult(
@@ -251,7 +256,8 @@ Examples:
       annotations: READ_ONLY,
     },
     async ({ slug }) => {
-      const detail = getStyleDetail(slug);
+      const detailSource = await getStyleDetailLive(slug);
+      const detail = detailSource.data;
       if (!detail) return unknownSlug(slug);
       const lines = [
         `# ${detail.nameEn} (${detail.name}) — \`${detail.slug}\``,
@@ -296,8 +302,9 @@ Examples:
       annotations: READ_ONLY,
     },
     async ({ slug }) => {
-      if (!knownSlug(slug)) return unknownSlug(slug);
-      const tokens = getTokens(slug);
+      const tokensSource = await getTokensLive(slug);
+      const tokens = tokensSource.data;
+      if (!tokens && !(await knownSlugLive(slug)).data) return unknownSlug(slug);
       if (!tokens) {
         return errorResult(
           `Style "${slug}" exists but has no registered design tokens. Use stylekit_get_style for its palette and rules instead.`,

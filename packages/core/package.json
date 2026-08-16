@@ -1,6 +1,6 @@
 {
   "name": "stylekit-core",
-  "version": "1.0.0-beta.2",
+  "version": "1.0.0-beta.3",
   "description": "StyleKit core library - design style tokens, recipes, and accessibility helpers for 146 UI styles",
   "type": "module",
   "main": "./dist/index.cjs",

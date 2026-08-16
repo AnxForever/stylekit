@@ -30,3 +30,19 @@ export type {
   StyleQuality,
   StyleQualityTier,
 } from "@/lib/styles/quality";
+
+/**
+ * Live-first variants. The exports above read the catalogue bundled at build
+ * time, which is correct until the catalogue grows; these read the published
+ * one and fall back to the bundle when offline.
+ */
+export {
+  searchStylesLive,
+  getStyleDetailLive,
+  getTokensLive,
+  getComponentRecipeLive,
+  knownSlugLive,
+  clearRemoteCache,
+} from "./remote";
+
+export type { DataOrigin, Sourced, RemoteOptions } from "./remote";

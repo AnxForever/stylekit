@@ -1,6 +1,6 @@
 {
   "name": "stylekit-cli",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Command-line tool for StyleKit — browse 146 design styles and pull tokens, recipes, and shadcn install commands from your terminal",
   "type": "module",
   "bin": {
