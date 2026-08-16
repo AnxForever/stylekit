@@ -228,13 +228,13 @@ built-in knowledge of StyleKit — how to browse styles and install them — wit
 one command:
 
 ```bash
-npx skills add AnxForever/stylekit
+npx skills add AnxForever/stylekit-skill
 ```
 
 Your agent can then apply any of the 146 styles on request ("make this look
 like Stripe", "cyberpunk dashboard") using the correct tokens and rules. The
-skill lives in [`SKILL.md`](SKILL.md); see [`docs/AGENT_SKILL_GUIDE.md`](docs/AGENT_SKILL_GUIDE.md)
-for how it's built and published.
+skill lives in its own repository ([`AnxForever/stylekit-skill`](https://github.com/AnxForever/stylekit-skill));
+see [`docs/AGENT_SKILL_GUIDE.md`](docs/AGENT_SKILL_GUIDE.md) for how it's built and published.
 
 
 ## Support This Project

@@ -51,10 +51,10 @@ npx shadcn add https://www.stylekit.top/r/neo-brutalist.json
 Install the StyleKit knowledge skill in a compatible coding-agent environment:
 
 ```bash
-npx skills add AnxForever/stylekit
+npx skills add AnxForever/stylekit-skill
 ```
 
-The repository also contains CLI and MCP packages for local contributor workflows. Those packages are repository-only and are not published to npm.
+The repository also contains CLI and MCP packages. Their `0.1.0` public betas are published to npm (`stylekit-cli`, `stylekit-mcp`); the repository tracks newer release candidates built from a local checkout.
 
 ## Product Boundaries
 

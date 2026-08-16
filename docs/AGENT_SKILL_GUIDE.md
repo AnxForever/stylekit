@@ -9,8 +9,9 @@ npx skills add <owner>/<repo>
 ```
 
 This is the exact process used to publish StyleKit's own skill
-([`SKILL.md`](../SKILL.md) at the repo root). It is verified end-to-end — the
-final step actually runs the installer.
+([`AnxForever/stylekit-skill`](https://github.com/AnxForever/stylekit-skill),
+a standalone repo whose root `SKILL.md` is the skill). It is verified
+end-to-end — the final step actually runs the installer.
 
 ---
 
@@ -160,6 +161,8 @@ use the exact name (`claude-code`, not `claude`) if you pass `--agent`.
 
 ## Worked example
 
-StyleKit's live skill: [`SKILL.md`](../SKILL.md). Install command surfaced in the
+StyleKit's live skill: [`SKILL.md`](https://github.com/AnxForever/stylekit-skill)
+in the standalone [`AnxForever/stylekit-skill`](https://github.com/AnxForever/stylekit-skill)
+repo. Install command (`npx skills add AnxForever/stylekit-skill`) is surfaced in the
 [README](../README.md), on the `/developers` page, and in
 [`public/llms.txt`](../public/llms.txt).

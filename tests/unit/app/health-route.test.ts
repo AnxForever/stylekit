@@ -10,21 +10,16 @@ describe("GET /api/health", () => {
     expect(response.headers.get("cache-control")).toBe("no-store, max-age=0");
 
     const payload = await response.json();
-    expect(payload).toEqual(
-      expect.objectContaining({
-        status: "ok",
-        service: "stylekit",
-        timestamp: expect.any(String),
-        uptime: expect.any(Number),
-        nodeVersion: process.version,
-        memory: expect.objectContaining({
-          rss: expect.any(Number),
-          heapTotal: expect.any(Number),
-          heapUsed: expect.any(Number),
-        }),
-      })
-    );
-    expect(Number.isNaN(Date.parse(payload.timestamp))).toBe(false);
+    expect(payload).toEqual({
+      status: "ok",
+      service: "stylekit",
+    });
+    // Public surface only: runtime details (node version, memory, uptime) are
+    // stripped to avoid reconnaissance surface (see app/api/health/route.ts).
+    expect(payload).not.toHaveProperty("timestamp");
+    expect(payload).not.toHaveProperty("uptime");
+    expect(payload).not.toHaveProperty("nodeVersion");
+    expect(payload).not.toHaveProperty("memory");
   });
 });
 
