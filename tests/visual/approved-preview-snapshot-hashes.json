@@ -1,5 +1,5 @@
 {
-  "baselineCommit": "3cafbfe6",
+  "baselineCommit": "5fdee058",
   "algorithm": "sha256",
   "count": 292,
   "files": {
@@ -132,7 +132,7 @@
     "kinetic-typography-cover-chromium-linux.png": "3aaa94aae44d40dc8c611551415e50891f93216bf9942c77230c8e3776aa869f",
     "kinetic-typography-cover-mobile-chrome-linux.png": "f1ed416e7c20bb16c1fcad3eb3db03b1f3b2b4de4a90e0df6c9f5f4403c261c1",
     "korean-minimal-cover-chromium-linux.png": "657fade7ecb53bb6876c1def35851eeca8ad82e6a03d8ad84ecffe6c30a70d96",
-    "korean-minimal-cover-mobile-chrome-linux.png": "c46157e167fa8b5eb78a973ac77ebd2142ec9b34d3b5f05b0ad11ed32641b973",
+    "korean-minimal-cover-mobile-chrome-linux.png": "13b601601dff0962e62169de808132c6dff435e4479de43c833fd64bfa2c89aa",
     "latex-paper-cover-chromium-linux.png": "f7fbcc714a3f7d9ee9b651162600e26ba6a2796d58a1de7ecc196b9ed9d6b213",
     "latex-paper-cover-mobile-chrome-linux.png": "cfdd8a2b32f8f5c15e2bb008bd7cec499d574bea84bae86b68aab69bfcc6d54e",
     "launch-keynote-cover-chromium-linux.png": "d9f7684669a5d71ec11fc065f36628ded5dd764fc25fa2656e766ac4d60f6062",
@@ -222,7 +222,7 @@
     "sci-fi-hud-cover-chromium-linux.png": "27f40b834fc3ab488e29e69d8e4fb3d3ae6b90c965a64013d8620ef631fba4e4",
     "sci-fi-hud-cover-mobile-chrome-linux.png": "41cd846426131c5ecad492b85eee4455ed834e58a2c634222d06b6d062c29fe1",
     "scrollytelling-cover-chromium-linux.png": "7b17d493269d027ff4c920066a7819bda4e76dfb6181d8031e4baef3cef46ed3",
-    "scrollytelling-cover-mobile-chrome-linux.png": "eebf07bda4c76873c31b3d0b4a20605b00ab3b587e27cef6d9cf6f8a28b6dbb5",
+    "scrollytelling-cover-mobile-chrome-linux.png": "e5da6a7f8a8631c0473be092490cd2ec5ef5433ebd3272f2ccc1ee0f85a9ee81",
     "shader-gradient-cover-chromium-linux.png": "6d8c33e60a636c9bc5ea2df76ee0144594ed5c4b6780074d762cec6d4e0947c5",
     "shader-gradient-cover-mobile-chrome-linux.png": "33da77a5fcfb2fd911ac6584b0029156dd852230b5ee71c7eb6f00ee618d163d",
     "shared-card-default-chromium-linux.png": "0f77cae22d35ddd1816d3fbe8d803488fd67c54f1e9025d399950eee6df051b7",
