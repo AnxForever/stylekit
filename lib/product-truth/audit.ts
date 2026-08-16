@@ -1,5 +1,9 @@
 import { access, readFile } from "node:fs/promises";
 import path from "node:path";
+import {
+  developerToolkitManifest,
+  type DeveloperToolkitManifest,
+} from "@/lib/developer-toolkit";
 
 export interface ProductTruthIssue {
   code:
@@ -7,7 +11,9 @@ export interface ProductTruthIssue {
     | "missing-redirect-target"
     | "unpublished-package-command"
     | "misleading-template-download"
-    | "retired-capability-claim";
+    | "retired-capability-claim"
+    | "toolkit-repository-version-mismatch"
+    | "toolkit-public-state-contradiction";
   source: string;
   message: string;
 }
@@ -29,6 +35,7 @@ export async function auditProductTruth(rootDir: string): Promise<ProductTruthRe
   const issues = [
     ...(await auditReadmeApiClaims(rootDir)),
     ...(await auditRedirectTargets(rootDir)),
+    ...(await auditDeveloperToolkitTruth(rootDir)),
     ...(await auditUnpublishedPackageCommands(rootDir)),
     ...(await auditTemplateDownloadClaim(rootDir)),
     ...(await auditForbiddenPublicClaims(rootDir)),
@@ -41,6 +48,84 @@ export async function auditProductTruth(rootDir: string): Promise<ProductTruthRe
       ),
     ),
   };
+}
+
+const TOOLKIT_PACKAGE_FILES = {
+  core: "packages/core/package.json",
+  cli: "packages/cli/package.json",
+  mcp: "packages/mcp/package.json",
+} as const;
+
+export async function auditDeveloperToolkitTruth(
+  rootDir: string,
+  manifest: DeveloperToolkitManifest = developerToolkitManifest,
+): Promise<ProductTruthIssue[]> {
+  const issues: ProductTruthIssue[] = [];
+
+  for (const [capabilityId, source] of Object.entries(TOOLKIT_PACKAGE_FILES)) {
+    const capability = manifest.capabilities.find(
+      ({ id }) => id === capabilityId,
+    );
+    if (!capability?.repositoryVersion) continue;
+
+    const packageJson = JSON.parse(
+      await readFile(path.join(rootDir, source), "utf8"),
+    ) as { version?: unknown };
+
+    if (packageJson.version !== capability.repositoryVersion) {
+      issues.push({
+        code: "toolkit-repository-version-mismatch",
+        source,
+        message:
+          `${capabilityId} manifest repository version `
+          + `${capability.repositoryVersion} does not match package version `
+          + `${String(packageJson.version)}`,
+      });
+    }
+  }
+
+  const publicClaimFiles = [
+    "SKILL.md",
+    "app/developers/page.tsx",
+    "components/developers/developers-content.tsx",
+    "components/style-preview/style-use-panel.tsx",
+    "packages/cli/README.md",
+    "packages/mcp/README.md",
+    "public/llms.txt",
+  ] as const;
+  const publicStateContradiction =
+    /(?:not\s+(?:yet\s+)?published|unpublished|repository[- ]only|尚未发布)/i;
+  const publicPackageClaims = [
+    { id: "cli", pattern: /(?:\bCLI\b|stylekit-cli)/i },
+    { id: "mcp", pattern: /(?:\bMCP\b|stylekit-mcp)/i },
+  ] as const;
+
+  for (const source of publicClaimFiles) {
+    const content = await readFileIfExists(path.join(rootDir, source));
+    if (!content || !publicStateContradiction.test(content)) continue;
+
+    const contradictoryChannels = publicPackageClaims.filter(({ pattern }) =>
+      pattern.test(content),
+    );
+    for (const channel of contradictoryChannels) {
+      const capability = manifest.capabilities.find(
+        ({ id }) => id === channel.id,
+      );
+      if (capability?.publicVersion === null || !capability?.publicVersion) {
+        continue;
+      }
+
+      issues.push({
+        code: "toolkit-public-state-contradiction",
+        source,
+        message:
+          `${channel.id} is marked ${capability.state} at public version `
+          + `${capability.publicVersion}, but this file uses unpublished wording`,
+      });
+    }
+  }
+
+  return issues;
 }
 
 async function auditReadmeApiClaims(rootDir: string): Promise<ProductTruthIssue[]> {
@@ -222,5 +307,13 @@ async function fileExists(filePath: string): Promise<boolean> {
     return true;
   } catch {
     return false;
+  }
+}
+
+async function readFileIfExists(filePath: string): Promise<string | null> {
+  try {
+    return await readFile(filePath, "utf8");
+  } catch {
+    return null;
   }
 }

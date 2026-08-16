@@ -18,14 +18,15 @@ All tools are read-only.
 
 ## Setup
 
-After publishing, add the following to your MCP client config:
+The public beta is available from npm. Add the following to your MCP client
+config:
 
 ```json
 {
   "mcpServers": {
     "stylekit": {
       "command": "npx",
-      "args": ["-y", "stylekit-mcp"]
+      "args": ["-y", "stylekit-mcp@0.1.0"]
     }
   }
 }
@@ -35,7 +36,8 @@ After publishing, add the following to your MCP client config:
 - **Cursor**: `.cursor/mcp.json`
 - **Windsurf**: the Windsurf MCP config
 
-Until the package is published, build locally and point your client at the absolute path:
+The repository currently contains the newer `0.1.1` candidate. To try that
+candidate, build locally and point your client at the absolute path:
 >
 > ```json
 > {
