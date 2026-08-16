@@ -20,3 +20,12 @@ export type {
   SearchOptions,
   DiscoveryCategory as StyleCategory,
 } from "stylekit-core/discovery";
+
+export { lintStyleCode, hasLintableRules } from "stylekit-core/styles";
+
+export type {
+  StyleLintReport,
+  StyleLintViolation,
+  StyleLintMissingRequired,
+  StyleLintComponent,
+} from "stylekit-core/styles";

@@ -125,6 +125,51 @@ export {
   validateClasses,
 } from "@/lib/styles/tokens";
 
+export type {
+  /** A single rule violation found in linted code. */
+  StyleLintViolation,
+  /** Required classes a style expects but the linted code never used. */
+  StyleLintMissingRequired,
+  /** Full result of linting code against a style. */
+  StyleLintReport,
+  /** Options controlling what {@link lintStyleCode} checks. */
+  StyleLintOptions,
+  /** Which component a required-class check applies to. */
+  StyleLintComponent,
+} from "@/lib/styles/style-linter";
+
+export {
+  /**
+   * Lints source code against a style's forbidden and required class rules.
+   * Understands JSX/HTML class attributes, `cn()`/`clsx()` calls, and template
+   * literals; variant prefixes are resolved before matching.
+   * @param slug - The style identifier, e.g. "glassmorphism".
+   * @param code - Source to check. JSX/TSX, HTML, or a bare class string.
+   * @param options - Optionally check components for missing required classes.
+   * @returns A {@link StyleLintReport} listing violations and missing requirements.
+   */
+  lintStyleCode,
+  /**
+   * Extracts Tailwind class tokens from source code, with line numbers.
+   * @param code - Source to scan.
+   * @returns Every statically resolvable class token and the line it sits on.
+   */
+  extractClassNames,
+  /**
+   * Strips Tailwind variant prefixes from a class, keeping the utility.
+   * Opacity modifiers are preserved; a leading `!` is dropped.
+   * @param className - A class token, e.g. "dark:md:shadow-lg".
+   * @returns The bare utility, e.g. "shadow-lg".
+   */
+  stripVariants,
+  /**
+   * Reports whether a style has any lintable rules registered.
+   * @param slug - The style identifier.
+   * @returns `true` when at least one rule source covers the style.
+   */
+  hasLintableRules,
+} from "@/lib/styles/style-linter";
+
 export {
   /**
    * Registry mapping style slugs to their {@link StyleTokens} definitions.

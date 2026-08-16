@@ -18,7 +18,7 @@ await client.connect(transport);
 
 const { tools } = await client.listTools();
 const names = tools.map((t) => t.name).sort();
-check(tools.length === 5, `5 tools registered (${names.join(", ")})`);
+check(tools.length === 6, `6 tools registered (${names.join(", ")})`);
 check(
   tools.every((t) => t.annotations?.readOnlyHint === true),
   "all tools annotated readOnlyHint",
@@ -93,6 +93,48 @@ const unknown = await client.callTool({
   arguments: { slug: "does-not-exist-xyz" },
 });
 check(unknown.isError === true, "unknown slug returns isError");
+
+// lint_code must catch a real violation and hand back a usable fix.
+const lintBad = await client.callTool({
+  name: "stylekit_lint_code",
+  arguments: {
+    slug: "neo-brutalist",
+    code: '<div className="rounded-xl shadow-lg" />',
+  },
+});
+check(
+  lintBad.structuredContent?.ok === false &&
+    lintBad.structuredContent?.violations?.length >= 2,
+  "lint_code flags forbidden classes",
+);
+check(
+  lintBad.structuredContent?.violations?.every((v) => typeof v.reason === "string") &&
+    lintBad.structuredContent?.violations?.some((v) => typeof v.fix === "string"),
+  "lint_code returns reasons and at least one concrete fix",
+);
+
+// The style's own canonical classes must never be reported.
+const lintGood = await client.callTool({
+  name: "stylekit_lint_code",
+  arguments: {
+    slug: "neo-brutalist",
+    code: '<div className="rounded-none border-2 border-black hidden md:block" />',
+  },
+});
+check(lintGood.structuredContent?.ok === true, "lint_code passes conforming code");
+
+const lintMissing = await client.callTool({
+  name: "stylekit_lint_code",
+  arguments: {
+    slug: "neo-brutalist",
+    code: '<button className="px-4" />',
+    checkRequired: ["button"],
+  },
+});
+check(
+  lintMissing.structuredContent?.missingRequired?.[0]?.missing?.length > 0,
+  "lint_code reports missing required classes when asked",
+);
 
 await client.close();
 console.log(

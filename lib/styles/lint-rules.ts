@@ -120,57 +120,6 @@ export const styleLintRules: Record<string, StyleLintRule> = {
     },
   },
 
-  "neubrutalism": {
-    slug: "neubrutalism",
-    name: "Neubrutalism",
-    forbidden: {
-      classes: [
-        "rounded-xl", "rounded-2xl", "rounded-3xl", "rounded-full",
-        "shadow-sm", "shadow-md", "shadow-lg", "shadow-xl",
-        "blur", "backdrop-blur",
-        "bg-gradient-to-r", "bg-gradient-to-l",
-      ],
-      patterns: [
-        /rounded-[2-9]xl/,
-        /rounded-full/,
-        /shadow-(?!(\[|none))/,
-        /blur-/,
-      ],
-      reasons: {
-        "rounded-2xl": "Neubrutalism uses sharp or slightly rounded corners only",
-        "shadow-lg": "Use hard offset shadows: shadow-[5px_5px_0_#000]",
-        "blur": "Neubrutalism avoids blur effects",
-      },
-    },
-    required: {
-      button: [
-        "border-[3px] border-black",
-        "shadow-[5px_5px_0_#000]",
-        "font-bold",
-      ],
-      card: [
-        "border-[3px] border-black",
-        "shadow-[5px_5px_0_#000]",
-      ],
-    },
-    recommended: {
-      borderRadius: "rounded-none or rounded-sm",
-      shadow: "shadow-[5px_5px_0_#000]",
-      transition: "transition-all duration-150",
-      spacing: "p-4 md:p-6",
-    },
-    colors: {
-      allowedPalettes: ["yellow", "red", "blue", "black", "white", "cyan", "magenta"],
-      forbiddenColors: ["gray-200", "gray-300", "slate-200"],
-      contrastMinimum: "AAA",
-    },
-    typography: {
-      headingFont: "font-bold",
-      bodyFont: "font-sans",
-      allowedWeights: [400, 600, 700, 800],
-    },
-  },
-
   // ==================== SOFT/MODERN FAMILY ====================
 
   "neumorphism": {
@@ -404,58 +353,6 @@ export const styleLintRules: Record<string, StyleLintRule> = {
   },
 
   // ==================== MINIMAL FAMILY ====================
-
-  "minimalism": {
-    slug: "minimalism",
-    name: "Minimalism / Swiss Style",
-    forbidden: {
-      classes: [
-        "shadow-lg", "shadow-xl", "shadow-2xl",
-        "bg-gradient-to-r", "bg-gradient-to-l",
-        "blur", "backdrop-blur",
-        "rounded-2xl", "rounded-3xl", "rounded-full",
-        "border-4",
-      ],
-      patterns: [
-        /shadow-[lx2]/,
-        /bg-gradient/,
-        /blur-/,
-        /rounded-[2-9]xl/,
-        /rounded-full/,
-      ],
-      reasons: {
-        "shadow-lg": "Minimalism avoids heavy shadows",
-        "bg-gradient-to-r": "Use solid colors only",
-        "blur": "No blur effects in pure minimalism",
-        "rounded-2xl": "Use subtle corners (rounded-lg max)",
-      },
-    },
-    required: {
-      button: [
-        "font-medium",
-        "transition-colors duration-200",
-      ],
-      card: [
-        "border border-gray-200",
-      ],
-    },
-    recommended: {
-      borderRadius: "rounded-none or rounded-lg",
-      shadow: "shadow-sm or shadow-none",
-      transition: "transition-colors duration-200",
-      spacing: "p-6 md:p-8 lg:p-12",
-    },
-    colors: {
-      allowedPalettes: ["black", "white", "gray", "slate"],
-      forbiddenColors: [],
-      contrastMinimum: "AAA",
-    },
-    typography: {
-      headingFont: "font-medium or font-semibold",
-      bodyFont: "font-sans",
-      allowedWeights: [400, 500, 600, 700],
-    },
-  },
 
   "minimalist-flat": {
     slug: "minimalist-flat",

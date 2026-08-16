@@ -11,7 +11,10 @@ import {
   knownSlug,
   shadcnInstallCommand,
   registryUrl,
+  lintStyleCode,
+  hasLintableRules,
   type StyleCategory,
+  type StyleLintComponent,
 } from "./data.js";
 import { toolResult, errorResult } from "./format.js";
 
@@ -412,6 +415,112 @@ Examples:
         "Prerequisite: the project must contain a tsconfig.json.",
       ].join("\n");
       return toolResult(text, structured);
+    },
+  );
+
+  // 6) Lint generated code against the style
+  server.registerTool(
+    "stylekit_lint_code",
+    {
+      title: "Lint code against a StyleKit style",
+      description: `Check whether code actually follows a style's rules. Use this AFTER generating or editing UI code to verify it matches the style, instead of assuming it does.
+
+Reports forbidden classes with the reason they are banned and a concrete replacement. Understands JSX/HTML class attributes, cn()/clsx() calls, and template literals; variant prefixes (dark:, md:, hover:) are resolved before matching.
+
+Args:
+  - slug (string): style identifier, e.g. "glassmorphism".
+  - code (string): the source to check. JSX/TSX, HTML, or a bare class string.
+  - checkRequired (array of 'button'|'card'|'input', optional): also report required classes the code is missing. Only pass components the code is supposed to contain.
+
+Returns JSON: { slug, ok, violations: [{ className, baseClassName, line, severity, source, rule, reason, fix }], missingRequired, checkedClasses, ruleSources }.
+
+Examples:
+  - "does this button match neo-brutalist?" -> slug: "neo-brutalist", code: "<button className=...>", checkRequired: ["button"]
+  - ok: true means no violations were found; it does not assert the design is good.`,
+      inputSchema: {
+        slug: z.string().min(1).describe("Style slug, e.g. 'glassmorphism'"),
+        code: z
+          .string()
+          .min(1)
+          .max(100_000)
+          .describe("Source code or class string to lint"),
+        checkRequired: z
+          .array(z.enum(["button", "card", "input"]))
+          .optional()
+          .describe("Components to also check for missing required classes"),
+      },
+      outputSchema: {
+        slug: z.string(),
+        ok: z.boolean(),
+        violations: z.array(
+          z.object({
+            className: z.string(),
+            baseClassName: z.string(),
+            line: z.number(),
+            severity: z.string(),
+            source: z.string(),
+            rule: z.string(),
+            reason: z.string(),
+            fix: z.string().optional(),
+          }),
+        ),
+        missingRequired: z.array(
+          z.object({
+            component: z.string(),
+            missing: z.array(z.string()),
+            source: z.string(),
+          }),
+        ),
+        checkedClasses: z.number(),
+        ruleSources: z.array(z.string()),
+      },
+      annotations: READ_ONLY,
+    },
+    async ({ slug, code, checkRequired }) => {
+      if (!knownSlug(slug)) return unknownSlug(slug);
+      if (!hasLintableRules(slug)) {
+        return errorResult(
+          `Style "${slug}" has no lint rules registered, so its code cannot be verified. Use stylekit_get_style_tokens for its constraints instead.`,
+        );
+      }
+
+      const report = lintStyleCode(slug, code, {
+        checkRequired: checkRequired as StyleLintComponent[] | undefined,
+      });
+
+      if (report.checkedClasses === 0) {
+        return errorResult(
+          `No classes found in the provided code for "${slug}". Pass JSX/HTML containing className/class attributes, or a bare space-separated class string.`,
+        );
+      }
+
+      const lines = [`# Lint report — \`${slug}\``];
+
+      if (report.ok) {
+        lines.push(
+          "",
+          `No violations across ${report.checkedClasses} classes checked.`,
+        );
+      } else {
+        lines.push(
+          "",
+          `${report.violations.length} violation(s) across ${report.checkedClasses} classes checked.`,
+          "",
+        );
+        for (const v of report.violations) {
+          lines.push(`- **${v.className}** (line ${v.line}) — ${v.reason}`);
+          if (v.fix) lines.push(`  Fix: ${v.fix}`);
+        }
+      }
+
+      for (const missing of report.missingRequired) {
+        lines.push(
+          "",
+          `**Missing required ${missing.component} classes**: ${missing.missing.join(", ")}`,
+        );
+      }
+
+      return toolResult(lines.join("\n"), report);
     },
   );
 }
