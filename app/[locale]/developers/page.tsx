@@ -14,7 +14,7 @@ export async function generateMetadata({
     ? {
         ...baseMetadata,
         title: "StyleKit 开发者工具与 shadcn 主题",
-        description: "通过 shadcn registry 安装 StyleKit 主题，查看设计 tokens、组件配方和适合 React 项目的开发者资源。",
+        description: "通过 shadcn registry 安装 StyleKit 主题，并使用公开 Beta CLI、MCP、Core Package 与 Agent Skill。",
         keywords: ["shadcn 主题", "StyleKit 开发者", "React 设计系统", "Tailwind 主题", "设计 tokens"],
       }
     : baseMetadata;

@@ -6,7 +6,7 @@ import { DevelopersContent } from "@/components/developers/developers-content";
 export const metadata: Metadata = {
   title: "StyleKit for Developers",
   description:
-    "Install StyleKit themes through the shadcn registry and explore repository-local previews of the unpublished CLI and MCP packages.",
+    "Install StyleKit themes through the shadcn registry and use the public beta CLI, MCP server, Core Package, and Agent Skill.",
 };
 
 export default function DevelopersPage() {
