@@ -48,6 +48,7 @@
     "test:style-extractor:ci": "pnpm run check:style-extractor && pnpm run test:style-extractor",
     "test:style-registry-install": "node tools/scripts/verify-style-registry-install.mjs",
     "check:package-size": "node tools/scripts/check-package-size.mjs",
+    "check:published": "node tools/scripts/check-published-versions.mjs",
     "test:developer-packages": "pnpm --filter stylekit-core build && pnpm --filter stylekit-core typecheck && pnpm --filter stylekit-cli build && pnpm --filter stylekit-cli test && pnpm --filter stylekit-mcp build && pnpm --filter stylekit-mcp test && pnpm run check:package-size",
     "test:preview-visual": "npx --no-install playwright test --config tests/playwright.config.ts tests/e2e/approved-preview-visual.spec.ts",
     "e2e": "npx playwright test --config tests/playwright.config.ts",
