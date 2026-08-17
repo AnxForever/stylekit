@@ -28,7 +28,7 @@ export function StyleRatingBadge({ slug }: StyleRatingBadgeProps) {
   return (
     <a
       href="#style-feedback"
-      className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs border border-border bg-zinc-50 text-muted hover:bg-zinc-100 hover:text-foreground transition-colors"
+      className="inline-flex items-center gap-1.5 whitespace-nowrap px-2.5 py-1 text-xs border border-border bg-zinc-50 text-muted hover:bg-zinc-100 hover:text-foreground transition-colors"
       title={hasRatings ? t("rating.jumpToRatings") : t("rating.beFirst")}
     >
       <Star
