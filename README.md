@@ -21,6 +21,10 @@
   <a href="https://www.typescriptlang.org"><img src="https://img.shields.io/badge/TypeScript-5-3178C6?style=flat-square&logo=typescript" alt="TypeScript"></a>
 </p>
 
+<p align="center">
+  <strong>English</strong> &middot; <a href="README.zh-CN.md">简体中文</a>
+</p>
+
 <br>
 
 <p align="center">
