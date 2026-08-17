@@ -3,6 +3,7 @@ export { fetcher } from "./fetcher";
 export type { ApiFetcherError } from "./fetcher";
 export {
   useCatalogStyles,
+  useStyleStats,
   useTrendingStyles,
   usePopularCombos,
   useStyleRating,

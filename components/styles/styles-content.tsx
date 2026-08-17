@@ -15,12 +15,18 @@ import {
   STYLE_SCENARIOS,
   type StyleScenario,
 } from "@/lib/styles/scenarios";
-import { useCatalogStyles } from "@/lib/swr";
+import { useCatalogStyles, useStyleStats } from "@/lib/swr";
 import { expandQueryTerms, colorIntentMatches, hasTerm } from "@/lib/search/synonyms";
 import { observeCatalogImpressions } from "@/lib/analytics/catalog-impressions";
+import {
+  isStatsDrivenSort,
+  parseCatalogSort,
+  sortCatalogStyles,
+  type CatalogSortOption,
+} from "@/lib/styles/catalog-sort";
 
 type TypeFilter = StyleType | "all";
-type SortOption = "recommended" | "name-asc" | "name-desc";
+type SortOption = CatalogSortOption;
 const INITIAL_VISIBLE_STYLE_COUNT = 24;
 const VISIBLE_STYLE_COUNT_STEP = 24;
 
@@ -51,11 +57,7 @@ function parseStylesSearchParams(searchParams: SearchParamsLike | null) {
     ].includes(tag));
 
   const showFavorites = searchParams?.get("fav") === "1";
-  const sortParam = searchParams?.get("sort");
-  const sort: SortOption =
-    sortParam === "name-asc" || sortParam === "name-desc"
-      ? sortParam
-      : "recommended";
+  const sort = parseCatalogSort(searchParams?.get("sort"));
   const query = searchParams?.get("q") ?? "";
   const scenarioParam = searchParams?.get("scenario");
   const scenario: StyleScenario | "all" = STYLE_SCENARIOS.includes(scenarioParam as StyleScenario)
@@ -110,6 +112,20 @@ export function StylesContent({ allStyles }: StylesContentProps) {
   const deferredActiveType = useDeferredValue(activeType);
   const deferredShowFavorites = useDeferredValue(showFavorites);
   const deferredSortBy = useDeferredValue(sortBy);
+  // Popularity signals are only fetched once a sort actually needs them, so the
+  // default catalog view still costs exactly one request.
+  const needsStyleStats = isStatsDrivenSort(sortBy) || isStatsDrivenSort(deferredSortBy);
+  const { data: styleStatsData, isLoading: isLoadingStyleStats } =
+    useStyleStats(needsStyleStats);
+  const styleStats = styleStatsData?.stats;
+  // When a signal is unavailable the sort silently degrades to popularity, so
+  // say so instead of showing an order the numbers do not support.
+  const isSortSignalDegraded = useMemo(() => {
+    const degraded = styleStatsData?.degraded ?? [];
+    if (deferredSortBy === "favorites") return degraded.includes("favorites");
+    if (deferredSortBy === "rating") return degraded.includes("ratings");
+    return false;
+  }, [deferredSortBy, styleStatsData]);
   const deferredSearchQuery = useDeferredValue(searchQuery);
   const deferredActiveScenario = useDeferredValue(activeScenario);
   const trimmedSearchQuery = searchQuery.trim();
@@ -311,6 +327,17 @@ export function StylesContent({ allStyles }: StylesContentProps) {
     }),
     [t]
   );
+  const sortLabels: Record<SortOption, string> = useMemo(
+    () => ({
+      recommended: t("styles.sortRecommended"),
+      "name-asc": t("styles.sortNameAsc"),
+      "name-desc": t("styles.sortNameDesc"),
+      popular: t("styles.sortPopular"),
+      favorites: t("styles.sortMostFavorited"),
+      rating: t("styles.sortTopRated"),
+    }),
+    [t]
+  );
   const activeFilterSummary = useMemo(() => {
     const parts: string[] = [];
 
@@ -333,10 +360,7 @@ export function StylesContent({ allStyles }: StylesContentProps) {
     }
 
     if (sortBy !== "recommended") {
-      const sortLabel = sortBy === "name-asc"
-        ? t("styles.sortNameAsc")
-        : t("styles.sortNameDesc");
-      parts.push(`${t("styles.sort")}: ${sortLabel}`);
+      parts.push(`${t("styles.sort")}: ${sortLabels[sortBy]}`);
     }
 
     if (trimmedSearchQuery.length > 0) {
@@ -351,6 +375,7 @@ export function StylesContent({ allStyles }: StylesContentProps) {
     locale,
     showFavorites,
     sortBy,
+    sortLabels,
     t,
     tagLabels,
     trimmedSearchQuery,
@@ -478,19 +503,7 @@ export function StylesContent({ allStyles }: StylesContentProps) {
         return colorIntentMatches(trimmedDeferredSearchQuery, palette);
       });
 
-    if (deferredSortBy === "recommended") return base;
-
-    const sorted = [...base].sort((left, right) => {
-      const leftName = (left.nameEn || left.name).toLowerCase();
-      const rightName = (right.nameEn || right.name).toLowerCase();
-      return leftName.localeCompare(rightName);
-    });
-
-    if (deferredSortBy === "name-desc") {
-      sorted.reverse();
-    }
-
-    return sorted;
+    return sortCatalogStyles(base, deferredSortBy, styleStats);
   }, [
     catalogStyles,
     deferredActiveTags,
@@ -501,6 +514,7 @@ export function StylesContent({ allStyles }: StylesContentProps) {
     expandedSearchTerms,
     favoriteSet,
     styleScenarios,
+    styleStats,
     trimmedDeferredSearchQuery,
   ]);
   const visibleStyles = useMemo(
@@ -528,6 +542,7 @@ export function StylesContent({ allStyles }: StylesContentProps) {
   ].filter(Boolean).length;
   const isFiltering =
     isPending ||
+    (needsStyleStats && isLoadingStyleStats) ||
     activeScenario !== deferredActiveScenario ||
     searchQuery !== deferredSearchQuery ||
     activeType !== deferredActiveType ||
@@ -904,6 +919,11 @@ export function StylesContent({ allStyles }: StylesContentProps) {
                   <Loader2 className="w-3.5 h-3.5 animate-spin" />
                 </span>
               )}
+              {isSortSignalDegraded && (
+                <span className="text-xs text-muted">
+                  {t("styles.sortSignalUnavailable")}
+                </span>
+              )}
             </div>
             <div className="flex flex-wrap items-center gap-2">
               <label htmlFor="styles-sort" className="text-sm text-muted">
@@ -918,6 +938,9 @@ export function StylesContent({ allStyles }: StylesContentProps) {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="recommended">{t("styles.sortRecommended")}</SelectItem>
+                  <SelectItem value="popular">{t("styles.sortPopular")}</SelectItem>
+                  <SelectItem value="favorites">{t("styles.sortMostFavorited")}</SelectItem>
+                  <SelectItem value="rating">{t("styles.sortTopRated")}</SelectItem>
                   <SelectItem value="name-asc">{t("styles.sortNameAsc")}</SelectItem>
                   <SelectItem value="name-desc">{t("styles.sortNameDesc")}</SelectItem>
                 </SelectContent>

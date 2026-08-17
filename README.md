@@ -209,6 +209,7 @@ GET  /api/styles                      # List all styles
 GET  /api/styles/{slug}               # Style record (tokens + recipes + rules)
 GET  /api/styles/{slug}/tokens        # Design tokens only
 GET  /api/styles/{slug}/recipes       # Component recipes only
+GET  /api/styles/stats                # Aggregate views, favorites, and ratings per style
 ```
 
 ## Use in your shadcn project

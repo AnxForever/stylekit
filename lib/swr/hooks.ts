@@ -2,6 +2,7 @@
 
 import useSWR from "swr";
 import type { StyleMeta } from "@/lib/styles/meta";
+import type { StyleStatsPayload } from "@/lib/styles/catalog-stats";
 import type { DashboardData, DashboardRange } from "@/lib/admin/analytics-dashboard";
 import type {
   KnowledgeAdminPublicationsData,
@@ -108,6 +109,19 @@ export function useCatalogStyles() {
   return useSWR<CatalogStylesData>("/api/styles", {
     dedupingInterval: 30_000,
     revalidateOnFocus: false,
+  });
+}
+
+/**
+ * Aggregate per-style signals for popularity sorting. Pass `enabled: false`
+ * while no stats-driven sort is active so the catalog does not pay for a
+ * Supabase round trip nobody asked for.
+ */
+export function useStyleStats(enabled = true) {
+  return useSWR<StyleStatsPayload>(enabled ? "/api/styles/stats" : null, {
+    dedupingInterval: 60_000,
+    revalidateOnFocus: false,
+    keepPreviousData: true,
   });
 }
 

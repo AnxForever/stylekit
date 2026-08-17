@@ -209,6 +209,7 @@ GET  /api/styles                      # 列出全部风格
 GET  /api/styles/{slug}               # 单个风格记录（tokens + recipes + rules）
 GET  /api/styles/{slug}/tokens        # 仅设计令牌
 GET  /api/styles/{slug}/recipes       # 仅组件配方
+GET  /api/styles/stats                # 每个风格的浏览量、收藏数与评分聚合
 ```
 
 ## 在你的 shadcn 项目中使用
