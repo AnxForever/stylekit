@@ -263,6 +263,10 @@ export const en = {
 
     // Rating
     "rating.signInToRate": "Sign in to rate",
+    "rating.rateThisStyle": "Rate this style",
+    "rating.jumpToRatings": "See ratings and feedback",
+    "rating.beFirst": "No ratings yet - be the first",
+    "rating.saved": "Rating saved, change it any time",
 
     // Analytics
     "analytics.trending.label": "Trending",

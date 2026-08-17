@@ -18,6 +18,7 @@ import { ScoreDetail } from "@/components/accessibility/score-detail";
 import { IdeExportButtons } from "@/components/export/ide-export-buttons";
 import { VersionBadge } from "@/components/styles/version-badge";
 import { StyleRating } from "@/components/styles/style-rating";
+import { StyleRatingBadge } from "@/components/styles/style-rating-badge";
 import { StyleComments } from "@/components/styles/style-comments";
 import { CollapsibleSection } from "@/components/ui/collapsible-section";
 import { useI18n } from "@/lib/i18n/context";
@@ -240,6 +241,7 @@ export function StyleDetailContent({
                 {accessibilityScore && (
                   <ScoreBadge score={accessibilityScore} />
                 )}
+                <StyleRatingBadge slug={style.slug} />
               </div>
               <p className="text-lg text-muted leading-relaxed mb-6">
                 {localizedDescription}

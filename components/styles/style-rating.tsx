@@ -74,7 +74,7 @@ export function StyleRating({ slug }: StyleRatingProps) {
   // Anonymous users: show read-only stars + sign-in link
   if (!user) {
     return (
-      <div className="flex items-center gap-3">
+      <div className="flex flex-wrap items-center gap-3">
         <div className="flex gap-1">
           {[1, 2, 3, 4, 5].map((star) => (
             <span key={star} className="p-0.5">
@@ -88,10 +88,12 @@ export function StyleRating({ slug }: StyleRatingProps) {
             </span>
           ))}
         </div>
-        {total > 0 && (
+        {total > 0 ? (
           <span className="text-sm text-muted">
             {average.toFixed(1)} ({total})
           </span>
+        ) : (
+          <span className="text-sm text-muted">{t("rating.beFirst")}</span>
         )}
         <Link
           href={loginHref}
@@ -105,7 +107,8 @@ export function StyleRating({ slug }: StyleRatingProps) {
 
   return (
     <div className="space-y-1">
-      <div className="flex items-center gap-3">
+      <div className="flex flex-wrap items-center gap-3">
+        <span className="text-sm text-muted">{t("rating.rateThisStyle")}</span>
         <div className="flex gap-1">
           {[1, 2, 3, 4, 5].map((star) => (
             <button
@@ -129,13 +132,21 @@ export function StyleRating({ slug }: StyleRatingProps) {
             </button>
           ))}
         </div>
-        {total > 0 && (
+        {total > 0 ? (
           <span className="text-sm text-muted">
             {average.toFixed(1)} ({total})
           </span>
+        ) : (
+          <span className="text-sm text-muted">{t("rating.beFirst")}</span>
         )}
       </div>
-      {error && <p className="text-xs text-red-500">{error}</p>}
+      {error ? (
+        <p className="text-xs text-red-500">{error}</p>
+      ) : (
+        resolvedUserRating != null && (
+          <p className="text-xs text-muted">{t("rating.saved")}</p>
+        )
+      )}
     </div>
   );
 }

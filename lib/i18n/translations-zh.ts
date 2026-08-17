@@ -1327,6 +1327,10 @@ export const zh: { [K in keyof typeof en]: string } = {
 
   // Rating
   "rating.signInToRate": "登录后评分",
+  "rating.rateThisStyle": "给这个风格评分",
+  "rating.jumpToRatings": "查看评分与反馈",
+  "rating.beFirst": "还没有人评分，来当第一个",
+  "rating.saved": "已记录你的评分，可以随时改",
 
   // Analytics
   "analytics.trending.title": "热门风格",
