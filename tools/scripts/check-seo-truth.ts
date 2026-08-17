@@ -2,6 +2,8 @@ import { readFile } from "node:fs/promises";
 import sitemap from "@/app/sitemap";
 import robots from "@/app/robots";
 import { CURATED_STYLE_COUNT } from "@/lib/product/catalog-facts";
+import { animationsMeta } from "@/lib/animations/meta";
+import { templateCatalog } from "@/lib/templates/catalog";
 import { generateStyleJsonLd, generateBlogPostJsonLd } from "@/lib/seo/json-ld";
 
 interface SeoTruthIssue {
@@ -22,6 +24,7 @@ const BANNED_DISCOVERY_PATTERNS = [
 ];
 const PUBLIC_SEO_SOURCES = [
   "README.md",
+  "README.zh-CN.md",
   "app/about/layout.tsx",
   "app/layout.tsx",
   "content/blog/ai-ui-prompts-guide.mdx",
@@ -35,6 +38,31 @@ const PUBLIC_SEO_SOURCES = [
   "lib/seo/site-metadata.ts",
 ];
 const STALE_PUBLIC_COUNT_PATTERN = /\b(?:135|136|140|143)\s*(?:\+|styles?|visual|种|curated)|\b(?:135|136|140|143)-style/i;
+// README copy still quotes catalog sizes, so pin every quoted number to the
+// registry that owns it. A claim that is absent is fine (evergreen copy);
+// a claim that disagrees with the registry is drift.
+const README_SOURCES: readonly string[] = ["README.md", "README.zh-CN.md"];
+const README_COUNT_CLAIMS: {
+  label: string;
+  expected: number;
+  patterns: RegExp[];
+}[] = [
+  {
+    label: "catalog styles",
+    expected: CURATED_STYLE_COUNT,
+    patterns: [/\*\*(\d+) visual and layout styles\*\*/, /\*\*(\d+) 套视觉与布局风格\*\*/],
+  },
+  {
+    label: "animations",
+    expected: animationsMeta.length,
+    patterns: [/\*\*(\d+) animations\*\*/, /\*\*(\d+) 个动效\*\*/],
+  },
+  {
+    label: "page-template demos",
+    expected: templateCatalog.filter((template) => !template.external).length,
+    patterns: [/\*\*(\d+) page-template demos\*\*/, /\*\*(\d+) 个页面模板演示\*\*/],
+  },
+];
 
 async function main(): Promise<void> {
   const issues: SeoTruthIssue[] = [];
@@ -68,6 +96,21 @@ async function main(): Promise<void> {
         source,
         message: "contains a stale public catalog count; use CURATED_STYLE_COUNT or count-free evergreen copy",
       });
+    }
+
+    if (!README_SOURCES.includes(source)) continue;
+
+    for (const claim of README_COUNT_CLAIMS) {
+      const match = claim.patterns
+        .map((pattern) => content.match(pattern))
+        .find((candidate): candidate is RegExpMatchArray => candidate !== null);
+      if (!match) continue;
+      if (Number(match[1]) !== claim.expected) {
+        issues.push({
+          source,
+          message: `claims ${match[1]} ${claim.label} but the registry has ${claim.expected}`,
+        });
+      }
     }
   }
 

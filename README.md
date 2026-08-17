@@ -86,8 +86,8 @@ If you are using AI to design or build a frontend, these focused guides cover th
 
 ### Creative Tools
 
-- **57 animations** with live preview and one-click copy
-- **35 page-template demos** — SaaS, dashboard, e-commerce, portfolio, blog
+- **60 animations** with live preview and one-click copy
+- **36 page-template demos** — SaaS, dashboard, e-commerce, portfolio, blog
 - **Prompt libraries** — copyable UI, landing page, dashboard, Tailwind, and dark mode prompts
 - **Design resources** — gradients, shadows, backgrounds, typography, and component patterns
 
@@ -204,7 +204,7 @@ See [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md) for production deployment notes.
 
 The stable JSON endpoints expose published style metadata, tokens, recipes, and rules.
 
-```
+```http
 GET  /api/styles                      # List all styles
 GET  /api/styles/{slug}               # Style record (tokens + recipes + rules)
 GET  /api/styles/{slug}/tokens        # Design tokens only
@@ -286,7 +286,7 @@ Current production for `www.stylekit.top` runs on an Alibaba Cloud ECS instance 
 - Edge and TLS: Nginx on the ECS host
 - App process: PM2 app `stylekit`
 - App directory: `/www/stylekit` rsynced from a verified local checkout
-- Runtime command: `pnpm start --hostname 0.0.0.0 --port 13000`
+- Runtime command: PM2 runs `next start -p 13000` directly via `node_modules/next/dist/bin/next` (no npm wrapper)
 
 `vercel.json` is no longer part of the active production deployment path and should not be treated as the source of truth for where StyleKit is hosted.
 
@@ -312,7 +312,7 @@ git commit -m "feat: add your feature"
 ## Contributors
 
 <a href="https://github.com/AnxForever/stylekit/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=AnxForever/stylekit" />
+  <img src="https://contrib.rocks/image?repo=AnxForever/stylekit" alt="StyleKit contributors" />
 </a>
 
 ## License

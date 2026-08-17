@@ -48,6 +48,16 @@
 
 StyleKit 帮助人和 AI 从一个统一的视觉方向出发。选定一个风格，即可获得结构化的设计令牌、组件配方、提示词指引和实现参考；至于能否落地到生产环境、覆盖是否完整，仍然取决于你的目标项目。
 
+## AI 前端资源
+
+如果你正在用 AI 设计或搭建前端，这几篇指南覆盖了实际工作流：
+
+- [AI 生成的网站不好看怎么修](https://www.stylekit.top/zh/ai-generated-website-fix) —— 视觉层次、间距、字体排版与组件一致性。
+- [怎么选 AI 网页设计工具](https://www.stylekit.top/zh/ai-web-design-tools) —— 对比提示词、设计与代码生成三类工作流。
+- [AI 生成 UI 界面](https://www.stylekit.top/zh/ai-ui-generator) —— 把一份页面需求变成可用的界面结构。
+- [AI 前端工作流](https://www.stylekit.top/zh/ai-frontend-workflow) —— 从想法走到 React、Tailwind 与实现约束。
+- English guides: [Fix an AI-generated website](https://www.stylekit.top/en/ai-generated-website-fix) · [AI frontend workflow](https://www.stylekit.top/en/ai-frontend-workflow)
+
 <table>
 <tr>
 <td width="50%" valign="top">
@@ -76,8 +86,8 @@ StyleKit 帮助人和 AI 从一个统一的视觉方向出发。选定一个风�
 
 ### 创意工具
 
-- **57 个动效**，支持实时预览与一键复制
-- **35 个页面模板演示** —— SaaS、仪表盘、电商、作品集、博客
+- **60 个动效**，支持实时预览与一键复制
+- **36 个页面模板演示** —— SaaS、仪表盘、电商、作品集、博客
 - **提示词库** —— 可复制的 UI、落地页、仪表盘、Tailwind 与暗色模式提示词
 - **设计资源** —— 渐变、阴影、背景、排版与组件模式
 
@@ -188,13 +198,13 @@ pnpm dev
 
 - 仓库结构、运行时流程、源码边界与清理指引：[`docs/PROJECT_STRUCTURE.md`](docs/PROJECT_STRUCTURE.md)
 - 新增或修改目录中的风格前请先阅读：[`docs/STYLE_AUTHORING.md`](docs/STYLE_AUTHORING.md)
-- 生产部署与发版评审说明：[`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md) 与 [`docs/RELEASE_REVIEW.md`](docs/RELEASE_REVIEW.md)
+- 生产部署与发版前的本地校验闸门：[`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md)
 
 ## API 接口
 
 稳定的 JSON 接口对外暴露已发布风格的元数据、令牌、配方与规则。
 
-```
+```http
 GET  /api/styles                      # 列出全部风格
 GET  /api/styles/{slug}               # 单个风格记录（tokens + recipes + rules）
 GET  /api/styles/{slug}/tokens        # 仅设计令牌
@@ -220,10 +230,10 @@ npx shadcn add https://stylekit.top/r/glassmorphism.json
 一条命令，让 Cursor、Claude Code、Windsurf 或任何兼容 Agent Skills 的编码代理内置 StyleKit 的知识 —— 包括如何浏览风格、如何安装：
 
 ```bash
-npx skills add AnxForever/stylekit
+npx skills add AnxForever/stylekit-skill
 ```
 
-之后你的代理就能按需套用这 146 套风格中的任意一套（比如「做成 Stripe 的样子」「赛博朋克风的仪表盘」），并使用正确的令牌与规则。技能本体位于 [`SKILL.md`](SKILL.md)；构建与发布方式见 [`docs/AGENT_SKILL_GUIDE.md`](docs/AGENT_SKILL_GUIDE.md)。
+之后你的代理就能按需套用这 146 套风格中的任意一套（比如「做成 Stripe 的样子」「赛博朋克风的仪表盘」），并使用正确的令牌与规则。技能本体在独立仓库 [`AnxForever/stylekit-skill`](https://github.com/AnxForever/stylekit-skill)；构建与发布方式见 [`docs/AGENT_SKILL_GUIDE.md`](docs/AGENT_SKILL_GUIDE.md)。
 
 ## 支持这个项目
 
@@ -260,11 +270,11 @@ npx skills add AnxForever/stylekit
 - 边缘与 TLS：ECS 主机上的 Nginx
 - 应用进程：PM2 应用 `stylekit`
 - 应用目录：`/www/stylekit`，由本地校验过的检出目录 rsync 同步
-- 运行命令：`pnpm start --hostname 0.0.0.0 --port 13000`
+- 运行命令：PM2 直接托管 `next start -p 13000`（`node_modules/next/dist/bin/next`，不经 npm wrapper）
 
 `vercel.json` 已不属于当前生效的生产部署路径，不应被当作 StyleKit 托管位置的事实来源。
 
-部署手册、健康检查看门狗配置、管理员登录检查与回滚命令见 [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md)。
+部署手册、健康检查、看门狗配置、管理员登录检查与回滚命令见 [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md)。
 
 ## 参与贡献
 
@@ -286,7 +296,7 @@ git commit -m "feat: add your feature"
 ## 贡献者
 
 <a href="https://github.com/AnxForever/stylekit/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=AnxForever/stylekit" />
+  <img src="https://contrib.rocks/image?repo=AnxForever/stylekit" alt="StyleKit 贡献者" />
 </a>
 
 ## 许可证
