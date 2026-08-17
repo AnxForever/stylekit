@@ -25,12 +25,12 @@ export default async function SupportPage() {
 
   const qrCodes = [
     {
-      src: "/wechat-qr.png",
+      src: "/support/wechat-qr.png",
       title: isZh ? "微信" : "WeChat Pay",
       hint: isZh ? "微信扫码赞赏" : "Scan with WeChat",
     },
     {
-      src: "/alipay-qr.jpg",
+      src: "/support/alipay-qr.png",
       title: isZh ? "支付宝" : "Alipay",
       hint: isZh ? "支付宝扫码赞赏" : "Scan with Alipay",
     },
@@ -113,15 +113,17 @@ export default async function SupportPage() {
                 ? "扫码即可，无论金额大小都非常感谢。"
                 : "Scan with WeChat or Alipay - every bit is appreciated."}
             </p>
-            <div className="grid grid-cols-2 gap-6 max-w-md">
+            <div className="grid grid-cols-2 gap-6 max-w-xl">
               {qrCodes.map((qr) => (
                 <figure key={qr.src} className="border border-border p-4 text-center">
                   <Image
                     src={qr.src}
                     alt={qr.title}
-                    width={320}
-                    height={320}
+                    width={800}
+                    height={800}
                     className="w-full h-auto"
+                    sizes="(max-width: 640px) 44vw, 280px"
+                    unoptimized
                   />
                   <figcaption className="mt-3">
                     <p className="text-sm font-medium">{qr.title}</p>

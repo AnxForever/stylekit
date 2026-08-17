@@ -133,12 +133,12 @@ export function HomeContent({ styles, stats, thankYouEntries }: HomeContentProps
   const supportPreviewItems: SupportPreviewItem[] = useMemo(
     () => [
       {
-        src: "/wechat-qr.png",
+        src: "/support/wechat-qr.png",
         title: locale === "zh" ? "微信赞赏码" : "WeChat Tipping",
         hint: locale === "zh" ? "微信赞赏" : "Tip via WeChat",
       },
       {
-        src: "/alipay-qr.jpg",
+        src: "/support/alipay-qr.png",
         title: locale === "zh" ? "支付宝" : "Alipay",
         hint: locale === "zh" ? "支付宝扫码" : "Scan with Alipay",
       },
@@ -503,7 +503,7 @@ export function HomeContent({ styles, stats, thankYouEntries }: HomeContentProps
                       align="end"
                       side="top"
                       sideOffset={12}
-                      className="w-[22rem] border-0 bg-transparent p-0 shadow-none"
+                      className="w-[28rem] border-0 bg-transparent p-0 shadow-none"
                     >
                       <HomeSupportCard
                         locale={locale}

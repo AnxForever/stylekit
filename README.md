@@ -194,7 +194,7 @@ Open [localhost:3000](http://localhost:3000). See [`.env.example`](.env.example)
 
 See [`docs/PROJECT_STRUCTURE.md`](docs/PROJECT_STRUCTURE.md) for the repository map, runtime flow, source boundaries, and cleanup guidance.
 See [`docs/STYLE_AUTHORING.md`](docs/STYLE_AUTHORING.md) before adding or changing catalog styles.
-See [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md) and [`docs/RELEASE_REVIEW.md`](docs/RELEASE_REVIEW.md) for production deployment and release review notes.
+See [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md) for production deployment notes.
 
 ## API Surface
 
@@ -252,10 +252,14 @@ For Chinese readers:
 - Website support page: [`https://stylekit.top/contact#support-maintenance`](https://stylekit.top/contact#support-maintenance)
 - Public sponsor follow-up: [`GitHub Discussions`](https://github.com/AnxForever/stylekit/discussions)
 
-Current QR assets:
+Current QR assets (cropped to the code block itself plus a white quiet zone, so
+the scannable area fills the frame):
 
-- Alipay: [`public/alipay-qr.jpg`](public/alipay-qr.jpg)
-- WeChat Tipping: [`public/wechat-qr.png`](public/wechat-qr.png)
+- Alipay: [`public/support/alipay-qr.png`](public/support/alipay-qr.png)
+- WeChat Tipping: [`public/support/wechat-qr.png`](public/support/wechat-qr.png)
+
+The uncropped originals are kept at `public/alipay-qr.jpg` and
+`public/wechat-qr.png` for reference.
 
 The website support section is driven from a single config file: [`lib/site/support.ts`](lib/site/support.ts).
 

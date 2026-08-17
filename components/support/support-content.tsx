@@ -128,14 +128,15 @@ export function SupportContent({ thankYouEntries }: { thankYouEntries: ThankYouE
                   <p className="mt-1.5 text-xs leading-5 text-muted">{description}</p>
 
                   {method.kind === "qr" && method.imageSrc && method.imageAlt ? (
-                    <div className="mx-auto mt-5 w-full max-w-[200px] border border-border bg-white p-2.5">
+                    <div className="mx-auto mt-5 w-full max-w-[300px] border border-border bg-white p-2.5">
                       <div className="relative aspect-square bg-white">
                         <Image
                           src={method.imageSrc}
                           alt={method.imageAlt[locale]}
                           fill
                           className="object-contain"
-                          sizes="200px"
+                          sizes="300px"
+                          unoptimized
                         />
                       </div>
                     </div>

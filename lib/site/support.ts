@@ -96,7 +96,7 @@ export const supportMethods: SupportMethod[] = [
       en: "QR",
       zh: "扫码",
     },
-    imageSrc: "/alipay-qr.jpg",
+    imageSrc: "/support/alipay-qr.png",
     imageAlt: {
       en: "Alipay QR code for supporting StyleKit",
       zh: "用于支持 StyleKit 的支付宝扫码",
@@ -121,7 +121,7 @@ export const supportMethods: SupportMethod[] = [
       en: "QR",
       zh: "扫码",
     },
-    imageSrc: "/wechat-qr.png",
+    imageSrc: "/support/wechat-qr.png",
     imageAlt: {
       en: "WeChat appreciation QR code for supporting StyleKit",
       zh: "用于支持 StyleKit 的微信赞赏码",
@@ -129,56 +129,6 @@ export const supportMethods: SupportMethod[] = [
     note: {
       en: "Supports WeChat in-app tipping with a message — every note gets read.",
       zh: "支持微信内赞赏留言，每条备注都会认真看。",
-    },
-  },
-  {
-    id: "github-funding",
-    kind: "link",
-    title: {
-      en: "GitHub Sponsor Entry",
-      zh: "GitHub 赞助入口",
-    },
-    description: {
-      en: "Use the repository page to access the Sponsor button or funding entry from GitHub.",
-      zh: "通过仓库主页进入 Sponsor 按钮或 Funding 入口，适合直接挂在 GitHub 页面里。",
-    },
-    badge: {
-      en: "GitHub",
-      zh: "GitHub",
-    },
-    actionLabel: {
-      en: "Open repository",
-      zh: "打开仓库主页",
-    },
-    href: "https://github.com/AnxForever/stylekit",
-    note: {
-      en: "Configured via .github/FUNDING.yml so the repo can expose a native support entry.",
-      zh: "已通过 .github/FUNDING.yml 预留，仓库可以直接展示原生支持入口。",
-    },
-  },
-  {
-    id: "custom-sponsorship",
-    kind: "link",
-    title: {
-      en: "Custom Sponsorship",
-      zh: "定制赞助",
-    },
-    description: {
-      en: "For larger sponsorships, company reimbursement, or follow-up questions, start with a public discussion thread.",
-      zh: "如果是较大金额赞助、企业报销或需要进一步沟通，可以先从公开讨论线程开始。",
-    },
-    badge: {
-      en: "Discussion",
-      zh: "讨论",
-    },
-    actionLabel: {
-      en: "Open GitHub Discussions",
-      zh: "打开 GitHub Discussions",
-    },
-    href: "https://github.com/AnxForever/stylekit/discussions",
-    note: {
-      en: "Keeps support requests and sponsor follow-up in one public place before adding more channels.",
-      zh: "在补充更多支付渠道前，先把赞助沟通和后续跟进统一放在公开渠道里。",
     },
   },
 ];

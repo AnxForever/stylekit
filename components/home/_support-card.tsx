@@ -76,13 +76,13 @@ export function HomeSupportCard({
             </Link>
           </div>
 
-          <div className="mt-4 grid gap-3 grid-cols-2">
+          <div className="mt-4 grid gap-2.5 grid-cols-2">
             {items.map((item) => (
               <Link
                 key={item.src}
                 href={href}
                 onClick={() => trackEvent("cta_click", { label: item.title, location: `home_support_${variant}` })}
-                className="group rounded-[22px] border border-border bg-background/90 p-3 transition-[transform,border-color] duration-200 hover:-translate-y-0.5 hover:border-foreground"
+                className="group rounded-[22px] border border-border bg-background/90 p-2.5 transition-[transform,border-color] duration-200 hover:-translate-y-0.5 hover:border-foreground"
               >
                 <div className="relative aspect-square overflow-hidden rounded-[16px] border border-border bg-white">
                   <Image
@@ -90,7 +90,8 @@ export function HomeSupportCard({
                     alt={item.title}
                     fill
                     className="object-contain"
-                    sizes="180px"
+                    sizes="190px"
+                    unoptimized
                   />
                 </div>
                 <div className="mt-3 flex items-center justify-between gap-2">
@@ -179,6 +180,7 @@ export function HomeSupportCard({
                   fill
                   className="object-contain"
                   sizes="(max-width: 768px) 70vw, 320px"
+                  unoptimized
                 />
               </div>
               <div className="mt-3 flex items-center justify-between gap-3">
