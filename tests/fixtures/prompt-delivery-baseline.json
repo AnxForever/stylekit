@@ -1,0 +1,1170 @@
+{
+  "neo-brutalist": {
+    "zh": 16623,
+    "en": 19180,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 72,
+    "enFences": 66
+  },
+  "editorial": {
+    "zh": 12936,
+    "en": 16074,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 48,
+    "enFences": 48
+  },
+  "neumorphism": {
+    "zh": 14186,
+    "en": 16921,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 60,
+    "enFences": 54
+  },
+  "glassmorphism": {
+    "zh": 23530,
+    "en": 27565,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 74,
+    "enFences": 74
+  },
+  "bento-grid": {
+    "zh": 11267,
+    "en": 13837,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 48,
+    "enFences": 42
+  },
+  "corporate-clean": {
+    "zh": 11989,
+    "en": 14266,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 48,
+    "enFences": 46
+  },
+  "minimalist-flat": {
+    "zh": 13943,
+    "en": 17223,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 74,
+    "enFences": 70
+  },
+  "soft-ui": {
+    "zh": 10782,
+    "en": 12201,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 48,
+    "enFences": 44
+  },
+  "natural-organic": {
+    "zh": 10434,
+    "en": 12043,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 48,
+    "enFences": 44
+  },
+  "modern-gradient": {
+    "zh": 10097,
+    "en": 12529,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 48,
+    "enFences": 44
+  },
+  "retro-vintage": {
+    "zh": 11609,
+    "en": 13139,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 48,
+    "enFences": 44
+  },
+  "dark-mode": {
+    "zh": 11930,
+    "en": 14286,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 48,
+    "enFences": 44
+  },
+  "macos-vibrancy": {
+    "zh": 12362,
+    "en": 13928,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 48,
+    "enFences": 48
+  },
+  "geometric-bold": {
+    "zh": 10639,
+    "en": 12222,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 48,
+    "enFences": 44
+  },
+  "masonry-flow": {
+    "zh": 11308,
+    "en": 13621,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 48,
+    "enFences": 48
+  },
+  "split-screen": {
+    "zh": 10544,
+    "en": 13056,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 48,
+    "enFences": 48
+  },
+  "full-page-scroll": {
+    "zh": 13095,
+    "en": 15487,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 48,
+    "enFences": 48
+  },
+  "timeline-vertical": {
+    "zh": 10490,
+    "en": 13330,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 48,
+    "enFences": 48
+  },
+  "card-stack": {
+    "zh": 11239,
+    "en": 13570,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 48,
+    "enFences": 48
+  },
+  "sidebar-fixed": {
+    "zh": 10688,
+    "en": 13267,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 48,
+    "enFences": 48
+  },
+  "magazine-grid": {
+    "zh": 10427,
+    "en": 12940,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 48,
+    "enFences": 48
+  },
+  "hero-fullscreen": {
+    "zh": 12322,
+    "en": 14542,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 48,
+    "enFences": 48
+  },
+  "claymorphism": {
+    "zh": 12520,
+    "en": 15305,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 48,
+    "enFences": 42
+  },
+  "notion-style": {
+    "zh": 10171,
+    "en": 12568,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 48,
+    "enFences": 42
+  },
+  "stripe-style": {
+    "zh": 12066,
+    "en": 13898,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 48,
+    "enFences": 42
+  },
+  "apple-style": {
+    "zh": 9421,
+    "en": 11996,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 48,
+    "enFences": 42
+  },
+  "pixel-art": {
+    "zh": 11733,
+    "en": 13735,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 48,
+    "enFences": 42
+  },
+  "vaporwave": {
+    "zh": 14305,
+    "en": 17588,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 66,
+    "enFences": 60
+  },
+  "y2k": {
+    "zh": 11008,
+    "en": 12864,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 48,
+    "enFences": 42
+  },
+  "memphis": {
+    "zh": 10587,
+    "en": 13247,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 48,
+    "enFences": 42
+  },
+  "art-deco": {
+    "zh": 10793,
+    "en": 12664,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 48,
+    "enFences": 42
+  },
+  "bauhaus": {
+    "zh": 9707,
+    "en": 12220,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 48,
+    "enFences": 42
+  },
+  "skeuomorphism": {
+    "zh": 11211,
+    "en": 13099,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 48,
+    "enFences": 42
+  },
+  "swiss-style": {
+    "zh": 10701,
+    "en": 12718,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 48,
+    "enFences": 42
+  },
+  "ghibli-style": {
+    "zh": 10823,
+    "en": 12726,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 48,
+    "enFences": 42
+  },
+  "material-design": {
+    "zh": 10891,
+    "en": 12986,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 48,
+    "enFences": 42
+  },
+  "fluent-design": {
+    "zh": 12158,
+    "en": 14503,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 48,
+    "enFences": 42
+  },
+  "comic-style": {
+    "zh": 11973,
+    "en": 14761,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 48,
+    "enFences": 42
+  },
+  "sketch-style": {
+    "zh": 11119,
+    "en": 13518,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 48,
+    "enFences": 42
+  },
+  "watercolor-style": {
+    "zh": 10588,
+    "en": 13767,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 48,
+    "enFences": 42
+  },
+  "f-pattern-layout": {
+    "zh": 9827,
+    "en": 12081,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 48,
+    "enFences": 42
+  },
+  "z-pattern-layout": {
+    "zh": 9338,
+    "en": 12347,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 48,
+    "enFences": 42
+  },
+  "holy-grail-layout": {
+    "zh": 10615,
+    "en": 12766,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 48,
+    "enFences": 42
+  },
+  "dashboard-layout": {
+    "zh": 9544,
+    "en": 12230,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 48,
+    "enFences": 42
+  },
+  "cyberpunk-neon": {
+    "zh": 10916,
+    "en": 13559,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 48,
+    "enFences": 44
+  },
+  "synthwave": {
+    "zh": 11992,
+    "en": 13803,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 48,
+    "enFences": 42
+  },
+  "neo-brutalist-soft": {
+    "zh": 11521,
+    "en": 12999,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 48,
+    "enFences": 42
+  },
+  "neo-brutalist-playful": {
+    "zh": 10615,
+    "en": 12846,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 48,
+    "enFences": 42
+  },
+  "art-nouveau": {
+    "zh": 10694,
+    "en": 12683,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 48,
+    "enFences": 42
+  },
+  "surrealism": {
+    "zh": 11393,
+    "en": 13137,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 48,
+    "enFences": 42
+  },
+  "ukiyo-e-digital": {
+    "zh": 10699,
+    "en": 12845,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 48,
+    "enFences": 42
+  },
+  "gothic": {
+    "zh": 10259,
+    "en": 12335,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 48,
+    "enFences": 42
+  },
+  "outrun": {
+    "zh": 11238,
+    "en": 12997,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 48,
+    "enFences": 42
+  },
+  "dark-academia": {
+    "zh": 10088,
+    "en": 12064,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 48,
+    "enFences": 42
+  },
+  "cottagecore": {
+    "zh": 10406,
+    "en": 12038,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 48,
+    "enFences": 42
+  },
+  "risograph": {
+    "zh": 11825,
+    "en": 13408,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 48,
+    "enFences": 44
+  },
+  "mecha": {
+    "zh": 11066,
+    "en": 12721,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 48,
+    "enFences": 42
+  },
+  "gothic-lolita": {
+    "zh": 10650,
+    "en": 12398,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 48,
+    "enFences": 42
+  },
+  "cyber-chinese": {
+    "zh": 11048,
+    "en": 13098,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 48,
+    "enFences": 42
+  },
+  "acid-graphics": {
+    "zh": 11738,
+    "en": 14032,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 48,
+    "enFences": 42
+  },
+  "hand-drawn-doodle": {
+    "zh": 11259,
+    "en": 13885,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 48,
+    "enFences": 42
+  },
+  "swiss-poster": {
+    "zh": 13291,
+    "en": 15275,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 48,
+    "enFences": 44
+  },
+  "watercolor-art": {
+    "zh": 11385,
+    "en": 13386,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 48,
+    "enFences": 42
+  },
+  "impressionist-oil": {
+    "zh": 12458,
+    "en": 14443,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 48,
+    "enFences": 42
+  },
+  "immersive-photo": {
+    "zh": 14339,
+    "en": 18635,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 50,
+    "enFences": 50
+  },
+  "collage-art": {
+    "zh": 13366,
+    "en": 14839,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 48,
+    "enFences": 44
+  },
+  "glitch-art": {
+    "zh": 13609,
+    "en": 16545,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 48,
+    "enFences": 42
+  },
+  "visual-novel": {
+    "zh": 11519,
+    "en": 14674,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 48,
+    "enFences": 44
+  },
+  "shoujo-manga": {
+    "zh": 11777,
+    "en": 14591,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 48,
+    "enFences": 44
+  },
+  "cyber-anime": {
+    "zh": 12718,
+    "en": 14417,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 48,
+    "enFences": 44
+  },
+  "pixel-anime": {
+    "zh": 13696,
+    "en": 14438,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 48,
+    "enFences": 44
+  },
+  "japanese-fresh": {
+    "zh": 13425,
+    "en": 14823,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 48,
+    "enFences": 44
+  },
+  "neon-samurai": {
+    "zh": 11631,
+    "en": 13289,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 48,
+    "enFences": 42
+  },
+  "magic-circle": {
+    "zh": 12257,
+    "en": 13368,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 48,
+    "enFences": 42
+  },
+  "cyber-wafuu": {
+    "zh": 11807,
+    "en": 13140,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 48,
+    "enFences": 42
+  },
+  "steampunk": {
+    "zh": 10094,
+    "en": 12751,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 48,
+    "enFences": 42
+  },
+  "pop-art": {
+    "zh": 11797,
+    "en": 13065,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 48,
+    "enFences": 42
+  },
+  "solarpunk": {
+    "zh": 9666,
+    "en": 11989,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 48,
+    "enFences": 42
+  },
+  "jrpg": {
+    "zh": 10586,
+    "en": 13014,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 48,
+    "enFences": 44
+  },
+  "asymmetric-grid": {
+    "zh": 9155,
+    "en": 10979,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 46,
+    "enFences": 42
+  },
+  "parallax-sections": {
+    "zh": 8867,
+    "en": 11570,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 46,
+    "enFences": 42
+  },
+  "warm-dashboard": {
+    "zh": 11826,
+    "en": 13810,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 48,
+    "enFences": 42
+  },
+  "neon-gradient": {
+    "zh": 13562,
+    "en": 15232,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 48,
+    "enFences": 42
+  },
+  "liquid-glass": {
+    "zh": 19714,
+    "en": 22609,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 54,
+    "enFences": 42
+  },
+  "scandinavian": {
+    "zh": 8996,
+    "en": 11163,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 46,
+    "enFences": 42
+  },
+  "cel-shading": {
+    "zh": 10053,
+    "en": 11744,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 46,
+    "enFences": 42
+  },
+  "cinematic-video-hero": {
+    "zh": 13075,
+    "en": 17437,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 48,
+    "enFences": 48
+  },
+  "wabi-sabi": {
+    "zh": 9305,
+    "en": 11529,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 46,
+    "enFences": 42
+  },
+  "zen-garden": {
+    "zh": 9593,
+    "en": 11996,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 46,
+    "enFences": 42
+  },
+  "sci-fi-hud": {
+    "zh": 9980,
+    "en": 11786,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 48,
+    "enFences": 42
+  },
+  "scrollytelling": {
+    "zh": 14949,
+    "en": 19440,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 52,
+    "enFences": 52
+  },
+  "kawaii-minimal": {
+    "zh": 9080,
+    "en": 10997,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 48,
+    "enFences": 42
+  },
+  "kinetic-typography": {
+    "zh": 15642,
+    "en": 18876,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 60,
+    "enFences": 60
+  },
+  "film-noir": {
+    "zh": 12008,
+    "en": 14350,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 48,
+    "enFences": 44
+  },
+  "arcade-crt": {
+    "zh": 10807,
+    "en": 12193,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 48,
+    "enFences": 42
+  },
+  "frutiger-aero": {
+    "zh": 14743,
+    "en": 17505,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 48,
+    "enFences": 48
+  },
+  "anti-design": {
+    "zh": 12262,
+    "en": 14215,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 48,
+    "enFences": 46
+  },
+  "brutalist-web": {
+    "zh": 12588,
+    "en": 14743,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 48,
+    "enFences": 46
+  },
+  "holographic": {
+    "zh": 11748,
+    "en": 12935,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 48,
+    "enFences": 42
+  },
+  "generative-art": {
+    "zh": 10627,
+    "en": 12879,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 48,
+    "enFences": 42
+  },
+  "particle": {
+    "zh": 11749,
+    "en": 12230,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 48,
+    "enFences": 42
+  },
+  "parallax-editorial": {
+    "zh": 13990,
+    "en": 18603,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 56,
+    "enFences": 56
+  },
+  "vhs-aesthetic": {
+    "zh": 11284,
+    "en": 12558,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 48,
+    "enFences": 42
+  },
+  "terracotta": {
+    "zh": 10304,
+    "en": 12327,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 46,
+    "enFences": 42
+  },
+  "monochrome": {
+    "zh": 9644,
+    "en": 11653,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 46,
+    "enFences": 42
+  },
+  "ink-wash": {
+    "zh": 9750,
+    "en": 12617,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 46,
+    "enFences": 42
+  },
+  "mid-century-modern": {
+    "zh": 11159,
+    "en": 13766,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 48,
+    "enFences": 42
+  },
+  "constructivism": {
+    "zh": 11694,
+    "en": 15026,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 48,
+    "enFences": 42
+  },
+  "op-art": {
+    "zh": 11552,
+    "en": 14778,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 48,
+    "enFences": 42
+  },
+  "islamic-geometric": {
+    "zh": 11404,
+    "en": 14353,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 48,
+    "enFences": 42
+  },
+  "indian-festive": {
+    "zh": 12866,
+    "en": 15141,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 48,
+    "enFences": 42
+  },
+  "african-textile": {
+    "zh": 11501,
+    "en": 14460,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 48,
+    "enFences": 42
+  },
+  "korean-minimal": {
+    "zh": 11174,
+    "en": 14622,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 48,
+    "enFences": 44
+  },
+  "pastel-goth": {
+    "zh": 12107,
+    "en": 15150,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 48,
+    "enFences": 42
+  },
+  "maximalism": {
+    "zh": 11952,
+    "en": 15343,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 48,
+    "enFences": 42
+  },
+  "medieval-manuscript": {
+    "zh": 12762,
+    "en": 15461,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 48,
+    "enFences": 42
+  },
+  "graffiti-street": {
+    "zh": 11383,
+    "en": 14320,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 48,
+    "enFences": 42
+  },
+  "marble-luxury": {
+    "zh": 11851,
+    "en": 15124,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 48,
+    "enFences": 42
+  },
+  "victorian-botanical": {
+    "zh": 10376,
+    "en": 14255,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 48,
+    "enFences": 42
+  },
+  "cubism": {
+    "zh": 11172,
+    "en": 14120,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 48,
+    "enFences": 42
+  },
+  "tropical-paradise": {
+    "zh": 10122,
+    "en": 13190,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 48,
+    "enFences": 42
+  },
+  "github-style": {
+    "zh": 10354,
+    "en": 13925,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 48,
+    "enFences": 42
+  },
+  "witchcore": {
+    "zh": 10860,
+    "en": 13701,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 48,
+    "enFences": 42
+  },
+  "neon-tokyo": {
+    "zh": 10470,
+    "en": 13178,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 48,
+    "enFences": 42
+  },
+  "paper-craft": {
+    "zh": 10010,
+    "en": 12865,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 48,
+    "enFences": 42
+  },
+  "blueprint": {
+    "zh": 9991,
+    "en": 13426,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 48,
+    "enFences": 44
+  },
+  "dopamine-design": {
+    "zh": 13379,
+    "en": 14327,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 48,
+    "enFences": 42
+  },
+  "linear-style": {
+    "zh": 10607,
+    "en": 11794,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 48,
+    "enFences": 42
+  },
+  "shopify-clean": {
+    "zh": 9996,
+    "en": 11697,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 48,
+    "enFences": 42
+  },
+  "luxury-retail": {
+    "zh": 10869,
+    "en": 12636,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 48,
+    "enFences": 42
+  },
+  "fresh-market": {
+    "zh": 10175,
+    "en": 12033,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 48,
+    "enFences": 42
+  },
+  "data-dense": {
+    "zh": 9267,
+    "en": 10929,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 48,
+    "enFences": 42
+  },
+  "oversized-typography": {
+    "zh": 12995,
+    "en": 15608,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 48,
+    "enFences": 46
+  },
+  "developer-terminal": {
+    "zh": 11136,
+    "en": 14493,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 48,
+    "enFences": 42
+  },
+  "horizontal-gallery": {
+    "zh": 13756,
+    "en": 16404,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 48,
+    "enFences": 48
+  },
+  "latex-paper": {
+    "zh": 14904,
+    "en": 17761,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 48,
+    "enFences": 48
+  },
+  "distill-style": {
+    "zh": 13403,
+    "en": 14796,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 48,
+    "enFences": 42
+  },
+  "studio-bold": {
+    "zh": 15730,
+    "en": 19015,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 48,
+    "enFences": 48
+  },
+  "gallery-dark": {
+    "zh": 14464,
+    "en": 17953,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 48,
+    "enFences": 46
+  },
+  "warm-organic": {
+    "zh": 13936,
+    "en": 17417,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 48,
+    "enFences": 42
+  },
+  "launch-keynote": {
+    "zh": 14556,
+    "en": 19602,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 54,
+    "enFences": 54
+  },
+  "luxe-lookbook": {
+    "zh": 13565,
+    "en": 18355,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 48,
+    "enFences": 48
+  },
+  "shader-gradient": {
+    "zh": 15603,
+    "en": 20186,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 50,
+    "enFences": 50
+  },
+  "pastel-ui": {
+    "zh": 7255,
+    "en": 8936,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 42,
+    "enFences": 42
+  },
+  "mobile-editorial": {
+    "zh": 7227,
+    "en": 8900,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 42,
+    "enFences": 42
+  },
+  "soft-utility": {
+    "zh": 7292,
+    "en": 8953,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 42,
+    "enFences": 42
+  }
+}
