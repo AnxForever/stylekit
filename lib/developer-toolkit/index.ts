@@ -49,7 +49,7 @@ export const developerToolkitManifest = Object.freeze({
       id: "core",
       state: "public-beta",
       publicVersion: "1.0.0-beta.1",
-      repositoryVersion: "1.0.0-beta.1",
+      repositoryVersion: "1.0.0-beta.3",
       command: "npm install stylekit-core@1.0.0-beta.1",
       docsUrl:
         "https://github.com/AnxForever/stylekit/tree/main/packages/core#readme",
@@ -60,7 +60,7 @@ export const developerToolkitManifest = Object.freeze({
       id: "cli",
       state: "public-beta",
       publicVersion: "0.1.0",
-      repositoryVersion: "0.1.1",
+      repositoryVersion: "0.1.2",
       command: "npx -y stylekit-cli@0.1.0 add synthwave",
       docsUrl:
         "https://github.com/AnxForever/stylekit/tree/main/packages/cli#readme",
@@ -71,7 +71,7 @@ export const developerToolkitManifest = Object.freeze({
       id: "mcp",
       state: "public-beta",
       publicVersion: "0.1.0",
-      repositoryVersion: "0.1.1",
+      repositoryVersion: "0.2.0",
       command: "npx -y stylekit-mcp@0.1.0",
       docsUrl:
         "https://github.com/AnxForever/stylekit/tree/main/packages/mcp#readme",

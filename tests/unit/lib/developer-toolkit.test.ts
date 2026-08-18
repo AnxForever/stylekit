@@ -10,7 +10,7 @@ describe("Developer Toolkit capability manifest", () => {
       id: "cli",
       state: "public-beta",
       publicVersion: "0.1.0",
-      repositoryVersion: "0.1.1",
+      repositoryVersion: "0.1.2",
       command: "npx -y stylekit-cli@0.1.0 add synthwave",
       verifiedAt: "2026-08-16",
     });
