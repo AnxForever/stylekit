@@ -135,6 +135,7 @@ publication never invents a generic preview.
   - Export preview renderers explicitly authored and approved for this style
   - Keep the existing visual contract unchanged when editing an approved style
   - Include `coverPreview`; add `button`, `card`, and `input` when the style supports them
+  - Pick a cover composition from [`STYLE_COVER_ARCHETYPES.md`](STYLE_COVER_ARCHETYPES.md); the cover must not print the style's own name
   - Do not leave the generated TODO placeholder in a publication request
 
 ### 2.6 Preview Delivery Registries
