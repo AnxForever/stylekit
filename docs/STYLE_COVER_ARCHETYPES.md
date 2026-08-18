@@ -17,34 +17,41 @@ skeleton, so the grid read as a palette swatch sheet instead of a style library.
 1. **The cover never prints the style's own name.** The card title sits directly
    below it, so the name inside the mock is redundant, and it crowds out the one
    thing the cover is for: showing what the style does.
-2. **The cover shows the style's substance, not a generic UI.** Whatever a
-   designer would recognise the style by -- its grid, its letterforms, its
-   texture, its density -- is what belongs in the frame.
+2. **The cover is an interface, not a mood board.** StyleKit exists so people can
+   build pages, so a cover must read as a plausible screenshot of a real screen
+   in that style: navigation, headings, controls, content. Ornament, texture and
+   atmosphere belong *inside* that screen -- as its background, its header band,
+   its thumbnails -- never instead of it. A beautiful abstract composition tells
+   a visitor nothing about what their page will look like.
 
-## Archetypes
+## Page archetypes
 
-Pick the one that carries the style's identity. The list is a vocabulary, not a
-quota; a style that needs a composition outside it should have one.
+Pick the screen this style is most often used to build. Two styles sharing an
+archetype still look nothing alike, because the visual language differs; two
+styles sharing a *composition* is what made the old grid monotonous.
 
-| Archetype | Shows | Fits |
+| Archetype | The screen | Fits |
 | --- | --- | --- |
-| Layout skeleton | Columns, rails, rhythm of the grid itself | Layout styles, poster and editorial grids |
-| Type specimen | Letterforms at size, hierarchy, scale steps | Styles whose identity is typographic |
-| Component cluster | Real controls: input, toggle, chip, card | Styles defined by radius, shadow, restraint |
-| Texture field | Full-bleed pattern, halftone, grain, weave | Print, craft, cultural, material styles |
-| Data density | Rows, metrics, sparklines, heatmaps | Dashboards, developer tooling, data UI |
-| Atmosphere scene | Horizon, light, depth, silhouette | Cinematic, retro-future, immersive styles |
-| Product card | A single marketing card, done properly | Only where the style *is* product marketing |
+| Landing hero | Nav, headline, sub, CTA, supporting visual | Marketing-first and expressive styles |
+| Card grid | Listing of products, posts or looks with prices/captions | Commerce, lookbook, blog index styles |
+| Dashboard | Metrics, chart, table rows, status | Data, developer, enterprise styles |
+| Article | Headline, byline, columns, pull quote, rules | Editorial, academic, typographic styles |
+| App shell | Sidebar, toolbar, content pane | Tool and productivity styles |
+| Form panel | Inputs, toggles, chips, submit | Styles defined by control shape and restraint |
+| Gallery | Image tiles with captions and gallery chrome | Photo, art and portfolio styles |
+| Document | Raw or minimally styled page structure | Anti-design and brutalist styles |
 
-Worked examples from the first batch:
+Worked examples:
 
-- `gothic` -- type specimen: oversized blackletter, gold rule, rose window.
-- `outrun` -- atmosphere scene: banded sun, glowing horizon, vanishing grid.
-- `korean-minimal` -- component cluster: soft controls beside a hanji margin band.
-- `risograph` -- texture field: one coarse halftone screen, spot overprint,
-  registration mark.
-- `github-style` -- data density: repo breadcrumb, file rows, contribution grid.
-- `swiss-poster` -- layout skeleton: visible column grid under an oversized numeral.
+- `github-style` -- dashboard: repo breadcrumb, file rows, contribution grid.
+- `korean-minimal` -- form panel: soft controls beside a hanji margin band.
+- `brutalist-web` -- document: a directory index with default link colours.
+- `cyber-anime` -- dashboard: targeting bracket beside a holo status panel.
+
+A texture, ornament or scene may only appear as part of the screen. The riso
+halftone is the background of a zine landing page; the outrun sunset is the hero
+image behind a nav and a CTA; the art nouveau vine frames a boutique header. If
+removing the UI leaves the cover intact, the cover is wrong.
 
 ## Constraints
 
@@ -54,6 +61,9 @@ Worked examples from the first batch:
   for the frame edges instead of centring a small box in dead space.
 - Tailwind classes only, plus inline `style` for computed colours. No images, no
   network requests, no animation in covers.
+- The catalog card floats its kit and favourite buttons over the top-right corner
+  of the cover. Keep roughly the top-right 70x30px free of nav items or content
+  that must stay readable.
 - Clip decorative geometry (`overflow-hidden`) so rotated or oversized elements
   cannot bleed into neighbouring regions and read as a rendering bug.
 - Avoid the house AI-slop tells: radial glow behind a centered card, a grid of
