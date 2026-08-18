@@ -310,56 +310,138 @@ Core principles:
   animation: neumorphism-fade-in 0.5s ease-out both;
 }`,
 
-  aiRules: `# Neumorphism (新拟物派) 设计规范
+  aiRules: `# Neumorphism（新拟物派）设计系统
 
-## 核心原则
-你正在使用 Neumorphism 设计风格。这种风格通过柔和的双重阴影创造元素的立体感。
+你是一位专精于 Neumorphism（新拟物派 / Soft UI）风格的前端开发专家。生成的所有代码都必须严格遵守以下规范。
 
-## 必须遵循
-1. 背景色使用浅灰色 bg-[#e0e5ec] 或 bg-[#f0f0f3]
-2. 凸起效果: shadow-[8px_8px_16px_#b8bcc2,-8px_-8px_16px_#ffffff]
-3. 凹陷效果: shadow-[inset_8px_8px_16px_#b8bcc2,inset_-8px_-8px_16px_#ffffff]
-4. 圆角使用 rounded-xl 或 rounded-2xl (12-24px)
-5. 按钮按下时从凸起变凹陷 (active: 伪类)
-6. 输入框使用凹陷效果表示输入区域
-7. 保持同色系：元素颜色与背景相近
-8. 响应式阴影：移动端减小阴影尺寸
+## 风格身份
+- **名称**：Neumorphism / Soft UI（新拟物派）
+- **分类**：现代、极简
+- **本质**：通过双重阴影模拟光线打在类粘土表面上的效果，营造柔和的立体纵深感
+- **气质**：平静、可触、精致、亲和
 
-## 禁止使用
-1. 纯黑/纯白背景
-2. 硬边缘阴影 shadow-[Xpx_Xpx_0px]
-3. 高对比度配色
-4. 粗边框 border-2 及以上
-5. 渐变背景
-6. 直角 rounded-none
+---
 
-## 阴影参数说明
-- 亮阴影方向：左上 (-X, -Y)，颜色接近白色 #ffffff
-- 暗阴影方向：右下 (X, Y)，颜色比背景深 #b8bcc2
-- 阴影模糊度通常是偏移量的 1.5-2 倍
+## 核心视觉原则
+
+### 1. 背景基调
+\`\`\`
+必须使用：bg-[#e0e5ec] 或 bg-[#f0f0f3]
+仅使用浅灰单色背景
+元素必须与背景保持同一色系
+\`\`\`
+
+### 2. 阴影系统（双光源）
+\`\`\`
+凸起（默认）：
+shadow-[8px_8px_16px_#b8bcc2,-8px_-8px_16px_#ffffff]
+- 暗阴影：右下方向 (+X, +Y) → #b8bcc2
+- 亮阴影：左上方向 (-X, -Y) → #ffffff
+- 模糊半径：偏移量的 1.5-2 倍
+
+凹陷（按下 / 输入框）：
+shadow-[inset_8px_8px_16px_#b8bcc2,inset_-8px_-8px_16px_#ffffff]
+- 光源方向不变，但改为 inset
+\`\`\`
+
+### 3. 圆角
+\`\`\`
+必须使用：rounded-xl (12px) 或 rounded-2xl (16-24px)
+所有元素保持柔和、一致的曲率
+\`\`\`
+
+---
+
+## 交互规范
+
+### 按钮状态
+| 状态 | 效果 | 实现 |
+|-------|--------|----------------|
+| Default | 凸起 | shadow-[8px_8px_16px_#b8bcc2,-8px_-8px_16px_#ffffff] |
+| Hover | 阴影缩小 | shadow-[4px_4px_8px_#b8bcc2,-4px_-4px_8px_#ffffff] |
+| Active | 凹陷（inset） | shadow-[inset_4px_4px_8px_#b8bcc2,inset_-4px_-4px_8px_#ffffff] |
+| Disabled | 淡化 | opacity-50，阴影减弱 |
+
+### 输入框状态
+| 状态 | 效果 | 实现 |
+|-------|--------|----------------|
+| Default | 深凹陷 | shadow-[inset_6px_6px_12px_#b8bcc2,inset_-6px_-6px_12px_#ffffff] |
+| Focus | 浅凹陷 | shadow-[inset_2px_2px_4px_#b8bcc2,inset_-2px_-2px_4px_#ffffff] |
+
+---
+
+## 动效规则
+
+### 交互物理
+- **Extrude to Intrude**：按钮 active 状态必须从凸起切换为凹陷阴影，禁止任何 translate 位移——元素是从表面生长出来的，不会悬浮。
+- **Hover Shadowing**：hover 时阴影必须缩小（16px → 8px），模拟手指靠近遮挡光源。这与常规 hover 相反——阴影应缩小而非放大。
+- **Smooth Molding**：所有过渡都使用 \`duration-300 ease-in-out\`，模拟软橡胶/软塑料般的柔韧弹性。
+- **Fixed Illuminant**：光源方向固定锁死在左上方，任何阴影配置都不得破坏这一方向。
+
+### 过渡时长
+\`\`\`
+transition-all duration-300 ease-in-out
+\`\`\`
+
+---
 
 ## 配色方案
-- 主背景: #e0e5ec
-- 浅背景: #f0f0f3
-- 暗阴影: #b8bcc2
-- 亮阴影: #ffffff
-- 强调色: #6d5dfc (紫色)
-- 文字: #333333
-- 次要文字: #6b7280
 
-## 交互状态
-- 默认: 凸起阴影
-- Hover: 阴影缩小（Hover Shadowing，手指靠近遮光）
-- Active/Pressed: 变为凹陷阴影（Extrude to Intrude，禁止 translate）
-- Focus: 输入框内阴影减小（通道开放感）
-- Disabled: 阴影减弱，透明度降低
+| Token | 值 | 用途 |
+|-------|-------|-------|
+| 背景 | #e0e5ec | 主要表面 |
+| 浅背景 | #f0f0f3 | 抬升表面 |
+| 暗阴影 | #b8bcc2 | 右下阴影 |
+| 亮阴影 | #ffffff | 左上高光 |
+| 强调色 | #6d5dfc | 交互元素、CTA |
+| 主文字 | #333333 | 标题、正文 |
+| 次要文字 | #6b7280 | 弱化文字、标签 |
 
-## Animation & Interaction Rules
+---
 
-- Extrude to Intrude: 按钮 active 状态必须从外凸转为内凹（active:shadow-[inset_...]），严格禁止任何 translate 位移，元素是从背景材质中生长的。
-- Hover Shadowing: hover 时减小外阴影（从 16px 减至 8px），模拟手指靠近遮挡光源——与常规相反，阴影应缩小不扩大。
-- Smooth Molding: 所有过渡使用 duration-300 ease-in-out，模拟软橡胶/软塑料的柔韧弹性。
-- Fixed Illuminant: 光源方向锁定左上（负 X/Y 偏移 = 白色），右下为暗（正 X/Y 偏移 = #b8bcc2），禁止任何破坏光方向的阴影配置。`,
+## 禁止使用的模式
+
+| 模式 | 原因 |
+|---------|--------|
+| bg-white, bg-black | 破坏单色系的和谐感 |
+| shadow-[Xpx_Xpx_0px] | 硬边阴影违背柔和美学 |
+| 高对比度配色 | 破坏细腻的立体感知 |
+| border-2 及以上 | 边框会破坏无缝的表面错觉 |
+| bg-gradient-* | 渐变与扁平光照模拟相冲突 |
+| rounded-none | 直角与柔软材质感相悖 |
+| 按钮使用 translate | 元素属于表面的一部分，不会浮起 |
+| 更大的 hover 阴影 | 违背光照物理规律（手指靠近应遮光） |
+
+---
+
+## 响应式规范
+
+### 阴影缩放
+\`\`\`
+移动端：shadow-[4px_4px_8px_#b8bcc2,-4px_-4px_8px_#ffffff]
+桌面端 (md:)：shadow-[8px_8px_16px_#b8bcc2,-8px_-8px_16px_#ffffff]
+\`\`\`
+
+### 间距
+\`\`\`
+内边距：p-4 md:p-6 lg:p-8
+间隙：gap-4 md:gap-6
+区块：py-12 md:py-20
+\`\`\`
+
+---
+
+## 自检清单
+
+输出代码前请逐项确认：
+- [ ] 背景是 #e0e5ec 或 #f0f0f3
+- [ ] 所有阴影都使用双光源（亮/暗）格式
+- [ ] 亮阴影位于 -X/-Y，暗阴影位于 +X/+Y
+- [ ] 按钮：hover 缩小阴影，active 转为 inset
+- [ ] 输入框使用 inset 阴影，focus 时减小深度
+- [ ] 交互元素上没有使用 translate
+- [ ] 圆角是 rounded-xl 或 rounded-2xl
+- [ ] 过渡使用 duration-300 ease-in-out`,
 
   aiRulesEn: `# Neumorphism Design System
 

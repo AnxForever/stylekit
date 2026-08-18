@@ -200,43 +200,94 @@ Core principles:
 
 .cyberpunk-neon-focus { outline: 2px solid var(--cyberpunk-neon-primary, currentColor); outline-offset: 2px; }`,
 
-  aiRules: `STYLE: Cyberpunk Neon
-TYPE: Futuristic sci-fi interface
+  aiRules: `风格：Cyberpunk Neon
+类型：未来感科幻界面
 
-MUST USE:
-- Dark background: bg-[#0a0a0f] or bg-gray-950
-- Neon glow shadows: shadow-[0_0_20px_rgba(0,255,255,0.5)]
-- Text glow: style={{textShadow: '0 0 10px currentColor'}}
-- Glowing borders: border border-cyan-400 shadow-[0_0_10px...]
-- High saturation colors: cyan-400, fuchsia-500, yellow-400
-- font-mono for tech text
-- uppercase tracking-wider for labels
+必须使用：
+- 深色背景：bg-[#0a0a0f] 或 bg-gray-950
+- 霓虹发光阴影：shadow-[0_0_20px_rgba(0,255,255,0.5)]
+- 文字发光：style={{textShadow: '0 0 10px currentColor'}}
+- 发光边框：border border-cyan-400 shadow-[0_0_10px...]
+- 高饱和度颜色：cyan-400、fuchsia-500、yellow-400
+- 科技感文字使用 font-mono
+- 标签使用 uppercase tracking-wider
 
-MUST AVOID:
-- Light/white backgrounds
-- Low saturation colors
-- Regular shadows (shadow-md)
-- Warm color schemes
-- Large rounded corners (rounded-2xl+)
-- Soft/friendly design language
+必须避免：
+- 浅色/白色背景
+- 低饱和度颜色
+- 普通阴影（shadow-md）
+- 暖色调配色
+- 过大的圆角（rounded-2xl 及以上）
+- 柔和/亲和的设计语言
 
-COLOR RULES:
-- Primary: Cyan (#00ffff)
-- Accent: Magenta (#ff00ff)
-- Background: Near-black (#0a0a0f)
-- Text: White with glow
-- Borders: Primary color with glow
+配色规则：
+- 主色：青色 (#00ffff)
+- 强调色：品红 (#ff00ff)
+- 背景：近黑色 (#0a0a0f)
+- 文字：带发光效果的白色
+- 边框：主色调发光
 
-SPECIAL EFFECTS:
-- Scan line overlay for tech feel
-- Pulsing elements with animate-pulse
-- Glow intensifies on hover
+特殊效果：
+- 扫描线叠加层，营造科技感
+- 使用 animate-pulse 制造脉冲元素
+- hover 时发光增强
 
-Animation & Interaction Rules:
-- Unstable Neon: 发光效果可带轻微脉冲与强弱波动，但不能持续高频闪烁到影响可读性。
-- Glitch Press: \`:active\` 优先使用错位平移（如 \`translate-x\` + \`-translate-y\`）与颜色反转，避免常规按钮缩放反馈。
-- CRT Scanline: 大面积卡片在 hover 时提升扫描线密度或可见度，强调终端正在扫描的状态变化。
-- Fast & Raw: 常规交互响应建议 \`duration-100\` 到 \`duration-150\`；仅扫描扫光可放宽到 \`duration-300\` 以内。`,
+---
+
+## 动效规则
+
+### 交互物理
+- **Unstable Neon**：发光效果可以带有轻微脉冲，谨慎使用 \`animate-pulse\`。禁止高频闪烁影响可读性。
+- **Glitch Press**：active 状态使用偏移位移 + 颜色反转，而不是缩放。例如：\`active:translate-x-[2px] active:-translate-y-[1px] active:text-fuchsia-400\`
+- **CRT Scanline**：卡片在 hover 时提升扫描线密度/可见度，模拟终端扫描效果。
+- **Fast & Raw**：常规交互使用 \`duration-100\` 到 \`duration-150\`；只有扫光效果可以放宽到 \`duration-300\`。
+
+### 时长参考
+| 交互 | 时长 | 缓动 |
+|-------------|----------|--------|
+| 按钮 hover | 100-150ms | ease-out |
+| 发光脉冲 | 2-3s | ease-in-out（循环） |
+| 扫光 | 150-300ms | ease-out |
+| Glitch Press | 瞬间 | — |
+
+---
+
+## 排版
+
+| 元素 | 类名 |
+|---------|---------|
+| 标题 | font-mono font-bold uppercase tracking-[0.2em] |
+| 标签 | text-xs font-mono uppercase tracking-wider |
+| 正文 | font-mono text-sm |
+| 代码/数据 | font-mono tabular-nums |
+
+---
+
+## 禁止使用的模式
+
+| 模式 | 原因 |
+|---------|--------|
+| 浅色/白色背景 | 破坏霓虹的可见度 |
+| 低饱和度颜色 | 失去赛博朋克的强度感 |
+| shadow-md, shadow-lg | 不使用模糊阴影——只用发光 |
+| 暖色调配色 | 与冷峻科技美学相悖 |
+| rounded-2xl, rounded-3xl | 过于柔和，缺乏科技感 |
+| 柔和/亲和的语言 | 破坏沉浸感 |
+| active 状态使用 scale 变换 | 应改用 glitch 偏移 |
+
+---
+
+## 自检清单
+
+输出代码前请逐项确认：
+- [ ] 背景是近黑色（#0a0a0f 或 bg-gray-950）
+- [ ] 霓虹发光使用 shadow-[0_0_Xpx_rgba(...)] 格式
+- [ ] 文字在合适的地方带有 textShadow 发光效果
+- [ ] 仅使用高饱和度颜色（青、品红、黄、绿）
+- [ ] 所有文字元素都使用 font-mono
+- [ ] Active 状态使用 glitch 偏移，而不是 scale
+- [ ] 圆角是 rounded-sm 或 rounded-none
+- [ ] 过渡要快：duration-100 到 duration-150`,
 
   aiRulesEn: `STYLE: Cyberpunk Neon
 TYPE: Futuristic sci-fi interface
