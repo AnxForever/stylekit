@@ -6,7 +6,7 @@
  * weaker prompt - and the gap is invisible from either page on its own. This
  * reports the imbalance and the facts a port must preserve.
  */
-import { styles } from "@/lib/styles";
+import { rawStyles as styles } from "@/lib/styles/registry";
 
 interface Row {
   slug: string;
@@ -18,6 +18,10 @@ interface Row {
   enClasses: number;
   zhCjk: number;
   enCjk: number;
+  zhHeadings: number;
+  enHeadings: number;
+  zhBullets: number;
+  enBullets: number;
 }
 
 const CLASS_PATTERN =
@@ -29,6 +33,20 @@ function countCode(value: string): number {
 
 function countClasses(value: string): number {
   return new Set(value.match(CLASS_PATTERN) ?? []).size;
+}
+
+/**
+ * Length is a bad proxy for completeness. Chinese runs 40-60% shorter than the
+ * same content in English, so a length gap flagged four styles whose Chinese was
+ * already a heading-for-heading, bullet-for-bullet mirror. Structure is the
+ * signal: a section or a rule that exists in one language and not the other.
+ */
+function countHeadings(value: string): number {
+  return (value.match(/^#{1,4} .+$/gm) ?? []).length;
+}
+
+function countBullets(value: string): number {
+  return (value.match(/^\s*[-*] /gm) ?? []).length;
 }
 
 /**
@@ -54,12 +72,28 @@ const rows: Row[] = styles.map((style) => {
     enClasses: countClasses(en),
     zhCjk: cjkRatio(zh),
     enCjk: cjkRatio(en),
+    zhHeadings: countHeadings(zh),
+    enHeadings: countHeadings(en),
+    zhBullets: countBullets(zh),
+    enBullets: countBullets(en),
   };
 });
 
 const wrongLanguage = rows.filter(
   (row) => (row.zh > 400 && row.zhCjk < 0.02) || (row.en > 400 && row.enCjk > 0.03)
 );
+
+const structurallyUneven = rows
+  .filter(
+    (row) =>
+      row.zhHeadings !== row.enHeadings || row.zhBullets !== row.enBullets
+  )
+  .sort(
+    (a, b) =>
+      Math.abs(b.zhHeadings - b.enHeadings) +
+      Math.abs(b.zhBullets - b.enBullets) -
+      (Math.abs(a.zhHeadings - a.enHeadings) + Math.abs(a.zhBullets - a.enBullets))
+  );
 
 const imbalanced = rows
   .filter((row) => {
@@ -71,7 +105,14 @@ const imbalanced = rows
 const thin = rows.filter((row) => row.zh < 1300 && row.en < 1600);
 
 console.log(`[rule-parity] ${rows.length} styles`);
-console.log(`[rule-parity] locale imbalance (>60%): ${imbalanced.length}`);
+console.log(`[rule-parity] structural gaps (a section or rule exists in one language only): ${structurallyUneven.length}`);
+for (const row of structurallyUneven) {
+  console.log(
+    `  ${row.slug.padEnd(24)} headings ${row.zhHeadings}/${row.enHeadings}  bullets ${row.zhBullets}/${row.enBullets}`
+  );
+}
+
+console.log(`\n[rule-parity] length gap only (>60%, often just Chinese density): ${imbalanced.length}`);
 for (const row of imbalanced) {
   const richer = row.en > row.zh ? "EN" : "ZH";
   console.log(

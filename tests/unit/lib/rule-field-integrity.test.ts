@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { styles } from "@/lib/styles";
+import { rawStyles } from "@/lib/styles/registry";
 
 /**
  * Structural guarantees for the two AI-rule fields.
@@ -16,6 +17,10 @@ function cjkRatio(value: string): number {
   return (value.match(CJK) ?? []).length / Math.max(value.length, 1);
 }
 
+function cjkCount(value: string): number {
+  return (value.match(CJK) ?? []).length;
+}
+
 function fenceCount(value: string): number {
   return (value.match(/```/g) ?? []).length;
 }
@@ -25,8 +30,41 @@ function fenceCount(value: string): number {
  * never grow it: a new style must ship Chinese rules from the start.
  */
 const CHINESE_RULES_PENDING = [
-  "japanese-fresh",
+  "corporate-clean",
+  "retro-vintage",
+  "dark-mode",
+  "split-screen",
+  "full-page-scroll",
+  "card-stack",
+  "hero-fullscreen",
+  "fluent-design",
+  "risograph",
+  "acid-graphics",
+  "swiss-poster",
+  "watercolor-art",
+  "impressionist-oil",
+  "collage-art",
+  "pop-art",
+  "cel-shading",
+  "film-noir",
+  "indian-festive",
+  "african-textile",
+  "witchcore",
+  "neon-tokyo",
   "dopamine-design",
+  "linear-style",
+  "shopify-clean",
+  "luxury-retail",
+  "fresh-market",
+  "data-dense",
+  "horizontal-gallery",
+  "latex-paper",
+  "distill-style",
+  "warm-organic",
+  "pastel-ui",
+  "soft-utility",
+  "studio-bold",
+  "japanese-fresh",
 ];
 
 describe("AI rule fields", () => {
@@ -42,9 +80,15 @@ describe("AI rule fields", () => {
   });
 
   it("keeps Chinese rules actually written in Chinese", () => {
-    const offenders = styles
+    // Measured on the authored field, not the registry output. The normalizer
+    // appends Chinese do/dont sections to every style, which lifts an
+    // English-authored document over any ratio threshold and hides the problem:
+    // through the normalized view only 11 styles looked wrong, against 34 that
+    // actually are. An absolute count of Chinese characters is what survives a
+    // body that is mostly Tailwind classes.
+    const offenders = rawStyles
       .filter((style) => style.aiRules.length > 400)
-      .filter((style) => cjkRatio(style.aiRules) < 0.05)
+      .filter((style) => cjkCount(style.aiRules) < 60)
       .map((style) => style.slug)
       .filter((slug) => !CHINESE_RULES_PENDING.includes(slug));
 

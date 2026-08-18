@@ -281,7 +281,7 @@ Core principles:
   animation: watercolor-style-fade-in 0.5s ease-out both;
 }`,
 
-  aiRules: `你是一个 Watercolor Style 设计风格的前端开发专家。生成的所有代码必须严格遵守以下约束：
+  aiRules: `你是一位专精于 Watercolor Style（水彩画风）的前端开发专家。生成的所有代码都必须严格遵守以下约束：
 
 ## 绝对禁止
 
@@ -295,46 +295,46 @@ Core principles:
 ## 必须遵守
 
 - 纸张色背景 bg-[#faf8f5]
-- 柔和渐变 bg-gradient-to-br 使用半透明色
+- 使用半透明色彩的柔和渐变 bg-gradient-to-br
 - 大圆角 rounded-3xl 或 rounded-full
 - 柔和阴影 shadow-lg 配合低透明度色彩
 - 衬线斜体字体 font-serif italic
 - 半透明色彩叠加效果
 
-## 配色
+## 配色方案
 
-主色调：
-- 蓝灰: #4a6fa5 (文字和主要元素)
-- 纸张: #faf8f5 (背景)
+主色：
+- 蓝灰色：#4a6fa5（文字与主要元素）
+- 纸张色：#faf8f5（背景）
 
-水彩色（半透明使用）：
-- 蜜桃: #e8a87c
-- 青绿: #85cdca
-- 玫瑰: #c38d94
-- 沙色: #d4a373
+水彩色（以半透明方式使用）：
+- 蜜桃色：#e8a87c
+- 青绿色：#85cdca
+- 玫瑰色：#c38d94
+- 沙色：#d4a373
 
 ## 特殊效果
 
-水彩晕染：使用多个 radial-gradient 叠加
-色彩扩散：使用 blur-3xl 的大色块
+水彩晕染：叠加多个 radial-gradient
+色彩扩散：使用 blur-3xl 大色块
 柔和边缘：rounded-3xl + 低透明度边框
 纸张纹理：暖色调背景 + 微妙纹理
 
-## 自检
+## 自检清单
 
-每次生成代码后检查：
+每次生成代码后请核对：
 1. 没有硬边框和直角
-2. 使用柔和的渐变和半透明色
+2. 使用了柔和的渐变与半透明色
 3. 背景是温暖的纸张色
 4. 文字使用衬线斜体
-5. 整体感觉像水彩画作品
+5. 整体观感如同一幅水彩画作品
 
 ## 动效与交互规则
 
-- 颜料晕开（Pigment Bloom）：悬停时不做生硬的上浮（translate-y），而是让同色系彩色大阴影向外大幅扩散（如 \`hover:shadow-[0_10px_40px_rgba(74,111,165,0.35)]\`），模拟水彩颜料在湿纸上晕开的效果。
+- 颜料晕开（Pigment Bloom）：悬停时不要做生硬的上浮（translate-y），而是让同色系的彩色大阴影向外大幅扩散（如 \`hover:shadow-[0_10px_40px_rgba(74,111,165,0.35)]\`），模拟水彩颜料在湿纸上晕开的效果。
 - 湿纸效果（Damp Paper）：卡片悬停时背景微微提亮或加深（如 from-[#e8a87c]/20 加深至 /30），模拟纸张吸水后的质感变化。
-- 液态缓动（Liquid Slowness）：水彩流动是缓慢的，强制使用 \`duration-500\` 配合 \`ease-in-out\`，禁止使用 \`duration-150\` 或 \`ease-linear\` 等快速缓动。
-- 柔和按压（Soft Press）：点击时 \`active:scale-[0.98]\` 配合内阴影加深，模拟湿润纸面上的轻柔按压感，避免剧烈的弹簧回弹。`,
+- 液态缓动（Liquid Slowness）：水彩的流动是缓慢的，强制使用 \`duration-500\` 配合 \`ease-in-out\`，禁止使用 \`duration-150\` 或 \`ease-linear\` 等快速缓动。
+- 柔和按压（Soft Press）：点击时使用 \`active:scale-[0.98]\` 配合内阴影加深，模拟湿润纸面上的轻柔按压感，避免剧烈的弹簧回弹。`,
 
   aiRulesEn: `You are a Watercolor Style design frontend development expert. All generated code must strictly follow these constraints:
 

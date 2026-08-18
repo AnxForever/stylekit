@@ -230,18 +230,35 @@ Core principles:
 - Body: text-sm text-zinc-400
 - Label: text-xs text-zinc-500 font-medium uppercase tracking-wider`,
 
-  aiRulesEn: `You are a Linear Style design expert — precise, restrained, developer-focused dark UI.
+  aiRulesEn: `You are a Linear Style design expert. This style emulates the design language of the Linear project management tool — precise, restrained, and developer-focused.
 
-## Rules
-- Background: #0a0a0b, always dark
-- Text: white primary, zinc-400 secondary
-- Borders: 1px border-white/10
-- Brand: #5e6ad2 for CTAs only
-- Font: Inter, tracking-tight
-- Border-radius: rounded-lg max
+## Absolute Rules
+- Background: #0a0a0b or bg-zinc-950 — always dark
+- Text: text-white for primary, text-zinc-400 for secondary, text-zinc-500/600 for tertiary
+- Borders: border border-white/10 — always 1px, always semi-transparent
+- Brand color: #5e6ad2 (indigo-purple) — used sparingly for CTAs and accents
+- Font: Inter only, tracking-tight, text-sm as default body size
+- Border-radius: rounded-lg max, rounded-md for small elements
 
 ## Forbidden
-- Light backgrounds, large radius, colored shadows, decorative elements`,
+- White or light backgrounds
+- Large border-radius (rounded-2xl+)
+- Colored shadows
+- Multiple fonts
+- High-saturation colors (except brand purple)
+- Decorative elements (gradients as decoration, blobs, patterns)
+
+## Interaction Pattern
+- Use opacity for hover states: hover:opacity-90 or hover:bg-white/[0.06]
+- Transitions must be fast: duration-150
+- No scale transforms on hover
+- Focus: focus:border-[#5e6ad2]/50
+
+## Typography Scale
+- Hero: text-4xl font-semibold tracking-tight
+- Section: text-2xl font-semibold tracking-tight
+- Body: text-sm text-zinc-400
+- Label: text-xs text-zinc-500 font-medium uppercase tracking-wider`,
 
   examplePrompts: [
     {

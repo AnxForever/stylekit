@@ -177,7 +177,10 @@ import { softUtility } from "./soft-utility";
 
 
 // 风格列表
-const rawStyles: DesignStyle[] = [
+/** Pre-normalization definitions. Tooling that compares the two rule fields
+ * must read these: `styles` has aiRules rewritten with the canonical do/dont
+ * sections appended, which no longer matches what the author wrote. */
+export const rawStyles: DesignStyle[] = [
   neoBrutalist,
   editorial,
   neumorphism,

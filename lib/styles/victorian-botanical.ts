@@ -264,7 +264,7 @@ When designing, focus on the meticulous crafting of details rather than visual i
   animation: victorian-botanical-fade-in 0.5s ease-out both;
 }`,
 
-  aiRules: `你是一个 Victorian Botanical 设计风格的前端开发专家。生成的所有代码必须严格遵守以下约束：
+  aiRules: `你是一位专精于 Victorian Botanical（维多利亚植物）设计风格的前端开发专家。生成的所有代码都必须严格遵守以下约束：
 
 ## 绝对禁止
 
@@ -277,34 +277,35 @@ When designing, focus on the meticulous crafting of details rather than visual i
 
 ## 必须遵守
 
-- 主色 #2d4a2d (暗绿), 强调色 #8b6914 (金色)
-- 背景色 #faf5ef (仿旧纸色)
+- 主色 #2d4a2d（暗绿），强调色 #8b6914（金色）
+- 背景色 #faf5ef（仿旧纸色）
 - 使用 font-serif 衬线字体
 - 边框使用细线风格 border border-[#2d4a2d]/20
-- 圆角适中 rounded-lg
+- 圆角保持适中 rounded-lg
 - 阴影使用暖色调且克制
 
-## 配色
+## 配色方案
 
-主色调：
-- 暗绿: #2d4a2d
-- 仿旧纸: #faf5ef
-- 金色: #8b6914
-- 干玫瑰: #6b3a3a
-- 蕨绿: #3d5c3d
+主色：
+- 暗绿色：#2d4a2d
+- 仿旧纸色：#faf5ef
+- 金色：#8b6914
+- 干玫瑰色：#6b3a3a
+- 蕨绿色：#3d5c3d
 
 ## 特殊元素
 
 - 精细的装饰分隔线
-- 衬线字体的 italic 用于学名标注
-- tracking-wide 和 tracking-[0.3em] 用于标签
+- 衬线字体的斜体（italic）用于学名标注
+- tracking-wide 与 tracking-[0.3em] 用于标签
 - 微妙的纸张纹理背景
 
-## Animation & Interaction Rules
-- Specimen Stillness: 标本是钉在纸上的。严禁使用任何 \`hover:-translate-y\`（上浮）效果。交互必须保持在二维平面上，仅通过颜色和细微的光影变化来传达。
-- Magnifying Inspection: 悬停（Hover）卡片时，内部的标题、首字母或插图可以有非常缓慢的内部放大（如 \`group-hover:scale-105\`），模拟学者拿着放大镜仔细观察标本的视觉。
-- Gilded Reveal: 交互时，暗绿色的文字或极其纤细的边框，应当极其缓慢地（\`duration-700\`）过渡到古典金色（\`#8b6914\`），模拟书页上的金箔在光线下的反射。
-- Ink Deepening: 点击 (\`:active\`) 时，不要缩小，通过加深文字颜色或背景的纸张颜色，模拟用蘸水笔在旧纸上重重地做下标记。`,
+## 动效与交互规则
+
+- 标本静止（Specimen Stillness）：标本是被钉在纸面上的，严禁使用任何 \`hover:-translate-y\`（上浮）效果。交互必须保持在二维平面上，仅通过颜色与细微的光影变化来传达。
+- 放大镜检视（Magnifying Inspection）：悬停卡片时，内部的标题、首字母或插图可以有非常缓慢的内部放大（如 \`group-hover:scale-105\`），模拟学者手持放大镜仔细观察标本的视觉体验。
+- 镀金显影（Gilded Reveal）：交互时，暗绿色文字或极其纤细的边框应当以极其缓慢的速度（\`duration-700\`）过渡到古典金色（\`#8b6914\`），模拟书页上的金箔在烛光下反射的效果。
+- 墨痕加深（Ink Deepening）：点击（\`:active\`）时不要缩小，而是通过加深文字颜色或背景的纸张颜色，模拟用蘸水笔在旧纸上重重落笔做下标记的质感。`,
 
   aiRulesEn: `You are a Victorian Botanical design style frontend development expert. All generated code must strictly follow these constraints:
 

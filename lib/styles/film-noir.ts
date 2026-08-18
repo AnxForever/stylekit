@@ -465,20 +465,45 @@ MUST AVOID:
 - High saturation colors (crimson only as rare accent)
 - Large rounded corners (rounded-2xl+)
 - Cartoon/cute elements
-- Glow effects (forbidden -- breaks the noir darkness)
+- Glow effects (forbidden — breaks the noir darkness)
 - Gradient buttons
+- Emoji or playful iconography
 - Buttons without active:scale-[0.98]
 - focus:ring without focus:ring-offset-neutral-950
 - Animation duration below 300ms (Noir is slow and dramatic, not snappy)
 
-Animation & Interaction Rules:
-- Light Shaft Sweep: ALL buttons use group class. Inside, an absolute div with bg-gradient-to-r from-transparent via-white/30 to-transparent starts at -translate-x-[200%] skew-x-[-20deg] and sweeps to translate-x-[200%] on group-hover. Use transition-transform duration-700 ease-in-out.
-- Harsh Monochrome Swap: Primary button hover does hover:bg-neutral-100 hover:text-neutral-950 hover:border-neutral-100. Complete binary inversion (dark to light).
-- Venetian Blinds Pattern: Cards have an absolute overlay with repeating-linear-gradient at opacity-0, transitioning to group-hover:opacity-[0.06]. Barely perceptible -- like light filtering through half-closed window blinds.
-- Crimson Bleed: Cards include a horizontal line w-12 h-[2px] bg-[#c41e3a] that expands to group-hover:w-full over duration-700 ease-out.
+COLOR SYSTEM:
+- Background: #0a0a0a (near black)
+- Card: neutral-900
+- Card border hover: neutral-600 (from neutral-800)
+- Text primary: neutral-100 → white on group-hover
+- Text secondary: neutral-400 → neutral-300 on group-hover
+- Text muted: neutral-500
+- Crimson accent: #c41e3a (very sparingly)
+- Gold accent: #d4af37 (very sparingly)
+- Borders: neutral-700 to neutral-800
+
+## Animation & Interaction Rules
+
+- Light Shaft Sweep: ALL buttons use group class. Inside, an absolute div with bg-gradient-to-r from-transparent via-white/30 to-transparent starts at -translate-x-[200%] skew-x-[-20deg] and sweeps to translate-x-[200%] on group-hover. Use transition-transform duration-700 ease-in-out. The skew creates a diagonal "flashlight beam" effect. The sweep is slow and deliberate — this is noir, not a sprint.
+- Harsh Monochrome Swap: Primary button hover does hover:bg-neutral-100 hover:text-neutral-950 hover:border-neutral-100. This is a complete binary inversion (dark→light), not a gradual shade change. The abruptness reflects 40s film drama where scenes cut hard between shadow and light.
+- Venetian Blinds Pattern: Cards have an absolute overlay with bg-[repeating-linear-gradient(180deg,transparent,transparent_4px,#fff_4px,#fff_6px)] at opacity-0, transitioning to group-hover:opacity-[0.06]. This is barely perceptible — like light filtering through half-closed window blinds in a detective's office.
+- Crimson Bleed: Cards include a horizontal line w-12 h-[2px] bg-[#c41e3a] that expands to group-hover:w-full over duration-700 ease-out. Simulates blood spreading, or a film title card's crimson underline unfurling.
+- Text Reveal: Card headings and body text brighten on group-hover (neutral-100→white, neutral-400→neutral-300) using transition-colors duration-500. Combined with venetian blinds pattern, creates the effect of light falling on text.
 - Tactile Confirmation: ALL buttons must use active:scale-[0.98].
 - Focus Ring Dark: Always use focus:ring-2 focus:ring-neutral-400 focus:ring-offset-2 focus:ring-offset-neutral-950.
-- Slow Easing: Buttons use duration-500. Cards use duration-700. NEVER use duration below 300ms.`,
+- Slow Easing: Buttons use duration-500. Cards use duration-700. The sweeping light shaft uses duration-700 ease-in-out. NEVER use duration below 300ms — slowness is inherent to noir's dramatic weight.
+
+## Self-Check
+
+After generating code, verify:
+1. All buttons are wrapped in group, have the light shaft sweep div inside
+2. All buttons have active:scale-[0.98]
+3. All focusable elements have focus:ring-offset-neutral-950
+4. Cards have venetian blinds overlay (opacity-0 → group-hover:opacity-[0.06])
+5. Cards have crimson bleed line (w-12 → group-hover:w-full)
+6. No animation duration below 300ms
+7. No rounded-2xl or larger`,
 
   examplePrompts: [
     {

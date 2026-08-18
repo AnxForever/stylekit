@@ -313,7 +313,7 @@ body {
   animation: apple-style-fade-in 0.5s ease-out both;
 }`,
 
-  aiRules: `你是一个 Apple Style 设计风格的前端开发专家。生成的所有代码必须严格遵守以下约束：
+  aiRules: `你是一名专精 Apple Style 设计风格的前端开发专家。生成的所有代码都必须严格遵守以下约束：
 
 ## 绝对禁止
 
@@ -327,49 +327,49 @@ body {
 
 - 大量留白
 - Apple 灰背景 bg-[#f5f5f7]
-- Apple 蓝强调 text-[#0071e3], bg-[#0071e3]
+- Apple 蓝强调色 text-[#0071e3], bg-[#0071e3]
 - 精致圆角 rounded-xl, rounded-2xl, rounded-full
 - 微妙阴影 shadow-[0_4px_12px_rgba(0,0,0,0.08)]
 - SF Pro 风格字体
 
-## 配色
+## 配色方案
 
-主色调：
-- 黑色: text-black, bg-black
-- 白色: text-white, bg-white
-- Apple 灰: bg-[#f5f5f7]
+主色：
+- 黑色：text-black, bg-black
+- 白色：text-white, bg-white
+- Apple 灰：bg-[#f5f5f7]
 
 强调色：
-- Apple 蓝: #0071e3
-- Apple 绿: #34c759
-- Apple 红: #ff3b30
+- Apple 蓝：#0071e3
+- Apple 绿：#34c759
+- Apple 红：#ff3b30
 
-## 字体
+## 字体排印
 
-- 标题: font-semibold tracking-tight
-- 正文: font-normal
-- 链接: text-[#0071e3] hover:underline
+- 标题：font-semibold tracking-tight
+- 正文：font-normal
+- 链接：text-[#0071e3] hover:underline
 
 ## 布局
 
-- 最大宽度: max-w-5xl 或 max-w-[980px]
-- 大量留白: py-20, py-24
-- 居中对齐: text-center, mx-auto
+- 最大宽度：max-w-5xl 或 max-w-[980px]
+- 大量留白：py-20, py-24
+- 居中对齐：text-center, mx-auto
 
-## Animation & Interaction Rules
+## 动效与交互规则
 
-- Spring Physics: 严禁使用默认的 linear 或基础 ease。必须使用丝滑的减速曲线，如 \`transition-all duration-500 ease-[cubic-bezier(0.25,0.1,0.25,1)]\`。
-- Haptic Touch: 所有可交互元素（按钮、卡片）必须具备物理按压的阻尼感，强制添加 \`active:scale-[0.98]\` 或 \`active:scale-[0.96]\`。
-- Contextual Depth: 卡片悬停时，利用 \`group-hover\` 让内部图片或图标产生微妙放大（\`scale-105\`），营造视差纵深感。
-- Subtle Blurs: 交互过程可以伴随背景模糊度或不透明度的平滑过渡。
+- Spring Physics（弹簧物理）：严禁使用默认的 linear 或基础 ease。必须使用丝滑的减速曲线，如 \`transition-all duration-500 ease-[cubic-bezier(0.25,0.1,0.25,1)]\`。
+- Haptic Touch（触感反馈）：所有可交互元素（按钮、卡片）都必须具备物理按压的阻尼感，强制添加 \`active:scale-[0.98]\` 或 \`active:scale-[0.96]\`。
+- Contextual Depth（情境纵深）：卡片悬停时，利用 \`group-hover\` 让内部图片或图标产生微妙放大（\`scale-105\`），营造视差纵深感。
+- Subtle Blurs（微妙模糊）：交互过程可以伴随背景模糊度或不透明度的平滑过渡。
 
-## 自检
+## 自检清单
 
-每次生成代码后检查：
-1. 留白足够大
-2. 配色克制（黑白灰 + 蓝色点缀）
-3. 没有渐变
-4. 整体感觉高端简约`,
+每次生成代码后请检查：
+1. 留白是否足够充分
+2. 配色是否克制（黑白灰 + 蓝色点缀）
+3. 是否没有使用渐变
+4. 整体是否呈现高端简约的观感`,
 
   aiRulesEn: `You are an Apple Style design frontend development expert. All generated code must strictly follow these constraints:
 
