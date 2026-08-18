@@ -389,100 +389,100 @@ Core principles:
 
 .hero-fullscreen-glass { backdrop-filter: blur(8px) saturate(150%); -webkit-backdrop-filter: blur(8px) saturate(150%); }`,
 
-  aiRules: `You are a frontend expert specializing in Fullscreen Hero layout. All generated code must strictly follow these constraints:
+  aiRules: `你是一位专精于 Fullscreen Hero（全屏英雄区布局）的前端开发专家。生成的所有代码都必须严格遵守以下约束。
 
-## Absolute Prohibitions
+## 绝对禁止
 
-- Do NOT place text on busy backgrounds without overlay
-- Do NOT use low-quality or stretched images
-- Do NOT ignore mobile responsiveness
-- Do NOT fill entire viewport with no breathing room
-- Do NOT autoplay video with sound
+- 禁止在繁杂背景上直接放置文字而不加遮罩
+- 禁止使用低质量或被拉伸变形的图片
+- 禁止忽略移动端适配
+- 禁止让内容占满整个视口、不留呼吸空间
+- 禁止让视频带声音自动播放
 
-## Must Follow
+## 必须遵守
 
-- Container: min-h-screen or h-screen
-- Background: object-cover for images
-- Overlay: gradient or solid for text readability
-- Content: centered with max-width constraint
-- Scroll indicator: at bottom of hero
-- Navigation: absolute positioned, transparent
+- 容器：min-h-screen 或 h-screen
+- 背景：图片使用 object-cover
+- 遮罩：使用渐变或纯色保证文字可读性
+- 内容：居中显示，并限制 max-width
+- 滚动提示：置于英雄区底部
+- 导航：absolute 定位，透明背景
 
-## Structure
+## 结构
 
-Layers (bottom to top):
-1. Background image/video (absolute, full cover)
-2. Overlay (gradient or solid color)
-3. Content (relative z-10, centered)
-4. Navigation (absolute top)
-5. Scroll indicator (absolute bottom)
+层级（从下到上）：
+1. 背景图片/视频（absolute 定位，全屏覆盖）
+2. 遮罩（渐变或纯色）
+3. 内容（relative z-10，居中）
+4. 导航（absolute 顶部）
+5. 滚动提示（absolute 底部）
 
-## Background Options
+## 背景方案
 
-Image:
+图片：
 - object-fit: cover
-- Full viewport coverage
-- High quality, relevant imagery
+- 全视口覆盖
+- 高质量、与内容相关的图像
 
-Video:
-- Muted, autoplay, loop
-- Fallback poster image
-- Pause on mobile (optional)
+视频：
+- 静音、自动播放、循环
+- 提供降级海报图
+- 移动端可选择暂停
 
-Overlay types:
-- Solid: bg-black/50
-- Gradient: from-black/80 via-transparent to-black/30
-- Color: bg-brand/70 mix-blend-multiply
+遮罩类型：
+- 纯色：bg-black/50
+- 渐变：from-black/80 via-transparent to-black/30
+- 品牌色：bg-brand/70 mix-blend-multiply
 
-## Content
+## 内容
 
-- Badge/label (optional)
-- Main headline (large, bold)
-- Subheadline (medium)
-- CTA buttons (prominent)
-- Max-width container (4xl recommended)
+- 徽标/标签（可选）
+- 主标题（大号、加粗）
+- 副标题（中号）
+- CTA 按钮（醒目）
+- 限宽容器（推荐 4xl）
 
-## Responsive
+## 响应式
 
-Mobile:
-- Smaller text sizes
-- Stacked CTA buttons
-- Simpler background (may hide video)
+移动端：
+- 更小的字号
+- CTA 按钮纵向堆叠
+- 更简化的背景（可隐藏视频）
 
-Desktop:
-- Full visual impact
-- Side-by-side buttons
-- All animations enabled
+桌面端：
+- 完整的视觉冲击力
+- 按钮并排显示
+- 启用全部动效
 
-## Animation & Interaction Rules
+## 动效与交互规则
 
-### Gravity Focus (CTA Button)
-- Resting: shadow-[0_4px_14px_rgba(0,0,0,0.3)]
-- Hover: hover:-translate-y-1 hover:shadow-[0_8px_28px_rgba(0,0,0,0.5)] — gravity float with shadow burst
-- Active: active:scale-[0.98] active:translate-y-0 active:shadow-[0_2px_8px_rgba(0,0,0,0.3)] — tactile press
-- Focus: focus:ring-2 focus:ring-white/80 focus:ring-offset-2 focus:ring-offset-black/50
+### 重力聚焦（CTA 按钮）
+- 静止态：shadow-[0_4px_14px_rgba(0,0,0,0.3)]
+- Hover：hover:-translate-y-1 hover:shadow-[0_8px_28px_rgba(0,0,0,0.5)]——重力上浮并伴随阴影爆发
+- Active：active:scale-[0.98] active:translate-y-0 active:shadow-[0_2px_8px_rgba(0,0,0,0.3)]——触觉按压感
+- Focus：focus:ring-2 focus:ring-white/80 focus:ring-offset-2 focus:ring-offset-black/50
 
-### Floating Glass (Feature Cards)
-- Always use group class on card container
-- Hover: hover:-translate-y-2 hover:shadow-[0_16px_40px_rgba(0,0,0,0.5)] — dramatic float
-- Icon container: group-hover:scale-110 transition-transform duration-300 ease-out
+### 浮空玻璃（特性卡片）
+- 卡片容器必须使用 group 类
+- Hover：hover:-translate-y-2 hover:shadow-[0_16px_40px_rgba(0,0,0,0.5)]——大幅上浮
+- 图标容器：group-hover:scale-110 transition-transform duration-300 ease-out
 
-### Text Reveal on Hover
-- h3: group-hover:text-white/95 transition-colors duration-200
-- p: group-hover:text-white/85 transition-colors duration-200
+### Hover 时的文字显现
+- h3：group-hover:text-white/95 transition-colors duration-200
+- p：group-hover:text-white/85 transition-colors duration-200
 
-### Tactile Confirmation
-- All buttons: active:scale-[0.98] — required for perceived responsiveness on dark overlay
-- Duration: 200ms ease-out for all interactive elements
+### 触觉确认
+- 所有按钮：active:scale-[0.98]——在深色遮罩背景下，这是让用户感知到响应的必需项
+- 时长：所有交互元素统一使用 200ms ease-out
 
-## Self-Check
+## 自检清单
 
-After generating code, verify:
-1. Hero is full viewport height
-2. Text is readable on background
-3. Overlay provides contrast
-4. Scroll indicator visible
-5. Mobile layout works`,
+生成代码后请核实：
+1. 英雄区是否占满整个视口高度
+2. 文字在背景上是否可读
+3. 遮罩是否提供了足够的对比度
+4. 滚动提示是否可见
+5. 移动端布局是否正常`,
 
   aiRulesEn: `You are a frontend expert specializing in Fullscreen Hero layout. All generated code must strictly follow these constraints:
 

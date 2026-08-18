@@ -17,6 +17,14 @@
  *   npx tsx tools/scripts/check-prompt-regression.ts --update   re-record
  *
  * Re-record only when you understand why content went missing.
+ *
+ * One known false positive: while a style's rules are still authored in English,
+ * its "Absolute Prohibitions" heading does not match the normalizer's forbidden
+ * markers, so the authored section survives *and* the canonical Chinese dontList
+ * is appended - the delivered prompt carries both. Translating the rules into
+ * Chinese makes the heading match, the duplicate collapses, and this check sees
+ * lines disappear. Confirm the canonical list is a superset before re-recording;
+ * for hero-fullscreen it was 7 rules replacing the same 5.
  */
 import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
 import path from "node:path";

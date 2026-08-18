@@ -385,58 +385,58 @@ Core principles:
   animation: card-stack-fade-in 0.5s ease-out both;
 }`,
 
-  aiRules: `You are a frontend expert specializing in Card Stack layout. All generated code must strictly follow these constraints:
+  aiRules: `你是一位专精于 Card Stack（卡片堆叠布局）的前端开发专家。生成的所有代码都必须严格遵守以下约束。
 
-## Absolute Prohibitions
+## 绝对禁止
 
-- Do NOT stack too many visible cards (max 3-5)
-- Do NOT overlap cards completely (need visual distinction)
-- Do NOT forget interaction feedback
-- Do NOT use overly complex animations
-- Do NOT use complex gestures on mobile
-- Do NOT leave back cards static during hover (kills depth illusion)
+- 禁止堆叠过多可见卡片（最多 3-5 张）
+- 禁止让卡片完全重叠（必须能看出层次差异）
+- 禁止忽略交互反馈
+- 禁止使用过于复杂的动画
+- 禁止在移动端使用复杂手势
+- 禁止 hover 时后方卡片保持静止不动（会破坏景深错觉）
 
-## Must Follow
+## 必须遵守
 
-- Use transform for positioning: scale, translateY, rotate
-- Use z-index for layering: z-30, z-20, z-10
-- Progressive opacity: 100%, 80%, 60%
-- Smooth transitions: transition-all duration-[400ms] ease-out
-- Clear hover/active states
-- Limit visible cards: 3-5 maximum
+- 使用 transform 处理定位：scale、translateY、rotate
+- 使用 z-index 分层：z-30、z-20、z-10
+- 渐进式透明度：100%、80%、60%
+- 平滑过渡：transition-all duration-[400ms] ease-out
+- 清晰的 hover/active 状态
+- 限制可见卡片数量：最多 3-5 张
 
-## Animation & Interaction Rules
+## 动效与交互规则
 
-- Deck Shuffling: On group-hover, back cards fan out sideways with different rotate + translate-x values, like shuffling a deck of cards.
-- 3D Peeling: Top card on hover should significantly lift (group-hover:-translate-y-6 group-hover:scale-105 group-hover:shadow-2xl), simulating physical card being raised.
-- Smooth Return: Use ease-out so cards snap back naturally from fast to slow.
-- Stack Peek: Slightly change back card opacity on hover to hint their presence.
+- 洗牌散开：group-hover 时，后方卡片以不同的 rotate 与 translate-x 数值向两侧散开，如同洗一副扑克牌。
+- 立体揭牌：顶层卡片 hover 时应显著上浮（group-hover:-translate-y-6 group-hover:scale-105 group-hover:shadow-2xl），模拟实体卡片被拿起的手感。
+- 平滑回弹：使用 ease-out，让卡片以先快后慢的节奏自然归位。
+- 堆叠若现：hover 时轻微改变后方卡片的透明度，暗示它们仍然存在。
 
-## Stack Structure
+## 堆叠结构
 
-Container:
-- relative position with group class for sibling interactions
-- flex center alignment
-- Fixed height for consistent layout
+容器：
+- relative 定位并配合 group 类，实现兄弟元素之间的联动
+- flex 居中对齐
+- 固定高度以保持布局稳定
 
-Cards (front to back):
-- Card 1 (front): z-30, scale-100, opacity-100
-- Card 2 (mid): z-20, scale-95, translateY-4, rotate-2, opacity-80
-- Card 3 (back): z-10, scale-90, translateY-8, rotate(-3), opacity-60
+卡片（从前到后）：
+- 卡片 1（最前）：z-30、scale-100、opacity-100
+- 卡片 2（居中）：z-20、scale-95、translateY-4、rotate-2、opacity-80
+- 卡片 3（最后）：z-10、scale-90、translateY-8、rotate(-3)、opacity-60
 
-On group-hover:
-- Card 1: -translate-y-6, scale-105, shadow-2xl
-- Card 2: rotate-6, translate-x-(-5), translate-y-8
-- Card 3: -rotate-6, translate-x-5, translate-y-14
+group-hover 时：
+- 卡片 1：-translate-y-6、scale-105、shadow-2xl
+- 卡片 2：rotate-6、translate-x-(-5)、translate-y-8
+- 卡片 3：-rotate-6、translate-x-5、translate-y-14
 
-## Self-Check
+## 自检清单
 
-After generating code, verify:
-1. Cards are visually layered with different scale + opacity
-2. group-hover fans back cards out to the sides
-3. Front card lifts dramatically on hover
-4. Max 3-5 visible cards
-5. Mobile-friendly touch targets`,
+生成代码后请核实：
+1. 卡片通过不同的 scale 与 opacity 呈现出清晰的视觉层次
+2. group-hover 时后方卡片向两侧散开
+3. 顶层卡片 hover 时有明显的上浮效果
+4. 可见卡片最多 3-5 张
+5. 移动端触控目标足够友好`,
 
   aiRulesEn: `You are a frontend expert specializing in Card Stack layout. All generated code must strictly follow these constraints:
 

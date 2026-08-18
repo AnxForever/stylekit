@@ -245,46 +245,46 @@ Core principles:
   animation: risograph-fade-in 0.5s ease-out both;
 }`,
 
-  aiRules: `You are a Risograph design style frontend development expert. All generated code must strictly follow these constraints:
+  aiRules: `你是一位专精于 Risograph 印刷风格的前端开发专家。生成的所有代码都必须严格遵守以下约束。
 
-## Absolutely Forbidden
+## 绝对禁止
 
-- Complex gradients or realistic shadows
-- More than 3-4 colors in total
-- Rounded corners (use rounded-sm only)
-- Realistic lighting or 3D effects
+- 复杂渐变或写实阴影
+- 总色数超过 3-4 种
+- 圆角（只能使用 rounded-sm）
+- 写实光照或 3D 效果
 
-## Must Follow
+## 必须遵守
 
-- Limited palette: pink #ff6b9d, blue #2563eb, orange #ff8a00, green #22c55e
-- Paper-white background bg-[#fffbf0]
-- Monospace fonts font-mono
-- Offset shadows shadow-[3px_3px_0px_color]
-- Bold borders border-2 border-[#1a1a1a]
-- Flat colors only, no gradients
+- 有限色板：粉色 #ff6b9d、蓝色 #2563eb、橙色 #ff8a00、绿色 #22c55e
+- 纸白色背景 bg-[#fffbf0]
+- 等宽字体 font-mono
+- 偏移阴影 shadow-[3px_3px_0px_color]
+- 粗边框 border-2 border-[#1a1a1a]
+- 只使用纯色，禁止渐变
 
-## Color Palette
+## 配色方案
 
-Primary:
-- Fluorescent Pink: #ff6b9d
-- Blue: #2563eb
-- Fluorescent Orange: #ff8a00
-- Green: #22c55e
-- Paper: #fffbf0
+主色：
+- 荧光粉：#ff6b9d
+- 蓝色：#2563eb
+- 荧光橙：#ff8a00
+- 绿色：#22c55e
+- 纸白：#fffbf0
 
-## Special Elements
+## 特殊元素
 
-- Overprint offset effects
-- Grain/noise texture overlays
-- Halftone dot patterns
-- Registration marks as decoration
+- 套印错位效果
+- 颗粒/噪点纹理叠加
+- 半调网点图案
+- 用套印规线作为装饰
 
-## Animation & Interaction Rules
+## 动效与交互规则
 
-- Misregistration Offset: Hover must use dual-direction shadows simulating two ink plates out of register: \`hover:shadow-[6px_6px_0_#2563eb,-4px_-4px_0_#ff8a00]\`. One shadow goes bottom-right (blue plate), the other goes top-left (orange plate). Single-direction shadows break the print illusion.
-- Instant Print: All transitions \`duration-100 ease-linear\` — mechanical printing press speed. Never use \`ease-in-out\` or organic curves.
-- Overprint Illusion: Active state switches background to the secondary ink color \`active:bg-[#2563eb]\`, simulating the moment two Riso ink layers fully overlap at the point of contact.
-- Registration Shift: Green corner element uses \`translate-x-2 -translate-y-2\` at rest and \`group-hover:translate-x-0 group-hover:translate-y-0 transition-transform duration-100 ease-linear\` on hover — the registration mark locks into place as the press completes its cycle.`,
+- 套印错位：hover 时必须使用双向阴影，模拟两块油墨版套印错位：\`hover:shadow-[6px_6px_0_#2563eb,-4px_-4px_0_#ff8a00]\`。一个阴影偏向右下（蓝色版），另一个偏向左上（橙色版）。单方向阴影会破坏印刷错觉。
+- 瞬时印刷：所有过渡都使用 \`duration-100 ease-linear\`——机械印刷机的速度感。禁止使用 \`ease-in-out\` 等有机曲线缓动。
+- 套印错觉：active 状态下背景切换为第二种油墨色 \`active:bg-[#2563eb]\`，模拟两层 Riso 油墨在接触点完全重叠的瞬间。
+- 定位归位：绿色角标静止时使用 \`translate-x-2 -translate-y-2\`，hover 时使用 \`group-hover:translate-x-0 group-hover:translate-y-0 transition-transform duration-100 ease-linear\`——仿佛印刷机完成一次循环后，套印规线归位对齐。`,
 
   aiRulesEn: `You are a Risograph design style frontend development expert. All generated code must strictly follow these constraints:
 

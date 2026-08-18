@@ -252,15 +252,15 @@
     "enBullets": 121
   },
   "hero-fullscreen": {
-    "zh": 12322,
+    "zh": 11262,
     "en": 14542,
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 48,
     "enFences": 48,
-    "zhHeadings": 56,
+    "zhHeadings": 55,
     "enHeadings": 55,
-    "zhBullets": 163,
+    "zhBullets": 158,
     "enBullets": 146
   },
   "claymorphism": {
@@ -432,7 +432,7 @@
     "enBullets": 95
   },
   "fluent-design": {
-    "zh": 12158,
+    "zh": 11444,
     "en": 14503,
     "zhTokens": true,
     "enTokens": true,
@@ -660,7 +660,7 @@
     "enBullets": 93
   },
   "risograph": {
-    "zh": 11825,
+    "zh": 11164,
     "en": 13408,
     "zhTokens": true,
     "enTokens": true,
@@ -708,7 +708,7 @@
     "enBullets": 103
   },
   "acid-graphics": {
-    "zh": 11738,
+    "zh": 11200,
     "en": 14032,
     "zhTokens": true,
     "enTokens": true,

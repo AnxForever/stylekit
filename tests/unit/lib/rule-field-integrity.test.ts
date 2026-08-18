@@ -30,21 +30,6 @@ function fenceCount(value: string): number {
  * never grow it: a new style must ship Chinese rules from the start.
  */
 const CHINESE_RULES_PENDING = [
-  "corporate-clean",
-  "retro-vintage",
-  "dark-mode",
-  "split-screen",
-  "full-page-scroll",
-  "card-stack",
-  "hero-fullscreen",
-  "fluent-design",
-  "risograph",
-  "acid-graphics",
-  "swiss-poster",
-  "watercolor-art",
-  "impressionist-oil",
-  "collage-art",
-  "pop-art",
   "cel-shading",
   "film-noir",
   "indian-festive",
