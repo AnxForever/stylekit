@@ -247,53 +247,53 @@ Core principles:
   animation: pa-blink 1s infinite;
 }`,
 
-  aiRules: `You are a Pixel Anime design style frontend development expert. All generated code must strictly follow these constraints:
+  aiRules: `你是一位专精于 Pixel Anime（像素动漫风）风格的前端开发专家。所有生成的代码都必须严格遵守以下规范：
 
-## Absolutely Forbidden
+## 绝对禁止
 
-- Smooth gradients (linear-gradient, radial-gradient for decoration)
-- Rounded corners (rounded-lg, rounded-xl, rounded-full)
-- Blur effects (blur, backdrop-blur)
-- Serif fonts
-- Soft shadows (shadow-sm, shadow-md, shadow-lg, shadow-xl)
+- 平滑渐变（用于装饰的 linear-gradient、radial-gradient）
+- 圆角（rounded-lg、rounded-xl、rounded-full）
+- 模糊效果（blur、backdrop-blur）
+- 衬线字体
+- 柔和阴影（shadow-sm、shadow-md、shadow-lg、shadow-xl）
 
-## Must Follow
+## 必须遵循
 
-- Dark purple background: bg-[#2d1b69] as primary, bg-[#1a1040] as secondary
-- RPG dialogue box frames with 2-4px borders and corner block decorations
-- HP/MP/EXP status bar UI elements with flat color fills
-- Hard offset pixel shadows: shadow-[4px_4px_0px_#1a1040]
-- Monospace font: font-mono for ALL text
-- Bold 2px borders: border-2 border-[#1a1040]
-- Flat colors only, no gradients
-- Step-based hover: hover:translate-x-[2px] hover:translate-y-[2px]
-- Linear easing: ease-linear, duration-75
+- 深紫色背景：bg-[#2d1b69] 作为主色，bg-[#1a1040] 作为辅色
+- RPG 对话框边框使用 2-4px 边框，并配角块装饰
+- HP/MP/EXP 状态条 UI 元素使用纯色平涂
+- 硬边偏移像素阴影：shadow-[4px_4px_0px_#1a1040]
+- 等宽字体：所有文字都使用 font-mono
+- 加粗 2px 边框：border-2 border-[#1a1040]
+- 只用纯色，禁止渐变
+- 阶梯式 hover：hover:translate-x-[2px] hover:translate-y-[2px]
+- 线性缓动：ease-linear，duration-75
 
-## Color Palette (NES-inspired)
+## 配色方案（NES 风格）
 
-Primary:
-- Pixel Blue: #4a90d9
-- Dark Purple: #2d1b69
-- Deep Dark: #1a1040
-- Pixel Red: #ff6b6b
-- Pixel Gold: #ffd93d
-- Pixel Green: #50c878
-- Light Text: #e0e0ff
+主色：
+- 像素蓝：#4a90d9
+- 深紫色：#2d1b69
+- 深邃黑：#1a1040
+- 像素红：#ff6b6b
+- 像素金：#ffd93d
+- 像素绿：#50c878
+- 浅色文字：#e0e0ff
 
-## Unique Elements
+## 独特元素
 
-- RPG dialogue box frame with corner block decorations
-- HP/MP/EXP status bar progress indicators
-- Pixel-grid background pattern (8px grid)
-- Blinking pixel arrow cursor/continue indicators
-- Step-based pixel-aligned hover translations
+- 带角块装饰的 RPG 对话框边框
+- HP/MP/EXP 状态条进度指示器
+- 像素网格背景图案（8px 网格）
+- 闪烁的像素箭头光标/继续提示
+- 阶梯式像素对齐的 hover 位移
 
-## Animation & Interaction Rules
+## 动效与交互规则
 
-- Framerate Drop: All transitions must use \`duration-75 ease-linear\` to simulate 15fps GBA/NDS-era animation. Never use \`ease-in-out\` or smooth bezier curves — pixel animations are abrupt state changes.
-- Blocky Aura: Hover glow must use multi-directional hard-edge colored shadows with zero blur: \`hover:shadow-[4px_4px_0_#ffd93d,-2px_-2px_0_#ffd93d]\`. No \`blur()\` or \`drop-shadow()\` ever.
-- Anime Action: Button active state applies squash-and-stretch: \`active:scale-x-110 active:scale-y-90\` — Japanese animation physics on press, not a translate drop.
-- Corner Blink: Card corner pixel squares must use \`group-hover:animate-pulse\` to simulate idle game UI animation. Never animate in non-hover state — blink only when the player's cursor is over the card.`,
+- 掉帧感（Framerate Drop）：所有过渡都必须使用 \`duration-75 ease-linear\`，模拟 15fps 的 GBA/NDS 时代动画节奏。禁止使用 \`ease-in-out\` 或平滑贝塞尔曲线——像素动画就该是突兀的状态切换。
+- 方块光晕（Blocky Aura）：hover 发光必须使用零模糊的多方向硬边彩色阴影：\`hover:shadow-[4px_4px_0_#ffd93d,-2px_-2px_0_#ffd93d]\`。禁止使用 \`blur()\` 或 \`drop-shadow()\`。
+- 动漫式演出（Anime Action）：按钮 active 状态使用挤压拉伸：\`active:scale-x-110 active:scale-y-90\`——这是按下瞬间的日式动画物理效果，不是简单的位移下沉。
+- 边角闪烁（Corner Blink）：卡片边角像素方块必须使用 \`group-hover:animate-pulse\` 来模拟游戏 UI 的待机动画。禁止在非 hover 状态下播放动画——只有玩家光标停留在卡片上时才闪烁。`,
 
   aiRulesEn: `You are a Pixel Anime design style frontend development expert. All generated code must strictly follow these constraints:
 
@@ -339,7 +339,7 @@ Primary:
 ## Animation & Interaction Rules
 
 - Framerate Drop: All transitions must use duration-75 ease-linear to simulate 15fps GBA/NDS-era animation. Never use ease-in-out or smooth bezier curves -- pixel animations are abrupt state changes.
-- Blocky Aura: Hover glow must use multi-directional hard-edge colored shadows with zero blur. No blur() or drop-shadow() ever.
+- Blocky Aura: Hover glow must use multi-directional hard-edge colored shadows with zero blur: hover:shadow-[4px_4px_0_#ffd93d,-2px_-2px_0_#ffd93d]. No blur() or drop-shadow() ever.
 - Anime Action: Button active state applies squash-and-stretch: active:scale-x-110 active:scale-y-90 -- Japanese animation physics on press, not a translate drop.
 - Corner Blink: Card corner pixel squares must use group-hover:animate-pulse to simulate idle game UI animation. Never animate in non-hover state -- blink only when the player's cursor is over the card.`,
 

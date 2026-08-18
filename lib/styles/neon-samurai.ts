@@ -260,51 +260,51 @@ Core principles:
 
 .neon-samurai-glass { backdrop-filter: blur(8px) saturate(150%); -webkit-backdrop-filter: blur(8px) saturate(150%); }`,
 
-  aiRules: `You are a Neon Samurai design style frontend development expert. All generated code must strictly follow these constraints:
+  aiRules: `你是一位专精于 Neon Samurai（霓虹武士风）风格的前端开发专家。所有生成的代码都必须严格遵守以下规范：
 
-## Absolutely Forbidden
+## 绝对禁止
 
-- Soft pastel colors or light backgrounds
-- rounded-full or large border radius
-- Organic/irregular shapes
-- Serif fonts
-- Light mode backgrounds (bg-white, bg-gray-50, etc.)
-- Standard drop shadows (shadow-md, shadow-lg)
+- 柔和粉彩色或浅色背景
+- rounded-full 或大圆角
+- 有机/不规则形状
+- 衬线字体
+- 浅色模式背景（bg-white、bg-gray-50 等）
+- 标准投影阴影（shadow-md、shadow-lg）
 
-## Must Follow
+## 必须遵循
 
-- Dark navy backgrounds: bg-[#080818] or similar near-black
-- Neon red primary: #dc2626 with glow effects
-- Dual-color glow: stroke color differs from glow (e.g., purple text with blue glow halo)
-- Katana slash diagonal lines as decorative elements
-- Torii gate shapes for section framing
-- Armor-plate angular clip-paths on cards
-- Brush-stroke style underlines (not solid box borders for inputs)
-- Ink splatter burst accents on hover
+- 深藏青背景：bg-[#080818] 或类似的近黑色
+- 霓虹红主色：#dc2626，配发光效果
+- 双色发光：描边色与发光色不同（例如紫色文字配蓝色光晕）
+- 用刀锋斜切对角线作为装饰元素
+- 用鸟居造型作为区块外框
+- 卡片使用铠甲板式的多角 clip-path
+- 输入框使用笔触式下划线（而非实心方框边框）
+- hover 时触发墨溅爆裂点缀
 
-## Color Palette
+## 配色方案
 
-Primary:
-- Neon Red: #dc2626
-- Dark Navy: #080818
-- Electric Purple: #a020f0
-- Neon Blue: #38bdf8
-- Gold: #fbbf24
+主色：
+- 霓虹红：#dc2626
+- 深藏青：#080818
+- 电紫色：#a020f0
+- 霓虹蓝：#38bdf8
+- 金色：#fbbf24
 
-## Unique Elements
+## 独特元素
 
-- Katana diagonal slash stroke decorations (tapered SVG paths)
-- Torii gate shaped frames (double-beam top border)
-- Dual-color glow effect (stroke color != glow color)
-- Armor-plate angular card clip-paths
-- Calligraphy brush-stroke neon dividers
+- 刀锋斜切装饰线（收窄的 SVG 路径）
+- 鸟居造型边框（双梁顶部边框）
+- 双色发光效果（描边色 != 发光色）
+- 铠甲板式多角卡片 clip-path
+- 书法笔触霓虹分隔线
 
-## Animation & Interaction Rules
+## 动效与交互规则
 
-- Katana Slash: interactions must resolve in 75ms to 100ms, with slash-line sweeps that feel like a single blade pass.
-- Target Lock: corner markers should brighten and contract on hover to simulate lock-on feedback.
-- Lethal Glow: glow stays concentrated and high-saturation (red/purple), avoiding broad soft haze.
-- Instant Parry: active state should snap with slight X-axis jolt or immediate color inversion, never soft scaling.`,
+- 居合斩（Katana Slash）：交互必须在 75ms 到 100ms 内完成，斜线扫光要有一刀入鞘般的干脆感。
+- 目标锁定（Target Lock）：hover 时边角标记应变亮并收拢，模拟锁定反馈。
+- 致命光晕（Lethal Glow）：发光要保持浓缩和高饱和（红/紫），避免大面积柔光雾化。
+- 瞬间格挡（Instant Parry）：active 状态要以轻微的 X 轴抖动或即时反色来给出反馈，绝不使用柔和缩放。`,
 
   aiRulesEn: `You are a Neon Samurai design style frontend development expert. All generated code must strictly follow these constraints:
 

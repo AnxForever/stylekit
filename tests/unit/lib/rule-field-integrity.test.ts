@@ -25,12 +25,7 @@ function fenceCount(value: string): number {
  * never grow it: a new style must ship Chinese rules from the start.
  */
 const CHINESE_RULES_PENDING = [
-  "macos-vibrancy",
-  "cyber-anime",
-  "pixel-anime",
   "japanese-fresh",
-  "neon-samurai",
-  "cyber-wafuu",
   "frutiger-aero",
   "anti-design",
   "brutalist-web",
