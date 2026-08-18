@@ -226,7 +226,48 @@ Core principles:
   animation: pop-art-fade-in 0.5s ease-out both;
 }`,
 
-  aiRules: `STYLE: Pop Art
+  aiRules: `风格：波普艺术（Pop Art）
+类型：大胆的漫画风格界面
+
+必须使用：
+- 粗黑边框：border-4 border-black
+- 硬偏移阴影：shadow-[4px_4px_0_#000]
+- 大胆的纯色平涂：bg-[#ffdd00]、bg-[#ff69b4]、bg-[#00bfff]
+- 厚重的字体：font-black uppercase tracking-wider
+- 用本戴网点（Ben-Day dots）图案作为背景纹理
+- 白色或高亮度色彩背景
+- 漫画风格元素（对话泡泡、拟声词）
+
+必须避免：
+- 渐变（只能使用纯色平涂）
+- 低饱和度/浊色
+- 细边框（边框必须 border-2 及以上）
+- 柔和阴影（shadow-md、shadow-lg）
+- 全圆角 rounded-full 形状
+- 极简/干净的设计语言
+
+配色规则：
+- 主色：黄色（#ffdd00）
+- 辅色：亮粉（#ff69b4）
+- 强调色：电光蓝（#00bfff）
+- 边框：黑色（#000000）
+- 背景：白色（#ffffff）或高亮度色彩
+- 文字：浅色背景用黑字，深色背景用白字
+
+特殊效果：
+- hover 时硬阴影偏移量增大
+- hover 时产生位移，形成纵深感
+- 叠加本戴网点营造波普质感
+- active 状态阴影向内收缩
+
+## 动效与交互规则
+
+- 漫画 Pow!（Comic Pow!）：hover 时施加夸张的放大与倾斜：\`hover:scale-110 hover:-rotate-3\`——就像漫画拟声框猛地从画格里炸出来。禁止只用 \`hover:translate-y\` 而不搭配 \`scale\` 和 \`rotate\`。
+- 本戴网点动态（Ben-Day Dynamics）：使用双层网点。底层黑色网点：\`opacity-10 group-hover:opacity-30\`；第二层红色网点错开半格：\`opacity-0 group-hover:opacity-20\`。两层叠加模拟出 Lichtenstein 版画标志性的网点变色效果。
+- 冲击式动效（Punchy Motion）：所有过渡都使用 \`duration-100 ease-out\`——像盖章一样快，而不是平滑柔和。hover/active 状态禁止使用 \`duration-200\` 或更慢的时长。
+- 回压回弹（Active Snap）：\`active:scale-95 active:rotate-2 active:translate-x-[4px] active:translate-y-[4px] active:shadow-[2px_2px_0_#000]\`——向内按压把阴影推回接近零，制造出干脆有力的点击手感。`,
+
+  aiRulesEn: `STYLE: Pop Art
 TYPE: Bold comic-book inspired interface
 
 MUST USE:
@@ -266,47 +307,6 @@ SPECIAL EFFECTS:
 - Ben-Day Dynamics: Use dual dot layers. Base black dots: \`opacity-10 group-hover:opacity-30\`. Secondary red dots offset by half a grid: \`opacity-0 group-hover:opacity-20\`. Together they simulate the Ben-Day color shift characteristic of Lichtenstein prints.
 - Punchy Motion: All transitions \`duration-100 ease-out\` — rubber-stamp speed, not smooth. Never use \`duration-200\` or slower for hover/active states.
 - Active Snap: \`active:scale-95 active:rotate-2 active:translate-x-[4px] active:translate-y-[4px] active:shadow-[2px_2px_0_#000]\` — the inward press pushes shadow back toward zero, creating a punchy click feel.`,
-
-  aiRulesEn: `STYLE: Pop Art
-TYPE: Bold comic-book inspired interface
-
-MUST USE:
-- Thick black borders: border-4 border-black
-- Hard offset shadows: shadow-[4px_4px_0_#000]
-- Bold flat colors: bg-[#ffdd00], bg-[#ff69b4], bg-[#00bfff]
-- Heavy typography: font-black uppercase tracking-wider
-- Ben-Day dot patterns as background texture
-- White or bright color backgrounds
-- Comic-style elements (speech bubbles, action words)
-
-MUST AVOID:
-- Gradients (use flat color fills only)
-- Low saturation / muted colors
-- Thin borders (border must be border-2+)
-- Soft shadows (shadow-md, shadow-lg)
-- Rounded-full shapes
-- Minimal / clean design language
-
-COLOR RULES:
-- Primary: Yellow (#ffdd00)
-- Secondary: Hot Pink (#ff69b4)
-- Accent: Electric Blue (#00bfff)
-- Borders: Black (#000000)
-- Background: White (#ffffff) or bright colors
-- Text: Black on light, White on dark colors
-
-SPECIAL EFFECTS:
-- Hard shadow offset increases on hover
-- Translate shift on hover for depth effect
-- Ben-Day dots overlay for pop art texture
-- Active state presses shadow inward
-
-## Animation & Interaction Rules
-
-- Comic Pow!: Hover applies exaggerated scale + tilt: hover:scale-110 hover:-rotate-3 -- like a comic SFX panel bursting out of the frame. Never use hover:translate-y alone without scale and rotate.
-- Ben-Day Dynamics: Use dual dot layers. Base black dots: opacity-10 group-hover:opacity-30. Secondary red dots offset by half a grid: opacity-0 group-hover:opacity-20. Together they simulate the Ben-Day color shift characteristic of Lichtenstein prints.
-- Punchy Motion: All transitions duration-100 ease-out -- rubber-stamp speed, not smooth. Never use duration-200 or slower for hover/active states.
-- Active Snap: active:scale-95 active:rotate-2 active:translate-x-[4px] active:translate-y-[4px] active:shadow-[2px_2px_0_#000] -- the inward press pushes shadow back toward zero, creating a punchy click feel.`,
 
   examplePrompts: [
     {

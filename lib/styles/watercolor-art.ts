@@ -279,59 +279,59 @@ Primary:
 
 ## Animation & Interaction Rules
 
-- Pigment Bloom: Abandon hard 3D translate on hover. The core interaction simulates "watercolor bleeding." Use a large, soft, same-palette colored shadow that spreads outward on hover, like pigment dissolving on wet paper. Never use hover:scale or hover:-translate-y.
-- Damp Paper Effect: On card hover, shift background opacity or tint slightly, simulating paper absorbing moisture.
-- Liquid Slowness: Watercolor flows slowly. Enforce long transitions: duration-500 or duration-700 with ease-in-out.
-- Soft Press: On :active, do not use aggressive scale-down. Add a subtle inset shadow to simulate a brush pressing gently on damp paper surface.`,
-
-  aiRules: `You are a Watercolor Art design style frontend development expert. All generated code must strictly follow these constraints:
-
-## Absolutely Forbidden
-
-- Sharp edges (rounded-none, rounded-sm)
-- Hard offset shadows (shadow-[Npx_Npx_0px])
-- Thick borders (border-2 or higher)
-- Neon or highly saturated colors
-- Monospace fonts (font-mono)
-- Uppercase text (uppercase)
-- Pure black backgrounds (bg-black)
-
-## Must Follow
-
-- Warm paper background bg-[#faf6f0]
-- Rose pink as primary color #d4a0a0
-- Serif fonts font-serif with generous tracking
-- Soft organic corners rounded-2xl (buttons) / rounded-3xl (cards)
-- Ultra-soft shadows using rgba with low opacity (0.08-0.18)
-- Delicate borders with 15-25% opacity
-- Radial gradient backgrounds for watercolor wash effects
-- Generous whitespace throughout
-
-## Color Palette
-
-Primary:
-- Rose Wash: #d4a0a0
-- Warm Paper: #faf6f0
-- Cerulean: #7bb8d4
-- Sage Green: #8cc5a8
-- Lavender Bloom: #c3a0d4
-- Ochre Gold: #e8c87a
-- Text: #5a3e3e
-
-## Unique Elements
-
-- Paper grain texture overlay (feTurbulence SVG filter)
-- Radial gradient buttons simulating pigment pooling
-- Watercolor wash section backgrounds (multiple radial-gradients)
-- Botanical watercolor accent decorations (leaf/flower shapes)
-- Organic blob-like border-radius values
-
-## Animation & Interaction Rules
-
 - Pigment Bloom: Abandon hard 3D translate on hover. The core interaction simulates "watercolor bleeding." Use a large, soft, same-palette colored shadow that spreads outward on hover (e.g., \`hover:shadow-[0_10px_40px_rgba(212,160,160,0.5)]\`), like pigment dissolving on wet paper. Never use \`hover:scale\` or \`hover:-translate-y\`.
 - Damp Paper Effect: On card hover, shift background opacity or tint slightly (e.g., \`bg-[#faf6f0]/80\` → \`bg-[#faf6f0]/95\`), simulating paper absorbing moisture.
 - Liquid Slowness: Watercolor flows slowly. Enforce long transitions: \`duration-500\` or \`duration-700\` with \`ease-in-out\`.
 - Soft Press: On \`:active\`, do not use aggressive scale-down. Add a subtle inset shadow (\`active:shadow-[inset_0_2px_4px_rgba(90,62,62,0.1)]\`) to simulate a brush pressing gently on damp paper surface.`,
+
+  aiRules: `你是一位专精于水彩艺术风（Watercolor Art）的前端开发专家。生成的所有代码都必须严格遵循以下规范：
+
+## 绝对禁止
+
+- 锐利边角（rounded-none、rounded-sm）
+- 硬边偏移阴影（shadow-[Npx_Npx_0px]）
+- 粗边框（border-2 及以上）
+- 霓虹色或高饱和度色彩
+- 等宽字体（font-mono）
+- 大写文字（uppercase）
+- 纯黑背景（bg-black）
+
+## 必须遵守
+
+- 温暖的纸张背景 bg-[#faf6f0]
+- 玫瑰粉作为主色 #d4a0a0
+- 衬线字体 font-serif，配合宽松字距
+- 柔和的有机圆角：按钮用 rounded-2xl / 卡片用 rounded-3xl
+- 使用 rgba 低透明度（0.08-0.18）的超柔和阴影
+- 15%-25% 透明度的精致边框
+- 使用 radial-gradient 背景表现水彩晕染效果
+- 全局保持大量留白
+
+## 配色方案
+
+主色：
+- 玫瑰晕染：#d4a0a0
+- 暖调纸张：#faf6f0
+- 天蓝：#7bb8d4
+- 鼠尾草绿：#8cc5a8
+- 薰衣草紫：#c3a0d4
+- 赭石金：#e8c87a
+- 文字色：#5a3e3e
+
+## 独特元素
+
+- 纸张颗粒纹理叠加（feTurbulence SVG 滤镜）
+- 使用 radial-gradient 按钮模拟颜料池化
+- 水彩晕染区块背景（多个 radial-gradient 叠加）
+- 植物水彩点缀装饰（叶片/花朵形态）
+- 有机团状的 border-radius 取值
+
+## 动效与交互规则
+
+- 颜料晕染（Pigment Bloom）：hover 时放弃生硬的 3D translate。核心交互要模拟"水彩渗透"效果——使用与色板同色系、大而柔和的阴影在 hover 时向外扩散（例如 \`hover:shadow-[0_10px_40px_rgba(212,160,160,0.5)]\`），如同颜料在湿纸上溶解开来。禁止使用 \`hover:scale\` 或 \`hover:-translate-y\`。
+- 湿纸效果（Damp Paper Effect）：卡片 hover 时轻微改变背景透明度或色调（例如 \`bg-[#faf6f0]/80\` → \`bg-[#faf6f0]/95\`），模拟纸张吸收水分的过程。
+- 液态迟缓（Liquid Slowness）：水彩流动缓慢，过渡必须足够长：使用 \`duration-500\` 或 \`duration-700\` 配合 \`ease-in-out\`。
+- 轻柔按压（Soft Press）：\`:active\` 状态下不要使用激进的缩小效果，改为添加细微的内阴影（\`active:shadow-[inset_0_2px_4px_rgba(90,62,62,0.1)]\`），模拟画笔轻轻压在湿润纸面上的触感。`,
 
   examplePrompts: [
     {

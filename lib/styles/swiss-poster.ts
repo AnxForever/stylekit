@@ -288,58 +288,58 @@ Core principles:
   animation: swiss-poster-fade-in 0.5s ease-out both;
 }`,
 
-  aiRules: `You are a Swiss Poster design style frontend development expert. All generated code must strictly follow these constraints:
+  aiRules: `你是一位专精于瑞士海报风格（Swiss Poster）的前端开发专家。生成的所有代码都必须严格遵循以下规范：
 
-## Absolutely Forbidden
+## 绝对禁止
 
-- Decorative, script, or monospace fonts
-- Rounded corners larger than rounded-sm (use rounded-none)
-- Any shadows (shadow-sm, shadow-md, shadow-lg, etc.) - Swiss Poster has NO shadows
-- Gradients of any kind
-- Dashed borders (border-dashed) - use border-solid only
-- Element spacing/gaps (gap-4, gap-6) - use gap-0 with border dividers
-- Backdrop blur or glass effects
-- Decorative elements or embellishments
+- 装饰性字体、手写体或等宽字体（monospace fonts）
+- 大于 rounded-sm 的圆角（请使用 rounded-none）
+- 任何阴影（shadow-sm、shadow-md、shadow-lg 等）——Swiss Poster 完全没有阴影
+- 任何形式的渐变
+- 虚线边框（border-dashed）——只使用实线边框 border-solid
+- 元素间距（gap-4、gap-6）——请使用 gap-0 配合边框分隔
+- 背景模糊（backdrop blur）或玻璃拟态效果
+- 装饰性元素或点缀
 
-## Must Follow
+## 必须遵守
 
-- Black and white as primary palette: #000000, #ffffff
-- Accent color blocks: red #ff0000, blue #0057b8, yellow #ffcc00
-- Extra bold sans-serif: font-sans font-black
-- All uppercase: uppercase tracking-widest
-- Sharp edges: rounded-none everywhere
-- 12-column grid alignment: grid-cols-12 with asymmetric splits
-- Borders as dividers: border-2 border-[#000000]
-- Zero gaps: gap-0, elements butt against each other
-- Extreme type scale contrast (160px heading vs 10px label)
-- Non-symmetric layouts (3/9, 8/4 column splits)
+- 以黑白为主色调：#000000、#ffffff
+- 强调色块：红 #ff0000、蓝 #0057b8、黄 #ffcc00
+- 超粗无衬线字体：font-sans font-black
+- 全部大写：uppercase tracking-widest
+- 直角边缘：全站使用 rounded-none
+- 12 列网格（grid）对齐：grid-cols-12 配合非对称分栏
+- 用边框作分隔线：border-2 border-[#000000]
+- 零间距：gap-0，元素边缘紧贴
+- 极端的字号对比（160px 标题 vs 10px 标签）
+- 非对称布局（3/9、8/4 分栏）
 
-## Color Palette
+## 配色方案
 
-Primary:
-- Black: #000000 (text, borders, backgrounds)
-- White: #ffffff (backgrounds)
-- Red: #ff0000 (color blocks, hover states)
-- Blue: #0057b8 (color blocks)
-- Yellow: #ffcc00 (color blocks)
+主色：
+- 黑色：#000000（文字、边框、背景）
+- 白色：#ffffff（背景）
+- 红色：#ff0000（色块、hover 状态）
+- 蓝色：#0057b8（色块）
+- 黄色：#ffcc00（色块）
 
-## Special Elements
+## 特色元素
 
-- 12-column grid system with visible structural lines
-- Asymmetric column splits (not 6/6 - use 3/9, 8/4, etc.)
-- Color block backgrounds (full sections in red/blue/yellow)
-- Visible grid column markers
-- Extreme font size contrasts (160px vs 10px)
-- Edge-to-edge button groups (gap-0, border-l-0)
-- Vertical text using writing-mode: vertical-lr
-- Section borders as visual separators instead of spacing
+- 带可见结构线的 12 列网格系统
+- 非对称分栏（不用 6/6，改用 3/9、8/4 等）
+- 整块色块背景（整个区块使用红/蓝/黄）
+- 可见的网格列标记
+- 极端的字号对比（160px vs 10px）
+- 边对边的按钮组（gap-0、border-l-0）
+- 使用 writing-mode: vertical-lr 的竖排文字
+- 用区块边框代替间距作视觉分隔
 
-## Animation & Interaction Rules
+## 动效与交互规则
 
-- Absolute Objectivity: Zero \`translate\`, \`scale\`, or \`shadow\` changes on any interactive element. Swiss Poster communicates through color and typography alone — motion is visual noise that undermines the grid's authority.
-- Snap Transitions: All state changes use \`transition-none\` — color flips are instantaneous, like ink stamped onto paper in a single press. Never use \`duration-100\` or any timed transition.
-- Color Block Invasion: Hover replaces the entire background with solid black \`hover:bg-[#000000]\` and text inverts to \`hover:text-[#ffffff] transition-none\`. The color block takes over completely — no partial fills, no gradients.
-- Typographic Highlighting: The year/category label activates to \`group-hover:text-[#ff0000] transition-none\` on hover — the red typographic accent fires like a stamp imprint, the only color note in a black-and-white composition.`,
+- 绝对客观（Absolute Objectivity）：任何可交互元素上都不允许出现 \`translate\`、\`scale\` 或 \`shadow\` 的变化。Swiss Poster 只靠色彩和排版传达信息——运动效果是干扰噪声，会削弱网格本身的权威感。
+- 瞬切过渡（Snap Transitions）：所有状态变化都使用 \`transition-none\`——颜色翻转是瞬间完成的，就像油墨一次性盖印到纸上。禁止使用 \`duration-100\` 或任何带时长的过渡。
+- 色块入侵（Color Block Invasion）：hover 时整个背景替换为纯黑 \`hover:bg-[#000000]\`，文字反转为 \`hover:text-[#ffffff] transition-none\`。色块必须完全接管元素——不允许局部填充，也不允许渐变。
+- 字体高亮（Typographic Highlighting）：年份/分类标签在 hover 时切换为 \`group-hover:text-[#ff0000] transition-none\`——红色的排印强调像盖章一样瞬间激活，是黑白构图中唯一的色彩音符。`,
 
   aiRulesEn: `You are a Swiss Poster design style frontend development expert. All generated code must strictly follow these constraints:
 

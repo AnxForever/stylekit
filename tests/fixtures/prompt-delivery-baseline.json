@@ -5,7 +5,11 @@
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 72,
-    "enFences": 66
+    "enFences": 66,
+    "zhHeadings": 74,
+    "enHeadings": 68,
+    "zhBullets": 140,
+    "enBullets": 104
   },
   "editorial": {
     "zh": 12936,
@@ -13,7 +17,11 @@
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 48,
-    "enFences": 48
+    "enFences": 48,
+    "zhHeadings": 52,
+    "enHeadings": 51,
+    "zhBullets": 156,
+    "enBullets": 147
   },
   "neumorphism": {
     "zh": 14186,
@@ -21,7 +29,11 @@
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 60,
-    "enFences": 54
+    "enFences": 54,
+    "zhHeadings": 63,
+    "enHeadings": 57,
+    "zhBullets": 150,
+    "enBullets": 109
   },
   "glassmorphism": {
     "zh": 23530,
@@ -29,7 +41,11 @@
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 74,
-    "enFences": 74
+    "enFences": 74,
+    "zhHeadings": 72,
+    "enHeadings": 70,
+    "zhBullets": 157,
+    "enBullets": 134
   },
   "bento-grid": {
     "zh": 11267,
@@ -37,15 +53,23 @@
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 48,
-    "enFences": 42
+    "enFences": 42,
+    "zhHeadings": 49,
+    "enHeadings": 45,
+    "zhBullets": 127,
+    "enBullets": 102
   },
   "corporate-clean": {
-    "zh": 11989,
+    "zh": 11387,
     "en": 14266,
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 48,
-    "enFences": 46
+    "enFences": 46,
+    "zhHeadings": 50,
+    "enHeadings": 48,
+    "zhBullets": 131,
+    "enBullets": 115
   },
   "minimalist-flat": {
     "zh": 13943,
@@ -53,7 +77,11 @@
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 74,
-    "enFences": 70
+    "enFences": 70,
+    "zhHeadings": 74,
+    "enHeadings": 70,
+    "zhBullets": 138,
+    "enBullets": 118
   },
   "soft-ui": {
     "zh": 10782,
@@ -61,7 +89,11 @@
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 48,
-    "enFences": 44
+    "enFences": 44,
+    "zhHeadings": 49,
+    "enHeadings": 42,
+    "zhBullets": 117,
+    "enBullets": 97
   },
   "natural-organic": {
     "zh": 10434,
@@ -69,7 +101,11 @@
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 48,
-    "enFences": 44
+    "enFences": 44,
+    "zhHeadings": 49,
+    "enHeadings": 42,
+    "zhBullets": 123,
+    "enBullets": 103
   },
   "modern-gradient": {
     "zh": 10097,
@@ -77,23 +113,35 @@
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 48,
-    "enFences": 44
+    "enFences": 44,
+    "zhHeadings": 46,
+    "enHeadings": 42,
+    "zhBullets": 107,
+    "enBullets": 102
   },
   "retro-vintage": {
-    "zh": 11609,
-    "en": 13139,
+    "zh": 11360,
+    "en": 13157,
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 48,
-    "enFences": 44
+    "enFences": 44,
+    "zhHeadings": 46,
+    "enHeadings": 42,
+    "zhBullets": 139,
+    "enBullets": 114
   },
   "dark-mode": {
-    "zh": 11930,
+    "zh": 11549,
     "en": 14286,
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 48,
-    "enFences": 44
+    "enFences": 44,
+    "zhHeadings": 47,
+    "enHeadings": 43,
+    "zhBullets": 133,
+    "enBullets": 110
   },
   "macos-vibrancy": {
     "zh": 12362,
@@ -101,7 +149,11 @@
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 48,
-    "enFences": 48
+    "enFences": 48,
+    "zhHeadings": 50,
+    "enHeadings": 48,
+    "zhBullets": 142,
+    "enBullets": 123
   },
   "geometric-bold": {
     "zh": 10639,
@@ -109,7 +161,11 @@
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 48,
-    "enFences": 44
+    "enFences": 44,
+    "zhHeadings": 49,
+    "enHeadings": 42,
+    "zhBullets": 132,
+    "enBullets": 115
   },
   "masonry-flow": {
     "zh": 11308,
@@ -117,23 +173,35 @@
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 48,
-    "enFences": 48
+    "enFences": 48,
+    "zhHeadings": 51,
+    "enHeadings": 50,
+    "zhBullets": 130,
+    "enBullets": 117
   },
   "split-screen": {
-    "zh": 10544,
+    "zh": 9764,
     "en": 13056,
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 48,
-    "enFences": 48
+    "enFences": 48,
+    "zhHeadings": 51,
+    "enHeadings": 50,
+    "zhBullets": 128,
+    "enBullets": 116
   },
   "full-page-scroll": {
-    "zh": 13095,
+    "zh": 11723,
     "en": 15487,
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 48,
-    "enFences": 48
+    "enFences": 48,
+    "zhHeadings": 50,
+    "enHeadings": 49,
+    "zhBullets": 139,
+    "enBullets": 123
   },
   "timeline-vertical": {
     "zh": 10490,
@@ -141,15 +209,23 @@
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 48,
-    "enFences": 48
+    "enFences": 48,
+    "zhHeadings": 51,
+    "enHeadings": 50,
+    "zhBullets": 138,
+    "enBullets": 127
   },
   "card-stack": {
-    "zh": 11239,
+    "zh": 10364,
     "en": 13570,
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 48,
-    "enFences": 48
+    "enFences": 48,
+    "zhHeadings": 48,
+    "enHeadings": 48,
+    "zhBullets": 120,
+    "enBullets": 112
   },
   "sidebar-fixed": {
     "zh": 10688,
@@ -157,7 +233,11 @@
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 48,
-    "enFences": 48
+    "enFences": 48,
+    "zhHeadings": 51,
+    "enHeadings": 50,
+    "zhBullets": 148,
+    "enBullets": 131
   },
   "magazine-grid": {
     "zh": 10427,
@@ -165,7 +245,11 @@
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 48,
-    "enFences": 48
+    "enFences": 48,
+    "zhHeadings": 51,
+    "enHeadings": 50,
+    "zhBullets": 133,
+    "enBullets": 121
   },
   "hero-fullscreen": {
     "zh": 12322,
@@ -173,7 +257,11 @@
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 48,
-    "enFences": 48
+    "enFences": 48,
+    "zhHeadings": 56,
+    "enHeadings": 55,
+    "zhBullets": 163,
+    "enBullets": 146
   },
   "claymorphism": {
     "zh": 12520,
@@ -181,7 +269,11 @@
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 48,
-    "enFences": 42
+    "enFences": 42,
+    "zhHeadings": 49,
+    "enHeadings": 45,
+    "zhBullets": 116,
+    "enBullets": 96
   },
   "notion-style": {
     "zh": 10171,
@@ -189,7 +281,11 @@
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 48,
-    "enFences": 42
+    "enFences": 42,
+    "zhHeadings": 49,
+    "enHeadings": 45,
+    "zhBullets": 120,
+    "enBullets": 96
   },
   "stripe-style": {
     "zh": 12066,
@@ -197,7 +293,11 @@
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 48,
-    "enFences": 42
+    "enFences": 42,
+    "zhHeadings": 50,
+    "enHeadings": 46,
+    "zhBullets": 110,
+    "enBullets": 88
   },
   "apple-style": {
     "zh": 9421,
@@ -205,7 +305,11 @@
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 48,
-    "enFences": 42
+    "enFences": 42,
+    "zhHeadings": 50,
+    "enHeadings": 46,
+    "zhBullets": 110,
+    "enBullets": 95
   },
   "pixel-art": {
     "zh": 11733,
@@ -213,7 +317,11 @@
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 48,
-    "enFences": 42
+    "enFences": 42,
+    "zhHeadings": 50,
+    "enHeadings": 46,
+    "zhBullets": 122,
+    "enBullets": 103
   },
   "vaporwave": {
     "zh": 14305,
@@ -221,7 +329,11 @@
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 66,
-    "enFences": 60
+    "enFences": 60,
+    "zhHeadings": 71,
+    "enHeadings": 65,
+    "zhBullets": 126,
+    "enBullets": 101
   },
   "y2k": {
     "zh": 11008,
@@ -229,7 +341,11 @@
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 48,
-    "enFences": 42
+    "enFences": 42,
+    "zhHeadings": 51,
+    "enHeadings": 44,
+    "zhBullets": 120,
+    "enBullets": 95
   },
   "memphis": {
     "zh": 10587,
@@ -237,7 +353,11 @@
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 48,
-    "enFences": 42
+    "enFences": 42,
+    "zhHeadings": 48,
+    "enHeadings": 44,
+    "zhBullets": 117,
+    "enBullets": 101
   },
   "art-deco": {
     "zh": 10793,
@@ -245,7 +365,11 @@
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 48,
-    "enFences": 42
+    "enFences": 42,
+    "zhHeadings": 51,
+    "enHeadings": 44,
+    "zhBullets": 120,
+    "enBullets": 96
   },
   "bauhaus": {
     "zh": 9707,
@@ -253,7 +377,11 @@
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 48,
-    "enFences": 42
+    "enFences": 42,
+    "zhHeadings": 48,
+    "enHeadings": 44,
+    "zhBullets": 127,
+    "enBullets": 110
   },
   "skeuomorphism": {
     "zh": 11211,
@@ -261,7 +389,11 @@
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 48,
-    "enFences": 42
+    "enFences": 42,
+    "zhHeadings": 51,
+    "enHeadings": 44,
+    "zhBullets": 114,
+    "enBullets": 89
   },
   "swiss-style": {
     "zh": 10701,
@@ -269,7 +401,11 @@
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 48,
-    "enFences": 42
+    "enFences": 42,
+    "zhHeadings": 48,
+    "enHeadings": 44,
+    "zhBullets": 123,
+    "enBullets": 108
   },
   "ghibli-style": {
     "zh": 10823,
@@ -277,7 +413,11 @@
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 48,
-    "enFences": 42
+    "enFences": 42,
+    "zhHeadings": 51,
+    "enHeadings": 44,
+    "zhBullets": 127,
+    "enBullets": 100
   },
   "material-design": {
     "zh": 10891,
@@ -285,7 +425,11 @@
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 48,
-    "enFences": 42
+    "enFences": 42,
+    "zhHeadings": 48,
+    "enHeadings": 44,
+    "zhBullets": 113,
+    "enBullets": 95
   },
   "fluent-design": {
     "zh": 12158,
@@ -293,7 +437,11 @@
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 48,
-    "enFences": 42
+    "enFences": 42,
+    "zhHeadings": 48,
+    "enHeadings": 44,
+    "zhBullets": 121,
+    "enBullets": 107
   },
   "comic-style": {
     "zh": 11973,
@@ -301,7 +449,11 @@
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 48,
-    "enFences": 42
+    "enFences": 42,
+    "zhHeadings": 49,
+    "enHeadings": 45,
+    "zhBullets": 134,
+    "enBullets": 113
   },
   "sketch-style": {
     "zh": 11119,
@@ -309,7 +461,11 @@
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 48,
-    "enFences": 42
+    "enFences": 42,
+    "zhHeadings": 52,
+    "enHeadings": 45,
+    "zhBullets": 144,
+    "enBullets": 109
   },
   "watercolor-style": {
     "zh": 10588,
@@ -317,7 +473,11 @@
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 48,
-    "enFences": 42
+    "enFences": 42,
+    "zhHeadings": 49,
+    "enHeadings": 45,
+    "zhBullets": 113,
+    "enBullets": 102
   },
   "f-pattern-layout": {
     "zh": 9827,
@@ -325,7 +485,11 @@
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 48,
-    "enFences": 42
+    "enFences": 42,
+    "zhHeadings": 53,
+    "enHeadings": 44,
+    "zhBullets": 122,
+    "enBullets": 86
   },
   "z-pattern-layout": {
     "zh": 9338,
@@ -333,7 +497,11 @@
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 48,
-    "enFences": 42
+    "enFences": 42,
+    "zhHeadings": 51,
+    "enHeadings": 45,
+    "zhBullets": 104,
+    "enBullets": 81
   },
   "holy-grail-layout": {
     "zh": 10615,
@@ -341,7 +509,11 @@
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 48,
-    "enFences": 42
+    "enFences": 42,
+    "zhHeadings": 54,
+    "enHeadings": 48,
+    "zhBullets": 131,
+    "enBullets": 99
   },
   "dashboard-layout": {
     "zh": 9544,
@@ -349,7 +521,11 @@
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 48,
-    "enFences": 42
+    "enFences": 42,
+    "zhHeadings": 52,
+    "enHeadings": 46,
+    "zhBullets": 118,
+    "enBullets": 95
   },
   "cyberpunk-neon": {
     "zh": 10916,
@@ -357,7 +533,11 @@
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 48,
-    "enFences": 44
+    "enFences": 44,
+    "zhHeadings": 51,
+    "enHeadings": 47,
+    "zhBullets": 127,
+    "enBullets": 111
   },
   "synthwave": {
     "zh": 11992,
@@ -365,7 +545,11 @@
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 48,
-    "enFences": 42
+    "enFences": 42,
+    "zhHeadings": 48,
+    "enHeadings": 44,
+    "zhBullets": 117,
+    "enBullets": 102
   },
   "neo-brutalist-soft": {
     "zh": 11521,
@@ -373,7 +557,11 @@
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 48,
-    "enFences": 42
+    "enFences": 42,
+    "zhHeadings": 51,
+    "enHeadings": 43,
+    "zhBullets": 141,
+    "enBullets": 101
   },
   "neo-brutalist-playful": {
     "zh": 10615,
@@ -381,7 +569,11 @@
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 48,
-    "enFences": 42
+    "enFences": 42,
+    "zhHeadings": 48,
+    "enHeadings": 43,
+    "zhBullets": 141,
+    "enBullets": 112
   },
   "art-nouveau": {
     "zh": 10694,
@@ -389,7 +581,11 @@
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 48,
-    "enFences": 42
+    "enFences": 42,
+    "zhHeadings": 51,
+    "enHeadings": 44,
+    "zhBullets": 126,
+    "enBullets": 99
   },
   "surrealism": {
     "zh": 11393,
@@ -397,7 +593,11 @@
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 48,
-    "enFences": 42
+    "enFences": 42,
+    "zhHeadings": 48,
+    "enHeadings": 44,
+    "zhBullets": 113,
+    "enBullets": 94
   },
   "ukiyo-e-digital": {
     "zh": 10699,
@@ -405,7 +605,11 @@
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 48,
-    "enFences": 42
+    "enFences": 42,
+    "zhHeadings": 51,
+    "enHeadings": 44,
+    "zhBullets": 127,
+    "enBullets": 97
   },
   "gothic": {
     "zh": 10259,
@@ -413,7 +617,11 @@
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 48,
-    "enFences": 42
+    "enFences": 42,
+    "zhHeadings": 51,
+    "enHeadings": 44,
+    "zhBullets": 122,
+    "enBullets": 95
   },
   "outrun": {
     "zh": 11238,
@@ -421,7 +629,11 @@
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 48,
-    "enFences": 42
+    "enFences": 42,
+    "zhHeadings": 51,
+    "enHeadings": 44,
+    "zhBullets": 130,
+    "enBullets": 100
   },
   "dark-academia": {
     "zh": 10088,
@@ -429,7 +641,11 @@
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 48,
-    "enFences": 42
+    "enFences": 42,
+    "zhHeadings": 51,
+    "enHeadings": 44,
+    "zhBullets": 116,
+    "enBullets": 92
   },
   "cottagecore": {
     "zh": 10406,
@@ -437,7 +653,11 @@
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 48,
-    "enFences": 42
+    "enFences": 42,
+    "zhHeadings": 51,
+    "enHeadings": 44,
+    "zhBullets": 118,
+    "enBullets": 93
   },
   "risograph": {
     "zh": 11825,
@@ -445,7 +665,11 @@
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 48,
-    "enFences": 44
+    "enFences": 44,
+    "zhHeadings": 48,
+    "enHeadings": 46,
+    "zhBullets": 119,
+    "enBullets": 106
   },
   "mecha": {
     "zh": 11066,
@@ -453,7 +677,11 @@
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 48,
-    "enFences": 42
+    "enFences": 42,
+    "zhHeadings": 51,
+    "enHeadings": 44,
+    "zhBullets": 124,
+    "enBullets": 100
   },
   "gothic-lolita": {
     "zh": 10650,
@@ -461,7 +689,11 @@
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 48,
-    "enFences": 42
+    "enFences": 42,
+    "zhHeadings": 51,
+    "enHeadings": 44,
+    "zhBullets": 122,
+    "enBullets": 99
   },
   "cyber-chinese": {
     "zh": 11048,
@@ -469,7 +701,11 @@
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 48,
-    "enFences": 42
+    "enFences": 42,
+    "zhHeadings": 51,
+    "enHeadings": 44,
+    "zhBullets": 130,
+    "enBullets": 103
   },
   "acid-graphics": {
     "zh": 11738,
@@ -477,7 +713,11 @@
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 48,
-    "enFences": 42
+    "enFences": 42,
+    "zhHeadings": 48,
+    "enHeadings": 44,
+    "zhBullets": 130,
+    "enBullets": 119
   },
   "hand-drawn-doodle": {
     "zh": 11259,
@@ -485,31 +725,47 @@
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 48,
-    "enFences": 42
+    "enFences": 42,
+    "zhHeadings": 48,
+    "enHeadings": 44,
+    "zhBullets": 127,
+    "enBullets": 117
   },
   "swiss-poster": {
-    "zh": 13291,
+    "zh": 12507,
     "en": 15275,
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 48,
-    "enFences": 44
+    "enFences": 44,
+    "zhHeadings": 48,
+    "enHeadings": 46,
+    "zhBullets": 145,
+    "enBullets": 136
   },
   "watercolor-art": {
-    "zh": 11385,
-    "en": 13386,
+    "zh": 10793,
+    "en": 13558,
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 48,
-    "enFences": 42
+    "enFences": 42,
+    "zhHeadings": 48,
+    "enHeadings": 44,
+    "zhBullets": 116,
+    "enBullets": 108
   },
   "impressionist-oil": {
-    "zh": 12458,
+    "zh": 11644,
     "en": 14443,
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 48,
-    "enFences": 42
+    "enFences": 42,
+    "zhHeadings": 53,
+    "enHeadings": 49,
+    "zhBullets": 126,
+    "enBullets": 117
   },
   "immersive-photo": {
     "zh": 14339,
@@ -517,15 +773,23 @@
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 50,
-    "enFences": 50
+    "enFences": 50,
+    "zhHeadings": 56,
+    "enHeadings": 54,
+    "zhBullets": 130,
+    "enBullets": 114
   },
   "collage-art": {
-    "zh": 13366,
-    "en": 14839,
+    "zh": 12418,
+    "en": 16045,
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 48,
-    "enFences": 44
+    "enFences": 44,
+    "zhHeadings": 49,
+    "enHeadings": 47,
+    "zhBullets": 120,
+    "enBullets": 121
   },
   "glitch-art": {
     "zh": 13609,
@@ -533,7 +797,11 @@
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 48,
-    "enFences": 42
+    "enFences": 42,
+    "zhHeadings": 53,
+    "enHeadings": 48,
+    "zhBullets": 159,
+    "enBullets": 144
   },
   "visual-novel": {
     "zh": 11519,
@@ -541,7 +809,11 @@
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 48,
-    "enFences": 44
+    "enFences": 44,
+    "zhHeadings": 48,
+    "enHeadings": 46,
+    "zhBullets": 118,
+    "enBullets": 117
   },
   "shoujo-manga": {
     "zh": 11777,
@@ -549,7 +821,11 @@
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 48,
-    "enFences": 44
+    "enFences": 44,
+    "zhHeadings": 48,
+    "enHeadings": 46,
+    "zhBullets": 126,
+    "enBullets": 120
   },
   "cyber-anime": {
     "zh": 12718,
@@ -557,7 +833,11 @@
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 48,
-    "enFences": 44
+    "enFences": 44,
+    "zhHeadings": 49,
+    "enHeadings": 46,
+    "zhBullets": 121,
+    "enBullets": 114
   },
   "pixel-anime": {
     "zh": 13696,
@@ -565,7 +845,11 @@
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 48,
-    "enFences": 44
+    "enFences": 44,
+    "zhHeadings": 49,
+    "enHeadings": 46,
+    "zhBullets": 130,
+    "enBullets": 118
   },
   "japanese-fresh": {
     "zh": 13425,
@@ -573,7 +857,11 @@
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 48,
-    "enFences": 44
+    "enFences": 44,
+    "zhHeadings": 48,
+    "enHeadings": 46,
+    "zhBullets": 128,
+    "enBullets": 128
   },
   "neon-samurai": {
     "zh": 11631,
@@ -581,7 +869,11 @@
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 48,
-    "enFences": 42
+    "enFences": 42,
+    "zhHeadings": 49,
+    "enHeadings": 44,
+    "zhBullets": 121,
+    "enBullets": 109
   },
   "magic-circle": {
     "zh": 12257,
@@ -589,7 +881,11 @@
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 48,
-    "enFences": 42
+    "enFences": 42,
+    "zhHeadings": 48,
+    "enHeadings": 44,
+    "zhBullets": 118,
+    "enBullets": 108
   },
   "cyber-wafuu": {
     "zh": 11807,
@@ -597,7 +893,11 @@
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 48,
-    "enFences": 42
+    "enFences": 42,
+    "zhHeadings": 49,
+    "enHeadings": 44,
+    "zhBullets": 127,
+    "enBullets": 111
   },
   "steampunk": {
     "zh": 10094,
@@ -605,15 +905,23 @@
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 48,
-    "enFences": 42
+    "enFences": 42,
+    "zhHeadings": 46,
+    "enHeadings": 40,
+    "zhBullets": 115,
+    "enBullets": 107
   },
   "pop-art": {
-    "zh": 11797,
-    "en": 13065,
+    "zh": 11633,
+    "en": 13080,
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 48,
-    "enFences": 42
+    "enFences": 42,
+    "zhHeadings": 46,
+    "enHeadings": 40,
+    "zhBullets": 135,
+    "enBullets": 105
   },
   "solarpunk": {
     "zh": 9666,
@@ -621,7 +929,11 @@
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 48,
-    "enFences": 42
+    "enFences": 42,
+    "zhHeadings": 46,
+    "enHeadings": 40,
+    "zhBullets": 110,
+    "enBullets": 99
   },
   "jrpg": {
     "zh": 10586,
@@ -629,7 +941,11 @@
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 48,
-    "enFences": 44
+    "enFences": 44,
+    "zhHeadings": 45,
+    "enHeadings": 41,
+    "zhBullets": 116,
+    "enBullets": 110
   },
   "asymmetric-grid": {
     "zh": 9155,
@@ -637,7 +953,11 @@
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 46,
-    "enFences": 42
+    "enFences": 42,
+    "zhHeadings": 49,
+    "enHeadings": 42,
+    "zhBullets": 110,
+    "enBullets": 81
   },
   "parallax-sections": {
     "zh": 8867,
@@ -645,7 +965,11 @@
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 46,
-    "enFences": 42
+    "enFences": 42,
+    "zhHeadings": 49,
+    "enHeadings": 45,
+    "zhBullets": 99,
+    "enBullets": 81
   },
   "warm-dashboard": {
     "zh": 11826,
@@ -653,7 +977,11 @@
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 48,
-    "enFences": 42
+    "enFences": 42,
+    "zhHeadings": 58,
+    "enHeadings": 43,
+    "zhBullets": 153,
+    "enBullets": 108
   },
   "neon-gradient": {
     "zh": 13562,
@@ -661,7 +989,11 @@
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 48,
-    "enFences": 42
+    "enFences": 42,
+    "zhHeadings": 65,
+    "enHeadings": 44,
+    "zhBullets": 179,
+    "enBullets": 116
   },
   "liquid-glass": {
     "zh": 19714,
@@ -669,7 +1001,11 @@
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 54,
-    "enFences": 42
+    "enFences": 42,
+    "zhHeadings": 71,
+    "enHeadings": 55,
+    "zhBullets": 189,
+    "enBullets": 164
   },
   "scandinavian": {
     "zh": 8996,
@@ -677,7 +1013,11 @@
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 46,
-    "enFences": 42
+    "enFences": 42,
+    "zhHeadings": 45,
+    "enHeadings": 39,
+    "zhBullets": 113,
+    "enBullets": 93
   },
   "cel-shading": {
     "zh": 10053,
@@ -685,7 +1025,11 @@
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 46,
-    "enFences": 42
+    "enFences": 42,
+    "zhHeadings": 45,
+    "enHeadings": 39,
+    "zhBullets": 114,
+    "enBullets": 96
   },
   "cinematic-video-hero": {
     "zh": 13075,
@@ -693,7 +1037,11 @@
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 48,
-    "enFences": 48
+    "enFences": 48,
+    "zhHeadings": 55,
+    "enHeadings": 53,
+    "zhBullets": 126,
+    "enBullets": 110
   },
   "wabi-sabi": {
     "zh": 9305,
@@ -701,7 +1049,11 @@
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 46,
-    "enFences": 42
+    "enFences": 42,
+    "zhHeadings": 45,
+    "enHeadings": 39,
+    "zhBullets": 112,
+    "enBullets": 97
   },
   "zen-garden": {
     "zh": 9593,
@@ -709,7 +1061,11 @@
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 46,
-    "enFences": 42
+    "enFences": 42,
+    "zhHeadings": 42,
+    "enHeadings": 39,
+    "zhBullets": 116,
+    "enBullets": 101
   },
   "sci-fi-hud": {
     "zh": 9980,
@@ -717,7 +1073,11 @@
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 48,
-    "enFences": 42
+    "enFences": 42,
+    "zhHeadings": 46,
+    "enHeadings": 39,
+    "zhBullets": 129,
+    "enBullets": 99
   },
   "scrollytelling": {
     "zh": 14949,
@@ -725,7 +1085,11 @@
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 52,
-    "enFences": 52
+    "enFences": 52,
+    "zhHeadings": 57,
+    "enHeadings": 55,
+    "zhBullets": 133,
+    "enBullets": 117
   },
   "kawaii-minimal": {
     "zh": 9080,
@@ -733,7 +1097,11 @@
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 48,
-    "enFences": 42
+    "enFences": 42,
+    "zhHeadings": 45,
+    "enHeadings": 39,
+    "zhBullets": 118,
+    "enBullets": 94
   },
   "kinetic-typography": {
     "zh": 15642,
@@ -741,7 +1109,11 @@
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 60,
-    "enFences": 60
+    "enFences": 60,
+    "zhHeadings": 59,
+    "enHeadings": 57,
+    "zhBullets": 142,
+    "enBullets": 122
   },
   "film-noir": {
     "zh": 12008,
@@ -749,7 +1121,11 @@
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 48,
-    "enFences": 44
+    "enFences": 44,
+    "zhHeadings": 47,
+    "enHeadings": 43,
+    "zhBullets": 137,
+    "enBullets": 129
   },
   "arcade-crt": {
     "zh": 10807,
@@ -757,7 +1133,11 @@
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 48,
-    "enFences": 42
+    "enFences": 42,
+    "zhHeadings": 45,
+    "enHeadings": 39,
+    "zhBullets": 122,
+    "enBullets": 100
   },
   "frutiger-aero": {
     "zh": 14743,
@@ -765,7 +1145,11 @@
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 48,
-    "enFences": 48
+    "enFences": 48,
+    "zhHeadings": 49,
+    "enHeadings": 49,
+    "zhBullets": 131,
+    "enBullets": 128
   },
   "anti-design": {
     "zh": 12262,
@@ -773,7 +1157,11 @@
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 48,
-    "enFences": 46
+    "enFences": 46,
+    "zhHeadings": 48,
+    "enHeadings": 47,
+    "zhBullets": 145,
+    "enBullets": 134
   },
   "brutalist-web": {
     "zh": 12588,
@@ -781,7 +1169,11 @@
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 48,
-    "enFences": 46
+    "enFences": 46,
+    "zhHeadings": 48,
+    "enHeadings": 47,
+    "zhBullets": 156,
+    "enBullets": 149
   },
   "holographic": {
     "zh": 11748,
@@ -789,7 +1181,11 @@
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 48,
-    "enFences": 42
+    "enFences": 42,
+    "zhHeadings": 52,
+    "enHeadings": 46,
+    "zhBullets": 132,
+    "enBullets": 102
   },
   "generative-art": {
     "zh": 10627,
@@ -797,7 +1193,11 @@
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 48,
-    "enFences": 42
+    "enFences": 42,
+    "zhHeadings": 45,
+    "enHeadings": 39,
+    "zhBullets": 126,
+    "enBullets": 98
   },
   "particle": {
     "zh": 11749,
@@ -805,7 +1205,11 @@
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 48,
-    "enFences": 42
+    "enFences": 42,
+    "zhHeadings": 46,
+    "enHeadings": 39,
+    "zhBullets": 126,
+    "enBullets": 95
   },
   "parallax-editorial": {
     "zh": 13990,
@@ -813,7 +1217,11 @@
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 56,
-    "enFences": 56
+    "enFences": 56,
+    "zhHeadings": 56,
+    "enHeadings": 54,
+    "zhBullets": 134,
+    "enBullets": 118
   },
   "vhs-aesthetic": {
     "zh": 11284,
@@ -821,7 +1229,11 @@
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 48,
-    "enFences": 42
+    "enFences": 42,
+    "zhHeadings": 46,
+    "enHeadings": 39,
+    "zhBullets": 133,
+    "enBullets": 104
   },
   "terracotta": {
     "zh": 10304,
@@ -829,7 +1241,11 @@
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 46,
-    "enFences": 42
+    "enFences": 42,
+    "zhHeadings": 45,
+    "enHeadings": 39,
+    "zhBullets": 115,
+    "enBullets": 95
   },
   "monochrome": {
     "zh": 9644,
@@ -837,7 +1253,11 @@
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 46,
-    "enFences": 42
+    "enFences": 42,
+    "zhHeadings": 45,
+    "enHeadings": 39,
+    "zhBullets": 111,
+    "enBullets": 96
   },
   "ink-wash": {
     "zh": 9750,
@@ -845,7 +1265,11 @@
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 46,
-    "enFences": 42
+    "enFences": 42,
+    "zhHeadings": 45,
+    "enHeadings": 39,
+    "zhBullets": 119,
+    "enBullets": 102
   },
   "mid-century-modern": {
     "zh": 11159,
@@ -853,7 +1277,11 @@
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 48,
-    "enFences": 42
+    "enFences": 42,
+    "zhHeadings": 51,
+    "enHeadings": 39,
+    "zhBullets": 121,
+    "enBullets": 96
   },
   "constructivism": {
     "zh": 11694,
@@ -861,7 +1289,11 @@
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 48,
-    "enFences": 42
+    "enFences": 42,
+    "zhHeadings": 49,
+    "enHeadings": 39,
+    "zhBullets": 118,
+    "enBullets": 104
   },
   "op-art": {
     "zh": 11552,
@@ -869,7 +1301,11 @@
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 48,
-    "enFences": 42
+    "enFences": 42,
+    "zhHeadings": 48,
+    "enHeadings": 44,
+    "zhBullets": 125,
+    "enBullets": 112
   },
   "islamic-geometric": {
     "zh": 11404,
@@ -877,7 +1313,11 @@
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 48,
-    "enFences": 42
+    "enFences": 42,
+    "zhHeadings": 51,
+    "enHeadings": 44,
+    "zhBullets": 121,
+    "enBullets": 103
   },
   "indian-festive": {
     "zh": 12866,
@@ -885,7 +1325,11 @@
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 48,
-    "enFences": 42
+    "enFences": 42,
+    "zhHeadings": 53,
+    "enHeadings": 49,
+    "zhBullets": 128,
+    "enBullets": 114
   },
   "african-textile": {
     "zh": 11501,
@@ -893,7 +1337,11 @@
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 48,
-    "enFences": 42
+    "enFences": 42,
+    "zhHeadings": 48,
+    "enHeadings": 44,
+    "zhBullets": 112,
+    "enBullets": 105
   },
   "korean-minimal": {
     "zh": 11174,
@@ -901,7 +1349,11 @@
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 48,
-    "enFences": 44
+    "enFences": 44,
+    "zhHeadings": 48,
+    "enHeadings": 46,
+    "zhBullets": 115,
+    "enBullets": 117
   },
   "pastel-goth": {
     "zh": 12107,
@@ -909,7 +1361,11 @@
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 48,
-    "enFences": 42
+    "enFences": 42,
+    "zhHeadings": 48,
+    "enHeadings": 44,
+    "zhBullets": 119,
+    "enBullets": 108
   },
   "maximalism": {
     "zh": 11952,
@@ -917,7 +1373,11 @@
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 48,
-    "enFences": 42
+    "enFences": 42,
+    "zhHeadings": 48,
+    "enHeadings": 44,
+    "zhBullets": 113,
+    "enBullets": 106
   },
   "medieval-manuscript": {
     "zh": 12762,
@@ -925,7 +1385,11 @@
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 48,
-    "enFences": 42
+    "enFences": 42,
+    "zhHeadings": 48,
+    "enHeadings": 44,
+    "zhBullets": 123,
+    "enBullets": 109
   },
   "graffiti-street": {
     "zh": 11383,
@@ -933,7 +1397,11 @@
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 48,
-    "enFences": 42
+    "enFences": 42,
+    "zhHeadings": 48,
+    "enHeadings": 44,
+    "zhBullets": 113,
+    "enBullets": 108
   },
   "marble-luxury": {
     "zh": 11851,
@@ -941,7 +1409,11 @@
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 48,
-    "enFences": 42
+    "enFences": 42,
+    "zhHeadings": 48,
+    "enHeadings": 44,
+    "zhBullets": 118,
+    "enBullets": 113
   },
   "victorian-botanical": {
     "zh": 10376,
@@ -949,7 +1421,11 @@
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 48,
-    "enFences": 42
+    "enFences": 42,
+    "zhHeadings": 48,
+    "enHeadings": 44,
+    "zhBullets": 107,
+    "enBullets": 103
   },
   "cubism": {
     "zh": 11172,
@@ -957,7 +1433,11 @@
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 48,
-    "enFences": 42
+    "enFences": 42,
+    "zhHeadings": 51,
+    "enHeadings": 44,
+    "zhBullets": 130,
+    "enBullets": 108
   },
   "tropical-paradise": {
     "zh": 10122,
@@ -965,7 +1445,11 @@
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 48,
-    "enFences": 42
+    "enFences": 42,
+    "zhHeadings": 48,
+    "enHeadings": 44,
+    "zhBullets": 107,
+    "enBullets": 94
   },
   "github-style": {
     "zh": 10354,
@@ -973,7 +1457,11 @@
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 48,
-    "enFences": 42
+    "enFences": 42,
+    "zhHeadings": 49,
+    "enHeadings": 45,
+    "zhBullets": 127,
+    "enBullets": 117
   },
   "witchcore": {
     "zh": 10860,
@@ -981,7 +1469,11 @@
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 48,
-    "enFences": 42
+    "enFences": 42,
+    "zhHeadings": 45,
+    "enHeadings": 39,
+    "zhBullets": 111,
+    "enBullets": 106
   },
   "neon-tokyo": {
     "zh": 10470,
@@ -989,7 +1481,11 @@
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 48,
-    "enFences": 42
+    "enFences": 42,
+    "zhHeadings": 46,
+    "enHeadings": 40,
+    "zhBullets": 103,
+    "enBullets": 100
   },
   "paper-craft": {
     "zh": 10010,
@@ -997,7 +1493,11 @@
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 48,
-    "enFences": 42
+    "enFences": 42,
+    "zhHeadings": 46,
+    "enHeadings": 40,
+    "zhBullets": 111,
+    "enBullets": 101
   },
   "blueprint": {
     "zh": 9991,
@@ -1005,7 +1505,11 @@
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 48,
-    "enFences": 44
+    "enFences": 44,
+    "zhHeadings": 45,
+    "enHeadings": 41,
+    "zhBullets": 111,
+    "enBullets": 112
   },
   "dopamine-design": {
     "zh": 13379,
@@ -1013,7 +1517,11 @@
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 48,
-    "enFences": 42
+    "enFences": 42,
+    "zhHeadings": 55,
+    "enHeadings": 49,
+    "zhBullets": 146,
+    "enBullets": 133
   },
   "linear-style": {
     "zh": 10607,
@@ -1021,7 +1529,11 @@
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 48,
-    "enFences": 42
+    "enFences": 42,
+    "zhHeadings": 48,
+    "enHeadings": 43,
+    "zhBullets": 115,
+    "enBullets": 104
   },
   "shopify-clean": {
     "zh": 9996,
@@ -1029,7 +1541,11 @@
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 48,
-    "enFences": 42
+    "enFences": 42,
+    "zhHeadings": 50,
+    "enHeadings": 45,
+    "zhBullets": 101,
+    "enBullets": 88
   },
   "luxury-retail": {
     "zh": 10869,
@@ -1037,7 +1553,11 @@
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 48,
-    "enFences": 42
+    "enFences": 42,
+    "zhHeadings": 50,
+    "enHeadings": 45,
+    "zhBullets": 107,
+    "enBullets": 95
   },
   "fresh-market": {
     "zh": 10175,
@@ -1045,7 +1565,11 @@
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 48,
-    "enFences": 42
+    "enFences": 42,
+    "zhHeadings": 50,
+    "enHeadings": 45,
+    "zhBullets": 109,
+    "enBullets": 96
   },
   "data-dense": {
     "zh": 9267,
@@ -1053,7 +1577,11 @@
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 48,
-    "enFences": 42
+    "enFences": 42,
+    "zhHeadings": 47,
+    "enHeadings": 42,
+    "zhBullets": 99,
+    "enBullets": 86
   },
   "oversized-typography": {
     "zh": 12995,
@@ -1061,7 +1589,11 @@
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 48,
-    "enFences": 46
+    "enFences": 46,
+    "zhHeadings": 48,
+    "enHeadings": 46,
+    "zhBullets": 113,
+    "enBullets": 100
   },
   "developer-terminal": {
     "zh": 11136,
@@ -1069,7 +1601,11 @@
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 48,
-    "enFences": 42
+    "enFences": 42,
+    "zhHeadings": 49,
+    "enHeadings": 45,
+    "zhBullets": 124,
+    "enBullets": 111
   },
   "horizontal-gallery": {
     "zh": 13756,
@@ -1077,7 +1613,11 @@
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 48,
-    "enFences": 48
+    "enFences": 48,
+    "zhHeadings": 49,
+    "enHeadings": 48,
+    "zhBullets": 139,
+    "enBullets": 126
   },
   "latex-paper": {
     "zh": 14904,
@@ -1085,7 +1625,11 @@
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 48,
-    "enFences": 48
+    "enFences": 48,
+    "zhHeadings": 51,
+    "enHeadings": 50,
+    "zhBullets": 147,
+    "enBullets": 133
   },
   "distill-style": {
     "zh": 13403,
@@ -1093,7 +1637,11 @@
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 48,
-    "enFences": 42
+    "enFences": 42,
+    "zhHeadings": 49,
+    "enHeadings": 44,
+    "zhBullets": 118,
+    "enBullets": 103
   },
   "studio-bold": {
     "zh": 15730,
@@ -1101,7 +1649,11 @@
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 48,
-    "enFences": 48
+    "enFences": 48,
+    "zhHeadings": 50,
+    "enHeadings": 49,
+    "zhBullets": 123,
+    "enBullets": 118
   },
   "gallery-dark": {
     "zh": 14464,
@@ -1109,7 +1661,11 @@
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 48,
-    "enFences": 46
+    "enFences": 46,
+    "zhHeadings": 49,
+    "enHeadings": 46,
+    "zhBullets": 125,
+    "enBullets": 118
   },
   "warm-organic": {
     "zh": 13936,
@@ -1117,7 +1673,11 @@
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 48,
-    "enFences": 42
+    "enFences": 42,
+    "zhHeadings": 49,
+    "enHeadings": 44,
+    "zhBullets": 127,
+    "enBullets": 126
   },
   "launch-keynote": {
     "zh": 14556,
@@ -1125,7 +1685,11 @@
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 54,
-    "enFences": 54
+    "enFences": 54,
+    "zhHeadings": 54,
+    "enHeadings": 52,
+    "zhBullets": 115,
+    "enBullets": 101
   },
   "luxe-lookbook": {
     "zh": 13565,
@@ -1133,7 +1697,11 @@
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 48,
-    "enFences": 48
+    "enFences": 48,
+    "zhHeadings": 54,
+    "enHeadings": 52,
+    "zhBullets": 131,
+    "enBullets": 117
   },
   "shader-gradient": {
     "zh": 15603,
@@ -1141,7 +1709,11 @@
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 50,
-    "enFences": 50
+    "enFences": 50,
+    "zhHeadings": 54,
+    "enHeadings": 52,
+    "zhBullets": 122,
+    "enBullets": 106
   },
   "pastel-ui": {
     "zh": 7255,
@@ -1149,7 +1721,11 @@
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 42,
-    "enFences": 42
+    "enFences": 42,
+    "zhHeadings": 41,
+    "enHeadings": 38,
+    "zhBullets": 70,
+    "enBullets": 46
   },
   "mobile-editorial": {
     "zh": 7227,
@@ -1157,7 +1733,11 @@
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 42,
-    "enFences": 42
+    "enFences": 42,
+    "zhHeadings": 39,
+    "enHeadings": 38,
+    "zhBullets": 79,
+    "enBullets": 45
   },
   "soft-utility": {
     "zh": 7292,
@@ -1165,6 +1745,10 @@
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 42,
-    "enFences": 42
+    "enFences": 42,
+    "zhHeadings": 41,
+    "enHeadings": 38,
+    "zhBullets": 71,
+    "enBullets": 47
   }
 }

@@ -10,13 +10,13 @@
  * authored rules entirely.
  *
  * This records what every style currently delivers in both languages and fails
- * when a prompt shrinks, loses its token dictionary, or ends up with an
- * unbalanced code fence. Growth is always allowed.
+ * when a prompt loses a section, a rule line, a code block or its token
+ * dictionary, or ends up with an unbalanced fence. Growth always passes.
  *
  *   npx tsx tools/scripts/check-prompt-regression.ts            compare
  *   npx tsx tools/scripts/check-prompt-regression.ts --update   re-record
  *
- * Re-record only when you understand why a prompt got shorter.
+ * Re-record only when you understand why content went missing.
  */
 import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
 import path from "node:path";
@@ -30,9 +30,14 @@ const BASELINE_PATH = path.join(
   "tests/fixtures/prompt-delivery-baseline.json"
 );
 
-/** A prompt may lose this much to rewording before it counts as lost content. */
-const SHRINK_TOLERANCE = 0.02;
-
+/**
+ * Byte length is a bad proxy for content. A faithful Chinese translation of an
+ * English document is legitimately 40-60% shorter, so length alone would demand
+ * a baseline edit every time a style's rules move into the right language - and
+ * a guard you are expected to overwrite is not a guard. Structure is what a
+ * regression actually destroys: a deleted code block costs fences and bullets,
+ * a dropped section costs a heading. Length is recorded for context only.
+ */
 export interface PromptDelivery {
   zh: number;
   en: number;
@@ -40,6 +45,21 @@ export interface PromptDelivery {
   enTokens: boolean;
   zhFences: number;
   enFences: number;
+  zhHeadings: number;
+  enHeadings: number;
+  zhBullets: number;
+  enBullets: number;
+}
+
+function countHeadings(value: string): number {
+  return (value.match(/^#{1,4} .+$/gm) ?? []).length;
+}
+
+function countBullets(value: string): number {
+  return (
+    (value.match(/^\s*[-*] /gm) ?? []).length +
+    (value.match(/^\s*\d+\. /gm) ?? []).length
+  );
 }
 
 export function measureDelivery(): Record<string, PromptDelivery> {
@@ -81,6 +101,10 @@ export function measureDelivery(): Record<string, PromptDelivery> {
       enTokens: /Token (Dictionary|字典)/.test(en),
       zhFences: (zh.match(/```/g) ?? []).length,
       enFences: (en.match(/```/g) ?? []).length,
+      zhHeadings: countHeadings(zh),
+      enHeadings: countHeadings(en),
+      zhBullets: countBullets(zh),
+      enBullets: countBullets(en),
     };
   }
 
@@ -106,12 +130,29 @@ export function compareDelivery(
     }
 
     for (const locale of ["zh", "en"] as const) {
-      const previous = before[locale];
-      const now = after[locale];
-      if (now < previous * (1 - SHRINK_TOLERANCE)) {
+      const headingsKey = locale === "zh" ? "zhHeadings" : "enHeadings";
+      const bulletsKey = locale === "zh" ? "zhBullets" : "enBullets";
+
+      if (after[headingsKey] < before[headingsKey]) {
         findings.push({
           slug,
-          message: `${locale} prompt shrank ${previous} -> ${now}`,
+          message: `${locale} prompt lost ${before[headingsKey] - after[headingsKey]} section heading(s)`,
+        });
+      }
+
+      if (after[bulletsKey] < before[bulletsKey]) {
+        findings.push({
+          slug,
+          message: `${locale} prompt lost ${before[bulletsKey] - after[bulletsKey]} rule line(s)`,
+        });
+      }
+
+      const previousFences = before[locale === "zh" ? "zhFences" : "enFences"];
+      const currentFences = after[locale === "zh" ? "zhFences" : "enFences"];
+      if (currentFences < previousFences) {
+        findings.push({
+          slug,
+          message: `${locale} prompt lost ${(previousFences - currentFences) / 2} code block(s)`,
         });
       }
 

@@ -360,71 +360,71 @@ Primary:
 - focus:ring-2 focus:ring-[#e8a87c] focus:ring-offset-2 focus:ring-offset-[#f5f0e1]
 - ring-offset-[#f5f0e1] mandatory -- canvas cream background needs matching offset`,
 
-  aiRules: `You are an Impressionist Oil design style frontend development expert. All generated code must strictly follow these constraints:
+  aiRules: `你是一位专精于油画印象派风格（Impressionist Oil）的前端开发专家。生成的所有代码都必须严格遵循以下规范：
 
-## Absolutely Forbidden
+## 绝对禁止
 
-- Flat solid fills without texture or gradient
-- Sharp geometric edges (rounded-none, rounded-sm)
-- Pixel-perfect offset shadows (shadow-[Npx_Npx_0px])
-- Neon or fluorescent colors
-- Monospace fonts (font-mono)
-- Uppercase text (uppercase)
-- Pure black backgrounds (bg-black)
+- 没有纹理或渐变的纯平色块填充
+- 锐利的几何边角（rounded-none、rounded-sm）
+- 像素级精确的偏移阴影（shadow-[Npx_Npx_0px]）
+- 霓虹色或荧光色
+- 等宽字体（font-mono）
+- 大写文字（uppercase）
+- 纯黑背景（bg-black）
 
-## Must Follow
+## 必须遵守
 
-- Canvas cream background bg-[#f5f0e1]
-- Warm orange #e8a87c as primary, use linear-gradient fills on buttons
-- Serif fonts font-serif font-bold for all text
-- Rounded corners rounded-lg
-- Layered box-shadows: solid color base + blur shadow (e.g. 0 4px 0 #c0392b, 0 6px 16px rgba())
-- Brushstroke texture via repeating-linear-gradient at angled degrees
-- Dappled light via multiple radial-gradient overlays
+- 温暖的画布米白背景 bg-[#f5f0e1]
+- 暖橙 #e8a87c 作为主色，按钮使用 linear-gradient 填充
+- 全局文字使用衬线字体 font-serif font-bold
+- 圆角使用 rounded-lg
+- 叠层 box-shadow：实色底层 + 模糊扩散层（例如 0 4px 0 #c0392b, 0 6px 16px rgba()）
+- 使用带角度的 repeating-linear-gradient 制作笔触纹理
+- 使用多层 radial-gradient 叠加制作斑驳光影
 
-## Color Palette
+## 配色方案
 
-Primary:
-- Warm Orange: #e8a87c
-- Canvas Cream: #f5f0e1
-- Vermillion Red: #c0392b
-- Deep Blue: #2c3e50
-- Turquoise Green: #1abc9c
-- Golden Light: #f5d88a
+主色：
+- 暖橙：#e8a87c
+- 画布米白：#f5f0e1
+- 朱红：#c0392b
+- 深蓝：#2c3e50
+- 青绿：#1abc9c
+- 金光：#f5d88a
 
-## Unique Elements (Impressionist-Only)
+## 独特元素（印象派专属）
 
-1. Brushstroke texture: repeating-linear-gradient at 25-40deg angles with 0.02 opacity color stops
-2. Dappled light: multiple radial-gradient(circle Npx at X% Y%, rgba(...,0.05-0.08)) scattered across surfaces
-3. Impasto shadows: layered box-shadow with solid color base layer + blurred spread layer
+1. 笔触纹理：repeating-linear-gradient 使用 25-40deg 角度，配 0.02 透明度的色标
+2. 斑驳光影：多个 radial-gradient(circle Npx at X% Y%, rgba(...,0.05-0.08)) 散布在画面各处
+3. 厚涂阴影：box-shadow 叠层，由实色底层 + 模糊扩散层组成
 
-## Animation & Interaction Rules
+## 动效与交互规则
 
-### Dancing Light (Button Hover)
-- hover:brightness-110 hover:contrast-125 — simulates sunlight illuminating pigment
-- Combined with hover:-translate-y-0.5 for subtle lift
-- NEVER use flat color hover (defeats the impressionist light-play concept)
+### 光影舞动（按钮 Hover）
+- hover:brightness-110 hover:contrast-125 —— 模拟阳光照亮颜料的效果
+- 搭配 hover:-translate-y-0.5 产生轻微上浮
+- 禁止使用纯色 hover（会破坏印象派光影游戏的理念）
 
-### Impasto Depression (Active Press)
-- active:translate-y-[3px] — button sinks into the 4px solid vermillion shadow layer
-- NEVER use active:scale-* alone (scaling doesn't simulate physical impasto depth)
-- The translate must match or nearly match the solid shadow offset (currently 4px)
+### 厚涂陷落（Active 按压）
+- active:translate-y-[3px] —— 按钮陷入 4px 实色朱红阴影层
+- 禁止单独使用 active:scale-*（缩放无法模拟厚涂颜料的物理深度）
+- translate 位移必须与实色阴影的偏移量相符或接近（目前为 4px）
 
-### Brushstroke Reveal (Card Underline)
-- Card heading underline: w-16 h-[3px] bg-[#e8a87c] rounded-full
-- On group-hover: group-hover:w-24 — brushstroke extends like paint spreading
-- Transition: duration-500 ease-out (slow, painterly rhythm)
-- Always use group class on card container
+### 笔触显现（卡片下划线）
+- 卡片标题下划线：w-16 h-[3px] bg-[#e8a87c] rounded-full
+- group-hover 时：group-hover:w-24 —— 笔触像颜料扩散一样延展
+- 过渡：duration-500 ease-out（缓慢、富有画意的节奏）
+- 卡片容器上必须使用 group 类
 
-### Slow Easing Standard
-- Minimum duration: 300ms (impressionist rhythm is slow and flowing)
-- Button transitions: duration-300 ease-out
-- Underline reveals: duration-500 ease-out
-- NEVER use duration < 300ms
+### 缓速缓动标准
+- 最短时长：300ms（印象派的节奏是缓慢流动的）
+- 按钮过渡：duration-300 ease-out
+- 下划线展开：duration-500 ease-out
+- 禁止使用小于 300ms 的时长
 
-### Focus Ring
+### 焦点环
 - focus:ring-2 focus:ring-[#e8a87c] focus:ring-offset-2 focus:ring-offset-[#f5f0e1]
-- ring-offset-[#f5f0e1] mandatory — canvas cream background needs matching offset`,
+- 必须包含 ring-offset-[#f5f0e1] —— 画布米白背景需要匹配的焦点环偏移`,
 
   examplePrompts: [
     {

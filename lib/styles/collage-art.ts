@@ -351,52 +351,11 @@ Primary:
 
 ## Animation & Interaction Rules
 
-- Paper Lift: On hover, elements should feel physically raised. Use hover:scale-[1.02] combined with a rotation change and shadow expansion. This simulates a piece of paper being pinched up off a surface.
-- Tape Parallax: The washi tape decoration on a card should react slightly differently from the card itself. Wrap the whole component in a group div. The tape has group-hover:-translate-y-1 group-hover:rotate-[6deg], while the card has group-hover:-translate-y-2 group-hover:-rotate-[1deg].
-- Desk Press: On :active, the shadow must sharply collapse and the element shifts slightly down, simulating pressing a paper scrap firmly onto a corkboard.
-- Snappy Easing: Use duration-200 ease-out or duration-300 ease-out for all paper interactions.
-- Transform Rules: ALWAYS use Tailwind rotate-[Xdeg] arbitrary class for initial rotation. NEVER use style={{ transform: "rotate(Xdeg)" }} on elements that also use Tailwind hover/group-hover transforms.`,
-
-  aiRules: `You are a Collage Art design style frontend development expert. All generated code must strictly follow these constraints:
-
-## Absolutely Forbidden
-
-- Smooth gradients (bg-gradient-to-*)
-- Soft rounded corners (rounded-lg, rounded-xl, rounded-2xl, rounded-full)
-- Backdrop blur effects (backdrop-blur)
-- Soft blur shadows (shadow-[0_Npx_Npx])
-- Uniform, perfectly aligned layouts
-- Single font family throughout
-- NEVER mix style={{ transform: "rotate(Ndeg)" }} with Tailwind hover/group-hover transform classes — this causes transform conflicts where the inline style overrides Tailwind's CSS variables. Always use rotate-[Ndeg] Tailwind arbitrary class instead.
-
-## Must Follow
-
-- Aged paper background bg-[#f5f0e8]
-- Dark charcoal #2d2d2d for borders and text
-- Hard offset shadows shadow-[Npx_Npx_0px_#color]
-- Sharp corners rounded-sm or rounded-none
-- Random rotation via Tailwind arbitrary class rotate-[0.5deg] to rotate-[2deg] (NOT inline style when hover transforms are also applied)
-- Mix font families: font-serif, font-sans, font-mono across sections
-- Thick borders border-2 border-[#2d2d2d]
-- Wrap interactive cards in group div so washi tape can respond via group-hover
-
-## Color Palette
-
-Primary:
-- Dark Charcoal: #2d2d2d
-- Aged Paper: #f5f0e8
-- Cut Red: #e74c3c
-- Magazine Blue: #3498db
-- Paste Yellow: #f39c12
-- Scrap Purple: #9b59b6
-
-## Animation & Interaction Rules
-
 - Paper Lift: On hover, elements should feel physically raised. Use hover:scale-[1.02] combined with a rotation change (e.g., from rotate-[1.5deg] to group-hover:-rotate-[1deg]) and shadow expansion (shadow-[5px_5px] → shadow-[12px_12px]). This simulates a piece of paper being pinched up off a surface.
 - Tape Parallax: The washi tape decoration on a card should react slightly differently from the card itself. Wrap the whole component in a group div. The tape div has group-hover:-translate-y-1 group-hover:rotate-[6deg], while the card has group-hover:-translate-y-2 group-hover:-rotate-[1deg]. The tape appears to shift independently, reinforcing the multi-layer physical illusion.
 - Desk Press: On :active, the shadow must sharply collapse (shadow-[12px_12px] → shadow-[2px_2px]) and the element shifts slightly down (active:translate-y-1), simulating pressing a paper scrap firmly onto a corkboard.
 - Snappy Easing: Use duration-200 ease-out or duration-300 ease-out for all paper interactions. Paper is light and snaps quickly.
-- Transform Rules: ALWAYS use Tailwind rotate-[Xdeg] arbitrary class for initial rotation. NEVER use style={{ transform: "rotate(Xdeg)" }} on elements that also use Tailwind hover/group-hover transforms — they will conflict.
+- Transform Rules: ALWAYS use Tailwind rotate-[Xdeg] arbitrary class for initial rotation. NEVER use style={{ transform: "rotate(Xdeg)" }} on elements that also use Tailwind hover/group-hover transforms -- they will conflict.
 
 ## Unique Elements (Collage-Only)
 
@@ -414,6 +373,64 @@ After generating code:
 3. hover state: scale-105 + rotation change + shadow expansion
 4. active state: shadow collapses + slight downward shift
 5. Duration 200-300ms ease-out`,
+
+  aiRules: `你是一位专精于拼贴艺术风格（Collage Art）的前端开发专家。生成的所有代码都必须严格遵循以下规范：
+
+## 绝对禁止
+
+- 平滑渐变（bg-gradient-to-*）
+- 柔和圆角（rounded-lg、rounded-xl、rounded-2xl、rounded-full）
+- 背景模糊效果（backdrop-blur）
+- 柔和模糊阴影（shadow-[0_Npx_Npx]）
+- 整齐划一、完全对齐的布局
+- 全篇只用单一字体
+- 禁止将 style={{ transform: "rotate(Ndeg)" }} 与 Tailwind 的 hover/group-hover transform 类混用——这会导致 transform 冲突，内联样式会覆盖 Tailwind 的 CSS 变量。请始终改用 rotate-[Ndeg] 这种 Tailwind 任意值类。
+
+## 必须遵守
+
+- 陈旧纸张背景 bg-[#f5f0e8]
+- 边框和文字使用深炭灰 #2d2d2d
+- 硬偏移阴影 shadow-[Npx_Npx_0px_#color]
+- 锐利边角 rounded-sm 或 rounded-none
+- 使用 Tailwind 任意值类 rotate-[0.5deg] 到 rotate-[2deg] 做随机旋转（若同时存在 hover transform，禁止用内联样式）
+- 混搭字体：各区块交替使用 font-serif、font-sans、font-mono
+- 粗边框 border-2 border-[#2d2d2d]
+- 将可交互卡片包裹在 group 容器中，让和纸胶带能通过 group-hover 响应
+
+## 配色方案
+
+主色：
+- 深炭灰：#2d2d2d
+- 陈旧纸张：#f5f0e8
+- 剪切红：#e74c3c
+- 杂志蓝：#3498db
+- 粘贴黄：#f39c12
+- 碎片紫：#9b59b6
+
+## 动效与交互规则
+
+- 纸片掀起（Paper Lift）：hover 时元素应带有被实际掀起的物理感。使用 hover:scale-[1.02]，配合旋转角度变化（例如从 rotate-[1.5deg] 变为 group-hover:-rotate-[1deg]）和阴影扩张（shadow-[5px_5px] → shadow-[12px_12px]）。这模拟了一张纸片被从桌面上捏起的效果。
+- 胶带视差（Tape Parallax）：卡片上的和纸胶带装饰应与卡片本身产生略微不同的反应。将整个组件包裹在 group 容器中：胶带 div 使用 group-hover:-translate-y-1 group-hover:rotate-[6deg]，卡片则使用 group-hover:-translate-y-2 group-hover:-rotate-[1deg]。胶带看起来是独立移动的，从而强化多层纸片叠加的物理错觉。
+- 按压桌面（Desk Press）：:active 状态下阴影必须骤然收缩（shadow-[12px_12px] → shadow-[2px_2px]），元素同时略微下移（active:translate-y-1），模拟把纸片牢牢按压到软木板上的动作。
+- 干脆缓动（Snappy Easing）：所有纸片交互都使用 duration-200 ease-out 或 duration-300 ease-out。纸张很轻，动作要干净利落。
+- 变换规则（Transform Rules）：初始旋转必须始终使用 Tailwind 的 rotate-[Xdeg] 任意值类。凡是同时使用了 Tailwind hover/group-hover transform 的元素，禁止再用 style={{ transform: "rotate(Xdeg)" }}——两者会产生冲突。
+
+## 独特元素（拼贴专属）
+
+1. 随机旋转：rotate-[0.7deg]、-rotate-[1.5deg]、rotate-[2deg] 等（使用 Tailwind 任意值，而非内联样式）
+2. 和纸胶带：repeating-linear-gradient(90deg, color 0px, color 3px, rgba(255,255,255,0.3) 3px, rgba(255,255,255,0.3) 6px) 条纹，置于响应 group-hover 的 div 中
+3. 混搭字体：标题、标签、正文交替使用 font-serif、font-sans、font-mono
+4. 撕纸边缘：使用带不规则锯齿点的 polygon clip-path
+5. 虚线边框：用 border-dashed 表现邮戳/剪切线效果
+
+## 自检清单
+
+生成代码后请确认：
+1. 所有初始旋转都使用 rotate-[Xdeg] 这个 Tailwind 类，而非内联样式（当存在 hover transform 时）
+2. 可交互卡片已包裹在 group 容器中，以实现胶带视差
+3. hover 状态：scale-105 + 旋转变化 + 阴影扩张
+4. active 状态：阴影收缩 + 轻微下移
+5. 时长为 200-300ms ease-out`,
 
   examplePrompts: [
     {
