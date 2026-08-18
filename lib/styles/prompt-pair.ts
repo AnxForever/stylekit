@@ -156,8 +156,7 @@ ${toBulletList(forbidden)}`;
 function resolveHardRuleSource(input: PromptPairInput, locale: Locale): string {
   const authored =
     locale === "en"
-      ? sanitizeEnglishRuleSource(input.aiRulesEn ?? "") ??
-        sanitizeEnglishRuleSource(input.aiRules)
+      ? sanitizeEnglishRuleSource(input.aiRulesEn ?? "")
       : input.aiRules.trim();
 
   const generated =

@@ -133,9 +133,21 @@ function parseAiRules(aiRules: string): ParsedAiRules {
   const sections: ParsedSection[] = [];
   let current: ParsedSection | null = null;
   let usesMarkdownHeading = false;
+  let insideCodeFence = false;
 
   for (const line of lines) {
-    const heading = parseHeading(line);
+    // A fenced block is content, not structure. Without this, a line like
+    // "FORBIDDEN: shadow-sm, shadow-md" inside a code sample parses as a
+    // forbidden heading, and everything under it is dropped and replaced by
+    // the dontList - silently deleting the code block and orphaning its fence.
+    if (line.trimStart().startsWith("```")) {
+      insideCodeFence = !insideCodeFence;
+      if (current) current.lines.push(line);
+      else preamble.push(line);
+      continue;
+    }
+
+    const heading = insideCodeFence ? null : parseHeading(line);
     if (heading) {
       if (current) sections.push(current);
       current = {
@@ -183,9 +195,20 @@ function collectAiFlags(aiRules: string): { pos: RuleFlags; neg: RuleFlags } {
   );
 
   const collectFrom = (sectionKind: SectionKind, lines: string[]) => {
+    let insideCodeFence = false;
     for (const raw of lines) {
       const line = raw.trim();
       if (!line) continue;
+      if (line.startsWith("```")) {
+        insideCodeFence = !insideCodeFence;
+        continue;
+      }
+      // Code samples and table rows are illustrations, not rule statements. The
+      // flag heuristics below are written for prose bullets: a table row banning
+      // rounded-none reads to them as "this style uses a rounded corner", which
+      // then conflicts with a doList entry asking for rounded-3xl.
+      if (insideCodeFence) continue;
+      if (line.startsWith("|")) continue;
       if (line.startsWith("#")) continue;
       const normalized = line.replace(/^[-*]\s+/, "").replace(/^\d+\.\s+/, "").trim();
       if (!normalized) continue;
@@ -280,6 +303,18 @@ function buildSection(heading: string, lines: string[]): string {
   return `${heading}\n\n${lines.join("\n")}`;
 }
 
+/**
+ * A required/forbidden section gets replaced by the canonical doList/dontList
+ * rendering. That is right for plain bullet lists, but a section that carries a
+ * table or a code sample holds detail the lists do not - class names, reasons,
+ * exact values - and replacing it deletes that detail. Keep those sections.
+ */
+function isReplaceableRuleSection(section: ParsedSection): boolean {
+  return !section.lines.some(
+    (line) => line.includes("|") || line.trimStart().startsWith("```")
+  );
+}
+
 function normalizeAiRulesText(style: DesignStyle, doList: string[], dontList: string[]): string {
   const parsed = parseAiRules(style.aiRules || "");
   const lang = detectLang(style);
@@ -305,7 +340,11 @@ function normalizeAiRulesText(style: DesignStyle, doList: string[], dontList: st
   const forbiddenSection = buildSection(forbiddenHeading, formatRuleItems(dontList));
 
   const removedKinds = parsed.sections
-    .filter((section) => section.kind === "required" || section.kind === "forbidden")
+    .filter(
+      (section) =>
+        (section.kind === "required" || section.kind === "forbidden") &&
+        isReplaceableRuleSection(section)
+    )
     .map((section) => section.kind);
   const requiredFirst =
     removedKinds.includes("required") &&
@@ -324,7 +363,12 @@ function normalizeAiRulesText(style: DesignStyle, doList: string[], dontList: st
   }
 
   for (const section of parsed.sections) {
-    if (section.kind === "required" || section.kind === "forbidden") continue;
+    if (
+      (section.kind === "required" || section.kind === "forbidden") &&
+      isReplaceableRuleSection(section)
+    ) {
+      continue;
+    }
     const sectionText = [section.heading, ...section.lines].join("\n").trim();
     if (sectionText) rebuiltParts.push(sectionText);
   }

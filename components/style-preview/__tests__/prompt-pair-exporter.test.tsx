@@ -32,7 +32,7 @@ describe("PromptPairExporter", () => {
     });
   });
 
-  it("copies hard prompt with style identity and enhanced rules", async () => {
+  it("copies hard prompt with style identity, authored rules and generated spec", async () => {
     render(
       <PromptPairExporter
         styleName="编辑杂志"
@@ -55,7 +55,9 @@ describe("PromptPairExporter", () => {
     expect(copied).toContain("style_slug: editorial");
     expect(copied).toContain("# Hard Prompt");
     expect(copied).toContain("ENHANCED_RULES");
-    expect(copied).not.toContain("BASE_RULES");
+    // Both sources ship: the authored rules explain composition, the generated
+    // spec pins the classes.
+    expect(copied).toContain("BASE_RULES");
   });
 
   it("updates soft prompt identity after rerendering a different style", async () => {

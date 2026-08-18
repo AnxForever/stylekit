@@ -12,14 +12,17 @@ describe("prompt-pair builders", () => {
     keywords: ["editorial", "typography", "minimal", "grid", "whitespace", "magazine", "readable"],
   };
 
-  it("uses enhanced rules for hard prompt when available", () => {
+  it("ships both the authored rules and the generated spec", () => {
     const hard = buildHardPrompt(input);
 
     expect(hard).toContain("STYLEKIT_STYLE_REFERENCE");
     expect(hard).toContain("style_slug: editorial");
     expect(hard).toContain("# Hard Prompt");
+    // The generated spec lists which classes a style uses; the authored rules
+    // say how to compose them. Preferring one silently dropped the other.
     expect(hard).toContain("ENHANCED_RULES");
-    expect(hard).not.toContain("BASE_RULES");
+    expect(hard).toContain("BASE_RULES");
+    expect(hard.indexOf("BASE_RULES")).toBeLessThan(hard.indexOf("ENHANCED_RULES"));
   });
 
   it("falls back to base rules for hard prompt when enhanced rules are missing", () => {

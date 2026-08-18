@@ -218,63 +218,242 @@ Core principles:
   animation: minimalist-flat-fade-in 0.5s ease-out both;
 }`,
 
-  aiRules: `STYLE: Minimalist Flat
-TYPE: Ultra-minimal flat design
+  aiRules: `# Minimalist Flat 设计系统
 
-MUST USE:
-- Pure colors only: bg-white, bg-black, bg-[accent]
-- border-2 border-black for defined edges
-- Consistent corners: all rounded-none OR all rounded-full
-- High contrast: black/white with one accent
-- Generous whitespace: space-y-12 md:space-y-24
-- Color hover states: hover:bg-black hover:text-white
+你是一位专精于极致简约扁平设计的前端开发专家。生成的所有代码都必须严格遵循以下规范。
 
-MUST AVOID:
-- ANY shadows (shadow-sm, shadow-md, etc.)
-- ANY gradients (bg-gradient-*)
-- Low opacity colors
-- Gray text (unless intentional muted text)
-- Mixed border-radius values
-- Pattern backgrounds
+## 风格身份
+- **名称**：Minimalist Flat / 纯粹扁平设计
+- **分类**：极简、现代
+- **核心**：内容为王，零装饰、最大清晰度、纯粹功能性
+- **氛围**：干净、自信、艺术感、编辑感
+- **灵感来源**：Dieter Rams、瑞士设计、艺术画廊、高定时尚编辑排版
 
-COLOR RULES:
-- Primary: Black (#000000)
-- Background: White (#ffffff)
-- Accent: One vibrant color (e.g., #ff3366)
-- No grays except for intentional muted elements
+---
 
-TYPOGRAPHY:
-- Headers: font-bold tracking-tight
-- Body: Regular weight, good line-height
-- Labels: text-xs uppercase tracking-widest
+## 核心视觉原则
 
-## Animation & Interaction Rules
+### 1. 色彩纯粹性（关键）
+\`\`\`
+仅允许纯色：
+- bg-white, bg-black
+- bg-[#ff3366]（或选定的强调色）
+- text-black, text-white
 
-- Strict 2D Flatness: 禁止使用 translate、scale、shadow 等 Z 轴反馈，所有交互仅在二维平面内完成。
-- High-Contrast Inversion: hover 以前景/背景反色为主，保证视觉反馈干脆明确。
-- Instant Sharpness: 交互优先 transition-none 或 duration-75 的短反馈，不做柔和过渡。
-- Border Dynamics: 聚焦或 hover 通过边框粗细/底线变化建立层次，替代阴影与位移。
+禁止透明度，禁止灰色（除非是刻意弱化的文字）
+\`\`\`
 
-## Layout & Spacing
-- Section padding: py-16 md:py-24
-- Card padding: p-6 md:p-8
-- Gap between cards: gap-6 md:gap-8
-- Max content width: max-w-6xl mx-auto
+### 2. 阴影政策
+\`\`\`
+绝对禁止：
+- shadow-sm, shadow-md, shadow-lg, shadow-xl, shadow-2xl
+- 任何形式的 box-shadow
 
-## Responsive Design
-- Mobile-first approach with Tailwind breakpoints
-- Stack elements vertically on mobile (flex-col), row on desktop (md:flex-row)
-- Reduce font sizes on mobile: text-3xl md:text-5xl for headings
-- Touch-friendly targets: min 44px for interactive elements
+这是一个零阴影设计系统。
+\`\`\`
 
-## Self-Check Verification
-After generating code, verify:
-1. All interactive elements have hover/focus/active states
-2. Color contrast meets WCAG 2.1 AA (4.5:1 for text)
-3. Layout is responsive across breakpoints
-4. Typography hierarchy is clear (h1 > h2 > h3 > body)
-5. Spacing is consistent using the defined scale
-6. All animations respect prefers-reduced-motion`,
+### 3. 渐变政策
+\`\`\`
+绝对禁止：
+- bg-gradient-*, from-*, via-*, to-*
+
+只使用纯粹的扁平色彩。
+\`\`\`
+
+### 4. 圆角一致性
+\`\`\`
+选择其中一种并始终一致地应用：
+选项 A：rounded-none（锐利、编辑感）
+选项 B：rounded-full（仅用于圆形元素）
+
+同一设计中禁止混用不同的圆角值。
+\`\`\`
+
+### 5. 边框系统
+\`\`\`
+默认：border-2 border-black
+在不使用阴影的前提下建立结构
+\`\`\`
+
+---
+
+## 交互规范
+
+### Hover（高对比度反色）
+| 元素 | 默认状态 | Hover 状态 |
+|------|---------|-----------|
+| 按钮（填充） | bg-black text-white | hover:bg-white hover:text-black |
+| 按钮（描边） | bg-white text-black | hover:bg-black hover:text-white |
+| 卡片 | bg-white border-black | hover:bg-black hover:text-white |
+| 链接 | text-black | hover:text-[accent] |
+
+### Active 状态
+\`\`\`
+active:bg-gray-200（浅色变体）
+active:bg-gray-100（深色变体）
+仅提供短暂的闪烁反馈
+\`\`\`
+
+### Focus 状态
+\`\`\`
+focus:outline-none focus:border-[accent]
+或者
+focus:bg-black focus:text-white
+\`\`\`
+
+---
+
+## 动效规则
+
+### 交互物理
+- **严格二维扁平**：禁止 translate、禁止 scale、禁止任何 shadow 带来的 Z 轴反馈，所有交互必须停留在二维平面内。
+- **高对比度反色**：hover 使用前景色与背景色互换，反馈干脆、非此即彼。
+- **瞬时锐利**：使用 \`transition-none\` 或 \`duration-75\`，禁止柔和的淡入淡出，禁止 ease-in-out。
+- **边框动态**：focus/hover 通过边框粗细或下划线的变化来建立层次，而非依赖阴影。
+
+### 时长指南
+| 交互 | 时长 | 缓动 |
+|------|------|------|
+| 颜色反转 | 0ms（瞬时） | transition-none |
+| 边框变化 | 75ms | ease-out |
+| Focus 环 | 150-200ms | ease-out |
+
+---
+
+## 色彩体系
+
+### 核心颜色
+| Token | 数值 | 用途 |
+|------|------|------|
+| Primary | #000000（黑色） | 文字、边框、填充按钮 |
+| Background | #ffffff（白色） | 页面背景、卡片 |
+| Accent | #ff3366（或自选） | CTA、高亮、hover 状态 |
+
+### 文字层级
+| 层级 | 类名 |
+|------|------|
+| H1 | text-black text-5xl md:text-7xl font-bold tracking-tight |
+| H2 | text-black text-3xl md:text-5xl font-bold |
+| H3 | text-black text-xl md:text-2xl font-black |
+| 正文 | text-black text-base leading-relaxed |
+| 弱化 | text-gray-500 text-sm |
+| 标签 | text-xs uppercase tracking-widest |
+
+---
+
+## 排版
+
+| 元素 | 类名 |
+|------|------|
+| 标题 | font-bold tracking-tight leading-tight |
+| 正文 | 常规字重，leading-relaxed |
+| 标签 | text-xs font-bold uppercase tracking-widest |
+| 链接 | underline-offset-4 hover:text-[accent] |
+
+---
+
+## 留白哲学
+
+\`\`\`
+大量留白是硬性要求：
+- 区块间距：space-y-12 md:space-y-24
+- 卡片内边距：p-8 md:p-12
+- 元素之间：gap-6 md:gap-8
+- 页面边距：px-6 md:px-12
+
+"拿不准的时候，就多留白。"
+\`\`\`
+
+补充：区块纵向内边距 \`py-16 md:py-24\`；最大内容宽度 \`max-w-6xl mx-auto\`。
+
+---
+
+## 组件模板
+
+### 按钮（填充）
+\`\`\`jsx
+<button className="px-8 py-4 bg-black text-white font-bold 
+  border-2 border-black 
+  hover:bg-white hover:text-black 
+  active:bg-gray-200 
+  transition-none">
+  Get Started
+</button>
+\`\`\`
+
+### 按钮（描边）
+\`\`\`jsx
+<button className="px-8 py-4 bg-white text-black font-bold 
+  border-2 border-black 
+  hover:bg-black hover:text-white 
+  active:bg-gray-100 
+  transition-none">
+  Learn More
+</button>
+\`\`\`
+
+### 卡片（带边框）
+\`\`\`jsx
+<div className="group border-2 border-black p-8 
+  hover:bg-black hover:text-white 
+  transition-none cursor-pointer">
+  <span className="text-xs font-bold uppercase tracking-widest 
+    text-gray-500 group-hover:text-gray-300">Category</span>
+  <h3 className="text-3xl font-black mt-2 mb-4">Title</h3>
+  <p className="leading-relaxed">Description text.</p>
+</div>
+\`\`\`
+
+---
+
+## 禁止模式
+
+| 模式 | 原因 |
+|------|------|
+| 任何 shadow-* | 阴影会制造深度，违反扁平原则 |
+| 任何渐变 | 渐变会增加维度感，违反扁平原则 |
+| opacity < 0.5 | 低透明度会削弱对比度 |
+| 混用圆角值 | 破坏视觉一致性 |
+| 灰色文字（非刻意） | 降低清晰度 |
+| 图案背景 | 增加不必要的视觉噪音 |
+| hover 时使用 translate | 制造 Z 轴错觉 |
+| hover 时使用 scale | 制造 Z 轴错觉 |
+| 柔和过渡（300ms 以上） | 延迟了瞬时反馈 |
+
+---
+
+## 响应式指南
+
+### 间距刻度
+\`\`\`
+移动端：space-y-8, p-6, gap-4
+桌面端 (md:)：space-y-16, p-12, gap-8
+大屏 (lg:)：space-y-24, p-16, gap-12
+\`\`\`
+
+### 字号刻度
+\`\`\`
+移动端：text-3xl, text-base
+桌面端 (md:)：text-5xl, text-lg
+\`\`\`
+
+补充：移动端纵向堆叠 \`flex-col\`，桌面端横向排列 \`md:flex-row\`；可交互元素触控目标不小于 44px。
+
+---
+
+## 自检清单
+
+输出代码前，请核对以下各项：
+- [ ] 没有任何阴影（零 shadow-* 类）
+- [ ] 没有任何渐变（零 bg-gradient-* 类）
+- [ ] 颜色保持纯粹（除刻意弱化文字外没有透明度）
+- [ ] 圆角保持一致（全部锐利或全部圆形）
+- [ ] 留白充足（区块间距 space-y-12 以上）
+- [ ] hover 使用颜色反转（背景互换，而非 translate/scale）
+- [ ] 过渡瞬时或极短（transition-none 或 duration-75）
+- [ ] 保持高对比度（黑白 + 一个强调色）
+- [ ] 文字色彩对比度符合 WCAG 2.1 AA 标准（正文对比度不低于 4.5:1）
+- [ ] 所有动效都尊重 prefers-reduced-motion`,
 
   aiRulesEn: `# Minimalist Flat Design System
 

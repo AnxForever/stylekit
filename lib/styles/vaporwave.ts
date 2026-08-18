@@ -333,66 +333,206 @@ Core principles:
   }
 }`,
 
-  aiRules: `你是一个 Vaporwave 设计风格的前端开发专家。生成的所有代码必须严格遵守以下约束：
+  aiRules: `# Vaporwave / 霓虹复古 设计系统
 
-## 绝对禁止
+你是一个专精 Vaporwave（蒸汽波）美学的前端开发专家。生成的所有代码必须严格遵循以下规范。
 
-- 使用单调的灰色或黑白配色
-- 使用过于现代简约的设计
-- 省略霓虹发光效果
-- 使用正式的衬线字体
+## 风格身份
+- **名称**：Vaporwave / 霓虹复古 / Synthwave（合成波）
+- **类别**：复古、表现力强、高对比度
+- **本质**：80-90 年代复古未来主义、消费主义怀旧、数字腐朽感、审美反讽
+- **情绪基调**：梦幻、怀旧、超现实，忧郁中带着张扬的活力
+- **灵感来源**：80 年代商场、VHS 录像带、早期互联网、希腊雕塑、日本 City Pop
 
-## 必须遵守
+---
 
-- 粉紫青渐变 bg-gradient-to-r from-pink-500 via-purple-500 to-cyan-500
-- 霓虹发光 shadow-[0_0_20px_rgba(255,113,206,0.5)]
-- 深色背景 bg-purple-900, bg-pink-900
-- 网格线背景装饰
-- 大写字母和宽字距 uppercase tracking-wider
+## 核心视觉原则
+
+### 1. 背景基础
+\`\`\`
+REQUIRED: Deep purple/pink gradient or solid dark colors
+- bg-purple-900, bg-pink-900, bg-indigo-900
+- bg-gradient-to-b from-purple-900 via-pink-900 to-indigo-900
+
+Add grid overlay for depth:
+bg-[linear-gradient(rgba(255,113,206,0.1)_1px,transparent_1px),linear-gradient(90deg,rgba(255,113,206,0.1)_1px,transparent_1px)]
+bg-[size:50px_50px]
+\`\`\`
+
+### 2. 霓虹发光系统（双色）
+\`\`\`
+REQUIRED: Pink + Cyan dual glow (NOT single color)
+
+TEXT GLOW:
+style={{ textShadow: '2px 2px 0px rgba(185,103,255,0.5)' }}
+
+ELEMENT GLOW:
+shadow-[0_0_20px_rgba(255,113,206,0.5)]  // Pink
+shadow-[0_0_20px_rgba(1,205,254,0.5)]    // Cyan
+shadow-[4px_4px_0_rgba(1,205,254,0.6)]   // Hard offset shadow
+
+DUAL IRRADIATION (ghosting effect):
+shadow-[0_10px_30px_rgba(255,113,206,0.2)]
+hover:shadow-[0_0_50px_rgba(1,205,254,0.4)]
+\`\`\`
+
+### 3. 渐变文字
+\`\`\`jsx
+<h1 className="text-transparent bg-clip-text 
+  bg-gradient-to-r from-pink-400 via-purple-400 to-cyan-400">
+  VAPORWAVE
+</h1>
+\`\`\`
+
+### 4. 边框系统
+\`\`\`
+Asymmetric neon borders:
+border-t-2 border-l-2 border-[#ff71ce]/50 
+border-b-4 border-r-4 border-[#01cdfe]/50
+\`\`\`
+
+---
+
+## 交互规范
+
+### Hover 效果（Aesthetic Warp）
+| 元素 | 效果 | 实现 |
+|---------|--------|----------------|
+| 按钮 | 渐变流动 + 上浮 | bg-[length:200%_auto] hover:bg-right hover:-translate-y-1 |
+| 卡片 | 旋转 + 阴影偏移 | hover:-translate-y-2 hover:rotate-1 hover:shadow-[0_0_50px_...] |
+| 文字 | 字距扩展 | group-hover:tracking-[0.4em] |
+
+### Active 状态（Glitch/Error Snap）
+\`\`\`
+active:rotate-0 
+active:translate-x-[6px] active:translate-y-[6px] 
+active:shadow-none
+\`\`\`
+模拟旧系统错误弹窗式反馈：突兀的错位位移。
+
+### 高光扫光（Specular Sweep）
+\`\`\`jsx
+<span className="absolute inset-0 
+  bg-gradient-to-r from-transparent via-white/30 to-transparent 
+  -translate-x-full 
+  group-hover:translate-x-full 
+  transition-transform duration-700" />
+\`\`\`
+
+---
+
+## 动画规则
+
+### 交互物理特性
+- **Aesthetic Warp**: Hover 引入轻微旋转、位移与渐变流动。使用 \`bg-[length:200%_auto] hover:bg-right\`。
+- **Glitch/Error Snap**: Active 使用突兀的偏移（translate-x + translate-y），模拟错误弹窗式反馈。
+- **Dual-Color Irradiation**: 发光必须同时呈现粉色 #ff71ce 与青色 #01cdfe 的双重重影。
+- **Floating Slowness**: 非点击动画使用 \`duration-500\` 到 \`duration-700\`，营造数字废墟中缓慢漂浮的感觉。
+
+### 时序指南
+| 交互 | 时长 | 缓动 |
+|-------------|----------|--------|
+| Hover 上浮 | 300-500ms | ease-out |
+| 渐变流动 | 500ms | ease-out |
+| Active 按下 | instant | — |
+| 网格缩放 | 700ms | ease-in-out |
+
+---
 
 ## 配色
 
-主色调：
-- 粉色: #ff71ce, from-pink-500
-- 青色: #01cdfe, from-cyan-500
-- 紫色: #b967ff, from-purple-500
-- 绿色: #05ffa1
-- 黄色: #fffb96
+### 主霓虹色
+| Token | Hex | Tailwind | Usage |
+|-------|-----|----------|-------|
+| 霓虹粉 | #ff71ce | pink-400 | 主色、标题 |
+| 霓虹青 | #01cdfe | cyan-400 | 链接、强调色 |
+| 霓虹紫 | #b967ff | purple-400 | 次要色 |
+| 霓虹绿 | #05ffa1 | — | 高亮 |
+| 霓虹黄 | #fffb96 | — | 特殊元素 |
+
+### 背景与表面
+| Token | Value | Usage |
+|-------|-------|-------|
+| 深背景 | bg-purple-900 | 主背景 |
+| 面板背景 | bg-[#2b0057]/60 | 卡片背景 |
+| 主文字 | text-pink-100 | 正文文字 |
+| 发光文字 | text-[#ff71ce] | 强调文字 |
+
+---
+
+## 排版
+
+| 元素 | 类名 |
+|---------|---------|
+| 标题 | font-black uppercase tracking-[0.2em] text-transparent bg-clip-text bg-gradient-... |
+| 正文 | font-medium leading-relaxed drop-shadow-[0_0_5px_rgba(255,113,206,0.5)] |
+| 标签 | font-mono font-bold text-xs uppercase |
+
+---
 
 ## 特殊元素
 
-- 日文文字装饰
-- 希腊雕塑图片
-- 棕榈树、日落元素
-- VHS 故障效果
+### 装饰元素
+- 日文文字：アエステティック、新しい、仮想現実
+- 希腊雕像/半身像意象
+- 棕榈树、日落地平线
+- VHS 扫描线与故障效果
+- Windows 95/98 界面元素
+- 透视网格地面
 
-## Animation & Interaction Rules
+### 网格背景
+\`\`\`jsx
+<div className="absolute inset-0 
+  bg-[linear-gradient(rgba(255,113,206,0.2)_1px,transparent_1px),linear-gradient(90deg,rgba(1,205,254,0.2)_1px,transparent_1px)] 
+  bg-[size:15px_15px] 
+  opacity-20 group-hover:opacity-50 group-hover:scale-110 
+  transition-all duration-700" 
+  style={{ transform: "perspective(200px) rotateX(45deg)" }} />
+\`\`\`
 
-- Aesthetic Warp: hover 引入轻微旋转与位移，并驱动渐变流动（如 bg-[length:200%_auto] + hover:bg-right）。
-- Glitch/Error Snap: active 使用突兀错位（如 translate-x / -translate-y），模拟旧系统故障弹窗反馈。
-- Dual-Color Irradiation: 发光必须呈现粉色 #ff71ce 与青色 #01cdfe 双重散射重影。
-- Floating Slowness: 非点击动画使用 duration-500 左右，营造互联网废墟中的缓慢漂浮感。
+---
 
-## Layout & Spacing
-- Section padding: py-16 md:py-24
-- Card padding: p-6 md:p-8
-- Gap between cards: gap-6 md:gap-8
-- Max content width: max-w-6xl mx-auto
+## 禁止事项
 
-## Responsive Design
-- Mobile-first approach with Tailwind breakpoints
-- Stack elements vertically on mobile (flex-col), row on desktop (md:flex-row)
-- Reduce font sizes on mobile: text-3xl md:text-5xl for headings
-- Touch-friendly targets: min 44px for interactive elements
+| 模式 | 原因 |
+|---------|--------|
+| 单调灰色/黑白配色 | 破坏复古的鲜活感 |
+| 现代极简设计 | 与极繁美学相悖 |
+| 省略霓虹发光 | 丧失蒸汽波辨识度 |
+| 正式衬线字体 | 年代错位、氛围不对 |
+| 单色发光 | 必须呈现粉青双色重影 |
+| 过快的交互 | 应使用缓慢梦幻的节奏 |
 
-## Self-Check Verification
-After generating code, verify:
-1. All interactive elements have hover/focus/active states
-2. Color contrast meets WCAG 2.1 AA (4.5:1 for text)
-3. Layout is responsive across breakpoints
-4. Typography hierarchy is clear (h1 > h2 > h3 > body)
-5. Spacing is consistent using the defined scale
-6. All animations respect prefers-reduced-motion`,
+---
+
+## 响应式指南
+
+### 发光缩放
+\`\`\`
+Mobile: shadow-[0_0_10px_...]
+Desktop (md:): shadow-[0_0_20px_...]
+\`\`\`
+
+### 网格尺寸
+\`\`\`
+Mobile: bg-[size:30px_30px]
+Desktop: bg-[size:50px_50px]
+\`\`\`
+
+---
+
+## 自检清单
+
+输出代码前，请确认：
+- [ ] 背景是紫粉渐变或纯深紫色
+- [ ] 霓虹发光同时使用粉色与青色（双色重影）
+- [ ] 主要区块上叠加了网格线
+- [ ] 主标题使用渐变文字
+- [ ] Hover 包含旋转/位移/渐变流动
+- [ ] Active 使用突兀偏移（glitch snap）
+- [ ] 过渡时长在 duration-500 以上，营造漂浮感
+- [ ] 合适位置有日文装饰文字
+- [ ] 边框是非对称的（右下更粗）`,
 
   aiRulesEn: `# Vaporwave / Neon Retro Design System
 
