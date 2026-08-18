@@ -47,7 +47,7 @@ const preview = {
             </div>
             <div className="px-2 py-[1px] font-mono text-[8px] text-white/60">ITEM</div>
             <div className="px-2 py-[1px] font-mono text-[8px] text-white/60">RUN</div>
-            <div className="ml-auto font-mono text-[8px] text-[#50c878]">▶</div>
+            <div className="ml-auto h-0 w-0 border-y-[4px] border-l-[6px] border-y-transparent border-l-[#50c878]" />
           </div>
         </div>
       </div>
