@@ -354,60 +354,60 @@ Core principles:
   animation: dark-mode-fade-in 0.5s ease-out both;
 }`,
 
-  aiRules: `STYLE: Dark Mode
-TYPE: Professional dark interface design
+  aiRules: `风格：Dark Mode（暗色模式）
+类型：专业的暗色界面设计
 
-MUST USE:
-- Dark backgrounds: bg-slate-900, bg-gray-900, bg-[#0f172a]
-- Card backgrounds: bg-slate-800/50 (semi-transparent) at rest, bg-slate-800 on hover
-- Low contrast borders: border-slate-700 at rest, border-slate-500 on hover (border illumination)
-- Text hierarchy: text-slate-100 (primary), text-slate-400 (secondary); secondary brightens to group-hover:text-slate-300
-- Saturated accent colors: blue-500, green-500
-- Inset top-edge glow on buttons: shadow-[inset_0_1px_0_rgba(255,255,255,0.15)]
-- Hover states: hover:bg-slate-800, hover:bg-white/5
-- Standard rounded corners: rounded-lg, rounded-xl
+必须使用：
+- 深色背景：bg-slate-900、bg-gray-900、bg-[#0f172a]
+- 卡片背景：静止时 bg-slate-800/50（半透明），hover 时 bg-slate-800
+- 低对比度边框：静止时 border-slate-700，hover 时 border-slate-500（边框点亮效果）
+- 文字层级：text-slate-100（主要）、text-slate-400（次要）；次要文字 hover 时提亮为 group-hover:text-slate-300
+- 高饱和度强调色：blue-500、green-500
+- 按钮的内嵌顶边高光：shadow-[inset_0_1px_0_rgba(255,255,255,0.15)]
+- hover 状态：hover:bg-slate-800、hover:bg-white/5
+- 标准圆角：rounded-lg、rounded-xl
 
-MUST AVOID:
-- Pure white text (too harsh)
-- High contrast borders
-- Pure black background (#000000)
-- Dark text on dark backgrounds
-- Too many highlight colors
-- Light-colored shadows (light shadows invisible on dark backgrounds)
-- Buttons without active:scale-[0.98] (no tactile confirmation)
-- focus:ring without focus:ring-offset-slate-900 (ring invisible on dark background)
+必须避免：
+- 纯白色文字（过于刺眼）
+- 高对比度边框
+- 禁止纯黑色背景（#000000）
+- 深色背景上使用深色文字
+- 过多的高亮颜色
+- 浅色阴影（浅色阴影在深色背景上不可见）
+- 按钮缺少 active:scale-[0.98]（没有触觉确认）
+- focus:ring 缺少 focus:ring-offset-slate-900（焦点环在深色背景上不可见）
 
-COLOR HIERARCHY:
-- Background: slate-900 (#0f172a)
-- Surface: slate-800/50 → slate-800 on hover
-- Border: slate-700 → slate-500 on hover
-- Text primary: slate-100 → white on group-hover
-- Text secondary: slate-400 → slate-300 on group-hover
-- Accent: blue-500, green-500
+色彩层级：
+- 背景：slate-900（#0f172a）
+- 表面：slate-800/50 → hover 时 slate-800
+- 边框：slate-700 → hover 时 slate-500
+- 主要文字：slate-100 → group-hover 时 white
+- 次要文字：slate-400 → group-hover 时 slate-300
+- 强调色：blue-500、green-500
 
-TYPOGRAPHY:
-- Headings: font-semibold text-slate-100
-- Body: text-slate-300 or text-slate-400
+字体排版：
+- 标题：font-semibold text-slate-100
+- 正文：text-slate-300 或 text-slate-400
 
-## Animation & Interaction Rules
+## 动效与交互规则
 
-- Illumination Physics: On hover, borders brighten from slate-700 to slate-500 (hover:border-slate-500). This simulates a nearby light source illuminating the card's edge — NOT a background change. Combined with hover:bg-slate-800 (surface rises slightly), the effect is of a surface catching light.
-- Text Light-Up: Secondary text (text-slate-400) transitions to group-hover:text-slate-300. Title text (text-slate-200) to group-hover:text-white. Use transition-colors duration-200. The card must use the group class.
-- Inset Glow Button: Primary buttons use shadow-[inset_0_1px_0_rgba(255,255,255,0.15)] at rest (top edge highlight simulating overhead light). On hover: shadow-[inset_0_1px_0_rgba(255,255,255,0.2),0_0_10px_rgba(59,130,246,0.3)] — glow intensifies and bleeds outward. On active: shadow-[inset_0_2px_4px_rgba(0,0,0,0.3)] — inset depression shadow simulates the button being physically pressed down.
-- Tactile Confirmation: ALL buttons must use active:scale-[0.98]. The 2% scale reduction is the minimum signal that a press occurred. Without it, a dark button feels completely unresponsive.
-- Focus Ring Visibility: ALWAYS pair focus:ring-2 with focus:ring-offset-2 focus:ring-offset-slate-900. Without ring-offset-slate-900, the ring merges with the dark background and becomes invisible — violating WCAG 2.1 AA.
-- Card Elevation: hover:-translate-y-0.5 + hover:shadow-[0_8px_30px_rgba(0,0,0,0.5)] — the deep dark shadow reinforces the dark environment. Never use light-colored shadows on dark backgrounds.
-- Easing: duration-200 ease-out for buttons and interactive controls. duration-300 ease-out for card-level transitions. Never exceed duration-300.
+- 光照物理：hover 时，边框从 slate-700 提亮到 slate-500（hover:border-slate-500）。这模拟的是附近光源照亮卡片边缘的效果——而不是背景色的变化。再配合 hover:bg-slate-800（表面轻微提亮），整体效果就是表面正在捕捉光线。
+- 文字点亮：次要文字（text-slate-400）过渡为 group-hover:text-slate-300。标题文字（text-slate-200）过渡为 group-hover:text-white。使用 transition-colors duration-200。卡片必须使用 group 类。
+- 内嵌高光按钮：主要按钮静止时使用 shadow-[inset_0_1px_0_rgba(255,255,255,0.15)]（顶边高光，模拟头顶光源）。hover 时：shadow-[inset_0_1px_0_rgba(255,255,255,0.2),0_0_10px_rgba(59,130,246,0.3)]——光晕增强并向外扩散。active 时：shadow-[inset_0_2px_4px_rgba(0,0,0,0.3)]——内凹阴影模拟按钮被物理按下的效果。
+- 触觉确认：所有按钮都必须使用 active:scale-[0.98]。这 2% 的缩放幅度是"按下已发生"的最低限度信号。缺少它，深色按钮会显得完全没有反馈。
+- 焦点环可见性：务必将 focus:ring-2 与 focus:ring-offset-2 focus:ring-offset-slate-900 搭配使用。缺少 ring-offset-slate-900，焦点环会与深色背景融为一体而变得不可见——违反 WCAG 2.1 AA。
+- 卡片抬升：hover:-translate-y-0.5 + hover:shadow-[0_8px_30px_rgba(0,0,0,0.5)]——这一深色阴影强化了整体的暗色环境。切勿在深色背景上使用浅色阴影。
+- 缓动：按钮和交互控件使用 duration-200 ease-out；卡片级过渡使用 duration-300 ease-out。时长永远不超过 duration-300。
 
-## Self-Check
+## 自检清单
 
-After generating code, verify:
-1. All buttons have active:scale-[0.98]
-2. All focusable elements have focus:ring-2 focus:ring-{color}-500 focus:ring-offset-2 focus:ring-offset-slate-900
-3. Cards use group class; text uses group-hover:text-* for light-up
-4. Card hover: border brightens (hover:border-slate-500) + bg lightens (hover:bg-slate-800) + hover:-translate-y-0.5
-5. Button shadows use inset for glow, deep dark for elevation
-6. No light-colored shadows anywhere`,
+生成代码后，请逐项确认：
+1. 所有按钮都有 active:scale-[0.98]
+2. 所有可聚焦元素都有 focus:ring-2 focus:ring-{color}-500 focus:ring-offset-2 focus:ring-offset-slate-900
+3. 卡片使用 group 类；文字使用 group-hover:text-* 实现点亮效果
+4. 卡片 hover 时：边框提亮（hover:border-slate-500）+ 背景变亮（hover:bg-slate-800）+ hover:-translate-y-0.5
+5. 按钮阴影：内嵌阴影表现光晕，深色阴影表现抬升
+6. 任何地方都不使用浅色阴影`,
 
   aiRulesEn: `STYLE: Dark Mode
 TYPE: Professional dark interface design

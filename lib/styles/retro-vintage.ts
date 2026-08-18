@@ -230,42 +230,42 @@ Core principles:
   }
 }`,
 
-  aiRules: `STYLE: Retro Vintage
-TYPE: Nostalgic, classic design aesthetic
+  aiRules: `风格：Retro Vintage（复古怀旧风）
+类型：怀旧经典的设计美学
 
-MUST USE:
-- Vintage color palette: sepia, amber, brown tones
-- Paper texture or aged effects on backgrounds
-- Serif fonts or vintage sans-serif
-- Thick borders: border-2 or border-4
-- Decorative elements (corner ornaments, dividers)
-- Old-style typography: uppercase, tracking-widest
-- Image filters: sepia, brightness-90
+必须使用：
+- 复古配色：棕褐色、琥珀色、棕色调
+- 背景使用纸张纹理或做旧效果
+- 衬线字体或复古无衬线字体
+- 粗边框：border-2 或 border-4
+- 装饰性元素（角部装饰、分隔线）
+- 旧式排版：大写字母、tracking-widest
+- 图片滤镜：sepia、brightness-90
 
-MUST AVOID:
-- Modern gradients
-- Neon/high saturation colors
-- Minimalist/flat modern design
-- Very rounded corners
-- Glass morphism effects
-- Heavy animations
+必须避免：
+- 现代渐变
+- 霓虹色/高饱和度色彩
+- 极简/扁平化的现代设计
+- 过大的圆角
+- 玻璃拟态效果
+- 厚重的动画
 
-COLOR PALETTE:
-- Primary: Saddle brown (#8b4513)
-- Background: Cream/Parchment (#f5e6d3)
-- Accent: Rust red (#c94c4c), Forest green (#2e4a3f)
+配色方案：
+- 主色：鞍棕色（#8b4513）
+- 背景：奶油色/羊皮纸色（#f5e6d3）
+- 强调色：铁锈红（#c94c4c）、森林绿（#2e4a3f）
 
-TYPOGRAPHY:
-- Headings: font-serif, uppercase option
-- Labels: text-xs uppercase tracking-[0.2em]
-- Body: font-serif, relaxed leading
+字体排版：
+- 标题：font-serif，可选大写
+- 标签：text-xs uppercase tracking-[0.2em]
+- 正文：font-serif，宽松行距
 
-## Animation & Interaction Rules
+## 动效与交互规则
 
-- Antique Stillness: Absolutely zero \`scale\` or \`translate-y\` motion. Old parchment lies flat on the table — it does not float, lift, or bounce. Forbidden: \`hover:-translate-y-*\`, \`hover:scale-*\`.
-- Ink & Oxidation: Hover subtly darkens the background (\`hover:bg-[#eedbc2]\`) and deepens text color (\`group-hover:text-[#5c2e0a]\`). This simulates paper yellowing and ink darkening over time — not a modern color swap.
-- Slow Passage of Time: All transitions must use \`duration-700 ease-in-out\` or longer. Historical materials change slowly. Never use \`duration-150\` or faster.
-- Corner Reveal: Decorative corner ornaments use \`opacity-30 group-hover:opacity-100 transition-opacity duration-700\` — as if readers discover hidden details by leaning in closely.`,
+- 古董般的静止：绝对不使用任何 \`scale\` 或 \`translate-y\` 动效。陈旧的羊皮纸平铺在桌面上——它不会漂浮、上升，也不会弹跳。禁止使用：\`hover:-translate-y-*\`、\`hover:scale-*\`。
+- 墨迹与氧化：hover 时背景微妙地变暗（\`hover:bg-[#eedbc2]\`），文字颜色随之加深（\`group-hover:text-[#5c2e0a]\`）。这模拟的是纸张随时间泛黄、墨迹随时间加深的过程，而不是现代式的色彩切换。
+- 缓慢的时间流逝：所有过渡效果必须使用 \`duration-700 ease-in-out\` 或更长时长。历史材质的变化是缓慢的，切勿使用 \`duration-150\` 或更快的时长。
+- 边角显现：装饰性边角元素使用 \`opacity-30 group-hover:opacity-100 transition-opacity duration-700\`——仿佛读者需要凑近细看，才能发现隐藏的细节。`,
 
   aiRulesEn: `STYLE: Retro Vintage
 TYPE: Nostalgic, classic design aesthetic
@@ -299,10 +299,10 @@ TYPOGRAPHY:
 
 ## Animation & Interaction Rules
 
-- Antique Stillness: Absolutely zero scale or translate-y motion. Old parchment lies flat on the table -- it does not float, lift, or bounce. Forbidden: hover:-translate-y-*, hover:scale-*.
-- Ink & Oxidation: Hover subtly darkens the background (hover:bg-[#eedbc2]) and deepens text color (group-hover:text-[#5c2e0a]). This simulates paper yellowing and ink darkening over time -- not a modern color swap.
-- Slow Passage of Time: All transitions must use duration-700 ease-in-out or longer. Historical materials change slowly. Never use duration-150 or faster.
-- Corner Reveal: Decorative corner ornaments use opacity-30 group-hover:opacity-100 transition-opacity duration-700 -- as if readers discover hidden details by leaning in closely.`,
+- Antique Stillness: Absolutely zero \`scale\` or \`translate-y\` motion. Old parchment lies flat on the table -- it does not float, lift, or bounce. Forbidden: \`hover:-translate-y-*\`, \`hover:scale-*\`.
+- Ink & Oxidation: Hover subtly darkens the background (\`hover:bg-[#eedbc2]\`) and deepens text color (\`group-hover:text-[#5c2e0a]\`). This simulates paper yellowing and ink darkening over time -- not a modern color swap.
+- Slow Passage of Time: All transitions must use \`duration-700 ease-in-out\` or longer. Historical materials change slowly. Never use \`duration-150\` or faster.
+- Corner Reveal: Decorative corner ornaments use \`opacity-30 group-hover:opacity-100 transition-opacity duration-700\` -- as if readers discover hidden details by leaning in closely.`,
 
   examplePrompts: [
     {
