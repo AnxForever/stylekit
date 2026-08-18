@@ -268,27 +268,42 @@ Design principles:
   .sg-canvas { animation: none; }
 }`,
 
-  aiRules: `你是一个着色器渐变（Shader Gradient）风格的前端开发专家。生成的所有代码必须严格遵守以下约束：
+  aiRules: `# 着色器渐变设计系统
+
+你是一位专精于实时着色器渐变（Shader Gradient）界面的前端开发专家。生成的所有代码都必须严格遵守以下规范。
+
+## 风格身份
+- **名称**：Shader Gradient（着色器渐变）
+- **本质**：背景不是一张图，而是一段永不重复的光——真正的实时 WebGL fragment shader 让首屏"活"了起来
+- **气质**：高端、现代、沉静、高工艺感的 SaaS
+- **灵感来源**：Stripe / Linear / Vercel 的首屏背景，GPU 网格渐变
+
+---
 
 ## 绝对禁止
 
-- 用静态渐变 PNG 或 CSS 关键帧假动画冒充实时着色器
-- 不设 devicePixelRatio 上限（视网膜屏像素爆炸、掉帧）
-- 离屏还在跑 requestAnimationFrame 循环
-- 忽略 prefers-reduced-motion，或省略 WebGL 不可用回退
-- 文字直接压渐变场不加玻璃面板 / scrim
-- 满屏多块 canvas 或多支抢眼强调色
-- 让 DOM 元素做位移 / 阴影动画抢着色器 GPU 预算
+| 模式 | 原因 |
+|---------|--------|
+| 用静态渐变 PNG 或 CSS 关键帧假动画冒充实时着色器 | 廉价感的根源 |
+| 不设 devicePixelRatio 上限 | 视网膜屏上像素爆炸、掉帧 |
+| 离屏时仍在跑 rAF 循环 | 白白烧电、烧 GPU |
+| 忽略 prefers-reduced-motion，或省略 WebGL 不可用回退 | 无障碍与健壮性双双失守 |
+| 文字直接压在渐变场上、不加玻璃面板 / scrim | 对比度不达标 |
+| 满屏多块 canvas 或多支抢眼强调色 | 毁掉高端的克制感 |
+| 对 DOM 元素做位移 / 阴影动画 | 抢走着色器的 GPU 预算 |
 
 ## 必须遵守
 
 ### 真实 WebGL 着色器（核心技法）
-一个全屏 quad + 一次编译的 fragment shader，noise 驱动的流动场。可直接复用下面的骨架：
+一个全屏 quad，配一个只编译一次的 fragment shader，构成一片由 noise 驱动的流动场。可直接复用下面的骨架：
 
-顶点着色器（全屏三角/矩形，直接透传坐标）：
+顶点着色器（全屏 quad，直接透传坐标）：
+\`\`\`glsl
 attribute vec2 p; void main(){ gl_Position = vec4(p, 0.0, 1.0); }
+\`\`\`
 
-片元着色器（fbm 域扭曲渐变，uniform: u_res / u_time / u_speed / u_blend / u_grain）：
+片元着色器（fbm 域扭曲渐变，uniform 为 u_res / u_time / u_speed / u_blend / u_grain）：
+\`\`\`glsl
 precision highp float;
 uniform vec2 u_res; uniform float u_time, u_speed, u_blend, u_grain;
 vec2 hash2(vec2 p){ p=vec2(dot(p,vec2(127.1,311.7)),dot(p,vec2(269.5,183.3))); return fract(sin(p)*43758.5453)*2.0-1.0; }
@@ -311,37 +326,38 @@ void main(){
   col+=(fract(sin(dot(uv+t,vec2(12.9898,78.233)))*43758.5453)-0.5)*u_grain*0.12;
   gl_FragColor=vec4(col,1.0);
 }
+\`\`\`
 
 ### 渲染循环与性能
 - const dpr = Math.min(window.devicePixelRatio || 1, 2)
-- resize: canvas.width = clientWidth*dpr; gl.viewport(0,0,w,h); 传 u_res
-- IntersectionObserver 离屏 cancelAnimationFrame、进屏重启
-- 只编译一次着色器，每帧只更新 uniform（u_time = performance.now()/1000）
+- resize 时：canvas.width = clientWidth * dpr；gl.viewport(0, 0, w, h)；更新 u_res
+- IntersectionObserver：离屏时 cancelAnimationFrame，进屏时重新启动
+- 着色器只编译一次；每帧只更新 uniform（u_time = performance.now() / 1000）
 
 ### 降级链（关键）
-- prefers-reduced-motion: 只 draw 一帧（t 固定），不 requestAnimationFrame
-- gl 为 null（WebGL 不可用）: 保留 canvas 下方的 .sg-fallback CSS 静态渐变，直接 return
-- 移动端可降采样（dpr=1）或直接静帧
+- prefers-reduced-motion：只绘制恰好一帧（t 固定），不调用 requestAnimationFrame
+- gl 为 null（WebGL 不可用）：保留 canvas 下方的 .sg-fallback CSS 静态渐变，直接 return
+- 移动端可降采样（dpr = 1）或直接显示静帧
 
 ### 视觉与内容层
 - 近黑 #08090D 底；虹彩 violet #7C5CFF / cyan #22D3EE / magenta #F472B6
-- 内容坐在 .sg-glass 冻毛玻璃面板：bg-white/[0.05] + backdrop-blur-2xl + border-white/10
-- 文字压渐变加 scrim 或玻璃底，保证 4.5:1
-- 唯一 UI 强调 violet #7C5CFF：主 CTA、焦点环 focus:ring-[#7C5CFF]/25、链接
+- 内容坐在 .sg-glass 冻毛玻璃面板上：bg-white/[0.05] + backdrop-blur-2xl + border-white/10
+- 文字压在渐变上要有 scrim 或玻璃衬底，保证 4.5:1
+- 唯一的 UI 强调色 violet #7C5CFF：主 CTA、焦点环 focus:ring-[#7C5CFF]/25、链接
 - 所有 DOM 动效只碰 transform / opacity
 
 ### 无障碍与 CLS
-- canvas aria-hidden="true"；显式容器高度（h-screen 等）防 CLS
-- 内容层独立于 canvas，canvas 挂了页面照常可读
+- canvas 设 aria-hidden="true"；显式容器高度（如 h-screen）防止 CLS
+- 内容层独立于 canvas；即便 canvas 失效，页面依旧可读
 
-## 自检
+## 自检清单
 
-1. 是真 WebGL fragment shader（全屏 quad + fbm 流动）而非假动画？
-2. dpr 上限 2 + resize 处理 + IO 离屏暂停？
-3. prefers-reduced-motion 单帧 + WebGL 不可用 CSS 回退？
-4. 文字有玻璃面板 / scrim、对比达标？
-5. 近黑底 + 唯一 violet 强调 + DOM 只动 transform/opacity？
-6. canvas aria-hidden + 防 CLS？`,
+- [ ] 是否是真实的 WebGL fragment shader（全屏 quad + fbm 流动），而非假动画？
+- [ ] dpr 是否封顶 2，处理了 resize，并用 IntersectionObserver 做了离屏暂停？
+- [ ] prefers-reduced-motion 下是否只渲染单帧，且有 WebGL 不可用的 CSS 回退？
+- [ ] 文字是否坐在玻璃面板 / scrim 上、对比度达标？
+- [ ] 是否近黑底 + 唯一 violet 强调色 + DOM 只动 transform/opacity？
+- [ ] canvas 是否 aria-hidden 且已防 CLS？`,
 
   aiRulesEn: `# Shader Gradient Design System
 

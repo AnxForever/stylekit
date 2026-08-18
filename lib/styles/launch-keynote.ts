@@ -267,26 +267,38 @@ Design principles:
   .lk-scrub { min-height: 100vh; }
 }`,
 
-  aiRules: `你是一个发布会主题（Launch Keynote）风格的前端开发专家。生成的所有代码必须严格遵守以下约束：
+  aiRules: `# 发布会主题设计系统
+
+你是一位专精于苹果发布会式产品揭幕界面的前端开发专家。生成的所有代码都必须严格遵守以下规范。
+
+## 风格身份
+- **名称**：Launch Keynote（发布会主题）
+- **本质**：页面是一场产品揭幕——纯黑舞台、滚动逐帧擦除的画面序列，一屏只讲一个产品、一句话
+- **气质**：高端、电影感、克制，万亿市值公司级别的产品页
+- **灵感来源**：apple.com 的产品页、发布会揭幕、旗舰硬件发布
+
+---
 
 ## 绝对禁止
 
-- 多彩渐变或第二支强调色（唯一电蓝之外全是黑白灰）
-- 在滚动处理器里逐帧读 offsetTop / getBoundingClientRect（layout thrash）
-- 页面一载就预载全部帧（必须 IO 懒加载）
-- 把关键信息烘焙进帧图（帧可能没加载 / reduced-motion 只显一帧）
-- 卡片边框、圆角装饰堆砌破坏纯黑舞台的无限深
-- 忽略 prefers-reduced-motion 与 devicePixelRatio 封顶
+| 模式 | 原因 |
+|---------|--------|
+| 彩虹渐变或第二支强调色 | 唯一的电蓝之外，必须全是黑/白/灰 |
+| 在滚动处理器里逐帧读取 offsetTop / getBoundingClientRect | layout thrash（布局抖动） |
+| 页面一载就预载全部帧 | 流量灾难；必须通过 IntersectionObserver 懒加载 |
+| 把关键信息烘焙进帧图里 | 帧可能没加载；reduced-motion 下只显示一帧 |
+| 堆砌卡片边框和圆角装饰 | 破坏纯黑舞台的无限深邃感 |
+| 忽略 prefers-reduced-motion 或 devicePixelRatio 封顶 | 无障碍失效、内存爆炸 |
 
 ## 必须遵守
 
 ### 纯黑舞台 + 唯一电蓝
-- 背景恒 #000000，抬升面 #1D1D1F，文字近白 #F5F5F7，次要中灰 #86868B
-- 全站唯一强调 #2997FF（按下态 #0071E3）：链接、CTA、关键规格数字
-- 无装饰纹理；留白即戏剧张力；一屏一产品一句话
+- 背景恒为 #000000，抬升面 #1D1D1F，文字近白 #F5F5F7，次要文字中灰 #86868B
+- 全站只有一支强调色 #2997FF（按下态 #0071E3）：用于链接、CTA、关键规格数字
+- 无装饰纹理；留白即戏剧张力；一屏只承载一个产品、一句话
 
-### 招牌：滚动逐帧序列（scroll-scrub）
-结构 = 一个高 ~350vh 的 section，内含 sticky top-0 h-screen 的 canvas：
+### 招牌技法：滚动逐帧序列
+结构 = 一个约 350vh 高的 section，内含一个 sticky top-0 h-screen 的 canvas：
 \`\`\`html
 <section class="relative h-[350vh]">
   <div class="sticky top-0 h-screen flex items-center justify-center">
@@ -295,7 +307,7 @@ Design principles:
 </section>
 \`\`\`
 
-懒加载（进视口才预载 96 帧 webp）：
+懒加载（仅在进入视口时预载 96 张 webp 帧）：
 \`\`\`js
 const io = new IntersectionObserver(([e]) => {
   if (!e.isIntersecting) return; io.disconnect();
@@ -308,7 +320,7 @@ const io = new IntersectionObserver(([e]) => {
 io.observe(sectionEl);
 \`\`\`
 
-rAF 滚动擦除（一帧只读一次滚动位置）：
+rAF 擦除（每帧只读一次滚动位置）：
 \`\`\`js
 let raf = 0;
 function draw() {
@@ -318,39 +330,39 @@ function draw() {
   const p = Math.min(1, Math.max(0, -rect.top / total));
   const idx = Math.min(95, Math.floor(p * 95));
   const img = frames[idx];
-  if (img && img.complete) paint(canvas, img); // 缓存上一帧，未加载则保留
+  if (img && img.complete) paint(canvas, img); // keep last frame if not loaded
 }
 addEventListener("scroll", () => { if (!raf) raf = requestAnimationFrame(draw); }, { passive: true });
 \`\`\`
 
-canvas 尺寸（devicePixelRatio 感知、封顶 2）：
+canvas 尺寸（感知 devicePixelRatio，封顶 2）：
 \`\`\`js
 const dpr = Math.min(2, devicePixelRatio || 1);
 canvas.width = w * dpr; canvas.height = h * dpr;
 ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-// object-fit: contain 手绘：算出等比缩放，黑边留白
+// object-fit: contain by hand: compute a uniform scale, letterbox with black
 \`\`\`
 
-帧数/尺寸：webp 序列（如 1280x720），96 帧左右；始终配 poster.webp 先画防白屏。
+帧数/尺寸：一套 webp 序列（如 1280x720），约 96 帧；始终配一张先绘制的 poster.webp，避免白屏。
 
 ### callout 里程碑
-3-4 个文字块在特定进度（如 p>0.2, p>0.5, p>0.8）淡入 + translateY，只动 opacity/transform。
+3-4 个文字块在特定进度点（如 p>0.2、p>0.5、p>0.8）淡入 + translateY，只对 opacity/transform 做动画。
 
-### 降级（关键）
-- prefers-reduced-motion: 不绑滚动，静态渲染最终帧 frame-0095，所有 callout 直接可见
-- 帧未加载：保留上一帧（drawn 缓存），绝不清屏白闪
+### 降级方案（关键）
+- prefers-reduced-motion：跳过滚动绑定，静态渲染最终帧 frame-0095，所有 callout 全部可见
+- 帧未加载：保留上一次绘制的帧（drawn 缓存），绝不清屏留白闪烁
 
 ### 排版
-系统 SF 栈：-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto...；hero clamp 到 ~7rem，字距 -0.03em；权重 600/400 两档；规格用大数字网格。
+系统 SF 字体栈：-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto...；hero 用 clamp 冲到约 7rem，字距 -0.03em；权重对比 600/400 两档；规格用大数字网格呈现。
 
-## 自检
+## 自检清单
 
-1. 背景纯黑 + 唯一电蓝，无第二强调色？
-2. scrub = sticky canvas + rAF，一帧只读一次滚动？
-3. 96 帧 IO 懒加载，poster 先画，未加载保留上一帧？
-4. devicePixelRatio 封顶 2、显式 aspect-ratio 防 CLS？
-5. prefers-reduced-motion 静态渲染最终帧 + callout 全可见？
-6. 关键信息在文字层不在帧里？`,
+- [ ] 背景是否纯黑，只有一支电蓝强调色、没有第二支？
+- [ ] 擦除是否为 sticky canvas + rAF、每帧只读一次滚动位置？
+- [ ] 96 帧是否通过 IO 懒加载、poster 先绘制、未加载时保留上一帧？
+- [ ] devicePixelRatio 是否封顶 2、有显式 aspect-ratio 防止 CLS？
+- [ ] prefers-reduced-motion 下是否静态渲染最终帧、所有 callout 可见？
+- [ ] 关键信息是否都在文字层，而不是帧图里？`,
 
   aiRulesEn: `# Launch Keynote Design System
 
