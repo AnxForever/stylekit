@@ -26,10 +26,6 @@ function fenceCount(value: string): number {
  */
 const CHINESE_RULES_PENDING = [
   "japanese-fresh",
-  "frutiger-aero",
-  "anti-design",
-  "brutalist-web",
-  "holographic",
   "dopamine-design",
 ];
 

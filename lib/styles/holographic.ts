@@ -288,46 +288,46 @@ Core principles:
   animation: holographic-fade-in 0.5s ease-out both;
 }`,
 
-  aiRules: `## Holographic Style Rules
-- Background: Deep dark (#0a0a1f or #1a0b2e) - cosmic/space feel
-- Primary effect: Rainbow spectrum gradients using linear-gradient with 3+ stops
-- Gradient colors: #ff0080 -> #ff6b00 -> #ffd700 -> #00ff88 -> #00d4ff -> #6366f1 -> #a855f7
-- Cards: Semi-transparent (bg-white/5 to bg-white/10) with backdrop-blur
-- Text highlights: Use bg-clip-text with gradient for headings
-- Borders: Subtle white/10 to white/20 with purple/prismatic glow on hover
-- Animate gradients: Use background-size: 200% and animate background-position
-- Holographic badges: Small elements with full rainbow gradient + shimmer overlay
-- All interactive elements should have prismatic box-shadow on hover
-- Never use light/white backgrounds
-- Never use flat solid colors without gradient treatment
-- Never use muted or desaturated color palettes
+  aiRules: `## 全息风格规则
+- 背景：深邃暗色（#0a0a1f 或 #1a0b2e）— 宇宙深空感
+- 主要效果：使用 3 个以上色停的 linear-gradient 制作彩虹光谱渐变
+- 渐变色序：#ff0080 -> #ff6b00 -> #ffd700 -> #00ff88 -> #00d4ff -> #6366f1 -> #a855f7
+- 卡片：半透明（bg-white/5 到 bg-white/10）配 backdrop-blur
+- 文字高亮：标题使用 bg-clip-text 配合渐变
+- 边框：柔和的 white/10 到 white/20，hover 时呈现紫色/棱镜光晕
+- 渐变动画：使用 background-size: 200% 并对 background-position 做动画
+- 全息徽章：使用完整彩虹渐变 + 微光叠加层的小型元素
+- 所有可交互元素在 hover 时都应有棱镜 box-shadow
+- 禁止使用浅色/白色背景
+- 禁止使用未经渐变处理的纯色
+- 禁止使用低饱和或去饱和配色
 
-## Animation & Interaction Rules
+## 动效与交互规则
 
-### Spectrum Shift (Gradient Slide)
-- Apply bg-[length:200%_auto] to all gradient buttons and card headings
-- On hover: hover:bg-right — gradient slides laterally, simulating angle-dependent holographic foil color shift
-- Transition: transition-[background-position] duration-500 (smooth spectrum sweep)
-- NEVER use hover:bg-right without bg-[length:200%_auto] (no movement without oversized gradient)
+### 光谱位移（渐变滑动）
+- 所有渐变按钮和卡片标题都应用 bg-[length:200%_auto]
+- hover 时：hover:bg-right —— 渐变横向滑动，模拟全息箔随角度变化的变色效果
+- 过渡：transition-[background-position] duration-500（平滑的光谱扫动）
+- 绝不能在没有 bg-[length:200%_auto] 的情况下使用 hover:bg-right（渐变不放大就不会有位移效果）
 
-### Prismatic Glow (Multi-Color Shadow)
-- Button hover: hover:shadow-[0_0_40px_rgba(0,212,255,0.6),0_0_20px_rgba(255,0,128,0.4)] — dual cyan+magenta glows
-- Card hover: hover:shadow-[0_0_30px_rgba(147,51,234,0.3)] — purple prism glow
-- Resting shadow always present: shadow-[0_0_20px_rgba(147,51,234,0.5)]
+### 棱镜光晕（多色阴影）
+- 按钮 hover：hover:shadow-[0_0_40px_rgba(0,212,255,0.6),0_0_20px_rgba(255,0,128,0.4)] —— 青色 + 品红双色光晕
+- 卡片 hover：hover:shadow-[0_0_30px_rgba(147,51,234,0.3)] —— 紫色棱镜光晕
+- 静止状态下始终存在的阴影：shadow-[0_0_20px_rgba(147,51,234,0.5)]
 
-### Liquid Glass (Card Float)
-- Always use group class on card containers
-- Cards: hover:-translate-y-2 hover:bg-white/10 hover:border-purple-400/40
-- Card headings use Spectrum Shift synchronized with card hover via group-hover:bg-right
+### 液态玻璃（卡片浮起）
+- 卡片容器始终使用 group 类
+- 卡片：hover:-translate-y-2 hover:bg-white/10 hover:border-purple-400/40
+- 卡片标题通过 group-hover:bg-right 与卡片 hover 同步实现光谱位移
 
-### Jelly Press (Active State)
-- All buttons: active:scale-95 active:translate-y-0 — jelly press confirms interaction
-- Focus: focus:ring-2 focus:ring-purple-400 focus:ring-offset-2 focus:ring-offset-[#0a0a1f]
-- ring-offset-[#0a0a1f] mandatory — ring invisible on dark cosmic background without it
+### 果冻按压（Active 状态）
+- 所有按钮：active:scale-95 active:translate-y-0 —— 果冻按压确认交互
+- Focus：focus:ring-2 focus:ring-purple-400 focus:ring-offset-2 focus:ring-offset-[#0a0a1f]
+- ring-offset-[#0a0a1f] 是必须的 —— 否则焦点环在深色宇宙背景上会不可见
 
-### Duration
-- Button transitions: duration-500 ease-out (slow = luxurious holographic feel)
-- Card transitions: duration-300 ease-out`,
+### 时长
+- 按钮过渡：duration-500 ease-out（缓慢 = 奢华的全息质感）
+- 卡片过渡：duration-300 ease-out`,
 
   aiRulesEn: `## Holographic Style Rules
 - Background: Deep dark (#0a0a1f or #1a0b2e) - cosmic/space feel
