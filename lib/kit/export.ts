@@ -20,6 +20,7 @@ import { getGradientById, type Gradient } from "@/lib/gradients";
 import { getShadowById, type Shadow } from "@/lib/shadows";
 import { getBackgroundById, type BackgroundPattern } from "@/lib/backgrounds";
 import { exportStyleTokens } from "@/lib/export/figma-tokens";
+import { getStyleTokens } from "@/lib/styles/tokens-registry";
 import { generateTailwindPresetJS } from "@/lib/export/tailwind-preset";
 import type { KitItem } from "./types";
 
@@ -200,7 +201,34 @@ function buildDesignSpec(kit: ResolvedKit, items: KitItem[]): string {
       style.colors.accent.forEach((color, i) => {
         lines.push(`| Accent ${i + 1} | \`${color}\` |`);
       });
+      // The spec used to stop at hex values, so the document that explains the
+      // kit said nothing about radius, shadow, type scale, spacing or motion -
+      // even though the same ZIP ships those tokens as machine-readable files.
+      const tokens = getStyleTokens(style.slug);
+      if (tokens) {
+        lines.push(`| Border | \`${tokens.border.width} ${tokens.border.color}\` |`);
+        lines.push(`| Radius | \`${tokens.border.radius}\` |`);
+        lines.push(`| Shadow (md) | \`${tokens.shadow.md}\` |`);
+        lines.push(`| Shadow (hover) | \`${tokens.shadow.hover}\` |`);
+        lines.push(`| Heading font | \`${tokens.typography.heading}\` |`);
+        lines.push(`| Body font | \`${tokens.typography.body}\` |`);
+        lines.push(`| Type scale | \`${tokens.typography.sizes.hero}\` / \`${tokens.typography.sizes.h2}\` / \`${tokens.typography.sizes.body}\` |`);
+        lines.push(`| Spacing | \`${tokens.spacing.section}\` · \`${tokens.spacing.container}\` · \`${tokens.spacing.card}\` |`);
+        lines.push(`| Gap | \`${tokens.spacing.gap.md}\` |`);
+        lines.push(`| Transition | \`${tokens.interaction.transition}\` |`);
+        if (tokens.interaction.active) {
+          lines.push(`| Active | \`${tokens.interaction.active}\` |`);
+        }
+      }
       lines.push("");
+      if (tokens?.forbidden?.classes.length) {
+        lines.push("**Never use in this style:**");
+        tokens.forbidden.classes.slice(0, 10).forEach((cls) => {
+          const reason = tokens.forbidden.reasons[cls];
+          lines.push(`- \`${cls}\`${reason ? ` - ${reason}` : ""}`);
+        });
+        lines.push("");
+      }
       const doList = style.doListEn ?? style.doList;
       const dontList = style.dontListEn ?? style.dontList;
       if (doList.length) {

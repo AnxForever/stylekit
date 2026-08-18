@@ -33,6 +33,18 @@ function formatTokenReference(tokens: StyleTokens): string {
   const lines: string[] = [];
   lines.push(`- Font (heading): ${tokens.typography.heading}`);
   lines.push(`- Font (body): ${tokens.typography.body}`);
+  if (tokens.typography.mono) {
+    lines.push(`- Font (mono): ${tokens.typography.mono}`);
+  }
+  // The type scale used to be missing here, so an agent reading .cursorrules
+  // knew the radius and shadow of this style but had to guess every heading
+  // size - the fastest way to drift off a style.
+  lines.push(`- Type scale (hero): ${tokens.typography.sizes.hero}`);
+  lines.push(`- Type scale (h1): ${tokens.typography.sizes.h1}`);
+  lines.push(`- Type scale (h2): ${tokens.typography.sizes.h2}`);
+  lines.push(`- Type scale (h3): ${tokens.typography.sizes.h3}`);
+  lines.push(`- Type scale (body): ${tokens.typography.sizes.body}`);
+  lines.push(`- Type scale (small): ${tokens.typography.sizes.small}`);
   lines.push(`- Border radius: ${tokens.border.radius}`);
   lines.push(`- Border width: ${tokens.border.width}`);
   lines.push(`- Border color: ${tokens.border.color}`);
@@ -40,10 +52,20 @@ function formatTokenReference(tokens: StyleTokens): string {
   lines.push(`- Shadow (md): ${tokens.shadow.md}`);
   lines.push(`- Shadow (lg): ${tokens.shadow.lg}`);
   lines.push(`- Shadow (hover): ${tokens.shadow.hover}`);
+  lines.push(`- Shadow (focus): ${tokens.shadow.focus}`);
   lines.push(`- Spacing (section): ${tokens.spacing.section}`);
   lines.push(`- Spacing (container): ${tokens.spacing.container}`);
   lines.push(`- Spacing (card): ${tokens.spacing.card}`);
+  lines.push(`- Gap (sm/md/lg): ${tokens.spacing.gap.sm} / ${tokens.spacing.gap.md} / ${tokens.spacing.gap.lg}`);
   lines.push(`- Transition: ${tokens.interaction.transition}`);
+  const hover =
+    tokens.interaction.hoverTranslate ??
+    tokens.interaction.hoverScale ??
+    tokens.interaction.hoverOpacity;
+  if (hover) lines.push(`- Hover: ${hover}`);
+  if (tokens.interaction.active) {
+    lines.push(`- Active: ${tokens.interaction.active}`);
+  }
   return lines.join("\n");
 }
 

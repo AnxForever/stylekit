@@ -100,10 +100,26 @@ ${aiRules}
 - Transition: \`${tokens.interaction.transition}\`
 ${tokens.interaction.hoverTranslate ? `- Hover Translate: \`${tokens.interaction.hoverTranslate}\`` : ""}
 ${tokens.interaction.hoverScale ? `- Hover Scale: \`${tokens.interaction.hoverScale}\`` : ""}
+${tokens.interaction.hoverOpacity ? `- Hover Opacity: \`${tokens.interaction.hoverOpacity}\`` : ""}
+${tokens.interaction.active ? `- Active: \`${tokens.interaction.active}\`` : ""}
+- Focus: \`${tokens.shadow.focus}\`
 
 ### Typography
 - Heading: \`${tokens.typography.heading}\`
 - Body: \`${tokens.typography.body}\`
+${tokens.typography.mono ? `- Mono: \`${tokens.typography.mono}\`` : ""}
+- Hero size: \`${tokens.typography.sizes.hero}\`
+- H1: \`${tokens.typography.sizes.h1}\`
+- H2: \`${tokens.typography.sizes.h2}\`
+- H3: \`${tokens.typography.sizes.h3}\`
+- Body size: \`${tokens.typography.sizes.body}\`
+- Small: \`${tokens.typography.sizes.small}\`
+
+### Spacing
+- Section: \`${tokens.spacing.section}\`
+- Container: \`${tokens.spacing.container}\`
+- Card: \`${tokens.spacing.card}\`
+- Gap: \`${tokens.spacing.gap.sm}\` / \`${tokens.spacing.gap.md}\` / \`${tokens.spacing.gap.lg}\`
 
 ### Forbidden Classes
 ${tokens.forbidden.classes.map((c) => `- \`${c}\``).join("\n")}
