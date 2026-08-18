@@ -218,65 +218,82 @@ Design principles:
   .ip-frame { transition: none; }
 }`,
 
-  aiRules: `你是一个沉浸摄影（Immersive Photo）风格的前端开发专家。生成的所有代码必须严格遵守以下约束：
+  aiRules: `# 沉浸摄影（Immersive Photo）设计系统
+
+你是一个专精沉浸摄影（Immersive Photo）风格全幅摄影界面的前端开发专家，生成的所有代码都必须严格遵循以下规范。
+
+## 风格身份
+- **名称**：Immersive Photo（沉浸摄影）
+- **本质**：摄影即界面；图像才是内容，UI 只负责让路
+- **气质**：电影感、编辑感、氛围感、画廊级质感
+- **灵感来源**：旅行与图片故事专题、Apple 产品摄影、全幅编辑跨页
+
+---
 
 ## 绝对禁止
 
-- 把照片当纯装饰背景、上面堆卡片挡住它（图是主角）
-- 文字直接压图不加可读性遮罩（scrim）
-- 用未优化大图（必须 AVIF/WebP + srcset；首屏别加载多张全尺寸 JPG）
-- Ken Burns 过快（<8s）或改布局属性（只用 transform）
-- 无 aspect-ratio / 固定高度直接塞图（CLS）
-- 多个强调色；硬塞与照片冲突的品牌色
-- 省略 LQIP 占位与 prefers-reduced-motion 降级
+| 模式 | 原因 |
+|---------|--------|
+| 把照片当背景埋在一堆卡片下面 | 图像才是主角 |
+| 文字直接压在图片上、不加遮罩 | 不可读，对比度不达标 |
+| 使用未优化的大图 | 必须用 AVIF/WebP + srcset；首屏绝不能加载多张原尺寸 JPG |
+| Ken Burns 快于 8s，或动画布局属性 | 只能用 transform，避免眩晕 |
+| 图片没有 aspect-ratio／固定高度 | 会造成 CLS |
+| 多个强调色／与照片冲突的品牌色 | 只允许一种从照片取样的强调色 |
+| 缺少 LQIP 占位或 reduced-motion 降级 | 首屏空白／跳动，无障碍不达标 |
 
 ## 必须遵守
 
 ### 图即内容
-每屏一张能独立成立的全幅照片，object-fit: cover 铺满视口。UI 退居其后，文字是压在光影上的说明。
+每屏一张能独立成立的全幅照片，object-fit: cover 铺满视口。UI 退居其后，文字只是压在光影上的说明文字。
 
 ### 可读性遮罩（scrim，纪律）
-文字压图前必铺遮罩，保证 4.5:1 对比：
-- 底部说明: linear-gradient(to top, rgba(0,0,0,0.72), transparent 70%)
-- 全屏叠字: linear-gradient(to top, rgba(0,0,0,0.7), rgba(0,0,0,0.25) 50%, rgba(0,0,0,0.35))
-- 或局部 backdrop-blur-md + bg-black/30 的浮层
+在任何文字压图之前，先铺一层能保证 4.5:1 对比度的遮罩：
+- 底部说明文字：linear-gradient(to top, rgba(0,0,0,0.72), transparent 70%)
+- 全屏叠加：linear-gradient(to top, rgba(0,0,0,0.7), rgba(0,0,0,0.25) 50%, rgba(0,0,0,0.35))
+- 或局部 backdrop-blur-md + bg-black/30 浮层
 
 ### Ken Burns（招牌）
-@keyframes ip-kenburns { from { transform: scale(1) translate3d(0,0,0) } to { transform: scale(1.12) translate3d(-2%,-1.5%,0) } }
+\`\`\`css
+@keyframes ip-kenburns { from { transform: scale(1) translate3d(0,0,0); } to { transform: scale(1.12) translate3d(-2%,-1.5%,0); } }
 .ip-kenburns { animation: ip-kenburns 18s ease-in-out infinite alternate; will-change: transform; }
-只用 transform（合成器层），时长 8-20s，绝不眩晕
+\`\`\`
+只用 transform（合成器层），时长 8-20s，绝不能让人眩晕。
 
 ### 渐进加载（LQIP blur-up）
-1. 先渲染 20px 模糊占位（内联 base64 或 CSS blur），scale(1.06) 消除边缘
-2. 真图 <img> onLoad 后 data-loaded=true，opacity 0→1 交叉淡入
-3. React: const [loaded,setLoaded]=useState(false); <img onLoad={()=>setLoaded(true)} .../>
+1. 先渲染一张 20px 模糊占位图（内联 base64 或 CSS blur），配合 scale(1.06) 遮住边缘
+2. 真实 <img> 的 onLoad 触发后，设置 data-loaded=true，opacity 从 0 交叉淡入到 1
+\`\`\`jsx
+const [loaded, setLoaded] = useState(false);
+<img onLoad={() => setLoaded(true)} data-loaded={loaded} className="ip-frame" ... />
+\`\`\`
 
 ### 性能
-- 双格式: <picture><source srcset="x.avif" type="image/avif"><source srcset="x.webp" type="image/webp"><img src="x.webp"></picture>
-- hero: fetchpriority="high" + preload；其余: loading="lazy" decoding="async"
-- 显式 aspect-ratio（如 aspect-[4/5]）或容器固定高度防 CLS
-- responsive srcset + sizes
+- 双格式：\`<picture><source srcset="x.avif" type="image/avif"><source srcset="x.webp" type="image/webp"><img src="x.webp"></picture>\`
+- hero 图：fetchpriority="high" + preload；其余图片：loading="lazy" decoding="async"
+- 显式声明 aspect-ratio（如 aspect-[4/5]）或固定容器高度，防止 CLS
+- 使用响应式 srcset + sizes
 
 ### 配色（从图取色）
-- 墨底 #0C0D10 / 纸白 #F4F1EA 作纯色段
-- 图上文字: text-white + white/80 + white/60
-- 唯一强调琥珀金 #E8B04B：仅关键 CTA、章节 kicker、高亮
-- 从当前照片采一支暖光作强调，别硬塞品牌色
+- 墨色 #0C0D10／纸色 #F4F1EA 用于纯色区块
+- 图片上的文字：text-white + white/80 + white/60
+- 唯一强调色琥珀金 #E8B04B：仅用于关键 CTA、章节引题、高亮
+- 强调色要从当前照片的暖光中取样，绝不强行使用与照片冲突的品牌色
 
 ### 无障碍
-- 每张图有意义 alt（装饰图 alt=""）
-- prefers-reduced-motion: Ken Burns 停、淡入瞬时
-- scrim 后文字对比 ≥ 4.5:1
+- 每张图片都要有有意义的 alt（装饰性图片用 alt=""）
+- prefers-reduced-motion：停止 Ken Burns，淡入变为瞬时
+- 压在遮罩上的文字对比度 >= 4.5:1
 
-## 自检
+## 自检清单
 
-1. 每屏一张全幅照片、图是主角？
-2. 所有压图文字都有 scrim 且对比达标？
-3. Ken Burns 只用 transform、≥8s、有 reduced-motion 降级？
-4. 有 LQIP 占位 + 交叉淡入，首屏不白屏？
-5. 图是 AVIF/WebP 双格式 + srcset + lazy（hero 除外）？
-6. 有 aspect-ratio 防 CLS？
-7. 唯一琥珀金强调、从图取色？`,
+- [ ] 每屏一张全幅照片；图像是主导
+- [ ] 每处压图文字都铺了遮罩，且对比度达标
+- [ ] Ken Burns 只用 transform，时长 >=8s，并有 reduced-motion 降级
+- [ ] 有 LQIP 占位 + 交叉淡入；首屏不会空白
+- [ ] 图片是 AVIF/WebP 双格式 + srcset + 懒加载（hero 除外）
+- [ ] 设置了 aspect-ratio 以防止 CLS
+- [ ] 只有一种琥珀色强调色，且从图片中取样`,
 
   aiRulesEn: `# Immersive Photo Design System
 

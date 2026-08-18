@@ -329,7 +329,7 @@ Core principles:
 - Button transitions: duration-500 ease-out (slow = luxurious holographic feel)
 - Card transitions: duration-300 ease-out`,
 
-  aiRulesEn: `Holographic Style Rules:
+  aiRulesEn: `## Holographic Style Rules
 - Background: Deep dark (#0a0a1f or #1a0b2e) - cosmic/space feel
 - Primary effect: Rainbow spectrum gradients using linear-gradient with 3+ stops
 - Gradient colors: #ff0080 -> #ff6b00 -> #ffd700 -> #00ff88 -> #00d4ff -> #6366f1 -> #a855f7
@@ -337,16 +337,38 @@ Core principles:
 - Text highlights: Use bg-clip-text with gradient for headings
 - Borders: Subtle white/10 to white/20 with purple/prismatic glow on hover
 - Animate gradients: Use background-size: 200% and animate background-position
+- Holographic badges: Small elements with full rainbow gradient + shimmer overlay
 - All interactive elements should have prismatic box-shadow on hover
 - Never use light/white backgrounds
 - Never use flat solid colors without gradient treatment
+- Never use muted or desaturated color palettes
 
-Animation & Interaction Rules:
-- Spectrum Shift: Apply bg-[length:200%_auto] to all gradient buttons and card headings. On hover: hover:bg-right -- gradient slides laterally, simulating angle-dependent holographic foil color shift.
-- Prismatic Glow: Button hover uses dual cyan+magenta glows. Card hover uses purple prism glow.
-- Liquid Glass: Always use group class on card containers. Cards hover:-translate-y-2 with synchronized heading Spectrum Shift via group-hover:bg-right.
-- Jelly Press: All buttons: active:scale-95 active:translate-y-0. Focus: focus:ring-2 focus:ring-purple-400 focus:ring-offset-2 focus:ring-offset-[#0a0a1f].
-- Duration: Button transitions duration-500 ease-out. Card transitions duration-300 ease-out.`,
+## Animation & Interaction Rules
+
+### Spectrum Shift (Gradient Slide)
+- Apply bg-[length:200%_auto] to all gradient buttons and card headings
+- On hover: hover:bg-right — gradient slides laterally, simulating angle-dependent holographic foil color shift
+- Transition: transition-[background-position] duration-500 (smooth spectrum sweep)
+- NEVER use hover:bg-right without bg-[length:200%_auto] (no movement without oversized gradient)
+
+### Prismatic Glow (Multi-Color Shadow)
+- Button hover: hover:shadow-[0_0_40px_rgba(0,212,255,0.6),0_0_20px_rgba(255,0,128,0.4)] — dual cyan+magenta glows
+- Card hover: hover:shadow-[0_0_30px_rgba(147,51,234,0.3)] — purple prism glow
+- Resting shadow always present: shadow-[0_0_20px_rgba(147,51,234,0.5)]
+
+### Liquid Glass (Card Float)
+- Always use group class on card containers
+- Cards: hover:-translate-y-2 hover:bg-white/10 hover:border-purple-400/40
+- Card headings use Spectrum Shift synchronized with card hover via group-hover:bg-right
+
+### Jelly Press (Active State)
+- All buttons: active:scale-95 active:translate-y-0 — jelly press confirms interaction
+- Focus: focus:ring-2 focus:ring-purple-400 focus:ring-offset-2 focus:ring-offset-[#0a0a1f]
+- ring-offset-[#0a0a1f] mandatory — ring invisible on dark cosmic background without it
+
+### Duration
+- Button transitions: duration-500 ease-out (slow = luxurious holographic feel)
+- Card transitions: duration-300 ease-out`,
 
   examplePrompts: [
     {

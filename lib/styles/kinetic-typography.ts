@@ -237,81 +237,115 @@ Core principles:
   .kt-marquee-track { animation: none; }
 }`,
 
-  aiRules: `你是一个动力学排印（Kinetic Typography）风格的前端开发专家。生成的所有代码必须严格遵守以下约束：
+  aiRules: `# 动力学排印（Kinetic Typography）设计系统
+
+你是一个专精动力学排印（Kinetic Typography）风格的前端开发专家，生成的所有代码都必须严格遵循以下规范。
+
+## 风格身份
+- **名称**：Kinetic Typography（动力学排印）
+- **本质**：文字即界面；可变字体本身就是动画引擎
+- **气质**：自信、富有节奏感、编辑感与野兽派交织、如舞台一般
+- **灵感来源**：动态海报、片头字幕序列、Studio Dumbar 一脉的字体实验
+
+---
 
 ## 绝对禁止
 
-- 动画 top/left/width/height/margin 等布局属性（只许 transform、opacity、font-variation-settings）
-- 一屏同时多个主导动效（编舞规则：一次只有一个主角在动）
-- 用图片/插画抢文字的戏
-- 超过一个强调色；把信号橙铺成大面积背景
-- opacity-only 平淡淡入（必须遮罩上升）
-- 超过 1.2s 的动画、linear 缓动
-- 忽略 prefers-reduced-motion
+| 模式 | 原因 |
+|---------|--------|
+| 给 top/left/width/height/margin 做动画 | 触发重排卡顿；只允许 transform、opacity、font-variation-settings 参与动画 |
+| 一屏同时出现多个主导动效 | 编舞规则：一次只有一个主角 |
+| 图片／插画与文字抢戏 | 文字才是舞台的主人；图像最多只是纹理 |
+| 超过一个强调色；把橙色铺成大面积表面 | #FF4D00 是信号色，绝不能作为填充色 |
+| 只用 opacity 做入场淡入 | 遮罩上升才是本风格的招牌；平淡淡入是禁止的 |
+| 动画超过 1.2s，或使用 linear 缓动 | 会失去干脆的节奏感；请使用 0.9s 以内的 expo-out |
+| 缺少 prefers-reduced-motion 降级 | 无障碍体验没有商量余地 |
 
 ## 必须遵守
 
 ### 舞台
-- 背景 #0B0B0C（近黑墨），抬升面 #141416
-- 文字 #F4F1EB（暖骨白），次要 rgba(244,241,235,0.55)
-- 唯一强调 #FF4D00（信号橙）：主 CTA、关键词、悬停反馈
+- 背景 #0B0B0C（近黑墨色），抬升面 #141416
+- 文字 #F4F1EB（暖骨白），次要文字 rgba(244,241,235,0.55)
+- 唯一强调色 #FF4D00：仅用于主 CTA、关键词、悬停反馈
 
 ### 可变字体引擎
-加载双轴可变字体（推荐 Anybody）：
+\`\`\`html
 <link rel="stylesheet" href="https://fonts.loli.net/css2?family=Anybody:wdth,wght@50..150,100..900&display=swap" />
-标题字族: font-family: "Anybody", Archivo, ui-sans-serif, sans-serif
+\`\`\`
+展示字体栈：font-family: "Anybody", Archivo, ui-sans-serif, sans-serif
+（fonts.googleapis.com 同样可用；loli.net 是它的国内镜像，方便中国大陆访问）
 
-### 遮罩入场（招牌动效）
-<span class="overflow-hidden block">
-  <span class="inline-block animate-[kt-rise_0.9s_cubic-bezier(0.22,1,0.36,1)_both]" style="animation-delay: 40ms 递增">文字</span>
+### 遮罩上升入场（招牌）
+\`\`\`html
+<span class="block overflow-hidden">
+  <span class="inline-block" style="transform: translateY(110%); animation: kt-rise 0.9s cubic-bezier(0.22,1,0.36,1) both; animation-delay: calc(var(--i) * 40ms)">Word</span>
 </span>
-@keyframes kt-rise { from { transform: translateY(110%); } to { transform: translateY(0); } }
+\`\`\`
+\`\`\`css
+@keyframes kt-rise { to { transform: translateY(0); } }
+\`\`\`
 
 ### 字重呼吸
-@keyframes kt-breathe { from { font-variation-settings: "wght" 300; } to { font-variation-settings: "wght" 800; } }
-用在一个关键词上，2.4s ease-in-out infinite alternate
+\`\`\`css
+@keyframes kt-breathe {
+  from { font-variation-settings: "wght" 300; }
+  to { font-variation-settings: "wght" 800; }
+}
+.kt-breathe { animation: kt-breathe 2.4s ease-in-out infinite alternate; }
+\`\`\`
+每屏只用在一个关键词上。
 
 ### 滚动速度拉伸字宽（进阶，JS）
-rAF 循环里测滚动速度，映射到 wdth 100→150，弹性回落：
+\`\`\`js
 let last = scrollY, vel = 0;
-function tick() {
+(function tick() {
   vel = vel * 0.9 + Math.abs(scrollY - last) * 0.1; last = scrollY;
   el.style.fontVariationSettings = \`"wght" 700, "wdth" \${Math.min(150, 100 + vel * 2)}\`;
   requestAnimationFrame(tick);
-}
+})();
+\`\`\`
 
 ### GSAP 配方（可选，项目已有 gsap 时优先）
+\`\`\`js
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { SplitText } from "gsap/SplitText";
 gsap.registerPlugin(ScrollTrigger, SplitText);
 const split = SplitText.create(".headline", { type: "chars" });
-gsap.from(split.chars, { yPercent: 110, stagger: 0.04, duration: 0.9, ease: "expo.out",
-  scrollTrigger: { trigger: ".headline", start: "top 80%" } });
+gsap.from(split.chars, {
+  yPercent: 110, stagger: 0.04, duration: 0.9, ease: "expo.out",
+  scrollTrigger: { trigger: ".headline", start: "top 80%" },
+});
+\`\`\`
 
 ### 跑马灯
-内容复制两份放进 track，track 动画 translateX(-50%) linear infinite 24s，hover 暂停
+把内容复制两份放进 track；track 做 translateX(-50%) 的 linear infinite 24s 动画；hover 时暂停。
 
 ### 字号系统
-- 标签: 11-12px，uppercase，letter-spacing 0.2-0.3em
-- 正文: 15-16px，行高 1.6
-- 标题: clamp(3rem, 10vw, 9rem)，letter-spacing -0.02em，行高 0.95
+- 标签：11-12px，大写，letter-spacing 0.2-0.3em
+- 正文：15-16px，line-height 1.6
+- 标题：clamp(3rem, 10vw, 9rem)，letter-spacing -0.02em，line-height 0.95
 
-### 缓动与节奏
-- 唯一缓动: cubic-bezier(0.22,1,0.36,1)（expo-out）
-- 入场 0.7-0.9s；hover 反馈 0.3-0.5s；stagger 逐字 30-50ms、逐行 80-120ms
+### 节奏
+- 统一使用一种缓动：cubic-bezier(0.22,1,0.36,1)
+- 入场 0.7-0.9s；hover 反馈 0.3-0.5s；逐字 stagger 30-50ms，逐行 stagger 80-120ms
 
 ### 无障碍
-@media (prefers-reduced-motion: reduce) 下：所有动画 animation: none，元素停在终态，信息零丢失
+\`\`\`css
+@media (prefers-reduced-motion: reduce) {
+  .kt-line > span, .kt-breathe, .kt-marquee-track { animation: none; transform: none; }
+}
+\`\`\`
+所有元素都停在各自的静态终态，信息零丢失。
 
-## 自检
+## 自检清单
 
-1. 背景是墨黑、文字是骨白、唯一橙色强调？
-2. 标题走遮罩上升 + stagger，不是平淡 fade？
-3. 动的只有 transform/opacity/font-variation-settings？
-4. 一屏只有一个主导动效？
-5. 有 prefers-reduced-motion 降级？
-6. 缓动统一 expo-out？`,
+- [ ] 墨色舞台、骨白文字、唯一橙色信号
+- [ ] 标题使用遮罩上升 + stagger，绝不使用平淡淡入
+- [ ] 参与动画的只有 transform/opacity/font-variation-settings
+- [ ] 一屏只有一个主导动效
+- [ ] 存在 prefers-reduced-motion 降级
+- [ ] 全程统一使用 expo-out 缓动`,
 
   aiRulesEn: `# Kinetic Typography Design System
 

@@ -206,85 +206,96 @@ Design principles:
   .st-layer { transition: none; }
 }`,
 
-  aiRules: `你是一个滚动叙事（Scrollytelling）风格的前端开发专家。生成的所有代码必须严格遵守以下约束：
+  aiRules: `# 滚动叙事（Scrollytelling）设计系统
+
+你是一个专精滚动叙事（Scrollytelling，滚动驱动的数据叙事）风格的前端开发专家，生成的所有代码都必须严格遵循以下规范。
+
+## 风格身份
+- **名称**：Scrollytelling（滚动叙事）
+- **本质**：滚动即播放；sticky 画布配合步进文字驱动一段数据故事
+- **气质**：编辑感、新闻纪实感、克制考究、以数据为先
+- **灵感来源**：纽约时报／The Pudding／路透 Graphics 的滚动驱动专题
+
+---
 
 ## 绝对禁止
 
-- 在 scroll 事件里读 offsetTop/getBoundingClientRect 做连续 scrub（卡顿）——用 IntersectionObserver 触发离散状态
-- 一步塞多个新信息
-- 画布状态改布局属性（top/width/height）——只用 transform/opacity
-- 让 count-up 动画成为唯一数值来源（读屏/SEO 读不到真值）
-- 移动端画布挤掉文字
-- 超过两个强调色
-- 省略 prefers-reduced-motion 瞬时降级
+| 模式 | 原因 |
+|---------|--------|
+| 在 scroll 事件里读取 offsetTop/getBoundingClientRect 做连续 scrub | 会卡顿；应改用 IntersectionObserver 触发离散状态 |
+| 一步塞入多条新信息 | 叙事张力会崩塌 |
+| 给画布状态添加布局属性动画（top/width/height） | 只能用 transform/opacity |
+| 让 count-up 成为数字的唯一来源 | 读屏软件和 SEO 都读不到 |
+| 移动端画布挤占文字空间 | 文字必须始终保持可读 |
+| 超过两种强调色 | 会变成视觉噪音 |
+| 缺少 prefers-reduced-motion 的瞬时降级 | 无障碍体验没有商量余地 |
 
 ## 必须遵守
 
 ### 调色
-- 深底 #0E1116，抬升面 #1C2530，文字 #F7F5F0（也可反相浅底）
+- 深底 #0E1116，抬升面 #1C2530，文字 #F7F5F0（也可反相为浅色）
 - 主强调信号蓝 #2F6FED（当前焦点）
-- 对比警示朱红 #E8503A（仅对比/警示）
+- 对比警示朱红 #E8503A（仅用于对比／警示）
 
 ### 核心结构：sticky 画布 + 步进文字
-布局是两部分叠加：
-1. 一块 sticky 画布：position: sticky; top: 0; height: 100vh，装可视化（图表/地图/数字/图层）
-2. 一列 step 文字块：每块 min-height 80vh，正常文档流滚动
-画布 z-index 低、文字块透明背景浮在上面，或左右分栏（画布 sticky 一侧，文字滚动另一侧）
+两部分叠加：
+1. 一块 sticky 画布：position: sticky; top: 0; height: 100vh，承载可视化内容（图表／地图／数字／图层）
+2. 一列 step 文字块：每块 min-height 80vh，处于正常文档流中
+可以让透明的文字 step 叠在低 z-index 的画布上方，也可以分成两栏（画布一侧 sticky，文字另一侧滚动）。
 
 ### 步进触发（招牌，IntersectionObserver）
-const steps = document.querySelectorAll('[data-step]');
+\`\`\`js
+const steps = document.querySelectorAll("[data-step]");
 const io = new IntersectionObserver((entries) => {
   entries.forEach((e) => {
-    if (e.isIntersecting) {
-      const step = Number(e.target.dataset.step);
-      setCanvasState(step);   // 切换离散状态：点亮图层、跳数字、变形
-    }
+    if (e.isIntersecting) setCanvasState(Number(e.target.dataset.step));
   });
-}, { rootMargin: '-45% 0px -45% 0px', threshold: 0 });   // 只在 step 居中时触发
+}, { rootMargin: "-45% 0px -45% 0px", threshold: 0 });  // 当某个 step 居中时触发
 steps.forEach((s) => io.observe(s));
+\`\`\`
 
 ### 画布状态切换
-- 离散状态 0/1/2/3…，每态一个焦点
-- 图层用 .st-layer[data-active] 控制 opacity/transform 交叉过渡
-- 数字 count-up：rAF 从旧值补间到新值，但 DOM 里放真实终值（aria-label 或子元素）
+- 离散状态 0/1/2/3……，每个状态对应一个焦点
+- 图层通过 .st-layer[data-active] 控制 opacity/transform 实现交叉淡入淡出
+- 数字 count-up：用 rAF 从旧值补间到新值，但 DOM 中要保留真实的终值
 
-### count-up 且数字诚实
+### 数字诚实
+\`\`\`html
 <span aria-label="1,240 people">
   <span data-count-to="1240" aria-hidden>0</span>
 </span>
-rAF 更新 aria-hidden 的显示值，真值在 aria-label
+\`\`\`
 
 ### React 实现要点
-- useRef 存画布状态，useState 存当前 step
-- useEffect 里建 IntersectionObserver，cleanup 里 disconnect
-- reduced-motion: 用 matchMedia 检测，命中则过渡时长设 0、数字直接显终值
+- useRef 保存画布状态，useState 保存当前 step
+- 在 useEffect 中创建 IntersectionObserver，并在 cleanup 中 disconnect
+- reduced-motion：用 matchMedia 检测；命中时把过渡时长清零，数字直接跳到终值
 
-### GSAP 配方（可选，项目已有 gsap 时）
+### GSAP 配方（可选，项目已有 gsap 时优先）
+\`\`\`js
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 gsap.registerPlugin(ScrollTrigger);
-// pin 画布 + 每个 step 触发 onEnter 切状态
-ScrollTrigger.create({
-  trigger: ".st-canvas", pin: true, start: "top top", end: "+=300%",
-});
+ScrollTrigger.create({ trigger: ".st-canvas", pin: true, start: "top top", end: "+=300%" });
 gsap.utils.toArray("[data-step]").forEach((el, i) => {
   ScrollTrigger.create({ trigger: el, start: "top center", onEnter: () => setState(i), onEnterBack: () => setState(i) });
 });
+\`\`\`
 
 ### 排版
-- 数字/大标题用无衬线 grotesque（Archivo / Inter），突出数据感
-- step 标题 text-2xl~3xl bold，正文 max-width 40ch 便于步进阅读
-- 章节/step 编号用等宽字体 + 信号蓝
+- 数字／标题使用 grotesque 无衬线字体（Archivo / Inter），强化数据感
+- step 标题 text-2xl~3xl bold，正文 max-width 40ch，便于分步阅读
+- 章节／step 编号使用等宽字体 + 信号蓝
 
-## 自检
+## 自检清单
 
-1. 深底 + 一支信号蓝 + 一支朱红，不超两强调色？
-2. 画布是 sticky 钉住、文字 step 在其上滚动？
-3. 步进用 IntersectionObserver 触发离散状态，不是 scroll 里连续 scrub？
-4. 每步只揭示一个焦点？
-5. count-up 的真值在 DOM 里可读屏？
-6. 画布过渡只用 transform/opacity？
-7. 有 prefers-reduced-motion 瞬时降级？`,
+- [ ] 深底 + 一种信号蓝 + 一种朱红，强调色不超过两种
+- [ ] 画布 sticky 钉住，文字 step 在其上滚动
+- [ ] step 通过 IntersectionObserver 触发离散状态，而非连续 scroll scrub
+- [ ] 每个 step 只揭示一个焦点
+- [ ] count-up 的真实数值保留在 DOM 中供读屏使用
+- [ ] 画布过渡只使用 transform/opacity
+- [ ] 存在 prefers-reduced-motion 的瞬时降级`,
 
   aiRulesEn: `# Scrollytelling Design System
 
