@@ -9,6 +9,7 @@ import { ScrollBackButton } from "@/components/scroll-back-button";
 import { ComponentPreview } from "@/components/style-preview/component-preview";
 import { ColorPalette } from "@/components/style-preview/color-palette";
 import { AiImplementationPanel } from "@/components/style-preview/ai-implementation-panel";
+import type { DesignSpecTokens } from "@/components/style-preview/_prompt-builders";
 import { HardPromptCopyButton } from "@/components/style-preview/hard-prompt-copy-button";
 import { CodeBlock } from "@/components/style-preview/code-block";
 import { TokensExportButton } from "@/components/tokens-export-button";
@@ -60,6 +61,7 @@ interface Props {
   compatibleStyles: CompatibleStyleSummary[];
   compatibleLayouts: CompatibleStyleSummary[];
   enhancedRules: string | null;
+  specTokens?: DesignSpecTokens;
   accessibilityScore: AccessibilityScore | null;
   readinessSection: ReactNode;
   faqSection?: ReactNode;
@@ -75,6 +77,7 @@ export function StyleDetailContent({
   compatibleStyles,
   compatibleLayouts,
   enhancedRules,
+  specTokens,
   accessibilityScore,
   readinessSection,
   faqSection,
@@ -420,6 +423,7 @@ export function StyleDetailContent({
             dontListEn={style.dontListEn}
             keywords={style.keywords}
             keywordsEn={style.keywordsEn}
+            specTokens={specTokens}
           />
         </div>
       </section>

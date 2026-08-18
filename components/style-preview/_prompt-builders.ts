@@ -20,6 +20,23 @@ interface DesignSpecColors {
   accent: string[];
 }
 
+/**
+ * Layout and motion values read off the style's own tokens. Optional because
+ * the panel is a client component and the token registry is server-side; when
+ * absent the spec falls back to wording that holds for any style.
+ */
+export interface DesignSpecTokens {
+  section?: string;
+  container?: string;
+  card?: string;
+  gap?: string;
+  radius?: string;
+  transition?: string;
+  hover?: string;
+  active?: string;
+  focus?: string;
+}
+
 interface BuildDesignSpecArgs {
   locale: Locale;
   styleName: string;
@@ -30,6 +47,78 @@ interface BuildDesignSpecArgs {
   doList: string[];
   dontList: string[];
   keywords: string[];
+  tokens?: DesignSpecTokens;
+}
+
+/**
+ * Layout and motion sections used to be one hard-coded paragraph shipped to
+ * every style. It described a brutalist temperament - no blur, no gradients,
+ * press states that flatten, deliberate asymmetry - which contradicted the
+ * roughly ninety styles built on gradients and the forty-seven built on glass.
+ * Both sections now quote the style's own tokens, and fall back to the style's
+ * own do/don't list rather than to someone else's taste.
+ */
+function buildLayoutRules(
+  locale: Locale,
+  tokens: DesignSpecTokens | undefined,
+  doList: string[]
+): string {
+  const lines: string[] = [];
+  if (tokens?.section) {
+    lines.push(locale === "en" ? `Section rhythm: \`${tokens.section}\`` : `区块节奏：\`${tokens.section}\``);
+  }
+  if (tokens?.container) {
+    lines.push(locale === "en" ? `Container padding: \`${tokens.container}\`` : `容器内边距：\`${tokens.container}\``);
+  }
+  if (tokens?.card) {
+    lines.push(locale === "en" ? `Card padding: \`${tokens.card}\`` : `卡片内边距：\`${tokens.card}\``);
+  }
+  if (tokens?.gap) {
+    lines.push(locale === "en" ? `Default gap: \`${tokens.gap}\`` : `默认间距：\`${tokens.gap}\``);
+  }
+  if (tokens?.radius) {
+    lines.push(locale === "en" ? `Corner radius: \`${tokens.radius}\`` : `圆角：\`${tokens.radius}\``);
+  }
+
+  if (lines.length === 0) {
+    const fallback = doList.slice(0, 4);
+    if (fallback.length > 0) return bulletList(fallback);
+    return locale === "en"
+      ? "- Keep spacing, alignment, and hierarchy consistent with this style's own rules."
+      : "- 间距、对齐和层级都按这个风格自己的规则保持一致。";
+  }
+
+  return bulletList(lines);
+}
+
+function buildMotionRules(
+  locale: Locale,
+  tokens: DesignSpecTokens | undefined,
+  doList: string[]
+): string {
+  const lines: string[] = [];
+  if (tokens?.transition) {
+    lines.push(locale === "en" ? `Transition: \`${tokens.transition}\`` : `过渡：\`${tokens.transition}\``);
+  }
+  if (tokens?.hover) {
+    lines.push(locale === "en" ? `Hover: \`${tokens.hover}\`` : `悬停：\`${tokens.hover}\``);
+  }
+  if (tokens?.active) {
+    lines.push(locale === "en" ? `Active: \`${tokens.active}\`` : `按下：\`${tokens.active}\``);
+  }
+  if (tokens?.focus) {
+    lines.push(locale === "en" ? `Focus: \`${tokens.focus}\`` : `聚焦：\`${tokens.focus}\``);
+  }
+
+  if (lines.length === 0) {
+    const fallback = doList.filter((item) => /hover|focus|active|motion|animation|动效|悬停|交互/i.test(item));
+    if (fallback.length > 0) return bulletList(fallback.slice(0, 4));
+    return locale === "en"
+      ? "- Use this style's own interaction tokens; do not import motion from another style."
+      : "- 用这个风格自己的交互 token，不要从别的风格搬动效。";
+  }
+
+  return bulletList(lines);
 }
 
 /**
@@ -47,8 +136,11 @@ export function buildDesignSpec({
   doList,
   dontList,
   keywords,
+  tokens,
 }: BuildDesignSpecArgs): string {
   const accents = colors.accent.join(", ");
+  const layoutRules = buildLayoutRules(locale, tokens, doList);
+  const motionRules = buildMotionRules(locale, tokens, doList);
 
   if (locale === "en") {
     return `# ${styleName} Design Spec
@@ -78,17 +170,14 @@ ${philosophy.split("\n\n")[0] ?? description}
 - Signature cues: ${keywords.slice(0, 8).join(", ")}
 
 ## Layout Rules
-- Use direct, high-contrast hierarchy before decorative density.
-- Keep sections scannable with strong dividers, clear alignment, and deliberate asymmetry.
-- Preserve stable responsive dimensions for controls, cards, and preview surfaces.
+${layoutRules}
 
 ## Component Rules
 ${bulletList(doList.slice(0, 8))}
 
 ## Interaction And Motion
-- Hover states should feel immediate and physical.
-- Active states should visibly compress or flatten the element.
-- Avoid soft fades, blurry depth, or motion that changes layout unexpectedly.
+${motionRules}
+- Motion must not shift layout or trap focus.
 
 ## Accessibility
 - Keep text contrast at WCAG AA or better.
@@ -101,7 +190,7 @@ ${bulletList(dontList.slice(0, 8))}
 ## Delivery Check
 - The page should still be recognizable as ${styleName} after replacing sample content.
 - Buttons, cards, inputs, empty states, errors, and loading states should share one visual language.
-- No rounded-card, blurred-shadow, or gradient-heavy defaults should leak in from generic UI libraries.`;
+- Nothing from the Avoid list above has leaked in from a generic UI library default.`;
   }
 
   return `# ${styleName} 设计规范
@@ -131,17 +220,14 @@ ${philosophy.split("\n\n")[0] ?? description}
 - Signature cues: ${keywords.slice(0, 8).join("、")}
 
 ## 布局规则
-- 先建立直接、高对比的信息层级，再考虑装饰密度。
-- 区块需要易扫读：强分隔、明确对齐、可控的不对称。
-- 控件、卡片、预览区域要有稳定的响应式尺寸，避免交互时跳动。
+${layoutRules}
 
 ## 组件规则
 ${bulletList(doList.slice(0, 8))}
 
 ## 交互与动效
-- Hover 反馈要即时、明确、有实体碰撞感。
-- Active 状态要明显压平或压缩元素。
-- 避免柔和淡入、模糊景深、以及会引发布局变化的动效。
+${motionRules}
+- 动效不得引发布局位移或抢走焦点。
 
 ## 可访问性
 - 文字对比度保持 WCAG AA 或更高。
@@ -154,7 +240,7 @@ ${bulletList(dontList.slice(0, 8))}
 ## 交付检查
 - 替换示例内容后，页面仍应一眼识别为 ${styleName}。
 - 按钮、卡片、输入、空状态、错误、加载状态应共享同一套视觉语言。
-- 不允许通用组件库的圆角卡片、模糊阴影、重渐变默认样式泄漏进来。`;
+- 上面"禁止项"里的任何一条都没有被通用组件库的默认样式带进来。`;
 }
 
 interface AddPromptPurposeArgs {

@@ -10,6 +10,7 @@ import { trackEvent } from "@/lib/analytics/events";
 import {
   addPromptPurpose,
   buildDesignSpec,
+  type DesignSpecTokens,
 } from "./_prompt-builders";
 import { ProjectContextForm } from "./_project-context";
 
@@ -32,6 +33,8 @@ interface AiImplementationPanelProps {
   dontListEn?: string[];
   keywords: string[];
   keywordsEn?: string[];
+  /** Layout and motion tokens for the design spec, resolved on the server. */
+  specTokens?: DesignSpecTokens;
 }
 
 type ImplementationTab = "design-spec" | "hard" | "creative-brief";
@@ -63,6 +66,7 @@ export function AiImplementationPanel({
   dontListEn,
   keywords,
   keywordsEn,
+  specTokens,
 }: AiImplementationPanelProps) {
   const { locale } = useI18n();
   const [activeTab, setActiveTab] = useState<ImplementationTab>("hard");
@@ -163,6 +167,7 @@ export function AiImplementationPanel({
           doList: localizedDoList,
           dontList: localizedDontList,
           keywords: localizedKeywords,
+          tokens: specTokens,
         }),
       },
       {
@@ -198,6 +203,7 @@ export function AiImplementationPanel({
     dontListEn,
     promptInput,
     promptContext,
+    specTokens,
   ]);
 
   const activeItem = items.find((item) => item.id === activeTab) ?? items[0];

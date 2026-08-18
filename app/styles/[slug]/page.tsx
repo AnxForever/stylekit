@@ -138,13 +138,37 @@ export default async function StyleDetailPage({
       : [];
 
   // Pre-compute enhanced rules
+  // Generate the token spec in the reader's language. It used to be Chinese
+  // only, and the prompt builder drops CJK sources for English prompts, so
+  // English readers were copying a prompt with no token dictionary at all.
   const enhancedRules = capabilities.tokens
     ? generateEnhancedAIRules({
         style,
         tokens: capabilities.tokens,
         format: "full",
+        locale,
       })
     : null;
+
+  // The design spec used to hard-code one style's temperament for all of them.
+  // Hand it this style's own layout and motion tokens instead.
+  const specTokens = capabilities.tokens
+    ? {
+        section: capabilities.tokens.spacing.section,
+        container: capabilities.tokens.spacing.container,
+        card: capabilities.tokens.spacing.card,
+        gap: capabilities.tokens.spacing.gap.md,
+        radius: capabilities.tokens.border.radius,
+        transition: capabilities.tokens.interaction.transition,
+        hover:
+          capabilities.tokens.interaction.hoverTranslate ??
+          capabilities.tokens.interaction.hoverScale ??
+          capabilities.tokens.interaction.hoverOpacity ??
+          undefined,
+        active: capabilities.tokens.interaction.active ?? undefined,
+        focus: capabilities.tokens.shadow.focus,
+      }
+    : undefined;
 
   const accessibilityScore = capabilities.accessibility;
   const version = capabilities.versioning?.current;
@@ -211,6 +235,7 @@ export default async function StyleDetailPage({
             compatibleStyles={compatibleStyles}
             compatibleLayouts={compatibleLayouts}
             enhancedRules={enhancedRules}
+            specTokens={specTokens}
             accessibilityScore={accessibilityScore}
             readinessSection={
               <StyleReadinessSection readiness={readiness} locale={locale} />
