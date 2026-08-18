@@ -24,21 +24,49 @@ const preview = {
         className="w-full px-4 py-3 bg-white border-4 border-black text-black placeholder-black/40 focus:outline-none focus:shadow-[5px_5px_0px_0px_#ff0066] transition-shadow"
       />
     ),
+    // Cover archetype: landing hero. Ben-Day dots and a comic panel behind a real
+    // product header and CTA.
     coverPreview: () => (
-      <div
-        className="w-full h-full flex items-center justify-center p-4"
-        style={{
-          backgroundColor: "#ff0066",
-          backgroundImage: "radial-gradient(rgba(0,0,0,0.35) 1px, transparent 1px)",
-          backgroundSize: "10px 10px",
-        }}
-      >
-        <div className="w-full max-w-[220px] bg-white border-4 border-black shadow-[8px_8px_0px_0px_#ffff00] p-4">
-          <div className="text-xs font-black tracking-[0.24em] mb-2">POP ART</div>
-          <div className="h-2 w-full bg-[#00ccff] border-2 border-black mb-3" />
-          <button className="w-full px-3 py-2 bg-[#ffff00] border-4 border-black font-black text-xs shadow-[4px_4px_0px_0px_#00ccff]">
-            Action
-          </button>
+      <div className="w-full h-full bg-[#ffff00] overflow-hidden relative">
+        <div className="absolute inset-0 bg-[radial-gradient(#ff0066_2px,transparent_2.2px)] bg-[size:12px_12px] opacity-35" />
+        <div className="relative flex items-center justify-between border-b-4 border-black px-4 py-2">
+          <div className="font-black text-[15px] italic tracking-tight text-black">
+            BOOM!
+          </div>
+          <div className="flex gap-3 pr-[68px] text-[8px] font-black uppercase tracking-wide text-black/70">
+            <span>Comics</span>
+            <span>Prints</span>
+          </div>
+        </div>
+        <div className="relative flex gap-3 px-4 pt-3">
+          <div className="flex-1">
+            <div className="inline-block border-2 border-black bg-white px-2 py-0.5 text-[8px] font-black uppercase text-black">
+              issue #42
+            </div>
+            <div className="mt-1.5 font-black text-[22px] leading-[0.98] uppercase tracking-tight text-black">
+              Pow to the
+              <br />
+              people
+            </div>
+            <div className="mt-2 flex items-center gap-2">
+              <div className="border-2 border-black bg-[#00ccff] px-3 py-1 text-[8px] font-black uppercase text-black shadow-[3px_3px_0_#000]">
+                Buy $9
+              </div>
+              <div className="border-2 border-black bg-white px-3 py-1 text-[8px] font-black uppercase text-black">
+                Preview
+              </div>
+            </div>
+          </div>
+          <div className="w-[104px] shrink-0 border-4 border-black bg-white relative overflow-hidden">
+            <div className="absolute inset-0 bg-[radial-gradient(#00ccff_2px,transparent_2.2px)] bg-[size:9px_9px] opacity-70" />
+            <div className="absolute left-2 top-2 h-8 w-8 rounded-full border-4 border-black bg-[#ff6600]" />
+            <div className="absolute right-1.5 bottom-6 border-2 border-black bg-[#cc00ff] px-1.5 py-[1px] text-[7px] font-black uppercase text-white">
+              zap!
+            </div>
+            <div className="absolute inset-x-0 bottom-0 border-t-4 border-black bg-[#ff0066] px-1.5 py-0.5 text-[7px] font-black uppercase text-white">
+              new
+            </div>
+          </div>
         </div>
       </div>
     ),
