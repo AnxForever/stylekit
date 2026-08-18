@@ -146,16 +146,33 @@ ${toBulletList(required)}
 ${toBulletList(forbidden)}`;
 }
 
+/**
+ * The generated token spec and the hand-written rules answer different
+ * questions: the spec says which classes this style uses, the prose says how to
+ * compose them - scene before glass, where the light comes from, what the style
+ * is actually for. This used to pick one and discard the other, and since every
+ * style has tokens, the prose always lost. Both ship now, authored rules first.
+ */
 function resolveHardRuleSource(input: PromptPairInput, locale: Locale): string {
-  if (locale !== "en") {
-    return (input.enhancedRules || input.aiRules).trim();
-  }
+  const authored =
+    locale === "en"
+      ? sanitizeEnglishRuleSource(input.aiRulesEn ?? "") ??
+        sanitizeEnglishRuleSource(input.aiRules)
+      : input.aiRules.trim();
 
-  const englishSources = [input.enhancedRules, input.aiRulesEn];
-  for (const source of englishSources) {
-    if (!source) continue;
-    const sanitized = sanitizeEnglishRuleSource(source);
-    if (sanitized) return sanitized;
+  const generated =
+    locale === "en"
+      ? input.enhancedRules
+        ? sanitizeEnglishRuleSource(input.enhancedRules)
+        : null
+      : (input.enhancedRules ?? "").trim() || null;
+
+  const parts = [authored, generated].filter(
+    (part): part is string => Boolean(part && part.trim())
+  );
+
+  if (parts.length > 0) {
+    return parts.join("\n\n---\n\n");
   }
 
   return buildEnglishHardRules(input);

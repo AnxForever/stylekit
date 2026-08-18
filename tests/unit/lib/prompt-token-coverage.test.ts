@@ -64,6 +64,19 @@ describe("prompt token coverage", () => {
     expect(missing).toEqual([]);
   });
 
+  it("ships the authored rules alongside the generated spec", () => {
+    // Every style has tokens, so preferring the generated spec silently
+    // discarded the hand-written rules for all 146 of them.
+    const style = styles.find((candidate) => candidate.slug === "glassmorphism")!;
+    const zh = hardPromptFor(style.slug, "zh");
+    const en = hardPromptFor(style.slug, "en");
+
+    expect(zh).toContain(style.aiRules.slice(30, 70));
+    expect(en).toContain((style.aiRulesEn ?? "").slice(30, 70));
+    expect(/Token (Dictionary|字典)/.test(zh)).toBe(true);
+    expect(/Token (Dictionary|字典)/.test(en)).toBe(true);
+  });
+
   it("keeps English prompts free of Chinese so the builder cannot drop them", () => {
     const leaking: string[] = [];
 
