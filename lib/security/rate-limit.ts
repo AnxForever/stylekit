@@ -65,11 +65,26 @@ export function createRateLimitHeaders(
   };
 }
 
+/**
+ * Identify the caller for rate-limiting.
+ *
+ * Only a proxy-appended value may be trusted. We read the *rightmost* entry of
+ * the chosen header because nginx's `$proxy_add_x_forwarded_for` appends the
+ * real peer to the end — the leftmost entries are client-supplied and forgeable,
+ * so keying on them would let an attacker mint a fresh bucket per request.
+ *
+ * When `TRUSTED_CLIENT_IP_HEADER` is unset we fall back to `x-forwarded-for`,
+ * which the default nginx deployment always appends. Returning a constant here
+ * instead would collapse every visitor into ONE global bucket per namespace,
+ * letting a single actor exhaust it and lock the whole site out of OTP login,
+ * feedback, etc. Only when no forwarding header exists at all (e.g. a direct,
+ * un-proxied hit) do we degrade to a shared "unknown" key.
+ */
 export function getRequestClientKey(request: Request): string {
   const configuredHeader = process.env.TRUSTED_CLIENT_IP_HEADER?.trim();
-  if (!configuredHeader) return "ip:unknown";
+  const headerName = configuredHeader || "x-forwarded-for";
 
-  const raw = request.headers.get(configuredHeader);
+  const raw = request.headers.get(headerName);
   if (!raw) return "ip:unknown";
 
   const entries = raw

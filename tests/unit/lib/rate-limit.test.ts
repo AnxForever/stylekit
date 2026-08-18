@@ -54,7 +54,7 @@ describe("rate-limit utility", () => {
     expect(Number(headers["retry-after"])).toBeGreaterThan(0);
   });
 
-  it("extracts client key from request headers", () => {
+  it("uses the rightmost entry of the configured proxy header", () => {
     vi.stubEnv("TRUSTED_CLIENT_IP_HEADER", "x-forwarded-for");
     const request = new Request("https://example.com/api/test", {
       headers: {
@@ -63,13 +63,38 @@ describe("rate-limit utility", () => {
       },
     });
 
+    // Rightmost is the proxy-appended peer; leftmost entries are client-forged.
     const key = getRequestClientKey(request);
     expect(key).toBe("ip:203.0.113.11");
   });
 
-  it("does not trust client IP headers until a proxy header is configured", () => {
+  it("falls back to the rightmost X-Forwarded-For entry when no header is configured", () => {
+    // Default deployment (TRUSTED_CLIENT_IP_HEADER unset) must still key per-IP,
+    // not collapse every visitor into one global bucket.
     const request = new Request("https://example.com/api/test", {
-      headers: { "x-forwarded-for": "203.0.113.10" },
+      headers: { "x-forwarded-for": "198.51.100.7, 203.0.113.10" },
+    });
+
+    expect(getRequestClientKey(request)).toBe("ip:203.0.113.10");
+  });
+
+  it("does not let a client forge a fresh key by prepending X-Forwarded-For entries", () => {
+    const attacker = new Request("https://example.com/api/test", {
+      headers: { "x-forwarded-for": "10.0.0.1, 203.0.113.10" },
+    });
+    const attackerAgain = new Request("https://example.com/api/test", {
+      headers: { "x-forwarded-for": "10.0.0.2, 203.0.113.10" },
+    });
+
+    // The forgeable leftmost entry changes, but the proxy-appended rightmost
+    // one is identical, so both land in the same bucket.
+    expect(getRequestClientKey(attacker)).toBe("ip:203.0.113.10");
+    expect(getRequestClientKey(attackerAgain)).toBe("ip:203.0.113.10");
+  });
+
+  it("degrades to a shared key only when no forwarding header exists at all", () => {
+    const request = new Request("https://example.com/api/test", {
+      headers: { "user-agent": "StyleKit-Test/1.0" },
     });
 
     expect(getRequestClientKey(request)).toBe("ip:unknown");
