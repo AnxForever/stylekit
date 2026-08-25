@@ -8,6 +8,7 @@ export default defineConfig({
     'recipes/index': 'src/recipes/index.ts',
     'accessibility/index': 'src/accessibility/index.ts',
     'discovery/index': 'src/discovery/index.ts',
+    'prompt/index': 'src/prompt/index.ts',
   },
   format: ['esm', 'cjs'],
   dts: true,
