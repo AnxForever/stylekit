@@ -8,6 +8,7 @@
 
 import { getStyleBySlug } from "stylekit-core/styles";
 import { STYLE_PLANNER_SYSTEM_PROMPT, type ChatMessage, type LlmClient } from "../llm/index.js";
+import { coerceIntent } from "./coerce.js";
 import { parseStyleIntent, type StyleIntent } from "./intent.js";
 import { buildStyleCandidates, renderCandidateList } from "./prompt.js";
 
@@ -43,7 +44,7 @@ export async function planStyle(
     timeoutMs: 120_000,
   });
 
-  const intent = parseStyleIntent(raw);
+  const intent = parseStyleIntent(coerceIntent(raw));
 
   // The schema only proves the slug is well-formed. Confirm the style
   // actually exists before it is allowed to drive everything downstream.
