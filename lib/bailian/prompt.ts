@@ -4,6 +4,14 @@ export interface StyleIntentCandidate {
   slug: string;
   nameEn: string;
   description: string;
+  /** Chinese name, when the caller has it. */
+  name?: string;
+  /** `modern` | `retro` | `minimal` | `expressive`. */
+  category?: string;
+  /** Style tags such as `dark-theme` or `high-contrast`. */
+  tags?: string[];
+  /** Primary hex, so the model can reason about hue without a token lookup. */
+  primaryColor?: string;
 }
 
 export interface StyleIntentKnowledgeReference {
@@ -46,17 +54,32 @@ Rules:
 - Never use a reference whose usage policy is not supplied by StyleKit.
 `;
 
+/**
+ * One candidate per line. Facets are only rendered when the caller supplies
+ * them, so the four-style demo list keeps its original shape.
+ */
+function formatCandidate(candidate: StyleIntentCandidate): string {
+  const title = candidate.name
+    ? `${candidate.nameEn} / ${candidate.name}`
+    : candidate.nameEn;
+
+  const facets = [
+    candidate.category,
+    candidate.tags?.length ? candidate.tags.join(",") : undefined,
+    candidate.primaryColor,
+  ].filter(Boolean);
+
+  const facetText = facets.length > 0 ? ` [${facets.join(" · ")}]` : "";
+
+  return `- ${candidate.slug}: ${title}${facetText} — ${candidate.description}`;
+}
+
 export function buildStyleIntentPrompt(
   request: string,
   candidates: StyleIntentCandidate[],
   knowledge: StyleIntentKnowledgeReference[] = [],
 ): string {
-  const candidateText = candidates
-    .map(
-      (candidate) =>
-        `- ${candidate.slug}: ${candidate.nameEn} — ${candidate.description}`,
-    )
-    .join("\n");
+  const candidateText = candidates.map(formatCandidate).join("\n");
 
   const knowledgeText = knowledge.length > 0
     ? knowledge.map((reference) => `- ${reference.id}: ${reference.name} — ${reference.summary} [${reference.usagePolicy}]`).join("\n")
@@ -64,7 +87,7 @@ export function buildStyleIntentPrompt(
 
   return `${STYLE_INTENT_SYSTEM_PROMPT}
 
-Candidate styles:
+Candidate styles (${candidates.length} total — read every one before choosing):
 ${candidateText}
 
 Published knowledge references:

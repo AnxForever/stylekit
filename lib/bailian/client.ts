@@ -5,7 +5,12 @@ import {
   type StyleIntentCandidate,
   type StyleIntentKnowledgeReference,
 } from "./prompt";
-import { parseDemoGenerationStyleIntent, type DemoGenerationStyleIntent } from "./style-intent";
+import { buildStyleCandidates } from "./candidates";
+import {
+  parseDemoGenerationStyleIntent,
+  parseStyleIntent,
+  type StyleIntent,
+} from "./style-intent";
 
 const DEMO_STYLE_SLUGS = [
   "neo-brutalist",
@@ -13,6 +18,14 @@ const DEMO_STYLE_SLUGS = [
   "neumorphism",
   "editorial",
 ] as const;
+
+/**
+ * Which slice of the catalog the planner may choose from.
+ *
+ * `demo` keeps the four styles the workspace generator can render.
+ * `full` opens all 146 — use it when the caller only needs the slug back.
+ */
+export type StyleIntentScope = "demo" | "full";
 
 export const DEFAULT_DASHSCOPE_MODEL = "qwen3.7-max";
 export const DEFAULT_DASHSCOPE_BASE_URL =
@@ -36,12 +49,35 @@ export class BailianClientError extends Error {
   }
 }
 
-function candidates(): StyleIntentCandidate[] {
+function candidates(scope: StyleIntentScope): StyleIntentCandidate[] {
+  if (scope === "full") return buildStyleCandidates();
+
   return DEMO_STYLE_SLUGS.map((slug) => {
     const detail = getStyleDetail(slug);
     if (!detail) throw new BailianClientError(`Missing demo style: ${slug}`, "CONFIGURATION_ERROR", 500);
     return { slug, nameEn: detail.nameEn, description: detail.description };
   });
+}
+
+/**
+ * Parses the model's JSON against the schema for this scope.
+ *
+ * The full schema only regex-checks the slug's shape, so a hallucinated but
+ * well-formed slug would sail through. Everything downstream — tokens,
+ * recipes, prompts — is keyed by slug, so we confirm the style actually
+ * exists before handing the intent on.
+ */
+function parseForScope(scope: StyleIntentScope, value: unknown): StyleIntent {
+  if (scope !== "full") return parseDemoGenerationStyleIntent(value);
+
+  const intent = parseStyleIntent(value);
+  if (!getStyleDetail(intent.styleSlug)) {
+    throw new BailianClientError(
+      `Model chose a style that is not in the catalog: ${intent.styleSlug}`,
+      "INVALID_MODEL_OUTPUT",
+    );
+  }
+  return intent;
 }
 
 function stripJsonFence(value: string): string {
@@ -82,6 +118,8 @@ export interface RequestStyleIntentOptions {
   timeoutMs?: number;
   fetchImpl?: typeof fetch;
   knowledge?: StyleIntentKnowledgeReference[];
+  /** Defaults to `demo` so existing callers keep the four-style list. */
+  scope?: StyleIntentScope;
 }
 
 export async function requestStyleIntent({
@@ -93,7 +131,8 @@ export async function requestStyleIntent({
   timeoutMs = 30_000,
   fetchImpl = fetch,
   knowledge = [],
-}: RequestStyleIntentOptions): Promise<DemoGenerationStyleIntent> {
+  scope = "demo",
+}: RequestStyleIntentOptions): Promise<StyleIntent> {
   const resolvedModel = model ?? (provider === "deepseek" ? DEFAULT_DEEPSEEK_MODEL : DEFAULT_DASHSCOPE_MODEL);
   const resolvedBaseUrl = baseUrl ?? (provider === "deepseek" ? DEFAULT_DEEPSEEK_BASE_URL : DEFAULT_DASHSCOPE_BASE_URL);
   const providerName = provider === "deepseek" ? "DeepSeek" : "DashScope";
@@ -121,7 +160,7 @@ export async function requestStyleIntent({
         temperature: 0.2,
         messages: [
           { role: "system", content: STYLE_INTENT_SYSTEM_PROMPT },
-          { role: "user", content: buildStyleIntentPrompt(request, candidates(), knowledge) },
+          { role: "user", content: buildStyleIntentPrompt(request, candidates(scope), knowledge) },
         ],
       }),
       signal: controller.signal,
@@ -145,8 +184,9 @@ export async function requestStyleIntent({
     }
 
     try {
-      return parseDemoGenerationStyleIntent(JSON.parse(stripJsonFence(text)));
-    } catch {
+      return parseForScope(scope, JSON.parse(stripJsonFence(text)));
+    } catch (error) {
+      if (error instanceof BailianClientError) throw error;
       throw new BailianClientError(
         `${providerName} returned invalid StyleIntent JSON.`,
         "INVALID_MODEL_OUTPUT",
