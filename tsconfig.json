@@ -23,6 +23,7 @@
       "@/*": ["./*"],
       "stylekit-core": ["./packages/core/src/index.ts"],
       "stylekit-core/discovery": ["./packages/core/src/discovery/index.ts"],
+      "stylekit-core/export": ["./packages/core/src/export/index.ts"],
       "stylekit-core/prompt": ["./packages/core/src/prompt/index.ts"],
       "stylekit-core/styles": ["./packages/core/src/styles/index.ts"]
     }

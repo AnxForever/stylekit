@@ -36,6 +36,11 @@
       "types": "./dist/prompt/index.d.ts",
       "import": "./dist/prompt/index.js",
       "require": "./dist/prompt/index.cjs"
+    },
+    "./export": {
+      "types": "./dist/export/index.d.ts",
+      "import": "./dist/export/index.js",
+      "require": "./dist/export/index.cjs"
     }
   },
   "files": [
