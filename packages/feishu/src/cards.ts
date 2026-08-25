@@ -115,7 +115,7 @@ export function complianceCard(report: StyleLintReport): object {
 }
 
 /** Delivery summary shown after a style is picked. */
-export function deliverCard(params: { slug: string; artifacts: number; totalChars: number; docUrl?: string; baseUrl?: string }): object {
+export function deliverCard(params: { slug: string; artifacts: number; totalChars: number; docUrl?: string; kitUrl?: string; baseUrl?: string }): object {
   const style = getStyleBySlug(params.slug);
   const lines = [
     `**${style?.name ?? params.slug} 工程包已生成**`,
@@ -123,6 +123,7 @@ export function deliverCard(params: { slug: string; artifacts: number; totalChar
   ];
   if (params.docUrl) lines.push(`- [设计规范交付单](${params.docUrl})`);
   if (params.baseUrl) lines.push(`- [多维表格记录](${params.baseUrl})`);
+  if (params.kitUrl) lines.push(`- [工程包下载](${params.kitUrl})`);
   lines.push("\n把 AI 写好的代码贴回群里，我来体检它是否守住了这个风格。");
 
   return {

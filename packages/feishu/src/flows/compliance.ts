@@ -33,8 +33,8 @@ export async function runComplianceFlow(
     // Write the verdict back to the Base record when one exists, so the
     // table becomes the project's live compliance log.
     const recordId = memory?.lastRecordId;
-    const baseToken = process.env.FEISHU_BASE_TOKEN?.trim();
-    const tableId = process.env.FEISHU_BASE_TABLE_ID?.trim();
+    const baseToken = process.env.FEISHU_BASE_TOKEN?.trim() || memory?.baseToken;
+    const tableId = process.env.FEISHU_BASE_TABLE_ID?.trim() || memory?.tableId;
     if (recordId && baseToken && tableId) {
       try {
         await larkCli.baseBatchUpdate({

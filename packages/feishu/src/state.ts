@@ -12,6 +12,9 @@ interface ChatMemory {
   lastIntent?: import("./planner/index.js").StyleIntent;
   /** Base record written by the delivery flow, so results can be patched in. */
   lastRecordId?: string;
+  /** Auto-created Base coordinates, so compliance write-backs know where to go. */
+  baseToken?: string;
+  tableId?: string;
   updatedAt: number;
 }
 
@@ -29,6 +32,12 @@ export class ChatStore {
 
   get(chatId: string): ChatMemory | undefined {
     return this.chats.get(chatId);
+  }
+
+  /** Remembers auto-created Base coordinates for a chat. */
+  rememberBase(chatId: string, baseToken: string, tableId: string): void {
+    const current = this.chats.get(chatId) ?? { updatedAt: 0 };
+    this.chats.set(chatId, { ...current, baseToken, tableId, updatedAt: Date.now() });
   }
 
   /** Drops a chat's memory when the style was changed. */

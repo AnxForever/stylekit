@@ -103,6 +103,16 @@ export interface LarkCli {
     fields: Array<Record<string, unknown>>;
     dryRun?: boolean;
   }): Promise<{ baseToken: string; tableId: string }>;
+  /**
+   * Uploads a local file to Drive and returns its shareable URL when the CLI
+   * prints one, otherwise the bare file token.
+   */
+  driveUpload(params: {
+    filePath: string;
+    folderToken?: string;
+    name?: string;
+    dryRun?: boolean;
+  }): Promise<string>;
 }
 
 export const larkCli: LarkCli = {
@@ -249,5 +259,37 @@ export const larkCli: LarkCli = {
         stdout.slice(0, 500),
       );
     }
+  },
+
+  async driveUpload({ filePath, folderToken, name, dryRun }) {
+    const args = [
+      "drive",
+      "+upload",
+      "--as",
+      "bot",
+      "--format",
+      "json",
+      "--file",
+      filePath,
+    ];
+    if (folderToken) args.push("--folder-token", folderToken);
+    if (name) args.push("--name", name);
+    if (dryRun) args.push("--dry-run");
+
+    const { stdout } = await run(args);
+    const text = stdout.trim();
+
+    const urlMatch = text.match(/https:\/\/[^\s"'<>]+/);
+    if (urlMatch) return urlMatch[0];
+
+    const tokenMatch = text.match(/[a-zA-Z0-9]{20,}/);
+    if (!tokenMatch) {
+      throw new LarkCliError(
+        `lark-cli upload returned no file token.`,
+        "BAD_OUTPUT",
+        stdout.slice(0, 500),
+      );
+    }
+    return tokenMatch[0];
   },
 };

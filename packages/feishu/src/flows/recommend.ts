@@ -12,7 +12,7 @@ import { stylesMeta } from "stylekit-core/styles";
 import type { BotContext } from "../bot.js";
 import { recommendCard, thinkingCard } from "../cards.js";
 import { planStyle } from "../planner/index.js";
-import { LlmError } from "../llm/index.js";
+import { LlmError, LlmClient } from "../llm/index.js";
 
 function pickAlternatives(primarySlug: string): string[] {
   const primary = stylesMeta.find((meta) => meta.slug === primarySlug);
@@ -24,14 +24,17 @@ function pickAlternatives(primarySlug: string): string[] {
     .map((meta) => meta.slug);
 }
 
+/** Fallback model for when the primary one errors out or times out. */
+const FALLBACK_MODEL = "step-overture-preview";
+
 export async function runRecommendFlow(
   ctx: BotContext,
   chatId: string,
   brief: string,
 ): Promise<void> {
-  let llm;
+  let primary;
   try {
-    llm = ctx.getLlm();
+    primary = ctx.getLlm();
   } catch (error) {
     await ctx.channel.send(chatId, {
       markdown: `LLM 还没配置。把 \`LLM_BASE_URL\` / \`LLM_MODEL\` / \`LLM_API_KEY\` 写进 \`packages/feishu/.env\` 后重启即可。${error instanceof Error ? `\n\n（${error.message}）` : ""}`,
@@ -39,16 +42,39 @@ export async function runRecommendFlow(
     return;
   }
 
+  const plan = async (llm: LlmClient) => {
+    const intent = await planStyle(llm, { brief });
+    ctx.store.remember(chatId, {
+      lastSlug: intent.styleSlug,
+      lastBrief: brief,
+      lastIntent: intent,
+    });
+    return intent;
+  };
+
   await ctx.channel.stream(chatId, {
     card: {
       initial: thinkingCard(1),
       producer: async (controller) => {
         await controller.update(thinkingCard(2));
-        const intent = await planStyle(llm, { brief });
+
+        let intent;
+        try {
+          intent = await plan(primary);
+        } catch (primaryError) {
+          console.warn(
+            "[stylekit-feishu] primary model failed, falling back:",
+            primaryError instanceof Error ? primaryError.message : primaryError,
+          );
+          const fallback = new LlmClient({
+            baseUrl: process.env.LLM_BASE_URL ?? primary.baseUrl,
+            model: FALLBACK_MODEL,
+            apiKey: primary.apiKey,
+          });
+          intent = await plan(fallback);
+        }
+
         await controller.update(thinkingCard(3));
-
-        ctx.store.remember(chatId, { lastSlug: intent.styleSlug, lastBrief: brief, lastIntent: intent });
-
         const alternatives = pickAlternatives(intent.styleSlug);
         await controller.update(recommendCard(intent, alternatives));
       },

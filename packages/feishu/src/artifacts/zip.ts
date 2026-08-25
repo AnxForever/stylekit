@@ -1,19 +1,31 @@
 /**
  * Packs artifacts into a single ZIP, staged on disk for upload via lark-cli.
+ *
+ * JSZip is CJS and lives in the web app's dependency tree; it is required
+ * lazily via createRequire so the bot's own package.json stays lean and a
+ * missing package degrades to a manifest listing instead of stranding the
+ * delivery flow.
  */
 
+import { createRequire } from "node:module";
 import { mkdtempSync, writeFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import type { Artifact } from "./index.js";
 
-// JSZip is ESM-only; load it lazily from the web app's dependency so the
-// bot's package.json stays lean. Falls back to a directory listing note if
-// the package is unavailable (unlikely inside the monorepo).
-const jszipPath = fileURLToPath(
-  new URL("../../../node_modules/jszip/package.json", import.meta.url),
+const requireFromRepo = createRequire(
+  join(fileURLToPath(new URL("../../..", import.meta.url)), "package.json"),
 );
+
+interface JSZipCjs {
+  file(path: string, content: string): void;
+  generateAsync(options: {
+    type: "nodebuffer";
+    compression: "DEFLATE";
+    compressionOptions: { level: number };
+  }): Promise<Buffer>;
+}
 
 export async function zipArtifacts(
   slug: string,
@@ -23,11 +35,11 @@ export async function zipArtifacts(
   const outPath = join(dir, `${slug}-stylekit.zip`);
 
   try {
-    let JSZip: typeof import("jszip");
+    let JSZip: new () => JSZipCjs;
     try {
-      JSZip = (await import(jszipPath)).default;
+      JSZip = requireFromRepo("jszip") as new () => JSZipCjs;
     } catch {
-      // No jszip available — degrade to a plain manifest so the flow never
+      // No jszip available — degrade to a manifest listing so the flow never
       // strands the user.
       writeFileSync(
         outPath,

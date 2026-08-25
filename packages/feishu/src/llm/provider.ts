@@ -59,6 +59,16 @@ function extractText(payload: unknown): string {
 export class LlmClient {
   constructor(private readonly config: LlmConfig) {}
 
+  /** Base URL of the configured endpoint, exposed for fallback clients. */
+  get baseUrl(): string {
+    return this.config.baseUrl;
+  }
+
+  /** API key of the configured endpoint, exposed for fallback clients. */
+  get apiKey(): string {
+    return this.config.apiKey;
+  }
+
   async chat(messages: ChatMessage[], options: ChatOptions = {}): Promise<string> {
     const { baseUrl, model, apiKey } = this.config;
     const { temperature = 0.2, maxTokens, timeoutMs = 60_000, responseFormat } = options;
