@@ -50,28 +50,46 @@ const ADDONS: AppAddons = {
 async function main(): Promise<void> {
   console.log("正在向飞书申请注册二维码...\n");
 
-  const credentials = await registerApp({
-    appPreset: APP_PRESET,
-    addons: ADDONS,
-    createOnly: true,
-    onQRCodeReady: ({ url, expireIn }) => {
-      console.log("┌─ 用飞书扫这个链接 ─────────────────────────────");
-      console.log(`│ ${url}`);
-      console.log(`└─ ${expireIn} 秒内有效 ─────────────────────────────\n`);
-      console.log("  扫码后请核对确认页列出的权限，缺什么在开放平台补。\n");
-    },
-    onStatusChange: (info) => {
-      console.log(`  状态: ${info.status}`);
-    },
-  });
+  // The poll loop runs for minutes; on a flaky network the TLS connection can
+  // drop mid-poll even though the first request succeeded. Retry the whole
+  // flow with a fresh QR instead of dying on the first hiccup.
+  for (let attempt = 1; attempt <= 3; attempt++) {
+    try {
+      const credentials = await registerApp({
+        appPreset: APP_PRESET,
+        addons: ADDONS,
+        createOnly: true,
+        onQRCodeReady: ({ url, expireIn }) => {
+          console.log("┌─ 用飞书扫这个链接 ─────────────────────────────");
+          console.log(`│ ${url}`);
+          console.log(`└─ ${expireIn} 秒内有效 ─────────────────────────────\n`);
+          console.log("  扫码后请核对确认页列出的权限，缺什么在开放平台补。\n");
+        },
+        onStatusChange: (info) => {
+          console.log(`  状态: ${info.status}`);
+        },
+      });
 
-  console.log("\n✅ 注册完成。把下面两行写进 packages/feishu/.env：\n");
-  console.log(`FEISHU_APP_ID=${credentials.client_id}`);
-  console.log(`FEISHU_APP_SECRET=${credentials.client_secret}`);
-  console.log("\n然后 pnpm --filter stylekit-feishu dev 启动机器人。");
+      console.log("\n✅ 注册完成。把下面两行写进 packages/feishu/.env：\n");
+      console.log(`FEISHU_APP_ID=${credentials.client_id}`);
+      console.log(`FEISHU_APP_SECRET=${credentials.client_secret}`);
+      console.log("\n然后 pnpm --filter stylekit-feishu dev 启动机器人。");
+      return;
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      const isNetwork =
+        /socket|network|tls|fetch|connect/i.test(message) &&
+        !/已取消|aborted|canceled/i.test(message);
+      if (!isNetwork || attempt === 3) throw error;
+      console.log(`\n⚠️  网络抖动中断了第 ${attempt} 次尝试，正在重新申请二维码...\n`);
+      await new Promise((resolve) => setTimeout(resolve, 2_000));
+    }
+  }
 }
 
 main().catch((error: unknown) => {
-  console.error("\n❌ 注册失败:", error instanceof Error ? error.message : error);
+  const message = error instanceof Error ? error.message : String(error);
+  console.error("\n❌ 注册失败:", message);
+  console.error("\n可以走手动路径：去 open.feishu.cn 创建自建应用，把 appId/appSecret 填进 packages/feishu/.env。");
   process.exitCode = 1;
 });
