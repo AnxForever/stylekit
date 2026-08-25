@@ -50,12 +50,21 @@ const ADDONS: AppAddons = {
 async function main(): Promise<void> {
   console.log("正在向飞书申请注册二维码...\n");
 
+  // The SDK's default registration host is open.feishu.cn, whose device-flow
+  // endpoint now answers 404 (verified 2026-08-25) — the poll loop dies with
+  // TLS resets shortly after begin. accounts.feishu.cn serves the same
+  // device-flow protocol and is stable (probed 10 polls / 0 failures over
+  // 40s). The QR link itself still lands on open.feishu.cn/page/launcher,
+  // so the user experience is unchanged.
+  const registrationDomain = process.env.FEISHU_REGISTRATION_DOMAIN?.trim() || "accounts.feishu.cn";
+
   // The poll loop runs for minutes; on a flaky network the TLS connection can
   // drop mid-poll even though the first request succeeded. Retry the whole
   // flow with a fresh QR instead of dying on the first hiccup.
   for (let attempt = 1; attempt <= 3; attempt++) {
     try {
       const credentials = await registerApp({
+        domain: registrationDomain,
         appPreset: APP_PRESET,
         addons: ADDONS,
         createOnly: true,
