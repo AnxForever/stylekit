@@ -93,6 +93,16 @@ export interface LarkCli {
     updates: Record<string, Record<string, unknown>>;
     dryRun?: boolean;
   }): Promise<void>;
+  /**
+   * Creates a Base with its first table and field schema in one command, so
+   * a fresh install needs no pre-made Base.
+   */
+  baseCreateWithTable(params: {
+    name: string;
+    tableName: string;
+    fields: Array<Record<string, unknown>>;
+    dryRun?: boolean;
+  }): Promise<{ baseToken: string; tableId: string }>;
 }
 
 export const larkCli: LarkCli = {
@@ -192,5 +202,52 @@ export const larkCli: LarkCli = {
     if (dryRun) args.push("--dry-run");
 
     await run(args);
+  },
+
+  async baseCreateWithTable({ name, tableName, fields, dryRun }) {
+    const args = [
+      "base",
+      "+base-create",
+      "--as",
+      "bot",
+      "--format",
+      "json",
+      "--name",
+      name,
+      "--table-name",
+      tableName,
+      "--fields",
+      JSON.stringify(fields),
+    ];
+    if (dryRun) args.push("--dry-run");
+
+    const { stdout } = await run(args);
+    try {
+      const payload = JSON.parse(stdout) as {
+        base_token?: string;
+        app_token?: string;
+        token?: string;
+        table_id?: string;
+        table?: { table_id?: string };
+      };
+      const baseToken =
+        payload.base_token ?? payload.app_token ?? payload.token;
+      const tableId = payload.table_id ?? payload.table?.table_id;
+      if (!baseToken) {
+        throw new LarkCliError(
+          `lark-cli base create returned no base token.`,
+          "BAD_OUTPUT",
+          stdout.slice(0, 500),
+        );
+      }
+      return { baseToken, tableId: tableId ?? "" };
+    } catch (error) {
+      if (error instanceof LarkCliError) throw error;
+      throw new LarkCliError(
+        `lark-cli base create returned non-JSON output.`,
+        "BAD_OUTPUT",
+        stdout.slice(0, 500),
+      );
+    }
   },
 };

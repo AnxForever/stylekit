@@ -11,11 +11,13 @@ import { createLarkChannel } from "@larksuite/channel";
 import { loadFeishuConfig } from "./config.js";
 import { loadLlmClient, LlmError } from "./llm/index.js";
 import { ChatStore } from "./state.js";
+import { acquireSingletonLock } from "./singleton.js";
 import type { BotContext } from "./bot.js";
 import { handleMessage } from "./handlers/message.js";
 import { handleCardAction } from "./handlers/card-action.js";
 
 async function main(): Promise<void> {
+  acquireSingletonLock();
   const { appId, appSecret } = loadFeishuConfig();
 
   const channel = createLarkChannel({
