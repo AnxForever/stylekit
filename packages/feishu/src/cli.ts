@@ -9,6 +9,9 @@
 
 import { createLarkChannel } from "@larksuite/channel";
 import { loadFeishuConfig } from "./config.js";
+import { loadLlmClient, LlmError } from "./llm/index.js";
+import { ChatStore } from "./state.js";
+import type { BotContext } from "./bot.js";
 import { handleMessage } from "./handlers/message.js";
 import { handleCardAction } from "./handlers/card-action.js";
 
@@ -29,8 +32,20 @@ async function main(): Promise<void> {
     },
   });
 
-  channel.on("message", handleMessage);
-  channel.on("cardAction", handleCardAction);
+  let cachedLlm: ReturnType<typeof loadLlmClient> | null = null;
+  const ctx: BotContext = {
+    channel,
+    getLlm: () => {
+      // Lazy: the compliance flow and the nudge reply work without an LLM,
+      // so a missing key should not stop the bot from connecting.
+      if (!cachedLlm) cachedLlm = loadLlmClient();
+      return cachedLlm;
+    },
+    store: new ChatStore(),
+  };
+
+  channel.on("message", (msg) => handleMessage(ctx, msg));
+  channel.on("cardAction", (event) => handleCardAction(ctx, event));
   channel.on("error", (error) => {
     console.error("[stylekit-feishu] channel error:", error.message);
   });
@@ -41,6 +56,17 @@ async function main(): Promise<void> {
     `[stylekit-feishu] connected as ${bot.name} (${bot.openId}). ` +
       `@-mention me in a group to start.`,
   );
+
+  try {
+    ctx.getLlm();
+    console.log("[stylekit-feishu] LLM configured.");
+  } catch (error) {
+    if (error instanceof LlmError) {
+      console.warn(`[stylekit-feishu] LLM not configured: ${error.message}`);
+    } else {
+      throw error;
+    }
+  }
 }
 
 main().catch((error: unknown) => {

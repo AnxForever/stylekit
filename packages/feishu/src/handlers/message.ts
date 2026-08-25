@@ -1,20 +1,51 @@
 /**
- * Inbound message handling — first slice.
+ * Inbound message routing.
  *
- * This is the working skeleton: reply with a greeting and an honest
- * description of what is wired up. The recommendation flow replaces the echo
- * as soon as the LLM plumbing lands (see handlers/recommend.ts in a follow-up
- * commit). Keeping the echo behind the same signature means the channel
- * wiring can be proven live today, before any AI is involved.
+ * Code gets the compliance check; everything else is treated as a design
+ * brief. The heuristic is deliberately conservative: a brief in Chinese
+ * asking for a landing page will never match, and a pasted component always
+ * will.
  */
 
 import type { NormalizedMessage } from "@larksuite/channel";
+import type { BotContext } from "../bot.js";
+import { runComplianceFlow } from "../flows/compliance.js";
+import { runRecommendFlow } from "../flows/recommend.js";
 
-export async function handleMessage(msg: NormalizedMessage): Promise<void> {
-  // "@bot" with no text is a nudge, not a request — answer it in kind.
+const CODE_MARKERS = [
+  /className=/,
+  /class="/,
+  /<\/[a-z]+>/,
+  /^import\s/m,
+  /^export\s/m,
+  /tailwind/i,
+  /@media\s/,
+  /font-(sans|serif|mono)/,
+];
+
+function looksLikeCode(content: string): boolean {
+  return CODE_MARKERS.some((marker) => marker.test(content));
+}
+
+export async function handleMessage(
+  ctx: BotContext,
+  msg: NormalizedMessage,
+): Promise<void> {
+  // "@bot" with no text is a nudge, not a request.
   if (msg.mentionedBot && !msg.content.trim()) {
+    await ctx.channel.reply(msg, {
+      markdown: "在的。@我一句话描述需求，我来选风格；代码写完贴回群里，我来体检。",
+    });
     return;
   }
 
-  void msg; // Wired but unused until the recommendation flow lands.
+  const content = msg.content.trim();
+  if (!content) return;
+
+  if (looksLikeCode(content)) {
+    await runComplianceFlow(ctx, msg.chatId, content);
+    return;
+  }
+
+  await runRecommendFlow(ctx, msg.chatId, content);
 }

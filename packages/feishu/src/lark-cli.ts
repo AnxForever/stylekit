@@ -76,13 +76,23 @@ export interface LarkCli {
   }): Promise<string[]>;
   /**
    * Imports a local Markdown file into Drive as a docx and returns the
-   * document token. Uses the application identity (no user prompt).
+   * document URL when the CLI prints one, otherwise the bare token. Uses the
+   * application identity (no user prompt).
    */
   driveImportMarkdown(params: {
     filePath: string;
     folderToken?: string;
     dryRun?: boolean;
   }): Promise<string>;
+  /**
+   * Patches fields on existing records, keyed by record id.
+   */
+  baseBatchUpdate(params: {
+    baseToken: string;
+    tableId: string;
+    updates: Record<string, Record<string, unknown>>;
+    dryRun?: boolean;
+  }): Promise<void>;
 }
 
 export const larkCli: LarkCli = {
@@ -148,8 +158,11 @@ export const larkCli: LarkCli = {
 
     const { stdout } = await run(args);
     const text = stdout.trim();
-    // The CLI prints either the raw document token or a JSON object holding
-    // it; accept both so a format change in the CLI does not break us.
+
+    // Prefer a full URL when the CLI prints one; fall back to a bare token.
+    const urlMatch = text.match(/https:\/\/[^\s"'<>]+/);
+    if (urlMatch) return urlMatch[0];
+
     const tokenMatch = text.match(/[a-zA-Z0-9]{20,}/);
     if (!tokenMatch) {
       throw new LarkCliError(
@@ -159,5 +172,25 @@ export const larkCli: LarkCli = {
       );
     }
     return tokenMatch[0];
+  },
+
+  async baseBatchUpdate({ baseToken, tableId, updates, dryRun }) {
+    const args = [
+      "base",
+      "+record-batch-update",
+      "--as",
+      "bot",
+      "--format",
+      "json",
+      "--base-token",
+      baseToken,
+      "--table-id",
+      tableId,
+      "--json",
+      JSON.stringify({ update_records: updates }),
+    ];
+    if (dryRun) args.push("--dry-run");
+
+    await run(args);
   },
 };
