@@ -31,6 +31,11 @@
       "types": "./dist/discovery/index.d.ts",
       "import": "./dist/discovery/index.js",
       "require": "./dist/discovery/index.cjs"
+    },
+    "./prompt": {
+      "types": "./dist/prompt/index.d.ts",
+      "import": "./dist/prompt/index.js",
+      "require": "./dist/prompt/index.cjs"
     }
   },
   "files": [
