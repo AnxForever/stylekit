@@ -84,6 +84,63 @@ describe("Bailian style intent client", () => {
     );
   });
 
+  it("shows the model the whole catalog when scope is full", async () => {
+    const fetchImpl = vi.fn<typeof fetch>().mockResolvedValue(
+      response({ choices: [{ message: { content: JSON.stringify(intent) } }] }),
+    );
+
+    await requestStyleIntent({
+      request: "Build a streetwear landing page.",
+      apiKey: "test-key",
+      scope: "full",
+      fetchImpl,
+    });
+
+    const body = JSON.parse(
+      (fetchImpl.mock.calls[0]?.[1]?.body as string) ?? "{}",
+    );
+    const userPrompt: string = body.messages[1].content;
+    const candidateLines = userPrompt
+      .split("\n")
+      .filter((line: string) => /^- [a-z0-9-]+: /.test(line));
+
+    expect(candidateLines.length).toBeGreaterThan(100);
+    expect(userPrompt).toContain("neo-brutalist");
+    expect(userPrompt).toContain("editorial");
+  });
+
+  it("lets scope full pick a style the demo list never offered", async () => {
+    const wideIntent = { ...intent, styleSlug: "cyberpunk-neon", projectType: "landing" };
+    const fetchImpl = vi.fn<typeof fetch>().mockResolvedValue(
+      response({ choices: [{ message: { content: JSON.stringify(wideIntent) } }] }),
+    );
+
+    await expect(
+      requestStyleIntent({
+        request: "Neon-drenched product page.",
+        apiKey: "test-key",
+        scope: "full",
+        fetchImpl,
+      }),
+    ).resolves.toMatchObject({ styleSlug: "cyberpunk-neon", projectType: "landing" });
+  });
+
+  it("rejects a well-formed slug that is not in the catalog", async () => {
+    const hallucinated = { ...intent, styleSlug: "vapor-glass-deluxe" };
+    const fetchImpl = vi.fn<typeof fetch>().mockResolvedValue(
+      response({ choices: [{ message: { content: JSON.stringify(hallucinated) } }] }),
+    );
+
+    await expect(
+      requestStyleIntent({
+        request: "Build something pretty.",
+        apiKey: "test-key",
+        scope: "full",
+        fetchImpl,
+      }),
+    ).rejects.toMatchObject({ code: "INVALID_MODEL_OUTPUT" });
+  });
+
   it("fails closed when the API key is missing", async () => {
     await expect(
       requestStyleIntent({
