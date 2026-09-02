@@ -124,6 +124,8 @@ import { monochromeRecipes } from "./monochrome";
 import { sciFiHudRecipes } from "./sci-fi-hud";
 import { scrollytellingRecipes } from "./scrollytelling";
 import { kawaiiMinimalRecipes } from "./kawaii-minimal";
+import { kineticConstructivismRecipes } from "./kinetic-constructivism";
+import { broadcastGlitchRecipes } from "./broadcast-glitch";
 import { kineticTypographyRecipes } from "./kinetic-typography";
 import { filmNoirRecipes } from "./film-noir";
 import { arcadeCrtRecipes } from "./arcade-crt";
@@ -286,6 +288,8 @@ const recipeRegistry: Record<string, StyleRecipes> = {
   "sci-fi-hud": sciFiHudRecipes,
   "scrollytelling": scrollytellingRecipes,
   "kawaii-minimal": kawaiiMinimalRecipes,
+  "kinetic-constructivism": kineticConstructivismRecipes,
+  "broadcast-glitch": broadcastGlitchRecipes,
   "kinetic-typography": kineticTypographyRecipes,
   "film-noir": filmNoirRecipes,
   "arcade-crt": arcadeCrtRecipes,

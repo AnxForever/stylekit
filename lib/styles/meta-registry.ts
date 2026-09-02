@@ -1828,6 +1828,44 @@ export const stylesMeta: StyleMeta[] = [
     keywords: ["动态排印", "可变字体", "文字动画", "跑马灯", "动效"],
   },
   {
+    slug: "kinetic-constructivism",
+    name: "动力学构成主义",
+    nameEn: "Kinetic Constructivism",
+    description:
+      "会动的构成主义。米白纸面上，红、蓝、黄的实色几何——圆、三角、方与粗对角线——沿轴线做机械运动：圆盘公转、三角钟摆、方块行进。",
+    descriptionEn:
+      "Constructivism set in motion. On bone-white paper, solid geometric primitives in red, blue and yellow are engineered to move: discs orbit, triangles swing, squares march.",
+    cover: "/styles/kinetic-constructivism.svg",
+    styleType: "visual",
+    tags: ["geometric", "high-contrast", "colorful"],
+    category: "expressive",
+    colors: {
+      primary: "#EFE9DC",
+      secondary: "#17130E",
+      accent: ["#E0231B", "#1C4A87", "#F4B301"],
+    },
+    keywords: ["构成主义", "会动的构成主义", "动态几何", "机械运动", "MG动画"],
+  },
+  {
+    slug: "broadcast-glitch",
+    name: "故障广播",
+    nameEn: "Broadcast Glitch",
+    description:
+      "老电视信号的动态包装。CRT 黑底上，扫描线滚动、RGB 通道红青错位抖动、SMPTE 测试卡彩条横扫、画面偶尔跳帧位移。90 年代电视台呼号与 VHS 故障艺术的复兴，不是合成波日落。",
+    descriptionEn:
+      "The motion packaging of a dying broadcast signal. On CRT black: crawling scanlines, red-cyan channel jitter, SMPTE color bars and stepped glitch jumps. A revival of 90s TV idents and VHS glitch, not a synthwave sunset.",
+    cover: "/styles/broadcast-glitch.svg",
+    styleType: "visual",
+    tags: ["retro", "dark-theme", "high-contrast", "texture-heavy"],
+    category: "retro",
+    colors: {
+      primary: "#0B0B0E",
+      secondary: "#EDEDED",
+      accent: ["#FF2E4C", "#00E5D8", "#F5E000"],
+    },
+    keywords: ["故障艺术", "故障广播", "CRT", "扫描线", "MG动画"],
+  },
+  {
     slug: "korean-minimal",
     name: "韩式极简",
     nameEn: "Korean Minimal",

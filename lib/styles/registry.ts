@@ -109,6 +109,8 @@ import { zenGarden } from "./zen-garden";
 import { sciFiHud } from "./sci-fi-hud";
 import { scrollytelling } from "./scrollytelling";
 import { kawaiiMinimal } from "./kawaii-minimal";
+import { kineticConstructivism } from "./kinetic-constructivism";
+import { broadcastGlitch } from "./broadcast-glitch";
 import { kineticTypography } from "./kinetic-typography";
 import { filmNoir } from "./film-noir";
 // New styles - Batch 10
@@ -288,6 +290,8 @@ export const rawStyles: DesignStyle[] = [
   sciFiHud,
   scrollytelling,
   kawaiiMinimal,
+  kineticConstructivism,
+  broadcastGlitch,
   kineticTypography,
   filmNoir,
   // New styles - Batch 10

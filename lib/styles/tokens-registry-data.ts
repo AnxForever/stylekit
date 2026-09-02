@@ -101,6 +101,8 @@ import { liquidGlassTokens } from "./liquid-glass-tokens";
 import { sciFiHudTokens } from "./sci-fi-hud-tokens";
 import { scrollytellingTokens } from "./scrollytelling-tokens";
 import { kawaiiMinimalTokens } from "./kawaii-minimal-tokens";
+import { kineticConstructivismTokens } from "./kinetic-constructivism-tokens";
+import { broadcastGlitchTokens } from "./broadcast-glitch-tokens";
 import { kineticTypographyTokens } from "./kinetic-typography-tokens";
 import { filmNoirTokens } from "./film-noir-tokens";
 import { arcadeCrtTokens } from "./arcade-crt-tokens";
@@ -267,6 +269,8 @@ export const styleTokensRegistry: Record<string, StyleTokens> = {
   "sci-fi-hud": sciFiHudTokens,
   "scrollytelling": scrollytellingTokens,
   "kawaii-minimal": kawaiiMinimalTokens,
+  "kinetic-constructivism": kineticConstructivismTokens,
+  "broadcast-glitch": broadcastGlitchTokens,
   "kinetic-typography": kineticTypographyTokens,
   "film-noir": filmNoirTokens,
   "arcade-crt": arcadeCrtTokens,

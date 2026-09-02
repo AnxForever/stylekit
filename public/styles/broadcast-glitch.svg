@@ -1,0 +1,60 @@
+<svg viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <pattern id="glitchScan" width="4" height="4" patternUnits="userSpaceOnUse">
+      <rect width="4" height="2" fill="transparent" />
+      <rect y="2" width="4" height="1.4" fill="#000000" opacity="0.6" />
+    </pattern>
+  </defs>
+
+  <!-- CRT black stage -->
+  <rect width="1200" height="630" fill="#0B0B0E" />
+
+  <!-- SMPTE color bars, top-right corner -->
+  <g>
+    <rect x="944" y="0" width="36.6" height="200" fill="#EDEDED" />
+    <rect x="980.6" y="0" width="36.6" height="200" fill="#F5E000" />
+    <rect x="1017.2" y="0" width="36.6" height="200" fill="#00E5D8" />
+    <rect x="1053.8" y="0" width="36.6" height="200" fill="#3DFF6E" />
+    <rect x="1090.4" y="0" width="36.6" height="200" fill="#FF2E9A" />
+    <rect x="1127" y="0" width="36.6" height="200" fill="#FF2E4C" />
+    <rect x="1163.6" y="0" width="36.4" height="200" fill="#2E6BFF" />
+  </g>
+
+  <!-- Channel-split title: cyan + red offsets under white -->
+  <g font-family="'Azeret Mono', ui-monospace, monospace" font-weight="700" font-size="128" letter-spacing="-2">
+    <text x="66" y="270" fill="#00E5D8" opacity="0.9" transform="translate(6,0)">PLEASE</text>
+    <text x="66" y="270" fill="#FF2E4C" opacity="0.9" transform="translate(-6,0)">PLEASE</text>
+    <text x="66" y="270" fill="#EDEDED">PLEASE</text>
+    <text x="66" y="400" fill="#00E5D8" opacity="0.9" transform="translate(6,0)">STAND BY</text>
+    <text x="66" y="400" fill="#FF2E4C" opacity="0.9" transform="translate(-6,0)">STAND BY</text>
+    <text x="66" y="400" fill="#EDEDED">STAND BY</text>
+  </g>
+
+  <!-- Mono label -->
+  <text x="68" y="150" font-family="'Azeret Mono', ui-monospace, monospace" font-size="20" fill="#00E5D8" letter-spacing="8">// NO SIGNAL</text>
+
+  <!-- VHS tear band -->
+  <g transform="translate(0,330)">
+    <rect x="66" y="0" width="620" height="10" fill="#EDEDED" opacity="0.12" />
+    <rect x="120" y="0" width="180" height="10" fill="#FF2E4C" opacity="0.5" transform="translate(8,0)" />
+  </g>
+
+  <!-- REC indicator + card + button (bottom) -->
+  <g font-family="'Azeret Mono', ui-monospace, monospace">
+    <circle cx="78" cy="470" r="9" fill="#FF2E4C" />
+    <text x="98" y="477" font-size="20" font-weight="700" fill="#FF2E4C" letter-spacing="4">REC</text>
+
+    <!-- CRT card -->
+    <rect x="66" y="500" width="360" height="96" fill="#101014" stroke="#EDEDED" stroke-opacity="0.3" stroke-width="2" />
+    <rect x="66" y="500" width="360" height="8" fill="#00E5D8" />
+    <text x="84" y="540" font-size="15" fill="#00E5D8" letter-spacing="2">CH-01 / LIVE</text>
+    <text x="84" y="572" font-size="24" font-weight="700" fill="#EDEDED" letter-spacing="1">SIGNAL LOST</text>
+
+    <!-- Button -->
+    <rect x="452" y="524" width="220" height="52" fill="#FF2E4C" stroke="#EDEDED" stroke-width="2" />
+    <text x="562" y="558" font-size="18" font-weight="700" fill="#0B0B0E" text-anchor="middle" letter-spacing="3">&#9654; TRANSMIT</text>
+  </g>
+
+  <!-- Scanline overlay across everything -->
+  <rect width="1200" height="630" fill="url(#glitchScan)" opacity="0.5" />
+</svg>

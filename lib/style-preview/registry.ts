@@ -89,6 +89,8 @@ import preview085 from "./styles/cinematic-video-hero";
 import preview140 from "./styles/launch-keynote";
 import preview141 from "./styles/luxe-lookbook";
 import preview142 from "./styles/shader-gradient";
+import preview143 from "./styles/kinetic-constructivism";
+import preview145 from "./styles/broadcast-glitch";
 import preview086 from "./styles/cel-shading";
 import preview087 from "./styles/wabi-sabi";
 import preview088 from "./styles/scrollytelling";
@@ -296,6 +298,8 @@ export const styleComponents: Record<string, StylePreviewComponents> = {
   "launch-keynote": preview140,
   "luxe-lookbook": preview141,
   "shader-gradient": preview142,
+  "kinetic-constructivism": preview143,
+  "broadcast-glitch": preview145,
   // End style preview entries
   "pastel-ui": pastelUiPreview,
   "mobile-editorial": mobileEditorialPreview,
