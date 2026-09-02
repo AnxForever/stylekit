@@ -121,6 +121,7 @@ const PROFILE_SLUGS: Record<ProfileId, readonly string[]> = {
     "dopamine-design",
     "geometric-bold",
     "graffiti-street",
+    "kinetic-constructivism",
     "kinetic-typography",
     "neo-brutalist",
     "neo-brutalist-playful",
@@ -146,6 +147,7 @@ const PROFILE_SLUGS: Record<ProfileId, readonly string[]> = {
   ],
   signal: [
     "blueprint",
+    "broadcast-glitch",
     "cyber-chinese",
     "cyber-wafuu",
     "cyberpunk-neon",
