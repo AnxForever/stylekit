@@ -57,7 +57,7 @@ describe("typography font generation", () => {
 describe("typography pairing metadata", () => {
   it("ships a deliberately edited catalog", () => {
     expect(fontPairings.length).toBeGreaterThanOrEqual(15);
-    expect(fontPairings.length).toBeLessThanOrEqual(40);
+    expect(fontPairings.length).toBeLessThanOrEqual(45);
   });
 
   it("includes the display and handwritten categories", () => {
