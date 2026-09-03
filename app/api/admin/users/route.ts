@@ -2,37 +2,38 @@ import { NextResponse } from "next/server";
 import { checkAdminApiAccess } from "@/lib/auth/admin-api";
 import { getAdminUserIds } from "@/lib/auth/admin-policy";
 import {
-  buildUserTitleRuleMap,
   isEarlyUser,
   resolveUserTitle,
   type UserTitleRule,
 } from "@/lib/auth/user-title-policy";
 import { getSupabaseAdmin } from "@/lib/supabase/server";
 
-const LEGACY_USER_SESSION_PREFIX = "user:";
-const FAVORITES_TABLE_CANDIDATES = ["user_favorites", "style_favorites"] as const;
-const SUBMISSIONS_TABLE_CANDIDATES = ["submissions", "style_submissions"] as const;
 const UUID_RE =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
-interface UserInfo {
-  userId: string;
-  authorName: string;
-  avatarUrl: string | null;
-  commentCount: number;
-  ratingCount: number;
-  favoriteCount: number;
-  submissionCount: number;
-  lastActive: string;
-  seqId: number | null;
-  profileTitle: string | null;
-  customTitle: string | null;
-  titleColor: string | null;
-  titleIconPath: string | null;
-  isOwner: boolean;
-  titleEnabled: boolean;
-  isEarlyUser: boolean;
-  resolvedTitle: string | null;
+// One row per user, already aggregated by the admin_users_overview RPC
+// (migration 036). The RPC reads auth.users directly and joins the per-user
+// comment/rating/favorite/submission counts + seq id + title in a single
+// round trip, replacing the previous auth.admin.listUsers (~1.1-1.4s REST
+// call) plus six full-table reads. Search, sort, paging and title resolution
+// stay here so the response contract is unchanged.
+interface OverviewRow {
+  user_id: string;
+  email: string | null;
+  author_name: string | null;
+  avatar_url: string | null;
+  comment_count: number;
+  rating_count: number;
+  favorite_count: number;
+  submission_count: number;
+  last_active: string | null;
+  seq_id: number | null;
+  custom_title: string | null;
+  title_color: string | null;
+  title_icon_path: string | null;
+  is_owner: boolean;
+  title_enabled: boolean;
+  profile_title: string | null;
 }
 
 interface UserPayload {
@@ -54,43 +55,18 @@ interface UserPayload {
   resolvedTitle: string | null;
 }
 
-interface DbErrorLike {
-  code?: string | null;
-  message?: string | null;
-  details?: string | null;
+// Internal shape: payload plus the lowercased email used only for search.
+// The email never leaves the server (stripped before the JSON response).
+interface EnrichedUser extends UserPayload {
+  emailLower: string;
 }
 
-interface SupabaseSelectResult {
-  data: unknown[] | null;
-  error: DbErrorLike | null;
+interface SupabaseRpcLike {
+  rpc: (
+    name: string,
+    params?: Record<string, unknown>
+  ) => Promise<{ data: unknown; error: { message?: string | null } | null }>;
 }
-
-interface SupabaseLike {
-  from: (tableName: string) => {
-    select: (columns: string) => Promise<SupabaseSelectResult>;
-  };
-  auth?: {
-    admin?: {
-      listUsers?: (params: {
-        page: number;
-        perPage: number;
-      }) => Promise<{
-        data?: { users?: unknown[] } | null;
-        error?: DbErrorLike | null;
-      }>;
-    };
-  };
-}
-
-interface AuthUserLite {
-  id: string;
-  email: string | null;
-  createdAt: string | null;
-  lastSignInAt: string | null;
-  userMetadata: Record<string, unknown> | null;
-}
-
-type TableRow = Record<string, unknown>;
 
 export async function GET(request: Request) {
   const access = await checkAdminApiAccess(request);
@@ -116,238 +92,23 @@ export async function GET(request: Request) {
   if (!sb) {
     return NextResponse.json({ users: [], total: 0, limit, offset });
   }
-  const admin = sb as SupabaseLike;
 
-  const usersMap = new Map<string, UserInfo>();
-  const userEmailMap = new Map<string, string>();
+  const { data, error } = await (sb as unknown as SupabaseRpcLike).rpc(
+    "admin_users_overview"
+  );
+  if (error) {
+    return NextResponse.json(
+      { error: "Failed to load users." },
+      { status: 500 }
+    );
+  }
+
+  const rows: OverviewRow[] = Array.isArray(data)
+    ? (data as OverviewRow[])
+    : [];
   const adminUserIds = new Set(getAdminUserIds());
 
-  function ensureUser(
-    userId: string,
-    options?: {
-      authorName?: string;
-      avatarUrl?: string | null;
-      seqId?: number | null;
-      profileTitle?: string | null;
-    }
-  ): UserInfo {
-    let user = usersMap.get(userId);
-    if (!user) {
-      user = {
-        userId,
-        authorName: options?.authorName || "",
-        avatarUrl: options?.avatarUrl ?? null,
-        commentCount: 0,
-        ratingCount: 0,
-        favoriteCount: 0,
-        submissionCount: 0,
-        lastActive: "",
-        seqId: options?.seqId ?? null,
-        profileTitle: options?.profileTitle ?? null,
-        customTitle: null,
-        titleColor: null,
-        titleIconPath: null,
-        isOwner: false,
-        titleEnabled: true,
-        isEarlyUser: false,
-        resolvedTitle: null,
-      };
-      usersMap.set(userId, user);
-    }
-
-    if (options?.authorName && !user.authorName) {
-      user.authorName = options.authorName;
-    }
-    if (options?.avatarUrl && !user.avatarUrl) {
-      user.avatarUrl = options.avatarUrl;
-    }
-    if (user.seqId == null && options?.seqId != null) {
-      user.seqId = options.seqId;
-    }
-    if (!user.profileTitle && options?.profileTitle) {
-      user.profileTitle = options.profileTitle;
-    }
-
-    return user;
-  }
-
-  function updateLastActive(user: UserInfo, createdAt: string | null) {
-    if (!createdAt) return;
-    if (!user.lastActive || createdAt > user.lastActive) {
-      user.lastActive = createdAt;
-    }
-  }
-
-  let seqIdMap = new Map<string, number>();
-  let titleRuleMap = new Map<string, UserTitleRule>();
-
-  // Fetch auth users AND all independent tables concurrently. Previously
-  // readAllAuthUsers (~1.3s) ran serially *before* the table reads, roughly
-  // doubling total latency. The nested Promise.all keeps the table tuple's
-  // element type intact. Each table degrades to null so schema drift or
-  // temporary read failures do not blank the admin users page.
-  const [authUsers, tableResults] = await Promise.all([
-    readAllAuthUsers(admin),
-    Promise.all([
-      readTableRows(admin, "style_comments"),
-      readTableRows(admin, "style_ratings"),
-      ...FAVORITES_TABLE_CANDIDATES.map((t) => readTableRows(admin, t)),
-      ...SUBMISSIONS_TABLE_CANDIDATES.map((t) => readTableRows(admin, t)),
-      readTableRows(admin, "user_seq_ids"),
-      readTableRows(admin, "user_titles"),
-    ]),
-  ]);
-
-  const [commentsRows, ratingsRows, ...restRows] = tableResults;
-
-  for (const authUser of authUsers) {
-    const authorName = resolveAuthorName(authUser);
-    const avatarUrl = resolveAvatarUrl(authUser.userMetadata);
-    const seqId = resolveMetadataSeqId(authUser.userMetadata);
-    const profileTitle = resolveMetadataProfileTitle(authUser.userMetadata);
-    const user = ensureUser(authUser.id, {
-      authorName,
-      avatarUrl,
-      seqId,
-      profileTitle,
-    });
-    if (authUser.email) {
-      userEmailMap.set(authUser.id, authUser.email.toLowerCase());
-    }
-    updateLastActive(user, authUser.lastSignInAt ?? authUser.createdAt);
-  }
-
-  const favoriteResultCount = FAVORITES_TABLE_CANDIDATES.length;
-  const submissionResultCount = SUBMISSIONS_TABLE_CANDIDATES.length;
-  const userSeqIndex = favoriteResultCount + submissionResultCount;
-  const userTitleIndex = userSeqIndex + 1;
-
-  const favoriteResults = restRows.slice(
-    0,
-    favoriteResultCount
-  ) as (TableRow[] | null)[];
-  const submissionResults = restRows.slice(
-    favoriteResultCount,
-    userSeqIndex
-  ) as (TableRow[] | null)[];
-  const userSeqRows = restRows[userSeqIndex] as TableRow[] | null;
-  const userTitleRows = restRows[userTitleIndex] as TableRow[] | null;
-
-  if (commentsRows) {
-    for (const row of commentsRows) {
-      const userId = resolveRowUserId(row);
-      if (!userId) continue;
-      const user = ensureUser(userId, {
-        authorName: getStringField(row, "author_name") ?? undefined,
-        avatarUrl: getStringField(row, "avatar_url"),
-      });
-      user.commentCount++;
-      updateLastActive(user, resolveRowTimestamp(row));
-    }
-  }
-
-  if (ratingsRows) {
-    for (const row of ratingsRows) {
-      const userId = resolveRowUserId(row);
-      if (!userId) continue;
-      const user = ensureUser(userId);
-      user.ratingCount++;
-      updateLastActive(user, resolveRowTimestamp(row));
-    }
-  }
-
-  const seenFavoriteKeys = new Set<string>();
-  for (const favoriteRows of favoriteResults) {
-    if (!favoriteRows) continue;
-
-    for (const row of favoriteRows) {
-      const userId = resolveRowUserId(row);
-      if (!userId) continue;
-
-      const styleSlug = getStringField(row, "style_slug");
-      if (styleSlug) {
-        const dedupeKey = `${userId}::${styleSlug}`;
-        if (seenFavoriteKeys.has(dedupeKey)) {
-          updateLastActive(ensureUser(userId), resolveRowTimestamp(row));
-          continue;
-        }
-        seenFavoriteKeys.add(dedupeKey);
-      }
-
-      const user = ensureUser(userId);
-      user.favoriteCount++;
-      updateLastActive(user, resolveRowTimestamp(row));
-    }
-  }
-
-  for (const submissionRows of submissionResults) {
-    if (!submissionRows) continue;
-
-    for (const row of submissionRows) {
-      const userId = resolveRowUserId(row);
-      if (!userId) continue;
-
-      const user = ensureUser(userId, {
-        authorName: getStringField(row, "author_name") ?? undefined,
-      });
-      user.submissionCount++;
-      updateLastActive(user, resolveRowTimestamp(row));
-    }
-  }
-
-  seqIdMap = buildSeqIdMap(userSeqRows);
-  if (userSeqRows) {
-    for (const row of userSeqRows) {
-      const userId = getStringField(row, "user_id");
-      const seqId = normalizePositiveInt(row.seq_id);
-      if (!userId || seqId == null) continue;
-      const user = ensureUser(userId, { seqId });
-      updateLastActive(user, resolveRowTimestamp(row));
-    }
-  }
-  titleRuleMap = buildUserTitleRuleMap(userTitleRows);
-
-  let users = Array.from(usersMap.values());
-
-  for (const user of users) {
-    // Always prefer user_seq_ids table (dense, renumbered) over stale
-    // metadata values that may still hold pre-renumber IDs (e.g. 51).
-    user.seqId = seqIdMap.get(user.userId) ?? user.seqId ?? null;
-
-    const rule = titleRuleMap.get(user.userId) ?? null;
-    user.customTitle = rule?.customTitle ?? null;
-    user.titleColor = rule?.titleColor ?? null;
-    user.titleIconPath = rule?.titleIconPath ?? null;
-    user.isOwner = rule?.isOwner ?? false;
-    user.titleEnabled = rule?.titleEnabled ?? true;
-    user.isEarlyUser = isEarlyUser(user.seqId);
-    user.resolvedTitle = resolveUserTitle({
-      userId: user.userId,
-      seqId: user.seqId,
-      adminUserIds,
-      rule,
-      fallbackCustomTitle: user.profileTitle,
-    });
-
-    if (user.authorName) {
-      continue;
-    }
-
-    const email = userEmailMap.get(user.userId);
-    if (email && email.includes("@")) {
-      const localPart = email.split("@")[0]?.trim();
-      if (localPart) {
-        user.authorName = localPart;
-        continue;
-      }
-    }
-
-    if (UUID_RE.test(user.userId)) {
-      user.authorName = `User ${user.userId.slice(0, 8)}`;
-    } else {
-      user.authorName = "User";
-    }
-  }
+  let users = rows.map((row) => enrichRow(row, adminUserIds));
 
   if (search) {
     users = users.filter(
@@ -355,7 +116,7 @@ export async function GET(request: Request) {
         u.authorName.toLowerCase().includes(search) ||
         u.userId.toLowerCase().includes(search) ||
         (u.resolvedTitle ?? "").toLowerCase().includes(search) ||
-        (userEmailMap.get(u.userId) ?? "").includes(search)
+        u.emailLower.includes(search)
     );
   }
 
@@ -367,283 +128,82 @@ export async function GET(request: Request) {
   });
 
   const total = users.length;
-  const paged = users.slice(offset, offset + limit).map(toUserPayload);
+  const paged = users.slice(offset, offset + limit).map(toPayload);
 
   return NextResponse.json({ users: paged, total, limit, offset });
 }
 
-async function readAllAuthUsers(admin: SupabaseLike): Promise<AuthUserLite[]> {
-  const authAdmin = admin.auth?.admin;
-  if (!authAdmin?.listUsers) {
-    return [];
-  }
+function enrichRow(
+  row: OverviewRow,
+  adminUserIds: Set<string>
+): EnrichedUser {
+  const emailLower = row.email?.toLowerCase() ?? "";
+  const authorName = resolveAuthorName(row, emailLower);
 
-  const perPage = 1000;
-  const maxPages = 20;
-  const users: AuthUserLite[] = [];
+  // The RPC always returns concrete title fields (is_owner/title_enabled fall
+  // back to false/true when the user has no user_titles row), so a synthesized
+  // rule is equivalent to the previous "no rule" case for resolveUserTitle.
+  const rule: UserTitleRule = {
+    userId: row.user_id,
+    customTitle: row.custom_title,
+    titleColor: row.title_color,
+    titleIconPath: row.title_icon_path,
+    isOwner: row.is_owner,
+    titleEnabled: row.title_enabled,
+    updatedAt: null,
+    updatedBy: null,
+  };
 
-  for (let page = 1; page <= maxPages; page++) {
-    let result:
-      | {
-          data?: { users?: unknown[] } | null;
-          error?: DbErrorLike | null;
-        }
-      | null = null;
-
-    try {
-      result = await authAdmin.listUsers({ page, perPage });
-    } catch {
-      break;
-    }
-
-    const { data, error } = result ?? {};
-    if (error) {
-      break;
-    }
-
-    const pageUsers = Array.isArray(data?.users) ? data.users : [];
-    for (const rawUser of pageUsers) {
-      const normalized = normalizeAuthUser(rawUser);
-      if (normalized) {
-        users.push(normalized);
-      }
-    }
-
-    if (pageUsers.length < perPage) {
-      break;
-    }
-  }
-
-  return users;
-}
-
-function normalizeAuthUser(rawUser: unknown): AuthUserLite | null {
-  if (!rawUser || typeof rawUser !== "object") {
-    return null;
-  }
-
-  const userId = getStringField(rawUser as TableRow, "id");
-  if (!userId) {
-    return null;
-  }
-
-  const userMetadataRaw = (rawUser as TableRow).user_metadata;
-  const userMetadata =
-    userMetadataRaw && typeof userMetadataRaw === "object"
-      ? (userMetadataRaw as Record<string, unknown>)
-      : null;
+  const resolvedTitle = resolveUserTitle({
+    userId: row.user_id,
+    seqId: row.seq_id,
+    adminUserIds,
+    rule,
+    fallbackCustomTitle: row.profile_title,
+  });
 
   return {
-    id: userId,
-    email: getStringField(rawUser as TableRow, "email"),
-    createdAt: getStringField(rawUser as TableRow, "created_at"),
-    lastSignInAt: getStringField(rawUser as TableRow, "last_sign_in_at"),
-    userMetadata,
+    userId: row.user_id,
+    authorName,
+    avatarUrl: row.avatar_url,
+    commentCount: row.comment_count,
+    ratingCount: row.rating_count,
+    favoriteCount: row.favorite_count,
+    submissionCount: row.submission_count,
+    lastActive: row.last_active ?? "",
+    seqId: row.seq_id,
+    customTitle: row.custom_title,
+    titleColor: row.title_color,
+    titleIconPath: row.title_icon_path,
+    isOwner: row.is_owner,
+    titleEnabled: row.title_enabled,
+    isEarlyUser: isEarlyUser(row.seq_id),
+    resolvedTitle,
+    emailLower,
   };
 }
 
-function resolveAuthorName(user: AuthUserLite): string {
-  const metadata = user.userMetadata;
-  const candidates = [
-    readMetadataString(metadata, "full_name"),
-    readMetadataString(metadata, "name"),
-    readMetadataString(metadata, "preferred_username"),
-    readMetadataString(metadata, "user_name"),
-  ];
-
-  for (const candidate of candidates) {
-    if (candidate) return candidate;
+function resolveAuthorName(row: OverviewRow, emailLower: string): string {
+  const fromRpc = row.author_name?.trim();
+  if (fromRpc) {
+    return fromRpc;
   }
 
-  if (user.email && user.email.includes("@")) {
-    const localPart = user.email.split("@")[0]?.trim();
-    if (localPart) return localPart;
+  if (emailLower.includes("@")) {
+    const localPart = emailLower.split("@")[0]?.trim();
+    if (localPart) {
+      return localPart;
+    }
   }
 
+  if (UUID_RE.test(row.user_id)) {
+    return `User ${row.user_id.slice(0, 8)}`;
+  }
   return "User";
 }
 
-function resolveAvatarUrl(metadata: Record<string, unknown> | null): string | null {
-  return (
-    readMetadataString(metadata, "avatar_url") ??
-    readMetadataString(metadata, "picture")
-  );
-}
-
-function resolveMetadataSeqId(metadata: Record<string, unknown> | null): number | null {
-  if (!metadata) {
-    return null;
-  }
-
-  return normalizePositiveInt(metadata.seq_id);
-}
-
-function resolveMetadataProfileTitle(metadata: Record<string, unknown> | null): string | null {
-  return readMetadataString(metadata, "user_title") ?? readMetadataString(metadata, "title");
-}
-
-function readMetadataString(
-  metadata: Record<string, unknown> | null,
-  key: string
-): string | null {
-  if (!metadata) return null;
-  const value = metadata[key];
-  if (typeof value !== "string") return null;
-  const trimmed = value.trim();
-  return trimmed.length > 0 ? trimmed : null;
-}
-
-async function readTableRows(
-  admin: SupabaseLike,
-  tableName: string
-): Promise<TableRow[] | null> {
-  let result: SupabaseSelectResult;
-  try {
-    result = await admin.from(tableName).select("*");
-  } catch {
-    return null;
-  }
-
-  let { data, error } = result;
-  if (
-    error &&
-    (tableName === "user_favorites" || tableName === "style_favorites") &&
-    isSkippableSchemaError(error)
-  ) {
-    try {
-      const fallback = await admin
-        .from(tableName)
-        .select("session_id, style_slug, created_at");
-      data = fallback.data;
-      error = fallback.error;
-    } catch {
-      return null;
-    }
-  }
-
-  if (error) {
-    return null;
-  }
-  const rows = Array.isArray(data) ? data : [];
-  return rows.filter((row): row is TableRow => !!row && typeof row === "object");
-}
-
-function buildSeqIdMap(rows: TableRow[] | null): Map<string, number> {
-  const map = new Map<string, number>();
-  if (!rows) {
-    return map;
-  }
-
-  for (const row of rows) {
-    const userId = getStringField(row, "user_id");
-    const seqId = normalizePositiveInt(row.seq_id);
-    if (!userId || seqId == null) {
-      continue;
-    }
-    map.set(userId, seqId);
-  }
-
-  return map;
-}
-
-function toUserPayload(user: UserInfo): UserPayload {
-  return {
-    userId: user.userId,
-    authorName: user.authorName,
-    avatarUrl: user.avatarUrl,
-    commentCount: user.commentCount,
-    ratingCount: user.ratingCount,
-    favoriteCount: user.favoriteCount,
-    submissionCount: user.submissionCount,
-    lastActive: user.lastActive,
-    seqId: user.seqId,
-    customTitle: user.customTitle,
-    titleColor: user.titleColor,
-    titleIconPath: user.titleIconPath,
-    isOwner: user.isOwner,
-    titleEnabled: user.titleEnabled,
-    isEarlyUser: user.isEarlyUser,
-    resolvedTitle: user.resolvedTitle,
-  };
-}
-
-function resolveRowUserId(row: TableRow): string | null {
-  const directUserId = getStringField(row, "user_id");
-  if (directUserId && UUID_RE.test(directUserId)) {
-    return directUserId;
-  }
-
-  const sessionId = getStringField(row, "session_id");
-  if (!sessionId) {
-    return null;
-  }
-
-  return extractUserIdFromSession(sessionId);
-}
-
-function extractUserIdFromSession(sessionId: string): string | null {
-  if (sessionId.startsWith(LEGACY_USER_SESSION_PREFIX)) {
-    const userId = sessionId.slice(LEGACY_USER_SESSION_PREFIX.length).trim();
-    if (UUID_RE.test(userId)) {
-      return userId;
-    }
-    return null;
-  }
-
-  if (UUID_RE.test(sessionId)) {
-    return sessionId;
-  }
-
-  return null;
-}
-
-function resolveRowTimestamp(row: TableRow): string | null {
-  return getStringField(row, "created_at") ?? getStringField(row, "submitted_at");
-}
-
-function getStringField(row: TableRow, key: string): string | null {
-  const value = row[key];
-  if (typeof value !== "string") {
-    return null;
-  }
-  const trimmed = value.trim();
-  return trimmed.length > 0 ? trimmed : null;
-}
-
-function normalizePositiveInt(value: unknown): number | null {
-  if (typeof value === "number" && Number.isInteger(value) && value > 0) {
-    return value;
-  }
-
-  if (typeof value === "string") {
-    const parsed = Number.parseInt(value, 10);
-    if (Number.isInteger(parsed) && parsed > 0) {
-      return parsed;
-    }
-  }
-
-  return null;
-}
-
-function isSkippableSchemaError(error: DbErrorLike): boolean {
-  const code = error.code ?? null;
-  if (
-    code === "42P01" ||
-    code === "PGRST205" ||
-    code === "PGRST204" ||
-    code === "42703"
-  ) {
-    return true;
-  }
-
-  const message = readDbErrorMessage(error);
-  return (
-    (message.includes("relation") && message.includes("does not exist")) ||
-    (message.includes("table") && message.includes("not found")) ||
-    (message.includes("column") && message.includes("does not exist"))
-  );
-}
-
-function readDbErrorMessage(error: DbErrorLike | null | undefined): string {
-  return `${error?.message ?? ""} ${error?.details ?? ""}`.toLowerCase();
+function toPayload(user: EnrichedUser): UserPayload {
+  const { emailLower: _emailLower, ...payload } = user;
+  void _emailLower;
+  return payload;
 }
