@@ -452,6 +452,34 @@ export const resolveStyleBySlug = cache(async function resolveStyleBySlug(
  * `app/styles/[slug]` could never render, because it fixes its params at build
  * time. The two catalogs now have separate endpoints and separate routes.
  */
+export interface CommunityAttribution {
+  authorName: string | null;
+  avatarUrl: string | null;
+}
+
+/**
+ * Contributor credit for one approved community style.
+ *
+ * Kept separate from RuntimeStyleResult so the shared delivery contract, which
+ * curated styles also flow through, stays free of submission-only fields. The
+ * lookup is React-cached upstream, so calling this next to resolveStyleBySlug
+ * does not cost a second round trip.
+ */
+export const getCommunityAttribution = cache(async function getCommunityAttribution(
+  slug: string
+): Promise<CommunityAttribution | null> {
+  const submission = await getApprovedSubmissionBySlugRuntime(normalizeSlug(slug));
+  if (!submission) {
+    return null;
+  }
+
+  const author = asRecord(asRecord(submission.formData).__author);
+  return {
+    authorName: asString(author.handle) ?? submission.authorName ?? null,
+    avatarUrl: asString(author.avatarUrl),
+  };
+});
+
 export async function listCommunityStylesMeta(): Promise<StyleMeta[]> {
   const curatedSlugs = new Set(getAllStylesMeta().map((item) => item.slug));
   const communitySubmissions = await listApprovedSubmissionsRuntime();

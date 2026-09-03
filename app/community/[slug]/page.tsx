@@ -6,6 +6,7 @@ import { Breadcrumb } from "@/components/ui/breadcrumb";
 import { DisableAutoScroll } from "@/components/style-preview/disable-auto-scroll";
 import { generateEnhancedAIRules } from "@/lib/styles/enhanced-rules";
 import { resolveStyleDelivery } from "@/lib/style-delivery";
+import { getCommunityAttribution } from "@/lib/styles/community-runtime";
 import { getRequestLocaleContext } from "@/lib/i18n/request";
 import { StyleDetailContent } from "@/app/styles/[slug]/_content";
 import { StyleReadinessSection } from "@/app/styles/[slug]/_readiness-section";
@@ -61,6 +62,7 @@ export default async function CommunityStylePage({
   }
 
   const { style, capabilities } = delivery;
+  const attribution = await getCommunityAttribution(slug);
 
   const enhancedRules = capabilities.tokens
     ? generateEnhancedAIRules({
@@ -103,6 +105,11 @@ export default async function CommunityStylePage({
             { label: localizedName },
           ]}
         />
+        {attribution?.authorName ? (
+          <p className="mt-4 font-mono text-xs uppercase tracking-[0.2em] text-muted-foreground">
+            {t.by} {attribution.authorName}
+          </p>
+        ) : null}
       </div>
 
       <DisableAutoScroll>
