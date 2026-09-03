@@ -26,6 +26,9 @@ export interface SubmissionRecord {
   formData: Record<string, unknown>;
   tokens: Record<string, unknown>;
   designStyle: Record<string, unknown>;
+  /** Catalog placement. Absent on the file-backed store, which predates it. */
+  visibility?: "community" | "hidden" | "promoted";
+  promotedAt?: string;
 }
 
 export function isValidSubmissionId(id: string): boolean {

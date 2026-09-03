@@ -3,6 +3,7 @@ export type AdminAuditAction =
   | "submission.approve"
   | "submission.reject"
   | "submission.register"
+  | "submission.promote"
   | "submission.update"
   | "submission.delete"
   | "support_acknowledgment.create"
@@ -23,6 +24,7 @@ export const ADMIN_AUDIT_ACTION_OPTIONS: ReadonlyArray<{
   { value: "submission.approve", label: "投稿已通过" },
   { value: "submission.reject", label: "投稿已驳回" },
   { value: "submission.register", label: "投稿已登记" },
+  { value: "submission.promote", label: "投稿已晋升" },
   { value: "submission.update", label: "编辑投稿" },
   { value: "submission.delete", label: "删除投稿" },
   { value: "support_acknowledgment.create", label: "新增赞助鸣谢" },
@@ -45,7 +47,12 @@ export function getAdminAuditActionTone(action: string): "danger" | "info" | "su
     return "danger";
   }
   if (action.includes("update")) return "info";
-  if (action.includes("create") || action.includes("approve") || action.includes("register")) {
+  if (
+    action.includes("create") ||
+    action.includes("approve") ||
+    action.includes("register") ||
+    action.includes("promote")
+  ) {
     return "success";
   }
   return "neutral";

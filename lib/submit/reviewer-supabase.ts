@@ -265,6 +265,39 @@ export async function approveSubmissionSupabase(
   return toSubmissionRecord(data);
 }
 
+/**
+ * Promote an approved submission into the curated catalog.
+ *
+ * Promotion is a database flag, not a code generation step: the style already
+ * renders from its submission record through community-runtime, so marking it
+ * promoted is all that is needed to move it into the curated surface. The
+ * heavier `register` flow (which writes static registry files and needs a
+ * deploy) stays available for batch-hardening the best styles later.
+ *
+ * Returns null when the row is missing or is not approved yet — promoting an
+ * unreviewed submission would put unvetted work into the curated catalog.
+ */
+export async function promoteSubmissionSupabase(
+  id: string
+): Promise<SubmissionRecord | null> {
+  const sb = getSupabaseAdmin();
+  if (!sb) return null;
+
+  const { data, error } = await sb
+    .from("submissions")
+    .update({
+      visibility: "promoted",
+      promoted_at: new Date().toISOString(),
+    })
+    .eq("id", id)
+    .eq("status", "approved")
+    .select("*")
+    .single();
+
+  if (error || !data) return null;
+  return toSubmissionRecord(data);
+}
+
 export async function rejectSubmissionSupabase(
   id: string,
   note?: string
@@ -329,6 +362,8 @@ interface DbRow {
   reviewed_at: string | null;
   user_id: string | null;
   author_name: string | null;
+  visibility?: string | null;
+  promoted_at?: string | null;
 }
 
 function toSubmissionRecord(row: DbRow): SubmissionRecord {
@@ -345,5 +380,11 @@ function toSubmissionRecord(row: DbRow): SubmissionRecord {
     formData,
     tokens: (formData.tokens as Record<string, unknown>) ?? {},
     designStyle: (formData.designStyle as Record<string, unknown>) ?? {},
+    // Columns arrived in migration 035; a database that predates it simply
+    // reports no placement rather than breaking the read path.
+    ...(row.visibility
+      ? { visibility: row.visibility as SubmissionRecord["visibility"] }
+      : {}),
+    ...(row.promoted_at ? { promotedAt: row.promoted_at } : {}),
   };
 }
