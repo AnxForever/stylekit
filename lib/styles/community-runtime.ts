@@ -115,10 +115,35 @@ function asStyleTags(value: unknown): StyleTag[] {
   return tags.length > 0 ? tags : ["retro"];
 }
 
+/**
+ * Community token payloads are stored as free-form JSON, so a bare cast would
+ * hand consumers a StyleTokens that is missing whole groups. Anything reading
+ * these tokens (generateEnhancedAIRules, the design spec) walks
+ * `tokens.<group>.<field>` unguarded and throws on the first absent group, so
+ * a partial payload has to read as "no tokens" rather than as tokens.
+ */
+const REQUIRED_TOKEN_GROUPS = [
+  "colors",
+  "typography",
+  "spacing",
+  "border",
+  "shadow",
+  "interaction",
+] as const;
+
 function asStyleTokens(value: unknown): StyleTokens | null {
   if (!value || typeof value !== "object" || Array.isArray(value)) {
     return null;
   }
+
+  const record = value as Record<string, unknown>;
+  for (const group of REQUIRED_TOKEN_GROUPS) {
+    const entry = record[group];
+    if (!entry || typeof entry !== "object" || Array.isArray(entry)) {
+      return null;
+    }
+  }
+
   return value as StyleTokens;
 }
 
@@ -307,16 +332,17 @@ export function mapSubmissionToStyle(submission: SubmissionRecord): DesignStyle 
     philosophyEn: asString(storedDesignStyle.philosophyEn) ?? undefined,
     doList: (() => {
       const list = asStringList(storedDesignStyle.doList ?? formData.doList);
-      return list.length > 0 ? list : ["Keep style language consistent across components."];
+      // No fallback rule here on purpose. The submission gates require a
+      // non-empty doList, so an empty one means the row predates the gates or
+      // was hand-edited. Inventing "keep style language consistent" made those
+      // rows look complete and taught contributors that empty lists were fine.
+      return list;
     })(),
     doListEn: (() => {
       const list = asStringList(storedDesignStyle.doListEn);
       return list.length > 0 ? list : undefined;
     })(),
-    dontList: (() => {
-      const list = asStringList(storedDesignStyle.dontList ?? formData.dontList);
-      return list.length > 0 ? list : ["Do not mix conflicting visual systems."];
-    })(),
+    dontList: asStringList(storedDesignStyle.dontList ?? formData.dontList),
     dontListEn: (() => {
       const list = asStringList(storedDesignStyle.dontListEn);
       return list.length > 0 ? list : undefined;
@@ -417,10 +443,17 @@ export const resolveStyleBySlug = cache(async function resolveStyleBySlug(
   };
 });
 
-export async function listCatalogStylesMeta(): Promise<StyleMeta[]> {
-  const staticMeta = getAllStylesMeta();
-  const staticSlugSet = new Set(staticMeta.map((item) => item.slug));
-
+/**
+ * Approved submissions only, excluding anything the curated library already has.
+ *
+ * Split out from the old `listCatalogStylesMeta`, which returned curated and
+ * community styles in one array. That merge was the source of a live
+ * contradiction: `/api/styles` advertised community slugs that
+ * `app/styles/[slug]` could never render, because it fixes its params at build
+ * time. The two catalogs now have separate endpoints and separate routes.
+ */
+export async function listCommunityStylesMeta(): Promise<StyleMeta[]> {
+  const curatedSlugs = new Set(getAllStylesMeta().map((item) => item.slug));
   const communitySubmissions = await listApprovedSubmissionsRuntime();
   const seenCommunitySlugs = new Set<string>();
 
@@ -430,7 +463,7 @@ export async function listCatalogStylesMeta(): Promise<StyleMeta[]> {
     if (!SLUG_RE.test(slug)) {
       continue;
     }
-    if (staticSlugSet.has(slug) || seenCommunitySlugs.has(slug)) {
+    if (curatedSlugs.has(slug) || seenCommunitySlugs.has(slug)) {
       continue;
     }
 
@@ -458,5 +491,5 @@ export async function listCatalogStylesMeta(): Promise<StyleMeta[]> {
     seenCommunitySlugs.add(slug);
   }
 
-  return [...staticMeta, ...communityMeta];
+  return communityMeta;
 }
