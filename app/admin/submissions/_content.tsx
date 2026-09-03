@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   Archive,
+  ArrowUpCircle,
   CheckCircle,
   ChevronRight,
   Clock3,
@@ -32,6 +33,8 @@ interface Submission {
   reviewedAt?: string;
   reviewNote?: string;
   authorName?: string;
+  visibility?: "community" | "hidden" | "promoted";
+  promotedAt?: string;
   formData: {
     name?: string;
     nameEn?: string;
@@ -85,6 +88,7 @@ export function SubmissionsReview() {
   const [submitting, setSubmitting] = useState(false);
   const [note, setNote] = useState("");
   const [registeringId, setRegisteringId] = useState<string | null>(null);
+  const [promotingId, setPromotingId] = useState<string | null>(null);
   const [registerResult, setRegisterResult] = useState<RegisterResult | null>(null);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editName, setEditName] = useState("");
@@ -230,6 +234,31 @@ export function SubmissionsReview() {
       setError(err instanceof Error ? err.message : "提交审核失败。");
     } finally {
       setSubmitting(false);
+    }
+  }
+
+  async function handlePromote(id: string) {
+    setPromotingId(id);
+    setError(null);
+
+    try {
+      const res = await fetch(`/api/admin/submissions/${id}/promote`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+      });
+      const payload = (await res.json().catch(() => null)) as
+        | { success?: boolean; error?: string }
+        | null;
+
+      if (!res.ok || !payload?.success) {
+        throw new Error(payload?.error ?? "晋升风格失败。");
+      }
+
+      void fetchSubmissions(undefined, { showLoading: false });
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "晋升风格失败。");
+    } finally {
+      setPromotingId(null);
     }
   }
 
@@ -701,12 +730,25 @@ export function SubmissionsReview() {
                       ) : (
                         <>
                           <p className="text-xs leading-5 text-muted">
-                            已上线风格。代码库注册会在本地开发环境中归档生成的文件。
+                            {sub.visibility === "promoted"
+                              ? "已晋升进精选库。代码库注册会在本地开发环境中归档生成的文件。"
+                              : "已上线社区风格库。晋升后会进入精选库；代码库注册需在本地开发环境执行。"}
                           </p>
+                          {sub.visibility !== "promoted" ? (
+                            <AdminButton
+                              disabled={promotingId === sub.id}
+                              onClick={() => handlePromote(sub.id)}
+                              tone="primary"
+                              className="w-full"
+                            >
+                              <ArrowUpCircle className="h-4 w-4" />
+                              {promotingId === sub.id ? "正在晋升..." : "晋升到精选库"}
+                            </AdminButton>
+                          ) : null}
                           <AdminButton
                             disabled={registeringId === sub.id}
                             onClick={() => handleRegister(sub.id)}
-                            tone="primary"
+                            tone="ghost"
                             className="w-full"
                           >
                             <Archive className="h-4 w-4" />
