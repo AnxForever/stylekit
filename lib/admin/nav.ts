@@ -12,12 +12,15 @@ import {
   LayoutDashboard,
   Megaphone,
   FlaskConical,
+  TrendingUp,
 } from "lucide-react";
 
 export interface AdminNavItem {
   href: string;
   label: string;
   icon: LucideIcon;
+  /** External tool: rendered as a plain anchor that opens in a new tab. */
+  external?: boolean;
 }
 
 export const adminNavItems: AdminNavItem[] = [
@@ -25,6 +28,7 @@ export const adminNavItems: AdminNavItem[] = [
   { href: "/admin/content", label: "内容中心", icon: Megaphone },
   { href: "/admin/validation", label: "产品验证", icon: FlaskConical },
   { href: "/admin/analytics", label: "数据分析", icon: BarChart3 },
+  { href: "/umami", label: "流量分析 (Umami)", icon: TrendingUp, external: true },
   { href: "/admin/submissions", label: "投稿管理", icon: FileText },
   { href: "/admin/comments", label: "评论管理", icon: MessageSquare },
   { href: "/admin/ratings", label: "评分管理", icon: Star },
