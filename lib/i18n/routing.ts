@@ -132,8 +132,10 @@ export const LOCALE_ROUTE_POLICY = [
       "/login",
       "/preview",
       "/profile",
+      "/submit",
+      "/community",
     ],
-    prefixes: [],
+    prefixes: ["/community"],
   },
 ] as const satisfies readonly LocaleRouteRule[];
 

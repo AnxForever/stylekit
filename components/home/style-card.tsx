@@ -13,6 +13,8 @@ import { getScenarioLabel, getStyleScenarios } from "@/lib/styles/scenarios";
 interface StyleCardProps {
   style: StyleMeta;
   variant?: "default" | "compact";
+  /** Detail-link base path; community styles resolve under /community. */
+  basePath?: string;
 }
 
 /**
@@ -22,6 +24,7 @@ interface StyleCardProps {
 export const StyleCard = React.memo(function StyleCard({
   style,
   variant = "default",
+  basePath = "/styles",
 }: StyleCardProps) {
   const { locale } = useI18n();
   const isCompact = variant === "compact";
@@ -45,7 +48,7 @@ export const StyleCard = React.memo(function StyleCard({
     <div className="relative">
       <div className={cardClassName}>
         <LocalizedLink
-          href={`/styles/${style.slug}`}
+          href={`${basePath}/${style.slug}`}
           onClick={handleClick}
           aria-label={`${primaryName} ${locale === "zh" ? "详情" : "details"}`}
           className="absolute inset-0 z-10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
