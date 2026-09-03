@@ -389,6 +389,16 @@ async function listApprovedSubmissionsRuntime(): Promise<SubmissionRecord[]> {
   return listSubmissions("approved");
 }
 
+/**
+ * A hidden submission is still approved — the review trail and the author's own
+ * history keep it — but a moderator has pulled it from the public catalog, so
+ * every public read has to treat it as absent. Rows written before migration
+ * 035 carry no visibility at all and stay visible.
+ */
+function isPubliclyVisible(submission: SubmissionRecord): boolean {
+  return submission.visibility !== "hidden";
+}
+
 async function getApprovedSubmissionBySlugRuntime(
   slug: string
 ): Promise<SubmissionRecord | null> {
@@ -397,15 +407,19 @@ async function getApprovedSubmissionBySlugRuntime(
     return null;
   }
 
-  if (isSupabaseConfigured()) {
-    try {
-      return await getLatestApprovedSubmissionBySlugSupabase(normalizedSlug);
-    } catch {
-      return getLatestApprovedSubmissionBySlug(normalizedSlug);
+  const found = await (async () => {
+    if (isSupabaseConfigured()) {
+      try {
+        return await getLatestApprovedSubmissionBySlugSupabase(normalizedSlug);
+      } catch {
+        return getLatestApprovedSubmissionBySlug(normalizedSlug);
+      }
     }
-  }
+    return getLatestApprovedSubmissionBySlug(normalizedSlug);
+  })();
 
-  return getLatestApprovedSubmissionBySlug(normalizedSlug);
+  // Guarding inside the lookup covers every public reader at once.
+  return found && isPubliclyVisible(found) ? found : null;
 }
 
 export const resolveStyleBySlug = cache(async function resolveStyleBySlug(
@@ -452,6 +466,15 @@ export const resolveStyleBySlug = cache(async function resolveStyleBySlug(
  * `app/styles/[slug]` could never render, because it fixes its params at build
  * time. The two catalogs now have separate endpoints and separate routes.
  */
+/**
+ * Catalog metadata plus the submission facts the community catalog sorts and
+ * badges by. Structurally a StyleMeta, so every StyleMeta consumer still works.
+ */
+export interface CommunityStyleMeta extends StyleMeta {
+  publishedAt?: string;
+  promoted?: boolean;
+}
+
 export interface CommunityAttribution {
   authorName: string | null;
   avatarUrl: string | null;
@@ -480,12 +503,14 @@ export const getCommunityAttribution = cache(async function getCommunityAttribut
   };
 });
 
-export async function listCommunityStylesMeta(): Promise<StyleMeta[]> {
+export async function listCommunityStylesMeta(): Promise<CommunityStyleMeta[]> {
   const curatedSlugs = new Set(getAllStylesMeta().map((item) => item.slug));
-  const communitySubmissions = await listApprovedSubmissionsRuntime();
+  const communitySubmissions = (await listApprovedSubmissionsRuntime()).filter(
+    isPubliclyVisible
+  );
   const seenCommunitySlugs = new Set<string>();
 
-  const communityMeta: StyleMeta[] = [];
+  const communityMeta: CommunityStyleMeta[] = [];
   for (const submission of communitySubmissions) {
     const slug = normalizeSlug(submission.slug);
     if (!SLUG_RE.test(slug)) {
@@ -515,6 +540,10 @@ export async function listCommunityStylesMeta(): Promise<StyleMeta[]> {
       compatibleWith: mappedStyle.compatibleWith,
       keywords: mappedStyle.keywords,
       colors: mappedStyle.colors,
+      // reviewedAt is when the style actually became visible; submittedAt is
+      // the fallback for rows approved before that column was written.
+      publishedAt: submission.reviewedAt ?? submission.submittedAt,
+      promoted: submission.visibility === "promoted",
     });
     seenCommunitySlugs.add(slug);
   }

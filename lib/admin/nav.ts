@@ -13,6 +13,7 @@ import {
   Megaphone,
   FlaskConical,
   TrendingUp,
+  ShieldAlert,
 } from "lucide-react";
 
 export interface AdminNavItem {
@@ -31,6 +32,7 @@ export const adminNavItems: AdminNavItem[] = [
   { href: "/umami", label: "流量分析 (Umami)", icon: TrendingUp, external: true },
   { href: "/admin/submissions", label: "投稿管理", icon: FileText },
   { href: "/admin/comments", label: "评论管理", icon: MessageSquare },
+  { href: "/admin/community-reports", label: "社区举报", icon: ShieldAlert },
   { href: "/admin/ratings", label: "评分管理", icon: Star },
   { href: "/admin/styles", label: "风格总览", icon: Palette },
   { href: "/admin/users", label: "用户管理", icon: Users },

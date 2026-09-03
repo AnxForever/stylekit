@@ -10,6 +10,7 @@ import { getCommunityAttribution } from "@/lib/styles/community-runtime";
 import { getRequestLocaleContext } from "@/lib/i18n/request";
 import { StyleDetailContent } from "@/app/styles/[slug]/_content";
 import { StyleReadinessSection } from "@/app/styles/[slug]/_readiness-section";
+import { ReportButton } from "./_report-button";
 
 // Community styles come from approved submissions, so the route resolves at
 // request time. Curated slugs are redirected to /styles rather than rendered
@@ -130,6 +131,9 @@ export default async function CommunityStylePage({
             }
             ssrLocale={locale}
           />
+          <div className="mx-auto w-full max-w-7xl px-4 pb-12 sm:px-6 md:px-12">
+            <ReportButton slug={slug} locale={locale === "zh" ? "zh" : "en"} />
+          </div>
         </main>
       </DisableAutoScroll>
 
