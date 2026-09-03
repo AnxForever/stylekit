@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useEffect, useRef } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import { X, LogOut } from "lucide-react";
+import { X, LogOut, ExternalLink } from "lucide-react";
 import { adminNavItems } from "@/lib/admin/nav";
 import { useAdminSidebar } from "./admin-sidebar-provider";
 import { prefetchAdminView, prefetchCommonAdminViews } from "@/lib/swr/admin-prefetch";
@@ -36,6 +36,9 @@ export function AdminSidebar() {
     router.push("/admin-login");
     router.refresh();
   };
+
+  const itemClassName =
+    "group flex h-9 items-center gap-3 rounded-md px-3 text-sm font-normal transition-colors";
 
   return (
     <>
@@ -83,6 +86,23 @@ export function AdminSidebar() {
 
         <nav aria-label="管理后台导航" className="flex-1 space-y-1 px-3 py-4">
           {adminNavItems.map((item) => {
+            if (item.external) {
+              return (
+                <a
+                  key={item.href}
+                  href={item.href}
+                  target="_blank"
+                  rel="noreferrer"
+                  onClick={close}
+                  className={`${itemClassName} text-muted hover:bg-[var(--admin-hover)] hover:text-foreground`}
+                >
+                  <item.icon className="h-4 w-4 shrink-0" />
+                  <span className="min-w-0 flex-1 truncate">{item.label}</span>
+                  <ExternalLink className="h-3.5 w-3.5 shrink-0 opacity-60" />
+                </a>
+              );
+            }
+
             const isActive =
               pathname === item.href || pathname.startsWith(item.href + "/");
             return (
@@ -93,7 +113,7 @@ export function AdminSidebar() {
                 aria-current={isActive ? "page" : undefined}
                 onMouseEnter={() => { router.prefetch(item.href); void prefetchAdminView(item.href); }}
                 onFocus={() => { router.prefetch(item.href); void prefetchAdminView(item.href); }}
-                className={`group flex h-9 items-center gap-3 rounded-md px-3 text-sm font-normal transition-colors ${
+                className={`${itemClassName} ${
                   isActive
                     ? "bg-[var(--admin-hover)] text-foreground"
                     : "text-muted hover:bg-[var(--admin-hover)] hover:text-foreground"
