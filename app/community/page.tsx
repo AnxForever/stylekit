@@ -3,7 +3,7 @@ import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { Breadcrumb } from "@/components/ui/breadcrumb";
 import { LocalizedLink } from "@/components/i18n/localized-link";
-import { StyleCard } from "@/components/home/style-card";
+import { CommunityCatalog } from "./_content";
 import { getRequestLocaleContext } from "@/lib/i18n/request";
 import { listCommunityStylesMeta } from "@/lib/styles/community-runtime";
 
@@ -29,6 +29,8 @@ const COPY = {
     emptyTitle: "No community styles yet",
     emptyBody: "Be the first to contribute a style to the StyleKit community.",
     count: (n: number) => `${n} community ${n === 1 ? "style" : "styles"}`,
+    sortLabel: "Sort",
+    promoted: "Promoted",
   },
   zh: {
     home: "首页",
@@ -40,6 +42,8 @@ const COPY = {
     emptyTitle: "还没有社区风格",
     emptyBody: "来做第一个给 StyleKit 社区贡献风格的人。",
     count: (n: number) => `${n} 个社区风格`,
+    sortLabel: "排序",
+    promoted: "已晋升",
   },
 } as const;
 
@@ -81,31 +85,17 @@ export default async function CommunityPage() {
             ) : null}
           </header>
 
-          {styles.length === 0 ? (
-            <div className="flex flex-col items-center justify-center rounded-lg border border-dashed border-border py-20 text-center">
-              <h2 className="font-serif text-xl">{t.emptyTitle}</h2>
-              <p className="mt-2 max-w-sm text-sm text-muted-foreground">
-                {t.emptyBody}
-              </p>
-              <LocalizedLink
-                href="/submit"
-                className="mt-6 inline-flex h-10 items-center rounded-md border border-foreground px-4 text-sm font-medium transition-colors hover:bg-foreground hover:text-background"
-              >
-                {t.submit}
-              </LocalizedLink>
-            </div>
-          ) : (
-            <div className="grid grid-cols-2 gap-3 sm:gap-4 md:gap-8 lg:grid-cols-3">
-              {styles.map((style) => (
-                <StyleCard
-                  key={style.slug}
-                  style={style}
-                  variant="compact"
-                  basePath="/community"
-                />
-              ))}
-            </div>
-          )}
+          <CommunityCatalog
+            styles={styles}
+            locale={locale === "zh" ? "zh" : "en"}
+            copy={{
+              submit: t.submit,
+              emptyTitle: t.emptyTitle,
+              emptyBody: t.emptyBody,
+              sortLabel: t.sortLabel,
+              promoted: t.promoted,
+            }}
+          />
         </div>
       </main>
       <Footer />

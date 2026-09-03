@@ -4,6 +4,8 @@ export type AdminAuditAction =
   | "submission.reject"
   | "submission.register"
   | "submission.promote"
+  | "community.hide"
+  | "community.report.resolve"
   | "submission.update"
   | "submission.delete"
   | "support_acknowledgment.create"
@@ -25,6 +27,8 @@ export const ADMIN_AUDIT_ACTION_OPTIONS: ReadonlyArray<{
   { value: "submission.reject", label: "投稿已驳回" },
   { value: "submission.register", label: "投稿已登记" },
   { value: "submission.promote", label: "投稿已晋升" },
+  { value: "community.hide", label: "社区风格已下架" },
+  { value: "community.report.resolve", label: "举报已处理" },
   { value: "submission.update", label: "编辑投稿" },
   { value: "submission.delete", label: "删除投稿" },
   { value: "support_acknowledgment.create", label: "新增赞助鸣谢" },
