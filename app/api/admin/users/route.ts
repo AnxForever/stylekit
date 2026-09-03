@@ -181,7 +181,25 @@ export async function GET(request: Request) {
   let seqIdMap = new Map<string, number>();
   let titleRuleMap = new Map<string, UserTitleRule>();
 
-  const authUsers = await readAllAuthUsers(admin);
+  // Fetch auth users AND all independent tables concurrently. Previously
+  // readAllAuthUsers (~1.3s) ran serially *before* the table reads, roughly
+  // doubling total latency. The nested Promise.all keeps the table tuple's
+  // element type intact. Each table degrades to null so schema drift or
+  // temporary read failures do not blank the admin users page.
+  const [authUsers, tableResults] = await Promise.all([
+    readAllAuthUsers(admin),
+    Promise.all([
+      readTableRows(admin, "style_comments"),
+      readTableRows(admin, "style_ratings"),
+      ...FAVORITES_TABLE_CANDIDATES.map((t) => readTableRows(admin, t)),
+      ...SUBMISSIONS_TABLE_CANDIDATES.map((t) => readTableRows(admin, t)),
+      readTableRows(admin, "user_seq_ids"),
+      readTableRows(admin, "user_titles"),
+    ]),
+  ]);
+
+  const [commentsRows, ratingsRows, ...restRows] = tableResults;
+
   for (const authUser of authUsers) {
     const authorName = resolveAuthorName(authUser);
     const avatarUrl = resolveAvatarUrl(authUser.userMetadata);
@@ -198,21 +216,6 @@ export async function GET(request: Request) {
     }
     updateLastActive(user, authUser.lastSignInAt ?? authUser.createdAt);
   }
-
-  // Fetch all independent tables in parallel. Each table degrades to null so
-  // schema drift or temporary read failures do not blank the admin users page.
-  const [
-    commentsRows,
-    ratingsRows,
-    ...restRows
-  ] = await Promise.all([
-    readTableRows(admin, "style_comments"),
-    readTableRows(admin, "style_ratings"),
-    ...FAVORITES_TABLE_CANDIDATES.map((t) => readTableRows(admin, t)),
-    ...SUBMISSIONS_TABLE_CANDIDATES.map((t) => readTableRows(admin, t)),
-    readTableRows(admin, "user_seq_ids"),
-    readTableRows(admin, "user_titles"),
-  ]);
 
   const favoriteResultCount = FAVORITES_TABLE_CANDIDATES.length;
   const submissionResultCount = SUBMISSIONS_TABLE_CANDIDATES.length;
