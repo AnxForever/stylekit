@@ -42,159 +42,81 @@ describe("GET /api/admin/users", () => {
     expect(mockedGetSupabaseAdmin).not.toHaveBeenCalled();
   });
 
-  it("merges auth users with legacy session-based social activity", async () => {
-    mockedCheckAdminApiAccess.mockResolvedValue({
-      allowed: true,
-      actor: { type: "user", id: "admin" },
-    });
-
-    const listUsers = vi.fn(
-      async ({ page }: { page: number; perPage: number }) => {
-        if (page === 1) {
-          return {
-            data: {
-              users: [
-                {
-                  id: USER_ONE_ID,
-                  email: "author@example.com",
-                  created_at: "2026-02-20T01:00:00.000Z",
-                  last_sign_in_at: "2026-02-20T12:00:00.000Z",
-                  user_metadata: {
-                    full_name: "Auth Name",
-                    avatar_url: "https://cdn.example.com/avatar.png",
-                  },
-                },
-                {
-                  id: USER_TWO_ID,
-                  email: "guest@example.com",
-                  created_at: "2026-02-19T09:00:00.000Z",
-                  last_sign_in_at: null,
-                  user_metadata: {
-                    name: "Guest User",
-                  },
-                },
-              ],
-            },
-            error: null,
-          };
-        }
-
-        return { data: { users: [] }, error: null };
-      }
-    );
-
-    const tableResponses: Record<
-      string,
-      { data: unknown[] | null; error: { code?: string; message?: string } | null }
-    > = {
-      style_comments: {
+  it("shapes the aggregation RPC into the admin users payload", async () => {
+    // The route reads one SECURITY DEFINER aggregation (migration 036) rather
+    // than joining tables in Node, so the fixture is what that function returns.
+    mockedCheckAdminApiAccess.mockResolvedValue({ allowed: true } as never);
+    mockedGetSupabaseAdmin.mockReturnValue({
+      rpc: vi.fn(async () => ({
         data: [
           {
-            session_id: `user:${USER_ONE_ID}`,
-            author_name: "Legacy Comment Name",
-            created_at: "2026-02-21T00:00:00.000Z",
+            user_id: USER_ONE_ID,
+            email: "owner@example.com",
+            author_name: "Auth Name",
+            avatar_url: "https://cdn.example.com/avatar.png",
+            comment_count: 1,
+            rating_count: 1,
+            favorite_count: 1,
+            submission_count: 1,
+            last_active: "2026-02-21T03:00:00.000Z",
+            seq_id: 3,
+            custom_title: null,
+            title_color: null,
+            title_icon_path: null,
+            is_owner: true,
+            title_enabled: true,
+            profile_title: null,
           },
-        ],
-        error: null,
-      },
-      style_ratings: {
-        data: [
           {
-            session_id: `user:${USER_ONE_ID}`,
-            created_at: "2026-02-21T01:00:00.000Z",
+            user_id: USER_TWO_ID,
+            email: "early@example.com",
+            author_name: "Early Bird",
+            avatar_url: null,
+            comment_count: 0,
+            rating_count: 2,
+            favorite_count: 0,
+            submission_count: 0,
+            last_active: "2026-02-21T02:00:00.000Z",
+            seq_id: 7,
+            custom_title: null,
+            title_color: null,
+            title_icon_path: null,
+            is_owner: false,
+            title_enabled: true,
+            profile_title: null,
           },
           {
             user_id: USER_THREE_ID,
-            created_at: "2026-02-21T02:30:00.000Z",
-          },
-          {
-            session_id: "user:not-a-uuid",
-            created_at: "2026-02-21T02:45:00.000Z",
-          },
-        ],
-        error: null,
-      },
-      user_favorites: {
-        data: [
-          {
-            session_id: `user:${USER_ONE_ID}`,
-            style_slug: "editorial",
-            created_at: "2026-02-21T02:00:00.000Z",
-          },
-        ],
-        error: null,
-      },
-      style_favorites: {
-        data: null,
-        error: {
-          code: "PGRST205",
-          message: "Could not find the table 'public.style_favorites' in the schema cache",
-        },
-      },
-      submissions: {
-        data: [
-          {
-            user_id: USER_ONE_ID,
-            submitted_at: "2026-02-21T03:00:00.000Z",
-          },
-        ],
-        error: null,
-      },
-      style_submissions: {
-        data: null,
-        error: {
-          code: "PGRST205",
-          message: "Could not find the table 'public.style_submissions' in the schema cache",
-        },
-      },
-      user_seq_ids: {
-        data: [
-          {
-            user_id: USER_TWO_ID,
-            seq_id: 88,
-          },
-        ],
-        error: null,
-      },
-      user_titles: {
-        data: [
-          {
-            user_id: USER_ONE_ID,
+            email: null,
+            author_name: null,
+            avatar_url: null,
+            comment_count: 0,
+            rating_count: 0,
+            favorite_count: 0,
+            submission_count: 0,
+            last_active: null,
+            seq_id: null,
             custom_title: null,
-            title_color: "#ff5500",
-            title_icon_path: "M0 0 L10 10 Z",
-            is_owner: true,
+            title_color: null,
+            title_icon_path: null,
+            is_owner: false,
             title_enabled: true,
+            profile_title: null,
           },
         ],
         error: null,
-      },
-    };
-
-    const fromMock = vi.fn((tableName: string) => ({
-      select: vi
-        .fn()
-        .mockResolvedValue(tableResponses[tableName] ?? { data: [], error: null }),
-    }));
-
-    mockedGetSupabaseAdmin.mockReturnValue({
-      from: fromMock,
-      auth: {
-        admin: {
-          listUsers,
-        },
-      },
+      })),
     } as never);
 
     const response = await GET(
-      new Request("https://stylekit.top/api/admin/users?limit=20&offset=0")
+      new Request("https://stylekit.top/api/admin/users?limit=20&offset=0"),
     );
-
-    expect(response.status).toBe(200);
     const payload = await response.json();
 
+    expect(response.status).toBe(200);
     expect(payload.total).toBe(3);
     expect(payload.users).toHaveLength(3);
+
     expect(payload.users[0].userId).toBe(USER_ONE_ID);
     expect(payload.users[0].authorName).toBe("Auth Name");
     expect(payload.users[0].avatarUrl).toBe("https://cdn.example.com/avatar.png");
@@ -204,184 +126,69 @@ describe("GET /api/admin/users", () => {
     expect(payload.users[0].submissionCount).toBe(1);
     expect(payload.users[0].lastActive).toBe("2026-02-21T03:00:00.000Z");
     expect(payload.users[0].resolvedTitle).toBe(SITE_OWNER_TITLE_TOKEN);
-    expect(payload.users[0].titleColor).toBe("#ff5500");
-    expect(payload.users[0].titleIconPath).toBe("M0 0 L10 10 Z");
-    expect(payload.users[0].isOwner).toBe(true);
 
-    const secondUser = payload.users.find(
-      (item: { userId: string }) => item.userId === USER_TWO_ID
-    );
-    expect(secondUser).toBeTruthy();
-    expect(secondUser.commentCount).toBe(0);
-    expect(secondUser.favoriteCount).toBe(0);
-    expect(secondUser.seqId).toBe(88);
-    expect(secondUser.resolvedTitle).toBe(EARLY_USER_TITLE_TOKEN);
-    expect(secondUser.titleColor).toBeNull();
-    expect(secondUser.titleIconPath).toBeNull();
-    expect(secondUser.isEarlyUser).toBe(true);
+    // A low seq id earns the early-user badge without any manual title.
+    expect(payload.users[1].seqId).toBe(7);
+    expect(payload.users[1].resolvedTitle).toBe(EARLY_USER_TITLE_TOKEN);
 
-    const thirdUser = payload.users.find(
-      (item: { userId: string }) => item.userId === USER_THREE_ID
-    );
-    expect(thirdUser).toBeTruthy();
-    expect(thirdUser.authorName).toBe("User 33333333");
-    expect(thirdUser.ratingCount).toBe(1);
-
-    const hasInvalidLegacyId = payload.users.some(
-      (item: { userId: string }) => item.userId === "not-a-uuid"
-    );
-    expect(hasInvalidLegacyId).toBe(false);
-
-    const searchByEmailResponse = await GET(
-      new Request(
-        "https://stylekit.top/api/admin/users?limit=20&offset=0&search=guest@example.com"
-      )
-    );
-
-    expect(searchByEmailResponse.status).toBe(200);
-    const searchByEmailPayload = await searchByEmailResponse.json();
-    expect(searchByEmailPayload.total).toBe(1);
-    expect(searchByEmailPayload.users[0].userId).toBe(USER_TWO_ID);
+    // Sorted by last activity, so the row that never acted lands last and still
+    // gets a readable fallback name rather than a bare uuid.
+    expect(payload.users[2].userId).toBe(USER_THREE_ID);
+    expect(payload.users[2].lastActive).toBe("");
+    expect(payload.users[2].authorName).toBe(`User ${USER_THREE_ID.slice(0, 8)}`);
   });
 
-  it("keeps successful table data when one admin table read fails", async () => {
-    mockedCheckAdminApiAccess.mockResolvedValue({
-      allowed: true,
-      actor: { type: "user", id: "admin" },
-    });
-
-    const listUsers = vi.fn(async () => ({
-      data: {
-        users: [
-          {
-            id: USER_ONE_ID,
-            email: "author@example.com",
-            created_at: "2026-02-20T01:00:00.000Z",
-            last_sign_in_at: null,
-            user_metadata: {},
-          },
-        ],
-      },
-      error: null,
-    }));
-
-    const tableResponses: Record<
-      string,
-      { data: unknown[] | null; error: { code?: string; message?: string } | null }
-    > = {
-      style_comments: {
-        data: [
-          {
-            session_id: `user:${USER_ONE_ID}`,
-            author_name: "Comment Author",
-            created_at: "2026-02-21T00:00:00.000Z",
-          },
-        ],
-        error: null,
-      },
-      style_ratings: {
-        data: null,
-        error: {
-          code: "42501",
-          message: "permission denied for table style_ratings",
-        },
-      },
-      user_favorites: {
-        data: null,
-        error: {
-          code: "42703",
-          message: "column user_id does not exist",
-        },
-      },
-      style_favorites: {
-        data: null,
-        error: {
-          code: "PGRST205",
-          message: "Could not find the table 'public.style_favorites' in the schema cache",
-        },
-      },
-      submissions: {
-        data: [],
-        error: null,
-      },
-      style_submissions: {
-        data: null,
-        error: {
-          code: "PGRST205",
-          message: "Could not find the table 'public.style_submissions' in the schema cache",
-        },
-      },
-      user_seq_ids: {
-        data: [
-          {
-            user_id: USER_TWO_ID,
-            seq_id: 7,
-            created_at: "2026-02-22T00:00:00.000Z",
-          },
-        ],
-        error: null,
-      },
-      user_titles: {
-        data: [],
-        error: null,
-      },
-    };
-
-    const fallbackFavorites = {
-      data: [
-        {
-          session_id: `user:${USER_ONE_ID}`,
-          style_slug: "editorial",
-          created_at: "2026-02-21T01:00:00.000Z",
-        },
-      ],
-      error: null,
-    };
-
-    const fromMock = vi.fn((tableName: string) => ({
-      select: vi.fn(async (columns: string) => {
-        if (
-          tableName === "user_favorites" &&
-          columns === "session_id, style_slug, created_at"
-        ) {
-          return fallbackFavorites;
-        }
-        return tableResponses[tableName] ?? { data: [], error: null };
-      }),
-    }));
-
+  it("never leaks the email it searches on", async () => {
+    mockedCheckAdminApiAccess.mockResolvedValue({ allowed: true } as never);
     mockedGetSupabaseAdmin.mockReturnValue({
-      from: fromMock,
-      auth: {
-        admin: {
-          listUsers,
-        },
-      },
+      rpc: vi.fn(async () => ({
+        data: [
+          {
+            user_id: USER_ONE_ID,
+            email: "secret@example.com",
+            author_name: null,
+            avatar_url: null,
+            comment_count: 0,
+            rating_count: 0,
+            favorite_count: 0,
+            submission_count: 0,
+            last_active: null,
+            seq_id: null,
+            custom_title: null,
+            title_color: null,
+            title_icon_path: null,
+            is_owner: false,
+            title_enabled: true,
+            profile_title: null,
+          },
+        ],
+        error: null,
+      })),
     } as never);
 
     const response = await GET(
-      new Request("https://stylekit.top/api/admin/users?limit=20&offset=0")
+      new Request("https://stylekit.top/api/admin/users?search=secret"),
     );
-
-    expect(response.status).toBe(200);
     const payload = await response.json();
-    expect(payload.total).toBe(2);
 
-    const firstUser = payload.users.find(
-      (item: { userId: string }) => item.userId === USER_ONE_ID
-    );
-    expect(firstUser).toBeTruthy();
-    expect(firstUser.authorName).toBe("author");
-    expect(firstUser.commentCount).toBe(1);
-    expect(firstUser.favoriteCount).toBe(1);
-    expect(firstUser.ratingCount).toBe(0);
-    expect(firstUser.lastActive).toBe("2026-02-21T01:00:00.000Z");
+    expect(payload.total).toBe(1);
+    // The address drives search server-side but must not reach the client.
+    expect(JSON.stringify(payload)).not.toContain("secret@example.com");
+    expect(payload.users[0].authorName).toBe("secret");
+  });
 
-    const seqOnlyUser = payload.users.find(
-      (item: { userId: string }) => item.userId === USER_TWO_ID
+  it("fails loudly when the aggregation cannot be read", async () => {
+    // A blank user table would read as "no users at all", which is worse than
+    // an error the console can surface.
+    mockedCheckAdminApiAccess.mockResolvedValue({ allowed: true } as never);
+    mockedGetSupabaseAdmin.mockReturnValue({
+      rpc: vi.fn(async () => ({ data: null, error: { message: "boom" } })),
+    } as never);
+
+    const response = await GET(
+      new Request("https://stylekit.top/api/admin/users"),
     );
-    expect(seqOnlyUser).toBeTruthy();
-    expect(seqOnlyUser.seqId).toBe(7);
-    expect(seqOnlyUser.authorName).toBe("User 22222222");
+
+    expect(response.status).toBe(500);
   });
 });

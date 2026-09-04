@@ -1,5 +1,10 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 
+// Hoisted by vitest regardless of where it appears, so it lives at the top to
+// match its actual execution order: these tests exercise the real client and
+// must not inherit a module mock from elsewhere in the suite.
+vi.unmock("@supabase/supabase-js");
+
 const ENV_SNAPSHOT = {
   NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
   SUPABASE_SERVICE_ROLE_KEY: process.env.SUPABASE_SERVICE_ROLE_KEY,
@@ -8,7 +13,6 @@ const ENV_SNAPSHOT = {
 afterEach(() => {
   vi.resetModules();
   vi.clearAllMocks();
-  vi.unmock("@supabase/supabase-js");
 
   if (ENV_SNAPSHOT.NEXT_PUBLIC_SUPABASE_URL === undefined) {
     delete process.env.NEXT_PUBLIC_SUPABASE_URL;
