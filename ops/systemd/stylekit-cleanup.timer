@@ -1,9 +1,0 @@
-[Unit]
-Description=Weekly StyleKit storage cleanup
-
-[Timer]
-OnCalendar=Sun *-*-* 04:15:00 Asia/Shanghai
-Persistent=true
-
-[Install]
-WantedBy=timers.target
