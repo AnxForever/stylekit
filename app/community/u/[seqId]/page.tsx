@@ -9,6 +9,8 @@ import { getRequestLocaleContext } from "@/lib/i18n/request";
 import { getAvatarImageSrc } from "@/lib/avatar";
 import { getContributorBySeqId } from "@/lib/community/contributor";
 import { listCommunityStylesByUser } from "@/lib/styles/community-runtime";
+import { getServerUser } from "@/lib/auth/supabase-server";
+import { FollowButton } from "./_follow-button";
 
 // Contributor standing changes as work is submitted and promoted, so the page
 // resolves per request rather than being frozen at build time.
@@ -75,6 +77,7 @@ export default async function ContributorPage({
   }
 
   const styles = await listCommunityStylesByUser(contributor.userId);
+  const viewer = await getServerUser().catch(() => null);
   const avatar = getAvatarImageSrc(contributor.avatarUrl);
   const tierLabel =
     locale === "zh" ? contributor.tier.labelZh : contributor.tier.labelEn;
@@ -119,6 +122,14 @@ export default async function ContributorPage({
                 <span className="font-mono text-xs text-muted-foreground">
                   {t.memberNo} #{contributor.seqId}
                 </span>
+              </div>
+
+              <div className="mt-4">
+                <FollowButton
+                  seqId={contributor.seqId ?? 0}
+                  locale={locale === "zh" ? "zh" : "en"}
+                  isSelf={viewer?.id === contributor.userId}
+                />
               </div>
 
               <dl className="mt-5 flex flex-wrap gap-8">
