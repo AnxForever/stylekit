@@ -9,6 +9,7 @@ import {
 import { isValidSubmissionId } from "@/lib/submit/reviewer";
 import { checkAdminApiAccess } from "@/lib/auth/admin-api";
 import { recordAdminAuditEvent } from "@/lib/admin/audit-log";
+import { notifySubmissionDecision } from "@/lib/submission/notify";
 import { verifyTrustedOrigin } from "@/lib/security/request-origin";
 import { parseJsonBodyWithLimit } from "@/lib/security/json-body";
 
@@ -95,7 +96,19 @@ export async function POST(
         },
       });
 
-      return NextResponse.json({ success: true, submission: result });
+      // Best-effort: the review stands whether or not the mail goes out.
+      const notified = await notifySubmissionDecision({
+        userId: result.userId,
+        slug: result.slug,
+        styleName:
+          (result.formData?.nameEn as string) ??
+          (result.formData?.name as string) ??
+          result.slug,
+        decision: "approved",
+        note,
+      });
+
+      return NextResponse.json({ success: true, submission: result, notified });
     }
 
     if (action === "reject") {
@@ -110,6 +123,17 @@ export async function POST(
         );
       }
 
+      const notified = await notifySubmissionDecision({
+        userId: result.userId,
+        slug: result.slug,
+        styleName:
+          (result.formData?.nameEn as string) ??
+          (result.formData?.name as string) ??
+          result.slug,
+        decision: "rejected",
+        note,
+      });
+
       await recordAdminAuditEvent(request, {
         action: "submission.reject",
         targetType: "submission",
@@ -117,6 +141,7 @@ export async function POST(
         actor: access.actor,
         metadata: {
           slug: result.slug,
+          notified,
           noteProvided: typeof note === "string" && note.length > 0,
         },
       });

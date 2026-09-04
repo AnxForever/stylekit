@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { X, LogOut, ExternalLink } from "lucide-react";
 import { adminNavItems } from "@/lib/admin/nav";
@@ -29,6 +29,31 @@ export function AdminSidebar() {
 
   useEffect(() => {
     void prefetchCommonAdminViews();
+  }, []);
+
+  // Unresolved reports are the one queue that needs answering rather than
+  // browsing, so the count comes to the maintainer instead of waiting to be
+  // discovered. Polled slowly: a report is not urgent to the minute, and the
+  // console stays open for long stretches.
+  const [openReports, setOpenReports] = useState(0);
+  useEffect(() => {
+    let cancelled = false;
+    const load = () =>
+      fetch("/api/admin/community-reports?status=open")
+        .then((res) => (res.ok ? res.json() : null))
+        .then((data: { total?: number } | null) => {
+          if (!cancelled && typeof data?.total === "number") {
+            setOpenReports(data.total);
+          }
+        })
+        .catch(() => {});
+
+    void load();
+    const timer = setInterval(load, 120_000);
+    return () => {
+      cancelled = true;
+      clearInterval(timer);
+    };
   }, []);
 
   const handleLogout = async () => {
@@ -120,7 +145,15 @@ export function AdminSidebar() {
                 }`}
               >
                 <item.icon className="h-4 w-4 shrink-0" />
-                {item.label}
+                <span className="min-w-0 flex-1 truncate">{item.label}</span>
+                {item.href === "/admin/community-reports" && openReports > 0 ? (
+                  <span
+                    className="shrink-0 rounded-full bg-foreground px-1.5 text-[10px] font-medium leading-4 text-background"
+                    aria-label={`${openReports} 条待处理`}
+                  >
+                    {openReports}
+                  </span>
+                ) : null}
               </Link>
             );
           })}
