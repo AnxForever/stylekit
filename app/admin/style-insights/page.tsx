@@ -25,9 +25,10 @@ interface InsightsSnapshot {
   dailyPv: { day: string; pv: number }[];
 }
 
-const INSIGHTS_URL =
-  process.env.NEXT_PUBLIC_UMAMI_INSIGHTS_URL ??
-  "http://117.72.199.116/insights/snapshot.json";
+// No hardcoded fallback: this repository is public, and a analytics host
+// address is infrastructure detail. Configure NEXT_PUBLIC_UMAMI_INSIGHTS_URL
+// in the deployment environment; the page degrades to an empty state without it.
+const INSIGHTS_URL = process.env.NEXT_PUBLIC_UMAMI_INSIGHTS_URL ?? "";
 
 export const revalidate = 300;
 
@@ -88,6 +89,7 @@ export default async function StyleInsightsPage() {
 }
 
 async function loadSnapshot(): Promise<InsightsSnapshot | null> {
+  if (!INSIGHTS_URL) return null;
   try {
     const res = await fetch(INSIGHTS_URL, {
       next: { revalidate: 300 },
