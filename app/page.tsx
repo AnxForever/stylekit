@@ -4,7 +4,7 @@ import { join } from "path";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { HomeContent } from "@/components/home/home-content";
-import { getAllStylesMeta } from "@/lib/styles/meta";
+import { getAllStylesMeta, type StyleMeta } from "@/lib/styles/meta";
 import { getAllAnimationsMeta } from "@/lib/animations/meta";
 import { CURATED_STYLE_COUNT } from "@/lib/product/catalog-facts";
 import { HOME_SOCIAL_IMAGE } from "@/lib/seo/site-metadata";
@@ -45,11 +45,66 @@ function getTemplateCount() {
     .length;
 }
 
+/**
+ * Fields a home-page style card actually renders.
+ *
+ * The full StyleMeta carries `description`, `descriptionEn` and `keywords`,
+ * which together are over half of the array's serialized weight. Only the eight
+ * featured cards show a description; the trending grid and the carousel render
+ * name, cover, palette and tags alone. Sending the prose for all 148 styles put
+ * roughly 47 KB of never-rendered text into every home-page response.
+ */
+const CARD_FIELDS = [
+  "slug",
+  "name",
+  "nameEn",
+  "cover",
+  "colors",
+  "styleType",
+  "tags",
+  "category",
+  "compatibleWith",
+] as const satisfies readonly (keyof StyleMeta)[];
+
+/**
+ * Trim the catalog to what the page renders.
+ *
+ * The first eight (deduplicated, matching HomeContent's own featured slice)
+ * keep every field because those cards show a description. The rest are
+ * needed only so the trending grid can look a slug up by name and palette,
+ * so they travel without prose.
+ */
+function buildHomeStyles(all: StyleMeta[]): StyleMeta[] {
+  const featured = all
+    .filter((style, index, list) => {
+      if (!style.slug) return false;
+      return list.findIndex((candidate) => candidate.slug === style.slug) === index;
+    })
+    .slice(0, 8);
+  const featuredSlugs = new Set(featured.map((style) => style.slug));
+
+  const rest = all
+    .filter((style) => !featuredSlugs.has(style.slug))
+    .map((style) => {
+      const lean: Partial<StyleMeta> = {};
+      for (const field of CARD_FIELDS) {
+        if (style[field] !== undefined) {
+          (lean as Record<string, unknown>)[field] = style[field];
+        }
+      }
+      return lean as StyleMeta;
+    });
+
+  // Featured first so HomeContent's own `.slice(0, 8)` picks the same eight.
+  return [...featured, ...rest];
+}
+
 export default async function Home() {
-  const styles = getAllStylesMeta();
+  const allStyles = getAllStylesMeta();
+  const styles = buildHomeStyles(allStyles);
   const thankYouEntries = await getPublishedThankYouEntries();
   const stats = {
-    styles: styles.length,
+    styles: allStyles.length,
     animations: getAllAnimationsMeta().length,
     templates: getTemplateCount(),
   };
