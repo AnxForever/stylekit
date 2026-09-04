@@ -399,28 +399,30 @@ function isPubliclyVisible(submission: SubmissionRecord): boolean {
   return submission.visibility !== "hidden";
 }
 
-async function getApprovedSubmissionBySlugRuntime(
-  slug: string
-): Promise<SubmissionRecord | null> {
-  const normalizedSlug = normalizeSlug(slug);
-  if (!SLUG_RE.test(normalizedSlug)) {
-    return null;
-  }
-
-  const found = await (async () => {
-    if (isSupabaseConfigured()) {
-      try {
-        return await getLatestApprovedSubmissionBySlugSupabase(normalizedSlug);
-      } catch {
-        return getLatestApprovedSubmissionBySlug(normalizedSlug);
-      }
+const getApprovedSubmissionBySlugRuntime = cache(
+  async function getApprovedSubmissionBySlugRuntime(
+    slug: string
+  ): Promise<SubmissionRecord | null> {
+    const normalizedSlug = normalizeSlug(slug);
+    if (!SLUG_RE.test(normalizedSlug)) {
+      return null;
     }
-    return getLatestApprovedSubmissionBySlug(normalizedSlug);
-  })();
 
-  // Guarding inside the lookup covers every public reader at once.
-  return found && isPubliclyVisible(found) ? found : null;
-}
+    const found = await (async () => {
+      if (isSupabaseConfigured()) {
+        try {
+          return await getLatestApprovedSubmissionBySlugSupabase(normalizedSlug);
+        } catch {
+          return getLatestApprovedSubmissionBySlug(normalizedSlug);
+        }
+      }
+      return getLatestApprovedSubmissionBySlug(normalizedSlug);
+    })();
+
+    // Guarding inside the lookup covers every public reader at once.
+    return found && isPubliclyVisible(found) ? found : null;
+  }
+);
 
 export const resolveStyleBySlug = cache(async function resolveStyleBySlug(
   slug: string
@@ -478,6 +480,8 @@ export interface CommunityStyleMeta extends StyleMeta {
 export interface CommunityAttribution {
   authorName: string | null;
   avatarUrl: string | null;
+  /** Author account, when the submission was made by a signed-in user. */
+  userId: string | null;
 }
 
 /**
@@ -500,8 +504,26 @@ export const getCommunityAttribution = cache(async function getCommunityAttribut
   return {
     authorName: asString(author.handle) ?? submission.authorName ?? null,
     avatarUrl: asString(author.avatarUrl),
+    userId: submission.userId ?? null,
   };
 });
+
+/**
+ * Publicly visible community styles by one contributor.
+ *
+ * Shares the same mapping and visibility rules as the main catalog, so a
+ * contributor page can never surface a style the catalog itself hides.
+ */
+export async function listCommunityStylesByUser(
+  userId: string
+): Promise<CommunityStyleMeta[]> {
+  const all = await listCommunityStylesMeta();
+  const submissions = (await listApprovedSubmissionsRuntime()).filter(
+    (submission) => submission.userId === userId && isPubliclyVisible(submission)
+  );
+  const owned = new Set(submissions.map((submission) => normalizeSlug(submission.slug)));
+  return all.filter((style) => owned.has(style.slug));
+}
 
 export async function listCommunityStylesMeta(): Promise<CommunityStyleMeta[]> {
   const curatedSlugs = new Set(getAllStylesMeta().map((item) => item.slug));
