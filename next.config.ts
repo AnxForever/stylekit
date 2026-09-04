@@ -2,14 +2,70 @@ import type { NextConfig } from "next";
 import withBundleAnalyzer from "@next/bundle-analyzer";
 import { withSentryConfig } from "@sentry/nextjs";
 
+/**
+ * Optional origin for immutable Next.js build assets.
+ *
+ * Keeping this opt-in is important: local development and deployments that do
+ * not have a CDN continue to use the same-origin `/_next/static` paths. When a
+ * CDN hostname is supplied, Next rewrites only build assets (JS, CSS and the
+ * fonts emitted by `next/font`); public files and API requests stay on the
+ * application origin.
+ */
+function getAssetPrefix(value: string | undefined): string | undefined {
+  const normalized = value?.trim().replace(/\/+$/, "");
+  if (!normalized) return undefined;
+
+  if (normalized.startsWith("//")) {
+    throw new Error("NEXT_PUBLIC_ASSET_PREFIX must not be protocol-relative");
+  }
+  if (normalized.includes("?") || normalized.includes("#")) {
+    throw new Error("NEXT_PUBLIC_ASSET_PREFIX must not contain a query or hash");
+  }
+  if (normalized.startsWith("/")) {
+    return normalized;
+  }
+
+  let url: URL;
+  try {
+    url = new URL(normalized);
+  } catch {
+    throw new Error("NEXT_PUBLIC_ASSET_PREFIX must be an absolute http(s) URL or a path");
+  }
+
+  if (url.protocol !== "http:" && url.protocol !== "https:") {
+    throw new Error("NEXT_PUBLIC_ASSET_PREFIX must use http or https");
+  }
+  if (url.username || url.password) {
+    throw new Error("NEXT_PUBLIC_ASSET_PREFIX must not contain URL credentials");
+  }
+
+  return url.toString().replace(/\/$/, "");
+}
+
+const assetPrefix = getAssetPrefix(process.env.NEXT_PUBLIC_ASSET_PREFIX);
+const assetUrl = assetPrefix && !assetPrefix.startsWith("/")
+  ? new URL(assetPrefix)
+  : undefined;
+const assetOrigin = assetUrl?.origin;
+const assetCspSource = assetOrigin ? ` ${assetOrigin}` : "";
+const scriptCspSource = "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://vibeloft.ai";
+const PUBLIC_ASSET_CACHE_CONTROL =
+  "public, max-age=86400, s-maxage=2592000, stale-while-revalidate=604800";
+
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
   compress: true,
   serverExternalPackages: ["isomorphic-dompurify"],
+  ...(assetPrefix ? { assetPrefix } : {}),
+  ...(assetOrigin ? { crossOrigin: "anonymous" as const } : {}),
 
   images: {
     formats: ["image/avif", "image/webp"],
+    // The optimizer output is content-addressed by its URL parameters. A
+    // longer floor lets the reverse proxy/CDN serve repeat image requests
+    // without waking the Next.js process.
+    minimumCacheTTL: 60 * 60 * 24 * 30,
     deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048],
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
     remotePatterns: [
@@ -40,9 +96,6 @@ const nextConfig: NextConfig = {
     // Keep production artifact generation deterministic on the constrained
     // local/CI builders used by the deployment runbook.
     cpus: 1,
-    // Shared-element View Transitions come from React 19's <ViewTransition>
-    // component, not from a Next flag. The experimental `viewTransition` key
-    // was removed in Next 16.3 and now fails the build's type check.
     // Client Router Cache for back/forward: without this every back navigation
     // refetches the RSC payload (dynamic default is 0), which makes returning
     // to long pages feel slow and breaks scroll restoration timing.
@@ -131,10 +184,10 @@ const nextConfig: NextConfig = {
             key: "Content-Security-Policy",
             value: [
               "default-src 'self'",
-              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://vibeloft.ai",
-              "style-src 'self' 'unsafe-inline' https://fonts.loli.net",
-              "img-src 'self' data: https: blob:",
-              "font-src 'self' data: https://gstatic.loli.net",
+              `${scriptCspSource}${assetCspSource}`,
+              `style-src 'self' 'unsafe-inline' https://fonts.loli.net${assetCspSource}`,
+              `img-src 'self' data: https: blob:${assetCspSource}`,
+              `font-src 'self' data: https://gstatic.loli.net${assetCspSource}`,
               "connect-src 'self' https://*.supabase.co https://connect.linux.do wss://*.supabase.co https://api.github.com https://api.vibeloft.ai",
               "media-src 'self'",
               "frame-src 'self'",
@@ -152,21 +205,41 @@ const nextConfig: NextConfig = {
         ],
       },
       {
-        source: "/(.*)\\.(png|jpg|jpeg|gif|webp|avif|svg|ico)",
+        // Fallback for deployments where the Nginx static-file include has
+        // not been installed yet. The extension-constrained pattern avoids
+        // applying shared caching to dynamic pages such as `/styles/:slug`.
+        // Nginx remains the preferred path because `try_files` can also avoid
+        // caching a missing asset response.
+        source:
+          "/:assetRoot(styles|templates|images|brand|readme|video|launch|experiments|submission)/:assetPath*\\.:assetExt(png|jpe?g|gif|webp|avif|svg|ico|woff2?|ttf|otf|mp4|webm|m4v)",
         headers: [
-          { key: "Cache-Control", value: "public, max-age=86400, stale-while-revalidate=604800" },
+          { key: "Cache-Control", value: PUBLIC_ASSET_CACHE_CONTROL },
+          { key: "CDN-Cache-Control", value: "public, max-age=2592000" },
+          { key: "Access-Control-Allow-Origin", value: "*" },
+          { key: "Timing-Allow-Origin", value: "*" },
         ],
       },
       {
-        source: "/styles/:path*",
+        // Next's build output is hashed and can be cached for the lifetime of
+        // the artifact. Next already emits `public, max-age=31536000,
+        // immutable` for this path in production; only add the provider hint
+        // and CORS header here so development does not inherit a forced cache.
+        source: "/_next/static/:path*",
         headers: [
-          { key: "Cache-Control", value: "public, s-maxage=86400, stale-while-revalidate=604800" },
+          { key: "CDN-Cache-Control", value: "public, max-age=31536000" },
+          { key: "Access-Control-Allow-Origin", value: "*" },
+          // Preserve cross-origin Resource Timing entries so field monitoring
+          // can distinguish CDN transfer time from application rendering.
+          { key: "Timing-Allow-Origin", value: "*" },
         ],
       },
       {
-        source: "/templates/:path*",
+        // Optimized image variants are keyed by URL, width, quality, and
+        // Accept. Next emits the browser cache policy; this hint lets a
+        // whole-site CDN retain the generated variant as well.
+        source: "/_next/image",
         headers: [
-          { key: "Cache-Control", value: "public, s-maxage=86400, stale-while-revalidate=604800" },
+          { key: "CDN-Cache-Control", value: "public, max-age=2592000" },
         ],
       },
     ];
