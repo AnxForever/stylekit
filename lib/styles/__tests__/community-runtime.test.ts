@@ -12,7 +12,7 @@ vi.mock("@/lib/submit/reviewer-supabase", () => ({
 }));
 
 import {
-  listCatalogStylesMeta,
+  listCommunityStylesMeta,
   resolveStyleBySlug,
 } from "@/lib/styles/community-runtime";
 import {
@@ -231,7 +231,7 @@ describe("community runtime styles", () => {
     expect(result?.style.cover).toBe("/styles/aurora-community/opengraph-image");
   });
 
-  it("merges approved community meta and skips static slug collisions", async () => {
+  it("returns approved community meta and drops curated slug collisions", async () => {
     mockedIsSupabaseConfigured.mockReturnValue(false);
     mockedListSubmissions.mockResolvedValue([
       communitySubmission,
@@ -242,10 +242,12 @@ describe("community runtime styles", () => {
       },
     ] as never);
 
-    const result = await listCatalogStylesMeta();
+    const result = await listCommunityStylesMeta();
 
-    expect(result.some((item) => item.slug === "aurora-community")).toBe(true);
-    expect(result.filter((item) => item.slug === "neo-brutalist")).toHaveLength(1);
+    expect(result.map((item) => item.slug)).toEqual(["aurora-community"]);
+    // neo-brutalist is a curated style, so a submission claiming that slug is
+    // never surfaced by the community catalog.
+    expect(result.some((item) => item.slug === "neo-brutalist")).toBe(false);
     expect(mockedListSubmissions).toHaveBeenCalledWith("approved");
     expect(mockedListSubmissionsSupabase).not.toHaveBeenCalled();
   });

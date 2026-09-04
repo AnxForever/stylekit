@@ -120,22 +120,28 @@
           "type": "string",
           "enum": [
             "visual",
-            "layout",
-            "animation"
+            "layout"
           ]
         },
         "tags": {
           "type": "array",
+          "description": "Visual-attribute tags. Must match lib/styles/meta-types.ts STYLE_TAGS.",
           "items": {
             "type": "string",
             "enum": [
-              "modern",
               "retro",
-              "minimal",
-              "expressive",
               "high-contrast",
               "responsive",
-              "brand-inspired"
+              "brand-inspired",
+              "dark-theme",
+              "colorful",
+              "hand-drawn",
+              "glassmorphic",
+              "gradient",
+              "geometric",
+              "game-ui",
+              "anime-aesthetic",
+              "texture-heavy"
             ]
           },
           "uniqueItems": true
