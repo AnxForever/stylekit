@@ -145,6 +145,25 @@ function componentGates(manifest: StyleSubmissionManifest): GateResult[] {
     }
   }
 
+  // Prose carries the style now that component code is optional, so an
+  // unfinished description or rule set has to be caught here too — that text is
+  // what an AI assistant actually consumes.
+  const PROSE_FIELDS = ["description", "philosophy"] as const;
+  for (const field of PROSE_FIELDS) {
+    const value = typeof form[field] === "string" ? (form[field] as string) : "";
+    if (PLACEHOLDER_RE.test(value)) {
+      placeholders.push(field);
+    }
+  }
+
+  const LIST_FIELDS = ["aiRules", "doList", "dontList"] as const;
+  for (const field of LIST_FIELDS) {
+    const list = Array.isArray(form[field]) ? (form[field] as unknown[]) : [];
+    if (list.some((item) => typeof item === "string" && PLACEHOLDER_RE.test(item))) {
+      placeholders.push(field);
+    }
+  }
+
   results.push({
     id: "core-components",
     label: "Button, card and input are real",
@@ -152,8 +171,11 @@ function componentGates(manifest: StyleSubmissionManifest): GateResult[] {
     detail:
       tooShort.length === 0
         ? "All three core components carry substantive code."
-        : `Needs at least ${MIN_COMPONENT_LENGTH} characters of real markup: ${tooShort.join(", ")}.`,
-    severity: "blocking",
+        : `Component code is optional; supplying it improves the preview. Thin or missing: ${tooShort.join(", ")}.`,
+    // Advisory since the catalog turned prompt-first: a style is useful to an
+    // AI assistant from its tokens and rules alone, and the runtime already
+    // synthesises component previews when code is absent.
+    severity: "advisory",
   });
 
   results.push({
@@ -182,11 +204,13 @@ function coverGate(manifest: StyleSubmissionManifest): GateResult {
     label: "Cover SVG shows UI",
     passed: hasRoot && hasShape,
     detail: !hasRoot
-      ? "assets.coverSvg must contain a real <svg> root."
+      ? "No cover supplied. One is optional; a drawn cover makes the catalog card far stronger."
       : !hasShape
         ? "Cover contains no shapes. Draw the UI, not just a title."
         : "Cover SVG contains a drawn composition.",
-    severity: "blocking",
+    // Advisory for the same reason as core-components: covers are generated
+    // from tokens when none is given.
+    severity: "advisory",
   };
 }
 

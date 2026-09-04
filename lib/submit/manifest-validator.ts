@@ -8,10 +8,10 @@ const sourceSchema = z.object({
 });
 
 const selfCheckSchema = z.object({
-  schemaValid: z.boolean(),
+  schemaValid: z.boolean().optional(),
   requiredFilesPrepared: z
     .array(z.enum(["manifest.json", "cover.svg", "self-check.md"]))
-    .min(1),
+    .optional(),
   componentCoverage: z
     .array(
       z.enum([
@@ -23,12 +23,19 @@ const selfCheckSchema = z.object({
         "footerCode",
       ])
     )
-    .min(1),
-  notes: z.string(),
+    .optional(),
+  notes: z.string().optional(),
 });
 
+/**
+ * Assets are optional in a prompt-first submission.
+ *
+ * A cover strengthens the catalog card, but the runtime generates one from the
+ * style's tokens when none is supplied, so demanding hand-authored SVG here
+ * would gate a usable style on artwork it does not need.
+ */
 const assetsSchema = z.object({
-  coverSvg: z.string().min(1, "coverSvg is required"),
+  coverSvg: z.string().default(""),
   previewImageUrl: z.string().url().optional(),
 });
 
@@ -39,13 +46,21 @@ const generatedAtSchema = z
     message: "generatedAt must be a valid ISO date-time",
   });
 
+/**
+ * Manifest envelope.
+ *
+ * Only `formData` is required. The provenance and self-check wrappers came from
+ * the era when a submission was a hand-assembled bundle; they still carry
+ * useful review context when present, but a style written directly in the
+ * submit form has none of them and should not be rejected for it.
+ */
 export const styleSubmissionManifestSchema = z.object({
-  schemaVersion: z.literal("1.0.0"),
-  generatedAt: generatedAtSchema,
-  source: sourceSchema,
+  schemaVersion: z.literal("1.0.0").default("1.0.0"),
+  generatedAt: generatedAtSchema.optional(),
+  source: sourceSchema.optional(),
   formData: wizardFormSchema,
-  assets: assetsSchema,
-  selfCheck: selfCheckSchema,
+  assets: assetsSchema.default({ coverSvg: "" }),
+  selfCheck: selfCheckSchema.optional(),
 });
 
 export type StyleSubmissionManifest = z.infer<typeof styleSubmissionManifestSchema>;
