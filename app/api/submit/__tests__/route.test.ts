@@ -197,7 +197,10 @@ describe("POST /api/submit", () => {
   it("refuses a manifest that fails a blocking gate", async () => {
     mockedGetServerUser.mockResolvedValue(signedIn as never);
     const manifest = validManifest();
-    manifest.formData.inputCode = "<input />";
+    // Thin component code is advisory since the catalog turned prompt-first,
+    // so the blocking failure has to come from something a style cannot ship
+    // without: rules an assistant can actually follow.
+    manifest.formData.aiRules = [];
 
     const response = await submit(
       post("https://stylekit.top/api/submit", { manifest, acceptedTerms: true }),
@@ -205,8 +208,25 @@ describe("POST /api/submit", () => {
     const payload = await response.json();
 
     expect(response.status).toBe(422);
-    expect(payload.failures.map((f: { id: string }) => f.id)).toContain("core-components");
+    expect(payload.failures.map((f: { id: string }) => f.id)).toContain("ai-rules");
     expect(mockedCreate).not.toHaveBeenCalled();
+  });
+
+  it("accepts a prompt-first manifest with no component code or cover", async () => {
+    mockedGetServerUser.mockResolvedValue(signedIn as never);
+    mockedCreate.mockResolvedValue({ id: "sub-prompt", slug: "route-fixture-style" });
+    const manifest = validManifest();
+    manifest.formData.buttonCode = "";
+    manifest.formData.cardCode = "";
+    manifest.formData.inputCode = "";
+    manifest.assets.coverSvg = "";
+
+    const response = await submit(
+      post("https://stylekit.top/api/submit", { manifest, acceptedTerms: true }),
+    );
+
+    expect(response.status).toBe(200);
+    expect(mockedCreate).toHaveBeenCalled();
   });
 
   it("re-runs the gates server-side even when the client skipped validate", async () => {

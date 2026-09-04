@@ -6,12 +6,7 @@
   "type": "object",
   "additionalProperties": false,
   "required": [
-    "schemaVersion",
-    "generatedAt",
-    "source",
-    "formData",
-    "assets",
-    "selfCheck"
+    "formData"
   ],
   "properties": {
     "schemaVersion": {
@@ -61,34 +56,11 @@
         "description",
         "category",
         "styleType",
-        "tags",
         "primaryColor",
         "secondaryColor",
-        "accentColors",
         "background",
         "foreground",
-        "muted",
-        "keywords",
-        "philosophy",
-        "headingFont",
-        "bodyFont",
-        "fontSizeBase",
-        "fontSizeHeading",
-        "fontSizeSmall",
-        "fontWeightNormal",
-        "fontWeightBold",
-        "lineHeightNormal",
-        "lineHeightTight",
-        "borderRadius",
-        "spacingSm",
-        "spacingMd",
-        "spacingLg",
-        "doList",
-        "dontList",
-        "aiRules",
-        "buttonCode",
-        "cardCode",
-        "inputCode"
+        "aiRules"
       ],
       "properties": {
         "name": {
@@ -251,9 +223,6 @@
     "assets": {
       "type": "object",
       "additionalProperties": false,
-      "required": [
-        "coverSvg"
-      ],
       "properties": {
         "coverSvg": {
           "type": "string",
@@ -270,12 +239,6 @@
     "selfCheck": {
       "type": "object",
       "additionalProperties": false,
-      "required": [
-        "schemaValid",
-        "requiredFilesPrepared",
-        "componentCoverage",
-        "notes"
-      ],
       "properties": {
         "schemaValid": {
           "type": "boolean"

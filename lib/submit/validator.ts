@@ -6,11 +6,6 @@ const HEX_RE = /^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/;
 
 const hexColor = z.string().regex(HEX_RE, "Must be a valid hex color (e.g. #ff0000)");
 
-const nonEmptyStringList = z
-  .array(z.string())
-  .refine((arr) => arr.some((s) => s.trim().length > 0), {
-    message: "Must contain at least one non-empty entry",
-  });
 
 export const wizardFormSchema = z.object({
   name: z.string(),
@@ -26,46 +21,54 @@ export const wizardFormSchema = z.object({
   // and drifted: it still accepted `modern`, `minimal` and `expressive` after
   // the tag revamp retired them, so submissions passed validation and then had
   // their tags silently dropped by the catalog.
-  tags: z.array(z.enum(STYLE_TAGS)),
+  // Tags aid discovery but a style is valid without them; reviewers can add
+  // them during curation.
+  tags: z.array(z.enum(STYLE_TAGS)).default([]),
 
   // Colors
   primaryColor: hexColor,
   secondaryColor: hexColor,
-  accentColors: z.array(hexColor).min(1, "At least one accent color is required"),
+  // Falls back to the primary color at the adapter layer when unset.
+  accentColors: z.array(hexColor).default([]),
   background: hexColor,
   foreground: hexColor,
-  muted: hexColor,
+  // A neutral mid-grey reads correctly against both light and dark grounds.
+  muted: hexColor.default("#6b7280"),
 
   // Keywords and philosophy
-  keywords: z.array(z.string()),
-  philosophy: z.string(),
+  keywords: z.array(z.string()).default([]),
+  philosophy: z.string().default(""),
 
-  // Typography
-  headingFont: z.string(),
-  bodyFont: z.string(),
-  fontSizeBase: z.string(),
-  fontSizeHeading: z.string(),
-  fontSizeSmall: z.string(),
-  fontWeightNormal: z.string(),
-  fontWeightBold: z.string(),
-  lineHeightNormal: z.string(),
-  lineHeightTight: z.string(),
+  // Typography. Defaulted rather than required: a contributor describes a
+  // style through its palette and rules, and a submission that leaves the
+  // scale unstated wants sensible neutral values, not a rejection. Anything
+  // supplied still wins.
+  headingFont: z.string().default("system-ui, sans-serif"),
+  bodyFont: z.string().default("system-ui, sans-serif"),
+  fontSizeBase: z.string().default("1rem"),
+  fontSizeHeading: z.string().default("2rem"),
+  fontSizeSmall: z.string().default("0.875rem"),
+  fontWeightNormal: z.string().default("400"),
+  fontWeightBold: z.string().default("700"),
+  lineHeightNormal: z.string().default("1.6"),
+  lineHeightTight: z.string().default("1.2"),
 
-  // Spacing and border
-  borderRadius: z.string(),
-  spacingSm: z.string(),
-  spacingMd: z.string(),
-  spacingLg: z.string(),
+  // Spacing and border, defaulted for the same reason.
+  borderRadius: z.string().default("0.5rem"),
+  spacingSm: z.string().default("0.5rem"),
+  spacingMd: z.string().default("1rem"),
+  spacingLg: z.string().default("2rem"),
 
   // Rules
-  doList: nonEmptyStringList,
-  dontList: z.array(z.string()),
+  doList: z.array(z.string()).default([]),
+  dontList: z.array(z.string()).default([]),
   aiRules: z.array(z.string()),
 
-  // Components
-  buttonCode: z.string(),
-  cardCode: z.string(),
-  inputCode: z.string(),
+  // Components are optional in a prompt-first submission; community-runtime
+  // synthesises previews from tokens when none are given.
+  buttonCode: z.string().default(""),
+  cardCode: z.string().default(""),
+  inputCode: z.string().default(""),
   previewModule: z.string().optional(),
   navCode: z.string().optional(),
   heroCode: z.string().optional(),

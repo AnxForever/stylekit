@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { wizardFormSchema } from "@/lib/submit/validator";
+import { STYLE_TAGS } from "@/lib/styles/meta-types";
 
 /** A fully valid form data fixture. */
 function validFormData() {
@@ -10,7 +11,7 @@ function validFormData() {
     description: "A test style",
     category: "modern" as const,
     styleType: "visual" as const,
-    tags: ["modern", "minimal"] as const,
+    tags: ["retro", "high-contrast"] as const,
     primaryColor: "#ff0000",
     secondaryColor: "#00ff00",
     accentColors: ["#0000ff"],
@@ -195,10 +196,12 @@ describe("wizardFormSchema", () => {
     }
 
     describe("accentColors", () => {
-      it("fails with empty array", () => {
+      it("accepts an empty array now that accents are optional", () => {
+        // Prompt-first submissions describe a style through its core palette
+        // and rules; accents are derived from the primary color when absent.
         const data = { ...validFormData(), accentColors: [] };
         const result = wizardFormSchema.safeParse(data);
-        expect(result.success).toBe(false);
+        expect(result.success).toBe(true);
       });
 
       it("passes with one valid hex", () => {
@@ -229,16 +232,16 @@ describe("wizardFormSchema", () => {
 
   // ── doList validation (nonEmptyStringList) ────────────────────────
   describe("doList validation", () => {
-    it("fails when all entries are empty strings", () => {
+    it("accepts empty entries now that doList is optional", () => {
       const data = { ...validFormData(), doList: [""] };
       const result = wizardFormSchema.safeParse(data);
-      expect(result.success).toBe(false);
+      expect(result.success).toBe(true);
     });
 
-    it("fails when all entries are whitespace-only", () => {
+    it("accepts whitespace-only entries now that doList is optional", () => {
       const data = { ...validFormData(), doList: ["  ", "\t"] };
       const result = wizardFormSchema.safeParse(data);
-      expect(result.success).toBe(false);
+      expect(result.success).toBe(true);
     });
 
     it("passes with one non-empty entry", () => {
@@ -334,10 +337,23 @@ describe("wizardFormSchema", () => {
     it("passes with valid tag values", () => {
       const data = {
         ...validFormData(),
-        tags: ["modern", "high-contrast", "responsive"],
+        tags: ["glassmorphic", "high-contrast", "responsive"],
       };
       const result = wizardFormSchema.safeParse(data);
       expect(result.success).toBe(true);
+    });
+
+    it.each(["modern", "minimal", "expressive"])(
+      "rejects %s, retired from the tag vocabulary when it duplicated a category",
+      (retired) => {
+        const data = { ...validFormData(), tags: [retired] };
+        expect(wizardFormSchema.safeParse(data).success).toBe(false);
+      },
+    );
+
+    it("accepts every tag in the shared vocabulary", () => {
+      const data = { ...validFormData(), tags: [...STYLE_TAGS] };
+      expect(wizardFormSchema.safeParse(data).success).toBe(true);
     });
 
     it("passes with empty array", () => {
