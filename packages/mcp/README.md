@@ -26,7 +26,7 @@ config:
   "mcpServers": {
     "stylekit": {
       "command": "npx",
-      "args": ["-y", "stylekit-mcp@0.1.0"]
+      "args": ["-y", "stylekit-mcp@0.2.0"]
     }
   }
 }

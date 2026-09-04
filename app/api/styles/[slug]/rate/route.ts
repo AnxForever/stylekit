@@ -311,23 +311,17 @@ export async function POST(
       }
     } else {
       // Insert new rating
-      const payload = useLegacySessionIdentity
-        ? {
-            style_slug: slugParsed.data,
-            rating: parsed.data.rating,
-            session_id: legacySessionId,
-            ip_address: ip,
-          }
-        : {
-            style_slug: slugParsed.data,
-            rating: parsed.data.rating,
-            session_id: null,
-            user_id: user.id,
-            ip_address: ip,
-          };
-      const { error } = await sb
-        .from("style_ratings")
-        .insert(payload);
+      // One row shape for both identities. Branching the object literal made
+      // the two arms structurally different, and newer supabase-js typings
+      // reject the resulting union at the insert call.
+      const insertResult = await sb.from("style_ratings").insert({
+        style_slug: slugParsed.data,
+        rating: parsed.data.rating,
+        session_id: useLegacySessionIdentity ? legacySessionId : null,
+        user_id: useLegacySessionIdentity ? null : user.id,
+        ip_address: ip,
+      });
+      const { error } = insertResult;
 
       if (error) {
         const classified = classifyDbError(error as DbErrorLike);

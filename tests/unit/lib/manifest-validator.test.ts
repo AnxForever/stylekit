@@ -18,7 +18,7 @@ const baseManifest = {
     description: "High contrast, bold blocks, and strong hierarchy.",
     category: "modern",
     styleType: "visual",
-    tags: ["modern", "high-contrast"],
+    tags: ["retro", "high-contrast"],
     primaryColor: "#111111",
     secondaryColor: "#ffffff",
     accentColors: ["#ff3b30"],
