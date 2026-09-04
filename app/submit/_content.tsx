@@ -205,6 +205,19 @@ export function SubmitConsole({
 
       {mode === "form" ? (
         <Section index="01" title={t.modeForm} description={t.formIntro}>
+          {/* The same rules the gates enforce, in a form an assistant can act
+              on. Offered here too because filling the form by hand and having
+              an assistant draft it are the same job with different tools. */}
+          <div className="mb-6 flex flex-wrap items-center gap-3 border border-border p-4">
+            <span className="text-sm text-muted-foreground">{t.aiHelpHint}</span>
+            <button
+              type="button"
+              onClick={copyPrompt}
+              className="border border-foreground px-3 py-1.5 font-mono text-xs uppercase tracking-wider transition-colors hover:bg-foreground hover:text-background"
+            >
+              {promptCopied ? t.promptCopied : t.copyRules}
+            </button>
+          </div>
           <StyleForm locale={locale} value={form} onChange={setForm} />
           <div className="mt-6 flex flex-wrap items-center gap-3">
             <button

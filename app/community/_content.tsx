@@ -108,14 +108,13 @@ export function CommunityCatalog({ styles, locale, copy }: Props) {
 
       <div className="grid grid-cols-2 gap-3 sm:gap-4 md:gap-8 lg:grid-cols-3">
         {ordered.map((style) => (
-          <div key={style.slug} className="relative">
-            {style.promoted ? (
-              <span className="absolute -top-2 left-2 z-20 rounded-full border border-foreground bg-background px-2 py-0.5 font-mono text-[10px] uppercase tracking-wider">
-                {copy.promoted}
-              </span>
-            ) : null}
-            <StyleCard style={style} variant="compact" basePath="/community" />
-          </div>
+          <StyleCard
+            key={style.slug}
+            style={style}
+            variant="compact"
+            basePath="/community"
+            badge={style.promoted ? copy.promoted : undefined}
+          />
         ))}
       </div>
     </>

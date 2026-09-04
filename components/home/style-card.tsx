@@ -15,6 +15,13 @@ interface StyleCardProps {
   variant?: "default" | "compact";
   /** Detail-link base path; community styles resolve under /community. */
   basePath?: string;
+  /**
+   * Short status word rendered beside the style name — "Promoted" on a
+   * community card, for instance. Sits inside the card's own title row rather
+   * than floating over the cover, so it reads as a property of the style and
+   * cannot collide with the favourite and kit controls.
+   */
+  badge?: string;
 }
 
 /**
@@ -25,6 +32,7 @@ export const StyleCard = React.memo(function StyleCard({
   style,
   variant = "default",
   basePath = "/styles",
+  badge,
 }: StyleCardProps) {
   const { locale } = useI18n();
   const isCompact = variant === "compact";
@@ -93,6 +101,11 @@ export const StyleCard = React.memo(function StyleCard({
             <span className={`text-sm text-muted shrink-0 ${isCompact ? "hidden sm:inline" : ""}`}>
               {secondaryName}
             </span>
+            {badge ? (
+              <span className="ml-auto shrink-0 border border-foreground px-1.5 py-0.5 font-mono text-[10px] uppercase tracking-wider">
+                {badge}
+              </span>
+            ) : null}
           </div>
           <p className="text-sm text-muted leading-relaxed line-clamp-2">
             {description}

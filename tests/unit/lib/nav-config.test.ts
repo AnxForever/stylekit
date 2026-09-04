@@ -4,9 +4,13 @@ import { mainNav, secondaryNav } from "@/lib/nav-config";
 
 describe("primary navigation", () => {
   it("keeps resources grouped without foundations or a build menu", () => {
+    // Community sits at the top level beside the other browsable catalogs.
+    // It was added deliberately: contributed styles had no route from the
+    // header at all, which left the whole catalog effectively unreachable.
     expect(mainNav.map((item) => item.labelKey)).toEqual([
       "nav.styles",
       "nav.templates",
+      "nav.community",
       "nav.resources",
     ]);
 

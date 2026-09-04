@@ -51,7 +51,8 @@ next-env.d.ts
 nul
 
 # Agent/IDE Rules
-AGENTS.md
+# AGENTS.md is tracked on purpose: it is the one rule file every contributor and
+# assistant is expected to read, so it has to travel with the repository.
 AI_CONTEXT.md
 AI-ICON-WORKFLOW-TUTORIAL.md
 CLAUDE.md
@@ -120,6 +121,9 @@ ops/*
 !ops/stylekit-healthcheck.sh
 !ops/cleanup-stylekit-server.sh
 !ops/verify-stylekit-production.sh
+# Versioned, provider-neutral CDN origin locations include.
+!ops/nginx/
+!ops/nginx/stylekit-performance-locations.conf
 !ops/systemd/
 !ops/systemd/stylekit-healthcheck.service
 !ops/systemd/stylekit-healthcheck.timer
