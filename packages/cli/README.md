@@ -5,20 +5,17 @@ Command-line tool for [StyleKit](https://stylekit.top) — browse 146 design sty
 ## Usage
 
 ```bash
-npx -y stylekit-cli@0.1.0 <command> [args] [flags]
+npx -y stylekit-cli@0.1.2 <command> [args] [flags]
 ```
 
-The `0.1.0` public beta is self-contained and works offline from a clean
-directory. The repository currently contains the newer `0.1.1` candidate; to
-try that candidate without installing from npm, run from the repository root:
+The `0.1.2` public beta is self-contained and works offline from a clean
+directory. It matches the version in this repository, so `npx` and a local
+build behave the same. To run the repository copy without installing from npm:
 
 ```bash
 pnpm --filter stylekit-cli build
 node packages/cli/dist/index.js <command>
 ```
-
-The public beta and repository candidate may have different output contracts;
-pin the version when scripting against JSON output.
 
 ## Commands
 
