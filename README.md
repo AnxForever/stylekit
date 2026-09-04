@@ -198,7 +198,7 @@ Open [localhost:3000](http://localhost:3000). See [`.env.example`](.env.example)
 
 See [`docs/PROJECT_STRUCTURE.md`](docs/PROJECT_STRUCTURE.md) for the repository map, runtime flow, source boundaries, and cleanup guidance.
 See [`docs/STYLE_AUTHORING.md`](docs/STYLE_AUTHORING.md) before adding or changing catalog styles.
-See [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md) for production deployment notes.
+Deployment is environment-specific: build locally, then serve the `.next` output with your process manager of choice (`ecosystem.config.cjs` holds a PM2 example).
 
 ## API Surface
 
@@ -291,7 +291,7 @@ Current production for `www.stylekit.top` runs on an Alibaba Cloud ECS instance 
 
 `vercel.json` is no longer part of the active production deployment path and should not be treated as the source of truth for where StyleKit is hosted.
 
-See [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md) for the deployment runbook, healthcheck watchdog setup, admin login checks, and rollback commands.
+Run the verification gate above before shipping; `/api/health` reports service status once the app is running.
 
 ## Contributing
 
