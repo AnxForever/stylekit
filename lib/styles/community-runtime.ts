@@ -514,6 +514,32 @@ export const getCommunityAttribution = cache(async function getCommunityAttribut
  * Shares the same mapping and visibility rules as the main catalog, so a
  * contributor page can never surface a style the catalog itself hides.
  */
+/**
+ * Community styles a maintainer promoted into the curated catalog.
+ *
+ * Separate from the full listing because promotion is what grants a style a
+ * place in the sitemap and an indexable detail page — the rest of /community
+ * stays out of search results until someone vouches for it.
+ */
+/**
+ * Whether one community style has been promoted into the curated catalog.
+ *
+ * Promotion is what makes a community page indexable, so the detail route asks
+ * this rather than hardcoding noindex. Shares the React-cached lookup with the
+ * page body, so it costs no extra round trip.
+ */
+export const isPromotedCommunityStyle = cache(async function isPromotedCommunityStyle(
+  slug: string
+): Promise<boolean> {
+  const submission = await getApprovedSubmissionBySlugRuntime(normalizeSlug(slug));
+  return submission?.visibility === "promoted";
+});
+
+export async function listPromotedCommunityStyles(): Promise<CommunityStyleMeta[]> {
+  const all = await listCommunityStylesMeta();
+  return all.filter((style) => style.promoted);
+}
+
 export async function listCommunityStylesByUser(
   userId: string
 ): Promise<CommunityStyleMeta[]> {

@@ -1,5 +1,6 @@
 import { MetadataRoute } from "next";
 import { getAllStylesMeta } from "@/lib/styles/meta";
+import { listPromotedCommunityStyles } from "@/lib/styles/community-runtime";
 import { getAllAnimationsMeta } from "@/lib/animations/meta";
 import { getAllTopicSlugs } from "@/lib/prompts";
 import { getAllPosts } from "@/lib/blog";
@@ -19,7 +20,7 @@ import {
 
 const BASE_URL = getBaseUrl();
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const styles = getAllStylesMeta();
   const redirectedPromptSlugs = new Set([
     "landing-page",
@@ -136,6 +137,25 @@ export default function sitemap(): MetadataRoute.Sitemap {
     )
   );
 
+  // Promoted community styles earn a place in the index. Everything else under
+  // /community stays out of it, which is what makes promotion mean something
+  // beyond a label in the review console.
+  // Written directly rather than through createLocalizedEntries: that helper
+  // asserts the path is registered for a locale set, and /community is
+  // deliberately registered as noindex so the *unpromoted* pages stay out of
+  // search. Promotion is decided per style, not per route, so the entries are
+  // emitted one at a time for the styles that earned it.
+  const promotedCommunity = await listPromotedCommunityStyles();
+  const communityPages: MetadataRoute.Sitemap = promotedCommunity.map((style) => ({
+    // Locale-prefixed like every other entry: the sitemap is asserted to hold
+    // only /en and /zh URLs, and a bare path would resolve through a redirect.
+    // English only, matching how the community catalog is written.
+    url: `${BASE_URL}/${DEFAULT_LOCALE}/community/${style.slug}`,
+    lastModified: new Date(),
+    changeFrequency: "weekly" as const,
+    priority: 0.6,
+  }));
+
   const promptPages: MetadataRoute.Sitemap = getAllTopicSlugs()
     .filter((slug) => !redirectedPromptSlugs.has(slug))
     .flatMap((slug) =>
@@ -186,6 +206,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   );
 
   return [
+    ...communityPages,
     ...staticPages,
     ...stylePages,
     ...promptPages,
