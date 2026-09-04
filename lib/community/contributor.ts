@@ -11,6 +11,18 @@
 
 import { getSupabaseAdmin } from "@/lib/supabase/server";
 
+const UUID_RE =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+
+/**
+ * Both follow columns are uuid foreign keys, so a non-uuid identity (the dev
+ * mock user, for one) has to be rejected in code rather than reaching the
+ * insert and surfacing as a 500.
+ */
+function isUuid(value: string | null | undefined): value is string {
+  return Boolean(value && UUID_RE.test(value));
+}
+
 export interface ContributorStats {
   userId: string;
   /** Approved styles that are still publicly visible. */
@@ -149,6 +161,72 @@ export async function getSeqIdForUser(userId: string): Promise<number | null> {
 
   const seqId = (data as { seq_id?: number } | null)?.seq_id;
   return typeof seqId === "number" && seqId > 0 ? seqId : null;
+}
+
+/** Follower totals for one contributor, plus whether a given reader follows. */
+export interface FollowState {
+  followers: number;
+  following: boolean;
+}
+
+export async function getFollowState(
+  contributorId: string,
+  viewerId?: string | null,
+): Promise<FollowState> {
+  const sb = getSupabaseAdmin();
+  if (!sb) return { followers: 0, following: false };
+
+  const { count } = await sb
+    .from("community_follows")
+    .select("*", { count: "exact", head: true })
+    .eq("contributor_id", contributorId);
+
+  let following = false;
+  if (viewerId && viewerId !== contributorId) {
+    const { data } = await sb
+      .from("community_follows")
+      .select("follower_id")
+      .eq("contributor_id", contributorId)
+      .eq("follower_id", viewerId)
+      .maybeSingle();
+    following = Boolean(data);
+  }
+
+  return { followers: count ?? 0, following };
+}
+
+/**
+ * Follow or unfollow a contributor.
+ *
+ * Idempotent in both directions: the primary key absorbs a duplicate follow and
+ * a delete that matches nothing is not an error, so a double-tapped button can
+ * never leave the reader wondering which state won.
+ */
+export async function setFollow(
+  followerId: string,
+  contributorId: string,
+  follow: boolean,
+): Promise<boolean> {
+  const sb = getSupabaseAdmin();
+  if (!sb || followerId === contributorId) return false;
+  if (!isUuid(followerId) || !isUuid(contributorId)) return false;
+
+  if (follow) {
+    const { error } = await sb
+      .from("community_follows")
+      .upsert(
+        { follower_id: followerId, contributor_id: contributorId },
+        { onConflict: "follower_id,contributor_id" },
+      );
+    return !error;
+  }
+
+  const { error } = await sb
+    .from("community_follows")
+    .delete()
+    .eq("follower_id", followerId)
+    .eq("contributor_id", contributorId);
+  return !error;
 }
 
 export interface ContributorProfile {
