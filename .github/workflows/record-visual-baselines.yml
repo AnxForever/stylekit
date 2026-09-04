@@ -33,7 +33,7 @@ jobs:
       - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 24
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - run: pnpm exec playwright install --with-deps chromium
@@ -44,9 +44,13 @@ jobs:
       # that the recorded images cannot be refreshed as a routine convenience.
       # This workflow is the one sanctioned path, and it only runs when a
       # person dispatches it.
+      # BASE_URL matches the E2E job in ci.yml exactly. Recording against a
+      # different origin than the one that compares would reintroduce the class
+      # of problem this whole exercise is about; on CI the config already
+      # selects `next start`, so no server override is needed here.
       - name: Record snapshots
         env:
-          PLAYWRIGHT_WEB_SERVER_COMMAND: npx --no-install next start -p 3187
+          BASE_URL: http://localhost:3000
         run: >-
           npx --no-install playwright test
           --config tests/playwright.config.ts
@@ -62,7 +66,12 @@ jobs:
       # run should fail loudly instead of committing images that will fail next
       # week for reasons nobody can reconstruct.
       - name: Replay against the new baselines
-        run: pnpm run test:preview-visual
+        env:
+          BASE_URL: http://localhost:3000
+        run: >-
+          npx --no-install playwright test
+          --config tests/playwright.config.ts
+          tests/e2e/approved-preview-visual.spec.ts
 
       - name: Verify the frozen files match the recorded images
         run: pnpm run check:visual-baseline
