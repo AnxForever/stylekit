@@ -95,6 +95,9 @@ export const COPY = {
     formMissing: "Still needed:",
     rulesCount: (n: number) =>
       n >= 3 ? `${n} rules` : `${n} of 3 minimum`,
+    aiHelpHint:
+      "Want an assistant to draft this? Copy the submission rules and paste them with your style brief.",
+    copyRules: "Copy rules for AI",
   },
   zh: {
     eyebrow: "参与贡献",
@@ -179,5 +182,7 @@ export const COPY = {
     fieldCoverSvg: "封面 SVG",
     formMissing: "还差：",
     rulesCount: (n: number) => (n >= 3 ? `${n} 条规则` : `${n} / 至少 3 条`),
+    aiHelpHint: "想让 AI 帮你写？复制投稿规则，连同你的风格构想一起交给它。",
+    copyRules: "复制 AI 投稿规则",
   },
 } as const;

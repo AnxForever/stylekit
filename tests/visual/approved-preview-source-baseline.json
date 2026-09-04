@@ -4,7 +4,7 @@
   "files": {
     "components/home/featured-carousel.tsx": "32b8cae0957e6fe5fecc99e048629180c645a51d12393a1c1b8b23b5be3ef01d",
     "components/home/home-style-card.tsx": "e0529494ea3d3269fa8270ffb2fed3e42dd0d48d801a4976381e796497028991",
-    "components/home/style-card.tsx": "063086e2224c1afa21ee0c2cb86815b13f07b11ad1715cbad6b5b087b1eaaae0",
+    "components/home/style-card.tsx": "05ee5a8709b6e782f5fab93e7db5fd36f93632a2fb6c1085246b4ada03449f92",
     "components/style-preview-switcher.tsx": "2208c8d4e0619aa83b28ed71d3ae63f57fda529aabc68b0b0eb0c774bfb8d968",
     "components/style-preview/style-cover-preview.tsx": "2be57fa7e4410d28f77b3eeb9574b7825e749f87521e00f52f3520c1d1db4d87",
     "lib/style-components.tsx": "2ee32bee110d37e2d62191cc1b036f5579f99ba4c1c10524a46b4e24fbaa53f2",
