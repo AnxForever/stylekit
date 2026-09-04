@@ -198,7 +198,7 @@ pnpm dev
 
 - 仓库结构、运行时流程、源码边界与清理指引：[`docs/PROJECT_STRUCTURE.md`](docs/PROJECT_STRUCTURE.md)
 - 新增或修改目录中的风格前请先阅读：[`docs/STYLE_AUTHORING.md`](docs/STYLE_AUTHORING.md)
-- 生产部署与发版前的本地校验闸门：[`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md)
+- 生产部署：本地构建后，用你自己的进程管理器托管 `.next` 产物（`ecosystem.config.cjs` 提供了 PM2 示例）
 
 ## API 接口
 
@@ -275,7 +275,7 @@ npx skills add AnxForever/stylekit-skill
 
 `vercel.json` 已不属于当前生效的生产部署路径，不应被当作 StyleKit 托管位置的事实来源。
 
-部署手册、健康检查、看门狗配置、管理员登录检查与回滚命令见 [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md)。
+发版前先跑上面的校验闸门；服务启动后可用 `/api/health` 查看运行状态。
 
 ## 参与贡献
 
