@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { STYLE_CATEGORIES, STYLE_TAGS, STYLE_TYPES } from "@/lib/styles/meta-types";
 
 const SLUG_RE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const HEX_RE = /^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/;
@@ -19,19 +20,13 @@ export const wizardFormSchema = z.object({
     .min(1, "Slug is required")
     .regex(SLUG_RE, "Slug must be lowercase letters, numbers, and hyphens"),
   description: z.string(),
-  category: z.enum(["modern", "retro", "minimal", "expressive"]),
-  styleType: z.enum(["visual", "layout"]),
-  tags: z.array(
-    z.enum([
-      "modern",
-      "retro",
-      "minimal",
-      "expressive",
-      "high-contrast",
-      "responsive",
-      "brand-inspired",
-    ])
-  ),
+  category: z.enum(STYLE_CATEGORIES),
+  styleType: z.enum(STYLE_TYPES),
+  // Read from the tag vocabulary directly. This list used to be restated here
+  // and drifted: it still accepted `modern`, `minimal` and `expressive` after
+  // the tag revamp retired them, so submissions passed validation and then had
+  // their tags silently dropped by the catalog.
+  tags: z.array(z.enum(STYLE_TAGS)),
 
   // Colors
   primaryColor: hexColor,
