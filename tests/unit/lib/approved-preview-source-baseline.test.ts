@@ -70,5 +70,29 @@ describe("approved preview source baseline", () => {
     expect(packageJson).not.toContain("--update-snapshots");
     expect(ciWorkflow).not.toContain("--update-snapshots");
     expect(playwrightConfig).toContain('updateSnapshots: "none"');
+
+    // Recording is allowed in exactly one place, and only when a person asks
+    // for it. Without this, the recording workflow could grow a `push:` or
+    // `schedule:` trigger and start silently refreshing the images it is
+    // supposed to be pinning -- which would leave the suite permanently green
+    // and permanently meaningless.
+    const recordWorkflow = await readFile(
+      path.join(ROOT, ".github/workflows/record-visual-baselines.yml"),
+      "utf8"
+    );
+    // Comments in that file discuss the flag, so match executable lines only --
+    // otherwise deleting the recording step still satisfies the assertion.
+    const recordWorkflowCode = recordWorkflow
+      .split("\n")
+      .filter((line) => !line.trim().startsWith("#"))
+      .join("\n");
+    expect(recordWorkflowCode).toContain("--update-snapshots");
+    const triggers = recordWorkflow
+      .split(/^on:\s*$/m)[1]
+      ?.split(/^[a-z]/m)[0] ?? "";
+    expect(triggers).toContain("workflow_dispatch");
+    expect(triggers).not.toContain("push:");
+    expect(triggers).not.toContain("schedule:");
+    expect(triggers).not.toContain("pull_request:");
   });
 });

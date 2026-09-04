@@ -1,0 +1,103 @@
+name: Record Visual Baselines
+
+# Approved-preview snapshots are compared on this runner image, so they have to
+# be recorded on it too. Recording them on a developer machine is what put the
+# suite into a permanently failing state: the images came from `next dev` on
+# one GPU and font stack, and were compared against `next start` on another.
+#
+# Run this manually from the Actions tab against the branch that needs new
+# baselines. It records, syncs the three frozen files, then immediately replays
+# the suite against what it just recorded -- a green replay is the evidence that
+# the baselines are reproducible rather than a lucky single capture.
+
+on:
+  workflow_dispatch:
+    inputs:
+      commit:
+        description: "Commit the re-recorded baselines back to the branch"
+        type: boolean
+        default: true
+
+permissions:
+  contents: write
+
+jobs:
+  record:
+    name: Record and verify
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm exec playwright install --with-deps chromium
+      - run: pnpm run build
+
+      # Spelled out rather than wrapped in a package script: a test asserts
+      # that `--update-snapshots` never appears in package.json or ci.yml, so
+      # that the recorded images cannot be refreshed as a routine convenience.
+      # This workflow is the one sanctioned path, and it only runs when a
+      # person dispatches it.
+      - name: Record snapshots
+        env:
+          PLAYWRIGHT_WEB_SERVER_COMMAND: npx --no-install next start -p 3187
+        run: >-
+          npx --no-install playwright test
+          --config tests/playwright.config.ts
+          tests/e2e/approved-preview-visual.spec.ts
+          --update-snapshots
+
+      - name: Sync the frozen baseline files
+        run: pnpm run record:visual-baseline
+
+      # The point of the exercise. If replaying the freshly recorded images on
+      # the same runner still reports differences, the contract is not merely
+      # stale -- something in the page is genuinely non-deterministic, and the
+      # run should fail loudly instead of committing images that will fail next
+      # week for reasons nobody can reconstruct.
+      - name: Replay against the new baselines
+        run: pnpm run test:preview-visual
+
+      - name: Verify the frozen files match the recorded images
+        run: pnpm run check:visual-baseline
+
+      - name: Summarise
+        if: always()
+        run: |
+          {
+            echo "### Recorded baselines"
+            echo
+            echo '```'
+            git -c core.pager=cat diff --stat || true
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload baselines
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: visual-baselines
+          path: |
+            tests/e2e/approved-preview-visual.spec.ts-snapshots/
+            tests/visual/
+            lib/styles/__tests__/approved-preview-baseline.test.ts
+          retention-days: 7
+
+      - name: Commit
+        if: inputs.commit && github.ref_name != 'main'
+        run: |
+          if git diff --quiet; then
+            echo "No baseline changes to commit."
+            exit 0
+          fi
+          git config user.name "AnxForever"
+          git config user.email "130662349+AnxForever@users.noreply.github.com"
+          git add tests/e2e/approved-preview-visual.spec.ts-snapshots tests/visual lib/styles/__tests__/approved-preview-baseline.test.ts
+          git commit -m "test(previews): re-record visual baselines on the CI runner"
+          git push origin HEAD:"${{ github.ref_name }}"
