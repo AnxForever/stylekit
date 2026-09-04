@@ -64,6 +64,35 @@ export const COPY = {
     viewSubmissions: "View my submissions",
     browseCommunity: "Browse community styles",
     submitAnother: "Submit another",
+    // Prompt-first form
+    modeForm: "Write it here",
+    modeManifest: "Paste a manifest",
+    formIntro:
+      "Describe the style and the rules an AI assistant should follow. Component code and a cover are optional — StyleKit builds a preview from your colors.",
+    fieldName: "Name",
+    fieldNameEn: "English name",
+    fieldSlug: "URL slug",
+    slugHint: "Lowercase letters, numbers and dashes.",
+    fieldDescription: "Description",
+    descriptionHint: "One or two sentences a reader can judge the style by.",
+    fieldCategory: "Category",
+    fieldStyleType: "Type",
+    fieldColors: "Core colors",
+    colorPrimary: "Primary",
+    colorSecondary: "Secondary",
+    colorBackground: "Background",
+    colorForeground: "Text",
+    fieldRules: "AI rules",
+    rulesHint:
+      "One instruction per line. These are what an assistant follows, so be concrete: name colors, sizes and shapes.",
+    rulesPlaceholder:
+      "Use a deep blue #1d4ed8 for every primary action\nKeep corners at 8px; never use hard shadows\nBody text stays #0f172a on #ffffff",
+    optionalSection: "Optional",
+    optionalHint:
+      "Everything below is optional. Supply what you have; the rest is filled in with neutral defaults.",
+    fieldButtonCode: "Button code",
+    fieldCoverSvg: "Cover SVG",
+    formMissing: "Still needed:",
   },
   zh: {
     eyebrow: "参与贡献",
@@ -118,5 +147,34 @@ export const COPY = {
     viewSubmissions: "查看我的投稿",
     browseCommunity: "浏览社区风格库",
     submitAnother: "再投一个",
+    // 提示词表单
+    modeForm: "直接填写",
+    modeManifest: "粘贴 manifest",
+    formIntro:
+      "描述这个风格，以及 AI 助手应当遵循的规则。组件代码和封面都是选填——StyleKit 会用你的配色生成预览。",
+    fieldName: "名称",
+    fieldNameEn: "英文名",
+    fieldSlug: "URL 标识",
+    slugHint: "小写字母、数字和连字符。",
+    fieldDescription: "描述",
+    descriptionHint: "一两句话，让人能据此判断这个风格。",
+    fieldCategory: "分类",
+    fieldStyleType: "类型",
+    fieldColors: "核心配色",
+    colorPrimary: "主色",
+    colorSecondary: "辅色",
+    colorBackground: "背景",
+    colorForeground: "文字",
+    fieldRules: "AI 规则",
+    rulesHint:
+      "一行一条。这些是 AI 助手真正会遵循的指令，写具体：点名颜色、尺寸和形状。",
+    rulesPlaceholder:
+      "主要操作一律使用深蓝 #1d4ed8\n圆角保持 8px，不要用硬阴影\n正文用 #0f172a 配 #ffffff 背景",
+    optionalSection: "选填",
+    optionalHint:
+      "以下全部选填。有就填，没有的会用中性默认值补齐。",
+    fieldButtonCode: "按钮代码",
+    fieldCoverSvg: "封面 SVG",
+    formMissing: "还差：",
   },
 } as const;

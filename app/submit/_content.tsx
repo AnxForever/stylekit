@@ -4,6 +4,13 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { LocalizedLink } from "@/components/i18n/localized-link";
 import type { GateReport } from "@/lib/submission/types";
 import { COPY, type SubmitLocale } from "./_copy";
+import {
+  EMPTY_STYLE_FORM,
+  StyleForm,
+  findMissingFields,
+  toManifest,
+  type StyleFormValue,
+} from "./_style-form";
 
 const DRAFT_KEY = "stylekit:submit:manifest-draft";
 
@@ -23,6 +30,10 @@ export function SubmitConsole({
   checklist,
 }: SubmitConsoleProps) {
   const t = COPY[locale];
+  // The form is the default route; the manifest paste stays available for
+  // contributors who already generated one with an assistant.
+  const [mode, setMode] = useState<"form" | "manifest">("form");
+  const [form, setForm] = useState<StyleFormValue>(EMPTY_STYLE_FORM);
   const [manifestText, setManifestText] = useState("");
   const [report, setReport] = useState<GateReport | null>(null);
   const [phase, setPhase] = useState<Phase>("idle");
@@ -57,16 +68,29 @@ export function SubmitConsole({
     }
   }, [manifestText]);
 
+  // Both modes produce the same manifest shape, so everything downstream —
+  // the dry run, the gate report, the submit call — stays mode-agnostic.
   const parseManifest = useCallback((): unknown | null => {
+    if (mode === "form") {
+      return toManifest(form);
+    }
     try {
       return JSON.parse(manifestText);
     } catch {
       setError(t.invalidJson);
       return null;
     }
-  }, [manifestText, t.invalidJson]);
+  }, [mode, form, manifestText, t.invalidJson]);
 
   const runCheck = useCallback(async () => {
+    if (mode === "form") {
+      const missing = findMissingFields(form, locale);
+      if (missing.length > 0) {
+        setReport(null);
+        setError(`${t.formMissing} ${missing.join(locale === "zh" ? "、" : ", ")}`);
+        return;
+      }
+    }
     setError(null);
     setReport(null);
     const manifest = parseManifest();
@@ -91,7 +115,7 @@ export function SubmitConsole({
       setError(t.checkFailed);
       setPhase("idle");
     }
-  }, [parseManifest, t.checkFailed]);
+  }, [mode, form, locale, t.formMissing, parseManifest, t.checkFailed]);
 
   const submit = useCallback(async () => {
     setError(null);
@@ -155,72 +179,118 @@ export function SubmitConsole({
         </p>
       </header>
 
-      <Section index="01" title={t.step1Title} description={t.step1Description}>
-        <ul className="space-y-2">
-          {checklist.map((item) => (
-            <li
-              key={item}
-              className="flex gap-3 border-b border-border/60 pb-2 text-sm text-muted-foreground"
-            >
-              <span className="font-mono text-xs text-muted-foreground/70">-</span>
-              <span>{item}</span>
-            </li>
-          ))}
-        </ul>
-        <div className="mt-6 flex items-center gap-3">
+      <div className="mt-8 flex gap-2" role="tablist" aria-label={t.title}>
+        {(["form", "manifest"] as const).map((option) => (
           <button
+            key={option}
             type="button"
-            onClick={copyPrompt}
-            className="border border-foreground px-4 py-2 font-mono text-xs uppercase tracking-wider transition-colors hover:bg-foreground hover:text-background"
+            role="tab"
+            aria-selected={mode === option}
+            onClick={() => {
+              setMode(option);
+              setReport(null);
+              setError(null);
+              setPhase("idle");
+            }}
+            className={`h-9 rounded-md border px-4 text-xs font-medium transition-colors ${
+              mode === option
+                ? "border-foreground bg-foreground text-background"
+                : "border-border text-muted-foreground hover:border-foreground hover:text-foreground"
+            }`}
           >
-            {promptCopied ? t.promptCopied : t.copyPrompt}
+            {option === "form" ? t.modeForm : t.modeManifest}
           </button>
-          <span className="text-xs text-muted-foreground">{t.promptHint}</span>
-        </div>
-      </Section>
+        ))}
+      </div>
 
-      <Section index="02" title={t.step2Title} description={t.step2Description}>
-        <textarea
-          value={manifestText}
-          onChange={(event) => setManifestText(event.target.value)}
-          onDrop={onDrop}
-          onDragOver={(event) => event.preventDefault()}
-          spellCheck={false}
-          rows={12}
-          placeholder={t.manifestPlaceholder}
-          aria-label={t.step2Title}
-          className="w-full resize-y border border-border bg-background p-4 font-mono text-xs leading-relaxed outline-none focus:border-foreground"
-        />
-        <div className="mt-4 flex flex-wrap items-center gap-3">
-          <button
-            type="button"
-            onClick={runCheck}
-            disabled={!manifestText.trim() || phase === "checking"}
-            className="border border-foreground px-4 py-2 font-mono text-xs uppercase tracking-wider transition-colors hover:bg-foreground hover:text-background disabled:cursor-not-allowed disabled:opacity-40"
-          >
-            {phase === "checking" ? t.checking : t.runCheck}
-          </button>
-          {manifestText.trim() ? (
+      {mode === "form" ? (
+        <Section index="01" title={t.modeForm} description={t.formIntro}>
+          <StyleForm locale={locale} value={form} onChange={setForm} />
+          <div className="mt-6 flex flex-wrap items-center gap-3">
             <button
               type="button"
-              onClick={() => {
-                setManifestText("");
-                setReport(null);
-                setError(null);
-                setPhase("idle");
-              }}
-              className="font-mono text-xs uppercase tracking-wider text-muted-foreground underline-offset-4 hover:underline"
+              onClick={runCheck}
+              disabled={!form.slug.trim() || phase === "checking"}
+              className="border border-foreground px-4 py-2 font-mono text-xs uppercase tracking-wider transition-colors hover:bg-foreground hover:text-background disabled:cursor-not-allowed disabled:opacity-40"
             >
-              {t.clear}
+              {phase === "checking" ? t.checking : t.runCheck}
             </button>
-          ) : null}
-        </div>
-        {error ? (
-          <p role="alert" className="mt-4 border-l-2 border-destructive pl-3 text-sm text-destructive">
-            {error}
-          </p>
-        ) : null}
-      </Section>
+          </div>
+        </Section>
+      ) : (
+        <>
+          <Section index="01" title={t.step1Title} description={t.step1Description}>
+            <ul className="space-y-2">
+              {checklist.map((item) => (
+                <li
+                  key={item}
+                  className="flex gap-3 border-b border-border/60 pb-2 text-sm text-muted-foreground"
+                >
+                  <span className="font-mono text-xs text-muted-foreground/70">-</span>
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+            <div className="mt-6 flex items-center gap-3">
+              <button
+                type="button"
+                onClick={copyPrompt}
+                className="border border-foreground px-4 py-2 font-mono text-xs uppercase tracking-wider transition-colors hover:bg-foreground hover:text-background"
+              >
+                {promptCopied ? t.promptCopied : t.copyPrompt}
+              </button>
+              <span className="text-xs text-muted-foreground">{t.promptHint}</span>
+            </div>
+          </Section>
+
+          <Section index="02" title={t.step2Title} description={t.step2Description}>
+            <textarea
+              value={manifestText}
+              onChange={(event) => setManifestText(event.target.value)}
+              onDrop={onDrop}
+              onDragOver={(event) => event.preventDefault()}
+              spellCheck={false}
+              rows={12}
+              placeholder={t.manifestPlaceholder}
+              aria-label={t.step2Title}
+              className="w-full resize-y border border-border bg-background p-4 font-mono text-xs leading-relaxed outline-none focus:border-foreground"
+            />
+            <div className="mt-4 flex flex-wrap items-center gap-3">
+              <button
+                type="button"
+                onClick={runCheck}
+                disabled={!manifestText.trim() || phase === "checking"}
+                className="border border-foreground px-4 py-2 font-mono text-xs uppercase tracking-wider transition-colors hover:bg-foreground hover:text-background disabled:cursor-not-allowed disabled:opacity-40"
+              >
+                {phase === "checking" ? t.checking : t.runCheck}
+              </button>
+              {manifestText.trim() ? (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setManifestText("");
+                    setReport(null);
+                    setError(null);
+                    setPhase("idle");
+                  }}
+                  className="font-mono text-xs uppercase tracking-wider text-muted-foreground underline-offset-4 hover:underline"
+                >
+                  {t.clear}
+                </button>
+              ) : null}
+            </div>
+          </Section>
+        </>
+      )}
+
+      {error ? (
+        <p
+          role="alert"
+          className="mt-4 border-l-2 border-destructive pl-3 text-sm text-destructive"
+        >
+          {error}
+        </p>
+      ) : null}
 
       <Section index="03" title={t.step3Title} description={t.step3Description}>
         {report ? (
