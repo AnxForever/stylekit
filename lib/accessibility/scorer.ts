@@ -252,15 +252,17 @@ function computeGrade(score: number): "A" | "B" | "C" | "D" | "F" {
 }
 
 /**
- * Score a single style by slug.
- * Returns null if the style is not found.
+ * Score raw style data without consulting the registry.
+ *
+ * Scoring only ever needed the colors and tokens, never the registry entry.
+ * Submissions are not registered yet, so they must score through this entry
+ * point; `scoreStyle` is the registry-backed wrapper around it.
  */
-export function scoreStyle(slug: string): AccessibilityScore | null {
-  const style = getStyleBySlug(slug);
-  if (!style) return null;
-
-  const tokens = getStyleTokens(slug);
-  const colorPairs = extractColorPairs(style.colors, tokens);
+export function scoreStyleData(
+  colors: { primary: string; secondary: string; accent: string[] },
+  tokens: StyleTokens | undefined
+): AccessibilityScore {
+  const colorPairs = extractColorPairs(colors, tokens);
   const contrast = scoreContrast(colorPairs);
   const readability = scoreReadability(tokens);
 
@@ -273,6 +275,17 @@ export function scoreStyle(slug: string): AccessibilityScore | null {
     readability,
     grade: computeGrade(overall),
   };
+}
+
+/**
+ * Score a single style by slug.
+ * Returns null if the style is not found.
+ */
+export function scoreStyle(slug: string): AccessibilityScore | null {
+  const style = getStyleBySlug(slug);
+  if (!style) return null;
+
+  return scoreStyleData(style.colors, getStyleTokens(slug));
 }
 
 /**
