@@ -151,6 +151,64 @@ function Field({
 const inputClass =
   "mt-2 w-full rounded-md border border-border bg-transparent px-3 py-2 text-sm focus:border-foreground focus:outline-none";
 
+/**
+ * Segmented choice instead of a native <select>.
+ *
+ * Both taxonomies here are tiny — four categories, two types — so a dropdown
+ * costs two interactions and hides the options behind the first one. Laying
+ * them out flat makes the whole vocabulary visible and selectable in a single
+ * click, and sidesteps the unstylable native control entirely.
+ */
+function Segmented({
+  label,
+  options,
+  value,
+  onSelect,
+}: {
+  label: string;
+  options: { value: string; label: string }[];
+  value: string;
+  onSelect: (next: string) => void;
+}) {
+  return (
+    <div>
+      <span className="font-mono text-xs uppercase tracking-[0.15em] text-muted-foreground">
+        {label}
+      </span>
+      <div className="mt-2 flex flex-wrap gap-2" role="radiogroup" aria-label={label}>
+        {options.map((option) => {
+          const active = value === option.value;
+          return (
+            <button
+              key={option.value}
+              type="button"
+              role="radio"
+              aria-checked={active}
+              onClick={() => onSelect(option.value)}
+              className={`h-9 rounded-md border px-3.5 text-xs font-medium transition-colors ${
+                active
+                  ? "border-foreground bg-foreground text-background"
+                  : "border-border text-muted-foreground hover:border-foreground hover:text-foreground"
+              }`}
+            >
+              {option.label}
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+/** "Nordic Calm" -> "nordic-calm". */
+function slugify(input: string): string {
+  return input
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
 export function StyleForm({
   locale,
   value,
@@ -162,8 +220,20 @@ export function StyleForm({
 }) {
   const t = COPY[locale];
   const [showOptional, setShowOptional] = useState(false);
+  // Once someone edits the slug by hand it stops tracking the name, so a
+  // deliberate URL is never overwritten by a later title tweak.
+  const [slugTouched, setSlugTouched] = useState(false);
   const set = <K extends keyof StyleFormValue>(key: K, next: StyleFormValue[K]) =>
     onChange({ ...value, [key]: next });
+
+  const setNameEn = (next: string) =>
+    onChange({
+      ...value,
+      nameEn: next,
+      ...(slugTouched ? {} : { slug: slugify(next) }),
+    });
+
+  const ruleCount = value.rules.split("\n").filter((line) => line.trim()).length;
 
   const colorFields: [keyof StyleFormValue, string][] = [
     ["primaryColor", t.colorPrimary],
@@ -181,7 +251,7 @@ export function StyleForm({
           <input
             className={inputClass}
             value={value.nameEn}
-            onChange={(event) => set("nameEn", event.target.value)}
+            onChange={(event) => setNameEn(event.target.value)}
             placeholder="Nordic Minimal"
           />
         </Field>
@@ -199,7 +269,10 @@ export function StyleForm({
         <input
           className={`${inputClass} font-mono`}
           value={value.slug}
-          onChange={(event) => set("slug", event.target.value)}
+          onChange={(event) => {
+            setSlugTouched(true);
+            set("slug", event.target.value);
+          }}
           placeholder="nordic-minimal"
         />
       </Field>
@@ -214,32 +287,24 @@ export function StyleForm({
       </Field>
 
       <div className="grid gap-5 sm:grid-cols-2">
-        <Field label={t.fieldCategory}>
-          <select
-            className={inputClass}
-            value={value.category}
-            onChange={(event) => set("category", event.target.value)}
-          >
-            {CATEGORIES.map((option) => (
-              <option key={option} value={option}>
-                {CATEGORY_LABELS[option][locale]}
-              </option>
-            ))}
-          </select>
-        </Field>
-        <Field label={t.fieldStyleType}>
-          <select
-            className={inputClass}
-            value={value.styleType}
-            onChange={(event) => set("styleType", event.target.value)}
-          >
-            {STYLE_TYPES.map((option) => (
-              <option key={option} value={option}>
-                {TYPE_LABELS[option][locale]}
-              </option>
-            ))}
-          </select>
-        </Field>
+        <Segmented
+          label={t.fieldCategory}
+          value={value.category}
+          onSelect={(next) => set("category", next)}
+          options={CATEGORIES.map((option) => ({
+            value: option,
+            label: CATEGORY_LABELS[option][locale],
+          }))}
+        />
+        <Segmented
+          label={t.fieldStyleType}
+          value={value.styleType}
+          onSelect={(next) => set("styleType", next)}
+          options={STYLE_TYPES.map((option) => ({
+            value: option,
+            label: TYPE_LABELS[option][locale],
+          }))}
+        />
       </div>
 
       <div>
@@ -269,7 +334,21 @@ export function StyleForm({
         </div>
       </div>
 
-      <Field label={t.fieldRules} hint={t.rulesHint}>
+      <div>
+        <div className="flex flex-wrap items-baseline justify-between gap-2">
+          <span className="font-mono text-xs uppercase tracking-[0.15em] text-muted-foreground">
+            {t.fieldRules}
+          </span>
+          {/* Live count because three is the threshold the gates enforce; a
+              contributor should see they are short before running the check. */}
+          <span
+            className={`font-mono text-xs ${
+              ruleCount >= 3 ? "text-muted-foreground" : "text-amber-600"
+            }`}
+          >
+            {t.rulesCount(ruleCount)}
+          </span>
+        </div>
         <textarea
           className={`${inputClass} resize-none font-mono text-xs leading-relaxed`}
           rows={6}
@@ -277,7 +356,10 @@ export function StyleForm({
           onChange={(event) => set("rules", event.target.value)}
           placeholder={t.rulesPlaceholder}
         />
-      </Field>
+        <span className="mt-1 block text-xs text-muted-foreground">
+          {t.rulesHint}
+        </span>
+      </div>
 
       <div className="border-t border-border pt-5">
         <button

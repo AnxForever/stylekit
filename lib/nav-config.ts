@@ -52,6 +52,10 @@ export interface ExternalNavItem {
 export const mainNav: NavItem[] = [
   { href: "/styles", labelKey: "nav.styles" },
   { href: "/templates", labelKey: "nav.templates" },
+  // Top level rather than tucked under Resources: the community catalog is a
+  // place people browse, and burying the only route to contributed work made it
+  // effectively invisible.
+  { href: "/community", labelKey: "nav.community" },
   {
     href: "/guides",
     labelKey: "nav.resources",

@@ -93,6 +93,8 @@ export const COPY = {
     fieldButtonCode: "Button code",
     fieldCoverSvg: "Cover SVG",
     formMissing: "Still needed:",
+    rulesCount: (n: number) =>
+      n >= 3 ? `${n} rules` : `${n} of 3 minimum`,
   },
   zh: {
     eyebrow: "参与贡献",
@@ -176,5 +178,6 @@ export const COPY = {
     fieldButtonCode: "按钮代码",
     fieldCoverSvg: "封面 SVG",
     formMissing: "还差：",
+    rulesCount: (n: number) => (n >= 3 ? `${n} 条规则` : `${n} / 至少 3 条`),
   },
 } as const;
