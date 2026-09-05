@@ -46,6 +46,13 @@ function shouldRefreshAuthSession(pathname: string): boolean {
   return pathname !== "/api/analytics";
 }
 
+function isPrefetchRequest(request: NextRequest): boolean {
+  return (
+    request.headers.has("next-router-prefetch") ||
+    request.headers.get("purpose") === "prefetch"
+  );
+}
+
 function isSupabaseAuthCookie(name: string): boolean {
   // @supabase/ssr appends .0, .1, ... when a session is split across cookies.
   return name.startsWith("sb-") && /-auth-token(?:\.\d+)?$/.test(name);
@@ -64,6 +71,7 @@ function buildAdminLoginRedirect(request: NextRequest) {
 
 export async function proxy(request: NextRequest) {
   const incomingPath = request.nextUrl.pathname;
+  const prefetchRequest = isPrefetchRequest(request);
   const localeInPath = getLocaleFromPathname(incomingPath);
   const strippedPath = localeInPath
     ? stripLocaleFromPathname(incomingPath)
@@ -77,6 +85,29 @@ export async function proxy(request: NextRequest) {
     const redirectUrl = request.nextUrl.clone();
     redirectUrl.pathname = strippedPath;
     return NextResponse.redirect(redirectUrl);
+  }
+
+  if (
+    !localeInPath &&
+    !shouldBypassLocale(incomingPath) &&
+    effectivePath.startsWith("/colors")
+  ) {
+    // Unprefixed /colors/* has no language-negotiated value for crawlers:
+    // Googlebot (no cookie, no Accept-Language) saw both /en/ and /zh/ as
+    // 307 targets on different crawls and keeps the unprefixed URL indexed
+    // as a locale selector, splitting impressions between /colors/x and
+    // /en/colors/x. Answer language-less requests with a deterministic
+    // permanent redirect; humans with a language preference keep the 307
+    // negotiation below.
+    const ua = request.headers.get("user-agent") || "";
+    const hasLanguagePreference =
+      isLocale(localeCookieValue) ||
+      Boolean(request.headers.get("accept-language"));
+    if (!isSocialCrawler(ua) && !hasLanguagePreference) {
+      const permanentUrl = request.nextUrl.clone();
+      permanentUrl.pathname = addLocaleToPathname(incomingPath, DEFAULT_LOCALE);
+      return NextResponse.redirect(permanentUrl, 308);
+    }
   }
 
   if (!localeInPath && !shouldBypassLocale(incomingPath)) {
@@ -181,7 +212,7 @@ export async function proxy(request: NextRequest) {
 
   if (isAdminRequest && hasAdminPasswordSession) {
     const response = buildResponse();
-    if (localeInPath) {
+    if (localeInPath && !prefetchRequest) {
       response.cookies.set(LOCALE_COOKIE_NAME, localeInPath, {
         path: "/",
         sameSite: "lax",
@@ -196,7 +227,7 @@ export async function proxy(request: NextRequest) {
     process.env.ADMIN_DEV_BYPASS === "true";
   if (isAdminRequest && hasAdminDevBypass) {
     const response = buildResponse();
-    if (localeInPath) {
+    if (localeInPath && !prefetchRequest) {
       response.cookies.set(LOCALE_COOKIE_NAME, localeInPath, {
         path: "/",
         sameSite: "lax",
@@ -219,7 +250,7 @@ export async function proxy(request: NextRequest) {
     }
 
     const response = buildResponse();
-    if (localeInPath) {
+    if (localeInPath && !prefetchRequest) {
       response.cookies.set(LOCALE_COOKIE_NAME, localeInPath, {
         path: "/",
         sameSite: "lax",
@@ -231,7 +262,7 @@ export async function proxy(request: NextRequest) {
 
   if (!isAdminRequest && !shouldRefreshAuthSession(effectivePath)) {
     const response = buildResponse();
-    if (localeInPath) {
+    if (localeInPath && !prefetchRequest) {
       response.cookies.set(LOCALE_COOKIE_NAME, localeInPath, {
         path: "/",
         sameSite: "lax",
@@ -289,7 +320,7 @@ export async function proxy(request: NextRequest) {
     return buildAdminLoginRedirect(request);
   }
 
-  if (localeInPath) {
+  if (localeInPath && !prefetchRequest) {
     supabaseResponse.cookies.set(LOCALE_COOKIE_NAME, localeInPath, {
       path: "/",
       sameSite: "lax",

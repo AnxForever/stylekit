@@ -38,23 +38,40 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   const hex = detail.hex;
   const styleNames = detail.usedBy.slice(0, 3).map((u) => u.nameEn);
-  const styleClause =
+  // Hex SERPs are zero-click for "conversions" — Google's own color widget
+  // and colorhexa answer that before anyone clicks. What earns the click is
+  // the part they can't show: which Tailwind token it is, which curated UI
+  // styles use it, and what pairs with it. Lead with those (audit #6: ~2,900
+  // impressions/28d across hex queries at ~0% CTR while ranking pos 6-10).
+  const token = detail.tailwind.distance <= 0.05 ? detail.tailwind.token : null;
+  const tokenPrefix = token ? `${hex} (${token})` : hex;
+  const title = styleNames.length
+    ? `${tokenPrefix} — UI styles that use it + pairings`
+    : `${tokenPrefix} — pairings, tints & WCAG contrast`;
+
+  const styleLead =
     styleNames.length > 0
-      ? ` Used by ${styleNames.join(", ")} in the StyleKit library.`
+      ? `Used by ${styleNames.join(", ")}${
+          detail.usedBy.length > styleNames.length
+            ? ` and ${detail.usedBy.length - styleNames.length} more curated styles`
+            : ""
+        }.`
       : "";
+  const description = token
+    ? `${hex} is Tailwind's ${token}. ${styleLead} See colors that pair with it, tints/shades, and WCAG-safe text colors.`.replace("  ", " ").trim()
+    : `${hex}: ${styleLead} RGB/HSL/OKLCH values, tints/shades, palette pairings, and WCAG contrast readings.`.replace("  ", " ").trim();
 
   return canonicalizeEnglishMetadata(
     {
-      title: `${hex} Hex Color — RGB, HSL, OKLCH, Contrast & Tailwind`,
-      description: `${hex} is ${detail.rgbCss} / ${detail.hslCss}. WCAG contrast on white is ${detail.contrast[0].ratio}:1, nearest Tailwind token is ${detail.tailwind.token}.${styleClause}`,
+      title,
+      description,
       keywords: [
         `${hex} color`,
-        `${hex} rgb`,
-        `${hex} hsl`,
         `${hex} tailwind`,
+        `${hex} pairings`,
+        `${hex} palette`,
         `${hex} contrast`,
-        "hex color info",
-        "color palette",
+        "hex color ui",
       ],
     },
     `/colors/${hexToSlug(hex)}`
