@@ -6,7 +6,10 @@ import { Breadcrumb } from "@/components/ui/breadcrumb";
 import { DisableAutoScroll } from "@/components/style-preview/disable-auto-scroll";
 import { generateEnhancedAIRules } from "@/lib/styles/enhanced-rules";
 import { resolveStyleDelivery } from "@/lib/style-delivery";
-import { getCommunityAttribution } from "@/lib/styles/community-runtime";
+import {
+  getCommunityAttribution,
+  isPromotedCommunityStyle,
+} from "@/lib/styles/community-runtime";
 import { getSeqIdForUser } from "@/lib/community/contributor";
 import { LocalizedLink } from "@/components/i18n/localized-link";
 import { getRequestLocaleContext } from "@/lib/i18n/request";
@@ -36,12 +39,20 @@ export async function generateMetadata({
   }
 
   const { style } = delivery;
+  // Promotion is the moment a maintainer vouches for the work, so it is also
+  // the moment the page becomes worth indexing. Everything else in /community
+  // stays out of search results.
+  const promoted = await isPromotedCommunityStyle(slug);
+
   return {
-    title: `${style.nameEn || style.name} — Community Style`,
+    title: promoted
+      ? `${style.nameEn || style.name} — UI Style & AI Prompts`
+      : `${style.nameEn || style.name} — Community Style`,
     description: style.descriptionEn || style.description,
-    // Community styles stay out of the index until a maintainer promotes them
-    // into the curated library.
-    robots: { index: false, follow: true },
+    robots: { index: promoted, follow: true },
+    ...(promoted
+      ? { alternates: { canonical: `/community/${slug}` } }
+      : {}),
   };
 }
 

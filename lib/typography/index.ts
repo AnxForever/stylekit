@@ -768,7 +768,11 @@ export function getTypographyCategories(): {
     .filter((category) => category.count > 0);
 }
 
+// The Google Fonts CSS API, served from a mirror that stays reachable from
+// mainland China. `FONT_CDN_ORIGINS` is the pair to preconnect to: the CSS host
+// and the host the @font-face `src` URLs actually point at.
 const FONT_CDN = "https://fonts.loli.net";
+export const FONT_CDN_ORIGINS = ["https://fonts.loli.net", "https://gstatic.loli.net"] as const;
 
 export function generateGoogleFontsUrl(fonts: FontSpec[]): string {
   const families = new Map<string, Set<number>>();

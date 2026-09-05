@@ -73,6 +73,11 @@ export const COPY = {
     fieldNameEn: "English name",
     fieldSlug: "URL slug",
     slugHint: "Lowercase letters, numbers and dashes.",
+    slugChecking: "Checking availability...",
+    slugAvailable: "Available",
+    slugCurated: "Already a curated StyleKit style — pick another.",
+    slugPending: "Already claimed by a submission in review — pick another.",
+    slugInvalid: "Use lowercase letters, numbers and dashes only.",
     fieldDescription: "Description",
     descriptionHint: "One or two sentences a reader can judge the style by.",
     fieldCategory: "Category",
@@ -90,6 +95,17 @@ export const COPY = {
     optionalSection: "Optional",
     optionalHint:
       "Everything below is optional. Supply what you have; the rest is filled in with neutral defaults.",
+    fieldKeywords: "Keywords",
+    keywordsHint:
+      "Comma-separated. They become the style signals an assistant matches against.",
+    keywordsPlaceholder: "editorial, high-contrast, serif",
+    fieldDoList: "Do",
+    doListHint: "One per line. These become the Prefer section of the soft prompt.",
+    doListPlaceholder:
+      "Lead with a large serif headline\nKeep generous whitespace between sections",
+    fieldDontList: "Don't",
+    dontListHint: "One per line. These become the Avoid section and self-check bans.",
+    dontListPlaceholder: "No drop shadows\nNo rounded corners over 4px",
     fieldButtonCode: "Button code",
     fieldCoverSvg: "Cover SVG",
     formMissing: "Still needed:",
@@ -98,6 +114,27 @@ export const COPY = {
     aiHelpHint:
       "Want an assistant to draft this? Copy the submission rules and paste them with your style brief.",
     copyRules: "Copy rules for AI",
+    // Extract from a URL
+    extractTitle: "Start from a live site",
+    extractHint:
+      "Paste a URL and we read its real colors, type and rules to prefill the form. You confirm the rest.",
+    extractPlaceholder: "https://example.com",
+    extractButton: "Extract",
+    extracting: "Extracting...",
+    extractFailed: "Couldn't extract that site. Try another URL or fill the form in by hand.",
+    extractReview: (fields: string[]) =>
+      `Prefilled from the site. Please confirm: ${fields.join(", ")}.`,
+    // Live prompt preview
+    previewTitle: "Prompt preview",
+    previewNote:
+      "The exact prompt an assistant receives on your style page. It updates as you write your rules.",
+    previewEmpty:
+      "Add an English name and at least one rule to preview the prompt.",
+    previewHard: "Hard prompt",
+    previewSoft: "Soft prompt",
+    previewCopy: "Copy",
+    previewCopied: "Copied",
+    previewChars: (n: number) => `${n.toLocaleString("en-US")} characters`,
   },
   zh: {
     eyebrow: "参与贡献",
@@ -161,6 +198,11 @@ export const COPY = {
     fieldNameEn: "英文名",
     fieldSlug: "URL 标识",
     slugHint: "小写字母、数字和连字符。",
+    slugChecking: "正在查询可用性…",
+    slugAvailable: "可用",
+    slugCurated: "已是精选风格，换一个。",
+    slugPending: "已有投稿占用，换一个。",
+    slugInvalid: "只能用小写字母、数字和连字符。",
     fieldDescription: "描述",
     descriptionHint: "一两句话，让人能据此判断这个风格。",
     fieldCategory: "分类",
@@ -178,11 +220,38 @@ export const COPY = {
     optionalSection: "选填",
     optionalHint:
       "以下全部选填。有就填，没有的会用中性默认值补齐。",
+    fieldKeywords: "关键词",
+    keywordsHint: "用逗号分隔。它们会成为助手匹配用的风格信号。",
+    keywordsPlaceholder: "杂志感, 高对比, 衬线",
+    fieldDoList: "推荐（Do）",
+    doListHint: "一行一条。会成为软提示词的 Prefer（推荐）部分。",
+    doListPlaceholder: "用大号衬线标题开场\n段落之间留足留白",
+    fieldDontList: "禁止（Don't）",
+    dontListHint: "一行一条。会成为 Avoid（避免）部分和自检禁令。",
+    dontListPlaceholder: "不要投影\n圆角不超过 4px",
     fieldButtonCode: "按钮代码",
     fieldCoverSvg: "封面 SVG",
     formMissing: "还差：",
     rulesCount: (n: number) => (n >= 3 ? `${n} 条规则` : `${n} / 至少 3 条`),
     aiHelpHint: "想让 AI 帮你写？复制投稿规则，连同你的风格构想一起交给它。",
     copyRules: "复制 AI 投稿规则",
+    // 从网址提取
+    extractTitle: "从现成网站开始",
+    extractHint:
+      "粘贴一个网址，我们读取它真实的配色、字体和规则来预填表单，其余由你确认。",
+    extractPlaceholder: "https://example.com",
+    extractButton: "提取",
+    extracting: "提取中…",
+    extractFailed: "没能提取该网站，换个网址或手动填写。",
+    extractReview: (fields: string[]) => `已从网站预填。请确认：${fields.join("、")}。`,
+    // 实时提示词预览
+    previewTitle: "提示词预览",
+    previewNote: "这就是助手在你的风格页面上收到的完整提示词，随你写规则实时更新。",
+    previewEmpty: "填入英文名和至少一条规则即可预览。",
+    previewHard: "硬提示词",
+    previewSoft: "软提示词",
+    previewCopy: "复制",
+    previewCopied: "已复制",
+    previewChars: (n: number) => `${n.toLocaleString("zh-CN")} 字`,
   },
 } as const;

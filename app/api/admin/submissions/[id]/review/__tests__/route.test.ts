@@ -120,8 +120,11 @@ describe("POST /api/admin/submissions/[id]/review", () => {
     expect(response.status).toBe(200);
     expect(mockedApproveSubmissionSupabase).toHaveBeenCalledWith("sub-2", "Looks good");
     expect(mockedRecordAdminAuditEvent).toHaveBeenCalledTimes(1);
+    // `notified` reports whether the contributor email went out. It is false
+    // here because the test fixture carries no account to mail.
     await expect(response.json()).resolves.toEqual({
       success: true,
+      notified: false,
       submission: {
         id: "sub-2",
         slug: "neo-brutalist",
