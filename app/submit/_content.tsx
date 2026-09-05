@@ -13,6 +13,7 @@ import {
 } from "./_style-form";
 
 const DRAFT_KEY = "stylekit:submit:manifest-draft";
+const FORM_DRAFT_KEY = "stylekit:submit:form-draft";
 
 interface SubmitConsoleProps {
   locale: SubmitLocale;
@@ -51,11 +52,20 @@ export function SubmitConsole({
     if (restoredRef.current) return;
     restoredRef.current = true;
     try {
-      const saved = window.localStorage.getItem(DRAFT_KEY);
+      const savedManifest = window.localStorage.getItem(DRAFT_KEY);
       // eslint-disable-next-line react-hooks/set-state-in-effect -- client-only draft recovery
-      if (saved) setManifestText(saved);
+      if (savedManifest) setManifestText(savedManifest);
+
+      const savedForm = window.localStorage.getItem(FORM_DRAFT_KEY);
+      if (savedForm) {
+        const parsed = JSON.parse(savedForm) as Partial<StyleFormValue>;
+        // Merge onto the empty shape so a draft saved before a field existed
+        // (or a hand-edited one) never leaves a controlled input undefined.
+        setForm({ ...EMPTY_STYLE_FORM, ...parsed });
+      }
     } catch {
-      // Private browsing modes throw on localStorage. Nothing to recover.
+      // Private browsing throws on localStorage, and a corrupt draft is not
+      // worth surfacing. Nothing to recover.
     }
   }, []);
 
@@ -67,6 +77,23 @@ export function SubmitConsole({
       // Ignore: the draft is a convenience, not a requirement.
     }
   }, [manifestText]);
+
+  // Persist the form draft too. The form is the default mode, and losing a
+  // half-filled form to a refresh or a sign-in round-trip is the single most
+  // discouraging thing that can happen to someone trying to contribute.
+  useEffect(() => {
+    try {
+      const touched =
+        form.name.trim() ||
+        form.nameEn.trim() ||
+        form.description.trim() ||
+        form.rules.trim();
+      if (touched) window.localStorage.setItem(FORM_DRAFT_KEY, JSON.stringify(form));
+      else window.localStorage.removeItem(FORM_DRAFT_KEY);
+    } catch {
+      // Ignore: the draft is a convenience, not a requirement.
+    }
+  }, [form]);
 
   // Both modes produce the same manifest shape, so everything downstream —
   // the dry run, the gate report, the submit call — stays mode-agnostic.
@@ -139,6 +166,12 @@ export function SubmitConsole({
       setSubmittedSlug(payload.submission?.slug ?? null);
       setPhase("submitted");
       setManifestText("");
+      setForm(EMPTY_STYLE_FORM);
+      try {
+        window.localStorage.removeItem(FORM_DRAFT_KEY);
+      } catch {
+        // best-effort cleanup
+      }
     } catch {
       setError(t.submitFailed);
       setPhase("checked");
@@ -307,7 +340,7 @@ export function SubmitConsole({
 
       <Section index="03" title={t.step3Title} description={t.step3Description}>
         {report ? (
-          <GateTable report={report} locale={locale} />
+          <GateTable report={report} locale={locale} humanizeFields={mode === "form"} />
         ) : (
           <p className="border border-dashed border-border p-6 text-center text-sm text-muted-foreground">
             {t.noReport}
@@ -387,7 +420,50 @@ function Section({
   );
 }
 
-function GateTable({ report, locale }: { report: GateReport; locale: SubmitLocale }) {
+/** Form-field labels for turning schema paths into words a form filler knows. */
+const FIELD_LABELS: Record<string, { en: string; zh: string }> = {
+  name: { en: "Name", zh: "名称" },
+  nameEn: { en: "English name", zh: "英文名" },
+  slug: { en: "URL slug", zh: "URL 标识" },
+  description: { en: "Description", zh: "描述" },
+  category: { en: "Category", zh: "分类" },
+  styleType: { en: "Type", zh: "类型" },
+  primaryColor: { en: "Primary color", zh: "主色" },
+  secondaryColor: { en: "Secondary color", zh: "辅色" },
+  background: { en: "Background", zh: "背景" },
+  foreground: { en: "Text color", zh: "文字色" },
+  accentColors: { en: "Accent colors", zh: "强调色" },
+  muted: { en: "Muted color", zh: "中性色" },
+  aiRules: { en: "AI rules", zh: "AI 规则" },
+  doList: { en: "Do list", zh: "推荐列表" },
+  dontList: { en: "Don't list", zh: "禁止列表" },
+  keywords: { en: "Keywords", zh: "关键词" },
+  tags: { en: "Tags", zh: "标签" },
+};
+
+/**
+ * Rewrites `formData.<field>` schema paths into the form's own labels.
+ *
+ * The schema reports failures by manifest path, which is precise for a pasted
+ * manifest and opaque to someone filling in a labelled form. Unknown fields are
+ * left untouched so no information is lost.
+ */
+function humanizeGateDetail(detail: string, locale: SubmitLocale): string {
+  return detail.replace(
+    /formData\.([A-Za-z]+)/g,
+    (whole, field: string) => FIELD_LABELS[field]?.[locale] ?? whole,
+  );
+}
+
+function GateTable({
+  report,
+  locale,
+  humanizeFields = false,
+}: {
+  report: GateReport;
+  locale: SubmitLocale;
+  humanizeFields?: boolean;
+}) {
   const t = COPY[locale];
 
   return (
@@ -411,7 +487,7 @@ function GateTable({ report, locale }: { report: GateReport; locale: SubmitLocal
                 <p
                   className={`mt-1 text-xs leading-relaxed ${gate.passed ? "text-muted-foreground" : "text-destructive"}`}
                 >
-                  {gate.detail}
+                  {humanizeFields ? humanizeGateDetail(gate.detail, locale) : gate.detail}
                 </p>
               </div>
             </li>

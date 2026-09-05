@@ -34,11 +34,15 @@ describe("prompt-pair builders", () => {
     expect(hard).toContain("BASE_RULES");
   });
 
-  it("uses English hard-rule fallback when aiRulesEn is missing", () => {
+  it("uses the English do/dont fallback when aiRulesEn is missing and the base rules are Chinese", () => {
+    // A curated style whose authored rules are Chinese and whose aiRulesEn was
+    // not written: the English prompt is assembled from the English do/dont
+    // lists, and the Chinese base must not leak in.
     const hard = buildHardPrompt(
       {
         ...input,
         styleName: "Editorial",
+        aiRules: "基础排版规则",
         enhancedRules: null,
         aiRulesEn: undefined,
         doListEn: ["Use generous whitespace", "Keep typography hierarchy clear"],
@@ -50,8 +54,40 @@ describe("prompt-pair builders", () => {
     expect(hard).toContain("## Required Style Rules");
     expect(hard).toContain("- Use generous whitespace");
     expect(hard).toContain("## Forbidden Rules");
-    expect(hard).not.toContain("BASE_RULES");
     expect(hard).not.toMatch(/[\u3400-\u9fff]/);
+  });
+
+  it("keeps authored English rules and folds in an English do/dont split", () => {
+    // The exact single-language shape the community submit form produces: rules
+    // and lists authored in English, with no localized *En variants. Every part
+    // must reach the English prompt. The earlier builder dropped the authored
+    // rules the moment a do/dont list appeared, because the English path only
+    // read the *En variants; input normalization backfills them.
+    const communityInput = {
+      styleName: "Neon Washi",
+      styleSlug: "neon-washi",
+      aiRules:
+        "Use a paper grain background at 6% opacity.\nReserve neon for a single call to action.",
+      enhancedRules: null,
+      aiRulesEn: undefined,
+      doList: ["Let the paper grain show through"],
+      dontList: ["No pure white surfaces"],
+      keywords: ["washi", "neon"],
+    };
+
+    const hard = buildHardPrompt(communityInput, "en");
+    // Authored rules survive alongside the do/dont-derived sections.
+    expect(hard).toContain("paper grain background at 6% opacity");
+    expect(hard).toContain("Reserve neon for a single call to action");
+    // The English don't-list reaches the bans/self-check, not only the soft prompt.
+    expect(hard).toContain("pure white surfaces");
+    expect(hard).not.toContain("- (none)");
+    expect(hard).not.toMatch(/[\u3400-\u9fff]/);
+
+    const soft = buildSoftPrompt(communityInput, "en");
+    expect(soft).toContain("Let the paper grain show through");
+    expect(soft).toContain("No pure white surfaces");
+    expect(soft).toContain("washi");
   });
 
   it("keeps English authored rules in the English prompt when only aiRules is set", () => {

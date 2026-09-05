@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { COPY, type SubmitLocale } from "./_copy";
 import { buildPromptPair, type PromptPairInput } from "@/lib/styles/prompt-pair";
 
@@ -42,6 +42,9 @@ export interface StyleFormValue {
   background: string;
   foreground: string;
   rules: string;
+  doList: string;
+  dontList: string;
+  keywords: string;
   buttonCode: string;
   coverSvg: string;
 }
@@ -58,9 +61,28 @@ export const EMPTY_STYLE_FORM: StyleFormValue = {
   background: "#ffffff",
   foreground: "#0f172a",
   rules: "",
+  doList: "",
+  dontList: "",
+  keywords: "",
   buttonCode: "",
   coverSvg: "",
 };
+
+/** One trimmed entry per non-empty line — the do/dont lists and rules share this. */
+function splitLines(value: string): string[] {
+  return value
+    .split("\n")
+    .map((line) => line.trim())
+    .filter(Boolean);
+}
+
+/** Keywords are short; accept commas (both scripts) or newlines as separators. */
+function splitKeywords(value: string): string[] {
+  return value
+    .split(/[\n,\uff0c]/)
+    .map((word) => word.trim())
+    .filter(Boolean);
+}
 
 /**
  * Fields the form itself insists on, in the reader's own vocabulary.
@@ -101,10 +123,10 @@ export function findMissingFields(
 
 /** Turn the form into the manifest shape the API and gates already understand. */
 export function toManifest(value: StyleFormValue) {
-  const rules = value.rules
-    .split("\n")
-    .map((line) => line.trim())
-    .filter(Boolean);
+  const rules = splitLines(value.rules);
+  const doList = splitLines(value.doList);
+  const dontList = splitLines(value.dontList);
+  const keywords = splitKeywords(value.keywords);
 
   return {
     formData: {
@@ -119,6 +141,11 @@ export function toManifest(value: StyleFormValue) {
       background: value.background,
       foreground: value.foreground,
       aiRules: rules,
+      // Optional in the reduced contract; omitted when empty so the manifest
+      // stays clean and the schema fills in its `[]` default.
+      ...(doList.length ? { doList } : {}),
+      ...(dontList.length ? { dontList } : {}),
+      ...(keywords.length ? { keywords } : {}),
       ...(value.buttonCode.trim() ? { buttonCode: value.buttonCode.trim() } : {}),
     },
     ...(value.coverSvg.trim()
@@ -140,11 +167,7 @@ export function formToPromptInput(
 ): PromptPairInput {
   const name = value.name.trim() || value.nameEn.trim() || value.slug.trim();
   const nameEn = value.nameEn.trim() || value.name.trim() || value.slug.trim();
-  const aiRules = value.rules
-    .split("\n")
-    .map((line) => line.trim())
-    .filter(Boolean)
-    .join("\n");
+  const aiRules = splitLines(value.rules).join("\n");
 
   return {
     styleName: locale === "zh" ? name : nameEn,
@@ -152,9 +175,11 @@ export function formToPromptInput(
     aiRules,
     aiRulesEn: undefined,
     enhancedRules: null,
-    doList: [],
-    dontList: [],
-    keywords: [],
+    // A single-language submission fills the base lists; the preview then
+    // shows real Prefer/Avoid/Style-Signal sections instead of "(none)".
+    doList: splitLines(value.doList),
+    dontList: splitLines(value.dontList),
+    keywords: splitKeywords(value.keywords),
   };
 }
 
@@ -233,6 +258,16 @@ function Segmented({
 }
 
 /** "Nordic Calm" -> "nordic-calm". */
+const SLUG_RE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+
+type SlugStatus =
+  | "idle"
+  | "checking"
+  | "available"
+  | "curated"
+  | "pending"
+  | "invalid";
+
 function slugify(input: string): string {
   return input
     .trim()
@@ -338,6 +373,10 @@ export function StyleForm({
 }) {
   const t = COPY[locale];
   const [showOptional, setShowOptional] = useState(false);
+  // Availability is a hint, not a gate: the dry run and the write both re-check
+  // the slug server-side, so this only saves a round trip of surprise.
+  const [slugStatus, setSlugStatus] = useState<SlugStatus>("idle");
+  const slugSeq = useRef(0);
   // Once someone edits the slug by hand it stops tracking the name, so a
   // deliberate URL is never overwritten by a later title tweak.
   const [slugTouched, setSlugTouched] = useState(false);
@@ -350,6 +389,34 @@ export function StyleForm({
       nameEn: next,
       ...(slugTouched ? {} : { slug: slugify(next) }),
     });
+
+  const checkSlug = async () => {
+    const slug = value.slug.trim().toLowerCase();
+    if (!slug) {
+      setSlugStatus("idle");
+      return;
+    }
+    if (!SLUG_RE.test(slug)) {
+      setSlugStatus("invalid");
+      return;
+    }
+    // A monotonic sequence guards against a slower earlier lookup landing after
+    // a faster later one and overwriting the current answer.
+    const seq = ++slugSeq.current;
+    setSlugStatus("checking");
+    try {
+      const response = await fetch(
+        `/api/submit/slug-available?slug=${encodeURIComponent(slug)}`
+      );
+      const data = await response.json();
+      if (seq !== slugSeq.current) return;
+      setSlugStatus((data.reason as SlugStatus) ?? (data.available ? "available" : "pending"));
+    } catch {
+      // A network hiccup should not nag; the dry run still catches a clash.
+      if (seq !== slugSeq.current) return;
+      setSlugStatus("idle");
+    }
+  };
 
   const ruleCount = value.rules.split("\n").filter((line) => line.trim()).length;
 
@@ -389,10 +456,35 @@ export function StyleForm({
           value={value.slug}
           onChange={(event) => {
             setSlugTouched(true);
+            setSlugStatus("idle");
             set("slug", event.target.value);
           }}
+          onBlur={checkSlug}
           placeholder="nordic-minimal"
         />
+        {slugStatus !== "idle" ? (
+          <span
+            className={`mt-1 block text-xs ${
+              slugStatus === "available"
+                ? "text-emerald-600"
+                : slugStatus === "checking"
+                  ? "text-muted-foreground"
+                  : slugStatus === "invalid"
+                    ? "text-amber-600"
+                    : "text-destructive"
+            }`}
+          >
+            {slugStatus === "checking"
+              ? t.slugChecking
+              : slugStatus === "available"
+                ? t.slugAvailable
+                : slugStatus === "curated"
+                  ? t.slugCurated
+                  : slugStatus === "pending"
+                    ? t.slugPending
+                    : t.slugInvalid}
+          </span>
+        ) : null}
       </Field>
 
       <Field label={t.fieldDescription} hint={t.descriptionHint}>
@@ -491,6 +583,32 @@ export function StyleForm({
         {showOptional ? (
           <div className="mt-4 space-y-5">
             <p className="text-xs text-muted-foreground">{t.optionalHint}</p>
+            <Field label={t.fieldKeywords} hint={t.keywordsHint}>
+              <input
+                className={inputClass}
+                value={value.keywords}
+                onChange={(event) => set("keywords", event.target.value)}
+                placeholder={t.keywordsPlaceholder}
+              />
+            </Field>
+            <Field label={t.fieldDoList} hint={t.doListHint}>
+              <textarea
+                className={`${inputClass} resize-none font-mono text-xs leading-relaxed`}
+                rows={3}
+                value={value.doList}
+                onChange={(event) => set("doList", event.target.value)}
+                placeholder={t.doListPlaceholder}
+              />
+            </Field>
+            <Field label={t.fieldDontList} hint={t.dontListHint}>
+              <textarea
+                className={`${inputClass} resize-none font-mono text-xs leading-relaxed`}
+                rows={3}
+                value={value.dontList}
+                onChange={(event) => set("dontList", event.target.value)}
+                placeholder={t.dontListPlaceholder}
+              />
+            </Field>
             <Field label={t.fieldButtonCode}>
               <textarea
                 className={`${inputClass} resize-none font-mono text-xs`}
