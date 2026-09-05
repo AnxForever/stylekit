@@ -8,11 +8,22 @@ import {
   EMPTY_STYLE_FORM,
   StyleForm,
   findMissingFields,
+  manifestToForm,
   toManifest,
   type StyleFormValue,
 } from "./_style-form";
 
 const DRAFT_KEY = "stylekit:submit:manifest-draft";
+const FORM_DRAFT_KEY = "stylekit:submit:form-draft";
+
+// A machine cannot judge these from computed styles; the extractor flags them
+// so the form can ask the contributor to confirm.
+const REVIEW_LABELS: Record<string, { en: string; zh: string }> = {
+  name: { en: "name", zh: "名称" },
+  category: { en: "category", zh: "分类" },
+  description: { en: "description", zh: "描述" },
+  colors: { en: "colors", zh: "配色" },
+};
 
 interface SubmitConsoleProps {
   locale: SubmitLocale;
@@ -41,6 +52,9 @@ export function SubmitConsole({
   const [accepted, setAccepted] = useState(false);
   const [promptCopied, setPromptCopied] = useState(false);
   const [submittedSlug, setSubmittedSlug] = useState<string | null>(null);
+  const [extractUrl, setExtractUrl] = useState("");
+  const [extracting, setExtracting] = useState(false);
+  const [reviewFields, setReviewFields] = useState<string[]>([]);
   const restoredRef = useRef(false);
 
   // Restore an unsent draft once. A manifest is expensive to regenerate, so
@@ -51,11 +65,20 @@ export function SubmitConsole({
     if (restoredRef.current) return;
     restoredRef.current = true;
     try {
-      const saved = window.localStorage.getItem(DRAFT_KEY);
+      const savedManifest = window.localStorage.getItem(DRAFT_KEY);
       // eslint-disable-next-line react-hooks/set-state-in-effect -- client-only draft recovery
-      if (saved) setManifestText(saved);
+      if (savedManifest) setManifestText(savedManifest);
+
+      const savedForm = window.localStorage.getItem(FORM_DRAFT_KEY);
+      if (savedForm) {
+        const parsed = JSON.parse(savedForm) as Partial<StyleFormValue>;
+        // Merge onto the empty shape so a draft saved before a field existed
+        // (or a hand-edited one) never leaves a controlled input undefined.
+        setForm({ ...EMPTY_STYLE_FORM, ...parsed });
+      }
     } catch {
-      // Private browsing modes throw on localStorage. Nothing to recover.
+      // Private browsing throws on localStorage, and a corrupt draft is not
+      // worth surfacing. Nothing to recover.
     }
   }, []);
 
@@ -67,6 +90,23 @@ export function SubmitConsole({
       // Ignore: the draft is a convenience, not a requirement.
     }
   }, [manifestText]);
+
+  // Persist the form draft too. The form is the default mode, and losing a
+  // half-filled form to a refresh or a sign-in round-trip is the single most
+  // discouraging thing that can happen to someone trying to contribute.
+  useEffect(() => {
+    try {
+      const touched =
+        form.name.trim() ||
+        form.nameEn.trim() ||
+        form.description.trim() ||
+        form.rules.trim();
+      if (touched) window.localStorage.setItem(FORM_DRAFT_KEY, JSON.stringify(form));
+      else window.localStorage.removeItem(FORM_DRAFT_KEY);
+    } catch {
+      // Ignore: the draft is a convenience, not a requirement.
+    }
+  }, [form]);
 
   // Both modes produce the same manifest shape, so everything downstream —
   // the dry run, the gate report, the submit call — stays mode-agnostic.
@@ -139,6 +179,12 @@ export function SubmitConsole({
       setSubmittedSlug(payload.submission?.slug ?? null);
       setPhase("submitted");
       setManifestText("");
+      setForm(EMPTY_STYLE_FORM);
+      try {
+        window.localStorage.removeItem(FORM_DRAFT_KEY);
+      } catch {
+        // best-effort cleanup
+      }
     } catch {
       setError(t.submitFailed);
       setPhase("checked");
@@ -158,6 +204,37 @@ export function SubmitConsole({
       window.setTimeout(() => setPromptCopied(false), 2000);
     });
   }, [masterPrompt]);
+
+  // Prefill the form from a live URL. The heavy lifting is a guarded service;
+  // here we just swap the returned manifest into the form and surface which
+  // fields the contributor still needs to confirm.
+  const extractFromUrl = useCallback(async () => {
+    const url = extractUrl.trim();
+    if (!url || extracting) return;
+    setExtracting(true);
+    setError(null);
+    setReviewFields([]);
+    try {
+      const response = await fetch("/api/submit/extract", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ url }),
+      });
+      const payload = await response.json();
+      if (!response.ok || !payload.success) {
+        setError(payload.error ?? t.extractFailed);
+        return;
+      }
+      setForm(manifestToForm((payload.manifest?.formData ?? {}) as Record<string, unknown>));
+      setReviewFields(Array.isArray(payload.needsReview) ? payload.needsReview : []);
+      setReport(null);
+      setPhase("idle");
+    } catch {
+      setError(t.extractFailed);
+    } finally {
+      setExtracting(false);
+    }
+  }, [extractUrl, extracting, t.extractFailed]);
 
   if (phase === "submitted") {
     return (
@@ -205,6 +282,44 @@ export function SubmitConsole({
 
       {mode === "form" ? (
         <Section index="01" title={t.modeForm} description={t.formIntro}>
+          <div className="mb-6 rounded-md border border-border p-4">
+            <p className="font-mono text-xs uppercase tracking-[0.15em] text-muted-foreground">
+              {t.extractTitle}
+            </p>
+            <p className="mt-1 text-xs text-muted-foreground">{t.extractHint}</p>
+            <div className="mt-3 flex flex-wrap gap-2">
+              <input
+                type="url"
+                inputMode="url"
+                value={extractUrl}
+                onChange={(event) => setExtractUrl(event.target.value)}
+                onKeyDown={(event) => {
+                  if (event.key === "Enter") {
+                    event.preventDefault();
+                    void extractFromUrl();
+                  }
+                }}
+                placeholder={t.extractPlaceholder}
+                aria-label={t.extractTitle}
+                className="min-w-0 flex-1 rounded-md border border-border bg-transparent px-3 py-2 font-mono text-xs focus:border-foreground focus:outline-none"
+              />
+              <button
+                type="button"
+                onClick={extractFromUrl}
+                disabled={!extractUrl.trim() || extracting}
+                className="shrink-0 border border-foreground px-4 py-2 font-mono text-xs uppercase tracking-wider transition-colors hover:bg-foreground hover:text-background disabled:cursor-not-allowed disabled:opacity-40"
+              >
+                {extracting ? t.extracting : t.extractButton}
+              </button>
+            </div>
+            {reviewFields.length ? (
+              <p className="mt-2 text-xs text-amber-600">
+                {t.extractReview(
+                  reviewFields.map((f) => REVIEW_LABELS[f]?.[locale] ?? f),
+                )}
+              </p>
+            ) : null}
+          </div>
           {/* The same rules the gates enforce, in a form an assistant can act
               on. Offered here too because filling the form by hand and having
               an assistant draft it are the same job with different tools. */}
@@ -307,7 +422,7 @@ export function SubmitConsole({
 
       <Section index="03" title={t.step3Title} description={t.step3Description}>
         {report ? (
-          <GateTable report={report} locale={locale} />
+          <GateTable report={report} locale={locale} humanizeFields={mode === "form"} />
         ) : (
           <p className="border border-dashed border-border p-6 text-center text-sm text-muted-foreground">
             {t.noReport}
@@ -387,7 +502,50 @@ function Section({
   );
 }
 
-function GateTable({ report, locale }: { report: GateReport; locale: SubmitLocale }) {
+/** Form-field labels for turning schema paths into words a form filler knows. */
+const FIELD_LABELS: Record<string, { en: string; zh: string }> = {
+  name: { en: "Name", zh: "名称" },
+  nameEn: { en: "English name", zh: "英文名" },
+  slug: { en: "URL slug", zh: "URL 标识" },
+  description: { en: "Description", zh: "描述" },
+  category: { en: "Category", zh: "分类" },
+  styleType: { en: "Type", zh: "类型" },
+  primaryColor: { en: "Primary color", zh: "主色" },
+  secondaryColor: { en: "Secondary color", zh: "辅色" },
+  background: { en: "Background", zh: "背景" },
+  foreground: { en: "Text color", zh: "文字色" },
+  accentColors: { en: "Accent colors", zh: "强调色" },
+  muted: { en: "Muted color", zh: "中性色" },
+  aiRules: { en: "AI rules", zh: "AI 规则" },
+  doList: { en: "Do list", zh: "推荐列表" },
+  dontList: { en: "Don't list", zh: "禁止列表" },
+  keywords: { en: "Keywords", zh: "关键词" },
+  tags: { en: "Tags", zh: "标签" },
+};
+
+/**
+ * Rewrites `formData.<field>` schema paths into the form's own labels.
+ *
+ * The schema reports failures by manifest path, which is precise for a pasted
+ * manifest and opaque to someone filling in a labelled form. Unknown fields are
+ * left untouched so no information is lost.
+ */
+function humanizeGateDetail(detail: string, locale: SubmitLocale): string {
+  return detail.replace(
+    /formData\.([A-Za-z]+)/g,
+    (whole, field: string) => FIELD_LABELS[field]?.[locale] ?? whole,
+  );
+}
+
+function GateTable({
+  report,
+  locale,
+  humanizeFields = false,
+}: {
+  report: GateReport;
+  locale: SubmitLocale;
+  humanizeFields?: boolean;
+}) {
   const t = COPY[locale];
 
   return (
@@ -411,7 +569,7 @@ function GateTable({ report, locale }: { report: GateReport; locale: SubmitLocal
                 <p
                   className={`mt-1 text-xs leading-relaxed ${gate.passed ? "text-muted-foreground" : "text-destructive"}`}
                 >
-                  {gate.detail}
+                  {humanizeFields ? humanizeGateDetail(gate.detail, locale) : gate.detail}
                 </p>
               </div>
             </li>

@@ -155,8 +155,9 @@ describe("SEO truth invariants", () => {
     });
   });
 
-  it("keeps the sitemap canonical, indexable, and free of placeholders", () => {
-    const entries = sitemap();
+  it("keeps the sitemap canonical, indexable, and free of placeholders", async () => {
+    // Async since promoted community styles are read from the database.
+    const entries = await sitemap();
     const urls = entries.map((entry) => entry.url);
 
     expect(new Set(urls).size).toBe(urls.length);

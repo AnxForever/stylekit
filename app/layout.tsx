@@ -36,6 +36,10 @@ const publicDisplay = Playfair_Display({
   weight: ["500", "600", "700"],
   style: ["normal", "italic"],
   display: "swap",
+  // Preloading a family with three weights and two styles pushes every Latin
+  // font slice into the critical request queue. The CSS still loads the exact
+  // face used by the page, while the body font remains the only global preload.
+  preload: false,
   variable: "--font-public-display",
 });
 
@@ -43,6 +47,8 @@ const publicMono = Fragment_Mono({
   subsets: ["latin", "latin-ext"],
   weight: "400",
   display: "swap",
+  // Mono is used for labels and code, not the primary above-the-fold copy.
+  preload: false,
   variable: "--font-public-mono",
 });
 
@@ -76,6 +82,26 @@ export const viewport: Viewport = {
 };
 
 const BASE_URL = getSiteBaseUrl();
+const SITE_ORIGIN = new URL(BASE_URL).origin;
+
+function getExternalAssetOrigin(value: string | undefined): string | null {
+  const normalized = value?.trim();
+  if (!normalized || normalized.startsWith("/")) return null;
+
+  try {
+    const origin = new URL(normalized).origin;
+    return origin === SITE_ORIGIN ? null : origin;
+  } catch {
+    // next.config.ts owns strict validation and fails the build for an invalid
+    // prefix. Keeping layout rendering defensive makes this helper harmless in
+    // isolated tests that do not execute the Next config first.
+    return null;
+  }
+}
+
+const EXTERNAL_ASSET_ORIGIN = getExternalAssetOrigin(
+  process.env.NEXT_PUBLIC_ASSET_PREFIX,
+);
 const LOCALE_BOOTSTRAP_SCRIPT = `
 (() => {
   try {
@@ -137,6 +163,18 @@ export default async function RootLayout({
   return (
     <html lang={htmlLang} suppressHydrationWarning>
       <head>
+        {EXTERNAL_ASSET_ORIGIN ? (
+          <>
+            {/* Start the CDN DNS/TLS handshake before the browser reaches the
+                stylesheet and module references emitted later in the head. */}
+            <link rel="dns-prefetch" href={EXTERNAL_ASSET_ORIGIN} />
+            <link
+              rel="preconnect"
+              href={EXTERNAL_ASSET_ORIGIN}
+              crossOrigin="anonymous"
+            />
+          </>
+        ) : null}
         <link rel="icon" href="/favicon.ico" sizes="32x32" />
         <link rel="icon" href="/favicon-16x16.png" sizes="16x16" type="image/png" />
         <link rel="icon" href="/favicon-32x32.png" sizes="32x32" type="image/png" />

@@ -1,0 +1,19 @@
+{
+  "name": "stylekit-style-extract-service",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Headless extraction service: URL -> StyleKit submission manifest.",
+  "scripts": {
+    "build": "node build.mjs",
+    "start": "node dist/server.mjs",
+    "dev": "tsx --tsconfig ../../tsconfig.json src/server.ts"
+  },
+  "dependencies": {
+    "playwright-core": "^1.58.2"
+  },
+  "devDependencies": {
+    "esbuild": "^0.25.0",
+    "tsx": "^4.20.0"
+  }
+}

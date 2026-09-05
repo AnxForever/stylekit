@@ -11,7 +11,17 @@ export default defineConfig({
     environment: "node",
     globals: true,
     include: ["**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}"],
-    exclude: ["**/node_modules/**", ".next", "tests/e2e", ".worktrees/**", ".tmp/**"],
+    // packages/** are workspace packages with their own lifecycle; their tests
+    // import built core dist (gitignored, not built in CI's test job), so the
+    // root suite must not reach into them.
+    exclude: [
+      "**/node_modules/**",
+      ".next",
+      "tests/e2e",
+      ".worktrees/**",
+      ".tmp/**",
+      "packages/**",
+    ],
     testTimeout: 30000,
     hookTimeout: 30000,
     pool: "threads",

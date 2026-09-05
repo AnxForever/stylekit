@@ -268,11 +268,47 @@ const softPromptText = {
   },
 } as const;
 
+/**
+ * A community submission is single-language: it fills the base fields
+ * (`aiRules`, `doList`, `dontList`, `keywords`) and leaves the `*En` variants
+ * empty. The English builders read only the `*En` variants, so without this an
+ * English-authored community style produces an English prompt missing its own
+ * rules, bans and signals. Backfill each English variant from its base field
+ * when that base is already English. Curated styles carry both variants, so the
+ * `already present` guard means this never changes their output, and a
+ * Chinese base never leaks into an English slot.
+ */
+function withEnglishFallbacks(input: PromptPairInput): PromptPairInput {
+  const englishList = (
+    en: string[] | undefined,
+    base: string[],
+  ): string[] | undefined =>
+    en && en.length > 0
+      ? en
+      : base.length > 0 && base.every((item) => !hasCjk(item))
+        ? base
+        : en;
+
+  return {
+    ...input,
+    aiRulesEn:
+      input.aiRulesEn && input.aiRulesEn.trim()
+        ? input.aiRulesEn
+        : input.aiRules && !hasCjk(input.aiRules)
+          ? input.aiRules
+          : input.aiRulesEn,
+    doListEn: englishList(input.doListEn, input.doList),
+    dontListEn: englishList(input.dontListEn, input.dontList),
+    keywordsEn: englishList(input.keywordsEn, input.keywords),
+  };
+}
+
 export function buildHardPrompt(
   input: PromptPairInput,
   locale: Locale = "zh",
   context?: PromptContext
 ): string {
+  input = withEnglishFallbacks(input);
   const identity = buildStyleCopyIdentity({
     styleName: input.styleName,
     styleSlug: input.styleSlug,
@@ -317,6 +353,7 @@ export function buildSoftPrompt(
   locale: Locale = "zh",
   context?: PromptContext
 ): string {
+  input = withEnglishFallbacks(input);
   const identity = buildStyleCopyIdentity({
     styleName: input.styleName,
     styleSlug: input.styleSlug,

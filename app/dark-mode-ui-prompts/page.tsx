@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
+import { PromptClusterLinks } from "@/components/seo/prompt-cluster-links";
 import { getTopicBySlug } from "@/lib/prompts";
 import { getAllStylesMeta } from "@/lib/styles/meta";
 import { CURATED_STYLE_COUNT } from "@/lib/product/catalog-facts";
@@ -78,6 +79,7 @@ export default async function DarkModeUiPromptsPage() {
           dontList={locale === "zh" ? darkMode.dontList : (darkMode.dontListEn ?? darkMode.dontList)}
           templates={darkModeTemplates}
         />
+        <PromptClusterLinks current="/dark-mode-ui-prompts" locale={locale} />
       </main>
       <Footer />
     </div>

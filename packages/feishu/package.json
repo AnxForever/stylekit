@@ -1,0 +1,42 @@
+{
+  "name": "stylekit-feishu",
+  "version": "0.1.0",
+  "description": "Feishu/Lark bot that turns a plain-language brief into a StyleKit design style, a ready-to-paste AI prompt, and a compliance check on the code that comes back",
+  "type": "module",
+  "license": "MIT",
+  "author": "AnxForever",
+  "engines": {
+    "node": ">=18"
+  },
+  "bin": {
+    "stylekit-feishu": "./dist/cli.js"
+  },
+  "scripts": {
+    "register": "tsx src/register.ts",
+    "dev": "tsx src/cli.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@larksuite/channel": "^0.5.0",
+    "stylekit-core": "workspace:*",
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "tsx": "^4.19.0",
+    "typescript": "^5.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AnxForever/stylekit.git",
+    "directory": "packages/feishu"
+  },
+  "keywords": [
+    "feishu",
+    "lark",
+    "bot",
+    "design-system",
+    "ai",
+    "prompt",
+    "stylekit"
+  ]
+}

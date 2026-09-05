@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { COPY, type SubmitLocale } from "./_copy";
+import { buildPromptPair, type PromptPairInput } from "@/lib/styles/prompt-pair";
 
 /**
  * Prompt-first submission form.
@@ -41,6 +42,9 @@ export interface StyleFormValue {
   background: string;
   foreground: string;
   rules: string;
+  doList: string;
+  dontList: string;
+  keywords: string;
   buttonCode: string;
   coverSvg: string;
 }
@@ -57,9 +61,60 @@ export const EMPTY_STYLE_FORM: StyleFormValue = {
   background: "#ffffff",
   foreground: "#0f172a",
   rules: "",
+  doList: "",
+  dontList: "",
+  keywords: "",
   buttonCode: "",
   coverSvg: "",
 };
+
+/**
+ * Reverse of {@link toManifest}: fill the form from an extracted manifest's
+ * formData so the "extract from a URL" flow can prefill every field the machine
+ * derived. Arrays collapse back to the textarea/CSV shapes the form edits;
+ * anything absent falls back to the empty defaults.
+ */
+export function manifestToForm(formData: Record<string, unknown>): StyleFormValue {
+  const str = (v: unknown, fallback = ""): string =>
+    typeof v === "string" && v.trim() ? v : fallback;
+  const list = (v: unknown): string[] =>
+    Array.isArray(v) ? v.filter((x): x is string => typeof x === "string") : [];
+
+  return {
+    name: str(formData.name),
+    nameEn: str(formData.nameEn),
+    slug: str(formData.slug),
+    description: str(formData.description),
+    category: str(formData.category, EMPTY_STYLE_FORM.category),
+    styleType: str(formData.styleType, EMPTY_STYLE_FORM.styleType),
+    primaryColor: str(formData.primaryColor, EMPTY_STYLE_FORM.primaryColor),
+    secondaryColor: str(formData.secondaryColor, EMPTY_STYLE_FORM.secondaryColor),
+    background: str(formData.background, EMPTY_STYLE_FORM.background),
+    foreground: str(formData.foreground, EMPTY_STYLE_FORM.foreground),
+    rules: list(formData.aiRules).join("\n"),
+    doList: list(formData.doList).join("\n"),
+    dontList: list(formData.dontList).join("\n"),
+    keywords: list(formData.keywords).join(", "),
+    buttonCode: "",
+    coverSvg: "",
+  };
+}
+
+/** One trimmed entry per non-empty line — the do/dont lists and rules share this. */
+function splitLines(value: string): string[] {
+  return value
+    .split("\n")
+    .map((line) => line.trim())
+    .filter(Boolean);
+}
+
+/** Keywords are short; accept commas (both scripts) or newlines as separators. */
+function splitKeywords(value: string): string[] {
+  return value
+    .split(/[\n,\uff0c]/)
+    .map((word) => word.trim())
+    .filter(Boolean);
+}
 
 /**
  * Fields the form itself insists on, in the reader's own vocabulary.
@@ -100,10 +155,10 @@ export function findMissingFields(
 
 /** Turn the form into the manifest shape the API and gates already understand. */
 export function toManifest(value: StyleFormValue) {
-  const rules = value.rules
-    .split("\n")
-    .map((line) => line.trim())
-    .filter(Boolean);
+  const rules = splitLines(value.rules);
+  const doList = splitLines(value.doList);
+  const dontList = splitLines(value.dontList);
+  const keywords = splitKeywords(value.keywords);
 
   return {
     formData: {
@@ -118,11 +173,45 @@ export function toManifest(value: StyleFormValue) {
       background: value.background,
       foreground: value.foreground,
       aiRules: rules,
+      // Optional in the reduced contract; omitted when empty so the manifest
+      // stays clean and the schema fills in its `[]` default.
+      ...(doList.length ? { doList } : {}),
+      ...(dontList.length ? { dontList } : {}),
+      ...(keywords.length ? { keywords } : {}),
       ...(value.buttonCode.trim() ? { buttonCode: value.buttonCode.trim() } : {}),
     },
     ...(value.coverSvg.trim()
       ? { assets: { coverSvg: value.coverSvg.trim() } }
       : {}),
+  };
+}
+
+/**
+ * Build the prompt-builder input from the form, mirroring the community path in
+ * `mapSubmissionToStyle`: the authored rules become `aiRules`, and everything a
+ * curated style would carry (localized rules, a token spec, do/dont lists) is
+ * absent — a form submission has none of it. Keeping this in lockstep with the
+ * runtime mapper is what makes the preview equal to what ships on the live page.
+ */
+export function formToPromptInput(
+  value: StyleFormValue,
+  locale: SubmitLocale
+): PromptPairInput {
+  const name = value.name.trim() || value.nameEn.trim() || value.slug.trim();
+  const nameEn = value.nameEn.trim() || value.name.trim() || value.slug.trim();
+  const aiRules = splitLines(value.rules).join("\n");
+
+  return {
+    styleName: locale === "zh" ? name : nameEn,
+    styleSlug: value.slug.trim().toLowerCase(),
+    aiRules,
+    aiRulesEn: undefined,
+    enhancedRules: null,
+    // A single-language submission fills the base lists; the preview then
+    // shows real Prefer/Avoid/Style-Signal sections instead of "(none)".
+    doList: splitLines(value.doList),
+    dontList: splitLines(value.dontList),
+    keywords: splitKeywords(value.keywords),
   };
 }
 
@@ -201,12 +290,108 @@ function Segmented({
 }
 
 /** "Nordic Calm" -> "nordic-calm". */
+const SLUG_RE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+
+type SlugStatus =
+  | "idle"
+  | "checking"
+  | "available"
+  | "curated"
+  | "pending"
+  | "invalid";
+
 function slugify(input: string): string {
   return input
     .trim()
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "");
+}
+
+function PromptPreview({
+  locale,
+  value,
+}: {
+  locale: SubmitLocale;
+  value: StyleFormValue;
+}) {
+  const t = COPY[locale];
+  const [kind, setKind] = useState<"hard" | "soft">("hard");
+  const [copied, setCopied] = useState(false);
+
+  // A name and at least one rule are the two inputs the prompt is built from;
+  // below that there is nothing meaningful to render.
+  const hasEnough =
+    (value.nameEn.trim() || value.name.trim()).length > 0 &&
+    value.rules.split("\n").some((line) => line.trim());
+
+  const prompt = useMemo(() => {
+    if (!hasEnough) return "";
+    const pair = buildPromptPair(formToPromptInput(value, locale), locale);
+    return kind === "hard" ? pair.hardPrompt : pair.softPrompt;
+  }, [hasEnough, value, locale, kind]);
+
+  const copy = async () => {
+    try {
+      await navigator.clipboard.writeText(prompt);
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 1500);
+    } catch {
+      // Clipboard access can be blocked; the text stays selectable in the panel.
+    }
+  };
+
+  return (
+    <div className="rounded-lg border border-border bg-muted/30 p-4">
+      <div className="flex flex-wrap items-baseline justify-between gap-2">
+        <span className="font-mono text-xs uppercase tracking-[0.15em] text-muted-foreground">
+          {t.previewTitle}
+        </span>
+        {hasEnough ? (
+          <span className="font-mono text-xs text-muted-foreground">
+            {t.previewChars(prompt.length)}
+          </span>
+        ) : null}
+      </div>
+      <p className="mt-1 text-xs text-muted-foreground">{t.previewNote}</p>
+
+      {hasEnough ? (
+        <>
+          <div className="mt-3 flex items-center gap-2">
+            {(["hard", "soft"] as const).map((option) => (
+              <button
+                key={option}
+                type="button"
+                onClick={() => setKind(option)}
+                aria-pressed={kind === option}
+                className={`h-7 rounded-md border px-3 text-xs transition-colors ${
+                  kind === option
+                    ? "border-foreground bg-foreground text-background"
+                    : "border-border text-muted-foreground hover:border-foreground hover:text-foreground"
+                }`}
+              >
+                {option === "hard" ? t.previewHard : t.previewSoft}
+              </button>
+            ))}
+            <button
+              type="button"
+              onClick={copy}
+              className="ml-auto h-7 rounded-md border border-border px-3 text-xs text-muted-foreground transition-colors hover:border-foreground hover:text-foreground"
+            >
+              {copied ? t.previewCopied : t.previewCopy}
+            </button>
+          </div>
+          <pre className="mt-3 max-h-80 overflow-auto whitespace-pre-wrap rounded-md border border-border bg-background p-3 font-mono text-xs leading-relaxed text-foreground">
+            {prompt}
+          </pre>
+        </>
+      ) : (
+        <p className="mt-3 rounded-md border border-dashed border-border p-4 text-center text-xs text-muted-foreground">
+          {t.previewEmpty}
+        </p>
+      )}
+    </div>
+  );
 }
 
 export function StyleForm({
@@ -220,6 +405,10 @@ export function StyleForm({
 }) {
   const t = COPY[locale];
   const [showOptional, setShowOptional] = useState(false);
+  // Availability is a hint, not a gate: the dry run and the write both re-check
+  // the slug server-side, so this only saves a round trip of surprise.
+  const [slugStatus, setSlugStatus] = useState<SlugStatus>("idle");
+  const slugSeq = useRef(0);
   // Once someone edits the slug by hand it stops tracking the name, so a
   // deliberate URL is never overwritten by a later title tweak.
   const [slugTouched, setSlugTouched] = useState(false);
@@ -232,6 +421,34 @@ export function StyleForm({
       nameEn: next,
       ...(slugTouched ? {} : { slug: slugify(next) }),
     });
+
+  const checkSlug = async () => {
+    const slug = value.slug.trim().toLowerCase();
+    if (!slug) {
+      setSlugStatus("idle");
+      return;
+    }
+    if (!SLUG_RE.test(slug)) {
+      setSlugStatus("invalid");
+      return;
+    }
+    // A monotonic sequence guards against a slower earlier lookup landing after
+    // a faster later one and overwriting the current answer.
+    const seq = ++slugSeq.current;
+    setSlugStatus("checking");
+    try {
+      const response = await fetch(
+        `/api/submit/slug-available?slug=${encodeURIComponent(slug)}`
+      );
+      const data = await response.json();
+      if (seq !== slugSeq.current) return;
+      setSlugStatus((data.reason as SlugStatus) ?? (data.available ? "available" : "pending"));
+    } catch {
+      // A network hiccup should not nag; the dry run still catches a clash.
+      if (seq !== slugSeq.current) return;
+      setSlugStatus("idle");
+    }
+  };
 
   const ruleCount = value.rules.split("\n").filter((line) => line.trim()).length;
 
@@ -271,10 +488,35 @@ export function StyleForm({
           value={value.slug}
           onChange={(event) => {
             setSlugTouched(true);
+            setSlugStatus("idle");
             set("slug", event.target.value);
           }}
+          onBlur={checkSlug}
           placeholder="nordic-minimal"
         />
+        {slugStatus !== "idle" ? (
+          <span
+            className={`mt-1 block text-xs ${
+              slugStatus === "available"
+                ? "text-emerald-600"
+                : slugStatus === "checking"
+                  ? "text-muted-foreground"
+                  : slugStatus === "invalid"
+                    ? "text-amber-600"
+                    : "text-destructive"
+            }`}
+          >
+            {slugStatus === "checking"
+              ? t.slugChecking
+              : slugStatus === "available"
+                ? t.slugAvailable
+                : slugStatus === "curated"
+                  ? t.slugCurated
+                  : slugStatus === "pending"
+                    ? t.slugPending
+                    : t.slugInvalid}
+          </span>
+        ) : null}
       </Field>
 
       <Field label={t.fieldDescription} hint={t.descriptionHint}>
@@ -373,6 +615,32 @@ export function StyleForm({
         {showOptional ? (
           <div className="mt-4 space-y-5">
             <p className="text-xs text-muted-foreground">{t.optionalHint}</p>
+            <Field label={t.fieldKeywords} hint={t.keywordsHint}>
+              <input
+                className={inputClass}
+                value={value.keywords}
+                onChange={(event) => set("keywords", event.target.value)}
+                placeholder={t.keywordsPlaceholder}
+              />
+            </Field>
+            <Field label={t.fieldDoList} hint={t.doListHint}>
+              <textarea
+                className={`${inputClass} resize-none font-mono text-xs leading-relaxed`}
+                rows={3}
+                value={value.doList}
+                onChange={(event) => set("doList", event.target.value)}
+                placeholder={t.doListPlaceholder}
+              />
+            </Field>
+            <Field label={t.fieldDontList} hint={t.dontListHint}>
+              <textarea
+                className={`${inputClass} resize-none font-mono text-xs leading-relaxed`}
+                rows={3}
+                value={value.dontList}
+                onChange={(event) => set("dontList", event.target.value)}
+                placeholder={t.dontListPlaceholder}
+              />
+            </Field>
             <Field label={t.fieldButtonCode}>
               <textarea
                 className={`${inputClass} resize-none font-mono text-xs`}
@@ -394,6 +662,8 @@ export function StyleForm({
           </div>
         ) : null}
       </div>
+
+      <PromptPreview locale={locale} value={value} />
     </div>
   );
 }

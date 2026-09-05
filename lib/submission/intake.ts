@@ -23,13 +23,24 @@ export const MAX_MANIFEST_BYTES = 512 * 1024;
  * is still caught by the unique constraints at insert time.
  */
 export async function isSlugTaken(manifest: unknown): Promise<boolean> {
-  const slug = readManifestSlug(manifest);
-  if (!slug) return false;
+  return isSlugTakenBySlug(readManifestSlug(manifest));
+}
+
+/**
+ * Whether a bare slug is already claimed by a submission in flight.
+ *
+ * Split out so the slug-availability endpoint can ask about a slug the
+ * contributor is still typing, before a full manifest exists. Returns false on
+ * an empty slug or a lookup failure, for the same reason as above.
+ */
+export async function isSlugTakenBySlug(slug: string): Promise<boolean> {
+  const normalized = slug.trim().toLowerCase();
+  if (!normalized) return false;
 
   try {
     return isSupabaseConfigured()
-      ? await hasActiveSubmissionSlugSupabase(slug)
-      : await hasActiveSubmissionSlug(slug);
+      ? await hasActiveSubmissionSlugSupabase(normalized)
+      : await hasActiveSubmissionSlug(normalized);
   } catch {
     return false;
   }
