@@ -68,6 +68,38 @@ export const EMPTY_STYLE_FORM: StyleFormValue = {
   coverSvg: "",
 };
 
+/**
+ * Reverse of {@link toManifest}: fill the form from an extracted manifest's
+ * formData so the "extract from a URL" flow can prefill every field the machine
+ * derived. Arrays collapse back to the textarea/CSV shapes the form edits;
+ * anything absent falls back to the empty defaults.
+ */
+export function manifestToForm(formData: Record<string, unknown>): StyleFormValue {
+  const str = (v: unknown, fallback = ""): string =>
+    typeof v === "string" && v.trim() ? v : fallback;
+  const list = (v: unknown): string[] =>
+    Array.isArray(v) ? v.filter((x): x is string => typeof x === "string") : [];
+
+  return {
+    name: str(formData.name),
+    nameEn: str(formData.nameEn),
+    slug: str(formData.slug),
+    description: str(formData.description),
+    category: str(formData.category, EMPTY_STYLE_FORM.category),
+    styleType: str(formData.styleType, EMPTY_STYLE_FORM.styleType),
+    primaryColor: str(formData.primaryColor, EMPTY_STYLE_FORM.primaryColor),
+    secondaryColor: str(formData.secondaryColor, EMPTY_STYLE_FORM.secondaryColor),
+    background: str(formData.background, EMPTY_STYLE_FORM.background),
+    foreground: str(formData.foreground, EMPTY_STYLE_FORM.foreground),
+    rules: list(formData.aiRules).join("\n"),
+    doList: list(formData.doList).join("\n"),
+    dontList: list(formData.dontList).join("\n"),
+    keywords: list(formData.keywords).join(", "),
+    buttonCode: "",
+    coverSvg: "",
+  };
+}
+
 /** One trimmed entry per non-empty line — the do/dont lists and rules share this. */
 function splitLines(value: string): string[] {
   return value

@@ -16,7 +16,7 @@ import { chromium, type Browser } from "playwright-core";
 
 import { extractedStyleToManifest, type ExtractToManifestResult } from "@/lib/submit/extract-to-manifest";
 
-import { hostResolverRules } from "./ssrf";
+import { hostResolverRules } from "@/lib/security/ssrf";
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 

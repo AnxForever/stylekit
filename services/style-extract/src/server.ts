@@ -15,7 +15,7 @@ import { createServer } from "node:http";
 import os from "node:os";
 import { timingSafeEqual } from "node:crypto";
 
-import { assertSafeUrl } from "./ssrf";
+import { assertSafeUrl } from "@/lib/security/ssrf";
 import { extractManifest } from "./extract";
 
 const TOKEN = process.env.EXTRACT_TOKEN ?? "";

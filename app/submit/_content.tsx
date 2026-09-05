@@ -8,12 +8,22 @@ import {
   EMPTY_STYLE_FORM,
   StyleForm,
   findMissingFields,
+  manifestToForm,
   toManifest,
   type StyleFormValue,
 } from "./_style-form";
 
 const DRAFT_KEY = "stylekit:submit:manifest-draft";
 const FORM_DRAFT_KEY = "stylekit:submit:form-draft";
+
+// A machine cannot judge these from computed styles; the extractor flags them
+// so the form can ask the contributor to confirm.
+const REVIEW_LABELS: Record<string, { en: string; zh: string }> = {
+  name: { en: "name", zh: "名称" },
+  category: { en: "category", zh: "分类" },
+  description: { en: "description", zh: "描述" },
+  colors: { en: "colors", zh: "配色" },
+};
 
 interface SubmitConsoleProps {
   locale: SubmitLocale;
@@ -42,6 +52,9 @@ export function SubmitConsole({
   const [accepted, setAccepted] = useState(false);
   const [promptCopied, setPromptCopied] = useState(false);
   const [submittedSlug, setSubmittedSlug] = useState<string | null>(null);
+  const [extractUrl, setExtractUrl] = useState("");
+  const [extracting, setExtracting] = useState(false);
+  const [reviewFields, setReviewFields] = useState<string[]>([]);
   const restoredRef = useRef(false);
 
   // Restore an unsent draft once. A manifest is expensive to regenerate, so
@@ -192,6 +205,37 @@ export function SubmitConsole({
     });
   }, [masterPrompt]);
 
+  // Prefill the form from a live URL. The heavy lifting is a guarded service;
+  // here we just swap the returned manifest into the form and surface which
+  // fields the contributor still needs to confirm.
+  const extractFromUrl = useCallback(async () => {
+    const url = extractUrl.trim();
+    if (!url || extracting) return;
+    setExtracting(true);
+    setError(null);
+    setReviewFields([]);
+    try {
+      const response = await fetch("/api/submit/extract", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ url }),
+      });
+      const payload = await response.json();
+      if (!response.ok || !payload.success) {
+        setError(payload.error ?? t.extractFailed);
+        return;
+      }
+      setForm(manifestToForm((payload.manifest?.formData ?? {}) as Record<string, unknown>));
+      setReviewFields(Array.isArray(payload.needsReview) ? payload.needsReview : []);
+      setReport(null);
+      setPhase("idle");
+    } catch {
+      setError(t.extractFailed);
+    } finally {
+      setExtracting(false);
+    }
+  }, [extractUrl, extracting, t.extractFailed]);
+
   if (phase === "submitted") {
     return (
       <SubmittedNotice locale={locale} slug={submittedSlug} onAgain={() => setPhase("idle")} />
@@ -238,6 +282,44 @@ export function SubmitConsole({
 
       {mode === "form" ? (
         <Section index="01" title={t.modeForm} description={t.formIntro}>
+          <div className="mb-6 rounded-md border border-border p-4">
+            <p className="font-mono text-xs uppercase tracking-[0.15em] text-muted-foreground">
+              {t.extractTitle}
+            </p>
+            <p className="mt-1 text-xs text-muted-foreground">{t.extractHint}</p>
+            <div className="mt-3 flex flex-wrap gap-2">
+              <input
+                type="url"
+                inputMode="url"
+                value={extractUrl}
+                onChange={(event) => setExtractUrl(event.target.value)}
+                onKeyDown={(event) => {
+                  if (event.key === "Enter") {
+                    event.preventDefault();
+                    void extractFromUrl();
+                  }
+                }}
+                placeholder={t.extractPlaceholder}
+                aria-label={t.extractTitle}
+                className="min-w-0 flex-1 rounded-md border border-border bg-transparent px-3 py-2 font-mono text-xs focus:border-foreground focus:outline-none"
+              />
+              <button
+                type="button"
+                onClick={extractFromUrl}
+                disabled={!extractUrl.trim() || extracting}
+                className="shrink-0 border border-foreground px-4 py-2 font-mono text-xs uppercase tracking-wider transition-colors hover:bg-foreground hover:text-background disabled:cursor-not-allowed disabled:opacity-40"
+              >
+                {extracting ? t.extracting : t.extractButton}
+              </button>
+            </div>
+            {reviewFields.length ? (
+              <p className="mt-2 text-xs text-amber-600">
+                {t.extractReview(
+                  reviewFields.map((f) => REVIEW_LABELS[f]?.[locale] ?? f),
+                )}
+              </p>
+            ) : null}
+          </div>
           {/* The same rules the gates enforce, in a form an assistant can act
               on. Offered here too because filling the form by hand and having
               an assistant draft it are the same job with different tools. */}

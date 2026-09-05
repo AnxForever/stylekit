@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { assertSafeUrl, hostResolverRules, isBlockedIp } from "@/services/style-extract/src/ssrf";
+import { assertSafeUrl, hostResolverRules, isBlockedIp } from "@/lib/security/ssrf";
 
 describe("isBlockedIp", () => {
   it("blocks loopback, private, link-local and metadata IPv4", () => {

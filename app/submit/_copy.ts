@@ -114,6 +114,16 @@ export const COPY = {
     aiHelpHint:
       "Want an assistant to draft this? Copy the submission rules and paste them with your style brief.",
     copyRules: "Copy rules for AI",
+    // Extract from a URL
+    extractTitle: "Start from a live site",
+    extractHint:
+      "Paste a URL and we read its real colors, type and rules to prefill the form. You confirm the rest.",
+    extractPlaceholder: "https://example.com",
+    extractButton: "Extract",
+    extracting: "Extracting...",
+    extractFailed: "Couldn't extract that site. Try another URL or fill the form in by hand.",
+    extractReview: (fields: string[]) =>
+      `Prefilled from the site. Please confirm: ${fields.join(", ")}.`,
     // Live prompt preview
     previewTitle: "Prompt preview",
     previewNote:
@@ -225,6 +235,15 @@ export const COPY = {
     rulesCount: (n: number) => (n >= 3 ? `${n} 条规则` : `${n} / 至少 3 条`),
     aiHelpHint: "想让 AI 帮你写？复制投稿规则，连同你的风格构想一起交给它。",
     copyRules: "复制 AI 投稿规则",
+    // 从网址提取
+    extractTitle: "从现成网站开始",
+    extractHint:
+      "粘贴一个网址，我们读取它真实的配色、字体和规则来预填表单，其余由你确认。",
+    extractPlaceholder: "https://example.com",
+    extractButton: "提取",
+    extracting: "提取中…",
+    extractFailed: "没能提取该网站，换个网址或手动填写。",
+    extractReview: (fields: string[]) => `已从网站预填。请确认：${fields.join("、")}。`,
     // 实时提示词预览
     previewTitle: "提示词预览",
     previewNote: "这就是助手在你的风格页面上收到的完整提示词，随你写规则实时更新。",
