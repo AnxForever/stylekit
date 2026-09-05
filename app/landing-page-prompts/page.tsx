@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
+import { PromptClusterLinks } from "@/components/seo/prompt-cluster-links";
 import { PromptTemplatePreviewSection } from "@/components/seo/prompt-template-preview-section";
 import { getTopicBySlug } from "@/lib/prompts";
 import { getAllStylesMeta } from "@/lib/styles/meta";
@@ -80,6 +81,7 @@ export default async function LandingPagePromptsPage() {
             templates={landingPageTemplates}
           />
         </PromptTopicContent>
+        <PromptClusterLinks current="/landing-page-prompts" locale={locale} />
       </main>
       <Footer />
     </div>
