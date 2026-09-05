@@ -139,6 +139,19 @@ function buildEnglishHardRules(input: PromptPairInput): string {
   const required = pickUnique(doSource.filter((item) => !hasCjk(item)), 8);
   const forbidden = pickUnique(dontSource.filter((item) => !hasCjk(item)), 8);
 
+  // Community submissions typically carry their whole rule set in the authored
+  // `aiRules` field with no do/dont split and no localized `aiRulesEn`. When
+  // there is nothing to assemble a required/forbidden section from, fall back
+  // to the authored rules if they are already usable English — otherwise the
+  // English prompt for such a style delivers an empty "(none)" scaffold, which
+  // is exactly the "no rules at all" bug this whole builder exists to prevent.
+  if (required.length === 0 && forbidden.length === 0) {
+    const authoredEnglish = sanitizeEnglishRuleSource(input.aiRules);
+    if (authoredEnglish) {
+      return authoredEnglish;
+    }
+  }
+
   return `## Required Style Rules
 ${toBulletList(required)}
 

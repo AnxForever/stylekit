@@ -98,6 +98,17 @@ export const COPY = {
     aiHelpHint:
       "Want an assistant to draft this? Copy the submission rules and paste them with your style brief.",
     copyRules: "Copy rules for AI",
+    // Live prompt preview
+    previewTitle: "Prompt preview",
+    previewNote:
+      "The exact prompt an assistant receives on your style page. It updates as you write your rules.",
+    previewEmpty:
+      "Add an English name and at least one rule to preview the prompt.",
+    previewHard: "Hard prompt",
+    previewSoft: "Soft prompt",
+    previewCopy: "Copy",
+    previewCopied: "Copied",
+    previewChars: (n: number) => `${n.toLocaleString("en-US")} characters`,
   },
   zh: {
     eyebrow: "参与贡献",
@@ -184,5 +195,14 @@ export const COPY = {
     rulesCount: (n: number) => (n >= 3 ? `${n} 条规则` : `${n} / 至少 3 条`),
     aiHelpHint: "想让 AI 帮你写？复制投稿规则，连同你的风格构想一起交给它。",
     copyRules: "复制 AI 投稿规则",
+    // 实时提示词预览
+    previewTitle: "提示词预览",
+    previewNote: "这就是助手在你的风格页面上收到的完整提示词，随你写规则实时更新。",
+    previewEmpty: "填入英文名和至少一条规则即可预览。",
+    previewHard: "硬提示词",
+    previewSoft: "软提示词",
+    previewCopy: "复制",
+    previewCopied: "已复制",
+    previewChars: (n: number) => `${n.toLocaleString("zh-CN")} 字`,
   },
 } as const;

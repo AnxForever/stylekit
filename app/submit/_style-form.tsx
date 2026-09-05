@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { COPY, type SubmitLocale } from "./_copy";
+import { buildPromptPair, type PromptPairInput } from "@/lib/styles/prompt-pair";
 
 /**
  * Prompt-first submission form.
@@ -126,6 +127,37 @@ export function toManifest(value: StyleFormValue) {
   };
 }
 
+/**
+ * Build the prompt-builder input from the form, mirroring the community path in
+ * `mapSubmissionToStyle`: the authored rules become `aiRules`, and everything a
+ * curated style would carry (localized rules, a token spec, do/dont lists) is
+ * absent — a form submission has none of it. Keeping this in lockstep with the
+ * runtime mapper is what makes the preview equal to what ships on the live page.
+ */
+export function formToPromptInput(
+  value: StyleFormValue,
+  locale: SubmitLocale
+): PromptPairInput {
+  const name = value.name.trim() || value.nameEn.trim() || value.slug.trim();
+  const nameEn = value.nameEn.trim() || value.name.trim() || value.slug.trim();
+  const aiRules = value.rules
+    .split("\n")
+    .map((line) => line.trim())
+    .filter(Boolean)
+    .join("\n");
+
+  return {
+    styleName: locale === "zh" ? name : nameEn,
+    styleSlug: value.slug.trim().toLowerCase(),
+    aiRules,
+    aiRulesEn: undefined,
+    enhancedRules: null,
+    doList: [],
+    dontList: [],
+    keywords: [],
+  };
+}
+
 function Field({
   label,
   hint,
@@ -207,6 +239,92 @@ function slugify(input: string): string {
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "");
+}
+
+function PromptPreview({
+  locale,
+  value,
+}: {
+  locale: SubmitLocale;
+  value: StyleFormValue;
+}) {
+  const t = COPY[locale];
+  const [kind, setKind] = useState<"hard" | "soft">("hard");
+  const [copied, setCopied] = useState(false);
+
+  // A name and at least one rule are the two inputs the prompt is built from;
+  // below that there is nothing meaningful to render.
+  const hasEnough =
+    (value.nameEn.trim() || value.name.trim()).length > 0 &&
+    value.rules.split("\n").some((line) => line.trim());
+
+  const prompt = useMemo(() => {
+    if (!hasEnough) return "";
+    const pair = buildPromptPair(formToPromptInput(value, locale), locale);
+    return kind === "hard" ? pair.hardPrompt : pair.softPrompt;
+  }, [hasEnough, value, locale, kind]);
+
+  const copy = async () => {
+    try {
+      await navigator.clipboard.writeText(prompt);
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 1500);
+    } catch {
+      // Clipboard access can be blocked; the text stays selectable in the panel.
+    }
+  };
+
+  return (
+    <div className="rounded-lg border border-border bg-muted/30 p-4">
+      <div className="flex flex-wrap items-baseline justify-between gap-2">
+        <span className="font-mono text-xs uppercase tracking-[0.15em] text-muted-foreground">
+          {t.previewTitle}
+        </span>
+        {hasEnough ? (
+          <span className="font-mono text-xs text-muted-foreground">
+            {t.previewChars(prompt.length)}
+          </span>
+        ) : null}
+      </div>
+      <p className="mt-1 text-xs text-muted-foreground">{t.previewNote}</p>
+
+      {hasEnough ? (
+        <>
+          <div className="mt-3 flex items-center gap-2">
+            {(["hard", "soft"] as const).map((option) => (
+              <button
+                key={option}
+                type="button"
+                onClick={() => setKind(option)}
+                aria-pressed={kind === option}
+                className={`h-7 rounded-md border px-3 text-xs transition-colors ${
+                  kind === option
+                    ? "border-foreground bg-foreground text-background"
+                    : "border-border text-muted-foreground hover:border-foreground hover:text-foreground"
+                }`}
+              >
+                {option === "hard" ? t.previewHard : t.previewSoft}
+              </button>
+            ))}
+            <button
+              type="button"
+              onClick={copy}
+              className="ml-auto h-7 rounded-md border border-border px-3 text-xs text-muted-foreground transition-colors hover:border-foreground hover:text-foreground"
+            >
+              {copied ? t.previewCopied : t.previewCopy}
+            </button>
+          </div>
+          <pre className="mt-3 max-h-80 overflow-auto whitespace-pre-wrap rounded-md border border-border bg-background p-3 font-mono text-xs leading-relaxed text-foreground">
+            {prompt}
+          </pre>
+        </>
+      ) : (
+        <p className="mt-3 rounded-md border border-dashed border-border p-4 text-center text-xs text-muted-foreground">
+          {t.previewEmpty}
+        </p>
+      )}
+    </div>
+  );
 }
 
 export function StyleForm({
@@ -394,6 +512,8 @@ export function StyleForm({
           </div>
         ) : null}
       </div>
+
+      <PromptPreview locale={locale} value={value} />
     </div>
   );
 }

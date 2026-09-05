@@ -54,6 +54,54 @@ describe("prompt-pair builders", () => {
     expect(hard).not.toMatch(/[\u3400-\u9fff]/);
   });
 
+  it("keeps English authored rules in the English prompt when only aiRules is set", () => {
+    // A community submission through the reduced form carries its whole rule
+    // set in `aiRules` with no aiRulesEn, no do/dont split, and no token spec.
+    // The English prompt must still deliver those rules, not an empty scaffold.
+    const hard = buildHardPrompt(
+      {
+        styleName: "Neon Washi",
+        styleSlug: "neon-washi",
+        aiRules:
+          "Use a paper grain background at 6% opacity, never a flat fill.\nNeon accents appear on at most two elements per viewport.",
+        enhancedRules: null,
+        aiRulesEn: undefined,
+        doList: [],
+        dontList: [],
+        keywords: [],
+      },
+      "en"
+    );
+
+    expect(hard).toContain("paper grain background at 6% opacity");
+    expect(hard).toContain("Neon accents appear on at most two elements");
+    // The degenerate "(none)" scaffold must not survive when real rules exist.
+    expect(hard).not.toContain("- (none)");
+    expect(hard).not.toMatch(/[\u3400-\u9fff]/);
+  });
+
+  it("still uses the empty English scaffold when authored rules are Chinese-only", () => {
+    // A Chinese-only submission has no usable English rules to promote, so the
+    // fallback must not smuggle Chinese into the English prompt.
+    const hard = buildHardPrompt(
+      {
+        styleName: "Neon Washi",
+        styleSlug: "neon-washi",
+        aiRules: "使用 6% 不透明度的纸张纹理背景。",
+        enhancedRules: null,
+        aiRulesEn: undefined,
+        doList: [],
+        dontList: [],
+        keywords: [],
+      },
+      "en"
+    );
+
+    expect(hard).toContain("## Required Style Rules");
+    expect(hard).toContain("- (none)");
+    expect(hard).not.toMatch(/[\u3400-\u9fff]/);
+  });
+
   it("removes small Chinese parentheticals from English hard rules", () => {
     const hard = buildHardPrompt(
       {
