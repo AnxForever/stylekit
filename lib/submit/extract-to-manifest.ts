@@ -91,6 +91,16 @@ function normalizeHex(value: string | undefined | null): string | null {
   return trimmed;
 }
 
+/** Colorfulness 0-1 (max-min RGB over 255); ~0 for grays, high for brand hues. */
+function chroma(hex: string): number {
+  const n = hex.replace("#", "");
+  if (n.length !== 6) return 0;
+  const r = parseInt(n.slice(0, 2), 16);
+  const g = parseInt(n.slice(2, 4), 16);
+  const b = parseInt(n.slice(4, 6), 16);
+  return (Math.max(r, g, b) - Math.min(r, g, b)) / 255;
+}
+
 function slugify(input: string): string {
   return input
     .trim()
@@ -102,8 +112,21 @@ function slugify(input: string): string {
 
 /** Site titles are usually "Name – tagline"; keep the name, drop the tagline. */
 function cleanName(raw: string | undefined, host: string): string {
-  const base = (raw ?? "").split(/[–—|:·]/)[0].trim();
-  if (base) return base.slice(0, 60);
+  const title = (raw ?? "").trim();
+  if (title) {
+    // Split on title/tagline separators. A plain hyphen counts only when
+    // space-padded (" - "), so in-word hyphens like "Neo-Brutalist" survive.
+    const parts = title
+      .split(/\s+[–—|·]\s+|\s+-\s+|[–—|]|:\s+/)
+      .map((part) => part.trim())
+      .filter(Boolean);
+    if (parts.length) {
+      // The brand name is usually the shortest segment: "Linear" over its
+      // tagline, "Vercel" over "Agentic Infrastructure".
+      const shortest = parts.reduce((a, b) => (b.length < a.length ? b : a));
+      return shortest.slice(0, 60);
+    }
+  }
   return host.replace(/^www\./, "").split(".")[0] || "Extracted style";
 }
 
@@ -163,9 +186,23 @@ function pickColors(colors: ExtractedColors | undefined): {
   const taken = new Set([background, foreground]);
   const remaining = ranked.map((c) => c.hex).filter((hex) => !taken.has(hex));
 
+  // Brand-color heuristic: the most chromatic hue across everything captured.
+  // A grayscale "primary" usually means the real brand color was read as the
+  // background (an indigo hero, say), so consider the background too and prefer
+  // saturation over mere confidence rank.
+  const allHues = [
+    ...Object.values(semantic)
+      .map((v) => normalizeHex(v))
+      .filter((h): h is string => Boolean(h)),
+    ...ranked.map((c) => c.hex),
+  ].filter((hex) => hex !== foreground);
+  const mostChromatic = [...new Set(allHues)].sort((a, b) => chroma(b) - chroma(a))[0];
+  const brandHue = mostChromatic && chroma(mostChromatic) > 0.15 ? mostChromatic : undefined;
+
   const primary =
     normalizeHex(semantic.primary) ??
     normalizeHex(semantic.accent) ??
+    brandHue ??
     remaining[0] ??
     background;
   taken.add(primary);

@@ -35,6 +35,9 @@ describe("extractedStyleToManifest", () => {
     expect(f.slug).toBe("linear");
     expect(f.background).toBe("#5e6ad2");
     expect(f.foreground).toBe("#f7f8f8");
+    // The brand indigo is the most chromatic hue, so it becomes primary even
+    // though it was captured as the background — not the gray palette entry.
+    expect(f.primaryColor).toBe("#5e6ad2");
     // Every core color is a valid hex.
     for (const hex of [f.primaryColor, f.secondaryColor, f.background, f.foreground]) {
       expect(hex).toMatch(/^#[0-9a-f]{6}$/);
@@ -48,6 +51,32 @@ describe("extractedStyleToManifest", () => {
     expect(rules.length).toBeGreaterThanOrEqual(3);
     expect(rules.join("\n")).toContain("#5e6ad2"); // background named
     expect(rules.some((r) => r.includes("Inter"))).toBe(true); // typeface named
+  });
+
+  it("takes the brand name from the shortest title segment and the saturated brand color", () => {
+    const { manifest } = extractedStyleToManifest({
+      name: "Agentic Infrastructure - Vercel",
+      source: { url: "https://vercel.com" },
+      tokens: {
+        colors: {
+          semantic: { background: "#ffffff", text: "#000000" },
+          palette: { c1: { value: "#0070f3", usage: ["link"], confidence: "high" } },
+        },
+      },
+    });
+    // Brand name is "Vercel", not the longer leading phrase.
+    expect(manifest.formData.name).toBe("Vercel");
+    // The saturated blue is the brand color, not black text or white background.
+    expect(manifest.formData.primaryColor).toBe("#0070f3");
+  });
+
+  it("keeps in-word hyphens in a single-segment name", () => {
+    const { manifest } = extractedStyleToManifest({
+      name: "Neo-Brutalist",
+      source: { url: "https://example.com" },
+      tokens: { colors: { semantic: {}, palette: {} } },
+    });
+    expect(manifest.formData.name).toBe("Neo-Brutalist");
   });
 
   it("flags machine-unknowable fields for review", () => {
