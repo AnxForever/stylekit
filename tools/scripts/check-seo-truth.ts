@@ -145,7 +145,9 @@ async function main(): Promise<void> {
     });
   }
 
-  const entries = sitemap();
+  // The sitemap became async when community promotion entries were added;
+  // without the await it returns a Promise and iteration throws.
+  const entries = await sitemap();
   const seen = new Set<string>();
   const redirectPaths = new Set([
     "/en/prompts",
