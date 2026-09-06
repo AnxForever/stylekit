@@ -1,6 +1,6 @@
 {
   "name": "stylekit-mcp",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "mcpName": "io.github.anxforever/stylekit-mcp",
   "description": "MCP server for StyleKit — search 148 design styles and pull tokens, recipes, and shadcn install commands from Claude, Cursor, or Windsurf",
   "type": "module",
