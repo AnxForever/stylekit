@@ -22,29 +22,42 @@ jobs:
           cache: pnpm
           registry-url: https://registry.npmjs.org
 
-      # Install flags are required in a fresh checkout. The root app can be
-      # ahead of the lockfile during an in-flight dependency upgrade, and
-      # pnpm 11 otherwise stops on protobufjs's intentionally ignored build.
-      - run: pnpm install --no-frozen-lockfile --config.strict-dep-builds=false
+      - name: Verify release tag
+        run: |
+          node --input-type=module <<'NODE'
+          import { readFileSync } from "node:fs";
 
-      # Call tsup directly instead of `pnpm run build`: pnpm 11 performs an
-      # implicit deps-status check before scripts and can re-trigger the
-      # ignored-builds failure in a clean CI workspace.
+          const { version } = JSON.parse(readFileSync("packages/cli/package.json", "utf8"));
+          const expectedTag = `cli-v${version}`;
+          if (process.env.GITHUB_REF_NAME !== expectedTag) {
+            throw new Error(`Expected tag ${expectedTag}, received ${process.env.GITHUB_REF_NAME}`);
+          }
+          NODE
+
+      # The root app manifest is ahead of its lockfile on this branch.
+      # Resolve it for the release; pnpm-workspace.yaml records skipped builds.
+      - run: pnpm install --no-frozen-lockfile
+
+      # Build the release artifact once, before testing and packaging it.
       - name: Build core (workspace dependency)
         run: cd packages/core && ./node_modules/.bin/tsup
 
       - name: Build cli package
         run: cd packages/cli && ./node_modules/.bin/tsup
 
-      - name: Smoke test
-        run: cd packages/cli && node test/smoke.mjs
+      - name: Pack and smoke test release artifact
+        run: |
+          cli_package_dir="$(mktemp -d "$RUNNER_TEMP/stylekit-cli.XXXXXX")"
+          pnpm --dir packages/cli pack --out "$RUNNER_TEMP/stylekit-cli.tgz"
+          tar -xzf "$RUNNER_TEMP/stylekit-cli.tgz" -C "$cli_package_dir"
+          cd "$cli_package_dir/package"
+          node "$GITHUB_WORKSPACE/packages/cli/test/smoke.mjs"
 
-      # The packages are already built above; skip prepublishOnly, whose
-      # nested pnpm run would re-trigger the deps-status check.
+      # Publish the exact tarball tested outside the workspace above.
       - name: Verify package (dry-run)
-        run: pnpm --dir packages/cli publish --dry-run --no-git-checks --ignore-scripts
+        run: pnpm publish "$RUNNER_TEMP/stylekit-cli.tgz" --dry-run --no-git-checks --ignore-scripts
 
       - name: Publish to npm
-        run: pnpm --dir packages/cli publish --provenance --access public --no-git-checks --ignore-scripts
+        run: pnpm publish "$RUNNER_TEMP/stylekit-cli.tgz" --provenance --access public --no-git-checks --ignore-scripts
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
