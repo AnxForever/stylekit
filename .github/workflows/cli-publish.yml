@@ -1,0 +1,42 @@
+name: Publish stylekit-cli
+
+on:
+  push:
+    tags:
+      - "cli-v*"
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  publish:
+    name: Build and Publish
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+          registry-url: https://registry.npmjs.org
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Build core (workspace dependency)
+        run: pnpm --dir packages/core run build
+
+      - name: Build cli package
+        run: pnpm --dir packages/cli run build
+
+      - name: Smoke test
+        run: pnpm --dir packages/cli test
+
+      - name: Verify package (dry-run)
+        run: pnpm --dir packages/cli publish --dry-run --no-git-checks
+
+      - name: Publish to npm
+        run: pnpm --dir packages/cli publish --provenance --access public --no-git-checks
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

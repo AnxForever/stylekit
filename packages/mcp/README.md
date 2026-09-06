@@ -26,7 +26,7 @@ config:
   "mcpServers": {
     "stylekit": {
       "command": "npx",
-      "args": ["-y", "stylekit-mcp@0.2.0"]
+      "args": ["-y", "stylekit-mcp"]
     }
   }
 }
@@ -36,16 +36,15 @@ config:
 - **Cursor**: `.cursor/mcp.json`
 - **Windsurf**: the Windsurf MCP config
 
-The repository currently contains the newer `0.1.1` candidate. To try that
-candidate, build locally and point your client at the absolute path:
->
-> ```json
-> {
->   "mcpServers": {
->     "stylekit": { "command": "node", "args": ["/abs/path/to/packages/mcp/dist/index.js"] }
->   }
-> }
-> ```
+To run a locally built copy instead, point your client at the absolute path:
+
+```json
+{
+  "mcpServers": {
+    "stylekit": { "command": "node", "args": ["/abs/path/to/packages/mcp/dist/index.js"] }
+  }
+}
+```
 
 ## Example
 

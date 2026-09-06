@@ -1,0 +1,23 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.anxforever/stylekit-mcp",
+  "title": "StyleKit",
+  "description": "Search 148 curated design styles and pull design tokens, component recipes, and shadcn install commands into Claude, Cursor, or Windsurf. Runs offline over stdio.",
+  "version": "0.2.1",
+  "websiteUrl": "https://stylekit.top",
+  "repository": {
+    "url": "https://github.com/AnxForever/stylekit",
+    "source": "github",
+    "subfolder": "packages/mcp"
+  },
+  "packages": [
+    {
+      "registryType": "npm",
+      "registryBaseUrl": "https://registry.npmjs.org",
+      "identifier": "stylekit-mcp",
+      "version": "0.2.1",
+      "runtimeHint": "npx",
+      "transport": { "type": "stdio" }
+    }
+  ]
+}

@@ -34,8 +34,9 @@
 | 0.1 | Expand npm keywords on all 3 packages (core 11→32, mcp 10→21, cli 7→18); fix stale "146"→"148" in descriptions | me (done) | ✅ edited, pending republish |
 | 0.2 | Fix stale "146"→"148" across README.md, README.zh-CN.md, public/llms.txt, feishu README | me (done) | ✅ |
 | 0.3 | Bump versions so keyword changes can publish (core→1.0.0-beta.4, mcp→0.2.1, cli→0.1.3) | me (done) | ✅ |
-| 0.4 | Republish all 3 packages with `--provenance` (OIDC/Trusted Publishing via GitHub Actions, or `npm publish --provenance` with npm auth) | **you** (needs npm 2FA/token) | ⬜ |
-| 0.5 | Fill 20 GitHub repo topics: `design-system` `design-tokens` `css` `styles` `ui-design` `web-design` `frontend` `tailwindcss` `react` `nextjs` `ai` `llm` `claude` `cursor` `mcp` `model-context-protocol` `ai-prompts` `developer-tools` `typescript` `hacktoberfest` | **you** (repo Settings→Topics) | ⬜ |
+| 0.4 | Publish all 3 packages (core beta.4 --tag beta, mcp 0.2.1, cli 0.1.3) — keywords now live on npm | me (done via logged-in npm) | ✅ published + verified |
+| 0.4b | Re-publish with `--provenance` — folded into Wave 1 CI (needs NPM_TOKEN secret) | Wave 1 | ⬜ |
+| 0.5 | Fill 20 GitHub repo topics | me (done via gh) | ✅ verified in repo |
 
 **Keyword rationale:** npm ranks exact-name > keyword-match > description > downloads. Each keyword
 is a separate search door. One documented case went 13→51 keywords for a sustained 10x. We stayed
@@ -50,16 +51,18 @@ upstream; every other directory ingests from it.** Publish there first; most syn
 
 | # | Action | Owner | Status |
 |---|--------|-------|--------|
-| 1.1 | Add `mcpName` field to packages/mcp/package.json matching registry name (proves npm ownership for registry publish) | me | ⬜ |
-| 1.2 | Install `mcp-publisher` CLI, `mcp-publisher init` → fill `server.json` (name `io.github.anxforever/stylekit-mcp`, specific description, `packages` w/ npm `stylekit-mcp`) | **you** (verify current CLI package name in live docs first — sources conflict) | ⬜ |
-| 1.3 | `mcp-publisher login github` + `mcp-publisher publish`; add CI job to re-publish on release | me (CI yaml) / **you** (auth) | ⬜ |
-| 1.4 | Add GitHub topics `mcp` + `model-context-protocol` → Glama auto-indexes | **you** (covered by 0.5) | ⬜ |
-| 1.5 | Submit to mcp.so (`mcp.so/submit`), Smithery (dashboard), Cline (GitHub issue on cline/mcp-marketplace) | **you** (forms) / me (prep all copy + logo specs) | ⬜ |
-| 1.6 | Email **hello@pulsemcp.com** with server name + namespace to expedite listing + pursue newsletter mention (one of the highest-signal channels in the ecosystem) | **you** (me drafts email) | ⬜ |
-| 1.7 | Open awesome-mcp-servers PR (punkpeye, ~90k stars) — **after** Glama listing exists (often required) | **you** (me drafts PR) | ⬜ |
+| 1.1 | Add `mcpName` field to packages/mcp/package.json | me | ✅ done |
+| 1.2 | Write `packages/mcp/server.json` (schema 2025-12-11, name `io.github.anxforever/stylekit-mcp`, npm package, stdio) | me | ✅ done + validated |
+| 1.3 | CI job to publish to npm (--provenance) + MCP Registry (OIDC) on `mcp-v*` tag; same for cli on `cli-v*` | me | ✅ mcp-publish.yml + cli-publish.yml written |
+| 1.4 | GitHub topics `mcp` + `model-context-protocol` → Glama auto-indexes | me | ✅ (Wave 0.5) |
+| 1.5 | README structured for directory auto-parse (`## Tools` table, npx snippet, fixed stale 0.2.0/0.1.1 refs) | me | ✅ done |
+| 1.6 | **Publish to Official Registry** — tag `mcp-v0.2.1` (CI, needs NPM_TOKEN secret) OR `mcp-publisher publish` locally | **you** | ⬜ see WAVE1_MCP_SUBMISSIONS.md #1 |
+| 1.7 | Submit mcp.so / Smithery / Cline / claim Glama | **you** (copy ready) | ⬜ #2-5 |
+| 1.8 | Email hello@pulsemcp.com (draft ready) | **you** | ⬜ #6 |
+| 1.9 | awesome-mcp-servers PR (after Glama) | **you** (draft ready) | ⬜ #7 |
 
-**README-for-parsers note:** mcp.so auto-pulls install snippet, a `## Tools` heading + table, and
-the first image as demo screenshot. Structure packages/mcp/README.md so these parse cleanly.
+**All submission copy + steps: `docs/WAVE1_MCP_SUBMISSIONS.md`.** Blockers only you can clear:
+`NPM_TOKEN` repo secret (CI publish + provenance) and a 400×400 PNG logo (Cline).
 
 ---
 
