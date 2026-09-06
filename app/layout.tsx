@@ -261,6 +261,9 @@ export default async function RootLayout({
               "sameAs": [
                 "https://github.com/AnxForever/stylekit",
                 "https://x.com/Justice66890051",
+                "https://www.npmjs.com/package/stylekit-core",
+                "https://www.npmjs.com/package/stylekit-mcp",
+                "https://www.npmjs.com/package/stylekit-cli",
               ],
             }),
           }}

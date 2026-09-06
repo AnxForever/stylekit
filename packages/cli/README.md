@@ -1,24 +1,15 @@
 # stylekit-cli
 
-Command-line tool for [StyleKit](https://stylekit.top) — browse 146 design styles and pull design tokens, component recipes, and shadcn install commands straight from your terminal. Works **offline** (served from the bundled `stylekit-core`).
+Command-line tool for [StyleKit](https://stylekit.top) — browse 148 design styles and pull design tokens, component recipes, and shadcn install commands straight from your terminal. Works **offline** (served from the bundled `stylekit-core`).
 
 ## Usage
 
 ```bash
-npx -y stylekit-cli@0.1.0 <command> [args] [flags]
+npx -y stylekit-cli@0.1.4 <command> [args] [flags]
 ```
 
-The `0.1.0` public beta is self-contained and works offline from a clean
-directory. The repository currently contains the newer `0.1.1` candidate; to
-try that candidate without installing from npm, run from the repository root:
-
-```bash
-pnpm --filter stylekit-cli build
-node packages/cli/dist/index.js <command>
-```
-
-The public beta and repository candidate may have different output contracts;
-pin the version when scripting against JSON output.
+The `0.1.4` public beta is self-contained and works offline from a clean
+directory. Pin the version when scripting against JSON output.
 
 ## Commands
 

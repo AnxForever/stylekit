@@ -59,7 +59,8 @@
     "capture:overseas-launch-demo": "node tools/scripts/capture-overseas-launch-demo.mjs",
     "capture:corporate-clean-evidence": "node tools/scripts/capture-corporate-clean-evidence.mjs",
     "readme:star-history": "node tools/scripts/generate-star-history.mjs",
-    "images:generate": "node tools/scripts/generate-style-images.mjs"
+    "images:generate": "node tools/scripts/generate-style-images.mjs",
+    "submit:baidu": "node tools/scripts/submit-baidu.mjs"
   },
   "dependencies": {
     "@codemirror/autocomplete": "^6.20.0",

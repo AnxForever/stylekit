@@ -1,12 +1,12 @@
 # StyleKit
 
-> StyleKit is an open-source visual style library for AI-generated web interfaces. Its catalog currently contains 146 curated visual and layout styles. Every catalog style includes machine-readable design tokens, component recipes, AI rules, and React + Tailwind examples.
+> StyleKit is an open-source visual style library for AI-generated web interfaces. Its catalog currently contains 148 curated visual and layout styles. Every catalog style includes machine-readable design tokens, component recipes, AI rules, and React + Tailwind examples.
 
 StyleKit helps developers give ChatGPT, Claude, Claude Code, Codex, and other coding tools concrete visual constraints instead of relying on a vague style name. The public site supports English and Chinese style discovery; some editorial content is English-only and is identified as such by its canonical URL.
 
 ## Start Here
 
-- [English style catalog](https://www.stylekit.top/en/styles): Browse all 146 UI and web design styles.
+- [English style catalog](https://www.stylekit.top/en/styles): Browse all 148 UI and web design styles.
 - [中文前端风格库](https://www.stylekit.top/zh/styles): 浏览网页设计风格、UI 风格与实现约束。
 - [UI design prompt library](https://www.stylekit.top/en/ui-prompts): Copy prompt structures for websites, dashboards, landing pages, dark mode, and Tailwind UI.
 - [中文 UI 与前端提示词](https://www.stylekit.top/zh/ui-prompts): 面向 ChatGPT、Claude、Claude Code 与 Codex 的提示词入口。
@@ -59,7 +59,7 @@ The repository also contains CLI and MCP packages. Their `0.1.0` public betas ar
 ## Product Boundaries
 
 - StyleKit provides design constraints, prompts, examples, and registry assets; it does not guarantee that every AI-generated interface is production-ready.
-- The 146 existing previews are curated visual references. General-purpose preview infrastructure is intended for future styles and does not replace those previews.
+- The 148 existing previews are curated visual references. General-purpose preview infrastructure is intended for future styles and does not replace those previews.
 - `llms.txt` is an emerging community convention, not a confirmed ranking signal for Google, ChatGPT, Claude, Gemini, or Perplexity.
 
 ## Additional References

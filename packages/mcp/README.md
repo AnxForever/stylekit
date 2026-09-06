@@ -1,6 +1,6 @@
 # stylekit-mcp
 
-MCP server for [StyleKit](https://stylekit.top) — search 146 design styles and pull design tokens, component recipes, and shadcn install commands directly from Claude, Cursor, or Windsurf.
+MCP server for [StyleKit](https://stylekit.top) — search 148 design styles and pull design tokens, component recipes, and shadcn install commands directly from Claude, Cursor, or Windsurf.
 
 Runs locally over stdio and serves everything **offline** from the bundled `stylekit-core`.
 
@@ -26,7 +26,7 @@ config:
   "mcpServers": {
     "stylekit": {
       "command": "npx",
-      "args": ["-y", "stylekit-mcp@0.1.0"]
+      "args": ["-y", "stylekit-mcp"]
     }
   }
 }
@@ -36,16 +36,15 @@ config:
 - **Cursor**: `.cursor/mcp.json`
 - **Windsurf**: the Windsurf MCP config
 
-The repository currently contains the newer `0.1.1` candidate. To try that
-candidate, build locally and point your client at the absolute path:
->
-> ```json
-> {
->   "mcpServers": {
->     "stylekit": { "command": "node", "args": ["/abs/path/to/packages/mcp/dist/index.js"] }
->   }
-> }
-> ```
+To run a locally built copy instead, point your client at the absolute path:
+
+```json
+{
+  "mcpServers": {
+    "stylekit": { "command": "node", "args": ["/abs/path/to/packages/mcp/dist/index.js"] }
+  }
+}
+```
 
 ## Example
 

@@ -30,8 +30,21 @@ import {
 const SOCIAL_CRAWLER_RE =
   /Twitterbot|facebookexternalhit|LinkedInBot|Slackbot|Discordbot|WhatsApp|TelegramBot|Pinterestbot|Applebot/i;
 
+// Search-engine and AI crawlers verify ownership and index against the exact
+// URL they request — they do not follow the 307 locale negotiation the way a
+// browser does. Baidu's site-verification fetch of `/` in particular fails
+// outright on a 307 ("未知原因:307"). Treat them like social crawlers at the
+// root: serve the default-locale content (with its meta tags) in place instead
+// of redirecting, while humans keep the language-negotiated 307 below.
+const SEARCH_CRAWLER_RE =
+  /Baiduspider|bingbot|BingPreview|Googlebot|Google-InspectionTool|DuckDuckBot|YandexBot|Sogou|360Spider|Bytespider|GPTBot|OAI-SearchBot|ChatGPT-User|ClaudeBot|Claude-Web|Claude-SearchBot|PerplexityBot|Perplexity-User|CCBot|Applebot-Extended|meta-externalagent/i;
+
 function isSocialCrawler(userAgent: string): boolean {
   return SOCIAL_CRAWLER_RE.test(userAgent);
+}
+
+function isContentCrawler(userAgent: string): boolean {
+  return SOCIAL_CRAWLER_RE.test(userAgent) || SEARCH_CRAWLER_RE.test(userAgent);
 }
 
 function isAdminRoute(pathname: string): boolean {
@@ -111,10 +124,20 @@ export async function proxy(request: NextRequest) {
   }
 
   if (!localeInPath && !shouldBypassLocale(incomingPath)) {
-    // Social crawlers should get content directly without locale redirect.
-    // They don't handle 307 well and need meta tags from the first response.
+    // Serve default-locale content in place (no 307) for two audiences:
+    //   1. Known social/search/AI crawler UAs.
+    //   2. ANY request with no language preference — no locale cookie AND no
+    //      Accept-Language header. This is the decisive case for verification
+    //      fetchers: Baidu's site-verification crawler does NOT send the
+    //      Baiduspider UA, so UA matching alone missed it and it kept getting
+    //      the empty 307 ("未知原因:307"). Real browsers always send
+    //      Accept-Language, so humans still fall through to the 307 language
+    //      negotiation below and keep their preferred locale.
     const ua = request.headers.get("user-agent") || "";
-    if (isSocialCrawler(ua)) {
+    const hasLanguagePreference =
+      isLocale(localeCookieValue) ||
+      Boolean(request.headers.get("accept-language"));
+    if (isContentCrawler(ua) || !hasLanguagePreference) {
       const localizedVisiblePath = addLocaleToPathname(incomingPath, DEFAULT_LOCALE);
       const requestHeaders = new Headers(request.headers);
       requestHeaders.set("x-stylekit-locale", DEFAULT_LOCALE);
