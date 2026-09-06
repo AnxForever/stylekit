@@ -9,7 +9,23 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: "*",
         allow: ["/", "/llms.md", "/llms-full.txt", "/api/styles/*/md$"],
-        disallow: ["/api/", "/admin/", "/api-test"],
+        // Beyond /api and /admin, exclude noindex product surfaces that carry
+        // no search value but still burn crawl budget (Bing WMT flagged limited
+        // crawl capacity + wasted URLs). These render noindex meta anyway; the
+        // Disallow stops the fetch before it happens.
+        disallow: [
+          "/api/",
+          "/admin/",
+          "/api-test",
+          "/preview",
+          "/kit",
+          "/workspace",
+          "/validation",
+          "/submit",
+          "/login",
+          "/admin-login",
+          "/profile",
+        ],
       },
       {
         userAgent: [
@@ -28,7 +44,19 @@ export default function robots(): MetadataRoute.Robots {
           "Applebot-Extended",
         ],
         allow: ["/", "/llms.md", "/llms-full.txt", "/api/styles/*/md$"],
-        disallow: ["/api/", "/admin/", "/api-test"],
+        disallow: [
+          "/api/",
+          "/admin/",
+          "/api-test",
+          "/preview",
+          "/kit",
+          "/workspace",
+          "/validation",
+          "/submit",
+          "/login",
+          "/admin-login",
+          "/profile",
+        ],
       },
     ],
     sitemap: `${BASE_URL}/sitemap.xml`,
