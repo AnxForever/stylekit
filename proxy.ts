@@ -30,8 +30,21 @@ import {
 const SOCIAL_CRAWLER_RE =
   /Twitterbot|facebookexternalhit|LinkedInBot|Slackbot|Discordbot|WhatsApp|TelegramBot|Pinterestbot|Applebot/i;
 
+// Search-engine and AI crawlers verify ownership and index against the exact
+// URL they request — they do not follow the 307 locale negotiation the way a
+// browser does. Baidu's site-verification fetch of `/` in particular fails
+// outright on a 307 ("未知原因:307"). Treat them like social crawlers at the
+// root: serve the default-locale content (with its meta tags) in place instead
+// of redirecting, while humans keep the language-negotiated 307 below.
+const SEARCH_CRAWLER_RE =
+  /Baiduspider|bingbot|BingPreview|Googlebot|Google-InspectionTool|DuckDuckBot|YandexBot|Sogou|360Spider|Bytespider|GPTBot|OAI-SearchBot|ChatGPT-User|ClaudeBot|Claude-Web|Claude-SearchBot|PerplexityBot|Perplexity-User|CCBot|Applebot-Extended|meta-externalagent/i;
+
 function isSocialCrawler(userAgent: string): boolean {
   return SOCIAL_CRAWLER_RE.test(userAgent);
+}
+
+function isContentCrawler(userAgent: string): boolean {
+  return SOCIAL_CRAWLER_RE.test(userAgent) || SEARCH_CRAWLER_RE.test(userAgent);
 }
 
 function isAdminRoute(pathname: string): boolean {
@@ -111,10 +124,13 @@ export async function proxy(request: NextRequest) {
   }
 
   if (!localeInPath && !shouldBypassLocale(incomingPath)) {
-    // Social crawlers should get content directly without locale redirect.
-    // They don't handle 307 well and need meta tags from the first response.
+    // Social AND search/AI crawlers should get content directly without the
+    // locale redirect. They index/verify against the requested URL and do not
+    // follow the 307 the way a browser does — Baidu's `/` verification fetch
+    // fails on it outright. Serve default-locale content with its meta tags in
+    // place; humans fall through to the language-negotiated 307 below.
     const ua = request.headers.get("user-agent") || "";
-    if (isSocialCrawler(ua)) {
+    if (isContentCrawler(ua)) {
       const localizedVisiblePath = addLocaleToPathname(incomingPath, DEFAULT_LOCALE);
       const requestHeaders = new Headers(request.headers);
       requestHeaders.set("x-stylekit-locale", DEFAULT_LOCALE);
