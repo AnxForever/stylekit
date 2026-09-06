@@ -27,7 +27,12 @@ jobs:
       # none of the app deps. --frozen-lockfile is avoided so an in-flight app
       # dependency upgrade (root package.json ahead of pnpm-lock.yaml) cannot
       # block an MCP release that does not touch those deps.
-      - run: pnpm install --no-frozen-lockfile
+      # --no-frozen-lockfile: the app's in-flight dep upgrade left root
+      #   package.json ahead of the lockfile; unrelated to this release.
+      # --config.strict-dep-builds=false: pnpm-workspace.yaml sets
+      #   protobufjs's build script to not run; pnpm 11 otherwise exits 1
+      #   (ERR_PNPM_IGNORED_BUILDS). This publish doesn't need that build.
+      - run: pnpm install --no-frozen-lockfile --config.strict-dep-builds=false
 
       - name: Build core (workspace dependency)
         run: pnpm --dir packages/core run build
