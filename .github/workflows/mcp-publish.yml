@@ -22,7 +22,12 @@ jobs:
           cache: pnpm
           registry-url: https://registry.npmjs.org
 
-      - run: pnpm install --frozen-lockfile
+      # This workflow publishes only the isolated packages/core + packages/mcp,
+      # whose deps are @modelcontextprotocol/sdk, zod, tsup, tsx, typescript —
+      # none of the app deps. --frozen-lockfile is avoided so an in-flight app
+      # dependency upgrade (root package.json ahead of pnpm-lock.yaml) cannot
+      # block an MCP release that does not touch those deps.
+      - run: pnpm install --no-frozen-lockfile
 
       - name: Build core (workspace dependency)
         run: pnpm --dir packages/core run build
