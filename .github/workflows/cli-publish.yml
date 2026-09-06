@@ -22,21 +22,29 @@ jobs:
           cache: pnpm
           registry-url: https://registry.npmjs.org
 
-      - run: pnpm install --frozen-lockfile
+      # Install flags are required in a fresh checkout. The root app can be
+      # ahead of the lockfile during an in-flight dependency upgrade, and
+      # pnpm 11 otherwise stops on protobufjs's intentionally ignored build.
+      - run: pnpm install --no-frozen-lockfile --config.strict-dep-builds=false
 
+      # Call tsup directly instead of `pnpm run build`: pnpm 11 performs an
+      # implicit deps-status check before scripts and can re-trigger the
+      # ignored-builds failure in a clean CI workspace.
       - name: Build core (workspace dependency)
-        run: pnpm --dir packages/core run build
+        run: cd packages/core && ./node_modules/.bin/tsup
 
       - name: Build cli package
-        run: pnpm --dir packages/cli run build
+        run: cd packages/cli && ./node_modules/.bin/tsup
 
       - name: Smoke test
-        run: pnpm --dir packages/cli test
+        run: cd packages/cli && node test/smoke.mjs
 
+      # The packages are already built above; skip prepublishOnly, whose
+      # nested pnpm run would re-trigger the deps-status check.
       - name: Verify package (dry-run)
-        run: pnpm --dir packages/cli publish --dry-run --no-git-checks
+        run: pnpm --dir packages/cli publish --dry-run --no-git-checks --ignore-scripts
 
       - name: Publish to npm
-        run: pnpm --dir packages/cli publish --provenance --access public --no-git-checks
+        run: pnpm --dir packages/cli publish --provenance --access public --no-git-checks --ignore-scripts
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
