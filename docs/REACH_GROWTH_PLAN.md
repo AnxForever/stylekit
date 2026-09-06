@@ -122,7 +122,7 @@ just legal compliance. ⑤ The "100k/day quota" figure is unreliable for new sit
 
 | # | Action | Owner | Status |
 |---|--------|-------|--------|
-| 3.1 | Chinese dev communities (7-parts-substance / 3-parts-placement rule): V2EX 推广 node post; one 掘金 deep-dive (1.5-5k words, "用 148 种设计风格让 Cursor 生成不像 AI 味的界面"); one 知乎 answer under a high-intent question; 少数派 Matrix / Linux.do 资源荟萃 | **you** (me drafts each, distinct angle per platform to avoid dedup) | ⬜ |
+| 3.1 | Chinese dev communities + AlternativeTo/SaaSHub/awesome PRs + Show HN | **you** (post) | ✅ all copy drafted in WAVE3_COMMUNITY_LAUNCH.md (掘金 deep-dive, 知乎 answer, V2EX 推广, GitHub weeklies, listings, awesome PRs, Show HN — distinct angle each) |
 | 3.2 | Claude Connectors Directory — needs Team org (~$50/mo, confirm current price), hosted remote MCP endpoint, privacy-policy URL (mandatory). Highest-value MCP slot (one-click connect inside Claude). | **you** (me preps materials + endpoint) | ⬜ |
 | 3.3 | Product Hunt launch — 4-6 week pre-launch project (maker profile 30d early, permanent forum thread at producthunt.com/p/, warm list). Launch Sunday (easier badge, 39.7% top-3 rate) or Tue-Wed (max reach). Self-hunt (no paid hunter). First 4h = comments not votes. Never say "please upvote". | **you** (me preps tagline/gallery/copy) | ⬜ |
 | 3.4 | Hacker News "Show HN" (highest single-event upside — needs English + genuine hook) | **you** | ⬜ |
