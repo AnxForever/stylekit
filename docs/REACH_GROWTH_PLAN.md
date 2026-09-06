@@ -112,8 +112,8 @@ just legal compliance. ⑤ The "100k/day quota" figure is unreliable for new sit
 | 2.12 | List on AlternativeTo + SaaSHub | **you** (me drafts listings) | ⬜ |
 | 2.13 | PR to awesome-design-tokens (sturobson) + awesome-design-systems (alexpate, ~25k stars) + awesome-css | **you** (me drafts) | ⬜ |
 | 2.14 | GitHub weeklies: 阮一峰周刊 (ruanyf/weekly issue), HelloGitHub (521xueweihan issue), GithubDaily | **you** (me drafts submissions) | ⬜ |
-| 2.15 | Add answer-first opening paragraph to flagship /learn + per-style pages (direct definition before showcase; Princeton study: stats+citations+quotes lift generative visibility up to ~40%). The dark-mode page's real-value WCAG contrast pattern (19.06:1) is exactly the citable format — replicate. | me | ⬜ |
-| 2.16 | Standardize ONE boilerplate sentence ("StyleKit — design style library for AI-assisted development") used verbatim across GitHub/npm/MCP-registry/PH/docs for entity clarity; add Organization + sameAs schema | me | ⬜ |
+| 2.15 | Answer-first opening paragraphs | me | ✅ audited — already in good shape: style pages open h1→definitional description; dark-mode GEO intro opens "Dark mode design is more than inverting colors… (4.5:1)". FAQPage schema already on style pages. No mass rewrite warranted. |
+| 2.16 | Entity clarity: Organization + sameAs schema | me | ✅ entity graph already present (WebApplication/Organization/WebSite w/ sameAs). Added the 3 npm package URLs to Organization.sameAs to tie the entity to its npm distribution. Canonical boilerplate defined in WAVE1_MCP_SUBMISSIONS.md for cross-channel use. |
 | 2.17 | Set up Otterly.ai free tier w/ ~15 prompts ("best design style library for AI coding", "glassmorphism CSS prompt for Cursor", "design tokens MCP server") to track AI citations monthly | **you** | ⬜ |
 
 ---
