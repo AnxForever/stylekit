@@ -124,13 +124,20 @@ export async function proxy(request: NextRequest) {
   }
 
   if (!localeInPath && !shouldBypassLocale(incomingPath)) {
-    // Social AND search/AI crawlers should get content directly without the
-    // locale redirect. They index/verify against the requested URL and do not
-    // follow the 307 the way a browser does — Baidu's `/` verification fetch
-    // fails on it outright. Serve default-locale content with its meta tags in
-    // place; humans fall through to the language-negotiated 307 below.
+    // Serve default-locale content in place (no 307) for two audiences:
+    //   1. Known social/search/AI crawler UAs.
+    //   2. ANY request with no language preference — no locale cookie AND no
+    //      Accept-Language header. This is the decisive case for verification
+    //      fetchers: Baidu's site-verification crawler does NOT send the
+    //      Baiduspider UA, so UA matching alone missed it and it kept getting
+    //      the empty 307 ("未知原因:307"). Real browsers always send
+    //      Accept-Language, so humans still fall through to the 307 language
+    //      negotiation below and keep their preferred locale.
     const ua = request.headers.get("user-agent") || "";
-    if (isContentCrawler(ua)) {
+    const hasLanguagePreference =
+      isLocale(localeCookieValue) ||
+      Boolean(request.headers.get("accept-language"));
+    if (isContentCrawler(ua) || !hasLanguagePreference) {
       const localizedVisiblePath = addLocaleToPathname(incomingPath, DEFAULT_LOCALE);
       const requestHeaders = new Headers(request.headers);
       requestHeaders.set("x-stylekit-locale", DEFAULT_LOCALE);
