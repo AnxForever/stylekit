@@ -72,7 +72,7 @@ upstream; every other directory ingests from it.** Publish there first; most syn
 | # | Action | Owner | Status |
 |---|--------|-------|--------|
 | 2.1 | Claim site in Bing Webmaster Tools via "Import from Google Search Console" (works in 2026; needs stylekit.top already in GSC — it is) | **you** | ⬜ |
-| 2.2 | Set `BING_SITE_VERIFICATION` env (hook already in lib/seo/site-metadata.ts, currently empty) | me (once you paste the value) | ⬜ |
+| 2.2 | `BING_SITE_VERIFICATION` env (only needed if you use meta-tag path instead of GSC import; hook confirmed working — Next omits empty tag cleanly) | **you** (paste if needed) | ⬜ |
 | 2.3 | Confirm IndexNow key file live + run `pnpm submit:indexnow` (already implemented, key `ea6f65fc…`) | me | ⬜ |
 | 2.4 | Enable BWT "AI Performance" report (shows Copilot/Bing-AI citations — no GSC equivalent) | **you** | ⬜ |
 
@@ -83,10 +83,10 @@ nothing for Claude (Brave index), Gemini/AI Overviews (Google), or Perplexity (o
 ### 2B. Baidu (from zero — cheap because you're already 备案'd)
 | # | Action | Owner | Status |
 |---|--------|-------|--------|
-| 2.5 | Register + verify at ziyuan.baidu.com via HTML meta tag (inject in root layout metadata) | me (code) / **you** (paste token) | ⬜ |
-| 2.6 | Set 站点关联主体 (Baidu now promotes this over ICP; required for mobile-search resources) | **you** | ⬜ |
-| 2.7 | Submit sitemap under 普通收录→sitemap (both /en and /zh URLs) | **you** | ⬜ |
-| 2.8 | Write Baidu push-API script (`data.zz.baidu.com/urls?site=…&token=…`, POST text/plain, ≤2000 URLs/call, one URL/line) + wire into deploy pipeline for **new/changed URLs only**; log `success`+`remain` every call | me | ⬜ |
+| 2.5 | Register + verify at ziyuan.baidu.com; `BAIDU_SITE_VERIFICATION` env hook pre-wired in site-metadata | me (env wired) / **you** (register + paste string) | ⬜ code ready |
+| 2.6 | Set 站点关联主体 | **you** | ⬜ |
+| 2.7 | Submit sitemap under 普通收录→sitemap | **you** | ⬜ |
+| 2.8 | Baidu push-API script (`pnpm submit:baidu`, new/updated URLs only, logs remain) | me | ✅ built + tested (submit-baidu.mjs) |
 
 **Baidu rules that bite:** ① Only push genuinely new/updated URLs — resubmitting indexed URLs
 wastes quota and can *lower your quota or revoke API access*. Sitemap carries the stable set; API
@@ -98,13 +98,13 @@ just legal compliance. ⑤ The "100k/day quota" figure is unreliable for new sit
 ### 2C. Crawler reachability (the possible silent bleed)
 | # | Action | Owner | Status |
 |---|--------|-------|--------|
-| 2.9 | Grep server access logs for Bingbot / GPTBot / OAI-SearchBot / ClaudeBot / PerplexityBot / Baiduspider — confirm they actually fetch (not blocked/throttled by Aliyun egress or nginx/CDN rules) | me (if given log access) / **you** | ⬜ |
-| 2.10 | If overseas crawlers are starved: consider CDN edge / mirror reachable from outside China | decide after 2.9 | ⬜ |
+| 2.9 | Audit prod nginx logs for all major crawlers | me | ✅ **VERDICT: healthy, no bleed** — all reach fine; Baiduspider already crawling clean (0 404s). See WAVE2_SEARCH_ENGINES.md 2C |
+| 2.10 | CDN edge/mirror if crawlers starved | — | ✅ not needed (2.9 cleared it) |
 
 ### 2D. Baiduspider rendering audit
 | # | Action | Owner | Status |
 |---|--------|-------|--------|
-| 2.11 | Confirm style pages, /colors/[hex], GEO pages are SSG/ISR with content + metadata + JSON-LD server-rendered — NOT injected client-side via i18n context after hydration (Baiduspider is weak at JS; invisible client-only content is a Baidu-specific indexing risk) | me | ⬜ |
+| 2.11 | Confirm style / colors / GEO pages are server-rendered (content + JSON-LD in raw HTML) | me | ✅ verified: style 269+ body hits & 2 JSON-LD; colors 162 & 2; GEO 275 & 2 — all in raw HTML |
 
 ### 2E. Third-party citations — the heaviest GEO lever
 | # | Action | Owner | Status |
