@@ -61,4 +61,5 @@ jobs:
 
       - name: Publish server.json
         working-directory: packages/mcp
-        run: "$GITHUB_WORKSPACE/mcp-publisher" publish
+        run: |
+          "$GITHUB_WORKSPACE/mcp-publisher" publish
