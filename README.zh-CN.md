@@ -10,7 +10,7 @@
 
 <p align="center">
   <strong>开源的视觉风格、设计令牌与 AI 提示词，让 AI 生成的界面不再千篇一律。</strong><br>
-  146 套精选风格 —— 既可以直接安装为 shadcn 主题，也可以把它的设计约束用在 Cursor、Claude Code、v0 或 Windsurf 里。中英文双语风格检索。
+  148 套精选风格 —— 既可以直接安装为 shadcn 主题，也可以把它的设计约束用在 Cursor、Claude Code、v0 或 Windsurf 里。中英文双语风格检索。
 </p>
 
 <p align="center">
@@ -64,8 +64,8 @@ StyleKit 帮助人和 AI 从一个统一的视觉方向出发。选定一个风�
 
 ### 设计系统
 
-- **146 套视觉与布局风格**，包含设计令牌、配色方案与字体排版
-- **146 个在线示例** —— 覆盖整个目录的整页交互演示
+- **148 套视觉与布局风格**，包含设计令牌、配色方案与字体排版
+- **148 个在线示例** —— 覆盖整个目录的整页交互演示
 - **组件配方** —— 按钮、卡片、输入框等可直接复制的代码
 - **随处导出** —— Tailwind preset、shadcn 主题、CSS 变量、Figma tokens
 
@@ -107,7 +107,7 @@ StyleKit 帮助人和 AI 从一个统一的视觉方向出发。选定一个风�
 
 ## 风格目录
 
-146 套风格，覆盖多个视觉与布局类别。每套风格都包含设计令牌、组件代码、AI 规则和精选预览。
+148 套风格，覆盖多个视觉与布局类别。每套风格都包含设计令牌、组件代码、AI 规则和精选预览。
 
 <details>
 <summary><strong>现代 / 科技</strong> —— 玻璃拟态、液态玻璃、新拟态、Bento 网格、Fluent Design、Material Design、Linear 风格 ...</summary>
@@ -234,7 +234,7 @@ npx shadcn add https://stylekit.top/r/glassmorphism.json
 npx skills add AnxForever/stylekit-skill
 ```
 
-之后你的代理就能按需套用这 146 套风格中的任意一套（比如「做成 Stripe 的样子」「赛博朋克风的仪表盘」），并使用正确的令牌与规则。技能本体在独立仓库 [`AnxForever/stylekit-skill`](https://github.com/AnxForever/stylekit-skill)；构建与发布方式见 [`docs/AGENT_SKILL_GUIDE.md`](docs/AGENT_SKILL_GUIDE.md)。
+之后你的代理就能按需套用这 148 套风格中的任意一套（比如「做成 Stripe 的样子」「赛博朋克风的仪表盘」），并使用正确的令牌与规则。技能本体在独立仓库 [`AnxForever/stylekit-skill`](https://github.com/AnxForever/stylekit-skill)；构建与发布方式见 [`docs/AGENT_SKILL_GUIDE.md`](docs/AGENT_SKILL_GUIDE.md)。
 
 ## 支持这个项目
 

@@ -10,7 +10,7 @@
 
 <p align="center">
   <strong>StyleKit is an open-source visual style library for AI-generated web interfaces.</strong><br>
-  Browse 146 curated styles, then use design tokens, component recipes, Tailwind-ready constraints, and copy-ready prompts in React, Cursor, Claude Code, v0, or Windsurf. English &amp; 中文.
+  Browse 148 curated styles, then use design tokens, component recipes, Tailwind-ready constraints, and copy-ready prompts in React, Cursor, Claude Code, v0, or Windsurf. English &amp; 中文.
 </p>
 
 <p align="center">
@@ -64,8 +64,8 @@ If you are using AI to design or build a frontend, these focused guides cover th
 
 ### Design System
 
-- **146 visual and layout styles** with design tokens, color palettes, and typography
-- **146 live showcases** — full-page interactive demos across the catalog
+- **148 visual and layout styles** with design tokens, color palettes, and typography
+- **148 live showcases** — full-page interactive demos across the catalog
 - **Component recipes** — copy-paste code for buttons, cards, inputs, and more
 - **Export anywhere** — Tailwind preset, shadcn theme, CSS variables, Figma tokens
 
@@ -107,7 +107,7 @@ If you are using AI to design or build a frontend, these focused guides cover th
 
 ## Styles
 
-146 visual and layout styles across multiple categories. Every style includes design tokens, component code, AI rules, and a curated preview.
+148 visual and layout styles across multiple categories. Every style includes design tokens, component code, AI rules, and a curated preview.
 
 <details>
 <summary><strong>Modern / Tech</strong> — Glassmorphism, Liquid Glass, Neumorphism, Bento Grid, Fluent Design, Material Design, Linear Style ...</summary>
@@ -236,7 +236,7 @@ one command:
 npx skills add AnxForever/stylekit-skill
 ```
 
-Your agent can then apply any of the 146 styles on request ("make this look
+Your agent can then apply any of the 148 styles on request ("make this look
 like Stripe", "cyberpunk dashboard") using the correct tokens and rules. The
 skill lives in its own repository ([`AnxForever/stylekit-skill`](https://github.com/AnxForever/stylekit-skill));
 see [`docs/AGENT_SKILL_GUIDE.md`](docs/AGENT_SKILL_GUIDE.md) for how it's built and published.
