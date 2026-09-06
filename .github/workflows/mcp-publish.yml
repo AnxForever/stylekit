@@ -13,6 +13,15 @@ jobs:
   publish:
     name: Build and Publish
     runs-on: ubuntu-latest
+    # Job-wide pnpm config so EVERY pnpm call (including the implicit deps
+    # check pnpm runs before `pnpm run <script>`) tolerates this repo's setup:
+    #   strict_dep_builds=false     -> pnpm-workspace.yaml disables protobufjs's
+    #     build script; pnpm 11 otherwise exits 1 (ERR_PNPM_IGNORED_BUILDS).
+    #   verify_deps_before_run=false-> don't re-install before each run script
+    #     (that re-install re-hit the ignored-builds error and failed the job).
+    env:
+      npm_config_strict_dep_builds: "false"
+      npm_config_verify_deps_before_run: "false"
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
@@ -28,11 +37,9 @@ jobs:
       # dependency upgrade (root package.json ahead of pnpm-lock.yaml) cannot
       # block an MCP release that does not touch those deps.
       # --no-frozen-lockfile: the app's in-flight dep upgrade left root
-      #   package.json ahead of the lockfile; unrelated to this release.
-      # --config.strict-dep-builds=false: pnpm-workspace.yaml sets
-      #   protobufjs's build script to not run; pnpm 11 otherwise exits 1
-      #   (ERR_PNPM_IGNORED_BUILDS). This publish doesn't need that build.
-      - run: pnpm install --no-frozen-lockfile --config.strict-dep-builds=false
+      # package.json ahead of the lockfile; unrelated to this release. (The
+      # ignored-build tolerance comes from the job-level env above.)
+      - run: pnpm install --no-frozen-lockfile
 
       - name: Build core (workspace dependency)
         run: pnpm --dir packages/core run build
@@ -50,6 +57,10 @@ jobs:
         run: pnpm --dir packages/mcp publish --provenance --access public --no-git-checks
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          # Step-level env replaces (not merges) the job env, so restate the
+          # two pnpm config vars the pre-publish deps check needs.
+          npm_config_strict_dep_builds: "false"
+          npm_config_verify_deps_before_run: "false"
 
   publish-registry:
     name: Publish to MCP Registry
