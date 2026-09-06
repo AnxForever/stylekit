@@ -22,32 +22,37 @@ jobs:
           cache: pnpm
           registry-url: https://registry.npmjs.org
 
-      # Two repo-specific install flags, both verified in a fresh worktree
-      # (a warm node_modules hides both — must test on a clean checkout):
+      # Install flags (both verified in a FRESH worktree — a warm node_modules
+      # masks both, so they must be tested on a clean checkout):
       #   --no-frozen-lockfile: the app's in-flight dep upgrade left root
       #     package.json ahead of pnpm-lock.yaml; unrelated to this release.
       #   --config.strict-dep-builds=false: pnpm-workspace.yaml disables
       #     protobufjs's build script; pnpm 11 otherwise exits 1
-      #     (ERR_PNPM_IGNORED_BUILDS). Must be the CLI flag — the env var
-      #     npm_config_strict_dep_builds is NOT honored for this key. Running
-      #     it here resolves the build once, so the implicit deps check before
-      #     each later `pnpm run` finds nothing pending and passes.
+      #     (ERR_PNPM_IGNORED_BUILDS). Must be a CLI flag — the env var form is
+      #     not honored for this key.
       - run: pnpm install --no-frozen-lockfile --config.strict-dep-builds=false
 
+      # Build via the tsup binary directly, NOT `pnpm run build`. pnpm 11 runs
+      # an implicit deps-status check before `pnpm run` that re-triggers the
+      # ignored-builds error (runDepsStatusCheck) and no config flag suppresses
+      # it. Calling the binary bypasses that check entirely.
       - name: Build core (workspace dependency)
-        run: pnpm --dir packages/core run build
+        run: cd packages/core && ./node_modules/.bin/tsup
 
       - name: Build mcp package
-        run: pnpm --dir packages/mcp run build
+        run: cd packages/mcp && ./node_modules/.bin/tsup
 
       - name: Smoke test
-        run: pnpm --dir packages/mcp test
+        run: cd packages/mcp && node scripts/smoke.mjs
 
       - name: Verify package (dry-run)
-        run: pnpm --dir packages/mcp publish --dry-run --no-git-checks
+        run: pnpm --dir packages/mcp publish --dry-run --no-git-checks --ignore-scripts
 
+      # --ignore-scripts: core+mcp are already built above; skip prepublishOnly
+      # (pnpm run clean && build), whose nested pnpm run would re-trigger the
+      # deps-status ignored-builds trap in CI.
       - name: Publish to npm
-        run: pnpm --dir packages/mcp publish --provenance --access public --no-git-checks
+        run: pnpm --dir packages/mcp publish --provenance --access public --no-git-checks --ignore-scripts
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
