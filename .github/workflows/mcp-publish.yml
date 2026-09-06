@@ -74,7 +74,19 @@ jobs:
       - name: Authenticate (GitHub OIDC)
         run: ./mcp-publisher login github-oidc
 
+      # Registry validates that the npm package version already exists. npm's
+      # registry can lag a minute behind a fresh publish, so retry on the
+      # "version not found (404)" race instead of failing the whole release.
       - name: Publish server.json
         working-directory: packages/mcp
         run: |
-          "$GITHUB_WORKSPACE/mcp-publisher" publish
+          for attempt in 1 2 3 4 5 6; do
+            if "$GITHUB_WORKSPACE/mcp-publisher" publish; then
+              echo "Published to MCP Registry."
+              exit 0
+            fi
+            echo "Publish attempt $attempt failed (likely npm propagation lag); waiting 20s..."
+            sleep 20
+          done
+          echo "MCP Registry publish still failing after retries." >&2
+          exit 1

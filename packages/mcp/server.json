@@ -3,7 +3,7 @@
   "name": "io.github.AnxForever/stylekit-mcp",
   "title": "StyleKit",
   "description": "Search 148 curated design styles and pull tokens, recipes, and shadcn commands into your AI IDE.",
-  "version": "0.2.4",
+  "version": "0.2.5",
   "websiteUrl": "https://stylekit.top",
   "repository": {
     "url": "https://github.com/AnxForever/stylekit",
@@ -15,7 +15,7 @@
       "registryType": "npm",
       "registryBaseUrl": "https://registry.npmjs.org",
       "identifier": "stylekit-mcp",
-      "version": "0.2.4",
+      "version": "0.2.5",
       "runtimeHint": "npx",
       "transport": { "type": "stdio" }
     }
