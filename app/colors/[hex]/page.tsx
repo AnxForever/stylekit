@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound, permanentRedirect } from "next/navigation";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
@@ -94,6 +93,28 @@ function SwatchLink({ hex }: { hex: string }) {
         {hex}
       </span>
     </LocalizedLink>
+  );
+}
+
+/**
+ * Non-interactive swatch for computed color ladders.
+ *
+ * Tints and shades come from a lightness ladder (buildLadder), not the curated
+ * library, so a detail page almost never exists for them. Rendering them as
+ * links pointed every color page at ~8 hard 404s (dynamicParams=false), which
+ * fed Google's "Not found (404)" pile. They are illustrative color math, so
+ * they render as plain swatches. Only neighbors — which are drawn from
+ * getAllDetailSwatches() and always exist — stay clickable via SwatchLink.
+ */
+function Swatch({ hex }: { hex: string }) {
+  return (
+    <div className="flex flex-col gap-2">
+      <span
+        className="block h-14 w-full border border-white/10"
+        style={{ backgroundColor: hex }}
+      />
+      <span className="font-mono text-[11px] text-white/50">{hex}</span>
+    </div>
   );
 }
 
@@ -282,10 +303,10 @@ export default async function ColorDetailPage({ params }: PageProps) {
             />
             <div className="grid grid-cols-4 gap-3 md:grid-cols-8 md:gap-4">
               {[...detail.tints].reverse().map((hex) => (
-                <SwatchLink key={`tint-${hex}`} hex={hex} />
+                <Swatch key={`tint-${hex}`} hex={hex} />
               ))}
               {detail.shades.map((hex) => (
-                <SwatchLink key={`shade-${hex}`} hex={hex} />
+                <Swatch key={`shade-${hex}`} hex={hex} />
               ))}
             </div>
             <p className="mt-4 max-w-2xl text-sm leading-[1.75] text-white/50">
@@ -325,12 +346,12 @@ export default async function ColorDetailPage({ params }: PageProps) {
             <p className="mt-4 max-w-2xl text-sm leading-[1.75] text-white/50">
               Paste this into ChatGPT, Claude, Cursor, or v0 to use {detail.hex}
               {" "}with correct contrast constraints.{" "}
-              <Link
+              <LocalizedLink
                 href="/colors"
                 className="text-[#7aa2ff] hover:text-white/90"
               >
                 Browse all palette colors
-              </Link>
+              </LocalizedLink>
               .
             </p>
           </section>
