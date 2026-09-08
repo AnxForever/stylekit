@@ -248,6 +248,7 @@ export const zh: { [K in keyof typeof en]: string } = {
   "typography.showing": "共",
   "typography.pairings": "个配对",
   "typography.noResults": "没有找到匹配的字体配对。",
+  "typography.previewSize": "预览字号",
 
   // Shadows page
   "shadows.subtitle": "阴影库",

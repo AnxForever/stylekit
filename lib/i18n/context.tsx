@@ -40,6 +40,21 @@ function persistLocale(locale: Locale) {
 function readPersistedLocale(): Locale | null {
   if (typeof window === "undefined") return null;
 
+  let storedLocale: Locale | null = null;
+  try {
+    const rawLocale = localStorage.getItem(LOCALE_STORAGE_KEY);
+    storedLocale = rawLocale === "en" || rawLocale === "zh" ? rawLocale : null;
+  } catch {
+    // Ignore localStorage access issues.
+  }
+
+  // localStorage is written by the client at the same time as the cookie and
+  // is not changed by server-side route prefetches. Prefer it when available
+  // so a static page cannot overwrite the user's locale before hydration.
+  if (storedLocale) {
+    return storedLocale;
+  }
+
   const cookiePrefix = `${LOCALE_COOKIE_NAME}=`;
   const cookieLocale = document.cookie
     .split(";")
@@ -50,12 +65,7 @@ function readPersistedLocale(): Locale | null {
     return cookieLocale;
   }
 
-  try {
-    const storedLocale = localStorage.getItem(LOCALE_STORAGE_KEY);
-    return storedLocale === "en" || storedLocale === "zh" ? storedLocale : null;
-  } catch {
-    return null;
-  }
+  return null;
 }
 
 export function I18nProvider({
@@ -73,11 +83,13 @@ export function I18nProvider({
   useEffect(() => {
     if (!pathnameLocale) {
       const persistedLocale = readPersistedLocale();
-      if (persistedLocale && persistedLocale !== preferredLocale) {
-        const timeoutId = window.setTimeout(() => {
-          setPreferredLocale(persistedLocale);
-        }, 0);
-        return () => window.clearTimeout(timeoutId);
+      if (persistedLocale) {
+        if (persistedLocale !== preferredLocale) {
+          const timeoutId = window.setTimeout(() => {
+            setPreferredLocale(persistedLocale);
+          }, 0);
+          return () => window.clearTimeout(timeoutId);
+        }
       }
     }
 

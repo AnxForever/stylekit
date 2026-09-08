@@ -596,6 +596,7 @@ export const en = {
     "typography.showing": "Showing",
     "typography.pairings": "pairings",
     "typography.noResults": "No matching font pairings found.",
+    "typography.previewSize": "Preview size",
     "shadows.subtitle": "Shadow Library",
     "shadows.title": "Shadow Collection",
     "shadows.description": "Curated box-shadow presets from soft to hard, colorful to glowing. Copy CSS or Tailwind code with one click.",
