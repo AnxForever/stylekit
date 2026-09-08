@@ -31,7 +31,7 @@ export interface DeveloperToolkitManifest {
 
 export const developerToolkitManifest = Object.freeze({
   schemaVersion: 1,
-  catalogCount: 146,
+  catalogCount: 148,
   capabilities: Object.freeze([
     {
       id: "registry",
@@ -42,40 +42,40 @@ export const developerToolkitManifest = Object.freeze({
         "npx shadcn add https://www.stylekit.top/r/glassmorphism.json",
       docsUrl:
         "https://github.com/AnxForever/stylekit/blob/main/docs/registry.md",
-      verifiedAt: "2026-08-16",
+      verifiedAt: "2026-09-06",
       evidence: "Clean Tailwind v4 consumer with shadcn@4.16.2",
     },
     {
       id: "core",
       state: "public-beta",
-      publicVersion: "1.0.0-beta.1",
-      repositoryVersion: "1.0.0-beta.1",
-      command: "npm install stylekit-core@1.0.0-beta.1",
+      publicVersion: "1.0.0-beta.4",
+      repositoryVersion: "1.0.0-beta.4",
+      command: "npm install stylekit-core@1.0.0-beta.4",
       docsUrl:
         "https://github.com/AnxForever/stylekit/tree/main/packages/core#readme",
-      verifiedAt: "2026-08-16",
+      verifiedAt: "2026-09-06",
       evidence: "npm metadata and package tarball verified",
     },
     {
       id: "cli",
       state: "public-beta",
-      publicVersion: "0.1.0",
-      repositoryVersion: "0.1.1",
-      command: "npx -y stylekit-cli@0.1.0 add synthwave",
+      publicVersion: "0.1.4",
+      repositoryVersion: "0.1.4",
+      command: "npx -y stylekit-cli@0.1.4 add synthwave",
       docsUrl:
         "https://github.com/AnxForever/stylekit/tree/main/packages/cli#readme",
-      verifiedAt: "2026-08-16",
+      verifiedAt: "2026-09-06",
       evidence: "Public npx version and list commands verified",
     },
     {
       id: "mcp",
       state: "public-beta",
-      publicVersion: "0.1.0",
-      repositoryVersion: "0.1.1",
-      command: "npx -y stylekit-mcp@0.1.0",
+      publicVersion: "0.2.5",
+      repositoryVersion: "0.2.5",
+      command: "npx -y stylekit-mcp@0.2.5",
       docsUrl:
         "https://github.com/AnxForever/stylekit/tree/main/packages/mcp#readme",
-      verifiedAt: "2026-08-16",
+      verifiedAt: "2026-09-06",
       evidence: "Public npm package answered tools/list and search over stdio",
     },
     {
@@ -86,7 +86,7 @@ export const developerToolkitManifest = Object.freeze({
       command: "npx skills add AnxForever/stylekit",
       docsUrl:
         "https://github.com/AnxForever/stylekit/blob/main/docs/AGENT_SKILL_GUIDE.md",
-      verifiedAt: "2026-08-16",
+      verifiedAt: "2026-09-06",
       evidence: "Installer discovered exactly one public stylekit skill",
     },
   ]),

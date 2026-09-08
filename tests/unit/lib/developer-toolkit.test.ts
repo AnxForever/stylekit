@@ -5,14 +5,14 @@ import {
 } from "@/lib/developer-toolkit";
 
 describe("Developer Toolkit capability manifest", () => {
-  it("separates the public CLI beta from the newer repository candidate", () => {
+  it("describes the current public CLI beta", () => {
     expect(getDeveloperToolkitCapability("cli")).toMatchObject({
       id: "cli",
       state: "public-beta",
-      publicVersion: "0.1.0",
-      repositoryVersion: "0.1.1",
-      command: "npx -y stylekit-cli@0.1.0 add synthwave",
-      verifiedAt: "2026-08-16",
+      publicVersion: "0.1.4",
+      repositoryVersion: "0.1.4",
+      command: "npx -y stylekit-cli@0.1.4 add synthwave",
+      verifiedAt: "2026-09-06",
     });
   });
 
