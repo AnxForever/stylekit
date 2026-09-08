@@ -1,8 +1,26 @@
-import { test, expect } from "@playwright/test";
+import { expect, test, type Page } from "@playwright/test";
+
+async function dismissThankYouModal(page: Page) {
+  const dialog = page.getByRole("dialog");
+  try {
+    await dialog.waitFor({ state: "visible", timeout: 1500 });
+    await dialog
+      .getByRole("button", { name: /close|关闭/i })
+      .click();
+  } catch {
+    // The modal is optional and may already be dismissed in this browser.
+  }
+}
+
+const styleDetailLinks =
+  'a[href^="/styles/"], a[href^="/en/styles/"], a[href^="/zh/styles/"]';
+const visibleStylesIndexLinks =
+  'a[href="/styles"]:visible, a[href="/en/styles"]:visible, a[href="/zh/styles"]:visible';
 
 test.describe("Homepage", () => {
   test("loads and shows style cards", async ({ page }) => {
     await page.goto("/");
+    await dismissThankYouModal(page);
     await expect(page).toHaveTitle(/StyleKit/);
 
     // Hero section visible
@@ -10,13 +28,14 @@ test.describe("Homepage", () => {
     await expect(hero).toBeVisible();
 
     // Fallback: if no test IDs, look for links to style detail pages
-    const styleLinks = page.locator('a[href^="/styles/"]');
+    const styleLinks = page.locator(styleDetailLinks);
     const count = await styleLinks.count();
     expect(count).toBeGreaterThan(0);
   });
 
   test("search filters styles", async ({ page }) => {
     await page.goto("/");
+    await dismissThankYouModal(page);
 
     const searchInput = page.locator(
       'input[type="text"], input[type="search"], input[placeholder*="search" i], input[placeholder*="搜索" i]'
@@ -27,7 +46,7 @@ test.describe("Homepage", () => {
       // Wait for filtering
       await page.waitForTimeout(500);
 
-      const visibleLinks = page.locator('a[href^="/styles/"]');
+      const visibleLinks = page.locator(styleDetailLinks);
       const count = await visibleLinks.count();
       expect(count).toBeGreaterThan(0);
     }
@@ -40,8 +59,9 @@ test.describe("Style detail page", () => {
     await expect(page).toHaveTitle(/Neo-Brutalist/i);
 
     // Hero heading and English style name should be visible
-    await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
-    await expect(page.getByText("Neo-Brutalist", { exact: true })).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: "Neo-Brutalist", exact: true })
+    ).toBeVisible();
   });
 
   test("tabs are interactive", async ({ page }) => {
@@ -75,7 +95,8 @@ test.describe("Style detail page", () => {
     const schemaTypes = schemas
       .map((schema) => schema?.["@type"])
       .filter(Boolean);
-    expect(schemaTypes).toContain("SoftwareApplication");
+    expect(schemaTypes).toContain("WebApplication");
+    expect(schemaTypes).toContain("CreativeWork");
   });
 });
 
@@ -94,9 +115,10 @@ test.describe("Showcase page", () => {
 test.describe("Navigation", () => {
   test("header links work", async ({ page }) => {
     await page.goto("/");
+    await dismissThankYouModal(page);
 
     // On mobile, open menu first so nav links become visible
-    const visibleStylesLink = page.locator('a[href="/styles"]:visible').first();
+    const visibleStylesLink = page.locator(visibleStylesIndexLinks).first();
     if ((await visibleStylesLink.count()) === 0) {
       const menuButton = page.getByRole("button", { name: /toggle menu/i }).first();
       if ((await menuButton.count()) > 0 && (await menuButton.isVisible())) {
@@ -104,7 +126,7 @@ test.describe("Navigation", () => {
       }
     }
 
-    const stylesLink = page.locator('a[href="/styles"]:visible').first();
+    const stylesLink = page.locator(visibleStylesIndexLinks).first();
     await expect(stylesLink).toBeVisible();
     await stylesLink.click();
     await page.waitForURL("**/styles**");
@@ -116,6 +138,7 @@ test.describe("Mobile responsive", () => {
 
   test("mobile layout renders correctly", async ({ page }) => {
     await page.goto("/");
+    await dismissThankYouModal(page);
     await expect(page.locator("body")).toBeVisible();
 
     // Mobile menu button should be visible

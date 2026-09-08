@@ -40,7 +40,8 @@ export async function getAuthServerClient(): Promise<SupabaseClient | null> {
 /**
  * Get the current authenticated user on the server side.
  * Returns null if not authenticated or Supabase is not configured.
- * In development with NEXT_PUBLIC_DEV_MOCK_USER=true, returns a mock user.
+ * In development with NEXT_PUBLIC_DEV_MOCK_USER=true, or during an explicitly
+ * marked Playwright server run, returns a mock user.
  *
  * Wrapped in React `cache()` so that Server Components reading the user
  * during a single request share one `getUser()` network call instead of
@@ -48,8 +49,9 @@ export async function getAuthServerClient(): Promise<SupabaseClient | null> {
  */
 export const getServerUser = cache(async () => {
   if (
-    process.env.NODE_ENV === "development" &&
-    process.env.NEXT_PUBLIC_DEV_MOCK_USER === "true"
+    (process.env.NODE_ENV === "development" &&
+      process.env.NEXT_PUBLIC_DEV_MOCK_USER === "true") ||
+    process.env.PLAYWRIGHT_E2E_MOCK_USER === "true"
   ) {
     return {
       id: "dev-mock-user-00000000",

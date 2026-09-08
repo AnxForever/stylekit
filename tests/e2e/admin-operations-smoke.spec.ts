@@ -20,7 +20,7 @@ test.describe("admin operations local smoke", () => {
     await expect(page.getByRole("heading", { name: "赞助公告", exact: true })).toBeVisible();
     await expect(page.getByRole("heading", { name: "发布一条新的赞助公告" })).toBeVisible();
     await expect(page.getByRole("button", { name: "上传并发布" })).toBeVisible();
-    await expect(page.locator('input[type="file"]')).toHaveAttribute(
+    await expect(page.locator('input[type="file"]').first()).toHaveAttribute(
       "accept",
       "image/jpeg,image/png,image/webp",
     );

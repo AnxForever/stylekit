@@ -38,7 +38,7 @@ test.describe("admin premium visual lab", () => {
       .evaluate((element) => getComputedStyle(element).animationName);
     expect(animationName).toBe("none");
 
-    if (testInfo.project.name === "mobile-chrome") {
+    if (testInfo.project.name.includes("mobile-chrome")) {
       const overflow = await page.evaluate(
         () => document.documentElement.scrollWidth - document.documentElement.clientWidth
       );

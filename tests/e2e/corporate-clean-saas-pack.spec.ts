@@ -140,7 +140,10 @@ test.describe("Corporate Clean SaaS Pack internal review", () => {
   test("has no document-level horizontal overflow on mobile", async ({
     page,
   }, testInfo) => {
-    test.skip(testInfo.project.name !== "mobile-chrome", "mobile viewport assertion");
+    test.skip(
+      !testInfo.project.name.includes("mobile-chrome"),
+      "mobile viewport assertion",
+    );
 
     await openReviewPage(page);
     const menuButton = page.getByRole("button", { name: "打开导航" });
