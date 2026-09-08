@@ -90,6 +90,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const staticPages: MetadataRoute.Sitemap = [
     ...createLocalizedEntries("/", undefined, "weekly", 1),
     ...createLocalizedEntries("/styles", undefined, "weekly", 0.9),
+    ...createLocalizedEntries("/community", undefined, "daily", 0.8),
     ...createLocalizedEntries("/colors", undefined, "weekly", 0.7),
     ...createLocalizedEntries("/collections", undefined, "weekly", 0.7),
     ...createEnglishEntry("/guides", undefined, "monthly", 0.8),
@@ -137,24 +138,23 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     )
   );
 
-  // Promoted community styles earn a place in the index. Everything else under
-  // /community stays out of it, which is what makes promotion mean something
-  // beyond a label in the review console.
-  // Written directly rather than through createLocalizedEntries: that helper
-  // asserts the path is registered for a locale set, and /community is
-  // deliberately registered as noindex so the *unpromoted* pages stay out of
-  // search. Promotion is decided per style, not per route, so the entries are
-  // emitted one at a time for the styles that earned it.
+  // Approved community styles are discoverable from the hub. Promotion adds
+  // an additional quality signal, but every approved detail page can render
+  // both locales and is represented with its source publication date.
   const promotedCommunity = await listPromotedCommunityStyles();
-  const communityPages: MetadataRoute.Sitemap = promotedCommunity.map((style) => ({
-    // Locale-prefixed like every other entry: the sitemap is asserted to hold
-    // only /en and /zh URLs, and a bare path would resolve through a redirect.
-    // English only, matching how the community catalog is written.
-    url: `${BASE_URL}/${DEFAULT_LOCALE}/community/${style.slug}`,
-    lastModified: new Date(),
-    changeFrequency: "weekly" as const,
-    priority: 0.6,
-  }));
+  const communityPages: MetadataRoute.Sitemap = promotedCommunity.flatMap((style) => {
+    const publishedAt = style.publishedAt ? new Date(style.publishedAt) : undefined;
+    const lastModified = publishedAt && !Number.isNaN(publishedAt.getTime())
+      ? publishedAt
+      : undefined;
+
+    return createLocalizedEntries(
+      `/community/${style.slug}`,
+      lastModified,
+      "weekly",
+      0.6
+    );
+  });
 
   const promptPages: MetadataRoute.Sitemap = getAllTopicSlugs()
     .filter((slug) => !redirectedPromptSlugs.has(slug))
