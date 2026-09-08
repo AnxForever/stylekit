@@ -22,7 +22,10 @@ import {
 } from "react";
 import type { User } from "@supabase/supabase-js";
 import { sanitizeNextPath } from "@/lib/auth/next-path";
-import { getAuthClient } from "./supabase-browser";
+import {
+  isBrowserAuthConfigured,
+  loadAuthClient,
+} from "./browser-client-loader";
 
 export interface AuthState {
   user: User | null;
@@ -53,13 +56,6 @@ const DEV_MOCK_ENABLED =
   process.env.NODE_ENV === "development" &&
   process.env.NEXT_PUBLIC_DEV_MOCK_USER === "true";
 
-function isBrowserAuthConfigured(): boolean {
-  return Boolean(
-    process.env.NEXT_PUBLIC_SUPABASE_URL &&
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-  );
-}
-
 const DEV_MOCK_USER: User = {
   id: "dev-mock-user-00000000",
   aud: "authenticated",
@@ -77,15 +73,13 @@ const SESSION_INITIALIZATION_TIMEOUT_MS = 4_000;
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const browserAuthConfigured = isBrowserAuthConfigured();
-  const authClient =
-    !DEV_MOCK_ENABLED && browserAuthConfigured ? getAuthClient() : null;
   const [user, setUser] = useState<User | null>(DEV_MOCK_ENABLED ? DEV_MOCK_USER : null);
   const [loading, setLoading] = useState(
-    DEV_MOCK_ENABLED ? false : Boolean(authClient)
+    DEV_MOCK_ENABLED ? false : browserAuthConfigured
   );
 
   useEffect(() => {
-    if (!authClient) return;
+    if (DEV_MOCK_ENABLED || !browserAuthConfigured) return;
 
     let cancelled = false;
     const initializationTimeout = window.setTimeout(() => {
@@ -94,31 +88,68 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
     }, SESSION_INITIALIZATION_TIMEOUT_MS);
 
-    // Try fast path first (local cookies), then verify with server if needed
-    void authClient.auth
-      .getSession()
-      .then(async ({ data: { session }, error }) => {
+    let unsubscribe: (() => void) | undefined;
+
+    // Load the SDK after the first paint. The timeout covers both the dynamic
+    // import and Supabase session lookup so a blocked network cannot leave the
+    // account controls in a permanent loading state.
+    void loadAuthClient()
+      .then(async (authClient) => {
         if (cancelled) return;
-        window.clearTimeout(initializationTimeout);
-        if (error || !session?.user) {
-          setUser(null);
+        if (!authClient) {
+          window.clearTimeout(initializationTimeout);
           setLoading(false);
           return;
         }
 
-        // Session exists locally — show user immediately, then verify in background.
-        setUser(session.user);
-        setLoading(false);
-
         const {
-          data: { user: verified },
-          error: verificationError,
-        } = await authClient.auth.getUser();
+          data: { subscription },
+        } = authClient.auth.onAuthStateChange((_event, session) => {
+          if (cancelled) return;
+          setUser(session?.user ?? null);
+          setLoading(false);
 
-        // A transient verification failure should not erase a usable local
-        // session. Auth state changes will still clear an invalid session.
-        if (!cancelled && !verificationError) {
-          setUser(verified ?? null);
+          // Clean up OAuth query params (?code=...) from the URL after sign-in
+          if (_event === "SIGNED_IN" && window.location.search.includes("code=")) {
+            window.history.replaceState({}, "", window.location.pathname);
+          }
+        });
+        unsubscribe = () => subscription.unsubscribe();
+
+        // Try fast path first (local cookies), then verify with server if needed
+        try {
+          const {
+            data: { session },
+            error,
+          } = await authClient.auth.getSession();
+          if (cancelled) return;
+          window.clearTimeout(initializationTimeout);
+          if (error || !session?.user) {
+            setUser(null);
+            setLoading(false);
+            return;
+          }
+
+          // Session exists locally — show user immediately, then verify in background.
+          setUser(session.user);
+          setLoading(false);
+
+          const {
+            data: { user: verified },
+            error: verificationError,
+          } = await authClient.auth.getUser();
+
+          // A transient verification failure should not erase a usable local
+          // session. Auth state changes will still clear an invalid session.
+          if (!cancelled && !verificationError) {
+            setUser(verified ?? null);
+          }
+        } catch {
+          window.clearTimeout(initializationTimeout);
+          if (!cancelled) {
+            setUser(null);
+            setLoading(false);
+          }
         }
       })
       .catch(() => {
@@ -129,29 +160,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         }
       });
 
-    // Subscribe to auth changes
-    const {
-      data: { subscription },
-    } = authClient.auth.onAuthStateChange((_event, session) => {
-      if (cancelled) return;
-      setUser(session?.user ?? null);
-      setLoading(false);
-
-      // Clean up OAuth query params (?code=...) from the URL after sign-in
-      if (_event === "SIGNED_IN" && window.location.search.includes("code=")) {
-        window.history.replaceState({}, "", window.location.pathname);
-      }
-    });
-
     return () => {
       cancelled = true;
       window.clearTimeout(initializationTimeout);
-      subscription.unsubscribe();
+      unsubscribe?.();
     };
-  }, [authClient]);
+  }, [browserAuthConfigured]);
 
   const signInWithGitHub = useCallback(async (nextPath?: string) => {
-    const client = getAuthClient();
+    const client = await loadAuthClient();
     if (!client) return;
     const safeNextPath = normalizeNextPath(nextPath);
 
@@ -165,7 +182,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const signInWithGoogle = useCallback(async (nextPath?: string) => {
-    const client = getAuthClient();
+    const client = await loadAuthClient();
     if (!client) return;
     const safeNextPath = normalizeNextPath(nextPath);
 
@@ -189,7 +206,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const signInWithPassword = useCallback(async (email: string, password: string) => {
-    const client = getAuthClient();
+    const client = await loadAuthClient();
     if (!client) throw new Error("Auth is not configured");
 
     const { error } = await client.auth.signInWithPassword({
@@ -204,7 +221,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     password: string,
     nextPath?: string,
   ) => {
-    const client = getAuthClient();
+    const client = await loadAuthClient();
     if (!client) throw new Error("Auth is not configured");
 
     const { data, error } = await client.auth.signUp({
@@ -247,7 +264,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     displayName: string;
     avatarUrl: string;
   }) => {
-    const client = getAuthClient();
+    const client = await loadAuthClient();
     if (!client || !user) {
       throw new Error("Auth is not configured");
     }
@@ -285,7 +302,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [user]);
 
   const signOut = useCallback(async () => {
-    const client = getAuthClient();
+    const client = await loadAuthClient();
     if (!client) return;
 
     await client.auth.signOut();
