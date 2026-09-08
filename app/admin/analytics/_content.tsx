@@ -300,9 +300,9 @@ export function AnalyticsDashboard({ view = "overview" }: { view?: AnalyticsView
           />
           <Metric
             icon={Users}
-            label="独立访客"
+            label="标签页会话"
             value={data.visitors.toLocaleString("zh-CN")}
-            detail={`${data.engagedVisitors.toLocaleString("zh-CN")} 位访客浏览了多个页面`}
+            detail={`${data.engagedVisitors.toLocaleString("zh-CN")} 个标签页会话浏览了多个页面`}
           />
           <Metric
             icon={UserPlus}
@@ -327,7 +327,7 @@ export function AnalyticsDashboard({ view = "overview" }: { view?: AnalyticsView
         <AdminPanel className="p-5 sm:p-6">
           <SectionHeading
             title="访问趋势"
-            description="所选时间范围内的页面浏览量与独立访客会话。"
+            description="所选时间范围内的页面浏览量与标签页会话数。同一人开多个标签页会分别计数，真实独立访客请看 Umami。"
             meta={formatDelta(data.trend.deltaPct)}
           />
           <div className="mt-6">
@@ -342,17 +342,17 @@ export function AnalyticsDashboard({ view = "overview" }: { view?: AnalyticsView
         <AdminPanel className="p-5 sm:p-6">
           <SectionHeading
             title="访问到注册"
-            description="按同一时间窗对比；注册数据不归因到具体访客会话。"
+            description="按同一时间窗对比；注册数据不归因到具体标签页会话。"
           />
           <div className="mt-6 space-y-5">
             <FunnelStep
-              label="独立访客"
+              label="标签页会话"
               value={data.visitors}
               total={data.visitors}
               dot="bg-[var(--admin-text-primary)]"
             />
             <FunnelStep
-              label="深度浏览访客"
+              label="深度浏览会话"
               value={data.engagedVisitors}
               total={data.visitors}
               dot="bg-[var(--admin-text-muted)]"
@@ -366,7 +366,7 @@ export function AnalyticsDashboard({ view = "overview" }: { view?: AnalyticsView
             />
           </div>
           <div className="mt-6 rounded-md bg-[var(--admin-input)] px-4 py-3 shadow-[var(--admin-shadow-border)]">
-            <p className="text-xs text-muted">本时间窗注册数 / 访客数</p>
+            <p className="text-xs text-muted">本时间窗注册数 / 标签页会话数</p>
             <p className="mt-1 text-2xl font-semibold tracking-[-0.8px] text-foreground">
               {registrationAvailable && data.registrations.visitorRatio != null
                 ? `${data.registrations.visitorRatio.toFixed(1)}%`
@@ -699,7 +699,7 @@ function getViewTitle(view: AnalyticsView): string {
 function getViewDescription(view: AnalyticsView): string {
   if (view === "traffic") return "查看访问来源、热门页面、浏览路径以及终端分布。";
   if (view === "content") return "判断哪些风格和内容行为正在产生真实的使用意向。";
-  if (view === "users") return "跟踪访客深度、注册趋势以及访问到注册的转化。";
+  if (view === "users") return "跟踪会话深度、注册趋势以及访问到注册的转化。";
   if (view === "audit") return "检索管理操作、确认操作者，并导出审计记录。";
   return "用少量核心指标快速判断网站状态和需要关注的变化。";
 }
@@ -939,7 +939,7 @@ function TrafficChart({
                 className="w-3 border-t border-dashed border-[var(--admin-text-muted)]"
                 aria-hidden="true"
               />
-              访客 {hoveredRow.visitors.toLocaleString("zh-CN")}
+              会话 {hoveredRow.visitors.toLocaleString("zh-CN")}
             </p>
           </div>
         ) : null}
@@ -967,12 +967,12 @@ function TrafficChart({
           <span className="h-0.5 w-5 bg-[var(--admin-text-primary)]" /> 页面浏览量
         </span>
         <span className="inline-flex items-center gap-2">
-          <span className="w-5 border-t border-dashed border-[var(--admin-text-muted)]" /> 独立访客
+          <span className="w-5 border-t border-dashed border-[var(--admin-text-muted)]" /> 标签页会话
         </span>
       </div>
       <ChartDataDisclosure
         label="查看访问趋势明细"
-        headers={["日期", "页面浏览量", "独立访客"]}
+        headers={["日期", "页面浏览量", "标签页会话"]}
         rows={rows.map((row) => [
           row.label,
           row.pageViews.toLocaleString("zh-CN"),

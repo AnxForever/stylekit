@@ -56,7 +56,7 @@ export function AnalyticsUsersPage({ initialRange = "7d", initialOverview, initi
             <div className="mt-6 space-y-5">
               <FunnelRow
                 icon={Users}
-                label="匿名访客"
+                label="标签页会话"
                 value={overview.data.current.visitors}
                 total={overview.data.current.visitors}
               />
@@ -117,8 +117,8 @@ export function AnalyticsUsersPage({ initialRange = "7d", initialOverview, initi
       {overview.data && registrations.data ? (
         <AdminPanel className="p-5 sm:p-6">
           <SectionTitle
-            title="同期注册 / 访客"
-            description="用于观察两个总体规模，不代表这些注册由本期访客完成。"
+            title="同期注册 / 标签页会话"
+            description="用于观察两个总体规模，不代表这些注册由本期会话完成。"
           />
           <p className="mt-4 font-mono text-3xl font-semibold tabular-nums text-foreground">
             {overview.data.current.visitors > 0

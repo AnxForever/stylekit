@@ -66,7 +66,7 @@ export function AnalyticsContentPage({ initialRange = "7d", initialData, initial
           </AdminPanel>
 
           <AdminPanel className="p-5 sm:p-6">
-            <SectionTitle title="自定义事件" description="像 Vercel Custom Events 一样，直接查看产品行为的事件次数与参与访客。" />
+            <SectionTitle title="自定义事件" description="像 Vercel Custom Events 一样，直接查看产品行为的事件次数与参与的标签页会话数。" />
             {events.isLoading && !events.data ? <PageSkeleton /> : null}
             {events.data ? <EventRows rows={events.data} /> : null}
           </AdminPanel>
@@ -129,7 +129,7 @@ export function AnalyticsContentPage({ initialRange = "7d", initialData, initial
 
 function EventRows({ rows }: { rows: AnalyticsEvents }) {
   if (rows.length === 0) return <p className="mt-5 text-sm text-muted">当前时间范围内暂无自定义事件。</p>;
-  return <div className="mt-5 divide-y divide-[var(--admin-border-soft)]">{rows.map((row) => <div key={row.event} className="grid grid-cols-[minmax(0,1fr)_auto] gap-4 py-3"><div className="min-w-0"><p className="truncate font-mono text-xs text-foreground">{row.event}</p><p className="mt-1 text-[11px] text-muted">{row.visitors.toLocaleString("zh-CN")} 位访客 · {row.share.toFixed(1)}%</p></div><p className="font-mono text-sm tabular-nums text-foreground">{row.count.toLocaleString("zh-CN")}</p></div>)}</div>;
+  return <div className="mt-5 divide-y divide-[var(--admin-border-soft)]">{rows.map((row) => <div key={row.event} className="grid grid-cols-[minmax(0,1fr)_auto] gap-4 py-3"><div className="min-w-0"><p className="truncate font-mono text-xs text-foreground">{row.event}</p><p className="mt-1 text-[11px] text-muted">{row.visitors.toLocaleString("zh-CN")} 个标签页会话 · {row.share.toFixed(1)}%</p></div><p className="font-mono text-sm tabular-nums text-foreground">{row.count.toLocaleString("zh-CN")}</p></div>)}</div>;
 }
 
 function SectionTitle({ title, description }: { title: string; description: string }) {
