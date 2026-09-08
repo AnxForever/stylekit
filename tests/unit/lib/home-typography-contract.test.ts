@@ -46,13 +46,35 @@ describe("English homepage typography", () => {
     expect(globals).toContain("font-weight: 400");
   });
 
-  it("removes the rejected display font from global and showcase sources", async () => {
-    const sources = await Promise.all([
+  it("keeps the rejected display font out of the site's own typography", async () => {
+    // Scope note: lib/typography/index.ts is deliberately NOT checked here. It is
+    // the public pairing catalogue visitors copy from, not the site's own type --
+    // the same split Newsreader already has (banned in app/layout.tsx, shipped as
+    // the newsreader-editorial pairing). A catalogue entry can only become site
+    // typography by being selected in PROFILE_PAIRINGS, which the resolved-profile
+    // check below covers directly.
+    const [layout, showcaseSource] = await Promise.all([
       read("app/layout.tsx"),
-      read("lib/typography/index.ts"),
       read("lib/typography/showcase-profiles.ts"),
     ]);
 
-    expect(sources.join("\n")).not.toContain("Bodoni");
+    expect(layout).not.toContain("Bodoni");
+    // Lower-cased: profiles reference pairings by id (e.g. "vogue-bodoni"), so a
+    // case-sensitive match would sail straight past them.
+    expect(showcaseSource.toLowerCase()).not.toContain("bodoni");
+
+    const { getShowcaseTypographyProfile } = await import(
+      "@/lib/typography/showcase-profiles"
+    );
+    const { stylesMeta } = await import("@/lib/styles/meta-registry");
+
+    for (const style of stylesMeta) {
+      const profile = getShowcaseTypographyProfile(
+        `/styles/${style.slug}/showcase`
+      );
+      if (!profile) continue;
+      expect(profile.pairing.heading.family, style.slug).not.toContain("Bodoni");
+      expect(profile.pairing.body.family, style.slug).not.toContain("Bodoni");
+    }
   });
 });

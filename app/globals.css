@@ -625,6 +625,63 @@ input[type="range"] { cursor: pointer; }
   font-variant-numeric: tabular-nums;
 }
 
+/* Font specimen sheets (Resources > Font Pairings)
+   Each pairing prints on its own paper-and-ink stock, carried in as custom
+   properties by the card so the dark theme can swap the pair here — an inline
+   style cannot hold a variant. Every derived tone mixes from `currentColor`,
+   so one pair of values drives the whole sheet.
+   `content-visibility` keeps the 40+ off-screen specimens out of layout and
+   paint, which is what makes the wall scroll smoothly. */
+.specimen-card {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 34rem;
+}
+
+/* Skipped subtrees do not print, and full-page captures render them blank.
+   Both want the whole wall. */
+@media print {
+  .specimen-card {
+    content-visibility: visible;
+  }
+}
+
+.specimen-sheet {
+  /* The sheet is the sizing context for the specimen type: the grid drops from
+     two columns to one at different widths, so a card can be 240px or 520px
+     wide at the same viewport. Sizing the headline off the viewport made the
+     narrow cards wrap a display word onto four lines. */
+  container-type: inline-size;
+  background: var(--specimen-paper);
+  color: var(--specimen-ink);
+}
+
+.dark .specimen-sheet {
+  background: var(--specimen-paper-dark);
+  color: var(--specimen-ink-dark);
+}
+
+.specimen-ink-soft {
+  color: color-mix(in srgb, currentColor 82%, transparent);
+}
+
+/* 72% is the floor that keeps secondary specimen copy at or above 4.5:1 on
+   every stock -- verified against the darkest paper (ochre). */
+.specimen-ink-muted {
+  color: color-mix(in srgb, currentColor 72%, transparent);
+}
+
+.specimen-ink-rule {
+  border-color: color-mix(in srgb, currentColor 18%, transparent);
+}
+
+.specimen-ink-track {
+  background: color-mix(in srgb, currentColor 18%, transparent);
+}
+
+.specimen-ink-fill {
+  background: currentColor;
+}
+
 /* Respect reduced motion preferences */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
