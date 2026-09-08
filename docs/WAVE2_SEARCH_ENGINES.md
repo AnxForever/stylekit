@@ -5,7 +5,7 @@
 
 ---
 
-## 2C. Crawler reachability audit — VERDICT: healthy, no silent bleed ✅
+## 2C. Crawler reachability audit — VERDICT: healthy, no silent bleed (confirmed)
 
 The big worry (China host starving overseas AI/Bing crawlers) is **not happening.**
 Audited `/var/log/nginx/access.log` + 6 rotated days on prod (59.110.91.219),
@@ -50,16 +50,16 @@ Audited `/var/log/nginx/access.log` + 6 rotated days on prod (59.110.91.219),
 
 **Already in place:** IndexNow fully implemented (`tools/scripts/submit-indexnow.mjs`,
 `pnpm submit:indexnow`, key file live at `/ea6f65fc…​.txt`); `BING_SITE_VERIFICATION` env
-hook wired in `lib/seo/site-metadata.ts` (currently empty → not yet claimed).
+hook wired in `lib/seo/site-metadata.ts` (currently empty; not yet claimed).
 
 **Your steps:**
-1. Go to https://www.bing.com/webmasters → sign in with a Microsoft account.
+1. Go to https://www.bing.com/webmasters and sign in with a Microsoft account.
 2. Click **Import from Google Search Console**, authorize Google, select stylekit.top.
    (Works in 2026; pulls verified ownership + sitemaps in ~2 min. stylekit.top is already
    in GSC so this is the fast path — no meta tag needed.)
-   - *Fallback if you prefer meta-tag:* BWT gives an `msvalidate.01` content string →
-     paste it as the `BING_SITE_VERIFICATION` env var on prod (the code already reads it) →
-     redeploy → click Verify.
+   - *Fallback if you prefer meta-tag:* BWT gives an `msvalidate.01` content string; paste it as the
+     `BING_SITE_VERIFICATION` env var on prod (the code already reads it),
+     redeploy, then click Verify.
 3. Confirm the sitemap is listed (import brings it; else add
    `https://www.stylekit.top/sitemap.xml`).
 4. Run `pnpm submit:indexnow` once to push the current catalog (it's the change feed;
@@ -77,21 +77,21 @@ Does *not* cover Claude (Brave), Gemini/AI Overviews (Google), or Perplexity (ow
 
 **Already built (code side):** `tools/scripts/submit-baidu.mjs` + `pnpm submit:baidu` —
 the 普通收录 push-API client. Pushes NEW/UPDATED URLs only (quota discipline baked in:
-on-site check, ≤2000/call, logs `success`+`remain`, dry-run mode, reads token from
+on-site check, up to 2,000 URLs per call, logs `success`+`remain`, dry-run mode, reads token from
 `BAIDU_PUSH_TOKEN` env so it never hits source control). Tested via `--dry-run`.
 
 **Your steps:**
-1. Register at https://ziyuan.baidu.com with a 百度 account → **添加网站** →
-   verify **stylekit.top** via **HTML标签验证** (meta tag). It gives a
+1. Register at https://ziyuan.baidu.com with a 百度 account, then choose
+   **添加网站** and verify **stylekit.top** via **HTML标签验证** (meta tag). It gives a
    `<meta name="baidu-site-verification" content="...">` value.
-   → paste the content value; I'll wire it into the site `<head>` via a
+   Paste the content value; I'll wire it into the site `<head>` via a
    `BAIDU_SITE_VERIFICATION` env + metadata (say the word and I'll add the code —
    mirrors the existing Bing/Google verification block).
 2. Set **站点关联主体** (site entity association) — Baidu now promotes this over ICP and
    it's required for mobile-search resources. (Can't undo for 7 days; do it deliberately.)
-3. Submit sitemap: 资源提交 → 普通收录 → sitemap tab → add
+3. Submit sitemap: open 资源提交, choose 普通收录, open the sitemap tab, and add
    `https://www.stylekit.top/sitemap.xml` (both /en and /zh URLs are already in it).
-4. Get the push **token**: 资源提交 → 普通收录 → **API提交** tab (16-char string).
+4. Get the push **token**: open 资源提交, choose 普通收录, then open the **API提交** tab (16-char string).
    Then set it as an env var and push changed URLs:
    ```bash
    BAIDU_PUSH_TOKEN=xxxx pnpm submit:baidu https://www.stylekit.top/en/styles/<new-style>
@@ -133,7 +133,7 @@ GithubDaily). Otterly.ai free tier for tracking.
 - Claim Bing (Import from GSC) + enable AI Performance report.
 - Register Baidu, verify, set 站点关联主体, submit sitemap, get push token.
 - Provide `BING_SITE_VERIFICATION` (if using meta path) and `BAIDU_SITE_VERIFICATION`
-  content strings → I wire them in.
+  content strings; I wire them in.
 - Provide `BAIDU_PUSH_TOKEN` at run time (env, not committed).
 
 ## What I can still do now (me-tasks)

@@ -5,8 +5,9 @@
 > with a soft mention converts. Each platform gets a DISTINCT angle — never paste the same
 > text across platforms (dedup / 灌水 detection). Prepared 2026-09-06.
 >
-> Facts: repo https://github.com/AnxForever/stylekit (458★), site https://stylekit.top,
-> npm stylekit-mcp / stylekit-cli / stylekit-core, 148 curated styles, EN + 中文, MIT.
+> Facts: repo https://github.com/AnxForever/stylekit (458 stars), site https://stylekit.top,
+> npm `stylekit-mcp@0.2.5` / `stylekit-cli@0.1.3` / `stylekit-core@1.0.0-beta.4`,
+> 148 curated styles, EN + 中文, MIT. MCP Registry namespace: `io.github.AnxForever/stylekit-mcp`.
 
 ---
 
@@ -104,7 +105,7 @@ Submit to (each is a GitHub issue or PR — copy below fits all, trim per format
 
 ## E. AlternativeTo + SaaSHub (permanent listings — double as GEO third-party citations)
 
-**AlternativeTo** (alternativeto.net → submit application):
+**AlternativeTo** (submit through alternativeto.net):
 - **Name:** StyleKit
 - **Category:** Design Tools / Developer Tools
 - **Tagline:** Design style library for AI-assisted development — 148 curated styles with
@@ -112,7 +113,7 @@ Submit to (each is a GitHub issue or PR — copy below fits all, trim per format
 - **List it as an alternative to:** shadcn/ui, Tailwind UI, Mobbin, Refactoring UI
 - **Platforms:** Web, npm, CLI, MCP · **License:** Open Source (MIT)
 
-**SaaSHub** (saashub.com → submit):
+**SaaSHub** (submit through saashub.com):
 - Same tagline; features: 148 styles, design tokens, component recipes, shadcn install,
   MCP server, CLI, bilingual, offline.
 - Links: site, GitHub, npm.
@@ -121,7 +122,7 @@ Submit to (each is a GitHub issue or PR — copy below fits all, trim per format
 
 ## F. awesome-* lists (PRs — social proof + GEO citations)
 
-**awesome-design-tokens** (sturobson) & **awesome-design-systems** (alexpate, ~25k★) &
+**awesome-design-tokens** (sturobson) & **awesome-design-systems** (alexpate, about 25k stars) &
 **awesome-css** — draft entry:
 ```markdown
 - [StyleKit](https://stylekit.top) - Open-source library of 148 curated design styles with
@@ -136,8 +137,8 @@ Match each list's exact section + formatting before opening the PR.
 
 ## G. Higher-upside single events (English, need a genuine hook)
 
-- **Hacker News "Show HN"** — highest single-event upside (a good Show HN → GitHub
-  Trending → thousands of stars). Needs English + a real hook. Draft title:
+- **Hacker News "Show HN"** — highest single-event upside (a good Show HN can lead to GitHub
+  Trending and then thousands of stars). Needs English + a real hook. Draft title:
   *"Show HN: StyleKit – 148 design styles as AI prompts so Cursor stops generating AI slop"*
   Lead the post with the pain point + the MCP angle; be present in comments all day.
 - **Dev Hunt / DEV Community (dev.to)** — repurpose the Juejin deep-dive in English.
