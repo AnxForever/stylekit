@@ -9,6 +9,7 @@ import { stylesMeta } from "./meta-registry";
 import type { StyleMeta } from "./meta-types";
 
 export type { StyleCategory, StyleType, StyleTag, StyleMeta } from "./meta-types";
+export { STYLE_TAGS, STYLE_CATEGORIES, STYLE_TYPES } from "./meta-types";
 export { stylesMeta } from "./meta-registry";
 
 export function getAllStylesMeta(): StyleMeta[] {

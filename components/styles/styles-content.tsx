@@ -15,7 +15,7 @@ import {
   STYLE_SCENARIOS,
   type StyleScenario,
 } from "@/lib/styles/scenarios";
-import { useCatalogStyles, useStyleStats } from "@/lib/swr";
+import { useStyleStats } from "@/lib/swr";
 import { expandQueryTerms, colorIntentMatches, hasTerm } from "@/lib/search/synonyms";
 import { observeCatalogImpressions } from "@/lib/analytics/catalog-impressions";
 import {
@@ -89,8 +89,10 @@ export function StylesContent({ allStyles }: StylesContentProps) {
   // Visual regression runs (?visual-baseline=1) need every catalog card in the
   // DOM at once; pagination would hide all but the first page from snapshots.
   const isVisualBaseline = searchParams.get("visual-baseline") === "1";
-  const { data: catalogStylesData } = useCatalogStyles();
-  const catalogStyles: StyleMeta[] = catalogStylesData?.styles ?? allStyles;
+  // The server already provides the immutable curated catalog. Re-fetching
+  // `/api/styles` on mount duplicated the full metadata payload and delayed
+  // the first filter interaction; keep the RSC payload as the single source.
+  const catalogStyles: StyleMeta[] = allStyles;
   const searchInputRef = useRef<HTMLInputElement>(null);
   const catalogGridRef = useRef<HTMLDivElement>(null);
   const seenCatalogImpressionsRef = useRef(new Set<string>());
