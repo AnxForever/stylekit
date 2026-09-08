@@ -1,5 +1,17 @@
 import { STYLE_CATEGORIES, STYLE_TYPES } from "@/lib/styles/meta-types";
 import type { StyleCategory, StyleType } from "@/lib/styles/meta";
+import type { ValidatedWizardFormData } from "./validator";
+import { parsePreviewAssets, PREVIEW_COMPONENT_KEYS, type PreviewAssets, type PreviewFontFace } from "@/lib/style-preview/preview-assets";
+import {
+  componentSampleCode,
+  componentSampleRules,
+  measuredValue,
+  normalizeExtractedColor,
+  selectComponentSamples,
+  type ComponentSamples,
+  type ExtractedComponents,
+  type ExtractedComponent,
+} from "./extracted-design";
 
 /**
  * Turn a style-extractor `normalized` payload into a submission manifest.
@@ -13,8 +25,6 @@ import type { StyleCategory, StyleType } from "@/lib/styles/meta";
  * contributor confirms. It is deliberately dependency-free and browser-free so
  * a CLI, a service, or a test can all call it.
  */
-
-const HEX_RE = /^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/;
 
 export interface ExtractedColorEntry {
   value?: string;
@@ -31,6 +41,7 @@ export interface ExtractedTypography {
   fontFamily?: { primary?: string; secondary?: string; mono?: string };
   fontSize?: Record<string, string>;
   fontWeight?: Record<string, string>;
+  lineHeight?: Record<string, string>;
 }
 
 export interface ExtractedStyle {
@@ -41,7 +52,12 @@ export interface ExtractedStyle {
   tokens?: {
     colors?: ExtractedColors;
     typography?: ExtractedTypography;
+    spacing?: Record<string, string>;
   };
+  components?: ExtractedComponents;
+  /** Page ground and inherited type measured before the extractor scrolls. */
+  page?: ExtractedComponent;
+  fonts?: PreviewFontFace[];
 }
 
 export interface ExtractToManifestOptions {
@@ -73,22 +89,16 @@ export interface ExtractToManifestResult {
       accentColors: string[];
       keywords: string[];
       aiRules: string[];
-    };
+    } & Partial<Pick<ValidatedWizardFormData,
+      "headingFont" | "bodyFont" | "fontSizeBase" | "fontSizeHeading" | "fontSizeSmall" |
+      "fontWeightNormal" | "fontWeightBold" | "lineHeightNormal" | "lineHeightTight" |
+      "borderRadius" | "spacingSm" | "spacingMd" | "spacingLg" |
+      "buttonCode" | "cardCode" | "inputCode" | "previewAssets"
+    >>;
     source: { assistant: "other"; model: string; notes?: string };
   };
   /** Fields the contributor should review before submitting. */
   needsReview: string[];
-}
-
-function normalizeHex(value: string | undefined | null): string | null {
-  if (!value || typeof value !== "string") return null;
-  const trimmed = value.trim().toLowerCase();
-  if (!HEX_RE.test(trimmed)) return null;
-  // Expand #abc to #aabbcc so downstream hex comparisons are uniform.
-  if (trimmed.length === 4) {
-    return `#${trimmed[1]}${trimmed[1]}${trimmed[2]}${trimmed[2]}${trimmed[3]}${trimmed[3]}`;
-  }
-  return trimmed;
 }
 
 /** Colorfulness 0-1 (max-min RGB over 255); ~0 for grays, high for brand hues. */
@@ -148,7 +158,7 @@ function rankedPalette(
   const seen = new Set<string>();
   const out: { hex: string; usage: string[]; rank: number }[] = [];
   for (const entry of Object.values(palette)) {
-    const hex = normalizeHex(entry.value);
+    const hex = normalizeExtractedColor(entry.value);
     if (!hex || seen.has(hex)) continue;
     seen.add(hex);
     out.push({
@@ -161,17 +171,22 @@ function rankedPalette(
 }
 
 /**
- * Pick the four core colours. Semantic roles win when present; otherwise fall
- * back to the highest-confidence palette entries, and finally to safe neutrals
+ * Prefer rendered page and component styles, then inferred semantic roles and
+ * confidence-ranked palette entries, and finally safe neutrals
  * so the result always satisfies the hex-required schema.
  */
-function pickColors(colors: ExtractedColors | undefined): {
+function pickColors(
+  colors: ExtractedColors | undefined,
+  components: ExtractedComponents | undefined,
+  page: ExtractedComponent | undefined,
+): {
   primary: string;
   secondary: string;
   background: string;
   foreground: string;
   accents: string[];
   low: boolean;
+  samples: ComponentSamples;
 } {
   const semantic = colors?.semantic ?? {};
   const ranked = rankedPalette(colors?.palette);
@@ -179,9 +194,16 @@ function pickColors(colors: ExtractedColors | undefined): {
     ranked.find((c) => c.usage.some((u) => u.toLowerCase().includes(role)))?.hex;
 
   const background =
-    normalizeHex(semantic.background) ?? usedFor("background") ?? "#ffffff";
+    normalizeExtractedColor(page?.styles?.backgroundColor) ??
+    normalizeExtractedColor(semantic.background) ?? usedFor("background") ?? "#ffffff";
   const foreground =
-    normalizeHex(semantic.text) ?? usedFor("text") ?? "#0f172a";
+    normalizeExtractedColor(page?.styles?.color, background) ??
+    normalizeExtractedColor(semantic.text) ?? usedFor("text") ?? "#0f172a";
+
+  const samples = selectComponentSamples(components, background);
+  const buttonFill = normalizeExtractedColor(samples.button?.styles?.backgroundColor, background);
+  const actionColor = buttonFill !== background ? buttonFill : null;
+  const cardFill = normalizeExtractedColor(samples.card?.styles?.backgroundColor, background);
 
   const taken = new Set([background, foreground]);
   const remaining = ranked.map((c) => c.hex).filter((hex) => !taken.has(hex));
@@ -192,7 +214,7 @@ function pickColors(colors: ExtractedColors | undefined): {
   // saturation over mere confidence rank.
   const allHues = [
     ...Object.values(semantic)
-      .map((v) => normalizeHex(v))
+      .map((v) => normalizeExtractedColor(v))
       .filter((h): h is string => Boolean(h)),
     ...ranked.map((c) => c.hex),
   ].filter((hex) => hex !== foreground);
@@ -200,32 +222,62 @@ function pickColors(colors: ExtractedColors | undefined): {
   const brandHue = mostChromatic && chroma(mostChromatic) > 0.15 ? mostChromatic : undefined;
 
   const primary =
-    normalizeHex(semantic.primary) ??
-    normalizeHex(semantic.accent) ??
+    actionColor ??
+    normalizeExtractedColor(semantic.primary) ??
+    normalizeExtractedColor(semantic.accent) ??
+    usedFor("link") ??
+    usedFor("button") ??
     brandHue ??
     remaining[0] ??
-    background;
+    foreground;
   taken.add(primary);
 
-  const secondary =
-    remaining.find((hex) => !taken.has(hex)) ??
-    (foreground === "#0f172a" ? "#ffffff" : "#ffffff");
+  const secondary = cardFill ??
+    ranked.find((entry) => entry.usage.includes("background") && !taken.has(entry.hex))?.hex ??
+    remaining.find((hex) => !taken.has(hex)) ?? background;
   taken.add(secondary);
 
   const accents = remaining.filter((hex) => !taken.has(hex)).slice(0, 4);
 
   // Flag a low-signal extraction: no semantic roles and no confident palette.
   const low =
-    !normalizeHex(semantic.background) &&
-    !normalizeHex(semantic.text) &&
-    ranked.every((c) => c.rank <= 1);
+    !normalizeExtractedColor(page?.styles?.backgroundColor) &&
+    !normalizeExtractedColor(semantic.background) &&
+    !normalizeExtractedColor(semantic.text) &&
+    ranked.every((c) => c.rank <= 1) && !actionColor;
 
-  return { primary, secondary, background, foreground, accents, low };
+  return { primary, secondary, background, foreground, accents, low, samples };
+}
+
+function designDetails(extracted: ExtractedStyle, samples: ComponentSamples) {
+  const typography = extracted.tokens?.typography;
+  const body = extracted.page?.styles ?? samples.card?.styles ?? samples.input?.styles ?? samples.button?.styles;
+  const heading = samples.heading?.styles;
+  const sizes = Object.values(typography?.fontSize ?? {}).filter((size) => /^\d+(?:\.\d+)?(?:px|rem|em)$/.test(size));
+  const sizeInPixels = (size: string) => parseFloat(size) * (/r?em$/.test(size) ? 16 : 1);
+  sizes.sort((a, b) => sizeInPixels(a) - sizeInPixels(b));
+  const bodyFont = measuredValue(body?.fontFamily) ?? measuredValue(typography?.fontFamily?.primary);
+  const shaped = samples.card ?? samples.button ?? samples.input;
+  return {
+    bodyFont,
+    headingFont: measuredValue(heading?.fontFamily) ?? measuredValue(typography?.fontFamily?.secondary) ?? bodyFont,
+    fontSizeBase: measuredValue(body?.fontSize) ?? measuredValue(typography?.fontSize?.base),
+    fontSizeHeading: measuredValue(heading?.fontSize) ?? sizes.at(-1),
+    fontSizeSmall: sizes[0],
+    fontWeightNormal: measuredValue(body?.fontWeight) ?? measuredValue(typography?.fontWeight?.normal),
+    fontWeightBold: measuredValue(heading?.fontWeight) ?? measuredValue(typography?.fontWeight?.bold),
+    lineHeightNormal: measuredValue(body?.lineHeight),
+    lineHeightTight: measuredValue(heading?.lineHeight),
+    borderRadius: shaped ? measuredValue(shaped.styles?.borderRadius) ?? "0px" : undefined,
+    spacingSm: measuredValue(extracted.tokens?.spacing?.sm),
+    spacingMd: measuredValue(extracted.tokens?.spacing?.md),
+    spacingLg: measuredValue(extracted.tokens?.spacing?.lg),
+  };
 }
 
 function synthesizeAiRules(
-  colors: { primary: string; secondary: string; background: string; foreground: string; accents: string[] },
-  typography: ExtractedTypography | undefined,
+  colors: ReturnType<typeof pickColors>,
+  details: ReturnType<typeof designDetails>,
 ): string[] {
   const rules: string[] = [
     `Use ${colors.primary} for primary actions and emphasis.`,
@@ -235,20 +287,41 @@ function synthesizeAiRules(
   if (colors.accents.length) {
     rules.push(`Reserve accent colors (${colors.accents.join(", ")}) for highlights, not large areas.`);
   }
-  const primaryFont = typography?.fontFamily?.primary;
-  if (primaryFont) {
-    rules.push(`Primary typeface is ${primaryFont.replace(/["']/g, "").split(",")[0].trim()}.`);
+  if (details.bodyFont) rules.push(`Body font-family: ${details.bodyFont}.`);
+  if (details.headingFont) rules.push(`Heading font-family: ${details.headingFont}.`);
+  if (details.fontSizeBase && details.fontSizeHeading) {
+    rules.push(`Base font size is ${details.fontSizeBase}; headings scale up to ${details.fontSizeHeading}.`);
   }
-  const base = typography?.fontSize?.base;
-  const largest =
-    typography?.fontSize?.["4xl"] ??
-    typography?.fontSize?.["3xl"] ??
-    typography?.fontSize?.["2xl"] ??
-    typography?.fontSize?.xl;
-  if (base && largest) {
-    rules.push(`Base font size is ${base}; headings scale up to ${largest}.`);
-  }
+  if (details.lineHeightNormal) rules.push(`Body line-height: ${details.lineHeightNormal}.`);
+  if (details.lineHeightTight) rules.push(`Heading line-height: ${details.lineHeightTight}.`);
+  rules.push(...componentSampleRules(colors.samples));
+  const spacing = [details.spacingSm, details.spacingMd, details.spacingLg].filter(Boolean);
+  if (spacing.length) rules.push(`Observed spacing steps: ${[...new Set(spacing)].join(", ")}.`);
   return rules;
+}
+
+function assetRules(assets: PreviewAssets | undefined): string[] {
+  if (!assets) return [];
+  const rules: string[] = [];
+  for (const font of assets.fonts ?? []) {
+    const source = font.sourceUrl ? ` from ${font.sourceUrl}` : "";
+    if (font.dataUrl || font.sourceUrl) rules.push(`Load font-family "${font.family}"${font.weight ? ` at weight ${font.weight}` : ""}${source}; retain the fallback stack if unavailable.`);
+  }
+  for (const key of PREVIEW_COMPONENT_KEYS) {
+    const motion = assets.motion?.[key];
+    if (!motion) continue;
+    const t = motion.transition;
+    if (t) rules.push(`${key} transitions: ${t.property}; duration: ${t.duration}; easing: ${t.timingFunction}; delay: ${t.delay}.`);
+    for (const [state, styles] of Object.entries(motion.states ?? {})) {
+      const values = Object.entries(styles).map(([property, value]) => `${property}: ${value}`).join("; ");
+      if (values) rules.push(`${key} ${state} state: ${values}.`);
+    }
+    for (const animation of motion.animations ?? []) {
+      rules.push(`${key} animation${animation.name ? ` "${animation.name}"` : ""}: ${animation.duration}ms ${animation.easing}, ${animation.iterations} iterations, ${animation.direction}; use the captured keyframes from the component sample.`);
+    }
+  }
+  if (assets.motion && Object.keys(assets.motion).length) rules.push("Respect prefers-reduced-motion: disable these animations and transitions when reduced motion is requested.");
+  return [...new Set(rules)];
 }
 
 export function extractedStyleToManifest(
@@ -263,7 +336,7 @@ export function extractedStyleToManifest(
   const nameEn = options.nameEn ?? name;
   const slug = slugify(options.slug ?? (name || host || "extracted-style"));
 
-  const colors = pickColors(extracted.tokens?.colors);
+  const colors = pickColors(extracted.tokens?.colors, extracted.components, extracted.page);
   if (colors.low) needsReview.push("colors");
 
   const description =
@@ -284,9 +357,19 @@ export function extractedStyleToManifest(
   if (!options.name) needsReview.push("name");
   if (!options.description) needsReview.push("description");
 
-  const aiRules = synthesizeAiRules(colors, extracted.tokens?.typography);
+  const details = designDetails(extracted, colors.samples);
+  const previewAssets = parsePreviewAssets({
+    ...(extracted.fonts?.length ? { fonts: extracted.fonts } : {}),
+    motion: Object.fromEntries(PREVIEW_COMPONENT_KEYS.flatMap((key) =>
+      colors.samples[key]?.motion ? [[key, colors.samples[key]!.motion]] : [],
+    )),
+  });
+  const hasAssets = Boolean(previewAssets?.fonts?.length || Object.keys(previewAssets?.motion ?? {}).length);
+  const aiRules = [...synthesizeAiRules(colors, details), ...assetRules(previewAssets)];
+  if (!details.bodyFont || !details.fontSizeBase) needsReview.push("typography");
+  if (!colors.samples.button && !colors.samples.card && !colors.samples.input) needsReview.push("components");
 
-  return {
+  const result: ExtractToManifestResult = {
     manifest: {
       schemaVersion: "1.0.0",
       formData: {
@@ -303,6 +386,11 @@ export function extractedStyleToManifest(
         accentColors: colors.accents,
         keywords: [],
         aiRules,
+        ...details,
+        ...(hasAssets ? { previewAssets } : {}),
+        buttonCode: componentSampleCode("button", colors.samples.button),
+        cardCode: componentSampleCode("card", colors.samples.card),
+        inputCode: componentSampleCode("input", colors.samples.input),
       },
       source: {
         assistant: "other",
@@ -312,4 +400,13 @@ export function extractedStyleToManifest(
     },
     needsReview,
   };
+  // Leave at least 32 KiB for form edits and the API envelope. Fonts are the
+  // optional bulk: retain their source references if the full sample is large.
+  const manifestBudget = 480 * 1024;
+  for (const font of [...(previewAssets?.fonts ?? [])].reverse()) {
+    if (new TextEncoder().encode(JSON.stringify(result.manifest)).length <= manifestBudget) break;
+    delete font.dataUrl;
+  }
+  if (previewAssets?.fonts?.some((font) => !font.dataUrl)) needsReview.push("fonts");
+  return result;
 }

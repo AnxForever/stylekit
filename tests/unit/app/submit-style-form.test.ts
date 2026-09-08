@@ -3,9 +3,11 @@ import { describe, expect, it } from "vitest";
 import {
   EMPTY_STYLE_FORM,
   formToPromptInput,
+  manifestToForm,
   toManifest,
 } from "@/app/submit/_style-form";
 import { validateStyleSubmissionManifest } from "@/lib/submit/manifest-validator";
+import { deriveDesignStyle } from "@/lib/submission/adapters/style";
 
 const BASE = {
   ...EMPTY_STYLE_FORM,
@@ -82,4 +84,46 @@ describe("submit form -> preview prompt input", () => {
 
     expect(input.styleName).toBe("霓虹和纸");
   });
+});
+
+
+describe("extracted manifest -> editable form -> submission", () => {
+  it("preserves measured components, typography, accents and the source", () => {
+    const source = { assistant: "other" as const, model: "style-extractor", notes: "Extracted from https://example.com" };
+    const formData = {
+      nameEn: "Field Notes", slug: "field-notes", description: "Warm paper and orange actions.",
+      primaryColor: "#de5b35", secondaryColor: "#ffffff", background: "#f3efe4", foreground: "#172c23",
+      aiRules: ["Use orange actions.", "Use Georgia, serif.", "Keep the measured component shapes."],
+      accentColors: ["#436345"], bodyFont: "Georgia, serif", headingFont: "Georgia, serif",
+      fontSizeBase: "16px", fontSizeHeading: "64px", borderRadius: "32px",
+      buttonCode: '<button style="border-radius: 32px">Start</button>',
+      cardCode: '<article style="padding: 32px">A card</article>',
+      inputCode: '<input style="border-radius: 32px" aria-label="Email" />',
+    };
+    const assets = { coverSvg: '<svg viewBox="0 0 10 10"></svg>' };
+    const form = manifestToForm(formData, { source, assets });
+    const parsed = validateStyleSubmissionManifest(toManifest({ ...form, nameEn: "Edited name" }));
+    expect(parsed.ok).toBe(true);
+    if (!parsed.ok) return;
+    for (const key of ["buttonCode", "cardCode", "inputCode", "bodyFont", "headingFont", "fontSizeBase", "fontSizeHeading", "borderRadius", "accentColors"] as const) {
+      expect(parsed.data.formData[key]).toEqual(formData[key]);
+    }
+    expect(parsed.data.formData.nameEn).toBe("Edited name");
+    expect(parsed.data.assets).toEqual(assets);
+    expect(parsed.data.source).toEqual(source);
+  });
+});
+
+
+it("keeps fonts and motion through editing, validation and the published style adapter", () => {
+  const previewAssets = {
+    fonts: [{ family: "Captured Face", sourceUrl: "https://example.com/font.woff2", weight: "100 900" }],
+    motion: { button: { transition: { property: "transform", duration: "0.3s", timingFunction: "ease", delay: "0s" }, states: { hover: { transform: "translateY(-4px)" } } } },
+  };
+  const form = manifestToForm({ ...BASE, aiRules: BASE.rules.split("\n"), previewAssets });
+  const parsed = validateStyleSubmissionManifest(toManifest({ ...form, nameEn: "Edited name" }));
+  expect(parsed.ok).toBe(true);
+  if (!parsed.ok) return;
+  expect(parsed.data.formData.previewAssets).toEqual(previewAssets);
+  expect(deriveDesignStyle(parsed.data.formData, "").previewAssets).toEqual(previewAssets);
 });

@@ -1,6 +1,11 @@
 "use client";
 
 import { useMemo, useRef, useState } from "react";
+import dynamic from "next/dynamic";
+import type { ComponentTemplate } from "@/lib/styles/types";
+import type { ValidatedWizardFormData } from "@/lib/submit/validator";
+import { parsePreviewAssets, type PreviewAssets } from "@/lib/style-preview/preview-assets";
+import type { StyleSubmissionManifest } from "@/lib/submit/manifest-validator";
 import { COPY, type SubmitLocale } from "./_copy";
 import { buildPromptPair, type PromptPairInput } from "@/lib/styles/prompt-pair";
 
@@ -14,6 +19,18 @@ import { buildPromptPair, type PromptPairInput } from "@/lib/styles/prompt-pair"
  * collects exactly that, and hands the same manifest shape to the same API, so
  * both routes share one validator and one gate set.
  */
+
+const ComponentPreview = dynamic(() =>
+  import("@/components/style-preview/component-preview").then((module) => module.ComponentPreview),
+);
+
+// Preserve supported design fields that are not edited by this compact form.
+const DETAIL_FIELDS = [
+  "headingFont", "bodyFont", "fontSizeBase", "fontSizeHeading", "fontSizeSmall",
+  "fontWeightNormal", "fontWeightBold", "lineHeightNormal", "lineHeightTight",
+  "borderRadius", "spacingSm", "spacingMd", "spacingLg",
+] as const;
+type StyleDetails = Partial<Pick<ValidatedWizardFormData, typeof DETAIL_FIELDS[number]>>;
 
 const CATEGORIES = ["modern", "retro", "minimal", "expressive"] as const;
 const STYLE_TYPES = ["visual", "layout"] as const;
@@ -46,6 +63,12 @@ export interface StyleFormValue {
   dontList: string;
   keywords: string;
   buttonCode: string;
+  cardCode: string;
+  inputCode: string;
+  accentColors: string[];
+  details: StyleDetails;
+  previewAssets?: PreviewAssets;
+  source?: StyleSubmissionManifest["source"];
   coverSvg: string;
 }
 
@@ -65,6 +88,10 @@ export const EMPTY_STYLE_FORM: StyleFormValue = {
   dontList: "",
   keywords: "",
   buttonCode: "",
+  cardCode: "",
+  inputCode: "",
+  accentColors: [],
+  details: {},
   coverSvg: "",
 };
 
@@ -74,7 +101,10 @@ export const EMPTY_STYLE_FORM: StyleFormValue = {
  * derived. Arrays collapse back to the textarea/CSV shapes the form edits;
  * anything absent falls back to the empty defaults.
  */
-export function manifestToForm(formData: Record<string, unknown>): StyleFormValue {
+export function manifestToForm(
+  formData: Record<string, unknown>,
+  envelope?: { assets?: { coverSvg?: unknown }; source?: StyleSubmissionManifest["source"] },
+): StyleFormValue {
   const str = (v: unknown, fallback = ""): string =>
     typeof v === "string" && v.trim() ? v : fallback;
   const list = (v: unknown): string[] =>
@@ -95,8 +125,16 @@ export function manifestToForm(formData: Record<string, unknown>): StyleFormValu
     doList: list(formData.doList).join("\n"),
     dontList: list(formData.dontList).join("\n"),
     keywords: list(formData.keywords).join(", "),
-    buttonCode: "",
-    coverSvg: "",
+    buttonCode: str(formData.buttonCode),
+    cardCode: str(formData.cardCode),
+    inputCode: str(formData.inputCode),
+    accentColors: list(formData.accentColors),
+    previewAssets: parsePreviewAssets(formData.previewAssets),
+    details: Object.fromEntries(DETAIL_FIELDS.flatMap((key) =>
+      str(formData[key]) ? [[key, str(formData[key])]] : [],
+    )),
+    coverSvg: str(envelope?.assets?.coverSvg),
+    source: envelope?.source,
   };
 }
 
@@ -161,7 +199,11 @@ export function toManifest(value: StyleFormValue) {
   const keywords = splitKeywords(value.keywords);
 
   return {
+    ...(value.source ? { source: value.source } : {}),
     formData: {
+      ...Object.fromEntries(DETAIL_FIELDS.flatMap((key) =>
+        value.details?.[key] ? [[key, value.details[key]]] : [],
+      )),
       name: value.name.trim() || value.nameEn.trim(),
       nameEn: value.nameEn.trim() || value.name.trim(),
       slug: value.slug.trim().toLowerCase(),
@@ -179,6 +221,10 @@ export function toManifest(value: StyleFormValue) {
       ...(dontList.length ? { dontList } : {}),
       ...(keywords.length ? { keywords } : {}),
       ...(value.buttonCode.trim() ? { buttonCode: value.buttonCode.trim() } : {}),
+      ...(value.cardCode?.trim() ? { cardCode: value.cardCode.trim() } : {}),
+      ...(value.inputCode?.trim() ? { inputCode: value.inputCode.trim() } : {}),
+      ...(value.accentColors?.length ? { accentColors: value.accentColors } : {}),
+      ...(value.previewAssets ? { previewAssets: value.previewAssets } : {}),
     },
     ...(value.coverSvg.trim()
       ? { assets: { coverSvg: value.coverSvg.trim() } }
@@ -452,12 +498,24 @@ export function StyleForm({
 
   const ruleCount = value.rules.split("\n").filter((line) => line.trim()).length;
 
-  const colorFields: [keyof StyleFormValue, string][] = [
+  const previewComponents = useMemo(() => {
+    const components: Record<string, ComponentTemplate> = {};
+    for (const [key, code, name] of [
+      ["button", value.buttonCode, t.componentButton],
+      ["card", value.cardCode, t.componentCard],
+      ["input", value.inputCode, t.componentInput],
+    ] as const) {
+      if (code?.trim()) components[key] = { name, description: t.componentSample, code };
+    }
+    return components;
+  }, [value.buttonCode, value.cardCode, value.inputCode, t]);
+
+  const colorFields = [
     ["primaryColor", t.colorPrimary],
     ["secondaryColor", t.colorSecondary],
     ["background", t.colorBackground],
     ["foreground", t.colorForeground],
-  ];
+  ] as const;
 
   return (
     <div className="space-y-6">
@@ -560,21 +618,40 @@ export function StyleForm({
               <div className="mt-1 flex items-center gap-2">
                 <input
                   type="color"
-                  value={value[key] as string}
-                  onChange={(event) => set(key, event.target.value as never)}
+                  value={value[key]}
+                  onChange={(event) => set(key, event.target.value)}
                   className="h-9 w-9 shrink-0 cursor-pointer rounded border border-border bg-transparent"
                   aria-label={label}
                 />
                 <input
                   className="w-full rounded-md border border-border bg-transparent px-2 py-1.5 font-mono text-xs focus:border-foreground focus:outline-none"
-                  value={value[key] as string}
-                  onChange={(event) => set(key, event.target.value as never)}
+                  value={value[key]}
+                  onChange={(event) => set(key, event.target.value)}
                 />
               </div>
             </label>
           ))}
         </div>
       </div>
+
+      {Object.keys(previewComponents).length > 0 ? (
+        <section aria-label={t.componentPreviewTitle} className="space-y-3">
+          <div>
+            <h3 className="font-mono text-xs uppercase tracking-[0.15em] text-muted-foreground">
+              {t.componentPreviewTitle}
+            </h3>
+            <p className="mt-1 text-xs leading-relaxed text-muted-foreground">{t.componentPreviewHint}</p>
+          </div>
+          <ComponentPreview
+            key={Object.keys(previewComponents).join("-")}
+            components={previewComponents}
+            defaultShowCode={false}
+            previewBackground={value.background}
+            previewForeground={value.foreground}
+            previewAssets={value.previewAssets}
+          />
+        </section>
+      ) : null}
 
       <div>
         <div className="flex flex-wrap items-baseline justify-between gap-2">
@@ -648,6 +725,22 @@ export function StyleForm({
                 value={value.buttonCode}
                 onChange={(event) => set("buttonCode", event.target.value)}
                 placeholder='<button className="px-4 py-2">Action</button>'
+              />
+            </Field>
+            <Field label={t.fieldCardCode}>
+              <textarea
+                className={`${inputClass} resize-none font-mono text-xs`}
+                rows={3}
+                value={value.cardCode}
+                onChange={(event) => set("cardCode", event.target.value)}
+              />
+            </Field>
+            <Field label={t.fieldInputCode}>
+              <textarea
+                className={`${inputClass} resize-none font-mono text-xs`}
+                rows={3}
+                value={value.inputCode}
+                onChange={(event) => set("inputCode", event.target.value)}
               />
             </Field>
             <Field label={t.fieldCoverSvg}>

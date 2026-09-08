@@ -14,9 +14,11 @@ import { fileURLToPath } from "node:url";
 
 import { chromium, type Browser } from "playwright-core";
 
-import { extractedStyleToManifest, type ExtractToManifestResult } from "@/lib/submit/extract-to-manifest";
+import { capturePageStyles } from "@/lib/submit/capture-page-styles";
+import { extractedStyleToManifest, type ExtractedStyle, type ExtractToManifestResult } from "@/lib/submit/extract-to-manifest";
 
 import { hostResolverRules } from "@/lib/security/ssrf";
+import { beginEnhancementCapture } from "./capture-enhancements";
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 
@@ -83,14 +85,23 @@ export async function extractManifest(input: ExtractInput): Promise<ExtractToMan
         const context = await browser.newContext({
           viewport: { width: 1440, height: 900 },
           javaScriptEnabled: true,
+          reducedMotion: "reduce",
           serviceWorkers: "block",
         });
         // Never let the page navigate the service to a non-public address via a
         // redirect: re-check every main-frame navigation target.
         const page = await context.newPage();
+        const enhancements = await beginEnhancementCapture(page);
 
         await page.goto(input.url, { waitUntil: "domcontentloaded", timeout: NAV_TIMEOUT_MS });
+        // Let delayed styles/fonts settle without waiting indefinitely on ads
+        // or live connections. Reduced motion avoids capturing entrance states.
+        await page.waitForLoadState("load", { timeout: 5_000 }).catch(() => {});
+        await page.waitForFunction(() => document.fonts.status === "loaded", undefined, { timeout: 2_000 }).catch(() => {});
         await page.waitForTimeout(1500);
+        const captured = await page.evaluate(capturePageStyles);
+        await enhancements.capture(captured);
+        await enhancements.stop();
 
         for (const content of scripts) {
           await page.addScriptTag({ content });
@@ -114,7 +125,12 @@ export async function extractManifest(input: ExtractInput): Promise<ExtractToMan
         const normalized = (data as { stylekit?: { normalized?: unknown } })?.stylekit?.normalized;
         if (!normalized) throw new Error("no-normalized-output");
 
-        return extractedStyleToManifest(normalized as never, {
+        return extractedStyleToManifest({
+          ...normalized as ExtractedStyle,
+          page: captured.page,
+          fonts: captured.fonts,
+          components: { ...(normalized as ExtractedStyle).components, ...captured.components },
+        }, {
           url: input.url,
           ...(input.options ?? {}),
         });

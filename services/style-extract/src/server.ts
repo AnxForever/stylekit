@@ -20,6 +20,9 @@ import { extractManifest } from "./extract";
 
 const TOKEN = process.env.EXTRACT_TOKEN ?? "";
 const PORT = Number(process.env.PORT ?? 8790);
+// Bind to loopback by default: the service is reached through the host's nginx
+// (or an explicit HOST), never exposed to the public internet directly.
+const HOST = process.env.HOST ?? "127.0.0.1";
 const MIN_FREE_MB = Number(process.env.EXTRACT_MIN_FREE_MB ?? 400);
 const MAX_BODY_BYTES = 8 * 1024;
 
@@ -127,9 +130,9 @@ const server = createServer(async (req, res) => {
 server.requestTimeout = 90_000;
 server.headersTimeout = 10_000;
 
-server.listen(PORT, () => {
+server.listen(PORT, HOST, () => {
   if (!TOKEN) {
     process.stderr.write("[style-extract] WARNING: EXTRACT_TOKEN unset — all requests will be denied.\n");
   }
-  process.stdout.write(`[style-extract] listening on :${PORT} (min free ${MIN_FREE_MB}MB)\n`);
+  process.stdout.write(`[style-extract] listening on ${HOST}:${PORT} (min free ${MIN_FREE_MB}MB)\n`);
 });

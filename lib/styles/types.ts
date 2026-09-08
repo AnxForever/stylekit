@@ -1,5 +1,6 @@
 import type { StyleAtoms } from "./atoms";
 import type { StyleTag } from "./meta-types";
+import type { PreviewAssets } from "@/lib/style-preview/preview-assets";
 
 export interface StyleVariant {
   id: string;
@@ -56,6 +57,7 @@ export interface DesignStyle {
   descriptionEn?: string;
   tailwindConfig?: string;
   globalCss: string;
+  previewAssets?: PreviewAssets;
   aiRules: string;
   aiRulesEn?: string;
 

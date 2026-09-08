@@ -1,5 +1,7 @@
 import { describe, it, expect } from "vitest";
-import { scoreStyle, scoreAllStyles } from "@/lib/accessibility/scorer";
+import { scoreStyle, scoreAllStyles, scoreStyleData } from "@/lib/accessibility/scorer";
+import { getStyleTokens } from "@/lib/styles/tokens-registry";
+import { getStyleBySlug } from "@/lib/styles/registry";
 
 describe("accessibility-scorer", () => {
   describe("scoreStyle", () => {
@@ -84,6 +86,36 @@ describe("accessibility-scorer", () => {
         expect(score.contrast).toBeDefined();
         expect(score.readability).toBeDefined();
       }
+    });
+  });
+
+  // Submissions are not registered yet, so scoreStyle() returns null for them.
+  // scoreStyleData is the data-driven path that can score them anyway.
+  describe("scoreStyleData", () => {
+    it("scores colors and tokens that are not in the registry", () => {
+      const result = scoreStyleData(
+        { primary: "#000000", secondary: "#ffffff", accent: ["#ff0000"] },
+        getStyleTokens("neo-brutalist"),
+      );
+      expect(result.overall).toBeGreaterThanOrEqual(0);
+      expect(result.overall).toBeLessThanOrEqual(100);
+      expect(["A", "B", "C", "D", "F"]).toContain(result.grade);
+    });
+
+    it("still scores when no tokens are available", () => {
+      const result = scoreStyleData(
+        { primary: "#111111", secondary: "#fafafa", accent: ["#2563eb"] },
+        undefined,
+      );
+      expect(typeof result.overall).toBe("number");
+      expect(result.contrast.pairs.length).toBeGreaterThan(0);
+    });
+
+    it("matches scoreStyle for a registered style", () => {
+      const style = getStyleBySlug("neo-brutalist")!;
+      expect(scoreStyleData(style.colors, getStyleTokens("neo-brutalist"))).toEqual(
+        scoreStyle("neo-brutalist"),
+      );
     });
   });
 });
