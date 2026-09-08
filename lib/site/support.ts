@@ -78,6 +78,32 @@ export const supportPageCopy = {
   },
 } as const;
 
+// Direct inbox for commercial enquiries. Public GitHub channels stay the
+// default for product questions; this is the private path for anything that
+// does not belong in a public thread.
+export const businessContactEmail = "anxforever@qq.com";
+
+export const businessContactCopy = {
+  en: {
+    eyebrow: "Business",
+    title: "Commercial and partnership enquiries",
+    description:
+      "For licensing, sponsored styles, content collaborations, or anything else that does not belong in a public thread, email me directly. Include your team, what you have in mind, and your timeline so I can reply with something useful.",
+    actionLabel: "Email",
+    subject: "StyleKit partnership enquiry",
+    note: "Product questions and bug reports are faster through the public channels below.",
+  },
+  zh: {
+    eyebrow: "商业合作",
+    title: "商业合作与授权咨询",
+    description:
+      "企业授权、定制风格、内容合作，或者其他不适合公开讨论的事情，直接发邮件给我。麻烦在邮件里写清楚团队情况、合作设想和时间预期，我好一次性回复到点上。",
+    actionLabel: "发邮件",
+    subject: "StyleKit 商业合作咨询",
+    note: "产品咨询和 Bug 反馈走下面的公开渠道会更快。",
+  },
+} as const;
+
 // Add future QR methods by placing images under public/support/ and appending
 // new items here with kind: "qr" and imageSrc set to the new asset path.
 export const supportMethods: SupportMethod[] = [

@@ -2,10 +2,10 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowUpRight, Heart, QrCode, Server } from "lucide-react";
+import { ArrowUpRight, Heart, Mail, QrCode, Server } from "lucide-react";
 import { useI18n } from "@/lib/i18n/context";
 import { localizeHref } from "@/lib/i18n/routing";
-import { supportMethods, supportLinks, supportPageCopy } from "@/lib/site/support";
+import { supportMethods, supportLinks, supportPageCopy, businessContactCopy, businessContactEmail } from "@/lib/site/support";
 import { ThankYouList } from "@/components/support/thank-you-list";
 import { FeedbackForm } from "@/components/feedback/feedback-form";
 import type { ThankYouEntry } from "@/lib/site/support";
@@ -26,6 +26,7 @@ function SectionRail({ index, label }: { index: string; label: string }) {
 export function SupportContent({ thankYouEntries }: { thankYouEntries: ThankYouEntry[] }) {
   const { locale } = useI18n();
   const copy = supportPageCopy[locale];
+  const business = businessContactCopy[locale];
 
   return (
     <div>
@@ -54,11 +55,32 @@ export function SupportContent({ thankYouEntries }: { thankYouEntries: ThankYouE
       </section>
 
       <section
+        id="business"
+        className="scroll-mt-24 border-t border-border py-10 md:grid md:grid-cols-[200px_minmax(0,1fr)] md:gap-10 md:py-14"
+      >
+        <div className="mb-4 md:mb-0">
+          <SectionRail index="02" label={business.eyebrow} />
+        </div>
+        <div>
+          <h2 className="max-w-2xl text-2xl leading-tight md:text-3xl">{business.title}</h2>
+          <p className="mt-3 max-w-2xl text-sm leading-6 text-muted">{business.description}</p>
+          <a
+            href={`mailto:${businessContactEmail}?subject=${encodeURIComponent(business.subject)}`}
+            className="group mt-6 inline-flex items-center gap-2 border border-foreground bg-foreground px-4 py-2 text-sm text-background transition-colors hover:bg-transparent hover:text-foreground"
+          >
+            <Mail className="h-4 w-4" />
+            <span className="font-mono text-[13px]">{businessContactEmail}</span>
+          </a>
+          <p className="mt-4 text-[11px] leading-5 text-muted">{business.note}</p>
+        </div>
+      </section>
+
+      <section
         id="support-maintenance"
         className="scroll-mt-24 border-t border-border py-10 md:grid md:grid-cols-[200px_minmax(0,1fr)] md:gap-10 md:py-14"
       >
         <div className="mb-4 md:mb-0">
-          <SectionRail index="02" label={copy.eyebrow} />
+          <SectionRail index="03" label={copy.eyebrow} />
         </div>
         <div>
           <h2 className="max-w-2xl text-2xl leading-tight md:text-3xl">{copy.title}</h2>
