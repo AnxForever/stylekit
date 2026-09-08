@@ -8,6 +8,10 @@ vi.mock("@/lib/admin/audit-log", () => ({
   recordAdminAuditEvent: vi.fn(),
 }));
 
+vi.mock("@/lib/site-announcements", () => ({
+  clearSiteAnnouncementCache: vi.fn(),
+}));
+
 vi.mock("@/lib/supabase/server", () => ({
   getSupabaseAdmin: vi.fn(),
 }));
@@ -15,10 +19,12 @@ vi.mock("@/lib/supabase/server", () => ({
 import { GET, PUT } from "@/app/api/admin/site-announcement/route";
 import { checkAdminApiAccess } from "@/lib/auth/admin-api";
 import { recordAdminAuditEvent } from "@/lib/admin/audit-log";
+import { clearSiteAnnouncementCache } from "@/lib/site-announcements";
 import { getSupabaseAdmin } from "@/lib/supabase/server";
 
 const mockedCheckAdminApiAccess = vi.mocked(checkAdminApiAccess);
 const mockedRecordAdminAuditEvent = vi.mocked(recordAdminAuditEvent);
+const mockedClearSiteAnnouncementCache = vi.mocked(clearSiteAnnouncementCache);
 const mockedGetSupabaseAdmin = vi.mocked(getSupabaseAdmin);
 
 afterEach(() => {
@@ -129,5 +135,6 @@ describe("admin site announcement API", () => {
         metadata: { enabled: true },
       }),
     );
+    expect(mockedClearSiteAnnouncementCache).toHaveBeenCalledWith("zh-CN");
   });
 });
