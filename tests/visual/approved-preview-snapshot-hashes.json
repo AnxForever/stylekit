@@ -1,7 +1,7 @@
 {
-  "baselineCommit": "6cfb4165",
+  "baselineCommit": "8bb788be",
   "algorithm": "sha256",
-  "count": 292,
+  "count": 296,
   "files": {
     "acid-graphics-cover-chromium-linux.png": "e592e10afe644e1f9052266d72eb77a8434e48913c105ac259889e6938d4cbad",
     "acid-graphics-cover-mobile-chrome-linux.png": "fcf5da91d0b64b6e47548ff07c1483d9c2cccd0e7c6b98ce613cd7072ce168e5",
@@ -25,6 +25,8 @@
     "bento-grid-cover-mobile-chrome-linux.png": "14d307f981f4bfa558cbf03ed10af92160ce08ee5b5d7ccf7f5e2969567cb9e8",
     "blueprint-cover-chromium-linux.png": "ee3fafc9a7832038044bc02408cae4ae3a8af6eb3e4fac0ef2ea57a3e6727ac2",
     "blueprint-cover-mobile-chrome-linux.png": "9afd1bd6510d0d0accc645fc158850f0aa1b8486aeb0e59ffd1b99410ea0b2a0",
+    "broadcast-glitch-cover-chromium-linux.png": "2893c923595f9049b483b4ff540e90b8d7cb9df8de828233a165b7722ae0fb4d",
+    "broadcast-glitch-cover-mobile-chrome-linux.png": "2f26b8052965531cbe641c146df878c44fa721337f59a60b7b2f33fe7fd061ba",
     "brutalist-web-cover-chromium-linux.png": "fa901fa47990b6cf224848c475a0713215adf271d03e163c1f501a609ef39684",
     "brutalist-web-cover-mobile-chrome-linux.png": "0e3c3c92128531fb463e2cd74dbc9dea410e101a4d01411b22f472b00059f66c",
     "card-stack-cover-chromium-linux.png": "b1be4cf5f32c972fd0d2b59afe1b76899baf91cc1756767923fee88a8a62adf5",
@@ -129,6 +131,8 @@
     "jrpg-cover-mobile-chrome-linux.png": "707c808b83a08cb8b9d46f38993c2547eb873c413f8712213459c3c3332f9844",
     "kawaii-minimal-cover-chromium-linux.png": "39b767b7c9a02b560b0fce134b5a7b27b041bd866797a7e54353c479dc0d98c0",
     "kawaii-minimal-cover-mobile-chrome-linux.png": "b39d108263d4fbf1bbc4212b15bbcd368d99c3354ba0de1ae7dc791458edf88c",
+    "kinetic-constructivism-cover-chromium-linux.png": "a66b859e570b582c53d554b43d86b2dd294a8837767389f709c0a8aa86ea96ca",
+    "kinetic-constructivism-cover-mobile-chrome-linux.png": "fcf20030a88bea6f43fcce09e888c891ef10d2144d19206301035eb2c8c4a215",
     "kinetic-typography-cover-chromium-linux.png": "3aaa94aae44d40dc8c611551415e50891f93216bf9942c77230c8e3776aa869f",
     "kinetic-typography-cover-mobile-chrome-linux.png": "f1ed416e7c20bb16c1fcad3eb3db03b1f3b2b4de4a90e0df6c9f5f4403c261c1",
     "korean-minimal-cover-chromium-linux.png": "6fc031841f1471b5022bd5d1d5943ef556e09b527a58cab915f7b4432769e05c",

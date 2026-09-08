@@ -227,6 +227,12 @@ const SCENARIO_ASSIGNMENTS: Record<string, StyleScenario[]> = {
   "pastel-ui": ["ecommerce", "saas", "creative"],
   "mobile-editorial": ["editorial", "blog", "creative"],
   "soft-utility": ["admin", "dashboard", "saas"],
+
+  // --- Motion graphics batch (2026-09-02) ---
+  // Both are motion-first idents rather than page systems, so they land where
+  // their siblings do: kinetic-typography and glitch-art.
+  "kinetic-constructivism": ["creative", "marketing", "portfolio"],
+  "broadcast-glitch": ["creative", "portfolio", "marketing"],
 };
 
 // Safety net for styles created outside the registry (e.g. runtime-generated

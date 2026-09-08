@@ -1103,6 +1103,30 @@
     "zhBullets": 118,
     "enBullets": 94
   },
+  "kinetic-constructivism": {
+    "zh": 15792,
+    "en": 21473,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 54,
+    "enFences": 54,
+    "zhHeadings": 58,
+    "enHeadings": 56,
+    "zhBullets": 148,
+    "enBullets": 133
+  },
+  "broadcast-glitch": {
+    "zh": 14525,
+    "en": 19817,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 56,
+    "enFences": 56,
+    "zhHeadings": 58,
+    "enHeadings": 56,
+    "zhBullets": 135,
+    "enBullets": 120
+  },
   "kinetic-typography": {
     "zh": 15642,
     "en": 18876,

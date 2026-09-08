@@ -1,6 +1,6 @@
 {
-  "baselineCommit": "6cfb4165",
-  "count": 143,
+  "baselineCommit": "8bb788be",
+  "count": 145,
   "slugs": [
     "acid-graphics",
     "african-textile",
@@ -13,6 +13,7 @@
     "bauhaus",
     "bento-grid",
     "blueprint",
+    "broadcast-glitch",
     "brutalist-web",
     "card-stack",
     "cel-shading",
@@ -65,6 +66,7 @@
     "japanese-fresh",
     "jrpg",
     "kawaii-minimal",
+    "kinetic-constructivism",
     "kinetic-typography",
     "korean-minimal",
     "latex-paper",
