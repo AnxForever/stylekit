@@ -34,6 +34,16 @@ function isSocialCrawler(userAgent: string): boolean {
   return SOCIAL_CRAWLER_RE.test(userAgent);
 }
 
+// Search and AI crawlers fetch without cookies or Accept-Language, so locale
+// negotiation can never learn anything about them; they need the deterministic
+// answer instead.
+const SEARCH_BOT_RE =
+  /Googlebot|Google-InspectionTool|bingbot|Baiduspider|YandexBot|DuckDuckBot|Slurp|GPTBot|OAI-SearchBot|ChatGPT-User|PerplexityBot|ClaudeBot|Amazonbot|Applebot/i;
+
+function isSearchBot(userAgent: string): boolean {
+  return SEARCH_BOT_RE.test(userAgent);
+}
+
 function isAdminRoute(pathname: string): boolean {
   return pathname === "/admin" || pathname.startsWith("/admin/");
 }
@@ -90,20 +100,17 @@ export async function proxy(request: NextRequest) {
   if (
     !localeInPath &&
     !shouldBypassLocale(incomingPath) &&
-    effectivePath.startsWith("/colors")
+    (effectivePath === "/colors" || effectivePath.startsWith("/colors/"))
   ) {
     // Unprefixed /colors/* has no language-negotiated value for crawlers:
     // Googlebot (no cookie, no Accept-Language) saw both /en/ and /zh/ as
     // 307 targets on different crawls and keeps the unprefixed URL indexed
     // as a locale selector, splitting impressions between /colors/x and
-    // /en/colors/x. Answer language-less requests with a deterministic
-    // permanent redirect; humans with a language preference keep the 307
-    // negotiation below.
+    // /en/colors/x. Answer crawler requests with a deterministic permanent
+    // redirect; humans keep the 307 negotiation below even without a
+    // language preference, so their choice is never pinned permanently.
     const ua = request.headers.get("user-agent") || "";
-    const hasLanguagePreference =
-      isLocale(localeCookieValue) ||
-      Boolean(request.headers.get("accept-language"));
-    if (!isSocialCrawler(ua) && !hasLanguagePreference) {
+    if (isSearchBot(ua)) {
       const permanentUrl = request.nextUrl.clone();
       permanentUrl.pathname = addLocaleToPathname(incomingPath, DEFAULT_LOCALE);
       return NextResponse.redirect(permanentUrl, 308);
@@ -139,11 +146,15 @@ export async function proxy(request: NextRequest) {
     const redirectUrl = request.nextUrl.clone();
     redirectUrl.pathname = addLocaleToPathname(incomingPath, preferredLocale || DEFAULT_LOCALE);
     const response = NextResponse.redirect(redirectUrl);
-    response.cookies.set(LOCALE_COOKIE_NAME, preferredLocale || DEFAULT_LOCALE, {
-      path: "/",
-      sameSite: "lax",
-      maxAge: 60 * 60 * 24 * 365,
-    });
+    // A prefetch carries no user intent; letting it write the locale cookie
+    // could silently pin the visitor's language from a background request.
+    if (!prefetchRequest) {
+      response.cookies.set(LOCALE_COOKIE_NAME, preferredLocale || DEFAULT_LOCALE, {
+        path: "/",
+        sameSite: "lax",
+        maxAge: 60 * 60 * 24 * 365,
+      });
+    }
     return response;
   }
 
