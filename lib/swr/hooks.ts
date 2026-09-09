@@ -3,7 +3,6 @@
 import useSWR from "swr";
 import type { StyleMeta } from "@/lib/styles/meta";
 import type { StyleStatsPayload } from "@/lib/styles/catalog-stats";
-import type { DashboardData, DashboardRange } from "@/lib/admin/analytics-dashboard";
 import type {
   KnowledgeAdminPublicationsData,
   KnowledgeAdminResourcesData,
@@ -137,14 +136,6 @@ export function useStyleComments(slug: string, limit = 10) {
   return useSWR<CommentsData>(
     slug ? `/api/styles/${slug}/comments?limit=${limit}` : null
   );
-}
-
-export function useAnalyticsDashboard(range: DashboardRange = "7d") {
-  return useSWR<DashboardData>(`/api/admin/analytics?range=${range}`, {
-    keepPreviousData: true,
-    dedupingInterval: 15_000,
-    revalidateOnFocus: false,
-  });
 }
 
 export function useAnalyticsOverview(
@@ -651,7 +642,6 @@ export type {
   RatingData,
   Comment,
   CommentsData,
-  DashboardData,
   AdminAuditActor,
   AdminAuditEvent,
   AdminAuditData,

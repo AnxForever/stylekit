@@ -130,6 +130,8 @@ export const SHOWCASE_SEQUENCE: readonly ShowcaseSequenceEntry[] = [
   ["indian-festive", "Indian Festive"],
   ["african-textile", "African Textile"],
   ["kinetic-typography", "Kinetic Typography"],
+  ["kinetic-constructivism", "Kinetic Constructivism"],
+  ["broadcast-glitch", "Broadcast Glitch"],
   ["korean-minimal", "Korean Minimal"],
   ["pastel-goth", "Pastel Goth"],
   ["maximalism", "Maximalism"],

@@ -36,7 +36,9 @@ const PUBLIC_SEO_SOURCES = [
   "lib/i18n/translations-zh.ts",
   "lib/prompts/topics.ts",
   "lib/seo/site-metadata.ts",
+  ".github/ISSUE_TEMPLATE/config.yml",
 ];
+const OVERSTATED_COUNT_PATTERN = /\b(\d{2,4})\s*\+\s*(?:curated\s+)?styles?\b/gi;
 const STALE_PUBLIC_COUNT_PATTERN = /\b(?:135|136|140|143)\s*(?:\+|styles?|visual|种|curated)|\b(?:135|136|140|143)-style/i;
 // README copy still quotes catalog sizes, so pin every quoted number to the
 // registry that owns it. A claim that is absent is fine (evergreen copy);
@@ -98,6 +100,21 @@ async function main(): Promise<void> {
       });
     }
 
+    // "N+ styles" reads as a floor, so it is only honest while N <= the
+    // registry. The stale-count pattern above pins a fixed list of old
+    // numbers and cannot catch a claim that rounds upward instead.
+    for (const match of content.matchAll(OVERSTATED_COUNT_PATTERN)) {
+      const claimed = Number(match[1]);
+      if (claimed > CURATED_STYLE_COUNT) {
+        issues.push({
+          source,
+          message:
+            `claims ${claimed}+ styles but the registry has ${CURATED_STYLE_COUNT}; `
+            + "use CURATED_STYLE_COUNT or count-free evergreen copy",
+        });
+      }
+    }
+
     if (!README_SOURCES.includes(source)) continue;
 
     for (const claim of README_COUNT_CLAIMS) {
@@ -128,7 +145,9 @@ async function main(): Promise<void> {
     });
   }
 
-  const entries = sitemap();
+  // The sitemap became async when community promotion entries were added;
+  // without the await it returns a Promise and iteration throws.
+  const entries = await sitemap();
   const seen = new Set<string>();
   const redirectPaths = new Set([
     "/en/prompts",
