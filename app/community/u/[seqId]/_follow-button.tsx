@@ -1,15 +1,15 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { UserCheck, UserPlus } from "lucide-react";
 
 /**
  * Follow control on a contributor page.
  *
- * The initial state is fetched client-side rather than rendered on the server:
- * the page itself is cacheable per contributor, but "do I follow this person"
- * differs per reader, and baking it into the page would make that cache
- * per-viewer for one small piece of UI.
+ * The server resolves the public follower total and the reader-specific
+ * following state. Keeping those values as initial props avoids a loading
+ * flash and, more importantly, prevents a second client request from
+ * overwriting the server-rendered state during hydration.
  */
 
 const COPY = {
@@ -33,34 +33,21 @@ export function FollowButton({
   seqId,
   locale,
   isSelf,
+  initialFollowers,
+  initialFollowing,
 }: {
   seqId: number;
   locale: "en" | "zh";
   isSelf: boolean;
+  initialFollowers: number;
+  initialFollowing: boolean;
 }) {
   const t = COPY[locale];
-  const [followers, setFollowers] = useState<number | null>(null);
-  const [following, setFollowing] = useState(false);
+  const [followers, setFollowers] = useState(initialFollowers);
+  const [following, setFollowing] = useState(initialFollowing);
   const [busy, setBusy] = useState(false);
   const [needsSignIn, setNeedsSignIn] = useState(false);
   const [hovered, setHovered] = useState(false);
-
-  useEffect(() => {
-    let cancelled = false;
-    void fetch(`/api/community/follow?seqId=${seqId}`)
-      .then((res) => res.json())
-      .then((data: { followers?: number; following?: boolean }) => {
-        if (cancelled) return;
-        setFollowers(data.followers ?? 0);
-        setFollowing(Boolean(data.following));
-      })
-      .catch(() => {
-        if (!cancelled) setFollowers(0);
-      });
-    return () => {
-      cancelled = true;
-    };
-  }, [seqId]);
 
   async function toggle() {
     setBusy(true);
@@ -80,7 +67,7 @@ export function FollowButton({
         following?: boolean;
       };
       if (data.success) {
-        setFollowers(data.followers ?? followers ?? 0);
+        setFollowers(data.followers ?? followers);
         setFollowing(Boolean(data.following));
       }
     } catch {
@@ -121,11 +108,9 @@ export function FollowButton({
         </button>
       ) : null}
 
-      {followers !== null ? (
-        <span className="font-mono text-xs text-muted-foreground">
-          {t.followers(followers)}
-        </span>
-      ) : null}
+      <span className="font-mono text-xs text-muted-foreground">
+        {t.followers(followers)}
+      </span>
     </div>
   );
 }

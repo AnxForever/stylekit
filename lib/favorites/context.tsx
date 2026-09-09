@@ -9,7 +9,7 @@ import {
   useCallback,
 } from "react";
 import { useUser } from "@/lib/auth/use-user";
-import { getAuthClient } from "@/lib/auth/supabase-browser";
+import { loadAuthClient } from "@/lib/auth/browser-client-loader";
 
 interface FavoritesContextType {
   favorites: string[];
@@ -30,7 +30,7 @@ const SLUG_RE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
 async function fetchWithAuth(input: RequestInfo | URL, init: RequestInit = {}) {
   const headers = new Headers(init.headers ?? {});
-  const client = getAuthClient();
+  const client = await loadAuthClient();
   if (client) {
     const {
       data: { session },

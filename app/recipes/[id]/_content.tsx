@@ -8,9 +8,11 @@ import { RecipeCard } from "@/components/recipes/recipe-card";
 import { useI18n } from "@/lib/i18n/context";
 import {
   type StyleRecipe,
+} from "@/lib/styles/recipe-types";
+import {
   getRecipesByUseCase,
   getRecipesByVisualStyle,
-} from "@/lib/styles/recipes";
+} from "@/lib/styles/recipe-selectors";
 import type { DesignStyle } from "@/lib/styles";
 
 interface Props {

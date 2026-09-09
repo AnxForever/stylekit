@@ -1,11 +1,10 @@
 "use client";
 
-import { useState, useMemo, useEffect, useRef } from "react";
+import { useState, useMemo, useEffect, useRef, type CSSProperties } from "react";
 import { useI18n } from "@/lib/i18n/context";
 import {
   fontPairings,
   getTypographyCategories,
-  generateGoogleFontsLink,
   fontStack,
   generateFontCSS,
   generateTailwindTheme,
@@ -13,15 +12,37 @@ import {
   type FontPairing,
   type TypographyCategory,
 } from "@/lib/typography";
+import { loadFontFaces, warmFonts } from "@/lib/typography/font-loader";
+import { specimenPalette } from "@/lib/typography/specimen";
 import { AddToKitButton } from "@/components/kit/add-to-kit-button";
+
+type CSSVars = CSSProperties & Record<`--${string}`, string>;
+
+// One control for the whole wall instead of a slider on all 41 cards: comparing
+// pairings means seeing them at the same size, and 41 range inputs were both
+// noise and DOM weight.
+// `sheetPx` is a fixed height, not a minimum: a specimen sheet that grows when
+// its webfont swaps in shoves the rest of the wall down, which is most of what
+// made the page feel unsettled while loading. Each value clears the tallest
+// specimen at that scale.
+const PREVIEW_SIZES = [
+  { id: "s", label: "S", scale: 0.85, sheetPx: 372 },
+  { id: "m", label: "M", scale: 1, sheetPx: 406 },
+  { id: "l", label: "L", scale: 1.2, sheetPx: 452 },
+] as const;
+
+type PreviewSizeId = (typeof PREVIEW_SIZES)[number]["id"];
 
 export function TypographyContent() {
   const { t, locale } = useI18n();
   const [selectedCategory, setSelectedCategory] = useState<TypographyCategory | "all">("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [copiedId, setCopiedId] = useState<string | null>(null);
+  const [previewSize, setPreviewSize] = useState<PreviewSizeId>("m");
 
   const categories = useMemo(() => getTypographyCategories(), []);
+
+  const size = PREVIEW_SIZES.find((s) => s.id === previewSize) ?? PREVIEW_SIZES[1];
 
   const filteredPairings = useMemo(() => {
     let result = fontPairings;
@@ -43,6 +64,13 @@ export function TypographyContent() {
 
     return result;
   }, [selectedCategory, searchQuery]);
+
+  // One pass for the whole catalogue, in the order the wall renders it. Doing
+  // this per card as it scrolled into view meant ~40 <head> mutations, each one
+  // a full-document style recalculation.
+  useEffect(() => {
+    loadFontFaces(fontPairings.flatMap((p) => [p.heading, p.body]));
+  }, []);
 
   function copyToClipboard(text: string, id: string) {
     navigator.clipboard.writeText(text).then(() => {
@@ -89,30 +117,54 @@ export function TypographyContent() {
           )}
         </div>
 
-        <div className="flex flex-wrap gap-2">
-          <button
-            onClick={() => setSelectedCategory("all")}
-            className={`px-4 py-2 text-sm border transition-colors ${
-              selectedCategory === "all"
-                ? "bg-foreground text-background border-foreground"
-                : "bg-background text-muted border-border hover:border-foreground hover:text-foreground"
-            }`}
-          >
-            {t("typography.filterAll")} ({fontPairings.length})
-          </button>
-          {categories.map((cat) => (
+        <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
+          <div className="flex flex-wrap gap-2">
             <button
-              key={cat.category}
-              onClick={() => setSelectedCategory(cat.category)}
+              onClick={() => setSelectedCategory("all")}
               className={`px-4 py-2 text-sm border transition-colors ${
-                selectedCategory === cat.category
+                selectedCategory === "all"
                   ? "bg-foreground text-background border-foreground"
                   : "bg-background text-muted border-border hover:border-foreground hover:text-foreground"
               }`}
             >
-              {locale === "zh" ? cat.labelZh : cat.labelEn} ({cat.count})
+              {t("typography.filterAll")} ({fontPairings.length})
             </button>
-          ))}
+            {categories.map((cat) => (
+              <button
+                key={cat.category}
+                onClick={() => setSelectedCategory(cat.category)}
+                className={`px-4 py-2 text-sm border transition-colors ${
+                  selectedCategory === cat.category
+                    ? "bg-foreground text-background border-foreground"
+                    : "bg-background text-muted border-border hover:border-foreground hover:text-foreground"
+                }`}
+              >
+                {locale === "zh" ? cat.labelZh : cat.labelEn} ({cat.count})
+              </button>
+            ))}
+          </div>
+
+          <div className="flex items-center gap-2 ms-auto">
+            <span className="text-xs text-muted whitespace-nowrap">
+              {t("typography.previewSize")}
+            </span>
+            <div className="flex border border-border" role="group">
+              {PREVIEW_SIZES.map((size) => (
+                <button
+                  key={size.id}
+                  onClick={() => setPreviewSize(size.id)}
+                  aria-pressed={previewSize === size.id}
+                  className={`w-9 py-2 text-xs transition-colors ${
+                    previewSize === size.id
+                      ? "bg-foreground text-background"
+                      : "bg-background text-muted hover:text-foreground"
+                  }`}
+                >
+                  {size.label}
+                </button>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
 
@@ -125,7 +177,10 @@ export function TypographyContent() {
           <p className="text-muted">{t("typography.noResults")}</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-px border border-border bg-border">
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-px border border-border bg-border">
+          {/* Two columns only from xl: with the resources sidebar taking 224px,
+              a two-up grid at lg leaves each specimen about 300px wide, which
+              wraps the family names and forces every sheet taller. */}
           {filteredPairings.map((pairing) => (
             <TypographyCard
               key={pairing.id}
@@ -133,6 +188,8 @@ export function TypographyContent() {
               copied={copiedId === pairing.id}
               onCopy={copyToClipboard}
               locale={locale}
+              scale={size.scale}
+              sheetPx={size.sheetPx}
             />
           ))}
         </div>
@@ -146,6 +203,8 @@ interface TypographyCardProps {
   copied: boolean;
   onCopy: (text: string, id: string) => void;
   locale: "zh" | "en";
+  scale: number;
+  sheetPx: number;
 }
 
 const CATEGORY_LABEL: Record<TypographyCategory, string> = {
@@ -200,32 +259,27 @@ const PREVIEW_BY_CATEGORY: Record<string, { heading: string; body: string }> = {
   },
 };
 
+// Pulls a specimen's font files down while it is still a screen away. This only
+// fetches — it never touches the DOM — so a fast scroll costs no style
+// recalculation, and the sheet paints in its real faces rather than swapping.
 function usePairingFont(pairing: FontPairing) {
   const specimenRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
     const element = specimenRef.current;
-    if (!element || typeof IntersectionObserver === "undefined") return;
-
-    const fontKey = `${pairing.heading.family}:${pairing.heading.weight}|${pairing.body.family}:${pairing.body.weight}`;
-    const selector = `link[data-stylekit-font="${CSS.escape(fontKey)}"]`;
-
-    const loadFont = () => {
-      if (document.head.querySelector(selector)) return;
-      const link = document.createElement("link");
-      link.rel = "stylesheet";
-      link.href = generateGoogleFontsLink(pairing);
-      link.dataset.stylekitFont = fontKey;
-      document.head.appendChild(link);
-    };
+    if (!element) return;
+    if (typeof IntersectionObserver === "undefined") {
+      warmFonts([pairing.heading, pairing.body]);
+      return;
+    }
 
     const observer = new IntersectionObserver(
       (entries) => {
         if (!entries.some((entry) => entry.isIntersecting)) return;
-        loadFont();
+        warmFonts([pairing.heading, pairing.body]);
         observer.disconnect();
       },
-      { rootMargin: "320px 0px" }
+      { rootMargin: "900px 0px" },
     );
 
     observer.observe(element);
@@ -248,14 +302,14 @@ function WeightContrastBar({
 }) {
   const pct = (weight: number) => `${((weight - 100) / 800) * 100}%`;
   return (
-    <div className="flex items-center gap-4 text-[0.7em] text-muted" style={{ fontFamily: bodyFamily }}>
+    <div className="flex items-center gap-4 text-[0.68em] specimen-ink-muted" style={{ fontFamily: bodyFamily }}>
       <div className="flex-1 space-y-1">
         <div className="flex items-center justify-between">
           <span className="uppercase tracking-wide">Heading</span>
           <span className="tabular-nums">{headingWeight}</span>
         </div>
-        <div className="h-1 rounded-full bg-muted/30 overflow-hidden">
-          <div className="h-full rounded-full bg-foreground" style={{ width: pct(headingWeight) }} />
+        <div className="h-px specimen-ink-track">
+          <div className="h-full specimen-ink-fill" style={{ width: pct(headingWeight) }} />
         </div>
       </div>
       <div className="flex-1 space-y-1">
@@ -263,16 +317,15 @@ function WeightContrastBar({
           <span className="uppercase tracking-wide">Body</span>
           <span className="tabular-nums">{bodyWeight}</span>
         </div>
-        <div className="h-1 rounded-full bg-muted/30 overflow-hidden">
-          <div className="h-full rounded-full bg-foreground/50" style={{ width: pct(bodyWeight) }} />
+        <div className="h-px specimen-ink-track">
+          <div className="h-full specimen-ink-fill opacity-50" style={{ width: pct(bodyWeight) }} />
         </div>
       </div>
     </div>
   );
 }
 
-function TypographyCard({ pairing, copied, onCopy, locale }: TypographyCardProps) {
-  const [scale, setScale] = useState(1);
+function TypographyCard({ pairing, copied, onCopy, locale, scale, sheetPx }: TypographyCardProps) {
   const specimenRef = usePairingFont(pairing);
 
   const headingFamily = fontStack(pairing.heading);
@@ -280,114 +333,115 @@ function TypographyCard({ pairing, copied, onCopy, locale }: TypographyCardProps
   const isDisplay = pairing.category === "display" || pairing.category === "handwritten";
   const preview = PREVIEW_BY_CATEGORY[pairing.category] ?? PREVIEW_BY_CATEGORY.modern;
   const contrast = pairingContrast(pairing);
+  const palette = specimenPalette(pairing);
+
+  // The sheet colours travel as custom properties so the dark-theme pair can be
+  // swapped by a `.dark` rule in CSS — an inline style cannot carry a variant.
+  const sheetVars: CSSVars = {
+    "--specimen-paper": palette.paper,
+    "--specimen-ink": palette.ink,
+    "--specimen-paper-dark": palette.paperDark,
+    "--specimen-ink-dark": palette.inkDark,
+  };
 
   return (
-    <article ref={specimenRef} className="group overflow-hidden bg-background">
-      {/* Specimen — adapts to the typeface: display / handwritten faces star as an
-          oversized word; text pairings show a character set, headline and copy. */}
+    <article ref={specimenRef} className="specimen-card group overflow-hidden bg-background">
+      {/* Specimen sheet — each pairing is printed on its own paper-and-ink stock,
+          so the wall reads as a specimen book rather than one flat field. */}
       <div
-        className="min-h-[22rem] px-6 py-7 md:px-8 md:py-8 bg-background"
-        style={{ fontSize: `${16 * scale}px` }}
+        className="specimen-sheet flex flex-col overflow-hidden px-6 py-7 md:px-8 md:py-8"
+        style={{ ...sheetVars, fontSize: `${16 * scale}px`, height: `${sheetPx}px` }}
       >
-        <div className="flex items-center justify-between gap-4 mb-10 border-b border-border pb-3">
+        <div className="flex items-center justify-between gap-4 mb-8 border-b specimen-ink-rule pb-3">
           <span
-            className="text-[0.7rem] uppercase tracking-[0.14em] text-muted"
+            className="text-[0.7rem] uppercase tracking-[0.14em] specimen-ink-muted"
             style={{ fontFamily: bodyFamily }}
           >
             {CATEGORY_LABEL[pairing.category]}
           </span>
-          <span className="text-[0.7rem] text-muted tracking-wide">{contrast}</span>
+          <span className="text-[0.7rem] specimen-ink-muted tracking-wide">{contrast}</span>
         </div>
 
-        {isDisplay ? (
-          <>
-            {/* The typeface itself is the subject */}
-            <div
-              className="mb-5 break-words"
-              style={{
-                fontFamily: headingFamily,
-                fontWeight: pairing.heading.weight,
-                fontSize: "clamp(3rem, 8vw, 5.4rem)",
-                lineHeight: 0.9,
-                letterSpacing: "-0.035em",
-              }}
-            >
-              {pairing.previewWord ?? preview.heading}
-            </div>
-            <div
-              className="mb-5 text-muted/80 break-words"
-              style={{
-                fontFamily: headingFamily,
-                fontWeight: pairing.heading.weight,
-                fontSize: "1.2em",
-                lineHeight: 1.2,
-              }}
-            >
-              {CHARSET}
-            </div>
-            <p
-              className="leading-relaxed text-muted"
-              style={{ fontFamily: bodyFamily, fontWeight: pairing.body.weight, fontSize: "0.9em" }}
-            >
-              {preview.body}
-            </p>
-          </>
-        ) : (
-          <>
-            {/* Character set in the heading face — letterforms up close */}
-            <div
-              className="mb-4 pb-4 border-b border-border/60 text-foreground/85 break-words"
-              style={{
-                fontFamily: headingFamily,
-                fontWeight: pairing.heading.weight,
-                fontSize: "1.5em",
-                lineHeight: 1.15,
-              }}
-            >
-              {CHARSET}
-            </div>
-            <h3
-              className="mb-3 break-words"
-              style={{ fontFamily: headingFamily, fontWeight: pairing.heading.weight, fontSize: "2.15em", lineHeight: 1.02, letterSpacing: "-0.025em" }}
-            >
-              {preview.heading}
-            </h3>
-            <p
-              className="leading-relaxed mb-4 text-muted"
-              style={{ fontFamily: bodyFamily, fontWeight: pairing.body.weight, fontSize: "0.92em" }}
-            >
-              {preview.body}
-            </p>
-            <WeightContrastBar
-              headingWeight={pairing.heading.weight}
-              bodyWeight={pairing.body.weight}
-              bodyFamily={bodyFamily}
-            />
-          </>
-        )}
+        <div className="flex-1 min-h-0 flex flex-col justify-center">
+          {isDisplay ? (
+            <>
+              {/* The typeface itself is the subject */}
+              <div
+                className="mb-5 break-words"
+                style={{
+                  fontFamily: headingFamily,
+                  fontWeight: pairing.heading.weight,
+                  fontSize: "clamp(2rem, 19cqw, 5.1em)",
+                  lineHeight: 0.92,
+                  letterSpacing: "-0.035em",
+                }}
+              >
+                {pairing.previewWord ?? preview.heading}
+              </div>
+              <div
+                className="mb-5 specimen-ink-soft break-words"
+                style={{
+                  fontFamily: headingFamily,
+                  fontWeight: pairing.heading.weight,
+                  fontSize: "min(1.2em, 6cqw)",
+                  lineHeight: 1.2,
+                }}
+              >
+                {CHARSET}
+              </div>
+              <p
+                className="leading-relaxed specimen-ink-muted"
+                style={{ fontFamily: bodyFamily, fontWeight: pairing.body.weight, fontSize: "0.9em" }}
+              >
+                {preview.body}
+              </p>
+            </>
+          ) : (
+            <>
+              {/* Character set in the heading face — letterforms up close */}
+              <div
+                className="mb-4 pb-4 border-b specimen-ink-rule specimen-ink-soft break-words"
+                style={{
+                  fontFamily: headingFamily,
+                  fontWeight: pairing.heading.weight,
+                  fontSize: "min(1.45em, 7cqw)",
+                  lineHeight: 1.15,
+                }}
+              >
+                {CHARSET}
+              </div>
+              <h3
+                className="mb-3 break-words"
+                style={{
+                  fontFamily: headingFamily,
+                  fontWeight: pairing.heading.weight,
+                  fontSize: "min(2.1em, 10cqw)",
+                  lineHeight: 1.02,
+                  letterSpacing: "-0.025em",
+                }}
+              >
+                {preview.heading}
+              </h3>
+              <p
+                className="leading-relaxed mb-6 specimen-ink-muted"
+                style={{ fontFamily: bodyFamily, fontWeight: pairing.body.weight, fontSize: "0.9em" }}
+              >
+                {preview.body}
+              </p>
+              <WeightContrastBar
+                headingWeight={pairing.heading.weight}
+                bodyWeight={pairing.body.weight}
+                bodyFamily={bodyFamily}
+              />
+            </>
+          )}
+        </div>
       </div>
 
-      {/* Size slider (interactive) */}
-      <div className="px-6 py-3 border-y border-border flex items-center gap-3 bg-muted/10">
-        <span className="text-xs text-muted whitespace-nowrap">Aa</span>
-        <input
-          type="range"
-          min={0.8}
-          max={1.4}
-          step={0.05}
-          value={scale}
-          onChange={(e) => setScale(Number(e.target.value))}
-          className="flex-1 accent-foreground"
-          aria-label="Preview font scale"
-        />
-        <span className="text-xs tabular-nums text-muted whitespace-nowrap w-10 text-right">
-          {Math.round(scale * 100)}%
-        </span>
-      </div>
-
-      {/* Info + copy */}
-      <div className="p-5 md:p-6 space-y-4">
-        <div className="flex items-start justify-between gap-2">
+      {/* Catalogue entry — kept on the site's own surface so the colour stays
+          on the specimen and the data stays readable. */}
+      <div className="p-5 md:p-6 space-y-3 border-t border-border">
+        <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
             <h4 className="font-sans font-semibold text-base truncate">
               {locale === "zh" ? pairing.nameZh : pairing.name}
@@ -405,7 +459,7 @@ function TypographyCard({ pairing, copied, onCopy, locale }: TypographyCardProps
           </div>
         </div>
 
-        <div className="space-y-2 text-sm leading-relaxed">
+        <div className="space-y-1.5 text-sm leading-relaxed">
           <p className="text-foreground">
             {locale === "zh" ? pairing.bestForZh : pairing.bestFor}
           </p>
@@ -414,24 +468,12 @@ function TypographyCard({ pairing, copied, onCopy, locale }: TypographyCardProps
           </p>
         </div>
 
-        <div className="flex items-center justify-between gap-3 border-t border-border pt-3 text-xs text-muted">
-          <span>{pairing.license} open-source license</span>
-          <a
-            href={pairing.sourceUrl}
-            target="_blank"
-            rel="noreferrer"
-            className="text-foreground underline underline-offset-4 hover:text-accent"
-          >
-            Google Fonts
-          </a>
-        </div>
-
-        <div className="flex gap-2">
+        <div className="flex flex-wrap items-center gap-2 pt-1">
           <button
             onClick={() => onCopy(generateFontCSS(pairing), pairing.id)}
-            className={`flex-1 px-3 py-2.5 text-xs font-medium border transition-colors ${
+            className={`px-3 py-2 text-xs font-medium border transition-colors ${
               copied
-                ? "bg-green-500 text-white border-green-500"
+                ? "bg-foreground text-background border-foreground"
                 : "bg-background text-muted border-border hover:border-foreground hover:text-foreground"
             }`}
           >
@@ -439,7 +481,7 @@ function TypographyCard({ pairing, copied, onCopy, locale }: TypographyCardProps
           </button>
           <button
             onClick={() => onCopy(generateTailwindTheme(pairing), pairing.id)}
-            className="flex-1 px-3 py-2.5 text-xs font-medium border bg-background text-muted border-border hover:border-foreground hover:text-foreground transition-colors"
+            className="px-3 py-2 text-xs font-medium border bg-background text-muted border-border hover:border-foreground hover:text-foreground transition-colors"
           >
             Tailwind
           </button>
@@ -447,8 +489,20 @@ function TypographyCard({ pairing, copied, onCopy, locale }: TypographyCardProps
             type="font-pairing"
             slug={pairing.id}
             variant="labeled"
-            className="px-3 py-2.5 text-xs tracking-normal normal-case"
+            className="px-3 py-2 text-xs tracking-normal normal-case"
           />
+          <span className="ms-auto text-xs text-muted whitespace-nowrap">
+            {pairing.license}
+            <span className="opacity-50 mx-1.5">·</span>
+            <a
+              href={pairing.sourceUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="text-foreground underline underline-offset-4 hover:text-accent"
+            >
+              Google Fonts
+            </a>
+          </span>
         </div>
       </div>
     </article>

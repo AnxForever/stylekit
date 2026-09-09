@@ -23,6 +23,9 @@ const REVIEW_LABELS: Record<string, { en: string; zh: string }> = {
   category: { en: "category", zh: "分类" },
   description: { en: "description", zh: "描述" },
   colors: { en: "colors", zh: "配色" },
+  typography: { en: "typography (limited samples)", zh: "字体（采样不足）" },
+  fonts: { en: "fonts (some use fallbacks)", zh: "字体（部分使用备用字体）" },
+  components: { en: "components (no samples found)", zh: "组件（未找到样例）" },
 };
 
 interface SubmitConsoleProps {
@@ -55,6 +58,8 @@ export function SubmitConsole({
   const [extractUrl, setExtractUrl] = useState("");
   const [extracting, setExtracting] = useState(false);
   const [reviewFields, setReviewFields] = useState<string[]>([]);
+  const [extractError, setExtractError] = useState<string | null>(null);
+  const [beforeExtraction, setBeforeExtraction] = useState<StyleFormValue | null>(null);
   const restoredRef = useRef(false);
 
   // Restore an unsent draft once. A manifest is expensive to regenerate, so
@@ -180,6 +185,9 @@ export function SubmitConsole({
       setPhase("submitted");
       setManifestText("");
       setForm(EMPTY_STYLE_FORM);
+      setBeforeExtraction(null);
+      setReviewFields([]);
+      setExtractError(null);
       try {
         window.localStorage.removeItem(FORM_DRAFT_KEY);
       } catch {
@@ -210,10 +218,14 @@ export function SubmitConsole({
   // fields the contributor still needs to confirm.
   const extractFromUrl = useCallback(async () => {
     const url = extractUrl.trim();
-    if (!url || extracting) return;
+    if (!url || extracting || phase === "checking" || phase === "submitting") return;
+    if (!signedIn) {
+      setExtractError(t.extractSignIn);
+      return;
+    }
     setExtracting(true);
+    setExtractError(null);
     setError(null);
-    setReviewFields([]);
     try {
       const response = await fetch("/api/submit/extract", {
         method: "POST",
@@ -221,20 +233,28 @@ export function SubmitConsole({
         body: JSON.stringify({ url }),
       });
       const payload = await response.json();
-      if (!response.ok || !payload.success) {
-        setError(payload.error ?? t.extractFailed);
+      if (!response.ok || !payload.success || !payload.manifest?.formData) {
+        const message = response.status === 401 ? t.extractSignIn
+          : response.status === 429 ? t.extractLimited
+          : response.status === 503 ? t.extractUnavailable
+          : response.status === 504 ? t.extractTimeout
+          : t.extractFailed;
+        setExtractError(message);
         return;
       }
-      setForm(manifestToForm((payload.manifest?.formData ?? {}) as Record<string, unknown>));
-      setReviewFields(Array.isArray(payload.needsReview) ? payload.needsReview : []);
+      setBeforeExtraction(form);
+      setForm(manifestToForm(payload.manifest.formData as Record<string, unknown>, payload.manifest));
+      setReviewFields(Array.isArray(payload.needsReview)
+        ? payload.needsReview.filter((field: unknown): field is string => typeof field === "string")
+        : []);
       setReport(null);
       setPhase("idle");
     } catch {
-      setError(t.extractFailed);
+      setExtractError(t.extractFailed);
     } finally {
       setExtracting(false);
     }
-  }, [extractUrl, extracting, t.extractFailed]);
+  }, [extractUrl, extracting, form, phase, signedIn, t]);
 
   if (phase === "submitted") {
     return (
@@ -242,7 +262,7 @@ export function SubmitConsole({
     );
   }
 
-  const canSubmit = Boolean(report?.accepted) && accepted && signedIn;
+  const canSubmit = Boolean(report?.accepted) && accepted && signedIn && !extracting;
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-12 md:py-16">
@@ -263,6 +283,7 @@ export function SubmitConsole({
             type="button"
             role="tab"
             aria-selected={mode === option}
+            disabled={extracting}
             onClick={() => {
               setMode(option);
               setReport(null);
@@ -292,6 +313,7 @@ export function SubmitConsole({
                 type="url"
                 inputMode="url"
                 value={extractUrl}
+                disabled={extracting || phase === "checking" || phase === "submitting"}
                 onChange={(event) => setExtractUrl(event.target.value)}
                 onKeyDown={(event) => {
                   if (event.key === "Enter") {
@@ -306,18 +328,41 @@ export function SubmitConsole({
               <button
                 type="button"
                 onClick={extractFromUrl}
-                disabled={!extractUrl.trim() || extracting}
+                disabled={!extractUrl.trim() || extracting || phase === "checking" || phase === "submitting"}
                 className="shrink-0 border border-foreground px-4 py-2 font-mono text-xs uppercase tracking-wider transition-colors hover:bg-foreground hover:text-background disabled:cursor-not-allowed disabled:opacity-40"
               >
                 {extracting ? t.extracting : t.extractButton}
               </button>
             </div>
+            {extracting ? (
+              <p role="status" className="mt-3 text-xs text-muted-foreground">{t.extractProgress}</p>
+            ) : null}
+            {extractError ? (
+              <p role="alert" className="mt-3 text-xs text-destructive">{extractError}</p>
+            ) : null}
             {reviewFields.length ? (
-              <p className="mt-2 text-xs text-amber-600">
+              <p role="status" className="mt-3 text-xs text-amber-600">
                 {t.extractReview(
                   reviewFields.map((f) => REVIEW_LABELS[f]?.[locale] ?? f),
                 )}
               </p>
+            ) : null}
+            {beforeExtraction ? (
+              <button
+                type="button"
+                disabled={extracting || phase === "checking" || phase === "submitting"}
+                onClick={() => {
+                  setForm(beforeExtraction);
+                  setBeforeExtraction(null);
+                  setReviewFields([]);
+                  setExtractError(null);
+                  setReport(null);
+                  setPhase("idle");
+                }}
+                className="mt-3 text-xs text-muted-foreground underline underline-offset-4 hover:text-foreground disabled:opacity-40"
+              >
+                {t.extractUndo}
+              </button>
             ) : null}
           </div>
           {/* The same rules the gates enforce, in a form an assistant can act
@@ -333,12 +378,14 @@ export function SubmitConsole({
               {promptCopied ? t.promptCopied : t.copyRules}
             </button>
           </div>
-          <StyleForm locale={locale} value={form} onChange={setForm} />
+          <fieldset disabled={extracting} className="min-w-0">
+            <StyleForm locale={locale} value={form} onChange={setForm} />
+          </fieldset>
           <div className="mt-6 flex flex-wrap items-center gap-3">
             <button
               type="button"
               onClick={runCheck}
-              disabled={!form.slug.trim() || phase === "checking"}
+              disabled={!form.slug.trim() || phase === "checking" || extracting}
               className="border border-foreground px-4 py-2 font-mono text-xs uppercase tracking-wider transition-colors hover:bg-foreground hover:text-background disabled:cursor-not-allowed disabled:opacity-40"
             >
               {phase === "checking" ? t.checking : t.runCheck}
@@ -492,7 +539,7 @@ function Section({
             {index}
           </span>
         </div>
-        <div>
+        <div className="min-w-0">
           <h2 className="font-serif text-xl">{title}</h2>
           <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{description}</p>
           <div className="mt-6">{children}</div>

@@ -15,7 +15,12 @@ export default function ResourcesPage() {
     <div className="min-h-screen flex flex-col">
       <Header />
       <main className="flex-1">
-        <Suspense>
+        {/* ResourcesContent reads ?tab= through useSearchParams, so this subtree
+            is client-rendered and the server ships an empty <main>. Without a
+            fallback the footer renders directly under the header and is then
+            shoved 13,000px down on hydration -- the single largest layout shift
+            on the page. Reserving the space keeps the jump off screen. */}
+        <Suspense fallback={<div className="min-h-[200vh]" aria-hidden="true" />}>
           <ResourcesContent />
         </Suspense>
       </main>

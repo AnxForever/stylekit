@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { STYLE_CATEGORIES, STYLE_TAGS, STYLE_TYPES } from "@/lib/styles/meta-types";
+import { previewAssetsSchema } from "@/lib/style-preview/preview-assets";
 
 const SLUG_RE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const HEX_RE = /^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/;
@@ -70,6 +71,7 @@ export const wizardFormSchema = z.object({
   cardCode: z.string().default(""),
   inputCode: z.string().default(""),
   previewModule: z.string().optional(),
+  previewAssets: previewAssetsSchema.optional(),
   navCode: z.string().optional(),
   heroCode: z.string().optional(),
   footerCode: z.string().optional(),

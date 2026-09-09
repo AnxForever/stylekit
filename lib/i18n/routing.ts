@@ -99,6 +99,18 @@ export const LOCALE_ROUTE_POLICY = [
     prefixes: ["/templates"],
   },
   {
+    // Community pages live in the shared root `app/community` tree, not under
+    // `app/[locale]`, so both locales reach them through a rewrite. Approved
+    // contributions are indexable in both languages; the noindex default for
+    // unpromoted pages is decided per style by the sitemap and metadata, not
+    // by the route policy.
+    id: "localized-community",
+    mode: "rewrite",
+    sitemapLocales: "all",
+    exact: [],
+    prefixes: ["/community"],
+  },
+  {
     id: "english-guides",
     mode: "rewrite",
     sitemapLocales: "en",
@@ -132,9 +144,8 @@ export const LOCALE_ROUTE_POLICY = [
       "/preview",
       "/profile",
       "/submit",
-      "/community",
     ],
-    prefixes: ["/community"],
+    prefixes: [],
   },
 ] as const satisfies readonly LocaleRouteRule[];
 

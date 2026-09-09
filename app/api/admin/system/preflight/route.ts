@@ -22,13 +22,22 @@ const REQUIRED_TABLES = [
   "product_validation_interviews",
 ] as const;
 
-const OPS_FILES = {
-  "health-check": "ops/stylekit-healthcheck.sh",
-  cleanup: "ops/cleanup-stylekit-server.sh",
-  verify: "ops/verify-stylekit-production.sh",
-  "systemd-service": "ops/systemd/stylekit-healthcheck.service",
-  "systemd-timer": "ops/systemd/stylekit-healthcheck.timer",
-} as const;
+// Keep every filesystem lookup under a statically known directory. Passing a
+// path assembled from an arbitrary `process.cwd()`-relative string makes
+// Turbopack conservatively trace the whole repository into the server output.
+const OPS_FILES = [
+  ["health-check", path.join(process.cwd(), "ops/stylekit-healthcheck.sh")],
+  ["cleanup", path.join(process.cwd(), "ops/cleanup-stylekit-server.sh")],
+  ["verify", path.join(process.cwd(), "ops/verify-stylekit-production.sh")],
+  [
+    "systemd-service",
+    path.join(process.cwd(), "ops/systemd/stylekit-healthcheck.service"),
+  ],
+  [
+    "systemd-timer",
+    path.join(process.cwd(), "ops/systemd/stylekit-healthcheck.timer"),
+  ],
+] as const;
 
 export async function GET(request: Request) {
   const access = await checkAdminApiAccess(request);
@@ -61,9 +70,12 @@ export async function GET(request: Request) {
     analyticsSignalVersion,
     tables,
     localFiles: Object.fromEntries(
-      Object.entries(OPS_FILES).map(([key, relativePath]) => [
+      OPS_FILES.map(([key, filePath]) => [
         key,
-        existsSync(path.join(process.cwd(), relativePath)),
+        // These are operator-managed files in the deployment checkout, not
+        // runtime module dependencies. Do not make Turbopack copy the whole
+        // repository just to preserve this diagnostic lookup.
+        existsSync(/*turbopackIgnore: true*/ filePath),
       ]),
     ),
   };

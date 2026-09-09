@@ -94,7 +94,7 @@ test.describe("Corporate Clean isolated price validation", () => {
     });
     expect(animationNames.every((name) => name === "none")).toBe(true);
 
-    if (testInfo.project.name === "mobile-chrome") {
+    if (testInfo.project.name.includes("mobile-chrome")) {
       const overflow = await page.evaluate(
         () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
       );

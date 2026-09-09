@@ -16,9 +16,11 @@ export const metadata: Metadata = {
 };
 
 // The page is force-static: these reads run at build time on the machine that
-// owns the source tree, so production never touches the filesystem.
-function readSource(relativePath: string): Promise<string> {
-  return readFile(path.join(process.cwd(), relativePath), "utf8");
+// owns the source tree, so production never touches the filesystem. Keeping
+// the dynamic filename below a fixed directory also prevents Turbopack from
+// tracing the entire repository into the server artifact.
+function readSource(fileName: string): Promise<string> {
+  return readFile(path.join(process.cwd(), "components/effects", fileName), "utf8");
 }
 
 function SignalLabel({ children }: { children: React.ReactNode }) {
@@ -28,10 +30,10 @@ function SignalLabel({ children }: { children: React.ReactNode }) {
 export default async function WebglLabPage() {
   const [shaderTsx, shaderCss, constellationTsx, constellationCss] =
     await Promise.all([
-      readSource("components/effects/shader-field.tsx"),
-      readSource("components/effects/shader-field.module.css"),
-      readSource("components/effects/constellation-field.tsx"),
-      readSource("components/effects/constellation-field.module.css"),
+      readSource("shader-field.tsx"),
+      readSource("shader-field.module.css"),
+      readSource("constellation-field.tsx"),
+      readSource("constellation-field.module.css"),
     ]);
 
   return (

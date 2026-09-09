@@ -66,6 +66,11 @@ export interface StyleLintOptions {
    * a snippet is rarely expected to contain every component of the style.
    */
   checkRequired?: StyleLintComponent[];
+  /**
+   * Label echoed back as `report.slug`. Only needed by `lintCodeWithRules`,
+   * where no slug was looked up; `lintStyleCode` sets it from its own argument.
+   */
+  slug?: string;
 }
 
 /** A class token plus where it came from. */
@@ -333,6 +338,37 @@ export interface MergedRules {
  * (no class is forbidden by one while required by the other).
  */
 export function mergeStyleRules(slug: string): MergedRules {
+  return mergeRulesFromParts(getStyleTokens(slug), getStyleLintRules(slug));
+}
+
+/**
+ * Build rules from tokens supplied directly rather than looked up by slug.
+ *
+ * Rule merging only ever needed the tokens object and (optionally) a curated
+ * rule set. Submissions carry their own tokens and are not registered yet, so
+ * they must lint through this entry point; `mergeStyleRules` is the
+ * registry-backed wrapper around it.
+ *
+ * @param curatedSlug Optional registered slug whose hand-written rules should
+ *   also apply. Submissions normally omit it: an unregistered style has no
+ *   curated rules, so linting checks it against its own declared tokens only.
+ */
+export function mergeRulesFromTokens(
+  tokens: StyleTokens | undefined,
+  curatedSlug?: string,
+): MergedRules {
+  return mergeRulesFromParts(
+    tokens,
+    curatedSlug ? getStyleLintRules(curatedSlug) : undefined,
+  );
+}
+
+type CuratedRules = ReturnType<typeof getStyleLintRules>;
+
+function mergeRulesFromParts(
+  tokens: StyleTokens | undefined,
+  curated: CuratedRules,
+): MergedRules {
   const merged: MergedRules = {
     forbiddenClasses: new Map(),
     forbiddenPatterns: [],
@@ -341,7 +377,6 @@ export function mergeStyleRules(slug: string): MergedRules {
     sources: [],
   };
 
-  const tokens = getStyleTokens(slug);
   if (tokens) {
     merged.sources.push("tokens");
     merged.tokens = tokens;
@@ -369,7 +404,6 @@ export function mergeStyleRules(slug: string): MergedRules {
     }
   }
 
-  const curated = getStyleLintRules(slug);
   if (curated) {
     merged.sources.push("curated");
     merged.recommended = curated.recommended;
@@ -488,7 +522,20 @@ export function lintStyleCode(
   code: string,
   options: StyleLintOptions = {},
 ): StyleLintReport {
-  const rules = mergeStyleRules(slug);
+  return lintCodeWithRules(mergeStyleRules(slug), code, { ...options, slug });
+}
+
+/**
+ * Lints code against a rule set built ahead of time.
+ *
+ * Lets callers lint against rules that never came from the registry — a
+ * submission checked against its own declared tokens is the motivating case.
+ */
+export function lintCodeWithRules(
+  rules: MergedRules,
+  code: string,
+  options: StyleLintOptions = {},
+): StyleLintReport {
   const extracted = extractClassNames(code);
   const violations: StyleLintViolation[] = [];
 
@@ -550,7 +597,7 @@ export function lintStyleCode(
   }
 
   return {
-    slug,
+    slug: options.slug ?? "",
     ok: violations.length === 0,
     violations,
     missingRequired,

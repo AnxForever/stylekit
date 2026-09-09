@@ -2,7 +2,7 @@
 
 > Ready-to-paste copy + exact steps for every MCP directory. Prepared 2026-09-06.
 > Facts locked at prep time: repo https://github.com/AnxForever/stylekit (458 stars),
-> npm `stylekit-mcp@0.2.1`, site https://stylekit.top, 148 curated styles, MIT.
+> npm `stylekit-mcp@0.2.5`, site https://stylekit.top, 148 curated styles, MIT.
 >
 > The code side (server.json, mcpName, CI workflows, README) is DONE and committed.
 > Everything below is a form/PR/email that needs your account — paste and click.
@@ -33,39 +33,40 @@
 - npm: https://www.npmjs.com/package/stylekit-mcp
 - repo: https://github.com/AnxForever/stylekit
 - site: https://stylekit.top
-- registry name: `io.github.anxforever/stylekit-mcp`
+- registry name: `io.github.AnxForever/stylekit-mcp`
 
 ---
 
-## 1. Official MCP Registry (do this FIRST — everything downstream syncs from it)
+## 1. Official MCP Registry (completed on September 6, 2026)
 
-**What's already done for you:** `packages/mcp/server.json` exists and validates;
-`mcpName` field added to package.json; a `mcp-publish.yml` CI job will auto-publish on
-a `mcp-v*` tag. So you have two paths:
+**Completed:** `packages/mcp/server.json` validates, `mcpName` is present in package.json,
+and the CI workflow published npm `stylekit-mcp@0.2.5` with provenance before publishing
+the server record through GitHub OIDC.
 
-### Path A — let CI do it (recommended, gives provenance too)
-1. Add repo secret `NPM_TOKEN` (a granular npm automation token with publish rights on
-   the stylekit packages) at repo → Settings → Secrets and variables → Actions.
-2. Tag and push:
+### Path A — historical CI release path (completed)
+1. The repository secret `NPM_TOKEN` was configured with publish rights for the
+   stylekit packages.
+2. The release tag was pushed:
    ```bash
-   git tag mcp-v0.2.1 && git push origin mcp-v0.2.1
+   git tag mcp-v0.2.5 && git push origin mcp-v0.2.5
    ```
    This runs `mcp-publish.yml`: publishes to npm with `--provenance`, then publishes
    `server.json` to the MCP Registry via GitHub OIDC (no registry password needed).
 
-### Path B — publish server.json manually now (local)
-1. Install the CLI (verify current asset name at
+### Path B — manual fallback (not needed for the completed release)
+1. If a future release needs a local fallback, install the CLI (verify the current
+   asset name at
    https://github.com/modelcontextprotocol/registry/releases — the name has varied):
    ```bash
    # macOS/Linux release binary, or:  brew install mcp-publisher
    ```
 2. From `packages/mcp/`:
    ```bash
-   mcp-publisher login github        # opens browser, authorizes io.github.anxforever/*
+   mcp-publisher login github-oidc   # authenticates the GitHub OIDC namespace
    mcp-publisher publish             # reads ./server.json
    ```
-   Registry checks: npm version matches server.json (0.2.1 ✓), repo resolves, auth
-   proves the `io.github.anxforever` namespace.
+   Registry checks: npm version matches server.json (0.2.5), repo resolves, auth
+   proves the `io.github.AnxForever` namespace.
 
 **Flagged:** the exact `mcp-publisher` install command differs across sources — confirm
 on the releases page before running. The `server.json` schema is pinned to
@@ -76,7 +77,7 @@ on the releases page before running. The `server.json` schema is pinned to
 ## 2. Glama (auto-indexes — mostly automatic)
 
 Glama auto-indexes any public GitHub repo that has the `mcp` +
-`model-context-protocol` topics (both added in Wave 0 ✓) and a package.json.
+`model-context-protocol` topics (both added in Wave 0 done) and a package.json.
 
 **Your action:**
 1. Wait ~1-2 days for auto-index, then go to https://glama.ai/mcp/servers, search
@@ -142,13 +143,13 @@ newsletter mention (one of the highest-signal channels in the ecosystem).
 > Hi PulseMCP team,
 >
 > I've published StyleKit MCP to the official registry
-> (`io.github.anxforever/stylekit-mcp`, npm `stylekit-mcp`). It's a read-only server that
+> (`io.github.AnxForever/stylekit-mcp`, npm `stylekit-mcp`). It's a read-only server that
 > gives coding agents 148 curated design styles — searchable, with typed design tokens,
 > component recipes, and shadcn install commands — so tools like Claude, Cursor, and
 > Windsurf can generate UI against concrete visual constraints instead of a vague style
 > name. Runs offline over stdio.
 >
-> Repo: https://github.com/AnxForever/stylekit (458★)
+> Repo: https://github.com/AnxForever/stylekit (458 stars)
 > npm: https://www.npmjs.com/package/stylekit-mcp
 > Site: https://stylekit.top
 >
@@ -161,16 +162,16 @@ newsletter mention (one of the highest-signal channels in the ecosystem).
 
 ## 7. awesome-mcp-servers PR (do LAST — after Glama listing exists)
 
-**Your action:** the punkpeye/awesome-mcp-servers list (~90k★) often requires a Glama
+**Your action:** the punkpeye/awesome-mcp-servers list (~90k stars) often requires a Glama
 listing first. Once #2 is live, open a PR adding StyleKit under the design/dev-tools
 section. Draft entry:
 
 ```markdown
-- [AnxForever/stylekit](https://github.com/AnxForever/stylekit) 📇 🏠 - Search 148 curated
+- [AnxForever/stylekit](https://github.com/AnxForever/stylekit) TypeScript / local stdio - Search 148 curated
   design styles and pull design tokens, component recipes, and shadcn install commands
   into Claude, Cursor, or Windsurf. Runs offline over stdio.
 ```
-(Check the list's current emoji legend — 📇 = TypeScript, 🏠 = local/stdio — and match its
+(Check the list's format legend — TypeScript / local stdio — and match its
 exact section + formatting conventions in the PR.)
 
 ---

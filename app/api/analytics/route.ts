@@ -26,6 +26,8 @@ import {
 const ANALYTICS_RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000;
 const ANALYTICS_RATE_LIMIT_MAX_REQUESTS = 300;
 const MAX_ANALYTICS_BODY_BYTES = 16 * 1024;
+const ANALYTICS_GET_CACHE_CONTROL =
+  "public, max-age=15, s-maxage=30, stale-while-revalidate=120";
 const legacyAnalyticsSchema = z
   .object({
     slug: z.string().trim().min(1).max(96),
@@ -40,19 +42,23 @@ export async function GET(request: Request) {
   const topParam = searchParams.get("top");
   if (topParam) {
     const limit = Math.min(Math.max(parseInt(topParam, 10) || 10, 1), 50);
-    return NextResponse.json({
-      top: getTopStyles(limit),
-    });
+    return NextResponse.json(
+      { top: getTopStyles(limit) },
+      { headers: { "Cache-Control": ANALYTICS_GET_CACHE_CONTROL } },
+    );
   }
 
   const combinationsParam = searchParams.get("combinations");
   if (combinationsParam === "true") {
-    return NextResponse.json({
-      combinations: getPopularCombinations(10),
-    });
+    return NextResponse.json(
+      { combinations: getPopularCombinations(10) },
+      { headers: { "Cache-Control": ANALYTICS_GET_CACHE_CONTROL } },
+    );
   }
 
-  return NextResponse.json(getUsageStats());
+  return NextResponse.json(getUsageStats(), {
+    headers: { "Cache-Control": ANALYTICS_GET_CACHE_CONTROL },
+  });
 }
 
 export async function POST(request: Request) {

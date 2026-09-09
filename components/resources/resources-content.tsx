@@ -1,12 +1,43 @@
 "use client";
 
 import { useState, type ComponentType } from "react";
+import dynamic from "next/dynamic";
 import { useSearchParams } from "next/navigation";
 import { useI18n } from "@/lib/i18n/context";
 import { TypographyContent } from "@/components/typography/typography-content";
-import { GradientsContent } from "@/components/gradients/gradients-content";
-import { ShadowsContent } from "@/components/shadows/shadows-content";
-import { BackgroundsContent } from "@/components/backgrounds/backgrounds-content";
+
+const DeferredResourceLoading = () => (
+  <div
+    className="min-h-[120vh] animate-pulse rounded-lg bg-muted/10"
+    aria-busy="true"
+    aria-label="Loading resources"
+  />
+);
+
+// These libraries contain large, copy-ready registries (the background
+// catalog alone is hundreds of KB). Keep them out of the initial resources
+// route and fetch only the section the visitor opens.
+const GradientsContent = dynamic(
+  () =>
+    import("@/components/gradients/gradients-content").then(
+      (module) => module.GradientsContent,
+    ),
+  { ssr: false, loading: DeferredResourceLoading },
+);
+const ShadowsContent = dynamic(
+  () =>
+    import("@/components/shadows/shadows-content").then(
+      (module) => module.ShadowsContent,
+    ),
+  { ssr: false, loading: DeferredResourceLoading },
+);
+const BackgroundsContent = dynamic(
+  () =>
+    import("@/components/backgrounds/backgrounds-content").then(
+      (module) => module.BackgroundsContent,
+    ),
+  { ssr: false, loading: DeferredResourceLoading },
+);
 
 interface ResourceSection {
   id: string;

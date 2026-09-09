@@ -10,7 +10,7 @@ import { animationsMeta } from "@/lib/animations/meta";
 import { fontPairings } from "@/lib/typography";
 import { getGradientById } from "@/lib/gradients";
 import { getShadowById } from "@/lib/shadows";
-import { getBackgroundById } from "@/lib/backgrounds";
+import { getBackgroundMetaById } from "@/lib/backgrounds/meta";
 import { buildKitHints } from "@/lib/kit/hints";
 import { encodeKitToSearch } from "@/lib/kit/share";
 import { KitCombinationPreview } from "@/components/kit/kit-combination-preview";
@@ -102,7 +102,7 @@ function resolveRow(item: KitItem, locale: string): ResolvedRow {
       detail: shadow?.category ?? "",
     };
   }
-  const background = getBackgroundById(item.slug);
+  const background = getBackgroundMetaById(item.slug);
   return {
     item,
     name: (locale === "zh" ? background?.nameZh : background?.name) ?? item.slug,

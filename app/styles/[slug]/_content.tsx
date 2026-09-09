@@ -476,6 +476,7 @@ export function StyleDetailContent({
             components={style.components}
             defaultShowCode={false}
             styleSlug={style.slug}
+            previewAssets={style.previewAssets}
           />
         </div>
       </section>

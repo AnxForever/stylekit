@@ -166,6 +166,7 @@ export function deriveDesignStyle(form: FormData, coverSvg: string): DesignStyle
       ...(footer ? { footer } : {}),
     },
     globalCss: "",
+    ...(form.previewAssets ? { previewAssets: form.previewAssets } : {}),
     aiRules: form.aiRules.filter((rule) => rule.trim()).join("\n"),
   };
 }

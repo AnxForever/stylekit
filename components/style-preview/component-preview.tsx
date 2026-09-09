@@ -6,17 +6,26 @@ import type { ComponentTemplate } from "@/lib/styles";
 import { useI18n } from "@/lib/i18n/context";
 import { sanitizePreviewHtml } from "@/lib/security/sanitize-html";
 import { generatePreviewHTML } from "@/lib/style-preview/preview-html";
+import { componentCodeWithAssets } from "@/lib/style-preview/motion-css";
+import type { PreviewAssets } from "@/lib/style-preview/preview-assets";
+import { ExtractedComponentPreview } from "./extracted-component-preview";
 
 interface ComponentPreviewProps {
   components: Record<string, ComponentTemplate>;
   defaultShowCode?: boolean;
   styleSlug?: string;
+  previewBackground?: string;
+  previewForeground?: string;
+  previewAssets?: PreviewAssets;
 }
 
 export function ComponentPreview({
   components,
   defaultShowCode = true,
   styleSlug,
+  previewBackground,
+  previewForeground,
+  previewAssets,
 }: ComponentPreviewProps) {
   const componentKeys = Object.keys(components);
   const [activeTab, setActiveTab] = useState(componentKeys[0]);
@@ -105,6 +114,7 @@ export function ComponentPreview({
       {/* Preview Area */}
       <div
         className="p-6 md:p-10 bg-white dark:bg-zinc-900 flex items-start justify-center min-h-[200px] overflow-x-auto"
+        style={{ backgroundColor: previewBackground, color: previewForeground }}
         onTouchStart={handleTouchStart}
         onTouchEnd={handleTouchEnd}
       >
@@ -114,16 +124,16 @@ export function ComponentPreview({
           viewport and the preview pane can appear blank.
         */}
         <div className="relative isolate w-full min-h-[200px] transform-gpu">
-          <div
-            dangerouslySetInnerHTML={{
-              __html: previewHtml,
-            }}
-          />
+          {previewAssets ? (
+            <ExtractedComponentPreview key={activeTab} html={previewHtml} assets={previewAssets} componentKey={activeTab} />
+          ) : (
+            <div dangerouslySetInnerHTML={{ __html: previewHtml }} />
+          )}
         </div>
       </div>
 
       {/* Code */}
-      {showCode && <CodeBlock code={activeComponent.code} slug={styleSlug} />}
+      {showCode && <CodeBlock code={componentCodeWithAssets(activeComponent.code, previewAssets, activeTab)} slug={styleSlug} />}
     </div>
   );
 }

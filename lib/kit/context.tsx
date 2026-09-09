@@ -25,11 +25,11 @@ import {
 } from "./storage";
 import { mergeKitCollections } from "./merge";
 import { useUser } from "@/lib/auth/use-user";
-import { getAuthClient } from "@/lib/auth/supabase-browser";
+import { loadAuthClient } from "@/lib/auth/browser-client-loader";
 
 async function fetchWithAuth(input: RequestInfo | URL, init: RequestInit = {}) {
   const headers = new Headers(init.headers ?? {});
-  const client = getAuthClient();
+  const client = await loadAuthClient();
   if (client) {
     const {
       data: { session },

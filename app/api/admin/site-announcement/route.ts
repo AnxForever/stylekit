@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { checkAdminApiAccess } from "@/lib/auth/admin-api";
 import { recordAdminAuditEvent } from "@/lib/admin/audit-log";
+import { clearSiteAnnouncementCache } from "@/lib/site-announcements";
 import { getSupabaseAdmin } from "@/lib/supabase/server";
 
 const locales = ["zh-CN", "en"] as const;
@@ -105,6 +106,8 @@ export async function PUT(request: Request) {
   if (error || !data) {
     return NextResponse.json({ error: "保存站点公告失败，请检查 migration 和数据库连接。" }, { status: 502 });
   }
+
+  clearSiteAnnouncementCache(parsed.data.locale);
 
   await recordAdminAuditEvent(request, {
     action: "site_announcement.update",

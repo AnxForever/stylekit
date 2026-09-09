@@ -73,7 +73,7 @@ export function AnalyticsOverviewPage({
           <div className="grid gap-px overflow-hidden rounded-xl bg-[var(--admin-border-soft)] shadow-[var(--admin-shadow-border)] sm:grid-cols-2 xl:grid-cols-5">
             <OverviewMetric
               icon={Users}
-              label="独立访客"
+              label="标签页会话"
               value={data.current.visitors}
               previous={data.previous.visitors}
             />
@@ -110,7 +110,7 @@ export function AnalyticsOverviewPage({
             <AdminPanel className="p-4" role="status">
               <p className="text-sm text-foreground">数据质量提示</p>
               <p className="mt-1 text-xs leading-5 text-muted">
-                {data.quality.anonymousPageViews.toLocaleString("zh-CN")} 次浏览缺少访客标识；
+                {data.quality.anonymousPageViews.toLocaleString("zh-CN")} 次浏览缺少会话标识；
                 地域覆盖率为 {data.quality.countryCoveragePct == null ? "暂无" : `${data.quality.countryCoveragePct}%`}。
               </p>
             </AdminPanel>
@@ -163,11 +163,11 @@ function OverviewMetric({
 function OverviewTrendPanel({ data }: { data: AnalyticsOverview }) {
   const [metric, setMetric] = useState<"visitors" | "pageViews">("visitors");
   const isVisitors = metric === "visitors";
-  return <AdminPanel className="p-5 sm:p-6"><div className="flex flex-wrap items-start justify-between gap-4"><div><h2 className="text-sm font-medium text-foreground">{isVisitors ? "独立访客趋势" : "页面浏览趋势"}</h2><p className="mt-1 text-xs text-muted">{isVisitors ? "每个时间桶内去重后的匿名访客。" : "页面加载与站内路由切换产生的浏览次数。"}</p></div><MetricSwitch value={metric} onChange={setMetric} /></div><InteractiveLineChart ariaLabel={isVisitors ? "独立访客趋势图" : "页面浏览趋势图"} primaryLabel={isVisitors ? "独立访客" : "页面浏览"} secondaryLabel={isVisitors ? undefined : "上一周期"} secondaryIsComparison={!isVisitors} points={data.series.map((point) => ({ key: point.bucket, label: new Date(point.bucket).toLocaleString("zh-CN"), primary: isVisitors ? point.visitors : point.pageViews, secondary: isVisitors ? undefined : point.previousPageViews }))} /></AdminPanel>;
+  return <AdminPanel className="p-5 sm:p-6"><div className="flex flex-wrap items-start justify-between gap-4"><div><h2 className="text-sm font-medium text-foreground">{isVisitors ? "标签页会话趋势" : "页面浏览趋势"}</h2><p className="mt-1 text-xs text-muted">{isVisitors ? "每个时间桶内去重后的标签页会话。同一人开多个标签页会分别计数，真实独立访客请看 Umami。" : "页面加载与站内路由切换产生的浏览次数。"}</p></div><MetricSwitch value={metric} onChange={setMetric} /></div><InteractiveLineChart ariaLabel={isVisitors ? "标签页会话趋势图" : "页面浏览趋势图"} primaryLabel={isVisitors ? "标签页会话" : "页面浏览"} secondaryLabel={isVisitors ? undefined : "上一周期"} secondaryIsComparison={!isVisitors} points={data.series.map((point) => ({ key: point.bucket, label: new Date(point.bucket).toLocaleString("zh-CN"), primary: isVisitors ? point.visitors : point.pageViews, secondary: isVisitors ? undefined : point.previousPageViews }))} /></AdminPanel>;
 }
 
 function MetricSwitch({ value, onChange }: { value: "visitors" | "pageViews"; onChange: (value: "visitors" | "pageViews") => void }) {
-  return <div className="inline-flex rounded-md bg-[var(--admin-input)] p-1 shadow-[var(--admin-shadow-border)]" role="group" aria-label="趋势指标">{([['visitors','独立访客'],['pageViews','页面浏览']] as const).map(([metric,label]) => <button key={metric} type="button" aria-pressed={value === metric} onClick={() => onChange(metric)} className={`rounded px-3 py-1.5 text-xs transition-colors ${value === metric ? "bg-[var(--admin-panel)] text-foreground shadow-[var(--admin-shadow-small)]" : "text-muted hover:text-foreground"}`}>{label}</button>)}</div>;
+  return <div className="inline-flex rounded-md bg-[var(--admin-input)] p-1 shadow-[var(--admin-shadow-border)]" role="group" aria-label="趋势指标">{([['visitors','标签页会话'],['pageViews','页面浏览']] as const).map(([metric,label]) => <button key={metric} type="button" aria-pressed={value === metric} onClick={() => onChange(metric)} className={`rounded px-3 py-1.5 text-xs transition-colors ${value === metric ? "bg-[var(--admin-panel)] text-foreground shadow-[var(--admin-shadow-small)]" : "text-muted hover:text-foreground"}`}>{label}</button>)}</div>;
 }
 
 function OverviewSkeleton() {

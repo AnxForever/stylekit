@@ -30,22 +30,76 @@ interface SiteAnnouncementRow {
   updated_at: string | null;
 }
 
+const ANNOUNCEMENT_CACHE_TTL_MS = 60 * 1000;
+
+interface AnnouncementCacheEntry {
+  expiresAt: number;
+  value: Promise<SiteAnnouncement | null>;
+}
+
+// There are only two locale keys. A tiny process-local TTL cache avoids one
+// Supabase round trip on every page render while keeping scheduled changes
+// fresh. Concurrent requests share the same in-flight promise as well.
+const announcementCache = new Map<
+  SiteAnnouncementLocale,
+  AnnouncementCacheEntry
+>();
+
 export async function getSiteAnnouncement(
+  locale: SiteAnnouncementLocale,
+): Promise<SiteAnnouncement | null> {
+  const now = Date.now();
+  const cached = announcementCache.get(locale);
+  if (cached && cached.expiresAt > now) {
+    return cached.value;
+  }
+
+  const value = loadSiteAnnouncement(locale);
+  const entry = { expiresAt: now + ANNOUNCEMENT_CACHE_TTL_MS, value };
+  announcementCache.set(locale, entry);
+
+  // Do not retain a rejected promise. The next request should be allowed to
+  // retry the database instead of failing for the full TTL.
+  void value.catch(() => {
+    if (announcementCache.get(locale) === entry) {
+      announcementCache.delete(locale);
+    }
+  });
+
+  return value;
+}
+
+export function clearSiteAnnouncementCache(
+  locale?: SiteAnnouncementLocale,
+): void {
+  if (locale) {
+    announcementCache.delete(locale);
+    return;
+  }
+  announcementCache.clear();
+}
+
+async function loadSiteAnnouncement(
   locale: SiteAnnouncementLocale,
 ): Promise<SiteAnnouncement | null> {
   const supabase = getSupabaseAdmin();
 
   if (supabase) {
-    const { data, error } = await supabase
-      .from("site_announcements")
-      .select("locale, enabled, title, body, cta_label, cta_href, starts_at, ends_at, updated_at")
-      .eq("locale", locale)
-      .maybeSingle();
+    try {
+      const { data, error } = await supabase
+        .from("site_announcements")
+        .select("locale, enabled, title, body, cta_label, cta_href, starts_at, ends_at, updated_at")
+        .eq("locale", locale)
+        .maybeSingle();
 
-    if (!error && data) {
-      const row = data as SiteAnnouncementRow;
-      const announcement = toSiteAnnouncement(row);
-      return isCurrentlyActive(announcement) ? announcement : null;
+      if (!error && data) {
+        const row = data as SiteAnnouncementRow;
+        const announcement = toSiteAnnouncement(row);
+        return isCurrentlyActive(announcement) ? announcement : null;
+      }
+    } catch {
+      // A transient content-database outage must not take down every public
+      // page. The bundled changelog remains a truthful fallback.
     }
   }
 

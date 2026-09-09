@@ -13,6 +13,7 @@ vi.mock("@/lib/submit/reviewer-supabase", () => ({
 
 import {
   listCommunityStylesMeta,
+  mapSubmissionToStyle,
   resolveStyleBySlug,
 } from "@/lib/styles/community-runtime";
 import {
@@ -251,4 +252,16 @@ describe("community runtime styles", () => {
     expect(mockedListSubmissions).toHaveBeenCalledWith("approved");
     expect(mockedListSubmissionsSupabase).not.toHaveBeenCalled();
   });
+});
+
+
+it("keeps approved font and motion assets when resolving a community style", () => {
+  const previewAssets = {
+    fonts: [{ family: "Captured Face", weight: "400" }],
+    motion: { button: { states: { hover: { transform: "translateY(-2px)" } } } },
+  };
+  const fromForm = mapSubmissionToStyle({ ...communitySubmission, formData: { ...communitySubmission.formData, previewAssets } });
+  expect(fromForm?.previewAssets).toEqual(previewAssets);
+  const fromStored = mapSubmissionToStyle({ ...communitySubmission, designStyle: { previewAssets } });
+  expect(fromStored?.previewAssets).toEqual(previewAssets);
 });

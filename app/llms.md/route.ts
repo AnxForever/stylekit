@@ -3,6 +3,9 @@ import { getStyleTokens } from "@/lib/styles/tokens-registry";
 import { getStyleRecipes } from "@/lib/recipes";
 import { localizedString } from "@/lib/styles/locale-content";
 import { getSiteBaseUrl } from "@/lib/site-url";
+import { listPromotedCommunityStyles } from "@/lib/styles/community-runtime";
+
+export const dynamic = "force-dynamic";
 
 const BASE_URL = getSiteBaseUrl();
 
@@ -33,8 +36,22 @@ StyleKit provides structured design systems that AI can use to generate consiste
     );
   }
 
+  const promotedCommunityStyles = await listPromotedCommunityStyles();
   sections.push(`
 
+## Promoted Community Styles
+
+These approved community contributions were selected for the curated catalog. Each page includes the human-readable reference and the read-only Markdown style endpoint.
+
+`);
+
+  for (const style of promotedCommunityStyles) {
+    sections.push(
+      `- [${style.nameEn || style.name}](${BASE_URL}/en/community/${style.slug}): ${style.descriptionEn || style.description} ([Markdown](${BASE_URL}/api/styles/${style.slug}/md); Category: ${style.category}; Tags: ${style.tags.join(", ")})\n`
+    );
+  }
+
+  sections.push(`
 ## Core Workflows
 
 ### Path A: Style -> Rules -> Code

@@ -5,10 +5,13 @@ import { getStylesWithLintRules } from "@/lib/styles/lint-rules";
 import {
   extractClassNames,
   hasLintableRules,
+  lintCodeWithRules,
   lintStyleCode,
+  mergeRulesFromTokens,
   mergeStyleRules,
   stripVariants,
 } from "@/lib/styles/style-linter";
+import { getStyleTokens } from "@/lib/styles/tokens-registry";
 
 describe("lint-rules registry integrity", () => {
   it("only carries rules for styles that actually exist", () => {
@@ -257,5 +260,51 @@ describe("hasLintableRules", () => {
   it("is true for registered styles and false otherwise", () => {
     expect(hasLintableRules("neo-brutalist")).toBe(true);
     expect(hasLintableRules("definitely-not-a-style")).toBe(false);
+  });
+});
+
+// Submissions are not in the registry yet, so slug-keyed lookups find nothing
+// for them. These cover the data-driven entry points that let an unregistered
+// style be linted against the tokens it declares itself.
+describe("linting without the registry", () => {
+  const borrowedTokens = getStyleTokens("neo-brutalist")!;
+
+  it("builds rules from tokens passed in directly", () => {
+    const rules = mergeRulesFromTokens(borrowedTokens);
+    expect(rules.sources).toContain("tokens");
+    expect(rules.forbiddenClasses.size).toBeGreaterThan(0);
+  });
+
+  it("finds no rules when no tokens are supplied", () => {
+    expect(mergeRulesFromTokens(undefined).sources).toEqual([]);
+  });
+
+  it("flags code that violates the tokens it was given", () => {
+    const rules = mergeRulesFromTokens(borrowedTokens);
+    const banned = [...rules.forbiddenClasses.keys()][0];
+    const report = lintCodeWithRules(
+      rules,
+      `<button className="px-4 ${banned}">Go</button>`,
+      { slug: "unregistered-submission" },
+    );
+
+    expect(report.ok).toBe(false);
+    expect(report.slug).toBe("unregistered-submission");
+    expect(report.violations.map((v) => v.baseClassName)).toContain(banned);
+  });
+
+  it("passes code that respects the tokens it was given", () => {
+    const rules = mergeRulesFromTokens(borrowedTokens);
+    const report = lintCodeWithRules(rules, '<div className="p-4 flex" />');
+    expect(report.ok).toBe(true);
+  });
+
+  it("matches the slug-keyed path for a registered style", () => {
+    const code = '<div className="p-4 rounded-lg" />';
+    const viaSlug = lintStyleCode("neo-brutalist", code);
+    const viaRules = lintCodeWithRules(mergeStyleRules("neo-brutalist"), code, {
+      slug: "neo-brutalist",
+    });
+    expect(viaRules).toEqual(viaSlug);
   });
 });

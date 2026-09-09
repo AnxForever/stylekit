@@ -13,7 +13,7 @@ import { animationsMeta } from "@/lib/animations/meta";
 import { fontPairings } from "@/lib/typography";
 import { getGradientById } from "@/lib/gradients";
 import { getShadowById } from "@/lib/shadows";
-import { getBackgroundById } from "@/lib/backgrounds";
+import { getBackgroundMetaById } from "@/lib/backgrounds/meta";
 import { KitCombinationPreview } from "@/components/kit/kit-combination-preview";
 
 const TYPE_LABELS: Record<KitItem["type"], { zh: string; en: string }> = {
@@ -55,7 +55,7 @@ function resolveName(item: KitItem, zh: boolean): string {
       return (zh ? s?.nameZh : s?.name) ?? item.slug;
     }
     default: {
-      const b = getBackgroundById(item.slug);
+      const b = getBackgroundMetaById(item.slug);
       return (zh ? b?.nameZh : b?.name) ?? item.slug;
     }
   }

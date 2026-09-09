@@ -5,6 +5,8 @@ import Link from "next/link";
 import { sanitizePreviewHtml, sanitizeCss } from "@/lib/security/sanitize-html";
 import { generatePreviewHTML } from "@/lib/style-preview/preview-html";
 import type { DesignStyle, ComponentTemplate } from "@/lib/styles";
+import { ExtractedComponentPreview } from "@/components/style-preview/extracted-component-preview";
+import type { PreviewAssets } from "@/lib/style-preview/preview-assets";
 
 // --- Inline hooks ---
 
@@ -147,6 +149,8 @@ export default function DynamicShowcaseContent({ style }: Props) {
           key={key}
           component={component}
           index={idx}
+          componentKey={key}
+          previewAssets={style.previewAssets}
         />
       ))}
 
@@ -220,9 +224,13 @@ export default function DynamicShowcaseContent({ style }: Props) {
 function ComponentShowcaseSection({
   component,
   index,
+  componentKey,
+  previewAssets,
 }: {
   component: ComponentTemplate;
   index: number;
+  componentKey: string;
+  previewAssets?: PreviewAssets;
 }) {
   const previewHtml = useMemo(() => {
     return sanitizePreviewHtml(
@@ -242,7 +250,11 @@ function ComponentShowcaseSection({
         <div className="border border-border">
           <div className="p-8 md:p-12 bg-white dark:bg-zinc-900 flex items-center justify-center min-h-[200px]">
             <div className="relative isolate w-full min-h-[200px] transform-gpu">
-              <div dangerouslySetInnerHTML={{ __html: previewHtml }} />
+              {previewAssets ? (
+                <ExtractedComponentPreview html={previewHtml} assets={previewAssets} componentKey={componentKey} />
+              ) : (
+                <div dangerouslySetInnerHTML={{ __html: previewHtml }} />
+              )}
             </div>
           </div>
         </div>

@@ -75,7 +75,7 @@ export function AnalyticsTrafficPage({ initialRange = "7d", initialData = {} }: 
       <AdminPanel className="p-5 sm:p-6">
         <PanelHeading
           title="访问趋势"
-          description="切换查看独立访客或页面浏览；两种指标使用各自刻度。"
+          description="切换查看标签页会话或页面浏览；两种指标使用各自刻度。同一人开多个标签页会分别计数，真实独立访客请看 Umami。"
         />
         {overview.isLoading && !overview.data ? <PanelSkeleton tall /> : null}
         {!overview.data && overview.error ? (
@@ -210,7 +210,7 @@ function BreakdownRows({ rows }: { rows: AnalyticsBreakdown }) {
             />
           </div>
           <p className="ml-10 mt-1 font-mono text-[10px] text-[var(--admin-text-muted)]">
-            {row.visitors.toLocaleString("zh-CN")} 位访客 · {row.share.toFixed(1)}%
+            {row.visitors.toLocaleString("zh-CN")} 个标签页会话 · {row.share.toFixed(1)}%
           </p>
         </div>
       ))}
@@ -229,7 +229,7 @@ function TrafficTrend({
         label: new Date(point.bucket).toLocaleString("zh-CN"),
         primary: point[metric],
       }));
-  return <div><div className="mt-4 flex justify-end"><div className="inline-flex rounded-md bg-[var(--admin-input)] p-1 shadow-[var(--admin-shadow-border)]" role="group" aria-label="流量趋势指标"><button type="button" aria-pressed={metric === "visitors"} onClick={() => setMetric("visitors")} className={`rounded px-3 py-1.5 text-xs ${metric === "visitors" ? "bg-[var(--admin-panel)] text-foreground shadow-[var(--admin-shadow-small)]" : "text-muted"}`}>独立访客</button><button type="button" aria-pressed={metric === "pageViews"} onClick={() => setMetric("pageViews")} className={`rounded px-3 py-1.5 text-xs ${metric === "pageViews" ? "bg-[var(--admin-panel)] text-foreground shadow-[var(--admin-shadow-small)]" : "text-muted"}`}>页面浏览</button></div></div><InteractiveLineChart ariaLabel={metric === "visitors" ? "独立访客趋势" : "页面浏览趋势"} primaryLabel={metric === "visitors" ? "独立访客" : "页面浏览"} points={points(metric)} /></div>;
+  return <div><div className="mt-4 flex justify-end"><div className="inline-flex rounded-md bg-[var(--admin-input)] p-1 shadow-[var(--admin-shadow-border)]" role="group" aria-label="流量趋势指标"><button type="button" aria-pressed={metric === "visitors"} onClick={() => setMetric("visitors")} className={`rounded px-3 py-1.5 text-xs ${metric === "visitors" ? "bg-[var(--admin-panel)] text-foreground shadow-[var(--admin-shadow-small)]" : "text-muted"}`}>标签页会话</button><button type="button" aria-pressed={metric === "pageViews"} onClick={() => setMetric("pageViews")} className={`rounded px-3 py-1.5 text-xs ${metric === "pageViews" ? "bg-[var(--admin-panel)] text-foreground shadow-[var(--admin-shadow-small)]" : "text-muted"}`}>页面浏览</button></div></div><InteractiveLineChart ariaLabel={metric === "visitors" ? "标签页会话趋势" : "页面浏览趋势"} primaryLabel={metric === "visitors" ? "标签页会话" : "页面浏览"} points={points(metric)} /></div>;
 }
 
 function PanelSkeleton({ tall = false }: { tall?: boolean }) {

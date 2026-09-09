@@ -31,6 +31,66 @@ export function isSupabaseConfigured(): boolean {
   );
 }
 
+/**
+ * The sitemap only needs placement metadata. Keeping this projection separate
+ * from `listSubmissionsSupabase` avoids transferring the potentially large
+ * `form_data` JSON (which contains component source and token payloads) just
+ * to decide which slugs are indexable.
+ */
+export interface SubmissionPlacementRecord {
+  slug: string;
+  submittedAt: string;
+  reviewedAt?: string;
+  promotedAt?: string;
+  visibility?: SubmissionRecord["visibility"];
+}
+
+export async function listPromotedSubmissionPlacementsSupabase(): Promise<
+  SubmissionPlacementRecord[]
+> {
+  const sb = getSupabaseAdmin();
+  if (!sb) return [];
+
+  const { data, error } = await sb
+    .from("submissions")
+    .select("slug, submitted_at, reviewed_at, promoted_at, visibility")
+    .eq("status", "approved")
+    .eq("visibility", "promoted")
+    .order("promoted_at", { ascending: false, nullsFirst: false })
+    .order("reviewed_at", { ascending: false, nullsFirst: false });
+
+  if (error) throw new Error(`Supabase query failed: ${error.message}`);
+
+  return ((data ?? []) as {
+    slug?: unknown;
+    submitted_at?: unknown;
+    reviewed_at?: unknown;
+    promoted_at?: unknown;
+    visibility?: unknown;
+  }[])
+    .filter(
+      (row): row is {
+        slug: string;
+        submitted_at: string;
+        reviewed_at?: string;
+        promoted_at?: string;
+        visibility?: SubmissionRecord["visibility"];
+      } =>
+        typeof row.slug === "string" &&
+        row.slug.trim().length > 0 &&
+        typeof row.submitted_at === "string" &&
+        (row.reviewed_at === undefined || row.reviewed_at === null || typeof row.reviewed_at === "string") &&
+        (row.promoted_at === undefined || row.promoted_at === null || typeof row.promoted_at === "string"),
+    )
+    .map((row) => ({
+      slug: row.slug,
+      submittedAt: row.submitted_at,
+      ...(row.reviewed_at ? { reviewedAt: row.reviewed_at } : {}),
+      ...(row.promoted_at ? { promotedAt: row.promoted_at } : {}),
+      ...(row.visibility ? { visibility: row.visibility } : {}),
+    }));
+}
+
 export async function listSubmissionsSupabase(
   filter?: "pending" | "approved" | "rejected"
 ): Promise<SubmissionRecord[]> {

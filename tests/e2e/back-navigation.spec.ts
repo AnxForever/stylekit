@@ -51,7 +51,7 @@ test.describe("semantic back navigation", () => {
     await expect(page).toHaveURL(/\/zh\/styles$/);
   });
 
-  test("a direct Showcase entry uses a locale-preserving fallback", async ({
+  test("a direct Showcase entry uses a locale-preserving style fallback", async ({
     context,
     page,
   }, testInfo) => {
@@ -64,6 +64,10 @@ test.describe("semantic back navigation", () => {
       },
     ]);
     await page.goto("/styles/neo-brutalist/showcase");
+    // The bypass route is intentionally unprefixed. Reload after setting the
+    // cookie so the server and I18n provider both initialize with zh before
+    // the client-side fallback is exercised.
+    await page.reload();
 
     await page
       .locator("a")
@@ -71,6 +75,6 @@ test.describe("semantic back navigation", () => {
       .first()
       .click();
 
-    await expect(page).toHaveURL(/\/zh$/);
+    await expect(page).toHaveURL(/\/zh\/styles\/neo-brutalist$/);
   });
 });

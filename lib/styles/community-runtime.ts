@@ -1,6 +1,7 @@
 import { getStyleBySlug as getStaticStyleBySlug } from "./registry";
 import type { ComponentTemplate, DesignStyle, ExamplePrompt } from "./types";
 import { cache } from "react";
+import { parsePreviewAssets } from "@/lib/style-preview/preview-assets";
 import {
   getAllStylesMeta,
   type StyleCategory,
@@ -371,6 +372,7 @@ export function mapSubmissionToStyle(submission: SubmissionRecord): DesignStyle 
       ...(footerComponent ? { footer: footerComponent } : {}),
     },
     globalCss: asString(storedDesignStyle.globalCss) ?? "",
+    previewAssets: parsePreviewAssets(storedDesignStyle.previewAssets ?? formData.previewAssets),
     aiRules,
     aiRulesEn: asString(storedDesignStyle.aiRulesEn) ?? undefined,
     examplePrompts: parseExamplePrompts(storedDesignStyle.examplePrompts),

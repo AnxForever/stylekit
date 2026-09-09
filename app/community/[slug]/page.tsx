@@ -9,10 +9,18 @@ import { resolveStyleDelivery } from "@/lib/style-delivery";
 import {
   getCommunityAttribution,
   isPromotedCommunityStyle,
+  listCommunityStylesMeta,
 } from "@/lib/styles/community-runtime";
 import { getSeqIdForUser } from "@/lib/community/contributor";
 import { LocalizedLink } from "@/components/i18n/localized-link";
 import { getRequestLocaleContext } from "@/lib/i18n/request";
+import { getAlternateLocalePath } from "@/lib/i18n/routing";
+import { localizedList, localizedString } from "@/lib/styles/locale-content";
+import { serializeJsonLd } from "@/lib/security/json-ld";
+import {
+  generateBreadcrumbJsonLd,
+  generateCommunityStyleJsonLd,
+} from "@/lib/seo/json-ld";
 import { StyleDetailContent } from "@/app/styles/[slug]/_content";
 import { StyleReadinessSection } from "@/app/styles/[slug]/_readiness-section";
 import { ReportButton } from "./_report-button";
@@ -38,21 +46,66 @@ export async function generateMetadata({
     return { title: "Style Not Found", robots: { index: false } };
   }
 
+  const { locale, canonicalUrl, languageAlternates, openGraphLocale, baseUrl } =
+    await getRequestLocaleContext();
   const { style } = delivery;
   // Promotion is the moment a maintainer vouches for the work, so it is also
   // the moment the page becomes worth indexing. Everything else in /community
   // stays out of search results.
-  const promoted = await isPromotedCommunityStyle(slug);
+  const promoted = await isPromotedCommunityStyle(style.slug);
+  const localizedName = localizedString(locale, style.name, style.nameEn);
+  const localizedDescription = localizedString(
+    locale,
+    style.description,
+    style.descriptionEn
+  );
+  const title = promoted
+    ? locale === "zh"
+      ? `${localizedName} — 社区 UI 风格与 AI 提示词`
+      : `${localizedName} — Community UI Style & AI Prompts`
+    : locale === "zh"
+      ? `${localizedName} — 社区风格`
+      : `${localizedName} — Community Style`;
+  const description = localizedDescription;
+  const imageUrl = `${baseUrl}/styles/${style.slug}/opengraph-image`;
+  const imageAlt =
+    locale === "zh"
+      ? `${localizedName} 社区设计风格预览`
+      : `${localizedName} community design style preview`;
 
   return {
-    title: promoted
-      ? `${style.nameEn || style.name} — UI Style & AI Prompts`
-      : `${style.nameEn || style.name} — Community Style`,
-    description: style.descriptionEn || style.description,
+    title,
+    description,
+    keywords: [
+      ...localizedList(locale, style.keywords, style.keywordsEn),
+      ...style.tags,
+      locale === "zh" ? "社区设计风格" : "community design style",
+    ],
     robots: { index: promoted, follow: true },
-    ...(promoted
-      ? { alternates: { canonical: `/community/${slug}` } }
-      : {}),
+    alternates: { canonical: canonicalUrl, languages: languageAlternates },
+    openGraph: {
+      title: `${title} — StyleKit`,
+      description,
+      url: canonicalUrl,
+      siteName: "StyleKit",
+      type: "article",
+      locale: openGraphLocale,
+      alternateLocale: locale === "zh" ? ["en_US"] : ["zh_CN"],
+      images: [
+        {
+          url: imageUrl,
+          width: 1200,
+          height: 630,
+          alt: imageAlt,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${title} — StyleKit`,
+      description,
+      images: [imageUrl],
+    },
   };
 }
 
@@ -62,7 +115,7 @@ export default async function CommunityStylePage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const { locale } = await getRequestLocaleContext();
+  const { locale, canonicalUrl, baseUrl } = await getRequestLocaleContext();
   const t = COPY[locale === "zh" ? "zh" : "en"];
 
   const delivery = await resolveStyleDelivery(slug);
@@ -76,7 +129,11 @@ export default async function CommunityStylePage({
   }
 
   const { style, capabilities } = delivery;
-  const attribution = await getCommunityAttribution(slug);
+  const promoted = await isPromotedCommunityStyle(style.slug);
+  const communityMeta = promoted
+    ? (await listCommunityStylesMeta()).find((item) => item.slug === style.slug)
+    : undefined;
+  const attribution = await getCommunityAttribution(style.slug);
   // A byline links to the contributor page only when the account has a seq id;
   // submissions from before seq assignment stay plain text.
   const contributorSeqId = attribution?.userId
@@ -110,10 +167,72 @@ export default async function CommunityStylePage({
       }
     : undefined;
 
-  const localizedName = locale === "zh" ? style.name : style.nameEn || style.name;
+  const localizedName = localizedString(locale, style.name, style.nameEn);
+  const localizedDescription = localizedString(
+    locale,
+    style.description,
+    style.descriptionEn
+  );
+  const localizedKeywords = localizedList(locale, style.keywords, style.keywordsEn);
+  const detailUrl = canonicalUrl;
+  const language = locale === "zh" ? "zh-CN" : "en";
+  const breadcrumbJsonLd = promoted
+    ? generateBreadcrumbJsonLd([
+        {
+          name: t.home,
+          url: `${baseUrl}${getAlternateLocalePath("/", locale)}`,
+        },
+        {
+          name: t.community,
+          url: `${baseUrl}${getAlternateLocalePath("/community", locale)}`,
+        },
+        { name: localizedName, url: detailUrl },
+      ])
+    : null;
+  const communityJsonLd = promoted
+    ? generateCommunityStyleJsonLd({
+        name: localizedName,
+        description: localizedDescription,
+        keywords: [...localizedKeywords, ...style.tags],
+        category: style.category,
+        url: detailUrl,
+        language,
+        ...(attribution?.authorName
+          ? {
+              author: {
+                name: attribution.authorName,
+                ...(contributorSeqId
+                  ? {
+                      url: `${baseUrl}${getAlternateLocalePath(
+                        `/community/u/${contributorSeqId}`,
+                        locale
+                      )}`,
+                    }
+                  : {}),
+              },
+            }
+          : {}),
+        ...(communityMeta?.publishedAt
+          ? { datePublished: communityMeta.publishedAt }
+          : {}),
+        isPromoted: true,
+      })
+    : null;
 
   return (
     <div className="min-h-screen flex flex-col">
+      {communityJsonLd ? (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: serializeJsonLd(communityJsonLd) }}
+        />
+      ) : null}
+      {breadcrumbJsonLd ? (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: serializeJsonLd(breadcrumbJsonLd) }}
+        />
+      ) : null}
       <Header />
 
       <div className="mx-auto w-full max-w-7xl px-4 pt-6 sm:px-6 md:px-12">

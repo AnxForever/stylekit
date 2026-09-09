@@ -35,6 +35,7 @@ import {
 import type { DesignStyle } from "@/lib/styles";
 import { getStyleBySlug } from "@/lib/styles";
 import type { StyleTokens } from "@/lib/styles/tokens";
+import type { StyleQuality, CapabilityStatus } from "@/lib/styles/quality";
 
 export type DataOrigin = "live" | "bundled";
 
@@ -68,43 +69,108 @@ const DEFAULT_TTL_MS = 5 * 60_000;
 const CIRCUIT_OPEN_MS = 30_000;
 
 const cache = new Map<string, { value: unknown; expiresAt: number }>();
-let liveDisabledUntil = 0;
+const liveDisabledUntil = new Map<string, number>();
+const inFlight = new Map<string, Promise<FetchResult<unknown>>>();
+let cacheGeneration = 0;
 
 /** Exposed for tests and for long-lived processes that want a forced refresh. */
 export function clearRemoteCache(): void {
   cache.clear();
-  liveDisabledUntil = 0;
+  liveDisabledUntil.clear();
+  inFlight.clear();
+  cacheGeneration += 1;
 }
 
 type FetchResult<T> = { value: T } | { error: string };
 
-async function fetchJson<T>(path: string, options: RemoteOptions): Promise<FetchResult<T>> {
-  if (options.live === false) return { error: "live fetching disabled" };
-  if (Date.now() < liveDisabledUntil) return { error: "live source unreachable, backing off" };
+function normalizeBaseUrl(value: string): string | null {
+  try {
+    // URL normalisation makes `https://example.test` and
+    // `https://example.test/` share cache and circuit-breaker state.
+    const url = new URL(value);
+    if (url.protocol !== "http:" && url.protocol !== "https:") return null;
+    return url.toString().replace(/\/+$/, "");
+  } catch {
+    return null;
+  }
+}
 
-  const cached = cache.get(path);
-  if (cached && cached.expiresAt > Date.now()) return { value: cached.value as T };
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return Boolean(value) && typeof value === "object" && !Array.isArray(value);
+}
 
-  const base = options.baseUrl ?? STYLEKIT_SITE_URL;
+function openCircuit(baseUrl: string, generation: number): void {
+  if (generation === cacheGeneration) {
+    liveDisabledUntil.set(baseUrl, Date.now() + CIRCUIT_OPEN_MS);
+  }
+}
+
+async function fetchJsonUncached<T>(
+  path: string,
+  baseUrl: string,
+  cacheKey: string,
+  options: RemoteOptions,
+  generation: number,
+): Promise<FetchResult<T>> {
   const timeoutMs = options.timeoutMs ?? DEFAULT_TIMEOUT_MS;
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeoutMs);
 
   try {
-    const response = await fetch(`${base}${path}`, {
+    const response = await fetch(`${baseUrl}${path}`, {
       signal: controller.signal,
       headers: { accept: "application/json" },
     });
-    if (!response.ok) return { error: `HTTP ${response.status}` };
+    if (!response.ok) {
+      openCircuit(baseUrl, generation);
+      return { error: `HTTP ${response.status}` };
+    }
+
     const value = (await response.json()) as T;
-    cache.set(path, { value, expiresAt: Date.now() + (options.cacheTtlMs ?? DEFAULT_TTL_MS) });
+    if (generation === cacheGeneration) {
+      cache.set(cacheKey, {
+        value,
+        expiresAt: Date.now() + (options.cacheTtlMs ?? DEFAULT_TTL_MS),
+      });
+      liveDisabledUntil.delete(baseUrl);
+    }
     return { value };
   } catch (error) {
+    openCircuit(baseUrl, generation);
     const message = error instanceof Error ? error.message : String(error);
-    liveDisabledUntil = Date.now() + CIRCUIT_OPEN_MS;
-    return { error: /abort/i.test(message) ? `timed out after ${timeoutMs}ms` : message };
+    return {
+      error: /abort/i.test(message) ? `timed out after ${timeoutMs}ms` : message,
+    };
   } finally {
     clearTimeout(timer);
+  }
+}
+
+async function fetchJson<T>(path: string, options: RemoteOptions): Promise<FetchResult<T>> {
+  if (options.live === false) return { error: "live fetching disabled" };
+
+  const baseUrl = normalizeBaseUrl(options.baseUrl ?? STYLEKIT_SITE_URL);
+  if (!baseUrl) return { error: "invalid live source base URL" };
+
+  const cacheKey = `${baseUrl}${path}`;
+  const cached = cache.get(cacheKey);
+  if (cached && cached.expiresAt > Date.now()) return { value: cached.value as T };
+
+  const disabledUntil = liveDisabledUntil.get(baseUrl) ?? 0;
+  if (Date.now() < disabledUntil) return { error: "live source unreachable, backing off" };
+
+  const existing = inFlight.get(cacheKey);
+  if (existing) return (await existing) as FetchResult<T>;
+
+  const generation = cacheGeneration;
+  const request = fetchJsonUncached<T>(path, baseUrl, cacheKey, options, generation);
+  inFlight.set(cacheKey, request as Promise<FetchResult<unknown>>);
+  try {
+    return await request;
+  } finally {
+    if (inFlight.get(cacheKey) === request) {
+      inFlight.delete(cacheKey);
+    }
   }
 }
 
@@ -119,6 +185,13 @@ interface LiveStyle {
   readonly keywords?: unknown;
   readonly colors?: unknown;
 }
+
+const STYLE_CATEGORIES = new Set<DesignStyle["category"]>([
+  "modern",
+  "retro",
+  "minimal",
+  "expressive",
+]);
 
 function str(value: unknown, fallback = ""): string {
   return typeof value === "string" ? value : fallback;
@@ -136,17 +209,21 @@ function strArray(value: unknown): string[] {
  * as an empty value in one place instead of silently producing an object that
  * type-checks but ranks wrongly.
  */
-function toDesignStyle(raw: LiveStyle): DesignStyle | null {
-  const slug = str(raw.slug);
+function toDesignStyle(raw: unknown): DesignStyle | null {
+  if (!isRecord(raw)) return null;
+  const slug = str(raw.slug).trim();
   if (!slug) return null;
-  const colors = (raw.colors ?? {}) as Record<string, unknown>;
+  const colors = isRecord(raw.colors) ? raw.colors : {};
+  const category = str(raw.category);
   return {
     slug,
     name: str(raw.name, slug),
     nameEn: str(raw.nameEn, slug),
     description: str(raw.description),
     descriptionEn: str(raw.descriptionEn),
-    category: str(raw.category) as DesignStyle["category"],
+    category: STYLE_CATEGORIES.has(category as DesignStyle["category"])
+      ? (category as DesignStyle["category"])
+      : "modern",
     tags: strArray(raw.tags),
     keywords: strArray(raw.keywords),
     colors: {
@@ -186,6 +263,49 @@ function mergeWithBundled(live: DesignStyle): DesignStyle {
   };
 }
 
+const QUALITY_STATUSES: ReadonlySet<CapabilityStatus> = new Set([
+  "complete",
+  "partial",
+  "fallback",
+  "missing",
+]);
+
+function capabilityStatus(value: unknown, fallback: CapabilityStatus): CapabilityStatus {
+  return typeof value === "string" && QUALITY_STATUSES.has(value as CapabilityStatus)
+    ? (value as CapabilityStatus)
+    : fallback;
+}
+
+function remoteQuality(raw: Record<string, unknown>): StyleQuality {
+  const readiness = isRecord(raw.readiness) ? raw.readiness : {};
+  const rawDarkMode = isRecord(readiness.darkMode) ? readiness.darkMode : {};
+  const rawAccessibility = isRecord(raw.accessibility) ? raw.accessibility : {};
+  const rawComponents = isRecord(raw.components) ? raw.components : {};
+  const componentCount = ["button", "card", "input"].filter((key) => {
+    const component = rawComponents[key];
+    return isRecord(component) && typeof component.code === "string" && component.code.trim();
+  }).length;
+  const accessibilityScore =
+    typeof rawAccessibility.overall === "number" ? rawAccessibility.overall : null;
+  const readinessSource = readiness.source === "curated" ? "curated" : "fallback";
+
+  return {
+    tier: readinessSource === "curated" ? "curated" : "baseline",
+    capabilities: {
+      tokens: isRecord(raw.tokens) ? "complete" : "missing",
+      recipes: isRecord(raw.recipes) ? "complete" : "missing",
+      componentCode:
+        componentCount === 3 ? "complete" : componentCount > 0 ? "partial" : "missing",
+      variants: Array.isArray(raw.variants) && raw.variants.length > 0 ? "complete" : "missing",
+      readiness: readinessSource,
+      darkMode: capabilityStatus(rawDarkMode.support, "fallback"),
+      accessibility: accessibilityScore === null ? "unavailable" : "scored",
+    },
+    accessibilityScore,
+    flags: readinessSource === "fallback" ? ["readiness-fallback"] : [],
+  };
+}
+
 async function liveCatalogue(
   options: RemoteOptions,
 ): Promise<{ styles: DesignStyle[] } | { error: string }> {
@@ -194,7 +314,12 @@ async function liveCatalogue(
     options,
   );
   if ("error" in response) return { error: response.error };
-  const mapped = (response.value.styles ?? [])
+
+  if (!isRecord(response.value) || !Array.isArray(response.value.styles)) {
+    return { error: "live catalogue returned malformed styles payload" };
+  }
+
+  const mapped = response.value.styles
     .map(toDesignStyle)
     .filter((style): style is DesignStyle => style !== null)
     .map(mergeWithBundled);
@@ -238,12 +363,27 @@ export async function getStyleDetailLive(
   }
 
   const raw = response.value;
+  if (!isRecord(raw)) {
+    return {
+      data: null,
+      origin: "bundled",
+      fallbackReason: "live detail returned a malformed payload",
+    };
+  }
+  const detailSlug = str(raw["slug"], slug).trim();
+  if (!detailSlug) {
+    return {
+      data: null,
+      origin: "bundled",
+      fallbackReason: "live detail returned no usable slug",
+    };
+  }
   const recipes = raw["recipes"];
   const recipeIds =
     recipes && typeof recipes === "object" && !Array.isArray(recipes)
       ? Object.keys(recipes as Record<string, unknown>)
       : [];
-  const colors = (raw["colors"] ?? {}) as Record<string, unknown>;
+  const colors = isRecord(raw["colors"]) ? raw["colors"] : {};
   const keywords = strArray(raw["keywords"]);
 
   // The detail endpoint publishes styleType but not category, and the two are
@@ -258,7 +398,7 @@ export async function getStyleDetailLive(
       : (catalogue.styles.find((style) => style.slug === slug)?.category ?? "");
 
   const detail: StyleDetail = {
-    slug: str(raw["slug"], slug),
+    slug: detailSlug,
     name: str(raw["nameEn"]) || str(raw["name"], slug),
     nameEn: str(raw["nameEn"], slug),
     category,
@@ -275,12 +415,12 @@ export async function getStyleDetailLive(
     doList: strArray(raw["doList"]),
     dontList: strArray(raw["dontList"]),
     keywords,
-    hasTokens: Boolean(raw["tokens"]),
+    hasTokens: isRecord(raw["tokens"]),
     hasRecipes: recipeIds.length > 0,
     recipeIds,
     shadcnInstall: shadcnInstallCommand(slug),
-    url: `${STYLEKIT_SITE_URL}/styles/${slug}`,
-    quality: (raw["readiness"] ?? null) as StyleDetail["quality"],
+    url: `${normalizeBaseUrl(options.baseUrl ?? STYLEKIT_SITE_URL) ?? STYLEKIT_SITE_URL}/styles/${detailSlug}`,
+    quality: remoteQuality(raw),
   };
 
   return { data: detail, origin: "live" };
@@ -298,7 +438,14 @@ export async function getTokensLive(
     options,
   );
   if ("error" in response) return { data: null, origin: "bundled", fallbackReason: response.error };
-  return { data: response.value.tokens ?? null, origin: "live" };
+  if (!isRecord(response.value) || !isRecord(response.value.tokens)) {
+    return {
+      data: null,
+      origin: "bundled",
+      fallbackReason: "live tokens returned a malformed payload",
+    };
+  }
+  return { data: response.value.tokens as StyleTokens, origin: "live" };
 }
 
 /**

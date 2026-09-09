@@ -217,6 +217,9 @@
         },
         "footerCode": {
           "type": "string"
+        },
+        "previewAssets": {
+          "$ref": "#/$defs/previewAssets"
         }
       }
     },
@@ -291,6 +294,379 @@
         "type": "string",
         "pattern": "\\S"
       }
+    },
+    "previewAssets": {
+      "type": "object",
+      "properties": {
+        "fonts": {
+          "maxItems": 8,
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/previewFontFace"
+          },
+          "description": "Captured font files for preview; all embedded data URLs combined must be at most 262144 characters."
+        },
+        "motion": {
+          "type": "object",
+          "properties": {
+            "button": {
+              "$ref": "#/$defs/componentMotion"
+            },
+            "card": {
+              "$ref": "#/$defs/componentMotion"
+            },
+            "input": {
+              "$ref": "#/$defs/componentMotion"
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "previewFontFace": {
+      "type": "object",
+      "properties": {
+        "family": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 160,
+          "pattern": "^[^;{}<>\\\\@]+$"
+        },
+        "sourceUrl": {
+          "type": "string",
+          "maxLength": 2048,
+          "format": "uri",
+          "pattern": "^https?://"
+        },
+        "dataUrl": {
+          "type": "string",
+          "maxLength": 524328,
+          "pattern": "^data:font\\/(?:woff2?|ttf|otf);base64,[A-Za-z0-9+/]+={0,2}$"
+        },
+        "weight": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 80,
+          "pattern": "^[^;{}<>\\\\@]+$"
+        },
+        "style": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 80,
+          "pattern": "^[^;{}<>\\\\@]+$"
+        },
+        "stretch": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 80,
+          "pattern": "^[^;{}<>\\\\@]+$"
+        },
+        "unicodeRange": {
+          "type": "string",
+          "maxLength": 2000,
+          "pattern": "^U\\+[\\da-f?]+(?:-[\\da-f]+)?(?:,\\s*U\\+[\\da-f?]+(?:-[\\da-f]+)?)*$"
+        }
+      },
+      "required": [
+        "family"
+      ],
+      "additionalProperties": false
+    },
+    "componentMotion": {
+      "type": "object",
+      "properties": {
+        "transition": {
+          "type": "object",
+          "properties": {
+            "property": {
+              "type": "string",
+              "maxLength": 240,
+              "pattern": "^[a-z-]+(?:,\\s*[a-z-]+)*$"
+            },
+            "duration": {
+              "type": "string",
+              "maxLength": 200,
+              "pattern": "^\\d*\\.?\\d+(?:ms|s)(?:,\\s*\\d*\\.?\\d+(?:ms|s))*$"
+            },
+            "timingFunction": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 500,
+              "pattern": "^[^;{}<>\\\\@]+$"
+            },
+            "delay": {
+              "type": "string",
+              "maxLength": 200,
+              "pattern": "^-?\\d*\\.?\\d+(?:ms|s)(?:,\\s*-?\\d*\\.?\\d+(?:ms|s))*$"
+            }
+          },
+          "required": [
+            "property",
+            "duration",
+            "timingFunction",
+            "delay"
+          ],
+          "additionalProperties": false
+        },
+        "base": {
+          "$ref": "#/$defs/motionStyles"
+        },
+        "states": {
+          "type": "object",
+          "properties": {
+            "hover": {
+              "$ref": "#/$defs/motionStyles"
+            },
+            "focus": {
+              "$ref": "#/$defs/motionStyles"
+            },
+            "active": {
+              "$ref": "#/$defs/motionStyles"
+            }
+          },
+          "additionalProperties": false
+        },
+        "animations": {
+          "maxItems": 3,
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "maxLength": 160
+              },
+              "duration": {
+                "type": "number",
+                "exclusiveMinimum": 0,
+                "maximum": 60000
+              },
+              "delay": {
+                "type": "number",
+                "minimum": -60000,
+                "maximum": 60000
+              },
+              "iterations": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "exclusiveMinimum": 0,
+                    "maximum": 1000
+                  },
+                  {
+                    "type": "string",
+                    "const": "infinite"
+                  }
+                ]
+              },
+              "direction": {
+                "type": "string",
+                "enum": [
+                  "normal",
+                  "reverse",
+                  "alternate",
+                  "alternate-reverse"
+                ]
+              },
+              "fill": {
+                "type": "string",
+                "enum": [
+                  "none",
+                  "forwards",
+                  "backwards",
+                  "both",
+                  "auto"
+                ]
+              },
+              "easing": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 500,
+                "pattern": "^[^;{}<>\\\\@]+$"
+              },
+              "keyframes": {
+                "minItems": 2,
+                "maxItems": 16,
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "offset": {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 1
+                    },
+                    "easing": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 500,
+                      "pattern": "^[^;{}<>\\\\@]+$"
+                    },
+                    "styles": {
+                      "$ref": "#/$defs/motionStyles"
+                    }
+                  },
+                  "required": [
+                    "offset",
+                    "styles"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "required": [
+              "duration",
+              "delay",
+              "iterations",
+              "direction",
+              "fill",
+              "easing",
+              "keyframes"
+            ],
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "motionStyles": {
+      "type": "object",
+      "properties": {
+        "backgroundColor": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 500,
+          "pattern": "^[^;{}<>\\\\@]+$"
+        },
+        "color": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 500,
+          "pattern": "^[^;{}<>\\\\@]+$"
+        },
+        "borderColor": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 500,
+          "pattern": "^[^;{}<>\\\\@]+$"
+        },
+        "borderWidth": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 500,
+          "pattern": "^[^;{}<>\\\\@]+$"
+        },
+        "borderRadius": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 500,
+          "pattern": "^[^;{}<>\\\\@]+$"
+        },
+        "borderTopLeftRadius": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 500,
+          "pattern": "^[^;{}<>\\\\@]+$"
+        },
+        "borderTopRightRadius": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 500,
+          "pattern": "^[^;{}<>\\\\@]+$"
+        },
+        "borderBottomLeftRadius": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 500,
+          "pattern": "^[^;{}<>\\\\@]+$"
+        },
+        "borderBottomRightRadius": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 500,
+          "pattern": "^[^;{}<>\\\\@]+$"
+        },
+        "boxShadow": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 500,
+          "pattern": "^[^;{}<>\\\\@]+$"
+        },
+        "opacity": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 500,
+          "pattern": "^[^;{}<>\\\\@]+$"
+        },
+        "transform": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 500,
+          "pattern": "^[^;{}<>\\\\@]+$"
+        },
+        "transformOrigin": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 500,
+          "pattern": "^[^;{}<>\\\\@]+$"
+        },
+        "translate": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 500,
+          "pattern": "^[^;{}<>\\\\@]+$"
+        },
+        "rotate": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 500,
+          "pattern": "^[^;{}<>\\\\@]+$"
+        },
+        "scale": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 500,
+          "pattern": "^[^;{}<>\\\\@]+$"
+        },
+        "filter": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 500,
+          "pattern": "^[^;{}<>\\\\@]+$"
+        },
+        "outlineColor": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 500,
+          "pattern": "^[^;{}<>\\\\@]+$"
+        },
+        "outlineStyle": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 500,
+          "pattern": "^[^;{}<>\\\\@]+$"
+        },
+        "outlineWidth": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 500,
+          "pattern": "^[^;{}<>\\\\@]+$"
+        },
+        "outlineOffset": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 500,
+          "pattern": "^[^;{}<>\\\\@]+$"
+        },
+        "letterSpacing": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 500,
+          "pattern": "^[^;{}<>\\\\@]+$"
+        }
+      },
+      "additionalProperties": false
     }
   }
 }
