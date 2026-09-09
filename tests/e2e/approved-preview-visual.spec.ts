@@ -29,6 +29,24 @@ test.describe("approved preview visual baseline", () => {
     colorScheme: "light",
     locale: "zh-CN",
     reducedMotion: "reduce",
+    // Pixel 5 is 393px wide, and 393 is odd. The two-column catalog grid
+    // resolves to 172.5px columns, so an aspect-[4/3] cover is 129.375px tall.
+    // Playwright captures ceil(top + height) - floor(top), which lands on 130
+    // or 131 depending on where each card falls between device pixels -- and a
+    // size difference is a hard failure that no pixel threshold can absorb.
+    // 392px divides evenly (172px columns, 129px covers) and yields the same
+    // 172x130 box for every card. Measured, not assumed: at 393 the capture
+    // heights are {130, 131}; at 392 they are {130}.
+    // Scoped to this spec so the behavioural suites keep real Pixel 5 metrics.
+    // Playwright passes the setter positionally; it is named `provide` rather
+    // than the usual `use` so eslint's rules-of-hooks does not read it as
+    // React's `use()` being called outside a component.
+    viewport: async ({ viewport }, provide, testInfo) => {
+      const isMobile = testInfo.project.name === "mobile-chrome";
+      await provide(
+        isMobile && viewport ? { ...viewport, width: 392 } : viewport,
+      );
+    },
   });
 
   test("keeps every approved cover preview pixel-stable", async ({ page }) => {

@@ -59,7 +59,7 @@ The repository also contains CLI and MCP packages. Their `0.1.0` public betas ar
 ## Product Boundaries
 
 - StyleKit provides design constraints, prompts, examples, and registry assets; it does not guarantee that every AI-generated interface is production-ready.
-- The 148 existing previews are curated visual references. General-purpose preview infrastructure is intended for future styles and does not replace those previews.
+- The existing catalog previews are curated visual references. General-purpose preview infrastructure is intended for future styles and does not replace those previews.
 - `llms.txt` is an emerging community convention, not a confirmed ranking signal for Google, ChatGPT, Claude, Gemini, or Perplexity.
 
 ## Additional References

@@ -425,6 +425,29 @@ export function StyleDetailContent({
             keywordsEn={style.keywordsEn}
             specTokens={specTokens}
           />
+          <p className="mt-8 text-sm text-muted">
+            {locale === "zh" ? "更多提示词库：" : "More prompt libraries: "}
+            <LocalizedLink
+              href="/ui-prompts"
+              className="underline underline-offset-4 hover:text-foreground transition-colors"
+            >
+              {locale === "zh" ? "全部 UI 提示词" : "All UI Prompts"}
+            </LocalizedLink>
+            {" · "}
+            <LocalizedLink
+              href="/tailwind-ui-prompts"
+              className="underline underline-offset-4 hover:text-foreground transition-colors"
+            >
+              {locale === "zh" ? "Tailwind UI 提示词" : "Tailwind UI Prompts"}
+            </LocalizedLink>
+            {" · "}
+            <LocalizedLink
+              href="/dark-mode-ui-prompts"
+              className="underline underline-offset-4 hover:text-foreground transition-colors"
+            >
+              {locale === "zh" ? "暗色模式提示词" : "Dark Mode UI Prompts"}
+            </LocalizedLink>
+          </p>
         </div>
       </section>
 

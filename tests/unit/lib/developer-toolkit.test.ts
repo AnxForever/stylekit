@@ -9,10 +9,10 @@ describe("Developer Toolkit capability manifest", () => {
     expect(getDeveloperToolkitCapability("cli")).toMatchObject({
       id: "cli",
       state: "public-beta",
-      publicVersion: "0.1.4",
-      repositoryVersion: "0.1.4",
-      command: "npx -y stylekit-cli@0.1.4 add synthwave",
-      verifiedAt: "2026-09-06",
+      publicVersion: "0.1.2",
+      repositoryVersion: "0.1.2",
+      command: "npx -y stylekit-cli@0.1.2 add synthwave",
+      verifiedAt: "2026-08-16",
     });
   });
 

@@ -96,6 +96,9 @@ const nextConfig: NextConfig = {
     // Keep production artifact generation deterministic on the constrained
     // local/CI builders used by the deployment runbook.
     cpus: 1,
+    // Shared-element View Transitions come from React 19's <ViewTransition>
+    // component, not from a Next flag. The experimental `viewTransition` key
+    // was removed in Next 16.3 and now fails the build's type check.
     // Client Router Cache for back/forward: without this every back navigation
     // refetches the RSC payload (dynamic default is 0), which makes returning
     // to long pages feel slow and breaks scroll restoration timing.

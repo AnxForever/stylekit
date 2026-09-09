@@ -65,7 +65,7 @@ If you are using AI to design or build a frontend, these focused guides cover th
 ### Design System
 
 - **148 visual and layout styles** with design tokens, color palettes, and typography
-- **148 live showcases** — full-page interactive demos across the catalog
+- **Live showcases** — a full-page interactive demo for every catalog style
 - **Component recipes** — copy-paste code for buttons, cards, inputs, and more
 - **Export anywhere** — Tailwind preset, shadcn theme, CSS variables, Figma tokens
 
