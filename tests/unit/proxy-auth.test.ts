@@ -106,3 +106,73 @@ describe("proxy Supabase session refresh", () => {
     expect(response.headers.get("location")).toContain("/admin-login");
   });
 });
+
+describe("proxy locale negotiation for /colors", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    vi.stubEnv("NEXT_PUBLIC_SUPABASE_URL", "https://example.supabase.co");
+    vi.stubEnv("NEXT_PUBLIC_SUPABASE_ANON_KEY", "test-anon-key");
+    mocks.verifyAdminSessionCookieValue.mockResolvedValue(false);
+    mocks.getClaims.mockResolvedValue({
+      data: null,
+      error: null,
+    });
+  });
+
+  function requestWith(pathname: string, headers: Record<string, string>) {
+    return new NextRequest(`https://www.stylekit.top${pathname}`, {
+      headers,
+    });
+  }
+
+  it("answers search bots on unprefixed /colors paths with a permanent redirect", async () => {
+    const response = await proxy(
+      requestWith("/colors/22c55e", {
+        "user-agent":
+          "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)",
+      }),
+    );
+
+    expect(response.status).toBe(308);
+    expect(response.headers.get("location")).toBe(
+      "https://www.stylekit.top/en/colors/22c55e",
+    );
+  });
+
+  it("keeps language-less humans on temporary negotiation instead of pinning them", async () => {
+    const response = await proxy(
+      requestWith("/colors/22c55e", {
+        "user-agent": "Mozilla/5.0 (Macintosh) regular-browser",
+      }),
+    );
+
+    expect(response.status).toBe(307);
+    expect(response.headers.get("location")).toBe(
+      "https://www.stylekit.top/en/colors/22c55e",
+    );
+  });
+
+  it("only matches the /colors path segment, not longer prefixes", async () => {
+    const response = await proxy(
+      requestWith("/colorscheme-guide", {
+        "user-agent":
+          "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)",
+      }),
+    );
+
+    expect(response.status).not.toBe(308);
+  });
+
+  it("does not let a prefetch write the locale cookie", async () => {
+    const response = await proxy(
+      requestWith("/styles", {
+        "user-agent": "Mozilla/5.0 (Macintosh) regular-browser",
+        "next-router-prefetch": "1",
+        cookie: "stylekit-locale=zh",
+      }),
+    );
+
+    expect(response.status).toBe(307);
+    expect(response.headers.get("set-cookie")).toBeNull();
+  });
+});

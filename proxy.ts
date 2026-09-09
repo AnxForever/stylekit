@@ -34,6 +34,16 @@ function isSocialCrawler(userAgent: string): boolean {
   return SOCIAL_CRAWLER_RE.test(userAgent);
 }
 
+// Search and AI crawlers fetch without cookies or Accept-Language, so locale
+// negotiation can never learn anything about them; they need the deterministic
+// answer instead.
+const SEARCH_BOT_RE =
+  /Googlebot|Google-InspectionTool|bingbot|Baiduspider|YandexBot|DuckDuckBot|Slurp|GPTBot|OAI-SearchBot|ChatGPT-User|PerplexityBot|ClaudeBot|Amazonbot|Applebot/i;
+
+function isSearchBot(userAgent: string): boolean {
+  return SEARCH_BOT_RE.test(userAgent);
+}
+
 function isAdminRoute(pathname: string): boolean {
   return pathname === "/admin" || pathname.startsWith("/admin/");
 }
@@ -44,6 +54,13 @@ function shouldRefreshAuthSession(pathname: string): boolean {
   // event creates a server-IP refresh storm and can exhaust Supabase Auth's
   // per-IP token bucket, which then blocks real login callbacks.
   return pathname !== "/api/analytics";
+}
+
+function isPrefetchRequest(request: NextRequest): boolean {
+  return (
+    request.headers.has("next-router-prefetch") ||
+    request.headers.get("purpose") === "prefetch"
+  );
 }
 
 function isSupabaseAuthCookie(name: string): boolean {
@@ -64,6 +81,7 @@ function buildAdminLoginRedirect(request: NextRequest) {
 
 export async function proxy(request: NextRequest) {
   const incomingPath = request.nextUrl.pathname;
+  const prefetchRequest = isPrefetchRequest(request);
   const localeInPath = getLocaleFromPathname(incomingPath);
   const strippedPath = localeInPath
     ? stripLocaleFromPathname(incomingPath)
@@ -77,6 +95,26 @@ export async function proxy(request: NextRequest) {
     const redirectUrl = request.nextUrl.clone();
     redirectUrl.pathname = strippedPath;
     return NextResponse.redirect(redirectUrl);
+  }
+
+  if (
+    !localeInPath &&
+    !shouldBypassLocale(incomingPath) &&
+    (effectivePath === "/colors" || effectivePath.startsWith("/colors/"))
+  ) {
+    // Unprefixed /colors/* has no language-negotiated value for crawlers:
+    // Googlebot (no cookie, no Accept-Language) saw both /en/ and /zh/ as
+    // 307 targets on different crawls and keeps the unprefixed URL indexed
+    // as a locale selector, splitting impressions between /colors/x and
+    // /en/colors/x. Answer crawler requests with a deterministic permanent
+    // redirect; humans keep the 307 negotiation below even without a
+    // language preference, so their choice is never pinned permanently.
+    const ua = request.headers.get("user-agent") || "";
+    if (isSearchBot(ua)) {
+      const permanentUrl = request.nextUrl.clone();
+      permanentUrl.pathname = addLocaleToPathname(incomingPath, DEFAULT_LOCALE);
+      return NextResponse.redirect(permanentUrl, 308);
+    }
   }
 
   if (!localeInPath && !shouldBypassLocale(incomingPath)) {
@@ -108,11 +146,15 @@ export async function proxy(request: NextRequest) {
     const redirectUrl = request.nextUrl.clone();
     redirectUrl.pathname = addLocaleToPathname(incomingPath, preferredLocale || DEFAULT_LOCALE);
     const response = NextResponse.redirect(redirectUrl);
-    response.cookies.set(LOCALE_COOKIE_NAME, preferredLocale || DEFAULT_LOCALE, {
-      path: "/",
-      sameSite: "lax",
-      maxAge: 60 * 60 * 24 * 365,
-    });
+    // A prefetch carries no user intent; letting it write the locale cookie
+    // could silently pin the visitor's language from a background request.
+    if (!prefetchRequest) {
+      response.cookies.set(LOCALE_COOKIE_NAME, preferredLocale || DEFAULT_LOCALE, {
+        path: "/",
+        sameSite: "lax",
+        maxAge: 60 * 60 * 24 * 365,
+      });
+    }
     return response;
   }
 
@@ -181,7 +223,7 @@ export async function proxy(request: NextRequest) {
 
   if (isAdminRequest && hasAdminPasswordSession) {
     const response = buildResponse();
-    if (localeInPath) {
+    if (localeInPath && !prefetchRequest) {
       response.cookies.set(LOCALE_COOKIE_NAME, localeInPath, {
         path: "/",
         sameSite: "lax",
@@ -196,7 +238,7 @@ export async function proxy(request: NextRequest) {
     process.env.ADMIN_DEV_BYPASS === "true";
   if (isAdminRequest && hasAdminDevBypass) {
     const response = buildResponse();
-    if (localeInPath) {
+    if (localeInPath && !prefetchRequest) {
       response.cookies.set(LOCALE_COOKIE_NAME, localeInPath, {
         path: "/",
         sameSite: "lax",
@@ -219,7 +261,7 @@ export async function proxy(request: NextRequest) {
     }
 
     const response = buildResponse();
-    if (localeInPath) {
+    if (localeInPath && !prefetchRequest) {
       response.cookies.set(LOCALE_COOKIE_NAME, localeInPath, {
         path: "/",
         sameSite: "lax",
@@ -231,7 +273,7 @@ export async function proxy(request: NextRequest) {
 
   if (!isAdminRequest && !shouldRefreshAuthSession(effectivePath)) {
     const response = buildResponse();
-    if (localeInPath) {
+    if (localeInPath && !prefetchRequest) {
       response.cookies.set(LOCALE_COOKIE_NAME, localeInPath, {
         path: "/",
         sameSite: "lax",
@@ -289,7 +331,7 @@ export async function proxy(request: NextRequest) {
     return buildAdminLoginRedirect(request);
   }
 
-  if (localeInPath) {
+  if (localeInPath && !prefetchRequest) {
     supabaseResponse.cookies.set(LOCALE_COOKIE_NAME, localeInPath, {
       path: "/",
       sameSite: "lax",
