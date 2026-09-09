@@ -1,0 +1,92 @@
+name: Publish stylekit-mcp
+
+on:
+  push:
+    tags:
+      - "mcp-v*"
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  publish:
+    name: Build and Publish
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+          registry-url: https://registry.npmjs.org
+
+      # Install flags (both verified in a FRESH worktree — a warm node_modules
+      # masks both, so they must be tested on a clean checkout):
+      #   --no-frozen-lockfile: the app's in-flight dep upgrade left root
+      #     package.json ahead of pnpm-lock.yaml; unrelated to this release.
+      #   --config.strict-dep-builds=false: pnpm-workspace.yaml disables
+      #     protobufjs's build script; pnpm 11 otherwise exits 1
+      #     (ERR_PNPM_IGNORED_BUILDS). Must be a CLI flag — the env var form is
+      #     not honored for this key.
+      - run: pnpm install --no-frozen-lockfile --config.strict-dep-builds=false
+
+      # Build via the tsup binary directly, NOT `pnpm run build`. pnpm 11 runs
+      # an implicit deps-status check before `pnpm run` that re-triggers the
+      # ignored-builds error (runDepsStatusCheck) and no config flag suppresses
+      # it. Calling the binary bypasses that check entirely.
+      - name: Build core (workspace dependency)
+        run: cd packages/core && ./node_modules/.bin/tsup
+
+      - name: Build mcp package
+        run: cd packages/mcp && ./node_modules/.bin/tsup
+
+      - name: Smoke test
+        run: cd packages/mcp && node scripts/smoke.mjs
+
+      - name: Verify package (dry-run)
+        run: pnpm --dir packages/mcp publish --dry-run --no-git-checks --ignore-scripts
+
+      # --ignore-scripts: core+mcp are already built above; skip prepublishOnly
+      # (pnpm run clean && build), whose nested pnpm run would re-trigger the
+      # deps-status ignored-builds trap in CI.
+      - name: Publish to npm
+        run: pnpm --dir packages/mcp publish --provenance --access public --no-git-checks --ignore-scripts
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+  publish-registry:
+    name: Publish to MCP Registry
+    runs-on: ubuntu-latest
+    needs: publish
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install mcp-publisher
+        run: |
+          curl -sSL "https://github.com/modelcontextprotocol/registry/releases/latest/download/mcp-publisher_$(uname -s | tr '[:upper:]' '[:lower:]')_$(uname -m | sed 's/x86_64/amd64/;s/aarch64/arm64/').tar.gz" \
+            | tar xz mcp-publisher
+
+      - name: Authenticate (GitHub OIDC)
+        run: ./mcp-publisher login github-oidc
+
+      # Registry validates that the npm package version already exists. npm's
+      # registry can lag a minute behind a fresh publish, so retry on the
+      # "version not found (404)" race instead of failing the whole release.
+      - name: Publish server.json
+        working-directory: packages/mcp
+        run: |
+          for attempt in 1 2 3 4 5 6; do
+            if "$GITHUB_WORKSPACE/mcp-publisher" publish; then
+              echo "Published to MCP Registry."
+              exit 0
+            fi
+            echo "Publish attempt $attempt failed (likely npm propagation lag); waiting 20s..."
+            sleep 20
+          done
+          echo "MCP Registry publish still failing after retries." >&2
+          exit 1

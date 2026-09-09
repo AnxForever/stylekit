@@ -139,17 +139,15 @@ describe("proxy locale negotiation for /colors", () => {
     );
   });
 
-  it("keeps language-less humans on temporary negotiation instead of pinning them", async () => {
+  it("serves language-less humans content in place without pinning a locale", async () => {
     const response = await proxy(
       requestWith("/colors/22c55e", {
         "user-agent": "Mozilla/5.0 (Macintosh) regular-browser",
       }),
     );
 
-    expect(response.status).toBe(307);
-    expect(response.headers.get("location")).toBe(
-      "https://www.stylekit.top/en/colors/22c55e",
-    );
+    expect(response.status).toBe(200);
+    expect(response.headers.get("set-cookie")).toBeNull();
   });
 
   it("only matches the /colors path segment, not longer prefixes", async () => {

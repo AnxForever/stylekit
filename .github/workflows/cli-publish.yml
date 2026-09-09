@@ -1,0 +1,63 @@
+name: Publish stylekit-cli
+
+on:
+  push:
+    tags:
+      - "cli-v*"
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  publish:
+    name: Build and Publish
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+          registry-url: https://registry.npmjs.org
+
+      - name: Verify release tag
+        run: |
+          node --input-type=module <<'NODE'
+          import { readFileSync } from "node:fs";
+
+          const { version } = JSON.parse(readFileSync("packages/cli/package.json", "utf8"));
+          const expectedTag = `cli-v${version}`;
+          if (process.env.GITHUB_REF_NAME !== expectedTag) {
+            throw new Error(`Expected tag ${expectedTag}, received ${process.env.GITHUB_REF_NAME}`);
+          }
+          NODE
+
+      # The root app manifest is ahead of its lockfile on this branch.
+      # Resolve it for the release; pnpm-workspace.yaml records skipped builds.
+      - run: pnpm install --no-frozen-lockfile
+
+      # Build the release artifact once, before testing and packaging it.
+      - name: Build core (workspace dependency)
+        run: cd packages/core && ./node_modules/.bin/tsup
+
+      - name: Build cli package
+        run: cd packages/cli && ./node_modules/.bin/tsup
+
+      - name: Pack and smoke test release artifact
+        run: |
+          cli_package_dir="$(mktemp -d "$RUNNER_TEMP/stylekit-cli.XXXXXX")"
+          pnpm --dir packages/cli pack --out "$RUNNER_TEMP/stylekit-cli.tgz"
+          tar -xzf "$RUNNER_TEMP/stylekit-cli.tgz" -C "$cli_package_dir"
+          cd "$cli_package_dir/package"
+          node "$GITHUB_WORKSPACE/packages/cli/test/smoke.mjs"
+
+      # Publish the exact tarball tested outside the workspace above.
+      - name: Verify package (dry-run)
+        run: pnpm publish "$RUNNER_TEMP/stylekit-cli.tgz" --dry-run --no-git-checks --ignore-scripts
+
+      - name: Publish to npm
+        run: pnpm publish "$RUNNER_TEMP/stylekit-cli.tgz" --provenance --access public --no-git-checks --ignore-scripts
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

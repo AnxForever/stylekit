@@ -87,6 +87,7 @@ export function buildSiteMetadata(context: RequestLocaleContext): Metadata {
       google: process.env.GOOGLE_SITE_VERIFICATION || "2f16e5aff2dd3b60",
       other: {
         "msvalidate.01": process.env.BING_SITE_VERIFICATION || "",
+        "baidu-site-verification": process.env.BAIDU_SITE_VERIFICATION || "",
       },
     },
     category: "technology",
