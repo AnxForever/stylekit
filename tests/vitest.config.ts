@@ -21,6 +21,8 @@ export default defineConfig({
       ".worktrees/**",
       ".tmp/**",
       "packages/**",
+      // gitignored local dev scratch on dev machines; CI never sees it
+      "style-extractor-dev/**",
     ],
     testTimeout: 30000,
     hookTimeout: 30000,
