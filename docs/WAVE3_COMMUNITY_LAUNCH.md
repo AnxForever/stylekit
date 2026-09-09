@@ -6,7 +6,7 @@
 > text across platforms (dedup / 灌水 detection). Prepared 2026-09-06.
 >
 > Facts: repo https://github.com/AnxForever/stylekit (458 stars), site https://stylekit.top,
-> npm `stylekit-mcp@0.2.5` / `stylekit-cli@0.1.3` / `stylekit-core@1.0.0-beta.4`,
+> npm `stylekit-mcp@0.2.5` / `stylekit-cli@0.1.4` / `stylekit-core@1.0.0-beta.3`,
 > 148 curated styles, EN + 中文, MIT. MCP Registry namespace: `io.github.AnxForever/stylekit-mcp`.
 
 ---
