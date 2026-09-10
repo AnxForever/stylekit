@@ -38,6 +38,15 @@ const BackgroundsContent = dynamic(
     ),
   { ssr: false, loading: DeferredResourceLoading },
 );
+// WebGL shaders only run client-side, so ssr:false is required here, not just
+// an optimization. The live canvas mounts one WebGL2 context at a time.
+const ShadersContent = dynamic(
+  () =>
+    import("@/components/shaders/shaders-content").then(
+      (module) => module.ShadersContent,
+    ),
+  { ssr: false, loading: DeferredResourceLoading },
+);
 
 interface ResourceSection {
   id: string;
@@ -84,6 +93,14 @@ const SECTIONS: ResourceSection[] = [
     blurbZh: "纯 CSS 与 SVG 背景纹理，网格、圆点、几何图案等。",
     blurbEn: "Pure-CSS and SVG background textures — grids, dots, geometric patterns.",
     Comp: BackgroundsContent,
+  },
+  {
+    id: "shaders",
+    zh: "着色器",
+    en: "Shaders",
+    blurbZh: "零依赖 WebGL2 动态背景，实时调参后复制 React 代码。",
+    blurbEn: "Zero-dependency WebGL2 animated backgrounds — tune live, copy the React snippet.",
+    Comp: ShadersContent,
   },
 ];
 

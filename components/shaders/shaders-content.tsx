@@ -20,8 +20,6 @@ type Lang = "en" | "zh";
 
 const copy = {
   en: {
-    eyebrow: "Shader Lab",
-    title: "WebGL backgrounds, tuned live.",
     description:
       "Zero-dependency WebGL2 background shaders from Paper's open-source library. Gradients, fluids, noise, patterns and optics. Every parameter is live, then you copy the React snippet. One WebGL context at a time, paused automatically when off-screen.",
     categories: { all: "All" },
@@ -42,8 +40,6 @@ const copy = {
     removeColor: "Remove color",
   },
   zh: {
-    eyebrow: "着色器实验室",
-    title: "WebGL 背景,实时调参。",
     description:
       "来自 Paper 开源库的零依赖 WebGL2 背景着色器。渐变、流体、噪声、图案与光学,每个参数实时可调,调好后直接复制 React 代码片段。同一时刻只占用一个 WebGL context,离屏自动暂停渲染。",
     categories: { all: "全部" },
@@ -318,7 +314,7 @@ function ParamRow({
   return null;
 }
 
-export function ShaderLab() {
+export function ShadersContent() {
   const { locale } = useI18n();
   const lang: Lang = locale === "zh" ? "zh" : "en";
   const t = copy[lang];
@@ -377,19 +373,13 @@ export function ShaderLab() {
   };
 
   return (
-    <section className="mx-auto w-full max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
-      <header className="max-w-3xl">
-        <p className="font-mono text-[11px] uppercase tracking-[0.24em] text-muted">
-          {t.eyebrow}
-        </p>
-        <h1 className="mt-3 font-serif text-3xl tracking-tight sm:text-4xl">
-          {t.title}
-        </h1>
-        <p className="mt-4 text-base leading-relaxed text-muted">{t.description}</p>
-      </header>
+    <div>
+      <div className="mb-6 max-w-3xl">
+        <p className="text-base leading-relaxed text-muted">{t.description}</p>
+      </div>
 
       {/* Shader picker: category chips over a wrapped list of shader names. */}
-      <div className="mt-8 border border-border">
+      <div className="border border-border">
         <div
           className="flex flex-wrap items-center gap-2 border-b border-border p-3"
           role="group"
@@ -593,6 +583,6 @@ export function ShaderLab() {
         </a>{" "}
         · Apache-2.0
       </p>
-    </section>
+    </div>
   );
 }
