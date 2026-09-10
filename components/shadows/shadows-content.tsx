@@ -100,73 +100,56 @@ interface ShadowCardProps {
 }
 
 function ShadowCard({ shadow, darkBg, copied, onCopy, locale }: ShadowCardProps) {
-  const [copyMode, setCopyMode] = useState<"css" | "tailwind">("css");
+  const displayName = locale === "zh" ? shadow.nameZh : shadow.name;
 
+  // Specimen language: the shadow floats on a large neutral stage that is the
+  // whole card. Name and value sit at the foot at rest; copy actions reveal on
+  // hover/focus. No stacked black-on-white panel.
   return (
-    <div className="border border-border rounded-lg overflow-hidden bg-background">
-      {/* Preview */}
+    <div className="group relative flex h-72 flex-col overflow-hidden border border-border bg-background transition-colors hover:border-foreground/40">
+      {/* Stage — the shadow is the subject, given room to breathe. */}
       <div
-        className={`h-40 flex items-center justify-center ${
-          darkBg
-            ? "bg-zinc-900"
-            : "bg-zinc-50 dark:bg-zinc-900"
+        className={`flex flex-1 items-center justify-center ${
+          darkBg ? "bg-zinc-900" : "bg-zinc-50 dark:bg-zinc-900"
         }`}
       >
         <div
-          className={`w-24 h-24 rounded-xl ${
-            darkBg
-              ? "bg-zinc-800"
-              : "bg-white dark:bg-zinc-800"
+          className={`h-28 w-28 rounded-xl ${
+            darkBg ? "bg-zinc-800" : "bg-white dark:bg-zinc-800"
           }`}
           style={{ boxShadow: shadow.value }}
         />
       </div>
 
-      {/* Content */}
-      <div className="p-4 space-y-3">
-        <div>
-          <h3 className="font-semibold text-sm">
-            {locale === "zh" ? shadow.nameZh : shadow.name}
-          </h3>
-          <p className="text-xs text-muted mt-0.5">
-            {shadow.tags.join(", ")}
+      {/* Caption bar — name + value at rest, actions on hover/focus. */}
+      <div className="relative border-t border-border p-4">
+        <div className="transition-opacity duration-200 group-hover:opacity-0 group-focus-within:opacity-0">
+          <h3 className="truncate text-sm font-semibold">{displayName}</h3>
+          <p className="mt-0.5 truncate font-mono text-[11px] text-muted">
+            {shadow.value}
           </p>
         </div>
 
-        {/* CSS Value Preview */}
-        <div className="px-3 py-2 bg-muted/10 rounded text-[11px] font-mono text-muted leading-relaxed break-all">
-          {shadow.value}
-        </div>
-
-        {/* Copy Buttons */}
-        <div className="flex gap-2">
+        <div className="absolute inset-x-4 bottom-4 flex items-center gap-2 opacity-0 translate-y-1 transition-all duration-200 group-hover:opacity-100 group-hover:translate-y-0 group-focus-within:opacity-100 group-focus-within:translate-y-0">
           <button
-            onClick={() => {
-              setCopyMode("css");
-              onCopy(shadow.css, shadow.id);
-            }}
-            className={`flex-1 px-3 py-2 text-xs font-medium rounded border transition-colors ${
-              copyMode === "css" && copied
-                ? "bg-green-500 text-white border-green-500"
-                : "bg-background text-muted border-border hover:border-foreground hover:text-foreground"
-            }`}
+            onClick={() => onCopy(shadow.css, shadow.id)}
+            aria-label={`Copy ${displayName} CSS`}
+            className="flex-1 border border-border px-3 py-1.5 text-xs font-medium text-muted transition-colors hover:border-foreground hover:text-foreground"
           >
-            {copyMode === "css" && copied ? "Copied!" : "Copy CSS"}
+            {copied ? (locale === "zh" ? "已复制" : "Copied") : "Copy CSS"}
           </button>
           <button
-            onClick={() => {
-              setCopyMode("tailwind");
-              onCopy(shadow.tailwind, shadow.id);
-            }}
-            className={`flex-1 px-3 py-2 text-xs font-medium rounded border transition-colors ${
-              copyMode === "tailwind" && copied
-                ? "bg-green-500 text-white border-green-500"
-                : "bg-background text-muted border-border hover:border-foreground hover:text-foreground"
-            }`}
+            onClick={() => onCopy(shadow.tailwind, shadow.id)}
+            className="flex-1 border border-border px-3 py-1.5 text-xs font-medium text-muted transition-colors hover:border-foreground hover:text-foreground"
           >
-            {copyMode === "tailwind" && copied ? "Copied!" : "Tailwind"}
+            Tailwind
           </button>
-          <AddToKitButton type="shadow" slug={shadow.id} size="md" />
+          <AddToKitButton
+            type="shadow"
+            slug={shadow.id}
+            size="sm"
+            className="grid h-7 w-7 shrink-0 place-items-center border border-border rounded-none text-muted hover:border-foreground hover:text-foreground"
+          />
         </div>
       </div>
     </div>

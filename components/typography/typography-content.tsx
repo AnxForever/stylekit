@@ -8,7 +8,6 @@ import {
   fontStack,
   generateFontCSS,
   generateTailwindTheme,
-  pairingContrast,
   type FontPairing,
   type TypographyCategory,
 } from "@/lib/typography";
@@ -177,10 +176,12 @@ export function TypographyContent() {
           <p className="text-muted">{t("typography.noResults")}</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 xl:grid-cols-2 gap-px border border-border bg-border">
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-5">
           {/* Two columns only from xl: with the resources sidebar taking 224px,
               a two-up grid at lg leaves each specimen about 300px wide, which
-              wraps the family names and forces every sheet taller. */}
+              wraps the family names and forces every sheet taller. Each sheet is
+              its own coloured tile now, so they sit apart on the page ground
+              rather than sharing hairline borders. */}
           {filteredPairings.map((pairing) => (
             <TypographyCard
               key={pairing.id}
@@ -289,42 +290,6 @@ function usePairingFont(pairing: FontPairing) {
   return specimenRef;
 }
 
-// Visualizes the weight gap between heading and body — the contrast that makes a
-// hierarchy hold up. If the two bars are nearly equal, the pairing reads flat.
-function WeightContrastBar({
-  headingWeight,
-  bodyWeight,
-  bodyFamily,
-}: {
-  headingWeight: number;
-  bodyWeight: number;
-  bodyFamily: string;
-}) {
-  const pct = (weight: number) => `${((weight - 100) / 800) * 100}%`;
-  return (
-    <div className="flex items-center gap-4 text-[0.68em] specimen-ink-muted" style={{ fontFamily: bodyFamily }}>
-      <div className="flex-1 space-y-1">
-        <div className="flex items-center justify-between">
-          <span className="uppercase tracking-wide">Heading</span>
-          <span className="tabular-nums">{headingWeight}</span>
-        </div>
-        <div className="h-px specimen-ink-track">
-          <div className="h-full specimen-ink-fill" style={{ width: pct(headingWeight) }} />
-        </div>
-      </div>
-      <div className="flex-1 space-y-1">
-        <div className="flex items-center justify-between">
-          <span className="uppercase tracking-wide">Body</span>
-          <span className="tabular-nums">{bodyWeight}</span>
-        </div>
-        <div className="h-px specimen-ink-track">
-          <div className="h-full specimen-ink-fill opacity-50" style={{ width: pct(bodyWeight) }} />
-        </div>
-      </div>
-    </div>
-  );
-}
-
 function TypographyCard({ pairing, copied, onCopy, locale, scale, sheetPx }: TypographyCardProps) {
   const specimenRef = usePairingFont(pairing);
 
@@ -332,8 +297,8 @@ function TypographyCard({ pairing, copied, onCopy, locale, scale, sheetPx }: Typ
   const bodyFamily = fontStack(pairing.body);
   const isDisplay = pairing.category === "display" || pairing.category === "handwritten";
   const preview = PREVIEW_BY_CATEGORY[pairing.category] ?? PREVIEW_BY_CATEGORY.modern;
-  const contrast = pairingContrast(pairing);
   const palette = specimenPalette(pairing);
+  const name = locale === "zh" ? pairing.nameZh : pairing.name;
 
   // The sheet colours travel as custom properties so the dark-theme pair can be
   // swapped by a `.dark` rule in CSS — an inline style cannot carry a variant.
@@ -344,165 +309,140 @@ function TypographyCard({ pairing, copied, onCopy, locale, scale, sheetPx }: Typ
     "--specimen-ink-dark": palette.inkDark,
   };
 
+  // One card = one specimen sheet. Everything lives on the coloured stock so the
+  // wall reads as a book of samples, not a black-on-white spreadsheet. The
+  // family names and the maker's stamp sit at the foot of the sheet; the copy
+  // actions stay out of the way and slide up on hover or keyboard focus.
   return (
-    <article ref={specimenRef} className="specimen-card group overflow-hidden bg-background">
-      {/* Specimen sheet — each pairing is printed on its own paper-and-ink stock,
-          so the wall reads as a specimen book rather than one flat field. */}
-      <div
-        className="specimen-sheet flex flex-col overflow-hidden px-6 py-7 md:px-8 md:py-8"
-        style={{ ...sheetVars, fontSize: `${16 * scale}px`, height: `${sheetPx}px` }}
-      >
-        <div className="flex items-center justify-between gap-4 mb-8 border-b specimen-ink-rule pb-3">
-          <span
-            className="text-[0.7rem] uppercase tracking-[0.14em] specimen-ink-muted"
-            style={{ fontFamily: bodyFamily }}
-          >
-            {CATEGORY_LABEL[pairing.category]}
-          </span>
-          <span className="text-[0.7rem] specimen-ink-muted tracking-wide">{contrast}</span>
-        </div>
-
-        <div className="flex-1 min-h-0 flex flex-col justify-center">
-          {isDisplay ? (
-            <>
-              {/* The typeface itself is the subject */}
-              <div
-                className="mb-5 break-words"
-                style={{
-                  fontFamily: headingFamily,
-                  fontWeight: pairing.heading.weight,
-                  fontSize: "clamp(2rem, 19cqw, 5.1em)",
-                  lineHeight: 0.92,
-                  letterSpacing: "-0.035em",
-                }}
-              >
-                {pairing.previewWord ?? preview.heading}
-              </div>
-              <div
-                className="mb-5 specimen-ink-soft break-words"
-                style={{
-                  fontFamily: headingFamily,
-                  fontWeight: pairing.heading.weight,
-                  fontSize: "min(1.2em, 6cqw)",
-                  lineHeight: 1.2,
-                }}
-              >
-                {CHARSET}
-              </div>
-              <p
-                className="leading-relaxed specimen-ink-muted"
-                style={{ fontFamily: bodyFamily, fontWeight: pairing.body.weight, fontSize: "0.9em" }}
-              >
-                {preview.body}
-              </p>
-            </>
-          ) : (
-            <>
-              {/* Character set in the heading face — letterforms up close */}
-              <div
-                className="mb-4 pb-4 border-b specimen-ink-rule specimen-ink-soft break-words"
-                style={{
-                  fontFamily: headingFamily,
-                  fontWeight: pairing.heading.weight,
-                  fontSize: "min(1.45em, 7cqw)",
-                  lineHeight: 1.15,
-                }}
-              >
-                {CHARSET}
-              </div>
-              <h3
-                className="mb-3 break-words"
-                style={{
-                  fontFamily: headingFamily,
-                  fontWeight: pairing.heading.weight,
-                  fontSize: "min(2.1em, 10cqw)",
-                  lineHeight: 1.02,
-                  letterSpacing: "-0.025em",
-                }}
-              >
-                {preview.heading}
-              </h3>
-              <p
-                className="leading-relaxed mb-6 specimen-ink-muted"
-                style={{ fontFamily: bodyFamily, fontWeight: pairing.body.weight, fontSize: "0.9em" }}
-              >
-                {preview.body}
-              </p>
-              <WeightContrastBar
-                headingWeight={pairing.heading.weight}
-                bodyWeight={pairing.body.weight}
-                bodyFamily={bodyFamily}
-              />
-            </>
-          )}
-        </div>
+    <article
+      ref={specimenRef}
+      className="specimen-card specimen-sheet group relative flex flex-col overflow-hidden"
+      style={{ ...sheetVars, fontSize: `${16 * scale}px`, height: `${sheetPx}px` }}
+    >
+      <div className="flex items-center justify-between gap-4 px-6 pt-6 md:px-8 md:pt-7">
+        <span
+          className="text-[0.7rem] uppercase tracking-[0.14em] specimen-ink-muted"
+          style={{ fontFamily: bodyFamily }}
+        >
+          {CATEGORY_LABEL[pairing.category]}
+        </span>
+        <span className="text-[0.7rem] specimen-ink-muted tracking-wide">
+          {pairing.heading.family.split(",")[0]} <span className="opacity-40">×</span>{" "}
+          {pairing.body.family.split(",")[0]}
+        </span>
       </div>
 
-      {/* Catalogue entry — kept on the site's own surface so the colour stays
-          on the specimen and the data stays readable. */}
-      <div className="p-5 md:p-6 space-y-3 border-t border-border">
-        <div className="flex items-start justify-between gap-3">
-          <div className="min-w-0">
-            <h4 className="font-sans font-semibold text-base truncate">
-              {locale === "zh" ? pairing.nameZh : pairing.name}
+      <div className="flex-1 min-h-0 flex flex-col justify-center px-6 md:px-8">
+        {isDisplay ? (
+          <>
+            <div
+              className="mb-4 break-words"
+              style={{
+                fontFamily: headingFamily,
+                fontWeight: pairing.heading.weight,
+                fontSize: "clamp(2rem, 19cqw, 5.1em)",
+                lineHeight: 0.92,
+                letterSpacing: "-0.035em",
+              }}
+            >
+              {pairing.previewWord ?? preview.heading}
+            </div>
+            <div
+              className="specimen-ink-soft break-words"
+              style={{
+                fontFamily: headingFamily,
+                fontWeight: pairing.heading.weight,
+                fontSize: "min(1.2em, 6cqw)",
+                lineHeight: 1.2,
+              }}
+            >
+              {CHARSET}
+            </div>
+          </>
+        ) : (
+          <>
+            <div
+              className="mb-4 pb-4 border-b specimen-ink-rule specimen-ink-soft break-words"
+              style={{
+                fontFamily: headingFamily,
+                fontWeight: pairing.heading.weight,
+                fontSize: "min(1.45em, 7cqw)",
+                lineHeight: 1.15,
+              }}
+            >
+              {CHARSET}
+            </div>
+            <h3
+              className="mb-3 break-words"
+              style={{
+                fontFamily: headingFamily,
+                fontWeight: pairing.heading.weight,
+                fontSize: "min(2.1em, 10cqw)",
+                lineHeight: 1.02,
+                letterSpacing: "-0.025em",
+              }}
+            >
+              {preview.heading}
+            </h3>
+            <p
+              className="leading-relaxed specimen-ink-muted"
+              style={{ fontFamily: bodyFamily, fontWeight: pairing.body.weight, fontSize: "0.9em" }}
+            >
+              {preview.body}
+            </p>
+          </>
+        )}
+      </div>
+
+      {/* Foot of the sheet: the pairing's name, printed in its own body face.
+          Slides out of the way on hover to make room for the actions. */}
+      <div className="relative px-6 pb-6 md:px-8 md:pb-7 pt-4">
+        <div className="border-t specimen-ink-rule pt-4">
+          <div className="transition-opacity duration-200 group-hover:opacity-0 group-focus-within:opacity-0">
+            <h4
+              className="text-[0.95em] leading-tight truncate"
+              style={{ fontFamily: bodyFamily, fontWeight: 600 }}
+            >
+              {name}
             </h4>
-            <p className="text-xs text-muted mt-0.5 truncate">
-              {pairing.heading.family} <span className="opacity-50">·</span> {pairing.body.family}
+            <p className="text-[0.72em] specimen-ink-muted mt-0.5">
+              {pairing.license}
             </p>
           </div>
-          <div className="flex flex-wrap gap-1.5 justify-end shrink-0">
-            {pairing.mood.slice(0, 2).map((m) => (
-              <span key={m} className="px-2 py-1 text-[0.65rem] border border-border text-muted">
-                {m}
-              </span>
-            ))}
-          </div>
-        </div>
 
-        <div className="space-y-1.5 text-sm leading-relaxed">
-          <p className="text-foreground">
-            {locale === "zh" ? pairing.bestForZh : pairing.bestFor}
-          </p>
-          <p className="text-muted">
-            {locale === "zh" ? pairing.descriptionZh : pairing.description}
-          </p>
-        </div>
-
-        <div className="flex flex-wrap items-center gap-2 pt-1">
-          <button
-            onClick={() => onCopy(generateFontCSS(pairing), pairing.id)}
-            className={`px-3 py-2 text-xs font-medium border transition-colors ${
-              copied
-                ? "bg-foreground text-background border-foreground"
-                : "bg-background text-muted border-border hover:border-foreground hover:text-foreground"
-            }`}
-          >
-            {copied ? "Copied!" : "Copy CSS"}
-          </button>
-          <button
-            onClick={() => onCopy(generateTailwindTheme(pairing), pairing.id)}
-            className="px-3 py-2 text-xs font-medium border bg-background text-muted border-border hover:border-foreground hover:text-foreground transition-colors"
-          >
-            Tailwind
-          </button>
-          <AddToKitButton
-            type="font-pairing"
-            slug={pairing.id}
-            variant="labeled"
-            className="px-3 py-2 text-xs tracking-normal normal-case"
-          />
-          <span className="ms-auto text-xs text-muted whitespace-nowrap">
-            {pairing.license}
-            <span className="opacity-50 mx-1.5">·</span>
+          {/* Actions overlay the name row on hover/focus so the resting sheet
+              stays quiet. Positioned over the same band, not adding height. */}
+          <div className="absolute inset-x-6 md:inset-x-8 bottom-6 md:bottom-7 flex items-center gap-2 opacity-0 translate-y-1 transition-all duration-200 group-hover:opacity-100 group-hover:translate-y-0 group-focus-within:opacity-100 group-focus-within:translate-y-0">
+            <button
+              onClick={() => onCopy(generateFontCSS(pairing), pairing.id)}
+              className="specimen-action px-3 py-1.5 text-xs font-medium"
+            >
+              {copied ? (locale === "zh" ? "已复制" : "Copied") : "Copy CSS"}
+            </button>
+            <button
+              onClick={() => onCopy(generateTailwindTheme(pairing), pairing.id)}
+              className="specimen-action px-3 py-1.5 text-xs font-medium"
+            >
+              Tailwind
+            </button>
+            <AddToKitButton
+              type="font-pairing"
+              slug={pairing.id}
+              size="sm"
+              className="specimen-action ms-auto grid h-7 w-7 place-items-center rounded-none"
+            />
             <a
               href={pairing.sourceUrl}
               target="_blank"
               rel="noreferrer"
-              className="text-foreground underline underline-offset-4 hover:text-accent"
+              aria-label={`${name} on Google Fonts`}
+              className="specimen-action grid h-7 w-7 place-items-center"
             >
-              Google Fonts
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+                <path d="M7 17L17 7M17 7H8M17 7v9" />
+              </svg>
             </a>
-          </span>
+          </div>
         </div>
       </div>
     </article>

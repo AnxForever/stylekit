@@ -496,7 +496,7 @@ export const SHADER_CATALOG: ShaderCatalogEntry[] = [
     presets: flutedGlassPresets,
     defaultImage: DEFAULT_IMAGE,
     hiddenParams: BORDER_MARGINS,
-    enums: { shape: GlassDistortionShapes, grid: GlassGridShapes },
+    enums: { shape: GlassGridShapes, distortionShape: GlassDistortionShapes },
   },
   {
     id: "heatmap",

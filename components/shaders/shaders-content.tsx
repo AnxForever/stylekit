@@ -69,9 +69,17 @@ const MIN_COLORS = 2;
 
 function getRange(key: string, value: number): [number, number, number] {
   const preset = PARAM_RANGES[key];
-  if (preset) return preset;
-  if (value > 1) return [0, Math.ceil(value * 2), Number.isInteger(value) ? 1 : 0.01];
-  return [0, 1, Number.isInteger(value) ? 1 : 0.01];
+  const step = Number.isInteger(value) ? 1 : 0.01;
+  // A shipped preset value must never sit outside its own slider, or the first
+  // drag snaps it back into range and destroys the preset look. Widen the
+  // declared range to always contain the current value (with headroom), and
+  // let the low end follow a negative value down.
+  if (preset) {
+    const [min, max, presetStep] = preset;
+    return [Math.min(min, value), Math.max(max, Math.ceil(value)), presetStep];
+  }
+  const max = value > 1 ? Math.ceil(value * 2) : 1;
+  return [Math.min(0, value), max, step];
 }
 
 function serializeValue(value: ShaderParamValue): string {
@@ -83,22 +91,27 @@ function serializeValue(value: ShaderParamValue): string {
 
 function buildSnippet(entry: ShaderCatalogEntry, params: ShaderParams): string {
   const keys = getVisibleParamKeys(entry);
-  if (entry.defaultImage) keys.push("image");
   const props = keys
     .map((key) => {
       const value = params[key];
       if (value === undefined) return null;
       return `      ${key}={${serializeValue(value)}}`;
     })
-    .filter(Boolean)
-    .join("\n");
+    .filter(Boolean);
+  // The demo image is a StyleKit-local path, so never emit it as a working prop
+  // in code the visitor pastes into their own project — point them at their own
+  // asset instead.
+  if (entry.defaultImage) {
+    props.push(`      image="/your-image.jpg" // swap for your own image URL`);
+  }
+  const propsBlock = props.join("\n");
   return [
     `import { ${entry.nameEn} } from "@paper-design/shaders-react";`,
     "",
     "export function Background() {",
     "  return (",
     `    <${entry.nameEn}`,
-    props,
+    propsBlock,
     `      style={{ width: "100%", height: "100%" }}`,
     "    />",
     "  );",
@@ -149,11 +162,16 @@ function ColorSwatchInput({
   onChange: (value: string) => void;
   label: string;
 }) {
+  // <input type="color"> only accepts #rrggbb. Some presets ship 8-digit hex
+  // with alpha (#rrggbbaa); feed the picker the opaque 6-digit form so it does
+  // not silently reset, while the swatch still shows the true colour (alpha and
+  // all) and edits preserve nothing beyond what the picker can express.
+  const pickerValue = /^#[0-9a-fA-F]{8}$/.test(value) ? value.slice(0, 7) : value;
   return (
-    <span className="relative inline-flex h-8 w-8 shrink-0 border border-border">
+    <span className="relative inline-flex h-8 w-8 shrink-0 border border-border focus-within:outline focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-foreground">
       <input
         type="color"
-        value={value}
+        value={pickerValue}
         onChange={(event) => onChange(event.target.value)}
         aria-label={label}
         className="h-full w-full cursor-pointer bg-transparent p-0 opacity-0"
@@ -203,10 +221,10 @@ function ParamRow({
                 <button
                   type="button"
                   onClick={() => onChange(value.filter((_, i) => i !== index))}
-                  className="absolute -right-1.5 -top-1.5 grid h-4 w-4 place-items-center border border-border bg-background text-muted hover:text-foreground"
+                  className="absolute -right-2 -top-2 grid h-6 w-6 place-items-center border border-border bg-background text-muted hover:text-foreground"
                   aria-label={`remove color ${index + 1}`}
                 >
-                  <Minus className="h-2.5 w-2.5" aria-hidden="true" />
+                  <Minus className="h-3 w-3" aria-hidden="true" />
                 </button>
               )}
             </span>

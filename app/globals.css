@@ -682,6 +682,25 @@ input[type="range"] { cursor: pointer; }
   background: currentColor;
 }
 
+/* Copy actions live on the coloured sheet, so they are drawn in the sheet's own
+   ink rather than the site's black-on-white — a hairline outline at rest that
+   fills in on hover. This keeps the resting wall calm and stops every card from
+   ending in a black button bar. */
+.specimen-action {
+  color: currentColor;
+  border: 1px solid color-mix(in srgb, currentColor 28%, transparent);
+  background: color-mix(in srgb, currentColor 4%, transparent);
+  transition: background-color 0.15s, border-color 0.15s;
+}
+.specimen-action:hover {
+  background: color-mix(in srgb, currentColor 12%, transparent);
+  border-color: color-mix(in srgb, currentColor 55%, transparent);
+}
+.specimen-action:focus-visible {
+  outline: 2px solid color-mix(in srgb, currentColor 55%, transparent);
+  outline-offset: 2px;
+}
+
 /* Respect reduced motion preferences */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
