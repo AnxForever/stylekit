@@ -71,6 +71,7 @@ export const LOCALE_ROUTE_POLICY = [
       "/mouse-interactions",
       "/avoid-ai-slop",
       "/resources",
+      "/shaders",
       "/style-advisor",
       "/tailwind-ui-prompts",
       "/templates",
