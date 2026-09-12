@@ -9,6 +9,7 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { createServerClient } from "@supabase/ssr";
+import type { Locale } from "@/lib/i18n/translations";
 import { isAdminUserId } from "@/lib/auth/admin-policy";
 import {
   ADMIN_SESSION_COOKIE_NAME,
@@ -87,6 +88,26 @@ function buildAdminLoginRedirect(request: NextRequest) {
     redirectUrl.searchParams.set("next", currentPath);
   }
   return NextResponse.redirect(redirectUrl);
+}
+
+// Only send Set-Cookie when the persisted locale actually changes. Re-setting
+// the same value on every localized response adds a header that shared caches
+// must treat as private, for no benefit.
+function applyLocaleCookie(
+  request: NextRequest,
+  response: NextResponse,
+  locale: Locale | null,
+  prefetchRequest: boolean,
+): NextResponse {
+  if (!locale || prefetchRequest) return response;
+  if (request.cookies.get(LOCALE_COOKIE_NAME)?.value === locale) return response;
+
+  response.cookies.set(LOCALE_COOKIE_NAME, locale, {
+    path: "/",
+    sameSite: "lax",
+    maxAge: 60 * 60 * 24 * 365,
+  });
+  return response;
 }
 
 export async function proxy(request: NextRequest) {
@@ -168,14 +189,12 @@ export async function proxy(request: NextRequest) {
     const response = NextResponse.redirect(redirectUrl);
     // A prefetch carries no user intent; letting it write the locale cookie
     // could silently pin the visitor's language from a background request.
-    if (!prefetchRequest) {
-      response.cookies.set(LOCALE_COOKIE_NAME, preferredLocale || DEFAULT_LOCALE, {
-        path: "/",
-        sameSite: "lax",
-        maxAge: 60 * 60 * 24 * 365,
-      });
-    }
-    return response;
+    return applyLocaleCookie(
+      request,
+      response,
+      preferredLocale || DEFAULT_LOCALE,
+      prefetchRequest,
+    );
   }
 
   // Block /api-test in production
@@ -242,30 +261,14 @@ export async function proxy(request: NextRequest) {
   }
 
   if (isAdminRequest && hasAdminPasswordSession) {
-    const response = buildResponse();
-    if (localeInPath && !prefetchRequest) {
-      response.cookies.set(LOCALE_COOKIE_NAME, localeInPath, {
-        path: "/",
-        sameSite: "lax",
-        maxAge: 60 * 60 * 24 * 365,
-      });
-    }
-    return response;
+    return applyLocaleCookie(request, buildResponse(), localeInPath, prefetchRequest);
   }
 
   const hasAdminDevBypass =
     process.env.NODE_ENV !== "production" &&
     process.env.ADMIN_DEV_BYPASS === "true";
   if (isAdminRequest && hasAdminDevBypass) {
-    const response = buildResponse();
-    if (localeInPath && !prefetchRequest) {
-      response.cookies.set(LOCALE_COOKIE_NAME, localeInPath, {
-        path: "/",
-        sameSite: "lax",
-        maxAge: 60 * 60 * 24 * 365,
-      });
-    }
-    return response;
+    return applyLocaleCookie(request, buildResponse(), localeInPath, prefetchRequest);
   }
 
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -281,26 +284,12 @@ export async function proxy(request: NextRequest) {
     }
 
     const response = buildResponse();
-    if (localeInPath && !prefetchRequest) {
-      response.cookies.set(LOCALE_COOKIE_NAME, localeInPath, {
-        path: "/",
-        sameSite: "lax",
-        maxAge: 60 * 60 * 24 * 365,
-      });
-    }
-    return response;
+    return applyLocaleCookie(request, response, localeInPath, prefetchRequest);
   }
 
   if (!isAdminRequest && !shouldRefreshAuthSession(effectivePath)) {
     const response = buildResponse();
-    if (localeInPath && !prefetchRequest) {
-      response.cookies.set(LOCALE_COOKIE_NAME, localeInPath, {
-        path: "/",
-        sameSite: "lax",
-        maxAge: 60 * 60 * 24 * 365,
-      });
-    }
-    return response;
+    return applyLocaleCookie(request, response, localeInPath, prefetchRequest);
   }
 
   let supabaseResponse = buildResponse();
@@ -351,15 +340,7 @@ export async function proxy(request: NextRequest) {
     return buildAdminLoginRedirect(request);
   }
 
-  if (localeInPath && !prefetchRequest) {
-    supabaseResponse.cookies.set(LOCALE_COOKIE_NAME, localeInPath, {
-      path: "/",
-      sameSite: "lax",
-      maxAge: 60 * 60 * 24 * 365,
-    });
-  }
-
-  return supabaseResponse;
+  return applyLocaleCookie(request, supabaseResponse, localeInPath, prefetchRequest);
 }
 
 export const config = {

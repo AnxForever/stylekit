@@ -173,4 +173,22 @@ describe("proxy locale negotiation for /colors", () => {
     expect(response.status).toBe(307);
     expect(response.headers.get("set-cookie")).toBeNull();
   });
+
+  it("sets the locale cookie only when the persisted value differs", async () => {
+    const unchanged = await proxy(
+      requestWith("/zh/styles", {
+        "user-agent": "Mozilla/5.0 (Macintosh) regular-browser",
+        cookie: "stylekit-locale=zh",
+      }),
+    );
+    expect(unchanged.headers.get("set-cookie")).toBeNull();
+
+    const changed = await proxy(
+      requestWith("/zh/styles", {
+        "user-agent": "Mozilla/5.0 (Macintosh) regular-browser",
+        cookie: "stylekit-locale=en",
+      }),
+    );
+    expect(changed.headers.get("set-cookie")).toContain("stylekit-locale=zh");
+  });
 });
