@@ -6,10 +6,28 @@ import { usePathname } from "next/navigation";
 import { useI18n } from "@/lib/i18n/context";
 import type { SiteAnnouncement } from "@/lib/site-announcements";
 
-export function AnnouncementBanner({ announcement = null }: { announcement?: SiteAnnouncement | null }) {
+export interface AnnouncementBannerCopy {
+  en: SiteAnnouncement | null;
+  zh: SiteAnnouncement | null;
+}
+
+/**
+ * Both locales are passed so statically rendered pages can select the right
+ * announcement from the payload instead of relying on request headers.
+ */
+export function AnnouncementBanner({
+  announcements,
+}: {
+  announcements?: AnnouncementBannerCopy;
+}) {
   const { t, locale } = useI18n();
   const pathname = usePathname();
   const [visible, setVisible] = useState(false);
+  const announcement = announcements
+    ? locale === "zh"
+      ? announcements.zh
+      : announcements.en
+    : null;
   const isIsolatedSurface =
     pathname.includes("/admin") ||
     pathname.startsWith("/validation/") ||

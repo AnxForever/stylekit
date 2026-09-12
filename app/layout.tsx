@@ -145,7 +145,12 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const { locale, htmlLang, contentPath } = await getRequestLocaleContext();
-  const announcement = await getSiteAnnouncement(locale === "zh" ? "zh-CN" : "en");
+  // Fetch both locales so a statically rendered locale route can pick its own
+  // announcement without reading request headers.
+  const [announcementEn, announcementZh] = await Promise.all([
+    getSiteAnnouncement("en"),
+    getSiteAnnouncement("zh-CN"),
+  ]);
   const showcaseTypography = getShowcaseTypographyProfile(contentPath);
   const isProductSurface = /^\/(?:admin|admin-login|login|profile|validation|workspace)(?:\/|$)/.test(
     contentPath
@@ -293,7 +298,9 @@ export default async function RootLayout({
       >
         <ClientProviders initialLocale={locale}>
           <LazyShowcaseTypographyRuntime />
-        <AnnouncementBanner announcement={announcement} />
+          <AnnouncementBanner
+            announcements={{ en: announcementEn, zh: announcementZh }}
+          />
           <LazyCommandPalette />
           {children}
           <ShowcaseBackBar />
