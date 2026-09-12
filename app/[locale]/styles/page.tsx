@@ -4,6 +4,10 @@ import { isLocale } from "@/lib/i18n/routing";
 import { localizeMetadata } from "@/lib/i18n/metadata";
 import { CURATED_STYLE_COUNT } from "@/lib/product/catalog-facts";
 
+// Prerender the localized catalog per locale instead of SSR per request. The
+// page body is a client component that resolves its locale from the pathname.
+export const dynamic = "force-static";
+
 export async function generateMetadata({
   params,
 }: {
