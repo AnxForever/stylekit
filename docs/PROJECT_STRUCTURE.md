@@ -11,7 +11,7 @@ Main runtime stack:
 - Next.js 16, React 19, TypeScript
 - App Router under `app/`
 - Supabase for auth and persistence-backed features
-- PM2 + Nginx on the current production host
+- systemd + Nginx on the current production host
 - Vitest for unit tests, Playwright for end-to-end tests
 
 ## Source Map
@@ -45,7 +45,7 @@ flowchart LR
   Lib --> Static[public/ assets]
   Ops[systemd timer] --> Health[local healthcheck]
   Health --> Next
-  Health --> PM2[pm2 restart stylekit]
+  Health --> Systemd[systemctl restart stylekit]
 ```
 
 ## `app/`
@@ -160,9 +160,11 @@ pnpm run e2e
 
 Current files:
 
-- `ops/stylekit-healthcheck.sh`: local HTTP healthcheck with PM2 restart after repeated failures.
-- `ops/systemd/stylekit-healthcheck.service`: one-shot watchdog service.
-- `ops/systemd/stylekit-healthcheck.timer`: timer that runs the watchdog every minute.
+- `ops/nginx/stylekit-performance-locations.conf`: Nginx location snippets for the production host.
+
+The watchdog itself is installed on the host outside the repo:
+`/usr/local/bin/stylekit-healthcheck` probes `/api/health` every minute via
+`stylekit-healthcheck.timer` and restarts `stylekit.service` after repeated failures.
 
 The current production host uses Nginx to proxy `www.stylekit.top` to the Next.js app on `127.0.0.1:13000`.
 

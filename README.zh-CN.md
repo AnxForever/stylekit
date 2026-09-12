@@ -198,7 +198,7 @@ pnpm dev
 
 - 仓库结构、运行时流程、源码边界与清理指引：[`docs/PROJECT_STRUCTURE.md`](docs/PROJECT_STRUCTURE.md)
 - 新增或修改目录中的风格前请先阅读：[`docs/STYLE_AUTHORING.md`](docs/STYLE_AUTHORING.md)
-- 生产部署：本地构建后，用你自己的进程管理器托管 `.next` 产物（`ecosystem.config.cjs` 提供了 PM2 示例）
+- 生产部署：本地构建后，用你自己的进程管理器托管 `.next` 产物（线上使用 systemd 服务；`ecosystem.config.cjs` 是遗留的 PM2 示例）
 
 ## API 接口
 
@@ -262,16 +262,17 @@ npx skills add AnxForever/stylekit-skill
 | 认证与数据库 | Supabase（PostgreSQL + auth helpers） |
 | 校验 | Zod 4 |
 | 测试 | Vitest + Playwright |
-| 部署 | 阿里云 ECS + Nginx + PM2 |
+| 部署 | 阿里云 ECS + Nginx + systemd |
 
 ## 生产部署
 
 `www.stylekit.top` 目前运行在北京地域的一台阿里云 ECS 实例上。
 
 - 边缘与 TLS：ECS 主机上的 Nginx
-- 应用进程：PM2 应用 `stylekit`
+- 应用进程：systemd 服务 `stylekit.service`
 - 应用目录：`/www/stylekit`，由本地校验过的检出目录 rsync 同步
-- 运行命令：PM2 直接托管 `next start -p 13000`（`node_modules/next/dist/bin/next`，不经 npm wrapper）
+- 运行命令：systemd 通过 `node_modules/.bin/next` 运行 `next start --hostname 0.0.0.0 --port 13000`
+- 健康看护：`stylekit-healthcheck.timer` 每分钟探测 `/api/health`，连续失败后重启服务
 
 `vercel.json` 已不属于当前生效的生产部署路径，不应被当作 StyleKit 托管位置的事实来源。
 

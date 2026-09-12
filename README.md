@@ -198,7 +198,7 @@ Open [localhost:3000](http://localhost:3000). See [`.env.example`](.env.example)
 
 See [`docs/PROJECT_STRUCTURE.md`](docs/PROJECT_STRUCTURE.md) for the repository map, runtime flow, source boundaries, and cleanup guidance.
 See [`docs/STYLE_AUTHORING.md`](docs/STYLE_AUTHORING.md) before adding or changing catalog styles.
-Deployment is environment-specific: build locally, then serve the `.next` output with your process manager of choice (`ecosystem.config.cjs` holds a PM2 example).
+Deployment is environment-specific: build locally, then serve the `.next` output with your process manager of choice (production uses a systemd service; `ecosystem.config.cjs` is a legacy PM2 example).
 
 ## API Surface
 
@@ -278,16 +278,17 @@ The website support section is driven from a single config file: [`lib/site/supp
 | Auth & DB | Supabase (PostgreSQL + auth helpers) |
 | Validation | Zod 4 |
 | Testing | Vitest + Playwright |
-| Deployment | Alibaba Cloud ECS + Nginx + PM2 |
+| Deployment | Alibaba Cloud ECS + Nginx + systemd |
 
 ## Production Deployment
 
 Current production for `www.stylekit.top` runs on an Alibaba Cloud ECS instance in Beijing.
 
 - Edge and TLS: Nginx on the ECS host
-- App process: PM2 app `stylekit`
+- App process: systemd service `stylekit.service`
 - App directory: `/www/stylekit` rsynced from a verified local checkout
-- Runtime command: PM2 runs `next start -p 13000` directly via `node_modules/next/dist/bin/next` (no npm wrapper)
+- Runtime command: systemd runs `next start --hostname 0.0.0.0 --port 13000` via `node_modules/.bin/next`
+- Health watchdog: `stylekit-healthcheck.timer` probes `/api/health` every minute and restarts the service after consecutive failures
 
 `vercel.json` is no longer part of the active production deployment path and should not be treated as the source of truth for where StyleKit is hosted.
 
