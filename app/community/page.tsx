@@ -37,7 +37,6 @@ const COPY = {
     tagLabel: "Tag",
     all: "All",
     clearFilters: "Clear filters",
-    resultCount: (n: number) => `${n} ${n === 1 ? "result" : "results"}`,
     filteredEmptyTitle: "No styles match those filters",
     filteredEmptyBody: "Try a broader search or clear the filters to browse every approved contribution.",
     faqTitle: "About the community catalog",
@@ -77,7 +76,6 @@ const COPY = {
     tagLabel: "标签",
     all: "全部",
     clearFilters: "清除筛选",
-    resultCount: (n: number) => `${n} 个结果`,
     filteredEmptyTitle: "没有匹配这些筛选条件的风格",
     filteredEmptyBody: "尝试扩大搜索范围，或清除筛选以浏览所有通过审核的投稿。",
     faqTitle: "关于社区风格库",
@@ -217,7 +215,6 @@ export default async function CommunityPage() {
               tagLabel: t.tagLabel,
               all: t.all,
               clearFilters: t.clearFilters,
-              resultCount: t.resultCount,
               filteredEmptyTitle: t.filteredEmptyTitle,
               filteredEmptyBody: t.filteredEmptyBody,
             }}

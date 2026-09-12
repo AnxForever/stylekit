@@ -79,7 +79,6 @@ interface Props {
     tagLabel: string;
     all: string;
     clearFilters: string;
-    resultCount: (n: number) => string;
     filteredEmptyTitle: string;
     filteredEmptyBody: string;
   };
@@ -144,6 +143,13 @@ export function CommunityCatalog({ styles, locale, copy }: Props) {
     setCategory("all");
     setTag("all");
   }
+
+  // Kept in the client component: a copy function passed from a server
+  // component cannot be serialized across the RSC boundary.
+  const resultCountLabel =
+    locale === "zh"
+      ? `${ordered.length} 个结果`
+      : `${ordered.length} ${ordered.length === 1 ? "result" : "results"}`;
 
   if (styles.length === 0) {
     return (
@@ -286,7 +292,7 @@ export function CommunityCatalog({ styles, locale, copy }: Props) {
             </button>
           ))}
           <span className="ml-auto font-mono text-xs text-muted-foreground">
-            {copy.resultCount(ordered.length)}
+            {resultCountLabel}
           </span>
           {hasFilters ? (
             <button
