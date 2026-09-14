@@ -10,7 +10,7 @@
 
 <p align="center">
   <strong>StyleKit is an open-source visual style library for AI-generated web interfaces.</strong><br>
-  Browse 148 curated styles, then use design tokens, component recipes, Tailwind-ready constraints, and copy-ready prompts in React, Cursor, Claude Code, v0, or Windsurf. English &amp; 中文.
+  Browse the curated catalog, then use design tokens, component recipes, Tailwind-ready constraints, and copy-ready prompts in React, Cursor, Claude Code, v0, or Windsurf. English &amp; 中文.
 </p>
 
 <p align="center">
@@ -47,16 +47,6 @@
 ## What is StyleKit?
 
 StyleKit helps developers and AI coding tools start from a consistent visual direction. Pick a named style to get structured design tokens, component recipes, prompt guidance, and implementation references for a website or dashboard; production integration and completeness still depend on the target project.
-
-## AI frontend resources
-
-If you are using AI to design or build a frontend, these focused guides cover the practical workflow:
-
-- [Fix an AI-generated website that looks bad](https://www.stylekit.top/en/ai-generated-website-fix) — visual hierarchy, spacing, typography, and component consistency.
-- [How to choose AI web design tools](https://www.stylekit.top/en/ai-web-design-tools) — compare prompt, design, and code-generation workflows.
-- [AI UI generation](https://www.stylekit.top/en/ai-ui-generator) — turn a page brief into a usable interface structure.
-- [AI frontend workflow](https://www.stylekit.top/en/ai-frontend-workflow) — move from idea to React, Tailwind, and implementation constraints.
-- Chinese guides: [AI 网页设计工具](https://www.stylekit.top/zh/ai-web-design-tools) · [AI 前端工作流](https://www.stylekit.top/zh/ai-frontend-workflow)
 
 <table>
 <tr>
@@ -107,7 +97,7 @@ If you are using AI to design or build a frontend, these focused guides cover th
 
 ## Styles
 
-148 visual and layout styles across multiple categories. Every style includes design tokens, component code, AI rules, and a curated preview.
+A catalog spanning multiple visual and layout categories. Every style includes design tokens, component code, AI rules, and a curated preview.
 
 <details>
 <summary><strong>Modern / Tech</strong> — Glassmorphism, Liquid Glass, Neumorphism, Bento Grid, Fluent Design, Material Design, Linear Style ...</summary>
@@ -194,11 +184,23 @@ pnpm dev
 
 Open [localhost:3000](http://localhost:3000). See [`.env.example`](.env.example) for optional Supabase and admin configuration.
 
+## Tech Stack
+
+| Layer | Technology |
+|-------|-----------|
+| Framework | Next.js 16 + Turbopack |
+| UI | React 19, Radix UI, Lucide Icons |
+| Styling | Tailwind CSS 4, CVA |
+| Auth & DB | Supabase (PostgreSQL + auth helpers) |
+| Validation | Zod 4 |
+| Testing | Vitest + Playwright |
+| Deployment | Self-hosted Node.js server (Nginx + systemd) |
+
 ## Project Structure
 
-See [`docs/PROJECT_STRUCTURE.md`](docs/PROJECT_STRUCTURE.md) for the repository map, runtime flow, source boundaries, and cleanup guidance.
-See [`docs/STYLE_AUTHORING.md`](docs/STYLE_AUTHORING.md) before adding or changing catalog styles.
-Deployment is environment-specific: build locally, then serve the `.next` output with your process manager of choice (`ecosystem.config.cjs` holds a PM2 example).
+- Repository map, runtime flow, source boundaries, and cleanup guidance: [`docs/PROJECT_STRUCTURE.md`](docs/PROJECT_STRUCTURE.md)
+- Read before adding or changing catalog styles: [`docs/STYLE_AUTHORING.md`](docs/STYLE_AUTHORING.md)
+- Deployment is environment-specific: build locally, then serve the `.next` output with your process manager of choice.
 
 ## API Surface
 
@@ -228,70 +230,23 @@ See [`docs/registry.md`](docs/registry.md) for the full guide.
 
 ## Use as an Agent Skill
 
-Give Cursor, Claude Code, Windsurf, or any Agent-Skills-compatible coding agent
-built-in knowledge of StyleKit — how to browse styles and install them — with
-one command:
+Give Cursor, Claude Code, Windsurf, or any Agent-Skills-compatible coding agent built-in knowledge of StyleKit — how to browse styles and install them — with one command:
 
 ```bash
 npx skills add AnxForever/stylekit-skill
 ```
 
-Your agent can then apply any of the 148 styles on request ("make this look
-like Stripe", "cyberpunk dashboard") using the correct tokens and rules. The
-skill lives in its own repository ([`AnxForever/stylekit-skill`](https://github.com/AnxForever/stylekit-skill));
-see [`docs/AGENT_SKILL_GUIDE.md`](docs/AGENT_SKILL_GUIDE.md) for how it's built and published.
+Your agent can then apply any style in the catalog on request ("make this look like Stripe", "cyberpunk dashboard") using the correct tokens and rules. The skill lives in its own repository ([`AnxForever/stylekit-skill`](https://github.com/AnxForever/stylekit-skill)); see [`docs/AGENT_SKILL_GUIDE.md`](docs/AGENT_SKILL_GUIDE.md) for how it's built and published.
 
+## AI frontend resources
 
-## Support This Project
+If you are using AI to design or build a frontend, these focused guides cover the practical workflow:
 
-If StyleKit happens to help you, that honestly means a lot.
-
-You can support the project with any amount you like. It helps keep StyleKit going and offsets server, domain, and maintenance costs.
-
-For Chinese readers:
-
-> 如果 StyleKit 恰好帮到了你，欢迎扫码支持我把它继续做下去。金额随意，每一份心意我都很感谢。
-
-- Tip via WeChat or Alipay on the website support page
-- GitHub repo funding entry: [`https://github.com/AnxForever/stylekit`](https://github.com/AnxForever/stylekit)
-- Website support page: [`https://stylekit.top/contact#support-maintenance`](https://stylekit.top/contact#support-maintenance)
-- Public sponsor follow-up: [`GitHub Discussions`](https://github.com/AnxForever/stylekit/discussions)
-
-Current QR assets (cropped to the code block itself plus a white quiet zone, so
-the scannable area fills the frame):
-
-- Alipay: [`public/support/alipay-qr.png`](public/support/alipay-qr.png)
-- WeChat Tipping: [`public/support/wechat-qr.png`](public/support/wechat-qr.png)
-
-The uncropped originals are kept at `public/alipay-qr.jpg` and
-`public/wechat-qr.png` for reference.
-
-The website support section is driven from a single config file: [`lib/site/support.ts`](lib/site/support.ts).
-
-## Tech Stack
-
-| Layer | Technology |
-|-------|-----------|
-| Framework | Next.js 16 + Turbopack |
-| UI | React 19, Radix UI, Lucide Icons |
-| Styling | Tailwind CSS 4, CVA |
-| Auth & DB | Supabase (PostgreSQL + auth helpers) |
-| Validation | Zod 4 |
-| Testing | Vitest + Playwright |
-| Deployment | Alibaba Cloud ECS + Nginx + PM2 |
-
-## Production Deployment
-
-Current production for `www.stylekit.top` runs on an Alibaba Cloud ECS instance in Beijing.
-
-- Edge and TLS: Nginx on the ECS host
-- App process: PM2 app `stylekit`
-- App directory: `/www/stylekit` rsynced from a verified local checkout
-- Runtime command: PM2 runs `next start -p 13000` directly via `node_modules/next/dist/bin/next` (no npm wrapper)
-
-`vercel.json` is no longer part of the active production deployment path and should not be treated as the source of truth for where StyleKit is hosted.
-
-Run the verification gate above before shipping; `/api/health` reports service status once the app is running.
+- [Fix an AI-generated website that looks bad](https://www.stylekit.top/en/ai-generated-website-fix) — visual hierarchy, spacing, typography, and component consistency.
+- [How to choose AI web design tools](https://www.stylekit.top/en/ai-web-design-tools) — compare prompt, design, and code-generation workflows.
+- [AI UI generation](https://www.stylekit.top/en/ai-ui-generator) — turn a page brief into a usable interface structure.
+- [AI frontend workflow](https://www.stylekit.top/en/ai-frontend-workflow) — move from idea to React, Tailwind, and implementation constraints.
+- Chinese guides: [AI 网页设计工具](https://www.stylekit.top/zh/ai-web-design-tools) · [AI 前端工作流](https://www.stylekit.top/zh/ai-frontend-workflow)
 
 ## Contributing
 
@@ -305,6 +260,15 @@ git checkout -b feat/your-feature
 pnpm lint && pnpm test && pnpm build
 git commit -m "feat: add your feature"
 ```
+
+## Support This Project
+
+If StyleKit happens to help you, that honestly means a lot. You can support it with any amount you like — it helps keep the project going and offsets server, domain, and maintenance costs.
+
+- Tip via WeChat or Alipay on the [website support page](https://stylekit.top/contact#support-maintenance)
+- Follow up publicly in [GitHub Discussions](https://github.com/AnxForever/stylekit/discussions)
+
+> 如果 StyleKit 恰好帮到了你，欢迎在[支持页面](https://stylekit.top/contact#support-maintenance)通过微信或支付宝打赏。金额随意，每一份心意我都很感谢。
 
 ## Star History
 

@@ -10,7 +10,7 @@
 
 <p align="center">
   <strong>开源的视觉风格、设计令牌与 AI 提示词，让 AI 生成的界面不再千篇一律。</strong><br>
-  148 套精选风格 —— 既可以直接安装为 shadcn 主题，也可以把它的设计约束用在 Cursor、Claude Code、v0 或 Windsurf 里。中英文双语风格检索。
+  精选风格库 —— 既可以直接安装为 shadcn 主题，也可以把它的设计约束用在 Cursor、Claude Code、v0 或 Windsurf 里。中英文双语风格检索。
 </p>
 
 <p align="center">
@@ -47,16 +47,6 @@
 ## StyleKit 是什么？
 
 StyleKit 帮助人和 AI 从一个统一的视觉方向出发。选定一个风格，即可获得结构化的设计令牌、组件配方、提示词指引和实现参考；至于能否落地到生产环境、覆盖是否完整，仍然取决于你的目标项目。
-
-## AI 前端资源
-
-如果你正在用 AI 设计或搭建前端，这几篇指南覆盖了实际工作流：
-
-- [AI 生成的网站不好看怎么修](https://www.stylekit.top/zh/ai-generated-website-fix) —— 视觉层次、间距、字体排版与组件一致性。
-- [怎么选 AI 网页设计工具](https://www.stylekit.top/zh/ai-web-design-tools) —— 对比提示词、设计与代码生成三类工作流。
-- [AI 生成 UI 界面](https://www.stylekit.top/zh/ai-ui-generator) —— 把一份页面需求变成可用的界面结构。
-- [AI 前端工作流](https://www.stylekit.top/zh/ai-frontend-workflow) —— 从想法走到 React、Tailwind 与实现约束。
-- English guides: [Fix an AI-generated website](https://www.stylekit.top/en/ai-generated-website-fix) · [AI frontend workflow](https://www.stylekit.top/en/ai-frontend-workflow)
 
 <table>
 <tr>
@@ -107,7 +97,7 @@ StyleKit 帮助人和 AI 从一个统一的视觉方向出发。选定一个风�
 
 ## 风格目录
 
-148 套风格，覆盖多个视觉与布局类别。每套风格都包含设计令牌、组件代码、AI 规则和精选预览。
+覆盖多个视觉与布局类别的风格目录。每套风格都包含设计令牌、组件代码、AI 规则和精选预览。
 
 <details>
 <summary><strong>现代 / 科技</strong> —— 玻璃拟态、液态玻璃、新拟态、Bento 网格、Fluent Design、Material Design、Linear 风格 ...</summary>
@@ -194,11 +184,23 @@ pnpm dev
 
 打开 [localhost:3000](http://localhost:3000)。Supabase 与管理员相关的可选配置见 [`.env.example`](.env.example)。
 
+## 技术栈
+
+| 层级 | 技术 |
+|-------|-----------|
+| 框架 | Next.js 16 + Turbopack |
+| UI | React 19、Radix UI、Lucide Icons |
+| 样式 | Tailwind CSS 4、CVA |
+| 认证与数据库 | Supabase（PostgreSQL + auth helpers） |
+| 校验 | Zod 4 |
+| 测试 | Vitest + Playwright |
+| 部署 | 自托管 Node.js 服务（Nginx + systemd） |
+
 ## 项目结构
 
 - 仓库结构、运行时流程、源码边界与清理指引：[`docs/PROJECT_STRUCTURE.md`](docs/PROJECT_STRUCTURE.md)
 - 新增或修改目录中的风格前请先阅读：[`docs/STYLE_AUTHORING.md`](docs/STYLE_AUTHORING.md)
-- 生产部署：本地构建后，用你自己的进程管理器托管 `.next` 产物（`ecosystem.config.cjs` 提供了 PM2 示例）
+- 部署与环境相关：本地构建后，用你自己的进程管理器托管 `.next` 产物。
 
 ## API 接口
 
@@ -234,48 +236,17 @@ npx shadcn add https://stylekit.top/r/glassmorphism.json
 npx skills add AnxForever/stylekit-skill
 ```
 
-之后你的代理就能按需套用这 148 套风格中的任意一套（比如「做成 Stripe 的样子」「赛博朋克风的仪表盘」），并使用正确的令牌与规则。技能本体在独立仓库 [`AnxForever/stylekit-skill`](https://github.com/AnxForever/stylekit-skill)；构建与发布方式见 [`docs/AGENT_SKILL_GUIDE.md`](docs/AGENT_SKILL_GUIDE.md)。
+之后你的代理就能按需套用库中的任意一套风格（比如「做成 Stripe 的样子」「赛博朋克风的仪表盘」），并使用正确的令牌与规则。技能本体在独立仓库 [`AnxForever/stylekit-skill`](https://github.com/AnxForever/stylekit-skill)；构建与发布方式见 [`docs/AGENT_SKILL_GUIDE.md`](docs/AGENT_SKILL_GUIDE.md)。
 
-## 支持这个项目
+## AI 前端资源
 
-如果 StyleKit 恰好帮到了你，欢迎扫码支持我把它继续做下去。金额随意，每一份心意我都很感谢。这也能帮忙分担服务器、域名与维护成本。
+如果你正在用 AI 设计或搭建前端，这几篇指南覆盖了实际工作流：
 
-- 在网站的支持页面通过微信或支付宝打赏
-- GitHub 仓库赞助入口：[`https://github.com/AnxForever/stylekit`](https://github.com/AnxForever/stylekit)
-- 网站支持页面：[`https://stylekit.top/contact#support-maintenance`](https://stylekit.top/contact#support-maintenance)
-- 公开的赞助反馈：[`GitHub Discussions`](https://github.com/AnxForever/stylekit/discussions)
-
-当前收款码资源：
-
-- 支付宝：[`public/alipay-qr.jpg`](public/alipay-qr.jpg)
-- 微信赞赏：[`public/wechat-qr.png`](public/wechat-qr.png)
-
-网站的支持板块由单个配置文件驱动：[`lib/site/support.ts`](lib/site/support.ts)。
-
-## 技术栈
-
-| 层级 | 技术 |
-|-------|-----------|
-| 框架 | Next.js 16 + Turbopack |
-| UI | React 19、Radix UI、Lucide Icons |
-| 样式 | Tailwind CSS 4、CVA |
-| 认证与数据库 | Supabase（PostgreSQL + auth helpers） |
-| 校验 | Zod 4 |
-| 测试 | Vitest + Playwright |
-| 部署 | 阿里云 ECS + Nginx + PM2 |
-
-## 生产部署
-
-`www.stylekit.top` 目前运行在北京地域的一台阿里云 ECS 实例上。
-
-- 边缘与 TLS：ECS 主机上的 Nginx
-- 应用进程：PM2 应用 `stylekit`
-- 应用目录：`/www/stylekit`，由本地校验过的检出目录 rsync 同步
-- 运行命令：PM2 直接托管 `next start -p 13000`（`node_modules/next/dist/bin/next`，不经 npm wrapper）
-
-`vercel.json` 已不属于当前生效的生产部署路径，不应被当作 StyleKit 托管位置的事实来源。
-
-发版前先跑上面的校验闸门；服务启动后可用 `/api/health` 查看运行状态。
+- [AI 生成的网站不好看怎么修](https://www.stylekit.top/zh/ai-generated-website-fix) —— 视觉层次、间距、字体排版与组件一致性。
+- [怎么选 AI 网页设计工具](https://www.stylekit.top/zh/ai-web-design-tools) —— 对比提示词、设计与代码生成三类工作流。
+- [AI 生成 UI 界面](https://www.stylekit.top/zh/ai-ui-generator) —— 把一份页面需求变成可用的界面结构。
+- [AI 前端工作流](https://www.stylekit.top/zh/ai-frontend-workflow) —— 从想法走到 React、Tailwind 与实现约束。
+- English guides: [Fix an AI-generated website](https://www.stylekit.top/en/ai-generated-website-fix) · [AI frontend workflow](https://www.stylekit.top/en/ai-frontend-workflow)
 
 ## 参与贡献
 
@@ -289,6 +260,13 @@ git checkout -b feat/your-feature
 pnpm lint && pnpm test && pnpm build
 git commit -m "feat: add your feature"
 ```
+
+## 支持这个项目
+
+如果 StyleKit 恰好帮到了你，那对我来说意义重大。金额随意，每一份心意我都很感谢，这也能帮忙分担服务器、域名与维护成本。
+
+- 在[网站支持页面](https://stylekit.top/contact#support-maintenance)通过微信或支付宝打赏
+- 在 [GitHub Discussions](https://github.com/AnxForever/stylekit/discussions) 公开反馈赞助
 
 ## Star 趋势
 
