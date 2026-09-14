@@ -60,7 +60,6 @@
     "capture:overseas-launch-assets": "node tools/scripts/capture-overseas-launch-assets.mjs",
     "capture:overseas-launch-demo": "node tools/scripts/capture-overseas-launch-demo.mjs",
     "capture:corporate-clean-evidence": "node tools/scripts/capture-corporate-clean-evidence.mjs",
-    "readme:star-history": "node tools/scripts/generate-star-history.mjs",
     "images:generate": "node tools/scripts/generate-style-images.mjs",
     "submit:baidu": "node tools/scripts/submit-baidu.mjs"
   },
