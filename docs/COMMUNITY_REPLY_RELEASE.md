@@ -6,8 +6,11 @@ It does not send email or push notifications.
 
 ## Status and order
 
-The implementation and migration are verified locally. The migration has **not**
-been applied to production, and this workspace has **not** been deployed.
+Completed on 2026-09-15: migration 040 is applied to production and the verified
+application build is deployed from `main` commit `5404e3ef`. The previous app
+artifact remains available at
+`/www/stylekit-backups/stylekit-pre-5404e3ef-20260915T1713+0800` for rollback.
+The steps below remain the required order for later environments and restores.
 
 1. Review migration `lib/supabase/migrations/040_comment_replies_notifications.sql`.
    Capture a database backup and verify the intended production database with a
@@ -21,9 +24,11 @@ been applied to production, and this workspace has **not** been deployed.
    root layout files and remove the old `app/layout.tsx`/`app/page.tsx` entry points
    from the deployed source snapshot; those implementations now live under
    `components/`. A partial source sync is not a valid release.
-4. Restart the service through the existing deployment procedure, then verify
+4. If the color catalog changed, regenerate and install the Nginx color allow map
+   from the deployed app's direct sitemap as documented in `README.md`.
+5. Restart the service through the existing deployment procedure, then verify
    `/api/health`, community discovery, both locale roots, private inbox auth, and
-   the checks below. No nginx URL changes are required.
+   the checks below. No Nginx proxy URL changes are required.
 
 The intended manual migration command, only after target verification, is:
 

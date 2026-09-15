@@ -220,4 +220,6 @@ outside the repository.
 The reply/notification design, locale-owned document roots, color answers, and
 final loading-performance work were completed after this initial audit. Current
 implementation and verification results are recorded in
-`docs/SEO_COMMUNITY_FOLLOWUP_2026-09-15.md`; migration 040 remains undeployed.
+`docs/SEO_COMMUNITY_FOLLOWUP_2026-09-15.md`. That statement recorded the
+pre-release state; migration 040 and the corresponding app build were deployed
+later on 2026-09-15, as recorded in the follow-up release status.

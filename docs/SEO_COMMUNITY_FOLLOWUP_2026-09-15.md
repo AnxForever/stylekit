@@ -14,6 +14,14 @@ previous turn's verified changes. The complete starting diff is saved locally at
 home-module import move may touch a localized file; its existing static directives
 must remain intact.
 
+## Release status
+
+The work was released to production on 2026-09-15. Migration 040 committed
+successfully before the application switch, and `main` commit `5404e3ef` is the
+deployed source state. The pre-release observations later in this document are
+retained as implementation evidence; this section supersedes their deployment
+status.
+
 ## Feature evidence ledger
 
 | ID | Lifecycle / desired outcome | Delivery before this work | Evidence and references | Decision / constraints | Acceptance and failure cases | Coverage / historical gap |
@@ -177,10 +185,11 @@ Implemented locally:
   existing `?comment={id}#comment-{id}` loader. No reply totals are inferred from
   production before migration 040 exists there.
 
-The production database was read only. Migration 040 remains undeployed, and no
-submission, comment, follow, moderation action, external publication, or search
-submission was performed. Search CTR, AI citations, and community participation
-remain post-release measurements rather than claimed outcomes.
+During this content-continuity pass the production database was read only and
+migration 040 had not yet been deployed. The later release applied the migration
+without creating submissions, comments, follows, moderation actions, external
+publications, or search submissions. Search CTR, AI citations, and community
+participation remain post-release measurements rather than claimed outcomes.
 
 Final local verification for this pass:
 
@@ -242,3 +251,40 @@ Implemented from those traces:
 - Started the bounded recent-discussion read alongside the community catalog and
   filtered every result through the resolved public style map. This preserves the
   fail-closed visibility rule while removing the database waterfall.
+
+## Production release evidence
+
+The release used a PostgreSQL 17 `pg_dump` backup before migration:
+
+- Path: `/home/anx4758/backups/stylekit/postgres-pre-040-20260915T084918Z.dump`
+- SHA-256: `aaef1e9ab59e275665956300798411f6341c6ef9cef5b8e7e4e79d83e730c74b`
+- Size: 6,393,139 bytes; the archive list was verified with PostgreSQL 17
+  `pg_restore --list`.
+
+Migration `040_comment_replies_notifications.sql` committed transactionally.
+The original nine comments remained, reply and notification counts began at
+zero, both tables retained RLS, and direct `anon` / `authenticated` SELECT grants
+were absent. The reply constraints and preparation/notification triggers were
+present after migration.
+
+The application was deployed through a separate canary directory and switched to
+`/www/stylekit` only after health checks. A production-only second proxy pass
+initially exposed a locale rewrite loop on shared routes; commit `5404e3ef` now
+recognizes the validated internal locale/path pair. Its regression tests fail on
+the old behavior and cover both regular localized rewrites and search-bot color
+rewrites. The post-fix gate passed 259 test files, 7,662 tests with one existing
+skip, lint with the same 38 warnings, type checking, and the 2,214-page build.
+
+Nginx's color allow map still contained 481 catalog colors from 2026-08-11. It
+was regenerated from the deployed sitemap to 491 colors, syntax-tested, backed
+up outside `conf.d`, and reloaded without stopping the application. The tracked
+generator keeps this deployment input reproducible for future catalog changes.
+
+Final public verification passed all 1,140 sitemap URLs as `200`, indexable, and
+self-canonical. English and Chinese roots expose the expected document language
+and canonical, community preserves the `anti-design` and `op-art` creator cards,
+anonymous notification reads return `401`, and the comments API advertises reply
+support. No production comments, replies, notifications, follows, ratings, or
+moderation records were created during verification. The stopped-service switch
+produced a brief upstream refusal window before Next became ready; no application
+errors appeared in the new service journal after readiness.

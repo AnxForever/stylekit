@@ -278,6 +278,25 @@ npx skills add AnxForever/stylekit-skill
 
 发版前先跑上面的校验闸门；服务启动后可用 `/api/health` 查看运行状态。
 
+如果发版修改了颜色目录，在公网 SEO 检查前，从已部署应用的直连
+sitemap 重新生成 Nginx 颜色白名单：
+
+```bash
+STYLEKIT_SITEMAP_URL=http://127.0.0.1:13000/sitemap.xml \
+  pnpm run generate:nginx-color-allow-map \
+  /tmp/stylekit-color-allow.map.conf
+install -d -m 700 /etc/nginx/backups
+cp /etc/nginx/conf.d/stylekit-color-allow.map.conf \
+  /etc/nginx/backups/stylekit-color-allow.map.conf.previous
+install -m 644 /tmp/stylekit-color-allow.map.conf \
+  /etc/nginx/conf.d/stylekit-color-allow.map.conf
+nginx -t && systemctl reload nginx
+```
+
+安装前先审查生成内容与现有配置的差异，并把旧文件保存在 `conf.d`
+之外以便回滚。该白名单用于阻止任意十六进制地址形成无限抓取面，必须
+与 sitemap 保持同步。
+
 ## 参与贡献
 
 欢迎贡献。提交 PR 前请先阅读：

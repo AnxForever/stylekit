@@ -294,6 +294,25 @@ Current production for `www.stylekit.top` runs on an Alibaba Cloud ECS instance 
 
 Run the verification gate above before shipping; `/api/health` reports service status once the app is running.
 
+After a release changes the color catalog, regenerate the Nginx allow map from
+the deployed app's direct sitemap before running the public SEO check:
+
+```bash
+STYLEKIT_SITEMAP_URL=http://127.0.0.1:13000/sitemap.xml \
+  pnpm run generate:nginx-color-allow-map \
+  /tmp/stylekit-color-allow.map.conf
+install -d -m 700 /etc/nginx/backups
+cp /etc/nginx/conf.d/stylekit-color-allow.map.conf \
+  /etc/nginx/backups/stylekit-color-allow.map.conf.previous
+install -m 644 /tmp/stylekit-color-allow.map.conf \
+  /etc/nginx/conf.d/stylekit-color-allow.map.conf
+nginx -t && systemctl reload nginx
+```
+
+Review the generated diff before installing it. Retain the previous file outside
+`conf.d` for rollback. The map prevents arbitrary hex routes from creating an
+unbounded crawl surface, so it must stay synchronized with the sitemap.
+
 ## Contributing
 
 Contributions welcome. Please read these before opening a PR:
