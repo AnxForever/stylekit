@@ -13,15 +13,17 @@ StyleKit helps developers give ChatGPT, Claude, Claude Code, Codex, and other co
 - [Page templates](https://www.stylekit.top/en/templates): Browse complete page structures without replacing the curated style previews.
 - [Theme collections](https://www.stylekit.top/en/collections): Find styles by dark mode, retro, game UI, anime, hand-drawn, and other themes.
 - [Color catalog](https://www.stylekit.top/en/colors): Browse and copy palettes from the style catalog.
+- [Community styles and discussions](https://www.stylekit.top/en/community): Read public style discussions, explore reviewed contributions, and find the submission workflow.
+- [中文风格社区](https://www.stylekit.top/zh/community): 参与风格讨论、浏览审核通过的社区作品，或提交原创风格。
 
 ## Prompt Collections
 
 - [Landing page prompts](https://www.stylekit.top/en/landing-page-prompts)
-- [Dashboard prompts](https://www.stylekit.top/en/dashboard-prompts)
+- [8 dashboard UI prompts with review checklist](https://www.stylekit.top/en/dashboard-prompts)
 - [Tailwind CSS and shadcn/ui prompts](https://www.stylekit.top/en/tailwind-ui-prompts)
 - [Dark mode UI prompts](https://www.stylekit.top/en/dark-mode-ui-prompts)
 - [中文落地页提示词](https://www.stylekit.top/zh/landing-page-prompts)
-- [中文仪表盘提示词](https://www.stylekit.top/zh/dashboard-prompts)
+- [中文仪表盘 UI 提示词与验收清单](https://www.stylekit.top/zh/dashboard-prompts)
 - [中文 Tailwind UI 提示词](https://www.stylekit.top/zh/tailwind-ui-prompts)
 - [中文暗色模式 UI 提示词](https://www.stylekit.top/zh/dark-mode-ui-prompts)
 
@@ -54,13 +56,14 @@ Install the StyleKit knowledge skill in a compatible coding-agent environment:
 npx skills add AnxForever/stylekit-skill
 ```
 
-The repository also contains CLI and MCP packages. Their `0.1.0` public betas are published to npm (`stylekit-cli`, `stylekit-mcp`); the repository tracks newer release candidates built from a local checkout.
+The repository also contains published public-beta [CLI](https://www.npmjs.com/package/stylekit-cli) and [MCP](https://www.npmjs.com/package/stylekit-mcp) packages. Check each package listing for its current release rather than assuming the repository and npm versions are identical.
 
 ## Product Boundaries
 
 - StyleKit provides design constraints, prompts, examples, and registry assets; it does not guarantee that every AI-generated interface is production-ready.
 - The existing catalog previews are curated visual references. General-purpose preview infrastructure is intended for future styles and does not replace those previews.
 - `llms.txt` is an emerging community convention, not a confirmed ranking signal for Google, ChatGPT, Claude, Gemini, or Perplexity.
+- Community comments are user feedback, not official documentation. Approved community styles are public; only promoted community style pages are included in the sitemap and promoted Markdown reference sections.
 
 ## Additional References
 

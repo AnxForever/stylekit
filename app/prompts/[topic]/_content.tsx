@@ -1,68 +1,51 @@
-"use client";
-
 import type { ReactNode } from "react";
-import { useState } from "react";
-import { useI18n } from "@/lib/i18n/context";
-import { LocalizedLink } from "@/components/i18n/localized-link";
+import Link from "next/link";
+import { localizeHref } from "@/lib/i18n/routing";
+import {
+  translations,
+  type Locale,
+  type TranslationKey,
+} from "@/lib/i18n/translations";
 import type { PromptTopic } from "@/lib/prompts/types";
 import type { StyleMeta } from "@/lib/styles/meta";
+import { PromptCopyButton } from "./_prompt-copy-button";
 
 // ── FAQ Accordion ──────────────────────────────────────
 
 function FAQItem({ question, answer }: { question: string; answer: string }) {
-  const [open, setOpen] = useState(false);
-
   return (
-    <div className="border-b border-border">
-      <button
-        onClick={() => setOpen((p) => !p)}
-        aria-expanded={open}
-        className="w-full flex items-center justify-between py-4 text-left hover:text-foreground transition-colors"
-      >
+    <details className="group border-b border-border">
+      <summary className="flex w-full cursor-pointer list-none items-center justify-between py-4 text-left transition-colors hover:text-foreground">
         <span className="font-medium text-sm md:text-base pr-4">{question}</span>
         <span
-          className={`text-muted shrink-0 transition-transform duration-200 ${open ? "rotate-45" : ""}`}
+          className="shrink-0 text-muted transition-transform duration-200 group-open:rotate-45"
           aria-hidden="true"
         >
           +
         </span>
-      </button>
-      {open && (
-        <div className="pb-4 text-sm text-muted leading-relaxed">{answer}</div>
-      )}
-    </div>
+      </summary>
+      <div className="pb-4 text-sm text-muted leading-relaxed">{answer}</div>
+    </details>
   );
 }
 
 // ── Prompt Card ────────────────────────────────────────
 
 function PromptCard({
+  id,
   title,
   tool,
   prompt,
+  copyLabel,
+  copiedLabel,
 }: {
+  id: string;
   title: string;
   tool: string;
   prompt: string;
+  copyLabel: string;
+  copiedLabel: string;
 }) {
-  const [copied, setCopied] = useState(false);
-  const { t } = useI18n();
-
-  const handleCopy = async () => {
-    try {
-      await navigator.clipboard.writeText(prompt);
-    } catch {
-      const el = document.createElement("textarea");
-      el.value = prompt;
-      document.body.appendChild(el);
-      el.select();
-      document.execCommand("copy");
-      document.body.removeChild(el);
-    }
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
-
   const toolLabel: Record<string, string> = {
     v0: "v0",
     cursor: "Cursor",
@@ -79,15 +62,14 @@ function PromptCard({
             {toolLabel[tool] || tool}
           </span>
         </div>
-        <button
-          onClick={handleCopy}
-          className="shrink-0 px-2 py-1 text-xs border border-border hover:bg-foreground hover:text-background transition-colors"
-        >
-          {copied ? t("seo.copiedPrompt") : t("seo.copyPrompt")}
-        </button>
+        <PromptCopyButton
+          targetId={id}
+          copyLabel={copyLabel}
+          copiedLabel={copiedLabel}
+        />
       </div>
       <div className="text-xs text-muted bg-zinc-50 dark:bg-zinc-900 p-3 mt-3 max-h-32 overflow-y-auto">
-        <pre className="whitespace-pre-wrap font-mono">{prompt}</pre>
+        <pre id={id} className="whitespace-pre-wrap font-mono">{prompt}</pre>
       </div>
     </div>
   );
@@ -96,22 +78,26 @@ function PromptCard({
 // ── Main Content ───────────────────────────────────────
 
 interface Props {
+  locale?: Locale;
   topic: PromptTopic;
   relatedStyles: (StyleMeta | undefined)[];
   curatedStyleCount: number;
   topicIndexHref?: string;
+  lead?: ReactNode;
   children?: ReactNode;
 }
 
 export function PromptTopicContent({
+  locale = "en",
   topic,
   relatedStyles,
   curatedStyleCount,
   topicIndexHref = "/ui-prompts",
+  lead,
   children,
 }: Props) {
-  const { locale, t } = useI18n();
   const isZh = locale === "zh";
+  const t = (key: TranslationKey) => translations[locale][key] || key;
 
   const title = isZh ? topic.titleZh : topic.titleEn;
   const description = isZh ? topic.descriptionZh : topic.descriptionEn;
@@ -122,13 +108,13 @@ export function PromptTopicContent({
       {/* Breadcrumb */}
       <div className="max-w-7xl mx-auto px-6 md:px-12 pt-6">
         <nav className="flex items-center gap-2 text-xs text-muted">
-          <LocalizedLink href="/" className="hover:text-foreground transition-colors">
+          <Link href={localizeHref("/", locale)} prefetch={false} className="hover:text-foreground transition-colors">
             {t("seo.breadcrumbHome")}
-          </LocalizedLink>
+          </Link>
           <span>/</span>
-          <LocalizedLink href={topicIndexHref} className="hover:text-foreground transition-colors">
+          <Link href={localizeHref(topicIndexHref, locale)} prefetch={false} className="hover:text-foreground transition-colors">
             {t("seo.breadcrumbPrompts")}
-          </LocalizedLink>
+          </Link>
           <span>/</span>
           <span className="text-foreground">{title}</span>
         </nav>
@@ -153,6 +139,8 @@ export function PromptTopicContent({
           </div>
         </div>
       </section>
+
+      {lead}
 
       {/* Intro / What is this? */}
       <section className="border-b border-border">
@@ -185,9 +173,12 @@ export function PromptTopicContent({
             {topic.prompts.map((p, i) => (
               <PromptCard
                 key={i}
+                id={`prompt-${topic.slug}-${i}`}
                 title={isZh ? p.titleZh : p.titleEn}
                 tool={p.tool}
                 prompt={p.prompt}
+                copyLabel={t("seo.copyPrompt")}
+                copiedLabel={t("seo.copiedPrompt")}
               />
             ))}
           </div>
@@ -211,9 +202,10 @@ export function PromptTopicContent({
               {relatedStyles.map(
                 (style) =>
                   style && (
-                    <LocalizedLink
+                    <Link
                       key={style.slug}
-                      href={`/styles/${style.slug}`}
+                      href={localizeHref(`/styles/${style.slug}`, locale)}
+                      prefetch={false}
                       className="group border border-border p-4 hover:border-foreground transition-colors"
                     >
                       <div className="flex gap-2 mb-2">
@@ -231,7 +223,7 @@ export function PromptTopicContent({
                       <p className="text-xs text-muted mt-1">
                         {style.category} / {style.styleType}
                       </p>
-                    </LocalizedLink>
+                    </Link>
                   )
               )}
             </div>
@@ -301,18 +293,20 @@ export function PromptTopicContent({
               : `StyleKit offers ${curatedStyleCount} visual styles, each with design tokens, component recipes, and exportable AI Rules.`}
           </p>
           <div className="flex justify-center gap-4">
-            <LocalizedLink
-              href="/styles"
+            <Link
+              href={localizeHref("/styles", locale)}
+              prefetch={false}
               className="inline-block border-2 border-foreground px-6 py-3 font-medium hover:bg-foreground hover:text-background transition-colors"
             >
               {isZh ? "浏览风格库" : "Browse Styles"}
-            </LocalizedLink>
-            <LocalizedLink
-              href={topicIndexHref}
+            </Link>
+            <Link
+              href={localizeHref(topicIndexHref, locale)}
+              prefetch={false}
               className="inline-block border border-border px-6 py-3 text-muted hover:border-foreground hover:text-foreground transition-colors"
             >
               {isZh ? "更多提示词主题" : "More Prompt Topics"}
-            </LocalizedLink>
+            </Link>
           </div>
         </div>
       </section>

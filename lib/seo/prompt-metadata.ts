@@ -26,9 +26,9 @@ const ZH_PROMPT_METADATA: Record<
     keywords: ["落地页提示词", "Landing Page 提示词", "SaaS 网页设计", "营销页面提示词", "AI 落地页设计"],
   },
   "/dashboard-prompts": {
-    title: "仪表盘 UI 设计提示词",
+    title: "仪表盘 UI 提示词：8 个可复制示例",
     description:
-      "面向数据仪表盘、后台管理、KPI 卡片、图表和复杂数据界面的 UI 提示词，适用于 ChatGPT、Claude、Claude Code 与 Codex。",
+      "复制 8 条适用于 ChatGPT、Claude、Cursor 和 v0 的仪表盘 UI 提示词，覆盖数据分析、后台管理、图表、表格和响应式状态。",
     keywords: ["仪表盘提示词", "后台 UI 提示词", "Dashboard UI", "数据可视化提示词", "管理后台设计"],
   },
   "/tailwind-ui-prompts": {
@@ -38,9 +38,9 @@ const ZH_PROMPT_METADATA: Record<
     keywords: ["Tailwind UI 提示词", "Tailwind CSS 提示词", "shadcn 提示词", "React UI 提示词", "Next.js 前端提示词"],
   },
   "/dark-mode-ui-prompts": {
-    title: "暗色模式 UI 设计提示词",
+    title: "暗色模式 UI 提示词与 Tailwind v4 示例",
     description:
-      "用于暗色仪表盘、SaaS 产品、媒体应用与深色网站的 UI 设计提示词，包含可读性、对比度、状态和交互约束。",
+      "复制适用于 ChatGPT、Claude、Cursor 和 v0 的暗色 UI 提示词，查看 Tailwind v4 主题配置、表面配色和有官方来源的文字对比度检查。",
     keywords: ["暗色模式提示词", "深色 UI 设计", "Dark Mode UI", "暗色仪表盘", "黑色网站设计提示词"],
   },
 };

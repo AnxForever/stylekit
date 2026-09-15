@@ -6,6 +6,14 @@ import { LocalizedLink } from "@/components/i18n/localized-link";
 import type { PromptTopic, PromptTool } from "@/lib/prompts/types";
 import type { StyleMeta } from "@/lib/styles/meta";
 import type { PromptTemplatePreview } from "@/lib/seo/prompt-template-previews";
+import type { Locale } from "@/lib/i18n/translations";
+
+import {
+  DARK_MODE_QUICK_PROMPT,
+  DARK_MODE_REFERENCE_REVIEWED_AT,
+  DARK_MODE_SOURCES,
+  DARK_MODE_TAILWIND_CSS,
+} from "@/lib/seo/dark-mode-reference";
 
 // Flagship dark-mode topic page, art-directed as a nocturnal spec sheet:
 // serif display headings (site-wide display face), monospaced data skeleton,
@@ -23,8 +31,8 @@ const INK = {
   text: "#f4f4f5",
   body: "#c8c8cd",
   muted: "#9d9da6",
-  dim: "#6e6e78",
-  faint: "#3f3f46",
+  dim: "#9797a1",
+  faint: "#85858f",
   accent: "#3b82f6",
   accentLight: "#7aa7f8",
 };
@@ -38,12 +46,12 @@ const CONTRAST_ROWS = [
   { fg: "#a1a1aa", bg: "#09090b", ratio: "7.76", grade: "AAA", useEn: "Captions on base", useZh: "基底上的说明文字" },
   { fg: "#a1a1aa", bg: "#131316", ratio: "7.24", grade: "AAA", useEn: "Captions on panels", useZh: "面板上的说明文字" },
   { fg: "#3b82f6", bg: "#09090b", ratio: "5.41", grade: "AA", useEn: "Accent fills, icons", useZh: "强调填充与图标" },
-  { fg: "#71717a", bg: "#09090b", ratio: "4.12", grade: "AA-LG", useEn: "Large dim labels only, 18px+", useZh: "仅限大号弱化标签，18px+" },
+  { fg: "#71717a", bg: "#09090b", ratio: "4.12", grade: "AA-LG", useEn: "Large text only: 24px or 18.67px bold", useZh: "仅限大号文字：24px 或 18.67px 加粗" },
   { fg: "#52525b", bg: "#09090b", ratio: "2.57", grade: "FAIL", useEn: "Too dim — never ship this", useZh: "过暗——禁止上线" },
 ];
 
 const ELEVATION_LAYERS = [
-  { hex: "#09090b", token: "zinc-950", nameEn: "Base", nameZh: "基底", useEn: "Page background. Never pure #000 — true black smears on OLED and erases every shadow cue.", useZh: "页面背景。永远不用纯 #000——OLED 上会拖影，所有阴影线索也随之消失。" },
+  { hex: "#09090b", token: "zinc-950", nameEn: "Base", nameZh: "基底", useEn: "Page background for this example. Near-black leaves room to distinguish the raised surfaces; pure black is not inherently an accessibility failure.", useZh: "本示例的页面背景。近黑为抬升表面留出可区分的层次；纯黑本身并不违反无障碍标准。" },
   { hex: "#131316", token: "card", nameEn: "Card", nameZh: "卡片", useEn: "Resting cards and panels. One step lighter than base, separated by a 1px border, not shadow.", useZh: "静置卡片与面板。比基底亮一档，用 1px 边框而非阴影分隔。" },
   { hex: "#1a1a20", token: "raised", nameEn: "Raised", nameZh: "抬升", useEn: "Hover states, dropdowns, popovers. Lightness signals proximity to the viewer.", useZh: "悬停态、下拉、弹出层。亮度传达与观者的距离。" },
   { hex: "#222228", token: "overlay", nameEn: "Overlay", nameZh: "浮层", useEn: "Modals and dialogs, over a black scrim at 60-70% opacity.", useZh: "模态与对话框，背后配 60-70% 不透明度的黑色遮罩。" },
@@ -130,28 +138,16 @@ function CopyButton({ text, isZh }: { text: string; isZh: boolean }) {
 }
 
 function FAQItem({ index, question, answer }: { index: number; question: string; answer: string }) {
-  const [open, setOpen] = useState(false);
   return (
-    <div style={{ borderTop: `1px solid ${INK.lineSoft}` }}>
-      <button
-        onClick={() => setOpen((p) => !p)}
-        aria-expanded={open}
-        className="w-full grid grid-cols-[2.5rem_1fr_auto] items-baseline gap-2 py-5 text-left transition-colors duration-150 focus:outline-none focus-visible:ring-1 focus-visible:ring-[#3b82f6]"
-      >
+    <details className="group" style={{ borderTop: `1px solid ${INK.lineSoft}` }}>
+      <summary className="grid cursor-pointer list-none grid-cols-[2.5rem_1fr_auto] items-baseline gap-2 py-5 text-left focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#7aa7f8] [&::-webkit-details-marker]:hidden">
         <span className="font-mono text-xs" style={{ color: INK.dim }}>{num(index)}</span>
-        <span className="text-[15px] md:text-base font-medium pr-4" style={{ color: open ? INK.text : INK.body }}>
-          {question}
-        </span>
-        <span aria-hidden="true" className="font-mono text-sm" style={{ color: open ? INK.accentLight : INK.dim }}>
-          {open ? "—" : "+"}
-        </span>
-      </button>
-      {open && (
-        <p className="pb-7 pl-10 max-w-2xl text-sm md:text-[15px] leading-[1.8]" style={{ color: INK.muted }}>
-          {answer}
-        </p>
-      )}
-    </div>
+        <span className="pr-4 text-[15px] font-medium md:text-base" style={{ color: INK.body }}>{question}</span>
+        <span aria-hidden="true" className="font-mono text-sm group-open:hidden" style={{ color: INK.dim }}>+</span>
+        <span aria-hidden="true" className="hidden font-mono text-sm group-open:block" style={{ color: INK.accentLight }}>−</span>
+      </summary>
+      <p className="max-w-2xl pb-7 pl-10 text-sm leading-[1.8] md:text-[15px]" style={{ color: INK.muted }}>{answer}</p>
+    </details>
   );
 }
 
@@ -162,6 +158,7 @@ export function DarkModeFlagshipContent({
   dontList,
   templates,
   curatedStyleCount,
+  ssrLocale,
 }: {
   topic: PromptTopic;
   relatedStyles: StyleMeta[];
@@ -169,8 +166,10 @@ export function DarkModeFlagshipContent({
   dontList: string[];
   templates: PromptTemplatePreview[];
   curatedStyleCount: number;
+  ssrLocale?: Locale;
 }) {
-  const { locale } = useI18n();
+  const { locale: clientLocale } = useI18n();
+  const locale = ssrLocale ?? clientLocale;
   const isZh = locale === "zh";
   const [activeLayer, setActiveLayer] = useState(1);
   const [openPrompt, setOpenPrompt] = useState<number | null>(0);
@@ -179,9 +178,9 @@ export function DarkModeFlagshipContent({
 
   const rules = [
     {
-      tEn: "Never use pure black", tZh: "永远不用纯黑",
-      bEn: "#000000 smears on OLED panels and erases every shadow and elevation cue. Start at #09090b so the interface keeps room below itself.",
-      bZh: "#000000 在 OLED 上产生拖影，并让所有阴影与层级线索失效。从 #09090b 起步，给界面留出向下的空间。",
+      tEn: "Separate your surfaces", tZh: "让表面层级清晰可辨",
+      bEn: "For this palette, start at #09090b and use lighter surfaces for cards and overlays. Test the actual contrast; no single background color guarantees readability.",
+      bZh: "这套配色从 #09090b 起步，用更浅的表面区分卡片与浮层。检查实际对比度；任何单一背景色都不能保证可读性。",
       spec: (
         <div className="grid grid-cols-2" style={{ border: `1px solid ${INK.line}` }} aria-hidden="true">
           <div className="p-4" style={{ backgroundColor: "#000000" }}>
@@ -214,8 +213,8 @@ export function DarkModeFlagshipContent({
     },
     {
       tEn: "Dim the white, keep three tiers", tZh: "白字压光，三档层级",
-      bEn: "Pure #fff glares on dark. Use #fafafa for primary, #d4d4d8 for body, #a1a1aa for captions — three tiers carry an entire page, all clearing AAA.",
-      bZh: "纯白在暗底上晃眼。主文本 #fafafa、正文 #d4d4d8、说明 #a1a1aa——三档撑起整页层级，全部超过 AAA。",
+      bEn: "On the #09090b base, #fafafa primary text, #d4d4d8 body text, and #a1a1aa captions all exceed the 7:1 AAA text threshold. Recheck these tokens when the background changes.",
+      bZh: "在 #09090b 基底上，主文字 #fafafa、正文 #d4d4d8、说明 #a1a1aa 都超过 7:1 的 AAA 文字阈值。背景改变时，需要重新检查这些 tokens。",
       spec: (
         <div className="p-4 space-y-1.5" style={{ border: `1px solid ${INK.line}`, backgroundColor: "#09090b" }} aria-hidden="true">
           <p className="text-sm" style={{ color: "#fafafa" }}>{"primary"} <span className="font-mono text-[10px]" style={{ color: INK.dim }}>19.06</span></p>
@@ -226,8 +225,8 @@ export function DarkModeFlagshipContent({
     },
     {
       tEn: "One accent, spent carefully", tZh: "一个强调色，花在刀刃上",
-      bEn: "A dark interface is 90% grayscale. The accent goes to the primary action, the active state, and one key metric. Color everywhere is emphasis nowhere.",
-      bZh: "暗色界面 90% 是灰阶。强调色只给主操作、当前态和一个关键数据。到处上色等于到处没有重点。",
+      bEn: "This example reserves its accent for the primary action, active states, and meaningful data. Use additional colors when they carry information, not to fill every surface.",
+      bZh: "本示例把强调色留给主操作、当前态和有意义的数据。需要传达信息时可以增加颜色，而不是为每个表面上色。",
       spec: (
         <div className="p-4 flex items-center gap-2" style={{ border: `1px solid ${INK.line}`, backgroundColor: "#09090b" }} aria-hidden="true">
           <span className="h-7 flex-1" style={{ backgroundColor: INK.panel, border: `1px solid ${INK.lineSoft}` }} />
@@ -274,10 +273,18 @@ export function DarkModeFlagshipContent({
               <p className="mt-6 max-w-2xl text-[15px] md:text-base leading-[1.8]" style={{ color: INK.muted }}>
                 {isZh ? topic.introZh : topic.introEn}
               </p>
+              <div id="quick-start" className="mt-7 scroll-mt-16 border p-4 sm:p-5" style={{ borderColor: INK.line, backgroundColor: INK.panel }}>
+                <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
+                  <h2 className="font-sans text-sm font-medium">{isZh ? "先复制这条起步提示词" : "Start with this dark mode prompt"}</h2>
+                  <CopyButton text={DARK_MODE_QUICK_PROMPT[isZh ? "zh" : "en"]} isZh={isZh} />
+                </div>
+                <p className="text-sm leading-7" style={{ color: INK.body }}>{DARK_MODE_QUICK_PROMPT[isZh ? "zh" : "en"]}</p>
+                <p className="mt-3 text-xs leading-6" style={{ color: INK.muted }}>{isZh ? "把方括号替换成你的页面类型和目标用户，再复制到 AI 编程工具。" : "Replace the bracketed page type and audience before using this in your AI coding tool."}</p>
+              </div>
               <div className="mt-8 flex flex-wrap gap-x-7 gap-y-2 font-mono text-[11px] tracking-[0.1em] uppercase" style={{ color: INK.dim }}>
                 <span>{topic.prompts.length} {isZh ? "条提示词" : "prompts"}</span>
                 <span>5 {isZh ? "层表面" : "surfaces"}</span>
-                <span>WCAG {isZh ? "实测" : "verified"}</span>
+                <span>{isZh ? "文字对比度示例" : "Text contrast examples"}</span>
                 <span>EN / ZH</span>
               </div>
             </div>
@@ -411,8 +418,8 @@ export function DarkModeFlagshipContent({
             title={isZh ? "实测对比度" : "Verified contrast"}
             lead={
               isZh
-                ? "以下每个数值都按 WCAG 相对亮度公式实算。把整张表贴进提示词，AI 就没有理由生成不可读的文字。"
-                : "Every ratio below is computed with the WCAG relative-luminance formula. Paste the table into a prompt and the AI has no excuse for unreadable text."
+                ? "以下每个数值都按 WCAG 相对亮度公式实算。把整张表贴进提示词，再检查生成结果，不能仅凭提示词认定无障碍达标。"
+                : "Every ratio below is computed with the WCAG relative-luminance formula. Use the table as a starting point, then test the generated UI rather than assuming the prompt guarantees accessibility."
             }
           />
           <div className="overflow-x-auto" style={{ border: `1px solid ${INK.line}` }}>
@@ -577,6 +584,30 @@ export function DarkModeFlagshipContent({
                 : "Runnable dark templates and related styles — every style page ships full tokens, component recipes, and exportable AI rules."
             }
           />
+          <div className="mb-10 space-y-6">
+            <div>
+              <h3 className="font-sans text-base font-medium">{isZh ? "Tailwind CSS v4：可直接使用的主题配置" : "Tailwind CSS v4: theme setup"}</h3>
+              <p className="mt-3 max-w-2xl text-sm leading-7" style={{ color: INK.body }}>
+                {isZh ? "默认 dark: 跟随系统偏好。如果希望通过 html 上的 .dark 类手动切换，把下面的配置加入 CSS 入口，再使用 bg-white dark:bg-zinc-950 等工具类。切换器需要同步类名与用户偏好。" : "By default, dark: follows the system preference. To control it with a .dark class on html, add this to your CSS entry, then use utilities such as bg-white dark:bg-zinc-950. Your theme toggle must synchronize the class and the user's preference."}
+              </p>
+              <div className="mt-4 flex justify-end"><CopyButton text={DARK_MODE_TAILWIND_CSS} isZh={isZh} /></div>
+              <pre className="mt-2 overflow-x-auto border p-4 text-xs leading-6" style={{ borderColor: INK.line, color: INK.body }}><code>{DARK_MODE_TAILWIND_CSS}</code></pre>
+            </div>
+            <div>
+              <h3 className="font-sans text-base font-medium">{isZh ? "核对依据与适用边界" : "Sources and limits"}</h3>
+              <p className="mt-2 text-xs" style={{ color: INK.muted }}>
+                {isZh ? "技术资料核对日期：" : "Technical references checked: "}<time dateTime={DARK_MODE_REFERENCE_REVIEWED_AT}>{DARK_MODE_REFERENCE_REVIEWED_AT}</time>
+              </p>
+              <ul className="mt-4 space-y-4">
+                {DARK_MODE_SOURCES.map((source) => (
+                  <li key={source.href}>
+                    <a href={source.href} className="text-sm underline underline-offset-4" style={{ color: INK.accentLight }}>{source.name}</a>
+                    <p className="mt-1 max-w-2xl text-xs leading-6" style={{ color: INK.muted }}>{isZh ? source.zh : source.en}</p>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
           <div className="grid md:grid-cols-2 gap-x-12">
             <div>
               <p className="font-mono text-[11px] tracking-[0.2em] uppercase pb-4" style={{ color: INK.muted }}>

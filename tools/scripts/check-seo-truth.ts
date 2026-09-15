@@ -26,7 +26,7 @@ const PUBLIC_SEO_SOURCES = [
   "README.md",
   "README.zh-CN.md",
   "app/about/layout.tsx",
-  "app/layout.tsx",
+  "components/layout/site-document.tsx",
   "content/blog/ai-ui-prompts-guide.mdx",
   "content/blog/design-tokens-explained.mdx",
   "content/blog/glassmorphism-vs-neo-brutalist.mdx",
@@ -72,7 +72,7 @@ async function main(): Promise<void> {
   const [llms, llmsFullSource, rootLayoutSource, publicSeoSources] = await Promise.all([
     readFile("public/llms.txt", "utf8"),
     readFile("lib/export/llms-full.ts", "utf8"),
-    readFile("app/layout.tsx", "utf8"),
+    readFile("components/layout/site-document.tsx", "utf8"),
     Promise.all(PUBLIC_SEO_SOURCES.map(async (source) => [source, await readFile(source, "utf8")] as const)),
   ]);
 
@@ -140,7 +140,7 @@ async function main(): Promise<void> {
 
   if (/canonical:\s*BASE_URL/.test(rootLayoutSource)) {
     issues.push({
-      source: "app/layout.tsx",
+      source: "components/layout/site-document.tsx",
       message: "root metadata must not force every route to use the homepage canonical",
     });
   }

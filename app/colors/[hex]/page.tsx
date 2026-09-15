@@ -12,10 +12,8 @@ import {
   type ColorDetail,
 } from "@/lib/styles/color-detail";
 import { serializeJsonLd } from "@/lib/security/json-ld";
-import { canonicalizeEnglishMetadata } from "@/lib/i18n/metadata";
-import { getSiteBaseUrl } from "@/lib/site-url";
-
-const BASE_URL = getSiteBaseUrl();
+import { buildColorDetailJsonLd, buildColorDetailMetadata, COLOR_REFERENCE_PALETTE, COLOR_REFERENCE_SOURCES, getColorAnswer, getColorFaq, getPreferredTextColor, isExactTailwindHex } from "@/lib/seo/color-detail-content";
+import { ColorPairings } from "@/components/colors/color-pairings";
 
 export const revalidate = 86400;
 // Only the curated swatches returned by generateStaticParams are public pages.
@@ -35,50 +33,11 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const detail = getCuratedColorDetail(slug);
   if (!detail) return { title: "Color not found" };
 
-  const hex = detail.hex;
-  const styleNames = detail.usedBy.slice(0, 3).map((u) => u.nameEn);
-  // Hex SERPs are zero-click for "conversions" — Google's own color widget
-  // and colorhexa answer that before anyone clicks. What earns the click is
-  // the part they can't show: which Tailwind token it is, which curated UI
-  // styles use it, and what pairs with it. Lead with those (audit #6: ~2,900
-  // impressions/28d across hex queries at ~0% CTR while ranking pos 6-10).
-  const token = detail.tailwind.distance <= 0.05 ? detail.tailwind.token : null;
-  const tokenPrefix = token ? `${hex} (${token})` : hex;
-  const title = styleNames.length
-    ? `${tokenPrefix} — UI styles that use it + pairings`
-    : `${tokenPrefix} — pairings, tints & WCAG contrast`;
-
-  const styleLead =
-    styleNames.length > 0
-      ? `Used by ${styleNames.join(", ")}${
-          detail.usedBy.length > styleNames.length
-            ? ` and ${detail.usedBy.length - styleNames.length} more curated styles`
-            : ""
-        }.`
-      : "";
-  const description = token
-    ? `${hex} is Tailwind's ${token}. ${styleLead} See colors that pair with it, tints/shades, and WCAG-safe text colors.`.replace("  ", " ").trim()
-    : `${hex}: ${styleLead} RGB/HSL/OKLCH values, tints/shades, palette pairings, and WCAG contrast readings.`.replace("  ", " ").trim();
-
-  return canonicalizeEnglishMetadata(
-    {
-      title,
-      description,
-      keywords: [
-        `${hex} color`,
-        `${hex} tailwind`,
-        `${hex} pairings`,
-        `${hex} palette`,
-        `${hex} contrast`,
-        "hex color ui",
-      ],
-    },
-    `/colors/${hexToSlug(hex)}`
-  );
+  return buildColorDetailMetadata(detail);
 }
 
 function textOn(detail: ColorDetail): string {
-  return detail.luminance > 0.35 ? "#111111" : "#ffffff";
+  return getPreferredTextColor(detail).hex;
 }
 
 function SectionHeading({ index, title }: { index: string; title: string }) {
@@ -106,7 +65,7 @@ function SwatchLink({ hex }: { hex: string }) {
         className="block h-14 w-full border border-white/10 transition-transform duration-150 group-hover:-translate-y-0.5"
         style={{ backgroundColor: hex }}
       />
-      <span className="font-mono text-[11px] text-white/50 group-hover:text-white/85">
+      <span className="font-mono text-[11px] text-white/65 group-hover:text-white/85">
         {hex}
       </span>
     </LocalizedLink>
@@ -130,7 +89,7 @@ function Swatch({ hex }: { hex: string }) {
         className="block h-14 w-full border border-white/10"
         style={{ backgroundColor: hex }}
       />
-      <span className="font-mono text-[11px] text-white/50">{hex}</span>
+      <span className="font-mono text-[11px] text-white/65">{hex}</span>
     </div>
   );
 }
@@ -149,20 +108,8 @@ export default async function ColorDetailPage({ params }: PageProps) {
   const detail = getCuratedColorDetail(normalized);
   if (!detail) notFound();
 
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "WebPage",
-    name: `${detail.hex} color information`,
-    description: `Conversions, WCAG contrast, Tailwind mapping, and design styles for the hex color ${detail.hex}.`,
-    url: `${BASE_URL}/colors/${canonicalSlug}`,
-    breadcrumb: {
-      "@type": "BreadcrumbList",
-      itemListElement: [
-        { "@type": "ListItem", position: 1, name: "Colors", item: `${BASE_URL}/colors` },
-        { "@type": "ListItem", position: 2, name: detail.hex, item: `${BASE_URL}/colors/${canonicalSlug}` },
-      ],
-    },
-  };
+  const jsonLd = buildColorDetailJsonLd(detail);
+  const faqs = getColorFaq(detail);
 
   const promptSnippet =
     detail.usedBy.length > 0
@@ -176,9 +123,9 @@ export default async function ColorDetailPage({ params }: PageProps) {
         dangerouslySetInnerHTML={{ __html: serializeJsonLd(jsonLd) }}
       />
       <Header />
-      <main className="flex-1">
+      <main lang="en" className="flex-1">
         <div className="container mx-auto max-w-4xl px-4 py-10 md:py-14">
-          <nav className="mb-8 font-mono text-[11px] uppercase tracking-[0.15em] text-white/40">
+          <nav className="mb-8 font-mono text-[11px] uppercase tracking-[0.15em] text-white/65">
             <LocalizedLink href="/colors" className="hover:text-white/80">
               Colors
             </LocalizedLink>
@@ -201,23 +148,7 @@ export default async function ColorDetailPage({ params }: PageProps) {
               </h1>
             </div>
             <p className="mt-5 max-w-2xl text-[15px] leading-[1.75] text-white/60">
-              {detail.hex} converts to {detail.rgbCss} and {detail.hslCss}. Its
-              nearest Tailwind CSS token is{" "}
-              <span className="font-mono text-white/85">
-                {detail.tailwind.token}
-              </span>
-              {detail.usedBy.length > 0 ? (
-                <>
-                  {" "}
-                  and it appears in{" "}
-                  {detail.usedBy.length === 1
-                    ? "one curated design style"
-                    : `${detail.usedBy.length} curated design styles`}{" "}
-                  in the StyleKit library.
-                </>
-              ) : (
-                "."
-              )}
+              {getColorAnswer(detail)}
             </p>
           </header>
 
@@ -231,7 +162,7 @@ export default async function ColorDetailPage({ params }: PageProps) {
               <CopyValueRow
                 label="tailwind"
                 value={
-                  detail.tailwind.distance === 0
+                  isExactTailwindHex(detail)
                     ? detail.tailwind.token
                     : `${detail.tailwind.token} (nearest, ${detail.tailwind.hex})`
                 }
@@ -244,7 +175,7 @@ export default async function ColorDetailPage({ params }: PageProps) {
             <div className="overflow-x-auto">
               <table className="w-full border-collapse text-sm">
                 <thead>
-                  <tr className="border-b border-white/15 text-left font-mono text-[11px] uppercase tracking-[0.15em] text-white/40">
+                  <tr className="border-b border-white/15 text-left font-mono text-[11px] uppercase tracking-[0.15em] text-white/65">
                     <th className="py-2 pr-4 font-normal">Background</th>
                     <th className="py-2 pr-4 font-normal">Ratio</th>
                     <th className="py-2 pr-4 font-normal">AA text</th>
@@ -278,11 +209,15 @@ export default async function ColorDetailPage({ params }: PageProps) {
                 </tbody>
               </table>
             </div>
-            <p className="mt-4 max-w-2xl text-sm leading-[1.75] text-white/50">
-              Ratios are computed from WCAG 2.x relative luminance. AA requires
-              4.5:1 for normal text and 3:1 for large text; AAA requires 7:1.
+            <p className="mt-4 max-w-2xl text-sm leading-[1.75] text-white/65">
+              Ratios use WCAG relative luminance for opaque sRGB colors. Normal text
+              requires 4.5:1, or 7:1 at AAA. Large text requires 3:1: at least 24 CSS
+              pixels, or about 18.67 CSS pixels when bold. Pass/fail uses the unrounded
+              ratio. Contrast alone is not a full accessibility assessment.
             </p>
           </section>
+
+          <ColorPairings detail={detail} />
 
           {detail.usedBy.length > 0 && (
             <section className="mb-12">
@@ -296,13 +231,13 @@ export default async function ColorDetailPage({ params }: PageProps) {
                     >
                       <span className="text-[15px] text-white/85">
                         {usage.nameEn}
-                        <span className="ml-3 font-mono text-[11px] uppercase tracking-[0.12em] text-white/40">
+                        <span className="ml-3 font-mono text-[11px] uppercase tracking-[0.12em] text-white/65">
                           {usage.role} · {usage.category}
                         </span>
                       </span>
                       <span
                         aria-hidden="true"
-                        className="font-mono text-sm text-white/30"
+                        className="font-mono text-sm text-white/65"
                       >
                         →
                       </span>
@@ -326,7 +261,7 @@ export default async function ColorDetailPage({ params }: PageProps) {
                 <Swatch key={`shade-${hex}`} hex={hex} />
               ))}
             </div>
-            <p className="mt-4 max-w-2xl text-sm leading-[1.75] text-white/50">
+            <p className="mt-4 max-w-2xl text-sm leading-[1.75] text-white/65">
               Lightness ladder in HSL space, from the lightest tint to the
               darkest shade of {detail.hex}.
             </p>
@@ -343,7 +278,7 @@ export default async function ColorDetailPage({ params }: PageProps) {
                   <SwatchLink key={neighbor.hex} hex={neighbor.hex} />
                 ))}
               </div>
-              <p className="mt-4 max-w-2xl text-sm leading-[1.75] text-white/50">
+              <p className="mt-4 max-w-2xl text-sm leading-[1.75] text-white/65">
                 Nearest swatches by perceptual OKLab distance across all
                 curated style palettes.
               </p>
@@ -360,7 +295,7 @@ export default async function ColorDetailPage({ params }: PageProps) {
                 {promptSnippet}
               </p>
             </div>
-            <p className="mt-4 max-w-2xl text-sm leading-[1.75] text-white/50">
+            <p className="mt-4 max-w-2xl text-sm leading-[1.75] text-white/65">
               Paste this into ChatGPT, Claude, Cursor, or v0 to use {detail.hex}
               {" "}with correct contrast constraints.{" "}
               <LocalizedLink
@@ -371,6 +306,22 @@ export default async function ColorDetailPage({ params }: PageProps) {
               </LocalizedLink>
               .
             </p>
+          </section>
+          <section className="mb-12" aria-labelledby="color-questions">
+            <h2 id="color-questions" className="mb-5 text-xl text-white/90 md:text-2xl">Questions about {detail.hex}</h2>
+            <div className="divide-y divide-white/10 border-y border-white/10">
+              {faqs.map((faq) => (
+                <details key={faq.question} className="py-4">
+                  <summary className="cursor-pointer text-sm font-medium leading-7 text-white/90">{faq.question}</summary>
+                  <p className="mt-3 max-w-2xl text-sm leading-7 text-white/65">{faq.answer}</p>
+                </details>
+              ))}
+            </div>
+          </section>
+          <section className="mb-6" aria-labelledby="color-sources">
+            <h2 id="color-sources" className="text-lg text-white/90">Sources and calculation limits</h2>
+            <p className="mt-3 text-sm leading-7 text-white/65">Reference palette: {COLOR_REFERENCE_PALETTE}. Named tokens are versioned approximations; use the exact hex utilities when matching an existing design. Palette pairings come from the linked StyleKit definitions, not external popularity or preference data.</p>
+            <ul className="mt-4 space-y-3 text-sm">{COLOR_REFERENCE_SOURCES.map((source) => <li key={source.href}><a href={source.href} className="text-[#7aa2ff] underline underline-offset-4">{source.name}</a></li>)}</ul>
           </section>
         </div>
       </main>

@@ -11,6 +11,7 @@ import { getSiteBaseUrl } from "@/lib/site-url";
 import { PromptTopicContent } from "./_content";
 import { getRequestLocaleContext } from "@/lib/i18n/request";
 import { generatePromptPageSchemas } from "@/lib/seo/prompt-schema";
+import type { Locale } from "@/lib/i18n/translations";
 
 const BASE_URL = getSiteBaseUrl();
 
@@ -59,13 +60,15 @@ export async function generateMetadata({
 
 export default async function PromptTopicPage({
   params,
+  locale: providedLocale,
 }: {
   params: Promise<{ topic: string }>;
+  locale?: Locale;
 }) {
   const { topic: slug } = await params;
   const topic = getTopicBySlug(slug);
   if (!topic) notFound();
-  const { locale } = await getRequestLocaleContext();
+  const locale = providedLocale ?? (await getRequestLocaleContext()).locale;
 
   // Resolve related styles metadata
   const allStyles = getAllStylesMeta();
@@ -101,7 +104,12 @@ export default async function PromptTopicPage({
             __html: serializeJsonLd(breadcrumbSchema),
           }}
         />
-        <PromptTopicContent topic={topic} relatedStyles={relatedStyles} curatedStyleCount={CURATED_STYLE_COUNT} />
+        <PromptTopicContent
+          locale={locale}
+          topic={topic}
+          relatedStyles={relatedStyles}
+          curatedStyleCount={CURATED_STYLE_COUNT}
+        />
       </main>
       <Footer />
     </div>
