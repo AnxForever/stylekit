@@ -45,4 +45,16 @@ export async function generateMetadata({
   return localizeMetadata(localized, locale, `/prompts/${topic}`);
 }
 
-export default Page;
+export default async function LocalizedPromptTopicPage({
+  params,
+}: {
+  params: Promise<{ locale: string; topic: string }>;
+}) {
+  const { locale, topic } = await params;
+  return (
+    <Page
+      params={Promise.resolve({ topic })}
+      locale={isLocale(locale) ? locale : "en"}
+    />
+  );
+}

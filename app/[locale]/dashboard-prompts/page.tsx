@@ -6,6 +6,7 @@ import { isLocale } from "@/lib/i18n/routing";
 import { getLocalizedPromptMetadata } from "@/lib/seo/prompt-metadata";
 
 export const revalidate = 86400;
+export const dynamic = "force-static";
 
 export async function generateMetadata({
   params,
@@ -18,4 +19,11 @@ export async function generateMetadata({
     : baseMetadata;
 }
 
-export default Page;
+export default async function LocalizedDashboardPromptsPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  return <Page locale={isLocale(locale) ? locale : "en"} />;
+}

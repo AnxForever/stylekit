@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-head-element -- Shared App Router document, rendered by root layouts; next/head is for the Pages Router. */
 import type { CSSProperties } from "react";
 import type { Metadata, Viewport } from "next";
 import Script from "next/script";
@@ -5,7 +6,6 @@ import {
   Albert_Sans,
   Playfair_Display,
   Fragment_Mono,
-  Noto_Serif_SC,
 } from "next/font/google";
 import { ClientProviders } from "@/components/providers/client-providers";
 import { LazyCommandPalette } from "@/components/ui/lazy-command-palette";
@@ -15,14 +15,19 @@ import { AnnouncementBanner } from "@/components/layout/announcement-banner";
 import { serializeJsonLd } from "@/lib/security/json-ld";
 import { MobileBottomNav } from "@/components/layout/mobile-bottom-nav";
 import { getSiteBaseUrl } from "@/lib/site-url";
-import { getRequestLocaleContext } from "@/lib/i18n/request";
+import { getLocaleDocumentContext, getRequestLocaleContext } from "@/lib/i18n/request";
 import { buildSiteMetadata } from "@/lib/seo/site-metadata";
 import { CURATED_STYLE_COUNT } from "@/lib/product/catalog-facts";
 import { getShowcaseTypographyProfile } from "@/lib/typography/showcase-profiles";
 import { LazyShowcaseTypographyRuntime } from "@/components/typography/lazy-showcase-typography-runtime";
 import { ShowcaseBackBar } from "@/components/showcase/showcase-back-bar";
 import { getSiteAnnouncement } from "@/lib/site-announcements";
-import "./globals.css";
+import "@/app/globals.css";
+import type { Locale } from "@/lib/i18n/translations";
+import {
+  FRIEND_PROMO_ID,
+  FRIEND_PROMO_STORAGE_KEY,
+} from "@/lib/home/friend-promo";
 
 const publicSans = Albert_Sans({
   subsets: ["latin", "latin-ext"],
@@ -50,18 +55,6 @@ const publicMono = Fragment_Mono({
   // Mono is used for labels and code, not the primary above-the-fold copy.
   preload: false,
   variable: "--font-public-mono",
-});
-
-// Chinese serif companion for Playfair Display headings. Google Fonts serves
-// CJK faces as unicode-range slices, so browsers only fetch the glyph blocks
-// actually used on the page. preload: false — CJK slice preloading would push
-// dozens of <link rel=preload> tags.
-const publicDisplayZh = Noto_Serif_SC({
-  subsets: ["latin"],
-  weight: ["500", "600", "700"],
-  display: "swap",
-  preload: false,
-  variable: "--font-public-display-zh",
 });
 
 const productFontVariables = {
@@ -135,22 +128,50 @@ const DEV_SW_CLEANUP_SCRIPT = `
 })();
 `;
 
-export async function generateMetadata(): Promise<Metadata> {
+function buildAnnouncementBootstrapScript(id: string): string {
+  const dismissalKey = serializeJsonLd(`sk-site-announcement-dismissed:${id}`);
+  return `
+(() => {
+  try {
+    if (localStorage.getItem(${dismissalKey}) === "1") {
+      document.documentElement.dataset.siteAnnouncementDismissed = "true";
+    }
+  } catch {}
+})();
+`;
+}
+
+const FRIEND_PROMO_BOOTSTRAP_SCRIPT = `
+(() => {
+  try {
+    if (localStorage.getItem(${serializeJsonLd(FRIEND_PROMO_STORAGE_KEY)}) === ${serializeJsonLd(FRIEND_PROMO_ID)}) {
+      document.documentElement.dataset.friendPromoDismissed = "true";
+    }
+  } catch {}
+})();
+`;
+
+export async function generateSiteMetadata(): Promise<Metadata> {
   return buildSiteMetadata(await getRequestLocaleContext());
 }
 
-export default async function RootLayout({
+export default async function SiteDocument({
   children,
+  locale: routeLocale,
 }: Readonly<{
   children: React.ReactNode;
+  locale?: Locale;
 }>) {
-  const { locale, htmlLang, contentPath } = await getRequestLocaleContext();
-  // Fetch both locales so a statically rendered locale route can pick its own
-  // announcement without reading request headers.
+  const { locale, htmlLang, contentPath } = routeLocale
+    ? getLocaleDocumentContext(routeLocale)
+    : await getRequestLocaleContext();
+  // Announcements are shared, while the locale root supplies the document
+  // language before hydration or any request-header lookup.
   const [announcementEn, announcementZh] = await Promise.all([
     getSiteAnnouncement("en"),
     getSiteAnnouncement("zh-CN"),
   ]);
+  const activeAnnouncement = locale === "zh" ? announcementZh : announcementEn;
   const showcaseTypography = getShowcaseTypographyProfile(contentPath);
   const isProductSurface = /^\/(?:admin|admin-login|login|profile|validation|workspace)(?:\/|$)/.test(
     contentPath
@@ -212,6 +233,18 @@ export default async function RootLayout({
         <script
           dangerouslySetInnerHTML={{
             __html: LOCALE_BOOTSTRAP_SCRIPT,
+          }}
+        />
+        {activeAnnouncement ? (
+          <script
+            dangerouslySetInnerHTML={{
+              __html: buildAnnouncementBootstrapScript(activeAnnouncement.id),
+            }}
+          />
+        ) : null}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: FRIEND_PROMO_BOOTSTRAP_SCRIPT,
           }}
         />
         {process.env.NODE_ENV !== "production" ? (
@@ -291,7 +324,7 @@ export default async function RootLayout({
         />
       </head>
       <body
-        className={`${publicSans.variable} ${publicDisplay.variable} ${publicMono.variable} ${publicDisplayZh.variable} antialiased pb-16 md:pb-0`}
+        className={`${publicSans.variable} ${publicDisplay.variable} ${publicMono.variable} antialiased pb-16 md:pb-0`}
         data-showcase-font={showcaseTypography?.id}
         data-product-font={isProductSurface ? "true" : undefined}
         style={routeFontVariables}
@@ -299,6 +332,7 @@ export default async function RootLayout({
         <ClientProviders initialLocale={locale}>
           <LazyShowcaseTypographyRuntime />
           <AnnouncementBanner
+            key={activeAnnouncement?.id ?? `no-announcement-${locale}`}
             announcements={{ en: announcementEn, zh: announcementZh }}
           />
           <LazyCommandPalette />

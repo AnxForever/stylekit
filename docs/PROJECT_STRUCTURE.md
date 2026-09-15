@@ -54,13 +54,16 @@ flowchart LR
 
 Important groups:
 
-- `app/page.tsx`, `app/[locale]/page.tsx`: home entry points.
-- `app/[locale]/...`: localized public pages.
+- `app/(default)/page.tsx`, `app/[locale]/page.tsx`: home entry points; both reuse `components/home/home-page.tsx`.
+- `app/[locale]/layout.tsx`: locale-aware HTML root. Its route parameter supplies `html.lang` during prerendering, before JavaScript runs.
+- `app/[locale]/...`: localized public pages. Legacy unprefixed route trees have thin root layouts that reuse `components/layout/legacy-root-layout.tsx`; the actual document, fonts, providers, and metadata defaults live in `components/layout/site-document.tsx`.
+- `app/global-not-found.tsx`: provider-independent 404 for unmatched routes across document roots. Crossing roots uses Next.js full-document navigation; public URLs are unchanged.
 - `app/styles/`: style catalog pages and style detail/showcase routes.
 - `app/templates/`: template gallery and individual template routes.
 - `app/animations/`, `app/backgrounds/`, `app/gradients/`, `app/shadows/`, `app/typography/`: design resource surfaces.
 - `app/admin/`: admin UI pages.
-- `app/login/`: auth entry point. Profile, community, generator, playground, analysis, comparison, migration, and pipeline routes are hidden or redirected.
+- `app/login/`, `app/profile/`: auth and personal account surfaces.
+- `app/community/`: public style discussions and reviewed contributions. `app/community/notifications/` is a private, noindex reply inbox.
 - `app/api/`: route handlers for JSON APIs, auth callbacks, admin APIs, linting, style export, health checks, and retired endpoint responses.
 
 Pattern in use:

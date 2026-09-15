@@ -11,7 +11,7 @@ async function read(relativePath: string) {
 describe("English homepage typography", () => {
   it("uses a readable editorial title with a scoped calligraphic accent", async () => {
     const [layout, homepage, globals] = await Promise.all([
-      read("app/layout.tsx"),
+      read("components/layout/site-document.tsx"),
       read("components/home/home-content.tsx"),
       read("app/globals.css"),
     ]);
@@ -54,7 +54,7 @@ describe("English homepage typography", () => {
     // typography by being selected in PROFILE_PAIRINGS, which the resolved-profile
     // check below covers directly.
     const [layout, showcaseSource] = await Promise.all([
-      read("app/layout.tsx"),
+      read("components/layout/site-document.tsx"),
       read("lib/typography/showcase-profiles.ts"),
     ]);
 

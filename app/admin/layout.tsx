@@ -1,3 +1,5 @@
+import SiteDocument, { generateSiteMetadata } from "@/components/layout/site-document";
+export { viewport } from "@/components/layout/site-document";
 import type { ReactNode } from "react";
 import { GeistMono } from "geist/font/mono";
 import { GeistSans } from "geist/font/sans";
@@ -8,7 +10,7 @@ import { DbStatusBanner } from "@/components/admin/db-status-banner";
 
 export default function AdminLayout({ children }: { children: ReactNode }) {
   return (
-    <AdminSidebarProvider>
+    <SiteDocument><AdminSidebarProvider>
       <style
         dangerouslySetInnerHTML={{
           __html: `
@@ -41,6 +43,8 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
           </main>
         </div>
       </div>
-    </AdminSidebarProvider>
+    </AdminSidebarProvider></SiteDocument>
   );
 }
+
+export { generateSiteMetadata as generateMetadata };

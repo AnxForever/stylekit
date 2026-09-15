@@ -5,6 +5,9 @@ import Page, {
 import { isLocale, LOCALES } from "@/lib/i18n/routing";
 import { canonicalizeEnglishMetadata } from "@/lib/i18n/metadata";
 
+export const dynamic = "force-static";
+export const revalidate = 3600;
+
 export const dynamicParams = false;
 
 export function generateStaticParams() {

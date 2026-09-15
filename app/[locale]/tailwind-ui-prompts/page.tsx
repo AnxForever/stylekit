@@ -18,4 +18,11 @@ export async function generateMetadata({
     : baseMetadata;
 }
 
-export default Page;
+export default async function LocalizedTailwindUiPromptsPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  return <Page locale={isLocale(locale) ? locale : "en"} />;
+}

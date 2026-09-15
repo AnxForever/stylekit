@@ -4,6 +4,9 @@ import { StyleAdvisorStandalone } from "@/components/bailian/style-advisor-stand
 import { isLocale } from "@/lib/i18n/routing";
 import { localizeMetadata } from "@/lib/i18n/metadata";
 
+export const dynamic = "force-static";
+export const revalidate = 3600;
+
 export async function generateMetadata({
   params,
 }: {

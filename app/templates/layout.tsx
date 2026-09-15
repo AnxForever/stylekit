@@ -1,3 +1,5 @@
+import SiteDocument, { generateSiteMetadata } from "@/components/layout/site-document";
+export { viewport } from "@/components/layout/site-document";
 import type { Metadata } from "next";
 import { TemplateViewTracker } from "@/components/analytics/template-view-tracker";
 import { templateCatalog } from "@/lib/templates/catalog";
@@ -25,7 +27,7 @@ export async function generateMetadata(): Promise<Metadata> {
       }
     : baseTemplateMetadata;
 
-  return applyRequestMetadata(localized, context);
+  return { ...await generateSiteMetadata(), ...applyRequestMetadata(localized, context) };
 }
 
 export default async function TemplatesLayout({
@@ -42,10 +44,10 @@ export default async function TemplatesLayout({
     : null;
 
   return (
-    <>
+    <SiteDocument>
       <TemplateViewTracker />
       {heading ? <h1 className="sr-only">{heading}</h1> : null}
       {children}
-    </>
+    </SiteDocument>
   );
 }
