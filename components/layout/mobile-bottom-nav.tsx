@@ -61,6 +61,7 @@ export function MobileBottomNav() {
             <Link
               key={tab.href}
               href={localizeHref(tab.href, locale)}
+              prefetch={false}
               aria-current={isActive ? "page" : undefined}
               className={`flex min-h-[44px] min-w-[64px] flex-col items-center justify-center gap-0.5 text-xs transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-accent ${
                 isActive ? "text-foreground" : "text-muted"

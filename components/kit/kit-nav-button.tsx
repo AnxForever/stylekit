@@ -16,6 +16,7 @@ export function KitNavButton() {
   return (
     <Link
       href="/kit"
+      prefetch={false}
       aria-label={`${label}${count > 0 ? ` (${count})` : ""}`}
       className="relative p-2 text-muted hover:text-foreground transition-colors"
     >

@@ -374,6 +374,7 @@ export function HomeContent({ styles, stats, thankYouEntries }: HomeContentProps
               <div className="flex flex-wrap items-center gap-3">
                 <Link
                   href={localizeHref("/styles", locale)}
+                  prefetch={false}
                   onClick={() => trackEvent("cta_click", { label: "browse_styles", location: "home_hero" })}
                   className="group inline-flex min-h-11 items-center justify-center gap-2 bg-foreground px-5 text-sm tracking-wide text-background transition-colors hover:bg-accent"
                 >
@@ -382,6 +383,7 @@ export function HomeContent({ styles, stats, thankYouEntries }: HomeContentProps
                 </Link>
                 <Link
                   href={localizeHref("/templates", locale)}
+                  prefetch={false}
                   onClick={() => trackEvent("cta_click", { label: "browse_templates", location: "home_hero" })}
                   className="inline-flex min-h-11 items-center justify-center border border-foreground/30 px-5 text-sm tracking-wide transition-colors hover:border-foreground hover:bg-background"
                 >
@@ -389,6 +391,7 @@ export function HomeContent({ styles, stats, thankYouEntries }: HomeContentProps
                 </Link>
                 <Link
                   href={localizeHref("/guide", locale)}
+                  prefetch={false}
                   onClick={() => trackEvent("cta_click", { label: "open_guide", location: "home_hero" })}
                   className={smallLinkClassName}
                 >
@@ -397,6 +400,7 @@ export function HomeContent({ styles, stats, thankYouEntries }: HomeContentProps
                 </Link>
                 <Link
                   href={localizeHref("/launch", locale)}
+                  prefetch={false}
                   onClick={() => trackEvent("cta_click", { label: "open_launch", location: "home_hero" })}
                   className={smallLinkClassName}
                 >
@@ -425,6 +429,7 @@ export function HomeContent({ styles, stats, thankYouEntries }: HomeContentProps
                       <Link
                         key={item.href}
                         href={item.href}
+                        prefetch={false}
                         aria-current={isActive ? "location" : undefined}
                         className={cn(
                           quickJumpLinkClassName,
@@ -527,6 +532,7 @@ export function HomeContent({ styles, stats, thankYouEntries }: HomeContentProps
                 <Link
                   key={item.scenario}
                   href={localizeHref(`/styles?scenario=${item.scenario}`, locale)}
+                  prefetch={false}
                   onClick={() => trackEvent("cta_click", { label: `scenario_${item.scenario}`, location: "home_scenarios" })}
                   className="group flex min-w-[8.5rem] items-center justify-between gap-5 border-r border-border/80 px-4 py-4 text-sm transition-colors hover:bg-foreground hover:text-background sm:min-w-[9.5rem] sm:py-5"
                 >
@@ -557,6 +563,7 @@ export function HomeContent({ styles, stats, thankYouEntries }: HomeContentProps
             {isMobileQuickJumpCompact ? (
               <Link
                 href={activeQuickLinkItem.href}
+                prefetch={false}
                 ref={(element) => {
                   mobileQuickLinkRefs.current[activeQuickLinkItem.href] = element;
                 }}
@@ -582,6 +589,7 @@ export function HomeContent({ styles, stats, thankYouEntries }: HomeContentProps
                   <Link
                     key={item.href}
                     href={item.href}
+                    prefetch={false}
                     ref={(element) => {
                       mobileQuickLinkRefs.current[item.href] = element;
                     }}
@@ -649,7 +657,7 @@ export function HomeContent({ styles, stats, thankYouEntries }: HomeContentProps
               <p className={`${sectionLabelClassName} mb-2`}>{t("home.styleCollection")}</p>
               <h2 className={sectionTitleClassName}>{t("home.styleCatalog")}</h2>
             </div>
-            <Link href={localizeHref("/styles", locale)} className="text-sm text-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background transition-colors flex items-center gap-1">
+            <Link href={localizeHref("/styles", locale)} prefetch={false} className="text-sm text-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background transition-colors flex items-center gap-1">
               {t("home.viewAll")}
               <span aria-hidden="true">&rarr;</span>
             </Link>

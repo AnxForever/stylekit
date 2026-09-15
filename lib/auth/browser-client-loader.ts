@@ -12,11 +12,24 @@ type BrowserAuthModule = typeof import("./supabase-browser");
 
 let browserAuthModulePromise: Promise<BrowserAuthModule> | undefined;
 
+const SUPABASE_AUTH_COOKIE_RE =
+  /(?:^|;\s*)sb-[^=;]+-auth-token(?:\.\d+)?=/;
+
 export function isBrowserAuthConfigured(): boolean {
   return Boolean(
     process.env.NEXT_PUBLIC_SUPABASE_URL &&
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
   );
+}
+
+/**
+ * Supabase SSR persists browser sessions in one or more readable cookies.
+ * Anonymous visitors have no such cookie, so loading the 200KB+ auth SDK on
+ * every public page cannot reveal a session and only delays useful work.
+ */
+export function hasBrowserAuthSessionHint(): boolean {
+  return typeof document !== "undefined" &&
+    SUPABASE_AUTH_COOKIE_RE.test(document.cookie);
 }
 
 export function loadAuthClient(): Promise<SupabaseClient | null> {

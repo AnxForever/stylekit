@@ -32,19 +32,14 @@ export function NewsletterSignup({ variant = "card" }: { variant?: Variant }) {
     e.preventDefault();
     setErrorMsg("");
 
-    // Zod is loaded on demand so it stays out of the first-load bundle;
-    // validation only ever runs at submit time.
-    try {
-      const { z } = await import("zod");
-      const result = z.string().email().safeParse(email);
-      if (!result.success) {
-        setStatus("error");
-        setErrorMsg(t("newsletter.invalidEmail"));
-        return;
-      }
-    } catch {
+    // Use the browser's email parser for immediate feedback. The API repeats
+    // validation with Zod on the server, so the public footer does not need to
+    // download the full validation library before a visitor interacts.
+    const form = e.currentTarget as HTMLFormElement;
+    const emailInput = form.elements.namedItem("email");
+    if (!(emailInput instanceof HTMLInputElement) || !emailInput.validity.valid) {
       setStatus("error");
-      setErrorMsg(t("newsletter.error"));
+      setErrorMsg(t("newsletter.invalidEmail"));
       return;
     }
 
@@ -100,6 +95,7 @@ export function NewsletterSignup({ variant = "card" }: { variant?: Variant }) {
         <div className="flex gap-2">
           <input
             id={emailId}
+            name="email"
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
@@ -152,6 +148,7 @@ export function NewsletterSignup({ variant = "card" }: { variant?: Variant }) {
         </label>
         <input
           id={emailId}
+          name="email"
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}

@@ -15,6 +15,7 @@ vi.mock("@/lib/auth/supabase-browser", () => ({
 import { AuthProvider, useUser, type AuthState } from "@/lib/auth/use-user";
 
 const TEST_PASSWORD = ["correct", "horse"].join("-");
+const TEST_AUTH_COOKIE = "sb-stylekit-auth-token=test-session";
 
 const user = {
   id: "user-1",
@@ -47,6 +48,22 @@ describe("AuthProvider", () => {
     vi.clearAllMocks();
     vi.stubEnv("NEXT_PUBLIC_SUPABASE_URL", "https://example.supabase.co");
     vi.stubEnv("NEXT_PUBLIC_SUPABASE_ANON_KEY", "anon-key");
+    document.cookie = `${TEST_AUTH_COOKIE}; path=/`;
+  });
+
+  it("does not load the Supabase SDK for an anonymous public page view", async () => {
+    document.cookie = "sb-stylekit-auth-token=; path=/; max-age=0";
+
+    render(
+      <AuthProvider>
+        <Consumer label="consumer" />
+      </AuthProvider>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByTestId("consumer").textContent).toBe("anonymous");
+    });
+    expect(mocks.getAuthClient).not.toHaveBeenCalled();
   });
 
   it("initializes one auth session for multiple consumers", async () => {

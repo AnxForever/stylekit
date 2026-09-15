@@ -3,12 +3,14 @@
 import { useEffect, useState } from "react";
 import { ArrowUpRight, Github, X } from "lucide-react";
 import { useI18n } from "@/lib/i18n/context";
-
-const PROMO_STORAGE_KEY = "stylekit-friend-promo-dismissed";
+import {
+  FRIEND_PROMO_ID,
+  FRIEND_PROMO_STORAGE_KEY,
+} from "@/lib/home/friend-promo";
 
 // Bump the id when promoting a new project so the banner shows again.
 const PROMO = {
-  id: "nextdevtpl-202608",
+  id: FRIEND_PROMO_ID,
   name: "NextDevTpl",
   tagline: {
     zh: "开源 Next.js 16 SaaS 全栈启动模板：认证、支付、积分、多部署目标",
@@ -20,15 +22,17 @@ const PROMO = {
 
 export function FriendPromoBanner() {
   const { locale } = useI18n();
-  const [visible, setVisible] = useState(false);
+  // The banner is present in the initial HTML. A head bootstrap hides it
+  // before first paint for returning visitors who dismissed this campaign.
+  const [visible, setVisible] = useState(true);
 
   useEffect(() => {
     try {
-      const dismissed = localStorage.getItem(PROMO_STORAGE_KEY);
-      // eslint-disable-next-line react-hooks/set-state-in-effect -- storage-derived visibility, avoids SSR hydration mismatch
-      if (dismissed !== PROMO.id) setVisible(true);
+      const dismissed = localStorage.getItem(FRIEND_PROMO_STORAGE_KEY);
+      document.documentElement.dataset.friendPromoDismissed =
+        dismissed === PROMO.id ? "true" : "false";
     } catch {
-      setVisible(true);
+      document.documentElement.dataset.friendPromoDismissed = "false";
     }
   }, []);
 
@@ -36,15 +40,16 @@ export function FriendPromoBanner() {
 
   const dismiss = () => {
     setVisible(false);
+    document.documentElement.dataset.friendPromoDismissed = "true";
     try {
-      localStorage.setItem(PROMO_STORAGE_KEY, PROMO.id);
+      localStorage.setItem(FRIEND_PROMO_STORAGE_KEY, PROMO.id);
     } catch {
       // localStorage unavailable; banner simply reappears next visit
     }
   };
 
   return (
-    <div className="border-b border-border bg-foreground/[0.03]">
+    <div data-friend-promo className="border-b border-border bg-foreground/[0.03]">
       <div className="max-w-7xl mx-auto flex items-center gap-3 px-4 sm:px-6 md:px-12 py-2.5 text-sm">
         <span aria-hidden className="hidden sm:block h-px w-6 bg-accent shrink-0" />
         <span className="shrink-0 text-[10px] tracking-[0.16em] uppercase text-muted">
