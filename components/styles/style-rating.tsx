@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { getStyleFeedbackLoginHref } from "@/lib/community/comments";
 import { Star } from "lucide-react";
 import { useStyleRating } from "@/lib/swr";
 import { useUser } from "@/lib/auth/use-user";
@@ -14,7 +16,8 @@ interface StyleRatingProps {
 export function StyleRating({ slug }: StyleRatingProps) {
   const { data, mutate } = useStyleRating(slug);
   const { user } = useUser();
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
+  const pathname = usePathname();
   const [userRating, setUserRating] = useState(0);
   const [hoveredStar, setHoveredStar] = useState(0);
   const [submitting, setSubmitting] = useState(false);
@@ -69,7 +72,7 @@ export function StyleRating({ slug }: StyleRatingProps) {
   }
 
   const displayRating = hoveredStar || userRating;
-  const loginHref = `/login?next=${encodeURIComponent(`/styles/${slug}`)}`;
+  const loginHref = getStyleFeedbackLoginHref(pathname, slug, locale);
 
   // Anonymous users: show read-only stars + sign-in link
   if (!user) {
