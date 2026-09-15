@@ -79,6 +79,25 @@ function isSupabaseAuthCookie(name: string): boolean {
   return name.startsWith("sb-") && /-auth-token(?:\.\d+)?$/.test(name);
 }
 
+function readInternalLocaleRewrite(
+  request: NextRequest,
+  incomingPath: string,
+): { locale: Locale; visiblePath: string } | null {
+  const locale = request.headers.get("x-stylekit-locale");
+  const visiblePath = request.headers.get("x-stylekit-visible-path");
+
+  if (
+    !isLocale(locale) ||
+    !visiblePath ||
+    getLocaleFromPathname(visiblePath) !== locale ||
+    stripLocaleFromPathname(visiblePath) !== incomingPath
+  ) {
+    return null;
+  }
+
+  return { locale, visiblePath };
+}
+
 function buildAdminLoginRedirect(request: NextRequest) {
   const redirectUrl = request.nextUrl.clone();
   redirectUrl.pathname = "/admin-login";
@@ -114,13 +133,21 @@ export async function proxy(request: NextRequest) {
   const incomingPath = request.nextUrl.pathname;
   const prefetchRequest = isPrefetchRequest(request);
   const localeInPath = getLocaleFromPathname(incomingPath);
+  // Next can run the proxy again after a localized URL is rewritten to a
+  // shared filesystem route. Preserve the visible locale instead of treating
+  // that internal request as a fresh, unprefixed browser navigation.
+  const internalLocaleRewrite = localeInPath
+    ? null
+    : readInternalLocaleRewrite(request, incomingPath);
   const strippedPath = localeInPath
     ? stripLocaleFromPathname(incomingPath)
     : incomingPath;
   const effectivePath = strippedPath;
   const localeCookieValue = request.cookies.get(LOCALE_COOKIE_NAME)?.value;
   const requestLocale =
-    localeInPath ?? (isLocale(localeCookieValue) ? localeCookieValue : DEFAULT_LOCALE);
+    localeInPath ??
+    internalLocaleRewrite?.locale ??
+    (isLocale(localeCookieValue) ? localeCookieValue : DEFAULT_LOCALE);
 
   if (localeInPath && shouldBypassLocale(strippedPath)) {
     const redirectUrl = request.nextUrl.clone();
@@ -130,6 +157,7 @@ export async function proxy(request: NextRequest) {
 
   if (
     !localeInPath &&
+    !internalLocaleRewrite &&
     !shouldBypassLocale(incomingPath) &&
     (effectivePath === "/colors" || effectivePath.startsWith("/colors/"))
   ) {
@@ -148,7 +176,11 @@ export async function proxy(request: NextRequest) {
     }
   }
 
-  if (!localeInPath && !shouldBypassLocale(incomingPath)) {
+  if (
+    !localeInPath &&
+    !internalLocaleRewrite &&
+    !shouldBypassLocale(incomingPath)
+  ) {
     // Serve default-locale content in place (no 307) for two audiences:
     //   1. Known social/search/AI crawler UAs.
     //   2. ANY request with no language preference — no locale cookie AND no
@@ -209,6 +241,12 @@ export async function proxy(request: NextRequest) {
   if (localeInPath) {
     requestHeaders.set("x-stylekit-locale", localeInPath);
     requestHeaders.set("x-stylekit-visible-path", incomingPath);
+  } else if (internalLocaleRewrite) {
+    requestHeaders.set("x-stylekit-locale", internalLocaleRewrite.locale);
+    requestHeaders.set(
+      "x-stylekit-visible-path",
+      internalLocaleRewrite.visiblePath,
+    );
   } else {
     requestHeaders.set("x-stylekit-locale", requestLocale);
     requestHeaders.set("x-stylekit-visible-path", incomingPath);

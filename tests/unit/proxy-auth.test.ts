@@ -191,4 +191,47 @@ describe("proxy locale negotiation for /colors", () => {
     );
     expect(changed.headers.get("set-cookie")).toContain("stylekit-locale=zh");
   });
+
+  it("does not renegotiate a localized path after its internal rewrite", async () => {
+    const response = await proxy(
+      requestWith("/community", {
+        "accept-language": "en-US,en;q=0.9",
+        "x-stylekit-locale": "en",
+        "x-stylekit-visible-path": "/en/community",
+      }),
+    );
+
+    expect(response.status).toBe(200);
+    expect(response.headers.get("location")).toBeNull();
+    expect(response.headers.get("set-cookie")).toBeNull();
+  });
+
+  it("does not redirect an internally rewritten localized color for search bots", async () => {
+    const response = await proxy(
+      requestWith("/colors/22c55e", {
+        "user-agent":
+          "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)",
+        "x-stylekit-locale": "en",
+        "x-stylekit-visible-path": "/en/colors/22c55e",
+      }),
+    );
+
+    expect(response.status).toBe(200);
+    expect(response.headers.get("location")).toBeNull();
+  });
+
+  it("does not trust a locale rewrite marker for a different path", async () => {
+    const response = await proxy(
+      requestWith("/community", {
+        "accept-language": "en-US,en;q=0.9",
+        "x-stylekit-locale": "en",
+        "x-stylekit-visible-path": "/en/privacy",
+      }),
+    );
+
+    expect(response.status).toBe(307);
+    expect(response.headers.get("location")).toBe(
+      "https://www.stylekit.top/en/community",
+    );
+  });
 });
