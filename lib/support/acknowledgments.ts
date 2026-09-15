@@ -1,4 +1,4 @@
-import { unstable_noStore as noStore } from "next/cache";
+import { unstable_cache } from "next/cache";
 import { getSupabaseAdmin } from "@/lib/supabase/server";
 import {
   thankYouEntries as legacyThankYouEntries,
@@ -26,31 +26,36 @@ export interface SupportAcknowledgmentAdminItem extends SupportAcknowledgmentRow
 
 const EMPTY_COPY: SupportLocaleCopy = { en: "", zh: "" };
 
-export async function getPublishedThankYouEntries(): Promise<ThankYouEntry[]> {
-  noStore();
+// The home page calls this on every request; the data changes only when an
+// admin publishes an acknowledgment, so a 60s data-cache window removes a
+// Supabase round trip per home visit without making publications feel stale.
+export const getPublishedThankYouEntries = unstable_cache(
+  async (): Promise<ThankYouEntry[]> => {
+    const admin = getSupabaseAdmin();
+    if (!admin) {
+      return legacyThankYouEntries;
+    }
 
-  const admin = getSupabaseAdmin();
-  if (!admin) {
-    return legacyThankYouEntries;
-  }
+    const { data, error } = await admin
+      .from("support_acknowledgments")
+      .select(
+        "id, donated_on, donor_label, amount, receipt_path, receipt_alt, celebration_path, celebration_alt, published, created_at, updated_at"
+      )
+      .eq("published", true)
+      .order("donated_on", { ascending: false })
+      .order("created_at", { ascending: false });
 
-  const { data, error } = await admin
-    .from("support_acknowledgments")
-    .select(
-      "id, donated_on, donor_label, amount, receipt_path, receipt_alt, celebration_path, celebration_alt, published, created_at, updated_at"
-    )
-    .eq("published", true)
-    .order("donated_on", { ascending: false })
-    .order("created_at", { ascending: false });
+    // Keep the public site available while a deployment is waiting for the
+    // migration, or when Supabase is temporarily unavailable.
+    if (error || !data) {
+      return legacyThankYouEntries;
+    }
 
-  // Keep the public site available while a deployment is waiting for the
-  // migration, or when Supabase is temporarily unavailable.
-  if (error || !data) {
-    return legacyThankYouEntries;
-  }
-
-  return (data as SupportAcknowledgmentRow[]).map(toThankYouEntry);
-}
+    return (data as SupportAcknowledgmentRow[]).map(toThankYouEntry);
+  },
+  ["support-published-thank-you-entries"],
+  { revalidate: 60 },
+);
 
 export function toThankYouEntry(row: SupportAcknowledgmentRow): ThankYouEntry {
   const label = row.donor_label.trim() || "匿名支持者";

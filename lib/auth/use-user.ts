@@ -23,6 +23,7 @@ import {
 import type { User } from "@supabase/supabase-js";
 import { sanitizeNextPath } from "@/lib/auth/next-path";
 import {
+  hasBrowserAuthSessionHint,
   isBrowserAuthConfigured,
   loadAuthClient,
 } from "./browser-client-loader";
@@ -80,6 +81,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (DEV_MOCK_ENABLED || !browserAuthConfigured) return;
+
+    if (!hasBrowserAuthSessionHint()) {
+      // Keep the server and hydration snapshots identical, then leave the
+      // loading state without importing Supabase for anonymous page views.
+      const anonymousTimer = window.setTimeout(() => setLoading(false), 0);
+      return () => window.clearTimeout(anonymousTimer);
+    }
 
     let cancelled = false;
     const initializationTimeout = window.setTimeout(() => {

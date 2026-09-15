@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
+import { COMMENT_MAX_LENGTH } from "@/lib/community/comments";
 import { getServerUser } from "@/lib/auth/supabase-server";
 import { isSupabaseConfigured } from "@/lib/submit/reviewer-supabase";
 import { parseJsonBodyWithLimit } from "@/lib/security/json-body";
@@ -12,7 +13,7 @@ const MAX_BODY_BYTES = 8 * 1024;
 const slugSchema = z.string().regex(SLUG_RE);
 const commentIdSchema = z.string().uuid();
 const updateSchema = z.object({
-  content: z.string().min(1).max(280),
+  content: z.string().trim().min(1).max(COMMENT_MAX_LENGTH),
 });
 
 interface DbErrorLike {

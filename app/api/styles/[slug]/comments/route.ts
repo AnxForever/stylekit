@@ -1,5 +1,8 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
+import { COMMENT_MAX_LENGTH } from "@/lib/community/comments";
+import { attachReplyContexts, isReplySchemaMissing, readCommentRows, type ReplyContext } from "@/lib/community/comment-threads";
+import { getPublicDiscussionStyle } from "@/lib/community/public-style";
 import { isSupabaseConfigured } from "@/lib/submit/reviewer-supabase";
 import { getServerUser } from "@/lib/auth/supabase-server";
 import {
@@ -25,7 +28,8 @@ const UUID_RE =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
 const commentSchema = z.object({
-  content: z.string().min(1).max(280),
+  content: z.string().trim().min(1).max(COMMENT_MAX_LENGTH),
+  replyToId: z.string().uuid().optional(),
 });
 
 const slugSchema = z.string().regex(SLUG_RE);
@@ -49,6 +53,9 @@ interface AuthorIdentity {
 }
 
 interface CommentOutput {
+  reply_to_id: string | null;
+  is_reply: boolean;
+  reply_to?: ReplyContext | null;
   id: string;
   content: string;
   author_name: string;
@@ -392,6 +399,8 @@ function toCommentOutput(
     resolvedTitle && resolvedRule?.titleIconPath ? resolvedRule.titleIconPath : null;
 
   return {
+    reply_to_id: asString(row.reply_to_id),
+    is_reply: row.is_reply === true,
     id: asString(row.id) ?? "",
     content: asString(row.content) ?? "",
     author_name:
@@ -599,10 +608,28 @@ export async function POST(
       );
     }
 
+    let publicStyle;
+    try {
+      publicStyle = await getPublicDiscussionStyle(slugParsed.data);
+    } catch {
+      return NextResponse.json({ success: false, error: "Style availability could not be verified." }, { status: 503 });
+    }
+    if (!publicStyle) return NextResponse.json({ success: false, error: "Style not found" }, { status: 404 });
+
+    if (parsed.data.replyToId) {
+      // The composite foreign key remains authoritative if the parent is
+      // deleted after this check, and the notification is in the same transaction.
+      const parent = await sb.from("style_comments").select("id").eq("style_slug", slugParsed.data)
+        .eq("id", parsed.data.replyToId).maybeSingle();
+      if (parent.error) return NextResponse.json({ success: false, error: "Reply target could not be verified." }, { status: 503 });
+      if (!parent.data) return NextResponse.json({ success: false, error: "The original comment is no longer available." }, { status: 404 });
+    }
+
     const modernInsertResult = await sb
       .from("style_comments")
       .insert({
         style_slug: slugParsed.data,
+        ...(parsed.data.replyToId ? { reply_to_id: parsed.data.replyToId } : {}),
         content: parsed.data.content,
         author_name: authorName,
         session_id: null,
@@ -610,7 +637,9 @@ export async function POST(
         avatar_url: avatarUrl,
         ip_address: ip,
       })
-      .select("id, content, author_name, avatar_url, user_id, session_id, created_at")
+      .select(parsed.data.replyToId
+        ? "id, content, author_name, avatar_url, user_id, session_id, created_at, reply_to_id, is_reply"
+        : "id, content, author_name, avatar_url, user_id, session_id, created_at")
       .single();
     if (!modernInsertResult.error) {
       return NextResponse.json({
@@ -623,6 +652,16 @@ export async function POST(
     }
 
     const modernInsertError = modernInsertResult.error as DbErrorLike;
+    if (parsed.data.replyToId) {
+      if (isReplySchemaMissing(modernInsertResult.error)) {
+        return NextResponse.json({ success: false, code: "COMMUNITY_UPGRADE_REQUIRED", error: "Replies are temporarily unavailable while the community is upgraded." }, { status: 503 });
+      }
+      if (modernInsertError.code === "23503") {
+        return NextResponse.json({ success: false, error: "The original comment is no longer available." }, { status: 409 });
+      }
+      // Never downgrade a failed reply into an ordinary comment on legacy retry.
+      return NextResponse.json({ success: false, error: "Could not publish the reply. Please try again." }, { status: 503 });
+    }
     if (!useLegacyIdentity && !shouldTryLegacyIdentity(modernInsertError, ["user_id", "avatar_url"])) {
       const classified = classifyDbError(modernInsertError);
       return NextResponse.json(
@@ -680,10 +719,23 @@ export async function GET(
   }
 
   if (!isSupabaseConfigured()) {
-    return NextResponse.json({ comments: [], total: 0 });
+    return NextResponse.json({ comments: [], total: 0, repliesEnabled: false });
+  }
+
+  try {
+    if (!await getPublicDiscussionStyle(slugParsed.data)) {
+      return NextResponse.json({ error: "Style not found" }, { status: 404 });
+    }
+  } catch {
+    return NextResponse.json({ error: "Style availability could not be verified." }, { status: 503 });
   }
 
   const { searchParams } = new URL(request.url);
+  const requestedComment = searchParams.get("comment");
+  if (requestedComment !== null && !UUID_RE.test(requestedComment)) {
+    return NextResponse.json({ error: "Invalid comment reference" }, { status: 400 });
+  }
+  const commentId = requestedComment ?? undefined;
   const limitParam = Number.parseInt(searchParams.get("limit") ?? "20", 10);
   const offsetParam = Number.parseInt(searchParams.get("offset") ?? "0", 10);
   const limit = Number.isFinite(limitParam)
@@ -717,12 +769,9 @@ export async function GET(
     };
   };
 
-  const modernListResult = await sb
-    .from("style_comments")
-    .select("id, content, author_name, avatar_url, user_id, session_id, created_at", { count: "exact" })
-    .eq("style_slug", slugParsed.data)
-    .order("created_at", { ascending: false })
-    .range(offset, offset + limit - 1);
+  const modernListResult = await readCommentRows(sb, slugParsed.data, {
+    limit: commentId ? 1 : limit, offset: commentId ? 0 : offset, commentId,
+  });
   if (!modernListResult.error) {
     const rows = Array.isArray(modernListResult.data)
       ? (modernListResult.data as unknown[])
@@ -786,10 +835,15 @@ export async function GET(
       });
     });
 
-    return NextResponse.json({
-      comments,
-      total: modernListResult.count ?? 0,
-    });
+    try {
+      return NextResponse.json({
+        comments: await attachReplyContexts(sb, slugParsed.data, comments),
+        total: modernListResult.count ?? 0,
+        repliesEnabled: modernListResult.repliesEnabled,
+      });
+    } catch {
+      return NextResponse.json({ error: "Comments could not be loaded." }, { status: 503 });
+    }
   }
 
   const listError = modernListResult.error as DbErrorLike;
@@ -806,12 +860,10 @@ export async function GET(
     );
   }
 
-  const legacyListResult = await sb
-    .from("style_comments")
-    .select("id, content, author_name, session_id, created_at", { count: "exact" })
-    .eq("style_slug", slugParsed.data)
-    .order("created_at", { ascending: false })
-    .range(offset, offset + limit - 1);
+  const legacyListResult = await readCommentRows(sb, slugParsed.data, {
+    limit: commentId ? 1 : limit, offset: commentId ? 0 : offset, commentId, legacy: true,
+  });
+
   if (legacyListResult.error) {
     const classified = classifyDbError(legacyListResult.error as DbErrorLike);
     return NextResponse.json(
@@ -890,5 +942,6 @@ export async function GET(
   return NextResponse.json({
     comments,
     total: legacyListResult.count ?? 0,
+    repliesEnabled: false,
   });
 }

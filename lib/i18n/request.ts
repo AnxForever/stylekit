@@ -29,13 +29,17 @@ export async function getRequestLocaleContext(): Promise<RequestLocaleContext> {
   const headerStore = await headers();
   const visiblePathHeader = headerStore.get("x-stylekit-visible-path");
   const localeHeader = headerStore.get("x-stylekit-locale");
-  const baseUrl = getBaseUrl();
-
   const visiblePath = visiblePathHeader || "/";
-  const isBypassedPath = shouldBypassLocale(visiblePath);
   const locale =
     (isLocale(localeHeader) ? localeHeader : getLocaleFromPathname(visiblePath)) ||
     DEFAULT_LOCALE;
+  return getLocaleDocumentContext(locale, visiblePath);
+}
+
+/** A deterministic context for a locale root during static generation. */
+export function getLocaleDocumentContext(locale: Locale, visiblePath = "/"): RequestLocaleContext {
+  const baseUrl = getBaseUrl();
+  const isBypassedPath = shouldBypassLocale(visiblePath);
   const contentPath = getLocaleFromPathname(visiblePath)
     ? stripLocaleFromPathname(visiblePath)
     : visiblePath;

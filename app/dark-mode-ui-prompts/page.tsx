@@ -12,15 +12,16 @@ import { darkMode } from "@/lib/styles/dark-mode";
 import { DarkModeFlagshipContent } from "@/app/dark-mode-ui-prompts/_content";
 import { getRequestLocaleContext } from "@/lib/i18n/request";
 import { generatePromptPageSchemas } from "@/lib/seo/prompt-schema";
+import type { Locale } from "@/lib/i18n/translations";
 
 const TOPIC_SLUG = "dark-mode";
 
 export const revalidate = 86400;
 
 export const metadata: Metadata = {
-  title: "Dark Mode UI Prompts for ChatGPT, Claude, Cursor & v0",
+  title: "Dark Mode UI Prompts & Tailwind v4 Examples",
   description:
-    "Copy-paste dark mode UI prompts for ChatGPT, Claude, Cursor, and v0 — dark dashboards, SaaS apps, and design systems with WCAG-AA contrast.",
+    "Copy dark mode UI prompts for ChatGPT, Claude, Cursor, and v0. Get Tailwind v4 setup, surface tokens, and source-backed text contrast checks.",
   keywords: [
     "dark mode UI prompts",
     "dark mode prompt for ChatGPT",
@@ -31,7 +32,7 @@ export const metadata: Metadata = {
     "dark UI design system",
   ],
   openGraph: {
-    title: "Dark Mode UI Prompts for ChatGPT, Claude, Cursor & v0 | StyleKit",
+    title: "Dark Mode UI Prompts & Tailwind v4 Examples | StyleKit",
     description:
       "Copy-paste dark mode UI prompts for ChatGPT, Claude, Cursor, Claude Code, and v0 — dark dashboards, SaaS apps, and design systems with proper surface elevation and readable contrast.",
     siteName: "StyleKit",
@@ -40,16 +41,18 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Dark Mode UI Prompts for ChatGPT, Claude, Cursor & v0 | StyleKit",
+    title: "Dark Mode UI Prompts & Tailwind v4 Examples | StyleKit",
     description:
       "Copy-paste dark mode UI prompts for ChatGPT, Claude, Cursor, Claude Code, and v0 — dark dashboards, SaaS apps, and design systems with readable contrast.",
   },
 };
 
-export default async function DarkModeUiPromptsPage() {
+export default async function DarkModeUiPromptsPage({
+  locale: providedLocale,
+}: { locale?: Locale } = {}) {
   const topic = getTopicBySlug(TOPIC_SLUG);
   if (!topic) notFound();
-  const { locale } = await getRequestLocaleContext();
+  const locale = providedLocale ?? (await getRequestLocaleContext()).locale;
 
   const allStyles = getAllStylesMeta();
   const relatedStyles = topic.relatedStyleSlugs
@@ -62,7 +65,7 @@ export default async function DarkModeUiPromptsPage() {
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
-      <main className="flex-1">
+      <main lang={locale === "zh" ? "zh-CN" : "en"} className="flex-1">
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: serializeJsonLd(faqSchema) }}
@@ -72,6 +75,7 @@ export default async function DarkModeUiPromptsPage() {
           dangerouslySetInnerHTML={{ __html: serializeJsonLd(breadcrumbSchema) }}
         />
         <DarkModeFlagshipContent
+          ssrLocale={locale}
           topic={topic}
           relatedStyles={relatedStyles}
           curatedStyleCount={CURATED_STYLE_COUNT}

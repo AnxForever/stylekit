@@ -3,10 +3,10 @@ import type { PromptTopic } from "./types";
 export const promptTopics: PromptTopic[] = [
   {
     slug: "dashboard-design",
-    titleEn: "Dashboard Design Prompts",
+    titleEn: "Dashboard UI Prompts for AI",
     titleZh: "仪表盘设计提示词",
-    descriptionEn: "AI prompts for building clean, data-rich dashboard UIs with charts, metrics, sidebars, and responsive layouts.",
-    descriptionZh: "用于构建数据丰富的仪表盘 UI 的 AI 提示词，涵盖图表、指标卡片、侧边栏和响应式布局。",
+    descriptionEn: "Copy 8 dashboard UI prompts for ChatGPT, Claude, Cursor, and v0, with concrete data, layout, interaction, and responsive requirements.",
+    descriptionZh: "复制 8 条适用于 ChatGPT、Claude、Cursor 和 v0 的仪表盘 UI 提示词，包含具体的数据、布局、交互和响应式要求。",
     keywords: [
       "dashboard UI prompt",
       "admin panel design prompt",
@@ -24,9 +24,9 @@ export const promptTopics: PromptTopic[] = [
       "sidebar-fixed",
     ],
     introEn:
-      "Dashboard design focuses on presenting complex data in an intuitive, scannable layout. A well-designed dashboard uses clear visual hierarchy, consistent spacing, and purposeful color coding to help users quickly understand metrics and take action. Modern dashboard UIs typically feature a fixed sidebar for navigation, a top bar for search and user actions, and a main content area with cards, charts, and data tables.",
+      "A useful dashboard prompt describes the decision a user needs to make, the data available, and the states the interface must handle. Layout patterns such as sidebars, KPI cards, charts, and tables should follow that workflow rather than act as a default checklist. The examples below make those constraints explicit so the generated result is easier to review and adapt.",
     introZh:
-      "仪表盘设计的核心在于将复杂数据以直觉化、可扫视的布局呈现。优秀的仪表盘通过清晰的视觉层级、一致的间距、有意义的色彩编码帮助用户快速理解指标并采取行动。现代仪表盘 UI 通常包含固定侧边栏导航、顶部搜索与用户操作栏，以及由卡片、图表和数据表组成的主内容区。",
+      "有效的仪表盘提示词需要说明用户要做的决策、可用数据，以及界面必须处理的各种状态。侧边栏、KPI 卡片、图表和表格应服务于具体工作流，而不是默认全部堆进页面。下面的示例把这些约束写清楚，便于检查和按项目调整。",
     prompts: [
       {
         titleEn: "Analytics Dashboard",
@@ -116,49 +116,49 @@ export const promptTopics: PromptTopic[] = [
         questionEn: "What makes a good dashboard UI design?",
         questionZh: "什么是好的仪表盘 UI 设计？",
         answerEn:
-          "A good dashboard prioritizes scannability: place the most important KPIs at the top, use consistent card sizes, limit the color palette to 3-5 purposeful colors, ensure charts have clear labels, and maintain generous whitespace between sections. Navigation should be persistent (sidebar or top bar) so users always know where they are.",
+          "A good dashboard helps a specific user make a decision. Give the highest-priority measures the clearest hierarchy, label charts and time ranges, keep related controls near the data they affect, and expose loading, empty, error, and permission states. Navigation should show the user's current location, whether it uses a sidebar, top bar, or a smaller mobile pattern.",
         answerZh:
-          "好的仪表盘设计注重可扫视性：将最重要的 KPI 放在顶部，使用一致的卡片尺寸，限制色板为 3-5 个有意义的颜色，确保图表有清晰标签，并在各区块间保持充足的留白。导航应常驻（侧边栏或顶部栏），让用户始终清楚当前位置。",
+          "好的仪表盘要帮助特定用户做出决策。让优先级最高的指标拥有最清晰的层级，标注图表和时间范围，把控件放在它所影响的数据附近，并补齐加载、空内容、错误和权限状态。无论使用侧边栏、顶部栏还是移动端的紧凑导航，都应让用户知道当前位置。",
       },
       {
         questionEn: "How to create a dashboard with Tailwind CSS?",
         questionZh: "如何用 Tailwind CSS 创建仪表盘？",
         answerEn:
-          "Use CSS Grid or Flexbox via Tailwind utilities: 'grid grid-cols-12 gap-6' for the main layout, 'col-span-3' for sidebar, 'col-span-9' for content. Use shadcn/ui Card components for metric cards, Recharts or Chart.js for data visualization, and Tailwind's 'sticky top-0' for fixed headers. StyleKit provides ready-made dashboard tokens and component recipes.",
+          "Start with semantic page regions, then use Tailwind's Grid or Flexbox utilities for the layout. A 12-column grid can help on wide screens, but define how cards, charts, navigation, and tables reflow at smaller breakpoints. Use real buttons and table markup, visible focus styles, and explicit loading, empty, and error states. Add a chart library only after the data and interaction requirements are clear.",
         answerZh:
-          "通过 Tailwind 工具类使用 CSS Grid 或 Flexbox：主布局用 'grid grid-cols-12 gap-6'，侧边栏用 'col-span-3'，内容区用 'col-span-9'。指标卡片用 shadcn/ui Card 组件，数据可视化用 Recharts 或 Chart.js，固定头部用 Tailwind 的 'sticky top-0'。StyleKit 提供现成的仪表盘 design tokens 和组件配方。",
+          "先确定语义化页面区域，再用 Tailwind 的 Grid 或 Flexbox 工具类布局。宽屏可以使用 12 列网格，但必须说明卡片、图表、导航和表格在更小断点如何重排。使用真实按钮与表格标记，提供清晰的焦点样式，并补齐加载、空内容和错误状态；先明确数据与交互需求，再选择图表库。",
       },
       {
         questionEn: "Which AI tools can generate dashboard designs?",
         questionZh: "哪些 AI 工具可以生成仪表盘设计？",
         answerEn:
-          "v0 by Vercel generates full dashboard UIs from text prompts using shadcn/ui. Cursor and Claude can generate complete dashboard code with charts and tables. StyleKit enhances all of these by providing design tokens and style rules that ensure visual consistency across generated components.",
+          "ChatGPT, Claude, Cursor, and v0 can all produce dashboard concepts or interface code from a prompt. The useful choice depends on your workflow and stack. Provide the same concrete audience, data, states, accessibility requirements, and output format to whichever tool you use, then review and test the result in your actual application.",
         answerZh:
-          "Vercel 的 v0 可以通过文字提示生成完整的仪表盘 UI（基于 shadcn/ui）。Cursor 和 Claude 能生成包含图表和表格的完整仪表盘代码。StyleKit 通过提供 design tokens 和风格规则来增强所有这些工具，确保生成组件的视觉一致性。",
+          "ChatGPT、Claude、Cursor 和 v0 都可以根据提示词产出仪表盘概念或界面代码，具体选择取决于你的工作流与技术栈。无论使用哪个工具，都应提供明确的用户、数据、状态、无障碍要求和输出格式，并在真实应用中检查和测试结果。",
       },
       {
         questionEn: "What is the best layout for a dashboard?",
         questionZh: "仪表盘最佳布局是什么？",
         answerEn:
-          "The most common and effective layout is a fixed sidebar (200-280px) with a scrollable main content area. Use a 12-column grid for the content, with metric cards in the first row (3-4 columns each), charts in the second row, and a data table spanning full width at the bottom. This pattern works well across screen sizes when the sidebar collapses to icons on mobile.",
+          "There is no single best dashboard layout. Choose the hierarchy from the user's main task and viewing context. A desktop operations tool may benefit from persistent navigation and a dense grid, while a mobile field dashboard may need one critical status, a short action list, and drill-down screens. Prompt the AI with both contexts and describe what should move, stack, collapse, or stay visible.",
         answerZh:
-          "最常见且有效的布局是固定侧边栏（200-280px）搭配可滚动的主内容区。内容区使用 12 列网格，第一行放指标卡片（每个占 3-4 列），第二行放图表，底部放全宽数据表。该模式在侧边栏在移动端折叠为图标时，能在各种屏幕尺寸下良好运行。",
+          "仪表盘没有唯一的最佳布局，应根据用户的主要任务和使用场景确定层级。桌面运维工具可能适合常驻导航和密集网格，移动端现场仪表盘则可能只需要一个关键状态、简短操作列表和下钻页面。在提示词中同时说明不同场景，以及哪些内容要移动、堆叠、收起或保持可见。",
       },
       {
         questionEn: "How many metrics should a dashboard show at once?",
         questionZh: "仪表盘一次应该展示多少个指标？",
         answerEn:
-          "Show 4-6 primary KPIs above the fold; research on scannability suggests users reliably compare at most 5-7 values at a glance. Put one number per card at 24-32px, with the trend delta as secondary text at 13-14px. Everything else belongs in charts or tables below, or behind a date-range or segment filter. If stakeholders ask for 15 metrics, group them into tabs (Overview, Revenue, Engagement) rather than shrinking cards — a dashboard where every number is small is a dashboard where no number gets read.",
+          "Use the smallest set that supports the dashboard's primary decision; there is no universal KPI count. Separate primary measures from diagnostic details, group related values, and move secondary data into charts, tables, or drill-down views. Validate the selection with the people doing the work instead of shrinking every requested metric into equal cards.",
         answerZh:
-          "首屏展示 4-6 个核心 KPI 即可；可扫视性研究表明用户一眼最多能可靠比较 5-7 个数值。每张卡片只放一个 24-32px 的主数字，趋势变化作为 13-14px 的次要文字。其余内容应放在下方的图表或表格中，或收进日期范围、分群筛选器里。如果需求方要 15 个指标，用标签页分组（概览、营收、活跃）而不是缩小卡片——每个数字都很小的仪表盘，等于没有数字被真正读到。",
+          "只保留支持主要决策所需的最小指标集合，KPI 数量没有通用答案。区分核心指标和诊断细节，把相关数值分组，将次要数据放入图表、表格或下钻页面；和实际使用者一起验证选择，不要把所有需求都压缩成同等大小的卡片。",
       },
       {
         questionEn: "How do I choose chart colors for a dashboard?",
         questionZh: "仪表盘的图表配色如何选择？",
         answerEn:
-          "Use one brand accent (e.g. #3b82f6) for the primary series, then derive categorical colors by rotating hue while keeping similar lightness, capping at 6 series per chart. For sequential data (heatmaps), vary lightness of a single hue instead of mixing hues. Reserve red and green strictly for negative/positive semantics, and always pair them with icons or labels for color-blind users. Gridlines and axes should stay quiet: #e5e7eb lines with #6b7280 labels on light themes. Test every text-on-color combination against the 4.5:1 WCAG AA ratio.",
+          "Match the palette to the data: use an ordered lightness scale for sequential values and clearly separated colors for categories. Keep status meanings consistent, and pair every color distinction with a label, icon, pattern, or position. Under WCAG 2.2, normal text needs at least 4.5:1 contrast and large text at least 3:1; chart controls and meaningful non-text graphics also need their applicable contrast and interaction checks.",
         answerZh:
-          "主数据系列使用一个品牌强调色（如 #3b82f6），分类色在保持相近明度的前提下旋转色相派生，每张图表最多 6 个系列。顺序型数据（热力图）应变化单一色相的明度而非混用多个色相。红色和绿色严格保留给负向/正向语义，并始终搭配图标或文字标签照顾色盲用户。网格线和坐标轴要低调：浅色主题下用 #e5e7eb 线条配 #6b7280 标签。所有文字与色块的组合都要通过 WCAG AA 的 4.5:1 对比度检测。",
+          "根据数据类型选择配色：顺序型数值使用有序的明度变化，分类数据使用能清晰区分的颜色。保持状态含义一致，并为每种颜色差异补充文字、图标、图案或位置线索。按 WCAG 2.2，普通文字至少需要 4.5:1 对比度，大号文字至少需要 3:1；图表控件和有意义的非文字图形也要完成相应的对比度与交互检查。",
       },
     ],
   },
@@ -346,9 +346,9 @@ export const promptTopics: PromptTopic[] = [
       "dark-academia",
     ],
     introEn:
-      "Dark mode design is more than inverting colors. It requires careful attention to surface elevation (using lighter shades of dark for raised elements), reduced saturation for colored elements, proper contrast ratios (minimum 4.5:1 for text), and strategic use of accent colors. A well-executed dark mode reduces eye strain in low-light environments while maintaining visual hierarchy and readability.",
+      "A dark mode UI prompt tells an AI coding tool what to build, which dark surfaces and text colors to use, and how the interface should behave. Start with the copy-ready prompt below, replace the page type and audience, then use the Tailwind CSS v4 setup and contrast checks to review the generated UI.",
     introZh:
-      "暗黑模式设计不仅是反转颜色。它需要仔细处理表面层级（用较浅的暗色表示抬升元素）、降低彩色元素的饱和度、确保适当的对比度（文字至少 4.5:1）、以及策略性地使用强调色。优秀的暗黑模式在低光环境下减轻眼疲劳，同时保持视觉层级和可读性。",
+      "暗色模式 UI 提示词需要说清页面任务、暗色表面与文字配色，以及交互和状态要求。先复制下面的起步提示词，替换页面类型和目标用户，再用 Tailwind CSS v4 配置示例和对比度检查验证生成结果。",
     prompts: [
       {
         titleEn: "Dark Mode Dashboard",
@@ -437,50 +437,44 @@ export const promptTopics: PromptTopic[] = [
       {
         questionEn: "What is dark mode UI design?",
         questionZh: "什么是暗黑模式 UI 设计？",
-        answerEn:
-          "Dark mode UI design uses dark backgrounds (typically #0a0a0a to #1a1a1a) with light text and carefully chosen accent colors. Unlike simply inverting a light theme, proper dark mode requires adjusting color saturation, using surface elevation through subtle lightness differences, and ensuring all text meets WCAG AA contrast ratios (4.5:1 minimum).",
-        answerZh:
-          "暗黑模式 UI 设计使用深色背景（通常 #0a0a0a 至 #1a1a1a）配合浅色文字和精心选择的强调色。与简单反转浅色主题不同，正确的暗黑模式需要调整色彩饱和度、通过微妙的明度差异实现表面层级、并确保所有文字满足 WCAG AA 对比度标准（最低 4.5:1）。",
+        answerEn: "Dark mode UI design uses dark surfaces, lighter text, and deliberately chosen accent colors. It is not simply an inverted light theme: each surface, text color, focus indicator, and interaction state needs to remain distinguishable. WCAG 2.2 requires at least 4.5:1 contrast for normal text and 3:1 for large text, with defined exceptions.",
+        answerZh: "暗色模式 UI 使用深色表面、较浅的文字和有目的的强调色，而不只是反转浅色主题。每一层表面、文字、焦点指示和交互状态都需要清晰可辨。WCAG 2.2 对普通文字要求至少 4.5:1 对比度，对大号文字要求至少 3:1，并规定了相应例外。",
       },
       {
-        questionEn: "How to implement dark mode in Tailwind CSS?",
-        questionZh: "如何在 Tailwind CSS 中实现暗黑模式？",
-        answerEn:
-          "Tailwind supports dark mode via the 'dark:' variant. Set darkMode: 'class' in tailwind.config to toggle with a class, or 'media' for system preference. Use CSS custom properties (--background, --foreground) to define theme colors, then reference them in Tailwind config. Toggle by adding/removing the 'dark' class on the html element.",
-        answerZh:
-          "Tailwind 通过 'dark:' 变体支持暗黑模式。在 tailwind.config 中设置 darkMode: 'class' 通过类名切换，或 'media' 跟随系统偏好。用 CSS 自定义属性（--background, --foreground）定义主题色，然后在 Tailwind 配置中引用。通过在 html 元素上添加/移除 'dark' 类来切换。",
+        questionEn: "How do I implement dark mode in Tailwind CSS v4?",
+        questionZh: "如何在 Tailwind CSS v4 中实现暗色模式？",
+        answerEn: "Tailwind CSS v4 uses the dark: variant and follows prefers-color-scheme by default. For a manual class toggle, add @custom-variant dark (&:where(.dark, .dark *)); after @import \"tailwindcss\"; in your CSS, then toggle the dark class on the html element. Use CSS custom properties for semantic theme colors, and preserve a light, dark, or system preference. Tailwind v3 configuration examples are not the CSS-first v4 setup.",
+        answerZh: "Tailwind CSS v4 通过 dark: 变体提供暗色样式，默认跟随 prefers-color-scheme。手动类名切换时，在 CSS 的 @import \"tailwindcss\"; 后添加 @custom-variant dark (&:where(.dark, .dark *));，再切换 html 元素上的 dark 类。用 CSS 自定义属性定义语义化主题色，并保留浅色、暗色或跟随系统的偏好。Tailwind v3 配置示例不能直接当作 v4 的 CSS 优先方案。",
       },
       {
-        questionEn: "What are the common mistakes in dark mode design?",
-        questionZh: "暗黑模式设计常见错误有哪些？",
-        answerEn:
-          "Common mistakes: using pure black (#000) backgrounds (causes halation on OLED), insufficient contrast between surface layers, using the same saturation as light mode (colors look too intense on dark backgrounds), white text at full opacity (use 87% opacity for body text), and not adjusting shadows (use lighter, more diffused shadows or subtle borders instead).",
-        answerZh:
-          "常见错误：使用纯黑（#000）背景（在 OLED 上造成光晕）、表面层之间对比度不足、使用与浅色模式相同的饱和度（颜色在暗色背景上看起来过于刺眼）、白色文字使用 100% 不透明度（正文应使用 87%）、不调整阴影（应使用更浅更分散的阴影或微妙的边框代替）。",
+        questionEn: "What should a dark mode UI prompt include?",
+        questionZh: "暗色模式 UI 提示词应该包含什么？",
+        answerEn: "Specify the page type, audience, layout, surface and text tokens, accent color, and responsive behavior. Ask for hover, focus, disabled, loading, empty, and error states, plus keyboard navigation and a theme preference. Require contrast checks against each rendered background and ask the tool to return both code and a verification checklist. Replace bracketed placeholders before using the starter prompt.",
+        answerZh: "说明页面类型、目标用户、布局、表面与文字 tokens、强调色和响应式行为。要求提供悬停、焦点、禁用、加载、空内容和错误状态，以及键盘操作和主题偏好；逐一检查文字与实际背景的对比度。让工具同时输出代码和验证清单，并在使用起步提示词前替换方括号中的占位内容。",
+      },
+      {
+        questionEn: "What are common mistakes in dark mode design?",
+        questionZh: "暗色模式设计常见错误有哪些？",
+        answerEn: "Common mistakes include inverting colors without checking the result, making secondary text too faint, relying only on color for errors, omitting focus states, and ignoring the saved theme preference. Pure black and fully opaque white are not automatically accessibility failures. Evaluate the actual foreground/background pairs and reading context instead of applying a universal opacity rule.",
+        answerZh: "常见问题包括只反转颜色而不检查结果、次要文字过淡、错误状态只靠颜色区分、缺少焦点状态，以及忽略已保存的主题偏好。纯黑和完全不透明的白色并不天然违反无障碍标准；应检查实际的前景与背景组合和阅读场景，而不是套用统一的不透明度规则。",
       },
       {
         questionEn: "Should I design dark mode first or light mode first?",
-        questionZh: "应该先设计暗黑模式还是浅色模式？",
-        answerEn:
-          "For developer tools, media apps, and creative platforms, consider dark-first design. For business, e-commerce, and content-heavy sites, light-first is usually better. The key is to design both simultaneously using CSS custom properties / design tokens, so neither mode is an afterthought. StyleKit provides dual-mode tokens for all styles.",
-        answerZh:
-          "对于开发者工具、媒体应用和创意平台，可以考虑暗色优先。对于商务、电商和内容密集型网站，通常浅色优先更好。关键是使用 CSS 自定义属性 / design tokens 同时设计两种模式，让两者都不是事后补充。StyleKit 为所有风格提供双模式 tokens。",
+        questionZh: "应该先设计暗色模式还是浅色模式？",
+        answerEn: "Choose the initial theme based on the intended audience, content, and environment, then verify both supported themes. Semantic CSS variables make shared components easier to adapt. StyleKit exports are implementation starting points; verify the selected style and your project's light and dark states instead of assuming every export supplies a complete dual-mode system.",
+        answerZh: "根据目标用户、内容和使用环境选择起始主题，再验证产品支持的两种主题。语义化 CSS 变量有助于复用组件。StyleKit 导出内容是实现起点；应检查所选风格和项目里的浅色、暗色状态，而不是假设每一份导出都包含完整的双模式系统。",
       },
       {
-        questionEn: "What colors work best for dark mode backgrounds?",
-        questionZh: "暗黑模式背景用什么颜色最好？",
-        answerEn:
-          "Avoid pure black (#000000) for large backgrounds — it causes halation on OLED screens and makes elevation impossible. Use a near-black range instead: #0a0a0a to #121212 for the base layer, then raise surfaces in steps (#181818, #1e1e1e, #242424). If you want warmth, add 2-4% of a hue: a blue-tinted dark like #0b0d12 feels cooler, a warm dark like #12100e feels softer. Reserve saturated colors for accents only, and desaturate them 15-20% compared to light mode.",
-        answerZh:
-          "大面积背景避免使用纯黑（#000000）——在 OLED 屏幕上会产生光晕，且无法实现层级。改用近黑区间：基础层用 #0a0a0a 至 #121212，然后按阶梯抬升表面（#181818、#1e1e1e、#242424）。想要温度感可以加入 2-4% 的色相：带蓝的暗色如 #0b0d12 更冷峻，暖暗色如 #12100e 更柔和。饱和色只留给强调色，且相比浅色模式降低 15-20% 饱和度。",
+        questionEn: "What colors work well for dark mode backgrounds?",
+        questionZh: "暗色模式背景可以用哪些颜色？",
+        answerEn: "This example uses #09090b for the base, #131316 for cards, and #1a1a20 for raised surfaces. These are design choices, not WCAG-mandated colors. Distinguish layers with lightness, borders, and spacing, then verify text and control contrast on each actual surface. There is no universal saturation reduction or background shade that makes every dark interface accessible.",
+        answerZh: "本示例使用 #09090b 作为基底、#131316 作为卡片表面、#1a1a20 作为抬升表面。这些是设计选择，不是 WCAG 指定的颜色。通过明度、边框和间距区分层级，并检查文字与控件在各个实际表面上的对比度；不存在适用于所有暗色界面的统一饱和度降幅或背景色。",
       },
       {
-        questionEn: "How do I make dark mode accessible (WCAG)?",
-        questionZh: "如何让暗黑模式满足 WCAG 无障碍标准？",
-        answerEn:
-          "Three rules cover most failures: body text needs 4.5:1 contrast (large text 3:1) against its surface — on a #121212 background that means at least #a7a7a7; never use pure white at 100% opacity for long body text, 87% opacity (#ffffffde) reduces glare while staying compliant; and do not rely on color alone for states — pair error red with an icon or text label, since 8% of men have some color vision deficiency. Test with the prefers-contrast media query and provide a high-contrast variant if your accent gets close to the limit.",
-        answerZh:
-          "三条规则覆盖大多数问题：正文文字相对所在表面需要 4.5:1 对比度（大文字 3:1）——在 #121212 背景上意味着至少 #a7a7a7；长正文不要用 100% 不透明度纯白，87% 不透明度（#ffffffde）既减少眩光又保持合规；状态不能仅靠颜色区分——错误红要搭配图标或文字标签，因为 8% 的男性有不同程度的色觉缺陷。用 prefers-contrast 媒体查询测试，如果强调色接近临界值就提供高对比度变体。",
+        questionEn: "How do I check dark mode text contrast under WCAG?",
+        questionZh: "如何按 WCAG 检查暗色模式的文字对比度？",
+        answerEn: "WCAG 2.2 SC 1.4.3 requires at least 4.5:1 contrast for normal text and 3:1 for large text. Large text means at least 18pt (24 CSS px), or 14pt (about 18.67 CSS px) when bold. Check the final foreground and background colors, including transparency; do not round a failing ratio up to a pass. Text contrast alone does not establish full WCAG compliance: also test keyboard access, focus, labels, and state information.",
+        answerZh: "WCAG 2.2 的 SC 1.4.3 要求普通文字对比度至少为 4.5:1，大号文字至少为 3:1。大号文字指不小于 18pt（24 CSS px），或加粗时不小于 14pt（约 18.67 CSS px）。检查包含透明度影响后的实际前景与背景色，不要把未达标的比值四舍五入为通过。文字对比度达标不等于完整 WCAG 合规，还需检查键盘、焦点、标签和状态信息。",
       },
     ],
   },

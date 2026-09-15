@@ -166,74 +166,61 @@ interface BackgroundCardProps {
 }
 
 function BackgroundCard({ background, copied, onCopy, locale }: BackgroundCardProps) {
-  const [copyMode, setCopyMode] = useState<"css" | "tailwind">("css");
+  const name = locale === "zh" ? background.nameZh : background.name;
 
+  // Same language as the type specimens: the texture is the whole card, the
+  // caption sits at the foot, and the copy actions stay hidden until hover or
+  // keyboard focus so the wall of textures reads calmly at rest.
   return (
-    <div className="group border border-border rounded-lg overflow-hidden bg-background hover:border-foreground/50 transition-colors">
-      {/* Background Preview */}
+    <div className="group relative overflow-hidden border border-border bg-background transition-colors hover:border-foreground/40">
       <div
-        className="h-40 relative"
+        className="h-56"
         style={{ background: background.css, backgroundSize: "20px 20px" }}
-      >
-        <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-      </div>
+      />
 
-      {/* Card Content */}
-      <div className="p-4 space-y-3">
-        {/* Name */}
-        <div>
-          <h3 className="font-semibold text-sm">
-            {locale === "zh" ? background.nameZh : background.name}
-          </h3>
-          <p className="text-xs text-muted mt-0.5">
-            {background.tags.join(", ")}
+      {/* Caption bar — resting state: name + tags. */}
+      <div className="border-t border-border p-4">
+        <div className="transition-opacity duration-200 group-hover:opacity-0 group-focus-within:opacity-0">
+          <h3 className="text-sm font-semibold truncate">{name}</h3>
+          <p className="text-xs text-muted mt-0.5 truncate">
+            {background.tags.join(" · ")}
           </p>
-          {background.attribution && (
-            <p className="text-[10px] text-muted/70 mt-1">
-              {background.attribution.source} ·{" "}
-              <a
-                href={background.attribution.url}
-                target="_blank"
-                rel="noreferrer"
-                className="underline underline-offset-2 hover:text-foreground"
-              >
-                {background.attribution.license}
-              </a>
-            </p>
-          )}
         </div>
 
-        {/* Copy Buttons */}
-        <div className="flex gap-2">
+        {/* Actions overlay the caption on hover/focus, matching its height. */}
+        <div className="absolute inset-x-4 bottom-4 flex items-center gap-2 opacity-0 translate-y-1 transition-all duration-200 group-hover:opacity-100 group-hover:translate-y-0 group-focus-within:opacity-100 group-focus-within:translate-y-0">
           <button
-            onClick={() => {
-              setCopyMode("css");
-              onCopy(background.css, background.id);
-            }}
-            className={`flex-1 px-3 py-2 text-xs font-medium rounded border transition-colors ${
-              copyMode === "css" && copied
-                ? "bg-green-500 text-white border-green-500"
-                : "bg-background text-muted border-border hover:border-foreground hover:text-foreground"
-            }`}
+            onClick={() => onCopy(background.css, background.id)}
+            className="flex-1 border border-border px-3 py-1.5 text-xs font-medium text-muted transition-colors hover:border-foreground hover:text-foreground"
           >
-            {copyMode === "css" && copied ? "Copied!" : "Copy CSS"}
+            {copied ? (locale === "zh" ? "已复制" : "Copied") : "Copy CSS"}
           </button>
           <button
-            onClick={() => {
-              setCopyMode("tailwind");
-              onCopy(background.tailwind, background.id);
-            }}
-            className={`flex-1 px-3 py-2 text-xs font-medium rounded border transition-colors ${
-              copyMode === "tailwind" && copied
-                ? "bg-green-500 text-white border-green-500"
-                : "bg-background text-muted border-border hover:border-foreground hover:text-foreground"
-            }`}
+            onClick={() => onCopy(background.tailwind, background.id)}
+            className="flex-1 border border-border px-3 py-1.5 text-xs font-medium text-muted transition-colors hover:border-foreground hover:text-foreground"
           >
-            {copyMode === "tailwind" && copied ? "Copied!" : "Tailwind"}
+            Tailwind
           </button>
-          <AddToKitButton type="background" slug={background.id} size="md" />
+          <AddToKitButton
+            type="background"
+            slug={background.id}
+            size="sm"
+            className="grid h-7 w-7 shrink-0 place-items-center border border-border rounded-none text-muted hover:border-foreground hover:text-foreground"
+          />
         </div>
       </div>
+
+      {/* Attribution stays visible but quiet, top-left, only when present. */}
+      {background.attribution && (
+        <a
+          href={background.attribution.url}
+          target="_blank"
+          rel="noreferrer"
+          className="absolute left-3 top-3 bg-background/80 px-2 py-0.5 text-[10px] text-muted backdrop-blur-sm transition-colors hover:text-foreground"
+        >
+          {background.attribution.license}
+        </a>
+      )}
     </div>
   );
 }

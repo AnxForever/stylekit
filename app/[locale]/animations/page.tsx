@@ -3,6 +3,9 @@ import Page, { animationsMetadata as baseMetadata } from "@/app/animations/page"
 import { isLocale } from "@/lib/i18n/routing";
 import { localizeMetadata } from "@/lib/i18n/metadata";
 
+export const dynamic = "force-static";
+export const revalidate = 3600;
+
 export async function generateMetadata({
   params,
 }: {

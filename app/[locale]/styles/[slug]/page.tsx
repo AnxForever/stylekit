@@ -8,6 +8,10 @@ import type { Locale } from "@/lib/i18n/translations";
 
 export const revalidate = 86400;
 export const dynamicParams = false;
+// Without this, the root layout's request-locale read keeps every localized
+// style page in request-time SSR. The page receives its locale from params, so
+// it can be prerendered per locale.
+export const dynamic = "force-static";
 
 export function generateStaticParams() {
   return LOCALES.flatMap((locale) =>

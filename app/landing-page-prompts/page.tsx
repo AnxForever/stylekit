@@ -12,6 +12,7 @@ import { landingPageTemplates } from "@/lib/seo/prompt-template-previews";
 import { PromptTopicContent } from "@/app/prompts/[topic]/_content";
 import { getRequestLocaleContext } from "@/lib/i18n/request";
 import { generatePromptPageSchemas } from "@/lib/seo/prompt-schema";
+import type { Locale } from "@/lib/i18n/translations";
 
 const TOPIC_SLUG = "landing-page";
 
@@ -44,10 +45,12 @@ export const metadata: Metadata = {
   },
 };
 
-export default async function LandingPagePromptsPage() {
+export default async function LandingPagePromptsPage({
+  locale: providedLocale,
+}: { locale?: Locale } = {}) {
   const topic = getTopicBySlug(TOPIC_SLUG);
   if (!topic) notFound();
-  const { locale } = await getRequestLocaleContext();
+  const locale = providedLocale ?? (await getRequestLocaleContext()).locale;
 
   const allStyles = getAllStylesMeta();
   const relatedStyles = topic.relatedStyleSlugs
@@ -70,6 +73,7 @@ export default async function LandingPagePromptsPage() {
           dangerouslySetInnerHTML={{ __html: serializeJsonLd(breadcrumbSchema) }}
         />
         <PromptTopicContent
+          locale={locale}
           topic={topic}
           relatedStyles={relatedStyles}
           curatedStyleCount={CURATED_STYLE_COUNT}

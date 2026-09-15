@@ -43,7 +43,7 @@ describe("configuration boundaries", () => {
   });
 
   it("warms an external asset origin without affecting same-origin builds", async () => {
-    const source = await read("app/layout.tsx");
+    const source = await read("components/layout/site-document.tsx");
 
     expect(source).toContain("process.env.NEXT_PUBLIC_ASSET_PREFIX");
     expect(source).toContain('rel="dns-prefetch"');

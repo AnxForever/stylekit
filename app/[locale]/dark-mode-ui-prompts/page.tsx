@@ -6,6 +6,9 @@ import { isLocale } from "@/lib/i18n/routing";
 import { getLocalizedPromptMetadata } from "@/lib/seo/prompt-metadata";
 
 export const revalidate = 86400;
+// Match the localized style pages: supply the locale from params rather than
+// depending on request headers and a streamed, JavaScript-revealed body.
+export const dynamic = "force-static";
 
 export async function generateMetadata({
   params,
@@ -18,4 +21,11 @@ export async function generateMetadata({
     : baseMetadata;
 }
 
-export default Page;
+export default async function LocalizedDarkModePage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  return <Page locale={isLocale(locale) ? locale : "en"} />;
+}

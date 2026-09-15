@@ -26,6 +26,13 @@ export interface LocaleRouteRule {
  */
 export const LOCALE_ROUTE_POLICY = [
   {
+    id: "private-community-notifications",
+    mode: "rewrite",
+    sitemapLocales: "none",
+    exact: ["/community/notifications"],
+    prefixes: [],
+  },
+  {
     id: "redirected-foundations",
     mode: "filesystem",
     sitemapLocales: "none",

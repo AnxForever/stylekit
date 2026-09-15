@@ -12,15 +12,17 @@ import { dashboardTemplates } from "@/lib/seo/prompt-template-previews";
 import { PromptTopicContent } from "@/app/prompts/[topic]/_content";
 import { getRequestLocaleContext } from "@/lib/i18n/request";
 import { generatePromptPageSchemas } from "@/lib/seo/prompt-schema";
+import { DashboardPromptGuide } from "./_dashboard-guide";
+import type { Locale } from "@/lib/i18n/translations";
 
 const TOPIC_SLUG = "dashboard-design";
 
 export const revalidate = 86400;
 
 export const metadata: Metadata = {
-  title: "Dashboard Prompts",
+  title: { absolute: "Dashboard UI Prompts for AI — 8 Examples | StyleKit" },
   description:
-    "Copyable dashboard UI prompts for analytics, admin panels, KPI cards, charts, tables, and responsive data-heavy interfaces.",
+    "Copy 8 dashboard UI prompts for ChatGPT, Claude, Cursor, and v0, with examples for analytics, admin panels, charts, tables, and responsive states.",
   keywords: [
     "dashboard prompts",
     "dashboard UI prompt",
@@ -29,25 +31,27 @@ export const metadata: Metadata = {
     "SaaS dashboard prompt",
   ],
   openGraph: {
-    title: "Dashboard Prompts | StyleKit",
+    title: "Dashboard UI Prompts for AI — 8 Examples | StyleKit",
     description:
-      "Copyable dashboard UI prompts for analytics, admin panels, KPI cards, charts, tables, and responsive data-heavy interfaces.",
+      "Copy 8 dashboard UI prompts for ChatGPT, Claude, Cursor, and v0, plus a practical checklist and source-backed accessibility checks.",
     siteName: "StyleKit",
     images: [{ url: "/social-preview-home-v2.png", width: 1200, height: 630 }],
     type: "article",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Dashboard Prompts | StyleKit",
+    title: "Dashboard UI Prompts for AI — 8 Examples | StyleKit",
     description:
-      "Copyable dashboard UI prompts for analytics, admin panels, KPI cards, charts, tables, and responsive data-heavy interfaces.",
+      "Copy 8 dashboard UI prompts for ChatGPT, Claude, Cursor, and v0, plus a practical checklist and source-backed accessibility checks.",
   },
 };
 
-export default async function DashboardPromptsPage() {
+export default async function DashboardPromptsPage({
+  locale: providedLocale,
+}: { locale?: Locale } = {}) {
   const topic = getTopicBySlug(TOPIC_SLUG);
   if (!topic) notFound();
-  const { locale } = await getRequestLocaleContext();
+  const locale = providedLocale ?? (await getRequestLocaleContext()).locale;
 
   const allStyles = getAllStylesMeta();
   const relatedStyles = topic.relatedStyleSlugs
@@ -60,7 +64,7 @@ export default async function DashboardPromptsPage() {
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
-      <main className="flex-1">
+      <main lang={locale === "zh" ? "zh-CN" : "en"} className="flex-1">
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: serializeJsonLd(faqSchema) }}
@@ -70,10 +74,17 @@ export default async function DashboardPromptsPage() {
           dangerouslySetInnerHTML={{ __html: serializeJsonLd(breadcrumbSchema) }}
         />
         <PromptTopicContent
+          locale={locale}
           topic={topic}
           relatedStyles={relatedStyles}
           curatedStyleCount={CURATED_STYLE_COUNT}
           topicIndexHref="/ui-prompts"
+          lead={
+            <DashboardPromptGuide
+              locale={locale}
+              promptCount={topic.prompts.length}
+            />
+          }
         >
           <PromptTemplatePreviewSection
             title="Example previews and starter templates"

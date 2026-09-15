@@ -5,9 +5,9 @@ import { Footer } from "@/components/layout/footer";
 import { ResourcesContent } from "@/components/resources/resources-content";
 
 export const metadata: Metadata = {
-  title: "Design Resources — Fonts, Gradients, Shadows & Backgrounds",
+  title: "Design Resources — Fonts, Gradients, Shadows, Backgrounds & Shaders",
   description:
-    "Copy-ready design assets in one place: curated font pairings, CSS gradients, box-shadow presets and background textures. Copy the CSS or add them to your kit.",
+    "Copy-ready design assets in one place: curated font pairings, CSS gradients, box-shadow presets, background textures and WebGL2 shader backgrounds. Copy the code or add them to your kit.",
 };
 
 export default function ResourcesPage() {

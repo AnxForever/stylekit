@@ -1,6 +1,7 @@
 "use client";
 
 import useSWR from "swr";
+import { COMMENTS_PAGE_SIZE, getStyleCommentsKey } from "@/lib/community/comments";
 import type { StyleMeta } from "@/lib/styles/meta";
 import type { StyleStatsPayload } from "@/lib/styles/catalog-stats";
 import type {
@@ -49,6 +50,9 @@ interface RatingData {
 }
 
 interface Comment {
+  reply_to_id?: string | null;
+  is_reply?: boolean;
+  reply_to?: { id: string; author_name: string; content: string } | null;
   id: string;
   content: string;
   author_name: string;
@@ -63,6 +67,7 @@ interface Comment {
 }
 
 interface CommentsData {
+  repliesEnabled?: boolean;
   comments: Comment[];
   total: number;
 }
@@ -132,9 +137,9 @@ export function useStyleRating(slug: string) {
   return useSWR<RatingData>(slug ? `/api/styles/${slug}/rate` : null);
 }
 
-export function useStyleComments(slug: string, limit = 10) {
+export function useStyleComments(slug: string, limit = COMMENTS_PAGE_SIZE, offset = 0, commentId?: string) {
   return useSWR<CommentsData>(
-    slug ? `/api/styles/${slug}/comments?limit=${limit}` : null
+    slug ? getStyleCommentsKey(slug, limit, offset, commentId) : null
   );
 }
 

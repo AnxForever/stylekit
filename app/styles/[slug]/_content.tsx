@@ -1,7 +1,7 @@
 /// <reference types="react/canary" />
 "use client";
 
-import { useEffect, useRef, useState, useCallback, useMemo, ViewTransition, type ReactNode } from "react";
+import { Suspense, useEffect, useRef, useState, useCallback, useMemo, ViewTransition, type ReactNode } from "react";
 import dynamic from "next/dynamic";
 import { ArrowRight } from "lucide-react";
 import { LocalizedLink } from "@/components/i18n/localized-link";
@@ -461,7 +461,9 @@ export function StyleDetailContent({
           <div className="mb-8">
             <StyleRating slug={style.slug} />
           </div>
-          <StyleComments slug={style.slug} />
+          <Suspense fallback={<p role="status" className="text-sm text-muted">{locale === "zh" ? "正在加载评论…" : "Loading comments…"}</p>}>
+            <StyleComments key={style.slug} slug={style.slug} />
+          </Suspense>
         </div>
       </section>
 

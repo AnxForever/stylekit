@@ -20,6 +20,10 @@ import {
 
 const BASE_URL = getBaseUrl();
 
+// Promotion and moderation happen after deployment. Do not freeze community
+// URLs at build time or publish an empty successful sitemap on a DB outage.
+export const dynamic = "force-dynamic";
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const styles = getAllStylesMeta();
   const redirectedPromptSlugs = new Set([
@@ -138,9 +142,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     )
   );
 
-  // Approved community styles are discoverable from the hub. Promotion adds
-  // an additional quality signal, but every approved detail page can render
-  // both locales and is represented with its source publication date.
+  // Approved styles are discoverable from the hub; only promoted styles are
+  // indexable. Include their two locales with actual source publication dates.
   const promotedCommunity = await listPromotedCommunityStyles();
   const communityPages: MetadataRoute.Sitemap = promotedCommunity.flatMap((style) => {
     const publishedAt = style.publishedAt ? new Date(style.publishedAt) : undefined;

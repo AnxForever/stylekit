@@ -96,7 +96,7 @@
 
 /* Editorial/Magazine Typography */
 body {
-  --font-display-active: var(--font-public-display), var(--font-public-display-zh), "Songti SC", "STSong", "SimSun", ui-serif, Georgia, serif;
+  --font-display-active: var(--font-public-display), "Songti SC", "STSong", "SimSun", ui-serif, Georgia, serif;
   --font-body-active: var(--font-public-sans), "PingFang SC", "Microsoft YaHei", ui-sans-serif, system-ui, sans-serif;
   --font-mono-active: var(--font-public-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "PingFang SC", "Microsoft YaHei", monospace;
   --font-serif: var(--font-display-active);
@@ -109,6 +109,17 @@ body {
   font-kerning: normal;
   font-feature-settings: "kern" 1, "liga" 1;
   overflow-x: hidden;
+}
+
+/* The head bootstrap sets this before first paint for a previously dismissed
+   announcement. The client then removes the hidden markup without shifting
+   the page. */
+html[data-site-announcement-dismissed="true"] [data-site-announcement] {
+  display: none;
+}
+
+html[data-friend-promo-dismissed="true"] [data-friend-promo] {
+  display: none;
 }
 
 /* Public headings use the display face. Showcase routes override the same
@@ -680,6 +691,25 @@ input[type="range"] { cursor: pointer; }
 
 .specimen-ink-fill {
   background: currentColor;
+}
+
+/* Copy actions live on the coloured sheet, so they are drawn in the sheet's own
+   ink rather than the site's black-on-white — a hairline outline at rest that
+   fills in on hover. This keeps the resting wall calm and stops every card from
+   ending in a black button bar. */
+.specimen-action {
+  color: currentColor;
+  border: 1px solid color-mix(in srgb, currentColor 28%, transparent);
+  background: color-mix(in srgb, currentColor 4%, transparent);
+  transition: background-color 0.15s, border-color 0.15s;
+}
+.specimen-action:hover {
+  background: color-mix(in srgb, currentColor 12%, transparent);
+  border-color: color-mix(in srgb, currentColor 55%, transparent);
+}
+.specimen-action:focus-visible {
+  outline: 2px solid color-mix(in srgb, currentColor 55%, transparent);
+  outline-offset: 2px;
 }
 
 /* Respect reduced motion preferences */

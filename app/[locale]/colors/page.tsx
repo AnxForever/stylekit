@@ -6,6 +6,8 @@ import { isLocale } from "@/lib/i18n/routing";
 import { localizeMetadata } from "@/lib/i18n/metadata";
 import { CURATED_STYLE_COUNT } from "@/lib/product/catalog-facts";
 
+export const dynamic = "force-static";
+
 export const revalidate = 86400;
 
 export async function generateMetadata({

@@ -1,8 +1,11 @@
 import type { Metadata } from "next";
-import HomePage, { metadata as baseMetadata } from "@/app/page";
+import HomePage, { metadata as baseMetadata } from "@/components/home/home-page";
 import { isLocale } from "@/lib/i18n/routing";
 import { localizeMetadata } from "@/lib/i18n/metadata";
 import { CURATED_STYLE_COUNT } from "@/lib/product/catalog-facts";
+
+export const dynamic = "force-static";
+export const revalidate = 3600;
 
 export async function generateMetadata({
   params,

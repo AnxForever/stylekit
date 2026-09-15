@@ -317,127 +317,115 @@ function GradientCard({ gradient, copiedId, onCopy, locale, typeLabel }: Gradien
   const swatchLabel = t("gradients.copySwatch");
   const resetLabel = t("gradients.resetAngle");
 
+  const name = locale === "zh" ? gradient.nameZh : gradient.name;
+
+  // Specimen language: the gradient is the whole tile. The name sits on it at
+  // rest; the angle control, swatches and copy actions are held back and
+  // revealed on hover/focus so the gallery reads as colour first, controls
+  // second. Everything overlays the gradient, so there is no black-on-white
+  // panel stacked beneath every card.
   return (
-    <div className="group border border-border rounded-xl overflow-hidden bg-background hover:border-foreground/40 hover:shadow-lg transition-all">
-      {/* Application preview: gradient on a real surface */}
-      <div className="relative h-40 overflow-hidden" style={{ background: liveCss }}>
-        <div className="absolute inset-0 bg-black/10" />
-        <div className="absolute inset-0 p-5 flex flex-col justify-end text-white">
-          <span className="text-[0.6rem] uppercase tracking-[0.18em] opacity-80 mb-1">
-            {gradient.category}
-          </span>
-          <h3 className="text-xl font-bold leading-tight drop-shadow-sm">
-            {locale === "zh" ? gradient.nameZh : gradient.name}
-          </h3>
-          <p className="text-[0.7rem] opacity-85 mt-0.5">
-            {t("gradients.previewLabel")}
-          </p>
-        </div>
-        <div className="absolute top-3 right-3">
-          <span className="inline-flex items-center rounded-full px-2 py-0.5 text-[0.6rem] font-medium bg-white/25 text-white backdrop-blur-sm uppercase tracking-wide">
-            {isLinear ? `${angle}° · ${typeLabel}` : typeLabel}
-          </span>
-        </div>
+    <div
+      className="group relative flex h-72 flex-col justify-between overflow-hidden border border-border p-4 text-white transition-colors hover:border-foreground/40"
+      style={{ background: liveCss }}
+    >
+      {/* Legibility scrim, only while interacting. */}
+      <div className="pointer-events-none absolute inset-0 bg-black/0 transition-colors duration-200 group-hover:bg-black/25 group-focus-within:bg-black/25" />
+
+      {/* Top row: type/angle badge, always readable. */}
+      <div className="relative flex items-start justify-between gap-2">
+        <span className="inline-flex items-center bg-black/30 px-2 py-0.5 text-[0.6rem] font-medium uppercase tracking-wide backdrop-blur-sm">
+          {isLinear ? `${angle}° · ${typeLabel}` : typeLabel}
+        </span>
+        <AddToKitButton
+          type="gradient"
+          slug={gradient.id}
+          size="sm"
+          className="grid h-7 w-7 shrink-0 place-items-center bg-black/30 text-white opacity-0 backdrop-blur-sm transition-opacity duration-200 hover:bg-black/50 group-hover:opacity-100 group-focus-within:opacity-100"
+        />
       </div>
 
-      {/* Angle slider — linear gradients only */}
-      {isLinear && (
-        <div className="px-4 py-2.5 border-b border-border flex items-center gap-2 bg-muted/10">
-          <span className="text-xs text-muted">∠</span>
-          <input
-            type="range"
-            min={0}
-            max={360}
-            step={5}
-            value={angle}
-            onChange={(e) => setAngle(Number(e.target.value))}
-            className="flex-1 accent-foreground"
-            aria-label={t("gradients.angle")}
-          />
-          <button
-            type="button"
-            onClick={() => setAngle(gradient.angle)}
-            className="text-[0.65rem] text-muted hover:text-foreground underline underline-offset-2 whitespace-nowrap"
-          >
-            {resetLabel}
-          </button>
-        </div>
-      )}
+      {/* Foot: name at rest; controls slide in on hover/focus. */}
+      <div className="relative">
+        <h3 className="text-lg font-bold leading-tight drop-shadow-sm transition-opacity duration-200 group-hover:opacity-0 group-focus-within:opacity-0">
+          {name}
+        </h3>
 
-      {/* Color swatches with format switcher */}
-      <div className="p-4 space-y-3">
-        <div className="flex items-center justify-between">
-          <div className="inline-flex rounded-md border border-border overflow-hidden text-[0.65rem]">
-            {(["hex", "rgb", "hsl"] as ColorFormat[]).map((fmt) => (
+        <div className="absolute inset-x-0 bottom-0 space-y-2.5 opacity-0 translate-y-1 transition-all duration-200 group-hover:opacity-100 group-hover:translate-y-0 group-focus-within:opacity-100 group-focus-within:translate-y-0">
+          {isLinear && (
+            <div className="flex items-center gap-2">
+              <input
+                type="range"
+                min={0}
+                max={360}
+                step={5}
+                value={angle}
+                onChange={(e) => setAngle(Number(e.target.value))}
+                className="flex-1 accent-white"
+                aria-label={t("gradients.angle")}
+              />
               <button
-                key={fmt}
                 type="button"
-                onClick={() => setFormat(fmt)}
-                className={`px-2 py-1 uppercase tracking-wide transition-colors ${
-                  format === fmt
-                    ? "bg-foreground text-background"
-                    : "bg-background text-muted hover:text-foreground"
-                }`}
+                onClick={() => setAngle(gradient.angle)}
+                className="whitespace-nowrap text-[0.65rem] text-white/80 underline underline-offset-2 hover:text-white"
               >
-                {fmt}
+                {resetLabel}
+              </button>
+            </div>
+          )}
+
+          {/* Swatches double as click-to-copy colour chips. */}
+          <div className="flex gap-1.5">
+            {gradient.colors.map((c, i) => (
+              <button
+                key={i}
+                type="button"
+                onClick={() => copyColor(c)}
+                className="relative h-7 flex-1 overflow-hidden border border-white/30"
+                style={{ background: c }}
+                title={`${formatColor(c, format)} — ${swatchLabel}`}
+                aria-label={`${formatColor(c, format)} — ${swatchLabel}`}
+              >
+                {copiedColor === c && (
+                  <span className="absolute inset-0 grid place-items-center bg-black/60 text-[0.55rem] font-mono">
+                    {copiedLabel}
+                  </span>
+                )}
               </button>
             ))}
           </div>
-          <span className="text-[0.65rem] text-muted">{swatchLabel}</span>
-        </div>
 
-        <div className="flex gap-1.5">
-          {gradient.colors.map((c, i) => (
+          <div className="flex items-center gap-2">
             <button
-              key={i}
               type="button"
-              onClick={() => copyColor(c)}
-              className="flex-1 group/sw relative h-9 rounded-md border border-border overflow-hidden"
-              style={{ background: c }}
-              title={`${formatColor(c, format)} — ${swatchLabel}`}
-              aria-label={`${formatColor(c, format)} — ${swatchLabel}`}
+              onClick={() => onCopy(liveCss, gradient.id)}
+              className="flex-1 border border-white/40 bg-black/20 px-3 py-1.5 text-xs font-medium backdrop-blur-sm transition-colors hover:bg-black/40"
             >
-              <span className="absolute inset-x-0 bottom-0 bg-black/55 text-white text-[0.6rem] py-0.5 font-mono tabular-nums">
-                {copiedColor === c ? copiedLabel : formatColor(c, format)}
-              </span>
+              {cssCopied ? copiedLabel : copyLabel}
             </button>
-          ))}
-        </div>
-
-        {/* Mood */}
-        <div className="flex flex-wrap gap-1.5 pt-1">
-          {gradient.mood.map((m) => (
-            <span key={m} className="px-1.5 py-0.5 text-[0.65rem] rounded bg-muted/40 text-muted">
-              {m}
-            </span>
-          ))}
-        </div>
-
-        {/* Copy buttons */}
-        <div className="flex gap-2 pt-1">
-          <button
-            type="button"
-            onClick={() => onCopy(liveCss, gradient.id)}
-            className={`flex-1 px-3 py-2 text-xs font-medium rounded-md border transition-colors ${
-              cssCopied
-                ? "bg-green-500 text-white border-green-500"
-                : "bg-background text-muted border-border hover:border-foreground hover:text-foreground"
-            }`}
-          >
-            {cssCopied ? copiedLabel : copyLabel}
-          </button>
-          <button
-            type="button"
-            onClick={() => onCopy(liveTailwind, gradient.id + "-tw")}
-            className={`flex-1 px-3 py-2 text-xs font-medium rounded-md border transition-colors ${
-              tailwindCopied
-                ? "bg-green-500 text-white border-green-500"
-                : "bg-background text-muted border-border hover:border-foreground hover:text-foreground"
-            }`}
-          >
-            {tailwindCopied ? copiedLabel : tailwindLabel}
-          </button>
-          <AddToKitButton type="gradient" slug={gradient.id} size="md" />
+            <button
+              type="button"
+              onClick={() => onCopy(liveTailwind, gradient.id + "-tw")}
+              className="flex-1 border border-white/40 bg-black/20 px-3 py-1.5 text-xs font-medium backdrop-blur-sm transition-colors hover:bg-black/40"
+            >
+              {tailwindLabel}
+            </button>
+            <div className="inline-flex border border-white/40 text-[0.6rem]">
+              {(["hex", "rgb", "hsl"] as ColorFormat[]).map((fmt) => (
+                <button
+                  key={fmt}
+                  type="button"
+                  onClick={() => setFormat(fmt)}
+                  aria-pressed={format === fmt}
+                  className={`px-1.5 py-1.5 uppercase tracking-wide transition-colors ${
+                    format === fmt ? "bg-white text-black" : "bg-black/20 hover:bg-black/40"
+                  }`}
+                >
+                  {fmt}
+                </button>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     </div>

@@ -38,7 +38,7 @@ describe("VibeLoft telemetry integration", () => {
     ).flat();
     const sources = await Promise.all(sourceFiles.map(read));
     const combinedSource = sources.join("\n");
-    const layout = await read("app/layout.tsx");
+    const layout = await read("components/layout/site-document.tsx");
 
     expect(combinedSource.split(SCRIPT_URL)).toHaveLength(2);
     expect(layout).toMatch(
@@ -67,7 +67,7 @@ describe("VibeLoft telemetry integration", () => {
   it("does not add a package, alternate collector, manual event sender, or Supabase telemetry path", async () => {
     const packageJson = await read("package.json");
     const lockfile = await read("pnpm-lock.yaml");
-    const layout = await read("app/layout.tsx");
+    const layout = await read("components/layout/site-document.tsx");
 
     expect(packageJson.toLowerCase()).not.toContain("vibeloft");
     expect(lockfile.toLowerCase()).not.toContain("vibeloft");

@@ -178,6 +178,8 @@ describe("styles comments route", () => {
     await expect(response.json()).resolves.toEqual({
       success: true,
       comment: {
+        reply_to_id: null,
+        is_reply: false,
         id: "c1",
         content: "Great style",
         author_name: "anx",
@@ -265,6 +267,7 @@ describe("styles comments route", () => {
     await expect(response.json()).resolves.toEqual({
       comments: [],
       total: 0,
+      repliesEnabled: false,
     });
   });
 
@@ -276,7 +279,8 @@ describe("styles comments route", () => {
       count: null,
       error: { code: "42P01", message: 'relation "style_comments" does not exist' },
     });
-    const order = vi.fn().mockReturnValue({ range });
+    const order = vi.fn();
+    order.mockReturnValue({ range, order });
     const eq = vi.fn().mockReturnValue({ order });
     const select = vi.fn().mockReturnValue({ eq });
 
@@ -311,7 +315,8 @@ describe("styles comments route", () => {
         message: "column style_comments.user_id does not exist",
       },
     });
-    const modernOrder = vi.fn().mockReturnValue({ range: modernRange });
+    const modernOrder = vi.fn();
+    modernOrder.mockReturnValue({ range: modernRange, order: modernOrder });
     const modernEq = vi.fn().mockReturnValue({ order: modernOrder });
     const modernSelect = vi.fn().mockReturnValue({ eq: modernEq });
 
@@ -328,7 +333,8 @@ describe("styles comments route", () => {
       count: 1,
       error: null,
     });
-    const legacyOrder = vi.fn().mockReturnValue({ range: legacyRange });
+    const legacyOrder = vi.fn();
+    legacyOrder.mockReturnValue({ range: legacyRange, order: legacyOrder });
     const legacyEq = vi.fn().mockReturnValue({ order: legacyOrder });
     const legacySelect = vi.fn().mockReturnValue({ eq: legacyEq });
 
@@ -384,6 +390,8 @@ describe("styles comments route", () => {
       comments: [
         {
           id: "c-legacy",
+          reply_to_id: null,
+          is_reply: false,
           content: "legacy comment",
           author_name: "legacy-user",
           avatar_url: "https://img.example/legacy.png",
@@ -397,6 +405,7 @@ describe("styles comments route", () => {
         },
       ],
       total: 1,
+      repliesEnabled: false,
     });
   });
 
@@ -417,7 +426,8 @@ describe("styles comments route", () => {
       count: 1,
       error: null,
     });
-    const order = vi.fn().mockReturnValue({ range });
+    const order = vi.fn();
+    order.mockReturnValue({ range, order });
     const eq = vi.fn().mockReturnValue({ order });
     const styleSelect = vi.fn().mockReturnValue({ eq });
 
@@ -544,4 +554,15 @@ describe("styles comments route", () => {
     expect(fallbackPayload.comments[0].author_title_color).toBeNull();
     expect(fallbackPayload.comments[0].author_title_icon_path).toBeNull();
   });
+});
+
+it("POST rejects whitespace-only comments before creating a database client", async () => {
+  mockedVerifyTrustedOrigin.mockReturnValue({ ok: true });
+  mockedGetRequestClientKey.mockReturnValue("ip:validation");
+  mockedCheckRateLimit.mockReturnValue({ allowed: true, limit: 40, remaining: 39, resetAt: Date.now() + 1_000, retryAfterSec: 0 });
+  mockedParseJsonBodyWithLimit.mockResolvedValue({ ok: true, data: { content: " \n\t " } });
+  mockedIsSupabaseConfigured.mockReturnValue(true);
+  const response = await POST(new Request("https://stylekit.top/api/styles/neo-brutalist/comments", { method: "POST" }), { params: params("neo-brutalist") });
+  expect(response.status).toBe(400);
+  expect(mockedCreateClient).not.toHaveBeenCalled();
 });

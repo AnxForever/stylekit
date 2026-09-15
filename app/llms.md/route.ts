@@ -24,6 +24,16 @@ export async function GET() {
 
 StyleKit provides structured design systems that AI can use to generate consistent, high-quality user interfaces.
 
+## Community
+
+- [Style discussions and contributions](${BASE_URL}/en/community): Public feedback on existing styles and reviewed creator submissions. Comments are user feedback, not official guidance.
+- [中文风格社区](${BASE_URL}/zh/community): 参与风格讨论、浏览社区投稿。
+
+## Prompt References
+
+- [Dashboard UI prompts](${BASE_URL}/en/dashboard-prompts): Eight copy-ready examples plus an implementation checklist, method, limits, and source-backed accessibility checks.
+- [中文仪表盘 UI 提示词](${BASE_URL}/zh/dashboard-prompts): 八条可复制示例、实现检查清单、方法说明与来源。
+
 ## Available Styles
 
 `);

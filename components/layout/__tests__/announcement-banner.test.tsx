@@ -23,6 +23,33 @@ vi.mock("next/link", () => ({
 }));
 
 import { AnnouncementBanner } from "@/components/layout/announcement-banner";
+import type { SiteAnnouncement } from "@/lib/site-announcements";
+
+const zhAnnouncement: SiteAnnouncement = {
+  id: "site-announcement:zh-CN",
+  locale: "zh-CN",
+  enabled: true,
+  title: "本周更新",
+  body: "新的内容已经上线。",
+  ctaLabel: "查看详情",
+  ctaHref: "/zh/changelog",
+  startsAt: null,
+  endsAt: null,
+  updatedAt: null,
+};
+
+const enAnnouncement: SiteAnnouncement = {
+  id: "site-announcement:en",
+  locale: "en",
+  enabled: true,
+  title: "Weekly update",
+  body: "New content is live.",
+  ctaLabel: "View details",
+  ctaHref: "/en/changelog",
+  startsAt: null,
+  endsAt: null,
+  updatedAt: null,
+};
 
 describe("AnnouncementBanner", () => {
   beforeEach(() => {
@@ -34,18 +61,7 @@ describe("AnnouncementBanner", () => {
   it("renders the announcement body on the public banner", async () => {
     render(
       <AnnouncementBanner
-        announcement={{
-          id: "site-announcement:zh-CN",
-          locale: "zh-CN",
-          enabled: true,
-          title: "本周更新",
-          body: "新的内容已经上线。",
-          ctaLabel: "查看详情",
-          ctaHref: "/zh/changelog",
-          startsAt: null,
-          endsAt: null,
-          updatedAt: null,
-        }}
+        announcements={{ en: enAnnouncement, zh: zhAnnouncement }}
       />,
     );
 
@@ -54,23 +70,27 @@ describe("AnnouncementBanner", () => {
     expect(screen.getByText("新的内容已经上线。")).toBeInTheDocument();
   });
 
+  it("selects the announcement by locale", async () => {
+    useI18nMock.mockReturnValue({ locale: "en", t: (key: string) => key });
+    usePathnameMock.mockReturnValue("/en");
+
+    render(
+      <AnnouncementBanner
+        announcements={{ en: enAnnouncement, zh: zhAnnouncement }}
+      />,
+    );
+
+    await waitFor(() => expect(screen.getByRole("banner")).toBeVisible());
+    expect(screen.getByText("Weekly update")).toBeInTheDocument();
+    expect(screen.queryByText("本周更新")).not.toBeInTheDocument();
+  });
+
   it("does not render on isolated admin surfaces", () => {
     usePathnameMock.mockReturnValue("/admin/content");
 
     render(
       <AnnouncementBanner
-        announcement={{
-          id: "site-announcement:zh-CN",
-          locale: "zh-CN",
-          enabled: true,
-          title: "本周更新",
-          body: "新的内容已经上线。",
-          ctaLabel: "查看详情",
-          ctaHref: "/zh/changelog",
-          startsAt: null,
-          endsAt: null,
-          updatedAt: null,
-        }}
+        announcements={{ en: enAnnouncement, zh: zhAnnouncement }}
       />,
     );
 

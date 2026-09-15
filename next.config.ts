@@ -93,6 +93,8 @@ const nextConfig: NextConfig = {
   },
 
   experimental: {
+    // Locale and legacy route trees now own separate HTML document roots.
+    globalNotFound: true,
     // Keep production artifact generation deterministic on the constrained
     // local/CI builders used by the deployment runbook.
     cpus: 1,

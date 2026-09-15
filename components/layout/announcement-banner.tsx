@@ -6,33 +6,56 @@ import { usePathname } from "next/navigation";
 import { useI18n } from "@/lib/i18n/context";
 import type { SiteAnnouncement } from "@/lib/site-announcements";
 
-export function AnnouncementBanner({ announcement = null }: { announcement?: SiteAnnouncement | null }) {
+export interface AnnouncementBannerCopy {
+  en: SiteAnnouncement | null;
+  zh: SiteAnnouncement | null;
+}
+
+/**
+ * Both locales are passed so statically rendered pages can select the right
+ * announcement from the payload instead of relying on request headers.
+ */
+export function AnnouncementBanner({
+  announcements,
+}: {
+  announcements?: AnnouncementBannerCopy;
+}) {
   const { t, locale } = useI18n();
   const pathname = usePathname();
-  const [visible, setVisible] = useState(false);
+  // Render the banner in the initial HTML so it occupies its final 40px before
+  // first paint. A head bootstrap hides previously dismissed announcements
+  // before the body is painted, avoiding the full-page layout shift caused by
+  // inserting the banner after hydration.
+  const [visible, setVisible] = useState(true);
+  const announcement = announcements
+    ? locale === "zh"
+      ? announcements.zh
+      : announcements.en
+    : null;
   const isIsolatedSurface =
     pathname.includes("/admin") ||
     pathname.startsWith("/validation/") ||
     pathname.startsWith("/workspace");
+  const isAnnouncementRoute =
+    announcement !== null &&
+    (pathname === announcement.ctaHref || pathname?.endsWith("/changelog"));
 
   useEffect(() => {
     if (!announcement) return;
-    if (pathname === announcement.ctaHref || pathname?.endsWith("/changelog")) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect -- route-derived notification state
-      setVisible(false);
-      return;
-    }
+    if (isAnnouncementRoute) return;
 
     try {
       const dismissed = localStorage.getItem(getDismissKey(announcement.id));
-      if (dismissed !== "1") setVisible(true);
+      document.documentElement.dataset.siteAnnouncementDismissed =
+        dismissed === "1" ? "true" : "false";
     } catch {
-      setVisible(true);
+      document.documentElement.dataset.siteAnnouncementDismissed = "false";
     }
-  }, [announcement, pathname]);
+  }, [announcement, isAnnouncementRoute]);
 
   const dismiss = useCallback(() => {
     setVisible(false);
+    document.documentElement.dataset.siteAnnouncementDismissed = "true";
     if (!announcement) return;
     try {
       localStorage.setItem(getDismissKey(announcement.id), "1");
@@ -41,7 +64,7 @@ export function AnnouncementBanner({ announcement = null }: { announcement?: Sit
     }
   }, [announcement]);
 
-  if (!announcement || !visible || isIsolatedSurface) return null;
+  if (!announcement || !visible || isIsolatedSurface || isAnnouncementRoute) return null;
   const ctaLabel = announcement.ctaLabel || (locale === "zh" ? "查看详情" : "View details");
 
   return (
@@ -66,6 +89,7 @@ export function AnnouncementBanner({ announcement = null }: { announcement?: Sit
       ) : null}
       <Link
         href={announcement.ctaHref || `/${locale}/changelog`}
+        prefetch={false}
         onClick={dismiss}
         className="shrink-0 underline underline-offset-2 opacity-80 hover:opacity-100 transition-opacity"
       >

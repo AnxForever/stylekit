@@ -7,6 +7,7 @@ import { isLocale, LOCALES } from "@/lib/i18n/routing";
 import { localizeMetadata } from "@/lib/i18n/metadata";
 import type { Locale } from "@/lib/i18n/translations";
 
+export const dynamic = "force-static";
 export const revalidate = 86400;
 export const dynamicParams = false;
 

@@ -1,6 +1,8 @@
+import SiteDocument, { generateSiteMetadata } from "@/components/layout/site-document";
+export { viewport } from "@/components/layout/site-document";
 import type { Metadata } from "next";
 
-export const metadata: Metadata = {
+const routeMetadata: Metadata = {
   title: "Responsive Preview - StyleKit",
   description:
     "Preview style showcases across desktop, tablet, and mobile viewports. Test responsive behavior of StyleKit design styles.",
@@ -15,5 +17,9 @@ export default function PreviewLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return <>{children}</>;
+  return <SiteDocument>{children}</SiteDocument>;
+}
+
+export async function generateMetadata(): Promise<Metadata> {
+  return { ...await generateSiteMetadata(), ...routeMetadata };
 }
