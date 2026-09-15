@@ -21,11 +21,10 @@ export async function GET() {
       { headers: { "Cache-Control": COMMUNITY_CACHE_CONTROL } },
     );
   } catch {
-    // A submissions table that is unreachable must not take the page down; an
-    // empty community catalog is the honest answer.
+    // Do not cache an outage as a successful, empty catalog.
     return NextResponse.json(
-      { total: 0, styles: [] },
-      { status: 200, headers: { "Cache-Control": COMMUNITY_CACHE_CONTROL } },
+      { error: "Community styles are temporarily unavailable." },
+      { status: 503, headers: { "Cache-Control": "no-store" } },
     );
   }
 }

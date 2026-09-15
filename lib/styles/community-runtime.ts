@@ -381,11 +381,9 @@ export function mapSubmissionToStyle(submission: SubmissionRecord): DesignStyle 
 
 async function listApprovedSubmissionsRuntime(): Promise<SubmissionRecord[]> {
   if (isSupabaseConfigured()) {
-    try {
-      return await listSubmissionsSupabase("approved");
-    } catch {
-      return listSubmissions("approved");
-    }
+    // A configured database is authoritative. Falling back during an outage
+    // can revive a locally stored submission that a moderator has since hidden.
+    return listSubmissionsSupabase("approved");
   }
 
   return listSubmissions("approved");
@@ -412,11 +410,7 @@ const getApprovedSubmissionBySlugRuntime = cache(
 
     const found = await (async () => {
       if (isSupabaseConfigured()) {
-        try {
-          return await getLatestApprovedSubmissionBySlugSupabase(normalizedSlug);
-        } catch {
-          return getLatestApprovedSubmissionBySlug(normalizedSlug);
-        }
+        return getLatestApprovedSubmissionBySlugSupabase(normalizedSlug);
       }
       return getLatestApprovedSubmissionBySlug(normalizedSlug);
     })();
@@ -462,21 +456,15 @@ export const resolveStyleBySlug = cache(async function resolveStyleBySlug(
 });
 
 /**
- * Approved submissions only, excluding anything the curated library already has.
- *
- * Split out from the old `listCatalogStylesMeta`, which returned curated and
- * community styles in one array. That merge was the source of a live
- * contradiction: `/api/styles` advertised community slugs that
- * `app/styles/[slug]` could never render, because it fixes its params at build
- * time. The two catalogs now have separate endpoints and separate routes.
- */
-/**
  * Catalog metadata plus the submission facts the community catalog sorts and
  * badges by. Structurally a StyleMeta, so every StyleMeta consumer still works.
  */
 export interface CommunityStyleMeta extends StyleMeta {
   publishedAt?: string;
   promoted?: boolean;
+  /** The submission now has a canonical entry in the curated style library. */
+  curated?: boolean;
+  authorName?: string;
 }
 
 export interface CommunityAttribution {
@@ -539,7 +527,9 @@ export const isPromotedCommunityStyle = cache(async function isPromotedCommunity
 
 export async function listPromotedCommunityStyles(): Promise<CommunityStyleMeta[]> {
   const all = await listCommunityStylesMeta();
-  return all.filter((style) => style.promoted);
+  // A curated collision resolves at /styles/{slug}; adding its community URL
+  // to the sitemap would only publish a redirect.
+  return all.filter((style) => style.promoted && !style.curated);
 }
 
 export async function listCommunityStylesByUser(
@@ -554,7 +544,9 @@ export async function listCommunityStylesByUser(
 }
 
 export async function listCommunityStylesMeta(): Promise<CommunityStyleMeta[]> {
-  const curatedSlugs = new Set(getAllStylesMeta().map((item) => item.slug));
+  const curatedBySlug = new Map(
+    getAllStylesMeta().map((item) => [item.slug, item] as const)
+  );
   const communitySubmissions = (await listApprovedSubmissionsRuntime()).filter(
     isPubliclyVisible
   );
@@ -566,7 +558,7 @@ export async function listCommunityStylesMeta(): Promise<CommunityStyleMeta[]> {
     if (!SLUG_RE.test(slug)) {
       continue;
     }
-    if (curatedSlugs.has(slug) || seenCommunitySlugs.has(slug)) {
+    if (seenCommunitySlugs.has(slug)) {
       continue;
     }
 
@@ -575,7 +567,8 @@ export async function listCommunityStylesMeta(): Promise<CommunityStyleMeta[]> {
       continue;
     }
 
-    communityMeta.push({
+    const curatedStyle = curatedBySlug.get(slug);
+    const catalogStyle: StyleMeta = curatedStyle ?? {
       slug: mappedStyle.slug,
       name: mappedStyle.name,
       nameEn: mappedStyle.nameEn,
@@ -590,10 +583,18 @@ export async function listCommunityStylesMeta(): Promise<CommunityStyleMeta[]> {
       compatibleWith: mappedStyle.compatibleWith,
       keywords: mappedStyle.keywords,
       colors: mappedStyle.colors,
+    };
+
+    communityMeta.push({
+      ...catalogStyle,
       // reviewedAt is when the style actually became visible; submittedAt is
       // the fallback for rows approved before that column was written.
       publishedAt: submission.reviewedAt ?? submission.submittedAt,
       promoted: submission.visibility === "promoted",
+      curated: Boolean(curatedStyle),
+      authorName:
+        asString(asRecord(asRecord(submission.formData).__author).handle) ??
+        asString(submission.authorName) ?? undefined,
     });
     seenCommunitySlugs.add(slug);
   }

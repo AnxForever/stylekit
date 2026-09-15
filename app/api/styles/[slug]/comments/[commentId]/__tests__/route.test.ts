@@ -173,3 +173,13 @@ describe("style comment mutate route", () => {
     expect(deleteFn).toHaveBeenCalled();
   });
 });
+
+it("PATCH rejects whitespace-only edits before querying the database", async () => {
+  mockedVerifyTrustedOrigin.mockReturnValue({ ok: true });
+  mockedGetServerUser.mockResolvedValue({ id: "user-1" } as never);
+  mockedIsSupabaseConfigured.mockReturnValue(true);
+  mockedParseJsonBodyWithLimit.mockResolvedValue({ ok: true, data: { content: " \n\t " } });
+  const response = await PATCH(new Request("https://stylekit.top/api/styles/editorial/comments/11111111-1111-4111-8111-111111111111", { method: "PATCH" }), { params: params("editorial", "11111111-1111-4111-8111-111111111111") });
+  expect(response.status).toBe(400);
+  expect(mockedCreateClient).not.toHaveBeenCalled();
+});

@@ -16,6 +16,10 @@ import { listCommunityStylesByUser } from "@/lib/styles/community-runtime";
 import { getServerUser } from "@/lib/auth/supabase-server";
 import { serializeJsonLd } from "@/lib/security/json-ld";
 import { FollowButton } from "./_follow-button";
+import {
+  getCommunityStyleBasePath,
+  getCommunityStylePath,
+} from "@/lib/community/style-path";
 
 // Contributor standing changes as work is submitted and promoted, so the page
 // resolves per request rather than being frozen at build time.
@@ -182,7 +186,7 @@ export default async function ContributorPage({
       pageLocale === "zh"
         ? style.description
         : style.descriptionEn || style.description,
-    url: localizedPath(`/community/${style.slug}`),
+    url: localizedPath(getCommunityStylePath(style)),
   }));
 
   // Do not emit a profile graph for an empty/noindex page. For public profiles,
@@ -318,7 +322,7 @@ export default async function ContributorPage({
                   key={style.slug}
                   style={style}
                   variant="compact"
-                  basePath="/community"
+                  basePath={getCommunityStyleBasePath(style)}
                 />
               ))}
             </div>

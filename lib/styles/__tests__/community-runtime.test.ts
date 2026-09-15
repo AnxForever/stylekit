@@ -13,9 +13,11 @@ vi.mock("@/lib/submit/reviewer-supabase", () => ({
 
 import {
   listCommunityStylesMeta,
+  listPromotedCommunityStyles,
   mapSubmissionToStyle,
   resolveStyleBySlug,
 } from "@/lib/styles/community-runtime";
+import { getStyleMetaBySlug } from "@/lib/styles/meta";
 import {
   getLatestApprovedSubmissionBySlug,
   listSubmissions,
@@ -232,7 +234,7 @@ describe("community runtime styles", () => {
     expect(result?.style.cover).toBe("/styles/aurora-community/opengraph-image");
   });
 
-  it("returns approved community meta and drops curated slug collisions", async () => {
+  it("keeps creator credit when an approved contribution enters the curated library", async () => {
     mockedIsSupabaseConfigured.mockReturnValue(false);
     mockedListSubmissions.mockResolvedValue([
       communitySubmission,
@@ -245,12 +247,30 @@ describe("community runtime styles", () => {
 
     const result = await listCommunityStylesMeta();
 
-    expect(result.map((item) => item.slug)).toEqual(["aurora-community"]);
-    // neo-brutalist is a curated style, so a submission claiming that slug is
-    // never surfaced by the community catalog.
-    expect(result.some((item) => item.slug === "neo-brutalist")).toBe(false);
+    expect(result.map((item) => item.slug)).toEqual([
+      "aurora-community",
+      "neo-brutalist",
+    ]);
+    expect(result.find((item) => item.slug === "neo-brutalist")).toMatchObject({
+      nameEn: getStyleMetaBySlug("neo-brutalist")?.nameEn,
+      curated: true,
+      publishedAt: communitySubmission.submittedAt,
+    });
     expect(mockedListSubmissions).toHaveBeenCalledWith("approved");
     expect(mockedListSubmissionsSupabase).not.toHaveBeenCalled();
+  });
+
+  it("does not add a curated collision's redirecting community URL to promoted outputs", async () => {
+    mockedIsSupabaseConfigured.mockReturnValue(false);
+    mockedListSubmissions.mockResolvedValue([
+      {
+        ...communitySubmission,
+        slug: "neo-brutalist",
+        visibility: "promoted",
+      },
+    ] as never);
+
+    expect(await listPromotedCommunityStyles()).toEqual([]);
   });
 });
 
@@ -264,4 +284,35 @@ it("keeps approved font and motion assets when resolving a community style", () 
   expect(fromForm?.previewAssets).toEqual(previewAssets);
   const fromStored = mapSubmissionToStyle({ ...communitySubmission, designStyle: { previewAssets } });
   expect(fromStored?.previewAssets).toEqual(previewAssets);
+});
+
+it("does not resurrect local submissions when the configured catalog database fails", async () => {
+  mockedIsSupabaseConfigured.mockReturnValue(true);
+  mockedListSubmissionsSupabase.mockRejectedValue(new Error("database unavailable"));
+  mockedListSubmissions.mockResolvedValue([communitySubmission]);
+
+  await expect(listCommunityStylesMeta()).rejects.toThrow("database unavailable");
+  expect(mockedListSubmissions).not.toHaveBeenCalled();
+});
+
+it("does not fall back to a stale local detail after a configured database failure", async () => {
+  mockedIsSupabaseConfigured.mockReturnValue(true);
+  mockedGetLatestApprovedSubmissionBySlugSupabase.mockRejectedValue(new Error("database unavailable"));
+  mockedGetLatestApprovedSubmissionBySlug.mockResolvedValue(communitySubmission);
+
+  await expect(resolveStyleBySlug("aurora-community")).rejects.toThrow("database unavailable");
+  expect(mockedGetLatestApprovedSubmissionBySlug).not.toHaveBeenCalled();
+});
+
+it("publishes contributor credit but does not include account identifiers in catalog metadata", async () => {
+  mockedIsSupabaseConfigured.mockReturnValue(false);
+  mockedListSubmissions.mockResolvedValue([{
+    ...communitySubmission,
+    userId: "private-account-id",
+    authorName: "Fallback credit",
+    formData: { ...communitySubmission.formData, __author: { handle: "Public creator" } },
+  }]);
+  const [style] = await listCommunityStylesMeta();
+  expect(style.authorName).toBe("Public creator");
+  expect(style).not.toHaveProperty("userId");
 });

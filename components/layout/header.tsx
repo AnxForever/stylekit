@@ -6,6 +6,7 @@ import { useState, useEffect, useRef } from "react";
 import { useTheme } from "next-themes";
 import { useI18n } from "@/lib/i18n/context";
 import { LanguageSwitcher } from "@/components/language-switcher";
+import { CommunityNotificationLink } from "@/components/community/notification-link";
 import { UserMenu, MobileUserMenu } from "@/components/layout/user-menu";
 import { mainNav, secondaryNav, type NavDropdown, type NavItem } from "@/lib/nav-config";
 import {
@@ -400,7 +401,7 @@ export function Header() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-12">
         <div className="flex items-center justify-between h-16 md:h-20">
           {/* Logo / Masthead */}
-          <Link href={localizeHref("/", locale)} className="masthead text-lg md:text-xl">
+          <Link href={localizeHref("/", locale)} prefetch={false} className="masthead text-lg md:text-xl">
             StyleKit
           </Link>
 
@@ -438,6 +439,7 @@ export function Header() {
                 <Link
                   key={item.href}
                   href={localizeHref(item.href, locale)}
+                  prefetch={false}
                   className={linkClass}
                 >
                   {t(item.labelKey)}
@@ -464,13 +466,17 @@ export function Header() {
             )}
 
             {/* GitHub Star Button */}
-            <div className="hidden xl:block shrink-0">
+            <div className="hidden w-16 shrink-0 justify-end xl:flex">
               <GitHubStarButton variant="compact" />
             </div>
 
-            {mounted && <KitNavButton />}
-            {mounted && <LanguageSwitcher />}
-            {mounted && (
+            <span className={mounted ? undefined : "invisible"}>
+              <KitNavButton />
+            </span>
+            <span className={mounted ? undefined : "invisible"}>
+              <LanguageSwitcher />
+            </span>
+            <span className={mounted ? undefined : "invisible"}>
               <button
                 onClick={toggleTheme}
                 className="p-2 text-muted hover:text-foreground transition-colors"
@@ -487,9 +493,14 @@ export function Header() {
                   </svg>
                 )}
               </button>
-            )}
-            {mounted && <UserMenu />}
+            </span>
+            <CommunityNotificationLink />
+            <span className="flex min-w-[4.5rem] justify-end">
+              <UserMenu />
+            </span>
           </nav>
+
+          <CommunityNotificationLink className="ml-auto mr-2 lg:hidden" />
 
           {/* Mobile Menu Button */}
           <button
@@ -538,6 +549,7 @@ export function Header() {
               {/* Kit Builder entry */}
               <Link
                 href="/kit"
+                prefetch={false}
                 onClick={() => setIsMenuOpen(false)}
                 className="text-sm tracking-wide text-muted hover:text-foreground transition-colors"
               >
@@ -552,6 +564,7 @@ export function Header() {
                     <Link
                       key={item.href}
                       href={localizeHref(item.href, locale)}
+                      prefetch={false}
                       className={linkClass}
                       onClick={() => setIsMenuOpen(false)}
                     >
