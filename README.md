@@ -9,8 +9,8 @@
 </p>
 
 <p align="center">
-  <strong>StyleKit is an open-source visual style library for AI-generated web interfaces.</strong><br>
-  Browse 148 curated styles, then use design tokens, component recipes, Tailwind-ready constraints, and copy-ready prompts in React, Cursor, Claude Code, v0, or Windsurf. English &amp; 中文.
+  <strong>An open-source visual style library for AI-generated web interfaces.</strong><br>
+  148 curated styles, each with design tokens, component recipes, Tailwind-ready constraints, and copy-ready prompts.
 </p>
 
 <p align="center">
@@ -46,144 +46,18 @@
 
 ## What is StyleKit?
 
-StyleKit helps developers and AI coding tools start from a consistent visual direction. Pick a named style to get structured design tokens, component recipes, prompt guidance, and implementation references for a website or dashboard; production integration and completeness still depend on the target project.
+Ask an AI to build you a landing page and you get something that works and looks
+like every other AI-built landing page. The problem is not the model — it is that
+"make it look good" is not a specification.
 
-## AI frontend resources
+StyleKit turns a visual direction into something an agent can actually follow: a
+named style with real tokens, hard constraints, and a demo you can look at first.
+Pick one, and the output stops drifting.
 
-If you are using AI to design or build a frontend, these focused guides cover the practical workflow:
+It does not guarantee a production-ready interface. Integration and completeness
+still depend on your project.
 
-- [Fix an AI-generated website that looks bad](https://www.stylekit.top/en/ai-generated-website-fix) — visual hierarchy, spacing, typography, and component consistency.
-- [How to choose AI web design tools](https://www.stylekit.top/en/ai-web-design-tools) — compare prompt, design, and code-generation workflows.
-- [AI UI generation](https://www.stylekit.top/en/ai-ui-generator) — turn a page brief into a usable interface structure.
-- [AI frontend workflow](https://www.stylekit.top/en/ai-frontend-workflow) — move from idea to React, Tailwind, and implementation constraints.
-- Chinese guides: [AI 网页设计工具](https://www.stylekit.top/zh/ai-web-design-tools) · [AI 前端工作流](https://www.stylekit.top/zh/ai-frontend-workflow)
-
-<table>
-<tr>
-<td width="50%" valign="top">
-
-### Design System
-
-- **148 visual and layout styles** with design tokens, color palettes, and typography
-- **Live showcases** — a full-page interactive demo for every catalog style
-- **Component recipes** — copy-paste code for buttons, cards, inputs, and more
-- **Export anywhere** — Tailwind preset, shadcn theme, CSS variables, Figma tokens
-
-</td>
-<td width="50%" valign="top">
-
-### AI-Native Workflow
-
-- **AI implementation guidance** — hard prompt, design spec, and creative brief
-- **IDE export** — `.cursorrules`, `claude-rules`, `windsurf-rules`
-- **shadcn theme install** — light and dark CSS variables for existing projects
-- **llms.txt** — AI-discoverable docs at [`/llms.txt`](https://stylekit.top/llms.txt)
-
-</td>
-</tr>
-<tr>
-<td width="50%" valign="top">
-
-### Creative Tools
-
-- **60 animations** with live preview and one-click copy
-- **36 page-template demos** — SaaS, dashboard, e-commerce, portfolio, blog
-- **Prompt libraries** — copyable UI, landing page, dashboard, Tailwind, and dark mode prompts
-- **Design resources** — gradients, shadows, backgrounds, typography, and component patterns
-
-</td>
-<td width="50%" valign="top">
-
-### Platform
-
-- **Bilingual** — full English and Chinese support
-- **Localized routing** — English and Chinese public pages
-- **LLM-readable docs** — `/llms.txt`, `/llms.md`, and `/llms-full.txt`
-- **Production runbooks** — deployment, release review, and style authoring docs
-
-</td>
-</tr>
-</table>
-
-## Styles
-
-148 visual and layout styles across multiple categories. Every style includes design tokens, component code, AI rules, and a curated preview.
-
-<details>
-<summary><strong>Modern / Tech</strong> — Glassmorphism, Liquid Glass, Neumorphism, Bento Grid, Fluent Design, Material Design, Linear Style ...</summary>
-
-Clean, professional styles for SaaS products, dashboards, and developer tools. Emphasis on subtle depth, blur effects, and systematic spacing.
-
-</details>
-
-<details>
-<summary><strong>Brutalist</strong> — Neo-Brutalist, Neo-Brutalist Playful, Neo-Brutalist Soft, Brutalist Web, Anti-Design</summary>
-
-Bold borders, raw typography, high contrast. Ranges from aggressive to playful depending on the variant.
-
-</details>
-
-<details>
-<summary><strong>Brand-Inspired</strong> — Apple Style, Stripe Style, Notion Style, GitHub Style, Shopify Clean, Linear Style</summary>
-
-Reverse-engineered design languages from iconic products. Great starting points for product UI.
-
-</details>
-
-<details>
-<summary><strong>Retro / Vintage</strong> — Art Deco, Vaporwave, VHS Aesthetic, Y2K, Outrun, Synthwave, Retro Vintage, Frutiger Aero</summary>
-
-Nostalgic aesthetics spanning decades. From 1920s Art Deco to 2000s Y2K and Frutiger Aero.
-
-</details>
-
-<details>
-<summary><strong>Artistic</strong> — Watercolor, Impressionist Oil, Pop Art, Risograph, Collage Art, Ink Wash, Generative Art</summary>
-
-Fine art movements translated into UI design. Painterly textures, halftone patterns, and organic forms.
-
-</details>
-
-<details>
-<summary><strong>Japanese / Anime</strong> — Ghibli Style, Cyber Anime, Shoujo Manga, Ukiyo-e, Pixel Anime, Neon Samurai, Kawaii Minimal</summary>
-
-Japanese visual culture from traditional woodblock prints to modern anime aesthetics.
-
-</details>
-
-<details>
-<summary><strong>Cyberpunk / Sci-Fi</strong> — Cyberpunk Neon, Neon Tokyo, Sci-Fi HUD, Mecha, Holographic, Arcade CRT</summary>
-
-Neon-drenched, high-tech interfaces. Terminal greens, scan lines, and holographic effects.
-
-</details>
-
-<details>
-<summary><strong>Layout Patterns</strong> — Magazine Grid, Masonry Flow, Split Screen, Parallax, Dashboard Layout, Holy Grail, F-Pattern, Z-Pattern</summary>
-
-Structural patterns that pair with any visual style. Responsive grids, scroll-based layouts, and classic page structures.
-
-</details>
-
-<details>
-<summary><strong>Cultural / Regional</strong> — Islamic Geometric, Indian Festive, African Textile, Korean Minimal, Cyber Chinese, Dark Academia</summary>
-
-Design traditions from around the world, adapted for modern web interfaces.
-
-</details>
-
-<details>
-<summary><strong>Nature / Cozy</strong> — Cottagecore, Scandinavian, Wabi-Sabi, Natural Organic, Solarpunk, Zen Garden, Tropical Paradise</summary>
-
-Warm, organic, and calming. Earthy palettes, soft textures, and generous whitespace.
-
-</details>
-
-<p align="center">
-  <a href="https://www.stylekit.top/en/styles"><strong>Browse all styles &rarr;</strong></a>
-</p>
-
-## Quick Start
+## Quick start
 
 ```bash
 git clone https://github.com/AnxForever/stylekit.git
@@ -192,133 +66,86 @@ pnpm install
 pnpm dev
 ```
 
-Open [localhost:3000](http://localhost:3000). See [`.env.example`](.env.example) for optional Supabase and admin configuration.
+Open [localhost:3000](http://localhost:3000). See [`.env.example`](.env.example)
+for optional Supabase and admin configuration.
 
-## Project Structure
+## Three ways to use it
 
-See [`docs/PROJECT_STRUCTURE.md`](docs/PROJECT_STRUCTURE.md) for the repository map, runtime flow, source boundaries, and cleanup guidance.
-See [`docs/STYLE_AUTHORING.md`](docs/STYLE_AUTHORING.md) before adding or changing catalog styles.
-Deployment is environment-specific: build locally, then serve the `.next` output with your process manager of choice (production uses a systemd service; `ecosystem.config.cjs` is a legacy PM2 example).
+### 1. Install a style into an existing shadcn project
 
-## API Surface
-
-The stable JSON endpoints expose published style metadata, tokens, recipes, and rules.
-
-```http
-GET  /api/styles                      # List all styles
-GET  /api/styles/{slug}               # Style record (tokens + recipes + rules)
-GET  /api/styles/{slug}/tokens        # Design tokens only
-GET  /api/styles/{slug}/recipes       # Component recipes only
-GET  /api/styles/stats                # Aggregate views, favorites, and ratings per style
-```
-
-## Use in your shadcn project
-
-Every style is also published as a [shadcn registry](https://ui.shadcn.com/docs/registry) theme. Install any style's light + dark color theme into an existing shadcn project with one command:
+Every style is published as a [shadcn registry](https://ui.shadcn.com/docs/registry)
+theme. One command adds its light and dark `cssVars` to your `globals.css`:
 
 ```bash
 npx shadcn add https://stylekit.top/r/glassmorphism.json
 ```
 
-Swap `glassmorphism` for any slug — browse the full list at [`/registry.json`](https://www.stylekit.top/registry.json) or in the [styles gallery](https://www.stylekit.top/en/styles). The CLI injects the style's `cssVars` (light + dark) into your `globals.css` and works with Tailwind v4.
+Swap `glassmorphism` for any slug. Works with Tailwind v4.
 
-> Prerequisite: the target project must contain a `tsconfig.json`, or the shadcn CLI exits with `Couldn't find tsconfig.json`.
+> The target project needs a `tsconfig.json`, or the shadcn CLI exits with
+> `Couldn't find tsconfig.json`. Full guide: [`docs/registry.md`](docs/registry.md).
 
-See [`docs/registry.md`](docs/registry.md) for the full guide.
-
-## Use as an Agent Skill
-
-Give Cursor, Claude Code, Windsurf, or any Agent-Skills-compatible coding agent
-built-in knowledge of StyleKit — how to browse styles and install them — with
-one command:
+### 2. Give your coding agent the whole library
 
 ```bash
 npx skills add AnxForever/stylekit-skill
 ```
 
-Your agent can then apply any of the 148 styles on request ("make this look
-like Stripe", "cyberpunk dashboard") using the correct tokens and rules. The
-skill lives in its own repository ([`AnxForever/stylekit-skill`](https://github.com/AnxForever/stylekit-skill));
-see [`docs/AGENT_SKILL_GUIDE.md`](docs/AGENT_SKILL_GUIDE.md) for how it's built and published.
+Claude Code, Cursor, Windsurf, and any Agent-Skills-compatible tool can then
+apply any of the 148 styles on request — "make this look like Stripe", "cyberpunk
+dashboard" — using the correct tokens and rules. The skill lives in
+[`AnxForever/stylekit-skill`](https://github.com/AnxForever/stylekit-skill).
 
-
-## Support This Project
-
-If StyleKit happens to help you, that honestly means a lot.
-
-You can support the project with any amount you like. It helps keep StyleKit going and offsets server, domain, and maintenance costs.
-
-For Chinese readers:
-
-> 如果 StyleKit 恰好帮到了你，欢迎扫码支持我把它继续做下去。金额随意，每一份心意我都很感谢。
-
-- Tip via WeChat or Alipay on the website support page
-- GitHub repo funding entry: [`https://github.com/AnxForever/stylekit`](https://github.com/AnxForever/stylekit)
-- Website support page: [`https://stylekit.top/contact#support-maintenance`](https://stylekit.top/contact#support-maintenance)
-- Public sponsor follow-up: [`GitHub Discussions`](https://github.com/AnxForever/stylekit/discussions)
-
-Current QR assets (cropped to the code block itself plus a white quiet zone, so
-the scannable area fills the frame):
-
-- Alipay: [`public/support/alipay-qr.png`](public/support/alipay-qr.png)
-- WeChat Tipping: [`public/support/wechat-qr.png`](public/support/wechat-qr.png)
-
-The uncropped originals are kept at `public/alipay-qr.jpg` and
-`public/wechat-qr.png` for reference.
-
-The website support section is driven from a single config file: [`lib/site/support.ts`](lib/site/support.ts).
-
-## Tech Stack
-
-| Layer | Technology |
-|-------|-----------|
-| Framework | Next.js 16 + Turbopack |
-| UI | React 19, Radix UI, Lucide Icons |
-| Styling | Tailwind CSS 4, CVA |
-| Auth & DB | Supabase (PostgreSQL + auth helpers) |
-| Validation | Zod 4 |
-| Testing | Vitest + Playwright |
-| Deployment | Alibaba Cloud ECS + Nginx + systemd |
-
-## Production Deployment
-
-Current production for `www.stylekit.top` runs on an Alibaba Cloud ECS instance in Beijing.
-
-- Edge and TLS: Nginx on the ECS host
-- App process: systemd service `stylekit.service`
-- App directory: `/www/stylekit` rsynced from a verified local checkout
-- Runtime command: systemd runs `next start --hostname 0.0.0.0 --port 13000` via `node_modules/.bin/next`
-- Health watchdog: `stylekit-healthcheck.timer` probes `/api/health` every minute and restarts the service after consecutive failures
-
-`vercel.json` is no longer part of the active production deployment path and should not be treated as the source of truth for where StyleKit is hosted.
-
-Run the verification gate above before shipping; `/api/health` reports service status once the app is running.
-
-After a release changes the color catalog, regenerate the Nginx allow map from
-the deployed app's direct sitemap before running the public SEO check:
+### 3. Call it over MCP
 
 ```bash
-STYLEKIT_SITEMAP_URL=http://127.0.0.1:13000/sitemap.xml \
-  pnpm run generate:nginx-color-allow-map \
-  /tmp/stylekit-color-allow.map.conf
-install -d -m 700 /etc/nginx/backups
-cp /etc/nginx/conf.d/stylekit-color-allow.map.conf \
-  /etc/nginx/backups/stylekit-color-allow.map.conf.previous
-install -m 644 /tmp/stylekit-color-allow.map.conf \
-  /etc/nginx/conf.d/stylekit-color-allow.map.conf
-nginx -t && systemctl reload nginx
+npx -y stylekit-mcp
 ```
 
-Review the generated diff before installing it. Retain the previous file outside
-`conf.d` for rollback. The map prevents arbitrary hex routes from creating an
-unbounded crawl surface, so it must stay synchronized with the sitemap.
+Exposes search, tokens, component recipes, and a `stylekit_lint_code` tool that
+checks whether generated UI code actually follows the style's rules. See
+[`packages/mcp/README.md`](packages/mcp/README.md).
+
+## Styles
+
+148 styles in ten families — Modern & Tech, Brutalist, Brand-Inspired (Apple,
+Stripe, Notion, GitHub), Retro & Vintage, Artistic, Japanese & Anime, Cyberpunk
+& Sci-Fi, Layout Patterns, Cultural & Regional, Nature & Cozy.
+
+Every style ships tokens, component code, AI rules, and a full-page live demo.
+
+**[Browse all 148 →](https://www.stylekit.top/en/styles)**
+
+## What else is in here
+
+- **60 animations** with live preview and one-click copy
+- **36 page templates** — SaaS, dashboard, e-commerce, portfolio, blog
+- **Export anywhere** — Tailwind preset, shadcn theme, CSS variables, Figma tokens
+- **IDE rules** — `.cursorrules`, `claude-rules`, `windsurf-rules`
+- **Bilingual** — full English and Chinese, with localized routing
+- **Machine-readable** — [`/llms.txt`](https://stylekit.top/llms.txt),
+  [`/llms.md`](https://stylekit.top/llms.md),
+  [`/llms-full.txt`](https://stylekit.top/llms-full.txt), and a documented HTTP
+  API ([`docs/API.md`](docs/API.md))
+
+## Guides for building frontends with AI
+
+Practical walkthroughs on the site, for when the problem is the workflow rather
+than the style:
+
+- [Fix an AI-generated website that looks bad](https://www.stylekit.top/en/ai-generated-website-fix)
+- [How to choose AI web design tools](https://www.stylekit.top/en/ai-web-design-tools)
+- [AI UI generation](https://www.stylekit.top/en/ai-ui-generator) — turn a page brief into a usable interface structure
+- [AI frontend workflow](https://www.stylekit.top/en/ai-frontend-workflow)
+- [中文：AI 网页设计工具](https://www.stylekit.top/zh/ai-web-design-tools) · [AI 前端工作流](https://www.stylekit.top/zh/ai-frontend-workflow)
 
 ## Contributing
 
-Contributions welcome. Please read these before opening a PR:
+Contributions welcome. Read these before opening a PR:
 
-1. [`CONTRIBUTING.md`](docs/CONTRIBUTING.md)
-2. [`STYLE_ADDITION_CHECKLIST.md`](docs/STYLE_ADDITION_CHECKLIST.md) — required for new styles
+1. [`docs/CONTRIBUTING.md`](docs/CONTRIBUTING.md)
+2. [`docs/STYLE_ADDITION_CHECKLIST.md`](docs/STYLE_ADDITION_CHECKLIST.md) — required for new styles
+3. [`docs/STYLE_AUTHORING.md`](docs/STYLE_AUTHORING.md) — how a style is written, before you add or change one
 
 ```bash
 git checkout -b feat/your-feature
@@ -326,7 +153,18 @@ pnpm lint && pnpm test && pnpm build
 git commit -m "feat: add your feature"
 ```
 
-## Star History
+Working on the codebase? [`docs/PROJECT_STRUCTURE.md`](docs/PROJECT_STRUCTURE.md)
+maps the repository, and [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md) covers how
+production is served.
+
+## Support this project
+
+If StyleKit helped you, a star is already a lot. If you want to go further,
+there is a support page on the site covering server and domain costs —
+[stylekit.top/contact#support-maintenance](https://stylekit.top/contact#support-maintenance).
+中文读者欢迎扫码支持，金额随意。
+
+## Star history
 
 <a href="https://star-history.com/#AnxForever/stylekit&Date">
   <picture>
