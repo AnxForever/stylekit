@@ -49,20 +49,23 @@ const README_COUNT_CLAIMS: {
   expected: number;
   patterns: RegExp[];
 }[] = [
-  {
-    label: "catalog styles",
-    expected: CURATED_STYLE_COUNT,
-    patterns: [/\*\*(\d+) visual and layout styles\*\*/, /\*\*(\d+) 套视觉与布局风格\*\*/],
-  },
+  // The catalogue count deliberately has no entry here. Its phrasing moved into
+  // a link ("**[Browse all 148 →]**"), which no bolded-number pattern matches,
+  // and lib/product-truth/audit.ts already checks it across both READMEs with
+  // patterns that do not depend on the surrounding markup. Keeping a dead
+  // pattern here would imply a coverage that does not exist.
   {
     label: "animations",
     expected: animationsMeta.length,
     patterns: [/\*\*(\d+) animations\*\*/, /\*\*(\d+) 个动效\*\*/],
   },
   {
-    label: "page-template demos",
+    label: "page templates",
     expected: templateCatalog.filter((template) => !template.external).length,
-    patterns: [/\*\*(\d+) page-template demos\*\*/, /\*\*(\d+) 个页面模板演示\*\*/],
+    // Was "page-template demos" / "个页面模板演示". The README rewrite shortened
+    // both to "page templates" / "个页面模板" and this guard went blind without
+    // failing — the same rewrite that moved the catalogue count out of reach.
+    patterns: [/\*\*(\d+) page templates\*\*/, /\*\*(\d+) 个页面模板\*\*/],
   },
 ];
 
