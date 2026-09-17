@@ -137,6 +137,30 @@ export default async function StyleDetailPage({
         ).map(({ slug, name, nameEn }) => ({ slug, name, nameEn }))
       : [];
 
+  // Pre-compute related styles for the sideways-link block. Google knows
+  // roughly half of the localized style pages but never crawls them, so each
+  // detail page links to its nearest siblings. A shared tag counts for more
+  // than a shared category.
+  const ownTags = new Set(style.tags ?? []);
+  const relatedStyles = styles
+    .filter((candidate) => candidate.slug !== style.slug)
+    .map((candidate) => ({
+      style: candidate,
+      score:
+        (candidate.category === style.category ? 2 : 0) +
+        (candidate.tags ?? []).filter((tag) => ownTags.has(tag)).length * 3,
+    }))
+    .filter((entry) => entry.score > 0)
+    .sort(
+      (a, b) => b.score - a.score || a.style.slug.localeCompare(b.style.slug)
+    )
+    .slice(0, 6)
+    .map(({ style: sibling }) => ({
+      slug: sibling.slug,
+      name: sibling.name,
+      nameEn: sibling.nameEn,
+    }));
+
   // Pre-compute enhanced rules
   // Generate the token spec in the reader's language. It used to be Chinese
   // only, and the prompt builder drops CJK sources for English prompts, so
@@ -234,6 +258,7 @@ export default async function StyleDetailPage({
             hasIdeExports={capabilities.exports.ideConfigs}
             compatibleStyles={compatibleStyles}
             compatibleLayouts={compatibleLayouts}
+            relatedStyles={relatedStyles}
             enhancedRules={enhancedRules}
             specTokens={specTokens}
             accessibilityScore={accessibilityScore}

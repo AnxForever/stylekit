@@ -35,13 +35,20 @@ export const materialDesign: DesignStyle = {
 - 响应式适配：设计必须在移动端、平板、桌面端上保持一致的体验
 - 无障碍性：确保色彩对比度符合 WCAG 2.1 AA 标准，所有交互元素可键盘访问`,
 
-  philosophyEn: `Material Design is a design language launched by Google in 2014, comparing digital interfaces to paper and ink with physical properties.
+  philosophyEn: `Material Design is Google's cross-platform design language, introduced in 2014 and still evolving. Its founding insight was deceptively simple: treat the interface as a physical material -- paper with real thickness, resting on a stage with real light.
+
+That metaphor drives every rule in the system. Surfaces have elevation, elevation casts shadows, and shadows communicate hierarchy. A dialog floats above a card; a card floats above the page. Users never need to learn a legend to know what sits on top of what.
 
 Core principles:
-- Material metaphor: Interfaces are like paper with thickness, stackable and movable
-- Elevation system: Expressing hierarchy through shadows
-- Bold colors: Vivid primary and accent colors
-- Meaningful motion: Animations convey spatial relationships and feedback`,
+- Material metaphor: Surfaces are sheets of paper. They have edges, they can be stacked, folded and moved, but they never pass through one another
+- Elevation and light: A single light source from above casts shadows whose size encodes height -- a resting card sits at elevation 1, a floating action button at elevation 6
+- Bold color: A primary and a secondary color carry the entire identity, applied flat and full-bleed rather than as outlines or effects
+- Meaningful motion: Animation exists to explain spatial relationships -- where a surface came from, where it went -- never as decoration
+- Responsive grid: An 8dp baseline grid and a 12/8/4-column responsive layout keep rhythm consistent from watch to desktop
+
+In practice the language shows up as rectangular surfaces with subtle rounded corners (4dp in the classic spec, 16-28dp in Material 3), filled buttons that use color rather than borders, and a type scale built on Roboto -- or the platform's own face under Material You. The signature move is restraint: one accent, one elevation language, and no shadow that does not correspond to a real stack.
+
+Suitable for: Android and cross-platform products, admin dashboards and settings screens, design systems that must scale to hundreds of contributors, and any interface where clarity of hierarchy matters more than novelty.`,
 
   doList: [
     "使用海拔阴影系统表达层次",

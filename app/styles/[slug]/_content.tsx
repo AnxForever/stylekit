@@ -60,6 +60,7 @@ interface Props {
   hasIdeExports?: boolean;
   compatibleStyles: CompatibleStyleSummary[];
   compatibleLayouts: CompatibleStyleSummary[];
+  relatedStyles?: CompatibleStyleSummary[];
   enhancedRules: string | null;
   specTokens?: DesignSpecTokens;
   accessibilityScore: AccessibilityScore | null;
@@ -76,6 +77,7 @@ export function StyleDetailContent({
   hasIdeExports = true,
   compatibleStyles,
   compatibleLayouts,
+  relatedStyles = [],
   enhancedRules,
   specTokens,
   accessibilityScore,
@@ -600,6 +602,44 @@ export function StyleDetailContent({
                       {getPrimaryName(layoutStyle)}
                     </p>
                     <p className="text-xs text-muted">{getSecondaryName(layoutStyle)}</p>
+                  </div>
+                </LocalizedLink>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Related Styles: sideways links to same-category siblings. Many
+          localized style pages are known to Google but never crawled, so every
+          detail page links to its nearest neighbours. */}
+      {relatedStyles.length > 0 && (
+        <section className="border-b border-border">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-12 py-12 md:py-16">
+            <p className="text-xs tracking-widest uppercase text-muted mb-4">
+              {t("seo.relatedStyles")}
+            </p>
+            <h2 className="text-2xl md:text-3xl mb-4">
+              {t("seo.relatedStyles")}
+            </h2>
+            <p className="text-muted mb-8 max-w-2xl">
+              {t("seo.relatedStylesDesc")}
+            </p>
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+              {relatedStyles.map((relatedStyle) => (
+                <LocalizedLink
+                  key={relatedStyle.slug}
+                  href={`/styles/${relatedStyle.slug}`}
+                  className="group block border border-border hover:border-foreground transition-colors"
+                >
+                  <div className="aspect-square overflow-hidden">
+                    <StyleCoverPreview styleSlug={relatedStyle.slug} />
+                  </div>
+                  <div className="p-3">
+                    <p className="text-sm font-medium group-hover:text-accent transition-colors">
+                      {getPrimaryName(relatedStyle)}
+                    </p>
+                    <p className="text-xs text-muted">{getSecondaryName(relatedStyle)}</p>
                   </div>
                 </LocalizedLink>
               ))}

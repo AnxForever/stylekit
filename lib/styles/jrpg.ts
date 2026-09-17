@@ -35,13 +35,20 @@ export const jrpg: DesignStyle = {
 - 响应式适配：设计必须在移动端、平板、桌面端上保持一致的体验
 - 无障碍性：确保色彩对比度符合 WCAG 2.1 AA 标准，所有交互元素可键盘访问`,
 
-  philosophyEn: `JRPG style originates from the menu and UI design of classic Japanese role-playing games, recreating the retro gaming experience through beveled borders, gradient backgrounds, and ornate frames.
+  philosophyEn: `JRPG style descends from the menu screens of 16-bit and 32-bit Japanese role-playing games -- the era when Final Fantasy, Dragon Quest and Chrono Trigger turned a simple status screen into a piece of worldbuilding. Every panel was carved, gilded and lit like an artifact from the game's own universe.
+
+The look is built from a handful of deliberate choices: a deep navy field (#0f172a to #1e293b) that reads as night sky or dungeon stone, beveled frames that catch light on the top-left and fall into shadow on the bottom-right, and a two-color accent system -- gold #fbbf24 for anything the player can act on, crystal white #f0f9ff for anything the player must read.
 
 Core principles:
-- Beveled borders: Inner and outer shadows with gradients simulate 3D raised buttons and panels
-- Dark base: Deep navy blue backgrounds paired with gold and crystal white highlights
-- Status visualization: HP/MP/EXP bar charts for intuitive numerical display
-- Ornate decoration: Corner ornaments and frames enhance the fantasy world atmosphere`,
+- Beveled depth: No flat surfaces. Panels and buttons use paired inset shadows, light from the top-left and dark from the bottom-right, so every element reads as a physical plate with thickness
+- Layered panels: Vertical ramps from slate-800 to slate-900 give large surfaces a subtle sheen, the way a backlit screen renders depth without any texture art
+- Ornamental framing: Corner caps, double borders and hairline inner strokes turn a plain container into a framed window
+- Status-driven color: HP, MP and EXP bars each own a color ramp (red-amber, blue-cyan, green-lime) so state is legible before a single number is read
+- Textured restraint: Grain or scanline layers stay at low opacity in the background, so the interface never fights the numbers
+
+Applying it to modern interfaces means treating every card as a menu entry and every action as a command: buttons click like a selection cursor landing, modals open with a short vertical wipe instead of a fade, and focus states glow gold rather than turning blue. Typography usually pairs a pixel or blocky display face for headers with a clean sans for body copy -- the display face carries the nostalgia, the sans keeps long text readable.
+
+Suitable for: game UI and launcher screens, retro-gaming storefronts and wikis, achievement and leaderboard dashboards, esports overlays, and any product that wants the weight of a 90s adventure menu without becoming unreadable.`,
 
   doList: [
     "背景使用深海军蓝 bg-[#0f172a] 或 bg-slate-900",
