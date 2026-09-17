@@ -15,6 +15,13 @@ All tools are read-only.
 | `stylekit_get_style_tokens` | Typed design tokens: border, shadow, typography, spacing, colors |
 | `stylekit_get_component_recipe` | Rendered component `className` + JSX (button/card/input) |
 | `stylekit_get_shadcn_install` | The `npx shadcn add` command for a style's theme |
+| `stylekit_lint_code` | Check generated UI code against a style's rules, with a reason and a fix per violation |
+
+`stylekit_lint_code` is the one worth building into your loop: call it after the
+agent writes UI code, so a style's constraints are **verified rather than
+assumed**. It resolves variant prefixes (`dark:`, `md:`, `hover:`) before
+matching, and understands JSX/HTML class attributes, `cn()`/`clsx()` calls, and
+template literals.
 
 ## Setup
 
