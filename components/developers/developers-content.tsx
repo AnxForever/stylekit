@@ -28,7 +28,11 @@ const COPY = {
     intro:
       "Every style ships as design tokens you can install through shadcn. Public beta CLI and MCP packages are available today, with newer repository candidates for contributors.",
     note: "These install a style's color theme — design tokens for light and dark. The component code is yours to build.",
-    browse: "Browse all 146 styles",
+    // Kept as a literal because this is a client component and importing the
+    // registry would ship all 148 style records to the browser to print a number.
+    // CI enforces it instead: `check:product-truth` fails with this file named if
+    // the registry count ever moves past it.
+    browse: "Browse all 148 styles",
     docs: "Docs",
     status: "Status",
     verified: "Verified",
@@ -70,7 +74,7 @@ const COPY = {
     intro:
       "每个风格都以 design tokens 的形式提供，可通过 shadcn 安装。CLI 与 MCP 公测包现已可用，仓库中也保留更新中的候选版本。",
     note: "安装的是风格的配色主题——明暗两套 design tokens。组件代码由你自己实现。",
-    browse: "浏览全部 146 风格",
+    browse: "浏览全部 148 风格",
     docs: "文档",
     status: "状态",
     verified: "已验证",

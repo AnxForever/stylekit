@@ -1,6 +1,9 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 const mocks = vi.hoisted(() => ({
+  // Read synchronously by tools.ts when it builds the search tool's description,
+  // so it must return a value rather than a promise.
+  searchStyles: vi.fn(),
   searchStylesLive: vi.fn(),
   getStyleDetail: vi.fn(),
   getComponentRecipe: vi.fn(),
@@ -48,6 +51,7 @@ function registeredSearchHandler() {
 
 beforeEach(() => {
   vi.clearAllMocks();
+  mocks.searchStyles.mockReturnValue({ total: results.length, results });
   mocks.searchStylesLive.mockResolvedValue({
     origin: "bundled",
     data: { total: results.length, results },

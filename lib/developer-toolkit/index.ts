@@ -1,3 +1,5 @@
+import { stylesMeta } from "@/lib/styles/meta";
+
 export type DeveloperToolkitState =
   | "repository-preview"
   | "public-beta"
@@ -31,7 +33,10 @@ export interface DeveloperToolkitManifest {
 
 export const developerToolkitManifest = Object.freeze({
   schemaVersion: 1,
-  catalogCount: 146,
+  // Read from the registry rather than written down. This field held 146 for
+  // two styles' worth of releases: adding a style updates no string, and a
+  // number that describes the catalogue should not be able to disagree with it.
+  catalogCount: stylesMeta.length,
   capabilities: Object.freeze([
     {
       id: "registry",

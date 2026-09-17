@@ -12,6 +12,7 @@ export interface ProductTruthIssue {
     | "unpublished-package-command"
     | "misleading-template-download"
     | "retired-capability-claim"
+    | "stale-style-count"
     | "toolkit-repository-version-mismatch"
     | "toolkit-public-state-contradiction";
   source: string;
@@ -39,6 +40,7 @@ export async function auditProductTruth(rootDir: string): Promise<ProductTruthRe
     ...(await auditUnpublishedPackageCommands(rootDir)),
     ...(await auditTemplateDownloadClaim(rootDir)),
     ...(await auditForbiddenPublicClaims(rootDir)),
+    ...(await auditStyleCountClaims(rootDir)),
   ];
 
   return {
@@ -295,6 +297,72 @@ async function auditForbiddenPublicClaims(rootDir: string): Promise<ProductTruth
         source: claim.source,
         message: claim.message,
       });
+    }
+  }
+
+  return issues;
+}
+
+/**
+ * Files that state how many styles the catalogue holds.
+ *
+ * Deliberately a short, hand-picked list rather than a repository-wide grep.
+ * A grep would also hit the changelog ("all 127 styles" was true in June), the
+ * community launch copy, and the GitHub-style demo page, which renders invented
+ * numbers on purpose. Those are records of a moment, not claims about today, and
+ * rewriting them to match would destroy the history the changelog exists to keep.
+ */
+const STYLE_COUNT_CLAIM_FILES = [
+  "README.md",
+  "README.zh-CN.md",
+  "SKILL.md",
+  "components/developers/developers-content.tsx",
+  "packages/cli/README.md",
+  "packages/cli/package.json",
+  "packages/mcp/README.md",
+  "packages/mcp/package.json",
+] as const;
+
+/** "148 design styles", "all 146 styles", and the Chinese "148 种风格". */
+const STYLE_COUNT_PATTERNS = [
+  /(\d{2,4})\s*\+?\s*(?:design\s+)?styles/gi,
+  /(\d{2,4})\s*\+?\s*(?:种|个|款)?\s*(?:设计)?风格/g,
+] as const;
+
+/**
+ * The catalogue grows whenever a style is added, and the number is written into
+ * prose in half a dozen places. It has already drifted: three public surfaces
+ * said 146 and one said 130+ while the registry held 148, because adding a style
+ * updates no strings.
+ *
+ * The MCP tool description is the one that hurt most — it is injected into the
+ * model's context, so a stale number is one the agent quotes back to the user.
+ * That description now reads the count at runtime; this check covers the places
+ * that genuinely cannot: npm descriptions, READMEs, and marketing copy.
+ */
+async function auditStyleCountClaims(rootDir: string): Promise<ProductTruthIssue[]> {
+  const { styles } = await import("@/lib/styles/registry");
+  const actual = styles.length;
+  const issues: ProductTruthIssue[] = [];
+
+  for (const source of STYLE_COUNT_CLAIM_FILES) {
+    const content = await readFileIfExists(path.join(rootDir, source));
+    if (content === null) continue;
+
+    for (const pattern of STYLE_COUNT_PATTERNS) {
+      for (const match of content.matchAll(pattern)) {
+        const claimed = Number(match[1]);
+        const isMinimum = match[0].includes("+");
+        // "130+" claims a floor, so it stays true as the catalogue grows.
+        const ok = isMinimum ? claimed <= actual : claimed === actual;
+        if (ok) continue;
+
+        issues.push({
+          code: "stale-style-count",
+          source,
+          message: `claims ${match[1]}${isMinimum ? "+" : ""} styles but the registry holds ${actual} ("${match[0].trim()}")`,
+        });
+      }
     }
   }
 

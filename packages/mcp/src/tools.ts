@@ -7,6 +7,7 @@ import {
   getStyleDetail,
   getComponentRecipe,
   knownSlug,
+  searchStyles,
   searchStylesLive,
   getStyleDetailLive,
   getTokensLive,
@@ -150,13 +151,26 @@ function unknownSlug(slug: string) {
   );
 }
 
+/**
+ * The size of the bundled catalogue.
+ *
+ * This used to be written into the tool description as a literal, and it drifted:
+ * the description said 146 while the catalogue held 148, because adding a style
+ * does not update a string. That matters more here than in most prose — this
+ * description is injected into the model's context, so a stale number is one the
+ * agent will happily quote back to the user. Read it from the catalogue instead.
+ */
+function catalogueSize(): number {
+  return searchStyles().total;
+}
+
 export function registerStyleKitTools(server: McpServer): void {
   // 1) Search
   server.registerTool(
     "stylekit_search_styles",
     {
       title: "Search StyleKit styles",
-      description: `Search StyleKit's 146 design styles by keyword and/or category, with pagination.
+      description: `Search StyleKit's ${catalogueSize()} design styles by keyword and/or category, with pagination.
 
 Args:
   - query (string, optional): matches slug, name, description, tags, keywords (case-insensitive).
