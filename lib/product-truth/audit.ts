@@ -34,7 +34,7 @@ const PUBLIC_PACKAGE_CLAIM_FILES = [
 
 export async function auditProductTruth(rootDir: string): Promise<ProductTruthReport> {
   const issues = [
-    ...(await auditReadmeApiClaims(rootDir)),
+    ...(await auditApiClaims(rootDir)),
     ...(await auditRedirectTargets(rootDir)),
     ...(await auditDeveloperToolkitTruth(rootDir)),
     ...(await auditUnpublishedPackageCommands(rootDir)),
@@ -130,25 +130,40 @@ export async function auditDeveloperToolkitTruth(
   return issues;
 }
 
-async function auditReadmeApiClaims(rootDir: string): Promise<ProductTruthIssue[]> {
-  const source = "README.md";
-  const content = await readFile(path.join(rootDir, source), "utf8");
-  const claims = [...content.matchAll(/^(GET|POST|PUT|PATCH|DELETE)\s+(\/api\/[^\s#]+)/gm)];
+/**
+ * Files that can state an HTTP endpoint.
+ *
+ * These claims moved from README.md to docs/API.md, and README.md is now the
+ * Chinese document — pointing this at README.md alone meant the scan parsed
+ * zero claims and passed without checking anything. A guard that cannot fail
+ * is worse than no guard, so scan every file that can carry a claim.
+ */
+const API_CLAIM_SOURCES = ["docs/API.md", "README.md", "README.en.md"] as const;
+
+async function auditApiClaims(rootDir: string): Promise<ProductTruthIssue[]> {
   const issues: ProductTruthIssue[] = [];
 
-  for (const claim of claims) {
-    const publicPath = claim[2];
-    const routePath = publicPath
-      .replace(/\{([^}]+)\}/g, "[$1]")
-      .replace(/\?.*$/, "");
-    const relativePath = `app${routePath}/route.ts`;
+  for (const source of API_CLAIM_SOURCES) {
+    const filePath = path.join(rootDir, source);
+    if (!(await fileExists(filePath))) continue;
 
-    if (!(await fileExists(path.join(rootDir, relativePath)))) {
-      issues.push({
-        code: "missing-api-route",
-        source,
-        message: `${claim[1]} ${publicPath} has no ${relativePath}`,
-      });
+    const content = await readFile(filePath, "utf8");
+    const claims = [...content.matchAll(/^(GET|POST|PUT|PATCH|DELETE)\s+(\/api\/[^\s#]+)/gm)];
+
+    for (const claim of claims) {
+      const publicPath = claim[2];
+      const routePath = publicPath
+        .replace(/\{([^}]+)\}/g, "[$1]")
+        .replace(/\?.*$/, "");
+      const relativePath = `app${routePath}/route.ts`;
+
+      if (!(await fileExists(path.join(rootDir, relativePath)))) {
+        issues.push({
+          code: "missing-api-route",
+          source,
+          message: `${claim[1]} ${publicPath} has no ${relativePath}`,
+        });
+      }
     }
   }
 
@@ -269,34 +284,47 @@ async function auditTemplateDownloadClaim(rootDir: string): Promise<ProductTruth
   return issues;
 }
 
+/** The two public READMEs: README.md is Chinese, README.en.md is English. */
+const README_SOURCES = ["README.md", "README.en.md"] as const;
+
+/**
+ * Claims each README must never make. Both documents are scanned, in both
+ * languages: README.md is Chinese, so an English-only pattern list would read
+ * it, match nothing, and pass — the failure this guard exists to catch would
+ * have to arrive in English before anyone noticed.
+ *
+ * Product names tend to survive translation, so the English patterns still
+ * apply to the Chinese document; the Chinese patterns cover translated wording.
+ */
+const FORBIDDEN_PUBLIC_CLAIMS = [
+  {
+    patterns: [/\bPrompt builder\b/i, /提示词构建/],
+    message: "README advertises the retired Prompt builder as an active product",
+  },
+  {
+    patterns: [/\bStyle linter\b/i, /风格检查器/, /样式检查器/],
+    message: "README advertises the retired Style linter as an active product",
+  },
+  {
+    patterns: [/everything needed[^\n]*production-ready code/i, /开箱即用[^\n]*生产级代码/],
+    message: "README overstates current content as a production-complete delivery",
+  },
+] as const;
+
 async function auditForbiddenPublicClaims(rootDir: string): Promise<ProductTruthIssue[]> {
-  const claims = [
-    {
-      source: "README.md",
-      pattern: /\bPrompt builder\b/i,
-      message: "README advertises the retired Prompt builder as an active product",
-    },
-    {
-      source: "README.md",
-      pattern: /\bStyle linter\b/i,
-      message: "README advertises the retired Style linter as an active product",
-    },
-    {
-      source: "README.md",
-      pattern: /everything needed[^\n]*production-ready code/i,
-      message: "README overstates current content as a production-complete delivery",
-    },
-  ] as const;
   const issues: ProductTruthIssue[] = [];
 
-  for (const claim of claims) {
-    const content = await readFile(path.join(rootDir, claim.source), "utf8");
-    if (claim.pattern.test(content)) {
-      issues.push({
-        code: "retired-capability-claim",
-        source: claim.source,
-        message: claim.message,
-      });
+  for (const source of README_SOURCES) {
+    const content = await readFile(path.join(rootDir, source), "utf8");
+
+    for (const claim of FORBIDDEN_PUBLIC_CLAIMS) {
+      if (claim.patterns.some((pattern) => pattern.test(content))) {
+        issues.push({
+          code: "retired-capability-claim",
+          source,
+          message: claim.message,
+        });
+      }
     }
   }
 
@@ -323,10 +351,19 @@ const STYLE_COUNT_CLAIM_FILES = [
   "packages/mcp/package.json",
 ] as const;
 
-/** "148 design styles", "all 146 styles", and the Chinese "148 种风格". */
+/**
+ * "148 design styles", "all 146 styles", and the Chinese "148 种风格".
+ *
+ * Each allows a short run of words between the number and the noun, because
+ * prose puts them there: "148 curated styles" and "148 套精选风格" are how both
+ * READMEs phrased it, and a pattern demanding adjacency matched neither — the
+ * number could have gone stale in either document with this check still green.
+ * Verified against every guarded file: the wider patterns add the missed claims
+ * and match nothing that is not a style count.
+ */
 const STYLE_COUNT_PATTERNS = [
-  /(\d{2,4})\s*\+?\s*(?:design\s+)?styles/gi,
-  /(\d{2,4})\s*\+?\s*(?:种|个|款)?\s*(?:设计)?风格/g,
+  /(\d{2,4})\s*\+?\s*(?:[\w-]+\s+){0,2}styles/gi,
+  /(\d{2,4})\s*\+?\s*(?:种|个|款|套)?\s*[^，。；\n]{0,4}?风格/g,
 ] as const;
 
 /**

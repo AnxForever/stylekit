@@ -60,6 +60,7 @@ describe("unicode policy", () => {
       "scripts",
       "mcp",
       "README.md",
+      "README.en.md",
       "CLAUDE.md",
       "AI-ICON-WORKFLOW-TUTORIAL.md",
       "NEO-BRUTALIST-GUIDE.md",

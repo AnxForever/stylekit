@@ -148,15 +148,13 @@ describe("dashscope embedding requests", () => {
     );
   });
 
-  it("refuses a batch size larger than the endpoint allows", async () => {
-    const { provider, calls } = createProvider((call) =>
-      Response.json(embeddingsResponse(call.body.input.length, 4)),
-    );
-
-    await provider.embed(
-      Array.from({ length: 25 }, (_, index) => `text ${index}`),
+  it("clamps a configured batch size that would exceed the endpoint limit", async () => {
+    const { provider, calls } = createProvider(
+      (call) => Response.json(embeddingsResponse(call.body.input.length, 4)),
       { batchSize: 99 },
     );
+
+    await provider.embed(Array.from({ length: 25 }, (_, index) => `text ${index}`));
 
     expect(Math.max(...calls.map((call) => call.body.input.length))).toBeLessThanOrEqual(
       MAX_BATCH_SIZE,
