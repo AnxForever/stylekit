@@ -9,8 +9,8 @@
 </p>
 
 <p align="center">
-  <strong>An open-source visual style library for AI-generated web interfaces.</strong><br>
-  148 curated styles, each with design tokens, component recipes, Tailwind-ready constraints, and copy-ready prompts.
+  <strong>面向 AI 生成网页的开源视觉风格库。</strong><br>
+  148 套精选风格，每套都包含设计令牌、组件配方、Tailwind 约束与可直接复制的提示词。
 </p>
 
 <p align="center">
@@ -22,42 +22,37 @@
 </p>
 
 <p align="center">
-  <strong>English</strong> &middot; <a href="README.zh-CN.md">简体中文</a>
+  <strong>简体中文</strong> &middot; <a href="README.en.md">English</a>
 </p>
 
 <br>
 
 <p align="center">
   <a href="https://stylekit.top">
-    <img src="public/readme/home-hero.png" alt="StyleKit Preview" width="100%">
+    <img src="public/readme/home-hero.png" alt="StyleKit 预览" width="100%">
   </a>
 </p>
 
 <p align="center">
-  <a href="https://www.stylekit.top/en/styles"><strong>Styles</strong></a> &middot;
-  <a href="https://www.stylekit.top/en/templates"><strong>Templates</strong></a> &middot;
-  <a href="https://www.stylekit.top/en/animations"><strong>Animations</strong></a> &middot;
-  <a href="#contributing"><strong>Contributing</strong></a>
+  <a href="https://www.stylekit.top/zh/styles"><strong>风格展示</strong></a> &middot;
+  <a href="https://www.stylekit.top/zh/templates"><strong>页面模板</strong></a> &middot;
+  <a href="https://www.stylekit.top/zh/animations"><strong>动效</strong></a> &middot;
+  <a href="#参与贡献"><strong>参与贡献</strong></a>
 </p>
 
 <br>
 
 ---
 
-## What is StyleKit?
+## StyleKit 是什么？
 
-Ask an AI to build you a landing page and you get something that works and looks
-like every other AI-built landing page. The problem is not the model — it is that
-"make it look good" is not a specification.
+让 AI 帮你做个落地页，出来的东西能跑，但和所有 AI 做的落地页长得一样。问题不在模型 —— 而是「做得好看点」本来就不算一句规格。
 
-StyleKit turns a visual direction into something an agent can actually follow: a
-named style with real tokens, hard constraints, and a demo you can look at first.
-Pick one, and the output stops drifting.
+StyleKit 把一个视觉方向变成代理真正能照着做的东西：一个有名字的风格，配上真实的令牌、硬性约束，以及可以先看的示例。选定一个，产出就不再漂移。
 
-It does not guarantee a production-ready interface. Integration and completeness
-still depend on your project.
+它不保证产出可以直接上线的界面。集成与完整度仍然取决于你的项目。
 
-## Quick start
+## 快速开始
 
 ```bash
 git clone https://github.com/AnxForever/stylekit.git
@@ -66,86 +61,72 @@ pnpm install
 pnpm dev
 ```
 
-Open [localhost:3000](http://localhost:3000). See [`.env.example`](.env.example)
-for optional Supabase and admin configuration.
+打开 [localhost:3000](http://localhost:3000)。Supabase 与管理员相关的可选配置见 [`.env.example`](.env.example)。
 
-## Three ways to use it
+## 三种使用方式
 
-### 1. Install a style into an existing shadcn project
+### 1. 把风格装进现有的 shadcn 项目
 
-Every style is published as a [shadcn registry](https://ui.shadcn.com/docs/registry)
-theme. One command adds its light and dark `cssVars` to your `globals.css`:
+每套风格都以 [shadcn registry](https://ui.shadcn.com/docs/registry) 主题的形式发布。一条命令即可把它的亮色与暗色 `cssVars` 加进你的 `globals.css`：
 
 ```bash
 npx shadcn add https://stylekit.top/r/glassmorphism.json
 ```
 
-Swap `glassmorphism` for any slug. Works with Tailwind v4.
+把 `glassmorphism` 换成任意 slug，兼容 Tailwind v4。
 
-> The target project needs a `tsconfig.json`, or the shadcn CLI exits with
-> `Couldn't find tsconfig.json`. Full guide: [`docs/registry.md`](docs/registry.md).
+> 目标项目必须包含 `tsconfig.json`，否则 shadcn CLI 会以 `Couldn't find tsconfig.json` 退出。完整指南见 [`docs/registry.md`](docs/registry.md)。
 
-### 2. Give your coding agent the whole library
+### 2. 把整个库交给你的编码代理
 
 ```bash
 npx skills add AnxForever/stylekit-skill
 ```
 
-Claude Code, Cursor, Windsurf, and any Agent-Skills-compatible tool can then
-apply any of the 148 styles on request — "make this look like Stripe", "cyberpunk
-dashboard" — using the correct tokens and rules. The skill lives in
-[`AnxForever/stylekit-skill`](https://github.com/AnxForever/stylekit-skill).
+之后 Claude Code、Cursor、Windsurf 以及任何兼容 Agent Skills 的工具，都能按需套用这 148 套风格 ——「做成 Stripe 的样子」「赛博朋克仪表盘」—— 并使用正确的令牌与规则。技能本体在 [`AnxForever/stylekit-skill`](https://github.com/AnxForever/stylekit-skill)。
 
-### 3. Call it over MCP
+### 3. 通过 MCP 调用
 
 ```bash
 npx -y stylekit-mcp
 ```
 
-Exposes search, tokens, component recipes, and a `stylekit_lint_code` tool that
-checks whether generated UI code actually follows the style's rules. See
-[`packages/mcp/README.md`](packages/mcp/README.md).
+提供风格检索、设计令牌、组件配方，以及一个 `stylekit_lint_code` 工具，用来检查生成的 UI 代码是否真的守住了该风格的规则。见 [`packages/mcp/README.md`](packages/mcp/README.md)。
 
-## Styles
+## 风格目录
 
-148 styles in ten families — Modern & Tech, Brutalist, Brand-Inspired (Apple,
-Stripe, Notion, GitHub), Retro & Vintage, Artistic, Japanese & Anime, Cyberpunk
-& Sci-Fi, Layout Patterns, Cultural & Regional, Nature & Cozy.
+148 套风格，分属十大类 —— 现代与科技、粗野主义、品牌启发（Apple、Stripe、Notion、GitHub）、复古与怀旧、艺术、日式与动漫、赛博朋克与科幻、布局模式、文化与地域、自然与温馨。
 
-Every style ships tokens, component code, AI rules, and a full-page live demo.
+每套风格都自带设计令牌、组件代码、AI 规则和整页实时演示。
 
-**[Browse all 148 →](https://www.stylekit.top/en/styles)**
+**[浏览全部 148 套 →](https://www.stylekit.top/zh/styles)**
 
-## What else is in here
+## 仓库里还有什么
 
-- **60 animations** with live preview and one-click copy
-- **36 page templates** — SaaS, dashboard, e-commerce, portfolio, blog
-- **Export anywhere** — Tailwind preset, shadcn theme, CSS variables, Figma tokens
-- **IDE rules** — `.cursorrules`, `claude-rules`, `windsurf-rules`
-- **Bilingual** — full English and Chinese, with localized routing
-- **Machine-readable** — [`/llms.txt`](https://stylekit.top/llms.txt),
-  [`/llms.md`](https://stylekit.top/llms.md),
-  [`/llms-full.txt`](https://stylekit.top/llms-full.txt), and a documented HTTP
-  API ([`docs/API.md`](docs/API.md))
+- **60 个动效** —— 实时预览，一键复制
+- **36 个页面模板** —— SaaS、仪表盘、电商、作品集、博客
+- **随处导出** —— Tailwind preset、shadcn 主题、CSS 变量、Figma tokens
+- **IDE 规则** —— `.cursorrules`、`claude-rules`、`windsurf-rules`
+- **双语** —— 完整的中英文内容与本地化路由
+- **面向机器可读** —— [`/llms.txt`](https://stylekit.top/llms.txt)、[`/llms.md`](https://stylekit.top/llms.md)、[`/llms-full.txt`](https://stylekit.top/llms-full.txt)，以及有文档的 HTTP API（[`docs/API.md`](docs/API.md)）
 
-## Guides for building frontends with AI
+## 用 AI 构建前端的实战指南
 
-Practical walkthroughs on the site, for when the problem is the workflow rather
-than the style:
+站点上的实操文章 —— 当问题出在工作流而不是风格本身时看这些：
 
-- [Fix an AI-generated website that looks bad](https://www.stylekit.top/en/ai-generated-website-fix)
-- [How to choose AI web design tools](https://www.stylekit.top/en/ai-web-design-tools)
-- [AI UI generation](https://www.stylekit.top/en/ai-ui-generator) — turn a page brief into a usable interface structure
-- [AI frontend workflow](https://www.stylekit.top/en/ai-frontend-workflow)
-- [中文：AI 网页设计工具](https://www.stylekit.top/zh/ai-web-design-tools) · [AI 前端工作流](https://www.stylekit.top/zh/ai-frontend-workflow)
+- [AI 生成的网站不好看怎么修](https://www.stylekit.top/zh/ai-generated-website-fix)
+- [怎么选 AI 网页设计工具](https://www.stylekit.top/zh/ai-web-design-tools)
+- [AI 生成 UI 界面](https://www.stylekit.top/zh/ai-ui-generator) —— 把一句话需求变成可用的界面结构
+- [AI 前端工作流](https://www.stylekit.top/zh/ai-frontend-workflow)
+- English: [Fix an AI-generated website](https://www.stylekit.top/en/ai-generated-website-fix) · [AI frontend workflow](https://www.stylekit.top/en/ai-frontend-workflow)
 
-## Contributing
+## 参与贡献
 
-Contributions welcome. Read these before opening a PR:
+欢迎贡献。提交 PR 前请先阅读：
 
 1. [`docs/CONTRIBUTING.md`](docs/CONTRIBUTING.md)
-2. [`docs/STYLE_ADDITION_CHECKLIST.md`](docs/STYLE_ADDITION_CHECKLIST.md) — required for new styles
-3. [`docs/STYLE_AUTHORING.md`](docs/STYLE_AUTHORING.md) — how a style is written, before you add or change one
+2. [`docs/STYLE_ADDITION_CHECKLIST.md`](docs/STYLE_ADDITION_CHECKLIST.md) —— 新增风格必读
+3. [`docs/STYLE_AUTHORING.md`](docs/STYLE_AUTHORING.md) —— 风格是怎么写的，动手前先看
 
 ```bash
 git checkout -b feat/your-feature
@@ -153,18 +134,15 @@ pnpm lint && pnpm test && pnpm build
 git commit -m "feat: add your feature"
 ```
 
-Working on the codebase? [`docs/PROJECT_STRUCTURE.md`](docs/PROJECT_STRUCTURE.md)
-maps the repository, and [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md) covers how
-production is served.
+在改代码？[`docs/PROJECT_STRUCTURE.md`](docs/PROJECT_STRUCTURE.md) 是仓库导览，[`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md) 说明线上是怎么跑的。
 
-## Support this project
+## 支持这个项目
 
-If StyleKit helped you, a star is already a lot. If you want to go further,
-there is a support page on the site covering server and domain costs —
-[stylekit.top/contact#support-maintenance](https://stylekit.top/contact#support-maintenance).
-中文读者欢迎扫码支持，金额随意。
+如果 StyleKit 恰好帮到了你，点个 star 就已经很够了。想再往前一步的话，网站上有专门的支持页面，写明了服务器与域名成本 —— [stylekit.top/contact#support-maintenance](https://stylekit.top/contact#support-maintenance)。
 
-## Star history
+也欢迎扫码支持我把它继续做下去，金额随意，每一份心意我都很感谢。
+
+## Star 趋势
 
 <a href="https://star-history.com/#AnxForever/stylekit&Date">
   <picture>
@@ -174,20 +152,20 @@ there is a support page on the site covering server and domain costs —
   </picture>
 </a>
 
-## Contributors
+## 贡献者
 
 <a href="https://github.com/AnxForever/stylekit/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=AnxForever/stylekit" alt="StyleKit contributors" />
+  <img src="https://contrib.rocks/image?repo=AnxForever/stylekit" alt="StyleKit 贡献者" />
 </a>
 
-## License
+## 许可证
 
-MIT — see [LICENSE](LICENSE).
+MIT —— 详见 [LICENSE](LICENSE)。
 
 ---
 
 <p align="center">
   <a href="https://stylekit.top"><strong>www.stylekit.top</strong></a>
   <br>
-  Built by <a href="https://github.com/AnxForever">AnxForever</a>
+  由 <a href="https://github.com/AnxForever">AnxForever</a> 构建
 </p>

@@ -24,7 +24,7 @@ const BANNED_DISCOVERY_PATTERNS = [
 ];
 const PUBLIC_SEO_SOURCES = [
   "README.md",
-  "README.zh-CN.md",
+  "README.en.md",
   "app/about/layout.tsx",
   "components/layout/site-document.tsx",
   "content/blog/ai-ui-prompts-guide.mdx",
@@ -43,7 +43,7 @@ const STALE_PUBLIC_COUNT_PATTERN = /\b(?:135|136|140|143)\s*(?:\+|styles?|visual
 // README copy still quotes catalog sizes, so pin every quoted number to the
 // registry that owns it. A claim that is absent is fine (evergreen copy);
 // a claim that disagrees with the registry is drift.
-const README_SOURCES: readonly string[] = ["README.md", "README.zh-CN.md"];
+const README_SOURCES: readonly string[] = ["README.md", "README.en.md"];
 const README_COUNT_CLAIMS: {
   label: string;
   expected: number;

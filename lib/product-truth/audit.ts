@@ -314,7 +314,7 @@ async function auditForbiddenPublicClaims(rootDir: string): Promise<ProductTruth
  */
 const STYLE_COUNT_CLAIM_FILES = [
   "README.md",
-  "README.zh-CN.md",
+  "README.en.md",
   "SKILL.md",
   "components/developers/developers-content.tsx",
   "packages/cli/README.md",
