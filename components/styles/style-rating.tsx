@@ -58,8 +58,14 @@ export function StyleRating({ slug }: StyleRatingProps) {
         body: JSON.stringify({ rating }),
       });
       if (!res.ok) {
-        const body = await res.json().catch(() => null);
-        throw new Error(body?.error ?? "Failed to submit rating");
+        const body = (await res.json().catch(() => null)) as { error?: string } | null;
+        // The route already answers with a user-safe message. Surfacing it
+        // keeps a rejected write diagnosable instead of looking identical to
+        // every other failure, which is how a schema mismatch stayed hidden.
+        setUserRating(0);
+        setError(body?.error ?? "Failed to submit rating. Please try again.");
+        await mutate();
+        return;
       }
       await mutate();
     } catch {

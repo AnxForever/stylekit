@@ -159,6 +159,81 @@ describe("styles rating route", () => {
     });
   });
 
+  it("POST omits user_id when the column is missing and writes the legacy session identity", async () => {
+    mockedVerifyTrustedOrigin.mockReturnValue({ ok: true });
+    mockedGetServerUser.mockResolvedValue({ id: "user-legacy" } as never);
+    mockedGetRequestClientKey.mockReturnValue("ip:legacy");
+    mockedCheckRateLimit.mockReturnValue({
+      allowed: true,
+      limit: 80,
+      remaining: 79,
+      resetAt: Date.now() + 1_000,
+      retryAfterSec: 0,
+    });
+    mockedParseJsonBodyWithLimit.mockResolvedValue({
+      ok: true,
+      data: { rating: 4 },
+    });
+    mockedIsSupabaseConfigured.mockReturnValue(true);
+
+    // The user_id probe fails the way Postgres reports an unknown column, which
+    // is what selects the legacy session identity for this write.
+    const userProbeMaybeSingle = vi.fn().mockResolvedValue({
+      data: null,
+      error: { code: "42703", message: "column style_ratings.user_id does not exist" },
+    });
+    const userProbeSelect = {
+      eq: vi.fn().mockReturnValue({
+        eq: vi.fn().mockReturnValue({
+          maybeSingle: userProbeMaybeSingle,
+        }),
+      }),
+    };
+    const legacyProbeMaybeSingle = vi.fn().mockResolvedValue({ data: null, error: null });
+    const legacyProbeSelect = {
+      eq: vi.fn().mockReturnValue({
+        in: vi.fn().mockReturnValue({
+          maybeSingle: legacyProbeMaybeSingle,
+        }),
+      }),
+    };
+    const insert = vi.fn().mockResolvedValue({ error: null });
+    const summaryMaybeSingle = vi.fn().mockResolvedValue({
+      data: { average_rating: 4, total_ratings: 1 },
+      error: null,
+    });
+    const summarySelect = {
+      eq: vi.fn().mockReturnValue({
+        maybeSingle: summaryMaybeSingle,
+      }),
+    };
+
+    const from = vi
+      .fn()
+      .mockReturnValueOnce({ select: vi.fn().mockReturnValue(userProbeSelect) })
+      .mockReturnValueOnce({ select: vi.fn().mockReturnValue(legacyProbeSelect) })
+      .mockReturnValueOnce({ insert })
+      .mockReturnValueOnce({ select: vi.fn().mockReturnValue(summarySelect) });
+    mockedCreateClient.mockReturnValue({ from } as never);
+
+    const response = await POST(
+      new Request("https://stylekit.top/api/styles/neo-brutalist/rate", { method: "POST" }),
+      { params: params("neo-brutalist") },
+    );
+
+    expect(response.status).toBe(200);
+    const payload = insert.mock.calls[0][0];
+    // Naming a column the database does not have makes PostgREST reject the
+    // whole insert, so the legacy identity must not so much as mention it.
+    expect(payload).not.toHaveProperty("user_id");
+    expect(payload).toEqual({
+      style_slug: "neo-brutalist",
+      rating: 4,
+      session_id: "user:user-legacy",
+      ip_address: null,
+    });
+  });
+
   it("POST returns DB_SCHEMA_MISMATCH when legacy session_id not-null constraint blocks writes", async () => {
     mockedVerifyTrustedOrigin.mockReturnValue({ ok: true });
     mockedGetServerUser.mockResolvedValue({ id: "user-3" } as never);
