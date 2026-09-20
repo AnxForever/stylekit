@@ -1,0 +1,36 @@
+# Copy-paste example: run the StyleKit linter on your own repository.
+#
+# This is documentation, not an active workflow. It lives here rather than in
+# .github/workflows/ because every path in it is written for a consumer repo:
+# it installs @stylekit/core from npm and lints `src/**/*.tsx`. StyleKit's own
+# checkout has no `src/` directory, so as an active workflow it matched nothing,
+# ran on any PR touching components/**, and failed every time on an action that
+# could not load a linter.
+#
+# Wiring note: the inputs below belong to .github/actions/stylekit-lint, the
+# action documented in .github/actions/stylekit-lint/README.md. The older
+# .github/actions/lint reads `fail-on` instead of `fail-on-error` and resolves
+# its linter from paths this repository does not have.
+name: StyleKit Lint
+on:
+  pull_request:
+    paths:
+      - 'src/**/*.tsx'
+      - 'src/**/*.jsx'
+      - 'components/**/*.tsx'
+      - 'components/**/*.jsx'
+
+jobs:
+  stylekit-lint:
+    name: Check Style Compliance
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Run StyleKit Lint
+        uses: ./.github/actions/stylekit-lint
+        with:
+          style: neo-brutalist
+          files: 'src/**/*.tsx'
+          fail-on-error: 'true'
