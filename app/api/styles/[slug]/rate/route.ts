@@ -34,6 +34,20 @@ interface UserRatingRow {
   created_at?: string | null;
 }
 
+/**
+ * An insert that names a column the database does not have is rejected whole,
+ * so `user_id` is optional here: the legacy identity arm leaves it out rather
+ * than sending null. Declaring the shape keeps both arms assignable to one
+ * payload type without collapsing them into a single object literal.
+ */
+interface RatingInsertPayload {
+  style_slug: string;
+  rating: number;
+  session_id: string | null;
+  ip_address: string | null;
+  user_id?: string;
+}
+
 interface UserRatingQueryResult {
   data: unknown[] | null;
   error: DbErrorLike | null;
@@ -310,18 +324,25 @@ export async function POST(
         );
       }
     } else {
-      // Insert new rating
-      // One row shape for both identities. Branching the object literal made
-      // the two arms structurally different, and newer supabase-js typings
-      // reject the resulting union at the insert call.
-      const insertResult = await sb.from("style_ratings").insert({
-        style_slug: slugParsed.data,
-        rating: parsed.data.rating,
-        session_id: useLegacySessionIdentity ? legacySessionId : null,
-        user_id: useLegacySessionIdentity ? null : user.id,
-        ip_address: ip,
-      });
-      const { error } = insertResult;
+      // Insert new rating. The legacy arm writes the session identity alone:
+      // a database still on the pre-003 schema has no user_id column, and
+      // PostgREST rejects an insert that so much as names a column it does not
+      // have, null or not.
+      const payload: RatingInsertPayload = useLegacySessionIdentity
+        ? {
+            style_slug: slugParsed.data,
+            rating: parsed.data.rating,
+            session_id: legacySessionId,
+            ip_address: ip,
+          }
+        : {
+            style_slug: slugParsed.data,
+            rating: parsed.data.rating,
+            session_id: null,
+            user_id: user.id,
+            ip_address: ip,
+          };
+      const { error } = await sb.from("style_ratings").insert(payload);
 
       if (error) {
         const classified = classifyDbError(error as DbErrorLike);
