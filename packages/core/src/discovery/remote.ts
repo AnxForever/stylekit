@@ -13,10 +13,11 @@
  * correct by construction; keeping the bundle as a fallback means losing the
  * network degrades to stale rather than to broken.
  *
- * Ranking stays local. The API supplies which styles exist; the bundled
- * scoring decides how they rank. Moving scoring server-side would create two
- * implementations of the same logic, and they would drift the way the data
- * just did.
+ * Query ranking prefers the site's hybrid search (`/api/search`: BM25 +
+ * vector + RRF). Its vector path needs an embedding key and a prebuilt index,
+ * neither of which can ship inside an npm package, so it has to run
+ * server-side. The bundled scorer stays as the fallback when that endpoint is
+ * unreachable, so a query always gets an answer.
  */
 
 import {
@@ -44,7 +45,14 @@ export interface Sourced<T> {
   readonly origin: DataOrigin;
   /** Why the live catalogue was not used, when it was not. */
   readonly fallbackReason?: string;
+  /**
+   * Which ranker ordered a query's results: the site's hybrid search, its
+   * keyword-only degradation, or the bundled scorer.
+   */
+  readonly ranking?: SearchRanking;
 }
+
+export type SearchRanking = "hybrid" | "keyword" | "local";
 
 export interface RemoteOptions {
   /** Override for testing or self-hosting. */
@@ -111,6 +119,7 @@ async function fetchJsonUncached<T>(
   cacheKey: string,
   options: RemoteOptions,
   generation: number,
+  tripCircuit: boolean,
 ): Promise<FetchResult<T>> {
   const timeoutMs = options.timeoutMs ?? DEFAULT_TIMEOUT_MS;
   const controller = new AbortController();
@@ -122,7 +131,7 @@ async function fetchJsonUncached<T>(
       headers: { accept: "application/json" },
     });
     if (!response.ok) {
-      openCircuit(baseUrl, generation);
+      if (tripCircuit) openCircuit(baseUrl, generation);
       return { error: `HTTP ${response.status}` };
     }
 
@@ -136,7 +145,7 @@ async function fetchJsonUncached<T>(
     }
     return { value };
   } catch (error) {
-    openCircuit(baseUrl, generation);
+    if (tripCircuit) openCircuit(baseUrl, generation);
     const message = error instanceof Error ? error.message : String(error);
     return {
       error: /abort/i.test(message) ? `timed out after ${timeoutMs}ms` : message,
@@ -146,7 +155,15 @@ async function fetchJsonUncached<T>(
   }
 }
 
-async function fetchJson<T>(path: string, options: RemoteOptions): Promise<FetchResult<T>> {
+/**
+ * `tripCircuit: false` is for optional endpoints: a site that predates one
+ * answers 404, and that must not take the catalogue offline with it.
+ */
+async function fetchJson<T>(
+  path: string,
+  options: RemoteOptions,
+  tripCircuit = true,
+): Promise<FetchResult<T>> {
   if (options.live === false) return { error: "live fetching disabled" };
 
   const baseUrl = normalizeBaseUrl(options.baseUrl ?? STYLEKIT_SITE_URL);
@@ -163,7 +180,7 @@ async function fetchJson<T>(path: string, options: RemoteOptions): Promise<Fetch
   if (existing) return (await existing) as FetchResult<T>;
 
   const generation = cacheGeneration;
-  const request = fetchJsonUncached<T>(path, baseUrl, cacheKey, options, generation);
+  const request = fetchJsonUncached<T>(path, baseUrl, cacheKey, options, generation, tripCircuit);
   inFlight.set(cacheKey, request as Promise<FetchResult<unknown>>);
   try {
     return await request;
@@ -340,9 +357,51 @@ export async function searchStylesLive(
 ): Promise<Sourced<{ total: number; results: StyleSummary[] }>> {
   const catalogue = await liveCatalogue(options);
   if ("error" in catalogue) {
-    return { data: searchWithPool(opts), origin: "bundled", fallbackReason: catalogue.error };
+    return {
+      data: searchWithPool(opts),
+      origin: "bundled",
+      fallbackReason: catalogue.error,
+      ...(opts.query?.trim() ? { ranking: "local" as const } : {}),
+    };
+  }
+
+  const query = opts.query?.trim();
+  if (query) {
+    const ranked = await rankedSlugs(query, options);
+    if (ranked && ranked.slugs.length > 0) {
+      const bySlug = new Map(catalogue.styles.map((style) => [style.slug, style]));
+      const pool = ranked.slugs
+        .map((slug) => bySlug.get(slug))
+        .filter((style): style is DesignStyle => style !== undefined);
+      // No query here: the pool is already in ranked order, and searchWithPool
+      // keeps that order while applying the category filter and limit.
+      return {
+        data: searchWithPool({ ...opts, query: undefined }, pool),
+        origin: "live",
+        ranking: ranked.mode,
+      };
+    }
+    return { data: searchWithPool(opts, catalogue.styles), origin: "live", ranking: "local" };
   }
   return { data: searchWithPool(opts, catalogue.styles), origin: "live" };
+}
+
+async function rankedSlugs(
+  query: string,
+  options: RemoteOptions,
+): Promise<{ slugs: string[]; mode: "hybrid" | "keyword" } | null> {
+  const response = await fetchJson<unknown>(
+    `/api/search?q=${encodeURIComponent(query)}`,
+    options,
+    false,
+  );
+  if ("error" in response || !isRecord(response.value)) return null;
+  const { mode, results } = response.value;
+  if ((mode !== "hybrid" && mode !== "keyword") || !Array.isArray(results)) return null;
+  const slugs = results
+    .map((result) => (isRecord(result) ? result.slug : undefined))
+    .filter((slug): slug is string => typeof slug === "string" && slug.length > 0);
+  return { slugs, mode };
 }
 
 export async function getStyleDetailLive(

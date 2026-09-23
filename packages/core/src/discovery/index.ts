@@ -45,4 +45,4 @@ export {
   clearRemoteCache,
 } from "./remote";
 
-export type { DataOrigin, Sourced, RemoteOptions } from "./remote";
+export type { DataOrigin, Sourced, RemoteOptions, SearchRanking } from "./remote";

@@ -235,4 +235,54 @@ describe("remote discovery", () => {
     await searchStylesLive({}, { baseUrl: "https://ttl.test", cacheTtlMs: 100 });
     expect(fetchMock).toHaveBeenCalledTimes(3);
   });
+
+  it("orders query results by the site's hybrid search and keeps the category filter", async () => {
+    const fetchMock = vi.fn((url: string) => {
+      if (url.includes("/api/search")) {
+        return Promise.resolve(
+          responseFor(url, {
+            mode: "hybrid",
+            results: [
+              { slug: "gamma", score: 3 },
+              { slug: "retro-one", score: 2 },
+              { slug: "alpha", score: 1 },
+              { slug: "unknown-slug", score: 0.5 },
+            ],
+          }),
+        );
+      }
+      return Promise.resolve(
+        catalogue([style("alpha"), style("gamma"), style("retro-one", "retro")]),
+      );
+    });
+    vi.stubGlobal("fetch", fetchMock);
+
+    const result = await searchStylesLive(
+      { query: "玻璃质感", category: "modern" },
+      { baseUrl: "https://hybrid.test" },
+    );
+    expect(result.origin).toBe("live");
+    expect(result.ranking).toBe("hybrid");
+    expect(result.data.results.map((r) => r.slug)).toEqual(["gamma", "alpha"]);
+    expect(fetchMock.mock.calls.some(([url]) => String(url).includes("q=%E7%8E%BB%E7%92%83"))).toBe(true);
+  });
+
+  it("falls back to the bundled scorer when search is missing, without backing off the catalogue", async () => {
+    const fetchMock = vi.fn((url: string) =>
+      Promise.resolve(
+        url.includes("/api/search")
+          ? responseFor(url, { error: "not found" }, 404)
+          : catalogue([style("alpha"), style("gamma")]),
+      ),
+    );
+    vi.stubGlobal("fetch", fetchMock);
+
+    const first = await searchStylesLive({ query: "gamma" }, { baseUrl: "https://old-site.test" });
+    expect(first.origin).toBe("live");
+    expect(first.ranking).toBe("local");
+    expect(first.data.results.map((r) => r.slug)).toEqual(["gamma"]);
+
+    const detail = await getStyleDetailLive("not-bundled-slug", { baseUrl: "https://old-site.test" });
+    expect(detail.fallbackReason).not.toBe("live source unreachable, backing off");
+  });
 });
