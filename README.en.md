@@ -10,7 +10,8 @@
 
 <p align="center">
   <strong>An open-source visual style library for AI-generated web interfaces.</strong><br>
-  148 curated styles, each with design tokens, component recipes, Tailwind-ready constraints, and copy-ready prompts.
+  148 curated styles, each with design tokens, component recipes, Tailwind-ready constraints, and copy-ready prompts.<br>
+  Available over MCP, as an Agent Skill, and via npm CLI.
 </p>
 
 <p align="center">

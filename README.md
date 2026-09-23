@@ -10,7 +10,8 @@
 
 <p align="center">
   <strong>面向 AI 生成网页的开源视觉风格库。</strong><br>
-  148 套精选风格，每套都包含设计令牌、组件配方、Tailwind 约束与可直接复制的提示词。
+  148 套精选风格，每套都包含设计令牌、组件配方、Tailwind 约束与可直接复制的提示词。<br>
+  支持 MCP、Agent Skill 与 npm CLI。
 </p>
 
 <p align="center">

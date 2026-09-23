@@ -14,9 +14,11 @@ product
 ## Product Purpose
 
 Help people choose a visual direction, inspect its examples, and carry its tokens,
-recipes, and prompts into their own project. Community participation should connect
-real people and their work, not manufacture activity or imply that a prompt alone
-guarantees a production-ready interface.
+recipes, and prompts into their own project. The same catalog is delivered through
+the website, an MCP server, an Agent Skill, and npm packages; the same facts must
+hold in each, so no surface may describe the catalog differently from another.
+Community participation should connect real people and their work, not manufacture
+activity or imply that a prompt alone guarantees a production-ready interface.
 
 ## Brand Personality
 
