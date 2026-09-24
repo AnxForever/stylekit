@@ -52,6 +52,147 @@ function formatColor(hex: string, fmt: ColorFormat): string {
   return `hsl(${Math.round(hdeg)}, ${Math.round(s * 100)}%, ${Math.round(l * 100)}%)`;
 }
 
+// ---------------------------------------------------------------------------
+// Type guide — when to use each gradient type (teaching layer)
+// ---------------------------------------------------------------------------
+
+const GRADIENT_TYPE_GUIDE = [
+  {
+    type: "linear",
+    typeZh: "线性",
+    demo: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+    useZh: "方向感强。Hero 背景、按钮、分隔条。",
+    useEn: "Directional. Hero backgrounds, buttons, dividers.",
+    avoidZh: "做不出圆形光照",
+    avoidEn: "Can't fake circular light",
+  },
+  {
+    type: "radial",
+    typeZh: "径向",
+    demo:
+      "radial-gradient(circle at 30% 25%, #f97316 0%, transparent 55%), #0f172a",
+    useZh: "同心圆光照。聚光、卡片高光、焦点。",
+    useEn: "Concentric glow. Spotlights, card highlights, focus.",
+    avoidZh: "方向引导弱",
+    avoidEn: "Weak at directing the eye",
+  },
+  {
+    type: "conic",
+    typeZh: "锥形",
+    demo:
+      "conic-gradient(from 0deg, #f43f5e, #f97316, #eab308, #22c55e, #3b82f6, #8b5cf6, #f43f5e)",
+    useZh: "圆环感。Spinner、圆环进度、色轮。",
+    useEn: "Circular. Spinners, progress rings, color wheels.",
+    avoidZh: "大面积铺底显花",
+    avoidEn: "Busy as a large fill",
+  },
+  {
+    type: "mesh",
+    typeZh: "网格混合",
+    demo:
+      "radial-gradient(at 20% 25%, #7c3aed 0px, transparent 55%), radial-gradient(at 75% 20%, #2563eb 0px, transparent 55%), radial-gradient(at 50% 80%, #06b6d4 0px, transparent 55%), #0a0e27",
+    useZh: "多色混合（2025–26 趋势）。抽象背景、品牌氛围。",
+    useEn: "Multi-color blend (2025–26 trend). Abstract backgrounds, brand mood.",
+    avoidZh: "CSS mesh 是多层 radial 叠加，非真 mesh",
+    avoidEn: "CSS mesh = layered radial, not true mesh",
+  },
+] as const;
+
+function GradientTypeGuide({ locale }: { locale: "zh" | "en" }) {
+  const tx = (zh: string, en: string) => (locale === "zh" ? zh : en);
+  return (
+    <section className="mb-10" aria-label={tx("渐变类型选用", "Gradient type guide")}>
+      <div className="max-w-2xl mb-5">
+        <div className="flex items-baseline gap-3 mb-1.5">
+          <span className="text-sm font-mono text-muted">·</span>
+          <h2 className="text-lg md:text-xl font-bold tracking-tight">
+            {tx("何时用哪种？", "Which type when?")}
+          </h2>
+        </div>
+        <p className="text-sm text-muted leading-relaxed">
+          {tx(
+            "四种渐变类型，四种用途——选错类型，再好看的配色也救不回来。",
+            "Four gradient types, four jobs — pick wrong and no palette saves it.",
+          )}
+        </p>
+      </div>
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {GRADIENT_TYPE_GUIDE.map((g) => (
+          <div key={g.type} className="rounded-xl border border-border overflow-hidden bg-background">
+            <div className="h-20" style={{ background: g.demo }} />
+            <div className="p-3.5 space-y-1.5">
+              <div className="flex items-baseline justify-between">
+                <h3 className="text-sm font-semibold">{tx(g.typeZh, g.type)}</h3>
+                <span className="text-[0.6rem] font-mono uppercase tracking-wide text-muted/60">
+                  {g.type}
+                </span>
+              </div>
+              <p className="text-[0.7rem] text-emerald-600 dark:text-emerald-400 leading-relaxed">
+                ✓ {tx(g.useZh, g.useEn)}
+              </p>
+              <p className="text-[0.7rem] text-muted leading-relaxed">
+                ✗ {tx(g.avoidZh, g.avoidEn)}
+              </p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function CompareBar({
+  list,
+  onRemove,
+  onClear,
+  locale,
+}: {
+  list: Gradient[];
+  onRemove: (g: Gradient) => void;
+  onClear: () => void;
+  locale: "zh" | "en";
+}) {
+  const tx = (zh: string, en: string) => (locale === "zh" ? zh : en);
+  return (
+    <div className="fixed bottom-0 inset-x-0 z-30 border-t border-border bg-background/95 backdrop-blur-sm shadow-lg">
+      <div className="max-w-7xl mx-auto px-6 md:px-12 py-3 flex items-center gap-4">
+        <span className="text-xs uppercase tracking-wide text-muted shrink-0 font-medium">
+          {tx("对比", "Compare")} ({list.length}/3)
+        </span>
+        <div className="flex-1 flex gap-3 overflow-x-auto no-scrollbar">
+          {list.map((g) => (
+            <div key={g.id} className="flex items-center gap-2 shrink-0">
+              <div
+                className="h-10 w-24 rounded-md border border-border shrink-0"
+                style={{ background: g.css }}
+                title={locale === "zh" ? g.nameZh : g.name}
+              />
+              <div className="text-xs min-w-0 max-w-[120px]">
+                <div className="font-medium truncate">
+                  {locale === "zh" ? g.nameZh : g.name}
+                </div>
+              </div>
+              <button
+                onClick={() => onRemove(g)}
+                className="text-muted hover:text-foreground text-xs px-1"
+                aria-label={tx("移除", "Remove from compare")}
+              >
+                ✕
+              </button>
+            </div>
+          ))}
+        </div>
+        <button
+          onClick={onClear}
+          className="text-xs text-muted hover:text-foreground shrink-0 underline underline-offset-2 whitespace-nowrap"
+        >
+          {tx("清除全部", "Clear all")}
+        </button>
+      </div>
+    </div>
+  );
+}
+
 export function GradientsContent() {
   const { t, locale } = useI18n();
   const [selectedCategory, setSelectedCategory] = useState<GradientCategory | "all">("all");
@@ -87,6 +228,15 @@ export function GradientsContent() {
     });
   }
 
+  const [compareList, setCompareList] = useState<Gradient[]>([]);
+  function toggleCompare(g: Gradient) {
+    setCompareList((prev) => {
+      if (prev.some((x) => x.id === g.id)) return prev.filter((x) => x.id !== g.id);
+      if (prev.length >= 3) return prev; // max 3 side-by-side
+      return [...prev, g];
+    });
+  }
+
   return (
     <div className="max-w-7xl mx-auto px-6 md:px-12 py-12 md:py-16" data-cursor-aura="off">
       {/* Header */}
@@ -101,6 +251,9 @@ export function GradientsContent() {
           {t("gradients.description")}
         </p>
       </div>
+
+      {/* Type guide — when to use each gradient type */}
+      <GradientTypeGuide locale={locale} />
 
       {/* Filters */}
       <div className="mb-8 space-y-4">
@@ -169,9 +322,21 @@ export function GradientsContent() {
               copiedId={copiedId}
               onCopy={copyToClipboard}
               locale={locale}
+              inCompare={compareList.some((c) => c.id === gradient.id)}
+              onToggleCompare={toggleCompare}
             />
           ))}
         </div>
+      )}
+
+      {/* Compare bar — sticky bottom, shows selected side-by-side */}
+      {compareList.length > 0 && (
+        <CompareBar
+          list={compareList}
+          onRemove={toggleCompare}
+          onClear={() => setCompareList([])}
+          locale={locale}
+        />
       )}
     </div>
   );
@@ -182,9 +347,11 @@ interface GradientCardProps {
   copiedId: string | null;
   onCopy: (text: string, id: string) => void;
   locale: "zh" | "en";
+  inCompare: boolean;
+  onToggleCompare: (g: Gradient) => void;
 }
 
-function GradientCard({ gradient, copiedId, onCopy, locale }: GradientCardProps) {
+function GradientCard({ gradient, copiedId, onCopy, locale, inCompare, onToggleCompare }: GradientCardProps) {
   const [angle, setAngle] = useState(gradient.angle);
   const [format, setFormat] = useState<ColorFormat>("hex");
   const [copiedColor, setCopiedColor] = useState<string | null>(null);
@@ -344,6 +511,17 @@ function GradientCard({ gradient, copiedId, onCopy, locale }: GradientCardProps)
             className="flex-1 px-3 py-2 text-xs font-medium rounded-md border bg-background text-muted border-border hover:border-foreground hover:text-foreground transition-colors"
           >
             Tailwind
+          </button>
+          <button
+            onClick={() => onToggleCompare(gradient)}
+            aria-label="Add to compare"
+            className={`px-3 py-2 text-xs font-medium rounded-md border transition-colors ${
+              inCompare
+                ? "bg-foreground text-background border-foreground"
+                : "bg-background text-muted border-border hover:border-foreground hover:text-foreground"
+            }`}
+          >
+            {inCompare ? "✓" : "对比"}
           </button>
         </div>
       </div>

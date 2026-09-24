@@ -7,6 +7,7 @@ import { useI18n } from "@/lib/i18n/context";
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover/popover";
 import { AnimationCard, AnimationCardPreviewStyles } from "@/components/animations/animation-card";
 import type { AnimationMeta, AnimationCategory, AnimationTrigger } from "@/lib/animations/types";
+import { getReducedMotionSafe } from "@/lib/animations/reduced-motion";
 
 type CategoryFilter = AnimationCategory | "all";
 type TriggerFilter = AnimationTrigger | "all";
@@ -82,21 +83,25 @@ export function AnimationsContent({ allAnimations }: AnimationsContentProps) {
   const [difficulty, setDifficulty] = useState<DifficultyFilter>(
     () => readParam(searchParams, "difficulty", validDifficulties)
   );
+  const [reducedMotionOnly, setReducedMotionOnly] = useState<boolean>(
+    () => searchParams.get("safe") === "1"
+  );
   const [search, setSearch] = useState(() => searchParams.get("q") ?? "");
   const deferredSearch = useDeferredValue(search);
 
   // Sync state to URL
   const syncURL = useCallback(
-    (cat: CategoryFilter, trig: TriggerFilter, diff: DifficultyFilter, q: string) => {
+    (cat: CategoryFilter, trig: TriggerFilter, diff: DifficultyFilter, q: string, safeOverride?: boolean) => {
       const params = new URLSearchParams();
       if (cat !== "all") params.set("category", cat);
       if (trig !== "all") params.set("trigger", trig);
       if (diff !== "all") params.set("difficulty", diff);
+      if (safeOverride ?? reducedMotionOnly) params.set("safe", "1");
       if (q.trim()) params.set("q", q.trim());
       const qs = params.toString();
       router.replace(qs ? `/animations?${qs}` : "/animations", { scroll: false });
     },
-    [router]
+    [router, reducedMotionOnly]
   );
 
   const handleCategory = useCallback(
@@ -123,6 +128,14 @@ export function AnimationsContent({ allAnimations }: AnimationsContentProps) {
     [category, trigger, search, syncURL]
   );
 
+  const handleReducedMotion = useCallback(
+    (next: boolean) => {
+      setReducedMotionOnly(next);
+      syncURL(category, trigger, difficulty, search, next);
+    },
+    [category, trigger, difficulty, search, syncURL]
+  );
+
   const handleSearch = useCallback(
     (value: string) => {
       setSearch(value);
@@ -136,6 +149,7 @@ export function AnimationsContent({ allAnimations }: AnimationsContentProps) {
     if (category !== "all") result = result.filter((a) => a.category === category);
     if (trigger !== "all") result = result.filter((a) => a.trigger === trigger);
     if (difficulty !== "all") result = result.filter((a) => a.difficulty === difficulty);
+    if (reducedMotionOnly) result = result.filter((a) => getReducedMotionSafe(a.slug));
     if (deferredSearch.trim()) {
       const q = deferredSearch.trim().toLowerCase();
       result = result.filter(
@@ -151,7 +165,7 @@ export function AnimationsContent({ allAnimations }: AnimationsContentProps) {
   }, [allAnimations, category, trigger, difficulty, deferredSearch]);
 
   const isSearching = search !== deferredSearch;
-  const hasSecondaryFilters = trigger !== "all" || difficulty !== "all";
+  const hasSecondaryFilters = trigger !== "all" || difficulty !== "all" || reducedMotionOnly;
 
   return (
     <>
@@ -257,6 +271,27 @@ export function AnimationsContent({ allAnimations }: AnimationsContentProps) {
                     ))}
                   </div>
                 </div>
+                {/* Reduced-motion safe (accessibility) */}
+                <div>
+                  <p className="text-[10px] uppercase tracking-wider text-muted mb-2">
+                    Accessibility
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => handleReducedMotion(!reducedMotionOnly)}
+                    className={`flex items-center gap-1.5 px-2.5 py-1 text-[11px] transition-colors ${
+                      reducedMotionOnly
+                        ? "bg-foreground text-background"
+                        : "border border-border text-muted hover:border-foreground"
+                    }`}
+                  >
+                    {reducedMotionOnly ? "✓ " : ""}
+                    prefers-reduced-motion safe
+                  </button>
+                  <p className="text-[10px] text-muted/70 mt-1.5 leading-relaxed">
+                    Hide large位移 / rotation / flashing — auto-inferred from slug.
+                  </p>
+                </div>
                 {/* Clear secondary filters */}
                 {hasSecondaryFilters && (
                   <button
@@ -264,6 +299,7 @@ export function AnimationsContent({ allAnimations }: AnimationsContentProps) {
                     onClick={() => {
                       handleTrigger("all");
                       handleDifficulty("all");
+                      handleReducedMotion(false);
                     }}
                     className="flex items-center gap-1 text-xs text-muted hover:text-foreground transition-colors"
                   >
