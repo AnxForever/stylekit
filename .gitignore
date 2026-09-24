@@ -189,3 +189,14 @@ ai_studio_code*.txt
 # dist-skills local artifacts (symlinks, data, scripts)
 dist-skills/*
 !dist-skills/*.skill
+
+# Google OAuth client credentials.
+# A local development file that must never be tracked. It was sitting untracked
+# in the working tree, one `git add -A` away from being published, and nothing
+# in this file covered it.
+client_secret_*.json
+*.apps.googleusercontent.com.json
+
+# Local verification screenshots. Produced while checking a change by hand, not
+# part of the product; anything people install or link to lives under public/.
+*-verify.png
