@@ -150,7 +150,19 @@ test.describe("Corporate Clean SaaS Pack internal review", () => {
     await menuButton.click();
     await expect(menuButton).toHaveAttribute("aria-expanded", "true");
     await expect(page.getByRole("complementary", { name: "工作区导航" })).toBeVisible();
-    await page.getByRole("button", { name: "关闭导航" }).click();
+
+    // The backdrop spans the whole viewport, but the 248px sidebar sits above it
+    // on the left, so a default centre-point click lands on the sidebar and is
+    // refused. Whether it does depends on how far the 180ms slide-in has
+    // travelled by the time the click fires -- which is why this assertion used
+    // to pass and fail at random. Aim at the right edge, which the backdrop
+    // always owns, whatever the animation is doing.
+    const backdrop = page.getByRole("button", { name: "关闭导航" });
+    const backdropBox = await backdrop.boundingBox();
+    if (!backdropBox) throw new Error("the mobile backdrop has no layout box");
+    await backdrop.click({
+      position: { x: backdropBox.width - 16, y: backdropBox.height / 2 },
+    });
     await expect(menuButton).toHaveAttribute("aria-expanded", "false");
 
     await page.getByRole("button", { name: "深色" }).click();
