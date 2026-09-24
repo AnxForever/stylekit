@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import { E2E_SIGNED_OUT_COOKIE } from "@/lib/auth/e2e-signed-out";
 
 test.setTimeout(90_000);
 test.beforeEach(async ({ page }) => {
@@ -6,7 +7,19 @@ test.beforeEach(async ({ page }) => {
   await page.route("**/api/analytics**", (route) => route.fulfill({ json: { success: true } }));
 });
 
-test("community connects readers to real feedback without a duplicate brand title", async ({ page }) => {
+test("community connects readers to real feedback without a duplicate brand title", async ({ page, context, baseURL }) => {
+  // The suite injects a mock signed-in user so the protected specs have a
+  // session. This spec asserts what an anonymous reader sees in the style
+  // feedback panel -- the two sign-in entry points -- so it opts out. On a
+  // development machine .env.local turns the client-side mock on for every
+  // context, which is why this only ever failed locally while CI stayed green.
+  await context.addCookies([
+    {
+      name: E2E_SIGNED_OUT_COOKIE,
+      value: "1",
+      url: baseURL ?? "http://localhost:3187",
+    },
+  ]);
   await page.goto("/zh/community");
   await expect(page).toHaveTitle("社区风格与 UI 设计讨论 | StyleKit");
   await expect(page.getByRole("heading", { level: 1, name: "风格社区" })).toBeVisible();
