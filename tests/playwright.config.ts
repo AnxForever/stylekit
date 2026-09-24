@@ -22,7 +22,12 @@ const WEB_SERVER_PORT = new URL(BASE_URL).port || "80";
 // local mock user and password-session secret confined to the Playwright
 // process; the authenticated projects still prove that their pages are
 // reached with the same cookies a real browser would send.
-process.env.NEXT_PUBLIC_DEV_MOCK_USER = "true";
+//
+// Only the server-side switch belongs here. NEXT_PUBLIC_DEV_MOCK_USER is
+// inlined into the client bundle, and setting it made every browser context
+// render as signed in on developer machines while CI (which builds without it)
+// rendered as signed out -- the same spec could pass in one place and fail in
+// the other. The specs that assert signed-out behaviour need one answer.
 process.env.PLAYWRIGHT_E2E_MOCK_USER = "true";
 process.env.ADMIN_PASSWORD = "playwright-e2e-admin-password";
 process.env.ADMIN_SESSION_SECRET =

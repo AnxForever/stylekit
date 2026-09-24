@@ -27,6 +27,7 @@ import {
   isBrowserAuthConfigured,
   loadAuthClient,
 } from "./browser-client-loader";
+import { E2E_SIGNED_OUT_COOKIE } from "./e2e-signed-out";
 
 export interface AuthState {
   user: User | null;
@@ -78,6 +79,27 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(
     DEV_MOCK_ENABLED ? false : browserAuthConfigured
   );
+
+  // Browser specs assert what an anonymous visitor sees, but a developer's
+  // .env.local enables the mock user for every context, and CI (which has no
+  // .env.local) does not -- so the same spec could pass in one place and fail in
+  // the other. This cookie lets a single context opt out, keeping the client in
+  // step with the server, which reads the same cookie in ./supabase-server.ts.
+  // It runs after hydration so the server and first client render still match.
+  useEffect(() => {
+    if (!DEV_MOCK_ENABLED || typeof document === "undefined") return;
+    const signedOut = document.cookie
+      .split("; ")
+      .some((entry) => entry === `${E2E_SIGNED_OUT_COOKIE}=1`);
+    if (!signedOut) return;
+    // Deferred like the anonymous branch below, so the state change lands after
+    // the first paint instead of synchronously inside the effect body.
+    const signedOutTimer = window.setTimeout(() => {
+      setUser(null);
+      setLoading(false);
+    }, 0);
+    return () => window.clearTimeout(signedOutTimer);
+  }, []);
 
   useEffect(() => {
     if (DEV_MOCK_ENABLED || !browserAuthConfigured) return;

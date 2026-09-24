@@ -10,6 +10,7 @@ import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 import { cache } from "react";
 import type { SupabaseClient } from "@supabase/supabase-js";
+import { E2E_SIGNED_OUT_COOKIE } from "./e2e-signed-out";
 
 export async function getAuthServerClient(): Promise<SupabaseClient | null> {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -41,7 +42,9 @@ export async function getAuthServerClient(): Promise<SupabaseClient | null> {
  * Get the current authenticated user on the server side.
  * Returns null if not authenticated or Supabase is not configured.
  * In development with NEXT_PUBLIC_DEV_MOCK_USER=true, or during an explicitly
- * marked Playwright server run, returns a mock user.
+ * marked Playwright server run, returns a mock user -- unless the request
+ * carries the E2E signed-out cookie, which yields null so the browser specs can
+ * assert anonymous behaviour instead of always seeing an authenticated user.
  *
  * Wrapped in React `cache()` so that Server Components reading the user
  * during a single request share one `getUser()` network call instead of
@@ -53,6 +56,8 @@ export const getServerUser = cache(async () => {
       process.env.NEXT_PUBLIC_DEV_MOCK_USER === "true") ||
     process.env.PLAYWRIGHT_E2E_MOCK_USER === "true"
   ) {
+    const cookieStore = await cookies();
+    if (cookieStore.get(E2E_SIGNED_OUT_COOKIE)?.value === "1") return null;
     return {
       id: "dev-mock-user-00000000",
       aud: "authenticated",
