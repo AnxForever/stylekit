@@ -30,6 +30,12 @@ const READ_ONLY = {
 
 const CATEGORIES = ["modern", "retro", "minimal", "expressive"] as const;
 
+const RANKING_LABEL = {
+  hybrid: "hybrid search (BM25 + vector + RRF)",
+  keyword: "keyword search (vector path unavailable)",
+  local: "bundled scorer (live search unavailable)",
+} as const;
+
 // Shared output shapes (so clients get typed structuredContent).
 const SUMMARY_SHAPE = {
   slug: z.string(),
@@ -209,6 +215,7 @@ Examples:
         count: z.number(),
         offset: z.number(),
         has_more: z.boolean(),
+        ranking: z.enum(["hybrid", "keyword", "local"]).optional(),
         results: z.array(z.object(SUMMARY_SHAPE)),
       },
       annotations: READ_ONLY,
@@ -228,7 +235,7 @@ Examples:
       const hasMore = offset + page.length < total;
       const lines = [
         `# StyleKit styles${query ? ` matching "${query}"` : ""}`,
-        `Found ${total} (showing ${page.length}${offset ? ` from offset ${offset}` : ""}).`,
+        `Found ${total} (showing ${page.length}${offset ? ` from offset ${offset}` : ""})${search.ranking ? ` · ranked by ${RANKING_LABEL[search.ranking]}` : ""}.`,
         "",
         ...page.map(
           (r) =>
@@ -241,6 +248,7 @@ Examples:
         count: page.length,
         offset,
         has_more: hasMore,
+        ...(search.ranking ? { ranking: search.ranking } : {}),
         results: page,
       });
     },
