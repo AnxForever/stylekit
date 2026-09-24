@@ -31,6 +31,16 @@ test.describe("admin operations local smoke", () => {
     await publishImmediately.check();
     await expect(page.getByRole("button", { name: "上传并发布" })).toBeVisible();
 
+    // CI runs without a database, so the announcement endpoint answers 503 and
+    // the page replaces itself with AdminErrorState -- which hides every control
+    // this test exists to exercise. Serve a deterministic empty payload so the
+    // page renders its real form, and the assertions below verify the UI rather
+    // than the absence of a backend.
+    await page.route("**/api/admin/site-announcement**", (route) =>
+      route.request().method() === "GET"
+        ? route.fulfill({ json: { announcements: [] } })
+        : route.fulfill({ json: { success: true } }),
+    );
     await page.goto("/admin/content");
     await expect(page.getByRole("heading", { name: "内容中心" })).toBeVisible();
     await expect(page.getByRole("button", { name: "保存公告" })).toBeVisible();

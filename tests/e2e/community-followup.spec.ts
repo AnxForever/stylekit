@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import { E2E_SIGNED_OUT_COOKIE } from "@/lib/auth/e2e-signed-out";
 
 test.setTimeout(90_000);
 test.beforeEach(async ({ page }) => {
@@ -30,8 +31,22 @@ test("an exact reply link reaches older context without paging through the discu
   await expect(page).not.toHaveURL(/\?comment=/);
 });
 
-test("notification pages are private, noindex, and do not expose an inbox when signed out", async ({ page, request }) => {
-  const api = await request.get("/api/community/notifications?scope=someone-else");
+test("notification pages are private, noindex, and do not expose an inbox when signed out", async ({ page, request, context, baseURL }) => {
+  // The suite injects a mock signed-in user so the protected specs have a
+  // session. This spec asserts what an anonymous visitor sees, so it opts out
+  // explicitly -- for the bare API request and for the page context alike.
+  // Without this the endpoint would answer as the mock user and the assertion
+  // below could never observe a 401.
+  await context.addCookies([
+    {
+      name: E2E_SIGNED_OUT_COOKIE,
+      value: "1",
+      url: baseURL ?? "http://localhost:3187",
+    },
+  ]);
+  const api = await request.get("/api/community/notifications?scope=someone-else", {
+    headers: { cookie: `${E2E_SIGNED_OUT_COOKIE}=1` },
+  });
   expect(api.status()).toBe(401);
   expect(api.headers()["cache-control"]).toContain("no-store");
   await page.goto("/en/community/notifications");
