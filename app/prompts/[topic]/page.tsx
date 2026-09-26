@@ -60,12 +60,10 @@ export async function generateMetadata({
 
 export default async function PromptTopicPage({
   params,
-  locale: providedLocale,
 }: {
-  params: Promise<{ topic: string }>;
-  locale?: Locale;
+  params: Promise<{ topic: string; locale?: Locale }>;
 }) {
-  const { topic: slug } = await params;
+  const { topic: slug, locale: providedLocale } = await params;
   const topic = getTopicBySlug(slug);
   if (!topic) notFound();
   const locale = providedLocale ?? (await getRequestLocaleContext()).locale;

@@ -40,7 +40,7 @@ describe("community search metadata", () => {
     mocks.catalog.mockResolvedValue({ status: "unavailable", styles: [] });
     expect((await generateMetadata()).robots).toEqual({ index: true, follow: true });
     expect(mocks.catalog).not.toHaveBeenCalled();
-    const html = renderToStaticMarkup(await CommunityPage());
+    const html = renderToStaticMarkup(await CommunityPage({}));
     expect(html).not.toContain('"@type":"CollectionPage"');
     expect(html).toContain("Contributions are temporarily unavailable");
   });

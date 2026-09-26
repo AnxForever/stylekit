@@ -53,8 +53,7 @@ export default async function LocalizedPromptTopicPage({
   const { locale, topic } = await params;
   return (
     <Page
-      params={Promise.resolve({ topic })}
-      locale={isLocale(locale) ? locale : "en"}
+      params={Promise.resolve({ topic, locale: isLocale(locale) ? locale : "en" })}
     />
   );
 }
