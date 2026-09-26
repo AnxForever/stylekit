@@ -447,8 +447,8 @@ export const zh: { [K in keyof typeof en]: string } = {
 
   // Styles page
   "styles.subtitle": "设计风格集合",
-  "styles.title": "风格目录",
-  "styles.description": "每种风格都包含完整文档、组件模板和 AI 规则，方便快速接入。",
+  "styles.title": "网页与 UI 设计风格",
+  "styles.description": "按网站或产品场景选择视觉方向。每种风格都提供色板、组件模板和 AI 实现规则。",
   "styles.type": "类型",
   "styles.typeAll": "全部",
   "styles.typeVisual": "视觉风格",

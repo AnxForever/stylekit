@@ -656,9 +656,26 @@ export function StylesContent({ allStyles }: StylesContentProps) {
             </h2>
             <p className="mt-3 max-w-2xl text-sm leading-relaxed text-muted">
               {locale === "zh"
-                ? "先按产品场景筛选，再打开单个风格查看色板、字体、组件配方和 AI 实现规则。确定视觉方向后，可以继续使用提示词库或模板完成页面。"
+                ? "网页与 UI 设计风格由配色、排版、布局和组件处理共同决定。先按产品场景筛选，再查看实际预览、色板、字体和实现规则；确定方向后，可以用提示词或模板继续构建页面。"
                 : "Start with a product scenario, then open a style to compare its palette, typography, component recipes, and AI implementation rules. Move from a visual direction to prompts or a runnable template when you are ready to build."}
             </p>
+            {locale === "zh" && (
+              <p className="mt-4 max-w-2xl text-sm leading-relaxed text-muted">
+                按场景起步：
+                <LocalizedLink href="/styles/corporate-clean" className="text-foreground underline underline-offset-4 hover:no-underline">
+                  企业简洁风
+                </LocalizedLink>
+                适合需要清晰层级的产品页面；
+                <LocalizedLink href="/styles/editorial" className="text-foreground underline underline-offset-4 hover:no-underline">
+                  Editorial
+                </LocalizedLink>
+                侧重内容排版；
+                <LocalizedLink href="/styles/neo-brutalist" className="text-foreground underline underline-offset-4 hover:no-underline">
+                  新野兽派
+                </LocalizedLink>
+                适合需要鲜明视觉个性的展示页。
+              </p>
+            )}
           </div>
           <nav aria-label={locale === "zh" ? "设计资源导航" : "Design resource navigation"} className="grid gap-2 text-sm">
             <LocalizedLink href="/collections" className="border border-border px-4 py-3 transition-colors hover:border-foreground">
