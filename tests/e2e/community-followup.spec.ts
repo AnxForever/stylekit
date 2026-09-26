@@ -68,7 +68,7 @@ test.describe("initial HTML without scripts", () => {
   });
   test("color answers show actual pairings, sources, and a single canonical URL", async ({ page }) => {
     await page.goto("/en/colors/111827");
-    await expect(page).toHaveTitle("#111827 Hex Color — RGB, Pairings & Contrast | StyleKit");
+    await expect(page).toHaveTitle("#111827 — UI Styles That Use It & Pairings | StyleKit");
     await expect(page.locator("main")).toHaveAttribute("lang", "en");
     await expect(page.getByRole("heading", { name: "Colors paired with #111827 in real UI palettes" })).toBeVisible();
     await expect(page.locator("header p").filter({ hasText: "not an exact match" })).toBeVisible();

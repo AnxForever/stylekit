@@ -16,7 +16,23 @@ describe("truthful color query answers", () => {
     expect(isExactTailwindHex(color)).toBe(false);
     expect(getColorAnswer(color)).toContain("not an exact match");
     expect(buildColorDetailMetadata(color).description).not.toContain("is Tailwind's");
+    expect(buildColorDetailMetadata(color).description).toContain("not an exact match");
     expect(getColorAnswer(color)).toContain("rgb(17, 24, 39)");
+  });
+  it("keeps hex search titles focused on real style use or color guidance", () => {
+    const used = detail("111827");
+    const usedMetadata = buildColorDetailMetadata(used);
+    expect(used.usedBy.length).toBeGreaterThan(0);
+    expect(usedMetadata.title).toContain("UI Styles That Use It & Pairings");
+    expect(usedMetadata.description).toContain(used.usedBy[0].nameEn);
+
+    const unused = detail("123456");
+    expect(unused.usedBy).toHaveLength(0);
+    expect(buildColorDetailMetadata(unused).title).toContain("Pairings, Tints & Contrast");
+
+    const exact = detail("ffffff");
+    expect(buildColorDetailMetadata(exact).title).toContain(`(${exact.tailwind.token})`);
+    expect(buildColorDetailMetadata(exact).description).toContain("Exact Tailwind v4 token");
   });
   it("compares hex values rather than a rounded distance when reporting an exact match", () => {
     const color = detail("ffffff");
