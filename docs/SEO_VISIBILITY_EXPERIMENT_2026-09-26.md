@@ -23,3 +23,11 @@ The page title already matches this intent, but its H1 was the generic `风格�
 Record the production deployment date and verify the new H1, guide copy, internal links, canonical, and indexability in raw HTML. After Google has recrawled the page, compare the same query/page rows, total page clicks and impressions, CTR, and average position for a full 28-day post-deployment window. Also inspect Umami landing visits and engagement for `/zh/styles` so a ranking change is not mistaken for useful traffic. A 7-day check is only for indexing and large regressions; the 28-day check is the decision point. External search demand and ranking changes can still confound this before/after comparison.
 
 Expand this approach to another page only if the query-level data and actual visitor behavior improve. Keep the recent Hex title repair on its separate post-recrawl measurement track.
+
+## Rollout and verification
+
+Deployed on 2026-09-26 from commit `c86377c8`, build `vVM7Ul0E4_4FwejOd-L5P`. The prior build is retained at `/www/stylekit-backups/stylekit-pre-seo-c86377c8-20260926/.next`, with copies of the two changed source files for rollback.
+
+Lint passed with 38 existing warnings and no errors; TypeScript passed; Vitest passed 7,802 tests with one skip; the production build passed with `NODE_OPTIONS=--max-old-space-size=6144`; and the SEO truth check passed all 1,140 sitemap URLs. The public `/zh/styles` page returned 200 with the new H1 and copy in raw HTML, its self-canonical, and working localized links to the three example styles. The app service, health endpoint, and health-check timer were active after deployment.
+
+GSC URL Inspection reported the page as submitted and indexed, with its most recent crawl at 2026-09-24 04:17:40 UTC, before this release. A single updated URL, `/zh/styles`, was submitted to IndexNow and accepted with HTTP 200. Neither observation establishes that Google has recrawled the new content or that search traffic has improved.
