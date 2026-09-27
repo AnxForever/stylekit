@@ -200,3 +200,22 @@ client_secret_*.json
 # Local verification screenshots. Produced while checking a change by hand, not
 # part of the product; anything people install or link to lives under public/.
 *-verify.png
+
+# Local hosting binding and maintainer notes. Public docs remain tracked.
+/.openai/
+/PRODUCT.md
+/.github/copilot-instructions.md
+/docs/CDN_ACCELERATION_RUNBOOK.md
+/docs/CLI_RELEASE.md
+/docs/COMMUNITY_REPLY_RELEASE.md
+/docs/DEPLOYMENT.md
+/docs/EXPLORATION_LOG_*.md
+/docs/PORTFOLIO_STYLE_RESEARCH.md
+/docs/PROJECT_STRUCTURE.md
+/docs/RAG_SEMANTIC_RETRIEVAL.md
+/docs/REACH_GROWTH_PLAN.md
+/docs/SEO_COMMUNITY_*.md
+/docs/SEO_VISIBILITY_EXPERIMENT_*.md
+/docs/WAVE*_*.md
+/docs/examples/product-validation-deployment-status.json
+/docs/examples/stylekit-lint-workflow.yml

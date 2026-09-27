@@ -72,9 +72,20 @@ export function getColorFaq(detail: ColorDetail) {
 }
 
 export function buildColorDetailMetadata(detail: ColorDetail): Metadata {
-  const text = getPreferredTextColor(detail);
-  const title = `${detail.hex} Hex Color — RGB, Pairings & Contrast`;
-  const description = `${detail.hex} is ${detail.rgbCss}. Explore real UI palette pairings, ${text.name} text contrast (${text.ratio.toFixed(2)}:1), and exact vs nearest Tailwind v4 colors.`;
+  const styleName = detail.usedBy[0]?.nameEn;
+  const exactToken = isExactTailwindHex(detail) ? detail.tailwind.token : null;
+  const tokenPrefix = exactToken ? `${detail.hex} (${exactToken})` : detail.hex;
+  const title = styleName
+    ? `${tokenPrefix} — UI Styles That Use It & Pairings`
+    : `${tokenPrefix} — Pairings, Tints & Contrast`;
+  const otherStyles = detail.usedBy.length - 1;
+  const styleLead = styleName
+    ? `Used in ${styleName}${otherStyles > 0 ? ` and ${otherStyles} more UI ${otherStyles === 1 ? "style" : "styles"}` : ""}. `
+    : "";
+  const tailwindLead = exactToken
+    ? `Exact Tailwind v4 token: ${exactToken}. `
+    : `Nearest Tailwind v4: ${detail.tailwind.token} (not an exact match). `;
+  const description = `${detail.hex}: ${styleLead}${tailwindLead}Explore pairings and text contrast.`;
   return canonicalizeEnglishMetadata({
     title, description,
     openGraph: { title: `${title} | StyleKit`, description, type: "website" },

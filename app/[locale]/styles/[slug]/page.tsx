@@ -30,8 +30,7 @@ export async function generateMetadata({
   const { locale, slug } = await params;
   const validLocale: Locale = isLocale(locale) ? locale : "en";
   const metadata = await baseGenerateMetadata({
-    params: Promise.resolve({ slug }),
-    locale: validLocale,
+    params: Promise.resolve({ slug, locale: validLocale }),
   });
 
   return isLocale(locale)
@@ -46,5 +45,5 @@ export default async function LocaleStylePage({
 }) {
   const { locale, slug } = await params;
   const validLocale: Locale = isLocale(locale) ? locale : "en";
-  return <Page params={Promise.resolve({ slug })} locale={validLocale} />;
+  return <Page params={Promise.resolve({ slug, locale: validLocale })} />;
 }

@@ -146,7 +146,7 @@ export default async function CommunityPage({
   searchParams,
 }: {
   searchParams?: Promise<Record<string, string | string[] | undefined>>;
-} = {}) {
+}) {
   const catalogPromise = getCommunityCatalog();
   const discussionsPromise = getRecentDiscussions(
     catalogPromise.then(({ styles }) => styles)

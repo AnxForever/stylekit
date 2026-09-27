@@ -96,7 +96,7 @@ async function readRatingSummaries(
     }));
 }
 
-export async function buildStyleStats(): Promise<StyleStatsPayload> {
+async function buildStyleStats(): Promise<StyleStatsPayload> {
   const stats: Record<string, StyleStatsEntry> = {};
   const degraded: string[] = [];
 

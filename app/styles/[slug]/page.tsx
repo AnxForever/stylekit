@@ -43,12 +43,10 @@ function truncateForMeta(text: string, limit = META_DESCRIPTION_LIMIT): string {
 // 动态 metadata
 export async function generateMetadata({
   params,
-  locale = "en",
 }: {
-  params: Promise<{ slug: string }>;
-  locale?: Locale;
+  params: Promise<{ slug: string; locale?: Locale }>;
 }) {
-  const { slug } = await params;
+  const { slug, locale = "en" } = await params;
   const delivery = await resolveStyleDelivery(slug);
   if (!delivery) {
     return { title: "Style Not Found" };
@@ -107,12 +105,10 @@ export async function generateMetadata({
 
 export default async function StyleDetailPage({
   params,
-  locale = "en",
 }: {
-  params: Promise<{ slug: string }>;
-  locale?: Locale;
+  params: Promise<{ slug: string; locale?: Locale }>;
 }) {
-  const { slug } = await params;
+  const { slug, locale = "en" } = await params;
   const delivery = await resolveStyleDelivery(slug);
 
   if (!delivery) {

@@ -154,9 +154,8 @@ pnpm lint && pnpm test && pnpm build
 git commit -m "feat: add your feature"
 ```
 
-Working on the codebase? [`docs/PROJECT_STRUCTURE.md`](docs/PROJECT_STRUCTURE.md)
-maps the repository, and [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md) covers how
-production is served.
+Working on the codebase? Start with the contribution guides above and the
+repository's [`AGENTS.md`](AGENTS.md) for coding rules.
 
 ## Support this project
 

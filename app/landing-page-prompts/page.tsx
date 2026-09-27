@@ -46,10 +46,11 @@ export const metadata: Metadata = {
 };
 
 export default async function LandingPagePromptsPage({
-  locale: providedLocale,
-}: { locale?: Locale } = {}) {
+  params,
+}: { params?: Promise<{ locale?: Locale }> }) {
   const topic = getTopicBySlug(TOPIC_SLUG);
   if (!topic) notFound();
+  const providedLocale = (await params)?.locale;
   const locale = providedLocale ?? (await getRequestLocaleContext()).locale;
 
   const allStyles = getAllStylesMeta();

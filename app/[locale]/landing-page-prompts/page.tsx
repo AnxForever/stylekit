@@ -24,5 +24,5 @@ export default async function LocalizedLandingPagePromptsPage({
   params: Promise<{ locale: string }>;
 }) {
   const { locale } = await params;
-  return <Page locale={isLocale(locale) ? locale : "en"} />;
+  return <Page params={Promise.resolve({ locale: isLocale(locale) ? locale : "en" })} />;
 }

@@ -47,7 +47,7 @@ const SCENARIO_LABELS: Record<StyleScenario, { zh: string; en: string }> = {
 //
 // Curation rubric per scenario:
 // - saas/dashboard/admin: product chrome the style could realistically ship in
-// - portfolio: per 2024-2026 portfolio trend research (docs/PORTFOLIO_STYLE_RESEARCH.md)
+// - portfolio: work that presents projects, cases, or visual craft
 // - blog/editorial/docs: long-form reading / publication / knowledge-base typography
 // - ecommerce: product display and retail branding
 // - marketing: strong fit for real landing / brand / campaign pages, not merely

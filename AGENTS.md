@@ -7,7 +7,7 @@ should reach every contributor and every assistant belongs here.
 If instructions conflict, follow this order:
 
 1. `AGENTS.md` (this file)
-2. `CONTRIBUTING.md`
+2. `docs/CONTRIBUTING.md`
 3. `docs/STYLE_ADDITION_CHECKLIST.md`
 
 ## Tech Stack
