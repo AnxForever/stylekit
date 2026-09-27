@@ -1,11 +1,10 @@
 /**
  * Client-side Event Tracking
  *
- * Type-safe wrapper around Vercel Analytics track() for custom event tracking.
+ * Type-safe wrapper for self-hosted and internal analytics.
  * SSR-safe: no-ops on the server.
  */
 
-import { track } from "@vercel/analytics";
 import { getUtmParams } from "@/lib/analytics/utm";
 import type {
   ClientEventName,
@@ -26,8 +25,6 @@ export type {
   EventProperties,
   PageViewPayload,
 } from "@/lib/analytics/event-contract";
-
-const isVercel = typeof process !== "undefined" && Boolean(process.env.NEXT_PUBLIC_VERCEL);
 
 declare global {
   interface Window {
@@ -78,9 +75,6 @@ export function trackEvent<T extends ClientEventName>(
     ? { ...properties, ...utm }
     : properties;
 
-  if (isVercel) {
-    track(name, merged as Record<string, string | number | boolean | null>);
-  }
   // Umami manages UTM at the session level itself, so forward the raw
   // properties without the merged UTM fields.
   trackWithUmami(name, properties);

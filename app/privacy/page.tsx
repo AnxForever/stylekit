@@ -41,7 +41,7 @@ export default function PrivacyPage() {
             <article>
               <h2 className="text-2xl mb-3">Third-party services</h2>
               <p className="text-muted leading-relaxed">
-                StyleKit relies on third-party infrastructure including Vercel Analytics, Supabase, and external sign-in providers. Those services may process data according to their own terms and privacy policies.
+                StyleKit uses Alibaba Cloud hosting, Supabase, and external sign-in providers. The site also runs self-hosted Umami analytics. Those services may process data according to their own terms and privacy policies.
               </p>
             </article>
             <article>
@@ -65,7 +65,7 @@ export default function PrivacyPage() {
             <article>
               <h2 className="text-2xl mb-3">Research processors</h2>
               <p className="text-muted leading-relaxed">
-                Vercel may deliver the page and process operational logs, while Supabase stores the restricted research records. Email or payment providers are not part of the current research flow; if they are later enabled, their role, data fields, and retention will be disclosed before verified contact or payment evidence is collected.
+                Alibaba Cloud delivers the page and may process operational logs, while Supabase stores the restricted research records. Email or payment providers are not part of the current research flow; if they are later enabled, their role, data fields, and retention will be disclosed before verified contact or payment evidence is collected.
               </p>
             </article>
           </div>

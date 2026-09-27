@@ -101,7 +101,7 @@ export async function POST(request: Request) {
     const internalPayload = parseClientAnalyticsPayload(body);
     if (internalPayload.success) {
       // Catalog impressions are high-volume passive telemetry. Keep them in
-      // Vercel Analytics, but do not persist every card exposure in Postgres.
+      // Umami, but do not persist every card exposure in Postgres.
       // This protects the database quota without changing user-facing behavior.
       if (internalPayload.data.eventType === "catalog_impression") {
         const catalogStyleSlug = readEventStyleSlug(
@@ -224,7 +224,6 @@ function hasEventType(value: unknown): value is { eventType: unknown } {
 function readCountry(request: Request): string | null {
   const country = (
     request.headers.get("cf-ipcountry")?.trim() ||
-    request.headers.get("x-vercel-ip-country")?.trim() ||
     request.headers.get("cloudfront-viewer-country")?.trim() ||
     null
   );
@@ -235,7 +234,6 @@ function readCountry(request: Request): string | null {
 
 function readEnvironment(): "production" | "preview" | "development" | "test" {
   if (process.env.NODE_ENV === "test") return "test";
-  if (process.env.VERCEL_ENV === "preview") return "preview";
   if (process.env.NODE_ENV === "development") return "development";
   return "production";
 }
