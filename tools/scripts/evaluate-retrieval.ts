@@ -1,8 +1,7 @@
 #!/usr/bin/env tsx
 
 /**
- * Scores style retrieval against the labelled evaluation set - design doc
- * `docs/RAG_SEMANTIC_RETRIEVAL.md` section 5.3, the P3 deliverable.
+ * Scores style retrieval against the labelled evaluation set.
  *
  * `tools/scripts/measure-retrieval-baseline.ts` answered "did anything come
  * back". That is not the same question as "did the right style come back":
@@ -22,7 +21,7 @@
  * B is the group C has to beat. A is there to show the defect is real; C
  * beating A proves very little on its own, because A also loses on English.
  * The row labelled B' is supplementary: the hybrid searcher with no embedding
- * provider, i.e. the production degradation path (design doc section 4), which
+ * provider, i.e. the production degradation path, which
  * shows what users get when the vector service is down.
  *
  * On embeddings and quota: DashScope is called only when `DASHSCOPE_API_KEY` is

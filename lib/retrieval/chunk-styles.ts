@@ -1,10 +1,9 @@
 /**
  * Slices design styles into embeddable chunks.
  *
- * `docs/RAG_SEMANTIC_RETRIEVAL.md` section 2.2: cut on semantic fields, not on
- * a character budget. Each style produces up to four kinds of chunk, each with
- * its own retrieval weight, and each written per locale so a Chinese query can
- * also recall an English chunk (and the other way round).
+ * Cut on semantic fields, not on a character budget. Each style produces up to
+ * four kinds of chunk, each with its own retrieval weight and written per locale
+ * so a Chinese query can also recall an English chunk (and the other way round).
  *
  * The function is pure and deterministic: the same styles always produce the
  * same ids, in the same order, which is what lets the vector index be rebuilt
@@ -32,8 +31,7 @@ export interface StyleChunk {
 }
 
 /**
- * Chunk weights from the design doc, section 2.2 - **metadata only, not part
- * of the retrieval score.**
+ * Chunk weights are **metadata only, not part of the retrieval score.**
  *
  * The values still travel with every chunk as `StyleChunk.weight` and land in
  * the vector index metadata, but `hybrid-search.ts` no longer multiplies them

@@ -135,7 +135,7 @@ pnpm lint && pnpm test && pnpm build
 git commit -m "feat: add your feature"
 ```
 
-在改代码？[`docs/PROJECT_STRUCTURE.md`](docs/PROJECT_STRUCTURE.md) 是仓库导览，[`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md) 说明线上是怎么跑的。
+在改代码？先看上面的贡献文档，再看仓库根目录的 [`AGENTS.md`](AGENTS.md) 了解代码规则。
 
 ## 支持这个项目
 

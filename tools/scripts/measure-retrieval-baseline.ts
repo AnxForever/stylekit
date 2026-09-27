@@ -3,9 +3,8 @@
 /**
  * Measures how badly the current keyword matcher misses Chinese queries.
  *
- * This is the "group A" baseline from `docs/RAG_SEMANTIC_RETRIEVAL.md` section
- * 5.3: it exists to prove the defect is real before any retrieval work is
- * justified by it. Read-only - it writes nothing.
+ * This is the "group A" baseline: it exists to prove the defect is real before
+ * any retrieval work is justified by it. Read-only - it writes nothing.
  *
  * Three methods are measured over the same query set:
  *

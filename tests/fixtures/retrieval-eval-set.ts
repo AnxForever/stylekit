@@ -1,10 +1,9 @@
 /**
  * Labelled evaluation set for the style retrieval pipeline.
  *
- * Design doc `docs/RAG_SEMANTIC_RETRIEVAL.md` section 5.1: at least 60
- * `query -> expected style slug` pairs across four types, each labelled with one
- * primary answer plus two acceptable alternates, where an alternate scores
- * partial credit rather than full.
+ * At least 60 `query -> expected style slug` pairs across four types, each
+ * labelled with one primary answer plus two acceptable alternates. An alternate
+ * scores partial credit rather than full.
  *
  * This is data, not code. `tests/unit/retrieval-eval.test.ts` checks the things
  * a hand-written label set gets wrong: a slug that does not exist, a count that
