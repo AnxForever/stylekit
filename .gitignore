@@ -219,3 +219,12 @@ client_secret_*.json
 /docs/WAVE*_*.md
 /docs/examples/product-validation-deployment-status.json
 /docs/examples/stylekit-lint-workflow.yml
+
+# Retired hosting configuration and unrelated local workspaces.
+/vercel.json
+/ecosystem.config.cjs
+/packages/feishu/
+/tools/remotion-assets/
+/.github/actions/lint/
+/.github/workflows/style-extractor-ci.yml
+/tools/scripts/check-style-extractor.cjs

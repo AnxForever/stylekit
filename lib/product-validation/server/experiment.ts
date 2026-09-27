@@ -96,7 +96,6 @@ export function assignExperimentVariant(identityKey: string) {
 
 export function readValidationEnvironment(): ValidationEnvironment {
   if (process.env.NODE_ENV === "test") return "test";
-  if (process.env.VERCEL_ENV === "preview") return "preview";
   if (process.env.NODE_ENV === "development") return "development";
   return "production";
 }
