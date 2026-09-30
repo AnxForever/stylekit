@@ -34,9 +34,7 @@ jobs:
           }
           NODE
 
-      # The root app manifest is ahead of its lockfile on this branch.
-      # Resolve it for the release; pnpm-workspace.yaml records skipped builds.
-      - run: pnpm install --no-frozen-lockfile
+      - run: pnpm install --frozen-lockfile --config.strict-dep-builds=false
 
       # Build the release artifact once, before testing and packaging it.
       - name: Build core (workspace dependency)

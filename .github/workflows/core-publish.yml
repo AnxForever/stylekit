@@ -1,4 +1,4 @@
-name: Publish @stylekit/core
+name: Publish stylekit-core
 
 on:
   push:
@@ -22,18 +22,31 @@ jobs:
           cache: pnpm
           registry-url: https://registry.npmjs.org
 
-      - run: pnpm install --frozen-lockfile
+      - name: Verify release tag
+        run: |
+          node --input-type=module <<'NODE'
+          import { readFileSync } from "node:fs";
+          const { version } = JSON.parse(readFileSync("packages/core/package.json", "utf8"));
+          if (process.env.GITHUB_REF_NAME !== `core-v${version}`) {
+            throw new Error(`Release tag does not match package version ${version}`);
+          }
+          NODE
 
-      - name: Build core package
-        run: pnpm --dir packages/core run build
+      - run: pnpm install --frozen-lockfile --config.strict-dep-builds=false
 
-      - name: Typecheck
-        run: pnpm --dir packages/core run typecheck
+      - name: Build and typecheck core
+        run: |
+          cd packages/core
+          ./node_modules/.bin/tsup
+          ./node_modules/.bin/tsc --noEmit
+
+      - name: Pack release artifact
+        run: pnpm --dir packages/core pack --out "$RUNNER_TEMP/stylekit-core.tgz"
 
       - name: Verify package (dry-run)
-        run: pnpm --dir packages/core publish --dry-run
+        run: pnpm publish "$RUNNER_TEMP/stylekit-core.tgz" --dry-run --no-git-checks --ignore-scripts --tag beta
 
       - name: Publish to npm
-        run: pnpm --dir packages/core publish --provenance --access public
+        run: pnpm publish "$RUNNER_TEMP/stylekit-core.tgz" --provenance --access public --no-git-checks --ignore-scripts --tag beta
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
