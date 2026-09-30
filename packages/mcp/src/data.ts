@@ -22,6 +22,7 @@ export {
   getTokensLive,
   getComponentRecipeLive,
   knownSlugLive,
+  getImplementationBriefLive,
 } from "stylekit-core/discovery";
 
 export type {

@@ -2,10 +2,12 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
   clearRemoteCache,
   getStyleDetailLive,
+  getImplementationBriefLive,
   getTokensLive,
   knownSlugLive,
   searchStylesLive,
 } from "@/packages/core/src/discovery/remote";
+import { getImplementationBrief } from "@/lib/implementation-brief";
 
 const catalogue = (styles: unknown[]) =>
   new Response(JSON.stringify({ total: styles.length, styles }), {
@@ -48,6 +50,30 @@ afterEach(() => {
 });
 
 describe("remote discovery", () => {
+  it("reads a live brief for a new style and rejects incompatible contracts", async () => {
+    const brief = getImplementationBrief("neo-brutalist")!;
+    const valid = { ...brief, slug: "live-only" };
+    const fetchMock = vi.fn().mockResolvedValueOnce(responseFor("", valid))
+      .mockResolvedValueOnce(responseFor("", { schemaVersion: "wrong", slug: "invalid" }));
+    vi.stubGlobal("fetch", fetchMock);
+    const result = await getImplementationBriefLive("live-only", { baseUrl: "https://brief.test" });
+    expect(result.origin).toBe("live");
+    expect(result.data?.aiRules).toBe(brief.aiRules);
+    expect(fetchMock.mock.calls[0][0]).toBe("https://brief.test/api/styles/live-only/brief");
+    const invalid = await getImplementationBriefLive("invalid", { baseUrl: "https://brief.test" });
+    expect(invalid.data).toBeNull();
+    expect(invalid.fallbackReason).toContain("contract");
+  });
+
+  it("unwraps actual recipe ids in a legacy live detail response", async () => {
+    const fetchMock = vi.fn((url: string) => Promise.resolve(url.endsWith("/api/styles/live-only")
+      ? responseFor(url, { ...style("live-only"), recipes: { styleSlug: "live-only", recipes: { button: {}, card: {} } } })
+      : catalogue([style("live-only")])));
+    vi.stubGlobal("fetch", fetchMock);
+    const detail = await getStyleDetailLive("live-only", { baseUrl: "https://detail.test" });
+    expect(detail.data?.recipeIds).toEqual(["button", "card"]);
+  });
+
   it("falls back with a reason on HTTP and network failures", async () => {
     const fetchMock = vi.fn().mockResolvedValue(responseFor("", {}, 503));
     vi.stubGlobal("fetch", fetchMock);

@@ -1,42 +1,43 @@
-name: 'StyleKit Style Lint'
-description: 'Check code against StyleKit design style guidelines'
-
+name: "StyleKit Style Lint"
+description: "Check static code against StyleKit rules; unresolved runtime classes require review"
 inputs:
   style:
-    description: 'Style slug to lint against (e.g., neo-brutalist, glassmorphism)'
+    description: "Style slug, e.g. neo-brutalist"
     required: true
   files:
-    description: 'Glob pattern for files to check (e.g., src/**/*.tsx)'
+    description: "Path, directory, or glob (supports *, **, ?)"
     required: true
-    default: 'src/**/*.tsx'
+    default: "src/**/*.tsx"
   fail-on-error:
-    description: 'Fail the action if lint errors are found'
-    required: false
-    default: 'true'
+    description: "Fail on violations or inconclusive checks"
+    default: "true"
   node-version:
-    description: 'Node.js version to use'
-    required: false
-    default: '24'
-
+    description: "Node.js version"
+    default: "24"
+  cli-version:
+    description: "Published stylekit-cli version with lint support (0.2.0 or newer)"
+    default: "0.2.0"
 runs:
-  using: 'composite'
+  using: "composite"
   steps:
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
+    - uses: actions/setup-node@v4
       with:
         node-version: ${{ inputs.node-version }}
-
-    - name: Install StyleKit
-      shell: bash
-      run: npm install @stylekit/core
-
+    - uses: pnpm/action-setup@v4
+      with:
+        version: "10"
+        run_install: false
     - name: Run StyleKit Lint
       shell: bash
+      env:
+        STYLEKIT_STYLE: ${{ inputs.style }}
+        STYLEKIT_FILES: ${{ inputs.files }}
+        STYLEKIT_CLI_VERSION: ${{ inputs.cli-version }}
+        STYLEKIT_FAIL_ON_ERROR: ${{ inputs.fail-on-error }}
       run: |
         set +e
-        npx stylekit lint --style ${{ inputs.style }} --files "${{ inputs.files }}" --format github
-        LINT_EXIT=$?
-        if [ "${{ inputs.fail-on-error }}" = "true" ] && [ $LINT_EXIT -ne 0 ]; then
-          echo "::error::StyleKit lint found style violations"
-          exit 1
+        pnpm dlx "stylekit-cli@$STYLEKIT_CLI_VERSION" lint --style "$STYLEKIT_STYLE" --files "$STYLEKIT_FILES" --format github
+        stylekit_lint_exit=$?
+        if [ "$STYLEKIT_FAIL_ON_ERROR" = "true" ] && [ "$stylekit_lint_exit" -ne 0 ]; then
+          exit "$stylekit_lint_exit"
         fi

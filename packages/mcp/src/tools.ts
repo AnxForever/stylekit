@@ -4,8 +4,6 @@ import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 
 import {
-  getStyleDetail,
-  getComponentRecipe,
   knownSlug,
   searchStyles,
   searchStylesLive,
@@ -16,6 +14,8 @@ import {
   registryUrl,
   lintStyleCode,
   hasLintableRules,
+  getImplementationBriefLive,
+  getComponentRecipeLive,
   type StyleCategory,
   type StyleLintComponent,
 } from "./data.js";
@@ -369,15 +369,16 @@ Examples:
       annotations: READ_ONLY,
     },
     async ({ slug, component }) => {
-      const detail = getStyleDetail(slug);
+      const detail = (await getStyleDetailLive(slug)).data;
       if (!detail) return unknownSlug(slug);
-      const recipe = getComponentRecipe(slug, component);
+      const recipeSource = await getComponentRecipeLive(slug, component);
+      const recipe = recipeSource.data;
       if (!recipe) {
         const available = detail.recipeIds.length
           ? detail.recipeIds.join(", ")
           : "none";
         return errorResult(
-          `No "${component}" recipe for "${slug}". Available recipes: ${available}.`,
+          `Cannot render "${component}" for "${slug}". Available recipes: ${available}.${recipeSource.fallbackReason ? ` ${recipeSource.fallbackReason}. Update stylekit-mcp or request stylekit_get_implementation_brief for the source definitions.` : ""}`,
         );
       }
       const lines = [
@@ -424,7 +425,7 @@ Examples:
       annotations: READ_ONLY,
     },
     async ({ slug }) => {
-      if (!knownSlug(slug)) return unknownSlug(slug);
+      if (!(await knownSlugLive(slug)).data) return unknownSlug(slug);
       const structured = {
         slug,
         command: shadcnInstallCommand(slug),
@@ -463,7 +464,8 @@ Returns JSON: { slug, ok, violations: [{ className, baseClassName, line, severit
 
 Examples:
   - "does this button match neo-brutalist?" -> slug: "neo-brutalist", code: "<button className=...>", checkRequired: ["button"]
-  - ok: true means no violations were found; it does not assert the design is good.`,
+  - strict (boolean, default false): fail missing required classes in a static component snippet. Required checks cover the whole input, not each element.
+  - status is pass, fail, or inconclusive. Runtime class expressions cannot be fully verified. ok is true only for a conclusive static pass; visual quality still needs review.`,
       inputSchema: {
         slug: z.string().min(1).describe("Style slug, e.g. 'glassmorphism'"),
         code: z
@@ -475,10 +477,14 @@ Examples:
           .array(z.enum(["button", "card", "input"]))
           .optional()
           .describe("Components to also check for missing required classes"),
+        strict: z.boolean().default(false).describe("Fail missing required classes in a static snippet"),
       },
       outputSchema: {
         slug: z.string(),
         ok: z.boolean(),
+        status: z.enum(["pass", "fail", "inconclusive"]),
+        coverage: z.object({ classAttributes: z.number(), dynamicAttributes: z.number(), requiredScope: z.literal("file") }),
+        warnings: z.array(z.string()),
         violations: z.array(
           z.object({
             className: z.string(),
@@ -503,8 +509,11 @@ Examples:
       },
       annotations: READ_ONLY,
     },
-    async ({ slug, code, checkRequired }) => {
-      if (!knownSlug(slug)) return unknownSlug(slug);
+    async ({ slug, code, checkRequired, strict }) => {
+      if (!knownSlug(slug)) {
+        if ((await knownSlugLive(slug)).data) return errorResult(`Style "${slug}" exists in the live catalogue but this package has no bundled lint rules for it. Update stylekit-mcp or fetch stylekit_get_implementation_brief and use its lintRules.`);
+        return unknownSlug(slug);
+      }
       if (!hasLintableRules(slug)) {
         return errorResult(
           `Style "${slug}" has no lint rules registered, so its code cannot be verified. Use stylekit_get_style_tokens for its constraints instead.`,
@@ -513,15 +522,10 @@ Examples:
 
       const report = lintStyleCode(slug, code, {
         checkRequired: checkRequired as StyleLintComponent[] | undefined,
+        strict,
       });
 
-      if (report.checkedClasses === 0) {
-        return errorResult(
-          `No classes found in the provided code for "${slug}". Pass JSX/HTML containing className/class attributes, or a bare space-separated class string.`,
-        );
-      }
-
-      const lines = [`# Lint report — \`${slug}\``];
+      const lines = [`# Lint report — \`${slug}\``, `Status: ${report.status}`, ...report.warnings];
 
       if (report.ok) {
         lines.push(
@@ -550,4 +554,25 @@ Examples:
       return toolResult(lines.join("\n"), report);
     },
   );
+
+  server.registerTool("stylekit_get_implementation_brief", {
+    title: "Get complete StyleKit implementation brief",
+    description: "Fetch one complete implementation contract before generating UI: AI rules, philosophy, global CSS, component templates, recipe definitions, tokens, readiness guidance, merged lint rules, and content provenance. Known styles come from the bundled catalogue; newer styles require the live brief endpoint. Coverage guidance does not certify visual quality or accessibility.",
+    inputSchema: { slug: z.string().min(1).max(100).describe("Style slug") },
+    outputSchema: {
+      schemaVersion: z.literal("stylekit-brief-v1"), slug: z.string(), name: z.string(), nameEn: z.string(),
+      category: z.string(), styleType: z.string(), description: z.string(),
+      tags: z.array(z.string()), keywords: z.array(z.string()), philosophy: z.string(), aiRules: z.string(),
+      doList: z.array(z.string()), dontList: z.array(z.string()), colors: z.object(DETAIL_SHAPE.colors.shape),
+      globalCss: z.string(), components: z.record(z.unknown()), variants: z.array(z.unknown()),
+      tokens: STYLE_TOKENS_SHAPE.nullable(), recipes: z.record(z.unknown()), readiness: z.record(z.unknown()),
+      lintRules: z.record(z.unknown()),
+      provenance: z.object({ source: z.enum(["bundled", "static", "community"]), contentHash: z.string(), url: z.string() }),
+    },
+    annotations: READ_ONLY,
+  }, async ({ slug }) => {
+    const result = await getImplementationBriefLive(slug);
+    if (!result.data) return errorResult(`Cannot retrieve an implementation brief for "${slug}". ${result.fallbackReason ?? "Check the slug with stylekit_search_styles."}`);
+    return toolResult(JSON.stringify(result.data), result.data, true);
+  });
 }

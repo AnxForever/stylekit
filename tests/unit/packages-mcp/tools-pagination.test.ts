@@ -16,6 +16,7 @@ const mocks = vi.hoisted(() => ({
   registryUrl: vi.fn(),
   lintStyleCode: vi.fn(),
   hasLintableRules: vi.fn(),
+  getImplementationBriefLive: vi.fn(),
 }));
 
 vi.mock("../../../packages/mcp/src/data.js", () => mocks);

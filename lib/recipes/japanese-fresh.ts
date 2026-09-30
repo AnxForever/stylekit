@@ -244,7 +244,7 @@ export const japaneseFreshRecipes = createStyleRecipes("japanese-fresh", "Japane
           "pb-2 pt-0",
           "bg-transparent",
           "border-0 border-b border-[#d4d4cf]",
-          "rounded-none",
+          "rounded-xl",
           "text-[#4a5568]",
           "placeholder:text-[#b0b8c4]/60",
           "font-sans font-light",

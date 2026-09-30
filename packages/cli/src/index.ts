@@ -21,6 +21,8 @@ import {
   type CommandResult,
 } from "./commands.js";
 import type { StyleCategory } from "./core.js";
+import { getImplementationBrief } from "stylekit-core/discovery";
+import { runLint } from "./lint.js";
 
 const VERSION = (
   createRequire(import.meta.url)("../package.json") as { version: string }
@@ -38,6 +40,8 @@ Commands:
   tokens <slug>              Print a style's design tokens (JSON)
   recipe <slug> <component>  Print a rendered component recipe
   add <slug>                 Print the shadcn install command
+  brief <slug>               Print the complete implementation contract (JSON)
+  lint <slug> <files...>      Check source files against a style's rules
 
 Flags:
   --category <c>   Filter by category (modern|retro|minimal|expressive)
@@ -45,6 +49,12 @@ Flags:
   --json           Output JSON (errors included)
   --help, -h       Show this help
   --version, -v    Show version
+  --style <slug>   Style for lint (alternative to positional slug)
+  --files <glob>   File path or glob for lint; may be repeated
+  --stdin          Read lint source from stdin
+  --component <c>  Check required classes for button|card|input; may be repeated
+  --strict         Fail missing required classes (requires --component)
+  --format <f>     Lint output: text|json|github
 
 Examples:
   stylekit list --category retro
@@ -85,6 +95,12 @@ function main(): void {
         limit: { type: "string" },
         help: { type: "boolean", short: "h", default: false },
         version: { type: "boolean", short: "v", default: false },
+        style: { type: "string" },
+        files: { type: "string", multiple: true },
+        stdin: { type: "boolean", default: false },
+        component: { type: "string", multiple: true },
+        strict: { type: "boolean", default: false },
+        format: { type: "string" },
       },
     });
     values = parsed.values;
@@ -104,7 +120,7 @@ function main(): void {
     return;
   }
 
-  const json = values.json === true;
+  const json = values.json === true || values.format === "json";
 
   // Validate --limit (positive integer).
   let limit: number | undefined;
@@ -137,32 +153,47 @@ function main(): void {
   const arg2 = positionals[2];
 
   let result: CommandResult;
-  switch (command) {
-    case "list":
-      result = cmdList(category, limit);
-      break;
-    case "search":
-      result = arg1 ? cmdSearch(arg1, limit) : usageFail("stylekit search <query>");
-      break;
-    case "show":
-      result = arg1 ? cmdShow(arg1) : usageFail("stylekit show <slug>");
-      break;
-    case "tokens":
-      result = arg1 ? cmdTokens(arg1) : usageFail("stylekit tokens <slug>");
-      break;
-    case "recipe":
-      result = arg1
-        ? cmdRecipe(arg1, arg2)
-        : usageFail("stylekit recipe <slug> <component>");
-      break;
-    case "add":
-      result = arg1 ? cmdAdd(arg1) : usageFail("stylekit add <slug>");
-      break;
-    default:
-      die(`Unknown command: ${command}\n\n${HELP}`, json, "UNKNOWN_COMMAND");
-  }
-
   try {
+    switch (command) {
+      case "brief": {
+        const brief = arg1 ? getImplementationBrief(arg1) : null;
+        if (!brief) die("Provide a known slug: stylekit brief <slug>", json, "UNKNOWN_STYLE");
+        console.log(JSON.stringify(brief, null, 2));
+        return;
+      }
+      case "lint": {
+        const slug = typeof values.style === "string" ? values.style : arg1;
+        if (!slug) die("Usage: stylekit lint <slug> <files...> | --stdin", json, "INVALID_ARGUMENTS");
+        runLint(slug, [...positionals.slice(typeof values.style === "string" ? 1 : 2), ...(values.files as string[] ?? [])], {
+          json, stdin: values.stdin === true, strict: values.strict === true,
+          format: values.format as string | undefined, components: values.component as string[] | undefined,
+        });
+        return;
+      }
+      case "list":
+        result = cmdList(category, limit);
+        break;
+      case "search":
+        result = arg1 ? cmdSearch(arg1, limit) : usageFail("stylekit search <query>");
+        break;
+      case "show":
+        result = arg1 ? cmdShow(arg1) : usageFail("stylekit show <slug>");
+        break;
+      case "tokens":
+        result = arg1 ? cmdTokens(arg1) : usageFail("stylekit tokens <slug>");
+        break;
+      case "recipe":
+        result = arg1
+          ? cmdRecipe(arg1, arg2)
+          : usageFail("stylekit recipe <slug> <component>");
+        break;
+      case "add":
+        result = arg1 ? cmdAdd(arg1) : usageFail("stylekit add <slug>");
+        break;
+      default:
+        die(`Unknown command: ${command}\n\n${HELP}`, json, "UNKNOWN_COMMAND");
+    }
+
     emit(result, json);
   } catch (err) {
     die(`Unexpected error: ${(err as Error).message}`, json, "UNEXPECTED_ERROR");

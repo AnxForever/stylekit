@@ -238,9 +238,10 @@ describe("lintStyleCode", () => {
     expect(report.missingRequired).toEqual([]);
   });
 
-  it("returns a clean report for an unknown slug rather than throwing", () => {
+  it("returns an inconclusive report for an unknown slug rather than throwing", () => {
     const report = lintStyleCode("definitely-not-a-style", '<div className="rounded-lg" />');
-    expect(report.ok).toBe(true);
+    expect(report.ok).toBe(false);
+    expect(report.status).toBe("inconclusive");
     expect(report.ruleSources).toEqual([]);
   });
 

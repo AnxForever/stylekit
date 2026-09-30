@@ -22,15 +22,18 @@ jobs:
           cache: pnpm
           registry-url: https://registry.npmjs.org
 
-      # Install flags (both verified in a FRESH worktree — a warm node_modules
-      # masks both, so they must be tested on a clean checkout):
-      #   --no-frozen-lockfile: the app's in-flight dep upgrade left root
-      #     package.json ahead of pnpm-lock.yaml; unrelated to this release.
-      #   --config.strict-dep-builds=false: pnpm-workspace.yaml disables
-      #     protobufjs's build script; pnpm 11 otherwise exits 1
-      #     (ERR_PNPM_IGNORED_BUILDS). Must be a CLI flag — the env var form is
-      #     not honored for this key.
-      - run: pnpm install --no-frozen-lockfile --config.strict-dep-builds=false
+      - name: Verify release tag and registry version
+        run: |
+          node --input-type=module <<'NODE'
+          import { readFileSync } from "node:fs";
+          const { version } = JSON.parse(readFileSync("packages/mcp/package.json", "utf8"));
+          const registry = JSON.parse(readFileSync("packages/mcp/server.json", "utf8"));
+          if (process.env.GITHUB_REF_NAME !== `mcp-v${version}` || registry.version !== version || registry.packages[0].version !== version) {
+            throw new Error(`Release tag and registry must match package version ${version}`);
+          }
+          NODE
+
+      - run: pnpm install --frozen-lockfile --config.strict-dep-builds=false
 
       # Build via the tsup binary directly, NOT `pnpm run build`. pnpm 11 runs
       # an implicit deps-status check before `pnpm run` that re-triggers the
@@ -45,14 +48,17 @@ jobs:
       - name: Smoke test
         run: cd packages/mcp && node scripts/smoke.mjs
 
+      - name: Pack release artifact
+        run: pnpm --dir packages/mcp pack --out "$RUNNER_TEMP/stylekit-mcp.tgz"
+
       - name: Verify package (dry-run)
-        run: pnpm --dir packages/mcp publish --dry-run --no-git-checks --ignore-scripts
+        run: pnpm publish "$RUNNER_TEMP/stylekit-mcp.tgz" --dry-run --no-git-checks --ignore-scripts
 
       # --ignore-scripts: core+mcp are already built above; skip prepublishOnly
       # (pnpm run clean && build), whose nested pnpm run would re-trigger the
       # deps-status ignored-builds trap in CI.
       - name: Publish to npm
-        run: pnpm --dir packages/mcp publish --provenance --access public --no-git-checks --ignore-scripts
+        run: pnpm publish "$RUNNER_TEMP/stylekit-mcp.tgz" --provenance --access public --no-git-checks --ignore-scripts
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 

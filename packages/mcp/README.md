@@ -2,7 +2,7 @@
 
 MCP server for [StyleKit](https://stylekit.top) — search 148 design styles and pull design tokens, component recipes, and shadcn install commands directly from Claude, Cursor, or Windsurf.
 
-Runs locally over stdio and serves everything **offline** from the bundled `stylekit-core`.
+Runs locally over stdio. Search uses the live catalogue with a bundled fallback; known style implementation data is bundled, while newer styles require live endpoints.
 
 ## Tools
 
@@ -11,6 +11,7 @@ All tools are read-only.
 | Tool | What it does |
 |------|--------------|
 | `stylekit_search_styles` | Search styles by keyword and/or category |
+| `stylekit_get_implementation_brief` | Complete AI guidance, CSS, templates, recipes, tokens, readiness, merged lint rules and provenance (0.3.0) |
 | `stylekit_get_style` | Full style profile: philosophy, palette, do/don't rules, quality/capability signals |
 | `stylekit_get_style_tokens` | Typed design tokens: border, shadow, typography, spacing, colors |
 | `stylekit_get_component_recipe` | Rendered component `className` + JSX (button/card/input) |
@@ -71,3 +72,17 @@ node scripts/smoke.mjs  # smoke-test all tools over stdio
 ## License
 
 MIT
+
+## 0.3.0 release candidate
+
+The new brief tool and lint contract are implemented in the locally built 0.3.0
+candidate; npm clients need that release to be published. Call the brief tool
+before generation and save its `stylekit-brief-v1` payload for later validation.
+`provenance.source` identifies the data origin; `contentHash` detects drift.
+
+Lint returns `status: pass | fail | inconclusive`. `ok` is true only for a
+conclusive static pass. Runtime expressions are reported as inconclusive unless
+known literals already contain a violation. Missing requirements are advisory;
+pass `strict: true` and `checkRequired: ["button"]` to fail them in a static
+component snippet. Required checks cover the entire input, not each element.
+These checks do not certify visual quality or accessibility.

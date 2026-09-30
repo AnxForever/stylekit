@@ -43,6 +43,9 @@ export {
   getComponentRecipeLive,
   knownSlugLive,
   clearRemoteCache,
+  getImplementationBriefLive,
 } from "./remote";
 
 export type { DataOrigin, Sourced, RemoteOptions, SearchRanking } from "./remote";
+export { getImplementationBrief, createImplementationBrief, serializeLintRules } from "@/lib/implementation-brief";
+export type { ImplementationBrief } from "@/lib/implementation-brief";
