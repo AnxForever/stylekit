@@ -169,7 +169,7 @@ export const memphisRecipes = createStyleRecipes("memphis", "Memphis", {
           "border-4 border-black",
           "text-black",
           "font-bold",
-          "placeholder:text-gray-400",
+          "placeholder:text-gray-600",
           "focus:outline-none",
           "transition-all duration-200",
         ],

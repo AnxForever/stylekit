@@ -104,7 +104,7 @@ export function generateTailwindPresetJS(
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   theme: {
-    extend: ${JSON.stringify(preset.theme.extend, null, 6).replace(/"([^"]+)":/g, "$1:")},
+    extend: ${JSON.stringify(preset.theme.extend, null, 6)},
   },
 };
 `;

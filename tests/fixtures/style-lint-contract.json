@@ -1,0 +1,879 @@
+{
+  "specs": {
+    "neo-brutalist": {
+      "slug": "neo-brutalist",
+      "lintRules": {
+        "schemaVersion": "stylekit-lint-v1",
+        "sources": [
+          "tokens",
+          "curated"
+        ],
+        "forbiddenClasses": [
+          {
+            "className": "rounded-sm",
+            "reason": "\"rounded-sm\" is forbidden in this style",
+            "source": "tokens"
+          },
+          {
+            "className": "rounded",
+            "reason": "\"rounded\" is forbidden in this style",
+            "source": "tokens"
+          },
+          {
+            "className": "rounded-md",
+            "reason": "\"rounded-md\" is forbidden in this style",
+            "source": "tokens"
+          },
+          {
+            "className": "rounded-lg",
+            "reason": "Neo-Brutalist uses sharp corners only (rounded-none)",
+            "source": "curated"
+          },
+          {
+            "className": "rounded-xl",
+            "reason": "\"rounded-xl\" is forbidden in Neo-Brutalist",
+            "source": "curated"
+          },
+          {
+            "className": "rounded-2xl",
+            "reason": "\"rounded-2xl\" is forbidden in Neo-Brutalist",
+            "source": "curated"
+          },
+          {
+            "className": "rounded-3xl",
+            "reason": "\"rounded-3xl\" is forbidden in Neo-Brutalist",
+            "source": "curated"
+          },
+          {
+            "className": "shadow-sm",
+            "reason": "\"shadow-sm\" is forbidden in Neo-Brutalist",
+            "source": "curated"
+          },
+          {
+            "className": "shadow",
+            "reason": "\"shadow\" is forbidden in this style",
+            "source": "tokens"
+          },
+          {
+            "className": "shadow-md",
+            "reason": "\"shadow-md\" is forbidden in Neo-Brutalist",
+            "source": "curated"
+          },
+          {
+            "className": "shadow-lg",
+            "reason": "Use hard offset shadows: shadow-[4px_4px_0_#000]",
+            "source": "curated"
+          },
+          {
+            "className": "shadow-xl",
+            "reason": "\"shadow-xl\" is forbidden in Neo-Brutalist",
+            "source": "curated"
+          },
+          {
+            "className": "shadow-2xl",
+            "reason": "\"shadow-2xl\" is forbidden in Neo-Brutalist",
+            "source": "curated"
+          },
+          {
+            "className": "border-gray-100",
+            "reason": "\"border-gray-100\" is forbidden in this style",
+            "source": "tokens"
+          },
+          {
+            "className": "border-gray-200",
+            "reason": "\"border-gray-200\" is forbidden in this style",
+            "source": "tokens"
+          },
+          {
+            "className": "border-gray-300",
+            "reason": "Neo-Brutalist uses pure black borders (border-black)",
+            "source": "tokens"
+          },
+          {
+            "className": "border-gray-400",
+            "reason": "\"border-gray-400\" is forbidden in this style",
+            "source": "tokens"
+          },
+          {
+            "className": "border-gray-500",
+            "reason": "\"border-gray-500\" is forbidden in this style",
+            "source": "tokens"
+          },
+          {
+            "className": "border-slate-100",
+            "reason": "\"border-slate-100\" is forbidden in this style",
+            "source": "tokens"
+          },
+          {
+            "className": "border-slate-200",
+            "reason": "\"border-slate-200\" is forbidden in this style",
+            "source": "tokens"
+          },
+          {
+            "className": "border-slate-300",
+            "reason": "\"border-slate-300\" is forbidden in this style",
+            "source": "tokens"
+          },
+          {
+            "className": "border-slate-400",
+            "reason": "\"border-slate-400\" is forbidden in this style",
+            "source": "tokens"
+          },
+          {
+            "className": "border-slate-500",
+            "reason": "\"border-slate-500\" is forbidden in this style",
+            "source": "tokens"
+          },
+          {
+            "className": "opacity-50",
+            "reason": "\"opacity-50\" is forbidden in Neo-Brutalist",
+            "source": "curated"
+          },
+          {
+            "className": "opacity-75",
+            "reason": "\"opacity-75\" is forbidden in Neo-Brutalist",
+            "source": "curated"
+          },
+          {
+            "className": "rounded-full",
+            "reason": "\"rounded-full\" is forbidden in Neo-Brutalist",
+            "source": "curated"
+          },
+          {
+            "className": "blur",
+            "reason": "Neo-Brutalist avoids blur effects",
+            "source": "curated"
+          },
+          {
+            "className": "backdrop-blur",
+            "reason": "\"backdrop-blur\" is forbidden in Neo-Brutalist",
+            "source": "curated"
+          },
+          {
+            "className": "bg-gradient-to-r",
+            "reason": "Use solid colors, no gradients",
+            "source": "curated"
+          },
+          {
+            "className": "bg-gradient-to-l",
+            "reason": "\"bg-gradient-to-l\" is forbidden in Neo-Brutalist",
+            "source": "curated"
+          },
+          {
+            "className": "bg-gradient-to-t",
+            "reason": "\"bg-gradient-to-t\" is forbidden in Neo-Brutalist",
+            "source": "curated"
+          },
+          {
+            "className": "bg-gradient-to-b",
+            "reason": "\"bg-gradient-to-b\" is forbidden in Neo-Brutalist",
+            "source": "curated"
+          },
+          {
+            "className": "transition-all",
+            "reason": "Use fast, snappy transitions (duration-200 max)",
+            "source": "curated"
+          },
+          {
+            "className": "duration-500",
+            "reason": "\"duration-500\" is forbidden in Neo-Brutalist",
+            "source": "curated"
+          },
+          {
+            "className": "duration-700",
+            "reason": "\"duration-700\" is forbidden in Neo-Brutalist",
+            "source": "curated"
+          },
+          {
+            "className": "duration-1000",
+            "reason": "\"duration-1000\" is forbidden in Neo-Brutalist",
+            "source": "curated"
+          }
+        ],
+        "forbiddenPatterns": [
+          {
+            "pattern": "^rounded-(?!none)",
+            "flags": "",
+            "source": "tokens",
+            "reasons": {
+              "rounded-lg": "Neo-Brutalist uses sharp corners only (rounded-none)",
+              "shadow-lg": "Neo-Brutalist uses hard-edge shadows only (shadow-[Xpx_Xpx_0px_0px_...])",
+              "bg-gradient-to-r": "Neo-Brutalist uses solid colors, no gradients",
+              "border-gray-300": "Neo-Brutalist uses pure black borders (border-black)"
+            }
+          },
+          {
+            "pattern": "^shadow-(?!\\[|none)",
+            "flags": "",
+            "source": "tokens",
+            "reasons": {
+              "rounded-lg": "Neo-Brutalist uses sharp corners only (rounded-none)",
+              "shadow-lg": "Neo-Brutalist uses hard-edge shadows only (shadow-[Xpx_Xpx_0px_0px_...])",
+              "bg-gradient-to-r": "Neo-Brutalist uses solid colors, no gradients",
+              "border-gray-300": "Neo-Brutalist uses pure black borders (border-black)"
+            }
+          },
+          {
+            "pattern": "^bg-gradient-",
+            "flags": "",
+            "source": "tokens",
+            "reasons": {
+              "rounded-lg": "Neo-Brutalist uses sharp corners only (rounded-none)",
+              "shadow-lg": "Neo-Brutalist uses hard-edge shadows only (shadow-[Xpx_Xpx_0px_0px_...])",
+              "bg-gradient-to-r": "Neo-Brutalist uses solid colors, no gradients",
+              "border-gray-300": "Neo-Brutalist uses pure black borders (border-black)"
+            }
+          },
+          {
+            "pattern": "^border-gray-",
+            "flags": "",
+            "source": "tokens",
+            "reasons": {
+              "rounded-lg": "Neo-Brutalist uses sharp corners only (rounded-none)",
+              "shadow-lg": "Neo-Brutalist uses hard-edge shadows only (shadow-[Xpx_Xpx_0px_0px_...])",
+              "bg-gradient-to-r": "Neo-Brutalist uses solid colors, no gradients",
+              "border-gray-300": "Neo-Brutalist uses pure black borders (border-black)"
+            }
+          },
+          {
+            "pattern": "^border-slate-",
+            "flags": "",
+            "source": "tokens",
+            "reasons": {
+              "rounded-lg": "Neo-Brutalist uses sharp corners only (rounded-none)",
+              "shadow-lg": "Neo-Brutalist uses hard-edge shadows only (shadow-[Xpx_Xpx_0px_0px_...])",
+              "bg-gradient-to-r": "Neo-Brutalist uses solid colors, no gradients",
+              "border-gray-300": "Neo-Brutalist uses pure black borders (border-black)"
+            }
+          },
+          {
+            "pattern": "rounded-[^n]",
+            "flags": "",
+            "source": "curated",
+            "reasons": {
+              "rounded-lg": "Neo-Brutalist uses sharp corners only (rounded-none)",
+              "shadow-lg": "Use hard offset shadows: shadow-[4px_4px_0_#000]",
+              "blur": "Neo-Brutalist avoids blur effects",
+              "bg-gradient-to-r": "Use solid colors, no gradients",
+              "transition-all": "Use fast, snappy transitions (duration-200 max)"
+            }
+          },
+          {
+            "pattern": "shadow-(?!(\\[|none))",
+            "flags": "",
+            "source": "curated",
+            "reasons": {
+              "rounded-lg": "Neo-Brutalist uses sharp corners only (rounded-none)",
+              "shadow-lg": "Use hard offset shadows: shadow-[4px_4px_0_#000]",
+              "blur": "Neo-Brutalist avoids blur effects",
+              "bg-gradient-to-r": "Use solid colors, no gradients",
+              "transition-all": "Use fast, snappy transitions (duration-200 max)"
+            }
+          },
+          {
+            "pattern": "blur-",
+            "flags": "",
+            "source": "curated",
+            "reasons": {
+              "rounded-lg": "Neo-Brutalist uses sharp corners only (rounded-none)",
+              "shadow-lg": "Use hard offset shadows: shadow-[4px_4px_0_#000]",
+              "blur": "Neo-Brutalist avoids blur effects",
+              "bg-gradient-to-r": "Use solid colors, no gradients",
+              "transition-all": "Use fast, snappy transitions (duration-200 max)"
+            }
+          },
+          {
+            "pattern": "bg-gradient",
+            "flags": "",
+            "source": "curated",
+            "reasons": {
+              "rounded-lg": "Neo-Brutalist uses sharp corners only (rounded-none)",
+              "shadow-lg": "Use hard offset shadows: shadow-[4px_4px_0_#000]",
+              "blur": "Neo-Brutalist avoids blur effects",
+              "bg-gradient-to-r": "Use solid colors, no gradients",
+              "transition-all": "Use fast, snappy transitions (duration-200 max)"
+            }
+          },
+          {
+            "pattern": "duration-[5-9]\\d{2}",
+            "flags": "",
+            "source": "curated",
+            "reasons": {
+              "rounded-lg": "Neo-Brutalist uses sharp corners only (rounded-none)",
+              "shadow-lg": "Use hard offset shadows: shadow-[4px_4px_0_#000]",
+              "blur": "Neo-Brutalist avoids blur effects",
+              "bg-gradient-to-r": "Use solid colors, no gradients",
+              "transition-all": "Use fast, snappy transitions (duration-200 max)"
+            }
+          }
+        ],
+        "required": {
+          "button": {
+            "classes": [
+              "border-2",
+              "border-black",
+              "shadow-[4px_4px_0_#000]",
+              "hover:shadow-none",
+              "hover:translate-x-[2px]",
+              "hover:translate-y-[2px]",
+              "transition-all",
+              "duration-200",
+              "cursor-pointer"
+            ],
+            "source": "curated"
+          },
+          "card": {
+            "classes": [
+              "border-2",
+              "border-black",
+              "shadow-[4px_4px_0_#000]"
+            ],
+            "source": "curated"
+          },
+          "input": {
+            "classes": [
+              "border-2",
+              "border-black",
+              "bg-white",
+              "focus:ring-0",
+              "focus:border-black"
+            ],
+            "source": "curated"
+          }
+        },
+        "exempt": [
+          "rounded-none",
+          "border-2",
+          "border-4",
+          "border-black",
+          "shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]",
+          "shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]",
+          "shadow-none",
+          "translate-x-[2px]",
+          "translate-y-[2px]",
+          "transition-all",
+          "duration-200",
+          "font-black",
+          "bg-white",
+          "font-mono",
+          "outline-none",
+          "shadow-[4px_4px_0_#000]",
+          "cursor-pointer",
+          "ring-0"
+        ],
+        "unsupportedRules": []
+      }
+    },
+    "glassmorphism": {
+      "slug": "glassmorphism",
+      "lintRules": {
+        "schemaVersion": "stylekit-lint-v1",
+        "sources": [
+          "tokens",
+          "curated"
+        ],
+        "forbiddenClasses": [
+          {
+            "className": "rounded-none",
+            "reason": "Use rounded corners (rounded-xl+)",
+            "source": "curated"
+          },
+          {
+            "className": "rounded-sm",
+            "reason": "\"rounded-sm\" is forbidden in Glassmorphism",
+            "source": "curated"
+          },
+          {
+            "className": "rounded",
+            "reason": "Glassmorphism requires large rounded corners (rounded-2xl or rounded-3xl)",
+            "source": "tokens"
+          },
+          {
+            "className": "bg-white",
+            "reason": "Glassmorphism requires translucent backgrounds (bg-white/10)",
+            "source": "curated"
+          },
+          {
+            "className": "bg-black",
+            "reason": "Glassmorphism requires semi-transparent surfaces, not opaque colors",
+            "source": "tokens"
+          },
+          {
+            "className": "bg-gray-100",
+            "reason": "\"bg-gray-100\" is forbidden in this style",
+            "source": "tokens"
+          },
+          {
+            "className": "bg-gray-900",
+            "reason": "\"bg-gray-900\" is forbidden in this style",
+            "source": "tokens"
+          },
+          {
+            "className": "shadow-none",
+            "reason": "\"shadow-none\" is forbidden in this style",
+            "source": "tokens"
+          },
+          {
+            "className": "backdrop-blur-sm",
+            "reason": "Glassmorphism requires high blur (backdrop-blur-[40px] or higher)",
+            "source": "tokens"
+          },
+          {
+            "className": "backdrop-blur",
+            "reason": "Glassmorphism requires high blur (backdrop-blur-[40px] or higher)",
+            "source": "tokens"
+          },
+          {
+            "className": "duration-100",
+            "reason": "Glassmorphism uses fluid animations (duration-500 with spring easing)",
+            "source": "tokens"
+          },
+          {
+            "className": "duration-150",
+            "reason": "Glassmorphism uses fluid animations (duration-500 with spring easing)",
+            "source": "tokens"
+          },
+          {
+            "className": "border-black",
+            "reason": "Use subtle white borders (border-white/20)",
+            "source": "curated"
+          },
+          {
+            "className": "border-gray-500",
+            "reason": "\"border-gray-500\" is forbidden in this style",
+            "source": "tokens"
+          },
+          {
+            "className": "from-indigo-600",
+            "reason": "The purple-pink AI gradient is the exact cliche this style rejects; use deep night scenes with light wells",
+            "source": "tokens"
+          },
+          {
+            "className": "via-purple-600",
+            "reason": "The purple-pink AI gradient is the exact cliche this style rejects; use deep night scenes with light wells",
+            "source": "tokens"
+          },
+          {
+            "className": "to-pink-500",
+            "reason": "The purple-pink AI gradient is the exact cliche this style rejects; use deep night scenes with light wells",
+            "source": "tokens"
+          },
+          {
+            "className": "bg-gray-50",
+            "reason": "\"bg-gray-50\" is forbidden in Glassmorphism",
+            "source": "curated"
+          },
+          {
+            "className": "bg-slate-50",
+            "reason": "\"bg-slate-50\" is forbidden in Glassmorphism",
+            "source": "curated"
+          },
+          {
+            "className": "shadow-[4px_4px_0",
+            "reason": "Use soft shadows, not hard offsets",
+            "source": "curated"
+          },
+          {
+            "className": "border-2",
+            "reason": "\"border-2\" is forbidden in Glassmorphism",
+            "source": "curated"
+          },
+          {
+            "className": "border-4",
+            "reason": "\"border-4\" is forbidden in Glassmorphism",
+            "source": "curated"
+          }
+        ],
+        "forbiddenPatterns": [
+          {
+            "pattern": "^rounded-none",
+            "flags": "",
+            "source": "tokens",
+            "reasons": {
+              "rounded-none": "Glassmorphism requires large rounded corners (rounded-2xl or rounded-3xl)",
+              "rounded-sm": "Glassmorphism requires large rounded corners (rounded-2xl or rounded-3xl)",
+              "rounded": "Glassmorphism requires large rounded corners (rounded-2xl or rounded-3xl)",
+              "bg-white": "Glassmorphism uses semi-transparent surfaces (bg-white/5 to bg-white/12)",
+              "bg-black": "Glassmorphism requires semi-transparent surfaces, not opaque colors",
+              "backdrop-blur-sm": "Glassmorphism requires high blur (backdrop-blur-[40px] or higher)",
+              "backdrop-blur": "Glassmorphism requires high blur (backdrop-blur-[40px] or higher)",
+              "duration-100": "Glassmorphism uses fluid animations (duration-500 with spring easing)",
+              "duration-150": "Glassmorphism uses fluid animations (duration-500 with spring easing)",
+              "border-black": "Glassmorphism uses luminous white borders (border-white/15 to border-white/35)",
+              "from-indigo-600": "The purple-pink AI gradient is the exact cliche this style rejects; use deep night scenes with light wells",
+              "via-purple-600": "The purple-pink AI gradient is the exact cliche this style rejects; use deep night scenes with light wells",
+              "to-pink-500": "The purple-pink AI gradient is the exact cliche this style rejects; use deep night scenes with light wells"
+            }
+          },
+          {
+            "pattern": "^rounded-sm$",
+            "flags": "",
+            "source": "tokens",
+            "reasons": {
+              "rounded-none": "Glassmorphism requires large rounded corners (rounded-2xl or rounded-3xl)",
+              "rounded-sm": "Glassmorphism requires large rounded corners (rounded-2xl or rounded-3xl)",
+              "rounded": "Glassmorphism requires large rounded corners (rounded-2xl or rounded-3xl)",
+              "bg-white": "Glassmorphism uses semi-transparent surfaces (bg-white/5 to bg-white/12)",
+              "bg-black": "Glassmorphism requires semi-transparent surfaces, not opaque colors",
+              "backdrop-blur-sm": "Glassmorphism requires high blur (backdrop-blur-[40px] or higher)",
+              "backdrop-blur": "Glassmorphism requires high blur (backdrop-blur-[40px] or higher)",
+              "duration-100": "Glassmorphism uses fluid animations (duration-500 with spring easing)",
+              "duration-150": "Glassmorphism uses fluid animations (duration-500 with spring easing)",
+              "border-black": "Glassmorphism uses luminous white borders (border-white/15 to border-white/35)",
+              "from-indigo-600": "The purple-pink AI gradient is the exact cliche this style rejects; use deep night scenes with light wells",
+              "via-purple-600": "The purple-pink AI gradient is the exact cliche this style rejects; use deep night scenes with light wells",
+              "to-pink-500": "The purple-pink AI gradient is the exact cliche this style rejects; use deep night scenes with light wells"
+            }
+          },
+          {
+            "pattern": "^rounded$",
+            "flags": "",
+            "source": "tokens",
+            "reasons": {
+              "rounded-none": "Glassmorphism requires large rounded corners (rounded-2xl or rounded-3xl)",
+              "rounded-sm": "Glassmorphism requires large rounded corners (rounded-2xl or rounded-3xl)",
+              "rounded": "Glassmorphism requires large rounded corners (rounded-2xl or rounded-3xl)",
+              "bg-white": "Glassmorphism uses semi-transparent surfaces (bg-white/5 to bg-white/12)",
+              "bg-black": "Glassmorphism requires semi-transparent surfaces, not opaque colors",
+              "backdrop-blur-sm": "Glassmorphism requires high blur (backdrop-blur-[40px] or higher)",
+              "backdrop-blur": "Glassmorphism requires high blur (backdrop-blur-[40px] or higher)",
+              "duration-100": "Glassmorphism uses fluid animations (duration-500 with spring easing)",
+              "duration-150": "Glassmorphism uses fluid animations (duration-500 with spring easing)",
+              "border-black": "Glassmorphism uses luminous white borders (border-white/15 to border-white/35)",
+              "from-indigo-600": "The purple-pink AI gradient is the exact cliche this style rejects; use deep night scenes with light wells",
+              "via-purple-600": "The purple-pink AI gradient is the exact cliche this style rejects; use deep night scenes with light wells",
+              "to-pink-500": "The purple-pink AI gradient is the exact cliche this style rejects; use deep night scenes with light wells"
+            }
+          },
+          {
+            "pattern": "^bg-(?!white\\/|gradient|\\[|transparent)",
+            "flags": "",
+            "source": "tokens",
+            "reasons": {
+              "rounded-none": "Glassmorphism requires large rounded corners (rounded-2xl or rounded-3xl)",
+              "rounded-sm": "Glassmorphism requires large rounded corners (rounded-2xl or rounded-3xl)",
+              "rounded": "Glassmorphism requires large rounded corners (rounded-2xl or rounded-3xl)",
+              "bg-white": "Glassmorphism uses semi-transparent surfaces (bg-white/5 to bg-white/12)",
+              "bg-black": "Glassmorphism requires semi-transparent surfaces, not opaque colors",
+              "backdrop-blur-sm": "Glassmorphism requires high blur (backdrop-blur-[40px] or higher)",
+              "backdrop-blur": "Glassmorphism requires high blur (backdrop-blur-[40px] or higher)",
+              "duration-100": "Glassmorphism uses fluid animations (duration-500 with spring easing)",
+              "duration-150": "Glassmorphism uses fluid animations (duration-500 with spring easing)",
+              "border-black": "Glassmorphism uses luminous white borders (border-white/15 to border-white/35)",
+              "from-indigo-600": "The purple-pink AI gradient is the exact cliche this style rejects; use deep night scenes with light wells",
+              "via-purple-600": "The purple-pink AI gradient is the exact cliche this style rejects; use deep night scenes with light wells",
+              "to-pink-500": "The purple-pink AI gradient is the exact cliche this style rejects; use deep night scenes with light wells"
+            }
+          },
+          {
+            "pattern": "^border-(?!white\\/|\\[)",
+            "flags": "",
+            "source": "tokens",
+            "reasons": {
+              "rounded-none": "Glassmorphism requires large rounded corners (rounded-2xl or rounded-3xl)",
+              "rounded-sm": "Glassmorphism requires large rounded corners (rounded-2xl or rounded-3xl)",
+              "rounded": "Glassmorphism requires large rounded corners (rounded-2xl or rounded-3xl)",
+              "bg-white": "Glassmorphism uses semi-transparent surfaces (bg-white/5 to bg-white/12)",
+              "bg-black": "Glassmorphism requires semi-transparent surfaces, not opaque colors",
+              "backdrop-blur-sm": "Glassmorphism requires high blur (backdrop-blur-[40px] or higher)",
+              "backdrop-blur": "Glassmorphism requires high blur (backdrop-blur-[40px] or higher)",
+              "duration-100": "Glassmorphism uses fluid animations (duration-500 with spring easing)",
+              "duration-150": "Glassmorphism uses fluid animations (duration-500 with spring easing)",
+              "border-black": "Glassmorphism uses luminous white borders (border-white/15 to border-white/35)",
+              "from-indigo-600": "The purple-pink AI gradient is the exact cliche this style rejects; use deep night scenes with light wells",
+              "via-purple-600": "The purple-pink AI gradient is the exact cliche this style rejects; use deep night scenes with light wells",
+              "to-pink-500": "The purple-pink AI gradient is the exact cliche this style rejects; use deep night scenes with light wells"
+            }
+          },
+          {
+            "pattern": "^backdrop-blur$",
+            "flags": "",
+            "source": "tokens",
+            "reasons": {
+              "rounded-none": "Glassmorphism requires large rounded corners (rounded-2xl or rounded-3xl)",
+              "rounded-sm": "Glassmorphism requires large rounded corners (rounded-2xl or rounded-3xl)",
+              "rounded": "Glassmorphism requires large rounded corners (rounded-2xl or rounded-3xl)",
+              "bg-white": "Glassmorphism uses semi-transparent surfaces (bg-white/5 to bg-white/12)",
+              "bg-black": "Glassmorphism requires semi-transparent surfaces, not opaque colors",
+              "backdrop-blur-sm": "Glassmorphism requires high blur (backdrop-blur-[40px] or higher)",
+              "backdrop-blur": "Glassmorphism requires high blur (backdrop-blur-[40px] or higher)",
+              "duration-100": "Glassmorphism uses fluid animations (duration-500 with spring easing)",
+              "duration-150": "Glassmorphism uses fluid animations (duration-500 with spring easing)",
+              "border-black": "Glassmorphism uses luminous white borders (border-white/15 to border-white/35)",
+              "from-indigo-600": "The purple-pink AI gradient is the exact cliche this style rejects; use deep night scenes with light wells",
+              "via-purple-600": "The purple-pink AI gradient is the exact cliche this style rejects; use deep night scenes with light wells",
+              "to-pink-500": "The purple-pink AI gradient is the exact cliche this style rejects; use deep night scenes with light wells"
+            }
+          },
+          {
+            "pattern": "^backdrop-blur-sm$",
+            "flags": "",
+            "source": "tokens",
+            "reasons": {
+              "rounded-none": "Glassmorphism requires large rounded corners (rounded-2xl or rounded-3xl)",
+              "rounded-sm": "Glassmorphism requires large rounded corners (rounded-2xl or rounded-3xl)",
+              "rounded": "Glassmorphism requires large rounded corners (rounded-2xl or rounded-3xl)",
+              "bg-white": "Glassmorphism uses semi-transparent surfaces (bg-white/5 to bg-white/12)",
+              "bg-black": "Glassmorphism requires semi-transparent surfaces, not opaque colors",
+              "backdrop-blur-sm": "Glassmorphism requires high blur (backdrop-blur-[40px] or higher)",
+              "backdrop-blur": "Glassmorphism requires high blur (backdrop-blur-[40px] or higher)",
+              "duration-100": "Glassmorphism uses fluid animations (duration-500 with spring easing)",
+              "duration-150": "Glassmorphism uses fluid animations (duration-500 with spring easing)",
+              "border-black": "Glassmorphism uses luminous white borders (border-white/15 to border-white/35)",
+              "from-indigo-600": "The purple-pink AI gradient is the exact cliche this style rejects; use deep night scenes with light wells",
+              "via-purple-600": "The purple-pink AI gradient is the exact cliche this style rejects; use deep night scenes with light wells",
+              "to-pink-500": "The purple-pink AI gradient is the exact cliche this style rejects; use deep night scenes with light wells"
+            }
+          },
+          {
+            "pattern": "^duration-(100|150)$",
+            "flags": "",
+            "source": "tokens",
+            "reasons": {
+              "rounded-none": "Glassmorphism requires large rounded corners (rounded-2xl or rounded-3xl)",
+              "rounded-sm": "Glassmorphism requires large rounded corners (rounded-2xl or rounded-3xl)",
+              "rounded": "Glassmorphism requires large rounded corners (rounded-2xl or rounded-3xl)",
+              "bg-white": "Glassmorphism uses semi-transparent surfaces (bg-white/5 to bg-white/12)",
+              "bg-black": "Glassmorphism requires semi-transparent surfaces, not opaque colors",
+              "backdrop-blur-sm": "Glassmorphism requires high blur (backdrop-blur-[40px] or higher)",
+              "backdrop-blur": "Glassmorphism requires high blur (backdrop-blur-[40px] or higher)",
+              "duration-100": "Glassmorphism uses fluid animations (duration-500 with spring easing)",
+              "duration-150": "Glassmorphism uses fluid animations (duration-500 with spring easing)",
+              "border-black": "Glassmorphism uses luminous white borders (border-white/15 to border-white/35)",
+              "from-indigo-600": "The purple-pink AI gradient is the exact cliche this style rejects; use deep night scenes with light wells",
+              "via-purple-600": "The purple-pink AI gradient is the exact cliche this style rejects; use deep night scenes with light wells",
+              "to-pink-500": "The purple-pink AI gradient is the exact cliche this style rejects; use deep night scenes with light wells"
+            }
+          },
+          {
+            "pattern": "bg-white$",
+            "flags": "",
+            "source": "curated",
+            "reasons": {
+              "bg-white": "Glassmorphism requires translucent backgrounds (bg-white/10)",
+              "rounded-none": "Use rounded corners (rounded-xl+)",
+              "shadow-[4px_4px_0": "Use soft shadows, not hard offsets",
+              "border-black": "Use subtle white borders (border-white/20)"
+            }
+          },
+          {
+            "pattern": "bg-gray-[1-3]00$",
+            "flags": "",
+            "source": "curated",
+            "reasons": {
+              "bg-white": "Glassmorphism requires translucent backgrounds (bg-white/10)",
+              "rounded-none": "Use rounded corners (rounded-xl+)",
+              "shadow-[4px_4px_0": "Use soft shadows, not hard offsets",
+              "border-black": "Use subtle white borders (border-white/20)"
+            }
+          },
+          {
+            "pattern": "bg-slate-[1-3]00$",
+            "flags": "",
+            "source": "curated",
+            "reasons": {
+              "bg-white": "Glassmorphism requires translucent backgrounds (bg-white/10)",
+              "rounded-none": "Use rounded corners (rounded-xl+)",
+              "shadow-[4px_4px_0": "Use soft shadows, not hard offsets",
+              "border-black": "Use subtle white borders (border-white/20)"
+            }
+          },
+          {
+            "pattern": "rounded-none",
+            "flags": "",
+            "source": "curated",
+            "reasons": {
+              "bg-white": "Glassmorphism requires translucent backgrounds (bg-white/10)",
+              "rounded-none": "Use rounded corners (rounded-xl+)",
+              "shadow-[4px_4px_0": "Use soft shadows, not hard offsets",
+              "border-black": "Use subtle white borders (border-white/20)"
+            }
+          },
+          {
+            "pattern": "shadow-\\[\\d+px_\\d+px_0",
+            "flags": "",
+            "source": "curated",
+            "reasons": {
+              "bg-white": "Glassmorphism requires translucent backgrounds (bg-white/10)",
+              "rounded-none": "Use rounded corners (rounded-xl+)",
+              "shadow-[4px_4px_0": "Use soft shadows, not hard offsets",
+              "border-black": "Use subtle white borders (border-white/20)"
+            }
+          }
+        ],
+        "required": {
+          "button": {
+            "classes": [
+              "backdrop-blur-lg",
+              "bg-white/10",
+              "border",
+              "border-white/20",
+              "rounded-xl"
+            ],
+            "source": "curated"
+          },
+          "card": {
+            "classes": [
+              "backdrop-blur-xl",
+              "bg-white/10",
+              "border",
+              "border-white/20",
+              "rounded-2xl"
+            ],
+            "source": "curated"
+          },
+          "input": {
+            "classes": [
+              "bg-white/6",
+              "backdrop-blur-[40px]",
+              "backdrop-saturate-[180%]",
+              "border",
+              "border-white/15",
+              "rounded-2xl",
+              "text-white",
+              "placeholder-white/35",
+              "shadow-[inset_0_1px_0_rgba(255,255,255,0.15),inset_0_-1px_0_rgba(2,6,16,0.3)]",
+              "focus:outline-none",
+              "focus:border-white/35",
+              "focus:bg-white/10",
+              "focus:shadow-[0_0_0_3px_rgba(228,184,99,0.15),inset_0_1px_0_rgba(255,255,255,0.25)]",
+              "transition-all",
+              "duration-500",
+              "ease-[cubic-bezier(0.16,1,0.3,1)]"
+            ],
+            "source": "tokens"
+          }
+        },
+        "exempt": [
+          "bg-white/10",
+          "backdrop-blur-[40px]",
+          "backdrop-saturate-[180%]",
+          "border",
+          "border-white/20",
+          "rounded-2xl",
+          "text-white",
+          "shadow-[0_4px_16px_rgba(3,7,18,0.45),inset_0_1px_0_rgba(255,255,255,0.25),inset_0_-1px_0_rgba(2,6,16,0.3)]",
+          "bg-white/15",
+          "border-white/35",
+          "shadow-[0_10px_32px_rgba(3,7,18,0.55),inset_0_1px_0_rgba(255,255,255,0.35)]",
+          "-translate-y-0.5",
+          "transition-all",
+          "duration-500",
+          "ease-[cubic-bezier(0.16,1,0.3,1)]",
+          "bg-white/8",
+          "backdrop-blur-[60px]",
+          "border-white/15",
+          "rounded-3xl",
+          "shadow-[0_16px_40px_rgba(3,7,18,0.5),inset_0_1px_0_rgba(255,255,255,0.22),inset_0_-1px_0_rgba(2,6,16,0.35)]",
+          "[background-image:linear-gradient(to_bottom,rgba(255,255,255,0.12),transparent_50%)]",
+          "bg-white/6",
+          "placeholder-white/35",
+          "shadow-[inset_0_1px_0_rgba(255,255,255,0.15),inset_0_-1px_0_rgba(2,6,16,0.3)]",
+          "outline-none",
+          "shadow-[0_0_0_3px_rgba(228,184,99,0.15),inset_0_1px_0_rgba(255,255,255,0.25)]",
+          "backdrop-blur-lg",
+          "rounded-xl",
+          "backdrop-blur-xl"
+        ],
+        "unsupportedRules": []
+      }
+    }
+  },
+  "cases": [
+    {
+      "name": "static allowed",
+      "slug": "neo-brutalist",
+      "code": "<div className=\"p-4 flex rounded-none\" />",
+      "status": "pass"
+    },
+    {
+      "name": "variant and important forbidden",
+      "slug": "neo-brutalist",
+      "code": "<div className=\"dark:rounded-xl!\" />",
+      "status": "fail"
+    },
+    {
+      "name": "arbitrary variant forbidden",
+      "slug": "neo-brutalist",
+      "code": "<div class=\"[&>*]:rounded-xl\"></div>",
+      "status": "fail"
+    },
+    {
+      "name": "bare classes",
+      "slug": "neo-brutalist",
+      "code": "p-4 rounded-xl shadow-lg",
+      "status": "fail"
+    },
+    {
+      "name": "runtime classes",
+      "slug": "neo-brutalist",
+      "code": "<div className={styles.card} />",
+      "status": "inconclusive"
+    },
+    {
+      "name": "runtime with known literal",
+      "slug": "neo-brutalist",
+      "code": "<div className={cn(\"p-4\", className)} />",
+      "status": "inconclusive"
+    },
+    {
+      "name": "runtime with forbidden literal",
+      "slug": "neo-brutalist",
+      "code": "<div className={cn(\"rounded-xl\", className)} />",
+      "status": "fail"
+    },
+    {
+      "name": "template interpolation",
+      "slug": "neo-brutalist",
+      "code": "<div className={`p-4 ${extra}`} />",
+      "status": "inconclusive"
+    },
+    {
+      "name": "strict required",
+      "slug": "neo-brutalist",
+      "code": "<button className=\"p-4\" />",
+      "component": "button",
+      "strict": true,
+      "status": "fail"
+    },
+    {
+      "name": "advisory required",
+      "slug": "neo-brutalist",
+      "code": "<button className=\"p-4\" />",
+      "component": "button",
+      "status": "pass"
+    },
+    {
+      "name": "dynamic required",
+      "slug": "neo-brutalist",
+      "code": "<button className={classes} />",
+      "component": "button",
+      "strict": true,
+      "status": "inconclusive"
+    },
+    {
+      "name": "no source classes",
+      "slug": "neo-brutalist",
+      "code": "export const count = 42;",
+      "status": "inconclusive"
+    },
+    {
+      "name": "opacity remains meaningful",
+      "slug": "glassmorphism",
+      "code": "<div className=\"bg-white/10 backdrop-blur-xl\" />",
+      "status": "pass"
+    },
+    {
+      "name": "opaque glass forbidden",
+      "slug": "glassmorphism",
+      "code": "<div className=\"hover:bg-white\" />",
+      "status": "fail"
+    },
+    {
+      "name": "escaped class literal",
+      "slug": "neo-brutalist",
+      "code": "<div className={\"round\\u0065d-xl\"} />",
+      "status": "inconclusive"
+    }
+  ]
+}

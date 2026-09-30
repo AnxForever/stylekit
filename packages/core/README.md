@@ -93,3 +93,26 @@ import {
 ## License
 
 MIT
+
+## 1.0.0-beta.5 release candidate
+
+Complete implementation inputs are available in the locally built candidate;
+public installs need this release to be published.
+
+```typescript
+import { getImplementationBrief } from "stylekit-core/discovery";
+import { lintStyleCode } from "stylekit-core/styles";
+
+const brief = getImplementationBrief("neo-brutalist");
+const report = lintStyleCode("neo-brutalist", code, {
+  checkRequired: ["button"],
+  strict: true,
+});
+```
+
+Briefs contain full guidance, CSS, templates, recipe definitions, tokens,
+readiness and merged `stylekit-lint-v1` rules. Provenance includes the bundled
+origin and a deterministic content identifier. Lint reports pass/fail/inconclusive;
+`ok` is false for unresolved runtime classes or unavailable rules. Required checks
+cover a whole input and are advisory unless strict is enabled. A static pass
+covers class rules and does not certify visual quality or accessibility.

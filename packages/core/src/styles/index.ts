@@ -168,6 +168,9 @@ export {
    * @returns `true` when at least one rule source covers the style.
    */
   hasLintableRules,
+  lintCodeWithRules,
+  mergeRulesFromTokens,
+  mergeStyleRules,
 } from "@/lib/styles/style-linter";
 
 export {

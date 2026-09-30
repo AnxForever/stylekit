@@ -13,9 +13,9 @@ export function truncateText(text: string): string {
 }
 
 /** Build a tool result carrying both human text and structured data. */
-export function toolResult(text: string, structuredContent: unknown) {
+export function toolResult(text: string, structuredContent: unknown, completeJson = false) {
   return {
-    content: [{ type: "text" as const, text: truncateText(text) }],
+    content: [{ type: "text" as const, text: completeJson ? JSON.stringify(structuredContent) : truncateText(text) }],
     structuredContent: structuredContent as Record<string, unknown>,
   };
 }

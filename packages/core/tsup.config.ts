@@ -16,6 +16,8 @@ export default defineConfig({
   clean: true,
   splitting: true,
   treeshake: true,
+  // Reduce emitted syntax while retaining readable identifier names.
+  minifyWhitespace: true,
   esbuildOptions(options) {
     options.alias = {
       '@/lib': path.resolve(__dirname, '../../lib'),

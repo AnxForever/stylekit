@@ -37,8 +37,36 @@ import type { DesignStyle } from "@/lib/styles";
 import { getStyleBySlug } from "@/lib/styles";
 import type { StyleTokens } from "@/lib/styles/tokens";
 import type { StyleQuality, CapabilityStatus } from "@/lib/styles/quality";
+import { getImplementationBrief, type ImplementationBrief } from "@/lib/implementation-brief";
 
 export type DataOrigin = "live" | "bundled";
+
+/** Known styles use the complete bundled contract; newer styles need the live brief endpoint. */
+export async function getImplementationBriefLive(slug: string, options: RemoteOptions = {}): Promise<Sourced<ImplementationBrief | null>> {
+  const local = getImplementationBrief(slug);
+  if (local) return { data: local, origin: "bundled" };
+  const response = await fetchJson<unknown>(`/api/styles/${encodeURIComponent(slug)}/brief`, options);
+  if ("error" in response) return { data: null, origin: "bundled", fallbackReason: response.error };
+  const value = response.value;
+  if (!isRecord(value) || value.schemaVersion !== "stylekit-brief-v1" || value.slug !== slug ||
+      !["name", "nameEn", "description", "philosophy"].every((key) => typeof value[key] === "string") ||
+      !["modern", "retro", "minimal", "expressive"].includes(String(value.category)) ||
+      !["visual", "layout"].includes(String(value.styleType)) ||
+      !["tags", "keywords", "doList", "dontList"].every((key) => Array.isArray(value[key]) && (value[key] as unknown[]).every((item) => typeof item === "string")) ||
+      !Array.isArray(value.variants) || !isRecord(value.colors) || typeof value.colors.primary !== "string" || typeof value.colors.secondary !== "string" || !Array.isArray(value.colors.accent) ||
+      typeof value.aiRules !== "string" || typeof value.globalCss !== "string" ||
+      !isRecord(value.components) || !isRecord(value.recipes) || !isRecord(value.readiness) ||
+      !Object.values(value.components).every((component) => isRecord(component) && typeof component.code === "string") ||
+      !(value.tokens === null || isRecord(value.tokens)) ||
+      !isRecord(value.lintRules) || value.lintRules.schemaVersion !== "stylekit-lint-v1" ||
+      !["sources", "forbiddenClasses", "forbiddenPatterns", "exempt", "unsupportedRules"].every((key) => Array.isArray((value.lintRules as Record<string, unknown>)[key])) ||
+      !isRecord(value.lintRules.required) ||
+      !isRecord(value.provenance) || typeof value.provenance.contentHash !== "string" || typeof value.provenance.url !== "string" ||
+      !["bundled", "static", "community"].includes(String(value.provenance.source))) {
+    return { data: null, origin: "bundled", fallbackReason: "live endpoint did not return a stylekit-brief-v1 contract" };
+  }
+  return { data: value as unknown as ImplementationBrief, origin: "live" };
+}
 
 export interface Sourced<T> {
   readonly data: T;
@@ -438,10 +466,8 @@ export async function getStyleDetailLive(
     };
   }
   const recipes = raw["recipes"];
-  const recipeIds =
-    recipes && typeof recipes === "object" && !Array.isArray(recipes)
-      ? Object.keys(recipes as Record<string, unknown>)
-      : [];
+  const recipeMap = isRecord(recipes) && isRecord(recipes.recipes) ? recipes.recipes : recipes;
+  const recipeIds = isRecord(recipeMap) ? Object.keys(recipeMap) : [];
   const colors = isRecord(raw["colors"]) ? raw["colors"] : {};
   const keywords = strArray(raw["keywords"]);
 

@@ -123,7 +123,7 @@ export const geometricBoldRecipes = createStyleRecipes("geometric-bold", "Geomet
           label: "Default",
           labelZh: "默认",
           classes: [
-            "shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] md:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]",
+            "shadow-none",
           ],
         },
         accent: {
@@ -170,7 +170,7 @@ export const geometricBoldRecipes = createStyleRecipes("geometric-bold", "Geomet
           "rounded-none",
           "text-black",
           "font-medium",
-          "placeholder:text-gray-400",
+          "placeholder:text-gray-600",
           "focus:outline-none",
           "transition-colors duration-200",
         ],

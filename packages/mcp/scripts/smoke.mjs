@@ -18,7 +18,7 @@ await client.connect(transport);
 
 const { tools } = await client.listTools();
 const names = tools.map((t) => t.name).sort();
-check(tools.length === 6, `6 tools registered (${names.join(", ")})`);
+check(tools.length === 7, `7 tools registered (${names.join(", ")})`);
 check(
   tools.every((t) => t.annotations?.readOnlyHint === true),
   "all tools annotated readOnlyHint",
@@ -135,6 +135,23 @@ check(
   lintMissing.structuredContent?.missingRequired?.[0]?.missing?.length > 0,
   "lint_code reports missing required classes when asked",
 );
+
+const brief = await client.callTool({ name: "stylekit_get_implementation_brief", arguments: { slug: "neo-brutalist" } });
+check(brief.structuredContent?.schemaVersion === "stylekit-brief-v1" &&
+  brief.structuredContent?.components?.button?.code?.includes("className") &&
+  brief.structuredContent?.recipes?.button?.skeleton?.baseClasses?.length > 0 &&
+  brief.structuredContent?.lintRules?.sources?.includes("curated") &&
+  brief.structuredContent?.aiRules?.length > 0,
+  "implementation brief includes instructions, template code, recipes and merged rules");
+check(JSON.stringify(JSON.parse(brief.content[0].text)) === JSON.stringify(brief.structuredContent), "brief text contains complete valid JSON for legacy clients");
+const strict = await client.callTool({ name: "stylekit_lint_code", arguments: {
+  slug: "neo-brutalist", code: '<button className="p-4" />', checkRequired: ["button"], strict: true,
+} });
+check(strict.structuredContent?.status === "fail" && strict.structuredContent?.ok === false, "strict lint fails missing requirements");
+const dynamic = await client.callTool({ name: "stylekit_lint_code", arguments: {
+  slug: "neo-brutalist", code: '<div className={styles.card} />',
+} });
+check(dynamic.structuredContent?.status === "inconclusive" && dynamic.structuredContent?.ok === false, "runtime classes return an inconclusive structured report");
 
 await client.close();
 console.log(

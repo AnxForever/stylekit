@@ -17,7 +17,7 @@ export const frutigerAeroRecipes = createStyleRecipes("frutiger-aero", "Frutiger
     description: "Glossy Aero button with gradient and blur",
     skeleton: {
       element: "button",
-      baseClasses: ["font-sans", "font-medium", "rounded-2xl", "backdrop-blur-sm", "transition-all duration-200"],
+      baseClasses: ["font-sans", "font-medium", "rounded-2xl", "backdrop-blur-xl", "transition-all duration-200"],
     },
     parameters: [
       sizeParam({ sm: "px-4 py-1.5 text-sm", md: "px-6 py-2.5 text-base", lg: "px-8 py-3.5 text-lg" }),
