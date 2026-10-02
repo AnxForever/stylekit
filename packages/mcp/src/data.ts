@@ -22,6 +22,7 @@ export {
   getTokensLive,
   getComponentRecipeLive,
   knownSlugLive,
+  getImplementationBriefLive,
 } from "stylekit-core/discovery";
 
 export type {
@@ -31,6 +32,7 @@ export type {
   SearchOptions,
   DiscoveryCategory as StyleCategory,
   DataOrigin,
+  SourceFailureKind,
   Sourced,
 } from "stylekit-core/discovery";
 
@@ -42,3 +44,24 @@ export type {
   StyleLintMissingRequired,
   StyleLintComponent,
 } from "stylekit-core/styles";
+
+export {
+  ASSET_KINDS,
+  PUBLIC_ASSET_KINDS,
+  listPublicAssets,
+  getPublicAsset,
+  listPublicAssetsLive,
+  getPublicAssetLive,
+} from "stylekit-core/assets";
+
+export type {
+  AssetKind,
+  AssetAvailability,
+  AssetContentLevel,
+  AssetLicense,
+  AssetAttribution,
+  AssetSummary,
+  PublicAssetDetail,
+  PublicAssetListResponse,
+  ListPublicAssetsOptions,
+} from "stylekit-core/assets";

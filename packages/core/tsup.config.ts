@@ -10,12 +10,15 @@ export default defineConfig({
     'discovery/index': 'src/discovery/index.ts',
     'prompt/index': 'src/prompt/index.ts',
     'export/index': 'src/export/index.ts',
+    'assets/index': 'src/assets/index.ts',
   },
   format: ['esm', 'cjs'],
   dts: true,
   clean: true,
   splitting: true,
   treeshake: true,
+  // Reduce emitted syntax while retaining readable identifier names.
+  minifyWhitespace: true,
   esbuildOptions(options) {
     options.alias = {
       '@/lib': path.resolve(__dirname, '../../lib'),

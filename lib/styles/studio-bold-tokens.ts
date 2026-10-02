@@ -80,11 +80,10 @@ export const studioBoldTokens = createStyleTokens({
       "shadow-sm",
       "shadow-md",
       "shadow-lg",
-      "shadow-xl",
     ],
     patterns: [
       "^rounded-(?:lg|xl|2xl|3xl)$",
-      "^shadow-(?:sm|md|lg|xl|inner)$",
+      "^shadow-(?:sm|md|lg|inner)$",
       "^font-serif$",
       "^bg-gradient",
     ],

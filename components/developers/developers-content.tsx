@@ -26,7 +26,7 @@ const COPY = {
     label: "For developers",
     title: "Use StyleKit in your workflow",
     intro:
-      "Every style ships as design tokens you can install through shadcn. Public beta CLI and MCP packages are available today, with newer repository candidates for contributors.",
+      "Use the CLI, MCP server or Skill to find styles, animations and reusable assets, then retrieve their code and dependencies. Install color themes through shadcn.",
     note: "These install a style's color theme — design tokens for light and dark. The component code is yours to build.",
     // Kept as a literal because this is a client component and importing the
     // registry would ship all 148 style records to the browser to print a number.
@@ -38,7 +38,7 @@ const COPY = {
     verified: "Verified",
     coreTitle: "Shared foundation",
     coreDescription:
-      "The public beta Core Package powers the CLI and MCP catalog queries, tokens, recipes, and accessibility helpers.",
+      "Core shares the public asset catalog, style briefs, tokens, recipes and accessibility helpers with the CLI and MCP server.",
     copyCommand: "Copy command",
     copiedCommand: "Command copied",
     cards: [
@@ -52,18 +52,18 @@ const COPY = {
         id: "mcp",
         name: "MCP server",
         desc: "Run the public beta MCP package over stdio from a compatible AI client.",
-        foot: "Five read-only tools · offline catalog",
+        foot: "Nine read-only tools · live assets with bundled fallback",
       },
       {
         id: "cli",
         name: "CLI",
-        desc: "Browse styles and print tokens, recipes, or shadcn install commands from your terminal.",
-        foot: "Public beta · offline catalog",
+        desc: "Search public assets and export styles, animation snippets, component patterns and complete template files.",
+        foot: "Public beta · searchable asset catalog",
       },
       {
         id: "agent-skill",
         name: "Agent Skill",
-        desc: "Give Cursor, Claude Code and Windsurf built-in StyleKit knowledge — apply any style on request.",
+        desc: "Guide a compatible coding agent to select assets, reuse their code and check the result in your project.",
         foot: "Vercel Agent Skills · works with any compatible agent",
       },
     ],
@@ -72,7 +72,7 @@ const COPY = {
     label: "面向开发者",
     title: "把 StyleKit 接进你的工作流",
     intro:
-      "每个风格都以 design tokens 的形式提供，可通过 shadcn 安装。CLI 与 MCP 公测包现已可用，仓库中也保留更新中的候选版本。",
+      "用 CLI、MCP 或 Skill 查找风格、动画和设计素材，直接获取代码与依赖；配色主题也可以通过 shadcn 安装。",
     note: "安装的是风格的配色主题——明暗两套 design tokens。组件代码由你自己实现。",
     browse: "浏览全部 148 风格",
     docs: "文档",
@@ -80,7 +80,7 @@ const COPY = {
     verified: "已验证",
     coreTitle: "共享底座",
     coreDescription:
-      "公开 Beta 版 Core Package 为 CLI 与 MCP 提供目录查询、tokens、配方和无障碍辅助能力。",
+      "Core 与 CLI、MCP 共用公开资产目录，提供完整风格说明、tokens、配方和无障碍辅助能力。",
     copyCommand: "复制命令",
     copiedCommand: "命令已复制",
     cards: [
@@ -94,18 +94,18 @@ const COPY = {
         id: "mcp",
         name: "MCP server",
         desc: "通过兼容的 AI 客户端，以 stdio 运行公开 Beta 版 MCP package。",
-        foot: "5 个只读工具 · 离线目录",
+        foot: "9 个只读工具 · 在线资产与离线回退",
       },
       {
         id: "cli",
         name: "CLI",
-        desc: "在终端浏览风格，并输出 tokens、配方或 shadcn 安装命令。",
-        foot: "公开 Beta · 离线目录",
+        desc: "在终端检索公开资产，获取风格、动画代码、组件模式和完整模板文件。",
+        foot: "公开 Beta · 可检索的资产目录",
       },
       {
         id: "agent-skill",
         name: "Agent Skill",
-        desc: "让 Cursor、Claude Code、Windsurf 内置 StyleKit 知识——按需应用任意风格。",
+        desc: "引导兼容的编码 Agent 选择素材、复用代码，并在你的项目里检查效果。",
         foot: "Vercel Agent Skills · 兼容任意 agent",
       },
     ],

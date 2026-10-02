@@ -4,10 +4,7 @@ import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 
 import {
-  getStyleDetail,
-  getComponentRecipe,
   knownSlug,
-  searchStyles,
   searchStylesLive,
   getStyleDetailLive,
   getTokensLive,
@@ -16,6 +13,13 @@ import {
   registryUrl,
   lintStyleCode,
   hasLintableRules,
+  getImplementationBriefLive,
+  getComponentRecipeLive,
+  ASSET_KINDS,
+  listPublicAssetsLive,
+  getPublicAssetLive,
+  type AssetKind,
+  type PublicAssetDetail,
   type StyleCategory,
   type StyleLintComponent,
 } from "./data.js";
@@ -25,15 +29,16 @@ const READ_ONLY = {
   readOnlyHint: true,
   destructiveHint: false,
   idempotentHint: true,
-  openWorldHint: false,
+  openWorldHint: true,
 } as const;
 
 const CATEGORIES = ["modern", "retro", "minimal", "expressive"] as const;
 
 const RANKING_LABEL = {
+  exact: "exact slug/name match prioritized",
   hybrid: "hybrid search (BM25 + vector + RRF)",
   keyword: "keyword search (vector path unavailable)",
-  local: "bundled scorer (live search unavailable)",
+  local: "local scorer",
 } as const;
 
 // Shared output shapes (so clients get typed structuredContent).
@@ -157,17 +162,155 @@ function unknownSlug(slug: string) {
   );
 }
 
-/**
- * The size of the bundled catalogue.
- *
- * This used to be written into the tool description as a literal, and it drifted:
- * the description said 146 while the catalogue held 148, because adding a style
- * does not update a string. That matters more here than in most prose — this
- * description is injected into the model's context, so a stale number is one the
- * agent will happily quote back to the user. Read it from the catalogue instead.
- */
-function catalogueSize(): number {
-  return searchStyles().total;
+type SourceIssue = {
+  failureKind?: "not-found" | "unavailable" | "unsupported";
+  fallbackReason?: string;
+};
+
+function sourceUnavailable(subject: string, source: SourceIssue) {
+  const reason = source.fallbackReason ? ` StyleKit reported: ${source.fallbackReason}.` : "";
+  return errorResult(`StyleKit source is unavailable; ${subject} could not be confirmed.${reason} Try again when the live source is available.`);
+}
+
+function styleLookupFailure(slug: string, source: SourceIssue) {
+  return source.failureKind === "not-found"
+    ? unknownSlug(slug)
+    : sourceUnavailable(`Style "${slug}"`, source);
+}
+
+const ASSET_AVAILABILITY = ["bundled", "remote", "external", "restricted"] as const;
+const ASSET_CONTENT_LEVEL = ["source", "metadata", "remote", "restricted"] as const;
+
+const ASSET_LICENSE_SHAPE = z.object({
+  name: z.string(),
+  url: z.string().optional(),
+  notes: z.string().optional(),
+});
+
+const ASSET_ATTRIBUTION_SHAPE = z.object({
+  source: z.string(),
+  author: z.string().optional(),
+  license: z.string().optional(),
+  url: z.string().optional(),
+});
+
+const ASSET_SUMMARY_SHAPE = z.object({
+  id: z.string(),
+  kind: z.enum(ASSET_KINDS),
+  name: z.string(),
+  nameZh: z.string().optional(),
+  description: z.string(),
+  tags: z.array(z.string()),
+  availability: z.enum(ASSET_AVAILABILITY),
+  contentLevel: z.enum(ASSET_CONTENT_LEVEL),
+  sourceRef: z.string().optional(),
+  websiteUrl: z.string().optional(),
+  sourceUrls: z.array(z.string()).optional(),
+  license: ASSET_LICENSE_SHAPE.optional(),
+  attribution: ASSET_ATTRIBUTION_SHAPE.optional(),
+  capabilities: z.array(z.string()).optional(),
+});
+
+const ASSET_DETAIL_SHAPE = z.object({
+  schemaVersion: z.literal("1"),
+  metadata: ASSET_SUMMARY_SHAPE,
+  data: z.unknown(),
+  code: z.union([z.string(), z.array(z.string())]).optional(),
+  codeLanguage: z.enum(["css", "tsx", "json", "text"]).optional(),
+  dependencies: z.array(z.string()),
+  attribution: ASSET_ATTRIBUTION_SHAPE.optional(),
+  license: ASSET_LICENSE_SHAPE.optional(),
+  sourceUrls: z.array(z.string()),
+  capabilities: z.array(z.string()),
+}).passthrough();
+
+function assetDetailForOutput(detail: PublicAssetDetail): PublicAssetDetail {
+  const restricted = detail.metadata.availability === "restricted" ||
+    detail.metadata.contentLevel === "restricted";
+  const metadataOnly = detail.metadata.availability === "external" ||
+    detail.metadata.contentLevel === "metadata" || restricted;
+  const incompleteRemoteTemplate = detail.metadata.kind === "template" &&
+    detail.metadata.availability === "remote" && !hasCompleteTemplateFiles(detail);
+  if (!metadataOnly && !incompleteRemoteTemplate) {
+    return detail;
+  }
+
+  // Keep the public identity, license, attribution, and links, but suppress
+  // source payloads that are restricted, metadata-only, or incomplete.
+  const safeData: Record<string, unknown> = {};
+  if (incompleteRemoteTemplate && detail.data && typeof detail.data === "object" && !Array.isArray(detail.data)) {
+    const data = detail.data as Record<string, unknown>;
+    if (data.sourceFilesIncluded === false) safeData.sourceFilesIncluded = false;
+    if (typeof data.downloadUrl === "string") safeData.downloadUrl = data.downloadUrl;
+  }
+  return {
+    schemaVersion: detail.schemaVersion,
+    metadata: {
+      ...detail.metadata,
+      contentLevel: restricted
+        ? "restricted"
+        : incompleteRemoteTemplate
+          ? detail.metadata.contentLevel
+          : "metadata",
+    },
+    data: safeData,
+    dependencies: [],
+    ...(detail.attribution ?? detail.metadata.attribution
+      ? { attribution: detail.attribution ?? detail.metadata.attribution }
+      : {}),
+    ...(detail.license ?? detail.metadata.license
+      ? { license: detail.license ?? detail.metadata.license }
+      : {}),
+    sourceUrls: detail.sourceUrls ?? detail.metadata.sourceUrls ?? [],
+    capabilities: detail.capabilities ?? detail.metadata.capabilities ?? [],
+  };
+}
+
+function hasCompleteTemplateFiles(detail: PublicAssetDetail): boolean {
+  if (detail.metadata.kind !== "template" || detail.metadata.availability !== "remote") return true;
+  const data = detail.data;
+  if (!data || typeof data !== "object" || Array.isArray(data)) return false;
+  const record = data as Record<string, unknown>;
+  const files = record.files;
+  if (record.sourceFilesIncluded !== true || !files || typeof files !== "object" || Array.isArray(files)) return false;
+  const fileMap = files as Record<string, unknown>;
+  const entries = Object.entries(fileMap);
+  if (entries.length === 0 || entries.some(([path, content]) =>
+    typeof content !== "string" || path.length === 0 || path.startsWith("/") ||
+    path.includes("\\") || path.split("/").includes(".."),
+  )) return false;
+  if (typeof fileMap["app/page.tsx"] !== "string" ||
+      typeof fileMap["app/globals.css"] !== "string" ||
+      typeof fileMap["package.json"] !== "string") return false;
+  try {
+    const packageJson: unknown = JSON.parse(fileMap["package.json"] as string);
+    return Boolean(packageJson) && typeof packageJson === "object" && !Array.isArray(packageJson);
+  } catch {
+    return false;
+  }
+}
+
+function assetFailure(
+  kind: AssetKind,
+  id: string,
+  source: { origin: "live" | "bundled"; failureKind?: "not-found" | "unavailable" | "unsupported"; fallbackReason?: string },
+  partial?: PublicAssetDetail,
+) {
+  const failureKind = source.failureKind ?? "unavailable";
+  const message = failureKind === "not-found"
+    ? `Unknown public asset "${kind}/${id}". Use stylekit_list_assets to find a valid namespaced id.`
+    : failureKind === "unsupported"
+      ? `StyleKit lists "${kind}/${id}", but its detail endpoint is unsupported.`
+      : `The source for "${kind}/${id}" is unavailable. No complete asset source was returned.`;
+  return errorResult(JSON.stringify({
+    error: message,
+    kind,
+    id,
+    source: source.origin,
+    failureKind,
+    ...(source.fallbackReason ? { fallbackReason: source.fallbackReason } : {}),
+    ...(partial ? { asset: assetDetailForOutput(partial) } : {}),
+  }));
 }
 
 export function registerStyleKitTools(server: McpServer): void {
@@ -176,7 +319,7 @@ export function registerStyleKitTools(server: McpServer): void {
     "stylekit_search_styles",
     {
       title: "Search StyleKit styles",
-      description: `Search StyleKit's ${catalogueSize()} design styles by keyword and/or category, with pagination.
+      description: `Search StyleKit design styles by keyword and/or category, with pagination. Exact slug or name matches are ranked first.
 
 Args:
   - query (string, optional): matches slug, name, description, tags, keywords (case-insensitive).
@@ -184,7 +327,7 @@ Args:
   - limit (number 1-50, default 15): page size.
   - offset (number >=0, default 0): results to skip (for paging).
 
-Returns JSON: { total, count, offset, has_more, results: [{ slug, name, nameEn, category, tags, description }] }.
+Returns structured JSON with total, count, offset, has_more, source, optional fallbackReason, and results. A valid query with no matches returns an empty results array, not a tool error.
 
 Examples:
   - "find a glassy frosted style" -> query: "glass"
@@ -215,7 +358,9 @@ Examples:
         count: z.number(),
         offset: z.number(),
         has_more: z.boolean(),
-        ranking: z.enum(["hybrid", "keyword", "local"]).optional(),
+        ranking: z.enum(["exact", "hybrid", "keyword", "local"]).optional(),
+        source: z.enum(["live", "bundled"]),
+        fallbackReason: z.string().optional(),
         results: z.array(z.object(SUMMARY_SHAPE)),
       },
       annotations: READ_ONLY,
@@ -227,20 +372,19 @@ Examples:
       });
       const { total, results: all } = search.data;
       const page = all.slice(offset, offset + limit);
-      if (page.length === 0) {
-        return errorResult(
-          `No styles match${query ? ` "${query}"` : ""}${category ? ` in category "${category}"` : ""}${offset ? ` at offset ${offset}` : ""}. Try a broader query, drop the category filter, or lower the offset.`,
-        );
-      }
       const hasMore = offset + page.length < total;
+      const sourceLabel = search.origin === "live" ? "live catalogue" : "bundled snapshot";
       const lines = [
         `# StyleKit styles${query ? ` matching "${query}"` : ""}`,
         `Found ${total} (showing ${page.length}${offset ? ` from offset ${offset}` : ""})${search.ranking ? ` · ranked by ${RANKING_LABEL[search.ranking]}` : ""}.`,
+        `Source: ${sourceLabel}${search.fallbackReason ? `; live lookup unavailable (${search.fallbackReason})` : ""}.`,
         "",
-        ...page.map(
-          (r) =>
-            `- **${r.nameEn}** (\`${r.slug}\`) — ${r.category} · ${r.tags.join(", ")}\n  ${r.description}`,
-        ),
+        ...(page.length > 0
+          ? page.map(
+              (r) =>
+                `- **${r.nameEn}** (\`${r.slug}\`) — ${r.category} · ${r.tags.join(", ")}\n  ${r.description}`,
+            )
+          : [`No styles match${query ? ` "${query}"` : ""}${category ? ` in category "${category}"` : ""}${offset ? ` at offset ${offset}` : ""}. Try a broader query, drop the category filter, or lower the offset.`]),
         ...(hasMore ? ["", `…more available — call again with offset: ${offset + page.length}.`] : []),
       ];
       return toolResult(lines.join("\n"), {
@@ -249,8 +393,109 @@ Examples:
         offset,
         has_more: hasMore,
         ...(search.ranking ? { ranking: search.ranking } : {}),
+        source: search.origin,
+        ...(search.fallbackReason ? { fallbackReason: search.fallbackReason } : {}),
         results: page,
       });
+    },
+  );
+
+  // Public design assets and templates.
+  server.registerTool(
+    "stylekit_list_assets",
+    {
+      title: "List public StyleKit assets",
+      description: `Browse StyleKit's public asset catalogue by namespace and query. Use the returned kind/id pair with stylekit_get_asset.
+
+Args:
+  - kind (optional): one public namespace such as animation, component-pattern, template, or experience-pack.
+  - query (optional): search public names, descriptions and tags.
+  - offset (number >=0, default 0): results to skip.
+  - limit (number 1-100, default 20): page size.
+
+Returns the full JSON page, including availability, contentLevel, license, attribution, source provenance, and kind counts. An empty page is a successful result. Private user kits and unpublished submissions are not listed.`,
+      inputSchema: {
+        kind: z.enum(ASSET_KINDS).optional().describe("Public asset namespace"),
+        query: z.string().max(500).optional().describe("Search names, descriptions and tags"),
+        offset: z.number().int().min(0).default(0).describe("Results to skip"),
+        limit: z.number().int().min(1).max(100).default(20).describe("Page size"),
+      },
+      outputSchema: {
+        schemaVersion: z.literal("1"),
+        assets: z.array(ASSET_SUMMARY_SHAPE),
+        total: z.number(),
+        offset: z.number(),
+        limit: z.number(),
+        hasMore: z.boolean(),
+        kindCounts: z.record(z.string(), z.number()),
+        source: z.enum(["live", "bundled"]),
+        fallbackReason: z.string().optional(),
+      },
+      annotations: READ_ONLY,
+    },
+    async ({ kind, query, offset, limit }) => {
+      const page = await listPublicAssetsLive({
+        kind: kind as AssetKind | undefined,
+        query,
+        offset,
+        limit,
+      });
+      const structured = {
+        ...page.data,
+        source: page.origin,
+        ...(page.fallbackReason ? { fallbackReason: page.fallbackReason } : {}),
+      };
+      return toolResult(JSON.stringify(structured), structured, true);
+    },
+  );
+
+  server.registerTool(
+    "stylekit_get_asset",
+    {
+      title: "Get a public StyleKit asset",
+      description: `Retrieve one public asset by its exact kind and id. Source is returned only where the asset's contentLevel and license permit it. Remote templates include their actual file set only when the live source is available; if it is down, the tool returns a structured unavailable error with safe metadata and does not treat a download URL as source code. External and restricted assets expose metadata, license, attribution and source links only.
+
+Args:
+  - kind: the namespace returned by stylekit_list_assets.
+  - id: the exact identifier within that namespace.
+
+Returns complete structured JSON and JSON text, preserving the namespace and provenance.`,
+      inputSchema: {
+        kind: z.enum(ASSET_KINDS).describe("Public asset namespace"),
+        id: z.string().regex(/^[a-z0-9][a-z0-9-]{0,127}$/).describe("Exact asset id within the namespace"),
+      },
+      outputSchema: {
+        ...ASSET_DETAIL_SHAPE.shape,
+        source: z.enum(["live", "bundled"]),
+        fallbackReason: z.string().optional(),
+      },
+      annotations: READ_ONLY,
+    },
+    async ({ kind, id }) => {
+      const source = await getPublicAssetLive(kind as AssetKind, id);
+      const detail = source.data;
+      const hasUnavailableRemoteSource = Boolean(
+        detail && source.failureKind === "unavailable" &&
+        (detail.metadata.availability === "remote" || detail.metadata.contentLevel === "remote"),
+      );
+      if (!detail || source.failureKind === "not-found" ||
+          (source.failureKind === "unsupported" && source.origin === "live") ||
+          hasUnavailableRemoteSource) {
+        return assetFailure(kind as AssetKind, id, source, detail ?? undefined);
+      }
+      if (!hasCompleteTemplateFiles(detail)) {
+        return assetFailure(kind as AssetKind, id, {
+          origin: source.origin,
+          failureKind: "unavailable",
+          fallbackReason: "remote template detail did not include the actual project files",
+        }, detail);
+      }
+      const structured = {
+        ...assetDetailForOutput(detail),
+        source: source.origin,
+        ...(source.fallbackReason ? { fallbackReason: source.fallbackReason } : {}),
+      };
+      return toolResult(JSON.stringify(structured), structured, true);
     },
   );
 
@@ -278,7 +523,7 @@ Examples:
     async ({ slug }) => {
       const detailSource = await getStyleDetailLive(slug);
       const detail = detailSource.data;
-      if (!detail) return unknownSlug(slug);
+      if (!detail) return styleLookupFailure(slug, detailSource);
       const lines = [
         `# ${detail.nameEn} (${detail.name}) — \`${detail.slug}\``,
         `Category: ${detail.category} · Tags: ${detail.tags.join(", ")}`,
@@ -324,11 +569,17 @@ Examples:
     async ({ slug }) => {
       const tokensSource = await getTokensLive(slug);
       const tokens = tokensSource.data;
-      if (!tokens && !(await knownSlugLive(slug)).data) return unknownSlug(slug);
       if (!tokens) {
-        return errorResult(
-          `Style "${slug}" exists but has no registered design tokens. Use stylekit_get_style for its palette and rules instead.`,
-        );
+        if (tokensSource.failureKind === "unavailable" || tokensSource.failureKind === "unsupported") {
+          return sourceUnavailable(`Tokens for style "${slug}"`, tokensSource);
+        }
+        const known = await knownSlugLive(slug);
+        if (known.data) {
+          return errorResult(
+            `Style "${slug}" exists but has no registered design tokens. Use stylekit_get_style for its palette and rules instead.`,
+          );
+        }
+        return styleLookupFailure(slug, known);
       }
       return toolResult(
         `# Design tokens for \`${slug}\`\n\n\`\`\`json\n${JSON.stringify(tokens, null, 2)}\n\`\`\``,
@@ -369,15 +620,23 @@ Examples:
       annotations: READ_ONLY,
     },
     async ({ slug, component }) => {
-      const detail = getStyleDetail(slug);
-      if (!detail) return unknownSlug(slug);
-      const recipe = getComponentRecipe(slug, component);
+      const detailSource = await getStyleDetailLive(slug);
+      const detail = detailSource.data;
+      if (!detail) return styleLookupFailure(slug, detailSource);
+      const recipeSource = await getComponentRecipeLive(slug, component);
+      const recipe = recipeSource.data;
       if (!recipe) {
+        if (recipeSource.failureKind === "unavailable") {
+          return sourceUnavailable(`Recipe "${component}" for style "${slug}"`, recipeSource);
+        }
         const available = detail.recipeIds.length
           ? detail.recipeIds.join(", ")
           : "none";
+        const guidance = recipeSource.failureKind === "unsupported"
+          ? " Use stylekit_get_implementation_brief for its source definitions."
+          : "";
         return errorResult(
-          `No "${component}" recipe for "${slug}". Available recipes: ${available}.`,
+          `Cannot render "${component}" for "${slug}". Available recipes: ${available}.${recipeSource.fallbackReason ? ` ${recipeSource.fallbackReason}.` : ""}${guidance}`,
         );
       }
       const lines = [
@@ -424,7 +683,12 @@ Examples:
       annotations: READ_ONLY,
     },
     async ({ slug }) => {
-      if (!knownSlug(slug)) return unknownSlug(slug);
+      const known = await knownSlugLive(slug);
+      if (!known.data) {
+        return known.failureKind === "not-found"
+          ? unknownSlug(slug)
+          : sourceUnavailable(`Style "${slug}"`, known);
+      }
       const structured = {
         slug,
         command: shadcnInstallCommand(slug),
@@ -463,7 +727,8 @@ Returns JSON: { slug, ok, violations: [{ className, baseClassName, line, severit
 
 Examples:
   - "does this button match neo-brutalist?" -> slug: "neo-brutalist", code: "<button className=...>", checkRequired: ["button"]
-  - ok: true means no violations were found; it does not assert the design is good.`,
+  - strict (boolean, default false): fail missing required classes in a static component snippet. Required checks cover the whole input, not each element.
+  - status is pass, fail, or inconclusive. Runtime class expressions cannot be fully verified. ok is true only for a conclusive static pass; visual quality still needs review.`,
       inputSchema: {
         slug: z.string().min(1).describe("Style slug, e.g. 'glassmorphism'"),
         code: z
@@ -475,10 +740,14 @@ Examples:
           .array(z.enum(["button", "card", "input"]))
           .optional()
           .describe("Components to also check for missing required classes"),
+        strict: z.boolean().default(false).describe("Fail missing required classes in a static snippet"),
       },
       outputSchema: {
         slug: z.string(),
         ok: z.boolean(),
+        status: z.enum(["pass", "fail", "inconclusive"]),
+        coverage: z.object({ classAttributes: z.number(), dynamicAttributes: z.number(), requiredScope: z.literal("file") }),
+        warnings: z.array(z.string()),
         violations: z.array(
           z.object({
             className: z.string(),
@@ -503,8 +772,13 @@ Examples:
       },
       annotations: READ_ONLY,
     },
-    async ({ slug, code, checkRequired }) => {
-      if (!knownSlug(slug)) return unknownSlug(slug);
+    async ({ slug, code, checkRequired, strict }) => {
+      if (!knownSlug(slug)) {
+        const known = await knownSlugLive(slug);
+        if (known.data) return errorResult(`Style "${slug}" exists in the live catalogue but this package has no bundled lint rules for it. Fetch stylekit_get_implementation_brief and use its lintRules.`);
+        if (known.failureKind === "not-found") return unknownSlug(slug);
+        return sourceUnavailable(`Style "${slug}"`, known);
+      }
       if (!hasLintableRules(slug)) {
         return errorResult(
           `Style "${slug}" has no lint rules registered, so its code cannot be verified. Use stylekit_get_style_tokens for its constraints instead.`,
@@ -513,15 +787,10 @@ Examples:
 
       const report = lintStyleCode(slug, code, {
         checkRequired: checkRequired as StyleLintComponent[] | undefined,
+        strict,
       });
 
-      if (report.checkedClasses === 0) {
-        return errorResult(
-          `No classes found in the provided code for "${slug}". Pass JSX/HTML containing className/class attributes, or a bare space-separated class string.`,
-        );
-      }
-
-      const lines = [`# Lint report — \`${slug}\``];
+      const lines = [`# Lint report — \`${slug}\``, `Status: ${report.status}`, ...report.warnings];
 
       if (report.ok) {
         lines.push(
@@ -550,4 +819,31 @@ Examples:
       return toolResult(lines.join("\n"), report);
     },
   );
+
+  server.registerTool("stylekit_get_implementation_brief", {
+    title: "Get complete StyleKit implementation brief",
+    description: "Fetch one complete implementation contract before generating UI: AI rules, philosophy, global CSS, component templates, recipe definitions, tokens, readiness guidance, merged lint rules, and content provenance. Known styles come from the bundled catalogue; newer styles require the live brief endpoint. Coverage guidance does not certify visual quality or accessibility.",
+    inputSchema: { slug: z.string().min(1).max(100).describe("Style slug") },
+    outputSchema: {
+      schemaVersion: z.literal("stylekit-brief-v1"), slug: z.string(), name: z.string(), nameEn: z.string(),
+      category: z.string(), styleType: z.string(), description: z.string(),
+      tags: z.array(z.string()), keywords: z.array(z.string()), philosophy: z.string(), aiRules: z.string(),
+      doList: z.array(z.string()), dontList: z.array(z.string()), colors: z.object(DETAIL_SHAPE.colors.shape),
+      globalCss: z.string(), components: z.record(z.unknown()), variants: z.array(z.unknown()),
+      tokens: STYLE_TOKENS_SHAPE.nullable(), recipes: z.record(z.unknown()), readiness: z.record(z.unknown()),
+      lintRules: z.record(z.unknown()),
+      provenance: z.object({ source: z.enum(["bundled", "static", "community"]), contentHash: z.string(), url: z.string() }),
+    },
+    annotations: READ_ONLY,
+  }, async ({ slug }) => {
+    const result = await getImplementationBriefLive(slug);
+    if (!result.data) {
+      if (result.failureKind === "not-found") return unknownSlug(slug);
+      if (result.failureKind === "unsupported") {
+        return errorResult(`Style "${slug}" exists, but this StyleKit source does not expose a compatible implementation brief.${result.fallbackReason ? ` ${result.fallbackReason}.` : ""}`);
+      }
+      return sourceUnavailable(`Implementation brief for style "${slug}"`, result);
+    }
+    return toolResult(JSON.stringify(result.data), result.data, true);
+  });
 }

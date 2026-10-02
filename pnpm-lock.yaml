@@ -253,6 +253,10 @@ importers:
         version: 5.9.3
 
   packages/core:
+    dependencies:
+      zod:
+        specifier: ^4.3.6
+        version: 4.3.6
     devDependencies:
       tsup:
         specifier: ^8.0.0

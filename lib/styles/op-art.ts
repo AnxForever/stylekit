@@ -111,7 +111,7 @@ Typography pursues minimalism and geometric precision: sans-serif fonts, uniform
   transition-colors duration-100
   overflow-hidden
 ">
-  <div className="absolute inset-0 bg-[repeating-linear-gradient(45deg,transparent,transparent_4px,black_4px,black_8px)] opacity-0 group-hover:opacity-10 transition-none" />
+  <div className="absolute inset-0 bg-[repeating-linear-gradient(45deg,transparent,transparent_4px,black_4px,black_8px)] opacity-0 group-hover:opacity-100 transition-none" />
   <span className="relative z-10">Perceive</span>
 </button>`,
     },
@@ -128,7 +128,7 @@ Typography pursues minimalism and geometric precision: sans-serif fonts, uniform
   cursor-crosshair
 ">
   {/* Concentric rings — spin on hover (Illusion Generation) */}
-  <div className="absolute top-0 right-0 w-32 h-32 overflow-hidden opacity-30 group-hover:opacity-100 transition-opacity duration-150">
+  <div className="absolute top-0 right-0 w-32 h-32 overflow-hidden opacity-0 group-hover:opacity-100 transition-opacity duration-150">
     <div className="w-64 h-64 -translate-x-16 -translate-y-16 group-hover:animate-[spin_4s_linear_infinite]">
       {[...Array(8)].map((_, i) => (
         <div
@@ -159,7 +159,7 @@ Typography pursues minimalism and geometric precision: sans-serif fonts, uniform
   transition-colors duration-150
   cursor-crosshair
 ">
-  <div className="absolute top-0 right-0 w-32 h-32 overflow-hidden opacity-30 group-hover:opacity-100 transition-opacity duration-150">
+  <div className="absolute top-0 right-0 w-32 h-32 overflow-hidden opacity-0 group-hover:opacity-100 transition-opacity duration-150">
     <div className="w-64 h-64 -translate-x-16 -translate-y-16 group-hover:animate-[spin_4s_linear_infinite]">
       <div className="absolute inset-0 border-[3px] border-black rounded-full group-hover:border-white" />
       <div className="absolute inset-[10px] border-[3px] border-black rounded-full group-hover:border-white" />

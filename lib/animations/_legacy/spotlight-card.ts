@@ -27,7 +27,9 @@ export const spotlightCard: Animation = {
     {
       label: "Tailwind CSS + React",
       language: "tsx",
-      code: `import { useRef, useState } from "react";
+      code: `"use client";
+
+import { useRef, useState } from "react";
 
 export function SpotlightCard({ children }: { children: React.ReactNode }) {
   const divRef = useRef<HTMLDivElement>(null);
@@ -63,7 +65,9 @@ export function SpotlightCard({ children }: { children: React.ReactNode }) {
     {
       label: "Framer Motion",
       language: "tsx",
-      code: `import { useRef } from "react";
+      code: `"use client";
+
+import { useRef } from "react";
 import { motion, useMotionValue, useSpring } from "framer-motion";
 
 // Tip: consider disabling for reduced motion users

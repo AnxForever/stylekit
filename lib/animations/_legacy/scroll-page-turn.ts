@@ -208,7 +208,9 @@ export function PageTurn({ pages, className }: PageTurnProps) {
     {
       label: "Framer Motion",
       language: "tsx",
-      code: `import { motion, useScroll, useTransform } from "framer-motion";
+      code: `"use client";
+
+import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef, type ReactNode } from "react";
 
 // Tip: disable 3D transforms for reduced motion users

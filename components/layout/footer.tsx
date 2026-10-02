@@ -199,7 +199,7 @@ export function Footer({ compact = false }: { compact?: boolean }) {
             rel="noopener noreferrer"
             className="transition-colors hover:text-white"
           >
-            闄旾CP澶?025065501鍙?3
+            陕ICP备2025065501号-3
           </a>
         </div>
       </div>

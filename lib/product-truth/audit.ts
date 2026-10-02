@@ -247,21 +247,41 @@ async function auditUnpublishedPackageCommands(rootDir: string): Promise<Product
 }
 
 async function auditTemplateDownloadClaim(rootDir: string): Promise<ProductTruthIssue[]> {
-  // The download button links to the zip route. The label may promise a full
-  // project only while that route still bundles the scaffold plus every
-  // template file; if it regresses to a single-file export, the label must
-  // disclose that again.
+  // The download route delegates project construction to a helper. Verify both
+  // sides of that contract: the route puts every returned file into the ZIP,
+  // and the helper adds the scaffold plus the template sources and license.
+  // Looking only for the scaffold builder in the route misses this valid split.
   const downloadRoute = "app/api/templates/[slug]/download/route.ts";
-  const downloadRoutePath = path.join(rootDir, downloadRoute);
-  if (await fileExists(downloadRoutePath)) {
-    const downloadContent = await readFile(downloadRoutePath, "utf8");
-    if (
-      downloadContent.includes("JSZip") &&
-      downloadContent.includes("buildScaffoldFiles")
-    ) {
-      return [];
-    }
+  const projectHelper = "lib/templates/project.ts";
+  let exportsCompleteProject = false;
+
+  if (
+    await fileExists(path.join(rootDir, downloadRoute)) &&
+    await fileExists(path.join(rootDir, projectHelper))
+  ) {
+    const [routeContent, helperContent] = await Promise.all([
+      readFile(path.join(rootDir, downloadRoute), "utf8"),
+      readFile(path.join(rootDir, projectHelper), "utf8"),
+    ]);
+    const routeBuildsZip =
+      /import\s+JSZip\s+from\s+["']jszip["']/.test(routeContent) &&
+      /getTemplateProject/.test(routeContent) &&
+      /await\s+getTemplateProject\(slug\)/.test(routeContent) &&
+      /Object\.entries\(project\.files\)/.test(routeContent) &&
+      /zip\.file\s*\(/.test(routeContent) &&
+      /binaryFiles\.has\(filePath\)/.test(routeContent);
+    const helperBuildsProject =
+      /collectSourceFiles\(templateRoot\)/.test(helperContent) &&
+      /buildScaffoldFiles\(projectMeta\(entry,\s*slug\)\)/.test(helperContent) &&
+      /withDependencies\(scaffold,\s*dependencies\)/.test(helperContent) &&
+      /files\[projectPath\]\s*=\s*content/.test(helperContent) &&
+      /files\["LICENSE"\]\s*=/.test(helperContent) &&
+      /return\s*\{[\s\S]*?files,[\s\S]*?dependencies,[\s\S]*?license,[\s\S]*?\};/.test(helperContent);
+
+    exportsCompleteProject = routeBuildsZip && helperBuildsProject;
   }
+
+  if (exportsCompleteProject) return [];
 
   const translationFiles = [
     "lib/i18n/translations-en.ts",
@@ -272,11 +292,11 @@ async function auditTemplateDownloadClaim(rootDir: string): Promise<ProductTruth
   for (const source of translationFiles) {
     const content = await readFile(path.join(rootDir, source), "utf8");
     const label = content.match(/"templates\.download":\s*"([^"]+)"/)?.[1] ?? "";
-    if (!/page\.tsx|source|源码/i.test(label)) {
+    if (!/page\.tsx|source|\u6e90\u7801/i.test(label)) {
       issues.push({
         code: "misleading-template-download",
         source,
-        message: `Template download label "${label}" does not disclose that only page.tsx source is exported`,
+        message: "Template download label \"" + label + "\" does not disclose that only page.tsx source is exported",
       });
     }
   }

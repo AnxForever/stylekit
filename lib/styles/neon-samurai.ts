@@ -96,7 +96,7 @@ Core principles:
 ">
   <span className="absolute top-0 right-0 h-3 w-3 border-t border-r border-[#a020f0] transition-all duration-100 ease-linear group-hover:h-2 group-hover:w-2 group-hover:border-white" />
   <span className="absolute bottom-0 left-0 h-3 w-3 border-b border-l border-[#a020f0] transition-all duration-100 ease-linear group-hover:h-2 group-hover:w-2 group-hover:border-white" />
-  <span className="absolute left-[-35%] top-1/2 h-[1px] w-[30%] -translate-y-1/2 rotate-[-20deg] bg-white opacity-0 group-hover:opacity-100 group-hover:left-[110%] transition-all duration-100 ease-linear" />
+  <span className="absolute left-[-35%] top-1/2 h-[1px] w-[30%] -translate-y-1/2 rotate-[-20deg] bg-[#dc2626] opacity-0 group-hover:opacity-100 group-hover:left-[110%] transition-all duration-100 ease-linear" />
   <span className="relative z-10">Strike</span>
 </button>`,
     },
@@ -119,7 +119,7 @@ Core principles:
   <h3 className="text-2xl font-sans font-bold text-[#dc2626] uppercase tracking-wider mb-3 transition-colors duration-75 group-hover:text-white">
     BUSHIDO
   </h3>
-  <div className="h-[2px] w-12 bg-[#a020f0] mb-4 transition-all duration-100 ease-linear group-hover:w-24 group-hover:bg-white" />
+  <div className="h-[2px] w-12 bg-[#a020f0] mb-4 transition-all duration-100 ease-linear group-hover:w-24 group-hover:bg-[#dc2626]" />
   <p className="text-white/55 font-sans">
     The way of the warrior, illuminated by precise neon steel.
   </p>

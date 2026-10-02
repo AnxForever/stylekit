@@ -134,7 +134,7 @@ Core principles:
     text-[#3d2b1f] placeholder-[#8b7355]/50
     font-serif rounded
     focus:border-[#8b7355]
-    focus:shadow-[0_0_8px_rgba(139,115,85,0.2)]
+    focus:ring-2 focus:ring-[#8b7355]/30 focus:ring-offset-2 focus:ring-offset-[#f5f0e1]
     focus:outline-none
     transition-all
   "

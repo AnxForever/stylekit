@@ -18,10 +18,60 @@ await client.connect(transport);
 
 const { tools } = await client.listTools();
 const names = tools.map((t) => t.name).sort();
-check(tools.length === 6, `6 tools registered (${names.join(", ")})`);
+check(tools.length === 9, `9 tools registered (${names.join(", ")})`);
 check(
   tools.every((t) => t.annotations?.readOnlyHint === true),
   "all tools annotated readOnlyHint",
+);
+check(
+  tools.every((t) => t.annotations?.openWorldHint === true),
+  "all tools annotated openWorldHint for live or network-backed data",
+);
+
+const assetPage = await client.callTool({
+  name: "stylekit_list_assets",
+  arguments: { kind: "component-pattern", limit: 2 },
+});
+check(
+  assetPage.isError !== true &&
+    assetPage.structuredContent?.schemaVersion === "1" &&
+    Array.isArray(assetPage.structuredContent?.assets) &&
+    typeof assetPage.structuredContent?.total === "number" &&
+    typeof assetPage.structuredContent?.hasMore === "boolean" &&
+    typeof assetPage.structuredContent?.source === "string" &&
+    assetPage.structuredContent.assets.every((asset) => asset.kind === "component-pattern"),
+  "list_assets returns a namespaced, sourced page",
+);
+const emptyAssetPage = await client.callTool({
+  name: "stylekit_list_assets",
+  arguments: { kind: "component-pattern", offset: 100000, limit: 1 },
+});
+check(
+  emptyAssetPage.isError !== true &&
+    emptyAssetPage.structuredContent?.assets?.length === 0 &&
+    emptyAssetPage.structuredContent?.hasMore === false &&
+    typeof emptyAssetPage.structuredContent?.source === "string",
+  "list_assets returns a successful empty offset page",
+);
+const patternAsset = await client.callTool({
+  name: "stylekit_get_asset",
+  arguments: { kind: "component-pattern", id: "sidebar-fixed-standard-breadcrumb" },
+});
+let patternTextJson = null;
+try {
+  patternTextJson = JSON.parse(patternAsset.content[0].text);
+} catch {
+  /* ignore */
+}
+check(
+  patternAsset.isError !== true &&
+    patternAsset.structuredContent?.metadata?.kind === "component-pattern" &&
+    patternAsset.structuredContent?.metadata?.id === "sidebar-fixed-standard-breadcrumb" &&
+    patternAsset.structuredContent?.metadata?.contentLevel === "source" &&
+    typeof patternAsset.structuredContent?.code === "string" &&
+    patternAsset.structuredContent.code.includes("previewId") &&
+    patternTextJson?.code === patternAsset.structuredContent?.code,
+  "get_asset returns full permitted pattern source as structured and complete JSON text",
 );
 
 const search = await client.callTool({
@@ -38,6 +88,33 @@ check(
   typeof search.structuredContent?.has_more === "boolean" &&
     search.structuredContent?.offset === 0,
   "search returns pagination (offset + has_more)",
+);
+
+const exactSearch = await client.callTool({
+  name: "stylekit_search_styles",
+  arguments: { query: "glassmorphism", limit: 1 },
+});
+check(
+  exactSearch.structuredContent?.results?.[0]?.slug === "glassmorphism" &&
+    exactSearch.structuredContent?.ranking === "exact",
+  "search ranks an exact slug before semantic matches",
+);
+check(
+  typeof exactSearch.structuredContent?.source === "string",
+  "search returns source provenance",
+);
+
+const emptyPage = await client.callTool({
+  name: "stylekit_search_styles",
+  arguments: { query: "glass", offset: 100000 },
+});
+check(
+  emptyPage.isError !== true &&
+    emptyPage.structuredContent?.count === 0 &&
+    Array.isArray(emptyPage.structuredContent?.results) &&
+    emptyPage.structuredContent.results.length === 0 &&
+    typeof emptyPage.structuredContent?.source === "string",
+  "search returns a successful structured empty page",
 );
 
 const detail = await client.callTool({
@@ -135,6 +212,23 @@ check(
   lintMissing.structuredContent?.missingRequired?.[0]?.missing?.length > 0,
   "lint_code reports missing required classes when asked",
 );
+
+const brief = await client.callTool({ name: "stylekit_get_implementation_brief", arguments: { slug: "neo-brutalist" } });
+check(brief.structuredContent?.schemaVersion === "stylekit-brief-v1" &&
+  brief.structuredContent?.components?.button?.code?.includes("className") &&
+  brief.structuredContent?.recipes?.button?.skeleton?.baseClasses?.length > 0 &&
+  brief.structuredContent?.lintRules?.sources?.includes("curated") &&
+  brief.structuredContent?.aiRules?.length > 0,
+  "implementation brief includes instructions, template code, recipes and merged rules");
+check(JSON.stringify(JSON.parse(brief.content[0].text)) === JSON.stringify(brief.structuredContent), "brief text contains complete valid JSON for legacy clients");
+const strict = await client.callTool({ name: "stylekit_lint_code", arguments: {
+  slug: "neo-brutalist", code: '<button className="p-4" />', checkRequired: ["button"], strict: true,
+} });
+check(strict.structuredContent?.status === "fail" && strict.structuredContent?.ok === false, "strict lint fails missing requirements");
+const dynamic = await client.callTool({ name: "stylekit_lint_code", arguments: {
+  slug: "neo-brutalist", code: '<div className={styles.card} />',
+} });
+check(dynamic.structuredContent?.status === "inconclusive" && dynamic.structuredContent?.ok === false, "runtime classes return an inconclusive structured report");
 
 await client.close();
 console.log(

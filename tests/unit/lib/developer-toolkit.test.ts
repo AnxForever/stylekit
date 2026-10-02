@@ -5,14 +5,32 @@ import {
 } from "@/lib/developer-toolkit";
 
 describe("Developer Toolkit capability manifest", () => {
-  it("describes the current public CLI beta", () => {
+  it("matches the checked npm versions and repository release candidates", () => {
     expect(getDeveloperToolkitCapability("cli")).toMatchObject({
       id: "cli",
       state: "public-beta",
-      publicVersion: "0.1.4",
-      repositoryVersion: "0.1.4",
-      command: "npx -y stylekit-cli@0.1.4 add synthwave",
-      verifiedAt: "2026-09-12",
+      publicVersion: "0.3.0",
+      repositoryVersion: "0.3.0",
+      command: "npx -y stylekit-cli@0.3.0 add synthwave",
+      verifiedAt: "2026-10-02",
+    });
+    expect(getDeveloperToolkitCapability("core")).toMatchObject({
+      publicVersion: "1.0.0-beta.6",
+      repositoryVersion: "1.0.0-beta.6",
+      command: "npm install stylekit-core@1.0.0-beta.6",
+      verifiedAt: "2026-10-02",
+    });
+    expect(getDeveloperToolkitCapability("mcp")).toMatchObject({
+      publicVersion: "0.4.0",
+      repositoryVersion: "0.4.0",
+      command: "npx -y stylekit-mcp@0.4.0",
+      verifiedAt: "2026-10-02",
+    });
+    expect(getDeveloperToolkitCapability("agent-skill")).toMatchObject({
+      publicVersion: "main@a5e42c87",
+      repositoryVersion: "main@a5e42c87",
+      command: "npx skills add AnxForever/stylekit-skill",
+      verifiedAt: "2026-10-02",
     });
   });
 

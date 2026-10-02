@@ -23,7 +23,6 @@ export const brutalistWebRecipes = createStyleRecipes("brutalist-web", "Brutalis
         "uppercase",
         "border-2 border-[#000000]",
         "rounded-none",
-        "transition-none",
       ],
     },
     parameters: [

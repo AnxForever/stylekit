@@ -132,16 +132,16 @@
     "enBullets": 114
   },
   "dark-mode": {
-    "zh": 11549,
-    "en": 14286,
+    "zh": 11532,
+    "en": 14264,
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 48,
     "enFences": 44,
     "zhHeadings": 47,
     "enHeadings": 43,
-    "zhBullets": 133,
-    "enBullets": 110
+    "zhBullets": 132,
+    "enBullets": 109
   },
   "macos-vibrancy": {
     "zh": 12362,
@@ -1200,16 +1200,16 @@
     "enBullets": 149
   },
   "holographic": {
-    "zh": 11748,
-    "en": 12935,
+    "zh": 11731,
+    "en": 12913,
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 48,
     "enFences": 42,
     "zhHeadings": 52,
     "enHeadings": 46,
-    "zhBullets": 132,
-    "enBullets": 102
+    "zhBullets": 131,
+    "enBullets": 101
   },
   "generative-art": {
     "zh": 10627,
@@ -1224,16 +1224,16 @@
     "enBullets": 98
   },
   "particle": {
-    "zh": 11749,
-    "en": 12230,
+    "zh": 11732,
+    "en": 12208,
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 48,
     "enFences": 42,
     "zhHeadings": 46,
     "enHeadings": 39,
-    "zhBullets": 126,
-    "enBullets": 95
+    "zhBullets": 125,
+    "enBullets": 94
   },
   "parallax-editorial": {
     "zh": 13990,
@@ -1248,16 +1248,16 @@
     "enBullets": 118
   },
   "vhs-aesthetic": {
-    "zh": 11284,
-    "en": 12558,
+    "zh": 11273,
+    "en": 12542,
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 48,
     "enFences": 42,
     "zhHeadings": 46,
     "enHeadings": 39,
-    "zhBullets": 133,
-    "enBullets": 104
+    "zhBullets": 132,
+    "enBullets": 103
   },
   "terracotta": {
     "zh": 10304,
@@ -1668,16 +1668,16 @@
     "enBullets": 103
   },
   "studio-bold": {
-    "zh": 15730,
-    "en": 19015,
+    "zh": 15713,
+    "en": 18998,
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 48,
     "enFences": 48,
     "zhHeadings": 50,
     "enHeadings": 49,
-    "zhBullets": 123,
-    "enBullets": 118
+    "zhBullets": 122,
+    "enBullets": 117
   },
   "gallery-dark": {
     "zh": 14464,

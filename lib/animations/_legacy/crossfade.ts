@@ -133,12 +133,12 @@ export function CrossfadeTabs({ panels }: { panels: ReactNode[] }) {
 
     let cancelled = false;
 
-    async function run() {
+    async function run(element: HTMLDivElement) {
       const { animate } = await import("animejs");
-      if (cancelled || activeRef.current !== activeElement) return;
+      if (cancelled || activeRef.current !== element) return;
 
       activeAnimationRef.current?.cancel();
-      activeAnimationRef.current = animate(activeElement, {
+      activeAnimationRef.current = animate(element, {
         opacity: [0, 1],
         duration: 500,
         ease: "inOut(2)",
@@ -157,7 +157,7 @@ export function CrossfadeTabs({ panels }: { panels: ReactNode[] }) {
       exitingAnimationRef.current = animation;
     }
 
-    void run();
+    void run(activeElement);
     return () => {
       cancelled = true;
     };

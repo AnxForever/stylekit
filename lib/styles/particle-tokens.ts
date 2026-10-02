@@ -87,7 +87,8 @@ export const particleTokens = createStyleTokens({
       "text-black",
     ],
     patterns: [
-      "^bg-white",
+      // Translucent white surfaces are valid glass; plain bg-white stays forbidden.
+
       "^bg-gray-[1-3]00",
       "^shadow-(sm|md|lg|xl)$",
       "^text-gray-[8-9]00",

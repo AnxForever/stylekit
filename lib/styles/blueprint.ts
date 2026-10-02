@@ -98,7 +98,7 @@ Suitable for: architecture firms, engineering consultancies, tech product launch
 </button>
 
 // Blueprint Filled (CAD Confirm)
-<button className="group relative px-6 py-2 bg-white text-[#1e3a5f] font-mono font-bold text-sm uppercase tracking-widest border border-white hover:bg-[#a0c4e8] active:bg-[#ff6b35] active:text-white active:border-[#ff6b35] transition-all duration-100 motion-reduce:transition-none overflow-hidden">
+<button className="group relative px-6 py-2 bg-[#a0c4e8] text-[#1e3a5f] font-mono font-bold text-sm uppercase tracking-widest border border-white hover:bg-[#a0c4e8] active:bg-[#ff6b35] active:text-white active:border-[#ff6b35] transition-all duration-100 motion-reduce:transition-none overflow-hidden">
   <span className="absolute left-2 right-2 top-1/2 h-px -translate-y-1/2 bg-[#1e3a5f]/0 group-hover:bg-[#1e3a5f]/25 transition-colors duration-100" />
   <span className="relative z-10">Compile</span>
 </button>

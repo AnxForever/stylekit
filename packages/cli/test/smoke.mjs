@@ -1,6 +1,8 @@
 // Black-box CLI test: spawn the built bin and assert stdout/stderr/exit code.
 import { execFileSync } from "node:child_process";
-import { readFileSync } from "node:fs";
+import { readFileSync, mkdtempSync, mkdirSync, writeFileSync, rmSync } from "node:fs";
+import { tmpdir } from "node:os";
+import path from "node:path";
 
 const packageVersion = JSON.parse(
   readFileSync(new URL("../package.json", import.meta.url), "utf8"),
@@ -12,10 +14,12 @@ function check(cond, label) {
   if (!cond) failures++;
 }
 
-function run(args) {
+function run(args, input) {
   try {
     const stdout = execFileSync("node", ["dist/index.js", ...args], {
       encoding: "utf8",
+      input,
+      stdio: ["pipe", "pipe", "pipe"],
     });
     return { code: 0, stdout, stderr: "" };
   } catch (e) {
@@ -118,6 +122,143 @@ check(
   r.code === 0 && listJson?.count === 2 && listJson?.total >= 2,
   "list --json -> total/count/results envelope",
 );
+
+r = run(["assets", "--json", "--limit", "1"]);
+let assetPageJson = null;
+try {
+  assetPageJson = JSON.parse(r.stdout);
+} catch {
+  /* ignore */
+}
+const assetPage = assetPageJson?.data;
+check(
+  r.code === 0 &&
+    ["live", "bundled"].includes(assetPageJson?.origin) &&
+    assetPage?.schemaVersion === "1" &&
+    Array.isArray(assetPage?.assets) &&
+    Number.isInteger(assetPage?.total) &&
+    assetPage?.offset === 0 &&
+    Number.isInteger(assetPage?.limit) &&
+    typeof assetPage?.hasMore === "boolean" &&
+    assetPageJson?.data?.kindCounts &&
+    typeof assetPageJson.data.kindCounts === "object",
+  "assets --json -> complete source and pagination envelope",
+);
+
+r = run(["assets", "--json", "--limit", "1", "--offset", String((assetPage?.total ?? 0) + 1000)]);
+let emptyAssetsJson = null;
+try {
+  emptyAssetsJson = JSON.parse(r.stdout);
+} catch {
+  /* ignore */
+}
+check(
+  r.code === 0 &&
+    ["live", "bundled"].includes(emptyAssetsJson?.origin) &&
+    Array.isArray(emptyAssetsJson?.data?.assets) &&
+    emptyAssetsJson.data.assets.length === 0 &&
+    emptyAssetsJson.data.hasMore === false,
+  "assets empty offset page is successful structured output",
+);
+
+if (assetPage?.assets?.[0]?.kind && assetPage.assets[0]?.id) {
+  const meta = assetPage.assets[0];
+  r = run(["asset", meta.kind, meta.id, "--json"]);
+  let detailJson = null;
+  try {
+    detailJson = JSON.parse(r.code === 0 ? r.stdout : r.stderr);
+  } catch {
+    /* ignore */
+  }
+  if (r.code === 0) {
+    check(
+      ["live", "bundled"].includes(detailJson?.origin) &&
+        detailJson?.data?.metadata?.kind === meta.kind &&
+        detailJson?.data?.metadata?.id === meta.id &&
+        detailJson?.data?.metadata?.availability === meta.availability,
+      "asset --json -> namespaced detail preserves availability metadata",
+    );
+  } else {
+    check(
+      detailJson?.code === "ASSET_SOURCE_UNAVAILABLE" &&
+        detailJson?.failureKind === "unavailable" &&
+        (detailJson?.asset?.metadata?.kind ?? detailJson?.asset?.kind) === meta.kind &&
+        (!detailJson?.asset?.data ||
+          detailJson.asset.data.sourceFilesIncluded === false) &&
+        !Object.hasOwn(detailJson?.asset?.data ?? {}, "files"),
+      "unavailable remote asset fails without claiming source content",
+    );
+  }
+}
+
+r = run(["assets", "--offset=-1", "--json"]);
+let invalidOffsetJson = null;
+try {
+  invalidOffsetJson = JSON.parse(r.stderr);
+} catch {
+  /* ignore */
+}
+check(
+  r.code === 1 && invalidOffsetJson?.code === "INVALID_OFFSET",
+  "assets invalid --offset -> structured validation error",
+);
+
+r = run(["assets", "--kind", "not-a-public-kind", "--json"]);
+let invalidAssetKindJson = null;
+try {
+  invalidAssetKindJson = JSON.parse(r.stderr);
+} catch {
+  /* ignore */
+}
+check(
+  r.code === 1 && invalidAssetKindJson?.code === "INVALID_ASSET_KIND",
+  "assets invalid --kind -> structured validation error",
+);
+
+r = run(["asset", "experience-pack", "corporate-clean-saas", "--json"]);
+let restrictedDetailJson = null;
+try {
+  restrictedDetailJson = JSON.parse(r.code === 0 ? r.stdout : r.stderr);
+} catch {
+  /* ignore */
+}
+check(
+  r.code === 0 &&
+    ["live", "bundled"].includes(restrictedDetailJson?.origin) &&
+    restrictedDetailJson?.data?.metadata?.kind === "experience-pack" &&
+    restrictedDetailJson?.data?.metadata?.id === "corporate-clean-saas" &&
+    restrictedDetailJson?.data?.metadata?.availability === "restricted" &&
+    Array.isArray(restrictedDetailJson?.data?.sourceUrls) &&
+    restrictedDetailJson.data.sourceUrls.length > 0 &&
+    Object.keys(restrictedDetailJson?.data?.data ?? {}).length === 0,
+  "restricted asset preserves metadata and links without exposing source files",
+);
+
+const fixtureRoot = mkdtempSync(path.join(tmpdir(), "stylekit-cli-test-"));
+try {
+  mkdirSync(path.join(fixtureRoot, "src"));
+  writeFileSync(path.join(fixtureRoot, "src", "good.tsx"), '<div className="p-4 rounded-none"/>');
+  writeFileSync(path.join(fixtureRoot, "src", "bad.tsx"), '<div className="hover:rounded-xl!"/>');
+  mkdirSync(path.join(fixtureRoot, "src", "node_modules"));
+  writeFileSync(path.join(fixtureRoot, "src", "node_modules", "ignored.tsx"), '<div className="rounded-xl"/>');
+  r = run(["brief", "neo-brutalist"]);
+  const brief = JSON.parse(r.stdout);
+  check(r.code === 0 && brief.schemaVersion === "stylekit-brief-v1" && brief.recipes.button && brief.lintRules.sources.includes("curated"), "brief exports complete implementation contract");
+  r = run(["lint", "neo-brutalist", path.join(fixtureRoot, "src", "good.tsx"), "--json"]);
+  check(r.code === 0 && JSON.parse(r.stdout).status === "pass", "lint valid file passes");
+  r = run(["lint", "--style", "neo-brutalist", "--files", path.join(fixtureRoot, "src", "**", "*.tsx"), "--format", "json"]);
+  check(r.code === 1 && JSON.parse(r.stdout).files.length === 2, "lint glob finds root files and excludes dependencies");
+  r = run(["lint", "neo-brutalist", "--stdin", "--json"], '<div className={runtimeClasses}/>');
+  check(r.code === 3 && JSON.parse(r.stdout).status === "inconclusive", "lint stdin runtime classes cannot pass");
+  r = run(["lint", "neo-brutalist", "--stdin", "--component", "button", "--strict", "--json"], '<button className="p-4"/>');
+  check(r.code === 1 && JSON.parse(r.stdout).files[0].report.missingRequired.length > 0, "lint strict checks required classes");
+  r = run(["lint", "neo-brutalist", "--stdin", "--format", "github"], '<div className="rounded-xl"/>');
+  check(r.code === 1 && r.stdout.includes("::error file=<stdin>,line=1::"), "lint emits GitHub error annotations");
+  r = run(["lint", "neo-brutalist", "--files", path.join(fixtureRoot, "missing", "*.tsx"), "--json"]);
+  check(r.code === 1 && JSON.parse(r.stderr).code === "UNEXPECTED_ERROR", "missing glob roots fail instead of passing zero files");
+} finally {
+  rmSync(fixtureRoot, { recursive: true, force: true });
+}
 
 console.log(
   failures === 0 ? "\nALL CLI SMOKE TESTS PASSED" : `\n${failures} FAILURE(S)`,

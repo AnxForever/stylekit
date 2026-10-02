@@ -94,7 +94,7 @@ Core principles:
       description: "产品展示卡片，包含图片、标题、价格",
       code: `<div className="group border border-[#e3e3e3] rounded-lg overflow-hidden bg-white hover:shadow-md transition-shadow duration-200">
   <div className="aspect-square bg-[#f7f7f8] overflow-hidden">
-    <div className="w-full h-full bg-gradient-to-br from-[#f0f0f0] to-[#e8e8e8] group-hover:scale-105 transition-transform duration-300" />
+    <div className="w-full h-full bg-[#f0f0f0] group-hover:scale-105 transition-transform duration-300" />
   </div>
   <div className="p-4">
     <p className="text-sm text-[#6b7280] mb-1">Brand Name</p>

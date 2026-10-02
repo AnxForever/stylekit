@@ -50,8 +50,11 @@ export interface StyleLintMissingRequired {
 
 export interface StyleLintReport {
   slug: string;
-  /** True when there are no violations. Missing required classes do not fail the report. */
+  /** True only for a conclusive pass of the requested static checks. */
   ok: boolean;
+  status: "pass" | "fail" | "inconclusive";
+  coverage: { classAttributes: number; dynamicAttributes: number; requiredScope: "file" };
+  warnings: string[];
   violations: StyleLintViolation[];
   missingRequired: StyleLintMissingRequired[];
   /** How many class tokens were extracted and checked. */
@@ -66,6 +69,8 @@ export interface StyleLintOptions {
    * a snippet is rarely expected to contain every component of the style.
    */
   checkRequired?: StyleLintComponent[];
+  /** Fail missing required classes. Defaults to false for existing callers. */
+  strict?: boolean;
   /**
    * Label echoed back as `report.slug`. Only needed by `lintCodeWithRules`,
    * where no slug was looked up; `lintStyleCode` sets it from its own argument.
@@ -121,7 +126,37 @@ export function extractClassNames(code: string): ExtractedClass[] {
     CLASS_ATTR_RE.lastIndex = region.end;
   }
 
+  if (found.length === 0 && isBareClassList(code)) {
+    const tokenRe = /\S+/g;
+    let token: RegExpExecArray | null;
+    while ((token = tokenRe.exec(code)) !== null) {
+      found.push({ raw: token[0], line: offsetToLine(lineStarts, token.index) });
+    }
+  }
   return found;
+}
+
+function isBareClassList(code: string): boolean {
+  const tokens = code.trim().split(/\s+/);
+  return tokens.length > 0 && tokens.every((token) =>
+    /^[^\s"'{}=<>;`]+$/.test(token) &&
+    (/[\-:[\]]/.test(token) || /^(block|inline|flex|grid|hidden|relative|absolute|fixed|sticky|italic|underline|truncate|uppercase|lowercase)$/.test(token)),
+  );
+}
+
+/** Expressions can contain runtime values even when some literals are readable. */
+function measureCoverage(code: string): StyleLintReport["coverage"] {
+  const matcher = new RegExp(CLASS_ATTR_RE.source, "g");
+  let classAttributes = 0;
+  let dynamicAttributes = 0;
+  for (const match of code.matchAll(matcher)) {
+    classAttributes += 1;
+    const region = readAttributeValue(code, match.index + match[0].length);
+    const value = region ? code.slice(region.start, region.end).trim() : "";
+    const literal = /^(?:"(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*'|`[^`]*`)$/s.test(value);
+    if (!literal || value.includes("\\") || (value.startsWith("`") && value.includes("${"))) dynamicAttributes += 1;
+  }
+  return { classAttributes, dynamicAttributes, requiredScope: "file" };
 }
 
 /**
@@ -139,7 +174,7 @@ function readAttributeValue(
   const opener = code[i];
 
   if (opener === '"' || opener === "'") {
-    const close = code.indexOf(opener, i + 1);
+    const close = findStringEnd(code, i, opener, code.length);
     if (close === -1) return null;
     return { start: i, end: close + 1 };
   }
@@ -298,7 +333,7 @@ export function stripVariants(className: string): string {
   }
 
   const base = lastColon === -1 ? className : className.slice(lastColon + 1);
-  return base.startsWith("!") ? base.slice(1) : base;
+  return base.replace(/^!|!$/g, "");
 }
 
 /** Normalized rule set merged from both sources. */
@@ -330,6 +365,7 @@ export interface MergedRules {
   };
   tokens?: StyleTokens;
   sources: StyleLintRuleSource[];
+  unsupportedRules?: string[];
 }
 
 /**
@@ -375,6 +411,7 @@ function mergeRulesFromParts(
     required: new Map(),
     exempt: new Set(),
     sources: [],
+    unsupportedRules: [],
   };
 
   if (tokens) {
@@ -395,6 +432,8 @@ function mergeRulesFromParts(
           source: "tokens",
           reasons: tokens.forbidden.reasons,
         });
+      } else {
+        merged.unsupportedRules?.push(pattern);
       }
     }
     for (const component of ["button", "card", "input"] as const) {
@@ -582,23 +621,39 @@ export function lintCodeWithRules(
 
   const missingRequired: StyleLintMissingRequired[] = [];
   const present = new Set(extracted.map((entry) => entry.raw));
-  const presentBase = new Set(extracted.map((entry) => stripVariants(entry.raw)));
+  // A hover/dark-only utility does not satisfy a required default utility.
+  const presentBase = new Set(extracted.filter((entry) =>
+    entry.raw.replace(/^!|!$/g, "") === stripVariants(entry.raw),
+  ).map((entry) => stripVariants(entry.raw)));
 
   for (const component of options.checkRequired ?? []) {
     const requirement = rules.required.get(component);
     if (!requirement?.classes.length) continue;
 
     const missing = requirement.classes.filter(
-      (cls) => !present.has(cls) && !presentBase.has(stripVariants(cls)),
+      (cls) => !present.has(cls) && !(cls === stripVariants(cls) && presentBase.has(cls)),
     );
     if (missing.length) {
       missingRequired.push({ component, missing, source: requirement.source });
     }
   }
 
+  const coverage = measureCoverage(code);
+  const warnings: string[] = [];
+  if (rules.sources.length === 0) warnings.push("No lint rules are available for this style.");
+  if (extracted.length === 0) warnings.push("No statically readable class tokens were found.");
+  if (coverage.dynamicAttributes > 0) warnings.push("Runtime class expressions require manual review; only their string literals were checked.");
+  if (rules.unsupportedRules?.length) warnings.push("Some forbidden patterns could not be compiled.");
+  if (missingRequired.length > 0 && !options.strict) warnings.push("Missing required classes are advisory; enable strict to fail them.");
+  const failed = violations.length > 0 || (options.strict === true && missingRequired.length > 0 && coverage.dynamicAttributes === 0);
+  const uncertain = rules.sources.length === 0 || extracted.length === 0 || coverage.dynamicAttributes > 0 || Boolean(rules.unsupportedRules?.length);
+  const status = failed ? "fail" : uncertain ? "inconclusive" : "pass";
   return {
     slug: options.slug ?? "",
-    ok: violations.length === 0,
+    ok: status === "pass",
+    status,
+    coverage,
+    warnings,
     violations,
     missingRequired,
     checkedClasses: extracted.length,

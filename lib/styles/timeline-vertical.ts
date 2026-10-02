@@ -112,7 +112,7 @@ Core principles:
       name: "时间线节点卡片",
       description: "时间线中的事件卡片",
       code: `<div className="group relative pl-10 sm:pl-0">
-  <div className="absolute top-6 left-0 sm:left-1/2 sm:-ml-[9px] w-4 h-4 bg-zinc-200 rounded-full border-4 border-white shadow-sm z-10 group-hover:bg-blue-500 group-hover:scale-125 group-hover:shadow-[0_0_10px_rgba(59,130,246,0.5)] transition-all duration-200 ease-out" />
+  <div className="absolute top-6 left-0 sm:left-1/2 sm:-ml-[9px] w-4 h-4 bg-zinc-200 rounded-full border-2 border-white shadow-sm z-10 group-hover:bg-blue-500 group-hover:scale-125 group-hover:shadow-[0_0_10px_rgba(59,130,246,0.5)] transition-all duration-200 ease-out" />
 
   <div className="sm:w-1/2 sm:pr-12 sm:text-right">
     <div className="p-6 bg-white rounded-xl shadow-sm border border-zinc-100 group-hover:shadow-md group-hover:border-blue-200 group-hover:-translate-y-1 group-hover:translate-x-1 transition-all duration-200 ease-out">
@@ -199,7 +199,7 @@ Core principles:
       <div className="space-y-8">
         {/* Item 1 */}
         <div className="relative pl-16">
-          <div className="absolute left-6 top-2 w-4 h-4 bg-blue-500 rounded-full border-4 border-white shadow" />
+          <div className="absolute left-6 top-2 w-4 h-4 bg-blue-500 rounded-full border-2 border-white shadow" />
           <div className="p-6 bg-white rounded-xl shadow-sm border border-zinc-100">
             <time className="text-sm text-blue-500 font-medium mb-2 block">2024</time>
             <h3 className="text-lg font-semibold text-zinc-900 mb-2">Series B Funding</h3>
@@ -209,7 +209,7 @@ Core principles:
 
         {/* Item 2 */}
         <div className="relative pl-16">
-          <div className="absolute left-6 top-2 w-4 h-4 bg-emerald-500 rounded-full border-4 border-white shadow" />
+          <div className="absolute left-6 top-2 w-4 h-4 bg-emerald-500 rounded-full border-2 border-white shadow" />
           <div className="p-6 bg-white rounded-xl shadow-sm border border-zinc-100">
             <time className="text-sm text-emerald-500 font-medium mb-2 block">2023</time>
             <h3 className="text-lg font-semibold text-zinc-900 mb-2">1 Million Users</h3>
@@ -219,7 +219,7 @@ Core principles:
 
         {/* Item 3 */}
         <div className="relative pl-16">
-          <div className="absolute left-6 top-2 w-4 h-4 bg-amber-500 rounded-full border-4 border-white shadow" />
+          <div className="absolute left-6 top-2 w-4 h-4 bg-amber-500 rounded-full border-2 border-white shadow" />
           <div className="p-6 bg-white rounded-xl shadow-sm border border-zinc-100">
             <time className="text-sm text-amber-500 font-medium mb-2 block">2022</time>
             <h3 className="text-lg font-semibold text-zinc-900 mb-2">Product Launch</h3>
@@ -229,7 +229,7 @@ Core principles:
 
         {/* Item 4 */}
         <div className="relative pl-16">
-          <div className="absolute left-6 top-2 w-4 h-4 bg-zinc-400 rounded-full border-4 border-white shadow" />
+          <div className="absolute left-6 top-2 w-4 h-4 bg-zinc-400 rounded-full border-2 border-white shadow" />
           <div className="p-6 bg-white rounded-xl shadow-sm border border-zinc-100">
             <time className="text-sm text-zinc-500 font-medium mb-2 block">2021</time>
             <h3 className="text-lg font-semibold text-zinc-900 mb-2">Company Founded</h3>

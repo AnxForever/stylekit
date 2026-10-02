@@ -3,8 +3,10 @@ import { LocalizedLink } from "@/components/i18n/localized-link";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { PromptTemplatePreviewSection } from "@/components/seo/prompt-template-preview-section";
+import { PromptCopyButton } from "@/app/prompts/[topic]/_prompt-copy-button";
 import { promptTopics } from "@/lib/prompts";
 import { uiPromptTemplates } from "@/lib/seo/prompt-template-previews";
+import { UI_PROMPT_EXAMPLES } from "@/lib/seo/ui-prompt-examples";
 import { getRequestLocaleContext } from "@/lib/i18n/request";
 
 export const metadata: Metadata = {
@@ -96,8 +98,8 @@ export default async function UiPromptsPage() {
             </h1>
             <p className="text-lg text-muted max-w-3xl mb-8 leading-relaxed">
               {isZh
-                ? "这里汇总适用于 UI 与前端设计的通用提示词。你可以从这里进入落地页、仪表盘、Tailwind UI 和暗色模式等专题，并将提示词用于 ChatGPT、Claude、Claude Code 或 Codex。"
-                : "StyleKit is an open-source library of copy-ready UI design prompts for AI coding. Start with a broad brief, then choose a focused collection for landing pages, dashboards, Tailwind UI, or dark mode in ChatGPT, Claude, Claude Code, or Codex."}
+                ? "复制包含布局、配色、响应式行为和交互状态的前端提示词，用于 ChatGPT、Claude、Claude Code 或 Codex。先从下面三个完整示例开始，再按页面类型或视觉风格查找更多提示词。"
+                : "Copy frontend prompts that specify layout, colors, responsive behavior, and UI states for ChatGPT, Claude, Claude Code, or Codex. Start with the three complete examples below, then explore prompts by page type or visual style."}
             </p>
             <div className="flex flex-wrap gap-3 text-sm text-muted">
               <span className="border border-border px-3 py-1">
@@ -111,13 +113,52 @@ export default async function UiPromptsPage() {
           </div>
         </section>
 
+        <section aria-labelledby="prompt-examples-title" className="border-b border-border">
+          <div className="max-w-7xl mx-auto px-6 md:px-12 py-12 md:py-16">
+            <p className="text-xs tracking-widest uppercase text-muted mb-4">
+              {isZh ? "可复制示例" : "Copyable Examples"}
+            </p>
+            <h2 id="prompt-examples-title" className="text-2xl md:text-3xl mb-4">
+              {isZh ? "选一个任务，复制完整提示词" : "Choose a task and copy the complete prompt"}
+            </h2>
+            <p className="text-muted mb-8 max-w-3xl leading-relaxed">
+              {isZh
+                ? "这些是可按需求修改的提示词示例。复制后补充你的产品内容和已有代码；生成结果需要在项目中检查和测试。每条示例都链接到对应专题，便于继续调整。"
+                : "These are prompt examples to adapt to your project. Add your product content and existing code, then review and test the generated result. Each example links to its source collection for further guidance."}
+            </p>
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              {UI_PROMPT_EXAMPLES.map((example) => (
+                <article key={example.id} className="min-w-0 border border-border p-6">
+                  <div className="flex items-start justify-between gap-3 mb-4">
+                    <h3 className="text-lg font-semibold">{example.title[locale]}</h3>
+                    <PromptCopyButton
+                      targetId={`ui-example-${example.id}`}
+                      copyLabel={isZh ? "复制提示词" : "Copy prompt"}
+                      copiedLabel={isZh ? "已复制" : "Copied"}
+                    />
+                  </div>
+                  <pre id={`ui-example-${example.id}`} className="whitespace-pre-wrap break-words font-sans text-sm leading-7 text-muted">
+                    {example.prompt[locale]}
+                  </pre>
+                  <LocalizedLink
+                    href={example.sourceHref}
+                    className="mt-5 inline-flex text-sm underline underline-offset-4 hover:text-muted transition-colors"
+                  >
+                    {example.sourceLabel[locale]}
+                  </LocalizedLink>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+
         <section className="border-b border-border">
           <div className="max-w-7xl mx-auto px-6 md:px-12 py-12 md:py-16">
             <p className="text-xs tracking-widest uppercase text-muted mb-4">
               {isZh ? "提示词主题" : "Prompt Topics"}
             </p>
             <h2 className="text-2xl md:text-3xl mb-8">
-              {isZh ? "按具体任务选择提示词" : "Search-friendly prompt topics"}
+              {isZh ? "按具体任务选择提示词" : "Choose prompts for the page you are building"}
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {featuredTopics.map((topic) => (
@@ -166,8 +207,8 @@ export default async function UiPromptsPage() {
         <PromptTemplatePreviewSection
           title={isZh ? "示例预览与起步模板" : "Example previews and starter templates"}
           description={isZh
-            ? "把这些模板当作结构参考，再把区块、布局和交互状态写回提示词，让输出更明确、更稳定。"
-            : "Use these templates as structural references, then feed their sections, layouts, and interaction states back into your prompt for more reliable output."}
+            ? "这些模板提供页面结构参考。选出需要的区块、布局和交互状态，再把它们补充到提示词中。"
+            : "Use these templates as references for page structure. Choose the sections, layouts, and interaction states you need, then add them to your prompt."}
           templates={uiPromptTemplates}
         />
 
@@ -178,8 +219,8 @@ export default async function UiPromptsPage() {
             </h2>
             <p className="text-muted mb-8 max-w-2xl mx-auto">
               {isZh
-                ? "如果任务已经明确，可以直接选择落地页、仪表盘、Tailwind UI 或暗色模式。针对具体页面类型的提示词通常比宽泛描述更容易得到清晰结果。"
-                : "Start with landing pages, dashboards, Tailwind UI, or dark mode if your search intent is already narrow. Specific prompt pages usually outperform generic briefs in both AI output quality and search clarity."}
+                ? "进入对应专题，选择落地页区块、仪表盘数据视图、Tailwind 组件或暗色主题的提示词，再按你的产品补充内容和约束。"
+                : "Open a collection for landing page sections, dashboard data views, Tailwind components, or dark themes, then add your product content and constraints."}
             </p>
             <div className="flex flex-wrap justify-center gap-3">
               <LocalizedLink

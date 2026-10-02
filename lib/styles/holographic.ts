@@ -129,7 +129,7 @@ Core principles:
       code: `<div className="
   group
   bg-white/5 backdrop-blur-xl rounded-2xl p-6
-  border border-white/10 shadow-xl
+  border border-white/10 shadow-[0_0_25px_rgba(147,51,234,0.4)]
   hover:bg-white/10 hover:border-purple-400/40
   hover:-translate-y-2
   hover:shadow-[0_0_30px_rgba(147,51,234,0.3)]

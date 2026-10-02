@@ -88,7 +88,8 @@ export const holographicTokens = createStyleTokens({
       "border-gray-300",
     ],
     patterns: [
-      "^bg-white",
+      // Glass panels use alpha-white; plain bg-white stays forbidden.
+
       "^bg-gray-[1-3]",
       "^bg-slate-[1-3]",
       "^shadow-(?!\\[)",

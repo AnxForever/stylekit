@@ -34,25 +34,86 @@ import {
   type RecipeResult,
 } from "@/lib/discovery";
 import type { DesignStyle } from "@/lib/styles";
-import { getStyleBySlug } from "@/lib/styles";
+import { getStyleBySlug, styles as bundledCatalogue } from "@/lib/styles";
 import type { StyleTokens } from "@/lib/styles/tokens";
 import type { StyleQuality, CapabilityStatus } from "@/lib/styles/quality";
+import { getImplementationBrief, type ImplementationBrief } from "@/lib/implementation-brief";
 
 export type DataOrigin = "live" | "bundled";
+
+/** Known styles use the complete bundled contract; newer styles need the live brief endpoint. */
+export async function getImplementationBriefLive(slug: string, options: RemoteOptions = {}): Promise<Sourced<ImplementationBrief | null>> {
+  const local = getImplementationBrief(slug);
+  if (local) return { data: local, origin: "bundled" };
+  const response = await fetchJson<unknown>(`/api/styles/${encodeURIComponent(slug)}/brief`, options);
+  if ("error" in response) {
+    if (response.failureKind !== "not-found") {
+      return { data: null, origin: "bundled", fallbackReason: response.error, failureKind: response.failureKind };
+    }
+
+    // The brief endpoint is optional across deployments. Its 404 says nothing
+    // about whether the style itself exists, so verify against the catalogue.
+    const known = await knownSlugLive(slug, options);
+    if (known.data) {
+      return {
+        data: null,
+        origin: "bundled",
+        fallbackReason: `live implementation brief endpoint is unavailable (${response.error}) for an existing style`,
+        failureKind: "unsupported",
+      };
+    }
+    if (known.failureKind === "not-found") {
+      return {
+        data: null,
+        origin: "bundled",
+        fallbackReason: known.fallbackReason ?? response.error,
+        failureKind: "not-found",
+      };
+    }
+    return {
+      data: null,
+      origin: "bundled",
+      fallbackReason: `${response.error}; style existence could not be checked: ${known.fallbackReason ?? "live catalogue unavailable"}`,
+      failureKind: "unavailable",
+    };
+  }
+  const value = response.value;
+  if (!isRecord(value) || value.schemaVersion !== "stylekit-brief-v1" || value.slug !== slug ||
+      !["name", "nameEn", "description", "philosophy"].every((key) => typeof value[key] === "string") ||
+      !["modern", "retro", "minimal", "expressive"].includes(String(value.category)) ||
+      !["visual", "layout"].includes(String(value.styleType)) ||
+      !["tags", "keywords", "doList", "dontList"].every((key) => Array.isArray(value[key]) && (value[key] as unknown[]).every((item) => typeof item === "string")) ||
+      !Array.isArray(value.variants) || !isRecord(value.colors) || typeof value.colors.primary !== "string" || typeof value.colors.secondary !== "string" || !Array.isArray(value.colors.accent) ||
+      typeof value.aiRules !== "string" || typeof value.globalCss !== "string" ||
+      !isRecord(value.components) || !isRecord(value.recipes) || !isRecord(value.readiness) ||
+      !Object.values(value.components).every((component) => isRecord(component) && typeof component.code === "string") ||
+      !(value.tokens === null || isRecord(value.tokens)) ||
+      !isRecord(value.lintRules) || value.lintRules.schemaVersion !== "stylekit-lint-v1" ||
+      !["sources", "forbiddenClasses", "forbiddenPatterns", "exempt", "unsupportedRules"].every((key) => Array.isArray((value.lintRules as Record<string, unknown>)[key])) ||
+      !isRecord(value.lintRules.required) ||
+      !isRecord(value.provenance) || typeof value.provenance.contentHash !== "string" || typeof value.provenance.url !== "string" ||
+      !["bundled", "static", "community"].includes(String(value.provenance.source))) {
+    return { data: null, origin: "bundled", fallbackReason: "live endpoint did not return a stylekit-brief-v1 contract", failureKind: "unavailable" };
+  }
+  return { data: value as unknown as ImplementationBrief, origin: "live" };
+}
 
 export interface Sourced<T> {
   readonly data: T;
   readonly origin: DataOrigin;
   /** Why the live catalogue was not used, when it was not. */
   readonly fallbackReason?: string;
+  /** Why a live-only resource could not be confirmed or retrieved. */
+  readonly failureKind?: SourceFailureKind;
   /**
-   * Which ranker ordered a query's results: the site's hybrid search, its
-   * keyword-only degradation, or the bundled scorer.
+   * Which ranker ordered a query's results: an exact slug/name match, the site's
+   * hybrid search, its keyword-only degradation, or the bundled scorer.
    */
   readonly ranking?: SearchRanking;
 }
 
-export type SearchRanking = "hybrid" | "keyword" | "local";
+export type SourceFailureKind = "not-found" | "unavailable" | "unsupported";
+export type SearchRanking = "exact" | "hybrid" | "keyword" | "local";
 
 export interface RemoteOptions {
   /** Override for testing or self-hosting. */
@@ -89,7 +150,9 @@ export function clearRemoteCache(): void {
   cacheGeneration += 1;
 }
 
-type FetchResult<T> = { value: T } | { error: string };
+type FetchResult<T> =
+  | { value: T }
+  | { error: string; failureKind: SourceFailureKind };
 
 function normalizeBaseUrl(value: string): string | null {
   try {
@@ -131,8 +194,16 @@ async function fetchJsonUncached<T>(
       headers: { accept: "application/json" },
     });
     if (!response.ok) {
-      if (tripCircuit) openCircuit(baseUrl, generation);
-      return { error: `HTTP ${response.status}` };
+      // A missing slug or missing optional artifact is a normal domain result,
+      // not evidence that the whole site is offline. Only transient server and
+      // rate-limit responses open the shared circuit.
+      if (tripCircuit && (response.status === 429 || response.status >= 500)) {
+        openCircuit(baseUrl, generation);
+      }
+      return {
+        error: `HTTP ${response.status}`,
+        failureKind: response.status === 404 ? "not-found" : "unavailable",
+      };
     }
 
     const value = (await response.json()) as T;
@@ -149,6 +220,7 @@ async function fetchJsonUncached<T>(
     const message = error instanceof Error ? error.message : String(error);
     return {
       error: /abort/i.test(message) ? `timed out after ${timeoutMs}ms` : message,
+      failureKind: "unavailable",
     };
   } finally {
     clearTimeout(timer);
@@ -164,17 +236,19 @@ async function fetchJson<T>(
   options: RemoteOptions,
   tripCircuit = true,
 ): Promise<FetchResult<T>> {
-  if (options.live === false) return { error: "live fetching disabled" };
+  if (options.live === false) return { error: "live fetching disabled", failureKind: "unavailable" };
 
   const baseUrl = normalizeBaseUrl(options.baseUrl ?? STYLEKIT_SITE_URL);
-  if (!baseUrl) return { error: "invalid live source base URL" };
+  if (!baseUrl) return { error: "invalid live source base URL", failureKind: "unavailable" };
 
   const cacheKey = `${baseUrl}${path}`;
   const cached = cache.get(cacheKey);
   if (cached && cached.expiresAt > Date.now()) return { value: cached.value as T };
 
   const disabledUntil = liveDisabledUntil.get(baseUrl) ?? 0;
-  if (Date.now() < disabledUntil) return { error: "live source unreachable, backing off" };
+  if (Date.now() < disabledUntil) {
+    return { error: "live source unreachable, backing off", failureKind: "unavailable" };
+  }
 
   const existing = inFlight.get(cacheKey);
   if (existing) return (await existing) as FetchResult<T>;
@@ -325,63 +399,127 @@ function remoteQuality(raw: Record<string, unknown>): StyleQuality {
 
 async function liveCatalogue(
   options: RemoteOptions,
-): Promise<{ styles: DesignStyle[] } | { error: string }> {
+): Promise<{ styles: DesignStyle[] } | { error: string; failureKind: SourceFailureKind }> {
   const response = await fetchJson<{ total?: number; styles?: LiveStyle[] }>(
     "/api/styles",
     options,
   );
-  if ("error" in response) return { error: response.error };
+  // Failure of the catalogue endpoint cannot establish that an individual
+  // style is missing, even when the endpoint itself responds with HTTP 404.
+  if ("error" in response) return { error: response.error, failureKind: "unavailable" };
 
   if (!isRecord(response.value) || !Array.isArray(response.value.styles)) {
-    return { error: "live catalogue returned malformed styles payload" };
+    return { error: "live catalogue returned malformed styles payload", failureKind: "unavailable" };
   }
 
   const mapped = response.value.styles
     .map(toDesignStyle)
     .filter((style): style is DesignStyle => style !== null)
     .map(mergeWithBundled);
-  if (mapped.length === 0) return { error: "live catalogue returned no usable styles" };
+  if (mapped.length === 0) return { error: "live catalogue returned no usable styles", failureKind: "unavailable" };
   return { styles: mapped };
 }
 
+function normalizeExactSearchValue(value: string): string {
+  return value.normalize("NFKC").trim().replace(/\s+/g, " ").toLowerCase();
+}
+
+function exactStyleMatches(
+  styles: readonly DesignStyle[],
+  query: string,
+  category?: SearchOptions["category"],
+): DesignStyle[] {
+  const normalizedQuery = normalizeExactSearchValue(query);
+  return styles.filter((style) => {
+    if (category && style.category !== category) return false;
+    return [style.slug, style.name, style.nameEn].some(
+      (value) => normalizeExactSearchValue(value) === normalizedQuery,
+    );
+  });
+}
+
+function prioritizeExactMatches(
+  data: { total: number; results: StyleSummary[] },
+  styles: readonly DesignStyle[],
+  query: string,
+  category?: SearchOptions["category"],
+  limit?: number,
+): { data: { total: number; results: StyleSummary[] }; matched: boolean } {
+  const exactStyles = exactStyleMatches(styles, query, category);
+  if (exactStyles.length === 0) return { data, matched: false };
+
+  const exactData = searchWithPool({ category }, exactStyles);
+  const exactSlugs = new Set(exactData.results.map((result) => result.slug));
+  const semanticSlugs = new Set(data.results.map((result) => result.slug));
+  const results = [
+    ...exactData.results,
+    ...data.results.filter((result) => !exactSlugs.has(result.slug)),
+  ];
+  return {
+    data: {
+      // NFKC exact matches can be stricter than the scorer's raw matching. Add
+      // those matches to total when they were not in the semantic result set.
+      total: data.total + exactData.results.filter((result) => !semanticSlugs.has(result.slug)).length,
+      results: typeof limit === "number" && limit > 0 ? results.slice(0, limit) : results,
+    },
+    matched: true,
+  };
+}
+
 /**
- * Search the live catalogue, ranked by the bundled scorer.
- *
- * This is the call that actually fixes staleness: styles published after this
- * package was built are searchable, because the set being ranked comes from
- * the API rather than from the bundle.
+ * Search the live catalogue, ranked by the site's hybrid search when available.
+ * Exact slug and name matches stay first even when semantic results score higher.
+ * The bundled scorer is used when the live catalogue is unavailable.
  */
 export async function searchStylesLive(
   opts: SearchOptions = {},
   options: RemoteOptions = {},
 ): Promise<Sourced<{ total: number; results: StyleSummary[] }>> {
   const catalogue = await liveCatalogue(options);
+  const query = opts.query?.trim();
   if ("error" in catalogue) {
+    const data = searchWithPool({ ...opts, limit: undefined }, bundledCatalogue);
+    const prioritized = query
+      ? prioritizeExactMatches(data, bundledCatalogue, query, opts.category, opts.limit)
+      : { data: searchWithPool(opts, bundledCatalogue), matched: false };
     return {
-      data: searchWithPool(opts),
+      data: prioritized.data,
       origin: "bundled",
       fallbackReason: catalogue.error,
-      ...(opts.query?.trim() ? { ranking: "local" as const } : {}),
+      failureKind: catalogue.failureKind,
+      ...(query ? { ranking: prioritized.matched ? "exact" : "local" } : {}),
     };
   }
 
-  const query = opts.query?.trim();
   if (query) {
     const ranked = await rankedSlugs(query, options);
     if (ranked && ranked.slugs.length > 0) {
       const bySlug = new Map(catalogue.styles.map((style) => [style.slug, style]));
-      const pool = ranked.slugs
-        .map((slug) => bySlug.get(slug))
-        .filter((style): style is DesignStyle => style !== undefined);
-      // No query here: the pool is already in ranked order, and searchWithPool
-      // keeps that order while applying the category filter and limit.
+      const exactStyles = exactStyleMatches(catalogue.styles, query, opts.category);
+      const poolBySlug = new Map(exactStyles.map((style) => [style.slug, style]));
+      for (const slug of ranked.slugs) {
+        const style = bySlug.get(slug);
+        if (style) poolBySlug.set(slug, style);
+      }
+      const pool = [...poolBySlug.values()];
+      // No query here: the pool is already in ranked order, with exact matches
+      // prepended, and searchWithPool applies the category filter.
+      const data = searchWithPool({ ...opts, query: undefined, limit: undefined }, pool);
+      const prioritized = prioritizeExactMatches(data, pool, query, opts.category, opts.limit);
       return {
-        data: searchWithPool({ ...opts, query: undefined }, pool),
+        data: prioritized.data,
         origin: "live",
-        ranking: ranked.mode,
+        ranking: prioritized.matched ? "exact" : ranked.mode,
       };
     }
-    return { data: searchWithPool(opts, catalogue.styles), origin: "live", ranking: "local" };
+
+    const data = searchWithPool({ ...opts, limit: undefined }, catalogue.styles);
+    const prioritized = prioritizeExactMatches(data, catalogue.styles, query, opts.category, opts.limit);
+    return {
+      data: prioritized.data,
+      origin: "live",
+      ranking: prioritized.matched ? "exact" : "local",
+    };
   }
   return { data: searchWithPool(opts, catalogue.styles), origin: "live" };
 }
@@ -418,7 +556,7 @@ export async function getStyleDetailLive(
     options,
   );
   if ("error" in response) {
-    return { data: null, origin: "bundled", fallbackReason: response.error };
+    return { data: null, origin: "bundled", fallbackReason: response.error, failureKind: response.failureKind };
   }
 
   const raw = response.value;
@@ -427,21 +565,21 @@ export async function getStyleDetailLive(
       data: null,
       origin: "bundled",
       fallbackReason: "live detail returned a malformed payload",
+      failureKind: "unavailable",
     };
   }
-  const detailSlug = str(raw["slug"], slug).trim();
-  if (!detailSlug) {
+  const detailSlug = str(raw["slug"]).trim();
+  if (detailSlug !== slug) {
     return {
       data: null,
       origin: "bundled",
-      fallbackReason: "live detail returned no usable slug",
+      fallbackReason: `live detail returned slug "${detailSlug}" for request "${slug}"`,
+      failureKind: "unavailable",
     };
   }
   const recipes = raw["recipes"];
-  const recipeIds =
-    recipes && typeof recipes === "object" && !Array.isArray(recipes)
-      ? Object.keys(recipes as Record<string, unknown>)
-      : [];
+  const recipeMap = isRecord(recipes) && isRecord(recipes.recipes) ? recipes.recipes : recipes;
+  const recipeIds = isRecord(recipeMap) ? Object.keys(recipeMap) : [];
   const colors = isRecord(raw["colors"]) ? raw["colors"] : {};
   const keywords = strArray(raw["keywords"]);
 
@@ -482,7 +620,13 @@ export async function getStyleDetailLive(
     quality: remoteQuality(raw),
   };
 
-  return { data: detail, origin: "live" };
+  return {
+    data: detail,
+    origin: "live",
+    ...("error" in catalogue
+      ? { fallbackReason: catalogue.error, failureKind: "unavailable" as const }
+      : {}),
+  };
 }
 
 export async function getTokensLive(
@@ -496,12 +640,13 @@ export async function getTokensLive(
     `/api/styles/${encodeURIComponent(slug)}/tokens`,
     options,
   );
-  if ("error" in response) return { data: null, origin: "bundled", fallbackReason: response.error };
+  if ("error" in response) return { data: null, origin: "bundled", fallbackReason: response.error, failureKind: response.failureKind };
   if (!isRecord(response.value) || !isRecord(response.value.tokens)) {
     return {
       data: null,
       origin: "bundled",
       fallbackReason: "live tokens returned a malformed payload",
+      failureKind: "unavailable",
     };
   }
   return { data: response.value.tokens as StyleTokens, origin: "live" };
@@ -535,12 +680,26 @@ export async function getComponentRecipeLive(
     return {
       data: null,
       origin: "bundled",
+      failureKind: "unsupported",
       fallbackReason:
         `"${slug}" was published after this package was built; recipe rendering needs ` +
-        "the bundled definitions. Update stylekit-core to render its components.",
+        "the bundled definitions. Use stylekit_get_implementation_brief for its source definitions.",
     };
   }
-  return { data: null, origin: known.origin, ...(known.fallbackReason ? { fallbackReason: known.fallbackReason } : {}) };
+  if (known.data) {
+    return {
+      data: null,
+      origin: known.origin,
+      failureKind: "not-found",
+      fallbackReason: `No "${recipeId}" recipe is registered for "${slug}".`,
+    };
+  }
+  return {
+    data: null,
+    origin: known.origin,
+    failureKind: known.failureKind ?? "unavailable",
+    ...(known.fallbackReason ? { fallbackReason: known.fallbackReason } : {}),
+  };
 }
 
 /**
@@ -558,7 +717,12 @@ export async function knownSlugLive(
 
   const catalogue = await liveCatalogue(options);
   if ("error" in catalogue) {
-    return { data: false, origin: "bundled", fallbackReason: catalogue.error };
+    return { data: false, origin: "bundled", fallbackReason: catalogue.error, failureKind: catalogue.failureKind };
   }
-  return { data: catalogue.styles.some((style) => style.slug === slug), origin: "live" };
+  const exists = catalogue.styles.some((style) => style.slug === slug);
+  return {
+    data: exists,
+    origin: "live",
+    ...(!exists ? { failureKind: "not-found" as const, fallbackReason: `Style "${slug}" was not found in the live catalogue.` } : {}),
+  };
 }

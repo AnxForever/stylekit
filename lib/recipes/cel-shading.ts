@@ -19,7 +19,7 @@ export const celShadingRecipes = createStyleRecipes("cel-shading", "Cel Shading"
       element: "button",
       baseClasses: [
         "font-bold",
-        "rounded-xl",
+        "rounded-none",
         "border-3 border-[#1a1a2e]",
         "transition-all duration-150",
       ],
@@ -63,7 +63,7 @@ export const celShadingRecipes = createStyleRecipes("cel-shading", "Cel Shading"
       baseClasses: [
         "bg-[#fafaf5]",
         "border-3 border-[#1a1a2e]",
-        "rounded-xl",
+        "rounded-none",
         "overflow-hidden",
         "transition-all duration-150",
       ],
@@ -115,7 +115,7 @@ export const celShadingRecipes = createStyleRecipes("cel-shading", "Cel Shading"
         "w-full",
         "bg-[#fafaf5]",
         "border-3 border-[#1a1a2e]",
-        "rounded-xl",
+        "rounded-none",
         "text-[#1a1a2e]",
         "font-medium",
         "placeholder:text-[#1a1a2e]/40",

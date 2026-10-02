@@ -1,0 +1,133 @@
+{
+  "schemaVersion": 1,
+  "auditDate": "2026-09-30",
+  "repositoryHead": "39bffebc",
+  "skillHead": "c2f7c32",
+  "scope": "Local source and selected public artifacts; no paid model calls or full E2E",
+  "publicSkillMatchesLocal": true,
+  "inspectedNpmArtifacts": [
+    "stylekit-core@1.0.0-beta.4",
+    "stylekit-mcp@0.2.5"
+  ],
+  "catalog": {
+    "styles": 148,
+    "stylesWithTokens": 148,
+    "stylesWithRecipes": 148,
+    "curatedReadinessProfiles": 9,
+    "fallbackReadinessProfiles": 139,
+    "darkModeReadiness": {
+      "complete": 0,
+      "partial": 9,
+      "fallback": 22,
+      "missing": 117
+    },
+    "accessibilityReviewFlags": 77,
+    "stylesWithVariants": 136
+  },
+  "canonicalOutputLint": {
+    "coreComponentsPerStyle": 3,
+    "recipeOutputsChecked": 444,
+    "recipeOutputsWithForbiddenViolations": 13,
+    "recipeOutputsWithMissingRequired": 263,
+    "templatesChecked": 444,
+    "templatesWithForbiddenViolations": 43,
+    "templatesWithMissingRequired": 250,
+    "caveat": "Counts include rule/data scope conflicts and equivalent class spellings; they are not counts of visually broken components."
+  },
+  "pythonSpecVerifierOnLocalCatalog": {
+    "stylesChecked": 148,
+    "issues": 0,
+    "stylesWithNotices": 112,
+    "notices": 385,
+    "caveat": "Different rule semantics and exemptions from the TypeScript evaluator."
+  },
+  "fixtureBenchmark": {
+    "taskCount": 4,
+    "styleCount": 2,
+    "withoutSkillPass": 0,
+    "withSkillPass": 4,
+    "realModelCalls": 0,
+    "caveat": "Detector regression fixtures; not an estimate of real skill effectiveness."
+  },
+  "confirmedReproductions": [
+    {
+      "tool": "skill fetch-style.py",
+      "input": "glassmorphism --recipes",
+      "result": "Only the recipes wrapper is printed; component recipes are omitted."
+    },
+    {
+      "tool": "skill fetch-style.py",
+      "input": "--search glassmorphism",
+      "result": "No styles match despite an exact catalog slug."
+    },
+    {
+      "tool": "skill eval-check.py",
+      "input": "Controlled rule banning rounded-lg; variant, cn expression, and HTML class inputs",
+      "result": "All three forms are missed; TypeScript evaluator detects them."
+    },
+    {
+      "tool": "skill detect-project.py",
+      "input": "Temporary project with tsconfig paths, standard shadcn aliases, button.tsx and stylekit-core dependency",
+      "result": "installedComponents is empty and styleKitInstalled is false."
+    },
+    {
+      "tool": "Tailwind preset export",
+      "input": "neo-brutalist JavaScript preset",
+      "result": "SyntaxError: Unexpected token '-' due to unquoted hyphenated keys."
+    },
+    {
+      "tool": "npm MCP 0.2.5",
+      "input": "swiss-style button recipe followed by lint_code",
+      "result": "Recipe uses rounded-sm; own linter rejects it and suggests rounded-none."
+    },
+    {
+      "tool": "npm MCP 0.2.5",
+      "input": "neo-brutalist button with px-4 and checkRequired button",
+      "result": "ok is true while nine required classes are missing."
+    },
+    {
+      "tool": "Local MCP handlers with mocked live catalog",
+      "input": "Style published after bundle, using actual API recipe wrapper shape",
+      "result": "Detail succeeds with recipeIds styleSlug/recipes; recipe and install report Unknown style."
+    },
+    {
+      "tool": "GitHub stylekit-lint Action",
+      "input": "Package lookup and CLI command inspection",
+      "result": "@stylekit/core returns npm registry 404; stylekit-cli has no lint command."
+    },
+    {
+      "tool": "Publication checker",
+      "input": "Npm tags and downloaded MCP tarball",
+      "result": "Misidentifies existing beta.4 as unpublished; misses local hybrid ranking behavior absent from MCP 0.2.5."
+    }
+  ],
+  "checks": {
+    "lint": { "exitCode": 0, "errors": 0, "warnings": 29 },
+    "typecheck": { "exitCode": 0 },
+    "unitTests": {
+      "exitCode": 1,
+      "passed": 7838,
+      "failed": 1,
+      "skipped": 1,
+      "failure": "Existing untracked docs/STYLE_RESEARCH_2026-09-28.html contains U+2197, caught by no-emoji policy test."
+    },
+    "productionBuild": { "exitCode": 0 },
+    "developerPackages": {
+      "exitCode": 1,
+      "coreBuildAndTypecheck": "passed",
+      "cliBuildAndSmoke": "passed",
+      "mcpBuildAndSmoke": "passed",
+      "failure": "Core unpacked size 12.16 MB exceeds 12.00 MB budget."
+    },
+    "catalogIntegrity": { "exitCode": 0 },
+    "experiencePackIntegrity": { "exitCode": 0, "packCount": 1 },
+    "publishedVersions": { "exitCode": 1, "caveat": "Core beta dist-tag false positive" }
+  },
+  "unverified": [
+    "Real-model full skill A/B effectiveness",
+    "Full browser E2E suite",
+    "Fresh consumer installs of every registry and Experience Pack",
+    "Extraction service browser workflow and deployed egress isolation"
+  ],
+  "detailedLocalEvidenceDirectory": "/tmp/stylekit-tooling-audit-ssONtz"
+}

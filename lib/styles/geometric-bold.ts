@@ -125,7 +125,7 @@ Core principles:
   <label className="block text-xs font-bold uppercase tracking-[0.3em]">Email</label>
   <input
     type="email"
-    className="w-full px-4 py-4 bg-white border-4 border-black text-black font-medium placeholder:text-gray-400 focus:outline-none focus:bg-yellow-300 transition-colors duration-200"
+    className="w-full px-4 py-4 bg-white border-4 border-black text-black font-medium placeholder:text-gray-600 focus:outline-none focus:bg-yellow-300 transition-colors duration-200"
     placeholder="YOUR@EMAIL.COM"
   />
 </div>`,

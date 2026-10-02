@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
- * StyleKit CLI — browse design styles and pull tokens, recipes, and shadcn
- * install commands from the terminal. Served offline from stylekit-core.
+ * StyleKit CLI — browse design styles, tokens, recipes, and public assets.
+ * Bundled data stays available offline; remote asset source is reported explicitly.
  *
  * Contract: success goes to stdout with exit 0; errors and usage go to stderr
  * with exit 1. With --json, both success and error emit JSON.
@@ -17,10 +17,15 @@ import {
   cmdTokens,
   cmdRecipe,
   cmdAdd,
+  cmdAssets,
+  cmdAsset,
   usageFail,
   type CommandResult,
 } from "./commands.js";
-import type { StyleCategory } from "./core.js";
+import { ASSET_KINDS, isAssetKind } from "./core.js";
+import type { PublicAssetKind, StyleCategory } from "./core.js";
+import { getImplementationBrief } from "stylekit-core/discovery";
+import { runLint } from "./lint.js";
 
 const VERSION = (
   createRequire(import.meta.url)("../package.json") as { version: string }
@@ -38,13 +43,26 @@ Commands:
   tokens <slug>              Print a style's design tokens (JSON)
   recipe <slug> <component>  Print a rendered component recipe
   add <slug>                 Print the shadcn install command
+  assets                     List public assets (filter by kind/query and page)
+  asset <kind> <id>          Show a namespaced public asset record
+  brief <slug>               Print the complete implementation contract (JSON)
+  lint <slug> <files...>      Check source files against a style's rules
 
 Flags:
   --category <c>   Filter by category (modern|retro|minimal|expressive)
-  --limit <n>      Limit results to a positive integer
+  --limit <n>      Limit results to a positive integer (assets: 1-100)
+  --offset <n>     Skip results for the assets command (zero or greater)
+  --kind <kind>    Filter public assets by namespace/kind
+  --query <text>   Search public asset metadata
   --json           Output JSON (errors included)
   --help, -h       Show this help
   --version, -v    Show version
+  --style <slug>   Style for lint (alternative to positional slug)
+  --files <glob>   File path or glob for lint; may be repeated
+  --stdin          Read lint source from stdin
+  --component <c>  Check required classes for button|card|input; may be repeated
+  --strict         Fail missing required classes (requires --component)
+  --format <f>     Lint output: text|json|github
 
 Examples:
   stylekit list --category retro
@@ -72,7 +90,7 @@ function die(message: string, json: boolean, code: string): never {
   process.exit(1);
 }
 
-function main(): void {
+async function main(): Promise<void> {
   const jsonRequested = process.argv.slice(2).includes("--json");
   let values: Record<string, unknown>;
   let positionals: string[];
@@ -83,8 +101,17 @@ function main(): void {
         json: { type: "boolean", default: false },
         category: { type: "string" },
         limit: { type: "string" },
+        offset: { type: "string" },
+        kind: { type: "string" },
+        query: { type: "string" },
         help: { type: "boolean", short: "h", default: false },
         version: { type: "boolean", short: "v", default: false },
+        style: { type: "string" },
+        files: { type: "string", multiple: true },
+        stdin: { type: "boolean", default: false },
+        component: { type: "string", multiple: true },
+        strict: { type: "boolean", default: false },
+        format: { type: "string" },
       },
     });
     values = parsed.values;
@@ -104,13 +131,13 @@ function main(): void {
     return;
   }
 
-  const json = values.json === true;
+  const json = values.json === true || values.format === "json";
 
   // Validate --limit (positive integer).
   let limit: number | undefined;
   if (typeof values.limit === "string") {
     const n = Number(values.limit);
-    if (!Number.isInteger(n) || n < 1) {
+    if (!Number.isSafeInteger(n) || n < 1) {
       die(
         `Invalid --limit "${values.limit}": must be a positive integer.`,
         json,
@@ -118,6 +145,49 @@ function main(): void {
       );
     }
     limit = n;
+  }
+  if (command === "assets" && limit !== undefined && limit > 100) {
+    die(
+      'Invalid --limit "' + limit + '": assets accepts values from 1 to 100.',
+      json,
+      "INVALID_LIMIT",
+    );
+  }
+  if (
+    command === "assets" &&
+    typeof values.query === "string" &&
+    values.query.length > 500
+  ) {
+    die(
+      "Invalid --query: public asset queries are limited to 500 characters.",
+      json,
+      "INVALID_QUERY",
+    );
+  }
+  if (
+    command === "assets" &&
+    typeof values.kind === "string" &&
+    !isAssetKind(values.kind)
+  ) {
+    die(
+      'Invalid --kind "' + values.kind + '": must be one of ' + ASSET_KINDS.join(", ") + ".",
+      json,
+      "INVALID_ASSET_KIND",
+    );
+  }
+
+  // Validate --offset (zero or greater).
+  let offset: number | undefined;
+  if (typeof values.offset === "string") {
+    const n = Number(values.offset);
+    if (!Number.isSafeInteger(n) || n < 0) {
+      die(
+        'Invalid --offset "' + values.offset + '": must be a non-negative integer.',
+        json,
+        "INVALID_OFFSET",
+      );
+    }
+    offset = n;
   }
 
   // Validate --category against the known set.
@@ -137,36 +207,78 @@ function main(): void {
   const arg2 = positionals[2];
 
   let result: CommandResult;
-  switch (command) {
-    case "list":
-      result = cmdList(category, limit);
-      break;
-    case "search":
-      result = arg1 ? cmdSearch(arg1, limit) : usageFail("stylekit search <query>");
-      break;
-    case "show":
-      result = arg1 ? cmdShow(arg1) : usageFail("stylekit show <slug>");
-      break;
-    case "tokens":
-      result = arg1 ? cmdTokens(arg1) : usageFail("stylekit tokens <slug>");
-      break;
-    case "recipe":
-      result = arg1
-        ? cmdRecipe(arg1, arg2)
-        : usageFail("stylekit recipe <slug> <component>");
-      break;
-    case "add":
-      result = arg1 ? cmdAdd(arg1) : usageFail("stylekit add <slug>");
-      break;
-    default:
-      die(`Unknown command: ${command}\n\n${HELP}`, json, "UNKNOWN_COMMAND");
-  }
-
   try {
+    switch (command) {
+      case "brief": {
+        const brief = arg1 ? getImplementationBrief(arg1) : null;
+        if (!brief) die("Provide a known slug: stylekit brief <slug>", json, "UNKNOWN_STYLE");
+        console.log(JSON.stringify(brief, null, 2));
+        return;
+      }
+      case "lint": {
+        const slug = typeof values.style === "string" ? values.style : arg1;
+        if (!slug) die("Usage: stylekit lint <slug> <files...> | --stdin", json, "INVALID_ARGUMENTS");
+        runLint(slug, [...positionals.slice(typeof values.style === "string" ? 1 : 2), ...(values.files as string[] ?? [])], {
+          json, stdin: values.stdin === true, strict: values.strict === true,
+          format: values.format as string | undefined, components: values.component as string[] | undefined,
+        });
+        return;
+      }
+      case "list":
+        result = cmdList(category, limit);
+        break;
+      case "search":
+        result = arg1 ? cmdSearch(arg1, limit) : usageFail("stylekit search <query>");
+        break;
+      case "show":
+        result = arg1 ? cmdShow(arg1) : usageFail("stylekit show <slug>");
+        break;
+      case "tokens":
+        result = arg1 ? cmdTokens(arg1) : usageFail("stylekit tokens <slug>");
+        break;
+      case "recipe":
+        result = arg1
+          ? cmdRecipe(arg1, arg2)
+          : usageFail("stylekit recipe <slug> <component>");
+        break;
+      case "add":
+        result = arg1 ? cmdAdd(arg1) : usageFail("stylekit add <slug>");
+        break;
+      case "assets":
+        result = await cmdAssets({
+          ...(typeof values.kind === "string"
+            ? { kind: values.kind as PublicAssetKind }
+            : {}),
+          ...(typeof values.query === "string" ? { query: values.query } : {}),
+          ...(offset !== undefined ? { offset } : {}),
+          ...(limit !== undefined ? { limit } : {}),
+        });
+        break;
+      case "asset":
+        if (!arg1 || !arg2) {
+          result = usageFail("stylekit asset <kind> <id>");
+        } else if (!isAssetKind(arg1)) {
+          die(
+            'Invalid asset kind "' +
+              arg1 +
+              '": must be one of ' +
+              ASSET_KINDS.join(", ") +
+              ".",
+            json,
+            "INVALID_ASSET_KIND",
+          );
+        } else {
+          result = await cmdAsset(arg1 as PublicAssetKind, arg2);
+        }
+        break;
+      default:
+        die(`Unknown command: ${command}\n\n${HELP}`, json, "UNKNOWN_COMMAND");
+    }
+
     emit(result, json);
   } catch (err) {
     die(`Unexpected error: ${(err as Error).message}`, json, "UNEXPECTED_ERROR");
   }
 }
 
-main();
+void main();

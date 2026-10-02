@@ -73,7 +73,12 @@ export default defineConfig({
   updateSnapshots: "none",
   retries: process.env.CI ? 2 : 0,
   workers: process.env.CI ? 1 : undefined,
-  reporter: process.env.CI ? "github" : "html",
+  reporter: process.env.CI
+    ? [
+        ["github"],
+        ["html", { outputFolder: `${process.cwd()}/playwright-report`, open: "never" }],
+      ]
+    : "html",
   use: {
     baseURL: BASE_URL,
     trace: "on-first-retry",

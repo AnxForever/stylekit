@@ -108,7 +108,7 @@ export const minimalistFlatRecipes = createStyleRecipes(
           "bg-transparent",
           "border-0 border-b-2 border-black",
           "text-black",
-          "placeholder:text-gray-400",
+          "placeholder:text-gray-500",
           "focus:outline-none",
           "transition-colors duration-200",
         ],

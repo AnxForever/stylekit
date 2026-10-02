@@ -62,7 +62,9 @@ export const scrollReveal: Animation = {
     {
       label: "Tailwind CSS",
       language: "tsx",
-      code: `// Hook + Tailwind approach
+      code: `"use client";
+
+// Hook + Tailwind approach
 import { useEffect, useRef, useState } from "react";
 
 function useScrollReveal() {

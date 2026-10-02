@@ -103,4 +103,11 @@ describe("generateTailwindPresetJS", () => {
     expect(js).toContain("theme:");
     expect(js).toContain("extend:");
   });
+
+  it("produces executable JavaScript and preserves hyphenated keys", () => {
+    const style = getStyleBySlug("neo-brutalist")!;
+    const generatedModule = { exports: {} };
+    new Function("module", generateTailwindPresetJS(style))(generatedModule);
+    expect(generatedModule.exports).toEqual(generateTailwindPreset(style));
+  });
 });

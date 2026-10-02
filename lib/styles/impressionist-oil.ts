@@ -144,7 +144,7 @@ Core principles:
     Impression
   </h3>
   {/* Brushstroke Reveal underline */}
-  <div className="w-16 h-[3px] bg-[#e8a87c] rounded-full mb-3 group-hover:w-24 transition-all duration-500 ease-out" />
+  <div className="w-16 h-[3px] bg-[#e8a87c] rounded-lg mb-3 group-hover:w-24 transition-all duration-500 ease-out" />
   <p className="text-[#2c3e50]/50 font-serif leading-relaxed">
     Light dances across the canvas at golden hour
   </p>

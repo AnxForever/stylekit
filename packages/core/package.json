@@ -1,6 +1,6 @@
 {
   "name": "stylekit-core",
-  "version": "1.0.0-beta.4",
+  "version": "1.0.0-beta.6",
   "description": "StyleKit core library - design style tokens, recipes, and accessibility helpers for 148 UI styles",
   "type": "module",
   "main": "./dist/index.cjs",
@@ -41,6 +41,11 @@
       "types": "./dist/export/index.d.ts",
       "import": "./dist/export/index.js",
       "require": "./dist/export/index.cjs"
+    },
+    "./assets": {
+      "types": "./dist/assets/index.d.ts",
+      "import": "./dist/assets/index.js",
+      "require": "./dist/assets/index.cjs"
     }
   },
   "files": [
@@ -103,5 +108,8 @@
   "devDependencies": {
     "tsup": "^8.0.0",
     "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "zod": "^4.3.6"
   }
 }
