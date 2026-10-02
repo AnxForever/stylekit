@@ -3,7 +3,7 @@
   "name": "io.github.AnxForever/stylekit-mcp",
   "title": "StyleKit",
   "description": "stdio MCP server for StyleKit styles, templates, assets, tokens, recipes, and lint checks.",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "websiteUrl": "https://stylekit.top",
   "repository": {
     "url": "https://github.com/AnxForever/stylekit",
@@ -15,7 +15,7 @@
       "registryType": "npm",
       "registryBaseUrl": "https://registry.npmjs.org",
       "identifier": "stylekit-mcp",
-      "version": "0.4.0",
+      "version": "0.4.1",
       "runtimeHint": "npx",
       "transport": {
         "type": "stdio"

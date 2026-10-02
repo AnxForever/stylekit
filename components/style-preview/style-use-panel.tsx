@@ -3,7 +3,10 @@
 import { CodeBlock } from "@/components/style-preview/code-block";
 import { LocalizedLink } from "@/components/i18n/localized-link";
 import { trackEvent } from "@/lib/analytics/events";
-import { getDeveloperToolkitCapability } from "@/lib/developer-toolkit";
+import {
+  getDeveloperToolkitCapability,
+  getDeveloperToolkitSetupSnippet,
+} from "@/lib/developer-toolkit";
 import { useI18n } from "@/lib/i18n/context";
 
 interface StyleUsePanelProps {
@@ -24,6 +27,7 @@ export function StyleUsePanel({ slug, name, nameEn }: StyleUsePanelProps) {
   const displayName = isZh ? name : nameEn;
   const cli = getDeveloperToolkitCapability("cli");
   const mcp = getDeveloperToolkitCapability("mcp");
+  const mcpSetup = getDeveloperToolkitSetupSnippet("mcp");
 
   const rows = [
     {
@@ -37,18 +41,18 @@ export function StyleUsePanel({ slug, name, nameEn }: StyleUsePanelProps) {
     {
       tag: "CLI",
       desc: isZh
-        ? `公开 Beta CLI（v${cli.publicVersion}）可离线浏览风格并输出安装命令。`
-        : `Use the public beta CLI (v${cli.publicVersion}) offline to browse styles and print install commands.`,
+        ? `公开 Beta CLI（v${cli.publicVersion}）可检索风格并输出安装命令。`
+        : `Use the public beta CLI (v${cli.publicVersion}) to search styles and print install commands.`,
       code: cli.command.replace("synthwave", slug),
       language: "bash",
     },
     {
       tag: "MCP",
       desc: isZh
-        ? `通过公开 Beta MCP（v${mcp.publicVersion}）在兼容客户端中查询「${displayName}」。`
-        : `Query ${displayName} through the public beta MCP (v${mcp.publicVersion}) in a compatible client.`,
-      code: mcp.command,
-      language: "bash",
+        ? `把这份配置添加到兼容客户端，连接公开 Beta MCP（v${mcp.publicVersion}）并查询「${displayName}」。`
+        : `Add this configuration to connect the public beta MCP (v${mcp.publicVersion}) and query ${displayName}.`,
+      code: mcpSetup.content,
+      language: mcpSetup.format,
     },
   ];
 

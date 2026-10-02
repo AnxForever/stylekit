@@ -38,62 +38,34 @@ import { getStyleBySlug, styles as bundledCatalogue } from "@/lib/styles";
 import type { StyleTokens } from "@/lib/styles/tokens";
 import type { StyleQuality, CapabilityStatus } from "@/lib/styles/quality";
 import { getImplementationBrief, type ImplementationBrief } from "@/lib/implementation-brief";
+import { renderRecipe, type ComponentRecipe } from "@/lib/recipes";
 
 export type DataOrigin = "live" | "bundled";
 
-/** Known styles use the complete bundled contract; newer styles need the live brief endpoint. */
+/** Prefer the published implementation contract; use the package snapshot only when live data is unavailable. */
 export async function getImplementationBriefLive(slug: string, options: RemoteOptions = {}): Promise<Sourced<ImplementationBrief | null>> {
   const local = getImplementationBrief(slug);
-  if (local) return { data: local, origin: "bundled" };
   const response = await fetchJson<unknown>(`/api/styles/${encodeURIComponent(slug)}/brief`, options);
   if ("error" in response) {
-    if (response.failureKind !== "not-found") {
-      return { data: null, origin: "bundled", fallbackReason: response.error, failureKind: response.failureKind };
+    if (response.failureKind === "not-found") {
+      const presence = await liveStylePresence(slug, options);
+      if (!("exists" in presence)) {
+        return sourcedFallback(
+          local,
+          `${response.error}; style existence could not be checked: ${presence.error}`,
+          "unavailable",
+        );
+      }
+      if (!presence.exists) {
+        return { data: null, origin: "live", fallbackReason: `Style "${slug}" was not found in the live catalogue.`, failureKind: "not-found" };
+      }
+      return sourcedFallback(local, `live implementation brief endpoint is unavailable (${response.error}) for an existing style`, "unsupported");
     }
-
-    // The brief endpoint is optional across deployments. Its 404 says nothing
-    // about whether the style itself exists, so verify against the catalogue.
-    const known = await knownSlugLive(slug, options);
-    if (known.data) {
-      return {
-        data: null,
-        origin: "bundled",
-        fallbackReason: `live implementation brief endpoint is unavailable (${response.error}) for an existing style`,
-        failureKind: "unsupported",
-      };
-    }
-    if (known.failureKind === "not-found") {
-      return {
-        data: null,
-        origin: "bundled",
-        fallbackReason: known.fallbackReason ?? response.error,
-        failureKind: "not-found",
-      };
-    }
-    return {
-      data: null,
-      origin: "bundled",
-      fallbackReason: `${response.error}; style existence could not be checked: ${known.fallbackReason ?? "live catalogue unavailable"}`,
-      failureKind: "unavailable",
-    };
+    return sourcedFallback(local, response.error, response.failureKind);
   }
   const value = response.value;
-  if (!isRecord(value) || value.schemaVersion !== "stylekit-brief-v1" || value.slug !== slug ||
-      !["name", "nameEn", "description", "philosophy"].every((key) => typeof value[key] === "string") ||
-      !["modern", "retro", "minimal", "expressive"].includes(String(value.category)) ||
-      !["visual", "layout"].includes(String(value.styleType)) ||
-      !["tags", "keywords", "doList", "dontList"].every((key) => Array.isArray(value[key]) && (value[key] as unknown[]).every((item) => typeof item === "string")) ||
-      !Array.isArray(value.variants) || !isRecord(value.colors) || typeof value.colors.primary !== "string" || typeof value.colors.secondary !== "string" || !Array.isArray(value.colors.accent) ||
-      typeof value.aiRules !== "string" || typeof value.globalCss !== "string" ||
-      !isRecord(value.components) || !isRecord(value.recipes) || !isRecord(value.readiness) ||
-      !Object.values(value.components).every((component) => isRecord(component) && typeof component.code === "string") ||
-      !(value.tokens === null || isRecord(value.tokens)) ||
-      !isRecord(value.lintRules) || value.lintRules.schemaVersion !== "stylekit-lint-v1" ||
-      !["sources", "forbiddenClasses", "forbiddenPatterns", "exempt", "unsupportedRules"].every((key) => Array.isArray((value.lintRules as Record<string, unknown>)[key])) ||
-      !isRecord(value.lintRules.required) ||
-      !isRecord(value.provenance) || typeof value.provenance.contentHash !== "string" || typeof value.provenance.url !== "string" ||
-      !["bundled", "static", "community"].includes(String(value.provenance.source))) {
-    return { data: null, origin: "bundled", fallbackReason: "live endpoint did not return a stylekit-brief-v1 contract", failureKind: "unavailable" };
+  if (!isImplementationBrief(value, slug)) {
+    return sourcedFallback(local, "live endpoint did not return a stylekit-brief-v1 contract", "unavailable");
   }
   return { data: value as unknown as ImplementationBrief, origin: "live" };
 }
@@ -168,6 +140,105 @@ function normalizeBaseUrl(value: string): string | null {
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return Boolean(value) && typeof value === "object" && !Array.isArray(value);
+}
+
+function sourcedFallback<T>(
+  data: T | null,
+  fallbackReason: string,
+  failureKind: SourceFailureKind,
+): Sourced<T | null> {
+  return { data, origin: "bundled", fallbackReason, failureKind };
+}
+
+function isStringArray(value: unknown): value is string[] {
+  return Array.isArray(value) && value.every((item) => typeof item === "string");
+}
+
+function isStringRecord(value: unknown): value is Record<string, string> {
+  return isRecord(value) && Object.values(value).every((item) => typeof item === "string");
+}
+
+function isStyleTokens(value: unknown): value is StyleTokens {
+  if (!isRecord(value)) return false;
+  const border = value.border;
+  const shadow = value.shadow;
+  const interaction = value.interaction;
+  const typography = value.typography;
+  const spacing = value.spacing;
+  const colors = value.colors;
+  const background = isRecord(colors) ? colors.background : undefined;
+  const textColors = isRecord(colors) ? colors.text : undefined;
+  const buttonColors = isRecord(colors) ? colors.button : undefined;
+  const forbidden = value.forbidden;
+  const required = value.required;
+  if (!isRecord(border) || !["width", "color", "radius"].every((key) => typeof border[key] === "string") ||
+      !(border.style === undefined || typeof border.style === "string")) return false;
+  if (!isRecord(shadow) || !["sm", "md", "lg", "none", "hover", "focus"].every((key) => typeof shadow[key] === "string") ||
+      !(shadow.colored === undefined || isStringRecord(shadow.colored))) return false;
+  if (!isRecord(interaction) || typeof interaction.transition !== "string" ||
+      !["hoverScale", "hoverTranslate", "hoverOpacity", "active"].every((key) => interaction[key] === undefined || typeof interaction[key] === "string")) return false;
+  if (!isRecord(typography) || typeof typography.heading !== "string" || typeof typography.body !== "string" ||
+      !["subtitle", "mono"].every((key) => typography[key] === undefined || typeof typography[key] === "string") ||
+      !isRecord(typography.sizes) || !["hero", "h1", "h2", "h3", "body", "small"].every((key) => typeof (typography.sizes as Record<string, unknown>)[key] === "string") ||
+      !(typography.neonStroke === undefined || isRecord(typography.neonStroke))) return false;
+  if (!isRecord(spacing) || !["section", "container", "card"].every((key) => typeof spacing[key] === "string") ||
+      !isRecord(spacing.gap) || !["sm", "md", "lg"].every((key) => typeof (spacing.gap as Record<string, unknown>)[key] === "string")) return false;
+  if (!isRecord(colors) || !isRecord(background) || typeof background.primary !== "string" || typeof background.secondary !== "string" || !isStringArray(background.accent) ||
+      !isRecord(textColors) || !["primary", "secondary", "muted"].every((key) => typeof textColors[key] === "string") ||
+      !isRecord(buttonColors) || typeof buttonColors.primary !== "string" || typeof buttonColors.secondary !== "string" ||
+      !(buttonColors.danger === undefined || typeof buttonColors.danger === "string")) return false;
+  if (!isRecord(forbidden) || !isStringArray(forbidden.classes) || !isStringArray(forbidden.patterns) || !isStringRecord(forbidden.reasons)) return false;
+  return isRecord(required) && ["button", "card", "input"].every((key) => isStringArray(required[key]));
+}
+
+const RECIPE_ELEMENTS = new Set(["button", "div", "input", "a", "section", "nav", "form", "label"]);
+const RECIPE_PARAMETER_TYPES = new Set(["select", "boolean", "string", "color", "number"]);
+
+function isComponentRecipe(value: unknown): value is ComponentRecipe {
+  if (!isRecord(value) || typeof value.id !== "string" || typeof value.name !== "string" ||
+      typeof value.nameZh !== "string" || typeof value.description !== "string") return false;
+  const skeleton = value.skeleton;
+  if (!isRecord(skeleton) || typeof skeleton.element !== "string" || !RECIPE_ELEMENTS.has(skeleton.element) || !isStringArray(skeleton.baseClasses) ||
+      !(skeleton.structure === undefined || typeof skeleton.structure === "string")) return false;
+  if (!Array.isArray(value.parameters) || !value.parameters.every((parameter) => {
+    if (!isRecord(parameter) || typeof parameter.id !== "string" || typeof parameter.label !== "string" ||
+        typeof parameter.labelZh !== "string" || typeof parameter.type !== "string" || !RECIPE_PARAMETER_TYPES.has(parameter.type) ||
+        !["string", "boolean", "number"].some((kind) => typeof parameter.default === kind)) return false;
+    if (parameter.options !== undefined && (!Array.isArray(parameter.options) || !parameter.options.every((option) =>
+      isRecord(option) && typeof option.value === "string" && typeof option.label === "string" &&
+      typeof option.labelZh === "string" && typeof option.classes === "string"))) return false;
+    return ["trueClasses", "falseClasses"].every((key) => parameter[key] === undefined || typeof parameter[key] === "string");
+  })) return false;
+  if (!isRecord(value.variants) || !Object.values(value.variants).every((variant) =>
+    isRecord(variant) && typeof variant.id === "string" && typeof variant.label === "string" &&
+    typeof variant.labelZh === "string" && isStringArray(variant.classes) &&
+    (variant.tokenRef === undefined || typeof variant.tokenRef === "string") &&
+    (variant.description === undefined || typeof variant.description === "string"))) return false;
+  if (!Array.isArray(value.slots) || !value.slots.every((slot) =>
+    isRecord(slot) && typeof slot.id === "string" && typeof slot.label === "string" &&
+    typeof slot.labelZh === "string" && typeof slot.required === "boolean" &&
+    (slot.default === undefined || typeof slot.default === "string") &&
+    (slot.type === undefined || ["text", "icon", "element", "children"].includes(String(slot.type))))) return false;
+  return value.states === undefined || (isRecord(value.states) && Object.values(value.states).every(isStringArray));
+}
+
+function isImplementationBrief(value: unknown, slug: string): value is ImplementationBrief {
+  if (!isRecord(value) || value.schemaVersion !== "stylekit-brief-v1" || value.slug !== slug ||
+      !["name", "nameEn", "description", "philosophy"].every((key) => typeof value[key] === "string") ||
+      !["modern", "retro", "minimal", "expressive"].includes(String(value.category)) ||
+      !["visual", "layout"].includes(String(value.styleType)) ||
+      !["tags", "keywords", "doList", "dontList"].every((key) => isStringArray(value[key])) ||
+      !Array.isArray(value.variants) || !isRecord(value.colors) || typeof value.colors.primary !== "string" || typeof value.colors.secondary !== "string" || !isStringArray(value.colors.accent) ||
+      typeof value.aiRules !== "string" || typeof value.globalCss !== "string" ||
+      !isRecord(value.components) || !isRecord(value.recipes) || !Object.values(value.recipes).every(isComponentRecipe) || !isRecord(value.readiness) ||
+      !Object.values(value.components).every((component) => isRecord(component) && typeof component.code === "string") ||
+      !(value.tokens === null || isStyleTokens(value.tokens)) ||
+      !isRecord(value.lintRules) || value.lintRules.schemaVersion !== "stylekit-lint-v1" ||
+      !["sources", "forbiddenClasses", "forbiddenPatterns", "exempt", "unsupportedRules"].every((key) => Array.isArray((value.lintRules as Record<string, unknown>)[key])) ||
+      !isRecord(value.lintRules.required) ||
+      !isRecord(value.provenance) || typeof value.provenance.contentHash !== "string" || typeof value.provenance.url !== "string" ||
+      !["bundled", "static", "community"].includes(String(value.provenance.source))) return false;
+  return true;
 }
 
 function openCircuit(baseUrl: string, generation: number): void {
@@ -399,7 +470,7 @@ function remoteQuality(raw: Record<string, unknown>): StyleQuality {
 
 async function liveCatalogue(
   options: RemoteOptions,
-): Promise<{ styles: DesignStyle[] } | { error: string; failureKind: SourceFailureKind }> {
+): Promise<{ styles: DesignStyle[]; sourceStyles: DesignStyle[] } | { error: string; failureKind: SourceFailureKind }> {
   const response = await fetchJson<{ total?: number; styles?: LiveStyle[] }>(
     "/api/styles",
     options,
@@ -412,12 +483,22 @@ async function liveCatalogue(
     return { error: "live catalogue returned malformed styles payload", failureKind: "unavailable" };
   }
 
-  const mapped = response.value.styles
+  const sourceStyles = response.value.styles
     .map(toDesignStyle)
-    .filter((style): style is DesignStyle => style !== null)
-    .map(mergeWithBundled);
-  if (mapped.length === 0) return { error: "live catalogue returned no usable styles", failureKind: "unavailable" };
-  return { styles: mapped };
+    .filter((style): style is DesignStyle => style !== null);
+  const mapped = sourceStyles.map(mergeWithBundled);
+  if (sourceStyles.length === 0 && !(response.value.total === 0 && response.value.styles.length === 0)) {
+    return { error: "live catalogue returned no usable styles", failureKind: "unavailable" };
+  }
+  return { styles: mapped, sourceStyles };
+}
+
+type LiveStylePresence = { exists: boolean } | { error: string; failureKind: SourceFailureKind };
+
+async function liveStylePresence(slug: string, options: RemoteOptions): Promise<LiveStylePresence> {
+  const catalogue = await liveCatalogue(options);
+  if ("error" in catalogue) return catalogue;
+  return { exists: catalogue.styles.some((style) => style.slug === slug) };
 }
 
 function normalizeExactSearchValue(value: string): string {
@@ -547,34 +628,35 @@ export async function getStyleDetailLive(
   options: RemoteOptions = {},
 ): Promise<Sourced<StyleDetail | null>> {
   const local = getDetailLocal(slug);
-  // The bundle carries richer detail than any single endpoint does, so prefer
-  // it whenever it knows the style. The network is for what it does not know.
-  if (local) return { data: local, origin: "bundled" };
 
   const response = await fetchJson<Record<string, unknown>>(
     `/api/styles/${encodeURIComponent(slug)}`,
     options,
   );
   if ("error" in response) {
-    return { data: null, origin: "bundled", fallbackReason: response.error, failureKind: response.failureKind };
+    if (response.failureKind !== "not-found") {
+      return sourcedFallback(local, response.error, response.failureKind);
+    }
+    const presence = await liveStylePresence(slug, options);
+    if (!("exists" in presence)) {
+      return sourcedFallback(local, `${response.error}; style existence could not be checked: ${presence.error}`, "unavailable");
+    }
+    if (!presence.exists) {
+      return { data: null, origin: "live", fallbackReason: `Style "${slug}" was not found in the live catalogue.`, failureKind: "not-found" };
+    }
+    return sourcedFallback(local, `live detail endpoint is unavailable (${response.error}) for an existing style`, "unsupported");
   }
 
   const raw = response.value;
   if (!isRecord(raw)) {
     return {
-      data: null,
-      origin: "bundled",
-      fallbackReason: "live detail returned a malformed payload",
-      failureKind: "unavailable",
+      ...sourcedFallback(local, "live detail returned a malformed payload", "unavailable"),
     };
   }
   const detailSlug = str(raw["slug"]).trim();
   if (detailSlug !== slug) {
     return {
-      data: null,
-      origin: "bundled",
-      fallbackReason: `live detail returned slug "${detailSlug}" for request "${slug}"`,
-      failureKind: "unavailable",
+      ...sourcedFallback(local, `live detail returned slug "${detailSlug}" for request "${slug}"`, "unavailable"),
     };
   }
   const recipes = raw["recipes"];
@@ -592,17 +674,20 @@ export async function getStyleDetailLive(
   const category =
     "error" in catalogue
       ? ""
-      : (catalogue.styles.find((style) => style.slug === slug)?.category ?? "");
+      : (catalogue.sourceStyles.find((style) => style.slug === slug)?.category ?? "");
+  const liveMetadata = "error" in catalogue
+    ? undefined
+    : catalogue.sourceStyles.find((style) => style.slug === slug);
 
   const detail: StyleDetail = {
     slug: detailSlug,
-    name: str(raw["nameEn"]) || str(raw["name"], slug),
-    nameEn: str(raw["nameEn"], slug),
+    name: liveMetadata?.name || str(raw["name"], slug),
+    nameEn: liveMetadata?.nameEn || str(raw["nameEn"], slug),
     category,
-    // The detail endpoint carries no separate tag list; keywords are the
-    // closest equivalent it actually publishes.
-    tags: keywords.slice(0, 6),
-    description: str(raw["description"]),
+    // Read tags from the unmerged catalogue metadata. The detail endpoint's
+    // keywords are a separate field and must not be presented as tags.
+    tags: liveMetadata?.tags ?? [],
+    description: liveMetadata?.descriptionEn || liveMetadata?.description || str(raw["description"]),
     philosophy: str(raw["philosophy"]),
     colors: {
       primary: str(colors["primary"]),
@@ -634,71 +719,97 @@ export async function getTokensLive(
   options: RemoteOptions = {},
 ): Promise<Sourced<StyleTokens | null>> {
   const local = getTokensLocal(slug);
-  if (local) return { data: local, origin: "bundled" };
 
-  const response = await fetchJson<{ tokens?: StyleTokens }>(
+  const response = await fetchJson<unknown>(
     `/api/styles/${encodeURIComponent(slug)}/tokens`,
     options,
   );
-  if ("error" in response) return { data: null, origin: "bundled", fallbackReason: response.error, failureKind: response.failureKind };
-  if (!isRecord(response.value) || !isRecord(response.value.tokens)) {
-    return {
-      data: null,
-      origin: "bundled",
-      fallbackReason: "live tokens returned a malformed payload",
-      failureKind: "unavailable",
-    };
+  if ("error" in response) {
+    if (response.failureKind !== "not-found") return sourcedFallback(local, response.error, response.failureKind);
+
+    // The style detail endpoint carries the same current capability payload.
+    // Its explicit null distinguishes a removed token set from an unsupported
+    // tokens URL, so a stale package snapshot cannot bring tokens back.
+    const detail = await fetchJson<unknown>(`/api/styles/${encodeURIComponent(slug)}`, options);
+    if (!("error" in detail) && isRecord(detail.value) && detail.value.slug === slug) {
+      if (detail.value.tokens === null) {
+        return { data: null, origin: "live", failureKind: "not-found", fallbackReason: `No live tokens are registered for "${slug}".` };
+      }
+      if (isStyleTokens(detail.value.tokens)) return { data: detail.value.tokens, origin: "live" };
+      return sourcedFallback(local, "live style detail returned a malformed tokens capability", "unavailable");
+    }
+
+    if ("error" in detail && detail.failureKind === "not-found") {
+      const presence = await liveStylePresence(slug, options);
+      if (!("exists" in presence)) {
+        return sourcedFallback(local, `${response.error}; ${detail.error}; style existence could not be checked: ${presence.error}`, "unavailable");
+      }
+      if (!presence.exists) {
+        return { data: null, origin: "live", failureKind: "not-found", fallbackReason: `Style "${slug}" was not found in the live catalogue.` };
+      }
+      return sourcedFallback(local, `live token and detail endpoints are unavailable (${response.error}; ${detail.error}) for an existing style`, "unsupported");
+    }
+    if ("error" in detail) {
+      return sourcedFallback(local, `${response.error}; live token status could not be confirmed: ${detail.error}`, detail.failureKind);
+    }
+    return sourcedFallback(
+      local,
+      `${response.error}; live style detail returned a malformed payload while checking tokens`,
+      "unavailable",
+    );
   }
-  return { data: response.value.tokens as StyleTokens, origin: "live" };
+  if (!isRecord(response.value) || response.value.styleSlug !== slug || !isStyleTokens(response.value.tokens)) {
+    return sourcedFallback(local, "live tokens returned a malformed payload for the stylekit tokens contract", "unavailable");
+  }
+  return { data: response.value.tokens, origin: "live" };
 }
 
 /**
- * Rendered component recipes, for styles the bundle knows.
- *
- * Deliberately does not fall back to the network. The recipes endpoint returns
- * recipe *definitions* -- skeletons, parameters, variants -- while the rendered
- * className and code come from local rendering against the style's tokens.
- * Reproducing that rendering here would duplicate it, and a second
- * implementation would drift from the first exactly the way the bundled data
- * drifted from the live catalogue.
- *
- * So a style published after this package was built reports why it cannot be
- * rendered rather than returning something approximate. Search and detail
- * still work for it, which is enough to tell the caller the style exists and
- * that an upgrade unlocks the rest.
+ * Render a live recipe definition with the same deterministic renderer used by
+ * the bundled discovery API. Online omissions are authoritative: a recipe
+ * removed from a still-published style must not be resurrected from the bundle.
  */
 export async function getComponentRecipeLive(
   slug: string,
   recipeId: string,
   options: RemoteOptions = {},
 ): Promise<Sourced<RecipeResult | null>> {
-  const local = getRecipeLocal(slug, recipeId);
-  if (local) return { data: local, origin: "bundled" };
-
-  const known = await knownSlugLive(slug, options);
-  if (known.data && !knownSlugLocal(slug)) {
-    return {
-      data: null,
-      origin: "bundled",
-      failureKind: "unsupported",
-      fallbackReason:
-        `"${slug}" was published after this package was built; recipe rendering needs ` +
-        "the bundled definitions. Use stylekit_get_implementation_brief for its source definitions.",
-    };
+  const brief = await getImplementationBriefLive(slug, options);
+  const liveRecipe = brief.origin === "live" ? brief.data?.recipes[recipeId] : undefined;
+  if (brief.origin === "live" && brief.data) {
+    if (!liveRecipe) {
+      return {
+        data: null,
+        origin: "live",
+        failureKind: "not-found",
+        fallbackReason: `No live "${recipeId}" recipe is registered for "${slug}".`,
+      };
+    }
+    if (!isComponentRecipe(liveRecipe)) {
+      return sourcedFallback(getRecipeLocal(slug, recipeId), "live recipe definition did not match the component recipe contract", "unavailable");
+    }
+    const variant = Object.keys(liveRecipe.variants)[0] ?? "default";
+    const rendered = renderRecipe(liveRecipe, { variant, params: {}, slots: {} });
+    return { data: { slug, component: recipeId, className: rendered.className, code: rendered.code }, origin: "live" };
   }
-  if (known.data) {
+  if (brief.failureKind === "not-found") {
+    return { data: null, origin: "live", failureKind: "not-found", fallbackReason: brief.fallbackReason };
+  }
+
+  const local = getRecipeLocal(slug, recipeId);
+  if (local) {
     return {
-      data: null,
-      origin: known.origin,
-      failureKind: "not-found",
-      fallbackReason: `No "${recipeId}" recipe is registered for "${slug}".`,
+      data: local,
+      origin: "bundled",
+      fallbackReason: brief.fallbackReason ?? "live implementation brief unavailable",
+      failureKind: brief.failureKind ?? "unavailable",
     };
   }
   return {
     data: null,
-    origin: known.origin,
-    failureKind: known.failureKind ?? "unavailable",
-    ...(known.fallbackReason ? { fallbackReason: known.fallbackReason } : {}),
+    origin: "bundled",
+    failureKind: brief.failureKind ?? "unsupported",
+    ...(brief.fallbackReason ? { fallbackReason: brief.fallbackReason } : {}),
   };
 }
 
@@ -713,13 +824,17 @@ export async function knownSlugLive(
   slug: string,
   options: RemoteOptions = {},
 ): Promise<Sourced<boolean>> {
-  if (knownSlugLocal(slug)) return { data: true, origin: "bundled" };
-
-  const catalogue = await liveCatalogue(options);
-  if ("error" in catalogue) {
-    return { data: false, origin: "bundled", fallbackReason: catalogue.error, failureKind: catalogue.failureKind };
+  const presence = await liveStylePresence(slug, options);
+  if ("error" in presence) {
+    const local = knownSlugLocal(slug);
+    return {
+      data: local,
+      origin: "bundled",
+      fallbackReason: presence.error,
+      failureKind: presence.failureKind,
+    };
   }
-  const exists = catalogue.styles.some((style) => style.slug === slug);
+  const exists = presence.exists;
   return {
     data: exists,
     origin: "live",

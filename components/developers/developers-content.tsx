@@ -16,6 +16,7 @@ import { useI18n } from "@/lib/i18n/context";
 import { RevealOnScroll } from "@/components/home/reveal-on-scroll";
 import {
   getDeveloperToolkitCapability,
+  getDeveloperToolkitSetupSnippet,
   type DeveloperToolkitState,
 } from "@/lib/developer-toolkit";
 
@@ -41,6 +42,34 @@ const COPY = {
       "Core shares the public asset catalog, style briefs, tokens, recipes and accessibility helpers with the CLI and MCP server.",
     copyCommand: "Copy command",
     copiedCommand: "Command copied",
+    copyConfig: "Copy MCP config",
+    copiedConfig: "MCP config copied",
+    configLabel: "Paste into your MCP client's configuration",
+    updatesTitle: "How updates work",
+    updatesIntro:
+      "Update timing depends on how a tool is installed. These short notes explain what happens after setup.",
+    updates: [
+      {
+        title: "Core package",
+        body: "The @beta tag selects the current prerelease only when you install or update the dependency. It does not rewrite an existing lockfile; run npm install stylekit-core@beta or pnpm add stylekit-core@beta again to update Core. Use an exact version for repeatable builds.",
+      },
+      {
+        title: "MCP server",
+        body: "The configuration above checks npm for the latest release when your client starts the MCP process. A running session keeps its current process; restart the MCP server or client to load an update.",
+      },
+      {
+        title: "CLI",
+        body: "The npx command checks for the latest published CLI when you run it. Pin an exact version instead when a script needs repeatable output.",
+      },
+      {
+        title: "Online assets",
+        body: "Styles and public asset details are fetched from StyleKit when requested, so new online content does not require reinstalling the CLI or MCP package. Complete template source needs a network connection.",
+      },
+      {
+        title: "Agent Skill",
+        body: "A compatible agent checks GitHub when it runs the Skill instructions, at most once per 24 hours. This is not a background updater and it does not change your project files. For an older installation, run npx skills@latest update stylekit once; back up local Skill edits before this migration. Afterward, the updater verifies files before changing them, skips the update if it detects local edits, and restores the previous file if an update fails.",
+      },
+    ],
     cards: [
       {
         id: "registry",
@@ -83,6 +112,34 @@ const COPY = {
       "Core 与 CLI、MCP 共用公开资产目录，提供完整风格说明、tokens、配方和无障碍辅助能力。",
     copyCommand: "复制命令",
     copiedCommand: "命令已复制",
+    copyConfig: "复制 MCP 配置",
+    copiedConfig: "MCP 配置已复制",
+    configLabel: "粘贴到兼容客户端的 MCP 配置中",
+    updatesTitle: "更新方式",
+    updatesIntro:
+      "不同工具的更新时机不一样，下面分别说明安装后会发生什么。",
+    updates: [
+      {
+        title: "Core 依赖",
+        body: "@beta 只在安装或更新依赖时解析为当前预发布版本，不会替你改已有 lockfile。要更新 Core，再运行一次 npm install stylekit-core@beta 或 pnpm add stylekit-core@beta；需要稳定复现时使用固定版本。",
+      },
+      {
+        title: "MCP 服务",
+        body: "上方配置会在客户端启动 MCP 进程时检查 npm 最新版本。已经运行的会话继续使用当前进程；重启 MCP 服务或客户端后才会加载新版本。",
+      },
+      {
+        title: "CLI",
+        body: "每次运行 npx 命令时都会检查 npm 上的最新 CLI。脚本需要稳定复现时，可以把 @latest 换成一个固定版本。",
+      },
+      {
+        title: "在线素材",
+        body: "风格和公开素材详情会在请求时从 StyleKit 获取，新增在线内容无需重装 CLI 或 MCP。完整模板源码需要联网获取。",
+      },
+      {
+        title: "Agent Skill",
+        body: "兼容的 Agent 在执行 Skill 说明时会检查 GitHub 新版本，最多每 24 小时一次。这不是后台更新服务，也不会改动你的项目文件。旧版先运行一次 npx skills@latest update stylekit 完成迁移；本地改过 Skill 的话，迁移前先备份。之后会先校验文件再更新，检测到本地改动就跳过，更新失败会恢复旧文件。",
+      },
+    ],
     cards: [
       {
         id: "registry",
@@ -113,39 +170,50 @@ const COPY = {
 } as const;
 
 function CommandBlock({
-  cmd,
+  content,
+  format,
+  label,
   copyLabel,
   copiedLabel,
 }: {
-  cmd: string;
+  content: string;
+  format: "bash" | "json";
+  label?: string;
   copyLabel: string;
   copiedLabel: string;
 }) {
   const [copied, setCopied] = useState(false);
   return (
-    <div className="mt-auto flex items-start gap-2 border border-border bg-foreground/[0.03] px-3 py-2.5 font-mono text-xs leading-relaxed">
-      <span className="mt-px select-none text-accent" aria-hidden="true">
-        $
-      </span>
-      <code className="flex-1 whitespace-pre-wrap break-all text-foreground/90">
-        {cmd}
-      </code>
-      <button
-        type="button"
-        onClick={() => {
-          void navigator.clipboard?.writeText(cmd);
-          setCopied(true);
-          setTimeout(() => setCopied(false), 1500);
-        }}
-        className="mt-px shrink-0 text-muted transition-colors hover:text-foreground"
-        aria-label={copied ? copiedLabel : copyLabel}
-      >
-        {copied ? (
-          <Check className="h-3.5 w-3.5 text-accent" />
-        ) : (
-          <Copy className="h-3.5 w-3.5" />
-        )}
-      </button>
+    <div className="mt-auto">
+      {label ? (
+        <p className="mb-2 text-[11px] text-muted">{label}</p>
+      ) : null}
+      <div className="flex items-start gap-2 border border-border bg-foreground/[0.03] px-3 py-2.5 font-mono text-xs leading-relaxed">
+        {format === "bash" ? (
+          <span className="mt-px select-none text-accent" aria-hidden="true">
+            $
+          </span>
+        ) : null}
+        <code className="min-w-0 flex-1 whitespace-pre-wrap break-all text-foreground/90">
+          {content}
+        </code>
+        <button
+          type="button"
+          onClick={() => {
+            void navigator.clipboard?.writeText(content);
+            setCopied(true);
+            setTimeout(() => setCopied(false), 1500);
+          }}
+          className="mt-px shrink-0 text-muted transition-colors hover:text-foreground"
+          aria-label={copied ? copiedLabel : copyLabel}
+        >
+          {copied ? (
+            <Check className="h-3.5 w-3.5 text-accent" />
+          ) : (
+            <Copy className="h-3.5 w-3.5" />
+          )}
+        </button>
+      </div>
     </div>
   );
 }
@@ -172,6 +240,11 @@ function stateLabel(
   } as const;
 
   return labels[locale][state];
+}
+
+function versionLabel(version: string | null): string {
+  if (version === null) return "";
+  return ` · ${version === "main" ? version : `v${version}`}`;
 }
 
 export function DevelopersContent() {
@@ -203,6 +276,7 @@ export function DevelopersContent() {
             {c.cards.map((card, i) => {
               const Icon = ICONS[i] ?? Boxes;
               const capability = getDeveloperToolkitCapability(card.id);
+              const setupSnippet = getDeveloperToolkitSetupSnippet(card.id);
               return (
                 <RevealOnScroll
                   key={card.name}
@@ -221,9 +295,11 @@ export function DevelopersContent() {
                       {card.desc}
                     </p>
                     <CommandBlock
-                      cmd={capability.command}
-                      copyLabel={c.copyCommand}
-                      copiedLabel={c.copiedCommand}
+                      content={setupSnippet.content}
+                      format={setupSnippet.format}
+                      label={capability.id === "mcp" ? c.configLabel : undefined}
+                      copyLabel={capability.id === "mcp" ? c.copyConfig : c.copyCommand}
+                      copiedLabel={capability.id === "mcp" ? c.copiedConfig : c.copiedCommand}
                     />
                     <p className="mt-4 text-[11px] tracking-wide text-muted">
                       {card.foot}
@@ -231,7 +307,7 @@ export function DevelopersContent() {
                     <div className="mt-3 flex flex-wrap items-center justify-between gap-2 text-[11px] tracking-wide text-muted">
                       <span>
                         {c.status}: {stateLabel(capability.state, locale === "zh" ? "zh" : "en")}
-                        {capability.publicVersion ? ` · v${capability.publicVersion}` : ""}
+                        {versionLabel(capability.publicVersion)}
                       </span>
                       <a
                         href={capability.docsUrl}
@@ -295,6 +371,29 @@ export function DevelopersContent() {
                 </div>
               </div>
             </div>
+          </RevealOnScroll>
+
+          <RevealOnScroll variant="soft" delayMs={540} className="mt-10">
+            <section aria-labelledby="developer-updates-title">
+              <div className="mb-5 max-w-2xl">
+                <h2 id="developer-updates-title" className="text-xl sm:text-2xl">
+                  {c.updatesTitle}
+                </h2>
+                <p className="mt-2 text-sm leading-relaxed text-muted">
+                  {c.updatesIntro}
+                </p>
+              </div>
+              <div className="grid gap-px border border-border bg-border sm:grid-cols-2">
+                {c.updates.map((item) => (
+                  <article key={item.title} className="bg-background/70 p-5">
+                    <h3 className="text-sm font-medium">{item.title}</h3>
+                    <p className="mt-2 text-sm leading-relaxed text-muted">
+                      {item.body}
+                    </p>
+                  </article>
+                ))}
+              </div>
+            </section>
           </RevealOnScroll>
         </div>
       </section>

@@ -89,7 +89,7 @@ Swap `glassmorphism` for any slug. Works with Tailwind v4.
 ### 2. Give your coding agent the whole library
 
 ```bash
-npx skills add AnxForever/stylekit-skill
+npx skills@latest add AnxForever/stylekit-skill
 ```
 
 Claude Code, Cursor, Windsurf, and any Agent-Skills-compatible tool can then
@@ -97,15 +97,29 @@ apply any of the 148 styles on request — "make this look like Stripe", "cyberp
 dashboard" — using the correct tokens and rules. The skill lives in
 [`AnxForever/stylekit-skill`](https://github.com/AnxForever/stylekit-skill).
 
+A compatible agent checks GitHub for Skill updates when it runs the Skill
+instructions, at most once every 24 hours. This is not a background service.
+For an older installation, run `npx skills@latest update stylekit` once; after
+that, the agent checks during use, so you do not need to reinstall repeatedly.
+Back up local edits before this one-time migration. Afterward, the updater
+verifies files before changing them, skips updates when it detects local edits,
+and restores the previous file if an update fails.
+
 ### 3. Call it over MCP
 
 ```bash
-npx -y stylekit-mcp
+npx -y --prefer-online stylekit-mcp@latest
 ```
 
 Exposes search, tokens, component recipes, and a `stylekit_lint_code` tool that
 checks whether generated UI code actually follows the style's rules. See
 [`packages/mcp/README.md`](packages/mcp/README.md).
+
+For an MCP client, copy the one-time JSON configuration from the
+[Developers page](https://www.stylekit.top/en/developers). The client checks npm
+for the latest release whenever it starts the MCP process. A running process
+must be restarted to load an update. Public online assets are fetched on
+request, so new content does not require reinstalling the CLI or MCP package.
 
 ## Styles
 

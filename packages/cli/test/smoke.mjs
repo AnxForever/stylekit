@@ -244,10 +244,13 @@ try {
   r = run(["brief", "neo-brutalist"]);
   const brief = JSON.parse(r.stdout);
   check(r.code === 0 && brief.schemaVersion === "stylekit-brief-v1" && brief.recipes.button && brief.lintRules.sources.includes("curated"), "brief exports complete implementation contract");
+  check(["live", "bundled"].includes(brief.origin) && ["bundled", "static", "community"].includes(brief.provenance.source) && (brief.origin === "live" || typeof brief.fallbackReason === "string"), "brief separates transport origin and content provenance and explains fallback");
   r = run(["lint", "neo-brutalist", path.join(fixtureRoot, "src", "good.tsx"), "--json"]);
-  check(r.code === 0 && JSON.parse(r.stdout).status === "pass", "lint valid file passes");
+  const goodLint = JSON.parse(r.stdout);
+  check(r.code === 0 && goodLint.status === "pass", "lint valid file passes");
+  check(["live", "bundled"].includes(goodLint.origin) && goodLint.contentSource === brief.provenance.source && (goodLint.origin === "live" || typeof goodLint.fallbackReason === "string"), "lint uses the implementation brief and reports the rule origin separately from content provenance");
   r = run(["lint", "--style", "neo-brutalist", "--files", path.join(fixtureRoot, "src", "**", "*.tsx"), "--format", "json"]);
-  check(r.code === 1 && JSON.parse(r.stdout).files.length === 2, "lint glob finds root files and excludes dependencies");
+  check(r.code === 1 && JSON.parse(r.stdout).files.length === 2 && JSON.parse(r.stdout).origin, "lint glob finds root files, excludes dependencies, and keeps source metadata");
   r = run(["lint", "neo-brutalist", "--stdin", "--json"], '<div className={runtimeClasses}/>');
   check(r.code === 3 && JSON.parse(r.stdout).status === "inconclusive", "lint stdin runtime classes cannot pass");
   r = run(["lint", "neo-brutalist", "--stdin", "--component", "button", "--strict", "--json"], '<button className="p-4"/>');

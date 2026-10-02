@@ -2,10 +2,10 @@
 /**
  * StyleKit MCP server.
  *
- * Exposes StyleKit's 148 design styles — search, full profiles, design tokens,
- * component recipes, and shadcn install commands — to MCP clients such as
- * Claude Desktop, Cursor, and Windsurf, over stdio. Data is served offline from
- * the bundled stylekit-core package.
+ * Exposes StyleKit's design styles and public assets to MCP clients such as
+ * Claude Desktop, Cursor, and Windsurf over stdio. Style discovery prefers the
+ * live catalogue (cached for five minutes) and uses the bundled package data
+ * only as an explicitly reported fallback when the live source is unavailable.
  */
 
 import { createRequire } from "node:module";

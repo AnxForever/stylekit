@@ -163,6 +163,6 @@ use the exact name (`claude-code`, not `claude`) if you pass `--agent`.
 
 StyleKit's live skill: [`SKILL.md`](https://github.com/AnxForever/stylekit-skill)
 in the standalone [`AnxForever/stylekit-skill`](https://github.com/AnxForever/stylekit-skill)
-repo. Install command (`npx skills add AnxForever/stylekit-skill`) is surfaced in the
+repo. Install command (`npx skills@latest add AnxForever/stylekit-skill`) is surfaced in the
 [README](../README.md), on the `/developers` page, and in
 [`public/llms.txt`](../public/llms.txt).

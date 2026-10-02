@@ -28,15 +28,14 @@ template literals.
 
 ## Setup
 
-Install the published `stylekit-mcp@0.4.0` package from npm with `npx`. Add the
-following to your MCP client config:
+Add this configuration once to your MCP client:
 
 ```json
 {
   "mcpServers": {
     "stylekit": {
       "command": "npx",
-      "args": ["-y", "stylekit-mcp@0.4.0"]
+      "args": ["-y", "--prefer-online", "stylekit-mcp@latest"]
     }
   }
 }
@@ -45,6 +44,13 @@ following to your MCP client config:
 - **Claude Desktop / Claude Code**: `claude_desktop_config.json` or `.mcp.json`
 - **Cursor**: `.cursor/mcp.json`
 - **Windsurf**: the Windsurf MCP config
+
+When the client starts the MCP process, `npx` checks npm for the current
+`latest` release, including when the package is already cached. A running MCP
+process does not replace itself; restart the server or client to load an update.
+For a reproducible setup, replace `stylekit-mcp@latest` with an exact published
+version such as `stylekit-mcp@0.4.1`. The [npm caching options](https://docs.npmjs.com/cli/v11/commands/npm-exec/#a-note-on-caching)
+describe how `--prefer-online` handles cached packages.
 
 To run a locally built copy instead, point your client at the absolute path:
 
@@ -94,10 +100,9 @@ MIT
 
 ## Release contents
 
-`stylekit-mcp@0.4.0` and `stylekit-core@beta` include the public asset tools,
-source provenance, and the discovery reliability fixes described above. The
-MCP package bundles `stylekit-core`; the runtime npm dependencies remain the MCP
-SDK and Zod.
+The published MCP package includes the public asset tools, source provenance,
+and discovery reliability fixes described above. It bundles `stylekit-core`;
+the runtime npm dependencies remain the MCP SDK and Zod.
 
 Call the brief tool before generation and save its `stylekit-brief-v1` payload
 for later validation. `provenance.source` identifies the data origin;

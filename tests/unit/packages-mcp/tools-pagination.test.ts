@@ -89,7 +89,11 @@ describe("stylekit_search_styles pagination", () => {
     expect(mocks.searchStylesLive).toHaveBeenNthCalledWith(1, {
       query: "modern",
       category: "modern",
-    });
+    }, {});
+    expect(mocks.searchStylesLive).toHaveBeenNthCalledWith(2, {
+      query: "modern",
+      category: "modern",
+    }, {});
     expect(firstPage.structuredContent).toMatchObject({
       total: 3,
       count: 2,
