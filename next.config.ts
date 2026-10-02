@@ -57,6 +57,10 @@ const nextConfig: NextConfig = {
   poweredByHeader: false,
   compress: true,
   serverExternalPackages: ["isomorphic-dompurify"],
+  outputFileTracingIncludes: {
+    "/api/assets/*/*": ["./LICENSE", "./app/templates/**/*", "./components/ui/brutal/**", "./lib/utils.ts"],
+    "/api/templates/*/*": ["./LICENSE", "./app/templates/**/*", "./components/ui/brutal/**", "./lib/utils.ts"],
+  },
   ...(assetPrefix ? { assetPrefix } : {}),
   ...(assetOrigin ? { crossOrigin: "anonymous" as const } : {}),
 

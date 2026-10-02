@@ -86,7 +86,8 @@ export const blueprintTokens = createStyleTokens({
       "bg-gradient-",
     ],
     patterns: [
-      "^bg-(?:white|gray-[1-3]|slate-[1-3])",
+      // Grid strokes may use translucent white; solid pale panels remain forbidden.
+      "^bg-(?:white|gray-(?:50|100|200|300)|slate-(?:50|100|200|300))$",
       "^shadow-(?:sm|md|lg|xl|2xl)",
       "^rounded-(?:xl|2xl|3xl|full)",
       "^font-serif",

@@ -105,7 +105,7 @@ Design principles:
       description: "直角项目海报卡：浅色底、大标题、标签行、悬停时放大+shadow+色彩偏移",
       code: `<div className="group bg-[#F5F5F0] overflow-hidden">
   <div className="relative">
-    <div className="aspect-[16/10] bg-gradient-to-br from-[#333333] to-[#1A1A1A] group-hover:scale-[1.02] transition-all duration-300"></div>
+    <div className="aspect-[16/10] bg-[#333333] group-hover:scale-[1.02] transition-all duration-300"></div>
     <div className="absolute top-4 left-4 flex gap-2">
       <span className="text-[11px] uppercase tracking-[0.12em] bg-white/90 text-[#1A1A1A] px-3 py-1 font-medium">Branding</span>
       <span className="text-[11px] uppercase tracking-[0.12em] bg-white/90 text-[#1A1A1A] px-3 py-1 font-medium">2024</span>

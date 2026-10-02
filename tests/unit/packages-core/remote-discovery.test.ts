@@ -81,12 +81,127 @@ describe("remote discovery", () => {
     const httpFailure = await searchStylesLive({}, { baseUrl: "https://http.test" });
     expect(httpFailure.origin).toBe("bundled");
     expect(httpFailure.fallbackReason).toBe("HTTP 503");
+    expect(httpFailure.failureKind).toBe("unavailable");
 
     clearRemoteCache();
     fetchMock.mockRejectedValueOnce(new Error("DNS unavailable"));
     const networkFailure = await searchStylesLive({}, { baseUrl: "https://network.test" });
     expect(networkFailure.origin).toBe("bundled");
     expect(networkFailure.fallbackReason).toBe("DNS unavailable");
+    expect(networkFailure.failureKind).toBe("unavailable");
+  });
+
+  it("does not open the site-wide circuit when one live detail is missing", async () => {
+    const fetchMock = vi.fn((url: string) => {
+      const parsed = new URL(url);
+      if (parsed.pathname === "/api/styles/missing-detail") {
+        return Promise.resolve(responseFor(url, { error: "not found" }, 404));
+      }
+      if (parsed.pathname === "/api/styles/available-detail") {
+        return Promise.resolve(responseFor(url, {
+          slug: "available-detail",
+          name: "Available detail",
+          nameEn: "Available detail",
+          description: "Still online",
+          philosophy: "Still online",
+          keywords: ["online"],
+          colors: style("available-detail").colors,
+          recipes: {},
+          tokens: null,
+        }));
+      }
+      if (parsed.pathname === "/api/styles") {
+        return Promise.resolve(catalogue([style("available-detail")]));
+      }
+      throw new Error(`Unexpected request ${url}`);
+    });
+    vi.stubGlobal("fetch", fetchMock);
+
+    const missing = await getStyleDetailLive("missing-detail", { baseUrl: "https://cross-404.test" });
+    const available = await getStyleDetailLive("available-detail", { baseUrl: "https://cross-404.test" });
+
+    expect(missing).toMatchObject({ data: null, failureKind: "not-found", fallbackReason: "HTTP 404" });
+    expect(available).toMatchObject({ origin: "live", data: { slug: "available-detail" } });
+    expect(fetchMock.mock.calls.some(([url]) => String(url).endsWith("/api/styles/available-detail"))).toBe(true);
+  });
+
+  it("classifies a missing brief separately from a missing style", async () => {
+    const fetchMock = vi.fn((url: string) => {
+      const parsed = new URL(url);
+      if (parsed.pathname.endsWith("/brief")) {
+        return Promise.resolve(responseFor(url, { error: "not found" }, 404));
+      }
+      if (parsed.pathname === "/api/styles") {
+        return Promise.resolve(catalogue([style("live-only")]));
+      }
+      throw new Error(`Unexpected request ${url}`);
+    });
+    vi.stubGlobal("fetch", fetchMock);
+
+    const existing = await getImplementationBriefLive("live-only", { baseUrl: "https://legacy-brief.test" });
+    const missing = await getImplementationBriefLive("not-in-catalogue", { baseUrl: "https://legacy-brief.test" });
+
+    expect(existing).toMatchObject({ data: null, failureKind: "unsupported" });
+    expect(existing.fallbackReason).toContain("existing style");
+    expect(missing).toMatchObject({ data: null, failureKind: "not-found" });
+  });
+
+  it("reports a missing brief as unavailable when style existence cannot be checked", async () => {
+    const fetchMock = vi.fn((url: string) => Promise.resolve(
+      new URL(url).pathname.endsWith("/brief")
+        ? responseFor(url, { error: "not found" }, 404)
+        : responseFor(url, { error: "offline" }, 503),
+    ));
+    vi.stubGlobal("fetch", fetchMock);
+
+    const result = await getImplementationBriefLive("maybe-live", { baseUrl: "https://brief-offline.test" });
+
+    expect(result).toMatchObject({ data: null, failureKind: "unavailable" });
+    expect(result.fallbackReason).toContain("style existence could not be checked");
+  });
+
+  it("uses a NFKC exact bundled match even when the local scorer has no hit", async () => {
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue(responseFor("", { error: "unavailable" }, 503)));
+
+    const result = await searchStylesLive(
+      { query: "Ｇｌａｓｓｍｏｒｐｈｉｓｍ", limit: 1 },
+      { baseUrl: "https://exact-fallback.test" },
+    );
+
+    expect(result.origin).toBe("bundled");
+    expect(result.ranking).toBe("exact");
+    expect(result.data).toMatchObject({ total: 1, results: [{ slug: "glassmorphism" }] });
+  });
+
+  it("prioritizes live exact slug or name matches over hybrid results and keeps totals", async () => {
+    const exact = {
+      ...style("exact-live"),
+      name: "独特名称",
+      nameEn: "Exact Display Name",
+    };
+    const fetchMock = vi.fn((url: string) => {
+      const parsed = new URL(url);
+      if (parsed.pathname === "/api/search") {
+        return Promise.resolve(responseFor(url, {
+          mode: "hybrid",
+          results: [{ slug: "semantic-first", score: 10 }],
+        }));
+      }
+      return Promise.resolve(catalogue([style("semantic-first"), exact]));
+    });
+    vi.stubGlobal("fetch", fetchMock);
+
+    const slugMatch = await searchStylesLive(
+      { query: "exact-live", limit: 1 },
+      { baseUrl: "https://exact-live.test" },
+    );
+    const nameMatch = await searchStylesLive(
+      { query: "独特名称", limit: 1 },
+      { baseUrl: "https://exact-live.test" },
+    );
+
+    expect(slugMatch).toMatchObject({ ranking: "exact", data: { total: 2, results: [{ slug: "exact-live" }] } });
+    expect(nameMatch).toMatchObject({ ranking: "exact", data: { total: 2, results: [{ slug: "exact-live" }] } });
   });
 
   it("uses the timeout budget and reports a stable fallback reason", async () => {
@@ -305,7 +420,7 @@ describe("remote discovery", () => {
 
     const first = await searchStylesLive({ query: "gamma" }, { baseUrl: "https://old-site.test" });
     expect(first.origin).toBe("live");
-    expect(first.ranking).toBe("local");
+    expect(first.ranking).toBe("exact");
     expect(first.data.results.map((r) => r.slug)).toEqual(["gamma"]);
 
     const detail = await getStyleDetailLive("not-bundled-slug", { baseUrl: "https://old-site.test" });

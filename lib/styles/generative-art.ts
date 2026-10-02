@@ -123,7 +123,7 @@ Core principles:
   <div className="absolute inset-0 opacity-0 group-hover:opacity-100 bg-[repeating-linear-gradient(0deg,transparent,transparent_2px,rgba(124,58,237,0.05)_2px,rgba(124,58,237,0.05)_4px)] transition-opacity duration-200 ease-linear" />
   <div className="relative z-10">
     <div className="flex items-center gap-3 mb-4">
-      <div className="w-2 h-2 rounded-none bg-violet-500 shadow-[0_0_8px_rgba(124,58,237,0.6)] group-hover:rotate-45 transition-transform duration-200 ease-linear" />
+      <div className="w-2 h-2 bg-violet-500 shadow-[0_0_8px_rgba(124,58,237,0.6)] group-hover:rotate-45 transition-transform duration-200 ease-linear" />
       <h3 className="text-violet-400 font-mono text-xs uppercase tracking-[0.2em]">Algorithm // 0x42</h3>
     </div>
     <h4 className="text-white text-lg font-mono font-bold mb-2 group-hover:text-violet-200 transition-colors duration-200 ease-linear">Perlin Noise</h4>

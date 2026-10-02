@@ -1,8 +1,8 @@
 # stylekit-mcp
 
-MCP server for [StyleKit](https://stylekit.top) — search 148 design styles and pull design tokens, component recipes, and shadcn install commands directly from Claude, Cursor, or Windsurf.
+MCP server for [StyleKit](https://stylekit.top) — search design styles and retrieve templates, assets, tokens, recipes, and lint checks from Claude, Cursor, or Windsurf.
 
-Runs locally over stdio. Search uses the live catalogue with a bundled fallback; known style implementation data is bundled, while newer styles require live endpoints.
+The server runs locally over stdio using the official MCP SDK. It bundles `stylekit-core`; the published process depends on `@modelcontextprotocol/sdk` and `zod`, and needs network access only for live catalogue data and remote assets. It is MIT-licensed.
 
 ## Tools
 
@@ -11,6 +11,8 @@ All tools are read-only.
 | Tool | What it does |
 |------|--------------|
 | `stylekit_search_styles` | Search styles by keyword and/or category |
+| `stylekit_list_assets` | Browse public templates and design assets by kind or query, with pagination and source provenance |
+| `stylekit_get_asset` | Retrieve a namespaced public asset detail and any source files the license permits |
 | `stylekit_get_implementation_brief` | Complete AI guidance, CSS, templates, recipes, tokens, readiness, merged lint rules and provenance (0.3.0) |
 | `stylekit_get_style` | Full style profile: philosophy, palette, do/don't rules, quality/capability signals |
 | `stylekit_get_style_tokens` | Typed design tokens: border, shadow, typography, spacing, colors |
@@ -26,15 +28,15 @@ template literals.
 
 ## Setup
 
-The public beta is available from npm. Add the following to your MCP client
-config:
+Install the published `stylekit-mcp@0.4.0` package from npm with `npx`. Add the
+following to your MCP client config:
 
 ```json
 {
   "mcpServers": {
     "stylekit": {
       "command": "npx",
-      "args": ["-y", "stylekit-mcp"]
+      "args": ["-y", "stylekit-mcp@0.4.0"]
     }
   }
 }
@@ -53,6 +55,23 @@ To run a locally built copy instead, point your client at the absolute path:
   }
 }
 ```
+
+## Public assets
+
+`stylekit_list_assets` accepts optional `kind` and `query` filters plus
+`offset`/`limit`. It returns a structured page with the namespace, content level,
+availability, license and attribution metadata, and whether the page came from
+the live API or bundled snapshot. An offset beyond the last result is an empty
+successful page.
+
+`stylekit_get_asset` returns the complete asset detail as structured data and
+JSON text. `contentLevel` tells you what is actually available: `source` and
+`remote` assets can include source files; `metadata` and `restricted` entries do
+not. `availability` distinguishes bundled, remote, external and restricted
+content. External and restricted entries provide metadata or source links only;
+they are not represented as downloadable full source. Remote templates require
+the live API to return their actual file set; if that source is unavailable, the
+tool reports an error instead of returning a placeholder as code.
 
 ## Example
 
@@ -73,12 +92,16 @@ node scripts/smoke.mjs  # smoke-test all tools over stdio
 
 MIT
 
-## 0.3.0 release candidate
+## Release contents
 
-The new brief tool and lint contract are implemented in the locally built 0.3.0
-candidate; npm clients need that release to be published. Call the brief tool
-before generation and save its `stylekit-brief-v1` payload for later validation.
-`provenance.source` identifies the data origin; `contentHash` detects drift.
+`stylekit-mcp@0.4.0` and `stylekit-core@beta` include the public asset tools,
+source provenance, and the discovery reliability fixes described above. The
+MCP package bundles `stylekit-core`; the runtime npm dependencies remain the MCP
+SDK and Zod.
+
+Call the brief tool before generation and save its `stylekit-brief-v1` payload
+for later validation. `provenance.source` identifies the data origin;
+`contentHash` detects drift.
 
 Lint returns `status: pass | fail | inconclusive`. `ok` is true only for a
 conclusive static pass. Runtime expressions are reported as inconclusive unless

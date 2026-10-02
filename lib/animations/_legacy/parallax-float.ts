@@ -65,7 +65,9 @@ export const parallaxFloat: Animation = {
     {
       label: "Tailwind CSS",
       language: "tsx",
-      code: `// JS-driven parallax with scroll listener
+      code: `"use client";
+
+// JS-driven parallax with scroll listener
 import { useEffect, useRef } from "react";
 
 function useParallax(speed = 0.5) {
@@ -97,7 +99,9 @@ function useParallax(speed = 0.5) {
     {
       label: "Framer Motion",
       language: "tsx",
-      code: `import { motion, useScroll, useTransform } from "framer-motion";
+      code: `"use client";
+
+import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
 
 // Tip: disable parallax for reduced motion users

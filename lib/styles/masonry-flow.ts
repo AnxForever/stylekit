@@ -106,7 +106,7 @@ Core principles:
   shadow-sm
   hover:bg-zinc-700
   hover:-translate-y-0.5
-  hover:shadow-[0_4px_12px_rgba(0,0,0,0.15)]
+  hover:shadow-md
   focus:outline-none focus:ring-2 focus:ring-zinc-900/30 focus:ring-offset-2
   active:scale-[0.98] active:translate-y-0
   transition-all duration-200
@@ -121,7 +121,7 @@ Core principles:
   group break-inside-avoid mb-6
   bg-white rounded-2xl overflow-hidden
   shadow-sm
-  hover:shadow-[0_20px_40px_rgba(0,0,0,0.06)]
+  hover:shadow-md
   hover:-translate-y-1
   transition-all duration-300 ease-out
   cursor-pointer

@@ -103,7 +103,9 @@ export const handDrawnAnnotation: Animation = {
     {
       label: "Scroll Trigger",
       language: "tsx",
-      code: `// Play the annotation only when it scrolls into view
+      code: `"use client";
+
+// Play the annotation only when it scrolls into view
 import { useEffect, useRef, useState } from "react";
 
 export function AnnotateOnScroll(props: { note: string; children: React.ReactNode }) {

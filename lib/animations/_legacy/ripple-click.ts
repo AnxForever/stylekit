@@ -190,7 +190,9 @@ export function RippleButton({ children }: { children: ReactNode }) {
     {
       label: "Framer Motion",
       language: "tsx",
-      code: `import { motion, AnimatePresence } from "framer-motion";
+      code: `"use client";
+
+import { motion, AnimatePresence } from "framer-motion";
 import { useState, type MouseEvent } from "react";
 
 // Tip: respect user's motion preferences

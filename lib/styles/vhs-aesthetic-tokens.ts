@@ -93,9 +93,10 @@ export const vhsAestheticTokens = createStyleTokens({
       "text-gray-800",
     ],
     patterns: [
-      "^bg-white",
+      // Low-opacity white scanlines are valid; plain bg-white stays forbidden.
+
       "^bg-gray-[1-3]",
-      "^shadow-(?!\\[)",
+      "^shadow-(?!none$|\\[)",
       "^rounded-[23]xl",
       "^rounded-full",
       "^font-serif",

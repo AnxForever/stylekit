@@ -108,7 +108,9 @@ export const counterRoll: Animation = {
     {
       label: "Framer Motion",
       language: "tsx",
-      code: `import { motion, useInView } from "framer-motion";
+      code: `"use client";
+
+import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
 
 // Tip: respect user's motion preferences

@@ -1,15 +1,14 @@
 # stylekit-cli
 
-Command-line tool for [StyleKit](https://stylekit.top) — browse 148 design styles and pull design tokens, component recipes, and shadcn install commands straight from your terminal. Works **offline** (served from the bundled `stylekit-core`).
+Command-line tool for [StyleKit](https://stylekit.top) — browse design styles, inspect public assets, and pull design tokens, component recipes, and shadcn install commands from your terminal. Discovery uses stylekit-core@beta with a bundled catalogue fallback.
 
 ## Usage
 
 ```bash
-npx -y stylekit-cli@0.1.4 <command> [args] [flags]
+npx -y stylekit-cli@latest <command> [args] [flags]
 ```
 
-The `0.1.4` public beta is self-contained and works offline from a clean
-directory. Pin the version when scripting against JSON output.
+Use @latest for the current CLI release, or pin an exact version when scripting against JSON output.
 
 ## Commands
 
@@ -23,8 +22,17 @@ directory. Pin the version when scripting against JSON output.
 | `brief <slug>` | Complete implementation JSON, merged lint rules and provenance (0.2.0) |
 | `lint <slug> <files...>` | Static rule checks, JSON/GitHub output and exit codes (0.2.0) |
 | `add <slug>` | Print the `npx shadcn add` command for the style's theme |
+| assets | List public assets with kind, query, offset and limit filters |
+| asset <kind> <id> | Inspect one asset by namespace and ID |
 
-Every command accepts `--json` for machine-readable output. List/search JSON uses a `{ total, count, results }` envelope; errors use `{ error, code }`. `--help` / `--version` are available.
+Commands accept --json for machine-readable output. Style list/search use a
+{ total, count, results } envelope. Asset commands preserve the Core source
+envelope and namespaced metadata. List data includes schemaVersion, assets,
+total, offset, limit, hasMore and kindCounts. Each list entry carries its kind,
+ID, name and availability (bundled, remote, external or restricted). Detail
+results contain the namespaced metadata object. Empty pages are successful.
+Errors use { error, code } plus source metadata when relevant. --help and
+--version are available.
 
 ## Examples
 
@@ -35,22 +43,29 @@ stylekit show neo-brutalist
 stylekit tokens glassmorphism > tokens.json
 stylekit recipe glassmorphism button
 stylekit add synthwave
+stylekit assets --kind template --limit 10
+stylekit assets --query "dashboard" --offset 10 --limit 5 --json
 ```
+
+Copy a result's kind and ID from the asset list when running the detail command.
 
 ## License
 
 MIT
 
-## 0.2.0 release candidate
+## Implementation briefs and static checks
 
-The new commands are available in the locally built 0.2.0 candidate. Public
-installs need that release to be published; the 0.1.4 package has no lint command.
+The brief and lint commands are included in the published 0.2.0 release.
+The asset commands target the 0.3.0 CLI release line and use
+stylekit-core@beta. Changes in the working tree require a release before
+npm consumers receive them.
 
 ```bash
 node packages/cli/dist/index.js brief neo-brutalist > style-spec.json
 node packages/cli/dist/index.js lint neo-brutalist 'src/**/*.tsx' --json
 node packages/cli/dist/index.js lint --style neo-brutalist --files 'src/**/*.tsx' --format github
 node packages/cli/dist/index.js lint neo-brutalist --stdin --component button --strict --json
+node packages/cli/dist/index.js assets --kind template --limit 10 --json
 ```
 
 Lint returns `pass`, `fail`, or `inconclusive`; exit codes are 0, 1, and 3.
@@ -58,4 +73,8 @@ Usage/file errors use exit 1. Runtime expressions and unreadable sources cannot
 pass. Required checks cover the whole input file and are advisory unless
 `--strict` is used with `--component`. Use a single component snippet for strict
 checks. Paths, directories, repeated `--files`, and `*`/`**`/`?` globs are supported.
-Completed JSON lint reports go to stdout even when the check fails.
+Completed JSON lint reports go to stdout even when the check fails. An
+unavailable remote asset returns a nonzero exit code with explicit source
+metadata and no bundled placeholder presented as full source. External and
+restricted assets retain their availability metadata and URLs without
+invented source content.

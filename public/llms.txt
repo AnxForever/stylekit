@@ -58,6 +58,17 @@ npx skills add AnxForever/stylekit-skill
 
 The repository also contains published public-beta [CLI](https://www.npmjs.com/package/stylekit-cli) and [MCP](https://www.npmjs.com/package/stylekit-mcp) packages. Check each package listing for its current release rather than assuming the repository and npm versions are identical.
 
+## Public Asset API
+
+- Browse and search: `GET https://www.stylekit.top/api/assets?kind=animation&q=fade&limit=20&offset=0`
+- Retrieve one asset: `GET https://www.stylekit.top/api/assets/{kind}/{id}`
+- Complete style contract: `GET https://www.stylekit.top/api/styles/{slug}/brief`
+- Standalone template ZIP: `GET https://www.stylekit.top/api/templates/{slug}/download`
+
+The asset catalog covers curated styles, animation snippets, backgrounds, gradients, shadows, font pairings, component patterns, templates and design references. Follow `hasMore` and increment `offset` to discover the whole catalog. Asset details include data, reusable code or project files, dependencies, and source/license information where applicable. Preserve third-party attribution and check each item's availability before using it. External templates are references; restricted experience packs require their separate license. Private user kits and knowledge records awaiting publication are excluded.
+
+The MCP server exposes `stylekit_list_assets` and `stylekit_get_asset`. The CLI provides `stylekit assets` and `stylekit asset <kind> <id>`. The Agent Skill can save the same asset JSON for reuse in a target project. Bundled fallback covers static assets; complete template source requires the website. Style lint checks do not prove that arbitrary asset integration is accessible or works in a browser.
+
 ## Product Boundaries
 
 - StyleKit provides design constraints, prompts, examples, and registry assets; it does not guarantee that every AI-generated interface is production-ready.

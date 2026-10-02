@@ -18,10 +18,60 @@ await client.connect(transport);
 
 const { tools } = await client.listTools();
 const names = tools.map((t) => t.name).sort();
-check(tools.length === 7, `7 tools registered (${names.join(", ")})`);
+check(tools.length === 9, `9 tools registered (${names.join(", ")})`);
 check(
   tools.every((t) => t.annotations?.readOnlyHint === true),
   "all tools annotated readOnlyHint",
+);
+check(
+  tools.every((t) => t.annotations?.openWorldHint === true),
+  "all tools annotated openWorldHint for live or network-backed data",
+);
+
+const assetPage = await client.callTool({
+  name: "stylekit_list_assets",
+  arguments: { kind: "component-pattern", limit: 2 },
+});
+check(
+  assetPage.isError !== true &&
+    assetPage.structuredContent?.schemaVersion === "1" &&
+    Array.isArray(assetPage.structuredContent?.assets) &&
+    typeof assetPage.structuredContent?.total === "number" &&
+    typeof assetPage.structuredContent?.hasMore === "boolean" &&
+    typeof assetPage.structuredContent?.source === "string" &&
+    assetPage.structuredContent.assets.every((asset) => asset.kind === "component-pattern"),
+  "list_assets returns a namespaced, sourced page",
+);
+const emptyAssetPage = await client.callTool({
+  name: "stylekit_list_assets",
+  arguments: { kind: "component-pattern", offset: 100000, limit: 1 },
+});
+check(
+  emptyAssetPage.isError !== true &&
+    emptyAssetPage.structuredContent?.assets?.length === 0 &&
+    emptyAssetPage.structuredContent?.hasMore === false &&
+    typeof emptyAssetPage.structuredContent?.source === "string",
+  "list_assets returns a successful empty offset page",
+);
+const patternAsset = await client.callTool({
+  name: "stylekit_get_asset",
+  arguments: { kind: "component-pattern", id: "sidebar-fixed-standard-breadcrumb" },
+});
+let patternTextJson = null;
+try {
+  patternTextJson = JSON.parse(patternAsset.content[0].text);
+} catch {
+  /* ignore */
+}
+check(
+  patternAsset.isError !== true &&
+    patternAsset.structuredContent?.metadata?.kind === "component-pattern" &&
+    patternAsset.structuredContent?.metadata?.id === "sidebar-fixed-standard-breadcrumb" &&
+    patternAsset.structuredContent?.metadata?.contentLevel === "source" &&
+    typeof patternAsset.structuredContent?.code === "string" &&
+    patternAsset.structuredContent.code.includes("previewId") &&
+    patternTextJson?.code === patternAsset.structuredContent?.code,
+  "get_asset returns full permitted pattern source as structured and complete JSON text",
 );
 
 const search = await client.callTool({
@@ -38,6 +88,33 @@ check(
   typeof search.structuredContent?.has_more === "boolean" &&
     search.structuredContent?.offset === 0,
   "search returns pagination (offset + has_more)",
+);
+
+const exactSearch = await client.callTool({
+  name: "stylekit_search_styles",
+  arguments: { query: "glassmorphism", limit: 1 },
+});
+check(
+  exactSearch.structuredContent?.results?.[0]?.slug === "glassmorphism" &&
+    exactSearch.structuredContent?.ranking === "exact",
+  "search ranks an exact slug before semantic matches",
+);
+check(
+  typeof exactSearch.structuredContent?.source === "string",
+  "search returns source provenance",
+);
+
+const emptyPage = await client.callTool({
+  name: "stylekit_search_styles",
+  arguments: { query: "glass", offset: 100000 },
+});
+check(
+  emptyPage.isError !== true &&
+    emptyPage.structuredContent?.count === 0 &&
+    Array.isArray(emptyPage.structuredContent?.results) &&
+    emptyPage.structuredContent.results.length === 0 &&
+    typeof emptyPage.structuredContent?.source === "string",
+  "search returns a successful structured empty page",
 );
 
 const detail = await client.callTool({

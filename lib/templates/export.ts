@@ -150,8 +150,7 @@ pnpm dev       # http://localhost:3000
 
 ## License
 
-Free for personal and commercial use. Attribution appreciated but not
-required — a link back to stylekit.top helps the project keep going.
+Licensed under the MIT License. See [LICENSE](./LICENSE) for the full terms and required copyright notice.
 `;
 }
 

@@ -27,7 +27,9 @@ export const magneticHover: Animation = {
     {
       label: "Tailwind CSS + React",
       language: "tsx",
-      code: `import { useRef, useState } from "react";
+      code: `"use client";
+
+import { useRef, useState } from "react";
 
 export function MagneticButton({ children }: { children: React.ReactNode }) {
   const ref = useRef<HTMLButtonElement>(null);
@@ -131,7 +133,9 @@ export function MagneticButton({ children }: { children: ReactNode }) {
     {
       label: "Framer Motion",
       language: "tsx",
-      code: `import { useRef, useState } from "react";
+      code: `"use client";
+
+import { useRef, useState } from "react";
 import { motion } from "framer-motion";
 
 // Tip: consider disabling for reduced motion users

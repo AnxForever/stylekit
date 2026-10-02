@@ -143,12 +143,12 @@ export function SlideSwap({ items }: { items: ReactNode[] }) {
 
     let cancelled = false;
 
-    async function run() {
+    async function run(element: HTMLDivElement) {
       const { animate } = await import("animejs");
-      if (cancelled || activeRef.current !== activeElement) return;
+      if (cancelled || activeRef.current !== element) return;
 
       activeAnimationRef.current?.cancel();
-      activeAnimationRef.current = animate(activeElement, {
+      activeAnimationRef.current = animate(element, {
         x: [30, 0],
         opacity: [0, 1],
         duration: 400,
@@ -169,7 +169,7 @@ export function SlideSwap({ items }: { items: ReactNode[] }) {
       exitingAnimationRef.current = animation;
     }
 
-    void run();
+    void run(activeElement);
     return () => {
       cancelled = true;
     };

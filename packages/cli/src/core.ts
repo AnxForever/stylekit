@@ -21,6 +21,17 @@ export type {
 } from "stylekit-core/discovery";
 
 import {
+  ASSET_KINDS,
+  getPublicAssetLive,
+  isAssetKind,
+  listPublicAssetsLive,
+} from "stylekit-core/assets";
+
+export { ASSET_KINDS, getPublicAssetLive, isAssetKind, listPublicAssetsLive };
+export type PublicAssetKind = Parameters<typeof getPublicAssetLive>[0];
+export type PublicAssetListOptions = Parameters<typeof listPublicAssetsLive>[0];
+
+import {
   searchStyles as coreSearch,
   type DiscoveryCategory,
   type StyleSummary,

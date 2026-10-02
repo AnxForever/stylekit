@@ -119,7 +119,7 @@ Core principles:
   bg-white
   border-4 border-black
   hover:-translate-y-2
-  hover:shadow-[8px_8px_0px_rgba(0,0,255,1)]
+
   transition-all duration-200 ease-out
 ">
   <div className="absolute -top-6 -left-6 w-12 h-12 bg-yellow-400 rounded-full border-4 border-black group-hover:scale-125 transition-transform duration-200" />

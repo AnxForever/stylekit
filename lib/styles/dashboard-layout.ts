@@ -110,7 +110,7 @@ Core principles:
 ">
   <div className="flex items-center justify-between mb-4">
     <span className="text-sm font-medium text-gray-500 group-hover:text-gray-700 transition-colors duration-150">Total Revenue</span>
-    <span className="text-xs font-medium text-[#10b981] bg-[#10b981]/10 px-2 py-1 rounded-full group-hover:bg-[#10b981]/20 transition-colors duration-150">+12.5%</span>
+    <span className="text-xs font-medium text-[#10b981] bg-[#10b981]/10 px-2 py-1 rounded-xl group-hover:bg-[#10b981]/20 transition-colors duration-150">+12.5%</span>
   </div>
   <div className="text-3xl font-bold text-[#111827] origin-left group-hover:text-[#4f46e5] group-hover:scale-[1.02] transition-all duration-150">$48,230</div>
   <p className="text-sm text-gray-500 mt-1 group-hover:text-gray-600 transition-colors duration-150">vs. $42,890 last month</p>

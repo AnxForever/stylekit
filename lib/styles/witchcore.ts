@@ -111,7 +111,7 @@ Suitable for: occult apps, tarot reading platforms, crystal healing shops, dark 
       code: `<div className="group p-10 bg-[#0d0b14]/95 border border-[#c9a74e]/30 shadow-[0_4px_20px_rgba(13,11,20,0.9)] hover:shadow-[0_0_40px_rgba(123,104,174,0.3)] hover:-translate-y-2 hover:border-[#c9a74e]/60 transition-all duration-1000 ease-in-out cursor-default relative overflow-hidden">
   <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(123,104,174,0.1),transparent_50%)] opacity-50 group-hover:opacity-100 group-hover:scale-110 transition-all duration-1000" />
   <div className="relative z-10 flex flex-col items-center text-center">
-    <div className="w-2 h-2 bg-[#c9a74e] rounded-full shadow-[0_0_10px_rgba(201,167,78,0.8)] mb-6 group-hover:scale-150 group-hover:shadow-[0_0_20px_rgba(201,167,78,1)] transition-all duration-700" />
+    <div className="w-2 h-2 bg-[#c9a74e] rotate-45 shadow-[0_0_10px_rgba(201,167,78,0.8)] mb-6 group-hover:scale-150 group-hover:shadow-[0_0_20px_rgba(201,167,78,1)] transition-all duration-700" />
     <h3 className="text-[#c9a74e] font-serif text-2xl tracking-[0.2em] mb-4 uppercase group-hover:drop-shadow-[0_0_8px_rgba(201,167,78,0.5)] transition-all duration-700" style={{textShadow: "0 0 10px rgba(201,167,78,0.3)"}}>
       Lunar Divination
     </h3>

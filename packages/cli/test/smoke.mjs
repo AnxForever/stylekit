@@ -123,6 +123,117 @@ check(
   "list --json -> total/count/results envelope",
 );
 
+r = run(["assets", "--json", "--limit", "1"]);
+let assetPageJson = null;
+try {
+  assetPageJson = JSON.parse(r.stdout);
+} catch {
+  /* ignore */
+}
+const assetPage = assetPageJson?.data;
+check(
+  r.code === 0 &&
+    ["live", "bundled"].includes(assetPageJson?.origin) &&
+    assetPage?.schemaVersion === "1" &&
+    Array.isArray(assetPage?.assets) &&
+    Number.isInteger(assetPage?.total) &&
+    assetPage?.offset === 0 &&
+    Number.isInteger(assetPage?.limit) &&
+    typeof assetPage?.hasMore === "boolean" &&
+    assetPageJson?.data?.kindCounts &&
+    typeof assetPageJson.data.kindCounts === "object",
+  "assets --json -> complete source and pagination envelope",
+);
+
+r = run(["assets", "--json", "--limit", "1", "--offset", String((assetPage?.total ?? 0) + 1000)]);
+let emptyAssetsJson = null;
+try {
+  emptyAssetsJson = JSON.parse(r.stdout);
+} catch {
+  /* ignore */
+}
+check(
+  r.code === 0 &&
+    ["live", "bundled"].includes(emptyAssetsJson?.origin) &&
+    Array.isArray(emptyAssetsJson?.data?.assets) &&
+    emptyAssetsJson.data.assets.length === 0 &&
+    emptyAssetsJson.data.hasMore === false,
+  "assets empty offset page is successful structured output",
+);
+
+if (assetPage?.assets?.[0]?.kind && assetPage.assets[0]?.id) {
+  const meta = assetPage.assets[0];
+  r = run(["asset", meta.kind, meta.id, "--json"]);
+  let detailJson = null;
+  try {
+    detailJson = JSON.parse(r.code === 0 ? r.stdout : r.stderr);
+  } catch {
+    /* ignore */
+  }
+  if (r.code === 0) {
+    check(
+      ["live", "bundled"].includes(detailJson?.origin) &&
+        detailJson?.data?.metadata?.kind === meta.kind &&
+        detailJson?.data?.metadata?.id === meta.id &&
+        detailJson?.data?.metadata?.availability === meta.availability,
+      "asset --json -> namespaced detail preserves availability metadata",
+    );
+  } else {
+    check(
+      detailJson?.code === "ASSET_SOURCE_UNAVAILABLE" &&
+        detailJson?.failureKind === "unavailable" &&
+        (detailJson?.asset?.metadata?.kind ?? detailJson?.asset?.kind) === meta.kind &&
+        (!detailJson?.asset?.data ||
+          detailJson.asset.data.sourceFilesIncluded === false) &&
+        !Object.hasOwn(detailJson?.asset?.data ?? {}, "files"),
+      "unavailable remote asset fails without claiming source content",
+    );
+  }
+}
+
+r = run(["assets", "--offset=-1", "--json"]);
+let invalidOffsetJson = null;
+try {
+  invalidOffsetJson = JSON.parse(r.stderr);
+} catch {
+  /* ignore */
+}
+check(
+  r.code === 1 && invalidOffsetJson?.code === "INVALID_OFFSET",
+  "assets invalid --offset -> structured validation error",
+);
+
+r = run(["assets", "--kind", "not-a-public-kind", "--json"]);
+let invalidAssetKindJson = null;
+try {
+  invalidAssetKindJson = JSON.parse(r.stderr);
+} catch {
+  /* ignore */
+}
+check(
+  r.code === 1 && invalidAssetKindJson?.code === "INVALID_ASSET_KIND",
+  "assets invalid --kind -> structured validation error",
+);
+
+r = run(["asset", "experience-pack", "corporate-clean-saas", "--json"]);
+let restrictedDetailJson = null;
+try {
+  restrictedDetailJson = JSON.parse(r.code === 0 ? r.stdout : r.stderr);
+} catch {
+  /* ignore */
+}
+check(
+  r.code === 0 &&
+    ["live", "bundled"].includes(restrictedDetailJson?.origin) &&
+    restrictedDetailJson?.data?.metadata?.kind === "experience-pack" &&
+    restrictedDetailJson?.data?.metadata?.id === "corporate-clean-saas" &&
+    restrictedDetailJson?.data?.metadata?.availability === "restricted" &&
+    Array.isArray(restrictedDetailJson?.data?.sourceUrls) &&
+    restrictedDetailJson.data.sourceUrls.length > 0 &&
+    Object.keys(restrictedDetailJson?.data?.data ?? {}).length === 0,
+  "restricted asset preserves metadata and links without exposing source files",
+);
+
 const fixtureRoot = mkdtempSync(path.join(tmpdir(), "stylekit-cli-test-"));
 try {
   mkdirSync(path.join(fixtureRoot, "src"));

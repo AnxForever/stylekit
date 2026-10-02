@@ -13,9 +13,19 @@ import {
   knownSlug,
   shadcnInstallCommand,
   registryUrl,
+  getPublicAssetLive,
+  listPublicAssetsLive,
+  type PublicAssetKind,
+  type PublicAssetListOptions,
   type StyleCategory,
   type StyleSummary,
 } from "./core.js";
+
+type PublicAssetListResponse = Awaited<ReturnType<typeof listPublicAssetsLive>>;
+type PublicAssetList = NonNullable<PublicAssetListResponse["data"]>;
+type PublicAssetSummary = PublicAssetList["assets"][number];
+type PublicAssetDetailResponse = Awaited<ReturnType<typeof getPublicAssetLive>>;
+type PublicAssetDetail = NonNullable<PublicAssetDetailResponse["data"]>;
 
 export interface CommandResult {
   ok: boolean;
@@ -23,17 +33,18 @@ export interface CommandResult {
   json: unknown;
 }
 
-interface CommandError {
-  error: string;
-  code: string;
-}
-
 function ok(text: string, json: unknown): CommandResult {
   return { ok: true, text, json };
 }
 
-function fail(text: string, code = "COMMAND_ERROR"): CommandResult {
-  const json: CommandError = { error: text, code };
+function fail(
+  text: string,
+  code = "COMMAND_ERROR",
+  details?: Record<string, unknown>,
+): CommandResult {
+  const json = details
+    ? { error: text, code, ...details }
+    : { error: text, code };
   return { ok: false, text, json };
 }
 
@@ -153,4 +164,175 @@ export function cmdAdd(slug: string): CommandResult {
     "(The target project must contain a tsconfig.json.)",
   ].join("\n");
   return ok(text, json);
+}
+
+function sourceMetadata(source: {
+  origin: "live" | "bundled";
+  fallbackReason?: string;
+  failureKind?: string;
+}): Record<string, unknown> {
+  return {
+    origin: source.origin,
+    ...(source.fallbackReason ? { fallbackReason: source.fallbackReason } : {}),
+    ...(source.failureKind ? { failureKind: source.failureKind } : {}),
+  };
+}
+
+function formatAssetSummary(asset: PublicAssetSummary): string {
+  return (
+    "  " +
+    asset.kind +
+    "/" +
+    asset.id +
+    "  " +
+    asset.name +
+    "  [" +
+    asset.availability +
+    "]"
+  );
+}
+
+export async function cmdAssets(
+  options: PublicAssetListOptions,
+): Promise<CommandResult> {
+  const result = await listPublicAssetsLive(options);
+  if (!result.data) {
+    const message =
+      result.failureKind === "not-found"
+        ? "The public asset catalogue was not found."
+        : "The public asset catalogue is unavailable.";
+    return fail(
+      message + (result.fallbackReason ? " " + result.fallbackReason : ""),
+      result.failureKind === "not-found"
+        ? "ASSET_CATALOGUE_NOT_FOUND"
+        : "ASSET_CATALOGUE_UNAVAILABLE",
+      sourceMetadata(result),
+    );
+  }
+
+  const page = result.data;
+  const lines = [
+    "Public assets (" +
+      page.assets.length +
+      " on this page; " +
+      page.total +
+      " total, offset " +
+      page.offset +
+      ", limit " +
+      page.limit +
+      ")",
+    "Catalogue origin: " + result.origin,
+    ...(result.fallbackReason ? ["Fallback: " + result.fallbackReason] : []),
+  ];
+  if (page.assets.length > 0) {
+    lines.push("", ...page.assets.map(formatAssetSummary));
+  } else {
+    lines.push(
+      "",
+      page.total === 0
+        ? "No public assets match these filters."
+        : "No assets on this page.",
+    );
+  }
+  return ok(lines.join("\n"), result);
+}
+
+function unavailableRemoteAsset(asset: PublicAssetDetail): Record<string, unknown> {
+  const result: Record<string, unknown> = { metadata: asset.metadata };
+  if (asset.data && typeof asset.data === "object" && !Array.isArray(asset.data)) {
+    const data = asset.data as Record<string, unknown>;
+    const safeData: Record<string, unknown> = {};
+    if (data.sourceFilesIncluded === false) safeData.sourceFilesIncluded = false;
+    if (typeof data.downloadUrl === "string") safeData.downloadUrl = data.downloadUrl;
+    if (Object.keys(safeData).length > 0) result.data = safeData;
+  }
+  return result;
+}
+
+function detailText(
+  asset: PublicAssetDetail,
+  source: PublicAssetDetailResponse,
+): string {
+  const meta = asset.metadata;
+  return [
+    "Asset " + meta.kind + "/" + meta.id,
+    "Name: " + meta.name,
+    "Availability: " + meta.availability,
+    "Catalogue origin: " + source.origin,
+    ...(source.fallbackReason ? ["Fallback: " + source.fallbackReason] : []),
+    ...(source.failureKind ? ["Source status: " + source.failureKind] : []),
+    ...(meta.description ? ["Description: " + meta.description] : []),
+    ...(meta.tags.length > 0 ? ["Tags: " + meta.tags.join(", ")] : []),
+    "",
+    "Asset record:",
+    JSON.stringify(asset, null, 2),
+  ].join("\n");
+}
+
+export async function cmdAsset(
+  kind: PublicAssetKind,
+  id: string,
+): Promise<CommandResult> {
+  const result = await getPublicAssetLive(kind, id);
+  const asset = result.data;
+
+  if (
+    asset?.metadata.availability === "remote" &&
+    result.failureKind === "unavailable"
+  ) {
+    const message =
+      'Remote source for asset "' + kind + "/" + id +
+      '" is unavailable; source content was not returned.' +
+      (result.fallbackReason ? " " + result.fallbackReason : "");
+    return fail(message, "ASSET_SOURCE_UNAVAILABLE", {
+      ...sourceMetadata(result),
+      asset: unavailableRemoteAsset(asset),
+    });
+  }
+
+  if (!asset) {
+    const notFound = result.failureKind === "not-found";
+    const unsupported = result.failureKind === "unsupported";
+    const message = notFound
+      ? 'Unknown public asset "' + kind + "/" + id + '".'
+      : unsupported
+        ? 'The source type for public asset "' + kind + "/" + id + '" is unsupported.'
+        : 'Could not retrieve public asset "' + kind + "/" + id +
+          '"; the source is unavailable.' +
+          (result.fallbackReason ? " " + result.fallbackReason : "");
+    return fail(
+      message,
+      notFound
+        ? "ASSET_NOT_FOUND"
+        : unsupported
+          ? "ASSET_UNSUPPORTED"
+          : "ASSET_SOURCE_UNAVAILABLE",
+      {
+        ...sourceMetadata(result),
+        asset: { kind, id },
+      },
+    );
+  }
+
+  if (asset.metadata.availability === "remote" && result.failureKind) {
+    const message =
+      'Remote source for asset "' + kind + "/" + id +
+      '" could not be retrieved (' + result.failureKind +
+      '); source content was not returned.' +
+      (result.fallbackReason ? " " + result.fallbackReason : "");
+    return fail(
+      message,
+      result.failureKind === "not-found"
+        ? "ASSET_SOURCE_NOT_FOUND"
+        : result.failureKind === "unsupported"
+          ? "ASSET_SOURCE_UNSUPPORTED"
+          : "ASSET_SOURCE_UNAVAILABLE",
+      {
+        ...sourceMetadata(result),
+        asset: unavailableRemoteAsset(asset),
+      },
+    );
+  }
+
+  return ok(detailText(asset, result), result);
 }

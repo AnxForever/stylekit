@@ -15,7 +15,7 @@ export const swissStyleRecipes = createStyleRecipes("swiss-style", "Swiss Style"
           "uppercase",
           "tracking-widest",
           "rounded-none",
-          "transition-all duration-150",
+          "transition-opacity duration-150",
         ],
       },
       parameters: [

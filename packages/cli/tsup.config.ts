@@ -8,5 +8,8 @@ export default defineConfig({
   target: "node18",
   platform: "node",
   noExternal: [/^stylekit-core/],
+  esbuildOptions(options) {
+    options.minifyWhitespace = true;
+  },
   clean: true,
 });

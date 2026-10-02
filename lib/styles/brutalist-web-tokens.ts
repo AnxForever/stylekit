@@ -105,7 +105,7 @@ export const brutalistWebTokens = createStyleTokens({
       "^bg-gradient-",
       "^backdrop-blur",
       "^animate-",
-      "^transition-",
+      "^transition-(?!none$)",
       "^duration-",
     ],
     reasons: {

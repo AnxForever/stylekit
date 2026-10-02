@@ -29,8 +29,10 @@ export const contextCursor: Animation = {
     {
       label: "Markup",
       language: "tsx",
-      code: `<button data-cursor="Copy">Copy token</button>
-<a data-cursor="Open" href="/demo">Open demo</a>`,
+      code: `<>
+  <button data-cursor="Copy">Copy token</button>
+  <a data-cursor="Open" href="/demo">Open demo</a>
+</>`,
     },
     {
       label: "Event Delegation",

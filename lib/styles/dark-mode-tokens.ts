@@ -76,7 +76,8 @@ export const darkModeTokens = createStyleTokens({
     ],
     patterns: [
       "^text-white$",
-      "^bg-white",
+      // Keep alpha-white interaction surfaces available; plain bg-white stays forbidden.
+
       "^bg-gray-[1-3]00",
       "^bg-black$",
     ],

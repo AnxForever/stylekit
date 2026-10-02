@@ -124,7 +124,7 @@ In interface design, Mid-Century Modern emphasizes whitespace, grid alignment, a
     </div>
   </div>
 
-  <div className="w-12 h-1 bg-[#e8572a] rounded-full mb-4 group-hover:w-20 transition-all duration-300 ease-out" />
+  <div className="w-12 h-1 bg-[#e8572a] rounded-lg mb-4 group-hover:w-20 transition-all duration-300 ease-out" />
   <h3 className="text-xl font-sans font-bold text-[#3d3d3d] tracking-wide mb-3 group-hover:text-[#e8572a] transition-colors duration-200">
     Atomic Living
   </h3>

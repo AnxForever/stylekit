@@ -71,7 +71,7 @@ export const heroFullscreenTokens = createStyleTokens({
       "border-gray-200", "border-zinc-200",
     ],
     patterns: [
-      "^shadow-(?!none)",
+      "^shadow-(?:sm|md|lg|xl|2xl)$",
       "^bg-(?:zinc|gray)-(?:50|100)",
       "^border-(?:zinc|gray)-",
     ],

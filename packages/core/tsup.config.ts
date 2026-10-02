@@ -10,6 +10,7 @@ export default defineConfig({
     'discovery/index': 'src/discovery/index.ts',
     'prompt/index': 'src/prompt/index.ts',
     'export/index': 'src/export/index.ts',
+    'assets/index': 'src/assets/index.ts',
   },
   format: ['esm', 'cjs'],
   dts: true,

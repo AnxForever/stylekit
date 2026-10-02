@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
- * StyleKit CLI — browse design styles and pull tokens, recipes, and shadcn
- * install commands from the terminal. Served offline from stylekit-core.
+ * StyleKit CLI — browse design styles, tokens, recipes, and public assets.
+ * Bundled data stays available offline; remote asset source is reported explicitly.
  *
  * Contract: success goes to stdout with exit 0; errors and usage go to stderr
  * with exit 1. With --json, both success and error emit JSON.
@@ -17,10 +17,13 @@ import {
   cmdTokens,
   cmdRecipe,
   cmdAdd,
+  cmdAssets,
+  cmdAsset,
   usageFail,
   type CommandResult,
 } from "./commands.js";
-import type { StyleCategory } from "./core.js";
+import { ASSET_KINDS, isAssetKind } from "./core.js";
+import type { PublicAssetKind, StyleCategory } from "./core.js";
 import { getImplementationBrief } from "stylekit-core/discovery";
 import { runLint } from "./lint.js";
 
@@ -40,12 +43,17 @@ Commands:
   tokens <slug>              Print a style's design tokens (JSON)
   recipe <slug> <component>  Print a rendered component recipe
   add <slug>                 Print the shadcn install command
+  assets                     List public assets (filter by kind/query and page)
+  asset <kind> <id>          Show a namespaced public asset record
   brief <slug>               Print the complete implementation contract (JSON)
   lint <slug> <files...>      Check source files against a style's rules
 
 Flags:
   --category <c>   Filter by category (modern|retro|minimal|expressive)
-  --limit <n>      Limit results to a positive integer
+  --limit <n>      Limit results to a positive integer (assets: 1-100)
+  --offset <n>     Skip results for the assets command (zero or greater)
+  --kind <kind>    Filter public assets by namespace/kind
+  --query <text>   Search public asset metadata
   --json           Output JSON (errors included)
   --help, -h       Show this help
   --version, -v    Show version
@@ -82,7 +90,7 @@ function die(message: string, json: boolean, code: string): never {
   process.exit(1);
 }
 
-function main(): void {
+async function main(): Promise<void> {
   const jsonRequested = process.argv.slice(2).includes("--json");
   let values: Record<string, unknown>;
   let positionals: string[];
@@ -93,6 +101,9 @@ function main(): void {
         json: { type: "boolean", default: false },
         category: { type: "string" },
         limit: { type: "string" },
+        offset: { type: "string" },
+        kind: { type: "string" },
+        query: { type: "string" },
         help: { type: "boolean", short: "h", default: false },
         version: { type: "boolean", short: "v", default: false },
         style: { type: "string" },
@@ -126,7 +137,7 @@ function main(): void {
   let limit: number | undefined;
   if (typeof values.limit === "string") {
     const n = Number(values.limit);
-    if (!Number.isInteger(n) || n < 1) {
+    if (!Number.isSafeInteger(n) || n < 1) {
       die(
         `Invalid --limit "${values.limit}": must be a positive integer.`,
         json,
@@ -134,6 +145,49 @@ function main(): void {
       );
     }
     limit = n;
+  }
+  if (command === "assets" && limit !== undefined && limit > 100) {
+    die(
+      'Invalid --limit "' + limit + '": assets accepts values from 1 to 100.',
+      json,
+      "INVALID_LIMIT",
+    );
+  }
+  if (
+    command === "assets" &&
+    typeof values.query === "string" &&
+    values.query.length > 500
+  ) {
+    die(
+      "Invalid --query: public asset queries are limited to 500 characters.",
+      json,
+      "INVALID_QUERY",
+    );
+  }
+  if (
+    command === "assets" &&
+    typeof values.kind === "string" &&
+    !isAssetKind(values.kind)
+  ) {
+    die(
+      'Invalid --kind "' + values.kind + '": must be one of ' + ASSET_KINDS.join(", ") + ".",
+      json,
+      "INVALID_ASSET_KIND",
+    );
+  }
+
+  // Validate --offset (zero or greater).
+  let offset: number | undefined;
+  if (typeof values.offset === "string") {
+    const n = Number(values.offset);
+    if (!Number.isSafeInteger(n) || n < 0) {
+      die(
+        'Invalid --offset "' + values.offset + '": must be a non-negative integer.',
+        json,
+        "INVALID_OFFSET",
+      );
+    }
+    offset = n;
   }
 
   // Validate --category against the known set.
@@ -190,6 +244,33 @@ function main(): void {
       case "add":
         result = arg1 ? cmdAdd(arg1) : usageFail("stylekit add <slug>");
         break;
+      case "assets":
+        result = await cmdAssets({
+          ...(typeof values.kind === "string"
+            ? { kind: values.kind as PublicAssetKind }
+            : {}),
+          ...(typeof values.query === "string" ? { query: values.query } : {}),
+          ...(offset !== undefined ? { offset } : {}),
+          ...(limit !== undefined ? { limit } : {}),
+        });
+        break;
+      case "asset":
+        if (!arg1 || !arg2) {
+          result = usageFail("stylekit asset <kind> <id>");
+        } else if (!isAssetKind(arg1)) {
+          die(
+            'Invalid asset kind "' +
+              arg1 +
+              '": must be one of ' +
+              ASSET_KINDS.join(", ") +
+              ".",
+            json,
+            "INVALID_ASSET_KIND",
+          );
+        } else {
+          result = await cmdAsset(arg1 as PublicAssetKind, arg2);
+        }
+        break;
       default:
         die(`Unknown command: ${command}\n\n${HELP}`, json, "UNKNOWN_COMMAND");
     }
@@ -200,4 +281,4 @@ function main(): void {
   }
 }
 
-main();
+void main();

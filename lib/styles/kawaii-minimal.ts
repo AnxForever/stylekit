@@ -94,7 +94,7 @@ Core principles:
       name: "可爱按钮",
       description: "圆润柔和的粉彩按钮，带弹跳交互",
       code: `// Primary Kawaii
-<button className="px-8 py-4 bg-pink-300 text-white rounded-full shadow-[0_8px_0_#f472b6,0_15px_20px_rgba(244,114,182,0.35)] hover:bg-pink-400 hover:shadow-[0_6px_0_#f472b6,0_10px_15px_rgba(244,114,182,0.35)] hover:translate-y-[2px] hover:scale-x-[1.05] hover:scale-y-[0.97] active:translate-y-[8px] active:shadow-[0_0_0_#f472b6,0_0_0_rgba(244,114,182,0)] active:scale-[0.95] transition-all duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] font-medium">
+<button className="px-8 py-4 bg-pink-300 text-white rounded-full shadow-[0_8px_0_#f472b6,0_15px_20px_rgba(244,114,182,0.35)] hover:bg-pink-400 hover:shadow-[0_6px_0_#f472b6,0_10px_15px_rgba(244,114,182,0.35)] hover:translate-y-[2px] hover:scale-x-[1.05] hover:scale-y-[0.97] active:translate-y-[8px] active:shadow-none active:scale-[0.95] transition-all duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] font-medium">
   Click Me
 </button>
 
