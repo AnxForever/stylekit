@@ -15,6 +15,8 @@ const mocks = vi.hoisted(() => ({
   shadcnInstallCommand: vi.fn(),
   registryUrl: vi.fn(),
   lintStyleCode: vi.fn(),
+  lintCodeWithRules: vi.fn(),
+  rulesFromBrief: vi.fn(),
   hasLintableRules: vi.fn(),
   getImplementationBriefLive: vi.fn(),
   ASSET_KINDS: ["style", "component-pattern", "template", "experience-pack", "prompt"],

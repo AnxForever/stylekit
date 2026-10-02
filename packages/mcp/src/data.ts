@@ -23,6 +23,7 @@ export {
   getComponentRecipeLive,
   knownSlugLive,
   getImplementationBriefLive,
+  rulesFromBrief,
 } from "stylekit-core/discovery";
 
 export type {
@@ -36,7 +37,7 @@ export type {
   Sourced,
 } from "stylekit-core/discovery";
 
-export { lintStyleCode, hasLintableRules } from "stylekit-core/styles";
+export { lintStyleCode, lintCodeWithRules, hasLintableRules } from "stylekit-core/styles";
 
 export type {
   StyleLintReport,

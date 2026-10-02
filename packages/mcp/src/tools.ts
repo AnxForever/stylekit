@@ -15,13 +15,13 @@ import {
   ASSET_KINDS,
   listPublicAssetsLive,
   getPublicAssetLive,
+  lintCodeWithRules,
+  rulesFromBrief,
   type AssetKind,
   type PublicAssetDetail,
   type StyleCategory,
   type StyleLintComponent,
 } from "./data.js";
-import { lintCodeWithRules } from "stylekit-core/styles";
-import { rulesFromBrief } from "stylekit-core/discovery";
 import type { RemoteOptions } from "stylekit-core/discovery";
 import { toolResult, errorResult } from "./format.js";
 
