@@ -81,18 +81,22 @@ npx shadcn add https://stylekit.top/r/glassmorphism.json
 ### 2. 把整个库交给你的编码代理
 
 ```bash
-npx skills add AnxForever/stylekit-skill
+npx skills@latest add AnxForever/stylekit-skill
 ```
 
 之后 Claude Code、Cursor、Windsurf 以及任何兼容 Agent Skills 的工具，都能按需套用这 148 套风格 ——「做成 Stripe 的样子」「赛博朋克仪表盘」—— 并使用正确的令牌与规则。技能本体在 [`AnxForever/stylekit-skill`](https://github.com/AnxForever/stylekit-skill)。
 
+兼容的 Agent 会在执行 Skill 说明时检查 GitHub 新版本，最多每 24 小时一次；这不是后台更新服务。旧版安装先运行一次 `npx skills@latest update stylekit` 完成迁移；如果改过旧版 Skill，迁移前先备份。之后由 Agent 在使用时检查，不需要反复安装；更新前会校验文件，检测到本地改动就跳过，更新失败则恢复旧文件。
+
 ### 3. 通过 MCP 调用
 
 ```bash
-npx -y stylekit-mcp
+npx -y --prefer-online stylekit-mcp@latest
 ```
 
 提供风格检索、设计令牌、组件配方，以及一个 `stylekit_lint_code` 工具，用来检查生成的 UI 代码是否真的守住了该风格的规则。见 [`packages/mcp/README.md`](packages/mcp/README.md)。
+
+接入 MCP 客户端时，把一次性 JSON 配置复制到[开发者页面](https://www.stylekit.top/zh/developers)。客户端每次启动 MCP 进程时都会检查 npm 最新版本；已运行的进程需要重启后才会载入更新。在线公开素材会按请求获取，新增内容无需重装 CLI 或 MCP。
 
 ## 风格目录
 

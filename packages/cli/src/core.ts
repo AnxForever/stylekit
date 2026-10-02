@@ -13,6 +13,15 @@ export {
   STYLEKIT_SITE_URL as SITE_URL,
 } from "stylekit-core/discovery";
 
+export {
+  searchStylesLive,
+  getStyleDetailLive,
+  getTokensLive,
+  getComponentRecipeLive,
+  knownSlugLive,
+  getImplementationBriefLive,
+} from "stylekit-core/discovery";
+
 export type {
   StyleSummary,
   StyleDetail,

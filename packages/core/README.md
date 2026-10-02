@@ -12,6 +12,12 @@ Use the `beta` dist-tag to receive the current prerelease. npm's `latest` tag
 still points to an older release, so an unqualified `stylekit-core` install
 does not include the newest asset and discovery APIs.
 
+The tag is resolved when you install or update the dependency; moving `beta`
+does not change a version already recorded in `package.json` or a lockfile. To
+update an existing project, resolve the tag again with `npm install stylekit-core@beta`
+or `pnpm add stylekit-core@beta`. For reproducible builds, use an exact version
+instead of the moving `beta` tag.
+
 ## Modules
 
 ### Styles
@@ -125,13 +131,48 @@ import {
 
 MIT
 
-## 1.0.0-beta.6 release target
+## Live discovery and public assets
 
-This release adds the stylekit-core/assets entry for browsing the public site
-asset catalogue, along with discovery reliability and exact-match ranking
-improvements. Install stylekit-core@1.0.0-beta.6 after the release workflow
-publishes it. The latest dist-tag remains on an older prerelease line, so use
-the explicit version or stylekit-core@beta.
+The `./discovery` live helpers query the current StyleKit site where supported,
+then fall back to the package's bundled data when the site cannot be reached.
+Successful discovery responses are cached in the current process for five
+minutes by default. Results include `origin: "live" | "bundled"`; fallback
+responses include `fallbackReason`. Pass `live: false` to use only bundled
+data. The cache duration can be changed with `cacheTtlMs`, and
+`clearRemoteCache()` forces a fresh discovery request.
+
+```typescript
+import {
+  clearRemoteCache,
+  getImplementationBriefLive,
+  searchStylesLive,
+} from 'stylekit-core/discovery'
+
+const search = await searchStylesLive({ query: 'glass' })
+console.log(search.origin, search.data.results)
+
+const brief = await getImplementationBriefLive('neo-brutalist', {
+  live: true,
+})
+console.log(brief.origin, brief.fallbackReason, brief.data)
+
+clearRemoteCache()
+```
+
+The `./assets` entry also exports `listPublicAssetsLive` and
+`getPublicAssetLive`; these fetch public asset details on demand and report
+their source in `origin`, with `fallbackReason` when the bundled snapshot is
+used. Set `live: false` to force bundled-only access.
+
+Live discovery makes newly published styles discoverable and retrieves current
+implementation briefs. The synchronous exports such as `styles`,
+`getStyleBySlug`, `getStyleTokens`, `getStyleRecipes` and `getRecipe` never
+access the network. For a style already in the package snapshot,
+`getStyleDetailLive`, `getTokensLive` and `getComponentRecipeLive` also return
+the bundled detail, tokens and rendered recipe. Their live lookup is for styles
+published after that snapshot where the corresponding endpoint supports it.
+
+## Implementation briefs and static checks
 
 ```typescript
 import { getImplementationBrief } from "stylekit-core/discovery";

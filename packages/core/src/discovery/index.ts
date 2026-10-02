@@ -47,5 +47,6 @@ export {
 } from "./remote";
 
 export type { DataOrigin, SourceFailureKind, Sourced, RemoteOptions, SearchRanking } from "./remote";
+export { rulesFromBrief } from "./live-lint";
 export { getImplementationBrief, createImplementationBrief, serializeLintRules } from "@/lib/implementation-brief";
 export type { ImplementationBrief } from "@/lib/implementation-brief";

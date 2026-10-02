@@ -23,6 +23,14 @@ export interface DeveloperToolkitCapability {
   docsUrl: string;
   verifiedAt: string;
   evidence: string;
+  clientConfiguration?: {
+    mcpServers: {
+      stylekit: {
+        command: string;
+        args: readonly string[];
+      };
+    };
+  };
 }
 
 export interface DeveloperToolkitManifest {
@@ -30,6 +38,12 @@ export interface DeveloperToolkitManifest {
   catalogCount: number;
   capabilities: readonly DeveloperToolkitCapability[];
 }
+
+const MCP_NPX_ARGS = Object.freeze([
+  "-y",
+  "--prefer-online",
+  "stylekit-mcp@latest",
+]);
 
 export const developerToolkitManifest = Object.freeze({
   schemaVersion: 1,
@@ -53,45 +67,54 @@ export const developerToolkitManifest = Object.freeze({
     {
       id: "core",
       state: "public-beta",
-      publicVersion: "1.0.0-beta.6",
-      repositoryVersion: "1.0.0-beta.6",
-      command: "npm install stylekit-core@1.0.0-beta.6",
+      publicVersion: "1.0.0-beta.7",
+      repositoryVersion: "1.0.0-beta.7",
+      command: "npm install stylekit-core@beta",
       docsUrl:
         "https://github.com/AnxForever/stylekit/tree/main/packages/core#readme",
       verifiedAt: "2026-10-02",
-      evidence: "Release target 1.0.0-beta.6; verify npm publication before updating the live site",
+      evidence: "The beta dist-tag selects the current prerelease for a new install; existing lockfiles still need an explicit dependency update",
     },
     {
       id: "cli",
       state: "public-beta",
-      publicVersion: "0.3.0",
-      repositoryVersion: "0.3.0",
-      command: "npx -y stylekit-cli@0.3.0 add synthwave",
+      publicVersion: "0.3.1",
+      repositoryVersion: "0.3.1",
+      command:
+        "npx -y --prefer-online stylekit-cli@latest add synthwave",
       docsUrl:
         "https://github.com/AnxForever/stylekit/tree/main/packages/cli#readme",
       verifiedAt: "2026-10-02",
-      evidence: "Release target 0.3.0; verify npm publication before updating the live site",
+      evidence: "The latest tag resolves at launch; an exact package version remains available for reproducible runs",
     },
     {
       id: "mcp",
       state: "public-beta",
-      publicVersion: "0.4.0",
-      repositoryVersion: "0.4.0",
-      command: "npx -y stylekit-mcp@0.4.0",
+      publicVersion: "0.4.1",
+      repositoryVersion: "0.4.1",
+      command: `npx ${MCP_NPX_ARGS.join(" ")}`,
       docsUrl:
         "https://github.com/AnxForever/stylekit/tree/main/packages/mcp#readme",
       verifiedAt: "2026-10-02",
-      evidence: "Release target 0.4.0; verify npm and MCP Registry publication before updating the live site",
+      evidence: "The latest tag resolves whenever the MCP client starts the configured process; a running process must be restarted to load an update",
+      clientConfiguration: Object.freeze({
+        mcpServers: Object.freeze({
+          stylekit: Object.freeze({
+            command: "npx",
+            args: MCP_NPX_ARGS,
+          }),
+        }),
+      }),
     },
     {
       id: "agent-skill",
       state: "public-beta",
-      publicVersion: "main@a5e42c87",
-      repositoryVersion: "main@a5e42c87",
-      command: "npx skills add AnxForever/stylekit-skill",
+      publicVersion: "0.7.0",
+      repositoryVersion: "0.7.0",
+      command: "npx skills@latest add AnxForever/stylekit-skill",
       docsUrl: "https://github.com/AnxForever/stylekit-skill#readme",
       verifiedAt: "2026-10-02",
-      evidence: "GitHub main is a5e42c87; the installer target is AnxForever/stylekit-skill",
+      evidence: "Release 0.7.0 tracks the repository default branch; the Skill verifies its release manifest when used",
     },
   ]),
 } satisfies DeveloperToolkitManifest);
@@ -114,4 +137,19 @@ export function getDeveloperToolkitCapability(
   if (capability) return capability;
 
   throw new Error(`Unknown Developer Toolkit capability: ${String(id)}`);
+}
+
+export function getDeveloperToolkitSetupSnippet(
+  id: DeveloperToolkitCapabilityId,
+): { format: "bash" | "json"; content: string } {
+  const capability = getDeveloperToolkitCapability(id);
+
+  if (capability.clientConfiguration) {
+    return {
+      format: "json",
+      content: JSON.stringify(capability.clientConfiguration, null, 2),
+    };
+  }
+
+  return { format: "bash", content: capability.command };
 }

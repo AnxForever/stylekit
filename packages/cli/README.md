@@ -5,10 +5,13 @@ Command-line tool for [StyleKit](https://stylekit.top) — browse design styles,
 ## Usage
 
 ```bash
-npx -y stylekit-cli@latest <command> [args] [flags]
+npx -y --prefer-online stylekit-cli@latest <command> [args] [flags]
 ```
 
-Use @latest for the current CLI release, or pin an exact version when scripting against JSON output.
+This checks npm for the latest release whenever you run the command, even if a
+copy is already cached. Use an exact published version (for example
+`stylekit-cli@0.3.1`) when a script needs repeatable output. `--prefer-online`
+behavior is documented in [npm's cache options](https://docs.npmjs.com/cli/v11/commands/npm-exec/#a-note-on-caching).
 
 ## Commands
 
@@ -56,7 +59,7 @@ MIT
 ## Implementation briefs and static checks
 
 The brief and lint commands are included in the published 0.2.0 release.
-The asset commands target the 0.3.0 CLI release line and use
+The asset commands are included in CLI 0.3.x and use
 stylekit-core@beta. Changes in the working tree require a release before
 npm consumers receive them.
 

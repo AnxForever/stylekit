@@ -24,7 +24,7 @@ import {
 } from "./commands.js";
 import { ASSET_KINDS, isAssetKind } from "./core.js";
 import type { PublicAssetKind, StyleCategory } from "./core.js";
-import { getImplementationBrief } from "stylekit-core/discovery";
+import { getImplementationBriefLive } from "stylekit-core/discovery";
 import { runLint } from "./lint.js";
 
 const VERSION = (
@@ -210,39 +210,49 @@ async function main(): Promise<void> {
   try {
     switch (command) {
       case "brief": {
-        const brief = arg1 ? getImplementationBrief(arg1) : null;
-        if (!brief) die("Provide a known slug: stylekit brief <slug>", json, "UNKNOWN_STYLE");
-        console.log(JSON.stringify(brief, null, 2));
+        if (!arg1) die("Provide a known slug: stylekit brief <slug>", json, "UNKNOWN_STYLE");
+        const result = await getImplementationBriefLive(arg1);
+        if (!result.data) {
+          const message = result.failureKind === "not-found"
+            ? `Unknown style "${arg1}".`
+            : `Could not retrieve an implementation brief for "${arg1}".${result.fallbackReason ? ` ${result.fallbackReason}` : ""}`;
+          die(message, json, result.failureKind === "not-found" ? "UNKNOWN_STYLE" : "STYLE_BRIEF_UNAVAILABLE");
+        }
+        console.log(JSON.stringify({
+          ...result.data,
+          origin: result.origin,
+          ...(result.fallbackReason ? { fallbackReason: result.fallbackReason } : {}),
+        }, null, 2));
         return;
       }
       case "lint": {
         const slug = typeof values.style === "string" ? values.style : arg1;
         if (!slug) die("Usage: stylekit lint <slug> <files...> | --stdin", json, "INVALID_ARGUMENTS");
-        runLint(slug, [...positionals.slice(typeof values.style === "string" ? 1 : 2), ...(values.files as string[] ?? [])], {
+        await runLint(slug, [...positionals.slice(typeof values.style === "string" ? 1 : 2), ...(values.files as string[] ?? [])], {
           json, stdin: values.stdin === true, strict: values.strict === true,
           format: values.format as string | undefined, components: values.component as string[] | undefined,
         });
         return;
       }
       case "list":
-        result = cmdList(category, limit);
+        result = await cmdList(category, limit);
         break;
       case "search":
-        result = arg1 ? cmdSearch(arg1, limit) : usageFail("stylekit search <query>");
+        result = arg1 ? await cmdSearch(arg1, limit) : usageFail("stylekit search <query>");
         break;
       case "show":
-        result = arg1 ? cmdShow(arg1) : usageFail("stylekit show <slug>");
+        result = arg1 ? await cmdShow(arg1) : usageFail("stylekit show <slug>");
         break;
       case "tokens":
-        result = arg1 ? cmdTokens(arg1) : usageFail("stylekit tokens <slug>");
+        result = arg1 ? await cmdTokens(arg1) : usageFail("stylekit tokens <slug>");
         break;
       case "recipe":
         result = arg1
-          ? cmdRecipe(arg1, arg2)
+          ? await cmdRecipe(arg1, arg2)
           : usageFail("stylekit recipe <slug> <component>");
         break;
       case "add":
-        result = arg1 ? cmdAdd(arg1) : usageFail("stylekit add <slug>");
+        result = arg1 ? await cmdAdd(arg1) : usageFail("stylekit add <slug>");
         break;
       case "assets":
         result = await cmdAssets({

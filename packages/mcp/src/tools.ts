@@ -4,25 +4,25 @@ import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 
 import {
-  knownSlug,
   searchStylesLive,
   getStyleDetailLive,
   getTokensLive,
   knownSlugLive,
   shadcnInstallCommand,
   registryUrl,
-  lintStyleCode,
-  hasLintableRules,
   getImplementationBriefLive,
   getComponentRecipeLive,
   ASSET_KINDS,
   listPublicAssetsLive,
   getPublicAssetLive,
+  lintCodeWithRules,
+  rulesFromBrief,
   type AssetKind,
   type PublicAssetDetail,
   type StyleCategory,
   type StyleLintComponent,
 } from "./data.js";
+import type { RemoteOptions } from "stylekit-core/discovery";
 import { toolResult, errorResult } from "./format.js";
 
 const READ_ONLY = {
@@ -81,6 +81,8 @@ const DETAIL_SHAPE = {
     accessibilityScore: z.number().nullable(),
     flags: z.array(z.string()),
   }),
+  origin: z.enum(["live", "bundled"]),
+  fallbackReason: z.string().optional(),
 } as const;
 
 const STYLE_TOKENS_SHAPE = z.object({
@@ -154,6 +156,11 @@ const STYLE_TOKENS_SHAPE = z.object({
     card: z.array(z.string()),
     input: z.array(z.string()),
   }),
+});
+
+const STYLE_TOKENS_OUTPUT_SHAPE = STYLE_TOKENS_SHAPE.extend({
+  origin: z.enum(["live", "bundled"]),
+  fallbackReason: z.string().optional(),
 });
 
 function unknownSlug(slug: string) {
@@ -313,7 +320,7 @@ function assetFailure(
   }));
 }
 
-export function registerStyleKitTools(server: McpServer): void {
+export function registerStyleKitTools(server: McpServer, remoteOptions: RemoteOptions = {}): void {
   // 1) Search
   server.registerTool(
     "stylekit_search_styles",
@@ -369,7 +376,7 @@ Examples:
       const search = await searchStylesLive({
         query,
         category: category as StyleCategory | undefined,
-      });
+      }, remoteOptions);
       const { total, results: all } = search.data;
       const page = all.slice(offset, offset + limit);
       const hasMore = offset + page.length < total;
@@ -504,12 +511,12 @@ Returns complete structured JSON and JSON text, preserving the namespace and pro
     "stylekit_get_style",
     {
       title: "Get StyleKit style detail",
-      description: `Get one style's full profile: philosophy, palette, do/don't rules, keywords, and what's available (tokens, recipes, shadcn install).
+      description: `Get one style's full profile: philosophy, palette, do/don't rules, keywords, and what's available (tokens, recipes, shadcn install). Style data is read from the live catalogue with a five-minute cache; when live data is unavailable, a bundled snapshot may be returned and marked with origin and fallbackReason.
 
 Args:
   - slug (string): style identifier, e.g. "glassmorphism", "neo-brutalist".
 
-Returns JSON: { slug, name, nameEn, category, tags, description, philosophy, colors, doList, dontList, keywords, hasTokens, hasRecipes, recipeIds, shadcnInstall, url, quality }.
+Returns JSON: { slug, name, nameEn, category, tags, description, philosophy, colors, doList, dontList, keywords, hasTokens, hasRecipes, recipeIds, shadcnInstall, url, quality, origin, fallbackReason? }. The content provenance is separate from origin when returned by the implementation brief.
 
 Examples:
   - "how should I use neo-brutalist?" -> slug: "neo-brutalist"
@@ -521,11 +528,17 @@ Examples:
       annotations: READ_ONLY,
     },
     async ({ slug }) => {
-      const detailSource = await getStyleDetailLive(slug);
+      const detailSource = await getStyleDetailLive(slug, remoteOptions);
       const detail = detailSource.data;
       if (!detail) return styleLookupFailure(slug, detailSource);
+      const structured = {
+        ...detail,
+        origin: detailSource.origin,
+        ...(detailSource.fallbackReason ? { fallbackReason: detailSource.fallbackReason } : {}),
+      };
       const lines = [
         `# ${detail.nameEn} (${detail.name}) — \`${detail.slug}\``,
+        `Catalogue origin: ${detailSource.origin}${detailSource.fallbackReason ? `; fallback: ${detailSource.fallbackReason}` : ""}.`,
         `Category: ${detail.category} · Tags: ${detail.tags.join(", ")}`,
         "",
         detail.philosophy,
@@ -541,7 +554,7 @@ Examples:
         `Tokens: ${detail.hasTokens ? "yes" : "no"} · Recipes: ${detail.recipeIds.join(", ") || "none"}`,
         `Install theme: \`${detail.shadcnInstall}\``,
       ];
-      return toolResult(lines.join("\n"), detail);
+      return toolResult(lines.join("\n"), structured);
     },
   );
 
@@ -550,12 +563,12 @@ Examples:
     "stylekit_get_style_tokens",
     {
       title: "Get StyleKit style design tokens",
-      description: `Get a style's design tokens (Tailwind class mappings): border, shadow, typography, spacing, semantic colors, and forbidden/required classes. Use these to generate style-consistent components.
+      description: `Get a style's design tokens (Tailwind class mappings): border, shadow, typography, spacing, semantic colors, and forbidden/required classes. Style data is read from the live catalogue with a five-minute cache; when live data is unavailable, a bundled snapshot may be returned and marked with origin and fallbackReason.
 
 Args:
   - slug (string): style identifier.
 
-Returns JSON: the full StyleTokens object (structuredContent).
+Returns JSON: the full StyleTokens object plus origin (live or bundled) and optional fallbackReason. Content provenance is distinct from transport origin.
 
 Examples:
   - "give me the spacing and border tokens for bento-grid" -> slug: "bento-grid"
@@ -563,17 +576,17 @@ Examples:
       inputSchema: {
         slug: z.string().min(1).describe("Style slug"),
       },
-      outputSchema: STYLE_TOKENS_SHAPE,
+      outputSchema: STYLE_TOKENS_OUTPUT_SHAPE,
       annotations: READ_ONLY,
     },
     async ({ slug }) => {
-      const tokensSource = await getTokensLive(slug);
+      const tokensSource = await getTokensLive(slug, remoteOptions);
       const tokens = tokensSource.data;
       if (!tokens) {
         if (tokensSource.failureKind === "unavailable" || tokensSource.failureKind === "unsupported") {
           return sourceUnavailable(`Tokens for style "${slug}"`, tokensSource);
         }
-        const known = await knownSlugLive(slug);
+        const known = await knownSlugLive(slug, remoteOptions);
         if (known.data) {
           return errorResult(
             `Style "${slug}" exists but has no registered design tokens. Use stylekit_get_style for its palette and rules instead.`,
@@ -581,10 +594,12 @@ Examples:
         }
         return styleLookupFailure(slug, known);
       }
-      return toolResult(
-        `# Design tokens for \`${slug}\`\n\n\`\`\`json\n${JSON.stringify(tokens, null, 2)}\n\`\`\``,
-        tokens as unknown as Record<string, unknown>,
-      );
+      const structured = {
+        ...(tokens as unknown as Record<string, unknown>),
+        origin: tokensSource.origin,
+        ...(tokensSource.fallbackReason ? { fallbackReason: tokensSource.fallbackReason } : {}),
+      };
+      return toolResult(JSON.stringify(structured, null, 2), structured, true);
     },
   );
 
@@ -593,13 +608,13 @@ Examples:
     "stylekit_get_component_recipe",
     {
       title: "Get StyleKit component recipe",
-      description: `Render a ready-to-use component for a style: the full Tailwind className and JSX code. Components are usually "button", "card", "input" (check recipeIds via stylekit_get_style).
+      description: `Render a ready-to-use component for a style: the full Tailwind className and JSX code. Components are usually "button", "card", "input" (check recipeIds via stylekit_get_style). Recipe data is read from the live catalogue with a five-minute cache; a bundled snapshot may be returned during an outage and is marked with origin and fallbackReason.
 
 Args:
   - slug (string): style identifier.
   - component (string): recipe id, e.g. "button", "card", "input".
 
-Returns JSON: { slug, component, className, code }.
+Returns JSON: { slug, component, className, code, origin, fallbackReason? }.
 
 Examples:
   - "give me a glassmorphism button" -> slug: "glassmorphism", component: "button"
@@ -616,14 +631,16 @@ Examples:
         component: z.string(),
         className: z.string(),
         code: z.string(),
+        origin: z.enum(["live", "bundled"]),
+        fallbackReason: z.string().optional(),
       },
       annotations: READ_ONLY,
     },
     async ({ slug, component }) => {
-      const detailSource = await getStyleDetailLive(slug);
+      const detailSource = await getStyleDetailLive(slug, remoteOptions);
       const detail = detailSource.data;
       if (!detail) return styleLookupFailure(slug, detailSource);
-      const recipeSource = await getComponentRecipeLive(slug, component);
+      const recipeSource = await getComponentRecipeLive(slug, component, remoteOptions);
       const recipe = recipeSource.data;
       if (!recipe) {
         if (recipeSource.failureKind === "unavailable") {
@@ -639,8 +656,14 @@ Examples:
           `Cannot render "${component}" for "${slug}". Available recipes: ${available}.${recipeSource.fallbackReason ? ` ${recipeSource.fallbackReason}.` : ""}${guidance}`,
         );
       }
+      const structured = {
+        ...recipe,
+        origin: recipeSource.origin,
+        ...(recipeSource.fallbackReason ? { fallbackReason: recipeSource.fallbackReason } : {}),
+      };
       const lines = [
         `# ${component} — \`${slug}\``,
+        `Catalogue origin: ${recipeSource.origin}${recipeSource.fallbackReason ? `; fallback: ${recipeSource.fallbackReason}` : ""}.`,
         "",
         "**className**:",
         "```",
@@ -652,7 +675,7 @@ Examples:
         recipe.code,
         "```",
       ];
-      return toolResult(lines.join("\n"), recipe);
+      return toolResult(lines.join("\n"), structured);
     },
   );
 
@@ -666,7 +689,7 @@ Examples:
 Args:
   - slug (string): style identifier.
 
-Returns JSON: { slug, command, registryUrl, prerequisite }.
+Returns JSON: { slug, command, registryUrl, prerequisite, lookupOrigin, fallbackReason? }. The command is derived from the style slug; lookupOrigin reports how StyleKit confirmed that slug.
 
 Examples:
   - "how do I install the synthwave theme?" -> slug: "synthwave"
@@ -679,11 +702,13 @@ Examples:
         command: z.string(),
         registryUrl: z.string(),
         prerequisite: z.string(),
+        lookupOrigin: z.enum(["live", "bundled"]),
+        fallbackReason: z.string().optional(),
       },
       annotations: READ_ONLY,
     },
     async ({ slug }) => {
-      const known = await knownSlugLive(slug);
+      const known = await knownSlugLive(slug, remoteOptions);
       if (!known.data) {
         return known.failureKind === "not-found"
           ? unknownSlug(slug)
@@ -694,9 +719,12 @@ Examples:
         command: shadcnInstallCommand(slug),
         registryUrl: registryUrl(slug),
         prerequisite: "The target project must contain a tsconfig.json.",
+        lookupOrigin: known.origin,
+        ...(known.fallbackReason ? { fallbackReason: known.fallbackReason } : {}),
       };
       const text = [
         `Install the **${slug}** theme into your shadcn project:`,
+        `Style existence lookup origin: ${known.origin}${known.fallbackReason ? `; fallback: ${known.fallbackReason}` : ""}.`,
         "",
         "```bash",
         structured.command,
@@ -723,7 +751,7 @@ Args:
   - code (string): the source to check. JSX/TSX, HTML, or a bare class string.
   - checkRequired (array of 'button'|'card'|'input', optional): also report required classes the code is missing. Only pass components the code is supposed to contain.
 
-Returns JSON: { slug, ok, violations: [{ className, baseClassName, line, severity, source, rule, reason, fix }], missingRequired, checkedClasses, ruleSources }.
+Returns JSON: { slug, ok, violations: [{ className, baseClassName, line, severity, source, rule, reason, fix }], missingRequired, checkedClasses, ruleSources, origin, contentSource, fallbackReason? }. Lint rules come from the same live implementation brief used for generation; its five-minute cache and any bundled fallback are reported separately from content provenance.
 
 Examples:
   - "does this button match neo-brutalist?" -> slug: "neo-brutalist", code: "<button className=...>", checkRequired: ["button"]
@@ -769,28 +797,45 @@ Examples:
         ),
         checkedClasses: z.number(),
         ruleSources: z.array(z.string()),
+        origin: z.enum(["live", "bundled"]),
+        contentSource: z.enum(["bundled", "static", "community"]),
+        fallbackReason: z.string().optional(),
       },
       annotations: READ_ONLY,
     },
     async ({ slug, code, checkRequired, strict }) => {
-      if (!knownSlug(slug)) {
-        const known = await knownSlugLive(slug);
-        if (known.data) return errorResult(`Style "${slug}" exists in the live catalogue but this package has no bundled lint rules for it. Fetch stylekit_get_implementation_brief and use its lintRules.`);
-        if (known.failureKind === "not-found") return unknownSlug(slug);
-        return sourceUnavailable(`Style "${slug}"`, known);
+      const briefSource = await getImplementationBriefLive(slug, remoteOptions);
+      const brief = briefSource.data;
+      if (!brief) {
+        if (briefSource.failureKind === "not-found") return unknownSlug(slug);
+        if (briefSource.failureKind === "unsupported") {
+          return errorResult(`Style "${slug}" exists, but no compatible implementation brief is available for linting.${briefSource.fallbackReason ? ` ${briefSource.fallbackReason}.` : ""}`);
+        }
+        return sourceUnavailable(`Lint rules for style "${slug}"`, briefSource);
       }
-      if (!hasLintableRules(slug)) {
-        return errorResult(
-          `Style "${slug}" has no lint rules registered, so its code cannot be verified. Use stylekit_get_style_tokens for its constraints instead.`,
-        );
+      const rules = rulesFromBrief(brief);
+      if (!rules) {
+        return errorResult(`The implementation brief for "${slug}" contains an invalid stylekit-lint-v1 rule contract.`);
       }
 
-      const report = lintStyleCode(slug, code, {
+      const report = lintCodeWithRules(rules, code, {
         checkRequired: checkRequired as StyleLintComponent[] | undefined,
         strict,
+        slug,
       });
+      const structured = {
+        ...report,
+        origin: briefSource.origin,
+        contentSource: brief.provenance.source,
+        ...(briefSource.fallbackReason ? { fallbackReason: briefSource.fallbackReason } : {}),
+      };
 
-      const lines = [`# Lint report — \`${slug}\``, `Status: ${report.status}`, ...report.warnings];
+      const lines = [
+        `# Lint report — \`${slug}\``,
+        `Status: ${report.status}`,
+        `Rules origin: ${briefSource.origin} · content provenance: ${brief.provenance.source}${briefSource.fallbackReason ? ` · fallback: ${briefSource.fallbackReason}` : ""}`,
+        ...report.warnings,
+      ];
 
       if (report.ok) {
         lines.push(
@@ -816,13 +861,13 @@ Examples:
         );
       }
 
-      return toolResult(lines.join("\n"), report);
+      return toolResult(lines.join("\n"), structured);
     },
   );
 
   server.registerTool("stylekit_get_implementation_brief", {
     title: "Get complete StyleKit implementation brief",
-    description: "Fetch one complete implementation contract before generating UI: AI rules, philosophy, global CSS, component templates, recipe definitions, tokens, readiness guidance, merged lint rules, and content provenance. Known styles come from the bundled catalogue; newer styles require the live brief endpoint. Coverage guidance does not certify visual quality or accessibility.",
+    description: "Fetch one complete implementation contract before generating UI: AI rules, philosophy, global CSS, component templates, recipe definitions, tokens, readiness guidance, merged lint rules, and content provenance. The live brief is preferred and cached for five minutes; when the live source is unavailable, a bundled snapshot is returned only when available and marked with origin and fallbackReason. provenance.source records the content publisher (bundled, static, or community) and is distinct from transport origin. Coverage guidance does not certify visual quality or accessibility.",
     inputSchema: { slug: z.string().min(1).max(100).describe("Style slug") },
     outputSchema: {
       schemaVersion: z.literal("stylekit-brief-v1"), slug: z.string(), name: z.string(), nameEn: z.string(),
@@ -833,10 +878,12 @@ Examples:
       tokens: STYLE_TOKENS_SHAPE.nullable(), recipes: z.record(z.unknown()), readiness: z.record(z.unknown()),
       lintRules: z.record(z.unknown()),
       provenance: z.object({ source: z.enum(["bundled", "static", "community"]), contentHash: z.string(), url: z.string() }),
+      origin: z.enum(["live", "bundled"]),
+      fallbackReason: z.string().optional(),
     },
     annotations: READ_ONLY,
   }, async ({ slug }) => {
-    const result = await getImplementationBriefLive(slug);
+    const result = await getImplementationBriefLive(slug, remoteOptions);
     if (!result.data) {
       if (result.failureKind === "not-found") return unknownSlug(slug);
       if (result.failureKind === "unsupported") {
@@ -844,6 +891,11 @@ Examples:
       }
       return sourceUnavailable(`Implementation brief for style "${slug}"`, result);
     }
-    return toolResult(JSON.stringify(result.data), result.data, true);
+    const structured = {
+      ...result.data,
+      origin: result.origin,
+      ...(result.fallbackReason ? { fallbackReason: result.fallbackReason } : {}),
+    };
+    return toolResult(JSON.stringify(structured), structured, true);
   });
 }

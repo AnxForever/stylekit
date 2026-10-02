@@ -5,12 +5,11 @@
  */
 
 import {
-  listStyles,
-  searchStyles,
-  getStyleDetail,
-  getTokens,
-  getComponentRecipe,
-  knownSlug,
+  searchStylesLive,
+  getStyleDetailLive,
+  getTokensLive,
+  getComponentRecipeLive,
+  knownSlugLive,
   shadcnInstallCommand,
   registryUrl,
   getPublicAssetLive,
@@ -64,36 +63,59 @@ function unknownSlugMsg(slug: string): string {
   return `Unknown style "${slug}". Run \`stylekit search <query>\` or \`stylekit list\` to find a slug.`;
 }
 
-export function cmdList(
+function styleSourceMetadata(source: {
+  origin: "live" | "bundled";
+  fallbackReason?: string;
+  failureKind?: string;
+}): Record<string, unknown> {
+  return {
+    origin: source.origin,
+    ...(source.fallbackReason ? { fallbackReason: source.fallbackReason } : {}),
+    ...(source.failureKind ? { failureKind: source.failureKind } : {}),
+  };
+}
+
+export async function cmdList(
   category: StyleCategory | undefined,
   limit: number | undefined,
-): CommandResult {
-  const { total, results } = listStyles(category, limit);
-  const header = `StyleKit styles${category ? ` · ${category}` : ""} (${results.length} of ${total}):`;
+): Promise<CommandResult> {
+  const source = await searchStylesLive({ category, limit });
+  const { total, results } = source.data;
+  const header = `StyleKit styles${category ? ` · ${category}` : ""} (${results.length} of ${total}; ${source.origin}):`;
   return ok(
     [header, "", ...results.map(summaryLine)].join("\n"),
-    { total, count: results.length, results },
+    { total, count: results.length, results, ...styleSourceMetadata(source) },
   );
 }
 
-export function cmdSearch(
+export async function cmdSearch(
   query: string,
   limit: number | undefined,
-): CommandResult {
-  const { total, results } = searchStyles(query, limit);
-  if (results.length === 0) return fail(`No styles match "${query}".`);
-  const header = `Matches for "${query}" (${results.length} of ${total}):`;
+): Promise<CommandResult> {
+  const source = await searchStylesLive({ query, limit });
+  const { total, results } = source.data;
+  if (results.length === 0) return fail(`No styles match "${query}".`, "NO_MATCHES", styleSourceMetadata(source));
+  const header = `Matches for "${query}" (${results.length} of ${total}; ${source.origin}):`;
   return ok(
     [header, "", ...results.map(summaryLine)].join("\n"),
-    { total, count: results.length, results },
+    { total, count: results.length, results, ...styleSourceMetadata(source) },
   );
 }
 
-export function cmdShow(slug: string): CommandResult {
-  const d = getStyleDetail(slug);
-  if (!d) return fail(unknownSlugMsg(slug));
+export async function cmdShow(slug: string): Promise<CommandResult> {
+  const source = await getStyleDetailLive(slug);
+  const d = source.data;
+  if (!d) {
+    const notFound = source.failureKind === "not-found";
+    return fail(
+      notFound ? unknownSlugMsg(slug) : `Could not retrieve style "${slug}".${source.fallbackReason ? ` ${source.fallbackReason}` : ""}`,
+      notFound ? "UNKNOWN_STYLE" : "STYLE_SOURCE_UNAVAILABLE",
+      styleSourceMetadata(source),
+    );
+  }
   const text = [
     `${d.nameEn} (${d.name})  [${d.category}]`,
+    `catalogue origin: ${source.origin}${source.fallbackReason ? ` · fallback: ${source.fallbackReason}` : ""}`,
     `slug: ${d.slug}`,
     `tags: ${d.tags.join(", ")}`,
     "",
@@ -111,34 +133,51 @@ export function cmdShow(slug: string): CommandResult {
     `install: ${d.shadcnInstall}`,
     `web: ${d.url}`,
   ].join("\n");
-  return ok(text, d);
+  return ok(text, { ...d, ...styleSourceMetadata(source) });
 }
 
-export function cmdTokens(slug: string): CommandResult {
-  if (!knownSlug(slug)) return fail(unknownSlugMsg(slug));
-  const t = getTokens(slug);
+export async function cmdTokens(slug: string): Promise<CommandResult> {
+  const source = await getTokensLive(slug);
+  const t = source.data;
   if (!t) {
-    return fail(`Style "${slug}" exists but has no registered design tokens.`);
+    if (source.failureKind === "not-found") {
+      const known = await knownSlugLive(slug);
+      if (!known.data) return fail(unknownSlugMsg(slug), "UNKNOWN_STYLE", styleSourceMetadata(known));
+      return fail(`Style "${slug}" exists but has no live design tokens.`, "TOKENS_NOT_FOUND", styleSourceMetadata(source));
+    }
+    return fail(`Could not retrieve tokens for "${slug}".${source.fallbackReason ? ` ${source.fallbackReason}` : ""}`, "TOKENS_SOURCE_UNAVAILABLE", styleSourceMetadata(source));
   }
-  return ok(JSON.stringify(t, null, 2), t);
+  const json = { ...t, ...styleSourceMetadata(source) };
+  return ok(JSON.stringify(json, null, 2), json);
 }
 
-export function cmdRecipe(
+export async function cmdRecipe(
   slug: string,
   component: string | undefined,
-): CommandResult {
-  const d = getStyleDetail(slug);
-  if (!d) return fail(unknownSlugMsg(slug));
+): Promise<CommandResult> {
+  const detailSource = await getStyleDetailLive(slug);
+  const d = detailSource.data;
+  if (!d) {
+    const notFound = detailSource.failureKind === "not-found";
+    return fail(
+      notFound ? unknownSlugMsg(slug) : `Could not retrieve style "${slug}".${detailSource.fallbackReason ? ` ${detailSource.fallbackReason}` : ""}`,
+      notFound ? "UNKNOWN_STYLE" : "STYLE_SOURCE_UNAVAILABLE",
+      styleSourceMetadata(detailSource),
+    );
+  }
   const available = d.recipeIds.join(", ") || "none";
   if (!component) {
-    return fail(`Specify a component. Available recipes for "${slug}": ${available}.`);
+    return fail(`Specify a component. Available recipes for "${slug}": ${available}.`, "MISSING_COMPONENT", styleSourceMetadata(detailSource));
   }
-  const r = getComponentRecipe(slug, component);
+  const source = await getComponentRecipeLive(slug, component);
+  const r = source.data;
   if (!r) {
-    return fail(`No "${component}" recipe for "${slug}". Available: ${available}.`);
+    return fail(`No "${component}" recipe for "${slug}". Available: ${available}.${source.fallbackReason ? ` ${source.fallbackReason}` : ""}`, "RECIPE_NOT_FOUND", styleSourceMetadata(source));
   }
+  const json = { ...r, ...styleSourceMetadata(source) };
   const text = [
     `${component} — ${slug}`,
+    `catalogue origin: ${source.origin}${source.fallbackReason ? ` · fallback: ${source.fallbackReason}` : ""}`,
     "",
     "className:",
     r.className,
@@ -146,20 +185,25 @@ export function cmdRecipe(
     "code:",
     r.code,
   ].join("\n");
-  return ok(text, r);
+  return ok(text, json);
 }
 
-export function cmdAdd(slug: string): CommandResult {
-  if (!knownSlug(slug)) return fail(unknownSlugMsg(slug));
+export async function cmdAdd(slug: string): Promise<CommandResult> {
+  const source = await knownSlugLive(slug);
+  if (!source.data) return fail(unknownSlugMsg(slug), "UNKNOWN_STYLE", styleSourceMetadata(source));
   const command = shadcnInstallCommand(slug);
   const json = {
     slug,
     command,
     registryUrl: registryUrl(slug),
     prerequisite: "The target project must contain a tsconfig.json.",
+    lookupOrigin: source.origin,
+    ...(source.fallbackReason ? { fallbackReason: source.fallbackReason } : {}),
   };
   const text = [
     command,
+    "",
+    `Style existence lookup origin: ${source.origin}${source.fallbackReason ? ` · fallback: ${source.fallbackReason}` : ""}`,
     "",
     "(The target project must contain a tsconfig.json.)",
   ].join("\n");

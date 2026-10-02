@@ -361,7 +361,13 @@
           "cursor-pointer",
           "ring-0"
         ],
-        "unsupportedRules": []
+        "unsupportedRules": [],
+        "recommended": {
+          "borderRadius": "rounded-none",
+          "shadow": "shadow-[4px_4px_0_#000] md:shadow-[8px_8px_0_#000]",
+          "transition": "transition-all duration-200",
+          "spacing": "p-4 md:p-6"
+        }
       }
     },
     "glassmorphism": {
@@ -775,7 +781,13 @@
           "rounded-xl",
           "backdrop-blur-xl"
         ],
-        "unsupportedRules": []
+        "unsupportedRules": [],
+        "recommended": {
+          "borderRadius": "rounded-xl or rounded-2xl",
+          "shadow": "shadow-xl shadow-black/10",
+          "transition": "transition-all duration-300",
+          "spacing": "p-6 md:p-8"
+        }
       }
     }
   },

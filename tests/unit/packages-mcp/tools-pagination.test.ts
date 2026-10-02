@@ -15,6 +15,8 @@ const mocks = vi.hoisted(() => ({
   shadcnInstallCommand: vi.fn(),
   registryUrl: vi.fn(),
   lintStyleCode: vi.fn(),
+  lintCodeWithRules: vi.fn(),
+  rulesFromBrief: vi.fn(),
   hasLintableRules: vi.fn(),
   getImplementationBriefLive: vi.fn(),
   ASSET_KINDS: ["style", "component-pattern", "template", "experience-pack", "prompt"],
@@ -89,7 +91,11 @@ describe("stylekit_search_styles pagination", () => {
     expect(mocks.searchStylesLive).toHaveBeenNthCalledWith(1, {
       query: "modern",
       category: "modern",
-    });
+    }, {});
+    expect(mocks.searchStylesLive).toHaveBeenNthCalledWith(2, {
+      query: "modern",
+      category: "modern",
+    }, {});
     expect(firstPage.structuredContent).toMatchObject({
       total: 3,
       count: 2,

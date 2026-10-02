@@ -13,6 +13,7 @@ export function serializeLintRules(rules: MergedRules) {
     required: Object.fromEntries(rules.required),
     exempt: [...rules.exempt],
     unsupportedRules: rules.unsupportedRules ?? [],
+    ...(rules.recommended ? { recommended: rules.recommended } : {}),
   };
 }
 
