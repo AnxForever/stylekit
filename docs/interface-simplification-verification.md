@@ -14,7 +14,7 @@ The final review also fixed a 320px IDE-menu overflow and inconsistent copy feed
 
 ## Verification
 
-- Unit suite: 289 files passed; 7,954 tests passed, 1 skipped.
+- Original workspace unit suite: 289 files passed; 7,954 tests passed, 1 skipped. The isolated release checkout excludes the unrelated analytics patch and passed 7,952 tests, with 1 skipped, across the same 289 files.
 - `pnpm exec tsc --noEmit`: passed.
 - `pnpm run lint`: 0 errors; 29 existing warnings.
 - `pnpm run security:secrets`: passed.
@@ -31,4 +31,4 @@ Browser checks use anonymous local Chromium sessions at 320px, 390px, and 1280px
 
 The existing Figma and individual-file preview modals still need a separate focus-management accessibility pass. This round verifies the controls changed above; it does not claim a full-site accessibility audit.
 
-Local evidence and the pre-change backup are stored under `C:\Users\34758\.codex\scratch\stylekit-simplification-20261007`.
+Local evidence and the pre-change backup are retained in the private release workspace, outside the repository.

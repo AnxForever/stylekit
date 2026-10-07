@@ -1,6 +1,6 @@
 import type { BackgroundPattern } from "./index";
 
-const PREVIEW_BACKGROUND_SIZE = "20px 20px";
+const FALLBACK_BACKGROUND_SIZE = "20px 20px";
 
 export interface BackgroundPatternPresentation {
   style: {
@@ -18,11 +18,16 @@ function toTailwindArbitraryValue(value: string): string {
     .replace(/\s+/g, "_");
 }
 
+function getBackgroundSize(tailwind: string): string {
+  const match = tailwind.match(/(?:^|\s)bg-\[size:([^\]]+)\]/);
+  return match?.[1].replace(/_/g, " ") ?? FALLBACK_BACKGROUND_SIZE;
+}
+
 /** Keeps the preview and both copy formats aligned to the same background. */
 export function getBackgroundPatternPresentation(
-  background: Pick<BackgroundPattern, "css">,
+  background: Pick<BackgroundPattern, "css" | "tailwind">,
 ): BackgroundPatternPresentation {
-  const size = PREVIEW_BACKGROUND_SIZE;
+  const size = getBackgroundSize(background.tailwind);
 
   return {
     style: {

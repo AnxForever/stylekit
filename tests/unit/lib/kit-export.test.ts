@@ -175,6 +175,7 @@ describe("buildKitFiles", () => {
     expect(surfaces).toContain("linear-gradient(150deg");
     expect(surfaces).toContain("linear-gradient(30deg");
     expect(surfaces).toContain("linear-gradient(90deg");
-    expect(surfaces).toContain("background-size: 20px 20px;");
+    expect(surfaces).toContain("21px 30px");
+    expect(surfaces).toContain("background-size: 42px 60px;");
   });
 });

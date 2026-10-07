@@ -19,21 +19,30 @@ describe("background pattern presentation", () => {
     );
   });
 
-  it("keeps every CSS layer and the final background color in Tailwind output", () => {
+  it("keeps honeycomb layers, offset, and catalog tile size in every output", () => {
     const background = backgrounds.find((candidate) => candidate.id === "honeycomb");
     expect(background).toBeDefined();
     if (!background) return;
 
     const presentation = getBackgroundPatternPresentation(background);
 
+    expect(background.css).toContain("21px 30px");
+    expect(background.tailwind).toContain("bg-[size:42px_60px]");
+    expect(presentation.style).toEqual({
+      background: background.css,
+      backgroundSize: "42px 60px",
+    });
+    expect(presentation.css).toContain("21px 30px");
+    expect(presentation.css).toContain("background-size: 42px 60px;");
     expect(presentation.tailwind).toContain(
       "[background:radial-gradient(circle_farthest-side_at_0%_50%",
     );
     expect(presentation.tailwind).toContain("linear-gradient(150deg");
     expect(presentation.tailwind).toContain("linear-gradient(30deg");
     expect(presentation.tailwind).toContain("linear-gradient(90deg");
+    expect(presentation.tailwind).toContain("21px_30px");
     expect(presentation.tailwind).toContain("#ffffff]");
-    expect(presentation.tailwind).toContain("[background-size:20px_20px]");
+    expect(presentation.tailwind).toContain("[background-size:42px_60px]");
   });
 
   it("preserves SVG data URLs while making them safe as Tailwind class tokens", () => {
@@ -49,13 +58,21 @@ describe("background pattern presentation", () => {
     expect(presentation.tailwind).toContain("%22");
   });
 
-  it("uses one consistent preview size for every catalog pattern", () => {
-    for (const background of backgrounds) {
-      const presentation = getBackgroundPatternPresentation(background);
+  it("uses each catalog size and falls back to 20px for patterns without one", () => {
+    const isometricGrid = backgrounds.find((candidate) => candidate.id === "isometric-grid");
+    const crossHatch = backgrounds.find((candidate) => candidate.id === "cross-hatch");
+    expect(isometricGrid).toBeDefined();
+    expect(crossHatch).toBeDefined();
+    if (!isometricGrid || !crossHatch) return;
 
-      expect(presentation.style.backgroundSize).toBe("20px 20px");
-      expect(presentation.css).toContain("background-size: 20px 20px;");
-      expect(presentation.tailwind).toContain("[background-size:20px_20px]");
-    }
+    const sized = getBackgroundPatternPresentation(isometricGrid);
+    expect(sized.style.backgroundSize).toBe("80px 140px");
+    expect(sized.css).toContain("background-size: 80px 140px;");
+    expect(sized.tailwind).toContain("[background-size:80px_140px]");
+
+    const fallback = getBackgroundPatternPresentation(crossHatch);
+    expect(fallback.style.backgroundSize).toBe("20px 20px");
+    expect(fallback.css).toContain("background-size: 20px 20px;");
+    expect(fallback.tailwind).toContain("[background-size:20px_20px]");
   });
 });
