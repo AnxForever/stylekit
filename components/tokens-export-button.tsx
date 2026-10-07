@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import type { DesignStyle } from "@/lib/styles";
+import { useI18n } from "@/lib/i18n/context";
 import { ExportDialog } from "./export-dialog";
 
 interface TokensExportButtonProps {
@@ -9,11 +10,13 @@ interface TokensExportButtonProps {
 }
 
 export function TokensExportButton({ style }: TokensExportButtonProps) {
+  const { locale } = useI18n();
   const [isOpen, setIsOpen] = useState(false);
 
   return (
     <>
       <button
+        type="button"
         onClick={() => setIsOpen(true)}
         className="inline-flex items-center justify-center px-6 py-3 border border-border text-sm tracking-wide hover:border-foreground transition-colors"
       >
@@ -30,7 +33,7 @@ export function TokensExportButton({ style }: TokensExportButtonProps) {
           <polyline points="7,10 12,15 17,10" />
           <line x1="12" y1="15" x2="12" y2="3" />
         </svg>
-        Export Figma Tokens
+        {locale === "zh" ? "导出 Figma 令牌" : "Export Figma Tokens"}
       </button>
       <ExportDialog style={style} isOpen={isOpen} onClose={() => setIsOpen(false)} />
     </>

@@ -7,6 +7,7 @@ import JSZip from "jszip";
 import { exportStyleTokens } from "./figma-tokens";
 import { generateTailwindPresetJS } from "./tailwind-preset";
 import { generateShadcnThemeJSON, generateShadcnThemeCSS } from "./shadcn-theme";
+import { generateSkillPack, getSkillPackFileInfo } from "./skill-pack";
 
 export interface StylePackFile {
   name: string;
@@ -93,6 +94,14 @@ export function generateStylePack(
       icon: "variables",
     },
   ];
+  const skillPackInfo = getSkillPackFileInfo(style);
+
+  files.push({
+    ...skillPackInfo,
+    content: generateSkillPack({ style, tokens }),
+    mimeType: "text/markdown",
+    icon: "skill",
+  });
 
   return files;
 }
@@ -109,15 +118,7 @@ export function downloadFile(file: StylePackFile): void {
   URL.revokeObjectURL(url);
 }
 
-export function downloadAllAsZip(
-  style: DesignStyle,
-  tokens?: StyleTokens,
-  options?: StylePackOptions
-): void {
-  void downloadAllAsZipAsync(style, tokens, options);
-}
-
-async function downloadAllAsZipAsync(
+export async function downloadAllAsZip(
   style: DesignStyle,
   tokens?: StyleTokens,
   options?: StylePackOptions

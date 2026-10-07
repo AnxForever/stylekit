@@ -416,9 +416,9 @@ export const shadows: Shadow[] = [
   // at growing offset/blur for realistic, soft depth). Low/medium/high
   // elevation pairs at two light intensities. ===
   {
-    id: "smooth-low",
-    name: "Smooth Low",
-    nameZh: "平滑低",
+    id: "smooth-neutral-low",
+    name: "Smooth Neutral Low",
+    nameZh: "中性平滑·低",
     value:
       "0 0.5px 0.6px rgba(0,0,0,0.07), 0 1.3px 1.6px -0.6px rgba(0,0,0,0.07), 0 2.9px 3.6px -1.2px rgba(0,0,0,0.07)",
     css: "box-shadow: 0 0.5px 0.6px rgba(0,0,0,0.07), 0 1.3px 1.6px -0.6px rgba(0,0,0,0.07), 0 2.9px 3.6px -1.2px rgba(0,0,0,0.07);",
@@ -428,9 +428,9 @@ export const shadows: Shadow[] = [
     tags: ["smooth", "card", "realistic"],
   },
   {
-    id: "smooth-medium",
-    name: "Smooth Medium",
-    nameZh: "平滑中",
+    id: "smooth-neutral-medium",
+    name: "Smooth Neutral Medium",
+    nameZh: "中性平滑·中",
     value:
       "0 0.6px 0.7px rgba(0,0,0,0.07), 0 2px 2.5px -0.4px rgba(0,0,0,0.07), 0 3.8px 4.7px -0.8px rgba(0,0,0,0.07), 0 6.7px 8.4px -1.2px rgba(0,0,0,0.07), 0 11.5px 14.4px -1.7px rgba(0,0,0,0.07)",
     css: "box-shadow: 0 0.6px 0.7px rgba(0,0,0,0.07), 0 2px 2.5px -0.4px rgba(0,0,0,0.07), 0 3.8px 4.7px -0.8px rgba(0,0,0,0.07), 0 6.7px 8.4px -1.2px rgba(0,0,0,0.07), 0 11.5px 14.4px -1.7px rgba(0,0,0,0.07);",
@@ -440,9 +440,9 @@ export const shadows: Shadow[] = [
     tags: ["smooth", "panel", "realistic"],
   },
   {
-    id: "smooth-high",
-    name: "Smooth High",
-    nameZh: "平滑高",
+    id: "smooth-neutral-high",
+    name: "Smooth Neutral High",
+    nameZh: "中性平滑·高",
     value:
       "0 0.7px 0.8px rgba(0,0,0,0.06), 0 2.4px 3px -0.3px rgba(0,0,0,0.06), 0 4.5px 5.6px -0.6px rgba(0,0,0,0.06), 0 7.5px 9.4px -0.9px rgba(0,0,0,0.06), 0 12.3px 15.4px -1.2px rgba(0,0,0,0.06), 0 19.5px 24.4px -1.5px rgba(0,0,0,0.06), 0 30px 37.5px -1.8px rgba(0,0,0,0.06)",
     css: "box-shadow: 0 0.7px 0.8px rgba(0,0,0,0.06), 0 2.4px 3px -0.3px rgba(0,0,0,0.06), 0 4.5px 5.6px -0.6px rgba(0,0,0,0.06), 0 7.5px 9.4px -0.9px rgba(0,0,0,0.06), 0 12.3px 15.4px -1.2px rgba(0,0,0,0.06), 0 19.5px 24.4px -1.5px rgba(0,0,0,0.06), 0 30px 37.5px -1.8px rgba(0,0,0,0.06);",

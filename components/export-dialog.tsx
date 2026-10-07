@@ -4,6 +4,8 @@ import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import type { DesignStyle } from "@/lib/styles";
 import { exportStyleTokens, downloadTokens, ExportFormat } from "@/lib/export/figma-tokens";
+import { ClipboardFeedback } from "@/components/ui/clipboard-feedback";
+import { useClipboard } from "@/lib/hooks/use-clipboard";
 
 interface ExportDialogProps {
   style: DesignStyle;
@@ -31,7 +33,8 @@ const formatOptions: { key: ExportFormat; label: string; description: string }[]
 
 export function ExportDialog({ style, isOpen, onClose }: ExportDialogProps) {
   const [selectedFormat, setSelectedFormat] = useState<ExportFormat>("figma-tokens");
-  const [copied, setCopied] = useState(false);
+  const [formatRevision, setFormatRevision] = useState(0);
+  const clipboard = useClipboard();
 
   useEffect(() => {
     if (isOpen) {
@@ -43,11 +46,19 @@ export function ExportDialog({ style, isOpen, onClose }: ExportDialogProps) {
   if (!isOpen) return null;
 
   const preview = exportStyleTokens(style, selectedFormat);
+  const copyId = `export-dialog:${selectedFormat}:${formatRevision}`;
+  const clipboardResult = clipboard.result?.id === copyId && clipboard.result.text === preview
+    ? clipboard.result
+    : null;
 
   const handleCopy = async () => {
-    await navigator.clipboard.writeText(preview);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    await clipboard.copy(preview, copyId);
+  };
+
+  const handleFormatChange = (format: ExportFormat) => {
+    if (format === selectedFormat) return;
+    setSelectedFormat(format);
+    setFormatRevision((revision) => revision + 1);
   };
 
   const handleDownload = () => {
@@ -72,6 +83,8 @@ export function ExportDialog({ style, isOpen, onClose }: ExportDialogProps) {
             <p className="text-sm text-muted">{style.name} - {style.nameEn}</p>
           </div>
           <button
+            type="button"
+            aria-label="Close token export"
             onClick={onClose}
             className="p-2 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
           >
@@ -88,7 +101,7 @@ export function ExportDialog({ style, isOpen, onClose }: ExportDialogProps) {
             {formatOptions.map((format) => (
               <button
                 key={format.key}
-                onClick={() => setSelectedFormat(format.key)}
+                onClick={() => handleFormatChange(format.key)}
                 className={`px-4 py-2 text-sm transition-colors ${
                   selectedFormat === format.key
                     ? "bg-foreground text-background"
@@ -105,7 +118,7 @@ export function ExportDialog({ style, isOpen, onClose }: ExportDialogProps) {
         </div>
 
         {/* Preview */}
-        <div className="flex-1 overflow-hidden px-6 py-4">
+        <div className="flex-1 overflow-y-auto px-6 py-4">
           <div className="flex items-center justify-between mb-3">
             <p className="text-xs tracking-widest uppercase text-muted">Preview</p>
             <div className="flex gap-2">
@@ -113,7 +126,7 @@ export function ExportDialog({ style, isOpen, onClose }: ExportDialogProps) {
                 onClick={handleCopy}
                 className="px-3 py-1.5 text-xs border border-border hover:border-foreground transition-colors"
               >
-                {copied ? "Copied!" : "Copy"}
+                {clipboard.isCopied(copyId, preview) ? "Copied!" : "Copy"}
               </button>
               <button
                 onClick={handleDownload}
@@ -128,6 +141,12 @@ export function ExportDialog({ style, isOpen, onClose }: ExportDialogProps) {
               {preview}
             </pre>
           </div>
+          <ClipboardFeedback
+            result={clipboardResult}
+            locale="en"
+            currentText={preview}
+            className="mt-3 mb-0"
+          />
         </div>
 
         {/* Footer */}

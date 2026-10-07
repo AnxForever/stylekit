@@ -4,6 +4,8 @@ import { useMemo, useState } from "react";
 import type { KeyboardEvent } from "react";
 import { Copy, Download } from "lucide-react";
 import { useI18n } from "@/lib/i18n/context";
+import { useClipboard } from "@/lib/hooks/use-clipboard";
+import { ClipboardFeedback } from "@/components/ui/clipboard-feedback";
 import { buildPromptPair, resolvePromptKeywords } from "@/lib/styles/prompt-pair";
 import type { PromptContext } from "@/lib/styles/prompt-pair";
 import { trackEvent } from "@/lib/analytics/events";
@@ -70,8 +72,7 @@ export function AiImplementationPanel({
 }: AiImplementationPanelProps) {
   const { locale } = useI18n();
   const [activeTab, setActiveTab] = useState<ImplementationTab>("hard");
-  const [copiedTab, setCopiedTab] = useState<ImplementationTab | null>(null);
-
+  const { copy, result: clipboardResult, isCopied } = useClipboard({ copiedDuration: 2000 });
   const [contextOpen, setContextOpen] = useState(false);
   const [promptContext, setPromptContext] = useState<PromptContext | undefined>();
 
@@ -247,20 +248,9 @@ export function AiImplementationPanel({
   };
 
   const handleCopy = async (item: ImplementationItem) => {
-    try {
-      await navigator.clipboard.writeText(item.content);
-    } catch {
-      const textArea = document.createElement("textarea");
-      textArea.value = item.content;
-      document.body.appendChild(textArea);
-      textArea.select();
-      document.execCommand("copy");
-      document.body.removeChild(textArea);
-    }
-
-    setCopiedTab(item.id);
+    const copied = await copy(item.content, item.id);
+    if (!copied) return;
     trackEvent("code_copy", { slug: styleSlug, language: item.id });
-    setTimeout(() => setCopiedTab(null), 2000);
   };
 
   const handleDownload = (item: ImplementationItem) => {
@@ -363,7 +353,7 @@ export function AiImplementationPanel({
               className="inline-flex min-h-[40px] items-center gap-2 border border-border px-3 py-2 text-sm transition-colors hover:border-foreground hover:text-foreground"
             >
               <Copy className="h-4 w-4" aria-hidden="true" />
-              {copiedTab === activeItem.id
+              {isCopied(activeItem.id, activeItem.content)
                 ? locale === "zh"
                   ? "已复制"
                   : "Copied"
@@ -381,6 +371,17 @@ export function AiImplementationPanel({
             </button>
           </div>
         </div>
+
+        <ClipboardFeedback
+          result={
+            clipboardResult?.id === activeItem.id && clipboardResult.text === activeItem.content
+              ? clipboardResult
+              : null
+          }
+          locale={locale}
+          currentText={activeItem.content}
+          className="mx-4 mt-4 mb-0"
+        />
 
         <div className="max-h-[520px] overflow-y-auto p-4">
           <pre className="whitespace-pre-wrap text-xs leading-6 text-foreground md:text-sm">

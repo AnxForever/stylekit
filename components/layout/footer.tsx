@@ -37,7 +37,6 @@ export function Footer({ compact = false }: { compact?: boolean }) {
     { href: "/community", label: t("nav.community") },
   ];
   const learnLinks: { href: string; label: string; external?: boolean }[] = [
-    { href: "/learn", label: t("nav.learn") },
     { href: "/guide", label: t("nav.guide") },
     { href: "/recipes", label: t("nav.recipes") },
     { href: "/changelog", label: t("nav.changelog") },

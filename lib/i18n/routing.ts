@@ -75,6 +75,7 @@ export const LOCALE_ROUTE_POLICY = [
       "/learn",
       "/liquid-glass",
       "/launch",
+      "/mobile",
       "/mouse-interactions",
       "/avoid-ai-slop",
       "/resources",

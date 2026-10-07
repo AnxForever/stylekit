@@ -124,20 +124,6 @@ export function RecipeShowcase({ variant = "home", maxItems = 6 }: RecipeShowcas
           </div>
         )}
 
-        {/* View All Link (for home variant) */}
-        {variant === "home" && displayRecipes.length > maxItems && (
-          <div className="text-center mt-8">
-            <LocalizedLink
-              href="/recipes"
-              className="inline-flex items-center gap-2 px-6 py-3 border border-border text-sm hover:border-foreground transition-colors"
-            >
-              {locale === "zh"
-                ? `查看全部 ${displayRecipes.length} 个配方`
-                : `View All ${displayRecipes.length} Recipes`}
-              <ChevronRight className="w-4 h-4" />
-            </LocalizedLink>
-          </div>
-        )}
       </div>
     </section>
   );

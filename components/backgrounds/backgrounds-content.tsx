@@ -10,12 +10,15 @@ import {
   type BackgroundCategory,
 } from "@/lib/backgrounds";
 import { AddToKitButton } from "@/components/kit/add-to-kit-button";
+import { ClipboardFeedback } from "@/components/ui/clipboard-feedback";
+import { useClipboard } from "@/lib/hooks/use-clipboard";
+import { getBackgroundPatternPresentation } from "@/lib/backgrounds/presentation";
 
 export function BackgroundsContent() {
   const { t, locale } = useI18n();
   const [selectedCategory, setSelectedCategory] = useState<BackgroundCategory | "all">("all");
   const [searchQuery, setSearchQuery] = useState("");
-  const [copiedId, setCopiedId] = useState<string | null>(null);
+  const clipboard = useClipboard();
 
   const categories = useMemo(() => getBackgroundCategories(), []);
 
@@ -39,13 +42,9 @@ export function BackgroundsContent() {
 
     return result;
   }, [selectedCategory, searchQuery]);
-
-  function copyToClipboard(text: string, id: string) {
-    navigator.clipboard.writeText(text).then(() => {
-      setCopiedId(id);
-      setTimeout(() => setCopiedId(null), 2000);
-    });
-  }
+  const clipboardResultVisible = filteredBackgrounds.some((background) =>
+    clipboard.result?.id.startsWith(`${background.id}-`),
+  );
 
   return (
     <div className="max-w-7xl mx-auto px-6 md:px-12 py-12 md:py-16">
@@ -136,6 +135,10 @@ export function BackgroundsContent() {
         {t("backgrounds.showing")} {filteredBackgrounds.length} {t("backgrounds.patterns")}
       </p>
 
+      {!clipboardResultVisible && clipboard.result && (
+        <ClipboardFeedback result={clipboard.result} locale={locale} />
+      )}
+
       {/* Background Grid */}
       {filteredBackgrounds.length === 0 ? (
         <div className="text-center py-16">
@@ -143,15 +146,23 @@ export function BackgroundsContent() {
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredBackgrounds.map((background) => (
-            <BackgroundCard
-              key={background.id}
-              background={background}
-              copied={copiedId === background.id}
-              onCopy={copyToClipboard}
-              locale={locale}
-            />
-          ))}
+          {filteredBackgrounds.map((background) => {
+            const result = clipboard.result?.id.startsWith(`${background.id}-`)
+              ? clipboard.result
+              : null;
+            return (
+              <div key={background.id} className="min-w-0">
+                <BackgroundCard
+                  background={background}
+                  cssCopied={clipboard.isCopied(`${background.id}-css`)}
+                  tailwindCopied={clipboard.isCopied(`${background.id}-tailwind`)}
+                  onCopy={clipboard.copy}
+                  locale={locale}
+                />
+                <ClipboardFeedback result={result} locale={locale} className="mt-2 mb-0" />
+              </div>
+            );
+          })}
         </div>
       )}
     </div>
@@ -160,13 +171,18 @@ export function BackgroundsContent() {
 
 interface BackgroundCardProps {
   background: BackgroundPattern;
-  copied: boolean;
-  onCopy: (text: string, id: string) => void;
+  cssCopied: boolean;
+  tailwindCopied: boolean;
+  onCopy: (text: string, id: string) => Promise<boolean>;
   locale: "zh" | "en";
 }
 
-function BackgroundCard({ background, copied, onCopy, locale }: BackgroundCardProps) {
+function BackgroundCard({ background, cssCopied, tailwindCopied, onCopy, locale }: BackgroundCardProps) {
   const name = locale === "zh" ? background.nameZh : background.name;
+  const presentation = useMemo(
+    () => getBackgroundPatternPresentation(background),
+    [background],
+  );
 
   // Same language as the type specimens: the texture is the whole card, the
   // caption sits at the foot, and the copy actions stay hidden until hover or
@@ -175,7 +191,7 @@ function BackgroundCard({ background, copied, onCopy, locale }: BackgroundCardPr
     <div className="group relative overflow-hidden border border-border bg-background transition-colors hover:border-foreground/40">
       <div
         className="h-56"
-        style={{ background: background.css, backgroundSize: "20px 20px" }}
+        style={presentation.style}
       />
 
       {/* Caption bar — resting state: name + tags. */}
@@ -190,16 +206,16 @@ function BackgroundCard({ background, copied, onCopy, locale }: BackgroundCardPr
         {/* Actions overlay the caption on hover/focus, matching its height. */}
         <div className="absolute inset-x-4 bottom-4 flex items-center gap-2 opacity-0 translate-y-1 transition-all duration-200 group-hover:opacity-100 group-hover:translate-y-0 group-focus-within:opacity-100 group-focus-within:translate-y-0">
           <button
-            onClick={() => onCopy(background.css, background.id)}
+            onClick={() => void onCopy(presentation.css, `${background.id}-css`)}
             className="flex-1 border border-border px-3 py-1.5 text-xs font-medium text-muted transition-colors hover:border-foreground hover:text-foreground"
           >
-            {copied ? (locale === "zh" ? "已复制" : "Copied") : "Copy CSS"}
+            {cssCopied ? (locale === "zh" ? "已复制" : "Copied") : "Copy CSS"}
           </button>
           <button
-            onClick={() => onCopy(background.tailwind, background.id)}
+            onClick={() => void onCopy(presentation.tailwind, `${background.id}-tailwind`)}
             className="flex-1 border border-border px-3 py-1.5 text-xs font-medium text-muted transition-colors hover:border-foreground hover:text-foreground"
           >
-            Tailwind
+            {tailwindCopied ? (locale === "zh" ? "已复制" : "Copied") : "Tailwind"}
           </button>
           <AddToKitButton
             type="background"
@@ -224,4 +240,3 @@ function BackgroundCard({ background, copied, onCopy, locale }: BackgroundCardPr
     </div>
   );
 }
-

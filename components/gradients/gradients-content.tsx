@@ -5,11 +5,15 @@ import { useI18n } from "@/lib/i18n/context";
 import {
   gradients,
   getGradientCategories,
+  toTailwindBackgroundImage,
   type Gradient,
   type GradientCategory,
   type GradientType,
 } from "@/lib/gradients";
 import { AddToKitButton } from "@/components/kit/add-to-kit-button";
+import { ClipboardFeedback } from "@/components/ui/clipboard-feedback";
+import { useClipboard } from "@/lib/hooks/use-clipboard";
+import type { ClipboardResult } from "@/lib/hooks/use-clipboard";
 import type { TranslationKey } from "@/lib/i18n/translations";
 
 type ColorFormat = "hex" | "rgb" | "hsl";
@@ -73,7 +77,7 @@ export function GradientsContent() {
   const [selectedCategory, setSelectedCategory] = useState<GradientCategory | "all">("all");
   const [selectedType, setSelectedType] = useState<GradientType | "all">("all");
   const [searchQuery, setSearchQuery] = useState("");
-  const [copiedId, setCopiedId] = useState<string | null>(null);
+  const clipboard = useClipboard();
 
   const categories = useMemo(() => getGradientCategories(), []);
 
@@ -100,13 +104,9 @@ export function GradientsContent() {
 
     return result;
   }, [selectedCategory, selectedType, searchQuery]);
-
-  function copyToClipboard(text: string, id: string) {
-    navigator.clipboard.writeText(text).then(() => {
-      setCopiedId(id);
-      setTimeout(() => setCopiedId(null), 2000);
-    });
-  }
+  const clipboardResultVisible = filteredGradients.some((gradient) =>
+    clipboard.result?.id.startsWith(`${gradient.id}:`),
+  );
 
   return (
     <div className="max-w-7xl mx-auto px-6 md:px-12 py-12 md:py-16" data-cursor-aura="off">
@@ -224,6 +224,10 @@ export function GradientsContent() {
         {t("gradients.showing")} {filteredGradients.length} {t("gradients.gradients")}
       </p>
 
+      {!clipboardResultVisible && clipboard.result && (
+        <ClipboardFeedback result={clipboard.result} locale={locale} />
+      )}
+
       {filteredGradients.length === 0 ? (
         <div className="text-center py-16">
           <p className="text-muted">{t("gradients.noResults")}</p>
@@ -234,8 +238,9 @@ export function GradientsContent() {
             <GradientCard
               key={gradient.id}
               gradient={gradient}
-              copiedId={copiedId}
-              onCopy={copyToClipboard}
+              result={clipboard.result}
+              isCopied={clipboard.isCopied}
+              onCopy={clipboard.copy}
               locale={locale}
               typeLabel={t(
                 GRADIENT_TYPES.find((type) => type.value === (gradient.type ?? "linear"))?.labelKey ??
@@ -251,17 +256,17 @@ export function GradientsContent() {
 
 interface GradientCardProps {
   gradient: Gradient;
-  copiedId: string | null;
-  onCopy: (text: string, id: string) => void;
+  result: ClipboardResult | null;
+  isCopied: (id: string, text?: string) => boolean;
+  onCopy: (text: string, id: string) => Promise<boolean>;
   locale: "zh" | "en";
   typeLabel: string;
 }
 
-function GradientCard({ gradient, copiedId, onCopy, locale, typeLabel }: GradientCardProps) {
+function GradientCard({ gradient, result, isCopied, onCopy, locale, typeLabel }: GradientCardProps) {
   const { t } = useI18n();
   const [angle, setAngle] = useState(gradient.angle);
   const [format, setFormat] = useState<ColorFormat>("hex");
-  const [copiedColor, setCopiedColor] = useState<string | null>(null);
 
   const isLinear = !gradient.type || gradient.type === "linear";
 
@@ -279,38 +284,28 @@ function GradientCard({ gradient, copiedId, onCopy, locale, typeLabel }: Gradien
     return `linear-gradient(${angle}deg, ${stops})`;
   }, [angle, gradient.colors, gradient.type, gradient.css]);
 
-  // Tailwind string reflecting current angle (keeps original from/via/to stops, only direction changes)
+  // Keep the Tailwind arbitrary background identical to the live preview,
+  // including angles between the named gradient utility directions.
   const liveTailwind = useMemo(() => {
     if (gradient.type && gradient.type !== "linear") {
       return gradient.tailwind;
     }
-    const a = ((angle % 360) + 360) % 360;
-    const dirs: Array<[number, string]> = [
-      [0, "t"], [45, "tr"], [90, "r"], [135, "br"],
-      [180, "b"], [225, "bl"], [270, "l"], [315, "tl"],
-    ];
-    let best = "tr";
-    let bestDiff = 360;
-    for (const d of dirs) {
-      const diff = Math.min(Math.abs(a - d[0]), 360 - Math.abs(a - d[0]));
-      if (diff < bestDiff) {
-        bestDiff = diff;
-        best = d[1];
-      }
-    }
-    const stops = gradient.tailwind.replace(/^bg-gradient-to-\S+\s*/, "");
-    return `bg-gradient-to-${best} ${stops}`;
-  }, [angle, gradient.tailwind, gradient.type]);
+    return toTailwindBackgroundImage(liveCss);
+  }, [gradient.tailwind, gradient.type, liveCss]);
 
-  function copyColor(hex: string) {
-    navigator.clipboard.writeText(formatColor(hex, format)).then(() => {
-      setCopiedColor(hex);
-      setTimeout(() => setCopiedColor(null), 1500);
-    });
-  }
-
-  const cssCopied = copiedId === gradient.id;
-  const tailwindCopied = copiedId === `${gradient.id}-tw`;
+  const feedbackResult = result?.id.startsWith(`${gradient.id}:`) ? result : null;
+  const copiedColor = gradient.colors.find((color) =>
+    feedbackResult?.id === `${gradient.id}:color-${color}`,
+  );
+  const currentFeedbackText = feedbackResult?.id === `${gradient.id}:css`
+    ? liveCss
+    : feedbackResult?.id === `${gradient.id}:tailwind`
+      ? liveTailwind
+      : copiedColor
+        ? formatColor(copiedColor, format)
+        : undefined;
+  const cssCopied = isCopied(`${gradient.id}:css`, liveCss);
+  const tailwindCopied = isCopied(`${gradient.id}:tailwind`, liveTailwind);
   const copyLabel = t("gradients.copyCss");
   const tailwindLabel = t("gradients.copyTailwind");
   const copiedLabel = t("gradients.copied");
@@ -319,115 +314,137 @@ function GradientCard({ gradient, copiedId, onCopy, locale, typeLabel }: Gradien
 
   const name = locale === "zh" ? gradient.nameZh : gradient.name;
 
-  // Specimen language: the gradient is the whole tile. The name sits on it at
-  // rest; the angle control, swatches and copy actions are held back and
-  // revealed on hover/focus so the gallery reads as colour first, controls
-  // second. Everything overlays the gradient, so there is no black-on-white
-  // panel stacked beneath every card.
-  return (
-    <div
-      className="group relative flex h-72 flex-col justify-between overflow-hidden border border-border p-4 text-white transition-colors hover:border-foreground/40"
-      style={{ background: liveCss }}
-    >
-      {/* Legibility scrim, only while interacting. */}
-      <div className="pointer-events-none absolute inset-0 bg-black/0 transition-colors duration-200 group-hover:bg-black/25 group-focus-within:bg-black/25" />
+  const colorFormatLabel = t("gradients.colorFormat");
 
-      {/* Top row: type/angle badge, always readable. */}
-      <div className="relative flex items-start justify-between gap-2">
-        <span className="inline-flex items-center bg-black/30 px-2 py-0.5 text-[0.6rem] font-medium uppercase tracking-wide backdrop-blur-sm">
+  return (
+    <article
+      aria-labelledby={`gradient-${gradient.id}-title`}
+      className="min-w-0 overflow-hidden border border-border bg-background"
+    >
+      <div className="relative h-40 sm:h-44" style={{ background: liveCss }} aria-hidden="true">
+        <span className="absolute left-3 top-3 inline-flex items-center bg-black/40 px-2 py-1 text-[0.65rem] font-medium text-white shadow-sm backdrop-blur-sm">
           {isLinear ? `${angle}° · ${typeLabel}` : typeLabel}
         </span>
-        <AddToKitButton
-          type="gradient"
-          slug={gradient.id}
-          size="sm"
-          className="grid h-7 w-7 shrink-0 place-items-center bg-black/30 text-white opacity-0 backdrop-blur-sm transition-opacity duration-200 hover:bg-black/50 group-hover:opacity-100 group-focus-within:opacity-100"
-        />
       </div>
 
-      {/* Foot: name at rest; controls slide in on hover/focus. */}
-      <div className="relative">
-        <h3 className="text-lg font-bold leading-tight drop-shadow-sm transition-opacity duration-200 group-hover:opacity-0 group-focus-within:opacity-0">
+      <div className="space-y-3 p-4">
+        <h3 id={`gradient-${gradient.id}-title`} className="text-base font-semibold leading-tight">
           {name}
         </h3>
 
-        <div className="absolute inset-x-0 bottom-0 space-y-2.5 opacity-0 translate-y-1 transition-all duration-200 group-hover:opacity-100 group-hover:translate-y-0 group-focus-within:opacity-100 group-focus-within:translate-y-0">
-          {isLinear && (
-            <div className="flex items-center gap-2">
-              <input
-                type="range"
-                min={0}
-                max={360}
-                step={5}
-                value={angle}
-                onChange={(e) => setAngle(Number(e.target.value))}
-                className="flex-1 accent-white"
-                aria-label={t("gradients.angle")}
-              />
-              <button
-                type="button"
-                onClick={() => setAngle(gradient.angle)}
-                className="whitespace-nowrap text-[0.65rem] text-white/80 underline underline-offset-2 hover:text-white"
-              >
-                {resetLabel}
-              </button>
-            </div>
-          )}
+        <div className="flex items-stretch gap-2">
+          <button
+            type="button"
+            onClick={() => void onCopy(liveCss, `${gradient.id}:css`)}
+            className="min-h-11 flex-1 border border-foreground bg-foreground px-3 py-2 text-sm font-medium text-background transition-colors hover:bg-foreground/90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+          >
+            {cssCopied ? copiedLabel : copyLabel}
+          </button>
+          <AddToKitButton
+            type="gradient"
+            slug={gradient.id}
+            variant="labeled"
+            className="min-h-11 shrink-0 px-3 text-xs normal-case tracking-normal text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+          />
+        </div>
 
-          {/* Swatches double as click-to-copy colour chips. */}
-          <div className="flex gap-1.5">
-            {gradient.colors.map((c, i) => (
-              <button
-                key={i}
-                type="button"
-                onClick={() => copyColor(c)}
-                className="relative h-7 flex-1 overflow-hidden border border-white/30"
-                style={{ background: c }}
-                title={`${formatColor(c, format)} — ${swatchLabel}`}
-                aria-label={`${formatColor(c, format)} — ${swatchLabel}`}
-              >
-                {copiedColor === c && (
-                  <span className="absolute inset-0 grid place-items-center bg-black/60 text-[0.55rem] font-mono">
-                    {copiedLabel}
-                  </span>
-                )}
-              </button>
-            ))}
-          </div>
+        <details className="group border-t border-border">
+          <summary className="flex min-h-11 cursor-pointer list-none items-center justify-between gap-3 text-sm font-medium text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent [&::-webkit-details-marker]:hidden">
+            <span>{t("gradients.adjust")}</span>
+            <svg
+              aria-hidden="true"
+              className="h-4 w-4 shrink-0 transition-transform group-open:rotate-180"
+              viewBox="0 0 20 20"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.5"
+            >
+              <path d="m5 7.5 5 5 5-5" />
+            </svg>
+          </summary>
 
-          <div className="flex items-center gap-2">
+          <div className="space-y-3 pb-1">
             <button
               type="button"
-              onClick={() => onCopy(liveCss, gradient.id)}
-              className="flex-1 border border-white/40 bg-black/20 px-3 py-1.5 text-xs font-medium backdrop-blur-sm transition-colors hover:bg-black/40"
+              onClick={() => void onCopy(liveTailwind, `${gradient.id}:tailwind`)}
+              className="min-h-11 w-full border border-border px-3 py-2 text-sm font-medium text-foreground transition-colors hover:border-foreground/60 hover:bg-foreground/[0.03] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
             >
-              {cssCopied ? copiedLabel : copyLabel}
+              {tailwindCopied ? copiedLabel : tailwindLabel}
             </button>
-            <button
-              type="button"
-              onClick={() => onCopy(liveTailwind, gradient.id + "-tw")}
-              className="flex-1 border border-white/40 bg-black/20 px-3 py-1.5 text-xs font-medium backdrop-blur-sm transition-colors hover:bg-black/40"
-            >
-              {tailwindLabel}
-            </button>
-            <div className="inline-flex border border-white/40 text-[0.6rem]">
-              {(["hex", "rgb", "hsl"] as ColorFormat[]).map((fmt) => (
+
+            {isLinear && (
+              <div className="flex items-center gap-3">
+                <input
+                  type="range"
+                  min={0}
+                  max={360}
+                  step={5}
+                  value={angle}
+                  onChange={(event) => setAngle(Number(event.target.value))}
+                  className="min-h-11 flex-1 accent-foreground"
+                  aria-label={t("gradients.angle")}
+                />
+                <span className="min-w-10 text-right text-sm tabular-nums text-muted" aria-live="polite">
+                  {angle}°
+                </span>
                 <button
-                  key={fmt}
                   type="button"
-                  onClick={() => setFormat(fmt)}
-                  aria-pressed={format === fmt}
-                  className={`px-1.5 py-1.5 uppercase tracking-wide transition-colors ${
-                    format === fmt ? "bg-white text-black" : "bg-black/20 hover:bg-black/40"
-                  }`}
+                  onClick={() => setAngle(gradient.angle)}
+                  className="min-h-11 px-2 text-xs text-muted underline underline-offset-2 hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
                 >
-                  {fmt}
+                  {resetLabel}
+                </button>
+              </div>
+            )}
+
+            <div className="flex items-center justify-between gap-3">
+              <span className="text-xs text-muted">{colorFormatLabel}</span>
+              <div role="group" aria-label={colorFormatLabel} className="inline-flex border border-border text-xs">
+                {(["hex", "rgb", "hsl"] as ColorFormat[]).map((fmt) => (
+                  <button
+                    key={fmt}
+                    type="button"
+                    onClick={() => setFormat(fmt)}
+                    aria-pressed={format === fmt}
+                    className={`min-h-9 min-w-11 px-2 uppercase tracking-wide transition-colors focus-visible:z-10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent ${
+                      format === fmt ? "bg-foreground text-background" : "text-muted hover:bg-foreground/[0.04] hover:text-foreground"
+                    }`}
+                  >
+                    {fmt}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="flex gap-1.5">
+              {gradient.colors.map((color) => (
+                <button
+                  key={color}
+                  type="button"
+                  onClick={() => void onCopy(formatColor(color, format), `${gradient.id}:color-${color}`)}
+                  className="relative min-h-9 min-w-0 flex-1 overflow-hidden border border-border/70 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+                  style={{ background: color }}
+                  title={`${formatColor(color, format)} — ${swatchLabel}`}
+                  aria-label={`${formatColor(color, format)} — ${swatchLabel}`}
+                >
+                  {isCopied(`${gradient.id}:color-${color}`, formatColor(color, format)) && (
+                    <span className="absolute inset-0 grid place-items-center bg-black/65 text-[0.6rem] font-mono text-white">
+                      {copiedLabel}
+                    </span>
+                  )}
                 </button>
               ))}
             </div>
           </div>
-        </div>
+        </details>
+
+        <ClipboardFeedback
+          result={feedbackResult}
+          locale={locale}
+          currentText={currentFeedbackText}
+          className="mb-0"
+        />
       </div>
-    </div>
+    </article>
   );
 }

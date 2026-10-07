@@ -1,10 +1,17 @@
 "use client";
 
-import { useState, type ComponentType } from "react";
+import { useEffect, type ComponentType } from "react";
 import dynamic from "next/dynamic";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useI18n } from "@/lib/i18n/context";
+import { LocalizedLink } from "@/components/i18n/localized-link";
 import { TypographyContent } from "@/components/typography/typography-content";
+import {
+  getCanonicalResourceUrl,
+  getResourceSectionFromSearch,
+  getResourceTabHref,
+  type ResourceSectionId,
+} from "@/lib/resources/navigation";
 
 const DeferredResourceLoading = () => (
   <div
@@ -49,7 +56,7 @@ const ShadersContent = dynamic(
 );
 
 interface ResourceSection {
-  id: string;
+  id: ResourceSectionId;
   zh: string;
   en: string;
   blurbZh: string;
@@ -104,32 +111,41 @@ const SECTIONS: ResourceSection[] = [
   },
 ];
 
-const VALID_IDS = new Set(SECTIONS.map((s) => s.id));
-
 export function ResourcesContent() {
   const { locale } = useI18n();
   const tx = (zh: string, en: string) => (locale === "zh" ? zh : en);
+  const router = useRouter();
   const searchParams = useSearchParams();
-  const fromQuery = searchParams.get("tab");
-  const fromHash =
-    typeof window !== "undefined" ? window.location.hash.replace("#", "") : "";
-  const requestedSection = [fromQuery, fromHash].find(
-    (id): id is string => Boolean(id && VALID_IDS.has(id)),
-  );
-  const [selectedSection, setSelectedSection] = useState<string | null>(null);
+  const active = getResourceSectionFromSearch(searchParams.toString());
 
-  // Land on the right section from ?tab= (301 targets) or #hash (deep links).
-  // A user click takes precedence for the rest of the current page session.
-  const active = selectedSection ?? requestedSection ?? SECTIONS[0].id;
+  useEffect(() => {
+    const canonicalizeCurrentUrl = () => {
+      const canonical = getCanonicalResourceUrl(new URL(window.location.href));
+      if (!canonical) return;
+
+      router.replace(`${canonical.pathname}${canonical.search}${canonical.hash}`, {
+        scroll: false,
+      });
+    };
+
+    // Read fragments only after hydration so server and client render the same
+    // initial tab. Legacy #section links are then replaced with ?tab=section.
+    canonicalizeCurrentUrl();
+    window.addEventListener("popstate", canonicalizeCurrentUrl);
+    window.addEventListener("hashchange", canonicalizeCurrentUrl);
+    return () => {
+      window.removeEventListener("popstate", canonicalizeCurrentUrl);
+      window.removeEventListener("hashchange", canonicalizeCurrentUrl);
+    };
+  }, [router]);
 
   const activeSection = SECTIONS.find((s) => s.id === active) ?? SECTIONS[0];
   const ActiveComp = activeSection.Comp;
 
-  const selectSection = (id: string) => {
-    setSelectedSection(id);
-    if (typeof window !== "undefined") {
-      window.history.replaceState(null, "", `#${id}`);
-    }
+  const selectSection = (id: ResourceSectionId) => {
+    router.push(getResourceTabHref(new URL(window.location.href), id), {
+      scroll: false,
+    });
   };
 
   return (
@@ -149,6 +165,23 @@ export function ResourcesContent() {
               "Copy-ready design assets in one place: font pairings, gradients, shadows and background textures. Copy the CSS, or add them to your kit and export in one go.",
             )}
           </p>
+          <LocalizedLink
+            href="/mobile"
+            className="mt-7 flex max-w-3xl items-center justify-between gap-5 rounded-2xl border border-border bg-background px-5 py-4 transition-colors hover:border-foreground/40"
+          >
+            <span>
+              <span className="block text-sm font-semibold text-foreground">
+                {tx("正在做移动端界面？", "Designing a mobile interface?")}
+              </span>
+              <span className="mt-1 block text-sm leading-6 text-muted">
+                {tx(
+                  "查看可操作的手机预览、常见移动端模式和开源组件推荐。",
+                  "Browse interactive phone previews, mobile patterns, and open-source component picks.",
+                )}
+              </span>
+            </span>
+            <span aria-hidden="true" className="shrink-0 text-lg text-muted">→</span>
+          </LocalizedLink>
         </div>
       </header>
 
@@ -183,9 +216,9 @@ export function ResourcesContent() {
         </aside>
 
         {/* active section — only one library is mounted at a time */}
-        <main className="flex-1 min-w-0">
+        <div className="flex-1 min-w-0">
           <ActiveComp />
-        </main>
+        </div>
       </div>
     </div>
   );

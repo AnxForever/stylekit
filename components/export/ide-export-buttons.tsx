@@ -1,15 +1,18 @@
 "use client";
 
-import { useState } from "react";
+import { useId, useRef, useState } from "react";
 import {
   Download,
   Copy,
   Check,
   Monitor,
   ChevronDown,
+  LoaderCircle,
 } from "lucide-react";
 import { useI18n } from "@/lib/i18n/context";
 import type { IdeConfigFormat } from "@/lib/export/ide-configs";
+import { useClipboard } from "@/lib/hooks/use-clipboard";
+import { ClipboardFeedback } from "@/components/ui/clipboard-feedback";
 
 interface IdeExportButtonsProps {
   slug: string;
@@ -50,9 +53,15 @@ const FORMAT_OPTIONS: FormatOption[] = [
 ];
 
 export function IdeExportButtons({ slug }: IdeExportButtonsProps) {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   const [isOpen, setIsOpen] = useState(false);
-  const [copiedFormat, setCopiedFormat] = useState<string | null>(null);
+  const [pendingFormat, setPendingFormat] = useState<IdeConfigFormat | null>(null);
+  const [feedbackFormat, setFeedbackFormat] = useState<IdeConfigFormat | null>(null);
+  const [loadError, setLoadError] = useState(false);
+  const menuId = useId();
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const { copy, result: clipboardResult, isCopied } = useClipboard({ copiedDuration: 2000 });
+  const zh = locale === "zh";
 
   async function fetchConfig(format: IdeConfigFormat): Promise<string | null> {
     const endpoint =
@@ -74,93 +83,161 @@ export function IdeExportButtons({ slug }: IdeExportButtonsProps) {
   }
 
   async function handleDownload(format: IdeConfigFormat) {
-    const content = await fetchConfig(format);
-    if (!content) return;
+    if (pendingFormat) return;
+    setPendingFormat(format);
+    setFeedbackFormat(null);
+    setLoadError(false);
 
-    const option = FORMAT_OPTIONS.find((o) => o.id === format);
-    const filename =
-      format === "claude-rules"
-        ? `${slug}.md`
-        : format === "generic"
-          ? `${slug}-rules.md`
-          : option?.filename ?? "rules.txt";
+    try {
+      const content = await fetchConfig(format);
+      if (!content) {
+        setLoadError(true);
+        return;
+      }
 
-    const blob = new Blob([content], { type: "text/plain" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = filename;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-    setIsOpen(false);
+      const option = FORMAT_OPTIONS.find((o) => o.id === format);
+      const filename =
+        format === "claude-rules"
+          ? `${slug}.md`
+          : format === "generic"
+            ? `${slug}-rules.md`
+            : option?.filename ?? "rules.txt";
+
+      const blob = new Blob([content], { type: "text/plain" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+      setIsOpen(false);
+    } catch {
+      setLoadError(true);
+    } finally {
+      setPendingFormat(null);
+    }
   }
 
   async function handleCopy(format: IdeConfigFormat) {
-    const content = await fetchConfig(format);
-    if (!content) return;
+    if (pendingFormat) return;
+    setPendingFormat(format);
+    setFeedbackFormat(null);
+    setLoadError(false);
 
-    await navigator.clipboard.writeText(content);
-    setCopiedFormat(format);
-    setTimeout(() => setCopiedFormat(null), 2000);
+    try {
+      const content = await fetchConfig(format);
+      if (!content) {
+        setLoadError(true);
+        return;
+      }
+
+      setFeedbackFormat(format);
+      await copy(content, format);
+    } catch {
+      setLoadError(true);
+    } finally {
+      setPendingFormat(null);
+    }
   }
 
   return (
-    <div className="relative">
+    <div className="relative w-full min-w-0">
       <div className="flex items-center gap-2">
         <button
-          onClick={() => setIsOpen(!isOpen)}
-          className="inline-flex items-center gap-2 px-4 py-2 text-sm border border-border hover:border-foreground transition-colors"
+          ref={triggerRef}
+          type="button"
+          aria-expanded={isOpen}
+          aria-controls={isOpen ? menuId : undefined}
+          aria-busy={pendingFormat !== null}
+          onClick={() => setIsOpen((open) => !open)}
+          className="inline-flex min-h-11 w-full items-center justify-center gap-2 border border-border px-4 py-2 text-sm transition-colors hover:border-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent sm:w-auto"
         >
-          <Monitor className="w-4 h-4" />
+          <Monitor className="w-4 h-4" aria-hidden="true" />
           <span>{t("ideExport.exportToIde")}</span>
           <ChevronDown
+            aria-hidden="true"
             className={`w-3 h-3 transition-transform ${isOpen ? "rotate-180" : ""}`}
           />
         </button>
       </div>
 
       {isOpen && (
-        <div className="absolute z-50 top-full left-0 mt-2 w-80 bg-background border border-border shadow-lg">
+        <div
+          id={menuId}
+          aria-busy={pendingFormat !== null}
+          onKeyDown={(event) => {
+            if (event.key === "Escape") {
+              event.stopPropagation();
+              setIsOpen(false);
+              triggerRef.current?.focus();
+            }
+          }}
+          className="absolute left-0 top-full z-50 mt-2 w-[min(20rem,calc(100vw-2rem))] max-w-full min-w-0 border border-border bg-background shadow-lg"
+        >
           <div className="p-3 border-b border-border">
             <p className="text-xs tracking-widest uppercase text-muted">
               {t("ideExport.chooseFormat")}
             </p>
           </div>
+          {loadError && (
+            <p role="alert" className="border-b border-border px-3 py-2 text-sm text-foreground">
+              {zh ? "无法加载配置，请重试。" : "Couldn't load the configuration. Please try again."}
+            </p>
+          )}
           <div className="divide-y divide-border">
             {FORMAT_OPTIONS.map((option) => (
               <div
                 key={option.id}
-                className="flex items-center justify-between p-3 hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition-colors"
+                className="flex flex-col gap-3 p-3 hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition-colors sm:flex-row sm:items-center sm:justify-between"
               >
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium">{option.label}</p>
-                  <p className="text-xs text-muted">{option.description}</p>
+                <div className="min-w-0 break-words sm:flex-1">
+                  <p className="break-words text-sm font-medium">{option.label}</p>
+                  <p className="break-words text-xs text-muted">{option.description}</p>
                 </div>
-                <div className="flex items-center gap-1 ml-3">
+                <div className="flex items-center justify-end gap-1 sm:ml-3 sm:justify-start">
                   <button
+                    type="button"
                     onClick={() => handleCopy(option.id)}
-                    className="p-1.5 hover:bg-zinc-100 dark:hover:bg-zinc-700 transition-colors"
+                    disabled={pendingFormat !== null}
+                    aria-label={zh ? `复制 ${option.label}` : `Copy ${option.label}`}
                     title={t("ideExport.copyToClipboard")}
+                    className="inline-flex min-h-11 min-w-11 items-center justify-center border border-transparent hover:bg-zinc-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent disabled:cursor-wait disabled:opacity-50 dark:hover:bg-zinc-700"
                   >
-                    {copiedFormat === option.id ? (
-                      <Check className="w-3.5 h-3.5 text-green-600" />
+                    {pendingFormat === option.id ? (
+                      <LoaderCircle className="w-4 h-4 animate-spin" aria-hidden="true" />
+                    ) : isCopied(option.id) ? (
+                      <Check className="w-4 h-4 text-green-600" aria-hidden="true" />
                     ) : (
-                      <Copy className="w-3.5 h-3.5" />
+                      <Copy className="w-4 h-4" aria-hidden="true" />
                     )}
                   </button>
                   <button
+                    type="button"
                     onClick={() => handleDownload(option.id)}
-                    className="p-1.5 hover:bg-zinc-100 dark:hover:bg-zinc-700 transition-colors"
+                    disabled={pendingFormat !== null}
+                    aria-label={zh ? `下载 ${option.label}` : `Download ${option.label}`}
                     title={t("ideExport.download")}
+                    className="inline-flex min-h-11 min-w-11 items-center justify-center border border-transparent hover:bg-zinc-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent disabled:cursor-wait disabled:opacity-50 dark:hover:bg-zinc-700"
                   >
-                    <Download className="w-3.5 h-3.5" />
+                    {pendingFormat === option.id ? (
+                      <LoaderCircle className="w-4 h-4 animate-spin" aria-hidden="true" />
+                    ) : (
+                      <Download className="w-4 h-4" aria-hidden="true" />
+                    )}
                   </button>
                 </div>
               </div>
             ))}
           </div>
+          <ClipboardFeedback
+            result={
+              feedbackFormat && clipboardResult?.id === feedbackFormat ? clipboardResult : null
+            }
+            locale={locale}
+            className="mx-3 mt-3 mb-3"
+          />
         </div>
       )}
     </div>

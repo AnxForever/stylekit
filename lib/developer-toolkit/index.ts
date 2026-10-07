@@ -72,8 +72,8 @@ export const developerToolkitManifest = Object.freeze({
       command: "npm install stylekit-core@beta",
       docsUrl:
         "https://github.com/AnxForever/stylekit/tree/main/packages/core#readme",
-      verifiedAt: "2026-10-02",
-      evidence: "The beta dist-tag selects the current prerelease for a new install; existing lockfiles still need an explicit dependency update",
+      verifiedAt: "2026-10-07",
+      evidence: "GitHub main and npm's beta dist-tag both report 1.0.0-beta.7; npm's latest dist-tag remains beta.3, so the setup command targets @beta. Existing lockfiles still need an explicit dependency update",
     },
     {
       id: "cli",
@@ -84,8 +84,8 @@ export const developerToolkitManifest = Object.freeze({
         "npx -y --prefer-online stylekit-cli@latest add synthwave",
       docsUrl:
         "https://github.com/AnxForever/stylekit/tree/main/packages/cli#readme",
-      verifiedAt: "2026-10-02",
-      evidence: "The latest tag resolves at launch; an exact package version remains available for reproducible runs",
+      verifiedAt: "2026-10-07",
+      evidence: "GitHub main and npm's latest dist-tag both report 0.3.1; an exact package version remains available for reproducible runs",
     },
     {
       id: "mcp",
@@ -95,8 +95,8 @@ export const developerToolkitManifest = Object.freeze({
       command: `npx ${MCP_NPX_ARGS.join(" ")}`,
       docsUrl:
         "https://github.com/AnxForever/stylekit/tree/main/packages/mcp#readme",
-      verifiedAt: "2026-10-02",
-      evidence: "The latest tag resolves whenever the MCP client starts the configured process; a running process must be restarted to load an update",
+      verifiedAt: "2026-10-07",
+      evidence: "GitHub main and npm's latest dist-tag both report 0.4.1; the configured process resolves latest on client startup, and a running process must be restarted to load an update",
       clientConfiguration: Object.freeze({
         mcpServers: Object.freeze({
           stylekit: Object.freeze({
@@ -109,12 +109,12 @@ export const developerToolkitManifest = Object.freeze({
     {
       id: "agent-skill",
       state: "public-beta",
-      publicVersion: "0.7.0",
-      repositoryVersion: "0.7.0",
+      publicVersion: "0.8.0",
+      repositoryVersion: "0.8.0",
       command: "npx skills@latest add AnxForever/stylekit-skill",
       docsUrl: "https://github.com/AnxForever/stylekit-skill#readme",
-      verifiedAt: "2026-10-02",
-      evidence: "Release 0.7.0 tracks the repository default branch; the Skill verifies its release manifest when used",
+      verifiedAt: "2026-10-07",
+      evidence: "The GitHub main release manifest reports 0.8.0; SKILL.md documents the client-followed update check against main",
     },
   ]),
 } satisfies DeveloperToolkitManifest);

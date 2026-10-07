@@ -19,6 +19,7 @@ import {
 import { getGradientById, type Gradient } from "@/lib/gradients";
 import { getShadowById, type Shadow } from "@/lib/shadows";
 import { getBackgroundById, type BackgroundPattern } from "@/lib/backgrounds";
+import { getBackgroundPatternPresentation } from "@/lib/backgrounds/presentation";
 import { exportStyleTokens } from "@/lib/export/figma-tokens";
 import { getStyleTokens } from "@/lib/styles/tokens-registry";
 import { generateTailwindPresetJS } from "@/lib/export/tailwind-preset";
@@ -165,7 +166,8 @@ function synthesizePrompt(kit: ResolvedKit, items: KitItem[]): string {
     surfaces.push(`- Shadow "${shadow.name}": \`${shadow.value}\``);
   }
   for (const background of kit.backgrounds) {
-    surfaces.push(`- Background "${background.name}": \`background-image: ${background.css};\``);
+    const declarations = getBackgroundPatternPresentation(background).css;
+    surfaces.push(`- Background "${background.name}": \`${declarations}\``);
   }
   if (surfaces.length > 0) {
     lines.push("## Surfaces");
@@ -293,7 +295,8 @@ function buildDesignSpec(kit: ResolvedKit, items: KitItem[]): string {
     lines.push("## Background Patterns");
     lines.push("");
     for (const background of kit.backgrounds) {
-      lines.push(`- **${background.name}**: \`background-image: ${background.css};\``);
+      const declarations = getBackgroundPatternPresentation(background).css;
+      lines.push(`- **${background.name}**: \`${declarations}\``);
     }
     lines.push("");
   }
@@ -364,8 +367,12 @@ function buildSurfacesFile(kit: ResolvedKit): string {
     lines.push("");
   }
   for (const background of kit.backgrounds) {
+    const declarations = getBackgroundPatternPresentation(background).css
+      .split("\n")
+      .map((declaration) => `  ${declaration}`)
+      .join("\n");
     lines.push(`/* Background pattern: ${background.name} */`);
-    lines.push(`.pattern-${background.id} { background-image: ${background.css}; }`);
+    lines.push(`.pattern-${background.id} {\n${declarations}\n}`);
     lines.push("");
   }
   return lines.join("\n");

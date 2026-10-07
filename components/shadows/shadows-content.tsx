@@ -9,11 +9,13 @@ import {
   type ShadowCategory,
 } from "@/lib/shadows";
 import { AddToKitButton } from "@/components/kit/add-to-kit-button";
+import { ClipboardFeedback } from "@/components/ui/clipboard-feedback";
+import { useClipboard } from "@/lib/hooks/use-clipboard";
 
 export function ShadowsContent() {
   const { t, locale } = useI18n();
   const [selectedCategory, setSelectedCategory] = useState<ShadowCategory | "all">("all");
-  const [copiedId, setCopiedId] = useState<string | null>(null);
+  const clipboard = useClipboard();
 
   const categories = useMemo(() => getShadowCategories(), []);
 
@@ -21,13 +23,9 @@ export function ShadowsContent() {
     if (selectedCategory === "all") return shadows;
     return shadows.filter((s) => s.category === selectedCategory);
   }, [selectedCategory]);
-
-  function copy(text: string, id: string) {
-    navigator.clipboard.writeText(text).then(() => {
-      setCopiedId(id);
-      setTimeout(() => setCopiedId(null), 2000);
-    });
-  }
+  const clipboardResultVisible = filtered.some((shadow) =>
+    clipboard.result?.id.startsWith(`${shadow.id}-`),
+  );
 
   const needsDarkBg = (s: Shadow) =>
     s.category === "glow" || s.tags.includes("dark-mode") || s.tags.includes("cyberpunk");
@@ -74,18 +72,30 @@ export function ShadowsContent() {
         ))}
       </div>
 
+      {!clipboardResultVisible && clipboard.result && (
+        <ClipboardFeedback result={clipboard.result} locale={locale} />
+      )}
+
       {/* Shadow Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {filtered.map((shadow) => (
-          <ShadowCard
-            key={shadow.id}
-            shadow={shadow}
-            darkBg={needsDarkBg(shadow)}
-            copied={copiedId === shadow.id}
-            onCopy={copy}
-            locale={locale}
-          />
-        ))}
+        {filtered.map((shadow) => {
+          const result = clipboard.result?.id.startsWith(`${shadow.id}-`)
+            ? clipboard.result
+            : null;
+          return (
+            <div key={shadow.id} className="min-w-0">
+              <ShadowCard
+                shadow={shadow}
+                darkBg={needsDarkBg(shadow)}
+                cssCopied={clipboard.isCopied(`${shadow.id}-css`)}
+                tailwindCopied={clipboard.isCopied(`${shadow.id}-tailwind`)}
+                onCopy={clipboard.copy}
+                locale={locale}
+              />
+              <ClipboardFeedback result={result} locale={locale} className="mt-2 mb-0" />
+            </div>
+          );
+        })}
       </div>
     </div>
   );
@@ -94,12 +104,13 @@ export function ShadowsContent() {
 interface ShadowCardProps {
   shadow: Shadow;
   darkBg: boolean;
-  copied: boolean;
-  onCopy: (text: string, id: string) => void;
+  cssCopied: boolean;
+  tailwindCopied: boolean;
+  onCopy: (text: string, id: string) => Promise<boolean>;
   locale: "zh" | "en";
 }
 
-function ShadowCard({ shadow, darkBg, copied, onCopy, locale }: ShadowCardProps) {
+function ShadowCard({ shadow, darkBg, cssCopied, tailwindCopied, onCopy, locale }: ShadowCardProps) {
   const displayName = locale === "zh" ? shadow.nameZh : shadow.name;
 
   // Specimen language: the shadow floats on a large neutral stage that is the
@@ -132,17 +143,17 @@ function ShadowCard({ shadow, darkBg, copied, onCopy, locale }: ShadowCardProps)
 
         <div className="absolute inset-x-4 bottom-4 flex items-center gap-2 opacity-0 translate-y-1 transition-all duration-200 group-hover:opacity-100 group-hover:translate-y-0 group-focus-within:opacity-100 group-focus-within:translate-y-0">
           <button
-            onClick={() => onCopy(shadow.css, shadow.id)}
+            onClick={() => void onCopy(shadow.css, `${shadow.id}-css`)}
             aria-label={`Copy ${displayName} CSS`}
             className="flex-1 border border-border px-3 py-1.5 text-xs font-medium text-muted transition-colors hover:border-foreground hover:text-foreground"
           >
-            {copied ? (locale === "zh" ? "已复制" : "Copied") : "Copy CSS"}
+            {cssCopied ? (locale === "zh" ? "已复制" : "Copied") : "Copy CSS"}
           </button>
           <button
-            onClick={() => onCopy(shadow.tailwind, shadow.id)}
+            onClick={() => void onCopy(shadow.tailwind, `${shadow.id}-tailwind`)}
             className="flex-1 border border-border px-3 py-1.5 text-xs font-medium text-muted transition-colors hover:border-foreground hover:text-foreground"
           >
-            Tailwind
+            {tailwindCopied ? (locale === "zh" ? "已复制" : "Copied") : "Tailwind"}
           </button>
           <AddToKitButton
             type="shadow"

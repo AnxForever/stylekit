@@ -30,4 +30,10 @@ describe("server-side locale documents", () => {
     expect(getLocaleRouteStrategy("/community/notifications")).toBe("rewrite");
     expect(getIndexableLocalesForPath("/community/aurora")).toEqual(["en", "zh"]);
   });
+  it("registers mobile design as a localized, indexable page", () => {
+    expect(getLocaleRouteStrategy("/mobile")).toBe("filesystem");
+    expect(getIndexableLocalesForPath("/mobile")).toEqual(["en", "zh"]);
+    const localePage = readFileSync("app/[locale]/mobile/page.tsx", "utf8");
+    expect(localePage).toContain('localizeMetadata(localized, locale, "/mobile")');
+  });
 });

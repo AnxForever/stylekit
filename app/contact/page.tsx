@@ -4,6 +4,7 @@ import { Footer } from "@/components/layout/footer";
 import { SupportContent } from "@/components/support/support-content";
 import { Heart } from "lucide-react";
 import { getPublishedThankYouEntries } from "@/lib/support/acknowledgments";
+import { FriendPromoBanner } from "@/components/home/friend-promo-banner";
 
 export const metadata: Metadata = {
   title: "Contact & Support",
@@ -48,6 +49,7 @@ export default async function ContactPage() {
             <SupportContent thankYouEntries={thankYouEntries} />
           </div>
         </section>
+        <FriendPromoBanner />
       </main>
       <Footer />
     </div>

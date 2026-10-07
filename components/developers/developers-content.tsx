@@ -27,7 +27,7 @@ const COPY = {
     label: "For developers",
     title: "Use StyleKit in your workflow",
     intro:
-      "Use the CLI, MCP server or Skill to find styles, animations and reusable assets, then retrieve their code and dependencies. Install color themes through shadcn.",
+      "Use the CLI, MCP server or Skill to find styles, animations and reusable assets, then retrieve source and dependencies where available. Install color themes through shadcn.",
     note: "These install a style's color theme — design tokens for light and dark. The component code is yours to build.",
     // Kept as a literal because this is a client component and importing the
     // registry would ship all 148 style records to the browser to print a number.
@@ -39,7 +39,7 @@ const COPY = {
     verified: "Verified",
     coreTitle: "Shared foundation",
     coreDescription:
-      "Core shares the public asset catalog, style briefs, tokens, recipes and accessibility helpers with the CLI and MCP server.",
+      "Core powers shared style and asset lookup, implementation briefs, tokens, recipes and code linting in the CLI and MCP server. Style records also include accessibility and readiness signals when available.",
     copyCommand: "Copy command",
     copiedCommand: "Command copied",
     copyConfig: "Copy MCP config",
@@ -67,7 +67,7 @@ const COPY = {
       },
       {
         title: "Agent Skill",
-        body: "A compatible agent checks GitHub when it runs the Skill instructions, at most once per 24 hours. This is not a background updater and it does not change your project files. For an older installation, run npx skills@latest update stylekit once; back up local Skill edits before this migration. Afterward, the updater verifies files before changing them, skips the update if it detects local edits, and restores the previous file if an update fails.",
+        body: "When a compatible client follows the Skill's startup instructions, it checks GitHub main at most once every 24 hours; this is not a background updater. For an older installation, run npx skills@latest update stylekit --project or --global to match its install scope. The Skills CLI may replace the Skill directory, so save local edits first. After migration, the bundled updater skips the whole update if managed files have local edits or conflicts.",
       },
     ],
     cards: [
@@ -86,7 +86,7 @@ const COPY = {
       {
         id: "cli",
         name: "CLI",
-        desc: "Search public assets and export styles, animation snippets, component patterns and complete template files.",
+        desc: "Browse the public asset catalog and retrieve available source code and dependencies in the terminal.",
         foot: "Public beta · searchable asset catalog",
       },
       {
@@ -101,7 +101,7 @@ const COPY = {
     label: "面向开发者",
     title: "把 StyleKit 接进你的工作流",
     intro:
-      "用 CLI、MCP 或 Skill 查找风格、动画和设计素材，直接获取代码与依赖；配色主题也可以通过 shadcn 安装。",
+      "用 CLI、MCP 或 Skill 查找风格、动画和设计素材，并按素材提供情况获取源码和依赖；配色主题也可以通过 shadcn 安装。",
     note: "安装的是风格的配色主题——明暗两套 design tokens。组件代码由你自己实现。",
     browse: "浏览全部 148 风格",
     docs: "文档",
@@ -109,7 +109,7 @@ const COPY = {
     verified: "已验证",
     coreTitle: "共享底座",
     coreDescription:
-      "Core 与 CLI、MCP 共用公开资产目录，提供完整风格说明、tokens、配方和无障碍辅助能力。",
+      "Core 为 CLI 与 MCP 提供共用的风格和素材查询、实现说明、tokens、配方与代码规则检查；数据可用时，风格记录也包含无障碍和就绪度信号。",
     copyCommand: "复制命令",
     copiedCommand: "命令已复制",
     copyConfig: "复制 MCP 配置",
@@ -137,7 +137,7 @@ const COPY = {
       },
       {
         title: "Agent Skill",
-        body: "兼容的 Agent 在执行 Skill 说明时会检查 GitHub 新版本，最多每 24 小时一次。这不是后台更新服务，也不会改动你的项目文件。旧版先运行一次 npx skills@latest update stylekit 完成迁移；本地改过 Skill 的话，迁移前先备份。之后会先校验文件再更新，检测到本地改动就跳过，更新失败会恢复旧文件。",
+        body: "兼容客户端遵循 Skill 启动指令时，会检查 GitHub main；每 24 小时最多一次，这不是后台更新服务。旧版按安装范围迁移：项目级运行 npx skills@latest update stylekit --project，全局运行 npx skills@latest update stylekit --global。Skills CLI 可能替换 Skill 目录，先备份本地改动。迁移后，内置更新器发现受管文件被修改或发生冲突时，会跳过整次更新。",
       },
     ],
     cards: [
@@ -156,7 +156,7 @@ const COPY = {
       {
         id: "cli",
         name: "CLI",
-        desc: "在终端检索公开资产，获取风格、动画代码、组件模式和完整模板文件。",
+        desc: "在终端浏览公开素材目录，并查看素材可提供的源码和依赖。",
         foot: "公开 Beta · 可检索的资产目录",
       },
       {

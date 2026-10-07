@@ -14,6 +14,8 @@ import {
   type ShaderParams,
 } from "@/components/shaders/shader-catalog";
 import { useI18n } from "@/lib/i18n/context";
+import { ClipboardFeedback } from "@/components/ui/clipboard-feedback";
+import { useClipboard } from "@/lib/hooks/use-clipboard";
 import { cn } from "@/lib/utils";
 
 type Lang = "en" | "zh";
@@ -346,8 +348,9 @@ export function ShadersContent() {
   const [params, setParams] = useState<ShaderParams>(() =>
     getInitialParams(SHADER_CATALOG[0])
   );
-  const [snippetCopied, setSnippetCopied] = useState(false);
-  const [installCopied, setInstallCopied] = useState(false);
+  const clipboard = useClipboard();
+  const snippetCopied = clipboard.isCopied("shader-snippet");
+  const installCopied = clipboard.isCopied("shader-install");
 
   const visibleShaders = useMemo(
     () =>
@@ -378,16 +381,6 @@ export function ShadersContent() {
 
   const setParam = (key: string, value: ShaderParamValue) => {
     setParams((previous) => ({ ...previous, [key]: value }));
-  };
-
-  const copyText = async (text: string, mark: (copied: boolean) => void) => {
-    try {
-      await navigator.clipboard.writeText(text);
-      mark(true);
-      setTimeout(() => mark(false), 1600);
-    } catch {
-      // Clipboard may be unavailable (insecure context); nothing to recover.
-    }
   };
 
   return (
@@ -554,7 +547,7 @@ export function ShadersContent() {
           </p>
           <button
             type="button"
-            onClick={() => copyText(snippet, setSnippetCopied)}
+            onClick={() => void clipboard.copy(snippet, "shader-snippet")}
             className="flex items-center gap-1.5 border border-border px-3 py-1 text-xs text-muted transition-colors hover:border-foreground/40 hover:text-foreground"
           >
             {snippetCopied ? (
@@ -570,9 +563,7 @@ export function ShadersContent() {
             <span className="shrink-0">$ pnpm add @paper-design/shaders-react</span>
             <button
               type="button"
-              onClick={() =>
-                copyText("pnpm add @paper-design/shaders-react", setInstallCopied)
-              }
+              onClick={() => void clipboard.copy("pnpm add @paper-design/shaders-react", "shader-install")}
               aria-label={t.install}
               className="shrink-0 text-muted transition-colors hover:text-foreground"
             >
@@ -588,6 +579,19 @@ export function ShadersContent() {
           </pre>
         </div>
       </div>
+
+      <ClipboardFeedback
+        result={clipboard.result}
+        locale={lang}
+        currentText={
+          clipboard.result?.id === "shader-snippet"
+            ? snippet
+            : clipboard.result?.id === "shader-install"
+              ? "pnpm add @paper-design/shaders-react"
+              : undefined
+        }
+        className="mt-2 mb-0"
+      />
 
       <p className="mt-6 text-xs text-muted">
         {t.credit}{" "}
