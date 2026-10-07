@@ -19,18 +19,21 @@ describe("public UX priority contract", () => {
     expect(source).not.toContain("<span>More</span>");
   });
 
-  it("anchors the support entry below the featured carousel, after discovery", async () => {
-    const source = await read("components/home/home-content.tsx");
+  it("keeps support reachable from the footer without competing with homepage discovery", async () => {
+    const [home, footer, contact] = await Promise.all([
+      read("components/home/home-content.tsx"),
+      read("components/layout/footer.tsx"),
+      read("app/contact/page.tsx"),
+    ]);
 
-    // Owner decision 2026-07-26: the support button lives directly under the
-    // featured carousel (desktop popover + mobile drawer) and must not be lost
-    // in future homepage redesigns; discovery still leads, support follows.
-    expect(source).toContain("<HomeSupportCard");
-    expect(source.indexOf("<FeaturedCarousel")).toBeGreaterThan(-1);
-    expect(source.indexOf("<HomeSupportCard")).toBeGreaterThan(
-      source.indexOf("<FeaturedCarousel")
-    );
-    expect(source).toContain('className="mt-5 sm:mt-6 hidden md:block"');
+    // The approved interface simplification moves support and promotions to
+    // Contact & Support, while preserving their existing footer entry.
+    expect(home).toContain("<FeaturedCarousel");
+    expect(home).not.toContain("<HomeSupportCard");
+    expect(home).not.toContain("<FriendPromoBanner");
+    expect(footer).toContain('localizeHref("/contact#support-maintenance", locale)');
+    expect(contact).toContain("<SupportContent");
+    expect(contact).toContain("<FriendPromoBanner");
   });
 
   it("makes hard-prompt copy the primary style-detail action", async () => {

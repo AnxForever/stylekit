@@ -212,44 +212,6 @@ export default async function UiPromptsPage() {
           templates={uiPromptTemplates}
         />
 
-        <section>
-          <div className="max-w-7xl mx-auto px-6 md:px-12 py-12 md:py-16 text-center">
-            <h2 className="text-2xl md:text-3xl mb-4">
-              {isZh ? "需要更具体的提示词分类？" : "Need a more specific prompt category?"}
-            </h2>
-            <p className="text-muted mb-8 max-w-2xl mx-auto">
-              {isZh
-                ? "进入对应专题，选择落地页区块、仪表盘数据视图、Tailwind 组件或暗色主题的提示词，再按你的产品补充内容和约束。"
-                : "Open a collection for landing page sections, dashboard data views, Tailwind components, or dark themes, then add your product content and constraints."}
-            </p>
-            <div className="flex flex-wrap justify-center gap-3">
-              <LocalizedLink
-                href="/landing-page-prompts"
-                className="inline-flex items-center px-6 py-3 bg-foreground text-background text-sm tracking-wide hover:bg-foreground/90 transition-colors"
-              >
-                {isZh ? "落地页提示词" : "Landing Page Prompts"}
-              </LocalizedLink>
-              <LocalizedLink
-                href="/dashboard-prompts"
-                className="inline-flex items-center px-6 py-3 border border-border text-sm tracking-wide hover:border-foreground transition-colors"
-              >
-                {isZh ? "仪表盘提示词" : "Dashboard Prompts"}
-              </LocalizedLink>
-              <LocalizedLink
-                href="/tailwind-ui-prompts"
-                className="inline-flex items-center px-6 py-3 border border-border text-sm tracking-wide hover:border-foreground transition-colors"
-              >
-                {isZh ? "Tailwind UI 提示词" : "Tailwind UI Prompts"}
-              </LocalizedLink>
-              <LocalizedLink
-                href="/dark-mode-ui-prompts"
-                className="inline-flex items-center px-6 py-3 border border-border text-sm tracking-wide hover:border-foreground transition-colors"
-              >
-                {isZh ? "暗色模式提示词" : "Dark Mode UI Prompts"}
-              </LocalizedLink>
-            </div>
-          </div>
-        </section>
       </main>
       <Footer />
     </div>

@@ -190,26 +190,16 @@ export function ComponentPatternsContent() {
                     ))}
                   </div>
 
-                  <div className="flex items-center justify-between gap-3 border-t border-border pt-4">
+                  <div className="border-t border-border pt-4">
                     <div>
                       <div className="text-[11px] uppercase tracking-[0.16em] text-muted">
                         {t("componentPatterns.sourceLabel")}
                       </div>
-                      <LocalizedLink href={pattern.sourceHref} className="mt-1 inline-flex text-sm font-medium hover:text-accent transition-colors">
+                      <LocalizedLink href={pattern.sourceHref} className="mt-1 inline-flex min-h-10 items-center gap-2 text-sm font-medium hover:text-accent transition-colors">
                         {sourceName}
+                        <span aria-hidden="true">→</span>
                       </LocalizedLink>
                     </div>
-
-                    <LocalizedLink
-                      href={pattern.sourceHref}
-                      className="inline-flex items-center gap-2 rounded-full border border-border px-3 py-2 text-xs font-medium hover:border-foreground hover:text-foreground transition-colors"
-                    >
-                      {t("componentPatterns.viewSource")}
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                        <path d="M7 17 17 7" />
-                        <path d="M7 7h10v10" />
-                      </svg>
-                    </LocalizedLink>
                   </div>
                 </div>
               </article>

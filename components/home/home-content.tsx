@@ -3,27 +3,15 @@
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import { startTransition, useEffect, useMemo, useRef, useState } from "react";
-import { ArrowRight, Heart } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { useI18n } from "@/lib/i18n/context";
 import { HomeStyleCard } from "@/components/home/home-style-card";
 import { FeaturedCarousel } from "@/components/home/featured-carousel";
 import { RevealOnScroll } from "@/components/home/reveal-on-scroll";
-import { GitHubStarButton } from "@/components/github-star-button";
-import {
-  Drawer,
-  DrawerContent,
-  DrawerDescription,
-  DrawerHeader,
-  DrawerTitle,
-  DrawerTrigger,
-} from "@/components/ui/drawer";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { trackEvent } from "@/lib/analytics/events";
-import { HomeSupportCard, type SupportPreviewItem } from "./_support-card";
 import { MobileHomeSummarySection } from "./_mobile-summary";
 import { TrendingStylesSkeleton } from "./_skeletons";
 import { ThankYouModal } from "@/components/home/thank-you-modal";
-import { FriendPromoBanner } from "@/components/home/friend-promo-banner";
 
 const BuiltForSection = dynamic(
   () => import("@/components/home/built-for-section").then((m) => ({ default: m.BuiltForSection })),
@@ -108,7 +96,6 @@ export function HomeContent({ styles, stats, thankYouEntries }: HomeContentProps
     return () => mq.removeEventListener("change", sync);
   }, []);
 
-  const smallLinkClassName = "inline-flex items-center gap-1.5 text-xs tracking-wide text-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background transition-colors";
   const quickJumpLinkClassName = "inline-flex items-center gap-1.5 px-2.5 py-1.5 md:px-3.5 md:py-2.5 text-[11px] md:text-xs border border-border text-muted hover:text-foreground hover:border-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background transition-[color,border-color,background-color,transform,box-shadow] duration-200 ease-out";
   const sectionLabelClassName = "text-[11px] tracking-[0.16em] uppercase text-muted";
   const sectionTitleClassName = "text-[1.6rem] sm:text-2xl md:text-3xl leading-tight tracking-tight";
@@ -128,22 +115,6 @@ export function HomeContent({ styles, stats, thankYouEntries }: HomeContentProps
       { href: quickLinkTargets[1], label: t("analytics.trending.title") },
     ],
     [quickLinkTargets, t]
-  );
-  const supportHref = localizeHref("/contact#support-maintenance", locale);
-  const supportPreviewItems: SupportPreviewItem[] = useMemo(
-    () => [
-      {
-        src: "/support/wechat-qr.png",
-        title: locale === "zh" ? "微信赞赏码" : "WeChat Tipping",
-        hint: locale === "zh" ? "微信赞赏" : "Tip via WeChat",
-      },
-      {
-        src: "/support/alipay-qr.png",
-        title: locale === "zh" ? "支付宝" : "Alipay",
-        hint: locale === "zh" ? "支付宝扫码" : "Scan with Alipay",
-      },
-    ],
-    [locale]
   );
   const heroScenarioEntries = useMemo(
     () => HERO_SCENARIO_ORDER
@@ -328,7 +299,6 @@ export function HomeContent({ styles, stats, thankYouEntries }: HomeContentProps
   return (
     <>
       <ThankYouModal showOnHomepageOnly={true} entries={thankYouEntries} />
-      <FriendPromoBanner />
       <section id="home-hero" className="home-hero-surface relative overflow-hidden border-b border-border">
         <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
           <div className="absolute -top-28 left-[-8rem] h-72 w-72 rounded-full bg-accent/10 blur-3xl" />
@@ -389,24 +359,6 @@ export function HomeContent({ styles, stats, thankYouEntries }: HomeContentProps
                 >
                   {t("nav.templates")}
                 </Link>
-                <Link
-                  href={localizeHref("/guide", locale)}
-                  prefetch={false}
-                  onClick={() => trackEvent("cta_click", { label: "open_guide", location: "home_hero" })}
-                  className={smallLinkClassName}
-                >
-                  {t("nav.guide")}
-                  <ArrowRight className="w-3 h-3" />
-                </Link>
-                <Link
-                  href={localizeHref("/launch", locale)}
-                  prefetch={false}
-                  onClick={() => trackEvent("cta_click", { label: "open_launch", location: "home_hero" })}
-                  className={smallLinkClassName}
-                >
-                  {t("home.launch")}
-                  <ArrowRight className="w-3 h-3" />
-                </Link>
               </div>
               <ul className="mt-7 flex flex-wrap items-center gap-4" aria-label={t("home.metricAriaLabel")}>
                 {heroStats.map((item) => (
@@ -415,8 +367,6 @@ export function HomeContent({ styles, stats, thankYouEntries }: HomeContentProps
                     <p className="text-[11px] uppercase tracking-[0.12em] text-muted">{item.label}</p>
                   </li>
                 ))}
-                <li aria-hidden className="h-4 w-px bg-border" />
-                <li className="hidden sm:block"><GitHubStarButton /></li>
               </ul>
 
               <nav className="mt-5 sm:mt-6 hidden md:block" aria-label={t("home.quickJump")}>
@@ -459,66 +409,6 @@ export function HomeContent({ styles, stats, thankYouEntries }: HomeContentProps
             <RevealOnScroll instant className="w-full max-w-xl md:max-w-none md:justify-self-end">
               <div className="relative">
                 <FeaturedCarousel styles={featuredStyles} />
-                <div className="mt-4 flex justify-end lg:hidden">
-                  <Drawer>
-                    <DrawerTrigger asChild>
-                      <button
-                        type="button"
-                        className="inline-flex items-center gap-2 rounded-full border border-foreground bg-background/90 px-4 py-2 text-sm shadow-[0_14px_40px_-24px_rgba(0,0,0,0.45)] backdrop-blur-sm transition-colors hover:bg-foreground hover:text-background"
-                      >
-                        <Heart className="h-4 w-4" />
-                        {locale === "zh" ? "支持维护" : "Support"}
-                      </button>
-                    </DrawerTrigger>
-                    <DrawerContent
-                      side="bottom"
-                      className="max-h-[88vh] overflow-y-auto rounded-t-[28px] px-4 pb-4 pt-8"
-                    >
-                      <DrawerHeader className="sr-only">
-                        <DrawerTitle>
-                          {locale === "zh" ? "支持维护" : "Support Maintenance"}
-                        </DrawerTitle>
-                        <DrawerDescription>
-                          {locale === "zh"
-                            ? "扫码支持 StyleKit 的服务器、域名和后续维护。"
-                            : "Scan to support StyleKit server, domain, and maintenance costs."}
-                        </DrawerDescription>
-                      </DrawerHeader>
-                      <HomeSupportCard
-                        locale={locale}
-                        href={supportHref}
-                        items={supportPreviewItems}
-                        variant="mobile"
-                      />
-                    </DrawerContent>
-                  </Drawer>
-                </div>
-                <div className="mt-4 hidden lg:flex justify-end">
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <button
-                        type="button"
-                        className="inline-flex items-center gap-2 rounded-full border border-foreground bg-background/90 px-4 py-2 text-sm shadow-[0_14px_40px_-24px_rgba(0,0,0,0.45)] backdrop-blur-sm transition-colors hover:bg-foreground hover:text-background"
-                      >
-                        <Heart className="h-4 w-4" />
-                        {locale === "zh" ? "支持维护" : "Support"}
-                      </button>
-                    </PopoverTrigger>
-                    <PopoverContent
-                      align="end"
-                      side="top"
-                      sideOffset={12}
-                      className="w-[28rem] border-0 bg-transparent p-0 shadow-none"
-                    >
-                      <HomeSupportCard
-                        locale={locale}
-                        href={supportHref}
-                        items={supportPreviewItems}
-                        variant="desktop"
-                      />
-                    </PopoverContent>
-                  </Popover>
-                </div>
               </div>
             </RevealOnScroll>
           </div>

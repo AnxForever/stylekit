@@ -3,7 +3,9 @@ import Page, { metadata as baseMetadata } from "@/app/resources/page";
 import { isLocale } from "@/lib/i18n/routing";
 import { localizeMetadata } from "@/lib/i18n/metadata";
 
-export const dynamic = "force-static";
+// Keep normal static rendering so useSearchParams can defer to the page's
+// Suspense boundary. force-static supplies empty query params during prerender
+// and hydrates the default font tab against the visitor's requested tab.
 export const revalidate = 3600;
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {

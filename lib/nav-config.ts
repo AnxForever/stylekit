@@ -77,7 +77,7 @@ export const mainNav: NavItem[] = [
           items: [
             { href: "/resources", labelKey: "nav.resourceLibrary" },
             { href: "/component-patterns", labelKey: "nav.componentPatterns" },
-            { href: "/learn", labelKey: "nav.learn" },
+            { href: "/mobile", labelKey: "nav.mobileDesign" },
           ],
         },
         {

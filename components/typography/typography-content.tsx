@@ -14,6 +14,8 @@ import {
 import { loadFontFaces, warmFonts } from "@/lib/typography/font-loader";
 import { specimenPalette } from "@/lib/typography/specimen";
 import { AddToKitButton } from "@/components/kit/add-to-kit-button";
+import { ClipboardFeedback } from "@/components/ui/clipboard-feedback";
+import { useClipboard } from "@/lib/hooks/use-clipboard";
 
 type CSSVars = CSSProperties & Record<`--${string}`, string>;
 
@@ -36,7 +38,7 @@ export function TypographyContent() {
   const { t, locale } = useI18n();
   const [selectedCategory, setSelectedCategory] = useState<TypographyCategory | "all">("all");
   const [searchQuery, setSearchQuery] = useState("");
-  const [copiedId, setCopiedId] = useState<string | null>(null);
+  const clipboard = useClipboard();
   const [previewSize, setPreviewSize] = useState<PreviewSizeId>("m");
 
   const categories = useMemo(() => getTypographyCategories(), []);
@@ -63,6 +65,9 @@ export function TypographyContent() {
 
     return result;
   }, [selectedCategory, searchQuery]);
+  const clipboardResultVisible = filteredPairings.some((pairing) =>
+    clipboard.result?.id.startsWith(`${pairing.id}-`),
+  );
 
   // One pass for the whole catalogue, in the order the wall renders it. Doing
   // this per card as it scrolled into view meant ~40 <head> mutations, each one
@@ -70,13 +75,6 @@ export function TypographyContent() {
   useEffect(() => {
     loadFontFaces(fontPairings.flatMap((p) => [p.heading, p.body]));
   }, []);
-
-  function copyToClipboard(text: string, id: string) {
-    navigator.clipboard.writeText(text).then(() => {
-      setCopiedId(id);
-      setTimeout(() => setCopiedId(null), 2000);
-    });
-  }
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-12 py-12 md:py-20" data-cursor-aura="off">
@@ -171,6 +169,10 @@ export function TypographyContent() {
         {t("typography.showing")} {filteredPairings.length} {t("typography.pairings")}
       </p>
 
+      {!clipboardResultVisible && clipboard.result && (
+        <ClipboardFeedback result={clipboard.result} locale={locale} />
+      )}
+
       {filteredPairings.length === 0 ? (
         <div className="text-center py-16">
           <p className="text-muted">{t("typography.noResults")}</p>
@@ -182,17 +184,25 @@ export function TypographyContent() {
               wraps the family names and forces every sheet taller. Each sheet is
               its own coloured tile now, so they sit apart on the page ground
               rather than sharing hairline borders. */}
-          {filteredPairings.map((pairing) => (
-            <TypographyCard
-              key={pairing.id}
-              pairing={pairing}
-              copied={copiedId === pairing.id}
-              onCopy={copyToClipboard}
-              locale={locale}
-              scale={size.scale}
-              sheetPx={size.sheetPx}
-            />
-          ))}
+          {filteredPairings.map((pairing) => {
+            const result = clipboard.result?.id.startsWith(`${pairing.id}-`)
+              ? clipboard.result
+              : null;
+            return (
+              <div key={pairing.id} className="min-w-0">
+                <TypographyCard
+                  pairing={pairing}
+                  cssCopied={clipboard.isCopied(`${pairing.id}-css`)}
+                  tailwindCopied={clipboard.isCopied(`${pairing.id}-tailwind`)}
+                  onCopy={clipboard.copy}
+                  locale={locale}
+                  scale={size.scale}
+                  sheetPx={size.sheetPx}
+                />
+                <ClipboardFeedback result={result} locale={locale} className="mt-2 mb-0" />
+              </div>
+            );
+          })}
         </div>
       )}
     </div>
@@ -201,8 +211,9 @@ export function TypographyContent() {
 
 interface TypographyCardProps {
   pairing: FontPairing;
-  copied: boolean;
-  onCopy: (text: string, id: string) => void;
+  cssCopied: boolean;
+  tailwindCopied: boolean;
+  onCopy: (text: string, id: string) => Promise<boolean>;
   locale: "zh" | "en";
   scale: number;
   sheetPx: number;
@@ -290,7 +301,7 @@ function usePairingFont(pairing: FontPairing) {
   return specimenRef;
 }
 
-function TypographyCard({ pairing, copied, onCopy, locale, scale, sheetPx }: TypographyCardProps) {
+function TypographyCard({ pairing, cssCopied, tailwindCopied, onCopy, locale, scale, sheetPx }: TypographyCardProps) {
   const specimenRef = usePairingFont(pairing);
 
   const headingFamily = fontStack(pairing.heading);
@@ -414,16 +425,16 @@ function TypographyCard({ pairing, copied, onCopy, locale, scale, sheetPx }: Typ
               stays quiet. Positioned over the same band, not adding height. */}
           <div className="absolute inset-x-6 md:inset-x-8 bottom-6 md:bottom-7 flex items-center gap-2 opacity-0 translate-y-1 transition-all duration-200 group-hover:opacity-100 group-hover:translate-y-0 group-focus-within:opacity-100 group-focus-within:translate-y-0">
             <button
-              onClick={() => onCopy(generateFontCSS(pairing), pairing.id)}
+              onClick={() => void onCopy(generateFontCSS(pairing), `${pairing.id}-css`)}
               className="specimen-action px-3 py-1.5 text-xs font-medium"
             >
-              {copied ? (locale === "zh" ? "已复制" : "Copied") : "Copy CSS"}
+              {cssCopied ? (locale === "zh" ? "已复制" : "Copied") : "Copy CSS"}
             </button>
             <button
-              onClick={() => onCopy(generateTailwindTheme(pairing), pairing.id)}
+              onClick={() => void onCopy(generateTailwindTheme(pairing), `${pairing.id}-tailwind`)}
               className="specimen-action px-3 py-1.5 text-xs font-medium"
             >
-              Tailwind
+              {tailwindCopied ? (locale === "zh" ? "已复制" : "Copied") : "Tailwind"}
             </button>
             <AddToKitButton
               type="font-pairing"

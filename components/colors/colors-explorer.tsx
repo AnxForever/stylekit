@@ -4,6 +4,9 @@ import { useMemo, useState } from "react";
 import { useI18n } from "@/lib/i18n/context";
 import { LocalizedLink } from "@/components/i18n/localized-link";
 import type { StyleColorEntry } from "@/lib/styles/colors";
+import { Check } from "lucide-react";
+import { useClipboard } from "@/lib/hooks/use-clipboard";
+import { ClipboardFeedback } from "@/components/ui/clipboard-feedback";
 
 interface ColorsExplorerProps {
   entries: StyleColorEntry[];
@@ -15,11 +18,13 @@ function Swatch({
   label,
   onCopy,
   copied,
+  isZh,
 }: {
   hex: string;
   label: string;
   onCopy: (hex: string) => void;
   copied: boolean;
+  isZh: boolean;
 }) {
   return (
     <div className="group/swatch flex flex-col items-stretch text-left">
@@ -28,7 +33,7 @@ function Swatch({
         onClick={() => onCopy(hex)}
         className="focus:outline-none focus-visible:ring-2 focus-visible:ring-foreground"
         title={`${label} · ${hex}`}
-        aria-label={`Copy ${hex}`}
+        aria-label={isZh ? `复制 ${hex}` : `Copy ${hex}`}
       >
         <span
           className="block aspect-square w-full border border-border transition-transform group-hover/swatch:scale-[1.03]"
@@ -38,9 +43,9 @@ function Swatch({
       <LocalizedLink
         href={`/colors/${hex.replace("#", "")}`}
         className="mt-1 font-mono text-[11px] text-muted hover:underline group-hover/swatch:text-foreground"
-        aria-label={`${hex} color details`}
+        aria-label={isZh ? `${hex} 色值详情` : `${hex} color details`}
       >
-        {copied ? "✓" : hex}
+        {copied ? <Check className="h-4 w-4" aria-hidden="true" /> : hex}
       </LocalizedLink>
     </div>
   );
@@ -50,7 +55,7 @@ export function ColorsExplorer({ entries, swatchCount }: ColorsExplorerProps) {
   const { locale } = useI18n();
   const isZh = locale === "zh";
   const [query, setQuery] = useState("");
-  const [copied, setCopied] = useState<string | null>(null);
+  const clipboard = useClipboard();
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -62,13 +67,6 @@ export function ColorsExplorer({ entries, swatchCount }: ColorsExplorerProps) {
       return entry.swatches.some((hex) => hex.includes(q));
     });
   }, [entries, query]);
-
-  const handleCopy = (hex: string) => {
-    void navigator.clipboard?.writeText(hex).then(() => {
-      setCopied(hex);
-      window.setTimeout(() => setCopied((c) => (c === hex ? null : c)), 1200);
-    });
-  };
 
   return (
     <div className="container mx-auto px-4 py-10 md:py-14">
@@ -137,11 +135,17 @@ export function ColorsExplorer({ entries, swatchCount }: ColorsExplorerProps) {
                     key={`${entry.slug}-${hex}-${index}`}
                     hex={hex}
                     label={isZh ? entry.name : entry.nameEn}
-                    onCopy={handleCopy}
-                    copied={copied === hex}
+                    onCopy={(value) => { void clipboard.copy(value, entry.slug); }}
+                    copied={clipboard.isCopied(entry.slug) && clipboard.result?.text === hex}
+                    isZh={isZh}
                   />
                 ))}
               </div>
+              <ClipboardFeedback
+                result={clipboard.result?.id === entry.slug ? clipboard.result : null}
+                locale={locale}
+                className="mt-3 mb-0"
+              />
             </section>
           ))}
         </div>

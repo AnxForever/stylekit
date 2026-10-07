@@ -27,6 +27,11 @@ export type GradientCategory =
   | "nature"    // 自然
   | "neon";     // 霓虹
 
+/** Converts a generated CSS gradient into Tailwind's arbitrary background syntax. */
+export function toTailwindBackgroundImage(css: string): string {
+  return `bg-[${css.trim().replace(/\s+/g, "_")}]`;
+}
+
 // Pre-defined gradient palettes
 export const gradients: Gradient[] = [
   // === Warm Gradients ===

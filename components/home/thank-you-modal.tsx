@@ -44,10 +44,6 @@ export function ThankYouModal({
         : [],
     [latestEntry, sortedReceiptEntries]
   );
-  const thankYouModalStorageKey = latestEntry
-    ? `stylekit-thankyou-modal-dismissed:${latestEntry.id}`
-    : "stylekit-thankyou-modal-dismissed";
-
   useEffect(() => {
     // 检查是否为首页
     const pathname = window.location.pathname;
@@ -59,26 +55,16 @@ export function ThankYouModal({
 
     const params = new URLSearchParams(window.location.search);
     const forceOpen = params.has("preview") || params.get("support") === "thanks";
-    let dismissed: string | null = null;
-    try {
-      dismissed = forceOpen ? null : localStorage.getItem(thankYouModalStorageKey);
-    } catch {
-      dismissed = null;
-    }
-
-    if (!dismissed && latestReceiptEntries.length > 0 && thankYouModalConfig.enabled) {
+    // A visit to the catalog is not a request to see donation receipts.
+    // Keep explicit support/preview links working without interrupting visitors.
+    if (forceOpen && latestReceiptEntries.length > 0 && thankYouModalConfig.enabled) {
       const frame = window.requestAnimationFrame(() => setIsOpen(true));
       return () => window.cancelAnimationFrame(frame);
     }
-  }, [latestReceiptEntries.length, showOnHomepageOnly, thankYouModalStorageKey]);
+  }, [latestReceiptEntries.length, showOnHomepageOnly]);
 
   const handleClose = () => {
     setIsOpen(false);
-    try {
-      localStorage.setItem(thankYouModalStorageKey, Date.now().toString());
-    } catch {
-      // Storage unavailable (private mode): the modal simply shows again next visit.
-    }
   };
 
   if (!isOpen) return null;

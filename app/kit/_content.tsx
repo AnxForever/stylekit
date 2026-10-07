@@ -114,11 +114,10 @@ function resolveRow(item: KitItem, locale: string): ResolvedRow {
 
 export function KitContent() {
   const { locale } = useI18n();
-  const { items, count, removeItem, updateNote, makePrimary, clearKit } = useKit();
+  const { items, count, removeItem, updateNote, makePrimary } = useKit();
   const [exporting, setExporting] = useState(false);
   const [promptCopied, setPromptCopied] = useState(false);
   const [linkCopied, setLinkCopied] = useState(false);
-  const [confirmClear, setConfirmClear] = useState(false);
 
   const zh = locale === "zh";
 
@@ -198,16 +197,6 @@ export function KitContent() {
     } catch {
       // clipboard unavailable
     }
-  };
-
-  const handleClear = () => {
-    if (!confirmClear) {
-      setConfirmClear(true);
-      setTimeout(() => setConfirmClear(false), 3000);
-      return;
-    }
-    clearKit();
-    setConfirmClear(false);
   };
 
   return (
@@ -290,13 +279,6 @@ export function KitContent() {
             >
               {linkCopied ? (zh ? "链接已复制" : "Link copied") : zh ? "分享这套搭配" : "Share this kit"}
             </button>
-            <button
-              type="button"
-              onClick={handleClear}
-              className="ml-auto border border-border px-4 py-2 text-xs uppercase tracking-[0.14em] text-muted hover:border-red-500 hover:text-red-500 transition-colors"
-            >
-              {confirmClear ? (zh ? "再点一次确认清空" : "Click again to confirm") : zh ? "清空" : "Clear"}
-            </button>
           </div>
 
           <div className="space-y-10">
@@ -339,7 +321,7 @@ export function KitContent() {
                         type="button"
                         onClick={() => removeItem(row.item.type, row.item.slug)}
                         aria-label={zh ? `移除 ${row.name}` : `Remove ${row.name}`}
-                        className="self-start sm:self-auto text-xs uppercase tracking-[0.14em] text-muted hover:text-red-500 transition-colors"
+                        className="min-h-11 self-start px-2 sm:self-auto text-xs uppercase tracking-[0.14em] text-muted hover:text-red-500 transition-colors"
                       >
                         {zh ? "移除" : "Remove"}
                       </button>

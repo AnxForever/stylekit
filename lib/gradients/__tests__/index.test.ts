@@ -1,4 +1,4 @@
-import { gradients, getGradientCategories } from "@/lib/gradients";
+import { gradients, getGradientCategories, toTailwindBackgroundImage } from "@/lib/gradients";
 
 describe("gradient categories", () => {
   it("returns all expected categories with bilingual labels", () => {
@@ -42,5 +42,21 @@ describe("gradient rendering types", () => {
         expect(gradient.tailwind).toContain("bg-[");
       }
     }
+  });
+});
+
+describe("Tailwind gradient export", () => {
+  it("preserves the exact live angle and color stops for a 25 degree gradient", () => {
+    expect(
+      toTailwindBackgroundImage("linear-gradient(25deg, #ff0000 0%, #0000ff 100%)"),
+    ).toBe("bg-[linear-gradient(25deg,_#ff0000_0%,_#0000ff_100%)]");
+  });
+
+  it("preserves the default preset angle and stops", () => {
+    const preset = gradients.find((gradient) => gradient.id === "sunrise-warmth");
+    expect(preset).toBeDefined();
+    expect(toTailwindBackgroundImage(preset!.css)).toBe(
+      "bg-[linear-gradient(135deg,_#ffffc4_0%,_#ff6164_50%,_#b00012_100%)]",
+    );
   });
 });

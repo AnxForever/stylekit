@@ -2,6 +2,8 @@ import { describe, expect, it } from "vitest";
 import { normalizeKitItems } from "@/lib/kit/storage";
 import { buildKitFiles, resolveKitItems } from "@/lib/kit/export";
 import type { KitItem } from "@/lib/kit/types";
+import { backgrounds } from "@/lib/backgrounds";
+import { getBackgroundPatternPresentation } from "@/lib/backgrounds/presentation";
 
 const at = "2026-08-01T00:00:00.000Z";
 
@@ -140,5 +142,40 @@ describe("buildKitFiles", () => {
     expect(spec).toContain("| Primary |");
     expect(spec).toContain("**Do:**");
     expect(spec).toContain("Google Fonts:");
+  });
+
+  it("exports complete background declarations across prompts, specs, and CSS", () => {
+    const backgroundItems: KitItem[] = [
+      { type: "background", slug: "dot-grid", addedAt: at },
+      { type: "background", slug: "honeycomb", addedAt: at },
+    ];
+    const backgroundFiles = buildKitFiles(backgroundItems, { generatedAt: "2026-08-01" });
+    const backgroundFileByPath = (path: string) => backgroundFiles.find((file) => file.path === path);
+    const prompt = backgroundFileByPath("AI_PROMPT.md")!.content;
+    const spec = backgroundFileByPath("DESIGN_SPEC.md")!.content;
+    const surfaces = backgroundFileByPath("surfaces.css")!.content;
+
+    for (const id of ["dot-grid", "honeycomb"]) {
+      const background = backgrounds.find((candidate) => candidate.id === id)!;
+      const declarations = getBackgroundPatternPresentation(background).css;
+
+      expect(prompt).toContain(`Background "${background.name}": \`${declarations}\``);
+      expect(spec).toContain(`- **${background.name}**: \`${declarations}\``);
+      expect(surfaces).toContain(
+        `.pattern-${id} {\n${declarations
+          .split("\n")
+          .map((declaration) => `  ${declaration}`)
+          .join("\n")}\n}`,
+      );
+    }
+
+    expect(prompt).not.toContain("background-image:");
+    expect(spec).not.toContain("background-image:");
+    expect(surfaces).not.toContain("background-image:");
+    expect(surfaces).toContain("linear-gradient(150deg");
+    expect(surfaces).toContain("linear-gradient(30deg");
+    expect(surfaces).toContain("linear-gradient(90deg");
+    expect(surfaces).toContain("21px 30px");
+    expect(surfaces).toContain("background-size: 42px 60px;");
   });
 });

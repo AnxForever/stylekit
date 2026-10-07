@@ -1,7 +1,7 @@
 // @vitest-environment happy-dom
 import "@testing-library/jest-dom/vitest";
-import { beforeEach, describe, expect, it, vi } from "vitest";
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
 
 const { useI18nMock } = vi.hoisted(() => ({
   useI18nMock: vi.fn(),
@@ -14,29 +14,21 @@ vi.mock("@/lib/i18n/context", () => ({
 import { ThankYouModal } from "@/components/home/thank-you-modal";
 
 describe("ThankYouModal", () => {
+  afterEach(cleanup);
   beforeEach(() => {
     window.history.replaceState({}, "", "/zh");
     window.localStorage.clear();
     useI18nMock.mockReturnValue({ locale: "zh" });
   });
 
-  it("auto-opens once per donation batch and stays closed after dismissal", async () => {
-    const { unmount } = render(<ThankYouModal />);
-
-    // Fresh visitor (no dismissal recorded for this batch): celebrate.
-    const dialog = await screen.findByRole("dialog");
-    expect(dialog).toBeInTheDocument();
-
-    fireEvent.click(screen.getByRole("button", { name: "关闭" }));
-    await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument());
-
-    // Same batch, next visit: dismissal is remembered, no auto-open.
-    unmount();
+  it("leaves a fresh homepage visit uninterrupted after the opening frame", async () => {
     render(<ThankYouModal />);
+    await new Promise<void>((resolve) => window.requestAnimationFrame(() => resolve()));
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
   });
 
   it("shows every receipt in the current batch", async () => {
+    window.history.replaceState({}, "", "/zh?preview");
     render(<ThankYouModal />);
     await screen.findByRole("dialog");
 
@@ -44,16 +36,12 @@ describe("ThankYouModal", () => {
     expect(receipts.length).toBeGreaterThanOrEqual(2);
   });
 
-  it("force-opens via ?support=thanks even after dismissal", async () => {
-    const { unmount } = render(<ThankYouModal />);
-    await screen.findByRole("dialog");
-    fireEvent.click(screen.getByRole("button", { name: "关闭" }));
-    await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument());
-    unmount();
-
+  it("opens via an explicit support link and can be closed", async () => {
     window.history.replaceState({}, "", "/zh?support=thanks");
     render(<ThankYouModal />);
     await waitFor(() => expect(screen.getByRole("dialog")).toBeInTheDocument());
+    fireEvent.click(screen.getByRole("button", { name: "关闭" }));
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
   });
 
   it("does not render outside the homepage when restricted", () => {
