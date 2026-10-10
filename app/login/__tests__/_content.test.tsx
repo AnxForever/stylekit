@@ -102,6 +102,11 @@ vi.mock("next/dynamic", () => ({
   default: () => () => null,
 }));
 
+// next/font is transformed by Next.js at build time, outside Vitest.
+vi.mock("next/font/google", () => ({
+  Playfair_Display: () => ({ variable: "login-display-font" }),
+}));
+
 vi.mock("next/link", () => ({
   default: ({ children, ...props }: React.ComponentProps<"a">) => <a {...props}>{children}</a>,
 }));
