@@ -79,10 +79,12 @@ export const LOCALE_ROUTE_POLICY = [
       "/mobile",
       "/mouse-interactions",
       "/avoid-ai-slop",
+      "/privacy",
       "/resources",
       "/style-advisor",
       "/tailwind-ui-prompts",
       "/templates",
+      "/terms",
       "/ui-prompts",
     ],
     prefixes: [
@@ -137,7 +139,7 @@ export const LOCALE_ROUTE_POLICY = [
     id: "english-indexable-aliases",
     mode: "rewrite",
     sitemapLocales: "en",
-    exact: ["/privacy", "/terms", "/refunds", "/support"],
+    exact: ["/refunds", "/support"],
     prefixes: [],
   },
   {

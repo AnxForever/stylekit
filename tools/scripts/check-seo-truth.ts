@@ -5,6 +5,11 @@ import { CURATED_STYLE_COUNT } from "@/lib/product/catalog-facts";
 import { animationsMeta } from "@/lib/animations/meta";
 import { templateCatalog } from "@/lib/templates/catalog";
 import { generateStyleJsonLd, generateBlogPostJsonLd } from "@/lib/seo/json-ld";
+import {
+  getIndexableLocalesForPath,
+  getLocaleFromPathname,
+  stripLocaleFromPathname,
+} from "@/lib/i18n/routing";
 
 interface SeoTruthIssue {
   source: string;
@@ -187,8 +192,13 @@ async function main(): Promise<void> {
     if (redirectPaths.has(url.pathname)) {
       issues.push({ source: "app/sitemap.ts", message: `redirect URL leaked into sitemap: ${entry.url}` });
     }
-    if (/^\/zh\/(?:blog|guides)(?:\/|$)/.test(url.pathname) || ["/zh/privacy", "/zh/terms"].includes(url.pathname)) {
-      issues.push({ source: "app/sitemap.ts", message: `English-only content advertised as Chinese: ${entry.url}` });
+    const locale = getLocaleFromPathname(url.pathname);
+    const contentPath = stripLocaleFromPathname(url.pathname);
+    if (locale && !getIndexableLocalesForPath(contentPath).includes(locale)) {
+      issues.push({
+        source: "app/sitemap.ts",
+        message: `route policy does not index ${contentPath} in locale ${locale}: ${entry.url}`,
+      });
     }
   }
 

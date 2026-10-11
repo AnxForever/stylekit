@@ -207,16 +207,18 @@ export function AiImplementationPanel({
     specTokens,
   ]);
 
-  const activeItem = items.find((item) => item.id === activeTab) ?? items[0];
-
   const focusTab = (tabId: ImplementationTab) => {
     window.requestAnimationFrame(() => {
       document.getElementById(`ai-implementation-tab-${tabId}`)?.focus();
     });
   };
 
-  const handleTabKeyDown = (event: KeyboardEvent<HTMLButtonElement>, tabId: ImplementationTab) => {
-    const currentIndex = items.findIndex((item) => item.id === tabId);
+  const handleTabKeyDown = (
+    event: KeyboardEvent<HTMLButtonElement>,
+    tabId: ImplementationTab,
+    tabItems: ImplementationItem[],
+  ) => {
+    const currentIndex = tabItems.findIndex((item) => item.id === tabId);
     if (currentIndex === -1) return;
 
     let nextIndex = currentIndex;
@@ -224,24 +226,24 @@ export function AiImplementationPanel({
     switch (event.key) {
       case "ArrowRight":
       case "ArrowDown":
-        nextIndex = (currentIndex + 1) % items.length;
+        nextIndex = (currentIndex + 1) % tabItems.length;
         break;
       case "ArrowLeft":
       case "ArrowUp":
-        nextIndex = (currentIndex - 1 + items.length) % items.length;
+        nextIndex = (currentIndex - 1 + tabItems.length) % tabItems.length;
         break;
       case "Home":
         nextIndex = 0;
         break;
       case "End":
-        nextIndex = items.length - 1;
+        nextIndex = tabItems.length - 1;
         break;
       default:
         return;
     }
 
     event.preventDefault();
-    const nextTab = items[nextIndex]?.id;
+    const nextTab = tabItems[nextIndex]?.id;
     if (!nextTab) return;
     setActiveTab(nextTab);
     focusTab(nextTab);
@@ -263,70 +265,37 @@ export function AiImplementationPanel({
     URL.revokeObjectURL(url);
   };
 
-  return (
-    <div className="border border-border">
+  const hardPromptItem = items.find((item) => item.id === "hard")!;
+  const referenceItems = items.filter((item) => item.id !== "hard");
+  const activeReferenceItem = referenceItems.find((item) => item.id === activeTab) ?? referenceItems[0];
+
+  const renderDocument = (item: ImplementationItem, isMainPrompt = false) => {
+    const canCopy = !isMainPrompt || Boolean(promptContext);
+    const copyLabel = isMainPrompt
+      ? locale === "zh" ? "复制项目版提示词" : "Copy contextual prompt"
+      : locale === "zh" ? "复制" : "Copy";
+
+    return (
       <div
-        role="tablist"
-        aria-label={locale === "zh" ? "AI 实现文档" : "AI implementation documents"}
-        className="grid grid-cols-1 border-b border-border sm:grid-cols-3"
-      >
-        {items.map((item) => {
-          const selected = item.id === activeItem.id;
-
-          return (
-            <button
-              key={item.id}
-              id={`ai-implementation-tab-${item.id}`}
-              type="button"
-              role="tab"
-              aria-selected={selected}
-              aria-label={`${item.eyebrow} ${item.title}`}
-              aria-controls={`ai-implementation-panel-${item.id}`}
-              onClick={() => setActiveTab(item.id)}
-              onKeyDown={(event) => handleTabKeyDown(event, item.id)}
-              className={`min-h-[56px] border-b border-r border-border px-3 py-3 text-left transition-colors last:border-r-0 md:border-b-0 ${
-                selected
-                  ? "bg-foreground text-background"
-                  : "bg-background text-muted hover:bg-zinc-50 hover:text-foreground dark:hover:bg-zinc-900"
-              }`}
-            >
-              <span className="block text-[10px] uppercase tracking-widest opacity-75">
-                {item.eyebrow}
-              </span>
-              <span className="mt-1 block text-sm font-medium tracking-normal">{item.title}</span>
-            </button>
-          );
-        })}
-      </div>
-
-      {/* Project context — lightweight pre-prompt interview */}
-      <ProjectContextForm
-        locale={locale}
-        open={contextOpen}
-        onToggle={() => setContextOpen((prev) => !prev)}
-        style={promptInput}
-        onPromptContextChange={setPromptContext}
-      />
-
-      <div
-        id={`ai-implementation-panel-${activeItem.id}`}
-        role="tabpanel"
-        aria-labelledby={`ai-implementation-tab-${activeItem.id}`}
+        id={`ai-implementation-panel-${item.id}`}
+        role={isMainPrompt ? "region" : "tabpanel"}
+        aria-label={isMainPrompt ? item.title : undefined}
+        aria-labelledby={isMainPrompt ? undefined : `ai-implementation-tab-${item.id}`}
       >
         <div className="flex flex-col gap-4 border-b border-border px-4 py-4 md:flex-row md:items-center md:justify-between">
           <div>
-            <h3 className="text-lg">{activeItem.title}</h3>
-            <p className="mt-1 max-w-2xl text-sm text-muted">{activeItem.description}</p>
+            <h3 className="text-lg">{item.title}</h3>
+            <p className="mt-1 max-w-2xl text-sm text-muted">{item.description}</p>
             <div className="mt-4 grid gap-3 text-xs md:grid-cols-2">
               <div className="border border-border/70 p-3">
                 <p className="mb-2 font-medium text-foreground">
                   {locale === "zh" ? "什么时候用" : "When to use"}
                 </p>
                 <ul className="space-y-1.5 text-muted">
-                  {activeItem.whenToUse.map((item) => (
-                    <li key={item} className="flex gap-2">
+                  {item.whenToUse.map((step) => (
+                    <li key={step} className="flex gap-2">
                       <span aria-hidden="true">-</span>
-                      <span>{item}</span>
+                      <span>{step}</span>
                     </li>
                   ))}
                 </ul>
@@ -336,10 +305,10 @@ export function AiImplementationPanel({
                   {locale === "zh" ? "怎么用" : "How to use"}
                 </p>
                 <ul className="space-y-1.5 text-muted">
-                  {activeItem.howToUse.map((item) => (
-                    <li key={item} className="flex gap-2">
+                  {item.howToUse.map((step) => (
+                    <li key={step} className="flex gap-2">
                       <span aria-hidden="true">-</span>
-                      <span>{item}</span>
+                      <span>{step}</span>
                     </li>
                   ))}
                 </ul>
@@ -347,48 +316,101 @@ export function AiImplementationPanel({
             </div>
           </div>
           <div className="flex flex-wrap gap-2">
+            {canCopy && (
+              <button
+                type="button"
+                onClick={() => handleCopy(item)}
+                className="inline-flex min-h-[40px] items-center gap-2 border border-border px-3 py-2 text-sm transition-colors hover:border-foreground hover:text-foreground"
+              >
+                <Copy className="h-4 w-4" aria-hidden="true" />
+                {isCopied(item.id, item.content) ? locale === "zh" ? "已复制" : "Copied" : copyLabel}
+              </button>
+            )}
             <button
               type="button"
-              onClick={() => handleCopy(activeItem)}
-              className="inline-flex min-h-[40px] items-center gap-2 border border-border px-3 py-2 text-sm transition-colors hover:border-foreground hover:text-foreground"
-            >
-              <Copy className="h-4 w-4" aria-hidden="true" />
-              {isCopied(activeItem.id, activeItem.content)
-                ? locale === "zh"
-                  ? "已复制"
-                  : "Copied"
-                : locale === "zh"
-                  ? "复制"
-                  : "Copy"}
-            </button>
-            <button
-              type="button"
-              onClick={() => handleDownload(activeItem)}
+              onClick={() => handleDownload(item)}
               className="inline-flex min-h-[40px] items-center gap-2 border border-border px-3 py-2 text-sm transition-colors hover:border-foreground hover:text-foreground"
             >
               <Download className="h-4 w-4" aria-hidden="true" />
-              {locale === "zh" ? "下载" : "Download"}
+              {locale === "zh" ? isMainPrompt ? "下载提示词" : "下载" : isMainPrompt ? "Download prompt" : "Download"}
             </button>
           </div>
         </div>
 
         <ClipboardFeedback
           result={
-            clipboardResult?.id === activeItem.id && clipboardResult.text === activeItem.content
+            clipboardResult?.id === item.id && clipboardResult.text === item.content
               ? clipboardResult
               : null
           }
           locale={locale}
-          currentText={activeItem.content}
+          currentText={item.content}
           className="mx-4 mt-4 mb-0"
         />
 
         <div className="max-h-[520px] overflow-y-auto p-4">
           <pre className="whitespace-pre-wrap text-xs leading-6 text-foreground md:text-sm">
-            <code>{activeItem.content}</code>
+            <code>{item.content}</code>
           </pre>
         </div>
       </div>
+    );
+  };
+
+  return (
+    <div className="border border-border">
+      <ProjectContextForm
+        locale={locale}
+        open={contextOpen}
+        onToggle={() => setContextOpen((prev) => !prev)}
+        style={promptInput}
+        onPromptContextChange={setPromptContext}
+      />
+
+      {renderDocument(hardPromptItem, true)}
+
+      <details className="border-t border-border">
+        <summary className="min-h-12 cursor-pointer px-4 py-3 text-sm text-muted transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-accent">
+          {locale === "zh"
+            ? "更多 AI 文档：Design Spec 和 Creative Brief"
+            : "More AI documents: Design Spec and Creative Brief"}
+        </summary>
+        <div className="border-t border-border">
+          <div
+            role="tablist"
+            aria-label={locale === "zh" ? "其他 AI 文档" : "Other AI documents"}
+            className="grid grid-cols-1 border-b border-border sm:grid-cols-2"
+          >
+            {referenceItems.map((item) => {
+              const selected = item.id === activeReferenceItem.id;
+
+              return (
+                <button
+                  key={item.id}
+                  id={`ai-implementation-tab-${item.id}`}
+                  type="button"
+                  role="tab"
+                  aria-selected={selected}
+                  aria-controls={`ai-implementation-panel-${item.id}`}
+                  onClick={() => setActiveTab(item.id)}
+                  onKeyDown={(event) => handleTabKeyDown(event, item.id, referenceItems)}
+                  className={`min-h-[56px] border-b border-r border-border px-3 py-3 text-left transition-colors last:border-r-0 md:border-b-0 ${
+                    selected
+                      ? "bg-foreground text-background"
+                      : "bg-background text-muted hover:bg-zinc-50 hover:text-foreground dark:hover:bg-zinc-900"
+                  }`}
+                >
+                  <span className="block text-[10px] uppercase tracking-widest opacity-75">
+                    {item.eyebrow}
+                  </span>
+                  <span className="mt-1 block text-sm font-medium tracking-normal">{item.title}</span>
+                </button>
+              );
+            })}
+          </div>
+          {activeReferenceItem ? renderDocument(activeReferenceItem) : null}
+        </div>
+      </details>
     </div>
   );
 }

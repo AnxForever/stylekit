@@ -8,18 +8,20 @@ import { hasLintableRules } from "@/lib/styles/style-linter";
 /**
  * Frozen quality baseline for the whole style library.
  *
- * Re-measured 2026-09-04 across 148 styles, after kinetic-constructivism and
- * broadcast-glitch joined the library. It exists because the submission quality
- * gates were designed against these numbers: a11y scores were rejected as a
- * hard gate precisely because 77 of our own curated styles score under 60
- * (apple-style 56, material-design 57, soft-ui 46). Low contrast is the design
- * language of neumorphism and soft-ui, not a defect.
+ * The initial full measurement was taken 2026-09-04 across 148 styles, after
+ * kinetic-constructivism and broadcast-glitch joined the library. At that
+ * baseline, 77 curated styles scored under 60 (apple-style 56, material-design
+ * 57, soft-ui 46). This is why accessibility remains a soft signal rather
+ * than a hard submission gate: low contrast can be part of a style's design.
  *
- * The distribution itself did not move when the library grew — min/p25/p50/p75/
- * max are byte-identical to the 146-style measurement, and the sub-60 count rose
- * by exactly one (kinetic-constructivism scores 58; broadcast-glitch scores 60
- * and clears the line). That is why the gate thresholds derived from the older
- * run remain valid here.
+ * When the library grew from 146 to 148 styles, min/p25/p50/p75/max stayed
+ * byte-identical and the sub-60 count rose by exactly one: kinetic-constructivism
+ * scores 58, while broadcast-glitch scores 60 and clears the line.
+ *
+ * Updated 2026-10-11 after the Editorial token correction: using the same scorer
+ * with the previous Editorial style and tokens gives 59; the corrected source
+ * scores 65. The sub-60 count is therefore 76. The 60 threshold and the other
+ * measured distribution landmarks are unchanged.
  *
  * If a refactor moves these numbers, the gate thresholds derived from them are
  * no longer valid and must be re-derived rather than nudged back.
@@ -47,7 +49,11 @@ describe("style library quality baseline", () => {
 
   it("keeps the count of curated styles that would fail an a11y >= 60 gate", () => {
     // The reason a11y is a soft signal, not a hard gate.
-    expect(scores.filter((value) => value < 60).length).toBe(77);
+    expect(scores.filter((value) => value < 60).length).toBe(76);
+  });
+
+  it("keeps the corrected Editorial score at or above the soft threshold", () => {
+    expect(scoreStyle("editorial")?.overall).toBeGreaterThanOrEqual(60);
   });
 
   it("has complete component code for every style", () => {

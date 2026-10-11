@@ -1,7 +1,7 @@
 // @vitest-environment happy-dom
 import "@testing-library/jest-dom/vitest";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 
 const { trackEventMock, useI18nMock } = vi.hoisted(() => ({
   trackEventMock: vi.fn(),
@@ -59,28 +59,30 @@ describe("AiImplementationPanel", () => {
     });
   });
 
-  it("renders hard prompt first and copies it", async () => {
+  it("shows the main prompt first and offers contextual copy only after context is added", async () => {
     render(<AiImplementationPanel {...baseProps} />);
 
-    expect(screen.getByRole("tab", { name: /硬性提示词/ })).toHaveAttribute(
-      "aria-selected",
-      "true"
-    );
+    expect(screen.getByRole("region", { name: "硬性提示词" })).toBeInTheDocument();
     expect(screen.getByText("默认使用它：复制后追加具体需求，让 AI 直接生成一致、可落地的前端。")).toBeInTheDocument();
+    expect(within(screen.getByRole("region", { name: "硬性提示词" })).queryByRole("button", { name: "复制" })).not.toBeInTheDocument();
 
-    fireEvent.click(screen.getByRole("button", { name: "复制" }));
+    fireEvent.click(screen.getByRole("button", { name: /项目实施简报/ }));
+    fireEvent.click(screen.getByRole("combobox", { name: /项目类型/ }));
+    fireEvent.click(await screen.findByRole("option", { name: "数据后台" }));
+    fireEvent.click(await screen.findByRole("button", { name: "复制项目版提示词" }));
 
     await waitFor(() => expect(writeTextMock).toHaveBeenCalledTimes(1));
     const copied = writeTextMock.mock.calls[0]?.[0] ?? "";
     expect(copied).toContain("# Hard Prompt");
     expect(copied).toContain("style_slug: neo-brutalist");
-    expect(copied).toContain("## 什么时候用");
-    expect(copied).toContain("## 怎么用");
+    expect(copied).toContain("## 项目上下文");
+    expect(copied).toContain("数据后台");
     expect(copied).toContain("RULES_ZH");
   });
 
-  it("switches to design spec and shows the style standard", () => {
+  it("opens the optional documents and shows the design spec", () => {
     render(<AiImplementationPanel {...baseProps} />);
+    fireEvent.click(screen.getByText("更多 AI 文档：Design Spec 和 Creative Brief"));
 
     fireEvent.click(screen.getByRole("tab", { name: /Design Spec/ }));
 
@@ -110,9 +112,10 @@ describe("AiImplementationPanel", () => {
 
     render(<AiImplementationPanel {...baseProps} />);
 
+    fireEvent.click(screen.getByText("更多 AI 文档：Design Spec 和 Creative Brief"));
     fireEvent.click(screen.getByRole("tab", { name: /Creative Brief/ }));
     expect(
-      screen.getByText((content) => content.includes("## 什么时候用"))
+      within(screen.getByRole("tabpanel")).getByText((content) => content.includes("## 什么时候用"))
     ).toBeInTheDocument();
     expect(screen.getByText((content) => content.includes("方向探索"))).toBeInTheDocument();
 
@@ -127,17 +130,13 @@ describe("AiImplementationPanel", () => {
     revokeSpy.mockRestore();
   });
 
-  it("supports keyboard navigation across tabs", async () => {
+  it("supports keyboard navigation across optional documents", async () => {
     render(<AiImplementationPanel {...baseProps} />);
-
-    const hardPromptTab = screen.getByRole("tab", { name: /硬性提示词/ });
-    fireEvent.keyDown(hardPromptTab, { key: "ArrowRight" });
+    fireEvent.click(screen.getByText("更多 AI 文档：Design Spec 和 Creative Brief"));
 
     const designSpecTab = screen.getByRole("tab", { name: /Design Spec/ });
-    expect(designSpecTab).toHaveAttribute("aria-selected", "true");
-    await waitFor(() => expect(designSpecTab).toHaveFocus());
+    fireEvent.keyDown(designSpecTab, { key: "ArrowRight" });
 
-    fireEvent.keyDown(designSpecTab, { key: "End" });
     const creativeBriefTab = screen.getByRole("tab", { name: /Creative Brief/ });
     expect(creativeBriefTab).toHaveAttribute("aria-selected", "true");
     await waitFor(() => expect(creativeBriefTab).toHaveFocus());
@@ -159,15 +158,16 @@ describe("AiImplementationPanel", () => {
       keywordsEn: undefined,
     };
 
-    const { container } = render(<AiImplementationPanel {...propsWithoutEnglishKeywords} />);
+    render(<AiImplementationPanel {...propsWithoutEnglishKeywords} />);
 
+    fireEvent.click(screen.getByText("More AI documents: Design Spec and Creative Brief"));
     fireEvent.click(screen.getByRole("tab", { name: /Design Spec/ }));
-    const designSpec = container.querySelector("code")?.textContent ?? "";
+    const designSpec = screen.getByRole("tabpanel").querySelector("code")?.textContent ?? "";
     expect(designSpec).toContain("Signature cues: bold, pure black borders");
     expect(designSpec).not.toMatch(/[\u3400-\u9fff]/);
 
     fireEvent.click(screen.getByRole("tab", { name: /Creative Brief/ }));
-    const creativeBrief = container.querySelector("code")?.textContent ?? "";
+    const creativeBrief = screen.getByRole("tabpanel").querySelector("code")?.textContent ?? "";
     expect(creativeBrief).toContain("## Style Signals");
     expect(creativeBrief).toContain("- bold");
     expect(creativeBrief).not.toMatch(/[\u3400-\u9fff]/);

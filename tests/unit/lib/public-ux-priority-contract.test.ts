@@ -41,7 +41,7 @@ describe("public UX priority contract", () => {
     const button = await read("components/style-preview/hard-prompt-copy-button.tsx");
 
     expect(source).toContain("<HardPromptCopyButton");
-    expect(button).toContain('locale === "zh" ? "复制硬性提示词" : "Copy Hard Prompt"');
+    expect(button).toContain('locale === "zh" ? "复制给 AI" : "Copy for AI"');
     expect(button).toContain('aria-live="polite"');
   });
 
