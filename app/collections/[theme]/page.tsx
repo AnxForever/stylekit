@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
+import { withBrandPreviews } from "@/lib/seo/social-metadata";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { CollectionContent } from "@/components/collections/collection-content";
@@ -37,7 +38,7 @@ export async function generateMetadata({
   const description =
     locale === "zh" ? collection.metaDescriptionZh : collection.metaDescriptionEn;
 
-  return {
+  return withBrandPreviews({
     title,
     description,
     openGraph: {
@@ -50,7 +51,7 @@ export async function generateMetadata({
       title: `${title} — StyleKit`,
       description,
     },
-  };
+  });
 }
 
 export default async function CollectionPage({

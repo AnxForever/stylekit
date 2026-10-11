@@ -1,3 +1,4 @@
+import { BRAND_ASSETS } from "@/lib/brand/assets";
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { Header } from "@/components/layout/header";
@@ -18,7 +19,7 @@ export const metadata: Metadata = {
     title: `Browse ${CURATED_STYLE_COUNT} UI Design Styles & AI Prompts | StyleKit`,
     description: `Explore ${CURATED_STYLE_COUNT} curated visual styles with design tokens, component recipes, and AI UI prompts.`,
     siteName: "StyleKit",
-    images: [{ url: "/social-preview-home-v2.png", width: 1200, height: 630 }],
+    images: [{ url: BRAND_ASSETS.socialPreview, width: 1200, height: 630 }],
     type: "website",
   },
 };

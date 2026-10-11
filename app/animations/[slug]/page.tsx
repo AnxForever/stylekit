@@ -1,3 +1,4 @@
+import { brandPreviewUrl } from "@/lib/brand/assets";
 import { notFound } from "next/navigation";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
@@ -43,7 +44,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       type: "article",
       images: [
         {
-          url: `${BASE_URL}/animations/${slug}/opengraph-image`,
+          url: brandPreviewUrl(`${BASE_URL}/animations/${slug}/opengraph-image`),
           width: 1200,
           height: 630,
           alt: `${name} animation preview`,
@@ -54,7 +55,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       card: "summary_large_image",
       title: isZh ? `${name} 动画 - StyleKit` : `${name} Animation - StyleKit`,
       description,
-      images: [`${BASE_URL}/animations/${slug}/opengraph-image`],
+      images: [brandPreviewUrl(`${BASE_URL}/animations/${slug}/opengraph-image`)],
     },
   }, context);
 }

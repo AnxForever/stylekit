@@ -1,3 +1,4 @@
+import { BRAND_ASSETS } from "@/lib/brand/assets";
 import type { Metadata } from "next";
 
 export const baseTemplateMetadata: Metadata = {
@@ -9,7 +10,7 @@ export const baseTemplateMetadata: Metadata = {
     description:
       "35 page templates for SaaS landing, admin, e-commerce, portfolio, and blog — preview live, download as runnable projects.",
     siteName: "StyleKit",
-    images: [{ url: "/social-preview-home-v2.png", width: 1200, height: 630 }],
+    images: [{ url: BRAND_ASSETS.socialPreview, width: 1200, height: 630 }],
     type: "website",
   },
 };

@@ -1,8 +1,18 @@
 import { ImageResponse } from "next/og";
 import { promptTopics, getTopicBySlug } from "@/lib/prompts";
+import {
+  OG_SIZE,
+  badgeStyle,
+  brandLogoStyle,
+  containerStyle,
+  fitTitleFontSize,
+  getOgBrandLogoDataUri,
+  subtitleStyle,
+  titleStyle,
+} from "@/lib/og/shared";
 
 export const alt = "StyleKit UI Prompts";
-export const size = { width: 1200, height: 630 };
+export const size = OG_SIZE;
 export const contentType = "image/png";
 
 export function generateStaticParams() {
@@ -18,20 +28,11 @@ export default async function OGImage({
   const topic = getTopicBySlug(slug);
   const title = topic?.titleEn ?? slug;
   const description = topic?.descriptionEn ?? "AI-Friendly UI Design Prompts";
+  const brandLogo = await getOgBrandLogoDataUri();
 
   return new ImageResponse(
     (
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          width: "100%",
-          height: "100%",
-          backgroundColor: "#0a0a0a",
-          padding: 60,
-          justifyContent: "space-between",
-        }}
-      >
+      <div style={containerStyle()}>
         <div
           style={{
             display: "flex",
@@ -40,44 +41,9 @@ export default async function OGImage({
             justifyContent: "center",
           }}
         >
-          <div
-            style={{
-              display: "flex",
-              padding: "6px 16px",
-              borderRadius: 6,
-              backgroundColor: "rgba(99,102,241,0.15)",
-              border: "1px solid rgba(99,102,241,0.3)",
-              fontSize: 16,
-              color: "#6366f1",
-              marginBottom: 24,
-              alignSelf: "flex-start",
-            }}
-          >
-            UI Prompts
-          </div>
-          <div
-            style={{
-              display: "flex",
-              fontSize: 56,
-              fontWeight: 800,
-              color: "#ffffff",
-              lineHeight: 1.1,
-              marginBottom: 16,
-            }}
-          >
-            {title}
-          </div>
-          <div
-            style={{
-              display: "flex",
-              fontSize: 24,
-              color: "rgba(255,255,255,0.5)",
-              lineHeight: 1.4,
-              maxWidth: 800,
-            }}
-          >
-            {description}
-          </div>
+          <div style={badgeStyle("#6366f1")}>UI Prompts</div>
+          <div style={titleStyle(fitTitleFontSize(title, 56))}>{title}</div>
+          <div style={subtitleStyle()}>{description}</div>
         </div>
         <div
           style={{
@@ -100,15 +66,13 @@ export default async function OGImage({
               />
             ))}
           </div>
-          <div
-            style={{
-              display: "flex",
-              fontSize: 20,
-              color: "rgba(255,255,255,0.3)",
-            }}
-          >
-            stylekit.top
-          </div>
+          <img
+            src={brandLogo}
+            width={168}
+            height={56}
+            alt="StyleKit"
+            style={brandLogoStyle()}
+          />
         </div>
       </div>
     ),

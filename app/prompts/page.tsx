@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { withBrandPreviews } from "@/lib/seo/social-metadata";
 import { LocalizedLink } from "@/components/i18n/localized-link";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
@@ -7,7 +8,7 @@ import { CURATED_STYLE_COUNT } from "@/lib/product/catalog-facts";
 
 export const dynamic = "force-static";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = withBrandPreviews({
   title: "UI Design Prompts Library",
   description:
     "Curated AI prompts for generating beautiful web interfaces. Browse dashboard, landing page, dark mode, glassmorphism, anime, and more design prompts optimized for v0, Cursor, and Claude.",
@@ -35,7 +36,7 @@ export const metadata: Metadata = {
     description:
       `Curated AI prompts covering StyleKit's ${CURATED_STYLE_COUNT} design styles.`,
   },
-};
+});
 
 export default function PromptsPage() {
   return (

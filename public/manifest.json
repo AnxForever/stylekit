@@ -9,39 +9,45 @@
   "orientation": "any",
   "icons": [
     {
-      "src": "/favicon-16x16.png",
+      "src": "/brand/v3/favicon-16x16.png",
       "sizes": "16x16",
       "type": "image/png"
     },
     {
-      "src": "/favicon-32x32.png",
+      "src": "/brand/v3/favicon-32x32.png",
       "sizes": "32x32",
       "type": "image/png"
     },
     {
-      "src": "/icon-192x192.png",
+      "src": "/brand/v3/icon-192x192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/icon-512x512.png",
+      "src": "/brand/v3/icon-512x512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/icon.svg",
+      "src": "/brand/v3/icon.svg",
       "sizes": "any",
       "type": "image/svg+xml"
     },
     {
-      "src": "/maskable-512x512.png",
+      "src": "/brand/v3/maskable-512x512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
     }
   ],
-  "categories": ["design", "development", "utilities"],
-  "prefer_related_applications": false
+  "categories": [
+    "design",
+    "development",
+    "utilities"
+  ],
+  "prefer_related_applications": false,
+  "id": "/",
+  "scope": "/"
 }
