@@ -155,6 +155,17 @@ describe("SEO truth invariants", () => {
     });
   });
 
+  it.each(["privacy", "terms"] as const)(
+    "includes both localized %s pages in the sitemap",
+    async (document) => {
+      const entries = await sitemap();
+      const urls = entries.map((entry) => entry.url);
+
+      expect(urls).toContain(`${BASE_URL}/en/${document}`);
+      expect(urls).toContain(`${BASE_URL}/zh/${document}`);
+    }
+  );
+
   it("keeps the sitemap canonical, indexable, and free of placeholders", async () => {
     // Async since promoted community styles are read from the database.
     const entries = await sitemap();
