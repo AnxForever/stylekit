@@ -3,6 +3,7 @@ import sitemap from "@/app/sitemap";
 import robots from "@/app/robots";
 import type { RequestLocaleContext } from "@/lib/i18n/request";
 import {
+  applyRequestMetadata,
   canonicalizeEnglishMetadata,
   localizeMetadata,
 } from "@/lib/i18n/metadata";
@@ -51,7 +52,7 @@ describe("SEO truth invariants", () => {
     expect(metadata.description).toContain(`Browse ${CURATED_STYLE_COUNT} curated styles`);
   });
 
-  it("uses a real PNG homepage capture for large social cards", () => {
+  it("uses the versioned brand card for large social previews", () => {
     const metadata = buildSiteMetadata(requestContext("en", "/en"));
     const expectedImage = `${BASE_URL}${HOME_SOCIAL_IMAGE.path}`;
 
@@ -88,6 +89,37 @@ describe("SEO truth invariants", () => {
       locale: "zh_CN",
       alternateLocale: ["en_US"],
     });
+  });
+
+  it("retains a social image when a route only overrides its title", () => {
+    const variants = [
+      localizeMetadata({ title: "Resources" }, "zh", "/resources"),
+      canonicalizeEnglishMetadata({ title: "Privacy Policy" }, "/privacy"),
+      applyRequestMetadata({ title: "StyleKit" }, requestContext("en", "/en")),
+    ];
+    for (const metadata of variants) {
+      expect(metadata.openGraph?.images).toEqual([
+        expect.objectContaining({ url: HOME_SOCIAL_IMAGE.path, width: 1200, height: 630 }),
+      ]);
+      expect(metadata.twitter).toMatchObject({
+        card: "summary_large_image",
+        images: metadata.openGraph?.images,
+      });
+    }
+  });
+
+  it("shares a page-specific image on Twitter while respecting explicit overrides", () => {
+    const images = [{ url: "/styles/editorial/opengraph-image?v=brand-v3" }];
+    const metadata = localizeMetadata({ openGraph: { images } }, "en", "/styles/editorial");
+    expect(metadata.openGraph?.images).toEqual(images);
+    expect(metadata.twitter?.images).toEqual(images);
+    const titled = localizeMetadata({ title: "Editorial", openGraph: { images } }, "en", "/styles/editorial");
+    expect(titled.twitter?.title).toBe("Editorial");
+    const overridden = localizeMetadata({
+      openGraph: { images },
+      twitter: { card: "summary_large_image", images: ["/custom-twitter.png"] },
+    }, "en", "/styles/editorial");
+    expect(overridden.twitter?.images).toEqual(["/custom-twitter.png"]);
   });
 
   it("does not advertise English-only documents as Chinese alternates", () => {

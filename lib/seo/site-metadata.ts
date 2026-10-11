@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
 import type { RequestLocaleContext } from "@/lib/i18n/request";
 import { CURATED_STYLE_COUNT } from "@/lib/product/catalog-facts";
+import { BRAND_ASSETS, BRAND_SOCIAL_CREATOR } from "@/lib/brand/assets";
 
 export const HOME_SOCIAL_IMAGE = {
-  path: "/social-preview-home-v2.png",
+  path: BRAND_ASSETS.socialPreview,
   width: 1200,
   height: 630,
-  alt: "StyleKit homepage showing the visual style library and design preview",
+  alt: "StyleKit — visual styles, design tokens, components, and AI prompts",
 } as const;
 
 export function buildSiteMetadata(context: RequestLocaleContext): Metadata {
@@ -73,7 +74,7 @@ export function buildSiteMetadata(context: RequestLocaleContext): Metadata {
       card: "summary_large_image",
       title: "StyleKit - UI Design Prompts, Visual Styles & AI-Friendly Design System",
       description: socialDescription,
-      creator: "@Justice66890051",
+      creator: BRAND_SOCIAL_CREATOR,
       images: [
         {
           url: `${context.baseUrl}${HOME_SOCIAL_IMAGE.path}`,

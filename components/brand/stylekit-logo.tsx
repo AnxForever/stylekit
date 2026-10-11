@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { cn } from "@/lib/utils";
+import { BRAND_ASSETS } from "@/lib/brand/assets";
 
 interface StyleKitLogoProps {
   className?: string;
@@ -9,7 +10,7 @@ interface StyleKitLogoProps {
 export function StyleKitLogo({ className, inverse = false }: StyleKitLogoProps) {
   return (
     <Image
-      src={`/brand/stylekit-horizontal-${inverse ? "white" : "ink"}.svg`}
+      src={inverse ? BRAND_ASSETS.logoInverse : BRAND_ASSETS.logo}
       alt="StyleKit"
       width={760}
       height={256}

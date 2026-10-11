@@ -17,6 +17,7 @@ import { MobileBottomNav } from "@/components/layout/mobile-bottom-nav";
 import { getSiteBaseUrl } from "@/lib/site-url";
 import { getLocaleDocumentContext, getRequestLocaleContext } from "@/lib/i18n/request";
 import { buildSiteMetadata } from "@/lib/seo/site-metadata";
+import { BRAND_ASSETS } from "@/lib/brand/assets";
 import { CURATED_STYLE_COUNT } from "@/lib/product/catalog-facts";
 import { getShowcaseTypographyProfile } from "@/lib/typography/showcase-profiles";
 import { LazyShowcaseTypographyRuntime } from "@/components/typography/lazy-showcase-typography-runtime";
@@ -201,12 +202,12 @@ export default async function SiteDocument({
             />
           </>
         ) : null}
-        <link rel="icon" href="/favicon.ico" sizes="32x32" />
-        <link rel="icon" href="/favicon-16x16.png" sizes="16x16" type="image/png" />
-        <link rel="icon" href="/favicon-32x32.png" sizes="32x32" type="image/png" />
-        <link rel="icon" href="/icon.svg" type="image/svg+xml" />
-        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-        <link rel="manifest" href="/manifest.json" />
+        <link rel="icon" href={BRAND_ASSETS.favicon} sizes="16x16 32x32 48x48" type="image/x-icon" />
+        <link rel="icon" href={BRAND_ASSETS.icon16} sizes="16x16" type="image/png" />
+        <link rel="icon" href={BRAND_ASSETS.icon32} sizes="32x32" type="image/png" />
+        <link rel="icon" href={BRAND_ASSETS.icon} sizes="any" type="image/svg+xml" />
+        <link rel="apple-touch-icon" href={BRAND_ASSETS.appleTouchIcon} sizes="180x180" />
+        <link rel="manifest" href={BRAND_ASSETS.manifest} />
         <Script
           id="vibeloft-telemetry"
           strategy="lazyOnload"
@@ -293,7 +294,7 @@ export default async function SiteDocument({
               "url": BASE_URL,
               "logo": {
                 "@type": "ImageObject",
-                "url": `${BASE_URL}/icon-512x512.png`,
+                "url": `${BASE_URL}${BRAND_ASSETS.icon512}`,
               },
               "description": `Open-source visual style library for AI-generated web interfaces with ${CURATED_STYLE_COUNT} curated styles, design tokens, and AI prompts.`,
               "sameAs": [

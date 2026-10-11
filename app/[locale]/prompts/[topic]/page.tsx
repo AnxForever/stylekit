@@ -39,6 +39,11 @@ export async function generateMetadata({
           title: `${promptTopic.titleZh} | StyleKit`,
           description: promptTopic.descriptionZh,
         },
+        twitter: {
+          ...(metadata.twitter ?? {}),
+          title: `${promptTopic.titleZh} | StyleKit`,
+          description: promptTopic.descriptionZh,
+        },
       }
     : metadata;
 

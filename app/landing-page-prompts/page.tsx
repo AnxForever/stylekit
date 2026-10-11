@@ -1,3 +1,4 @@
+import { BRAND_ASSETS } from "@/lib/brand/assets";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Header } from "@/components/layout/header";
@@ -34,7 +35,7 @@ export const metadata: Metadata = {
     description:
       "Copyable landing page prompts for SaaS products, startup launches, waitlists, and conversion-focused website design.",
     siteName: "StyleKit",
-    images: [{ url: "/social-preview-home-v2.png", width: 1200, height: 630 }],
+    images: [{ url: BRAND_ASSETS.socialPreview, width: 1200, height: 630 }],
     type: "article",
   },
   twitter: {

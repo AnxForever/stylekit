@@ -1,3 +1,4 @@
+import { brandPreviewUrl } from "@/lib/brand/assets";
 import { notFound } from "next/navigation";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
@@ -87,7 +88,7 @@ export async function generateMetadata({
       type: "article",
       images: [
         {
-          url: `${BASE_URL}/styles/${slug}/opengraph-image`,
+          url: brandPreviewUrl(`${BASE_URL}/styles/${slug}/opengraph-image`),
           width: 1200,
           height: 630,
           alt: `${style.nameEn} design style preview`,
@@ -98,7 +99,7 @@ export async function generateMetadata({
       card: "summary_large_image",
       title: `${finalTitle} — StyleKit`,
       description: finalDescription,
-      images: [`${BASE_URL}/styles/${slug}/opengraph-image`],
+      images: [brandPreviewUrl(`${BASE_URL}/styles/${slug}/opengraph-image`)],
     },
   };
 }

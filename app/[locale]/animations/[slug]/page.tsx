@@ -1,3 +1,4 @@
+import { brandPreviewUrl } from "@/lib/brand/assets";
 import { animations, getAnimationBySlug } from "@/lib/animations";
 import Page from "@/app/animations/[slug]/page";
 import { isLocale, LOCALES } from "@/lib/i18n/routing";
@@ -34,7 +35,7 @@ export async function generateMetadata({
     : `${animation.descriptionEn} Implementation snippets and Tailwind utility classes included.`;
   const baseUrl = getSiteBaseUrl();
   const canonical = `${baseUrl}/${locale}/animations/${slug}`;
-  const image = `${baseUrl}/animations/${slug}/opengraph-image`;
+  const image = brandPreviewUrl(`${baseUrl}/animations/${slug}/opengraph-image`);
 
   return {
     title: isZh ? `${name} - CSS 动画模式` : `${name} - Animation Pattern`,
