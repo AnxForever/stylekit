@@ -1109,6 +1109,9 @@ export const zh: { [K in keyof typeof en]: string } = {
   "guide.step3.title": "复制提示词与规则",
   "guide.step3.desc": "把提示词页面、风格规则和组件配方作为约束，放进你的编辑器或 AI 编码助手。",
   "guide.step3.cta": "打开提示词",
+  "guide.docs.title": "详细文档",
+  "guide.docs.description": "适合进一步了解视觉与布局风格、设计令牌、组件 Recipe 和 AI 工具接入。",
+  "guide.docs.cta": "查看文档",
   // Style detail page
   "styleDetail.notFound": "风格未找到 — StyleKit",
   "styleDetail.backToCatalog": "返回目录",

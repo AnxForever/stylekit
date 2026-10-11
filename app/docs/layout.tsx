@@ -1,12 +1,7 @@
 import SiteDocument, { generateSiteMetadata } from "@/components/layout/site-document";
 export { viewport } from "@/components/layout/site-document";
 import type { Metadata } from "next";
-
-const routeMetadata: Metadata = {
-  title: "Documentation",
-  description:
-    "StyleKit documentation covering getting started, style systems, exports, AI workflows, and implementation guidance.",
-};
+import { docsRouteMetadata } from "./metadata";
 
 export default function DocsLayout({
   children,
@@ -17,5 +12,5 @@ export default function DocsLayout({
 }
 
 export async function generateMetadata(): Promise<Metadata> {
-  return { ...await generateSiteMetadata(), ...routeMetadata };
+  return { ...await generateSiteMetadata(), ...docsRouteMetadata };
 }

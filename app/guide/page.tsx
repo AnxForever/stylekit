@@ -72,6 +72,21 @@ export default function GuidePage() {
                 </article>
               ))}
             </div>
+            <div className="mt-8 flex flex-col gap-3 border-t border-border pt-6 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <p className="text-sm font-medium">{t("guide.docs.title")}</p>
+                <p className="mt-1 max-w-3xl text-sm leading-relaxed text-muted">
+                  {t("guide.docs.description")}
+                </p>
+              </div>
+              <LocalizedLink
+                href="/docs"
+                className="inline-flex shrink-0 items-center gap-2 text-sm hover:underline underline-offset-4"
+              >
+                {t("guide.docs.cta")}
+                <ArrowRight className="w-4 h-4" />
+              </LocalizedLink>
+            </div>
           </div>
         </section>
 

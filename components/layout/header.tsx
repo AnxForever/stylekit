@@ -20,6 +20,7 @@ import { GitHubStarButton } from "@/components/github-star-button";
 import { KitNavButton } from "@/components/kit/kit-nav-button";
 import { trackEvent } from "@/lib/analytics/events";
 import { localizeHref } from "@/lib/i18n/routing";
+import { StyleKitLogo } from "@/components/brand/stylekit-logo";
 
 const linkClass =
   "shrink-0 whitespace-nowrap text-sm tracking-wide text-muted hover:text-foreground transition-colors";
@@ -402,8 +403,12 @@ export function Header() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-12">
         <div className="flex items-center justify-between h-16 md:h-20">
           {/* Logo / Masthead */}
-          <Link href={localizeHref("/", locale)} prefetch={false} className="masthead text-lg md:text-xl">
-            StyleKit
+          <Link
+            href={localizeHref("/", locale)}
+            prefetch={false}
+            className="shrink-0 rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-foreground"
+          >
+            <StyleKitLogo className="h-9 w-auto md:h-10" />
           </Link>
 
           {/* Desktop Navigation */}

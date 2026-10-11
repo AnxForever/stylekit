@@ -31,6 +31,7 @@ import {
 import { sanitizeNextPath } from "@/lib/auth/next-path";
 import { LinuxDoMark, NodeLocMark } from "@/components/auth/brand-marks";
 import { XiaoheiLoading } from "@/components/profile/xiaohei-note";
+import { StyleKitLogo } from "@/components/brand/stylekit-logo";
 import typography from "./login-typography.module.css";
 
 const loginDisplay = Playfair_Display({
@@ -601,14 +602,7 @@ export function LoginContent() {
         {/* PLACEHOLDER_FORM_INNER */}
         <div className="mb-5 animate-[home-reveal-up-strong_650ms_ease-out_both]">
           <div className="mb-4 flex items-center justify-between">
-            <div className="inline-flex items-center gap-2.5">
-              <span className="flex h-8 w-8 items-center justify-center bg-foreground font-serif text-xs font-bold text-background shadow-[4px_4px_0_var(--accent)]">
-              SK
-              </span>
-              <span className={`${typography.brandName} text-muted`}>
-                StyleKit
-              </span>
-            </div>
+            <StyleKitLogo className="h-10 w-auto" />
             <span className={`${typography.caption} text-muted`}>
               {t("auth.secureAccess")}
             </span>
