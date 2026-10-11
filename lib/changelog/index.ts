@@ -12,6 +12,29 @@ export interface ChangelogEntry {
 
 export const changelog: ChangelogEntry[] = [
   {
+    version: "0.19.0",
+    date: "2026-10-11",
+    title: "A clearer StyleKit experience",
+    titleZh: "更清晰的 StyleKit 使用体验",
+    changes: [
+      {
+        type: "changed",
+        description: "Clarify brand and documentation entry points, and allow restrained blue-gray and muted burgundy accents in Editorial.",
+        descriptionZh: "梳理品牌与文档入口；Editorial 风格在原有基础上允许少量蓝灰与灰酒红点缀。",
+      },
+      {
+        type: "changed",
+        description: "Group export actions around a smaller set of primary choices and separate core mobile navigation from contextual actions.",
+        descriptionZh: "收拢导出操作入口，并区分移动端主导航与页面内快捷操作。",
+      },
+      {
+        type: "added",
+        description: "Add Chinese privacy and terms pages with localized page metadata.",
+        descriptionZh: "新增中文隐私政策与使用条款，并为中英文页面分别设置页面元数据。",
+      },
+    ],
+  },
+  {
     version: "0.18.0",
     date: "2026-08-02",
     title: "Kit Builder — collect styles, animations & fonts, export one design kit",

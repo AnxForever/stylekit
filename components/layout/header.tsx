@@ -21,6 +21,7 @@ import { KitNavButton } from "@/components/kit/kit-nav-button";
 import { trackEvent } from "@/lib/analytics/events";
 import { localizeHref } from "@/lib/i18n/routing";
 import { StyleKitLogo } from "@/components/brand/stylekit-logo";
+import { isMobileBottomNavVisible } from "@/lib/mobile-navigation";
 
 const linkClass =
   "shrink-0 whitespace-nowrap text-sm tracking-wide text-muted hover:text-foreground transition-colors";
@@ -343,6 +344,7 @@ export function Header() {
   const [hasChangelogUpdate, setHasChangelogUpdate] = useState(false);
   const { t, locale } = useI18n();
   const pathname = usePathname();
+  const showBottomNav = isMobileBottomNavVisible(pathname || "/");
   const moreRef = useRef<HTMLDivElement>(null);
   const dropdownRefs = useRef<Array<HTMLDivElement | null>>([]);
 
@@ -512,7 +514,17 @@ export function Header() {
           <button
             onClick={() => setIsMenuOpen((prev) => !prev)}
             className="lg:hidden p-2 -mr-2"
-            aria-label="Toggle menu"
+            aria-controls="mobile-navigation"
+            aria-expanded={isMenuOpen}
+            aria-label={
+              locale === "zh"
+                ? isMenuOpen
+                  ? "关闭菜单"
+                  : "打开菜单"
+                : isMenuOpen
+                  ? "Close menu"
+                  : "Open menu"
+            }
           >
             <svg
               width="24"
@@ -533,7 +545,11 @@ export function Header() {
 
         {/* Mobile Navigation */}
         {isMenuOpen && (
-          <nav className="lg:hidden py-4 border-t border-border">
+          <nav
+            id="mobile-navigation"
+            aria-label={locale === "zh" ? "移动菜单" : "Mobile menu"}
+            className="lg:hidden py-4 border-t border-border"
+          >
             <div className="flex flex-col gap-4">
               {/* Mobile Search */}
               <button
@@ -543,7 +559,7 @@ export function Header() {
                     openCommandPalette("mobile_menu");
                   }, 100);
                 }}
-                className="flex items-center gap-2 px-3 py-2 text-sm text-muted border border-border rounded-md hover:border-foreground/50 transition-colors"
+                className={`flex items-center gap-2 px-3 py-2 text-sm text-muted border border-border rounded-md hover:border-foreground/50 transition-colors ${showBottomNav ? "hidden md:flex" : ""}`}
               >
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <circle cx="11" cy="11" r="8" />
@@ -566,12 +582,14 @@ export function Header() {
               {mainNav.map((item) => {
                 const dropdown: NavDropdown | undefined = item.dropdown;
                 if (!dropdown) {
+                  const isBottomTab =
+                    item.href === "/styles" || item.href === "/templates";
                   return (
                     <Link
                       key={item.href}
                       href={localizeHref(item.href, locale)}
                       prefetch={false}
-                      className={linkClass}
+                      className={`${linkClass} ${showBottomNav && isBottomTab ? "hidden md:block" : ""}`}
                       onClick={() => setIsMenuOpen(false)}
                     >
                       {t(item.labelKey)}
