@@ -70,6 +70,7 @@ export const LOCALE_ROUTE_POLICY = [
       "/dark-mode-ui-prompts",
       "/dashboard-prompts",
       "/developers",
+      "/docs",
       "/guide",
       "/landing-page-prompts",
       "/learn",
@@ -144,7 +145,6 @@ export const LOCALE_ROUTE_POLICY = [
     mode: "rewrite",
     sitemapLocales: "none",
     exact: [
-      "/docs",
       "/html-in-canvas",
       "/kit",
       "/kit/shared",

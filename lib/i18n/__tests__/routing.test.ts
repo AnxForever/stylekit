@@ -93,9 +93,11 @@ describe("i18n routing helpers", () => {
     expect(getLocaleRouteStrategy("/guides/neumorphism")).toBe("rewrite");
     expect(getLocaleRouteStrategy("/templates/saas-landing")).toBe("rewrite");
     expect(getLocaleRouteStrategy("/liquid-glass")).toBe("filesystem");
+    expect(getLocaleRouteStrategy("/docs")).toBe("filesystem");
 
     expect(getIndexableLocalesForPath("/styles/neo-brutalist")).toEqual(LOCALES);
     expect(getIndexableLocalesForPath("/blog/example")).toEqual(["en"]);
+    expect(getIndexableLocalesForPath("/docs")).toEqual(LOCALES);
     expect(getIndexableLocalesForPath("/guides/neumorphism")).toEqual(["en"]);
     expect(getIndexableLocalesForPath("/login")).toEqual([]);
     expect(getIndexableLocalesForPath("/styles/neo-brutalist/showcase")).toEqual([]);

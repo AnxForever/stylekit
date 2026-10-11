@@ -1,7 +1,7 @@
 {
   "name": "StyleKit - AI-Friendly Design System",
   "short_name": "StyleKit",
-  "description": "120+ visual styles with design tokens, component recipes, and AI prompts for consistent UI generation",
+  "description": "An open-source visual style library with design tokens, component recipes, and AI prompts for consistent UI generation",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",
@@ -34,6 +34,12 @@
       "src": "/icon.svg",
       "sizes": "any",
       "type": "image/svg+xml"
+    },
+    {
+      "src": "/maskable-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
     }
   ],
   "categories": ["design", "development", "utilities"],
