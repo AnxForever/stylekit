@@ -17,9 +17,9 @@ export const editorial: DesignStyle = {
   colors: {
     primary: "#1C1C1C",
     secondary: "#F9F8F6",
-    accent: ["#1C1C1C", "#6b7280", "#1c1c1c", "#816d70"],
+    accent: ["#6B7280", "#816D70"],
   },
-  keywords: ["杂志排版", "衬线字体", "优雅留白", "网格系统", "极简主义", "作品集", "单色", "minimal", "clean", "simple"],
+  keywords: ["杂志排版", "衬线字体", "优雅留白", "网格系统", "极简主义", "作品集", "纸墨色调", "minimal", "clean", "simple"],
   keywordsEn: ["editorial design", "magazine layout", "serif typography", "print-inspired", "grid system", "whitespace", "typography-driven", "fashion magazine", "blog design", "portfolio"],
 
   philosophy: `Editorial（编辑杂志风）设计风格源于传统印刷媒体的排版美学，特别是高端时尚杂志和报纸的设计语言。这种风格强调内容的层次结构、精致的字体搭配和大量留白。
@@ -28,7 +28,9 @@ export const editorial: DesignStyle = {
 - 内容为王：设计服务于内容，不喧宾夺主。UI 是低声细语，不是大声喊叫
 - 字体层次：衬线标题与无衬线正文形成对比，标签使用 uppercase tracking 增加呼吸感
 - 留白即美：适当的负空间让内容呼吸，section 间距 py-24 md:py-40 起步
-- 单色克制：仅使用 #1C1C1C 配合不同透明度（/60 /40 /10）构建视觉层次，拒绝彩色装饰
+- 纸墨为主：以暖米色纸面和 #1C1C1C 墨色建立主层次，透明度负责次级信息
+- 克制点缀：#6B7280 蓝灰与 #816D70 灰酒红只用于小标签、细线和交互提示；不铺大面积，不替代正文墨色
+- 可读性：点缀色用于文字时须满足 WCAG AA；冷灰纸面上若对比不足，小字仍用墨色
 - 微妙动效：hover-underline 动画、clip-path reveal、group-hover:italic 等克制而精致的交互`,
 
   philosophyEn: `Editorial design style originates from the typographic aesthetics of traditional print media, particularly the design language of high-end fashion magazines and newspapers. This style emphasizes content hierarchy, refined font pairing, and generous whitespace.
@@ -37,13 +39,17 @@ Core principles:
 - Content is king: Design serves content, never overshadowing it. UI whispers, it does not shout
 - Typographic hierarchy: Serif headings contrast with sans-serif body text; labels use uppercase tracking for breathing room
 - Whitespace is beauty: Proper negative space lets content breathe; section spacing starts at py-24 md:py-40
-- Monochrome restraint: Only #1C1C1C with varying opacities (/60 /40 /10) to build visual hierarchy; no colored decoration
+- Paper and ink first: warm cream paper and #1C1C1C ink establish the main hierarchy, with opacity for secondary information
+- Restrained accents: muted blue-gray #6B7280 and gray-burgundy #816D70 are limited to small labels, fine rules, and interaction cues; never broad surfaces or body copy
+- Readability: accent text must meet WCAG AA; on cooler gray paper, use ink for small text whenever an accent lacks sufficient contrast
 - Subtle motion: Restrained yet refined interactions like hover-underline animations, clip-path reveals, and group-hover:italic`,
 
   doList: [
     "标题使用衬线字体 font-serif，正文使用无衬线字体 font-sans",
     "背景使用暖米色 bg-[#F9F8F6]，文字使用柔和黑 text-[#1C1C1C]",
-    "使用透明度层次构建灰度：text-[#1C1C1C]/60（次要）、/40（辅助）、/10（边框）",
+    "使用透明度层次构建墨色层级：text-[#1C1C1C]/60（次要）、/40（辅助）、/10（边框）",
+    "蓝灰 #6B7280 与灰酒红 #816D70 可少量用于小标签、细线和交互提示；大面积与正文仍使用纸色、墨色",
+    "点缀色用于文字前检查 WCAG AA 对比度；冷灰纸面上小字优先使用墨色",
     "标签样式使用 font-sans text-xs tracking-[0.2em] uppercase",
     "Section 间距至少 py-24 md:py-40，容器内边距 px-6 md:px-12",
     "链接和按钮使用 hover-underline 动画下划线效果",
@@ -56,7 +62,9 @@ Core principles:
   doListEn: [
     "Headings use serif font font-serif, body text uses sans-serif font-sans",
     "Background uses warm cream bg-[#F9F8F6], text uses soft black text-[#1C1C1C]",
-    "Use opacity hierarchy for grayscale: text-[#1C1C1C]/60 (secondary), /40 (auxiliary), /10 (borders)",
+    "Use opacity hierarchy for ink: text-[#1C1C1C]/60 (secondary), /40 (auxiliary), /10 (borders)",
+    "Use muted blue-gray #6B7280 and gray-burgundy #816D70 sparingly for small labels, fine rules, and interaction cues; keep large surfaces and body copy paper-and-ink",
+    "Check WCAG AA contrast before using an accent for text; prefer ink for small text on cooler gray paper",
     "Label style uses font-sans text-xs tracking-[0.2em] uppercase",
     "Section spacing at least py-24 md:py-40, container padding px-6 md:px-12",
     "Links and buttons use hover-underline animated underline effect",
@@ -67,7 +75,7 @@ Core principles:
   ],
 
   dontList: [
-    "禁止使用彩色强调色（红、蓝、绿等），保持纯单色体系",
+    "禁止使用高饱和强调色或大面积彩色背景；仅可从 #6B7280 蓝灰与 #816D70 灰酒红中选择局部点缀",
     "禁止使用粗边框或阴影（shadow-*）",
     "禁止使用 #0a0a0a 纯黑或 #fafafa 冷白作为主色",
     "禁止标题使用无衬线字体",
@@ -78,7 +86,7 @@ Core principles:
   ],
 
   dontListEn: [
-    "Do not use colored accents (red, blue, green, etc.), maintain pure monochrome system",
+    "Do not use saturated accents or large colored surfaces; choose only the muted #6B7280 blue-gray and #816D70 gray-burgundy for localized details",
     "Do not use thick borders or shadows (shadow-*)",
     "Do not use #0a0a0a pure black or #fafafa cool white as primary colors",
     "Do not use sans-serif fonts for headings",
@@ -308,7 +316,8 @@ h1, h2, h3, h4, h5, h6 {
 - Background: #F9F8F6 (warm cream, NOT pure white or #fafafa)
 - Foreground: #1C1C1C (soft black, NOT #000 or #0a0a0a)
 - Opacity hierarchy: text-[#1C1C1C]/60 (secondary), /40 (tertiary), /10 (borders/dividers)
-- NO colored accents. This style is purely monochromatic.
+- Restrained accents: #6B7280 muted blue-gray and #816D70 gray-burgundy, only for small labels, fine rules, and interaction cues; never broad surfaces or body copy
+- Accent text must meet WCAG AA contrast on its actual paper surface; use ink for small text when contrast is insufficient
 
 ## Typography
 
@@ -349,7 +358,7 @@ h1, h2, h3, h4, h5, h6 {
 
 ## Absolutely Forbidden
 
-- Colored accents (red, blue, green) - this is a monochrome style
+- High-saturation accent colors or large colored surfaces; only use the two muted palette accents for localized details
 - Box shadows (shadow-*)
 - Thick borders (border-2 and above)
 - Large border-radius (rounded-xl and above)
@@ -373,7 +382,8 @@ h1, h2, h3, h4, h5, h6 {
 - Background: #F9F8F6 (warm cream, NOT pure white or #fafafa)
 - Foreground: #1C1C1C (soft black, NOT #000 or #0a0a0a)
 - Opacity hierarchy: text-[#1C1C1C]/60 (secondary), /40 (tertiary), /10 (borders/dividers)
-- NO colored accents. This style is purely monochromatic.
+- Restrained accents: #6B7280 muted blue-gray and #816D70 gray-burgundy, only for small labels, fine rules, and interaction cues; never broad surfaces or body copy
+- Accent text must meet WCAG AA contrast on its actual paper surface; use ink for small text when contrast is insufficient
 
 ## Typography
 
@@ -414,7 +424,7 @@ h1, h2, h3, h4, h5, h6 {
 
 ## Absolutely Forbidden
 
-- Colored accents (red, blue, green) - this is a monochrome style
+- High-saturation accent colors or large colored surfaces; only use the two muted palette accents for localized details
 - Box shadows (shadow-*)
 - Thick borders (border-2 and above)
 - Large border-radius (rounded-xl and above)
@@ -436,7 +446,7 @@ h1, h2, h3, h4, h5, h6 {
       title: "创意作品集",
       titleEn: "Creative Portfolio",
       description: "编辑杂志风格的创意设计师作品集",
-      descriptionEn: "Editorial-style creative designer portfolio with monochrome palette",
+      descriptionEn: "Editorial-style creative designer portfolio with a paper-and-ink base and restrained muted accents",
       prompt: `Use Editorial style to create a creative portfolio page:
 1. Fixed nav: font-serif logo with tracking-[0.3em], hover-underline links
 2. Hero: massive serif title (9rem+) with italic subtitle in #1C1C1C/60, clip-path image reveal
@@ -445,7 +455,7 @@ h1, h2, h3, h4, h5, h6 {
 5. Archive grid: masonry 2-col layout with staggered scroll reveals
 6. About section: sticky portrait left, serif quote right, services/clients lists
 7. Contact: floating-label inputs with bottom borders, hover-underline submit button
-8. Palette: bg-[#F9F8F6], text-[#1C1C1C] with /60 /40 /10 opacity hierarchy only`,
+8. Palette: bg-[#F9F8F6], text-[#1C1C1C] with /60 /40 /10 opacity hierarchy; optionally use #6B7280 or #816D70 only for small labels, fine rules, and interaction cues`,
     },
     {
       title: "杂志风格博客",
@@ -458,7 +468,7 @@ h1, h2, h3, h4, h5, h6 {
 3. Article list: numbered editorial list with border-b border-[#1C1C1C]/10 dividers
 4. Typography: font-serif headings tracking-tighter, font-sans text-xs labels with tracking-[0.2em] uppercase
 5. Footer: minimal, text-xs uppercase with dot separators
-6. Colors: monochrome only, #F9F8F6 background, #1C1C1C text with opacity variants`,
+6. Colors: #F9F8F6 paper and #1C1C1C ink with opacity variants; optionally use muted #6B7280 or #816D70 for localized details, after checking text contrast`,
     },
     {
       title: "工作室介绍",
@@ -472,7 +482,7 @@ h1, h2, h3, h4, h5, h6 {
 4. Services & clients: two-column grid with uppercase tracking labels, serif list items
 5. Contact section: Say Hello heading text-8xl, floating-label form inputs
 6. Interactions: IntersectionObserver scroll reveals, group-hover:italic on links
-7. Palette: bg-[#F9F8F6], pure monochrome, NO accent colors`,
+7. Palette: bg-[#F9F8F6], text-[#1C1C1C]; optional #6B7280 or #816D70 only for small labels, fine rules, and interaction cues, never large surfaces`,
     },
   ],
 
@@ -481,22 +491,22 @@ h1, h2, h3, h4, h5, h6 {
       id: "editorial-warm",
       name: "编辑杂志风暖色版",
       nameEn: "Editorial Warm",
-      description: "Warm-toned variant with shifted hues toward amber/orange",
+      description: "A warmer paper surface with near-black ink and a restrained gray-burgundy accent.",
       colors: {
-        primary: "#1c1c1c",
-        secondary: "#faf9f7",
-        accent: ["#1c1c1c", "#736f81"],
+        primary: "#1C1C1C",
+        secondary: "#FAF9F7",
+        accent: ["#816D70"],
       },
     },
     {
       id: "editorial-cool",
       name: "编辑杂志风冷色版",
       nameEn: "Editorial Cool",
-      description: "Cool-toned variant with shifted hues toward blue/teal",
+      description: "A cooler gray paper surface with near-black ink and a restrained blue-gray accent; keep small text in ink when contrast is insufficient.",
       colors: {
-        primary: "#1c1c1c",
-        secondary: "#e0dfdd",
-        accent: ["#1c1c1c", "#65747b"],
+        primary: "#1C1C1C",
+        secondary: "#E0DFDD",
+        accent: ["#6B7280"],
       },
     },
   ],

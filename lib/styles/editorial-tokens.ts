@@ -50,18 +50,19 @@ export const editorialTokens = createStyleTokens({
 
   colors: {
     background: {
-      primary: "bg-background",
-      secondary: "bg-foreground",
-      accent: ["bg-[#e63946]"],
+      primary: "bg-[#F9F8F6]",
+      secondary: "bg-[#F9F8F6]",
+      accent: ["bg-[#6B7280]/10", "bg-[#816D70]/10"],
     },
     text: {
-      primary: "text-foreground",
-      secondary: "text-background",
-      muted: "text-muted",
+      primary: "text-[#1C1C1C]",
+      // Shared text roles need to remain readable on both paper variants; the two palette accents stay local.
+      secondary: "text-[#595959]",
+      muted: "text-[#595959]",
     },
     button: {
-      primary: "bg-foreground text-background",
-      secondary: "bg-transparent text-foreground",
+      primary: "bg-[#1C1C1C] text-[#F9F8F6]",
+      secondary: "bg-transparent text-[#1C1C1C]",
     },
   },
 
@@ -73,8 +74,8 @@ export const editorialTokens = createStyleTokens({
       "shadow-sm", "shadow", "shadow-md", "shadow-lg", "shadow-xl", "shadow-2xl",
       // No thick borders
       "border-2", "border-4", "border-8",
-      // No bright colors
-      "bg-blue-500", "bg-green-500", "bg-yellow-500", "bg-purple-500", "bg-pink-500",
+      // No saturated colors outside the muted palette accents
+      "bg-red-500", "bg-orange-500", "bg-blue-500", "bg-cyan-500", "bg-green-500", "bg-yellow-500", "bg-purple-500", "bg-pink-500",
       // No gradients
       "bg-gradient-to-r", "bg-gradient-to-l", "bg-gradient-to-t", "bg-gradient-to-b",
       // No bold headings (Editorial uses font-normal for serif)

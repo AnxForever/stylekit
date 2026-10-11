@@ -17,8 +17,8 @@ export const editorialAtoms: StyleAtoms = {
     en: "Motion serves the reading ritual: link underlines sweep left-to-right over 300-400ms ease-out, images fade in with a 2-4px nudge as they scroll into view; no bounces, wobbles, or continuous loops; under reduced-motion underlines render statically.",
   },
   color: {
-    zh: "暖米色或象牙底配柔和近黑文字，层级通过透明度阶梯（100/70/50%）而非额外色相实现；强调色用极少量深墨或酒红作为引号；整体像旧纸张而非屏幕。",
-    en: "Warm cream or ivory base with soft near-black text, hierarchy built through opacity tiers (100/70/50%) rather than new hues; a sparing ink-dark or oxblood accent functions like quotation marks; the palette reads as aged paper, not screen.",
+    zh: "暖米色或象牙底配柔和近黑文字，层级主要通过墨色透明度与纸色深浅建立；调色盘列出的蓝灰和灰酒红只作小标签、细线与交互提示，正文仍用近黑墨色，文字点缀须检查对比度。整体像旧纸张而非屏幕。",
+    en: "Warm cream or ivory paper with soft near-black text. Build the main hierarchy with ink opacity and paper value; use only the palette's muted blue-gray and gray-burgundy for small labels, fine rules, and interaction cues. Keep body copy in ink and verify contrast before accent text. The palette reads as aged paper, not screen.",
   },
   typography: {
     zh: "衬线字体承担标题与引语（大字号、窄字距、偶尔斜体），无衬线承担正文与导航；字号对比强烈（hero 8-12x 正文），段首可用大写首字母（drop cap）但整屏只一次。",
