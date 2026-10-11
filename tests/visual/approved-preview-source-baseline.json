@@ -1,5 +1,5 @@
 {
-  "baselineCommit": "7c66cf8e",
+  "baselineCommit": "e7690d0a",
   "algorithm": "sha256",
   "files": {
     "components/home/featured-carousel.tsx": "32b8cae0957e6fe5fecc99e048629180c645a51d12393a1c1b8b23b5be3ef01d",
@@ -44,7 +44,7 @@
     "lib/style-preview/styles/developer-terminal.tsx": "346916df7287009343ba55f54a14ec3f44ca1188f16039b77e8e0ac8bce74b76",
     "lib/style-preview/styles/distill-style.tsx": "42160b061ef0fdcb69692bce1d08b75723bd2d084a25ee2dd179c8ab7213e48d",
     "lib/style-preview/styles/dopamine-design.tsx": "db9eccadd178925d0334bda20a401ae1d066a927a10ae837291bd9097b58f343",
-    "lib/style-preview/styles/editorial.tsx": "b9626f3d7018c15c4e6f3d800fc4de8f420e2ab9642b30fe59cc21e686df05a4",
+    "lib/style-preview/styles/editorial.tsx": "b0920e0773465d2b5dba8303f2c4fe812f1bfad55a038a238237c25539673a96",
     "lib/style-preview/styles/f-pattern-layout.tsx": "1ac531bcb420f44af7126863b7b01fe34fa19cc9132370efa04b495294448f0a",
     "lib/style-preview/styles/film-noir.tsx": "8f50855e4074c466b9234cde11fded16c6efafde2a6747da23c7f7d43a2887e5",
     "lib/style-preview/styles/fluent-design.tsx": "93ae11127dd0993ecddca856325a1c3576097fe44f03e83118ec379d3767b09e",
