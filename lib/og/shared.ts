@@ -26,9 +26,12 @@ export function getOgBrandLogoDataUri(): Promise<string> {
       "brand",
       "stylekit-horizontal-white.svg",
     );
-    brandLogoDataUriPromise = readFile(logoPath, "utf8").then(
-      (svg) => "data:image/svg+xml;base64," + Buffer.from(svg).toString("base64"),
-    );
+    brandLogoDataUriPromise = readFile(logoPath, "utf8")
+      .then((svg) => "data:image/svg+xml;base64," + Buffer.from(svg).toString("base64"))
+      .catch((error) => {
+        brandLogoDataUriPromise = undefined;
+        throw error;
+      });
   }
 
   return brandLogoDataUriPromise;
