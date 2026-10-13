@@ -4,6 +4,7 @@ import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { LocalizedLink } from "@/components/i18n/localized-link";
 import { getRequestLocaleContext } from "@/lib/i18n/request";
+import { localizeMetadata } from "@/lib/i18n/metadata";
 
 // International card-payment support is being set up through a
 // merchant-of-record (Paddle). A Ko-fi page is registered at
@@ -13,11 +14,24 @@ import { getRequestLocaleContext } from "@/lib/i18n/request";
 // set KOFI_URL to that address and the block switches to a live button.
 const KOFI_URL = "";
 
-export const metadata: Metadata = {
-  title: "Support StyleKit",
-  description:
-    "Ways to support StyleKit's servers, domains, and ongoing maintenance - star the project, share it, or leave a voluntary tip.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const { locale } = await getRequestLocaleContext();
+  return localizeMetadata(
+    locale === "zh"
+      ? {
+          title: "支持 StyleKit",
+          description:
+            "支持 StyleKit 的服务器、域名与持续维护，也可以为项目点 Star、分享给合适的社区，或自愿赞助。",
+        }
+      : {
+          title: "Support StyleKit",
+          description:
+            "Ways to support StyleKit's servers, domains, and ongoing maintenance - star the project, share it, or leave a voluntary tip.",
+        },
+    locale,
+    "/support",
+  );
+}
 
 export default async function SupportPage() {
   const { locale } = await getRequestLocaleContext();

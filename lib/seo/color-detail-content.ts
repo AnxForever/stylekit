@@ -59,7 +59,56 @@ export function getColorAnswer(detail: ColorDetail) {
   const match = isExactTailwindHex(detail)
     ? `It exactly matches the sRGB hex approximation of ${detail.tailwind.token} in the reference Tailwind v4 palette.`
     : `The nearest reference Tailwind v4 token is ${detail.tailwind.token} (${detail.tailwind.hex}), not an exact match.`;
-  return `${detail.hex} is ${detail.rgbCss}, or ${detail.hslCss}. ${match}`;
+  return `${detail.hex} is ${detail.rgbCss}, or ${detail.hslCss}. ${match} ${getColorUsageSummary(detail)}`;
+}
+
+/** A concise, source-backed statement of where this exact hex occurs. */
+export function getColorUsageSummary(detail: ColorDetail): string {
+  if (detail.usedBy.length === 0) {
+    return "No curated StyleKit style palette currently uses this color.";
+  }
+
+  if (detail.usedBy.length === 1) {
+    const usage = detail.usedBy[0];
+    const article = usage.role === "accent" ? "an" : "a";
+    return `Used as ${article} ${usage.role} color in the ${usage.nameEn} palette.`;
+  }
+
+  const roleCounts = new Map<string, number>();
+  for (const usage of detail.usedBy) {
+    roleCounts.set(usage.role, (roleCounts.get(usage.role) ?? 0) + 1);
+  }
+  const roles = [...roleCounts.entries()];
+  if (roles.length === 1) {
+    const [role] = roles[0];
+    const article = role === "accent" ? "an" : "a";
+    return `Used as ${article} ${role} color in ${detail.usedBy.length} curated StyleKit style palettes.`;
+  }
+
+  const roleSummary = roles
+    .map(([role, count]) => {
+      const article = role === "accent" ? "an" : "a";
+      const paletteWord = count === 1 ? "palette" : "palettes";
+      const verb = count === 1 ? "uses" : "use";
+      return `${count} ${paletteWord} ${verb} it as ${article} ${role} color`;
+    })
+    .join(" and ");
+
+  return `Used in ${detail.usedBy.length} curated StyleKit style palettes; ${roleSummary}.`;
+}
+
+function getColorMetadataUsageSummary(detail: ColorDetail): string {
+  if (detail.usedBy.length === 0) {
+    return "Not currently used in a curated style palette.";
+  }
+
+  if (detail.usedBy.length === 1) {
+    const usage = detail.usedBy[0];
+    const article = usage.role === "accent" ? "an" : "a";
+    return `Used as ${article} ${usage.role} in ${usage.nameEn}.`;
+  }
+
+  return `Used in ${detail.usedBy.length} style palettes.`;
 }
 
 export function getColorFaq(detail: ColorDetail) {
@@ -72,20 +121,12 @@ export function getColorFaq(detail: ColorDetail) {
 }
 
 export function buildColorDetailMetadata(detail: ColorDetail): Metadata {
-  const styleName = detail.usedBy[0]?.nameEn;
   const exactToken = isExactTailwindHex(detail) ? detail.tailwind.token : null;
-  const tokenPrefix = exactToken ? `${detail.hex} (${exactToken})` : detail.hex;
-  const title = styleName
-    ? `${tokenPrefix} — UI Styles That Use It & Pairings`
-    : `${tokenPrefix} — Pairings, Tints & Contrast`;
-  const otherStyles = detail.usedBy.length - 1;
-  const styleLead = styleName
-    ? `Used in ${styleName}${otherStyles > 0 ? ` and ${otherStyles} more UI ${otherStyles === 1 ? "style" : "styles"}` : ""}. `
-    : "";
   const tailwindLead = exactToken
-    ? `Exact Tailwind v4 token: ${exactToken}. `
-    : `Nearest Tailwind v4: ${detail.tailwind.token} (not an exact match). `;
-  const description = `${detail.hex}: ${styleLead}${tailwindLead}Explore pairings and text contrast.`;
+    ? `Exact Tailwind v4: ${exactToken}.`
+    : `Nearest Tailwind v4: ${detail.tailwind.token} (not exact).`;
+  const title = `${detail.hex} Hex Color Code: RGB, CSS & Contrast`;
+  const description = `${detail.hex}: ${detail.rgbCss}; ${detail.hslCss}. ${getColorMetadataUsageSummary(detail)} ${tailwindLead} Copy CSS, see pairings, and check WCAG contrast.`;
   return canonicalizeEnglishMetadata({
     title, description,
     openGraph: { title: `${title} | StyleKit`, description, type: "website" },

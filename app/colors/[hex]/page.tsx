@@ -141,10 +141,10 @@ export default async function ColorDetailPage({ params }: PageProps) {
               style={{ backgroundColor: detail.hex }}
             >
               <h1
-                className="font-mono text-3xl tracking-tight md:text-5xl"
+                className="font-mono text-2xl tracking-tight sm:text-3xl md:text-5xl"
                 style={{ color: textOn(detail) }}
               >
-                {detail.hex}
+                {detail.hex} Hex Color
               </h1>
             </div>
             <p className="mt-5 max-w-2xl text-[15px] leading-[1.75] text-white/60">
@@ -159,6 +159,10 @@ export default async function ColorDetailPage({ params }: PageProps) {
               <CopyValueRow label="rgb" value={detail.rgbCss} />
               <CopyValueRow label="hsl" value={detail.hslCss} />
               <CopyValueRow label="oklch" value={detail.oklchCss} />
+              <CopyValueRow
+                label="css variable"
+                value={`--stylekit-color-reference: ${detail.hex};`}
+              />
               <CopyValueRow
                 label="tailwind"
                 value={
