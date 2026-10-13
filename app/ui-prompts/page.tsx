@@ -9,11 +9,15 @@ import { promptTopics } from "@/lib/prompts";
 import { uiPromptTemplates } from "@/lib/seo/prompt-template-previews";
 import { UI_PROMPT_EXAMPLES } from "@/lib/seo/ui-prompt-examples";
 import { getRequestLocaleContext } from "@/lib/i18n/request";
+import { getAllStylesMeta } from "@/lib/styles/meta";
+
+const ENGLISH_TITLE = "AI UI Prompt Library for Websites & Dashboards";
+const ENGLISH_DESCRIPTION =
+  "Copy-ready AI UI prompts with website and dashboard examples, plus landing page, dark mode, and Tailwind UI guidance. Adapt them for ChatGPT, Claude Code, and Codex.";
 
 export const metadata: Metadata = {
-  title: "UI Design Prompts Library",
-  description:
-    "Copy-ready UI design prompts for websites, dashboards, landing pages, dark mode, and Tailwind UI — ready for ChatGPT, Claude, Claude Code, and Codex.",
+  title: ENGLISH_TITLE,
+  description: ENGLISH_DESCRIPTION,
   keywords: [
     "UI design prompts",
     "web UI prompts",
@@ -23,18 +27,16 @@ export const metadata: Metadata = {
     "Tailwind UI prompts",
   ],
   openGraph: {
-    title: "UI Design Prompts Library | StyleKit",
-    description:
-      "Copy-ready UI design prompts for websites, dashboards, landing pages, dark mode, and more.",
+    title: "AI UI Prompt Library for Websites & Dashboards | StyleKit",
+    description: ENGLISH_DESCRIPTION,
     siteName: "StyleKit",
     images: [{ url: BRAND_ASSETS.socialPreview, width: 1200, height: 630 }],
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "UI Design Prompts Library | StyleKit",
-    description:
-      "Copy-ready UI design prompts for websites, dashboards, landing pages, dark mode, and more.",
+    title: "AI UI Prompt Library for Websites & Dashboards | StyleKit",
+    description: ENGLISH_DESCRIPTION,
   },
 };
 
@@ -56,7 +58,15 @@ function getTopicHref(slug: string) {
 export default async function UiPromptsPage() {
   const { locale } = await getRequestLocaleContext();
   const isZh = locale === "zh";
-  const featuredTopics = promptTopics;
+  const stylesBySlug = new Map(
+    getAllStylesMeta().map((style) => [style.slug, style] as const),
+  );
+  const featuredTopics = promptTopics.map((topic) => ({
+    topic,
+    relatedStyle: topic.relatedStyleSlugs
+      .map((slug) => stylesBySlug.get(slug))
+      .find((style) => style !== undefined),
+  }));
 
   const toolCards = [
     {
@@ -95,12 +105,12 @@ export default async function UiPromptsPage() {
               {isZh ? "提示词库" : "Prompt Library"}
             </p>
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
-              {isZh ? "UI 与前端设计提示词库" : "UI Design Prompts Library"}
+              {isZh ? "UI 与前端设计提示词库" : ENGLISH_TITLE}
             </h1>
             <p className="text-lg text-muted max-w-3xl mb-8 leading-relaxed">
               {isZh
                 ? "复制包含布局、配色、响应式行为和交互状态的前端提示词，用于 ChatGPT、Claude、Claude Code 或 Codex。先从下面三个完整示例开始，再按页面类型或视觉风格查找更多提示词。"
-                : "Copy frontend prompts that specify layout, colors, responsive behavior, and UI states for ChatGPT, Claude, Claude Code, or Codex. Start with the three complete examples below, then explore prompts by page type or visual style."}
+                : "Copy AI UI prompts with explicit layout, color, responsive behavior, and interaction states for websites and dashboards. Start with the complete examples below, then explore prompts by page type or visual style."}
             </p>
             <div className="flex flex-wrap gap-3 text-sm text-muted">
               <span className="border border-border px-3 py-1">
@@ -162,25 +172,39 @@ export default async function UiPromptsPage() {
               {isZh ? "按具体任务选择提示词" : "Choose prompts for the page you are building"}
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {featuredTopics.map((topic) => (
-                <LocalizedLink
+              {featuredTopics.map(({ topic, relatedStyle }) => (
+                <article
                   key={topic.slug}
-                  href={getTopicHref(topic.slug)}
-                  className="group border border-border p-6 hover:border-foreground transition-colors"
+                  className="border border-border p-6 transition-colors hover:border-foreground"
                 >
-                  <h3 className="text-lg font-semibold mb-2 group-hover:text-foreground transition-colors">
-                    {isZh ? topic.titleZh : topic.titleEn}
-                  </h3>
-                  <p className="text-sm text-muted mb-4 leading-relaxed">
-                    {isZh
-                      ? topic.descriptionZh
-                      : featuredTopicDescriptions[topic.slug] ?? topic.descriptionEn}
-                  </p>
-                  <div className="flex gap-3 text-xs text-muted">
-                    <span>{topic.prompts.length} {isZh ? "条提示词" : "prompts"}</span>
-                    <span>{topic.relatedStyleSlugs.length} {isZh ? "种风格" : "styles"}</span>
-                  </div>
-                </LocalizedLink>
+                  <LocalizedLink
+                    href={getTopicHref(topic.slug)}
+                    className="group block min-h-28 rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                  >
+                    <h3 className="text-lg font-semibold mb-2 group-hover:text-foreground transition-colors">
+                      {isZh ? topic.titleZh : topic.titleEn}
+                    </h3>
+                    <p className="text-sm text-muted mb-4 leading-relaxed">
+                      {isZh
+                        ? topic.descriptionZh
+                        : featuredTopicDescriptions[topic.slug] ?? topic.descriptionEn}
+                    </p>
+                    <div className="flex gap-3 text-xs text-muted">
+                      <span>{topic.prompts.length} {isZh ? "条提示词" : "prompts"}</span>
+                    </div>
+                  </LocalizedLink>
+                  {relatedStyle ? (
+                    <p className="mt-3 border-t border-border pt-2 text-xs text-muted">
+                      <span>{isZh ? "相关风格：" : "Related style: "}</span>
+                      <LocalizedLink
+                        href={"/styles/" + relatedStyle.slug}
+                        className="inline-flex min-h-11 items-center px-1 font-medium text-foreground underline underline-offset-4 transition-colors hover:text-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                      >
+                        {isZh ? relatedStyle.name : relatedStyle.nameEn || relatedStyle.name}
+                      </LocalizedLink>
+                    </p>
+                  ) : null}
+                </article>
               ))}
             </div>
           </div>

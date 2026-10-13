@@ -3,6 +3,10 @@ import Page, { metadata as baseMetadata } from "@/app/ui-prompts/page";
 import { isLocale } from "@/lib/i18n/routing";
 import { localizeMetadata } from "@/lib/i18n/metadata";
 
+const ENGLISH_TITLE = "AI UI Prompt Library for Websites & Dashboards";
+const ENGLISH_DESCRIPTION =
+  "Copy-ready AI UI prompts with website and dashboard examples, plus landing page, dark mode, and Tailwind UI guidance. Adapt them for ChatGPT, Claude Code, and Codex.";
+
 export async function generateMetadata({
   params,
 }: {
@@ -38,9 +42,8 @@ export async function generateMetadata({
       }
     : {
         ...baseMetadata,
-        title: "AI UI & Frontend Design Prompts",
-        description:
-          "Copy-ready AI UI and frontend design prompts for websites, dashboards, landing pages, dark mode, and Tailwind UI. Use them with ChatGPT, Claude Code, and Codex.",
+        title: ENGLISH_TITLE,
+        description: ENGLISH_DESCRIPTION,
         keywords: [
           "AI UI prompts",
           "AI frontend prompts",
