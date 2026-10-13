@@ -112,7 +112,7 @@ async function collectSourceFiles(
 }
 
 function packageDependencies(slug: string): Record<string, string> {
-  // These cover imports used by the 36 local catalog templates and the
+  // These cover imports used by the local catalog templates and the
   // shared Brutal UI component barrel. Tests verify source imports against it.
   const dependencies: Record<string, string> = {
     "lucide-react": "^0.563.0",
@@ -210,6 +210,17 @@ async function readSharedUtils(): Promise<SourceFile> {
   return { relativePath: "lib/utils.ts", content: await readRegularFile(filePath) };
 }
 
+async function collectReliefMarkFiles(): Promise<SourceFile[]> {
+  const root = path.resolve(process.cwd(), "components", "templates");
+  if (await realpath(root) !== root) {
+    throw new Error("Shared template source resolves through a symlink");
+  }
+  return Promise.all(["relief-mark.tsx", "relief-mark.module.css"].map(async (name) => ({
+    relativePath: `components/templates/${name}`,
+    content: await readRegularFile(path.join(root, name)),
+  })));
+}
+
 /** Returns a complete standalone project for local catalog entries only. */
 export async function getTemplateProject(
   slug: string
@@ -245,6 +256,9 @@ export async function getTemplateProject(
     const exportedSources = [...sourceFiles];
     if (slug === "brutal-landing") {
       exportedSources.push(...await collectBrutalUiFiles(), await readSharedUtils());
+    }
+    if (slug === "technical-profile") {
+      exportedSources.push(...await collectReliefMarkFiles());
     }
 
     for (const file of exportedSources) {

@@ -109,7 +109,7 @@ npx -y --prefer-online stylekit-mcp@latest
 ## 仓库里还有什么
 
 - **60 个动效** —— 实时预览，一键复制
-- **36 个页面模板** —— SaaS、仪表盘、电商、作品集、博客
+- **37 个页面模板** —— SaaS、仪表盘、电商、作品集、博客
 - **随处导出** —— Tailwind preset、shadcn 主题、CSS 变量、Figma tokens
 - **IDE 规则** —— `.cursorrules`、`claude-rules`、`windsurf-rules`
 - **双语** —— 完整的中英文内容与本地化路由

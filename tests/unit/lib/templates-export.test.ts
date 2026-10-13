@@ -157,8 +157,8 @@ describe("getTemplateProject", () => {
     (entry) => !entry.external && entry.href.startsWith("/templates/")
   );
 
-  it("exports all 36 local templates with closed import graphs and license data", async () => {
-    expect(localTemplates).toHaveLength(36);
+  it("exports all local templates with closed import graphs and license data", async () => {
+    expect(localTemplates).toHaveLength(37);
 
     for (const entry of localTemplates) {
       const project = await getTemplateProject(entry.id);
@@ -215,6 +215,29 @@ describe("getTemplateProject", () => {
     await expect(getTemplateProject("nextdevtpl")).resolves.toBeNull();
     await expect(getTemplateProject("../brutal-landing")).resolves.toBeNull();
     await expect(getTemplateProject("not-a-template")).resolves.toBeNull();
+  });
+
+  it("bundles the technical profile shared relief and journal in its download", async () => {
+    const project = await getTemplateProject("technical-profile");
+    expect(project).not.toBeNull();
+    if (!project) return;
+    expect(project.files["components/templates/relief-mark.tsx"]).toContain("ReliefMark");
+    expect(project.files["components/templates/relief-mark.module.css"]).toContain("prefers-reduced-motion");
+    expect(Object.keys(project.files).some((file) => file.includes("[slug]/page.tsx"))).toBe(true);
+
+    const response = await getDownload(
+      new Request("https://stylekit.test/api/templates/technical-profile/download"),
+      { params: Promise.resolve({ slug: "technical-profile" }) }
+    );
+    expect(response.status).toBe(200);
+    const archive = await JSZip.loadAsync(await response.arrayBuffer());
+    for (const name of [
+      "components/templates/relief-mark.tsx",
+      "components/templates/relief-mark.module.css",
+    ]) {
+      expect(await archive.file(`technical-profile-template/${name}`)?.async("string"))
+        .toBe(project.files[name]);
+    }
   });
 
   it("keeps the source endpoint JSON contract and excludes nonlocal slugs", async () => {

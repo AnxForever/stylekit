@@ -181,7 +181,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         !template.external && template.href !== "/templates/editorial-profile-archive"
     )
     .flatMap((template) =>
-      createLocalizedEntries(template.href, undefined, "monthly", 0.6)
+      template.id === "technical-profile"
+        ? [{ url: `${BASE_URL}${template.href}`, changeFrequency: "monthly", priority: 0.6 }]
+        : createLocalizedEntries(template.href, undefined, "monthly", 0.6)
     );
 
   const blogPosts = getAllPosts();

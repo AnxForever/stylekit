@@ -71,6 +71,15 @@ function crawlDecision(group: RobotsGroup, urlPath: string): "allow" | "disallow
 }
 
 describe("SEO crawlability contracts", () => {
+  it("indexes the standalone technical profile without locale aliases or sample articles", async () => {
+    const entries = (await sitemap()).filter((entry) => entry.url.includes("/templates/technical-profile"));
+    expect(entries).toEqual([{
+      url: `${getBaseUrl()}/templates/technical-profile`,
+      changeFrequency: "monthly",
+      priority: 0.6,
+    }]);
+  });
+
   it("publishes every exact route marked indexable at its canonical locale URL", async () => {
     const entries = await sitemap();
     const urls = new Set(entries.map((entry) => entry.url));

@@ -33,6 +33,7 @@ export const templateCoverSlugs = new Set<string>([
   "shadcn-analytics",
   "social-feed",
   "startup-landing",
+  "technical-profile",
   "travel-booking",
   "warm-dashboard",
   "yohaku-blog",

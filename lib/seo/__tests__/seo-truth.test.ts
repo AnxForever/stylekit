@@ -193,7 +193,11 @@ describe("SEO truth invariants", () => {
     const urls = entries.map((entry) => entry.url);
 
     expect(new Set(urls).size).toBe(urls.length);
-    expect(urls.every((url) => url.startsWith(`${BASE_URL}/en`) || url.startsWith(`${BASE_URL}/zh`))).toBe(true);
+    expect(urls.every((url) =>
+      url.startsWith(`${BASE_URL}/en`) ||
+      url.startsWith(`${BASE_URL}/zh`) ||
+      url === `${BASE_URL}/templates/technical-profile`
+    )).toBe(true);
     expect(urls.some((url) => url.includes("["))).toBe(false);
     expect(urls.some((url) => url.includes("/showcase"))).toBe(false);
     expect(urls.some((url) => /\/zh\/(blog|guides)(?:\/|$)/.test(url))).toBe(false);

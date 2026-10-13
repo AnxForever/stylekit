@@ -175,7 +175,10 @@ async function main(): Promise<void> {
     if (url.origin !== BASE_URL) {
       issues.push({ source: "app/sitemap.ts", message: `non-canonical host ${entry.url}` });
     }
-    if (!/^\/(en|zh)(?:\/|$)/.test(url.pathname)) {
+    // This English demo microsite has a canonical unprefixed route; localized
+    // aliases redirect to it. Keep the exception exact so articles stay out.
+    const standaloneTemplate = url.pathname === "/templates/technical-profile";
+    if (!standaloneTemplate && !/^\/(en|zh)(?:\/|$)/.test(url.pathname)) {
       issues.push({ source: "app/sitemap.ts", message: `missing locale prefix ${entry.url}` });
     }
     if (url.pathname.includes("[")) {
