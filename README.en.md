@@ -134,7 +134,7 @@ Every style ships tokens, component code, AI rules, and a full-page live demo.
 ## What else is in here
 
 - **60 animations** with live preview and one-click copy
-- **36 page templates** — SaaS, dashboard, e-commerce, portfolio, blog
+- **37 page templates** — SaaS, dashboard, e-commerce, portfolio, blog
 - **Export anywhere** — Tailwind preset, shadcn theme, CSS variables, Figma tokens
 - **IDE rules** — `.cursorrules`, `claude-rules`, `windsurf-rules`
 - **Bilingual** — full English and Chinese, with localized routing

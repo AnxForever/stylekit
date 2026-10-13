@@ -1,0 +1,133 @@
+.button {
+  --relief-background: var(--paper, var(--background, #fafafa));
+  --relief-foreground: var(--ink, var(--foreground, #0a0a0a));
+  --relief-muted: var(--muted, var(--relief-foreground));
+  --relief-side: color-mix(in srgb, var(--relief-foreground) 14%, var(--relief-background));
+  --relief-line: color-mix(in srgb, var(--relief-muted) 48%, transparent);
+  --relief-hatch: color-mix(in srgb, var(--relief-muted) 42%, transparent);
+  --relief-light: var(--relief-foreground);
+
+  display: inline-flex;
+  width: min(100%, 22rem);
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: 2px;
+  appearance: none;
+  background: transparent;
+  color: var(--relief-foreground);
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.button:focus-visible {
+  outline: 2px solid var(--relief-foreground);
+  outline-offset: 4px;
+}
+
+.art {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.extrusion path {
+  fill: var(--relief-side);
+}
+
+.face {
+  transform: translate(0, 0);
+  transform-box: fill-box;
+  transform-origin: center;
+  transition: transform 300ms cubic-bezier(0.2, 0.72, 0.25, 1);
+}
+
+.button[data-pressed="true"] .face {
+  transform: translate(8px, 8px);
+}
+
+.faceFill {
+  fill: var(--relief-background);
+}
+
+.hatch {
+  fill: none;
+  stroke: var(--relief-hatch);
+  stroke-width: 1;
+}
+
+.faceOutline {
+  fill: none;
+  stroke: var(--relief-line);
+  stroke-width: 1;
+}
+
+.lightCenter {
+  stop-color: var(--relief-light);
+  stop-opacity: 0.2;
+}
+
+.lightMid {
+  stop-color: var(--relief-light);
+  stop-opacity: 0.075;
+}
+
+.lightEdgeStop {
+  stop-color: var(--relief-light);
+  stop-opacity: 0;
+}
+
+.pointerGradient {
+  transition: cx 240ms cubic-bezier(0.2, 0.72, 0.25, 1),
+    cy 240ms cubic-bezier(0.2, 0.72, 0.25, 1);
+}
+
+.lightWash,
+.lightEdge {
+  opacity: 0;
+  transition: opacity 180ms ease;
+}
+
+.lightEdge {
+  stroke-width: 1.5;
+}
+
+.button:focus-visible .lightWash,
+.button:focus-visible .lightEdge {
+  opacity: 1;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .button:hover .lightWash,
+  .button:hover .lightEdge {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .face,
+  .lightWash,
+  .lightEdge,
+  .pointerGradient {
+    transition: none;
+  }
+
+  .face {
+    transform: none;
+  }
+
+  .button[data-pressed="true"] .face {
+    transform: none;
+  }
+
+  .button[data-pressed="true"] .faceOutline {
+    stroke: var(--relief-foreground);
+    stroke-width: 2;
+  }
+
+  .pointerGradient {
+    cx: 50%;
+    cy: 50%;
+  }
+}

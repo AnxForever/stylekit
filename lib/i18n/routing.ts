@@ -299,15 +299,16 @@ export function shouldBypassLocale(pathname: string): boolean {
   // with the generic dynamic fallback.
   if (/^\/styles\/[^/]+\/showcase$/.test(normalized)) return true;
   if (normalized.startsWith("/feed/")) return true;
-  // The editorial-profile-archive template is a standalone English-only
-  // microsite served from the unprefixed top-level route
-  // (app/templates/editorial-profile-archive/*). Locale-prefixed requests
+  // These templates are standalone English-only microsites served from
+  // their unprefixed top-level routes. Locale-prefixed requests
   // redirect to it via the bypass branch in the proxy; routing it through the
   // [locale] filesystem tree (which holds only a redirect stub) produced a
   // soft-404 home shell. Match the base page and every sub-route.
   if (
     normalized === "/templates/editorial-profile-archive" ||
-    normalized.startsWith("/templates/editorial-profile-archive/")
+    normalized.startsWith("/templates/editorial-profile-archive/") ||
+    normalized === "/templates/technical-profile" ||
+    normalized.startsWith("/templates/technical-profile/")
   ) {
     return true;
   }

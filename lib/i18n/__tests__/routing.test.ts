@@ -69,6 +69,9 @@ describe("i18n routing helpers", () => {
     expect(shouldBypassLocale("/styles/corporate-clean/showcase")).toBe(true);
     expect(shouldBypassLocale("/styles/neo-brutalist/showcase")).toBe(true);
     expect(shouldBypassLocale("/styles/corporate-clean")).toBe(false);
+    expect(shouldBypassLocale("/templates/technical-profile")).toBe(true);
+    expect(shouldBypassLocale("/templates/technical-profile/notes/tokens-are-a-promise")).toBe(true);
+    expect(shouldBypassLocale("/templates/technical-profile-copy")).toBe(false);
     expect(shouldBypassLocale("/styles")).toBe(false);
     expect(shouldBypassLocale("/")).toBe(false);
   });

@@ -155,6 +155,17 @@ export const templateCatalog: TemplateCatalogEntry[] = [
     href: "/templates/editorial-profile-archive",
   }),
   defineTemplate({
+    id: "technical-profile",
+    name: { zh: "线框个人档案与博客", en: "Technical Profile & Journal" },
+    description: {
+      zh: "窄栏黑白个人站，以贯穿页面的细线、斜纹分隔和受光浮雕字标组织项目与博客专栏，包含文章筛选与阅读页。",
+      en: "A monochrome personal site with a narrow frame, hatched dividers, an interactive relief mark, selected projects, and a filterable journal with article pages.",
+    },
+    styleSlug: "monochrome",
+    type: "portfolio",
+    href: "/templates/technical-profile",
+  }),
+  defineTemplate({
     id: "magazine-landing",
     name: { zh: "杂志风落地页", en: "Magazine Landing" },
     description: {
