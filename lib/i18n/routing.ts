@@ -37,6 +37,7 @@ export const LOCALE_ROUTE_POLICY = [
     mode: "filesystem",
     sitemapLocales: "none",
     exact: [
+      "/backgrounds",
       "/color-theory",
       "/design-principles",
       "/spacing",
@@ -59,7 +60,6 @@ export const LOCALE_ROUTE_POLICY = [
       "/ai-web-design-tools",
       "/ai-ui-generator",
       "/ai-frontend-workflow",
-      "/backgrounds",
       "/changelog",
       "/claude-code-ui-design",
       "/colors",
@@ -101,6 +101,13 @@ export const LOCALE_ROUTE_POLICY = [
     prefixes: ["/blog"],
   },
   {
+    id: "localized-support",
+    mode: "rewrite",
+    sitemapLocales: "all",
+    exact: ["/support"],
+    prefixes: [],
+  },
+  {
     id: "localized-template-details",
     mode: "rewrite",
     sitemapLocales: "all",
@@ -137,7 +144,7 @@ export const LOCALE_ROUTE_POLICY = [
     id: "english-indexable-aliases",
     mode: "rewrite",
     sitemapLocales: "en",
-    exact: ["/privacy", "/terms", "/refunds", "/support"],
+    exact: ["/privacy", "/terms", "/refunds"],
     prefixes: [],
   },
   {

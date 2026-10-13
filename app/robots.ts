@@ -2,30 +2,59 @@ import { MetadataRoute } from "next";
 import { getSiteBaseUrl } from "@/lib/site-url";
 
 const BASE_URL = getSiteBaseUrl();
+const LOCALE_PREFIXES = ["", "/en", "/zh"] as const;
+
+// These public entry pages intentionally send noindex metadata. Keep them
+// crawlable so search crawlers can observe that directive, including the
+// locale aliases and query-driven sign-in/share URLs.
+const PUBLIC_NOINDEX_ROUTE_ALLOW = LOCALE_PREFIXES.flatMap((localePrefix) => {
+  const routes = ["login", "submit"] as const;
+  return routes.flatMap((route) => {
+    const path = `${localePrefix}/${route}`;
+    return [`${path}$`, `${path}?*`, `${path}/$`, `${path}/?*`];
+  });
+});
+
+// Shared kits are public links whose content is encoded in the query string.
+// Keep the exception exact so /kit/shared-other and nested private routes stay
+// covered by the broader kit disallow rule.
+const SHARED_KIT_ROUTE_ALLOW = LOCALE_PREFIXES.flatMap((localePrefix) => {
+  const path = `${localePrefix}/kit/shared`;
+  return [`${path}$`, `${path}?*`, `${path}/$`, `${path}/?*`];
+});
+
+const CRAWLER_RULES = {
+  allow: [
+    "/",
+    "/llms.md",
+    "/llms-full.txt",
+    "/api/styles/*/md$",
+    ...PUBLIC_NOINDEX_ROUTE_ALLOW,
+    ...SHARED_KIT_ROUTE_ALLOW,
+  ],
+  disallow: [
+    "/api/",
+    "/admin/",
+    "/api-test",
+    "/preview",
+    "/kit",
+    "/en/kit",
+    "/zh/kit",
+    "/workspace",
+    "/validation",
+    "/admin-login",
+    "/profile",
+    "/en/profile",
+    "/zh/profile",
+  ],
+};
 
 export default function robots(): MetadataRoute.Robots {
   return {
     rules: [
       {
         userAgent: "*",
-        allow: ["/", "/llms.md", "/llms-full.txt", "/api/styles/*/md$"],
-        // Beyond /api and /admin, exclude noindex product surfaces that carry
-        // no search value but still burn crawl budget (Bing WMT flagged limited
-        // crawl capacity + wasted URLs). These render noindex meta anyway; the
-        // Disallow stops the fetch before it happens.
-        disallow: [
-          "/api/",
-          "/admin/",
-          "/api-test",
-          "/preview",
-          "/kit",
-          "/workspace",
-          "/validation",
-          "/submit",
-          "/login",
-          "/admin-login",
-          "/profile",
-        ],
+        ...CRAWLER_RULES,
       },
       {
         userAgent: [
@@ -43,20 +72,7 @@ export default function robots(): MetadataRoute.Robots {
           "Perplexity-User",
           "Applebot-Extended",
         ],
-        allow: ["/", "/llms.md", "/llms-full.txt", "/api/styles/*/md$"],
-        disallow: [
-          "/api/",
-          "/admin/",
-          "/api-test",
-          "/preview",
-          "/kit",
-          "/workspace",
-          "/validation",
-          "/submit",
-          "/login",
-          "/admin-login",
-          "/profile",
-        ],
+        ...CRAWLER_RULES,
       },
     ],
     sitemap: `${BASE_URL}/sitemap.xml`,

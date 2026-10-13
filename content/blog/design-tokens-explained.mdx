@@ -1,60 +1,111 @@
 ---
-title: "Design Tokens Explained: From Colors to Consistent UI"
-description: "What design tokens are, why they matter, and how StyleKit uses them to describe consistent Tailwind CSS constraints across its visual style catalog."
+title: "Design Tokens Explained: CSS Variables, Tailwind CSS, and Practical Use"
+description: "Learn what design tokens are, how they differ from CSS variables and Tailwind utilities, and how to use StyleKit's real style mappings in Tailwind CSS v4."
 date: "2026-03-12"
-modified: "2026-07-10"
+modified: "2026-10-13"
 author: "StyleKit Team"
-tags: ["tutorial", "design-tokens", "design-system"]
+tags: ["tutorial", "design-tokens", "design-system", "tailwind-css"]
 ---
 
-Design tokens are the smallest decisions in a design system. A border radius value, a shadow definition, a primary color, a font weight -- each of these is a token. On their own they seem trivial, but together they define the entire visual identity of an interface. If you have ever wondered why some apps feel cohesive while others look like a patchwork of unrelated components, the answer is almost always tokens: the cohesive app has them, and the patchwork does not.
+A design token is a named value that records a reusable design decision, such as a text color, spacing step, corner radius, or shadow. Instead of repeating the same raw value throughout an interface, you give it a name and make components use that name or its generated output.
 
-## What Design Tokens Actually Are
+For example, a system might define <code>color.text.primary</code> as <code>#171717</code>. Buttons, headings, and form labels can then use the same decision. If those components actually reference the token, changing its value updates them consistently. A token alone does not change a page: the CSS, component, or tool consuming it must be connected to the token.
 
-A design token is a named value that represents a design decision. Instead of hardcoding `#ff006e` in twelve places across your codebase, you define it once as your accent color and reference it everywhere. The concept extends beyond colors to every visual property: spacing scales, border widths, shadow definitions, typography stacks, border radii, transition timing, and interaction patterns. Tokens are platform-agnostic by nature -- the same token can compile to a CSS custom property, a Tailwind class, a Figma variable, or a Swift constant.
+## What design tokens are useful for
 
-The real power of tokens shows up when you need to change something. Want to switch from a rounded aesthetic to sharp corners? Change one token. Want to swap your shadow system from soft blurs to hard offsets? Change a few tokens. The rest of your UI updates automatically because every component references the token, not a raw value.
+Tokens give designers and developers a shared vocabulary for visual decisions. A small set of semantic tokens can describe roles such as primary text, page background, focus ring, or card radius. Components can use those roles without needing to know why the chosen value is blue, 8 pixels, or a hard-edged shadow.
 
-## How StyleKit Structures Tokens
+They are useful when you need to:
 
-StyleKit organizes tokens into six categories for each style: **border** (width, color, radius, style), **shadow** (small, medium, large, hover, focus, colored variants), **typography** (heading weight, body font, size scale), **spacing** (section padding, container margins, card padding, gap scale), **colors** (backgrounds, text, button variants), and **interaction** (hover transforms, transitions, active states). Every token maps directly to one or more Tailwind CSS classes.
+- keep repeated UI decisions consistent across components;
+- change a theme without searching through every component for duplicated values;
+- map one design system to different implementation targets, such as CSS and a design tool;
+- give an AI coding tool concrete styling rules instead of relying on vague directions.
 
-Here is a concrete example. The Neo-Brutalist style defines its border token as:
+Tokens improve consistency only when the consuming code uses them. They do not automatically make a design accessible, responsive, or visually coherent; those decisions still need review.
 
-```typescript
+## Design token vs. CSS variable vs. Tailwind class
+
+These terms describe different parts of the same workflow:
+
+- A **design token** is the named design decision, for example, <code>color.text.primary</code>.
+- A **CSS custom property** is one way to store a value in CSS, for example, <code>--color-text-primary: #171717</code>.
+- A **Tailwind utility** is a class used where a component needs the style, for example, <code>text-foreground</code>.
+
+A token can be implemented as a CSS variable, a Tailwind theme variable, a JSON entry, or another platform-specific value. Those representations are related, but they are not interchangeable by default.
+
+In Tailwind CSS v4, <code>@theme</code> variables define values and make matching utility classes available. Regular <code>:root</code> custom properties are still useful when you need a CSS value but do not want Tailwind to generate a utility for it. See Tailwind's [theme variable documentation](https://tailwindcss.com/docs/theme) for the namespaces and behavior.
+
+## How StyleKit represents a visual style
+
+StyleKit's per-style token maps are designed to be immediately usable in Tailwind-oriented components and AI workflows. Many entries are utility class strings, grouped into areas such as border, shadow, interaction, typography, spacing, and color. They also include required and forbidden class rules. The style metadata holds raw palette colors separately.
+
+For example, the Neo-Brutalist map uses a responsive black border, square corners, and a hard shadow:
+
+~~~ts
 border: {
   width: "border-2 md:border-4",
   color: "border-black",
   radius: "rounded-none",
-  style: "border-solid",
+},
+shadow: {
+  md: "shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] md:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]",
 }
-```
+~~~
 
-While the Glassmorphism (Liquid Glass) style defines the same category completely differently:
+A Glassmorphism map instead uses large rounded corners, translucent surfaces, blur, and layered shadows. Applying one style's tokens to a component means the component must read and use those values; simply defining the token map does not restyle unrelated components.
 
-```typescript
-border: {
-  width: "border",
-  color: "border-white/20",
-  radius: "rounded-3xl",
-  style: "border-solid",
+This is one practical form of design tokens, but it is not a claim that every entry is a raw, platform-neutral value. For Tailwind projects, the ready-to-copy utility mappings are useful as-is. For a shared multi-platform design system, you may want to map the underlying visual decisions into semantic names and the formats required by your other tools.
+
+## Use StyleKit tokens in Tailwind CSS
+
+You can copy a style's utility values directly into a component. This Neo-Brutalist example uses the responsive border, radius, and shadow mapping above:
+
+~~~tsx
+<article className="border-2 md:border-4 border-black rounded-none shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] md:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
+  <h2>Project notes</h2>
+  <p>Keep the visual decisions consistent across this card.</p>
+</article>
+~~~
+
+If you prefer semantic utilities in a Tailwind CSS v4 app, you can map StyleKit values into your own CSS theme. This is an app-level mapping, not the same file as StyleKit's generated JavaScript config:
+
+~~~css
+@import "tailwindcss";
+
+@theme {
+  --color-stylekit-accent: #ff006e;
+  --shadow-stylekit-card-sm: 4px 4px 0 0 #000;
+  --shadow-stylekit-card-lg: 8px 8px 0 0 #000;
 }
-```
+~~~
 
-Same token structure, radically different visual output. A card component that reads from these tokens will render with thick black borders and sharp corners in Neo-Brutalist, or with thin translucent borders and large rounded corners in Glassmorphism -- without changing a single line of component code.
+The theme variables create utilities such as <code>bg-stylekit-accent</code> and <code>shadow-stylekit-card-sm</code>. Use them in markup:
 
-## Tokens as AI Constraints
+~~~html
+<button class="rounded-none border-2 border-black bg-stylekit-accent px-4 py-2 text-black shadow-stylekit-card-sm md:shadow-stylekit-card-lg">
+  Save changes
+</button>
+~~~
 
-Design tokens become especially powerful when working with AI coding tools. One of the biggest challenges with AI-generated UI is inconsistency: the AI might use `rounded-lg` on one component and `rounded-xl` on another, or mix `shadow-md` with a custom shadow value. Tokens eliminate this problem by giving the AI a fixed vocabulary.
+Tailwind CSS v4 still supports JavaScript configuration for backward compatibility, but it no longer discovers those files automatically. New v4 projects generally define and extend their theme in CSS; when using an older configuration file, load it explicitly as described in the [Tailwind upgrade guide](https://tailwindcss.com/docs/upgrade-guide#using-a-javascript-config-file).
 
-StyleKit takes this further with **forbidden tokens** -- classes that are explicitly banned for a given style. The Neo-Brutalist token set forbids any rounded corner class except `rounded-none`, any Tailwind shadow preset (only custom hard-edge shadows are allowed), and any gray border color. The Glassmorphism token set forbids `rounded-none`, opaque backgrounds like `bg-white`, and fast transitions like `duration-150`. These constraints act as guardrails that keep AI output on-style, even when the model's training data would push it toward generic defaults.
+## Use the rules with an AI coding tool
 
-## From Tokens to Tailwind Classes
+A style token map can give an AI coding tool exact class choices for borders, spacing, and component states. Required rules describe patterns to include; forbidden rules describe patterns to avoid. For example, a Neo-Brutalist prompt can ask for square corners and hard-edge shadows, while ruling out blurred shadow presets and rounded cards.
 
-If you are building with Tailwind CSS, design tokens translate almost one-to-one into utility classes. StyleKit's token files are structured so that each value is already a valid Tailwind class string. When you export a style's prompt, the tokens are embedded directly in the output -- the AI receives exact class names to use and exact class names to avoid.
+These rules narrow the implementation choices, but they cannot guarantee that generated code follows every rule or that the finished UI is usable. Review the output for mobile layouts, hover and focus states, keyboard behavior, and text contrast.
 
-For example, the shadow tokens for Neo-Brutalist produce classes like `shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]` for medium shadows and `shadow-[8px_8px_0px_0px_rgba(255,0,110,1)]` for colored accent shadows. The Glassmorphism shadow tokens produce `shadow-[0_8px_32px_rgba(0,0,0,0.12),inset_0_1px_0_rgba(255,255,255,0.35)]` -- multi-layer shadows with inner highlights that simulate light passing through glass. Both are valid Tailwind arbitrary values, and both are deterministic: the AI does not need to guess.
+## What StyleKit exports
 
-## Getting Started with Tokens
+A style page includes a token export dialog with Figma Tokens, Style Dictionary, and CSS Variables options. Those are separate output formats, so preview the selected file before assuming it contains every style rule. A full style pack also contains a Tailwind JavaScript theme config, global CSS, shadcn theme files, and an Agent Skill.
 
-If you are new to design tokens, start small. Pick three categories -- colors, borders, and shadows -- and define a token for each. Use those tokens consistently across your components. Once you see the benefits of that consistency, expand to typography, spacing, and interactions. Or browse StyleKit's visual style catalog at [StyleKit](https://www.stylekit.top/en/styles), pick one that matches your project's aesthetic, and inspect its token set, Tailwind mappings, AI rules, and component recipes.
+StyleKit's public API also exposes the published token map as JSON. For example, [view the Neo-Brutalist token endpoint](https://www.stylekit.top/api/styles/neo-brutalist/tokens), or browse the [Neo-Brutalist style page](https://www.stylekit.top/en/styles/neo-brutalist) and [Glassmorphism style page](https://www.stylekit.top/en/styles/glassmorphism) to compare the rules in context.
+
+If your pipeline requires the Design Tokens Community Group's interchange format, check the target tool's importer and validate the exported file against its expected schema. The [2025.10 Design Tokens Format report](https://www.designtokens.org/TR/2025.10/format/) is a Community Group specification; a tool-specific JSON export should not be assumed to follow that format automatically.
+
+## A practical way to start
+
+Choose one visual style, apply its border, color, and shadow choices to a single component, and check the component at mobile and desktop sizes. Then reuse the same decisions in related components. If your project uses Tailwind CSS v4, decide which values should become semantic <code>@theme</code> utilities; if it needs another target, create an explicit mapping instead of assuming Tailwind class strings will work in CSS or a design tool.
+
+To explore the rest of StyleKit, [browse the visual style catalog](https://www.stylekit.top/en/styles) and inspect a style's components and export options before adding it to your project.
