@@ -89,6 +89,9 @@ describe("UI prompt library discovery", () => {
   }) => {
     mocks.locale = locale;
     const html = renderToStaticMarkup(await UiPromptsPage());
+    expect(html).toContain(
+      locale === "en" ? "AI UI Prompt Library" : "UI 与前端设计提示词库",
+    );
     const styles = getAllStylesMeta();
     const expectedSlugs = promptTopics
       .map((topic) =>

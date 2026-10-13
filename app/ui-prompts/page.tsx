@@ -12,6 +12,7 @@ import { getRequestLocaleContext } from "@/lib/i18n/request";
 import { getAllStylesMeta } from "@/lib/styles/meta";
 
 const ENGLISH_TITLE = "AI UI Prompt Library for Websites & Dashboards";
+const ENGLISH_HERO_TITLE = "AI UI Prompt Library";
 const ENGLISH_DESCRIPTION =
   "Copy-ready AI UI prompts with website and dashboard examples, plus landing page, dark mode, and Tailwind UI guidance. Adapt them for ChatGPT, Claude Code, and Codex.";
 
@@ -105,7 +106,7 @@ export default async function UiPromptsPage() {
               {isZh ? "提示词库" : "Prompt Library"}
             </p>
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
-              {isZh ? "UI 与前端设计提示词库" : ENGLISH_TITLE}
+              {isZh ? "UI 与前端设计提示词库" : ENGLISH_HERO_TITLE}
             </h1>
             <p className="text-lg text-muted max-w-3xl mb-8 leading-relaxed">
               {isZh
