@@ -43,11 +43,11 @@ export default function TechnicalProfileLayout({
 
   function toggleTheme() {
     const next = !isDark;
-    setSelectedTheme(next);
     try {
       window.localStorage.setItem(THEME_STORAGE_KEY, next ? "dark" : "light");
+      setSelectedTheme(null);
     } catch {
-      // The control still works for this page when browser storage is unavailable.
+      setSelectedTheme(next);
     }
     window.dispatchEvent(new Event(THEME_CHANGE_EVENT));
   }

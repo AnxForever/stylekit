@@ -36,6 +36,16 @@ test("technical profile rejects nonexistent notes", async ({ page }) => {
   await expect(page.getByRole("heading", { level: 1 }).first()).toBeVisible();
 });
 
+test("theme changes in another tab reach a previously toggled profile", async ({ page, context }) => {
+  await page.goto("/templates/technical-profile");
+  await page.getByRole("button", { name: "Use dark theme" }).click();
+  const second = await context.newPage();
+  await second.goto("/templates/technical-profile");
+  await second.getByRole("button", { name: "Use light theme" }).click();
+  await expect(page.getByRole("button", { name: "Use dark theme" })).toBeVisible();
+  await second.close();
+});
+
 test("technical profile works with blocked storage and reduced motion", async ({ page }) => {
   await page.addInitScript(() => {
     Storage.prototype.setItem = () => { throw new DOMException("Storage disabled", "QuotaExceededError"); };
