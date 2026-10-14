@@ -272,7 +272,8 @@ async function auditTemplateDownloadClaim(rootDir: string): Promise<ProductTruth
       /binaryFiles\.has\(filePath\)/.test(routeContent);
     const helperBuildsProject =
       /collectSourceFiles\(templateRoot\)/.test(helperContent) &&
-      /buildScaffoldFiles\(projectMeta\(entry,\s*slug\)\)/.test(helperContent) &&
+      // The helper can augment the base metadata with optional guide settings.
+      /buildScaffoldFiles\(\s*(?:projectMeta\(entry,\s*slug\)|\{\s*\.\.\.projectMeta\(entry,\s*slug\),[\s\S]*?\})\s*\)/.test(helperContent) &&
       /withDependencies\(scaffold,\s*dependencies\)/.test(helperContent) &&
       /files\[projectPath\]\s*=\s*content/.test(helperContent) &&
       /files\["LICENSE"\]\s*=/.test(helperContent) &&

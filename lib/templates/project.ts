@@ -249,7 +249,10 @@ export async function getTemplateProject(
         MAX_PROJECT_BYTES) return null;
 
     const dependencies = packageDependencies(slug);
-    const scaffold = buildScaffoldFiles(projectMeta(entry, slug));
+    const scaffold = buildScaffoldFiles({
+      ...projectMeta(entry, slug),
+      hasCustomizationGuide: sourceFiles.some((file) => file.relativePath === "CUSTOMIZE.md"),
+    });
     const files = withDependencies(scaffold, dependencies);
     const binaryFiles: string[] = [];
 
@@ -262,7 +265,8 @@ export async function getTemplateProject(
     }
 
     for (const file of exportedSources) {
-      const projectPath = file.relativePath.startsWith("components/") ||
+      const projectPath = file.relativePath === "CUSTOMIZE.md" ||
+        file.relativePath.startsWith("components/") ||
         file.relativePath.startsWith("lib/")
         ? file.relativePath
         : `app/templates/${slug}/${file.relativePath}`;

@@ -223,6 +223,10 @@ describe("getTemplateProject", () => {
     if (!project) return;
     expect(project.files["components/templates/relief-mark.tsx"]).toContain("ReliefMark");
     expect(project.files["components/templates/relief-mark.module.css"]).toContain("prefers-reduced-motion");
+    expect(project.files["CUSTOMIZE.md"]).toContain("FIELD_NOTES");
+    expect(project.files["app/templates/technical-profile/CUSTOMIZE.md"]).toBeUndefined();
+    expect(project.files["README.md"]).toContain("[CUSTOMIZE.md](./CUSTOMIZE.md)");
+    expect(project.license.attribution).not.toContain("Customize this template");
     expect(Object.keys(project.files).some((file) => file.includes("[slug]/page.tsx"))).toBe(true);
 
     const response = await getDownload(
@@ -234,6 +238,7 @@ describe("getTemplateProject", () => {
     for (const name of [
       "components/templates/relief-mark.tsx",
       "components/templates/relief-mark.module.css",
+      "CUSTOMIZE.md",
     ]) {
       expect(await archive.file(`technical-profile-template/${name}`)?.async("string"))
         .toBe(project.files[name]);
