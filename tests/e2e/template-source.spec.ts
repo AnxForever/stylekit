@@ -53,6 +53,9 @@ test("template source exposes real files and copies the selected CSS", async ({ 
     .toHaveAttribute("href", `/api/templates/${slug}/download`);
   expect(await dialog.evaluate((element) => element.scrollWidth <= element.clientWidth)).toBe(true);
   await dialog.screenshot({ path: testInfo.outputPath("source-browser.png") });
+  await chooseFile(dialog, "CUSTOMIZE.md");
+  await expect(dialog.locator("pre code")).toContainText("FIELD_NOTES");
+  await expect(dialog.locator("pre code")).toContainText("定制模板");
   await page.keyboard.press("Escape");
   await expect(dialog).toHaveCount(0);
   await expect(opener).toBeFocused();
