@@ -17,8 +17,9 @@ contact information, avatar, and the reference site's ANX glyph are not bundled.
 - The example is an English microsite at `/templates/technical-profile`.
   Locale-prefixed aliases redirect to that route; its gallery card is bilingual.
   Sample articles are not search-indexable editorial content.
-- The source preview shows the entry page. Download the project for all routes,
-  data, CSS modules, and the shared relief component.
+- The source viewer lets you inspect and copy each text file, including routes,
+  data, CSS modules, and the shared relief component. Download the project to
+  get the runnable file tree and any binary assets.
 
 ## Feature evidence ledger
 

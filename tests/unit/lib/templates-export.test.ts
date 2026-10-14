@@ -240,6 +240,49 @@ describe("getTemplateProject", () => {
     }
   });
 
+  it("exposes the complete technical profile text files that are present in its ZIP", async () => {
+    const project = await getTemplateProject("technical-profile");
+    expect(project).not.toBeNull();
+    if (!project) return;
+
+    const response = await getSource(
+      new Request("https://stylekit.test/api/templates/technical-profile/source?view=project"),
+      { params: Promise.resolve({ slug: "technical-profile" }) }
+    );
+    expect(response.status).toBe(200);
+    const viewed = await response.json();
+    expect(viewed.entryPath).toBe("app/templates/technical-profile/page.tsx");
+    expect(viewed.source).toBe(project.source);
+    expect(viewed.binaryFiles).toEqual(project.binaryFiles);
+
+    const binaryFiles = new Set(project.binaryFiles);
+    const expectedTextFiles = Object.fromEntries(
+      Object.entries(project.files).filter(([name]) => !binaryFiles.has(name))
+    );
+    expect(viewed.files).toEqual(expectedTextFiles);
+    for (const name of [
+      "app/templates/technical-profile/_components/field-manual.module.css",
+      "app/templates/technical-profile/_components/field-notes-list.tsx",
+      "app/templates/technical-profile/_data.ts",
+      "app/templates/technical-profile/notes/[slug]/page.tsx",
+      "components/templates/relief-mark.tsx",
+      "components/templates/relief-mark.module.css",
+    ]) {
+      expect(viewed.files[name]).toBe(project.files[name]);
+    }
+
+    const download = await getDownload(
+      new Request("https://stylekit.test/api/templates/technical-profile/download"),
+      { params: Promise.resolve({ slug: "technical-profile" }) }
+    );
+    expect(download.status).toBe(200);
+    const archive = await JSZip.loadAsync(await download.arrayBuffer());
+    for (const [name, content] of Object.entries(expectedTextFiles)) {
+      expect(await archive.file(`technical-profile-template/${name}`)?.async("string"))
+        .toBe(content);
+    }
+  });
+
   it("keeps the source endpoint JSON contract and excludes nonlocal slugs", async () => {
     const response = await getSource(
       new Request("https://stylekit.test/api/templates/brutal-landing/source"),

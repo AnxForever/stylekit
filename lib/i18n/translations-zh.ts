@@ -447,6 +447,17 @@ export const zh: { [K in keyof typeof en]: string } = {
 
   "templates.loadingSource": "加载源码中...",
   "templates.sourceNotFound": "源码暂不可用。",
+  "templates.sourceTitle": "项目源码",
+  "templates.sourceDescription": "查看并复制单个文件；下载完整项目可获取全部源码、资源和运行配置。",
+  "templates.sourceFiles": "项目文件",
+  "templates.sourceAssets": "资源文件",
+  "templates.sourceAssetHint": "此资源包含在下载包中，不提供文本预览。",
+  "templates.copyFile": "复制当前文件",
+  "templates.copyFailed": "复制失败，请选中代码手动复制。",
+  "templates.retrySource": "重新加载",
+  "templates.closeSource": "关闭源码",
+  "templates.showFiles": "选择文件",
+  "templates.hideFiles": "收起文件",
 
   // Styles page
   "styles.subtitle": "设计风格集合",
