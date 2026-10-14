@@ -38,6 +38,7 @@ test("template source exposes real files and copies the selected CSS", async ({ 
   await page.goto("/zh/templates?q=technical-profile");
   await expect(page.getByRole("button", { name: "复制代码", exact: true })).toHaveCount(0);
   const opener = page.getByRole("button", { name: "查看源码", exact: true });
+  await expect(opener).toHaveCount(1);
   await opener.click();
   const dialog = page.getByRole("dialog", { name: /项目源码/ });
   await expect(dialog).toBeVisible();
@@ -73,7 +74,9 @@ test("source failure can retry and denied clipboard reports failure honestly", a
     });
   });
   await page.goto("/zh/templates?q=technical-profile");
-  await page.getByRole("button", { name: "查看源码", exact: true }).click();
+  const opener = page.getByRole("button", { name: "查看源码", exact: true });
+  await expect(opener).toHaveCount(1);
+  await opener.click();
   const dialog = page.getByRole("dialog", { name: /项目源码/ });
   await expect(dialog.getByText("源码暂不可用。", { exact: true })).toBeVisible();
   shouldFail = false;
@@ -104,6 +107,7 @@ test("closing during a pending request cannot reopen the source dialog", async (
   });
   await page.goto("/zh/templates?q=technical-profile");
   const opener = page.getByRole("button", { name: "查看源码", exact: true });
+  await expect(opener).toHaveCount(1);
   const started = page.waitForRequest(endpoint);
   await opener.click();
   await started;
