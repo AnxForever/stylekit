@@ -14,9 +14,9 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   const localized = locale === "zh"
     ? {
         ...baseTemplateMetadata,
-        title: "Next.js 与 Tailwind 网页模板",
-        description: "浏览可运行的 SaaS、落地页、后台、电商、作品集和博客模板，预览并下载 Next.js + Tailwind 项目。",
-        keywords: ["Next.js 模板", "Tailwind 模板", "网页模板", "SaaS 模板", "后台模板"],
+        title: "完整网站与页面模板",
+        description: "精选个人站、博客与商业网站开源项目，提供真实预览和完整源码；另有可下载的 Next.js 页面示例，方便接入自己的数据与业务。",
+        keywords: ["个人网站模板", "博客模板", "开源网站", "Next.js 模板", "Astro 模板", "Tailwind 模板"],
       }
     : baseTemplateMetadata;
   return localizeMetadata(localized, locale, "/templates");

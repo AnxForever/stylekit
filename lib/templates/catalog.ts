@@ -27,6 +27,8 @@ export interface TemplateCatalogEntry {
     accent: string[];
   };
   type: TemplateCatalogType;
+  additionalTypes?: TemplateCatalogType[];
+  keywords?: string[];
   href: string;
   codePath: string;
   /**
@@ -37,6 +39,9 @@ export interface TemplateCatalogEntry {
   external?: {
     repoUrl: string;
     siteUrl: string;
+    stack?: string;
+    features?: LocaleCopy<string[]>;
+    license?: { label: string; url: string };
   };
 }
 
@@ -50,6 +55,100 @@ function defineTemplate(
 }
 
 export const templateCatalog: TemplateCatalogEntry[] = [
+  {
+    id: "anx-portfolio",
+    name: { zh: "AnxForever 个人站与博客", en: "AnxForever Portfolio & Blog" },
+    description: {
+      zh: "me.anxforever.cn 的真实完整项目：个人首页、项目作品、MDX 博客、动态与收藏。内容集中维护，可替换为自己的资料。",
+      en: "The complete project behind me.anxforever.cn: a personal homepage, projects, MDX blog, now page, and bookmarks, with editable content files.",
+    },
+    styleSlug: "monochrome",
+    type: "portfolio",
+    additionalTypes: ["blog"],
+    keywords: ["Anx", "AnxForever", "me.anxforever.cn", "个人站", "个人网站", "博客", "MDX"],
+    href: "https://me.anxforever.cn",
+    codePath: "",
+    external: {
+      repoUrl: "https://github.com/AnxForever/anx-portfolio",
+      siteUrl: "https://me.anxforever.cn",
+      stack: "Next.js + React + MDX",
+      features: {
+        zh: ["个人资料与项目作品", "博客列表与独立文章", "搜索、动态与分类收藏"],
+        en: ["Profile and project portfolio", "Blog index and article pages", "Search, now page, and bookmarks"],
+      },
+      license: { label: "MIT", url: "https://github.com/AnxForever/anx-portfolio/blob/main/LICENSE" },
+    },
+  },
+  {
+    id: "astro-paper",
+    name: { zh: "AstroPaper 技术博客", en: "AstroPaper Blog" },
+    description: {
+      zh: "以阅读和内容维护为核心的完整博客主题，提供独立文章、归档、标签和全文搜索，支持 Markdown 与 MDX。",
+      en: "A complete reading-focused blog theme with article pages, archives, tags, full-text search, and Markdown/MDX content.",
+    },
+    styleSlug: "minimalist-flat",
+    type: "blog",
+    keywords: ["AstroPaper", "Astro", "Markdown", "MDX", "Pagefind", "技术博客"],
+    href: "https://astro-paper.pages.dev",
+    codePath: "",
+    external: {
+      repoUrl: "https://github.com/satnaing/astro-paper",
+      siteUrl: "https://astro-paper.pages.dev",
+      stack: "Astro + Tailwind CSS + MDX",
+      features: {
+        zh: ["文章、归档与标签页", "静态全文搜索与 RSS", "明暗主题与内容配置"],
+        en: ["Articles, archives, and tags", "Static full-text search and RSS", "Light/dark themes and content configuration"],
+      },
+      license: { label: "MIT", url: "https://github.com/satnaing/astro-paper/blob/main/LICENSE" },
+    },
+  },
+  {
+    id: "fuwari",
+    name: { zh: "Fuwari 图文博客", en: "Fuwari Blog" },
+    description: {
+      zh: "带封面、侧栏和柔和配色的完整 Astro 博客，包含分页文章列表、阅读页、分类归档与搜索，可集中修改主题配置。",
+      en: "A complete Astro blog with cover images, a sidebar, soft colors, paginated posts, article pages, archives, and search.",
+    },
+    styleSlug: "soft-ui",
+    type: "blog",
+    keywords: ["Fuwari", "Astro", "Svelte", "Markdown", "图文博客", "个人博客"],
+    href: "https://fuwari.vercel.app",
+    codePath: "",
+    external: {
+      repoUrl: "https://github.com/saicaca/fuwari",
+      siteUrl: "https://fuwari.vercel.app",
+      stack: "Astro + Svelte + Tailwind CSS",
+      features: {
+        zh: ["分页首页与独立文章", "分类归档、搜索与 RSS", "文章目录与 Markdown 扩展"],
+        en: ["Paginated homepage and articles", "Archives, search, and RSS", "Table of contents and extended Markdown"],
+      },
+      license: { label: "MIT", url: "https://github.com/saicaca/fuwari/blob/main/LICENSE" },
+    },
+  },
+  {
+    id: "astrowind",
+    name: { zh: "AstroWind 多页企业站", en: "AstroWind Business Website" },
+    description: {
+      zh: "可组合页面区块的多页商业网站，包含多种首页、关于、服务、定价、联系及博客路由，适合继续开发自己的产品官网。",
+      en: "A multi-page business starter with composable sections, home variants, about, services, pricing, contact, and blog routes.",
+    },
+    styleSlug: "corporate-clean",
+    type: "landing",
+    additionalTypes: ["saas", "blog"],
+    keywords: ["AstroWind", "Astro", "Tailwind", "onwidget", "企业官网", "多页网站"],
+    href: "https://astrowind.vercel.app",
+    codePath: "",
+    external: {
+      repoUrl: "https://github.com/arthelokyo/astrowind",
+      siteUrl: "https://astrowind.vercel.app",
+      stack: "Astro + Tailwind CSS",
+      features: {
+        zh: ["关于、服务与定价页面", "博客文章、分类与标签", "可组合区块与明暗主题"],
+        en: ["About, services, and pricing pages", "Blog articles, categories, and tags", "Composable sections and light/dark themes"],
+      },
+      license: { label: "MIT", url: "https://github.com/arthelokyo/astrowind/blob/main/LICENSE.md" },
+    },
+  },
   {
     id: "nextdevtpl",
     name: { zh: "NextDevTpl · SaaS 全栈模板", en: "NextDevTpl · SaaS Starter" },
@@ -101,7 +200,7 @@ export const templateCatalog: TemplateCatalogEntry[] = [
   }),
   defineTemplate({
     id: "anx-blog",
-    name: { zh: "Anx 实验博客", en: "Anx Avant Blog" },
+    name: { zh: "实验风博客示例", en: "Experimental Blog Demo" },
     description: {
       zh: "实验型作品集博客混合布局，强调大胆字体、粗边框与动感分区。",
       en: "Experimental portfolio-blog mix with loud typography, brutal borders, and kinetic sections.",
@@ -164,6 +263,7 @@ export const templateCatalog: TemplateCatalogEntry[] = [
     styleSlug: "monochrome",
     type: "portfolio",
     href: "/templates/technical-profile",
+    additionalTypes: ["blog"],
   }),
   defineTemplate({
     id: "magazine-landing",

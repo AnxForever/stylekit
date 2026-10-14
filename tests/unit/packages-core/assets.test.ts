@@ -163,6 +163,16 @@ describe("public asset registry", () => {
     expect(externalTemplate.metadata.availability).toBe("external");
     expect(externalTemplate.data).toHaveProperty("external.repoUrl", "https://github.com/evepupil/NextDevTpl");
 
+    const personalSite = getPublicAsset("template", "anx-portfolio")!;
+    expect(personalSite.metadata.tags).toEqual(expect.arrayContaining(["portfolio", "blog"]));
+    expect(personalSite.metadata.availability).toBe("external");
+    expect(personalSite.license).toMatchObject({
+      name: "MIT",
+      url: "https://github.com/AnxForever/anx-portfolio/blob/main/LICENSE",
+    });
+    expect(personalSite.data).not.toHaveProperty("downloadUrl");
+    expect(personalSite).not.toHaveProperty("code");
+
     const pack = getPublicAsset("experience-pack", "corporate-clean-saas")!;
     expect(pack.metadata.availability).toBe("restricted");
     expect(pack.metadata.contentLevel).toBe("restricted");

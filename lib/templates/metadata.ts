@@ -2,13 +2,13 @@ import { BRAND_ASSETS } from "@/lib/brand/assets";
 import type { Metadata } from "next";
 
 export const baseTemplateMetadata: Metadata = {
-  title: "Next.js + Tailwind Page Templates",
+  title: "Website Templates & Open-source Projects",
   description:
-    "35 page templates for SaaS landing, admin, e-commerce, portfolio, and blog. Preview each live and download it as a runnable Next.js + Tailwind project.",
+    "Explore complete portfolio, blog, and business website projects alongside downloadable Next.js interface examples. Preview real sites and get their full source repositories.",
   openGraph: {
-    title: "Next.js + Tailwind Page Templates | StyleKit",
+    title: "Website Templates & Open-source Projects | StyleKit",
     description:
-      "35 page templates for SaaS landing, admin, e-commerce, portfolio, and blog — preview live, download as runnable projects.",
+      "Complete website projects with live previews and upstream source, plus downloadable Next.js page examples for your own data and services.",
     siteName: "StyleKit",
     images: [{ url: BRAND_ASSETS.socialPreview, width: 1200, height: 630 }],
     type: "website",
