@@ -26,9 +26,15 @@ import {
   type TemplateCatalogEntry,
   type TemplateCatalogType,
 } from "@/lib/templates/catalog";
+import {
+  getTemplateTypeScenarios,
+  getTemplateTypes,
+  matchesTemplateSearch,
+  matchesTemplateType,
+  type TemplateTypeFilter,
+} from "@/lib/templates/discovery";
 import { templateCoverSlugs } from "@/lib/templates/covers.generated";
 
-type TemplateTypeFilter = "all" | TemplateCatalogType | "pricing";
 type TemplateSort = "recommended" | "name-asc" | "name-desc";
 const templates = templateCatalog;
 const subscribeToClientReady = () => () => {};
@@ -50,11 +56,10 @@ const templatePrimaryScenarioMap: Partial<Record<TemplateCatalogType, StyleScena
 };
 
 function getTemplateScenarios(template: TemplateCatalogEntry): StyleScenario[] {
-  const primary = templatePrimaryScenarioMap[template.type];
   const style = styleMap.get(template.styleSlug);
   const styleScenarios = style ? getStyleScenarios(style, 3) : [];
   const combined = [
-    ...(primary ? [primary] : []),
+    ...getTemplateTypeScenarios(template, templatePrimaryScenarioMap),
     ...styleScenarios,
   ];
 
@@ -284,29 +289,17 @@ export default function TemplatesPage() {
         deferredActiveScenario === "all" ||
         getTemplateScenarios(template).includes(deferredActiveScenario)
       ))
-      .filter((template) => (
-        deferredActiveType === "all" ||
-        (deferredActiveType === "pricing" ? template.id === "pricing-page" : template.type === deferredActiveType)
-      ))
+      .filter((template) => matchesTemplateType(template, deferredActiveType))
       .filter((template) => {
-        if (!normalizedQuery) return true;
-
         const style = styleMap.get(template.styleSlug);
-        const searchableText = [
-          template.id,
-          template.href,
-          template.name.zh,
-          template.name.en,
-          template.description.zh,
-          template.description.en,
-          style?.name,
-          style?.nameEn,
-        ]
-          .filter(Boolean)
-          .join(" ")
-          .toLowerCase();
-
-        return searchableText.includes(normalizedQuery);
+        const typeLabels = getTemplateTypes(template).map((type) =>
+          t(templateTypeToTranslationKey(type))
+        );
+        return matchesTemplateSearch(template, normalizedQuery, [
+          style?.name ?? "",
+          style?.nameEn ?? "",
+          ...typeLabels,
+        ]);
       });
 
     if (deferredActiveSort === "recommended") return matchedTemplates;
@@ -322,7 +315,7 @@ export default function TemplatesPage() {
     }
 
     return sortedTemplates;
-  }, [deferredActiveScenario, deferredActiveSort, deferredActiveStyleSlug, deferredActiveType, locale, trimmedDeferredSearchQuery]);
+  }, [deferredActiveScenario, deferredActiveSort, deferredActiveStyleSlug, deferredActiveType, locale, t, trimmedDeferredSearchQuery]);
   const isFiltering =
     searchQuery !== deferredSearchQuery ||
     activeScenario !== deferredActiveScenario ||
@@ -584,6 +577,7 @@ export default function TemplatesPage() {
                   return (
                     <div
                       key={template.id}
+                      data-template-id={template.id}
                       className="group border border-border hover:border-foreground focus-within:border-foreground transition-colors [content-visibility:auto] [contain-intrinsic-size:1px_520px]"
                     >
                       <a
@@ -594,7 +588,7 @@ export default function TemplatesPage() {
                           templateCardRefs.current[index] = element;
                         }}
                         onKeyDown={(event) => handleTemplateCardKeyDown(event, index)}
-                        aria-label={`${templateName} - ${t("templates.visitSite")}`}
+                        aria-label={`${templateName} - ${t("templates.externalPreview")}`}
                         className="block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                       >
                         <div className="aspect-[16/10] relative overflow-hidden bg-zinc-100 dark:bg-zinc-900">
@@ -609,7 +603,7 @@ export default function TemplatesPage() {
                             />
                           )}
                           <span className="absolute left-3 top-3 border border-foreground bg-background/90 px-2 py-1 text-[10px] uppercase tracking-[0.16em] backdrop-blur-sm">
-                            {t("templates.communityPick")}
+                            {t("templates.completeProject")}
                           </span>
                           <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent px-4 py-3">
                             <span className="text-white text-sm font-medium">{templateName}</span>
@@ -618,12 +612,11 @@ export default function TemplatesPage() {
 
                         <div className="p-4 md:p-5">
                           <div className="flex flex-wrap items-center gap-2 mb-3">
-                            <span className="text-xs px-2 py-0.5 bg-zinc-100 dark:bg-zinc-800 text-muted">
-                              {t(templateTypeToTranslationKey(template.type))}
-                            </span>
-                            <span className="text-xs px-2 py-0.5 bg-zinc-100 dark:bg-zinc-800 text-muted">
-                              {t("templates.badgeOpenSource")}
-                            </span>
+                            {getTemplateTypes(template).map((type) => (
+                              <span key={type} className="text-xs px-2 py-0.5 bg-zinc-100 dark:bg-zinc-800 text-muted">
+                                {t(templateTypeToTranslationKey(type))}
+                              </span>
+                            ))}
                           </div>
 
                           <h3 className="text-lg mb-2 group-hover:text-accent transition-colors">
@@ -632,34 +625,57 @@ export default function TemplatesPage() {
                           <p className="text-sm text-muted leading-relaxed line-clamp-2">
                             {templateDescription}
                           </p>
-
-                          <p className="text-xs tracking-wide mt-4 group-hover:text-accent transition-colors">
-                            {t("templates.visitSite")} &#8599;
-                          </p>
+                          {template.external.stack && (
+                            <p className="mt-4 text-xs leading-relaxed text-muted">
+                              <span className="mr-1 text-foreground">{t("templates.stack")}</span>
+                              {template.external.stack}
+                            </p>
+                          )}
+                          {template.external.features && (
+                            <ul className="mt-3 space-y-1.5 text-xs leading-relaxed text-muted">
+                              {pickLocale(locale, template.external.features).slice(0, 3).map((feature) => (
+                                <li key={feature} className="flex gap-2">
+                                  <span aria-hidden="true" className="text-foreground">—</span>
+                                  <span>{feature}</span>
+                                </li>
+                              ))}
+                            </ul>
+                          )}
                         </div>
                       </a>
 
-                      <div className="flex items-center gap-1 px-4 pb-4 md:px-5 md:pb-5 pt-0">
+                      <div className="flex flex-wrap items-center gap-2 px-4 pb-4 md:px-5 md:pb-5 pt-0">
                         <a
                           href={template.external.repoUrl}
                           target="_blank"
                           rel="noopener noreferrer"
-                          title={t("templates.viewOnGitHub")}
+                          title={t("templates.fullSource")}
                           className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium border border-foreground text-foreground hover:bg-foreground hover:text-background transition-colors"
                         >
                           <Github className="w-3.5 h-3.5" />
-                          GitHub
+                          {t("templates.fullSource")}
                         </a>
                         <a
                           href={template.external.siteUrl}
                           target="_blank"
                           rel="noopener noreferrer"
-                          title={t("templates.visitSite")}
+                          title={t("templates.externalPreview")}
                           className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-muted border border-border hover:border-foreground hover:text-foreground transition-colors"
                         >
                           <ExternalLink className="w-3.5 h-3.5" />
-                          {t("templates.visitSite")}
+                          {t("templates.externalPreview")}
                         </a>
+                        {template.external.license && (
+                          <a
+                            href={template.external.license.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            title={t("templates.viewLicense")}
+                            className="ml-auto text-xs text-muted underline decoration-border underline-offset-4 hover:text-foreground"
+                          >
+                            {template.external.license.label} {t("templates.license")}
+                          </a>
+                        )}
                       </div>
                     </div>
                   );
@@ -668,6 +684,7 @@ export default function TemplatesPage() {
                 return (
                   <div
                     key={template.id}
+                    data-template-id={template.id}
                     className="group border border-border hover:border-foreground focus-within:border-foreground transition-colors [content-visibility:auto] [contain-intrinsic-size:1px_520px]"
                   >
                     <LocalizedLink
@@ -708,11 +725,16 @@ export default function TemplatesPage() {
 
                       <div className="p-4 md:p-5">
                         <div className="flex flex-wrap items-center gap-2 mb-3">
-                          <span className="text-xs px-2 py-0.5 bg-zinc-100 dark:bg-zinc-800 text-muted">
-                            {t(templateTypeToTranslationKey(template.type))}
-                          </span>
+                          {getTemplateTypes(template).map((type) => (
+                            <span key={type} className="text-xs px-2 py-0.5 bg-zinc-100 dark:bg-zinc-800 text-muted">
+                              {t(templateTypeToTranslationKey(type))}
+                            </span>
+                          ))}
                           <span className="text-xs px-2 py-0.5 bg-zinc-100 dark:bg-zinc-800 text-muted">
                             {styleLabel}
+                          </span>
+                          <span className="text-xs px-2 py-0.5 border border-border text-muted">
+                            {t("templates.downloadableExample")}
                           </span>
                         </div>
 
@@ -754,11 +776,11 @@ export default function TemplatesPage() {
                       <a
                         href={"/api/templates/" + encodeURIComponent(slug) + "/download"}
                         download
-                        title={t("templates.download")}
+                        title={t("templates.downloadExample")}
                         className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium border border-foreground text-foreground hover:bg-foreground hover:text-background transition-colors"
                       >
                         <Download className="w-3.5 h-3.5" />
-                        {t("templates.download")}
+                        {t("templates.downloadExample")}
                       </a>
                     </div>
                   </div>

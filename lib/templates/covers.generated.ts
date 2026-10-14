@@ -2,6 +2,9 @@
 export const templateCoverSlugs = new Set<string>([
   "admin-panel",
   "anx-blog",
+  "anx-portfolio",
+  "astro-paper",
+  "astrowind",
   "auth-pages",
   "blog-sidebar",
   "brutal-landing",
@@ -16,6 +19,7 @@ export const templateCoverSlugs = new Set<string>([
   "email-inbox",
   "file-manager",
   "fitness-health",
+  "fuwari",
   "glass-landing",
   "kokonutui-dashboard",
   "learning-course",
