@@ -472,7 +472,7 @@ Everything lands on its static end state; zero information loss.
 4. A full-width marquee strip of uppercase feature words, pause on hover
 5. Numbered feature cards whose headlines jump from wght 450 to 800 on hover
 6. CTA button with signal-orange fill wipe rising on hover
-7. All easing cubic-bezier(0.22,1,0.36,1); only transform/opacity/font-variation-settings animate; prefers-reduced-motion lands everything on static end states`,
+7. Use cubic-bezier(0.22,1,0.36,1) for discrete entrances and interaction transitions; continuous breathing uses 2.4s ease-in-out and marquee uses 24s linear; only transform/opacity/font-variation-settings animate; prefers-reduced-motion lands everything on static end states`,
       promptEn: `Create a kinetic typography landing page with:
 1. Stage: #0B0B0C background, #F4F1EB text, single #FF4D00 accent
 2. Load variable font Anybody (wght 100-900, wdth 50-150) from fonts.loli.net
@@ -480,7 +480,7 @@ Everything lands on its static end state; zero information loss.
 4. A full-width marquee strip of uppercase feature words, pause on hover
 5. Numbered feature cards whose headlines jump from wght 450 to 800 on hover
 6. CTA button with signal-orange fill wipe rising on hover
-7. All easing cubic-bezier(0.22,1,0.36,1); only transform/opacity/font-variation-settings animate; prefers-reduced-motion lands everything on static end states`,
+7. Use cubic-bezier(0.22,1,0.36,1) for discrete entrances and interaction transitions; continuous breathing uses 2.4s ease-in-out and marquee uses 24s linear; only transform/opacity/font-variation-settings animate; prefers-reduced-motion lands everything on static end states`,
     },
     {
       title: "文字驱动作品集",
