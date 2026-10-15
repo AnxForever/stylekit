@@ -68,6 +68,14 @@ describe("implementation brief", () => {
       expect(prompt).toContain("breathing uses 2.4s ease-in-out");
       expect(prompt).toContain("marquee uses 24s linear");
     }
+
+    for (const examplePrompt of style.examplePrompts ?? []) {
+      for (const prompt of [examplePrompt.prompt, examplePrompt.promptEn]) {
+        expect(prompt).toContain("pause on hover");
+        expect(prompt).toContain("persistent pause/stop/hide mechanism");
+        expect(prompt).toContain("auto-starting scrolling information that runs over 5 seconds alongside other content");
+      }
+    }
   });
 
   it("uses community capabilities without importing curated rules for a reused slug", () => {
