@@ -469,7 +469,7 @@ Everything lands on its static end state; zero information loss.
 1. Stage: #0B0B0C background, #F4F1EB text, single #FF4D00 accent
 2. Load variable font Anybody (wght 100-900, wdth 50-150) from fonts.loli.net
 3. Hero: clamp(3rem,10vw,9rem) headline, each line rising from an overflow mask with 80ms stagger, one accent word running a wght 300-800 breathing loop
-4. A full-width marquee strip of uppercase feature words, pause on hover
+4. A full-width marquee strip of uppercase feature words, pause on hover; auto-starting scrolling information that runs over 5 seconds alongside other content also needs a persistent pause/stop/hide mechanism
 5. Numbered feature cards whose headlines jump from wght 450 to 800 on hover
 6. CTA button with signal-orange fill wipe rising on hover
 7. Use cubic-bezier(0.22,1,0.36,1) for discrete entrances and interaction transitions; continuous breathing uses 2.4s ease-in-out and marquee uses 24s linear; only transform/opacity/font-variation-settings animate; prefers-reduced-motion lands everything on static end states`,
@@ -477,7 +477,7 @@ Everything lands on its static end state; zero information loss.
 1. Stage: #0B0B0C background, #F4F1EB text, single #FF4D00 accent
 2. Load variable font Anybody (wght 100-900, wdth 50-150) from fonts.loli.net
 3. Hero: clamp(3rem,10vw,9rem) headline, each line rising from an overflow mask with 80ms stagger, one accent word running a wght 300-800 breathing loop
-4. A full-width marquee strip of uppercase feature words, pause on hover
+4. A full-width marquee strip of uppercase feature words, pause on hover; auto-starting scrolling information that runs over 5 seconds alongside other content also needs a persistent pause/stop/hide mechanism
 5. Numbered feature cards whose headlines jump from wght 450 to 800 on hover
 6. CTA button with signal-orange fill wipe rising on hover
 7. Use cubic-bezier(0.22,1,0.36,1) for discrete entrances and interaction transitions; continuous breathing uses 2.4s ease-in-out and marquee uses 24s linear; only transform/opacity/font-variation-settings animate; prefers-reduced-motion lands everything on static end states`,
@@ -491,7 +491,7 @@ Everything lands on its static end state; zero information loss.
 1. Ink stage #0B0B0C, bone type #F4F1EB, orange signal #FF4D00
 2. Project list as huge headline rows (clamp 2.5rem-6rem): on hover the row's font-variation-settings width stretches wdth 100 to 130 and an orange index number slides in
 3. Section headings enter with per-char mask rise, 40ms stagger, expo-out
-4. A skills marquee strip between sections, opposite scroll directions on alternate strips
+4. A skills marquee strip between sections, opposite scroll directions on alternate strips; pause on hover, and provide a persistent pause/stop/hide mechanism for auto-starting scrolling information that runs over 5 seconds alongside other content
 5. Footer contact line with a giant breathing "HELLO" (wght 300-800 loop)
 6. GSAP ScrollTrigger optional recipe for scroll-scrubbed entrances; CSS fallback required
 7. prefers-reduced-motion: all text static at final weights`,
@@ -499,7 +499,7 @@ Everything lands on its static end state; zero information loss.
 1. Ink stage #0B0B0C, bone type #F4F1EB, orange signal #FF4D00
 2. Project list as huge headline rows (clamp 2.5rem-6rem): on hover the row's font-variation-settings width stretches wdth 100 to 130 and an orange index number slides in
 3. Section headings enter with per-char mask rise, 40ms stagger, expo-out
-4. A skills marquee strip between sections, opposite scroll directions on alternate strips
+4. A skills marquee strip between sections, opposite scroll directions on alternate strips; pause on hover, and provide a persistent pause/stop/hide mechanism for auto-starting scrolling information that runs over 5 seconds alongside other content
 5. Footer contact line with a giant breathing "HELLO" (wght 300-800 loop)
 6. GSAP ScrollTrigger optional recipe for scroll-scrubbed entrances; CSS fallback required
 7. prefers-reduced-motion: all text static at final weights`,
