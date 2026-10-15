@@ -26,11 +26,10 @@ describe("public UX priority contract", () => {
       read("app/contact/page.tsx"),
     ]);
 
-    // The approved interface simplification moves support and promotions to
-    // Contact & Support, while preserving their existing footer entry.
+    // Support remains on Contact & Support with its existing footer entry.
+    // A dismissible sponsored banner is also allowed above the homepage content.
     expect(home).toContain("<FeaturedCarousel");
     expect(home).not.toContain("<HomeSupportCard");
-    expect(home).not.toContain("<FriendPromoBanner");
     expect(footer).toContain('localizeHref("/contact#support-maintenance", locale)');
     expect(contact).toContain("<SupportContent");
     expect(contact).toContain("<FriendPromoBanner");
