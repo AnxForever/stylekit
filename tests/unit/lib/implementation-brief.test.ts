@@ -26,6 +26,37 @@ describe("implementation brief", () => {
     expect(changed.provenance.contentHash).not.toBe(brief.provenance.contentHash);
   });
 
+  it("scopes kinetic timing rules to discrete transitions and preserves loop guidance in the brief", () => {
+    const style = getStyleBySlug("kinetic-typography")!;
+    const brief = getImplementationBrief(style.slug)!;
+    const rulesZh = [...style.doList, ...style.dontList, style.aiRules].join("\n");
+    const rulesEn = [
+      ...(style.doListEn ?? []),
+      ...(style.dontListEn ?? []),
+      style.aiRulesEn ?? "",
+    ].join("\n");
+
+    expect(rulesZh).not.toMatch(/禁止超过 1\.2s 的拖沓动画与 linear 缓动|全程统一使用 expo-out/);
+    expect(rulesEn).not.toMatch(/Never drag animations past 1\.2s or use linear easing|expo-out easing everywhere/i);
+    expect(rulesZh).toContain("离散入场或交互过渡超过 1.2s");
+    expect(rulesZh).toContain("连续装饰循环不受此时长限制");
+    expect(rulesZh).toContain("呼吸可用 2.4s ease-in-out");
+    expect(rulesZh).toContain("跑马灯可用 24s linear 保持匀速");
+    expect(rulesEn).toContain("continuous decorative loops have their own timing");
+    expect(rulesEn).toContain("2.4s ease-in-out breathing");
+    expect(rulesEn).toContain("24s linear marquee for constant speed");
+    expect(rulesEn).toContain("pause/stop/hide mechanism");
+
+    expect(brief.doList).toEqual(style.doListEn);
+    expect(brief.dontList).toEqual(style.dontListEn);
+    expect(brief.aiRules).toBe(style.aiRulesEn);
+    expect(brief.globalCss).toContain("animation: kt-marquee 24s linear infinite");
+    expect(brief.globalCss).toContain(".kt-marquee:hover .kt-marquee-track { animation-play-state: paused; }");
+    expect(brief.globalCss).toContain("@media (prefers-reduced-motion: reduce)");
+    expect(brief.components.hero).toBeDefined();
+    expect(brief.components.hero?.code).toContain("animation: kt-breathe 2.4s ease-in-out infinite alternate");
+  });
+
   it("uses community capabilities without importing curated rules for a reused slug", () => {
     const brief = getImplementationBrief("neo-brutalist")!;
     const community = createImplementationBrief(getStyleBySlug(brief.slug)!, {
