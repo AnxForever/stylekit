@@ -4,6 +4,7 @@ import { join } from "path";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { HomeContent } from "@/components/home/home-content";
+import { FriendPromoBanner } from "@/components/home/friend-promo-banner";
 import { getAllStylesMeta, type StyleMeta } from "@/lib/styles/meta";
 import { getAllAnimationsMeta } from "@/lib/animations/meta";
 import { CURATED_STYLE_COUNT } from "@/lib/product/catalog-facts";
@@ -113,6 +114,7 @@ export default async function Home() {
     <div className="min-h-screen flex flex-col">
       <Header />
       <main className="flex-1">
+        <FriendPromoBanner placement="home" />
         <HomeContent styles={styles} stats={stats} thankYouEntries={thankYouEntries} />
       </main>
       <Footer />
