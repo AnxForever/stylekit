@@ -81,6 +81,7 @@ export const LOCALE_ROUTE_POLICY = [
       "/avoid-ai-slop",
       "/resources",
       "/style-advisor",
+      "/repair",
       "/tailwind-ui-prompts",
       "/templates",
       "/ui-prompts",

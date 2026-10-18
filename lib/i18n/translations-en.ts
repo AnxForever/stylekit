@@ -32,6 +32,7 @@ export const en = {
     "nav.resourcesType": "Typography",
     "nav.resourcesDevelopers": "Developers",
     "nav.developers": "Tools & packages",
+    "nav.repair": "Repair a page",
     "nav.colors": "Colors",
     "nav.icons": "Icons",
     "nav.illustrations": "Illustrations",

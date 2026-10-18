@@ -36,6 +36,7 @@ describe("primary navigation", () => {
       "nav.downloads",
       "nav.componentPatterns",
       "nav.mobileDesign",
+      "nav.repair",
       "nav.developers",
       "nav.changelog",
       "nav.blog",

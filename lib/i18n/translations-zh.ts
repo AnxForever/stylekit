@@ -38,6 +38,7 @@ export const zh: { [K in keyof typeof en]: string } = {
   "nav.resourcesType": "字体",
   "nav.resourcesDevelopers": "开发者",
   "nav.developers": "工具与包",
+  "nav.repair": "修好一个页面",
   "nav.colors": "配色",
   "nav.icons": "图标",
   "nav.illustrations": "插画",
