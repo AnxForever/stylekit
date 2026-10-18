@@ -1,0 +1,62 @@
+<svg viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <clipPath id="riseClip">
+      <rect x="120" y="200" width="960" height="190" />
+    </clipPath>
+  </defs>
+
+  <!-- Ink stage -->
+  <rect width="1200" height="630" fill="#0B0B0C" />
+
+  <!-- Top-left: numbered card -->
+  <g transform="translate(60,54)">
+    <rect x="0" y="0" width="300" height="2" fill="#F4F1EB" opacity="0.9" />
+    <text x="0" y="30" font-family="ui-monospace, monospace" font-size="13" fill="#FF4D00">01</text>
+    <text x="0" y="62" font-family="Archivo, ui-sans-serif, sans-serif" font-size="26" font-weight="800" fill="#F4F1EB" letter-spacing="-0.5">WEIGHT IS VOLUME</text>
+    <text x="0" y="88" font-family="Archivo, ui-sans-serif, sans-serif" font-size="13" fill="#F4F1EB" opacity="0.5">The headline speaks louder as you approach.</text>
+  </g>
+
+  <!-- Top-right: nav mock -->
+  <g transform="translate(760,54)">
+    <text x="0" y="24" font-family="Archivo, ui-sans-serif, sans-serif" font-size="22" font-weight="900" fill="#F4F1EB" letter-spacing="-0.5">STUDIO<tspan fill="#FF4D00">*</tspan></text>
+    <text x="200" y="22" font-family="Archivo, ui-sans-serif, sans-serif" font-size="13" font-weight="600" fill="#F4F1EB" opacity="0.85" letter-spacing="2">WORK</text>
+    <rect x="200" y="28" width="44" height="2" fill="#FF4D00" />
+    <text x="270" y="22" font-family="Archivo, ui-sans-serif, sans-serif" font-size="13" font-weight="600" fill="#F4F1EB" opacity="0.5" letter-spacing="2">ABOUT</text>
+    <text x="348" y="22" font-family="Archivo, ui-sans-serif, sans-serif" font-size="13" font-weight="600" fill="#F4F1EB" opacity="0.5" letter-spacing="2">CONTACT</text>
+  </g>
+
+  <!-- Central headline: letters frozen mid-rise, clipped -->
+  <g clip-path="url(#riseClip)" font-family="Archivo, ui-sans-serif, sans-serif" font-weight="900" font-size="170" fill="#F4F1EB" letter-spacing="-4">
+    <text x="128" y="360" transform="translate(0,0)">K</text>
+    <text x="248" y="360" transform="translate(0,18)" opacity="0.92">I</text>
+    <text x="310" y="360" transform="translate(0,42)" opacity="0.85">N</text>
+    <text x="444" y="360" transform="translate(0,8)">E</text>
+    <text x="556" y="360" transform="translate(0,60)" opacity="0.72">T</text>
+    <text x="668" y="360" transform="translate(0,26)" opacity="0.88">I</text>
+    <text x="730" y="360" transform="translate(0,74)" fill="#FF4D00">C</text>
+  </g>
+  <rect x="120" y="390" width="960" height="2" fill="#F4F1EB" opacity="0.18" />
+  <text x="122" y="428" font-family="Archivo, ui-sans-serif, sans-serif" font-size="30" font-weight="300" fill="#F4F1EB" opacity="0.85" letter-spacing="14">TYPOGRAPHY</text>
+  <text x="920" y="428" font-family="ui-monospace, monospace" font-size="13" fill="#F4F1EB" opacity="0.45">wght 100&#8211;900 &#183; wdth 50&#8211;150</text>
+
+  <!-- Marquee strip -->
+  <g font-family="ui-monospace, monospace" font-size="13" letter-spacing="3">
+    <text x="60" y="480" fill="#F4F1EB" opacity="0.4">STAGGER <tspan fill="#FF4D00">&#183;</tspan> BREATHE <tspan fill="#FF4D00">&#183;</tspan> STRETCH <tspan fill="#FF4D00">&#183;</tspan> MARQUEE <tspan fill="#FF4D00">&#183;</tspan> MASK RISE <tspan fill="#FF4D00">&#183;</tspan> EXPO OUT <tspan fill="#FF4D00">&#183;</tspan> STAGGER <tspan fill="#FF4D00">&#183;</tspan> BREATHE</text>
+  </g>
+
+  <!-- Bottom-left: buttons -->
+  <g transform="translate(60,516)">
+    <rect x="0" y="0" width="132" height="48" fill="#FF4D00" />
+    <text x="66" y="30" font-family="Archivo, ui-sans-serif, sans-serif" font-size="15" font-weight="700" fill="#0B0B0C" text-anchor="middle" letter-spacing="3">PLAY</text>
+    <rect x="152" y="0" width="180" height="48" fill="none" stroke="#F4F1EB" stroke-opacity="0.35" stroke-width="1.5" />
+    <text x="242" y="30" font-family="Archivo, ui-sans-serif, sans-serif" font-size="15" font-weight="700" fill="#F4F1EB" text-anchor="middle" letter-spacing="3">SPECIMEN</text>
+  </g>
+
+  <!-- Bottom-right: underline input -->
+  <g transform="translate(760,506)">
+    <text x="0" y="14" font-family="ui-monospace, monospace" font-size="11" fill="#F4F1EB" opacity="0.45" letter-spacing="3">YOUR NAME</text>
+    <text x="0" y="48" font-family="Archivo, ui-sans-serif, sans-serif" font-size="22" fill="#F4F1EB" opacity="0.35">Type here</text>
+    <rect x="0" y="58" width="380" height="1.5" fill="#F4F1EB" opacity="0.25" />
+    <rect x="0" y="58" width="150" height="1.5" fill="#FF4D00" />
+  </g>
+</svg>

@@ -1,0 +1,114 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" fill="none">
+  <!-- Desk backdrop -->
+  <rect width="1200" height="630" fill="#F5F5F0"/>
+
+  <!-- Paper page -->
+  <rect x="170" y="24" width="860" height="582" fill="#FFFFFF" stroke="#D4D4D0" stroke-width="1"/>
+
+  <!-- Running head -->
+  <text x="210" y="50" font-family="Georgia, 'Times New Roman', serif" font-size="11" font-style="italic" fill="#6B6B66">J. Web Typogr. 12 (2026) 1&#8211;18</text>
+  <text x="990" y="50" font-family="Georgia, 'Times New Roman', serif" font-size="11" fill="#0B5394" text-anchor="end">arXiv:2607.00001</text>
+  <line x1="210" y1="58" x2="990" y2="58" stroke="#D4D4D0" stroke-width="1"/>
+
+  <!-- Centered title -->
+  <text x="600" y="94" font-family="Georgia, 'Times New Roman', serif" font-size="29" fill="#111111" text-anchor="middle" letter-spacing="-0.4">Order as Interface: Typesetting the Web</text>
+
+  <!-- Author line and date -->
+  <text x="600" y="122" font-family="Georgia, 'Times New Roman', serif" font-size="13" fill="#111111" text-anchor="middle">A. Researcher&#8201;&#185;&#160;&#160;&#160;&#160;B. Coauthor&#8201;&#178;&#160;&#160;&#160;&#160;C. Reviewer&#8201;&#185;</text>
+  <text x="600" y="142" font-family="Georgia, 'Times New Roman', serif" font-size="12" font-style="italic" fill="#6B6B66" text-anchor="middle">July 5, 2026</text>
+
+  <!-- Abstract block (narrow, indented) -->
+  <text x="600" y="172" font-family="Georgia, 'Times New Roman', serif" font-size="13" font-weight="bold" fill="#111111" text-anchor="middle">Abstract</text>
+  <rect x="380" y="182" width="440" height="5" fill="#D4D4D0"/>
+  <rect x="380" y="195" width="440" height="5" fill="#D4D4D0"/>
+  <rect x="380" y="208" width="440" height="5" fill="#D4D4D0"/>
+  <rect x="380" y="221" width="300" height="5" fill="#D4D4D0"/>
+  <text x="600" y="248" font-family="Georgia, 'Times New Roman', serif" font-size="11" font-style="italic" fill="#6B6B66" text-anchor="middle">Keywords: typesetting, theorem environments, booktabs</text>
+
+  <!-- Column 1: section heading -->
+  <text x="210" y="288" font-family="Georgia, 'Times New Roman', serif" font-size="14" font-weight="bold" fill="#111111">1&#160;&#160;&#160;Introduction</text>
+
+  <!-- Column 1: body text lines -->
+  <rect x="210" y="300" width="380" height="4.5" fill="#D4D4D0"/>
+  <rect x="210" y="312" width="380" height="4.5" fill="#D4D4D0"/>
+  <rect x="210" y="324" width="366" height="4.5" fill="#D4D4D0"/>
+  <rect x="210" y="336" width="380" height="4.5" fill="#D4D4D0"/>
+  <rect x="210" y="348" width="380" height="4.5" fill="#D4D4D0"/>
+  <rect x="210" y="360" width="242" height="4.5" fill="#D4D4D0"/>
+
+  <!-- Column 1: display equation with (1) tag -->
+  <text x="392" y="394" font-family="Georgia, 'Times New Roman', serif" font-size="14" font-style="italic" fill="#111111" text-anchor="middle">Better = (A + O) / (A + O + M + I)</text>
+  <text x="590" y="394" font-family="Georgia, 'Times New Roman', serif" font-size="13" fill="#111111" text-anchor="end">(1)</text>
+
+  <!-- Column 1: more body lines with an inline hyperref -->
+  <rect x="210" y="412" width="380" height="4.5" fill="#D4D4D0"/>
+  <rect x="210" y="424" width="286" height="4.5" fill="#D4D4D0"/>
+  <text x="504" y="430" font-family="Georgia, 'Times New Roman', serif" font-size="11" fill="#0B5394">see Table 1</text>
+  <rect x="210" y="436" width="380" height="4.5" fill="#D4D4D0"/>
+
+  <!-- Column 1: Figure 1 mini profile chart -->
+  <line x1="260" y1="462" x2="260" y2="546" stroke="#D4D4D0" stroke-width="1" stroke-dasharray="2 4"/>
+  <line x1="330" y1="462" x2="330" y2="546" stroke="#D4D4D0" stroke-width="1" stroke-dasharray="2 4"/>
+  <line x1="400" y1="462" x2="400" y2="546" stroke="#6B6B66" stroke-width="1"/>
+  <line x1="470" y1="462" x2="470" y2="546" stroke="#D4D4D0" stroke-width="1" stroke-dasharray="2 4"/>
+  <line x1="540" y1="462" x2="540" y2="546" stroke="#D4D4D0" stroke-width="1" stroke-dasharray="2 4"/>
+  <polyline points="470,470 505,489 435,508 470,527 505,546" fill="none" stroke="#0B5394" stroke-width="1.5" stroke-dasharray="5 3"/>
+  <rect x="466.5" y="466.5" width="7" height="7" fill="#FFFFFF" stroke="#0B5394" stroke-width="1.5"/>
+  <rect x="501.5" y="485.5" width="7" height="7" fill="#FFFFFF" stroke="#0B5394" stroke-width="1.5"/>
+  <rect x="431.5" y="504.5" width="7" height="7" fill="#FFFFFF" stroke="#0B5394" stroke-width="1.5"/>
+  <rect x="466.5" y="523.5" width="7" height="7" fill="#FFFFFF" stroke="#0B5394" stroke-width="1.5"/>
+  <rect x="501.5" y="542.5" width="7" height="7" fill="#FFFFFF" stroke="#0B5394" stroke-width="1.5"/>
+  <polyline points="295,470 260,489 330,508 295,527 260,546" fill="none" stroke="#111111" stroke-width="1.5"/>
+  <circle cx="295" cy="470" r="3.5" fill="#111111"/>
+  <circle cx="260" cy="489" r="3.5" fill="#111111"/>
+  <circle cx="330" cy="508" r="3.5" fill="#111111"/>
+  <circle cx="295" cy="527" r="3.5" fill="#111111"/>
+  <circle cx="260" cy="546" r="3.5" fill="#111111"/>
+  <text x="400" y="568" font-family="Georgia, 'Times New Roman', serif" font-size="11" fill="#111111" text-anchor="middle"><tspan font-weight="bold">Figure 1:</tspan> Semantic differential profiles.</text>
+
+  <!-- Column 2: section heading -->
+  <text x="630" y="288" font-family="Georgia, 'Times New Roman', serif" font-size="14" font-weight="bold" fill="#111111">2&#160;&#160;&#160;Results</text>
+
+  <!-- Column 2: body text lines -->
+  <rect x="630" y="300" width="360" height="4.5" fill="#D4D4D0"/>
+  <rect x="630" y="312" width="360" height="4.5" fill="#D4D4D0"/>
+  <rect x="630" y="324" width="214" height="4.5" fill="#D4D4D0"/>
+
+  <!-- Column 2: Table 1 caption above table -->
+  <text x="810" y="352" font-family="Georgia, 'Times New Roman', serif" font-size="11" fill="#111111" text-anchor="middle"><tspan font-weight="bold">Table 1:</tspan> Kano classification.</text>
+
+  <!-- Column 2: booktabs table (heavy top/bottom rules, thin midrule, no vertical rules) -->
+  <line x1="630" y1="364" x2="990" y2="364" stroke="#111111" stroke-width="2"/>
+  <text x="638" y="382" font-family="Georgia, 'Times New Roman', serif" font-size="11" font-style="italic" fill="#111111">Feature</text>
+  <text x="810" y="382" font-family="Georgia, 'Times New Roman', serif" font-size="11" font-style="italic" fill="#111111">Cat.</text>
+  <text x="900" y="382" font-family="Georgia, 'Times New Roman', serif" font-size="11" font-style="italic" fill="#111111" text-anchor="end">Better</text>
+  <text x="982" y="382" font-family="Georgia, 'Times New Roman', serif" font-size="11" font-style="italic" fill="#111111" text-anchor="end">Worse</text>
+  <line x1="630" y1="390" x2="990" y2="390" stroke="#111111" stroke-width="1"/>
+  <text x="638" y="408" font-family="Georgia, 'Times New Roman', serif" font-size="11" fill="#111111">Load &#60; 1 s</text>
+  <text x="810" y="408" font-family="Georgia, 'Times New Roman', serif" font-size="11" fill="#111111">M</text>
+  <text x="900" y="408" font-family="Georgia, 'Times New Roman', serif" font-size="11" fill="#111111" text-anchor="end">0.21</text>
+  <text x="982" y="408" font-family="Georgia, 'Times New Roman', serif" font-size="11" fill="#111111" text-anchor="end">&#8722;0.83</text>
+  <text x="638" y="426" font-family="Georgia, 'Times New Roman', serif" font-size="11" fill="#111111">CSV export</text>
+  <text x="810" y="426" font-family="Georgia, 'Times New Roman', serif" font-size="11" fill="#111111">O</text>
+  <text x="900" y="426" font-family="Georgia, 'Times New Roman', serif" font-size="11" fill="#111111" text-anchor="end">0.64</text>
+  <text x="982" y="426" font-family="Georgia, 'Times New Roman', serif" font-size="11" fill="#111111" text-anchor="end">&#8722;0.57</text>
+  <text x="638" y="444" font-family="Georgia, 'Times New Roman', serif" font-size="11" fill="#111111">Dark mode</text>
+  <text x="810" y="444" font-family="Georgia, 'Times New Roman', serif" font-size="11" fill="#111111">A</text>
+  <text x="900" y="444" font-family="Georgia, 'Times New Roman', serif" font-size="11" fill="#111111" text-anchor="end">0.72</text>
+  <text x="982" y="444" font-family="Georgia, 'Times New Roman', serif" font-size="11" fill="#111111" text-anchor="end">&#8722;0.18</text>
+  <text x="638" y="462" font-family="Georgia, 'Times New Roman', serif" font-size="11" fill="#111111">Confetti</text>
+  <text x="810" y="462" font-family="Georgia, 'Times New Roman', serif" font-size="11" fill="#111111">I</text>
+  <text x="900" y="462" font-family="Georgia, 'Times New Roman', serif" font-size="11" fill="#111111" text-anchor="end">0.10</text>
+  <text x="982" y="462" font-family="Georgia, 'Times New Roman', serif" font-size="11" fill="#111111" text-anchor="end">&#8722;0.05</text>
+  <line x1="630" y1="472" x2="990" y2="472" stroke="#111111" stroke-width="2"/>
+
+  <!-- Column 2: theorem environment -->
+  <rect x="630" y="492" width="360" height="70" fill="#F5F5F0"/>
+  <rect x="630" y="492" width="2.5" height="70" fill="#111111"/>
+  <text x="646" y="514" font-family="Georgia, 'Times New Roman', serif" font-size="12" fill="#111111"><tspan font-weight="bold">Theorem 1.</tspan> <tspan font-style="italic">Everything numbered,</tspan></text>
+  <text x="646" y="532" font-family="Georgia, 'Times New Roman', serif" font-size="12" font-style="italic" fill="#111111">everything citable; order, once visible,</text>
+  <text x="646" y="550" font-family="Georgia, 'Times New Roman', serif" font-size="12" font-style="italic" fill="#111111">reads as credibility.</text>
+
+  <!-- Page number -->
+  <text x="600" y="594" font-family="Georgia, 'Times New Roman', serif" font-size="12" fill="#111111" text-anchor="middle">1</text>
+</svg>

@@ -1,0 +1,74 @@
+<svg viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <clipPath id="kcArcClip">
+      <rect x="920" y="60" width="280" height="280" />
+    </clipPath>
+  </defs>
+
+  <!-- Paper stage -->
+  <rect width="1200" height="630" fill="#EFE9DC" />
+
+  <!-- Machine decor: concentric arc (top-right), radial burst is the flywheel -->
+  <g clip-path="url(#kcArcClip)">
+    <circle cx="1120" cy="90" r="210" fill="none" stroke="#17130E" stroke-width="3" opacity="0.28" />
+    <circle cx="1120" cy="90" r="150" fill="none" stroke="#17130E" stroke-width="3" opacity="0.28" />
+    <circle cx="1120" cy="90" r="90" fill="none" stroke="#1C4A87" stroke-width="8" opacity="0.85" />
+  </g>
+
+  <!-- Diagonal red band driving across -->
+  <g transform="rotate(-24 600 315)">
+    <rect x="-80" y="298" width="1360" height="34" fill="#E0231B" />
+  </g>
+
+  <!-- Orbiting disc: rim circle + travelling dot -->
+  <circle cx="250" cy="250" r="86" fill="none" stroke="#17130E" stroke-width="2" opacity="0.35" />
+  <circle cx="250" cy="164" r="20" fill="#E0231B" stroke="#17130E" stroke-width="3" />
+
+  <!-- Swinging triangle (pendulum) top-right -->
+  <polygon points="880,120 936,120 908,172" fill="#1C4A87" stroke="#17130E" stroke-width="3" />
+  <line x1="908" y1="96" x2="908" y2="120" stroke="#17130E" stroke-width="2" />
+
+  <!-- Top-left: numbered constructivist card -->
+  <g transform="translate(60,60)">
+    <rect x="0" y="0" width="320" height="126" fill="#EFE9DC" stroke="#17130E" stroke-width="2" />
+    <rect x="0" y="0" width="320" height="8" fill="#1C4A87" />
+    <text x="18" y="46" font-family="ui-monospace, monospace" font-size="14" fill="#E0231B">01</text>
+    <text x="18" y="78" font-family="Archivo, Helvetica, sans-serif" font-size="24" font-weight="800" fill="#17130E" letter-spacing="-0.5">MOTION IS STRUCTURE</text>
+    <text x="18" y="104" font-family="Archivo, Helvetica, sans-serif" font-size="13" fill="#17130E" opacity="0.6">The disc does not decorate &#8212; it turns.</text>
+  </g>
+
+  <!-- Central diagonal headline -->
+  <g font-family="Archivo, Helvetica, sans-serif" font-weight="900" letter-spacing="-3">
+    <text x="120" y="330" font-size="150" fill="#17130E">BUILD</text>
+    <text x="120" y="452" font-size="120" fill="#E0231B">IN</text>
+    <g transform="rotate(-4 500 430)">
+      <rect x="330" y="378" width="360" height="96" fill="#F4B301" stroke="#17130E" stroke-width="3" />
+      <text x="352" y="452" font-size="96" fill="#17130E">MOTION</text>
+    </g>
+  </g>
+
+  <!-- Marching squares strip -->
+  <g transform="translate(120,498)">
+    <rect x="0" y="0" width="26" height="26" fill="#17130E" />
+    <rect x="40" y="0" width="26" height="26" fill="none" stroke="#17130E" stroke-width="2" />
+    <rect x="80" y="0" width="26" height="26" fill="#1C4A87" />
+    <rect x="120" y="0" width="26" height="26" fill="none" stroke="#17130E" stroke-width="2" />
+    <rect x="160" y="0" width="26" height="26" fill="#F4B301" stroke="#17130E" stroke-width="2" />
+  </g>
+
+  <!-- Bottom-left: buttons -->
+  <g transform="translate(120,548)">
+    <rect x="0" y="0" width="176" height="46" fill="#E0231B" stroke="#17130E" stroke-width="2" />
+    <text x="88" y="30" font-family="Archivo, Helvetica, sans-serif" font-size="15" font-weight="800" fill="#EFE9DC" text-anchor="middle" letter-spacing="2">BUILD FORWARD</text>
+    <rect x="192" y="0" width="120" height="46" fill="none" stroke="#17130E" stroke-width="2" />
+    <text x="252" y="30" font-family="Archivo, Helvetica, sans-serif" font-size="15" font-weight="800" fill="#17130E" text-anchor="middle" letter-spacing="2">SPECS</text>
+  </g>
+
+  <!-- Bottom-right: boxed input with red baseline -->
+  <g transform="translate(820,540)">
+    <text x="0" y="14" font-family="ui-monospace, monospace" font-size="11" fill="#17130E" opacity="0.6" letter-spacing="3">YOUR NAME</text>
+    <rect x="0" y="24" width="300" height="48" fill="none" stroke="#17130E" stroke-width="2" />
+    <text x="14" y="54" font-family="Archivo, Helvetica, sans-serif" font-size="18" fill="#17130E" opacity="0.35">Type here</text>
+    <rect x="2" y="68" width="150" height="4" fill="#E0231B" />
+  </g>
+</svg>

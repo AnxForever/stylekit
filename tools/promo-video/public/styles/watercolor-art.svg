@@ -1,0 +1,137 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
+  <defs>
+    <!-- Blur filters for watercolor wash blobs -->
+    <filter id="blur-rose" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="18"/>
+    </filter>
+    <filter id="blur-cerulean" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="22"/>
+    </filter>
+    <filter id="blur-sage" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="16"/>
+    </filter>
+    <filter id="blur-lavender" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="20"/>
+    </filter>
+    <filter id="blur-ochre" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="15"/>
+    </filter>
+    <filter id="blur-soft" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="6"/>
+    </filter>
+    <!-- Paper grain texture -->
+    <filter id="grain" x="0%" y="0%" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch" result="noise"/>
+      <feColorMatrix type="saturate" values="0" in="noise" result="grayNoise"/>
+      <feBlend in="SourceGraphic" in2="grayNoise" mode="multiply" result="blended"/>
+      <feComposite in="blended" in2="SourceGraphic" operator="in"/>
+    </filter>
+  </defs>
+
+  <!-- Background: warm paper -->
+  <rect width="1200" height="630" fill="#faf8f4"/>
+
+  <!-- Paper grain overlay -->
+  <rect width="1200" height="630" fill="#e8ddd0" opacity="0.03" filter="url(#grain)"/>
+
+  <!-- === PIGMENT POOLING: darker edge blobs (behind main blobs) === -->
+  <!-- Rose pool edge -->
+  <path d="M 60,20 C 140,-10 310,30 370,110 C 420,180 400,280 330,310 C 250,345 120,290 70,210 C 20,135 -20,50 60,20 Z"
+        fill="#c08080" opacity="0.28" filter="url(#blur-rose)"/>
+  <!-- Cerulean pool edge -->
+  <path d="M 900,380 C 980,340 1130,370 1180,450 C 1230,525 1180,620 1100,640 C 1020,660 880,620 840,545 C 800,470 820,420 900,380 Z"
+        fill="#5a9cc0" opacity="0.22" filter="url(#blur-cerulean)"/>
+  <!-- Sage pool edge -->
+  <path d="M 680,200 C 760,160 890,185 940,265 C 985,335 950,430 870,455 C 790,480 660,440 630,360 C 600,285 610,235 680,200 Z"
+        fill="#6aaa88" opacity="0.20" filter="url(#blur-sage)"/>
+  <!-- Lavender pool edge -->
+  <path d="M 820,10 C 910,-20 1060,15 1110,80 C 1155,140 1120,230 1040,255 C 960,278 830,240 795,165 C 762,95 740,40 820,10 Z"
+        fill="#a878c0" opacity="0.16" filter="url(#blur-lavender)"/>
+  <!-- Ochre pool edge -->
+  <path d="M 30,420 C 90,375 230,390 290,460 C 345,525 310,615 230,635 C 155,655 30,615 -10,545 C -45,475 -30,465 30,420 Z"
+        fill="#c8a040" opacity="0.18" filter="url(#blur-ochre)"/>
+
+  <!-- === MAIN WATERCOLOR WASH BLOBS === -->
+  <!-- Rose blob top-left -->
+  <path d="M 80,30 C 170,-5 340,25 395,120 C 445,205 415,310 335,340 C 255,370 110,315 62,225 C 15,140 -10,65 80,30 Z"
+        fill="#d4a0a0" opacity="0.35" filter="url(#blur-rose)"/>
+  <!-- Cerulean blob bottom-right -->
+  <path d="M 915,395 C 1000,350 1155,382 1195,465 C 1235,545 1185,635 1098,650 C 1015,665 875,628 840,550 C 808,475 835,438 915,395 Z"
+        fill="#7bb8d4" opacity="0.30" filter="url(#blur-cerulean)"/>
+  <!-- Sage blob center-right -->
+  <path d="M 695,210 C 778,168 912,195 958,278 C 1000,355 960,455 876,478 C 794,500 660,458 630,375 C 600,295 616,250 695,210 Z"
+        fill="#8cc5a8" opacity="0.25" filter="url(#blur-sage)"/>
+  <!-- Lavender blob top-right -->
+  <path d="M 840,15 C 930,-18 1080,18 1125,85 C 1168,148 1128,242 1045,266 C 962,290 828,250 792,172 C 758,98 755,48 840,15 Z"
+        fill="#c3a0d4" opacity="0.20" filter="url(#blur-lavender)"/>
+  <!-- Ochre blob bottom-left -->
+  <path d="M 45,435 C 108,388 252,402 308,475 C 360,542 322,632 238,648 C 158,664 28,626 -12,553 C -50,482 -18,480 45,435 Z"
+        fill="#e8c87a" opacity="0.22" filter="url(#blur-ochre)"/>
+
+  <!-- === BOTANICAL LEAF DECORATIONS === -->
+  <!-- Leaf 1: sage, top-left area -->
+  <g transform="translate(195,155) rotate(35)">
+    <ellipse rx="8" ry="32" fill="#8cc5a8" opacity="0.5"/>
+    <line x1="0" y1="-30" x2="0" y2="30" stroke="#6aaa88" stroke-width="0.8" opacity="0.35"/>
+  </g>
+  <!-- Leaf 2: cerulean, top-right -->
+  <g transform="translate(1035,165) rotate(-28)">
+    <ellipse rx="7" ry="28" fill="#7bb8d4" opacity="0.4"/>
+    <line x1="0" y1="-26" x2="0" y2="26" stroke="#5a9cc0" stroke-width="0.7" opacity="0.30"/>
+  </g>
+  <!-- Leaf 3: sage, bottom-right -->
+  <g transform="translate(1080,510) rotate(55)">
+    <ellipse rx="9" ry="34" fill="#8cc5a8" opacity="0.45"/>
+    <line x1="0" y1="-32" x2="0" y2="32" stroke="#6aaa88" stroke-width="0.8" opacity="0.32"/>
+  </g>
+  <!-- Leaf 4: cerulean, bottom-left -->
+  <g transform="translate(145,520) rotate(-42)">
+    <ellipse rx="7" ry="26" fill="#7bb8d4" opacity="0.38"/>
+    <line x1="0" y1="-24" x2="0" y2="24" stroke="#5a9cc0" stroke-width="0.7" opacity="0.28"/>
+  </g>
+  <!-- Leaf 5: lavender, center-left -->
+  <g transform="translate(310,290) rotate(18)">
+    <ellipse rx="6" ry="22" fill="#c3a0d4" opacity="0.35"/>
+  </g>
+
+  <!-- === TITLE TEXT === -->
+  <!-- "Watercolor" main title -->
+  <text x="600" y="335"
+        font-family="Georgia, 'Palatino Linotype', serif"
+        font-size="88"
+        font-weight="600"
+        letter-spacing="2"
+        fill="#5a3e3e"
+        opacity="0.85"
+        text-anchor="middle">Watercolor</text>
+  <!-- "Art" subtitle -->
+  <text x="600" y="418"
+        font-family="Georgia, 'Palatino Linotype', serif"
+        font-size="72"
+        font-weight="600"
+        letter-spacing="2"
+        fill="#d4a0a0"
+        opacity="0.80"
+        text-anchor="middle">Art</text>
+
+  <!-- === TINY FLOWER (5 petals) === -->
+  <g transform="translate(490,502)" filter="url(#blur-soft)">
+    <ellipse cx="0" cy="-11" rx="5" ry="9" fill="#d4a0a0" opacity="0.65" transform="rotate(0)"/>
+    <ellipse cx="0" cy="-11" rx="5" ry="9" fill="#d4a0a0" opacity="0.60" transform="rotate(72)"/>
+    <ellipse cx="0" cy="-11" rx="5" ry="9" fill="#d4a0a0" opacity="0.60" transform="rotate(144)"/>
+    <ellipse cx="0" cy="-11" rx="5" ry="9" fill="#d4a0a0" opacity="0.60" transform="rotate(216)"/>
+    <ellipse cx="0" cy="-11" rx="5" ry="9" fill="#d4a0a0" opacity="0.60" transform="rotate(288)"/>
+    <circle cx="0" cy="0" r="5" fill="#e8c87a" opacity="0.80"/>
+  </g>
+
+  <!-- === WATERCOLOR SPLATTERS === -->
+  <circle cx="430" cy="158" r="4.5" fill="#d4a0a0" opacity="0.30" filter="url(#blur-soft)"/>
+  <circle cx="442" cy="148" r="2.8" fill="#d4a0a0" opacity="0.22"/>
+  <circle cx="422" cy="165" r="2" fill="#d4a0a0" opacity="0.18"/>
+
+  <circle cx="762" cy="488" r="4" fill="#7bb8d4" opacity="0.28" filter="url(#blur-soft)"/>
+  <circle cx="773" cy="478" r="2.5" fill="#7bb8d4" opacity="0.20"/>
+
+  <circle cx="612" cy="178" r="3.5" fill="#8cc5a8" opacity="0.25" filter="url(#blur-soft)"/>
+  <circle cx="602" cy="170" r="2" fill="#8cc5a8" opacity="0.18"/>
+</svg>

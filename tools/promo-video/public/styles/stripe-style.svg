@@ -1,0 +1,102 @@
+<svg viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg" width="1200" height="630">
+  <defs>
+    <filter id="blur-80">
+      <feGaussianBlur stdDeviation="40"/>
+    </filter>
+    <filter id="blur-100">
+      <feGaussianBlur stdDeviation="50"/>
+    </filter>
+    <filter id="blur-120">
+      <feGaussianBlur stdDeviation="60"/>
+    </filter>
+    <filter id="blur-60">
+      <feGaussianBlur stdDeviation="30"/>
+    </filter>
+    <linearGradient id="card-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#635bff"/>
+      <stop offset="100%" stop-color="#7a73ff"/>
+    </linearGradient>
+    <linearGradient id="chip-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#d4af37"/>
+      <stop offset="100%" stop-color="#f5d06b"/>
+    </linearGradient>
+    <clipPath id="card-clip">
+      <rect x="120" y="160" width="360" height="210" rx="16"/>
+    </clipPath>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="630" fill="#0a2540"/>
+
+  <!-- Gradient mesh blobs -->
+  <ellipse cx="900" cy="80" rx="340" ry="260" fill="#635bff" opacity="0.35" filter="url(#blur-80)"/>
+  <ellipse cx="180" cy="520" rx="320" ry="220" fill="#00d4ff" opacity="0.25" filter="url(#blur-100)"/>
+  <ellipse cx="560" cy="300" rx="280" ry="200" fill="#7a73ff" opacity="0.3" filter="url(#blur-120)"/>
+  <ellipse cx="100" cy="120" rx="220" ry="160" fill="#80e9ff" opacity="0.2" filter="url(#blur-60)"/>
+  <ellipse cx="1100" cy="480" rx="260" ry="180" fill="#635bff" opacity="0.2" filter="url(#blur-80)"/>
+
+  <!-- Payment Card -->
+  <rect x="120" y="160" width="360" height="210" rx="16" fill="url(#card-gradient)"/>
+
+  <!-- Card subtle grid lines -->
+  <g clip-path="url(#card-clip)" opacity="0.08">
+    <line x1="120" y1="200" x2="480" y2="200" stroke="white" stroke-width="1"/>
+    <line x1="120" y1="240" x2="480" y2="240" stroke="white" stroke-width="1"/>
+    <line x1="120" y1="280" x2="480" y2="280" stroke="white" stroke-width="1"/>
+    <line x1="120" y1="320" x2="480" y2="320" stroke="white" stroke-width="1"/>
+    <line x1="180" y1="160" x2="180" y2="370" stroke="white" stroke-width="1"/>
+    <line x1="240" y1="160" x2="240" y2="370" stroke="white" stroke-width="1"/>
+    <line x1="300" y1="160" x2="300" y2="370" stroke="white" stroke-width="1"/>
+    <line x1="360" y1="160" x2="360" y2="370" stroke="white" stroke-width="1"/>
+    <line x1="420" y1="160" x2="420" y2="370" stroke="white" stroke-width="1"/>
+  </g>
+
+  <!-- Card chip -->
+  <rect x="152" y="206" width="44" height="34" rx="5" fill="url(#chip-gradient)"/>
+  <line x1="152" y1="220" x2="196" y2="220" stroke="#b8900a" stroke-width="1" opacity="0.5"/>
+  <line x1="152" y1="229" x2="196" y2="229" stroke="#b8900a" stroke-width="1" opacity="0.5"/>
+  <line x1="174" y1="206" x2="174" y2="240" stroke="#b8900a" stroke-width="1" opacity="0.5"/>
+
+  <!-- Card network logo circles -->
+  <circle cx="432" cy="205" r="18" fill="#eb001b" opacity="0.9"/>
+  <circle cx="454" cy="205" r="18" fill="#f79e1b" opacity="0.9"/>
+  <ellipse cx="443" cy="205" rx="7" ry="14" fill="#ff5f00" opacity="0.9"/>
+
+  <!-- Card number -->
+  <text x="152" y="305" font-family="'Courier New', monospace" font-size="18" fill="white" opacity="0.9" letter-spacing="3">....  ....  ....  4242</text>
+
+  <!-- Card holder -->
+  <text x="152" y="344" font-family="Arial, sans-serif" font-size="11" fill="white" opacity="0.6" letter-spacing="2">CARD HOLDER</text>
+  <text x="152" y="360" font-family="Arial, sans-serif" font-size="15" fill="white" font-weight="600">Alex Johnson</text>
+
+  <!-- Expiry -->
+  <text x="380" y="344" font-family="Arial, sans-serif" font-size="11" fill="white" opacity="0.6" letter-spacing="2">EXPIRES</text>
+  <text x="380" y="360" font-family="Arial, sans-serif" font-size="15" fill="white" font-weight="600">12/27</text>
+
+  <!-- Dashboard stat cards (right side) -->
+  <!-- Revenue card -->
+  <rect x="620" y="148" width="220" height="100" rx="8" fill="#1a3a5c" stroke="#2a5080" stroke-width="1"/>
+  <text x="644" y="186" font-family="Arial, sans-serif" font-size="12" fill="#94a3b8" letter-spacing="1">REVENUE</text>
+  <text x="644" y="222" font-family="Arial, sans-serif" font-size="28" fill="white" font-weight="700">$24,891</text>
+
+  <!-- Growth card -->
+  <rect x="860" y="148" width="220" height="100" rx="8" fill="#1a3a5c" stroke="#2a5080" stroke-width="1"/>
+  <text x="884" y="186" font-family="Arial, sans-serif" font-size="12" fill="#94a3b8" letter-spacing="1">GROWTH</text>
+  <text x="884" y="222" font-family="Arial, sans-serif" font-size="28" fill="#00d4ff" font-weight="700">+12.5%</text>
+
+  <!-- Transactions card -->
+  <rect x="740" y="272" width="220" height="100" rx="8" fill="#1a3a5c" stroke="#2a5080" stroke-width="1"/>
+  <text x="764" y="310" font-family="Arial, sans-serif" font-size="12" fill="#94a3b8" letter-spacing="1">TRANSACTIONS</text>
+  <text x="764" y="346" font-family="Arial, sans-serif" font-size="28" fill="white" font-weight="700">1,847</text>
+
+  <!-- Mini sparkline on revenue card -->
+  <polyline points="644,252 658,244 672,248 686,236 700,240 714,228 728,232 742,220 756,226 770,216 784,222 798,210 812,216 826,204" stroke="#635bff" stroke-width="2" fill="none" opacity="0.6"/>
+
+  <!-- Bottom typography -->
+  <text x="120" y="470" font-family="Arial, sans-serif" font-size="68" fill="white" font-weight="700" letter-spacing="-1">Stripe Style</text>
+  <text x="122" y="510" font-family="Arial, sans-serif" font-size="22" fill="#94a3b8">Professional fintech design system</text>
+
+  <!-- Accent line -->
+  <rect x="120" y="530" width="120" height="3" rx="2" fill="#635bff"/>
+  <rect x="248" y="530" width="40" height="3" rx="2" fill="#00d4ff"/>
+</svg>

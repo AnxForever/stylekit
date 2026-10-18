@@ -1,0 +1,180 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" fill="none">
+  <rect width="1200" height="630" fill="#f8fafc"/>
+
+  <!-- Sidebar -->
+  <rect x="0" y="0" width="180" height="630" fill="#ffffff" stroke="#e2e8f0" stroke-width="1"/>
+  <rect x="16" y="24" width="148" height="12" rx="2" fill="#e2e8f0"/>
+  <rect x="16" y="52" width="148" height="22" rx="4" fill="#3b82f6"/>
+  <text x="28" y="67" font-family="monospace" font-size="10" fill="#ffffff">Dashboard</text>
+  <rect x="16" y="80" width="148" height="22" rx="4" fill="transparent"/>
+  <text x="28" y="95" font-family="monospace" font-size="10" fill="#64748b">Users</text>
+  <rect x="16" y="108" width="148" height="22" rx="4" fill="transparent"/>
+  <text x="28" y="123" font-family="monospace" font-size="10" fill="#64748b">Orders</text>
+  <rect x="16" y="136" width="148" height="22" rx="4" fill="transparent"/>
+  <text x="28" y="151" font-family="monospace" font-size="10" fill="#64748b">Products</text>
+  <rect x="16" y="164" width="148" height="22" rx="4" fill="transparent"/>
+  <text x="28" y="179" font-family="monospace" font-size="10" fill="#64748b">Analytics</text>
+  <rect x="16" y="192" width="148" height="22" rx="4" fill="transparent"/>
+  <text x="28" y="207" font-family="monospace" font-size="10" fill="#64748b">Settings</text>
+
+  <!-- KPI Cards -->
+  <rect x="200" y="24" width="230" height="68" rx="4" fill="#ffffff" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="216" y="44" font-family="monospace" font-size="9" fill="#64748b" text-transform="uppercase" letter-spacing="1">REVENUE</text>
+  <text x="216" y="68" font-family="monospace" font-size="22" fill="#1e293b" font-weight="600">$142,389</text>
+  <text x="216" y="82" font-family="monospace" font-size="9" fill="#22c55e">+12.5%</text>
+
+  <rect x="446" y="24" width="230" height="68" rx="4" fill="#ffffff" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="462" y="44" font-family="monospace" font-size="9" fill="#64748b" letter-spacing="1">ORDERS</text>
+  <text x="462" y="68" font-family="monospace" font-size="22" fill="#1e293b" font-weight="600">3,284</text>
+  <text x="462" y="82" font-family="monospace" font-size="9" fill="#ef4444">-3.2%</text>
+
+  <rect x="692" y="24" width="230" height="68" rx="4" fill="#ffffff" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="708" y="44" font-family="monospace" font-size="9" fill="#64748b" letter-spacing="1">ACTIVE USERS</text>
+  <text x="708" y="68" font-family="monospace" font-size="22" fill="#1e293b" font-weight="600">18,921</text>
+  <text x="708" y="82" font-family="monospace" font-size="9" fill="#22c55e">+8.1%</text>
+
+  <rect x="938" y="24" width="230" height="68" rx="4" fill="#ffffff" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="954" y="44" font-family="monospace" font-size="9" fill="#64748b" letter-spacing="1">ERROR RATE</text>
+  <text x="954" y="68" font-family="monospace" font-size="22" fill="#1e293b" font-weight="600">0.42%</text>
+  <text x="954" y="82" font-family="monospace" font-size="9" fill="#22c55e">-0.15%</text>
+
+  <!-- Filter Toolbar -->
+  <rect x="200" y="110" width="200" height="24" rx="4" fill="#ffffff" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="216" y="126" font-family="monospace" font-size="10" fill="#94a3b8">Search users...</text>
+  <rect x="410" y="110" width="100" height="24" rx="4" fill="#ffffff" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="420" y="126" font-family="monospace" font-size="10" fill="#64748b">Status</text>
+  <rect x="520" y="110" width="100" height="24" rx="4" fill="#ffffff" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="530" y="126" font-family="monospace" font-size="10" fill="#64748b">Role</text>
+  <rect x="1100" y="110" width="68" height="24" rx="4" fill="#3b82f6"/>
+  <text x="1116" y="126" font-family="monospace" font-size="10" fill="#ffffff">Export</text>
+
+  <!-- Table Header -->
+  <rect x="200" y="150" width="968" height="26" rx="0" fill="#f8fafc"/>
+  <line x1="200" y1="176" x2="1168" y2="176" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="216" y="168" font-family="monospace" font-size="9" fill="#64748b" letter-spacing="1">ID</text>
+  <text x="296" y="168" font-family="monospace" font-size="9" fill="#64748b" letter-spacing="1">NAME</text>
+  <text x="446" y="168" font-family="monospace" font-size="9" fill="#64748b" letter-spacing="1">EMAIL</text>
+  <text x="636" y="168" font-family="monospace" font-size="9" fill="#64748b" letter-spacing="1">STATUS</text>
+  <text x="746" y="168" font-family="monospace" font-size="9" fill="#64748b" letter-spacing="1">ROLE</text>
+  <text x="846" y="168" font-family="monospace" font-size="9" fill="#64748b" letter-spacing="1">LAST LOGIN</text>
+  <text x="986" y="168" font-family="monospace" font-size="9" fill="#64748b" letter-spacing="1">AMOUNT</text>
+  <text x="1096" y="168" font-family="monospace" font-size="9" fill="#64748b" letter-spacing="1">ACTIONS</text>
+
+  <!-- Table Rows -->
+  <rect x="200" y="176" width="968" height="28" fill="#ffffff"/>
+  <line x1="200" y1="204" x2="1168" y2="204" stroke="#e2e8f0" stroke-width="0.5"/>
+  <text x="216" y="195" font-family="monospace" font-size="10" fill="#64748b">#10421</text>
+  <text x="296" y="195" font-family="sans-serif" font-size="10" fill="#1e293b">Alice Chen</text>
+  <text x="446" y="195" font-family="sans-serif" font-size="10" fill="#64748b">alice@acme.co</text>
+  <rect x="636" y="185" width="44" height="16" rx="3" fill="#f0fdf4"/>
+  <text x="643" y="197" font-family="sans-serif" font-size="8" fill="#15803d">Active</text>
+  <text x="746" y="195" font-family="sans-serif" font-size="10" fill="#64748b">Admin</text>
+  <text x="846" y="195" font-family="sans-serif" font-size="10" fill="#94a3b8">2 min ago</text>
+  <text x="986" y="195" font-family="monospace" font-size="10" fill="#1e293b">$4,200</text>
+  <text x="1096" y="195" font-family="sans-serif" font-size="9" fill="#3b82f6">Edit</text>
+  <text x="1136" y="195" font-family="sans-serif" font-size="9" fill="#ef4444">Del</text>
+
+  <rect x="200" y="204" width="968" height="28" fill="#ffffff"/>
+  <line x1="200" y1="232" x2="1168" y2="232" stroke="#e2e8f0" stroke-width="0.5"/>
+  <text x="216" y="223" font-family="monospace" font-size="10" fill="#64748b">#10420</text>
+  <text x="296" y="223" font-family="sans-serif" font-size="10" fill="#1e293b">Bob Martinez</text>
+  <text x="446" y="223" font-family="sans-serif" font-size="10" fill="#64748b">bob@acme.co</text>
+  <rect x="636" y="213" width="52" height="16" rx="3" fill="#fffbeb"/>
+  <text x="643" y="225" font-family="sans-serif" font-size="8" fill="#a16207">Pending</text>
+  <text x="746" y="223" font-family="sans-serif" font-size="10" fill="#64748b">Editor</text>
+  <text x="846" y="223" font-family="sans-serif" font-size="10" fill="#94a3b8">1 hr ago</text>
+  <text x="986" y="223" font-family="monospace" font-size="10" fill="#1e293b">$1,890</text>
+  <text x="1096" y="223" font-family="sans-serif" font-size="9" fill="#3b82f6">Edit</text>
+  <text x="1136" y="223" font-family="sans-serif" font-size="9" fill="#ef4444">Del</text>
+
+  <rect x="200" y="232" width="968" height="28" fill="#ffffff"/>
+  <line x1="200" y1="260" x2="1168" y2="260" stroke="#e2e8f0" stroke-width="0.5"/>
+  <text x="216" y="251" font-family="monospace" font-size="10" fill="#64748b">#10419</text>
+  <text x="296" y="251" font-family="sans-serif" font-size="10" fill="#1e293b">Carol Singh</text>
+  <text x="446" y="251" font-family="sans-serif" font-size="10" fill="#64748b">carol@acme.co</text>
+  <rect x="636" y="241" width="44" height="16" rx="3" fill="#f0fdf4"/>
+  <text x="643" y="253" font-family="sans-serif" font-size="8" fill="#15803d">Active</text>
+  <text x="746" y="251" font-family="sans-serif" font-size="10" fill="#64748b">Viewer</text>
+  <text x="846" y="251" font-family="sans-serif" font-size="10" fill="#94a3b8">5 min ago</text>
+  <text x="986" y="251" font-family="monospace" font-size="10" fill="#1e293b">$3,100</text>
+  <text x="1096" y="251" font-family="sans-serif" font-size="9" fill="#3b82f6">Edit</text>
+  <text x="1136" y="251" font-family="sans-serif" font-size="9" fill="#ef4444">Del</text>
+
+  <rect x="200" y="260" width="968" height="28" fill="#ffffff"/>
+  <line x1="200" y1="288" x2="1168" y2="288" stroke="#e2e8f0" stroke-width="0.5"/>
+  <text x="216" y="279" font-family="monospace" font-size="10" fill="#64748b">#10418</text>
+  <text x="296" y="279" font-family="sans-serif" font-size="10" fill="#1e293b">David Kim</text>
+  <text x="446" y="279" font-family="sans-serif" font-size="10" fill="#64748b">david@acme.co</text>
+  <rect x="636" y="269" width="38" height="16" rx="3" fill="#fef2f2"/>
+  <text x="643" y="281" font-family="sans-serif" font-size="8" fill="#b91c1c">Error</text>
+  <text x="746" y="279" font-family="sans-serif" font-size="10" fill="#64748b">Editor</text>
+  <text x="846" y="279" font-family="sans-serif" font-size="10" fill="#94a3b8">3 days ago</text>
+  <text x="986" y="279" font-family="monospace" font-size="10" fill="#1e293b">$720</text>
+  <text x="1096" y="279" font-family="sans-serif" font-size="9" fill="#3b82f6">Edit</text>
+  <text x="1136" y="279" font-family="sans-serif" font-size="9" fill="#ef4444">Del</text>
+
+  <rect x="200" y="288" width="968" height="28" fill="#ffffff"/>
+  <line x1="200" y1="316" x2="1168" y2="316" stroke="#e2e8f0" stroke-width="0.5"/>
+  <text x="216" y="307" font-family="monospace" font-size="10" fill="#64748b">#10417</text>
+  <text x="296" y="307" font-family="sans-serif" font-size="10" fill="#1e293b">Eve Wilson</text>
+  <text x="446" y="307" font-family="sans-serif" font-size="10" fill="#64748b">eve@acme.co</text>
+  <rect x="636" y="297" width="44" height="16" rx="3" fill="#f0fdf4"/>
+  <text x="643" y="309" font-family="sans-serif" font-size="8" fill="#15803d">Active</text>
+  <text x="746" y="307" font-family="sans-serif" font-size="10" fill="#64748b">Admin</text>
+  <text x="846" y="307" font-family="sans-serif" font-size="10" fill="#94a3b8">12 min ago</text>
+  <text x="986" y="307" font-family="monospace" font-size="10" fill="#1e293b">$5,640</text>
+  <text x="1096" y="307" font-family="sans-serif" font-size="9" fill="#3b82f6">Edit</text>
+  <text x="1136" y="307" font-family="sans-serif" font-size="9" fill="#ef4444">Del</text>
+
+  <!-- Pagination -->
+  <rect x="200" y="330" width="968" height="24" rx="0" fill="#f8fafc"/>
+  <text x="216" y="346" font-family="sans-serif" font-size="9" fill="#94a3b8">Showing 1-8 of 3,284</text>
+  <rect x="1056" y="334" width="20" height="16" rx="3" fill="#3b82f6"/>
+  <text x="1062" y="346" font-family="monospace" font-size="9" fill="#ffffff">1</text>
+  <rect x="1080" y="334" width="20" height="16" rx="3" fill="#ffffff" stroke="#e2e8f0" stroke-width="0.5"/>
+  <text x="1086" y="346" font-family="monospace" font-size="9" fill="#64748b">2</text>
+  <rect x="1104" y="334" width="20" height="16" rx="3" fill="#ffffff" stroke="#e2e8f0" stroke-width="0.5"/>
+  <text x="1110" y="346" font-family="monospace" font-size="9" fill="#64748b">3</text>
+
+  <!-- Mini Chart -->
+  <rect x="200" y="370" width="480" height="120" rx="4" fill="#ffffff" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="216" y="392" font-family="monospace" font-size="9" fill="#64748b" letter-spacing="1">REVENUE TREND</text>
+  <text x="616" y="392" font-family="monospace" font-size="9" fill="#22c55e" text-anchor="end">+12.5%</text>
+  <rect x="220" y="450" width="50" height="30" rx="2" fill="#e2e8f0"/>
+  <rect x="278" y="430" width="50" height="50" rx="2" fill="#e2e8f0"/>
+  <rect x="336" y="460" width="50" height="20" rx="2" fill="#e2e8f0"/>
+  <rect x="394" y="420" width="50" height="60" rx="2" fill="#e2e8f0"/>
+  <rect x="452" y="410" width="50" height="70" rx="2" fill="#e2e8f0"/>
+  <rect x="510" y="425" width="50" height="55" rx="2" fill="#e2e8f0"/>
+  <rect x="568" y="400" width="50" height="80" rx="2" fill="#3b82f6"/>
+
+  <!-- Alerts -->
+  <rect x="700" y="370" width="468" height="28" rx="4" fill="#eff6ff" stroke="#bfdbfe" stroke-width="0.5"/>
+  <text x="716" y="389" font-family="monospace" font-size="8" fill="#1d4ed8" letter-spacing="0.5">INFO</text>
+  <text x="756" y="389" font-family="sans-serif" font-size="9" fill="#1d4ed8">System update scheduled for 2:00 AM</text>
+
+  <rect x="700" y="404" width="468" height="28" rx="4" fill="#f0fdf4" stroke="#bbf7d0" stroke-width="0.5"/>
+  <text x="716" y="423" font-family="monospace" font-size="8" fill="#15803d" letter-spacing="0.5">OK</text>
+  <text x="748" y="423" font-family="sans-serif" font-size="9" fill="#15803d">Backup completed. 1,284 records processed.</text>
+
+  <rect x="700" y="438" width="468" height="28" rx="4" fill="#fffbeb" stroke="#fde68a" stroke-width="0.5"/>
+  <text x="716" y="457" font-family="monospace" font-size="8" fill="#a16207" letter-spacing="0.5">WARN</text>
+  <text x="756" y="457" font-family="sans-serif" font-size="9" fill="#a16207">API rate limit approaching 80%</text>
+
+  <rect x="700" y="472" width="468" height="28" rx="4" fill="#fef2f2" stroke="#fecaca" stroke-width="0.5"/>
+  <text x="716" y="491" font-family="monospace" font-size="8" fill="#b91c1c" letter-spacing="0.5">ERR</text>
+  <text x="750" y="491" font-family="sans-serif" font-size="9" fill="#b91c1c">DB connection timeout on replica-03</text>
+
+  <!-- Status Bar -->
+  <rect x="200" y="604" width="968" height="26" rx="0" fill="#ffffff" stroke="#e2e8f0" stroke-width="1"/>
+  <circle cx="220" cy="617" r="3" fill="#22c55e"/>
+  <text x="228" y="621" font-family="monospace" font-size="8" fill="#94a3b8">System OK</text>
+  <text x="310" y="621" font-family="monospace" font-size="8" fill="#94a3b8">API: 142ms</text>
+  <text x="400" y="621" font-family="monospace" font-size="8" fill="#94a3b8">DB: 28ms</text>
+  <text x="1090" y="621" font-family="monospace" font-size="8" fill="#94a3b8">v2.4.1</text>
+
+  <!-- Title Overlay -->
+  <rect x="200" y="530" width="480" height="60" rx="4" fill="#ffffff" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="216" y="554" font-family="sans-serif" font-size="16" fill="#1e293b" font-weight="600">Data Dense</text>
+  <text x="216" y="574" font-family="sans-serif" font-size="10" fill="#64748b">High-density admin panel with compact spacing</text>
+</svg>

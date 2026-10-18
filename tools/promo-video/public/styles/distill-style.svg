@@ -1,0 +1,94 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" fill="none" viewBox="0 0 1200 630">
+  <path fill="#FFFFFF" d="M0 0h1200v630H0z"/>
+  <!-- masthead -->
+  <path stroke="#E5E7EB" d="M0 64.5h1200"/>
+  <text x="120" y="41" fill="#1F2933" font-family="Georgia, 'Times New Roman', serif" font-size="20" font-weight="600">The Distill Review</text>
+  <text x="322" y="41" fill="#9CA3AF" font-family="Georgia, 'Times New Roman', serif" font-size="15">设计科学评论</text>
+  <text x="880" y="40" fill="#6B7280" font-family="'Inter','Segoe UI',sans-serif" font-size="12">Articles</text>
+  <text x="946" y="40" fill="#6B7280" font-family="'Inter','Segoe UI',sans-serif" font-size="12">Archive</text>
+  <text x="1012" y="40" fill="#6B7280" font-family="'Inter','Segoe UI',sans-serif" font-size="12">Submit</text>
+  <text x="1080" y="40" fill="#9CA3AF" font-family="'Inter','Segoe UI',sans-serif" font-size="10" letter-spacing=".1em">ISSN 2026-0705</text>
+  <!-- article column (narrow measure) -->
+  <text x="320" y="112" fill="#2A7AE2" font-family="'Inter','Segoe UI',sans-serif" font-size="11" letter-spacing=".16em">RESEARCH EXPLAINER</text>
+  <text x="320" y="152" fill="#1F2933" font-family="Georgia, 'Times New Roman', serif" font-size="34" font-weight="600">界面风格的可测量性</text>
+  <text x="320" y="182" fill="#6B7280" font-family="Georgia, 'Times New Roman', serif" font-size="16">从狩野曲线到情绪圆环：把「好看」翻译成坐标</text>
+  <!-- byline block -->
+  <path stroke="#E5E7EB" d="M320 200.5h560M320 260.5h560"/>
+  <text x="320" y="222" fill="#6B7280" font-family="'Inter','Segoe UI',sans-serif" font-size="9" letter-spacing=".14em">AUTHORS</text>
+  <text x="320" y="242" fill="#1F2933" font-family="'Inter','Segoe UI',sans-serif" font-size="12">Lin Qiao, A. N. Reader</text>
+  <text x="520" y="222" fill="#6B7280" font-family="'Inter','Segoe UI',sans-serif" font-size="9" letter-spacing=".14em">PUBLISHED</text>
+  <text x="520" y="242" fill="#1F2933" font-family="'Inter','Segoe UI',sans-serif" font-size="12">July 5, 2026</text>
+  <text x="700" y="222" fill="#6B7280" font-family="'Inter','Segoe UI',sans-serif" font-size="9" letter-spacing=".14em">DOI</text>
+  <text x="700" y="242" fill="#1F2933" font-family="'SFMono-Regular',Consolas,monospace" font-size="11">10.23915/sk.00042</text>
+  <!-- body prose lines with citation marks -->
+  <g fill="#D6DAE0">
+    <rect x="320" y="288" width="560" height="9" rx="2"/>
+    <rect x="320" y="310" width="522" height="9" rx="2"/>
+    <rect x="320" y="332" width="560" height="9" rx="2"/>
+    <rect x="320" y="354" width="300" height="9" rx="2"/>
+  </g>
+  <text x="848" y="318" fill="#2A7AE2" font-family="'Inter','Segoe UI',sans-serif" font-size="10" font-weight="600">[1]</text>
+  <text x="626" y="362" fill="#2A7AE2" font-family="'Inter','Segoe UI',sans-serif" font-size="10" font-weight="600">[2]</text>
+  <!-- sidenote in right margin -->
+  <path stroke="#E5E7EB" d="M920 288.5h180"/>
+  <text x="920" y="308" fill="#2A7AE2" font-family="'Inter','Segoe UI',sans-serif" font-size="10" font-weight="600">注 1.</text>
+  <g fill="#E5E7EB">
+    <rect x="952" y="300" width="148" height="7" rx="2"/>
+    <rect x="920" y="316" width="180" height="7" rx="2"/>
+    <rect x="920" y="332" width="132" height="7" rx="2"/>
+  </g>
+  <!-- figure breaking the measure: Kano curves -->
+  <rect x="200" y="392" width="800" height="180" fill="#FFFFFF" stroke="#E5E7EB" rx="4"/>
+  <!-- axes -->
+  <path stroke="#9CA3AF" d="M260 482h680M600 552V412"/>
+  <path fill="#9CA3AF" d="M940 482l-9-4.5v9zM600 412l-4.5 9h9z"/>
+  <text x="932" y="498" fill="#6B7280" font-family="'Inter','Segoe UI',sans-serif" font-size="10" text-anchor="end">功能充分</text>
+  <text x="264" y="498" fill="#6B7280" font-family="'Inter','Segoe UI',sans-serif" font-size="10">功能缺失</text>
+  <text x="610" y="422" fill="#6B7280" font-family="'Inter','Segoe UI',sans-serif" font-size="10">满意</text>
+  <text x="610" y="548" fill="#6B7280" font-family="'Inter','Segoe UI',sans-serif" font-size="10">不满</text>
+  <!-- must-be concave (dashed ink) -->
+  <path stroke="#1F2933" stroke-width="2" stroke-dasharray="6 4" d="M280 544c60-40 130-52 640-58"/>
+  <!-- one-dimensional straight (blue) -->
+  <path stroke="#2A7AE2" stroke-width="2" d="M280 540 920 436"/>
+  <!-- attractive convex (orange) -->
+  <path stroke="#E4572E" stroke-width="2" d="M280 490c220-4 480-16 640-78"/>
+  <circle cx="920" cy="412" r="3.5" fill="#E4572E"/>
+  <circle cx="920" cy="436" r="3.5" fill="#2A7AE2"/>
+  <circle cx="920" cy="486" r="3.5" fill="#1F2933"/>
+  <text x="930" y="416" fill="#E4572E" font-family="'Inter','Segoe UI',sans-serif" font-size="11" font-weight="600">A</text>
+  <text x="930" y="440" fill="#2A7AE2" font-family="'Inter','Segoe UI',sans-serif" font-size="11" font-weight="600">O</text>
+  <text x="930" y="490" fill="#1F2933" font-family="'Inter','Segoe UI',sans-serif" font-size="11" font-weight="600">M</text>
+  <!-- mini circumplex inside figure, left side -->
+  <circle cx="330" cy="440" r="26" stroke="#D1D5DB"/>
+  <path stroke="#E5E7EB" d="M298 440h64M330 408v64"/>
+  <circle cx="348" cy="422" r="4" fill="#E4572E"/>
+  <circle cx="356" cy="440" r="2.5" fill="#2A7AE2"/>
+  <circle cx="330" cy="414" r="2.5" fill="#2A7AE2"/>
+  <circle cx="312" cy="422" r="2.5" fill="#2A7AE2"/>
+  <circle cx="304" cy="440" r="2.5" fill="#2A7AE2"/>
+  <circle cx="312" cy="458" r="2.5" fill="#2A7AE2"/>
+  <circle cx="330" cy="466" r="2.5" fill="#2A7AE2"/>
+  <circle cx="348" cy="458" r="2.5" fill="#2A7AE2"/>
+  <!-- figure caption -->
+  <path stroke="#E5E7EB" d="M200 588.5h800"/>
+  <text x="200" y="608" fill="#1F2933" font-family="'Inter','Segoe UI',sans-serif" font-size="11" font-weight="600">图 1：</text>
+  <text x="238" y="608" fill="#6B7280" font-family="'Inter','Segoe UI',sans-serif" font-size="11">狩野模型三类品质曲线（Kano et al., 1984）。A 魅力品质随时间衰变为 O，再衰变为 M。</text>
+  <!-- left margin: contents hint -->
+  <text x="120" y="112" fill="#6B7280" font-family="'Inter','Segoe UI',sans-serif" font-size="9" letter-spacing=".14em">CONTENTS</text>
+  <g fill="#E5E7EB">
+    <rect x="120" y="126" width="120" height="7" rx="2"/>
+    <rect x="120" y="144" width="96" height="7" rx="2"/>
+    <rect x="120" y="162" width="110" height="7" rx="2"/>
+    <rect x="120" y="180" width="84" height="7" rx="2"/>
+  </g>
+  <path stroke="#2A7AE2" d="M108 124v14"/>
+  <!-- right margin bottom: tag badges -->
+  <rect x="920" y="120" width="52" height="20" stroke="#E5E7EB" rx="2"/>
+  <text x="946" y="134" fill="#6B7280" font-family="'Inter','Segoe UI',sans-serif" font-size="9" text-anchor="middle">cs.HC</text>
+  <rect x="980" y="120" width="58" height="20" stroke="#E5E7EB" rx="2"/>
+  <text x="1009" y="134" fill="#6B7280" font-family="'Inter','Segoe UI',sans-serif" font-size="9" text-anchor="middle">stat.AP</text>
+  <rect x="1046" y="120" width="34" height="20" stroke="#E5E7EB" rx="2"/>
+  <text x="1063" y="134" fill="#2A7AE2" font-family="'Inter','Segoe UI',sans-serif" font-size="9" text-anchor="middle">PDF</text>
+  <!-- footer tagline -->
+  <text x="1080" y="608" fill="#9CA3AF" font-family="'Inter','Segoe UI',sans-serif" font-size="11" text-anchor="end" letter-spacing=".05em">Distill Style - 学术科普风</text>
+</svg>

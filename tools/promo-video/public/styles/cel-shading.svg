@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#1A1A2E" />
+  <!-- Top-left: Card with thick outline -->
+  <g transform="translate(60,50)">
+    <rect width="320" height="210" fill="#16213E" stroke="#E94560" stroke-width="4" />
+    <rect x="0" y="0" width="320" height="40" fill="#E94560" />
+    <text x="16" y="27" fill="#FFFFFF" font-family="system-ui,sans-serif" font-size="15" font-weight="800">PLAYER STATS</text>
+    <rect x="16" y="56" width="140" height="60" fill="#0F3460" stroke="#E94560" stroke-width="2" />
+    <text x="86" y="82" text-anchor="middle" fill="#E94560" font-family="system-ui,sans-serif" font-size="24" font-weight="900">LV.42</text>
+    <text x="86" y="102" text-anchor="middle" fill="#FFFFFF" font-family="system-ui,sans-serif" font-size="11" font-weight="600" opacity="0.7">LEVEL</text>
+    <rect x="164" y="56" width="140" height="60" fill="#533483" stroke="#E94560" stroke-width="2" />
+    <text x="234" y="82" text-anchor="middle" fill="#E94560" font-family="system-ui,sans-serif" font-size="24" font-weight="900">HP:88</text>
+    <text x="234" y="102" text-anchor="middle" fill="#FFFFFF" font-family="system-ui,sans-serif" font-size="11" font-weight="600" opacity="0.7">HEALTH</text>
+    <rect x="16" y="132" width="288" height="16" fill="#0F3460" stroke="#E94560" stroke-width="2" />
+    <rect x="18" y="134" width="200" height="12" fill="#E94560" />
+    <text x="16" y="175" fill="#FFFFFF" font-family="system-ui,sans-serif" font-size="12" font-weight="700" opacity="0.6">EXP 2450 / 3000</text>
+  </g>
+  <!-- Top-right: Buttons -->
+  <g transform="translate(820,50)">
+    <rect width="320" height="210" fill="#16213E" stroke="#E94560" stroke-width="4" />
+    <rect x="24" y="24" width="272" height="44" fill="#E94560" stroke="#1A1A2E" stroke-width="3" />
+    <text x="160" y="52" text-anchor="middle" fill="#FFFFFF" font-family="system-ui,sans-serif" font-size="16" font-weight="800">ATTACK</text>
+    <rect x="24" y="84" width="130" height="44" fill="#0F3460" stroke="#E94560" stroke-width="3" />
+    <text x="89" y="112" text-anchor="middle" fill="#E94560" font-family="system-ui,sans-serif" font-size="14" font-weight="800">DEFEND</text>
+    <rect x="166" y="84" width="130" height="44" fill="#533483" stroke="#E94560" stroke-width="3" />
+    <text x="231" y="112" text-anchor="middle" fill="#FFFFFF" font-family="system-ui,sans-serif" font-size="14" font-weight="800">MAGIC</text>
+    <rect x="24" y="148" width="272" height="40" fill="none" stroke="#E94560" stroke-width="3" />
+    <text x="40" y="173" fill="#E94560" font-family="system-ui,sans-serif" font-size="13" font-weight="700">Search...</text>
+  </g>
+  <!-- Center title -->
+  <text x="600" y="320" text-anchor="middle" fill="#E94560" font-family="system-ui,sans-serif" font-size="48" font-weight="900" letter-spacing="6">CEL SHADING</text>
+  <text x="600" y="358" text-anchor="middle" fill="#FFFFFF" font-family="system-ui,sans-serif" font-size="14" font-weight="600" letter-spacing="4" opacity="0.5">FLAT COLORS . BOLD OUTLINES . NO GRADIENTS</text>
+  <!-- Bottom-left: Color blocks -->
+  <g transform="translate(60,400)">
+    <rect width="320" height="180" fill="#16213E" stroke="#E94560" stroke-width="4" />
+    <rect x="16" y="16" width="68" height="68" fill="#1A1A2E" stroke="#E94560" stroke-width="3" />
+    <rect x="92" y="16" width="68" height="68" fill="#E94560" stroke="#1A1A2E" stroke-width="3" />
+    <rect x="168" y="16" width="68" height="68" fill="#0F3460" stroke="#E94560" stroke-width="3" />
+    <rect x="244" y="16" width="60" height="68" fill="#533483" stroke="#E94560" stroke-width="3" />
+    <text x="16" y="115" fill="#FFFFFF" font-family="system-ui,sans-serif" font-size="16" font-weight="800">Aa HEADING</text>
+    <text x="16" y="140" fill="#FFFFFF" font-family="system-ui,sans-serif" font-size="12" opacity="0.6" font-weight="600">Body text with bold outlines</text>
+    <text x="16" y="165" fill="#E94560" font-family="system-ui,sans-serif" font-size="11" font-weight="700">FLAT . BOLD . ANIMATED</text>
+  </g>
+  <!-- Bottom-right: Card -->
+  <g transform="translate(820,400)">
+    <rect width="320" height="180" fill="#0F3460" stroke="#E94560" stroke-width="4" />
+    <rect x="16" y="16" width="100" height="28" fill="#E94560" />
+    <text x="66" y="35" text-anchor="middle" fill="#FFFFFF" font-family="system-ui,sans-serif" font-size="12" font-weight="800">EPISODE 01</text>
+    <text x="16" y="72" fill="#FFFFFF" font-family="system-ui,sans-serif" font-size="18" font-weight="800">Scene Title</text>
+    <text x="16" y="96" fill="#FFFFFF" font-family="system-ui,sans-serif" font-size="12" opacity="0.6" font-weight="600">Like every frame is hand-painted art.</text>
+    <rect x="16" y="120" width="288" height="3" fill="#E94560" />
+    <rect x="16" y="140" width="80" height="28" fill="#E94560" stroke="#1A1A2E" stroke-width="2" />
+    <text x="56" y="159" text-anchor="middle" fill="#FFFFFF" font-family="system-ui,sans-serif" font-size="11" font-weight="800">NEXT</text>
+    <rect x="108" y="140" width="80" height="28" fill="none" stroke="#E94560" stroke-width="2" />
+    <text x="148" y="159" text-anchor="middle" fill="#E94560" font-family="system-ui,sans-serif" font-size="11" font-weight="800">BACK</text>
+  </g>
+</svg>

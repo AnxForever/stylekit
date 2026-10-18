@@ -1,0 +1,142 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <!-- Neon glow filter for main title -->
+    <filter id="neon-glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="6" result="blur1"/>
+      <feGaussianBlur in="SourceGraphic" stdDeviation="14" result="blur2"/>
+      <feMerge>
+        <feMergeNode in="blur2"/>
+        <feMergeNode in="blur1"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <!-- Soft glow for secondary elements -->
+    <filter id="soft-glow" x="-10%" y="-10%" width="120%" height="120%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="3" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <!-- CRT vignette radial gradient -->
+    <radialGradient id="vignette" cx="50%" cy="50%" r="65%" fx="50%" fy="50%">
+      <stop offset="40%" stop-color="#000000" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#000000" stop-opacity="0.88"/>
+    </radialGradient>
+
+    <!-- Screen inner ambient glow -->
+    <radialGradient id="screen-glow" cx="50%" cy="50%" r="60%">
+      <stop offset="0%" stop-color="#003300" stop-opacity="0.5"/>
+      <stop offset="100%" stop-color="#000800" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Scanlines pattern -->
+    <pattern id="scan" x="0" y="0" width="1200" height="4" patternUnits="userSpaceOnUse">
+      <rect fill="#000000" opacity="0.4" width="1200" height="2" y="0"/>
+    </pattern>
+
+    <!-- Pixel grid pattern -->
+    <pattern id="pixel-grid" x="0" y="0" width="6" height="6" patternUnits="userSpaceOnUse">
+      <rect fill="none" stroke="#39ff14" stroke-opacity="0.04" width="6" height="6"/>
+    </pattern>
+
+    <!-- Health bar gradient -->
+    <linearGradient id="health-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#39ff14"/>
+      <stop offset="70%" stop-color="#aaff00"/>
+      <stop offset="100%" stop-color="#FFFF00"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="630" fill="#050505"/>
+
+  <!-- Monitor stand / base trapezoid -->
+  <polygon points="520,595 680,595 710,625 490,625" fill="#1a1a1a"/>
+  <rect x="490" y="620" width="220" height="10" rx="4" fill="#111111"/>
+
+  <!-- Monitor outer shell -->
+  <rect x="150" y="35" width="900" height="560" rx="20" fill="#1a1a1a"/>
+
+  <!-- Inner bezel -->
+  <rect x="168" y="52" width="864" height="526" rx="12" fill="#0d0d0d"/>
+
+  <!-- Screen area background -->
+  <rect x="185" y="68" width="830" height="494" rx="8" fill="#001100"/>
+
+  <!-- Screen inner ambient glow -->
+  <rect x="185" y="68" width="830" height="494" rx="8" fill="url(#screen-glow)"/>
+
+  <!-- Pixel grid overlay -->
+  <rect x="185" y="68" width="830" height="494" rx="8" fill="url(#pixel-grid)"/>
+
+  <!-- Scanlines overlay -->
+  <rect x="185" y="68" width="830" height="494" rx="8" fill="url(#scan)"/>
+
+  <!-- HUD: Top-left P1 Score -->
+  <text x="210" y="108" font-family="monospace" font-size="22" font-weight="700" fill="#39ff14" opacity="0.9" filter="url(#soft-glow)">P1 SCORE: 98750</text>
+
+  <!-- HUD: Top-right Credits -->
+  <text x="990" y="108" font-family="monospace" font-size="22" font-weight="700" fill="#39ff14" opacity="0.9" text-anchor="end" filter="url(#soft-glow)">CREDITS: 03</text>
+
+  <!-- HUD: Top divider line -->
+  <line x1="200" y1="118" x2="1000" y2="118" stroke="#39ff14" stroke-width="1" stroke-opacity="0.35"/>
+
+  <!-- HUD: Lives indicator -->
+  <text x="210" y="148" font-family="monospace" font-size="16" fill="#ff00ff" opacity="0.8">LIVES:</text>
+  <rect x="275" y="132" width="14" height="14" rx="2" fill="#ff00ff" opacity="0.9"/>
+  <rect x="295" y="132" width="14" height="14" rx="2" fill="#ff00ff" opacity="0.9"/>
+  <rect x="315" y="132" width="14" height="14" rx="2" fill="#ff00ff" opacity="0.9"/>
+
+  <!-- HUD: Level indicator -->
+  <text x="990" y="148" font-family="monospace" font-size="16" fill="#00ffff" opacity="0.8" text-anchor="end">LVL: 07</text>
+
+  <!-- Chromatic aberration: red ghost (offset left) -->
+  <text x="597" y="342" font-family="monospace" font-size="100" font-weight="900" fill="#ff0000" fill-opacity="0.45" text-anchor="middle">ARCADE</text>
+
+  <!-- Chromatic aberration: cyan ghost (offset right) -->
+  <text x="603" y="342" font-family="monospace" font-size="100" font-weight="900" fill="#00ffff" fill-opacity="0.45" text-anchor="middle">ARCADE</text>
+
+  <!-- Main title: ARCADE with neon glow -->
+  <text x="600" y="342" font-family="monospace" font-size="100" font-weight="900" fill="#39ff14" text-anchor="middle" filter="url(#neon-glow)">ARCADE</text>
+
+  <!-- Subtitle: CRT MODE -->
+  <text x="600" y="406" font-family="monospace" font-size="52" font-weight="700" fill="#39ff14" fill-opacity="0.85" text-anchor="middle" filter="url(#soft-glow)">CRT MODE</text>
+
+  <!-- Decorative horizontal rule under subtitle -->
+  <line x1="310" y1="424" x2="890" y2="424" stroke="#39ff14" stroke-width="1.5" stroke-opacity="0.4"/>
+
+  <!-- Health bar label -->
+  <text x="210" y="478" font-family="monospace" font-size="15" fill="#39ff14" opacity="0.75">ENERGY</text>
+
+  <!-- Health bar outline -->
+  <rect x="210" y="484" width="320" height="18" rx="3" fill="none" stroke="#39ff14" stroke-width="1.5" stroke-opacity="0.6"/>
+
+  <!-- Health bar filled portion (~80%) -->
+  <rect x="212" y="486" width="252" height="14" rx="2" fill="url(#health-grad)" opacity="0.9"/>
+
+  <!-- INSERT COIN static text -->
+  <text x="600" y="482" font-family="monospace" font-size="28" font-weight="700" fill="#FFFF00" text-anchor="middle" filter="url(#soft-glow)">- INSERT COIN -</text>
+
+  <!-- Bottom divider line -->
+  <line x1="200" y1="500" x2="1000" y2="500" stroke="#39ff14" stroke-width="1" stroke-opacity="0.25"/>
+
+  <!-- Bottom HUD: game status row -->
+  <text x="210" y="525" font-family="monospace" font-size="14" fill="#ff2a2a" opacity="0.8">GAME OVER</text>
+  <text x="600" y="525" font-family="monospace" font-size="14" fill="#00ffff" opacity="0.7" text-anchor="middle">STAGE CLEAR</text>
+  <text x="990" y="525" font-family="monospace" font-size="14" fill="#ff00ff" opacity="0.8" text-anchor="end">HIGH SCORE</text>
+
+  <!-- CRT vignette overlay -->
+  <rect x="185" y="68" width="830" height="494" rx="8" fill="url(#vignette)"/>
+
+  <!-- Monitor corner screws -->
+  <circle cx="175" cy="59" r="5" fill="#2a2a2a" stroke="#333333" stroke-width="1"/>
+  <circle cx="1025" cy="59" r="5" fill="#2a2a2a" stroke="#333333" stroke-width="1"/>
+  <circle cx="175" cy="581" r="5" fill="#2a2a2a" stroke="#333333" stroke-width="1"/>
+  <circle cx="1025" cy="581" r="5" fill="#2a2a2a" stroke="#333333" stroke-width="1"/>
+
+  <!-- Monitor power LED -->
+  <circle cx="600" cy="574" r="5" fill="#39ff14" opacity="0.9" filter="url(#soft-glow)"/>
+</svg>

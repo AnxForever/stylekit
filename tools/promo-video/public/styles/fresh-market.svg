@@ -1,0 +1,97 @@
+<svg viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg" fill="none">
+  <!-- Background -->
+  <rect width="1200" height="630" fill="#fef9f0"/>
+
+  <!-- Subtle grid texture -->
+  <pattern id="fm-dots" x="0" y="0" width="30" height="30" patternUnits="userSpaceOnUse">
+    <circle cx="15" cy="15" r="0.8" fill="#d4e4bc" opacity="0.4"/>
+  </pattern>
+  <rect width="1200" height="630" fill="url(#fm-dots)"/>
+
+  <!-- Top nav bar -->
+  <rect x="0" y="0" width="1200" height="60" fill="#fef9f0"/>
+  <text x="80" y="38" font-family="system-ui, sans-serif" font-size="22" font-weight="700" fill="#2d5016">FreshMarket</text>
+  <text x="900" y="38" font-family="system-ui, sans-serif" font-size="14" fill="#8b4513">Produce</text>
+  <text x="970" y="38" font-family="system-ui, sans-serif" font-size="14" fill="#8b4513">Dairy</text>
+  <text x="1030" y="38" font-family="system-ui, sans-serif" font-size="14" fill="#8b4513">Bakery</text>
+  <text x="1095" y="38" font-family="system-ui, sans-serif" font-size="14" fill="#8b4513">Recipes</text>
+
+  <!-- Hero section -->
+  <rect x="60" y="80" width="1080" height="220" rx="24" fill="#2d5016"/>
+  <text x="600" y="165" font-family="system-ui, sans-serif" font-size="14" fill="#d4e4bc" text-anchor="middle" letter-spacing="4" text-transform="uppercase">THIS WEEK</text>
+  <text x="600" y="210" font-family="system-ui, sans-serif" font-size="40" font-weight="700" fill="white" text-anchor="middle">Farm-Fresh Picks</text>
+  <text x="600" y="240" font-family="system-ui, sans-serif" font-size="16" fill="#d4e4bc" text-anchor="middle">Hand-selected seasonal produce, delivered to your door.</text>
+  <!-- CTA button -->
+  <rect x="490" y="258" width="220" height="44" rx="22" fill="#e8722a"/>
+  <text x="600" y="285" font-family="system-ui, sans-serif" font-size="15" font-weight="600" fill="white" text-anchor="middle">Shop This Week</text>
+
+  <!-- Category pills -->
+  <rect x="180" y="325" width="90" height="32" rx="16" fill="#d4e4bc"/>
+  <text x="225" y="346" font-family="system-ui, sans-serif" font-size="12" font-weight="500" fill="#2d5016" text-anchor="middle">Produce</text>
+  <rect x="290" y="325" width="72" height="32" rx="16" fill="#fef9f0" stroke="#d4e4bc" stroke-width="1"/>
+  <text x="326" y="346" font-family="system-ui, sans-serif" font-size="12" fill="#2d5016" text-anchor="middle">Dairy</text>
+  <rect x="382" y="325" width="80" height="32" rx="16" fill="#fef9f0" stroke="#d4e4bc" stroke-width="1"/>
+  <text x="422" y="346" font-family="system-ui, sans-serif" font-size="12" fill="#2d5016" text-anchor="middle">Bakery</text>
+  <rect x="482" y="325" width="72" height="32" rx="16" fill="#fef9f0" stroke="#d4e4bc" stroke-width="1"/>
+  <text x="518" y="346" font-family="system-ui, sans-serif" font-size="12" fill="#2d5016" text-anchor="middle">Meat</text>
+  <rect x="574" y="325" width="96" height="32" rx="16" fill="#fef9f0" stroke="#d4e4bc" stroke-width="1"/>
+  <text x="622" y="346" font-family="system-ui, sans-serif" font-size="12" fill="#2d5016" text-anchor="middle">Beverages</text>
+  <rect x="690" y="325" width="80" height="32" rx="16" fill="#fef9f0" stroke="#d4e4bc" stroke-width="1"/>
+  <text x="730" y="346" font-family="system-ui, sans-serif" font-size="12" fill="#2d5016" text-anchor="middle">Snacks</text>
+  <rect x="790" y="325" width="88" height="32" rx="16" fill="#fef9f0" stroke="#d4e4bc" stroke-width="1"/>
+  <text x="834" y="346" font-family="system-ui, sans-serif" font-size="12" fill="#2d5016" text-anchor="middle">Organic</text>
+
+  <!-- Product cards row -->
+  <!-- Card 1 -->
+  <rect x="80" y="380" width="240" height="230" rx="16" fill="white" filter="url(#fm-shadow)"/>
+  <rect x="80" y="380" width="240" height="120" rx="16" fill="#d4e4bc"/>
+  <rect x="80" y="484" width="240" height="126" rx="0" fill="white"/>
+  <!-- Organic badge -->
+  <rect x="96" y="396" width="60" height="20" rx="10" fill="#2d5016"/>
+  <text x="126" y="410" font-family="system-ui, sans-serif" font-size="9" fill="white" text-anchor="middle">ORGANIC</text>
+  <text x="100" y="520" font-family="system-ui, sans-serif" font-size="15" font-weight="700" fill="#2d5016">Farm Avocados</text>
+  <text x="100" y="540" font-family="system-ui, sans-serif" font-size="11" fill="#8b7355">500g, locally sourced</text>
+  <text x="100" y="572" font-family="system-ui, sans-serif" font-size="18" font-weight="700" fill="#e8722a">$4.99</text>
+  <circle cx="292" cy="566" r="16" fill="#2d5016"/>
+  <text x="292" y="572" font-family="system-ui, sans-serif" font-size="18" fill="white" text-anchor="middle">+</text>
+
+  <!-- Card 2 -->
+  <rect x="348" y="380" width="240" height="230" rx="16" fill="white" filter="url(#fm-shadow)"/>
+  <rect x="348" y="380" width="240" height="120" rx="16" fill="#f5e6c8"/>
+  <rect x="348" y="484" width="240" height="126" rx="0" fill="white"/>
+  <text x="368" y="520" font-family="system-ui, sans-serif" font-size="15" font-weight="700" fill="#2d5016">Sourdough Bread</text>
+  <text x="368" y="540" font-family="system-ui, sans-serif" font-size="11" fill="#8b7355">Freshly baked daily</text>
+  <text x="368" y="572" font-family="system-ui, sans-serif" font-size="18" font-weight="700" fill="#e8722a">$6.50</text>
+  <circle cx="560" cy="566" r="16" fill="#2d5016"/>
+  <text x="560" y="572" font-family="system-ui, sans-serif" font-size="18" fill="white" text-anchor="middle">+</text>
+
+  <!-- Card 3 -->
+  <rect x="616" y="380" width="240" height="230" rx="16" fill="white" filter="url(#fm-shadow)"/>
+  <rect x="616" y="380" width="240" height="120" rx="16" fill="#c5d4a8"/>
+  <rect x="616" y="484" width="240" height="126" rx="0" fill="white"/>
+  <!-- Price tag -->
+  <rect x="790" y="396" width="50" height="20" rx="6" fill="#f5c542"/>
+  <text x="815" y="410" font-family="system-ui, sans-serif" font-size="9" font-weight="600" fill="#8b4513" text-anchor="middle">SALE</text>
+  <text x="636" y="520" font-family="system-ui, sans-serif" font-size="15" font-weight="700" fill="#2d5016">Mixed Berries</text>
+  <text x="636" y="540" font-family="system-ui, sans-serif" font-size="11" fill="#8b7355">250g, seasonal mix</text>
+  <text x="636" y="572" font-family="system-ui, sans-serif" font-size="18" font-weight="700" fill="#e8722a">$5.99</text>
+  <circle cx="828" cy="566" r="16" fill="#2d5016"/>
+  <text x="828" y="572" font-family="system-ui, sans-serif" font-size="18" fill="white" text-anchor="middle">+</text>
+
+  <!-- Card 4 -->
+  <rect x="884" y="380" width="240" height="230" rx="16" fill="white" filter="url(#fm-shadow)"/>
+  <rect x="884" y="380" width="240" height="120" rx="16" fill="#e8d4b8"/>
+  <rect x="884" y="484" width="240" height="126" rx="0" fill="white"/>
+  <text x="904" y="520" font-family="system-ui, sans-serif" font-size="15" font-weight="700" fill="#2d5016">Free-Range Eggs</text>
+  <text x="904" y="540" font-family="system-ui, sans-serif" font-size="11" fill="#8b7355">12 pack, pasture raised</text>
+  <text x="904" y="572" font-family="system-ui, sans-serif" font-size="18" font-weight="700" fill="#e8722a">$7.99</text>
+  <circle cx="1096" cy="566" r="16" fill="#2d5016"/>
+  <text x="1096" y="572" font-family="system-ui, sans-serif" font-size="18" fill="white" text-anchor="middle">+</text>
+
+  <!-- Shadow filter -->
+  <defs>
+    <filter id="fm-shadow" x="-4" y="-2" width="108%" height="112%">
+      <feDropShadow dx="0" dy="2" stdDeviation="4" flood-color="#8b7355" flood-opacity="0.08"/>
+    </filter>
+  </defs>
+</svg>

@@ -1,0 +1,136 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="coralBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#d4a088"/>
+      <stop offset="60%" style="stop-color:#c9967a"/>
+      <stop offset="100%" style="stop-color:#c08870"/>
+    </linearGradient>
+    <linearGradient id="creamCard" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#ffffff"/>
+      <stop offset="100%" style="stop-color:#faf8f5"/>
+    </linearGradient>
+    <linearGradient id="sidebarGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:rgba(255,255,255,0.88)"/>
+      <stop offset="100%" style="stop-color:rgba(255,255,255,0.78)"/>
+    </linearGradient>
+    <filter id="cardShadow" x="-8%" y="-8%" width="116%" height="132%">
+      <feDropShadow dx="0" dy="8" stdDeviation="16" flood-color="rgba(0,0,0,0.07)"/>
+    </filter>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#coralBg)"/>
+
+  <!-- Sidebar -->
+  <rect x="0" y="0" width="210" height="630" fill="url(#sidebarGrad)"/>
+  <rect x="209" y="0" width="1" height="630" fill="rgba(200,195,190,0.4)"/>
+
+  <!-- Logo -->
+  <rect x="20" y="24" width="34" height="34" rx="9" fill="#4a9d9a"/>
+  <text x="37" y="47" font-family="Arial, sans-serif" font-size="15" font-weight="800" fill="white" text-anchor="middle">C</text>
+  <text x="64" y="47" font-family="Arial, sans-serif" font-size="15" font-weight="600" fill="#374151">Crowz</text>
+
+  <!-- Avatar area -->
+  <circle cx="105" cy="120" r="32" fill="#d4a088" stroke="rgba(255,255,255,0.6)" stroke-width="2"/>
+  <circle cx="105" cy="112" r="12" fill="rgba(255,255,255,0.4)"/>
+  <path d="M 78 145 Q 85 132 105 130 Q 125 132 132 145 Q 120 155 105 157 Q 90 155 78 145 Z" fill="rgba(255,255,255,0.35)"/>
+  <text x="105" y="167" font-family="Arial, sans-serif" font-size="12" font-weight="600" fill="#1f2937" text-anchor="middle">Robert Grant</text>
+  <text x="105" y="183" font-family="Arial, sans-serif" font-size="10" fill="#6b7280" text-anchor="middle">Marketing Director</text>
+
+  <!-- Nav: active -->
+  <rect x="14" y="204" width="182" height="38" rx="10" fill="#faf8f5"/>
+  <circle cx="30" cy="223" r="4" fill="#c17767"/>
+  <text x="44" y="228" font-family="Arial, sans-serif" font-size="13" font-weight="600" fill="#1f2937">Dashboard</text>
+  <!-- Nav: inactive -->
+  <text x="44" y="268" font-family="Arial, sans-serif" font-size="13" fill="#9ca3af">Insights</text>
+  <text x="44" y="308" font-family="Arial, sans-serif" font-size="13" fill="#9ca3af">Reports</text>
+  <text x="44" y="348" font-family="Arial, sans-serif" font-size="13" fill="#9ca3af">Comments</text>
+  <text x="44" y="388" font-family="Arial, sans-serif" font-size="13" fill="#9ca3af">Channels</text>
+
+  <!-- KPI Card 1 — Views -->
+  <rect x="240" y="80" width="280" height="130" rx="18" fill="url(#creamCard)" filter="url(#cardShadow)"/>
+  <circle cx="490" cy="100" r="10" fill="rgba(74,157,154,0.15)"/>
+  <circle cx="490" cy="100" r="5" fill="#4a9d9a"/>
+  <text x="260" y="108" font-family="Arial, sans-serif" font-size="12" fill="#6b7280" font-weight="500">Views</text>
+  <text x="260" y="155" font-family="Arial, sans-serif" font-size="38" font-weight="700" fill="#1f2937">27.6m</text>
+  <text x="260" y="195" font-family="Arial, sans-serif" font-size="12" fill="#9ca3af">
+    <tspan font-weight="600" fill="#e8b86d">+18%</tspan>
+    <tspan> from last month</tspan>
+  </text>
+
+  <!-- KPI Card 2 — Followers -->
+  <rect x="550" y="80" width="280" height="130" rx="18" fill="url(#creamCard)" filter="url(#cardShadow)"/>
+  <circle cx="800" cy="100" r="10" fill="rgba(74,157,154,0.15)"/>
+  <circle cx="800" cy="100" r="5" fill="#4a9d9a"/>
+  <text x="570" y="108" font-family="Arial, sans-serif" font-size="12" fill="#6b7280" font-weight="500">Followers</text>
+  <text x="570" y="155" font-family="Arial, sans-serif" font-size="38" font-weight="700" fill="#1f2937">219.3k</text>
+  <text x="570" y="195" font-family="Arial, sans-serif" font-size="12" fill="#9ca3af">
+    <tspan font-weight="600" fill="#e8b86d">+12%</tspan>
+    <tspan> from last month</tspan>
+  </text>
+
+  <!-- KPI Card 3 — Reposts -->
+  <rect x="860" y="80" width="280" height="130" rx="18" fill="url(#creamCard)" filter="url(#cardShadow)"/>
+  <circle cx="1110" cy="100" r="10" fill="rgba(193,119,103,0.15)"/>
+  <circle cx="1110" cy="100" r="5" fill="#c17767"/>
+  <text x="880" y="108" font-family="Arial, sans-serif" font-size="12" fill="#6b7280" font-weight="500">Reposts</text>
+  <text x="880" y="155" font-family="Arial, sans-serif" font-size="38" font-weight="700" fill="#1f2937">1.5k</text>
+  <text x="880" y="195" font-family="Arial, sans-serif" font-size="12" fill="#9ca3af">
+    <tspan font-weight="600" fill="#c17767">-3%</tspan>
+    <tspan> from last month</tspan>
+  </text>
+
+  <!-- Main Chart Card -->
+  <rect x="240" y="236" width="580" height="360" rx="22" fill="url(#creamCard)" filter="url(#cardShadow)"/>
+  <text x="268" y="276" font-family="Arial, sans-serif" font-size="16" font-weight="600" fill="#1f2937">Activity</text>
+  <text x="268" y="298" font-family="Arial, sans-serif" font-size="11" fill="#9ca3af">Weekly performance overview</text>
+
+  <!-- Bar chart -->
+  <rect x="268" y="440" width="58" height="60" rx="6" fill="#e8b86d" opacity="0.35"/>
+  <rect x="342" y="400" width="58" height="100" rx="6" fill="#e8b86d" opacity="0.4"/>
+  <rect x="416" y="420" width="58" height="80" rx="6" fill="#e8b86d" opacity="0.35"/>
+  <rect x="490" y="360" width="58" height="140" rx="6" fill="#e8b86d" opacity="0.9"/>
+  <rect x="564" y="380" width="58" height="120" rx="6" fill="#e8b86d" opacity="0.55"/>
+  <rect x="638" y="410" width="58" height="90" rx="6" fill="#e8b86d" opacity="0.4"/>
+  <rect x="712" y="430" width="58" height="70" rx="6" fill="#e8b86d" opacity="0.35"/>
+  <text x="297" y="520" font-family="Arial, sans-serif" font-size="10" fill="#9ca3af" text-anchor="middle">Mon</text>
+  <text x="371" y="520" font-family="Arial, sans-serif" font-size="10" fill="#9ca3af" text-anchor="middle">Tue</text>
+  <text x="445" y="520" font-family="Arial, sans-serif" font-size="10" fill="#9ca3af" text-anchor="middle">Wed</text>
+  <text x="519" y="520" font-family="Arial, sans-serif" font-size="10" fill="#4a9d9a" font-weight="600" text-anchor="middle">Thu</text>
+  <text x="593" y="520" font-family="Arial, sans-serif" font-size="10" fill="#9ca3af" text-anchor="middle">Fri</text>
+  <text x="667" y="520" font-family="Arial, sans-serif" font-size="10" fill="#9ca3af" text-anchor="middle">Sat</text>
+  <text x="741" y="520" font-family="Arial, sans-serif" font-size="10" fill="#9ca3af" text-anchor="middle">Sun</text>
+  <rect x="268" y="503" width="502" height="1" fill="#f0ede8"/>
+
+  <!-- Channels Card -->
+  <rect x="850" y="236" width="290" height="168" rx="22" fill="url(#creamCard)" filter="url(#cardShadow)"/>
+  <text x="876" y="272" font-family="Arial, sans-serif" font-size="14" font-weight="600" fill="#1f2937">Channels</text>
+  <rect x="876" y="288" width="36" height="36" rx="8" fill="#ea4c89"/>
+  <text x="894" y="312" font-family="Arial, sans-serif" font-size="13" font-weight="700" fill="white" text-anchor="middle">Dr</text>
+  <text x="920" y="300" font-family="Arial, sans-serif" font-size="11" fill="#6b7280">Dribbble</text>
+  <text x="920" y="318" font-family="Arial, sans-serif" font-size="13" font-weight="600" fill="#4a9d9a">+2%</text>
+  <rect x="876" y="336" width="36" height="36" rx="8" fill="#0057ff"/>
+  <text x="894" y="360" font-family="Arial, sans-serif" font-size="13" font-weight="700" fill="white" text-anchor="middle">Be</text>
+  <text x="920" y="348" font-family="Arial, sans-serif" font-size="11" fill="#6b7280">Behance</text>
+  <text x="920" y="366" font-family="Arial, sans-serif" font-size="13" font-weight="600" fill="#c17767">-7%</text>
+  <rect x="876" y="384" width="240" height="32" rx="8" fill="#4a9d9a"/>
+  <text x="996" y="405" font-family="Arial, sans-serif" font-size="12" font-weight="600" fill="white" text-anchor="middle">Full Stats</text>
+
+  <!-- Top Performers Card -->
+  <rect x="850" y="424" width="290" height="172" rx="22" fill="url(#creamCard)" filter="url(#cardShadow)"/>
+  <text x="876" y="458" font-family="Arial, sans-serif" font-size="14" font-weight="600" fill="#1f2937">Top Posts</text>
+  <rect x="876" y="470" width="36" height="28" rx="6" fill="#f0e8e0"/>
+  <text x="894" y="490" font-family="Arial, sans-serif" font-size="9" fill="#8b6914" text-anchor="middle" font-weight="600">IMG</text>
+  <text x="924" y="481" font-family="Arial, sans-serif" font-size="11" fill="#374151">Sunset Series — Vol 3</text>
+  <text x="924" y="496" font-family="Arial, sans-serif" font-size="10" fill="#4a9d9a" font-weight="600">4.2k likes</text>
+  <rect x="876" y="510" width="36" height="28" rx="6" fill="#e8f0e8"/>
+  <text x="894" y="530" font-family="Arial, sans-serif" font-size="9" fill="#2d5a2d" text-anchor="middle" font-weight="600">VID</text>
+  <text x="924" y="521" font-family="Arial, sans-serif" font-size="11" fill="#374151">Behind the Process</text>
+  <text x="924" y="536" font-family="Arial, sans-serif" font-size="10" fill="#4a9d9a" font-weight="600">3.8k likes</text>
+  <rect x="876" y="550" width="36" height="28" rx="6" fill="#f0e8f0"/>
+  <text x="894" y="570" font-family="Arial, sans-serif" font-size="9" fill="#6b3a6b" text-anchor="middle" font-weight="600">ART</text>
+  <text x="924" y="561" font-family="Arial, sans-serif" font-size="11" fill="#374151">Color Theory Basics</text>
+  <text x="924" y="576" font-family="Arial, sans-serif" font-size="10" fill="#4a9d9a" font-weight="600">2.9k likes</text>
+
+  <!-- Decorative circle -->
+  <circle cx="1170" cy="580" r="80" fill="rgba(255,255,255,0.05)"/>
+</svg>

@@ -1,0 +1,244 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <radialGradient id="linenCenter" cx="50%" cy="50%" r="70%">
+      <stop offset="0%" stop-color="#fdf4ea"/>
+      <stop offset="100%" stop-color="#ecd8c0"/>
+    </radialGradient>
+    <radialGradient id="warmCorner" cx="0%" cy="0%" r="80%">
+      <stop offset="0%" stop-color="#e8c4a8" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="#f5e6d3" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Background: warm linen -->
+  <rect width="1200" height="630" fill="url(#linenCenter)"/>
+  <rect width="1200" height="630" fill="url(#warmCorner)" opacity="0.6"/>
+  <rect width="1200" height="630" fill="#d4956a" opacity="0.03"/>
+
+  <!-- Rolling hills (back to front) -->
+  <path d="M 0 420 Q 200 345 400 390 Q 600 340 800 388 Q 1000 340 1200 390 L 1200 630 L 0 630 Z" fill="#b8d4a8" opacity="0.7"/>
+  <path d="M 0 462 Q 250 392 500 442 Q 750 392 1000 447 Q 1100 462 1200 442 L 1200 630 L 0 630 Z" fill="#7c9a6e" opacity="0.8"/>
+  <path d="M 0 510 Q 300 480 600 505 Q 900 480 1200 510 L 1200 630 L 0 630 Z" fill="#5c7a4a" opacity="0.75"/>
+
+  <!-- Cottage body -->
+  <rect x="498" y="392" width="204" height="138" rx="2" fill="#d4956a"/>
+  <!-- Cottage roof triangle -->
+  <polygon points="470,392 600,302 730,392" fill="#8b5e3c"/>
+  <!-- Thatched roof lines -->
+  <line x1="492" y1="390" x2="530" y2="322" stroke="#6b4428" stroke-width="1.5" opacity="0.5"/>
+  <line x1="512" y1="390" x2="549" y2="312" stroke="#6b4428" stroke-width="1.5" opacity="0.5"/>
+  <line x1="533" y1="390" x2="567" y2="305" stroke="#6b4428" stroke-width="1.5" opacity="0.5"/>
+  <line x1="556" y1="389" x2="582" y2="302" stroke="#6b4428" stroke-width="1.5" opacity="0.5"/>
+  <line x1="580" y1="388" x2="598" y2="302" stroke="#6b4428" stroke-width="1.5" opacity="0.5"/>
+  <line x1="620" y1="388" x2="602" y2="302" stroke="#6b4428" stroke-width="1.5" opacity="0.5"/>
+  <line x1="644" y1="389" x2="618" y2="302" stroke="#6b4428" stroke-width="1.5" opacity="0.5"/>
+  <line x1="667" y1="390" x2="635" y2="305" stroke="#6b4428" stroke-width="1.5" opacity="0.5"/>
+  <line x1="688" y1="390" x2="651" y2="312" stroke="#6b4428" stroke-width="1.5" opacity="0.5"/>
+  <line x1="708" y1="390" x2="670" y2="322" stroke="#6b4428" stroke-width="1.5" opacity="0.5"/>
+  <!-- Chimney -->
+  <rect x="648" y="320" width="22" height="50" fill="#8b5e3c"/>
+  <!-- Smoke wisps -->
+  <path d="M 659 318 Q 653 306 660 297 Q 667 288 661 278" stroke="#c8b8a8" stroke-width="2" fill="none" opacity="0.5"/>
+  <path d="M 665 316 Q 672 304 666 294 Q 660 284 667 273" stroke="#c8b8a8" stroke-width="2" fill="none" opacity="0.4"/>
+  <!-- Cottage door -->
+  <rect x="572" y="462" width="56" height="68" rx="4" fill="#e8c4a8"/>
+  <rect x="572" y="462" width="56" height="68" rx="4" fill="#5c7a4a" opacity="0.15"/>
+  <circle cx="622" cy="498" r="4" fill="#8b5e3c"/>
+  <!-- Windows -->
+  <rect x="510" y="416" width="46" height="38" rx="3" fill="#e8f4f8" opacity="0.85"/>
+  <line x1="533" y1="416" x2="533" y2="454" stroke="#b8d4a8" stroke-width="1.5"/>
+  <line x1="510" y1="435" x2="556" y2="435" stroke="#b8d4a8" stroke-width="1.5"/>
+  <rect x="644" y="416" width="46" height="38" rx="3" fill="#e8f4f8" opacity="0.85"/>
+  <line x1="667" y1="416" x2="667" y2="454" stroke="#b8d4a8" stroke-width="1.5"/>
+  <line x1="644" y1="435" x2="690" y2="435" stroke="#b8d4a8" stroke-width="1.5"/>
+
+  <!-- Top vine connector -->
+  <path d="M 100 42 Q 300 20 550 24 Q 700 18 900 24 Q 1050 20 1110 42"
+        stroke="#7c9a6e" stroke-width="2" fill="none" opacity="0.4" stroke-dasharray="4,6"/>
+  <!-- Bottom vine connector -->
+  <path d="M 120 590 Q 300 574 500 584 Q 700 574 900 584 Q 1050 574 1080 590"
+        stroke="#5c7a4a" stroke-width="2" fill="none" opacity="0.35" stroke-dasharray="4,6"/>
+
+  <!-- Wildflower border: top-left cluster -->
+  <ellipse cx="90" cy="36" rx="6" ry="18" transform="rotate(-30,90,36)" fill="#7c9a6e"/>
+  <ellipse cx="32" cy="90" rx="6" ry="18" transform="rotate(60,32,90)" fill="#5c7a4a"/>
+  <ellipse cx="112" cy="62" rx="5" ry="14" transform="rotate(-10,112,62)" fill="#b8d4a8"/>
+  <circle cx="56" cy="56" r="9" fill="#d4956a"/>
+  <ellipse cx="56" cy="39" rx="5" ry="10" fill="#e8c4a8"/>
+  <ellipse cx="56" cy="73" rx="5" ry="10" fill="#e8c4a8"/>
+  <ellipse cx="39" cy="56" rx="10" ry="5" fill="#e8c4a8"/>
+  <ellipse cx="73" cy="56" rx="10" ry="5" fill="#e8c4a8"/>
+  <ellipse cx="44" cy="44" rx="5" ry="10" transform="rotate(-45,44,44)" fill="#f5d4b8"/>
+  <ellipse cx="68" cy="68" rx="5" ry="10" transform="rotate(-45,68,68)" fill="#f5d4b8"/>
+  <ellipse cx="68" cy="44" rx="5" ry="10" transform="rotate(45,68,44)" fill="#f5d4b8"/>
+  <ellipse cx="44" cy="68" rx="5" ry="10" transform="rotate(45,44,68)" fill="#f5d4b8"/>
+
+  <!-- Top-left small secondary flower -->
+  <circle cx="138" cy="24" r="6" fill="#7c9a6e"/>
+  <ellipse cx="138" cy="13" rx="3.5" ry="7" fill="#b8d4a8"/>
+  <ellipse cx="138" cy="35" rx="3.5" ry="7" fill="#b8d4a8"/>
+  <ellipse cx="127" cy="24" rx="7" ry="3.5" fill="#b8d4a8"/>
+  <ellipse cx="149" cy="24" rx="7" ry="3.5" fill="#b8d4a8"/>
+  <ellipse cx="115" cy="22" rx="5" ry="12" transform="rotate(20,115,22)" fill="#7c9a6e"/>
+  <ellipse cx="142" cy="18" rx="4" ry="11" transform="rotate(-15,142,18)" fill="#5c7a4a"/>
+
+  <!-- Top-center flower -->
+  <circle cx="350" cy="28" r="7" fill="#7c9a6e"/>
+  <ellipse cx="350" cy="14" rx="4" ry="8" fill="#b8d4a8"/>
+  <ellipse cx="350" cy="42" rx="4" ry="8" fill="#b8d4a8"/>
+  <ellipse cx="336" cy="28" rx="8" ry="4" fill="#b8d4a8"/>
+  <ellipse cx="364" cy="28" rx="8" ry="4" fill="#b8d4a8"/>
+
+  <!-- Top-right cluster -->
+  <ellipse cx="1110" cy="36" rx="6" ry="18" transform="rotate(30,1110,36)" fill="#7c9a6e"/>
+  <ellipse cx="1168" cy="90" rx="6" ry="18" transform="rotate(-60,1168,90)" fill="#5c7a4a"/>
+  <circle cx="1144" cy="56" r="9" fill="#7c9a6e"/>
+  <ellipse cx="1144" cy="39" rx="5" ry="10" fill="#b8d4a8"/>
+  <ellipse cx="1144" cy="73" rx="5" ry="10" fill="#b8d4a8"/>
+  <ellipse cx="1127" cy="56" rx="10" ry="5" fill="#b8d4a8"/>
+  <ellipse cx="1161" cy="56" rx="10" ry="5" fill="#b8d4a8"/>
+  <ellipse cx="1132" cy="44" rx="5" ry="10" transform="rotate(-45,1132,44)" fill="#d4f0c0"/>
+  <ellipse cx="1156" cy="68" rx="5" ry="10" transform="rotate(-45,1156,68)" fill="#d4f0c0"/>
+  <ellipse cx="1156" cy="44" rx="5" ry="10" transform="rotate(45,1156,44)" fill="#d4f0c0"/>
+  <ellipse cx="1132" cy="68" rx="5" ry="10" transform="rotate(45,1132,68)" fill="#d4f0c0"/>
+  <ellipse cx="1062" cy="18" rx="4" ry="11" transform="rotate(15,1062,18)" fill="#7c9a6e"/>
+
+  <!-- Left edge flower -->
+  <circle cx="32" cy="280" r="8" fill="#e8c4a8"/>
+  <ellipse cx="32" cy="265" rx="4" ry="9" fill="#f5ece0"/>
+  <ellipse cx="32" cy="295" rx="4" ry="9" fill="#f5ece0"/>
+  <ellipse cx="17" cy="280" rx="9" ry="4" fill="#f5ece0"/>
+  <ellipse cx="47" cy="280" rx="9" ry="4" fill="#f5ece0"/>
+  <ellipse cx="15" cy="256" rx="5" ry="16" transform="rotate(-15,15,256)" fill="#5c7a4a"/>
+  <ellipse cx="15" cy="308" rx="5" ry="15" transform="rotate(10,15,308)" fill="#7c9a6e"/>
+
+  <!-- Right edge flower -->
+  <circle cx="1168" cy="280" r="8" fill="#d4956a"/>
+  <ellipse cx="1168" cy="265" rx="4" ry="9" fill="#e8c4a8"/>
+  <ellipse cx="1168" cy="295" rx="4" ry="9" fill="#e8c4a8"/>
+  <ellipse cx="1153" cy="280" rx="9" ry="4" fill="#e8c4a8"/>
+  <ellipse cx="1183" cy="280" rx="9" ry="4" fill="#e8c4a8"/>
+  <ellipse cx="1185" cy="256" rx="5" ry="16" transform="rotate(15,1185,256)" fill="#7c9a6e"/>
+  <ellipse cx="1185" cy="308" rx="5" ry="15" transform="rotate(-10,1185,308)" fill="#b8d4a8"/>
+
+  <!-- Bottom-left cluster -->
+  <circle cx="80" cy="574" r="9" fill="#d4956a"/>
+  <ellipse cx="80" cy="558" rx="5" ry="10" fill="#e8c4a8"/>
+  <ellipse cx="80" cy="590" rx="5" ry="10" fill="#e8c4a8"/>
+  <ellipse cx="64" cy="574" rx="10" ry="5" fill="#e8c4a8"/>
+  <ellipse cx="96" cy="574" rx="10" ry="5" fill="#e8c4a8"/>
+  <ellipse cx="50" cy="554" rx="5" ry="16" transform="rotate(20,50,554)" fill="#7c9a6e"/>
+  <ellipse cx="110" cy="548" rx="5" ry="14" transform="rotate(-30,110,548)" fill="#b8d4a8"/>
+
+  <!-- Bottom-right cluster -->
+  <circle cx="1120" cy="574" r="9" fill="#7c9a6e"/>
+  <ellipse cx="1120" cy="558" rx="5" ry="10" fill="#b8d4a8"/>
+  <ellipse cx="1120" cy="590" rx="5" ry="10" fill="#b8d4a8"/>
+  <ellipse cx="1104" cy="574" rx="10" ry="5" fill="#b8d4a8"/>
+  <ellipse cx="1136" cy="574" rx="10" ry="5" fill="#b8d4a8"/>
+  <ellipse cx="1150" cy="554" rx="5" ry="16" transform="rotate(-20,1150,554)" fill="#5c7a4a"/>
+  <ellipse cx="1090" cy="548" rx="5" ry="14" transform="rotate(30,1090,548)" fill="#7c9a6e"/>
+
+  <!-- Scattered dot flowers in grass -->
+  <circle cx="172" cy="554" r="4" fill="#e8c4a8"/>
+  <circle cx="172" cy="554" r="2" fill="#d4956a"/>
+  <circle cx="234" cy="576" r="4" fill="#b8d4a8"/>
+  <circle cx="234" cy="576" r="2" fill="#7c9a6e"/>
+  <circle cx="312" cy="563" r="3" fill="#e8c4a8"/>
+  <circle cx="312" cy="563" r="1.5" fill="#d4956a"/>
+  <circle cx="444" cy="578" r="4" fill="#d4956a"/>
+  <circle cx="444" cy="578" r="2" fill="#8b5e3c"/>
+  <circle cx="762" cy="570" r="4" fill="#e8c4a8"/>
+  <circle cx="762" cy="570" r="2" fill="#d4956a"/>
+  <circle cx="842" cy="558" r="3" fill="#b8d4a8"/>
+  <circle cx="842" cy="558" r="1.5" fill="#7c9a6e"/>
+  <circle cx="924" cy="573" r="4" fill="#d4956a"/>
+  <circle cx="924" cy="573" r="2" fill="#8b5e3c"/>
+  <circle cx="1004" cy="560" r="4" fill="#e8c4a8"/>
+  <circle cx="1004" cy="560" r="2" fill="#d4956a"/>
+  <!-- Tiny grass blades -->
+  <line x1="200" y1="540" x2="196" y2="524" stroke="#5c7a4a" stroke-width="2"/>
+  <line x1="210" y1="540" x2="215" y2="522" stroke="#7c9a6e" stroke-width="2"/>
+  <line x1="382" y1="534" x2="378" y2="518" stroke="#5c7a4a" stroke-width="2"/>
+  <line x1="392" y1="534" x2="397" y2="516" stroke="#7c9a6e" stroke-width="2"/>
+  <line x1="822" y1="534" x2="818" y2="518" stroke="#5c7a4a" stroke-width="2"/>
+  <line x1="832" y1="534" x2="837" y2="517" stroke="#7c9a6e" stroke-width="2"/>
+
+  <!-- Butterfly (left of cottage) -->
+  <g transform="translate(422,357) rotate(-10)" opacity="0.85">
+    <ellipse cx="-10" cy="-4" rx="14" ry="9" fill="#e8c4a8" opacity="0.8"/>
+    <ellipse cx="10" cy="-4" rx="14" ry="9" fill="#e8c4a8" opacity="0.8"/>
+    <ellipse cx="-8" cy="6" rx="8" ry="5" fill="#d4956a" opacity="0.7"/>
+    <ellipse cx="8" cy="6" rx="8" ry="5" fill="#d4956a" opacity="0.7"/>
+    <rect x="-1.5" y="-10" width="3" height="20" rx="2" fill="#8b5e3c"/>
+    <ellipse cx="-4" cy="-12" rx="1.5" ry="5" transform="rotate(-20,-4,-12)" fill="#8b5e3c"/>
+    <ellipse cx="4" cy="-12" rx="1.5" ry="5" transform="rotate(20,4,-12)" fill="#8b5e3c"/>
+  </g>
+
+  <!-- Butterfly (right of cottage) -->
+  <g transform="translate(800,312) rotate(8)" opacity="0.8">
+    <ellipse cx="-10" cy="-4" rx="13" ry="8" fill="#b8d4a8" opacity="0.8"/>
+    <ellipse cx="10" cy="-4" rx="13" ry="8" fill="#b8d4a8" opacity="0.8"/>
+    <ellipse cx="-8" cy="5" rx="7" ry="4" fill="#7c9a6e" opacity="0.7"/>
+    <ellipse cx="8" cy="5" rx="7" ry="4" fill="#7c9a6e" opacity="0.7"/>
+    <rect x="-1.5" y="-9" width="3" height="18" rx="2" fill="#5c7a4a"/>
+    <ellipse cx="-3" cy="-10" rx="1.5" ry="4" transform="rotate(-20,-3,-10)" fill="#5c7a4a"/>
+    <ellipse cx="3" cy="-10" rx="1.5" ry="4" transform="rotate(20,3,-10)" fill="#5c7a4a"/>
+  </g>
+
+  <!-- Bee (upper area) -->
+  <g transform="translate(892,92)" opacity="0.85">
+    <ellipse cx="0" cy="0" rx="10" ry="7" fill="#f0c040"/>
+    <rect x="-10" y="-3" width="6" height="6" rx="1" fill="#3a3020" opacity="0.7"/>
+    <rect x="-4" y="-4" width="4" height="8" fill="#3a3020" opacity="0.35"/>
+    <rect x="2" y="-4" width="4" height="8" fill="#3a3020" opacity="0.35"/>
+    <ellipse cx="-3" cy="-9" rx="7" ry="4" fill="#e8f4f8" opacity="0.7" transform="rotate(-20,-3,-9)"/>
+    <ellipse cx="7" cy="-9" rx="7" ry="4" fill="#e8f4f8" opacity="0.7" transform="rotate(20,7,-9)"/>
+  </g>
+
+  <!-- Central parchment title card -->
+  <rect x="280" y="112" width="640" height="178" rx="8" fill="#f5e6d3" opacity="0.93"/>
+  <rect x="280" y="112" width="640" height="178" rx="8" fill="none" stroke="#d4956a" stroke-width="2" opacity="0.5"/>
+  <!-- Corner florals on card -->
+  <circle cx="302" cy="134" r="6" fill="#d4956a" opacity="0.6"/>
+  <ellipse cx="302" cy="122" rx="3" ry="6" fill="#e8c4a8" opacity="0.7"/>
+  <ellipse cx="314" cy="134" rx="6" ry="3" fill="#e8c4a8" opacity="0.7"/>
+  <circle cx="898" cy="134" r="6" fill="#7c9a6e" opacity="0.6"/>
+  <ellipse cx="898" cy="122" rx="3" ry="6" fill="#b8d4a8" opacity="0.7"/>
+  <ellipse cx="886" cy="134" rx="6" ry="3" fill="#b8d4a8" opacity="0.7"/>
+  <circle cx="302" cy="268" r="6" fill="#7c9a6e" opacity="0.6"/>
+  <ellipse cx="302" cy="280" rx="3" ry="6" fill="#b8d4a8" opacity="0.7"/>
+  <ellipse cx="314" cy="268" rx="6" ry="3" fill="#b8d4a8" opacity="0.7"/>
+  <circle cx="898" cy="268" r="6" fill="#d4956a" opacity="0.6"/>
+  <ellipse cx="898" cy="280" rx="3" ry="6" fill="#e8c4a8" opacity="0.7"/>
+  <ellipse cx="886" cy="268" rx="6" ry="3" fill="#e8c4a8" opacity="0.7"/>
+
+  <!-- Title -->
+  <text x="600" y="207" font-family="Georgia, serif" font-size="68" font-style="italic" font-weight="normal"
+        fill="#5c7a4a" text-anchor="middle" letter-spacing="2">Cottagecore</text>
+  <!-- Subtitle -->
+  <text x="600" y="256" font-family="Georgia, serif" font-size="20" font-style="italic"
+        fill="#8b5e3c" text-anchor="middle" opacity="0.8" letter-spacing="4">soft botanical  ·  pastoral warmth</text>
+
+  <!-- Floral icons flanking title -->
+  <!-- Left sprig -->
+  <g transform="translate(318,192)">
+    <circle cx="0" cy="0" r="6" fill="#d4956a"/>
+    <ellipse cx="0" cy="-13" rx="3" ry="7" fill="#e8c4a8"/>
+    <ellipse cx="0" cy="13" rx="3" ry="7" fill="#e8c4a8"/>
+    <ellipse cx="-13" cy="0" rx="7" ry="3" fill="#e8c4a8"/>
+    <ellipse cx="13" cy="0" rx="7" ry="3" fill="#e8c4a8"/>
+    <ellipse cx="25" cy="-12" rx="3" ry="8" transform="rotate(-40,25,-12)" fill="#7c9a6e"/>
+    <ellipse cx="25" cy="12" rx="3" ry="8" transform="rotate(40,25,12)" fill="#b8d4a8"/>
+  </g>
+  <!-- Right sprig -->
+  <g transform="translate(882,192)">
+    <circle cx="0" cy="0" r="6" fill="#7c9a6e"/>
+    <ellipse cx="0" cy="-13" rx="3" ry="7" fill="#b8d4a8"/>
+    <ellipse cx="0" cy="13" rx="3" ry="7" fill="#b8d4a8"/>
+    <ellipse cx="-13" cy="0" rx="7" ry="3" fill="#b8d4a8"/>
+    <ellipse cx="13" cy="0" rx="7" ry="3" fill="#b8d4a8"/>
+    <ellipse cx="-25" cy="-12" rx="3" ry="8" transform="rotate(40,-25,-12)" fill="#5c7a4a"/>
+    <ellipse cx="-25" cy="12" rx="3" ry="8" transform="rotate(-40,-25,12)" fill="#7c9a6e"/>
+  </g>
+</svg>

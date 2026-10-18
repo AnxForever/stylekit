@@ -1,0 +1,112 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
+
+  <!-- Background: pure white -->
+  <rect width="1200" height="630" fill="#ffffff"/>
+
+  <!-- Dominant red left strip — full height, ~43% of canvas -->
+  <rect x="0" y="0" width="520" height="630" fill="#ff0000"/>
+
+  <!-- Subtle grid lines (underlying structure) -->
+  <line x1="520" y1="0" x2="520" y2="630" stroke="#00000012" stroke-width="1"/>
+  <line x1="0"   y1="210" x2="1200" y2="210" stroke="#00000012" stroke-width="1"/>
+  <line x1="0"   y1="420" x2="1200" y2="420" stroke="#00000012" stroke-width="1"/>
+  <line x1="860" y1="0"   x2="860"  y2="630" stroke="#00000012" stroke-width="1"/>
+
+  <!-- Primary typography: "SWISS" — white on red, flush left inside the strip -->
+  <text
+    x="48" y="248"
+    font-family="'Helvetica Neue', Helvetica, Arial, sans-serif"
+    font-size="172"
+    font-weight="900"
+    letter-spacing="-6"
+    fill="#ffffff">SWISS</text>
+
+  <!-- "POSTER" — black on white, right half, anchored to grid -->
+  <text
+    x="556" y="248"
+    font-family="'Helvetica Neue', Helvetica, Arial, sans-serif"
+    font-size="172"
+    font-weight="900"
+    letter-spacing="-6"
+    fill="#000000">POST</text>
+
+  <!-- Second line: "ER" continues below, white on red strip left, black on white right -->
+  <text
+    x="48" y="430"
+    font-family="'Helvetica Neue', Helvetica, Arial, sans-serif"
+    font-size="172"
+    font-weight="900"
+    letter-spacing="-6"
+    fill="#ffffff">DE</text>
+
+  <text
+    x="372" y="430"
+    font-family="'Helvetica Neue', Helvetica, Arial, sans-serif"
+    font-size="172"
+    font-weight="900"
+    letter-spacing="-6"
+    fill="#000000">SIGN</text>
+
+  <!-- Full-width horizontal rule — bold red accent line -->
+  <line x1="0" y1="456" x2="1200" y2="456" stroke="#ff0000" stroke-width="8"/>
+
+  <!-- Secondary horizontal rule — thin black -->
+  <line x1="520" y1="260" x2="1200" y2="260" stroke="#000000" stroke-width="4"/>
+
+  <!-- Vertical accent: thin black rule inside white area -->
+  <line x1="860" y1="260" x2="860" y2="456" stroke="#000000" stroke-width="4"/>
+
+  <!-- Small black circle accent (grid bullet) -->
+  <circle cx="556" cy="260" r="20" fill="#000000"/>
+
+  <!-- Small red circle accent (counter-point) -->
+  <circle cx="860" cy="456" r="12" fill="#ff0000"/>
+
+  <!-- Supporting text block — bottom grid row, white area -->
+  <text
+    x="556" y="510"
+    font-family="'Helvetica Neue', Helvetica, Arial, sans-serif"
+    font-size="18"
+    font-weight="400"
+    letter-spacing="4"
+    fill="#000000">INTERNATIONAL TYPOGRAPHIC STYLE</text>
+
+  <!-- Sub-label: year / origin marker -->
+  <text
+    x="556" y="540"
+    font-family="'Helvetica Neue', Helvetica, Arial, sans-serif"
+    font-size="12"
+    font-weight="400"
+    letter-spacing="3"
+    fill="#ff0000">ZURICH — BASEL — 1950</text>
+
+  <!-- Bottom-right: small grid-aligned descriptor block -->
+  <text
+    x="870" y="510"
+    font-family="'Helvetica Neue', Helvetica, Arial, sans-serif"
+    font-size="12"
+    font-weight="700"
+    letter-spacing="2"
+    fill="#000000">FORM FOLLOWS</text>
+
+  <text
+    x="870" y="530"
+    font-family="'Helvetica Neue', Helvetica, Arial, sans-serif"
+    font-size="12"
+    font-weight="700"
+    letter-spacing="2"
+    fill="#000000">FUNCTION</text>
+
+  <!-- Bottom-left strip: small white label on red -->
+  <text
+    x="48" y="510"
+    font-family="'Helvetica Neue', Helvetica, Arial, sans-serif"
+    font-size="13"
+    font-weight="400"
+    letter-spacing="3"
+    fill="#ffffff">GRID  /  TYPE  /  FUNCTION</text>
+
+  <!-- Thin bottom border line — full width, black -->
+  <line x1="0" y1="620" x2="1200" y2="620" stroke="#000000" stroke-width="4"/>
+
+</svg>

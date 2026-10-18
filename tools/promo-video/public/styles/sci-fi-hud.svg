@@ -1,0 +1,109 @@
+<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 1200 630">
+  <defs>
+    <filter id="glow"><feGaussianBlur stdDeviation="3" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    <filter id="glow2"><feGaussianBlur stdDeviation="6" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  </defs>
+  <!-- Background -->
+  <rect width="1200" height="630" fill="#020617"/>
+  <!-- Scanlines -->
+  <defs><pattern id="scan" width="1" height="4" patternUnits="userSpaceOnUse"><rect width="1" height="2" fill="rgba(148,163,184,0.02)"/></pattern></defs>
+  <rect width="1200" height="630" fill="url(#scan)"/>
+  <!-- Grid -->
+  <g stroke="#06B6D4" stroke-width=".3" opacity=".06">
+    <line x1="0" y1="0" x2="0" y2="630"/><line x1="60" y1="0" x2="60" y2="630"/><line x1="120" y1="0" x2="120" y2="630"/>
+    <line x1="180" y1="0" x2="180" y2="630"/><line x1="240" y1="0" x2="240" y2="630"/>
+    <line x1="0" y1="60" x2="1200" y2="60"/><line x1="0" y1="120" x2="1200" y2="120"/>
+    <line x1="0" y1="180" x2="1200" y2="180"/><line x1="0" y1="240" x2="1200" y2="240"/>
+  </g>
+  <!-- Nav bar -->
+  <rect x="0" y="0" width="1200" height="50" fill="#020617" opacity=".95"/>
+  <line x1="0" y1="50" x2="1200" y2="50" stroke="#06B6D4" stroke-width=".5" opacity=".3"/>
+  <rect x="40" y="12" width="40" height="26" rx="3" fill="rgba(6,182,212,0.1)" stroke="#06B6D4" stroke-width="1"/>
+  <text x="47" y="30" fill="#22D3EE" font-family="monospace" font-size="10" font-weight="700">HUD</text>
+  <text x="95" y="32" fill="#E5F2FF" font-family="monospace" font-size="12" letter-spacing="2">STYLEKIT COMMAND</text>
+  <circle cx="1050" cy="25" r="4" fill="#22C55E" filter="url(#glow)"/>
+  <text x="1060" y="29" fill="#94A3B8" font-family="monospace" font-size="9" letter-spacing="1.5">ONLINE</text>
+  <rect x="920" y="14" width="100" height="22" rx="3" fill="rgba(6,182,212,0.1)" stroke="rgba(6,182,212,0.3)"/>
+  <text x="940" y="29" fill="#22D3EE" font-family="monospace" font-size="10">14:32:07 UTC</text>
+  <!-- Hero -->
+  <text x="80" y="100" fill="#22D3EE" font-family="monospace" font-size="10" letter-spacing="4" opacity=".7">// DESIGN SYSTEM INTERFACE</text>
+  <text x="80" y="170" fill="#E5F2FF" font-family="monospace" font-size="64" font-weight="700" filter="url(#glow2)">SCI-FI HUD</text>
+  <text x="80" y="210" fill="#94A3B8" font-family="monospace" font-size="13">Command center interface. Semi-transparent glass panels, glowing accents.</text>
+  <!-- Main HUD Panel -->
+  <rect x="80" y="250" width="500" height="280" rx="6" fill="rgba(15,23,42,0.85)" stroke="rgba(6,182,212,0.3)"/>
+  <!-- Corner decorations -->
+  <path d="M80 258v-8h8" stroke="#22D3EE" stroke-width="2" fill="none"/>
+  <path d="M572 258v-8h-8" stroke="#22D3EE" stroke-width="2" fill="none"/>
+  <path d="M80 522v8h8" stroke="#22D3EE" stroke-width="2" fill="none"/>
+  <path d="M572 522v8h-8" stroke="#22D3EE" stroke-width="2" fill="none"/>
+  <!-- Panel label -->
+  <rect x="110" y="244" width="110" height="16" rx="3" fill="#020617" stroke="rgba(6,182,212,0.3)"/>
+  <text x="125" y="255" fill="#22D3EE" font-family="monospace" font-size="8" letter-spacing="2">SYSTEM STATUS</text>
+  <!-- Progress bars -->
+  <text x="105" y="290" fill="#94A3B8" font-family="monospace" font-size="9" letter-spacing="1.5">POWER CORE</text>
+  <text x="510" y="290" fill="#22D3EE" font-family="monospace" font-size="11" font-weight="700" text-anchor="end">92%</text>
+  <rect x="105" y="298" width="450" height="8" rx="1" fill="#1e293b" stroke="rgba(51,65,85,0.5)"/>
+  <rect x="105" y="298" width="414" height="8" rx="1" fill="url(#cyanGrad)"/>
+  <text x="105" y="335" fill="#94A3B8" font-family="monospace" font-size="9" letter-spacing="1.5">SHIELD ARRAY</text>
+  <text x="510" y="335" fill="#22D3EE" font-family="monospace" font-size="11" font-weight="700" text-anchor="end">78%</text>
+  <rect x="105" y="343" width="450" height="8" rx="1" fill="#1e293b" stroke="rgba(51,65,85,0.5)"/>
+  <rect x="105" y="343" width="351" height="8" rx="1" fill="url(#greenGrad)"/>
+  <text x="105" y="380" fill="#94A3B8" font-family="monospace" font-size="9" letter-spacing="1.5">COMM BANDWIDTH</text>
+  <text x="510" y="380" fill="#22D3EE" font-family="monospace" font-size="11" font-weight="700" text-anchor="end">64%</text>
+  <rect x="105" y="388" width="450" height="8" rx="1" fill="#1e293b" stroke="rgba(51,65,85,0.5)"/>
+  <rect x="105" y="388" width="288" height="8" rx="1" fill="url(#yellowGrad)"/>
+  <text x="105" y="425" fill="#94A3B8" font-family="monospace" font-size="9" letter-spacing="1.5">HULL INTEGRITY</text>
+  <text x="510" y="425" fill="#22D3EE" font-family="monospace" font-size="11" font-weight="700" text-anchor="end">45%</text>
+  <rect x="105" y="433" width="450" height="8" rx="1" fill="#1e293b" stroke="rgba(51,65,85,0.5)"/>
+  <rect x="105" y="433" width="202" height="8" rx="1" fill="url(#redGrad)"/>
+  <!-- Gradients -->
+  <defs>
+    <linearGradient id="cyanGrad"><stop offset="0%" stop-color="#06B6D4"/><stop offset="100%" stop-color="#38BDF8"/></linearGradient>
+    <linearGradient id="greenGrad"><stop offset="0%" stop-color="#10B981"/><stop offset="100%" stop-color="#34D399"/></linearGradient>
+    <linearGradient id="yellowGrad"><stop offset="0%" stop-color="#F59E0B"/><stop offset="100%" stop-color="#FBBF24"/></linearGradient>
+    <linearGradient id="redGrad"><stop offset="0%" stop-color="#DC2626"/><stop offset="100%" stop-color="#F87171"/></linearGradient>
+  </defs>
+  <!-- Buttons -->
+  <rect x="105" y="470" width="110" height="34" rx="4" fill="rgba(15,23,42,0.8)" stroke="rgba(6,182,212,0.4)" filter="url(#glow)"/>
+  <text x="130" y="491" fill="#22D3EE" font-family="monospace" font-size="9" letter-spacing="2">INITIALIZE</text>
+  <rect x="230" y="470" width="100" height="34" rx="4" fill="rgba(6,182,212,0.2)" stroke="#67E8F9"/>
+  <text x="258" y="491" fill="#67E8F9" font-family="monospace" font-size="9" letter-spacing="2">ACTIVE</text>
+  <rect x="345" y="470" width="100" height="34" rx="4" fill="rgba(15,23,42,0.8)" stroke="rgba(239,68,68,0.4)"/>
+  <text x="365" y="491" fill="#F87171" font-family="monospace" font-size="9" letter-spacing="2">OVERRIDE</text>
+  <!-- Radar Panel -->
+  <rect x="620" y="250" width="280" height="280" rx="6" fill="rgba(15,23,42,0.85)" stroke="rgba(6,182,212,0.3)"/>
+  <path d="M620 258v-8h8" stroke="#22D3EE" stroke-width="2" fill="none"/>
+  <path d="M892 258v-8h-8" stroke="#22D3EE" stroke-width="2" fill="none"/>
+  <path d="M620 522v8h8" stroke="#22D3EE" stroke-width="2" fill="none"/>
+  <path d="M892 522v8h-8" stroke="#22D3EE" stroke-width="2" fill="none"/>
+  <rect x="650" y="244" width="120" height="16" rx="3" fill="#020617" stroke="rgba(6,182,212,0.3)"/>
+  <text x="665" y="255" fill="#22D3EE" font-family="monospace" font-size="8" letter-spacing="2">TACTICAL RADAR</text>
+  <!-- Radar circles -->
+  <circle cx="760" cy="400" r="80" fill="none" stroke="rgba(14,165,233,0.15)"/>
+  <circle cx="760" cy="400" r="55" fill="none" stroke="rgba(14,165,233,0.12)"/>
+  <circle cx="760" cy="400" r="30" fill="none" stroke="rgba(14,165,233,0.1)"/>
+  <line x1="760" y1="310" x2="760" y2="490" stroke="rgba(14,165,233,0.08)"/>
+  <line x1="670" y1="400" x2="850" y2="400" stroke="rgba(14,165,233,0.08)"/>
+  <!-- Radar blips -->
+  <circle cx="790" cy="360" r="3" fill="#22D3EE" opacity=".8"/>
+  <circle cx="730" cy="430" r="3" fill="#22D3EE" opacity=".6"/>
+  <circle cx="800" cy="420" r="3" fill="#22C55E" opacity=".7"/>
+  <circle cx="760" cy="400" r="4" fill="#22D3EE"/>
+  <!-- Metric cards -->
+  <rect x="940" y="250" width="220" height="60" rx="4" fill="rgba(30,41,59,0.3)" stroke="rgba(51,65,85,0.5)"/>
+  <text x="960" y="272" fill="#94A3B8" font-family="monospace" font-size="8" letter-spacing="2">CREW</text>
+  <text x="960" y="298" fill="#22D3EE" font-family="monospace" font-size="22" font-weight="700">847</text>
+  <rect x="940" y="320" width="220" height="60" rx="4" fill="rgba(30,41,59,0.3)" stroke="rgba(51,65,85,0.5)"/>
+  <text x="960" y="342" fill="#94A3B8" font-family="monospace" font-size="8" letter-spacing="2">CARGO</text>
+  <text x="960" y="368" fill="#22D3EE" font-family="monospace" font-size="22" font-weight="700">72.4T</text>
+  <rect x="940" y="390" width="220" height="60" rx="4" fill="rgba(30,41,59,0.3)" stroke="rgba(51,65,85,0.5)"/>
+  <text x="960" y="412" fill="#94A3B8" font-family="monospace" font-size="8" letter-spacing="2">RANGE</text>
+  <text x="960" y="438" fill="#22D3EE" font-family="monospace" font-size="22" font-weight="700">4.2 LY</text>
+  <rect x="940" y="460" width="220" height="60" rx="4" fill="rgba(30,41,59,0.3)" stroke="rgba(51,65,85,0.5)"/>
+  <text x="960" y="482" fill="#94A3B8" font-family="monospace" font-size="8" letter-spacing="2">UPTIME</text>
+  <text x="960" y="508" fill="#22D3EE" font-family="monospace" font-size="22" font-weight="700">99.97%</text>
+  <!-- Footer -->
+  <line x1="0" y1="580" x2="1200" y2="580" stroke="rgba(6,182,212,0.2)"/>
+  <text x="80" y="605" fill="#64748B" font-family="monospace" font-size="10">Sci-Fi HUD Design System // StyleKit</text>
+  <text x="1000" y="605" fill="#22D3EE" font-family="monospace" font-size="10" letter-spacing="1">DOCUMENTATION</text>
+</svg>

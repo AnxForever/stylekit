@@ -1,0 +1,28 @@
+{
+  "name": "stylekit-promo-video",
+  "private": true,
+  "description": "StyleKit promo film. Remotion composition + synthesised score. Standalone: not part of the Next.js app build.",
+  "type": "module",
+  "scripts": {
+    "studio": "remotion studio src/index.tsx",
+    "audio": "node audio/build.mjs",
+    "stills": "node scripts/qa-stills.mjs",
+    "render": "node scripts/render.mjs",
+    "catalog": "cd ../.. && npx --no-install tsx tools/promo-video/scripts/gen-catalog.ts"
+  },
+  "dependencies": {
+    "@remotion/bundler": "4.0.536",
+    "@remotion/cli": "4.0.536",
+    "@remotion/google-fonts": "^4.0.536",
+    "@remotion/renderer": "4.0.536",
+    "@rspack/binding-win32-x64-msvc": "^1.6.8",
+    "esbuild-loader": "^4.5.0",
+    "react": "19.2.3",
+    "react-dom": "19.2.3",
+    "remotion": "4.0.536"
+  },
+  "devDependencies": {
+    "playwright-core": "^1.58.2",
+    "postcss": "^8.5.30"
+  }
+}

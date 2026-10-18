@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <!-- Background sky layer (Layer 1 - farthest) -->
+  <rect width="1200" height="630" fill="#1e3a5f"/>
+
+  <!-- Stars scattered in sky -->
+  <circle cx="120" cy="40" r="1.5" fill="#e2e8f0" opacity="0.9"/>
+  <circle cx="240" cy="75" r="1.5" fill="#e2e8f0" opacity="0.7"/>
+  <circle cx="370" cy="28" r="1.5" fill="#e2e8f0" opacity="0.8"/>
+  <circle cx="510" cy="55" r="1.5" fill="#e2e8f0" opacity="0.9"/>
+  <circle cx="650" cy="35" r="1.5" fill="#e2e8f0" opacity="0.6"/>
+  <circle cx="780" cy="62" r="1.5" fill="#e2e8f0" opacity="0.8"/>
+  <circle cx="890" cy="22" r="1.5" fill="#e2e8f0" opacity="0.9"/>
+  <circle cx="1020" cy="48" r="1.5" fill="#e2e8f0" opacity="0.7"/>
+  <circle cx="1130" cy="68" r="1.5" fill="#e2e8f0" opacity="0.8"/>
+  <circle cx="185" cy="112" r="1.5" fill="#e2e8f0" opacity="0.5"/>
+  <circle cx="460" cy="90" r="1.5" fill="#e2e8f0" opacity="0.7"/>
+  <circle cx="720" cy="105" r="1.5" fill="#e2e8f0" opacity="0.6"/>
+  <circle cx="960" cy="88" r="1.5" fill="#e2e8f0" opacity="0.8"/>
+  <circle cx="55" cy="82" r="1.5" fill="#e2e8f0" opacity="0.6"/>
+  <circle cx="1080" cy="118" r="1.5" fill="#e2e8f0" opacity="0.5"/>
+
+  <!-- Layer 2: Far hills -->
+  <path d="M0,310 Q80,200 200,240 Q320,180 420,250 Q520,190 620,235 Q720,175 840,230 Q940,185 1050,220 Q1130,190 1200,215 L1200,630 L0,630 Z" fill="#2d4f73"/>
+
+  <!-- Layer 3: Mid hills -->
+  <path d="M0,370 Q100,280 220,320 Q340,265 460,310 Q580,260 680,305 Q800,255 920,295 Q1020,265 1100,288 Q1160,270 1200,278 L1200,630 L0,630 Z" fill="#1e6091"/>
+
+  <!-- Layer 4: Near hills -->
+  <path d="M0,430 Q120,360 260,395 Q380,345 500,385 Q620,350 740,380 Q860,345 980,375 Q1080,355 1200,365 L1200,630 L0,630 Z" fill="#1e3a5f" opacity="0.9"/>
+
+  <!-- Foreground strip (closest layer) -->
+  <path d="M0,510 Q150,480 300,495 Q450,470 600,488 Q750,465 900,482 Q1050,460 1200,475 L1200,630 L0,630 Z" fill="#0f2744"/>
+
+  <!-- Parallax layer labels on the left -->
+  <!-- Layer 1 label -->
+  <line x1="72" y1="80" x2="108" y2="80" stroke="#93c5fd" stroke-width="1" opacity="0.6"/>
+  <rect x="4" y="70" width="66" height="20" rx="10" fill="#1e3a5f" stroke="#93c5fd" stroke-width="1" opacity="0.8"/>
+  <text x="37" y="84" font-family="'Courier New', monospace" font-size="12" fill="#93c5fd" text-anchor="middle">Layer 1</text>
+
+  <!-- Layer 2 label -->
+  <line x1="72" y1="250" x2="108" y2="250" stroke="#93c5fd" stroke-width="1" opacity="0.6"/>
+  <rect x="4" y="240" width="66" height="20" rx="10" fill="#1e3a5f" stroke="#93c5fd" stroke-width="1" opacity="0.8"/>
+  <text x="37" y="254" font-family="'Courier New', monospace" font-size="12" fill="#93c5fd" text-anchor="middle">Layer 2</text>
+
+  <!-- Layer 3 label -->
+  <line x1="72" y1="335" x2="108" y2="335" stroke="#93c5fd" stroke-width="1" opacity="0.6"/>
+  <rect x="4" y="325" width="66" height="20" rx="10" fill="#1e3a5f" stroke="#93c5fd" stroke-width="1" opacity="0.8"/>
+  <text x="37" y="339" font-family="'Courier New', monospace" font-size="12" fill="#93c5fd" text-anchor="middle">Layer 3</text>
+
+  <!-- Layer 4 label -->
+  <line x1="72" y1="415" x2="108" y2="415" stroke="#93c5fd" stroke-width="1" opacity="0.6"/>
+  <rect x="4" y="405" width="66" height="20" rx="10" fill="#1e3a5f" stroke="#93c5fd" stroke-width="1" opacity="0.8"/>
+  <text x="37" y="419" font-family="'Courier New', monospace" font-size="12" fill="#93c5fd" text-anchor="middle">Layer 4</text>
+
+  <!-- Title: PARALLAX -->
+  <text x="600" y="175" font-family="'Arial Black', Arial, sans-serif" font-size="80" font-weight="900" fill="#f8fafc" text-anchor="middle" letter-spacing="6">PARALLAX</text>
+
+  <!-- Subtitle: SECTIONS -->
+  <text x="600" y="228" font-family="'Arial Black', Arial, sans-serif" font-size="40" font-weight="700" fill="#93c5fd" text-anchor="middle" letter-spacing="10">SECTIONS</text>
+
+  <!-- Scroll indicator at bottom center -->
+  <text x="600" y="598" font-family="'Arial', sans-serif" font-size="22" fill="#93c5fd" text-anchor="middle" opacity="0.8">&#x2193;</text>
+  <text x="600" y="618" font-family="'Courier New', monospace" font-size="11" fill="#93c5fd" text-anchor="middle" opacity="0.6" letter-spacing="2">scroll</text>
+</svg>

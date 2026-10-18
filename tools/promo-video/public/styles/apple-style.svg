@@ -1,0 +1,109 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <filter id="device-shadow" x="-20%" y="-10%" width="140%" height="130%">
+      <feDropShadow dx="0" dy="12" stdDeviation="28" flood-color="rgba(0,0,0,0.22)"/>
+    </filter>
+    <linearGradient id="body-grad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#2c2c2e"/>
+      <stop offset="55%" stop-color="#1d1d1f"/>
+      <stop offset="100%" stop-color="#0d0d0f"/>
+    </linearGradient>
+    <linearGradient id="screen-grad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1a1a1a"/>
+      <stop offset="100%" stop-color="#000000"/>
+    </linearGradient>
+    <clipPath id="screen-clip">
+      <rect x="275" y="148" width="250" height="358" rx="36"/>
+    </clipPath>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="630" fill="#f5f5f7"/>
+
+  <!-- Apple logo: top center -->
+  <g transform="translate(574, 30)" fill="#1d1d1f" opacity="0.7">
+    <path d="M26 4 C26 4 30 0 36 3 C36 3 32 6 32 10 C32 10 28 10 26 4Z"/>
+    <path d="M14 10 C14 10 18 6 24 6 C24 6 30 6 34 10 C38 14 38 26 34 32 C32 36 30 38 26 38 C22 38 20 36 18 36 C16 36 14 38 10 38 C6 38 4 36 2 32 C-2 26 -2 14 2 10 C6 6 10 10 14 10Z"/>
+    <ellipse cx="32" cy="7" rx="5.5" ry="5.5" fill="#f5f5f7"/>
+  </g>
+
+  <!-- iPhone body -->
+  <rect x="255" y="105" width="290" height="422" rx="50" fill="url(#body-grad)" filter="url(#device-shadow)"/>
+  <rect x="255" y="105" width="290" height="422" rx="50" fill="none" stroke="#38383a" stroke-width="1.5"/>
+
+  <!-- Screen bezel -->
+  <rect x="267" y="140" width="266" height="374" rx="40" fill="#000"/>
+
+  <!-- Screen content -->
+  <rect x="275" y="148" width="250" height="358" rx="36" fill="url(#screen-grad)"/>
+
+  <!-- Dynamic Island -->
+  <rect x="338" y="162" width="124" height="30" rx="15" fill="#000000" opacity="0.95"/>
+
+  <!-- Screen UI elements inside clip -->
+  <g clip-path="url(#screen-clip)">
+    <!-- App icon row -->
+    <rect x="292" y="212" width="52" height="52" rx="13" fill="#1c4ed8" opacity="0.92"/>
+    <rect x="356" y="212" width="52" height="52" rx="13" fill="#047857" opacity="0.92"/>
+    <rect x="420" y="212" width="52" height="52" rx="13" fill="#7c3aed" opacity="0.92"/>
+    <!-- Content lines -->
+    <rect x="292" y="282" width="228" height="9" rx="4.5" fill="#ffffff" opacity="0.14"/>
+    <rect x="292" y="301" width="178" height="7" rx="3.5" fill="#ffffff" opacity="0.09"/>
+    <rect x="292" y="322" width="228" height="9" rx="4.5" fill="#ffffff" opacity="0.14"/>
+    <rect x="292" y="341" width="148" height="7" rx="3.5" fill="#ffffff" opacity="0.09"/>
+    <rect x="292" y="362" width="228" height="9" rx="4.5" fill="#ffffff" opacity="0.14"/>
+    <rect x="292" y="381" width="198" height="7" rx="3.5" fill="#ffffff" opacity="0.09"/>
+    <rect x="292" y="402" width="228" height="9" rx="4.5" fill="#ffffff" opacity="0.14"/>
+    <!-- Home indicator -->
+    <rect x="350" y="472" width="100" height="5" rx="2.5" fill="#ffffff" opacity="0.3"/>
+  </g>
+
+  <!-- Side buttons -->
+  <rect x="545" y="228" width="6" height="60" rx="3" fill="#38383a"/>
+  <rect x="249" y="218" width="6" height="42" rx="3" fill="#38383a"/>
+  <rect x="249" y="272" width="6" height="42" rx="3" fill="#38383a"/>
+
+  <!-- Vertical divider -->
+  <line x1="636" y1="150" x2="636" y2="478" stroke="#d2d2d7" stroke-width="1"/>
+
+  <!-- Eyebrow label -->
+  <text x="690" y="222"
+    font-family="-apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', sans-serif"
+    font-size="13" font-weight="500" letter-spacing="4.5" fill="#86868b" text-anchor="start">
+    STYLEKIT
+  </text>
+
+  <!-- Main heading -->
+  <text x="686" y="318"
+    font-family="-apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', sans-serif"
+    font-size="72" font-weight="600" letter-spacing="-2.5" fill="#1d1d1f" text-anchor="start">
+    Apple Style.
+  </text>
+
+  <!-- Tagline -->
+  <text x="690" y="368"
+    font-family="-apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', sans-serif"
+    font-size="24" font-weight="400" letter-spacing="-0.4" fill="#86868b" text-anchor="start">
+    Designed with precision.
+  </text>
+
+  <!-- Horizontal rule -->
+  <line x1="690" y1="396" x2="1110" y2="396" stroke="#d2d2d7" stroke-width="1"/>
+
+  <!-- CTA text -->
+  <text x="690" y="432"
+    font-family="-apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', sans-serif"
+    font-size="20" font-weight="400" letter-spacing="-0.2" fill="#0071e3" text-anchor="start">
+    Learn more &#x203A;
+  </text>
+
+  <!-- Bottom rule -->
+  <line x1="60" y1="592" x2="1140" y2="592" stroke="#d2d2d7" stroke-width="1"/>
+
+  <!-- Footer -->
+  <text x="600" y="614"
+    font-family="-apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', sans-serif"
+    font-size="12" font-weight="400" letter-spacing="0.3" fill="#86868b" text-anchor="middle">
+    Minimal. Intentional. Refined.
+  </text>
+</svg>

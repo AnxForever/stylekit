@@ -1,0 +1,131 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="skyGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#2a4a7a"/>
+      <stop offset="30%" style="stop-color:#4a6fa5"/>
+      <stop offset="60%" style="stop-color:#8b6c9a"/>
+      <stop offset="80%" style="stop-color:#c4a882"/>
+      <stop offset="100%" style="stop-color:#e8c19a"/>
+    </linearGradient>
+    <linearGradient id="dialogGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#1a202c; stop-opacity:0.92"/>
+      <stop offset="100%" style="stop-color:#0f1520; stop-opacity:0.96"/>
+    </linearGradient>
+    <linearGradient id="nameplateGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#6366f1"/>
+      <stop offset="100%" style="stop-color:#4f46e5"/>
+    </linearGradient>
+    <linearGradient id="nameplateGrad2" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#ec4899"/>
+      <stop offset="100%" style="stop-color:#db2777"/>
+    </linearGradient>
+    <filter id="bloom" x="-10%" y="-10%" width="120%" height="120%">
+      <feGaussianBlur stdDeviation="14" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#skyGrad)"/>
+
+  <circle cx="900" cy="120" r="80" fill="rgba(255,230,180,0.12)" filter="url(#bloom)"/>
+
+  <circle cx="180" cy="60" r="1.5" fill="white" opacity="0.6"/>
+  <circle cx="340" cy="40" r="1" fill="white" opacity="0.5"/>
+  <circle cx="520" cy="80" r="1.5" fill="white" opacity="0.55"/>
+  <circle cx="720" cy="50" r="1" fill="white" opacity="0.45"/>
+  <circle cx="850" cy="35" r="2" fill="white" opacity="0.5"/>
+  <circle cx="1050" cy="65" r="1.5" fill="white" opacity="0.55"/>
+  <circle cx="1140" cy="40" r="1" fill="white" opacity="0.4"/>
+
+  <g opacity="0.15" fill="#1a2035">
+    <rect x="0" y="320" width="80" height="120"/>
+    <rect x="60" y="340" width="50" height="100"/>
+    <rect x="100" y="300" width="60" height="140"/>
+    <rect x="150" y="330" width="40" height="110"/>
+    <rect x="1050" y="290" width="70" height="150"/>
+    <rect x="1100" y="310" width="50" height="130"/>
+    <rect x="1130" y="280" width="70" height="160"/>
+  </g>
+
+  <rect x="0" y="390" width="1200" height="40" fill="rgba(100,80,60,0.15)"/>
+
+  <!-- Character silhouettes -->
+  <g opacity="0.22" fill="#1a2035">
+    <ellipse cx="280" cy="395" rx="45" ry="125"/>
+    <circle cx="280" cy="260" r="32"/>
+    <path d="M 248 260 Q 240 220 255 200 Q 268 195 280 200 Q 292 195 305 200 Q 320 220 312 260" fill="#1a2035"/>
+    <path d="M 248 260 Q 236 270 234 290" fill="none" stroke="#1a2035" stroke-width="12" stroke-linecap="round"/>
+    <path d="M 235 400 Q 240 450 230 520 L 330 520 Q 320 450 325 400 Z" fill="#1a2035"/>
+    <path d="M 240 320 Q 200 360 190 400" fill="none" stroke="#1a2035" stroke-width="22" stroke-linecap="round"/>
+  </g>
+  <g opacity="0.14" fill="#1a2035">
+    <ellipse cx="920" cy="405" rx="40" ry="110"/>
+    <circle cx="920" cy="280" r="28"/>
+    <path d="M 892 280 Q 885 244 898 226 Q 910 222 920 226 Q 930 222 942 226 Q 955 244 948 280" fill="#1a2035"/>
+    <path d="M 880 400 Q 882 460 872 520 L 968 520 Q 958 460 960 400 Z" fill="#1a2035"/>
+    <path d="M 960 330 Q 990 300 1010 280" fill="none" stroke="#1a2035" stroke-width="18" stroke-linecap="round"/>
+  </g>
+
+  <!-- Cherry petals -->
+  <g opacity="0.5">
+    <ellipse cx="140" cy="180" rx="8" ry="5" fill="#f0c4d4" transform="rotate(-30, 140, 180)"/>
+    <ellipse cx="420" cy="140" rx="7" ry="4" fill="#f0c4d4" transform="rotate(20, 420, 140)"/>
+    <ellipse cx="680" cy="200" rx="9" ry="5" fill="#f0c4d4" transform="rotate(-15, 680, 200)"/>
+    <ellipse cx="960" cy="160" rx="7" ry="4" fill="#f0c4d4" transform="rotate(35, 960, 160)"/>
+    <ellipse cx="1100" cy="210" rx="8" ry="5" fill="#f0c4d4" transform="rotate(-10, 1100, 210)"/>
+    <ellipse cx="300" cy="250" rx="6" ry="4" fill="#f0c4d4" transform="rotate(25, 300, 250)"/>
+    <ellipse cx="760" cy="130" rx="7" ry="4" fill="#f0c4d4" transform="rotate(-40, 760, 130)"/>
+  </g>
+
+  <!-- Floating title -->
+  <g text-anchor="middle" opacity="0.88">
+    <text x="600" y="195" font-family="Georgia, 'Times New Roman', serif" font-size="72" font-weight="700" fill="white" letter-spacing="6">Visual Novel</text>
+    <text x="600" y="235" font-family="Arial, sans-serif" font-size="13" fill="rgba(255,255,255,0.5)" letter-spacing="10">INTERACTIVE  STORYTELLING</text>
+  </g>
+
+  <!-- Corner decorations above dialog -->
+  <path d="M 30 400 L 30 420 L 50 420" fill="none" stroke="rgba(99,102,241,0.35)" stroke-width="1.5"/>
+  <path d="M 1170 400 L 1170 420 L 1150 420" fill="none" stroke="rgba(99,102,241,0.35)" stroke-width="1.5"/>
+
+  <!-- ADV Dialog Panel -->
+  <rect x="0" y="410" width="1200" height="220" fill="url(#dialogGrad)"/>
+  <rect x="0" y="410" width="1200" height="1.5" fill="rgba(99,102,241,0.35)"/>
+  <rect x="20" y="422" width="1160" height="198" fill="none" stroke="rgba(99,102,241,0.15)" stroke-width="0.8"/>
+
+  <!-- L-corner decorations on dialog -->
+  <path d="M 20 450 L 20 422 L 48 422" fill="none" stroke="rgba(99,102,241,0.5)" stroke-width="1.5"/>
+  <path d="M 1180 450 L 1180 422 L 1152 422" fill="none" stroke="rgba(99,102,241,0.5)" stroke-width="1.5"/>
+  <path d="M 20 590 L 20 618 L 48 618" fill="none" stroke="rgba(99,102,241,0.5)" stroke-width="1.5"/>
+  <path d="M 1180 590 L 1180 618 L 1152 618" fill="none" stroke="rgba(99,102,241,0.5)" stroke-width="1.5"/>
+
+  <!-- Sakura nameplate (indigo) -->
+  <rect x="55" y="398" width="110" height="28" rx="3" fill="url(#nameplateGrad)" opacity="0.95"/>
+  <path d="M 165 398 L 165 426 L 175 412 Z" fill="url(#nameplateGrad)"/>
+  <text x="110" y="418" font-family="Arial, sans-serif" font-size="14" font-weight="700" fill="white" text-anchor="middle" letter-spacing="1">Sakura</text>
+
+  <!-- Hana nameplate (pink) -->
+  <rect x="640" y="398" width="100" height="28" rx="3" fill="url(#nameplateGrad2)" opacity="0.85"/>
+  <path d="M 740 398 L 740 426 L 750 412 Z" fill="url(#nameplateGrad2)" opacity="0.85"/>
+  <text x="690" y="418" font-family="Arial, sans-serif" font-size="14" font-weight="700" fill="white" text-anchor="middle" letter-spacing="1">Hana</text>
+
+  <!-- Dialog text -->
+  <text x="70" y="472" font-family="Georgia, 'Times New Roman', serif" font-size="22" fill="rgba(255,255,255,0.9)" letter-spacing="0.5">"The cherry blossoms are beautiful this time of year...</text>
+  <text x="70" y="508" font-family="Georgia, 'Times New Roman', serif" font-size="22" fill="rgba(255,255,255,0.9)" letter-spacing="0.5">Do you think we'll see them together again next spring?"</text>
+
+  <text x="1140" y="595" font-family="sans-serif" font-size="14" fill="rgba(99,102,241,0.7)">&#9660;</text>
+
+  <!-- Choice buttons -->
+  <rect x="70" y="545" width="300" height="44" rx="6" fill="rgba(26,32,44,0.6)" stroke="rgba(99,102,241,0.3)" stroke-width="1"/>
+  <rect x="70" y="545" width="300" height="44" rx="6" fill="rgba(99,102,241,0.08)"/>
+  <text x="88" y="572" font-family="Arial, sans-serif" font-size="13" fill="rgba(226,232,240,0.9)">"Yes, I'd like that very much."</text>
+
+  <rect x="420" y="545" width="320" height="44" rx="6" fill="rgba(26,32,44,0.6)" stroke="rgba(99,102,241,0.3)" stroke-width="1"/>
+  <text x="438" y="572" font-family="Arial, sans-serif" font-size="13" fill="rgba(226,232,240,0.9)">"I'm not sure about the future..."</text>
+
+  <rect x="790" y="545" width="320" height="44" rx="6" fill="rgba(26,32,44,0.6)" stroke="rgba(99,102,241,0.3)" stroke-width="1"/>
+  <text x="808" y="572" font-family="Arial, sans-serif" font-size="13" fill="rgba(226,232,240,0.9)">"Let's not think about it now."</text>
+
+  <!-- StyleKit badge -->
+  <rect x="1050" y="28" width="120" height="28" rx="4" fill="rgba(26,32,44,0.7)" stroke="rgba(99,102,241,0.3)" stroke-width="0.8"/>
+  <text x="1110" y="47" font-family="Arial, sans-serif" font-size="11" fill="rgba(200,200,255,0.7)" text-anchor="middle" letter-spacing="2">STYLEKIT</text>
+</svg>

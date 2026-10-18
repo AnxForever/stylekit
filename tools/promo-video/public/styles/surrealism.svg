@@ -1,0 +1,131 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="skyGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0d0d24"/>
+      <stop offset="100%" stop-color="#1a1a3e"/>
+    </linearGradient>
+    <filter id="mist1" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="40"/>
+    </filter>
+    <filter id="mist2" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="60"/>
+    </filter>
+    <filter id="mist3" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="25"/>
+    </filter>
+    <clipPath id="canvasClip">
+      <rect width="1200" height="630"/>
+    </clipPath>
+  </defs>
+
+  <!-- Background sky -->
+  <rect width="1200" height="630" fill="url(#skyGrad)"/>
+
+  <!-- Misty atmosphere layers -->
+  <ellipse cx="600" cy="300" rx="500" ry="200" fill="#c38d94" opacity="0.07" filter="url(#mist2)"/>
+  <ellipse cx="900" cy="200" rx="300" ry="150" fill="#d4a574" opacity="0.06" filter="url(#mist2)"/>
+  <ellipse cx="250" cy="350" rx="280" ry="120" fill="#4a3f6b" opacity="0.15" filter="url(#mist1)"/>
+
+  <!-- Ground plane -->
+  <rect x="0" y="420" width="1200" height="210" fill="#12102a"/>
+  <!-- Horizon line -->
+  <rect x="0" y="418" width="1200" height="5" fill="#4a3f6b" opacity="0.8"/>
+
+  <!-- Large sun/moon partially cut by horizon -->
+  <circle cx="780" cy="460" r="110" fill="#d4a574" opacity="0.20"/>
+  <!-- Mask the sun below horizon with ground color -->
+  <rect x="640" y="420" width="290" height="200" fill="#12102a"/>
+  <!-- Sun arc outline above horizon -->
+  <path d="M 670 420 A 110 110 0 0 1 890 420" fill="none" stroke="#d4a574" stroke-width="1.5" opacity="0.5"/>
+  <!-- Soft glow behind sun -->
+  <ellipse cx="780" cy="420" rx="180" ry="60" fill="#d4a574" opacity="0.08" filter="url(#mist1)"/>
+
+  <!-- Floating eyes / portals in the sky -->
+  <ellipse cx="500" cy="155" rx="72" ry="28" fill="#c38d94" opacity="0.14" filter="url(#mist3)"/>
+  <ellipse cx="500" cy="155" rx="58" ry="22" fill="none" stroke="#c38d94" stroke-width="1" opacity="0.38"/>
+  <ellipse cx="500" cy="155" rx="20" ry="8" fill="#c38d94" opacity="0.22"/>
+
+  <ellipse cx="970" cy="115" rx="56" ry="21" fill="#c38d94" opacity="0.12" filter="url(#mist3)"/>
+  <ellipse cx="970" cy="115" rx="44" ry="16" fill="none" stroke="#c38d94" stroke-width="1" opacity="0.32"/>
+  <ellipse cx="970" cy="115" rx="14" ry="6" fill="#c38d94" opacity="0.20"/>
+
+  <ellipse cx="120" cy="220" rx="44" ry="17" fill="#c38d94" opacity="0.10" filter="url(#mist3)"/>
+  <ellipse cx="120" cy="220" rx="34" ry="13" fill="none" stroke="#c38d94" stroke-width="0.8" opacity="0.28"/>
+
+  <!-- Melting clock — main rectangular body -->
+  <rect x="200" y="195" width="200" height="120" rx="4" fill="#d4a574"/>
+  <!-- Drip / melt path hanging below-right of clock body -->
+  <path d="M 340 315 C 342 330, 362 348, 360 378 C 358 405, 345 428, 330 435 C 315 442, 300 432, 297 414 C 293 393, 305 368, 303 348 C 301 332, 292 320, 290 315 Z" fill="#d4a574" opacity="0.88"/>
+  <!-- Clock face -->
+  <circle cx="300" cy="255" r="46" fill="#f0ece4" opacity="0.92"/>
+  <circle cx="300" cy="255" r="46" fill="none" stroke="#0d0d24" stroke-width="1.5"/>
+  <!-- Hour tick marks -->
+  <line x1="300" y1="213" x2="300" y2="221" stroke="#0d0d24" stroke-width="2.2"/>
+  <line x1="300" y1="290" x2="300" y2="298" stroke="#0d0d24" stroke-width="2.2"/>
+  <line x1="254" y1="255" x2="262" y2="255" stroke="#0d0d24" stroke-width="2.2"/>
+  <line x1="338" y1="255" x2="346" y2="255" stroke="#0d0d24" stroke-width="2.2"/>
+  <line x1="267" y1="222" x2="273" y2="230" stroke="#0d0d24" stroke-width="1.5"/>
+  <line x1="327" y1="280" x2="333" y2="288" stroke="#0d0d24" stroke-width="1.5"/>
+  <line x1="267" y1="288" x2="273" y2="280" stroke="#0d0d24" stroke-width="1.5"/>
+  <line x1="327" y1="222" x2="333" y2="230" stroke="#0d0d24" stroke-width="1.5"/>
+  <!-- Clock hands -->
+  <line x1="300" y1="255" x2="300" y2="226" stroke="#0d0d24" stroke-width="2" stroke-linecap="round"/>
+  <line x1="300" y1="255" x2="324" y2="270" stroke="#0d0d24" stroke-width="2.5" stroke-linecap="round"/>
+  <circle cx="300" cy="255" r="3.5" fill="#0d0d24"/>
+  <!-- Drip tip soft shadow -->
+  <ellipse cx="326" cy="434" rx="16" ry="5" fill="#d4a574" opacity="0.25" filter="url(#mist3)"/>
+
+  <!-- Floating sphere (right, impossible levitation) -->
+  <circle cx="950" cy="275" r="112" fill="none" stroke="#c38d94" stroke-width="1.5" opacity="0.72"/>
+  <circle cx="950" cy="275" r="112" fill="#c38d94" opacity="0.04"/>
+  <!-- Latitude ring -->
+  <ellipse cx="950" cy="275" rx="112" ry="30" fill="none" stroke="#c38d94" stroke-width="0.8" opacity="0.32"/>
+  <!-- Longitude ring -->
+  <ellipse cx="950" cy="275" rx="30" ry="112" fill="none" stroke="#c38d94" stroke-width="0.8" opacity="0.22"/>
+  <!-- Subtle inner glow -->
+  <circle cx="950" cy="275" r="112" fill="#c38d94" opacity="0.03" filter="url(#mist3)"/>
+
+  <!-- Floating perspective cube -->
+  <g opacity="0.6">
+    <!-- Front face -->
+    <polygon points="855,342 940,342 940,415 855,415" fill="#d4a574" opacity="0.05"/>
+    <polygon points="855,342 940,342 940,415 855,415" fill="none" stroke="#d4a574" stroke-width="1.2"/>
+    <!-- Top face -->
+    <polygon points="855,342 895,312 980,312 940,342" fill="#d4a574" opacity="0.08"/>
+    <polygon points="855,342 895,312 980,312 940,342" fill="none" stroke="#d4a574" stroke-width="1.2"/>
+    <!-- Right face -->
+    <polygon points="940,342 980,312 980,385 940,415" fill="#d4a574" opacity="0.06"/>
+    <polygon points="940,342 980,312 980,385 940,415" fill="none" stroke="#d4a574" stroke-width="1.2"/>
+  </g>
+
+  <!-- Title text -->
+  <text
+    x="600"
+    y="108"
+    text-anchor="middle"
+    font-family="Georgia, 'Palatino Linotype', serif"
+    font-size="76"
+    font-weight="700"
+    font-style="italic"
+    letter-spacing="6"
+    fill="#f0ece4"
+    opacity="0.95"
+  >SURREALISM</text>
+
+  <!-- Subtitle -->
+  <text
+    x="600"
+    y="148"
+    text-anchor="middle"
+    font-family="Georgia, 'Palatino Linotype', serif"
+    font-size="15"
+    font-weight="400"
+    font-style="italic"
+    letter-spacing="4"
+    fill="#c38d94"
+    opacity="0.60"
+  >where dreams dissolve into form</text>
+
+  <!-- Ground horizon atmospheric glow -->
+  <ellipse cx="600" cy="422" rx="600" ry="38" fill="#4a3f6b" opacity="0.30" filter="url(#mist1)"/>
+</svg>

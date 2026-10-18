@@ -1,0 +1,145 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" fill="none">
+  <defs>
+    <pattern id="dt-scan" width="4" height="3" patternUnits="userSpaceOnUse">
+      <rect width="4" height="1" fill="#8BE9FD" opacity="0.04"/>
+    </pattern>
+    <filter id="dt-glow" x="-20%" y="-40%" width="140%" height="180%">
+      <feGaussianBlur stdDeviation="3" result="b"/>
+      <feMerge>
+        <feMergeNode in="b"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="630" fill="#0A0E12"/>
+
+  <!-- ================= Main terminal window ================= -->
+  <rect x="40" y="40" width="740" height="470" rx="4" fill="#0D141B" stroke="#1F2937" stroke-width="1.5"/>
+
+  <!-- Title bar with three dots -->
+  <rect x="41.5" y="41.5" width="737" height="32" rx="3" fill="#111821"/>
+  <line x1="41" y1="74" x2="779" y2="74" stroke="#1F2937" stroke-width="1"/>
+  <circle cx="60" cy="58" r="5" fill="#FF79C6"/>
+  <circle cx="78" cy="58" r="5" fill="#FFB86C"/>
+  <circle cx="96" cy="58" r="5" fill="#4AF626"/>
+  <text x="116" y="62" font-family="monospace" font-size="12" fill="#6272A4">visitor@stylekit: ~/showcase -- 80x24</text>
+
+  <!-- Boot sequence -->
+  <text x="64" y="102" font-family="monospace" font-size="13" fill="#6272A4">Last login: Fri Jul 5 09:41:07 2026 on ttys001</text>
+  <text x="64" y="126" font-family="monospace" font-size="13"><tspan fill="#8BE9FD">[ OK ]</tspan><tspan fill="#4AF626"> mounted /dev/portfolio</tspan></text>
+  <text x="64" y="148" font-family="monospace" font-size="13"><tspan fill="#8BE9FD">[ OK ]</tspan><tspan fill="#4AF626"> loaded 12 projects, 34 posts, 1 developer</tspan></text>
+  <text x="64" y="170" font-family="monospace" font-size="13"><tspan fill="#FFB86C">[WARN]</tspan><tspan fill="#4AF626"> coffee level at 12% -- refill recommended</tspan></text>
+
+  <!-- Prompt + central title -->
+  <text x="64" y="202" font-family="monospace" font-size="14"><tspan fill="#8BE9FD">visitor@stylekit</tspan><tspan fill="#6272A4">:~$</tspan><tspan fill="#4AF626"> echo $STYLE_NAME</tspan></text>
+  <text x="64" y="244" font-family="monospace" font-size="38" font-weight="bold" fill="#4AF626" filter="url(#dt-glow)">DEVELOPER TERMINAL</text>
+  <text x="64" y="272" font-family="monospace" font-size="13" fill="#6272A4"># 终端风 -- a website as a terminal session</text>
+
+  <!-- ASCII divider -->
+  <line x1="64" y1="292" x2="300" y2="292" stroke="#1F2937" stroke-width="1.5" stroke-dasharray="7 4"/>
+  <text x="312" y="296" font-family="monospace" font-size="11" fill="#6272A4">projects</text>
+  <line x1="384" y1="292" x2="756" y2="292" stroke="#1F2937" stroke-width="1.5" stroke-dasharray="7 4"/>
+
+  <!-- ls -la listing -->
+  <text x="64" y="322" font-family="monospace" font-size="14"><tspan fill="#8BE9FD">visitor@stylekit</tspan><tspan fill="#6272A4">:~$</tspan><tspan fill="#4AF626"> ls -la ~/projects</tspan></text>
+  <text x="64" y="346" font-family="monospace" font-size="13"><tspan fill="#6272A4">drwxr-xr-x  4096  Jul 03 21:14  </tspan><tspan fill="#8BE9FD">stylekit-registry/</tspan></text>
+  <text x="64" y="368" font-family="monospace" font-size="13"><tspan fill="#6272A4">-rw-r--r--   18K  Jun 28 09:02  </tspan><tspan fill="#4AF626">design-tokens.json</tspan></text>
+  <text x="64" y="390" font-family="monospace" font-size="13"><tspan fill="#6272A4">-rwxr-xr-x  2.4K  Jun 21 23:59  </tspan><tspan fill="#FFB86C">deploy.sh</tspan></text>
+
+  <!-- ASCII progress bar -->
+  <text x="64" y="424" font-family="monospace" font-size="13" fill="#6272A4">build</text>
+  <text x="122" y="424" font-family="monospace" font-size="13" fill="#4AF626">[</text>
+  <rect x="134" y="412" width="14" height="13" fill="#4AF626"/>
+  <rect x="151" y="412" width="14" height="13" fill="#4AF626"/>
+  <rect x="168" y="412" width="14" height="13" fill="#4AF626"/>
+  <rect x="185" y="412" width="14" height="13" fill="#4AF626"/>
+  <rect x="202" y="412" width="14" height="13" fill="#4AF626"/>
+  <rect x="219" y="412" width="14" height="13" fill="#4AF626"/>
+  <rect x="236" y="412" width="14" height="13" fill="#4AF626"/>
+  <rect x="253" y="412" width="14" height="13" fill="#4AF626"/>
+  <rect x="270" y="412" width="14" height="13" fill="#4AF626"/>
+  <rect x="287" y="412" width="14" height="13" fill="#4AF626"/>
+  <rect x="304" y="412" width="14" height="13" fill="#4AF626"/>
+  <rect x="321" y="412" width="14" height="13" fill="#1F2937"/>
+  <rect x="338" y="412" width="14" height="13" fill="#1F2937"/>
+  <rect x="355" y="412" width="14" height="13" fill="#1F2937"/>
+  <rect x="372" y="412" width="14" height="13" fill="#1F2937"/>
+  <rect x="389" y="412" width="14" height="13" fill="#1F2937"/>
+  <text x="408" y="424" font-family="monospace" font-size="13" fill="#4AF626">]</text>
+  <text x="426" y="424" font-family="monospace" font-size="13" fill="#FFB86C">67%</text>
+  <text x="470" y="424" font-family="monospace" font-size="12" fill="#6272A4"># tests still running</text>
+
+  <!-- Final prompt with blinking cursor block -->
+  <text x="64" y="458" font-family="monospace" font-size="14"><tspan fill="#8BE9FD">visitor@stylekit</tspan><tspan fill="#6272A4">:~$</tspan><tspan fill="#4AF626"> start_session</tspan></text>
+  <rect x="330" y="444" width="10" height="17" fill="#4AF626"/>
+
+  <!-- Faint CRT scanline overlay on the window -->
+  <rect x="41" y="75" width="738" height="434" fill="url(#dt-scan)"/>
+
+  <!-- ================= Right column: stderr panel ================= -->
+  <rect x="800" y="40" width="360" height="140" rx="4" fill="#0D141B" stroke="#FF79C6" stroke-opacity="0.4" stroke-width="1.5"/>
+  <text x="816" y="66" font-family="monospace" font-size="13" fill="#4AF626">$ npm run legacy</text>
+  <rect x="1078" y="50" width="66" height="20" rx="3" stroke="#FF79C6" stroke-opacity="0.6" stroke-width="1" fill="none"/>
+  <text x="1087" y="64" font-family="monospace" font-size="11" fill="#FF79C6">[1] ERR</text>
+  <line x1="800" y1="78" x2="1160" y2="78" stroke="#FF79C6" stroke-opacity="0.25" stroke-width="1"/>
+  <text x="816" y="102" font-family="monospace" font-size="13" fill="#FF79C6">Error: module &apos;jquery&apos;</text>
+  <text x="816" y="124" font-family="monospace" font-size="13" fill="#FF79C6">was last seen in 2014</text>
+  <text x="816" y="150" font-family="monospace" font-size="12" fill="#6272A4"># stderr speaks magenta</text>
+
+  <!-- ================= Right column: theme.conf palette ================= -->
+  <rect x="800" y="200" width="360" height="170" rx="4" fill="#0D141B" stroke="#1F2937" stroke-width="1.5"/>
+  <text x="816" y="226" font-family="monospace" font-size="12" fill="#6272A4"># /etc/theme.conf</text>
+  <rect x="816" y="238" width="14" height="14" rx="2" fill="#4AF626"/>
+  <text x="842" y="250" font-family="monospace" font-size="12" fill="#8BE9FD">$term-green</text>
+  <text x="1064" y="250" font-family="monospace" font-size="12" fill="#FFB86C">#4AF626</text>
+  <rect x="816" y="262" width="14" height="14" rx="2" fill="#8BE9FD"/>
+  <text x="842" y="274" font-family="monospace" font-size="12" fill="#8BE9FD">$term-cyan</text>
+  <text x="1064" y="274" font-family="monospace" font-size="12" fill="#FFB86C">#8BE9FD</text>
+  <rect x="816" y="286" width="14" height="14" rx="2" fill="#FF79C6"/>
+  <text x="842" y="298" font-family="monospace" font-size="12" fill="#8BE9FD">$term-magenta</text>
+  <text x="1064" y="298" font-family="monospace" font-size="12" fill="#FFB86C">#FF79C6</text>
+  <rect x="816" y="310" width="14" height="14" rx="2" fill="#FFB86C"/>
+  <text x="842" y="322" font-family="monospace" font-size="12" fill="#8BE9FD">$term-amber</text>
+  <text x="1064" y="322" font-family="monospace" font-size="12" fill="#FFB86C">#FFB86C</text>
+  <rect x="816" y="334" width="14" height="14" rx="2" fill="#6272A4"/>
+  <text x="842" y="346" font-family="monospace" font-size="12" fill="#8BE9FD">$term-comment</text>
+  <text x="1064" y="346" font-family="monospace" font-size="12" fill="#FFB86C">#6272A4</text>
+
+  <!-- ================= Right column: command buttons ================= -->
+  <rect x="800" y="390" width="360" height="120" rx="4" fill="#0D141B" stroke="#1F2937" stroke-width="1.5"/>
+  <text x="816" y="416" font-family="monospace" font-size="12" fill="#6272A4"># buttons are executables</text>
+  <rect x="816" y="428" width="146" height="30" rx="3" fill="#4AF626"/>
+  <text x="830" y="447" font-family="monospace" font-size="12" font-weight="bold" fill="#0A0E12">./deploy --prod</text>
+  <rect x="972" y="428" width="102" height="30" rx="3" fill="none" stroke="#1F2937" stroke-width="1.5"/>
+  <text x="986" y="447" font-family="monospace" font-size="12" fill="#4AF626">make build</text>
+  <rect x="816" y="466" width="130" height="30" rx="3" fill="none" stroke="#FF79C6" stroke-opacity="0.5" stroke-width="1.5"/>
+  <text x="828" y="485" font-family="monospace" font-size="12" fill="#FF79C6">rm -rf ./cache</text>
+  <rect x="956" y="466" width="118" height="30" rx="3" fill="none" stroke="#8BE9FD" stroke-opacity="0.5" stroke-width="1.5"/>
+  <text x="968" y="485" font-family="monospace" font-size="12" fill="#8BE9FD">git push -f</text>
+
+  <!-- ================= Token chips row ================= -->
+  <rect x="40" y="526" width="100" height="26" rx="3" fill="none" stroke="#1F2937" stroke-width="1"/>
+  <text x="54" y="543" font-family="monospace" font-size="12" fill="#4AF626">font-mono</text>
+  <rect x="150" y="526" width="110" height="26" rx="3" fill="none" stroke="#1F2937" stroke-width="1"/>
+  <text x="164" y="543" font-family="monospace" font-size="12" fill="#8BE9FD">rounded-sm</text>
+  <rect x="270" y="526" width="130" height="26" rx="3" fill="none" stroke="#1F2937" stroke-width="1"/>
+  <text x="284" y="543" font-family="monospace" font-size="12" fill="#FFB86C">bg-[#0A0E12]</text>
+  <rect x="410" y="526" width="176" height="26" rx="3" fill="none" stroke="#1F2937" stroke-width="1"/>
+  <text x="424" y="543" font-family="monospace" font-size="12" fill="#6272A4">border-[#1F2937]</text>
+  <rect x="1096" y="526" width="64" height="26" rx="3" fill="none" stroke="#4AF626" stroke-opacity="0.5" stroke-width="1"/>
+  <text x="1108" y="543" font-family="monospace" font-size="12" fill="#4AF626">[0] OK</text>
+
+  <!-- ================= tmux status bar ================= -->
+  <rect x="40" y="570" width="1120" height="32" rx="3" fill="#0D141B" stroke="#1F2937" stroke-width="1.5"/>
+  <rect x="52" y="577" width="76" height="18" rx="3" fill="#4AF626"/>
+  <text x="59" y="590" font-family="monospace" font-size="11" font-weight="bold" fill="#0A0E12">[stylekit]</text>
+  <text x="140" y="590" font-family="monospace" font-size="11" fill="#4AF626">0:overview*</text>
+  <text x="222" y="590" font-family="monospace" font-size="11" fill="#6272A4">1:logs</text>
+  <text x="272" y="590" font-family="monospace" font-size="11" fill="#6272A4">2:monitor</text>
+  <text x="880" y="590" font-family="monospace" font-size="11" fill="#FFB86C">load: 0.42</text>
+  <text x="962" y="590" font-family="monospace" font-size="11" fill="#8BE9FD">09:41:07</text>
+  <rect x="1034" y="577" width="114" height="18" rx="3" fill="#1F2937"/>
+  <text x="1041" y="590" font-family="monospace" font-size="10" fill="#4AF626">visitor@stylekit</text>
+</svg>

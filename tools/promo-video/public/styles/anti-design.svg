@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <!-- Background: pure white, about to be violated -->
+  <rect width="1200" height="630" fill="#ffffff"/>
+
+  <!-- Hard shadow offsets behind colored blocks -->
+  <rect x="56" y="186" width="420" height="200" fill="#000000"/>
+  <rect x="756" y="56" width="340" height="220" fill="#000000"/>
+
+  <!-- Yellow block, rotated, chaotic -->
+  <rect x="50" y="180" width="420" height="200" transform="rotate(-7 200 300)" fill="#FFFF00"/>
+
+  <!-- Red block, overlapping, rotated wrong way -->
+  <rect x="750" y="50" width="340" height="220" transform="rotate(12 900 100)" fill="#FF0000"/>
+
+  <!-- Blue block, partially off-canvas, barely rotated -->
+  <rect x="350" y="460" width="500" height="240" transform="rotate(-3 400 500)" fill="#0000FF"/>
+
+  <!-- Cyan accent block, awkward size -->
+  <rect x="920" y="350" width="180" height="130" fill="#00FFFF"/>
+
+  <!-- Black heavy border rects on top of colored blocks -->
+  <rect x="50" y="180" width="420" height="200" transform="rotate(-7 200 300)" fill="none" stroke="#000000" stroke-width="8"/>
+  <rect x="750" y="50" width="340" height="220" transform="rotate(12 900 100)" fill="none" stroke="#000000" stroke-width="8"/>
+
+  <!-- Green circle, awkward placement, off-center by design -->
+  <circle cx="1090" cy="520" r="80" fill="#00FF00"/>
+  <circle cx="1090" cy="520" r="80" fill="none" stroke="#000000" stroke-width="6"/>
+
+  <!-- Magenta dot right next to the main title, wrong place -->
+  <circle cx="22" cy="260" r="18" fill="#FF00FF"/>
+
+  <!-- Main text: ANTI — massive, not centered, just dumped at left -->
+  <text x="30" y="280" font-family="Arial Black, Arial, sans-serif" font-size="180" font-weight="900" fill="#000000" letter-spacing="-8">ANTI</text>
+
+  <!-- DESIGN — overlapping, red, shifted down and right, rotated wrong -->
+  <text x="400" y="420" font-family="Arial Black, Arial, sans-serif" font-size="180" font-weight="900" fill="#FF0000" letter-spacing="-8" transform="rotate(-5 400 420)">DESIGN</text>
+
+  <!-- Aggressive diagonal line cutting across entire canvas -->
+  <line x1="0" y1="630" x2="1200" y2="0" stroke="#FF0000" stroke-width="6"/>
+
+  <!-- Multiple thick crossing black lines — rule violations -->
+  <line x1="0" y1="120" x2="1200" y2="120" stroke="#000000" stroke-width="10"/>
+  <line x1="600" y1="0" x2="600" y2="630" stroke="#000000" stroke-width="10"/>
+  <line x1="0" y1="400" x2="1200" y2="430" stroke="#000000" stroke-width="5"/>
+
+  <!-- Crossed-out X box — intentional design crime -->
+  <rect x="870" y="440" width="120" height="100" fill="#FFFF00" stroke="#000000" stroke-width="5"/>
+  <line x1="870" y1="440" x2="990" y2="540" stroke="#000000" stroke-width="7"/>
+  <line x1="990" y1="440" x2="870" y2="540" stroke="#000000" stroke-width="7"/>
+
+  <!-- Arrow pointing nowhere obvious -->
+  <line x1="1100" y1="200" x2="1050" y2="140" stroke="#000000" stroke-width="5"/>
+  <polygon points="1045,125 1065,145 1035,155" fill="#000000"/>
+
+  <!-- Small chaotic text in wrong place -->
+  <text x="670" y="80" font-family="monospace" font-size="10" fill="#000000">why?</text>
+  <text x="1110" y="410" font-family="monospace" font-size="10" fill="#000000">no.</text>
+  <text x="80" y="600" font-family="monospace" font-size="10" fill="#0000FF">this is wrong</text>
+
+  <!-- Extra label crammed in wrong size, wrong place -->
+  <text x="920" y="500" font-family="Arial, sans-serif" font-size="28" font-weight="700" fill="#000000" transform="rotate(90 920 500)">RULES</text>
+
+  <!-- Magenta slash line for extra chaos -->
+  <line x1="0" y1="0" x2="300" y2="630" stroke="#FF00FF" stroke-width="4"/>
+</svg>

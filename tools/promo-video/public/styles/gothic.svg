@@ -1,0 +1,201 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
+  <defs>
+    <!-- Ambient radial gradient: deep purple glow at center -->
+    <radialGradient id="ambientGlow" cx="50%" cy="50%" r="55%">
+      <stop offset="0%"   stop-color="#2d1b4e" stop-opacity="0.45"/>
+      <stop offset="60%"  stop-color="#140a28" stop-opacity="0.25"/>
+      <stop offset="100%" stop-color="#0a0a0a" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Gold title glow filter -->
+    <filter id="goldGlow" x="-20%" y="-40%" width="140%" height="180%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="10" result="blur"/>
+      <feFlood flood-color="#c9a227" flood-opacity="0.45" result="color"/>
+      <feComposite in="color" in2="blur" operator="in" result="shadow"/>
+      <feMerge><feMergeNode in="shadow"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+
+    <!-- Soft inner glow for arch strokes -->
+    <filter id="archGlow" x="-10%" y="-10%" width="120%" height="120%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="3" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+
+    <!-- Clip to the gothic arch window shape -->
+    <clipPath id="archClip">
+      <path d="M 430 580 L 430 240 Q 430 80 600 65 Q 770 80 770 240 L 770 580 Z"/>
+    </clipPath>
+  </defs>
+
+  <!-- ── Background ──────────────────────────────────────── -->
+  <rect width="1200" height="630" fill="#0a0a0a"/>
+  <rect width="1200" height="630" fill="url(#ambientGlow)"/>
+
+  <!-- ── Corner ornaments ───────────────────────────────── -->
+  <!-- Top-left -->
+  <g stroke="#c9a227" stroke-width="1.2" fill="none" opacity="0.55">
+    <path d="M 30 30 L 110 30 L 110 20 M 30 30 L 30 110 L 20 110"/>
+    <path d="M 50 50 L 90 50 L 90 46 M 50 50 L 50 90 L 46 90"/>
+    <circle cx="70" cy="70" r="14"/>
+    <circle cx="70" cy="70" r="7"/>
+    <line x1="70" y1="56" x2="70" y2="84"/>
+    <line x1="56" y1="70" x2="84" y2="70"/>
+  </g>
+  <!-- Top-right -->
+  <g stroke="#c9a227" stroke-width="1.2" fill="none" opacity="0.55">
+    <path d="M 1170 30 L 1090 30 L 1090 20 M 1170 30 L 1170 110 L 1180 110"/>
+    <path d="M 1150 50 L 1110 50 L 1110 46 M 1150 50 L 1150 90 L 1154 90"/>
+    <circle cx="1130" cy="70" r="14"/>
+    <circle cx="1130" cy="70" r="7"/>
+    <line x1="1130" y1="56" x2="1130" y2="84"/>
+    <line x1="1116" y1="70" x2="1144" y2="70"/>
+  </g>
+  <!-- Bottom-left -->
+  <g stroke="#c9a227" stroke-width="1.2" fill="none" opacity="0.55">
+    <path d="M 30 600 L 110 600 L 110 610 M 30 600 L 30 520 L 20 520"/>
+    <path d="M 50 580 L 90 580 L 90 584 M 50 580 L 50 540 L 46 540"/>
+    <circle cx="70" cy="560" r="14"/>
+    <circle cx="70" cy="560" r="7"/>
+    <line x1="70" y1="546" x2="70" y2="574"/>
+    <line x1="56" y1="560" x2="84" y2="560"/>
+  </g>
+  <!-- Bottom-right -->
+  <g stroke="#c9a227" stroke-width="1.2" fill="none" opacity="0.55">
+    <path d="M 1170 600 L 1090 600 L 1090 610 M 1170 600 L 1170 520 L 1180 520"/>
+    <path d="M 1150 580 L 1110 580 L 1110 584 M 1150 580 L 1150 540 L 1154 540"/>
+    <circle cx="1130" cy="560" r="14"/>
+    <circle cx="1130" cy="560" r="7"/>
+    <line x1="1130" y1="546" x2="1130" y2="574"/>
+    <line x1="1116" y1="560" x2="1144" y2="560"/>
+  </g>
+
+  <!-- ── Side tracery lines ──────────────────────────────── -->
+  <g stroke="#c9a227" stroke-width="0.7" opacity="0.28" fill="none">
+    <!-- left column tracery -->
+    <line x1="160" y1="80"  x2="160" y2="560"/>
+    <line x1="180" y1="80"  x2="180" y2="560"/>
+    <line x1="170" y1="150" x2="170" y2="490"/>
+    <line x1="160" y1="200" x2="180" y2="200"/>
+    <line x1="160" y1="300" x2="180" y2="300"/>
+    <line x1="160" y1="400" x2="180" y2="400"/>
+    <line x1="160" y1="500" x2="180" y2="500"/>
+    <path d="M 160 150 Q 170 130 180 150"/>
+    <path d="M 160 250 Q 170 230 180 250"/>
+    <path d="M 160 350 Q 170 330 180 350"/>
+    <path d="M 160 450 Q 170 430 180 450"/>
+    <!-- right column tracery -->
+    <line x1="1020" y1="80"  x2="1020" y2="560"/>
+    <line x1="1040" y1="80"  x2="1040" y2="560"/>
+    <line x1="1030" y1="150" x2="1030" y2="490"/>
+    <line x1="1020" y1="200" x2="1040" y2="200"/>
+    <line x1="1020" y1="300" x2="1040" y2="300"/>
+    <line x1="1020" y1="400" x2="1040" y2="400"/>
+    <line x1="1020" y1="500" x2="1040" y2="500"/>
+    <path d="M 1020 150 Q 1030 130 1040 150"/>
+    <path d="M 1020 250 Q 1030 230 1040 250"/>
+    <path d="M 1020 350 Q 1030 330 1040 350"/>
+    <path d="M 1020 450 Q 1030 430 1040 450"/>
+  </g>
+
+  <!-- ── Stained glass panels (clipped to arch) ────────── -->
+  <g clip-path="url(#archClip)">
+    <!-- Deep blue left panel -->
+    <path d="M 430 240 Q 430 80 600 65 L 600 300 L 430 300 Z"
+          fill="#1a1a8b" opacity="0.55"/>
+    <!-- Deep red right panel -->
+    <path d="M 600 65 Q 770 80 770 240 L 770 300 L 600 300 Z"
+          fill="#8b1a1a" opacity="0.55"/>
+    <!-- Gold center-top small diamond -->
+    <polygon points="600,90 630,160 600,200 570,160"
+             fill="#c9a227" opacity="0.35"/>
+    <!-- Green lower-left -->
+    <path d="M 430 300 L 600 300 L 600 460 L 430 460 Z"
+          fill="#1a4a1a" opacity="0.50"/>
+    <!-- Purple lower-right -->
+    <path d="M 600 300 L 770 300 L 770 460 L 600 460 Z"
+          fill="#4a2d6e" opacity="0.55"/>
+    <!-- Red lower band -->
+    <path d="M 430 460 L 770 460 L 770 580 L 430 580 Z"
+          fill="#8b1a1a" opacity="0.40"/>
+    <!-- Bright gold highlight shard top-left -->
+    <polygon points="430,240 530,240 480,300 430,300"
+             fill="#c9a227" opacity="0.18"/>
+    <!-- Bright gold highlight shard top-right -->
+    <polygon points="770,240 670,240 720,300 770,300"
+             fill="#c9a227" opacity="0.18"/>
+
+    <!-- Lead lines (dark dividers simulating solder) -->
+    <line x1="430" y1="300" x2="770" y2="300" stroke="#0a0a0a" stroke-width="3"/>
+    <line x1="430" y1="460" x2="770" y2="460" stroke="#0a0a0a" stroke-width="3"/>
+    <line x1="600" y1="65"  x2="600" y2="580" stroke="#0a0a0a" stroke-width="3"/>
+    <!-- Diagonal lead shards in top half -->
+    <line x1="430" y1="240" x2="600" y2="300" stroke="#0a0a0a" stroke-width="2"/>
+    <line x1="770" y1="240" x2="600" y2="300" stroke="#0a0a0a" stroke-width="2"/>
+    <!-- Shorter cross leads -->
+    <line x1="515" y1="300" x2="515" y2="460" stroke="#0a0a0a" stroke-width="1.5"/>
+    <line x1="685" y1="300" x2="685" y2="460" stroke="#0a0a0a" stroke-width="1.5"/>
+    <line x1="430" y1="380" x2="515" y2="380" stroke="#0a0a0a" stroke-width="1.5"/>
+    <line x1="685" y1="380" x2="770" y2="380" stroke="#0a0a0a" stroke-width="1.5"/>
+  </g>
+
+  <!-- ── Gothic arch frame (outer) ──────────────────────── -->
+  <g filter="url(#archGlow)">
+    <path d="M 430 580 L 430 240 Q 430 80 600 65 Q 770 80 770 240 L 770 580"
+          fill="none" stroke="#c9a227" stroke-width="3.5"/>
+    <!-- Inner arch (slightly smaller) -->
+    <path d="M 445 580 L 445 245 Q 445 95 600 82 Q 755 95 755 245 L 755 580"
+          fill="none" stroke="#c9a227" stroke-width="1.5" opacity="0.5"/>
+    <!-- Third inner arch for depth -->
+    <path d="M 460 580 L 460 250 Q 460 110 600 100 Q 740 110 740 250 L 740 580"
+          fill="none" stroke="#c9a227" stroke-width="0.8" opacity="0.28"/>
+  </g>
+
+  <!-- ── Trefoil at top of arch ─────────────────────────── -->
+  <g filter="url(#archGlow)" fill="none" stroke="#c9a227" stroke-width="1.8">
+    <!-- Center circle -->
+    <circle cx="600" cy="68" r="18"/>
+    <!-- Left lobe -->
+    <circle cx="582" cy="60" r="12"/>
+    <!-- Right lobe -->
+    <circle cx="618" cy="60" r="12"/>
+    <!-- Small rosette center -->
+    <circle cx="600" cy="68" r="7" fill="#c9a227" fill-opacity="0.3"/>
+  </g>
+
+  <!-- ── Horizontal tracery bar across arch ─────────────── -->
+  <g stroke="#c9a227" stroke-width="1" opacity="0.45" fill="none">
+    <line x1="430" y1="240" x2="770" y2="240"/>
+    <line x1="430" y1="460" x2="770" y2="460" opacity="0.3"/>
+    <!-- Small pointed arches along the 240 bar -->
+    <path d="M 470 240 Q 485 220 500 240"/>
+    <path d="M 510 240 Q 525 220 540 240"/>
+    <path d="M 550 240 Q 565 220 580 240"/>
+    <path d="M 620 240 Q 635 220 650 240"/>
+    <path d="M 660 240 Q 675 220 690 240"/>
+    <path d="M 700 240 Q 715 220 730 240"/>
+  </g>
+
+  <!-- ── GOTHIC title ────────────────────────────────────── -->
+  <text
+    x="600" y="570"
+    font-family="Georgia, serif"
+    font-size="96"
+    font-weight="700"
+    fill="#c9a227"
+    letter-spacing="8"
+    text-anchor="middle"
+    filter="url(#goldGlow)"
+  >GOTHIC</text>
+
+  <!-- Subtitle -->
+  <text
+    x="600" y="610"
+    font-family="Georgia, serif"
+    font-size="14"
+    font-weight="400"
+    fill="#c9a227"
+    letter-spacing="6"
+    text-anchor="middle"
+    opacity="0.55"
+  >DARK  &amp;  ORNATE</text>
+</svg>

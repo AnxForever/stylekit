@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+
+  <!-- Background -->
+  <rect width="1200" height="630" fill="#f5f5f5"/>
+
+  <!-- Top header band -->
+  <rect x="0" y="0" width="1200" height="80" fill="#000000"/>
+
+  <!-- Header: title -->
+  <text x="60" y="52" font-family="Helvetica Neue, Arial, sans-serif" font-size="32" font-weight="700" letter-spacing="8" fill="#ffffff">SWISS STYLE</text>
+
+  <!-- Header: navigation items right-aligned -->
+  <text x="1140" y="46" font-family="Helvetica Neue, Arial, sans-serif" font-size="12" font-weight="400" letter-spacing="2" fill="#ffffff" text-anchor="end">CONTACT</text>
+  <text x="1050" y="46" font-family="Helvetica Neue, Arial, sans-serif" font-size="12" font-weight="400" letter-spacing="2" fill="#ffffff" text-anchor="end">WORK</text>
+  <text x="960" y="46" font-family="Helvetica Neue, Arial, sans-serif" font-size="12" font-weight="400" letter-spacing="2" fill="#ffffff" text-anchor="end">ABOUT</text>
+  <text x="870" y="46" font-family="Helvetica Neue, Arial, sans-serif" font-size="12" font-weight="400" letter-spacing="2" fill="#ffffff" text-anchor="end">INDEX</text>
+
+  <!-- Watermark giant number background -->
+  <text x="30" y="540" font-family="Helvetica Neue, Arial, sans-serif" font-size="520" font-weight="900" fill="#000000" opacity="0.05">01</text>
+
+  <!-- Left column: eyebrow label -->
+  <text x="60" y="170" font-family="Helvetica Neue, Arial, sans-serif" font-size="13" font-weight="400" letter-spacing="3" fill="#999999">INTERNATIONAL TYPOGRAPHIC STYLE</text>
+
+  <!-- Left column: headline -->
+  <text x="60" y="240" font-family="Helvetica Neue, Arial, sans-serif" font-size="56" font-weight="700" fill="#000000" letter-spacing="-1">Functional</text>
+  <text x="60" y="310" font-family="Helvetica Neue, Arial, sans-serif" font-size="56" font-weight="700" fill="#000000" letter-spacing="-1">Clarity.</text>
+
+  <!-- Red accent line -->
+  <line x1="60" y1="340" x2="500" y2="340" stroke="#ff0000" stroke-width="6"/>
+
+  <!-- Left column: body text -->
+  <text x="60" y="390" font-family="Helvetica Neue, Arial, sans-serif" font-size="16" font-weight="400" fill="#333333">Design rooted in purpose — structure,</text>
+  <text x="60" y="416" font-family="Helvetica Neue, Arial, sans-serif" font-size="16" font-weight="400" fill="#333333">legibility, and mathematical proportion.</text>
+
+  <!-- Red square punctuation + year label -->
+  <rect x="60" y="450" width="50" height="50" fill="#ff0000"/>
+  <text x="124" y="484" font-family="Helvetica Neue, Arial, sans-serif" font-size="13" font-weight="400" letter-spacing="2" fill="#666666">1957 — PRESENT</text>
+
+  <!-- Vertical rule dividing columns -->
+  <line x1="620" y1="100" x2="620" y2="570" stroke="#cccccc" stroke-width="1"/>
+
+  <!-- Right column: type weight contrast showcase -->
+  <text x="660" y="240" font-family="Helvetica Neue, Arial, sans-serif" font-size="120" font-weight="100" fill="#000000" letter-spacing="-4">Helvetica</text>
+  <text x="660" y="376" font-family="Helvetica Neue, Arial, sans-serif" font-size="120" font-weight="900" fill="#000000" letter-spacing="-4">Neue</text>
+
+  <!-- Weight labels -->
+  <text x="660" y="418" font-family="Helvetica Neue, Arial, sans-serif" font-size="12" font-weight="400" letter-spacing="3" fill="#999999">WEIGHT 100 — ULTRALIGHT</text>
+  <text x="660" y="438" font-family="Helvetica Neue, Arial, sans-serif" font-size="12" font-weight="400" letter-spacing="3" fill="#999999">WEIGHT 900 — ULTRABLACK</text>
+
+  <!-- Grid guide lines (dashed vertical columns) -->
+  <line x1="660" y1="100" x2="660" y2="460" stroke="#cccccc" stroke-width="1" stroke-dasharray="4,6"/>
+  <line x1="900" y1="100" x2="900" y2="460" stroke="#cccccc" stroke-width="1" stroke-dasharray="4,6"/>
+  <line x1="1140" y1="100" x2="1140" y2="460" stroke="#cccccc" stroke-width="1" stroke-dasharray="4,6"/>
+  <line x1="660" y1="460" x2="1140" y2="460" stroke="#cccccc" stroke-width="1"/>
+
+  <!-- Bottom strip -->
+  <rect x="0" y="585" width="1200" height="45" fill="#000000"/>
+  <text x="60" y="613" font-family="Helvetica Neue, Arial, sans-serif" font-size="13" font-weight="400" letter-spacing="3" fill="#666666">GRID SYSTEM — FUNCTIONAL MINIMALISM — HELVETICA NEUE</text>
+
+</svg>

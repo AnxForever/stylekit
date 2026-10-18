@@ -1,0 +1,46 @@
+<svg viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2A3A5C"/>
+      <stop offset="0.42" stop-color="#7C6A8A"/>
+      <stop offset="0.7" stop-color="#D98A6A"/>
+      <stop offset="1" stop-color="#F2C79B"/>
+    </linearGradient>
+    <radialGradient id="sun" cx="0.72" cy="0.6" r="0.5">
+      <stop offset="0" stop-color="#FFD9A0" stop-opacity="0.8"/>
+      <stop offset="1" stop-color="#FFD9A0" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="scrim" x1="0" y1="1" x2="0" y2="0">
+      <stop offset="0" stop-color="#000000" stop-opacity="0.72"/>
+      <stop offset="0.5" stop-color="#000000" stop-opacity="0.12"/>
+      <stop offset="1" stop-color="#000000" stop-opacity="0.3"/>
+    </linearGradient>
+    <filter id="grain"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" stitchTiles="stitch"/><feColorMatrix type="saturate" values="0"/></filter>
+  </defs>
+
+  <!-- full-bleed photo -->
+  <rect width="1200" height="630" fill="url(#sky)"/>
+  <rect width="1200" height="630" fill="url(#sun)"/>
+  <!-- ridgeline silhouettes for depth -->
+  <path d="M0 470 L200 430 L360 460 L520 415 L700 455 L880 420 L1050 450 L1200 425 L1200 630 L0 630 Z" fill="#1A1C22" opacity="0.35"/>
+  <path d="M0 520 L260 495 L470 520 L680 490 L900 520 L1200 495 L1200 630 L0 630 Z" fill="#0C0D10" opacity="0.5"/>
+  <rect width="1200" height="630" filter="url(#grain)" opacity="0.05"/>
+  <!-- readability scrim -->
+  <rect width="1200" height="630" fill="url(#scrim)"/>
+
+  <!-- nav hint -->
+  <text x="60" y="56" font-family="Archivo, ui-sans-serif, sans-serif" font-size="22" font-weight="600" fill="#FFFFFF">Atlas</text>
+  <text x="1000" y="54" font-family="Archivo, ui-sans-serif, sans-serif" font-size="15" fill="#FFFFFF" opacity="0.75">Series &#183; Craft</text>
+
+  <!-- headline block -->
+  <text x="60" y="440" font-family="ui-monospace, monospace" font-size="16" fill="#E8B04B" letter-spacing="5">CHAPTER ONE</text>
+  <text x="58" y="512" font-family="Archivo, ui-sans-serif, sans-serif" font-size="74" font-weight="700" fill="#FFFFFF" letter-spacing="-1.5">The light arrives</text>
+  <text x="58" y="582" font-family="Archivo, ui-sans-serif, sans-serif" font-size="74" font-weight="700" fill="#FFFFFF" letter-spacing="-1.5">before the sound</text>
+
+  <!-- frosted CTA pill -->
+  <g transform="translate(880,530)">
+    <rect x="0" y="0" width="248" height="54" rx="27" fill="#FFFFFF" fill-opacity="0.14" stroke="#FFFFFF" stroke-opacity="0.32"/>
+    <text x="30" y="34" font-family="Archivo, ui-sans-serif, sans-serif" font-size="17" fill="#FFFFFF">View the series</text>
+    <text x="210" y="34" font-family="Archivo, ui-sans-serif, sans-serif" font-size="18" fill="#FFFFFF">&#8594;</text>
+  </g>
+</svg>

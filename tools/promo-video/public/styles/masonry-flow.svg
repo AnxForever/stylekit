@@ -1,0 +1,101 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <!-- Background -->
+  <rect width="1200" height="630" fill="#111827"/>
+
+  <!-- Subtle grid texture -->
+  <defs>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <rect width="40" height="40" fill="none"/>
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#1f2937" stroke-width="1"/>
+    </pattern>
+  </defs>
+  <rect width="1200" height="630" fill="url(#grid)" opacity="0.5"/>
+
+  <!-- ===== COLUMN 1 (x: 60-310) ===== -->
+
+  <!-- Card 1: tall h=200, indigo -->
+  <rect x="60" y="80" width="250" height="200" rx="12" fill="#6366f1" opacity="0.9"/>
+  <rect x="60" y="80" width="250" height="200" rx="12" fill="white" opacity="0.05"/>
+  <rect x="84" y="200" width="160" height="10" rx="4" fill="white" opacity="0.3"/>
+  <rect x="84" y="218" width="120" height="10" rx="4" fill="white" opacity="0.3"/>
+  <rect x="84" y="236" width="140" height="10" rx="4" fill="white" opacity="0.3"/>
+
+  <!-- Card 2: short h=100, emerald -->
+  <rect x="60" y="296" width="250" height="100" rx="12" fill="#10b981"/>
+  <rect x="60" y="296" width="250" height="100" rx="12" fill="white" opacity="0.05"/>
+  <rect x="84" y="340" width="140" height="10" rx="4" fill="white" opacity="0.3"/>
+  <rect x="84" y="358" width="100" height="10" rx="4" fill="white" opacity="0.3"/>
+
+  <!-- Card 3: medium h=150, amber -->
+  <rect x="60" y="412" width="250" height="150" rx="12" fill="#f59e0b" opacity="0.85"/>
+  <rect x="60" y="412" width="250" height="150" rx="12" fill="white" opacity="0.05"/>
+  <rect x="84" y="496" width="150" height="10" rx="4" fill="white" opacity="0.3"/>
+  <rect x="84" y="514" width="110" height="10" rx="4" fill="white" opacity="0.3"/>
+  <rect x="84" y="532" width="130" height="10" rx="4" fill="white" opacity="0.3"/>
+
+  <!-- ===== COLUMN 2 (x: 330-580) ===== -->
+
+  <!-- Card 1: short h=110, red -->
+  <rect x="330" y="80" width="250" height="110" rx="12" fill="#ef4444" opacity="0.8"/>
+  <rect x="330" y="80" width="250" height="110" rx="12" fill="white" opacity="0.05"/>
+  <rect x="354" y="148" width="140" height="10" rx="4" fill="white" opacity="0.3"/>
+  <rect x="354" y="166" width="100" height="10" rx="4" fill="white" opacity="0.3"/>
+
+  <!-- Card 2: tall h=220, purple -->
+  <rect x="330" y="206" width="250" height="220" rx="12" fill="#8b5cf6"/>
+  <rect x="330" y="206" width="250" height="220" rx="12" fill="white" opacity="0.05"/>
+  <rect x="354" y="360" width="160" height="10" rx="4" fill="white" opacity="0.3"/>
+  <rect x="354" y="378" width="120" height="10" rx="4" fill="white" opacity="0.3"/>
+  <rect x="354" y="396" width="140" height="10" rx="4" fill="white" opacity="0.3"/>
+
+  <!-- Card 3: medium h=130, cyan -->
+  <rect x="330" y="442" width="250" height="130" rx="12" fill="#06b6d4"/>
+  <rect x="330" y="442" width="250" height="130" rx="12" fill="white" opacity="0.05"/>
+  <rect x="354" y="516" width="150" height="10" rx="4" fill="white" opacity="0.3"/>
+  <rect x="354" y="534" width="110" height="10" rx="4" fill="white" opacity="0.3"/>
+
+  <!-- ===== COLUMN 3 (x: 600-850) ===== -->
+
+  <!-- Card 1: medium h=160, amber -->
+  <rect x="600" y="80" width="250" height="160" rx="12" fill="#f59e0b"/>
+  <rect x="600" y="80" width="250" height="160" rx="12" fill="white" opacity="0.05"/>
+  <rect x="624" y="184" width="150" height="10" rx="4" fill="white" opacity="0.3"/>
+  <rect x="624" y="202" width="110" height="10" rx="4" fill="white" opacity="0.3"/>
+  <rect x="624" y="220" width="130" height="10" rx="4" fill="white" opacity="0.3"/>
+
+  <!-- Card 2: short h=90, emerald -->
+  <rect x="600" y="256" width="250" height="90" rx="12" fill="#10b981" opacity="0.85"/>
+  <rect x="600" y="256" width="250" height="90" rx="12" fill="white" opacity="0.05"/>
+  <rect x="624" y="306" width="140" height="10" rx="4" fill="white" opacity="0.3"/>
+  <rect x="624" y="324" width="100" height="10" rx="4" fill="white" opacity="0.3"/>
+
+  <!-- Card 3: tall h=200, indigo -->
+  <rect x="600" y="362" width="250" height="200" rx="12" fill="#6366f1" opacity="0.75"/>
+  <rect x="600" y="362" width="250" height="200" rx="12" fill="white" opacity="0.05"/>
+  <rect x="624" y="496" width="160" height="10" rx="4" fill="white" opacity="0.3"/>
+  <rect x="624" y="514" width="120" height="10" rx="4" fill="white" opacity="0.3"/>
+  <rect x="624" y="532" width="140" height="10" rx="4" fill="white" opacity="0.3"/>
+
+  <!-- ===== RIGHT SIDE: TEXT AND ICON ===== -->
+
+  <!-- Title: MASONRY -->
+  <text x="900" y="220" font-family="'Arial Black', Arial, sans-serif" font-size="56" font-weight="900" fill="#f9fafb" letter-spacing="-1">MASONRY</text>
+
+  <!-- Title: FLOW -->
+  <text x="900" y="286" font-family="'Arial Black', Arial, sans-serif" font-size="56" font-weight="900" fill="#6366f1" letter-spacing="-1">FLOW</text>
+
+  <!-- Subtitle -->
+  <text x="900" y="324" font-family="Arial, sans-serif" font-size="16" fill="#9ca3af">Variable-height waterfall columns</text>
+
+  <!-- Divider line -->
+  <rect x="900" y="345" width="240" height="2" rx="1" fill="#374151"/>
+
+  <!-- Small grid icon: 3 rects of different heights -->
+  <rect x="900" y="370" width="36" height="70" rx="5" fill="#6366f1" opacity="0.8"/>
+  <rect x="944" y="400" width="36" height="40" rx="5" fill="#10b981" opacity="0.8"/>
+  <rect x="988" y="382" width="36" height="58" rx="5" fill="#f59e0b" opacity="0.8"/>
+
+  <!-- Tag -->
+  <rect x="900" y="460" width="130" height="32" rx="16" fill="#6366f1" opacity="0.2"/>
+  <text x="916" y="481" font-family="Arial, sans-serif" font-size="13" fill="#6366f1" font-weight="600">pinterest-style</text>
+</svg>

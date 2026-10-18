@@ -1,0 +1,92 @@
+<svg viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="sg1" cx="0.26" cy="0.30" r="0.55"><stop offset="0" stop-color="#7C5CFF"/><stop offset="1" stop-color="#08090D" stop-opacity="0"/></radialGradient>
+    <radialGradient id="sg2" cx="0.76" cy="0.58" r="0.5"><stop offset="0" stop-color="#22D3EE"/><stop offset="1" stop-color="#08090D" stop-opacity="0"/></radialGradient>
+    <radialGradient id="sg3" cx="0.52" cy="0.9" r="0.5"><stop offset="0" stop-color="#F472B6"/><stop offset="1" stop-color="#08090D" stop-opacity="0"/></radialGradient>
+    <radialGradient id="sg4" cx="0.9" cy="0.12" r="0.4"><stop offset="0" stop-color="#818CF8"/><stop offset="1" stop-color="#08090D" stop-opacity="0"/></radialGradient>
+    <radialGradient id="sgvig" cx="0.5" cy="0.45" r="0.65"><stop offset="0.35" stop-color="#08090D" stop-opacity="0"/><stop offset="1" stop-color="#08090D" stop-opacity="0.72"/></radialGradient>
+    <filter id="sgblur"><feGaussianBlur stdDeviation="26"/></filter>
+    <filter id="sggrain"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" stitchTiles="stitch"/><feColorMatrix type="saturate" values="0"/></filter>
+    <linearGradient id="sgavatar" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7C5CFF"/><stop offset="1" stop-color="#22D3EE"/></linearGradient>
+  </defs>
+
+  <!-- living-gradient field -->
+  <rect width="1200" height="630" fill="#08090D"/>
+  <g filter="url(#sgblur)">
+    <rect width="1200" height="630" fill="url(#sg1)"/>
+    <rect width="1200" height="630" fill="url(#sg2)"/>
+    <rect width="1200" height="630" fill="url(#sg3)"/>
+    <rect width="1200" height="630" fill="url(#sg4)"/>
+  </g>
+  <rect width="1200" height="630" fill="url(#sgvig)"/>
+  <rect width="1200" height="630" filter="url(#sggrain)" opacity="0.05"/>
+
+  <!-- frosted nav bar -->
+  <rect x="60" y="42" width="1080" height="56" rx="18" fill="#FFFFFF" fill-opacity="0.05" stroke="#FFFFFF" stroke-opacity="0.10"/>
+  <circle cx="92" cy="70" r="9" fill="url(#sgavatar)"/>
+  <text x="116" y="76" font-family="Inter, ui-sans-serif, sans-serif" font-size="18" font-weight="600" fill="#FFFFFF">Prism</text>
+  <g font-family="Inter, ui-sans-serif, sans-serif" font-size="14" fill="#FFFFFF" opacity="0.72">
+    <text x="900" y="75">Features</text>
+    <text x="990" y="75">Pricing</text>
+    <text x="1070" y="75">Lab</text>
+  </g>
+
+  <!-- top-right glass feature card -->
+  <g>
+    <rect x="740" y="150" width="400" height="180" rx="22" fill="#FFFFFF" fill-opacity="0.06" stroke="#FFFFFF" stroke-opacity="0.12"/>
+    <rect x="770" y="180" width="40" height="40" rx="11" fill="#7C5CFF" fill-opacity="0.22" stroke="#7C5CFF" stroke-opacity="0.4"/>
+    <text x="770" y="252" font-family="Inter, ui-sans-serif, sans-serif" font-size="20" font-weight="600" fill="#FFFFFF">Realtime by default</text>
+    <text x="770" y="284" font-family="Inter, ui-sans-serif, sans-serif" font-size="14" fill="#FFFFFF" opacity="0.6">Every frame computed on the GPU.</text>
+    <text x="770" y="306" font-family="Inter, ui-sans-serif, sans-serif" font-size="14" fill="#FFFFFF" opacity="0.6">Nothing is a baked PNG.</text>
+  </g>
+
+  <!-- bottom-right shader-lab card with sliders -->
+  <g>
+    <rect x="820" y="360" width="320" height="210" rx="22" fill="#FFFFFF" fill-opacity="0.06" stroke="#FFFFFF" stroke-opacity="0.12"/>
+    <text x="848" y="398" font-family="ui-monospace, monospace" font-size="12" fill="#FFFFFF" opacity="0.5" letter-spacing="2">SHADER LAB</text>
+    <!-- slider rows -->
+    <g>
+      <text x="848" y="436" font-family="Inter, sans-serif" font-size="13" fill="#FFFFFF" opacity="0.85">Speed</text>
+      <rect x="848" y="446" width="264" height="4" rx="2" fill="#FFFFFF" fill-opacity="0.14"/>
+      <rect x="848" y="446" width="150" height="4" rx="2" fill="#7C5CFF"/>
+      <circle cx="998" cy="448" r="8" fill="#7C5CFF" stroke="#FFFFFF" stroke-width="2"/>
+    </g>
+    <g>
+      <text x="848" y="484" font-family="Inter, sans-serif" font-size="13" fill="#FFFFFF" opacity="0.85">Blend</text>
+      <rect x="848" y="494" width="264" height="4" rx="2" fill="#FFFFFF" fill-opacity="0.14"/>
+      <rect x="848" y="494" width="200" height="4" rx="2" fill="#7C5CFF"/>
+      <circle cx="1048" cy="496" r="8" fill="#7C5CFF" stroke="#FFFFFF" stroke-width="2"/>
+    </g>
+    <g>
+      <text x="848" y="532" font-family="Inter, sans-serif" font-size="13" fill="#FFFFFF" opacity="0.85">Grain</text>
+      <rect x="848" y="542" width="264" height="4" rx="2" fill="#FFFFFF" fill-opacity="0.14"/>
+      <rect x="848" y="542" width="86" height="4" rx="2" fill="#7C5CFF"/>
+      <circle cx="934" cy="544" r="8" fill="#7C5CFF" stroke="#FFFFFF" stroke-width="2"/>
+    </g>
+  </g>
+
+  <!-- hero glass panel (left) -->
+  <rect x="60" y="188" width="560" height="382" rx="26" fill="#FFFFFF" fill-opacity="0.05" stroke="#FFFFFF" stroke-opacity="0.12"/>
+  <text x="96" y="252" font-family="ui-monospace, monospace" font-size="15" fill="#B4A6FF" letter-spacing="5">REALTIME WEBGL</text>
+  <text x="92" y="330" font-family="Inter, ui-sans-serif, sans-serif" font-size="74" font-weight="600" fill="#FFFFFF" letter-spacing="-2">The living</text>
+  <text x="92" y="404" font-family="Inter, ui-sans-serif, sans-serif" font-size="74" font-weight="600" fill="#FFFFFF" letter-spacing="-2">gradient</text>
+  <text x="96" y="452" font-family="Inter, ui-sans-serif, sans-serif" font-size="17" fill="#FFFFFF" opacity="0.66">A fragment shader flows across the canvas.</text>
+  <text x="96" y="478" font-family="Inter, ui-sans-serif, sans-serif" font-size="17" fill="#FFFFFF" opacity="0.66">No two frames alike.</text>
+
+  <!-- accent CTA + frosted secondary -->
+  <g transform="translate(96,506)">
+    <rect x="0" y="0" width="196" height="46" rx="14" fill="#7C5CFF"/>
+    <text x="34" y="30" font-family="Inter, ui-sans-serif, sans-serif" font-size="16" font-weight="600" fill="#FFFFFF">Start building</text>
+  </g>
+  <g transform="translate(308,506)">
+    <rect x="0" y="0" width="150" height="46" rx="14" fill="#FFFFFF" fill-opacity="0.08" stroke="#FFFFFF" stroke-opacity="0.16"/>
+    <text x="30" y="30" font-family="Inter, ui-sans-serif, sans-serif" font-size="16" fill="#FFFFFF" opacity="0.9">View docs</text>
+  </g>
+
+  <!-- title tag -->
+  <text x="60" y="608" font-family="ui-monospace, monospace" font-size="13" fill="#FFFFFF" opacity="0.4" letter-spacing="3">SHADER GRADIENT</text>
+  <g transform="translate(980,590)" font-family="ui-monospace, monospace" font-size="12" fill="#9FE9F4">
+    <text x="0" y="0">fbm domain-warp</text>
+    <text x="0" y="18" fill="#FFFFFF" opacity="0.4">dpr &#8804; 2</text>
+  </g>
+</svg>

@@ -1,0 +1,87 @@
+<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="spotlight" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="rgba(255,255,255,0.04)"/>
+      <stop offset="100%" stop-color="transparent"/>
+    </linearGradient>
+  </defs>
+  <!-- Background -->
+  <rect width="1200" height="630" fill="#0a0a0a"/>
+  <!-- Diagonal light shaft -->
+  <rect x="700" y="-100" width="200" height="900" fill="url(#spotlight)" transform="rotate(15 800 350)"/>
+  <!-- Nav -->
+  <line x1="0" y1="50" x2="1200" y2="50" stroke="#262626"/>
+  <text x="80" y="32" fill="#525252" font-family="serif" font-size="12" font-style="italic" letter-spacing="3">BACK</text>
+  <text x="550" y="32" fill="#525252" font-family="serif" font-size="13" font-style="italic">Film Noir</text>
+  <text x="1050" y="32" fill="#525252" font-family="serif" font-size="12" letter-spacing="3">ALL STYLES</text>
+  <!-- Hero -->
+  <text x="80" y="110" fill="#404040" font-family="serif" font-size="10" letter-spacing="5">A DESIGN SYSTEM</text>
+  <text x="80" y="200" fill="#F5F5F0" font-family="serif" font-size="80" font-style="italic" letter-spacing="-2">Film</text>
+  <text x="80" y="290" fill="#F5F5F0" font-family="serif" font-size="80" font-style="italic" letter-spacing="-2">Noir</text>
+  <text x="80" y="335" fill="#525252" font-family="sans-serif" font-size="14">Inspired by the dramatic chiaroscuro of 1940s cinema.</text>
+  <text x="80" y="355" fill="#525252" font-family="sans-serif" font-size="14">Deep blacks, stark whites, and an atmosphere thick with mystery.</text>
+  <rect x="80" y="380" width="64" height="1" fill="#c41e3a"/>
+  <!-- Case Files -->
+  <text x="600" y="110" fill="#404040" font-family="serif" font-size="10" letter-spacing="5">CASE FILES</text>
+  <!-- Card 1 -->
+  <rect x="600" y="130" width="260" height="160" fill="#171717"/>
+  <rect x="600" y="130" width="260" height="160" fill="url(#spotlight)" opacity=".5"/>
+  <text x="620" y="155" fill="#404040" font-family="serif" font-size="9" letter-spacing="3">CASE #001</text>
+  <text x="840" y="155" fill="#404040" font-family="serif" font-size="9" letter-spacing="2" text-anchor="end">1947</text>
+  <text x="620" y="185" fill="#F5F5F0" font-family="serif" font-size="18" font-style="italic">The Vanishing Point</text>
+  <text x="620" y="210" fill="#525252" font-family="sans-serif" font-size="11">She walked into my office at</text>
+  <text x="620" y="226" fill="#525252" font-family="sans-serif" font-size="11">midnight. Nobody walks in at</text>
+  <text x="620" y="242" fill="#525252" font-family="sans-serif" font-size="11">midnight unless they're desperate.</text>
+  <rect x="620" y="260" width="40" height="1" fill="#c41e3a"/>
+  <!-- Card 2 -->
+  <rect x="870" y="130" width="260" height="160" fill="#171717"/>
+  <rect x="870" y="130" width="260" height="160" fill="url(#spotlight)" opacity=".3"/>
+  <text x="890" y="155" fill="#404040" font-family="serif" font-size="9" letter-spacing="3">CASE #002</text>
+  <text x="1110" y="155" fill="#404040" font-family="serif" font-size="9" letter-spacing="2" text-anchor="end">1948</text>
+  <text x="890" y="185" fill="#F5F5F0" font-family="serif" font-size="18" font-style="italic">Shadows on 5th</text>
+  <text x="890" y="210" fill="#525252" font-family="sans-serif" font-size="11">The photograph told a story</text>
+  <text x="890" y="226" fill="#525252" font-family="sans-serif" font-size="11">the witness wouldn't. Rain-slicked</text>
+  <text x="890" y="242" fill="#525252" font-family="sans-serif" font-size="11">streets and a silhouette.</text>
+  <rect x="890" y="260" width="40" height="1" fill="#c41e3a"/>
+  <!-- Components -->
+  <text x="600" y="330" fill="#404040" font-family="serif" font-size="10" letter-spacing="5">COMPONENTS</text>
+  <!-- Buttons -->
+  <rect x="600" y="345" width="530" height="80" fill="#171717"/>
+  <text x="620" y="368" fill="#525252" font-family="sans-serif" font-size="9" letter-spacing="3">BUTTONS</text>
+  <rect x="620" y="380" width="100" height="34" fill="#F5F5F0"/>
+  <text x="641" y="401" fill="#0a0a0a" font-family="serif" font-size="12" font-style="italic">Investigate</text>
+  <rect x="735" y="380" width="100" height="34" fill="none" stroke="#525252"/>
+  <text x="755" y="401" fill="#A3A3A3" font-family="serif" font-size="12" font-style="italic">Read More</text>
+  <rect x="850" y="380" width="90" height="34" fill="#c41e3a"/>
+  <text x="872" y="401" fill="white" font-family="serif" font-size="12" font-style="italic">Confess</text>
+  <text x="960" y="401" fill="#525252" font-family="serif" font-size="12" font-style="italic" text-decoration="underline">Dismiss</text>
+  <!-- Typography -->
+  <text x="80" y="440" fill="#404040" font-family="serif" font-size="10" letter-spacing="5">TYPOGRAPHY</text>
+  <rect x="80" y="455" width="480" height="120" fill="#171717"/>
+  <text x="100" y="487" fill="#F5F5F0" font-family="serif" font-size="30" font-style="italic">Every shadow tells</text>
+  <text x="100" y="520" fill="#F5F5F0" font-family="serif" font-size="30" font-style="italic">a story</text>
+  <text x="100" y="555" fill="#A3A3A3" font-family="sans-serif" font-size="10" letter-spacing="3">CASE CLASSIFIED // RESTRICTED ACCESS // EYES ONLY</text>
+  <!-- Color Palette -->
+  <rect x="80" y="590" width="100" height="30" fill="#0a0a0a" stroke="#262626"/>
+  <text x="90" y="609" fill="#525252" font-family="sans-serif" font-size="9">Near Black</text>
+  <rect x="180" y="590" width="100" height="30" fill="#171717"/>
+  <text x="190" y="609" fill="#525252" font-family="sans-serif" font-size="9">Dark Grey</text>
+  <rect x="280" y="590" width="100" height="30" fill="#262626"/>
+  <text x="290" y="609" fill="#525252" font-family="sans-serif" font-size="9">Mid Grey</text>
+  <rect x="380" y="590" width="100" height="30" fill="#F5F5F0"/>
+  <text x="390" y="609" fill="#404040" font-family="sans-serif" font-size="9">Off White</text>
+  <rect x="480" y="590" width="100" height="30" fill="#c41e3a"/>
+  <text x="490" y="609" fill="white" font-family="sans-serif" font-size="9">Crimson</text>
+  <rect x="580" y="590" width="100" height="30" fill="#d4af37"/>
+  <text x="590" y="609" fill="black" font-family="sans-serif" font-size="9">Old Gold</text>
+  <rect x="680" y="590" width="100" height="30" fill="#A3A3A3"/>
+  <text x="690" y="609" fill="black" font-family="sans-serif" font-size="9">Smoke</text>
+  <!-- Quote -->
+  <rect x="600" y="445" width="530" height="130" fill="none"/>
+  <rect x="755" y="445" width="32" height="1" fill="#c41e3a"/>
+  <text x="771" y="480" fill="#A3A3A3" font-family="serif" font-size="18" font-style="italic" text-anchor="middle">"It was a blonde. A blonde to</text>
+  <text x="771" y="505" fill="#A3A3A3" font-family="serif" font-size="18" font-style="italic" text-anchor="middle">make a bishop kick a hole in</text>
+  <text x="771" y="530" fill="#A3A3A3" font-family="serif" font-size="18" font-style="italic" text-anchor="middle">a stained-glass window."</text>
+  <text x="771" y="555" fill="#404040" font-family="sans-serif" font-size="9" text-anchor="middle" letter-spacing="3">RAYMOND CHANDLER</text>
+  <rect x="755" y="565" width="32" height="1" fill="#c41e3a"/>
+</svg>

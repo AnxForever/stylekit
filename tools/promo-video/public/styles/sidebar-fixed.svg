@@ -1,0 +1,183 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <filter id="shadow-bar">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#00000012"/>
+    </filter>
+    <filter id="card-shadow">
+      <feDropShadow dx="0" dy="2" stdDeviation="6" flood-color="#0000001a"/>
+    </filter>
+  </defs>
+
+  <!-- Content background -->
+  <rect x="0" y="0" width="1200" height="630" fill="#f8fafc"/>
+
+  <!-- Fixed Sidebar -->
+  <rect x="0" y="0" width="240" height="630" fill="#1e293b"/>
+
+  <!-- Logo area -->
+  <circle cx="36" cy="40" r="14" fill="#3b82f6"/>
+  <text x="58" y="46" font-family="system-ui, sans-serif" font-size="15" font-weight="700" fill="#ffffff">App</text>
+  <line x1="0" y1="70" x2="240" y2="70" stroke="#334155" stroke-width="1"/>
+
+  <!-- Nav item: Dashboard (active) -->
+  <rect x="0" y="86" width="240" height="44" fill="#3b82f6" fill-opacity="0.15"/>
+  <rect x="0" y="86" width="4" height="44" fill="#3b82f6"/>
+  <rect x="20" y="100" width="16" height="14" rx="3" fill="#3b82f6"/>
+  <text x="46" y="113" font-family="system-ui, sans-serif" font-size="13" font-weight="600" fill="#3b82f6">Dashboard</text>
+
+  <!-- Nav item: Analytics -->
+  <rect x="20" y="146" width="16" height="14" rx="3" fill="#ffffff" fill-opacity="0.4"/>
+  <text x="46" y="159" font-family="system-ui, sans-serif" font-size="13" fill="#ffffff" opacity="0.6">Analytics</text>
+  <circle cx="210" cy="153" r="9" fill="#ef4444"/>
+  <text x="210" y="157" font-family="system-ui, sans-serif" font-size="9" font-weight="700" fill="#ffffff" text-anchor="middle">3</text>
+
+  <!-- Nav item: Projects -->
+  <rect x="20" y="186" width="16" height="14" rx="3" fill="#ffffff" fill-opacity="0.4"/>
+  <text x="46" y="199" font-family="system-ui, sans-serif" font-size="13" fill="#ffffff" opacity="0.6">Projects</text>
+  <circle cx="210" cy="193" r="9" fill="#f59e0b"/>
+  <text x="210" y="197" font-family="system-ui, sans-serif" font-size="9" font-weight="700" fill="#ffffff" text-anchor="middle">7</text>
+
+  <!-- Nav item: Team -->
+  <rect x="20" y="226" width="16" height="14" rx="3" fill="#ffffff" fill-opacity="0.4"/>
+  <text x="46" y="239" font-family="system-ui, sans-serif" font-size="13" fill="#ffffff" opacity="0.6">Team</text>
+
+  <!-- Nav item: Reports -->
+  <rect x="20" y="266" width="16" height="14" rx="3" fill="#ffffff" fill-opacity="0.4"/>
+  <text x="46" y="279" font-family="system-ui, sans-serif" font-size="13" fill="#ffffff" opacity="0.6">Reports</text>
+
+  <!-- Nav item: Settings -->
+  <rect x="20" y="306" width="16" height="14" rx="3" fill="#ffffff" fill-opacity="0.4"/>
+  <text x="46" y="319" font-family="system-ui, sans-serif" font-size="13" fill="#ffffff" opacity="0.6">Settings</text>
+
+  <!-- Sidebar divider -->
+  <line x1="16" y1="350" x2="224" y2="350" stroke="#334155" stroke-width="1"/>
+
+  <!-- User avatar at bottom -->
+  <circle cx="36" cy="590" r="18" fill="#475569"/>
+  <circle cx="36" cy="582" r="7" fill="#94a3b8"/>
+  <ellipse cx="36" cy="601" rx="12" ry="7" fill="#94a3b8"/>
+  <text x="62" y="587" font-family="system-ui, sans-serif" font-size="12" font-weight="600" fill="#ffffff">Alex Johnson</text>
+  <text x="62" y="602" font-family="system-ui, sans-serif" font-size="11" fill="#94a3b8">Admin</text>
+
+  <!-- Top bar -->
+  <rect x="240" y="0" width="960" height="64" fill="#ffffff" filter="url(#shadow-bar)"/>
+  <line x1="240" y1="64" x2="1200" y2="64" stroke="#e2e8f0" stroke-width="1"/>
+
+  <!-- Breadcrumb -->
+  <text x="268" y="36" font-family="system-ui, sans-serif" font-size="13" fill="#94a3b8">Home</text>
+  <text x="310" y="36" font-family="system-ui, sans-serif" font-size="13" fill="#cbd5e1">/</text>
+  <text x="322" y="36" font-family="system-ui, sans-serif" font-size="13" fill="#1e293b" font-weight="600">Dashboard</text>
+
+  <!-- Notification icon -->
+  <rect x="1120" y="20" width="22" height="20" rx="4" fill="#f1f5f9"/>
+  <circle cx="1142" cy="20" r="5" fill="#ef4444"/>
+
+  <!-- Top bar avatar -->
+  <circle cx="1164" cy="32" r="18" fill="#3b82f6"/>
+  <circle cx="1164" cy="24" r="7" fill="#bfdbfe"/>
+  <ellipse cx="1164" cy="43" rx="12" ry="7" fill="#bfdbfe"/>
+
+  <!-- Stat Cards Row -->
+  <!-- Card 1: Blue -->
+  <rect x="268" y="84" width="268" height="120" rx="8" fill="#ffffff" filter="url(#card-shadow)"/>
+  <rect x="284" y="100" width="36" height="36" rx="8" fill="#eff6ff"/>
+  <rect x="292" y="108" width="8" height="20" rx="2" fill="#3b82f6"/>
+  <rect x="304" y="114" width="8" height="14" rx="2" fill="#3b82f6"/>
+  <text x="332" y="118" font-family="system-ui, sans-serif" font-size="11" fill="#64748b">Total Revenue</text>
+  <text x="332" y="140" font-family="system-ui, sans-serif" font-size="26" font-weight="700" fill="#1e293b">$84,230</text>
+  <text x="284" y="186" font-family="system-ui, sans-serif" font-size="11" fill="#10b981">+12.5% this month</text>
+
+  <!-- Card 2: Green -->
+  <rect x="556" y="84" width="268" height="120" rx="8" fill="#ffffff" filter="url(#card-shadow)"/>
+  <rect x="572" y="100" width="36" height="36" rx="8" fill="#f0fdf4"/>
+  <circle cx="590" cy="118" r="10" fill="none" stroke="#10b981" stroke-width="3"/>
+  <text x="620" y="118" font-family="system-ui, sans-serif" font-size="11" fill="#64748b">Active Users</text>
+  <text x="620" y="140" font-family="system-ui, sans-serif" font-size="26" font-weight="700" fill="#1e293b">4,192</text>
+  <text x="572" y="186" font-family="system-ui, sans-serif" font-size="11" fill="#10b981">+8.1% this week</text>
+
+  <!-- Card 3: Amber -->
+  <rect x="844" y="84" width="268" height="120" rx="8" fill="#ffffff" filter="url(#card-shadow)"/>
+  <rect x="860" y="100" width="36" height="36" rx="8" fill="#fffbeb"/>
+  <polygon points="878,106 886,122 870,122" fill="#f59e0b"/>
+  <text x="908" y="118" font-family="system-ui, sans-serif" font-size="11" fill="#64748b">Open Tickets</text>
+  <text x="908" y="140" font-family="system-ui, sans-serif" font-size="26" font-weight="700" fill="#1e293b">237</text>
+  <text x="860" y="186" font-family="system-ui, sans-serif" font-size="11" fill="#ef4444">+3 since yesterday</text>
+
+  <!-- Table panel -->
+  <rect x="268" y="224" width="560" height="240" rx="8" fill="#ffffff" filter="url(#card-shadow)"/>
+  <text x="284" y="248" font-family="system-ui, sans-serif" font-size="13" font-weight="600" fill="#1e293b">Recent Activity</text>
+  <!-- Table header -->
+  <rect x="268" y="258" width="560" height="28" fill="#f8fafc"/>
+  <line x1="268" y1="286" x2="828" y2="286" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="284" y="277" font-family="system-ui, sans-serif" font-size="11" font-weight="600" fill="#64748b">NAME</text>
+  <text x="430" y="277" font-family="system-ui, sans-serif" font-size="11" font-weight="600" fill="#64748b">STATUS</text>
+  <text x="556" y="277" font-family="system-ui, sans-serif" font-size="11" font-weight="600" fill="#64748b">DATE</text>
+  <text x="688" y="277" font-family="system-ui, sans-serif" font-size="11" font-weight="600" fill="#64748b">AMOUNT</text>
+  <!-- Row 1 -->
+  <circle cx="296" cy="304" r="10" fill="#dbeafe"/>
+  <text x="314" y="308" font-family="system-ui, sans-serif" font-size="12" fill="#1e293b">Project Alpha</text>
+  <rect x="420" y="296" width="58" height="18" rx="9" fill="#dcfce7"/>
+  <text x="449" y="309" font-family="system-ui, sans-serif" font-size="10" fill="#16a34a" text-anchor="middle">Active</text>
+  <text x="556" y="308" font-family="system-ui, sans-serif" font-size="12" fill="#64748b">Jan 12</text>
+  <text x="688" y="308" font-family="system-ui, sans-serif" font-size="12" font-weight="600" fill="#1e293b">$3,200</text>
+  <line x1="268" y1="320" x2="828" y2="320" stroke="#f1f5f9" stroke-width="1"/>
+  <!-- Row 2 -->
+  <rect x="268" y="320" width="560" height="36" fill="#f8fafc" fill-opacity="0.6"/>
+  <circle cx="296" cy="338" r="10" fill="#fef3c7"/>
+  <text x="314" y="342" font-family="system-ui, sans-serif" font-size="12" fill="#1e293b">Project Beta</text>
+  <rect x="420" y="330" width="58" height="18" rx="9" fill="#fef3c7"/>
+  <text x="449" y="343" font-family="system-ui, sans-serif" font-size="10" fill="#d97706" text-anchor="middle">Pending</text>
+  <text x="556" y="342" font-family="system-ui, sans-serif" font-size="12" fill="#64748b">Jan 10</text>
+  <text x="688" y="342" font-family="system-ui, sans-serif" font-size="12" font-weight="600" fill="#1e293b">$1,840</text>
+  <line x1="268" y1="356" x2="828" y2="356" stroke="#f1f5f9" stroke-width="1"/>
+  <!-- Row 3 -->
+  <circle cx="296" cy="374" r="10" fill="#fee2e2"/>
+  <text x="314" y="378" font-family="system-ui, sans-serif" font-size="12" fill="#1e293b">Project Gamma</text>
+  <rect x="420" y="366" width="58" height="18" rx="9" fill="#fee2e2"/>
+  <text x="449" y="379" font-family="system-ui, sans-serif" font-size="10" fill="#dc2626" text-anchor="middle">Closed</text>
+  <text x="556" y="378" font-family="system-ui, sans-serif" font-size="12" fill="#64748b">Jan 08</text>
+  <text x="688" y="378" font-family="system-ui, sans-serif" font-size="12" font-weight="600" fill="#1e293b">$5,100</text>
+  <line x1="268" y1="392" x2="828" y2="392" stroke="#f1f5f9" stroke-width="1"/>
+  <!-- Row 4 -->
+  <rect x="268" y="392" width="560" height="36" fill="#f8fafc" fill-opacity="0.6"/>
+  <circle cx="296" cy="410" r="10" fill="#dbeafe"/>
+  <text x="314" y="414" font-family="system-ui, sans-serif" font-size="12" fill="#1e293b">Project Delta</text>
+  <rect x="420" y="402" width="58" height="18" rx="9" fill="#dcfce7"/>
+  <text x="449" y="415" font-family="system-ui, sans-serif" font-size="10" fill="#16a34a" text-anchor="middle">Active</text>
+  <text x="556" y="414" font-family="system-ui, sans-serif" font-size="12" fill="#64748b">Jan 05</text>
+  <text x="688" y="414" font-family="system-ui, sans-serif" font-size="12" font-weight="600" fill="#1e293b">$2,760</text>
+  <line x1="268" y1="428" x2="828" y2="428" stroke="#f1f5f9" stroke-width="1"/>
+  <!-- Row 5 -->
+  <circle cx="296" cy="446" r="10" fill="#fef3c7"/>
+  <text x="314" y="450" font-family="system-ui, sans-serif" font-size="12" fill="#1e293b">Project Epsilon</text>
+  <rect x="420" y="438" width="58" height="18" rx="9" fill="#fef3c7"/>
+  <text x="449" y="451" font-family="system-ui, sans-serif" font-size="10" fill="#d97706" text-anchor="middle">Pending</text>
+  <text x="556" y="450" font-family="system-ui, sans-serif" font-size="12" fill="#64748b">Jan 03</text>
+  <text x="688" y="450" font-family="system-ui, sans-serif" font-size="12" font-weight="600" fill="#1e293b">$920</text>
+
+  <!-- Bar chart panel -->
+  <rect x="848" y="224" width="264" height="240" rx="8" fill="#ffffff" filter="url(#card-shadow)"/>
+  <text x="864" y="248" font-family="system-ui, sans-serif" font-size="13" font-weight="600" fill="#1e293b">Monthly Overview</text>
+  <!-- Baseline -->
+  <line x1="864" y1="434" x2="1096" y2="434" stroke="#e2e8f0" stroke-width="1"/>
+  <!-- Bars -->
+  <rect x="872" y="374" width="22" height="60" rx="3" fill="#bfdbfe"/>
+  <rect x="904" y="344" width="22" height="90" rx="3" fill="#3b82f6"/>
+  <rect x="936" y="359" width="22" height="75" rx="3" fill="#bfdbfe"/>
+  <rect x="968" y="324" width="22" height="110" rx="3" fill="#3b82f6"/>
+  <rect x="1000" y="349" width="22" height="85" rx="3" fill="#bfdbfe"/>
+  <rect x="1032" y="334" width="22" height="100" rx="3" fill="#3b82f6"/>
+  <rect x="1064" y="314" width="22" height="120" rx="3" fill="#1d4ed8"/>
+  <!-- X-axis labels -->
+  <text x="876" y="448" font-family="system-ui, sans-serif" font-size="9" fill="#94a3b8">Jul</text>
+  <text x="908" y="448" font-family="system-ui, sans-serif" font-size="9" fill="#94a3b8">Aug</text>
+  <text x="940" y="448" font-family="system-ui, sans-serif" font-size="9" fill="#94a3b8">Sep</text>
+  <text x="972" y="448" font-family="system-ui, sans-serif" font-size="9" fill="#94a3b8">Oct</text>
+  <text x="1004" y="448" font-family="system-ui, sans-serif" font-size="9" fill="#94a3b8">Nov</text>
+  <text x="1036" y="448" font-family="system-ui, sans-serif" font-size="9" fill="#94a3b8">Dec</text>
+  <text x="1068" y="448" font-family="system-ui, sans-serif" font-size="9" fill="#94a3b8">Jan</text>
+
+  <!-- Typography overlay -->
+  <text x="268" y="548" font-family="system-ui, sans-serif" font-size="52" font-weight="700" fill="#1e293b">Sidebar Fixed</text>
+  <text x="268" y="578" font-family="system-ui, sans-serif" font-size="18" fill="#64748b">Navigation-first dashboard layout</text>
+</svg>

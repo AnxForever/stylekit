@@ -1,0 +1,91 @@
+<svg viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="ll-plate1" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#E8E3DB"/>
+      <stop offset="0.6" stop-color="#CFC7BB"/>
+      <stop offset="1" stop-color="#9A7B4F"/>
+    </linearGradient>
+    <linearGradient id="ll-plate2" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#F0ECE5"/>
+      <stop offset="0.7" stop-color="#DFD8CD"/>
+      <stop offset="1" stop-color="#B7A98F"/>
+    </linearGradient>
+    <linearGradient id="ll-plate3" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#2A2622"/>
+      <stop offset="1" stop-color="#4A4038"/>
+    </linearGradient>
+    <linearGradient id="ll-scrim" x1="0" y1="1" x2="0" y2="0">
+      <stop offset="0" stop-color="#141210" stop-opacity="0.45"/>
+      <stop offset="0.6" stop-color="#141210" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <!-- porcelain ground -->
+  <rect width="1200" height="630" fill="#F7F5F1"/>
+
+  <!-- masthead -->
+  <text x="60" y="78" font-family="Georgia, 'Times New Roman', serif" font-size="34" fill="#141210">Maison</text>
+  <text x="1010" y="72" font-family="ui-sans-serif, sans-serif" font-size="13" letter-spacing="4" fill="#141210" opacity="0.7">LOOKBOOK</text>
+  <line x1="60" y1="104" x2="1140" y2="104" stroke="#141210" stroke-opacity="0.2" stroke-width="1"/>
+
+  <!-- title area -->
+  <text x="60" y="176" font-family="ui-sans-serif, sans-serif" font-size="13" letter-spacing="5" fill="#9A7B4F">AUTUMN MAISON</text>
+  <text x="56" y="270" font-family="Georgia, 'Times New Roman', serif" font-size="112" fill="#141210">Luxe Lookbook</text>
+
+  <!-- gold CTA + outline secondary -->
+  <g transform="translate(60,308)">
+    <rect x="0" y="0" width="230" height="46" fill="#141210"/>
+    <text x="28" y="30" font-family="ui-sans-serif, sans-serif" font-size="13" letter-spacing="3" fill="#F7F5F1">VIEW THE LOOKBOOK</text>
+  </g>
+  <g transform="translate(304,308)">
+    <rect x="0" y="0" width="190" height="46" fill="none" stroke="#141210" stroke-width="1"/>
+    <text x="26" y="30" font-family="ui-sans-serif, sans-serif" font-size="13" letter-spacing="3" fill="#141210">BOOK A FITTING</text>
+  </g>
+
+  <!-- lookbook grid of three portrait plates -->
+  <g transform="translate(60,388)">
+    <rect x="0" y="0" width="200" height="200" fill="url(#ll-plate1)"/>
+    <rect x="0" y="0" width="200" height="200" fill="url(#ll-scrim)"/>
+    <line x1="0" y1="216" x2="200" y2="216" stroke="#141210" stroke-opacity="0.2" stroke-width="1"/>
+    <text x="0" y="240" font-family="ui-sans-serif, sans-serif" font-size="11" letter-spacing="3" fill="#9A7B4F">LOOK 01</text>
+    <text x="0" y="266" font-family="Georgia, 'Times New Roman', serif" font-size="20" fill="#141210">The Camel Coat</text>
+  </g>
+  <g transform="translate(288,388)">
+    <rect x="0" y="0" width="200" height="200" fill="url(#ll-plate2)"/>
+    <rect x="0" y="0" width="200" height="200" fill="url(#ll-scrim)"/>
+    <line x1="0" y1="216" x2="200" y2="216" stroke="#141210" stroke-opacity="0.2" stroke-width="1"/>
+    <text x="0" y="240" font-family="ui-sans-serif, sans-serif" font-size="11" letter-spacing="3" fill="#9A7B4F">LOOK 02</text>
+    <text x="0" y="266" font-family="Georgia, 'Times New Roman', serif" font-size="20" fill="#141210">Ivory Column</text>
+  </g>
+  <g transform="translate(516,388)">
+    <rect x="0" y="0" width="200" height="200" fill="url(#ll-plate3)"/>
+    <rect x="0" y="0" width="200" height="200" fill="url(#ll-scrim)"/>
+    <line x1="0" y1="216" x2="200" y2="216" stroke="#141210" stroke-opacity="0.2" stroke-width="1"/>
+    <text x="0" y="240" font-family="ui-sans-serif, sans-serif" font-size="11" letter-spacing="3" fill="#9A7B4F">LOOK 03</text>
+    <text x="0" y="266" font-family="Georgia, 'Times New Roman', serif" font-size="20" fill="#141210">Noir Tailoring</text>
+  </g>
+
+  <!-- right column: film-hero plate with play chip + newsletter field -->
+  <g transform="translate(760,388)">
+    <rect x="0" y="0" width="380" height="200" fill="url(#ll-plate1)"/>
+    <rect x="0" y="0" width="380" height="200" fill="url(#ll-scrim)"/>
+    <circle cx="190" cy="92" r="30" fill="#F7F5F1" fill-opacity="0.85"/>
+    <path d="M181 78 L181 106 L205 92 Z" fill="#141210"/>
+    <text x="16" y="176" font-family="ui-sans-serif, sans-serif" font-size="11" letter-spacing="4" fill="#F7F5F1">THE SILK SEASON - FILM</text>
+    <line x1="0" y1="240" x2="300" y2="240" stroke="#141210" stroke-opacity="0.35" stroke-width="1"/>
+    <text x="0" y="230" font-family="ui-sans-serif, sans-serif" font-size="11" letter-spacing="3" fill="#141210" opacity="0.5">YOUR EMAIL</text>
+    <g transform="translate(312,214)">
+      <rect x="0" y="0" width="68" height="30" fill="none" stroke="#141210" stroke-width="1"/>
+      <text x="12" y="20" font-family="ui-sans-serif, sans-serif" font-size="10" letter-spacing="2" fill="#141210">JOIN</text>
+    </g>
+  </g>
+
+  <!-- palette dots -->
+  <g transform="translate(760,320)">
+    <rect x="0" y="0" width="26" height="26" fill="#F7F5F1" stroke="#141210" stroke-opacity="0.2"/>
+    <rect x="34" y="0" width="26" height="26" fill="#E8E3DB"/>
+    <rect x="68" y="0" width="26" height="26" fill="#141210"/>
+    <rect x="102" y="0" width="26" height="26" fill="#9A7B4F"/>
+    <rect x="136" y="0" width="26" height="26" fill="#6B6259"/>
+  </g>
+</svg>

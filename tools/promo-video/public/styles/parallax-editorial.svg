@@ -1,0 +1,50 @@
+<svg viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg">
+  <!-- Warm paper stage -->
+  <rect width="1200" height="630" fill="#F5F0E6" />
+
+  <!-- Background layer (slow): giant faint year, offset up -->
+  <text x="40" y="440" font-family="Georgia, 'Times New Roman', serif" font-size="360" font-weight="600" fill="#1A1712" opacity="0.05">1892</text>
+
+  <!-- Midground rule (medium) -->
+  <rect x="820" y="120" width="2" height="300" fill="#B3401F" opacity="0.4" />
+  <circle cx="250" cy="470" r="80" fill="none" stroke="#C9BBA0" stroke-width="1.5" />
+
+  <!-- Top-left: masthead + chapter number -->
+  <g transform="translate(60,64)">
+    <rect x="0" y="0" width="320" height="1.5" fill="#1A1712" opacity="0.25" />
+    <text x="0" y="30" font-family="Georgia, serif" font-size="15" font-style="italic" fill="#B3401F">Issue 001</text>
+    <text x="0" y="70" font-family="Georgia, serif" font-size="26" fill="#1A1712">The Paper Press</text>
+  </g>
+
+  <!-- Top-right: nav -->
+  <g transform="translate(880,74)" font-family="Georgia, serif" font-size="15" fill="#1A1712" opacity="0.7">
+    <text x="0" y="20">Depth</text>
+    <text x="90" y="20">Archive</text>
+  </g>
+
+  <!-- Central foreground title (fast plane) -->
+  <text x="600" y="300" font-family="Georgia, 'Times New Roman', serif" font-size="96" font-weight="600" fill="#1A1712" text-anchor="middle" letter-spacing="-2">Depth on Paper</text>
+  <text x="600" y="346" font-family="Georgia, serif" font-size="20" font-style="italic" fill="#B3401F" text-anchor="middle">Scroll, and the layers slide out of register</text>
+
+  <!-- Drop-cap body block bottom-left -->
+  <g transform="translate(60,430)">
+    <text x="0" y="70" font-family="Georgia, serif" font-size="96" font-weight="600" fill="#B3401F">W</text>
+    <text x="76" y="30" font-family="Georgia, serif" font-size="16" fill="#1A1712" opacity="0.75">hen foreground and background slide out of</text>
+    <text x="76" y="56" font-family="Georgia, serif" font-size="16" fill="#1A1712" opacity="0.75">register, the flat page finally gains the</text>
+    <text x="76" y="82" font-family="Georgia, serif" font-size="16" fill="#1A1712" opacity="0.75">thickness of printed paper stock.</text>
+  </g>
+
+  <!-- Bottom-right: chapter card + rate tiers -->
+  <g transform="translate(800,440)">
+    <rect x="0" y="0" width="340" height="1.5" fill="#1A1712" opacity="0.25" />
+    <text x="0" y="52" font-family="Georgia, serif" font-size="44" fill="#B3401F">03</text>
+    <text x="70" y="30" font-family="Georgia, serif" font-size="20" fill="#1A1712">The Register Shift</text>
+    <g font-family="ui-monospace, monospace" font-size="11" fill="#1A1712" opacity="0.5">
+      <text x="70" y="54">rate 0.10 &#183; 0.30 &#183; 0.50</text>
+    </g>
+    <!-- three tier bars -->
+    <rect x="0" y="86" width="90" height="4" fill="#1A1712" opacity="0.2" />
+    <rect x="0" y="98" width="180" height="4" fill="#1A1712" opacity="0.35" />
+    <rect x="0" y="110" width="300" height="4" fill="#B3401F" opacity="0.7" />
+  </g>
+</svg>

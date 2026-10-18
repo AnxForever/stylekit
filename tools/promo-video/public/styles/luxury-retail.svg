@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="gold-line" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="transparent"/>
+      <stop offset="20%" stop-color="#c9a96e"/>
+      <stop offset="80%" stop-color="#c9a96e"/>
+      <stop offset="100%" stop-color="transparent"/>
+    </linearGradient>
+    <linearGradient id="product-grad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#e8e0d4"/>
+      <stop offset="100%" stop-color="#d8cfc0"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Warm white background -->
+  <rect width="1200" height="630" fill="#faf9f6"/>
+
+  <!-- Top gold divider -->
+  <rect x="200" y="80" width="800" height="1" fill="url(#gold-line)"/>
+
+  <!-- Brand name - serif style -->
+  <text x="600" y="130" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="28" letter-spacing="12" fill="#1a1a1a">MAISON</text>
+
+  <!-- Navigation links -->
+  <text x="600" y="160" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="10" letter-spacing="4" fill="#8b7355">WOMEN      MEN      STORIES      STORES</text>
+
+  <!-- Gold divider -->
+  <rect x="200" y="180" width="800" height="1" fill="url(#gold-line)"/>
+
+  <!-- Hero section -->
+  <text x="600" y="240" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="9" letter-spacing="6" fill="#c9a96e">AUTUMN / WINTER 2026</text>
+  <text x="600" y="290" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="42" fill="#1a1a1a">The Art of</text>
+  <text x="600" y="340" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="42" fill="#1a1a1a">Timeless Elegance</text>
+
+  <!-- CTA button outline -->
+  <rect x="480" y="370" width="240" height="44" rx="2" fill="none" stroke="#1a1a1a" stroke-width="1"/>
+  <text x="600" y="397" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="10" letter-spacing="4" fill="#1a1a1a">EXPLORE COLLECTION</text>
+
+  <!-- Gold divider -->
+  <rect x="300" y="440" width="600" height="1" fill="url(#gold-line)"/>
+
+  <!-- Product cards row -->
+  <!-- Card 1 -->
+  <rect x="160" y="465" width="180" height="130" rx="1" fill="url(#product-grad)"/>
+  <text x="250" y="615" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="8" letter-spacing="3" fill="#8b7355">COLLECTION</text>
+
+  <!-- Card 2 -->
+  <rect x="380" y="465" width="180" height="130" rx="1" fill="url(#product-grad)"/>
+  <text x="470" y="615" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="13" fill="#1a1a1a">Signature Piece</text>
+
+  <!-- Card 3 -->
+  <rect x="600" y="465" width="180" height="130" rx="1" fill="url(#product-grad)"/>
+  <text x="690" y="615" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="10" fill="#8b7355">$1,280</text>
+
+  <!-- Card 4 -->
+  <rect x="820" y="465" width="180" height="130" rx="1" fill="url(#product-grad)"/>
+
+  <!-- Bottom gold accents -->
+  <rect x="200" y="628" width="800" height="1" fill="url(#gold-line)"/>
+
+  <!-- Gold corner accents -->
+  <line x1="140" y1="60" x2="140" y2="90" stroke="#c9a96e" stroke-width="1"/>
+  <line x1="140" y1="60" x2="170" y2="60" stroke="#c9a96e" stroke-width="1"/>
+  <line x1="1060" y1="60" x2="1060" y2="90" stroke="#c9a96e" stroke-width="1"/>
+  <line x1="1030" y1="60" x2="1060" y2="60" stroke="#c9a96e" stroke-width="1"/>
+  <line x1="140" y1="570" x2="140" y2="540" stroke="#c9a96e" stroke-width="1"/>
+  <line x1="140" y1="570" x2="170" y2="570" stroke="#c9a96e" stroke-width="1"/>
+  <line x1="1060" y1="570" x2="1060" y2="540" stroke="#c9a96e" stroke-width="1"/>
+  <line x1="1030" y1="570" x2="1060" y2="570" stroke="#c9a96e" stroke-width="1"/>
+</svg>

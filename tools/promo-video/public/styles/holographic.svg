@@ -1,0 +1,137 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
+  <defs>
+    <!-- Full rainbow gradient (diagonal) -->
+    <linearGradient id="holo" x1="0%" y1="0%" x2="100%" y2="100%" gradientTransform="rotate(45)">
+      <stop offset="0%"    stop-color="#ff0080"/>
+      <stop offset="14%"   stop-color="#ff6600"/>
+      <stop offset="28%"   stop-color="#ffff00"/>
+      <stop offset="42%"   stop-color="#00ff80"/>
+      <stop offset="57%"   stop-color="#00ffff"/>
+      <stop offset="71%"   stop-color="#0080ff"/>
+      <stop offset="85%"   stop-color="#8000ff"/>
+      <stop offset="100%"  stop-color="#ff0080"/>
+    </linearGradient>
+
+    <!-- Card fill gradient (angled foil) -->
+    <linearGradient id="cardFoil" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%"   stop-color="#ff0080" stop-opacity="0.35"/>
+      <stop offset="25%"  stop-color="#ffff00" stop-opacity="0.25"/>
+      <stop offset="50%"  stop-color="#00ffff" stop-opacity="0.35"/>
+      <stop offset="75%"  stop-color="#8000ff" stop-opacity="0.25"/>
+      <stop offset="100%" stop-color="#ff0080" stop-opacity="0.35"/>
+    </linearGradient>
+
+    <!-- Foil shimmer layer A -->
+    <linearGradient id="shimmerA" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%"   stop-color="#ffffff" stop-opacity="0"/>
+      <stop offset="45%"  stop-color="#ffffff" stop-opacity="0.12"/>
+      <stop offset="55%"  stop-color="#ffffff" stop-opacity="0.22"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+
+    <!-- Foil shimmer layer B -->
+    <linearGradient id="shimmerB" x1="100%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%"   stop-color="#ff00ff" stop-opacity="0"/>
+      <stop offset="40%"  stop-color="#00ffff" stop-opacity="0.10"/>
+      <stop offset="60%"  stop-color="#ffff00" stop-opacity="0.10"/>
+      <stop offset="100%" stop-color="#ff00ff" stop-opacity="0"/>
+    </linearGradient>
+
+    <!-- Text gradient (horizontal full spectrum) -->
+    <linearGradient id="holoText" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%"    stop-color="#ff0080"/>
+      <stop offset="16%"   stop-color="#ff6600"/>
+      <stop offset="33%"   stop-color="#ffff00"/>
+      <stop offset="50%"   stop-color="#00ff80"/>
+      <stop offset="66%"   stop-color="#00ffff"/>
+      <stop offset="83%"   stop-color="#8000ff"/>
+      <stop offset="100%"  stop-color="#ff0080"/>
+    </linearGradient>
+
+    <!-- Card border gradient -->
+    <linearGradient id="cardBorder" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%"   stop-color="#ff0080"/>
+      <stop offset="33%"  stop-color="#00ffff"/>
+      <stop offset="66%"  stop-color="#ffff00"/>
+      <stop offset="100%" stop-color="#ff0080"/>
+    </linearGradient>
+
+    <!-- Glow filter -->
+    <filter id="glow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="8" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <!-- Soft glow for center point -->
+    <filter id="softGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="18" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- 1. Dark background -->
+  <rect width="1200" height="630" fill="#0a0a0f"/>
+
+  <!-- 2. Iridescent gradient overlay (diagonal rainbow wash) -->
+  <rect width="1200" height="630" fill="url(#holo)" opacity="0.15"/>
+
+  <!-- 3. Prismatic light rays from top-right -->
+  <line x1="1050" y1="80"  x2="200"  y2="580" stroke="#ff0080" stroke-width="2" opacity="0.35"/>
+  <line x1="1050" y1="80"  x2="300"  y2="600" stroke="#ff6600" stroke-width="2" opacity="0.35"/>
+  <line x1="1050" y1="80"  x2="450"  y2="620" stroke="#ffff00" stroke-width="2" opacity="0.35"/>
+  <line x1="1050" y1="80"  x2="600"  y2="630" stroke="#00ff80" stroke-width="2" opacity="0.35"/>
+  <line x1="1050" y1="80"  x2="750"  y2="630" stroke="#00ffff" stroke-width="2" opacity="0.35"/>
+  <line x1="1050" y1="80"  x2="1000" y2="600" stroke="#0080ff" stroke-width="2" opacity="0.35"/>
+  <line x1="1050" y1="80"  x2="1150" y2="400" stroke="#8000ff" stroke-width="2" opacity="0.35"/>
+  <line x1="1050" y1="80"  x2="1190" y2="200" stroke="#ff0080" stroke-width="2" opacity="0.35"/>
+
+  <!-- Glow at ray origin -->
+  <circle cx="1050" cy="80" r="18" fill="#ffffff" opacity="0.18" filter="url(#softGlow)"/>
+
+  <!-- 4. Central holographic card -->
+  <rect width="500" height="300" x="350" y="165" rx="24" fill="url(#cardFoil)" filter="url(#glow)"/>
+  <rect width="500" height="300" x="350" y="165" rx="24" fill="url(#shimmerA)"/>
+  <rect width="500" height="300" x="350" y="165" rx="24" fill="url(#shimmerB)"/>
+  <rect width="500" height="300" x="350" y="165" rx="24" fill="none" stroke="url(#cardBorder)" stroke-width="1.5" opacity="0.9"/>
+
+  <!-- Card inner text -->
+  <text x="600" y="340" font-family="Arial Black, Arial, sans-serif" font-size="96" font-weight="900"
+        text-anchor="middle" fill="#ffffff" opacity="0.92" letter-spacing="6">HOLO</text>
+
+  <!-- 5. Floating holographic circles -->
+  <circle cx="180" cy="200" r="90"  fill="none" stroke="url(#holo)" stroke-width="2" opacity="0.55"/>
+  <circle cx="1020" cy="430" r="70" fill="none" stroke="url(#holo)" stroke-width="2" opacity="0.55"/>
+  <circle cx="130"  cy="470" r="50" fill="none" stroke="url(#holo)" stroke-width="1.5" stroke-dasharray="6 4" opacity="0.5"/>
+  <circle cx="1090" cy="160" r="55" fill="none" stroke="url(#holo)" stroke-width="1.5" stroke-dasharray="6 4" opacity="0.5"/>
+
+  <!-- 6. Main title text -->
+  <text x="600" y="110" font-family="Arial Black, Arial, sans-serif" font-size="72" font-weight="900"
+        text-anchor="middle" letter-spacing="4" fill="url(#holoText)" filter="url(#glow)">HOLOGRAPHIC</text>
+
+  <!-- Subtitle -->
+  <text x="600" y="548" font-family="Arial, sans-serif" font-size="20" font-weight="400"
+        text-anchor="middle" fill="#888888" letter-spacing="2">Iridescent Design System</text>
+
+  <!-- 7. Sparkle dots scattered across canvas -->
+  <circle cx="80"   cy="120" r="3" fill="#ff0080" opacity="0.85"/>
+  <circle cx="155"  cy="340" r="2" fill="#ff6600" opacity="0.75"/>
+  <circle cx="70"   cy="560" r="4" fill="#ffff00" opacity="0.7"/>
+  <circle cx="290"  cy="80"  r="2" fill="#00ff80" opacity="0.8"/>
+  <circle cx="320"  cy="580" r="3" fill="#00ffff" opacity="0.75"/>
+  <circle cx="490"  cy="140" r="2" fill="#0080ff" opacity="0.8"/>
+  <circle cx="720"  cy="520" r="4" fill="#8000ff" opacity="0.7"/>
+  <circle cx="870"  cy="100" r="3" fill="#ff0080" opacity="0.8"/>
+  <circle cx="930"  cy="570" r="2" fill="#ffff00" opacity="0.75"/>
+  <circle cx="1000" cy="300" r="3" fill="#00ffff" opacity="0.75"/>
+  <circle cx="1130" cy="520" r="4" fill="#ff6600" opacity="0.7"/>
+  <circle cx="1170" cy="350" r="2" fill="#00ff80" opacity="0.8"/>
+  <circle cx="430"  cy="490" r="2" fill="#8000ff" opacity="0.75"/>
+  <circle cx="760"  cy="160" r="3" fill="#ff0080" opacity="0.8"/>
+  <circle cx="220"  cy="580" r="2" fill="#0080ff" opacity="0.7"/>
+</svg>

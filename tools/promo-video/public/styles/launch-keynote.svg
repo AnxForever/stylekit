@@ -1,0 +1,81 @@
+<svg viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="lk-glow" cx="0.5" cy="0.42" r="0.5">
+      <stop offset="0" stop-color="#2997FF" stop-opacity="0.42"/>
+      <stop offset="0.6" stop-color="#2997FF" stop-opacity="0.06"/>
+      <stop offset="1" stop-color="#000000" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="lk-device" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#3A3A3D"/>
+      <stop offset="0.5" stop-color="#1C1C1E"/>
+      <stop offset="1" stop-color="#0A0A0B"/>
+    </linearGradient>
+    <linearGradient id="lk-screen" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#0E2A4A"/>
+      <stop offset="1" stop-color="#05060A"/>
+    </linearGradient>
+    <linearGradient id="lk-title" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#F5F5F7"/>
+      <stop offset="1" stop-color="#B8B8BD"/>
+    </linearGradient>
+  </defs>
+
+  <!-- pitch-black stage -->
+  <rect width="1200" height="630" fill="#000000"/>
+  <rect width="1200" height="630" fill="url(#lk-glow)"/>
+
+  <!-- glowing product silhouette, center stage -->
+  <g transform="translate(510,150)">
+    <rect x="0" y="0" width="180" height="330" rx="42" fill="url(#lk-device)" stroke="#48484A" stroke-width="1.5"/>
+    <rect x="14" y="16" width="152" height="298" rx="30" fill="url(#lk-screen)"/>
+    <rect x="66" y="30" width="48" height="9" rx="4.5" fill="#000000" fill-opacity="0.6"/>
+    <!-- on-screen kicker + reveal line -->
+    <text x="30" y="250" font-family="ui-monospace, monospace" font-size="10" fill="#2997FF" letter-spacing="3">REVEALED</text>
+    <rect x="30" y="262" width="118" height="10" rx="3" fill="#F5F5F7" fill-opacity="0.9"/>
+    <rect x="30" y="278" width="80" height="10" rx="3" fill="#F5F5F7" fill-opacity="0.55"/>
+    <!-- camera cluster -->
+    <circle cx="46" cy="60" r="14" fill="#0A0A0B" stroke="#48484A" stroke-width="1.5"/>
+    <circle cx="46" cy="60" r="6" fill="#2997FF" fill-opacity="0.5"/>
+  </g>
+
+  <!-- top-left spec card -->
+  <g transform="translate(60,60)">
+    <rect x="0" y="0" width="200" height="92" rx="18" fill="#1D1D1F"/>
+    <text x="20" y="30" font-family="ui-monospace, monospace" font-size="11" fill="#2997FF" letter-spacing="2">CHIP</text>
+    <text x="20" y="62" font-family="-apple-system, ui-sans-serif, sans-serif" font-size="28" font-weight="600" fill="#F5F5F7" letter-spacing="-1">A17 Vertex</text>
+    <text x="20" y="82" font-family="-apple-system, ui-sans-serif, sans-serif" font-size="13" fill="#86868B">6-core, 3nm</text>
+  </g>
+
+  <!-- top-right spec card -->
+  <g transform="translate(940,60)">
+    <rect x="0" y="0" width="200" height="92" rx="18" fill="#1D1D1F"/>
+    <text x="20" y="30" font-family="ui-monospace, monospace" font-size="11" fill="#2997FF" letter-spacing="2">BATTERY</text>
+    <text x="20" y="62" font-family="-apple-system, ui-sans-serif, sans-serif" font-size="28" font-weight="600" fill="#F5F5F7" letter-spacing="-1">29 hours</text>
+    <text x="20" y="82" font-family="-apple-system, ui-sans-serif, sans-serif" font-size="13" fill="#86868B">Video playback</text>
+  </g>
+
+  <!-- bottom-left: title + CTA + secondary -->
+  <g transform="translate(60,470)">
+    <text x="0" y="0" font-family="ui-monospace, monospace" font-size="14" fill="#2997FF" letter-spacing="5">NOW REVEALED</text>
+    <text x="-2" y="58" font-family="-apple-system, ui-sans-serif, sans-serif" font-size="62" font-weight="600" fill="url(#lk-title)" letter-spacing="-2">Launch Keynote</text>
+    <g transform="translate(0,80)">
+      <rect x="0" y="0" width="118" height="42" rx="21" fill="#2997FF"/>
+      <text x="59" y="27" text-anchor="middle" font-family="-apple-system, ui-sans-serif, sans-serif" font-size="16" font-weight="500" fill="#FFFFFF">Buy</text>
+      <text x="140" y="27" font-family="-apple-system, ui-sans-serif, sans-serif" font-size="16" font-weight="500" fill="#2997FF">Learn more &#8250;</text>
+    </g>
+  </g>
+
+  <!-- bottom-right: scrub frame strip -->
+  <g transform="translate(896,486)">
+    <rect x="0" y="0" width="244" height="86" rx="16" fill="#1D1D1F"/>
+    <text x="20" y="28" font-family="ui-monospace, monospace" font-size="11" fill="#86868B" letter-spacing="2">FRAME 96 / 96</text>
+    <rect x="20" y="42" width="204" height="6" rx="3" fill="#FFFFFF" fill-opacity="0.12"/>
+    <rect x="20" y="42" width="204" height="6" rx="3" fill="#2997FF"/>
+    <g transform="translate(20,60)">
+      <rect x="0" y="0" width="34" height="16" rx="4" fill="#2997FF" fill-opacity="0.85"/>
+      <rect x="42" y="0" width="34" height="16" rx="4" fill="#FFFFFF" fill-opacity="0.14"/>
+      <rect x="84" y="0" width="34" height="16" rx="4" fill="#FFFFFF" fill-opacity="0.14"/>
+      <rect x="126" y="0" width="34" height="16" rx="4" fill="#FFFFFF" fill-opacity="0.14"/>
+    </g>
+  </g>
+</svg>
