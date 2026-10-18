@@ -6,14 +6,16 @@ import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { useI18n } from "@/lib/i18n/context";
 
-type DrawElementContext = CanvasRenderingContext2D & {
+type BaseCanvasContext = Omit<CanvasRenderingContext2D, "drawElementImage">;
+
+type DrawElementContext = BaseCanvasContext & {
   drawElementImage?: (
     element: Element,
     dx: number,
     dy: number,
     dWidth?: number,
     dHeight?: number,
-  ) => DOMMatrix;
+  ) => DOMMatrix | undefined;
 };
 
 type ExperimentalCanvas = HTMLCanvasElement & {
@@ -90,7 +92,7 @@ export default function HtmlInCanvasPage() {
   const [paintCount, setPaintCount] = useState(0);
   const [lastPaint, setLastPaint] = useState("");
 
-  const drawFallback = useCallback((ctx: CanvasRenderingContext2D, width: number, height: number) => {
+  const drawFallback = useCallback((ctx: BaseCanvasContext, width: number, height: number) => {
     ctx.clearRect(0, 0, width, height);
     ctx.fillStyle = "#0b0f14";
     ctx.fillRect(0, 0, width, height);
@@ -178,7 +180,7 @@ export default function HtmlInCanvasPage() {
     try {
       setSupported(true);
       const transform = ctx.drawElementImage(source, 72, 84, 320, 210);
-      source.style.transform = transform.toString();
+      if (transform) source.style.transform = transform.toString();
       setPaintCount((count) => count + 1);
       setLastPaint(`${copy.renderedAt} ${new Date().toLocaleTimeString()}`);
     } catch (error) {
