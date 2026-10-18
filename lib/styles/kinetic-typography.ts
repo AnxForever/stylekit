@@ -28,7 +28,7 @@ export const kineticTypography: DesignStyle = {
 - 编舞规则：一屏只允许一个主导动效。逐字入场时别的元素安静；跑马灯滚动时标题静止
 - 遮罩入场：文字从 overflow 遮罩下方升起（translateY 110% → 0），像幕布后走出的演员，绝不用平淡的 fade
 - 唯一信号色：信号橙 #FF4D00 只用于主 CTA、关键词高亮和悬停反馈，永不铺底
-- 动效即物理：expo-out 缓动（cubic-bezier(0.22,1,0.36,1)），快启动慢落定；stagger 30-50ms 制造波浪
+- 动效即物理：离散入场与交互过渡使用 expo-out 缓动（cubic-bezier(0.22,1,0.36,1)），快启动慢落定；stagger 30-50ms 制造波浪
 
 设计原则：
 - 性能红线：只动 transform / opacity / font-variation-settings，绝不动 top/left/width 触发重排
@@ -44,16 +44,16 @@ Core principles:
 - Choreography rule: one dominant motion per viewport; while letters stagger in, everything else holds still
 - Mask entrances: text rises from an overflow mask (translateY 110% → 0) like an actor stepping from behind a curtain — never a flat fade
 - One signal color: #FF4D00 appears only on primary CTAs, key words and hover feedback, never as a surface
-- Motion is physics: expo-out easing cubic-bezier(0.22,1,0.36,1), fast start, slow settle; 30-50ms stagger builds the wave`,
+- Motion is physics: discrete entrances and interaction transitions use expo-out easing cubic-bezier(0.22,1,0.36,1), fast start, slow settle; 30-50ms stagger builds the wave`,
 
   doList: [
     "背景用近黑墨色 #0B0B0C，文字用暖骨白 #F4F1EB，制造高对比舞台感",
     "加载可变字体（如 Anybody，wght 100-900 + wdth 50-150 双轴）作为展示字体",
     "标题入场用遮罩上升：外层 overflow-hidden，内层 translateY(110%) 动画到 0，逐字/逐词 stagger 30-50ms",
-    "缓动统一用 expo-out：cubic-bezier(0.22,1,0.36,1)，时长 0.7-0.9s",
+    "离散入场和交互过渡使用 expo-out：cubic-bezier(0.22,1,0.36,1)，入场 0.7-0.9s、hover 反馈 0.3-0.5s；连续装饰循环单独设定节奏",
     "用 font-variation-settings 动画字重（呼吸 300-800）与字宽（滚动速度联动 100-150）",
     "字号反差拉满：标签 11-12px 大写宽字距 + 标题 clamp(3rem,10vw,9rem) tracking-tight",
-    "跑马灯用 CSS 无缝循环（内容复制两份 + translateX -50%），hover 暂停",
+    "跑马灯用 CSS 无缝循环（内容复制两份 + translateX -50%），hover 暂停；自动播放且超过 5 秒并与其他内容并列的滚动信息，还要提供可持续使用的暂停／停止／隐藏机制",
     "信号橙 #FF4D00 只出现在主 CTA、关键词与悬停态",
     "所有动画都写 prefers-reduced-motion 降级到静态终态",
   ],
@@ -62,10 +62,10 @@ Core principles:
     "Stage the page on near-black ink #0B0B0C with warm bone text #F4F1EB for maximum contrast",
     "Load a variable font (e.g. Anybody, wght 100-900 + wdth 50-150) as the display face",
     "Mask entrances for headlines: overflow-hidden wrapper, inner element animates translateY(110%) to 0, staggered 30-50ms per char/word",
-    "One easing everywhere: expo-out cubic-bezier(0.22,1,0.36,1), 0.7-0.9s",
+    "Use expo-out cubic-bezier(0.22,1,0.36,1) for discrete entrances (0.7-0.9s) and interaction transitions such as hover feedback (0.3-0.5s); set continuous decorative loops independently",
     "Animate font-variation-settings: weight breathing 300-800, width stretching 100-150 with scroll velocity",
     "Extreme size contrast: 11-12px uppercase tracked labels against clamp(3rem,10vw,9rem) tracking-tight headlines",
-    "Seamless CSS marquee (duplicate content, translateX -50% loop), pause on hover",
+    "Seamless CSS marquee (duplicate content, translateX -50% loop), pause on hover; auto-starting scrolling information that runs over 5 seconds alongside other content also needs a persistent pause/stop/hide mechanism",
     "Signal orange #FF4D00 only on primary CTAs, key words and hover states",
     "Every animation ships a prefers-reduced-motion fallback that lands on the static end state",
   ],
@@ -76,7 +76,7 @@ Core principles:
     "禁止用图片或插画抢文字的戏（本风格里图像最多是背景纹理）",
     "禁止超过一个强调色，禁止把信号橙铺成大面积底色",
     "禁止平淡的 opacity-only 淡入代替遮罩上升",
-    "禁止超过 1.2s 的拖沓动画与 linear 缓动",
+    "禁止离散入场或交互过渡超过 1.2s，或对这些一次性过渡使用 linear；连续装饰循环不受此时长限制，呼吸可用 2.4s ease-in-out，跑马灯可用 24s linear 保持匀速",
     "禁止忽略 prefers-reduced-motion",
   ],
 
@@ -86,7 +86,7 @@ Core principles:
     "Never let images or illustration steal the stage from type (imagery is texture at most)",
     "Never use more than one accent, never flood signal orange as a surface color",
     "Never substitute a flat opacity fade for a mask rise",
-    "Never drag animations past 1.2s or use linear easing",
+    "Never drag discrete entrances or interaction transitions past 1.2s or use linear easing for them; continuous decorative loops have their own timing, such as 2.4s ease-in-out breathing and a 24s linear marquee for constant speed",
     "Never skip the prefers-reduced-motion fallback",
   ],
 
@@ -258,7 +258,7 @@ Core principles:
 | 图片／插画与文字抢戏 | 文字才是舞台的主人；图像最多只是纹理 |
 | 超过一个强调色；把橙色铺成大面积表面 | #FF4D00 是信号色，绝不能作为填充色 |
 | 只用 opacity 做入场淡入 | 遮罩上升才是本风格的招牌；平淡淡入是禁止的 |
-| 动画超过 1.2s，或使用 linear 缓动 | 会失去干脆的节奏感；请使用 0.9s 以内的 expo-out |
+| 离散入场或交互过渡超过 1.2s，或对这些过渡使用 linear | 会失去干脆的节奏感；入场使用 0.7-0.9s 的 expo-out。连续装饰循环不受该时长限制，跑马灯用 linear 保持匀速 |
 | 缺少 prefers-reduced-motion 降级 | 无障碍体验没有商量余地 |
 
 ## 必须遵守
@@ -319,7 +319,7 @@ gsap.from(split.chars, {
 \`\`\`
 
 ### 跑马灯
-把内容复制两份放进 track；track 做 translateX(-50%) 的 linear infinite 24s 动画；hover 时暂停。
+把内容复制两份放进 track；track 做 translateX(-50%) 的 linear infinite 24s 动画。linear 保持轨道匀速，24s 是一次完整滚动循环，不是入场过渡时长；保留 hover 暂停。自动播放且超过 5 秒并与其他内容并列的滚动信息，还要提供可持续使用的暂停／停止／隐藏机制。
 
 ### 字号系统
 - 标签：11-12px，大写，letter-spacing 0.2-0.3em
@@ -327,8 +327,9 @@ gsap.from(split.chars, {
 - 标题：clamp(3rem, 10vw, 9rem)，letter-spacing -0.02em，line-height 0.95
 
 ### 节奏
-- 统一使用一种缓动：cubic-bezier(0.22,1,0.36,1)
+- 离散入场与交互过渡使用 cubic-bezier(0.22,1,0.36,1) 的 expo-out
 - 入场 0.7-0.9s；hover 反馈 0.3-0.5s；逐字 stagger 30-50ms，逐行 stagger 80-120ms
+- 连续装饰循环不套用离散过渡的时长和缓动限制：呼吸可用 2.4s ease-in-out infinite alternate，跑马灯可用 24s linear infinite 保持匀速
 
 ### 无障碍
 \`\`\`css
@@ -345,7 +346,7 @@ gsap.from(split.chars, {
 - [ ] 参与动画的只有 transform/opacity/font-variation-settings
 - [ ] 一屏只有一个主导动效
 - [ ] 存在 prefers-reduced-motion 降级
-- [ ] 全程统一使用 expo-out 缓动`,
+- [ ] 离散入场与交互过渡使用 expo-out；连续装饰循环使用适合其运动方式的时长和缓动`,
 
   aiRulesEn: `# Kinetic Typography Design System
 
@@ -368,7 +369,7 @@ You are an expert frontend developer specializing in kinetic typography. Generat
 | Images/illustration competing with type | Type owns the stage; imagery is texture at most |
 | More than one accent; orange surfaces | #FF4D00 is a signal, never a fill |
 | Opacity-only fades for entrances | Mask rises are the signature; flat fades are forbidden |
-| Animations over 1.2s or linear easing | Kills the snap; use expo-out under 0.9s |
+| Discrete entrances or interaction transitions over 1.2s, or linear easing on those transitions | Kills the snap; use 0.7-0.9s expo-out for entrances. Continuous decorative loops have their own timing; marquee uses linear for constant speed |
 | Missing prefers-reduced-motion fallback | Accessibility is non-negotiable |
 
 ## Required
@@ -429,7 +430,7 @@ gsap.from(split.chars, {
 \`\`\`
 
 ### Marquee
-Duplicate strip content twice inside a track; animate track translateX(-50%) linear infinite 24s; pause on hover.
+Duplicate strip content twice inside a track; animate track translateX(-50%) linear infinite 24s. Linear keeps a constant track speed, and 24s is one complete marquee pass rather than an entrance duration; keep hover-to-pause. Auto-starting scrolling information that runs over 5 seconds alongside other content also needs a persistent pause/stop/hide mechanism.
 
 ### Type Scale
 - Labels: 11-12px, uppercase, letter-spacing 0.2-0.3em
@@ -437,8 +438,9 @@ Duplicate strip content twice inside a track; animate track translateX(-50%) lin
 - Headlines: clamp(3rem, 10vw, 9rem), letter-spacing -0.02em, line-height 0.95
 
 ### Rhythm
-- One easing: cubic-bezier(0.22,1,0.36,1)
+- Use expo-out cubic-bezier(0.22,1,0.36,1) for discrete entrances and interaction transitions
 - Entrances 0.7-0.9s; hover 0.3-0.5s; stagger 30-50ms per char, 80-120ms per line
+- Continuous decorative loops have their own timing and easing: breathing may use 2.4s ease-in-out infinite alternate; the marquee may use 24s linear infinite for constant speed
 
 ### Reduced Motion
 \`\`\`css
@@ -455,7 +457,7 @@ Everything lands on its static end state; zero information loss.
 - [ ] Only transform/opacity/font-variation-settings animate
 - [ ] One dominant motion per viewport
 - [ ] prefers-reduced-motion fallback present
-- [ ] expo-out easing everywhere`,
+- [ ] Use expo-out for discrete entrances and interaction transitions; give continuous decorative loops timing and easing suited to their motion`,
 
   examplePrompts: [
     {

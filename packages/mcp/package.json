@@ -15,7 +15,7 @@
   "scripts": {
     "build": "tsup",
     "dev": "tsx watch src/index.ts",
-    "clean": "rm -rf dist",
+    "clean": "node ../../tools/scripts/clean-generated.mjs mcp",
     "test": "node scripts/smoke.mjs && tsx scripts/live-lint.test.ts",
     "prepublishOnly": "pnpm run clean && pnpm run build"
   },

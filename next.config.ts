@@ -53,6 +53,8 @@ const PUBLIC_ASSET_CACHE_CONTROL =
   "public, max-age=86400, s-maxage=2592000, stale-while-revalidate=604800";
 
 const nextConfig: NextConfig = {
+  // Contributor-maintained agent rules must stay unchanged when starting dev.
+  agentRules: false,
   reactStrictMode: true,
   poweredByHeader: false,
   compress: true,
