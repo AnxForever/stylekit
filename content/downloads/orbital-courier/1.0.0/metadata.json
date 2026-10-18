@@ -1,0 +1,84 @@
+{
+  "id": "orbital-courier",
+  "name": {
+    "en": "Orbital Courier",
+    "zh": "轨道信使"
+  },
+  "description": {
+    "en": "A compact low-poly delivery spacecraft with ivory pressure hull, orange outriggers and a secured freight module.",
+    "zh": "象牙白船体、橙色侧舱与固定货箱组成的低多边形太空快递飞船。"
+  },
+  "style": "Lowpoly",
+  "theme": "Space transport",
+  "blender_version": "4.3.2",
+  "dimensions_m": [
+    3.059999942779541,
+    2.940000057220459,
+    2.2300000190734863
+  ],
+  "bounds_m": [
+    [
+      -1.5299999713897705,
+      -1.4700000286102295,
+      0.0
+    ],
+    [
+      1.5299999713897705,
+      1.4700000286102295,
+      2.2300000190734863
+    ]
+  ],
+  "evaluated_triangles": 1044,
+  "exported_triangles": 1044,
+  "materials": 7,
+  "mesh_parts": 27,
+  "license": "Pending user selection",
+  "origin": "Centered floor footprint, Z up in blend; standard glTF Y up",
+  "files": {
+    "model.blend": {
+      "bytes": 809208,
+      "sha256": "ff11cd1a07abbd65ab40745470d3e07e45f446e55f5cfd39afcddbd7e4a08efe"
+    },
+    "model.glb": {
+      "bytes": 78908,
+      "sha256": "ce4763adcb8c1286a894aaf1b95dfa3a6a9efd9cee54355c94a57e4db7f145b1"
+    },
+    "preview.png": {
+      "bytes": 1306516,
+      "sha256": "c6ad71c58e9f4ffba0b15262f5987f1269eba87b9b16b4fb06a8d7c3ad712089"
+    },
+    "generator.py": {
+      "bytes": 10973,
+      "sha256": "36196fa94133aaee1875525a84383792ebf6a44d04f3efdc9d4677c9aa91aee6"
+    }
+  },
+  "qa": {
+    "exported_triangle_count_matches": true,
+    "reimport": "passed: mesh count, bounds, floor and triangle count agree",
+    "reopen": "passed, fresh Blender process",
+    "preview": "Passed: final 900px image visually inspected, coherent silhouette and supports, no clipping.",
+    "roundtrip_bounds_max_error_m": 0.0,
+    "nonmanifold_edges": 0,
+    "zero_area_faces": 0,
+    "gltf_validator": {
+      "version": "2.0.0-dev.3.10",
+      "errors": 0,
+      "warnings": 0,
+      "infos": 21,
+      "info_notes": "Unused UV attributes on untextured solid-color materials are intentional."
+    },
+    "independent_review": "Passed technical checks: validator, reimport, bounds, origin, stage exclusion, source and reimport topology."
+  },
+  "triangle_budget": 5000,
+  "front_direction_blender": "-Y",
+  "asset_kind": "spacecraft",
+  "preview_render": {
+    "engine": "Cycles CPU",
+    "samples": 48,
+    "denoising": false,
+    "resolution": [
+      900,
+      900
+    ]
+  }
+}

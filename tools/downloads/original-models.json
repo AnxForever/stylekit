@@ -1,0 +1,261 @@
+[
+  {
+    "slug": "orbital-courier",
+    "style": "low-poly",
+    "tags": [
+      "GLB",
+      "Blender",
+      "low-poly",
+      "spacecraft"
+    ],
+    "styleSlugs": [
+      "sci-fi-hud"
+    ],
+    "theme": "props",
+    "name": {
+      "en": "Orbital Courier",
+      "zh": "轨道信使"
+    },
+    "description": {
+      "en": "A compact low-poly delivery spacecraft with ivory pressure hull, orange outriggers and a secured freight module.",
+      "zh": "象牙白船体、橙色侧舱与固定货箱组成的低多边形太空快递飞船。"
+    },
+    "itemCount": 1,
+    "geometry": {
+      "triangles": 1044,
+      "dimensions": [
+        3.059999942779541,
+        2.940000057220459,
+        2.2300000190734863
+      ]
+    },
+    "sourceDir": "D:\\StyleKit-Original-Models\\orbital-courier",
+    "files": [
+      {
+        "id": "model",
+        "source": "model.glb",
+        "name": "model.glb",
+        "format": "GLB",
+        "role": "model"
+      },
+      {
+        "id": "blender-source",
+        "source": "model.blend",
+        "name": "model.blend",
+        "format": "BLEND",
+        "role": "source"
+      },
+      {
+        "id": "metadata",
+        "source": "metadata.json",
+        "name": "metadata.json",
+        "format": "JSON",
+        "role": "guide"
+      },
+      {
+        "id": "validator-report",
+        "source": "validator.json",
+        "name": "validator.json",
+        "format": "JSON",
+        "role": "guide"
+      }
+    ],
+    "cover": {
+      "source": "preview.png",
+      "alt": {
+        "zh": "轨道信使：实际 Blender 渲染预览",
+        "en": "Orbital Courier: actual Blender-rendered preview"
+      }
+    },
+    "previews": [
+      {
+        "source": "preview.png",
+        "alt": {
+          "zh": "轨道信使：实际 Blender 渲染预览",
+          "en": "Orbital Courier: actual Blender-rendered preview"
+        }
+      }
+    ],
+    "notes": [
+      {
+        "zh": "静态模型，含一个 GLB 和独立 Blender 源文件；无绑定、动画或碰撞体。",
+        "en": "Static model with one GLB and an individual Blender source; no rig, animation or collision mesh."
+      },
+      {
+        "zh": "尺寸来自制作元数据，单位为米；网页预览为实际渲染图的压缩版本。",
+        "en": "Dimensions come from production metadata in meters; web previews are compressed copies of actual renders."
+      }
+    ]
+  },
+  {
+    "slug": "prism-reactor",
+    "style": "futuristic",
+    "tags": [
+      "GLB",
+      "Blender",
+      "futuristic",
+      "energy"
+    ],
+    "styleSlugs": [
+      "sci-fi-hud",
+      "cyberpunk-neon"
+    ],
+    "theme": "props",
+    "name": {
+      "en": "Prism Reactor",
+      "zh": "棱晶反应堆"
+    },
+    "description": {
+      "en": "A faceted turquoise energy crystal held by a mechanical tripod and two interrupted induction rings.",
+      "zh": "机械三脚底座与双层不闭合感应环支撑的青绿色棱晶能量装置。"
+    },
+    "itemCount": 1,
+    "geometry": {
+      "triangles": 1368,
+      "dimensions": [
+        2.0495171546936035,
+        2.073676586151123,
+        2.227695941925049
+      ]
+    },
+    "sourceDir": "D:\\StyleKit-Original-Models\\prism-reactor",
+    "files": [
+      {
+        "id": "model",
+        "source": "model.glb",
+        "name": "model.glb",
+        "format": "GLB",
+        "role": "model"
+      },
+      {
+        "id": "blender-source",
+        "source": "model.blend",
+        "name": "model.blend",
+        "format": "BLEND",
+        "role": "source"
+      },
+      {
+        "id": "metadata",
+        "source": "metadata.json",
+        "name": "metadata.json",
+        "format": "JSON",
+        "role": "guide"
+      },
+      {
+        "id": "validator-report",
+        "source": "validator.json",
+        "name": "validator.json",
+        "format": "JSON",
+        "role": "guide"
+      }
+    ],
+    "cover": {
+      "source": "preview.png",
+      "alt": {
+        "zh": "棱晶反应堆：实际 Blender 渲染预览",
+        "en": "Prism Reactor: actual Blender-rendered preview"
+      }
+    },
+    "previews": [
+      {
+        "source": "preview.png",
+        "alt": {
+          "zh": "棱晶反应堆：实际 Blender 渲染预览",
+          "en": "Prism Reactor: actual Blender-rendered preview"
+        }
+      }
+    ],
+    "notes": [
+      {
+        "zh": "静态模型，含一个 GLB 和独立 Blender 源文件；无绑定、动画或碰撞体。",
+        "en": "Static model with one GLB and an individual Blender source; no rig, animation or collision mesh."
+      },
+      {
+        "zh": "尺寸来自制作元数据，单位为米；网页预览为实际渲染图的压缩版本。",
+        "en": "Dimensions come from production metadata in meters; web previews are compressed copies of actual renders."
+      }
+    ]
+  },
+  {
+    "slug": "voxel-arcade",
+    "style": "voxel",
+    "tags": [
+      "GLB",
+      "Blender",
+      "voxel",
+      "arcade"
+    ],
+    "styleSlugs": [
+      "pixel-art",
+      "retro-vintage"
+    ],
+    "theme": "props",
+    "name": {
+      "zh": "像素彗星街机",
+      "en": "Pixel Comet Arcade"
+    },
+    "description": {
+      "zh": "原创体素街机，搭配方块彗星屏幕、粗颗粒摇杆与珊瑚青绿配色。",
+      "en": "An original voxel arcade cabinet with a cube-built comet screen, chunky controls and coral-lagoon color blocking."
+    },
+    "itemCount": 1,
+    "geometry": {
+      "triangles": 660,
+      "dimensions": [
+        1.2000000476837158,
+        1.2040000557899475,
+        2.2299997806549072
+      ]
+    },
+    "sourceDir": "D:\\StyleKit-Original-Models\\voxel-arcade",
+    "files": [
+      {
+        "id": "model",
+        "source": "model.glb",
+        "name": "model.glb",
+        "format": "GLB",
+        "role": "model"
+      },
+      {
+        "id": "blender-source",
+        "source": "model.blend",
+        "name": "model.blend",
+        "format": "BLEND",
+        "role": "source"
+      },
+      {
+        "id": "metadata",
+        "source": "metadata.json",
+        "name": "metadata.json",
+        "format": "JSON",
+        "role": "guide"
+      }
+    ],
+    "cover": {
+      "source": "preview.png",
+      "alt": {
+        "zh": "像素彗星街机：实际 Blender 渲染预览",
+        "en": "Pixel Comet Arcade: actual Blender-rendered preview"
+      }
+    },
+    "previews": [
+      {
+        "source": "preview.png",
+        "alt": {
+          "zh": "像素彗星街机：实际 Blender 渲染预览",
+          "en": "Pixel Comet Arcade: actual Blender-rendered preview"
+        }
+      }
+    ],
+    "notes": [
+      {
+        "zh": "静态模型，含一个 GLB 和独立 Blender 源文件；无绑定、动画或碰撞体。",
+        "en": "Static model with one GLB and an individual Blender source; no rig, animation or collision mesh."
+      },
+      {
+        "zh": "尺寸来自制作元数据，单位为米；网页预览为实际渲染图的压缩版本。",
+        "en": "Dimensions come from production metadata in meters; web previews are compressed copies of actual renders."
+      }
+    ]
+  }
+]

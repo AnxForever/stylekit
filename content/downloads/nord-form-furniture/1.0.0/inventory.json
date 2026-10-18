@@ -1,0 +1,311 @@
+{
+  "collection": "NORD FORM",
+  "blender_version": "4.3.2",
+  "units": "meters",
+  "blender_front": "-Y",
+  "glTF_up": "+Y",
+  "geometry": "Editable separate solid components; single-segment non-destructive bevels; no image textures.",
+  "assets": [
+    {
+      "id": "01_dining_chair",
+      "name": "Dining chair",
+      "dimensions_m": [
+        0.46,
+        0.4641,
+        0.81921
+      ],
+      "bounds_min_m": [
+        -0.23000000417232513,
+        -0.23205094039440155,
+        0.0
+      ],
+      "bounds_max_m": [
+        0.23000000417232513,
+        0.23205094039440155,
+        0.8192085027694702
+      ],
+      "evaluated_triangles": 484,
+      "evaluated_vertices": 264,
+      "mesh_parts": 11,
+      "materials": [
+        "Cream",
+        "Oak"
+      ],
+      "file": "models/01_dining_chair.glb",
+      "preview": "previews/01_dining_chair.png",
+      "floor_origin": true
+    },
+    {
+      "id": "02_dining_table",
+      "name": "Dining table",
+      "dimensions_m": [
+        1.6,
+        0.85,
+        0.755
+      ],
+      "bounds_min_m": [
+        -0.800000011920929,
+        -0.42500001192092896,
+        0.0
+      ],
+      "bounds_max_m": [
+        0.800000011920929,
+        0.42500001192092896,
+        0.7549999952316284
+      ],
+      "evaluated_triangles": 476,
+      "evaluated_vertices": 256,
+      "mesh_parts": 9,
+      "materials": [
+        "Oak"
+      ],
+      "file": "models/02_dining_table.glb",
+      "preview": "previews/02_dining_table.png",
+      "floor_origin": true
+    },
+    {
+      "id": "03_lounge_chair",
+      "name": "Lounge chair",
+      "dimensions_m": [
+        0.68555,
+        0.76209,
+        0.81606
+      ],
+      "bounds_min_m": [
+        -0.34277743101119995,
+        -0.3810437321662903,
+        0.0
+      ],
+      "bounds_max_m": [
+        0.34277743101119995,
+        0.3810437321662903,
+        0.816059410572052
+      ],
+      "evaluated_triangles": 572,
+      "evaluated_vertices": 312,
+      "mesh_parts": 13,
+      "materials": [
+        "Oak",
+        "Sage"
+      ],
+      "file": "models/03_lounge_chair.glb",
+      "preview": "previews/03_lounge_chair.png",
+      "floor_origin": true
+    },
+    {
+      "id": "04_sofa",
+      "name": "Two-seat sofa",
+      "dimensions_m": [
+        1.86,
+        0.785,
+        0.815
+      ],
+      "bounds_min_m": [
+        -0.9300000071525574,
+        -0.39249998331069946,
+        0.0
+      ],
+      "bounds_max_m": [
+        0.9300000071525574,
+        0.39249998331069946,
+        0.815000057220459
+      ],
+      "evaluated_triangles": 572,
+      "evaluated_vertices": 312,
+      "mesh_parts": 13,
+      "materials": [
+        "Cream",
+        "Oak",
+        "Terracotta",
+        "Walnut"
+      ],
+      "file": "models/04_sofa.glb",
+      "preview": "previews/04_sofa.png",
+      "floor_origin": true
+    },
+    {
+      "id": "05_coffee_table",
+      "name": "Coffee table",
+      "dimensions_m": [
+        1.1,
+        0.62,
+        0.405
+      ],
+      "bounds_min_m": [
+        -0.550000011920929,
+        -0.3100000023841858,
+        0.0
+      ],
+      "bounds_max_m": [
+        0.550000011920929,
+        0.3100000023841858,
+        0.4050000011920929
+      ],
+      "evaluated_triangles": 440,
+      "evaluated_vertices": 232,
+      "mesh_parts": 6,
+      "materials": [
+        "Oak",
+        "Walnut"
+      ],
+      "file": "models/05_coffee_table.glb",
+      "preview": "previews/05_coffee_table.png",
+      "floor_origin": true
+    },
+    {
+      "id": "06_bed",
+      "name": "Platform bed",
+      "dimensions_m": [
+        1.65,
+        2.12,
+        0.985
+      ],
+      "bounds_min_m": [
+        -0.824999988079071,
+        -1.059999942779541,
+        0.0
+      ],
+      "bounds_max_m": [
+        0.824999988079071,
+        1.059999942779541,
+        0.98499995470047
+      ],
+      "evaluated_triangles": 968,
+      "evaluated_vertices": 528,
+      "mesh_parts": 22,
+      "materials": [
+        "Cream",
+        "Linen",
+        "Oak",
+        "Sage"
+      ],
+      "file": "models/06_bed.glb",
+      "preview": "previews/06_bed.png",
+      "floor_origin": true
+    },
+    {
+      "id": "07_nightstand",
+      "name": "Nightstand",
+      "dimensions_m": [
+        0.5,
+        0.447,
+        0.5575
+      ],
+      "bounds_min_m": [
+        -0.25,
+        -0.22349999845027924,
+        0.0
+      ],
+      "bounds_max_m": [
+        0.25,
+        0.22349999845027924,
+        0.5575000047683716
+      ],
+      "evaluated_triangles": 616,
+      "evaluated_vertices": 336,
+      "mesh_parts": 14,
+      "materials": [
+        "Charcoal",
+        "Oak",
+        "Walnut"
+      ],
+      "file": "models/07_nightstand.glb",
+      "preview": "previews/07_nightstand.png",
+      "floor_origin": true
+    },
+    {
+      "id": "08_dresser",
+      "name": "Three-drawer dresser",
+      "dimensions_m": [
+        1.15,
+        0.496,
+        0.85
+      ],
+      "bounds_min_m": [
+        -0.574999988079071,
+        -0.24799999594688416,
+        0.0
+      ],
+      "bounds_max_m": [
+        0.574999988079071,
+        0.24800001084804535,
+        0.8499999642372131
+      ],
+      "evaluated_triangles": 1320,
+      "evaluated_vertices": 720,
+      "mesh_parts": 30,
+      "materials": [
+        "Charcoal",
+        "Oak",
+        "Walnut"
+      ],
+      "file": "models/08_dresser.glb",
+      "preview": "previews/08_dresser.png",
+      "floor_origin": true
+    },
+    {
+      "id": "09_bookshelf",
+      "name": "Open bookshelf",
+      "dimensions_m": [
+        0.85,
+        0.34,
+        1.65
+      ],
+      "bounds_min_m": [
+        -0.42500001192092896,
+        -0.17000000178813934,
+        0.0
+      ],
+      "bounds_max_m": [
+        0.42500001192092896,
+        0.17000000178813934,
+        1.649999976158142
+      ],
+      "evaluated_triangles": 836,
+      "evaluated_vertices": 456,
+      "mesh_parts": 19,
+      "materials": [
+        "Charcoal",
+        "Cream",
+        "Linen",
+        "Oak",
+        "Sage",
+        "Terracotta",
+        "Walnut"
+      ],
+      "file": "models/09_bookshelf.glb",
+      "preview": "previews/09_bookshelf.png",
+      "floor_origin": true
+    },
+    {
+      "id": "10_desk",
+      "name": "Writing desk",
+      "dimensions_m": [
+        1.35,
+        0.65,
+        0.755
+      ],
+      "bounds_min_m": [
+        -0.675000011920929,
+        -0.32499998807907104,
+        0.0
+      ],
+      "bounds_max_m": [
+        0.675000011920929,
+        0.32499998807907104,
+        0.7549999952316284
+      ],
+      "evaluated_triangles": 888,
+      "evaluated_vertices": 480,
+      "mesh_parts": 18,
+      "materials": [
+        "Charcoal",
+        "Oak",
+        "Walnut"
+      ],
+      "file": "models/10_desk.glb",
+      "preview": "previews/10_desk.png",
+      "floor_origin": true
+    }
+  ]
+}

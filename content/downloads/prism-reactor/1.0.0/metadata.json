@@ -1,0 +1,84 @@
+{
+  "id": "prism-reactor",
+  "name": {
+    "en": "Prism Reactor",
+    "zh": "棱晶反应堆"
+  },
+  "description": {
+    "en": "A faceted turquoise energy crystal held by a mechanical tripod and two interrupted induction rings.",
+    "zh": "机械三脚底座与双层不闭合感应环支撑的青绿色棱晶能量装置。"
+  },
+  "style": "Futuristic",
+  "theme": "Energy technology",
+  "blender_version": "4.3.2",
+  "dimensions_m": [
+    2.0495171546936035,
+    2.073676586151123,
+    2.227695941925049
+  ],
+  "bounds_m": [
+    [
+      -1.0247585773468018,
+      -1.0368382930755615,
+      0.0
+    ],
+    [
+      1.0247585773468018,
+      1.0368382930755615,
+      2.227695941925049
+    ]
+  ],
+  "evaluated_triangles": 1368,
+  "exported_triangles": 1368,
+  "materials": 4,
+  "mesh_parts": 34,
+  "license": "Pending user selection",
+  "origin": "Centered floor footprint, Z up in blend; standard glTF Y up",
+  "files": {
+    "model.blend": {
+      "bytes": 788960,
+      "sha256": "e3e76f4e489beeafd121283a973017bb50221e9c3dcf435af282531c029a8a44"
+    },
+    "model.glb": {
+      "bytes": 99516,
+      "sha256": "a8413dee97d2543f00e1be2509d744c2056178cf39e0ab981942365da40562e9"
+    },
+    "preview.png": {
+      "bytes": 1281362,
+      "sha256": "e526ae40052d8bc4cc873ef84bc8d691534d054a930d4a22e3bcb8849baf58f2"
+    },
+    "generator.py": {
+      "bytes": 10973,
+      "sha256": "36196fa94133aaee1875525a84383792ebf6a44d04f3efdc9d4677c9aa91aee6"
+    }
+  },
+  "qa": {
+    "exported_triangle_count_matches": true,
+    "reimport": "passed: mesh count, bounds, floor and triangle count agree",
+    "reopen": "passed, fresh Blender process",
+    "preview": "Passed: final 900px image visually inspected, coherent silhouette and supports, no clipping.",
+    "roundtrip_bounds_max_error_m": 0.0,
+    "nonmanifold_edges": 0,
+    "zero_area_faces": 0,
+    "gltf_validator": {
+      "version": "2.0.0-dev.3.10",
+      "errors": 0,
+      "warnings": 0,
+      "infos": 31,
+      "info_notes": "Unused UV attributes on untextured solid-color materials are intentional."
+    },
+    "independent_review": "Passed technical checks: validator, reimport, bounds, origin, stage exclusion, source and reimport topology."
+  },
+  "triangle_budget": 5000,
+  "front_direction_blender": "-Y",
+  "asset_kind": "energy device",
+  "preview_render": {
+    "engine": "Cycles CPU",
+    "samples": 48,
+    "denoising": false,
+    "resolution": [
+      900,
+      900
+    ]
+  }
+}

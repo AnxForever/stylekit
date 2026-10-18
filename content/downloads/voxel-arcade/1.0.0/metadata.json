@@ -1,0 +1,65 @@
+{
+  "name_en": "Pixel Comet Arcade",
+  "name_zh": "像素彗星街机",
+  "description_en": "An original voxel arcade cabinet with a cube-built comet screen, chunky controls and coral-lagoon color blocking.",
+  "description_zh": "原创体素街机，搭配方块彗星屏幕、粗颗粒摇杆与珊瑚青绿配色。",
+  "style": "voxel / pixel-art 3D",
+  "theme": "playful retro arcade",
+  "slug": "voxel-arcade",
+  "blender_version": "4.3.2",
+  "license": "Pending user selection; no license grant made",
+  "original_design": true,
+  "affiliation": "Independent original design; no franchise affiliation",
+  "bounds_m": {
+    "min": [
+      -0.6000000238418579,
+      -0.6640000343322754,
+      0.0
+    ],
+    "max": [
+      0.6000000238418579,
+      0.5400000214576721,
+      2.2299997806549072
+    ],
+    "dimensions": [
+      1.2000000476837158,
+      1.2040000557899475,
+      2.2299997806549072
+    ]
+  },
+  "evaluated_triangles": 660,
+  "exported_triangles": 660,
+  "mesh_objects": 55,
+  "materials": 6,
+  "glb_bytes": 85788,
+  "preview": {
+    "width": 900,
+    "height": 900,
+    "engine": "Cycles CPU",
+    "samples": 48,
+    "denoising": false
+  },
+  "checks": {
+    "saved_blend": true,
+    "glb_isolated": true,
+    "glb_reimport": true,
+    "blend_reopen": true,
+    "khronos_errors": 0,
+    "khronos_warnings": 0,
+    "visual_preview_inspected": true
+  },
+  "files": [
+    "model.blend",
+    "model.glb",
+    "preview.png",
+    "generator.py",
+    "metadata.json"
+  ],
+  "file_bytes": {
+    "model.blend": 884276,
+    "model.glb": 85788,
+    "preview.png": 1352164,
+    "generator.py": 11129,
+    "metadata.json": 1448
+  }
+}
