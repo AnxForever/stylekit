@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useId, useState } from "react";
 import Link from "next/link";
 import {
   Boxes,
@@ -14,13 +14,15 @@ import {
 } from "lucide-react";
 import { useI18n } from "@/lib/i18n/context";
 import { RevealOnScroll } from "@/components/home/reveal-on-scroll";
+import { useClipboard } from "@/lib/hooks/use-clipboard";
+import { cn } from "@/lib/utils";
 import {
   getDeveloperToolkitCapability,
   getDeveloperToolkitSetupSnippet,
   type DeveloperToolkitState,
 } from "@/lib/developer-toolkit";
 
-const ICONS = [Boxes, Sparkles, Terminal, Zap] as const;
+const ICONS = { registry: Boxes, mcp: Sparkles, cli: Terminal, "agent-skill": Zap } as const;
 
 const COPY = {
   en: {
@@ -44,6 +46,10 @@ const COPY = {
     copiedCommand: "Command copied",
     copyConfig: "Copy MCP config",
     copiedConfig: "MCP config copied",
+    chooseTool: "Choose an integration",
+    terminalLabel: "Run in your terminal",
+    configTitle: "MCP configuration",
+    copyFailed: "Couldn't copy. Select the code below to copy it manually.",
     configLabel: "Paste into your MCP client's configuration",
     updatesTitle: "How updates work",
     updatesIntro:
@@ -74,24 +80,28 @@ const COPY = {
       {
         id: "registry",
         name: "shadcn registry",
+        purpose: "Install a color theme",
         desc: "Drop any style's theme into an existing shadcn project with a single command.",
         foot: "Injects light + dark cssVars · Tailwind v4 ready",
       },
       {
         id: "mcp",
         name: "MCP server",
+        purpose: "Connect your AI client",
         desc: "Run the public beta MCP package over stdio from a compatible AI client.",
         foot: "Nine read-only tools · live assets with bundled fallback",
       },
       {
         id: "cli",
         name: "CLI",
+        purpose: "Work in your terminal",
         desc: "Browse the public asset catalog and retrieve available source code and dependencies in the terminal.",
         foot: "Public beta · searchable asset catalog",
       },
       {
         id: "agent-skill",
         name: "Agent Skill",
+        purpose: "Guide your coding agent",
         desc: "Guide a compatible coding agent to select assets, reuse their code and check the result in your project.",
         foot: "Vercel Agent Skills · works with any compatible agent",
       },
@@ -114,6 +124,10 @@ const COPY = {
     copiedCommand: "命令已复制",
     copyConfig: "复制 MCP 配置",
     copiedConfig: "MCP 配置已复制",
+    chooseTool: "选择接入方式",
+    terminalLabel: "在终端运行",
+    configTitle: "MCP 配置",
+    copyFailed: "未能复制，请手动选择下方代码。",
     configLabel: "粘贴到兼容客户端的 MCP 配置中",
     updatesTitle: "更新方式",
     updatesIntro:
@@ -144,24 +158,28 @@ const COPY = {
       {
         id: "registry",
         name: "shadcn registry",
+        purpose: "为项目安装配色主题",
         desc: "一行命令，把任意风格的主题装进现有 shadcn 项目。",
         foot: "注入明暗 cssVars · 兼容 Tailwind v4",
       },
       {
         id: "mcp",
         name: "MCP server",
+        purpose: "连接你的 AI 客户端",
         desc: "通过兼容的 AI 客户端，以 stdio 运行公开 Beta 版 MCP package。",
         foot: "9 个只读工具 · 在线资产与离线回退",
       },
       {
         id: "cli",
         name: "CLI",
+        purpose: "在终端查找和使用素材",
         desc: "在终端浏览公开素材目录，并查看素材可提供的源码和依赖。",
         foot: "公开 Beta · 可检索的资产目录",
       },
       {
         id: "agent-skill",
         name: "Agent Skill",
+        purpose: "让编码 Agent 使用素材",
         desc: "引导兼容的编码 Agent 选择素材、复用代码，并在你的项目里检查效果。",
         foot: "Vercel Agent Skills · 兼容任意 agent",
       },
@@ -175,45 +193,46 @@ function CommandBlock({
   label,
   copyLabel,
   copiedLabel,
+  failedLabel,
 }: {
   content: string;
   format: "bash" | "json";
-  label?: string;
+  label: string;
   copyLabel: string;
   copiedLabel: string;
+  failedLabel: string;
 }) {
-  const [copied, setCopied] = useState(false);
+  const { copy, result, isCopied } = useClipboard();
+  const copied = isCopied("setup", content);
   return (
-    <div className="mt-auto">
-      {label ? (
-        <p className="mb-2 text-[11px] text-muted">{label}</p>
-      ) : null}
-      <div className="flex items-start gap-2 border border-border bg-foreground/[0.03] px-3 py-2.5 font-mono text-xs leading-relaxed">
-        {format === "bash" ? (
-          <span className="mt-px select-none text-accent" aria-hidden="true">
-            $
-          </span>
-        ) : null}
-        <code className="min-w-0 flex-1 whitespace-pre-wrap break-all text-foreground/90">
-          {content}
-        </code>
+    <div className="min-w-0 overflow-hidden border border-border bg-foreground/[0.025]">
+      <div className="flex min-h-12 items-center justify-between gap-3 border-b border-border px-4">
+        <p className="text-xs text-foreground/65">{label}</p>
         <button
           type="button"
-          onClick={() => {
-            void navigator.clipboard?.writeText(content);
-            setCopied(true);
-            setTimeout(() => setCopied(false), 1500);
-          }}
-          className="mt-px shrink-0 text-muted transition-colors hover:text-foreground"
+          onClick={() => void copy(content, "setup")}
+          className="inline-flex min-h-11 shrink-0 items-center gap-2 text-xs text-foreground transition-colors hover:text-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
           aria-label={copied ? copiedLabel : copyLabel}
         >
           {copied ? (
-            <Check className="h-3.5 w-3.5 text-accent" />
+            <Check className="h-3.5 w-3.5 text-accent" aria-hidden="true" />
           ) : (
-            <Copy className="h-3.5 w-3.5" />
+            <Copy className="h-3.5 w-3.5" aria-hidden="true" />
           )}
+          <span>{copied ? copiedLabel : copyLabel}</span>
         </button>
       </div>
+      <div className="flex min-w-0 items-start gap-3 p-4 sm:p-5">
+        {format === "bash" ? (
+          <span className="select-none font-mono text-[13px] leading-6 text-accent" aria-hidden="true">$</span>
+        ) : null}
+        <pre role="region" tabIndex={0} aria-label={label} className="min-w-0 flex-1 overflow-x-auto whitespace-pre-wrap break-normal bg-transparent! p-0! font-mono text-[13px]! leading-6! text-foreground/90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent">
+          <code>{content}</code>
+        </pre>
+      </div>
+      <p role="status" className={result?.state === "failed" ? "px-4 pb-4 text-xs text-foreground sm:px-5" : "sr-only"}>
+        {result?.state === "failed" ? failedLabel : copied ? copiedLabel : ""}
+      </p>
     </div>
   );
 }
@@ -251,6 +270,11 @@ export function DevelopersContent() {
   const { locale } = useI18n();
   const c = COPY[locale as keyof typeof COPY] ?? COPY.en;
   const core = getDeveloperToolkitCapability("core");
+  const [selectedId, setSelectedId] = useState<keyof typeof ICONS>("registry");
+  const panelId = useId();
+  const selectedCard = c.cards.find((card) => card.id === selectedId) ?? c.cards[0];
+  const capability = getDeveloperToolkitCapability(selectedCard.id);
+  const setupSnippet = getDeveloperToolkitSetupSnippet(selectedCard.id);
 
   return (
     <main className="flex-1" data-cursor-aura="off">
@@ -272,66 +296,66 @@ export function DevelopersContent() {
 
       <section className="relative border-b border-border">
         <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-12 md:px-12 md:py-16">
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-            {c.cards.map((card, i) => {
-              const Icon = ICONS[i] ?? Boxes;
-              const capability = getDeveloperToolkitCapability(card.id);
-              const setupSnippet = getDeveloperToolkitSetupSnippet(card.id);
+          <div role="group" aria-label={c.chooseTool} className="grid grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-3">
+            {c.cards.map((card) => {
+              const Icon = ICONS[card.id];
+              const selected = card.id === selectedCard.id;
               return (
-                <RevealOnScroll
-                  key={card.name}
-                  variant="upStrong"
-                  delayMs={100 + i * 80}
-                  disableDelayOnMobile
+                <button
+                  key={card.id}
+                  type="button"
+                  aria-pressed={selected}
+                  aria-controls={panelId}
+                  onClick={() => setSelectedId(card.id)}
+                  className={cn(
+                    "relative min-w-0 border px-4 py-4 text-left transition-colors focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent sm:px-5 sm:py-5",
+                    selected ? "border-foreground/30 bg-foreground/[0.04]" : "border-transparent hover:bg-foreground/[0.025]",
+                  )}
                 >
-                  <article className="group flex h-full flex-col border border-border bg-background/70 p-6 motion-safe:transition-[border-color,transform] motion-safe:duration-200 hover:border-foreground motion-safe:hover:-translate-y-0.5">
-                    <div className="mb-4 flex items-center gap-2.5">
-                      <div className="flex h-8 w-8 items-center justify-center border border-border text-accent transition-colors group-hover:border-foreground">
-                        <Icon className="h-4 w-4" aria-hidden="true" />
-                      </div>
-                      <h2 className="text-lg leading-snug">{card.name}</h2>
-                    </div>
-                    <p className="mb-5 text-sm leading-relaxed text-muted">
-                      {card.desc}
-                    </p>
-                    <CommandBlock
-                      content={setupSnippet.content}
-                      format={setupSnippet.format}
-                      label={capability.id === "mcp" ? c.configLabel : undefined}
-                      copyLabel={capability.id === "mcp" ? c.copyConfig : c.copyCommand}
-                      copiedLabel={capability.id === "mcp" ? c.copiedConfig : c.copiedCommand}
-                    />
-                    <p className="mt-4 text-[11px] tracking-wide text-muted">
-                      {card.foot}
-                    </p>
-                    <div className="mt-3 flex flex-wrap items-center justify-between gap-2 text-[11px] tracking-wide text-muted">
-                      <span>
-                        {c.status}: {stateLabel(capability.state, locale === "zh" ? "zh" : "en")}
-                        {versionLabel(capability.publicVersion)}
-                      </span>
-                      <a
-                        href={capability.docsUrl}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="inline-flex items-center gap-1 text-foreground underline-offset-4 hover:text-accent hover:underline"
-                      >
-                        {c.docs}
-                        <ExternalLink className="h-3 w-3" aria-hidden="true" />
-                      </a>
-                    </div>
-                  </article>
-                </RevealOnScroll>
+                  <span className="flex items-center gap-2.5 text-sm font-medium sm:text-base">
+                    <Icon className={cn("h-4 w-4 shrink-0", selected ? "text-accent" : "text-muted")} aria-hidden="true" />
+                    {card.name}
+                  </span>
+                  <span className="mt-2 block text-xs leading-relaxed text-foreground/65">{card.purpose}</span>
+                  {selected ? <span className="absolute inset-x-4 bottom-0 h-0.5 bg-accent sm:inset-x-5" aria-hidden="true" /> : null}
+                </button>
               );
             })}
           </div>
 
-          <RevealOnScroll variant="soft" delayMs={360} className="mt-8">
-            <p className="max-w-2xl border-l-2 border-accent pl-4 text-sm leading-relaxed text-muted">
-              {c.note}
-            </p>
-          </RevealOnScroll>
+          <section id={panelId} aria-labelledby={`${panelId}-title`} className="mt-5 grid min-w-0 items-start gap-6 border-t border-border py-6 sm:gap-8 sm:py-8 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.5fr)] lg:gap-12">
+            <div className="min-w-0">
+              <h2 id={`${panelId}-title`} className="text-2xl tracking-tight">{selectedCard.name}</h2>
+              <p className="mt-3 max-w-lg text-sm leading-7 text-muted">{selectedCard.desc}</p>
+              <p className="mt-4 text-xs leading-relaxed text-muted">{selectedCard.foot}</p>
+              <div className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-2 text-xs">
+                <span className="text-muted">
+                  {stateLabel(capability.state, locale === "zh" ? "zh" : "en")}{versionLabel(capability.publicVersion)}
+                </span>
+                <a href={capability.docsUrl} target="_blank" rel="noreferrer" className="inline-flex min-h-8 items-center gap-1.5 text-foreground underline-offset-4 hover:text-accent hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent">
+                  {c.docs}<ExternalLink className="h-3 w-3" aria-hidden="true" />
+                </a>
+              </div>
+            </div>
+            <div className="min-w-0">
+              <CommandBlock
+                key={selectedCard.id}
+                content={setupSnippet.content}
+                format={setupSnippet.format}
+                label={selectedCard.id === "mcp" ? c.configTitle : c.terminalLabel}
+                copyLabel={selectedCard.id === "mcp" ? c.copyConfig : c.copyCommand}
+                copiedLabel={selectedCard.id === "mcp" ? c.copiedConfig : c.copiedCommand}
+                failedLabel={c.copyFailed}
+              />
+              {selectedCard.id === "registry" || selectedCard.id === "mcp" ? (
+                <p className="mt-3 text-xs leading-relaxed text-muted">
+                  {selectedCard.id === "registry" ? c.note : c.configLabel}
+                </p>
+              ) : null}
+            </div>
+          </section>
 
-          <RevealOnScroll variant="soft" delayMs={420} className="mt-8">
+          <RevealOnScroll variant="soft" className="mt-2">
             <Link
               href={`/${locale}/styles`}
               className="group inline-flex items-center gap-1.5 text-sm text-foreground transition-colors hover:text-accent"
@@ -385,7 +409,7 @@ export function DevelopersContent() {
               </div>
               <div className="grid gap-px border border-border bg-border sm:grid-cols-2">
                 {c.updates.map((item) => (
-                  <article key={item.title} className="bg-background/70 p-5">
+                  <article key={item.title} className="bg-background p-5">
                     <h3 className="text-sm font-medium">{item.title}</h3>
                     <p className="mt-2 text-sm leading-relaxed text-muted">
                       {item.body}
