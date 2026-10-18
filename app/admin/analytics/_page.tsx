@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+﻿import type { Metadata } from "next";
 import { Suspense } from "react";
 import { AdminPage } from "@/components/admin/admin-page";
 import {
@@ -29,7 +29,7 @@ const PAGE_COPY: Record<AnalyticsView, { title: string; description: string }> =
   },
   users: {
     title: "用户与转化",
-    description: "查看标签页会话、深度访问、注册趋势和访问到注册的转化。",
+    description: "查看独立访客、深度访问、注册趋势和访问到注册的转化；流量指标来自 Umami Cloud。",
   },
   audit: {
     title: "操作审计",

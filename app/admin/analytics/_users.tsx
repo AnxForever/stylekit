@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { Activity, UserCheck, UserPlus, Users } from "lucide-react";
 import {
@@ -56,7 +56,7 @@ export function AnalyticsUsersPage({ initialRange = "7d", initialOverview, initi
             <div className="mt-6 space-y-5">
               <FunnelRow
                 icon={Users}
-                label="标签页会话"
+                label="独立访客"
                 value={overview.data.current.visitors}
                 total={overview.data.current.visitors}
               />
@@ -117,7 +117,7 @@ export function AnalyticsUsersPage({ initialRange = "7d", initialOverview, initi
       {overview.data && registrations.data ? (
         <AdminPanel className="p-5 sm:p-6">
           <SectionTitle
-            title="同期注册 / 标签页会话"
+            title="同期注册 / 独立访客"
             description="用于观察两个总体规模，不代表这些注册由本期会话完成。"
           />
           <p className="mt-4 font-mono text-3xl font-semibold tabular-nums text-foreground">

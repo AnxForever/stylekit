@@ -16,6 +16,8 @@ import {
   ShieldAlert,
 } from "lucide-react";
 
+import { UMAMI_HOST } from "@/lib/analytics/umami-constants";
+
 export interface AdminNavItem {
   href: string;
   label: string;
@@ -29,7 +31,8 @@ export const adminNavItems: AdminNavItem[] = [
   { href: "/admin/content", label: "内容中心", icon: Megaphone },
   { href: "/admin/validation", label: "产品验证", icon: FlaskConical },
   { href: "/admin/analytics", label: "数据分析", icon: BarChart3 },
-  { href: "/umami", label: "流量分析 (Umami)", icon: TrendingUp, external: true },
+  // The self-hosted Umami dashboard, mounted under /umami on the main host.
+  { href: `https://${UMAMI_HOST}/umami/dashboard`, label: "Umami 后台", icon: TrendingUp, external: true },
   { href: "/admin/submissions", label: "投稿管理", icon: FileText },
   { href: "/admin/comments", label: "评论管理", icon: MessageSquare },
   { href: "/admin/community-reports", label: "社区举报", icon: ShieldAlert },

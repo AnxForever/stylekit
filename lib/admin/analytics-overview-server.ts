@@ -8,38 +8,42 @@ import {
 import { readAnalyticsCache, writeAnalyticsCache } from "./analytics-response-cache";
 import { getSupabaseAdmin } from "@/lib/supabase/server";
 import { readPersistentAnalyticsSnapshot, writePersistentAnalyticsSnapshot } from "./analytics-persistent-snapshot";
+import { mapUmamiOverview } from "./analytics-umami-map";
+import {
+  fetchUmamiPageviews,
+  fetchUmamiStats,
+  getUmamiConfig,
+} from "@/lib/analytics/umami-api";
 
 const TIMEZONE = "Asia/Shanghai";
 
 /**
- * Read the range overview from the Umami snapshot — the source of truth for
- * traffic. The self-built analytics_events table undercounts badly because ad
- * blockers strip requests to `/api/analytics`; Umami is served from a `/umami`
- * path that evades blockers, so its numbers are the real ones. Returns null
- * when the snapshot isn't configured or reachable, so callers fall back to the
- * self-built data (e.g. local dev without the insights URL).
+ * Read the range overview from the self-hosted Umami instance — the source of
+ * truth for traffic.
  *
- * Reads a server-runtime env (UMAMI_INSIGHTS_URL) rather than a build-inlined
- * NEXT_PUBLIC_ var, so the URL is set via .env.production + restart (no rebuild)
- * and never ships to the client bundle. Falls back to the public var if that's
- * how a deployment happens to be configured.
+ * The self-built `analytics_events` table undercounts badly because ad blockers
+ * strip requests to `/api/analytics`. Umami is the primary read path; the
+ * self-built RPCs remain only as a degraded fallback so missing credentials or
+ * an Umami outage still renders something labelled.
+ *
+ * Returns null when credentials are absent or the request fails, which is the
+ * signal for the caller to fall back.
  */
-async function readUmamiOverview(range: AnalyticsRange): Promise<AnalyticsOverview | null> {
-  const url =
-    process.env.UMAMI_INSIGHTS_URL ?? process.env.NEXT_PUBLIC_UMAMI_INSIGHTS_URL ?? "";
-  if (!url) return null;
+async function readUmamiOverview(
+  range: AnalyticsRange
+): Promise<AnalyticsOverview | null> {
+  const config = getUmamiConfig();
+  if (!config) return null;
+
   try {
-    const res = await fetch(url, {
-      next: { revalidate: 300 },
-      signal: AbortSignal.timeout(8000),
-    });
-    if (!res.ok) return null;
-    const data = (await res.json()) as { overview?: Record<string, unknown> };
-    const raw = data.overview?.[range];
-    if (!raw) return null;
-    const parsed = analyticsOverviewSchema.safeParse(raw);
-    return parsed.success ? parsed.data : null;
+    const [stats, pageviews] = await Promise.all([
+      fetchUmamiStats(config, range),
+      fetchUmamiPageviews(config, range, { compare: true }),
+    ]);
+    return mapUmamiOverview(stats, pageviews, getAnalyticsWindow(range));
   } catch {
+    // Network failure, expired credentials, or a schema drift: fall through to
+    // the snapshot/RPC path rather than showing an empty dashboard.
     return null;
   }
 }
@@ -51,8 +55,7 @@ export async function getAnalyticsOverviewSnapshot(
   const cached = readAnalyticsCache<AnalyticsOverview>(cacheKey);
   if (cached) return cached;
 
-  // Umami first — real visitors. Falls through to the self-built snapshot/RPC
-  // only when Umami is unreachable.
+  // Umami Cloud first — real visitors.
   const umami = await readUmamiOverview(range);
   if (umami) {
     writeAnalyticsCache(cacheKey, umami);

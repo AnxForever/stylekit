@@ -18,6 +18,8 @@ import {
 import { readAnalyticsCache, writeAnalyticsCache } from "./analytics-response-cache";
 import { getSupabaseAdmin } from "@/lib/supabase/server";
 import { readPersistentAnalyticsSnapshot, writePersistentAnalyticsSnapshot } from "./analytics-persistent-snapshot";
+import { isUmamiMetricDimension, mapUmamiBreakdown } from "./analytics-umami-map";
+import { fetchUmamiMetrics, getUmamiConfig } from "@/lib/analytics/umami-api";
 
 const TIMEZONE = "Asia/Shanghai";
 
@@ -25,10 +27,23 @@ async function rpcSnapshot<T>(
   cacheKey: string,
   rpc: string,
   params: Record<string, unknown>,
-  parse: (value: unknown) => T | null
+  parse: (value: unknown) => T | null,
+  readPrimary?: () => Promise<T | null>
 ): Promise<T | null> {
   const cached = readAnalyticsCache<T>(cacheKey);
   if (cached) return cached;
+
+  // Primary source (Umami Cloud) runs before the snapshot fallback: a persisted
+  // snapshot must not shadow fresher numbers while Cloud is reachable.
+  if (readPrimary) {
+    const primary = await readPrimary();
+    if (primary) {
+      writeAnalyticsCache(cacheKey, primary);
+      await writePersistentAnalyticsSnapshot(cacheKey, primary);
+      return primary;
+    }
+  }
+
   const persisted = await readPersistentAnalyticsSnapshot<T>(cacheKey);
   if (persisted) {
     writeAnalyticsCache(cacheKey, persisted);
@@ -59,6 +74,18 @@ export function getBreakdownSnapshot(
     (value) => {
       const result = analyticsBreakdownSchema.safeParse(value);
       return result.success ? result.data : null;
+    },
+    // Umami Cloud ranks the same dimensions the traffic view requests, so it
+    // replaces the RPC for those; the RPC stays as the degraded fallback.
+    async () => {
+      const config = getUmamiConfig();
+      if (!config || !isUmamiMetricDimension(dimension)) return null;
+      try {
+        const rows = await fetchUmamiMetrics(config, dimension, range, limit);
+        return mapUmamiBreakdown(rows, dimension);
+      } catch {
+        return null;
+      }
     }
   );
 }

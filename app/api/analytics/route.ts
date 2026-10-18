@@ -62,6 +62,10 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
+  if (process.env.NEXT_PUBLIC_ANALYTICS_DISABLED === "true") {
+    return NextResponse.json({ success: true, skipped: true });
+  }
+
   const originCheck = verifyTrustedOrigin(request);
   if (!originCheck.ok) {
     return NextResponse.json(

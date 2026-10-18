@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 vi.mock("@/lib/analytics", () => ({
   getUsageStats: vi.fn(),
@@ -62,6 +62,7 @@ function request(body: unknown, headers: HeadersInit = {}) {
 
 beforeEach(() => {
   vi.clearAllMocks();
+  vi.stubEnv("NEXT_PUBLIC_ANALYTICS_DISABLED", "");
   mockedVerifyTrustedOrigin.mockReturnValue({ ok: true });
   mockedGetRequestClientKey.mockReturnValue("client-key");
   mockedCheckRateLimit.mockReturnValue({
@@ -84,7 +85,29 @@ beforeEach(() => {
   );
 });
 
+afterEach(() => {
+  vi.unstubAllEnvs();
+});
+
 describe("analytics route", () => {
+  it("acknowledges analytics without touching storage when disabled", async () => {
+    vi.stubEnv("NEXT_PUBLIC_ANALYTICS_DISABLED", "true");
+
+    const response = await POST(
+      request({
+        eventType: "showcase_open",
+        eventData: { slug: "corporate-clean", source: "hero" },
+        sessionId: null,
+      }),
+    );
+
+    expect(response.status).toBe(200);
+    expect(await response.json()).toEqual({ success: true, skipped: true });
+    expect(mockedVerifyTrustedOrigin).not.toHaveBeenCalled();
+    expect(mockedCheckRateLimit).not.toHaveBeenCalled();
+    expect(mockedGetSupabaseAdmin).not.toHaveBeenCalled();
+  });
+
   it("stores a valid client event with a server-derived slug and no raw IP or user agent", async () => {
     const insert = vi.fn().mockResolvedValue({ error: null });
     mockedGetSupabaseAdmin.mockReturnValue({

@@ -1,4 +1,4 @@
-import { describe, expect, expectTypeOf, it } from "vitest";
+import { afterEach, describe, expect, expectTypeOf, it, vi } from "vitest";
 import {
   ANALYTICS_EVENT_NAMES,
   AUTHORITATIVE_EVENT_NAMES,
@@ -8,9 +8,68 @@ import {
   type ClientEventName,
   type EventProperties,
 } from "@/lib/analytics/event-contract";
-import { trackEvent } from "@/lib/analytics/events";
+import { trackEvent, trackPageView } from "@/lib/analytics/events";
+
+afterEach(() => {
+  vi.unstubAllEnvs();
+  vi.unstubAllGlobals();
+});
 
 describe("analytics event contract", () => {
+  it("suppresses Umami and internal events when analytics are disabled", () => {
+    const umamiTrack = vi.fn();
+    const sendBeacon = vi.fn();
+    const fetchMock = vi.fn();
+    vi.stubEnv("NEXT_PUBLIC_ANALYTICS_DISABLED", "true");
+    vi.stubGlobal("window", { umami: { track: umamiTrack } });
+    vi.stubGlobal("navigator", { sendBeacon });
+    vi.stubGlobal("fetch", fetchMock);
+
+    trackEvent("showcase_open", { slug: "corporate-clean", source: "hero" });
+    trackPageView({
+      path: "/styles",
+      hostname: "localhost",
+      referrerDomain: null,
+      referrerType: "direct",
+    });
+
+    expect(umamiTrack).not.toHaveBeenCalled();
+    expect(sendBeacon).not.toHaveBeenCalled();
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
+
+  it("drops queued events on hosts the tracker is not allowed to record", async () => {
+    const umamiTrack = vi.fn();
+    vi.stubEnv("NEXT_PUBLIC_ANALYTICS_DISABLED", "false");
+    // localhost is outside `data-domains`, so the real tracker never defines
+    // window.umami; the queue must give up instead of polling for 5 seconds.
+    vi.stubGlobal("window", {
+      location: { hostname: "localhost" },
+      umami: { track: umamiTrack },
+    });
+
+    trackEvent("showcase_open", { slug: "corporate-clean", source: "hero" });
+    await new Promise((resolve) => setTimeout(resolve, 300));
+
+    expect(umamiTrack).not.toHaveBeenCalled();
+  });
+
+  it("forwards events once the tracker global is available", () => {
+    const umamiTrack = vi.fn();
+    vi.stubEnv("NEXT_PUBLIC_ANALYTICS_DISABLED", "false");
+    vi.stubGlobal("window", {
+      location: { hostname: "stylekit.top" },
+      umami: { track: umamiTrack },
+    });
+
+    trackEvent("showcase_open", { slug: "corporate-clean", source: "hero" });
+
+    expect(umamiTrack).toHaveBeenCalledWith("showcase_open", {
+      slug: "corporate-clean",
+      source: "hero",
+    });
+  });
+
   it("publishes separate client and authoritative allowlists", () => {
     expect(CLIENT_EVENT_NAMES).toEqual(expect.arrayContaining([
       "showcase_open",
