@@ -24,10 +24,8 @@ import { ShowcaseBackBar } from "@/components/showcase/showcase-back-bar";
 import { getSiteAnnouncement } from "@/lib/site-announcements";
 import "@/app/globals.css";
 import type { Locale } from "@/lib/i18n/translations";
-import {
-  FRIEND_PROMO_ID,
-  FRIEND_PROMO_STORAGE_KEY,
-} from "@/lib/home/friend-promo";
+import { FRIEND_PROMO_ID, FRIEND_PROMO_STORAGE_KEY } from "@/lib/home/friend-promo";
+import { UMAMI_TRACKING_DOMAINS } from "@/lib/analytics/umami-constants";
 
 const publicSans = Albert_Sans({
   subsets: ["latin", "latin-ext"],
@@ -207,20 +205,31 @@ export default async function SiteDocument({
         <link rel="icon" href="/icon.svg" type="image/svg+xml" />
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
         <link rel="manifest" href="/manifest.json" />
-        <Script
-          id="vibeloft-telemetry"
-          strategy="lazyOnload"
-          src="https://vibeloft.ai/telemetry/v1.js"
-          data-vl-product-id="89414aab-7920-4854-8720-5ef041561792"
-          data-vl-auth-key="vl_web.grGnbaTxVblO8tSKoOK8zC-726z3_2htURIvubBSPXM"
-        />
-        {process.env.NEXT_PUBLIC_UMAMI_SCRIPT_URL &&
-        process.env.NEXT_PUBLIC_UMAMI_WEBSITE_ID ? (
+        {process.env.NEXT_PUBLIC_ANALYTICS_DISABLED === "true" ? null : (
+          <Script
+            id="vibeloft-telemetry"
+            strategy="lazyOnload"
+            src="https://vibeloft.ai/telemetry/v1.js"
+            data-vl-product-id="89414aab-7920-4854-8720-5ef041561792"
+            data-vl-auth-key="vl_web.grGnbaTxVblO8tSKoOK8zC-726z3_2htURIvubBSPXM"
+          />
+        )}
+        {/*
+          The collector is the self-hosted Umami at https://www.stylekit.top/umami.
+          It must be set explicitly: there is no default, because falling back to
+          Umami Cloud would silently double-count every visit once the self-hosted
+          instance is configured too.
+        */}
+        {process.env.NEXT_PUBLIC_ANALYTICS_DISABLED !== "true" &&
+        process.env.NEXT_PUBLIC_UMAMI_SCRIPT_URL?.trim() &&
+        process.env.NEXT_PUBLIC_UMAMI_WEBSITE_ID?.trim() ? (
           <Script
             id="umami-analytics"
             strategy="afterInteractive"
-            src={process.env.NEXT_PUBLIC_UMAMI_SCRIPT_URL}
-            data-website-id={process.env.NEXT_PUBLIC_UMAMI_WEBSITE_ID}
+            src={process.env.NEXT_PUBLIC_UMAMI_SCRIPT_URL.trim()}
+            data-website-id={process.env.NEXT_PUBLIC_UMAMI_WEBSITE_ID.trim()}
+            data-domains={UMAMI_TRACKING_DOMAINS}
+            data-do-not-track="true"
           />
         ) : null}
         {showcaseTypography ? (

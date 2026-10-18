@@ -33,12 +33,18 @@ describe("primary navigation", () => {
       "nav.recipes",
       "nav.guides",
       "nav.resourceLibrary",
+      "nav.downloads",
       "nav.componentPatterns",
       "nav.mobileDesign",
       "nav.developers",
       "nav.changelog",
       "nav.blog",
     ]);
+    expect(
+      resources?.dropdown?.groups
+        ?.find((group) => group.groupLabelKey === "nav.resourcesComponents")
+        ?.items.map((item) => item.href)
+    ).toEqual(["/resources", "/downloads", "/component-patterns", "/mobile"]);
     expect(
       resourceItems?.filter((item) => item.labelKey === "nav.blog")
     ).toEqual([

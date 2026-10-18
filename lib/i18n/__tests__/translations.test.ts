@@ -29,6 +29,7 @@ describe("translations consistency", () => {
       "nav.guides",
       "nav.animations",
       "nav.templates",
+      "nav.downloads",
       "nav.community",
       "nav.blog",
       "nav.changelog",

@@ -6,6 +6,7 @@ export const zh: { [K in keyof typeof en]: string } = {
   "nav.styles": "风格库",
   "nav.learn": "前端基础",
   "nav.resourceLibrary": "资源库",
+  "nav.downloads": "3D 模型库",
   "nav.templates": "模板",
   "nav.community": "社区",
   "nav.generator": "生成器",

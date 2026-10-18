@@ -1,8 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { ArrowUpRight, Github, X } from "lucide-react";
+import { ArrowUpRight, X } from "lucide-react";
 import { useI18n } from "@/lib/i18n/context";
+import { trackEvent } from "@/lib/analytics/events";
 import {
   FRIEND_PROMO_ID,
   FRIEND_PROMO_STORAGE_KEY,
@@ -11,16 +12,19 @@ import {
 // Bump the id when promoting a new project so the banner shows again.
 const PROMO = {
   id: FRIEND_PROMO_ID,
-  name: "NextDevTpl",
+  name: "ProdClub",
   tagline: {
-    zh: "开源 Next.js 16 SaaS 全栈启动模板：认证、支付、积分、多部署目标",
-    en: "open-source Next.js 16 SaaS starter with auth, payments, credits, and deploy presets",
+    zh: "ChatGPT Plus / Pro 会员代充服务",
+    en: "Third-party ChatGPT Plus / Pro subscription top-ups",
   },
-  repoUrl: "https://github.com/evepupil/NextDevTpl",
-  siteUrl: "https://nextdevtpl.chaosyn.com",
+  siteUrl: "https://prodclub.xyz/r/6JJ9HG",
 };
 
-export function FriendPromoBanner() {
+interface FriendPromoBannerProps {
+  placement?: "home" | "contact";
+}
+
+export function FriendPromoBanner({ placement = "contact" }: FriendPromoBannerProps) {
   const { locale } = useI18n();
   // The banner is present in the initial HTML. A head bootstrap hides it
   // before first paint for returning visitors who dismissed this campaign.
@@ -53,13 +57,14 @@ export function FriendPromoBanner() {
       <div className="max-w-7xl mx-auto flex items-center gap-3 px-4 sm:px-6 md:px-12 py-2.5 text-sm">
         <span aria-hidden className="hidden sm:block h-px w-6 bg-accent shrink-0" />
         <span className="shrink-0 text-[10px] tracking-[0.16em] uppercase text-muted">
-          {locale === "zh" ? "友情推荐" : "Community pick"}
+          {locale === "zh" ? "广告" : "Ad"}
         </span>
         <p className="min-w-0 flex-1 truncate">
           <a
             href={PROMO.siteUrl}
             target="_blank"
-            rel="noopener noreferrer"
+            rel="sponsored noopener noreferrer"
+            onClick={() => trackEvent("cta_click", { label: "prodclub", location: `${placement}_promo` })}
             className="font-medium underline-offset-4 hover:underline"
           >
             {PROMO.name}
@@ -69,19 +74,19 @@ export function FriendPromoBanner() {
           </span>
         </p>
         <a
-          href={PROMO.repoUrl}
+          href={PROMO.siteUrl}
           target="_blank"
-          rel="noopener noreferrer"
+          rel="sponsored noopener noreferrer"
+          onClick={() => trackEvent("cta_click", { label: "prodclub", location: `${placement}_promo` })}
           className="shrink-0 inline-flex items-center gap-1.5 border border-foreground/30 px-2.5 py-1 text-xs tracking-wide transition-colors hover:border-foreground hover:bg-foreground hover:text-background"
         >
-          <Github className="h-3.5 w-3.5" />
-          GitHub
+          {locale === "zh" ? "查看服务" : "View service"}
           <ArrowUpRight className="h-3 w-3" />
         </a>
         <button
           type="button"
           onClick={dismiss}
-          aria-label={locale === "zh" ? "关闭推荐横幅" : "Dismiss recommendation banner"}
+          aria-label={locale === "zh" ? "关闭广告" : "Dismiss advertisement"}
           className="shrink-0 p-1 text-muted transition-colors hover:text-foreground"
         >
           <X className="h-3.5 w-3.5" />

@@ -70,6 +70,7 @@ export const LOCALE_ROUTE_POLICY = [
       "/dark-mode-ui-prompts",
       "/dashboard-prompts",
       "/developers",
+      "/downloads",
       "/guide",
       "/landing-page-prompts",
       "/learn",

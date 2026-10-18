@@ -3,6 +3,7 @@ export const en = {
     "nav.styles": "Styles",
     "nav.learn": "Foundations",
     "nav.resourceLibrary": "Resource Library",
+    "nav.downloads": "3D models",
     "nav.components": "Components",
     "nav.templates": "Templates",
     "nav.community": "Community",

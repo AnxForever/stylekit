@@ -66,6 +66,13 @@ const TOOL_PAGES = [
     descriptionEn: "Set up the CLI, MCP and Agent Skill in your development tools",
     keywords: ["developer", "developers", "cli", "mcp", "skill", "npm", "安装", "开发工具", "工具"],
   },
+  {
+    id: "downloads", href: "/downloads",
+    zh: "3D 模型库", en: "3D models",
+    descriptionZh: "预览不同美术风格的 3D 模型，按风格与题材浏览，查看文件清单、发布状态与授权信息",
+    descriptionEn: "Preview 3D models in different art styles, browse by style and theme, and inspect file lists, publication status and license details",
+    keywords: ["3d", "models", "model library", "art styles", "themes", "模型", "风格", "题材"],
+  },
 ] as const;
 
 export function getToolSearchItems(locale: Locale) {

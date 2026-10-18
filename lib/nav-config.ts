@@ -76,6 +76,7 @@ export const mainNav: NavItem[] = [
           groupLabelKey: "nav.resourcesComponents",
           items: [
             { href: "/resources", labelKey: "nav.resourceLibrary" },
+            { href: "/downloads", labelKey: "nav.downloads" },
             { href: "/component-patterns", labelKey: "nav.componentPatterns" },
             { href: "/mobile", labelKey: "nav.mobileDesign" },
           ],

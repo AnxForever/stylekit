@@ -3,6 +3,7 @@
 import { useEffect, useState, type FormEvent } from "react";
 import Link from "next/link";
 import dynamic from "next/dynamic";
+import { Playfair_Display } from "next/font/google";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useTheme } from "next-themes";
 import { useUser } from "@/lib/auth/use-user";
@@ -30,6 +31,15 @@ import {
 import { sanitizeNextPath } from "@/lib/auth/next-path";
 import { LinuxDoMark, NodeLocMark } from "@/components/auth/brand-marks";
 import { XiaoheiLoading } from "@/components/profile/xiaohei-note";
+import typography from "./login-typography.module.css";
+
+const loginDisplay = Playfair_Display({
+  subsets: ["latin"],
+  weight: "400",
+  display: "swap",
+  variable: "--font-login-display",
+});
+
 const LoginBrandInk = dynamic(
   () => import("@/components/auth/login-brand-ink").then((module) => module.LoginBrandInk),
   { ssr: false, loading: () => null },
@@ -243,7 +253,7 @@ export function LoginContent() {
       <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-full bg-emerald-600 text-white">
         <Check className="h-5 w-5" aria-hidden="true" />
       </div>
-      <h2 className="font-serif text-2xl">{t("auth.accountCreated")}</h2>
+      <h2 className={typography.statusTitle}>{t("auth.accountCreated")}</h2>
       <p className="mt-2 text-sm leading-relaxed text-muted">
         {t("auth.checkEmailConfirmation")}
       </p>
@@ -445,20 +455,20 @@ export function LoginContent() {
       </span>
 
       <div className="relative z-10 flex items-center justify-between">
-        <span className="font-mono text-[11px] uppercase tracking-[0.28em] text-zinc-500">
+        <span className={`${typography.brandName} text-zinc-600`}>
           StyleKit
         </span>
-        <span className="rounded-full border border-zinc-900/10 bg-white/40 px-3 py-1 font-mono text-[10px] uppercase tracking-[0.16em] text-zinc-500 backdrop-blur-sm">
+        <span className={`${typography.caption} rounded-full border border-zinc-900/10 bg-white/40 px-3 py-1 text-zinc-600 backdrop-blur-sm`}>
           {CURATED_STYLE_COUNT}+ {t("auth.curatedStyles")}
         </span>
       </div>
 
       <div className="relative z-10 max-w-md animate-[home-reveal-up-strong_700ms_ease-out_both]">
-        <p className="mb-5 flex items-center gap-3 font-mono text-[10px] uppercase tracking-[0.24em] text-zinc-500">
+        <p className={`${typography.caption} mb-5 flex items-center gap-3 text-zinc-600`}>
           <span className="h-px w-8 bg-zinc-900/30" aria-hidden="true" />
           {t("auth.perksHeading")}
         </p>
-        <h2 className="mb-10 max-w-sm font-serif text-3xl leading-[1.12] text-zinc-900 xl:text-[2.75rem]">
+        <h2 className={`${typography.brandTitle} mb-10 text-zinc-900`}>
           {t("auth.brandStatement")}
         </h2>
         <ul className="divide-y divide-zinc-900/10 border-y border-zinc-900/10">
@@ -472,7 +482,7 @@ export function LoginContent() {
                 <Icon className="mt-0.5 h-4 w-4 shrink-0 text-zinc-600" strokeWidth={1.5} />
                 <div>
                   <p className="text-sm font-medium leading-snug text-zinc-900">{perk.title}</p>
-                  <p className="mt-1 text-xs leading-relaxed text-zinc-600">{perk.desc}</p>
+                  <p className="mt-1 text-[13px] leading-relaxed text-zinc-600">{perk.desc}</p>
                 </div>
               </li>
             );
@@ -490,7 +500,7 @@ export function LoginContent() {
   // top/middle/bottom rhythm instead of one lone centered block.
   const formFooter = (
     <div className="flex flex-col gap-2 border-t border-border pt-5 text-[11px] text-muted sm:flex-row sm:items-center sm:justify-between">
-      <span className="font-mono uppercase tracking-[0.14em]">
+      <span className={typography.caption}>
         StyleKit — {CURATED_STYLE_COUNT}+ {t("auth.curatedStyles")}
       </span>
       <div className="flex items-center gap-4">
@@ -512,7 +522,10 @@ export function LoginContent() {
 
   if (authLoading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-background px-5 text-foreground">
+      <div
+        lang={locale === "zh" ? "zh-CN" : "en"}
+        className={`${loginDisplay.variable} ${typography.surface} flex min-h-screen items-center justify-center bg-background px-5 text-foreground`}
+      >
         <XiaoheiLoading
           locale={locale}
           label={locale === "zh" ? "正在确认登录状态" : "Checking your session"}
@@ -526,7 +539,7 @@ export function LoginContent() {
     <div className="flex items-center justify-between">
       <Link
         href={localizeHref("/", locale)}
-        className="inline-flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-[0.16em] text-muted transition-colors hover:text-foreground"
+        className={`${typography.caption} inline-flex items-center gap-1.5 text-muted transition-colors hover:text-foreground`}
       >
         <ArrowUpLeft className="h-3.5 w-3.5" />
         {t("auth.backToStyleKit")}
@@ -571,7 +584,7 @@ export function LoginContent() {
   if (user) {
     formBody = (
       <div className="flex flex-col">
-        <h1 className="mb-3 font-serif text-3xl leading-tight">{t("auth.loginTitle")}</h1>
+        <h1 className={`${typography.formTitle} mb-3`}>{t("auth.loginTitle")}</h1>
         <p className="mb-8 text-sm text-muted">{t("auth.alreadySignedIn")}</p>
         <Link
           href={nextPath}
@@ -592,18 +605,18 @@ export function LoginContent() {
               <span className="flex h-8 w-8 items-center justify-center bg-foreground font-serif text-xs font-bold text-background shadow-[4px_4px_0_var(--accent)]">
               SK
               </span>
-              <span className="font-mono text-[11px] uppercase tracking-[0.22em] text-muted">
+              <span className={`${typography.brandName} text-muted`}>
                 StyleKit
               </span>
             </div>
-            <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted">
+            <span className={`${typography.caption} text-muted`}>
               {t("auth.secureAccess")}
             </span>
           </div>
-          <h1 className="mb-2 font-serif text-4xl leading-[1.05] md:text-[2.75rem]">
+          <h1 className={`${typography.formTitle} mb-2`}>
             {authMode === "login" ? t("auth.loginTitle") : t("auth.registerTitle")}
           </h1>
-          <p className="max-w-sm text-sm leading-relaxed text-muted">
+          <p className="max-w-sm text-[15px] leading-relaxed text-muted">
             {authMode === "login" ? t("auth.loginTagline") : t("auth.registerTagline")}
           </p>
         </div>
@@ -816,7 +829,7 @@ export function LoginContent() {
         {/* Social sign-in: a compact row on desktop, full-width buttons on mobile. */}
         <div className="my-5 flex items-center gap-4">
           <span className="h-px flex-1 bg-border" />
-          <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted">
+          <span className={`${typography.caption} text-muted`}>
             {t("auth.social")}
           </span>
           <span className="h-px flex-1 bg-border" />
@@ -899,10 +912,13 @@ export function LoginContent() {
   }
 
   return (
-    <div className="relative min-h-dvh bg-background text-foreground lg:grid lg:h-dvh lg:min-h-0 lg:grid-cols-[0.82fr_1fr] xl:grid-cols-[0.78fr_1.05fr]">
+    <div
+      lang={locale === "zh" ? "zh-CN" : "en"}
+      className={`${loginDisplay.variable} ${typography.surface} relative min-h-dvh bg-background text-foreground lg:grid lg:grid-cols-[0.82fr_1fr] xl:grid-cols-[0.78fr_1.05fr]`}
+    >
       {brandPanel}
       <main
-        className={`flex min-h-dvh flex-col px-5 py-4 transition-opacity duration-300 sm:px-10 sm:py-6 md:px-16 lg:min-h-0 lg:overflow-hidden lg:px-12 lg:py-5 motion-reduce:transition-none ${pendingProvider ? "opacity-40" : "opacity-100"}`}
+        className={`flex min-h-dvh flex-col px-5 py-4 transition-opacity duration-300 sm:px-10 sm:py-6 md:px-16 lg:px-12 lg:py-5 motion-reduce:transition-none ${pendingProvider ? "opacity-40" : "opacity-100"}`}
       >
         {topBar}
         <div className="flex min-h-0 flex-1 items-center justify-center py-5 lg:py-3">

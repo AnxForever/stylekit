@@ -1,0 +1,82 @@
+.surface {
+  /* Pair regular editorial headings with the site's readable UI body face.
+     Rebind the semantic aliases here because body resolves them before this
+     route overrides the active font stack. */
+  --font-body-active: var(--font-public-sans), "PingFang SC", "Microsoft YaHei UI", "Microsoft YaHei", "Noto Sans CJK SC", ui-sans-serif, system-ui, sans-serif;
+  --font-display-active: var(--font-login-display), "Songti SC", "STSong", "Noto Serif CJK SC", "SimSun", ui-serif, Georgia, serif;
+  --font-sans: var(--font-body-active);
+  --font-serif: var(--font-display-active);
+  font-family: var(--font-body-active);
+}
+
+.formTitle,
+.brandTitle,
+.statusTitle {
+  font-family: var(--font-display-active);
+  font-weight: 400;
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+}
+
+.formTitle {
+  font-size: clamp(1.75rem, 2.3vw, 2.125rem);
+  line-height: 1.4;
+}
+
+.brandTitle {
+  max-width: 12em;
+  font-size: clamp(2rem, 2.5vw, 2.75rem);
+  line-height: 1.35;
+}
+
+.statusTitle {
+  font-size: 1.5rem;
+  line-height: 1.4;
+}
+
+.formTitle:lang(zh),
+.brandTitle:lang(zh),
+.statusTitle:lang(zh) {
+  letter-spacing: 0.035em;
+}
+
+.formTitle:lang(zh) {
+  line-height: 1.55;
+}
+
+.brandTitle:lang(zh) {
+  max-width: 12em;
+  font-size: clamp(2rem, 2.2vw, 2.375rem);
+  line-height: 1.55;
+}
+
+.caption {
+  font-family: var(--font-body-active);
+  font-size: 0.75rem;
+  font-weight: 400;
+  line-height: 1.5;
+  letter-spacing: 0.015em;
+}
+
+.brandName {
+  font-family: var(--font-body-active);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  line-height: 1.5;
+  letter-spacing: 0.015em;
+}
+
+.surface label {
+  font-size: 0.8125rem;
+  line-height: 1.5;
+}
+
+/* Keep mobile inputs readable without triggering iOS focus zoom. */
+@media (max-width: 639px) {
+  .surface input[type="email"],
+  .surface input[type="password"],
+  .surface input[name="password"],
+  .surface input[name="confirmPassword"] {
+    font-size: 1rem;
+  }
+}

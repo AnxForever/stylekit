@@ -59,6 +59,16 @@ describe("i18n routing helpers", () => {
     expect(localizeHref("https://example.com", "zh")).toBe("https://example.com");
   });
 
+  it.each(LOCALES)("preserves download filters when localizing to %s", (locale) => {
+    const query = "?style=low-poly&theme=furniture&q=low%20poly&pack=low-poly-furniture";
+    const previousLocale = locale === "en" ? "zh" : "en";
+
+    expect(localizeHref(`/downloads${query}`, locale)).toBe(`/${locale}/downloads${query}`);
+    expect(localizeHref(`/${previousLocale}/downloads${query}`, locale)).toBe(
+      `/${locale}/downloads${query}`
+    );
+  });
+
   it("detects bypass paths correctly", () => {
     expect(shouldBypassLocale("/api/styles")).toBe(true);
     expect(shouldBypassLocale("/admin/users")).toBe(true);
@@ -93,8 +103,10 @@ describe("i18n routing helpers", () => {
     expect(getLocaleRouteStrategy("/guides/neumorphism")).toBe("rewrite");
     expect(getLocaleRouteStrategy("/templates/saas-landing")).toBe("rewrite");
     expect(getLocaleRouteStrategy("/liquid-glass")).toBe("filesystem");
+    expect(getLocaleRouteStrategy("/downloads")).toBe("filesystem");
 
     expect(getIndexableLocalesForPath("/styles/neo-brutalist")).toEqual(LOCALES);
+    expect(getIndexableLocalesForPath("/downloads")).toEqual(["en", "zh"]);
     expect(getIndexableLocalesForPath("/blog/example")).toEqual(["en"]);
     expect(getIndexableLocalesForPath("/guides/neumorphism")).toEqual(["en"]);
     expect(getIndexableLocalesForPath("/login")).toEqual([]);
@@ -105,6 +117,7 @@ describe("i18n routing helpers", () => {
     const paths = [
       "/",
       "/liquid-glass",
+      "/downloads",
       "/styles/neo-brutalist",
       "/templates/saas-landing",
     ];
