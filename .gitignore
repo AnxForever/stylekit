@@ -153,6 +153,9 @@ packages/**/node_modules/
 packages/**/dist/
 .spec-workflow/
 tools/scripts/output/
+# Standalone npm projects under tools/ vendor their own dependencies.
+tools/*/node_modules/
+tools/*/out/
 
 # Competitor analysis data
 uiprompt-*.json
