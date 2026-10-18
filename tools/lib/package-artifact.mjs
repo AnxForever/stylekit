@@ -8,7 +8,7 @@ function run(command, args, cwd) {
 }
 
 export function artifactContents(tarball) {
-  const entries = run("tar", ["-tzf", tarball]).toString("utf8").trim().split("\n");
+  const entries = run("tar", ["-tzf", tarball]).toString("utf8").trim().split(/\r?\n/);
   const result = new Map();
   for (const entry of entries) {
     if (!entry.startsWith("package/dist/") && entry !== "package/package.json") continue;
