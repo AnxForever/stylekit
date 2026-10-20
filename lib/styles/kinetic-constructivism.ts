@@ -54,7 +54,7 @@ export const kineticConstructivism: DesignStyle = {
 - 运动即结构：动效不是缀饰，而是构成关系的外化——圆做公转与自转，三角做钟摆，方块做节拍行进，对角块做扫入
 - 三色一墨一纸：构成红 #E0231B、群青蓝 #1C4A87、金黄 #F4B301，落在暖墨 #17130E 与米白纸 #EFE9DC 上，绝无第四种颜色
 - 对角线是主轴：重要构图沿 -30° / -45° 对角线组织，制造张力与方向感，正交只用于稳定的骨架
-- 硬边零圆角：所有边缘是刀切的直线，实色平涂，没有渐变、没有阴影、没有发光
+- 结构边缘硬切：表面保持直线与实色平涂；圆形图元仍是明确的圆，不给结构表面加柔化圆角
 - 机械缓动：入场用 expo-out（快启慢落），循环用匀速或 steps() 的齿轮感，回弹用克制的 back，绝不弹跳卖萌
 
 设计原则：
@@ -70,7 +70,7 @@ Core principles:
 - Motion is structure: animation is not garnish but the externalization of compositional relationships — discs orbit and spin, triangles swing, squares march to a beat, diagonal blocks sweep in
 - Three colors, one ink, one paper: constructivist red #E0231B, ultramarine blue #1C4A87, chrome yellow #F4B301, on warm ink #17130E and bone paper #EFE9DC — never a fourth hue
 - The diagonal is the main axis: organize key compositions along -30deg / -45deg diagonals for tension and direction; orthogonal layout is reserved for the stable scaffold
-- Hard edges, zero radius: every edge is a knife-cut straight line, flat solid fills, no gradients, no shadows, no glow
+- Hard structural edges: surfaces stay knife-cut and flat; circles remain explicit geometric primitives rather than softened surfaces
 - Mechanical easing: entrances use expo-out (fast start, slow settle), loops use linear or stepped gear motion, rebounds use restrained back — never a cutesy bounce
 
 Design principles:
@@ -82,7 +82,7 @@ Design principles:
   doList: [
     "背景用米白纸 #EFE9DC，主体用暖墨 #17130E，制造纸面印刷的质感",
     "只用三种强调色：构成红 #E0231B、群青蓝 #1C4A87、金黄 #F4B301，绝不引入第四色",
-    "只用基本几何图元：圆、三角、方、粗对角线、弧，实色平涂、硬边零圆角",
+    "只用基本几何图元：圆、三角、方、粗对角线、弧；结构表面硬边零圆角，圆形图元必须保持真正圆形且等宽高",
     "重要构图沿 -30° / -45° 对角线组织，用旋转的字块和色带制造方向张力",
     "让图元真的机械运动：圆做公转/自转、三角做钟摆、方块做节拍行进、对角块做扫入",
     "入场用 expo-out（cubic-bezier(0.16,1,0.3,1)，0.6-0.9s），循环旋转用 linear 或 steps() 制造齿轮感",
@@ -93,7 +93,7 @@ Design principles:
   doListEn: [
     "Set the page on bone paper #EFE9DC with warm ink #17130E for a printed-poster feel",
     "Use only three accents — constructivist red #E0231B, ultramarine #1C4A87, chrome yellow #F4B301 — never a fourth",
-    "Use only basic primitives: circle, triangle, square, thick diagonal bar, arc — flat fills, hard edges, zero radius",
+    "Use only basic primitives: circle, triangle, square, thick diagonal bar, arc — hard edges on structural surfaces, with equal-width/height true circles",
     "Organize key compositions along -30deg / -45deg diagonals with rotated type blocks and color bands for directional tension",
     "Make primitives genuinely move mechanically: discs orbit/spin, triangles swing, squares march, diagonal blocks sweep",
     "Entrances use expo-out (cubic-bezier(0.16,1,0.3,1), 0.6-0.9s); rotation loops use linear or steps() for a gear feel",
@@ -102,7 +102,7 @@ Design principles:
   ],
 
   dontList: [
-    "禁止圆角（rounded-*）、阴影（shadow-md 以上）、渐变（bg-gradient-*）、发光与模糊——构成主义是刀切的硬边实色",
+    "禁止用圆角（rounded-*）柔化结构表面；仅等宽高的圆形图元允许 rounded-full。另禁止 shadow-md 以上、渐变（bg-gradient-*）、发光与模糊",
     "禁止第四种颜色，禁止低饱和 pastel，禁止把三原色调浑",
     "禁止用插画、照片、3D 拟物抢几何的戏——图元本身就是主角",
     "禁止弹跳卖萌的卡通缓动与超过 1.2s 的拖沓循环",
@@ -112,7 +112,7 @@ Design principles:
   ],
 
   dontListEn: [
-    "Never use rounded corners, shadows (md+), gradients, glow or blur — constructivism is knife-cut hard edges and flat color",
+    "Never soften structural surfaces with rounded-*; only equal-width/height true circles may use rounded-full. Also avoid shadows (md+), gradients, glow and blur",
     "Never introduce a fourth hue, never use low-saturation pastels, never muddy the primaries",
     "Never let illustration, photography or 3D skeuomorphism steal the stage from geometry — primitives are the protagonist",
     "Never use cutesy bouncy easing or dragging loops over 1.2s",
@@ -289,7 +289,7 @@ Design principles:
 
 | 模式 | 原因 |
 |---------|--------|
-| 圆角 / 阴影 / 渐变 / 发光 / 模糊 | 构成主义是刀切硬边 + 实色平涂，任何柔化都破坏工业感 |
+| 结构表面的圆角 / 阴影 / 渐变 / 发光 / 模糊 | 结构必须刀切硬边；只有等宽高圆形图元可用 rounded-full，其他柔化会破坏工业感 |
 | 第四种颜色 / 低饱和 pastel / 调浑三原色 | 只有红蓝黄 + 墨 + 纸五色，色彩是结构信号不是氛围 |
 | 插画 / 照片 / 3D 拟物 | 基本几何图元本身就是主角，其它一律抢戏 |
 | 弹跳卖萌卡通缓动 / 超过 1.2s 的循环 | 破坏机械节奏；用 expo-out 入场、匀速或 steps() 循环 |
@@ -302,7 +302,7 @@ Design principles:
 ### 画面（纸与墨与三色）
 - 背景 #EFE9DC（米白纸），主体 #17130E（暖墨黑）
 - 三个强调色：构成红 #E0231B、群青蓝 #1C4A87、金黄 #F4B301
-- 实色平涂，硬边零圆角（rounded-none），关键块用 2px 或 4px 墨色描边
+- 实色平涂，结构表面硬边零圆角（rounded-none）；圆形图元保持等宽高的纯几何轮廓，关键块用 2px 或 4px 墨色描边
 
 ### 图元库（只用这些）
 圆（disc）、三角（triangle）、方（square）、粗对角线（diagonal bar）、弧（arc / 同心圆环）。像机械零件一样拼装，禁止其它形状。
@@ -365,7 +365,7 @@ animate(".kc-square", {
 ## 自检清单
 
 - [ ] 纸底墨字 + 只有红蓝黄三色
-- [ ] 只用圆/三角/方/对角线/弧，硬边零圆角实色平涂
+- [ ] 只用圆/三角/方/对角线/弧；结构表面硬边零圆角，圆形图元保持等宽高的纯几何轮廓
 - [ ] 关键构图沿对角线，标题字块有旋转
 - [ ] 图元真的机械运动（公转/自转/钟摆/行进），不是静态摆拍
 - [ ] 参与动画的只有 transform / opacity
@@ -388,7 +388,7 @@ You are an expert frontend developer specializing in kinetic constructivism. Gen
 
 | Pattern | Reason |
 |---------|--------|
-| Rounded corners / shadows / gradients / glow / blur | Constructivism is knife-cut hard edges + flat fills; any softening kills the industrial feel |
+| Rounded structural surfaces / shadows / gradients / glow / blur | Structural edges stay knife-cut; only equal-width/height circle primitives may use rounded-full |
 | A fourth hue / low-sat pastels / muddied primaries | Only red, blue, yellow + ink + paper; color is a structural signal, not atmosphere |
 | Illustration / photography / 3D skeuomorphism | Basic primitives are the protagonist; anything else steals the stage |
 | Cutesy bouncy easing / loops over 1.2s | Breaks the mechanical rhythm; use expo-out entrances, linear or stepped loops |
@@ -464,7 +464,7 @@ animate(".kc-square", {
 ## Self-Verification Checklist
 
 - [ ] Paper ground, ink type, only red/blue/yellow
-- [ ] Only circle/triangle/square/diagonal/arc, hard edges, zero radius, flat fills
+- [ ] Only circle/triangle/square/diagonal/arc; hard structural edges, equal-width/height circles retain a true geometric outline, flat fills
 - [ ] Key composition on the diagonal, headline blocks rotated
 - [ ] Primitives genuinely move mechanically (orbit/spin/pendulum/march), not static mockups
 - [ ] Only transform / opacity animate

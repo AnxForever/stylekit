@@ -91,10 +91,18 @@ export const opArtTokens = createStyleTokens({
     reasons: {
       "font-serif": "Op Art uses clean geometric sans-serif typography (font-sans)",
       "rounded-lg": "Op Art demands sharp geometric edges for optical precision (rounded-none)",
+      "rounded-full": "Only concentric optical ring decorations use rounded-full; UI surfaces retain sharp edges",
       "shadow-md": "Op Art is flat and graphic; soft shadows break the 2D illusion",
       "bg-gradient-to-r": "Op Art uses hard-edge flat colors for maximum contrast",
       "backdrop-blur": "Op Art avoids blur effects that soften the precise geometric patterns",
     },
+    exceptions: [
+      {
+        className: "rounded-full",
+        reason: "Op Art's repeated concentric rings are absolute inset borders, not rounded UI surfaces.",
+        element: { tags: ["div"], classesAll: ["absolute", "border-black"], classPrefixesAll: ["inset-", "border-"] },
+      },
+    ],
   },
 
   required: {

@@ -4,9 +4,14 @@
 import type { DesignStyle } from "../styles";
 import type { StyleTokens } from "../styles/tokens";
 import JSZip from "jszip";
-import { exportStyleTokens } from "./figma-tokens";
-import { generateTailwindPresetJS } from "./tailwind-preset";
-import { generateShadcnThemeJSON, generateShadcnThemeCSS } from "./shadcn-theme";
+import { generateFigmaTokenExport } from "./figma-tokens";
+import {
+  generateTailwindPresetExport,
+  generateTailwindPresetJS,
+  generateTailwindThemeCSSExport,
+  serializeTailwindDiagnostics,
+} from "./tailwind-preset";
+import { generateShadcnThemeExport, generateShadcnThemeCSS } from "./shadcn-theme";
 import { generateSkillPack, getSkillPackFileInfo } from "./skill-pack";
 
 export interface StylePackFile {
@@ -29,6 +34,10 @@ export function generateStylePack(
   options?: StylePackOptions
 ): StylePackFile[] {
   const version = options?.version ?? "0.0.0";
+  const figmaExport = generateFigmaTokenExport(style, tokens);
+  const tailwindPresetExport = generateTailwindPresetExport(style, tokens);
+  const tailwindThemeExport = generateTailwindThemeCSSExport(style, tokens);
+  const shadcnExport = generateShadcnThemeExport(style, tokens);
   const files: StylePackFile[] = [
     {
       name: "Metadata",
@@ -53,18 +62,50 @@ export function generateStylePack(
       filename: `${style.slug}-tokens.json`,
       description: "Figma / Style Dictionary / Tokens Studio 兼容",
       descriptionEn: "Compatible with Figma / Style Dictionary / Tokens Studio",
-      content: exportStyleTokens(style, "figma-tokens"),
+      content: JSON.stringify(figmaExport.tokens, null, 2),
       mimeType: "application/json",
       icon: "tokens",
     },
     {
-      name: "Tailwind Preset",
+      name: "Tailwind v3 Preset",
       filename: `${style.slug}-tailwind-preset.js`,
-      description: "Tailwind CSS 主题预设，可直接在配置中引用",
-      descriptionEn: "Tailwind CSS theme preset, import directly in config",
+      description: "Tailwind CSS v3 CommonJS 主题预设，附未支持值说明",
+      descriptionEn: "Tailwind CSS v3 CommonJS theme preset with export limitations noted",
       content: generateTailwindPresetJS(style, tokens),
       mimeType: "application/javascript",
       icon: "tailwind",
+    },
+    {
+      name: "Tailwind v4 Theme",
+      filename: `${style.slug}-tailwind-theme.css`,
+      description: "Tailwind CSS v4 @theme 样式表；spacing 使用 stylekit-* 命名，避免覆盖 max-w-sm 等默认别名",
+      descriptionEn: "Tailwind CSS v4 @theme stylesheet; stylekit-* spacing names preserve default aliases such as max-w-sm",
+      content: tailwindThemeExport.css,
+      mimeType: "text/css",
+      icon: "tailwind",
+    },
+    {
+      name: "Export Diagnostics",
+      filename: `${style.slug}-export-diagnostics.json`,
+      description: "列出导出中使用的回退和无法表达的值",
+      descriptionEn: "Lists fallbacks and values that could not be represented in generated artifacts",
+      content: JSON.stringify({
+        schemaVersion: 1,
+        generatedBy: "StyleKit",
+        styleSlug: style.slug,
+        figmaTokens: figmaExport.diagnostics,
+        tailwindV3Preset: serializeTailwindDiagnostics(tailwindPresetExport.diagnostics, style.slug),
+        tailwindV4Theme: serializeTailwindDiagnostics(tailwindThemeExport.diagnostics, style.slug),
+        shadcnTheme: {
+          schemaVersion: 1,
+          generatedBy: "StyleKit",
+          styleSlug: style.slug,
+          fallbacks: shadcnExport.diagnostics.fallbacks,
+          unsupported: shadcnExport.diagnostics.unsupported,
+        },
+      }, null, 2),
+      mimeType: "application/json",
+      icon: "info",
     },
     {
       name: "Global CSS",
@@ -78,18 +119,18 @@ export function generateStylePack(
     {
       name: "shadcn Theme",
       filename: `${style.slug}-shadcn-theme.json`,
-      description: "shadcn/ui 主题配置",
-      descriptionEn: "shadcn/ui theme configuration",
-      content: generateShadcnThemeJSON(style),
+      description: "旧版 shadcn/Tailwind v3 的 HSL 通道配置",
+      descriptionEn: "Legacy shadcn/Tailwind v3 HSL channel configuration",
+      content: JSON.stringify(shadcnExport.theme, null, 2),
       mimeType: "application/json",
       icon: "shadcn",
     },
     {
       name: "CSS Variables",
       filename: `${style.slug}-variables.css`,
-      description: "纯 CSS 变量，适用于任何项目",
-      descriptionEn: "Pure CSS variables, works with any project",
-      content: generateShadcnThemeCSS(style),
+      description: "旧版 HSL 通道变量，配合 hsl(var(--token)) 使用；v4 请用 Theme CSS",
+      descriptionEn: "Legacy HSL channels for hsl(var(--token)); use Theme CSS for v4",
+      content: generateShadcnThemeCSS(style, tokens),
       mimeType: "text/css",
       icon: "variables",
     },

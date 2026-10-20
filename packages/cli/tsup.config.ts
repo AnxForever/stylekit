@@ -10,6 +10,10 @@ export default defineConfig({
   noExternal: [/^stylekit-core/],
   esbuildOptions(options) {
     options.minifyWhitespace = true;
+    options.minifySyntax = true;
+    // Keep stack-trace names while shrinking local bindings in the bundled catalog.
+    options.minifyIdentifiers = true;
+    options.keepNames = true;
   },
   clean: true,
 });

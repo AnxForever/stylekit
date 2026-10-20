@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import type { DesignStyle } from "@/lib/styles";
-import { exportStyleTokens, downloadTokens, ExportFormat } from "@/lib/export/figma-tokens";
+import { exportStyleTokens, downloadTokens, generateFigmaTokenExport, ExportFormat } from "@/lib/export/figma-tokens";
 import { ClipboardFeedback } from "@/components/ui/clipboard-feedback";
 import { useClipboard } from "@/lib/hooks/use-clipboard";
 
@@ -45,7 +45,10 @@ export function ExportDialog({ style, isOpen, onClose }: ExportDialogProps) {
 
   if (!isOpen) return null;
 
-  const preview = exportStyleTokens(style, selectedFormat);
+  const figmaExport = selectedFormat === "figma-tokens" ? generateFigmaTokenExport(style) : null;
+  const preview = figmaExport
+    ? JSON.stringify(figmaExport.tokens, null, 2)
+    : exportStyleTokens(style, selectedFormat);
   const copyId = `export-dialog:${selectedFormat}:${formatRevision}`;
   const clipboardResult = clipboard.result?.id === copyId && clipboard.result.text === preview
     ? clipboard.result
@@ -136,6 +139,21 @@ export function ExportDialog({ style, isOpen, onClose }: ExportDialogProps) {
               </button>
             </div>
           </div>
+          {figmaExport && (figmaExport.diagnostics.fallbacks.length > 0 || figmaExport.diagnostics.unsupported.length > 0) && (
+            <details className="mb-3 border border-border p-3 text-xs">
+              <summary className="cursor-pointer font-medium">Export notes</summary>
+              <p className="mt-2 text-muted">
+                {figmaExport.diagnostics.fallbacks.length} values use a fallback. {figmaExport.diagnostics.unsupported.length} values could not be exported.
+              </p>
+              <ul className="mt-2 max-h-36 space-y-2 overflow-y-auto">
+                {[...figmaExport.diagnostics.fallbacks, ...figmaExport.diagnostics.unsupported].map((note, index) => (
+                  <li key={`${note.path}:${index}`}>
+                    <span className="font-mono">{note.path}</span>: {note.reason}
+                  </li>
+                ))}
+              </ul>
+            </details>
+          )}
           <div className="border border-border overflow-auto max-h-[280px]">
             <pre className="p-4 text-xs font-mono text-foreground whitespace-pre-wrap">
               {preview}

@@ -151,7 +151,11 @@ export interface RecipeSlot {
   /** Default content */
   default?: string;
 
-  /** Slot type */
+  /**
+   * `text` (and omitted type) is escaped as text. `children` and `element` are
+   * intentional raw JSX/HTML code slots and must only receive trusted code.
+   * `icon` accepts a JSX component identifier or member name.
+   */
   type?: "text" | "icon" | "element" | "children";
 
   /** Placeholder text for input */

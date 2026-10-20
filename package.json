@@ -62,6 +62,8 @@
     "submit:baidu": "node tools/scripts/submit-baidu.mjs",
     "check:developer-contracts": "pnpm exec tsx tools/scripts/check-developer-contracts.ts",
     "test:developer-consumer": "node tools/scripts/verify-developer-consumer.mjs",
+    "test:tool-workflows": "pnpm exec tsx tools/scripts/evaluate-tool-workflows.ts --scope toolchain",
+    "evaluate:tool-workflows": "pnpm exec tsx tools/scripts/evaluate-tool-workflows.ts",
     "check:style-catalog": "pnpm exec tsx tools/scripts/check-style-catalog.ts"
   },
   "dependencies": {

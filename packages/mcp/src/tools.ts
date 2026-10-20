@@ -22,7 +22,14 @@ import {
   type StyleCategory,
   type StyleLintComponent,
 } from "./data.js";
-import type { RemoteOptions } from "stylekit-core/discovery";
+import {
+  ImplementationBriefProjectionError,
+  RecipeRenderInputError,
+  projectImplementationBrief,
+  type ImplementationBriefSection,
+  type RecipeRenderOptions,
+  type RemoteOptions,
+} from "stylekit-core/discovery";
 import { toolResult, errorResult } from "./format.js";
 
 const READ_ONLY = {
@@ -33,6 +40,54 @@ const READ_ONLY = {
 } as const;
 
 const CATEGORIES = ["modern", "retro", "minimal", "expressive"] as const;
+const IMPLEMENTATION_BRIEF_SECTIONS = [
+  "identity",
+  "guidance",
+  "colors",
+  "globalCss",
+  "variants",
+  "components",
+  "tokens",
+  "recipes",
+  "readiness",
+  "lintRules",
+] as const;
+
+const RECIPE_RENDER_OPTIONS_SHAPE = {
+  variant: z.string().optional(),
+  params: z.record(
+    z.string(),
+    z.union([z.string(), z.number(), z.boolean()]),
+  ).optional(),
+  slots: z.record(z.string(), z.string()).optional(),
+} as const;
+
+function markdownCodeBlock(content: string, language = ""): string {
+  let longestBacktickRun = 0;
+  let currentBacktickRun = 0;
+  for (const character of content) {
+    if (character === "`") {
+      currentBacktickRun += 1;
+      longestBacktickRun = Math.max(longestBacktickRun, currentBacktickRun);
+    } else {
+      currentBacktickRun = 0;
+    }
+  }
+
+  const fence = "`".repeat(Math.max(3, longestBacktickRun + 1));
+  return `${fence}${language}\n${content}\n${fence}`;
+}
+
+const IMPLEMENTATION_BRIEF_PROJECTION_SHAPE = {
+  complete: z.boolean(),
+  mode: z.enum(["full", "partial"]),
+  includedSections: z.array(z.enum(IMPLEMENTATION_BRIEF_SECTIONS)),
+  excludedSections: z.array(z.enum(IMPLEMENTATION_BRIEF_SECTIONS)),
+  componentFilter: z.array(z.string()).nullable(),
+  lintRulesIncluded: z.boolean(),
+  lintRulesComplete: z.boolean(),
+  notice: z.string(),
+} as const;
 
 const RANKING_LABEL = {
   exact: "exact slug/name match prioritized",
@@ -150,6 +205,21 @@ const STYLE_TOKENS_SHAPE = z.object({
     classes: z.array(z.string()),
     patterns: z.array(z.string()),
     reasons: z.record(z.string(), z.string()),
+    exceptions: z.array(z.object({
+      className: z.string(),
+      reason: z.string(),
+      variants: z.object({
+        all: z.array(z.string()).optional(),
+        none: z.array(z.string()).optional(),
+      }).optional(),
+      element: z.object({
+        tags: z.array(z.string()).optional(),
+        classesAll: z.array(z.string()).optional(),
+        classPrefixesAll: z.array(z.string()).optional(),
+        squareDimensions: z.literal(true).optional(),
+        maxDimension: z.number().optional(),
+      }).optional(),
+    })).optional(),
   }),
   required: z.object({
     button: z.array(z.string()),
@@ -162,6 +232,38 @@ const STYLE_TOKENS_OUTPUT_SHAPE = STYLE_TOKENS_SHAPE.extend({
   origin: z.enum(["live", "bundled"]),
   fallbackReason: z.string().optional(),
 });
+
+const IMPLEMENTATION_BRIEF_OUTPUT_SHAPE = {
+  schemaVersion: z.literal("stylekit-brief-v1"),
+  slug: z.string(),
+  provenance: z.object({
+    source: z.enum(["bundled", "static", "community"]),
+    contentHash: z.string(),
+    url: z.string(),
+  }),
+  projection: z.object(IMPLEMENTATION_BRIEF_PROJECTION_SHAPE),
+  name: z.string().optional(),
+  nameEn: z.string().optional(),
+  category: z.string().optional(),
+  styleType: z.string().optional(),
+  description: z.string().optional(),
+  tags: z.array(z.string()).optional(),
+  keywords: z.array(z.string()).optional(),
+  philosophy: z.string().optional(),
+  aiRules: z.string().optional(),
+  doList: z.array(z.string()).optional(),
+  dontList: z.array(z.string()).optional(),
+  colors: z.object(DETAIL_SHAPE.colors.shape).optional(),
+  globalCss: z.string().optional(),
+  variants: z.array(z.unknown()).optional(),
+  components: z.record(z.string(), z.unknown()).optional(),
+  tokens: STYLE_TOKENS_SHAPE.nullable().optional(),
+  recipes: z.record(z.string(), z.unknown()).optional(),
+  readiness: z.record(z.string(), z.unknown()).optional(),
+  lintRules: z.record(z.string(), z.unknown()).optional(),
+  origin: z.enum(["live", "bundled"]),
+  fallbackReason: z.string().optional(),
+} as const;
 
 function unknownSlug(slug: string) {
   return errorResult(
@@ -613,8 +715,18 @@ Examples:
 Args:
   - slug (string): style identifier.
   - component (string): recipe id, e.g. "button", "card", "input".
+  - variant (string, optional): named recipe variant such as "cyan".
+  - params (object, optional): JSON object of parameter ids to string, number,
+    or boolean values, for example {"size":"lg","fullWidth":true}.
+  - slots (object, optional): JSON object of slot ids to values, for example
+    {"label":"Transmit"}. Text and unspecified slots are emitted as escaped text.
+    Icon slots accept an empty value or a JSX component/member name such as
+    "ArrowRight" or "Icons.ArrowRight". Children and element slots insert raw
+    JSX/HTML code, so only pass trusted code to those slots.
 
-Returns JSON: { slug, component, className, code, origin, fallbackReason? }.
+Returns JSON: { slug, component, className, code, renderOptions?, origin,
+fallbackReason? }. Unknown variants, parameters, slots, and invalid values return
+an explicit tool error rather than falling back to a default render.
 
 Examples:
   - "give me a glassmorphism button" -> slug: "glassmorphism", component: "button"
@@ -625,22 +737,48 @@ Examples:
           .string()
           .min(1)
           .describe("Recipe id: button, card, input, ..."),
+        variant: z.string().optional().describe("Recipe variant id"),
+        params: RECIPE_RENDER_OPTIONS_SHAPE.params.describe(
+          "JSON object mapping parameter ids to string, number, or boolean values",
+        ),
+        slots: RECIPE_RENDER_OPTIONS_SHAPE.slots.describe(
+          "JSON object mapping slot ids to values. Text is escaped; icon values must be component names. children/element slots insert trusted raw code.",
+        ),
       },
       outputSchema: {
         slug: z.string(),
         component: z.string(),
         className: z.string(),
         code: z.string(),
+        renderOptions: z.object(RECIPE_RENDER_OPTIONS_SHAPE).optional(),
         origin: z.enum(["live", "bundled"]),
         fallbackReason: z.string().optional(),
       },
       annotations: READ_ONLY,
     },
-    async ({ slug, component }) => {
+    async ({ slug, component, variant, params, slots }) => {
       const detailSource = await getStyleDetailLive(slug, remoteOptions);
       const detail = detailSource.data;
       if (!detail) return styleLookupFailure(slug, detailSource);
-      const recipeSource = await getComponentRecipeLive(slug, component, remoteOptions);
+      const renderOptions: RecipeRenderOptions = {
+        ...(variant !== undefined ? { variant } : {}),
+        ...(params !== undefined ? { params } : {}),
+        ...(slots !== undefined ? { slots } : {}),
+      };
+      let recipeSource: Awaited<ReturnType<typeof getComponentRecipeLive>>;
+      try {
+        recipeSource = await getComponentRecipeLive(
+          slug,
+          component,
+          remoteOptions,
+          renderOptions,
+        );
+      } catch (error) {
+        if (error instanceof RecipeRenderInputError) {
+          return errorResult(`${error.message} (code: ${error.code})`);
+        }
+        throw error;
+      }
       const recipe = recipeSource.data;
       if (!recipe) {
         if (recipeSource.failureKind === "unavailable") {
@@ -658,6 +796,7 @@ Examples:
       }
       const structured = {
         ...recipe,
+        ...(Object.keys(renderOptions).length > 0 ? { renderOptions } : {}),
         origin: recipeSource.origin,
         ...(recipeSource.fallbackReason ? { fallbackReason: recipeSource.fallbackReason } : {}),
       };
@@ -666,14 +805,10 @@ Examples:
         `Catalogue origin: ${recipeSource.origin}${recipeSource.fallbackReason ? `; fallback: ${recipeSource.fallbackReason}` : ""}.`,
         "",
         "**className**:",
-        "```",
-        recipe.className,
-        "```",
+        markdownCodeBlock(recipe.className),
         "",
         "**code**:",
-        "```tsx",
-        recipe.code,
-        "```",
+        markdownCodeBlock(recipe.code, "tsx"),
       ];
       return toolResult(lines.join("\n"), structured);
     },
@@ -684,7 +819,7 @@ Examples:
     "stylekit_get_shadcn_install",
     {
       title: "Get StyleKit shadcn install command",
-      description: `Get the one-line shadcn CLI command that installs a style's color theme (light + dark) into a shadcn project.
+      description: `Get the one-line shadcn CLI command that installs a style's color theme (light + dark) into a Tailwind CSS v4 shadcn project. This StyleKit registry theme endpoint is Tailwind v4 only; for Tailwind v3, use the local Style Pack's legacy HSL <slug>-variables.css and Tailwind v3 <slug>-tailwind-preset.js artifacts instead.
 
 Args:
   - slug (string): style identifier.
@@ -693,7 +828,7 @@ Returns JSON: { slug, command, registryUrl, prerequisite, lookupOrigin, fallback
 
 Examples:
   - "how do I install the synthwave theme?" -> slug: "synthwave"
-  - The target project must have a tsconfig.json or the shadcn CLI errors out.`,
+  - Initialize a Tailwind v4 shadcn project with components.json (tailwind.css and CSS variables) and tsconfig.json. For Tailwind v3, use Style Pack's legacy HSL <slug>-variables.css and Tailwind v3 <slug>-tailwind-preset.js instead of this registry endpoint.`,
       inputSchema: {
         slug: z.string().min(1).describe("Style slug"),
       },
@@ -718,7 +853,7 @@ Examples:
         slug,
         command: shadcnInstallCommand(slug),
         registryUrl: registryUrl(slug),
-        prerequisite: "The target project must contain a tsconfig.json.",
+        prerequisite: "This registry theme command supports Tailwind CSS v4 only. The target must have components.json configured with tailwind.css and CSS variables enabled, plus tsconfig.json. For Tailwind v3, use Style Pack's legacy HSL <slug>-variables.css and Tailwind v3 <slug>-tailwind-preset.js artifacts instead.",
         lookupOrigin: known.origin,
         ...(known.fallbackReason ? { fallbackReason: known.fallbackReason } : {}),
       };
@@ -730,8 +865,9 @@ Examples:
         structured.command,
         "```",
         "",
-        "Injects light + dark cssVars into your globals.css (Tailwind v4 compatible).",
-        "Prerequisite: the project must contain a tsconfig.json.",
+        "This registry theme command targets Tailwind CSS v4; it injects light + dark cssVars into the configured globals.css.",
+        "Prerequisite: initialize shadcn with components.json (tailwind.css and CSS variables) and tsconfig.json.",
+        "For Tailwind v3, use Style Pack's legacy HSL <slug>-variables.css and Tailwind v3 <slug>-tailwind-preset.js instead of this registry endpoint.",
       ].join("\n");
       return toolResult(text, structured);
     },
@@ -815,7 +951,7 @@ Examples:
       }
       const rules = rulesFromBrief(brief);
       if (!rules) {
-        return errorResult(`The implementation brief for "${slug}" contains an invalid stylekit-lint-v1 rule contract.`);
+        return errorResult(`The implementation brief for "${slug}" contains an unsupported or invalid StyleKit lint rule contract.`);
       }
 
       const report = lintCodeWithRules(rules, code, {
@@ -866,23 +1002,18 @@ Examples:
   );
 
   server.registerTool("stylekit_get_implementation_brief", {
-    title: "Get complete StyleKit implementation brief",
-    description: "Fetch one complete implementation contract before generating UI: AI rules, philosophy, global CSS, component templates, recipe definitions, tokens, readiness guidance, merged lint rules, and content provenance. The live brief is preferred and cached for five minutes; when the live source is unavailable, a bundled snapshot is returned only when available and marked with origin and fallbackReason. provenance.source records the content publisher (bundled, static, or community) and is distinct from transport origin. Coverage guidance does not certify visual quality or accessibility.",
-    inputSchema: { slug: z.string().min(1).max(100).describe("Style slug") },
-    outputSchema: {
-      schemaVersion: z.literal("stylekit-brief-v1"), slug: z.string(), name: z.string(), nameEn: z.string(),
-      category: z.string(), styleType: z.string(), description: z.string(),
-      tags: z.array(z.string()), keywords: z.array(z.string()), philosophy: z.string(), aiRules: z.string(),
-      doList: z.array(z.string()), dontList: z.array(z.string()), colors: z.object(DETAIL_SHAPE.colors.shape),
-      globalCss: z.string(), components: z.record(z.unknown()), variants: z.array(z.unknown()),
-      tokens: STYLE_TOKENS_SHAPE.nullable(), recipes: z.record(z.unknown()), readiness: z.record(z.unknown()),
-      lintRules: z.record(z.unknown()),
-      provenance: z.object({ source: z.enum(["bundled", "static", "community"]), contentHash: z.string(), url: z.string() }),
-      origin: z.enum(["live", "bundled"]),
-      fallbackReason: z.string().optional(),
+    title: "Get StyleKit implementation brief",
+    description: "Fetch a complete StyleKit implementation contract by default, or request selected sections and component templates to reduce context size. Sections: identity, guidance, colors, globalCss, variants, components, tokens, recipes, readiness, lintRules. Use components to filter templates when requesting the components or recipes section. Every response includes a projection marker so partial results are not mistaken for the complete contract. The live brief is preferred and cached for five minutes; when the live source is unavailable, a bundled snapshot is returned only when available and marked with origin and fallbackReason. provenance.source records the content publisher and is distinct from transport origin. Coverage guidance does not certify visual quality or accessibility.",
+    inputSchema: {
+      slug: z.string().min(1).max(100).describe("Style slug"),
+      sections: z.array(z.enum(IMPLEMENTATION_BRIEF_SECTIONS)).optional()
+        .describe("Optional section projection; omitted means the complete brief"),
+      components: z.array(z.string().min(1)).optional()
+        .describe("Optional component ids, valid only when sections includes components or recipes"),
     },
+    outputSchema: IMPLEMENTATION_BRIEF_OUTPUT_SHAPE,
     annotations: READ_ONLY,
-  }, async ({ slug }) => {
+  }, async ({ slug, sections, components }) => {
     const result = await getImplementationBriefLive(slug, remoteOptions);
     if (!result.data) {
       if (result.failureKind === "not-found") return unknownSlug(slug);
@@ -891,8 +1022,22 @@ Examples:
       }
       return sourceUnavailable(`Implementation brief for style "${slug}"`, result);
     }
+    let projected: ReturnType<typeof projectImplementationBrief>;
+    try {
+      projected = projectImplementationBrief(result.data, {
+        ...(sections !== undefined
+          ? { sections: sections as ImplementationBriefSection[] }
+          : {}),
+        ...(components !== undefined ? { componentIds: components } : {}),
+      });
+    } catch (error) {
+      if (error instanceof ImplementationBriefProjectionError) {
+        return errorResult(`${error.message} (code: ${error.code})`);
+      }
+      throw error;
+    }
     const structured = {
-      ...result.data,
+      ...projected,
       origin: result.origin,
       ...(result.fallbackReason ? { fallbackReason: result.fallbackReason } : {}),
     };

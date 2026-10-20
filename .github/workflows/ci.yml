@@ -51,6 +51,20 @@ jobs:
       - run: pnpm run check:seo-truth
       - run: pnpm run test
 
+  developer-tools:
+    name: Developer tools
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm run test:developer-packages
+      - run: pnpm run test:tool-workflows
+
   build:
     name: Build
     runs-on: ubuntu-latest

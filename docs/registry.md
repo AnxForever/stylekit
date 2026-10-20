@@ -1,20 +1,20 @@
 # shadcn Registry
 
-Every StyleKit style is published as a [shadcn registry](https://ui.shadcn.com/docs/registry) theme. You can install any style's color theme — light and dark — into an existing [shadcn](https://ui.shadcn.com) project with a single command, no copy-paste required.
+Every StyleKit style is published as a [shadcn registry](https://ui.shadcn.com/docs/registry) theme for current Tailwind CSS v4 projects. You can install any style's color theme — light and dark — into an existing v4 [shadcn](https://ui.shadcn.com) project with a single command, no copy-paste required.
 
 ## Quick Start
 
-In any shadcn project, run:
+In a Tailwind CSS v4 shadcn project, run:
 
 ```bash
 npx shadcn add https://stylekit.top/r/glassmorphism.json
 ```
 
-Replace `glassmorphism` with the slug of any style. The shadcn CLI fetches the URL, reads the theme item, and injects its CSS variables into your `globals.css`. After it finishes, your project's components pick up the StyleKit palette for both light and dark mode.
+Replace `glassmorphism` with the slug of any style. The shadcn CLI fetches the URL, reads the theme item, and injects its CSS variables into your `globals.css`. The registry item contains CSS `hsl(...)` colors, including a normalized alpha channel where the source style is translucent. After it finishes, your project's components pick up the StyleKit palette for both light and dark mode.
 
 ## Prerequisites
 
-- A project that has already been initialized with shadcn (it has a `components.json` and a `globals.css`).
+- A Tailwind CSS v4 project that has already been initialized with shadcn (it has a `components.json` and a `globals.css`).
 - **The project must contain a `tsconfig.json`.** The shadcn CLI inspects `tsconfig.json` to resolve paths; without it the command fails with:
 
   ```
@@ -40,9 +40,11 @@ The variables cover the standard shadcn theme tokens, derived from the style's o
 | Form / focus | `border`, `input`, `ring` |
 | Shape | `radius` |
 
-### Tailwind v4 compatibility
+### Tailwind version compatibility
 
-Values are stored as bare HSL channels (for example `0 0% 100%`). When you install into a Tailwind v4 project, the shadcn CLI wraps each value as `hsl(...)` and generates the matching `@theme inline` block automatically, so the variables are usable as Tailwind utilities without extra configuration. Tailwind v3 projects work too — the CLI adapts the output to the detected setup.
+The registry endpoint emits complete CSS colors such as `hsl(0 0% 100% / 0.08)`, which Tailwind v4's `@theme inline` variables can consume directly. This path was verified with `shadcn@4.16.2`.
+
+Tailwind CSS v3 needs bare HSL components because its shadcn configuration commonly wraps them with `hsl(var(--background))`. The CLI does not convert a registry item's full `hsl(...)` value for that contract; an isolated `shadcn@3.3.0` and Tailwind `3.4.17` install preserved the wrapper and would produce nested `hsl(hsl(...))`. For v3, use the local Style Pack's `<slug>-variables.css` and `<slug>-tailwind-preset.js` artifacts with the project's existing shadcn configuration instead of installing this registry endpoint. The JavaScript preset is a Tailwind v3 CommonJS artifact; rename it to `.cjs` when your project treats `.js` files as ES modules.
 
 ## Finding a style slug
 
@@ -94,14 +96,14 @@ Both responses follow the official shadcn schemas ([`registry.json`](https://ui.
   "description": "...",
   "cssVars": {
     "light": {
-      "background": "0 0% 100%",
-      "foreground": "0 0% 3.9%",
+      "background": "hsl(0 0% 100% / 0.08)",
+      "foreground": "hsl(0 0% 3.9%)",
       "primary": "...",
       "radius": "0.5rem"
     },
     "dark": {
-      "background": "0 0% 3.9%",
-      "foreground": "0 0% 98%",
+      "background": "hsl(0 0% 3.9%)",
+      "foreground": "hsl(0 0% 98%)",
       "primary": "..."
     }
   },

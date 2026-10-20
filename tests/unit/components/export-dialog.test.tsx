@@ -7,6 +7,13 @@ import type { DesignStyle } from "@/lib/styles";
 
 vi.mock("@/lib/export/figma-tokens", () => ({
   exportStyleTokens: (_style: unknown, format: string) => `tokens:${format}`,
+  generateFigmaTokenExport: () => ({
+    tokens: { colors: { background: { value: "#0a0a1a", type: "color" } } },
+    diagnostics: {
+      fallbacks: [],
+      unsupported: [{ path: "typography.fontFamily.primary", source: "font-custom", reason: "The custom font requires a consumer definition." }],
+    },
+  }),
   downloadTokens: vi.fn(),
 }));
 
@@ -30,15 +37,17 @@ describe("ExportDialog clipboard feedback", () => {
     });
 
     render(<ExportDialog style={style} isOpen onClose={vi.fn()} />);
+    expect(screen.getByText("Export notes")).toBeInTheDocument();
 
     fireEvent.click(screen.getByRole("button", { name: "Copy" }));
     await waitFor(() => {
       expect(screen.getByRole("textbox", { name: "Code to copy manually" })).toHaveValue(
-        "tokens:figma-tokens",
+        JSON.stringify({ colors: { background: { value: "#0a0a1a", type: "color" } } }, null, 2),
       );
     });
 
     fireEvent.click(screen.getByRole("button", { name: "Style Dictionary" }));
+    expect(screen.queryByText("Export notes")).not.toBeInTheDocument();
     expect(screen.queryByRole("textbox", { name: "Code to copy manually" })).not.toBeInTheDocument();
 
     fireEvent.click(screen.getByRole("button", { name: "Copy" }));

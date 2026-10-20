@@ -2,8 +2,10 @@ import { describe, expect, it } from "vitest";
 
 import {
   colorToHsl,
+  colorToHslWithAlpha,
   hslLightness,
   resolveTwColor,
+  resolveTwColorCss,
   twRadiusToRem,
 } from "@/lib/export/color-resolve";
 
@@ -40,6 +42,18 @@ describe("colorToHsl", () => {
   it("returns null for non-colors", () => {
     expect(colorToHsl("transparent")).toBeNull();
     expect(colorToHsl("not-a-color")).toBeNull();
+  });
+});
+
+describe("colorToHslWithAlpha", () => {
+  it("keeps alpha in values consumed by hsl(var(--token))", () => {
+    expect(colorToHslWithAlpha("rgba(255, 255, 255, 0.12)")).toBe("0 0% 100% / 0.12");
+    expect(colorToHslWithAlpha("#00000080")).toBe("0 0% 0% / 0.502");
+  });
+
+  it("keeps slash-separated alpha for modern rgba and hsla syntax", () => {
+    expect(colorToHslWithAlpha("rgba(255 0 0 / 0.5)")).toBe("0 100% 50% / 0.5");
+    expect(colorToHslWithAlpha("hsla(120 100% 50% / 25%)")).toBe("120 100% 50% / 0.25");
   });
 });
 
@@ -100,10 +114,26 @@ describe("resolveTwColor", () => {
   });
 });
 
+describe("resolveTwColorCss", () => {
+  it("preserves arbitrary values and applies numeric opacity modifiers", () => {
+    expect(resolveTwColorCss("bg-[#0a0a1a]")).toBe("#0a0a1a");
+    expect(resolveTwColorCss("bg-[rgb(0_0_0_/_0.5)]")).toBe("rgb(0 0 0 / 0.5)");
+    expect(resolveTwColorCss("text-[#abcdef]/40")).toBe("hsl(210 68% 80% / 0.4)");
+    expect(resolveTwColorCss("bg-white/12")).toBe("hsl(0 0% 100% / 0.12)");
+  });
+
+  it("preserves transparent values and rejects unresolved CSS variables", () => {
+    expect(resolveTwColorCss("bg-transparent")).toBe("transparent");
+    expect(resolveTwColorCss("bg-[var(--surface)]")).toBeNull();
+  });
+});
+
 describe("twRadiusToRem", () => {
   it("maps the Tailwind radius scale", () => {
     expect(twRadiusToRem("rounded-none")).toBe("0rem");
-    expect(twRadiusToRem("rounded")).toBe("0.25rem");
+    expect(twRadiusToRem("rounded-xs")).toBe("0.125rem");
+    expect(twRadiusToRem("rounded-sm")).toBe("0.25rem");
+    expect(twRadiusToRem("rounded")).toBe("0.375rem");
     expect(twRadiusToRem("rounded-lg")).toBe("0.5rem");
     expect(twRadiusToRem("rounded-xl")).toBe("0.75rem");
     expect(twRadiusToRem("rounded-2xl")).toBe("1rem");

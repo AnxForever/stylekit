@@ -45,11 +45,46 @@ function hexToRgb(hex: string): Rgb | null {
 function rgbStringToRgb(input: string): Rgb | null {
   const m = input.match(/rgba?\(([^)]+)\)/i);
   if (!m) return null;
-  const parts = m[1].split(",").map((p) => parseFloat(p.trim()));
-  if (parts.length < 3 || parts.some((n, i) => i < 3 && Number.isNaN(n))) {
+  const parts = m[1].trim().split(/[,\s/]+/).filter(Boolean).map((part) => {
+    const numeric = parseFloat(part);
+    return part.endsWith("%") ? numeric * 2.55 : numeric;
+  });
+  if (parts.length < 3 || parts.slice(0, 3).some((n) => Number.isNaN(n))) {
     return null;
   }
   return { r: parts[0], g: parts[1], b: parts[2] };
+}
+
+function hslStringToRgb(input: string): Rgb | null {
+  const match = input.match(/hsla?\(([^)]+)\)/i);
+  if (!match) return null;
+  const parts = match[1].trim().split(/[\s,/]+/).filter(Boolean);
+  if (parts.length < 3) return null;
+  const h = parseFloat(parts[0]);
+  const s = parseFloat(parts[1]) / (parts[1].endsWith("%") ? 100 : 1);
+  const l = parseFloat(parts[2]) / (parts[2].endsWith("%") ? 100 : 1);
+  if ([h, s, l].some((value) => Number.isNaN(value))) return null;
+
+  const chroma = (1 - Math.abs(2 * l - 1)) * s;
+  const section = (((h % 360) + 360) % 360) / 60;
+  const x = chroma * (1 - Math.abs((section % 2) - 1));
+  const [r, g, b] = section < 1
+    ? [chroma, x, 0]
+    : section < 2
+      ? [x, chroma, 0]
+      : section < 3
+        ? [0, chroma, x]
+        : section < 4
+          ? [0, x, chroma]
+          : section < 5
+            ? [x, 0, chroma]
+            : [chroma, 0, x];
+  const offset = l - chroma / 2;
+  return {
+    r: Math.round((r + offset) * 255),
+    g: Math.round((g + offset) * 255),
+    b: Math.round((b + offset) * 255),
+  };
 }
 
 /** Parse "oklch(20.8% 0.042 265.755)" into L(0-1), C, H(deg). */
@@ -118,7 +153,7 @@ function formatHsl({ h, s, l }: Hsl): string {
 
 /** Expose the perceptual lightness (0-100) of a bare HSL triplet string. */
 export function hslLightness(triplet: string): number | null {
-  const m = triplet.match(/^\d{1,3}(?:\.\d+)?\s+\d{1,3}(?:\.\d+)?%\s+(\d{1,3}(?:\.\d+)?)%$/);
+  const m = triplet.match(/^\d{1,3}(?:\.\d+)?\s+\d{1,3}(?:\.\d+)?%\s+(\d{1,3}(?:\.\d+)?)%(?:\s*\/\s*(?:\d+(?:\.\d+)?%?))?$/);
   return m ? parseFloat(m[1]) : null;
 }
 
@@ -135,8 +170,17 @@ export function colorToHsl(input: string): string | null {
     const ok = parseOklch(v);
     rgb = ok ? oklchToRgb(ok) : null;
   } else if (v.startsWith("rgb")) rgb = rgbStringToRgb(v);
+  else if (v.startsWith("hsl")) rgb = hslStringToRgb(v);
 
   return rgb ? formatHsl(rgbToHsl(rgb)) : null;
+}
+
+/** Convert a concrete CSS color to a shadcn-compatible HSL value, keeping alpha. */
+export function colorToHslWithAlpha(input: string): string | null {
+  const hsl = colorToHsl(input);
+  if (!hsl) return null;
+  const alpha = clamp01(readAlpha(input));
+  return alpha < 1 ? `${hsl} / ${Number(alpha.toFixed(4))}` : hsl;
 }
 
 const COLOR_PREFIXES = [
@@ -169,6 +213,97 @@ export function resolveTwColor(className: string): string | null {
     if (hsl) return hsl;
   }
   return null;
+}
+
+function splitOpacity(value: string): { color: string; opacity?: number } {
+  let slash = -1;
+  let brackets = 0;
+  let parentheses = 0;
+  for (let index = 0; index < value.length; index++) {
+    const char = value[index];
+    if (char === "[") brackets++;
+    else if (char === "]") brackets = Math.max(0, brackets - 1);
+    else if (char === "(") parentheses++;
+    else if (char === ")") parentheses = Math.max(0, parentheses - 1);
+    else if (char === "/" && brackets === 0 && parentheses === 0) slash = index;
+  }
+  if (slash < 0) return { color: value };
+  const modifier = value.slice(slash + 1);
+  const arbitrary = modifier.match(/^\[(.+)\]$/);
+  const raw = arbitrary ? arbitrary[1] : modifier;
+  const numeric = Number.parseFloat(raw);
+  if (!Number.isFinite(numeric) || numeric < 0) return { color: value };
+  const percent = raw.endsWith("%") || (!arbitrary && numeric > 1);
+  return {
+    color: value.slice(0, slash),
+    opacity: Math.min(1, Math.max(0, percent ? numeric / 100 : numeric)),
+  };
+}
+
+function readAlpha(input: string): number {
+  const hex = input.match(/^#[\da-f]{6}([\da-f]{2})$/i);
+  if (hex) return Number.parseInt(hex[1], 16) / 255;
+
+  const colorFunction = input.match(/(?:rgba?|hsla?|oklch)\(([^)]*)\)/i);
+  if (!colorFunction) return 1;
+
+  const body = colorFunction[1].trim();
+  const slash = body.lastIndexOf("/");
+  const commaParts = body.split(",").map((part) => part.trim());
+  const raw = slash >= 0
+    ? body.slice(slash + 1).trim()
+    : commaParts.length >= 4
+      ? commaParts[commaParts.length - 1]
+      : "1";
+  const alpha = Number.parseFloat(raw);
+  if (!Number.isFinite(alpha)) return 1;
+  return raw.endsWith("%") ? alpha / 100 : alpha;
+}
+
+function applyOpacity(color: string, opacity: number): string | null {
+  const hsl = colorToHsl(color);
+  if (!hsl) return null;
+  const alpha = clamp01(readAlpha(color) * opacity);
+  return `hsl(${hsl} / ${Number(alpha.toFixed(4))})`;
+}
+
+/**
+ * Resolve one Tailwind color utility to a CSS color while retaining its
+ * `/opacity` modifier. This export path intentionally differs from
+ * {@link resolveTwColor}, which returns an alpha-free HSL triplet for shadcn.
+ */
+export function resolveTwColorCss(className: string): string | null {
+  let token = className.trim();
+  for (const prefix of COLOR_PREFIXES) {
+    if (token.startsWith(prefix)) {
+      token = token.slice(prefix.length);
+      break;
+    }
+  }
+
+  const { color: colorToken, opacity } = splitOpacity(token);
+  const arbitrary = colorToken.match(/^\[(.+)\]$/);
+  let color: string | null = null;
+  if (arbitrary) {
+    color = arbitrary[1].replace(/_/g, " ");
+  } else if (colorToken === "white" || colorToken === "black" || colorToken === "transparent") {
+    color = colorToken;
+  } else {
+    const dash = colorToken.lastIndexOf("-");
+    const family = dash === -1 ? colorToken : colorToken.slice(0, dash);
+    const shade = dash === -1 ? "500" : colorToken.slice(dash + 1);
+    const palette = (twColors as Record<string, unknown>)[family];
+    if (palette && typeof palette === "object") {
+      const value = (palette as Record<string, unknown>)[shade];
+      if (typeof value === "string") color = value;
+    }
+  }
+
+  if (!color || color === "currentColor" || color === "inherit") return null;
+  if (opacity === undefined) {
+    return color === "transparent" || colorToHsl(color) ? color : null;
+  }
+  return color === "transparent" ? color : applyOpacity(color, opacity);
 }
 
 function resolveSingleColorClass(raw: string): string | null {
@@ -206,13 +341,15 @@ function resolveSingleColorClass(raw: string): string | null {
 
 const RADIUS_REM: Record<string, string> = {
   none: "0rem",
-  sm: "0.125rem",
-  DEFAULT: "0.25rem",
+  xs: "0.125rem",
+  sm: "0.25rem",
+  DEFAULT: "0.375rem",
   md: "0.375rem",
   lg: "0.5rem",
   xl: "0.75rem",
   "2xl": "1rem",
   "3xl": "1.5rem",
+  "4xl": "2rem",
   full: "9999px",
 };
 

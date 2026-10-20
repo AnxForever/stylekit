@@ -87,7 +87,7 @@ Core principles:
     "Don't use light backgrounds",
     "Don't use modern sans-serif fonts",
     "Don't use smooth gradients",
-    "Don't use rounded corners larger than 2px",
+    "Keep panels and controls at sharp or 2px corners; only tiny square REC/tape status lamps may use rounded-full",
     "Don't use subtle, refined effects",
   ],
 
@@ -96,7 +96,7 @@ Core principles:
     "Don't use light backgrounds",
     "Don't use modern sans-serif fonts",
     "Don't use smooth gradients",
-    "Don't use rounded corners larger than 2px",
+    "Keep panels and controls at sharp or 2px corners; only tiny square REC/tape status lamps may use rounded-full",
     "Don't use subtle, refined effects",
   ],
 

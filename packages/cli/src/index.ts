@@ -16,15 +16,21 @@ import {
   cmdShow,
   cmdTokens,
   cmdRecipe,
+  cmdBrief,
   cmdAdd,
+  cmdDoctor,
   cmdAssets,
   cmdAsset,
   usageFail,
   type CommandResult,
 } from "./commands.js";
 import { ASSET_KINDS, isAssetKind } from "./core.js";
-import type { PublicAssetKind, StyleCategory } from "./core.js";
-import { getImplementationBriefLive } from "stylekit-core/discovery";
+import type {
+  ImplementationBriefSection,
+  PublicAssetKind,
+  RecipeRenderOptions,
+  StyleCategory,
+} from "./core.js";
 import { runLint } from "./lint.js";
 
 const VERSION = (
@@ -42,10 +48,11 @@ Commands:
   show <slug>                Show a style's full detail
   tokens <slug>              Print a style's design tokens (JSON)
   recipe <slug> <component>  Print a rendered component recipe
-  add <slug>                 Print the shadcn install command
+  add <slug>                 Print a shadcn command, or plan/apply it in a project
+  doctor                     Inspect a project for StyleKit/shadcn readiness
   assets                     List public assets (filter by kind/query and page)
   asset <kind> <id>          Show a namespaced public asset record
-  brief <slug>               Print the complete implementation contract (JSON)
+  brief <slug>               Print the complete contract, or selected sections
   lint <slug> <files...>      Check source files against a style's rules
 
 Flags:
@@ -61,14 +68,28 @@ Flags:
   --files <glob>   File path or glob for lint; may be repeated
   --stdin          Read lint source from stdin
   --component <c>  Check required classes for button|card|input; may be repeated
+  --variant <id>   Recipe variant for the recipe command
+  --params <json>  Recipe parameter values as a JSON object
+  --slots <json>   Recipe slot values as a JSON object
+  --sections <s>   Brief sections (comma-separated or repeated)
+  --components <c> Brief component ids (comma-separated or repeated)
+  --cwd <path>     Target project directory for doctor/add
+  --apply          Install the planned style into the target project
+  --dry-run        Print the add plan without writing or installing
   --strict         Fail missing required classes (requires --component)
   --format <f>     Lint output: text|json|github
+
+StyleKit registry add targets Tailwind CSS v4 and needs components.json (tailwind.css with CSS variables) plus tsconfig.json. For Tailwind v3, use the Style Pack's legacy HSL <slug>-variables.css and Tailwind v3 <slug>-tailwind-preset.js.
+
+Recipe slots of type text (or without a type) are emitted as escaped text. Icon slots accept an empty value or a JSX component/member name, such as ArrowRight or Icons.ArrowRight. Children and element slots insert raw JSX/HTML code; pass only trusted code to those slots.
 
 Examples:
   stylekit list --category retro
   stylekit search glass --limit 5
   stylekit show neo-brutalist
   stylekit add synthwave
+  stylekit doctor --cwd ./my-app
+  stylekit add synthwave --cwd ./my-app --dry-run --json
 `;
 
 function emit(result: CommandResult, json: boolean): void {
@@ -90,6 +111,47 @@ function die(message: string, json: boolean, code: string): never {
   process.exit(1);
 }
 
+function parseJsonRecord<T extends string | number | boolean>(
+  value: unknown,
+  flag: string,
+  accepts: (entry: unknown) => entry is T,
+  json: boolean,
+): Record<string, T> | undefined {
+  if (typeof value !== "string") return undefined;
+
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(value);
+  } catch {
+    die(`Invalid ${flag}: expected a JSON object.`, json, "INVALID_RECIPE_OPTIONS");
+  }
+  if (parsed === null || typeof parsed !== "object" || Array.isArray(parsed)) {
+    die(`Invalid ${flag}: expected a JSON object.`, json, "INVALID_RECIPE_OPTIONS");
+  }
+
+  const record = Object.create(null) as Record<string, T>;
+  for (const [key, entry] of Object.entries(parsed)) {
+    if (!accepts(entry)) {
+      die(
+        `Invalid ${flag}.${key}: value has the wrong JSON type.`,
+        json,
+        "INVALID_RECIPE_OPTIONS",
+      );
+    }
+    record[key] = entry;
+  }
+  return record;
+}
+
+function splitListFlags(value: unknown): string[] {
+  if (!Array.isArray(value)) return [];
+  return value.flatMap((part) =>
+    typeof part === "string"
+      ? part.split(",").map((item) => item.trim()).filter(Boolean)
+      : [],
+  );
+}
+
 async function main(): Promise<void> {
   const jsonRequested = process.argv.slice(2).includes("--json");
   let values: Record<string, unknown>;
@@ -104,6 +166,14 @@ async function main(): Promise<void> {
         offset: { type: "string" },
         kind: { type: "string" },
         query: { type: "string" },
+        variant: { type: "string" },
+        params: { type: "string" },
+        slots: { type: "string" },
+        sections: { type: "string", multiple: true },
+        components: { type: "string", multiple: true },
+        cwd: { type: "string" },
+        apply: { type: "boolean", default: false },
+        "dry-run": { type: "boolean", default: false },
         help: { type: "boolean", short: "h", default: false },
         version: { type: "boolean", short: "v", default: false },
         style: { type: "string" },
@@ -210,20 +280,19 @@ async function main(): Promise<void> {
   try {
     switch (command) {
       case "brief": {
-        if (!arg1) die("Provide a known slug: stylekit brief <slug>", json, "UNKNOWN_STYLE");
-        const result = await getImplementationBriefLive(arg1);
-        if (!result.data) {
-          const message = result.failureKind === "not-found"
-            ? `Unknown style "${arg1}".`
-            : `Could not retrieve an implementation brief for "${arg1}".${result.fallbackReason ? ` ${result.fallbackReason}` : ""}`;
-          die(message, json, result.failureKind === "not-found" ? "UNKNOWN_STYLE" : "STYLE_BRIEF_UNAVAILABLE");
+        if (!arg1) {
+          result = usageFail("stylekit brief <slug> [--sections identity,recipes] [--components button]");
+          break;
         }
-        console.log(JSON.stringify({
-          ...result.data,
-          origin: result.origin,
-          ...(result.fallbackReason ? { fallbackReason: result.fallbackReason } : {}),
-        }, null, 2));
-        return;
+        const sectionFlags = values.sections;
+        const componentFlags = values.components;
+        const sections = splitListFlags(sectionFlags) as ImplementationBriefSection[];
+        const components = splitListFlags(componentFlags);
+        result = await cmdBrief(arg1, {
+          ...(sectionFlags !== undefined ? { sections } : {}),
+          ...(componentFlags !== undefined ? { componentIds: components } : {}),
+        });
+        break;
       }
       case "lint": {
         const slug = typeof values.style === "string" ? values.style : arg1;
@@ -247,12 +316,43 @@ async function main(): Promise<void> {
         result = arg1 ? await cmdTokens(arg1) : usageFail("stylekit tokens <slug>");
         break;
       case "recipe":
-        result = arg1
-          ? await cmdRecipe(arg1, arg2)
-          : usageFail("stylekit recipe <slug> <component>");
+        if (!arg1) {
+          result = usageFail("stylekit recipe <slug> <component> [--variant id] [--params json] [--slots json]");
+          break;
+        }
+        {
+          const params = parseJsonRecord(
+            values.params,
+            "--params",
+            (value): value is string | number | boolean =>
+              typeof value === "string" || typeof value === "number" || typeof value === "boolean",
+            json,
+          );
+          const slots = parseJsonRecord(
+            values.slots,
+            "--slots",
+            (value): value is string => typeof value === "string",
+            json,
+          );
+          const renderOptions: RecipeRenderOptions = {
+            ...(typeof values.variant === "string" ? { variant: values.variant } : {}),
+            ...(params !== undefined ? { params } : {}),
+            ...(slots !== undefined ? { slots } : {}),
+          };
+          result = await cmdRecipe(arg1, arg2, renderOptions);
+        }
         break;
       case "add":
-        result = arg1 ? await cmdAdd(arg1) : usageFail("stylekit add <slug>");
+        result = arg1
+          ? await cmdAdd(arg1, {
+              ...(typeof values.cwd === "string" ? { cwd: values.cwd } : {}),
+              ...(values.apply === true ? { apply: true } : {}),
+              ...(values["dry-run"] === true ? { dryRun: true } : {}),
+            })
+          : usageFail("stylekit add <slug> [--cwd path] [--dry-run | --apply]");
+        break;
+      case "doctor":
+        result = cmdDoctor(typeof values.cwd === "string" ? values.cwd : undefined);
         break;
       case "assets":
         result = await cmdAssets({

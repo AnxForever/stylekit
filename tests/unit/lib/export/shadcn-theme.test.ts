@@ -1,7 +1,8 @@
 import { describe, expect, it } from "vitest";
 
 import { getStyleBySlug, styles } from "@/lib/styles/registry";
-import { generateShadcnTheme } from "@/lib/export/shadcn-theme";
+import { generateShadcnTheme, generateShadcnThemeCSS, generateShadcnThemeExport } from "@/lib/export/shadcn-theme";
+import { getStyleTokens } from "@/lib/styles/tokens-registry";
 
 const REQUIRED = [
   "background",
@@ -96,6 +97,59 @@ describe("generateShadcnTheme fidelity", () => {
     ]) {
       expect(t.cssVars.light[key], key).toBeDefined();
       expect(t.cssVars.dark[key], key).toBeDefined();
+    }
+  });
+
+  it("validates color utility prefixes and reports a fallback for unresolved surfaces", () => {
+    const style = getStyleBySlug("synthwave")!;
+    const tokens = structuredClone(getStyleTokens(style.slug)!);
+    tokens.colors.background.primary = "text-red-500";
+
+    const result = generateShadcnThemeExport(style, tokens);
+    expect(result.theme.cssVars.light.background).toBe("0 0% 100%");
+    expect(result.theme.cssVars.light.background).not.toContain("red");
+    expect(result.diagnostics.unsupported).toContainEqual(expect.objectContaining({
+      path: "colors.background.primary",
+      source: "text-red-500",
+    }));
+    expect(result.diagnostics.fallbacks).toContainEqual(expect.objectContaining({
+      path: "colors.background.primary",
+      source: "text-red-500",
+    }));
+  });
+
+  it("keeps CSS variables in HSL component form and preserves alpha", () => {
+    const style = getStyleBySlug("synthwave")!;
+    const tokens = structuredClone(getStyleTokens(style.slug)!);
+    tokens.colors.background.primary = "bg-white/12";
+
+    const result = generateShadcnThemeExport(style, tokens);
+    const css = generateShadcnThemeCSS(style, tokens);
+    expect(result.theme.cssVars.light.background).toBe("0 0% 100% / 0.12");
+    expect(result.diagnostics.unsupported.some((item) => item.path === "colors.background.primary" && item.reason.includes("compositing"))).toBe(true);
+    expect(css).toContain("--background: 0 0% 100% / 0.12;");
+    expect(css).not.toContain("--background: hsl(");
+  });
+
+  it("preserves modern rgba and hsla alpha in the exported theme", () => {
+    const style = getStyleBySlug("synthwave")!;
+    const rgbaTokens = structuredClone(getStyleTokens(style.slug)!);
+    rgbaTokens.colors.background.primary = "bg-[rgba(255_0_0_/_0.5)]";
+    const rgbaTheme = generateShadcnThemeExport(style, rgbaTokens);
+
+    const hslaTokens = structuredClone(getStyleTokens(style.slug)!);
+    hslaTokens.colors.background.primary = "bg-[hsla(120_100%_50%_/_25%)]";
+    const hslaTheme = generateShadcnThemeExport(style, hslaTokens);
+
+    expect(rgbaTheme.theme.cssVars.light.background).toBe("0 100% 50% / 0.5");
+    expect(hslaTheme.theme.cssVars.light.background).toBe("120 100% 50% / 0.25");
+  });
+
+  it("keeps glass borders distinct from translucent surfaces", () => {
+    for (const slug of ["glassmorphism", "liquid-glass"]) {
+      const theme = generateShadcnTheme(getStyleBySlug(slug)!);
+      expect(theme.cssVars.light.background, slug).toContain("/");
+      expect(theme.cssVars.light.border, slug).not.toBe(theme.cssVars.light.background);
     }
   });
 });

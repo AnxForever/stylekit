@@ -39,6 +39,8 @@ export default defineConfig({
   resolve: {
     alias: {
       "@": ROOT,
+      // Root CI tests run before workspace dist is built.
+      "stylekit-core/discovery": path.join(ROOT, "packages/core/src/discovery/index.ts"),
     },
   },
 });

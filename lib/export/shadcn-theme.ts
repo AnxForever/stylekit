@@ -5,13 +5,21 @@
 // with contrast-safe foregrounds and a per-style dark mode.
 
 import type { DesignStyle } from "../styles";
+import type { StyleTokens } from "../styles/tokens";
 import { getStyleTokens } from "../styles/tokens-registry";
 import {
-  colorToHsl,
+  colorToHslWithAlpha,
   hslLightness,
   resolveTwColor,
-  twRadiusToRem,
 } from "./color-resolve";
+import {
+  addFallback,
+  addUnsupported,
+  createExportDiagnostics,
+  resolveColorUtility,
+  resolveRadiusUtilityValue,
+  type ExportDiagnostics,
+} from "./style-token-resolve";
 
 export interface ShadcnTheme {
   name: string;
@@ -19,6 +27,11 @@ export interface ShadcnTheme {
     light: Record<string, string>;
     dark: Record<string, string>;
   };
+}
+
+export interface ShadcnThemeExport {
+  theme: ShadcnTheme;
+  diagnostics: ExportDiagnostics;
 }
 
 // Neutral shadcn defaults, used only when a style token cannot be resolved.
@@ -45,7 +58,55 @@ const CONTRAST_GAP = 35;
 /** Resolve a value that may be a raw color (hex/rgba/oklch) OR a Tailwind class. */
 function anyColorToHsl(input?: string): string | null {
   if (!input) return null;
-  return colorToHsl(input) ?? resolveTwColor(input);
+  return colorToHslWithAlpha(input) ?? resolveTwColor(input);
+}
+
+function resolveTokenColor(
+  source: string | undefined,
+  path: string,
+  prefix: "bg" | "text" | "border",
+  fallback: string,
+  diagnostics: ExportDiagnostics,
+): string {
+  if (!source) {
+    addUnsupported(diagnostics, path, "<missing StyleTokens>", "No registered source token is available for this semantic color.");
+    addFallback(diagnostics, path, "<missing StyleTokens>", `Used the neutral ${fallback} fallback because no source token was available.`);
+    return fallback;
+  }
+
+  const color = resolveColorUtility(source, path, prefix, diagnostics);
+  const value = color ? colorToHslWithAlpha(color) : null;
+  if (value) {
+    if (/\/\s*[\d.]+%?\s*\)$/.test(color ?? "") || /\/\s*[\d.]+%?$/.test(value)) {
+      addUnsupported(diagnostics, path, source, "The color includes alpha; its appearance and contrast depend on the compositing surface.");
+    }
+    return value;
+  }
+
+  if (color) {
+    addUnsupported(diagnostics, path, source, "The resolved color is not representable as a shadcn HSL token.");
+  }
+
+  addFallback(diagnostics, path, source, `Used the neutral ${fallback} fallback because the expected ${prefix}-color utility could not be represented as an HSL value.`);
+  return fallback;
+}
+
+function resolvePaletteColor(
+  source: string | undefined,
+  path: string,
+  fallback: string,
+  diagnostics: ExportDiagnostics,
+): string {
+  const value = source ? anyColorToHsl(source) : null;
+  if (value) {
+    if (value.includes("/")) {
+      addUnsupported(diagnostics, path, source ?? "<missing palette color>", "The palette color includes alpha; its appearance and contrast depend on the compositing surface.");
+    }
+    return value;
+  }
+  addUnsupported(diagnostics, path, source ?? "<missing palette color>", "The style palette value is not a concrete color.");
+  addFallback(diagnostics, path, source ?? "<missing palette color>", `Used ${fallback} because the style palette color could not be resolved.`);
+  return fallback;
 }
 
 /** Pick a readable near-black / near-white foreground for a given HSL background. */
@@ -65,18 +126,20 @@ function ensureContrast(fg: string, bg: string): string {
 
 /** Rotate an HSL triplet's hue by `deg` degrees (used to spread chart colors). */
 function rotateHue(hsl: string, deg: number): string {
-  const m = hsl.match(/^(\d+) (\d+)% (\d+)%$/);
+  const m = hsl.match(/^(\d+(?:\.\d+)?) (\d+(?:\.\d+)?)% (\d+(?:\.\d+)?)%(?:\s*\/\s*([\d.]+%?))?$/);
   if (!m) return hsl;
   const h = (parseInt(m[1], 10) + deg) % 360;
-  return `${h} ${m[2]}% ${m[3]}%`;
+  const alpha = m[4] ? ` / ${m[4]}` : "";
+  return `${h} ${m[2]}% ${m[3]}%${alpha}`;
 }
 
 /** Shift an HSL triplet's lightness by `delta` percentage points (clamped 0-100). */
 function shiftLightness(hsl: string, delta: number): string {
-  const m = hsl.match(/^(\d+) (\d+)% (\d+(?:\.\d+)?)%$/);
+  const m = hsl.match(/^(\d+(?:\.\d+)?) (\d+(?:\.\d+)?)% (\d+(?:\.\d+)?)%(?:\s*\/\s*([\d.]+%?))?$/);
   if (!m) return hsl;
   const l = Math.max(0, Math.min(100, parseFloat(m[3]) + delta));
-  return `${m[1]} ${m[2]}% ${Math.round(l * 10) / 10}%`;
+  const alpha = m[4] ? ` / ${m[4]}` : "";
+  return `${m[1]} ${m[2]}% ${Math.round(l * 10) / 10}%${alpha}`;
 }
 
 /** True when two HSL colors are too close in lightness to be told apart. */
@@ -176,43 +239,82 @@ function buildVars(s: Surface): Record<string, string> {
   };
 }
 
-export function generateShadcnTheme(style: DesignStyle): ShadcnTheme {
-  const tokens = getStyleTokens(style.slug);
+export function generateShadcnThemeExport(style: DesignStyle, tokenOverride?: StyleTokens): ShadcnThemeExport {
+  const diagnostics = createExportDiagnostics();
+  const tokens = tokenOverride ?? getStyleTokens(style.slug);
 
   // Structural colors from the style's semantic tokens.
-  const bg =
-    (tokens && resolveTwColor(tokens.colors.background.primary)) ??
-    FALLBACK.lightBg;
+  const bg = resolveTokenColor(
+    tokens?.colors.background.primary,
+    "colors.background.primary",
+    "bg",
+    FALLBACK.lightBg,
+    diagnostics,
+  );
   const fg = ensureContrast(
-    (tokens && resolveTwColor(tokens.colors.text.primary)) ?? FALLBACK.lightFg,
+    resolveTokenColor(
+      tokens?.colors.text.primary,
+      "colors.text.primary",
+      "text",
+      FALLBACK.lightFg,
+      diagnostics,
+    ),
     bg,
   );
-  const muted =
-    (tokens && resolveTwColor(tokens.colors.background.secondary)) ??
-    FALLBACK.lightMuted;
+  const muted = resolveTokenColor(
+    tokens?.colors.background.secondary,
+    "colors.background.secondary",
+    "bg",
+    FALLBACK.lightMuted,
+    diagnostics,
+  );
   const mutedFg = ensureContrast(
-    (tokens && resolveTwColor(tokens.colors.text.muted)) ??
+    resolveTokenColor(
+      tokens?.colors.text.muted,
+      "colors.text.muted",
+      "text",
       FALLBACK.lightMutedFg,
+      diagnostics,
+    ),
     muted,
   );
-  const border =
-    (tokens && resolveTwColor(tokens.border.color)) ?? FALLBACK.lightBorder;
-  const radius =
-    (tokens && twRadiusToRem(tokens.border.radius)) ?? FALLBACK.radius;
+  const border = resolveTokenColor(
+    tokens?.border.color,
+    "border.color",
+    "border",
+    FALLBACK.lightBorder,
+    diagnostics,
+  );
+  let radius = FALLBACK.radius;
+  if (tokens) {
+    const resolvedRadius = resolveRadiusUtilityValue(tokens.border.radius, "border.radius", diagnostics);
+    if (resolvedRadius.value) radius = resolvedRadius.value;
+    else addFallback(diagnostics, "border.radius", tokens.border.radius, `Used ${FALLBACK.radius} because the border radius could not be resolved.`);
+    for (const item of resolvedRadius.responsive) {
+      addUnsupported(diagnostics, "border.radius", item.source, `The shadcn theme stores one static radius; responsive value ${item.value} at ${item.query} is omitted.`);
+    }
+  } else {
+    addUnsupported(diagnostics, "border.radius", "<missing StyleTokens>", "No registered border radius token is available.");
+    addFallback(diagnostics, "border.radius", "<missing StyleTokens>", `Used ${FALLBACK.radius} because no source token was available.`);
+  }
 
   // Brand colors from the style palette (robust across hex / rgba / class).
-  const rawPrimary = anyColorToHsl(style.colors.primary) ?? FALLBACK.primary;
-  const secondary = anyColorToHsl(style.colors.secondary) ?? muted;
-  const accent = anyColorToHsl(style.colors.accent?.[0]) ?? rawPrimary;
+  const rawPrimary = resolvePaletteColor(style.colors.primary, "colors.primary", FALLBACK.primary, diagnostics);
+  const secondary = resolvePaletteColor(style.colors.secondary, "colors.secondary", muted, diagnostics);
+  const accent = resolvePaletteColor(style.colors.accent?.[0], "colors.accent.accent-1", rawPrimary, diagnostics);
 
   // If the brand primary is invisible on the surface (e.g. white-on-white for
   // translucent "glass" styles), promote the most vivid accent so the primary
   // button/ring is actually usable; fall back to a strong surface shade.
-  const primary = lowContrast(rawPrimary, bg, PRIMARY_MIN_GAP)
+  const primaryNeedsFallback = lowContrast(rawPrimary, bg, PRIMARY_MIN_GAP);
+  const primary = primaryNeedsFallback
     ? !lowContrast(accent, bg, PRIMARY_MIN_GAP)
       ? accent
       : shiftLightness(bg, (hslLightness(bg) ?? 100) >= 50 ? -72 : 72)
     : rawPrimary;
+  if (primaryNeedsFallback) {
+    addFallback(diagnostics, "colors.primary", style.colors.primary, "The palette primary has too little contrast on the surface; the accent or a contrast-adjusted surface color is used.");
+  }
 
   const light = buildVars({
     bg,
@@ -230,6 +332,9 @@ export function generateShadcnTheme(style: DesignStyle): ShadcnTheme {
   // Dark mode: natively-dark styles keep their own identity in both modes;
   // light styles get a neutral dark skeleton with brand colors preserved.
   const nativelyDark = (hslLightness(bg) ?? 100) < DARK_THRESHOLD;
+  if (!nativelyDark) {
+    addFallback(diagnostics, "cssVars.dark", style.slug, "A neutral dark-mode surface is generated because this style's registered primary background is light.");
+  }
   const dark = nativelyDark
     ? buildVars({
         bg,
@@ -256,15 +361,22 @@ export function generateShadcnTheme(style: DesignStyle): ShadcnTheme {
         style,
       });
 
-  return { name: style.slug, cssVars: { light, dark } };
+  return {
+    theme: { name: style.slug, cssVars: { light, dark } },
+    diagnostics,
+  };
 }
 
-export function generateShadcnThemeJSON(style: DesignStyle): string {
-  return JSON.stringify(generateShadcnTheme(style), null, 2);
+export function generateShadcnTheme(style: DesignStyle, tokenOverride?: StyleTokens): ShadcnTheme {
+  return generateShadcnThemeExport(style, tokenOverride).theme;
 }
 
-export function generateShadcnThemeCSS(style: DesignStyle): string {
-  const theme = generateShadcnTheme(style);
+export function generateShadcnThemeJSON(style: DesignStyle, tokens?: StyleTokens): string {
+  return JSON.stringify(generateShadcnTheme(style, tokens), null, 2);
+}
+
+export function generateShadcnThemeCSS(style: DesignStyle, tokens?: StyleTokens): string {
+  const theme = generateShadcnTheme(style, tokens);
 
   const lightVars = Object.entries(theme.cssVars.light)
     .map(([key, value]) => `    --${key}: ${value};`)

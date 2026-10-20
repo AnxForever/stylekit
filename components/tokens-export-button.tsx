@@ -1,9 +1,15 @@
 "use client";
 
 import { useState } from "react";
+import dynamic from "next/dynamic";
 import type { DesignStyle } from "@/lib/styles";
 import { useI18n } from "@/lib/i18n/context";
-import { ExportDialog } from "./export-dialog";
+
+// Token generators include the full token registry; load them when exporting.
+const ExportDialog = dynamic(
+  () => import("./export-dialog").then((module) => module.ExportDialog),
+  { ssr: false },
+);
 
 interface TokensExportButtonProps {
   style: DesignStyle;
@@ -35,7 +41,7 @@ export function TokensExportButton({ style }: TokensExportButtonProps) {
         </svg>
         {locale === "zh" ? "导出 Figma 令牌" : "Export Figma Tokens"}
       </button>
-      <ExportDialog style={style} isOpen={isOpen} onClose={() => setIsOpen(false)} />
+      {isOpen && <ExportDialog style={style} isOpen onClose={() => setIsOpen(false)} />}
     </>
   );
 }

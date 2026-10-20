@@ -121,7 +121,7 @@ Core principles:
   group relative p-10
   bg-[#0a0920]
   border border-[#1e1b4b]
-  rounded-full aspect-square
+  rounded-full aspect-square sk-magic-circle-plate
   flex flex-col items-center justify-center
   shadow-[0_0_30px_rgba(30,27,75,0.8)]
   hover:border-[#fbbf24]/50
@@ -129,8 +129,8 @@ Core principles:
   transition-all duration-1000 ease-in-out
   cursor-crosshair overflow-hidden
 ">
-  <div className="absolute inset-2 border border-dashed border-[#fbbf24]/20 rounded-full group-hover:rotate-180 group-hover:border-[#fbbf24]/60 transition-all duration-[3000ms] ease-linear" />
-  <div className="absolute inset-6 border border-[#e2e8f0]/10 rounded-full group-hover:-rotate-90 group-hover:border-[#e2e8f0]/30 transition-all duration-[2000ms] ease-linear" style={{ borderStyle: "dotted" }} />
+  <div className="absolute inset-2 border border-dashed border-[#fbbf24]/20 rounded-full sk-magic-circle-ring group-hover:rotate-180 group-hover:border-[#fbbf24]/60 transition-all duration-[3000ms] ease-linear" />
+  <div className="absolute inset-6 border border-[#e2e8f0]/10 rounded-full sk-magic-circle-ring group-hover:-rotate-90 group-hover:border-[#e2e8f0]/30 transition-all duration-[2000ms] ease-linear" style={{ borderStyle: "dotted" }} />
   <div className="relative z-10 text-center">
     <h3 className="text-3xl font-serif font-bold text-[#fbbf24] mb-2 tracking-[0.2em] group-hover:drop-shadow-[0_0_10px_rgba(251,191,36,0.8)] transition-all duration-500">
       ARCANUM
@@ -171,9 +171,9 @@ Core principles:
   relative overflow-hidden
 ">
   <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-    <div className="w-[500px] h-[500px] border border-[#fbbf24]/8 rounded-full animate-spin" style={{ animationDuration: "40s" }} />
-    <div className="absolute w-[400px] h-[400px] border border-dashed border-[#818cf8]/6 rounded-full animate-spin" style={{ animationDuration: "60s", animationDirection: "reverse" }} />
-    <div className="absolute w-[300px] h-[300px] border border-[#fbbf24]/10 rounded-full" />
+    <div className="w-[500px] h-[500px] border border-[#fbbf24]/8 rounded-full sk-magic-circle-orbit animate-spin" style={{ animationDuration: "40s" }} />
+    <div className="absolute w-[400px] h-[400px] border border-dashed border-[#818cf8]/6 rounded-full sk-magic-circle-orbit animate-spin" style={{ animationDuration: "60s", animationDirection: "reverse" }} />
+    <div className="absolute w-[300px] h-[300px] border border-[#fbbf24]/10 rounded-full sk-magic-circle-orbit" />
   </div>
   <div className="relative z-10 text-center px-6">
     <h1 className="text-6xl md:text-8xl font-serif font-bold text-[#fbbf24] mb-2

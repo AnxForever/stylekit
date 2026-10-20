@@ -68,7 +68,7 @@ GitHub's design proves a truth: in information-dense scenarios, restrained visua
 
   dontList: [
     "禁止使用渐变背景或彩色装饰",
-    "禁止使用大圆角 rounded-2xl, rounded-full（除头像外）",
+    "禁止在常规表面使用大圆角 rounded-2xl；rounded-full 仅用于头像、紧凑文字标签/计数和小型语言色点",
     "禁止使用重阴影 shadow-lg, shadow-xl",
     "禁止使用非语义化的装饰色彩",
     "禁止使用衬线字体",
@@ -78,7 +78,7 @@ GitHub's design proves a truth: in information-dense scenarios, restrained visua
 
   dontListEn: [
     "Do not use gradient backgrounds or colorful decorations",
-    "Do not use large rounded corners rounded-2xl, rounded-full (except for avatars)",
+    "Avoid large rounded corners on ordinary surfaces; rounded-full is reserved for avatars, compact text labels/counters, and tiny language color markers",
     "Do not use heavy shadows shadow-lg, shadow-xl",
     "Do not use non-semantic decorative colors",
     "Do not use serif fonts",

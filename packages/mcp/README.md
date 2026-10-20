@@ -13,10 +13,10 @@ All tools are read-only.
 | `stylekit_search_styles` | Search styles by keyword and/or category |
 | `stylekit_list_assets` | Browse public templates and design assets by kind or query, with pagination and source provenance |
 | `stylekit_get_asset` | Retrieve a namespaced public asset detail and any source files the license permits |
-| `stylekit_get_implementation_brief` | Complete AI guidance, CSS, templates, recipes, tokens, readiness, merged lint rules and provenance (0.3.0) |
+| `stylekit_get_implementation_brief` | Complete brief by default, or selected sections and component templates with a completeness marker |
 | `stylekit_get_style` | Full style profile: philosophy, palette, do/don't rules, quality/capability signals |
 | `stylekit_get_style_tokens` | Typed design tokens: border, shadow, typography, spacing, colors |
-| `stylekit_get_component_recipe` | Rendered component `className` + JSX (button/card/input) |
+| `stylekit_get_component_recipe` | Rendered component `className` + JSX with optional variant, parameter, and slot values |
 | `stylekit_get_shadcn_install` | The `npx shadcn add` command for a style's theme |
 | `stylekit_lint_code` | Check generated UI code against a style's rules, with a reason and a fix per violation |
 
@@ -25,6 +25,48 @@ agent writes UI code, so a style's constraints are **verified rather than
 assumed**. It resolves variant prefixes (`dark:`, `md:`, `hover:`) before
 matching, and understands JSX/HTML class attributes, `cn()`/`clsx()` calls, and
 template literals.
+
+## Recipe options and brief projections
+
+`stylekit_get_component_recipe` accepts optional `variant`, `params`, and
+`slots` fields. `params` and `slots` are JSON objects. For example:
+
+```json
+{
+  "slug": "broadcast-glitch",
+  "component": "button",
+  "variant": "cyan",
+  "params": { "size": "lg", "fullWidth": true },
+  "slots": { "label": "RUN REPORT" }
+}
+```
+
+The renderer validates the requested variant, parameter ids and values, and
+slot ids and values. Invalid options return a tool error rather than silently
+falling back to the default recipe.
+Text and unspecified slots are escaped. Icon slots accept an empty value or a
+component/member name such as `ArrowRight`; `children` and `element` slots insert
+raw JSX/HTML, so pass only trusted code to those slots.
+
+`stylekit_get_implementation_brief` returns the complete contract when only
+`slug` is supplied. To reduce context size, pass `sections` as a list chosen
+from `identity`, `guidance`, `colors`, `globalCss`, `variants`, `components`,
+`tokens`, `recipes`, `readiness`, and `lintRules`. Pass `components` to filter
+component templates or recipes when `sections` includes `components` or
+`recipes`:
+
+```json
+{
+  "slug": "neo-brutalist",
+  "sections": ["guidance", "components", "recipes", "tokens"],
+  "components": ["button"]
+}
+```
+
+Every brief includes `projection.complete`, `projection.mode`, included and
+excluded section names, and a notice explaining whether it is complete. Keep
+`provenance.contentHash` with stored briefs so consumers can detect content
+drift.
 
 ## Setup
 
@@ -79,6 +121,15 @@ they are not represented as downloadable full source. Remote templates require
 the live API to return their actual file set; if that source is unavailable, the
 tool reports an error instead of returning a placeholder as code.
 
+`stylekit_get_shadcn_install` returns the theme command and its prerequisites.
+This registry command targets Tailwind CSS v4. The target project must have
+`components.json` configured with `tailwind.css` and CSS variables enabled, and
+must contain `tsconfig.json`. For Tailwind v3, use the local Style Pack's
+legacy HSL `<slug>-variables.css` and Tailwind v3 `<slug>-tailwind-preset.js`
+artifacts instead of this registry endpoint. The current theme item has no
+TypeScript source files, but shadcn still loads the project TypeScript
+configuration while applying it.
+
 ## Example
 
 In your editor's AI chat:
@@ -90,9 +141,16 @@ The agent calls `stylekit_search_styles` → `stylekit_get_component_recipe` →
 ## Development
 
 ```bash
-pnpm --filter stylekit-mcp build # compile to dist/
-node scripts/smoke.mjs  # smoke-test all tools over stdio
+pnpm --filter stylekit-core build
+pnpm --filter stylekit-mcp build
+pnpm --filter stylekit-mcp test  # smoke-test all tools over stdio
 ```
+
+Recipe options and brief projections are present in this repository source and
+require a rebuilt package plus a new npm release before `stylekit-mcp@latest`
+consumers receive them. To exercise this checkout, build `stylekit-core` first,
+then `stylekit-mcp`, and point your MCP client at `packages/mcp/dist/index.js`
+as shown in Setup.
 
 ## License
 
@@ -114,3 +172,6 @@ known literals already contain a violation. Missing requirements are advisory;
 pass `strict: true` and `checkRequired: ["button"]` to fail them in a static
 component snippet. Required checks cover the entire input, not each element.
 These checks do not certify visual quality or accessibility.
+The lint adapter accepts supported `stylekit-lint-v1` and
+`stylekit-lint-v2` rule contracts; unsupported or malformed contracts produce
+an explicit tool error.

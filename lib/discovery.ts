@@ -8,7 +8,7 @@
  */
 
 import { styles, getStyleBySlug } from "./styles";
-import { getRecipe, getRecipeIds, hasRecipes, renderRecipe } from "./recipes";
+import { getRecipe, getRecipeIds, hasRecipes, isValidRecipeIconName, renderRecipe, type ComponentRecipe, type RecipeParameter } from "./recipes";
 import { getStyleTokens, hasStyleTokens } from "./styles/tokens-registry";
 import { getStyleQuality, type StyleQuality } from "./styles/quality";
 import { expandQueryTerms, colorIntentMatches, hasTerm } from "./search/synonyms";
@@ -50,6 +50,35 @@ export interface RecipeResult {
   component: string;
   className: string;
   code: string;
+}
+
+export type RecipeRenderValue = string | boolean | number;
+
+/** Options for rendering one component recipe. Omitted values keep recipe defaults. */
+export interface RecipeRenderOptions {
+  variant?: string;
+  params?: Record<string, RecipeRenderValue>;
+  slots?: Record<string, string>;
+}
+
+export type RecipeRenderInputErrorCode =
+  | "invalid_options"
+  | "invalid_recipe_definition"
+  | "unknown_variant"
+  | "unknown_parameter"
+  | "invalid_parameter"
+  | "unknown_slot"
+  | "invalid_slot_value";
+
+/** A caller input error for a recipe, distinct from a missing style/component. */
+export class RecipeRenderInputError extends Error {
+  readonly code: RecipeRenderInputErrorCode;
+
+  constructor(code: RecipeRenderInputErrorCode, message: string) {
+    super(message);
+    this.name = "RecipeRenderInputError";
+    this.code = code;
+  }
 }
 
 export interface SearchOptions {
@@ -180,17 +209,160 @@ export function getStyleDetail(slug: string): StyleDetail | null {
   };
 }
 
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return Boolean(value) && typeof value === "object" && !Array.isArray(value);
+}
+
+function recipeInputError(code: RecipeRenderInputErrorCode, message: string): never {
+  throw new RecipeRenderInputError(code, message);
+}
+
+function isRecipeParameterValueType(parameter: RecipeParameter, value: unknown): boolean {
+  if (parameter.type === "boolean") return typeof value === "boolean";
+  if (parameter.type === "number") return typeof value === "number" && Number.isFinite(value);
+  return typeof value === "string";
+}
+
+function isRecipeParameterOption(parameter: RecipeParameter, value: unknown): boolean {
+  return parameter.type !== "select" || Boolean(parameter.options?.some((option) => option.value === value));
+}
+
+/** Validates the default and enum contract that the shared renderer consumes. */
+export function isValidRecipeParameterDefinition(value: unknown): boolean {
+  if (!isRecord(value) || typeof value.id !== "string" || value.id.length === 0 ||
+      typeof value.label !== "string" || typeof value.labelZh !== "string" ||
+      !["select", "boolean", "string", "color", "number"].includes(String(value.type))) return false;
+
+  const parameter = value as unknown as RecipeParameter;
+  if (!isRecipeParameterValueType(parameter, parameter.default)) return false;
+
+  if (parameter.type === "select") {
+    if (!Array.isArray(value.options) || value.options.length === 0 || !value.options.every((option) =>
+      isRecord(option) && typeof option.value === "string" && option.value.length > 0 &&
+      typeof option.label === "string" && typeof option.labelZh === "string" && typeof option.classes === "string")) return false;
+    const optionValues = value.options.map((option) => (option as Record<string, unknown>).value as string);
+    if (new Set(optionValues).size !== optionValues.length || !isRecipeParameterOption(parameter, parameter.default)) return false;
+  } else if (value.options !== undefined) {
+    return false;
+  }
+
+  return (value.affectsClasses === undefined || typeof value.affectsClasses === "boolean") &&
+    ["trueClasses", "falseClasses"].every((key) => value[key] === undefined || typeof value[key] === "string");
+}
+
+function normalizeRecipeRenderOptions(
+  recipe: ComponentRecipe,
+  options: RecipeRenderOptions = {},
+): { variant: string; params: Record<string, RecipeRenderValue>; slots: Record<string, string> } {
+  if (!isRecord(options)) {
+    return recipeInputError("invalid_options", "Recipe render options must be an object.");
+  }
+
+  const invalidParameter = recipe.parameters.find((parameter) => !isValidRecipeParameterDefinition(parameter));
+  if (invalidParameter) {
+    return recipeInputError(
+      "invalid_recipe_definition",
+      `Parameter "${invalidParameter.id}" for recipe "${recipe.id}" has an invalid type, default, or option contract.`,
+    );
+  }
+  const invalidIconDefault = recipe.slots.find((slot) =>
+    slot.type === "icon" && Boolean(slot.default) && !isValidRecipeIconName(slot.default!));
+  if (invalidIconDefault) {
+    return recipeInputError(
+      "invalid_recipe_definition",
+      `Default value for icon slot "${invalidIconDefault.id}" in recipe "${recipe.id}" is not a JSX component/member name.`,
+    );
+  }
+  if (new Set(recipe.parameters.map((parameter) => parameter.id)).size !== recipe.parameters.length) {
+    return recipeInputError("invalid_recipe_definition", `Recipe "${recipe.id}" has duplicate parameter IDs.`);
+  }
+
+  const allowedKeys = new Set(["variant", "params", "slots"]);
+  const unknownOption = Object.keys(options).find((key) => !allowedKeys.has(key));
+  if (unknownOption) {
+    return recipeInputError("invalid_options", `Unknown recipe render option "${unknownOption}".`);
+  }
+
+  if (options.variant !== undefined && typeof options.variant !== "string") {
+    return recipeInputError("invalid_options", `Recipe render option "variant" must be a string.`);
+  }
+
+  const rawParams = options.params === undefined ? {} : options.params;
+  if (!isRecord(rawParams)) {
+    return recipeInputError("invalid_options", `Recipe render option "params" must be an object.`);
+  }
+  const params = Object.create(null) as Record<string, RecipeRenderValue>;
+  for (const [parameterId, value] of Object.entries(rawParams)) {
+    const parameter = recipe.parameters.find((candidate) => candidate.id === parameterId);
+    if (!parameter) {
+      return recipeInputError("unknown_parameter", `Unknown parameter "${parameterId}" for recipe "${recipe.id}".`);
+    }
+
+    if (!isRecipeParameterValueType(parameter, value)) {
+      return recipeInputError(
+        "invalid_parameter",
+        `Parameter "${parameterId}" for recipe "${recipe.id}" must be ${parameter.type === "boolean" ? "a boolean" : parameter.type === "number" ? "a finite number" : "a string"}.`,
+      );
+    }
+
+    if (!isRecipeParameterOption(parameter, value)) {
+      const choices = (parameter.options ?? []).map((option) => option.value).join(", ");
+      return recipeInputError(
+        "invalid_parameter",
+        `Parameter "${parameterId}" for recipe "${recipe.id}" must be one of: ${choices}.`,
+      );
+    }
+    params[parameterId] = value as RecipeRenderValue;
+  }
+
+  const rawSlots = options.slots === undefined ? {} : options.slots;
+  if (!isRecord(rawSlots)) {
+    return recipeInputError("invalid_options", `Recipe render option "slots" must be an object.`);
+  }
+  const slots = Object.create(null) as Record<string, string>;
+  for (const [slotId, value] of Object.entries(rawSlots)) {
+    const slot = recipe.slots.find((candidate) => candidate.id === slotId);
+    if (!slot) {
+      return recipeInputError("unknown_slot", `Unknown slot "${slotId}" for recipe "${recipe.id}".`);
+    }
+    if (typeof value !== "string") {
+      return recipeInputError("invalid_slot_value", `Slot "${slotId}" for recipe "${recipe.id}" must be a string.`);
+    }
+    if (slot.type === "icon" && value.length > 0 && !isValidRecipeIconName(value)) {
+      return recipeInputError(
+        "invalid_slot_value",
+        `Icon slot "${slotId}" for recipe "${recipe.id}" accepts an empty value or a JSX component/member name such as "ArrowRight" or "Icons.ArrowRight"; markup is not allowed.`,
+      );
+    }
+    slots[slotId] = value;
+  }
+
+  const variant = options.variant ?? Object.keys(recipe.variants)[0] ?? "default";
+  if (options.variant !== undefined && !Object.prototype.hasOwnProperty.call(recipe.variants, variant)) {
+    return recipeInputError("unknown_variant", `Unknown variant "${variant}" for recipe "${recipe.id}".`);
+  }
+
+  return { variant, params, slots };
+}
+
+/** Render a known definition with the same validation and default semantics as discovery. */
+export function renderRecipeDefinition(
+  slug: string,
+  component: string,
+  recipe: ComponentRecipe,
+  options: RecipeRenderOptions = {},
+): RecipeResult {
+  const renderOptions = normalizeRecipeRenderOptions(recipe, options);
+  const rendered = renderRecipe(recipe, renderOptions);
+  return { slug, component, className: rendered.className, code: rendered.code };
+}
+
 export function getComponentRecipe(
   slug: string,
   component: string,
+  options: RecipeRenderOptions = {},
 ): RecipeResult | null {
   const recipe = getRecipe(slug, component);
   if (!recipe) return null;
-  const variantId = Object.keys(recipe.variants)[0] ?? "default";
-  const rendered = renderRecipe(recipe, {
-    variant: variantId,
-    params: {},
-    slots: {},
-  });
-  return { slug, component, className: rendered.className, code: rendered.code };
+  return renderRecipeDefinition(slug, component, recipe, options);
 }

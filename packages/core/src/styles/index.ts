@@ -105,6 +105,12 @@ export {
 export type {
   /** Token-based CSS class mappings for a design style. */
   StyleTokens,
+  /** A state- or element-scoped exception to a forbidden utility. */
+  StyleLintException,
+  /** Optional element tag context for token-list validation. */
+  StyleClassValidationContext,
+  /** Conclusive or inconclusive result from token-list validation. */
+  StyleClassValidationResult,
 } from "@/lib/styles/tokens";
 
 export {
@@ -117,10 +123,13 @@ export {
    */
   buildComponentClass,
   /**
-   * Validates a class string against a style's forbidden rules.
+   * Validates a class string against a style's forbidden rules. Scoped
+   * exceptions that require element semantics return `inconclusive` unless
+   * the matching element tag is supplied.
    * @param tokens - The style's token definitions.
    * @param classString - Space-separated CSS classes to validate.
-   * @returns An object with `valid` boolean and `violations` array.
+   * @param context - Optional element tag required by scoped exceptions.
+   * @returns A `pass`, `fail`, or `inconclusive` result with violations and warnings.
    */
   validateClasses,
 } from "@/lib/styles/tokens";

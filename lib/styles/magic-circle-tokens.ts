@@ -85,11 +85,58 @@ export const magicCircleTokens = createStyleTokens({
       "^shadow-(?:md|lg|xl)$",
     ],
     reasons: {
-      "rounded-full": "Magic Circle uses rounded-sm only for refined elegance",
+      "rounded-full": "Magic Circle controls and surfaces use rounded-sm; the square ritual plate and concentric ring decorations are explicit circular forms",
       "bg-white": "Magic Circle requires deep dark backgrounds for mystical atmosphere",
       "border-4": "Magic Circle uses thin elegant borders only",
       "shadow-md": "Use radiant glow-style shadows instead of soft drop shadows",
     },
+    exceptions: [
+      {
+        className: "rounded-full",
+        reason: "The Magic Circle card is an explicitly square ritual plate with a circular silhouette.",
+        element: {
+          tags: ["div"],
+          classesAll: ["sk-magic-circle-plate", "aspect-square"],
+          squareDimensions: true,
+        },
+      },
+      {
+        className: "rounded-full",
+        reason: "The inner circular ring decoration uses the approved absolute inset-2 border geometry.",
+        element: {
+          tags: ["div"],
+          classesAll: ["sk-magic-circle-ring", "absolute", "border", "inset-2"],
+        },
+      },
+      {
+        className: "rounded-full",
+        reason: "The outer circular ring decoration uses the approved absolute inset-6 border geometry.",
+        element: {
+          tags: ["div"],
+          classesAll: ["sk-magic-circle-ring", "absolute", "border", "inset-6"],
+        },
+      },
+      {
+        className: "rounded-full",
+        reason: "The hero's bounded concentric orbit rings are decorative geometry, not content panels.",
+        element: {
+          tags: ["div"],
+          classesAll: ["sk-magic-circle-orbit", "border"],
+          squareDimensions: true,
+          maxDimension: 125,
+        },
+      },
+      {
+        className: "rounded-full",
+        reason: "Rune glyph badges are intentionally circular and use one of the recipe's bounded square sizes.",
+        element: {
+          tags: ["div"],
+          classesAll: ["sk-magic-circle-glyph"],
+          squareDimensions: true,
+          maxDimension: 20,
+        },
+      },
+    ],
   },
 
   required: {

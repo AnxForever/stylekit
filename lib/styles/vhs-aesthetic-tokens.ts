@@ -108,11 +108,19 @@ export const vhsAestheticTokens = createStyleTokens({
       "shadow-md":
         "Use neon glow shadows: shadow-[0_0_20px_rgba(255,0,255,0.4)]",
       "rounded-2xl": "VHS aesthetic uses sharp edges (rounded-none)",
+      "rounded-full": "Only tiny square REC/tape status lamps may use rounded-full; VHS surfaces remain sharp or at most 2px rounded",
       "font-sans":
         "Use monospace fonts only for VHS terminal/tape aesthetic",
       "font-serif":
         "Use monospace fonts only for VHS terminal/tape aesthetic",
     },
+    exceptions: [
+      {
+        className: "rounded-full",
+        reason: "The REC indicator is a status light and stays circular only at three spacing units square or smaller.",
+        element: { tags: ["div"], squareDimensions: true, maxDimension: 3 },
+      },
+    ],
   },
 
   required: {

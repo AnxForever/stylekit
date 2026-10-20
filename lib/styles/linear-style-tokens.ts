@@ -87,10 +87,18 @@ export const linearStyleTokens = createStyleTokens({
     reasons: {
       "bg-white": "Linear Style uses dark backgrounds only (#0a0a0b)",
       "rounded-2xl": "Linear Style uses rounded-lg max for restrained aesthetics",
+      "rounded-full": "Only the equal 1rem issue status icon may use rounded-full; panels remain at rounded-lg max",
       "shadow-sm": "Linear Style avoids shadows entirely; uses borders for hierarchy",
       "font-serif": "Linear Style uses Inter (sans-serif) exclusively",
       "font-mono": "Linear Style uses Inter (sans-serif) exclusively for UI text",
     },
+    exceptions: [
+      {
+        className: "rounded-full",
+        reason: "The issue status marker is a circular icon only when it is at most four spacing units square.",
+        element: { tags: ["div"], squareDimensions: true, maxDimension: 4 },
+      },
+    ],
   },
 
   required: {

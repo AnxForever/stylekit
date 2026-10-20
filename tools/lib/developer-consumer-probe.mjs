@@ -327,7 +327,14 @@ check("CLI exports a complete reusable brief", () => {
 writeFileSync("cli-brief.json", JSON.stringify(brief, null, 2));
 
 const client = new Client({ name: "stylekit-consumer-check", version: "1.0.0" });
-const transport = new StdioClientTransport({ command: process.execPath, args: [resolve("node_modules/stylekit-mcp/dist/index.js")], stderr: "pipe" });
+const transport = new StdioClientTransport({
+  command: process.execPath,
+  args: [resolve("node_modules/stylekit-mcp/dist/index.js")],
+  stderr: "pipe",
+  // The SDK intentionally filters inherited environment variables. Explicitly
+  // retain the consumer runner's network preload for this child as well.
+  ...(process.env.NODE_OPTIONS ? { env: { NODE_OPTIONS: process.env.NODE_OPTIONS } } : {}),
+});
 const call = (name, args) => client.callTool({ name, arguments: args }, undefined, { timeout: 20_000 });
 try {
   await client.connect(transport);

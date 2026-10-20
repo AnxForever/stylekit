@@ -93,6 +93,13 @@ export const kineticConstructivismTokens = createStyleTokens({
       "drop-shadow-lg": "No soft shadows; the composition is flat and printed",
       "ease-linear": "Linear easing is lifeless for entrances; use expo-out cubic-bezier(0.16,1,0.3,1) (linear is allowed only for constant-speed gear/orbit loops)",
     },
+    exceptions: [
+      {
+        className: "rounded-full",
+        reason: "Constructivist discs remain circles only when their width and height are explicitly equal.",
+        element: { tags: ["span"], squareDimensions: true },
+      },
+    ],
   },
 
   required: {

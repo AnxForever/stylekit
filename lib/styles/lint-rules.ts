@@ -7,6 +7,8 @@
  * - Generator: Ensure generated code is compliant
  */
 
+import type { StyleLintException } from "./tokens";
+
 export interface StyleLintRule {
   /** Style identifier */
   slug: string;
@@ -19,6 +21,7 @@ export interface StyleLintRule {
     classes: string[];
     patterns: RegExp[];
     reasons: Record<string, string>;
+    exceptions?: StyleLintException[];
   };
 
   /** Required classes for specific components */
@@ -598,7 +601,15 @@ export const styleLintRules: Record<string, StyleLintRule> = {
         "shadow-md": "Use neon glow shadows (shadow-cyan-500/50)",
         "font-serif": "Use monospace fonts for terminal aesthetic",
         "rounded-2xl": "Use sharp or slightly rounded corners",
+        "rounded-full": "Only the equal 0.5rem input power indicator may use rounded-full; controls keep restrained corners",
       },
+      exceptions: [
+        {
+          className: "rounded-full",
+          reason: "The input's power indicator is a circular status light at two spacing units square.",
+          element: { tags: ["div"], squareDimensions: true, maxDimension: 2 },
+        },
+      ],
     },
     required: {
       button: [

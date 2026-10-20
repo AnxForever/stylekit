@@ -87,12 +87,24 @@ export const githubStyleTokens = createStyleTokens({
     ],
     reasons: {
       "rounded-2xl": "GitHub uses consistent rounded-md (6px) corners",
-      "rounded-full": "GitHub reserves rounded-full for avatars and labels only",
+      "rounded-full": "GitHub reserves rounded-full for avatars, compact labels, and tiny language color markers only",
       "bg-gradient-to-r": "GitHub uses flat, solid colors without gradients",
       "shadow-lg": "GitHub uses minimal shadows; heavy shadows break the clean aesthetic",
       "font-serif": "GitHub uses system sans-serif and monospace fonts only",
       "blur-sm": "GitHub does not use blur effects; keep everything crisp",
     },
+    exceptions: [
+      {
+        className: "rounded-full",
+        reason: "GitHub uses pill corners for compact text labels with horizontal and vertical padding.",
+        element: { tags: ["span"], classesAll: ["text-xs"], classPrefixesAll: ["px-", "py-"] },
+      },
+      {
+        className: "rounded-full",
+        reason: "The repository language swatch is a tiny circular marker paired with its text label.",
+        element: { tags: ["span"], classesAll: ["w-3", "h-3"], squareDimensions: true, maxDimension: 3 },
+      },
+    ],
   },
 
   required: {

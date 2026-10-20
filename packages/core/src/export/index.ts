@@ -83,18 +83,28 @@ export {
 export type {
   /** A shadcn theme: CSS custom properties for light and dark. */
   ShadcnTheme,
+  /** Shadcn theme plus explicit fallback and unsupported-value diagnostics. */
+  ShadcnThemeExport,
 } from "@/lib/export/shadcn-theme";
 
 export {
   /**
    * Builds a shadcn theme from a style's palette.
    * @param style - The style to convert.
+   * @param tokens - Optional StyleTokens override; omitted values use the registered style tokens.
    * @returns The theme as structured data.
    */
   generateShadcnTheme,
   /**
+   * Builds a shadcn theme together with explicit token-resolution diagnostics.
+   * @param style - The style to convert.
+   * @param tokens - Optional StyleTokens override; omitted values use registered tokens.
+   */
+  generateShadcnThemeExport,
+  /**
    * Same as {@link generateShadcnTheme}, serialized to JSON.
    * @param style - The style to convert.
+   * @param tokens - Optional StyleTokens override; omitted values use the registered style tokens.
    * @returns Pretty-printed JSON.
    */
   generateShadcnThemeJSON,
@@ -102,6 +112,7 @@ export {
    * Same as {@link generateShadcnTheme}, rendered as a CSS block ready to
    * paste into a globals stylesheet.
    * @param style - The style to convert.
+   * @param tokens - Optional StyleTokens override; omitted values use the registered style tokens.
    * @returns The CSS text.
    */
   generateShadcnThemeCSS,
@@ -110,12 +121,17 @@ export {
 export type {
   /** A Tailwind preset object: colors, fonts, and related theme extensions. */
   TailwindPreset,
+  /** Resolved Tailwind preset with any omitted or fallback values recorded. */
+  TailwindPresetExport,
+  /** Tailwind v4 CSS theme and its export diagnostics. */
+  TailwindThemeCSSExport,
 } from "@/lib/export/tailwind-preset";
 
 export {
   /**
    * Builds a Tailwind preset from a style.
    * @param style - The style to convert.
+   * @param tokens - Optional StyleTokens override.
    * @returns The preset as structured data.
    */
   generateTailwindPreset,
@@ -126,20 +142,52 @@ export {
    * @returns The module source.
    */
   generateTailwindPresetJS,
+  /**
+   * Builds a Tailwind CSS v4 stylesheet using CSS-first @theme variables.
+   * Spacing tokens use a `stylekit-` namespace (for example `py-stylekit-section`)
+   * so they do not replace built-in aliases such as `max-w-sm`.
+   * @param style - The style to convert.
+   * @param tokens - Optional style-token override.
+   * @returns The stylesheet source.
+   */
+  generateTailwindThemeCSS,
+  /**
+   * Builds a Tailwind v4 stylesheet and reports values omitted from it.
+   * @param style - The style to convert.
+   * @param tokens - Optional style-token override.
+   * @returns CSS plus structured diagnostics.
+   */
+  generateTailwindThemeCSSExport,
+  /**
+   * Builds a Tailwind v3 preset and reports values that config objects cannot express.
+   */
+  generateTailwindPresetExport,
+  /** Serializes diagnostics for one Tailwind artifact. */
+  serializeTailwindDiagnostics,
 } from "@/lib/export/tailwind-preset";
 
 export type {
   /** A Figma-compatible token set. */
   FigmaTokenSet,
+  /** Figma token set plus explicit fallback and unsupported-value diagnostics. */
+  FigmaTokenExport,
+  FigmaTokenExportDiagnostics,
 } from "@/lib/export/figma-tokens";
 
 export {
   /**
    * Builds a Figma-compatible token set from a style.
    * @param style - The style to convert.
+   * @param tokens - Optional StyleTokens override; omitted values use the registered style tokens.
    * @returns The token set.
    */
   generateFigmaTokens,
+  /**
+   * Builds Figma tokens together with explicit fallback and unsupported-value diagnostics.
+   * @param style - The style to convert.
+   * @param tokens - Optional StyleTokens override.
+   */
+  generateFigmaTokenExport,
   /**
    * Builds a Style Dictionary source from a style.
    * @param style - The style to convert.

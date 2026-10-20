@@ -7,23 +7,9 @@ type Component = StyleLintComponent;
 type Violation = StyleLintViolation & { slug: string; component: Component };
 type Exception = { slug: string; component: Component; rule: Violation["rule"]; className: string; count: number; reason: string };
 
-// Exact, reviewed conflicts where the current extractor cannot distinguish a
-// decorative descendant or one explicit interaction state from a container rule.
-const exceptions: Exception[] = [
-  { slug: "bauhaus", component: "card", rule: "forbidden-class", className: "rounded-full", count: 1, reason: "Overlapping yellow geometric ornament; card container is square." },
-  { slug: "cyberpunk-neon", component: "input", rule: "forbidden-class", className: "rounded-full", count: 1, reason: "Tiny pulsing cyan status LED; the input itself uses rounded-lg." },
-  { slug: "synthwave", component: "button", rule: "forbidden-class", className: "active:bg-white", count: 1, reason: "Explicit Overvoltage press state deliberately flashes white for one state." },
-  { slug: "synthwave", component: "button", rule: "forbidden-class", className: "active:text-black", count: 1, reason: "Black label preserves contrast during the authored Overvoltage flash." },
-  { slug: "magic-circle", component: "card", rule: "forbidden-pattern", className: "rounded-full", count: 3, reason: "Circular seal and two nested rings are the component's defining motif; rule targets ordinary UI corner rounding." },
-  { slug: "sci-fi-hud", component: "input", rule: "forbidden-class", className: "rounded-full", count: 1, reason: "Tiny pulsing cyan HUD status indicator; input itself has square edges." },
-  { slug: "scrollytelling", component: "card", rule: "forbidden-class", className: "rounded-full", count: 1, reason: "Circle marks a vertical timeline step; content panel is not pill-shaped." },
-  { slug: "kinetic-constructivism", component: "card", rule: "forbidden-class", className: "rounded-full", count: 1, reason: "Explicit rotating disc ornament inside a square-edged article." },
-  { slug: "vhs-aesthetic", component: "card", rule: "forbidden-class", className: "rounded-full", count: 1, reason: "Small recording-status LED; card body is square." },
-  { slug: "op-art", component: "card", rule: "forbidden-pattern", className: "rounded-full", count: 1, reason: "Concentric optical rings inside a square-edged card." },
-  { slug: "github-style", component: "card", rule: "forbidden-class", className: "rounded-full", count: 2, reason: "Only the repository language dot and Public label use full rounding, as explicitly allowed by the style rule." },
-  { slug: "linear-style", component: "card", rule: "forbidden-class", className: "rounded-full", count: 1, reason: "Tiny issue-status marker; issue card uses rounded-lg." },
-  { slug: "warm-organic", component: "card", rule: "forbidden-class", className: "rounded-full", count: 1, reason: "Tiny decorative status dot; card uses rounded-lg." },
-];
+// Former template waivers are now expressed as portable, element/state-scoped
+// lint rules. Keep this list empty so a new unreviewed conflict fails the gate.
+const exceptions: Exception[] = [];
 
 const components: Component[] = ["button", "card", "input"];
 const keyOf = (item: Pick<Exception, "slug" | "component" | "rule" | "className">) =>

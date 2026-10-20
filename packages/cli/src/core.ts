@@ -22,10 +22,19 @@ export {
   getImplementationBriefLive,
 } from "stylekit-core/discovery";
 
+export {
+  projectImplementationBrief,
+  RecipeRenderInputError,
+  ImplementationBriefProjectionError,
+} from "stylekit-core/discovery";
+
 export type {
   StyleSummary,
   StyleDetail,
   RecipeResult,
+  RecipeRenderOptions,
+  ImplementationBrief,
+  ImplementationBriefSection,
   DiscoveryCategory as StyleCategory,
 } from "stylekit-core/discovery";
 
@@ -39,6 +48,19 @@ import {
 export { ASSET_KINDS, getPublicAssetLive, isAssetKind, listPublicAssetsLive };
 export type PublicAssetKind = Parameters<typeof getPublicAssetLive>[0];
 export type PublicAssetListOptions = Parameters<typeof listPublicAssetsLive>[0];
+
+export { inspectProject, createAddPlan, applyAddPlan } from "./project.js";
+export type {
+  AddPlan,
+  ApplyOptions,
+  ApplyResult,
+  PlannedFile,
+  ProjectFinding,
+  ProjectInspection,
+  SpawnImpl,
+  SpawnOptionsForStyleKit,
+  SupportedPackageManager,
+} from "./project.js";
 
 import {
   searchStyles as coreSearch,

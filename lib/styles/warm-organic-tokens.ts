@@ -105,11 +105,23 @@ export const warmOrganicTokens = createStyleTokens({
       "rounded-sm": "Warm Organic needs rounded-lg or rounded-md; tiny radii feel sterile",
       "rounded-xl": "Warm Organic caps radii at rounded-lg; larger radii read as artificial bubbles",
       "rounded-2xl": "Warm Organic caps radii at rounded-lg; larger radii read as artificial bubbles",
-      "rounded-full": "Warm Organic uses rounded-full only for tiny decorative dots, never for containers or buttons",
+      "rounded-full": "Warm Organic uses rounded-full only for tiny decorative dots or the explicit w-12 h-12 divider circle, never for containers or buttons",
       "bg-gray-50": "Cool grays are forbidden; use warm neutrals like bg-[#F5F0EB] or bg-[#E8DED1] instead",
       "text-gray-500": "Cool grays are forbidden; use warm brown text-[#2D2A24] with opacity instead",
       "backdrop-blur": "Glassmorphism is forbidden; organic warmth comes from layered warm colors and soft shadows, not frosted glass",
     },
+    exceptions: [
+      {
+        className: "rounded-full",
+        reason: "Warm Organic permits rounded-full only for tiny dots at three spacing units square or smaller.",
+        element: { tags: ["span"], squareDimensions: true, maxDimension: 3 },
+      },
+      {
+        className: "rounded-full",
+        reason: "The style's explicit w-12 h-12 decorative divider circle is a bounded circular primitive, not a rounded container.",
+        element: { tags: ["div", "span"], classesAll: ["w-12", "h-12"], classPrefixesAll: ["bg-"], squareDimensions: true, maxDimension: 12 },
+      },
+    ],
   },
 
   required: {

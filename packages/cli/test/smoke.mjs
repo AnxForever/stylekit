@@ -1,6 +1,6 @@
 // Black-box CLI test: spawn the built bin and assert stdout/stderr/exit code.
 import { execFileSync } from "node:child_process";
-import { readFileSync, mkdtempSync, mkdirSync, writeFileSync, rmSync } from "node:fs";
+import { readFileSync, mkdtempSync, mkdirSync, writeFileSync, rmSync, existsSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
 
@@ -33,6 +33,14 @@ check(
   r.code === 0 && r.stdout.trim() === packageVersion,
   `--version -> ${packageVersion}`,
 );
+r = run(["--help"]);
+check(
+  r.code === 0 && /components\.json/.test(r.stdout) &&
+    /tailwind\.css/.test(r.stdout) && /tsconfig\.json/.test(r.stdout) &&
+    /Tailwind CSS v4/.test(r.stdout) && /Tailwind v3/.test(r.stdout) &&
+    /Style Pack/.test(r.stdout) && /HSL/.test(r.stdout) && /preset/.test(r.stdout),
+  "CLI help states shadcn prerequisites and the Tailwind v4 registry limit",
+);
 
 r = run(["list", "--category", "retro", "--limit", "3"]);
 const listRows = r.stdout.split("\n").filter((l) => l.startsWith("  "));
@@ -43,8 +51,60 @@ check(r.code === 0 && /glassmorphism/.test(r.stdout), "search glass finds glassm
 
 r = run(["add", "synthwave"]);
 check(
-  r.code === 0 && /www\.stylekit\.top\/r\/synthwave\.json/.test(r.stdout),
-  "add synthwave uses canonical www host",
+  r.code === 0 && /www\.stylekit\.top\/r\/synthwave\.json/.test(r.stdout) &&
+    /components\.json/.test(r.stdout) && /tailwind\.css/.test(r.stdout) &&
+    /CSS variables/.test(r.stdout) && /tsconfig\.json/.test(r.stdout) &&
+    /Tailwind v4/.test(r.stdout) && /Tailwind v3/.test(r.stdout) &&
+    /Style Pack/.test(r.stdout) && /HSL/.test(r.stdout) && /preset/.test(r.stdout),
+  "add synthwave prints prerequisites and the supported Tailwind versions",
+);
+r = run(["add", "synthwave", "--json"]);
+const addGuidance = JSON.parse(r.stdout);
+check(
+  r.code === 0 && /components\.json/.test(addGuidance.prerequisite) &&
+    /tailwind\.css/.test(addGuidance.prerequisite) &&
+    /CSS variables/.test(addGuidance.prerequisite) &&
+    /tsconfig\.json/.test(addGuidance.prerequisite) &&
+    /Tailwind CSS v4 only/.test(addGuidance.prerequisite) &&
+    /Tailwind v3/.test(addGuidance.prerequisite) &&
+    /Style Pack/.test(addGuidance.prerequisite) &&
+    /HSL/.test(addGuidance.prerequisite) && /preset/.test(addGuidance.prerequisite),
+  "default add JSON documents prerequisites and the Tailwind v4 registry limit",
+);
+
+r = run([
+  "recipe", "broadcast-glitch", "button", "--variant", "cyan",
+  "--params", JSON.stringify({ size: "lg", fullWidth: true }),
+  "--slots", JSON.stringify({ label: "Transmit now" }), "--json",
+]);
+let configuredRecipe = null;
+try {
+  configuredRecipe = JSON.parse(r.stdout);
+} catch {
+  /* ignore */
+}
+check(
+  r.code === 0 &&
+    configuredRecipe?.renderOptions?.variant === "cyan" &&
+    configuredRecipe?.className?.includes("bg-[#00E5D8]") &&
+    configuredRecipe?.className?.includes("px-9 py-4 text-base") &&
+    configuredRecipe?.className?.includes("w-full") &&
+    configuredRecipe?.code?.includes("Transmit now"),
+  "recipe --variant/--params/--slots renders a custom combination as JSON",
+);
+r = run([
+  "recipe", "broadcast-glitch", "button", "--params", JSON.stringify({ unknownOption: "ignored" }), "--json",
+]);
+let invalidRecipeJson = null;
+try {
+  invalidRecipeJson = JSON.parse(r.stderr);
+} catch {
+  /* ignore */
+}
+check(
+  r.code === 1 && invalidRecipeJson?.code === "INVALID_RECIPE_OPTIONS" &&
+    invalidRecipeJson?.optionCode === "unknown_parameter",
+  "recipe unknown parameter is a structured input error",
 );
 
 r = run(["show", "neo-brutalist", "--json"]);
@@ -237,14 +297,100 @@ check(
 const fixtureRoot = mkdtempSync(path.join(tmpdir(), "stylekit-cli-test-"));
 try {
   mkdirSync(path.join(fixtureRoot, "src"));
+  mkdirSync(path.join(fixtureRoot, "src", "app"));
+  writeFileSync(path.join(fixtureRoot, "package.json"), JSON.stringify({
+    name: "stylekit-cli-project-fixture",
+    packageManager: "pnpm@11.5.3",
+    devDependencies: { tailwindcss: "^4.0.0" },
+  }, null, 2));
+  writeFileSync(path.join(fixtureRoot, "tsconfig.json"), JSON.stringify({ compilerOptions: {} }, null, 2));
+  writeFileSync(path.join(fixtureRoot, "components.json"), JSON.stringify({
+    $schema: "https://ui.shadcn.com/schema.json",
+    style: "new-york",
+    tailwind: { css: "src/app/globals.css", cssVariables: true },
+    aliases: { components: "@/components", utils: "@/lib/utils" },
+  }, null, 2));
+  const fixtureCss = path.join(fixtureRoot, "src", "app", "globals.css");
+  writeFileSync(fixtureCss, '@import "tailwindcss";\n:root { --background: #fff; }\n');
   writeFileSync(path.join(fixtureRoot, "src", "good.tsx"), '<div className="p-4 rounded-none"/>');
   writeFileSync(path.join(fixtureRoot, "src", "bad.tsx"), '<div className="hover:rounded-xl!"/>');
   mkdirSync(path.join(fixtureRoot, "src", "node_modules"));
   writeFileSync(path.join(fixtureRoot, "src", "node_modules", "ignored.tsx"), '<div className="rounded-xl"/>');
+  r = run(["doctor", "--cwd", fixtureRoot, "--json"]);
+  const doctor = JSON.parse(r.stdout);
+  check(
+    r.code === 0 && doctor.schemaVersion === "stylekit-cli-project-v1" &&
+      doctor.readyForAdd === true && doctor.packageManager.name === "pnpm" &&
+      doctor.cssEntry.path === fixtureCss,
+    "doctor --cwd inspects the selected project and reports readiness",
+  );
+  const cssBeforePlan = readFileSync(fixtureCss, "utf8");
+  r = run(["add", "synthwave", "--cwd", fixtureRoot, "--dry-run", "--json"]);
+  const addPlan = JSON.parse(r.stdout);
+  check(
+    r.code === 0 && addPlan.schemaVersion === "stylekit-cli-add-output-v1" &&
+      addPlan.mode === "dry-run" && addPlan.plan.readyForApply === true &&
+      addPlan.plan.command.executable === "pnpm" &&
+      addPlan.plan.target.cssFile === fixtureCss,
+    "add --dry-run returns the explicit pnpm plan without applying it",
+  );
+  check(
+    readFileSync(fixtureCss, "utf8") === cssBeforePlan,
+    "add --dry-run leaves the target CSS entry unchanged",
+  );
+  r = run(["add", "synthwave", "--cwd", fixtureRoot, "--apply", "--dry-run", "--json"]);
+  check(
+    r.code === 1 && JSON.parse(r.stderr).code === "INVALID_ARGUMENTS",
+    "add rejects conflicting --apply and --dry-run flags",
+  );
+  const blockedRoot = path.join(fixtureRoot, "blocked-project");
+  mkdirSync(blockedRoot);
+  r = run(["doctor", "--cwd", blockedRoot, "--json"]);
+  const blockedDoctor = JSON.parse(r.stderr);
+  check(
+    r.code === 1 && blockedDoctor.code === "PROJECT_NOT_READY" &&
+      blockedDoctor.inspection?.readyForAdd === false,
+    "doctor reports blockers with a nonzero exit and preserves inspection JSON",
+  );
+  r = run(["add", "synthwave", "--cwd", blockedRoot, "--dry-run", "--json"]);
+  const blockedPlan = JSON.parse(r.stderr);
+  check(
+    r.code === 1 && blockedPlan.code === "ADD_BLOCKED" &&
+      blockedPlan.mode === "dry-run" && blockedPlan.plan?.readyForApply === false &&
+      blockedPlan.plan?.blockers?.length > 0 &&
+      !existsSync(path.join(blockedRoot, "components.json")),
+    "blocked add --dry-run exits nonzero with its plan and leaves the project unchanged",
+  );
   r = run(["brief", "neo-brutalist"]);
   const brief = JSON.parse(r.stdout);
-  check(r.code === 0 && brief.schemaVersion === "stylekit-brief-v1" && brief.recipes.button && brief.lintRules.sources.includes("curated"), "brief exports complete implementation contract");
+  check(r.code === 0 && brief.schemaVersion === "stylekit-brief-v1" && brief.recipes.button && brief.lintRules.sources.includes("curated") && brief.projection.complete === true, "brief exports complete implementation contract with a full projection marker");
   check(["live", "bundled"].includes(brief.origin) && ["bundled", "static", "community"].includes(brief.provenance.source) && (brief.origin === "live" || typeof brief.fallbackReason === "string"), "brief separates transport origin and content provenance and explains fallback");
+  r = run(["brief", "neo-brutalist", "--sections", "identity,recipes", "--components", "button", "--json"]);
+  let projectedBrief = null;
+  try {
+    projectedBrief = JSON.parse(r.stdout);
+  } catch {
+    /* ignore */
+  }
+  check(
+    r.code === 0 && projectedBrief?.projection?.complete === false &&
+      projectedBrief?.projection?.componentFilter?.[0] === "button" &&
+      projectedBrief?.recipes?.button && projectedBrief?.components === undefined &&
+      typeof projectedBrief?.provenance?.contentHash === "string",
+    "brief --sections/--components returns an explicitly partial projection",
+  );
+  r = run(["brief", "neo-brutalist", "--sections", "identity", "--components", "button", "--json"]);
+  let invalidProjection = null;
+  try {
+    invalidProjection = JSON.parse(r.stderr);
+  } catch {
+    /* ignore */
+  }
+  check(
+    r.code === 1 && invalidProjection?.code === "INVALID_BRIEF_PROJECTION" &&
+      invalidProjection?.projectionCode === "component_ids_require_components",
+    "brief rejects component filters when neither components nor recipes are selected",
+  );
   r = run(["lint", "neo-brutalist", path.join(fixtureRoot, "src", "good.tsx"), "--json"]);
   const goodLint = JSON.parse(r.stdout);
   check(r.code === 0 && goodLint.status === "pass", "lint valid file passes");

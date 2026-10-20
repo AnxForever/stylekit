@@ -86,9 +86,17 @@ export const bauhausTokens = createStyleTokens({
     reasons: {
       "font-serif": "Bauhaus uses geometric sans-serif typography only (font-sans)",
       "rounded-xl": "Bauhaus uses strict geometric forms with sharp angles (rounded-none)",
+      "rounded-full": "Bauhaus permits rounded-full only for explicitly square geometric circles, never for buttons or surfaces",
       "shadow-lg": "Bauhaus rejects decorative shadows; form follows function",
       "bg-gradient-to-r": "Bauhaus uses flat solid primary colors (red, yellow, blue), no gradients",
     },
+    exceptions: [
+      {
+        className: "rounded-full",
+        reason: "Bauhaus permits full rounding only when the element has explicit square dimensions and forms a circle.",
+        element: { tags: ["div", "span"], squareDimensions: true },
+      },
+    ],
   },
 
   required: {

@@ -136,6 +136,50 @@ describe("stylekit_search_styles pagination", () => {
     });
   });
 
+  it("uses a longer Markdown fence when recipe code contains a text-slot fence", async () => {
+    const tick = String.fromCharCode(96);
+    const textSlot = `${tick.repeat(3)}\nTransmit`;
+    const recipeCode = `export function Button() {\n  return <button>${textSlot}\n</button>;\n}`;
+    mocks.getStyleDetailLive.mockResolvedValue({
+      origin: "live",
+      data: { slug: "test-style", recipeIds: ["button"] },
+    });
+    mocks.getComponentRecipeLive.mockResolvedValue({
+      origin: "live",
+      data: {
+        slug: "test-style",
+        component: "button",
+        className: "rounded-md",
+        code: recipeCode,
+      },
+    });
+    const handler = registeredHandler<{
+      slug: string;
+      component: string;
+      variant?: string;
+      params?: Record<string, string | number | boolean>;
+      slots?: Record<string, string>;
+    }>("stylekit_get_component_recipe");
+
+    const result = await handler({
+      slug: "test-style",
+      component: "button",
+      slots: { label: textSlot },
+    });
+    const markdown = result.content?.[0]?.text ?? "";
+    const fence = tick.repeat(4);
+
+    expect(result.isError).toBeUndefined();
+    expect(markdown).toContain(`${fence}tsx\n${recipeCode}\n${fence}`);
+    expect(result.structuredContent?.code).toBe(recipeCode);
+    expect(mocks.getComponentRecipeLive).toHaveBeenCalledWith(
+      "test-style",
+      "button",
+      {},
+      { slots: { label: textSlot } },
+    );
+  });
+
   it("does not call an inconclusive live detail lookup an unknown style", async () => {
     mocks.getStyleDetailLive.mockResolvedValue({
       data: null,

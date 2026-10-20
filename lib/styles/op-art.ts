@@ -74,7 +74,7 @@ Typography pursues minimalism and geometric precision: sans-serif fonts, uniform
     "禁止在大面积使用密集光学图案导致视觉疲劳",
     "禁止使用柔和渐变 bg-gradient-to-r 削弱对比度",
     "禁止使用柔和阴影 shadow-sm shadow-md 破坏平面感",
-    "禁止使用圆角 rounded-lg rounded-xl rounded-full",
+    "禁止卡片等 UI 表面使用 rounded-lg 或 rounded-xl；rounded-full 仅用于同心光学圆环装饰",
     "禁止使用衬线字体 font-serif",
     "禁止使用超过两种强调色，保持黑白为主体",
     "禁止使用半透明或模糊效果 opacity-50 backdrop-blur",
@@ -87,7 +87,7 @@ Typography pursues minimalism and geometric precision: sans-serif fonts, uniform
     "Do not use dense optical patterns over large areas causing visual fatigue",
     "Do not use soft gradients bg-gradient-to-r that weaken contrast",
     "Do not use soft shadows shadow-sm shadow-md that break the flat feel",
-    "Do not use rounded corners rounded-lg rounded-xl rounded-full",
+    "Do not round UI surfaces with rounded-lg or rounded-xl; rounded-full is reserved for concentric optical ring decorations",
     "Do not use serif fonts font-serif",
     "Do not use more than two accent colors; keep black-and-white as the dominant palette",
     "Do not use semi-transparency or blur effects opacity-50 backdrop-blur",
@@ -431,7 +431,7 @@ Typography pursues minimalism and geometric precision: sans-serif fonts, uniform
 
 ## 绝对禁止
 
-- 使用圆角 rounded-lg rounded-xl rounded-full
+- UI 表面禁止 rounded-lg 和 rounded-xl；rounded-full 仅用于同心光学圆环装饰
 - 使用柔和阴影 shadow-sm shadow-md shadow-lg
 - 使用渐变 bg-gradient-to-*
 - 使用衬线字体 font-serif
@@ -479,7 +479,7 @@ Typography pursues minimalism and geometric precision: sans-serif fonts, uniform
 
 ## Absolutely Forbidden
 
-- Rounded corners rounded-lg rounded-xl rounded-full
+- Do not round UI surfaces with rounded-lg or rounded-xl; rounded-full is reserved for concentric optical ring decorations
 - Soft shadows shadow-sm shadow-md shadow-lg
 - Gradients bg-gradient-to-*
 - Serif fonts font-serif

@@ -82,9 +82,16 @@ export const scrollytellingTokens = createStyleTokens({
       "bg-white": "Scrollytelling uses a dark data-feature base #0E1116 (or a controlled paper variant)",
       "bg-gradient-to-r": "The stage is flat; focus comes from signal-blue highlights, not gradients",
       "from-indigo-600": "No AI-cliche gradients; one signal blue and one vermilion accent only",
-      "rounded-full": "Chart/data UI reads better with restrained rounded-md, not pills",
+      "rounded-full": "Chart/data surfaces use restrained rounded-md, not pills; only the square 1rem timeline point is circular",
       "duration-1000": "Step transitions stay 0.5-0.8s so the narrative keeps pace",
     },
+    exceptions: [
+      {
+        className: "rounded-full",
+        reason: "The story timeline uses a square 1rem step marker as a circular data point.",
+        element: { tags: ["span"], squareDimensions: true, maxDimension: 4 },
+      },
+    ],
   },
 
   required: {

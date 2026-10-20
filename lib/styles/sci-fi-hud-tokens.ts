@@ -89,8 +89,16 @@ export const sciFiHudTokens = createStyleTokens({
       "bg-white": "HUD interfaces require deep dark backgrounds",
       "shadow-md": "Must use glow shadows (shadow-[0_0_Xpx_rgba(...)]) not standard shadows",
       "rounded-2xl": "HUD panels use sharp or slightly rounded corners only",
+      "rounded-full": "Only status lights at most 2.5 spacing units square may be circular; HUD panels stay sharp or slightly rounded",
       "font-serif": "HUD interfaces use monospace fonts exclusively",
     },
+    exceptions: [
+      {
+        className: "rounded-full",
+        reason: "HUD status lights are circular only when their element is at most 2.5 spacing units square.",
+        element: { tags: ["div"], squareDimensions: true, maxDimension: 2.5 },
+      },
+    ],
   },
 
   required: {

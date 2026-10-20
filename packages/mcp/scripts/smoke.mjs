@@ -27,6 +27,20 @@ check(
   tools.every((t) => t.annotations?.openWorldHint === true),
   "all tools annotated openWorldHint for live or network-backed data",
 );
+const recipeToolSchema = tools.find((tool) => tool.name === "stylekit_get_component_recipe");
+check(
+  ["variant", "params", "slots"].every((key) =>
+    Object.hasOwn(recipeToolSchema?.inputSchema?.properties ?? {}, key),
+  ),
+  "recipe tool schema exposes variant, JSON params, and slots",
+);
+const briefToolSchema = tools.find((tool) => tool.name === "stylekit_get_implementation_brief");
+check(
+  ["sections", "components"].every((key) =>
+    Object.hasOwn(briefToolSchema?.inputSchema?.properties ?? {}, key),
+  ) && Object.hasOwn(briefToolSchema?.outputSchema?.properties ?? {}, "projection"),
+  "brief tool schemas expose section/component projections and the completeness marker",
+);
 
 const assetPage = await client.callTool({
   name: "stylekit_list_assets",
@@ -163,6 +177,38 @@ check(
     ["live", "bundled"].includes(recipe.structuredContent?.origin),
   "get_component_recipe returns a className and its data origin",
 );
+const configuredRecipe = await client.callTool({
+  name: "stylekit_get_component_recipe",
+  arguments: {
+    slug: "broadcast-glitch",
+    component: "button",
+    variant: "cyan",
+    params: { size: "lg", fullWidth: true },
+    slots: { label: "Transmit now" },
+  },
+});
+check(
+  configuredRecipe.isError !== true &&
+    configuredRecipe.structuredContent?.renderOptions?.variant === "cyan" &&
+    configuredRecipe.structuredContent?.className?.includes("bg-[#00E5D8]") &&
+    configuredRecipe.structuredContent?.className?.includes("px-9 py-4 text-base") &&
+    configuredRecipe.structuredContent?.className?.includes("w-full") &&
+    configuredRecipe.structuredContent?.code?.includes("Transmit now"),
+  "get_component_recipe renders the requested variant, parameters, and slot text",
+);
+const invalidRecipeOptions = await client.callTool({
+  name: "stylekit_get_component_recipe",
+  arguments: {
+    slug: "broadcast-glitch",
+    component: "button",
+    params: { unknownOption: "ignored" },
+  },
+});
+check(
+  invalidRecipeOptions.isError === true &&
+    /unknown_parameter/i.test(invalidRecipeOptions.content[0]?.text ?? ""),
+  "get_component_recipe rejects unknown parameters instead of silently ignoring them",
+);
 
 const install = await client.callTool({
   name: "stylekit_get_shadcn_install",
@@ -170,8 +216,17 @@ const install = await client.callTool({
 });
 check(
   /npx shadcn add .*synthwave\.json/.test(install.content[0].text) &&
-    ["live", "bundled"].includes(install.structuredContent?.lookupOrigin),
-  "get_shadcn_install returns the command and separate style lookup origin",
+    ["live", "bundled"].includes(install.structuredContent?.lookupOrigin) &&
+    /components\.json/.test(install.structuredContent?.prerequisite ?? "") &&
+    /tailwind\.css/.test(install.structuredContent?.prerequisite ?? "") &&
+    /CSS variables/.test(install.structuredContent?.prerequisite ?? "") &&
+    /tsconfig\.json/.test(install.structuredContent?.prerequisite ?? "") &&
+    /Tailwind CSS v4 only/.test(install.structuredContent?.prerequisite ?? "") &&
+    /Tailwind v3/.test(install.structuredContent?.prerequisite ?? "") &&
+    /Style Pack/.test(install.structuredContent?.prerequisite ?? "") &&
+    /HSL/.test(install.structuredContent?.prerequisite ?? "") &&
+    /preset/.test(install.structuredContent?.prerequisite ?? ""),
+  "get_shadcn_install returns prerequisites, provenance, and Tailwind version guidance",
 );
 
 const unknown = await client.callTool({
@@ -230,6 +285,35 @@ check(brief.structuredContent?.schemaVersion === "stylekit-brief-v1" &&
   brief.structuredContent?.aiRules?.length > 0,
   "implementation brief includes instructions, template code, recipes and merged rules");
 check(JSON.stringify(JSON.parse(brief.content[0].text)) === JSON.stringify(brief.structuredContent), "brief text contains complete valid JSON for legacy clients");
+check(
+  brief.structuredContent?.projection?.complete === true &&
+    brief.structuredContent?.projection?.mode === "full" &&
+    brief.structuredContent?.projection?.lintRulesComplete === true,
+  "full brief marks its complete projection explicitly",
+);
+const partialBrief = await client.callTool({
+  name: "stylekit_get_implementation_brief",
+  arguments: { slug: "neo-brutalist", sections: ["identity", "recipes"], components: ["button"] },
+});
+check(
+  partialBrief.isError !== true &&
+    partialBrief.structuredContent?.projection?.complete === false &&
+    partialBrief.structuredContent?.projection?.mode === "partial" &&
+    partialBrief.structuredContent?.projection?.componentFilter?.[0] === "button" &&
+    partialBrief.structuredContent?.recipes?.button &&
+    partialBrief.structuredContent?.components === undefined &&
+    typeof partialBrief.structuredContent?.provenance?.contentHash === "string",
+  "projected brief returns only requested sections and marks itself partial",
+);
+const invalidBriefProjection = await client.callTool({
+  name: "stylekit_get_implementation_brief",
+  arguments: { slug: "neo-brutalist", sections: ["identity"], components: ["button"] },
+});
+check(
+  invalidBriefProjection.isError === true &&
+    /component_ids_require_components/i.test(invalidBriefProjection.content[0]?.text ?? ""),
+  "brief rejects component filters when neither components nor recipes are selected",
+);
 check(
   ["live", "bundled"].includes(brief.structuredContent?.origin) &&
     ["bundled", "static", "community"].includes(brief.structuredContent?.provenance?.source) &&

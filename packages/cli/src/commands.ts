@@ -9,15 +9,26 @@ import {
   getStyleDetailLive,
   getTokensLive,
   getComponentRecipeLive,
+  getImplementationBriefLive,
+  projectImplementationBrief,
+  RecipeRenderInputError,
+  ImplementationBriefProjectionError,
   knownSlugLive,
   shadcnInstallCommand,
   registryUrl,
+  inspectProject,
+  createAddPlan,
+  applyAddPlan,
   getPublicAssetLive,
   listPublicAssetsLive,
   type PublicAssetKind,
   type PublicAssetListOptions,
   type StyleCategory,
   type StyleSummary,
+  type RecipeRenderOptions,
+  type ImplementationBriefSection,
+  type AddPlan,
+  type ProjectInspection,
 } from "./core.js";
 
 type PublicAssetListResponse = Awaited<ReturnType<typeof listPublicAssetsLive>>;
@@ -154,6 +165,7 @@ export async function cmdTokens(slug: string): Promise<CommandResult> {
 export async function cmdRecipe(
   slug: string,
   component: string | undefined,
+  renderOptions?: RecipeRenderOptions,
 ): Promise<CommandResult> {
   const detailSource = await getStyleDetailLive(slug);
   const d = detailSource.data;
@@ -169,12 +181,28 @@ export async function cmdRecipe(
   if (!component) {
     return fail(`Specify a component. Available recipes for "${slug}": ${available}.`, "MISSING_COMPONENT", styleSourceMetadata(detailSource));
   }
-  const source = await getComponentRecipeLive(slug, component);
+  let source: Awaited<ReturnType<typeof getComponentRecipeLive>>;
+  try {
+    source = await getComponentRecipeLive(slug, component, undefined, renderOptions);
+  } catch (error) {
+    if (error instanceof RecipeRenderInputError) {
+      return fail(
+        `${error.message} (code: ${error.code})`,
+        "INVALID_RECIPE_OPTIONS",
+        { optionCode: error.code, slug, component },
+      );
+    }
+    throw error;
+  }
   const r = source.data;
   if (!r) {
     return fail(`No "${component}" recipe for "${slug}". Available: ${available}.${source.fallbackReason ? ` ${source.fallbackReason}` : ""}`, "RECIPE_NOT_FOUND", styleSourceMetadata(source));
   }
-  const json = { ...r, ...styleSourceMetadata(source) };
+  const json = {
+    ...r,
+    ...(renderOptions && Object.keys(renderOptions).length > 0 ? { renderOptions } : {}),
+    ...styleSourceMetadata(source),
+  };
   const text = [
     `${component} — ${slug}`,
     `catalogue origin: ${source.origin}${source.fallbackReason ? ` · fallback: ${source.fallbackReason}` : ""}`,
@@ -188,15 +216,166 @@ export async function cmdRecipe(
   return ok(text, json);
 }
 
-export async function cmdAdd(slug: string): Promise<CommandResult> {
+export async function cmdBrief(
+  slug: string,
+  options: {
+    sections?: readonly ImplementationBriefSection[];
+    componentIds?: readonly string[];
+  } = {},
+): Promise<CommandResult> {
+  const source = await getImplementationBriefLive(slug);
+  if (!source.data) {
+    const notFound = source.failureKind === "not-found";
+    return fail(
+      notFound
+        ? unknownSlugMsg(slug)
+        : `Could not retrieve an implementation brief for "${slug}".${source.fallbackReason ? ` ${source.fallbackReason}` : ""}`,
+      notFound ? "UNKNOWN_STYLE" : "STYLE_BRIEF_UNAVAILABLE",
+      styleSourceMetadata(source),
+    );
+  }
+
+  let projected: ReturnType<typeof projectImplementationBrief>;
+  try {
+    projected = projectImplementationBrief(source.data, options);
+  } catch (error) {
+    if (error instanceof ImplementationBriefProjectionError) {
+      return fail(
+        `${error.message} (code: ${error.code})`,
+        "INVALID_BRIEF_PROJECTION",
+        { projectionCode: error.code, slug },
+      );
+    }
+    throw error;
+  }
+
+  const json = {
+    ...projected,
+    ...styleSourceMetadata(source),
+  };
+  return ok(JSON.stringify(json, null, 2), json);
+}
+
+function formatProjectInspection(inspection: ProjectInspection): string {
+  return [
+    `Project doctor — ${inspection.root}`,
+    `Ready for add: ${inspection.readyForAdd ? "yes" : "no"}`,
+    `Package manager: ${inspection.packageManager.message}`,
+    `Tailwind: ${inspection.tailwind.message}`,
+    `CSS entry: ${inspection.cssEntry.message}`,
+    ...(inspection.blockers.length > 0
+      ? ["", "Blockers:", ...inspection.blockers.map((item) => `- ${item}`)]
+      : []),
+    ...(inspection.warnings.length > 0
+      ? ["", "Warnings:", ...inspection.warnings.map((item) => `- ${item}`)]
+      : []),
+  ].join("\n");
+}
+
+function formatAddPlan(plan: AddPlan): string {
+  return [
+    `StyleKit add plan — ${plan.slug}`,
+    `Project: ${plan.target.projectRoot}`,
+    `Status: ${plan.readyForApply ? "ready to apply" : "blocked"}`,
+    `Command: ${plan.command.display ?? "unavailable"}`,
+    ...(plan.target.cssFile ? [`CSS target: ${plan.target.cssFile}`] : []),
+    ...(plan.affectedFiles.length > 0
+      ? ["", "Expected file effects:", ...plan.affectedFiles.map((file) => `- ${file.path}: ${file.reason}`)]
+      : ["", "Expected file effects: none identified"]),
+    ...(plan.blockers.length > 0
+      ? ["", "Blockers:", ...plan.blockers.map((item) => `- ${item}`)]
+      : []),
+    ...(plan.warnings.length > 0
+      ? ["", "Warnings:", ...plan.warnings.map((item) => `- ${item}`)]
+      : []),
+  ].join("\n");
+}
+
+export function cmdDoctor(cwd?: string): CommandResult {
+  const inspection = inspectProject(cwd);
+  const text = formatProjectInspection(inspection);
+  return inspection.readyForAdd
+    ? ok(text, inspection)
+    : fail(text, "PROJECT_NOT_READY", { inspection });
+}
+
+export async function cmdAdd(
+  slug: string,
+  options: { cwd?: string; apply?: boolean; dryRun?: boolean } = {},
+): Promise<CommandResult> {
   const source = await knownSlugLive(slug);
-  if (!source.data) return fail(unknownSlugMsg(slug), "UNKNOWN_STYLE", styleSourceMetadata(source));
+  if (!source.data) {
+    const authoritativeNotFound = source.origin === "live" && !source.failureKind;
+    if (source.failureKind === "not-found" || authoritativeNotFound) {
+      return fail(unknownSlugMsg(slug), "UNKNOWN_STYLE", styleSourceMetadata(source));
+    }
+    return fail(
+      `Could not verify that style "${slug}" exists.${source.fallbackReason ? ` ${source.fallbackReason}` : ""}`,
+      "STYLE_SOURCE_UNAVAILABLE",
+      styleSourceMetadata(source),
+    );
+  }
+
+  if (options.apply && options.dryRun) {
+    return fail("Choose either --apply or --dry-run, not both.", "INVALID_ARGUMENTS");
+  }
+
+  if (options.apply || options.dryRun || options.cwd !== undefined) {
+    const plan = createAddPlan(slug, options.cwd);
+    if (options.apply) {
+      const applied = await applyAddPlan(plan, { apply: true });
+      const json = {
+        schemaVersion: "stylekit-cli-add-output-v1",
+        mode: "apply",
+        plan,
+        result: applied,
+        lookupOrigin: source.origin,
+        ...(source.fallbackReason ? { fallbackReason: source.fallbackReason } : {}),
+      };
+      const verification = applied.verification.css.changesObserved
+        ? "CSS variable changes were observed in the configured stylesheet; theme identity and visual result remain unverified."
+        : applied.ok
+          ? "The installer exited successfully, but no CSS variable changes were observed; theme identity and visual result remain unverified."
+          : applied.verification.note;
+      const text = [
+        formatAddPlan(plan),
+        "",
+        `Install status: ${applied.status}`,
+        verification,
+        `Theme identity: ${applied.verification.themeIdentity}; visual result: ${applied.verification.visualResult}.`,
+        ...(applied.blockers.length > 0
+          ? ["", ...applied.blockers.map((item) => `- ${item}`)]
+          : []),
+      ].join("\n");
+      return applied.ok
+        ? ok(text, json)
+        : fail(text, applied.status === "blocked" ? "ADD_BLOCKED" : "ADD_FAILED", {
+            schemaVersion: json.schemaVersion,
+            mode: json.mode,
+            plan,
+            result: applied,
+            lookupOrigin: source.origin,
+            ...(source.fallbackReason ? { fallbackReason: source.fallbackReason } : {}),
+          });
+    }
+
+    const mode = options.dryRun ? "dry-run" : "plan";
+    const details = {
+      schemaVersion: "stylekit-cli-add-output-v1",
+      mode,
+      plan,
+    };
+    return plan.readyForApply
+      ? ok(formatAddPlan(plan), details)
+      : fail(`The ${mode} cannot be applied because the project has blockers.\n${formatAddPlan(plan)}`, "ADD_BLOCKED", details);
+  }
+
   const command = shadcnInstallCommand(slug);
   const json = {
     slug,
     command,
     registryUrl: registryUrl(slug),
-    prerequisite: "The target project must contain a tsconfig.json.",
+    prerequisite: "This registry theme command supports Tailwind CSS v4 only. The target must have components.json configured with tailwind.css and CSS variables enabled, plus tsconfig.json. For Tailwind v3, use Style Pack's legacy HSL <slug>-variables.css and Tailwind v3 <slug>-tailwind-preset.js artifacts instead.",
     lookupOrigin: source.origin,
     ...(source.fallbackReason ? { fallbackReason: source.fallbackReason } : {}),
   };
@@ -205,7 +384,8 @@ export async function cmdAdd(slug: string): Promise<CommandResult> {
     "",
     `Style existence lookup origin: ${source.origin}${source.fallbackReason ? ` · fallback: ${source.fallbackReason}` : ""}`,
     "",
-    "(The target project must contain a tsconfig.json.)",
+    "(This registry command is for Tailwind v4. Initialize shadcn with components.json (tailwind.css and CSS variables) and tsconfig.json.)",
+    "For Tailwind v3, use Style Pack's legacy HSL <slug>-variables.css and Tailwind v3 <slug>-tailwind-preset.js instead.",
   ].join("\n");
   return ok(text, json);
 }

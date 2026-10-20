@@ -50,7 +50,7 @@ Core principles:
     "按钮渐变 bg-gradient-to-r from-[#5e6ad2] to-[#8b5cf6]",
     "字体使用 Inter，tracking-tight 或 -tracking-[0.01em]",
     "交互使用 opacity 变化而非颜色变化 hover:text-white",
-    "圆角克制 rounded-lg 为最大值",
+    "面板圆角最大 rounded-lg；仅等宽高的 1rem issue 状态图标允许 rounded-full",
     "使用 backdrop-blur-sm 为浮层增加质感",
   ],
 
@@ -61,13 +61,13 @@ Core principles:
     "Button gradient: bg-gradient-to-r from-[#5e6ad2] to-[#8b5cf6]",
     "Inter font with tracking-tight or -tracking-[0.01em]",
     "Opacity-based interactions: hover:text-white",
-    "Restrained border-radius: rounded-lg max",
+    "Keep panel radii at rounded-lg max; only the equal 1rem issue status icon may use rounded-full",
     "Use backdrop-blur-sm for floating layers",
   ],
 
   dontList: [
     "禁止使用白色/浅色背景（暗色是根基）",
-    "禁止大圆角 rounded-2xl rounded-3xl rounded-full",
+    "面板禁止大圆角 rounded-2xl/rounded-3xl；rounded-full 仅用于等宽高的 1rem issue 状态图标",
     "禁止使用彩色阴影或大面积阴影",
     "禁止使用多种字体（只用 Inter）",
     "禁止使用饱和度过高的颜色（除品牌紫色外）",
@@ -76,7 +76,7 @@ Core principles:
 
   dontListEn: [
     "No white/light backgrounds (dark is the foundation)",
-    "No large border-radius: rounded-2xl, rounded-3xl, rounded-full",
+    "Avoid rounded-2xl/rounded-3xl on panels; rounded-full is reserved for the equal 1rem issue status icon",
     "No colored shadows or large shadows",
     "No multiple fonts (Inter only)",
     "No oversaturated colors (except brand purple)",

@@ -1,9 +1,10 @@
 import { describe, expect, it } from "vitest";
 import fixture from "../../fixtures/style-lint-contract.json";
 import { getImplementationBrief } from "@/lib/implementation-brief";
-import { lintStyleCode, type StyleLintComponent } from "@/lib/styles/style-linter";
+import { lintCodeWithRules, lintStyleCode, type StyleLintComponent } from "@/lib/styles/style-linter";
 import { styles } from "@/lib/styles";
 import { getComponentRecipe } from "@/lib/discovery";
+import { rulesFromBrief } from "@/packages/core/src/discovery/live-lint";
 
 describe("shared static lint contract", () => {
   for (const [slug, spec] of Object.entries(fixture.specs)) {
@@ -22,6 +23,29 @@ describe("shared static lint contract", () => {
       expect(report.ok).toBe(sample.status === "pass");
     });
   }
+  it("serializes and rehydrates state-scoped v2 exceptions without widening the base rule", () => {
+    const brief = getImplementationBrief("synthwave")!;
+    const contract = brief.lintRules as Record<string, unknown>;
+    expect(contract.schemaVersion).toBe("stylekit-lint-v2");
+    expect(contract.forbiddenExceptions).toHaveLength(2);
+
+    const rules = rulesFromBrief(brief);
+    expect(rules).not.toBeNull();
+    const active = lintCodeWithRules(rules!, '<button className="active:bg-white active:text-black" />', { slug: "synthwave" });
+    expect(active.status).toBe("pass");
+    const base = lintCodeWithRules(rules!, '<button className="bg-white text-black" />', { slug: "synthwave" });
+    expect(base.status).toBe("fail");
+
+    const malformedBrief = {
+      ...brief,
+      lintRules: {
+        ...contract,
+        forbiddenExceptions: [{ className: "bg-white", reason: "empty scope", variants: { all: [] } }],
+      },
+    } as unknown as Parameters<typeof rulesFromBrief>[0];
+    expect(rulesFromBrief(malformedBrief)).toBeNull();
+  });
+
   it("does not let a hover-only class satisfy a default requirement", () => {
     const report = lintStyleCode("neo-brutalist", '<button className="hover:border-2" />', { checkRequired: ["button"], strict: true });
     expect(report.missingRequired[0].missing).toContain("border-2");

@@ -266,6 +266,7 @@ export const magicCircleRecipes = createStyleRecipes("magic-circle", "Magic Circ
         baseClasses: [
           "inline-flex items-center justify-center",
           "rounded-full",
+          "sk-magic-circle-glyph",
           "bg-[#0a0920]",
           "border-2",
           "font-serif",

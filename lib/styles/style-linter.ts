@@ -20,7 +20,8 @@
 
 import { getStyleLintRules } from "./lint-rules";
 import { getStyleTokens } from "./tokens-registry";
-import type { StyleTokens } from "./tokens";
+import { matchStyleLintException } from "./tokens";
+import type { StyleLintElementContext, StyleLintException, StyleLintExceptionMatch, StyleTokens } from "./tokens";
 
 export type StyleLintSeverity = "error" | "warning";
 export type StyleLintRuleSource = "curated" | "tokens";
@@ -82,6 +83,7 @@ export interface StyleLintOptions {
 interface ExtractedClass {
   raw: string;
   line: number;
+  element?: StyleLintElementContext;
 }
 
 const CLASS_ATTR_RE = /\b(?:className|class)\s*=\s*/g;
@@ -104,10 +106,12 @@ export function extractClassNames(code: string): ExtractedClass[] {
   let attrMatch: RegExpExecArray | null;
 
   while ((attrMatch = CLASS_ATTR_RE.exec(code)) !== null) {
+    if (isInsideLiteralOrComment(code, attrMatch.index)) continue;
     const valueStart = attrMatch.index + attrMatch[0].length;
     const region = readAttributeValue(code, valueStart);
     if (!region) continue;
 
+    const attributeClasses: Array<{ raw: string; line: number }> = [];
     for (const literal of readStringLiterals(code, region.start, region.end)) {
       // Scan with positions so each token maps to its own line. Template
       // interpolations were blanked out (not removed), so offsets stay aligned
@@ -115,12 +119,20 @@ export function extractClassNames(code: string): ExtractedClass[] {
       const tokenRe = /\S+/g;
       let token: RegExpExecArray | null;
       while ((token = tokenRe.exec(literal.text)) !== null) {
-        found.push({
+        attributeClasses.push({
           raw: token[0],
           line: offsetToLine(lineStarts, literal.offset + token.index),
         });
       }
     }
+
+    const value = code.slice(region.start, region.end).trim();
+    const element = {
+      tagName: readElementTagName(code, attrMatch.index),
+      classes: attributeClasses.map(({ raw }) => raw),
+      complete: isCompleteClassAttribute(value),
+    };
+    found.push(...attributeClasses.map((entry) => ({ ...entry, element })));
 
     // Continue scanning after this attribute value.
     CLASS_ATTR_RE.lastIndex = region.end;
@@ -134,6 +146,152 @@ export function extractClassNames(code: string): ExtractedClass[] {
     }
   }
   return found;
+}
+
+function readElementTagName(code: string, attributeStart: number): string | undefined {
+  const open = code.lastIndexOf("<", attributeStart);
+  if (open <= code.lastIndexOf(">", attributeStart)) return undefined;
+  if (isInsideLiteralOrComment(code, open)) return undefined;
+  const tagHeader = code.slice(open, attributeStart);
+  if (hasUnclosedQuote(tagHeader)) return undefined;
+  const match = tagHeader.match(/^<([A-Za-z][A-Za-z0-9._:-]*)\b/);
+  return match?.[1]?.toLowerCase();
+}
+
+function isInsideLiteralOrComment(code: string, position: number): boolean {
+  for (let i = 0; i < position; i += 1) {
+    const char = code[i];
+    const next = code[i + 1];
+
+    if (char === "/" && next === "/") {
+      const newline = code.indexOf("\n", i + 2);
+      if (newline === -1 || newline >= position) return true;
+      i = newline;
+      continue;
+    }
+    if (char === "/" && next === "*") {
+      const close = code.indexOf("*/", i + 2);
+      if (close === -1 || close >= position) return true;
+      i = close + 1;
+      continue;
+    }
+    if (char === "'" || char === "\"" || char === "`") {
+      const close = findQuotedEnd(code, i, char);
+      if (close === -1 || close >= position) return true;
+      i = close;
+      continue;
+    }
+    if (char === "/" && canStartRegexLiteral(code, i)) {
+      const close = findRegexEndBefore(code, i + 1, position);
+      if (close === -1) return true;
+      i = close;
+    }
+  }
+  return false;
+}
+
+function findQuotedEnd(code: string, open: number, quote: string): number {
+  for (let i = open + 1; i < code.length; i += 1) {
+    if (code[i] === "\\") i += 1;
+    else if (code[i] === quote) return i;
+  }
+  return -1;
+}
+
+function canStartRegexLiteral(code: string, slash: number, recognizeControlHeader = true): boolean {
+  const prefix = code.slice(0, slash).trimEnd();
+  if (!prefix) return true;
+  if (prefix.endsWith("=>")) return true;
+  const last = prefix[prefix.length - 1]!;
+  if (last === ")" && recognizeControlHeader && isControlFlowHeaderClose(code, prefix.length - 1)) return true;
+  if ("=(:,;!&|?{}[]~".includes(last)) return true;
+  const word = prefix.match(/([A-Za-z_$][\w$]*)$/)?.[1];
+  return ["return", "throw", "case", "delete", "void", "typeof", "yield", "await", "in", "of", "else", "do"].includes(word ?? "");
+}
+
+/** A regex may start after a control-flow header's closing parenthesis. */
+function isControlFlowHeaderClose(code: string, closingParen: number): boolean {
+  const openParens: number[] = [];
+
+  for (let i = 0; i <= closingParen; i += 1) {
+    const char = code[i];
+    const next = code[i + 1];
+
+    if (char === "/" && next === "/") {
+      const newline = code.indexOf("\n", i + 2);
+      if (newline === -1 || newline > closingParen) return false;
+      i = newline;
+      continue;
+    }
+    if (char === "/" && next === "*") {
+      const close = code.indexOf("*/", i + 2);
+      if (close === -1 || close >= closingParen) return false;
+      i = close + 1;
+      continue;
+    }
+    if (char === "'" || char === "\"" || char === "`") {
+      const close = findQuotedEnd(code, i, char);
+      if (close === -1 || close >= closingParen) return false;
+      i = close;
+      continue;
+    }
+    if (char === "/" && canStartRegexLiteral(code, i, false)) {
+      const close = findRegexEndBefore(code, i + 1, closingParen);
+      if (close === -1) return false;
+      i = close;
+      continue;
+    }
+    if (char === "(") {
+      openParens.push(i);
+      continue;
+    }
+    if (char === ")") {
+      const open = openParens.pop();
+      if (i !== closingParen) continue;
+      if (open === undefined) return false;
+
+      const beforeOpen = code.slice(0, open);
+      const standardControlHeader = /(?:^|[^\w$.])(?:if|while|with|switch|catch)\s*$/.test(beforeOpen);
+      const forControlHeader = /(?:^|[^\w$.])for(?:\s+await)?\s*$/.test(beforeOpen);
+      return standardControlHeader || forControlHeader;
+    }
+  }
+
+  return false;
+}
+
+function findRegexEndBefore(code: string, start: number, limit: number): number {
+  let inCharacterClass = false;
+  for (let i = start; i < limit; i += 1) {
+    if (code[i] === "\\") {
+      i += 1;
+      continue;
+    }
+    if (code[i] === "\n" || code[i] === "\r") return -1;
+    if (code[i] === "[") inCharacterClass = true;
+    else if (code[i] === "]") inCharacterClass = false;
+    else if (code[i] === "/" && !inCharacterClass) return i;
+  }
+  return -1;
+}
+
+function hasUnclosedQuote(value: string): boolean {
+  let quote: string | undefined;
+  for (let i = 0; i < value.length; i += 1) {
+    const char = value[i];
+    if (quote) {
+      if (char === "\\") i += 1;
+      else if (char === quote) quote = undefined;
+    } else if (char === "\"" || char === "'") {
+      quote = char;
+    }
+  }
+  return quote !== undefined;
+}
+
+function isCompleteClassAttribute(value: string): boolean {
+  const literal = /^(?:"(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*'|`[^`]*`)$/s.test(value);
+  return literal && !value.includes("\\") && !(value.startsWith("`") && value.includes("${"));
 }
 
 function isBareClassList(code: string): boolean {
@@ -150,6 +308,7 @@ function measureCoverage(code: string): StyleLintReport["coverage"] {
   let classAttributes = 0;
   let dynamicAttributes = 0;
   for (const match of code.matchAll(matcher)) {
+    if (isInsideLiteralOrComment(code, match.index!)) continue;
     classAttributes += 1;
     const region = readAttributeValue(code, match.index + match[0].length);
     const value = region ? code.slice(region.start, region.end).trim() : "";
@@ -345,6 +504,8 @@ export interface MergedRules {
     source: StyleLintRuleSource;
     reasons: Record<string, string>;
   }>;
+  /** Scoped allowances that narrow, but never remove, a matching forbidden rule. */
+  forbiddenExceptions: StyleLintException[];
   required: Map<StyleLintComponent, { classes: string[]; source: StyleLintRuleSource }>;
   /**
    * Classes the style itself requires. Never reported as violations, even when
@@ -408,6 +569,7 @@ function mergeRulesFromParts(
   const merged: MergedRules = {
     forbiddenClasses: new Map(),
     forbiddenPatterns: [],
+    forbiddenExceptions: [],
     required: new Map(),
     exempt: new Set(),
     sources: [],
@@ -417,6 +579,9 @@ function mergeRulesFromParts(
   if (tokens) {
     merged.sources.push("tokens");
     merged.tokens = tokens;
+    if (tokens.forbidden.exceptions) {
+      merged.forbiddenExceptions.push(...tokens.forbidden.exceptions);
+    }
 
     for (const cls of tokens.forbidden.classes) {
       merged.forbiddenClasses.set(cls, {
@@ -446,6 +611,9 @@ function mergeRulesFromParts(
   if (curated) {
     merged.sources.push("curated");
     merged.recommended = curated.recommended;
+    if (curated.forbidden.exceptions) {
+      merged.forbiddenExceptions.push(...curated.forbidden.exceptions);
+    }
 
     for (const cls of curated.forbidden.classes) {
       // Curated reasons are hand-written, so they take precedence.
@@ -577,46 +745,49 @@ export function lintCodeWithRules(
 ): StyleLintReport {
   const extracted = extractClassNames(code);
   const violations: StyleLintViolation[] = [];
+  let uncertainScopedException = false;
 
-  for (const { raw, line } of extracted) {
+  for (const { raw, line, element } of extracted) {
     const base = stripVariants(raw);
 
     // The style asked for this class. Never report it, whatever the ban says.
     if (rules.exempt.has(base)) continue;
 
     const exact = rules.forbiddenClasses.get(base);
-    if (exact) {
-      violations.push({
-        className: raw,
-        baseClassName: base,
-        line,
-        severity: "error",
-        source: exact.source,
-        rule: "forbidden-class",
-        reason: exact.reason,
-        fix: deriveFix(base, rules),
-      });
+    const matchedPattern = exact
+      ? undefined
+      : rules.forbiddenPatterns.find((entry) => entry.pattern.test(base));
+    if (!exact && !matchedPattern) continue;
+
+    const exceptionResult = rules.forbiddenExceptions
+      .filter((exception) => exception.className === base)
+      .reduce<StyleLintExceptionMatch>((result, exception) => {
+        if (result === "match") return result;
+        const current = matchStyleLintException(exception, raw, element);
+        return current === "match" || (current === "unknown" && result === "miss")
+          ? current
+          : result;
+      }, "miss");
+    if (exceptionResult === "match") continue;
+    if (exceptionResult === "unknown") {
+      uncertainScopedException = true;
       continue;
     }
 
-    // Patterns are written against the utility, so test the stripped form.
-    // Testing the raw token would let a variant prefix mask a match.
-    const matched = rules.forbiddenPatterns.find((entry) => entry.pattern.test(base));
-    if (matched) {
-      const reason =
-        matched.reasons[base] ??
-        `"${base}" matches a forbidden pattern for this style (${matched.pattern.source})`;
-      violations.push({
-        className: raw,
-        baseClassName: base,
-        line,
-        severity: "error",
-        source: matched.source,
-        rule: "forbidden-pattern",
-        reason,
-        fix: deriveFix(base, rules),
-      });
-    }
+    const reason = exact?.reason ?? (
+      matchedPattern?.reasons[base] ??
+      `"${base}" matches a forbidden pattern for this style (${matchedPattern?.pattern.source})`
+    );
+    violations.push({
+      className: raw,
+      baseClassName: base,
+      line,
+      severity: "error",
+      source: exact?.source ?? matchedPattern!.source,
+      rule: exact ? "forbidden-class" : "forbidden-pattern",
+      reason,
+      fix: deriveFix(base, rules),
+    });
   }
 
   const missingRequired: StyleLintMissingRequired[] = [];
@@ -644,9 +815,10 @@ export function lintCodeWithRules(
   if (extracted.length === 0) warnings.push("No statically readable class tokens were found.");
   if (coverage.dynamicAttributes > 0) warnings.push("Runtime class expressions require manual review; only their string literals were checked.");
   if (rules.unsupportedRules?.length) warnings.push("Some forbidden patterns could not be compiled.");
+  if (uncertainScopedException) warnings.push("Some scoped exceptions need complete, statically readable element context.");
   if (missingRequired.length > 0 && !options.strict) warnings.push("Missing required classes are advisory; enable strict to fail them.");
   const failed = violations.length > 0 || (options.strict === true && missingRequired.length > 0 && coverage.dynamicAttributes === 0);
-  const uncertain = rules.sources.length === 0 || extracted.length === 0 || coverage.dynamicAttributes > 0 || Boolean(rules.unsupportedRules?.length);
+  const uncertain = rules.sources.length === 0 || extracted.length === 0 || coverage.dynamicAttributes > 0 || Boolean(rules.unsupportedRules?.length) || uncertainScopedException;
   const status = failed ? "fail" : uncertain ? "inconclusive" : "pass";
   return {
     slug: options.slug ?? "",

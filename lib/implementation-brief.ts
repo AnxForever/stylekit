@@ -5,11 +5,29 @@ import { getStyleRecipes, type StyleRecipes } from "./recipes";
 import { mergeRulesFromTokens, type MergedRules } from "./styles/style-linter";
 
 export function serializeLintRules(rules: MergedRules) {
+  const forbiddenExceptions = rules.forbiddenExceptions ?? [];
   return {
-    schemaVersion: "stylekit-lint-v1" as const,
+    schemaVersion: forbiddenExceptions.length > 0 ? "stylekit-lint-v2" as const : "stylekit-lint-v1" as const,
     sources: rules.sources,
     forbiddenClasses: [...rules.forbiddenClasses].map(([className, rule]) => ({ className, ...rule })),
     forbiddenPatterns: rules.forbiddenPatterns.map(({ pattern, ...rule }) => ({ pattern: pattern.source, flags: pattern.flags, ...rule })),
+    ...(forbiddenExceptions.length > 0 ? {
+      forbiddenExceptions: forbiddenExceptions.map((exception) => ({
+        className: exception.className,
+        reason: exception.reason,
+        ...(exception.variants ? { variants: {
+          ...(exception.variants.all ? { all: [...exception.variants.all] } : {}),
+          ...(exception.variants.none ? { none: [...exception.variants.none] } : {}),
+        } } : {}),
+        ...(exception.element ? { element: {
+          ...(exception.element.tags ? { tags: [...exception.element.tags] } : {}),
+          ...(exception.element.classesAll ? { classesAll: [...exception.element.classesAll] } : {}),
+          ...(exception.element.classPrefixesAll ? { classPrefixesAll: [...exception.element.classPrefixesAll] } : {}),
+          ...(exception.element.squareDimensions ? { squareDimensions: true as const } : {}),
+          ...(exception.element.maxDimension !== undefined ? { maxDimension: exception.element.maxDimension } : {}),
+        } } : {}),
+      })),
+    } : {}),
     required: Object.fromEntries(rules.required),
     exempt: [...rules.exempt],
     unsupportedRules: rules.unsupportedRules ?? [],
@@ -23,17 +41,17 @@ interface BriefCapabilities {
   readiness: FrontendReadinessProfile;
 }
 
-function stableJson(value: unknown): string {
-  if (Array.isArray(value)) return `[${value.map(stableJson).join(",")}]`;
+export function stableImplementationBriefJson(value: unknown): string {
+  if (Array.isArray(value)) return `[${value.map(stableImplementationBriefJson).join(",")}]`;
   if (value && typeof value === "object") {
-    return `{${Object.entries(value).filter(([, v]) => v !== undefined).sort(([a], [b]) => a < b ? -1 : a > b ? 1 : 0).map(([k, v]) => `${JSON.stringify(k)}:${stableJson(v)}`).join(",")}}`;
+    return `{${Object.entries(value).filter(([, v]) => v !== undefined).sort(([a], [b]) => a < b ? -1 : a > b ? 1 : 0).map(([k, v]) => `${JSON.stringify(k)}:${stableImplementationBriefJson(v)}`).join(",")}}`;
   }
   return JSON.stringify(value) ?? "null";
 }
 
 /** Portable content identifier for cache/drift detection, not a security digest. */
 function contentHash(value: unknown): string {
-  const json = stableJson(value);
+  const json = stableImplementationBriefJson(value);
   let hash = 0x811c9dc5;
   for (let i = 0; i < json.length; i += 1) hash = Math.imul(hash ^ json.charCodeAt(i), 0x01000193) >>> 0;
   return `fnv1a32:${hash.toString(16).padStart(8, "0")}`;

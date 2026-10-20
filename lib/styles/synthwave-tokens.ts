@@ -94,6 +94,18 @@ export const synthwaveTokens = createStyleTokens({
       "shadow-[4px_4px_0px": "Synthwave uses neon glow shadows (0_0_Xpx_rgba), not hard-edge",
       "text-black": "Synthwave uses neon-colored text on dark backgrounds",
     },
+    exceptions: [
+      {
+        className: "bg-white",
+        reason: "Overvoltage Press intentionally flashes white only while the button is active.",
+        variants: { all: ["active"] },
+      },
+      {
+        className: "text-black",
+        reason: "Overvoltage Press intentionally switches text to black only while the button is active.",
+        variants: { all: ["active"] },
+      },
+    ],
   },
 
   required: {

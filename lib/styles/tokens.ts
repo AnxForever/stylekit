@@ -85,6 +85,8 @@ export interface StyleTokens {
     classes: string[];    // Exact classes to avoid
     patterns: string[];   // Regex patterns to avoid
     reasons: Record<string, string>; // Why each is forbidden
+    /** Narrow, auditable allowances for a forbidden utility in a specific state or element role. */
+    exceptions?: StyleLintException[];
   };
 
   // Required patterns - AI must ALWAYS include these
@@ -93,6 +95,177 @@ export interface StyleTokens {
     card: string[];       // Required classes for cards
     input: string[];      // Required classes for inputs
   };
+}
+
+/**
+ * A constrained exception to a forbidden utility. The forbidden utility is
+ * matched without its variant prefix; element scope evidence only counts plain
+ * utilities without variants or important modifiers. Every declared scope
+ * condition must also match.
+ * `maxDimension` is measured in Tailwind spacing units (1 = 0.25rem).
+ */
+export interface StyleLintException {
+  className: string;
+  reason: string;
+  variants?: {
+    all?: string[];
+    none?: string[];
+  };
+  element?: {
+    tags?: string[];
+    classesAll?: string[];
+    classPrefixesAll?: string[];
+    squareDimensions?: true;
+    maxDimension?: number;
+  };
+}
+
+export interface StyleLintElementContext {
+  tagName?: string;
+  classes: string[];
+  complete: boolean;
+}
+
+export type StyleLintExceptionMatch = "match" | "miss" | "unknown";
+
+function styleLintBaseClass(className: string): string {
+  let depth = 0;
+  let lastColon = -1;
+  for (let i = 0; i < className.length; i += 1) {
+    const ch = className[i];
+    if (ch === "[" || ch === "(") depth += 1;
+    else if (ch === "]" || ch === ")") depth -= 1;
+    else if (ch === ":" && depth === 0) lastColon = i;
+  }
+  return (lastColon === -1 ? className : className.slice(lastColon + 1)).replace(/^!|!$/g, "");
+}
+
+function styleLintVariantStack(className: string): string[] {
+  const variants: string[] = [];
+  let depth = 0;
+  let start = 0;
+  for (let i = 0; i < className.length; i += 1) {
+    const ch = className[i];
+    if (ch === "[" || ch === "(") depth += 1;
+    else if (ch === "]" || ch === ")") depth -= 1;
+    else if (ch === ":" && depth === 0) {
+      variants.push(className.slice(start, i));
+      start = i + 1;
+    }
+  }
+  return variants;
+}
+
+/** Shared evaluator for the class-only helper and source-code linter. */
+export function matchStyleLintException(
+  exception: StyleLintException,
+  rawClassName: string,
+  element: StyleLintElementContext | undefined,
+): StyleLintExceptionMatch {
+  if (styleLintBaseClass(rawClassName) !== exception.className) return "miss";
+
+  if ((exception.variants?.all !== undefined && exception.variants.all.length === 0) ||
+      (exception.variants?.none !== undefined && exception.variants.none.length === 0) ||
+      (exception.element?.tags !== undefined && exception.element.tags.length === 0) ||
+      (exception.element?.classesAll !== undefined && exception.element.classesAll.length === 0) ||
+      (exception.element?.classPrefixesAll !== undefined && exception.element.classPrefixesAll.length === 0)) return "unknown";
+
+  const hasVariantScope = Boolean(exception.variants?.all?.length || exception.variants?.none?.length);
+  const hasElementScope = Boolean(
+    exception.element?.tags?.length ||
+    exception.element?.classesAll?.length ||
+    exception.element?.classPrefixesAll?.length ||
+    exception.element?.squareDimensions ||
+    exception.element?.maxDimension !== undefined,
+  );
+  if (!hasVariantScope && !hasElementScope) return "unknown";
+
+  const variants = styleLintVariantStack(rawClassName);
+  if (exception.variants?.all?.some((variant) => !variants.includes(variant))) return "miss";
+  if (exception.variants?.none?.some((variant) => variants.includes(variant))) return "miss";
+  if (!exception.element) return "match";
+
+  const scope = exception.element;
+  if (!element || !element.complete) return "unknown";
+  if (scope.tags?.length) {
+    if (!element.tagName) return "unknown";
+    if (!scope.tags.includes(element.tagName.toLowerCase())) return "miss";
+  }
+
+  const classes = element.classes.filter((className) => styleLintBaseClass(className) === className);
+  if (scope.classesAll?.some((className) => !classes.includes(className))) return "miss";
+  if (scope.classPrefixesAll?.some((prefix) => !classes.some((className) => className.startsWith(prefix)))) return "miss";
+
+  if (scope.squareDimensions || scope.maxDimension !== undefined) {
+    const dimensions = getSquareElementDimensions(element.classes);
+    if (dimensions.status === "unknown") return "unknown";
+    if (dimensions.status === "not-square") return "miss";
+    if (scope.maxDimension !== undefined) {
+      if (dimensions.value === undefined) return "unknown";
+      if (dimensions.value > scope.maxDimension) return "miss";
+    }
+  }
+
+  return "match";
+}
+
+function getSquareElementDimensions(
+  rawClasses: string[],
+): { status: "square"; value?: number } | { status: "not-square" } | { status: "unknown" } {
+  const classes = rawClasses.map(styleLintBaseClass);
+  const hasVariantDimension = rawClasses.some((raw) =>
+    styleLintVariantStack(raw).length > 0 && /^(?:w|h|size|aspect)-/.test(styleLintBaseClass(raw)),
+  );
+  if (hasVariantDimension) return { status: "unknown" };
+
+  const widths = getUniqueDimension(classes, "w");
+  const heights = getUniqueDimension(classes, "h");
+  const sizes = getUniqueDimension(classes, "size");
+  if (widths.status === "conflict" || heights.status === "conflict" || sizes.status === "conflict") {
+    return { status: "unknown" };
+  }
+
+  if ((widths.value !== undefined && sizes.value !== undefined && widths.value !== sizes.value) ||
+      (heights.value !== undefined && sizes.value !== undefined && heights.value !== sizes.value)) {
+    return { status: "unknown" };
+  }
+
+  const width = widths.value ?? sizes.value;
+  const height = heights.value ?? sizes.value;
+  const aspectSquare = classes.includes("aspect-square");
+  if (width !== undefined && height !== undefined) {
+    return width === height
+      ? { status: "square", value: width }
+      : { status: "not-square" };
+  }
+  if (aspectSquare) {
+    const knownDimension = width ?? height;
+    return knownDimension === undefined
+      ? { status: "square" }
+      : { status: "square", value: knownDimension };
+  }
+  return { status: "unknown" };
+}
+
+function getUniqueDimension(
+  classes: string[],
+  axis: "w" | "h" | "size",
+): { status: "ok"; value?: number } | { status: "conflict" } {
+  const values = classes
+    .filter((className) => className.startsWith(`${axis}-`))
+    .map((className) => parseTailwindDimension(className.slice(axis.length + 1)));
+  if (values.some((value) => value === undefined)) return { status: "conflict" };
+  const unique = [...new Set(values as number[])];
+  if (unique.length > 1) return { status: "conflict" };
+  return { status: "ok", value: unique[0] };
+}
+
+function parseTailwindDimension(value: string): number | undefined {
+  if (/^\d+(?:\.\d+)?$/.test(value)) return Number(value);
+  const arbitrary = value.match(/^\[(\d+(?:\.\d+)?)(px|rem)\]$/);
+  if (!arbitrary) return undefined;
+  const amount = Number(arbitrary[1]);
+  return arbitrary[2] === "px" ? amount / 4 : amount * 4;
 }
 
 // Helper function to generate a complete component class string
@@ -106,30 +279,78 @@ export function buildComponentClass(
   return base;
 }
 
-// Validation function - checks if a class string violates forbidden rules
+export interface StyleClassValidationContext {
+  /** Required only when a scoped exception restricts the element tag. */
+  elementTag?: string;
+}
+
+export interface StyleClassValidationResult {
+  valid: boolean;
+  status: "pass" | "fail" | "inconclusive";
+  violations: string[];
+  warnings: string[];
+}
+
+// Context-free token-list validation. Use the source linter for JSX when the
+// exception depends on an element whose tag or complete class list is unknown.
 export function validateClasses(
   tokens: StyleTokens,
-  classString: string
-): { valid: boolean; violations: string[] } {
+  classString: string,
+  context: StyleClassValidationContext = {},
+): StyleClassValidationResult {
   const violations: string[] = [];
-  const classes = classString.split(/\s+/);
+  const warnings: string[] = [];
+  let uncertainScope = false;
+  const classes = classString.split(/\s+/).filter(Boolean);
+  const element: StyleLintElementContext = {
+    tagName: context.elementTag?.toLowerCase(),
+    classes,
+    complete: true,
+  };
 
   for (const cls of classes) {
-    // Check exact matches
-    if (tokens.forbidden.classes.includes(cls)) {
-      violations.push(`"${cls}" is forbidden: ${tokens.forbidden.reasons[cls] || "violates style rules"}`);
+    const base = styleLintBaseClass(cls);
+    const exact = tokens.forbidden.classes.includes(base);
+    let pattern: string | undefined;
+    if (!exact) {
+      pattern = tokens.forbidden.patterns.find((candidate) => {
+        try {
+          return new RegExp(candidate).test(base);
+        } catch {
+          uncertainScope = true;
+          return false;
+        }
+      });
+    }
+    if (!exact && !pattern) continue;
+
+    let exception: StyleLintExceptionMatch = "miss";
+    for (const candidate of tokens.forbidden.exceptions ?? []) {
+      if (candidate.className !== base) continue;
+      const result = matchStyleLintException(candidate, cls, element);
+      if (result === "match") {
+        exception = result;
+        break;
+      }
+      if (result === "unknown") exception = result;
+    }
+    if (exception === "match") continue;
+    if (exception === "unknown") {
+      uncertainScope = true;
+      continue;
     }
 
-    // Check patterns
-    for (const pattern of tokens.forbidden.patterns) {
-      if (new RegExp(pattern).test(cls)) {
-        violations.push(`"${cls}" matches forbidden pattern "${pattern}"`);
-      }
-    }
+    violations.push(exact
+      ? `"${base}" is forbidden: ${tokens.forbidden.reasons[base] || "violates style rules"}`
+      : `"${base}" matches forbidden pattern "${pattern}"`);
   }
 
+  const status = violations.length > 0 ? "fail" : uncertainScope ? "inconclusive" : "pass";
+  if (uncertainScope) warnings.push("Some scoped exceptions or forbidden patterns could not be resolved from this class list.");
   return {
-    valid: violations.length === 0,
+    valid: status === "pass",
+    status,
     violations,
+    warnings,
   };
 }

@@ -22,8 +22,12 @@ export type {
   StyleSummary,
   StyleDetail,
   RecipeResult,
+  RecipeRenderOptions,
+  RecipeRenderValue,
+  RecipeRenderInputErrorCode,
   SearchOptions,
 } from "@/lib/discovery";
+export { RecipeRenderInputError } from "@/lib/discovery";
 export type {
   CapabilityStatus,
   StyleCapabilities,
@@ -50,3 +54,14 @@ export type { DataOrigin, SourceFailureKind, Sourced, RemoteOptions, SearchRanki
 export { rulesFromBrief } from "./live-lint";
 export { getImplementationBrief, createImplementationBrief, serializeLintRules } from "@/lib/implementation-brief";
 export type { ImplementationBrief } from "@/lib/implementation-brief";
+export {
+  projectImplementationBrief,
+  ImplementationBriefProjectionError,
+} from "@/lib/implementation-brief-projection";
+export type {
+  ImplementationBriefSection,
+  ImplementationBriefProjectionOptions,
+  ImplementationBriefProjectionErrorCode,
+  ImplementationBriefProjectionMetadata,
+  ProjectedImplementationBrief,
+} from "@/lib/implementation-brief-projection";

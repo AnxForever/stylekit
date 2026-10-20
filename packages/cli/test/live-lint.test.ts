@@ -23,8 +23,30 @@ liveBrief.provenance = {
   url: `http://127.0.0.1/api/styles/${dynamicSlug}/brief`,
 };
 const lintRules = liveBrief.lintRules as unknown as {
+  schemaVersion: "stylekit-lint-v1" | "stylekit-lint-v2";
   forbiddenClasses: Array<{ className: string; reason: string; source: "tokens" | "curated" }>;
+  forbiddenExceptions?: Array<{
+    className: string;
+    reason: string;
+    element?: {
+      tags?: string[];
+      classesAll?: string[];
+      squareDimensions?: boolean;
+      maxDimension?: number;
+    };
+  }>;
 };
+lintRules.schemaVersion = "stylekit-lint-v2";
+lintRules.forbiddenExceptions = [{
+  className: "rounded-full",
+  reason: "Tiny square status dots may be round.",
+  element: {
+    tags: ["span"],
+    classesAll: ["w-2", "h-2"],
+    squareDimensions: true,
+    maxDimension: 2,
+  },
+}];
 lintRules.forbiddenClasses.push({
   className: liveOnlyClass,
   reason: "This rule exists only in the live test brief.",
@@ -91,6 +113,19 @@ try {
   assert.deepEqual(
     live.report.files[0]?.report.violations.map(({ className, reason }) => ({ className, reason })),
     [{ className: liveOnlyClass, reason: "This rule exists only in the live test brief." }],
+  );
+
+  clearRemoteCache();
+  const scopedException = await lintJson(
+    dynamicSlug,
+    '<span className="w-2 h-2 rounded-full" />',
+  );
+  assert.equal(scopedException.report.status, "pass");
+  assert.equal(
+    scopedException.report.files[0]?.report.violations.some(
+      ({ className }) => className === "rounded-full",
+    ),
+    false,
   );
 
   clearRemoteCache();

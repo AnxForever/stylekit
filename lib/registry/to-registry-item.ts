@@ -1,14 +1,12 @@
 /**
  * @module lib/registry/to-registry-item
  *
- * Converts a StyleKit {@link DesignStyle} into a shadcn-compatible
- * `registry-item.json` payload so any shadcn project can install a StyleKit
- * style with `npx shadcn add https://stylekit.top/r/<slug>.json`.
- *
- * The color tokens are sourced from {@link generateShadcnTheme}, which today
- * derives only primary/secondary/accent per style. Improving per-style theme
- * fidelity (background, radius, border, fonts) is tracked separately — see the
- * "提升 shadcn theme 保真度" task.
+ * Converts a StyleKit {@link DesignStyle} into a Tailwind v4 shadcn-compatible
+ * `registry-item.json` payload. The registry contract carries CSS color values,
+ * while {@link generateShadcnTheme} keeps bare HSL components for the legacy
+ * `hsl(var(--token))` stylesheet. This boundary wraps valid HSL values in
+ * `hsl(...)` and preserves their alpha channel. Tailwind v3 consumers should use
+ * the Style Pack's v3 preset and variables stylesheet instead.
  *
  * Reference: https://ui.shadcn.com/docs/registry/registry-item-json
  */
@@ -50,24 +48,22 @@ function pickDescription(style: DesignStyle): string {
 }
 
 /**
- * Drop any cssVar whose value failed to parse (e.g. "0 NaN% NaN%"), which
- * happens when {@link generateShadcnTheme} is fed a non-hex color such as the
- * `rgba(...)` / partial-hex values some styles use. Emitting `--accent: NaN`
- * would corrupt the consumer's stylesheet after `shadcn add`, so we omit the
- * token and let shadcn keep its framework default. Root-cause color derivation
- * is handled by the theme-fidelity task.
+ * Registry `cssVars.light/dark` values are inserted as CSS color values. The
+ * shadcn theme generator keeps HSL components for the legacy `hsl(var(...))`
+ * contract, so project valid bare HSL triplets as CSS `hsl(...)` functions at
+ * this boundary. Drop malformed values rather than emitting invalid CSS.
  */
-function sanitizeVars(vars: Record<string, string>): Record<string, string> {
+const HSL_COMPONENT_RE = /^\d{1,3}(?:\.\d+)? \d{1,3}(?:\.\d+)?% \d{1,3}(?:\.\d+)?%(?: \/ (?:0(?:\.\d+)?|1(?:\.0+)?|(?:\d{1,2}(?:\.\d+)?|100)%))?$/;
+
+function projectRegistryCssVars(vars: Record<string, string>): Record<string, string> {
   const out: Record<string, string> = {};
   for (const [key, value] of Object.entries(vars)) {
-    if (!value.includes("NaN")) out[key] = value;
+    if (value.includes("NaN")) continue;
+    out[key] = HSL_COMPONENT_RE.test(value) ? `hsl(${value})` : value;
   }
   return out;
 }
 
-/**
- * Build a shadcn `registry:theme` item for a single style.
- */
 /**
  * Lightweight item metadata (name/type/title/description, no cssVars). Used by
  * the registry index so it doesn't run full theme generation per style.
@@ -86,6 +82,7 @@ export function registryItemMeta(style: DesignStyle): {
   };
 }
 
+/** Build a v4 `registry:theme` item for one style. */
 export function toRegistryItem(style: DesignStyle): RegistryItem {
   const theme = generateShadcnTheme(style);
 
@@ -93,8 +90,8 @@ export function toRegistryItem(style: DesignStyle): RegistryItem {
     $schema: REGISTRY_ITEM_SCHEMA,
     ...registryItemMeta(style),
     cssVars: {
-      light: sanitizeVars(theme.cssVars.light),
-      dark: sanitizeVars(theme.cssVars.dark),
+      light: projectRegistryCssVars(theme.cssVars.light),
+      dark: projectRegistryCssVars(theme.cssVars.dark),
     },
     // A theme-only item ships no source files; shadcn injects cssVars directly.
     files: [],

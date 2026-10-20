@@ -77,7 +77,7 @@ export async function runLint(slug: string, patterns: string[], options: {
   }
   const rules = rulesFromBrief(brief);
   if (!rules) {
-    const message = `The implementation brief for "${slug}" contains an invalid stylekit-lint-v1 rule contract.`;
+    const message = `The implementation brief for "${slug}" contains an unsupported or invalid StyleKit lint rule contract.`;
     console.error(options.json || options.format === "json"
       ? JSON.stringify({ error: message, code: "INVALID_LINT_CONTRACT", origin: briefSource.origin }, null, 2)
       : message);

@@ -15,7 +15,7 @@
     "build": "tsup",
     "dev": "tsx src/index.ts",
     "clean": "rm -rf dist",
-    "test": "node test/smoke.mjs && tsx test/live-lint.test.ts",
+    "test": "node test/smoke.mjs && tsx test/live-lint.test.ts && tsx test/project.test.ts",
     "prepublishOnly": "pnpm run clean && pnpm run build"
   },
   "engines": {

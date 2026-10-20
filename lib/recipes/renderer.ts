@@ -6,6 +6,11 @@ import type {
   RecipeRenderResult,
 } from "./types";
 
+/** True when a slot value is a JSX component identifier or member chain. */
+export function isValidRecipeIconName(value: string): boolean {
+  return /^[A-Za-z_$][A-Za-z0-9_$]*(?:\.[A-Za-z_$][A-Za-z0-9_$]*)*$/.test(value);
+}
+
 /**
  * Renders a component recipe with the given parameters
  */
@@ -95,7 +100,7 @@ function generateCode(
   const selfClosing = ["input", "img", "br", "hr"].includes(element);
 
   if (selfClosing) {
-    const additionalProps = buildAdditionalProps(recipe, params);
+    const additionalProps = buildAdditionalProps(recipe, params, "jsx");
     return `<${element}${additionalProps}
   className="${formattedClassName}"
 />`;
@@ -124,7 +129,7 @@ function generatePreview(
   const selfClosing = ["input", "img", "br", "hr"].includes(element);
 
   if (selfClosing) {
-    const additionalProps = buildAdditionalProps(recipe, params);
+    const additionalProps = buildAdditionalProps(recipe, params, "html");
     return `<${element}${additionalProps} class="${className}" />`;
   }
 
@@ -146,19 +151,57 @@ function buildSlotContent(
     if (!value && !slot.required) continue;
 
     if (slot.type === "icon" && value) {
+      if (!isValidRecipeIconName(value)) {
+        throw new TypeError(`Icon slot "${slot.id}" must be empty or a JSX component/member name.`);
+      }
       if (format === "jsx") {
         parts.push(`<${value} className="w-4 h-4" />`);
       } else {
         parts.push(`[${value}]`);
       }
-    } else if (slot.type === "children") {
+    } else if (slot.type === "children" || slot.type === "element") {
+      // These two slot kinds intentionally insert caller-supplied JSX/HTML
+      // code. Ordinary and unspecified slots are escaped as text below.
       parts.push(value);
     } else {
-      parts.push(value);
+      parts.push(format === "jsx" ? escapeJsxText(value) : escapeHtmlText(value));
     }
   }
 
   return parts.join("\n  ");
+}
+
+function escapeHtmlText(value: string): string {
+  const entities: Record<string, string> = {
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#39;",
+  };
+  return value.replace(/[&<>"']/g, (character) => entities[character]);
+}
+
+function escapeJsxText(value: string): string {
+  const entities: Record<string, string> = {
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "{": '{"{"}',
+    "}": '{"}"}',
+  };
+  return value.replace(/[&<>"{}]/g, (character) => entities[character]);
+}
+
+/** Attribute values are emitted in both JSX and HTML contexts. */
+function escapeAttributeValue(value: string): string {
+  return escapeHtmlText(value);
+}
+
+function formatJsxAttribute(value: string): string {
+  if (!/[&<>"{}\\\n\r]/.test(value)) return `"${value}"`;
+  return `{${JSON.stringify(value)}}`;
 }
 
 /**
@@ -166,21 +209,27 @@ function buildSlotContent(
  */
 function buildAdditionalProps(
   recipe: ComponentRecipe,
-  params: RecipeRenderParams
+  params: RecipeRenderParams,
+  format: "jsx" | "html",
 ): string {
   const props: string[] = [];
 
   // Add type for input
   if (recipe.skeleton.element === "input") {
-    const typeParam = params.params.type as string;
+    const typeParam = params.params.type;
     if (typeParam) {
-      props.push(`type="${typeParam}"`);
+      const value = String(typeParam);
+      props.push(format === "jsx"
+        ? `type=${formatJsxAttribute(value)}`
+        : `type="${escapeAttributeValue(value)}"`);
     }
 
     // Add placeholder from slots
     const placeholder = params.slots.placeholder;
     if (placeholder) {
-      props.push(`placeholder="${placeholder}"`);
+      props.push(format === "jsx"
+        ? `placeholder=${formatJsxAttribute(placeholder)}`
+        : `placeholder="${escapeAttributeValue(placeholder)}"`);
     }
   }
 

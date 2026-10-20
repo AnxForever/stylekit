@@ -25,6 +25,8 @@ import {
   getStyleDetail as getDetailLocal,
   getTokens as getTokensLocal,
   getComponentRecipe as getRecipeLocal,
+  renderRecipeDefinition,
+  isValidRecipeParameterDefinition,
   knownSlug as knownSlugLocal,
   shadcnInstallCommand,
   STYLEKIT_SITE_URL,
@@ -32,13 +34,14 @@ import {
   type StyleSummary,
   type StyleDetail,
   type RecipeResult,
+  type RecipeRenderOptions,
 } from "@/lib/discovery";
 import type { DesignStyle } from "@/lib/styles";
 import { getStyleBySlug, styles as bundledCatalogue } from "@/lib/styles";
 import type { StyleTokens } from "@/lib/styles/tokens";
 import type { StyleQuality, CapabilityStatus } from "@/lib/styles/quality";
-import { getImplementationBrief, type ImplementationBrief } from "@/lib/implementation-brief";
-import { renderRecipe, type ComponentRecipe } from "@/lib/recipes";
+import { getImplementationBrief, stableImplementationBriefJson, type ImplementationBrief } from "@/lib/implementation-brief";
+import { isValidRecipeIconName, type ComponentRecipe } from "@/lib/recipes";
 
 export type DataOrigin = "live" | "bundled";
 
@@ -158,6 +161,50 @@ function isStringRecord(value: unknown): value is Record<string, string> {
   return isRecord(value) && Object.values(value).every((item) => typeof item === "string");
 }
 
+function hasOnlyKeys(value: Record<string, unknown>, allowed: readonly string[]): boolean {
+  return Object.keys(value).every((key) => allowed.includes(key));
+}
+
+function isScopedStringArray(value: unknown): value is string[] {
+  return Array.isArray(value) && value.length > 0 && value.every((item) =>
+    typeof item === "string" && item.length > 0 && item.length <= 160);
+}
+
+function isForbiddenException(value: unknown): boolean {
+  if (!isRecord(value) || !hasOnlyKeys(value, ["className", "reason", "variants", "element"]) ||
+      typeof value.className !== "string" || value.className.length === 0 || value.className.length > 160 ||
+      typeof value.reason !== "string" || value.reason.length === 0 || value.reason.length > 512) return false;
+
+  const variants = value.variants;
+  const element = value.element;
+  if (variants !== undefined) {
+    if (!isRecord(variants) || !hasOnlyKeys(variants, ["all", "none"]) ||
+        (variants.all !== undefined && !isScopedStringArray(variants.all)) ||
+        (variants.none !== undefined && !isScopedStringArray(variants.none)) ||
+        (!Array.isArray(variants.all) && !Array.isArray(variants.none))) return false;
+  }
+  if (element !== undefined) {
+    if (!isRecord(element) || !hasOnlyKeys(element, ["tags", "classesAll", "classPrefixesAll", "squareDimensions", "maxDimension"]) ||
+        (element.tags !== undefined && !isScopedStringArray(element.tags)) ||
+        (element.classesAll !== undefined && !isScopedStringArray(element.classesAll)) ||
+        (element.classPrefixesAll !== undefined && !isScopedStringArray(element.classPrefixesAll)) ||
+        (element.squareDimensions !== undefined && element.squareDimensions !== true) ||
+        (element.maxDimension !== undefined && (typeof element.maxDimension !== "number" || !Number.isFinite(element.maxDimension) || element.maxDimension < 0 || element.maxDimension > 1024)) ||
+        !["tags", "classesAll", "classPrefixesAll", "squareDimensions", "maxDimension"].some((key) => element[key] !== undefined)) return false;
+  }
+
+  const hasVariantScope = isRecord(variants) && (
+    (Array.isArray(variants.all) && variants.all.length > 0) ||
+    (Array.isArray(variants.none) && variants.none.length > 0)
+  );
+  const hasElementScope = isRecord(element) && (
+    (["tags", "classesAll", "classPrefixesAll"] as const).some((key) => Array.isArray(element[key]) && element[key].length > 0) ||
+    element.squareDimensions === true ||
+    typeof element.maxDimension === "number"
+  );
+  return hasVariantScope || hasElementScope;
+}
+
 function isStyleTokens(value: unknown): value is StyleTokens {
   if (!isRecord(value)) return false;
   const border = value.border;
@@ -187,12 +234,12 @@ function isStyleTokens(value: unknown): value is StyleTokens {
       !isRecord(textColors) || !["primary", "secondary", "muted"].every((key) => typeof textColors[key] === "string") ||
       !isRecord(buttonColors) || typeof buttonColors.primary !== "string" || typeof buttonColors.secondary !== "string" ||
       !(buttonColors.danger === undefined || typeof buttonColors.danger === "string")) return false;
-  if (!isRecord(forbidden) || !isStringArray(forbidden.classes) || !isStringArray(forbidden.patterns) || !isStringRecord(forbidden.reasons)) return false;
+  if (!isRecord(forbidden) || !isStringArray(forbidden.classes) || !isStringArray(forbidden.patterns) || !isStringRecord(forbidden.reasons) ||
+      (forbidden.exceptions !== undefined && (!Array.isArray(forbidden.exceptions) || !forbidden.exceptions.every(isForbiddenException)))) return false;
   return isRecord(required) && ["button", "card", "input"].every((key) => isStringArray(required[key]));
 }
 
 const RECIPE_ELEMENTS = new Set(["button", "div", "input", "a", "section", "nav", "form", "label"]);
-const RECIPE_PARAMETER_TYPES = new Set(["select", "boolean", "string", "color", "number"]);
 
 function isComponentRecipe(value: unknown): value is ComponentRecipe {
   if (!isRecord(value) || typeof value.id !== "string" || typeof value.name !== "string" ||
@@ -200,15 +247,9 @@ function isComponentRecipe(value: unknown): value is ComponentRecipe {
   const skeleton = value.skeleton;
   if (!isRecord(skeleton) || typeof skeleton.element !== "string" || !RECIPE_ELEMENTS.has(skeleton.element) || !isStringArray(skeleton.baseClasses) ||
       !(skeleton.structure === undefined || typeof skeleton.structure === "string")) return false;
-  if (!Array.isArray(value.parameters) || !value.parameters.every((parameter) => {
-    if (!isRecord(parameter) || typeof parameter.id !== "string" || typeof parameter.label !== "string" ||
-        typeof parameter.labelZh !== "string" || typeof parameter.type !== "string" || !RECIPE_PARAMETER_TYPES.has(parameter.type) ||
-        !["string", "boolean", "number"].some((kind) => typeof parameter.default === kind)) return false;
-    if (parameter.options !== undefined && (!Array.isArray(parameter.options) || !parameter.options.every((option) =>
-      isRecord(option) && typeof option.value === "string" && typeof option.label === "string" &&
-      typeof option.labelZh === "string" && typeof option.classes === "string"))) return false;
-    return ["trueClasses", "falseClasses"].every((key) => parameter[key] === undefined || typeof parameter[key] === "string");
-  })) return false;
+  if (!Array.isArray(value.parameters) || !value.parameters.every(isValidRecipeParameterDefinition)) return false;
+  const parameterIds = value.parameters.map((parameter) => isRecord(parameter) ? parameter.id : undefined);
+  if (new Set(parameterIds).size !== parameterIds.length) return false;
   if (!isRecord(value.variants) || !Object.values(value.variants).every((variant) =>
     isRecord(variant) && typeof variant.id === "string" && typeof variant.label === "string" &&
     typeof variant.labelZh === "string" && isStringArray(variant.classes) &&
@@ -218,11 +259,28 @@ function isComponentRecipe(value: unknown): value is ComponentRecipe {
     isRecord(slot) && typeof slot.id === "string" && typeof slot.label === "string" &&
     typeof slot.labelZh === "string" && typeof slot.required === "boolean" &&
     (slot.default === undefined || typeof slot.default === "string") &&
-    (slot.type === undefined || ["text", "icon", "element", "children"].includes(String(slot.type))))) return false;
+    (slot.type === undefined || ["text", "icon", "element", "children"].includes(String(slot.type))) &&
+    !(slot.type === "icon" && typeof slot.default === "string" && slot.default.length > 0 && !isValidRecipeIconName(slot.default)))) return false;
   return value.states === undefined || (isRecord(value.states) && Object.values(value.states).every(isStringArray));
 }
 
 function isImplementationBrief(value: unknown, slug: string): value is ImplementationBrief {
+  const lintRules = isRecord(value) ? value.lintRules : undefined;
+  const lintVersion = isRecord(lintRules) ? lintRules.schemaVersion : undefined;
+  const rawExceptions = isRecord(lintRules) ? lintRules.forbiddenExceptions : undefined;
+  const tokenExceptions = isRecord(value) && isRecord(value.tokens) && isRecord(value.tokens.forbidden)
+    ? value.tokens.forbidden.exceptions
+    : undefined;
+  const hasTokenExceptions = Array.isArray(tokenExceptions) && tokenExceptions.length > 0;
+  const tokenExceptionsPreserved = !hasTokenExceptions || (
+    lintVersion === "stylekit-lint-v2" && Array.isArray(rawExceptions) &&
+    tokenExceptions.every((tokenException) => rawExceptions.some((ruleException) =>
+      stableImplementationBriefJson(tokenException) === stableImplementationBriefJson(ruleException)))
+  );
+  const validLintVersion = (lintVersion === "stylekit-lint-v1"
+    ? rawExceptions === undefined || Array.isArray(rawExceptions) && rawExceptions.length === 0
+    : lintVersion === "stylekit-lint-v2" && Array.isArray(rawExceptions) && rawExceptions.length > 0 && rawExceptions.every(isForbiddenException)) &&
+    tokenExceptionsPreserved;
   if (!isRecord(value) || value.schemaVersion !== "stylekit-brief-v1" || value.slug !== slug ||
       !["name", "nameEn", "description", "philosophy"].every((key) => typeof value[key] === "string") ||
       !["modern", "retro", "minimal", "expressive"].includes(String(value.category)) ||
@@ -233,7 +291,7 @@ function isImplementationBrief(value: unknown, slug: string): value is Implement
       !isRecord(value.components) || !isRecord(value.recipes) || !Object.values(value.recipes).every(isComponentRecipe) || !isRecord(value.readiness) ||
       !Object.values(value.components).every((component) => isRecord(component) && typeof component.code === "string") ||
       !(value.tokens === null || isStyleTokens(value.tokens)) ||
-      !isRecord(value.lintRules) || value.lintRules.schemaVersion !== "stylekit-lint-v1" ||
+      !isRecord(value.lintRules) || !validLintVersion ||
       !["sources", "forbiddenClasses", "forbiddenPatterns", "exempt", "unsupportedRules"].every((key) => Array.isArray((value.lintRules as Record<string, unknown>)[key])) ||
       !isRecord(value.lintRules.required) ||
       !isRecord(value.provenance) || typeof value.provenance.contentHash !== "string" || typeof value.provenance.url !== "string" ||
@@ -772,9 +830,10 @@ export async function getTokensLive(
 export async function getComponentRecipeLive(
   slug: string,
   recipeId: string,
-  options: RemoteOptions = {},
+  remoteOptions: RemoteOptions = {},
+  renderOptions: RecipeRenderOptions = {},
 ): Promise<Sourced<RecipeResult | null>> {
-  const brief = await getImplementationBriefLive(slug, options);
+  const brief = await getImplementationBriefLive(slug, remoteOptions);
   const liveRecipe = brief.origin === "live" ? brief.data?.recipes[recipeId] : undefined;
   if (brief.origin === "live" && brief.data) {
     if (!liveRecipe) {
@@ -786,17 +845,15 @@ export async function getComponentRecipeLive(
       };
     }
     if (!isComponentRecipe(liveRecipe)) {
-      return sourcedFallback(getRecipeLocal(slug, recipeId), "live recipe definition did not match the component recipe contract", "unavailable");
+      return sourcedFallback(getRecipeLocal(slug, recipeId, renderOptions), "live recipe definition did not match the component recipe contract", "unavailable");
     }
-    const variant = Object.keys(liveRecipe.variants)[0] ?? "default";
-    const rendered = renderRecipe(liveRecipe, { variant, params: {}, slots: {} });
-    return { data: { slug, component: recipeId, className: rendered.className, code: rendered.code }, origin: "live" };
+    return { data: renderRecipeDefinition(slug, recipeId, liveRecipe, renderOptions), origin: "live" };
   }
   if (brief.failureKind === "not-found") {
     return { data: null, origin: "live", failureKind: "not-found", fallbackReason: brief.fallbackReason };
   }
 
-  const local = getRecipeLocal(slug, recipeId);
+  const local = getRecipeLocal(slug, recipeId, renderOptions);
   if (local) {
     return {
       data: local,
