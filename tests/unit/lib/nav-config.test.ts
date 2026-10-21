@@ -3,10 +3,7 @@ import { describe, expect, it } from "vitest";
 import { mainNav, secondaryNav } from "@/lib/nav-config";
 
 describe("primary navigation", () => {
-  it("keeps resources grouped without foundations or a build menu", () => {
-    // Community sits at the top level beside the other browsable catalogs.
-    // It was added deliberately: contributed styles had no route from the
-    // header at all, which left the whole catalog effectively unreachable.
+  it("keeps the chat group and blog together under community", () => {
     expect(mainNav.map((item) => item.labelKey)).toEqual([
       "nav.styles",
       "nav.templates",
@@ -14,9 +11,25 @@ describe("primary navigation", () => {
       "nav.resources",
     ]);
 
-    const resources = mainNav.find(
-      (item) => item.labelKey === "nav.resources"
-    );
+    const community = mainNav.find((item) => item.labelKey === "nav.community");
+
+    expect(community?.href).toBe("/community");
+    expect(community?.dropdown?.width).toBe("narrow");
+    expect(community?.dropdown?.items?.map((item) => item.labelKey)).toEqual([
+      "nav.communityStyles",
+      "nav.communityJoin",
+      "nav.blog",
+    ]);
+    expect(community?.dropdown?.items?.map((item) => item.href)).toEqual([
+      "/community",
+      "/community/join",
+      "/blog",
+    ]);
+    expect(community?.dropdown?.groups).toBeUndefined();
+  });
+
+  it("keeps resources grouped without a build menu or an external blog", () => {
+    const resources = mainNav.find((item) => item.labelKey === "nav.resources");
     const resourceItems = resources?.dropdown?.groups?.flatMap(
       (group) => group.items
     );
@@ -28,6 +41,7 @@ describe("primary navigation", () => {
       "nav.more",
     ]);
     expect(resourceItems?.map((item) => item.labelKey)).toEqual([
+      "nav.learn",
       "nav.animations",
       "nav.mouseInteractions",
       "nav.recipes",
@@ -37,17 +51,24 @@ describe("primary navigation", () => {
       "nav.mobileDesign",
       "nav.developers",
       "nav.changelog",
-      "nav.blog",
     ]);
     expect(
-      resourceItems?.filter((item) => item.labelKey === "nav.blog")
+      resources?.dropdown?.groups
+        ?.find((group) => group.groupLabelKey === "nav.resourcesBrowse")
+        ?.items.map((item) => item.href)
     ).toEqual([
-      {
-        href: "https://anxforever.cn",
-        labelKey: "nav.blog",
-        external: true,
-      },
+      "/learn",
+      "/animations",
+      "/mouse-interactions",
+      "/recipes",
+      "/guides",
     ]);
+    expect(
+      resources?.dropdown?.groups
+        ?.find((group) => group.groupLabelKey === "nav.resourcesComponents")
+        ?.items.map((item) => item.href)
+    ).toEqual(["/resources", "/component-patterns", "/mobile"]);
+    expect(JSON.stringify(mainNav)).not.toContain("anxforever.cn");
     expect(secondaryNav).toEqual([]);
   });
 });
