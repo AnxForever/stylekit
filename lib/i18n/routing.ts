@@ -33,7 +33,10 @@ export const LOCALE_ROUTE_POLICY = [
     prefixes: [],
   },
   {
-    id: "redirected-foundations",
+    // Interactive deep-dives that expand the chapters summarised on /learn.
+    // They stay out of the sitemap so /learn remains the single canonical hub,
+    // while the filesystem rule still guarantees locale-prefixed URLs.
+    id: "foundation-deep-dives",
     mode: "filesystem",
     sitemapLocales: "none",
     exact: [
