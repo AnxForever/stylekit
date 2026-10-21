@@ -6,7 +6,6 @@ export const en = {
     "nav.components": "Components",
     "nav.templates": "Templates",
     "nav.community": "Community",
-    "nav.communityStyles": "Community styles",
     "nav.communityJoin": "Chat group",
     "nav.about": "About",
     "nav.guide": "Getting started",
