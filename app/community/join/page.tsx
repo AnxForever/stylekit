@@ -7,6 +7,7 @@ import { Breadcrumb } from "@/components/ui/breadcrumb";
 import { LocalizedLink } from "@/components/i18n/localized-link";
 import { NewsletterSignup } from "@/components/newsletter/newsletter-signup";
 import { getRequestLocaleContext } from "@/lib/i18n/request";
+import { localizeHref } from "@/lib/i18n/routing";
 import {
   COMMUNITY_GROUP,
   resolveCommunityGroupDestination,
@@ -156,8 +157,8 @@ export default async function CommunityJoinPage() {
         <div className="mx-auto max-w-5xl px-4 py-8 sm:px-6 md:px-12 md:py-12">
           <Breadcrumb
             items={[
-              { label: t.home, href: "/" },
-              { label: t.community, href: "/community" },
+              { label: t.home, href: localizeHref("/", locale) },
+              { label: t.community, href: localizeHref("/community", locale) },
               { label: t.chat },
             ]}
           />
