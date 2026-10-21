@@ -7,6 +7,7 @@
 export const PENDING_STYLE_SLUGS = [
   "mobile-editorial",
   "pastel-ui",
+  "quantized-line-field",
   "soft-utility",
 ] as const;
 

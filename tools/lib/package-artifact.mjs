@@ -1,5 +1,6 @@
 import { execFileSync } from "node:child_process";
 import { createHash } from "node:crypto";
+import path from "node:path";
 
 const RUNTIME_FIELDS = ["name", "version", "type", "main", "module", "types", "exports", "bin", "dependencies", "engines", "sideEffects"];
 
@@ -8,12 +9,17 @@ function run(command, args, cwd) {
 }
 
 export function artifactContents(tarball) {
-  const entries = run("tar", ["-tzf", tarball]).toString("utf8").trim().split(/\r?\n/);
+  // Run tar from the archive's directory with a bare filename: GNU tar treats
+  // an argument containing a colon, such as a Windows "C:\..." path, as a
+  // remote host and fails to open the archive.
+  const cwd = path.dirname(tarball);
+  const archive = path.basename(tarball);
+  const entries = run("tar", ["-tzf", archive], cwd).toString("utf8").trim().split(/\r?\n/);
   const result = new Map();
   for (const entry of entries) {
     if (!entry.startsWith("package/dist/") && entry !== "package/package.json") continue;
     if (entry.endsWith("/")) continue;
-    const content = run("tar", ["-xOzf", tarball, "--", entry]);
+    const content = run("tar", ["-xOzf", archive, "--", entry], cwd);
     if (entry === "package/package.json") {
       const manifest = JSON.parse(content.toString("utf8"));
       result.set(entry, JSON.stringify(Object.fromEntries(RUNTIME_FIELDS.filter((key) => key in manifest).map((key) => [key, manifest[key]]))));
