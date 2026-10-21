@@ -136,7 +136,14 @@ export function extractClassNames(code: string): ExtractedClass[] {
   return found;
 }
 
-function isBareClassList(code: string): boolean {
+/**
+ * True when the whole input is a class string rather than markup.
+ *
+ * Shared with the repair pass so "linted as a class list" and "rewritten as a
+ * class list" cannot disagree: a bare list the linter reads is the same list
+ * the repair pass must rewrite.
+ */
+export function isBareClassList(code: string): boolean {
   const tokens = code.trim().split(/\s+/);
   return tokens.length > 0 && tokens.every((token) =>
     /^[^\s"'{}=<>;`]+$/.test(token) &&

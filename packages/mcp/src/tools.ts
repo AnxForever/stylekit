@@ -1,6 +1,6 @@
 /** Registers all StyleKit MCP tools on a server instance. */
 
-import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import type { McpServer } from "@modelcontextprotocol/server";
 import { z } from "zod";
 
 import {
@@ -17,6 +17,7 @@ import {
   getPublicAssetLive,
   lintCodeWithRules,
   rulesFromBrief,
+  repairCodeWithRules,
   type AssetKind,
   type PublicAssetDetail,
   type StyleCategory,
@@ -40,6 +41,21 @@ const RANKING_LABEL = {
   keyword: "keyword search (vector path unavailable)",
   local: "local scorer",
 } as const;
+
+const BRIEF_SECTIONS = [
+  "philosophy",
+  "aiRules",
+  "doList",
+  "dontList",
+  "colors",
+  "globalCss",
+  "components",
+  "variants",
+  "tokens",
+  "recipes",
+  "readiness",
+  "lintRules",
+] as const;
 
 // Shared output shapes (so clients get typed structuredContent).
 const SUMMARY_SHAPE = {
@@ -273,6 +289,38 @@ function assetDetailForOutput(detail: PublicAssetDetail): PublicAssetDetail {
   };
 }
 
+function selectAssetSource(
+  detail: PublicAssetDetail,
+  includeSource: boolean,
+  files?: readonly string[],
+): PublicAssetDetail {
+  if (includeSource && !files) return detail;
+  const data = detail.data;
+  if (!data || typeof data !== "object" || Array.isArray(data)) return detail;
+  const record = { ...(data as Record<string, unknown>) };
+  if (!includeSource) {
+    delete record.files;
+    delete record.code;
+  } else if (files && record.files && typeof record.files === "object" && !Array.isArray(record.files)) {
+    const source = record.files as Record<string, unknown>;
+    const selected: Record<string, unknown> = {};
+    const missing: string[] = [];
+    for (const path of files) {
+      if (Object.prototype.hasOwnProperty.call(source, path)) selected[path] = source[path];
+      else missing.push(path);
+    }
+    record.files = selected;
+    if (missing.length > 0) record.missingFiles = missing;
+  }
+  // Drop the top-level code block when the caller asked for metadata only.
+  const { code, ...rest } = detail;
+  return {
+    ...rest,
+    data: record,
+    ...(includeSource && code !== undefined ? { code } : {}),
+  };
+}
+
 function hasCompleteTemplateFiles(detail: PublicAssetDetail): boolean {
   if (detail.metadata.kind !== "template" || detail.metadata.availability !== "remote") return true;
   const data = detail.data;
@@ -334,7 +382,7 @@ Args:
   - limit (number 1-50, default 15): page size.
   - offset (number >=0, default 0): results to skip (for paging).
 
-Returns structured JSON with total, count, offset, has_more, source, optional fallbackReason, and results. A valid query with no matches returns an empty results array, not a tool error.
+Returns structured JSON with total, count, offset, hasMore, next_offset (null on the last page), has_more as a deprecated alias, source, optional fallbackReason, and results. A valid query with no matches returns an empty results array, not a tool error.
 
 Examples:
   - "find a glassy frosted style" -> query: "glass"
@@ -364,7 +412,9 @@ Examples:
         total: z.number(),
         count: z.number(),
         offset: z.number(),
-        has_more: z.boolean(),
+        hasMore: z.boolean(),
+        next_offset: z.number().nullable(),
+        has_more: z.boolean().describe("Deprecated alias of hasMore."),
         ranking: z.enum(["exact", "hybrid", "keyword", "local"]).optional(),
         source: z.enum(["live", "bundled"]),
         fallbackReason: z.string().optional(),
@@ -398,6 +448,8 @@ Examples:
         total,
         count: page.length,
         offset,
+        hasMore,
+        next_offset: hasMore ? offset + page.length : null,
         has_more: hasMore,
         ...(search.ranking ? { ranking: search.ranking } : {}),
         source: search.origin,
@@ -420,7 +472,11 @@ Args:
   - offset (number >=0, default 0): results to skip.
   - limit (number 1-100, default 20): page size.
 
-Returns the full JSON page, including availability, contentLevel, license, attribution, source provenance, and kind counts. An empty page is a successful result. Private user kits and unpublished submissions are not listed.`,
+Returns the full JSON page, including count, hasMore, next_offset, availability, contentLevel, license, attribution, source provenance, and kind counts. An empty page is a successful result. Private user kits and unpublished submissions are not listed.
+
+Examples:
+  - "show me a pricing template" -> query: "pricing", then stylekit_get_asset with the returned kind/id.
+  - Templates that include source files can be large; list first and fetch only the asset you need.`,
       inputSchema: {
         kind: z.enum(ASSET_KINDS).optional().describe("Public asset namespace"),
         query: z.string().max(500).optional().describe("Search names, descriptions and tags"),
@@ -431,9 +487,11 @@ Returns the full JSON page, including availability, contentLevel, license, attri
         schemaVersion: z.literal("1"),
         assets: z.array(ASSET_SUMMARY_SHAPE),
         total: z.number(),
+        count: z.number(),
         offset: z.number(),
         limit: z.number(),
         hasMore: z.boolean(),
+        next_offset: z.number().nullable(),
         kindCounts: z.record(z.string(), z.number()),
         source: z.enum(["live", "bundled"]),
         fallbackReason: z.string().optional(),
@@ -449,6 +507,8 @@ Returns the full JSON page, including availability, contentLevel, license, attri
       });
       const structured = {
         ...page.data,
+        count: page.data.assets.length,
+        next_offset: page.data.hasMore ? offset + page.data.assets.length : null,
         source: page.origin,
         ...(page.fallbackReason ? { fallbackReason: page.fallbackReason } : {}),
       };
@@ -465,11 +525,20 @@ Returns the full JSON page, including availability, contentLevel, license, attri
 Args:
   - kind: the namespace returned by stylekit_list_assets.
   - id: the exact identifier within that namespace.
+  - includeSource (boolean, default true): include permitted source files/code; false returns metadata and links only.
+  - files (array, optional): exact source file paths to include (templates); omit for all files. Unmatched paths are reported as missingFiles.
 
-Returns complete structured JSON and JSON text, preserving the namespace and provenance.`,
+Returns complete structured JSON and JSON text, preserving the namespace and provenance.
+
+Examples:
+  - "show me the pricing template" -> kind: "template", id from stylekit_list_assets.
+  - "just the page and styles" -> kind: "template", files: ["app/page.tsx", "app/globals.css"].
+  - A full template can return tens of thousands of characters; use includeSource: false or files to keep it small.`,
       inputSchema: {
         kind: z.enum(ASSET_KINDS).describe("Public asset namespace"),
         id: z.string().regex(/^[a-z0-9][a-z0-9-]{0,127}$/).describe("Exact asset id within the namespace"),
+        includeSource: z.boolean().default(true).describe("Include permitted source files/code; false returns metadata only"),
+        files: z.array(z.string().min(1).max(500)).max(200).optional().describe("Exact source file paths to include"),
       },
       outputSchema: {
         ...ASSET_DETAIL_SHAPE.shape,
@@ -478,7 +547,7 @@ Returns complete structured JSON and JSON text, preserving the namespace and pro
       },
       annotations: READ_ONLY,
     },
-    async ({ kind, id }) => {
+    async ({ kind, id, includeSource = true, files }) => {
       const source = await getPublicAssetLive(kind as AssetKind, id);
       const detail = source.data;
       const hasUnavailableRemoteSource = Boolean(
@@ -490,15 +559,16 @@ Returns complete structured JSON and JSON text, preserving the namespace and pro
           hasUnavailableRemoteSource) {
         return assetFailure(kind as AssetKind, id, source, detail ?? undefined);
       }
-      if (!hasCompleteTemplateFiles(detail)) {
+      if (includeSource && !hasCompleteTemplateFiles(detail)) {
         return assetFailure(kind as AssetKind, id, {
           origin: source.origin,
           failureKind: "unavailable",
           fallbackReason: "remote template detail did not include the actual project files",
         }, detail);
       }
+      const selected = selectAssetSource(assetDetailForOutput(detail), includeSource, files);
       const structured = {
-        ...assetDetailForOutput(detail),
+        ...selected,
         source: source.origin,
         ...(source.fallbackReason ? { fallbackReason: source.fallbackReason } : {}),
       };
@@ -864,25 +934,138 @@ Examples:
       return toolResult(lines.join("\n"), structured);
     },
   );
+  // 7) Repair violations instead of only reporting them
+  server.registerTool(
+    "stylekit_repair_code",
+    {
+      title: "Repair code so it follows a StyleKit style",
+      description: `Rewrite code that drifts from a style, using the style's own tokens as replacements. Use this instead of hand-editing class names after stylekit_lint_code reports violations.
+
+Every applied rewrite comes from the style's tokens, never from a guess: variants (dark:, md:, hover:) are preserved, multi-class replacements are deduplicated, and string literals inside cn()/clsx() expressions are rewritten while variable references and interpolation spans are left untouched. JSX/HTML class attributes, template literals, and a bare class string are all handled. Spacing, layout and structure are never changed.
+
+Args:
+  - slug (string): style identifier.
+  - code (string, 1-100000 chars): source to repair.
+
+Returns JSON: { slug, code, edits: [{ from, to, line }], unfixed: [{ className, line, reason }], before, report, origin, contentSource, fallbackReason? }. Apply the returned code as-is, then review any entries in unfixed yourself — the rules flagged them but no concrete replacement exists.
+
+Examples:
+  - "make this hero match neo-brutalist" -> slug: "neo-brutalist", code: "<section className=\\"rounded-2xl shadow-2xl\\">"
+  - If edits is empty and before.status is "pass", the code already matched. Do not invent further changes.`,
+      inputSchema: {
+        slug: z.string().min(1).describe("Style slug, e.g. 'glassmorphism'"),
+        code: z.string().min(1).max(100_000).describe("Source code or class string to repair"),
+      },
+      outputSchema: {
+        slug: z.string(),
+        code: z.string(),
+        edits: z.array(z.object({ from: z.string(), to: z.string(), line: z.number() })),
+        unfixed: z.array(z.object({ className: z.string(), line: z.number(), reason: z.string() })),
+        before: z.object({ status: z.enum(["pass", "fail", "inconclusive"]), violations: z.array(z.unknown()) }),
+        report: z.object({ status: z.enum(["pass", "fail", "inconclusive"]), violations: z.array(z.unknown()) }),
+        origin: z.enum(["live", "bundled"]),
+        contentSource: z.enum(["bundled", "static", "community"]),
+        fallbackReason: z.string().optional(),
+      },
+      annotations: READ_ONLY,
+    },
+    async ({ slug, code }) => {
+      const briefSource = await getImplementationBriefLive(slug, remoteOptions);
+      const brief = briefSource.data;
+      if (!brief) {
+        if (briefSource.failureKind === "not-found") return unknownSlug(slug);
+        if (briefSource.failureKind === "unsupported") {
+          return errorResult(
+            `Style "${slug}" exists, but no compatible implementation brief is available for repair.${briefSource.fallbackReason ? ` ${briefSource.fallbackReason}.` : ""}`,
+          );
+        }
+        return sourceUnavailable(`Repair rules for style "${slug}"`, briefSource);
+      }
+      const rules = rulesFromBrief(brief);
+      if (!rules) {
+        return errorResult(`The implementation brief for "${slug}" contains an invalid stylekit-lint-v1 rule contract.`);
+      }
+
+      const result = repairCodeWithRules(slug, code, rules);
+      const structured = {
+        slug: result.slug,
+        code: result.code,
+        edits: result.edits,
+        unfixed: result.unfixed,
+        before: { status: result.before.status, violations: result.before.violations },
+        report: { status: result.report.status, violations: result.report.violations },
+        origin: briefSource.origin,
+        contentSource: brief.provenance.source,
+        ...(briefSource.fallbackReason ? { fallbackReason: briefSource.fallbackReason } : {}),
+      };
+
+      const lines = [
+        `# Repair — \`${slug}\``,
+        `Before: ${result.before.status} · after: ${result.report.status} · rules origin: ${briefSource.origin}`,
+      ];
+      if (result.edits.length === 0) {
+        lines.push(
+          "",
+          result.before.status === "pass"
+            ? "Nothing to repair: the code already follows this style."
+            : "No violation had a concrete replacement; review the unfixed list.",
+        );
+      } else {
+        lines.push("", `${result.edits.length} replacement(s):`, "");
+        for (const edit of result.edits) {
+          lines.push(`- line ${edit.line}: \`${edit.from}\` -> \`${edit.to}\``);
+        }
+      }
+      if (result.unfixed.length > 0) {
+        lines.push("", "**Needs your decision** (flagged, no concrete replacement):", "");
+        for (const item of result.unfixed) {
+          lines.push(`- \`${item.className}\` (line ${item.line}) — ${item.reason}`);
+        }
+      }
+      lines.push("", "```tsx", result.code, "```");
+
+      return toolResult(lines.join("\n"), structured);
+    },
+  );
 
   server.registerTool("stylekit_get_implementation_brief", {
     title: "Get complete StyleKit implementation brief",
-    description: "Fetch one complete implementation contract before generating UI: AI rules, philosophy, global CSS, component templates, recipe definitions, tokens, readiness guidance, merged lint rules, and content provenance. The live brief is preferred and cached for five minutes; when the live source is unavailable, a bundled snapshot is returned only when available and marked with origin and fallbackReason. provenance.source records the content publisher (bundled, static, or community) and is distinct from transport origin. Coverage guidance does not certify visual quality or accessibility.",
-    inputSchema: { slug: z.string().min(1).max(100).describe("Style slug") },
+    description: `Fetch one complete implementation contract before generating UI. Use this when you need the full rules, CSS, templates, recipes and tokens in one call; the full payload is large (often 30k-60k characters). Pass sections to return only identity/provenance plus the parts you need.
+
+Args:
+  - slug (string): style identifier.
+  - sections (array, optional): philosophy, aiRules, doList, dontList, colors, globalCss, components, variants, tokens, recipes, readiness, lintRules.
+
+Returns JSON: { schemaVersion: "stylekit-brief-v1", slug, name, nameEn, category, styleType, description, tags, keywords, provenance, origin, fallbackReason?, sections?, plus the selected sections }. provenance.source records the content publisher (bundled, static, or community) and is distinct from transport origin. Coverage guidance does not certify visual quality or accessibility.
+
+Examples:
+  - "build a landing page in glassmorphism" -> slug: "glassmorphism"; keep the returned stylekit-brief-v1 payload for later validation.
+  - "just give me the rules and tokens" -> slug: "glassmorphism", sections: ["aiRules", "tokens", "lintRules"].`,
+    inputSchema: {
+      slug: z.string().min(1).max(100).describe("Style slug"),
+      sections: z.array(z.enum(BRIEF_SECTIONS)).min(1).optional().describe(
+        "Return only these sections plus identity and provenance; omit for the full brief",
+      ),
+    },
     outputSchema: {
       schemaVersion: z.literal("stylekit-brief-v1"), slug: z.string(), name: z.string(), nameEn: z.string(),
       category: z.string(), styleType: z.string(), description: z.string(),
-      tags: z.array(z.string()), keywords: z.array(z.string()), philosophy: z.string(), aiRules: z.string(),
-      doList: z.array(z.string()), dontList: z.array(z.string()), colors: z.object(DETAIL_SHAPE.colors.shape),
-      globalCss: z.string(), components: z.record(z.unknown()), variants: z.array(z.unknown()),
-      tokens: STYLE_TOKENS_SHAPE.nullable(), recipes: z.record(z.unknown()), readiness: z.record(z.unknown()),
-      lintRules: z.record(z.unknown()),
+      tags: z.array(z.string()), keywords: z.array(z.string()),
+      philosophy: z.string().optional(), aiRules: z.string().optional(),
+      doList: z.array(z.string()).optional(), dontList: z.array(z.string()).optional(),
+      colors: z.object(DETAIL_SHAPE.colors.shape).optional(),
+      globalCss: z.string().optional(), components: z.record(z.string(), z.unknown()).optional(),
+      variants: z.array(z.unknown()).optional(),
+      tokens: STYLE_TOKENS_SHAPE.nullable().optional(),
+      recipes: z.record(z.string(), z.unknown()).optional(), readiness: z.record(z.string(), z.unknown()).optional(),
+      lintRules: z.record(z.string(), z.unknown()).optional(),
+      sections: z.array(z.string()).optional(),
       provenance: z.object({ source: z.enum(["bundled", "static", "community"]), contentHash: z.string(), url: z.string() }),
       origin: z.enum(["live", "bundled"]),
       fallbackReason: z.string().optional(),
     },
     annotations: READ_ONLY,
-  }, async ({ slug }) => {
+  }, async ({ slug, sections }) => {
     const result = await getImplementationBriefLive(slug, remoteOptions);
     if (!result.data) {
       if (result.failureKind === "not-found") return unknownSlug(slug);
@@ -891,11 +1074,29 @@ Examples:
       }
       return sourceUnavailable(`Implementation brief for style "${slug}"`, result);
     }
-    const structured = {
-      ...result.data,
-      origin: result.origin,
-      ...(result.fallbackReason ? { fallbackReason: result.fallbackReason } : {}),
-    };
+    const brief = result.data;
+    const structured = sections
+      ? {
+          schemaVersion: brief.schemaVersion,
+          slug: brief.slug,
+          name: brief.name,
+          nameEn: brief.nameEn,
+          category: brief.category,
+          styleType: brief.styleType,
+          description: brief.description,
+          tags: brief.tags,
+          keywords: brief.keywords,
+          provenance: brief.provenance,
+          origin: result.origin,
+          sections,
+          ...Object.fromEntries(sections.map((key) => [key, brief[key]])),
+          ...(result.fallbackReason ? { fallbackReason: result.fallbackReason } : {}),
+        }
+      : {
+          ...brief,
+          origin: result.origin,
+          ...(result.fallbackReason ? { fallbackReason: result.fallbackReason } : {}),
+        };
     return toolResult(JSON.stringify(structured), structured, true);
   });
 }

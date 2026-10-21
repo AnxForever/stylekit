@@ -1,6 +1,6 @@
 // Smoke test: spawn the built server over stdio and exercise every tool.
-import { Client } from "@modelcontextprotocol/sdk/client/index.js";
-import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
+import { Client } from "@modelcontextprotocol/client";
+import { StdioClientTransport } from "@modelcontextprotocol/client/stdio";
 
 const transport = new StdioClientTransport({
   command: "node",
@@ -18,7 +18,22 @@ await client.connect(transport);
 
 const { tools } = await client.listTools();
 const names = tools.map((t) => t.name).sort();
-check(tools.length === 9, `9 tools registered (${names.join(", ")})`);
+const EXPECTED_TOOLS = [
+  "stylekit_get_asset",
+  "stylekit_get_component_recipe",
+  "stylekit_get_implementation_brief",
+  "stylekit_get_shadcn_install",
+  "stylekit_get_style",
+  "stylekit_get_style_tokens",
+  "stylekit_lint_code",
+  "stylekit_list_assets",
+  "stylekit_repair_code",
+  "stylekit_search_styles",
+];
+check(
+  names.join(",") === [...EXPECTED_TOOLS].join(","),
+  `${EXPECTED_TOOLS.length} tools registered (${names.join(", ")})`,
+);
 check(
   tools.every((t) => t.annotations?.readOnlyHint === true),
   "all tools annotated readOnlyHint",
@@ -37,7 +52,10 @@ check(
     assetPage.structuredContent?.schemaVersion === "1" &&
     Array.isArray(assetPage.structuredContent?.assets) &&
     typeof assetPage.structuredContent?.total === "number" &&
+    typeof assetPage.structuredContent?.count === "number" &&
     typeof assetPage.structuredContent?.hasMore === "boolean" &&
+    (assetPage.structuredContent?.next_offset === null ||
+      typeof assetPage.structuredContent?.next_offset === "number") &&
     typeof assetPage.structuredContent?.source === "string" &&
     assetPage.structuredContent.assets.every((asset) => asset.kind === "component-pattern"),
   "list_assets returns a namespaced, sourced page",
@@ -50,6 +68,7 @@ check(
   emptyAssetPage.isError !== true &&
     emptyAssetPage.structuredContent?.assets?.length === 0 &&
     emptyAssetPage.structuredContent?.hasMore === false &&
+    emptyAssetPage.structuredContent?.next_offset === null &&
     typeof emptyAssetPage.structuredContent?.source === "string",
   "list_assets returns a successful empty offset page",
 );
@@ -85,9 +104,12 @@ check(
   "search returns structuredContent.results",
 );
 check(
-  typeof search.structuredContent?.has_more === "boolean" &&
-    search.structuredContent?.offset === 0,
-  "search returns pagination (offset + has_more)",
+  typeof search.structuredContent?.hasMore === "boolean" &&
+    search.structuredContent?.has_more === search.structuredContent?.hasMore &&
+    search.structuredContent?.offset === 0 &&
+    (search.structuredContent?.next_offset === null ||
+      typeof search.structuredContent?.next_offset === "number"),
+  "search returns pagination (hasMore + next_offset + deprecated has_more)",
 );
 
 const exactSearch = await client.callTool({
@@ -249,6 +271,54 @@ const dynamic = await client.callTool({ name: "stylekit_lint_code", arguments: {
   slug: "neo-brutalist", code: '<div className={styles.card} />',
 } });
 check(dynamic.structuredContent?.status === "inconclusive" && dynamic.structuredContent?.ok === false, "runtime classes return an inconclusive structured report");
+
+// repair_code must hand back code that stops violating the same rules.
+const repairShapes = [
+  "rounded-xl shadow-lg",
+  '<div className="rounded-xl shadow-lg" />',
+  '<div className={`rounded-xl ${size}`} />',
+  '<div className={cn("rounded-xl", active && "shadow-lg")} />',
+];
+for (const code of repairShapes) {
+  const repaired = await client.callTool({
+    name: "stylekit_repair_code",
+    arguments: { slug: "neo-brutalist", code },
+  });
+  const content = repaired.structuredContent;
+  check(
+    repaired.isError !== true &&
+      content?.before?.status === "fail" &&
+      content?.report?.status !== "fail" &&
+      content?.code?.length > 0 &&
+      content.edits.every((edit) => !content.code.includes(edit.from)),
+    `repair_code fixes ${JSON.stringify(code)} and reports only applied edits`,
+  );
+}
+const repairPass = await client.callTool({
+  name: "stylekit_repair_code",
+  arguments: { slug: "neo-brutalist", code: '<div className="rounded-none border-2 border-black" />' },
+});
+check(
+  repairPass.structuredContent?.edits?.length === 0 &&
+    repairPass.structuredContent?.code === '<div className="rounded-none border-2 border-black" />',
+  "repair_code leaves conforming code untouched",
+);
+const repairUnknown = await client.callTool({
+  name: "stylekit_repair_code",
+  arguments: { slug: "does-not-exist-xyz", code: "rounded-xl" },
+});
+check(repairUnknown.isError === true, "repair_code rejects an unknown slug");
+
+
+const modernStdio = new Client(
+  { name: "stylekit-mcp-smoke-modern", version: "1.0.0" },
+  { versionNegotiation: { mode: "auto" } },
+);
+await modernStdio.connect(new StdioClientTransport({ command: "node", args: ["dist/index.js"] }));
+check(modernStdio.getProtocolEra() === "modern", "stdio negotiates the modern 2026-07-28 era");
+const modernStdioTools = await modernStdio.listTools();
+check(modernStdioTools.tools.length === 10, "modern stdio lists all tools");
+await modernStdio.close();
 
 await client.close();
 console.log(

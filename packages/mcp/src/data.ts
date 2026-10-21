@@ -37,13 +37,19 @@ export type {
   Sourced,
 } from "stylekit-core/discovery";
 
-export { lintStyleCode, lintCodeWithRules, hasLintableRules } from "stylekit-core/styles";
+export {
+  lintStyleCode,
+  lintCodeWithRules,
+  hasLintableRules,
+  repairCodeWithRules,
+} from "stylekit-core/styles";
 
 export type {
   StyleLintReport,
   StyleLintViolation,
   StyleLintMissingRequired,
   StyleLintComponent,
+  StyleRepairResult,
 } from "stylekit-core/styles";
 
 export {

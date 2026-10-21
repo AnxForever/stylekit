@@ -1,9 +1,8 @@
 import assert from "node:assert/strict";
 import { createServer } from "node:http";
 
-import { Client } from "@modelcontextprotocol/sdk/client/index.js";
-import { InMemoryTransport } from "@modelcontextprotocol/sdk/inMemory.js";
-import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { Client, InMemoryTransport } from "@modelcontextprotocol/client";
+import { McpServer } from "@modelcontextprotocol/server";
 import { clearRemoteCache, getImplementationBrief } from "stylekit-core/discovery";
 import { registerStyleKitTools } from "../src/tools.js";
 

@@ -100,6 +100,8 @@ describe("stylekit_search_styles pagination", () => {
       total: 3,
       count: 2,
       offset: 1,
+      hasMore: false,
+      next_offset: null,
       has_more: false,
       results: [results[1], results[2]],
     });
@@ -107,6 +109,8 @@ describe("stylekit_search_styles pagination", () => {
       total: 3,
       count: 1,
       offset: 2,
+      hasMore: false,
+      next_offset: null,
       has_more: false,
       results: [results[2]],
     });
@@ -129,6 +133,8 @@ describe("stylekit_search_styles pagination", () => {
       total: 3,
       count: 0,
       offset: 50,
+      hasMore: false,
+      next_offset: null,
       has_more: false,
       source: "bundled",
       fallbackReason: "HTTP 503",
