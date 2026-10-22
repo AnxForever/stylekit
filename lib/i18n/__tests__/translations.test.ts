@@ -30,6 +30,7 @@ describe("translations consistency", () => {
       "nav.animations",
       "nav.templates",
       "nav.community",
+      "nav.communityJoin",
       "nav.blog",
       "nav.changelog",
     ];

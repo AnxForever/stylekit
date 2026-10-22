@@ -8,6 +8,7 @@ export const zh: { [K in keyof typeof en]: string } = {
   "nav.resourceLibrary": "资源库",
   "nav.templates": "模板",
   "nav.community": "社区",
+  "nav.communityJoin": "交流群",
   "nav.generator": "生成器",
   "nav.assets": "素材库",
   "nav.componentPatterns": "组件样式图库",

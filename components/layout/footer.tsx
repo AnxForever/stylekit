@@ -36,12 +36,14 @@ export function Footer({ compact = false }: { compact?: boolean }) {
     { href: "/ui-prompts", label: locale === "zh" ? "提示词库" : "Prompts" },
     { href: "/collections", label: locale === "zh" ? "主题合集" : "Collections" },
     { href: "/community", label: t("nav.community") },
+    { href: "/community/join", label: t("nav.communityJoin") },
   ];
-  const learnLinks: { href: string; label: string; external?: boolean }[] = [
+  const learnLinks: { href: string; label: string }[] = [
+    { href: "/learn", label: t("nav.learn") },
     { href: "/guide", label: t("nav.guide") },
+    { href: "/blog", label: t("nav.blog") },
     { href: "/recipes", label: t("nav.recipes") },
     { href: "/changelog", label: t("nav.changelog") },
-    { href: "https://anxforever.cn", label: t("nav.blog"), external: true },
   ];
 
   if (compact) {
@@ -146,28 +148,16 @@ export function Footer({ compact = false }: { compact?: boolean }) {
               <span className="text-base leading-none text-zinc-600 transition-transform group-open:rotate-45">+</span>
             </summary>
             <nav className="grid grid-cols-2 gap-x-4 gap-y-2 pb-4">
-              {learnLinks.map((link) =>
-                link.external ? (
-                  <a
-                    key={link.href}
-                    href={link.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="py-1 text-xs text-zinc-400 transition-colors hover:text-white"
-                  >
-                    {link.label}
-                  </a>
-                ) : (
-                  <Link
-                    key={link.href}
-                    href={localizeHref(link.href, locale)}
-                    prefetch={false}
-                    className="py-1 text-xs text-zinc-400 transition-colors hover:text-white"
-                  >
-                    {link.label}
-                  </Link>
-                )
-              )}
+              {learnLinks.map((link) => (
+                <Link
+                  key={link.href}
+                  href={localizeHref(link.href, locale)}
+                  prefetch={false}
+                  className="py-1 text-xs text-zinc-400 transition-colors hover:text-white"
+                >
+                  {link.label}
+                </Link>
+              ))}
             </nav>
           </details>
 
@@ -298,28 +288,16 @@ export function Footer({ compact = false }: { compact?: boolean }) {
               {locale === "zh" ? "学习与动态" : "Learn"}
             </p>
             <nav className="mt-6 flex flex-col gap-3">
-              {learnLinks.map((link) =>
-                link.external ? (
-                  <a
-                    key={link.href}
-                    href={link.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={footerLinkClassName}
-                  >
-                    {link.label}
-                  </a>
-                ) : (
-                  <Link
-                    key={link.href}
-                    href={localizeHref(link.href, locale)}
-                    prefetch={false}
-                    className={footerLinkClassName}
-                  >
-                    {link.label}
-                  </Link>
-                )
-              )}
+              {learnLinks.map((link) => (
+                <Link
+                  key={link.href}
+                  href={localizeHref(link.href, locale)}
+                  prefetch={false}
+                  className={footerLinkClassName}
+                >
+                  {link.label}
+                </Link>
+              ))}
             </nav>
           </div>
 

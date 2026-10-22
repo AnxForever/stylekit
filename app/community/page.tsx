@@ -212,6 +212,7 @@ export default async function CommunityPage({
             <nav aria-label={isZh ? "社区导航" : "Community sections"} className="mt-6 flex flex-wrap gap-x-6 gap-y-2 text-sm">
               <a href="#discussions" className="inline-flex min-h-10 items-center underline-offset-4 hover:underline">{isZh ? "参与讨论" : "Join a discussion"}</a>
               <a href="#contributions" className="inline-flex min-h-10 items-center underline-offset-4 hover:underline">{isZh ? "浏览社区作品" : "Browse contributions"}</a>
+              <LocalizedLink href="/community/join" className="inline-flex min-h-10 items-center underline-offset-4 hover:underline">{isZh ? "加入交流群" : "Join the chat group"}</LocalizedLink>
               <LocalizedLink href="/profile" className="inline-flex min-h-10 items-center text-muted underline-offset-4 hover:text-foreground hover:underline">{isZh ? "我的投稿与评论" : "My contributions & comments"}</LocalizedLink>
             </nav>
           </header>

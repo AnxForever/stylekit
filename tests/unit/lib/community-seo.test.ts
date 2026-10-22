@@ -153,7 +153,11 @@ describe("community sitemap with isolated data sources", () => {
     ]);
 
     const entries = await sitemap();
-    const details = entries.filter((entry) => /\/community\//.test(entry.url));
+    // `/community/join` is a static hub, not a promoted style detail.
+    const details = entries.filter(
+      (entry) =>
+        /\/community\//.test(entry.url) && !/\/community\/join$/.test(entry.url)
+    );
     expect(details).toHaveLength(6);
     expect(new Set(details.map((entry) => entry.url)).size).toBe(6);
     for (const slug of ["aurora-grid", "missing-date", "invalid-date"]) {
