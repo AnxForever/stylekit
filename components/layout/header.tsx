@@ -15,7 +15,7 @@ import {
   isChangelogPath,
   markLatestChangelogSeen,
 } from "@/lib/changelog/read-state";
-import { ChevronDown } from "lucide-react";
+import { ArrowUpRight, ChevronDown } from "lucide-react";
 import { ShortcutHint } from "@/components/ui/shortcut-hint";
 import { GitHubStarButton } from "@/components/github-star-button";
 import { KitNavButton } from "@/components/kit/kit-nav-button";
@@ -486,11 +486,11 @@ export function Header() {
                   location: "header",
                 })
               }
-              className="inline-flex h-8 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full border border-border px-3 text-[12px] leading-none tracking-[0.01em] text-foreground/80 transition-[background-color,border-color,color,box-shadow] duration-200 hover:border-foreground/40 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+              className="group inline-flex h-8 shrink-0 items-stretch overflow-hidden whitespace-nowrap rounded-full border border-border text-[12px] leading-none tracking-[0.01em] text-foreground/80 transition-colors duration-200 hover:border-foreground/40 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
             >
-              {t("nav.blog")}
-              <span aria-hidden="true" className="text-[10px]">
-                ↗
+              <span className="flex items-center pl-3 pr-2.5">{t("nav.blog")}</span>
+              <span className="flex w-7 items-center justify-center border-l border-border transition-colors duration-200 group-hover:bg-foreground group-hover:text-background">
+                <ArrowUpRight className="h-3.5 w-3.5 transition-transform duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
               </span>
             </a>
 
