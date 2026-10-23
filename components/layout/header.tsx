@@ -25,6 +25,9 @@ import { StyleKitLogo } from "@/components/brand/stylekit-logo";
 const linkClass =
   "shrink-0 whitespace-nowrap text-sm tracking-wide text-muted hover:text-foreground transition-colors";
 
+/** Personal blog, intentionally outside the catalog navigation. */
+const BLOG_URL = "https://me.anxforever.cn";
+
 /**
  * Grace period between leaving the trigger and the panel collapsing.
  * Long enough to traverse the 8px gap between trigger and panel +
@@ -471,6 +474,24 @@ export function Header() {
               />
             )}
 
+            <a
+              href={BLOG_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() =>
+                trackEvent("cta_click", {
+                  label: "open_personal_blog",
+                  location: "header",
+                })
+              }
+              className="inline-flex h-8 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full border border-border px-3 text-[12px] leading-none tracking-[0.01em] text-foreground/80 transition-[background-color,border-color,color,box-shadow] duration-200 hover:border-foreground/40 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+            >
+              {t("nav.blog")}
+              <span aria-hidden="true" className="text-[10px]">
+                ↗
+              </span>
+            </a>
+
             {/* GitHub Star Button */}
             <div className="hidden w-16 shrink-0 justify-end xl:flex">
               <GitHubStarButton variant="compact" />
@@ -639,6 +660,18 @@ export function Header() {
                   </div>
                 );
               })}
+              <a
+                href={BLOG_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`flex items-center gap-2 py-2 ${linkClass}`}
+                onClick={() => setIsMenuOpen(false)}
+              >
+                {t("nav.blog")}
+                <span aria-hidden="true" className="text-[10px]">
+                  ↗
+                </span>
+              </a>
 
               {/* Secondary Nav */}
               {secondaryNav.length > 0 && (
