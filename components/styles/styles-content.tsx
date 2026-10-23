@@ -962,14 +962,6 @@ export function StylesContent({ allStyles }: StylesContentProps) {
                   <SelectItem value="rating">{t("styles.sortTopRated")}</SelectItem>
                 </SelectContent>
               </Select>
-              {hasActiveFilters && (
-                <button
-                  onClick={handleResetFilters}
-                  className="px-3 py-1.5 text-xs border border-border hover:border-foreground transition-colors"
-                >
-                  {t("styles.resetFilters")}
-                </button>
-              )}
             </div>
           </div>
 
