@@ -2451,4 +2451,21 @@ export const stylesMeta: StyleMeta[] = [
     },
     keywords: ["工具应用","手机应用","效率","状态色","柔和层级","高频使用"],
   },
+  {
+    slug: "quantized-line-field",
+    name: "量化线场",
+    nameEn: "Quantized Line Field",
+    description: "把图形的明暗转换成四档竖线，用轻柔流动、弹簧位移和网格检测框，让品牌标志成为可探索的交互视觉。",
+    descriptionEn: "Translate a mark's luminance into four weights of vertical lines, with slow drift, spring displacement, and grid-aligned scan overlays.",
+    cover: "/styles/quantized-line-field.svg",
+    styleType: "visual",
+    tags: ["high-contrast","responsive","brand-inspired"],
+    category: "expressive",
+    colors: {
+      primary: "#202220",
+      secondary: "#fafaf8",
+      accent: ["#2152e7","#c2dcff","#ec353e","#267dff"],
+    },
+    keywords: ["竖线","亮度场","量化","竹节线条","品牌卡片","扫描框","Canvas 2D"],
+  },
 ];
