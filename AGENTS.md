@@ -10,6 +10,17 @@ If instructions conflict, follow this order:
 2. `docs/CONTRIBUTING.md`
 3. `docs/STYLE_ADDITION_CHECKLIST.md`
 
+## Branch Workflow
+
+- `dev` is the development branch. All feature, fix and experiment work goes
+  here.
+- `main` is the release branch. Do not commit, rebase or force-push `main`
+  unless the owner asks for a release.
+- The owner decides when dev is ready. Only then merge `dev` into `main` (or
+  open a PR from `dev`) and deploy the merged `main`.
+- Deploy from a clean, committed branch. Never rsync an uncommitted working
+  tree, and never push dev work to main early.
+
 ## Tech Stack
 
 - Next.js 16 (App Router, NOT Pages Router)
