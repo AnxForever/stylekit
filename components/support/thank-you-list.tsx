@@ -19,8 +19,6 @@ export function ThankYouList({ entries }: { entries: ThankYouEntry[] }) {
     >
       <div className="mb-4 md:mb-0">
         <p className="font-mono text-[10px] uppercase tracking-[0.28em] text-muted">
-          <span className="tabular-nums text-muted/70">03</span>
-          <span className="mx-2 text-muted/50">·</span>
           {locale === "zh" ? "鸣谢名单" : "Acknowledgments"}
         </p>
       </div>
@@ -32,11 +30,11 @@ export function ThankYouList({ entries }: { entries: ThankYouEntry[] }) {
         </p>
 
         {/* 图片网格 - 只显示收款截图，统一尺寸 */}
-        <div className="mt-6 grid grid-cols-2 gap-px border border-border bg-border md:grid-cols-4">
+        <div className="mt-6 grid grid-cols-2 gap-3 md:grid-cols-4">
         {entries.map((entry) => (
           <div
             key={entry.id}
-            className="group relative overflow-hidden bg-background"
+            className="group relative overflow-hidden border border-border bg-background"
           >
             {/* 只显示收款截图 - 固定宽高比 */}
             {entry.receiptImage && (
