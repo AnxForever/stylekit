@@ -954,7 +954,7 @@ export function StylesContent({ allStyles }: StylesContentProps) {
                 >
                   <SelectValue />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent align="start">
                   <SelectItem value="recommended">{t("styles.sortRecommended")}</SelectItem>
                   <SelectItem value="latest">{t("styles.sortLatest")}</SelectItem>
                   <SelectItem value="popular">{t("styles.sortPopular")}</SelectItem>
