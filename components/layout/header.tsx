@@ -27,7 +27,7 @@ const linkClass =
   "shrink-0 whitespace-nowrap text-sm tracking-wide text-muted hover:text-foreground transition-colors";
 
 /** Personal blog, intentionally outside the catalog navigation. */
-const BLOG_URL = "https://me.anxforever.cn";
+const BLOG_URL = "https://anxforever.cn";
 
 /**
  * Grace period between leaving the trigger and the panel collapsing.
