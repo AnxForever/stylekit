@@ -95,7 +95,6 @@ export function StylesContent({ allStyles }: StylesContentProps) {
   const catalogStyles: StyleMeta[] = allStyles;
   const searchInputRef = useRef<HTMLInputElement>(null);
   const catalogGridRef = useRef<HTMLDivElement>(null);
-  const catalogScrollRef = useRef<HTMLDivElement>(null);
   const loadMoreRef = useRef<HTMLDivElement>(null);
   const seenCatalogImpressionsRef = useRef(new Set<string>());
   const hasMountedQuerySyncRef = useRef(false);
@@ -111,8 +110,6 @@ export function StylesContent({ allStyles }: StylesContentProps) {
   const [isPending, startTransition] = useTransition();
   const [tagDropdownOpen, setTagDropdownOpen] = useState(false);
   const [visibleStyleCount, setVisibleStyleCount] = useState(INITIAL_VISIBLE_STYLE_COUNT);
-  const [isDesktopViewport, setIsDesktopViewport] = useState(false);
-  const [isPanelScrollActive, setIsPanelScrollActive] = useState(false);
   const tagDropdownRef = useRef<HTMLDivElement>(null);
   const activeTagsKey = activeTags.join(",");
   const deferredActiveType = useDeferredValue(activeType);
@@ -528,61 +525,6 @@ export function StylesContent({ allStyles }: StylesContentProps) {
   );
   const hasMoreStyles = visibleStyles.length < filteredStyles.length;
 
-  // The catalog scrolls inside its own panel on desktop, so keep the observer
-  // rooted there; on mobile the page itself is the scroll container.
-  useEffect(() => {
-    const mq = window.matchMedia("(min-width: 768px)");
-    const sync = () => setIsDesktopViewport(mq.matches);
-    sync();
-    mq.addEventListener("change", sync);
-    return () => mq.removeEventListener("change", sync);
-  }, []);
-
-  // Until the catalog panel reaches the top of the viewport, let the wheel
-  // scroll the page so the panel is fully visible; only then make the panel
-  // itself scrollable. This removes the "page moves a little, then the list
-  // jumps" hand-off when the visitor first reaches the catalog.
-  useEffect(() => {
-    if (!isDesktopViewport) {
-      setIsPanelScrollActive(false);
-      return;
-    }
-    const panel = catalogScrollRef.current;
-    if (!panel) return;
-
-    const sync = () => {
-      setIsPanelScrollActive(panel.getBoundingClientRect().top <= 0);
-    };
-    sync();
-    window.addEventListener("scroll", sync, { passive: true });
-    window.addEventListener("resize", sync);
-    return () => {
-      window.removeEventListener("scroll", sync);
-      window.removeEventListener("resize", sync);
-    };
-  }, [isDesktopViewport]);
-
-  // A fast wheel gesture over a partially visible catalog must not skip past
-  // it to the footer. Clamp the page scroll to the panel's top edge; once the
-  // panel is aligned it becomes the scroller and takes over.
-  useEffect(() => {
-    if (!isDesktopViewport) return;
-    const panel = catalogScrollRef.current;
-    if (!panel) return;
-
-    const handleWheel = (event: WheelEvent) => {
-      const top = panel.getBoundingClientRect().top;
-      if (top <= 0) return;
-      event.preventDefault();
-      window.scrollBy(
-        0,
-        event.deltaY > 0 ? Math.min(event.deltaY, top) : event.deltaY
-      );
-    };
-
-    panel.addEventListener("wheel", handleWheel, { passive: false });
-    return () => panel.removeEventListener("wheel", handleWheel);
-  }, [isDesktopViewport]);
 
   useEffect(() => {
     if (!hasMoreStyles || isVisualBaseline) return;
@@ -597,7 +539,6 @@ export function StylesContent({ allStyles }: StylesContentProps) {
         );
       },
       {
-        root: isDesktopViewport ? catalogScrollRef.current : null,
         rootMargin: "0px 0px 600px 0px",
       }
     );
@@ -606,7 +547,6 @@ export function StylesContent({ allStyles }: StylesContentProps) {
     return () => observer.disconnect();
   }, [
     hasMoreStyles,
-    isDesktopViewport,
     filteredStyles.length,
     visibleStyleCount,
     isVisualBaseline,
@@ -1053,15 +993,6 @@ export function StylesContent({ allStyles }: StylesContentProps) {
             </div>
           </div>
 
-          {/* The catalog is its own scroll area on desktop: the wheel over the
-              grid walks the whole list, while the page margins still reach the
-              footer. Mobile keeps the page as the only scroller. */}
-          <div
-            ref={catalogScrollRef}
-            className={`md:max-h-[calc(100vh-4rem)] md:pr-1 md:overscroll-contain ${
-              isPanelScrollActive ? "md:overflow-y-auto" : "md:overflow-hidden"
-            }`}
-          >
             <div
               id="styles-catalog-grid"
               ref={catalogGridRef}
@@ -1095,7 +1026,6 @@ export function StylesContent({ allStyles }: StylesContentProps) {
             {hasMoreStyles ? (
               <div ref={loadMoreRef} aria-hidden="true" className="h-px" />
             ) : null}
-          </div>
           {!hasMoreStyles &&
           filteredStyles.length > INITIAL_VISIBLE_STYLE_COUNT &&
           !isVisualBaseline ? (
