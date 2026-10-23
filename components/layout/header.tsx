@@ -15,7 +15,7 @@ import {
   isChangelogPath,
   markLatestChangelogSeen,
 } from "@/lib/changelog/read-state";
-import { ArrowUpRight, ChevronDown } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 import { ShortcutHint } from "@/components/ui/shortcut-hint";
 import { GitHubStarButton } from "@/components/github-star-button";
 import { KitNavButton } from "@/components/kit/kit-nav-button";
