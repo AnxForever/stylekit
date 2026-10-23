@@ -14,6 +14,7 @@ import { ClientScripts } from "@/components/layout/client-scripts";
 import { AnnouncementBanner } from "@/components/layout/announcement-banner";
 import { serializeJsonLd } from "@/lib/security/json-ld";
 import { MobileBottomNav } from "@/components/layout/mobile-bottom-nav";
+import { CommunityRail } from "@/components/community/community-rail";
 import { getSiteBaseUrl } from "@/lib/site-url";
 import { getLocaleDocumentContext, getRequestLocaleContext } from "@/lib/i18n/request";
 import { buildSiteMetadata } from "@/lib/seo/site-metadata";
@@ -215,6 +216,12 @@ export default async function SiteDocument({
           data-vl-product-id="89414aab-7920-4854-8720-5ef041561792"
           data-vl-auth-key="vl_web.grGnbaTxVblO8tSKoOK8zC-726z3_2htURIvubBSPXM"
         />
+        <script
+          defer
+          src="https://vibecafe.ai/telemetry/v1.js"
+          data-vc-product-id="cmvkjmjs0000208ighwdlcmgy"
+          data-vc-auth-key="vc_web_ZQQOrQHyU2kzOgSc6cRs6RfyT_oRl1QxQaoRDU0n4ow"
+        />
         {process.env.NEXT_PUBLIC_UMAMI_SCRIPT_URL &&
         process.env.NEXT_PUBLIC_UMAMI_WEBSITE_ID ? (
           <Script
@@ -340,6 +347,7 @@ export default async function SiteDocument({
           {children}
           <ShowcaseBackBar />
           <MobileBottomNav />
+          <CommunityRail />
           <ScrollToTop />
         </ClientProviders>
         <ClientScripts />
