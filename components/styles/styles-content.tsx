@@ -1011,7 +1011,7 @@ export function StylesContent({ allStyles }: StylesContentProps) {
               footer. Mobile keeps the page as the only scroller. */}
           <div
             ref={catalogScrollRef}
-            className={`md:max-h-[70vh] md:overflow-y-auto md:pr-1 ${
+            className={`md:max-h-[calc(100vh-4rem)] md:overflow-y-auto md:pr-1 ${
               hasMoreStyles ? "md:overscroll-contain" : "md:overscroll-auto"
             }`}
           >
