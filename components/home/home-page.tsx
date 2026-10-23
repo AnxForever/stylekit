@@ -1,12 +1,11 @@
 import type { Metadata } from "next";
-import { readdirSync } from "fs";
-import { join } from "path";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { HomeContent } from "@/components/home/home-content";
 import { FriendPromoBanner } from "@/components/home/friend-promo-banner";
 import { getAllStylesMeta, type StyleMeta } from "@/lib/styles/meta";
 import { getAllAnimationsMeta } from "@/lib/animations/meta";
+import { templateCatalog } from "@/lib/templates/catalog";
 import { CURATED_STYLE_COUNT } from "@/lib/product/catalog-facts";
 import { HOME_SOCIAL_IMAGE } from "@/lib/seo/site-metadata";
 import { getPublishedThankYouEntries } from "@/lib/support/acknowledgments";
@@ -40,11 +39,6 @@ export const metadata: Metadata = {
   },
 };
 
-function getTemplateCount() {
-  return readdirSync(join(process.cwd(), "app/templates"), { withFileTypes: true })
-    .filter((entry) => entry.isDirectory())
-    .length;
-}
 
 /**
  * Fields a home-page style card actually renders.
@@ -107,7 +101,7 @@ export default async function Home() {
   const stats = {
     styles: allStyles.length,
     animations: getAllAnimationsMeta().length,
-    templates: getTemplateCount(),
+    templates: templateCatalog.length,
   };
 
   return (
