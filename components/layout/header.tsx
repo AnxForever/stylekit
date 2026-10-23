@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { useState, useEffect, useRef } from "react";
 import { useTheme } from "next-themes";
 import { useI18n } from "@/lib/i18n/context";
+import { useKit } from "@/lib/kit/context";
 import { LanguageSwitcher } from "@/components/language-switcher";
 import { CommunityNotificationLink } from "@/components/community/notification-link";
 import { UserMenu, MobileUserMenu } from "@/components/layout/user-menu";
@@ -345,6 +346,7 @@ export function Header() {
   const isDarkTheme = mounted && resolvedTheme === "dark";
   const [hasChangelogUpdate, setHasChangelogUpdate] = useState(false);
   const { t, locale } = useI18n();
+  const { count: kitCount } = useKit();
   const pathname = usePathname();
   const moreRef = useRef<HTMLDivElement>(null);
   const dropdownRefs = useRef<Array<HTMLDivElement | null>>([]);
@@ -573,15 +575,18 @@ export function Header() {
                 <span>{t("nav.search")}</span>
               </button>
 
-              {/* Kit Builder entry */}
-              <Link
-                href="/kit"
-                prefetch={false}
-                onClick={() => setIsMenuOpen(false)}
-                className="text-sm tracking-wide text-muted hover:text-foreground transition-colors"
-              >
-                {locale === "zh" ? "我的工具箱" : "My Kit"}
-              </Link>
+              {/* Kit entry appears once something has been collected. */}
+              {kitCount > 0 ? (
+                <Link
+                  href="/kit"
+                  prefetch={false}
+                  onClick={() => setIsMenuOpen(false)}
+                  className="text-sm tracking-wide text-muted hover:text-foreground transition-colors"
+                >
+                  {locale === "zh" ? "我的工具箱" : "My Kit"}
+                  <span className="ml-2 tabular-nums text-foreground">{kitCount}</span>
+                </Link>
+              ) : null}
 
               {/* Main Nav: link or accordion dropdown */}
               {mainNav.map((item) => {
