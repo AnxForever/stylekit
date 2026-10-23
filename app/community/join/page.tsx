@@ -27,6 +27,7 @@ const COPY = {
     intro:
       "A slower place to talk about interface work. Bring the page you are building, say where it is stuck, and get specific feedback. The group is for craft, not promotion.",
     open: "Open",
+    groupNumber: "Group number",
     preparing: "Preparing",
     whatTitle: "What the group is for",
     what: [
@@ -66,6 +67,7 @@ const COPY = {
     intro:
       "一个慢一点的讨论区。贴出你正在做的页面，说明卡在哪里，得到具体的反馈。这里聊的是手艺，不做推广。",
     open: "开放中",
+    groupNumber: "群号",
     preparing: "筹备中",
     whatTitle: "在群里聊什么",
     what: [
@@ -247,7 +249,14 @@ export default async function CommunityJoinPage() {
                   <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-muted">
                     {platformName}
                   </p>
-                  <h2 className="mt-3 font-serif text-xl">{t.title}</h2>
+                  <h2 className="mt-3 font-serif text-xl">
+                    {COMMUNITY_GROUP.name ?? t.title}
+                  </h2>
+                  {COMMUNITY_GROUP.groupNumber ? (
+                    <p className="mt-2 font-mono text-[11px] tracking-[0.08em] text-muted">
+                      {t.groupNumber} {COMMUNITY_GROUP.groupNumber}
+                    </p>
+                  ) : null}
                   <a
                     href={destination.href}
                     target="_blank"
