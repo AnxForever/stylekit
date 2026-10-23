@@ -9,16 +9,14 @@ import type { StyleStatsEntry } from "./catalog-stats";
 
 export type CatalogSortOption =
   | "recommended"
-  | "name-asc"
-  | "name-desc"
+  | "latest"
   | "popular"
   | "favorites"
   | "rating";
 
 export const CATALOG_SORT_OPTIONS: readonly CatalogSortOption[] = [
   "recommended",
-  "name-asc",
-  "name-desc",
+  "latest",
   "popular",
   "favorites",
   "rating",
@@ -100,6 +98,7 @@ function compareName(left: SortableStyle, right: SortableStyle): number {
 /**
  * Order the catalog. `recommended` preserves the curated registry order, so it
  * returns the input array untouched; every other option returns a new array.
+ * The registry appends new styles, so `latest` is its reverse.
  */
 export function sortCatalogStyles<T extends SortableStyle>(
   styles: T[],
@@ -108,10 +107,7 @@ export function sortCatalogStyles<T extends SortableStyle>(
 ): T[] {
   if (sort === "recommended") return styles;
 
-  if (sort === "name-asc" || sort === "name-desc") {
-    const byName = [...styles].sort(compareName);
-    return sort === "name-desc" ? byName.reverse() : byName;
-  }
+  if (sort === "latest") return [...styles].reverse();
 
   const catalogMean = catalogRatingMean(stats);
 

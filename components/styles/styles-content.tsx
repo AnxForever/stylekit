@@ -332,8 +332,7 @@ export function StylesContent({ allStyles }: StylesContentProps) {
   const sortLabels: Record<SortOption, string> = useMemo(
     () => ({
       recommended: t("styles.sortRecommended"),
-      "name-asc": t("styles.sortNameAsc"),
-      "name-desc": t("styles.sortNameDesc"),
+      latest: t("styles.sortLatest"),
       popular: t("styles.sortPopular"),
       favorites: t("styles.sortMostFavorited"),
       rating: t("styles.sortTopRated"),
@@ -957,11 +956,10 @@ export function StylesContent({ allStyles }: StylesContentProps) {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="recommended">{t("styles.sortRecommended")}</SelectItem>
+                  <SelectItem value="latest">{t("styles.sortLatest")}</SelectItem>
                   <SelectItem value="popular">{t("styles.sortPopular")}</SelectItem>
                   <SelectItem value="favorites">{t("styles.sortMostFavorited")}</SelectItem>
                   <SelectItem value="rating">{t("styles.sortTopRated")}</SelectItem>
-                  <SelectItem value="name-asc">{t("styles.sortNameAsc")}</SelectItem>
-                  <SelectItem value="name-desc">{t("styles.sortNameDesc")}</SelectItem>
                 </SelectContent>
               </Select>
               {hasActiveFilters && (
