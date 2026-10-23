@@ -562,6 +562,28 @@ export function StylesContent({ allStyles }: StylesContentProps) {
     };
   }, [isDesktopViewport]);
 
+  // A fast wheel gesture over a partially visible catalog must not skip past
+  // it to the footer. Clamp the page scroll to the panel's top edge; once the
+  // panel is aligned it becomes the scroller and takes over.
+  useEffect(() => {
+    if (!isDesktopViewport) return;
+    const panel = catalogScrollRef.current;
+    if (!panel) return;
+
+    const handleWheel = (event: WheelEvent) => {
+      const top = panel.getBoundingClientRect().top;
+      if (top <= 0) return;
+      event.preventDefault();
+      window.scrollBy(
+        0,
+        event.deltaY > 0 ? Math.min(event.deltaY, top) : event.deltaY
+      );
+    };
+
+    panel.addEventListener("wheel", handleWheel, { passive: false });
+    return () => panel.removeEventListener("wheel", handleWheel);
+  }, [isDesktopViewport]);
+
   useEffect(() => {
     if (!hasMoreStyles || isVisualBaseline) return;
     const sentinel = loadMoreRef.current;
@@ -1036,10 +1058,8 @@ export function StylesContent({ allStyles }: StylesContentProps) {
               footer. Mobile keeps the page as the only scroller. */}
           <div
             ref={catalogScrollRef}
-            className={`md:max-h-[calc(100vh-4rem)] md:pr-1 ${
+            className={`md:max-h-[calc(100vh-4rem)] md:pr-1 md:overscroll-contain ${
               isPanelScrollActive ? "md:overflow-y-auto" : "md:overflow-hidden"
-            } ${
-              hasMoreStyles ? "md:overscroll-contain" : "md:overscroll-auto"
             }`}
           >
             <div
