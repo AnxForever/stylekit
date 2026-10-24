@@ -49,7 +49,8 @@ describe("public UX priority contract", () => {
 
     expect(source).toContain("const INITIAL_VISIBLE_STYLE_COUNT = 24");
     expect(source).toContain("filteredStyles.slice(0, visibleStyleCount)");
-    expect(source).toContain('locale === "zh" ? "加载更多风格" : "Load more styles"');
+    expect(source).toContain("ref={loadMoreRef}");
+    expect(source).toContain("IntersectionObserver");
     expect(source).toContain('aria-live="polite"');
   });
 

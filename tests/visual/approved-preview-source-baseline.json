@@ -8,8 +8,8 @@
     "components/style-preview-switcher.tsx": "2208c8d4e0619aa83b28ed71d3ae63f57fda529aabc68b0b0eb0c774bfb8d968",
     "components/style-preview/style-cover-preview.tsx": "2be57fa7e4410d28f77b3eeb9574b7825e749f87521e00f52f3520c1d1db4d87",
     "lib/style-components.tsx": "2ee32bee110d37e2d62191cc1b036f5579f99ba4c1c10524a46b4e24fbaa53f2",
-    "lib/style-preview/delivery.ts": "69f6fc3b4adcc306022833bd86693eab35ed184170da1a11a2120a1ec617c8d3",
-    "lib/style-preview/registry.ts": "740a8a6a68c0fd9a98cb2e4fb215c301c98ec4ea9664dcc7891ccb72438eaa16",
+    "lib/style-preview/delivery.ts": "e0dd31addd53adcdbec80572f9de65a1d80456eae598155b7e4936773d19ee0a",
+    "lib/style-preview/registry.ts": "b1daed61fce1739cee86d8800717dba268c5cf74bfb31ac3de1cd0656f880e74",
     "lib/style-preview/styles/acid-graphics.tsx": "b0c672fd7c5ddd5a51425086eb032b48c94bc3e369c0ff6e631c3dc8dbcbeb93",
     "lib/style-preview/styles/african-textile.tsx": "721d7bbb1d6e3069a800dcd2e74e86d7d482251fe84bed34fe9c1aecaee7c278",
     "lib/style-preview/styles/anti-design.tsx": "abbb86110665bcc994760fd077f8253a4813ac779a09f23d0f6dda085e40a1f7",
@@ -156,6 +156,6 @@
     "lib/style-preview/styles/z-pattern-layout.tsx": "45735dc9271bc545c30dfa994303ae911adac343307c522808962de987face78",
     "lib/style-preview/styles/zen-garden.tsx": "b10338b2e55a267e8be31f8e6bcb458092aabbab3b2aee39f6aef76ec884c5d8",
     "lib/style-preview/types.ts": "4d508c6dc39554bd4a15e410186d6424c1165134bb799beca4ce655378b97b06",
-    "lib/styles/meta-registry.ts": "626b0348bc24f00aaaac2584523620fe630c24d7dd46477b78c3ee8c013cda8f"
+    "lib/styles/meta-registry.ts": "0ce1c4511593ac18d2523b88defc0a1cfbfefcae69fb0d14eea073bc5b22b20b"
   }
 }
