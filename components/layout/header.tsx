@@ -493,7 +493,16 @@ export function Header() {
                 aria-hidden="true"
                 className="text-[9px] leading-none transition-transform duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
               >
-                ↗
+                <svg
+                  viewBox="0 0 12 12"
+                  className="size-2.5"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  aria-hidden="true"
+                >
+                  <path d="M2.5 9.5 9.5 2.5M4.5 2.5h5v5" />
+                </svg>
               </span>
               <span
                 aria-hidden="true"
@@ -689,7 +698,16 @@ export function Header() {
               >
                 {t("nav.blog")}
                 <span aria-hidden="true" className="text-[10px]">
-                  ↗
+                  <svg
+                    viewBox="0 0 12 12"
+                    className="size-2.5"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                    aria-hidden="true"
+                  >
+                    <path d="M2.5 9.5 9.5 2.5M4.5 2.5h5v5" />
+                  </svg>
                 </span>
               </a>
 
