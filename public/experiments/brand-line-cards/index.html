@@ -1,0 +1,761 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <link rel="icon" href="data:,">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="description" content="An independent Canvas 2D study: three brand marks translated into moving, four-weight vertical lines.">
+  <title>Identity, in lines. — StyleKit study</title>
+  <style>
+    :root {
+      color: #252725;
+      background: #fafaf8;
+      font-family: Arial, Helvetica, sans-serif;
+      font-synthesis: none;
+      -webkit-font-smoothing: antialiased;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; }
+    button { font: inherit; color: inherit; }
+    button:focus-visible, article:focus-visible {
+      outline: 2px solid #247cff;
+      outline-offset: 6px;
+    }
+    button { -webkit-tap-highlight-color: transparent; }
+    main { width: min(1200px, calc(100% - 80px)); margin: 0 auto; padding: 43px 0 30px; }
+    .masthead { display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+    .signature { display: flex; align-items: baseline; gap: 13px; font-size: 12px; }
+    .signature strong { font: 600 23px Georgia, "Times New Roman", serif; letter-spacing: -1px; }
+    .signature span { color: #777a73; }
+    .motion-button {
+      display: inline-flex; align-items: center; gap: 8px; padding: 9px 12px;
+      border: 1px solid #dedfd9; border-radius: 30px; background: transparent;
+      font-size: 11px; cursor: pointer;
+    }
+    .motion-button:hover { background: #edeee8; }
+    .motion-dot { width: 5px; height: 5px; background: #287bff; border-radius: 50%; }
+    .motion-button[aria-pressed="false"] .motion-dot { background: #93958c; }
+    .introduction { display: flex; justify-content: space-between; align-items: flex-end; gap: 35px; margin: 55px 0 29px; }
+    h1 { margin: 0; font: 400 clamp(38px, 4.1vw, 57px)/1.04 Georgia, "Times New Roman", serif; letter-spacing: -2.5px; }
+    .introduction p { margin: 0 0 3px; max-width: 247px; color: #7b7e76; font-size: 12px; line-height: 1.7; }
+    .cards {
+      display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 19px;
+      perspective: 900px;
+    }
+    .brand-card {
+      --background: #eeeeeb; --foreground: #202220; --secondary: #686b64;
+      --shadow-color: 60deg 5% 16%;
+      --rx: 0deg; --ry: 0deg; --ty: 0px;
+      position: relative; isolation: isolate; min-width: 0; min-height: 460px;
+      aspect-ratio: .70; overflow: hidden; border-radius: 17px;
+      background: var(--background); color: var(--foreground); touch-action: pan-y;
+      /* Elevation is a stack, not a blur: every layer keeps its own offset and a
+         constant alpha, so the layers accumulate into volume. The colour is the
+         card's own hue at low saturation — neutral black would read as dirt. */
+      box-shadow:
+        0 .5px 1px hsl(var(--shadow-color) / .28),
+        0 1px 2px hsl(var(--shadow-color) / .24),
+        0 2px 4px hsl(var(--shadow-color) / .2),
+        0 4px 8px hsl(var(--shadow-color) / .16),
+        inset 0 0 0 1px rgb(0 0 0 / .035);
+      transform: translate3d(0, var(--ty), 0) rotateX(var(--rx)) rotateY(var(--ry));
+      transform-style: preserve-3d;
+      will-change: transform;
+      transition: box-shadow 220ms cubic-bezier(.23, 1, .32, 1);
+    }
+    .brand-card.is-lifted {
+      box-shadow:
+        0 1px 2px hsl(var(--shadow-color) / .26),
+        0 2px 4px hsl(var(--shadow-color) / .22),
+        0 6px 12px hsl(var(--shadow-color) / .2),
+        0 12px 24px hsl(var(--shadow-color) / .18),
+        0 24px 48px hsl(var(--shadow-color) / .14),
+        inset 0 0 0 1px rgb(0 0 0 / .035);
+    }
+    .brand-card[data-brand="google"] { --background: #2152e7; --foreground: #f7faff; --secondary: #bfd3ff; }
+    .brand-card[data-brand="tesla"] { --background: #111212; --foreground: #f5f3ef; --secondary: #9c9b96; }
+    .field { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0; }
+    .card-header { position: relative; z-index: 1; display: flex; align-items: center; gap: 9px; padding: 27px 27px 0; pointer-events: none; }
+    .mini-mark { flex: none; width: 21px; height: 25px; }
+    .brand-name { margin: 0; font-size: 15px; font-weight: 500; letter-spacing: -.3px; }
+    .scan-status { margin-left: auto; font-size: 9px; letter-spacing: .01em; color: var(--secondary); opacity: .7; }
+    .card-footer { position: absolute; left: 29px; right: 25px; bottom: 29px; z-index: 2; pointer-events: none; }
+    .tagline { margin: 0 0 23px; font-size: clamp(27px, 2.75vw, 37px); font-weight: 400; line-height: 1.04; letter-spacing: -1.2px; }
+    .source-button {
+      display: inline-flex; align-items: center; gap: 15px; border: 0; border-bottom: 1px solid transparent;
+      background: none; padding: 0 0 3px; font-size: 11px; color: var(--secondary); cursor: pointer; pointer-events: auto;
+    }
+    .source-button:hover { color: var(--foreground); border-bottom-color: currentColor; }
+    .source-button span { font-size: 17px; line-height: 10px; }
+    .colophon { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px; margin-top: 23px; color: #86887f; font-size: 10px; line-height: 1.5; }
+    .colophon p { margin: 0; }
+    .colophon .recipe { color: #62665d; }
+    .fallback { padding: 20px; border: 1px solid #d4d4d0; font-size: 14px; }
+    dialog {
+      width: min(680px, calc(100vw - 36px)); max-height: min(80vh, 740px); overflow: auto;
+      padding: 34px; border: 1px solid #dfe1d8; border-radius: 19px; background: #fafaf8; color: #252725;
+    }
+    dialog::backdrop { background: rgb(10 13 14 / .45); backdrop-filter: blur(5px); }
+    .dialog-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
+    dialog h2 { margin: 0; font: 400 34px/1.1 Georgia, "Times New Roman", serif; letter-spacing: -1.2px; }
+    .close-button { background: none; border: 0; padding: 4px 0 4px 15px; font-size: 22px; line-height: 1; cursor: pointer; }
+    .dialog-description { color: #70756b; margin: 17px 0 23px; font-size: 13px; line-height: 1.7; }
+    .source-facts { display: flex; flex-wrap: wrap; gap: 8px 20px; padding: 15px 0; border-block: 1px solid #e0e3da; color: #63695d; font-size: 11px; }
+    .source-facts strong { color: #252725; font-weight: 500; }
+    pre { white-space: pre-wrap; overflow-wrap: anywhere; font: 11px/1.8 Consolas, "SFMono-Regular", monospace; padding: 20px; margin: 20px 0; border-radius: 9px; background: #eef0e9; }
+    .copy-button { border: 1px solid #d4d8ce; border-radius: 6px; background: transparent; padding: 9px 13px; font-size: 12px; cursor: pointer; }
+    @media (min-width: 1450px) { main { padding-top: 58px; } .introduction { margin-top: 76px; } }
+    @media (max-width: 850px) {
+      main { width: calc(100% - 40px); padding-top: 27px; }
+      .introduction { margin-top: 40px; }
+      h1 { font-size: 44px; }
+      .introduction p { max-width: 190px; }
+      .cards { gap: 13px; }
+      .brand-card { min-height: 430px; }
+      .card-header { padding: 23px 18px 0; gap: 6px; }
+      .scan-status { display: none; }
+      .card-footer { left: 21px; right: 15px; bottom: 25px; }
+      .tagline { font-size: 27px; }
+    }
+    @media (max-width: 650px) {
+      main { width: min(420px, calc(100% - 36px)); }
+      .signature span { font-size: 10px; }
+      .introduction { display: block; margin: 40px 0 25px; }
+      h1 { font-size: 42px; letter-spacing: -1.9px; }
+      .introduction p { max-width: 270px; margin-top: 15px; font-size: 12px; }
+      .cards { grid-template-columns: 1fr; gap: 17px; }
+      .brand-card { min-height: 460px; }
+      .card-header { padding: 27px 27px 0; gap: 9px; }
+      .scan-status { display: block; }
+      .card-footer { left: 29px; bottom: 29px; }
+      .tagline { font-size: 34px; }
+      .colophon { margin-top: 23px; font-size: 10px; }
+      dialog { padding: 25px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; }
+      .brand-card { transition: none; transform: none; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <header class="masthead">
+      <div class="signature"><strong>StyleKit</strong><span>Visual studies</span></div>
+      <button type="button" class="motion-button" id="motion-toggle" aria-pressed="true"><span class="motion-dot" aria-hidden="true"></span><span id="motion-label">Motion</span></button>
+    </header>
+    <div class="introduction">
+      <h1>Identity, in lines.</h1>
+      <p>Move through a familiar mark.<br>Find the structure beneath the surface.</p>
+    </div>
+    <p id="fallback" class="fallback" hidden>This study needs a browser with Canvas 2D and Path2D support.</p>
+    <section class="cards" aria-label="Interactive brand identity studies">
+      <article class="brand-card" data-brand="apple" tabindex="0" aria-label="Apple. Hover, focus, or touch to explore the line drawing.">
+        <canvas class="field" aria-hidden="true"></canvas>
+        <div class="card-header"><canvas class="mini-mark" aria-hidden="true"></canvas><h2 class="brand-name">Apple</h2><span class="scan-status" aria-hidden="true">Hover to scan</span></div>
+        <div class="card-footer"><p class="tagline">Think<br>different.</p><button type="button" class="source-button" data-source="apple" aria-label="Reveal the Apple source">Reveal the source <span aria-hidden="true">→</span></button></div>
+      </article>
+      <article class="brand-card" data-brand="google" tabindex="0" aria-label="Google. Hover, focus, or touch to explore the line drawing.">
+        <canvas class="field" aria-hidden="true"></canvas>
+        <div class="card-header"><canvas class="mini-mark" aria-hidden="true"></canvas><h2 class="brand-name">Google</h2><span class="scan-status" aria-hidden="true">Hover to scan</span></div>
+        <div class="card-footer"><p class="tagline">Find your next<br>possibility.</p><button type="button" class="source-button" data-source="google" aria-label="Reveal the Google source">Reveal the source <span aria-hidden="true">→</span></button></div>
+      </article>
+      <article class="brand-card" data-brand="tesla" tabindex="0" aria-label="Tesla. Hover, focus, or touch to explore the line drawing.">
+        <canvas class="field" aria-hidden="true"></canvas>
+        <div class="card-header"><canvas class="mini-mark" aria-hidden="true"></canvas><h2 class="brand-name">Tesla</h2><span class="scan-status" aria-hidden="true">Hover to scan</span></div>
+        <div class="card-footer"><p class="tagline">Accelerate<br>the future.</p><button type="button" class="source-button" data-source="tesla" aria-label="Reveal the Tesla source">Reveal the source <span aria-hidden="true">→</span></button></div>
+      </article>
+    </section>
+    <footer class="colophon"><p>A study of recognition and reconstruction.</p><p class="recipe">One path. A field of light. Four line weights.</p></footer>
+  </main>
+  <dialog id="source-dialog" aria-labelledby="source-title" aria-describedby="source-description">
+    <div class="dialog-heading"><h2 id="source-title">Behind the mark.</h2><button type="button" class="close-button" aria-label="Close source">×</button></div>
+    <p class="dialog-description" id="source-description">The SVG path is sampled once into a luminance grid. Everything you see on the card is drawn from that grid using vertical line segments.</p>
+    <div class="source-facts"><span>Sampling <strong>60 × 60</strong></span><span>Line weights <strong>4</strong></span><span>Image requests <strong>0</strong></span></div>
+    <pre><code id="source-code"></code></pre>
+    <button type="button" class="copy-button" id="copy-source">Copy SVG path</button>
+  </dialog>
+  <script>
+    "use strict";
+
+    /*
+     * StyleKit design study: quantized luminance fields.
+     * Single-file HTML, native Canvas 2D, no images/fonts/libraries/network calls.
+     * Reusable decisions: 60 parallel columns; four width buckets; one-time
+     * supersampled mask; downward-advected value noise; damped radial springs;
+     * brightness-ranked windows with spatial non-max suppression for callouts.
+     * Paths: https://github.com/simple-icons/simple-icons/tree/develop/icons
+     * Apple / Google / Tesla paths from Simple Icons (CC0); respective brand
+     * trademarks remain their owners'. Taglines are presentation copy.
+     * Canvas APIs: https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Tutorial/Optimizing_canvas
+     * The scratch canvas, its context and pixels are local to sampleLogo().
+     * They are discarded after one read. Resizing NEVER resamples the SVG.
+     *
+     * Design record (2026-10-21): reusable pattern "Quantized brand field".
+     * Scope: standalone local study; no external assets or runtime libraries.
+     * Sampling: 60x60 cells, five-pixel supersampling, Rec.709 luminance;
+     * two sampled rows per rendered segment preserve a vertical bamboo rhythm.
+     * Interaction: pulse-driven spring (k=145, damping=19), then return to rest;
+     * live regions re-detected every 100ms from the noisy, displaced line field,
+     * spatially suppressed and tracked with a small continuity prior.
+     * Original browser evidence (before live tracking): three pixel reads;
+     * DPR 1/2 and mobile 390px preserve those tables; hover/spring return, source
+     * dialog, motion pause and reduced-motion checks passed. No external
+     * resources, image elements or SVG elements in the product interface.
+     * Repository checks: lint passed (38 existing warnings), typecheck passed,
+     * 8087 tests passed / one existing live test skipped, production build passed.
+     */
+    (() => {
+      const GRID = 60;
+      const COUNT = GRID * GRID;
+      const WIDTHS = [0.38, 1.12, 2.28, 3.80];
+      const ALPHAS = [0.15, 0.64, 0.93, 1];
+      const BRANDS = {
+        apple: {
+          name: "Apple", ink: "#202220", detection: "#267dff", seed: 3, scale: 0.82,
+          path: "M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701"
+        },
+        google: {
+          name: "Google", ink: "#c2dcff", detection: "#91dcff", seed: 29, scale: 0.79,
+          path: "M12.48 10.92v3.28h7.84c-.24 1.84-.853 3.187-1.787 4.133-1.147 1.147-2.933 2.4-6.053 2.4-4.827 0-8.6-3.893-8.6-8.72s3.773-8.72 8.6-8.72c2.6 0 4.507 1.027 5.907 2.347l2.307-2.307C18.747 1.44 16.133 0 12.48 0 5.867 0 .307 5.387.307 12s5.56 12 12.173 12c3.573 0 6.267-1.173 8.373-3.36 2.16-2.16 2.84-5.213 2.84-7.667 0-.76-.053-1.467-.173-2.053H12.48z"
+        },
+        tesla: {
+          name: "Tesla", ink: "#ec353e", detection: "#4eaeff", seed: 51, scale: 0.81,
+          path: "M12 5.362l2.475-3.026s4.245.09 8.471 2.054c-1.082 1.636-3.231 2.438-3.231 2.438-.146-1.439-1.154-1.79-4.354-1.79L12 24 8.619 5.034c-3.18 0-4.188.354-4.335 1.792 0 0-2.146-.795-3.229-2.43C5.28 2.431 9.525 2.34 9.525 2.34L12 5.362l-.004.002H12v-.002zm0-3.899c3.415-.03 7.326.528 11.328 2.28.535-.968.672-1.395.672-1.395C19.625.612 15.528.015 12 0 8.472.015 4.375.61 0 2.349c0 0 .195.525.672 1.396C4.674 1.989 8.585 1.435 12 1.46v.003z"
+        }
+      };
+
+      let samplingReads = 0;
+      let frames = 0;
+      let raf = 0;
+      let lastTime = 0;
+      let clock = 0;
+      let dialogOpen = false;
+      const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)");
+      let playing = !reducedMotion.matches;
+      const motionButton = document.getElementById("motion-toggle");
+      const motionLabel = document.getElementById("motion-label");
+      const dialog = document.getElementById("source-dialog");
+      let sourcePath = "";
+
+      function sampleLogo(brand) {
+        const supersampling = 5;
+        const side = GRID * supersampling;
+        const scratch = document.createElement("canvas");
+        scratch.width = side;
+        scratch.height = side;
+        const context = scratch.getContext("2d", { willReadFrequently: true });
+        if (!context) throw new Error("Canvas 2D is unavailable.");
+        context.fillStyle = "#000";
+        context.fillRect(0, 0, side, side);
+        const scale = side * brand.scale / 24;
+        context.translate(side / 2, side / 2);
+        context.scale(scale, scale);
+        context.translate(-12, -12);
+        context.fillStyle = "#fff";
+        context.fill(new Path2D(brand.path));
+        const pixels = context.getImageData(0, 0, side, side).data;
+        samplingReads += 1;
+        const luminance = new Float32Array(COUNT);
+        for (let y = 0; y < GRID; y += 1) {
+          for (let x = 0; x < GRID; x += 1) {
+            let sum = 0;
+            for (let sy = 0; sy < supersampling; sy += 1) {
+              for (let sx = 0; sx < supersampling; sx += 1) {
+                const index = ((y * supersampling + sy) * side + x * supersampling + sx) * 4;
+                sum += (0.2126 * pixels[index] + 0.7152 * pixels[index + 1] + 0.0722 * pixels[index + 2]) / 255;
+              }
+            }
+            luminance[y * GRID + x] = sum / (supersampling * supersampling);
+          }
+        }
+        scratch.width = 0;
+        scratch.height = 0;
+        return luminance;
+      }
+
+      // Deposit the displayed segment's signal into its displaced grid cells.
+      // This is numerical accumulation, never another canvas pixel read.
+      function splatSignal(field, x, y, value) {
+        const left = Math.floor(x);
+        const top = Math.floor(y);
+        const fx = x - left;
+        const fy = y - top;
+        const signal = Math.max(0, Math.min(1, value));
+        for (let row = 0; row < 2; row += 1) {
+          const gy = top + row;
+          if (gy < 0 || gy >= GRID) continue;
+          for (let col = 0; col < 2; col += 1) {
+            const gx = left + col;
+            if (gx < 0 || gx >= GRID) continue;
+            field[gy * GRID + gx] += signal * (col ? fx : 1 - fx) * (row ? fy : 1 - fy);
+          }
+        }
+      }
+
+      function detectRegions(luminance, previous = []) {
+        const stride = GRID + 1;
+        const integral = new Float64Array(stride * stride);
+        for (let y = 1; y <= GRID; y += 1) {
+          let row = 0;
+          for (let x = 1; x <= GRID; x += 1) {
+            row += Math.min(1, luminance[(y - 1) * GRID + x - 1]);
+            integral[y * stride + x] = integral[(y - 1) * stride + x] + row;
+          }
+        }
+        const candidates = [];
+        const side = 7;
+        let brightest = 0;
+        for (let y = 2; y <= GRID - side - 2; y += 1) {
+          for (let x = 2; x <= GRID - side - 2; x += 1) {
+            const sum = integral[(y + side) * stride + x + side] - integral[y * stride + x + side] - integral[(y + side) * stride + x] + integral[y * stride + x];
+            const score = Math.max(0, Math.min(1, sum / (side * side)));
+            const px = x - 1;
+            const py = y - 1;
+            let nearest = Infinity;
+            for (const region of previous) {
+              if (!region.fadingOut) nearest = Math.min(nearest, (px - (region.pending ? region.pending.x : region.targetX)) ** 2 + (py - (region.pending ? region.pending.y : region.targetY)) ** 2);
+            }
+            // A small spatial prior resists score ties without pinning a box.
+            const rank = score + 0.025 * Math.exp(-nearest / 128);
+            candidates.push({ x: px, y: py, w: side + 2, h: side + 2, score, rank });
+            brightest = Math.max(brightest, score);
+          }
+        }
+        if (brightest < 0.04) return [];
+        candidates.sort((a, b) => b.rank - a.rank || b.score - a.score || a.y - b.y || a.x - b.x);
+        const selected = [];
+        const threshold = brightest * 0.48;
+        for (const distance of [16, 12]) {
+          for (const candidate of candidates) {
+            if (selected.length === 3) break;
+            if (candidate.score < threshold) continue;
+            if (selected.every((region) => Math.hypot(region.x - candidate.x, region.y - candidate.y) >= distance)) selected.push(candidate);
+          }
+          if (selected.length >= 2) break;
+        }
+        return selected.slice(0, 3);
+      }
+
+      function matchRegions(previous, candidates) {
+        const remaining = new Set(candidates);
+        const matched = [];
+        const lost = [];
+        for (const region of previous) {
+          let closest = null;
+          let distance = 12;
+          for (const candidate of remaining) {
+            const nextDistance = Math.hypot(candidate.x - (region.pending ? region.pending.x : region.targetX), candidate.y - (region.pending ? region.pending.y : region.targetY));
+            if (nextDistance <= distance) { closest = candidate; distance = nextDistance; }
+          }
+          if (closest) {
+            remaining.delete(closest);
+            matched.push(region.pending
+              ? { ...region, pending: closest, fadingOut: false }
+              : { ...closest, x: region.x, y: region.y, targetX: closest.x, targetY: closest.y, vx: region.vx || 0, vy: region.vy || 0, opacity: region.opacity === undefined ? 1 : region.opacity, fadingOut: false });
+          } else {
+            lost.push(matched.length);
+            matched.push({ ...region, pending: null, fadingOut: true, opacity: region.opacity === undefined ? 1 : region.opacity });
+          }
+        }
+        // Reacquire in the same slot: fade the old window out before placing
+        // the new one, so neither the box nor its connector teleports visibly.
+        for (const candidate of remaining) {
+          const slot = lost.shift();
+          if (slot !== undefined) matched[slot] = { ...matched[slot], pending: candidate, fadingOut: false };
+          else if (matched.length < 3) matched.push({ ...candidate, targetX: candidate.x, targetY: candidate.y, vx: 0, vy: 0, opacity: 0 });
+        }
+        return matched;
+      }
+
+      function advanceRegions(regions, dt, animate) {
+        for (let index = regions.length - 1; index >= 0; index -= 1) {
+          const region = regions[index];
+          if (region.opacity === undefined) region.opacity = 1;
+          const retiring = region.pending || region.fadingOut;
+          region.opacity += ((retiring ? 0 : 1) - region.opacity) * (animate ? 1 - Math.exp(-dt * 16) : 1);
+          if (retiring && region.opacity < 0.04) {
+            if (region.pending) {
+              const next = region.pending;
+              Object.assign(region, next, { x: next.x, y: next.y, targetX: next.x, targetY: next.y, vx: 0, vy: 0, opacity: animate ? 0 : 1, pending: null, fadingOut: false });
+            } else {
+              regions.splice(index, 1);
+              continue;
+            }
+          }
+          if (!animate) {
+            region.x = region.targetX; region.y = region.targetY;
+            region.vx = 0; region.vy = 0;
+            continue;
+          }
+          region.vx = region.vx || 0; region.vy = region.vy || 0;
+          const steps = Math.max(1, Math.ceil(dt / (1 / 120)));
+          const step = dt / steps;
+          for (let substep = 0; substep < steps; substep += 1) {
+            region.vx += ((region.targetX - region.x) * 144 - region.vx * 24) * step;
+            region.vy += ((region.targetY - region.y) * 144 - region.vy * 24) * step;
+            region.x += region.vx * step;
+            region.y += region.vy * step;
+          }
+          if (Math.hypot(region.x - region.targetX, region.y - region.targetY) < 0.002 && Math.hypot(region.vx, region.vy) < 0.02) {
+            region.x = region.targetX; region.y = region.targetY;
+            region.vx = 0; region.vy = 0;
+          }
+        }
+      }
+
+      function regionBox(region, plotX, plotY, cell) {
+        const gridX = Math.max(0, Math.min(GRID - region.w, region.x));
+        const gridY = Math.max(0, Math.min(GRID - region.h, region.y));
+        return { x: plotX + gridX * cell, y: plotY + gridY * cell, w: region.w * cell, h: region.h * cell, gridX, gridY, opacity: region.opacity === undefined ? 1 : region.opacity };
+      }
+
+      // A reusable lattice, sampled with y - time so the noise travels down.
+      const noiseLattice = new Float32Array(128 * 128);
+      let randomState = 7319;
+      for (let i = 0; i < noiseLattice.length; i += 1) {
+        randomState ^= randomState << 13;
+        randomState ^= randomState >>> 17;
+        randomState ^= randomState << 5;
+        noiseLattice[i] = (randomState >>> 0) / 4294967295 * 2 - 1;
+      }
+      function noise(x, y) {
+        const ix = Math.floor(x);
+        const iy = Math.floor(y);
+        let fx = x - ix;
+        let fy = y - iy;
+        fx = fx * fx * (3 - 2 * fx);
+        fy = fy * fy * (3 - 2 * fy);
+        const a = noiseLattice[(iy & 127) * 128 + (ix & 127)];
+        const b = noiseLattice[(iy & 127) * 128 + ((ix + 1) & 127)];
+        const c = noiseLattice[((iy + 1) & 127) * 128 + (ix & 127)];
+        const d = noiseLattice[((iy + 1) & 127) * 128 + ((ix + 1) & 127)];
+        return (a + (b - a) * fx) * (1 - fy) + (c + (d - c) * fx) * fy;
+      }
+      const bucket = (value) => value < 0.12 ? 0 : value < 0.42 ? 1 : value < 0.89 ? 2 : 3;
+
+      class LineCard {
+        constructor(element) {
+          this.element = element;
+          this.brand = BRANDS[element.dataset.brand];
+          this.canvas = element.querySelector(".field");
+          this.context = this.canvas.getContext("2d");
+          if (!this.context) throw new Error("Canvas 2D is unavailable.");
+          this.luminance = sampleLogo(this.brand);
+          this.regions = [];
+          this.scanField = new Float32Array(COUNT);
+          this.scanAge = Infinity;
+          this.scanPasses = 0;
+          this.dx = new Float32Array(COUNT);
+          this.dy = new Float32Array(COUNT);
+          this.vx = new Float32Array(COUNT);
+          this.vy = new Float32Array(COUNT);
+          this.pointer = { x: -1000, y: -1000, clientX: -1000, clientY: -1000, impulseX: -1000, impulseY: -1000, dirty: false, pulse: 0 };
+          this.statusElement = element.querySelector(".scan-status");
+          this.status = "Hover to scan";
+          this.hovered = false;
+          this.focused = false;
+          this.visible = true;
+          this.hoverMix = 0;
+          this.frames = 0;
+          element.addEventListener("pointerenter", (event) => {
+            if (event.pointerType !== "touch") this.hovered = true;
+            this.movePointer(event, true);
+          });
+          element.addEventListener("pointermove", (event) => this.movePointer(event));
+          element.addEventListener("pointerdown", (event) => {
+            if (event.pointerType === "touch") this.hovered = true;
+            this.movePointer(event, true);
+          });
+          const leave = () => { this.hovered = false; this.pointer.pulse = 0; this.resetTilt(); this.updateStatus(); requestFrame(); };
+          element.addEventListener("pointerleave", leave);
+          element.addEventListener("pointercancel", leave);
+          element.addEventListener("pointerup", (event) => { if (event.pointerType === "touch") leave(); });
+          element.addEventListener("focusin", () => { this.focused = true; this.updateStatus(); requestFrame(); });
+          element.addEventListener("focusout", (event) => {
+            if (!element.contains(event.relatedTarget)) this.focused = false;
+            this.updateStatus(); requestFrame();
+          });
+          // Pointer tilt: spring-integrated rotateX/rotateY plus a -6px lift.
+          // k = w^2, c = 2w for w ~= 17.3 rad/s (Apple's ~0.35s response).
+          const tilt = { rx: 0, ry: 0, ty: 0, vrx: 0, vry: 0, vty: 0, trx: 0, trv: 0, tty: 0, raf: 0, stamp: 0 };
+          const springStep = (now) => {
+            const dt = Math.min((now - (tilt.stamp || now)) / 1000, 1 / 30);
+            tilt.stamp = now;
+            let moving = false;
+            for (const [key, target, velocity] of [["rx", "trx", "vrx"], ["ry", "trv", "vry"], ["ty", "tty", "vty"]]) {
+              const acceleration = -300 * (tilt[key] - tilt[target]) - 34 * tilt[velocity];
+              tilt[velocity] += acceleration * dt;
+              tilt[key] += tilt[velocity] * dt;
+              if (Math.abs(tilt[key] - tilt[target]) > 0.01 || Math.abs(tilt[velocity]) > 0.01) moving = true;
+            }
+            element.style.setProperty("--rx", tilt.rx.toFixed(3) + "deg");
+            element.style.setProperty("--ry", tilt.ry.toFixed(3) + "deg");
+            element.style.setProperty("--ty", tilt.ty.toFixed(2) + "px");
+            tilt.raf = moving ? requestAnimationFrame(springStep) : 0;
+          };
+          const kickTilt = () => { if (!tilt.raf) { tilt.stamp = performance.now(); tilt.raf = requestAnimationFrame(springStep); } };
+          const aimTilt = (event, active) => {
+            if (!active) {
+              tilt.trx = 0; tilt.trv = 0; tilt.tty = 0;
+              element.classList.remove("is-lifted");
+              kickTilt();
+              return;
+            }
+            const rect = element.getBoundingClientRect();
+            const x = (event.clientX - rect.left) / rect.width;
+            const y = (event.clientY - rect.top) / rect.height;
+            element.classList.add("is-lifted");
+            if (reducedMotion.matches) { tilt.trx = 0; tilt.trv = 0; tilt.tty = 0; }
+            else { tilt.trx = 6 * (0.5 - y); tilt.trv = 6 * (x - 0.5); tilt.tty = -6; }
+            kickTilt();
+          };
+          this.aimTilt = aimTilt;
+          this.resetTilt = () => aimTilt(null, false);
+          this.resize();
+          const status = this.hovered || this.focused ? "Signal found" : "Hover to scan";
+          if (status !== this.status) { this.status = status; this.statusElement.textContent = status; }
+        }
+        movePointer(event, impulse = false) {
+          if (impulse || Math.hypot(event.clientX - this.pointer.impulseX, event.clientY - this.pointer.impulseY) > 1.5) {
+            this.pointer.pulse = 1;
+            this.pointer.impulseX = event.clientX; this.pointer.impulseY = event.clientY;
+          }
+          this.pointer.clientX = event.clientX;
+          this.pointer.clientY = event.clientY;
+          this.pointer.dirty = true;
+          if (event.pointerType !== "touch") this.aimTilt(event, true);
+          this.updateStatus(); requestFrame();
+        }
+        resize() {
+          const rect = this.canvas.getBoundingClientRect();
+          this.width = rect.width;
+          this.height = rect.height;
+          this.dpr = devicePixelRatio || 1;
+          this.canvas.width = Math.round(this.width * this.dpr);
+          this.canvas.height = Math.round(this.height * this.dpr);
+          this.context.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
+          this.plotSize = this.width - (this.width < 260 ? 35 : 58);
+          this.plotX = (this.width - this.plotSize) / 2;
+          this.plotY = Math.min(84, this.height - 145 - this.plotSize);
+          this.plotY = Math.max(69, this.plotY);
+          this.cell = this.plotSize / GRID;
+          this.widthScale = this.cell / 5.25;
+          this.dx.fill(0); this.dy.fill(0); this.vx.fill(0); this.vy.fill(0);
+          this.scanAge = Infinity;
+          this.drawMini();
+          requestFrame();
+        }
+        drawMini() {
+          const canvas = this.element.querySelector(".mini-mark");
+          canvas.width = Math.round(21 * this.dpr);
+          canvas.height = Math.round(25 * this.dpr);
+          const context = canvas.getContext("2d");
+          if (!context) return;
+          context.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
+          context.clearRect(0, 0, 21, 25);
+          context.strokeStyle = this.brand.ink;
+          context.lineCap = "butt";
+          for (let x = 1; x < GRID; x += 4) {
+            for (let y = 0; y < GRID; y += 3) {
+              const value = this.luminance[y * GRID + x];
+              if (value < 0.12) continue;
+              context.lineWidth = [0.25, 0.45, 0.75, 1.05][bucket(value)];
+              context.beginPath();
+              context.moveTo(x / GRID * 21, y / GRID * 21 + 2);
+              context.lineTo(x / GRID * 21, (y + 3) / GRID * 21 + 2);
+              context.stroke();
+            }
+          }
+        }
+        draw(dt) {
+          if (this.dpr !== (devicePixelRatio || 1)) this.resize();
+          if (this.pointer.dirty) {
+            const rect = this.canvas.getBoundingClientRect();
+            this.pointer.x = this.pointer.clientX - rect.left;
+            this.pointer.y = this.pointer.clientY - rect.top;
+            this.pointer.dirty = false;
+          }
+          const context = this.context;
+          context.clearRect(0, 0, this.width, this.height);
+          const active = this.hovered || this.focused;
+          this.hoverMix = playing ? this.hoverMix + ((active ? 1 : 0) - this.hoverMix) * (1 - Math.exp(-dt * 9)) : Number(active);
+          if (this.hoverMix < 0.001) this.hoverMix = 0;
+          const paths = [new Path2D(), new Path2D(), new Path2D(), new Path2D()];
+          this.scanAge += dt;
+          const scanNow = (active || this.hoverMix > 0.005) && (this.scanAge >= 0.1 || !playing);
+          if (scanNow) this.scanField.fill(0);
+          const radius = this.plotSize * 0.25;
+          const strength = active && playing ? this.pointer.pulse : 0;
+          this.pointer.pulse *= Math.exp(-dt * 5.5);
+          // Two sampled rows per drawn segment keep the marks visibly linear,
+          // with longer bamboo-like joints rather than a square dot matrix.
+          for (let row = 0; row < GRID; row += 2) {
+            for (let col = 0; col < GRID; col += 1) {
+              const index = row * GRID + col;
+              const baseX = this.plotX + (col + 0.5) * this.cell;
+              const baseY = this.plotY + (row + 1) * this.cell;
+              const value = (this.luminance[index] + this.luminance[index + GRID]) / 2;
+              const flow = noise(col * 0.15 + this.brand.seed, row * 0.16 - clock * 0.17);
+              const signal = value * 0.94 + flow * 0.12 * (0.25 + value * 0.75);
+              const level = bucket(signal);
+              if (playing) {
+                const px = baseX - this.pointer.x;
+                const py = baseY - this.pointer.y;
+                const distance = Math.max(0.1, Math.hypot(px, py));
+                const influence = Math.max(0, 1 - distance / radius);
+                const force = influence * influence * strength * 25;
+                const targetX = px / distance * force;
+                const targetY = py / distance * force * 0.58;
+                this.vx[index] += ((targetX - this.dx[index]) * 145 - this.vx[index] * 19) * dt;
+                this.vy[index] += ((targetY - this.dy[index]) * 145 - this.vy[index] * 19) * dt;
+                this.dx[index] += this.vx[index] * dt;
+                this.dy[index] += this.vy[index] * dt;
+              }
+              const x = baseX + (playing ? this.dx[index] : 0);
+              const y = baseY + (playing ? this.dy[index] : 0);
+              if (scanNow) {
+                const gx = col + (x - baseX) / this.cell;
+                const gy = row + (y - baseY) / this.cell;
+                splatSignal(this.scanField, gx, gy, signal);
+                splatSignal(this.scanField, gx, gy + 1, signal);
+              }
+              const halfSegment = Math.max(0.35, (this.cell * 2 - 0.7) / 2);
+              paths[level].moveTo(x, y - halfSegment);
+              paths[level].lineTo(x, y + halfSegment);
+            }
+          }
+          context.strokeStyle = this.brand.ink;
+          context.lineCap = "butt";
+          for (let level = 0; level < 4; level += 1) {
+            context.lineWidth = WIDTHS[level] * this.widthScale;
+            context.globalAlpha = ALPHAS[level];
+            context.stroke(paths[level]);
+          }
+          context.globalAlpha = 1;
+          if (scanNow) {
+            this.regions = matchRegions(this.regions, detectRegions(this.scanField, this.regions));
+            this.scanAge = 0;
+            this.scanPasses += 1;
+          }
+          advanceRegions(this.regions, dt, playing);
+          if (this.hoverMix > 0.005) this.drawDetections();
+          this.frames += 1;
+        }
+        drawDetections() {
+          const context = this.context;
+          const boxes = this.regions.map((region) => regionBox(region, this.plotX, this.plotY, this.cell));
+          context.save();
+          context.strokeStyle = this.brand.detection;
+          context.fillStyle = this.brand.detection;
+          context.lineWidth = 0.75;
+          for (let index = 1; index < boxes.length; index += 1) {
+            const a = boxes[index - 1], b = boxes[index];
+            context.globalAlpha = this.hoverMix * Math.min(a.opacity, b.opacity) * 0.65;
+            context.beginPath();
+            context.moveTo(a.x + a.w / 2, a.y + a.h / 2);
+            context.lineTo(b.x + b.w / 2, b.y + b.h / 2);
+            context.stroke();
+          }
+          for (const box of boxes) {
+            const alpha = this.hoverMix * box.opacity;
+            if (alpha < 0.005) continue;
+            context.globalAlpha = alpha * 0.06;
+            context.fillRect(box.x, box.y, box.w, box.h);
+            context.globalAlpha = alpha * 0.9;
+            context.lineWidth = 0.9;
+            context.strokeRect(box.x, box.y, box.w, box.h);
+            const corner = Math.min(6, this.cell * 1.2);
+            context.lineWidth = 1.8;
+            context.beginPath();
+            for (const [x, y, sx, sy] of [[box.x, box.y, 1, 1], [box.x + box.w, box.y, -1, 1], [box.x, box.y + box.h, 1, -1], [box.x + box.w, box.y + box.h, -1, -1]]) {
+              context.moveTo(x + corner * sx, y); context.lineTo(x, y); context.lineTo(x, y + corner * sy);
+            }
+            context.stroke();
+            context.font = "9px Consolas, monospace";
+            context.textBaseline = "bottom";
+            context.fillText(`x:${String(Number(box.gridX.toFixed(1))).padStart(2, "0")} y:${String(Number(box.gridY.toFixed(1))).padStart(2, "0")}`, box.x, box.y - 5);
+            context.beginPath(); context.arc(box.x + box.w / 2, box.y + box.h / 2, 1.6, 0, Math.PI * 2); context.fill();
+          }
+          context.restore();
+        }
+      }
+
+      let cards = [];
+      function requestFrame() {
+        if (!raf && !document.hidden && !dialogOpen) raf = requestAnimationFrame(tick);
+      }
+      function tick(timestamp) {
+        raf = 0;
+        const dt = lastTime ? Math.min((timestamp - lastTime) / 1000, 1 / 30) : 1 / 60;
+        lastTime = timestamp;
+        if (playing) clock += dt;
+        for (const card of cards) { if (card.visible) card.draw(dt); }
+        frames += 1;
+        if (playing && cards.some((card) => card.visible)) requestFrame();
+      }
+      function updateMotion(enabled) {
+        playing = enabled;
+        motionButton.setAttribute("aria-pressed", String(playing));
+        motionLabel.textContent = "Motion";
+        lastTime = 0;
+        requestFrame();
+      }
+
+      try {
+        if (typeof Path2D === "undefined") throw new Error("Path2D is unavailable.");
+        cards = [...document.querySelectorAll(".brand-card")].map((element) => new LineCard(element));
+        const resizeObserver = new ResizeObserver((entries) => {
+          for (const entry of entries) cards.find((card) => card.element === entry.target)?.resize();
+        });
+        const intersectionObserver = new IntersectionObserver((entries) => {
+          for (const entry of entries) {
+            const card = cards.find((item) => item.element === entry.target);
+            if (card) card.visible = entry.isIntersecting;
+          }
+          lastTime = 0; requestFrame();
+        }, { rootMargin: "80px" });
+        for (const card of cards) { resizeObserver.observe(card.element); intersectionObserver.observe(card.element); }
+        window.addEventListener("resize", () => { for (const card of cards) card.resize(); });
+        document.addEventListener("visibilitychange", () => {
+          if (document.hidden) { cancelAnimationFrame(raf); raf = 0; }
+          else { lastTime = 0; requestFrame(); }
+        });
+        reducedMotion.addEventListener("change", (event) => updateMotion(!event.matches));
+        motionButton.addEventListener("click", () => updateMotion(!playing));
+        updateMotion(playing);
+        window.brandLineStudy = Object.freeze({
+          inspect: () => ({ samplingReads, frames, playing, grid: GRID, widthLevels: WIDTHS.slice(), cards: cards.map((card) => ({ brand: card.brand.name, dpr: card.dpr, cssWidth: card.width, cssHeight: card.height, backingWidth: card.canvas.width, backingHeight: card.canvas.height, frames: card.frames, scanPasses: card.scanPasses, regions: card.regions.map((region) => ({ ...region })), hover: card.hoverMix, springOffset: Math.max(...card.dx.map(Math.abs)) })) })
+        });
+      } catch (error) {
+        console.error(error);
+        document.getElementById("fallback").hidden = false;
+        motionButton.disabled = true;
+      }
+
+      for (const button of document.querySelectorAll("[data-source]")) {
+        button.addEventListener("click", () => {
+          const brand = BRANDS[button.dataset.source];
+          document.getElementById("source-title").textContent = brand.name + ", before the lines.";
+          sourcePath = brand.path;
+          document.getElementById("source-code").textContent = `const path = new Path2D("${brand.path}");`;
+          document.getElementById("copy-source").textContent = "Copy SVG path";
+          dialogOpen = true;
+          cancelAnimationFrame(raf); raf = 0;
+          dialog.showModal();
+        });
+      }
+      dialog.querySelector(".close-button").addEventListener("click", () => dialog.close());
+      dialog.addEventListener("click", (event) => { if (event.target === dialog) { const bounds = dialog.getBoundingClientRect(); if (event.clientX < bounds.left || event.clientX > bounds.right || event.clientY < bounds.top || event.clientY > bounds.bottom) dialog.close(); } });
+      dialog.addEventListener("close", () => { dialogOpen = false; lastTime = 0; requestFrame(); });
+      document.getElementById("copy-source").addEventListener("click", async (event) => {
+        const button = event.currentTarget;
+        try { await navigator.clipboard.writeText(sourcePath); button.textContent = "Copied"; }
+        catch { document.getElementById("copy-source").textContent = "Select and copy the path above"; }
+      });
+    })();
+  </script>
+</body>
+</html>
