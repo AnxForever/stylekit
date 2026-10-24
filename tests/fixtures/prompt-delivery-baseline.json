@@ -72,8 +72,8 @@
     "enBullets": 115
   },
   "minimalist-flat": {
-    "zh": 13943,
-    "en": 17223,
+    "zh": 13955,
+    "en": 17235,
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 74,
@@ -252,8 +252,8 @@
     "enBullets": 121
   },
   "hero-fullscreen": {
-    "zh": 11262,
-    "en": 14542,
+    "zh": 11274,
+    "en": 14554,
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 48,
@@ -421,7 +421,7 @@
   },
   "material-design": {
     "zh": 10891,
-    "en": 12986,
+    "en": 14439,
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 48,
@@ -429,7 +429,7 @@
     "zhHeadings": 48,
     "enHeadings": 44,
     "zhBullets": 113,
-    "enBullets": 95
+    "enBullets": 96
   },
   "fluent-design": {
     "zh": 11444,
@@ -937,7 +937,7 @@
   },
   "jrpg": {
     "zh": 10586,
-    "en": 13014,
+    "en": 14569,
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 48,
@@ -945,7 +945,7 @@
     "zhHeadings": 45,
     "enHeadings": 41,
     "zhBullets": 116,
-    "enBullets": 110
+    "enBullets": 111
   },
   "asymmetric-grid": {
     "zh": 9155,
@@ -1128,16 +1128,16 @@
     "enBullets": 120
   },
   "kinetic-typography": {
-    "zh": 15642,
-    "en": 18876,
+    "zh": 16583,
+    "en": 20376,
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 60,
     "enFences": 60,
     "zhHeadings": 59,
     "enHeadings": 57,
-    "zhBullets": 142,
-    "enBullets": 122
+    "zhBullets": 143,
+    "enBullets": 123
   },
   "film-noir": {
     "zh": 12008,
@@ -1188,8 +1188,8 @@
     "enBullets": 134
   },
   "brutalist-web": {
-    "zh": 12588,
-    "en": 14743,
+    "zh": 12597,
+    "en": 14752,
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 48,
@@ -1524,8 +1524,8 @@
     "enBullets": 101
   },
   "blueprint": {
-    "zh": 9991,
-    "en": 13426,
+    "zh": 10018,
+    "en": 13453,
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 48,
@@ -1774,5 +1774,17 @@
     "enHeadings": 38,
     "zhBullets": 71,
     "enBullets": 47
+  },
+  "quantized-line-field": {
+    "zh": 19914,
+    "en": 23075,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 46,
+    "enFences": 42,
+    "zhHeadings": 42,
+    "enHeadings": 39,
+    "zhBullets": 79,
+    "enBullets": 56
   }
 }
