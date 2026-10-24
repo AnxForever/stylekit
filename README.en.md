@@ -10,7 +10,7 @@
 
 <p align="center">
   <strong>An open-source visual style library for AI-generated web interfaces.</strong><br>
-  148 curated styles, each with design tokens, component recipes, Tailwind-ready constraints, and copy-ready prompts.<br>
+  149 curated styles, each with design tokens, component recipes, Tailwind-ready constraints, and copy-ready prompts.<br>
   Available over MCP, as an Agent Skill, and via npm CLI.
 </p>
 
@@ -93,7 +93,7 @@ npx skills@latest add AnxForever/stylekit-skill
 ```
 
 Claude Code, Cursor, Windsurf, and any Agent-Skills-compatible tool can then
-apply any of the 148 styles on request — "make this look like Stripe", "cyberpunk
+apply any of the 149 styles on request — "make this look like Stripe", "cyberpunk
 dashboard" — using the correct tokens and rules. The skill lives in
 [`AnxForever/stylekit-skill`](https://github.com/AnxForever/stylekit-skill).
 
@@ -123,13 +123,13 @@ request, so new content does not require reinstalling the CLI or MCP package.
 
 ## Styles
 
-148 styles in ten families — Modern & Tech, Brutalist, Brand-Inspired (Apple,
+149 styles in ten families — Modern & Tech, Brutalist, Brand-Inspired (Apple,
 Stripe, Notion, GitHub), Retro & Vintage, Artistic, Japanese & Anime, Cyberpunk
 & Sci-Fi, Layout Patterns, Cultural & Regional, Nature & Cozy.
 
 Every style ships tokens, component code, AI rules, and a full-page live demo.
 
-**[Browse all 148 →](https://www.stylekit.top/en/styles)**
+**[Browse all 149 →](https://www.stylekit.top/en/styles)**
 
 ## What else is in here
 

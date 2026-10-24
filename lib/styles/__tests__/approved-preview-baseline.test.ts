@@ -35,7 +35,12 @@ describe("approved preview baseline", () => {
       .map((style) => style.slug)
       .filter((slug) => !approved.has(slug));
 
-    expect(pending.sort()).toEqual(["mobile-editorial", "pastel-ui", "soft-utility"]);
+    expect(pending.sort()).toEqual([
+      "mobile-editorial",
+      "pastel-ui",
+      "quantized-line-field",
+      "soft-utility",
+    ]);
     for (const slug of pending) {
       expect(isPendingStyleSlug(slug)).toBe(true);
       expect(styleComponents[slug]?.coverPreview).toBeTypeOf("function");

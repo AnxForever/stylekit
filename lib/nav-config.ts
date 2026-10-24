@@ -63,8 +63,6 @@ export const mainNav: NavItem[] = [
           groupLabelKey: "nav.resourcesBrowse",
           items: [
             { href: "/learn", labelKey: "nav.learn" },
-            { href: "/community/join", labelKey: "nav.communityJoin" },
-            { href: "/blog", labelKey: "nav.blog" },
             { href: "/animations", labelKey: "nav.animations" },
             { href: "/mouse-interactions", labelKey: "nav.mouseInteractions" },
             { href: "/recipes", labelKey: "nav.recipes" },

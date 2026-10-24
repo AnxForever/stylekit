@@ -153,6 +153,7 @@ const stylePreviewLoaders: Record<string, StylePreviewLoader> = {
   "pastel-ui": () => import("./styles/pastel-ui").then((module) => module.default),
   "mobile-editorial": () => import("./styles/mobile-editorial").then((module) => module.default),
   "soft-utility": () => import("./styles/soft-utility").then((module) => module.default),
+  "quantized-line-field": () => import("./styles/quantized-line-field").then((module) => module.default),
 };
 
 const previewPromises = new Map<string, Promise<StylePreviewComponents>>();
@@ -309,6 +310,7 @@ export const stylePreviewSlugs = Object.freeze([
   "pastel-ui",
   "mobile-editorial",
   "soft-utility",
+  "quantized-line-field",
 ]);
 
 export function loadStylePreview(

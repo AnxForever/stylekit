@@ -10,7 +10,7 @@
 
 <p align="center">
   <strong>面向 AI 生成网页的开源视觉风格库。</strong><br>
-  148 套精选风格，每套都包含设计令牌、组件配方、Tailwind 约束与可直接复制的提示词。<br>
+  149 套精选风格，每套都包含设计令牌、组件配方、Tailwind 约束与可直接复制的提示词。<br>
   支持 MCP、Agent Skill 与 npm CLI。
 </p>
 
@@ -84,7 +84,7 @@ npx shadcn add https://stylekit.top/r/glassmorphism.json
 npx skills@latest add AnxForever/stylekit-skill
 ```
 
-之后 Claude Code、Cursor、Windsurf 以及任何兼容 Agent Skills 的工具，都能按需套用这 148 套风格 ——「做成 Stripe 的样子」「赛博朋克仪表盘」—— 并使用正确的令牌与规则。技能本体在 [`AnxForever/stylekit-skill`](https://github.com/AnxForever/stylekit-skill)。
+之后 Claude Code、Cursor、Windsurf 以及任何兼容 Agent Skills 的工具，都能按需套用这 149 套风格 ——「做成 Stripe 的样子」「赛博朋克仪表盘」—— 并使用正确的令牌与规则。技能本体在 [`AnxForever/stylekit-skill`](https://github.com/AnxForever/stylekit-skill)。
 
 兼容的 Agent 会在执行 Skill 说明时检查 GitHub 新版本，最多每 24 小时一次；这不是后台更新服务。旧版安装先运行一次 `npx skills@latest update stylekit` 完成迁移；如果改过旧版 Skill，迁移前先备份。之后由 Agent 在使用时检查，不需要反复安装；更新前会校验文件，检测到本地改动就跳过，更新失败则恢复旧文件。
 
@@ -100,11 +100,11 @@ npx -y --prefer-online stylekit-mcp@latest
 
 ## 风格目录
 
-148 套风格，分属十大类 —— 现代与科技、粗野主义、品牌启发（Apple、Stripe、Notion、GitHub）、复古与怀旧、艺术、日式与动漫、赛博朋克与科幻、布局模式、文化与地域、自然与温馨。
+149 套风格，分属十大类 —— 现代与科技、粗野主义、品牌启发（Apple、Stripe、Notion、GitHub）、复古与怀旧、艺术、日式与动漫、赛博朋克与科幻、布局模式、文化与地域、自然与温馨。
 
 每套风格都自带设计令牌、组件代码、AI 规则和整页实时演示。
 
-**[浏览全部 148 套 →](https://www.stylekit.top/zh/styles)**
+**[浏览全部 149 套 →](https://www.stylekit.top/zh/styles)**
 
 ## 仓库里还有什么
 

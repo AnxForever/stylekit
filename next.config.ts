@@ -48,7 +48,7 @@ const assetUrl = assetPrefix && !assetPrefix.startsWith("/")
   : undefined;
 const assetOrigin = assetUrl?.origin;
 const assetCspSource = assetOrigin ? ` ${assetOrigin}` : "";
-const scriptCspSource = "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://vibeloft.ai";
+const scriptCspSource = "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://vibeloft.ai https://vibecafe.ai";
 const PUBLIC_ASSET_CACHE_CONTROL =
   "public, max-age=86400, s-maxage=2592000, stale-while-revalidate=604800";
 
@@ -197,7 +197,7 @@ const nextConfig: NextConfig = {
               `style-src 'self' 'unsafe-inline' https://fonts.loli.net${assetCspSource}`,
               `img-src 'self' data: https: blob:${assetCspSource}`,
               `font-src 'self' data: https://gstatic.loli.net${assetCspSource}`,
-              "connect-src 'self' https://*.supabase.co https://connect.linux.do wss://*.supabase.co https://api.github.com https://api.vibeloft.ai",
+              "connect-src 'self' https://*.supabase.co https://connect.linux.do wss://*.supabase.co https://api.github.com https://api.vibeloft.ai https://vibecafe.ai",
               "media-src 'self'",
               "frame-src 'self'",
               "frame-ancestors 'self'",

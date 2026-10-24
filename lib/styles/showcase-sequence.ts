@@ -166,6 +166,7 @@ export const SHOWCASE_SEQUENCE: readonly ShowcaseSequenceEntry[] = [
   ["pastel-ui", "Pastel App UI"],
   ["mobile-editorial", "Mobile Editorial"],
   ["soft-utility", "Soft Utility"],
+  ["quantized-line-field", "Quantized Line Field"],
 ];
 
 export function getShowcaseNeighbors(slug: string): ShowcaseNeighbors | null {

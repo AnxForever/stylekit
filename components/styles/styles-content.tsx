@@ -95,6 +95,7 @@ export function StylesContent({ allStyles }: StylesContentProps) {
   const catalogStyles: StyleMeta[] = allStyles;
   const searchInputRef = useRef<HTMLInputElement>(null);
   const catalogGridRef = useRef<HTMLDivElement>(null);
+  const loadMoreRef = useRef<HTMLDivElement>(null);
   const seenCatalogImpressionsRef = useRef(new Set<string>());
   const hasMountedQuerySyncRef = useRef(false);
   const hasMountedVisibleCountRef = useRef(false);
@@ -332,8 +333,7 @@ export function StylesContent({ allStyles }: StylesContentProps) {
   const sortLabels: Record<SortOption, string> = useMemo(
     () => ({
       recommended: t("styles.sortRecommended"),
-      "name-asc": t("styles.sortNameAsc"),
-      "name-desc": t("styles.sortNameDesc"),
+      latest: t("styles.sortLatest"),
       popular: t("styles.sortPopular"),
       favorites: t("styles.sortMostFavorited"),
       rating: t("styles.sortTopRated"),
@@ -524,6 +524,33 @@ export function StylesContent({ allStyles }: StylesContentProps) {
     [filteredStyles, visibleStyleCount, isVisualBaseline]
   );
   const hasMoreStyles = visibleStyles.length < filteredStyles.length;
+
+
+  useEffect(() => {
+    if (!hasMoreStyles || isVisualBaseline) return;
+    const sentinel = loadMoreRef.current;
+    if (!sentinel) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (!entries.some((entry) => entry.isIntersecting)) return;
+        setVisibleStyleCount((current) =>
+          Math.min(current + VISIBLE_STYLE_COUNT_STEP, filteredStyles.length)
+        );
+      },
+      {
+        rootMargin: "0px 0px 600px 0px",
+      }
+    );
+
+    observer.observe(sentinel);
+    return () => observer.disconnect();
+  }, [
+    hasMoreStyles,
+    filteredStyles.length,
+    visibleStyleCount,
+    isVisualBaseline,
+  ]);
 
   const hasActiveFilters =
     activeScenario !== "all" ||
@@ -955,72 +982,58 @@ export function StylesContent({ allStyles }: StylesContentProps) {
                 >
                   <SelectValue />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent align="start">
                   <SelectItem value="recommended">{t("styles.sortRecommended")}</SelectItem>
+                  <SelectItem value="latest">{t("styles.sortLatest")}</SelectItem>
                   <SelectItem value="popular">{t("styles.sortPopular")}</SelectItem>
                   <SelectItem value="favorites">{t("styles.sortMostFavorited")}</SelectItem>
                   <SelectItem value="rating">{t("styles.sortTopRated")}</SelectItem>
-                  <SelectItem value="name-asc">{t("styles.sortNameAsc")}</SelectItem>
-                  <SelectItem value="name-desc">{t("styles.sortNameDesc")}</SelectItem>
                 </SelectContent>
               </Select>
-              {hasActiveFilters && (
-                <button
-                  onClick={handleResetFilters}
-                  className="px-3 py-1.5 text-xs border border-border hover:border-foreground transition-colors"
-                >
-                  {t("styles.resetFilters")}
-                </button>
-              )}
             </div>
           </div>
 
-          {/* Styles List with loading indicator */}
-          <div
-            id="styles-catalog-grid"
-            ref={catalogGridRef}
-            className={`grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 md:gap-8 transition-opacity ${
-              isFiltering ? "opacity-70" : ""
-            }`}
-          >
-            {filteredStyles.length === 0 ? (
-              <div className="col-span-full py-12 text-center text-muted">
-                {showFavorites && favorites.length === 0 ? (
-                  <span className="inline-flex items-center gap-1">
-                    {t("styles.noFavorites")} <Heart className="w-4 h-4" />
-                  </span>
-                ) : (
-                  t("common.noResults")
-                )}
-              </div>
-            ) : (
-              visibleStyles.map((style: StyleMeta, index: number) => (
-                <div
-                  key={style.slug}
-                  data-catalog-style-slug={style.slug}
-                  data-catalog-style-rank={index + 1}
-                  className="[content-visibility:auto] [contain-intrinsic-size:1px_540px]"
-                >
-                  <StyleCard style={style} variant="compact" />
+            <div
+              id="styles-catalog-grid"
+              ref={catalogGridRef}
+              className={`grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 md:gap-8 transition-opacity ${
+                isFiltering ? "opacity-70" : ""
+              }`}
+            >
+              {filteredStyles.length === 0 ? (
+                <div className="col-span-full py-12 text-center text-muted">
+                  {showFavorites && favorites.length === 0 ? (
+                    <span className="inline-flex items-center gap-1">
+                      {t("styles.noFavorites")} <Heart className="w-4 h-4" />
+                    </span>
+                  ) : (
+                    t("common.noResults")
+                  )}
                 </div>
-              ))
-            )}
-          </div>
-          {hasMoreStyles ? (
-            <div className="mt-8 flex justify-center">
-              <button
-                type="button"
-                onClick={() =>
-                  setVisibleStyleCount((current) =>
-                    Math.min(current + VISIBLE_STYLE_COUNT_STEP, filteredStyles.length)
-                  )
-                }
-                className="inline-flex min-h-[48px] items-center justify-center border border-foreground bg-background px-6 py-3 text-sm tracking-wide text-foreground transition-colors hover:bg-foreground hover:text-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-                aria-controls="styles-catalog-grid"
-              >
-                {locale === "zh" ? "加载更多风格" : "Load more styles"}
-              </button>
+              ) : (
+                visibleStyles.map((style: StyleMeta, index: number) => (
+                  <div
+                    key={style.slug}
+                    data-catalog-style-slug={style.slug}
+                    data-catalog-style-rank={index + 1}
+                    className="[content-visibility:auto] [contain-intrinsic-size:1px_540px]"
+                  >
+                    <StyleCard style={style} variant="compact" />
+                  </div>
+                ))
+              )}
             </div>
+            {hasMoreStyles ? (
+              <div ref={loadMoreRef} aria-hidden="true" className="h-px" />
+            ) : null}
+          {!hasMoreStyles &&
+          filteredStyles.length > INITIAL_VISIBLE_STYLE_COUNT &&
+          !isVisualBaseline ? (
+            <p className="mt-6 text-center text-xs text-muted">
+              {locale === "zh"
+                ? `已显示全部 ${filteredStyles.length} 种风格`
+                : `All ${filteredStyles.length} styles loaded`}
+            </p>
           ) : null}
         </div>
       </section>

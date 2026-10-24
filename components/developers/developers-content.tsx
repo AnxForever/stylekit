@@ -30,10 +30,10 @@ const COPY = {
       "Use the CLI, MCP server or Skill to find styles, animations and reusable assets, then retrieve source and dependencies where available. Install color themes through shadcn.",
     note: "These install a style's color theme — design tokens for light and dark. The component code is yours to build.",
     // Kept as a literal because this is a client component and importing the
-    // registry would ship all 148 style records to the browser to print a number.
+    // registry would ship all 149 style records to the browser to print a number.
     // CI enforces it instead: `check:product-truth` fails with this file named if
     // the registry count ever moves past it.
-    browse: "Browse all 148 styles",
+    browse: "Browse all 149 styles",
     docs: "Docs",
     status: "Status",
     verified: "Verified",
@@ -103,7 +103,7 @@ const COPY = {
     intro:
       "用 CLI、MCP 或 Skill 查找风格、动画和设计素材，并按素材提供情况获取源码和依赖；配色主题也可以通过 shadcn 安装。",
     note: "安装的是风格的配色主题——明暗两套 design tokens。组件代码由你自己实现。",
-    browse: "浏览全部 148 风格",
+    browse: "浏览全部 149 风格",
     docs: "文档",
     status: "状态",
     verified: "已验证",

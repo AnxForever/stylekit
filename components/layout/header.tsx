@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { useState, useEffect, useRef } from "react";
 import { useTheme } from "next-themes";
 import { useI18n } from "@/lib/i18n/context";
+import { useKit } from "@/lib/kit/context";
 import { LanguageSwitcher } from "@/components/language-switcher";
 import { CommunityNotificationLink } from "@/components/community/notification-link";
 import { UserMenu, MobileUserMenu } from "@/components/layout/user-menu";
@@ -24,6 +25,9 @@ import { StyleKitLogo } from "@/components/brand/stylekit-logo";
 
 const linkClass =
   "shrink-0 whitespace-nowrap text-sm tracking-wide text-muted hover:text-foreground transition-colors";
+
+/** Personal blog, intentionally outside the catalog navigation. */
+const BLOG_URL = "https://anxforever.cn";
 
 /**
  * Grace period between leaving the trigger and the panel collapsing.
@@ -342,6 +346,7 @@ export function Header() {
   const isDarkTheme = mounted && resolvedTheme === "dark";
   const [hasChangelogUpdate, setHasChangelogUpdate] = useState(false);
   const { t, locale } = useI18n();
+  const { count: kitCount } = useKit();
   const pathname = usePathname();
   const moreRef = useRef<HTMLDivElement>(null);
   const dropdownRefs = useRef<Array<HTMLDivElement | null>>([]);
@@ -471,39 +476,81 @@ export function Header() {
               />
             )}
 
-            {/* GitHub Star Button */}
-            <div className="hidden w-16 shrink-0 justify-end xl:flex">
-              <GitHubStarButton variant="compact" />
-            </div>
-
-            <span className={mounted ? undefined : "invisible"}>
-              <KitNavButton />
-            </span>
-            <span className={mounted ? undefined : "invisible"}>
-              <LanguageSwitcher />
-            </span>
-            <span className={mounted ? undefined : "invisible"}>
-              <button
-                onClick={toggleTheme}
-                className="p-2 text-muted hover:text-foreground transition-colors"
-                aria-label={isDarkTheme ? t("theme.switchToLight") : t("theme.switchToDark")}
+            <a
+              href={BLOG_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() =>
+                trackEvent("cta_click", {
+                  label: "open_personal_blog",
+                  location: "header",
+                })
+              }
+              className="group relative inline-flex shrink-0 items-center gap-1 whitespace-nowrap text-sm tracking-wide text-muted transition-colors hover:text-foreground"
+            >
+              {t("nav.blog")}
+              <span
+                aria-hidden="true"
+                className="text-[9px] leading-none transition-transform duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
               >
-                {isDarkTheme ? (
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                    <circle cx="12" cy="12" r="5" />
-                    <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
-                  </svg>
-                ) : (
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
-                  </svg>
-                )}
-              </button>
-            </span>
-            <CommunityNotificationLink />
-            <span className="flex min-w-[4.5rem] justify-end">
-              <UserMenu />
-            </span>
+                <svg
+                  viewBox="0 0 12 12"
+                  className="size-2.5"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  aria-hidden="true"
+                >
+                  <path d="M2.5 9.5 9.5 2.5M4.5 2.5h5v5" />
+                </svg>
+              </span>
+              <span
+                aria-hidden="true"
+                className="absolute inset-x-0 -bottom-1 h-px origin-left scale-x-0 bg-current transition-transform duration-200 group-hover:scale-x-100"
+              />
+            </a>
+
+            {/*
+              Right cluster on the 8pt grid: GitHub (social proof) is separated
+              from the preference icons by a hairline rule, and icon hit areas
+              sit 4px apart so their optical spacing stays even. The account
+              entry gets 12px + the group gap, which reads as one clear step.
+            */}
+            <div className="ml-2 flex shrink-0 items-center gap-1 xl:ml-3">
+              <div className="hidden xl:flex">
+                <GitHubStarButton variant="compact" />
+              </div>
+              <span
+                aria-hidden="true"
+                className="mx-1 hidden h-4 w-px bg-border xl:block"
+              />
+              <KitNavButton />
+              <span className={mounted ? undefined : "invisible"}>
+                <LanguageSwitcher />
+              </span>
+              <span className={mounted ? undefined : "invisible"}>
+                <button
+                  onClick={toggleTheme}
+                  className="p-2 text-muted hover:text-foreground transition-colors"
+                  aria-label={isDarkTheme ? t("theme.switchToLight") : t("theme.switchToDark")}
+                >
+                  {isDarkTheme ? (
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                      <circle cx="12" cy="12" r="5" />
+                      <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
+                    </svg>
+                  ) : (
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                      <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+                    </svg>
+                  )}
+                </button>
+              </span>
+              <CommunityNotificationLink />
+              <span className="ml-3 flex">
+                <UserMenu />
+              </span>
+            </div>
           </nav>
 
           <CommunityNotificationLink className="ml-auto mr-2 lg:hidden" />
@@ -552,15 +599,18 @@ export function Header() {
                 <span>{t("nav.search")}</span>
               </button>
 
-              {/* Kit Builder entry */}
-              <Link
-                href="/kit"
-                prefetch={false}
-                onClick={() => setIsMenuOpen(false)}
-                className="text-sm tracking-wide text-muted hover:text-foreground transition-colors"
-              >
-                {locale === "zh" ? "我的工具箱" : "My Kit"}
-              </Link>
+              {/* Kit entry appears once something has been collected. */}
+              {kitCount > 0 ? (
+                <Link
+                  href="/kit"
+                  prefetch={false}
+                  onClick={() => setIsMenuOpen(false)}
+                  className="text-sm tracking-wide text-muted hover:text-foreground transition-colors"
+                >
+                  {locale === "zh" ? "我的工具箱" : "My Kit"}
+                  <span className="ml-2 tabular-nums text-foreground">{kitCount}</span>
+                </Link>
+              ) : null}
 
               {/* Main Nav: link or accordion dropdown */}
               {mainNav.map((item) => {
@@ -639,6 +689,27 @@ export function Header() {
                   </div>
                 );
               })}
+              <a
+                href={BLOG_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`flex items-center gap-2 py-2 ${linkClass}`}
+                onClick={() => setIsMenuOpen(false)}
+              >
+                {t("nav.blog")}
+                <span aria-hidden="true" className="text-[10px]">
+                  <svg
+                    viewBox="0 0 12 12"
+                    className="size-2.5"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                    aria-hidden="true"
+                  >
+                    <path d="M2.5 9.5 9.5 2.5M4.5 2.5h5v5" />
+                  </svg>
+                </span>
+              </a>
 
               {/* Secondary Nav */}
               {secondaryNav.length > 0 && (

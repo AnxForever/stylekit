@@ -159,6 +159,7 @@ import { shaderGradientRecipes } from "./shader-gradient";
 import { pastelUiRecipes } from "./pastel-ui";
 import { mobileEditorialRecipes } from "./mobile-editorial";
 import { softUtilityRecipes } from "./soft-utility";
+import { quantizedLineFieldRecipes } from "./quantized-line-field";
 
 
 
@@ -324,6 +325,7 @@ const recipeRegistry: Record<string, StyleRecipes> = {
   "pastel-ui": pastelUiRecipes,
   "mobile-editorial": mobileEditorialRecipes,
   "soft-utility": softUtilityRecipes,
+  "quantized-line-field": quantizedLineFieldRecipes,
 };
 
 /**

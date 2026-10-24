@@ -35,6 +35,7 @@ export function Footer({ compact = false }: { compact?: boolean }) {
     { href: "/resources", label: t("nav.resourceLibrary") },
     { href: "/ui-prompts", label: locale === "zh" ? "提示词库" : "Prompts" },
     { href: "/collections", label: locale === "zh" ? "主题合集" : "Collections" },
+    { href: "/kit", label: locale === "zh" ? "工具箱" : "Kit" },
     { href: "/community", label: t("nav.community") },
     { href: "/community/join", label: t("nav.communityJoin") },
   ];

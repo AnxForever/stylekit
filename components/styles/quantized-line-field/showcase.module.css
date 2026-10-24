@@ -1,0 +1,58 @@
+/* Card depth for Quantized Line Field.
+ *
+ * Two rules from the research:
+ *  1. Elevation is a stack, not a blur. Each layer keeps its own offset/blur and
+ *     a *constant* alpha, so the layers accumulate into volume instead of one
+ *     faint grey halo with a negative spread that cancels itself out.
+ *  2. The shadow is tinted with the card's own hue at low saturation — a neutral
+ *     black over a warm paper surface reads as dirt, not shade.
+ *
+ * The lift itself is a spring driven from JS (see TiltCard); this file only
+ * declares how the numbers are rendered.
+ */
+
+.stage {
+  perspective: 900px;
+}
+
+.card,
+.cardStatic {
+  /* Overridden per card through an inline --shadow-color. */
+  --shadow-color: 60deg 5% 16%;
+  --elev-rest:
+    0 0.5px 1px hsl(var(--shadow-color) / 0.28),
+    0 1px 2px hsl(var(--shadow-color) / 0.24),
+    0 2px 4px hsl(var(--shadow-color) / 0.2),
+    0 4px 8px hsl(var(--shadow-color) / 0.16);
+  --elev-lift:
+    0 1px 2px hsl(var(--shadow-color) / 0.26),
+    0 2px 4px hsl(var(--shadow-color) / 0.22),
+    0 6px 12px hsl(var(--shadow-color) / 0.2),
+    0 12px 24px hsl(var(--shadow-color) / 0.18),
+    0 24px 48px hsl(var(--shadow-color) / 0.14);
+
+  position: relative;
+  box-shadow: var(--elev-rest);
+}
+
+.card {
+  --rx: 0deg;
+  --ry: 0deg;
+  --ty: 0px;
+
+  transform: translate3d(0, var(--ty), 0) rotateX(var(--rx)) rotateY(var(--ry));
+  transform-style: preserve-3d;
+  will-change: transform;
+  transition: box-shadow 220ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.card[data-lifted="true"] {
+  box-shadow: var(--elev-lift);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card {
+    transition: none;
+    transform: none;
+  }
+}

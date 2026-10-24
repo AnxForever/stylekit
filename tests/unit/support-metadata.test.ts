@@ -7,6 +7,12 @@ vi.mock("@/components/layout/header", () => ({ Header: () => null }));
 vi.mock("@/components/layout/footer", () => ({ Footer: () => null }));
 vi.mock("@/components/i18n/localized-link", () => ({ LocalizedLink: () => null }));
 vi.mock("next/image", () => ({ default: () => null }));
+vi.mock("@/lib/support/acknowledgments", () => ({
+  getPublishedThankYouEntries: async () => [],
+}));
+vi.mock("@/components/support/thank-you-list", () => ({
+  ThankYouList: () => null,
+}));
 
 import SupportPage, { generateMetadata } from "@/app/support/page";
 import { getBaseUrl } from "@/lib/i18n/routing";
@@ -36,7 +42,7 @@ describe("localized support metadata", () => {
       locale: "en" as const,
       title: "Support StyleKit",
       description:
-        "Ways to support StyleKit's servers, domains, and ongoing maintenance - star the project, share it, or leave a voluntary tip.",
+        "Support StyleKit's servers, domain and maintenance with a voluntary tip and see the acknowledgments.",
       canonical: "/en/support",
       ogLocale: "en_US",
     },
@@ -44,7 +50,7 @@ describe("localized support metadata", () => {
       locale: "zh" as const,
       title: "支持 StyleKit",
       description:
-        "支持 StyleKit 的服务器、域名与持续维护，也可以为项目点 Star、分享给合适的社区，或自愿赞助。",
+        "扫码赞赏支持 StyleKit 的服务器、域名与持续维护，并查看赞助鸣谢。",
       canonical: "/zh/support",
       ogLocale: "zh_CN",
     },

@@ -18,6 +18,7 @@ describe("approved preview source baseline", () => {
     expect(PENDING_STYLE_SLUGS).toEqual([
       "mobile-editorial",
       "pastel-ui",
+      "quantized-line-field",
       "soft-utility",
     ]);
   });

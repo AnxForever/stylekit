@@ -148,6 +148,8 @@ import preview139 from "./styles/warm-organic";
 import pastelUiPreview from "./styles/pastel-ui";
 import mobileEditorialPreview from "./styles/mobile-editorial";
 import softUtilityPreview from "./styles/soft-utility";
+import quantizedLineFieldPreview from "./styles/quantized-line-field";
+
 
 
 
@@ -304,4 +306,5 @@ export const styleComponents: Record<string, StylePreviewComponents> = {
   "pastel-ui": pastelUiPreview,
   "mobile-editorial": mobileEditorialPreview,
   "soft-utility": softUtilityPreview,
+  "quantized-line-field": quantizedLineFieldPreview,
 };

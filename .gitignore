@@ -228,3 +228,6 @@ client_secret_*.json
 /.github/actions/lint/
 /.github/workflows/style-extractor-ci.yml
 /tools/scripts/check-style-extractor.cjs
+
+.vercel
+.env*

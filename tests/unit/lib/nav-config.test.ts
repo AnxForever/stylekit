@@ -12,7 +12,7 @@ describe("primary navigation", () => {
     expect(mainNav.some((item) => item.labelKey === "nav.community")).toBe(false);
   });
 
-  it("puts the chat group and blog beside foundations in resources", () => {
+  it("keeps resources to browsing, components and tools", () => {
     const resources = mainNav.find((item) => item.labelKey === "nav.resources");
     const resourceItems = resources?.dropdown?.groups?.flatMap(
       (group) => group.items
@@ -26,8 +26,6 @@ describe("primary navigation", () => {
     ]);
     expect(resourceItems?.map((item) => item.labelKey)).toEqual([
       "nav.learn",
-      "nav.communityJoin",
-      "nav.blog",
       "nav.animations",
       "nav.mouseInteractions",
       "nav.recipes",
@@ -44,8 +42,6 @@ describe("primary navigation", () => {
         ?.items.map((item) => item.href)
     ).toEqual([
       "/learn",
-      "/community/join",
-      "/blog",
       "/animations",
       "/mouse-interactions",
       "/recipes",

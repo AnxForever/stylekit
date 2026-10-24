@@ -497,8 +497,7 @@ export const zh: { [K in keyof typeof en]: string } = {
   "styles.favorites": "收藏",
   "styles.sort": "排序",
   "styles.sortRecommended": "推荐",
-  "styles.sortNameAsc": "名称 A-Z",
-  "styles.sortNameDesc": "名称 Z-A",
+  "styles.sortLatest": "最新",
   "styles.sortPopular": "最多浏览",
   "styles.sortMostFavorited": "最多收藏",
   "styles.sortTopRated": "评分最高",
@@ -825,6 +824,10 @@ export const zh: { [K in keyof typeof en]: string } = {
   "community.of": "\u5171",
   "community.prev": "\u4e0a\u4e00\u9875",
   "community.next": "\u4e0b\u4e00\u9875",
+  "communityRail.purpose": "\u53cd\u9988 \u00b7 \u5439\u6c34 \u00b7 \u6280\u672f\u5206\u4eab",
+  "communityRail.cta": "\u70b9\u51fb\u52a0\u5165",
+  "communityRail.groupNumber": "\u7fa4\u53f7",
+  "communityRail.aria": "\u52a0\u5165 StyleKit \u4ea4\u6d41\u7fa4\uff08QQ \u7fa4\uff09",
 
   // Style comments
   "styleComments.countSuffix": "\u6761\u8bc4\u8bba",

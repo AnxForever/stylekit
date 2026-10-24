@@ -19,17 +19,17 @@ describe("public UX priority contract", () => {
     expect(source).not.toContain("<span>More</span>");
   });
 
-  it("keeps support reachable from the footer without competing with homepage discovery", async () => {
+  it("keeps support reachable from the footer, contact page and homepage card", async () => {
     const [home, footer, contact] = await Promise.all([
       read("components/home/home-content.tsx"),
       read("components/layout/footer.tsx"),
       read("app/contact/page.tsx"),
     ]);
 
-    // Support remains on Contact & Support with its existing footer entry.
-    // A dismissible sponsored banner is also allowed above the homepage content.
+    // The homepage keeps its compact support card; the footer and Contact &
+    // Support page remain the canonical entry points.
     expect(home).toContain("<FeaturedCarousel");
-    expect(home).not.toContain("<HomeSupportCard");
+    expect(home).toContain("<HomeSupportCard");
     expect(footer).toContain('localizeHref("/contact#support-maintenance", locale)');
     expect(contact).toContain("<SupportContent");
     expect(contact).toContain("<FriendPromoBanner");
@@ -49,7 +49,8 @@ describe("public UX priority contract", () => {
 
     expect(source).toContain("const INITIAL_VISIBLE_STYLE_COUNT = 24");
     expect(source).toContain("filteredStyles.slice(0, visibleStyleCount)");
-    expect(source).toContain('locale === "zh" ? "加载更多风格" : "Load more styles"');
+    expect(source).toContain("ref={loadMoreRef}");
+    expect(source).toContain("IntersectionObserver");
     expect(source).toContain('aria-live="polite"');
   });
 
