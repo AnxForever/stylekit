@@ -23,7 +23,7 @@ test("an exact reply link reaches older context without paging through the discu
   await page.goto(`/en/styles/dark-mode?comment=${replyId}#comment-${replyId}`);
   await expect(page.locator(`#comment-${replyId}`)).toBeInViewport();
   await expect(page.getByText("Specific reply fixture")).toBeVisible();
-  await page.getByRole("button", { name: "Replying to Contributor" }).click();
+  await page.getByRole("button", { name: /Contributor Original implementation question/ }).click();
   await expect(page).toHaveURL(new RegExp(`comment=${parentId}`));
   await expect(page.locator(`#comment-${parentId}`)).toBeInViewport();
   await expect(page.locator(`#comment-${parentId}`)).toContainText("Original implementation question");
