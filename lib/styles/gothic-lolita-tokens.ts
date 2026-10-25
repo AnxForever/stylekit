@@ -97,19 +97,23 @@ export const gothicLolitaTokens = createStyleTokens({
   required: {
     button: [
       "rounded-sm",
-      "border border-[#8b1a2a]/60",
+      "border",
       "font-serif",
-      "transition-all duration-300 ease-in-out",
+      "transition-all",
+      "duration-300",
+      "ease-in-out",
     ],
     card: [
       "rounded-sm",
       "bg-[#0a0a0a]/90",
-      "border border-[#4a1a4a]/50",
+      "border",
+      "border-[#4a1a4a]/50",
       "shadow-[0_4px_16px_rgba(74,26,74,0.4)]",
     ],
     input: [
       "rounded-sm",
-      "border border-[#4a1a4a]/50",
+      "border",
+      "border-[#4a1a4a]/50",
       "bg-[#0a0a0a]/80",
       "text-[#e5e5e5]",
       "font-serif",

@@ -96,18 +96,20 @@ export const latexPaperTokens = createStyleTokens({
     button: [
       "font-serif",
       "rounded-none",
-      "transition-colors duration-200",
+      "transition-colors",
+      "duration-200",
     ],
     card: [
       "rounded-none",
       "bg-[#F5F5F0]",
-      "border-l-2 border-[#111111]",
+      "border-l-2",
+      "border-[#111111]",
     ],
     input: [
       "font-serif",
       "rounded-none",
-      "border border-[#D4D4D0]",
-      "focus:outline-none focus:border-[#111111]",
+      "focus:outline-none",
+      "focus:border-[#111111]",
     ],
   },
 });

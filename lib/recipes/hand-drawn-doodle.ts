@@ -467,12 +467,12 @@ export const handDrawnDoodleRecipes = createStyleRecipes("hand-drawn-doodle", "H
       id: "sketchBadge",
       name: "Sketch Badge",
       nameZh: "素描徽章",
-      description: "Badge with hand-drawn circle border",
+      description: "Badge with hand-drawn dashed border",
       skeleton: {
         element: "div",
         baseClasses: [
           "inline-flex items-center justify-center",
-          "rounded-full",
+          "rounded-sm",
           "border-2 border-dashed",
           "font-sans font-bold",
           "transition-all duration-200 ease-in-out",

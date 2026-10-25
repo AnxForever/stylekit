@@ -657,7 +657,7 @@ export const collageArtRecipes = createStyleRecipes("collage-art", "Collage Art"
           classes: [
             "bg-[#f39c12]/60",
             "rotate-[-0.5deg]",
-            "shadow-[0_1px_3px_rgba(0,0,0,0.1)]",
+            "shadow-[2px_2px_0px_rgba(0,0,0,0.2)]",
           ],
         },
         colorful: {
@@ -665,9 +665,9 @@ export const collageArtRecipes = createStyleRecipes("collage-art", "Collage Art"
           label: "Colorful",
           labelZh: "彩色",
           classes: [
-            "bg-gradient-to-r from-[#e74c3c]/50 via-[#f39c12]/50 to-[#3498db]/50",
+            "bg-[#3498db]/50",
             "rotate-[0.3deg]",
-            "shadow-[0_1px_3px_rgba(0,0,0,0.1)]",
+            "shadow-[2px_2px_0px_rgba(0,0,0,0.2)]",
           ],
         },
         vintage: {

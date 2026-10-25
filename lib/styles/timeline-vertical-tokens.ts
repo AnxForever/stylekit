@@ -84,24 +84,27 @@ export const timelineVerticalTokens = createStyleTokens({
 
   required: {
     button: [
-      "inline-flex items-center gap-2",
-      "text-sm font-medium",
-      "text-blue-600",
+      "inline-flex",
+      "items-center",
+      "gap-2",
+      "font-medium",
       "transition-colors",
     ],
     card: [
-      "relative",
       "bg-white",
       "rounded-xl",
-      "shadow-sm",
-      "border border-zinc-100",
+      "border",
+      "border-zinc-100",
     ],
     input: [
-      "border border-zinc-200",
+      "border",
+      "border-zinc-200",
       "rounded-lg",
-      "text-zinc-900",
+      "text-slate-900",
       "focus:outline-none",
-      "focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500",
+      "focus:ring-2",
+      "focus:ring-blue-500/20",
+      "focus:border-blue-500",
     ],
   },
 });

@@ -89,22 +89,29 @@ export const minimalistFlatTokens = createStyleTokens({
 
   required: {
     button: [
-      "border-2 border-black",
+      "border-2",
+      "border-black",
       "font-medium",
-      "hover:bg-black hover:text-white",
-      "transition-colors duration-200",
+      "hover:bg-white",
+      "hover:text-black",
+      "transition-colors",
+      "duration-200",
     ],
     card: [
-      "border-2 border-black",
-      "hover:bg-black hover:text-white",
-      "transition-colors duration-200",
+      "border-2",
+      "border-black",
+      "transition-colors",
+      "duration-200",
     ],
     input: [
-      "border-0 border-b-2 border-black",
+      "border-0",
+      "border-b-2",
+      "border-black",
       "bg-transparent",
       "focus:outline-none",
       "focus:border-[#ff3366]",
-      "transition-colors duration-200",
+      "transition-colors",
+      "duration-200",
     ],
   },
 });

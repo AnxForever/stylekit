@@ -80,19 +80,21 @@ export const splitScreenTokens = createStyleTokens({
 
   required: {
     button: [
-      "px-8 py-4",
       "font-semibold",
       "transition-colors",
     ],
     card: [
-      "min-h-[50vh] lg:min-h-screen",
-      "flex flex-col justify-center",
+      "flex",
+      "flex-col",
+      "justify-center",
     ],
     input: [
       "bg-transparent",
-      "border-b-2 border-zinc-300",
+      "border-b-2",
+      "border-zinc-300",
       "text-lg",
-      "focus:outline-none focus:border-black",
+      "focus:outline-none",
+      "focus:border-black",
       "transition-colors",
     ],
   },

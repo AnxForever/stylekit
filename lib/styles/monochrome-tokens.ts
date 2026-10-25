@@ -95,8 +95,19 @@ export const monochromeTokens = createStyleTokens({
   },
 
   required: {
-    button: ["rounded-sm", "transition-colors", "font-medium"],
-    card: ["rounded-sm", "border"],
-    input: ["border-b", "focus:outline-none", "bg-transparent"],
+    button: [
+      "rounded-none",
+      "transition-all",
+      "font-medium",
+    ],
+    card: [
+      "rounded-none",
+      "border",
+    ],
+    input: [
+      "focus:outline-none",
+      "bg-[#fafafa]",
+      "focus:border-[#111111]",
+    ],
   },
 });

@@ -98,23 +98,22 @@ export const paperCraftTokens = createStyleTokens({
 
   required: {
     button: [
-      "px-6 py-3",
-      "font-bold",
+      "font-semibold",
       "rounded-xl",
-      "shadow-[3px_3px_0px_rgba(0,0,0,0.1)]",
-      "transition-all duration-200",
+      "transition-all",
+      "duration-200",
     ],
     card: [
-      "bg-white",
-      "rounded-2xl",
-      "shadow-[4px_4px_0px_rgba(0,0,0,0.08)]",
+      "bg-[#fdf6ee]",
+      "rounded-xl",
     ],
     input: [
-      "bg-white",
-      "border-2 border-[#e0d8cc]",
+      "bg-white/80",
+      "border-2",
+      "border-[#e85d75]/30",
       "rounded-xl",
-      "text-[#2d2d2d]",
-      "focus:border-[#e85d75]",
+      "text-[#4a3728]",
+      "focus:border-[#5cb8a5]/60",
       "focus:outline-none",
     ],
   },

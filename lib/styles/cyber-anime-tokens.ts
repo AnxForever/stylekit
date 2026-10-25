@@ -84,7 +84,7 @@ export const cyberAnimeTokens = createStyleTokens({
     patterns: [
       "^rounded-full$",
       "^bg-white$",
-      "^bg-\\[#f[a-f]",
+      "^bg-\\[#f(?:a|b|c|d|e|[1-9a-f][1-9a-f])",
       "^shadow-(?:sm|md|lg|xl)$",
       "^font-serif$",
     ],
@@ -98,22 +98,30 @@ export const cyberAnimeTokens = createStyleTokens({
 
   required: {
     button: [
-      "font-bold uppercase tracking-widest",
-      "border border-[#06d6a0]/50",
-      "shadow-[0_0_15px_rgba(124,58,237,0.5)]",
-      "transition-all duration-300 ease-out",
+      "font-bold",
+      "uppercase",
+      "tracking-widest",
+      "border",
+      "border-[#06d6a0]/50",
+      "transition-all",
+      "duration-300",
+      "ease-out",
     ],
     card: [
       "bg-[#0f0f1a]/90",
-      "border border-[#7c3aed]/30",
+      "border",
+      "border-[#7c3aed]/30",
       "backdrop-blur-sm",
     ],
     input: [
       "bg-[#0f0f1a]/80",
-      "border border-[#7c3aed]/30",
+      "border",
+      "border-[#7c3aed]/30",
       "text-[#e0e0ff]",
       "font-mono",
       "focus:outline-none",
+      "focus:border-[#06d6a0]",
+      "focus:shadow-[0_0_15px_rgba(6,214,160,0.3),0_0_30px_rgba(6,214,160,0.1)]",
     ],
   },
 });

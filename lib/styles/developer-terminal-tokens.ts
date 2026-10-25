@@ -102,25 +102,28 @@ export const developerTerminalTokens = createStyleTokens({
   required: {
     button: [
       "font-mono",
-      "text-sm",
       "rounded-sm",
-      "transition-colors duration-150",
+      "transition-colors",
+      "duration-150",
     ],
     card: [
       "font-mono",
       "bg-[#0D141B]",
-      "border border-[#1F2937]",
+      "border",
+      "border-[#1F2937]",
       "rounded-sm",
     ],
     input: [
       "font-mono",
       "bg-[#0A0E12]",
-      "border border-[#1F2937]",
+      "border",
+      "border-[#1F2937]",
       "rounded-sm",
       "text-[#4AF626]",
       "caret-[#4AF626]",
       "placeholder:text-[#6272A4]",
-      "focus:outline-none focus:border-[#4AF626]/60",
+      "focus:outline-none",
+      "focus:border-[#4AF626]/60",
     ],
   },
 });

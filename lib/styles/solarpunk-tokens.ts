@@ -99,23 +99,26 @@ export const solarpunkTokens = createStyleTokens({
 
   required: {
     button: [
-      "px-6 py-3",
       "rounded-2xl",
       "font-medium",
-      "transition-all duration-300",
+      "transition-all",
+      "duration-300",
     ],
     card: [
       "bg-white/80",
-      "border border-green-200",
+      "border",
+      "border-green-200",
       "rounded-3xl",
     ],
     input: [
       "bg-white/80",
-      "border border-green-200",
+      "border",
+      "border-green-200",
       "rounded-2xl",
       "text-gray-800",
       "focus:border-green-400",
-      "focus:shadow-lg focus:shadow-green-200/40",
+      "focus:shadow-lg",
+      "focus:shadow-green-200/40",
     ],
   },
 });

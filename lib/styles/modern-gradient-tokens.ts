@@ -100,27 +100,30 @@ export const modernGradientTokens = createStyleTokens({
 
   required: {
     button: [
-      "px-6 py-3",
       "rounded-2xl",
       "font-medium",
-      "transition-all duration-300",
+      "transition-all",
+      "duration-300",
+      "text-white",
     ],
     card: [
       "backdrop-blur-xl",
       "bg-white/10",
-      "border border-white/20",
+      "border",
+      "border-white/20",
       "rounded-3xl",
     ],
     input: [
-      "px-5 py-3.5",
       "backdrop-blur-xl",
       "bg-white/10",
-      "border border-white/20",
+      "border",
+      "border-white/20",
       "rounded-2xl",
       "text-white",
       "placeholder:text-white/40",
       "focus:border-violet-500/50",
-      "focus:ring-2 focus:ring-violet-500/20",
+      "focus:ring-2",
+      "focus:ring-violet-500/20",
     ],
   },
 });

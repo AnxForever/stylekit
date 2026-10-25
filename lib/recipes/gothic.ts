@@ -208,13 +208,13 @@ export const gothicRecipes = createStyleRecipes(
       id: "waxSeal",
       name: "Wax Seal",
       nameZh: "\u706b\u6f06\u5370\u7ae0",
-      description: "Circular wax seal decoration with embossed effect",
+      description: "Angular wax seal decoration with embossed effect",
       skeleton: {
         element: "div",
         baseClasses: [
           "inline-flex items-center justify-center",
           "w-16 h-16",
-          "rounded-full",
+          "clip-path-[polygon(30%_0%,70%_0%,100%_30%,100%_70%,70%_100%,30%_100%,0%_70%,0%_30%)]",
           "bg-[#8b1a1a]",
           "shadow-[inset_0_2px_4px_rgba(255,255,255,0.2),inset_0_-2px_4px_rgba(0,0,0,0.3),0_4px_8px_rgba(0,0,0,0.5)]",
         ],

@@ -105,20 +105,23 @@ export const steampunkTokens = createStyleTokens({
 
   required: {
     button: [
-      "px-6 py-3",
       "rounded",
       "font-serif",
-      "uppercase tracking-wider",
-      "transition-all duration-300",
+      "uppercase",
+      "tracking-wider",
+      "transition-all",
+      "duration-300",
     ],
     card: [
       "bg-[#2a1f15]",
-      "border-2 border-[#b87333]/40",
+      "border-2",
+      "border-[#b87333]/40",
       "rounded",
     ],
     input: [
       "bg-[#2a1f15]",
-      "border-2 border-[#b87333]/30",
+      "border-2",
+      "border-[#b87333]/30",
       "rounded",
       "text-[#f5f0e1]",
       "font-serif",

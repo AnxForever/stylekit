@@ -115,8 +115,9 @@ export const warmOrganicTokens = createStyleTokens({
   required: {
     button: [
       "rounded-lg",
-      "text-sm font-medium",
-      "transition-all duration-200",
+      "font-medium",
+      "transition-all",
+      "duration-200",
     ],
     card: [
       "bg-[#E8DED1]",
@@ -125,9 +126,13 @@ export const warmOrganicTokens = createStyleTokens({
     ],
     input: [
       "bg-[#E8DED1]/40",
-      "border border-[#D4BFA5]",
+      "border",
+      "border-[#D4BFA5]",
       "rounded-lg",
-      "focus:outline-none focus:border-[#C86A4A] focus:ring-1 focus:ring-[#C86A4A]/20",
+      "focus:outline-none",
+      "focus:border-[#C86A4A]",
+      "focus:ring-1",
+      "focus:ring-[#C86A4A]/20",
     ],
   },
 });

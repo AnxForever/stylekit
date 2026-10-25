@@ -88,21 +88,23 @@ export const shopifyCleanTokens = createStyleTokens({
 
   required: {
     button: [
-      "px-6 py-3",
       "rounded-lg",
       "font-medium",
-      "transition-colors duration-200",
+      "transition-colors",
+      "duration-200",
     ],
     card: [
       "bg-white",
       "rounded-lg",
-      "border border-[#e3e3e3]",
+      "border",
+      "border-[#e3e3e3]",
     ],
     input: [
-      "px-4 py-3",
-      "border border-[#e3e3e3]",
+      "border",
+      "border-[#e3e3e3]",
       "rounded-lg",
-      "focus:ring-2 focus:ring-[#008060]/20",
+      "focus:ring-2",
+      "focus:ring-[#008060]/20",
       "focus:border-[#008060]",
     ],
   },

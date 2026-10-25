@@ -98,20 +98,23 @@ export const cyberChineseTokens = createStyleTokens({
   required: {
     button: [
       "rounded-none",
-      "border border-[#c9a227]",
-      "shadow-[0_0_16px_rgba(212,85,58,0.5)]",
-      "transition-all duration-300 ease-in-out",
+      "border",
+      "transition-all",
+      "duration-300",
+      "ease-in-out",
       "font-bold",
     ],
     card: [
       "rounded-none",
       "bg-[#0a0a0a]/90",
-      "border border-[#d4553a]/40",
+      "border",
+      "border-[#d4553a]/40",
       "shadow-[0_0_16px_rgba(212,85,58,0.3)]",
     ],
     input: [
       "rounded-none",
-      "border border-[#c9a227]/40",
+      "border",
+      "border-[#c9a227]/40",
       "bg-[#0a0a0a]/80",
       "text-[#00d4ff]",
       "focus:shadow-[0_0_16px_rgba(0,212,255,0.5)]",

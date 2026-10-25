@@ -95,20 +95,27 @@ export const geometricBoldTokens = createStyleTokens({
 
   required: {
     button: [
-      "font-bold uppercase tracking-widest",
-      "transition-colors duration-200",
+      "font-bold",
+      "uppercase",
+      "tracking-widest",
+      "transition-colors",
+      "duration-200",
     ],
     card: [
-      "border-4 border-black",
+      "border-4",
+      "border-black",
       "bg-white",
     ],
     input: [
-      "border-4 border-black",
+      "border-4",
+      "border-black",
       "bg-white",
       "font-medium",
       "focus:outline-none",
       "focus:bg-yellow-300",
-      "transition-colors duration-200",
+      "transition-colors",
+      "duration-200",
+      "focus:border-black",
     ],
   },
 });

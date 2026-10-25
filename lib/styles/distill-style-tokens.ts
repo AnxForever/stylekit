@@ -97,19 +97,25 @@ export const distillStyleTokens = createStyleTokens({
   required: {
     button: [
       "rounded-md",
-      "text-sm font-medium",
-      "transition-colors duration-150",
+      "font-medium",
+      "transition-colors",
+      "duration-150",
     ],
     card: [
       "bg-white",
-      "border border-[#E5E7EB]",
+      "border",
+      "border-[#E5E7EB]",
       "rounded-md",
     ],
     input: [
       "bg-white",
-      "border border-[#E5E7EB]",
+      "border",
+      "border-[#E5E7EB]",
       "rounded-md",
-      "focus:outline-none focus:border-[#2A7AE2] focus:ring-1 focus:ring-[#2A7AE2]/30",
+      "focus:outline-none",
+      "focus:border-[#2A7AE2]",
+      "focus:ring-1",
+      "focus:ring-[#2A7AE2]/30",
     ],
   },
 });

@@ -94,22 +94,21 @@ export const dataDenseTokens = createStyleTokens({
 
   required: {
     button: [
-      "px-2.5 py-1",
-      "text-xs",
       "rounded",
       "transition-colors",
     ],
     card: [
       "bg-white",
-      "border border-[#e2e8f0]",
+      "border",
+      "border-[#e2e8f0]",
       "rounded",
     ],
     input: [
-      "px-2.5 py-1.5",
-      "text-xs",
-      "border border-[#e2e8f0]",
+      "border",
+      "border-[#e2e8f0]",
       "rounded",
-      "focus:ring-1 focus:ring-[#3b82f6]",
+      "focus:ring-1",
+      "focus:ring-[#3b82f6]",
     ],
   },
 });

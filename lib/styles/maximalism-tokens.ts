@@ -115,22 +115,29 @@ export const maximalismTokens = createStyleTokens({
 
   required: {
     button: [
-      "rounded-sm",
-      "font-black uppercase tracking-widest",
-      "border-4",
-      "transition-all duration-200",
+      "rounded-xl",
+      "font-extrabold",
+      "uppercase",
+      "tracking-widest",
+      "border-3",
+      "transition-all",
+      "duration-300",
     ],
     card: [
-      "rounded-sm",
+      "rounded-2xl",
       "bg-[#1a0a2e]",
-      "border-4 border-[#d4145a]",
+      "border-4",
+      "border-[#ffbe0b]",
     ],
     input: [
-      "rounded-sm",
-      "border-4 border-[#8338ec]",
+      "rounded-xl",
+      "border-3",
+      "border-[#ffbe0b]/40",
       "bg-[#1a0a2e]",
-      "text-white",
+      "text-[#ffbe0b]",
       "focus:outline-none",
+      "focus:border-[#ffbe0b]",
+      "focus:shadow-[0_0_20px_rgba(255,190,11,0.35)]",
     ],
   },
 });

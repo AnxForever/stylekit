@@ -97,23 +97,32 @@ export const kineticConstructivismTokens = createStyleTokens({
 
   required: {
     button: [
-      "uppercase font-extrabold tracking-[0.12em] text-sm",
-      "border-2 border-[#17130E]",
+      "uppercase",
+      "font-extrabold",
+      "tracking-[0.12em]",
+      "border-2",
+      "border-[#17130E]",
       "rounded-none",
-      "transition-colors duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]",
+      "transition-colors",
+      "duration-300",
+      "ease-[cubic-bezier(0.16,1,0.3,1)]",
       "active:scale-[0.98]",
     ],
     card: [
       "bg-[#EFE9DC]",
-      "border-2 border-[#17130E]",
+      "border-2",
+      "border-[#17130E]",
       "rounded-none",
     ],
     input: [
       "bg-transparent",
-      "border-2 border-[#17130E]",
+      "border-2",
+      "border-[#17130E]",
       "rounded-none",
-      "text-[#17130E] placeholder-[#17130E]/30",
+      "text-[#17130E]",
+      "placeholder-[#17130E]/30",
       "focus:outline-none",
+      "focus:border-[#E0231B]",
     ],
   },
 });

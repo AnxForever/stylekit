@@ -137,7 +137,7 @@ export const fPatternLayoutRecipes = createStyleRecipes("f-pattern-layout", "F-P
           labelZh: "列表",
           classes: [
             "border-b border-gray-100",
-            "rounded-none",
+            "rounded-lg",
           ],
         },
       },

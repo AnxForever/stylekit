@@ -97,24 +97,23 @@ export const claymorphismTokens = createStyleTokens({
 
   required: {
     button: [
-      "bg-gradient-to-b from-pink-300 to-pink-400",
-      "rounded-full",
-      "text-white font-bold",
-      "shadow-[8px_8px_16px_rgba(0,0,0,0.1),inset_4px_4px_8px_rgba(255,255,255,0.4),inset_-2px_-2px_4px_rgba(0,0,0,0.1)]",
-      "hover:translate-y-1",
-      "transition-all duration-200",
+      "rounded-2xl",
+      "text-gray-800",
+      "font-semibold",
+      "shadow-[0_8px_16px_rgba(0,0,0,0.1),inset_0_-4px_8px_rgba(0,0,0,0.1)]",
+      "hover:-translate-y-0.5",
+      "transition-all",
+      "duration-200",
     ],
     card: [
-      "bg-gradient-to-br from-white to-pink-50",
-      "rounded-[32px]",
-      "shadow-[12px_12px_24px_rgba(0,0,0,0.1),inset_6px_6px_12px_rgba(255,255,255,0.6),inset_-4px_-4px_8px_rgba(0,0,0,0.05)]",
+      "rounded-3xl",
+      "shadow-[0_12px_24px_rgba(0,0,0,0.1),inset_0_-6px_12px_rgba(0,0,0,0.08)]",
     ],
     input: [
-      "bg-gradient-to-b from-gray-100 to-gray-200",
       "rounded-2xl",
-      "shadow-[inset_4px_4px_8px_rgba(0,0,0,0.1),inset_-4px_-4px_8px_rgba(255,255,255,0.9)]",
       "focus:outline-none",
       "transition-all",
+      "focus:shadow-[inset_0_2px_4px_rgba(0,0,0,0.06),0_0_0_3px_rgba(196,181,253,0.4)]",
     ],
   },
 });

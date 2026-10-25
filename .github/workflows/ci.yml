@@ -45,6 +45,7 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - run: pnpm run check:catalog
+      - run: pnpm run check:recipe-lint
       - run: pnpm run check:support-assets
       - run: pnpm run check:product-truth
       - run: pnpm run check:experience-packs

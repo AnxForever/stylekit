@@ -88,7 +88,8 @@ export const launchKeynoteTokens = createStyleTokens({
   required: {
     button: [
       "rounded-full",
-      "transition-all duration-300",
+      "transition-all",
+      "duration-300",
       "active:scale-[0.98]",
     ],
     card: [
@@ -97,11 +98,15 @@ export const launchKeynoteTokens = createStyleTokens({
     ],
     input: [
       "bg-[#1D1D1F]",
-      "border border-white/10",
+      "border",
+      "border-white/10",
       "rounded-xl",
-      "text-[#F5F5F7] placeholder-[#86868B]",
-      "focus:outline-none focus:border-[#2997FF]",
-      "transition-colors duration-300",
+      "text-[#F5F5F7]",
+      "placeholder-[#86868B]",
+      "focus:outline-none",
+      "focus:border-[#2997FF]",
+      "transition-colors",
+      "duration-300",
     ],
   },
 });

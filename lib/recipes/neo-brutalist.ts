@@ -84,7 +84,7 @@ export const neoBrutalistRecipes = createStyleRecipes("neo-brutalist", "Neo-Brut
           "md:hover:translate-x-1 md:hover:translate-y-1",
         ],
         active: ["active:translate-x-[4px] active:translate-y-[4px]"],
-        disabled: ["opacity-50 cursor-not-allowed"],
+        disabled: ["opacity-60 cursor-not-allowed"],
       },
     },
 
@@ -213,7 +213,7 @@ export const neoBrutalistRecipes = createStyleRecipes("neo-brutalist", "Neo-Brut
           "focus:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]",
           "md:focus:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]",
         ],
-        disabled: ["opacity-50 cursor-not-allowed bg-gray-100"],
+        disabled: ["opacity-60 cursor-not-allowed"],
       },
     },
 

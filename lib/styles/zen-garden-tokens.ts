@@ -101,8 +101,15 @@ export const zenGardenTokens = createStyleTokens({
   },
 
   required: {
-    button: ["bg-transparent", "transition-colors", "duration-700"],
-    card: ["transition-colors"],
-    input: ["bg-transparent", "focus:outline-none"],
+    button: [
+      "transition-all",
+      "duration-200",
+    ],
+    card: ["bg-[#f5f3ee]", "border", "border-[#c4bba8]/40", "rounded-sm"],
+    input: [
+      "bg-transparent",
+      "focus:outline-none",
+      "focus:border-[#4a5548]",
+    ],
   },
 });

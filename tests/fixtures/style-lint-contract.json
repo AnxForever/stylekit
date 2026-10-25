@@ -310,33 +310,39 @@
         "required": {
           "button": {
             "classes": [
+              "rounded-none",
               "border-2",
+              "md:border-4",
               "border-black",
-              "shadow-[4px_4px_0_#000]",
               "hover:shadow-none",
               "hover:translate-x-[2px]",
               "hover:translate-y-[2px]",
               "transition-all",
               "duration-200",
-              "cursor-pointer"
+              "font-black"
             ],
             "source": "curated"
           },
           "card": {
             "classes": [
+              "rounded-none",
               "border-2",
+              "md:border-4",
               "border-black",
-              "shadow-[4px_4px_0_#000]"
+              "bg-white"
             ],
             "source": "curated"
           },
           "input": {
             "classes": [
+              "rounded-none",
               "border-2",
+              "md:border-4",
               "border-black",
-              "bg-white",
-              "focus:ring-0",
-              "focus:border-black"
+              "font-mono",
+              "focus:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]",
+              "focus:outline-none",
+              "bg-white"
             ],
             "source": "curated"
           }
@@ -346,8 +352,6 @@
           "border-2",
           "border-4",
           "border-black",
-          "shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]",
-          "shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]",
           "shadow-none",
           "translate-x-[2px]",
           "translate-y-[2px]",
@@ -356,10 +360,8 @@
           "font-black",
           "bg-white",
           "font-mono",
-          "outline-none",
-          "shadow-[4px_4px_0_#000]",
-          "cursor-pointer",
-          "ring-0"
+          "shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]",
+          "outline-none"
         ],
         "unsupportedRules": [],
         "recommended": {
@@ -572,7 +574,7 @@
             }
           },
           {
-            "pattern": "^border-(?!white\\/|\\[)",
+            "pattern": "^border-(?!(?:white\\/|\\[|(?:t|b|l|r|x|y)(?:$|-)))",
             "flags": "",
             "source": "tokens",
             "reasons": {
@@ -710,76 +712,75 @@
         "required": {
           "button": {
             "classes": [
-              "backdrop-blur-lg",
-              "bg-white/10",
+              "backdrop-blur-2xl",
+              "backdrop-saturate-150",
               "border",
-              "border-white/20",
-              "rounded-xl"
+              "border-white/40",
+              "rounded-2xl",
+              "text-white",
+              "hover:bg-white/35",
+              "hover:shadow-xl",
+              "transition-all",
+              "duration-300",
+              "ease-out"
             ],
             "source": "curated"
           },
           "card": {
             "classes": [
-              "backdrop-blur-xl",
-              "bg-white/10",
+              "bg-white/20",
+              "backdrop-blur-3xl",
+              "backdrop-saturate-150",
               "border",
-              "border-white/20",
-              "rounded-2xl"
+              "border-white/30",
+              "rounded-3xl",
+              "shadow-xl",
+              "[background-image:linear-gradient(to_bottom,rgba(255,255,255,0.15),transparent)]"
             ],
             "source": "curated"
           },
           "input": {
             "classes": [
-              "bg-white/6",
-              "backdrop-blur-[40px]",
-              "backdrop-saturate-[180%]",
+              "bg-white/15",
+              "backdrop-blur-2xl",
+              "backdrop-saturate-150",
               "border",
-              "border-white/15",
+              "border-white/30",
               "rounded-2xl",
               "text-white",
-              "placeholder-white/35",
-              "shadow-[inset_0_1px_0_rgba(255,255,255,0.15),inset_0_-1px_0_rgba(2,6,16,0.3)]",
               "focus:outline-none",
-              "focus:border-white/35",
-              "focus:bg-white/10",
-              "focus:shadow-[0_0_0_3px_rgba(228,184,99,0.15),inset_0_1px_0_rgba(255,255,255,0.25)]",
+              "focus:border-white/50",
+              "focus:bg-white/25",
+              "focus:shadow-[0_0_20px_rgba(255,255,255,0.15)]",
               "transition-all",
-              "duration-500",
-              "ease-[cubic-bezier(0.16,1,0.3,1)]"
+              "duration-300",
+              "ease-out"
             ],
-            "source": "tokens"
+            "source": "curated"
           }
         },
         "exempt": [
-          "bg-white/10",
-          "backdrop-blur-[40px]",
-          "backdrop-saturate-[180%]",
+          "backdrop-blur-2xl",
+          "backdrop-saturate-150",
           "border",
-          "border-white/20",
+          "border-white/40",
           "rounded-2xl",
           "text-white",
-          "shadow-[0_4px_16px_rgba(3,7,18,0.45),inset_0_1px_0_rgba(255,255,255,0.25),inset_0_-1px_0_rgba(2,6,16,0.3)]",
-          "bg-white/15",
-          "border-white/35",
-          "shadow-[0_10px_32px_rgba(3,7,18,0.55),inset_0_1px_0_rgba(255,255,255,0.35)]",
-          "-translate-y-0.5",
+          "bg-white/35",
+          "shadow-xl",
           "transition-all",
-          "duration-500",
-          "ease-[cubic-bezier(0.16,1,0.3,1)]",
-          "bg-white/8",
-          "backdrop-blur-[60px]",
-          "border-white/15",
+          "duration-300",
+          "ease-out",
+          "bg-white/20",
+          "backdrop-blur-3xl",
+          "border-white/30",
           "rounded-3xl",
-          "shadow-[0_16px_40px_rgba(3,7,18,0.5),inset_0_1px_0_rgba(255,255,255,0.22),inset_0_-1px_0_rgba(2,6,16,0.35)]",
-          "[background-image:linear-gradient(to_bottom,rgba(255,255,255,0.12),transparent_50%)]",
-          "bg-white/6",
-          "placeholder-white/35",
-          "shadow-[inset_0_1px_0_rgba(255,255,255,0.15),inset_0_-1px_0_rgba(2,6,16,0.3)]",
+          "[background-image:linear-gradient(to_bottom,rgba(255,255,255,0.15),transparent)]",
+          "bg-white/15",
           "outline-none",
-          "shadow-[0_0_0_3px_rgba(228,184,99,0.15),inset_0_1px_0_rgba(255,255,255,0.25)]",
-          "backdrop-blur-lg",
-          "rounded-xl",
-          "backdrop-blur-xl"
+          "border-white/50",
+          "bg-white/25",
+          "shadow-[0_0_20px_rgba(255,255,255,0.15)]"
         ],
         "unsupportedRules": [],
         "recommended": {

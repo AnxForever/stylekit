@@ -197,7 +197,7 @@ export const magazineGridRecipes = createStyleRecipes("magazine-grid", "Magazine
           id: "underline",
           label: "Underline",
           labelZh: "下划线",
-          classes: ["bg-transparent border-b border-zinc-300 rounded-none"],
+          classes: ["bg-transparent border-b border-zinc-300 rounded-b-lg"],
         },
       },
       slots: [

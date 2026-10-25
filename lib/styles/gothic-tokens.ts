@@ -75,17 +75,20 @@ export const gothicTokens = createStyleTokens({
   required: {
     button: [
       "border-2",
-      "border-[#c9a227]/60",
       "font-serif",
-      "transition-all duration-300 ease-in-out",
+      "transition-all",
+      "duration-300",
+      "ease-in-out",
     ],
     card: [
       "bg-[#0a0a0a]/90",
-      "border-2 border-[#c9a227]/40",
+      "border-2",
+      "border-[#c9a227]/40",
       "shadow-[0_4px_20px_rgba(10,10,10,0.8)]",
     ],
     input: [
-      "border-2 border-[#c9a227]/30",
+      "border-2",
+      "border-[#c9a227]/30",
       "bg-[#0a0a0a]/80",
       "text-[#c9a227]",
       "font-serif",

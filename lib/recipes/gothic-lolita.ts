@@ -328,13 +328,13 @@ export const gothicLolitaRecipes = createStyleRecipes("gothic-lolita", "Gothic L
       id: "rosetteBadge",
       name: "Rosette Badge",
       nameZh: "玫瑰花结徽章",
-      description: "Circular rosette badge with scalloped edges",
+      description: "Rosette badge with layered ribbon edges",
       skeleton: {
         element: "div",
         baseClasses: [
           "inline-flex items-center justify-center",
           "w-16 h-16",
-          "rounded-full",
+          "rounded-sm",
           "bg-[#8b1a2a]",
           "text-[#e5e5e5]",
           "font-serif font-bold",

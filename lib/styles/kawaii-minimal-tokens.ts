@@ -95,7 +95,17 @@ export const kawaiiMinimalTokens = createStyleTokens({
 
   required: {
     button: ["rounded-full", "transition-all", "font-medium"],
-    card: ["rounded-3xl", "shadow-md"],
-    input: ["rounded-2xl", "border-2", "focus:outline-none"],
+    card: [
+      "rounded-2xl",
+      "shadow-sm",
+    ],
+    input: [
+      "rounded-full",
+      "border",
+      "focus:outline-none",
+      "focus:border-pink-300",
+      "focus:ring-2",
+      "focus:ring-pink-200",
+    ],
   },
 });

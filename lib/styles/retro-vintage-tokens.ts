@@ -101,22 +101,29 @@ export const retroVintageTokens = createStyleTokens({
 
   required: {
     button: [
-      "font-serif uppercase tracking-widest",
-      "transition-colors duration-200",
+      "font-serif",
+      "uppercase",
+      "tracking-widest",
+      "transition-colors",
+      "duration-200",
+      "border-2",
     ],
     card: [
-      "border-2 border-[#8b4513]",
+      "border-2",
+      "border-[#8b4513]",
       "bg-[#f5e6d3]",
-      "font-serif",
     ],
     input: [
-      "border-2 border-[#8b4513]",
+      "border-2",
+      "border-[#8b4513]",
       "bg-transparent",
       "text-[#8b4513]",
       "font-serif",
       "focus:outline-none",
       "focus:bg-[#8b4513]/5",
-      "transition-colors duration-200",
+      "transition-colors",
+      "duration-200",
+      "focus:border-[#5c2e0a]",
     ],
   },
 });

@@ -163,7 +163,7 @@ export const liquidGlassRecipes = createStyleRecipes("liquid-glass", "Apple Liqu
           label: "Dark",
           labelZh: "深色",
           classes: [
-            "bg-black/20",
+            "bg-[#000000]/20",
           ],
         },
         accent: {

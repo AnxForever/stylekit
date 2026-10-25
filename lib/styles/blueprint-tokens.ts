@@ -104,22 +104,24 @@ export const blueprintTokens = createStyleTokens({
 
   required: {
     button: [
-      "px-6 py-3",
       "font-mono",
-      "uppercase tracking-widest",
-      "text-sm",
-      "transition-all duration-200",
+      "uppercase",
+      "tracking-wider",
+      "transition-all",
+      "duration-200",
     ],
     card: [
-      "bg-[#1e3a5f]/60",
-      "border border-white/20",
+      "bg-[#1e3a5f]/90",
+      "border",
+      "border-white/30",
     ],
     input: [
-      "bg-transparent",
-      "border border-white/30",
+      "bg-[#1e3a5f]/60",
+      "border",
+      "border-white/40",
       "text-white",
       "font-mono",
-      "focus:border-[#4a90d9]",
+      "focus:border-white/80",
       "focus:outline-none",
     ],
   },
