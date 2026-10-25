@@ -2,8 +2,10 @@
 
 import { useCallback, useEffect, useId, useLayoutEffect, useRef, useState } from "react";
 import { Code2, Copy, Download, Loader2, RotateCw, X } from "lucide-react";
+import { trackEvent } from "@/lib/analytics/events";
 import { useClipboard } from "@/lib/hooks/use-clipboard";
 import {
+  getTemplateSourceLanguage,
   parseTemplateSourceProject,
   type TemplateSourceProject,
 } from "@/lib/templates/source";
@@ -96,7 +98,11 @@ export function TemplateSourceDialog({ slug, name, onClose }: TemplateSourceDial
 
   const handleCopy = useCallback(() => {
     if (selectedSource === null || !selectedPath) return;
-    void copy(selectedSource, slug + ":" + selectedPath);
+    const language = getTemplateSourceLanguage(selectedPath);
+    void copy(selectedSource, slug + ":" + selectedPath).then((didCopy) => {
+      // Count only copies the clipboard accepted, matching the visible feedback.
+      if (didCopy) trackEvent("template_source_copy", { slug, language });
+    });
   }, [copy, selectedPath, selectedSource, slug]);
 
   const handleRetry = () => {
@@ -186,6 +192,7 @@ export function TemplateSourceDialog({ slug, name, onClose }: TemplateSourceDial
             <a
               href={"/api/templates/" + encodeURIComponent(slug) + "/download"}
               download
+              onClick={() => trackEvent("template_download", { slug, surface: "source_dialog" })}
               className="inline-flex min-h-9 items-center gap-2 border border-foreground px-3 py-2 text-xs font-medium text-foreground transition-colors hover:bg-foreground hover:text-background focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
             >
               <Download className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />

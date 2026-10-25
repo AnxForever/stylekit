@@ -50,6 +50,7 @@ buttons. Multi-category filtering and search aliases repair discovery directly.
 | PROJECT-DISCOVERY | Secondary categories, name/domain/repository/stack search; preserve empty query and combined filters. | Covered: discovery unit cases and desktop/mobile browser checks / implemented / backfilled |
 | PROJECT-SCOPE | Label upstream projects versus downloadable examples; no local ZIP/source buttons for external sites; license only when known. | Covered: asset/export API unit checks and desktop/mobile card/source-browser checks / implemented / backfilled |
 | PROJECT-CATALOG | Three additional complete projects with real routes, documented setup, license and preview; retain attribution and original destinations. | Covered for listing: source routes, license and real homepage preview checked; fresh upstream builds not claimed / implemented / none |
+| PROJECT-REFERRALS | Record clicks from a partner card to its preview site or repository, keyed by catalog id; reject ids that are not partner projects. | Covered: event schema, analytics route and template identity unit checks / implemented / none |
 
 Historical sample limitations remain explicit: some older interface demos have
 placeholder links or local form feedback. This release does not turn all of them

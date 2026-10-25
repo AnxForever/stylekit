@@ -13,6 +13,7 @@ import { TemplatesFilter } from "@/components/templates/templates-filter";
 import { TemplateCoverPreview } from "@/components/templates/template-cover-preview";
 import { TemplateSourceDialog } from "@/components/templates/template-source-dialog";
 import { LocalizedLink } from "@/components/i18n/localized-link";
+import { trackEvent } from "@/lib/analytics/events";
 import { useI18n } from "@/lib/i18n/context";
 import { pickLocale } from "@/lib/i18n/locale-copy";
 import {
@@ -330,6 +331,7 @@ export default function TemplatesPage() {
   const [sourceTemplate, setSourceTemplate] = useState<{ slug: string; name: string } | null>(null);
   const clientReady = useSyncExternalStore(subscribeToClientReady, getClientReady, getServerReady);
   const handleViewSource = useCallback((slug: string, name: string) => {
+    trackEvent("template_source_open", { slug, surface: "templates_catalog" });
     setSourceTemplate({ slug, name });
   }, []);
   const handleCloseSource = useCallback(() => {
@@ -587,6 +589,7 @@ export default function TemplatesPage() {
                         ref={(element) => {
                           templateCardRefs.current[index] = element;
                         }}
+                        onClick={() => trackEvent("template_external_click", { slug, target: "site" })}
                         onKeyDown={(event) => handleTemplateCardKeyDown(event, index)}
                         aria-label={`${templateName} - ${t("templates.externalPreview")}`}
                         className="block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
@@ -649,6 +652,7 @@ export default function TemplatesPage() {
                           href={template.external.repoUrl}
                           target="_blank"
                           rel="noopener noreferrer"
+                          onClick={() => trackEvent("template_external_click", { slug, target: "repo" })}
                           title={t("templates.fullSource")}
                           className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium border border-foreground text-foreground hover:bg-foreground hover:text-background transition-colors"
                         >
@@ -659,6 +663,7 @@ export default function TemplatesPage() {
                           href={template.external.siteUrl}
                           target="_blank"
                           rel="noopener noreferrer"
+                          onClick={() => trackEvent("template_external_click", { slug, target: "site" })}
                           title={t("templates.externalPreview")}
                           className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-muted border border-border hover:border-foreground hover:text-foreground transition-colors"
                         >
@@ -776,6 +781,7 @@ export default function TemplatesPage() {
                       <a
                         href={"/api/templates/" + encodeURIComponent(slug) + "/download"}
                         download
+                        onClick={() => trackEvent("template_download", { slug, surface: "templates_catalog" })}
                         title={t("templates.downloadExample")}
                         className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium border border-foreground text-foreground hover:bg-foreground hover:text-background transition-colors"
                       >

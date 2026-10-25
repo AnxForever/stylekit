@@ -2,6 +2,7 @@
 
 import { usePathname, useRouter } from "next/navigation";
 import { ArrowLeft, Download } from "lucide-react";
+import { trackEvent } from "@/lib/analytics/events";
 import { useI18n } from "@/lib/i18n/context";
 import { navigateBackOrFallback } from "@/lib/navigation/smart-back";
 
@@ -73,6 +74,7 @@ export function TemplateBackButton({
       {slug ? (
         <a
           href={`/api/templates/${slug}/download`}
+          onClick={() => trackEvent("template_download", { slug, surface: "template_page" })}
           title={t("templates.download")}
           aria-label={t("templates.download")}
           className={`inline-flex items-center gap-2 px-4 py-2.5 transition-all duration-200 ${style}`}

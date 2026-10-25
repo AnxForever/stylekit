@@ -41,6 +41,10 @@ import {
 import { getSupabaseAdmin } from "@/lib/supabase/server";
 import { getStyleBySlug } from "@/lib/styles";
 import { resolveStyleBySlug } from "@/lib/styles/community-runtime";
+import { templateCatalog } from "@/lib/templates/catalog";
+
+const showcaseTemplateSlug = templateCatalog.find((entry) => !entry.external)!.id;
+const partnerProjectId = templateCatalog.find((entry) => entry.external)!.id;
 
 const mockedVerifyTrustedOrigin = vi.mocked(verifyTrustedOrigin);
 const mockedCheckRateLimit = vi.mocked(checkRateLimit);
@@ -269,6 +273,61 @@ describe("analytics route", () => {
         sessionId: null,
       }),
     );
+
+    expect(response.status).toBe(400);
+    expect(insert).not.toHaveBeenCalled();
+  });
+
+  it.each([
+    {
+      eventType: "template_download",
+      eventData: { slug: showcaseTemplateSlug, surface: "template_page" },
+    },
+    {
+      eventType: "template_external_click",
+      eventData: { slug: partnerProjectId, target: "site" },
+    },
+  ])("stores $eventType for a catalog template", async ({ eventType, eventData }) => {
+    const insert = vi.fn().mockResolvedValue({ error: null });
+    mockedGetSupabaseAdmin.mockReturnValue({
+      from: vi.fn().mockReturnValue({ insert }),
+    } as never);
+
+    const response = await POST(request({ eventType, eventData, sessionId: null }));
+
+    expect(response.status).toBe(200);
+    expect(insert).toHaveBeenCalledWith(
+      expect.objectContaining({
+        event_type: eventType,
+        event_data: expect.objectContaining(eventData),
+        style_slug: null,
+      }),
+    );
+  });
+
+  it.each([
+    [
+      "a download of a template outside the catalog",
+      "template_download",
+      { slug: "not-a-template", surface: "templates_catalog" },
+    ],
+    [
+      "a page view of a template outside the catalog",
+      "template_view",
+      { slug: "not-a-template", source: "page" },
+    ],
+    [
+      "an in-site template posing as a partner project",
+      "template_external_click",
+      { slug: showcaseTemplateSlug, target: "site" },
+    ],
+  ])("rejects %s", async (_label, eventType, eventData) => {
+    const insert = vi.fn();
+    mockedGetSupabaseAdmin.mockReturnValue({
+      from: vi.fn().mockReturnValue({ insert }),
+    } as never);
+
+    const response = await POST(request({ eventType, eventData, sessionId: null }));
 
     expect(response.status).toBe(400);
     expect(insert).not.toHaveBeenCalled();
