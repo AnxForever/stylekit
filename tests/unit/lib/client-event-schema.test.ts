@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   parseClientAnalyticsPayload,
   readEventStyleSlug,
+  readEventTemplateReference,
 } from "@/lib/analytics/client-event-schema";
 
 describe("client analytics runtime schema", () => {
@@ -190,5 +191,102 @@ describe("client analytics runtime schema", () => {
         source: "page",
       }),
     ).toBeNull();
+  });
+});
+
+describe("template engagement events", () => {
+  it.each([
+    {
+      eventType: "template_source_open",
+      eventData: { slug: "saas-landing", surface: "templates_catalog" },
+      kind: "showcase",
+    },
+    {
+      eventType: "template_source_copy",
+      eventData: { slug: "saas-landing", language: "tsx" },
+      kind: "showcase",
+    },
+    {
+      eventType: "template_download",
+      eventData: { slug: "saas-landing", surface: "template_page" },
+      kind: "showcase",
+    },
+    {
+      eventType: "template_external_click",
+      eventData: { slug: "partner-project", target: "repo" },
+      kind: "external",
+    },
+  ] as const)(
+    "accepts $eventType as a $kind template reference",
+    ({ eventType, eventData, kind }) => {
+      const parsed = parseClientAnalyticsPayload({
+        eventType,
+        eventData,
+        sessionId: null,
+      });
+
+      expect(parsed.success).toBe(true);
+      if (!parsed.success) return;
+      expect(
+        readEventTemplateReference(parsed.data.eventType, parsed.data.eventData),
+      ).toEqual({ kind, slug: eventData.slug });
+      expect(
+        readEventStyleSlug(parsed.data.eventType, parsed.data.eventData),
+      ).toBeNull();
+    },
+  );
+
+  it("resolves page views to in-site templates and ignores non-template events", () => {
+    expect(
+      readEventTemplateReference("template_view", {
+        slug: "saas-landing",
+        source: "page",
+      }),
+    ).toEqual({ kind: "showcase", slug: "saas-landing" });
+    expect(
+      readEventTemplateReference("style_view", {
+        slug: "corporate-clean",
+        source: "page",
+      }),
+    ).toBeNull();
+  });
+
+  it.each([
+    [
+      "an unknown download surface",
+      "template_download",
+      { slug: "saas-landing", surface: "footer" },
+    ],
+    [
+      "a source viewer opened outside the catalog",
+      "template_source_open",
+      { slug: "saas-landing", surface: "template_page" },
+    ],
+    [
+      "a file path instead of a language bucket",
+      "template_source_copy",
+      { slug: "saas-landing", language: "app/templates/saas-landing/page.tsx" },
+    ],
+    [
+      "an unknown partner link target",
+      "template_external_click",
+      { slug: "partner-project", target: "license" },
+    ],
+    [
+      "an extra field",
+      "template_download",
+      { slug: "saas-landing", surface: "templates_catalog", path: "page.tsx" },
+    ],
+    [
+      "a malformed slug",
+      "template_download",
+      { slug: "../saas-landing", surface: "templates_catalog" },
+    ],
+    ["a missing slug", "template_source_copy", { language: "tsx" }],
+  ])("rejects %s", (_label, eventType, eventData) => {
+    expect(
+      parseClientAnalyticsPayload({ eventType, eventData, sessionId: null })
+        .success,
+    ).toBe(false);
   });
 });
