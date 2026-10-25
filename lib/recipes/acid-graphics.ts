@@ -208,14 +208,14 @@ export const acidGraphicsRecipes = createStyleRecipes(
       id: "warpedBanner",
       name: "Warped Banner",
       nameZh: "\u626d\u66f2\u6a2a\u5e45",
-      description: "Full-width banner with skewed transform and fluorescent gradient background",
+      description: "Full-width banner with skewed transform and flat fluorescent background",
       skeleton: {
         element: "div",
         baseClasses: [
           "relative",
           "w-full",
           "py-6 px-8",
-          "bg-gradient-to-r from-[#39ff14] via-[#a020f0] to-[#ff6ec7]",
+          "bg-[#39ff14]",
           "skew-y-[-2deg]",
           "rounded-none",
           "font-mono",
@@ -231,13 +231,13 @@ export const acidGraphicsRecipes = createStyleRecipes(
           id: "purple",
           label: "Purple",
           labelZh: "\u7d2b\u8272",
-          classes: ["from-[#a020f0] via-[#ff6ec7] to-[#e6ff00]"],
+          classes: ["bg-[#a020f0]"],
         },
         pink: {
           id: "pink",
           label: "Pink",
           labelZh: "\u7c89\u8272",
-          classes: ["from-[#ff6ec7] via-[#e6ff00] to-[#39ff14]"],
+          classes: ["bg-[#ff6ec7]"],
         },
       },
       slots: [

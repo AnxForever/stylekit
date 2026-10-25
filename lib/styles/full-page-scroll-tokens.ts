@@ -82,21 +82,23 @@ export const fullPageScrollTokens = createStyleTokens({
 
   required: {
     button: [
-      "px-8 md:px-12 py-4 md:py-5",
-      "font-semibold text-lg",
+      "font-semibold",
       "transition-colors",
     ],
     card: [
       "min-h-screen",
       "snap-start",
-      "flex items-center justify-center",
+      "flex",
+      "items-center",
+      "justify-center",
     ],
     input: [
       "bg-transparent",
-      "border-b border-white/30",
-      "text-white text-lg",
-      "placeholder-white/50",
-      "focus:outline-none focus:border-white",
+      "border-b",
+      "border-white/30",
+      "text-white",
+      "focus:outline-none",
+      "focus:border-white",
       "transition-colors",
     ],
   },

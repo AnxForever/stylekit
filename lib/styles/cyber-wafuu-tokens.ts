@@ -96,21 +96,32 @@ export const cyberWafuuTokens = createStyleTokens({
 
   required: {
     button: [
-      "font-sans font-semibold tracking-wider",
-      "border border-[#1e3a5f]/60",
-      "transition-all duration-300 ease-in-out",
+      "font-sans",
+      "font-semibold",
+      "tracking-wider",
+      "border",
+      "border-[#1e3a5f]/60",
+      "transition-all",
+      "duration-300",
+      "ease-in-out",
     ],
     card: [
       "bg-[#080814]",
-      "border border-[#1e3a5f]/30",
-      "transition-all duration-300 ease-in-out",
+      "border",
+      "border-[#1e3a5f]/30",
+      "transition-all",
+      "duration-300",
+      "ease-in-out",
     ],
     input: [
       "bg-[#080814]",
-      "border border-[#1e3a5f]/30",
+      "border",
+      "border-[#1e3a5f]/30",
       "text-[#e2e8f0]",
       "font-sans",
       "focus:outline-none",
+      "focus:border-[#38bdf8]/60",
+      "focus:shadow-[0_0_12px_rgba(56,189,248,0.3)]",
     ],
   },
 });

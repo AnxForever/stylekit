@@ -537,7 +537,7 @@ export const impressionistOilRecipes = createStyleRecipes("impressionist-oil", "
         element: "div",
         baseClasses: [
           "bg-[#f5f0e1]",
-          "rounded-sm",
+          "rounded-lg",
           "transition-all duration-300 ease-in-out",
           "relative",
         ],

@@ -6,6 +6,96 @@ import type {
   RecipeRenderResult,
 } from "./types";
 
+const SELF_GATED_STATE_VARIANTS = new Set([
+  "hover",
+  "focus",
+  "focus-visible",
+  "focus-within",
+  "active",
+  "disabled",
+  "enabled",
+  "checked",
+  "indeterminate",
+  "default",
+  "required",
+  "optional",
+  "valid",
+  "invalid",
+  "in-range",
+  "out-of-range",
+  "read-only",
+  "read-write",
+  "placeholder-shown",
+  "autofill",
+  "visited",
+  "target",
+  "open",
+  "closed",
+]);
+
+function splitClassVariants(className: string): string[] {
+  const variants: string[] = [];
+  let bracketDepth = 0;
+  let parenDepth = 0;
+  let segmentStart = 0;
+
+  for (let index = 0; index < className.length; index += 1) {
+    const character = className[index];
+    if (character === "[" || character === "(") {
+      bracketDepth += character === "[" ? 1 : 0;
+      parenDepth += character === "(" ? 1 : 0;
+    } else if (character === "]" || character === ")") {
+      bracketDepth -= character === "]" ? 1 : 0;
+      parenDepth -= character === ")" ? 1 : 0;
+    } else if (character === ":" && bracketDepth === 0 && parenDepth === 0) {
+      variants.push(className.slice(segmentStart, index));
+      segmentStart = index + 1;
+    }
+  }
+
+  return variants;
+}
+
+function isGatedStateClass(className: string): boolean {
+  return splitClassVariants(className).some((variant) => {
+    if (SELF_GATED_STATE_VARIANTS.has(variant)) return true;
+    const relationalState = variant.match(/^(?:group|peer)-([a-z-]+)(?:\/[a-zA-Z0-9_-]+)?$/);
+    if (relationalState && SELF_GATED_STATE_VARIANTS.has(relationalState[1])) return true;
+    if (variant.startsWith("aria-") || variant.startsWith("data-")) return true;
+    if (!variant.startsWith("[") || !variant.endsWith("]") || !variant.includes("&")) return false;
+
+    return /&(?::(?:hover|focus(?:-visible|-within)?|active|disabled|enabled|checked|indeterminate|valid|invalid|open|closed)\b|\[(?:aria|data)-)/.test(variant);
+  });
+}
+
+function uniqueClassTokens(classGroups: string[][]): string[] {
+  const classes: string[] = [];
+  const seen = new Set<string>();
+
+  for (const group of classGroups) {
+    for (const classEntry of group) {
+      for (const className of classEntry.split(/\s+/).filter(Boolean)) {
+        if (seen.has(className)) continue;
+        seen.add(className);
+        classes.push(className);
+      }
+    }
+  }
+
+  return classes;
+}
+
+function collectSelfGatedStateClasses(
+  recipe: ComponentRecipe,
+  includeHover: boolean,
+): string[] {
+  const tokens = Object.entries(recipe.states ?? {}).flatMap(([state, classes]) => {
+    if (state === "hover" && !includeHover) return [];
+    return (classes ?? []).flatMap((classEntry: string) => classEntry.split(/\s+/).filter(Boolean));
+  });
+  return tokens.filter(isGatedStateClass);
+}
+
 /**
  * Renders a component recipe with the given parameters
  */
@@ -44,21 +134,35 @@ export function renderRecipe(
     }
   }
 
-  // Add state classes
+  // State variants are gated by CSS and can be included in the default output.
+  // Group/peer variants are gated by their relationship; unprefixed simulation
+  // classes stay opt-in through params.state.
+  const interactiveParameter = recipe.parameters.find(
+    (parameter) => parameter.id === "interactive" && parameter.type === "boolean",
+  );
+  const interactive = interactiveParameter
+    ? params.params[interactiveParameter.id] ?? interactiveParameter.default
+    : true;
+  // Keep an interactive=false recipe static by default, but let an explicit
+  // hover render show its requested state for preview and code generation.
+  const includeHover = interactive !== false || params.state === "hover";
+  classGroups.states = [...collectSelfGatedStateClasses(recipe, includeHover)];
+
+  // Add explicitly simulated state classes.
   if (recipe.states && params.state && params.state !== "default") {
     const stateClasses = recipe.states[params.state];
     if (stateClasses) {
-      classGroups.states = [...stateClasses];
+      classGroups.states = uniqueClassTokens([classGroups.states, stateClasses]);
     }
   }
 
   // Combine all classes
-  const allClasses = [
-    ...classGroups.base,
-    ...classGroups.variant,
-    ...classGroups.params,
-    ...classGroups.states,
-  ];
+  const allClasses = uniqueClassTokens([
+    classGroups.base,
+    classGroups.variant,
+    classGroups.params,
+    classGroups.states,
+  ]);
 
   const className = allClasses.join(" ");
 

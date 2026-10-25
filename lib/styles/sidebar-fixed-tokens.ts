@@ -88,21 +88,23 @@ export const sidebarFixedTokens = createStyleTokens({
   required: {
     button: [
       "rounded-lg",
-      "text-sm font-medium",
+      "font-medium",
       "transition-colors",
     ],
     card: [
       "bg-white",
       "rounded-xl",
-      "border border-zinc-200",
-      "shadow-sm",
+      "border",
+      "border-zinc-200",
     ],
     input: [
       "bg-zinc-100",
       "border-0",
       "rounded-lg",
       "text-sm",
-      "focus:outline-none focus:ring-2 focus:ring-blue-500/30",
+      "focus:outline-none",
+      "focus:ring-2",
+      "focus:ring-blue-500/30",
     ],
   },
 });

@@ -105,21 +105,21 @@ export const particleTokens = createStyleTokens({
 
   required: {
     button: [
-      "rounded-lg",
-      "font-medium",
-      "transition-all duration-300",
+      "transition-all",
+      "duration-200",
     ],
     card: [
-      "backdrop-blur",
-      "rounded-xl",
-      "border border-white/5",
+      "rounded-lg",
+      "border",
+      "border-cyan-500/25",
     ],
     input: [
-      "bg-[#0a0e1a]",
-      "border border-white/10",
-      "rounded-lg",
-      "text-[#e0e8ff]",
-      "focus:border-blue-500/50",
+      "bg-[#020617]/90",
+      "border",
+      "border-cyan-500/35",
+      "rounded-md",
+      "text-cyan-100",
+      "focus:border-cyan-300",
     ],
   },
 });

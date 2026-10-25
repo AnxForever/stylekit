@@ -107,24 +107,21 @@ export const galleryDarkTokens = createStyleTokens({
 
   required: {
     button: [
-      "border border-[#2A2A2A]",
-      "rounded-sm",
-      "font-light",
-      "tracking-wider",
-      "transition-all duration-300",
+      "tracking-[0.15em]",
+      "transition-colors",
+      "duration-200",
     ],
     card: [
-      "bg-[#0A0A0A]",
-      "border border-[#2A2A2A]",
+      "bg-[#1A1A1A]",
       "rounded-sm",
     ],
     input: [
-      "bg-[#0A0A0A]",
-      "border border-[#2A2A2A]",
-      "rounded-sm",
+      "bg-transparent",
+      "border-[#2A2A2A]",
       "font-light",
       "text-white",
-      "focus:outline-none focus:border-[#C4956A] focus:ring-1 focus:ring-[#C4956A]/30",
+      "focus:outline-none",
+      "focus:border-[#C4956A]",
     ],
   },
 });

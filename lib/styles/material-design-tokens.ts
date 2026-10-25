@@ -95,23 +95,21 @@ export const materialDesignTokens = createStyleTokens({
 
   required: {
     button: [
-      "rounded-md",
-      "shadow-[0_1px_3px_rgba(0,0,0,0.12),0_1px_2px_rgba(0,0,0,0.14)]",
-      "hover:shadow-[0_14px_28px_rgba(0,0,0,0.18),0_5px_10px_rgba(0,0,0,0.12)]",
-      "transition-all duration-200 ease-in-out",
+      "rounded-full",
+      "hover:shadow-lg",
+      "transition-all",
+      "duration-200",
       "font-medium",
     ],
     card: [
-      "rounded-md",
-      "shadow-[0_1px_3px_rgba(0,0,0,0.12),0_1px_2px_rgba(0,0,0,0.14)]",
+      "rounded-xl",
       "bg-white",
     ],
     input: [
       "rounded-md",
-      "border border-[#e0e0e0]",
-      "bg-white",
-      "font-sans",
-      "focus:border-[#6200ee]",
+      "border-gray-400",
+      "bg-transparent",
+      "focus:border-[#1976d2]",
       "focus:outline-none",
     ],
   },

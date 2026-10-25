@@ -92,21 +92,26 @@ export const parallaxEditorialTokens = createStyleTokens({
   required: {
     button: [
       "font-serif",
-      "transition-colors duration-300",
-      "hover:text-[#B3401F]",
+      "transition-colors",
+      "duration-300",
     ],
     card: [
-      "border-t border-[#1A1712]/20",
+      "border-t",
+      "border-[#1A1712]/20",
       "rounded-none",
       "pt-5",
     ],
     input: [
       "bg-transparent",
-      "border-b border-[#1A1712]/25",
+      "border-b",
+      "border-[#1A1712]/25",
       "rounded-none",
-      "text-[#1A1712] placeholder-[#1A1712]/30",
-      "focus:outline-none focus:border-[#B3401F]",
-      "transition-colors duration-300",
+      "text-[#1A1712]",
+      "placeholder-[#1A1712]/30",
+      "focus:outline-none",
+      "focus:border-[#B3401F]",
+      "transition-colors",
+      "duration-300",
     ],
   },
 });

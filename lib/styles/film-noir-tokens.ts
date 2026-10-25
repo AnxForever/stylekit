@@ -93,8 +93,20 @@ export const filmNoirTokens = createStyleTokens({
   },
 
   required: {
-    button: ["font-serif", "italic", "tracking-wide", "transition-colors"],
-    card: ["bg-neutral-900", "relative", "overflow-hidden"],
-    input: ["bg-neutral-950", "border-b", "font-serif", "focus:outline-none"],
+    button: [
+      "font-serif",
+      "tracking-wide",
+      "transition-all",
+    ],
+    card: [
+      "bg-neutral-900",
+      "overflow-hidden",
+    ],
+    input: [
+      "bg-[#0a0a0a]",
+      "font-serif",
+      "focus:outline-none",
+      "focus:border-neutral-400",
+    ],
   },
 });

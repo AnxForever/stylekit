@@ -260,12 +260,12 @@ export const magicCircleRecipes = createStyleRecipes("magic-circle", "Magic Circ
       id: "runeGlyph",
       name: "Rune Glyph",
       nameZh: "符文徽记",
-      description: "Circular glyph badge with golden border and mystical feel",
+      description: "Glyph badge with golden border and mystical feel",
       skeleton: {
         element: "div",
         baseClasses: [
           "inline-flex items-center justify-center",
-          "rounded-full",
+          "rounded-sm",
           "bg-[#0a0920]",
           "border-2",
           "font-serif",

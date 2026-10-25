@@ -215,7 +215,6 @@ export const darkAcademiaRecipes = createStyleRecipes("dark-academia", "Dark Aca
       states: {
         focus: [
           "focus:border-[#8b7355]",
-          "focus:shadow-[0_0_8px_rgba(139,115,85,0.2)]",
         ],
         disabled: ["opacity-50 cursor-not-allowed"],
       },

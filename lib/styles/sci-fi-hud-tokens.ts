@@ -95,7 +95,19 @@ export const sciFiHudTokens = createStyleTokens({
 
   required: {
     button: ["font-mono", "uppercase", "tracking-widest", "border", "transition-all"],
-    card: ["backdrop-blur", "border", "relative"],
-    input: ["bg-slate-950", "border", "font-mono", "focus:outline-none"],
+    card: [
+      "border",
+      "bg-slate-900/85",
+      "border-cyan-500/25",
+      "rounded-lg",
+    ],
+    input: [
+      "bg-[#020617]/90",
+      "border",
+      "font-mono",
+      "focus:outline-none",
+      "focus:border-cyan-300",
+      "focus:shadow-[0_0_12px_rgba(34,211,238,0.25)]",
+    ],
   },
 });

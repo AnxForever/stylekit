@@ -79,7 +79,7 @@ export const comicStyleRecipes = createStyleRecipes("comic-style", "Comic Style"
           "hover:translate-x-[2px] hover:translate-y-[2px]",
         ],
         active: ["active:translate-x-[4px] active:translate-y-[4px] active:shadow-none"],
-        disabled: ["opacity-60 cursor-not-allowed"],
+        disabled: ["grayscale cursor-not-allowed"],
       },
     },
 
@@ -212,7 +212,7 @@ export const comicStyleRecipes = createStyleRecipes("comic-style", "Comic Style"
         focus: [
           "focus:shadow-[4px_4px_0px_0px_rgba(26,26,26,1)]",
         ],
-        disabled: ["opacity-60 cursor-not-allowed bg-gray-200"],
+        disabled: ["grayscale cursor-not-allowed"],
       },
     },
 

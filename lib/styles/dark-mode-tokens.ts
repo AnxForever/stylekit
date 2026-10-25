@@ -75,14 +75,12 @@ export const darkModeTokens = createStyleTokens({
       "bg-black",
     ],
     patterns: [
-      "^text-white$",
       // Keep alpha-white interaction surfaces available; plain bg-white stays forbidden.
 
       "^bg-gray-[1-3]00",
       "^bg-black$",
     ],
     reasons: {
-      "text-white": "Use text-slate-100 for softer contrast",
       "bg-white": "Dark mode uses dark backgrounds",
       "bg-black": "Use bg-slate-900 for better depth",
     },
@@ -90,24 +88,27 @@ export const darkModeTokens = createStyleTokens({
 
   required: {
     button: [
-      "px-4 py-2",
       "rounded-lg",
       "font-medium",
-      "transition-colors duration-200",
+      "transition-all",
+      "duration-200",
     ],
     card: [
-      "bg-slate-800",
-      "border border-slate-700",
-      "rounded-xl",
+      "bg-gray-800",
+      "border",
+      "border-gray-700",
+      "rounded-lg",
     ],
     input: [
-      "bg-slate-800",
-      "border border-slate-700",
+      "bg-gray-800",
+      "border",
+      "border-gray-700",
       "rounded-lg",
-      "text-slate-100",
-      "placeholder:text-slate-500",
+      "text-gray-100",
+      "placeholder:text-gray-500",
       "focus:border-blue-500",
-      "focus:ring-1 focus:ring-blue-500",
+      "focus:ring-2",
+      "focus:ring-blue-500/30",
     ],
   },
 });

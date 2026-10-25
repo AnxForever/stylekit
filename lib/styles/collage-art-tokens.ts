@@ -121,20 +121,28 @@ export const collageArtTokens = createStyleTokens({
   required: {
     button: [
       "rounded-sm",
-      "font-bold uppercase",
-      "border-2 border-[#2d2d2d]",
-      "transition-all duration-200 ease-in-out",
+      "font-bold",
+      "uppercase",
+      "border-2",
+      "border-[#2d2d2d]",
+      "transition-all",
+      "duration-200",
+      "ease-in-out",
     ],
     card: [
       "rounded-none",
       "bg-[#f5f0e8]",
-      "border-2 border-[#2d2d2d]",
+      "border-2",
+      "border-[#2d2d2d]",
     ],
     input: [
       "rounded-none",
-      "border-2 border-[#2d2d2d]",
+      "border-2",
+      "border-[#2d2d2d]",
       "bg-[#f5f0e8]",
       "focus:outline-none",
+      "focus:border-[#e74c3c]",
+      "focus:shadow-[3px_3px_0px_#2d2d2d]",
     ],
   },
 });

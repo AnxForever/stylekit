@@ -72,22 +72,23 @@ export const mobileEditorialTokens: StyleTokens = {
   },
   "required": {
     "button": [
-      "rounded-md",
+      "rounded-lg",
       "border",
       "font-medium",
-      "inline-flex",
-      "items-center"
     ],
     "card": [
-      "rounded-md",
+      "rounded-lg",
       "border",
-      "bg-white/80"
+      "bg-[#fffdf8]",
     ],
     "input": [
-      "rounded-md",
+      "rounded-lg",
       "border",
-      "bg-background",
-      "focus:outline-none"
+      "bg-[#fffdf8]",
+      "focus:outline-none",
+      "focus:border-[#24211f]",
+      "focus:ring-1",
+      "focus:ring-[#24211f]/30",
     ]
   }
 };

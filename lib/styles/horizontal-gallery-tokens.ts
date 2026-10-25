@@ -102,7 +102,8 @@ export const horizontalGalleryTokens = createStyleTokens({
       "rounded-none",
       "uppercase",
       "tracking-[0.2em]",
-      "transition-colors duration-300",
+      "transition-colors",
+      "duration-300",
     ],
     card: [
       "rounded-none",
@@ -111,7 +112,8 @@ export const horizontalGalleryTokens = createStyleTokens({
     input: [
       "rounded-none",
       "bg-transparent",
-      "border-b border-[#E8E6E1]",
+      "border-b",
+      "border-[#E8E6E1]",
       "focus:border-[#1A1A1A]",
     ],
   },

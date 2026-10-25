@@ -88,23 +88,23 @@ export const appleStyleTokens = createStyleTokens({
 
   required: {
     button: [
-      "px-6 py-3",
-      "bg-[#0071e3]",
       "rounded-full",
-      "text-white font-medium",
-      "hover:bg-[#0077ed]",
-      "transition-colors duration-200",
+      "font-medium",
+      "transition-all",
+      "duration-300",
     ],
     card: [
       "bg-white",
       "rounded-2xl",
-      "shadow-[0_4px_12px_rgba(0,0,0,0.08)]",
+      "shadow-sm",
     ],
     input: [
       "bg-[#f5f5f7]",
       "rounded-xl",
-      "text-black placeholder-gray-400",
-      "focus:outline-none focus:ring-2 focus:ring-[#0071e3]",
+      "text-[#1d1d1f]",
+      "focus:outline-none",
+      "focus:ring-2",
+      "focus:ring-[#0071e3]/30",
       "transition-all",
     ],
   },

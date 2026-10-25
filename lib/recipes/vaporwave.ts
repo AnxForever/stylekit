@@ -52,7 +52,7 @@ export const vaporwaveRecipes = createStyleRecipes("vaporwave", "Vaporwave", {
           label: "Secondary",
           labelZh: "次要",
           classes: [
-            "bg-gradient-to-r from-[#01cdfe] to-[#05ffa1] text-black",
+            "bg-[#01cdfe]/20 text-[#01cdfe] border border-[#01cdfe]/50",
             "shadow-[0_0_20px_rgba(1,205,254,0.5)]",
           ],
         },

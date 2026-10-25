@@ -84,22 +84,27 @@ export const heroFullscreenTokens = createStyleTokens({
 
   required: {
     button: [
-      "px-8 py-4",
-      "font-semibold text-lg",
+      "font-semibold",
       "rounded-full",
-      "transition-colors",
+      "transition-all",
     ],
     card: [
-      "bg-white/10 backdrop-blur-sm",
+      "bg-white/10",
+      "backdrop-blur-sm",
       "rounded-2xl",
-      "border border-white/20",
+      "border",
+      "border-white/20",
     ],
     input: [
-      "bg-white/10 backdrop-blur-sm",
-      "border border-white/30",
+      "bg-white/10",
+      "backdrop-blur-sm",
+      "border",
+      "border-white/30",
       "rounded-full",
-      "text-white placeholder-white/60",
-      "focus:outline-none focus:ring-2 focus:ring-white/50",
+      "text-white",
+      "focus:outline-none",
+      "focus:ring-2",
+      "focus:ring-white/50",
     ],
   },
 });

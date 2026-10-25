@@ -132,16 +132,16 @@
     "enBullets": 114
   },
   "dark-mode": {
-    "zh": 11532,
-    "en": 14264,
+    "zh": 11393,
+    "en": 14120,
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 48,
     "enFences": 44,
     "zhHeadings": 47,
     "enHeadings": 43,
-    "zhBullets": 132,
-    "enBullets": 109
+    "zhBullets": 130,
+    "enBullets": 107
   },
   "macos-vibrancy": {
     "zh": 12362,
@@ -372,16 +372,16 @@
     "enBullets": 96
   },
   "bauhaus": {
-    "zh": 9707,
-    "en": 12220,
+    "zh": 9713,
+    "en": 12226,
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 48,
     "enFences": 42,
     "zhHeadings": 48,
     "enHeadings": 44,
-    "zhBullets": 127,
-    "enBullets": 110
+    "zhBullets": 126,
+    "enBullets": 109
   },
   "skeuomorphism": {
     "zh": 11211,

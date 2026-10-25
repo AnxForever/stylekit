@@ -301,7 +301,7 @@ export const artDecoRecipes = createStyleRecipes("art-deco", "Art Deco", {
           "my-4 md:my-6",
           "flex items-center justify-center",
           "overflow-hidden",
-          "before:content-[''] before:absolute before:w-8 before:h-8 before:bg-[conic-gradient(from_0deg,transparent_0deg,#D4AF37_10deg,transparent_20deg,transparent_40deg,#D4AF37_50deg,transparent_60deg,transparent_80deg,#D4AF37_90deg,transparent_100deg,transparent_120deg,#D4AF37_130deg,transparent_140deg,transparent_160deg,#D4AF37_170deg,transparent_180deg,transparent_200deg,#D4AF37_210deg,transparent_220deg,transparent_240deg,#D4AF37_250deg,transparent_260deg,transparent_280deg,#D4AF37_290deg,transparent_300deg,transparent_320deg,#D4AF37_330deg,transparent_340deg,transparent_360deg)] before:rounded-full before:opacity-60",
+          "before:content-[''] before:absolute before:w-8 before:h-8 before:bg-[conic-gradient(from_0deg,transparent_0deg,#D4AF37_10deg,transparent_20deg,transparent_40deg,#D4AF37_50deg,transparent_60deg,transparent_80deg,#D4AF37_90deg,transparent_100deg,transparent_120deg,#D4AF37_130deg,transparent_140deg,transparent_160deg,#D4AF37_170deg,transparent_180deg,transparent_200deg,#D4AF37_210deg,transparent_220deg,transparent_240deg,#D4AF37_250deg,transparent_260deg,transparent_280deg,#D4AF37_290deg,transparent_300deg,transparent_320deg,#D4AF37_330deg,transparent_340deg,transparent_360deg)] before:rounded-t-full before:opacity-60",
         ],
       },
       parameters: [

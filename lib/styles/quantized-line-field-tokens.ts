@@ -66,8 +66,18 @@ export const quantizedLineFieldTokens: StyleTokens = {
     reasons: {},
   },
   required: {
-    button: ["rounded-md", "border", "font-medium", "inline-flex", "items-center"],
+    button: [
+      "rounded-md",
+      "border",
+      "font-medium",
+    ],
     card: ["rounded-md", "border", "bg-[#fafaf8]"],
-    input: ["rounded-md", "border", "bg-[#fafaf8]", "focus:outline-none"],
+    input: [
+      "rounded-md",
+      "border",
+      "bg-[#fafaf8]",
+      "focus:outline-none",
+      "focus:border-[#267dff]",
+    ],
   },
 };

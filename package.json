@@ -62,7 +62,9 @@
     "submit:baidu": "node tools/scripts/submit-baidu.mjs",
     "check:developer-contracts": "pnpm exec tsx tools/scripts/check-developer-contracts.ts",
     "test:developer-consumer": "node tools/scripts/verify-developer-consumer.mjs",
-    "check:style-catalog": "pnpm exec tsx tools/scripts/check-style-catalog.ts"
+    "check:style-catalog": "pnpm exec tsx tools/scripts/check-style-catalog.ts",
+    "check:recipe-lint": "pnpm exec tsx tools/scripts/check-recipe-lint-parity.ts",
+    "align:recipe-required": "pnpm exec tsx tools/scripts/align-recipe-required.ts"
   },
   "dependencies": {
     "@codemirror/autocomplete": "^6.20.0",

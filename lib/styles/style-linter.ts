@@ -136,7 +136,14 @@ export function extractClassNames(code: string): ExtractedClass[] {
   return found;
 }
 
-function isBareClassList(code: string): boolean {
+/**
+ * True when the whole input is a class string rather than markup.
+ *
+ * Shared with the repair pass so "linted as a class list" and "rewritten as a
+ * class list" cannot disagree: a bare list the linter reads is the same list
+ * the repair pass must rewrite.
+ */
+export function isBareClassList(code: string): boolean {
   const tokens = code.trim().split(/\s+/);
   return tokens.length > 0 && tokens.every((token) =>
     /^[^\s"'{}=<>;`]+$/.test(token) &&
@@ -336,6 +343,75 @@ export function stripVariants(className: string): string {
   return base.replace(/^!|!$/g, "");
 }
 
+/**
+ * Canonical form used only when checking required classes.
+ *
+ * The same class can be spelled several ways without rendering differently:
+ * `shadow-[4px_4px_0_#000]` and `shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]` draw
+ * the same box-shadow, and the curated required rules plus the generated
+ * recipes routinely pick different spellings of one look. Declaring a class
+ * missing because of its spelling trains users to ignore the linter, so both
+ * sides are compared in canonical form.
+ *
+ * Deliberately conservative: only the arbitrary value changes, and only in
+ * ways that cannot alter rendering - underscores for spaces, units on zero,
+ * color formats, and a repeated zero length in shadow values. It is never
+ * applied to forbidden matching, where patterns stay authoritative.
+ */
+export function canonicalRequiredClass(className: string): string {
+  const bare = className.replace(/^!|!$/g, "");
+  const open = bare.indexOf("[");
+  if (open === -1) return bare;
+  const close = bare.lastIndexOf("]");
+  if (close <= open) return bare;
+  const head = bare.slice(0, open + 1);
+  const tail = bare.slice(close);
+  let body = bare.slice(open + 1, close).replace(/_/g, " ");
+  body = body.replace(/\b0(?:\.0+)?(?:px|em|rem|%)\b/g, "0");
+  body = normalizeColors(body);
+  // shadow-[4px_4px_0_#000] omits the spread zero that
+  // shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] spells out. Collapse zero runs
+  // that follow a length so both spellings land on one form. Zero runs at
+  // the start are left alone: offsets are meaningful positions.
+  if (/^!?shadow-\[$/.test(head)) {
+    body = body.replace(/(\S)(\s0)(?:\s0)+(?=\s)/g, "$1$2");
+  }
+  return head + body + tail;
+}
+
+function formatAlpha(alpha: number): string {
+  if (alpha >= 1) return "1";
+  const trimmed = alpha.toFixed(3).replace(/0+$/, "").replace(/\.$/, "");
+  return trimmed === "" ? "0" : trimmed;
+}
+
+/** #abc, #aabbcc, #aabbccdd, rgb() and rgba() all become rgba(r,g,b,a). */
+function normalizeColors(value: string): string {
+  return value.replace(
+    /#([0-9a-fA-F]{8}|[0-9a-fA-F]{6}|[0-9a-fA-F]{3})|rgba?\(\s*([^)]*?)\s*\)/g,
+    (match, hex: string | undefined, fn: string | undefined) => {
+      if (hex) {
+        const full = hex.length === 3 ? hex.split("").map((c) => c + c).join("") : hex;
+        const r = parseInt(full.slice(0, 2), 16);
+        const g = parseInt(full.slice(2, 4), 16);
+        const b = parseInt(full.slice(4, 6), 16);
+        const alpha = full.length === 8 ? parseInt(full.slice(6, 8), 16) / 255 : 1;
+        return `rgba(${r},${g},${b},${formatAlpha(alpha)})`;
+      }
+      const parts = (fn ?? "").split(/[\s,]+/).filter(Boolean);
+      if (parts.length < 3) return match;
+      const [r, g, b] = parts.slice(0, 3).map((p) => String(Math.round(parseFloat(p))));
+      const rawAlpha = parts[3];
+      const alpha = rawAlpha === undefined
+        ? 1
+        : rawAlpha.endsWith("%")
+          ? parseFloat(rawAlpha) / 100
+          : parseFloat(rawAlpha);
+      return `rgba(${r},${g},${b},${formatAlpha(alpha)})`;
+    },
+  );
+}
+
 /** Normalized rule set merged from both sources. */
 export interface MergedRules {
   /** Exact forbidden class -> reason. Curated reasons win over generated ones. */
@@ -350,9 +426,8 @@ export interface MergedRules {
    * Classes the style itself requires. Never reported as violations, even when
    * a forbidden rule matches them.
    *
-   * Measured: 2/15 curated styles ban a class they also require
-   * (neo-brutalist forbids `transition-all` yet requires `transition-all duration-200`;
-   * dark-mode forbids `text-white` yet requires it). Without this exemption the
+   * Neo-brutalist forbids `transition-all` yet requires it with duration-200.
+   * Without this exemption the
    * linter fires on the style's own canonical code, which destroys trust faster
    * than missing a real violation.
    */
@@ -370,8 +445,8 @@ export interface MergedRules {
 
 /**
  * Merges curated and token-derived rules into one rule set.
- * Union, not override: the two sources were measured to be complementary
- * (no class is forbidden by one while required by the other).
+ * Forbidden rules are unioned; registered required contracts are kept aligned
+ * by check:recipe-lint. Curated precedence remains for compatibility.
  */
 export function mergeStyleRules(slug: string): MergedRules {
   return mergeRulesFromParts(getStyleTokens(slug), getStyleLintRules(slug));
@@ -625,14 +700,21 @@ export function lintCodeWithRules(
   const presentBase = new Set(extracted.filter((entry) =>
     entry.raw.replace(/^!|!$/g, "") === stripVariants(entry.raw),
   ).map((entry) => stripVariants(entry.raw)));
+  const presentCanon = new Set(extracted.map((entry) => canonicalRequiredClass(entry.raw)));
+  const presentBaseCanon = new Set(extracted.filter((entry) =>
+    entry.raw.replace(/^!|!$/g, "") === stripVariants(entry.raw),
+  ).map((entry) => canonicalRequiredClass(stripVariants(entry.raw))));
 
   for (const component of options.checkRequired ?? []) {
     const requirement = rules.required.get(component);
     if (!requirement?.classes.length) continue;
 
-    const missing = requirement.classes.filter(
-      (cls) => !present.has(cls) && !(cls === stripVariants(cls) && presentBase.has(cls)),
-    );
+    const missing = requirement.classes.filter((cls) => {
+      if (present.has(cls)) return false;
+      if (cls === stripVariants(cls) && presentBase.has(cls)) return false;
+      const canon = canonicalRequiredClass(cls);
+      return !presentCanon.has(canon) && !(cls === stripVariants(cls) && presentBaseCanon.has(canon));
+    });
     if (missing.length) {
       missingRequired.push({ component, missing, source: requirement.source });
     }

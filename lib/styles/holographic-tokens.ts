@@ -105,18 +105,13 @@ export const holographicTokens = createStyleTokens({
 
   required: {
     button: [
-      "rounded-",
-      "bg-gradient-",
       "transition-all",
-      "shadow-[0_0_",
     ],
-    card: ["backdrop-blur", "bg-white/", "rounded-", "border"],
+    card: [
+      "border",
+    ],
     input: [
-      "backdrop-blur",
-      "bg-white/",
-      "rounded-",
-      "focus:border-purple",
-      "focus:shadow-[0_0_",
+      "focus:border-purple-400",
     ],
   },
 });

@@ -85,20 +85,23 @@ export const magazineGridTokens = createStyleTokens({
 
   required: {
     button: [
-      "text-xs font-semibold uppercase tracking-wider",
+      "text-xs",
+      "font-semibold",
+      "uppercase",
+      "tracking-wider",
       "rounded",
     ],
     card: [
-      "rounded-lg",
-      "overflow-hidden",
       "group",
+      "bg-white",
     ],
     input: [
       "bg-zinc-100",
       "border-0",
       "rounded-lg",
       "focus:outline-none",
-      "focus:ring-2 focus:ring-red-500/30",
+      "focus:ring-2",
+      "focus:ring-[#e63946]/20",
     ],
   },
 });
