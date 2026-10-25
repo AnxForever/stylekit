@@ -70,7 +70,7 @@ export const bauhausTokens = createStyleTokens({
   forbidden: {
     classes: [
       "font-serif",
-      "rounded-lg", "rounded-xl", "rounded-2xl", "rounded-3xl", "rounded-full",
+      "rounded-lg", "rounded-xl", "rounded-2xl", "rounded-3xl",
       "shadow-sm", "shadow", "shadow-md", "shadow-lg", "shadow-xl", "shadow-2xl",
       "bg-gradient-to-r", "bg-gradient-to-l", "bg-gradient-to-b", "bg-gradient-to-t",
       "border-dashed", "border-dotted",
@@ -78,14 +78,14 @@ export const bauhausTokens = createStyleTokens({
     ],
     patterns: [
       "^font-serif",
-      "^rounded-(?!none)",
+      "^rounded-(?!none|full)",
       "^shadow-(?!none)",
       "^bg-gradient-",
       "^border-(?:dashed|dotted)",
     ],
     reasons: {
       "font-serif": "Bauhaus uses geometric sans-serif typography only (font-sans)",
-      "rounded-xl": "Bauhaus uses strict geometric forms with sharp angles (rounded-none)",
+      "rounded-xl": "Bauhaus corners stay sharp (rounded-none); rounded-full is reserved for circle primitives",
       "shadow-lg": "Bauhaus rejects decorative shadows; form follows function",
       "bg-gradient-to-r": "Bauhaus uses flat solid primary colors (red, yellow, blue), no gradients",
     },

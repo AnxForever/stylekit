@@ -50,7 +50,7 @@ export const opArtRecipes = createStyleRecipes("op-art", "Op Art", {
     states: {
       hover: ["hover:invert"],
       active: ["active:scale-95"],
-      disabled: ["opacity-50 cursor-not-allowed"],
+      disabled: ["opacity-60 cursor-not-allowed"],
     },
   },
 
@@ -128,7 +128,7 @@ export const opArtRecipes = createStyleRecipes("op-art", "Op Art", {
     slots: inputSlots(),
     states: {
       focus: ["focus:border-[#ff3300] focus:shadow-[4px_4px_0_#ff3300]"],
-      disabled: ["opacity-50 cursor-not-allowed"],
+      disabled: ["opacity-60 cursor-not-allowed"],
     },
   },
 });

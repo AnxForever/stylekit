@@ -155,7 +155,7 @@ export const glassmorphismRecipes = createStyleRecipes("glassmorphism", "Liquid 
           label: "Dark",
           labelZh: "深色",
           classes: [
-            "bg-black/20",
+            "bg-[#000000]/20",
             "border-white/20",
             "ring-white/15",
           ],

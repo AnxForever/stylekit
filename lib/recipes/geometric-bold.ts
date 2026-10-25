@@ -63,7 +63,6 @@ export const geometricBoldRecipes = createStyleRecipes("geometric-bold", "Geomet
           labelZh: "轮廓",
           classes: [
             "bg-transparent text-black",
-            "shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] md:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]",
           ],
         },
       },
@@ -76,7 +75,7 @@ export const geometricBoldRecipes = createStyleRecipes("geometric-bold", "Geomet
           "hover:bg-red-500 hover:text-white hover:border-red-500",
         ],
         active: ["active:bg-blue-600 active:border-blue-600 active:text-white"],
-        disabled: ["opacity-50 cursor-not-allowed"],
+        disabled: ["grayscale cursor-not-allowed"],
       },
     },
 
@@ -84,7 +83,7 @@ export const geometricBoldRecipes = createStyleRecipes("geometric-bold", "Geomet
       id: "card",
       name: "Card",
       nameZh: "卡片",
-      description: "Bold card with thick border, sharp corners, and offset shadow",
+      description: "Bold card with thick border, sharp corners, and flat color blocks",
       skeleton: {
         element: "div",
         baseClasses: [
@@ -131,7 +130,7 @@ export const geometricBoldRecipes = createStyleRecipes("geometric-bold", "Geomet
           label: "Accent",
           labelZh: "强调",
           classes: [
-            "shadow-[4px_4px_0px_0px_rgba(255,0,0,1)] md:shadow-[8px_8px_0px_0px_rgba(255,0,0,1)]",
+            "border-red-600",
           ],
         },
         inverted: {
@@ -140,7 +139,6 @@ export const geometricBoldRecipes = createStyleRecipes("geometric-bold", "Geomet
           labelZh: "反色",
           classes: [
             "bg-black text-white border-white",
-            "shadow-[4px_4px_0px_0px_rgba(255,255,255,1)] md:shadow-[8px_8px_0px_0px_rgba(255,255,255,1)]",
           ],
         },
       },
@@ -150,8 +148,7 @@ export const geometricBoldRecipes = createStyleRecipes("geometric-bold", "Geomet
       ],
       states: {
         hover: [
-          "hover:shadow-[6px_6px_0px_0px_rgba(0,0,255,1)]",
-          "md:hover:shadow-[10px_10px_0px_0px_rgba(0,0,255,1)]",
+          "hover:bg-yellow-300",
         ],
       },
     },
@@ -198,10 +195,10 @@ export const geometricBoldRecipes = createStyleRecipes("geometric-bold", "Geomet
         },
         offset: {
           id: "offset",
-          label: "Offset Shadow",
-          labelZh: "偏移阴影",
+          label: "Offset Outline",
+          labelZh: "偏移描边",
           classes: [
-            "shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]",
+            "outline outline-4 outline-black outline-offset-4",
           ],
         },
       },
@@ -213,7 +210,7 @@ export const geometricBoldRecipes = createStyleRecipes("geometric-bold", "Geomet
           "focus:bg-yellow-300",
           "focus:border-black",
         ],
-        disabled: ["opacity-50 cursor-not-allowed bg-gray-100"],
+        disabled: ["grayscale cursor-not-allowed"],
       },
     },
 });

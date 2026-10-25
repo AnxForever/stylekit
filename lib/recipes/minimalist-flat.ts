@@ -60,7 +60,7 @@ export const minimalistFlatRecipes = createStyleRecipes(
       slots: buttonSlots("Click Me"),
       states: {
         hover: ["hover:bg-white hover:text-black"],
-        active: ["active:bg-gray-100"],
+        active: ["active:scale-[0.98]"],
         disabled: ["opacity-40 cursor-not-allowed"],
       },
     },
@@ -107,6 +107,7 @@ export const minimalistFlatRecipes = createStyleRecipes(
           "w-full",
           "bg-transparent",
           "border-0 border-b-2 border-black",
+          "px-0",
           "text-black",
           "placeholder:text-gray-500",
           "focus:outline-none",
@@ -115,9 +116,9 @@ export const minimalistFlatRecipes = createStyleRecipes(
       },
       parameters: [
         sizeParam({
-          sm: "px-0 py-1.5 text-sm",
-          md: "px-0 py-2 md:py-3 text-sm md:text-base",
-          lg: "px-0 py-3 md:py-4 text-base md:text-lg",
+          sm: "py-1.5 text-sm",
+          md: "py-2 md:py-3 text-sm md:text-base",
+          lg: "py-3 md:py-4 text-base md:text-lg",
         }),
       ],
       variants: {

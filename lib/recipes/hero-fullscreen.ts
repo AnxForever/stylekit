@@ -72,7 +72,6 @@ export const heroFullscreenRecipes = createStyleRecipes("hero-fullscreen", "Hero
       states: {
         hover: [
           "hover:bg-white/90",
-          "hover:shadow-lg",
         ],
         active: ["active:scale-[0.98]"],
         disabled: ["opacity-50 cursor-not-allowed"],
@@ -129,9 +128,8 @@ export const heroFullscreenRecipes = createStyleRecipes("hero-fullscreen", "Hero
           label: "Solid",
           labelZh: "实底",
           classes: [
-            "bg-white text-zinc-900",
+            "bg-black/80 text-white",
             "border-white/0",
-            "shadow-xl",
           ],
         },
         dark: {
@@ -200,7 +198,7 @@ export const heroFullscreenRecipes = createStyleRecipes("hero-fullscreen", "Hero
           id: "solid",
           label: "Solid",
           labelZh: "实底",
-          classes: ["bg-white text-zinc-900 placeholder:text-zinc-400 border-white/0"],
+          classes: ["bg-black/80 text-white placeholder:text-white/50 border-white/0"],
         },
       },
       slots: [

@@ -49,7 +49,7 @@ export const celShadingRecipes = createStyleRecipes("cel-shading", "Cel Shading"
         "hover:translate-x-[-2px] hover:translate-y-[-2px]",
       ],
       active: ["active:translate-x-[2px] active:translate-y-[2px] active:shadow-[1px_1px_0px_0px_#1a1a2e]"],
-      disabled: ["opacity-50 cursor-not-allowed grayscale"],
+      disabled: ["grayscale cursor-not-allowed"],
     },
   },
 
@@ -141,7 +141,7 @@ export const celShadingRecipes = createStyleRecipes("cel-shading", "Cel Shading"
         "focus:shadow-[3px_3px_0px_0px_#4ea8de]",
         "focus:border-[#4ea8de]",
       ],
-      disabled: ["opacity-50 cursor-not-allowed"],
+      disabled: ["grayscale cursor-not-allowed"],
     },
   },
 });

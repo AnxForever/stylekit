@@ -84,7 +84,7 @@ export const cyberAnimeTokens = createStyleTokens({
     patterns: [
       "^rounded-full$",
       "^bg-white$",
-      "^bg-\\[#f[a-f]",
+      "^bg-\\[#f(?:a|b|c|d|e|[1-9a-f][1-9a-f])",
       "^shadow-(?:sm|md|lg|xl)$",
       "^font-serif$",
     ],

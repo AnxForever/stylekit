@@ -91,7 +91,7 @@ export const glassmorphismTokens = createStyleTokens({
       "^rounded-sm$",
       "^rounded$",
       "^bg-(?!white\\/|gradient|\\[|transparent)",
-      "^border-(?!white\\/|\\[)",
+      "^border-(?!(?:white\\/|\\[|(?:t|b|l|r|x|y)(?:$|-)))",
       "^backdrop-blur$",
       "^backdrop-blur-sm$",
       "^duration-(100|150)$",

@@ -77,7 +77,7 @@ export const memphisRecipes = createStyleRecipes("memphis", "Memphis", {
           "hover:translate-x-[3px] hover:translate-y-[3px]",
         ],
         active: ["active:shadow-none active:translate-x-[6px] active:translate-y-[6px]"],
-        disabled: ["opacity-50 cursor-not-allowed"],
+        disabled: ["grayscale cursor-not-allowed"],
       },
     },
 
@@ -213,7 +213,7 @@ export const memphisRecipes = createStyleRecipes("memphis", "Memphis", {
         focus: [
           "focus:shadow-[4px_4px_0px_#ff6b6b]",
         ],
-        disabled: ["opacity-50 cursor-not-allowed bg-gray-100"],
+        disabled: ["grayscale cursor-not-allowed"],
       },
     },
 

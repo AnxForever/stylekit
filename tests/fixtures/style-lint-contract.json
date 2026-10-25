@@ -572,7 +572,7 @@
             }
           },
           {
-            "pattern": "^border-(?!white\\/|\\[)",
+            "pattern": "^border-(?!(?:white\\/|\\[|(?:t|b|l|r|x|y)(?:$|-)))",
             "flags": "",
             "source": "tokens",
             "reasons": {

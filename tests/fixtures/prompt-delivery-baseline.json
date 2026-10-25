@@ -372,16 +372,16 @@
     "enBullets": 96
   },
   "bauhaus": {
-    "zh": 9707,
-    "en": 12220,
+    "zh": 9713,
+    "en": 12226,
     "zhTokens": true,
     "enTokens": true,
     "zhFences": 48,
     "enFences": 42,
     "zhHeadings": 48,
     "enHeadings": 44,
-    "zhBullets": 127,
-    "enBullets": 110
+    "zhBullets": 126,
+    "enBullets": 109
   },
   "skeuomorphism": {
     "zh": 11211,
