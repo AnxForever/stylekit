@@ -1,3 +1,5 @@
+import type { TemplateSourceLanguage } from "@/lib/analytics/event-contract";
+
 /** Text-only view of the same project delivered by the template ZIP endpoint. */
 export interface TemplateSourceProject {
   slug: string;
@@ -51,4 +53,25 @@ export function parseTemplateSourceProject(value: unknown): TemplateSourceProjec
     files: Object.fromEntries(entries) as Record<string, string>,
     binaryFiles,
   };
+}
+
+const SOURCE_LANGUAGE_BY_EXTENSION: Readonly<Record<string, TemplateSourceLanguage>> = {
+  ".tsx": "tsx",
+  ".ts": "ts",
+  ".js": "js",
+  ".jsx": "js",
+  ".mjs": "js",
+  ".cjs": "js",
+  ".css": "css",
+  ".json": "json",
+  ".md": "md",
+  ".mdx": "md",
+};
+
+/** File-type bucket reported by copy analytics; the path itself is never sent. */
+export function getTemplateSourceLanguage(filePath: string): TemplateSourceLanguage {
+  const fileName = filePath.slice(filePath.lastIndexOf("/") + 1);
+  const extensionStart = fileName.lastIndexOf(".");
+  if (extensionStart <= 0) return "other";
+  return SOURCE_LANGUAGE_BY_EXTENSION[fileName.slice(extensionStart).toLowerCase()] ?? "other";
 }

@@ -20,6 +20,10 @@ templates such as Technical Profile, Editorial Profile Archive, and Admin Panel.
   clearly copies only the selected file.
 - Use the shared clipboard hook for honest success/failure feedback. A closed
   dialog or newer request must never be replaced by a late response.
+- Record engagement through the shared analytics contract: opening the viewer,
+  a successful file copy (a file-type bucket, never the path) and downloads from
+  the catalog card, the viewer and the template page. The analytics API stores
+  template events only for templates in the catalog.
 - Keep native dialog behavior, a visible named close button, contained scrolling,
   and focus return to the opener. Follow the
   [WAI dialog pattern](https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/)
@@ -31,6 +35,7 @@ templates such as Technical Profile, Editorial Profile Archive, and Admin Panel.
 | --- | --- | --- | --- |
 | TS-FILES | Open a template, inspect each file, distinguish binary assets, download the same project | Existing exporter and multi-file templates establish the missing dependency boundary. Adapt the existing API with an opt-in representation. | Implemented / covered: endpoint and ZIP parity tests, desktop/mobile file selection / backfilled |
 | TS-COPY | Copy one selected file and receive accurate feedback, including clipboard rejection | Existing useClipboard handles stale requests and failures. Reuse it; remove duplicate card-level copy. | Implemented / covered: exact CSS copy and blocked-clipboard browser cases / backfilled |
+| TS-ANALYTICS | Count source views, accepted copies and downloads per template and entry point | Only template page views were recorded. Extend the existing client event contract; validate template identity server-side like style events; rejected clipboard writes are not counted. | Implemented / covered: event schema, analytics route and template identity unit tests / none |
 | TS-LIFECYCLE | Load, retry, close, reopen or switch templates without stale code or misplaced focus | Existing dialog opened after awaiting fetch, with no request cancellation. Native dialog plus controlled request lifecycle follows WAI guidance. | Implemented / covered: retry, late-response close/reopen, Escape and focus-return browser cases / backfilled |
 
 Acceptance includes mobile layout, keyboard/Escape/focus return, slow requests,

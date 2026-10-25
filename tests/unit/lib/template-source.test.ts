@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
+  getTemplateSourceLanguage,
   parseTemplateSourceProject,
   type TemplateSourceProject,
 } from "@/lib/templates/source";
@@ -76,5 +77,30 @@ describe("parseTemplateSourceProject", () => {
     ["an unsafe binary path", ["../profile.png"]],
   ] as const)("rejects %s", (_label, binaryFiles) => {
     expect(parseTemplateSourceProject(validProject({ binaryFiles: [...binaryFiles] }))).toBeNull();
+  });
+});
+
+describe("getTemplateSourceLanguage", () => {
+  it.each([
+    ["app/templates/technical-profile/page.tsx", "tsx"],
+    ["app/templates/technical-profile/_data.ts", "ts"],
+    ["next.config.mjs", "js"],
+    ["components/demo.jsx", "js"],
+    ["app/globals.css", "css"],
+    ["package.json", "json"],
+    ["CUSTOMIZE.md", "md"],
+    ["content/post.MDX", "md"],
+  ] as const)("buckets %s as %s", (filePath, language) => {
+    expect(getTemplateSourceLanguage(filePath)).toBe(language);
+  });
+
+  it.each([
+    ".gitignore",
+    "Dockerfile",
+    "public/robots.txt",
+    "lib.d/README",
+    ".env.example",
+  ])("falls back to other for %s", (filePath) => {
+    expect(getTemplateSourceLanguage(filePath)).toBe("other");
   });
 });
