@@ -32,6 +32,7 @@ import type { DesignStyle } from "@/lib/styles";
 import type { AccessibilityScore } from "@/lib/accessibility";
 import type { StyleVersion } from "@/lib/versioning";
 import type { Locale } from "@/lib/i18n/translations";
+import type { ComponentRecipe } from "@/lib/recipes/types";
 import {
   getRecipesByLayout,
   getRecipesByVisualStyle,
@@ -57,6 +58,7 @@ type CompatibleStyleSummary = Pick<DesignStyle, "slug" | "name" | "nameEn">;
 
 interface Props {
   style: DesignStyle;
+  componentRecipes?: Record<string, ComponentRecipe>;
   hasIdeExports?: boolean;
   compatibleStyles: CompatibleStyleSummary[];
   compatibleLayouts: CompatibleStyleSummary[];
@@ -74,6 +76,7 @@ interface Props {
 
 export function StyleDetailContent({
   style,
+  componentRecipes,
   hasIdeExports = true,
   compatibleStyles,
   compatibleLayouts,
@@ -470,7 +473,9 @@ export function StyleDetailContent({
           </p>
           <h2 className="text-2xl md:text-3xl mb-8">{t("styleDetail.componentPreview")}</h2>
           <ComponentPreview
+            key={style.slug}
             components={style.components}
+            recipes={componentRecipes}
             defaultShowCode={false}
             styleSlug={style.slug}
             previewAssets={style.previewAssets}

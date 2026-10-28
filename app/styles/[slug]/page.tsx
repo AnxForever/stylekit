@@ -17,6 +17,7 @@ import type { Locale } from "@/lib/i18n/translations";
 import { StyleDetailContent } from "./_content";
 import { StyleReadinessSection } from "./_readiness-section";
 import { StyleFaqSection } from "./_faq-section";
+import { DesignWorkflowLinks } from "@/components/seo/design-workflow-links";
 
 // 生成静态参数
 export function generateStaticParams() {
@@ -251,6 +252,7 @@ export default async function StyleDetailPage({
         <main className="flex-1">
           <StyleDetailContent
             style={style}
+            componentRecipes={capabilities.recipes?.recipes}
             hasIdeExports={capabilities.exports.ideConfigs}
             compatibleStyles={compatibleStyles}
             compatibleLayouts={compatibleLayouts}
@@ -272,6 +274,7 @@ export default async function StyleDetailPage({
             changelog={changelog}
             ssrLocale={locale}
           />
+          <DesignWorkflowLinks locale={locale} styleSlug={style.slug} />
         </main>
       </DisableAutoScroll>
 

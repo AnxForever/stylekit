@@ -9,6 +9,7 @@ interface CodeBlockProps {
   language?: string;
   slug?: string;
   onCopySuccess?: () => void;
+  copyLabel?: string;
 }
 
 export function CodeBlock({
@@ -16,6 +17,7 @@ export function CodeBlock({
   language = "tsx",
   slug,
   onCopySuccess,
+  copyLabel,
 }: CodeBlockProps) {
   const [copied, setCopied] = useState(false);
   const { t } = useI18n();
@@ -47,6 +49,8 @@ export function CodeBlock({
       <div className="flex items-center justify-between px-4 py-2 border-b border-border">
         <span className="text-xs text-muted font-mono uppercase tracking-wider">{language}</span>
         <button
+          type="button"
+          aria-label={copyLabel}
           onClick={handleCopy}
           className="text-xs text-muted hover:text-foreground transition-colors px-2 py-1"
         >

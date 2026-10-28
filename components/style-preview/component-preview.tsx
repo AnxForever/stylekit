@@ -9,6 +9,10 @@ import { generatePreviewHTML } from "@/lib/style-preview/preview-html";
 import { componentCodeWithAssets } from "@/lib/style-preview/motion-css";
 import type { PreviewAssets } from "@/lib/style-preview/preview-assets";
 import { ExtractedComponentPreview } from "./extracted-component-preview";
+import { RecipeWorkbench } from "./recipe-workbench";
+import { ComponentUsageGuide } from "./component-usage-guide";
+import { isWorkbenchRecipe } from "@/lib/recipes/workbench";
+import type { ComponentRecipe } from "@/lib/recipes/types";
 
 interface ComponentPreviewProps {
   components: Record<string, ComponentTemplate>;
@@ -17,6 +21,7 @@ interface ComponentPreviewProps {
   previewBackground?: string;
   previewForeground?: string;
   previewAssets?: PreviewAssets;
+  recipes?: Record<string, ComponentRecipe>;
 }
 
 export function ComponentPreview({
@@ -26,11 +31,16 @@ export function ComponentPreview({
   previewBackground,
   previewForeground,
   previewAssets,
+  recipes,
 }: ComponentPreviewProps) {
   const componentKeys = Object.keys(components);
   const [activeTab, setActiveTab] = useState(componentKeys[0]);
   const [showCode, setShowCode] = useState(defaultShowCode);
+  const [view, setView] = useState<"template" | "customize">("template");
   const activeComponent = components[activeTab];
+  const activeRecipe = recipes?.[activeTab];
+  const canCustomize = activeRecipe && isWorkbenchRecipe(activeRecipe);
+  const customizing = view === "customize" && canCustomize;
   const { t, locale } = useI18n();
   const touchStartX = useRef(0);
 
@@ -80,6 +90,8 @@ export function ComponentPreview({
         {componentKeys.map((key) => (
           <button
             key={key}
+            type="button"
+            aria-pressed={activeTab === key}
             onClick={() => setActiveTab(key)}
             className={`px-4 py-3 text-sm tracking-wide whitespace-nowrap transition-colors ${
               activeTab === key
@@ -93,47 +105,66 @@ export function ComponentPreview({
       </div>
 
       {/* Component Info */}
-      <div className="px-4 md:px-6 py-4 border-b border-border flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
-        <div>
-          <h4 className="font-serif text-lg">{activeComponent.name}</h4>
-          <p className="text-sm text-muted mt-1">
-            {activeComponent.description}
-          </p>
-        </div>
-        <button
-          type="button"
-          onClick={() => setShowCode((current) => !current)}
-          className="inline-flex items-center justify-center px-3 py-1.5 text-xs tracking-wide border border-border text-muted hover:text-foreground hover:border-foreground transition-colors whitespace-nowrap"
-        >
-          {showCode
-            ? (locale === "zh" ? "收起代码" : "Hide Code")
-            : (locale === "zh" ? "查看代码" : "Show Code")}
-        </button>
-      </div>
-
-      {/* Preview Area */}
-      <div
-        className="p-6 md:p-10 bg-white dark:bg-zinc-900 flex items-start justify-center min-h-[200px] overflow-x-auto"
-        style={{ backgroundColor: previewBackground, color: previewForeground }}
-        onTouchStart={handleTouchStart}
-        onTouchEnd={handleTouchEnd}
-      >
-        {/* 
-          Create a containing block for position: fixed preview snippets
-          (common in nav examples). Without this, fixed elements attach to the
-          viewport and the preview pane can appear blank.
-        */}
-        <div className="relative isolate w-full min-h-[200px] transform-gpu">
-          {previewAssets ? (
-            <ExtractedComponentPreview key={activeTab} html={previewHtml} assets={previewAssets} componentKey={activeTab} />
-          ) : (
-            <div dangerouslySetInnerHTML={{ __html: previewHtml }} />
+      <div className="flex flex-wrap items-center gap-2 border-b border-border px-3 py-2">
+          {canCustomize && (
+            <fieldset className="inline-flex border border-border p-0.5">
+              <legend className="sr-only">{locale === "zh" ? "组件视图" : "Component view"}</legend>
+              {(["template", "customize"] as const).map((mode) => (
+                <button
+                  key={mode}
+                  type="button"
+                  aria-pressed={view === mode}
+                  onClick={() => setView(mode)}
+                  className={`px-3 py-1.5 text-xs transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 ${view === mode ? "bg-foreground text-background" : "text-muted hover:text-foreground"}`}
+                >
+                  {mode === "template"
+                    ? (locale === "zh" ? "模板示例" : "Template")
+                    : (locale === "zh" ? "调整组件" : "Customize")}
+                </button>
+              ))}
+            </fieldset>
           )}
-        </div>
+          {!customizing && (
+            <button
+              type="button"
+              onClick={() => setShowCode((current) => !current)}
+              className="inline-flex items-center justify-center px-3 py-1.5 text-xs tracking-wide border border-border text-muted hover:text-foreground hover:border-foreground transition-colors whitespace-nowrap"
+            >
+              {showCode
+                ? (locale === "zh" ? "收起代码" : "Hide Code")
+                : (locale === "zh" ? "查看代码" : "Show Code")}
+            </button>
+          )}
       </div>
 
-      {/* Code */}
-      {showCode && <CodeBlock code={componentCodeWithAssets(activeComponent.code, previewAssets, activeTab)} slug={styleSlug} />}
+      {customizing && activeRecipe ? (
+        <RecipeWorkbench
+          key={`${styleSlug ?? "style"}:${activeTab}`}
+          recipe={activeRecipe}
+          styleSlug={styleSlug}
+          previewAssets={previewAssets}
+        />
+      ) : (
+        <>
+          <div
+            className="p-4 md:p-6 bg-white dark:bg-zinc-900 flex items-start justify-center min-h-[160px] overflow-x-auto"
+            style={{ backgroundColor: previewBackground, color: previewForeground }}
+            onTouchStart={handleTouchStart}
+            onTouchEnd={handleTouchEnd}
+          >
+            {/* Keep fixed-position examples inside the preview pane. */}
+            <div className="relative isolate w-full min-h-[200px] transform-gpu">
+              {previewAssets ? (
+                <ExtractedComponentPreview key={activeTab} html={previewHtml} assets={previewAssets} componentKey={activeTab} />
+              ) : (
+                <div dangerouslySetInnerHTML={{ __html: previewHtml }} />
+              )}
+            </div>
+          </div>
+          {showCode && <CodeBlock code={componentCodeWithAssets(activeComponent.code, previewAssets, activeTab)} slug={styleSlug} />}
+          <ComponentUsageGuide componentId={activeTab} styleSlug={styleSlug} />
+        </>
+      )}
     </div>
   );
 }
