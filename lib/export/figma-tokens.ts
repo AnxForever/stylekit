@@ -1,10 +1,14 @@
 import type { DesignStyle } from "../styles";
+import { hslToHex } from "../color/convert";
+import { getStyleTokens } from "../styles/tokens-registry";
+import { resolveTwColor } from "./color-resolve";
 
 export interface FigmaTokenSet {
   colors: {
     primary: { value: string; type: "color" };
     secondary: { value: string; type: "color" };
     accent: Record<string, { value: string; type: "color" }>;
+    /** Scalar color field; gradient backgrounds use their first resolved color stop. */
     background: { value: string; type: "color" };
     foreground: { value: string; type: "color" };
   };
@@ -22,7 +26,126 @@ export interface FigmaTokenSet {
   shadow: Record<string, { value: string; type: "boxShadow" }>;
 }
 
+function parseOpacityModifier(token: string): { colorClass: string; opacity: number } | null {
+  const slash = token.lastIndexOf("/");
+  if (slash < 0) return { colorClass: token, opacity: 1 };
+
+  const bracketStartBeforeSlash = token.lastIndexOf("[", slash);
+  const bracketEndBeforeSlash = token.lastIndexOf("]", slash);
+  if (bracketStartBeforeSlash > bracketEndBeforeSlash) {
+    // A slash inside an arbitrary CSS color (for example rgb(... / 50%)) is
+    // part of that color, not Tailwind's trailing opacity modifier.
+    return { colorClass: token, opacity: 1 };
+  }
+
+  const modifier = token.slice(slash + 1);
+  let opacity: number;
+  if (/^\d{1,3}(?:\.\d+)?$/.test(modifier)) {
+    opacity = Number(modifier) / 100;
+  } else {
+    const arbitrary = modifier.match(/^\[([\d.]+)(%)?\]$/);
+    if (!arbitrary) return null;
+    opacity = Number(arbitrary[1]) / (arbitrary[2] ? 100 : 1);
+  }
+
+  if (!Number.isFinite(opacity) || opacity < 0 || opacity > 1) return null;
+  return { colorClass: token.slice(0, slash), opacity };
+}
+
+function parseHexColor(hex: string): { rgb: [number, number, number]; alpha: number } | null {
+  const value = hex.replace(/^#/, "");
+  if (![3, 4, 6, 8].includes(value.length) || !/^[\da-f]+$/i.test(value)) {
+    return null;
+  }
+
+  const expanded = value.length <= 4
+    ? value.split("").map((digit) => digit + digit).join("")
+    : value;
+  const hasAlpha = expanded.length === 8;
+  return {
+    rgb: [
+      Number.parseInt(expanded.slice(0, 2), 16),
+      Number.parseInt(expanded.slice(2, 4), 16),
+      Number.parseInt(expanded.slice(4, 6), 16),
+    ],
+    alpha: hasAlpha ? Number.parseInt(expanded.slice(6, 8), 16) / 255 : 1,
+  };
+}
+
+function formatRgba(
+  [r, g, b]: [number, number, number],
+  alpha: number,
+): string {
+  const roundedAlpha = Number(alpha.toFixed(4));
+  return `rgba(${r}, ${g}, ${b}, ${roundedAlpha})`;
+}
+
+/**
+ * Resolve class-based colors to the scalar color value accepted by Figma tokens.
+ * For gradients, only the first resolvable stop is exported; direction and
+ * remaining stops are not represented by this schema.
+ * @internal Exported so opacity/color edge cases can be tested directly.
+ */
+export function resolveFigmaColorToken(token: string | undefined, fallback: string): string {
+  if (!token) return fallback;
+
+  // Source order makes the first explicit gradient stop the scalar representative.
+  for (const classToken of token.trim().split(/\s+/)) {
+    const opacity = parseOpacityModifier(classToken);
+    if (!opacity) {
+      // An unrecognized opacity modifier must not be silently treated as solid.
+      if (resolveTwColor(classToken)) return fallback;
+      continue;
+    }
+
+    const { colorClass, opacity: utilityOpacity } = opacity;
+    const rawColor = colorClass.match(/\[([^\]]+)\]/)?.[1]?.replace(/_/g, " ");
+    const hex = rawColor?.match(/^#[\da-f]+$/i)?.[0];
+    if (hex) {
+      const parsed = parseHexColor(hex);
+      if (!parsed) return fallback;
+      const alpha = parsed.alpha * utilityOpacity;
+      return alpha === 1 ? hex : formatRgba(parsed.rgb, alpha);
+    }
+
+    // Keep CSS RGB/HSL functions intact so embedded alpha is preserved.
+    if (rawColor && /^(?:rgba?|hsla?)\(/i.test(rawColor)) {
+      if (/^hsl\(/i.test(rawColor) && rawColor.includes("/")) return fallback;
+      return utilityOpacity === 1 ? rawColor : fallback;
+    }
+
+    // The Tailwind resolver ignores alpha in OKLCH slash notation. Do not
+    // convert such a color to an opaque hex value when its alpha is uncertain.
+    if (rawColor?.startsWith("oklch(") && rawColor.includes("/")) return fallback;
+
+    if (/^(?:bg|text|border|ring|from|to|via|fill|stroke|decoration|outline)-transparent$/.test(colorClass)) {
+      return utilityOpacity === 1 ? "rgba(0, 0, 0, 0)" : fallback;
+    }
+
+    const hsl = resolveTwColor(colorClass)?.match(
+      /^(\d+(?:\.\d+)?)\s+(\d+(?:\.\d+)?)%\s+(\d+(?:\.\d+)?)%$/,
+    );
+    if (!hsl) continue;
+
+    const resolvedHex = hslToHex({
+      h: Number(hsl[1]),
+      s: Number(hsl[2]),
+      l: Number(hsl[3]),
+    });
+    const parsed = parseHexColor(resolvedHex);
+    if (!parsed) return fallback;
+    return utilityOpacity === 1
+      ? resolvedHex
+      : formatRgba(parsed.rgb, utilityOpacity);
+  }
+
+  return fallback;
+}
+
 export function generateFigmaTokens(style: DesignStyle): FigmaTokenSet {
+  const tokens = getStyleTokens(style.slug);
+  const background = resolveFigmaColorToken(tokens?.colors.background.primary, "#ffffff");
+  const foreground = resolveFigmaColorToken(tokens?.colors.text.primary, "#000000");
   const accentTokens: Record<string, { value: string; type: "color" }> = {};
   style.colors.accent.forEach((color, index) => {
     accentTokens[`accent-${index + 1}`] = { value: color, type: "color" };
@@ -33,8 +156,8 @@ export function generateFigmaTokens(style: DesignStyle): FigmaTokenSet {
       primary: { value: style.colors.primary, type: "color" },
       secondary: { value: style.colors.secondary, type: "color" },
       accent: accentTokens,
-      background: { value: "#ffffff", type: "color" },
-      foreground: { value: "#000000", type: "color" },
+      background: { value: background, type: "color" },
+      foreground: { value: foreground, type: "color" },
     },
     typography: {
       fontFamily: {

@@ -5,7 +5,8 @@ import { createPortal } from "react-dom";
 import { useI18n } from "@/lib/i18n/context";
 import type { DesignStyle } from "@/lib/styles";
 import { getStyleTokens } from "@/lib/styles/tokens-registry";
-import { generateStylePack, downloadFile, downloadAllAsZip, type StylePackFile } from "@/lib/export/style-pack";
+import { generateStylePack, downloadFile, type StylePackFile } from "@/lib/export/style-pack";
+import { StylePackDownloadButton } from "@/components/style-preview/style-pack-download-button";
 import { useClipboard } from "@/lib/hooks/use-clipboard";
 import { ClipboardFeedback } from "@/components/ui/clipboard-feedback";
 import { Download, Check, Package, FileJson, FileCode, Palette, Code2, Copy, BookOpen, X } from "lucide-react";
@@ -13,6 +14,7 @@ import { Download, Check, Package, FileJson, FileCode, Palette, Code2, Copy, Boo
 interface StylePackExportProps {
   style: DesignStyle;
   version?: string;
+  showDownloadAll?: boolean;
 }
 
 const iconMap: Record<string, React.ReactNode> = {
@@ -24,13 +26,11 @@ const iconMap: Record<string, React.ReactNode> = {
   skill: <BookOpen className="w-5 h-5" />,
 };
 
-export function StylePackExport({ style, version }: StylePackExportProps) {
+export function StylePackExport({ style, version, showDownloadAll = true }: StylePackExportProps) {
   const { t, locale } = useI18n();
   const tokens = getStyleTokens(style.slug);
   const [downloadedFiles, setDownloadedFiles] = useState<Set<string>>(new Set());
   const [previewFile, setPreviewFile] = useState<StylePackFile | null>(null);
-  const [isDownloading, setIsDownloading] = useState(false);
-  const [downloadFailed, setDownloadFailed] = useState(false);
   const [mounted, setMounted] = useState(false);
   const { copy, result: clipboardResult, isCopied } = useClipboard({ copiedDuration: 2000 });
 
@@ -49,18 +49,6 @@ export function StylePackExport({ style, version }: StylePackExportProps) {
     setDownloadedFiles((prev) => new Set([...prev, file.filename]));
   };
 
-  const handleDownloadAll = async () => {
-    setIsDownloading(true);
-    setDownloadFailed(false);
-    try {
-      await downloadAllAsZip(style, tokens, { version });
-      setDownloadedFiles(new Set(files.map((file) => file.filename)));
-    } catch {
-      setDownloadFailed(true);
-    } finally {
-      setIsDownloading(false);
-    }
-  };
 
   const handleCopyContent = async () => {
     if (!previewFile) return;
@@ -69,26 +57,26 @@ export function StylePackExport({ style, version }: StylePackExportProps) {
 
   return (
     <div>
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+      {showDownloadAll ? (
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <p className="text-sm text-muted">
+            {locale === "zh"
+              ? `${files.length} 个风格文件，包含 SKILL.md。`
+              : `${files.length} style files, including SKILL.md.`}
+          </p>
+          <StylePackDownloadButton
+            style={style}
+            version={version}
+            label={t("stylePack.downloadAll")}
+            onDownloaded={() => setDownloadedFiles(new Set(files.map((file) => file.filename)))}
+            className="min-h-11 px-4 py-2"
+          />
+        </div>
+      ) : (
         <p className="text-sm text-muted">
           {locale === "zh"
-            ? `${files.length} 个风格文件，包含 SKILL.md。`
-            : `${files.length} style files, including SKILL.md.`}
-        </p>
-        <button
-          type="button"
-          onClick={handleDownloadAll}
-          disabled={isDownloading}
-          aria-busy={isDownloading}
-          className="flex min-h-11 items-center gap-2 px-4 py-2 bg-foreground text-background text-sm hover:bg-foreground/90 transition-colors disabled:opacity-60"
-        >
-          <Package className="w-4 h-4" />
-          {isDownloading ? (locale === "zh" ? "正在打包…" : "Preparing ZIP…") : t("stylePack.downloadAll")}
-        </button>
-      </div>
-      {downloadFailed && (
-        <p role="alert" className="mt-3 text-sm text-foreground">
-          {locale === "zh" ? "打包失败，请重试或展开下方列表逐个下载。" : "Could not prepare the ZIP. Try again or download the files individually below."}
+            ? `${files.length} 个风格文件可单独预览或下载。`
+            : `${files.length} style files are available to preview or download individually.`}
         </p>
       )}
 

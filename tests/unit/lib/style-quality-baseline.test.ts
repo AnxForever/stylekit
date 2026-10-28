@@ -19,6 +19,11 @@ import { hasLintableRules } from "@/lib/styles/style-linter";
  * p50/p75/max are unchanged, and the sub-60 count rose by one (quantized-line-
  * field scores 56). The gate thresholds stay valid.
  *
+ * Updated 2026-10-11 after the Editorial token correction: the previous
+ * Editorial style and tokens score 59, and the corrected source scores 65, so
+ * the sub-60 count falls by one. The 60 threshold and the other measured
+ * distribution landmarks are unchanged.
+ *
  * If a refactor moves these numbers, the gate thresholds derived from them are
  * no longer valid and must be re-derived rather than nudged back.
  */
@@ -45,7 +50,11 @@ describe("style library quality baseline", () => {
 
   it("keeps the count of curated styles that would fail an a11y >= 60 gate", () => {
     // The reason a11y is a soft signal, not a hard gate.
-    expect(scores.filter((value) => value < 60).length).toBe(78);
+    expect(scores.filter((value) => value < 60).length).toBe(77);
+  });
+
+  it("keeps the corrected Editorial score at or above the soft threshold", () => {
+    expect(scoreStyle("editorial")?.overall).toBeGreaterThanOrEqual(60);
   });
 
   it("has complete component code for every style", () => {

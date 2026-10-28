@@ -1,5 +1,5 @@
 {
-  "baselineCommit": "7c66cf8e",
+  "baselineCommit": "5d2c1691",
   "algorithm": "sha256",
   "count": 296,
   "files": {
@@ -71,7 +71,7 @@
     "distill-style-cover-mobile-chrome-linux.png": "95516fd5eacd996672ad95a2780428dd66eea55b6cde99d3be8a179d22659bda",
     "dopamine-design-cover-chromium-linux.png": "dfb412125bc76a8acb8fabc48611d9e37229a347baf40e4e12667f3bf5be9a83",
     "dopamine-design-cover-mobile-chrome-linux.png": "672dbb02d59627b9596d3e191b5dc89371abbb7abae11f407b850c282df8928a",
-    "editorial-cover-chromium-linux.png": "eaacc01432704acf8e8ff548664cb220159ec7500ae018584911a2a89844d1f6",
+    "editorial-cover-chromium-linux.png": "9db498f7d9c7823d5e744f211237829034d3c324b0c158baf4884daca4e1f057",
     "editorial-cover-mobile-chrome-linux.png": "e2851d8c62c801857868298de13c5058ddb7373d0efccc3e70686de91d9fc00d",
     "f-pattern-layout-cover-chromium-linux.png": "655bced3deefeb1ca4485a3428855c4713f6db6235c7df2a96097e4bc8bee304",
     "f-pattern-layout-cover-mobile-chrome-linux.png": "0662830eac2c0ba69964834cec87deb761bf3578216c2dafa279704555293814",

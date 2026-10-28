@@ -17,9 +17,9 @@ export function HardPromptCopyButton({ content, locale, slug }: HardPromptCopyBu
   const copied = isCopied(slug, content);
   const label = copied
     ? locale === "zh"
-      ? "已复制硬性提示词"
-      : "Hard Prompt Copied"
-    : locale === "zh" ? "复制硬性提示词" : "Copy Hard Prompt";
+      ? "已复制给 AI"
+      : "Copied for AI"
+    : locale === "zh" ? "复制给 AI" : "Copy for AI";
 
   const handleCopy = async () => {
     if (await copy(content, slug)) {

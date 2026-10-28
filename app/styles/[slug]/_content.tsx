@@ -11,6 +11,7 @@ import { ColorPalette } from "@/components/style-preview/color-palette";
 import { AiImplementationPanel } from "@/components/style-preview/ai-implementation-panel";
 import type { DesignSpecTokens } from "@/components/style-preview/_prompt-builders";
 import { HardPromptCopyButton } from "@/components/style-preview/hard-prompt-copy-button";
+import { StylePackDownloadButton } from "@/components/style-preview/style-pack-download-button";
 import { CodeBlock } from "@/components/style-preview/code-block";
 import { TokensExportButton } from "@/components/tokens-export-button";
 import { StyleCoverPreview } from "@/components/style-preview/style-cover-preview";
@@ -91,6 +92,7 @@ export function StyleDetailContent({
   const locale = ssrLocale ?? clientLocale;
   const showcaseContainerRef = useRef<HTMLDivElement>(null);
   const [showcaseScale, setShowcaseScale] = useState(0);
+  const [moreExportsOpen, setMoreExportsOpen] = useState(false);
 
   const updateShowcaseScale = useCallback(() => {
     const el = showcaseContainerRef.current;
@@ -225,7 +227,7 @@ export function StyleDetailContent({
               <h1 className="text-4xl md:text-5xl lg:text-6xl mb-2">
                 {primaryStyleName}
               </h1>
-              <div className="flex items-center gap-3 mb-6">
+              <div className="flex flex-wrap items-center gap-3 mb-6">
                 {secondaryStyleName && secondaryStyleName !== primaryStyleName && (
                   <p className="text-xl text-muted">{secondaryStyleName}</p>
                 )}
@@ -251,18 +253,19 @@ export function StyleDetailContent({
                 ))}
               </div>
 
-              <div className="flex flex-col sm:flex-row flex-wrap gap-3 sm:gap-4 mt-6">
+              <div className="flex flex-col gap-3 mt-6 sm:flex-row sm:flex-wrap sm:gap-4">
                 <HardPromptCopyButton
                   content={hardPromptContent}
                   locale={locale}
                   slug={style.slug}
                 />
-                <LocalizedLink
-                  href="#style-exports"
-                  className="inline-flex min-h-[48px] items-center justify-center px-4 py-3 text-sm text-muted underline underline-offset-4 transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-                >
-                  {t("styleDetail.export")}
-                </LocalizedLink>
+                <StylePackDownloadButton
+                  style={style}
+                  version={version}
+                  label={locale === "zh" ? "下载完整风格包" : "Download full style pack"}
+                  variant="secondary"
+                  className="min-h-12 px-5 py-3"
+                />
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 mt-8">
@@ -388,13 +391,13 @@ export function StyleDetailContent({
           </p>
           <h2 className="text-2xl md:text-3xl mb-4">
             {locale === "zh"
-              ? "先复制硬性提示词，需要时再看设计规范"
-              : "Copy the Hard Prompt first, then use the spec when needed"}
+              ? "先用主提示词，需要时再展开其他文档"
+              : "Start with the main prompt and open other documents when needed"}
           </h2>
           <p className="text-muted mb-8 max-w-2xl">
             {locale === "zh"
-              ? `默认用硬性提示词让 AI 直接生成前端；Design Spec 用来理解、改写和审核风格；Creative Brief 用来早期探索方向。`
-              : `Use the Hard Prompt by default to generate UI. Use the Design Spec to understand, modify, and review the style. Use the Creative Brief for early exploration.`}
+              ? `主提示词可直接交给 AI；Design Spec、Creative Brief 和项目上下文按需使用。`
+              : `Give the main prompt directly to AI. Use the Design Spec, Creative Brief, and project context when needed.`}
           </p>
           <AiImplementationPanel
             styleName={primaryStyleName}
@@ -641,66 +644,81 @@ export function StyleDetailContent({
         </section>
       )}
 
-      {/* Export Tools */}
+      {/* Secondary export formats stay closed until requested. */}
       <section id="style-exports" className="border-b border-border scroll-mt-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-12 py-12 md:py-16">
           <p className="text-xs tracking-widest uppercase text-muted mb-4">
-            {locale === "zh" ? "导出工具" : "Export tools"}
+            {locale === "zh" ? "按需使用" : "When needed"}
           </p>
           <h2 className="text-2xl md:text-3xl mb-4">
-            {locale === "zh" ? "按需要导出风格资源" : "Export the style assets you need"}
+            {locale === "zh" ? "更多导出格式" : "More export formats"}
           </h2>
           <p className="text-muted mb-8 max-w-2xl">
             {locale === "zh"
-              ? "Showcase 离线包、Figma 令牌、IDE 规则和完整风格包都集中在这里。"
-              : "Showcase ZIP, Figma tokens, IDE rules, and the complete style pack are collected here."}
+              ? "完整风格包可在页面顶部直接下载。Showcase、Figma 令牌、IDE 规则和单个文件预览收在这里。"
+              : "Download the complete style pack from the top of the page. Showcase, Figma tokens, IDE rules, and individual file previews are here."}
           </p>
-          <div className="grid gap-8 md:grid-cols-2">
-            <article className="border border-border p-5 md:p-6">
-              <h3 className="text-lg mb-2">
-                {locale === "zh" ? "Showcase 离线包" : "Showcase ZIP"}
-              </h3>
-              <p className="text-sm text-muted mb-5">
-                {locale === "zh"
-                  ? "下载完整 Showcase，离线查看页面效果。"
-                  : "Download the complete showcase for offline viewing."}
-              </p>
-              <ShowcaseDownloadButton slug={style.slug} />
-            </article>
-            <article className="border border-border p-5 md:p-6">
-              <h3 className="text-lg mb-2">
-                {locale === "zh" ? "Figma 设计令牌" : "Figma design tokens"}
-              </h3>
-              <p className="text-sm text-muted mb-5">
-                {locale === "zh"
-                  ? "导出可用于 Figma 和设计令牌工具的颜色与样式。"
-                  : "Export colors and styles for Figma and design-token tools."}
-              </p>
-              <TokensExportButton style={style} />
-            </article>
-            {hasIdeExports && (
-              <article className="border border-border p-5 md:p-6">
-                <h3 className="text-lg mb-2">{t("ideExport.title")}</h3>
-                <p className="text-sm text-muted mb-5">
-                  {t("ideExport.description")}
-                </p>
-                <IdeExportButtons slug={style.slug} />
-              </article>
+          <details
+            className="border border-border"
+            onToggle={(event) => setMoreExportsOpen(event.currentTarget.open)}
+          >
+            <summary className="min-h-12 cursor-pointer px-4 py-3 text-sm text-muted transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-accent">
+              {locale === "zh"
+                ? "查看 Showcase、Figma、IDE 和单个文件导出"
+                : "Show Showcase, Figma, IDE, and individual file exports"}
+            </summary>
+            {moreExportsOpen && (
+              <div className="grid gap-6 border-t border-border p-4 md:grid-cols-2 md:p-6">
+                <article className="border border-border p-5 md:p-6">
+                  <h3 className="text-lg mb-2">
+                    {locale === "zh" ? "Showcase 离线包" : "Showcase ZIP"}
+                  </h3>
+                  <p className="text-sm text-muted mb-5">
+                    {locale === "zh"
+                      ? "下载完整 Showcase，离线查看页面效果。"
+                      : "Download the complete showcase for offline viewing."}
+                  </p>
+                  <ShowcaseDownloadButton slug={style.slug} />
+                </article>
+                <article className="border border-border p-5 md:p-6">
+                  <h3 className="text-lg mb-2">
+                    {locale === "zh" ? "Figma 设计令牌" : "Figma design tokens"}
+                  </h3>
+                  <p className="text-sm text-muted mb-5">
+                    {locale === "zh"
+                      ? "导出可用于 Figma 和设计令牌工具的颜色与样式。"
+                      : "Export colors and styles for Figma and design-token tools."}
+                  </p>
+                  <TokensExportButton style={style} />
+                </article>
+                {hasIdeExports && (
+                  <article className="border border-border p-5 md:p-6">
+                    <h3 className="text-lg mb-2">{t("ideExport.title")}</h3>
+                    <p className="text-sm text-muted mb-5">
+                      {t("ideExport.description")}
+                    </p>
+                    <IdeExportButtons slug={style.slug} />
+                  </article>
+                )}
+                <article className="border border-border p-5 md:col-span-2 md:p-6">
+                  <p className="text-xs tracking-widest uppercase text-muted mb-3">
+                    {t("styleDetail.stylePackLabel")}
+                  </p>
+                  <h3 className="text-xl mb-3">
+                    {locale === "zh" ? "单个文件" : "Individual files"}
+                  </h3>
+                  <p className="text-sm text-muted mb-5 max-w-2xl">
+                    {locale === "zh"
+                      ? "按需预览、复制或下载风格包中的任一文件。"
+                      : "Preview, copy, or download any file from the style pack."}
+                  </p>
+                  <StylePackExport style={style} version={version} showDownloadAll={false} />
+                </article>
+              </div>
             )}
-            <article className="border border-border p-5 md:col-span-2 md:p-6">
-              <p className="text-xs tracking-widest uppercase text-muted mb-3">
-                {t("styleDetail.stylePackLabel")}
-              </p>
-              <h3 className="text-xl mb-3">{t("styleDetail.exportStylePack")}</h3>
-              <p className="text-sm text-muted mb-5 max-w-2xl">
-                {t("styleDetail.exportStylePackDesc")}
-              </p>
-              <StylePackExport style={style} version={version} />
-            </article>
-          </div>
+          </details>
         </div>
       </section>
-
       {/* Philosophy — condensed, collapsed */}
       <section className="border-b border-border">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-12 py-12 md:py-16">
