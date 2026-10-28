@@ -1,10 +1,25 @@
 import { execFile } from "node:child_process";
 import { access, stat } from "node:fs/promises";
+import { existsSync } from "node:fs";
 import path from "node:path";
 import { promisify } from "node:util";
 
 const execFileAsync = promisify(execFile);
 const ROOT = process.cwd();
+// On Windows `npm` is a `.cmd` shim, which Node refuses to spawn without a
+// shell, and Node 24 deprecates passing an argument list through a shell. Run
+// npm's JavaScript entry with the current Node binary instead; POSIX keeps
+// spawning `npm` directly because its launcher is a real executable.
+const NPM_CLI = path.join(
+  path.dirname(process.execPath),
+  "node_modules",
+  "npm",
+  "bin",
+  "npm-cli.js",
+);
+const NPM = process.platform === "win32" && existsSync(NPM_CLI)
+  ? { command: process.execPath, prefix: [NPM_CLI] }
+  : { command: "npm", prefix: [] };
 const PACKAGES = [
   { name: "stylekit-core", dir: "packages/core", maxUnpacked: 12_000_000 },
   { name: "stylekit-cli", dir: "packages/cli", maxUnpacked: 6_000_000 },
@@ -29,7 +44,7 @@ for (const pkg of PACKAGES) {
   }
 
   const entrySize = (await stat(distEntry)).size;
-  const { stdout } = await execFileAsync("npm", ["pack", "--dry-run", "--json"], {
+  const { stdout } = await execFileAsync(NPM.command, [...NPM.prefix, "pack", "--dry-run", "--json"], {
     cwd: packageDir,
     maxBuffer: 2 * 1024 * 1024,
   });

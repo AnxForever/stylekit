@@ -11,22 +11,23 @@ describe("Developer Toolkit capability manifest", () => {
       id: "cli",
       state: "public-beta",
       publicVersion: "0.3.1",
-      repositoryVersion: "0.3.1",
+      repositoryVersion: "0.3.2",
       command:
         "npx -y --prefer-online stylekit-cli@latest add synthwave",
-      verifiedAt: "2026-10-07",
+      verifiedAt: "2026-10-20",
     });
     expect(getDeveloperToolkitCapability("core")).toMatchObject({
       publicVersion: "1.0.0-beta.7",
-      repositoryVersion: "1.0.0-beta.7",
+      repositoryVersion: "1.0.0-beta.8",
       command: "npm install stylekit-core@beta",
-      verifiedAt: "2026-10-07",
+      verifiedAt: "2026-10-20",
     });
     expect(getDeveloperToolkitCapability("mcp")).toMatchObject({
-      publicVersion: "0.4.1",
-      repositoryVersion: "0.4.1",
+      publicVersion: "0.5.0",
+      repositoryVersion: "0.5.0",
       command: "npx -y --prefer-online stylekit-mcp@latest",
-      verifiedAt: "2026-10-07",
+      verifiedAt: "2026-10-21",
+      remoteUrl: "https://www.stylekit.top/mcp",
     });
     expect(getDeveloperToolkitCapability("agent-skill")).toMatchObject({
       publicVersion: "0.8.0",

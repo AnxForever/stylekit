@@ -23,6 +23,8 @@ export interface DeveloperToolkitCapability {
   docsUrl: string;
   verifiedAt: string;
   evidence: string;
+  /** Hosted Streamable HTTP endpoint, when one is live. */
+  remoteUrl?: string;
   clientConfiguration?: {
     mcpServers: {
       stylekit: {
@@ -67,36 +69,40 @@ export const developerToolkitManifest = Object.freeze({
     {
       id: "core",
       state: "public-beta",
+      // beta.8 carries repairStyleCode, which beta.7 does not.
       publicVersion: "1.0.0-beta.7",
-      repositoryVersion: "1.0.0-beta.7",
+      repositoryVersion: "1.0.0-beta.8",
       command: "npm install stylekit-core@beta",
       docsUrl:
         "https://github.com/AnxForever/stylekit/tree/main/packages/core#readme",
-      verifiedAt: "2026-10-07",
-      evidence: "GitHub main and npm's beta dist-tag both report 1.0.0-beta.7; npm's latest dist-tag remains beta.3, so the setup command targets @beta. Existing lockfiles still need an explicit dependency update",
+      verifiedAt: "2026-10-20",
+      evidence: "npm's beta dist-tag reports 1.0.0-beta.7, which predates repairStyleCode; the repository is at 1.0.0-beta.8 and needs a core-v1.0.0-beta.8 tag to publish it. npm's latest dist-tag remains beta.3, so the setup command targets @beta. Existing lockfiles still need an explicit dependency update",
     },
     {
       id: "cli",
       state: "public-beta",
+      // 0.3.2 carries the exit-code fix; npm only has 0.3.1.
       publicVersion: "0.3.1",
-      repositoryVersion: "0.3.1",
+      repositoryVersion: "0.3.2",
       command:
         "npx -y --prefer-online stylekit-cli@latest add synthwave",
       docsUrl:
         "https://github.com/AnxForever/stylekit/tree/main/packages/cli#readme",
-      verifiedAt: "2026-10-07",
-      evidence: "GitHub main and npm's latest dist-tag both report 0.3.1; an exact package version remains available for reproducible runs",
+      verifiedAt: "2026-10-20",
+      evidence: "npm's latest dist-tag reports 0.3.1; the repository is at 0.3.2 and needs a cli-v0.3.2 tag to publish the corrected lint exit codes. An exact package version remains available for reproducible runs",
     },
     {
       id: "mcp",
       state: "public-beta",
-      publicVersion: "0.4.1",
-      repositoryVersion: "0.4.1",
+      // Repository is on the v2 SDK and speaks the 2026-07-28 stateless protocol.
+      publicVersion: "0.5.0",
+      repositoryVersion: "0.5.0",
       command: `npx ${MCP_NPX_ARGS.join(" ")}`,
       docsUrl:
         "https://github.com/AnxForever/stylekit/tree/main/packages/mcp#readme",
-      verifiedAt: "2026-10-07",
-      evidence: "GitHub main and npm's latest dist-tag both report 0.4.1; the configured process resolves latest on client startup, and a running process must be restarted to load an update",
+      verifiedAt: "2026-10-21",
+      evidence: "npm 0.5.0 is published on the latest dist-tag with the v2 SDK, and the MCP Registry entry points at https://www.stylekit.top/mcp. The endpoint serves both the 2026-07-28 stateless protocol and 2025-era clients. Node 20 or newer is required",
+      remoteUrl: "https://www.stylekit.top/mcp",
       clientConfiguration: Object.freeze({
         mcpServers: Object.freeze({
           stylekit: Object.freeze({

@@ -3,8 +3,8 @@ import { execFileSync } from "node:child_process";
 import { createServer } from "node:http";
 import { readFileSync, realpathSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
-import { Client } from "@modelcontextprotocol/sdk/client/index.js";
-import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
+import { Client } from "@modelcontextprotocol/client";
+import { StdioClientTransport } from "@modelcontextprotocol/client/stdio";
 import { clearRemoteCache, getStyleDetailLive } from "stylekit-core/discovery";
 import { ASSET_KINDS, getPublicAsset, listPublicAssets } from "stylekit-core/assets";
 
@@ -17,7 +17,11 @@ function check(label, assertion) {
 
 for (const name of ["stylekit-core", "stylekit-cli", "stylekit-mcp"]) {
   check(`${name} installed from tarball outside workspace`, () => {
-    assert.ok(realpathSync(`node_modules/${name}`).startsWith(`${process.cwd()}/node_modules/`));
+    // realpathSync returns backslashes on Windows; compare normalized paths so
+    // the check tests "inside this directory" rather than a separator style.
+    const installed = realpathSync(`node_modules/${name}`).replaceAll("\\", "/");
+    const expected = `${process.cwd().replaceAll("\\", "/")}/node_modules/`;
+    assert.ok(installed.startsWith(expected), `${installed} is not under ${expected}`);
   });
 }
 
@@ -110,6 +114,21 @@ async function collectAssetPages(fetchPage, label) {
 
 function sortedAssetKeys(assets) {
   return assets.map(assetKey).sort();
+}
+
+/**
+ * Checks that a consumer's catalogue contains every bundled asset.
+ *
+ * The bundled snapshot is the deterministic baseline, but a live-enabled
+ * consumer also sees assets published after that snapshot was built, so
+ * equality is the wrong invariant: a template added to the website would fail a
+ * consumer that is behaving correctly. A missing baseline row is the real
+ * regression.
+ */
+function assertIncludesBaseline(consumerAssets, label) {
+  const seen = new Set(sortedAssetKeys(consumerAssets));
+  const missing = sortedAssetKeys(coreCatalog.assets).filter((key) => !seen.has(key));
+  assert.deepEqual(missing, [], `${label} is missing bundled assets`);
 }
 
 function pickAsset(assets, kind, predicate = () => true) {
@@ -275,7 +294,7 @@ const cliAssetCatalog = await collectAssetPages(
 );
 const cliOrigins = cliAssetCatalog.origins;
 check("CLI assets JSON paginates every Core asset with matching stable IDs", () => {
-  assert.deepEqual(sortedAssetKeys(cliAssetCatalog.assets), sortedAssetKeys(coreCatalog.assets));
+  assertIncludesBaseline(cliAssetCatalog.assets, "CLI");
   assert.ok(cliOrigins.every((origin) => origin === "live" || origin === "bundled"));
 });
 assetCoverage.cli = {
@@ -333,9 +352,10 @@ try {
   await client.connect(transport);
   const { tools } = await client.listTools();
   check("MCP starts and advertises the required read-only tools", () => {
-    assert.equal(tools.length, 9);
+    assert.equal(tools.length, 10);
     assert.ok(tools.some((tool) => tool.name === "stylekit_list_assets"));
     assert.ok(tools.some((tool) => tool.name === "stylekit_get_asset"));
+    assert.ok(tools.some((tool) => tool.name === "stylekit_repair_code"));
     assert.ok(tools.every((tool) => tool.annotations?.readOnlyHint));
   });
   const mcpAssetCatalog = await collectAssetPages(async (offset) => {
@@ -344,7 +364,7 @@ try {
     return result.structuredContent;
   }, "MCP");
   check("MCP list_assets returns every Core asset through paginated stdio calls", () => {
-    assert.deepEqual(sortedAssetKeys(mcpAssetCatalog.assets), sortedAssetKeys(coreCatalog.assets));
+    assertIncludesBaseline(mcpAssetCatalog.assets, "MCP");
     assert.ok(mcpAssetCatalog.origins.every((origin) => origin === "live" || origin === "bundled"));
   });
   assetCoverage.mcp = {
@@ -450,6 +470,8 @@ try {
     assert.ok(empty.structuredContent.total >= 1);
     assert.equal(empty.structuredContent.offset, 100_000);
     assert.equal(empty.structuredContent.has_more, false);
+    assert.equal(empty.structuredContent.hasMore, false);
+    assert.equal(empty.structuredContent.next_offset, null);
   });
   for (const name of ["stylekit_get_style", "stylekit_get_style_tokens", "stylekit_get_shadcn_install"]) {
     const result = await call(name, { slug: "neo-brutalist" });
@@ -473,6 +495,15 @@ try {
   });
   const dynamic = await call("stylekit_lint_code", { slug: "neo-brutalist", code: "<div className={styles.card} />" });
   check("runtime classes remain inconclusive", () => assert.equal(dynamic.structuredContent.status, "inconclusive"));
+  const repair = await call("stylekit_repair_code", { slug: "neo-brutalist", code: "rounded-xl shadow-lg" });
+  check("repair returns conforming code for a bare class string", () => {
+    assert.ok(!repair.isError && repair.structuredContent);
+    assert.equal(repair.structuredContent.before.status, "fail");
+    assert.equal(repair.structuredContent.report.status, "pass");
+    for (const edit of repair.structuredContent.edits) {
+      assert.ok(!repair.structuredContent.code.includes(edit.from));
+    }
+  });
 } finally {
   await client.close();
 }

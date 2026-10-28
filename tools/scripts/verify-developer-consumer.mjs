@@ -12,6 +12,26 @@ const keep = process.argv.includes("--keep");
 const run = (command, args, cwd = temporary) => execFileSync(command, args, {
   cwd, stdio: "pipe", timeout: 180_000,
 });
+// Windows exposes pnpm as a `.cmd` shim that Node cannot spawn directly, so
+// resolve the JavaScript entry behind it. A global npm install ships a complete
+// `pnpm.cjs`; the corepack shim is only used when that is absent because it
+// re-enters the package manager instead of running standalone.
+const PNPM_CLI_CANDIDATES = [
+  ...(process.env.APPDATA
+    ? [join(process.env.APPDATA, "npm", "node_modules", "pnpm", "bin", "pnpm.cjs")]
+    : []),
+  join(dirname(process.execPath), "node_modules", "pnpm", "bin", "pnpm.cjs"),
+  join(dirname(process.execPath), "node_modules", "corepack", "dist", "pnpm.js"),
+];
+const PNPM_CLI = PNPM_CLI_CANDIDATES.find((candidate) => existsSync(candidate));
+// A package manager run from inside another package manager inherits INIT_CWD,
+// which makes pnpm treat the caller's workspace as the project. These commands
+// target the throwaway consumer directory, so that hint must not leak in.
+const PNPM_ENV = { ...process.env };
+delete PNPM_ENV.INIT_CWD;
+const pnpm = (args, cwd = temporary) => PNPM_CLI
+  ? execFileSync(process.execPath, [PNPM_CLI, ...args], { cwd, env: PNPM_ENV, stdio: "pipe", timeout: 180_000 })
+  : run("pnpm", args, cwd);
 
 try {
   const tarballs = [];
@@ -21,12 +41,13 @@ try {
       throw new Error(`Build packages first: pnpm run test:developer-packages (${name} dist is missing)`);
     }
     const tarball = join(temporary, `${name}.tgz`);
-    run("pnpm", ["pack", "--out", tarball], directory);
+    pnpm(["pack", "--out", tarball], directory);
     tarballs.push(tarball);
   }
   writeFileSync(join(temporary, "package.json"), JSON.stringify({ name: "stylekit-consumer-check", private: true, type: "module" }));
   const mcp = JSON.parse(readFileSync(join(root, "packages", "mcp", "package.json"), "utf8"));
-  run("pnpm", ["add", "--ignore-scripts", ...tarballs, `@modelcontextprotocol/sdk@${mcp.dependencies["@modelcontextprotocol/sdk"]}`]);
+  const clientVersion = mcp.devDependencies["@modelcontextprotocol/client"];
+  pnpm(["add", "--ignore-scripts", ...tarballs, `@modelcontextprotocol/client@${clientVersion}`]);
   copyFileSync(join(root, "tools", "lib", "developer-consumer-probe.mjs"), join(temporary, "probe.mjs"));
   process.stdout.write(run(process.execPath, ["probe.mjs"]));
 } catch (error) {

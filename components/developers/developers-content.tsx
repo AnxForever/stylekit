@@ -29,13 +29,13 @@ const COPY = {
     label: "For developers",
     title: "Use StyleKit in your workflow",
     intro:
-      "Use the CLI, MCP server or Skill to find styles, animations and reusable assets, then retrieve source and dependencies where available. Install color themes through shadcn.",
+      "Use the CLI, MCP server or Skill to find styles, animations and reusable assets, then retrieve source and dependencies where available. Install color themes through shadcn. Remote MCP works with Claude, ChatGPT, Claude Code, Codex CLI, Gemini CLI, VS Code, and Cursor.",
     note: "These install a style's color theme — design tokens for light and dark. The component code is yours to build.",
     // Kept as a literal because this is a client component and importing the
-    // registry would ship all 148 style records to the browser to print a number.
+    // registry would ship all 149 style records to the browser to print a number.
     // CI enforces it instead: `check:product-truth` fails with this file named if
     // the registry count ever moves past it.
-    browse: "Browse all 148 styles",
+    browse: "Browse all 149 styles",
     docs: "Docs",
     status: "Status",
     verified: "Verified",
@@ -51,6 +51,7 @@ const COPY = {
     configTitle: "MCP configuration",
     copyFailed: "Couldn't copy. Select the code below to copy it manually.",
     configLabel: "Paste into your MCP client's configuration",
+    remoteLabel: "Hosted endpoint (no token)",
     updatesTitle: "How updates work",
     updatesIntro:
       "Update timing depends on how a tool is installed. These short notes explain what happens after setup.",
@@ -61,7 +62,7 @@ const COPY = {
       },
       {
         title: "MCP server",
-        body: "The configuration above checks npm for the latest release when your client starts the MCP process. A running session keeps its current process; restart the MCP server or client to load an update.",
+        body: "The hosted endpoint always serves the live catalogue. The stdio configuration above checks npm for the latest release when your client starts the MCP process. A running session keeps its current process; restart the MCP server or client to load an update.",
       },
       {
         title: "CLI",
@@ -88,8 +89,8 @@ const COPY = {
         id: "mcp",
         name: "MCP server",
         purpose: "Connect your AI client",
-        desc: "Run the public beta MCP package over stdio from a compatible AI client.",
-        foot: "Nine read-only tools · live assets with bundled fallback",
+        desc: "Connect a compatible AI client to the hosted HTTP endpoint, or run the npm package locally over stdio.",
+        foot: "Ten read-only tools · hosted endpoint · live assets with bundled fallback",
       },
       {
         id: "cli",
@@ -111,9 +112,9 @@ const COPY = {
     label: "面向开发者",
     title: "把 StyleKit 接进你的工作流",
     intro:
-      "用 CLI、MCP 或 Skill 查找风格、动画和设计素材，并按素材提供情况获取源码和依赖；配色主题也可以通过 shadcn 安装。",
+      "用 CLI、MCP 或 Skill 查找风格、动画和设计素材，并按素材提供情况获取源码和依赖；配色主题也可以通过 shadcn 安装。远程 MCP 支持 Claude、ChatGPT、Claude Code、Codex CLI、Gemini CLI、VS Code 和 Cursor。",
     note: "安装的是风格的配色主题——明暗两套 design tokens。组件代码由你自己实现。",
-    browse: "浏览全部 148 风格",
+    browse: "浏览全部 149 风格",
     docs: "文档",
     status: "状态",
     verified: "已验证",
@@ -129,6 +130,7 @@ const COPY = {
     configTitle: "MCP 配置",
     copyFailed: "未能复制，请手动选择下方代码。",
     configLabel: "粘贴到兼容客户端的 MCP 配置中",
+    remoteLabel: "远程端点（无需令牌）",
     updatesTitle: "更新方式",
     updatesIntro:
       "不同工具的更新时机不一样，下面分别说明安装后会发生什么。",
@@ -166,8 +168,8 @@ const COPY = {
         id: "mcp",
         name: "MCP server",
         purpose: "连接你的 AI 客户端",
-        desc: "通过兼容的 AI 客户端，以 stdio 运行公开 Beta 版 MCP package。",
-        foot: "9 个只读工具 · 在线资产与离线回退",
+        desc: "通过远程 HTTP 端点连接兼容的 AI 客户端，或在本地以 stdio 运行 npm 包。",
+        foot: "10 个只读工具 · 远程端点 · 在线资产与离线回退",
       },
       {
         id: "cli",
@@ -350,6 +352,19 @@ export function DevelopersContent() {
               {selectedCard.id === "registry" || selectedCard.id === "mcp" ? (
                 <p className="mt-3 text-xs leading-relaxed text-muted">
                   {selectedCard.id === "registry" ? c.note : c.configLabel}
+                </p>
+              ) : null}
+              {selectedCard.id === "mcp" && capability.remoteUrl ? (
+                <p className="mt-2 text-xs leading-relaxed text-muted">
+                  {c.remoteLabel}:{" "}
+                  <a
+                    href={capability.remoteUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-foreground underline underline-offset-4 hover:text-accent"
+                  >
+                    {capability.remoteUrl.replace(/^https?:\/\//, "")}
+                  </a>
                 </p>
               ) : null}
             </div>

@@ -9,6 +9,19 @@ import { execFileSync } from "node:child_process";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const PACKAGES = ["core", "mcp", "cli"];
+// Windows exposes pnpm as a `.cmd` shim that Node cannot spawn directly, so
+// resolve the JavaScript entry behind it and run it with this Node binary.
+const PNPM_CLI = [
+  ...(process.env.APPDATA
+    ? [join(process.env.APPDATA, "npm", "node_modules", "pnpm", "bin", "pnpm.cjs")]
+    : []),
+  join(dirname(process.execPath), "node_modules", "pnpm", "bin", "pnpm.cjs"),
+].find((candidate) => existsSync(candidate));
+const packLocally = (cwd, out) => execFileSync(
+  PNPM_CLI ? process.execPath : "pnpm",
+  PNPM_CLI ? [PNPM_CLI, "pack", "--out", out] : ["pack", "--out", out],
+  { cwd, stdio: "pipe", timeout: 60_000 },
+);
 
 let failed = false;
 let unavailable = false;
@@ -40,7 +53,7 @@ for (const pkg of PACKAGES) {
     const artifact = await fetch(published.dist.tarball, { signal: AbortSignal.timeout(30_000) });
     if (!artifact.ok) throw new Error(`Tarball HTTP ${artifact.status}`);
     writeFileSync(remoteTar, Buffer.from(await artifact.arrayBuffer()));
-    execFileSync("pnpm", ["pack", "--out", localTar], { cwd, stdio: "pipe", timeout: 60_000 });
+    packLocally(cwd, localTar);
     const local = artifactContents(localTar);
     const remote = artifactContents(remoteTar);
     const changed = [...new Set([...local.keys(), ...remote.keys()])].filter((entry) => local.get(entry) !== remote.get(entry));
