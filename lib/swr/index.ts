@@ -10,6 +10,7 @@ export {
   useStyleComments,
   useAnalyticsOverview,
   useAnalyticsBreakdown,
+  useAnalyticsRealtime,
   useAnalyticsRegistrations,
   useAnalyticsContent,
   useAnalyticsEvents,

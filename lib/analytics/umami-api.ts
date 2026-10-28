@@ -17,12 +17,9 @@ import "server-only";
 
 import { z } from "zod";
 import type { AnalyticsRange } from "@/lib/admin/analytics-api-contract";
-import { UMAMI_HOST, UMAMI_SCRIPT_URL } from "./umami-constants";
+import { UMAMI_HOST, UMAMI_SCRIPT_URL, UMAMI_TIMEZONE } from "./umami-constants";
 
-export { UMAMI_HOST, UMAMI_SCRIPT_URL };
-
-/** Asia/Shanghai matches every other date bucket the admin surfaces render. */
-export const UMAMI_TIMEZONE = "Asia/Shanghai";
+export { UMAMI_HOST, UMAMI_SCRIPT_URL, UMAMI_TIMEZONE };
 
 export const UMAMI_API_BASE_URL = `https://${UMAMI_HOST}/umami/api`;
 
@@ -125,6 +122,10 @@ export const umamiPageviewsSchema = z.object({
 });
 
 export type UmamiPageviews = z.infer<typeof umamiPageviewsSchema>;
+
+export const umamiActiveSchema = z.object({ visitors: z.number() });
+
+export type UmamiActive = z.infer<typeof umamiActiveSchema>;
 
 /**
  * Metrics rows. `x` is the dimension value and `y` the count; `t` is an
@@ -312,4 +313,16 @@ export async function fetchUmamiMetrics(
     })
   );
   return umamiMetricsSchema.parse(raw);
+}
+
+/** Visitors active in the last few minutes. */
+export async function fetchUmamiActive(
+  config: UmamiConfig
+): Promise<UmamiActive["visitors"]> {
+  const raw = await umamiGet(
+    config,
+    `/websites/${encodeURIComponent(config.websiteId)}/active`,
+    {}
+  );
+  return umamiActiveSchema.parse(raw).visitors;
 }

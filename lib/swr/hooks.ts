@@ -20,6 +20,7 @@ import type {
   AnalyticsEvents,
   AnalyticsOverview,
   AnalyticsRange,
+  AnalyticsRealtime,
   AnalyticsRegistrations,
 } from "@/lib/admin/analytics-api-contract";
 
@@ -152,6 +153,16 @@ export function useAnalyticsOverview(
     keepPreviousData: true,
     dedupingInterval: 300_000,
     revalidateOnFocus: false,
+  });
+}
+
+export function useAnalyticsRealtime(fallbackData?: AnalyticsRealtime) {
+  return useSWR<AnalyticsRealtime>("/api/admin/analytics/realtime", {
+    fallbackData,
+    keepPreviousData: true,
+    dedupingInterval: 15_000,
+    refreshInterval: 30_000,
+    revalidateOnFocus: true,
   });
 }
 

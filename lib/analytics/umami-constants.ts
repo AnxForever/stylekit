@@ -24,3 +24,6 @@ export const UMAMI_TRACKING_HOSTS = ["stylekit.top", "www.stylekit.top"] as cons
 
 /** Rendered value of the tracker's `data-domains` attribute. */
 export const UMAMI_TRACKING_DOMAINS = UMAMI_TRACKING_HOSTS.join(", ");
+
+/** Asia/Shanghai matches every other date bucket the admin surfaces render. */
+export const UMAMI_TIMEZONE = "Asia/Shanghai";
