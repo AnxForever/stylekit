@@ -1,0 +1,24 @@
+{
+  "reviewedAt": "2026-10-22",
+  "scope": "Traffic overview, breakdowns, collection exclusions and historical provenance",
+  "baseline": "Live Q5QTjqUJdccH-izrtOX3x with Umami 3.2.0; local checkout includes unshipped analytics work",
+  "evidence": [
+    "Production PostgreSQL aggregates and gen-insights.mjs reviewed read-only on 2026-10-22",
+    "Live dashboard and GA4 reporting inspected in ego-browser",
+    "https://docs.umami.is/docs/metric-definitions",
+    "https://raw.githubusercontent.com/umami-software/umami/v3.2.0/src/app/api/send/route.ts"
+  ],
+  "features": [
+    { "id": "AN-01", "outcome": "Source-aware anonymous visitor and tab-session labels", "state": "implemented", "coverage": "partial", "history": "backfilled", "decision": "Explicit source, filtering and cache freshness metadata; never infer source from payload shape or promise natural persons", "acceptance": "Measurement/reader and UI tests; pending candidate browser verification" },
+    { "id": "AN-02", "outcome": "Exclude internal QA and clear automation before collection", "state": "implemented", "coverage": "partial", "history": "backfilled", "decision": "Canonical hosts, admin routes, browser optout, explicit automation signatures across internal/Umami/GA4; no exclusion by browsing speed alone", "acceptance": "Policy and authenticated endpoint tests; pending browser checks" },
+    { "id": "AN-03", "outcome": "Preserve raw data while reporting one filtered population", "state": "implemented", "coverage": "partial", "history": "backfilled", "decision": "Read-only snapshot SQL, rule counts, consistent filtered overview and dimension breakdowns; high-frequency records remain review-only", "acceptance": "Pipeline tests and read-only production dry-run; pending" },
+    { "id": "AN-04", "outcome": "Historical backfill remains visible without invented row attribution", "state": "implemented", "coverage": "partial", "history": "backfilled", "decision": "Known log reported 232380 sends; approximate 2026-08-16 boundary; mixed provenance remains unverified at event level", "acceptance": "Historical-window tests; exact per-row attribution remains unavailable" },
+    { "id": "AN-05", "outcome": "Honest recovery and comparison periods", "state": "implemented", "coverage": "partial", "history": "backfilled", "decision": "Stale fallback keeps source and original timestamp; sparse comparisons align by relative bucket time; missing filtered breakdowns fail explicitly", "acceptance": "Reader outage, stale-clock and sparse-bucket tests" }
+  ],
+  "remainingLimits": [
+    "No exact natural-person identity or bot percentage is claimed",
+    "Old internal test events cannot be identified retroactively from a new browser cookie",
+    "Deployment requires an isolated production-baseline candidate; unrelated local WIP must not ship",
+    "Raw Umami realtime/API views do not automatically inherit curated historical reporting filters"
+  ]
+}

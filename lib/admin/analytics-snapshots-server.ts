@@ -20,6 +20,7 @@ import { getSupabaseAdmin } from "@/lib/supabase/server";
 import { readPersistentAnalyticsSnapshot, writePersistentAnalyticsSnapshot } from "./analytics-persistent-snapshot";
 import { isUmamiMetricDimension, mapUmamiBreakdown } from "./analytics-umami-map";
 import { fetchUmamiMetrics, getUmamiConfig } from "@/lib/analytics/umami-api";
+import { hasUmamiSnapshotConfiguration, readUmamiSnapshotBreakdown } from "./analytics-umami-snapshot";
 
 const TIMEZONE = "Asia/Shanghai";
 
@@ -66,6 +67,12 @@ export function getBreakdownSnapshot(
   dimension: AnalyticsBreakdownDimension,
   limit: number
 ) {
+  if (hasUmamiSnapshotConfiguration()) {
+    // The curated snapshot applies one population to the overview and every
+    // breakdown. An unavailable breakdown is safer than an unlabelled switch
+    // to rankings from an unrelated collection pipeline.
+    return readUmamiSnapshotBreakdown(range, dimension, limit);
+  }
   const window = getAnalyticsWindow(range);
   return rpcSnapshot<AnalyticsBreakdown>(
     `breakdown:${range}:${dimension}:${limit}`,
