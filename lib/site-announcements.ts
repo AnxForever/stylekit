@@ -1,4 +1,5 @@
 import "server-only";
+import { createHash } from "node:crypto";
 
 import { changelog } from "@/lib/changelog";
 import { getSupabaseAdmin } from "@/lib/supabase/server";
@@ -94,6 +95,14 @@ async function loadSiteAnnouncement(
 
       if (!error && data) {
         const row = data as SiteAnnouncementRow;
+        const releaseTime = Date.parse(changelog[0]?.announcement?.publishedAt ?? "");
+        const configuredTime = Date.parse(row.updated_at ?? "");
+        // Static pages must contain the new release notice at build time;
+        // do not invalidate the site's entire route cache to publish a notice.
+        // A later admin campaign still takes precedence over the bundled one.
+        if (Number.isFinite(releaseTime) && (!Number.isFinite(configuredTime) || configuredTime < releaseTime)) {
+          return getChangelogFallback(locale);
+        }
         const announcement = toSiteAnnouncement(row);
         return isCurrentlyActive(announcement) ? announcement : null;
       }
@@ -107,8 +116,12 @@ async function loadSiteAnnouncement(
 }
 
 export function toSiteAnnouncement(row: SiteAnnouncementRow): SiteAnnouncement {
+  const release = getChangelogFallback(row.locale);
+  const matchesRelease = release && row.enabled && !row.starts_at && !row.ends_at
+    && row.title === release.title && row.body === release.body
+    && row.cta_label === release.ctaLabel && row.cta_href === release.ctaHref;
   return {
-    id: `site-announcement:${row.locale}`,
+    id: matchesRelease ? release.id : `site-announcement:${row.locale}:${row.updated_at ?? createHash("sha256").update(JSON.stringify(row)).digest("hex").slice(0, 16)}`,
     locale: row.locale,
     enabled: row.enabled,
     title: row.title,
@@ -143,11 +156,15 @@ function getChangelogFallback(locale: SiteAnnouncementLocale): SiteAnnouncement 
     locale,
     enabled: true,
     title: `v${latest.version} — ${isChinese && latest.titleZh ? latest.titleZh : latest.title}`,
-    body: isChinese
+    body: latest.announcement
+      ? isChinese ? latest.announcement.bodyZh ?? latest.announcement.body : latest.announcement.body
+      : isChinese
       ? latest.changes.map((change) => change.descriptionZh ?? change.description).join("；")
       : latest.changes.map((change) => change.description).join("; "),
-    ctaLabel: isChinese ? "查看详情" : "View details",
-    ctaHref: `/${isChinese ? "zh" : "en"}/changelog`,
+    ctaLabel: latest.announcement
+      ? isChinese ? latest.announcement.labelZh ?? latest.announcement.label : latest.announcement.label
+      : isChinese ? "查看详情" : "View details",
+    ctaHref: `/${isChinese ? "zh" : "en"}${latest.announcement?.href ?? "/changelog"}`,
     startsAt: null,
     endsAt: null,
     updatedAt: null,

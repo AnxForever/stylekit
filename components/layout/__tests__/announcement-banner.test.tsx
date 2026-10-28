@@ -1,7 +1,7 @@
 // @vitest-environment happy-dom
 import "@testing-library/jest-dom/vitest";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { render, screen, waitFor } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 
 const { useI18nMock, usePathnameMock } = vi.hoisted(() => ({
   useI18nMock: vi.fn(),
@@ -95,5 +95,16 @@ describe("AnnouncementBanner", () => {
     );
 
     expect(screen.queryByRole("banner")).not.toBeInTheDocument();
+  });
+
+  it("shows a new publication after dismissing the previous one", () => {
+    const { rerender } = render(<AnnouncementBanner announcements={{ en: enAnnouncement, zh: zhAnnouncement }} />);
+    fireEvent.click(screen.getByRole("button", { name: "关闭公告" }));
+    expect(screen.queryByRole("banner")).not.toBeInTheDocument();
+    expect(localStorage.getItem(`sk-site-announcement-dismissed:${zhAnnouncement.id}`)).toBe("1");
+    rerender(<AnnouncementBanner announcements={{ en: enAnnouncement, zh: { ...zhAnnouncement, id: "release:quantized-line-field:zh", title: "量化线场上线" } }} />);
+    expect(screen.getByRole("banner")).toBeInTheDocument();
+    expect(screen.getByText("量化线场上线")).toBeInTheDocument();
+    expect(document.documentElement.dataset.siteAnnouncementDismissed).toBe("false");
   });
 });

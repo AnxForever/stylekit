@@ -3,6 +3,15 @@ export interface ChangelogEntry {
   date: string;
   title: string;
   titleZh?: string;
+  announcement?: {
+    publishedAt: string;
+    /** Site path without a locale prefix. */
+    href: string;
+    label: string;
+    labelZh?: string;
+    body: string;
+    bodyZh?: string;
+  };
   changes: {
     type: "added" | "changed" | "fixed" | "removed";
     description: string;
@@ -11,6 +20,25 @@ export interface ChangelogEntry {
 }
 
 export const changelog: ChangelogEntry[] = [
+  {
+    version: "0.18.1",
+    date: "2026-10-21",
+    title: "Quantized Line Field is live",
+    titleZh: "量化线场上线",
+    announcement: {
+      publishedAt: "2026-10-21T06:56:51.000Z",
+      href: "/styles/quantized-line-field",
+      label: "Explore the style",
+      labelZh: "体验新风格",
+      body: "Interactive line cards, complete reproduction prompts, and an offline HTML demo.",
+      bodyZh: "互动竖线卡片、完整复现提示词与可下载的单文件 HTML。",
+    },
+    changes: [
+      { type: "added", description: "Explore Quantized Line Field at /styles/quantized-line-field with line-drawn Apple, Google and Tesla identities.", descriptionZh: "新增量化线场 /styles/quantized-line-field，以竖线重建 Apple、Google 和 Tesla 品牌卡片。" },
+      { type: "added", description: "Copy complete Chinese or English prompts with exact vector paths and download the standalone HTML reference.", descriptionZh: "提供包含实际矢量路径的中英文完整提示词，以及可下载的独立 HTML 参考。" },
+      { type: "fixed", description: "Scan windows track the current noisy line field with continuous motion and fade between unrelated targets.", descriptionZh: "检测框跟踪当前线场的亮区，连续移动，并在更换目标时淡出淡入。" },
+    ],
+  },
   {
     version: "0.18.0",
     date: "2026-08-02",

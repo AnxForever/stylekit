@@ -26,7 +26,7 @@ export function AnnouncementBanner({
   // first paint. A head bootstrap hides previously dismissed announcements
   // before the body is painted, avoiding the full-page layout shift caused by
   // inserting the banner after hydration.
-  const [visible, setVisible] = useState(true);
+  const [dismissedId, setDismissedId] = useState<string | null>(null);
   const announcement = announcements
     ? locale === "zh"
       ? announcements.zh
@@ -54,7 +54,7 @@ export function AnnouncementBanner({
   }, [announcement, isAnnouncementRoute]);
 
   const dismiss = useCallback(() => {
-    setVisible(false);
+    setDismissedId(announcement?.id ?? null);
     document.documentElement.dataset.siteAnnouncementDismissed = "true";
     if (!announcement) return;
     try {
@@ -64,7 +64,7 @@ export function AnnouncementBanner({
     }
   }, [announcement]);
 
-  if (!announcement || !visible || isIsolatedSurface || isAnnouncementRoute) return null;
+  if (!announcement || dismissedId === announcement.id || isIsolatedSurface || isAnnouncementRoute) return null;
   const ctaLabel = announcement.ctaLabel || (locale === "zh" ? "查看详情" : "View details");
 
   return (
