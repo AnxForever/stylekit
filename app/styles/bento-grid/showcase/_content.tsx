@@ -105,7 +105,7 @@ export default function BentoGridShowcase() {
               <a
                 key={item}
                 href={`#${item.toLowerCase().replace(" ", "-")}`}
-                className="px-4 py-2 rounded-full text-sm text-zinc-600 font-medium hover:bg-zinc-100 hover:text-zinc-900 transition-all duration-200"
+                className="px-4 py-2 rounded-full text-sm text-zinc-600 font-medium hover:bg-zinc-100 hover:text-zinc-900 transition duration-200"
               >
                 {item}
               </a>
@@ -120,7 +120,7 @@ export default function BentoGridShowcase() {
             >
               StyleKit &rarr;
             </Link>
-            <button className="px-5 py-2 rounded-full bg-zinc-900 text-white text-sm font-semibold hover:-translate-y-0.5 hover:shadow-[0_4px_16px_rgba(0,0,0,0.18)] transition-all duration-200">
+            <button className="px-5 py-2 rounded-full bg-zinc-900 text-white text-sm font-semibold hover:-translate-y-0.5 hover:shadow-[0_4px_16px_rgba(0,0,0,0.18)] transition duration-200">
               Get Started
             </button>
           </div>
@@ -159,7 +159,7 @@ export default function BentoGridShowcase() {
         <RevealBlock delay={0.15}>
           <div className="grid grid-cols-4 gap-4 max-w-5xl mx-auto mt-4">
             {/* Large featured card */}
-            <div className="col-span-2 row-span-2 bg-gradient-to-br from-blue-500 to-purple-600 rounded-3xl p-8 flex flex-col justify-between text-white min-h-[280px] hover:-translate-y-1 hover:scale-[1.01] hover:shadow-[0_8px_30px_rgba(59,130,246,0.30)] transition-all duration-300 ease-out cursor-pointer">
+            <div className="col-span-2 row-span-2 bg-gradient-to-br from-blue-500 to-purple-600 rounded-3xl p-8 flex flex-col justify-between text-white min-h-[280px] hover:-translate-y-1 hover:scale-[1.01] hover:shadow-[0_8px_30px_rgba(59,130,246,0.30)] transition duration-300 ease-out cursor-pointer">
               <div>
                 <div className="w-12 h-12 rounded-2xl bg-white/20 flex items-center justify-center mb-4">
                   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -182,7 +182,7 @@ export default function BentoGridShowcase() {
             </div>
 
             {/* Wide card */}
-            <div className="col-span-2 bg-zinc-100 rounded-3xl p-6 flex items-center gap-6 hover:-translate-y-1 hover:scale-[1.01] hover:shadow-[0_8px_30px_rgba(0,0,0,0.08)] transition-all duration-300 ease-out cursor-pointer">
+            <div className="col-span-2 bg-zinc-100 rounded-3xl p-6 flex items-center gap-6 shadow-surface-lg hover:-translate-y-1 hover:scale-[1.01] hover:shadow-[0_8px_30px_rgba(0,0,0,0.08)] transition duration-300 ease-out cursor-pointer">
               <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-pink-400 to-orange-400 flex items-center justify-center flex-shrink-0">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2">
                   <circle cx="12" cy="12" r="10" />
@@ -197,7 +197,7 @@ export default function BentoGridShowcase() {
             </div>
 
             {/* Small orange card */}
-            <div className="col-span-1 bg-orange-50 border border-orange-100 rounded-3xl p-6 flex flex-col items-center justify-center gap-3 hover:-translate-y-1 hover:scale-[1.01] hover:shadow-[0_8px_30px_rgba(249,115,22,0.12)] transition-all duration-300 ease-out cursor-pointer">
+            <div className="col-span-1 bg-orange-50 border border-orange-100 rounded-3xl p-6 flex flex-col items-center justify-center gap-3 hover:-translate-y-1 hover:scale-[1.01] hover:shadow-[0_8px_30px_rgba(249,115,22,0.12)] transition duration-300 ease-out cursor-pointer">
               <div className="w-10 h-10 rounded-xl bg-orange-100 flex items-center justify-center">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f97316" strokeWidth="2">
                   <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
@@ -210,7 +210,7 @@ export default function BentoGridShowcase() {
             </div>
 
             {/* Small green card */}
-            <div className="col-span-1 bg-emerald-50 border border-emerald-100 rounded-3xl p-6 flex flex-col items-center justify-center gap-3 hover:-translate-y-1 hover:scale-[1.01] hover:shadow-[0_8px_30px_rgba(16,185,129,0.12)] transition-all duration-300 ease-out cursor-pointer">
+            <div className="col-span-1 bg-emerald-50 border border-emerald-100 rounded-3xl p-6 flex flex-col items-center justify-center gap-3 hover:-translate-y-1 hover:scale-[1.01] hover:shadow-[0_8px_30px_rgba(16,185,129,0.12)] transition duration-300 ease-out cursor-pointer">
               <div className="w-10 h-10 rounded-xl bg-emerald-100 flex items-center justify-center">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#10b981" strokeWidth="2">
                   <path d="M22 11.08V12a10 10 0 11-5.93-9.14" />
@@ -250,7 +250,7 @@ export default function BentoGridShowcase() {
                 <button
                   key={layout}
                   onClick={() => setActiveLayout(layout)}
-                  className={`px-6 py-2.5 rounded-full text-sm font-semibold capitalize transition-all duration-200 ${
+                  className={`px-6 py-2.5 rounded-full text-sm font-semibold capitalize transition duration-200 ${
                     activeLayout === layout
                       ? "bg-zinc-900 text-white shadow-[0_4px_12px_rgba(0,0,0,0.15)]"
                       : "bg-zinc-100 text-zinc-600 hover:bg-zinc-200"
@@ -267,7 +267,7 @@ export default function BentoGridShowcase() {
             <RevealBlock delay={0.05}>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 {/* Photo / hero card */}
-                <div className="lg:col-span-2 lg:row-span-2 bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 rounded-3xl p-8 flex flex-col justify-between min-h-[260px] hover:-translate-y-1 hover:scale-[1.01] hover:shadow-[0_8px_30px_rgba(139,92,246,0.28)] transition-all duration-300 ease-out cursor-pointer">
+                <div className="lg:col-span-2 lg:row-span-2 bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 rounded-3xl p-8 flex flex-col justify-between min-h-[260px] hover:-translate-y-1 hover:scale-[1.01] hover:shadow-[0_8px_30px_rgba(139,92,246,0.28)] transition duration-300 ease-out cursor-pointer">
                   <div className="w-16 h-16 rounded-full bg-white/20 border-2 border-white/40 flex items-center justify-center">
                     <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.5">
                       <circle cx="12" cy="8" r="4" />
@@ -288,8 +288,8 @@ export default function BentoGridShowcase() {
                 </div>
 
                 {/* Social: Twitter */}
-                <div className="group bg-zinc-900 rounded-3xl p-6 flex items-center gap-4 hover:-translate-y-1 hover:scale-[1.01] hover:shadow-[0_8px_30px_rgba(0,0,0,0.18)] transition-all duration-300 ease-out cursor-pointer">
-                  <div className="w-10 h-10 rounded-2xl bg-zinc-800 group-hover:bg-blue-500 flex items-center justify-center transition-all duration-300">
+                <div className="group bg-zinc-900 rounded-3xl p-6 flex items-center gap-4 shadow-surface-lg hover:-translate-y-1 hover:scale-[1.01] hover:shadow-[0_8px_30px_rgba(0,0,0,0.18)] transition duration-300 ease-out cursor-pointer">
+                  <div className="w-10 h-10 rounded-2xl bg-zinc-800 group-hover:bg-blue-500 flex items-center justify-center transition duration-300">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2">
                       <path d="M23 3a10.9 10.9 0 01-3.14 1.53 4.48 4.48 0 00-7.86 3v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2c9 5 20 0 20-11.5a4.5 4.5 0 00-.08-.83A7.72 7.72 0 0023 3z" />
                     </svg>
@@ -301,8 +301,8 @@ export default function BentoGridShowcase() {
                 </div>
 
                 {/* Social: GitHub */}
-                <div className="group bg-zinc-800 rounded-3xl p-6 flex items-center gap-4 hover:-translate-y-1 hover:scale-[1.01] hover:shadow-[0_8px_30px_rgba(0,0,0,0.18)] transition-all duration-300 ease-out cursor-pointer">
-                  <div className="w-10 h-10 rounded-2xl bg-zinc-700 group-hover:bg-purple-500 flex items-center justify-center transition-all duration-300">
+                <div className="group bg-zinc-800 rounded-3xl p-6 flex items-center gap-4 shadow-surface-lg hover:-translate-y-1 hover:scale-[1.01] hover:shadow-[0_8px_30px_rgba(0,0,0,0.18)] transition duration-300 ease-out cursor-pointer">
+                  <div className="w-10 h-10 rounded-2xl bg-zinc-700 group-hover:bg-purple-500 flex items-center justify-center transition duration-300">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2">
                       <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 00-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0020 4.77 5.07 5.07 0 0019.91 1S18.73.65 16 2.48a13.38 13.38 0 00-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 005 4.77a5.44 5.44 0 00-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 009 18.13V22" />
                     </svg>
@@ -314,7 +314,7 @@ export default function BentoGridShowcase() {
                 </div>
 
                 {/* Skills card — wide */}
-                <div className="lg:col-span-2 bg-zinc-50 border border-zinc-200 rounded-3xl p-6 hover:-translate-y-1 hover:scale-[1.01] hover:shadow-[0_8px_30px_rgba(0,0,0,0.08)] transition-all duration-300 ease-out cursor-pointer">
+                <div className="lg:col-span-2 bg-zinc-50 border border-zinc-200 rounded-3xl p-6 hover:-translate-y-1 hover:scale-[1.01] hover:shadow-[0_8px_30px_rgba(0,0,0,0.08)] transition duration-300 ease-out cursor-pointer">
                   <p className="text-xs font-semibold text-zinc-400 uppercase tracking-widest mb-4">Skills</p>
                   <div className="space-y-3">
                     {[
@@ -346,7 +346,7 @@ export default function BentoGridShowcase() {
             <RevealBlock delay={0.05}>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {/* Featured work — large */}
-                <div className="lg:col-span-2 bg-gradient-to-br from-zinc-900 to-zinc-700 rounded-3xl p-8 flex flex-col justify-between min-h-[260px] hover:-translate-y-1 hover:scale-[1.01] hover:shadow-[0_8px_30px_rgba(0,0,0,0.22)] transition-all duration-300 ease-out cursor-pointer">
+                <div className="lg:col-span-2 bg-gradient-to-br from-zinc-900 to-zinc-700 rounded-3xl p-8 flex flex-col justify-between min-h-[260px] hover:-translate-y-1 hover:scale-[1.01] hover:shadow-[0_8px_30px_rgba(0,0,0,0.22)] transition duration-300 ease-out cursor-pointer">
                   <div className="w-full h-28 bg-gradient-to-r from-blue-500/30 to-purple-500/30 rounded-2xl border border-white/10 mb-4 flex items-center justify-center">
                     <span className="text-white/40 text-sm">Project Preview</span>
                   </div>
@@ -358,7 +358,7 @@ export default function BentoGridShowcase() {
                 </div>
 
                 {/* Side card */}
-                <div className="bg-blue-50 rounded-3xl p-6 flex flex-col justify-between min-h-[260px] hover:-translate-y-1 hover:scale-[1.01] hover:shadow-[0_8px_30px_rgba(59,130,246,0.14)] transition-all duration-300 ease-out cursor-pointer">
+                <div className="bg-blue-50 rounded-3xl p-6 flex flex-col justify-between min-h-[260px] hover:-translate-y-1 hover:scale-[1.01] hover:shadow-[0_8px_30px_rgba(59,130,246,0.14)] transition duration-300 ease-out cursor-pointer">
                   <div className="w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" strokeWidth="2">
                       <rect x="3" y="3" width="18" height="18" rx="2" />
@@ -380,7 +380,7 @@ export default function BentoGridShowcase() {
                 ].map((item) => (
                   <div
                     key={item.title}
-                    className={`bg-gradient-to-br ${item.color} rounded-3xl p-6 flex flex-col justify-between min-h-[140px] hover:-translate-y-1 hover:scale-[1.01] hover:shadow-[0_8px_30px_rgba(0,0,0,0.14)] transition-all duration-300 ease-out cursor-pointer`}
+                    className={`bg-gradient-to-br ${item.color} rounded-3xl p-6 flex flex-col justify-between min-h-[140px] hover:-translate-y-1 hover:scale-[1.01] hover:shadow-[0_8px_30px_rgba(0,0,0,0.14)] transition duration-300 ease-out cursor-pointer`}
                   >
                     <span className="text-xs text-white/70 uppercase tracking-widest">{item.tag}</span>
                     <h3 className="text-lg font-bold text-white">{item.title}</h3>
@@ -403,7 +403,7 @@ export default function BentoGridShowcase() {
                 ].map((stat) => (
                   <div
                     key={stat.label}
-                    className={`${stat.color} border rounded-3xl p-5 hover:-translate-y-1 hover:scale-[1.01] hover:shadow-[0_8px_30px_rgba(0,0,0,0.08)] transition-all duration-300 ease-out cursor-pointer`}
+                    className={`${stat.color} border rounded-3xl p-5 hover:-translate-y-1 hover:scale-[1.01] hover:shadow-[0_8px_30px_rgba(0,0,0,0.08)] transition duration-300 ease-out cursor-pointer`}
                   >
                     <p className="text-xs font-semibold text-zinc-400 uppercase tracking-widest mb-2">{stat.label}</p>
                     <p className="text-3xl font-bold text-zinc-900 mb-1">{stat.value}</p>
@@ -412,7 +412,7 @@ export default function BentoGridShowcase() {
                 ))}
 
                 {/* Chart area */}
-                <div className="lg:col-span-3 bg-zinc-900 rounded-3xl p-6 hover:-translate-y-1 hover:scale-[1.01] hover:shadow-[0_8px_30px_rgba(0,0,0,0.20)] transition-all duration-300 ease-out cursor-pointer">
+                <div className="lg:col-span-3 bg-zinc-900 rounded-3xl p-6 shadow-surface-lg hover:-translate-y-1 hover:scale-[1.01] hover:shadow-[0_8px_30px_rgba(0,0,0,0.20)] transition duration-300 ease-out cursor-pointer">
                   <p className="text-xs font-semibold text-zinc-400 uppercase tracking-widest mb-4">Revenue Overview</p>
                   <div className="flex items-end gap-2 h-28">
                     {[40, 65, 45, 80, 55, 90, 70, 85, 60, 95, 75, 100].map((h, i) => (
@@ -431,7 +431,7 @@ export default function BentoGridShowcase() {
                 </div>
 
                 {/* Recent activity list */}
-                <div className="bg-white border border-zinc-100 rounded-3xl p-6 hover:-translate-y-1 hover:scale-[1.01] hover:shadow-[0_8px_30px_rgba(0,0,0,0.06)] transition-all duration-300 ease-out cursor-pointer">
+                <div className="bg-white border border-zinc-100 rounded-3xl p-6 hover:-translate-y-1 hover:scale-[1.01] hover:shadow-[0_8px_30px_rgba(0,0,0,0.06)] transition duration-300 ease-out cursor-pointer">
                   <p className="text-xs font-semibold text-zinc-400 uppercase tracking-widest mb-4">Activity</p>
                   <div className="space-y-3">
                     {[
@@ -473,9 +473,9 @@ export default function BentoGridShowcase() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Card 1: Icon color flip on hover */}
             <RevealBlock delay={0.05}>
-              <div className="group bg-white border border-zinc-100 rounded-3xl p-8 hover:-translate-y-1 hover:scale-[1.01] hover:shadow-[0_8px_30px_rgba(0,0,0,0.08)] transition-all duration-300 ease-out cursor-pointer">
+              <div className="group bg-white border border-zinc-100 rounded-3xl p-8 hover:-translate-y-1 hover:scale-[1.01] hover:shadow-[0_8px_30px_rgba(0,0,0,0.08)] transition duration-300 ease-out cursor-pointer">
                 <div className="flex items-start gap-5">
-                  <div className="w-14 h-14 rounded-2xl bg-zinc-100 group-hover:bg-blue-500 flex items-center justify-center transition-all duration-300 flex-shrink-0">
+                  <div className="w-14 h-14 rounded-2xl bg-zinc-100 group-hover:bg-blue-500 flex items-center justify-center transition duration-300 flex-shrink-0">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-zinc-600 group-hover:text-white transition-colors duration-300">
                       <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
                     </svg>
@@ -501,7 +501,7 @@ export default function BentoGridShowcase() {
 
             {/* Card 2: Number counter scale */}
             <RevealBlock delay={0.1}>
-              <div className="group bg-gradient-to-br from-zinc-900 to-zinc-800 rounded-3xl p-8 hover:-translate-y-1 hover:scale-[1.01] hover:shadow-[0_8px_30px_rgba(0,0,0,0.22)] transition-all duration-300 ease-out cursor-pointer">
+              <div className="group bg-gradient-to-br from-zinc-900 to-zinc-800 rounded-3xl p-8 hover:-translate-y-1 hover:scale-[1.01] hover:shadow-[0_8px_30px_rgba(0,0,0,0.22)] transition duration-300 ease-out cursor-pointer">
                 <p className="text-xs font-semibold text-zinc-500 uppercase tracking-widest mb-4">Scale on Hover</p>
                 <div className="flex items-end gap-2 mb-4">
                   <span className="text-6xl font-black text-white group-hover:scale-110 inline-block transition-transform duration-300 origin-left">
@@ -518,7 +518,7 @@ export default function BentoGridShowcase() {
 
             {/* Card 3: Progress bar animation */}
             <RevealBlock delay={0.15}>
-              <div className="group bg-orange-50 border border-orange-100 rounded-3xl p-8 hover:-translate-y-1 hover:scale-[1.01] hover:shadow-[0_8px_30px_rgba(249,115,22,0.14)] transition-all duration-300 ease-out cursor-pointer">
+              <div className="group bg-orange-50 border border-orange-100 rounded-3xl p-8 hover:-translate-y-1 hover:scale-[1.01] hover:shadow-[0_8px_30px_rgba(249,115,22,0.14)] transition duration-300 ease-out cursor-pointer">
                 <p className="text-xs font-semibold text-orange-400 uppercase tracking-widest mb-5">Progress Bars</p>
                 <div className="space-y-4">
                   {[
@@ -533,7 +533,7 @@ export default function BentoGridShowcase() {
                       </div>
                       <div className="h-2.5 bg-orange-100 rounded-full overflow-hidden">
                         <div
-                          className={`h-full ${bar.barColor} rounded-full transition-all duration-700 ease-out`}
+                          className={`h-full ${bar.barColor} rounded-full transition duration-700 ease-out`}
                           style={{ width: `${bar.pct}%` }}
                         />
                       </div>
@@ -545,7 +545,7 @@ export default function BentoGridShowcase() {
 
             {/* Card 4: Tag cloud with color shifts */}
             <RevealBlock delay={0.2}>
-              <div className="group bg-purple-50 border border-purple-100 rounded-3xl p-8 hover:-translate-y-1 hover:scale-[1.01] hover:shadow-[0_8px_30px_rgba(139,92,246,0.14)] transition-all duration-300 ease-out cursor-pointer">
+              <div className="group bg-purple-50 border border-purple-100 rounded-3xl p-8 hover:-translate-y-1 hover:scale-[1.01] hover:shadow-[0_8px_30px_rgba(139,92,246,0.14)] transition duration-300 ease-out cursor-pointer">
                 <p className="text-xs font-semibold text-purple-400 uppercase tracking-widest mb-5">Tag Cloud</p>
                 <div className="flex flex-wrap gap-2">
                   {[
@@ -560,7 +560,7 @@ export default function BentoGridShowcase() {
                   ].map((item) => (
                     <span
                       key={item.tag}
-                      className={`px-3 py-1.5 rounded-full text-sm font-medium ${item.color} transition-all duration-300`}
+                      className={`px-3 py-1.5 rounded-full text-sm font-medium ${item.color} transition duration-300`}
                     >
                       {item.tag}
                     </span>
@@ -593,7 +593,7 @@ export default function BentoGridShowcase() {
           <RevealBlock delay={0.1}>
             <div className="grid grid-cols-4 gap-4">
               {/* 1x1 */}
-              <div className="col-span-1 bg-blue-50 border-2 border-blue-200 rounded-2xl p-5 flex flex-col justify-between min-h-[120px] hover:-translate-y-1 hover:scale-[1.01] hover:shadow-[0_8px_30px_rgba(59,130,246,0.14)] transition-all duration-300 ease-out">
+              <div className="col-span-1 bg-blue-50 border-2 border-blue-200 rounded-2xl p-5 flex flex-col justify-between min-h-[120px] hover:-translate-y-1 hover:scale-[1.01] hover:shadow-[0_8px_30px_rgba(59,130,246,0.14)] transition duration-300 ease-out">
                 <span className="text-xs font-mono text-blue-400 font-semibold">1x1</span>
                 <div>
                   <p className="text-xs font-mono text-blue-600 font-semibold">col-span-1</p>
@@ -602,7 +602,7 @@ export default function BentoGridShowcase() {
               </div>
 
               {/* 2x1 */}
-              <div className="col-span-2 bg-purple-50 border-2 border-purple-200 rounded-2xl p-5 flex flex-col justify-between min-h-[120px] hover:-translate-y-1 hover:scale-[1.01] hover:shadow-[0_8px_30px_rgba(139,92,246,0.14)] transition-all duration-300 ease-out">
+              <div className="col-span-2 bg-purple-50 border-2 border-purple-200 rounded-2xl p-5 flex flex-col justify-between min-h-[120px] hover:-translate-y-1 hover:scale-[1.01] hover:shadow-[0_8px_30px_rgba(139,92,246,0.14)] transition duration-300 ease-out">
                 <span className="text-xs font-mono text-purple-400 font-semibold">2x1</span>
                 <div>
                   <p className="text-xs font-mono text-purple-600 font-semibold">col-span-2</p>
@@ -611,7 +611,7 @@ export default function BentoGridShowcase() {
               </div>
 
               {/* 1x1 */}
-              <div className="col-span-1 bg-pink-50 border-2 border-pink-200 rounded-2xl p-5 flex flex-col justify-between min-h-[120px] hover:-translate-y-1 hover:scale-[1.01] hover:shadow-[0_8px_30px_rgba(236,72,153,0.14)] transition-all duration-300 ease-out">
+              <div className="col-span-1 bg-pink-50 border-2 border-pink-200 rounded-2xl p-5 flex flex-col justify-between min-h-[120px] hover:-translate-y-1 hover:scale-[1.01] hover:shadow-[0_8px_30px_rgba(236,72,153,0.14)] transition duration-300 ease-out">
                 <span className="text-xs font-mono text-pink-400 font-semibold">1x1</span>
                 <div>
                   <p className="text-xs font-mono text-pink-600 font-semibold">col-span-1</p>
@@ -620,7 +620,7 @@ export default function BentoGridShowcase() {
               </div>
 
               {/* 1x2 */}
-              <div className="col-span-1 row-span-2 bg-orange-50 border-2 border-orange-200 rounded-2xl p-5 flex flex-col justify-between min-h-[260px] hover:-translate-y-1 hover:scale-[1.01] hover:shadow-[0_8px_30px_rgba(249,115,22,0.14)] transition-all duration-300 ease-out">
+              <div className="col-span-1 row-span-2 bg-orange-50 border-2 border-orange-200 rounded-2xl p-5 flex flex-col justify-between min-h-[260px] hover:-translate-y-1 hover:scale-[1.01] hover:shadow-[0_8px_30px_rgba(249,115,22,0.14)] transition duration-300 ease-out">
                 <span className="text-xs font-mono text-orange-400 font-semibold">1x2</span>
                 <div>
                   <p className="text-xs font-mono text-orange-600 font-semibold">col-span-1</p>
@@ -629,7 +629,7 @@ export default function BentoGridShowcase() {
               </div>
 
               {/* 3x1 */}
-              <div className="col-span-3 bg-emerald-50 border-2 border-emerald-200 rounded-2xl p-5 flex flex-col justify-between min-h-[120px] hover:-translate-y-1 hover:scale-[1.01] hover:shadow-[0_8px_30px_rgba(16,185,129,0.14)] transition-all duration-300 ease-out">
+              <div className="col-span-3 bg-emerald-50 border-2 border-emerald-200 rounded-2xl p-5 flex flex-col justify-between min-h-[120px] hover:-translate-y-1 hover:scale-[1.01] hover:shadow-[0_8px_30px_rgba(16,185,129,0.14)] transition duration-300 ease-out">
                 <span className="text-xs font-mono text-emerald-400 font-semibold">3x1</span>
                 <div>
                   <p className="text-xs font-mono text-emerald-600 font-semibold">col-span-3</p>
@@ -638,7 +638,7 @@ export default function BentoGridShowcase() {
               </div>
 
               {/* 2x2 */}
-              <div className="col-span-2 row-span-2 bg-gradient-to-br from-blue-500 to-purple-600 border-2 border-transparent rounded-2xl p-5 flex flex-col justify-between min-h-[260px] hover:-translate-y-1 hover:scale-[1.01] hover:shadow-[0_8px_30px_rgba(139,92,246,0.28)] transition-all duration-300 ease-out">
+              <div className="col-span-2 row-span-2 bg-gradient-to-br from-blue-500 to-purple-600 border-2 border-transparent rounded-2xl p-5 flex flex-col justify-between min-h-[260px] hover:-translate-y-1 hover:scale-[1.01] hover:shadow-[0_8px_30px_rgba(139,92,246,0.28)] transition duration-300 ease-out">
                 <span className="text-xs font-mono text-white/60 font-semibold">2x2</span>
                 <div>
                   <p className="text-xs font-mono text-white font-bold text-lg">col-span-2</p>
@@ -648,7 +648,7 @@ export default function BentoGridShowcase() {
               </div>
 
               {/* 1x1 */}
-              <div className="col-span-1 bg-zinc-100 border-2 border-zinc-200 rounded-2xl p-5 flex flex-col justify-between min-h-[120px] hover:-translate-y-1 hover:scale-[1.01] hover:shadow-[0_8px_30px_rgba(0,0,0,0.08)] transition-all duration-300 ease-out">
+              <div className="col-span-1 bg-zinc-100 border-2 border-zinc-200 rounded-2xl p-5 flex flex-col justify-between min-h-[120px] hover:-translate-y-1 hover:scale-[1.01] hover:shadow-[0_8px_30px_rgba(0,0,0,0.08)] transition duration-300 ease-out">
                 <span className="text-xs font-mono text-zinc-400 font-semibold">1x1</span>
                 <div>
                   <p className="text-xs font-mono text-zinc-600 font-semibold">col-span-1</p>
@@ -657,7 +657,7 @@ export default function BentoGridShowcase() {
               </div>
 
               {/* 1x1 */}
-              <div className="col-span-1 bg-violet-50 border-2 border-violet-200 rounded-2xl p-5 flex flex-col justify-between min-h-[120px] hover:-translate-y-1 hover:scale-[1.01] hover:shadow-[0_8px_30px_rgba(139,92,246,0.12)] transition-all duration-300 ease-out">
+              <div className="col-span-1 bg-violet-50 border-2 border-violet-200 rounded-2xl p-5 flex flex-col justify-between min-h-[120px] hover:-translate-y-1 hover:scale-[1.01] hover:shadow-[0_8px_30px_rgba(139,92,246,0.12)] transition duration-300 ease-out">
                 <span className="text-xs font-mono text-violet-400 font-semibold">1x1</span>
                 <div>
                   <p className="text-xs font-mono text-violet-600 font-semibold">col-span-1</p>
@@ -666,7 +666,7 @@ export default function BentoGridShowcase() {
               </div>
 
               {/* 4x1 */}
-              <div className="col-span-4 bg-zinc-900 border-2 border-transparent rounded-2xl p-5 flex flex-col justify-between min-h-[100px] hover:-translate-y-1 hover:scale-[1.01] hover:shadow-[0_8px_30px_rgba(0,0,0,0.20)] transition-all duration-300 ease-out">
+              <div className="col-span-4 bg-zinc-900 border-2 border-transparent rounded-2xl p-5 flex flex-col justify-between min-h-[100px] hover:-translate-y-1 hover:scale-[1.01] hover:shadow-[0_8px_30px_rgba(0,0,0,0.20)] transition duration-300 ease-out">
                 <span className="text-xs font-mono text-zinc-500 font-semibold">4x1</span>
                 <div className="flex items-center justify-between">
                   <p className="text-xs font-mono text-white font-semibold">col-span-4</p>
@@ -699,7 +699,7 @@ export default function BentoGridShowcase() {
             {palette.map((color, i) => (
               <RevealBlock key={color.hex} delay={i * 0.06}>
                 <div
-                  className="rounded-3xl p-6 flex flex-col gap-4 hover:-translate-y-1 hover:scale-[1.01] transition-all duration-300 ease-out cursor-pointer"
+                  className="rounded-3xl p-6 flex flex-col gap-4 hover:-translate-y-1 hover:scale-[1.01] transition duration-300 ease-out cursor-pointer"
                   style={{
                     background: color.hex,
                     boxShadow: `0 8px 30px ${color.hex}40`,
@@ -846,7 +846,7 @@ export default function BentoGridShowcase() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             {/* Card 1: Hero brand card — 2x2 */}
             <RevealBlock delay={0.04} className="lg:col-span-2 lg:row-span-2">
-              <div className="h-full bg-gradient-to-br from-blue-600 via-blue-500 to-purple-600 rounded-3xl p-10 flex flex-col justify-between min-h-[320px] hover:-translate-y-1 hover:scale-[1.01] hover:shadow-[0_8px_40px_rgba(59,130,246,0.35)] transition-all duration-300 ease-out cursor-pointer">
+              <div className="h-full bg-gradient-to-br from-blue-600 via-blue-500 to-purple-600 rounded-3xl p-10 flex flex-col justify-between min-h-[320px] hover:-translate-y-1 hover:scale-[1.01] hover:shadow-[0_8px_40px_rgba(59,130,246,0.35)] transition duration-300 ease-out cursor-pointer">
                 <div>
                   <div className="flex items-center gap-3 mb-8">
                     <div className="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center">
@@ -865,10 +865,10 @@ export default function BentoGridShowcase() {
                   </p>
                 </div>
                 <div className="flex items-center gap-3">
-                  <button className="px-6 py-2.5 rounded-full bg-white text-blue-600 text-sm font-bold hover:-translate-y-0.5 hover:shadow-[0_4px_16px_rgba(255,255,255,0.25)] transition-all duration-200">
+                  <button className="px-6 py-2.5 rounded-full bg-white text-blue-600 text-sm font-bold hover:-translate-y-0.5 hover:shadow-[0_4px_16px_rgba(255,255,255,0.25)] transition duration-200">
                     Start free
                   </button>
-                  <button className="px-6 py-2.5 rounded-full bg-white/15 text-white text-sm font-medium hover:bg-white/25 transition-all duration-200">
+                  <button className="px-6 py-2.5 rounded-full bg-white/15 text-white text-sm font-medium hover:bg-white/25 transition duration-200">
                     Watch demo
                   </button>
                 </div>
@@ -877,7 +877,7 @@ export default function BentoGridShowcase() {
 
             {/* Card 2: Stat — users */}
             <RevealBlock delay={0.08}>
-              <div className="bg-zinc-800 rounded-3xl p-6 flex flex-col justify-between min-h-[150px] hover:-translate-y-1 hover:scale-[1.01] hover:shadow-[0_8px_30px_rgba(0,0,0,0.30)] transition-all duration-300 ease-out cursor-pointer">
+              <div className="bg-zinc-800 rounded-3xl p-6 flex flex-col justify-between min-h-[150px] shadow-surface-lg hover:-translate-y-1 hover:scale-[1.01] hover:shadow-[0_8px_30px_rgba(0,0,0,0.30)] transition duration-300 ease-out cursor-pointer">
                 <p className="text-xs font-semibold text-zinc-500 uppercase tracking-widest">Active users</p>
                 <div>
                   <p className="text-4xl font-black text-white">48K</p>
@@ -888,7 +888,7 @@ export default function BentoGridShowcase() {
 
             {/* Card 3: Stat — NPS */}
             <RevealBlock delay={0.1}>
-              <div className="bg-gradient-to-br from-pink-500 to-rose-500 rounded-3xl p-6 flex flex-col justify-between min-h-[150px] hover:-translate-y-1 hover:scale-[1.01] hover:shadow-[0_8px_30px_rgba(236,72,153,0.30)] transition-all duration-300 ease-out cursor-pointer">
+              <div className="bg-gradient-to-br from-pink-500 to-rose-500 rounded-3xl p-6 flex flex-col justify-between min-h-[150px] hover:-translate-y-1 hover:scale-[1.01] hover:shadow-[0_8px_30px_rgba(236,72,153,0.30)] transition duration-300 ease-out cursor-pointer">
                 <p className="text-xs font-semibold text-white/60 uppercase tracking-widest">NPS Score</p>
                 <div>
                   <p className="text-4xl font-black text-white">72</p>
@@ -899,7 +899,7 @@ export default function BentoGridShowcase() {
 
             {/* Card 4: Integrations wide */}
             <RevealBlock delay={0.12} className="lg:col-span-2">
-              <div className="group bg-zinc-800/60 border border-zinc-700 rounded-3xl p-6 hover:-translate-y-1 hover:scale-[1.01] hover:shadow-[0_8px_30px_rgba(0,0,0,0.25)] transition-all duration-300 ease-out cursor-pointer">
+              <div className="group bg-zinc-800/60 border border-zinc-700 rounded-3xl p-6 hover:-translate-y-1 hover:scale-[1.01] hover:shadow-[0_8px_30px_rgba(0,0,0,0.25)] transition duration-300 ease-out cursor-pointer">
                 <p className="text-xs font-semibold text-zinc-500 uppercase tracking-widest mb-4">Integrations</p>
                 <div className="flex items-center gap-3 flex-wrap">
                   {[
@@ -926,8 +926,8 @@ export default function BentoGridShowcase() {
 
             {/* Card 5: Feature — AI */}
             <RevealBlock delay={0.14}>
-              <div className="group bg-gradient-to-br from-violet-600 to-purple-700 rounded-3xl p-6 min-h-[200px] flex flex-col justify-between hover:-translate-y-1 hover:scale-[1.01] hover:shadow-[0_8px_30px_rgba(139,92,246,0.32)] transition-all duration-300 ease-out cursor-pointer">
-                <div className="w-10 h-10 rounded-xl bg-white/20 group-hover:bg-white/30 flex items-center justify-center transition-all duration-300">
+              <div className="group bg-gradient-to-br from-violet-600 to-purple-700 rounded-3xl p-6 min-h-[200px] flex flex-col justify-between hover:-translate-y-1 hover:scale-[1.01] hover:shadow-[0_8px_30px_rgba(139,92,246,0.32)] transition duration-300 ease-out cursor-pointer">
+                <div className="w-10 h-10 rounded-xl bg-white/20 group-hover:bg-white/30 flex items-center justify-center transition duration-300">
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2">
                     <path d="M12 2a10 10 0 110 20A10 10 0 0112 2z" />
                     <path d="M12 8v4l3 3" />
@@ -944,8 +944,8 @@ export default function BentoGridShowcase() {
 
             {/* Card 6: Feature — Security */}
             <RevealBlock delay={0.16}>
-              <div className="group bg-zinc-800 border border-zinc-700 rounded-3xl p-6 min-h-[200px] flex flex-col justify-between hover:-translate-y-1 hover:scale-[1.01] hover:shadow-[0_8px_30px_rgba(0,0,0,0.25)] transition-all duration-300 ease-out cursor-pointer">
-                <div className="w-10 h-10 rounded-xl bg-emerald-900/40 group-hover:bg-emerald-500 flex items-center justify-center transition-all duration-300">
+              <div className="group bg-zinc-800 border border-zinc-700 rounded-3xl p-6 min-h-[200px] flex flex-col justify-between hover:-translate-y-1 hover:scale-[1.01] hover:shadow-[0_8px_30px_rgba(0,0,0,0.25)] transition duration-300 ease-out cursor-pointer">
+                <div className="w-10 h-10 rounded-xl bg-emerald-900/40 group-hover:bg-emerald-500 flex items-center justify-center transition duration-300">
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-emerald-400 group-hover:text-white transition-colors duration-300">
                     <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
                   </svg>
@@ -961,8 +961,8 @@ export default function BentoGridShowcase() {
 
             {/* Card 7: Feature — Speed — wide */}
             <RevealBlock delay={0.18} className="lg:col-span-2">
-              <div className="group bg-gradient-to-r from-orange-500 to-amber-500 rounded-3xl p-7 flex items-center gap-6 hover:-translate-y-1 hover:scale-[1.01] hover:shadow-[0_8px_30px_rgba(249,115,22,0.32)] transition-all duration-300 ease-out cursor-pointer">
-                <div className="w-16 h-16 rounded-2xl bg-white/20 group-hover:bg-white/30 flex items-center justify-center flex-shrink-0 transition-all duration-300">
+              <div className="group bg-gradient-to-r from-orange-500 to-amber-500 rounded-3xl p-7 flex items-center gap-6 hover:-translate-y-1 hover:scale-[1.01] hover:shadow-[0_8px_30px_rgba(249,115,22,0.32)] transition duration-300 ease-out cursor-pointer">
+                <div className="w-16 h-16 rounded-2xl bg-white/20 group-hover:bg-white/30 flex items-center justify-center flex-shrink-0 transition duration-300">
                   <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2">
                     <polyline points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
                   </svg>
@@ -982,7 +982,7 @@ export default function BentoGridShowcase() {
 
             {/* Card 8: Social proof — full width */}
             <RevealBlock delay={0.20} className="lg:col-span-4">
-              <div className="bg-zinc-800/40 border border-zinc-700/60 rounded-3xl p-8 flex flex-col md:flex-row items-center gap-8 hover:-translate-y-1 hover:scale-[1.01] hover:shadow-[0_8px_30px_rgba(0,0,0,0.20)] transition-all duration-300 ease-out cursor-pointer">
+              <div className="bg-zinc-800/40 border border-zinc-700/60 rounded-3xl p-8 flex flex-col md:flex-row items-center gap-8 hover:-translate-y-1 hover:scale-[1.01] hover:shadow-[0_8px_30px_rgba(0,0,0,0.20)] transition duration-300 ease-out cursor-pointer">
                 <div className="flex items-center gap-1 flex-shrink-0">
                   {[1, 2, 3, 4, 5].map((s) => (
                     <svg key={s} width="18" height="18" viewBox="0 0 24 24" fill="#f97316" stroke="none">
@@ -1069,7 +1069,7 @@ export default function BentoGridShowcase() {
 
               {/* CTA */}
               <div className="flex flex-col gap-3">
-                <button className="px-7 py-3 rounded-full bg-zinc-900 text-white text-sm font-semibold hover:-translate-y-0.5 hover:shadow-[0_4px_20px_rgba(0,0,0,0.18)] transition-all duration-200">
+                <button className="px-7 py-3 rounded-full bg-zinc-900 text-white text-sm font-semibold hover:-translate-y-0.5 hover:shadow-[0_4px_20px_rgba(0,0,0,0.18)] transition duration-200">
                   Start building
                 </button>
                 <Link

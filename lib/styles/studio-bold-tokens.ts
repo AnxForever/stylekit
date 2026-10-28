@@ -12,9 +12,9 @@ export const studioBoldTokens = createStyleTokens({
   shadow: {
     sm: "shadow-sm",
     md: "shadow-md",
-    lg: "shadow-2xl",
+    lg: "shadow-surface-lg",
     none: "shadow-none",
-    hover: "hover:shadow-2xl",
+    hover: "hover:shadow-surface-lg",
     focus: "focus:shadow-md",
   },
 

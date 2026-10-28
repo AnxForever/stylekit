@@ -229,8 +229,8 @@ const projectTypes = ["BRANDING", "DIGITAL", "MOTION", "STRATEGY"] as const;
 const doRules = [
   "Pair bg-[#1A1A1A] with white text in dark sections; bg-[#F5F5F0] with ink in light ones",
   "Hero headings start at text-6xl and climb — highlight one word in coral",
-  "Cards are square posters: rounded-none, hover fires scale-[1.02] and shadow-2xl together",
-  "CTAs run coral with bold labels; hover lifts -translate-y-0.5 and adds shadow-xl",
+  "Cards are square posters: rounded-none, hover fires scale-[1.02] and shadow-surface-lg together",
+  "CTAs run coral with bold labels; hover lifts -translate-y-0.5 and adds shadow-surface-lg",
   "Client logos sit grayscale at 60% opacity until hover restores them",
   "Separate sections by switching background color blocks, never by drawing borders",
   "Fix the nav to the top at 95% ink with backdrop blur; hovers turn coral",
@@ -342,7 +342,7 @@ function ProjectCard({ project }: { project: Project }) {
         ? "bg-gradient-to-br from-[#3A3A3A] to-[#262626]"
         : "bg-gradient-to-br from-[#242424] to-[#141414]";
   return (
-    <div className="group h-full bg-[#1A1A1A] rounded-none overflow-hidden cursor-pointer transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl">
+    <div className="group h-full bg-[#1A1A1A] rounded-none overflow-hidden cursor-pointer transition duration-300 hover:scale-[1.02] hover:shadow-surface-lg">
       <div className="relative aspect-[16/10] overflow-hidden">
         <div className={`absolute inset-0 ${toneBg} transition-transform duration-300 group-hover:scale-105`} />
         <span
@@ -459,7 +459,7 @@ export default function StudioBoldShowcase() {
             </Link>
             <a
               href="#contact"
-              className="bg-[#FF6B6B] text-white px-5 py-2.5 font-bold hover:bg-[#E55A5A] hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300"
+              className="bg-[#FF6B6B] text-white px-5 py-2.5 font-bold hover:bg-[#E55A5A] hover:shadow-surface-lg hover:-translate-y-0.5 transition duration-300"
             >
               Contact
             </a>
@@ -498,13 +498,13 @@ export default function StudioBoldShowcase() {
           <div className="flex flex-wrap items-center gap-4 mt-10" style={heroStagger("0.36s")}>
             <a
               href="#work"
-              className="bg-[#FF6B6B] text-white font-bold px-8 py-4 text-lg hover:bg-[#E55A5A] hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300 rounded-none"
+              className="bg-[#FF6B6B] text-white font-bold px-8 py-4 text-lg hover:bg-[#E55A5A] hover:shadow-surface-lg hover:-translate-y-0.5 transition duration-300 rounded-none"
             >
               View Our Work
             </a>
             <a
               href="#contact"
-              className="border-2 border-white/30 text-white font-bold px-8 py-4 text-lg hover:border-white hover:bg-white/10 transition-all duration-300 rounded-none"
+              className="border-2 border-white/30 text-white font-bold px-8 py-4 text-lg hover:border-white hover:bg-white/10 transition duration-300 rounded-none"
             >
               Get in Touch
             </a>
@@ -557,9 +557,9 @@ export default function StudioBoldShowcase() {
                   type="button"
                   onClick={() => setWorkFilter(f)}
                   aria-pressed={workFilter === f}
-                  className={`px-5 py-2.5 text-xs font-bold uppercase tracking-[0.14em] rounded-none transition-all duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#FF6B6B] ${
+                  className={`px-5 py-2.5 text-xs font-bold uppercase tracking-[0.14em] rounded-none transition duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#FF6B6B] ${
                     workFilter === f
-                      ? "bg-[#1A1A1A] text-white shadow-xl -translate-y-0.5"
+                      ? "bg-[#1A1A1A] text-white shadow-surface-lg -translate-y-0.5"
                       : "border-2 border-[#1A1A1A]/15 text-[#1A1A1A]/50 hover:border-[#1A1A1A] hover:text-[#1A1A1A] hover:-translate-y-0.5"
                   }`}
                 >
@@ -581,7 +581,7 @@ export default function StudioBoldShowcase() {
             <div className="flex justify-center mt-14">
               <button
                 type="button"
-                className="border-2 border-[#1A1A1A] text-[#1A1A1A] font-bold px-8 py-4 hover:bg-[#1A1A1A] hover:text-white hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300 rounded-none"
+                className="border-2 border-[#1A1A1A] text-[#1A1A1A] font-bold px-8 py-4 hover:bg-[#1A1A1A] hover:text-white hover:shadow-surface-lg hover:-translate-y-0.5 transition duration-300 rounded-none"
               >
                 View Full Archive &rarr;
               </button>
@@ -606,9 +606,9 @@ export default function StudioBoldShowcase() {
                   role="tab"
                   aria-selected={activeService === s.id}
                   onClick={() => setActiveService(s.id)}
-                  className={`px-4 py-4 text-xs font-bold uppercase tracking-[0.14em] rounded-none transition-all duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#FF6B6B] ${
+                  className={`px-4 py-4 text-xs font-bold uppercase tracking-[0.14em] rounded-none transition duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#FF6B6B] ${
                     activeService === s.id
-                      ? "bg-[#FF6B6B] text-white shadow-xl -translate-y-0.5"
+                      ? "bg-[#FF6B6B] text-white shadow-surface-lg -translate-y-0.5"
                       : "bg-white/5 text-white/50 hover:bg-white/10 hover:text-white hover:-translate-y-0.5"
                   }`}
                 >
@@ -655,7 +655,7 @@ export default function StudioBoldShowcase() {
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
             {paletteSwatches.map((c, i) => (
               <Reveal key={c.hex} delay={0.05 * i}>
-                <div className="group cursor-pointer transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl">
+                <div className="group cursor-pointer transition duration-300 hover:scale-[1.02] hover:shadow-surface-lg">
                   <div className={`${c.bg} h-36 md:h-44 flex items-end p-5`}>
                     <span className={`text-2xl md:text-3xl font-black tracking-tight ${c.text}`}>{c.name}</span>
                   </div>
@@ -666,7 +666,7 @@ export default function StudioBoldShowcase() {
                     </div>
                     <p className="text-xs text-white/50 font-light mb-4">{c.usage}</p>
                     <div className="h-1 bg-white/10">
-                      <div className="h-full bg-[#FF6B6B] transition-all duration-500" style={{ width: `${c.share}%` }} />
+                      <div className="h-full bg-[#FF6B6B] transition duration-500" style={{ width: `${c.share}%` }} />
                     </div>
                     <p className="text-[10px] text-white/30 mt-2 font-medium tracking-[0.12em]">{c.share}% OF ANY GIVEN PAGE</p>
                   </div>
@@ -705,7 +705,7 @@ export default function StudioBoldShowcase() {
           <div className="grid md:grid-cols-3 gap-6">
             {weightTrio.map((w, i) => (
               <Reveal key={w.weight} delay={0.06 * i}>
-                <div className="group bg-[#1A1A1A] p-8 transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl cursor-default">
+                <div className="group bg-[#1A1A1A] p-8 transition duration-300 hover:scale-[1.02] hover:shadow-surface-lg cursor-default">
                   <p className={`text-7xl text-white group-hover:text-[#FF6B6B] transition-colors duration-300 leading-none ${w.cls}`}>Aa</p>
                   <p className="text-white font-bold mt-6 tracking-tight">
                     {w.weight} — {w.name}
@@ -737,13 +737,13 @@ export default function StudioBoldShowcase() {
             <div className="flex flex-wrap items-center gap-4 mb-12">
               <button
                 type="button"
-                className="bg-[#FF6B6B] text-white font-bold px-8 py-4 text-lg hover:bg-[#E55A5A] hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300 rounded-none"
+                className="bg-[#FF6B6B] text-white font-bold px-8 py-4 text-lg hover:bg-[#E55A5A] hover:shadow-surface-lg hover:-translate-y-0.5 transition duration-300 rounded-none"
               >
                 Start a Project
               </button>
               <button
                 type="button"
-                className="border-2 border-white/30 text-white font-bold px-8 py-4 text-lg hover:border-white hover:bg-white/10 transition-all duration-300 rounded-none"
+                className="border-2 border-white/30 text-white font-bold px-8 py-4 text-lg hover:border-white hover:bg-white/10 transition duration-300 rounded-none"
               >
                 See the Work
               </button>
@@ -770,13 +770,13 @@ export default function StudioBoldShowcase() {
               <div className="flex flex-wrap items-center gap-4">
                 <button
                   type="button"
-                  className="bg-[#1A1A1A] text-white font-bold px-8 py-4 text-lg hover:bg-[#0D0D0D] hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300 rounded-none"
+                  className="bg-[#1A1A1A] text-white font-bold px-8 py-4 text-lg hover:bg-[#0D0D0D] hover:shadow-surface-lg hover:-translate-y-0.5 transition duration-300 rounded-none"
                 >
                   Book a Call
                 </button>
                 <button
                   type="button"
-                  className="border-2 border-[#FF6B6B] text-[#FF6B6B] font-bold px-8 py-4 text-lg hover:bg-[#FF6B6B] hover:text-white hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300 rounded-none"
+                  className="border-2 border-[#FF6B6B] text-[#FF6B6B] font-bold px-8 py-4 text-lg hover:bg-[#FF6B6B] hover:text-white hover:shadow-surface-lg hover:-translate-y-0.5 transition duration-300 rounded-none"
                 >
                   Download Deck
                 </button>
@@ -796,19 +796,19 @@ export default function StudioBoldShowcase() {
             <div className="flex flex-wrap items-center gap-4">
               <button
                 type="button"
-                className="bg-[#FF6B6B] text-white font-bold px-5 py-2.5 text-sm hover:bg-[#E55A5A] hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300 rounded-none"
+                className="bg-[#FF6B6B] text-white font-bold px-5 py-2.5 text-sm hover:bg-[#E55A5A] hover:shadow-surface-lg hover:-translate-y-0.5 transition duration-300 rounded-none"
               >
                 Small
               </button>
               <button
                 type="button"
-                className="bg-[#FF6B6B] text-white font-bold px-8 py-4 text-lg hover:bg-[#E55A5A] hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300 rounded-none"
+                className="bg-[#FF6B6B] text-white font-bold px-8 py-4 text-lg hover:bg-[#E55A5A] hover:shadow-surface-lg hover:-translate-y-0.5 transition duration-300 rounded-none"
               >
                 Default
               </button>
               <button
                 type="button"
-                className="bg-[#FF6B6B] text-white font-bold px-10 py-5 text-xl hover:bg-[#E55A5A] hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300 rounded-none"
+                className="bg-[#FF6B6B] text-white font-bold px-10 py-5 text-xl hover:bg-[#E55A5A] hover:shadow-surface-lg hover:-translate-y-0.5 transition duration-300 rounded-none"
               >
                 Poster Size
               </button>
@@ -830,7 +830,7 @@ export default function StudioBoldShowcase() {
               {["BRAND IDENTITY", "ART DIRECTION", "WEB PLATFORM", "MOTION SYSTEM", "POSITIONING", "CASE STUDY"].map((t) => (
                 <span
                   key={t}
-                  className="bg-[#1A1A1A] text-white text-[11px] font-bold uppercase tracking-[0.14em] px-4 py-2 hover:bg-[#FF6B6B] hover:-translate-y-0.5 hover:shadow-xl transition-all duration-300 cursor-default"
+                  className="bg-[#1A1A1A] text-white text-[11px] font-bold uppercase tracking-[0.14em] px-4 py-2 hover:bg-[#FF6B6B] hover:-translate-y-0.5 hover:shadow-surface-lg transition duration-300 cursor-default"
                 >
                   {t}
                 </span>
@@ -907,7 +907,7 @@ export default function StudioBoldShowcase() {
                         </span>
                       </span>
                     </button>
-                    <div className={`grid transition-all duration-300 ${open ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"}`}>
+                    <div className={`grid transition duration-300 ${open ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"}`}>
                       <div className="overflow-hidden">
                         <div className="pb-8 md:pl-16 grid md:grid-cols-12 gap-6">
                           <p className="md:col-span-7 text-white/60 leading-relaxed font-light">{step.desc}</p>
@@ -954,7 +954,7 @@ export default function StudioBoldShowcase() {
                       </span>
                     </div>
                     <div className="h-2 bg-[#1A1A1A]/10" role="progressbar" aria-valuenow={e.pct} aria-valuemin={0} aria-valuemax={100} aria-label={`${e.client} progress`}>
-                      <div className="h-full bg-[#FF6B6B] transition-all duration-500 group-hover:bg-[#E55A5A]" style={{ width: `${e.pct}%` }} />
+                      <div className="h-full bg-[#FF6B6B] transition duration-500 group-hover:bg-[#E55A5A]" style={{ width: `${e.pct}%` }} />
                     </div>
                   </div>
                 </Reveal>
@@ -1042,7 +1042,7 @@ export default function StudioBoldShowcase() {
                   type="button"
                   onClick={() => setLedgerPage((p) => Math.max(0, p - 1))}
                   disabled={ledgerPage === 0}
-                  className="border-2 border-white/30 text-white font-bold px-5 py-2.5 text-sm hover:border-white hover:bg-white/10 transition-all duration-300 disabled:border-white/10 disabled:text-white/20 disabled:cursor-not-allowed disabled:hover:bg-transparent rounded-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#FF6B6B]"
+                  className="border-2 border-white/30 text-white font-bold px-5 py-2.5 text-sm hover:border-white hover:bg-white/10 transition duration-300 disabled:border-white/10 disabled:text-white/20 disabled:cursor-not-allowed disabled:hover:bg-transparent rounded-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#FF6B6B]"
                 >
                   &larr; Prev
                 </button>
@@ -1050,7 +1050,7 @@ export default function StudioBoldShowcase() {
                   type="button"
                   onClick={() => setLedgerPage((p) => Math.min(ledgerPages - 1, p + 1))}
                   disabled={ledgerPage === ledgerPages - 1}
-                  className="bg-[#FF6B6B] text-white font-bold px-5 py-2.5 text-sm hover:bg-[#E55A5A] hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300 disabled:bg-white/10 disabled:text-white/20 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:shadow-none rounded-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-white"
+                  className="bg-[#FF6B6B] text-white font-bold px-5 py-2.5 text-sm hover:bg-[#E55A5A] hover:shadow-surface-lg hover:-translate-y-0.5 transition duration-300 disabled:bg-white/10 disabled:text-white/20 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:shadow-none rounded-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-white"
                 >
                   Next &rarr;
                 </button>
@@ -1082,7 +1082,7 @@ export default function StudioBoldShowcase() {
               const bodyColor = a.kind === "INFO" || a.kind === "WARNING" ? "text-[#1A1A1A]/70" : "text-white/80";
               return (
                 <Reveal key={a.id} delay={0.04 * i}>
-                  <div className={`flex items-stretch ${shell} transition-all duration-300 hover:shadow-2xl hover:scale-[1.01]`}>
+                  <div className={`flex items-stretch ${shell} transition duration-300 hover:shadow-surface-lg hover:scale-[1.01]`}>
                     <div className={`w-1.5 shrink-0 ${edge}`} aria-hidden="true" />
                     <div className="flex-1 p-5 md:p-6">
                       <div className="flex items-baseline justify-between gap-4 mb-1.5">
@@ -1110,7 +1110,7 @@ export default function StudioBoldShowcase() {
                   <button
                     type="button"
                     onClick={() => setDismissed([])}
-                    className="bg-[#1A1A1A] text-white font-bold px-6 py-3 text-sm hover:bg-[#0D0D0D] hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300 rounded-none"
+                    className="bg-[#1A1A1A] text-white font-bold px-6 py-3 text-sm hover:bg-[#0D0D0D] hover:shadow-surface-lg hover:-translate-y-0.5 transition duration-300 rounded-none"
                   >
                     Restore Notices
                   </button>
@@ -1167,7 +1167,7 @@ export default function StudioBoldShowcase() {
                 type="button"
                 onClick={() => setTestimonialIndex((i) => (i - 1 + testimonials.length) % testimonials.length)}
                 aria-label="Previous testimonial"
-                className="border-2 border-[#1A1A1A]/20 text-[#1A1A1A] font-bold w-12 h-12 hover:border-[#1A1A1A] hover:bg-[#1A1A1A] hover:text-white transition-all duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#FF6B6B]"
+                className="border-2 border-[#1A1A1A]/20 text-[#1A1A1A] font-bold w-12 h-12 hover:border-[#1A1A1A] hover:bg-[#1A1A1A] hover:text-white transition duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#FF6B6B]"
               >
                 &larr;
               </button>
@@ -1180,7 +1180,7 @@ export default function StudioBoldShowcase() {
                 type="button"
                 onClick={() => setTestimonialIndex((i) => (i + 1) % testimonials.length)}
                 aria-label="Next testimonial"
-                className="bg-[#FF6B6B] text-white font-bold w-12 h-12 hover:bg-[#E55A5A] hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#1A1A1A]"
+                className="bg-[#FF6B6B] text-white font-bold w-12 h-12 hover:bg-[#E55A5A] hover:shadow-surface-lg hover:-translate-y-0.5 transition duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#1A1A1A]"
               >
                 &rarr;
               </button>
@@ -1189,7 +1189,7 @@ export default function StudioBoldShowcase() {
 
           <Reveal delay={0.1}>
             <p className="text-[11px] uppercase tracking-[0.25em] text-[#1A1A1A]/30 font-medium text-center mb-8">TRUSTED BY</p>
-            <div className="flex flex-wrap justify-center gap-x-12 gap-y-6 opacity-60 grayscale hover:grayscale-0 hover:opacity-100 transition-all duration-300">
+            <div className="flex flex-wrap justify-center gap-x-12 gap-y-6 opacity-60 grayscale hover:grayscale-0 hover:opacity-100 transition duration-300">
               {clients.map((c) => (
                 <span key={c} className="text-sm text-[#1A1A1A]/60 font-bold tracking-[0.15em] hover:text-[#FF6B6B] transition-colors duration-300 cursor-default">
                   {c}
@@ -1233,7 +1233,7 @@ export default function StudioBoldShowcase() {
           <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
             {team.map((m, i) => (
               <Reveal key={m.name} delay={0.04 * i}>
-                <div className="group bg-white/5 p-6 md:p-8 transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl hover:bg-white/10 cursor-default">
+                <div className="group bg-white/5 p-6 md:p-8 transition duration-300 hover:scale-[1.02] hover:shadow-surface-lg hover:bg-white/10 cursor-default">
                   <span
                     className={`w-14 h-14 rounded-full border-2 border-white shadow-md flex items-center justify-center text-sm font-bold mb-5 ${
                       m.tone === "coral" ? "bg-[#FF6B6B] text-white" : m.tone === "sand" ? "bg-[#F5F5F0] text-[#1A1A1A]" : "bg-[#333333] text-white"
@@ -1291,9 +1291,9 @@ export default function StudioBoldShowcase() {
                         type="button"
                         onClick={() => setProjectType(t)}
                         aria-pressed={projectType === t}
-                        className={`px-4 py-2 text-[11px] font-bold uppercase tracking-[0.14em] rounded-none transition-all duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#FF6B6B] ${
+                        className={`px-4 py-2 text-[11px] font-bold uppercase tracking-[0.14em] rounded-none transition duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#FF6B6B] ${
                           projectType === t
-                            ? "bg-[#FF6B6B] text-white shadow-xl -translate-y-0.5"
+                            ? "bg-[#FF6B6B] text-white shadow-surface-lg -translate-y-0.5"
                             : "bg-[#333333] text-white/50 hover:text-white hover:bg-[#3D3D3D] hover:-translate-y-0.5"
                         }`}
                       >
@@ -1369,7 +1369,7 @@ export default function StudioBoldShowcase() {
                 </div>
                 <button
                   type="submit"
-                  className="bg-[#FF6B6B] text-white font-bold px-8 py-4 text-lg hover:bg-[#E55A5A] hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300 rounded-none"
+                  className="bg-[#FF6B6B] text-white font-bold px-8 py-4 text-lg hover:bg-[#E55A5A] hover:shadow-surface-lg hover:-translate-y-0.5 transition duration-300 rounded-none"
                 >
                   Send the Brief &rarr;
                 </button>
@@ -1451,13 +1451,13 @@ export default function StudioBoldShowcase() {
             <div className="flex flex-wrap justify-center gap-4">
               <a
                 href="#contact"
-                className="bg-[#1A1A1A] text-white font-bold px-8 py-4 text-lg hover:bg-[#0D0D0D] hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300 rounded-none"
+                className="bg-[#1A1A1A] text-white font-bold px-8 py-4 text-lg hover:bg-[#0D0D0D] hover:shadow-surface-lg hover:-translate-y-0.5 transition duration-300 rounded-none"
               >
                 Start a Conversation &rarr;
               </a>
               <a
                 href="#work"
-                className="border-2 border-white/60 text-white font-bold px-8 py-4 text-lg hover:border-white hover:bg-white/10 transition-all duration-300 rounded-none"
+                className="border-2 border-white/60 text-white font-bold px-8 py-4 text-lg hover:border-white hover:bg-white/10 transition duration-300 rounded-none"
               >
                 See the Work First
               </a>

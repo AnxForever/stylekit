@@ -10,10 +10,10 @@ export const warmDashboardTokens = createStyleTokens({
 
   shadow: {
     sm: "shadow-lg shadow-black/5",
-    md: "shadow-xl shadow-black/8",
-    lg: "shadow-2xl shadow-black/10",
+    md: "shadow-surface-lg",
+    lg: "shadow-surface-lg",
     none: "shadow-none",
-    hover: "hover:shadow-2xl hover:-translate-y-1",
+    hover: "hover:shadow-surface-lg hover:-translate-y-1",
     focus: "focus:ring-2 focus:ring-[#4a9d9a]/30",
     colored: {
       teal: "shadow-lg shadow-[#4a9d9a]/25",

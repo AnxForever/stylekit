@@ -12,9 +12,9 @@ export const softUITokens = createStyleTokens({
   shadow: {
     sm: "shadow-md shadow-gray-200/50",
     md: "shadow-lg shadow-gray-200/50",
-    lg: "shadow-xl shadow-gray-200/50",
+    lg: "shadow-surface-lg",
     none: "shadow-none",
-    hover: "shadow-xl shadow-indigo-500/20",
+    hover: "shadow-surface-lg shadow-indigo-500/20",
     focus: "ring-2 ring-indigo-500/50",
     colored: {
       indigo: "shadow-lg shadow-indigo-500/30",

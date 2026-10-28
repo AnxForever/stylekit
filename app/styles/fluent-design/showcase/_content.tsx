@@ -192,7 +192,7 @@ const doRules = [
   "Maintain rounded-lg (8px) on cards, panels, and buttons consistently",
   "Add shadow-lg with low opacity to communicate depth hierarchy",
   "Apply focus:ring-2 focus:ring-[#0078d4] focus:ring-offset-2 on all focusable elements",
-  "Use transition-all duration-200 ease-out for all Fluent motion",
+  "Use transition duration-200 ease-out for all Fluent motion",
   "Show Reveal highlight border on hover via group + group-hover classes",
   "Maintain WCAG AA contrast — 4.5:1 for text, 3:1 for UI elements",
 ];
@@ -300,7 +300,7 @@ export default function ShowcaseContent() {
                   key={item.id}
                   type="button"
                   onClick={() => setActiveNavItem(item.id)}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm transition-all duration-200 ease-out focus:outline-none focus:ring-2 focus:ring-[#0078d4] focus:ring-offset-2 ${
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm transition duration-200 ease-out focus:outline-none focus:ring-2 focus:ring-[#0078d4] focus:ring-offset-2 ${
                     activeNavItem === item.id
                       ? "bg-[#0078d4]/10 text-[#0078d4] font-medium"
                       : "text-[#605e5c] hover:bg-[#f3f2f1] hover:text-[#201f1e]"
@@ -322,7 +322,7 @@ export default function ShowcaseContent() {
               {/* Notification bell */}
               <button
                 type="button"
-                className="relative p-1.5 text-[#605e5c] hover:bg-[#f3f2f1] rounded-lg transition-all duration-200 ease-out focus:outline-none focus:ring-2 focus:ring-[#0078d4] focus:ring-offset-2"
+                className="relative p-1.5 text-[#605e5c] hover:bg-[#f3f2f1] rounded-lg transition duration-200 ease-out focus:outline-none focus:ring-2 focus:ring-[#0078d4] focus:ring-offset-2"
               >
                 <Icon d={ICONS.bell} className="w-5 h-5" />
                 <span className="absolute top-1 right-1 w-2 h-2 bg-[#0078d4] rounded-full border-2 border-white" />
@@ -456,14 +456,14 @@ export default function ShowcaseContent() {
               <div className="group relative">
                 <button
                   type="button"
-                  className="px-6 py-2.5 bg-[#0078d4] text-white text-sm font-medium rounded-lg hover:bg-[#106ebe] active:bg-[#005a9e] transition-all duration-200 ease-out focus:outline-none focus:ring-2 focus:ring-[#0078d4] focus:ring-offset-2 border border-transparent group-hover:border-white/20 shadow-lg shadow-[#0078d4]/25"
+                  className="px-6 py-2.5 bg-[#0078d4] text-white text-sm font-medium rounded-lg hover:bg-[#106ebe] active:bg-[#005a9e] transition duration-200 ease-out focus:outline-none focus:ring-2 focus:ring-[#0078d4] focus:ring-offset-2 border border-transparent group-hover:border-white/20 shadow-lg shadow-[#0078d4]/25"
                 >
                   Explore Components
                 </button>
               </div>
               <button
                 type="button"
-                className="group px-6 py-2.5 bg-white text-[#0078d4] text-sm font-medium rounded-lg border border-[#d2d0ce] hover:border-[#0078d4]/40 hover:bg-[#f0f6fc] active:bg-[#deecf9] transition-all duration-200 ease-out focus:outline-none focus:ring-2 focus:ring-[#0078d4] focus:ring-offset-2"
+                className="group px-6 py-2.5 bg-white text-[#0078d4] text-sm font-medium rounded-lg border border-[#d2d0ce] hover:border-[#0078d4]/40 hover:bg-[#f0f6fc] active:bg-[#deecf9] transition duration-200 ease-out focus:outline-none focus:ring-2 focus:ring-[#0078d4] focus:ring-offset-2"
               >
                 View Guidelines
               </button>
@@ -480,7 +480,7 @@ export default function ShowcaseContent() {
             }}
           >
             {/* Primary acrylic panel */}
-            <div className="md:col-span-3 group bg-white/70 backdrop-blur-xl rounded-lg border border-white/60 shadow-lg p-6 hover:border-white/80 hover:shadow-xl transition-all duration-200 ease-out">
+            <div className="md:col-span-3 group bg-white/70 backdrop-blur-xl rounded-lg border border-white/60 shadow-lg p-6 hover:border-white/80 hover:shadow-surface-lg transition duration-200 ease-out">
               <div className="flex items-center justify-between mb-5">
                 <span className="text-sm font-semibold text-[#201f1e]">Acrylic Material</span>
                 <div className="flex gap-1.5">
@@ -495,7 +495,7 @@ export default function ShowcaseContent() {
                   <button
                     key={action.label}
                     type="button"
-                    className="flex items-center gap-1.5 px-3 py-1.5 rounded text-xs text-[#605e5c] hover:bg-white hover:text-[#0078d4] hover:shadow-sm transition-all duration-200 ease-out focus:outline-none focus:ring-2 focus:ring-[#0078d4]"
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded text-xs text-[#605e5c] hover:bg-white hover:text-[#0078d4] hover:shadow-sm transition duration-200 ease-out focus:outline-none focus:ring-2 focus:ring-[#0078d4]"
                   >
                     <Icon d={action.iconPath} className="w-3.5 h-3.5" />
                     {action.label}
@@ -516,7 +516,7 @@ export default function ShowcaseContent() {
 
             {/* Depth layer secondary panels */}
             <div className="md:col-span-2 flex flex-col gap-4">
-              <div className="group bg-white/60 backdrop-blur-xl rounded-lg border border-white/50 shadow-md p-5 hover:border-white/70 hover:shadow-lg transition-all duration-200 ease-out flex-1">
+              <div className="group bg-white/60 backdrop-blur-xl rounded-lg border border-white/50 shadow-md p-5 hover:border-white/70 hover:shadow-lg transition duration-200 ease-out flex-1">
                 <div className="w-8 h-8 rounded-lg bg-[#0078d4]/10 flex items-center justify-center mb-3">
                   <Icon d={ICONS.bell} className="w-4 h-4 text-[#0078d4]" />
                 </div>
@@ -528,7 +528,7 @@ export default function ShowcaseContent() {
                   <div className="w-2 h-2 rounded-full bg-[#0078d4]/20" />
                 </div>
               </div>
-              <div className="group bg-white/50 backdrop-blur-xl rounded-lg border border-white/40 shadow-sm p-5 hover:border-white/60 hover:shadow-md transition-all duration-200 ease-out flex-1">
+              <div className="group bg-white/50 backdrop-blur-xl rounded-lg border border-white/40 shadow-sm p-5 hover:border-white/60 hover:shadow-md transition duration-200 ease-out flex-1">
                 <div className="w-8 h-8 rounded-lg bg-[#00cc6a]/10 flex items-center justify-center mb-3">
                   <Icon d={ICONS.check} className="w-4 h-4 text-[#00cc6a]" />
                 </div>
@@ -561,7 +561,7 @@ export default function ShowcaseContent() {
                 key={tab}
                 type="button"
                 onClick={() => setComponentTab(tab)}
-                className={`px-5 py-2 rounded-md text-sm font-medium transition-all duration-200 ease-out focus:outline-none focus:ring-2 focus:ring-[#0078d4] focus:ring-offset-2 ${
+                className={`px-5 py-2 rounded-md text-sm font-medium transition duration-200 ease-out focus:outline-none focus:ring-2 focus:ring-[#0078d4] focus:ring-offset-2 ${
                   componentTab === tab
                     ? "bg-white text-[#201f1e] shadow-sm border border-[#d2d0ce]"
                     : "text-[#605e5c] hover:text-[#201f1e] hover:bg-white/60"
@@ -584,13 +584,13 @@ export default function ShowcaseContent() {
                   <div className="flex flex-wrap gap-3 items-center">
                     <button
                       type="button"
-                      className="px-5 py-2.5 bg-[#0078d4] text-white text-sm font-medium rounded-lg hover:bg-[#106ebe] active:bg-[#005a9e] transition-all duration-200 ease-out focus:outline-none focus:ring-2 focus:ring-[#0078d4] focus:ring-offset-2 shadow-sm"
+                      className="px-5 py-2.5 bg-[#0078d4] text-white text-sm font-medium rounded-lg hover:bg-[#106ebe] active:bg-[#005a9e] transition duration-200 ease-out focus:outline-none focus:ring-2 focus:ring-[#0078d4] focus:ring-offset-2 shadow-sm"
                     >
                       Primary
                     </button>
                     <button
                       type="button"
-                      className="flex items-center gap-2 px-5 py-2.5 bg-[#0078d4] text-white text-sm font-medium rounded-lg hover:bg-[#106ebe] active:bg-[#005a9e] transition-all duration-200 ease-out focus:outline-none focus:ring-2 focus:ring-[#0078d4] focus:ring-offset-2 shadow-sm"
+                      className="flex items-center gap-2 px-5 py-2.5 bg-[#0078d4] text-white text-sm font-medium rounded-lg hover:bg-[#106ebe] active:bg-[#005a9e] transition duration-200 ease-out focus:outline-none focus:ring-2 focus:ring-[#0078d4] focus:ring-offset-2 shadow-sm"
                     >
                       <Icon d={ICONS.plus} className="w-4 h-4" />
                       New Item
@@ -614,7 +614,7 @@ export default function ShowcaseContent() {
                     <div className="group relative">
                       <button
                         type="button"
-                        className="px-5 py-2.5 bg-white text-[#201f1e] text-sm font-medium rounded-lg border border-[#d2d0ce] group-hover:border-[#0078d4]/40 hover:bg-[#f0f6fc] active:bg-[#deecf9] transition-all duration-200 ease-out focus:outline-none focus:ring-2 focus:ring-[#0078d4] focus:ring-offset-2"
+                        className="px-5 py-2.5 bg-white text-[#201f1e] text-sm font-medium rounded-lg border border-[#d2d0ce] group-hover:border-[#0078d4]/40 hover:bg-[#f0f6fc] active:bg-[#deecf9] transition duration-200 ease-out focus:outline-none focus:ring-2 focus:ring-[#0078d4] focus:ring-offset-2"
                       >
                         Secondary
                       </button>
@@ -622,7 +622,7 @@ export default function ShowcaseContent() {
                     <div className="group relative">
                       <button
                         type="button"
-                        className="flex items-center gap-2 px-5 py-2.5 bg-white text-[#201f1e] text-sm font-medium rounded-lg border border-[#d2d0ce] group-hover:border-[#0078d4]/40 hover:bg-[#f0f6fc] transition-all duration-200 ease-out focus:outline-none focus:ring-2 focus:ring-[#0078d4] focus:ring-offset-2"
+                        className="flex items-center gap-2 px-5 py-2.5 bg-white text-[#201f1e] text-sm font-medium rounded-lg border border-[#d2d0ce] group-hover:border-[#0078d4]/40 hover:bg-[#f0f6fc] transition duration-200 ease-out focus:outline-none focus:ring-2 focus:ring-[#0078d4] focus:ring-offset-2"
                       >
                         <Icon d={ICONS.share} className="w-4 h-4 text-[#605e5c] group-hover:text-[#0078d4] transition-colors duration-200" />
                         Share
@@ -630,7 +630,7 @@ export default function ShowcaseContent() {
                     </div>
                     <button
                       type="button"
-                      className="px-5 py-2.5 bg-transparent text-[#0078d4] text-sm font-medium rounded-lg border border-[#0078d4]/30 hover:bg-[#f0f6fc] hover:border-[#0078d4]/60 transition-all duration-200 ease-out focus:outline-none focus:ring-2 focus:ring-[#0078d4] focus:ring-offset-2"
+                      className="px-5 py-2.5 bg-transparent text-[#0078d4] text-sm font-medium rounded-lg border border-[#0078d4]/30 hover:bg-[#f0f6fc] hover:border-[#0078d4]/60 transition duration-200 ease-out focus:outline-none focus:ring-2 focus:ring-[#0078d4] focus:ring-offset-2"
                     >
                       Accent Outline
                     </button>
@@ -645,20 +645,20 @@ export default function ShowcaseContent() {
                   <div className="flex flex-wrap gap-3 items-center">
                     <button
                       type="button"
-                      className="px-5 py-2.5 bg-transparent text-[#605e5c] text-sm font-medium rounded-lg hover:bg-[#f3f2f1] hover:text-[#201f1e] active:bg-[#edebe9] transition-all duration-200 ease-out focus:outline-none focus:ring-2 focus:ring-[#0078d4] focus:ring-offset-2"
+                      className="px-5 py-2.5 bg-transparent text-[#605e5c] text-sm font-medium rounded-lg hover:bg-[#f3f2f1] hover:text-[#201f1e] active:bg-[#edebe9] transition duration-200 ease-out focus:outline-none focus:ring-2 focus:ring-[#0078d4] focus:ring-offset-2"
                     >
                       Subtle
                     </button>
                     <button
                       type="button"
-                      className="flex items-center gap-2 px-5 py-2.5 bg-transparent text-[#605e5c] text-sm font-medium rounded-lg hover:bg-[#f3f2f1] hover:text-[#201f1e] transition-all duration-200 ease-out focus:outline-none focus:ring-2 focus:ring-[#0078d4] focus:ring-offset-2"
+                      className="flex items-center gap-2 px-5 py-2.5 bg-transparent text-[#605e5c] text-sm font-medium rounded-lg hover:bg-[#f3f2f1] hover:text-[#201f1e] transition duration-200 ease-out focus:outline-none focus:ring-2 focus:ring-[#0078d4] focus:ring-offset-2"
                     >
                       <Icon d={ICONS.settings} className="w-4 h-4" />
                       Settings
                     </button>
                     <button
                       type="button"
-                      className="flex items-center gap-2 px-5 py-2.5 bg-[#e81123] text-white text-sm font-medium rounded-lg hover:bg-[#c50f1f] active:bg-[#a4262c] transition-all duration-200 ease-out focus:outline-none focus:ring-2 focus:ring-[#e81123] focus:ring-offset-2"
+                      className="flex items-center gap-2 px-5 py-2.5 bg-[#e81123] text-white text-sm font-medium rounded-lg hover:bg-[#c50f1f] active:bg-[#a4262c] transition duration-200 ease-out focus:outline-none focus:ring-2 focus:ring-[#e81123] focus:ring-offset-2"
                     >
                       <Icon d={ICONS.x} className="w-4 h-4" />
                       Delete
@@ -673,7 +673,7 @@ export default function ShowcaseContent() {
               <div className="space-y-5">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
                   {/* Acrylic card */}
-                  <div className="group bg-white/70 backdrop-blur-xl rounded-lg border border-white/60 shadow-lg p-6 hover:border-white/80 hover:shadow-xl hover:-translate-y-1 transition-all duration-200 ease-out cursor-pointer">
+                  <div className="group bg-white/70 backdrop-blur-xl rounded-lg border border-white/60 shadow-lg p-6 hover:border-white/80 hover:shadow-surface-lg hover:-translate-y-1 transition duration-200 ease-out cursor-pointer">
                     <div className="w-10 h-10 rounded-lg bg-[#0078d4]/10 flex items-center justify-center mb-4 group-hover:bg-[#0078d4]/20 transition-colors duration-200">
                       <Icon d={ICONS.sparkles} className="w-5 h-5 text-[#0078d4]" />
                     </div>
@@ -685,19 +685,19 @@ export default function ShowcaseContent() {
                   </div>
 
                   {/* Elevated card */}
-                  <div className="group bg-white rounded-lg border border-[#d2d0ce] shadow-md p-6 hover:shadow-xl hover:-translate-y-1 hover:border-[#0078d4]/30 transition-all duration-200 ease-out cursor-pointer">
+                  <div className="group bg-white rounded-lg border border-[#d2d0ce] shadow-md p-6 hover:shadow-surface-lg hover:-translate-y-1 hover:border-[#0078d4]/30 transition duration-200 ease-out cursor-pointer">
                     <div className="w-10 h-10 rounded-lg bg-[#ffb900]/10 flex items-center justify-center mb-4 group-hover:bg-[#ffb900]/20 transition-colors duration-200">
                       <Icon d={ICONS.sun} className="w-5 h-5 text-[#ffb900]" />
                     </div>
                     <h3 className="text-sm font-semibold text-[#201f1e] mb-2">Elevated Card</h3>
                     <p className="text-xs text-[#605e5c] leading-relaxed">
-                      shadow-md base, shadow-xl on hover. Lift reinforces depth hierarchy within the surface layer.
+                      shadow-md base, shadow-surface-lg on hover. Lift reinforces depth hierarchy within the surface layer.
                     </p>
-                    <div className="mt-4 text-xs text-[#a19f9d] font-mono">shadow-md to shadow-xl</div>
+                    <div className="mt-4 text-xs text-[#a19f9d] font-mono">shadow-md to shadow-surface-lg</div>
                   </div>
 
                   {/* Subtle card */}
-                  <div className="group bg-[#faf9f8] rounded-lg border border-[#edebe9] p-6 hover:bg-white hover:border-[#0078d4]/20 hover:shadow-md transition-all duration-200 ease-out cursor-pointer">
+                  <div className="group bg-[#faf9f8] rounded-lg border border-[#edebe9] p-6 hover:bg-white hover:border-[#0078d4]/20 hover:shadow-md transition duration-200 ease-out cursor-pointer">
                     <div className="w-10 h-10 rounded-lg bg-[#00cc6a]/10 flex items-center justify-center mb-4 group-hover:bg-[#00cc6a]/20 transition-colors duration-200">
                       <Icon d={ICONS.check} className="w-5 h-5 text-[#00cc6a]" />
                     </div>
@@ -723,7 +723,7 @@ export default function ShowcaseContent() {
                   {notificationItems.map((item) => (
                     <div
                       key={item.title}
-                      className="group flex items-start gap-4 px-5 py-4 hover:bg-[#f0f6fc] transition-all duration-200 ease-out cursor-pointer"
+                      className="group flex items-start gap-4 px-5 py-4 hover:bg-[#f0f6fc] transition duration-200 ease-out cursor-pointer"
                     >
                       <div
                         className={`w-2 h-2 rounded-full mt-1.5 shrink-0 ${
@@ -760,7 +760,7 @@ export default function ShowcaseContent() {
                     <input
                       type="text"
                       placeholder="Enter your name..."
-                      className="w-full px-3 py-2 bg-white border border-[#d2d0ce] rounded-lg text-sm text-[#201f1e] placeholder-[#a19f9d] focus:outline-none focus:ring-2 focus:ring-[#0078d4] focus:ring-offset-2 focus:border-[#0078d4] hover:border-[#a19f9d] transition-all duration-200 ease-out"
+                      className="w-full px-3 py-2 bg-white border border-[#d2d0ce] rounded-lg text-sm text-[#201f1e] placeholder-[#a19f9d] focus:outline-none focus:ring-2 focus:ring-[#0078d4] focus:ring-offset-2 focus:border-[#0078d4] hover:border-[#a19f9d] transition duration-200 ease-out"
                     />
                   </div>
                   <div>
@@ -768,7 +768,7 @@ export default function ShowcaseContent() {
                     <input
                       type="email"
                       placeholder="name@company.com"
-                      className="w-full px-3 py-2 bg-white border border-[#d2d0ce] rounded-lg text-sm text-[#201f1e] placeholder-[#a19f9d] focus:outline-none focus:ring-2 focus:ring-[#0078d4] focus:ring-offset-2 focus:border-[#0078d4] hover:border-[#a19f9d] transition-all duration-200 ease-out"
+                      className="w-full px-3 py-2 bg-white border border-[#d2d0ce] rounded-lg text-sm text-[#201f1e] placeholder-[#a19f9d] focus:outline-none focus:ring-2 focus:ring-[#0078d4] focus:ring-offset-2 focus:border-[#0078d4] hover:border-[#a19f9d] transition duration-200 ease-out"
                     />
                     <p className="mt-1.5 text-xs text-[#a19f9d]">We will never share your email</p>
                   </div>
@@ -779,7 +779,7 @@ export default function ShowcaseContent() {
                     <input
                       type="password"
                       placeholder="••••••••"
-                      className="w-full px-3 py-2 bg-white border border-[#e81123] rounded-lg text-sm text-[#201f1e] placeholder-[#a19f9d] focus:outline-none focus:ring-2 focus:ring-[#e81123] focus:ring-offset-2 transition-all duration-200 ease-out"
+                      className="w-full px-3 py-2 bg-white border border-[#e81123] rounded-lg text-sm text-[#201f1e] placeholder-[#a19f9d] focus:outline-none focus:ring-2 focus:ring-[#e81123] focus:ring-offset-2 transition duration-200 ease-out"
                     />
                     <p className="mt-1.5 text-xs text-[#e81123]">Password must be at least 8 characters</p>
                   </div>
@@ -809,7 +809,7 @@ export default function ShowcaseContent() {
                       <input
                         type="search"
                         placeholder="Search components..."
-                        className="w-full pl-9 pr-4 py-2 bg-white border border-[#d2d0ce] rounded-lg text-sm text-[#201f1e] placeholder-[#a19f9d] focus:outline-none focus:ring-2 focus:ring-[#0078d4] focus:ring-offset-2 focus:border-[#0078d4] hover:border-[#a19f9d] transition-all duration-200 ease-out"
+                        className="w-full pl-9 pr-4 py-2 bg-white border border-[#d2d0ce] rounded-lg text-sm text-[#201f1e] placeholder-[#a19f9d] focus:outline-none focus:ring-2 focus:ring-[#0078d4] focus:ring-offset-2 focus:border-[#0078d4] hover:border-[#a19f9d] transition duration-200 ease-out"
                       />
                     </div>
                   </div>
@@ -817,7 +817,7 @@ export default function ShowcaseContent() {
                   <div>
                     <label className="block text-xs font-semibold text-[#605e5c] mb-1.5">Theme</label>
                     <select
-                      className="w-full px-3 py-2 bg-white border border-[#d2d0ce] rounded-lg text-sm text-[#201f1e] focus:outline-none focus:ring-2 focus:ring-[#0078d4] focus:ring-offset-2 focus:border-[#0078d4] hover:border-[#a19f9d] transition-all duration-200 ease-out"
+                      className="w-full px-3 py-2 bg-white border border-[#d2d0ce] rounded-lg text-sm text-[#201f1e] focus:outline-none focus:ring-2 focus:ring-[#0078d4] focus:ring-offset-2 focus:border-[#0078d4] hover:border-[#a19f9d] transition duration-200 ease-out"
                       defaultValue="system"
                     >
                       <option value="light">Light</option>
@@ -874,7 +874,7 @@ export default function ShowcaseContent() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
             {fluentColors.map((color, i) => (
               <RevealBlock key={color.name} delay={i * 0.06}>
-                <div className="group rounded-lg overflow-hidden border border-[#d2d0ce] bg-white shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 ease-out cursor-pointer">
+                <div className="group rounded-lg overflow-hidden border border-[#d2d0ce] bg-white shadow-sm hover:shadow-md hover:-translate-y-0.5 transition duration-200 ease-out cursor-pointer">
                   <div
                     className="h-28 flex items-end p-4"
                     style={{ backgroundColor: color.hex }}
@@ -959,7 +959,7 @@ export default function ShowcaseContent() {
           <div className="space-y-1">
             {typographyScale.map((item, i) => (
               <RevealBlock key={item.label} delay={i * 0.04}>
-                <div className="group flex items-baseline gap-6 px-6 py-5 rounded-lg hover:bg-[#f0f6fc] transition-all duration-200 ease-out border border-transparent hover:border-[#0078d4]/10">
+                <div className="group flex items-baseline gap-6 px-6 py-5 rounded-lg hover:bg-[#f0f6fc] transition duration-200 ease-out border border-transparent hover:border-[#0078d4]/10">
                   <div className="w-24 shrink-0">
                     <span className="text-xs font-semibold text-[#a19f9d] uppercase tracking-wider">
                       {item.label}
@@ -1008,7 +1008,7 @@ export default function ShowcaseContent() {
                   key={p.id}
                   type="button"
                   onClick={() => setActivePrinciple(p.id)}
-                  className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 ease-out focus:outline-none focus:ring-2 focus:ring-[#0078d4] focus:ring-offset-2 ${
+                  className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium transition duration-200 ease-out focus:outline-none focus:ring-2 focus:ring-[#0078d4] focus:ring-offset-2 ${
                     activePrinciple === p.id
                       ? "bg-white text-[#201f1e] shadow-md border border-[#d2d0ce]"
                       : "bg-white/60 text-[#605e5c] border border-[#d2d0ce]/60 hover:bg-white hover:text-[#201f1e] hover:shadow-sm"
@@ -1026,7 +1026,7 @@ export default function ShowcaseContent() {
           <RevealBlock>
             <div className="grid md:grid-cols-5 gap-6">
               {/* Active principle detail */}
-              <div className="md:col-span-3 bg-white/70 backdrop-blur-xl rounded-lg border border-white/60 shadow-lg p-8 hover:shadow-xl transition-all duration-200 ease-out">
+              <div className="md:col-span-3 bg-white/70 backdrop-blur-xl rounded-lg border border-white/60 shadow-lg p-8 hover:shadow-surface-lg transition duration-200 ease-out">
                 <div
                   className="w-12 h-12 rounded-lg flex items-center justify-center mb-6 transition-colors duration-200"
                   style={{
@@ -1056,7 +1056,7 @@ export default function ShowcaseContent() {
                     key={p.id}
                     type="button"
                     onClick={() => setActivePrinciple(p.id)}
-                    className={`w-full group flex items-center gap-4 p-4 rounded-lg border transition-all duration-200 ease-out text-left focus:outline-none focus:ring-2 focus:ring-[#0078d4] focus:ring-offset-2 ${
+                    className={`w-full group flex items-center gap-4 p-4 rounded-lg border transition duration-200 ease-out text-left focus:outline-none focus:ring-2 focus:ring-[#0078d4] focus:ring-offset-2 ${
                       activePrinciple === p.id
                         ? "bg-white border-[#d2d0ce] shadow-md"
                         : "bg-white/60 border-[#d2d0ce]/50 hover:bg-white hover:border-[#d2d0ce] hover:shadow-sm"
@@ -1105,7 +1105,7 @@ export default function ShowcaseContent() {
                   key={p.id}
                   type="button"
                   onClick={() => setActivePrinciple(p.id)}
-                  className="group bg-white rounded-lg border border-[#d2d0ce] p-5 hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 ease-out text-center focus:outline-none focus:ring-2 focus:ring-[#0078d4] focus:ring-offset-2"
+                  className="group bg-white rounded-lg border border-[#d2d0ce] p-5 hover:shadow-md hover:-translate-y-0.5 transition duration-200 ease-out text-center focus:outline-none focus:ring-2 focus:ring-[#0078d4] focus:ring-offset-2"
                 >
                   <div
                     className="w-10 h-10 rounded-lg flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform duration-200"
@@ -1191,7 +1191,7 @@ export default function ShowcaseContent() {
                 ].map((item) => (
                   <div
                     key={item.label}
-                    className={`group flex items-center gap-4 p-4 bg-[#faf9f8] rounded-lg border border-[#edebe9] ${item.hoverBorder} hover:bg-white hover:shadow-md transition-all duration-200 ease-out cursor-pointer`}
+                    className={`group flex items-center gap-4 p-4 bg-[#faf9f8] rounded-lg border border-[#edebe9] ${item.hoverBorder} hover:bg-white hover:shadow-md transition duration-200 ease-out cursor-pointer`}
                   >
                     <div className="w-2 h-10 rounded-full bg-[#0078d4]/20 group-hover:bg-[#0078d4]/60 transition-colors duration-200" />
                     <div className="flex-1">
@@ -1200,7 +1200,7 @@ export default function ShowcaseContent() {
                     </div>
                     <Icon
                       d={ICONS.chevronRight}
-                      className="w-4 h-4 text-[#d2d0ce] group-hover:text-[#0078d4] group-hover:translate-x-0.5 transition-all duration-200"
+                      className="w-4 h-4 text-[#d2d0ce] group-hover:text-[#0078d4] group-hover:translate-x-0.5 transition duration-200"
                     />
                   </div>
                 ))}
@@ -1218,10 +1218,10 @@ export default function ShowcaseContent() {
                 {motionTokens.map((token) => (
                   <div
                     key={token.name}
-                    className="group p-4 bg-white rounded-lg border border-[#d2d0ce] hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 ease-out"
+                    className="group p-4 bg-white rounded-lg border border-[#d2d0ce] hover:shadow-md hover:-translate-y-0.5 transition duration-200 ease-out"
                   >
                     <div
-                      className="w-6 h-1 rounded-full mb-3 transition-all duration-300 group-hover:w-full"
+                      className="w-6 h-1 rounded-full mb-3 transition duration-300 group-hover:w-full"
                       style={{ backgroundColor: token.color }}
                     />
                     <p className="text-sm font-semibold text-[#201f1e] mb-1">{token.name}</p>
@@ -1321,7 +1321,7 @@ export default function ShowcaseContent() {
                       { label: "Resting", value: "shadow-sm" },
                       { label: "Raised", value: "shadow-md" },
                       { label: "Floating", value: "shadow-lg" },
-                      { label: "Dialog", value: "shadow-xl" },
+                      { label: "Dialog", value: "shadow-surface-lg" },
                     ],
                   },
                   {

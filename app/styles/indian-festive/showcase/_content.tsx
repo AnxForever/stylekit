@@ -363,7 +363,7 @@ export default function IndianFestiveShowcase() {
             <div className="w-8 h-8 rounded-full border-2 border-[#d4af37] flex items-center justify-center shadow-[0_0_10px_rgba(212,175,55,0.4)]">
               <div className="w-3 h-3 rounded-full bg-gradient-to-br from-[#e63946] to-[#ff9f1c]" />
             </div>
-            <span className="text-xl font-bold bg-gradient-to-r from-[#e63946] to-[#ff9f1c] bg-clip-text text-transparent">
+            <span className="text-xl font-bold bg-gradient-to-r from-[#b91c1c] to-[#c2410c] bg-clip-text text-transparent">
               Indian Festive
             </span>
           </div>
@@ -448,7 +448,7 @@ export default function IndianFestiveShowcase() {
           {/* Gold ceremonial ribbon divider */}
           <div className="h-1 w-24 bg-gradient-to-r from-[#e63946] via-[#ff9f1c] to-[#d4af37] rounded-full mx-auto mb-8" />
 
-          <h1 className="text-6xl md:text-8xl font-bold bg-gradient-to-r from-[#e63946] via-[#ff9f1c] to-[#d4af37] bg-clip-text text-transparent mb-6 leading-tight tracking-tight">
+          <h1 className="text-6xl md:text-8xl font-bold bg-gradient-to-r from-[#b91c1c] via-[#c2410c] to-[#a16207] bg-clip-text text-transparent mb-6 leading-tight tracking-tight">
             Festival of
             <br />
             Light & Color
@@ -886,7 +886,7 @@ export default function IndianFestiveShowcase() {
                     <h3
                       className="text-2xl font-bold mb-0.5 bg-clip-text text-transparent"
                       style={{
-                        backgroundImage: `linear-gradient(to right, ${festival.color}, ${festival.accent})`,
+                        backgroundImage: `linear-gradient(to right, color-mix(in oklab, ${festival.color} 58%, #241000), color-mix(in oklab, ${festival.accent} 58%, #241000))`,
                       }}
                     >
                       {festival.name}
@@ -1102,7 +1102,7 @@ export default function IndianFestiveShowcase() {
             <div className="bg-[#fff8e7] rounded-2xl border-2 border-[#d4af37]/40 p-10 shadow-[0_4px_24px_rgba(212,175,55,0.15)] space-y-8">
               <div>
                 <p className="text-xs font-bold tracking-widest text-[#d4af37] uppercase mb-3">Display — उत्सव</p>
-                <p className="text-6xl md:text-7xl font-bold bg-gradient-to-r from-[#e63946] via-[#ff9f1c] to-[#d4af37] bg-clip-text text-transparent leading-tight">
+                <p className="text-6xl md:text-7xl font-bold bg-gradient-to-r from-[#b91c1c] via-[#c2410c] to-[#a16207] bg-clip-text text-transparent leading-tight">
                   Shubh Diwali
                 </p>
               </div>
@@ -1150,7 +1150,7 @@ export default function IndianFestiveShowcase() {
               <div className="mb-5 opacity-40">
                 <MandalaSVG size={64} />
               </div>
-              <h3 className="text-2xl font-bold bg-gradient-to-r from-[#e63946] to-[#ff9f1c] bg-clip-text text-transparent mb-3">
+              <h3 className="text-2xl font-bold bg-gradient-to-r from-[#b91c1c] to-[#c2410c] bg-clip-text text-transparent mb-3">
                 Indian Festive
               </h3>
               <p className="text-sm text-[#7b2d8e]/60 leading-relaxed max-w-xs">

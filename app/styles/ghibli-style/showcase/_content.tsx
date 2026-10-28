@@ -334,7 +334,7 @@ export default function GhibliStyleShowcase() {
 
           <h1 className="text-6xl md:text-7xl lg:text-8xl font-semibold text-[#5a4a3a] mb-6 leading-tight tracking-tight">
             A World of
-            <span className="block text-transparent bg-clip-text bg-gradient-to-r from-[#7cb9a8] via-[#85cdca] to-[#7cb9a8]">
+            <span className="block text-[#4a8f80]">
               Wonder
             </span>
           </h1>

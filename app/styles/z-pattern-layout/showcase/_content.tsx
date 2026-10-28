@@ -238,7 +238,7 @@ export default function ZPatternLayoutShowcase() {
               </div>
               <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-slate-900 tracking-tight leading-tight mb-6">
                 The Z-Pattern
-                <span className="block text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 via-cyan-500 to-indigo-600">
+                <span className="block text-indigo-600">
                   Eye Tracking Layout
                 </span>
               </h1>

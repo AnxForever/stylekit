@@ -107,7 +107,7 @@ export default function ShowcaseContent() {
           100% { background-position: 200% 50%; }
         }
         .ml-gold-shimmer {
-          background: linear-gradient(90deg, #c9a96e 0%, #f1dbc1 40%, #c9a96e 60%, #8a7968 100%);
+          background: linear-gradient(90deg, #4a3819 0%, #5e4620 40%, #4a3819 60%, #332b20 100%);
           background-size: 200% auto;
           -webkit-background-clip: text;
           -webkit-text-fill-color: transparent;
@@ -115,7 +115,7 @@ export default function ShowcaseContent() {
           animation: ml-gold-flow 3s linear infinite;
         }
         .ml-gold-shimmer-hover {
-          background: linear-gradient(90deg, #8a7968 0%, #c9a96e 30%, #f1dbc1 50%, #c9a96e 70%, #8a7968 100%);
+          background: linear-gradient(90deg, #332b20 0%, #4a3819 30%, #5e4620 50%, #4a3819 70%, #332b20 100%);
           background-size: 200% auto;
           -webkit-background-clip: text;
           -webkit-text-fill-color: transparent;

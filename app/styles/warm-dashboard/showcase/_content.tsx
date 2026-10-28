@@ -315,7 +315,7 @@ export default function ShowcaseContent() {
             {["Palette", "Components", "Animations", "App Demo", "Philosophy"].map((item) => (
               <span
                 key={item}
-                className="px-3 py-1.5 rounded-lg text-sm text-white/70 hover:text-white hover:bg-white/20 cursor-pointer transition-all duration-200"
+                className="px-3 py-1.5 rounded-lg text-sm text-white/70 hover:text-white hover:bg-white/20 cursor-pointer transition duration-200"
               >
                 {item}
               </span>
@@ -326,7 +326,7 @@ export default function ShowcaseContent() {
           <Link
             href="/styles/warm-dashboard"
             data-back-navigation="true"
-            className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg active:translate-y-0 active:scale-[0.97]"
+            className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-medium transition duration-200 hover:-translate-y-0.5 hover:shadow-lg active:translate-y-0 active:scale-[0.97]"
             style={{
               backgroundColor: TEAL,
               color: "white",
@@ -435,7 +435,7 @@ export default function ShowcaseContent() {
             }}
           >
             <button
-              className="inline-flex items-center gap-2 px-8 py-4 rounded-xl text-white font-medium transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98]"
+              className="inline-flex items-center gap-2 px-8 py-4 rounded-xl text-white font-medium transition duration-200 hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98]"
               style={{
                 backgroundColor: TEAL,
                 boxShadow: "0 8px 20px rgba(74,157,154,0.3)",
@@ -445,7 +445,7 @@ export default function ShowcaseContent() {
               View Dashboard
             </button>
             <button
-              className="inline-flex items-center gap-2 px-8 py-4 rounded-xl font-medium transition-all duration-200 hover:-translate-y-0.5 active:scale-[0.97]"
+              className="inline-flex items-center gap-2 px-8 py-4 rounded-xl font-medium transition duration-200 hover:-translate-y-0.5 active:scale-[0.97]"
               style={{
                 backgroundColor: "rgba(255,255,255,0.2)",
                 color: "white",
@@ -474,7 +474,7 @@ export default function ShowcaseContent() {
             ].map((stat, i) => (
               <div
                 key={stat.label}
-                className="rounded-2xl p-5 text-center cursor-default transition-all duration-200 hover:-translate-y-1"
+                className="rounded-2xl p-5 text-center cursor-default transition duration-200 hover:-translate-y-1"
                 style={{
                   backgroundColor: CARD,
                   boxShadow: "0 8px 24px rgba(0,0,0,0.06)",
@@ -636,7 +636,7 @@ export default function ShowcaseContent() {
                 <button
                   key={tab}
                   onClick={() => setActiveTab(tab)}
-                  className="px-5 py-2.5 rounded-xl text-sm font-medium capitalize transition-all duration-200 hover:-translate-y-0.5 active:scale-[0.96]"
+                  className="px-5 py-2.5 rounded-xl text-sm font-medium capitalize transition duration-200 hover:-translate-y-0.5 active:scale-[0.96]"
                   style={
                     activeTab === tab
                       ? { backgroundColor: TEAL, color: "white", boxShadow: "0 4px 12px rgba(74,157,154,0.25)" }
@@ -665,14 +665,14 @@ export default function ShowcaseContent() {
                     </p>
                     <div className="flex flex-wrap gap-4 items-center">
                       <button
-                        className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-white font-medium transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_8px_20px_rgba(74,157,154,0.25)] active:scale-[0.98] active:translate-y-0"
+                        className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-white font-medium transition duration-200 hover:-translate-y-0.5 hover:shadow-[0_8px_20px_rgba(74,157,154,0.25)] active:scale-[0.98] active:translate-y-0"
                         style={{ backgroundColor: TEAL, boxShadow: "0 4px 12px rgba(74,157,154,0.2)" }}
                       >
                         <BarChartIcon className="w-4 h-4" />
                         Generate Report
                       </button>
                       <button
-                        className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-white font-medium transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_8px_20px_rgba(232,184,109,0.25)] active:scale-[0.98]"
+                        className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-white font-medium transition duration-200 hover:-translate-y-0.5 hover:shadow-[0_8px_20px_rgba(232,184,109,0.25)] active:scale-[0.98]"
                         style={{ backgroundColor: GOLD, boxShadow: "0 4px 12px rgba(232,184,109,0.2)" }}
                       >
                         <TrendUpIcon className="w-4 h-4" />
@@ -687,7 +687,7 @@ export default function ShowcaseContent() {
                     </p>
                     <div className="flex flex-wrap gap-4 items-center">
                       <button
-                        className="px-6 py-3 rounded-xl font-medium border transition-all duration-200 hover:-translate-y-0.5 active:scale-[0.97]"
+                        className="px-6 py-3 rounded-xl font-medium border transition duration-200 hover:-translate-y-0.5 active:scale-[0.97]"
                         style={{
                           borderColor: TEAL,
                           color: TEAL,
@@ -697,12 +697,12 @@ export default function ShowcaseContent() {
                         Outlined
                       </button>
                       <button
-                        className="px-6 py-3 rounded-xl font-medium transition-all duration-200 hover:bg-gray-100 active:scale-[0.97] text-gray-500"
+                        className="px-6 py-3 rounded-xl font-medium transition duration-200 hover:bg-gray-100 active:scale-[0.97] text-gray-500"
                       >
                         Ghost
                       </button>
                       <button
-                        className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-white font-medium transition-all duration-200 hover:-translate-y-0.5 hover:opacity-90 active:scale-[0.97]"
+                        className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-white font-medium transition duration-200 hover:-translate-y-0.5 hover:opacity-90 active:scale-[0.97]"
                         style={{
                           background: `linear-gradient(135deg, ${TEAL}, ${SAGE})`,
                           boxShadow: "0 4px 12px rgba(74,157,154,0.2)",
@@ -726,7 +726,7 @@ export default function ShowcaseContent() {
                       ].map(({ size, px }) => (
                         <button
                           key={size}
-                          className={`rounded-xl text-white font-medium transition-all duration-200 hover:-translate-y-0.5 active:scale-[0.97] ${px}`}
+                          className={`rounded-xl text-white font-medium transition duration-200 hover:-translate-y-0.5 active:scale-[0.97] ${px}`}
                           style={{ backgroundColor: TEAL, boxShadow: "0 4px 12px rgba(74,157,154,0.2)" }}
                         >
                           {size.toUpperCase()}
@@ -776,7 +776,7 @@ export default function ShowcaseContent() {
                   ].map((card) => (
                     <div
                       key={card.title}
-                      className="group rounded-3xl p-6 cursor-pointer transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_16px_40px_rgba(0,0,0,0.08)]"
+                      className="group rounded-3xl p-6 cursor-pointer transition duration-300 hover:-translate-y-1 hover:shadow-[0_16px_40px_rgba(0,0,0,0.08)]"
                       style={{
                         backgroundColor: CARD,
                         border: "1px solid transparent",
@@ -799,7 +799,7 @@ export default function ShowcaseContent() {
                         </span>
                       </div>
                       <p
-                        className="text-4xl font-bold text-gray-800 mb-2 transition-all duration-200 origin-left group-hover:scale-105"
+                        className="text-4xl font-bold text-gray-800 mb-2 transition duration-200 origin-left group-hover:scale-105"
                       >
                         {card.value}
                       </p>
@@ -823,14 +823,14 @@ export default function ShowcaseContent() {
                       <input
                         type="text"
                         placeholder="Robert Grant"
-                        className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl text-gray-800 placeholder-gray-400 focus:outline-none focus:border-[#4a9d9a] transition-all duration-200"
+                        className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl text-gray-800 placeholder-gray-400 focus:outline-none focus:border-[#4a9d9a] transition duration-200"
                         style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.04)" }}
                       />
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-gray-600 mb-2">Report Type</label>
                       <select
-                        className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl text-gray-800 focus:outline-none focus:border-[#4a9d9a] transition-all duration-200"
+                        className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl text-gray-800 focus:outline-none focus:border-[#4a9d9a] transition duration-200"
                         style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.04)" }}
                       >
                         <option>Analytics Overview</option>
@@ -844,7 +844,7 @@ export default function ShowcaseContent() {
                       <textarea
                         rows={3}
                         placeholder="Add context for this report..."
-                        className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl text-gray-800 placeholder-gray-400 focus:outline-none focus:border-[#4a9d9a] transition-all duration-200 resize-none"
+                        className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl text-gray-800 placeholder-gray-400 focus:outline-none focus:border-[#4a9d9a] transition duration-200 resize-none"
                         style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.04)" }}
                       />
                     </div>
@@ -855,13 +855,13 @@ export default function ShowcaseContent() {
                       <input
                         type="text"
                         placeholder="Jan 1 &ndash; Feb 28, 2026"
-                        className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl text-gray-800 placeholder-gray-400 focus:outline-none focus:border-[#4a9d9a] transition-all duration-200"
+                        className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl text-gray-800 placeholder-gray-400 focus:outline-none focus:border-[#4a9d9a] transition duration-200"
                         style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.04)" }}
                       />
                     </div>
                     <div className="flex items-center gap-3">
                       <div
-                        className="w-5 h-5 rounded-md border-2 flex items-center justify-center cursor-pointer transition-all duration-200 hover:scale-110"
+                        className="w-5 h-5 rounded-md border-2 flex items-center justify-center cursor-pointer transition duration-200 hover:scale-110"
                         style={{ borderColor: TEAL, backgroundColor: TEAL }}
                       >
                         <CheckIcon className="w-3 h-3 text-white" />
@@ -870,13 +870,13 @@ export default function ShowcaseContent() {
                     </div>
                     <div className="flex items-center gap-3">
                       <div
-                        className="w-5 h-5 rounded-md border-2 cursor-pointer transition-all duration-200 hover:scale-110"
+                        className="w-5 h-5 rounded-md border-2 cursor-pointer transition duration-200 hover:scale-110"
                         style={{ borderColor: "#e5e7eb" }}
                       />
                       <label className="text-sm text-gray-600 cursor-pointer">Export as PDF</label>
                     </div>
                     <button
-                      className="w-full py-3.5 rounded-xl text-white font-medium transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_8px_20px_rgba(74,157,154,0.25)] active:scale-[0.98]"
+                      className="w-full py-3.5 rounded-xl text-white font-medium transition duration-200 hover:-translate-y-0.5 hover:shadow-[0_8px_20px_rgba(74,157,154,0.25)] active:scale-[0.98]"
                       style={{ backgroundColor: TEAL, boxShadow: "0 4px 12px rgba(74,157,154,0.2)" }}
                     >
                       Generate Report
@@ -905,7 +905,7 @@ export default function ShowcaseContent() {
                       ].map((b) => (
                         <span
                           key={b.label}
-                          className="px-4 py-1.5 rounded-full text-sm font-medium transition-all duration-200 hover:-translate-y-0.5 cursor-default"
+                          className="px-4 py-1.5 rounded-full text-sm font-medium transition duration-200 hover:-translate-y-0.5 cursor-default"
                           style={{ backgroundColor: b.bg, color: b.text }}
                         >
                           {b.label}
@@ -928,7 +928,7 @@ export default function ShowcaseContent() {
                       ].map((b) => (
                         <span
                           key={b.label}
-                          className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-semibold cursor-default transition-all duration-200 hover:-translate-y-0.5"
+                          className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-semibold cursor-default transition duration-200 hover:-translate-y-0.5"
                           style={{
                             backgroundColor: `${b.accent}18`,
                             color: b.accent,
@@ -959,7 +959,7 @@ export default function ShowcaseContent() {
                         <div key={b.label} className="flex items-center gap-2">
                           <span className="text-sm text-gray-600 font-medium">{b.label}</span>
                           <span
-                            className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold text-white transition-all duration-200 hover:scale-110 cursor-default"
+                            className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold text-white transition duration-200 hover:scale-110 cursor-default"
                             style={{ backgroundColor: b.color }}
                           >
                             {b.count}
@@ -1016,12 +1016,12 @@ export default function ShowcaseContent() {
                   Card hover stays calm &mdash; only a whisper of movement. No visual shock for data dashboards.
                 </p>
                 <p className="text-xs text-gray-300 mb-6 font-mono">
-                  hover:-translate-y-0.5 + shadow-xl &rarr; shadow-2xl
+                  hover:-translate-y-0.5 + shadow-surface-lg &rarr; shadow-surface-lg
                 </p>
 
                 {/* Demo: a data card that only micro-lifts */}
                 <div
-                  className="rounded-2xl p-5 cursor-pointer transition-all duration-200"
+                  className="rounded-2xl p-5 cursor-pointer transition duration-200"
                   style={{
                     backgroundColor: "#f5f3f0",
                     transform: microFocusHovered ? "translateY(-2px)" : "translateY(0)",
@@ -1037,7 +1037,7 @@ export default function ShowcaseContent() {
                     <TrendUpIcon className="w-4 h-4 text-[#4a9d9a]" />
                   </div>
                   <div
-                    className="text-3xl font-bold text-gray-800 mb-1 transition-all duration-200"
+                    className="text-3xl font-bold text-gray-800 mb-1 transition duration-200"
                     style={microFocusHovered ? { color: TEAL, transform: "scale(1.02)", transformOrigin: "left" } : {}}
                   >
                     $142k
@@ -1080,7 +1080,7 @@ export default function ShowcaseContent() {
                   {/* Teal button */}
                   <div className="flex items-center gap-4 w-full">
                     <button
-                      className="px-5 py-2.5 rounded-xl text-white text-sm font-medium transition-all duration-200"
+                      className="px-5 py-2.5 rounded-xl text-white text-sm font-medium transition duration-200"
                       style={{
                         backgroundColor: TEAL,
                         boxShadow: tintedDiffusionHovered
@@ -1098,7 +1098,7 @@ export default function ShowcaseContent() {
                   {/* Gold button */}
                   <div className="flex items-center gap-4 w-full">
                     <button
-                      className="px-5 py-2.5 rounded-xl text-white text-sm font-medium transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_8px_20px_rgba(232,184,109,0.35)]"
+                      className="px-5 py-2.5 rounded-xl text-white text-sm font-medium transition duration-200 hover:-translate-y-0.5 hover:shadow-[0_8px_20px_rgba(232,184,109,0.35)]"
                       style={{ backgroundColor: GOLD, boxShadow: "0 4px 12px rgba(232,184,109,0.15)" }}
                     >
                       Export CSV
@@ -1108,7 +1108,7 @@ export default function ShowcaseContent() {
                   {/* Coral button */}
                   <div className="flex items-center gap-4 w-full">
                     <button
-                      className="px-5 py-2.5 rounded-xl text-white text-sm font-medium transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_8px_20px_rgba(193,119,103,0.35)]"
+                      className="px-5 py-2.5 rounded-xl text-white text-sm font-medium transition duration-200 hover:-translate-y-0.5 hover:shadow-[0_8px_20px_rgba(193,119,103,0.35)]"
                       style={{ backgroundColor: CORAL, boxShadow: "0 4px 12px rgba(193,119,103,0.15)" }}
                     >
                       Delete Entry
@@ -1149,7 +1149,7 @@ export default function ShowcaseContent() {
                   ].map((kpi) => (
                     <div
                       key={kpi.label}
-                      className="group rounded-2xl p-4 cursor-pointer transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md"
+                      className="group rounded-2xl p-4 cursor-pointer transition duration-200 hover:-translate-y-0.5 hover:shadow-md"
                       style={{ backgroundColor: "#f5f3f0" }}
                       onMouseEnter={() => setDataPulseHovered(true)}
                       onMouseLeave={() => setDataPulseHovered(false)}
@@ -1158,7 +1158,7 @@ export default function ShowcaseContent() {
                         {kpi.label}
                       </div>
                       <div
-                        className="text-xl font-bold text-gray-800 transition-all duration-200 origin-left group-hover:scale-105"
+                        className="text-xl font-bold text-gray-800 transition duration-200 origin-left group-hover:scale-105"
                         style={dataPulseHovered ? { color: kpi.accent } : {}}
                       >
                         {kpi.value}
@@ -1320,7 +1320,7 @@ export default function ShowcaseContent() {
                   {navItems.map((item) => (
                     <div
                       key={item.label}
-                      className="flex items-center gap-3 px-3 py-2.5 rounded-xl cursor-pointer transition-all duration-200"
+                      className="flex items-center gap-3 px-3 py-2.5 rounded-xl cursor-pointer transition duration-200"
                       style={
                         item.active
                           ? { backgroundColor: CARD, color: "#374151", fontWeight: 500 }
@@ -1346,13 +1346,13 @@ export default function ShowcaseContent() {
                   <h2 className="text-xl md:text-2xl font-bold text-white">Dashboard</h2>
                   <div className="flex items-center gap-2">
                     <button
-                      className="w-9 h-9 rounded-xl flex items-center justify-center transition-all duration-200 hover:-translate-y-0.5"
+                      className="w-9 h-9 rounded-xl flex items-center justify-center transition duration-200 hover:-translate-y-0.5"
                       style={{ backgroundColor: "rgba(255,255,255,0.2)" }}
                     >
                       <BellIcon className="w-4 h-4 text-white" />
                     </button>
                     <button
-                      className="w-9 h-9 rounded-xl flex items-center justify-center transition-all duration-200 hover:-translate-y-0.5"
+                      className="w-9 h-9 rounded-xl flex items-center justify-center transition duration-200 hover:-translate-y-0.5"
                       style={{ backgroundColor: "rgba(255,255,255,0.2)" }}
                     >
                       <SettingsIcon className="w-4 h-4 text-white" />
@@ -1365,7 +1365,7 @@ export default function ShowcaseContent() {
                   {statCards.map((card, i) => (
                     <div
                       key={card.label}
-                      className="group rounded-2xl p-5 cursor-pointer transition-all duration-200"
+                      className="group rounded-2xl p-5 cursor-pointer transition duration-200"
                       style={{
                         backgroundColor: CARD,
                         boxShadow: hoveredStatCard === i
@@ -1386,7 +1386,7 @@ export default function ShowcaseContent() {
                         </div>
                       </div>
                       <div
-                        className="text-2xl font-bold text-gray-800 mb-1 transition-all duration-200 origin-left"
+                        className="text-2xl font-bold text-gray-800 mb-1 transition duration-200 origin-left"
                         style={hoveredStatCard === i ? { transform: "scale(1.05)", color: card.color } : {}}
                       >
                         {card.value}
@@ -1417,7 +1417,7 @@ export default function ShowcaseContent() {
                     {activityBars.map((bar, i) => (
                       <div key={bar.month} className="flex-1 flex flex-col items-center gap-1">
                         <div
-                          className="w-full rounded-t-md transition-all duration-200 cursor-pointer"
+                          className="w-full rounded-t-md transition duration-200 cursor-pointer"
                           style={{
                             height: `${bar.value}%`,
                             backgroundColor: hoveredBar === i ? GOLD : `${GOLD}60`,
@@ -1455,7 +1455,7 @@ export default function ShowcaseContent() {
                         <div className="flex-1 hidden sm:block">
                           <div className="h-1.5 rounded-full bg-gray-100 overflow-hidden">
                             <div
-                              className="h-full rounded-full transition-all duration-300"
+                              className="h-full rounded-full transition duration-300"
                               style={{ width: `${person.score}%`, backgroundColor: person.color }}
                             />
                           </div>
@@ -1511,7 +1511,7 @@ export default function ShowcaseContent() {
                 title: "Diffused Shadow",
                 tagline: "Soft glow, never hard drop",
                 desc: "Every shadow is xl-spread and low-opacity. No sharp drop shadows. Cards appear to rest gently above the background, not float aggressively.",
-                items: ["shadow-xl shadow-black/8", "hover:shadow-2xl", "No hard box-shadow"],
+                items: ["shadow-surface-lg shadow-black/8", "hover:shadow-surface-lg", "No hard box-shadow"],
                 color: TEAL,
                 lightBg: "#e8f4f4",
               },
@@ -1527,7 +1527,7 @@ export default function ShowcaseContent() {
             ].map((principle, i) => (
               <RevealBlock key={principle.title} delay={i * 0.1}>
                 <div
-                  className="group rounded-3xl p-8 h-full cursor-default transition-all duration-200 hover:-translate-y-1"
+                  className="group rounded-3xl p-8 h-full cursor-default transition duration-200 hover:-translate-y-1"
                   style={{
                     backgroundColor: CARD,
                     boxShadow: "0 8px 24px rgba(0,0,0,0.06)",
@@ -1579,8 +1579,8 @@ export default function ShowcaseContent() {
                   {[
                     "Use bg-[#d4a088] or bg-[#c9967a] as main background",
                     "Cards: bg-[#faf8f5] with rounded-2xl or rounded-3xl",
-                    "Shadows: shadow-xl shadow-black/10 (soft diffusion)",
-                    "Hover: hover:shadow-2xl hover:-translate-y-1",
+                    "Shadows: shadow-surface-lg shadow-black/10 (soft diffusion)",
+                    "Hover: hover:shadow-surface-lg hover:-translate-y-1",
                     "Positive data: text-[#4a9d9a] teal",
                     "Charts: #e8b86d gold as primary fill color",
                     "Sidebar: bg-white/80 backdrop-blur-xl",
@@ -1672,7 +1672,7 @@ export default function ShowcaseContent() {
                   {channelStats.map((ch) => (
                     <div
                       key={ch.name}
-                      className="flex items-center gap-2 rounded-2xl px-4 py-2.5 cursor-pointer transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md"
+                      className="flex items-center gap-2 rounded-2xl px-4 py-2.5 cursor-pointer transition duration-200 hover:-translate-y-0.5 hover:shadow-md"
                       style={{ backgroundColor: "white" }}
                     >
                       <div
@@ -1693,7 +1693,7 @@ export default function ShowcaseContent() {
                     </div>
                   ))}
                   <button
-                    className="px-5 py-2.5 rounded-xl text-white text-sm font-medium transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_8px_20px_rgba(74,157,154,0.25)]"
+                    className="px-5 py-2.5 rounded-xl text-white text-sm font-medium transition duration-200 hover:-translate-y-0.5 hover:shadow-[0_8px_20px_rgba(74,157,154,0.25)]"
                     style={{ backgroundColor: TEAL, boxShadow: "0 4px 12px rgba(74,157,154,0.2)" }}
                   >
                     Full Stats
@@ -1751,7 +1751,7 @@ export default function ShowcaseContent() {
             ].map((feature, i) => (
               <RevealBlock key={feature.title} delay={i * 0.06}>
                 <div
-                  className="group rounded-3xl p-7 h-full cursor-default transition-all duration-200 hover:-translate-y-1 hover:shadow-xl"
+                  className="group rounded-3xl p-7 h-full cursor-default transition duration-200 hover:-translate-y-1 hover:shadow-surface-lg"
                   style={{ backgroundColor: CARD, boxShadow: "0 4px 16px rgba(0,0,0,0.06)" }}
                 >
                   <div
@@ -1888,7 +1888,7 @@ export default function ShowcaseContent() {
             </div>
             <Link
               href="/"
-              className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg active:scale-[0.97]"
+              className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium transition duration-200 hover:-translate-y-0.5 hover:shadow-lg active:scale-[0.97]"
               style={{
                 backgroundColor: TEAL,
                 color: "white",

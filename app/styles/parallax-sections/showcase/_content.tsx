@@ -357,7 +357,7 @@ export default function ParallaxSectionsShowcase() {
               transition: "opacity 0.7s cubic-bezier(0.16,1,0.3,1) 0.18s, transform 0.7s cubic-bezier(0.16,1,0.3,1) 0.18s",
             }}
           >
-            <h2 className="text-3xl md:text-5xl font-light text-transparent bg-clip-text bg-gradient-to-r from-[#3b82f6] to-[#0ea5e9] mb-8">
+            <h2 className="mb-8 text-3xl font-light text-[#3b82f6] md:text-5xl">
               Parallax Sections
             </h2>
           </div>

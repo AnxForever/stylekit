@@ -105,7 +105,7 @@ export default function Y2KShowcase() {
           animation: rainbow-shift 5s ease infinite;
         }
         .chrome-text {
-          background: linear-gradient(90deg, #a0a0a0, #ffffff, #c0c0c0, #ffffff, #a0a0a0);
+          background: linear-gradient(90deg, #2f3540, #6b7280, #3b4250, #6b7280, #2f3540);
           background-size: 200% auto;
           -webkit-background-clip: text;
           -webkit-text-fill-color: transparent;
@@ -156,7 +156,7 @@ export default function Y2KShowcase() {
       <nav
         className="sticky top-0 z-50 px-6 py-3 backdrop-blur-md border-b border-white/40"
         style={{
-          background: "linear-gradient(135deg, rgba(232,232,232,0.85), rgba(255,255,255,0.90), rgba(192,192,192,0.80), rgba(160,160,160,0.70))",
+          background: "linear-gradient(135deg, rgba(255,255,255,0.94), rgba(255,255,255,0.96), rgba(240,240,240,0.90), rgba(255,255,255,0.92))",
         }}
       >
         <div className="max-w-6xl mx-auto flex items-center justify-between gap-4">
@@ -273,7 +273,7 @@ export default function Y2KShowcase() {
             <h1
               className="text-8xl md:text-[10rem] lg:text-[12rem] font-black leading-none tracking-tighter mb-4 select-none"
               style={{
-                background: "linear-gradient(135deg, #e8e8e8 0%, #ffffff 20%, #c0c0c0 40%, #f0f0f0 60%, #a0a0a0 80%, #ffffff 100%)",
+                background: "linear-gradient(135deg, #2f3540 0%, #6b7280 20%, #3b4250 40%, #5a6472 60%, #2a2f3a 80%, #6b7280 100%)",
                 backgroundSize: "200% auto",
                 WebkitBackgroundClip: "text",
                 WebkitTextFillColor: "transparent",
@@ -290,7 +290,7 @@ export default function Y2KShowcase() {
             <p
               className="text-sm font-bold tracking-[0.5em] uppercase mb-4"
               style={{
-                background: "linear-gradient(90deg, #ff69b4, #c084fc, #00ffff)",
+                background: "linear-gradient(90deg, #be185d, #6d28d9, #0b5f78)",
                 WebkitBackgroundClip: "text",
                 WebkitTextFillColor: "transparent",
                 backgroundClip: "text",
@@ -373,7 +373,7 @@ export default function Y2KShowcase() {
             <h2
               className="text-4xl font-black"
               style={{
-                background: "linear-gradient(90deg, #ff69b4, #c084fc, #00ffff)",
+                background: "linear-gradient(90deg, #be185d, #6d28d9, #0b5f78)",
                 WebkitBackgroundClip: "text",
                 WebkitTextFillColor: "transparent",
                 backgroundClip: "text",
@@ -492,7 +492,7 @@ export default function Y2KShowcase() {
                   <h3
                     className="relative z-10 text-xl font-bold mb-2 group-hover:tracking-wider transition-all duration-300"
                     style={{
-                      background: "linear-gradient(90deg, #ff69b4, #c084fc, #00ffff)",
+                      background: "linear-gradient(90deg, #be185d, #6d28d9, #0b5f78)",
                       WebkitBackgroundClip: "text",
                       WebkitTextFillColor: "transparent",
                       backgroundClip: "text",
@@ -594,7 +594,7 @@ export default function Y2KShowcase() {
             <h2
               className="text-4xl font-black"
               style={{
-                background: "linear-gradient(90deg, #ff69b4, #c084fc, #00ffff)",
+                background: "linear-gradient(90deg, #be185d, #6d28d9, #0b5f78)",
                 WebkitBackgroundClip: "text",
                 WebkitTextFillColor: "transparent",
                 backgroundClip: "text",
@@ -671,7 +671,7 @@ export default function Y2KShowcase() {
             <h2
               className="text-4xl font-black"
               style={{
-                background: "linear-gradient(90deg, #ff69b4, #c084fc, #00ffff)",
+                background: "linear-gradient(90deg, #be185d, #6d28d9, #0b5f78)",
                 WebkitBackgroundClip: "text",
                 WebkitTextFillColor: "transparent",
                 backgroundClip: "text",
@@ -793,7 +793,7 @@ export default function Y2KShowcase() {
             <h2
               className="text-4xl font-black"
               style={{
-                background: "linear-gradient(90deg, #ff69b4, #c084fc, #00ffff)",
+                background: "linear-gradient(90deg, #be185d, #6d28d9, #0b5f78)",
                 WebkitBackgroundClip: "text",
                 WebkitTextFillColor: "transparent",
                 backgroundClip: "text",
@@ -836,7 +836,7 @@ export default function Y2KShowcase() {
                       className="text-3xl font-bold"
                       style={{
                         fontFamily: "'Courier New', monospace",
-                        background: "linear-gradient(90deg, #ff69b4, #c084fc)",
+                        background: "linear-gradient(90deg, #be185d, #6d28d9)",
                         WebkitBackgroundClip: "text",
                         WebkitTextFillColor: "transparent",
                         backgroundClip: "text",
@@ -898,7 +898,7 @@ export default function Y2KShowcase() {
                     <p
                       className="text-4xl font-black"
                       style={{
-                        background: "linear-gradient(270deg, #ff69b4, #00ffff, #ff00ff, #87ceeb, #ff69b4)",
+                        background: "linear-gradient(270deg, #be185d, #0b5f78, #a21caf, #155e75, #be185d)",
                         backgroundSize: "300% 300%",
                         animation: "rainbow-shift 3s ease infinite",
                         WebkitBackgroundClip: "text",
@@ -924,7 +924,7 @@ export default function Y2KShowcase() {
                     <p
                       className="text-2xl font-bold"
                       style={{
-                        background: "linear-gradient(90deg, #ff69b4, #ff1493, #c084fc)",
+                        background: "linear-gradient(90deg, #be185d, #9d174d, #6d28d9)",
                         WebkitBackgroundClip: "text",
                         WebkitTextFillColor: "transparent",
                         backgroundClip: "text",
@@ -969,7 +969,7 @@ export default function Y2KShowcase() {
             <h2
               className="text-4xl font-black"
               style={{
-                background: "linear-gradient(90deg, #ff69b4, #c084fc, #00ffff)",
+                background: "linear-gradient(90deg, #be185d, #6d28d9, #0b5f78)",
                 WebkitBackgroundClip: "text",
                 WebkitTextFillColor: "transparent",
                 backgroundClip: "text",
@@ -1026,7 +1026,7 @@ export default function Y2KShowcase() {
                     <h4
                       className="text-lg font-bold mb-3"
                       style={{
-                        background: "linear-gradient(90deg, #ff69b4, #c084fc)",
+                        background: "linear-gradient(90deg, #be185d, #6d28d9)",
                         WebkitBackgroundClip: "text",
                         WebkitTextFillColor: "transparent",
                         backgroundClip: "text",
@@ -1057,7 +1057,7 @@ export default function Y2KShowcase() {
                     <h4
                       className="text-lg font-bold mb-3"
                       style={{
-                        background: "linear-gradient(90deg, #00ffff, #c084fc)",
+                        background: "linear-gradient(90deg, #0b5f78, #6d28d9)",
                         WebkitBackgroundClip: "text",
                         WebkitTextFillColor: "transparent",
                         backgroundClip: "text",
@@ -1076,7 +1076,7 @@ export default function Y2KShowcase() {
                     <h4
                       className="text-lg font-bold mb-3"
                       style={{
-                        background: "linear-gradient(90deg, #c084fc, #ff69b4)",
+                        background: "linear-gradient(90deg, #6d28d9, #be185d)",
                         WebkitBackgroundClip: "text",
                         WebkitTextFillColor: "transparent",
                         backgroundClip: "text",
@@ -1122,7 +1122,7 @@ export default function Y2KShowcase() {
                     <span
                       className="text-sm font-bold"
                       style={{
-                        background: "linear-gradient(90deg, #ff69b4, #c084fc)",
+                        background: "linear-gradient(90deg, #be185d, #6d28d9)",
                         WebkitBackgroundClip: "text",
                         WebkitTextFillColor: "transparent",
                         backgroundClip: "text",
@@ -1340,7 +1340,7 @@ export default function Y2KShowcase() {
             <h2
               className="text-4xl font-black"
               style={{
-                background: "linear-gradient(90deg, #ff69b4, #c084fc, #00ffff)",
+                background: "linear-gradient(90deg, #be185d, #6d28d9, #0b5f78)",
                 WebkitBackgroundClip: "text",
                 WebkitTextFillColor: "transparent",
                 backgroundClip: "text",
@@ -1384,7 +1384,7 @@ export default function Y2KShowcase() {
                   <p
                     className="text-3xl font-black mb-1"
                     style={{
-                      background: `linear-gradient(90deg, #ff69b4, #c084fc)`,
+                      background: `linear-gradient(90deg, #be185d, #6d28d9)`,
                       WebkitBackgroundClip: "text",
                       WebkitTextFillColor: "transparent",
                       backgroundClip: "text",
@@ -1421,7 +1421,7 @@ export default function Y2KShowcase() {
             <h2
               className="text-4xl font-black"
               style={{
-                background: "linear-gradient(90deg, #ff69b4, #c084fc, #00ffff)",
+                background: "linear-gradient(90deg, #be185d, #6d28d9, #0b5f78)",
                 WebkitBackgroundClip: "text",
                 WebkitTextFillColor: "transparent",
                 backgroundClip: "text",
@@ -1472,7 +1472,7 @@ export default function Y2KShowcase() {
                   <h3
                     className="text-lg font-bold mb-3"
                     style={{
-                      background: "linear-gradient(90deg, #ff69b4, #c084fc)",
+                      background: "linear-gradient(90deg, #be185d, #6d28d9)",
                       WebkitBackgroundClip: "text",
                       WebkitTextFillColor: "transparent",
                       backgroundClip: "text",

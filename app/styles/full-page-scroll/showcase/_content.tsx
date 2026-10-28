@@ -251,7 +251,7 @@ export default function ShowcaseContent() {
               <a
                 key={item.label}
                 href={item.href}
-                className="px-3 py-1.5 rounded-full text-xs text-white/50 hover:text-white hover:bg-white/10 transition-all duration-300"
+                className="px-3 py-1.5 rounded-full text-xs text-white/50 hover:text-white hover:bg-white/10 transition duration-300"
               >
                 {item.label}
               </a>
@@ -262,7 +262,7 @@ export default function ShowcaseContent() {
           <Link
             href="/styles/full-page-scroll"
             data-back-navigation="true"
-            className="flex items-center gap-1.5 px-4 py-2 rounded-full bg-white text-black text-xs font-semibold hover:bg-indigo-100 transition-all duration-300 hover:scale-105 active:scale-95"
+            className="flex items-center gap-1.5 px-4 py-2 rounded-full bg-white text-black text-xs font-semibold hover:bg-indigo-100 transition duration-300 hover:scale-105 active:scale-95"
           >
             <span>&#8592;</span>
             <span>StyleKit</span>
@@ -360,11 +360,11 @@ export default function ShowcaseContent() {
               transition: "opacity 0.7s cubic-bezier(0.16,1,0.3,1) 0.3s, transform 0.7s cubic-bezier(0.16,1,0.3,1) 0.3s",
             }}
           >
-            <button className="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-indigo-600 text-white font-semibold text-sm hover:bg-indigo-500 hover:scale-105 active:scale-95 transition-all duration-300">
+            <button className="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-indigo-600 text-white font-semibold text-sm hover:bg-indigo-500 hover:scale-105 active:scale-95 transition duration-300">
               <ZapIcon className="w-4 h-4" />
               Explore Live Demo
             </button>
-            <button className="inline-flex items-center gap-2 px-8 py-4 rounded-full border border-white/20 text-white/80 font-semibold text-sm hover:border-white/50 hover:text-white hover:bg-white/5 hover:scale-105 active:scale-95 transition-all duration-300">
+            <button className="inline-flex items-center gap-2 px-8 py-4 rounded-full border border-white/20 text-white/80 font-semibold text-sm hover:border-white/50 hover:text-white hover:bg-white/5 hover:scale-105 active:scale-95 transition duration-300">
               <LayersIcon className="w-4 h-4" />
               View Components
             </button>
@@ -387,7 +387,7 @@ export default function ShowcaseContent() {
             ].map((stat) => (
               <div
                 key={stat.label}
-                className="group border border-white/10 rounded-2xl p-5 text-center bg-white/[0.03] hover:border-white/25 hover:bg-white/[0.07] hover:-translate-y-1 transition-all duration-300 cursor-default"
+                className="group border border-white/10 rounded-2xl p-5 text-center bg-white/[0.03] hover:border-white/25 hover:bg-white/[0.07] hover:-translate-y-1 transition duration-300 cursor-default"
               >
                 <div className="text-2xl font-black mb-1" style={{ color: stat.accent }}>
                   {stat.value}
@@ -476,7 +476,7 @@ export default function ShowcaseContent() {
 
                       {/* delay-75 — heading with scale */}
                       <h3
-                        className="text-3xl md:text-5xl font-black text-white mb-4 transition-all duration-700 ease-out group-hover:scale-105 group-hover:-translate-y-2"
+                        className="text-3xl md:text-5xl font-black text-white mb-4 transition duration-700 ease-out group-hover:scale-105 group-hover:-translate-y-2"
                         style={{ transitionDelay: "75ms" }}
                       >
                         {["Immersive Story", "Bold Vision", "Deep Focus", "Final Act"][idx]}
@@ -521,7 +521,7 @@ export default function ShowcaseContent() {
                     }}
                     onMouseEnter={() => setCapsuleHoveredIndex(idx)}
                     onMouseLeave={() => setCapsuleHoveredIndex(null)}
-                    className="rounded-full transition-all duration-300"
+                    className="rounded-full transition duration-300"
                     aria-label={`Go to section ${idx + 1}`}
                     style={{
                       width: "12px",
@@ -639,7 +639,7 @@ export default function ShowcaseContent() {
                 ].map((g) => (
                   <div key={g.label} className="group cursor-pointer">
                     <div
-                      className="h-20 rounded-xl mb-2 transition-all duration-500 group-hover:-translate-y-1 overflow-hidden"
+                      className="h-20 rounded-xl mb-2 transition duration-500 group-hover:-translate-y-1 overflow-hidden"
                       style={{
                         background: `linear-gradient(135deg, ${g.from}, ${g.to})`,
                         boxShadow: `0 0 0 1px ${g.accent}33`,
@@ -691,7 +691,7 @@ export default function ShowcaseContent() {
                 <button
                   key={tab}
                   onClick={() => setActiveTab(tab)}
-                  className={`px-5 py-2.5 rounded-full text-sm font-semibold capitalize transition-all duration-300 hover:scale-105 active:scale-95 ${
+                  className={`px-5 py-2.5 rounded-full text-sm font-semibold capitalize transition duration-300 hover:scale-105 active:scale-95 ${
                     activeTab === tab
                       ? "bg-teal-600 text-white"
                       : "border border-white/15 text-white/50 hover:text-white hover:border-white/40"
@@ -729,7 +729,7 @@ export default function ShowcaseContent() {
                             onClick={() => setCapsuleActiveIndex(idx)}
                             onMouseEnter={() => setCapsuleHoveredIndex(idx + 10)}
                             onMouseLeave={() => setCapsuleHoveredIndex(null)}
-                            className="rounded-full transition-all duration-300"
+                            className="rounded-full transition duration-300"
                             aria-label={`Section ${idx + 1}`}
                             style={{
                               width: "12px",
@@ -758,7 +758,7 @@ export default function ShowcaseContent() {
                           <div>Active:   <span className="text-indigo-400">w-3 h-10 bg-accent</span></div>
                           <div>Hover:    <span className="text-white/60">w-3 h-6 bg-white/80</span></div>
                           <div>Default:  <span className="text-white/40">w-3 h-3 bg-white/25</span></div>
-                          <div>Easing:   <span className="text-teal-400">transition-all duration-300</span></div>
+                          <div>Easing:   <span className="text-teal-400">transition duration-300</span></div>
                         </div>
                       </div>
                     </div>
@@ -769,12 +769,12 @@ export default function ShowcaseContent() {
                     <pre className="text-xs text-white/50 font-mono bg-black/50 rounded-xl p-5 overflow-x-auto leading-relaxed border border-white/10">
 {`<nav className="fixed right-8 top-1/2 -translate-y-1/2 z-50 flex flex-col gap-3">
   {/* Active — tall capsule */}
-  <a className="w-3 h-10 rounded-full bg-indigo-500 transition-all duration-300" />
+  <a className="w-3 h-10 rounded-full bg-indigo-500 transition duration-300" />
 
   {/* Inactive — expands to capsule on hover */}
   <a className="w-3 h-3 rounded-full bg-white/30
     hover:bg-white/80 hover:h-6
-    transition-all duration-300" />
+    transition duration-300" />
 </nav>`}
                     </pre>
                   </div>
@@ -802,7 +802,7 @@ export default function ShowcaseContent() {
                           Chapter 01
                         </span>
                         <h3
-                          className="text-2xl md:text-4xl font-black text-white mb-3 transition-all duration-700 ease-out group-hover:scale-105 group-hover:-translate-y-2"
+                          className="text-2xl md:text-4xl font-black text-white mb-3 transition duration-700 ease-out group-hover:scale-105 group-hover:-translate-y-2"
                           style={{ transitionDelay: "75ms" }}
                         >
                           Hover this section
@@ -825,7 +825,7 @@ export default function ShowcaseContent() {
     group-hover:scale-110 transition-transform duration-1000 ease-out" />
   <div className="relative z-10 flex items-center justify-center min-h-screen text-center">
     <span className="group-hover:-translate-y-3 transition-transform duration-700 delay-0">Ch 01</span>
-    <h2 className="group-hover:scale-105 group-hover:-translate-y-2 transition-all duration-700 delay-75">Title</h2>
+    <h2 className="group-hover:scale-105 group-hover:-translate-y-2 transition duration-700 delay-75">Title</h2>
     <p className="group-hover:-translate-y-1 transition-transform duration-700 delay-150">Body</p>
   </div>
 </section>`}
@@ -855,7 +855,7 @@ export default function ShowcaseContent() {
                       <div className="flex flex-col items-center gap-4">
                         <p className="text-xs text-white/30">Circle button</p>
                         <button
-                          className="w-10 h-10 rounded-full border border-white/20 flex items-center justify-center text-white/50 hover:text-white hover:border-white/60 transition-all duration-300 hover:scale-110"
+                          className="w-10 h-10 rounded-full border border-white/20 flex items-center justify-center text-white/50 hover:text-white hover:border-white/60 transition duration-300 hover:scale-110"
                           style={{ animation: "fps-bounce 2s ease-in-out infinite 0.5s" }}
                         >
                           <ChevronDownIcon className="w-5 h-5" />
@@ -865,7 +865,7 @@ export default function ShowcaseContent() {
                       <div className="flex flex-col items-center gap-4">
                         <p className="text-xs text-white/30">Pill labeled</p>
                         <button
-                          className="flex flex-col items-center gap-1 px-6 py-3 rounded-full border border-white/15 text-white/50 hover:text-white hover:border-white/40 transition-all duration-300"
+                          className="flex flex-col items-center gap-1 px-6 py-3 rounded-full border border-white/15 text-white/50 hover:text-white hover:border-white/40 transition duration-300"
                           style={{ animation: "fps-bounce 2s ease-in-out infinite 1s" }}
                         >
                           <span className="text-[9px] uppercase tracking-[0.3em]">Explore</span>
@@ -878,13 +878,13 @@ export default function ShowcaseContent() {
                   <div className="border-t border-white/10 pt-8">
                     <p className="text-xs font-semibold tracking-[0.15em] uppercase text-white/30 mb-6">Section CTA buttons</p>
                     <div className="flex flex-wrap gap-4">
-                      <button className="px-8 py-4 rounded-full bg-white text-black font-bold text-sm hover:bg-indigo-100 hover:scale-105 active:scale-95 transition-all duration-300">
+                      <button className="px-8 py-4 rounded-full bg-white text-black font-bold text-sm hover:bg-indigo-100 hover:scale-105 active:scale-95 transition duration-300">
                         Get Started
                       </button>
-                      <button className="px-8 py-4 rounded-full border border-white/30 text-white font-semibold text-sm hover:bg-white/10 hover:scale-105 active:scale-95 transition-all duration-300">
+                      <button className="px-8 py-4 rounded-full border border-white/30 text-white font-semibold text-sm hover:bg-white/10 hover:scale-105 active:scale-95 transition duration-300">
                         Learn More
                       </button>
-                      <button className="px-8 py-4 rounded-full bg-indigo-600 text-white font-semibold text-sm hover:bg-indigo-500 hover:scale-105 active:scale-95 transition-all duration-300">
+                      <button className="px-8 py-4 rounded-full bg-indigo-600 text-white font-semibold text-sm hover:bg-indigo-500 hover:scale-105 active:scale-95 transition duration-300">
                         See Demo
                       </button>
                     </div>
@@ -916,7 +916,7 @@ export default function ShowcaseContent() {
                             {sc.label}
                           </span>
                           <h4
-                            className="text-2xl font-black text-white mb-2 transition-all duration-700 ease-out group-hover:scale-105 group-hover:-translate-y-2"
+                            className="text-2xl font-black text-white mb-2 transition duration-700 ease-out group-hover:scale-105 group-hover:-translate-y-2"
                             style={{ transitionDelay: "75ms" }}
                           >
                             {["Immersive Story", "Bold Vision"][idx]}
@@ -1061,7 +1061,7 @@ export default function ShowcaseContent() {
                   <div className="flex items-center gap-3 mb-3">
                     <button
                       onClick={() => setBreathingActive(!breathingActive)}
-                      className={`px-4 py-2 rounded-full text-sm font-semibold transition-all duration-300 hover:scale-105 active:scale-95 ${
+                      className={`px-4 py-2 rounded-full text-sm font-semibold transition duration-300 hover:scale-105 active:scale-95 ${
                         breathingActive
                           ? "bg-pink-600 text-white"
                           : "border border-white/20 text-white/60 hover:text-white"
@@ -1092,7 +1092,7 @@ export default function ShowcaseContent() {
                       {sectionColors.map((sc, i) => (
                         <div
                           key={i}
-                          className="w-1.5 h-1.5 rounded-full transition-all duration-300"
+                          className="w-1.5 h-1.5 rounded-full transition duration-300"
                           style={{
                             backgroundColor:
                               breathingIndex === i && breathingActive
@@ -1169,7 +1169,7 @@ export default function ShowcaseContent() {
                           onClick={() => setCapsuleActiveIndex(idx)}
                           onMouseEnter={() => setCapsuleHoveredIndex(idx + 20)}
                           onMouseLeave={() => setCapsuleHoveredIndex(null)}
-                          className="rounded-full transition-all duration-300"
+                          className="rounded-full transition duration-300"
                           aria-label={`Set active section ${idx + 1}`}
                           style={{
                             width: "12px",
@@ -1209,7 +1209,7 @@ export default function ShowcaseContent() {
 {`/* Active */  w-3 h-10 rounded-full bg-accent
 /* Hover */   w-3 h-6 rounded-full bg-white/80
 /* Default */ w-3 h-3 rounded-full bg-white/30
-             transition-all duration-300`}
+             transition duration-300`}
                   </pre>
                 </div>
               </div>
@@ -1237,7 +1237,7 @@ export default function ShowcaseContent() {
                   <div className="flex gap-2 flex-wrap mb-3">
                     <button
                       onClick={() => setHeadingLayer("off")}
-                      className={`px-4 py-2 rounded-full text-xs font-semibold transition-all duration-300 ${
+                      className={`px-4 py-2 rounded-full text-xs font-semibold transition duration-300 ${
                         headingLayer === "off" ? "bg-white/20 text-white" : "text-white/40 hover:text-white"
                       }`}
                     >
@@ -1245,7 +1245,7 @@ export default function ShowcaseContent() {
                     </button>
                     <button
                       onClick={() => setHeadingLayer("hover")}
-                      className={`px-4 py-2 rounded-full text-xs font-semibold transition-all duration-300 ${
+                      className={`px-4 py-2 rounded-full text-xs font-semibold transition duration-300 ${
                         headingLayer === "hover" ? "bg-amber-600 text-white" : "text-white/40 hover:text-white"
                       }`}
                     >
@@ -1318,7 +1318,7 @@ export default function ShowcaseContent() {
                   <div className="flex items-center gap-3">
                     <div className="flex-1 h-1.5 bg-white/10 rounded-full overflow-hidden">
                       <div
-                        className="h-full bg-amber-500 rounded-full transition-all duration-700"
+                        className="h-full bg-amber-500 rounded-full transition duration-700"
                         style={{
                           width:
                             headingHovered || headingLayer === "hover" ? "100%" : "80%",
@@ -1336,7 +1336,7 @@ export default function ShowcaseContent() {
 {`<h2 className="
   group-hover:scale-105
   group-hover:-translate-y-2
-  transition-all duration-700 ease-out
+  transition duration-700 ease-out
   delay-75
 ">
   Section Heading
@@ -1402,7 +1402,7 @@ export default function ShowcaseContent() {
             ].map((principle, i) => (
               <RevealBlock key={principle.title} delay={i * 0.08}>
                 <div
-                  className={`group border ${principle.border} rounded-2xl p-8 h-full transition-all duration-500 hover:-translate-y-2 cursor-default`}
+                  className={`group border ${principle.border} rounded-2xl p-8 h-full transition duration-500 hover:-translate-y-2 cursor-default`}
                   style={{ backgroundColor: principle.bgHex }}
                 >
                   <div
@@ -1535,7 +1535,7 @@ export default function ShowcaseContent() {
                     Chapter 05
                   </span>
                   <h3
-                    className="text-3xl font-black text-white mb-8 transition-all duration-700 ease-out group-hover:scale-105 group-hover:-translate-y-2"
+                    className="text-3xl font-black text-white mb-8 transition duration-700 ease-out group-hover:scale-105 group-hover:-translate-y-2"
                     style={{ transitionDelay: "75ms" }}
                   >
                     Get in Touch
@@ -1563,7 +1563,7 @@ export default function ShowcaseContent() {
                         className="w-full px-0 py-3 bg-transparent border-b border-white/25 text-white text-sm placeholder-white/40 focus:outline-none focus:border-teal-400 transition-colors duration-200"
                       />
                     </div>
-                    <button className="w-full py-4 mt-2 bg-white text-black font-black text-sm tracking-wide hover:bg-teal-50 hover:scale-[1.02] active:scale-[0.97] transition-all duration-300">
+                    <button className="w-full py-4 mt-2 bg-white text-black font-black text-sm tracking-wide hover:bg-teal-50 hover:scale-[1.02] active:scale-[0.97] transition duration-300">
                       Send Message
                     </button>
                   </form>
@@ -1674,9 +1674,9 @@ export default function ShowcaseContent() {
               },
             ].map((spec, i) => (
               <RevealBlock key={spec.title} delay={i * 0.08}>
-                <div className="border border-white/10 rounded-2xl p-6 h-full bg-white/[0.02] hover:border-white/25 hover:-translate-y-1 transition-all duration-300 cursor-default group">
+                <div className="border border-white/10 rounded-2xl p-6 h-full bg-white/[0.02] hover:border-white/25 hover:-translate-y-1 transition duration-300 cursor-default group">
                   <div
-                    className="w-2 h-8 rounded-full mb-4 transition-all duration-300 group-hover:h-12"
+                    className="w-2 h-8 rounded-full mb-4 transition duration-300 group-hover:h-12"
                     style={{ backgroundColor: spec.accent }}
                   />
                   <h4 className="text-sm font-black text-white mb-3">{spec.title}</h4>
@@ -1713,7 +1713,7 @@ export default function ShowcaseContent() {
       {/* delay-0 — fastest */}
       <span className="... group-hover:-translate-y-3 transition-transform duration-700 delay-0">01</span>
       {/* delay-75 — heading scales */}
-      <h2 className="... group-hover:scale-105 group-hover:-translate-y-2 transition-all duration-700 delay-75">Title</h2>
+      <h2 className="... group-hover:scale-105 group-hover:-translate-y-2 transition duration-700 delay-75">Title</h2>
       {/* delay-150 — slowest */}
       <p className="... group-hover:-translate-y-1 transition-transform duration-700 delay-150">Subtitle</p>
     </div>
@@ -1729,9 +1729,9 @@ export default function ShowcaseContent() {
   {/* Fixed capsule nav dots (Rule 3) */}
   <nav className="fixed right-8 top-1/2 -translate-y-1/2 z-50 flex flex-col gap-3">
     {/* Active */}
-    <a className="w-3 h-10 rounded-full bg-indigo-500 transition-all duration-300" />
+    <a className="w-3 h-10 rounded-full bg-indigo-500 transition duration-300" />
     {/* Inactive */}
-    <a className="w-3 h-3 rounded-full bg-white/30 hover:bg-white/80 hover:h-6 transition-all duration-300" />
+    <a className="w-3 h-3 rounded-full bg-white/30 hover:bg-white/80 hover:h-6 transition duration-300" />
   </nav>
 
 </main>`}
@@ -1865,7 +1865,7 @@ export default function ShowcaseContent() {
             </div>
             <Link
               href="/"
-              className="flex items-center gap-2 px-5 py-2.5 rounded-full border border-white/15 text-white/60 text-sm font-medium hover:border-white/40 hover:text-white hover:bg-white/5 hover:scale-105 active:scale-95 transition-all duration-300"
+              className="flex items-center gap-2 px-5 py-2.5 rounded-full border border-white/15 text-white/60 text-sm font-medium hover:border-white/40 hover:text-white hover:bg-white/5 hover:scale-105 active:scale-95 transition duration-300"
             >
               <span>&#8592;</span>
               Back to StyleKit

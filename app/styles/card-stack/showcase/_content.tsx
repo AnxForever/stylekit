@@ -7,6 +7,24 @@ import Link from "next/link";
 /*  Inline hooks & primitives                                          */
 /* ------------------------------------------------------------------ */
 
+/**
+ * Layered, hue-tinted elevation. A single black blur reads as grey haze; stacking
+ * layers with a constant per-layer alpha is what produces the volume.
+ * Tint is the card's own hue, low saturation, so shadows never turn grey.
+ */
+const ELEVATION_LAYERS: Record<number, [number, number, number][]> = {
+  1: [[0.5, 1, 0.24], [1, 2, 0.2], [2, 4, 0.16], [4, 8, 0.12]],
+  2: [[1, 2, 0.26], [2, 4, 0.22], [6, 12, 0.2], [12, 24, 0.18]],
+  3: [[1, 2, 0.26], [2, 4, 0.22], [6, 12, 0.2], [12, 24, 0.18], [24, 48, 0.14]],
+};
+
+function elevation(depth: 1 | 2 | 3, tint = "258deg 14% 16%"): string {
+  const layers = ELEVATION_LAYERS[depth];
+  return layers
+    .map(([y, blur, alpha]) => `0 ${y}px ${blur}px hsl(${tint} / ${alpha})`)
+    .join(", ");
+}
+
 function useInView(options: IntersectionObserverInit = {}) {
   const ref = useRef<HTMLDivElement>(null);
   const [inView, setInView] = useState(false);
@@ -195,7 +213,7 @@ export default function CardStackShowcaseContent() {
     zIndex: cardData.length - i,
     transform: `translateY(${i * 8}px) translateX(${i * 4}px) scale(${1 - i * 0.05}) rotate(${i * 1.5}deg)`,
     opacity: i < 3 ? 1 - i * 0.1 : 0,
-    transition: "all 0.4s cubic-bezier(0.16,1,0.3,1)",
+    transition: "transform 0.4s cubic-bezier(0.16,1,0.3,1), box-shadow 0.4s cubic-bezier(0.16,1,0.3,1), opacity 0.4s",
     pointerEvents: i === 0 ? "auto" : "none",
   });
 
@@ -207,7 +225,7 @@ export default function CardStackShowcaseContent() {
     zIndex: i,
     transform: `translateY(${i * -6}px) translateX(${(i - 2) * 68}px) rotate(${(i - 2) * 8}deg) scale(0.9)`,
     opacity: 1,
-    transition: "all 0.4s cubic-bezier(0.16,1,0.3,1)",
+    transition: "transform 0.4s cubic-bezier(0.16,1,0.3,1), box-shadow 0.4s cubic-bezier(0.16,1,0.3,1), opacity 0.4s",
     pointerEvents: "auto",
   });
 
@@ -492,11 +510,11 @@ export default function CardStackShowcaseContent() {
                             : "#fffbea",
                   boxShadow: i === 0
                     ? heroFanned
-                      ? "0 24px 56px rgba(0,0,0,0.45)"
-                      : "0 16px 40px rgba(0,0,0,0.35)"
-                    : "0 8px 24px rgba(0,0,0,0.20)",
+                      ? elevation(3)
+                      : elevation(3)
+                    : elevation(2),
                   zIndex: heroFanned ? i : 5 - i,
-                  transition: "all 0.4s cubic-bezier(0.16,1,0.3,1)",
+                  transition: "transform 0.4s cubic-bezier(0.16,1,0.3,1), box-shadow 0.4s cubic-bezier(0.16,1,0.3,1), opacity 0.4s",
                   transform: heroFanned
                     ? `translateX(${(i - 2) * 72}px) translateY(${i === 2 ? 0 : Math.abs(i - 2) * 8}px) rotate(${(i - 2) * 9}deg) scale(0.88)`
                     : `translateY(${i * 8}px) translateX(${i * 4}px) scale(${1 - i * 0.05}) rotate(${i * 1.5}deg)`,
@@ -985,7 +1003,7 @@ export default function CardStackShowcaseContent() {
                           zIndex: 3 - i,
                           transform: `translateY(${i * 10}px) translateX(${i * 5}px) scale(${1 - i * 0.06}) rotate(${i * 2}deg)`,
                           opacity: 1 - i * 0.12,
-                          transition: "all 0.4s cubic-bezier(0.16,1,0.3,1)",
+                          transition: "transform 0.4s cubic-bezier(0.16,1,0.3,1), box-shadow 0.4s cubic-bezier(0.16,1,0.3,1), opacity 0.4s",
                         }}
                       />
                     ))}
@@ -1106,10 +1124,10 @@ export default function CardStackShowcaseContent() {
                           height: 90,
                           borderRadius: 10,
                           background: i === 0 ? "#fff" : i === 1 ? "#f0eeff" : "#e4e0ff",
-                          boxShadow: "0 8px 24px rgba(0,0,0,0.28)",
+                          boxShadow: elevation(2),
                           borderTop: `4px solid ${i === 0 ? ACCENT_PURPLE : i === 1 ? ACCENT_TEAL : ACCENT_PINK}`,
                           zIndex: i,
-                          transition: "all 0.4s cubic-bezier(0.16,1,0.3,1)",
+                          transition: "transform 0.4s cubic-bezier(0.16,1,0.3,1), box-shadow 0.4s cubic-bezier(0.16,1,0.3,1), opacity 0.4s",
                           transform: depthFanned
                             ? `translateX(${(i - 1) * 88}px) rotate(${(i - 1) * 10}deg) scale(0.88) translateY(${i === 1 ? -8 : 0}px)`
                             : `translateY(${i * 8}px) translateX(${i * 4}px) scale(${1 - i * 0.05}) rotate(${i * 2}deg)`,
@@ -1919,7 +1937,7 @@ opacity(1.00)`,
                                   : "rgba(255,255,255,0.3)",
                             borderTop: `3px solid ${uc.accent}`,
                             zIndex: 3 - i,
-                            transition: "all 0.4s cubic-bezier(0.16,1,0.3,1)",
+                            transition: "transform 0.4s cubic-bezier(0.16,1,0.3,1), box-shadow 0.4s cubic-bezier(0.16,1,0.3,1), opacity 0.4s",
                             transform:
                               selectedUseCase === idx
                                 ? `translateX(${(i - 1) * 22}px) rotate(${(i - 1) * 7}deg) scale(0.88)`

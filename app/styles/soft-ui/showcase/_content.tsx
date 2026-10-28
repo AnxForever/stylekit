@@ -72,10 +72,10 @@ const palette = [
 // ---------------------------------------------------------------------------
 const doList = [
   "Use rounded-2xl or rounded-3xl as primary border radius",
-  "Use shadow-lg or shadow-xl with color tint (shadow-[accent]/20)",
+  "Use shadow-lg or shadow-surface-lg with color tint (shadow-[accent]/20)",
   "Background: soft bg-slate-50 or bg-gray-50",
   "Use low-saturation primary color tones",
-  "Buttons: hover:shadow-xl + hover:-translate-y-0.5 lift effect",
+  "Buttons: hover:shadow-surface-lg + hover:-translate-y-0.5 lift effect",
   "Cards: gap-6 or gap-8 for generous spacing",
   "Icons: circular background rounded-full bg-[color]/10",
 ];
@@ -214,7 +214,7 @@ export default function SoftUIShowcase() {
               className="w-8 h-8 rounded-xl flex items-center justify-center
                 shadow-[3px_3px_6px_rgba(0,0,0,0.07),-3px_-3px_6px_rgba(255,255,255,0.8)]
                 group-hover:shadow-[inset_2px_2px_5px_rgba(0,0,0,0.08),inset_-2px_-2px_5px_rgba(255,255,255,0.7)]
-                transition-all duration-200"
+                transition duration-200"
             >
               <svg viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4">
                 <path fillRule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clipRule="evenodd" />
@@ -224,7 +224,7 @@ export default function SoftUIShowcase() {
           </Link>
 
           {/* Logo */}
-          <span className="font-bold text-lg bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 bg-clip-text text-transparent">
+          <span className="text-lg font-bold text-gray-800">
             Soft UI
           </span>
 
@@ -234,7 +234,7 @@ export default function SoftUIShowcase() {
             className="px-5 py-2 rounded-2xl text-sm font-semibold text-indigo-600 bg-indigo-50
               shadow-[3px_3px_8px_rgba(99,102,241,0.12),-3px_-3px_8px_rgba(255,255,255,0.9)]
               hover:shadow-[0_8px_20px_rgba(99,102,241,0.25)] hover:-translate-y-0.5
-              transition-all duration-300"
+              transition duration-300"
           >
             View Docs
           </Link>
@@ -290,7 +290,7 @@ export default function SoftUIShowcase() {
             className="text-5xl md:text-7xl font-bold tracking-tight text-gray-800 mb-6"
           >
             Gentle.{" "}
-            <span className="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 bg-clip-text text-transparent">
+            <span className="text-indigo-500">
               Elegant.
             </span>
             <br />
@@ -324,7 +324,7 @@ export default function SoftUIShowcase() {
                 shadow-[0_10px_24px_rgba(99,102,241,0.35)]
                 hover:shadow-[0_18px_36px_rgba(99,102,241,0.45)] hover:-translate-y-1
                 active:translate-y-[2px] active:scale-[0.97] active:shadow-[inset_0_4px_10px_rgba(67,56,202,0.28)]
-                transition-all duration-300 ease-in-out"
+                transition duration-300 ease-in-out"
             >
               Get Started
             </button>
@@ -333,7 +333,7 @@ export default function SoftUIShowcase() {
                 shadow-[6px_6px_12px_rgba(0,0,0,0.08),-6px_-6px_12px_rgba(255,255,255,0.8)]
                 hover:shadow-[0_16px_32px_rgba(148,163,184,0.3)] hover:-translate-y-1
                 active:shadow-[inset_3px_3px_8px_rgba(0,0,0,0.08),inset_-3px_-3px_8px_rgba(255,255,255,0.7)]
-                transition-all duration-300 ease-in-out"
+                transition duration-300 ease-in-out"
             >
               Learn More
             </button>
@@ -355,7 +355,7 @@ export default function SoftUIShowcase() {
             ].map((stat, i) => (
               <div
                 key={stat.label}
-                className={`bg-white rounded-3xl py-6 px-4 text-center ${stat.shadow} hover:-translate-y-1 transition-all duration-300`}
+                className={`bg-white rounded-3xl py-6 px-4 text-center ${stat.shadow} hover:-translate-y-1 transition duration-300`}
                 style={{
                   animationDelay: `${i * 0.1}s`,
                 }}
@@ -389,7 +389,7 @@ export default function SoftUIShowcase() {
                 <button
                   key={label}
                   onClick={() => setActiveComponentTab(i)}
-                  className={`px-6 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300 ${
+                  className={`px-6 py-2.5 rounded-xl text-sm font-semibold transition duration-300 ${
                     activeComponentTab === i
                       ? "bg-white text-indigo-600 shadow-[4px_4px_10px_rgba(0,0,0,0.08),-4px_-4px_10px_rgba(255,255,255,0.9)]"
                       : "text-slate-500 hover:text-slate-700"
@@ -418,7 +418,7 @@ export default function SoftUIShowcase() {
                           shadow-[0_10px_24px_rgba(99,102,241,0.3)]
                           hover:shadow-[0_18px_32px_rgba(99,102,241,0.4)] hover:-translate-y-0.5
                           active:translate-y-[2px] active:shadow-[inset_0_4px_10px_rgba(67,56,202,0.28)]
-                          transition-all duration-300 ease-in-out"
+                          transition duration-300 ease-in-out"
                       >
                         Primary
                       </button>
@@ -427,7 +427,7 @@ export default function SoftUIShowcase() {
                           shadow-[3px_3px_8px_rgba(99,102,241,0.1),-3px_-3px_8px_rgba(255,255,255,0.9)]
                           hover:bg-indigo-100 hover:shadow-[0_8px_20px_rgba(99,102,241,0.18)]
                           active:shadow-[inset_0_3px_8px_rgba(99,102,241,0.15)]
-                          transition-all duration-300 ease-in-out"
+                          transition duration-300 ease-in-out"
                       >
                         Ghost
                       </button>
@@ -436,7 +436,7 @@ export default function SoftUIShowcase() {
                           shadow-[6px_6px_12px_rgba(0,0,0,0.07),-6px_-6px_12px_rgba(255,255,255,0.8)]
                           hover:shadow-[0_14px_28px_rgba(148,163,184,0.25)] hover:-translate-y-0.5
                           active:shadow-[inset_3px_3px_7px_rgba(0,0,0,0.07),inset_-3px_-3px_7px_rgba(255,255,255,0.7)]
-                          transition-all duration-300 ease-in-out"
+                          transition duration-300 ease-in-out"
                       >
                         Neumorphic
                       </button>
@@ -445,7 +445,7 @@ export default function SoftUIShowcase() {
                           shadow-[0_10px_24px_rgba(236,72,153,0.3)]
                           hover:shadow-[0_18px_32px_rgba(236,72,153,0.4)] hover:-translate-y-0.5
                           active:shadow-[inset_0_4px_10px_rgba(190,24,93,0.25)]
-                          transition-all duration-300 ease-in-out"
+                          transition duration-300 ease-in-out"
                       >
                         Accent
                       </button>
@@ -454,7 +454,7 @@ export default function SoftUIShowcase() {
                           shadow-[0_10px_24px_rgba(16,185,129,0.3)]
                           hover:shadow-[0_18px_32px_rgba(16,185,129,0.4)] hover:-translate-y-0.5
                           active:shadow-[inset_0_4px_10px_rgba(4,120,87,0.25)]
-                          transition-all duration-300 ease-in-out"
+                          transition duration-300 ease-in-out"
                       >
                         Success
                       </button>
@@ -469,7 +469,7 @@ export default function SoftUIShowcase() {
                         className="px-4 py-2 text-xs bg-indigo-500 text-white rounded-xl font-semibold
                           shadow-[0_6px_14px_rgba(99,102,241,0.25)]
                           hover:shadow-[0_10px_20px_rgba(99,102,241,0.35)] hover:-translate-y-0.5
-                          transition-all duration-300"
+                          transition duration-300"
                       >
                         Small
                       </button>
@@ -477,7 +477,7 @@ export default function SoftUIShowcase() {
                         className="px-6 py-3 bg-indigo-500 text-white rounded-2xl font-semibold
                           shadow-[0_10px_24px_rgba(99,102,241,0.3)]
                           hover:shadow-[0_18px_32px_rgba(99,102,241,0.4)] hover:-translate-y-0.5
-                          transition-all duration-300"
+                          transition duration-300"
                       >
                         Medium
                       </button>
@@ -485,7 +485,7 @@ export default function SoftUIShowcase() {
                         className="px-10 py-4 text-lg bg-indigo-500 text-white rounded-3xl font-semibold
                           shadow-[0_14px_32px_rgba(99,102,241,0.35)]
                           hover:shadow-[0_22px_40px_rgba(99,102,241,0.45)] hover:-translate-y-1
-                          transition-all duration-300"
+                          transition duration-300"
                       >
                         Large
                       </button>
@@ -534,14 +534,14 @@ export default function SoftUIShowcase() {
                     className={`group bg-white rounded-3xl p-8
                       shadow-[8px_8px_20px_rgba(0,0,0,0.07),-8px_-8px_20px_rgba(255,255,255,0.9)]
                       ${f.hoverShadow} hover:-translate-y-2
-                      transition-all duration-500 ease-in-out cursor-pointer`}
+                      transition duration-500 ease-in-out cursor-pointer`}
                     onMouseEnter={() => setHoveredCard(i)}
                     onMouseLeave={() => setHoveredCard(null)}
                   >
                     <div
                       className={`w-14 h-14 ${f.iconBg} ${f.iconColor} rounded-2xl flex items-center justify-center mb-6
                         group-hover:scale-110 group-hover:rounded-3xl
-                        transition-all duration-300 ease-in-out`}
+                        transition duration-300 ease-in-out`}
                     >
                       {f.icon}
                     </div>
@@ -553,7 +553,7 @@ export default function SoftUIShowcase() {
                     </h3>
                     <p className="text-slate-500 leading-relaxed text-sm">{f.desc}</p>
                     <div
-                      className={`mt-6 flex items-center gap-1 text-sm font-semibold transition-all duration-300 ${
+                      className={`mt-6 flex items-center gap-1 text-sm font-semibold transition duration-300 ${
                         hoveredCard === i ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-2"
                       } ${f.iconColor}`}
                     >
@@ -588,7 +588,7 @@ export default function SoftUIShowcase() {
                         shadow-[inset_3px_3px_7px_rgba(0,0,0,0.07),inset_-3px_-3px_7px_rgba(255,255,255,0.8)]
                         focus:outline-none focus:bg-white focus:ring-4 focus:ring-indigo-500/20
                         focus:shadow-[0_10px_26px_rgba(99,102,241,0.14)]
-                        transition-all duration-300 ease-in-out"
+                        transition duration-300 ease-in-out"
                     />
                   </div>
                   <div>
@@ -601,7 +601,7 @@ export default function SoftUIShowcase() {
                         shadow-[inset_3px_3px_7px_rgba(0,0,0,0.07),inset_-3px_-3px_7px_rgba(255,255,255,0.8)]
                         focus:outline-none focus:bg-white focus:ring-4 focus:ring-indigo-500/20
                         focus:shadow-[0_10px_26px_rgba(99,102,241,0.14)]
-                        transition-all duration-300 ease-in-out"
+                        transition duration-300 ease-in-out"
                     />
                   </div>
                   <div>
@@ -614,7 +614,7 @@ export default function SoftUIShowcase() {
                         shadow-[inset_3px_3px_7px_rgba(0,0,0,0.07),inset_-3px_-3px_7px_rgba(255,255,255,0.8)]
                         focus:outline-none focus:bg-white focus:ring-4 focus:ring-indigo-500/20
                         focus:shadow-[0_10px_26px_rgba(99,102,241,0.14)]
-                        transition-all duration-300 ease-in-out"
+                        transition duration-300 ease-in-out"
                     />
                   </div>
                   <button
@@ -622,7 +622,7 @@ export default function SoftUIShowcase() {
                       shadow-[0_10px_24px_rgba(99,102,241,0.3)]
                       hover:shadow-[0_18px_36px_rgba(99,102,241,0.4)] hover:-translate-y-0.5
                       active:shadow-[inset_0_4px_10px_rgba(67,56,202,0.28)] active:translate-y-[2px]
-                      transition-all duration-300 ease-in-out"
+                      transition duration-300 ease-in-out"
                   >
                     Send Message
                   </button>
@@ -651,7 +651,7 @@ export default function SoftUIShowcase() {
                     bg-white
                     shadow-[6px_6px_14px_rgba(0,0,0,0.08),-6px_-6px_14px_rgba(255,255,255,0.8)]
                     hover:shadow-[0_18px_36px_rgba(0,0,0,0.1)] hover:-translate-y-1
-                    transition-all duration-400"
+                    transition duration-400"
                 >
                   <div className={`h-20 md:h-24 ${color.twBg}`} />
                   <div className="p-4">
@@ -872,7 +872,7 @@ export default function SoftUIShowcase() {
                       className="flex items-center justify-between p-4 rounded-2xl cursor-pointer
                         shadow-[inset_2px_2px_5px_rgba(0,0,0,0.05),inset_-2px_-2px_5px_rgba(255,255,255,0.8)]
                         hover:shadow-[inset_3px_3px_7px_rgba(0,0,0,0.07),inset_-3px_-3px_7px_rgba(255,255,255,0.9)]
-                        transition-all duration-200"
+                        transition duration-200"
                       style={{ background: "#eef1f5" }}
                     >
                       <span className="text-sm font-semibold text-gray-700">{label}</span>
@@ -885,7 +885,7 @@ export default function SoftUIShowcase() {
                           next[i] = !next[i];
                           setToggleStates(next);
                         }}
-                        className={`relative w-14 h-8 rounded-full transition-all duration-300 ${
+                        className={`relative w-14 h-8 rounded-full transition duration-300 ${
                           toggleStates[i]
                             ? "bg-indigo-500 shadow-[0_4px_12px_rgba(99,102,241,0.4)]"
                             : "shadow-[inset_2px_2px_5px_rgba(0,0,0,0.1),inset_-2px_-2px_5px_rgba(255,255,255,0.8)]"
@@ -893,7 +893,7 @@ export default function SoftUIShowcase() {
                         style={{ background: toggleStates[i] ? "#6366f1" : "#d4d8e0" }}
                       >
                         <span
-                          className={`absolute top-1 w-6 h-6 bg-white rounded-full shadow-md transition-all duration-300 ${
+                          className={`absolute top-1 w-6 h-6 bg-white rounded-full shadow-md transition duration-300 ${
                             toggleStates[i] ? "left-7" : "left-1"
                           }`}
                         />
@@ -918,7 +918,7 @@ export default function SoftUIShowcase() {
                       className="flex items-center gap-4 p-4 rounded-2xl cursor-pointer
                         shadow-[inset_2px_2px_5px_rgba(0,0,0,0.05),inset_-2px_-2px_5px_rgba(255,255,255,0.8)]
                         hover:shadow-[inset_3px_3px_7px_rgba(0,0,0,0.07),inset_-3px_-3px_7px_rgba(255,255,255,0.9)]
-                        transition-all duration-200"
+                        transition duration-200"
                       style={{ background: "#eef1f5" }}
                     >
                       <button
@@ -930,7 +930,7 @@ export default function SoftUIShowcase() {
                           next[i] = !next[i];
                           setCheckboxStates(next);
                         }}
-                        className={`w-6 h-6 rounded-lg flex items-center justify-center flex-shrink-0 transition-all duration-300 ${
+                        className={`w-6 h-6 rounded-lg flex items-center justify-center flex-shrink-0 transition duration-300 ${
                           checkboxStates[i]
                             ? "bg-indigo-500 shadow-[0_4px_10px_rgba(99,102,241,0.35)]"
                             : "shadow-[inset_2px_2px_5px_rgba(0,0,0,0.08),inset_-2px_-2px_5px_rgba(255,255,255,0.8)]"
@@ -967,7 +967,7 @@ export default function SoftUIShowcase() {
                   <button
                     key={tab}
                     onClick={() => setActiveTab(i)}
-                    className={`px-5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300 ${
+                    className={`px-5 py-2.5 rounded-xl text-sm font-semibold transition duration-300 ${
                       activeTab === i
                         ? "bg-white text-indigo-600 shadow-[4px_4px_10px_rgba(0,0,0,0.07),-4px_-4px_10px_rgba(255,255,255,0.9)]"
                         : "text-slate-500 hover:text-slate-700"
@@ -1000,7 +1000,7 @@ export default function SoftUIShowcase() {
                     shadow-[5px_5px_12px_rgba(0,0,0,0.07),-5px_-5px_12px_rgba(255,255,255,0.85)]
                     hover:shadow-[0_12px_24px_rgba(0,0,0,0.08)] hover:-translate-y-0.5
                     active:shadow-[inset_3px_3px_7px_rgba(0,0,0,0.08),inset_-3px_-3px_7px_rgba(255,255,255,0.8)]
-                    transition-all duration-300 bg-white"
+                    transition duration-300 bg-white"
                 >
                   <span>Select a category</span>
                   <svg
@@ -1173,7 +1173,7 @@ export default function SoftUIShowcase() {
                   className="group bg-white rounded-3xl p-8 h-full
                     shadow-[8px_8px_20px_rgba(0,0,0,0.07),-8px_-8px_20px_rgba(255,255,255,0.9)]
                     hover:shadow-[0_24px_48px_rgba(99,102,241,0.15)] hover:-translate-y-2
-                    transition-all duration-500 ease-in-out"
+                    transition duration-500 ease-in-out"
                 >
                   {/* Quote mark */}
                   <div className="text-4xl text-indigo-200 font-serif leading-none mb-4">&ldquo;</div>
@@ -1229,7 +1229,7 @@ export default function SoftUIShowcase() {
                   className="px-8 py-4 bg-white text-indigo-600 rounded-2xl font-semibold
                     shadow-[0_8px_24px_rgba(0,0,0,0.15)]
                     hover:shadow-[0_16px_32px_rgba(0,0,0,0.2)] hover:-translate-y-0.5
-                    transition-all duration-300"
+                    transition duration-300"
                 >
                   View Full Docs
                 </Link>
@@ -1237,7 +1237,7 @@ export default function SoftUIShowcase() {
                   href="/styles"
                   className="px-8 py-4 bg-white/10 text-white rounded-2xl font-semibold backdrop-blur-sm
                     hover:bg-white/20 hover:-translate-y-0.5
-                    transition-all duration-300"
+                    transition duration-300"
                 >
                   Explore Styles
                 </Link>

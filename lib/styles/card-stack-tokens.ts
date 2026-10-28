@@ -10,10 +10,10 @@ export const cardStackTokens = createStyleTokens({
 
   shadow: {
     sm: "shadow-md",
-    md: "shadow-xl",
-    lg: "shadow-2xl",
+    md: "shadow-surface-lg",
+    lg: "shadow-surface-lg",
     none: "shadow-none",
-    hover: "hover:shadow-2xl",
+    hover: "hover:shadow-surface-lg",
     focus: "focus:shadow-xl",
   },
 
