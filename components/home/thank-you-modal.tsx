@@ -14,6 +14,14 @@ import {
 // batch and celebrate together (screenshots usually arrive in clusters).
 const RECENT_WINDOW_MS = 7 * 24 * 60 * 60 * 1000;
 
+/**
+ * Shown once per browser. Closing the dialog is the only thing that writes
+ * this key, so a first visit still gets the thank-you note even when the
+ * visitor bounces before the dialog appears.
+ */
+const DISMISSED_STORAGE_KEY = "stylekit-thank-you-seen";
+const OPEN_DELAY_MS = 1200;
+
 export function ThankYouModal({
   showOnHomepageOnly = true,
   entries,
@@ -45,26 +53,38 @@ export function ThankYouModal({
     [latestEntry, sortedReceiptEntries]
   );
   useEffect(() => {
-    // 检查是否为首页
     const pathname = window.location.pathname;
     const isHome = pathname === "/" || pathname === "/en" || pathname === "/zh";
 
-    if (showOnHomepageOnly && !isHome) {
-      return;
-    }
+    if (showOnHomepageOnly && !isHome) return;
+    if (!thankYouModalConfig.enabled || latestReceiptEntries.length === 0) return;
 
     const params = new URLSearchParams(window.location.search);
     const forceOpen = params.has("preview") || params.get("support") === "thanks";
-    // A visit to the catalog is not a request to see donation receipts.
-    // Keep explicit support/preview links working without interrupting visitors.
-    if (forceOpen && latestReceiptEntries.length > 0 && thankYouModalConfig.enabled) {
-      const frame = window.requestAnimationFrame(() => setIsOpen(true));
-      return () => window.cancelAnimationFrame(frame);
+
+    let dismissed = false;
+    try {
+      dismissed = window.localStorage.getItem(DISMISSED_STORAGE_KEY) === "1";
+    } catch {
+      // Storage can be unavailable in private mode; keep the notice, don't crash.
     }
+    if (!forceOpen && dismissed) return;
+
+    const timer = window.setTimeout(
+      () => setIsOpen(true),
+      forceOpen ? 0 : OPEN_DELAY_MS
+    );
+    return () => window.clearTimeout(timer);
   }, [latestReceiptEntries.length, showOnHomepageOnly]);
 
   const handleClose = () => {
     setIsOpen(false);
+    if (!thankYouModalConfig.dismissible) return;
+    try {
+      window.localStorage.setItem(DISMISSED_STORAGE_KEY, "1");
+    } catch {
+      // Ignore storage failures: the dialog closes for this session either way.
+    }
   };
 
   if (!isOpen) return null;
