@@ -149,6 +149,11 @@ packages/.run/
 /.tmp-*.mjs
 /preview-*.png
 
+# Local-only experiments. They stay on disk for hands-on development, but are
+# deliberately not part of the repository or the deployed site.
+/app/experiments/diffusion/
+/app/api/experiments/diffusion/
+
 # Runtime data (analytics, submissions)
 /.data/
 /data/
