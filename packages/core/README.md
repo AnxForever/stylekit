@@ -191,3 +191,22 @@ origin and a deterministic content identifier. Lint reports pass/fail/inconclusi
 `ok` is false for unresolved runtime classes or unavailable rules. Required checks
 cover a whole input and are advisory unless strict is enabled. A static pass
 covers class rules and does not certify visual quality or accessibility.
+
+`repairStyleCode` runs the same rules and rewrites violations with the style's
+own classes:
+
+```typescript
+import { repairStyleCode } from "stylekit-core/styles";
+
+const { code: fixed, edits, unfixed, report } = repairStyleCode(
+  "neo-brutalist",
+  '<div className="rounded-xl shadow-lg" />',
+);
+```
+
+It handles JSX/HTML class attributes, `cn()`/`clsx()` calls, template literals,
+and bare class strings. Variant prefixes survive the rewrite, and string literals
+inside expressions are rewritten while variable references are left alone.
+`edits` names only replacements that were applied; a flagged class with no
+concrete replacement is returned in `unfixed` instead of being guessed at.
+Layout, spacing and structure are never changed.

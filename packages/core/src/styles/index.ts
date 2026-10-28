@@ -175,6 +175,25 @@ export {
 
 export {
   /**
+   * Rewrites a style's violations into the corrected source.
+   * Replacements come from the style's own tokens; anything the rules flag
+   * without a concrete replacement is returned in `unfixed` rather than guessed.
+   * @param slug - The style identifier.
+   * @param code - Source to repair. JSX/TSX, HTML, or a bare class string.
+   * @returns The repaired source, the applied edits, and both reports.
+   */
+  repairStyleCode,
+  repairCodeWithRules,
+} from "@/lib/styles/style-repair";
+
+export type {
+  StyleRepairEdit,
+  StyleRepairUnfixed,
+  StyleRepairResult,
+} from "@/lib/styles/style-repair";
+
+export {
+  /**
    * Registry mapping style slugs to their {@link StyleTokens} definitions.
    */
   styleTokensRegistry,

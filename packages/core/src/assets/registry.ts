@@ -517,8 +517,13 @@ for (const archetype of getAllArchetypes()) {
 }
 
 for (const topic of promptTopics) {
-  const sourceRef = "lib/prompts/topics.ts";
-  const promptText = topic.prompts.map((prompt) => `## ${prompt.titleEn} (${prompt.tool})\n\n${prompt.prompt}`).join("\n\n");
+  const sourceRef = topic.sourceRef ?? "lib/prompts/topics.ts";
+  const promptText = topic.prompts.map((prompt) => {
+    const english = `## ${prompt.titleEn} (${prompt.tool})\n\n${prompt.prompt}`;
+    return prompt.promptZh
+      ? `${english}\n\n## ${prompt.titleZh}\n\n${prompt.promptZh}`
+      : english;
+  }).join("\n\n");
   assets.push(createDetail({
     id: topic.slug,
     kind: "prompt",
