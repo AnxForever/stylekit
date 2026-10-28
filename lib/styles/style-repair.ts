@@ -8,9 +8,11 @@
 //
 // Deliberately narrow. It only rewrites class tokens that the linter already
 // reports, and only when the style itself supplies a replacement. It never
-// invents classes, never touches dynamic expressions, and never reindents.
+// invents classes, never evaluates an expression (only literal class text is
+// rewritten; variable references are copied verbatim), and never reindents.
 
 import {
+  isBareClassList,
   lintCodeWithRules,
   mergeStyleRules,
   stripVariants,
@@ -56,9 +58,21 @@ function variantPrefix(className: string): string {
  * Rewrites are positional: every class attribute is re-read and its string
  * literals are rebuilt token by token, so a token repeated on three lines is
  * replaced on all three and unrelated text is never touched.
+ *
+ * A bare class string (no markup at all) is itself the class list, because the
+ * linter reads it that way. `applied` records which replacements really landed
+ * so the caller can report an unlocatable class as unfixed instead of claiming
+ * an edit that never happened.
  */
-function rewriteClassAttributes(code: string, replacements: Map<string, string>): string {
-  if (replacements.size === 0) return code;
+function rewriteClassAttributes(
+  code: string,
+  replacements: Map<string, string>,
+): { code: string; applied: Set<string> } {
+  const applied = new Set<string>();
+  if (replacements.size === 0) return { code, applied };
+  if (isBareClassList(code)) {
+    return { code: rewriteTokens(code, replacements, applied), applied };
+  }
 
   let out = "";
   let cursor = 0;
@@ -68,35 +82,78 @@ function rewriteClassAttributes(code: string, replacements: Map<string, string>)
     out += code.slice(cursor, index);
 
     if (dq !== undefined) {
-      out += `${whole.slice(0, -dq.length - 2)}"${rewriteTokens(dq, replacements)}"`;
+      out += `${whole.slice(0, -dq.length - 2)}"${rewriteTokens(dq, replacements, applied)}"`;
     } else if (sq !== undefined) {
-      out += `${whole.slice(0, -sq.length - 2)}'${rewriteTokens(sq, replacements)}'`;
+      out += `${whole.slice(0, -sq.length - 2)}'${rewriteTokens(sq, replacements, applied)}'`;
     } else if (tpl !== undefined) {
-      out += `${whole.slice(0, -tpl.length - 2)}\`${rewriteTokens(tpl, replacements)}\``;
+      out += `${whole.slice(0, -tpl.length - 2)}\`${rewriteTemplate(tpl, replacements, applied)}\``;
     } else {
-      // A `{...}` attribute holds an expression, not a class list: rebuild only
-      // its string literals and leave every variable reference alone. The brace
-      // is matched, not covered by the regex, because `cn("a", f("b"))` nests.
+      // A `{...}` attribute holds an expression, not a class list: rebuild its
+      // string and template literals and leave every variable reference alone.
+      // The brace is matched, not covered by the regex, because `cn("a", f("b"))`
+      // nests.
       const open = index + whole.length - 1;
       const close = matchBrace(code, open);
       if (close === -1) {
         out += whole;
       } else {
-        const expression = code.slice(open + 1, close);
-        out += whole + expression.replace(
-          /"([^"]*)"|'([^']*)'/g,
-          (literal: string, innerDq?: string, innerSq?: string) =>
-            innerDq !== undefined
-              ? `"${rewriteTokens(innerDq, replacements)}"`
-              : `'${rewriteTokens(innerSq ?? "", replacements)}'`,
-        ) + "}";
+        out += whole + rewriteExpression(code.slice(open + 1, close), replacements, applied) + "}";
         cursor = close + 1;
         continue;
       }
     }
     cursor = index + whole.length;
   }
-  return out + code.slice(cursor);
+  return { code: out + code.slice(cursor), applied };
+}
+
+/**
+ * Rebuilds the string and template literals of an expression, leaving code
+ * between them untouched. So `cn("rounded-xl", cond && styles.card)` keeps the
+ * variable reference and rewrites only the literal, and a nested template is
+ * handled by {@link rewriteTemplate} rather than evaluated.
+ */
+function rewriteExpression(
+  expression: string,
+  replacements: Map<string, string>,
+  applied: Set<string>,
+): string {
+  return expression.replace(
+    /"([^"]*)"|'([^']*)'|`([^`]*)`/g,
+    (literal: string, innerDq?: string, innerSq?: string, innerTpl?: string) => {
+      if (innerTpl !== undefined) return `\`${rewriteTemplate(innerTpl, replacements, applied)}\``;
+      return innerDq !== undefined
+        ? `"${rewriteTokens(innerDq, replacements, applied)}"`
+        : `'${rewriteTokens(innerSq ?? "", replacements, applied)}'`;
+    },
+  );
+}
+
+/**
+ * Rewrites a template literal's static text while copying each `${...}` span
+ * verbatim. An interpolation computes a value at runtime, so rewriting tokens
+ * inside it would change code this pass did not read.
+ */
+function rewriteTemplate(
+  template: string,
+  replacements: Map<string, string>,
+  applied: Set<string>,
+): string {
+  let out = "";
+  let index = 0;
+  while (index < template.length) {
+    const start = template.indexOf("${", index);
+    if (start === -1) {
+      out += rewriteTokens(template.slice(index), replacements, applied);
+      break;
+    }
+    out += rewriteTokens(template.slice(index, start), replacements, applied);
+    const close = matchBrace(template, start + 1);
+    const stop = close === -1 ? template.length : close + 1;
+    out += rewriteExpression(template.slice(start, stop), replacements, applied);
+    index = stop;
+  }
+  return out;
 }
 
 /** Index of the `}` closing the `{` at `open`, ignoring braces inside strings. */
@@ -125,22 +182,58 @@ function matchBrace(code: string, open: number): number {
  * keep applying on hover. Parts the segment already contains are dropped, which
  * is what keeps `border-2 -> border border-white/15` from becoming a duplicate.
  */
-function rewriteTokens(segment: string, replacements: Map<string, string>): string {
+function rewriteTokens(
+  segment: string,
+  replacements: Map<string, string>,
+  applied: Set<string>,
+): string {
   // Whole-token membership: `border` must not be considered present just
   // because the segment contains `border-2`, which is the token being replaced.
   const present = new Set(segment.split(/\s+/).filter(Boolean));
-  return segment.replace(/\S+/g, (token) => {
-    const replacement = replacements.get(token);
-    if (!replacement) return token;
-    const prefix = variantPrefix(token);
+  const leading = /^\s*/.exec(segment)?.[0] ?? "";
+  const trailing = /\s*$/.exec(segment)?.[0] ?? "";
+  const body = segment.slice(leading.length, segment.length - trailing.length);
+  if (!body) return segment;
+
+  let out = "";
+  let separator = "";
+  let emittedAny = false;
+
+  for (const part of body.split(/(\s+)/)) {
+    if (part === "") continue;
+    if (/^\s+$/.test(part)) {
+      separator = part;
+      continue;
+    }
+
+    const replacement = replacements.get(part);
+    if (!replacement) {
+      out += (emittedAny ? separator : leading) + part;
+      emittedAny = true;
+      separator = "";
+      continue;
+    }
+
+    const prefix = variantPrefix(part);
     const emitted: string[] = [];
-    for (const part of replacement.split(/\s+/).filter(Boolean)) {
-      const candidate = part.includes(":") ? part : `${prefix}${part}`;
+    for (const piece of replacement.split(/\s+/).filter(Boolean)) {
+      const candidate = piece.includes(":") ? piece : `${prefix}${piece}`;
       if (present.has(candidate) || emitted.includes(candidate)) continue;
       emitted.push(candidate);
     }
-    return emitted.join(" ");
-  });
+    applied.add(part);
+    // Every replacement part is already present, so the token disappears. Its
+    // separator is dropped with it rather than left as a gap.
+    if (emitted.length === 0) {
+      separator = "";
+      continue;
+    }
+    out += (emittedAny ? separator : leading) + emitted.join(" ");
+    emittedAny = true;
+    separator = "";
+  }
+
+  return out + trailing;
 }
 
 /**
@@ -194,11 +287,26 @@ export function repairCodeWithRules(
     edits.push({ from: violation.className, to, line: violation.line });
   }
 
-  const repaired = rewriteClassAttributes(code, replacements);
+  const { code: repaired, applied } = rewriteClassAttributes(code, replacements);
+  // Only report edits that actually landed. A class the linter saw inside a
+  // construct this pass cannot rewrite (a concatenation, a computed key) is
+  // unfixed, not silently claimed as repaired. A class repeated on several
+  // lines is still one replacement, so `applied` is keyed by token.
+  const appliedEdits = edits.filter((edit) => applied.has(edit.from));
+  for (const edit of edits) {
+    if (applied.has(edit.from)) continue;
+    const violation = before.violations.find((item) => item.className === edit.from);
+    unfixed.push({
+      className: edit.from,
+      line: edit.line,
+      reason: violation?.reason ?? "No concrete replacement could be applied.",
+    });
+  }
+
   return {
     slug,
     code: repaired,
-    edits,
+    edits: appliedEdits,
     unfixed,
     before,
     report: lintCodeWithRules(rules, repaired, { slug }),

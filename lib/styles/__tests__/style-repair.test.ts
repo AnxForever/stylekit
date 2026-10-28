@@ -83,6 +83,68 @@ describe("repairStyleCode", () => {
     ]);
   });
 
+  it("rewrites a bare class string, which the linter also reads as a class list", () => {
+    const result = repairStyleCode("neo-brutalist", "rounded-xl shadow-lg");
+
+    expect(result.code).toBe(
+      "rounded-none shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] md:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]",
+    );
+    expect(result.edits.map((edit) => edit.from)).toEqual(["rounded-xl", "shadow-lg"]);
+    expect(result.report.status).toBe("pass");
+  });
+
+  it("rewrites a template literal's static text and copies interpolations verbatim", () => {
+    const code = '<div className={`rounded-xl ${size} shadow-lg`} />';
+    const result = repairStyleCode("neo-brutalist", code);
+
+    expect(result.code).toContain("rounded-none");
+    expect(result.code).not.toContain("rounded-xl");
+    expect(result.code).toContain("${size}");
+    expect(result.report.status).not.toBe("fail");
+  });
+
+  it("rewrites template literals nested inside expressions", () => {
+    const code = '<div className={cn(`rounded-xl ${size}`, active && "shadow-lg")} />';
+    const result = repairStyleCode("neo-brutalist", code);
+
+    expect(result.code).not.toContain("rounded-xl");
+    expect(result.code).not.toContain("shadow-lg");
+    expect(result.code).toContain("${size}");
+  });
+
+  it("drops a deduplicated replacement without leaving a gap", () => {
+    const code = '<div className="border-2 border border-white/15" />';
+    const result = repairStyleCode("glassmorphism", code);
+    const classes = result.code.match(/className="([^"]*)"/)?.[1] ?? "";
+
+    expect(classes.split(/\s+/)).toEqual(["border", "border-white/15"]);
+    expect(classes).not.toMatch(/\s{2}/);
+    expect(classes).toBe(classes.trim());
+  });
+
+  it("keeps multi-line class attributes on their original lines", () => {
+    const code = '<div className="rounded-xl\n  shadow-lg" />';
+    const result = repairStyleCode("neo-brutalist", code);
+
+    expect(result.code).toContain('rounded-none\n  shadow-');
+  });
+
+  it("reports only edits it actually applied", () => {
+    const inputs = [
+      "rounded-xl shadow-lg",
+      '<div className="rounded-xl shadow-lg" />',
+      '<div className={`rounded-xl ${size}`} />',
+      '<div className={cn("rounded-xl", active && "shadow-lg")} />',
+    ];
+
+    for (const code of inputs) {
+      const result = repairStyleCode("neo-brutalist", code);
+      for (const edit of result.edits) {
+        expect(result.code).not.toContain(edit.from);
+      }
+    }
+  });
+
   it("agrees with the linter about the repaired code", () => {
     const before = lintStyleCode("corporate-clean", '<div className="rounded-full shadow-2xl" />');
     expect(before.status).toBe("fail");
