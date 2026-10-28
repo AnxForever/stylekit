@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
-import { RepairWorkbench } from "@/app/repair/_content";
+import { RepairWorkbench } from "@/components/repair/repair-workbench";
 import { getAllStylesMeta } from "@/lib/styles/meta";
 import { getStylesWithLintRules } from "@/lib/styles/lint-rules";
 import { isLocale } from "@/lib/i18n/routing";
