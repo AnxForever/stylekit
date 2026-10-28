@@ -46,7 +46,7 @@ jobs:
         run: cd packages/mcp && ./node_modules/.bin/tsup
 
       - name: Smoke test
-        run: cd packages/mcp && node scripts/smoke.mjs
+        run: cd packages/mcp && node scripts/smoke.mjs && node scripts/http-smoke.mjs
 
       - name: Pack release artifact
         run: pnpm --dir packages/mcp pack --out "$RUNNER_TEMP/stylekit-mcp.tgz"

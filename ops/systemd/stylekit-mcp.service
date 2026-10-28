@@ -1,0 +1,55 @@
+# StyleKit MCP HTTP server.
+#
+# The site tree is root-only (0700), so this service runs as www from its own
+# copy of the bundle:
+#
+#   /opt/stylekit-mcp/dist/index.js
+#   /opt/stylekit-mcp/package.json   (ops/mcp/package.json)
+#
+# Build locally with `pnpm --filter stylekit-mcp build`; copy the bundle and
+# manifest, run `npm install --omit=dev` once per dependency change, then
+# restart this unit. Keep the manifest version in sync with packages/mcp.
+# Keep the process bound to loopback and expose it through
+# ops/nginx/stylekit-mcp-locations.conf.
+#
+# The bearer token belongs in /etc/stylekit-mcp.env with mode 600:
+#   MCP_HTTP_TOKEN=<long random value>
+
+[Unit]
+Description=StyleKit MCP HTTP server
+After=network.target stylekit.service
+Wants=stylekit.service
+
+[Service]
+Type=simple
+User=www
+Group=www
+WorkingDirectory=/opt/stylekit-mcp
+EnvironmentFile=-/etc/stylekit-mcp.env
+Environment=NODE_ENV=production
+Environment=MCP_HTTP_HOST=127.0.0.1
+Environment=MCP_HTTP_PORT=8787
+Environment=NODE_OPTIONS=--max-old-space-size=192
+Environment=MCP_RATE_LIMIT=120
+Environment=MCP_MAX_BODY_BYTES=1000000
+Environment=STYLEKIT_MCP_BASE_URL=http://127.0.0.1:13000
+Environment=MCP_TRUST_PROXY=1
+Environment=MCP_ALLOWED_HOSTS=www.stylekit.top,stylekit.top,localhost,127.0.0.1
+ExecStart=/usr/bin/node /opt/stylekit-mcp/dist/index.js --http
+Restart=on-failure
+RestartSec=3
+TimeoutStopSec=20
+# The host is memory constrained; cap a runaway tool call instead of letting
+# the OOM killer choose between this process and the site.
+MemoryMax=256M
+
+# The server only needs to read its bundle and reach the local Next process.
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadOnlyPaths=/opt/stylekit-mcp
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
+
+[Install]
+WantedBy=multi-user.target
