@@ -9,6 +9,8 @@ import { serializeJsonLd } from "@/lib/security/json-ld";
 import { generateBreadcrumbJsonLd } from "@/lib/seo/json-ld";
 import { CURATED_STYLE_COUNT } from "@/lib/product/catalog-facts";
 import { getSiteBaseUrl } from "@/lib/site-url";
+import { DesignWorkflowLinks } from "@/components/seo/design-workflow-links";
+import { isLocale, localizeHref } from "@/lib/i18n/routing";
 
 export const metadata: Metadata = {
   title: `Browse ${CURATED_STYLE_COUNT} UI Design Styles & AI Prompts`,
@@ -25,13 +27,15 @@ export const metadata: Metadata = {
 
 export const dynamic = "force-static";
 
-export default function StylesPage() {
+export default async function StylesPage({ params }: { params?: Promise<{ locale?: string }> }) {
+  const routeParams = await params;
+  const locale = isLocale(routeParams?.locale) ? routeParams.locale : "en";
   const allStyles = getAllStylesMeta();
   const BASE_URL = getSiteBaseUrl();
 
   const breadcrumbJsonLd = generateBreadcrumbJsonLd([
-    { name: "Home", url: BASE_URL },
-    { name: "Styles", url: `${BASE_URL}/styles` },
+    { name: locale === "zh" ? "首页" : "Home", url: `${BASE_URL}${localizeHref("/", locale)}` },
+    { name: locale === "zh" ? "风格库" : "Styles", url: `${BASE_URL}${localizeHref("/styles", locale)}` },
   ]);
 
   return (
@@ -44,8 +48,8 @@ export default function StylesPage() {
       <div className="container mx-auto px-4 pt-4">
         <Breadcrumb
           items={[
-            { label: "Home", href: "/" },
-            { label: "Styles" },
+            { label: locale === "zh" ? "首页" : "Home", href: localizeHref("/", locale) },
+            { label: locale === "zh" ? "风格库" : "Styles" },
           ]}
         />
       </div>
@@ -53,6 +57,7 @@ export default function StylesPage() {
         <Suspense fallback={<div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-12 py-12 md:py-16" />}>
           <StylesContent allStyles={allStyles} />
         </Suspense>
+        <DesignWorkflowLinks locale={locale} />
       </main>
       <Footer />
     </div>
