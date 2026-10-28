@@ -1,6 +1,8 @@
 import type { PromptTopic } from "./types";
+import { canvasLineCardsTopic } from "./canvas-line-cards";
 
 export const promptTopics: PromptTopic[] = [
+  canvasLineCardsTopic,
   {
     slug: "dashboard-design",
     titleEn: "Dashboard UI Prompts for AI",
@@ -1716,6 +1718,7 @@ export const promptTopics: PromptTopic[] = [
       "Tailwind responsive design",
     ],
     relatedStyleSlugs: [
+      "neo-brutalist",
       "minimalist-flat",
       "corporate-clean",
       "stripe-style",
@@ -1750,18 +1753,18 @@ export const promptTopics: PromptTopic[] = [
           "Build a multi-step form with Tailwind CSS in Next.js. Container: 'max-w-2xl mx-auto py-12 px-6'. Step indicator: horizontal dots connected by lines, active step highlighted. Each step: form fields using 'space-y-6' with labels in 'text-sm font-medium' and inputs in 'w-full px-3 py-2 border border-zinc-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none dark:bg-zinc-900 dark:border-zinc-700'. Navigation: 'flex justify-between mt-8' with Back/Next buttons. Animate step transitions with 'transition-opacity duration-200'.",
       },
       {
-        titleEn: "Design Tokens for Claude",
-        titleZh: "Claude Design Tokens",
+        titleEn: "Tailwind v3 Design Tokens for Claude",
+        titleZh: "Claude Tailwind v3 Design Tokens",
         tool: "claude",
         prompt:
-          "Generate a Tailwind CSS configuration with a complete design token system. Include: custom color palette (primary, secondary, accent, success, warning, danger, each with 50-950 shades), spacing scale extending the default (adding 18, 22, 30 for fine-grained control), custom font family stack (sans, serif, mono), border-radius tokens (none, sm, md, lg, xl, full), box-shadow tokens (sm, md, lg, xl, glow), and custom animation tokens (fade-in, slide-up, scale-in). Also create CSS custom properties that mirror the tokens for use in non-Tailwind contexts. Output as a tailwind.config.ts file.",
+          "For an existing Tailwind CSS v3 project, generate a configuration with a complete design token system. Include: custom color palette (primary, secondary, accent, success, warning, danger, each with 50-950 shades), spacing scale extending the default (adding 18, 22, 30), custom font family stacks, border-radius tokens, box-shadow tokens, and animation tokens. Also create CSS custom properties that mirror the tokens for use outside Tailwind. Output as a tailwind.config.ts file. This is the legacy v3 setup; use the separate CSS-first @theme example for Tailwind v4.",
       },
       {
         titleEn: "Tailwind v4 Theme Setup",
         titleZh: "Tailwind v4 主题配置",
         tool: "general",
         prompt:
-          "Set up a Tailwind CSS v4 project theme using the CSS-first configuration (no tailwind.config.js). In globals.css: '@import \"tailwindcss\";' followed by an @theme block defining --color-brand-50 through --color-brand-950 (base #4f46e5), --font-sans: 'Inter', system-ui, --radius-card: 1rem, and --spacing-section: 6rem. Add a custom dark variant with '@custom-variant dark (&:where(.dark, .dark *))'. Demonstrate usage: a hero section with bg-brand-600 text-white, cards using rounded-[--radius-card], and section padding py-[--spacing-section]. Include one @utility definition for a text-balance helper. All interactive elements need focus-visible:ring-2 ring-brand-500.",
+          "Set up a Tailwind CSS v4 project theme using CSS-first configuration. In globals.css: '@import \"tailwindcss\";' followed by an @theme block defining --color-brand-50 through --color-brand-950 (base #4f46e5), --font-sans: 'Inter', system-ui, --radius-card: 1rem, and --spacing-section: 6rem. Add '@custom-variant dark (&:where(.dark, .dark *));'. Demonstrate a hero with bg-brand-600 text-white, cards with rounded-(--radius-card), and section padding py-(--spacing-section). Use the built-in text-balance utility and visible focus rings. Do not add tailwind.config.js; a retained legacy JavaScript config would require an explicit @config directive in v4.",
       },
       {
         titleEn: "Dashboard Shell for v0",
@@ -1824,9 +1827,9 @@ export const promptTopics: PromptTopic[] = [
         questionEn: "What is the best way to organize Tailwind in large projects?",
         questionZh: "大型项目中组织 Tailwind 的最佳方式是什么？",
         answerEn:
-          "Use design tokens in tailwind.config (custom colors, spacing, shadows), create reusable component classes with @apply only in component CSS modules (not globally), use CSS custom properties for theme values that change (dark mode, user preferences), organize components with consistent naming, and leverage shadcn/ui as a component foundation. Avoid long className strings by extracting repeated patterns into components.",
+          "In Tailwind CSS v4, define shared theme tokens in CSS with @theme, use CSS custom properties for runtime theme values, and extract repeated UI into components. Tailwind v3 projects can keep tokens in tailwind.config.js or .ts. V4 does not automatically load a legacy JavaScript config; load it explicitly with @config when migrating. In component-scoped styles, use @reference when you need access to the shared theme and utilities. Keep component names, states and responsive behavior consistent.",
         answerZh:
-          "在 tailwind.config 中使用 design tokens（自定义颜色、间距、阴影），仅在组件 CSS 模块中（非全局）用 @apply 创建可复用组件类，使用 CSS 自定义属性处理会变化的主题值（暗黑模式、用户偏好），用一致的命名组织组件，利用 shadcn/ui 作为组件基础。通过将重复模式提取为组件来避免过长的 className 字符串。",
+          "Tailwind CSS v4 在 CSS 中用 @theme 定义共享主题 tokens，用 CSS 自定义属性处理运行时主题值，并把重复界面提取为组件。Tailwind v3 项目可以继续使用 tailwind.config.js 或 .ts；v4 不会自动读取旧 JavaScript 配置，迁移时需通过 @config 显式加载。在组件作用域样式中需要共享主题和工具类时使用 @reference。保持组件命名、交互状态与响应式行为一致。",
       },
       {
         questionEn: "How does StyleKit work with Tailwind CSS?",

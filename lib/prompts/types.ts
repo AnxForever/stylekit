@@ -5,6 +5,12 @@ export interface TopicPrompt {
   titleZh: string;
   tool: PromptTool;
   prompt: string;
+  /** Optional Chinese body; legacy prompts keep their existing copy. */
+  promptZh?: string;
+  reference?: {
+    href: string;
+    downloadFileName?: string;
+  };
 }
 
 export interface TopicFAQ {
@@ -23,6 +29,8 @@ export interface TopicUseCase {
 
 export interface PromptTopic {
   slug: string;
+  /** Authored source when a topic lives outside the shared topic registry. */
+  sourceRef?: string;
   titleEn: string;
   titleZh: string;
   descriptionEn: string;

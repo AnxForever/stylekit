@@ -6,7 +6,7 @@ import {
   type Locale,
   type TranslationKey,
 } from "@/lib/i18n/translations";
-import type { PromptTopic } from "@/lib/prompts/types";
+import type { PromptTopic, TopicPrompt } from "@/lib/prompts/types";
 import type { StyleMeta } from "@/lib/styles/meta";
 import { PromptCopyButton } from "./_prompt-copy-button";
 
@@ -38,6 +38,8 @@ function PromptCard({
   prompt,
   copyLabel,
   copiedLabel,
+  locale,
+  reference,
 }: {
   id: string;
   title: string;
@@ -45,6 +47,8 @@ function PromptCard({
   prompt: string;
   copyLabel: string;
   copiedLabel: string;
+  locale: Locale;
+  reference?: TopicPrompt["reference"];
 }) {
   const toolLabel: Record<string, string> = {
     v0: "v0",
@@ -68,9 +72,30 @@ function PromptCard({
           copiedLabel={copiedLabel}
         />
       </div>
-      <div className="text-xs text-muted bg-zinc-50 dark:bg-zinc-900 p-3 mt-3 max-h-32 overflow-y-auto">
-        <pre id={id} className="whitespace-pre-wrap font-mono">{prompt}</pre>
+      <div className={`text-xs text-muted bg-zinc-50 dark:bg-zinc-900 p-3 mt-3 overflow-y-auto ${reference ? "max-h-[32rem]" : "max-h-32"}`}>
+        <pre id={id} className="whitespace-pre-wrap [overflow-wrap:anywhere] font-mono">{prompt}</pre>
       </div>
+      {reference ? (
+        <div className="mt-4 flex flex-wrap gap-x-5 gap-y-3 text-sm">
+          <a
+            href={reference.href}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline underline-offset-4 hover:text-muted"
+          >
+            {locale === "zh" ? "查看参考效果" : "View reference demo"}
+          </a>
+          {reference.downloadFileName ? (
+            <a
+              href={reference.href}
+              download={reference.downloadFileName}
+              className="underline underline-offset-4 hover:text-muted"
+            >
+              {locale === "zh" ? "下载参考 HTML" : "Download reference HTML"}
+            </a>
+          ) : null}
+        </div>
+      ) : null}
     </div>
   );
 }
@@ -169,16 +194,18 @@ export function PromptTopicContent({
               isZh ? topic.titleZh : topic.titleEn
             )}
           </p>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className={`grid grid-cols-1 gap-4 ${topic.prompts.length > 1 ? "md:grid-cols-2" : ""}`}>
             {topic.prompts.map((p, i) => (
               <PromptCard
                 key={i}
                 id={`prompt-${topic.slug}-${i}`}
                 title={isZh ? p.titleZh : p.titleEn}
                 tool={p.tool}
-                prompt={p.prompt}
+                prompt={isZh ? p.promptZh ?? p.prompt : p.prompt}
                 copyLabel={t("seo.copyPrompt")}
                 copiedLabel={t("seo.copiedPrompt")}
+                locale={locale}
+                reference={p.reference}
               />
             ))}
           </div>
