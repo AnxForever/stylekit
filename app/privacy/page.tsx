@@ -29,7 +29,7 @@ export default function PrivacyPage() {
             <article>
               <h2 className="text-2xl mb-3">What we collect</h2>
               <p className="text-muted leading-relaxed">
-                We may collect anonymous usage events, UTM campaign parameters, newsletter email addresses that you voluntarily submit, and basic profile data when you sign in with a supported identity provider.
+                We may collect usage events, page views, browser and device information, UTM campaign parameters, newsletter email addresses that you voluntarily submit, and basic profile data when you sign in with a supported identity provider. Google Analytics may use cookies and pseudonymous identifiers to measure visits.
               </p>
             </article>
             <article>
@@ -41,13 +41,13 @@ export default function PrivacyPage() {
             <article>
               <h2 className="text-2xl mb-3">Third-party services</h2>
               <p className="text-muted leading-relaxed">
-                StyleKit uses Alibaba Cloud hosting, Supabase, and external sign-in providers. The site also runs self-hosted Umami analytics. Those services may process data according to their own terms and privacy policies.
+                StyleKit uses Alibaba Cloud hosting, Supabase, and external sign-in providers. The site also runs self-hosted Umami analytics and Google Analytics 4 to measure website usage. Google signals and ad personalization signals are disabled in our Google tag configuration. These services may process data according to their own terms and privacy policies, including the <a href="https://policies.google.com/privacy" className="underline underline-offset-4">Google Privacy Policy</a>.
               </p>
             </article>
             <article>
               <h2 className="text-2xl mb-3">Your choices</h2>
               <p className="text-muted leading-relaxed">
-                You can avoid newsletter signup, choose not to create an account, and clear locally stored preferences in your browser. If you need help with a newsletter subscription or public profile data, use the contact options on the support page.
+                You can avoid newsletter signup, choose not to create an account, and clear locally stored preferences in your browser. Our Google tag does not load when your browser sends Do Not Track or Global Privacy Control. You can also use the <a href="https://tools.google.com/dlpage/gaoptout" className="underline underline-offset-4">Google Analytics opt-out browser add-on</a>. If you need help with a newsletter subscription or public profile data, use the contact options on the support page.
               </p>
             </article>
             <article>
