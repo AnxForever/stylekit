@@ -333,7 +333,8 @@ export const zh: { [K in keyof typeof en]: string } = {
   "home.title.line1": "让 AI 生成的",
   "home.title.line2": "网站更加",
   "home.title.line3": "好看",
-  "home.description": "精选网页设计风格，附带文档、组件模板、代码片段与可导出的 AI 规则。",
+  "home.description": "用 AI 写页面，却总觉得设计差一点？选定视觉风格，预览组件，再复制或导出设计 token、代码与 AI 规则，在 Cursor、Claude Code 或 v0 中使用。",
+  "home.freeAccess": "公开风格、提示词与规则导出免费，无需注册。",
   "home.styleCollection": "风格集合",
   "home.styleCatalog": "风格目录",
   "home.viewAll": "查看全部",
@@ -363,8 +364,8 @@ export const zh: { [K in keyof typeof en]: string } = {
   "home.proof.animations": "CSS 动画",
   "home.proof.templates": "页面模板",
   "home.proof.openSource": "开源项目",
-  "home.builtFor.label": "适配工具",
-  "home.builtFor.ariaLabel": "工具集成",
+  "home.builtFor.label": "把设计素材用进你的工作流",
+  "home.builtFor.ariaLabel": "可使用 StyleKit 素材的工具",
 
   // CTA Banner
   "home.cta.title": "立即开始构建精美 UI",
@@ -809,6 +810,10 @@ export const zh: { [K in keyof typeof en]: string } = {
   "community.of": "\u5171",
   "community.prev": "\u4e0a\u4e00\u9875",
   "community.next": "\u4e0b\u4e00\u9875",
+  "communityRail.purpose": "\u53cd\u9988 \u00b7 \u5439\u6c34 \u00b7 \u6280\u672f\u5206\u4eab",
+  "communityRail.cta": "\u70b9\u51fb\u52a0\u5165",
+  "communityRail.groupNumber": "\u7fa4\u53f7",
+  "communityRail.aria": "\u52a0\u5165 StyleKit \u4ea4\u6d41\u7fa4\uff08QQ \u7fa4\uff09",
 
   // Style comments
   "styleComments.countSuffix": "\u6761\u8bc4\u8bba",
@@ -1103,7 +1108,7 @@ export const zh: { [K in keyof typeof en]: string } = {
   // Guide page
   "guide.badge": "使用指南",
   "guide.heading": "3 步使用 StyleKit",
-  "guide.subheading": "先选择稳定的风格参考，再匹配页面模板，最后把提示词和规则放进自己的编码流程。",
+  "guide.subheading": "选定视觉风格，把设计规则交给 AI 编码工具，再检查实现结果。跟着下面的示例即可开始，无需注册。",
   "guide.step1.title": "选择风格",
   "guide.step1.desc": "浏览风格库，选择适合当前产品的视觉方向、设计 token、组件配方和 AI 规则。",
   "guide.step1.cta": "浏览风格",
