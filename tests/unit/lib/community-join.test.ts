@@ -12,11 +12,17 @@ function config(overrides: Partial<CommunityGroupConfig>): CommunityGroupConfig 
 }
 
 describe("community group destination", () => {
-  it("ships in the prelaunch state until an invite exists", () => {
-    expect(COMMUNITY_GROUP.status).toBe("prelaunch");
-    expect(resolveCommunityGroupDestination(COMMUNITY_GROUP, NOW)).toEqual({
-      kind: "pending",
-    });
+  it("ships a live QQ invite that resolves to an external link", () => {
+    expect(COMMUNITY_GROUP.status).toBe("live");
+    expect(COMMUNITY_GROUP.platform).toBe("qq");
+
+    const destination = resolveCommunityGroupDestination(COMMUNITY_GROUP, NOW);
+    expect(destination.kind).toBe("invite");
+    if (destination.kind !== "invite") return;
+
+    const url = new URL(destination.href);
+    expect(url.protocol).toBe("https:");
+    expect(url.hostname).toBe("qun.qq.com");
   });
 
   it("uses a public invite URL when the group is live", () => {
