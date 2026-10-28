@@ -4,6 +4,11 @@ import { getSiteBaseUrl } from "@/lib/site-url";
 const BASE_URL = getSiteBaseUrl();
 const LOCALE_PREFIXES = ["", "/en", "/zh"] as const;
 
+// These are POST-only protocol endpoints, not web documents. Match only the
+// published endpoints so similarly named documentation stays crawlable.
+const MCP_TRANSPORT_DISALLOW = ["/mcp", "/mcp/all", "/mcp/core", "/mcp/assets", "/mcp/design"]
+  .flatMap((path) => [`${path}$`, `${path}?*`, `${path}/$`, `${path}/?*`]);
+
 // These public entry pages intentionally send noindex metadata. Keep them
 // crawlable so search crawlers can observe that directive, including the
 // locale aliases and query-driven sign-in/share URLs.
@@ -55,6 +60,7 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: "*",
         ...CRAWLER_RULES,
+        disallow: [...CRAWLER_RULES.disallow, ...MCP_TRANSPORT_DISALLOW],
       },
       {
         userAgent: [
