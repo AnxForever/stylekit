@@ -1,5 +1,6 @@
 import { Metadata } from "next";
 import { canonicalizeEnglishMetadata } from "@/lib/i18n/metadata";
+import { NEO_BRUTALIST_GUIDE_SEO } from "@/lib/seo/neo-brutalist-guide";
 
 export interface StyleGuide {
   name: string;
@@ -15,6 +16,11 @@ export interface StyleGuide {
   references: Reference[];
   influenced?: string[];
   influencedBy?: string[];
+  seo?: {
+    title: string;
+    description: string;
+    keywords?: string[];
+  };
 }
 
 export interface UseCase {
@@ -165,7 +171,8 @@ export const styleGuides: Record<string, StyleGuide> = {
     nameEn: "Neo-Brutalism",
     slug: "neo-brutalism",
     description: "大胆的颜色、粗犷的边框和不对称布局，挑战传统设计规范",
-    descriptionEn: "Bold colors, raw borders, and asymmetric layouts that challenge traditional design conventions.",
+    descriptionEn: "Learn how to build a Neo-Brutalist website with Tailwind CSS v4. Use StyleKit's responsive border and hard-shadow tokens, implement an accessible project link, and export the complete style rules when ready.",
+    seo: NEO_BRUTALIST_GUIDE_SEO,
     history: "新野兽派设计于 2020 年代初兴起，受建筑野兽派运动启发。它是对过度精致的 UI 设计的一种反叛，强调原始、大胆和诚实的视觉表达。",
     historyEn: "Neo-brutalism emerged in the early 2020s, inspired by the architectural Brutalist movement. It's a rebellion against over-polished UI design, emphasizing raw, bold, and honest visual expression.",
     philosophy: "设计应该是诚实和大胆的，不需要隐藏或美化。通过打破常规的视觉元素创造独特的品牌识别和用户记忆点。",
@@ -289,9 +296,10 @@ export const styleGuides: Record<string, StyleGuide> = {
  * Generate SEO-optimized metadata for a style guide page
  */
 export function generateStyleGuideMetadata(guide: StyleGuide): Metadata {
-  const title = `${guide.nameEn} - Design Style Guide`;
-  const description = guide.descriptionEn;
+  const title = guide.seo?.title ?? `${guide.nameEn} - Design Style Guide`;
+  const description = guide.seo?.description ?? guide.descriptionEn;
   const keywords = [
+    ...(guide.seo?.keywords ?? []),
     guide.nameEn,
     "design style",
     "UI design",

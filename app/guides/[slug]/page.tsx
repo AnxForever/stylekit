@@ -2,8 +2,11 @@ import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
+import { NeoBrutalistTailwindGuide } from "@/components/guides/neo-brutalist-tailwind-guide";
+import { RelatedStyleLinks } from "@/components/guides/related-style-links";
 import { styleGuides, generateStyleGuideMetadata } from "@/lib/seo/style-guides";
 import { LocalizedLink } from "@/components/i18n/localized-link";
+import { getAllStylesMeta } from "@/lib/styles/meta";
 
 interface StyleGuidePageProps {
   params: Promise<{ slug: string }>;
@@ -50,7 +53,7 @@ export default async function StyleGuidePage({ params }: StyleGuidePageProps) {
             </div>
 
             <h1 className="text-4xl md:text-5xl font-bold mb-4 text-balance">
-              {guide.nameEn}
+              {guide.seo?.title ?? guide.nameEn}
             </h1>
 
             {guide.name !== guide.nameEn && (
@@ -58,7 +61,7 @@ export default async function StyleGuidePage({ params }: StyleGuidePageProps) {
             )}
 
             <p className="text-lg text-muted leading-relaxed max-w-2xl mb-8">
-              {guide.descriptionEn}
+              {guide.seo?.description ?? guide.descriptionEn}
             </p>
 
             {guide.influencedBy && guide.influencedBy.length > 0 && (
@@ -76,6 +79,8 @@ export default async function StyleGuidePage({ params }: StyleGuidePageProps) {
             )}
           </div>
         </section>
+
+        {slug === "neo-brutalism" && <NeoBrutalistTailwindGuide />}
 
         {/* Philosophy */}
         <section className="border-b border-border">
@@ -158,26 +163,11 @@ export default async function StyleGuidePage({ params }: StyleGuidePageProps) {
           </section>
         )}
 
-        {/* Related Styles */}
-        {guide.influenced && guide.influenced.length > 0 && (
-          <section className="border-b border-border">
-            <div className="max-w-4xl mx-auto px-4 sm:px-6 md:px-12 py-12 md:py-16">
-              <h2 className="text-3xl font-bold mb-6">Related Design Styles</h2>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {guide.influenced.map((style) => (
-                  <LocalizedLink
-                    key={style}
-                    href={`/styles/${style.toLowerCase().replace(/\s+/g, "-")}`}
-                    className="flex items-center justify-between p-4 border border-border rounded-lg hover:border-foreground hover:bg-muted/5 transition-colors"
-                  >
-                    <span className="font-medium">{style}</span>
-                    <span className="text-muted">→</span>
-                  </LocalizedLink>
-                ))}
-              </div>
-            </div>
-          </section>
+        {guide.influenced && (
+          <RelatedStyleLinks
+            names={guide.influenced}
+            styles={getAllStylesMeta()}
+          />
         )}
       </main>
       <Footer />
