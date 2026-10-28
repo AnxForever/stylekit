@@ -10,7 +10,7 @@
 
 <p align="center">
   <strong>An open-source visual style library for AI-generated web interfaces.</strong><br>
-  148 curated styles, each with design tokens, component recipes, Tailwind-ready constraints, and copy-ready prompts.<br>
+  149 curated styles, each with design tokens, component recipes, Tailwind-ready constraints, and copy-ready prompts.<br>
   Available over MCP, as an Agent Skill, and via npm CLI.
 </p>
 
@@ -93,7 +93,7 @@ npx skills@latest add AnxForever/stylekit-skill
 ```
 
 Claude Code, Cursor, Windsurf, and any Agent-Skills-compatible tool can then
-apply any of the 148 styles on request — "make this look like Stripe", "cyberpunk
+apply any of the 149 styles on request — "make this look like Stripe", "cyberpunk
 dashboard" — using the correct tokens and rules. The skill lives in
 [`AnxForever/stylekit-skill`](https://github.com/AnxForever/stylekit-skill).
 
@@ -105,31 +105,39 @@ Back up local edits before this one-time migration. Afterward, the updater
 verifies files before changing them, skips updates when it detects local edits,
 and restores the previous file if an update fails.
 
-### 3. Call it over MCP
+### 3. Call it over MCP (remote or local)
+
+The remote endpoint needs no local process:
+
+```text
+https://www.stylekit.top/mcp
+```
+
+Claude Code, Codex CLI, Gemini CLI, VS Code, Cursor, and other MCP clients can
+add that URL directly; see [`packages/mcp/README.md`](packages/mcp/README.md)
+for the per-client configuration. Clients that only launch stdio servers can
+run it locally:
 
 ```bash
 npx -y --prefer-online stylekit-mcp@latest
 ```
 
-Exposes search, tokens, component recipes, and a `stylekit_lint_code` tool that
-checks whether generated UI code actually follows the style's rules. See
-[`packages/mcp/README.md`](packages/mcp/README.md).
-
-For an MCP client, copy the one-time JSON configuration from the
-[Developers page](https://www.stylekit.top/en/developers). The client checks npm
-for the latest release whenever it starts the MCP process. A running process
-must be restarted to load an update. Public online assets are fetched on
-request, so new content does not require reinstalling the CLI or MCP package.
+Exposes search, tokens, component recipes, implementation briefs, and the
+`stylekit_lint_code` / `stylekit_repair_code` pair for checking and fixing
+generated UI code. The remote endpoint serves both the 2026-07-28 stateless
+protocol and 2025-era clients, with `/mcp/core`, `/mcp/assets`, and
+`/mcp/design` toolsets. Public online assets are fetched on request, so new
+content does not require reinstalling the CLI or MCP package.
 
 ## Styles
 
-148 styles in ten families — Modern & Tech, Brutalist, Brand-Inspired (Apple,
+149 styles in ten families — Modern & Tech, Brutalist, Brand-Inspired (Apple,
 Stripe, Notion, GitHub), Retro & Vintage, Artistic, Japanese & Anime, Cyberpunk
 & Sci-Fi, Layout Patterns, Cultural & Regional, Nature & Cozy.
 
 Every style ships tokens, component code, AI rules, and a full-page live demo.
 
-**[Browse all 148 →](https://www.stylekit.top/en/styles)**
+**[Browse all 149 →](https://www.stylekit.top/en/styles)**
 
 ## What else is in here
 
