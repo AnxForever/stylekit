@@ -81,13 +81,24 @@ function emit(result: CommandResult, json: boolean): void {
   }
 }
 
+/**
+ * Thrown by {@link die} after the message is printed.
+ *
+ * `process.exit()` inside this async entrypoint aborts while the fetch pool and
+ * stdout still hold handles; on Windows Node 24 that trips libuv's
+ * `UV_HANDLE_CLOSING` assertion and the process dies with 0xC0000409 instead of
+ * the exit code the caller asked for. Throwing lets the event loop drain and
+ * `process.exitCode` produce the real status.
+ */
+class CliExit extends Error {}
+
 function die(message: string, json: boolean, code: string): never {
   console.error(
     json
       ? JSON.stringify({ error: message, code }, null, 2)
       : message,
   );
-  process.exit(1);
+  throw new CliExit(code);
 }
 
 async function main(): Promise<void> {
@@ -287,8 +298,17 @@ async function main(): Promise<void> {
 
     emit(result, json);
   } catch (err) {
+    if (err instanceof CliExit) throw err;
     die(`Unexpected error: ${(err as Error).message}`, json, "UNEXPECTED_ERROR");
   }
 }
 
-void main();
+// Every error path has already printed its message: `die` before throwing
+// CliExit, and the outer catch for anything unexpected. Drained handles let the
+// real status reach the caller instead of an abort.
+main().catch((err: unknown) => {
+  if (!(err instanceof CliExit)) {
+    console.error(`Unexpected error: ${(err as Error).message}`);
+  }
+  process.exitCode = 1;
+});
