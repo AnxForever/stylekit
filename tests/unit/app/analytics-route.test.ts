@@ -31,6 +31,7 @@ vi.mock("@/lib/styles/community-runtime", () => ({
 }));
 
 import { POST } from "@/app/api/analytics/route";
+import { ANALYTICS_EXCLUSION_COOKIE_NAME } from "@/lib/analytics/collection-policy";
 import { trackStyleCombination, trackStyleUsage } from "@/lib/analytics";
 import { verifyTrustedOrigin } from "@/lib/security/request-origin";
 import {
@@ -53,7 +54,11 @@ const mockedTrackStyleUsage = vi.mocked(trackStyleUsage);
 const mockedTrackStyleCombination = vi.mocked(trackStyleCombination);
 
 function request(body: unknown, headers: HeadersInit = {}) {
-  return new Request("https://stylekit.top/api/analytics", {
+  return requestAt("https://stylekit.top/api/analytics", body, headers);
+}
+
+function requestAt(url: string, body: unknown, headers: HeadersInit = {}) {
+  return new Request(url, {
     method: "POST",
     headers: { "content-type": "application/json", origin: "https://stylekit.top", ...headers },
     body: typeof body === "string" ? body : JSON.stringify(body),
@@ -102,7 +107,11 @@ describe("analytics route", () => {
     );
 
     expect(response.status).toBe(200);
-    expect(await response.json()).toEqual({ success: true, skipped: true });
+    expect(await response.json()).toEqual({
+      success: true,
+      skipped: true,
+      reason: "disabled",
+    });
     expect(mockedVerifyTrustedOrigin).not.toHaveBeenCalled();
     expect(mockedCheckRateLimit).not.toHaveBeenCalled();
     expect(mockedGetSupabaseAdmin).not.toHaveBeenCalled();
@@ -361,5 +370,197 @@ describe("analytics route", () => {
       }),
     );
     expect(failed.status).toBe(500);
+  });
+
+  it("skips a valid event with the persistent analytics opt-out cookie after API guards", async () => {
+    const response = await POST(
+      request(
+        {
+          eventType: "github_click",
+          eventData: { location: "header" },
+          sessionId: null,
+        },
+        { cookie: `${ANALYTICS_EXCLUSION_COOKIE_NAME}=1` },
+      ),
+    );
+
+    expect(response.status).toBe(200);
+    await expect(response.json()).resolves.toEqual({
+      success: true,
+      skipped: true,
+      reason: "internal",
+    });
+    expect(mockedVerifyTrustedOrigin).toHaveBeenCalledTimes(1);
+    expect(mockedCheckRateLimit).toHaveBeenCalledTimes(1);
+    expect(mockedGetSupabaseAdmin).not.toHaveBeenCalled();
+  });
+
+  it.each([
+    ["Playwright", "Mozilla/5.0 Playwright"],
+    ["headless Chromium client hint", '"Chromium";v="126", "HeadlessChrome";v="126"'],
+    ["command-line client", "curl/8.7.1"],
+    ["search crawler", "Googlebot/2.1"],
+    ["social preview bot", "Slackbot-LinkExpanding 1.0"],
+  ])("skips explicit automation signature: %s", async (_label, userAgent) => {
+    const insert = vi.fn();
+    mockedGetSupabaseAdmin.mockReturnValue({
+      from: vi.fn().mockReturnValue({ insert }),
+    } as never);
+
+    const headers: Record<string, string> = userAgent.startsWith('"')
+      ? { "sec-ch-ua": userAgent }
+      : { "user-agent": userAgent };
+    const response = await POST(
+      request(
+        {
+          eventType: "github_click",
+          eventData: { location: "header" },
+          sessionId: null,
+        },
+        headers,
+      ),
+    );
+
+    expect(response.status).toBe(200);
+    await expect(response.json()).resolves.toMatchObject({
+      success: true,
+      skipped: true,
+      reason: "automation",
+    });
+    expect(insert).not.toHaveBeenCalled();
+  });
+
+  it.each([
+    "/admin",
+    "/admin/analytics",
+    "/admin-login",
+    "/zh/admin/analytics",
+    "/en/admin-login",
+    "/styles/corporate-clean?analytics=off",
+  ])("skips page views for internal or opted-out path %s", async (path) => {
+    const insert = vi.fn();
+    mockedGetSupabaseAdmin.mockReturnValue({
+      from: vi.fn().mockReturnValue({ insert }),
+    } as never);
+
+    const response = await POST(
+      request({
+        eventType: "page_view",
+        eventData: {
+          path,
+          hostname: "stylekit.top",
+          referrerDomain: null,
+          referrerType: "direct",
+        },
+        sessionId: null,
+      }),
+    );
+
+    expect(response.status).toBe(200);
+    const payload = await response.json();
+    expect(payload.success).toBe(true);
+    expect(payload.skipped).toBe(true);
+    expect(payload.reason).toBe("internal");
+    expect(insert).not.toHaveBeenCalled();
+  });
+
+  it("skips request-level analytics=off and keeps the skip reason non-sensitive", async () => {
+    const response = await POST(
+      requestAt(
+        "https://stylekit.top/api/analytics?analytics=off",
+        {
+          eventType: "github_click",
+          eventData: { location: "header" },
+          sessionId: null,
+        },
+      ),
+    );
+
+    await expect(response.json()).resolves.toEqual({
+      success: true,
+      skipped: true,
+      reason: "internal",
+    });
+  });
+
+  it("rejects localhost and preview hosts even under the test runner", async () => {
+    for (const host of ["http://localhost:3000/api/analytics", "https://stylekit-preview.vercel.app/api/analytics"]) {
+      const response = await POST(
+        requestAt(host, {
+          eventType: "github_click",
+          eventData: { location: "header" },
+          sessionId: null,
+        }),
+      );
+
+      expect(response.status).toBe(200);
+      await expect(response.json()).resolves.toMatchObject({
+        success: true,
+        skipped: true,
+        reason: "non-production-host",
+      });
+    }
+    expect(mockedGetSupabaseAdmin).not.toHaveBeenCalled();
+  });
+
+  it("uses the forwarded canonical host only for an HTTPS loopback proxy request", async () => {
+    const insert = vi.fn().mockResolvedValue({ error: null });
+    mockedGetSupabaseAdmin.mockReturnValue({
+      from: vi.fn().mockReturnValue({ insert }),
+    } as never);
+
+    const response = await POST(
+      requestAt("http://127.0.0.1:13000/api/analytics", {
+        eventType: "page_view",
+        eventData: {
+          path: "/styles/corporate-clean",
+          hostname: "attacker-preview.example",
+          referrerDomain: null,
+          referrerType: "direct",
+        },
+        sessionId: null,
+      }, {
+        host: "127.0.0.1:13000",
+        "x-forwarded-host": "www.stylekit.top",
+        "x-forwarded-proto": "https",
+      }),
+    );
+
+    expect(response.status).toBe(200);
+    expect(insert).toHaveBeenCalledWith(
+      expect.objectContaining({
+        event_data: expect.objectContaining({ hostname: "www.stylekit.top" }),
+      }),
+    );
+    expect(JSON.stringify(insert.mock.calls)).not.toContain("attacker-preview.example");
+  });
+
+  it("keeps origin, size, and payload validation active for opted-out requests", async () => {
+    mockedVerifyTrustedOrigin.mockReturnValueOnce({
+      ok: false,
+      status: 403,
+      error: "Cross-origin request denied.",
+    });
+    const denied = await POST(
+      request(
+        { eventType: "github_click", eventData: { location: "header" } },
+        { cookie: `${ANALYTICS_EXCLUSION_COOKIE_NAME}=1` },
+      ),
+    );
+    expect(denied.status).toBe(403);
+
+    const oversized = await POST(
+      request(JSON.stringify({ value: "a".repeat(17 * 1024) }), {
+        cookie: `${ANALYTICS_EXCLUSION_COOKIE_NAME}=1`,
+      }),
+    );
+    expect(oversized.status).toBe(413);
+
+    const invalid = await POST(
+      request({ eventType: "github_click", eventData: {} }, {
+        cookie: `${ANALYTICS_EXCLUSION_COOKIE_NAME}=1`,
+      }),
+    );
+    expect(invalid.status).toBe(400);
   });
 });

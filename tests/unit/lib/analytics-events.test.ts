@@ -10,6 +10,32 @@ import {
 } from "@/lib/analytics/event-contract";
 import { trackEvent, trackPageView } from "@/lib/analytics/events";
 
+function stubProductionAnalyticsBrowser(hostname: string, pathname = "/styles") {
+  const sendBeacon = vi.fn(() => true);
+  vi.stubGlobal("window", {
+    location: {
+      hostname,
+      pathname,
+      search: "",
+      protocol: "https:",
+      href: `https://${hostname}${pathname}`,
+    },
+    localStorage: { getItem: () => null, setItem: vi.fn() },
+    umami: { track: vi.fn() },
+  });
+  vi.stubGlobal("navigator", {
+    sendBeacon,
+    doNotTrack: "",
+    globalPrivacyControl: false,
+    webdriver: false,
+    userAgent: "Mozilla/5.0 Chrome/130.0",
+  });
+  vi.stubGlobal("document", { cookie: "" });
+  vi.stubEnv("NODE_ENV", "production");
+  vi.stubEnv("NEXT_PUBLIC_ANALYTICS_DISABLED", "false");
+  return { sendBeacon };
+}
+
 afterEach(() => {
   vi.unstubAllEnvs();
   vi.unstubAllGlobals();
@@ -20,8 +46,18 @@ describe("analytics event contract", () => {
     const umamiTrack = vi.fn();
     const sendBeacon = vi.fn();
     const fetchMock = vi.fn();
+    vi.stubEnv("NODE_ENV", "production");
     vi.stubEnv("NEXT_PUBLIC_ANALYTICS_DISABLED", "true");
-    vi.stubGlobal("window", { umami: { track: umamiTrack } });
+    vi.stubGlobal("window", {
+      location: {
+        hostname: "www.stylekit.top",
+        pathname: "/styles",
+        search: "",
+        protocol: "https:",
+      },
+      umami: { track: umamiTrack },
+    });
+    vi.stubGlobal("document", { cookie: "" });
     vi.stubGlobal("navigator", { sendBeacon });
     vi.stubGlobal("fetch", fetchMock);
 
@@ -40,11 +76,17 @@ describe("analytics event contract", () => {
 
   it("drops queued events on hosts the tracker is not allowed to record", async () => {
     const umamiTrack = vi.fn();
-    vi.stubEnv("NEXT_PUBLIC_ANALYTICS_DISABLED", "false");
+    stubProductionAnalyticsBrowser("localhost");
     // localhost is outside `data-domains`, so the real tracker never defines
     // window.umami; the queue must give up instead of polling for 5 seconds.
     vi.stubGlobal("window", {
-      location: { hostname: "localhost" },
+      location: {
+        hostname: "localhost",
+        pathname: "/styles",
+        search: "",
+        protocol: "http:",
+      },
+      localStorage: { getItem: () => null, setItem: vi.fn() },
       umami: { track: umamiTrack },
     });
 
@@ -56,10 +98,23 @@ describe("analytics event contract", () => {
 
   it("forwards events once the tracker global is available", () => {
     const umamiTrack = vi.fn();
-    vi.stubEnv("NEXT_PUBLIC_ANALYTICS_DISABLED", "false");
+    const { sendBeacon } = stubProductionAnalyticsBrowser("stylekit.top");
     vi.stubGlobal("window", {
-      location: { hostname: "stylekit.top" },
+      location: {
+        hostname: "stylekit.top",
+        pathname: "/styles",
+        search: "",
+        protocol: "https:",
+      },
+      localStorage: { getItem: () => null, setItem: vi.fn() },
       umami: { track: umamiTrack },
+    });
+    vi.stubGlobal("navigator", {
+      sendBeacon,
+      doNotTrack: "",
+      globalPrivacyControl: false,
+      webdriver: false,
+      userAgent: "Mozilla/5.0 Chrome/130.0",
     });
 
     trackEvent("showcase_open", { slug: "corporate-clean", source: "hero" });
@@ -68,6 +123,49 @@ describe("analytics event contract", () => {
       slug: "corporate-clean",
       source: "hero",
     });
+    expect(sendBeacon).toHaveBeenCalledTimes(1);
+  });
+
+  it.each([
+    ["admin path", "/admin/analytics", "", null, "", false],
+    ["explicit query opt-out", "/styles", "?analytics=off", null, "", false],
+    ["browser preference", "/styles", "", "1", "", false],
+    ["readable cookie", "/styles", "", null, "stylekit-analytics-excluded=1", false],
+    ["automation browser", "/styles", "", null, "", true],
+  ])("suppresses every browser sink for %s", (_label, pathname, search, storedOptOut, cookie, webdriver) => {
+    const umamiTrack = vi.fn();
+    const sendBeacon = vi.fn();
+    vi.stubEnv("NODE_ENV", "production");
+    vi.stubEnv("NEXT_PUBLIC_ANALYTICS_DISABLED", "false");
+    vi.stubGlobal("window", {
+      location: {
+        hostname: "www.stylekit.top",
+        pathname,
+        search,
+        protocol: "https:",
+      },
+      localStorage: { getItem: () => storedOptOut, setItem: vi.fn() },
+      umami: { track: umamiTrack },
+    });
+    vi.stubGlobal("navigator", {
+      sendBeacon,
+      doNotTrack: "",
+      globalPrivacyControl: false,
+      webdriver,
+      userAgent: "Mozilla/5.0 Chrome/130.0",
+    });
+    vi.stubGlobal("document", { cookie });
+
+    trackEvent("showcase_open", { slug: "corporate-clean", source: "hero" });
+    trackPageView({
+      path: pathname,
+      hostname: "www.stylekit.top",
+      referrerDomain: null,
+      referrerType: "direct",
+    });
+
+    expect(umamiTrack).not.toHaveBeenCalled();
+    expect(sendBeacon).not.toHaveBeenCalled();
   });
 
   it("publishes separate client and authoritative allowlists", () => {

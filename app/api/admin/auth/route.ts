@@ -11,6 +11,10 @@ import {
   createRateLimitHeaders,
   getRequestClientKey,
 } from "@/lib/security/rate-limit";
+import {
+  ANALYTICS_EXCLUSION_COOKIE_MAX_AGE_SECONDS,
+  ANALYTICS_EXCLUSION_COOKIE_NAME,
+} from "@/lib/analytics/collection-policy";
 
 const ADMIN_LOGIN_RATE_LIMIT = {
   limit: 10,
@@ -63,6 +67,13 @@ export async function POST(request: Request) {
     secure: process.env.NODE_ENV === "production",
     path: "/",
     maxAge: getAdminSessionCookieMaxAge(),
+  });
+  response.cookies.set(ANALYTICS_EXCLUSION_COOKIE_NAME, "1", {
+    httpOnly: false,
+    sameSite: "lax",
+    secure: process.env.NODE_ENV === "production",
+    path: "/",
+    maxAge: ANALYTICS_EXCLUSION_COOKIE_MAX_AGE_SECONDS,
   });
   return response;
 }

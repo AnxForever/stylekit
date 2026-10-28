@@ -7,6 +7,7 @@
 
 import { getUtmParams } from "@/lib/analytics/utm";
 import { UMAMI_TRACKING_HOSTS } from "@/lib/analytics/umami-constants";
+import { isClientAnalyticsCollectionExcluded } from "@/lib/analytics/collection-policy";
 import type {
   ClientEventName,
   EventProperties,
@@ -43,10 +44,6 @@ declare global {
 
 function isClient(): boolean {
   return typeof window !== "undefined";
-}
-
-function isAnalyticsDisabled(): boolean {
-  return process.env.NEXT_PUBLIC_ANALYTICS_DISABLED === "true";
 }
 
 /**
@@ -92,6 +89,7 @@ function tryTrackWithUmami(
   name: string,
   data: Record<string, string | number | boolean | null>
 ): boolean {
+  if (isClientAnalyticsCollectionExcluded()) return false;
   if (!isTrackableHost()) return false;
   if (!window.umami?.track) return false;
   try {
@@ -106,6 +104,11 @@ function tryTrackWithUmami(
 function scheduleUmamiFlush(): void {
   if (umamiFlushScheduled) return;
 
+  if (isClientAnalyticsCollectionExcluded()) {
+    pendingUmamiEvents.length = 0;
+    return;
+  }
+
   // On a host outside `data-domains` the tracker will never expose itself, so
   // drop the queue immediately instead of polling a global that never arrives.
   if (!isTrackableHost()) {
@@ -115,6 +118,12 @@ function scheduleUmamiFlush(): void {
   umamiFlushScheduled = true;
 
   const flush = () => {
+    if (isClientAnalyticsCollectionExcluded()) {
+      pendingUmamiEvents.length = 0;
+      umamiFlushScheduled = false;
+      return;
+    }
+
     const age = Date.now();
     for (let index = pendingUmamiEvents.length - 1; index >= 0; index -= 1) {
       const event = pendingUmamiEvents[index];
@@ -142,7 +151,7 @@ export function trackEvent<T extends ClientEventName>(
   name: T,
   properties: EventProperties<T>
 ): void {
-  if (!isClient() || isAnalyticsDisabled()) return;
+  if (!isClient() || isClientAnalyticsCollectionExcluded()) return;
 
   const utm = getUtmParams();
   const merged = utm
@@ -159,7 +168,7 @@ export function trackEvent<T extends ClientEventName>(
 }
 
 export function trackPageView(payload: PageViewPayload): void {
-  if (!isClient() || isAnalyticsDisabled()) return;
+  if (!isClient() || isClientAnalyticsCollectionExcluded()) return;
   const utm = getUtmParams();
   queueInternalAnalyticsEvent("page_view", utm ? { ...payload, ...utm } : payload);
 }

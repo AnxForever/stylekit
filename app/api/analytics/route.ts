@@ -16,6 +16,11 @@ import {
   readEventStyleSlug,
   type ParsedClientAnalyticsPayload,
 } from "@/lib/analytics/client-event-schema";
+import {
+  getCanonicalAnalyticsRuntimeHost,
+  getServerAnalyticsCollectionSkipReason,
+  isAnalyticsAutomationRequest,
+} from "@/lib/analytics/server-collection-policy";
 import { parseJsonBodyWithLimit } from "@/lib/security/json-body";
 import {
   checkRateLimit,
@@ -63,7 +68,7 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
   if (process.env.NEXT_PUBLIC_ANALYTICS_DISABLED === "true") {
-    return NextResponse.json({ success: true, skipped: true });
+    return NextResponse.json({ success: true, skipped: true, reason: "disabled" });
   }
 
   const originCheck = verifyTrustedOrigin(request);
@@ -104,6 +109,17 @@ export async function POST(request: Request) {
     const body = parsedBody.data;
     const internalPayload = parseClientAnalyticsPayload(body);
     if (internalPayload.success) {
+      const skipReason = getServerAnalyticsCollectionSkipReason(
+        request,
+        internalPayload.data.eventData,
+      );
+      if (skipReason) {
+        return NextResponse.json(
+          { success: true, skipped: true, reason: skipReason },
+          { headers: rateLimitHeaders },
+        );
+      }
+
       // Catalog impressions are high-volume passive telemetry. Keep them in
       // Umami, but do not persist every card exposure in Postgres.
       // This protects the database quota without changing user-facing behavior.
@@ -146,6 +162,14 @@ export async function POST(request: Request) {
       );
     }
 
+    const skipReason = getServerAnalyticsCollectionSkipReason(request);
+    if (skipReason) {
+      return NextResponse.json(
+        { success: true, skipped: true, reason: skipReason },
+        { headers: rateLimitHeaders },
+      );
+    }
+
     const { slug, source, slugB } = legacyPayload.data;
     if (!getStyleBySlug(slug) || (slugB && !getStyleBySlug(slugB))) {
       return NextResponse.json(
@@ -181,9 +205,15 @@ async function recordInternalAnalyticsEvent(
     return { ok: false, status: 400, error: "Unknown style slug" };
   }
 
-  const deviceType = readDeviceType(request.headers.get("user-agent"));
+  const deviceType = readDeviceType(
+    request.headers.get("user-agent"),
+    isAnalyticsAutomationRequest(request),
+  );
   const eventData = {
     ...payload.eventData,
+    ...(payload.eventType === "page_view"
+      ? { hostname: getCanonicalAnalyticsRuntimeHost(request) ?? "Unknown" }
+      : {}),
     browser: readBrowser(request.headers.get("user-agent")),
     os: readOs(request.headers.get("user-agent")),
     deviceType,
@@ -263,9 +293,12 @@ function readOs(userAgent: string | null): string {
   return "Unknown";
 }
 
-function readDeviceType(userAgent: string | null): "mobile" | "tablet" | "desktop" | "bot" {
+function readDeviceType(
+  userAgent: string | null,
+  isAutomation: boolean,
+): "mobile" | "tablet" | "desktop" | "bot" {
   const ua = (userAgent ?? "").toLowerCase();
-  if (/(bot|crawler|spider|preview|curl|wget)/.test(ua)) return "bot";
+  if (isAutomation) return "bot";
   if (ua.includes("ipad") || ua.includes("tablet")) return "tablet";
   if (ua.includes("mobi") || ua.includes("iphone") || ua.includes("android")) return "mobile";
   return "desktop";

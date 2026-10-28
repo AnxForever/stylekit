@@ -1,5 +1,6 @@
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { DELETE, POST } from "@/app/api/admin/auth/route";
+import { ANALYTICS_EXCLUSION_COOKIE_NAME } from "@/lib/analytics/collection-policy";
 import { ADMIN_SESSION_COOKIE_NAME } from "@/lib/auth/admin-session";
 
 const ORIGINAL_ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
@@ -10,6 +11,8 @@ const WRONG_ADMIN_PASSWORD = ["wrong", "password"].join("-");
 const TEST_SESSION_KEY = ["test", "session", "key"].join("-");
 
 afterEach(() => {
+  vi.unstubAllEnvs();
+
   if (ORIGINAL_ADMIN_PASSWORD === undefined) {
     delete process.env.ADMIN_PASSWORD;
   } else {
@@ -31,6 +34,7 @@ afterEach(() => {
 
 describe("POST /api/admin/auth", () => {
   it("sets an admin session cookie for a valid password", async () => {
+    vi.stubEnv("NODE_ENV", "production");
     process.env.ADMIN_PASSWORD = TEST_ADMIN_PASSWORD;
     process.env.ADMIN_SESSION_SECRET = TEST_SESSION_KEY;
 
@@ -47,6 +51,14 @@ describe("POST /api/admin/auth", () => {
     expect(setCookie).toContain(ADMIN_SESSION_COOKIE_NAME);
     expect(setCookie).toContain("HttpOnly");
     expect(setCookie.toLowerCase()).toContain("samesite=lax");
+    expect(setCookie).toContain(`${ANALYTICS_EXCLUSION_COOKIE_NAME}=1`);
+    const analyticsCookie = setCookie
+      .split(/,\s*(?=[^;,]+=)/)
+      .find((cookie) => cookie.startsWith(`${ANALYTICS_EXCLUSION_COOKIE_NAME}=`));
+    expect(analyticsCookie).toBeTruthy();
+    expect(analyticsCookie?.toLowerCase()).not.toContain("httponly");
+    expect(analyticsCookie?.toLowerCase()).toContain("samesite=lax");
+    expect(analyticsCookie?.toLowerCase()).toContain("secure");
   });
 
   it("rejects invalid passwords", async () => {
@@ -139,5 +151,6 @@ describe("DELETE /api/admin/auth", () => {
     const setCookie = response.headers.get("set-cookie") ?? "";
     expect(setCookie).toContain(`${ADMIN_SESSION_COOKIE_NAME}=`);
     expect(setCookie).toContain("Max-Age=0");
+    expect(setCookie).not.toContain(ANALYTICS_EXCLUSION_COOKIE_NAME);
   });
 });

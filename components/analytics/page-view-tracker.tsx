@@ -3,6 +3,10 @@
 import { useEffect, useRef } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
 import { trackPageView } from "@/lib/analytics/events";
+import {
+  installAnalyticsHistoryGuard,
+  isClientAnalyticsCollectionExcluded,
+} from "@/lib/analytics/collection-policy";
 
 const SEARCH_ENGINES = ["google.", "bing.com", "duckduckgo.com", "baidu.com", "yahoo.", "yandex."];
 const SOCIAL_SOURCES = ["x.com", "twitter.com", "t.co", "linkedin.com", "facebook.com", "reddit.com", "youtube.com", "github.com"];
@@ -13,12 +17,14 @@ export function PageViewTracker() {
   const lastTrackedRef = useRef<string>("");
 
   useEffect(() => {
+    installAnalyticsHistoryGuard();
     if (!pathname || typeof window === "undefined") return;
 
     const query = searchParams?.toString();
     const key = query ? `${pathname}?${query}` : pathname;
     if (lastTrackedRef.current === key) return;
     lastTrackedRef.current = key;
+    if (isClientAnalyticsCollectionExcluded()) return;
 
     const referrer = document.referrer || null;
     const hostname = window.location.hostname;
