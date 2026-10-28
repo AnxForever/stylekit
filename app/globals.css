@@ -213,6 +213,16 @@ h1, h2, h3, h4, h5, h6 {
   background-position: center top;
 }
 
+/* The canvas takes over the grid only once it has painted its first frame; with
+   JS disabled or reduced motion the printed CSS grid above stays in charge. */
+.home-hero-surface:has(.hero-grid-field[data-ready]) {
+  background-image: none;
+}
+
+.hero-grid-field {
+  --hero-grid-ink: color-mix(in srgb, var(--foreground) 4%, transparent);
+}
+
 .home-hero-surface::after {
   position: absolute;
   inset: 0;

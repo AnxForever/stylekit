@@ -3,7 +3,7 @@
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import { startTransition, useEffect, useMemo, useRef, useState } from "react";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Heart } from "lucide-react";
 import { useI18n } from "@/lib/i18n/context";
 import { HomeStyleCard } from "@/components/home/home-style-card";
 import { FeaturedCarousel } from "@/components/home/featured-carousel";
@@ -12,6 +12,17 @@ import { trackEvent } from "@/lib/analytics/events";
 import { MobileHomeSummarySection } from "./_mobile-summary";
 import { TrendingStylesSkeleton } from "./_skeletons";
 import { ThankYouModal } from "@/components/home/thank-you-modal";
+import { HeroGridField } from "@/components/home/hero-grid-field";
+import { HomeSupportCard, type SupportPreviewItem } from "./_support-card";
+import {
+  Drawer,
+  DrawerContent,
+  DrawerDescription,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
 const BuiltForSection = dynamic(
   () => import("@/components/home/built-for-section").then((m) => ({ default: m.BuiltForSection })),
@@ -77,6 +88,23 @@ export function HomeContent({ styles, stats, thankYouEntries }: HomeContentProps
     [styles]
   );
   const mobileFeaturedStyles = useMemo(() => featuredStyles.slice(0, 4), [featuredStyles]);
+
+  const supportHref = localizeHref("/support", locale);
+  const supportPreviewItems: SupportPreviewItem[] = useMemo(
+    () => [
+      {
+        src: "/support/wechat-qr.png",
+        title: locale === "zh" ? "微信赞赏码" : "WeChat Tipping",
+        hint: locale === "zh" ? "微信赞赏" : "Tip via WeChat",
+      },
+      {
+        src: "/support/alipay-qr.png",
+        title: locale === "zh" ? "支付宝" : "Alipay",
+        hint: locale === "zh" ? "支付宝扫码" : "Scan with Alipay",
+      },
+    ],
+    [locale]
+  );
 
   // The Style Catalog renders two lists at once — a mobile carousel and a
   // desktop grid — whose leading slugs overlap. Two <ViewTransition> boundaries
@@ -301,8 +329,7 @@ export function HomeContent({ styles, stats, thankYouEntries }: HomeContentProps
       <ThankYouModal showOnHomepageOnly={true} entries={thankYouEntries} />
       <section id="home-hero" className="home-hero-surface relative overflow-hidden border-b border-border">
         <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
-          <div className="absolute -top-28 left-[-8rem] h-72 w-72 rounded-full bg-accent/10 blur-3xl" />
-          <div className="absolute bottom-[-9rem] right-[-4rem] h-72 w-72 rounded-full bg-foreground/10 blur-3xl" />
+          <HeroGridField />
           <div className="absolute inset-0 bg-[linear-gradient(to_bottom,transparent,rgba(0,0,0,0.04))] dark:bg-[linear-gradient(to_bottom,transparent,rgba(255,255,255,0.04))]" />
         </div>
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 md:px-12 pt-10 sm:pt-16 md:pt-20">
@@ -409,6 +436,66 @@ export function HomeContent({ styles, stats, thankYouEntries }: HomeContentProps
             <RevealOnScroll instant className="w-full max-w-xl md:max-w-none md:justify-self-end">
               <div className="relative">
                 <FeaturedCarousel styles={featuredStyles} />
+                <div className="mt-4 flex justify-end lg:hidden">
+                  <Drawer>
+                    <DrawerTrigger asChild>
+                      <button
+                        type="button"
+                        className="inline-flex items-center gap-2 rounded-full border border-foreground bg-background/90 px-4 py-2 text-sm shadow-[0_14px_40px_-24px_rgba(0,0,0,0.45)] backdrop-blur-sm transition-colors hover:bg-foreground hover:text-background"
+                      >
+                        <Heart className="h-4 w-4" />
+                        {locale === "zh" ? "支持维护" : "Support"}
+                      </button>
+                    </DrawerTrigger>
+                    <DrawerContent
+                      side="bottom"
+                      className="max-h-[88vh] overflow-y-auto rounded-t-[28px] px-4 pb-4 pt-8"
+                    >
+                      <DrawerHeader className="sr-only">
+                        <DrawerTitle>
+                          {locale === "zh" ? "支持维护" : "Support Maintenance"}
+                        </DrawerTitle>
+                        <DrawerDescription>
+                          {locale === "zh"
+                            ? "扫码支持 StyleKit 的服务器、域名和后续维护。"
+                            : "Scan to support StyleKit server, domain, and maintenance costs."}
+                        </DrawerDescription>
+                      </DrawerHeader>
+                      <HomeSupportCard
+                        locale={locale}
+                        href={supportHref}
+                        items={supportPreviewItems}
+                        variant="mobile"
+                      />
+                    </DrawerContent>
+                  </Drawer>
+                </div>
+                <div className="mt-4 hidden lg:flex justify-end">
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <button
+                        type="button"
+                        className="inline-flex items-center gap-2 rounded-full border border-foreground bg-background/90 px-4 py-2 text-sm shadow-[0_14px_40px_-24px_rgba(0,0,0,0.45)] backdrop-blur-sm transition-colors hover:bg-foreground hover:text-background"
+                      >
+                        <Heart className="h-4 w-4" />
+                        {locale === "zh" ? "支持维护" : "Support"}
+                      </button>
+                    </PopoverTrigger>
+                    <PopoverContent
+                      align="end"
+                      side="top"
+                      sideOffset={12}
+                      className="w-[28rem] border-0 bg-transparent p-0 shadow-none"
+                    >
+                      <HomeSupportCard
+                        locale={locale}
+                        href={supportHref}
+                        items={supportPreviewItems}
+                        variant="desktop"
+                      />
+                    </PopoverContent>
+                  </Popover>
+                </div>
               </div>
             </RevealOnScroll>
           </div>
