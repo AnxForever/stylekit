@@ -124,6 +124,8 @@ ops/*
 # Versioned, provider-neutral CDN origin locations include.
 !ops/nginx/
 !ops/nginx/stylekit-performance-locations.conf
+!ops/analytics/
+!ops/analytics/*.mjs
 !ops/systemd/
 !ops/systemd/stylekit-healthcheck.service
 !ops/systemd/stylekit-healthcheck.timer
@@ -142,6 +144,10 @@ __pycache__/
 # Local scratch screenshot helper and package runtime locks.
 /shot.mjs
 packages/.run/
+# One-off diagnostics and scratch scripts written straight into the repo root.
+/.diag-*.ps1
+/.tmp-*.mjs
+/preview-*.png
 
 # Runtime data (analytics, submissions)
 /.data/
