@@ -6,6 +6,7 @@ const routeMetadata: Metadata = {
   title: "Documentation",
   description:
     "StyleKit documentation covering getting started, style systems, exports, AI workflows, and implementation guidance.",
+  robots: { index: false, follow: true },
 };
 
 export default function DocsLayout({

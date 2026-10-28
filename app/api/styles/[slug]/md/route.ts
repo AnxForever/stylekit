@@ -1,5 +1,7 @@
 import { resolveStyleDelivery } from "@/lib/style-delivery";
 import { localizedList, localizedString } from "@/lib/styles/locale-content";
+import { getSiteBaseUrl } from "@/lib/site-url";
+import { localizeHref } from "@/lib/i18n/routing";
 
 /**
  * /api/styles/[slug]/md - Markdown variant for LLM consumption
@@ -219,11 +221,16 @@ ${style.compatibleWith.map((s) => `- \`${s}\``).join("\n")}
   }
 
   const content = sections.join("\n");
+  const htmlPath = delivery.source === "static"
+    ? `/styles/${encodeURIComponent(style.slug)}`
+    : `/community/${encodeURIComponent(style.slug)}`;
+  const canonical = `${getSiteBaseUrl()}${localizeHref(htmlPath, locale)}`;
 
   return new Response(content, {
     headers: {
       "Content-Type": "text/markdown; charset=utf-8",
       "Content-Language": locale === "zh" ? "zh-CN" : "en",
+      Link: `<${canonical}>; rel="canonical"`,
       "Cache-Control": "public, max-age=3600, s-maxage=3600",
     },
   });

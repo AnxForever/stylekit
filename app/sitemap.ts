@@ -130,9 +130,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...createLocalizedEntries("/guide", undefined, "monthly", 0.6),
     ...createLocalizedEntries("/components", undefined, "weekly", 0.6),
     ...createLocalizedEntries("/about", undefined, "monthly", 0.4),
+    ...createLocalizedEntries("/launch", undefined, "monthly", 0.6),
+    ...createLocalizedEntries("/style-advisor", undefined, "monthly", 0.7),
+    ...createLocalizedEntries("/support", undefined, "monthly", 0.3),
     ...createLocalizedEntries("/contact", undefined, "monthly", 0.4),
     ...createEnglishEntry("/privacy", undefined, "yearly", 0.2),
     ...createEnglishEntry("/terms", undefined, "yearly", 0.2),
+    ...createEnglishEntry("/refunds", undefined, "yearly", 0.2),
     ...createEnglishEntry("/blog", undefined, "weekly", 0.7),
     ...createLocalizedEntries("/changelog", undefined, "monthly", 0.5),
   ];
