@@ -13,6 +13,10 @@ import {
 } from "@/lib/i18n/routing";
 import { localizeMetadata } from "@/lib/i18n/metadata";
 import type { Locale } from "@/lib/i18n/translations";
+import {
+  getSpecializedAiIntentCopy,
+  type AiIntentCopy,
+} from "@/lib/seo/ai-intent-specialized";
 
 export type AiIntentPageKey =
   | "ai-ui-design"
@@ -25,25 +29,6 @@ export type AiIntentPageKey =
   | "avoid-ai-slop"
   | "claude-code-ui-design"
   | "codex-ui-design";
-
-interface AiIntentCopy {
-  title: string;
-  description: string;
-  h1: string;
-  intro: string;
-  eyebrow: string;
-  primaryCta: string;
-  secondaryCta: string;
-  includedTitle: string;
-  included: Array<{ title: string; body: string }>;
-  workflowTitle: string;
-  workflow: string[];
-  stylesTitle: string;
-  stylesBody: string;
-  relatedTitle: string;
-  related: Array<{ label: string; href: string; body: string }>;
-  faq: Array<{ question: string; answer: string }>;
-}
 
 const TOOL_LABELS: Record<AiIntentPageKey, string> = {
   "ai-ui-design": "AI coding tools",
@@ -382,6 +367,14 @@ function getCopy(key: AiIntentPageKey, locale: Locale): AiIntentCopy {
     return getPracticalCopy(key, locale);
   }
 
+  if (
+    key === "ai-ui-design" ||
+    key === "claude-code-ui-design" ||
+    key === "codex-ui-design"
+  ) {
+    return getSpecializedAiIntentCopy(key, locale);
+  }
+
   if (isZh) {
     if (key === "ai-web-design") {
       return {
@@ -403,6 +396,7 @@ function getCopy(key: AiIntentPageKey, locale: Locale): AiIntentCopy {
           "先写清页面目标、目标用户和内容层级，再决定使用落地页、仪表盘、作品集还是应用界面结构。",
           "从 StyleKit 选择一个视觉方向，把颜色、字体、间距、组件和禁止项加入 brief。",
           "让 AI 先输出页面结构和组件清单，再分区实现，不要一开始就要求生成一整个复杂网站。",
+          "最后用真实内容检查移动端、键盘操作和交互状态，再把具体问题交回给 AI 修复。",
         ],
         stylesTitle: "用具体视觉语言控制 AI 输出",
         stylesBody: "AI 网页设计的质量取决于输入是否可执行。StyleKit 的风格页提供设计 tokens、组件配方和前端提示词，让视觉判断变成 AI 可以遵循的规则。",
@@ -565,6 +559,7 @@ function getCopy(key: AiIntentPageKey, locale: Locale): AiIntentCopy {
         "Write the page goal, audience, and content hierarchy before choosing a landing page, dashboard, portfolio, or app structure.",
         "Choose one StyleKit direction and add its colors, type, spacing, components, and avoid list to the brief.",
         "Ask the AI to outline the page structure and component list first, then implement sections instead of generating a complex site in one shot.",
+        "Use real content to check mobile layout, keyboard behavior, and interaction states, then ask the AI to fix specific issues.",
       ],
       stylesTitle: "Control AI output with specific visual language",
       stylesBody: "AI web design quality depends on whether the input can be executed. StyleKit provides design tokens, component recipes, and frontend prompt guidance that turn visual judgment into rules an AI can follow.",
@@ -729,36 +724,39 @@ function getCopy(key: AiIntentPageKey, locale: Locale): AiIntentCopy {
   };
 }
 
+function getAiIntentKeywords(key: AiIntentPageKey, locale: Locale): string[] {
+  if (locale === "zh") {
+    const keywords: Partial<Record<AiIntentPageKey, string[]>> = {
+      "ai-web-design": ["AI 网页设计", "AI 生成网页", "AI 网页设计工具", "AI 网站设计", "网页设计提示词", "AI 前端 UI"],
+      "ai-frontend-design": ["AI 前端设计", "AI 前端开发", "前端 AI 工作流", "前端 AI 编程工具", "AI 生成网页代码", "AI 网站制作工具"],
+      "ai-generated-website-fix": ["AI 生成网站不好看", "AI 生成网页不好看怎么办", "AI 网站设计不好看", "AI 网页生成修复", "AI 前端设计规范"],
+      "ai-web-design-tools": ["AI 网页设计工具", "AI 网站设计工具", "AI 网页制作工具", "AI 网站生成器", "AI 做网页设计"],
+      "ai-ui-generator": ["AI 生成 UI", "AI 生成 UI 界面", "AI UI 生成器", "AI 界面设计", "AI UI 设计工具"],
+      "ai-frontend-workflow": ["AI 前端工作流", "AI 前端开发", "前端 AI 工作流", "前端 AI 编程工具", "AI 生成网页代码"],
+      "avoid-ai-slop": ["AI 生成网站不好看", "AI 生成网页不好看怎么办", "避免 AI 味", "AI 前端设计规范", "AI UI 提示词"],
+      "claude-code-ui-design": ["Claude Code UI 设计", "Claude Code 前端设计", "CLAUDE.md UI 规则", "Claude Code 设计系统", "StyleKit Claude Code"],
+      "codex-ui-design": ["Codex UI 设计", "Codex 前端设计", "AGENTS.md UI 规则", "Codex CLI 前端工作流", "StyleKit Codex"],
+    };
+    return keywords[key] ?? ["AI UI 设计", "AI UI 提示词", "网页设计提示词", "AI 界面设计", "前端提示词", "设计 tokens"];
+  }
+
+  const toolSpecificKeywords: Partial<Record<AiIntentPageKey, string[]>> = {
+    "claude-code-ui-design": ["Claude Code UI design", "CLAUDE.md design rules", "Claude Code frontend workflow", "StyleKit Claude Code"],
+    "codex-ui-design": ["Codex UI design", "AGENTS.md UI rules", "Codex CLI frontend workflow", "StyleKit Codex"],
+  };
+  return [
+    ...(toolSpecificKeywords[key] ?? ["AI UI design", "frontend prompts", "web design styles", "design tokens", "Tailwind CSS"]),
+    TOOL_LABELS[key],
+  ];
+}
+
 export function getAiIntentMetadata(
   key: AiIntentPageKey,
   locale: string,
 ): Metadata {
   const resolvedLocale = isLocale(locale) ? locale : "en";
   const copy = getCopy(key, resolvedLocale);
-  const keywords = resolvedLocale === "zh"
-    ? key === "ai-web-design"
-      ? ["AI 网页设计", "AI 生成网页", "AI 网页设计工具", "AI 网站设计", "网页设计提示词", "AI 前端 UI"]
-      : key === "ai-frontend-design"
-        ? ["AI 前端设计", "AI 前端开发", "前端 AI 工作流", "前端 AI 编程工具", "AI 生成网页代码", "AI 网站制作工具"]
-        : key === "ai-generated-website-fix"
-          ? ["AI 生成网站不好看", "AI 生成网页不好看怎么办", "AI 网站设计不好看", "AI 网页生成修复", "AI 前端设计规范"]
-          : key === "ai-web-design-tools"
-            ? ["AI 网页设计工具", "AI 网站设计工具", "AI 网页制作工具", "AI 网站生成器", "AI 做网页设计"]
-            : key === "ai-ui-generator"
-              ? ["AI 生成 UI", "AI 生成 UI 界面", "AI UI 生成器", "AI 界面设计", "AI UI 设计工具"]
-              : key === "ai-frontend-workflow"
-                ? ["AI 前端工作流", "AI 前端开发", "前端 AI 工作流", "前端 AI 编程工具", "AI 生成网页代码"]
-        : key === "avoid-ai-slop"
-          ? ["AI 生成网站不好看", "AI 生成网页不好看怎么办", "避免 AI 味", "AI 前端设计规范", "AI UI 提示词"]
-          : ["AI UI 设计", "AI UI 提示词", "网页设计提示词", "AI 界面设计", "前端提示词", "设计 tokens"]
-    : [
-        "AI UI design",
-        "frontend prompts",
-        "web design styles",
-        TOOL_LABELS[key],
-        "design tokens",
-        "Tailwind CSS",
-      ];
+  const keywords = getAiIntentKeywords(key, resolvedLocale);
   return localizeMetadata(
     {
       title: copy.title,
@@ -860,8 +858,10 @@ export function AiIntentPage({
             </ol>
           </div>
           <div className="border border-border bg-foreground p-6 text-background md:p-8">
-            <p className="text-xs uppercase tracking-[0.18em] opacity-60">Prompt skeleton</p>
-            <pre className="mt-6 whitespace-pre-wrap font-mono text-sm leading-7">{`Build a ${keyName === "ai-ui-design" ? "responsive web page" : `${TOOL_LABELS[keyName]} interface`} using one StyleKit visual direction.\n\nInclude:\n- explicit colors, typography, spacing, radii, and shadows\n- reusable components with hover, focus, loading, and empty states\n- responsive behavior and keyboard-accessible controls\n- a short list of visual choices that must not drift`}</pre>
+            <h2 className="text-lg font-medium">
+              {copy.promptTitle ?? (locale === "zh" ? "可复用的页面 brief" : "Prompt skeleton")}
+            </h2>
+            <pre className="mt-6 whitespace-pre-wrap font-mono text-sm leading-7">{copy.promptContent ?? `Build a ${keyName === "ai-ui-design" ? "responsive web page" : `${TOOL_LABELS[keyName]} interface`} using one StyleKit visual direction.\n\nInclude:\n- explicit colors, typography, spacing, radii, and shadows\n- reusable components with hover, focus, loading, and empty states\n- responsive behavior and keyboard-accessible controls\n- a short list of visual choices that must not drift`}</pre>
           </div>
         </section>
 
@@ -884,7 +884,18 @@ export function AiIntentPage({
         <section className="mx-auto max-w-7xl px-4 py-14 sm:px-6 md:px-12 md:py-20">
           <h2 className="text-2xl font-semibold tracking-tight md:text-3xl">{copy.relatedTitle}</h2>
           <div className="mt-8 grid gap-4 md:grid-cols-3">
-            {copy.related.map((item) => (
+            {copy.related.map((item) => item.external ? (
+              <a
+                key={item.href}
+                href={item.href}
+                target="_blank"
+                rel="noreferrer"
+                className="border border-border p-6 transition-colors hover:border-foreground"
+              >
+                <h3 className="font-medium">{item.label} →</h3>
+                <p className="mt-3 text-sm leading-7 text-muted">{item.body}</p>
+              </a>
+            ) : (
               <Link key={item.href} href={linkFor(item.href)} className="border border-border p-6 transition-colors hover:border-foreground">
                 <h3 className="font-medium">{item.label} →</h3>
                 <p className="mt-3 text-sm leading-7 text-muted">{item.body}</p>
