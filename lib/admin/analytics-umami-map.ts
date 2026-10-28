@@ -14,13 +14,17 @@ import type {
   getAnalyticsWindow,
 } from "@/lib/admin/analytics-api-contract";
 import { analyticsBreakdownSchema, analyticsOverviewSchema } from "@/lib/admin/analytics-api-contract";
-import {
-  UMAMI_TIMEZONE,
-  type UmamiMetricDimension,
-  type UmamiMetricRow,
-  type UmamiPageviews,
-  type UmamiStats,
+import { UMAMI_TIMEZONE } from "@/lib/analytics/umami-constants";
+import type {
+  UmamiMetricDimension,
+  UmamiMetricRow,
+  UmamiPageviews,
+  UmamiStats,
 } from "@/lib/analytics/umami-api";
+import { countsAreVisitors } from "./analytics-breakdown";
+import { createAnalyticsMeasurement } from "./analytics-measurement";
+
+export { countsAreVisitors, getBreakdownCount } from "./analytics-breakdown";
 
 /** The time window an overview describes, matching getAnalyticsWindow's shape. */
 type AnalyticsWindow = ReturnType<typeof getAnalyticsWindow>;
@@ -50,7 +54,15 @@ export function mapUmamiOverview(
   window: AnalyticsWindow,
   now: Date = new Date()
 ): AnalyticsOverview {
-  const previousPageViews = toSeriesMap(pageviews.comparison?.pageviews ?? []);
+  const durationMs = Date.parse(window.end) - Date.parse(window.start);
+  // Compare the same relative bucket in the preceding period. Current and
+  // previous timestamps are different; missing buckets must not shift indexes.
+  const previousPageViews = new Map(
+    (pageviews.comparison?.pageviews ?? []).map((point) => [
+      Date.parse(point.x) + durationMs,
+      point.y,
+    ]),
+  );
   // Session counts come from the same series as pageviews, so equal indices
   // already describe the same time bucket and no re-alignment is needed.
   const sessionsByBucket = toSeriesMap(pageviews.sessions);
@@ -87,17 +99,17 @@ export function mapUmamiOverview(
       bucket: point.x,
       pageViews: point.y,
       visitors: sessionsByBucket.get(point.x) ?? 0,
-      previousPageViews: previousPageViews.get(point.x) ?? 0,
+      previousPageViews: previousPageViews.get(Date.parse(point.x)) ?? 0,
     })),
     quality: {
-      // Umami is cookie-less and derives visitors without a stored session id,
-      // so the "anonymous pageview" warning the self-built pipeline raised can
-      // never apply here. Reporting it as complete is accurate, not optimistic.
-      status: "complete",
+      // API success cannot verify blocked browsers, bot share, or legacy import
+      // attribution. Completeness of returned rows is not audience authenticity.
+      status: "partial",
       anonymousPageViews: 0,
       countryCoveragePct: null,
       generatedAt: now.toISOString(),
     },
+    measurement: createAnalyticsMeasurement("umami_api", window.start),
   });
 }
 
@@ -113,7 +125,7 @@ export function mapUmamiBreakdown(
   dimension: AnalyticsBreakdownDimension
 ): AnalyticsBreakdown {
   const total = rows.reduce((sum, row) => sum + row.y, 0);
-  const byVisitors = VISITOR_DIMENSIONS.has(dimension);
+  const byVisitors = countsAreVisitors(dimension);
 
   return analyticsBreakdownSchema.parse(
     rows.map((row) => ({
@@ -127,17 +139,6 @@ export function mapUmamiBreakdown(
   );
 }
 
-/** Dimensions where a Umami count describes visitors rather than pageviews. */
-const VISITOR_DIMENSIONS: ReadonlySet<AnalyticsBreakdownDimension> = new Set([
-  "country",
-  "browser",
-  "os",
-  "device",
-]);
-
-export function countsAreVisitors(dimension: AnalyticsBreakdownDimension): boolean {
-  return VISITOR_DIMENSIONS.has(dimension);
-}
 
 /** Every breakdown dimension the admin traffic view requests. */
 export const UMAMI_BREAKDOWN_DIMENSIONS: readonly AnalyticsBreakdownDimension[] = [

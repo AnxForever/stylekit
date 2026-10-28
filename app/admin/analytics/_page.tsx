@@ -17,7 +17,7 @@ import type { AnalyticsContent, AnalyticsEvents, AnalyticsOverview, AnalyticsRan
 const PAGE_COPY: Record<AnalyticsView, { title: string; description: string }> = {
   overview: {
     title: "数据概览",
-    description: "先看核心趋势和转化信号，再进入对应分区调查细节。",
+    description: "先看核心趋势和注册规模，再进入对应分区调查细节。",
   },
   traffic: {
     title: "流量分析",
@@ -28,8 +28,8 @@ const PAGE_COPY: Record<AnalyticsView, { title: string; description: string }> =
     description: "查看热门风格、产品行为以及评论、评分、收藏和投稿状态。",
   },
   users: {
-    title: "用户与转化",
-    description: "查看独立访客、深度访问、注册趋势和访问到注册的转化；流量指标来自 Umami Cloud。",
+    title: "访问与注册",
+    description: "查看访问参与度与注册规模；访客指标会标明匿名标识或标签页会话口径，不等于真人数量。",
   },
   audit: {
     title: "操作审计",

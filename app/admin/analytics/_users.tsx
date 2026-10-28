@@ -1,12 +1,13 @@
 ﻿"use client";
 
-import { Activity, UserCheck, UserPlus, Users } from "lucide-react";
+import { Activity, Fingerprint, UserCheck, UserPlus, Users } from "lucide-react";
 import {
   AdminErrorState,
   AdminPanel,
   AdminSegmentedControl,
 } from "@/components/admin/admin-ui";
 import type { AnalyticsOverview, AnalyticsRange, AnalyticsRegistrations } from "@/lib/admin/analytics-api-contract";
+import { AnalyticsMeasurementNote, getVisitorMetricLabel } from "@/components/admin/analytics-measurement-note";
 import { useAnalyticsOverview, useAnalyticsRegistrations } from "@/lib/swr";
 import { AnalyticsSectionNav, AnalyticsSyncStatus } from "./_content";
 import { useAnalyticsRangeState } from "./_range-state";
@@ -20,10 +21,14 @@ export function AnalyticsUsersPage({ initialRange = "7d", initialOverview, initi
     <div className="space-y-6">
       <AnalyticsSectionNav view="users" range={range} />
       <AnalyticsSyncStatus syncing={overview.isValidating || registrations.isValidating} generatedAt={registrations.data?.generatedAt} />
+      <AnalyticsMeasurementNote
+        measurement={overview.data?.measurement}
+        qualityStatus={overview.data?.quality.status}
+      />
       <AdminPanel className="p-4 sm:p-5">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <p className="text-sm font-medium text-foreground">用户与转化</p>
+            <p className="text-sm font-medium text-foreground">访问与注册</p>
             <p className="mt-1 text-sm text-muted">
               访问行为与注册数据独立加载；同期比例不等同于归因转化。
             </p>
@@ -46,7 +51,7 @@ export function AnalyticsUsersPage({ initialRange = "7d", initialOverview, initi
         <AdminPanel className="p-5 sm:p-6">
           <SectionTitle
             title="访问参与度"
-            description="访问按同一匿名标识连续 30 分钟内的行为分组。"
+            description={`访客指标按${getVisitorMetricLabel(overview.data?.measurement)}统计，不代表真人数量。`}
           />
           {overview.isLoading && !overview.data ? <Skeleton /> : null}
           {!overview.data && overview.error ? (
@@ -55,8 +60,8 @@ export function AnalyticsUsersPage({ initialRange = "7d", initialOverview, initi
           {overview.data ? (
             <div className="mt-6 space-y-5">
               <FunnelRow
-                icon={Users}
-                label="独立访客"
+                icon={Fingerprint}
+                label={getVisitorMetricLabel(overview.data.measurement)}
                 value={overview.data.current.visitors}
                 total={overview.data.current.visitors}
               />
@@ -117,8 +122,8 @@ export function AnalyticsUsersPage({ initialRange = "7d", initialOverview, initi
       {overview.data && registrations.data ? (
         <AdminPanel className="p-5 sm:p-6">
           <SectionTitle
-            title="同期注册 / 独立访客"
-            description="用于观察两个总体规模，不代表这些注册由本期会话完成。"
+            title={`同期注册 / ${getVisitorMetricLabel(overview.data.measurement)}`}
+            description="这是同期注册数与访客标识数的规模比例，不代表归因转化，也不代表真人注册转化率。"
           />
           <p className="mt-4 font-mono text-3xl font-semibold tabular-nums text-foreground">
             {overview.data.current.visitors > 0

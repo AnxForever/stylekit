@@ -8,6 +8,28 @@ export const PROJECT_BRIEF_ANALYTICS_SIGNAL_VERSION = 2;
 
 const nullableNumber = z.number().nullable();
 
+export const analyticsMeasurementSchema = z.object({
+  source: z.enum(["umami_snapshot", "umami_api", "internal_events", "legacy_snapshot"]),
+  visitorMetric: z.enum(["anonymous_identifiers", "tab_sessions", "unknown"]),
+  freshness: z.enum(["current", "cached", "stale"]),
+  fallback: z.boolean(),
+  filtering: z.enum(["applied", "collection_only", "unverified"]),
+  policyVersion: z.string().nullable(),
+  rawPageViews: z.number().nonnegative().nullable(),
+  excludedPageViews: z.number().nonnegative().nullable(),
+  exclusions: z.array(z.object({
+    reason: z.enum(["internal", "automation", "non_production"]),
+    pageViews: z.number().nonnegative(),
+  })),
+  history: z.object({
+    status: z.enum(["mixed_legacy", "outside_window", "unverified"]),
+    cutoff: z.string().nullable(),
+    reportedImportedEvents: z.number().nonnegative().nullable(),
+  }),
+});
+
+export type AnalyticsMeasurement = z.infer<typeof analyticsMeasurementSchema>;
+
 export const analyticsOverviewSchema = z.object({
   range: z.object({
     start: z.string(),
@@ -44,9 +66,23 @@ export const analyticsOverviewSchema = z.object({
     countryCoveragePct: nullableNumber,
     generatedAt: z.string(),
   }),
+  // Optional for old persisted payloads. Readers attach explicit unknown
+  // provenance rather than treating missing metadata as a verified source.
+  measurement: analyticsMeasurementSchema.optional(),
 });
 
 export type AnalyticsOverview = z.infer<typeof analyticsOverviewSchema>;
+/**
+ * Realtime visitor count. `visitors` is null when the Umami read path is not
+ * configured or temporarily unavailable, so the dashboard can render a quiet
+ * placeholder instead of treating the whole analytics page as failed.
+ */
+export const analyticsRealtimeSchema = z.object({
+  visitors: z.number().nullable(),
+  generatedAt: z.string(),
+});
+
+export type AnalyticsRealtime = z.infer<typeof analyticsRealtimeSchema>;
 
 export const analyticsBreakdownDimensionSchema = z.enum([
   "path",

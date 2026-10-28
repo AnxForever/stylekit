@@ -5,6 +5,7 @@ vi.mock("server-only", () => ({}));
 
 import {
   countsAreVisitors,
+  getBreakdownCount,
   mapUmamiBreakdown,
   mapUmamiOverview,
 } from "@/lib/admin/analytics-umami-map";
@@ -81,25 +82,39 @@ describe("mapUmamiOverview", () => {
         bucket: "2026-01-26T00:00:00Z",
         pageViews: 600,
         visitors: 250,
-        // The comparison series carries its own timestamps, so buckets without a
-        // matching previous-period point report 0 rather than borrowing a value.
-        previousPageViews: 0,
+        previousPageViews: 300,
       },
       {
         bucket: "2026-01-27T00:00:00Z",
         pageViews: 400,
         visitors: 150,
-        previousPageViews: 0,
+        previousPageViews: 500,
       },
     ]);
   });
 
-  it("marks the payload complete because Umami never has anonymous pageviews", () => {
+  it("labels API data as partial without claiming verified human traffic", () => {
     expect(mapUmamiOverview(stats, pageviews, WINDOW, NOW).quality).toMatchObject({
-      status: "complete",
+      status: "partial",
       anonymousPageViews: 0,
       generatedAt: NOW.toISOString(),
     });
+    expect(mapUmamiOverview(stats, pageviews, WINDOW, NOW).measurement).toMatchObject({
+      source: "umami_api",
+      visitorMetric: "anonymous_identifiers",
+      filtering: "unverified",
+    });
+  });
+
+  it("aligns sparse comparisons by relative time instead of array position", () => {
+    const overview = mapUmamiOverview(stats, {
+      ...pageviews,
+      comparison: {
+        pageviews: [{ x: "2026-01-20T00:00:00Z", y: 123 }],
+        sessions: [],
+      },
+    }, WINDOW, NOW);
+    expect(overview.series.map((point) => point.previousPageViews)).toEqual([0, 123]);
   });
 
   it("returns null ratios instead of dividing by zero on a quiet period", () => {
@@ -182,5 +197,17 @@ describe("mapUmamiBreakdown", () => {
     expect(countsAreVisitors("path")).toBe(false);
     expect(countsAreVisitors("referrer")).toBe(false);
     expect(countsAreVisitors("utm_source")).toBe(false);
+  });
+});
+
+describe("getBreakdownCount", () => {
+  it("reads pageviews for activity dimensions", () => {
+    const row = { value: "/styles", page_views: 75, visitors: 0, share: 75 };
+    expect(getBreakdownCount(row, "path")).toBe(75);
+  });
+
+  it("reads visitors for visitor dimensions", () => {
+    const row = { value: "US", page_views: 0, visitors: 60, share: 60 };
+    expect(getBreakdownCount(row, "country")).toBe(60);
   });
 });

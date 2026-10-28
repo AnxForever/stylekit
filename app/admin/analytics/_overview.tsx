@@ -1,6 +1,6 @@
 ﻿"use client";
 
-import { Activity, Eye, Gauge, MousePointerClick, Users } from "lucide-react";
+import { Activity, Eye, Fingerprint, Gauge, MousePointerClick } from "lucide-react";
 import { useEffect, useState } from "react";
 import {
   AdminErrorState,
@@ -8,7 +8,8 @@ import {
   AdminSegmentedControl,
 } from "@/components/admin/admin-ui";
 import type { AnalyticsOverview, AnalyticsRange } from "@/lib/admin/analytics-api-contract";
-import { useAnalyticsOverview } from "@/lib/swr";
+import { useAnalyticsOverview, useAnalyticsRealtime } from "@/lib/swr";
+import { AnalyticsMeasurementNote, getVisitorMetricLabel } from "@/components/admin/analytics-measurement-note";
 import { AnalyticsSectionNav, AnalyticsSyncStatus } from "./_content";
 import { useAnalyticsRangeState } from "./_range-state";
 import { InteractiveLineChart } from "./_interactive-line-chart";
@@ -42,22 +43,30 @@ export function AnalyticsOverviewPage({
           <div>
             <p className="text-sm text-foreground">经营概览</p>
             <p className="mt-1 text-sm text-muted">
-              流量与访客指标直接来自 Umami Cloud；内容与注册数据独立加载。
+              流量指标会标注来源、识别口径和过滤状态；内容与注册数据独立加载。
             </p>
           </div>
-          <AdminSegmentedControl<AnalyticsRange>
-            value={range}
-            onChange={setRange}
-            ariaLabel="分析时间范围"
-            options={[
-              { value: "24h", label: "24时" },
-              { value: "7d", label: "7天" },
-              { value: "30d", label: "30天" },
-              { value: "90d", label: "90天" },
-            ]}
-          />
+          <div className="flex flex-wrap items-center gap-3">
+            <RealtimeVisitors />
+            <AdminSegmentedControl<AnalyticsRange>
+              value={range}
+              onChange={setRange}
+              ariaLabel="分析时间范围"
+              options={[
+                { value: "24h", label: "24时" },
+                { value: "7d", label: "7天" },
+                { value: "30d", label: "30天" },
+                { value: "90d", label: "90天" },
+              ]}
+            />
+          </div>
         </div>
       </AdminPanel>
+
+      <AnalyticsMeasurementNote
+        measurement={data?.measurement}
+        qualityStatus={data?.quality.status}
+      />
 
       {isLoading && !data ? <OverviewSkeleton /> : null}
       {!data && error ? (
@@ -72,8 +81,8 @@ export function AnalyticsOverviewPage({
 
           <div className="grid gap-px overflow-hidden rounded-xl bg-[var(--admin-border-soft)] shadow-[var(--admin-shadow-border)] sm:grid-cols-2 xl:grid-cols-5">
             <OverviewMetric
-              icon={Users}
-              label="独立访客"
+              icon={Fingerprint}
+              label={getVisitorMetricLabel(data.measurement)}
               value={data.current.visitors}
               previous={data.previous.visitors}
             />
@@ -110,13 +119,40 @@ export function AnalyticsOverviewPage({
             <AdminPanel className="p-4" role="status">
               <p className="text-sm text-foreground">数据质量提示</p>
               <p className="mt-1 text-xs leading-5 text-muted">
-                {data.quality.anonymousPageViews.toLocaleString("zh-CN")} 次浏览缺少会话标识；
+                {data.quality.anonymousPageViews.toLocaleString("zh-CN")} 次页面浏览缺少可识别访客标识；
                 地域覆盖率为 {data.quality.countryCoveragePct == null ? "暂无" : `${data.quality.countryCoveragePct}%`}。
               </p>
             </AdminPanel>
           ) : null}
         </>
       ) : null}
+    </div>
+  );
+}
+
+function RealtimeVisitors() {
+  const { data } = useAnalyticsRealtime();
+  const visitors = data?.visitors;
+  const online = visitors != null;
+
+  return (
+    <div
+      className="flex items-center gap-2 text-xs text-muted"
+      title="Umami 原始接口近 5 分钟的匿名访客标识计数；不代表真人，也未应用历史报表过滤。"
+      aria-label={`Umami 近 5 分钟匿名访客标识 ${visitors == null ? "暂无数据" : visitors.toLocaleString("zh-CN")}；该原始计数不代表真人，也未应用历史报表过滤。`}
+    >
+      <span
+        className={`h-1.5 w-1.5 rounded-full ${
+          online
+            ? "animate-pulse bg-[var(--admin-status-green)]"
+            : "bg-[var(--admin-text-muted)]"
+        }`}
+      />
+      <span>近 5 分钟</span>
+      <span>Umami 匿名访客标识</span>
+      <span className="font-mono tabular-nums text-foreground">
+        {visitors == null ? "—" : visitors.toLocaleString("zh-CN")}
+      </span>
     </div>
   );
 }
@@ -163,11 +199,62 @@ function OverviewMetric({
 function OverviewTrendPanel({ data }: { data: AnalyticsOverview }) {
   const [metric, setMetric] = useState<"visitors" | "pageViews">("visitors");
   const isVisitors = metric === "visitors";
-  return <AdminPanel className="p-5 sm:p-6"><div className="flex flex-wrap items-start justify-between gap-4"><div><h2 className="text-sm font-medium text-foreground">{isVisitors ? "独立访客趋势" : "页面浏览趋势"}</h2><p className="mt-1 text-xs text-muted">{isVisitors ? "按时间桶去重后的独立访客数，直接来自 Umami Cloud。" : "按时间桶统计的页面浏览数，并与上一周期对比。"}</p></div><MetricSwitch value={metric} onChange={setMetric} /></div><InteractiveLineChart ariaLabel={isVisitors ? "独立访客趋势图" : "页面浏览趋势图"} primaryLabel={isVisitors ? "独立访客" : "页面浏览"} secondaryLabel={isVisitors ? undefined : "上一周期"} secondaryIsComparison={!isVisitors} points={data.series.map((point) => ({ key: point.bucket, label: new Date(point.bucket).toLocaleString("zh-CN"), primary: isVisitors ? point.visitors : point.pageViews, secondary: isVisitors ? undefined : point.previousPageViews }))} /></AdminPanel>;
+  const visitorLabel = getVisitorMetricLabel(data.measurement);
+  return (
+    <AdminPanel className="p-5 sm:p-6">
+      <div className="flex flex-wrap items-start justify-between gap-4">
+        <div>
+          <h2 className="text-sm font-medium text-foreground">
+            {isVisitors ? `${visitorLabel}趋势` : "页面浏览趋势"}
+          </h2>
+          <p className="mt-1 text-xs text-muted">
+            {isVisitors
+              ? `按时间桶统计的${visitorLabel}；该口径不等于真人数量。`
+              : "按时间桶统计页面浏览，并与上一周期的页面浏览对比。"}
+          </p>
+        </div>
+        <MetricSwitch value={metric} onChange={setMetric} visitorLabel={visitorLabel} />
+      </div>
+      <InteractiveLineChart
+        ariaLabel={isVisitors ? `${visitorLabel}趋势图` : "页面浏览趋势图"}
+        primaryLabel={isVisitors ? visitorLabel : "页面浏览"}
+        secondaryLabel={isVisitors ? undefined : "上一周期页面浏览"}
+        secondaryIsComparison={!isVisitors}
+        points={data.series.map((point) => ({
+          key: point.bucket,
+          label: new Date(point.bucket).toLocaleString("zh-CN"),
+          primary: isVisitors ? point.visitors : point.pageViews,
+          secondary: isVisitors ? undefined : point.previousPageViews,
+        }))}
+      />
+    </AdminPanel>
+  );
 }
 
-function MetricSwitch({ value, onChange }: { value: "visitors" | "pageViews"; onChange: (value: "visitors" | "pageViews") => void }) {
-  return <div className="inline-flex rounded-md bg-[var(--admin-input)] p-1 shadow-[var(--admin-shadow-border)]" role="group" aria-label="趋势指标">{([['visitors','独立访客'],['pageViews','页面浏览']] as const).map(([metric,label]) => <button key={metric} type="button" aria-pressed={value === metric} onClick={() => onChange(metric)} className={`rounded px-3 py-1.5 text-xs transition-colors ${value === metric ? "bg-[var(--admin-panel)] text-foreground shadow-[var(--admin-shadow-small)]" : "text-muted hover:text-foreground"}`}>{label}</button>)}</div>;
+function MetricSwitch({
+  value,
+  onChange,
+  visitorLabel,
+}: {
+  value: "visitors" | "pageViews";
+  onChange: (value: "visitors" | "pageViews") => void;
+  visitorLabel: string;
+}) {
+  return (
+    <div className="inline-flex rounded-md bg-[var(--admin-input)] p-1 shadow-[var(--admin-shadow-border)]" role="group" aria-label="趋势指标">
+      {([["visitors", visitorLabel], ["pageViews", "页面浏览"]] as const).map(([metric, label]) => (
+        <button
+          key={metric}
+          type="button"
+          aria-pressed={value === metric}
+          onClick={() => onChange(metric)}
+          className={`min-h-11 rounded px-3 py-1.5 text-xs transition-colors sm:min-h-9 ${value === metric ? "bg-[var(--admin-panel)] text-foreground shadow-[var(--admin-shadow-small)]" : "text-muted hover:text-foreground"}`}
+        >
+          {label}
+        </button>
+      ))}
+    </div>
+  );
 }
 
 function OverviewSkeleton() {
