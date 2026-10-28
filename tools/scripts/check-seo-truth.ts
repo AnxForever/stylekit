@@ -4,6 +4,7 @@ import robots from "@/app/robots";
 import { CURATED_STYLE_COUNT } from "@/lib/product/catalog-facts";
 import { animationsMeta } from "@/lib/animations/meta";
 import { templateCatalog } from "@/lib/templates/catalog";
+import { TEMPLATE_DEMO_BOUNDARY } from "@/lib/templates/demo-boundary";
 import { generateStyleJsonLd, generateBlogPostJsonLd } from "@/lib/seo/json-ld";
 
 interface SeoTruthIssue {
@@ -72,13 +73,53 @@ const README_COUNT_CLAIMS: {
 async function main(): Promise<void> {
   const issues: SeoTruthIssue[] = [];
 
-  const [llms, llmsFullSource, rootLayoutSource, publicSeoSources] = await Promise.all([
+  const [
+    llms,
+    llmsFullSource,
+    llmsMarkdownRouteSource,
+    llmsFullRouteSource,
+    templatesLayoutSource,
+    rootLayoutSource,
+    publicSeoSources,
+  ] = await Promise.all([
     readFile("public/llms.txt", "utf8"),
     readFile("lib/export/llms-full.ts", "utf8"),
+    readFile("app/llms.md/route.ts", "utf8"),
+    readFile("app/llms-full.txt/route.ts", "utf8"),
+    readFile("app/templates/layout.tsx", "utf8"),
     readFile("components/layout/site-document.tsx", "utf8"),
     Promise.all(PUBLIC_SEO_SOURCES.map(async (source) => [source, await readFile(source, "utf8")] as const)),
   ]);
 
+  const templateBoundary = TEMPLATE_DEMO_BOUNDARY.en.machineReadable;
+  if (!llms.includes(templateBoundary)) {
+    issues.push({
+      source: "public/llms.txt",
+      message: "does not distinguish template sample claims from StyleKit product claims",
+    });
+  }
+  if (!llmsMarkdownRouteSource.includes("templateDemoBoundaryMarkdown")) {
+    issues.push({
+      source: "app/llms.md/route.ts",
+      message: "does not include the template demo product boundary",
+    });
+  }
+  if (!llmsFullRouteSource.includes("templateDemoBoundaryMarkdown")) {
+    issues.push({
+      source: "app/llms-full.txt/route.ts",
+      message: "does not include the template demo product boundary",
+    });
+  }
+  if (
+    !templatesLayoutSource.includes("data-nosnippet") ||
+    !templatesLayoutSource.includes("TemplateDemoNotice") ||
+    !templatesLayoutSource.includes("addTemplateDemoBoundary")
+  ) {
+    issues.push({
+      source: "app/templates/layout.tsx",
+      message: "template detail pages must label sample content and exclude it from Google snippets",
+    });
+  }
   for (const pattern of BANNED_DISCOVERY_PATTERNS) {
     if (pattern.test(llms) || pattern.test(llmsFullSource)) {
       issues.push({

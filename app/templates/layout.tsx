@@ -2,10 +2,14 @@ import SiteDocument, { generateSiteMetadata } from "@/components/layout/site-doc
 export { viewport } from "@/components/layout/site-document";
 import type { Metadata } from "next";
 import { TemplateViewTracker } from "@/components/analytics/template-view-tracker";
-import { templateCatalog } from "@/lib/templates/catalog";
 import { baseTemplateMetadata } from "@/lib/templates/metadata";
+import {
+  addTemplateDemoBoundary,
+  findTemplateEntryForPath,
+} from "@/lib/templates/demo-boundary";
 import { getRequestLocaleContext } from "@/lib/i18n/request";
 import { applyRequestMetadata } from "@/lib/i18n/metadata";
+import { TemplateDemoNotice } from "@/components/templates/template-demo-notice";
 
 const TEMPLATES_WITHOUT_A_PAGE_HEADING = new Set([
   "/templates/crm-frosted-glass",
@@ -17,7 +21,7 @@ const TEMPLATES_WITHOUT_A_PAGE_HEADING = new Set([
 
 export async function generateMetadata(): Promise<Metadata> {
   const context = await getRequestLocaleContext();
-  const entry = templateCatalog.find((template) => template.href === context.contentPath);
+  const entry = findTemplateEntryForPath(context.contentPath);
   const localized = entry
     ? {
         ...baseTemplateMetadata,
@@ -27,7 +31,12 @@ export async function generateMetadata(): Promise<Metadata> {
       }
     : baseTemplateMetadata;
 
-  return { ...await generateSiteMetadata(), ...applyRequestMetadata(localized, context) };
+  const metadata = {
+    ...await generateSiteMetadata(),
+    ...applyRequestMetadata(localized, context),
+  };
+
+  return entry ? addTemplateDemoBoundary(metadata, context.locale) : metadata;
 }
 
 export default async function TemplatesLayout({
@@ -36,7 +45,7 @@ export default async function TemplatesLayout({
   children: React.ReactNode;
 }) {
   const context = await getRequestLocaleContext();
-  const entry = templateCatalog.find((template) => template.href === context.contentPath);
+  const entry = findTemplateEntryForPath(context.contentPath);
   const heading = entry && TEMPLATES_WITHOUT_A_PAGE_HEADING.has(context.contentPath)
     ? context.locale === "zh"
       ? entry.name.zh
@@ -47,7 +56,12 @@ export default async function TemplatesLayout({
     <SiteDocument>
       <TemplateViewTracker />
       {heading ? <h1 className="sr-only">{heading}</h1> : null}
-      {children}
+      {entry ? <TemplateDemoNotice locale={context.locale} /> : null}
+      {entry ? (
+        <div className="contents" data-nosnippet>
+          {children}
+        </div>
+      ) : children}
     </SiteDocument>
   );
 }

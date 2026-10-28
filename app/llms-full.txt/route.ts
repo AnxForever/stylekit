@@ -1,6 +1,7 @@
 import { generateLlmsFullText } from "@/lib/export/llms-full";
 import { listPromotedCommunityStyles } from "@/lib/styles/community-runtime";
 import { getSiteBaseUrl } from "@/lib/site-url";
+import { templateDemoBoundaryMarkdown } from "@/lib/templates/demo-boundary";
 
 export const dynamic = "force-dynamic";
 
@@ -15,7 +16,7 @@ export async function GET() {
         )
         .join("\n\n")}\n`
     : "";
-  const content = `${generateLlmsFullText()}${communitySection}`;
+  const content = `${generateLlmsFullText()}\n\n${templateDemoBoundaryMarkdown("en")}${communitySection}`;
 
   return new Response(content, {
     headers: {

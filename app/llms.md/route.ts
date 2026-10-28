@@ -4,6 +4,7 @@ import { getStyleRecipes } from "@/lib/recipes";
 import { localizedString } from "@/lib/styles/locale-content";
 import { getSiteBaseUrl } from "@/lib/site-url";
 import { listPromotedCommunityStyles } from "@/lib/styles/community-runtime";
+import { templateDemoBoundaryMarkdown } from "@/lib/templates/demo-boundary";
 
 export const dynamic = "force-dynamic";
 
@@ -81,6 +82,8 @@ These approved community contributions were selected for the curated catalog. Ea
 - [Generated catalog reference](${BASE_URL}/llms-full.txt): Larger machine-readable catalog export
 - [GitHub repository](https://github.com/AnxForever/stylekit)
 `);
+
+  sections.push(templateDemoBoundaryMarkdown("en"));
 
   const content = sections.join("\n");
 
