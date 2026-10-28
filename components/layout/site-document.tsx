@@ -13,6 +13,7 @@ import { ScrollToTop } from "@/components/ui/scroll-to-top";
 import { ClientScripts } from "@/components/layout/client-scripts";
 import { AnnouncementBanner } from "@/components/layout/announcement-banner";
 import { serializeJsonLd } from "@/lib/security/json-ld";
+import { CommunityRail } from "@/components/community/community-rail";
 import { MobileBottomNav } from "@/components/layout/mobile-bottom-nav";
 import { getSiteBaseUrl } from "@/lib/site-url";
 import { getLocaleDocumentContext, getRequestLocaleContext } from "@/lib/i18n/request";
@@ -26,6 +27,8 @@ import "@/app/globals.css";
 import type { Locale } from "@/lib/i18n/translations";
 import { FRIEND_PROMO_ID, FRIEND_PROMO_STORAGE_KEY } from "@/lib/home/friend-promo";
 import { UMAMI_TRACKING_DOMAINS } from "@/lib/analytics/umami-constants";
+import { GOOGLE_ANALYTICS_BOOTSTRAP_SCRIPT } from "@/lib/analytics/google-analytics";
+import { ANALYTICS_COLLECTION_POLICY_BOOTSTRAP_SCRIPT } from "@/lib/analytics/collection-policy";
 
 const publicSans = Albert_Sans({
   subsets: ["latin", "latin-ext"],
@@ -205,6 +208,19 @@ export default async function SiteDocument({
         <link rel="icon" href="/icon.svg" type="image/svg+xml" />
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
         <link rel="manifest" href="/manifest.json" />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: ANALYTICS_COLLECTION_POLICY_BOOTSTRAP_SCRIPT,
+          }}
+        />
+        {process.env.NODE_ENV !== "production" ||
+        process.env.NEXT_PUBLIC_ANALYTICS_DISABLED === "true" ? null : (
+          <Script
+            id="google-analytics"
+            strategy="afterInteractive"
+            dangerouslySetInnerHTML={{ __html: GOOGLE_ANALYTICS_BOOTSTRAP_SCRIPT }}
+          />
+        )}
         {process.env.NEXT_PUBLIC_ANALYTICS_DISABLED === "true" ? null : (
           <Script
             id="vibeloft-telemetry"
@@ -214,13 +230,20 @@ export default async function SiteDocument({
             data-vl-auth-key="vl_web.grGnbaTxVblO8tSKoOK8zC-726z3_2htURIvubBSPXM"
           />
         )}
+        <script
+          defer
+          src="https://vibecafe.ai/telemetry/v1.js"
+          data-vc-product-id="cmvkjmjs0000208ighwdlcmgy"
+          data-vc-auth-key="vc_web_ZQQOrQHyU2kzOgSc6cRs6RfyT_oRl1QxQaoRDU0n4ow"
+        />
         {/*
           The collector is the self-hosted Umami at https://www.stylekit.top/umami.
           It must be set explicitly: there is no default, because falling back to
           Umami Cloud would silently double-count every visit once the self-hosted
           instance is configured too.
         */}
-        {process.env.NEXT_PUBLIC_ANALYTICS_DISABLED !== "true" &&
+        {process.env.NODE_ENV === "production" &&
+        process.env.NEXT_PUBLIC_ANALYTICS_DISABLED !== "true" &&
         process.env.NEXT_PUBLIC_UMAMI_SCRIPT_URL?.trim() &&
         process.env.NEXT_PUBLIC_UMAMI_WEBSITE_ID?.trim() ? (
           <Script
@@ -230,6 +253,7 @@ export default async function SiteDocument({
             data-website-id={process.env.NEXT_PUBLIC_UMAMI_WEBSITE_ID.trim()}
             data-domains={UMAMI_TRACKING_DOMAINS}
             data-do-not-track="true"
+            data-before-send="stylekitAnalyticsBeforeSend"
           />
         ) : null}
         {showcaseTypography ? (
@@ -348,6 +372,7 @@ export default async function SiteDocument({
           {children}
           <ShowcaseBackBar />
           <MobileBottomNav />
+          <CommunityRail />
           <ScrollToTop />
         </ClientProviders>
         <ClientScripts />

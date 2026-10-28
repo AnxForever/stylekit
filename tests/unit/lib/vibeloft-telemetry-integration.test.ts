@@ -53,10 +53,10 @@ describe("VibeLoft telemetry integration", () => {
     const config = await read("next.config.ts");
 
     expect(config).toContain(
-      `"script-src 'self' 'unsafe-inline' 'unsafe-eval' https://vibeloft.ai"`
+      `"script-src 'self' 'unsafe-inline' 'unsafe-eval' https://vibeloft.ai https://www.googletagmanager.com https://vibecafe.ai"`
     );
     expect(config).toContain(
-      `"connect-src 'self' https://*.supabase.co https://connect.linux.do wss://*.supabase.co https://api.github.com ${EVENT_ORIGIN}"`
+      `"connect-src 'self' https://*.supabase.co https://connect.linux.do wss://*.supabase.co https://api.github.com ${EVENT_ORIGIN} https://www.googletagmanager.com https://*.google-analytics.com https://*.google.com https://vibecafe.ai"`
     );
     expect(config).toContain(`"default-src 'self'"`);
     expect(config).toContain(`"frame-ancestors 'self'"`);
