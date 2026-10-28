@@ -89,7 +89,7 @@ describe("public asset MCP tools", () => {
       kind: "component-pattern", query: "missing", offset: 200, limit: 20,
     });
     expect(result.isError).toBeUndefined();
-    expect(result.structuredContent).toMatchObject({ total: 12, assets: [], offset: 200, source: "live" });
+    expect(result.structuredContent).toMatchObject({ total: 12, count: 0, assets: [], offset: 200, next_offset: null, source: "live" });
     expect(JSON.parse(result.content?.[0]?.text ?? "{}")).toEqual(result.structuredContent);
   });
 

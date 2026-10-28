@@ -2,9 +2,9 @@
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
   "name": "io.github.AnxForever/stylekit-mcp",
   "title": "StyleKit",
-  "description": "stdio MCP server for StyleKit styles, templates, assets, tokens, recipes, and lint checks.",
-  "version": "0.4.1",
-  "websiteUrl": "https://stylekit.top",
+  "description": "MCP server for StyleKit styles, tokens, recipes, lint and repair over stdio or HTTP.",
+  "version": "0.5.0",
+  "websiteUrl": "https://www.stylekit.top",
   "repository": {
     "url": "https://github.com/AnxForever/stylekit",
     "source": "github",
@@ -15,11 +15,17 @@
       "registryType": "npm",
       "registryBaseUrl": "https://registry.npmjs.org",
       "identifier": "stylekit-mcp",
-      "version": "0.4.1",
+      "version": "0.5.0",
       "runtimeHint": "npx",
       "transport": {
         "type": "stdio"
       }
+    }
+  ],
+  "remotes": [
+    {
+      "type": "streamable-http",
+      "url": "https://www.stylekit.top/mcp"
     }
   ]
 }
