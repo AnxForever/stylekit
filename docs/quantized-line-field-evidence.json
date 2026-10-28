@@ -1,0 +1,120 @@
+{
+  "updated": "2026-10-21",
+  "verification": {
+    "lint": "0 errors; 38 existing warnings",
+    "typecheck": "pnpm exec tsc --noEmit passed",
+    "tests": "310 files; 8137 passed; 1 existing skip",
+    "trackingE2E": "2 passed: integer detection targets with fractional rendered motion, grid bounds, three pixel reads, pause stability and high-DPI mobile resize",
+    "egoMotion": {
+      "before": "Visible marker positions changed in whole-cell steps of 5.49 CSS pixels.",
+      "after": "51 measured nonzero visible marker displacements ranged from 0.098 to 1.626 CSS pixels during an Ego pointer sweep.",
+      "artifacts": [".tmp/quantized-line-field/ego-smooth-before.json", ".tmp/quantized-line-field/ego-smooth-after.json"],
+      "limits": "The Ego GUI was closed/minimized during some runs and a simple control page was also throttled. Those runs do not establish a stable display frame rate or an FPS improvement. Keep geometry continuity distinct from frame cadence."
+    },
+    "build": "pnpm run build passed; 2240 static pages generated",
+    "browser": [
+      "Production build: searching for 量化 returns the style-library entry",
+      "Detail hard-prompt copy includes the full Chinese recipe and all three paths",
+      "Original showcase copy flow passed; current recipe bodies are 5695 Chinese and 11881 English characters and remain covered by exact-content unit tests",
+      "Caption and brand controls work with keyboard activation",
+      "390px viewport: three cards stack, frame content fits, no horizontal overflow",
+      "Embedded reference retains three sampling reads and correctly scaled canvas backing stores"
+    ],
+    "deployment": "Production acceptance and rollback paths are recorded separately in /www/stylekit/.release-quantized-line-field.json; this source ledger is not a live deployment receipt.",
+    "preview": ".tmp/quantized-line-field/style-preview-clean.png"
+  },
+  "purpose": "Let visitors discover the line-card experiment in the style library and reproduce it from a complete prompt.",
+  "design": {
+    "name": "量化线场 / Quantized Line Field",
+    "palette": ["#fafaf8", "#eeeeeb", "#2152e7", "#111212", "#c2dcff", "#ec353e"],
+    "type": "Local serif display, sans-serif interface, monospace coordinate annotations.",
+    "layout": "Gallery cover shows the three identities. The detail page uses existing AI implementation documents; the showcase opens with the live cards and direct prompt copying, then explains the visual system.",
+    "principle": "Put motion in the artwork and keep copy and controls quiet. Preserve discrete stroke weights and a recognizable mark."
+  },
+  "features": [
+    {
+      "id": "quantized-release-announcement",
+      "parent": "style-library",
+      "lifecycle": "publish, revisit, follow announcement, dismiss, reload and next release",
+      "outcome": "Returning visitors discover the new style through the existing announcement bar and can dismiss each publication independently.",
+      "delivery": "implemented",
+      "coverage": "partial",
+      "history": "reopened-by-change",
+      "evidence": ["User chose the existing top announcement bar with a direct style link", "Announcement dismissal previously used one permanent locale ID", "The first production attempt returned locale-page 404s after a new global layout-cache invalidation; the old build and announcements were restored", "The isolated candidate stayed healthy through automatic stale-page regeneration without that invalidation"],
+      "decision": "Bundle the bilingual release announcement in generated pages, give its matching published database row the same dismissal ID, preserve newer admin campaigns, and retain the existing announcement API without global route invalidation.",
+      "acceptance": "Unit coverage checks new-publication visibility after dismissal, old campaign precedence and canonical dismissal identity. The production receipt records live route, CTA and dismissal acceptance separately.",
+      "failure": "The first deployment check covered initial route responses but missed behavior after publishing the announcement. No global cache invalidation remains in the release.",
+      "priority": "P1"
+    },
+    {
+      "id": "quantized-motion-continuity",
+      "parent": "quantized-dynamic-scan-tracking",
+      "lifecycle": "continuous pointer sweeps, target changes, settling and pause",
+      "outcome": "Boxes move continuously between grid targets and reacquire without visible teleporting.",
+      "delivery": "implemented",
+      "coverage": "partial",
+      "history": "backfilled",
+      "evidence": ["User reports choppy motion in Ego", "Ego pointer-sweep CPU profile: callback p95 4ms, no long tasks, visible box steps of 5.49px", "drawDetections rounds every interpolated position to whole cells", "Previous acceptance checked changing coordinates, not motion continuity"],
+      "decision": "Snap detection targets only; draw fractional positions with a critically damped spring, crossfade distant reacquisitions and their connectors, and coalesce pointer work.",
+      "acceptance": "Ego pointer sweeps measured sub-cell rendered movement instead of 5.49px grid jumps. Unit tests cover fractional projection, hidden relocation, monotonic settling and consistent 30/60/120Hz integration. Pause and mobile-resize E2E pass. Stable display cadence is not established by background-throttled Ego captures.",
+      "failure": "Per-frame grid rounding canceled smoothing. Unmatched regions appeared immediately at a new location.",
+      "priority": "P1"
+    },
+    {
+      "id": "quantized-dynamic-scan-tracking",
+      "parent": "quantized-style-visual-preview",
+      "lifecycle": "hover, idle drift, pointer displacement, spring return, keyboard focus, pause and resize",
+      "outcome": "Scan boxes follow bright regions of the current line field, with coordinates matching their displayed grid positions.",
+      "delivery": "implemented",
+      "coverage": "covered",
+      "history": "backfilled",
+      "evidence": ["User screenshot and correction: boxes stay fixed", "Reference constructor runs detectRegions only once on the original luminance table", "Per-frame line rendering already computes noisy luminance and spring displacement"],
+      "decision": "Rebuild a numerical live field during throttled scan passes, reuse the sampled source table, and preserve target continuity rather than adding arbitrary motion.",
+      "acceptance": "Six tests exercise helpers extracted from the actual HTML. Two headless browser tests verify changing live target coordinates, grid bounds, paused stability, DPR-scaled mobile resize and three total pixel reads. The connected browser also observed a grid coordinate changing during pointer response.",
+      "failure": "Original scan positions were computed only at initialization; later frames updated opacity alone.",
+      "priority": "P1"
+    },
+    {
+      "id": "quantized-style-discovery",
+      "parent": "style-library",
+      "lifecycle": "gallery, search, detail, showcase navigation, exports",
+      "outcome": "Find the experiment as a named visual style.",
+      "delivery": "implemented",
+      "coverage": "covered",
+      "history": "reopened-by-change",
+      "evidence": ["User correction: add it to the style library", "lib/styles/types.ts", "docs/STYLE_ADDITION_CHECKLIST.md", "lib/style-publication/plan.ts"],
+      "decision": "Adapt the existing style contract and publication flow; keep the authored cover pending owner visual-baseline review.",
+      "acceptance": "All style, metadata, token, recipe, preview and showcase projections agree; the new style is discoverable and opens its authored demo.",
+      "failure": "A prompt-only entry did not satisfy discovery in the style library.",
+      "priority": "P1"
+    },
+    {
+      "id": "quantized-style-reproduction",
+      "parent": "style-library",
+      "lifecycle": "view, switch language, copy, download, replace brand data",
+      "outcome": "Generate a standalone version without guessing logo paths or parameters.",
+      "delivery": "implemented",
+      "coverage": "partial",
+      "history": "backfilled",
+      "evidence": ["lib/prompts/canvas-line-cards.ts", "public/experiments/brand-line-cards/index.html", "Prior independent Chinese-prompt-only generation and browser checks"],
+      "decision": "Reuse the complete bilingual recipe in style AI rules and the showcase copy targets. Make source paths part of the copied payload.",
+      "acceptance": "Both style hard prompts retain the exact three paths; showcase copy matches the chosen complete recipe, and the HTML attachment loads.",
+      "failure": "One independent generation required a DPR-only handling refinement. Browser emulation also had event-delivery limits while paused; general model/device conformance is not established.",
+      "priority": "P1"
+    },
+    {
+      "id": "quantized-style-visual-preview",
+      "parent": "style-library",
+      "lifecycle": "static cover, live iframe, resize, offscreen, motion preference, mobile",
+      "outcome": "Recognize the style before copying and experience the original interaction.",
+      "delivery": "implemented",
+      "coverage": "partial",
+      "history": "none",
+      "evidence": ["Original seven-point Canvas brief", "Browser-checked standalone reference", "Static cover groups sampled from the same actual paths"],
+      "decision": "Keep the reference engine in one standalone file, embed it for the live demo, and use static line groups for lightweight gallery previews.",
+      "acceptance": "Three identities remain recognizable; the iframe fits desktop and mobile; prompt and download actions remain usable; no existing approved cover renderer changes.",
+      "failure": "Localized showcase routing and 390px iframe sizing passed browser checks. Static samples intentionally omit animated noise and pointer displacement; the new cover remains outside the frozen approved visual baseline until owner review.",
+      "priority": "P1"
+    }
+  ]
+}

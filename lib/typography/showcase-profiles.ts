@@ -192,6 +192,7 @@ const FALLBACK_PROFILE_BY_SLUG: Record<string, ProfileId> = {
   "memphis": "retro",
   "op-art": "poster",
   "pastel-goth": "poster",
+  "quantized-line-field": "catalog",
   "scrollytelling": "poster",
   "skeuomorphism": "retro",
   "terracotta": "catalog",

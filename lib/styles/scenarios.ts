@@ -122,6 +122,7 @@ const SCENARIO_ASSIGNMENTS: Record<string, StyleScenario[]> = {
   "latex-paper": ["portfolio", "docs", "blog"],
   "distill-style": ["portfolio", "blog", "docs"],
   "generative-art": ["creative", "portfolio"],
+  "quantized-line-field": ["creative", "portfolio", "marketing"],
   "glitch-art": ["creative", "portfolio"],
   "neo-brutalist-playful": ["creative", "marketing", "portfolio"],
 

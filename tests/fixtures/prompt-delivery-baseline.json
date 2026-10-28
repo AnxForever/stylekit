@@ -1774,5 +1774,17 @@
     "enHeadings": 38,
     "zhBullets": 71,
     "enBullets": 47
+  },
+  "quantized-line-field": {
+    "zh": 19319,
+    "en": 22350,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 46,
+    "enFences": 42,
+    "zhHeadings": 42,
+    "enHeadings": 39,
+    "zhBullets": 92,
+    "enBullets": 69
   }
 }

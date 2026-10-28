@@ -164,6 +164,8 @@ import { shaderGradientTokens } from "./shader-gradient-tokens";
 import { pastelUiTokens } from "./pastel-ui-tokens";
 import { mobileEditorialTokens } from "./mobile-editorial-tokens";
 import { softUtilityTokens } from "./soft-utility-tokens";
+import { quantizedLineFieldTokens } from "./quantized-line-field-tokens";
+
 
 
 
@@ -332,4 +334,5 @@ export const styleTokensRegistry: Record<string, StyleTokens> = {
   "pastel-ui": pastelUiTokens,
   "mobile-editorial": mobileEditorialTokens,
   "soft-utility": softUtilityTokens,
+  "quantized-line-field": quantizedLineFieldTokens,
 };

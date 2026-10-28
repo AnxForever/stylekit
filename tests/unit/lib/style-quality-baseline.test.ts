@@ -23,6 +23,8 @@ import { hasLintableRules } from "@/lib/styles/style-linter";
  *
  * If a refactor moves these numbers, the gate thresholds derived from them are
  * no longer valid and must be re-derived rather than nudged back.
+ * On 2026-10-21, Quantized Line Field brought the inventory to 149; the measured
+ * percentiles and sub-60 count below remained unchanged.
  */
 describe("style library quality baseline", () => {
   const scores = styles
@@ -33,7 +35,7 @@ describe("style library quality baseline", () => {
   const percentile = (p: number) => scores[Math.floor((scores.length - 1) * p)];
 
   it("covers every registered style", () => {
-    expect(styles.length).toBe(148);
+    expect(styles.length).toBe(149);
     expect(scores.length).toBe(styles.length);
   });
 
@@ -51,7 +53,7 @@ describe("style library quality baseline", () => {
   });
 
   it("has complete component code for every style", () => {
-    // This one IS a hard gate for submissions: our own library meets it 148/148.
+    // This one IS a hard gate for submissions: our own library meets it 149/149.
     const complete = styles.filter(
       (style) => getStyleQuality(style).capabilities.componentCode === "complete",
     );
