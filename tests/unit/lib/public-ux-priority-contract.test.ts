@@ -19,17 +19,19 @@ describe("public UX priority contract", () => {
     expect(source).not.toContain("<span>More</span>");
   });
 
-  it("keeps support reachable from the footer without competing with homepage discovery", async () => {
+  it("keeps support reachable from the footer and the homepage carousel", async () => {
     const [home, footer, contact] = await Promise.all([
       read("components/home/home-content.tsx"),
       read("components/layout/footer.tsx"),
       read("app/contact/page.tsx"),
     ]);
 
-    // Support remains on Contact & Support with its existing footer entry.
-    // A dismissible sponsored banner is also allowed above the homepage content.
+    // Support stays on Contact & Support and remains one click away from the
+    // homepage through the QR popover. The dedicated /support page carries the
+    // full method list and acknowledgments.
     expect(home).toContain("<FeaturedCarousel");
-    expect(home).not.toContain("<HomeSupportCard");
+    expect(home).toContain("<HomeSupportCard");
+    expect(home).toContain('localizeHref("/support", locale)');
     expect(footer).toContain('localizeHref("/contact#support-maintenance", locale)');
     expect(contact).toContain("<SupportContent");
     expect(contact).toContain("<FriendPromoBanner");

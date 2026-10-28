@@ -1,27 +1,50 @@
 import type { Metadata } from "next";
+import { existsSync } from "node:fs";
+import path from "node:path";
 import Image from "next/image";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { LocalizedLink } from "@/components/i18n/localized-link";
 import { getRequestLocaleContext } from "@/lib/i18n/request";
+import { localizeMetadata } from "@/lib/i18n/metadata";
+import { ThankYouList } from "@/components/support/thank-you-list";
+import { getPublishedThankYouEntries } from "@/lib/support/acknowledgments";
 
-// International card-payment support is being set up through a
-// merchant-of-record (Paddle). A Ko-fi page is registered at
-// https://ko-fi.com/anxforever but MUST NOT be linked here until a payout
-// method (PayPal) is connected in Ko-fi - without it, visitor payments fail
-// at the final step. Once connected and verified with a real test payment,
-// set KOFI_URL to that address and the block switches to a live button.
-const KOFI_URL = "";
+export async function generateMetadata(): Promise<Metadata> {
+  const { locale } = await getRequestLocaleContext();
+  return localizeMetadata(
+    locale === "zh"
+      ? {
+          title: "支持 StyleKit",
+          description:
+            "扫码赞赏支持 StyleKit 的服务器、域名与持续维护，并查看赞助鸣谢。",
+        }
+      : {
+          title: "Support StyleKit",
+          description:
+            "Support StyleKit's servers, domain and maintenance with a voluntary tip and see the acknowledgments.",
+        },
+    locale,
+    "/support",
+  );
+}
 
-export const metadata: Metadata = {
-  title: "Support StyleKit",
-  description:
-    "Ways to support StyleKit's servers, domains, and ongoing maintenance - star the project, share it, or leave a voluntary tip.",
-};
+/**
+ * Legacy acknowledgment rows point at screenshots under `public/`. Skip rows
+ * whose image is gone instead of publishing a broken tile; newer rows use
+ * absolute Supabase Storage URLs and always render.
+ */
+function hasRenderableReceipt(src: string): boolean {
+  if (/^https?:\/\//i.test(src)) return true;
+  return existsSync(path.join(process.cwd(), "public", src.replace(/^\/+/, "")));
+}
 
 export default async function SupportPage() {
   const { locale } = await getRequestLocaleContext();
   const isZh = locale === "zh";
+  const thankYouEntries = (await getPublishedThankYouEntries()).filter(
+    (entry) => entry.receiptImage && hasRenderableReceipt(entry.receiptImage),
+  );
 
   const qrCodes = [
     {
@@ -50,40 +73,9 @@ export default async function SupportPage() {
             </h1>
             <p className="text-base md:text-lg text-muted leading-relaxed">
               {isZh
-                ? "StyleKit 免费且开源。自愿的支持会用于服务器、域名和持续维护——不设任何付费墙。"
-                : "StyleKit is free and open source. Voluntary support goes toward servers, domains, and ongoing maintenance - nothing sits behind a paywall."}
+                ? "StyleKit 免费且开源。自愿赞赏用于服务器、域名和持续维护，不设付费墙。"
+                : "StyleKit is free and open source. Voluntary tips cover servers, domains and ongoing maintenance - nothing sits behind a paywall."}
             </p>
-          </div>
-        </section>
-
-        <section className="border-b border-border">
-          <div className="max-w-3xl mx-auto px-6 py-12 md:py-16">
-            <h2 className="text-xl md:text-2xl mb-2">
-              {isZh ? "国际支持（银行卡）" : "International support (card)"}
-            </h2>
-            {KOFI_URL ? (
-              <>
-                <p className="text-sm md:text-base text-muted leading-relaxed mb-6">
-                  {isZh
-                    ? "海外用户可以通过 Ko-fi 用银行卡或 PayPal 支持我们。"
-                    : "You can support StyleKit with a card or PayPal through Ko-fi."}
-                </p>
-                <a
-                  href={KOFI_URL}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 border border-foreground px-5 py-2.5 text-sm font-medium hover:bg-foreground hover:text-background transition-colors"
-                >
-                  {isZh ? "在 Ko-fi 上支持" : "Support on Ko-fi"}
-                </a>
-              </>
-            ) : (
-              <p className="text-sm md:text-base text-muted leading-relaxed">
-                {isZh
-                  ? "面向海外用户的银行卡支持通道（经由 Paddle）正在开通中。在此之前，给项目一个 Star 就是最好的支持。"
-                  : "A card-payment channel for international supporters (via Paddle as merchant of record) is being set up. Until it lands, starring the repository is the best way to help."}
-              </p>
-            )}
             <div className="mt-6 flex flex-wrap gap-3">
               <a
                 href="https://github.com/AnxForever/stylekit"
@@ -103,7 +95,10 @@ export default async function SupportPage() {
           </div>
         </section>
 
-        <section className="border-b border-border">
+        <section
+          id="support-channels"
+          className="scroll-mt-24 border-b border-border"
+        >
           <div className="max-w-3xl mx-auto px-6 py-12 md:py-16">
             <h2 className="text-xl md:text-2xl mb-2">
               {isZh ? "国内赞赏" : "Support from China"}
@@ -135,44 +130,7 @@ export default async function SupportPage() {
           </div>
         </section>
 
-        <section>
-          <div className="max-w-3xl mx-auto px-6 py-12 md:py-16">
-            <h2 className="text-xl md:text-2xl mb-4">
-              {isZh ? "不花钱的支持方式" : "Free ways to help"}
-            </h2>
-            <ul className="grid gap-3 text-sm md:text-base text-muted leading-relaxed">
-              <li>
-                {isZh
-                  ? "把 StyleKit 分享给会用到它的朋友或社区。"
-                  : "Share StyleKit with a friend or community that would use it."}
-              </li>
-              <li>
-                {isZh
-                  ? "在 GitHub 提交问题反馈或风格建议。"
-                  : "File issues or style suggestions on GitHub."}
-              </li>
-              <li>
-                {isZh ? (
-                  <>
-                    购买相关说明见
-                    <LocalizedLink href="/refunds" className="underline underline-offset-4 hover:text-foreground ml-1">
-                      退款政策
-                    </LocalizedLink>
-                    。
-                  </>
-                ) : (
-                  <>
-                    Paid-product terms live in the
-                    <LocalizedLink href="/refunds" className="underline underline-offset-4 hover:text-foreground ml-1">
-                      refund policy
-                    </LocalizedLink>
-                    .
-                  </>
-                )}
-              </li>
-            </ul>
-          </div>
-        </section>
+        <ThankYouList entries={thankYouEntries} />
       </main>
       <Footer />
     </div>

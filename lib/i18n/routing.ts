@@ -138,10 +138,17 @@ export const LOCALE_ROUTE_POLICY = [
     prefixes: ["/colors"],
   },
   {
+    id: "localized-support",
+    mode: "rewrite",
+    sitemapLocales: "all",
+    exact: ["/support"],
+    prefixes: [],
+  },
+  {
     id: "english-indexable-aliases",
     mode: "rewrite",
     sitemapLocales: "en",
-    exact: ["/privacy", "/terms", "/refunds", "/support"],
+    exact: ["/privacy", "/terms", "/refunds"],
     prefixes: [],
   },
   {
