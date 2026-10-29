@@ -48,10 +48,16 @@ interface SearchParamsLike {
 
 function parseStylesSearchParams(searchParams: SearchParamsLike | null) {
   const typeParam = searchParams?.get("type");
-  // 全部 stays addressable via ?type=all so a link can still mean "everything";
-  // anything else, including a missing or unknown value, lands on styles.
+  // The visual baseline snapshots every approved cover, layout patterns
+  // included, so it opts out of the visual-styles default. An explicit ?type=
+  // still wins, and 全部 stays addressable via ?type=all.
+  const isBaseline = searchParams?.get("visual-baseline") === "1";
   const type: TypeFilter =
-    typeParam === "layout" || typeParam === "all" ? typeParam : DEFAULT_TYPE_FILTER;
+    typeParam === "visual" || typeParam === "layout" || typeParam === "all"
+      ? typeParam
+      : isBaseline
+        ? "all"
+        : DEFAULT_TYPE_FILTER;
 
   const tags = (searchParams?.get("tags") ?? "")
     .split(",")
