@@ -2,6 +2,16 @@
   "name": "stylekit",
   "version": "0.1.0",
   "private": true,
+  "description": "Open-source visual style library for AI-assisted web development.",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AnxForever/stylekit.git"
+  },
+  "homepage": "https://www.stylekit.top",
+  "engines": {
+    "node": ">=20.9.0"
+  },
   "packageManager": "pnpm@11.5.3",
   "scripts": {
     "dev": "next dev",
