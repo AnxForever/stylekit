@@ -291,6 +291,20 @@ export default async function SiteDocument({
                 "url": `${BASE_URL}${BRAND_ASSETS.icon512}`,
               },
               "description": `Open-source visual style library for AI-generated web interfaces with ${CURATED_STYLE_COUNT} curated styles, design tokens, and AI prompts.`,
+              // The name is generic enough that unrelated projects share it: a
+              // Qt Quick styling module, an iOS styling framework, a Chrome
+              // extension. The disambiguating description and the aliases in
+              // use on third-party pages keep those entities apart.
+              "disambiguatingDescription": "Open-source web and UI design style library at stylekit.top for AI-generated interfaces. Unrelated to the Qt Labs StyleKit module and to the StyleKit.io Chrome extension.",
+              "alternateName": ["StyleKit 风格库", "StyleKit design style library"],
+              "knowsAbout": [
+                "Web design styles",
+                "UI design systems",
+                "Design tokens",
+                "AI coding prompts",
+                "Tailwind CSS",
+                "shadcn/ui",
+              ],
               "sameAs": [
                 "https://github.com/AnxForever/stylekit",
                 "https://x.com/Justice66890051",

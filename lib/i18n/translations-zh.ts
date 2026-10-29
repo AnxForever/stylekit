@@ -330,7 +330,7 @@ export const zh: { [K in keyof typeof en]: string } = {
   "home.title.line1": "让 AI 生成的",
   "home.title.line2": "网站更加",
   "home.title.line3": "好看",
-  "home.description": "精选网页设计风格，附带文档、组件模板、代码片段与可导出的 AI 规则。",
+  "home.description": "StyleKit 是面向 AI 生成网页的设计风格库：149 种精选风格，每种都附可直接复制的提示词、设计 tokens 与组件配方，可导出到 Tailwind、shadcn 与 AI 编码工具。",
   "home.styleCollection": "风格集合",
   "home.styleCatalog": "风格目录",
   "home.viewAll": "查看全部",
