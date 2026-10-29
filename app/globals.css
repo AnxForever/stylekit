@@ -677,6 +677,25 @@ input[type="range"] { cursor: pointer; }
   opacity: var(--sk-spotlight-opacity, 0);
 }
 
+/* Card spotlight: a soft wash that follows the pointer, ported from the
+   owner's blog. useCardSpotlight writes --spotlight-x/y on the card; the layer
+   paints them above the card content but below its links and controls. The
+   colour derives from --foreground so it darkens a light surface and lifts a
+   dark one without a second palette. */
+.card-spotlight {
+  background: radial-gradient(
+    260px circle at var(--spotlight-x, 50%) var(--spotlight-y, 50%),
+    color-mix(in oklab, var(--foreground) 7%, transparent),
+    transparent 70%
+  );
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card-spotlight {
+    display: none;
+  }
+}
+
 .sk-tilt-perspective {
   perspective: 900px;
 }
