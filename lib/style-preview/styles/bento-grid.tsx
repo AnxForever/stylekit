@@ -1,4 +1,5 @@
 import type { StylePreviewComponents } from "../types";
+import { previewCopy } from "../copy";
 
 const preview = {
     button: () => (
@@ -20,13 +21,13 @@ const preview = {
         className="w-full px-4 py-3 bg-white rounded-xl border border-zinc-200 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
       />
     ),
-    coverPreview: () => (
+    coverPreview: ({ locale } = {}) => (
       <div className="w-full h-full bg-zinc-50 flex items-center justify-center p-3">
         <div className="w-full max-w-[220px] grid grid-cols-3 gap-1.5">
           {/* 大卡片 2x2 */}
           <div className="col-span-2 row-span-2 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl p-3 text-white">
             <div className="font-bold text-sm mb-1">Bento</div>
-            <p className="text-[10px] text-white/70">不规则网格</p>
+            <p className="text-[10px] text-white/70">{previewCopy(locale, "不规则网格", "Irregular grid")}</p>
           </div>
           {/* 小卡片 */}
           <div className="bg-orange-100 rounded-lg p-2 flex items-center justify-center">

@@ -1,4 +1,5 @@
 import type { StylePreviewComponents } from "../types";
+import { previewCopy } from "../copy";
 
 const preview = {
     button: () => (
@@ -24,7 +25,7 @@ const preview = {
         className="w-full px-4 py-3 bg-transparent border-2 border-[#8b4513] text-[#8b4513] font-serif placeholder:text-[#8b4513]/40 focus:outline-none focus:bg-[#8b4513]/5 transition-colors duration-200"
       />
     ),
-    coverPreview: () => (
+    coverPreview: ({ locale } = {}) => (
       <div className="w-full h-full bg-[#f5e6d3] flex items-center justify-center p-4">
         <div className="w-full max-w-[200px]">
           <div className="border-2 border-[#8b4513] p-4 relative">
@@ -34,7 +35,7 @@ const preview = {
             <div className="absolute bottom-1 right-1 w-3 h-3 border-b-2 border-r-2 border-[#8b4513]" />
             <span className="text-[10px] font-serif uppercase tracking-[0.2em] text-[#8b4513]/60">Vintage</span>
             <div className="font-serif text-lg text-[#8b4513] mt-1 mb-2">Retro</div>
-            <p className="text-xs text-[#8b4513]/70 font-serif mb-3">复古怀旧风格</p>
+            <p className="text-xs text-[#8b4513]/70 font-serif mb-3">{previewCopy(locale, "复古怀旧风格", "Retro nostalgia")}</p>
             <button className="bg-[#8b4513] text-[#f5e6d3] text-[10px] font-serif uppercase tracking-widest px-3 py-1.5 border-2 border-[#5c2e0a]">
               Explore
             </button>

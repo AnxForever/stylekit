@@ -1,4 +1,5 @@
 import type { StylePreviewComponents } from "../types";
+import { previewCopy } from "../copy";
 
 const preview = {
     button: () => (
@@ -20,13 +21,13 @@ const preview = {
         className="w-full px-0 py-2 bg-transparent border-0 border-b-2 border-black text-black placeholder:text-gray-400 focus:outline-none focus:border-[#ff3366] transition-colors duration-200"
       />
     ),
-    coverPreview: () => (
+    coverPreview: ({ locale } = {}) => (
       <div className="w-full h-full bg-white flex items-center justify-center p-4">
         <div className="w-full max-w-[200px]">
           <div className="border-2 border-black p-4">
             <span className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Minimal</span>
             <div className="font-bold text-lg mt-1 mb-3">Flat Design</div>
-            <p className="text-xs text-gray-600 mb-4">极简扁平风格</p>
+            <p className="text-xs text-gray-600 mb-4">{previewCopy(locale, "极简扁平风格", "Minimal flat design")}</p>
             <button className="bg-black text-white text-xs font-medium px-4 py-2 border-2 border-black hover:bg-white hover:text-black transition-colors">
               Action
             </button>

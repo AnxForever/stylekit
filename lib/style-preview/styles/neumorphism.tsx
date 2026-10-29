@@ -1,4 +1,5 @@
 import type { StylePreviewComponents } from "../types";
+import { previewCopy } from "../copy";
 
 const preview = {
     button: () => (
@@ -19,12 +20,12 @@ const preview = {
         className="w-full px-4 py-3 bg-[#e0e5ec] rounded-xl shadow-[inset_4px_4px_8px_#b8bcc2,inset_-4px_-4px_8px_#ffffff] text-zinc-600 focus:outline-none"
       />
     ),
-    coverPreview: () => (
+    coverPreview: ({ locale } = {}) => (
       <div className="w-full h-full bg-[#e0e5ec] flex items-center justify-center p-4">
         <div className="w-full max-w-[200px]">
           <div className="bg-[#e0e5ec] rounded-2xl shadow-[8px_8px_16px_#b8bcc2,-8px_-8px_16px_#ffffff] p-4">
             <div className="font-semibold text-base mb-2 text-zinc-700">Neumorphism</div>
-            <p className="text-xs text-zinc-500 mb-3">柔和立体的界面</p>
+            <p className="text-xs text-zinc-500 mb-3">{previewCopy(locale, "柔和立体的界面", "Soft, dimensional UI")}</p>
             <div className="flex gap-2">
               <button className="bg-[#e0e5ec] text-xs font-medium text-zinc-600 px-4 py-2 rounded-lg shadow-[4px_4px_8px_#b8bcc2,-4px_-4px_8px_#ffffff]">
                 Button

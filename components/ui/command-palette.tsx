@@ -55,12 +55,14 @@ export function CommandPalette() {
     return styles.map((style) => ({
       id: style.slug,
       type: "style" as const,
-      title: style.name,
-      description: style.nameEn,
+      // Lead with the name in the current language, but keep both names in the
+      // searchable keywords so users can type either one.
+      title: locale === "zh" ? style.name : style.nameEn || style.name,
+      description: locale === "zh" ? style.nameEn : style.name,
       href: `/styles/${style.slug}`,
-      keywords: style.keywords,
+      keywords: [...style.keywords, style.name, style.nameEn],
     }));
-  }, []);
+  }, [locale]);
 
   // Combine all searchable items
   const allItems = React.useMemo(

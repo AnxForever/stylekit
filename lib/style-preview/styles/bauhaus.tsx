@@ -1,4 +1,5 @@
 import type { StylePreviewComponents } from "../types";
+import { previewCopy } from "../copy";
 
 const preview = {
     button: () => (
@@ -21,7 +22,7 @@ const preview = {
         className="w-full px-4 py-3 bg-white border-4 border-black text-black font-medium placeholder-gray-400 focus:border-red-600 focus:outline-none transition-colors"
       />
     ),
-    coverPreview: () => (
+    coverPreview: ({ locale } = {}) => (
       <div className="w-full h-full bg-white flex items-center justify-center p-3 relative overflow-hidden">
         {/* Geometric shapes */}
         <div className="absolute top-3 right-3 w-12 h-12 bg-yellow-400 rounded-full" />
@@ -32,7 +33,7 @@ const preview = {
             <div className="absolute -top-3 -left-3 w-6 h-6 bg-yellow-400 rounded-full" />
             <div className="absolute -bottom-2 -right-2 w-4 h-4 bg-blue-600" />
             <div className="font-black text-lg text-black uppercase tracking-wider mb-1">BAU<br/>HAUS</div>
-            <p className="text-gray-600 text-[10px] mb-3">功能主义</p>
+            <p className="text-gray-600 text-[10px] mb-3">{previewCopy(locale, "功能主义", "Functionalism")}</p>
             <button className="w-full py-2 bg-black text-white text-xs font-bold uppercase tracking-wider hover:bg-red-600 transition-colors">
               Explore
             </button>

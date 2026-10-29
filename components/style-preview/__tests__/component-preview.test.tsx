@@ -58,6 +58,54 @@ describe("component preview", () => {
     );
   });
 
+  it("falls back to the translated heading and drops untranslated copy in English", () => {
+    useI18nMock.mockReturnValue({
+      t: (key: string) => key,
+      locale: "en",
+      setLocale: vi.fn(),
+    });
+
+    const { container } = render(
+      <ComponentPreview
+        components={{
+          button: {
+            name: "按钮",
+            description: "测试按钮",
+            code: "<button>Start</button>",
+          },
+        }}
+      />
+    );
+
+    expect(container.querySelector("h4")).toHaveTextContent("preview.tab.button");
+    expect(screen.queryByText("测试按钮")).not.toBeInTheDocument();
+  });
+
+  it("prefers English component copy when the style provides it", () => {
+    useI18nMock.mockReturnValue({
+      t: (key: string) => key,
+      locale: "en",
+      setLocale: vi.fn(),
+    });
+
+    const { container } = render(
+      <ComponentPreview
+        components={{
+          button: {
+            name: "按钮",
+            nameEn: "Button",
+            description: "测试按钮",
+            descriptionEn: "A hard-edged button.",
+            code: "<button>Start</button>",
+          },
+        }}
+      />
+    );
+
+    expect(container.querySelector("h4")).toHaveTextContent("Button");
+    expect(screen.getByText("A hard-edged button.")).toBeInTheDocument();
+  });
+
   it("renders fixed-position nav snippets inside a transformed preview container", () => {
     const { container } = render(
       <ComponentPreview
