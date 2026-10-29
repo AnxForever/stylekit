@@ -1,17 +1,13 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { ArrowUpRight, X } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 import { useI18n } from "@/lib/i18n/context";
 import { trackEvent } from "@/lib/analytics/events";
-import {
-  FRIEND_PROMO_ID,
-  FRIEND_PROMO_STORAGE_KEY,
-} from "@/lib/home/friend-promo";
 
-// Bump the id when promoting a new project so the banner shows again.
+// A house ad that stays up permanently. Since there is no dismiss control, the
+// homepage copy marquee-scrolls on one compact line instead of truncating, and
+// the call to action stays fixed so it never moves under the pointer.
 const PROMO = {
-  id: FRIEND_PROMO_ID,
   name: "ProdClub",
   tagline: {
     zh: "ChatGPT Plus / Pro 会员代充服务",
@@ -20,59 +16,65 @@ const PROMO = {
   siteUrl: "https://prodclub.xyz/r/6JJ9HG",
 };
 
+// Each half of the loop is repeated enough times to outrun the widest bar, so
+// the -50% translation never exposes an empty gap.
+const MARQUEE_REPEAT = 3;
+
 interface FriendPromoBannerProps {
   placement?: "home" | "contact";
 }
 
 export function FriendPromoBanner({ placement = "contact" }: FriendPromoBannerProps) {
   const { locale } = useI18n();
-  // The banner is present in the initial HTML. A head bootstrap hides it
-  // before first paint for returning visitors who dismissed this campaign.
-  const [visible, setVisible] = useState(true);
-
-  useEffect(() => {
-    try {
-      const dismissed = localStorage.getItem(FRIEND_PROMO_STORAGE_KEY);
-      document.documentElement.dataset.friendPromoDismissed =
-        dismissed === PROMO.id ? "true" : "false";
-    } catch {
-      document.documentElement.dataset.friendPromoDismissed = "false";
-    }
-  }, []);
-
-  if (!visible) return null;
-
-  const dismiss = () => {
-    setVisible(false);
-    document.documentElement.dataset.friendPromoDismissed = "true";
-    try {
-      localStorage.setItem(FRIEND_PROMO_STORAGE_KEY, PROMO.id);
-    } catch {
-      // localStorage unavailable; banner simply reappears next visit
-    }
-  };
+  // Only the homepage marquee-scrolls. The ad also sits under the contact page
+  // content, where a moving line would compete with the support channels, so it
+  // stays as one static, truncated line there.
+  const scrolls = placement === "home";
+  const tagline = locale === "zh" ? PROMO.tagline.zh : PROMO.tagline.en;
+  const copy = (
+    <>
+      <span className="font-medium text-foreground">{PROMO.name}</span>
+      <span className="text-muted">{` — ${tagline}`}</span>
+    </>
+  );
 
   return (
     <div data-friend-promo className="border-b border-border bg-foreground/[0.03]">
-      <div className="max-w-7xl mx-auto flex items-center gap-3 px-4 sm:px-6 md:px-12 py-2.5 text-sm">
+      <div className="max-w-7xl mx-auto flex items-center gap-3 px-4 sm:px-6 md:px-12 py-1.5 text-xs sm:text-sm">
         <span aria-hidden className="hidden sm:block h-px w-6 bg-accent shrink-0" />
         <span className="shrink-0 text-[10px] tracking-[0.16em] uppercase text-muted">
           {locale === "zh" ? "广告" : "Ad"}
         </span>
-        <p className="min-w-0 flex-1 truncate">
-          <a
-            href={PROMO.siteUrl}
-            target="_blank"
-            rel="sponsored noopener noreferrer"
-            onClick={() => trackEvent("cta_click", { label: "prodclub", location: `${placement}_promo` })}
-            className="font-medium underline-offset-4 hover:underline"
-          >
-            {PROMO.name}
-          </a>
-          <span className="text-muted">
-            {" "}— {locale === "zh" ? PROMO.tagline.zh : PROMO.tagline.en}
-          </span>
-        </p>
+        {scrolls ? (
+          <div className="relative min-w-0 flex-1 overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_8%,black_92%,transparent)]">
+            <div data-friend-promo-track className="flex w-max items-center">
+              {[0, 1].map((loop) => (
+                <div
+                  key={loop}
+                  aria-hidden={loop === 1}
+                  className="flex shrink-0 items-center gap-8 pr-8"
+                >
+                  {Array.from({ length: MARQUEE_REPEAT }, (_, index) => (
+                    <span
+                      key={index}
+                      aria-hidden={index > 0}
+                      className="flex shrink-0 items-center gap-8 whitespace-nowrap"
+                    >
+                      {copy}
+                      <span aria-hidden className="select-none text-border">
+                        ·
+                      </span>
+                    </span>
+                  ))}
+                </div>
+              ))}
+            </div>
+          </div>
+        ) : (
+          // A div, not a p: the global `p { text-wrap: pretty }` rule would
+          // override the truncation and wrap the line onto two rows.
+          <div className="min-w-0 flex-1 truncate">{copy}</div>
+        )}
         <a
           href={PROMO.siteUrl}
           target="_blank"
@@ -83,14 +85,6 @@ export function FriendPromoBanner({ placement = "contact" }: FriendPromoBannerPr
           {locale === "zh" ? "查看服务" : "View service"}
           <ArrowUpRight className="h-3 w-3" />
         </a>
-        <button
-          type="button"
-          onClick={dismiss}
-          aria-label={locale === "zh" ? "关闭广告" : "Dismiss advertisement"}
-          className="shrink-0 p-1 text-muted transition-colors hover:text-foreground"
-        >
-          <X className="h-3.5 w-3.5" />
-        </button>
       </div>
     </div>
   );
