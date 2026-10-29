@@ -75,3 +75,17 @@ warnings; `pnpm run test --maxWorkers=4` passed 314 test files (8146 tests, one
 skipped); `pnpm exec next build --webpack` completed successfully. Type checking
 and `pnpm run security:secrets` passed. The temporary browser space and local
 preview server were closed after verification.
+
+Production was enabled on 2026-10-29 using merged-main `fa0ccb85` and build
+`ssunQpN4RV__GDGpDLelt`. Migration 043 was applied after backing up the existing
+function definitions; both indexes were built concurrently and verified valid.
+The new RPC grants EXECUTE only to service_role, not anon/authenticated. Live
+authenticated prompt/content/overview APIs return 200 with private,no-store.
+At verification the prompt report contained six received copy events across
+six styles. No historical analytics rows or synthetic copy records were created
+to produce that result. CI passed for the deployed source; post-deploy browser
+interaction was not repeated because the original browser task space expired.
+
+The task's temporary scripts and receipts were moved into the repository's
+ignored `.tmp/releases/prompt-analytics-20261029/` directory. Reusable deployment
+and canary helpers are maintained in `tools/scripts/release/`.
