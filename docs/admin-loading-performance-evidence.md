@@ -43,10 +43,10 @@ resource timings and controlled concurrency/failure tests.
 
 | ID | Lifecycle / owner outcome | Delivery | Coverage | History | Acceptance / remaining gap |
 | --- | --- | --- | --- | --- | --- |
-| AP-01 | Admin navigation and hydration / reduce unused and duplicate requests | implemented | partial | backfilled | Explicit destination prefetch; real SWR lifecycle tests prove cold SSR makes no fetch, new range fetches, and returning cached range revalidates; production before/after network receipt pending |
-| AP-02 | Shared analytics load / one underlying query for concurrent identical requests | implemented | partial | backfilled | Ten same-key calls invoke one loader; bidirectional SSR/API races share raw RPC shape; failures release in-flight slot; API auth remains ahead of caches; production verification pending |
-| AP-03 | Snapshot persistence / efficient durable fallback without stale data posing as live data | implemented | partial | backfilled | Concurrent parsed-store read, batched writes, no response wait for persistence, live-provider priority, original timestamp and STALE fallback header; production restart/outage drill outside scope |
-| AP-04 | Content report first load / server-render the prompt report and cache labels | implemented | partial | reopened-by-change | Prompt report hydrates from SSR; community/style zero rows retained; label reads coalesce and refresh within TTL; live migration and UI acceptance pending |
+| AP-01 | Admin navigation and hydration / reduce unused and duplicate requests | operational | partial | backfilled | Explicit destination prefetch; real SWR lifecycle tests prove cold SSR makes no fetch, new range fetches, and returning cached range revalidates; pre-release browser receipt retained; post-release browser space expired |
+| AP-02 | Shared analytics load / one underlying query for concurrent identical requests | operational | partial | backfilled | Ten same-key calls invoke one loader; bidirectional SSR/API races share raw RPC shape; failures release in-flight slot; API auth remains ahead of caches; live concurrency checks passed; full SQL tracing remains unverified |
+| AP-03 | Snapshot persistence / efficient durable fallback without stale data posing as live data | operational | partial | backfilled | Concurrent parsed-store read, batched writes, no response wait for persistence, live-provider priority, original timestamp and STALE fallback header; production restart/outage drill outside scope |
+| AP-04 | Content report first load / server-render the prompt report and cache labels | operational | partial | reopened-by-change | Prompt report hydrates from SSR; community/style zero rows retained; label reads coalesce and refresh within TTL; live migration/API verified; post-release browser acceptance not repeated |
 
 These changes do not change metric definitions or delete/rewrite historical
 analytics rows. Tests of synthetic counts are not proof of human users.
