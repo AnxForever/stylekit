@@ -26,6 +26,14 @@ import {
 } from "@/lib/styles/catalog-sort";
 
 type TypeFilter = StyleType | "all";
+
+/**
+ * Styles and layout patterns share one catalog, but they answer different
+ * questions: a style decides how a page looks, a layout decides how it is
+ * arranged. The catalog opens on visual styles so the first cards are finished
+ * designs rather than wireframes; 布局模式 and 全部 are one click away.
+ */
+const DEFAULT_TYPE_FILTER: TypeFilter = "visual";
 type SortOption = CatalogSortOption;
 const INITIAL_VISIBLE_STYLE_COUNT = 24;
 const VISIBLE_STYLE_COUNT_STEP = 24;
@@ -40,8 +48,10 @@ interface SearchParamsLike {
 
 function parseStylesSearchParams(searchParams: SearchParamsLike | null) {
   const typeParam = searchParams?.get("type");
+  // 全部 stays addressable via ?type=all so a link can still mean "everything";
+  // anything else, including a missing or unknown value, lands on styles.
   const type: TypeFilter =
-    typeParam === "visual" || typeParam === "layout" ? typeParam : "all";
+    typeParam === "layout" || typeParam === "all" ? typeParam : DEFAULT_TYPE_FILTER;
 
   const tags = (searchParams?.get("tags") ?? "")
     .split(",")
@@ -270,7 +280,7 @@ export function StylesContent({ allStyles }: StylesContentProps) {
       scenario: StyleScenario | "all"
     ) => {
       const sp = new URLSearchParams();
-      if (type && type !== "all") sp.set("type", type);
+      if (type && type !== DEFAULT_TYPE_FILTER) sp.set("type", type);
       if (tags.length > 0) sp.set("tags", tags.join(","));
       if (fav) sp.set("fav", "1");
       if (sort !== "recommended") sp.set("sort", sort);
@@ -347,7 +357,7 @@ export function StylesContent({ allStyles }: StylesContentProps) {
       parts.push(`${locale === "zh" ? "场景" : "Scenario"}: ${getScenarioLabel(activeScenario, locale)}`);
     }
 
-    if (activeType !== "all") {
+    if (activeType !== DEFAULT_TYPE_FILTER) {
       parts.push(`${t("styles.type")}: ${typeFilters.find((item) => item.key === activeType)?.label ?? activeType}`);
     }
 
@@ -432,13 +442,13 @@ export function StylesContent({ allStyles }: StylesContentProps) {
 
   const handleResetFilters = () => {
     startTransition(() => {
-      setActiveType("all");
+      setActiveType(DEFAULT_TYPE_FILTER);
       setActiveTags([]);
       setShowFavorites(false);
       setSortBy("recommended");
       setSearchQuery("");
       setActiveScenario("all");
-      syncToUrl("all", [], false, "recommended", "", "all");
+      syncToUrl(DEFAULT_TYPE_FILTER, [], false, "recommended", "", "all");
     });
   };
 
@@ -554,7 +564,7 @@ export function StylesContent({ allStyles }: StylesContentProps) {
 
   const hasActiveFilters =
     activeScenario !== "all" ||
-    activeType !== "all" ||
+    activeType !== DEFAULT_TYPE_FILTER ||
     activeTags.length > 0 ||
     showFavorites ||
     sortBy !== "recommended" ||
@@ -563,7 +573,7 @@ export function StylesContent({ allStyles }: StylesContentProps) {
   const layoutStyleCount = catalogStyles.filter((style) => style.styleType === "layout").length;
   const activeFilterCount = [
     activeScenario !== "all",
-    activeType !== "all",
+    activeType !== DEFAULT_TYPE_FILTER,
     activeTags.length > 0,
     showFavorites,
     sortBy !== "recommended",
@@ -581,7 +591,7 @@ export function StylesContent({ allStyles }: StylesContentProps) {
 
   const deferredFilterCount = [
     deferredActiveScenario !== "all",
-    deferredActiveType !== "all",
+    deferredActiveType !== DEFAULT_TYPE_FILTER,
     deferredActiveTags.length > 0,
     deferredShowFavorites,
   ].filter(Boolean).length;
@@ -804,6 +814,7 @@ export function StylesContent({ allStyles }: StylesContentProps) {
               <button
                 key={type.key}
                 onClick={() => handleTypeChange(type.key)}
+                aria-pressed={activeType === type.key}
                 className={`shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 min-h-[44px] sm:min-h-0 transition-colors ${
                   activeType === type.key
                     ? "bg-foreground text-background"
