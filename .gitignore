@@ -147,6 +147,19 @@ __pycache__/
 /shot.mjs
 packages/.run/
 
+# Local-only experiments. Research prototypes stay on disk for hands-on work
+# but are not part of the repository or the deployed site. The WebGL lab, the
+# brand line cards reference file and their routes stay tracked: the backgrounds
+# page links to the lab and the quantized line field showcase downloads the file.
+/app/experiments/cinematic-stylekit/
+/app/experiments/editorial-aura-frame/
+/app/experiments/minimal-zine-poster/
+/app/experiments/glass-profile/
+/components/experiments/
+/public/experiments/cinematic-stylekit/
+/public/experiments/minimal-zine-poster/
+/public/experiments/glass-profile/
+
 # Runtime data (analytics, submissions)
 /.data/
 /data/
