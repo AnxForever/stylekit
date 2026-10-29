@@ -8,8 +8,9 @@ import { COMMUNITY_GROUP, resolveCommunityGroupDestination } from "@/lib/communi
 import { localizeHref } from "@/lib/i18n/routing";
 
 // A house ad that stays up permanently. Since there is no dismiss control, the
-// homepage copy marquee-scrolls on one compact line instead of truncating, and
-// the call to action stays fixed so it never moves under the pointer.
+// homepage copy marquee-scrolls on one compact line instead of truncating. The
+// call to action travels with the ad copy so it reads as part of the message;
+// hovering or focusing the bar pauses the track under the pointer.
 const PROMO = {
   name: "ProdClub",
   tagline: {
@@ -52,13 +53,28 @@ export function FriendPromoBanner({ placement = "contact" }: FriendPromoBannerPr
 
   // Each message carries its own tag: the bar no longer shows a single fixed
   // "ad" label, so the group invite is not labelled as paid placement.
-  const adCopy = (
+  const promoCta = (interactive: boolean) => (
+    <a
+      href={PROMO.siteUrl}
+      target="_blank"
+      rel="sponsored noopener noreferrer"
+      tabIndex={interactive ? undefined : -1}
+      onClick={() => trackEvent("cta_click", { label: "prodclub", location: `${placement}_promo` })}
+      className="shrink-0 inline-flex items-center gap-1.5 border border-foreground/30 px-2.5 py-1 text-xs tracking-wide transition-colors hover:border-foreground hover:bg-foreground hover:text-background"
+    >
+      {locale === "zh" ? "查看服务" : "View service"}
+      <ArrowUpRight className="h-3 w-3" />
+    </a>
+  );
+
+  const adCopy = (interactive: boolean, withCta: boolean) => (
     <>
       <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-muted">
         {locale === "zh" ? "广告" : "Ad"}
       </span>
       <span className="font-medium text-foreground">{PROMO.name}</span>
       <span className="text-muted">{` — ${tagline}`}</span>
+      {withCta ? promoCta(interactive) : null}
     </>
   );
 
@@ -108,7 +124,7 @@ export function FriendPromoBanner({ placement = "contact" }: FriendPromoBannerPr
                           aria-hidden={duplicate}
                           className="flex shrink-0 items-center gap-2 whitespace-nowrap"
                         >
-                          {adCopy}
+                          {adCopy(!duplicate, scrolls)}
                           <span aria-hidden className="select-none text-border">
                             ·
                           </span>
@@ -132,18 +148,11 @@ export function FriendPromoBanner({ placement = "contact" }: FriendPromoBannerPr
         ) : (
           // A div, not a p: the global `p { text-wrap: pretty }` rule would
           // override the truncation and wrap the line onto two rows.
-          <div className="min-w-0 flex-1 flex items-center gap-2 truncate">{adCopy}</div>
+          <div className="min-w-0 flex-1 flex items-center gap-2 truncate">
+            {adCopy(true, false)}
+          </div>
         )}
-        <a
-          href={PROMO.siteUrl}
-          target="_blank"
-          rel="sponsored noopener noreferrer"
-          onClick={() => trackEvent("cta_click", { label: "prodclub", location: `${placement}_promo` })}
-          className="shrink-0 inline-flex items-center gap-1.5 border border-foreground/30 px-2.5 py-1 text-xs tracking-wide transition-colors hover:border-foreground hover:bg-foreground hover:text-background"
-        >
-          {locale === "zh" ? "查看服务" : "View service"}
-          <ArrowUpRight className="h-3 w-3" />
-        </a>
+        {scrolls ? null : promoCta(true)}
       </div>
     </div>
   );
