@@ -21,6 +21,7 @@ import { GitHubStarButton } from "@/components/github-star-button";
 import { KitNavButton } from "@/components/kit/kit-nav-button";
 import { trackEvent } from "@/lib/analytics/events";
 import { localizeHref } from "@/lib/i18n/routing";
+import { setThemeAnimated } from "@/lib/theme/transition";
 import { StyleKitLogo } from "@/components/brand/stylekit-logo";
 
 const linkClass =
@@ -387,7 +388,7 @@ export function Header() {
   }, []);
 
   const toggleTheme = () => {
-    setTheme(resolvedTheme === "dark" ? "light" : "dark");
+    setThemeAnimated(resolvedTheme === "dark" ? "light" : "dark", setTheme);
   };
   const markChangelogSeen = () => {
     markLatestChangelogSeen();
