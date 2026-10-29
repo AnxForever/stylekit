@@ -1,4 +1,5 @@
 import type { StylePreviewComponents } from "../types";
+import { previewCopy } from "../copy";
 
 const preview = {
     button: () => (
@@ -25,12 +26,12 @@ const preview = {
         />
       </div>
     ),
-    coverPreview: () => (
+    coverPreview: ({ locale } = {}) => (
       <div className="w-full h-full bg-[#0B1322] [background-image:radial-gradient(180px_circle_at_85%_10%,rgba(124,156,196,0.32),transparent_60%),radial-gradient(160px_circle_at_8%_90%,rgba(51,81,122,0.35),transparent_60%),radial-gradient(120px_circle_at_35%_45%,rgba(228,184,99,0.12),transparent_55%)] flex items-center justify-center p-4">
         <div className="w-full max-w-[200px]">
           <div className="bg-white/8 backdrop-blur-xl rounded-2xl border border-white/15 p-4 shadow-[0_16px_40px_rgba(3,7,18,0.5),inset_0_1px_0_rgba(255,255,255,0.22)]">
             <div className="font-semibold text-base mb-2 text-white">Nocturne Glass</div>
-            <p className="text-xs text-white/60 mb-3">玻璃无色，色彩属于夜景</p>
+            <p className="text-xs text-white/60 mb-3">{previewCopy(locale, "玻璃无色，色彩属于夜景", "Colorless glass, color belongs to the night")}</p>
             <div className="flex gap-2">
               <button className="bg-[#E4B863]/15 text-[#F3DCA8] text-xs font-medium px-4 py-2 rounded-lg border border-[#E4B863]/40">
                 Button

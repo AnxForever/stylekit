@@ -1,4 +1,5 @@
 import type { StylePreviewComponents } from "../types";
+import { previewCopy } from "../copy";
 
 const preview = {
     button: () => (
@@ -22,7 +23,7 @@ const preview = {
         className="w-full px-5 py-3.5 backdrop-blur-xl bg-white/10 border border-white/20 rounded-2xl text-white placeholder:text-white/40 focus:outline-none focus:border-violet-500/50 focus:ring-2 focus:ring-violet-500/20 transition-all duration-300"
       />
     ),
-    coverPreview: () => (
+    coverPreview: ({ locale } = {}) => (
       <div className="w-full h-full bg-slate-950 flex items-center justify-center p-4 relative overflow-hidden">
         {/* 装饰性光晕 */}
         <div className="absolute top-0 left-0 w-32 h-32 bg-violet-500 rounded-full blur-3xl opacity-30" />
@@ -33,7 +34,7 @@ const preview = {
               <div className="w-5 h-5 bg-white/80 rounded" />
             </div>
             <div className="font-semibold text-base text-white mb-2">Gradient</div>
-            <p className="text-xs text-white/60 mb-3">现代渐变风格</p>
+            <p className="text-xs text-white/60 mb-3">{previewCopy(locale, "现代渐变风格", "Modern gradients")}</p>
             <button className="bg-gradient-to-r from-violet-500 to-fuchsia-500 text-white text-xs font-medium px-4 py-2 rounded-xl shadow-lg shadow-violet-500/25">
               Action
             </button>

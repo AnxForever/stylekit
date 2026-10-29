@@ -12,7 +12,7 @@ interface FeaturedCarouselProps {
 }
 
 export function FeaturedCarousel({ styles }: FeaturedCarouselProps) {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   const [featuredIndex, setFeaturedIndex] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
   const [isFocusWithin, setIsFocusWithin] = useState(false);
@@ -20,6 +20,21 @@ export function FeaturedCarousel({ styles }: FeaturedCarouselProps) {
   const [reducedMotion, setReducedMotion] = useState(false);
   const normalizedIndex = styles.length > 0 ? featuredIndex % styles.length : 0;
   const featuredStyle = styles.length > 0 ? styles[normalizedIndex] : null;
+  // The carousel title must follow the page language; the other name stays as
+  // a secondary label so bilingual readers can still match the catalog.
+  const primaryName = featuredStyle
+    ? locale === "zh"
+      ? featuredStyle.name
+      : featuredStyle.nameEn || featuredStyle.name
+    : "";
+  const secondaryName = featuredStyle
+    ? locale === "zh"
+      ? featuredStyle.nameEn
+      : featuredStyle.name
+    : "";
+  const showSecondaryName = Boolean(
+    secondaryName && secondaryName !== primaryName,
+  );
   const progressPercent = styles.length > 0 ? ((normalizedIndex + 1) / styles.length) * 100 : 0;
 
   const nextStyle = useCallback(() => {
@@ -134,7 +149,7 @@ export function FeaturedCarousel({ styles }: FeaturedCarouselProps) {
           <StyleCoverPreview styleSlug={featuredStyle.slug} />
         </div>
         <span className="absolute bottom-4 right-4 bg-background px-2 py-1 font-mono text-[9px] uppercase tracking-[0.12em] text-foreground shadow-surface sm:bottom-5 sm:right-5">
-          Live preview
+          {t("home.featuredLivePreview")}
         </span>
       </LocalizedLink>
 
@@ -147,9 +162,11 @@ export function FeaturedCarousel({ styles }: FeaturedCarouselProps) {
         >
           <div key={featuredStyle.slug} className="motion-safe:animate-home-feature-swap-soft">
             <p className="font-serif text-xl leading-none transition-colors group-hover:text-accent sm:text-2xl">
-              {featuredStyle.name}
+              {primaryName}
             </p>
-            <p className="mt-1 text-xs uppercase tracking-[0.1em] text-muted truncate">{featuredStyle.nameEn}</p>
+            {showSecondaryName && (
+              <p className="mt-1 text-xs uppercase tracking-[0.1em] text-muted truncate">{secondaryName}</p>
+            )}
           </div>
         </LocalizedLink>
         <div className="flex items-center gap-3 shrink-0">
