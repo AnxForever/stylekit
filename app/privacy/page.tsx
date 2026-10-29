@@ -47,7 +47,7 @@ export default function PrivacyPage() {
             <article>
               <h2 className="text-2xl mb-3">Your choices</h2>
               <p className="text-muted leading-relaxed">
-                You can avoid newsletter signup, choose not to create an account, and clear locally stored preferences in your browser. If you need help with a newsletter subscription or public profile data, use the contact options on the support page.
+                You can avoid newsletter signup, choose not to create an account, and clear locally stored preferences in your browser. Every newsletter email includes a one-click unsubscribe link, and using it deletes the stored address. If you need help with a newsletter subscription or public profile data, use the contact options on the support page.
               </p>
             </article>
             <article>
