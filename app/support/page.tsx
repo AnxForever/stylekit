@@ -1,6 +1,4 @@
 import type { Metadata } from "next";
-import { existsSync } from "node:fs";
-import path from "node:path";
 import Image from "next/image";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
@@ -30,21 +28,13 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 /**
- * Legacy acknowledgment rows point at screenshots under `public/`. Skip rows
- * whose image is gone instead of publishing a broken tile; newer rows use
- * absolute Supabase Storage URLs and always render.
+ * Rows whose local screenshot is gone are already skipped by
+ * `getPublishedThankYouEntries`, so every surface shows the same list.
  */
-function hasRenderableReceipt(src: string): boolean {
-  if (/^https?:\/\//i.test(src)) return true;
-  return existsSync(path.join(process.cwd(), "public", src.replace(/^\/+/, "")));
-}
-
 export default async function SupportPage() {
   const { locale } = await getRequestLocaleContext();
   const isZh = locale === "zh";
-  const thankYouEntries = (await getPublishedThankYouEntries()).filter(
-    (entry) => entry.receiptImage && hasRenderableReceipt(entry.receiptImage),
-  );
+  const thankYouEntries = await getPublishedThankYouEntries();
 
   const qrCodes = [
     {

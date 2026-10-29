@@ -1,3 +1,5 @@
+import { existsSync } from "node:fs";
+import path from "node:path";
 import { unstable_cache } from "next/cache";
 import { getSupabaseAdmin } from "@/lib/supabase/server";
 import {
@@ -26,6 +28,23 @@ export interface SupportAcknowledgmentAdminItem extends SupportAcknowledgmentRow
 
 const EMPTY_COPY: SupportLocaleCopy = { en: "", zh: "" };
 
+/**
+ * Receipt screenshots are runtime content under `public/` and are deliberately
+ * not tracked in git, so a legacy row can outlive its file. Drop those rows
+ * instead of rendering a broken tile. Published Supabase Storage URLs are
+ * trusted as-is.
+ */
+export function isRenderableReceipt(src: string): boolean {
+  if (/^https?:\/\//i.test(src)) return true;
+  return existsSync(path.join(process.cwd(), "public", src.replace(/^\/+/, "")));
+}
+
+function withRenderableReceipts(entries: ThankYouEntry[]): ThankYouEntry[] {
+  return entries.filter(
+    (entry) => Boolean(entry.receiptImage) && isRenderableReceipt(entry.receiptImage!),
+  );
+}
+
 // The home page calls this on every request; the data changes only when an
 // admin publishes an acknowledgment, so a 60s data-cache window removes a
 // Supabase round trip per home visit without making publications feel stale.
@@ -33,7 +52,7 @@ export const getPublishedThankYouEntries = unstable_cache(
   async (): Promise<ThankYouEntry[]> => {
     const admin = getSupabaseAdmin();
     if (!admin) {
-      return legacyThankYouEntries;
+      return withRenderableReceipts(legacyThankYouEntries);
     }
 
     const { data, error } = await admin
@@ -48,10 +67,12 @@ export const getPublishedThankYouEntries = unstable_cache(
     // Keep the public site available while a deployment is waiting for the
     // migration, or when Supabase is temporarily unavailable.
     if (error || !data) {
-      return legacyThankYouEntries;
+      return withRenderableReceipts(legacyThankYouEntries);
     }
 
-    return (data as SupportAcknowledgmentRow[]).map(toThankYouEntry);
+    return withRenderableReceipts(
+      (data as SupportAcknowledgmentRow[]).map(toThankYouEntry),
+    );
   },
   ["support-published-thank-you-entries"],
   { revalidate: 60 },
