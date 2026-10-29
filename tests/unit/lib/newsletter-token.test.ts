@@ -5,7 +5,7 @@ import {
   readUnsubscribeToken,
 } from "@/lib/newsletter/token";
 
-const SECRET = "test-newsletter-secret";
+const SECRET = "placeholder-newsletter-signing-secret";
 
 afterEach(() => {
   vi.unstubAllEnvs();

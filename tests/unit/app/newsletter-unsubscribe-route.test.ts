@@ -18,7 +18,7 @@ import { getSupabaseAdmin } from "@/lib/supabase/server";
 const mockedGetSupabaseAdmin = vi.mocked(getSupabaseAdmin);
 const mockedCheckRateLimit = vi.mocked(checkRateLimit);
 
-const SECRET = "test-newsletter-secret";
+const SECRET = "placeholder-newsletter-signing-secret";
 
 function createSupabaseMock(deleteError: { message: string } | null = null) {
   const eq = vi.fn().mockResolvedValue({ error: deleteError });
