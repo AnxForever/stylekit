@@ -50,6 +50,19 @@ describe("sortCatalogStyles", () => {
     expect(result).toBe(styles);
   });
 
+  it("lifts the newly shipped style to the front for recommended", () => {
+    const input = [
+      style("corporate-clean", "Corporate Clean"),
+      style("quantized-line-field", "Quantized Line Field"),
+      style("soft-ui", "Soft UI"),
+    ];
+    expect(sortCatalogStyles(input, "recommended").map((s) => s.slug)).toEqual([
+      "quantized-line-field",
+      "corporate-clean",
+      "soft-ui",
+    ]);
+  });
+
   it("reverses the curated order for latest without mutating the input", () => {
     const input = [style("alpha", "Alpha"), style("charlie", "Charlie")];
     expect(sortCatalogStyles(input, "latest").map((s) => s.slug)).toEqual([

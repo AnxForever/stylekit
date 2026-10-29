@@ -7,6 +7,8 @@ StyleKit helps developers give ChatGPT, Claude, Claude Code, Codex, and other co
 ## Start Here
 
 - [English style catalog](https://www.stylekit.top/en/styles): Browse all 149 UI and web design styles.
+- [Whole catalog as one Markdown table](https://www.stylekit.top/all-styles.md): Every style with its Chinese name, category, and one-line definition.
+- [Whole catalog as one JSON file](https://www.stylekit.top/api/styles/all.json): Names, descriptions, colors, design tokens, and AI rules for all 149 styles in a single request.
 - [中文前端风格库](https://www.stylekit.top/zh/styles): 浏览网页设计风格、UI 风格与实现约束。
 - [UI design prompt library](https://www.stylekit.top/en/ui-prompts): Copy prompt structures for websites, dashboards, landing pages, dark mode, and Tailwind UI.
 - [中文 UI 与前端提示词](https://www.stylekit.top/zh/ui-prompts): 面向 ChatGPT、Claude、Claude Code 与 Codex 的提示词入口。

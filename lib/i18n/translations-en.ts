@@ -610,7 +610,7 @@ export const en = {
     "home.title.line1": "Make AI‑Generated",
     "home.title.line2": "Websites Look",
     "home.title.line3": "Better",
-    "home.description": "Curated web design styles with documentation, component templates, code snippets, and exportable AI rules.",
+    "home.description": "StyleKit is a design style library for AI-generated web UI: 149 curated styles, each with copy-ready prompts, design tokens, and component recipes, exportable to Tailwind, shadcn, and AI coding tools.",
     "home.styleCollection": "Style Collection",
     "home.styleCatalog": "Style Catalog",
     "home.viewAll": "View All",
