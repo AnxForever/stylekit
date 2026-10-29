@@ -71,6 +71,10 @@ skills/
 skills-lock.json
 
 # Screenshots (local dev / Playwright / temp)
+# Product imagery lives under public/. A PNG at the repository root is always a
+# hand-made capture of a local or production check, and a set of them was one
+# `git add -A` away from being published, so the whole top level is covered.
+/*.png
 stylekit-*.png
 login-*.png
 *-modal-*.png
@@ -200,6 +204,12 @@ client_secret_*.json
 # Local verification screenshots. Produced while checking a change by hand, not
 # part of the product; anything people install or link to lives under public/.
 *-verify.png
+
+# Internal evidence and verification records. Dated acceptance notes and audit
+# dumps are working records for the maintainer, not project documentation, and
+# they carry host-specific paths; they live outside the repository.
+/docs/*-evidence.md
+/docs/*-evidence.json
 
 # Local hosting binding and maintainer notes. Public docs remain tracked.
 /.openai/
