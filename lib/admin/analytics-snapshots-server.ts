@@ -15,9 +15,15 @@ import {
   analyticsRegistrationsSchema,
   getAnalyticsWindow,
 } from "./analytics-api-contract";
-import { readAnalyticsCache, writeAnalyticsCache } from "./analytics-response-cache";
+import {
+  type AnalyticsRpcResult,
+  coalesceAnalyticsRequest,
+  readAnalyticsCache,
+  writeAnalyticsCache,
+} from "./analytics-response-cache";
 import { getSupabaseAdmin } from "@/lib/supabase/server";
 import { readPersistentAnalyticsSnapshot, writePersistentAnalyticsSnapshot } from "./analytics-persistent-snapshot";
+import { promptCopyAnalyticsSchema, type PromptCopyAnalytics } from "./prompt-copy-analytics";
 
 const TIMEZONE = "Asia/Shanghai";
 
@@ -29,21 +35,34 @@ async function rpcSnapshot<T>(
 ): Promise<T | null> {
   const cached = readAnalyticsCache<T>(cacheKey);
   if (cached) return cached;
-  const persisted = await readPersistentAnalyticsSnapshot<T>(cacheKey);
-  if (persisted) {
-    writeAnalyticsCache(cacheKey, persisted);
-    return persisted;
-  }
+
   const client = getSupabaseAdmin();
-  if (!client) return null;
-  const { data, error } = await client.rpc(rpc, params);
-  if (error) return null;
-  const parsed = parse(data);
-  if (parsed) {
-    writeAnalyticsCache(cacheKey, parsed);
-    await writePersistentAnalyticsSnapshot(cacheKey, parsed);
+  if (client) {
+    try {
+      const response = await coalesceAnalyticsRequest<AnalyticsRpcResult>(`rpc:${cacheKey}`, async () => {
+        const recent = readAnalyticsCache<T>(cacheKey);
+        if (recent) return { data: recent, error: null };
+        return await client.rpc(rpc, params);
+      });
+      if (response.error === null && response.data !== null) {
+        const parsed = parse(response.data);
+        if (!parsed) return null;
+        writeAnalyticsCache(cacheKey, parsed);
+        void writePersistentAnalyticsSnapshot(cacheKey, parsed);
+        return parsed;
+      }
+      if (response.error === null) {
+        return null;
+      }
+    } catch {
+      // The persistent snapshot below is a last-resort display fallback.
+    }
   }
-  return parsed;
+
+  // Disk snapshots preserve the original generatedAt value and are never
+  // inserted into the fresh response cache. A later request rechecks the DB.
+  const persisted = await readPersistentAnalyticsSnapshot<unknown>(cacheKey);
+  return persisted === null ? null : parse(persisted);
 }
 
 export function getBreakdownSnapshot(
@@ -100,4 +119,33 @@ export function getEventsSnapshot(range: AnalyticsRange) {
       return result.success ? result.data : null;
     }
   );
+}
+
+export function getPromptCopySnapshot(range: AnalyticsRange): Promise<PromptCopyAnalytics | null> {
+  const cacheKey = `prompt-copies:${range}`;
+  const cached = readAnalyticsCache<PromptCopyAnalytics>(cacheKey);
+  if (cached) return Promise.resolve(cached);
+
+  return coalesceAnalyticsRequest(`snapshot:${cacheKey}`, async () => {
+    const recent = readAnalyticsCache<PromptCopyAnalytics>(cacheKey);
+    if (recent) return recent;
+
+    const client = getSupabaseAdmin();
+    if (!client) return null;
+    const window = getAnalyticsWindow(range);
+    const { data, error } = await coalesceAnalyticsRequest<AnalyticsRpcResult>(`rpc:${cacheKey}`, async () => {
+      const recent = readAnalyticsCache<PromptCopyAnalytics>(cacheKey);
+      if (recent) return { data: recent, error: null };
+      return await client.rpc("admin_analytics_prompt_copies", {
+        p_start: window.start,
+        p_end: window.end,
+      });
+    });
+    if (error) return null;
+
+    const parsed = promptCopyAnalyticsSchema.safeParse(data);
+    if (!parsed.success) return null;
+    writeAnalyticsCache(cacheKey, parsed.data);
+    return parsed.data;
+  }).catch(() => null);
 }

@@ -250,7 +250,12 @@ export function AiImplementationPanel({
   const handleCopy = async (item: ImplementationItem) => {
     const copied = await copy(item.content, item.id);
     if (!copied) return;
-    trackEvent("code_copy", { slug: styleSlug, language: item.id });
+    trackEvent("prompt_copy", {
+      slug: styleSlug,
+      prompt_type: item.id,
+      source: "implementation-panel",
+      locale,
+    });
   };
 
   const handleDownload = (item: ImplementationItem) => {

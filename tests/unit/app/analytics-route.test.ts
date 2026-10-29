@@ -85,6 +85,35 @@ beforeEach(() => {
 });
 
 describe("analytics route", () => {
+  it("stores one prompt copy against the validated style without the prompt text", async () => {
+    const insert = vi.fn().mockResolvedValue({ error: null });
+    mockedGetSupabaseAdmin.mockReturnValue({ from: vi.fn().mockReturnValue({ insert }) } as never);
+    const response = await POST(request({
+      eventType: "prompt_copy",
+      eventData: { slug: "neo-brutalist", prompt_type: "hard", source: "hero", locale: "en" },
+      sessionId: "123e4567-e89b-42d3-a456-426614174000",
+    }));
+    expect(response.status).toBe(200);
+    expect(insert).toHaveBeenCalledTimes(1);
+    expect(insert).toHaveBeenCalledWith(expect.objectContaining({
+      event_type: "prompt_copy",
+      style_slug: "neo-brutalist",
+      event_data: expect.objectContaining({ prompt_type: "hard", source: "hero", locale: "en" }),
+    }));
+  });
+
+  it("rejects prompt copies attributed to a nonexistent style", async () => {
+    const insert = vi.fn();
+    mockedGetSupabaseAdmin.mockReturnValue({ from: vi.fn().mockReturnValue({ insert }) } as never);
+    const response = await POST(request({
+      eventType: "prompt_copy",
+      eventData: { slug: "not-in-catalog", prompt_type: "hard", source: "hero", locale: "zh" },
+      sessionId: null,
+    }));
+    expect(response.status).toBe(400);
+    expect(insert).not.toHaveBeenCalled();
+  });
+
   it("stores a valid client event with a server-derived slug and no raw IP or user agent", async () => {
     const insert = vi.fn().mockResolvedValue({ error: null });
     mockedGetSupabaseAdmin.mockReturnValue({

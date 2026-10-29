@@ -33,7 +33,12 @@ it("reports and tracks success only after the clipboard write resolves", async (
   Object.defineProperty(navigator, "clipboard", { configurable: true, value: { writeText } });
   render(<HardPromptCopyButton content="Use bold borders" locale="en" slug="neo-brutalist" />);
   fireEvent.click(screen.getByRole("button", { name: "Copy Hard Prompt" }));
-  await waitFor(() => expect(trackEvent).toHaveBeenCalledWith("code_copy", { slug: "neo-brutalist", language: "hard" }));
+  await waitFor(() => expect(trackEvent).toHaveBeenCalledWith("prompt_copy", {
+    slug: "neo-brutalist",
+    prompt_type: "hard",
+    source: "hero",
+    locale: "en",
+  }));
   expect(writeText).toHaveBeenCalledWith("Use bold borders");
   expect(screen.getByRole("button", { name: "Hard Prompt Copied" })).toBeInTheDocument();
 });

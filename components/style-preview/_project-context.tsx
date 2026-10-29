@@ -205,6 +205,12 @@ export function ProjectContextForm({
           locale === "zh" ? "实施简报已复制。" : "Implementation brief copied.",
       });
       trackEvent("project_brief_copy", generated.metadata);
+      trackEvent("prompt_copy", {
+        slug: generated.metadata.slug,
+        prompt_type: "project-brief",
+        source: "project-brief",
+        locale,
+      });
     } catch {
       setStatus({
         locale,

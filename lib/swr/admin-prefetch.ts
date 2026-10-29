@@ -16,10 +16,3 @@ const DATA_KEYS: Record<string, string[]> = {
 export function prefetchAdminView(href: string) {
   return Promise.allSettled((DATA_KEYS[href] ?? []).map((key) => preload(key, fetcher)));
 }
-
-export function prefetchCommonAdminViews() {
-  return Promise.allSettled([
-    prefetchAdminView("/admin/styles"),
-    prefetchAdminView("/admin/users"),
-  ]);
-}

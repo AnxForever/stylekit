@@ -1,6 +1,6 @@
 "use client";
 
-import useSWR from "swr";
+import useSWR, { useSWRConfig } from "swr";
 import { COMMENTS_PAGE_SIZE, getStyleCommentsKey } from "@/lib/community/comments";
 import type { StyleMeta } from "@/lib/styles/meta";
 import type { StyleStatsPayload } from "@/lib/styles/catalog-stats";
@@ -22,6 +22,11 @@ import type {
   AnalyticsRange,
   AnalyticsRegistrations,
 } from "@/lib/admin/analytics-api-contract";
+
+function useAnalyticsRevalidateOnMount<Data>(key: string, fallbackData?: Data): boolean {
+  const { cache } = useSWRConfig();
+  return fallbackData === undefined || cache.get(key)?.data !== undefined;
+}
 
 // ---------- Types ----------
 
@@ -147,9 +152,11 @@ export function useAnalyticsOverview(
   range: AnalyticsRange = "7d",
   fallbackData?: AnalyticsOverview
 ) {
-  return useSWR<AnalyticsOverview>(`/api/admin/analytics/overview?range=${range}`, {
+  const key = `/api/admin/analytics/overview?range=${range}`;
+  return useSWR<AnalyticsOverview>(key, {
     fallbackData,
-    keepPreviousData: true,
+    revalidateOnMount: useAnalyticsRevalidateOnMount(key, fallbackData),
+    keepPreviousData: false,
     dedupingInterval: 300_000,
     revalidateOnFocus: false,
   });
@@ -166,48 +173,50 @@ export function useAnalyticsBreakdown(
     dimension,
     limit: String(limit),
   });
-  return useSWR<AnalyticsBreakdown>(
-    `/api/admin/analytics/breakdown?${params.toString()}`,
-    {
-      fallbackData,
-      keepPreviousData: true,
-      dedupingInterval: 300_000,
-      revalidateOnFocus: false,
-    }
-  );
+  const key = `/api/admin/analytics/breakdown?${params.toString()}`;
+  return useSWR<AnalyticsBreakdown>(key, {
+    fallbackData,
+    revalidateOnMount: useAnalyticsRevalidateOnMount(key, fallbackData),
+    keepPreviousData: false,
+    dedupingInterval: 300_000,
+    revalidateOnFocus: false,
+  });
 }
 
 export function useAnalyticsRegistrations(
   range: AnalyticsRange,
   fallbackData?: AnalyticsRegistrations
 ) {
-  return useSWR<AnalyticsRegistrations>(
-    `/api/admin/analytics/registrations?range=${range}`,
-    {
-      fallbackData,
-      keepPreviousData: true,
-      dedupingInterval: 300_000,
-      revalidateOnFocus: false,
-    }
-  );
+  const key = `/api/admin/analytics/registrations?range=${range}`;
+  return useSWR<AnalyticsRegistrations>(key, {
+    fallbackData,
+    revalidateOnMount: useAnalyticsRevalidateOnMount(key, fallbackData),
+    keepPreviousData: false,
+    dedupingInterval: 300_000,
+    revalidateOnFocus: false,
+  });
 }
 
 export function useAnalyticsContent(
   range: AnalyticsRange,
   fallbackData?: AnalyticsContent
 ) {
-  return useSWR<AnalyticsContent>(`/api/admin/analytics/content?range=${range}`, {
+  const key = `/api/admin/analytics/content?range=${range}`;
+  return useSWR<AnalyticsContent>(key, {
     fallbackData,
-    keepPreviousData: true,
+    revalidateOnMount: useAnalyticsRevalidateOnMount(key, fallbackData),
+    keepPreviousData: false,
     dedupingInterval: 300_000,
     revalidateOnFocus: false,
   });
 }
 
 export function useAnalyticsEvents(range: AnalyticsRange, fallbackData?: AnalyticsEvents) {
-  return useSWR<AnalyticsEvents>(`/api/admin/analytics/events?range=${range}`, {
+  const key = `/api/admin/analytics/events?range=${range}`;
+  return useSWR<AnalyticsEvents>(key, {
     fallbackData,
-    keepPreviousData: true,
+    revalidateOnMount: useAnalyticsRevalidateOnMount(key, fallbackData),
+    keepPreviousData: false,
     dedupingInterval: 300_000,
     revalidateOnFocus: false,
   });

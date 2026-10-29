@@ -6,7 +6,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { X, LogOut, ExternalLink } from "lucide-react";
 import { adminNavItems } from "@/lib/admin/nav";
 import { useAdminSidebar } from "./admin-sidebar-provider";
-import { prefetchAdminView, prefetchCommonAdminViews } from "@/lib/swr/admin-prefetch";
+import { prefetchAdminView } from "@/lib/swr/admin-prefetch";
 
 export function AdminSidebar() {
   const pathname = usePathname();
@@ -26,10 +26,6 @@ export function AdminSidebar() {
     document.addEventListener("keydown", handleKeyDown);
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, [open, close]);
-
-  useEffect(() => {
-    void prefetchCommonAdminViews();
-  }, []);
 
   // Unresolved reports are the one queue that needs answering rather than
   // browsing, so the count comes to the maintainer instead of waiting to be
@@ -134,10 +130,11 @@ export function AdminSidebar() {
               <Link
                 key={item.href}
                 href={item.href}
+                prefetch={false}
                 onClick={close}
                 aria-current={isActive ? "page" : undefined}
-                onMouseEnter={() => { router.prefetch(item.href); void prefetchAdminView(item.href); }}
-                onFocus={() => { router.prefetch(item.href); void prefetchAdminView(item.href); }}
+                onMouseEnter={() => void prefetchAdminView(item.href)}
+                onFocus={() => void prefetchAdminView(item.href)}
                 className={`${itemClassName} ${
                   isActive
                     ? "bg-[var(--admin-hover)] text-foreground"

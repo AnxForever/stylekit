@@ -3,12 +3,17 @@ import "@testing-library/jest-dom/vitest";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 
-const { useI18nMock } = vi.hoisted(() => ({
+const { trackEventMock, useI18nMock } = vi.hoisted(() => ({
+  trackEventMock: vi.fn(),
   useI18nMock: vi.fn(),
 }));
 
 vi.mock("@/lib/i18n/context", () => ({
   useI18n: useI18nMock,
+}));
+
+vi.mock("@/lib/analytics/events", () => ({
+  trackEvent: trackEventMock,
 }));
 
 import { ExamplePrompts } from "@/components/style-preview/example-prompts";
@@ -19,6 +24,7 @@ describe("style preview copy payload identity", () => {
   const writeTextMock = vi.fn();
 
   beforeEach(() => {
+    trackEventMock.mockReset();
     writeTextMock.mockReset();
     writeTextMock.mockResolvedValue(undefined);
 
@@ -93,6 +99,12 @@ describe("style preview copy payload identity", () => {
     expect(copied).toContain("style_name: 新粗野主义");
     expect(copied).toContain("style_slug: neo-brutalist");
     expect(copied).not.toContain("style_slug: editorial");
+    expect(trackEventMock).toHaveBeenLastCalledWith("prompt_copy", {
+      slug: "neo-brutalist",
+      prompt_type: "example",
+      source: "example-prompts",
+      locale: "zh",
+    });
   });
 
   it("includes style identity in exporter prompt copy", async () => {
@@ -115,5 +127,42 @@ describe("style preview copy payload identity", () => {
     expect(copied).toContain("style_slug: editorial");
     expect(copied).toContain("style_source: /styles/editorial");
     expect(copied).toContain("PROMPT_RULES");
+    expect(trackEventMock).not.toHaveBeenCalledWith("prompt_copy", expect.anything());
+  });
+
+  it("counts a successful English example prompt copy with its style identity", async () => {
+    useI18nMock.mockReturnValue({
+      t: (key: string) => key,
+      locale: "en",
+      setLocale: vi.fn(),
+    });
+    render(
+      <ExamplePrompts
+        prompts={[{
+          title: "生成页面",
+          titleEn: "Generate a page",
+          description: "中文描述",
+          descriptionEn: "English description",
+          prompt: "BUILD_ZH",
+          promptEn: "BUILD_EN",
+        }]}
+        styleName="Editorial"
+        styleSlug="editorial"
+        aiRules="RULES_ZH"
+        aiRulesEn="RULES_EN"
+      />
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: "export.copy" }));
+
+    await waitFor(() => expect(writeTextMock).toHaveBeenCalledTimes(1));
+    expect(writeTextMock.mock.calls[0]?.[0]).toContain("BUILD_EN");
+    expect(writeTextMock.mock.calls[0]?.[0]).toContain("RULES_EN");
+    expect(trackEventMock).toHaveBeenCalledWith("prompt_copy", {
+      slug: "editorial",
+      prompt_type: "example",
+      source: "example-prompts",
+      locale: "en",
+    });
   });
 });

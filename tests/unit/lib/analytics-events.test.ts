@@ -14,6 +14,7 @@ describe("analytics event contract", () => {
   it("publishes separate client and authoritative allowlists", () => {
     expect(CLIENT_EVENT_NAMES).toEqual(expect.arrayContaining([
       "showcase_open",
+      "prompt_copy",
       "shadcn_command_copy",
       "project_brief_generated",
       "project_brief_copy",
