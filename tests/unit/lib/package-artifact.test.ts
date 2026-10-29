@@ -14,18 +14,26 @@ describe("published artifact comparison", () => {
       writeFileSync(path.join(root, "package", "package.json"), JSON.stringify(manifest));
       writeFileSync(path.join(root, "package", "dist", "index.js"), 'export const value = "one";');
       const first = path.join(root, "first.tgz");
-      execFileSync("tar", ["-czf", first, "-C", root, "package"]);
+      execFileSync("tar", ["-czf", "first.tgz", "-C", ".", "package"], {
+        cwd: root,
+      });
       const original = artifactContents(first);
       writeFileSync(path.join(root, "package", "package.json"), JSON.stringify({ ...manifest, scripts: { build: "tsup" }, devDependencies: { typescript: "^5" } }));
       writeFileSync(path.join(root, "package", "README.md"), "New documentation.");
       const second = path.join(root, "second.tgz");
-      execFileSync("tar", ["-czf", second, "-C", root, "package"]);
+      execFileSync("tar", ["-czf", "second.tgz", "-C", ".", "package"], {
+        cwd: root,
+      });
       expect(artifactContents(second)).toEqual(original);
       writeFileSync(path.join(root, "package", "dist", "index.js"), 'export const value = "two";');
-      execFileSync("tar", ["-czf", second, "-C", root, "package"]);
+      execFileSync("tar", ["-czf", "second.tgz", "-C", ".", "package"], {
+        cwd: root,
+      });
       expect(artifactContents(second).get("package/dist/index.js")).not.toBe(original.get("package/dist/index.js"));
       writeFileSync(path.join(root, "package", "package.json"), JSON.stringify({ ...manifest, dependencies: { zod: "^3" } }));
-      execFileSync("tar", ["-czf", second, "-C", root, "package"]);
+      execFileSync("tar", ["-czf", "second.tgz", "-C", ".", "package"], {
+        cwd: root,
+      });
       expect(artifactContents(second).get("package/package.json")).not.toBe(original.get("package/package.json"));
     } finally {
       rmSync(root, { recursive: true, force: true });
