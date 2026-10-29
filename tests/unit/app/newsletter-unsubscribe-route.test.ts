@@ -53,7 +53,7 @@ afterEach(() => {
 });
 
 describe("GET /api/newsletter/unsubscribe", () => {
-  it("deletes the stored address and renders a confirmation page", async () => {
+  it("asks for confirmation instead of deleting on the link fetch", async () => {
     const supabase = createSupabaseMock();
     mockedGetSupabaseAdmin.mockReturnValue(supabase.client as never);
     const token = createUnsubscribeToken("reader@example.com", "zh", SECRET)!;
@@ -62,27 +62,45 @@ describe("GET /api/newsletter/unsubscribe", () => {
     const html = await response.text();
 
     expect(response.status).toBe(200);
-    expect(html).toContain("已取消订阅");
+    expect(html).toContain("确认退订");
     expect(html).toContain("r****@example.com");
-    expect(supabase.eq).toHaveBeenCalledWith("email", "reader@example.com");
+    expect(html).toContain('method="post"');
+    expect(html).toContain(encodeURIComponent(token));
+    expect(supabase.del).not.toHaveBeenCalled();
     expect(response.headers.get("x-robots-tag")).toContain("noindex");
   });
 
   it("uses the locale carried by the token", async () => {
+    const token = createUnsubscribeToken("reader@example.com", "en", SECRET)!;
+    const html = await (await GET(request(token))).text();
+    expect(html).toContain("Confirm unsubscribe");
+  });
+
+  it("rejects a forged token", async () => {
+    const response = await GET(request("v1.forged.signature"));
+    expect(response.status).toBe(400);
+  });
+});
+
+describe("POST /api/newsletter/unsubscribe", () => {
+  it("deletes the stored address and confirms it", async () => {
     const supabase = createSupabaseMock();
     mockedGetSupabaseAdmin.mockReturnValue(supabase.client as never);
-    const token = createUnsubscribeToken("reader@example.com", "en", SECRET)!;
+    const token = createUnsubscribeToken("reader@example.com", "zh", SECRET)!;
 
-    const html = await (await GET(request(token))).text();
-    expect(html).toContain("Unsubscribed");
+    const response = await POST(request(token, "POST"));
+    const html = await response.text();
+
+    expect(response.status).toBe(200);
+    expect(html).toContain("已取消订阅");
+    expect(supabase.eq).toHaveBeenCalledWith("email", "reader@example.com");
   });
 
   it("rejects a forged token without deleting anything", async () => {
     const supabase = createSupabaseMock();
     mockedGetSupabaseAdmin.mockReturnValue(supabase.client as never);
 
-    const response = await GET(request("v1.forged.signature"));
-
+    const response = await POST(request("v1.forged.signature", "POST"));
     expect(response.status).toBe(400);
     expect(supabase.del).not.toHaveBeenCalled();
   });
@@ -92,7 +110,7 @@ describe("GET /api/newsletter/unsubscribe", () => {
     mockedGetSupabaseAdmin.mockReturnValue(supabase.client as never);
     const token = createUnsubscribeToken("reader@example.com", "zh", SECRET)!;
 
-    const response = await GET(request(token));
+    const response = await POST(request(token, "POST"));
     expect(response.status).toBe(500);
   });
 
@@ -100,26 +118,22 @@ describe("GET /api/newsletter/unsubscribe", () => {
     mockedGetSupabaseAdmin.mockReturnValue(null);
     const token = createUnsubscribeToken("reader@example.com", "zh", SECRET)!;
 
-    const response = await GET(request(token));
+    const response = await POST(request(token, "POST"));
     expect(response.status).toBe(503);
   });
-});
 
-describe("POST /api/newsletter/unsubscribe", () => {
-  it("answers one-click unsubscribe posts with a bare 200", async () => {
-    const supabase = createSupabaseMock();
-    mockedGetSupabaseAdmin.mockReturnValue(supabase.client as never);
+  it("rate limits repeated confirmation posts", async () => {
+    mockedCheckRateLimit.mockReturnValue({
+      allowed: false,
+      limit: 30,
+      remaining: 0,
+      resetAt: Date.now() + 60_000,
+      retryAfterSec: 60,
+    });
     const token = createUnsubscribeToken("reader@example.com", "zh", SECRET)!;
 
     const response = await POST(request(token, "POST"));
-
-    expect(response.status).toBe(200);
-    expect(await response.text()).toBe("");
-    expect(supabase.eq).toHaveBeenCalledWith("email", "reader@example.com");
-  });
-
-  it("keeps the error page for invalid posts", async () => {
-    const response = await POST(request("v1.forged.signature", "POST"));
-    expect(response.status).toBe(400);
+    expect(response.status).toBe(429);
+    expect(mockedGetSupabaseAdmin).not.toHaveBeenCalled();
   });
 });
