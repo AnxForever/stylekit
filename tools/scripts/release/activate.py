@@ -178,7 +178,10 @@ try:
                'previousBuildId': manifest['previousBuildId'], 'backup': str(BACKUP),
                'archiveSha256': expected_archive_hash, 'releasedAt': time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime()),
                'health': report.get('status'), 'mcpPidPreserved': True}
-    (APP / '.release-prompt-analytics.json').write_text(json.dumps(receipt, indent=2) + '\n')
+    # One neutral receipt file: a per-release name would leak the feature name
+    # into the deployment directory, and a hard-coded one overwrites the receipt
+    # of an earlier release. Each backup keeps its own receipt.json.
+    (APP / '.release-receipt.json').write_text(json.dumps(receipt, indent=2) + '\n')
     (BACKUP / 'receipt.json').write_text(json.dumps(receipt, indent=2) + '\n')
     log(receipt)
 except BaseException:

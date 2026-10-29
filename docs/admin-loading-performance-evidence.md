@@ -43,10 +43,10 @@ resource timings and controlled concurrency/failure tests.
 
 | ID | Lifecycle / owner outcome | Delivery | Coverage | History | Acceptance / remaining gap |
 | --- | --- | --- | --- | --- | --- |
-| AP-01 | Admin navigation and hydration / reduce unused and duplicate requests | implemented | partial | backfilled | Explicit destination prefetch; real SWR lifecycle tests prove cold SSR makes no fetch, new range fetches, and returning cached range revalidates; production before/after network receipt pending |
-| AP-02 | Shared analytics load / one underlying query for concurrent identical requests | implemented | partial | backfilled | Ten same-key calls invoke one loader; bidirectional SSR/API races share raw RPC shape; failures release in-flight slot; API auth remains ahead of caches; production verification pending |
-| AP-03 | Snapshot persistence / efficient durable fallback without stale data posing as live data | implemented | partial | backfilled | Concurrent parsed-store read, batched writes, no response wait for persistence, live-provider priority, original timestamp and STALE fallback header; production restart/outage drill outside scope |
-| AP-04 | Content report first load / server-render the prompt report and cache labels | implemented | partial | reopened-by-change | Prompt report hydrates from SSR; community/style zero rows retained; label reads coalesce and refresh within TTL; live migration and UI acceptance pending |
+| AP-01 | Admin navigation and hydration / reduce unused and duplicate requests | operational | partial | backfilled | Explicit destination prefetch; real SWR lifecycle tests prove cold SSR makes no fetch, new range fetches, and returning cached range revalidates; pre-release browser receipt retained; post-release browser space expired |
+| AP-02 | Shared analytics load / one underlying query for concurrent identical requests | operational | partial | backfilled | Ten same-key calls invoke one loader; bidirectional SSR/API races share raw RPC shape; failures release in-flight slot; API auth remains ahead of caches; live concurrency checks passed; full SQL tracing remains unverified |
+| AP-03 | Snapshot persistence / efficient durable fallback without stale data posing as live data | operational | partial | backfilled | Concurrent parsed-store read, batched writes, no response wait for persistence, live-provider priority, original timestamp and STALE fallback header; production restart/outage drill outside scope |
+| AP-04 | Content report first load / server-render the prompt report and cache labels | operational | partial | reopened-by-change | Prompt report hydrates from SSR; community/style zero rows retained; label reads coalesce and refresh within TTL; live migration/API verified; post-release browser acceptance not repeated |
 
 These changes do not change metric definitions or delete/rewrite historical
 analytics rows. Tests of synthetic counts are not proof of human users.
@@ -62,3 +62,34 @@ credentials out of logs, commits, client bundles and public evidence.
 After deployment, verify health/build identity, authenticated report API and
 content page, request counts, success-only collection metadata, public pages,
 robots/sitemap/LLM paths and the intentionally POST-only MCP endpoint.
+
+## Production receipt, 2026-10-29
+
+Released merged-main commit `fa0ccb85` with build `ssunQpN4RV__GDGpDLelt`.
+The production baseline advanced during parallel owner work, so the final build
+includes the already-live banner and theme changes. Approved source preimages
+and these concurrent files were verified before activation. A frozen clean
+worktree and the production environment produced the Webpack artifact; a
+separate Linux canary passed health and three authenticated analytics APIs
+within a 256 MB / 30 percent CPU service, before touching the live service.
+
+The website, watchdog and MCP service are active. Public health returns 200;
+English/Chinese pages, robots, sitemap and LLM routes passed; MCP GET retains
+405. The original build and source remain at
+`/www/stylekit-backups/prompt-analytics-20261029-fa0ccb85`.
+
+Five concurrent cold requests to the 90-day prompt report returned the same
+microsecond-resolution generatedAt, each as a cache MISS, consistent with the
+shared underlying read. Their loopback elapsed time was 335-337 ms; a following
+cache HIT took 8.2 ms. The report had six received copy events across six styles
+at verification time. These are received client events, not proven people or
+installs. No synthetic copy events were inserted for acceptance.
+
+CI for `fa0ccb85` passed. Post-deploy browser work could not resume because its
+task space had expired; do not claim a live browser request-count comparison
+from these results. Live acceptance used authenticated HTTP checks; the UI and
+range behavior retain the earlier browser and real-SWR lifecycle evidence.
+
+Reusable operator code is now in `tools/scripts/release/`. Private per-release
+scripts, artifacts and receipts are stored under the repository's ignored
+`.tmp/releases/prompt-analytics-20261029/`, restricted to the local operator.

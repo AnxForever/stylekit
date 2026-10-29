@@ -1,10 +1,10 @@
 {
-  "baselineCommit": "65d285bd",
+  "baselineCommit": "9b142663",
   "algorithm": "sha256",
   "files": {
     "components/home/featured-carousel.tsx": "8d74ccd23b6af86b4c79c293bd382e166711a6a50fefc98a70b48b97bd084cfc",
     "components/home/home-style-card.tsx": "e0529494ea3d3269fa8270ffb2fed3e42dd0d48d801a4976381e796497028991",
-    "components/home/style-card.tsx": "05ee5a8709b6e782f5fab93e7db5fd36f93632a2fb6c1085246b4ada03449f92",
+    "components/home/style-card.tsx": "8f48f6f1a228ab2c381a173a01f9240f4e266276e3fcc47c677eeacbed590b9f",
     "components/style-preview-switcher.tsx": "feed9300e9ba3bc35df5967d36d25fd1d71dea2f05685d7608fdf82cba499d12",
     "components/style-preview/style-cover-preview.tsx": "8d7d9a11a08acd2f64696f7e688e33c8ecb7ee03f4f22994fadae4293819a3e6",
     "lib/style-components.tsx": "2ee32bee110d37e2d62191cc1b036f5579f99ba4c1c10524a46b4e24fbaa53f2",

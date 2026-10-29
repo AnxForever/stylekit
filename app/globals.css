@@ -124,8 +124,8 @@ html[data-site-announcement-dismissed="true"] [data-site-announcement] {
 }
 
 /* The house promo cannot be dismissed, so its single line scrolls instead of
-   truncating. Hovering or focusing the bar pauses it so the copy stays readable
-   and the fixed action never drifts under the pointer. */
+   truncating. Hovering or focusing the bar pauses it so the copy and the ad's
+   own call to action stay readable under the pointer. */
 @keyframes friend-promo-marquee {
   from { transform: translateX(0); }
   to { transform: translateX(-50%); }
@@ -675,6 +675,25 @@ input[type="range"] { cursor: pointer; }
       transparent 46%
     );
   opacity: var(--sk-spotlight-opacity, 0);
+}
+
+/* Card spotlight: a soft wash that follows the pointer, ported from the
+   owner's blog. useCardSpotlight writes --spotlight-x/y on the card; the layer
+   paints them above the card content but below its links and controls. The
+   colour derives from --foreground so it darkens a light surface and lifts a
+   dark one without a second palette. */
+.card-spotlight {
+  background: radial-gradient(
+    260px circle at var(--spotlight-x, 50%) var(--spotlight-y, 50%),
+    color-mix(in oklab, var(--foreground) 7%, transparent),
+    transparent 70%
+  );
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card-spotlight {
+    display: none;
+  }
 }
 
 .sk-tilt-perspective {
