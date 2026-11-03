@@ -160,6 +160,7 @@ import { pastelUiRecipes } from "./pastel-ui";
 import { mobileEditorialRecipes } from "./mobile-editorial";
 import { softUtilityRecipes } from "./soft-utility";
 import { quantizedLineFieldRecipes } from "./quantized-line-field";
+import { diffractionFoilRecipes } from "./diffraction-foil";
 
 
 
@@ -326,6 +327,7 @@ const recipeRegistry: Record<string, StyleRecipes> = {
   "mobile-editorial": mobileEditorialRecipes,
   "soft-utility": softUtilityRecipes,
   "quantized-line-field": quantizedLineFieldRecipes,
+  "diffraction-foil": diffractionFoilRecipes,
 };
 
 /**

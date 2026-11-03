@@ -149,6 +149,7 @@ import pastelUiPreview from "./styles/pastel-ui";
 import mobileEditorialPreview from "./styles/mobile-editorial";
 import softUtilityPreview from "./styles/soft-utility";
 import quantizedLineFieldPreview from "./styles/quantized-line-field";
+import diffractionFoilPreview from "./styles/diffraction-foil";
 
 
 
@@ -307,4 +308,5 @@ export const styleComponents: Record<string, StylePreviewComponents> = {
   "mobile-editorial": mobileEditorialPreview,
   "soft-utility": softUtilityPreview,
   "quantized-line-field": quantizedLineFieldPreview,
+  "diffraction-foil": diffractionFoilPreview,
 };

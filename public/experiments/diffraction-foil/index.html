@@ -1,0 +1,2860 @@
+<!doctype html>
+<html lang="zh-CN" data-foil="css">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>镭射箔 · Diffraction Foil · StyleKit</title>
+<meta name="description" content="一张镭射收藏卡，颜色按衍射光栅实时算；下面把这层镭射膜拆成按钮、开关、滑杆、徽章等一套能单独用的零件。">
+<link rel="preconnect" href="https://fonts.loli.net">
+<link rel="preconnect" href="https://gstatic.loli.net" crossorigin>
+<!-- 字体表不挡脚本：挡住的话，网慢时卡片的初始化要等它下载完才开始 -->
+<link id="font-css" rel="stylesheet" href="https://fonts.loli.net/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Noto+Sans+SC:wght@900&family=Syne:wght@600;700;800&display=swap" media="print" onload="this.media='all'">
+<style>
+  :root {
+    color-scheme: dark;   /* 代码框的滚动条也是深色的 */
+    --bg: #0b0b0e;
+    --panel: #121217;
+    --line: #23232b;
+    --text: #ececf1;
+    --muted: #9b9aa7;
+    --faint: #64636f;
+    --ink: #15131d;   /* 印在镭射膜上的油墨 */
+    --pearl: radial-gradient(circle at 35% 30%, #fff, #e2e1ea 45%, #a9a8b6);   /* 珍珠白的圆钮 */
+    --sans: "Segoe UI", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+    --syne: Syne, "Noto Sans SC", "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+    --mono: "IBM Plex Mono", ui-monospace, Consolas, "PingFang SC", "Microsoft YaHei", monospace;
+  }
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  html { scroll-behavior: smooth; }
+  body { margin: 0; background: var(--bg); color: var(--text); font: 15px/1.7 var(--sans); }
+
+  /* 角落的页码，点了回目录；用反色混合，深浅底上都看得见 */
+  .folio {
+    position: absolute; top: 12px; right: 16px; z-index: 20;
+    font: 500 11px/1 ui-monospace, "Cascadia Mono", Consolas, monospace; letter-spacing: .14em;
+    color: #fff; mix-blend-mode: difference; opacity: .5; text-decoration: none; transition: opacity .2s;
+  }
+  .folio:hover, .folio:focus-visible { opacity: 1; }
+
+  /* ---------- 主角：那张卡 ---------- */
+  .hero-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 16px; padding: 22px clamp(16px, 4vw, 48px) 0; }
+  .hero-head h1 { margin: 0; font: 800 19px/1 var(--syne); letter-spacing: .02em; }
+  .stage { position: relative; background: #0c0b10; touch-action: pan-y; user-select: none; -webkit-user-select: none; -webkit-tap-highlight-color: transparent; }
+  .stage canvas { display: block; width: 100%; outline: none; background: #0c0b10; }   /* 和入场前那一帧的印张同色，画面还没出来时不会先黑一块 */
+  .stage canvas:focus-visible { box-shadow: inset 0 0 0 2px #6d64a8; }
+  /* 印张上的贴纸：放在卡片两边的空白里，脚本按卡片的位置摆 */
+  .stage .aux { position: absolute; left: 0; top: 0; transform: translate(-50%, -50%) rotate(var(--r, 0deg)); pointer-events: none; }
+  .stage .gyro {
+    position: absolute; right: 14px; bottom: 12px;
+    font: 12px/1 var(--sans); color: var(--muted); cursor: pointer;
+    background: rgb(12 11 16 / .7); border: 1px solid var(--line); border-radius: 999px; padding: 8px 12px;
+  }
+
+  /* ---------- 元素库 ---------- */
+  .lib { max-width: 2000px; margin: 0 auto; padding: 64px clamp(16px, 3vw, 40px) 20px; }
+  .lib-head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 12px 24px; margin-bottom: 18px; }
+  .seg { display: inline-flex; padding: 3px; border-radius: 999px; background: #17161d; box-shadow: inset 0 0 0 1px var(--line); }
+  .seg button {
+    position: relative; isolation: isolate; height: 30px; padding: 0 15px; border: 0; border-radius: 999px;
+    background: none; color: var(--muted); font: 600 12px/1 var(--mono); letter-spacing: .08em; cursor: pointer; transition: color .25s;
+  }
+  .seg button:hover { color: var(--text); }
+  .seg button:focus-visible { outline: 2px solid #f2f1f7; outline-offset: 2px; }
+  .seg .on { position: absolute; inset: 0; z-index: -1; border-radius: inherit; opacity: 0; transition: opacity .25s; }
+  .seg button[aria-checked="true"] { color: var(--ink); }
+  .seg button[aria-checked="true"] .on { opacity: 1; }
+  .lib-head h2 { margin: 0; font: 800 clamp(30px, 3.4vw, 44px)/1 var(--syne); letter-spacing: -0.01em; }
+  /* 格子按窗口宽度排成 6 / 4 / 3 / 2 / 1 列，每种列数各排一张不留空的版面；扭索纹、小卡、防撕贴纸占两行 */
+  .grid {
+    display: grid; gap: 10px; grid-template-columns: repeat(6, minmax(0, 1fr));
+    grid-template-areas:
+      "foil foil foil emboss emboss emboss"
+      "guil guil guil card seal avatar"
+      "guil guil guil card button button"
+      "void void kine kine scratch scratch"
+      "void void choice choice slider field"
+      "progress progress badge badge skel skel";
+  }
+  .spec { display: flex; flex-direction: column; min-width: 0; background: var(--panel); border: 1px solid var(--line); border-radius: 12px; }
+  .spec[data-part="foil"] { grid-area: foil; }
+  .spec[data-part="emboss"] { grid-area: emboss; }
+  .spec[data-part="seal"] { grid-area: seal; }
+  .spec[data-part="avatar"] { grid-area: avatar; }
+  .spec[data-part="guilloche"] { grid-area: guil; }
+  .spec[data-part="card"] { grid-area: card; }
+  .spec[data-part="button"] { grid-area: button; }
+  .spec[data-part="choice"] { grid-area: choice; }
+  .spec[data-part="slider"] { grid-area: slider; }
+  .spec[data-part="field"] { grid-area: field; }
+  .spec[data-part="progress"] { grid-area: progress; }
+  .spec[data-part="badge"] { grid-area: badge; }
+  .spec[data-part="kinegram"] { grid-area: kine; }
+  .spec[data-part="scratch"] { grid-area: scratch; }
+  .spec[data-part="void"] { grid-area: void; }
+  .spec[data-part="skeleton"] { grid-area: skel; }
+  @media (max-width: 1499px) {
+    .grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      grid-template-areas:
+        "foil foil emboss emboss"
+        "guil guil guil card"
+        "guil guil guil card"
+        "seal avatar button button"
+        "choice choice slider field"
+        "progress progress badge badge"
+        "void void kine kine"
+        "void void scratch scratch"
+        "skel skel skel skel";
+    }
+  }
+  @media (max-width: 1079px) {
+    .grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-areas:
+        "foil foil seal"
+        "emboss emboss avatar"
+        "guil guil card"
+        "guil guil card"
+        "button button slider"
+        "choice choice field"
+        "badge badge progress"
+        "kine void void"
+        "scratch void void"
+        "skel skel skel";
+    }
+  }
+  @media (max-width: 819px) {
+    .grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-template-areas:
+        "foil foil" "emboss emboss" "seal avatar" "guil guil"
+        "card button" "card slider" "choice choice" "field progress" "badge badge"
+        "kine scratch" "void void" "skel skel";
+    }
+  }
+  /* CSS 平替没有 WebGL 专属的那几格：不按版面排，按宽度自动填，宽的格子占两列 */
+  html[data-foil="css"] .grid { grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); grid-template-areas: none; grid-auto-flow: dense; }
+  html[data-foil="css"] .spec { grid-area: auto; }
+  html[data-foil="css"] .spec:is([data-part="foil"], [data-part="button"], [data-part="choice"], [data-part="field"], [data-part="progress"], [data-part="badge"], [data-part="skeleton"]) { grid-column: span 2; }
+  html[data-foil="css"] .spec[data-part="card"] { grid-row: span 2; }
+  html[data-foil="css"] .spec[data-gl-only] { display: none; }
+  .spec header { display: flex; align-items: baseline; gap: 8px; padding: 12px 14px 0; }
+  .spec h3 { margin: 0; font: 600 13.5px/1.3 var(--sans); }
+  .spec header span { font: 10px/1 var(--mono); letter-spacing: .14em; color: var(--faint); text-transform: uppercase; }
+  .demo { flex: 1; display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 14px 16px; min-height: 124px; padding: 16px 14px; }
+  .spec { scroll-margin-top: 16px; transition: border-color .4s; }
+  .spec:target { border-color: #4a4760; }
+  .spec header .acts { margin-left: auto; display: flex; gap: 2px; margin-top: -6px; margin-right: -6px; }
+  .cp {
+    display: grid; place-items: center; width: 28px; height: 28px; padding: 0; border: 0; border-radius: 8px;
+    background: none; color: var(--faint); cursor: pointer; transition: color .2s, background-color .2s;
+  }
+  .cp:hover { color: var(--text); background: #1d1c24; }
+  .cp:focus-visible { outline: 2px solid #f2f1f7; outline-offset: 1px; }
+  .cp svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+  .cp .ok { display: none; }
+  .cp.done { color: #9be3b8; }
+  .cp.done .ok { display: block; }
+  .cp.done .ic { display: none; }
+  .end { display: flex; justify-content: space-between; gap: 16px; max-width: 2000px; margin: 0 auto; padding: 28px clamp(16px, 3vw, 40px) 40px; font: 11.5px/1 var(--mono); letter-spacing: .12em; color: var(--faint); }
+  .end a { color: var(--muted); text-decoration: none; }
+  .end a:hover { color: var(--text); }
+  .end .gh { display: inline-flex; align-items: center; gap: 7px; }
+  .end .gh svg { width: 14px; height: 14px; }
+  @media (max-width: 559px) {
+    .lib { padding-top: 48px; }
+    .grid { grid-template-columns: minmax(0, 1fr); grid-template-areas: none; }
+    .spec { grid-area: auto !important; }
+  }
+</style>
+
+<style data-part="foil">
+  /* 镭射膜：底下一层银，上面叠衍射的彩虹（转到刻槽方向的光谱表），最上面是镜面高光和闪点。
+     刻槽总是朝着灯，所以彩虹是以灯为圆心的一圈圈光环，扫过页面上所有零件。
+     --lx --ly 是灯相对元素的位置；--k（刻槽法向）--bs --bp --dg 由 Foil 脚本按灯的方向算好写进来 */
+  .holo {
+    --k: 24deg;
+    position: relative; isolation: isolate; overflow: hidden;
+    background: linear-gradient(calc(var(--k) + 90deg), #4f4e59, #a3a2af 28%, #5e5d68 50%, #adacb9 76%, #575661);
+  }
+  /* 浅色款：上面要印油墨字（按钮、徽章），银底亮一些，彩虹用 overlay 压上去，不会把底子冲白 */
+  .holo.light { --blend: overlay; background: linear-gradient(calc(var(--k) + 90deg), #b4b3bf, #e9e8f0 30%, #bdbcc8 52%, #ecebf2 78%, #b6b5c1); }
+  .holo::before {
+    content: ""; position: absolute; z-index: -1; left: 50%; top: 50%;
+    width: var(--dg, 300%); height: var(--dg, 300%);
+    transform: translate(-50%, -50%) rotate(var(--k));
+    background: var(--spectrum) var(--bp, 0) 0 / var(--bs, 100%) 100% repeat-x;
+    mix-blend-mode: var(--blend, screen); opacity: .92;
+    pointer-events: none;
+  }
+  .holo::after {
+    content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
+    background:
+      radial-gradient(circle at var(--lx, 70%) var(--ly, 0%), rgb(255 255 255 / .55), rgb(255 255 255 / 0) 150px),
+      var(--glint) calc(var(--lx, 0px) * -.3) calc(var(--ly, 0px) * -.3) / 140px 140px,
+      var(--sparkle) 0 0 / 96px 96px;
+    background-blend-mode: normal, multiply, normal;
+    mix-blend-mode: screen;
+  }
+  /* 字也可以是镭射箔：直纹，刻槽法向是水平的 */
+  .holo-text {
+    background:
+      radial-gradient(circle at var(--lx, 70%) var(--ly, 0%), rgb(255 255 255 / .9), rgb(255 255 255 / 0) 120px),
+      var(--spectrum) var(--bp, 0) 0 / var(--bs, 100%) 100% repeat-x,
+      linear-gradient(#e2e1ea, #8f8e9b 55%, #cfced9);
+    background-blend-mode: screen, screen, normal;
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  /* 星芒：同心圆刻槽，只有朝着灯的那条半径（和它对面那条）亮出彩虹；--la 是灯的方向，--sc --sc2 是那道彩虹的颜色 */
+  .holo-seal {
+    position: relative; isolation: isolate; overflow: hidden; border-radius: 50%;
+    background:
+      radial-gradient(circle at var(--lx, 70%) var(--ly, 0%), rgb(255 255 255 / .45), rgb(255 255 255 / 0) 110px),
+      repeating-radial-gradient(circle, rgb(255 255 255 / .07) 0 1px, rgb(0 0 0 / .08) 1px 3px),
+      conic-gradient(from calc(var(--la, 40deg) - 18deg), rgb(0 0 0 / 0), var(--sc, #8cf) 12deg, var(--sc2, #f9c) 18deg, var(--sc, #8cf) 24deg, rgb(0 0 0 / 0) 36deg 162deg,
+                     var(--sc, #8cf) 192deg, var(--sc2, #f9c) 198deg, var(--sc, #8cf) 204deg, rgb(0 0 0 / 0) 216deg),
+      radial-gradient(circle at 50% 42%, #c4c3d0, #6d6c79 68%, #4a4954);
+    background-blend-mode: screen, overlay, screen, normal;
+  }
+  /* 碎钻：暗底上零星的闪点，灯一动就换一批亮 */
+  .glitter { position: relative; isolation: isolate; overflow: hidden; background: #111017; }
+  .glitter::after {
+    content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
+    background:
+      var(--glint) calc(var(--lx, 0px) * -.45) calc(var(--ly, 0px) * -.45) / 46px 46px,
+      var(--sparkle) 0 0 / 30px 30px,
+      var(--sparkle) 11px 17px / 23px 23px;
+    background-blend-mode: multiply, screen, normal;
+    filter: brightness(2.2) saturate(1.6);
+  }
+  .sw { margin: 0; display: grid; gap: 10px; justify-items: center; }
+  .sw-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 14px 16px; max-width: calc(5 * 88px + 4 * 16px); }
+  .sw .sw-a { position: relative; isolation: isolate; overflow: hidden; display: block; width: 88px; height: 88px; border-radius: 12px; box-shadow: 0 12px 26px -16px #000; }
+  .sw figcaption { font-size: 12.5px; text-align: center; line-height: 1.4; }
+  @media (max-width: 580px) { .sw .sw-a { width: 70px; height: 70px; } .sw-grid { gap: 12px 14px; max-width: calc(4 * 70px + 3 * 14px); } }
+  html[data-foil="css"] .sw[data-gl-only] { display: none; }
+</style>
+
+<style data-part="foil-gl">
+  /* WebGL 版：每个镭射零件里垫一块小画布，FoilGL 每帧把灯照下的膜逐像素算好拷进来；零件上的字压在画布上面 */
+  .fx { position: absolute; inset: 0; z-index: -1; display: block; width: 100%; height: 100%; border-radius: inherit; pointer-events: none; }
+  html[data-foil="css"] .fx { display: none; }
+  html[data-foil="gl"] .holo::before, html[data-foil="gl"] .holo::after, html[data-foil="gl"] .glitter::after { content: none; }
+  html[data-foil="gl"] .holo-seal, html[data-foil="gl"] .mini-burst, html[data-foil="gl"] .glitter { background: none; }
+  html[data-foil="gl"] .mini-name { color: transparent; background: none; }
+  html[data-foil="gl"] .mini-dust { opacity: .45; }   /* 逐像素算的碎钻比 CSS 版亮得多，撒在卡面上要淡一些 */
+  .mini-name-fx { z-index: 1; -webkit-mask: var(--name-mask) 0 0 / 100% 100% no-repeat; mask: var(--name-mask) 0 0 / 100% 100% no-repeat; }
+</style>
+
+<style data-part="emboss">
+  /* 烫印：深色卡纸上一块凸起的镭射箔。高度和箔的形状画成一张贴图，WebGL 按高度求法线，斜面会接住灯光 */
+  .plate { position: relative; isolation: isolate; width: min(100%, 620px); height: 132px; border-radius: 10px; overflow: hidden; background: #110e22; box-shadow: 0 16px 30px -18px #000, inset 0 0 0 1px rgb(255 255 255 / .05); }
+</style>
+
+<style data-part="guilloche">
+  /* 扭索纹：几十条相位错开的玫瑰线和波纹，像钞票上的底纹；线是镭射箔，彩虹绕着花心转 */
+  .note-bill { position: relative; isolation: isolate; width: min(100%, 760px); aspect-ratio: 2.35; border-radius: 8px; overflow: hidden; background: #0e1330; box-shadow: 0 16px 30px -18px #000; }
+</style>
+
+<style data-part="avatar">
+  /* 头像框：一圈碎钻，中间是烫印的首字母 */
+  .avatar { position: relative; flex: none; width: 88px; height: 88px; border-radius: 50%; filter: drop-shadow(0 8px 12px rgb(0 0 0 / .55)); }
+  .av-ring, .av-in { position: absolute; isolation: isolate; border-radius: 50%; overflow: hidden; }
+  .av-ring { inset: 0; -webkit-mask: radial-gradient(closest-side, transparent 80%, #000 81%); mask: radial-gradient(closest-side, transparent 80%, #000 81%); }
+  .av-in { inset: 9%; background: #110e22; box-shadow: 0 0 0 1.5px rgb(255 255 255 / .55); }
+  .avatar.sm { width: 44px; height: 44px; }
+  .chip { display: inline-flex; align-items: center; gap: 10px; }
+  .chip b { display: block; font: 700 14px/1.3 var(--syne); }
+  .chip small { font: 11px/1.3 var(--mono); letter-spacing: .08em; color: var(--muted); }
+</style>
+
+<style data-part="kinegram">
+  /* 光变图：点阵全息，每个小点的刻槽朝向不同。灯从左右照来时一张图亮，从上下照来时换成另一张 */
+  .kine { position: relative; isolation: isolate; display: block; flex: none; overflow: hidden; box-shadow: 0 12px 24px -14px #000, inset 0 0 0 1px rgb(255 255 255 / .06); }
+  .kine-badge { width: 128px; height: 128px; border-radius: 50%; }
+  .kine-strip { width: 232px; height: 76px; border-radius: 8px; }
+</style>
+
+<style data-part="scratch">
+  /* 刮开兑换码：银色刮层盖在镭射膜上，按住拖动刮开 */
+  [data-part="scratch"] .demo { flex-direction: column; gap: 10px; }
+  .scratch {
+    position: relative; isolation: isolate; width: min(100%, 320px); aspect-ratio: 320 / 104; border-radius: 10px; overflow: hidden;
+    cursor: crosshair; touch-action: none; user-select: none; -webkit-user-select: none;
+    box-shadow: 0 12px 24px -14px #000, inset 0 0 0 1px rgb(255 255 255 / .06);
+  }
+  .scratch:focus-visible { outline: 2px solid #f2f1f7; outline-offset: 3px; }
+  .mini-btn { padding: 4px 2px; border: 0; background: none; font: 12.5px/1 var(--sans); color: var(--muted); cursor: pointer; }
+  .mini-btn:hover { color: var(--text); }
+  .mini-btn:focus-visible { outline: 2px solid #f2f1f7; outline-offset: 2px; }
+</style>
+
+<style data-part="void">
+  /* 防撕贴纸：拖动角撕开，揭开的地方留下 VOID 字样；再贴回去，那一块也会露出 VOID */
+  [data-part="void"] .demo { flex-direction: column; gap: 10px; }
+  .void-box { position: relative; isolation: isolate; width: 100%; height: 230px; border-radius: 10px; overflow: hidden; cursor: grab; touch-action: none; user-select: none; -webkit-user-select: none; }
+  .void-box:active { cursor: grabbing; }
+</style>
+
+<style data-part="skeleton">
+  /* 加载骨架：一道镭射流光同步扫过所有占位块（按页面坐标算，几块是同一道光） */
+  .skel { display: grid; grid-template-columns: 52px minmax(0, 1fr); gap: 12px 14px; width: min(100%, 560px); align-items: center; }
+  .sk { position: relative; isolation: isolate; display: block; overflow: hidden; border-radius: 6px; background: #1c1b23; }
+  .sk-av { width: 52px; height: 52px; border-radius: 50%; }
+  .sk-lines { display: grid; gap: 9px; }
+  .sk-l1 { width: 58%; height: 12px; }
+  .sk-l2 { width: 34%; height: 10px; }
+  .sk-img { grid-column: 1 / -1; height: 112px; border-radius: 10px; }
+  .sk-l3 { grid-column: 1 / -1; width: 86%; height: 10px; }
+  .sk-l4 { grid-column: 1 / -1; width: 54%; height: 10px; margin-top: -4px; }
+  /* CSS 平替：一道带彩边的光，背景按视口固定，几块占位上看到的是同一道光 */
+  .sk::after {
+    content: ""; position: absolute; inset: 0;
+    background: linear-gradient(105deg, transparent 46%, rgb(110 70 255 / .5) 47.6%, rgb(70 230 140 / .55) 48.6%, rgb(255 225 120 / .55) 49.4%, rgb(255 70 110 / .5) 50.3%, transparent 52%) 0 0 / 220vw 100% fixed;
+    animation: sk-sweep 2.4s linear infinite;
+  }
+  @keyframes sk-sweep { from { background-position: 110vw 0; } to { background-position: -110vw 0; } }
+  html[data-foil="gl"] .sk::after { content: none; }
+  @media (prefers-reduced-motion: reduce) { .sk::after { animation: none; } }
+</style>
+
+<style data-part="seal">
+  .seal { position: relative; width: 120px; height: 120px; flex: none; transform: rotate(var(--r, 0deg)); filter: drop-shadow(0 8px 12px rgb(0 0 0 / .5)); }
+  .seal .seal-disc { position: absolute; inset: 0; }
+  .seal svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .seal text { font: 600 8.6px var(--mono); letter-spacing: .12em; fill: rgb(21 19 29 / .62); filter: drop-shadow(0 .5px 0 rgb(255 255 255 / .45)); }   /* 压印：暗字下沿一道亮边 */
+  .seal .edge { fill: none; stroke: rgb(21 19 29 / .32); stroke-width: .8; }
+  .seal .star { fill: rgb(255 255 255 / .6); mix-blend-mode: overlay; }
+</style>
+
+<style data-part="button">
+  .btn {
+    position: relative; display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    height: 44px; padding: 0 22px; border: 0; border-radius: 999px;
+    font: 700 14px/1 var(--syne); letter-spacing: .02em; color: var(--ink);
+    cursor: pointer; user-select: none; -webkit-tap-highlight-color: transparent;
+    box-shadow: inset 0 1px 0 rgb(255 255 255 / .5), inset 0 -1px 0 rgb(0 0 0 / .28), 0 10px 22px -12px rgb(0 0 0 / .9);
+    transition: transform .2s cubic-bezier(.3, 1.4, .5, 1), filter .2s, box-shadow .2s;
+  }
+  .btn:hover { transform: translateY(-1px); filter: brightness(1.08) saturate(1.25); }
+  .btn:active { transform: translateY(1px) scale(.98); filter: brightness(.95); box-shadow: inset 0 2px 5px rgb(0 0 0 / .4); }
+  .btn:focus-visible { outline: 2px solid #f2f1f7; outline-offset: 3px; }
+  .btn:disabled { background: #24242b; color: #5f5e69; box-shadow: inset 0 1px 0 rgb(255 255 255 / .04); cursor: not-allowed; transform: none; filter: none; }
+  .btn svg { width: 18px; height: 18px; flex: none; }
+  .btn-icon { width: 44px; padding: 0; }
+  /* 描边款：镭射只留一圈 */
+  .btn-line { isolation: isolate; color: var(--text); background: #16151c; box-shadow: 0 10px 22px -12px rgb(0 0 0 / .9); }
+  .btn-line .ring {
+    position: absolute; inset: 0; z-index: -1; border-radius: inherit; padding: 1.5px;
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor;
+    mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+  }
+</style>
+
+<style data-part="choice">
+  .choices { display: grid; grid-template-columns: auto auto; gap: 16px 40px; align-items: center; }
+  .opt { display: inline-flex; align-items: center; gap: 12px; font-size: 14px; }
+  .switch { position: relative; width: 46px; height: 26px; flex: none; padding: 0; border: 0; border-radius: 999px; background: none; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+  .switch .track, .switch .shade { position: absolute; inset: 0; border-radius: inherit; }
+  .switch .shade { background: #25242c; box-shadow: inset 0 1px 3px rgb(0 0 0 / .6), inset 0 0 0 1px #33323c; transition: opacity .3s; }
+  .switch[aria-checked="true"] .shade { opacity: 0; }
+  .switch .knob {
+    position: absolute; top: 3px; left: 3px; width: 20px; height: 20px; border-radius: 50%;
+    background: var(--pearl); box-shadow: 0 2px 5px rgb(0 0 0 / .5);
+    transition: transform .34s cubic-bezier(.3, 1.45, .45, 1);
+  }
+  .switch[aria-checked="true"] .knob { transform: translateX(20px); }
+  .switch:focus-visible { outline: 2px solid #f2f1f7; outline-offset: 3px; }
+  .check { display: inline-flex; align-items: center; gap: 11px; font-size: 14px; cursor: pointer; }
+  .check input { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
+  .check .box {
+    position: relative; width: 20px; height: 20px; flex: none; border-radius: 6px; overflow: hidden;
+    background: #1c1b22; box-shadow: inset 0 0 0 1.5px #3b3a44; transition: box-shadow .2s;
+  }
+  .check:hover .box { box-shadow: inset 0 0 0 1.5px #5c5b67; }
+  .check .fill { position: absolute; inset: 0; border-radius: inherit; opacity: 0; transform: scale(.3); transition: opacity .18s, transform .3s cubic-bezier(.3, 1.5, .5, 1); }
+  .check input:checked + .box .fill { opacity: 1; transform: none; }
+  .check svg { position: absolute; inset: 0; fill: none; stroke: var(--ink); stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 18; stroke-dashoffset: 18; transition: stroke-dashoffset .28s .1s ease-out; }
+  .check input:checked + .box svg { stroke-dashoffset: 0; }
+  .check input:focus-visible + .box { outline: 2px solid #f2f1f7; outline-offset: 2px; }
+  .radio .box { border-radius: 50%; }
+  .radio .fill { inset: 4px; border-radius: 50%; }
+</style>
+
+<style data-part="slider">
+  .slider { display: grid; gap: 14px; width: min(100%, 280px); font: 12px/1 var(--mono); letter-spacing: .08em; color: var(--muted); }
+  .sl-top { display: flex; justify-content: space-between; }
+  .sl-top output { color: var(--text); font-variant-numeric: tabular-nums; }
+  .sl-track { position: relative; height: 6px; border-radius: 999px; background: #24232b; box-shadow: inset 0 1px 2px rgb(0 0 0 / .6); }
+  .sl-fill { position: absolute; top: 0; bottom: 0; left: 0; width: var(--v); border-radius: inherit; }
+  .sl-track input { position: absolute; left: 0; top: -14px; width: 100%; height: 34px; margin: 0; opacity: 0; cursor: pointer; }
+  .sl-thumb {
+    position: absolute; top: 50%; left: var(--v); width: 22px; height: 22px; margin: -11px 0 0 -11px; border-radius: 50%;
+    background: var(--pearl); box-shadow: 0 2px 6px rgb(0 0 0 / .55); pointer-events: none;
+    transition: transform .2s cubic-bezier(.3, 1.5, .5, 1);
+  }
+  .sl-track:hover .sl-thumb, .sl-track input:active + .sl-thumb { transform: scale(1.14); }
+  .sl-track input:focus-visible + .sl-thumb { outline: 2px solid #f2f1f7; outline-offset: 3px; }
+</style>
+
+<style data-part="field">
+  .field { position: relative; display: block; width: min(100%, 280px); padding-top: 16px; }
+  .field input {
+    display: block; width: 100%; height: 40px; padding: 10px 0 6px; border: 0; border-bottom: 1px solid #3a3943; border-radius: 0;
+    background: transparent; color: var(--text); font: 500 16px/1 var(--mono); letter-spacing: .06em; outline: none;
+  }
+  .field .fl { position: absolute; left: 0; top: 28px; font-size: 14px; color: var(--faint); pointer-events: none; transform-origin: 0 0; transition: transform .22s, color .22s; }
+  .field input:focus ~ .fl, .field input:not(:placeholder-shown) ~ .fl { transform: translateY(-24px) scale(.82); color: var(--muted); }
+  .field .fl-line { position: absolute; left: 0; right: 0; top: 54px; height: 2px; transform: scaleX(0); transform-origin: 0 50%; transition: transform .5s cubic-bezier(.2, .8, .2, 1); }
+  .field input:focus ~ .fl-line { transform: none; }
+  .field .fl-hint { display: block; margin-top: 10px; font-size: 12px; color: var(--faint); }
+</style>
+
+<style data-part="progress">
+  .prog { display: grid; gap: 12px; width: min(100%, 280px); }
+  .pg-top { display: flex; align-items: baseline; justify-content: space-between; font-size: 12.5px; color: var(--muted); }
+  .pg-top b { font: 500 12.5px/1 var(--mono); color: var(--text); font-variant-numeric: tabular-nums; }
+  .pg { position: relative; height: 10px; border-radius: 999px; overflow: hidden; background: #1f1e25; box-shadow: inset 0 1px 2px rgb(0 0 0 / .6); }
+  .pg-bar { position: absolute; top: 0; bottom: 0; left: 0; width: var(--p); border-radius: inherit; transition: width .8s cubic-bezier(.2, .8, .2, 1); }
+  .pg-thin { height: 3px; }
+  .pg-run { position: absolute; top: 0; bottom: 0; width: 34%; border-radius: inherit; animation: pg-run 1.7s cubic-bezier(.45, 0, .2, 1) infinite; }
+  @keyframes pg-run { from { left: -34%; } to { left: 100%; } }
+  .pg-more { justify-self: start; padding: 6px 0; border: 0; background: none; font: 12.5px/1 var(--sans); color: var(--muted); cursor: pointer; }
+  .pg-more:hover { color: var(--text); }
+  @media (prefers-reduced-motion: reduce) { .pg-run { animation: none; left: 33%; } }
+</style>
+
+<style data-part="badge">
+  .badge { display: inline-flex; align-items: center; gap: 7px; height: 26px; padding: 0 12px; border-radius: 999px; font: 600 11.5px/1 var(--mono); letter-spacing: .1em; color: var(--ink); }
+  .badge-ink { color: var(--text); background: #1c1b23; box-shadow: inset 0 0 0 1px #34333d; }
+  .badge .dot { width: 8px; height: 8px; border-radius: 50%; }
+  /* 贴纸：镭射膜按形状模切，外面留一圈白边 */
+  .sticker { position: relative; display: inline-block; width: 76px; height: 76px; flex: none; transform: rotate(var(--r, 0deg)); filter: drop-shadow(0 6px 9px rgb(0 0 0 / .5)); }
+  .sticker svg { position: absolute; inset: 0; overflow: visible; }
+  .sticker svg path { fill: #f3f2f7; stroke: #f3f2f7; stroke-width: 8; stroke-linejoin: round; }
+  .sticker .sk-in { position: absolute; inset: 0; clip-path: path("M38 3Q43 33 73 38Q43 43 38 73Q33 43 3 38Q33 33 38 3Z"); }
+  .sticker svg circle { fill: #f3f2f7; stroke: #f3f2f7; stroke-width: 8; }
+  .sk-round .sk-in { inset: 4px; clip-path: circle(50%); display: grid; place-content: center; text-align: center; color: var(--ink); line-height: 1.1; }
+  .sk-round b { font: 900 17px/1.1 var(--syne); letter-spacing: .06em; }
+  .sk-round small { font: 600 7.5px/1 var(--mono); letter-spacing: .2em; }
+  [data-part="badge"] .row { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 12px 14px; }
+</style>
+
+<style data-part="card">
+  .mini { width: 196px; aspect-ratio: 63 / 88; perspective: 800px; flex: none; cursor: pointer; outline: none; }
+  .mini-face {
+    position: relative; height: 100%; border-radius: 12px; overflow: hidden;
+    background: radial-gradient(circle at 50% 44%, #3d2f86, #1d1745 46%, #0b0a18);
+    box-shadow: 0 26px 40px -22px #000, 0 0 0 1px rgb(255 255 255 / .05);
+    transform: rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+  }
+  .mini:focus-visible .mini-face { outline: 2px solid #f2f1f7; outline-offset: 3px; }
+  .mini-frame {
+    position: absolute; inset: 0; border-radius: inherit; padding: 7px;
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor;
+    mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+  }
+  /* 星芒：一圈放射的细光，加上朝着灯的那道彩虹（--la --sc --sc2 由 Foil 按 data-foil="seal" 写进来） */
+  .mini-burst {
+    position: absolute; left: 50%; top: 44%; width: 300px; height: 300px; margin: -150px 0 0 -150px; mix-blend-mode: screen;
+    background:
+      repeating-conic-gradient(from var(--la, 0deg), rgb(255 255 255 / .09) 0 3deg, rgb(255 255 255 / 0) 3deg 10deg),
+      conic-gradient(from calc(var(--la, 0deg) - 22deg), rgb(0 0 0 / 0), var(--sc, #8cf) 22deg, rgb(0 0 0 / 0) 44deg 158deg, var(--sc2, #f9c) 202deg, rgb(0 0 0 / 0) 224deg);
+    -webkit-mask: radial-gradient(closest-side, #000 8%, rgb(0 0 0 / .5) 40%, transparent); mask: radial-gradient(closest-side, #000 8%, rgb(0 0 0 / .5) 40%, transparent);
+  }
+  .mini-dust { position: absolute; inset: 7px; border-radius: 6px; background: none; mix-blend-mode: screen; opacity: .8; }
+  .mini-name { position: absolute; left: 12px; right: 12px; top: 44%; transform: translateY(-50%); text-align: center; font: 800 38px/1.1 var(--syne); letter-spacing: -0.01em; white-space: nowrap; }
+  .mini-meta { position: absolute; left: 16px; right: 16px; bottom: 16px; display: flex; justify-content: space-between; font: 500 9.5px/1 var(--mono); letter-spacing: .14em; color: #d9d7ec; }
+  .mini-top { position: absolute; left: 16px; top: 16px; font: 500 9.5px/1 var(--mono); letter-spacing: .14em; color: #d9d7ec; }
+</style>
+</head>
+<body>
+
+
+<header class="hero-head">
+  <h1>镭射闪卡</h1>
+</header>
+<div class="stage" id="stage">
+  <canvas id="gl" tabindex="0" role="button" aria-label="一张镭射收藏卡，品牌名烫在正面；按回车或点一下翻面"></canvas>
+  <span class="aux sticker" data-aux="star" style="--r: 14deg" aria-hidden="true">
+    <svg viewBox="0 0 76 76"><path d="M38 3Q43 33 73 38Q43 43 38 73Q33 43 3 38Q33 33 38 3Z"/></svg>
+    <span class="sk-in holo"><canvas class="fx" data-mat="film"></canvas></span>
+  </span>
+  <div class="aux seal" data-aux="seal" style="--r: -12deg" aria-hidden="true">
+    <span class="seal-disc holo-seal" data-foil="seal"><canvas class="fx" data-mat="star" data-light></canvas></span>
+    <svg viewBox="0 0 120 120">
+      <defs><path id="seal-ring-a" d="M60 60m-45 0a45 45 0 1 1 90 0a45 45 0 1 1 -90 0"/></defs>
+      <circle class="edge" cx="60" cy="60" r="55.5"/><circle class="edge" cx="60" cy="60" r="35"/>
+      <text><textPath href="#seal-ring-a" textLength="282" lengthAdjust="spacing">正品 · AUTHENTIC · 镭射印社 · No. 0042 ·</textPath></text>
+      <path class="star" d="M60 39Q63 57 81 60Q63 63 60 81Q57 63 39 60Q57 57 60 39Z"/>
+    </svg>
+  </div>
+  <button class="gyro" type="button" id="gyro" hidden>开启陀螺仪</button>
+</div>
+
+<main class="lib" aria-labelledby="lib-h">
+  <div class="lib-head">
+    <h2 id="lib-h">元素库</h2>
+    <div class="seg" data-tilt role="radiogroup" aria-label="渲染方式">
+      <button type="button" role="radio" aria-checked="true" data-mode="gl"><span class="on holo light"><canvas class="fx" data-mat="film" data-light></canvas></span>WebGL</button>
+      <button type="button" role="radio" aria-checked="false" data-mode="css"><span class="on holo light"><canvas class="fx" data-mat="film" data-light></canvas></span>CSS 平替</button>
+    </div>
+  </div>
+  <div class="grid">
+    <section class="spec" id="foil" data-part="foil">
+      <header><h3>材质</h3><span>Foil</span><span class="acts"><button class="cp" type="button" data-copy="link" aria-label="复制这一格的链接" title="复制链接"><svg class="ic" viewBox="0 0 16 16" aria-hidden="true"><path d="M6.6 9.4a2.6 2.6 0 0 0 3.7 0l2.4-2.4a2.6 2.6 0 0 0-3.7-3.7l-.9.9"/><path d="M9.4 6.6a2.6 2.6 0 0 0-3.7 0L3.3 9a2.6 2.6 0 0 0 3.7 3.7l.9-.9"/></svg><svg class="ok" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.4l3 3 6-6.6"/></svg></button><button class="cp" type="button" data-copy="code" aria-label="复制这一格的代码" title="复制代码"><svg class="ic" viewBox="0 0 16 16" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.6"/><path d="M10.5 5.5V4.1c0-.9-.7-1.6-1.6-1.6H4.1c-.9 0-1.6.7-1.6 1.6v4.8c0 .9.7 1.6 1.6 1.6h1.4"/></svg><svg class="ok" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.4l3 3 6-6.6"/></svg></button></span></header>
+      <div class="demo">
+        <div class="sw-grid">
+          <figure class="sw"><span class="sw-a holo"><canvas class="fx" data-mat="film"></canvas></span><figcaption>彩虹膜</figcaption></figure>
+          <figure class="sw" data-gl-only><span class="sw-a"><canvas class="fx" data-mat="straight" data-k="66"></canvas></span><figcaption>拉丝</figcaption></figure>
+          <figure class="sw"><span class="sw-a holo-seal" data-foil="seal"><canvas class="fx" data-mat="star" data-light></canvas></span><figcaption>星芒</figcaption></figure>
+          <figure class="sw"><span class="sw-a glitter" data-foil="glitter"><canvas class="fx" data-mat="glitter"></canvas></span><figcaption>碎钻</figcaption></figure>
+          <figure class="sw" data-gl-only><span class="sw-a"><canvas class="fx" data-mat="dots"></canvas></span><figcaption>点阵</figcaption></figure>
+          <figure class="sw" data-gl-only><span class="sw-a"><canvas class="fx" data-mat="ice"></canvas></span><figcaption>碎冰</figcaption></figure>
+          <figure class="sw" data-gl-only><span class="sw-a"><canvas class="fx" data-mat="pillar"></canvas></span><figcaption>光柱</figcaption></figure>
+          <figure class="sw" data-gl-only><span class="sw-a"><canvas class="fx" data-mat="ripple"></canvas></span><figcaption>波纹</figcaption></figure>
+          <figure class="sw" data-gl-only><span class="sw-a"><canvas class="fx" data-mat="cosmos"></canvas></span><figcaption>银河</figcaption></figure>
+          <figure class="sw" data-gl-only><span class="sw-a"><canvas class="fx" data-mat="pearl"></canvas></span><figcaption>幻彩</figcaption></figure>
+        </div>
+      </div>
+    </section>
+
+    <section class="spec" id="emboss" data-part="emboss" data-gl-only>
+      <header><h3>烫印</h3><span>Hot Foil</span><span class="acts"><button class="cp" type="button" data-copy="link" aria-label="复制这一格的链接" title="复制链接"><svg class="ic" viewBox="0 0 16 16" aria-hidden="true"><path d="M6.6 9.4a2.6 2.6 0 0 0 3.7 0l2.4-2.4a2.6 2.6 0 0 0-3.7-3.7l-.9.9"/><path d="M9.4 6.6a2.6 2.6 0 0 0-3.7 0L3.3 9a2.6 2.6 0 0 0 3.7 3.7l.9-.9"/></svg><svg class="ok" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.4l3 3 6-6.6"/></svg></button><button class="cp" type="button" data-copy="code" aria-label="复制这一格的代码" title="复制代码"><svg class="ic" viewBox="0 0 16 16" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.6"/><path d="M10.5 5.5V4.1c0-.9-.7-1.6-1.6-1.6H4.1c-.9 0-1.6.7-1.6 1.6v4.8c0 .9.7 1.6 1.6 1.6h1.4"/></svg><svg class="ok" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.4l3 3 6-6.6"/></svg></button></span></header>
+      <div class="demo">
+        <div class="plate"><canvas class="fx" data-mat="emboss" data-art="emboss"></canvas></div>
+      </div>
+    </section>
+
+    <section class="spec" id="seal" data-part="seal">
+      <header><h3>防伪圆章</h3><span>Seal</span><span class="acts"><button class="cp" type="button" data-copy="link" aria-label="复制这一格的链接" title="复制链接"><svg class="ic" viewBox="0 0 16 16" aria-hidden="true"><path d="M6.6 9.4a2.6 2.6 0 0 0 3.7 0l2.4-2.4a2.6 2.6 0 0 0-3.7-3.7l-.9.9"/><path d="M9.4 6.6a2.6 2.6 0 0 0-3.7 0L3.3 9a2.6 2.6 0 0 0 3.7 3.7l.9-.9"/></svg><svg class="ok" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.4l3 3 6-6.6"/></svg></button><button class="cp" type="button" data-copy="code" aria-label="复制这一格的代码" title="复制代码"><svg class="ic" viewBox="0 0 16 16" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.6"/><path d="M10.5 5.5V4.1c0-.9-.7-1.6-1.6-1.6H4.1c-.9 0-1.6.7-1.6 1.6v4.8c0 .9.7 1.6 1.6 1.6h1.4"/></svg><svg class="ok" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.4l3 3 6-6.6"/></svg></button></span></header>
+      <div class="demo">
+        <div class="seal" style="--r: -8deg">
+          <span class="seal-disc holo-seal" data-foil="seal"><canvas class="fx" data-mat="star" data-light></canvas></span>
+          <svg viewBox="0 0 120 120" aria-hidden="true">
+            <defs><path id="seal-ring-b" d="M60 60m-45 0a45 45 0 1 1 90 0a45 45 0 1 1 -90 0"/></defs>
+            <circle class="edge" cx="60" cy="60" r="55.5"/><circle class="edge" cx="60" cy="60" r="35"/>
+            <text><textPath href="#seal-ring-b" textLength="282" lengthAdjust="spacing">正品 · AUTHENTIC · 镭射印社 · No. 0042 ·</textPath></text>
+            <path class="star" d="M60 39Q63 57 81 60Q63 63 60 81Q57 63 39 60Q57 57 60 39Z"/>
+          </svg>
+        </div>
+      </div>
+    </section>
+
+    <section class="spec" id="guilloche" data-part="guilloche" data-gl-only>
+      <header><h3>扭索纹</h3><span>Guilloché</span><span class="acts"><button class="cp" type="button" data-copy="link" aria-label="复制这一格的链接" title="复制链接"><svg class="ic" viewBox="0 0 16 16" aria-hidden="true"><path d="M6.6 9.4a2.6 2.6 0 0 0 3.7 0l2.4-2.4a2.6 2.6 0 0 0-3.7-3.7l-.9.9"/><path d="M9.4 6.6a2.6 2.6 0 0 0-3.7 0L3.3 9a2.6 2.6 0 0 0 3.7 3.7l.9-.9"/></svg><svg class="ok" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.4l3 3 6-6.6"/></svg></button><button class="cp" type="button" data-copy="code" aria-label="复制这一格的代码" title="复制代码"><svg class="ic" viewBox="0 0 16 16" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.6"/><path d="M10.5 5.5V4.1c0-.9-.7-1.6-1.6-1.6H4.1c-.9 0-1.6.7-1.6 1.6v4.8c0 .9.7 1.6 1.6 1.6h1.4"/></svg><svg class="ok" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.4l3 3 6-6.6"/></svg></button></span></header>
+      <div class="demo">
+        <div class="note-bill"><canvas class="fx" data-mat="guilloche" data-art="guilloche"></canvas></div>
+      </div>
+    </section>
+
+    <section class="spec" id="avatar" data-part="avatar" data-gl-only>
+      <header><h3>头像框</h3><span>Avatar</span><span class="acts"><button class="cp" type="button" data-copy="link" aria-label="复制这一格的链接" title="复制链接"><svg class="ic" viewBox="0 0 16 16" aria-hidden="true"><path d="M6.6 9.4a2.6 2.6 0 0 0 3.7 0l2.4-2.4a2.6 2.6 0 0 0-3.7-3.7l-.9.9"/><path d="M9.4 6.6a2.6 2.6 0 0 0-3.7 0L3.3 9a2.6 2.6 0 0 0 3.7 3.7l.9-.9"/></svg><svg class="ok" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.4l3 3 6-6.6"/></svg></button><button class="cp" type="button" data-copy="code" aria-label="复制这一格的代码" title="复制代码"><svg class="ic" viewBox="0 0 16 16" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.6"/><path d="M10.5 5.5V4.1c0-.9-.7-1.6-1.6-1.6H4.1c-.9 0-1.6.7-1.6 1.6v4.8c0 .9.7 1.6 1.6 1.6h1.4"/></svg><svg class="ok" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.4l3 3 6-6.6"/></svg></button></span></header>
+      <div class="demo">
+        <span class="avatar"><span class="av-ring"><canvas class="fx" data-mat="glitter"></canvas></span><span class="av-in"><canvas class="fx" data-mat="emboss" data-art="initial"></canvas></span></span>
+        <span class="chip"><span class="avatar sm"><span class="av-ring"><canvas class="fx" data-mat="glitter"></canvas></span><span class="av-in"><canvas class="fx" data-mat="emboss" data-art="initial"></canvas></span></span><span><b class="bn">Lumen</b><small>收藏 42 张</small></span></span>
+      </div>
+    </section>
+
+    <section class="spec" id="card" data-part="card">
+      <header><h3>小卡</h3><span>Card</span><span class="acts"><button class="cp" type="button" data-copy="link" aria-label="复制这一格的链接" title="复制链接"><svg class="ic" viewBox="0 0 16 16" aria-hidden="true"><path d="M6.6 9.4a2.6 2.6 0 0 0 3.7 0l2.4-2.4a2.6 2.6 0 0 0-3.7-3.7l-.9.9"/><path d="M9.4 6.6a2.6 2.6 0 0 0-3.7 0L3.3 9a2.6 2.6 0 0 0 3.7 3.7l.9-.9"/></svg><svg class="ok" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.4l3 3 6-6.6"/></svg></button><button class="cp" type="button" data-copy="code" aria-label="复制这一格的代码" title="复制代码"><svg class="ic" viewBox="0 0 16 16" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.6"/><path d="M10.5 5.5V4.1c0-.9-.7-1.6-1.6-1.6H4.1c-.9 0-1.6.7-1.6 1.6v4.8c0 .9.7 1.6 1.6 1.6h1.4"/></svg><svg class="ok" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.4l3 3 6-6.6"/></svg></button></span></header>
+      <div class="demo">
+        <div class="mini" tabindex="0" aria-label="一张小号镭射卡">
+          <div class="mini-face" data-tilt>
+            <span class="mini-burst" data-foil="seal"><canvas class="fx" data-mat="star" data-dark></canvas></span>
+            <span class="mini-dust glitter" data-foil="glitter"><canvas class="fx" data-mat="glitter" data-dark></canvas></span>
+            <span class="mini-frame holo"><canvas class="fx" data-mat="film"></canvas></span>
+            <span class="mini-top">镭射印社</span>
+            <span class="mini-name holo-text" data-foil="text">Lumen</span>
+            <canvas class="fx mini-name-fx" data-mat="straight" data-k="66" data-light></canvas>
+            <span class="mini-meta"><span>第 03 季</span><span>No. 0042</span></span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="spec" id="button" data-part="button">
+      <header><h3>按钮</h3><span>Button</span><span class="acts"><button class="cp" type="button" data-copy="link" aria-label="复制这一格的链接" title="复制链接"><svg class="ic" viewBox="0 0 16 16" aria-hidden="true"><path d="M6.6 9.4a2.6 2.6 0 0 0 3.7 0l2.4-2.4a2.6 2.6 0 0 0-3.7-3.7l-.9.9"/><path d="M9.4 6.6a2.6 2.6 0 0 0-3.7 0L3.3 9a2.6 2.6 0 0 0 3.7 3.7l.9-.9"/></svg><svg class="ok" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.4l3 3 6-6.6"/></svg></button><button class="cp" type="button" data-copy="code" aria-label="复制这一格的代码" title="复制代码"><svg class="ic" viewBox="0 0 16 16" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.6"/><path d="M10.5 5.5V4.1c0-.9-.7-1.6-1.6-1.6H4.1c-.9 0-1.6.7-1.6 1.6v4.8c0 .9.7 1.6 1.6 1.6h1.4"/></svg><svg class="ok" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.4l3 3 6-6.6"/></svg></button></span></header>
+      <div class="demo">
+        <button class="btn holo light" type="button" data-tilt><canvas class="fx" data-mat="film" data-light></canvas>开始收藏</button>
+        <button class="btn btn-line" type="button" data-tilt><span class="ring holo"><canvas class="fx" data-mat="film"></canvas></span>查看卡册</button>
+        <button class="btn btn-icon holo light" type="button" aria-label="收藏" data-tilt><canvas class="fx" data-mat="film" data-light></canvas><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2.6l2.6 6.2 6.7.6-5.1 4.4 1.5 6.5L12 16.9l-5.7 3.4 1.5-6.5-5.1-4.4 6.7-.6z"/></svg></button>
+        <button class="btn" type="button" disabled>已售罄</button>
+      </div>
+    </section>
+
+    <section class="spec" id="choice" data-part="choice">
+      <header><h3>开关与选择</h3><span>Switch · Check · Radio</span><span class="acts"><button class="cp" type="button" data-copy="link" aria-label="复制这一格的链接" title="复制链接"><svg class="ic" viewBox="0 0 16 16" aria-hidden="true"><path d="M6.6 9.4a2.6 2.6 0 0 0 3.7 0l2.4-2.4a2.6 2.6 0 0 0-3.7-3.7l-.9.9"/><path d="M9.4 6.6a2.6 2.6 0 0 0-3.7 0L3.3 9a2.6 2.6 0 0 0 3.7 3.7l.9-.9"/></svg><svg class="ok" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.4l3 3 6-6.6"/></svg></button><button class="cp" type="button" data-copy="code" aria-label="复制这一格的代码" title="复制代码"><svg class="ic" viewBox="0 0 16 16" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.6"/><path d="M10.5 5.5V4.1c0-.9-.7-1.6-1.6-1.6H4.1c-.9 0-1.6.7-1.6 1.6v4.8c0 .9.7 1.6 1.6 1.6h1.4"/></svg><svg class="ok" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.4l3 3 6-6.6"/></svg></button></span></header>
+      <div class="demo">
+        <div class="choices">
+          <span class="opt"><button class="switch" type="button" data-tilt role="switch" aria-checked="true" aria-labelledby="sw-a"><span class="track holo"><canvas class="fx" data-mat="film"></canvas></span><span class="shade"></span><span class="knob"></span></button><span id="sw-a">反光</span></span>
+          <label class="check" data-tilt><input type="checkbox" checked><span class="box"><span class="fill holo"><canvas class="fx" data-mat="film"></canvas></span><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 10.4l3.4 3.4 6.8-7.4"/></svg></span>闪卡</label>
+          <span class="opt"><button class="switch" type="button" data-tilt role="switch" aria-checked="false" aria-labelledby="sw-b"><span class="track holo"><canvas class="fx" data-mat="film"></canvas></span><span class="shade"></span><span class="knob"></span></button><span id="sw-b">声音</span></span>
+          <label class="check" data-tilt><input type="checkbox"><span class="box"><span class="fill holo"><canvas class="fx" data-mat="film"></canvas></span><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 10.4l3.4 3.4 6.8-7.4"/></svg></span>普卡</label>
+          <label class="check radio" data-tilt><input type="radio" name="edition" checked><span class="box"><span class="fill holo"><canvas class="fx" data-mat="film"></canvas></span></span>限定版</label>
+          <label class="check radio" data-tilt><input type="radio" name="edition"><span class="box"><span class="fill holo"><canvas class="fx" data-mat="film"></canvas></span></span>普通版</label>
+        </div>
+      </div>
+    </section>
+
+    <section class="spec" id="slider" data-part="slider">
+      <header><h3>滑杆</h3><span>Slider</span><span class="acts"><button class="cp" type="button" data-copy="link" aria-label="复制这一格的链接" title="复制链接"><svg class="ic" viewBox="0 0 16 16" aria-hidden="true"><path d="M6.6 9.4a2.6 2.6 0 0 0 3.7 0l2.4-2.4a2.6 2.6 0 0 0-3.7-3.7l-.9.9"/><path d="M9.4 6.6a2.6 2.6 0 0 0-3.7 0L3.3 9a2.6 2.6 0 0 0 3.7 3.7l.9-.9"/></svg><svg class="ok" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.4l3 3 6-6.6"/></svg></button><button class="cp" type="button" data-copy="code" aria-label="复制这一格的代码" title="复制代码"><svg class="ic" viewBox="0 0 16 16" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.6"/><path d="M10.5 5.5V4.1c0-.9-.7-1.6-1.6-1.6H4.1c-.9 0-1.6.7-1.6 1.6v4.8c0 .9.7 1.6 1.6 1.6h1.4"/></svg><svg class="ok" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.4l3 3 6-6.6"/></svg></button></span></header>
+      <div class="demo">
+        <label class="slider" style="--v: 60%">
+          <span class="sl-top"><span>倾角</span><output>18°</output></span>
+          <span class="sl-track" data-tilt><span class="sl-fill holo"><canvas class="fx" data-mat="film"></canvas></span><input type="range" min="0" max="30" value="18" aria-label="倾角"><span class="sl-thumb"></span></span>
+        </label>
+      </div>
+    </section>
+
+    <section class="spec" id="field" data-part="field">
+      <header><h3>输入框</h3><span>Field</span><span class="acts"><button class="cp" type="button" data-copy="link" aria-label="复制这一格的链接" title="复制链接"><svg class="ic" viewBox="0 0 16 16" aria-hidden="true"><path d="M6.6 9.4a2.6 2.6 0 0 0 3.7 0l2.4-2.4a2.6 2.6 0 0 0-3.7-3.7l-.9.9"/><path d="M9.4 6.6a2.6 2.6 0 0 0-3.7 0L3.3 9a2.6 2.6 0 0 0 3.7 3.7l.9-.9"/></svg><svg class="ok" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.4l3 3 6-6.6"/></svg></button><button class="cp" type="button" data-copy="code" aria-label="复制这一格的代码" title="复制代码"><svg class="ic" viewBox="0 0 16 16" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.6"/><path d="M10.5 5.5V4.1c0-.9-.7-1.6-1.6-1.6H4.1c-.9 0-1.6.7-1.6 1.6v4.8c0 .9.7 1.6 1.6 1.6h1.4"/></svg><svg class="ok" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.4l3 3 6-6.6"/></svg></button></span></header>
+      <div class="demo">
+        <label class="field"><input type="text" placeholder=" " autocomplete="off" spellcheck="false"><span class="fl">卡号</span><span class="fl-line holo"><canvas class="fx" data-mat="film"></canvas></span><span class="fl-hint">印在卡背右下角，比如 LM-26S3-0042</span></label>
+      </div>
+    </section>
+
+    <section class="spec" id="progress" data-part="progress">
+      <header><h3>进度条</h3><span>Progress</span><span class="acts"><button class="cp" type="button" data-copy="link" aria-label="复制这一格的链接" title="复制链接"><svg class="ic" viewBox="0 0 16 16" aria-hidden="true"><path d="M6.6 9.4a2.6 2.6 0 0 0 3.7 0l2.4-2.4a2.6 2.6 0 0 0-3.7-3.7l-.9.9"/><path d="M9.4 6.6a2.6 2.6 0 0 0-3.7 0L3.3 9a2.6 2.6 0 0 0 3.7 3.7l.9-.9"/></svg><svg class="ok" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.4l3 3 6-6.6"/></svg></button><button class="cp" type="button" data-copy="code" aria-label="复制这一格的代码" title="复制代码"><svg class="ic" viewBox="0 0 16 16" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.6"/><path d="M10.5 5.5V4.1c0-.9-.7-1.6-1.6-1.6H4.1c-.9 0-1.6.7-1.6 1.6v4.8c0 .9.7 1.6 1.6 1.6h1.4"/></svg><svg class="ok" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.4l3 3 6-6.6"/></svg></button></span></header>
+      <div class="demo">
+        <div class="prog">
+          <div class="pg-top"><span>第 03 季收集进度</span><b>7 / 12</b></div>
+          <div class="pg" data-tilt role="progressbar" aria-label="收集进度" aria-valuemin="0" aria-valuemax="12" aria-valuenow="7"><span class="pg-bar holo" style="--p: 58.33%"><canvas class="fx" data-mat="film"></canvas></span></div>
+          <div class="pg pg-thin" data-tilt role="progressbar" aria-label="正在开包"><span class="pg-run holo"><canvas class="fx" data-mat="film"></canvas></span></div>
+          <button class="pg-more" type="button">开一包 +1</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="spec" id="badge" data-part="badge">
+      <header><h3>徽章与贴纸</h3><span>Badge · Sticker</span><span class="acts"><button class="cp" type="button" data-copy="link" aria-label="复制这一格的链接" title="复制链接"><svg class="ic" viewBox="0 0 16 16" aria-hidden="true"><path d="M6.6 9.4a2.6 2.6 0 0 0 3.7 0l2.4-2.4a2.6 2.6 0 0 0-3.7-3.7l-.9.9"/><path d="M9.4 6.6a2.6 2.6 0 0 0-3.7 0L3.3 9a2.6 2.6 0 0 0 3.7 3.7l.9-.9"/></svg><svg class="ok" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.4l3 3 6-6.6"/></svg></button><button class="cp" type="button" data-copy="code" aria-label="复制这一格的代码" title="复制代码"><svg class="ic" viewBox="0 0 16 16" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.6"/><path d="M10.5 5.5V4.1c0-.9-.7-1.6-1.6-1.6H4.1c-.9 0-1.6.7-1.6 1.6v4.8c0 .9.7 1.6 1.6 1.6h1.4"/></svg><svg class="ok" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.4l3 3 6-6.6"/></svg></button></span></header>
+      <div class="demo">
+        <div class="row">
+          <span class="badge holo light"><canvas class="fx" data-mat="film" data-light></canvas>限定</span>
+          <span class="badge holo light"><canvas class="fx" data-mat="film" data-light></canvas>No. 0042</span>
+          <span class="badge badge-ink"><i class="dot holo"><canvas class="fx" data-mat="film"></canvas></i>第 03 季</span>
+        </div>
+        <div class="row">
+          <span class="sticker" style="--r: -10deg"><svg viewBox="0 0 76 76" aria-hidden="true"><path d="M38 3Q43 33 73 38Q43 43 38 73Q33 43 3 38Q33 33 38 3Z"/></svg><span class="sk-in holo"><canvas class="fx" data-mat="film"></canvas></span></span>
+          <span class="sticker sk-round" style="--r: 8deg"><svg viewBox="0 0 76 76" aria-hidden="true"><circle cx="38" cy="38" r="34"/></svg><span class="sk-in holo light"><canvas class="fx" data-mat="film" data-light></canvas><b>限定</b><small>LIMITED</small></span></span>
+        </div>
+      </div>
+    </section>
+
+
+    <section class="spec" id="kinegram" data-part="kinegram" data-gl-only>
+      <header><h3>光变图</h3><span>Kinegram</span><span class="acts"><button class="cp" type="button" data-copy="link" aria-label="复制这一格的链接" title="复制链接"><svg class="ic" viewBox="0 0 16 16" aria-hidden="true"><path d="M6.6 9.4a2.6 2.6 0 0 0 3.7 0l2.4-2.4a2.6 2.6 0 0 0-3.7-3.7l-.9.9"/><path d="M9.4 6.6a2.6 2.6 0 0 0-3.7 0L3.3 9a2.6 2.6 0 0 0 3.7 3.7l.9-.9"/></svg><svg class="ok" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.4l3 3 6-6.6"/></svg></button><button class="cp" type="button" data-copy="code" aria-label="复制这一格的代码" title="复制代码"><svg class="ic" viewBox="0 0 16 16" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.6"/><path d="M10.5 5.5V4.1c0-.9-.7-1.6-1.6-1.6H4.1c-.9 0-1.6.7-1.6 1.6v4.8c0 .9.7 1.6 1.6 1.6h1.4"/></svg><svg class="ok" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.4l3 3 6-6.6"/></svg></button></span></header>
+      <div class="demo">
+        <span class="kine kine-badge" role="img" aria-label="光变徽章：灯从左右照来是品牌首字母，从上下照来是一颗四角星"><canvas class="fx" data-mat="kine" data-art="kineBadge"></canvas></span>
+        <span class="kine kine-strip" role="img" aria-label="光变防伪条：灯从左右照来是“正品”，从上下照来是 AUTHENTIC"><canvas class="fx" data-mat="kine" data-art="kineStrip"></canvas></span>
+      </div>
+    </section>
+
+    <section class="spec" id="scratch" data-part="scratch" data-gl-only>
+      <header><h3>刮开兑换码</h3><span>Scratch-off</span><span class="acts"><button class="cp" type="button" data-copy="link" aria-label="复制这一格的链接" title="复制链接"><svg class="ic" viewBox="0 0 16 16" aria-hidden="true"><path d="M6.6 9.4a2.6 2.6 0 0 0 3.7 0l2.4-2.4a2.6 2.6 0 0 0-3.7-3.7l-.9.9"/><path d="M9.4 6.6a2.6 2.6 0 0 0-3.7 0L3.3 9a2.6 2.6 0 0 0 3.7 3.7l.9-.9"/></svg><svg class="ok" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.4l3 3 6-6.6"/></svg></button><button class="cp" type="button" data-copy="code" aria-label="复制这一格的代码" title="复制代码"><svg class="ic" viewBox="0 0 16 16" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.6"/><path d="M10.5 5.5V4.1c0-.9-.7-1.6-1.6-1.6H4.1c-.9 0-1.6.7-1.6 1.6v4.8c0 .9.7 1.6 1.6 1.6h1.4"/></svg><svg class="ok" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.4l3 3 6-6.6"/></svg></button></span></header>
+      <div class="demo">
+        <div class="scratch" tabindex="0" role="button" aria-label="刮开涂层露出兑换码，按回车直接刮开"><canvas class="fx" data-mat="scratch" data-art="scratch"></canvas></div>
+        <button class="mini-btn scr-reset" type="button" hidden>重新涂上</button>
+      </div>
+    </section>
+
+    <section class="spec" id="void" data-part="void" data-gl-only>
+      <header><h3>防撕贴纸</h3><span>Void Seal</span><span class="acts"><button class="cp" type="button" data-copy="link" aria-label="复制这一格的链接" title="复制链接"><svg class="ic" viewBox="0 0 16 16" aria-hidden="true"><path d="M6.6 9.4a2.6 2.6 0 0 0 3.7 0l2.4-2.4a2.6 2.6 0 0 0-3.7-3.7l-.9.9"/><path d="M9.4 6.6a2.6 2.6 0 0 0-3.7 0L3.3 9a2.6 2.6 0 0 0 3.7 3.7l.9-.9"/></svg><svg class="ok" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.4l3 3 6-6.6"/></svg></button><button class="cp" type="button" data-copy="code" aria-label="复制这一格的代码" title="复制代码"><svg class="ic" viewBox="0 0 16 16" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.6"/><path d="M10.5 5.5V4.1c0-.9-.7-1.6-1.6-1.6H4.1c-.9 0-1.6.7-1.6 1.6v4.8c0 .9.7 1.6 1.6 1.6h1.4"/></svg><svg class="ok" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.4l3 3 6-6.6"/></svg></button></span></header>
+      <div class="demo">
+        <div class="void-box" role="img" aria-label="防撕封签：拖动它的角撕开，揭开的地方会留下 VOID 字样"><canvas class="fx" data-mat="void" data-art="void"></canvas></div>
+        <button class="mini-btn void-reset" type="button" hidden>换一张</button>
+      </div>
+    </section>
+
+    <section class="spec" id="skeleton" data-part="skeleton">
+      <header><h3>加载骨架</h3><span>Skeleton</span><span class="acts"><button class="cp" type="button" data-copy="link" aria-label="复制这一格的链接" title="复制链接"><svg class="ic" viewBox="0 0 16 16" aria-hidden="true"><path d="M6.6 9.4a2.6 2.6 0 0 0 3.7 0l2.4-2.4a2.6 2.6 0 0 0-3.7-3.7l-.9.9"/><path d="M9.4 6.6a2.6 2.6 0 0 0-3.7 0L3.3 9a2.6 2.6 0 0 0 3.7 3.7l.9-.9"/></svg><svg class="ok" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.4l3 3 6-6.6"/></svg></button><button class="cp" type="button" data-copy="code" aria-label="复制这一格的代码" title="复制代码"><svg class="ic" viewBox="0 0 16 16" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.6"/><path d="M10.5 5.5V4.1c0-.9-.7-1.6-1.6-1.6H4.1c-.9 0-1.6.7-1.6 1.6v4.8c0 .9.7 1.6 1.6 1.6h1.4"/></svg><svg class="ok" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.4l3 3 6-6.6"/></svg></button></span></header>
+      <div class="demo">
+        <div class="skel" role="status" aria-label="正在加载">
+          <span class="sk sk-av"><canvas class="fx" data-mat="sheen"></canvas></span>
+          <span class="sk-lines"><span class="sk sk-l1"><canvas class="fx" data-mat="sheen"></canvas></span><span class="sk sk-l2"><canvas class="fx" data-mat="sheen"></canvas></span></span>
+          <span class="sk sk-img"><canvas class="fx" data-mat="sheen"></canvas></span>
+          <span class="sk sk-l3"><canvas class="fx" data-mat="sheen"></canvas></span>
+          <span class="sk sk-l4"><canvas class="fx" data-mat="sheen"></canvas></span>
+        </div>
+      </div>
+    </section>
+  </div>
+</main>
+
+
+<script>
+  // 每一格右上角两个按钮：复制链接（带这一格的定位），复制代码（这一格当前渲染方式下的 HTML、CSS 和脚本）。
+  // HTML 取页面刚加载时的原样，不带运行时写进去的变量
+  (() => {
+    const dedent = s => {
+      const lines = s.replace(/^\s*\n/, '').replace(/\s+$/, '').split('\n');
+      const ind = Math.min(...lines.filter(l => l.trim()).map(l => l.match(/^ */)[0].length));
+      return lines.map(l => l.slice(ind)).join('\n');
+    };
+    const pick = (sel, names) => names.flatMap(n => [...document.querySelectorAll(`${sel}[data-part="${n}"]`)]).map(s => dedent(s.textContent)).join('\n\n');
+    // WebGL 版：零件自己的样式 + .holo 打底 + 画布和渲染器；CSS 平替：零件自己的样式 + .holo，HTML 里去掉画布
+    const code = (part, raw) => {
+      const gl = document.documentElement.dataset.foil === 'gl', own = part === 'foil' ? [] : [part];
+      const html = gl ? raw : raw.replace(/\s*<canvas class="fx[^>]*><\/canvas>/g, '');
+      const css = pick('style', gl ? [...own, 'foil', 'foil-gl'] : [...own, 'foil']);
+      const js = pick('script', gl ? ['core', 'foil-gl', ...own] : ['core', 'foil', ...own]);
+      return `<!-- HTML -->\n${dedent(html)}\n\n<style>\n${css}\n</style>${js ? `\n\n<script>\n${js}\n</` + `script>` : ''}\n`;
+    };
+    // 剪贴板接口要安全上下文；本地打开的文件或者老浏览器上退回到选中一段文字再复制
+    const copy = text => (navigator.clipboard ? navigator.clipboard.writeText(text) : Promise.reject()).catch(() => {
+      const t = document.createElement('textarea');
+      t.value = text;
+      t.style.cssText = 'position:fixed;left:-9999px;top:0';
+      document.body.append(t);
+      t.select();
+      const ok = document.execCommand('copy');
+      t.remove();
+      if (!ok) throw new Error('复制失败');
+    });
+    document.querySelectorAll('.spec').forEach(sp => {
+      const raw = sp.querySelector('.demo').innerHTML, part = sp.dataset.part;
+      sp.querySelectorAll('.cp').forEach(btn => {
+        let tm;
+        btn.addEventListener('click', () => {
+          const text = btn.dataset.copy === 'link' ? `${location.origin === 'null' ? location.href.split('#')[0] : location.origin + location.pathname + location.search}#${sp.id}` : code(part, raw);
+          copy(text).then(() => {
+            btn.classList.add('done');
+            clearTimeout(tm);
+            tm = setTimeout(() => btn.classList.remove('done'), 1400);
+          }, () => {});
+        });
+      });
+    });
+    // 带着 #定位 打开时：大卡的高度要等字体到了才定下来，前几秒页面会变高，没动过滚动条就再对准一次
+    const target = location.hash && document.getElementById(decodeURIComponent(location.hash.slice(1)));
+    if (target && target.classList.contains('spec')) {
+      let moved = false;
+      const stop = () => { moved = true; };
+      ['wheel', 'touchstart', 'keydown', 'pointerdown'].forEach(e => addEventListener(e, stop, { once: true, passive: true }));
+      const ro = new ResizeObserver(() => { if (!moved) target.scrollIntoView({ block: 'start' }); });
+      ro.observe(document.body);
+      setTimeout(() => ro.disconnect(), 4000);
+    }
+  })();
+</script>
+
+<script data-part="core">
+  // 波长（纳米）对应的线性 RGB：Wyman 等人对 CIE 1931 配色函数的分段高斯拟合 → XYZ → 线性 sRGB。大卡、WebGL 零件、CSS 平替都用这一套
+  function cie(l) {
+    if (l < 380 || l > 780) return [0, 0, 0];
+    const g = (x, m, a, b) => { const t = (x - m) / (x < m ? a : b); return Math.exp(-0.5 * t * t); };
+    const X = 1.056 * g(l, 599.8, 37.9, 31) + 0.362 * g(l, 442, 16, 26.7) - 0.065 * g(l, 501.1, 20.4, 26.2);
+    const Y = 0.821 * g(l, 568.8, 46.9, 40.5) + 0.286 * g(l, 530.9, 16.3, 31.1);
+    const Z = 1.217 * g(l, 437, 11.8, 36) + 0.681 * g(l, 459, 26, 13.8);
+    const rgb = [3.2406 * X - 1.5372 * Y - 0.4986 * Z, -0.9689 * X + 1.8758 * Y + 0.0415 * Z, 0.0557 * X - 0.204 * Y + 1.057 * Z];
+    // 纯光谱色在 sRGB 外面：往同亮度的灰拉一点再截掉负值，颜色不会突然断开
+    return rgb.map(c => Math.max(0, Y + (c - Y) * 0.66) * 0.8);
+  }
+
+  /* 灯：指针就是一盏离屏幕 D 像素高的小灯。4 秒没动、指针离开窗口或者是手机，就自己慢慢绕圈；有陀螺仪时再按手机的倾斜挪一挪。
+     镭射零件的画法（WebGL 或 CSS 平替）各自往 draws 里登记一个函数，每帧灯挪完以后调用 */
+  const FoilLight = (() => {
+    const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const L = { x: innerWidth * 0.72, y: innerHeight * 0.22, D: 300, px: 0, py: 0, at: -1e9, gx: 0, gy: 0, g0: null, draws: [] };
+    addEventListener('pointermove', e => { L.px = e.clientX; L.py = e.clientY; L.at = performance.now(); }, { passive: true });
+    document.addEventListener('pointerout', e => { if (!e.relatedTarget && e.pointerType === 'mouse') L.at = -1e9; });
+    addEventListener('deviceorientation', e => {
+      if (e.beta == null || e.gamma == null) return;
+      if (!L.g0) L.g0 = [e.beta, e.gamma];
+      L.g0[0] += (e.beta - L.g0[0]) * 0.02;   // 基准慢慢跟上当前姿势：拿手机的角度随便，转动的那一下才算数
+      L.g0[1] += (e.gamma - L.g0[1]) * 0.02;
+      L.gx = Math.max(-1, Math.min(1, (e.gamma - L.g0[1]) / 25));
+      L.gy = Math.max(-1, Math.min(1, (e.beta - L.g0[0]) / 25));
+    });
+    let last = performance.now();
+    requestAnimationFrame(function tick(now) {
+      requestAnimationFrame(tick);
+      const dt = Math.max(0, Math.min(now - last, 50)) / 1000;   // rAF 的时间戳可能比上一帧记的还早，夹到不小于 0
+      last = now;
+      const live = now - L.at < 4000;
+      let tx, ty;
+      if (live) { tx = L.px; ty = L.py; }
+      else if (REDUCED) { tx = innerWidth * 0.72; ty = innerHeight * 0.22; }
+      else { const t = now / 1000; tx = innerWidth * (0.5 + 0.42 * Math.sin(t * 0.21)); ty = innerHeight * (0.4 + 0.32 * Math.sin(t * 0.33 + 1.2)); }
+      tx += L.gx * innerWidth * 0.35;
+      ty += L.gy * innerHeight * 0.35;
+      const a = 1 - Math.exp(-dt * (live ? 16 : 2.5));   // 跟指针跟得紧；自己绕圈时慢慢滑过去
+      L.x += (tx - L.x) * a;
+      L.y += (ty - L.y) * a;
+      for (const d of L.draws) d();
+    });
+    return L;
+  })();
+</script>
+
+<script data-part="foil">
+  /* CSS 平替：按灯的方向，算出衍射的彩虹该落在光谱表的哪一段，写进几个 CSS 变量，样式见 .holo 等 */
+  const Foil = (() => {
+    const T = 1.25, SPREAD = 2.6;
+    const root = document.documentElement.style;
+    const aces = x => Math.min(1, Math.max(0, (x * (2.51 * x + 0.03)) / (x * (2.43 * x + 0.59) + 0.14)));
+    const enc = x => Math.round(255 * (x <= 0.0031308 ? 12.92 * x : 1.055 * Math.pow(x, 1 / 2.4) - 0.055));
+    // 衍射光栅的颜色：s 是“光和视线在膜面上的投影之和”垂直于刻槽的分量；刻槽间距 1500nm，一、二、三级叠在一起
+    const grating = s => { const u = s * 1500, a = cie(u), b = cie(u / 2), c = cie(u / 3); return a.map((v, i) => enc(aces((v + 0.5 * b[i] + 0.3 * c[i]) * 1.6))); };
+    const rgb = c => `rgb(${c[0]} ${c[1]} ${c[2]})`;
+    let seed = 7;
+    const rnd = () => (seed = seed * 16807 % 2147483647) / 2147483647;
+    const img = (w, h, draw) => {
+      const c = document.createElement('canvas');
+      c.width = w; c.height = h;
+      const g = c.getContext('2d');
+      g.fillStyle = '#000'; g.fillRect(0, 0, w, h);
+      draw(g);
+      return `url(${c.toDataURL()})`;
+    };
+    // 光谱表：横向从 t = -T 到 T，颜色按 |t| 算；每个元素按灯的方向截取其中一段
+    root.setProperty('--spectrum', img(1024, 1, g => {
+      const d = g.createImageData(1024, 1);
+      for (let i = 0; i < 1024; i++) { const c = grating(Math.abs(((i + 0.5) / 1024 * 2 - 1) * T)); d.data.set([c[0], c[1], c[2], 255], i * 4); }
+      g.putImageData(d, 0, 0);
+    }));
+    // 闪点：很小的亮点，一半白、一半带色；画成两倍大，高清屏上也是尖的
+    root.setProperty('--sparkle', img(192, 192, g => {
+      for (let i = 0; i < 70; i++) {
+        g.globalAlpha = 0.45 + rnd() * 0.55;
+        g.fillStyle = rgb(rnd() < 0.45 ? [255, 255, 255] : grating(0.28 + rnd() * 0.24));
+        g.beginPath(); g.arc(rnd() * 192, rnd() * 192, 1 + rnd() * 1.6, 0, 7); g.fill();
+      }
+    }));
+    // 高光块：几团柔和的光斑，和闪点相乘，灯一动就换一批亮
+    root.setProperty('--glint', img(140, 140, g => {
+      g.globalCompositeOperation = 'lighter';
+      for (let i = 0; i < 9; i++) {
+        const x = rnd() * 140, y = rnd() * 140, r = 9 + rnd() * 16, gr = g.createRadialGradient(x, y, 0, x, y, r);
+        gr.addColorStop(0, '#fff'); gr.addColorStop(1, 'rgba(0,0,0,0)');
+        g.fillStyle = gr; g.fillRect(x - r, y - r, r * 2, r * 2);
+      }
+    }));
+
+    // 登记：.holo 是直纹，data-foil 是 text（镭射字）/ seal（星芒）/ glitter（碎钻）
+    const els = new Map(), vis = new Set();
+    const io = new IntersectionObserver(es => es.forEach(e => (e.isIntersecting ? vis.add(e.target) : vis.delete(e.target))), { rootMargin: '80px' });
+    document.querySelectorAll('.holo, [data-foil]').forEach(el => { els.set(el, el.dataset.foil || 'foil'); io.observe(el); });
+
+    function update() {
+      const L = FoilLight, D = L.D, todo = [];
+      for (const el of vis) todo.push([el, el.getBoundingClientRect()]);   // 先全部量完再写，免得每写一个就逼浏览器重排一次
+      for (const [el, r] of todo) {
+        const kind = els.get(el), s = el.style;
+        const cx = r.left + r.width / 2 - L.x, cy = r.top + r.height / 2 - L.y;
+        s.setProperty('--lx', `${(L.x - r.left).toFixed(1)}px`);
+        s.setProperty('--ly', `${(L.y - r.top).toFixed(1)}px`);
+        if (kind === 'glitter') continue;
+        if (kind === 'seal') {
+          // 同心圆刻槽：亮的是指向灯的那条半径，颜色由离灯多远定
+          const d = Math.hypot(cx, cy), s0 = d / Math.hypot(d, D);
+          s.setProperty('--la', `${(Math.atan2(-cx, cy) * 180 / Math.PI).toFixed(1)}deg`);
+          s.setProperty('--sc', rgb(grating(s0)));
+          s.setProperty('--sc2', rgb(grating(s0 * 0.93)));
+          continue;
+        }
+        // 直纹：刻槽法向 k 指向背离灯的方向，所以彩虹是以灯为圆心的一圈圈光环。t 是“灯到膜上这一点”的方向在 k 上的分量。
+        // 镭射字没法转，刻槽固定是竖的（k 水平），离 k 那条线远的部分算进 q 里
+        let ck, q;
+        if (kind === 'text') { ck = cx; q = cy * cy + D * D; }
+        else { ck = Math.hypot(cx, cy); q = D * D; s.setProperty('--k', `${(Math.atan2(cy, cx) * 180 / Math.PI).toFixed(2)}deg`); }
+        const half = kind === 'text' ? r.width / 2 : Math.hypot(r.width, r.height) / 2 + 1;
+        const t = x => x / Math.sqrt(x * x + q);
+        // 一个零件只有一两百像素，按真实几何只截到很窄一段光谱、几乎是一种颜色；把截取范围放宽 SPREAD 倍，一件上能同时看到两三种颜色
+        const f0 = (t(ck) + T) / (2 * T), w = Math.max((t(ck + half) - t(ck - half)) / (4 * T) * SPREAD, 0.03);
+        const fA = f0 - w, fB = f0 + w, size = 2 * half / (fB - fA);
+        if (kind === 'foil') s.setProperty('--dg', `${(2 * half).toFixed(1)}px`);
+        s.setProperty('--bs', `${size.toFixed(1)}px`);
+        s.setProperty('--bp', `${(-fA * size).toFixed(1)}px`);
+      }
+    }
+    const api = { enabled: true };
+    FoilLight.draws.push(() => { if (api.enabled && vis.size) update(); });
+    return api;
+  })();
+</script>
+
+<script data-part="foil-gl">
+  // 镭射膜共用的 GLSL：哈希噪声、ACES、光谱表、衍射光栅。上面那张大卡的着色器也引用这一段（要先声明 uniform sampler2D uSpec）
+  const FOIL_GLSL = `
+float h12(vec2 p) { vec3 p3 = fract(vec3(p.xyx) * .1031); p3 += dot(p3, p3.yzx + 33.33); return fract((p3.x + p3.y) * p3.z); }
+vec3 h32(vec2 p) { vec3 p3 = fract(vec3(p.xyx) * vec3(.1031, .1030, .0973)); p3 += dot(p3, p3.yxz + 33.33); return fract((p3.xxy + p3.yzz) * p3.zyx); }
+float vn(vec2 p) { vec2 i = floor(p), f = fract(p); f = f * f * (3. - 2. * f); return mix(mix(h12(i), h12(i + vec2(1, 0)), f.x), mix(h12(i + vec2(0, 1)), h12(i + 1.), f.x), f.y); }
+vec3 aces(vec3 x) { return clamp((x * (2.51 * x + .03)) / (x * (2.43 * x + .59) + .14), 0., 1.); }
+vec3 sat(vec3 c, float k) { float l = dot(c, vec3(.2126, .7152, .0722)); return max(mix(vec3(l), c, k), 0.); }
+// 波长（纳米）对应的颜色，表是按 CIE 1931 配色函数算好的
+vec3 spec(float lam) { float x = (lam - 380.) / 400.; return x > 0. && x < 1. ? texture(uSpec, vec2(x, .5)).rgb : vec3(0.); }
+// 衍射光栅：h 是光线和视线在膜面上的投影之和，k 是光栅矢量（垂直于刻槽），d 是刻槽间距（纳米）。
+// 沿 k 的分量决定反射回来的波长（一、二、三级），垂直 k 的分量偏离 0 越多越暗，sig 管这道反光带有多宽
+vec3 grating(vec2 h, vec2 k, float d, float sig) {
+  float u = abs(dot(h, k)) * d, w = dot(h, vec2(-k.y, k.x)) / sig;
+  return (spec(u) + .5 * spec(u * .5) + .3 * spec(u / 3.)) * exp(-w * w);
+}`;
+  // 光谱表贴图：256 格，380–780 纳米
+  function foilSpecTexture(gl) {
+    const n = 256, d = new Float32Array(n * 4);
+    for (let i = 0; i < n; i++) { d.set(cie(380 + 400 * (i + 0.5) / n), i * 4); d[i * 4 + 3] = 1; }
+    const t = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_2D, t);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA16F, n, 1, 0, gl.RGBA, gl.FLOAT, d);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+    return t;
+  }
+
+  /* WebGL 版：整页只用一个不显示的 WebGL2 画布（浏览器同时能开的 WebGL 画布有上限）。
+     每个零件里垫一块 <canvas class="fx" data-mat="…">，每帧把它在灯下的样子逐像素算好，再拷进那块画布。
+     data-mat：film 彩虹膜（交叉光栅）、straight 拉丝、star 星芒（同心圆刻槽）、glitter 碎钻、dots 点阵、ice 碎冰、pillar 光柱、ripple 波纹、cosmos 银河、pearl 幻彩（薄膜干涉），
+     emboss 烫印、guilloche 扭索纹、sheen 骨架光带、kine 光变图、scratch 刮层、void 防撕贴纸；data-k 是刻槽法向的角度，默认 30°。
+     烫印和扭索纹要一张贴图（data-art 指定画法，见 ART），按零件的实际像素画，大小变了才重画。
+     data-light 是浅色底（上面要印油墨字），data-dark 是只要彩光、不要银底（叠在深色卡面上）。父元素带 data-tilt 时，按它的 _tilt（度）转膜面的法线 */
+  const FoilGL = (() => {
+    if (/[?&]nogl\b/.test(location.search)) return null;
+    const cv = document.createElement('canvas');
+    const gl = cv.getContext('webgl2', { antialias: false, alpha: false, premultipliedAlpha: false });
+    if (!gl) return null;
+    const FS = `#version 300 es
+precision highp float;
+out vec4 o;
+uniform sampler2D uSpec;
+uniform vec2 uSize, uOrigin, uC;
+uniform vec3 uLight;
+uniform float uDpr, uTop, uMat, uK, uSeed, uLite, uBase;
+uniform mat3 uRot;
+uniform sampler2D uArt;
+uniform float uTime;
+uniform vec4 uFold, uRect;
+${FOIL_GLSL}
+// 屋子：上亮下暗的一片柔光，镜面一样的膜会照出它（屏幕坐标 y 朝下，所以“上”是 -y）
+vec3 env(vec3 r) { return mix(vec3(.05, .05, .06), vec3(.34, .34, .38), smoothstep(-.7, .9, -r.y)); }
+// 圆角矩形的有向距离（防撕贴纸用）
+float sdR(vec2 p, vec2 b, float r) { vec2 d = abs(p) - b + r; return length(max(d, 0.)) + min(max(d.x, d.y), 0.) - r; }
+float inSeal(vec2 p) { return sdR(p - (uRect.xy + uRect.zw) * .5, (uRect.zw - uRect.xy) * .5, 9.); }
+// 彩虹膜（和 film 一样的交叉光栅），给刮刮卡底下、防撕贴纸正面用
+vec3 filmAt(vec2 q, vec2 h, vec3 metal) {
+  vec2 k1 = vec2(cos(uK), sin(uK)), k2 = vec2(-k1.y, k1.x);
+  float d = 1650. + 240. * (vn(q / 120. + uSeed) - .5);
+  return metal * .6 + grating(h, k1, d, .38) + grating(h, k2, d * 1.07, .38);
+}
+void main() {
+  vec2 q = vec2(gl_FragCoord.x, uTop - gl_FragCoord.y) / uDpr;   // 零件里的位置，CSS 像素，y 朝下
+  vec2 P = uOrigin + q, px = q * uDpr;
+  vec3 N = uRot * vec3(0., 0., 1.), T = uRot * vec3(1., 0., 0.), B = uRot * vec3(0., 1., 0.);
+  // 人从稍高一点的地方往下看：灯在指针正上方时，指针底下也能看到第一级彩光，不只是一块白
+  vec3 V = normalize(vec3(0., -.26, 1.));
+  vec3 L = normalize(vec3(uLight.xy - P, uLight.z));
+  vec3 Hs = L + V;
+  vec2 h = vec2(dot(Hs, T), dot(Hs, B));
+  float hz = dot(Hs, N), hl = dot(h, h);
+  vec3 R = reflect(-V, N);
+  // 镀铝的膜本身是一面镜子：照出屋子，加上灯的一点镜面高光和一圈宽一点的晕
+  vec3 metal = env(R) * (1. + 1.6 * uLite) + vec3(1., .97, .93) * (exp(-hl / .0025) * 2.4 + exp(-hl / .05) * .3);
+  vec3 col;
+  if (uMat < .5) {
+    // 彩虹膜：两组互相垂直的刻槽（交叉光栅），灯从哪个方向来，总有一组衍射出彩光；底子是顺着一个方向拉过丝的银，
+    // 刻槽疏密随位置慢慢变一点，彩虹带就不是笔直的
+    vec2 k1 = vec2(cos(uK), sin(uK)), k2 = vec2(-k1.y, k1.x);
+    float st = vn(vec2(dot(q, k2) * .06, dot(q, k1) * 1.6) + uSeed) * (1. - .6 * uLite);   // 浅色款上要印字，拉丝淡一些
+    float d = 1650. + 240. * (vn(q / 120. + uSeed) - .5);
+    vec3 hc = grating(h, k1, d, .38) + grating(h, k2, d * 1.07, .38);
+    col = metal * (.68 + .14 * st - .25 * uLite) * uBase + hc * (1.1 + .18 * st + .3 * uLite);
+  } else if (uMat < 1.5) {
+    // 拉丝直纹：刻槽方向固定，顺着刻槽有一道道拉丝，刻槽方向跟着拉丝抖一点
+    float st = vn(vec2(dot(q, vec2(-sin(uK), cos(uK))) * .03, dot(q, vec2(cos(uK), sin(uK))) * .7));
+    float ka = uK + (st - .5) * .18;
+    vec3 hc = grating(h, vec2(cos(ka), sin(ka)), 1500., .32);
+    col = metal * (.55 + .35 * st) * uBase + hc * (1.1 + .6 * st);
+  } else if (uMat < 2.5) {
+    // 星芒：同心圆刻槽，只有和 h 平行的那条半径最亮，倾斜时那道彩虹绕着中心转；分 36 个扇区，相邻扇区疏密不同
+    vec2 c = q - uC * uSize;
+    float rr = length(c);
+    vec2 kr = c / max(rr, 1e-3), kt = vec2(-kr.y, kr.x);
+    float a = atan(c.y, c.x) / 6.2832 * 36. + 36.;
+    float sec = floor(a), fa = fract(a);
+    float edge = min(fa, 1. - fa) * rr * 6.2832 / 36. * uDpr;
+    float nb = fa < .5 ? sec - 1. : sec + 1.;
+    float d0 = 1240. + 190. * h12(vec2(mod(sec, 36.), 3.)), d1 = 1240. + 190. * h12(vec2(mod(nb, 36.), 3.));
+    float dd = mix(d1, d0, .5 + .5 * smoothstep(0., 1.5, edge));
+    vec3 hc = grating(h, kr, dd, .05) * 1.6 + grating(h, kr, dd, .17) * .4 + grating(h, kt, 1720., .06) * .3;
+    float rings = .9 + .1 * sin(rr * uDpr * 1.6);   // 刻槽密到看不清，只留一点同心的纹路
+    col = metal * .55 * rings * uBase + hc;
+  } else if (uMat < 3.5) {
+    // 碎钻：几千粒朝向各不相同的小碎片，底子是暗的镜面。六成是小光栅，角度对上时亮成很饱和的颜色；其余是小镜子，正对灯时白光一闪
+    float cs = 4.6;
+    vec2 gp = px / cs, ip = floor(gp), fp = fract(gp);
+    float F1 = 9., F2 = 9.;
+    vec2 id1 = ip;
+    for (int j = -1; j <= 1; j++) for (int i = -1; i <= 1; i++) {
+      vec2 oc = vec2(float(i), float(j));
+      vec2 dl = oc + .1 + .8 * h32(ip + oc + uSeed).xy - fp;
+      float dd = dot(dl, dl);
+      if (dd < F1) { F2 = F1; F1 = dd; id1 = ip + oc; } else if (dd < F2) F2 = dd;
+    }
+    float gap = sqrt(F2) - sqrt(F1);
+    vec3 r1 = h32(id1 + uSeed + 17.3), r2 = h32(id1 + uSeed + 3.7);
+    vec2 tl = (r2.xy - .5) * .9;
+    vec2 hs = h - tl * hz;
+    vec3 nf = normalize(N + T * tl.x + B * tl.y);
+    vec3 gc = env(reflect(-V, nf)) * (.01 + .04 * r1.z) * (.3 + .7 * uBase);   // 碎片大多数角度下是暗的，和大卡的边框一样
+    if (r2.z < .6) { float th = r1.x * 6.2832; gc += sat(grating(hs, vec2(cos(th), sin(th)), 1050. + 800. * r1.y, .026), 1.9) * 2.8 * (.25 + .75 * r1.z * r1.z); }
+    else gc += vec3(1., .97, .92) * exp(-dot(hs, hs) / .004) * 5.;
+    col = mix(vec3(.018, .016, .022), gc, .7 + .3 * smoothstep(0., 1.2 / cs, gap));
+    // 最亮的那几粒带星芒：粗一级的格子里每格挑一粒，正好对上灯时亮成一颗四角星
+    float c2 = cs * 3.2;
+    vec2 si = floor(px / c2);
+    for (int j = -1; j <= 1; j++) for (int i = -1; i <= 1; i++) {
+      vec2 id = si + vec2(float(i), float(j));
+      vec2 tl2 = (h32(id + uSeed + 5.3).xy - .5) * .9, hs2 = h - tl2 * hz;
+      float I = exp(-dot(hs2, hs2) / .0035);
+      if (I < .03) continue;
+      vec3 r3 = h32(id + uSeed + 91.7);
+      vec2 d = px - (id + .15 + .7 * r3.xy) * c2;
+      float len = 2.5 + 8. * I;
+      float rays = exp(-abs(d.y) * 1.5 - abs(d.x) / len) + exp(-abs(d.x) * 1.5 - abs(d.y) / len);
+      col += mix(vec3(1., .98, .95), sat(spec(430. + 240. * r3.z), 1.6) * 1.5, .4) * I * (exp(-dot(d, d) * .35) * 2.5 + rays * .9);
+    }
+  } else if (uMat < 4.5) {
+    // 烫印：贴图 r 是凸起的高度，g 是箔。按高度求法线，斜面朝着灯的一侧亮、背着的一侧暗，彩虹也跟着法线走
+    vec2 uv = q / uSize, e = 1. / (uSize * uDpr);
+    float a0 = texture(uArt, uv).g;
+    float hR = texture(uArt, uv + vec2(e.x, 0.)).r, hL = texture(uArt, uv - vec2(e.x, 0.)).r;
+    float hD = texture(uArt, uv + vec2(0., e.y)).r, hU = texture(uArt, uv - vec2(0., e.y)).r;
+    vec2 g = vec2(hR - hL, hD - hU) * uDpr * 1.6;   // 每个 CSS 像素的坡度，乘上凸起的高度
+    vec3 n = normalize(N - T * g.x - B * g.y);
+    vec3 t1 = normalize(T - n * dot(n, T)), t2 = cross(n, t1);
+    vec2 hn = vec2(dot(Hs, t1), dot(Hs, t2));
+    float hn2 = dot(hn, hn);
+    vec3 Rn = reflect(-V, n);
+    // 箔：斜着拉过丝的银，刻槽方向跟着拉丝抖一点
+    vec2 bd = vec2(cos(.42), sin(.42)), bp = vec2(-bd.y, bd.x);
+    float st = vn(vec2(dot(q, bd) * .02, dot(q, bp) * .6) + uSeed);
+    float ka = .42 + 1.5708 + (st - .5) * .22;
+    vec3 fc = env(Rn) * (1.3 + .5 * st) + vec3(1., .97, .93) * (exp(-hn2 / .0035) * 3. + exp(-hn2 / .05) * .35)
+            + grating(hn, vec2(cos(ka), sin(ka)), 1500., .3) * (1.1 + .5 * st);
+    // 卡纸：深色油墨，被箔顶起来的那一圈也按斜面受光
+    float lam = max(dot(n, L), 0.);
+    vec3 ink = vec3(.016, .012, .04) * (.45 + .9 * lam) * (.92 + .08 * vn(px * .45)) + env(Rn) * .012;
+    col = mix(ink, fc, a0);
+  } else if (uMat < 5.5) {
+    // 扭索纹：贴图 r 是镭射线，g 是印上去的浅色微缩字，b 是镭射箔（字、花心的星）。线是银色的细线，刻槽绕着花心，转动时线上泛出彩光
+    vec4 a0 = texture(uArt, q / uSize);
+    vec2 c = q - uC * uSize;
+    float rr = length(c);
+    vec2 kr = c / max(rr, 1e-3), kt = vec2(-kr.y, kr.x);
+    float lam = max(dot(N, L), 0.);
+    vec3 paper = vec3(.011, .015, .045) * (.5 + .8 * lam) * (.94 + .06 * vn(px * .5));
+    vec3 lines = metal * .75 + vec3(.2, .21, .3) * (.4 + .8 * lam) + grating(h, kr, 1380., .09) * .55 + grating(h, kt, 1700., .1) * .35;
+    vec3 micro = vec3(.3, .33, .5) * (.35 + .8 * lam);
+    vec2 bk = vec2(cos(.42 + 1.5708), sin(.42 + 1.5708));
+    // 箔：斜着拉过丝的银，灯不照着的时候也有一道道拉丝的明暗，看得出是金属；反光带放宽一些
+    float fst = vn(vec2(dot(q, bk.yx * vec2(1., -1.)) * .02, dot(q, bk) * .55) + uSeed);
+    vec3 foilT = metal * (1.2 + .6 * fst) + vec3(.16, .16, .19) * (.6 + .5 * fst) + grating(h, bk, 1500., .45) * (1.3 + .5 * fst);
+    col = mix(mix(mix(paper, micro, a0.g), lines, a0.r), foilT, a0.b);
+  } else if (uMat < 6.5) {
+    // 加载骨架：哑光的深色占位，一道斜着的光带按页面坐标扫过去，光带里露出镭射的彩光
+    float lam = max(dot(N, L), 0.);
+    vec3 base = vec3(.018, .017, .024) * (.85 + .3 * lam);
+    float bx = P.x + P.y * .36 - uTime * 620.;
+    float ph = (fract(bx / 1100.) - .5) * 1100.;
+    float band = exp(-ph * ph / (64. * 64.));
+    vec2 hb = vec2(.42 + ph / 360., .05);   // 光带里从左到右走过一段光谱，两边淡出
+    vec3 film = grating(hb, vec2(1., 0.), 1500., .5) * 1.1 + metal * .18;
+    col = base + film * band * .42 + vec3(.01) * band;
+  } else if (uMat < 7.5) {
+    // 光变图：点阵全息。每 2.4 个 CSS 像素一个小圆点，一个点只属于一张图（两张图重叠处按棋盘格分）。
+    // 图 A 的点刻槽是竖的（灯在左右时亮），图 B 的点刻槽是横的（灯在上下时亮）；灯在正上方时两张都暗
+    float pitch = 2.4;
+    vec2 cp = q / pitch, ci = floor(cp);
+    vec4 m = texture(uArt, (ci + .5) * pitch / uSize);
+    float a1 = step(.5, m.r), b1 = step(.5, m.g), both = a1 * b1, par = mod(ci.x + ci.y, 2.);
+    a1 = mix(a1, par, both);
+    b1 = mix(b1, 1. - par, both);
+    float aa = .8 / (pitch * uDpr);
+    float dotm = 1. - smoothstep(.36 - aa, .36 + aa, length(fract(cp) - .5));
+    vec2 hl = vec2(dot(L, T), dot(L, B));
+    vec3 cA = grating(hl, vec2(1., 0.), 1500., .2), cB = grating(hl, vec2(0., 1.), 1500., .2);
+    vec4 fr = texture(uArt, q / uSize);
+    vec3 base = vec3(.022, .02, .034) + metal * .03;
+    vec2 c0 = q - uSize * .5;
+    vec3 ring = metal * .55 + grating(hl, normalize(c0 + 1e-3), 1400., .3) * .9;
+    col = mix(base, ring, fr.b);
+    col += dotm * (a1 * (cA * 2.4 + vec3(.012)) + b1 * (cB * 2.4 + vec3(.012)));
+  } else if (uMat < 8.5) {
+    // 刮开兑换码：贴图 r 是还剩的刮层，g 是兑换码的油墨，b 是印在刮层上的字。
+    // 刮层边缘取几个点平均，再加噪声取阈值，刮痕的边是碎的；刮层是哑光的银，带细颗粒，灯一动换一批闪点
+    vec2 uv = q / uSize, e = 1.6 / uSize;
+    vec4 a0 = texture(uArt, uv);
+    float c0 = (a0.r * 2. + texture(uArt, uv + vec2(e.x, 0.)).r + texture(uArt, uv - vec2(e.x, 0.)).r
+              + texture(uArt, uv + vec2(0., e.y)).r + texture(uArt, uv - vec2(0., e.y)).r) / 6.;
+    float coat = smoothstep(.42, .58, c0 + (vn(px * .55 + uSeed) - .5) * .5);
+    float lam = max(dot(N, L), 0.);
+    vec3 under = filmAt(q, h, metal);
+    under = mix(under, vec3(.02, .018, .04), a0.g * .94);
+    under *= 1. - .55 * smoothstep(.05, .5, c0) * (1. - coat);   // 刮层的厚度在刮痕边上投一圈影
+    vec3 coatc = vec3(.4, .4, .44) * (.5 + .55 * lam) * (.82 + .3 * vn(px * .9 + 3.));
+    coatc += vec3(1.) * step(.988, h12(floor(px * .6) + floor(hl * 30.))) * .55;
+    coatc = mix(coatc, coatc * .55, a0.b);
+    coatc += .22 * (1. - smoothstep(.5, .85, c0)) * coat;   // 刮痕边缘翘起的一点亮边
+    col = mix(under, coatc, coat);
+  } else if (uMat < 9.5) {
+    // 防撕贴纸：uRect 是贴纸，uFold 是撕起的那个角（xy）和它被拖到的位置（zw）。
+    // 折线是两点连线的中垂线：角那一侧的贴纸翻过去，沿折线对称，露出背面；原来的位置露出底下的盒面
+    vec4 a0 = texture(uArt, q / uSize);   // r 撕起过的地方，g VOID 字样，b 贴纸上印的字
+    vec2 fa = uFold.xy, fb = uFold.zw, fd = fb - fa;
+    // 只有往贴纸里面拖才算折起来；角要是跑到贴纸外侧（比如弹回时冲过头），折线会落在贴纸外面，整张都被当成撕起来
+    float fl = dot(fd, (uRect.xy + uRect.zw) * .5 - fa) > 0. ? length(fd) : 0.;
+    vec2 n = fl > .5 ? fd / fl : vec2(0., 1.), m = (fa + fb) * .5;
+    float side = fl > .5 ? dot(q - m, n) : 1e4;
+    float aa = 1. / uDpr;
+    float inS = clamp(.5 - inSeal(q) / aa, 0., 1.);
+    float kept = inS * clamp(side / aa + .5, 0., 1.);
+    vec2 qr = q - 2. * side * n;
+    float flap = fl > .5 ? clamp(.5 - inSeal(qr) / aa, 0., 1.) * clamp(side / aa + .5, 0., 1.) : 0.;
+    // 翻起的那片投在底下的软影：往右下错开几个像素，边缘放宽
+    vec2 qs = q - vec2(5., 8.), qsr = qs - 2. * dot(qs - m, n) * n;
+    float shadow = fl > .5 ? clamp(.5 - inSeal(qsr) / 7., 0., 1.) * clamp(dot(qs - m, n) / 7. + .5, 0., 1.) : 0.;
+    float lam = max(dot(N, L), 0.);
+    // 盒面：深色哑光纸板；揭开的地方留下胶层的 VOID 字样
+    vec3 surf = vec3(.016, .015, .021) * (.6 + .6 * lam) * (.93 + .07 * vn(px * .5));
+    surf = mix(surf, vec3(.36, .36, .41) * (.55 + .45 * lam) + metal * .1, inS * (1. - kept) * a0.g * .85);
+    // 正面：彩虹膜加印上去的字；撕起过又贴回去的地方，VOID 字样处的镭射没了，是一片发白的哑光
+    vec3 front = filmAt(q, h, metal);
+    front = mix(front, vec3(.03, .025, .05), a0.b * .9);
+    front = mix(front, vec3(.5, .5, .55) * (.55 + .45 * lam), a0.r * a0.g * .72);
+    // 背面：银白的胶层，VOID 字样留在了盒面上，背面那里是镂空发暗的；越靠近折线越亮，像卷起来的弧面接住了光
+    vec4 ar = texture(uArt, qr / uSize);
+    vec3 back = vec3(.66, .66, .72) * (.6 + .3 * lam) * (.8 + .35 * exp(-side / 16.));
+    back = mix(back, back * .5, ar.g);
+    col = surf * (1. - .5 * shadow * (1. - kept));
+    col = mix(col, front, kept);
+    col *= 1. - .4 * shadow * kept * (1. - flap);
+    col = mix(col, back, flap);
+  } else if (uMat < 10.5) {
+    // 点阵：每 2.4 个 CSS 像素一个小圆点，刻槽朝向绕着中心转成螺旋。灯在哪个方向，朝向对得上的点连成几条螺旋臂，灯一转，臂跟着转
+    float pitch = 2.4;
+    vec2 cp = q / pitch, ci = floor(cp), cq = (ci + .5) * pitch - uSize * .5;
+    float a = atan(cq.y, cq.x) * 2. + length(cq) * .07 + (vn(ci * .09 + uSeed) - .5) * .5;
+    float aa = .8 / (pitch * uDpr);
+    float dm = 1. - smoothstep(.36 - aa, .36 + aa, length(fract(cp) - .5));
+    col = vec3(.02, .019, .03) + metal * .04 + dm * (grating(h, vec2(cos(a), sin(a)), 1500., .3) * 2.4 + vec3(.03));
+  } else if (uMat < 11.5) {
+    // 碎冰：膜面裂成一块块碎片，每块的刻槽朝向、疏密和倾角都不一样，裂缝是一道道亮的银线
+    vec2 gp = q / 15. + uSeed, ip = floor(gp), fp = fract(gp);
+    float F1 = 9., F2 = 9.;
+    vec2 id1 = ip;
+    for (int j = -1; j <= 1; j++) for (int i = -1; i <= 1; i++) {
+      vec2 oc = vec2(float(i), float(j));
+      vec2 dl = oc + .5 + .45 * (h32(ip + oc).xy - .5) * 2. - fp;
+      float dd = dot(dl, dl);
+      if (dd < F1) { F2 = F1; F1 = dd; id1 = ip + oc; } else if (dd < F2) F2 = dd;
+    }
+    vec3 r1 = h32(id1 + 9.1);
+    vec2 tl = (h32(id1 + 2.3).xy - .5) * .35, hs = h - tl * hz;
+    float a = r1.x * 6.2832;
+    vec3 c = grating(hs, vec2(cos(a), sin(a)), 1300. + 500. * r1.y, .2) * (1.3 + .8 * r1.z);
+    float crack = 1. - smoothstep(0., 1.3 / (15. * uDpr), sqrt(F2) - sqrt(F1));
+    col = metal * (.32 + .25 * r1.z) + c;
+    col = mix(col, metal * 1.3 + vec3(.06), crack * .75);
+  } else if (uMat < 12.5) {
+    // 光柱：一条条 7 像素宽的竖条，刻槽大体是竖的，每条的角度和疏密差一点，倾斜时彩虹一根根跳过去
+    float w = 7., si = floor(q.x / w), fx = fract(q.x / w);
+    vec3 r = h32(vec2(si, 3.) + uSeed);
+    float a = (r.x - .5) * .9;
+    vec3 c = grating(h, vec2(cos(a), sin(a)), 1300. + 500. * r.y, .5) * 1.6;
+    float seam = smoothstep(0., .1, fx) * smoothstep(1., .9, fx);
+    col = (metal * .45 + c) * (.6 + .4 * seam);
+  } else if (uMat < 13.5) {
+    // 波纹：刻槽是一圈圈偏心的涟漪，膜面跟着波峰波谷起伏，彩虹顺着波纹一圈圈流
+    vec2 cq = q - uSize * vec2(.32, .38);
+    float rr = length(cq);
+    float ph = rr * .32 + 1.8 * sin(atan(cq.y, cq.x) * 3. + rr * .05);
+    vec2 kr = cq / max(rr, 1e-3);
+    vec2 hs = h - kr * cos(ph) * .3 * hz;
+    col = metal * (.42 + .18 * sin(ph)) + grating(hs, kr, 1500., .4) * 1.3;
+  } else if (uMat < 14.5) {
+    // 银河：深色底上一个个半透明的全息泡泡，每个是一小片倾角、刻槽方向都不同的膜，对上灯时整片泛出一种颜色，边上一圈更亮，叠在一起的地方颜色相加；再撒一层会闪的星点
+    col = vec3(.012, .012, .03) + metal * .05;
+    float cs = 18.;
+    vec2 ip = floor(q / cs);
+    for (int j = -1; j <= 1; j++) for (int i = -1; i <= 1; i++) {
+      vec2 id = ip + vec2(float(i), float(j));
+      vec3 r = h32(id + uSeed + 1.7);
+      vec2 cen = (id + .2 + .6 * r.xy) * cs;
+      float rad = 3. + 8. * r.z * r.z;
+      vec2 dq = q - cen;
+      float dist = length(dq);
+      float disc = 1. - smoothstep(rad - 1. / uDpr, rad, dist);
+      if (disc <= 0.) continue;
+      vec3 r2 = h32(id + uSeed + 5.3);
+      vec2 tl = (r2.xy - .5) * .8, hs = h - tl * hz;
+      float a = r2.z * 6.2832;
+      vec3 c = grating(hs, vec2(cos(a), sin(a)), 1350. + 400. * r.x, .35) * 1.5 + vec3(1., .97, .93) * exp(-dot(hs, hs) / .005) * .7;
+      float rim = smoothstep(rad * .6, rad, dist);
+      col += c * disc * (.32 + .85 * rim);
+    }
+    vec2 sp = floor(px * .5);
+    if (h12(sp + uSeed) > .985) {
+      vec2 tl = (h32(sp + 3.1).xy - .5) * 1.1, hs = h - tl * hz;
+      col += vec3(1., .98, .95) * exp(-dot(hs, hs) / .004) * 2.2 + vec3(.05);
+    }
+  } else {
+    // 幻彩：薄膜干涉，不是光栅。膜的厚度随位置起伏，每个波长按光程差决定反射多少，叠出肥皂泡、油膜那样柔和的颜色；
+    // 灯斜过来时光在膜里走得更斜，整片颜色跟着慢慢偏移
+    float th = 300. + 260. * vn(q / 46. + uSeed) + 90. * vn(q / 13. + uSeed + 4.);
+    float si = clamp(length(vec2(dot(L, T), dot(L, B))), 0., .95);
+    float ct = sqrt(1. - si * si / (1.38 * 1.38));
+    vec3 acc = vec3(0.), ws = vec3(0.);
+    for (int i = 0; i < 12; i++) {
+      float lam = 400. + float(i) * 27.;
+      vec3 sp = spec(lam);
+      acc += sp * (.5 - .5 * cos(6.2832 * 2. * 1.38 * th * ct / lam));
+      ws += sp;
+    }
+    vec3 tf = acc / max(ws, vec3(1e-4));
+    col = tf * (.4 + .4 * max(dot(N, L), 0.)) + metal * .15 + vec3(1., .97, .93) * exp(-hl / .01) * .25;
+  }
+  col = pow(aces(col), vec3(1. / 2.2));
+  o = vec4(col + (h12(gl_FragCoord.xy) - .5) / 255., 1.);
+}`;
+    const sh = (type, src) => { const s = gl.createShader(type); gl.shaderSource(s, src); gl.compileShader(s); return s; };
+    const prog = gl.createProgram(), fs = sh(gl.FRAGMENT_SHADER, FS);
+    gl.attachShader(prog, sh(gl.VERTEX_SHADER, '#version 300 es\nin vec2 a;\nvoid main() { gl_Position = vec4(a, 0., 1.); }'));
+    gl.attachShader(prog, fs);
+    gl.bindAttribLocation(prog, 0, 'a');
+    gl.linkProgram(prog);
+    if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) { console.error(gl.getShaderInfoLog(fs) || gl.getProgramInfoLog(prog)); return null; }
+    gl.useProgram(prog);
+    gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer());
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]), gl.STATIC_DRAW);
+    gl.enableVertexAttribArray(0);
+    gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0);
+    gl.activeTexture(gl.TEXTURE0);
+    foilSpecTexture(gl);
+    const U = {};
+    ['uSpec', 'uArt', 'uSize', 'uOrigin', 'uC', 'uLight', 'uDpr', 'uTop', 'uMat', 'uK', 'uSeed', 'uLite', 'uBase', 'uRot', 'uTime', 'uFold', 'uRect'].forEach(k => { U[k] = gl.getUniformLocation(prog, k); });
+    gl.uniform1i(U.uSpec, 0);
+    gl.uniform1i(U.uArt, 1);
+
+    /* 贴图的画法：在一块 w×h（设备像素）的画布上，按颜色通道分开画（lighter 叠加，通道互不干扰），返回贴图数据和花心的位置 */
+    const NAME = (new URLSearchParams(location.search).get('name') || '').trim().slice(0, 16) || 'Lumen';
+    const FONT = px => `800 ${px}px Syne, "Noto Sans SC", "Microsoft YaHei", sans-serif`;
+    const MONO = px => `500 ${px}px "IBM Plex Mono", Consolas, "Microsoft YaHei", monospace`;
+    // 按字形的实际外框，把一行字缩放到 maxW × maxH 里居中画
+    const fitText = (g, text, cx, cy, maxW, maxH) => {
+      g.font = FONT(100);
+      g.textAlign = 'left';   // 量字形外框之前先定好对齐方式，不然沿用前面设的居中，算出来的偏移是错的
+      g.textBaseline = 'alphabetic';
+      const m = g.measureText(text), w = m.actualBoundingBoxLeft + m.actualBoundingBoxRight, h = m.actualBoundingBoxAscent + m.actualBoundingBoxDescent;
+      const k = Math.min(maxW / Math.max(w, 1), maxH / Math.max(h, 1));
+      g.font = FONT(100 * k);
+      g.textAlign = 'left';
+      g.textBaseline = 'alphabetic';
+      g.fillText(text, cx - w * k / 2 + m.actualBoundingBoxLeft * k, cy - h * k / 2 + m.actualBoundingBoxAscent * k);
+    };
+    const star4 = (g, x, y, r) => {   // 四角星，边是往里凹的弧
+      g.beginPath(); g.moveTo(x, y - r);
+      g.quadraticCurveTo(x, y, x + r, y); g.quadraticCurveTo(x, y, x, y + r); g.quadraticCurveTo(x, y, x - r, y); g.quadraticCurveTo(x, y, x, y - r);
+      g.fill();
+    };
+    // 可分离的方框模糊，原地改
+    const blur = (a, w, h, r) => {
+      const t = new Float32Array(Math.max(w, h)), inv = 1 / (2 * r + 1);
+      for (let y = 0; y < h; y++) {
+        const o = y * w; let s = a[o] * (r + 1);
+        for (let x = 1; x <= r; x++) s += a[o + Math.min(x, w - 1)];
+        for (let x = 0; x < w; x++) { t[x] = s * inv; s += a[o + Math.min(x + r + 1, w - 1)] - a[o + Math.max(x - r, 0)]; }
+        a.set(t.subarray(0, w), o);
+      }
+      for (let x = 0; x < w; x++) {
+        let s = a[x] * (r + 1);
+        for (let y = 1; y <= r; y++) s += a[Math.min(y, h - 1) * w + x];
+        for (let y = 0; y < h; y++) { t[y] = s * inv; s += a[Math.min(y + r + 1, h - 1) * w + x] - a[Math.max(y - r, 0) * w + x]; }
+        for (let y = 0; y < h; y++) a[y * w + x] = t[y];
+      }
+    };
+    const paint = (w, h, draw) => {
+      const c = document.createElement('canvas');
+      c.width = w; c.height = h;
+      const g = c.getContext('2d', { willReadFrequently: true });
+      g.globalCompositeOperation = 'lighter';
+      const info = draw(g, w, h) || {};
+      return { px: g.getImageData(0, 0, w, h).data, ...info };
+    };
+    // 凸起：箔的形状模糊成一道窄斜边加一圈很缓的肩，高度存浮点（8 位的高度求出来的法线有一道道台阶）
+    const relief = (px, w, h, dpr) => {
+      const n = w * h, m = new Float32Array(n), out = new Float32Array(n * 4);
+      for (let i = 0; i < n; i++) m[i] = px[i * 4 + 1] / 255;
+      const a = m.slice(), b = m.slice(), r1 = Math.max(1, Math.round(1.1 * dpr)), r2 = Math.max(2, Math.round(4 * dpr));
+      for (let i = 0; i < 3; i++) { blur(a, w, h, r1); blur(b, w, h, r2); }
+      for (let i = 0; i < n; i++) { out[i * 4] = a[i] * 0.8 + b[i] * 0.2; out[i * 4 + 1] = m[i]; out[i * 4 + 3] = 1; }
+      return out;
+    };
+    const ART = {
+      // 烫印：品牌名加右下角三颗小星
+      emboss(w, h, dpr) {
+        const { px } = paint(w, h, (g, w, h) => {
+          g.fillStyle = '#0f0';
+          fitText(g, NAME, w / 2, h / 2, w * 0.8, h * 0.56);
+          const r = h * 0.045;
+          for (let i = 0; i < 3; i++) star4(g, w - h * 0.12 - i * r * 2.6, h - h * 0.13, r);
+        });
+        return { data: relief(px, w, h, dpr) };
+      },
+      // 光变徽章：r 是图 A（首字母），g 是图 B（四角星），b 是外圈两道镭射线
+      kineBadge(w, h, dpr) {
+        const { px } = paint(w, h, (g, w, h) => {
+          g.fillStyle = '#f00';
+          fitText(g, [...NAME][0].toUpperCase(), w / 2, h / 2, w * 0.44, h * 0.44);
+          g.fillStyle = '#0f0';
+          star4(g, w / 2, h / 2, w * 0.3);
+          g.strokeStyle = '#00f';
+          g.lineWidth = Math.max(1, 1.6 * dpr);
+          for (const r of [w / 2 - 4 * dpr, w / 2 - 8 * dpr]) { g.beginPath(); g.arc(w / 2, h / 2, r, 0, 7); g.stroke(); }
+        });
+        return { data: px, u8: true };
+      },
+      // 光变防伪条：A 是“正品”，B 是 AUTHENTIC，外面一圈细框
+      kineStrip(w, h, dpr) {
+        const { px } = paint(w, h, (g, w, h) => {
+          g.fillStyle = '#f00';
+          fitText(g, '正品', w / 2, h / 2, w * 0.5, h * 0.6);
+          g.fillStyle = '#0f0';
+          fitText(g, 'AUTHENTIC', w / 2, h / 2, w * 0.84, h * 0.42);
+          g.strokeStyle = '#00f';
+          g.lineWidth = Math.max(1, 1.4 * dpr);
+          g.beginPath(); g.roundRect(3 * dpr, 3 * dpr, w - 6 * dpr, h - 6 * dpr, 5 * dpr); g.stroke();
+        });
+        return { data: px, u8: true };
+      },
+      // 刮刮卡：r 是还剩的刮层（c._mask，刮的时候往里擦），g 是兑换码，b 是印在刮层上的字
+      scratch(w, h, dpr, c) {
+        if (!c._mask || c._mask.width !== w || c._mask.height !== h) {
+          c._mask = document.createElement('canvas');
+          c._mask.width = w; c._mask.height = h;
+          const m = c._mask.getContext('2d');
+          m.fillStyle = '#f00'; m.fillRect(0, 0, w, h);
+        }
+        const { px } = paint(w, h, (g, w, h) => {
+          g.drawImage(c._mask, 0, 0);
+          g.fillStyle = '#0f0';
+          g.textAlign = 'center'; g.textBaseline = 'middle';
+          g.font = MONO(h * 0.1); g.letterSpacing = `${h * 0.03}px`;
+          g.fillText('兑换码 · REDEEM CODE', w / 2, h * 0.27);
+          g.font = `600 ${h * 0.22}px "IBM Plex Mono", Consolas, monospace`; g.letterSpacing = `${h * 0.02}px`;
+          g.fillText('LM7Q-26S3-K42X', w / 2, h * 0.6);
+          g.letterSpacing = '0px';
+          g.fillStyle = '#00f';
+          g.font = `600 ${h * 0.15}px "IBM Plex Mono", "Microsoft YaHei", monospace`;
+          g.fillText('刮开 · SCRATCH', w / 2, h / 2);
+          for (let y = h * 0.14; y < h; y += h * 0.72) for (let x = w * 0.06; x < w; x += h * 0.2) star4(g, x + (y > h / 2 ? h * 0.1 : 0), y, h * 0.03);
+        });
+        return { data: px, u8: true };
+      },
+      // 防撕贴纸：r 是撕起过的地方（c._tmask），g 是 VOID 字样，b 是贴纸上印的字。只画贴纸那一块
+      void(w, h, dpr, c) {
+        if (!c._tmask || c._tmask.width !== w || c._tmask.height !== h) {
+          c._tmask = document.createElement('canvas');
+          c._tmask.width = w; c._tmask.height = h;
+        }
+        const rc = (c._rect || [0, 0, 0, 0]).map(v => v * dpr), rw = rc[2] - rc[0], rh = rc[3] - rc[1];
+        const { px } = paint(w, h, (g) => {
+          g.drawImage(c._tmask, 0, 0);
+          if (rw <= 0) return;
+          g.save();
+          g.beginPath(); g.roundRect(rc[0], rc[1], rw, rh, 9 * dpr); g.clip();
+          g.fillStyle = '#0f0';
+          g.font = FONT(rh * 0.13); g.textAlign = 'center'; g.textBaseline = 'middle';
+          for (let j = 0, y = rc[1] + rh * 0.1; y < rc[3] + rh * 0.1; j++, y += rh * 0.2)
+            for (let x = rc[0] + (j % 2 ? rh * 0.32 : 0); x < rc[2] + rh * 0.4; x += rh * 0.64) g.fillText('VOID', x, y);
+          g.fillStyle = '#00f';
+          fitText(g, NAME, (rc[0] + rc[2]) / 2, rc[1] + rh * 0.42, rw * 0.7, rh * 0.3);
+          g.font = MONO(rh * 0.085); g.textAlign = 'center'; g.textBaseline = 'middle';
+          g.fillText('原厂封签 · 撕开即作废', (rc[0] + rc[2]) / 2, rc[1] + rh * 0.76);
+          g.strokeStyle = '#00f'; g.lineWidth = Math.max(1, 1.2 * dpr);
+          g.beginPath(); g.roundRect(rc[0] + 6 * dpr, rc[1] + 6 * dpr, rw - 12 * dpr, rh - 12 * dpr, 5 * dpr); g.stroke();
+          g.restore();
+        });
+        return { data: px, u8: true };
+      },
+      // 头像框里的首字母
+      initial(w, h, dpr) {
+        const { px } = paint(w, h, (g, w, h) => { g.fillStyle = '#0f0'; fitText(g, [...NAME][0].toUpperCase(), w / 2, h / 2, w * 0.56, h * 0.5); });
+        return { data: relief(px, w, h, dpr) };
+      },
+      // 扭索纹：左边一朵玫瑰花饰，右边一束波纹带，箔字压在波纹上，微缩字绕一圈、走一行
+      guilloche(w, h, dpr) {
+        let ctr;
+        const { px } = paint(w, h, (g, w, h) => {
+          const cx = h * 0.54, cy = h / 2, R0 = h * 0.43, lw = dpr > 1.5 ? 0.5 * dpr : 0.55;
+          ctr = [cx / w, cy / h];
+          g.lineWidth = lw;
+          g.strokeStyle = 'rgba(255,0,0,.9)';
+          g.strokeStyle = `rgba(255,0,0,${dpr > 1.5 ? 0.8 : 0.62})`;
+          // 普通屏幕上一根线只有一个像素宽，线数按像素密度减一点，花纹之间才留得出空隙
+          const dn = dpr > 1.5 ? 1 : 0.7;
+          for (const [n, base, amp, amp2, lobes] of [[20, 0.8, 0.14, 0.04, 18], [16, 0.55, 0.08, 0.03, 24], [12, 0.31, 0.07, 0.02, 12]].map(f => [Math.round(f[0] * dn), ...f.slice(1)])) {
+            for (let i = 0; i < n; i++) {
+              const ph = i / n * Math.PI * 2 / lobes;
+              g.beginPath();
+              for (let k = 0; k <= 1440; k++) {
+                const t = k / 1440 * Math.PI * 2, r = R0 * (base + amp * Math.cos(lobes * (t + ph)) + amp2 * Math.cos(lobes * 3 * t - 2 * lobes * ph));
+                k ? g.lineTo(cx + Math.cos(t) * r, cy + Math.sin(t) * r) : g.moveTo(cx + Math.cos(t) * r, cy + Math.sin(t) * r);
+              }
+              g.stroke();
+            }
+          }
+          // 波纹带：一束相位错开的正弦线，从花饰边上一直走到右边
+          const x0 = cx + R0 * 1.02, x1 = w - h * 0.06;
+          for (let j = 0; j < 22; j++) {
+            g.beginPath();
+            for (let x = x0; x <= x1; x += dpr) {
+              const u = (x - x0) / (x1 - x0), env = Math.sin(Math.PI * Math.min(1, u * 1.4 + 0.15));
+              const y = cy + (j - 10.5) * h * 0.028 + Math.sin(x / (h * 0.09) + j * 0.36) * h * 0.06 * env + Math.sin(x / (h * 0.031) - j * 0.5) * h * 0.008;
+              x === x0 ? g.moveTo(x, y) : g.lineTo(x, y);
+            }
+            g.stroke();
+          }
+          // 微缩字：花饰外一圈，底边一行，正常大小看只是一道细线
+          g.fillStyle = '#0f0';
+          const fs = Math.max(3.4 * dpr, h * 0.021), gap = fs * 0.12;
+          g.font = MONO(fs); g.textAlign = 'center'; g.textBaseline = 'middle';
+          // 一圈：按每个字的实际宽度排（中文比英文宽），排整数遍，字距微调到正好绕满一圈，没有接缝
+          const ring = [...`${NAME.toUpperCase()} · 镭射印社 · No. 0042 · `], ws = ring.map(c => g.measureText(c).width + gap);
+          const rr = R0 * 1.06, rep = ws.reduce((a, b) => a + b, 0), reps = Math.max(1, Math.floor(Math.PI * 2 * rr / rep)), k = Math.PI * 2 * rr / (reps * rep);
+          for (let r = 0, at = 0; r < reps; r++) {
+            ring.forEach((c, i) => {
+              const a = (at + ws[i] / 2) * k / rr - Math.PI / 2;
+              at += ws[i];
+              g.save(); g.translate(cx + Math.cos(a) * rr, cy + Math.sin(a) * rr); g.rotate(a + Math.PI / 2); g.fillText(c, 0, 0); g.restore();
+            });
+          }
+          // 底边一行：只排放得下的整数遍，不切半个字
+          const unit = `LM-26S3-0042 · ${NAME.toUpperCase()} · 镭射印社 · 第 03 季`, sep = ' · ';
+          let line = unit;
+          while (g.measureText(line + sep + unit).width <= x1 - x0) line += sep + unit;
+          // 剩下的空隙摊进字距，两头正好和波纹带对齐
+          g.letterSpacing = `${(x1 - x0 - g.measureText(line).width) / Math.max(1, [...line].length - 1)}px`;
+          g.textAlign = 'left';
+          g.fillText(line, x0, h - h * 0.07);
+          g.letterSpacing = '0px';
+          // 箔：花心一颗四角星，品牌名压在波纹带上，右上角一个编号
+          g.fillStyle = '#00f';
+          star4(g, cx, cy, R0 * 0.2);
+          fitText(g, NAME, (x0 + x1) / 2, cy, (x1 - x0) * 0.82, h * 0.34);
+          g.font = MONO(h * 0.075); g.textBaseline = 'alphabetic'; g.textAlign = 'right';
+          g.fillText('No. 0042', x1, h * 0.17);
+        });
+        const n = w * h, out = new Float32Array(n * 4);
+        for (let i = 0; i < n * 4; i++) out[i] = px[i] / 255;
+        for (let i = 0; i < n; i++) out[i * 4 + 3] = 1;
+        return { data: out, ctr };
+      },
+    };
+
+    const MATS = { film: 0, straight: 1, star: 2, glitter: 3, emboss: 4, guilloche: 5, sheen: 6, kine: 7, scratch: 8, void: 9, dots: 10, ice: 11, pillar: 12, ripple: 13, cosmos: 14, pearl: 15 };
+    const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const items = new Map(), vis = new Set();
+    const io = new IntersectionObserver(es => es.forEach(e => (e.isIntersecting ? vis.add(e.target) : vis.delete(e.target))), { rootMargin: '80px' });
+    document.querySelectorAll('canvas.fx').forEach((c, i) => {
+      const ds = c.dataset;
+      items.set(c, {
+        ctx: c.getContext('2d'), mat: MATS[ds.mat] ?? 0, k: +(ds.k ?? 30) * Math.PI / 180, seed: (i * 7.31) % 50,
+        lite: 'light' in ds ? 1 : 0, base: 'dark' in ds ? 0 : 1, host: c.closest('[data-tilt]'), key: '',
+        art: ART[ds.art], tex: null, texKey: '', ctr: [0.5, 0.5],
+      });
+      if (ds.mat === 'sheen' && !REDUCED) c._dyn = () => Math.round(performance.now() / 8);   // 骨架的光带一直在走，每帧重画
+      io.observe(c);
+    });
+    // 膜面的倾斜：和 CSS 的 rotateX(rx) rotateY(ry) 一样的转法，按列存
+    const rot = t => {
+      if (!t) return [1, 0, 0, 0, 1, 0, 0, 0, 1];
+      const a = t[0] * Math.PI / 180, b = t[1] * Math.PI / 180, ca = Math.cos(a), sa = Math.sin(a), cb = Math.cos(b), sb = Math.sin(b);
+      return [cb, sa * sb, -ca * sb, 0, ca, sa, sb, -sa * cb, ca * cb];
+    };
+
+    // 网页字体到了以后，烫印和扭索纹的贴图按新字体重画
+    let fontsSeen = 0;
+    document.fonts.addEventListener('loadingdone', () => { fontsSeen++; items.forEach(it => { it.key = ''; }); });
+    const api = { enabled: true };
+    FoilLight.draws.push(() => {
+      if (!api.enabled || !vis.size) return;
+      const L = FoilLight, dpr = Math.min(devicePixelRatio || 1, 2), jobs = [];
+      for (const c of vis) jobs.push([c, c.getBoundingClientRect(), c.offsetWidth, c.offsetHeight]);   // 先量完再画
+      let mw = cv.width, mh = cv.height;
+      for (const [, , w, h] of jobs) { mw = Math.max(mw, Math.ceil(w * dpr)); mh = Math.max(mh, Math.ceil(h * dpr)); }
+      if (mw > cv.width || mh > cv.height) { cv.width = mw; cv.height = mh; }
+      gl.uniform3f(U.uLight, L.x, L.y, L.D * 1.8);   // 逐像素算的膜，灯放高一些：彩虹圈铺得开，离指针远的零件上也有二、三级的彩光
+      gl.uniform1f(U.uTop, cv.height);
+      gl.uniform1f(U.uTime, REDUCED ? 0 : performance.now() / 1000);
+      const lk = `${L.x.toFixed(1)},${L.y.toFixed(1)}`;
+      for (const [c, r, w, h] of jobs) {
+        const it = items.get(c), W = Math.max(1, Math.round(w * dpr)), H = Math.max(1, Math.round(h * dpr));
+        if (!w || !h) continue;
+        const tilt = it.host && it.host._tilt;
+        // 灯、位置、大小、倾角都没变就不重画
+        // 零件自己会变的（_dyn：光带的时间、撕起的角；_ver：刮痕、撕过的范围）也算进去
+        const key = `${lk}|${r.left.toFixed(1)},${r.top.toFixed(1)},${W},${H}|${tilt ? tilt.join() : ''}|${c._dyn ? c._dyn() : ''}|${c._ver || 0}`;
+        if (key === it.key) continue;
+        it.key = key;
+        if (c.width !== W || c.height !== H) { c.width = W; c.height = H; }
+        if (it.art) {
+          // 贴图按零件的实际像素画；大小或字体变了才重画
+          const tk = `${W}x${H}|${fontsSeen}|${c._ver || 0}`;
+          if (tk !== it.texKey) {
+            const a = it.art(W, H, W / w, c);
+            it.texKey = tk;
+            it.ctr = a.ctr || [0.5, 0.5];
+            if (!it.tex) it.tex = gl.createTexture();
+            gl.activeTexture(gl.TEXTURE1);
+            gl.bindTexture(gl.TEXTURE_2D, it.tex);
+            if (a.u8) gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA8, W, H, 0, gl.RGBA, gl.UNSIGNED_BYTE, new Uint8Array(a.data.buffer));
+            else gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA16F, W, H, 0, gl.RGBA, gl.FLOAT, a.data);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+          }
+          gl.activeTexture(gl.TEXTURE1);
+          gl.bindTexture(gl.TEXTURE_2D, it.tex);
+        }
+        gl.viewport(0, cv.height - H, W, H);   // 画在左上角，拷的时候从 (0,0) 取
+        gl.uniform2f(U.uSize, w, h);
+        gl.uniform2f(U.uOrigin, r.left + (r.width - w) / 2, r.top + (r.height - h) / 2);   // 有变换时按外框的中心对齐
+        gl.uniform2f(U.uC, it.ctr[0], it.ctr[1]);
+        gl.uniform1f(U.uDpr, W / w);
+        gl.uniform1f(U.uMat, it.mat);
+        gl.uniform1f(U.uK, it.k);
+        gl.uniform1f(U.uSeed, it.seed);
+        gl.uniform1f(U.uLite, it.lite);
+        gl.uniform1f(U.uBase, it.base);
+        gl.uniformMatrix3fv(U.uRot, false, rot(tilt));
+        gl.uniform4fv(U.uFold, c._fold || [0, 0, 0, 0]);
+        gl.uniform4fv(U.uRect, c._rect || [0, 0, 0, 0]);
+        gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+        it.ctx.drawImage(cv, 0, 0, W, H, 0, 0, W, H);
+      }
+    });
+    return api;
+  })();
+</script>
+
+<script data-part="foil-gl">
+  // 按下、勾选、拖动时膜面跟着弯一下：按在哪边，哪边往下压，反光的角度一变，颜色就跳一下；松手后弹回去，带一点过冲。
+  // 只改 FoilGL 算膜时用的法线（元素的 _tilt，单位度），元素本身不动
+  (() => {
+    const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    document.querySelectorAll('.lib [data-tilt]:not(.mini-face)').forEach(el => {
+      const S = { tx: 0, ty: 0, rx: 0, ry: 0, vx: 0, vy: 0 };
+      let raf = 0, last = 0;
+      const K = 320, C = 2 * (reduced ? 1 : 0.32) * Math.sqrt(K);
+      const run = now => {
+        const dt = Math.max(0, Math.min(now - last, 50)) / 1000;
+        last = now;
+        for (let n = Math.ceil(dt / 0.004), h = dt / n, i = 0; i < n; i++) {
+          S.vx += (K * (S.tx - S.rx) - C * S.vx) * h; S.rx += S.vx * h;
+          S.vy += (K * (S.ty - S.ry) - C * S.vy) * h; S.ry += S.vy * h;
+        }
+        const idle = !S.tx && !S.ty && Math.abs(S.rx) + Math.abs(S.ry) < 0.02 && Math.abs(S.vx) + Math.abs(S.vy) < 0.2;
+        el._tilt = idle ? null : [S.rx, S.ry];
+        raf = idle ? 0 : requestAnimationFrame(run);
+      };
+      const kick = () => { if (!raf) { last = performance.now(); raf = requestAnimationFrame(run); } };
+      const bump = v => { S.vy += reduced ? 0 : v; kick(); };
+      el.addEventListener('pointerdown', e => {
+        const r = el.getBoundingClientRect();
+        S.ty = ((e.clientX - r.left) / r.width - 0.5) * 2 * 14;
+        S.tx = -((e.clientY - r.top) / r.height - 0.5) * 2 * 14;
+        kick();
+      });
+      const release = () => { if (S.tx || S.ty) { S.tx = S.ty = 0; kick(); } };
+      addEventListener('pointerup', release);
+      addEventListener('pointercancel', release);
+      // 开关、勾选、开一包：翻转的那一下（点标签时浏览器还会替里面的 input 再点一次，那一次不算）
+      el.addEventListener('click', e => { if (e.target.tagName !== 'INPUT') bump(260); });
+      // 滑杆：往哪边拖，膜往哪边歪
+      el.addEventListener('input', e => {
+        const v = +e.target.value, d = v - (e.target._v ?? v);
+        e.target._v = v;
+        bump(Math.sign(d) * 90);
+      });
+      el.addEventListener('keydown', e => { if (e.key === ' ' || e.key === 'Enter') bump(200); });
+    });
+    // 进度条：开一包的时候，两条进度条一起弹一下
+    document.querySelectorAll('.pg-more').forEach(b => b.addEventListener('click', () => b.closest('.prog').querySelectorAll('.pg').forEach(pg => pg.dispatchEvent(new Event('click')))));
+  })();
+</script>
+
+<script data-part="scratch">
+  // 刮刮卡：按住拖动，往刮层的遮罩里擦一道（粗线加几个碎点，边是毛的）；回车直接全部刮开
+  document.querySelectorAll('.scratch').forEach(el => {
+    const c = el.querySelector('canvas.fx'), reset = el.parentElement.querySelector('.scr-reset');
+    let last = null, down = false;
+    const local = e => { const r = el.getBoundingClientRect(); return [e.clientX - r.left, e.clientY - r.top]; };
+    const touch = () => { c._ver = (c._ver || 0) + 1; reset.hidden = false; };
+    const scrape = p => {
+      if (!c._mask) return;
+      const k = c._mask.width / el.clientWidth, g = c._mask.getContext('2d');
+      g.save();
+      g.scale(k, k);
+      g.globalCompositeOperation = 'destination-out';
+      g.lineCap = g.lineJoin = 'round';
+      g.lineWidth = 16;
+      if (last) { g.beginPath(); g.moveTo(...last); g.lineTo(...p); g.stroke(); }
+      else { g.beginPath(); g.arc(p[0], p[1], 8, 0, 7); g.fill(); }   // 长度为零的线画不出来，按下那一下画个圆点
+      for (let i = 0; i < 4; i++) { g.beginPath(); g.arc(p[0] + (Math.random() - 0.5) * 22, p[1] + (Math.random() - 0.5) * 22, 0.8 + Math.random() * 2.4, 0, 7); g.fill(); }
+      g.restore();
+      last = p;
+      touch();
+    };
+    el.addEventListener('pointerdown', e => { down = true; last = null; el.setPointerCapture(e.pointerId); scrape(local(e)); });
+    el.addEventListener('pointermove', e => { if (down) scrape(local(e)); });
+    const up = () => { down = false; last = null; };
+    addEventListener('pointerup', up);
+    addEventListener('pointercancel', up);
+    el.addEventListener('keydown', e => {
+      if (e.key !== 'Enter' && e.key !== ' ') return;
+      e.preventDefault();
+      if (c._mask) { c._mask.getContext('2d').clearRect(0, 0, c._mask.width, c._mask.height); touch(); }
+    });
+    reset.addEventListener('click', () => {
+      if (c._mask) { const g = c._mask.getContext('2d'); g.fillStyle = '#f00'; g.fillRect(0, 0, c._mask.width, c._mask.height); }
+      c._ver = (c._ver || 0) + 1;
+      reset.hidden = true;
+    });
+  });
+</script>
+
+<script data-part="void">
+  // 防撕贴纸：按住贴纸拖动，离按下点最近的那个角被撕起来，跟着指针走（弹簧带一点拖拽感）；
+  // 撕起来的范围记进遮罩，松手后贴纸贴回去，那一块就露出 VOID。没碰过时右上角微微翘着
+  document.querySelectorAll('.void-box').forEach(box => {
+    const c = box.querySelector('canvas.fx'), reset = box.parentElement.querySelector('.void-reset');
+    const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let rect = [0, 0, 0, 0], A = [0, 0], B = [0, 0], T = [0, 0], V = [0, 0], drag = false, fresh = true, raf = 0, last = 0;
+    const corners = () => [[rect[0], rect[1]], [rect[2], rect[1]], [rect[0], rect[3]], [rect[2], rect[3]]];
+    // 从角 A 指向贴纸中心的方向；拖动的点只能在它的正侧，不然折线落到贴纸外面，整张贴纸都会被当成撕起来
+    const inward = () => { const d = [(rect[0] + rect[2]) / 2 - A[0], (rect[1] + rect[3]) / 2 - A[1]], l = Math.hypot(...d) || 1; return [d[0] / l, d[1] / l]; };
+    const keepIn = p => { const d = inward(), k = (p[0] - A[0]) * d[0] + (p[1] - A[1]) * d[1]; return k < 0 ? [p[0] - d[0] * k, p[1] - d[1] * k] : p; };
+    // 拖动目标：只认朝贴纸里面的那部分，往外拖就收回去；斜着拖最多偏离对角线 60°，折线才总是横在角上
+    const aim = p => {
+      const d = inward(), t = [-d[1], d[0]], v = [p[0] - A[0], p[1] - A[1]];
+      const along = v[0] * d[0] + v[1] * d[1];
+      if (along <= 0) return A.slice();
+      const lim = along * Math.tan(Math.PI / 3), side = Math.max(-lim, Math.min(lim, v[0] * t[0] + v[1] * t[1]));
+      return [A[0] + d[0] * along + t[0] * side, A[1] + d[1] * along + t[1] * side];
+    };
+    const idle = () => { A = [rect[2], rect[1]]; T = [A[0] - 7, A[1] + 7]; };
+    const layout = () => {
+      const w = box.clientWidth, h = box.clientHeight, sw = Math.min(250, w * 0.74), sh = Math.round(sw * 0.52);
+      rect = [(w - sw) / 2, (h - sh) / 2, (w + sw) / 2, (h + sh) / 2].map(Math.round);
+      c._rect = rect;
+      if (fresh) { idle(); B = T.slice(); }
+      else { A = corners().reduce((a, b) => (Math.hypot(b[0] - A[0], b[1] - A[1]) < Math.hypot(a[0] - A[0], a[1] - A[1]) ? b : a)); B = T = A.slice(); }
+      c._fold = [...A, ...B];
+      c._ver = (c._ver || 0) + 1;
+    };
+    new ResizeObserver(layout).observe(box);
+    c._dyn = () => c._fold.map(v => v.toFixed(1)).join();
+    // 把撕起来的那一块（贴纸在折线靠角那一侧的部分）记进遮罩
+    const mark = () => {
+      const fd = [B[0] - A[0], B[1] - A[1]], fl = Math.hypot(...fd), d = inward();
+      if (!c._tmask || fl < 2 || fd[0] * d[0] + fd[1] * d[1] <= 0) return;
+      const n = [fd[0] / fl, fd[1] / fl], m = [(A[0] + B[0]) / 2, (A[1] + B[1]) / 2], t = [-n[1], n[0]], big = 4000;
+      const g = c._tmask.getContext('2d'), k = c._tmask.width / box.clientWidth;
+      g.save();
+      g.scale(k, k);
+      g.beginPath();
+      g.moveTo(m[0] + t[0] * big, m[1] + t[1] * big);
+      g.lineTo(m[0] - t[0] * big, m[1] - t[1] * big);
+      g.lineTo(m[0] - t[0] * big - n[0] * big, m[1] - t[1] * big - n[1] * big);
+      g.lineTo(m[0] + t[0] * big - n[0] * big, m[1] + t[1] * big - n[1] * big);
+      g.clip();
+      g.fillStyle = '#f00';
+      g.beginPath(); g.roundRect(rect[0], rect[1], rect[2] - rect[0], rect[3] - rect[1], 9); g.fill();
+      g.restore();
+      c._ver = (c._ver || 0) + 1;
+      reset.hidden = false;
+    };
+    const step = now => {
+      const dt = Math.max(0, Math.min(now - last, 50)) / 1000;
+      last = now;
+      const K = 420, C = 2 * 0.85 * Math.sqrt(K);
+      if (reduced) { B = T.slice(); V = [0, 0]; }
+      else for (let n = Math.ceil(dt / 0.004), h = dt / n, i = 0; i < n; i++) for (const j of [0, 1]) { V[j] += (K * (T[j] - B[j]) - C * V[j]) * h; B[j] += V[j] * h; }
+      // 弹回去时会冲过原位一点点：不许越过那个角，到了就停
+      const d = inward();
+      if ((B[0] - A[0]) * d[0] + (B[1] - A[1]) * d[1] < 0) { B = keepIn(B); V = [0, 0]; }
+      c._fold = [...A, ...B];
+      if (drag) mark();
+      const still = !drag && Math.hypot(T[0] - B[0], T[1] - B[1]) < 0.05 && Math.hypot(...V) < 0.5;
+      if (still) { B = T.slice(); c._fold = [...A, ...B]; raf = 0; } else raf = requestAnimationFrame(step);
+    };
+    const kick = () => { if (!raf) { last = performance.now(); raf = requestAnimationFrame(step); } };
+    const local = e => { const r = box.getBoundingClientRect(); return [e.clientX - r.left, e.clientY - r.top]; };
+    box.addEventListener('pointerdown', e => {
+      const p = local(e);
+      if (p[0] < rect[0] - 24 || p[0] > rect[2] + 24 || p[1] < rect[1] - 24 || p[1] > rect[3] + 24) return;
+      const a = corners().reduce((a, b) => (Math.hypot(b[0] - p[0], b[1] - p[1]) < Math.hypot(a[0] - p[0], a[1] - p[1]) ? b : a));
+      if (a[0] !== A[0] || a[1] !== A[1]) { A = a; B = a.slice(); V = [0, 0]; }
+      fresh = false;
+      drag = true;
+      T = aim(p);
+      box.setPointerCapture(e.pointerId);
+      kick();
+    });
+    box.addEventListener('pointermove', e => {
+      if (!drag) return;
+      const p = local(e), d = [p[0] - A[0], p[1] - A[1]], l = Math.hypot(...d), max = Math.hypot(rect[2] - rect[0], rect[3] - rect[1]) * 2.1;
+      T = aim(l > max ? [A[0] + d[0] / l * max, A[1] + d[1] / l * max] : p);
+      kick();
+    });
+    const up = () => { if (!drag) return; drag = false; T = A.slice(); kick(); };
+    // 松手可能发生在盒子外面：在整个窗口上听；万一漏了，鼠标键已经放开就当松手
+    addEventListener('pointerup', up);
+    addEventListener('pointercancel', up);
+    box.addEventListener('pointermove', e => { if (drag && e.pointerType === 'mouse' && e.buttons === 0) up(); });
+    reset.addEventListener('click', () => {
+      if (c._tmask) c._tmask.getContext('2d').clearRect(0, 0, c._tmask.width, c._tmask.height);
+      fresh = true;
+      idle();
+      B = [rect[2], rect[1]];
+      V = [0, 0];
+      c._ver = (c._ver || 0) + 1;
+      reset.hidden = true;
+      kick();
+    });
+  });
+</script>
+
+<script data-part="choice">
+  document.querySelectorAll('.switch').forEach(b => b.addEventListener('click', () => b.setAttribute('aria-checked', String(b.getAttribute('aria-checked') !== 'true'))));
+</script>
+
+<script data-part="slider">
+  document.querySelectorAll('.slider').forEach(sl => {
+    const inp = sl.querySelector('input'), out = sl.querySelector('output');
+    const set = () => { sl.style.setProperty('--v', `${(inp.value - inp.min) / (inp.max - inp.min) * 100}%`); out.textContent = `${inp.value}°`; };
+    inp.addEventListener('input', set);
+    set();
+  });
+</script>
+
+<script data-part="progress">
+  document.querySelectorAll('.prog').forEach(p => {
+    const bar = p.querySelector('.pg-bar'), pg = bar.parentElement, num = p.querySelector('.pg-top b'), max = +pg.getAttribute('aria-valuemax');
+    let n = +pg.getAttribute('aria-valuenow');
+    p.querySelector('.pg-more').addEventListener('click', () => {
+      n = n >= max ? 0 : n + 1;   // 集满了就从头再来
+      pg.setAttribute('aria-valuenow', n);
+      bar.style.setProperty('--p', `${n / max * 100}%`);
+      num.textContent = `${n} / ${max}`;
+    });
+  });
+</script>
+
+<script data-part="card">
+  // 小卡转向指针：目标角度跟着指针，弹簧带一点过冲，移开后晃一下回正。名字太长就缩小字号
+  document.querySelectorAll('.mini').forEach(card => {
+    const face = card.querySelector('.mini-face'), name = card.querySelector('.mini-name');
+    const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    name.textContent = (new URLSearchParams(location.search).get('name') || '').trim().slice(0, 16) || 'Lumen';
+    // WebGL 版的名字：把字画成一张遮罩（和 CSS 里那行字同样的字体、大小、位置），盖在一块拉丝镭射膜上
+    const mask = () => {
+      const w = face.offsetWidth, h = face.offsetHeight, c = document.createElement('canvas'), g = c.getContext('2d'), cs = getComputedStyle(name);
+      c.width = w * 2; c.height = h * 2;
+      g.scale(2, 2);
+      g.font = `${cs.fontWeight} ${cs.fontSize} ${cs.fontFamily}`;
+      g.letterSpacing = cs.letterSpacing === 'normal' ? '0px' : cs.letterSpacing;
+      g.textAlign = 'center';
+      g.textBaseline = 'middle';
+      g.fillText(name.textContent, w / 2, name.offsetTop);
+      face.style.setProperty('--name-mask', `url(${c.toDataURL()})`);
+    };
+    const fit = () => { name.style.fontSize = ''; const k = name.clientWidth / name.scrollWidth; if (k < 1) name.style.fontSize = `${38 * k}px`; mask(); };
+    fit();
+    document.fonts.load(`800 38px Syne`, name.textContent).then(fit, () => {});
+    document.fonts.addEventListener('loadingdone', fit);
+    let tx = 0, ty = 0, rx = 0, ry = 0, vx = 0, vy = 0, last = performance.now();
+    card.addEventListener('pointermove', e => {
+      const r = card.getBoundingClientRect();
+      tx = ((e.clientY - r.top) / r.height - 0.5) * -22;
+      ty = ((e.clientX - r.left) / r.width - 0.5) * 26;
+    });
+    card.addEventListener('pointerleave', () => { tx = ty = 0; });
+    const K = 160, C = 2 * (reduced ? 1 : 0.45) * Math.sqrt(K);
+    const step = now => {
+      requestAnimationFrame(step);
+      const dt = Math.max(0, Math.min(now - last, 50)) / 1000;
+      last = now;
+      for (let n = Math.ceil(dt / 0.004), h = dt / n, i = 0; i < n; i++) {
+        vx += (K * (tx - rx) - C * vx) * h; rx += vx * h;
+        vy += (K * (ty - ry) - C * vy) * h; ry += vy * h;
+      }
+      face.style.setProperty('--rx', `${rx.toFixed(2)}deg`);
+      face.style.setProperty('--ry', `${ry.toFixed(2)}deg`);
+      face._tilt = [rx, ry];   // WebGL 版按它转膜面的法线：灯不动、只转卡，彩虹也会流
+    };
+    requestAnimationFrame(step);
+  });
+</script>
+
+<script>
+  // 元素库的渲染方式：默认 WebGL；没有 WebGL2 时只能用 CSS 平替
+  (() => {
+    const name = (new URLSearchParams(location.search).get('name') || '').trim().slice(0, 16) || 'Lumen';
+    document.querySelectorAll('.lib .bn').forEach(b => { b.textContent = name; });
+    const seg = document.querySelector('.seg'), btns = [...seg.querySelectorAll('button')];
+    const set = m => {
+      document.documentElement.dataset.foil = m;
+      Foil.enabled = m === 'css';
+      if (FoilGL) FoilGL.enabled = m === 'gl';
+      btns.forEach(b => b.setAttribute('aria-checked', String(b.dataset.mode === m)));
+    };
+    if (!FoilGL) { seg.hidden = true; set('css'); return; }
+    btns.forEach(b => b.addEventListener('click', () => set(b.dataset.mode)));
+    set('gl');
+  })();
+</script>
+
+<script>
+  const $ = s => document.querySelector(s);
+  const clamp = (v, a, b) => Math.min(Math.max(v, a), b);
+  const smooth = x => { x = clamp(x, 0, 1); return x * x * (3 - 2 * x); };
+  const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const canvas = (w, h) => { const c = document.createElement('canvas'); c.width = Math.max(1, Math.round(w)); c.height = Math.max(1, Math.round(h)); return c; };
+  // 品牌名默认 Lumen，网址加 ?name=星河 这样的参数可以换
+  const brand = (new URLSearchParams(location.search).get('name') || '').trim().slice(0, 16) || 'Lumen';
+  const MONO = '"IBM Plex Mono", Consolas, "Microsoft YaHei", monospace';
+  const BRAND = px => `800 ${px}px Syne, "Noto Sans SC", "Microsoft YaHei", sans-serif`;
+  // 固定种子的随机数：条码、扭索纹每次长得一样
+  function seeded(s) { return () => { s |= 0; s = (s + 0x6D2B79F5) | 0; let t = Math.imul(s ^ (s >>> 15), 1 | s); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; }
+
+  const stage = $('#stage'), glc = $('#gl');
+
+  /* ---------- 构图：透视相机正对着卡片，世界单位里卡片高 1 ---------- */
+  const TANF = Math.tan(15 * Math.PI / 180);   // 竖直视角 30°：倾斜看得出透视，又不会把卡拉变形
+  let W, H, DPR, mobile, CA, cardW, cardH, CY, DIST, YC, HALF, RAD, TW, TH;
+  function layout() {
+    W = stage.clientWidth;
+    DPR = Math.min(devicePixelRatio || 1, 2);
+    mobile = W < 680;
+    if (mobile) {   // 手机：竖着的标准卡比例，卡占满宽度，下面留出色条和版边字
+      CA = 63 / 88;
+      cardW = Math.min(W - 76, 340);
+      cardH = cardW / CA;
+      CY = 46 + cardH / 2;
+      H = Math.round(cardH + 156);
+    } else {        // 桌面：宽幅卡
+      CA = 1.8;
+      H = Math.round(clamp(W * 0.56, 420, 760));
+      cardH = H * 0.72;
+      cardW = cardH * CA;
+      if (cardW > W * 0.8) { cardW = W * 0.8; cardH = cardW / CA; }
+      CY = H / 2 - 10;
+    }
+    DIST = H / (cardH * 2 * TANF);
+    YC = (1 - CY / H * 2) * DIST * TANF;
+    HALF = [CA / 2, 0.5];
+    RAD = 0.048 * Math.min(CA, 1);   // 卡角圆角：短边的 4.8%，和真卡一样
+    // 卡面贴图：比屏幕上的卡再密一点，最长边不超过 2048
+    let tw = clamp(cardW * DPR * 1.25, 1024, 2048), th = tw / CA;
+    if (th > 2048) { th = 2048; tw = th * CA; }
+    if (Math.max(tw, th) < 1024) { const k = 1024 / Math.max(tw, th); tw *= k; th *= k; }
+    TW = Math.round(tw);
+    TH = Math.round(th);
+    glc.style.height = H + 'px';
+    glc.width = Math.round(W * DPR);
+    glc.height = Math.round(H * DPR);
+    const x0 = (W - cardW) / 2, y1 = CY + cardH / 2;
+    // 印张上的两枚贴纸：桌面放在卡片左右两边的空白里；手机两边没地方，只在卡片下面右边放那枚圆章
+    const place = (el, x, y, k) => { el.hidden = !k; el.style.left = x + 'px'; el.style.top = y + 'px'; el.style.scale = k || 1; };
+    const star = stage.querySelector('[data-aux="star"]'), seal = stage.querySelector('[data-aux="seal"]');
+    // 陀螺仪按钮（只有 iPhone 才会露出来）：桌面在右下角，手机放到卡片左下方，给圆章让位
+    Object.assign($('#gyro').style, mobile ? { left: x0 + 'px', top: (y1 + 46) + 'px', right: 'auto', bottom: 'auto' } : { left: '', top: '', right: '', bottom: '' });
+    if (mobile) { place(star, 0, 0, 0); place(seal, x0 + cardW - 30, y1 + 60, 0.62); }
+    else {
+      const room = x0 > 110;
+      place(star, W - x0 / 2, CY - cardH * 0.3, room ? Math.min(1, x0 / 140) : 0);
+      place(seal, x0 / 2, CY + cardH * 0.26, room ? Math.min(1, x0 / 160) : 0);
+    }
+  }
+
+  /* ---------- 卡面：每一面画六张图，在着色器里合起来 ----------
+     art  油墨的颜色
+     cov  油墨覆盖率：0 是露出镭射膜，1 是完全盖住
+     foil 烫印（品牌名、小星星），glit 碎钻边框，holo 星芒底纹（背面是防伪标），emb 凸起的高度 */
+  const rr = (o, x, y, w, h, r) => { o.beginPath(); o.roundRect(x, y, w, h, Math.max(0, r)); };
+  function ring(o, a, ra, b, rb, color) {   // 圆角矩形环：外圈内缩 a，内圈内缩 b
+    o.fillStyle = color;
+    o.beginPath();
+    o.roundRect(a, a, TW - 2 * a, TH - 2 * a, Math.max(0, ra));
+    o.roundRect(b, b, TW - 2 * b, TH - 2 * b, Math.max(0, rb));
+    o.fill('evenodd');
+  }
+  function star4(o, x, y, r) {   // 四角星，边是往里凹的弧
+    o.beginPath();
+    o.moveTo(x, y - r);
+    o.quadraticCurveTo(x, y, x + r, y);
+    o.quadraticCurveTo(x, y, x, y + r);
+    o.quadraticCurveTo(x, y, x - r, y);
+    o.quadraticCurveTo(x, y, x, y - r);
+    o.fill();
+  }
+  function fitBrand(o, text, maxW, maxH) {
+    o.font = BRAND(100);
+    const m = o.measureText(text);
+    const w = m.actualBoundingBoxLeft + m.actualBoundingBoxRight, h = m.actualBoundingBoxAscent + m.actualBoundingBoxDescent;
+    const k = Math.min(maxW / Math.max(w, 1), maxH / Math.max(h, 1));
+    return { px: 100 * k, w: w * k, h: h * k, left: m.actualBoundingBoxLeft * k, asc: m.actualBoundingBoxAscent * k };
+  }
+  function drawBrand(os, text, cx, cy, f) {   // 按字形的实际外框居中
+    for (const o of os) {
+      o.font = BRAND(f.px);
+      o.textAlign = 'left';
+      o.textBaseline = 'alphabetic';
+      o.fillStyle = '#fff';
+      o.fillText(text, cx - f.w / 2 + f.left, cy - f.h / 2 + f.asc);
+    }
+  }
+  function both(A, V, color, fn) {   // 同一笔油墨：颜色画进 art，覆盖率画进 cov
+    A.fillStyle = A.strokeStyle = color;
+    V.fillStyle = V.strokeStyle = '#fff';
+    fn(A);
+    fn(V);
+  }
+  function mono(o, px, sp) {
+    o.font = `500 ${px}px ${MONO}`;
+    o.letterSpacing = sp + 'px';
+    o.textBaseline = 'top';
+  }
+
+  function drawFront(C) {
+    const { art: A, cov: V, foil: F, glit: G, holo: Hh, emb: E } = C;
+    const s = Math.min(TW, TH) / 100, R = 4.8 * s, port = TH > TW;
+    A.fillStyle = '#0c0a17';
+    A.fillRect(0, 0, TW, TH);
+    V.fillStyle = '#fff';
+    V.fillRect(0, 0, TW, TH);
+    // 碎钻边框：外面留一道很细的深色边，像真卡裁出来的样子
+    const b0 = 1.05 * s, b1 = 6.1 * s;
+    ring(G, b0, R - b0, b1, R - b1, '#fff');
+    ring(V, b0, R - b0, b1, R - b1, '#000');
+    // 星芒底纹：中间油墨薄、镭射透出来最多，四周压暗
+    const fi = 6.6 * s, fr = Math.max(R - fi, 1.4 * s), fw = TW - 2 * fi, fh = TH - 2 * fi;
+    const cx = TW / 2, cy = port ? TH * 0.47 : TH / 2;
+    rr(Hh, fi, fi, fw, fh, fr);
+    Hh.fillStyle = '#fff';
+    Hh.fill();
+    const rad = Math.hypot(fw, fh) / 2;
+    V.save();
+    rr(V, fi, fi, fw, fh, fr);
+    V.clip();
+    let g = V.createRadialGradient(cx, cy, 0, cx, cy, rad);
+    g.addColorStop(0, '#4a4a4a');
+    g.addColorStop(0.35, '#6a6a6a');
+    g.addColorStop(0.8, '#c4c4c4');
+    g.addColorStop(1, '#dcdcdc');
+    V.fillStyle = g;
+    V.fillRect(0, 0, TW, TH);
+    // 印一圈放射状的深色条：镭射在条里暗一些，星芒更像一道道光
+    const N = 44;
+    g = V.createRadialGradient(cx, cy, 0, cx, cy, rad);
+    g.addColorStop(0, 'rgba(255,255,255,0)');
+    g.addColorStop(0.12, 'rgba(255,255,255,0)');
+    g.addColorStop(0.3, 'rgba(255,255,255,.2)');
+    g.addColorStop(1, 'rgba(255,255,255,.34)');
+    V.fillStyle = g;
+    for (let i = 0; i < N; i += 2) {
+      const a0 = i / N * Math.PI * 2, a1 = (i + 1) / N * Math.PI * 2;
+      V.beginPath();
+      V.moveTo(cx, cy);
+      V.lineTo(cx + Math.cos(a0) * rad * 1.2, cy + Math.sin(a0) * rad * 1.2);
+      V.lineTo(cx + Math.cos(a1) * rad * 1.2, cy + Math.sin(a1) * rad * 1.2);
+      V.closePath();
+      V.fill();
+    }
+    V.restore();
+    A.save();
+    rr(A, fi, fi, fw, fh, fr);
+    A.clip();
+    g = A.createRadialGradient(cx, cy, 0, cx, cy, rad);
+    g.addColorStop(0, '#3d2f86');
+    g.addColorStop(0.45, '#1d1745');
+    g.addColorStop(1, '#0b0a18');
+    A.fillStyle = g;
+    A.fillRect(0, 0, TW, TH);
+    A.restore();
+    // 底纹边上一道白线、往里一道淡紫的细线
+    both(A, V, '#efedf8', o => { o.lineWidth = 0.34 * s; rr(o, fi, fi, fw, fh, fr); o.stroke(); });
+    both(A, V, '#6f68a8', o => { o.lineWidth = 0.16 * s; rr(o, fi + 1.25 * s, fi + 1.25 * s, fw - 2.5 * s, fh - 2.5 * s, fr - 1.25 * s); o.stroke(); });
+    // 角上的小字
+    const pad = fi + 3.3 * s, ts = (port ? 3.1 : 2.35) * s;
+    both(A, V, '#efedf8', o => {
+      mono(o, ts, ts * 0.16);
+      o.textAlign = 'left';
+      o.fillText(port ? '镭射印社' : '镭射印社 · 第 03 季', pad, pad);
+      o.textAlign = 'right';
+      o.fillText(port ? 'No. 0042' : 'No. 0042 / 2000', TW - pad, pad);
+      o.textAlign = 'left';
+      o.textBaseline = 'bottom';
+      o.fillText(port ? '第 03 季 · 限定' : '宽幅镭射卡 · 限定', pad, TH - pad + ts * 0.2);
+      o.letterSpacing = '0px';
+    });
+    // 右下角三颗烫印小星
+    for (const o of [F, E]) {
+      o.fillStyle = '#fff';
+      for (let i = 0; i < 3; i++) star4(o, TW - pad - ts * 0.55 - i * ts * 1.45, TH - pad - ts * 0.5, ts * 0.62);
+    }
+    // 品牌名：烫印箔，微微凸起
+    const f = fitBrand(F, brand, fw * 0.84, fh * (port ? 0.3 : 0.44));
+    drawBrand([F, E], brand, cx, cy, f);
+    return { ctr: [cx / TW, cy / TH] };
+  }
+
+  let guilloche = null;
+  async function drawGuilloche(id) {
+    const s = Math.min(TW, TH) / 100, port = TH > TW, fi = 2.6 * s;
+    const cx = TW / 2, cy = port ? TH * 0.36 : TH * 0.47, R0 = port ? TW * 0.36 : TH * 0.36;
+    const c = canvas(TW, TH), A = c.getContext('2d', { willReadFrequently: true });   // 和卡面画布一样放在内存里，贴过去时不用从显卡读回来
+    // 两圈：外圈 18 瓣的花边，内圈 30 瓣的细网，每圈几十条线相位一点点错开，交叠出网纹
+    A.lineWidth = 0.11 * s;
+    for (const [n, base, amp, amp2, lobes, col] of [[30, 0.8, 0.13, 0.035, 18, 'rgba(150,165,235,.34)'], [26, 0.57, 0.06, 0.03, 30, 'rgba(185,170,245,.3)']]) {
+      A.strokeStyle = col;
+      for (let i = 0; i < n; i++) {
+        if (i % 14 === 13) { await nextFrame(); if (id !== buildId) return null; }   // 画十几条让出一帧
+        const ph = i / n * Math.PI * 2 / lobes;
+        A.beginPath();
+        for (let k = 0; k <= 1440; k++) {
+          const t = k / 1440 * Math.PI * 2;
+          const r = R0 * (base + amp * Math.cos(lobes * (t + ph)) + amp2 * Math.cos(lobes * 3 * t - 2 * lobes * ph));
+          const x = cx + Math.cos(t) * r, y = cy + Math.sin(t) * r;
+          k ? A.lineTo(x, y) : A.moveTo(x, y);
+        }
+        A.stroke();
+      }
+    }
+    // 横版：左右两条波纹带
+    if (!port) {
+      A.lineWidth = 0.11 * s;
+      for (let j = 0; j < 14; j++) {
+        A.strokeStyle = 'rgba(120,140,230,.32)';
+        for (const side of [-1, 1]) {
+          A.beginPath();
+          const xs = side < 0 ? fi + 4 * s : cx + R0 * 1.02, xe = side < 0 ? cx - R0 * 1.02 : TW - fi - 4 * s;
+          for (let x = xs; x <= xe; x += s * 0.5) {
+            const y = TH * 0.86 + Math.sin(x / (s * 5.2) + j * 0.42) * s * 1.6 + (j - 7) * s * 0.5;
+            x === xs ? A.moveTo(x, y) : A.lineTo(x, y);
+          }
+          A.stroke();
+        }
+      }
+    }
+    c.key = `${TW}x${TH}`;
+    return c;
+  }
+  function drawBack(C) {
+    const { art: A, cov: V, foil: F, glit: G, holo: Hh, emb: E } = C;
+    const s = Math.min(TW, TH) / 100, R = 4.8 * s, port = TH > TW;
+    const rnd = seeded(42);
+    A.fillStyle = '#0e1330';
+    A.fillRect(0, 0, TW, TH);
+    V.fillStyle = '#fff';
+    V.fillRect(0, 0, TW, TH);
+    // 背面只留一道细细的碎钻边
+    const b0 = 1.05 * s, b1 = 2.6 * s;
+    ring(G, b0, R - b0, b1, R - b1, '#fff');
+    ring(V, b0, R - b0, b1, R - b1, '#000');
+    const fi = 2.6 * s;
+    let g = A.createLinearGradient(0, 0, TW, TH);
+    g.addColorStop(0, '#141a3d');
+    g.addColorStop(1, '#0a0e24');
+    A.fillStyle = g;
+    rr(A, fi, fi, TW - 2 * fi, TH - 2 * fi, R - fi);
+    A.fill();
+    both(A, V, '#c9cff0', o => { o.lineWidth = 0.22 * s; rr(o, fi + 1.6 * s, fi + 1.6 * s, TW - 2 * fi - 3.2 * s, TH - 2 * fi - 3.2 * s, R - fi - 1.6 * s); o.stroke(); });
+    // 扭索纹：几十条相位错开的玫瑰线，像钞票上的底纹。它不随品牌名和字体变，按尺寸缓存一张（建卡前分几帧画好），改名时不用重画
+    const cx = TW / 2, cy = port ? TH * 0.36 : TH * 0.47, R0 = port ? TW * 0.36 : TH * 0.36;
+    A.drawImage(guilloche, 0, 0);
+    // 中间一圈深色衬底，再烫一个小号的品牌名
+    g = A.createRadialGradient(cx, cy, 0, cx, cy, R0 * 0.5);
+    g.addColorStop(0, '#0e1330');
+    g.addColorStop(0.8, '#0e1330');
+    g.addColorStop(1, 'rgba(14,19,48,0)');
+    A.fillStyle = g;
+    A.beginPath(); A.arc(cx, cy, R0 * 0.5, 0, 7); A.fill();
+    const f = fitBrand(F, brand, R0 * 0.66, R0 * 0.2);
+    drawBrand([F, E], brand, cx, cy - R0 * 0.02, f);
+    // 防伪微缩字：绕着品牌名一圈，正常大小看只是一道细线
+    const ring1 = `${brand.toUpperCase()} · 镭射印社 · No. 0042 · `;
+    A.fillStyle = '#b9c0ea';
+    A.font = `500 ${1.05 * s}px ${MONO}`;
+    A.textAlign = 'center';
+    A.textBaseline = 'middle';
+    const rr1 = R0 * 0.4, step = 1.05 * s * 0.74 / rr1, n1 = Math.floor(Math.PI * 2 / step);
+    for (let i = 0; i < n1; i++) {
+      const ch = ring1[i % ring1.length], a = i * step - Math.PI / 2;
+      A.save(); A.translate(cx + Math.cos(a) * rr1, cy + Math.sin(a) * rr1); A.rotate(a + Math.PI / 2); A.fillText(ch, 0, 0); A.restore();
+    }
+    A.beginPath(); A.arc(cx, cy, rr1 + 1.1 * s, 0, 7); A.arc(cx, cy, rr1 - 1.1 * s, 0, 7);
+    A.strokeStyle = '#b9c0ea'; A.lineWidth = 0.1 * s; A.stroke();
+    // 编号和序列号
+    const pad = fi + 5 * s;
+    both(A, V, '#e7e9fb', o => {
+      o.textAlign = 'left';
+      o.letterSpacing = '0px';
+      if (port) {
+        let y = TH * 0.66;
+        mono(o, 2.9 * s, 0.5 * s); o.fillText('镭射印社 出品', pad, pad);
+        o.font = `700 ${12 * s}px Syne, sans-serif`; o.letterSpacing = '0px'; o.textBaseline = 'top'; o.fillText('0042', pad, y);
+        mono(o, 3.4 * s, 0.4 * s); o.fillText('/ 2000', pad + o.measureText('0042').width * 0 + 34 * s, y + 6.2 * s);
+        y += 15 * s;
+        mono(o, 2.7 * s, 0.35 * s);
+        o.fillText('序列号  LM-26S3-0042-Q7', pad, y);
+        o.fillText('限量 2000 张 · 第 03 季', pad, y + 4.6 * s);
+      } else {
+        mono(o, 2.1 * s, 0.4 * s); o.fillText('镭射印社 出品 · 第 03 季', pad, pad);
+        o.font = `700 ${11 * s}px Syne, sans-serif`; o.letterSpacing = '0px'; o.textBaseline = 'top'; o.fillText('0042', pad, TH * 0.3);
+        mono(o, 2.6 * s, 0.3 * s); o.fillText('/ 2000', pad + 2 * s, TH * 0.3 + 13 * s);
+        mono(o, 2 * s, 0.3 * s);
+        o.fillText('序列号  LM-26S3-0042-Q7', pad, TH * 0.3 + 19 * s);
+        o.fillText('限量 2000 张，本张第 0042 张', pad, TH * 0.3 + 23 * s);
+      }
+    });
+    // 条码：随便的粗细，固定种子
+    const bx = port ? pad : TW - pad - 26 * s, by = port ? TH - pad - 13 * s : TH * 0.6, bw = 26 * s, bh = (port ? 8 : 9) * s;
+    both(A, V, '#e7e9fb', o => {
+      let x = bx;
+      const r2 = seeded(7);
+      while (x < bx + bw) { const w = (0.25 + Math.floor(r2() * 4) * 0.22) * s; if (r2() > 0.42) o.fillRect(x, by, w, bh); x += w + 0.22 * s; }
+      mono(o, 1.6 * s, 0.35 * s);
+      o.textAlign = 'left';
+      o.fillText('2 026003 004207', bx, by + bh + 1.2 * s);
+    });
+    // 防伪标：一枚圆形的镭射贴，自己带一个径向光栅，边上一圈压出来的字
+    const sr = port ? TW * 0.16 : TH * 0.13;
+    const sx = port ? TW - pad - sr : TW - pad - sr, sy = port ? TH - pad - sr : pad + sr + 2 * s;
+    Hh.fillStyle = '#fff';
+    Hh.beginPath(); Hh.arc(sx, sy, sr, 0, 7); Hh.fill();
+    V.fillStyle = '#000';
+    V.beginPath(); V.arc(sx, sy, sr, 0, 7); V.fill();
+    A.fillStyle = '#20264d';
+    A.beginPath(); A.arc(sx, sy, sr, 0, 7); A.fill();
+    E.fillStyle = '#fff';
+    E.strokeStyle = '#fff';
+    E.lineWidth = 0.35 * s;
+    E.beginPath(); E.arc(sx, sy, sr * 0.97, 0, 7); E.stroke();
+    E.beginPath(); E.arc(sx, sy, sr * 0.62, 0, 7); E.stroke();
+    E.font = `600 ${sr * 0.17}px ${MONO}`;
+    E.textAlign = 'center';
+    E.textBaseline = 'middle';
+    const ring2 = '正品 · AUTHENTIC · 镭射印社 · ', step2 = sr * 0.17 * 0.82 / (sr * 0.8), n2 = Math.floor(Math.PI * 2 / step2);
+    for (let i = 0; i < n2; i++) {
+      const a = i * step2 - Math.PI / 2;
+      E.save(); E.translate(sx + Math.cos(a) * sr * 0.8, sy + Math.sin(a) * sr * 0.8); E.rotate(a + Math.PI / 2); E.fillText(ring2[i % ring2.length], 0, 0); E.restore();
+    }
+    star4(E, sx, sy, sr * 0.42);
+    return { ctr: [sx / TW, sy / TH] };
+  }
+
+  // 可分离的方框模糊，原地改。竖向那一遍也按行往下推（每列一个滑动和），内存是连续读的，比逐列扫快很多
+  function blur(a, w, h, r, tmp) {
+    const inv = 1 / (2 * r + 1), line = new Float32Array(w);
+    for (let y = 0; y < h; y++) {
+      const o = y * w;
+      let s = a[o] * (r + 1);
+      for (let x = 1; x <= r; x++) s += a[o + Math.min(x, w - 1)];
+      for (let x = 0; x < w; x++) { line[x] = s * inv; s += a[o + Math.min(x + r + 1, w - 1)] - a[o + Math.max(x - r, 0)]; }
+      a.set(line, o);
+    }
+    for (let x = 0; x < w; x++) { let s = a[x] * (r + 1); for (let y = 1; y <= r; y++) s += a[Math.min(y, h - 1) * w + x]; line[x] = s; }
+    for (let y = 0; y < h; y++) {
+      const o = y * w, add = Math.min(y + r + 1, h - 1) * w, sub = Math.max(y - r, 0) * w;
+      for (let x = 0; x < w; x++) { tmp[o + x] = line[x] * inv; line[x] += a[add + x] - a[sub + x]; }
+    }
+    a.set(tmp);
+  }
+  // 分成十来小步，每步之间让出一帧，两倍屏上单步也只有二三十毫秒：画、读出来、打包、六遍模糊、叠起来
+  const nextFrame = () => new Promise(r => requestAnimationFrame(() => setTimeout(r, 0)));
+  let buildId = 0;
+  async function makeFace(draw, id) {
+    const C = {};
+    for (const k of ['art', 'cov', 'foil', 'glit', 'holo', 'emb']) {
+      C[k] = canvas(TW, TH).getContext('2d', { willReadFrequently: true });
+      if (k !== 'art') { C[k].fillStyle = '#000'; C[k].fillRect(0, 0, TW, TH); }
+    }
+    const info = draw(C), step = async () => { await nextFrame(); return id === buildId; };
+    if (!await step()) return null;
+    const n = TW * TH, px = k => C[k].getImageData(0, 0, TW, TH).data;
+    const art = px('art'), dc = px('cov'), df = px('foil'), dg = px('glit'), dh = px('holo'), de = px('emb');
+    if (!await step()) return null;
+    const mk = new Uint8Array(n * 4), hs = new Float32Array(n);
+    for (let i = 0, j = 0; i < n; i++, j += 4) {
+      mk[j] = df[j]; mk[j + 1] = dg[j]; mk[j + 2] = dh[j]; mk[j + 3] = dc[j];
+      hs[i] = de[j] / 255;
+    }
+    // 凸起的轮廓：一道窄的斜边加一圈很缓的肩，各模糊三遍叠起来，存成浮点
+    const s = Math.min(TW, TH) / 100, hb = hs.slice(), tmp = new Float32Array(n);
+    const r1 = Math.max(1, Math.round(0.24 * s)), r2 = Math.max(2, Math.round(1.1 * s));
+    for (const [a, r] of [[hs, r1], [hs, r1], [hs, r1], [hb, r2], [hb, r2], [hb, r2]]) {
+      if (!await step()) return null;
+      blur(a, TW, TH, r, tmp);
+    }
+    for (let i = 0; i < n; i++) hs[i] = hs[i] * 0.78 + hb[i] * 0.22;
+    return { art: C.art.canvas, artPx: art, mk, hgt: hs, ctr: info.ctr, w: TW, h: TH };
+  }
+
+  /* ---------- 印张：卡片背后那张纸，留着裁切线、套准标记、色条和版边字 ---------- */
+  let sheetCv;
+  function drawSheet() {
+    const c = canvas(W * DPR, H * DPR), o = c.getContext('2d', { willReadFrequently: true });
+    o.scale(DPR, DPR);
+    o.fillStyle = '#16151d';
+    o.fillRect(0, 0, W, H);
+    const x0 = (W - cardW) / 2, y0 = CY - cardH / 2, x1 = x0 + cardW, y1 = y0 + cardH;
+    const ink = 'rgba(214,211,230,.46)';
+    o.strokeStyle = ink;
+    o.lineWidth = 0.8;
+    const line = (a, b, c2, d) => { o.beginPath(); o.moveTo(a, b); o.lineTo(c2, d); o.stroke(); };
+    const gap = 9, L = mobile ? 14 : 20;
+    for (const [px, py, sx, sy] of [[x0, y0, -1, -1], [x1, y0, 1, -1], [x0, y1, -1, 1], [x1, y1, 1, 1]]) {
+      line(px + sx * gap, py, px + sx * (gap + L), py);
+      line(px, py + sy * gap, px, py + sy * (gap + L));
+    }
+    const reg = (x, y, r) => {   // 套准标记：圆圈加十字
+      o.beginPath(); o.arc(x, y, r, 0, 7); o.stroke();
+      o.beginPath(); o.arc(x, y, r * 0.45, 0, 7); o.stroke();
+      line(x - r * 1.7, y, x + r * 1.7, y);
+      line(x, y - r * 1.7, x, y + r * 1.7);
+    };
+    if (!mobile) { reg(x0 - 40, CY, 6.5); reg(x1 + 40, CY, 6.5); }
+    if (y0 > 40) reg(W / 2, y0 - 24, 6);
+    // 色条：四色实地、半色调，最后一格是镭射
+    const sw = mobile ? 9 : 11, cols = ['#00a0e9', '#e4007f', '#ffe100', '#231815', '#7fcff4', '#f17fbf', '#fff07f', '#8a8584'];
+    let bx = x0, by = y1 + (mobile ? 22 : 26);
+    cols.forEach((col, i) => { o.fillStyle = col; o.globalAlpha = 0.82; o.fillRect(bx + i * (sw + 2), by, sw, sw); });
+    const hg = o.createLinearGradient(bx + cols.length * (sw + 2), 0, bx + cols.length * (sw + 2) + sw * 3, 0);
+    ['#ff9ac1', '#ffd98a', '#a6f5c8', '#8fd2ff', '#c3a6ff'].forEach((c2, i) => hg.addColorStop(i / 4, c2));
+    o.fillStyle = hg;
+    o.fillRect(bx + cols.length * (sw + 2), by, sw * 3, sw);
+    o.globalAlpha = 1;
+    // 版边字
+    o.fillStyle = 'rgba(214,211,230,.5)';
+    o.font = `500 ${mobile ? 9.5 : 10.5}px ${MONO}`;
+    o.letterSpacing = '1.2px';
+    o.textBaseline = 'middle';
+    let slug = `${brand.toUpperCase()} 镭射印社  ·  ${mobile ? '' : '宽幅'}镭射卡 第 03 季  ·  印张 0042 / 2000`;
+    // 右边还要放读数：放不下就换短的，再放不下就不写
+    const sx = bx + cols.length * (sw + 2) + sw * 3 + 18, room = x1 - 290 - sx;
+    if (!mobile && o.measureText(slug).width > room) slug = `${brand.toUpperCase()} 镭射印社  ·  印张 0042 / 2000`;
+    if (!mobile && o.measureText(slug).width > room) slug = '';
+    if (mobile) {   // 手机：版边字竖着排在左边
+      o.save();
+      o.translate(x0 / 2, y0 + cardH / 2);
+      o.rotate(-Math.PI / 2);
+      o.textAlign = 'center';
+      o.fillText(slug, 0, 0);
+      o.restore();
+    } else {
+      o.textAlign = 'left';
+      o.fillText(slug, sx, by + sw / 2);
+    }
+    o.letterSpacing = '0px';
+    sheetCv = c;
+  }
+
+  /* ---------- 着色器 ---------- */
+  const VS = `#version 300 es
+in vec2 a;
+void main() { gl_Position = vec4(a, 0., 1.); }`;
+  const FS = `#version 300 es
+precision highp float;
+precision highp sampler2D;
+precision highp sampler2DArray;
+out vec4 o;
+uniform vec2 uRes, uHalf, uTex, uBoxS;
+uniform float uTanF, uRad, uTh, uBackZ, uBoxI, uFillI, uEmb;
+uniform vec3 uCam, uPos, uBox, uBoxU, uBoxV, uFill;
+uniform vec4 uCtr;
+uniform mat3 uRot;
+uniform sampler2DArray uArt, uMask, uHgt;
+uniform sampler2D uSheet, uSpec;
+
+float sdRR(vec2 p, vec2 b, float r) { vec2 q = abs(p) - b + r; return length(max(q, 0.)) + min(max(q.x, q.y), 0.) - r; }
+${FOIL_GLSL}
+// 灯：一根斜放的短灯管。从 p 沿 r 看出去能看到它多少：亮度从中线往两边、从中间往两头都是平滑衰减，倒影没有硬边；
+// soft 是表面有多毛（世界单位），越毛倒影糊得越开、也越暗；斜着看灯管时也暗一些
+float softbox(vec3 p, vec3 r, float soft) {
+  vec3 n = cross(uBoxU, uBoxV);
+  float dn = dot(r, n);
+  if (abs(dn) < 1e-4) return 0.;
+  float t = dot(uBox - p, n) / dn;
+  if (t <= 0.) return 0.;
+  vec2 c = vec2(dot(p + r * t - uBox, uBoxU), dot(p + r * t - uBox, uBoxV));
+  vec2 sg = sqrt(uBoxS * uBoxS + soft * soft);
+  vec2 e = exp(-c * c / (sg * sg));
+  return e.x * e.y * uBoxS.y / sg.y * abs(dn);
+}
+// 屋子里其余的地方：很暗，上面稍亮
+vec3 env(vec3 r) { return mix(vec3(.014, .013, .019), vec3(.07, .066, .08), smoothstep(-.5, .9, r.y)); }
+
+vec3 face(vec2 uv, vec2 gx, vec2 gy, float layer, vec3 P, vec3 N, vec3 T, vec3 B, float fpx) {
+  vec3 tuv = vec3(uv, layer);
+  vec3 ink = textureGrad(uArt, tuv, gx, gy).rgb;
+  vec4 mk = textureGrad(uMask, tuv, gx, gy);
+  vec2 px = uv * uTex;
+  // 凸起：贴图 y 朝下，卡面的 B 朝上
+  vec2 ex = vec2(1.25 / uTex.x, 0.), ey = vec2(0., 1.25 / uTex.y);
+  float hR = textureLod(uHgt, vec3(uv + ex, layer), 0.).r, hL = textureLod(uHgt, vec3(uv - ex, layer), 0.).r;
+  float hU = textureLod(uHgt, vec3(uv - ey, layer), 0.).r, hD = textureLod(uHgt, vec3(uv + ey, layer), 0.).r;
+  vec2 g = vec2(hR - hL, hU - hD) * uEmb;
+  vec3 n = normalize(N - T * g.x - B * g.y);
+  vec3 V = normalize(uCam - P), L = normalize(uBox - P), Lf = normalize(uFill - P);
+  vec3 t1 = normalize(T - n * dot(n, T)), t2 = cross(n, t1);
+  vec3 Hs = L + V, Hf = Lf + V;
+  vec2 h = vec2(dot(Hs, t1), dot(Hs, t2)), hf = vec2(dot(Hf, t1), dot(Hf, t2));
+  float hz = dot(Hs, n), hfz = dot(Hf, n);
+  vec3 R = reflect(-V, n);
+  // 镀铝的镭射膜本身是一面镜子：照出屋子和柔光箱
+  vec3 mirror = env(R) + vec3(1., .97, .93) * softbox(P, R, .1) * uBoxI * 1.6;
+  vec3 foil = mirror * .5;
+
+  // 碎钻边框：几千粒朝向各不相同的小碎片，底子是暗的镜面，大多数角度下都是黑的。
+  // 六成碎片是小光栅，角度刚好对上时亮成一种很饱和的颜色；其余是小镜子，正对灯时白光一闪。倾斜一点，亮的就整批换掉
+  vec3 glare = vec3(0.);
+  if (mk.g > .002) {
+    float cs = 4.6;
+    vec2 gp = px / cs, ip = floor(gp), fp = fract(gp);
+    float F1 = 9., F2 = 9.;
+    vec2 id1 = ip;
+    for (int j = -1; j <= 1; j++) for (int i = -1; i <= 1; i++) {
+      vec2 oc = vec2(float(i), float(j));
+      vec2 d = oc + .1 + .8 * h32(ip + oc).xy - fp;
+      float dd = dot(d, d);
+      if (dd < F1) { F2 = F1; F1 = dd; id1 = ip + oc; } else if (dd < F2) F2 = dd;
+    }
+    float gap = sqrt(F2) - sqrt(F1);
+    vec3 r1 = h32(id1 + 17.3), r2 = h32(id1 + 3.7);
+    vec2 tl = (r2.xy - .5) * .9;   // 朝向散得很开：同一时刻只有少数对得上
+    vec2 hs = h - tl * hz, hfs = hf - tl * hfz;
+    vec3 nf = normalize(n + t1 * tl.x + t2 * tl.y);
+    vec3 Rf = reflect(-V, nf);
+    vec3 gc = env(Rf) * (.1 + .3 * r1.z) + vec3(.002, .0018, .003);
+    if (r2.z < .6) {
+      float th = r1.x * 6.2832, dd = 1050. + 800. * r1.y;
+      vec2 k = vec2(cos(th), sin(th));
+      gc += sat(grating(hs, k, dd, .026) * uBoxI + grating(hfs, k, dd, .026) * .6 * uFillI, 1.9) * 2.8 * (.25 + .75 * r1.z * r1.z);   // 亮度也有高有低
+    } else {
+      gc += vec3(1., .97, .92) * (exp(-dot(hs, hs) / .004) * uBoxI + exp(-dot(hfs, hfs) / .004) * .4 * uFillI) * 5.;
+    }
+    gc += vec3(1., .97, .93) * softbox(P, Rf, .03) * uBoxI * 6.;   // 灯管的倒影扫过哪几粒，哪几粒就亮
+    float seam = smoothstep(0., 1.2 * fpx / cs, gap);
+    float far = smoothstep(cs * .6, cs * .3, fpx);   // 碎片小到一个像素以下时不闪，免得满是噪点
+    vec3 gg = mix(vec3(.018, .016, .022), gc * (.7 + .3 * seam), far);
+    foil = mix(foil, gg, mk.g);
+  }
+  // 最亮的那几粒带星芒：粗一级的格子里每格挑一粒，正好对上灯时亮成一颗四角星，光芒伸到旁边的碎片上
+  if (textureLod(uMask, tuv, 3.).g > .01) {
+    float c2 = 4.6 * 3.2;
+    vec2 si = floor(px / c2);
+    for (int j = -1; j <= 1; j++) for (int i = -1; i <= 1; i++) {
+      vec2 id = si + vec2(float(i), float(j));
+      vec2 tl = (h32(id + 5.3).xy - .5) * .9, hs = h - tl * hz;
+      float I = exp(-dot(hs, hs) / .0035) * uBoxI;
+      if (I < .03) continue;
+      vec3 q = h32(id + 91.7);
+      vec2 cp = (id + .15 + .7 * q.xy) * c2;
+      if (textureLod(uMask, vec3(cp / uTex, layer), 0.).g < .5) continue;   // 星心要落在碎钻边框里
+      vec2 d = (px - cp) / max(fpx, .5);   // 换成屏幕像素
+      float len = 2.5 + 8. * I;
+      float rays = exp(-abs(d.y) * 1.5 - abs(d.x) / len) + exp(-abs(d.x) * 1.5 - abs(d.y) / len);
+      vec3 tint = mix(vec3(1., .98, .95), sat(spec(430. + 240. * q.z), 1.6) * 1.5, .4);
+      glare += tint * I * (exp(-dot(d, d) * .35) * 2.5 + rays * .9);
+    }
+  }
+  // 星芒底纹：刻槽是一圈圈同心圆（光栅矢量朝外），只有和 h 平行的那条半径最亮，倾斜时那道彩虹绕着中心转
+  if (mk.b > .002) {
+    vec2 c0 = layer < .5 ? uCtr.xy : uCtr.zw;
+    vec2 q = (uv - c0) * uTex;
+    q.y = -q.y;
+    float rr = length(q);
+    vec2 kr = q / max(rr, 1e-3), kt = vec2(-kr.y, kr.x);
+    // 分成 36 个扇区，相邻扇区刻槽疏密不同，彩虹在扇区边上错开一格；边界按屏幕像素抗锯齿
+    float a = atan(q.y, q.x) / 6.2832 * 36. + 36.;
+    float sec = floor(a), fa = fract(a);
+    float edge = min(fa, 1. - fa) * rr * 6.2832 / 36. / max(fpx, 1e-3);
+    float nb = fa < .5 ? sec - 1. : sec + 1.;
+    float d0 = 1240. + 190. * h12(vec2(mod(sec, 36.), 3.)), d1 = 1240. + 190. * h12(vec2(mod(nb, 36.), 3.));
+    float dd = mix(d1, d0, .5 + .5 * smoothstep(0., 1.5, edge));
+    vec3 hc = grating(h, kr, dd, .045) * 1.5 + grating(h, kr, dd, .16) * .32 + grating(hf, kr, dd, .05) * .7 * uFillI + grating(h, kt, 1720., .06) * .3;
+    // 背面的防伪标：亮银底，反光带宽一些，小小一枚也能看到彩虹
+    if (layer > .5) hc = env(R) * 2.4 + vec3(.1, .098, .11) + grating(h, kr, 1400., .3) * 1.3 + grating(hf, kr, 1400., .3) * .6 * uFillI + grating(h, kt, 1600., .2) * .6;
+    // 星点：零星几颗小镜面，各朝各的方向
+    float cs = 6.;
+    vec2 sp = px / cs, si = floor(sp), sf = fract(sp) - .5;
+    vec3 r3 = h32(si + 41.);
+    if (r3.x < .12) {
+      vec2 tl = (h32(si + 7.).xy - .5) * 1.1;
+      vec2 hs = h - tl * hz;
+      float dpx = length(sf - (r3.yz - .5) * .5) * cs / max(fpx, .6);
+      float fl = exp(-dot(hs, hs) * 320.) * exp(-dpx * dpx * .7);
+      hc += (vec3(.7) + spec(380. + 380. * fract(r3.y * 7.))) * fl * 5. * uBoxI;
+    }
+    foil += hc * mk.b * (1. - mk.g);
+  }
+  // 印上去的油墨：漫反射，加一点纸纹
+  float lam = max(dot(n, L), 0.), lamF = max(dot(n, Lf), 0.);
+  float grain = mix(1., .93 + .07 * vn(px * .4), smoothstep(3., 1., fpx));
+  vec3 inkLit = ink * (.06 + lam * .95 * uBoxI + lamF * .28 * uFillI) * grain;
+  vec3 col = mix(foil, inkLit, mk.a);
+
+  // 烫印的品牌名：银色的镭射箔，斜着拉丝，刻槽方向跟着拉丝的纹路抖一点
+  if (mk.r > .002) {
+    float ba = .42;
+    vec2 bd = vec2(cos(ba), sin(ba)), bp = vec2(-bd.y, bd.x), pc = vec2(px.x, -px.y);
+    float near = smoothstep(2.6, .8, fpx);   // 拉丝纹比像素还细时就淡掉，不然会闪成噪点
+    float st = vn(vec2(dot(pc, bd) * .01, dot(pc, bp) * .14));
+    float jt = (st - .5) * .22 * near;
+    vec2 k = vec2(cos(ba + jt + 1.5708), sin(ba + jt + 1.5708));
+    vec3 hc = grating(h, k, 1500., .28) * 1.1 + grating(hf, k, 1500., .28) * .5 * uFillI;
+    // 拉丝银：上方亮、下方暗的影棚，加上柔光箱拉开的一大片宽高光
+    vec3 metal = mix(vec3(.04, .04, .05), vec3(.46, .46, .5), smoothstep(-.45, .8, R.y)) * (.55 + .45 * uBoxI)
+               + vec3(1., .97, .93) * (softbox(P, R, .2) * 20. + softbox(P, R, .6) * 12.) * uBoxI;
+    vec3 tc = metal + hc * (.7 + .6 * st * near + .3 * (1. - near));
+    col = mix(col, tc, mk.r);
+  }
+  // 覆膜：一层很薄的透明光油，柔光箱在上面的倒影，带一点橘皮纹
+  vec2 op = vec2(vn(px * .05), vn(px * .05 + 31.)) - .5;
+  vec3 nl = normalize(n + (t1 * op.x + t2 * op.y) * .0012 * smoothstep(12., 4., fpx));
+  vec3 Rl = reflect(-V, nl);
+  float fr = .04 + .96 * pow(1. - max(dot(nl, V), 0.), 5.);
+  // 亮条本身很细很亮，外面再带一圈淡淡的晕
+  // 灯管在覆膜上的倒影：一道细细的亮线，外面一圈很淡的晕
+  col += (vec3(1., .98, .95) * (softbox(P, Rl, .006) * 22. + softbox(P, Rl, .07) * 5.) * uBoxI + env(Rl)) * fr * (1. - mk.r * .75);
+  return col + glare;
+}
+
+void main() {
+  vec2 f = gl_FragCoord.xy;
+  vec2 ndc = f / uRes * 2. - 1.;
+  vec3 dir = normalize(vec3(ndc.x * uRes.x / uRes.y * uTanF, ndc.y * uTanF, -1.));
+  mat3 Ri = transpose(uRot);
+  // 卡片是一块很薄的板：先和正反两个面求交，再看光线在板里那一小段有没有落进圆角矩形
+  vec3 ol = Ri * (uCam - uPos), dl = Ri * dir;
+  float dz = abs(dl.z) < 1e-6 ? 1e-6 : dl.z;
+  float s1 = (uTh - ol.z) / dz, s2 = (-uTh - ol.z) / dz;
+  bool front = s1 < s2;
+  float sIn = min(s1, s2), sOut = max(s1, s2);
+  vec3 pIn = ol + dl * sIn, pOut = ol + dl * sOut;
+  float dIn = sdRR(pIn.xy, uHalf, uRad), dOut = sdRR(pOut.xy, uHalf, uRad);
+  float dSil = sIn > 0. ? min(dIn, dOut) : 1.;
+  // 卡片平面延长过相机的那条线上，相邻像素的交点一个在前一个在后，导数会爆掉：给它封个顶
+  float cov = clamp(.5 - dSil / clamp(fwidth(dSil), 1e-6, .02), 0., 1.);
+  float fwIn = clamp(fwidth(dIn), 1e-6, .02);
+  vec2 uv = pIn.xy / (2. * uHalf) + .5;
+  uv = vec2(front ? uv.x : 1. - uv.x, 1. - uv.y);   // 贴图的 y 朝下；背面左右镜像
+  vec2 gx = dFdx(uv), gy = dFdy(uv);
+  float fpx = max(length(gx * uTex), length(gy * uTex));   // 一个屏幕像素跨几个贴图像素
+
+  // 背后的印张：柔光箱照亮，卡片投下一块软影
+  vec3 col = texture(uSheet, vec2(f.x, uRes.y - f.y) / uRes).rgb;   // 画布的 y 朝下
+  {
+    vec3 Pb = uCam + dir * ((uBackZ - uCam.z) / dir.z);
+    vec3 Lb = uBox - Pb;
+    float dl2 = dot(Lb, Lb);
+    Lb *= inversesqrt(dl2);
+    vec3 c0 = vec3(0., uPos.y, uBackZ) - uBox;
+    float lit = .42 + 1.05 * uBoxI * max(Lb.z, 0.) * dot(c0, c0) / dl2;
+    vec3 q = Ri * (Pb - uPos), ld = Ri * Lb;
+    float occ = 0.;
+    if (abs(ld.z) > 1e-4) {
+      float s = -q.z / ld.z;
+      if (s > 0.) {
+        float pen = .02 + s * .3;
+        occ = 1. - smoothstep(-pen, pen, sdRR(q.xy + ld.xy * s, uHalf, uRad));
+      }
+    }
+    col *= lit * (1. - .8 * occ * (.35 + .65 * uBoxI));
+  }
+  if (cov > 0.) {
+    vec3 P = uCam + dir * sIn;
+    float sg = front ? 1. : -1.;
+    vec3 N = uRot * vec3(0., 0., sg), T = uRot * vec3(sg, 0., 0.), B = uRot * vec3(0., 1., 0.);
+    vec3 c = face(clamp(uv, 0., 1.), gx, gy, front ? 0. : 1., P, N, T, B, fpx);
+    // 立起来快成一条线时，看得到卡纸白色的切边
+    float em = smoothstep(0., fwIn * 1.5, dIn);
+    if (em > 0.) {
+      vec2 e = vec2(1e-3, 0.);
+      vec2 gq = vec2(sdRR(pOut.xy + e, uHalf, uRad) - sdRR(pOut.xy - e, uHalf, uRad), sdRR(pOut.xy + e.yx, uHalf, uRad) - sdRR(pOut.xy - e.yx, uHalf, uRad));
+      vec3 ne = uRot * normalize(vec3(gq, 0.));
+      vec3 Pe = uCam + dir * sOut;
+      vec3 ec = vec3(.78, .76, .74) * (.06 + .9 * max(dot(ne, normalize(uBox - Pe)), 0.) * uBoxI);
+      c = mix(c, ec, em);
+    }
+    col = mix(col, c, cov);
+  }
+  col = pow(aces(col), vec3(1. / 2.2));
+  o = vec4(col + (h12(f) - .5) / 255., 1.);
+}`;
+
+  let gl = null, U = {}, tex = {}, glOK = false, prog = null, pcx = null, progReady = false;
+  function initGL() {
+    if (/[?&]nogl\b/.test(location.search)) return false;
+    gl = glc.getContext('webgl2', { antialias: false, alpha: false, premultipliedAlpha: false });
+    if (!gl) return false;
+    // 着色器放到后台编译（KHR_parallel_shader_compile）：同步编译这段着色器要卡主线程半秒多
+    pcx = gl.getExtension('KHR_parallel_shader_compile');
+    const sh = (type, src) => { const s = gl.createShader(type); gl.shaderSource(s, src); gl.compileShader(s); return s; };
+    prog = gl.createProgram();
+    prog.fs = sh(gl.FRAGMENT_SHADER, FS);
+    gl.attachShader(prog, sh(gl.VERTEX_SHADER, VS));
+    gl.attachShader(prog, prog.fs);
+    gl.bindAttribLocation(prog, 0, 'a');
+    gl.linkProgram(prog);
+    const buf = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]), gl.STATIC_DRAW);
+    gl.enableVertexAttribArray(0);
+    gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0);
+    [['art', gl.TEXTURE_2D_ARRAY], ['mask', gl.TEXTURE_2D_ARRAY], ['hgt', gl.TEXTURE_2D_ARRAY], ['sheet', gl.TEXTURE_2D], ['spec', gl.TEXTURE_2D]].forEach(([k, t], i) => {
+      tex[k] = gl.createTexture();
+      gl.activeTexture(gl.TEXTURE0 + i);
+      gl.bindTexture(t, tex[k]);
+    });
+    gl.pixelStorei(gl.UNPACK_ALIGNMENT, 1);
+    tex.aniso = gl.getExtension('EXT_texture_filter_anisotropic');
+    // 光谱表：和下面镭射零件同一套 CIE 拟合（cie 在前面的 Foil 脚本里）
+    const n = 256, d = new Float32Array(n * 4);
+    for (let i = 0; i < n; i++) {
+      d.set(cie(380 + 400 * (i + 0.5) / n), i * 4);
+      d[i * 4 + 3] = 1;
+    }
+    gl.activeTexture(gl.TEXTURE4);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA16F, n, 1, 0, gl.RGBA, gl.FLOAT, d);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+    return true;
+  }
+  // 编译完之前不碰需要着色器的调用（查状态、取 uniform 位置都会让主线程停下来等它）
+  function glReady() {
+    if (progReady) return true;
+    if (pcx && !gl.getProgramParameter(prog, pcx.COMPLETION_STATUS_KHR)) return false;
+    if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) throw new Error(gl.getShaderInfoLog(prog.fs) || gl.getProgramInfoLog(prog));
+    gl.useProgram(prog);
+    ['uRes', 'uHalf', 'uTex', 'uBoxS', 'uTanF', 'uRad', 'uTh', 'uBackZ', 'uBoxI', 'uFillI', 'uEmb', 'uCam', 'uPos', 'uBox', 'uBoxU', 'uBoxV', 'uFill', 'uCtr', 'uRot',
+     'uArt', 'uMask', 'uHgt', 'uSheet', 'uSpec'].forEach(k => { U[k] = gl.getUniformLocation(prog, k); });
+    ['uArt', 'uMask', 'uHgt', 'uSheet', 'uSpec'].forEach((k, i) => gl.uniform1i(U[k], i));
+    progReady = true;
+    return true;
+  }
+  function arrayParams(mip) {
+    const T = gl.TEXTURE_2D_ARRAY;
+    gl.texParameteri(T, gl.TEXTURE_MIN_FILTER, mip ? gl.LINEAR_MIPMAP_LINEAR : gl.LINEAR);
+    gl.texParameteri(T, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+    gl.texParameteri(T, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(T, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+    if (mip && tex.aniso) gl.texParameterf(T, tex.aniso.TEXTURE_MAX_ANISOTROPY_EXT, Math.min(8, gl.getParameter(tex.aniso.MAX_TEXTURE_MAX_ANISOTROPY_EXT)));
+  }
+  let FACE, BACK;
+  async function uploadCard(F, B, id) {
+    const T = gl.TEXTURE_2D_ARRAY, w = F.w, h = F.h, n = w * h, made = [];
+    const make = (fmt, type, internal, a, b, mip) => {
+      const data = new (a.constructor === Uint8ClampedArray ? Uint8Array : a.constructor)(n * 2 * (a.length / n));
+      data.set(a);
+      data.set(b, a.length);
+      const t = gl.createTexture();
+      gl.activeTexture(gl.TEXTURE5);   // 用一个空着的单元传，别动正在画的那几张
+      gl.bindTexture(T, t);
+      gl.texImage3D(T, 0, internal, w, h, 2, 0, fmt, type, data);
+      if (mip) gl.generateMipmap(T);
+      arrayParams(mip);
+      made.push(t);
+    };
+    // 油墨颜色、各种遮罩：从字节数组传，比直接传画布快（画布要先从显卡读回来）
+    make(gl.RGBA, gl.UNSIGNED_BYTE, gl.SRGB8_ALPHA8, F.artPx, B.artPx, true);
+    await nextFrame();
+    make(gl.RGBA, gl.UNSIGNED_BYTE, gl.RGBA8, F.mk, B.mk, true);
+    await nextFrame();
+    // 高度存浮点：8 位的高度求出来的法线会有一道道台阶
+    make(gl.RED, gl.FLOAT, gl.R16F, F.hgt, B.hgt, false);
+    await nextFrame();
+    const sp = sheetCv.getContext('2d').getImageData(0, 0, sheetCv.width, sheetCv.height).data, ts = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_2D, ts);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.SRGB8_ALPHA8, sheetCv.width, sheetCv.height, 0, gl.RGBA, gl.UNSIGNED_BYTE, sp);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+    made.push(ts);
+    if (id !== buildId) { made.forEach(t => gl.deleteTexture(t)); return false; }
+    ['art', 'mask', 'hgt', 'sheet'].forEach((k, i) => {
+      gl.activeTexture(gl.TEXTURE0 + i);
+      gl.bindTexture(k === 'sheet' ? gl.TEXTURE_2D : T, made[i]);
+      gl.deleteTexture(tex[k]);
+      tex[k] = made[i];
+    });
+    return true;
+  }
+
+  /* ---------- 动起来：倾角、翻面、入场都是弹簧，带一点过冲 ---------- */
+  const MAXT = 0.33;   // 最大倾角约 19°
+  const st = {
+    started: false, t: 0,
+    rx: 0.3, ry: -0.42, vx: 0, vy: 0,          // 倾角（弧度）和角速度
+    fl: Math.PI, vf: 0, ft: Math.PI,             // 翻面角：π 是背面朝上；入场 0.6 秒后才翻过来
+    z: -1.1, vz: 0,                              // 入场前离得远一点、低一点
+    ptr: null, drag: null, gyro: null, touched: false,
+  };
+  window.__holo = st;   // 给测试脚本读数用
+  const SLOW = +(new URLSearchParams(location.search).get('slow') || 1);   // 测试用：?slow=4 放慢四倍看入场
+  function flip() {
+    st.touched = st.userFlip = true;
+    st.ft += Math.PI;
+    if (REDUCED) { st.fl = st.ft; st.vf = 0; }
+  }
+  function spring(x, v, target, k, zeta, s) {
+    const c = 2 * zeta * Math.sqrt(k);
+    v += (k * (target - x) - c * v) * s;
+    return [x + v * s, v];
+  }
+  function frame(dt) {
+    if (!st.started) return;
+    const s = dt / 1000 / SLOW;
+    st.t += s;
+    let tx = 0, ty = 0;
+    const g = st.gyro && performance.now() - st.gyro.at < 1500 ? st.gyro : null;
+    if (st.drag && !st.drag.mouse) { tx = st.drag.ny * MAXT * 0.8; ty = st.drag.nx * MAXT; }
+    else if (st.ptr) { tx = st.ptr[1] * MAXT * 0.3; ty = st.ptr[0] * MAXT * 0.4; }   // 指针主要是灯，卡片只朝它微微转一点
+    else if (g) {
+      // 基准慢慢跟上当前姿势：拿手机的角度随便，转动的那一下才算数
+      g.b0 += (g.b - g.b0) * Math.min(1, s * 0.35);
+      g.g0 += (g.g - g.g0) * Math.min(1, s * 0.35);
+      tx = clamp((g.b - g.b0) / 26, -1, 1) * MAXT * 0.8;
+      ty = clamp((g.g - g.g0) / 26, -1, 1) * MAXT;
+    } else if (REDUCED) { tx = -0.06; ty = 0.12; }
+    else {   // 没人碰时自己慢慢晃，入场结束后才晃起来
+      const k = smooth((st.t - 4) / 2.5);
+      tx = (0.07 * Math.sin(st.t * 0.41 + 0.6) - 0.02) * k;
+      ty = 0.15 * Math.sin(st.t * 0.29) * k;
+    }
+    const zt = 0.16 * Math.abs(Math.sin(st.fl));   // 翻面时往前抬一点
+    // 入场：先背面朝上从远处浮上来，0.6 秒时开始翻，翻得比平时慢
+    if (st.t >= 0.6 && !st.flipped) { st.flipped = true; if (!st.userFlip) st.ft = 0; }   // 用户自己先翻过了就不再替他翻
+    const zeta = REDUCED ? 1 : 0.5, intro = st.t < 3.2 && !st.userFlip;
+    for (let n = Math.ceil(s / 0.004), h = s / n, i = 0; i < n; i++) {
+      [st.rx, st.vx] = spring(st.rx, st.vx, tx, 70, zeta, h);
+      [st.ry, st.vy] = spring(st.ry, st.vy, ty, 70, zeta, h);
+      [st.fl, st.vf] = spring(st.fl, st.vf, st.ft, intro ? 15 : 48, REDUCED ? 1 : 0.7, h);
+      [st.z, st.vz] = spring(st.z, st.vz, zt, intro ? 12 : 40, 0.8, h);
+    }
+  }
+  // 卡片本地 → 世界：先绕竖轴翻面、左右倾，再上下倾。按列存
+  function rotM() {
+    const a = st.rx, b = st.ry + st.fl, ca = Math.cos(a), sa = Math.sin(a), cb = Math.cos(b), sb = Math.sin(b);
+    return [cb, sa * sb, -ca * sb, 0, ca, sa, sb, -sa * cb, ca * cb];
+  }
+  // 灯：一根柔光灯管。入场时从左边远处扫过来；扫完以后跟着整页共用的那盏灯（FoilLight，桌面上就是指针），
+  // 放在让它的倒影正好落在指针底下的位置，所以指针移到哪里，卡上的亮线和彩虹就跟到哪里
+  function lights() {
+    const t = st.t, on = REDUCED ? 1 : smooth((t - 1.1) / 0.8);
+    const u = REDUCED ? 1 : smooth((t - 1.2) / 2.3);
+    const sweep = REDUCED ? 0 : (1 - u) * -5.2 + Math.sin(Math.PI * u) * 0.9;
+    const bz = DIST * 0.82;
+    // 扫的时候灯放低一点，倒影横穿品牌名，停下来时升到右上角
+    const intro = [(mobile ? 0.06 : HALF[0] * 0.32 + 0.22) + sweep, YC + 0.12 + 0.43 * u, bz];
+    // 指针在卡片平面上的位置；镜面里灯的倒影落在相机和灯连线的 DIST/(DIST+bz) 处，反过来算出灯该放哪
+    const r = stage.getBoundingClientRect(), k = (DIST + bz) / DIST;
+    const px = ((FoilLight.x - r.left) / W * 2 - 1) * (W / H) * DIST * TANF, py = (1 - (FoilLight.y - r.top) / H * 2) * DIST * TANF;
+    const follow = [clamp(px * k, -4, 4), clamp(py * k, -3, 3), bz];
+    const w = REDUCED ? 1 : smooth((t - 3.4) / 1.4);
+    const box = intro.map((v, i) => v + (follow[i] - v) * w);
+    const ctr = [0, YC, 0], nb = norm(sub(ctr, box)), u0 = norm(cross([0, 1, 0], nb)), v0 = cross(nb, u0);
+    const ca = Math.cos(0.38), sa = Math.sin(0.38);   // 灯管斜着放，倒影是一道斜的亮条
+    const ub = u0.map((v, i) => v * ca + v0[i] * sa), vb = v0.map((v, i) => v * ca - u0[i] * sa);
+    return {
+      box, U: ub, V: vb, S: mobile ? [0.2, 0.008] : [0.32, 0.011], I: 0.1 + 0.9 * on,
+      fill: [-HALF[0] - 0.7, YC - 0.95, DIST * 0.7], F: 0.15 + 0.4 * on,
+    };
+  }
+  const sub = (a, b) => [a[0] - b[0], a[1] - b[1], a[2] - b[2]];
+  const cross = (a, b) => [a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0]];
+  const norm = a => { const l = Math.hypot(a[0], a[1], a[2]) || 1; return [a[0] / l, a[1] / l, a[2] / l]; };
+
+  function render() {
+    if (!glOK) return;
+    const Lt = lights();
+    gl.viewport(0, 0, glc.width, glc.height);
+    gl.uniform2f(U.uRes, glc.width, glc.height);
+    gl.uniform2f(U.uHalf, HALF[0], HALF[1]);
+    gl.uniform2f(U.uTex, FACE.w, FACE.h);   // 用贴图自己的尺寸：改宽度时新贴图还没建好，先接着用旧的
+    gl.uniform1f(U.uTanF, TANF);
+    gl.uniform1f(U.uRad, RAD);
+    gl.uniform1f(U.uTh, 0.0045);
+    gl.uniform1f(U.uBackZ, -0.32);
+    gl.uniform1f(U.uBoxI, Lt.I);
+    gl.uniform1f(U.uFillI, Lt.F);
+    gl.uniform1f(U.uEmb, Math.min(FACE.w, FACE.h) / 100 * 0.25);
+    gl.uniform3f(U.uCam, 0, 0, DIST);
+    gl.uniform3f(U.uPos, 0, YC - 0.06 * Math.max(0, -st.z), st.z);
+    gl.uniform3fv(U.uBox, Lt.box);
+    gl.uniform3fv(U.uBoxU, Lt.U);
+    gl.uniform3fv(U.uBoxV, Lt.V);
+    gl.uniform2fv(U.uBoxS, Lt.S);
+    gl.uniform3fv(U.uFill, Lt.fill);
+    gl.uniform4f(U.uCtr, FACE.ctr[0], FACE.ctr[1], BACK.ctr[0], BACK.ctr[1]);
+    gl.uniformMatrix3fv(U.uRot, false, rotM());
+    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+  }
+
+  /* ---------- 交互 ---------- */
+  const local = e => { const r = stage.getBoundingClientRect(); return [e.clientX - r.left, e.clientY - r.top]; };
+  const overCard = (x, y) => Math.abs(x - W / 2) < cardW / 2 + 6 && Math.abs(y - CY) < cardH / 2 + 6;
+  stage.addEventListener('pointermove', e => {
+    const [x, y] = local(e);
+    if (e.pointerType === 'mouse') {
+      st.ptr = [clamp((x - W / 2) / (cardW / 2 + 90), -1, 1), clamp((y - CY) / (cardH / 2 + 70), -1, 1)];
+      st.touched = true;
+      glc.style.cursor = overCard(x, y) ? 'pointer' : '';
+    }
+    const d = st.drag;
+    if (d && d.id === e.pointerId) {
+      const dx = x - d.x, dy = y - d.y;
+      if (Math.hypot(dx, dy) > 8) d.moved = true;
+      d.nx = clamp(dx / (cardW * 0.55), -1, 1);
+      d.ny = clamp(dy / (cardH * 0.55), -1, 1);
+      if (!d.mouse) st.touched = true;
+    }
+  });
+  stage.addEventListener('pointerleave', e => { if (e.pointerType === 'mouse') st.ptr = null; });
+  stage.addEventListener('pointerdown', e => {
+    const [x, y] = local(e);
+    st.drag = { id: e.pointerId, x, y, nx: 0, ny: 0, moved: false, mouse: e.pointerType === 'mouse', on: overCard(x, y) };
+    if (e.pointerType !== 'mouse') stage.setPointerCapture(e.pointerId);
+  });
+  stage.addEventListener('pointerup', e => {
+    const d = st.drag;
+    st.drag = null;
+    if (d && d.id === e.pointerId && !d.moved && d.on) flip();
+  });
+  stage.addEventListener('pointercancel', () => { st.drag = null; });
+  glc.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); flip(); } });
+
+  // 陀螺仪：iPhone 要用户点一下才给权限；没有陀螺仪的设备不会收到带数值的事件，照常自己晃
+  function onOri(e) {
+    if (e.beta == null || e.gamma == null) return;
+    const g = st.gyro, now = performance.now();
+    if (!g || now - g.at > 1500) { st.gyro = { b0: e.beta, g0: e.gamma, b: e.beta, g: e.gamma, at: now }; gyroBtn.hidden = true; }
+    else { g.b = e.beta; g.g = e.gamma; g.at = now; }
+  }
+  const gyroBtn = $('#gyro');
+  addEventListener('deviceorientation', onOri);
+  // 只有触屏设备、又要授权（iPhone）、过了一会儿还没收到数据，才把按钮露出来；桌面的 Chromium 也有这个函数，不能只看它
+  if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function' && matchMedia('(pointer: coarse)').matches) {
+    setTimeout(() => { if (!st.gyro) gyroBtn.hidden = false; }, 1200);
+    gyroBtn.addEventListener('click', () => {
+      DeviceOrientationEvent.requestPermission()
+        .then(r => { if (r === 'granted') gyroBtn.hidden = true; else gyroBtn.textContent = '陀螺仪没有授权'; })
+        .catch(() => { gyroBtn.textContent = '陀螺仪用不了'; });
+    });
+  }
+
+  // 没有 WebGL2：画一张静止的卡，镭射用一道固定的彩虹渐变代替
+  function fallback() {
+    const o = glc.getContext('2d');
+    if (!o) return;
+    o.setTransform(DPR, 0, 0, DPR, 0, 0);
+    o.drawImage(sheetCv, 0, 0, W, H);
+    const x0 = (W - cardW) / 2, y0 = CY - cardH / 2, r = RAD / (HALF[1] * 2) * cardH;
+    o.save();
+    rr(o, x0, y0, cardW, cardH, r);
+    o.clip();
+    const g = o.createLinearGradient(x0, y0, x0 + cardW, y0 + cardH);
+    ['#a9a6b8', '#ffb3d1', '#ffe3a1', '#b9f5d4', '#a9dcff', '#d3bdff', '#a9a6b8'].forEach((c, i) => g.addColorStop(i / 6, c));
+    o.fillStyle = g;
+    o.fillRect(x0, y0, cardW, cardH);
+    // 油墨按覆盖率盖上去
+    const p = canvas(FACE.w, FACE.h), pc = p.getContext('2d');
+    pc.drawImage(FACE.art, 0, 0);
+    const im = pc.getImageData(0, 0, FACE.w, FACE.h);
+    for (let i = 0; i < FACE.w * FACE.h; i++) im.data[i * 4 + 3] = FACE.mk[i * 4] > 8 ? 0 : FACE.mk[i * 4 + 3] * 0.92;
+    pc.putImageData(im, 0, 0);
+    o.drawImage(p, x0, y0, cardW, cardH);
+    o.restore();
+  }
+
+  let cardReady = false, warmed = false;
+  async function buildCard() {
+    const id = ++buildId;
+    const F = await makeFace(drawFront, id);
+    if (!F) return;
+    if (!guilloche || guilloche.key !== `${TW}x${TH}`) {
+      const g = await drawGuilloche(id);
+      if (!g) return;
+      guilloche = g;
+    }
+    const B = await makeFace(drawBack, id);
+    if (!B) return;
+    drawSheet();
+    if (glOK && !await uploadCard(F, B, id)) return;
+    if (id !== buildId) return;
+    FACE = F;
+    BACK = B;
+    if (!glOK) fallback();
+    cardReady = true;
+    warmed = false;
+  }
+  function build() {
+    layout();
+    if (REDUCED && !st.started) { st.started = st.flipped = true; st.fl = st.ft = 0; st.z = 0; st.rx = -0.06; st.ry = 0.12; st.t = 9; }
+    return buildCard();
+  }
+  // 预热：贴图和着色器都好了就先画一帧，不管在不在画面里；画布上留着入场前那一帧，滚到时不会先黑一下再闪出来
+  function warm() {
+    try { render(); gl.flush(); } catch (err) { console.error(err); }
+    warmed = true;
+  }
+
+  let visible = false, last = performance.now(), fontsIn = false, buildFonts = null, fontsPending = false;
+  new IntersectionObserver(es => es.forEach(e => { visible = e.isIntersecting; }), { rootMargin: '300px 0px' }).observe(stage);
+  function loop(now) {
+    requestAnimationFrame(loop);
+    const dt = Math.min(now - last, 50);
+    last = now;
+    const r = stage.getBoundingClientRect(), onScreen = r.bottom > 0 && r.top < innerHeight;
+    // 字体比第一版贴图晚到：等页脚不在画面里、还没开始，或入场演完了再重建，别在入场中途卡一下
+    if (fontsPending && (!onScreen || !st.started || st.t > 4.6)) { fontsPending = false; buildFonts = true; buildCard(); }
+    if (glOK) {
+      try { if (!glReady()) return; } catch (err) { console.error(err); glOK = false; if (FACE) fallback(); return; }
+      if (cardReady && !warmed) warm();
+    }
+    if (!visible || !cardReady) return;
+    if (!st.started && (r.top < innerHeight * 0.72 || r.bottom <= innerHeight + 4)) st.started = true;
+    frame(dt);
+    try { render(); } catch (err) { console.error(err); }
+  }
+
+  const fontCss = $('#font-css');
+  const cssReady = new Promise(r => { if (fontCss.media === 'all') r(); else { fontCss.addEventListener('load', r); fontCss.addEventListener('error', r); } });
+  const fontsReady = () => cssReady.then(() => Promise.all([
+    document.fonts.load('800 100px Syne', brand), document.fonts.load('900 100px "Noto Sans SC"', brand),
+    document.fonts.load('700 100px Syne', '0042'), document.fonts.load('500 20px "IBM Plex Mono"', 'No. 0042 / 2000'),
+  ])).catch(() => {});
+  try { glOK = initGL(); } catch (err) { console.error(err); glOK = false; }
+  // 字体最多等 2 秒：卡片一打开页面就入场，宁可多等一会儿，也别演到一半换字体；没到就先用系统字体建一版，字体到了再换
+  const fontsP = fontsReady().then(() => { fontsIn = true; if (buildFonts === false) fontsPending = true; });
+  Promise.race([fontsP, new Promise(r => setTimeout(r, 2000))]).then(() => { buildFonts = fontsIn; build(); });
+  requestAnimationFrame(loop);
+  let tmr, lastW = innerWidth;
+  addEventListener('resize', () => {
+    if (innerWidth === lastW) return;
+    lastW = innerWidth;
+    clearTimeout(tmr);
+    tmr = setTimeout(build, 250);
+  });
+</script>
+</body>
+</html>

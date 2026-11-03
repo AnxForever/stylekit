@@ -1,0 +1,109 @@
+/* Diffraction Foil, CSS fallback layers for the showcase. The lamp runtime in foil.ts
+   writes --k, --bs, --bp, --dg, --lx, --ly (and --la, --sc, --sc2 for the seal) onto every
+   element marked with data-foil; --spectrum, --sparkle and --glint live on the page root.
+   These rules are unlayered and would beat Tailwind utilities, so they set no position:
+   each element brings its own relative or absolute class. */
+
+.foil {
+  --k: 24deg;
+  isolation: isolate;
+  overflow: hidden;
+  background: linear-gradient(calc(var(--k) + 90deg), #4f4e59, #a3a2af 28%, #5e5d68 50%, #adacb9 76%, #575661);
+}
+
+/* Light foil carries ink, so the spectrum is overlaid instead of screened. */
+.light {
+  --blend: overlay;
+  background: linear-gradient(calc(var(--k) + 90deg), #b4b3bf, #e9e8f0 30%, #bdbcc8 52%, #ecebf2 78%, #b6b5c1);
+}
+
+.foil::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  left: 50%;
+  top: 50%;
+  width: var(--dg, 300%);
+  height: var(--dg, 300%);
+  transform: translate(-50%, -50%) rotate(var(--k));
+  background: var(--spectrum) var(--bp, 0) 0 / var(--bs, 100%) 100% repeat-x;
+  mix-blend-mode: var(--blend, screen);
+  opacity: 0.92;
+  pointer-events: none;
+}
+
+.foil::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at var(--lx, 70%) var(--ly, 0%), rgb(255 255 255 / 0.55), rgb(255 255 255 / 0) 150px),
+    var(--glint, none) calc(var(--lx, 0px) * -0.3) calc(var(--ly, 0px) * -0.3) / 140px 140px,
+    var(--sparkle, none) 0 0 / 96px 96px;
+  background-blend-mode: normal, multiply, normal;
+  mix-blend-mode: screen;
+}
+
+/* Foil type: vertical grooves, so the spectrum runs horizontally across the letters. */
+.text {
+  background:
+    radial-gradient(circle at var(--lx, 70%) var(--ly, 0%), rgb(255 255 255 / 0.9), rgb(255 255 255 / 0) 120px),
+    var(--spectrum) var(--bp, 0) 0 / var(--bs, 100%) 100% repeat-x,
+    linear-gradient(#e2e1ea, #8f8e9b 55%, #cfced9);
+  background-blend-mode: screen, screen, normal;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Star: concentric grooves; only the radius facing the lamp and its opposite light up. */
+.seal {
+  isolation: isolate;
+  overflow: hidden;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at var(--lx, 70%) var(--ly, 0%), rgb(255 255 255 / 0.45), rgb(255 255 255 / 0) 110px),
+    repeating-radial-gradient(circle, rgb(255 255 255 / 0.07) 0 1px, rgb(0 0 0 / 0.08) 1px 3px),
+    conic-gradient(from calc(var(--la, 40deg) - 18deg), rgb(0 0 0 / 0), var(--sc, #8cf) 12deg, var(--sc2, #f9c) 18deg, var(--sc, #8cf) 24deg, rgb(0 0 0 / 0) 36deg 162deg,
+      var(--sc, #8cf) 192deg, var(--sc2, #f9c) 198deg, var(--sc, #8cf) 204deg, rgb(0 0 0 / 0) 216deg),
+    radial-gradient(circle at 50% 42%, #c4c3d0, #6d6c79 68%, #4a4954);
+  background-blend-mode: screen, overlay, screen, normal;
+}
+
+/* Glitter: a dark base where a few facets flash as the lamp moves. */
+.glitter {
+  isolation: isolate;
+  overflow: hidden;
+  background: #111017;
+}
+
+.glitter::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background:
+    var(--glint, none) calc(var(--lx, 0px) * -0.45) calc(var(--ly, 0px) * -0.45) / 46px 46px,
+    var(--sparkle, none) 0 0 / 30px 30px,
+    var(--sparkle, none) 11px 17px / 23px 23px;
+  background-blend-mode: multiply, screen, normal;
+  filter: brightness(2.2) saturate(1.6);
+}
+
+/* Switch thumb slides over a foil track. */
+.switchTrack {
+  transition: background-color 0.2s;
+}
+
+.switchThumb {
+  transition: transform 0.28s cubic-bezier(0.3, 1.5, 0.5, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .switchThumb {
+    transition: none;
+  }
+}

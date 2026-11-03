@@ -2468,4 +2468,21 @@ export const stylesMeta: StyleMeta[] = [
     },
     keywords: ["竖线","亮度场","量化","竹节线条","品牌卡片","扫描框","Canvas 2D"],
   },
+  {
+    slug: "diffraction-foil",
+    name: "镭射箔",
+    nameEn: "Diffraction Foil",
+    description: "按衍射光栅实时算颜色的镭射烫印箔：指针是一盏灯，彩虹以灯为圆心扫过每个元素，银底、星芒、碎钻和幻彩都是不同的刻槽排布。",
+    descriptionEn: "Holographic hot-stamping foil whose color is computed from a diffraction grating. The pointer is a lamp; rainbow bands sweep around it across every element, and silver, star, glitter, and pearl are different groove layouts.",
+    cover: "/styles/diffraction-foil.svg",
+    styleType: "visual",
+    tags: ["dark-theme","colorful","texture-heavy","high-contrast"],
+    category: "expressive",
+    colors: {
+      primary: "#0c0b10",
+      secondary: "#c9c8d4",
+      accent: ["#ff5ab8","#ffd36b","#4fe0b4","#5aa8ff","#a98bff"],
+    },
+    keywords: ["镭射","烫印","衍射光栅","全息箔","收藏卡","防伪","WebGL","光谱","指针光源"],
+  },
 ];
