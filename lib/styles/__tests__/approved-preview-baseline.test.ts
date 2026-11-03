@@ -36,6 +36,7 @@ describe("approved preview baseline", () => {
       .filter((slug) => !approved.has(slug));
 
     expect(pending.sort()).toEqual([
+      "diffraction-foil",
       "mobile-editorial",
       "pastel-ui",
       "quantized-line-field",

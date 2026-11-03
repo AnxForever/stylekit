@@ -1786,5 +1786,17 @@
     "enHeadings": 39,
     "zhBullets": 79,
     "enBullets": 56
+  },
+  "diffraction-foil": {
+    "zh": 15292,
+    "en": 20055,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 48,
+    "enFences": 42,
+    "zhHeadings": 46,
+    "enHeadings": 40,
+    "zhBullets": 128,
+    "enBullets": 99
   }
 }

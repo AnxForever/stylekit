@@ -16,6 +16,7 @@ const SNAPSHOT_DIRECTORY = path.join(
 describe("approved preview source baseline", () => {
   it("keeps the pending preview lane explicit", () => {
     expect(PENDING_STYLE_SLUGS).toEqual([
+      "diffraction-foil",
       "mobile-editorial",
       "pastel-ui",
       "quantized-line-field",
