@@ -23,7 +23,12 @@ export function HardPromptCopyButton({ content, locale, slug }: HardPromptCopyBu
 
   const handleCopy = async () => {
     if (await copy(content, slug)) {
-      trackEvent("code_copy", { slug, language: "hard" });
+      trackEvent("prompt_copy", {
+        slug,
+        prompt_type: "hard",
+        source: "hero",
+        locale,
+      });
     }
   };
 

@@ -139,7 +139,7 @@ export default async function StyleDetailPage({
   // detail page links to its nearest siblings. A shared tag counts for more
   // than a shared category.
   const ownTags = new Set(style.tags ?? []);
-  const relatedStyles = styles
+  const rankedSiblings = styles
     .filter((candidate) => candidate.slug !== style.slug)
     .map((candidate) => ({
       style: candidate,
@@ -150,13 +150,31 @@ export default async function StyleDetailPage({
     .filter((entry) => entry.score > 0)
     .sort(
       (a, b) => b.score - a.score || a.style.slug.localeCompare(b.style.slug)
-    )
-    .slice(0, 6)
-    .map(({ style: sibling }) => ({
-      slug: sibling.slug,
-      name: sibling.name,
-      nameEn: sibling.nameEn,
-    }));
+    );
+  const relatedStyles = rankedSiblings.slice(0, 6).map(({ style: sibling }) => ({
+    slug: sibling.slug,
+    name: sibling.name,
+    nameEn: sibling.nameEn,
+  }));
+
+  // The nearest sibling, spelled out. A card grid shows that two styles exist
+  // side by side; a reader deciding between them needs the difference stated,
+  // and that stated difference is what a quote can carry.
+  const nearestSibling = rankedSiblings[0]?.style;
+  const comparison = nearestSibling
+    ? {
+        slug: nearestSibling.slug,
+        name: nearestSibling.name,
+        nameEn: nearestSibling.nameEn,
+        colors: nearestSibling.colors,
+        keywords: localizedList(
+          locale,
+          nearestSibling.keywords,
+          nearestSibling.keywordsEn
+        ),
+        tags: nearestSibling.tags ?? [],
+      }
+    : null;
 
   // Pre-compute enhanced rules
   // Generate the token spec in the reader's language. It used to be Chinese
@@ -256,6 +274,7 @@ export default async function StyleDetailPage({
             compatibleStyles={compatibleStyles}
             compatibleLayouts={compatibleLayouts}
             relatedStyles={relatedStyles}
+            comparison={comparison}
             enhancedRules={enhancedRules}
             specTokens={specTokens}
             accessibilityScore={accessibilityScore}

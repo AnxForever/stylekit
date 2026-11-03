@@ -78,6 +78,13 @@ export interface ExamplePrompt {
 export interface ComponentTemplate {
   name: string;
   description: string;
+  /**
+   * Optional English label and description. Component templates are authored
+   * per style; where a translation is missing the English UI falls back to the
+   * tab label and omits the description instead of showing Chinese copy.
+   */
+  nameEn?: string;
+  descriptionEn?: string;
   code: string;
   preview?: string;
 }

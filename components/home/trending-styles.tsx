@@ -14,7 +14,13 @@ interface TrendingStylesProps {
 }
 
 export function TrendingStyles({ styles, sectionId = "home-trending" }: TrendingStylesProps) {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
+  // Ranked cards lead with the name in the page language, mirroring the
+  // style catalog cards; the other language stays as a secondary line.
+  const getDisplayNames = (meta: StyleMeta) =>
+    locale === "zh"
+      ? { primary: meta.name, secondary: meta.nameEn }
+      : { primary: meta.nameEn || meta.name, secondary: meta.name };
   const { data, isLoading } = useTrendingStyles(8);
   const topStyles = data?.top ?? [];
   const useFallback = !isLoading && (!data?.top || data.top.length === 0);
@@ -104,7 +110,7 @@ export function TrendingStyles({ styles, sectionId = "home-trending" }: Trending
                   <div className="flex items-center gap-2 mb-2">
                     <span className="text-xs text-muted tabular-nums">#{index + 1}</span>
                     <h3 className="text-sm font-medium group-hover:text-accent group-focus-visible:text-accent transition-colors truncate">
-                      {meta.name}
+                      {getDisplayNames(meta).primary}
                     </h3>
                   </div>
                   {meta.colors && (
@@ -113,7 +119,7 @@ export function TrendingStyles({ styles, sectionId = "home-trending" }: Trending
                       <div className="flex-1" style={{ backgroundColor: meta.colors.secondary }} />
                     </div>
                   )}
-                  <div className="text-xs text-muted">{meta.nameEn}</div>
+                  <div className="text-xs text-muted">{getDisplayNames(meta).secondary}</div>
                   {meta.category && (
                     <span className="inline-block mt-3 text-[10px] px-2 py-0.5 bg-zinc-100 dark:bg-zinc-800 text-muted uppercase tracking-wider">
                       {meta.category}
@@ -174,7 +180,7 @@ export function TrendingStyles({ styles, sectionId = "home-trending" }: Trending
                       #{index + 1}
                     </span>
                     <h3 className="text-sm font-medium group-hover:text-accent group-focus-visible:text-accent transition-colors truncate">
-                      {meta.name}
+                      {getDisplayNames(meta).primary}
                     </h3>
                   </div>
 
@@ -193,7 +199,7 @@ export function TrendingStyles({ styles, sectionId = "home-trending" }: Trending
 
                   <div className="space-y-1.5">
                     <div className="flex items-center justify-between text-xs text-muted">
-                      <span>{meta.nameEn}</span>
+                      <span>{getDisplayNames(meta).secondary}</span>
                       <span className="tabular-nums">{top.total}</span>
                     </div>
                     <div className="h-1.5 bg-zinc-100 dark:bg-zinc-800">

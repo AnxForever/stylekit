@@ -1,4 +1,5 @@
 import type { StylePreviewComponents } from "../types";
+import { previewCopy } from "../copy";
 
 const preview = {
     button: () => (
@@ -19,12 +20,12 @@ const preview = {
         className="w-full px-4 py-3 bg-white border-4 border-black font-mono focus:outline-none focus:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
       />
     ),
-    coverPreview: () => (
+    coverPreview: ({ locale } = {}) => (
       <div className="w-full h-full bg-[#ccff00] flex items-center justify-center p-4">
         <div className="w-full max-w-[200px]">
           <div className="bg-white border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] p-4">
             <div className="font-black text-base mb-3">BRUTAL</div>
-            <p className="font-mono text-xs mb-3 text-gray-600">大胆直接的设计</p>
+            <p className="font-mono text-xs mb-3 text-gray-600">{previewCopy(locale, "大胆直接的设计", "Bold, direct design")}</p>
             <button className="bg-[#ff006e] text-white text-xs font-black px-4 py-2 border-2 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]">
               ACTION
             </button>

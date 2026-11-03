@@ -1,4 +1,5 @@
 import type { StylePreviewComponents } from "../types";
+import { previewCopy } from "../copy";
 
 const preview = {
     button: () => (
@@ -29,7 +30,7 @@ const preview = {
         <div className="absolute right-3 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-cyan-400 shadow-[0_0_10px_rgba(0,255,255,0.8)] animate-pulse" />
       </div>
     ),
-    coverPreview: () => (
+    coverPreview: ({ locale } = {}) => (
       <div className="w-full h-full bg-[#0a0a0f] flex items-center justify-center p-4">
         <div className="w-full max-w-[200px]">
           <div className="bg-gray-950 border border-cyan-400/30 rounded-lg p-4 shadow-[0_0_20px_rgba(0,255,255,0.2)] relative overflow-hidden">
@@ -40,7 +41,7 @@ const preview = {
                 <span className="text-cyan-400 font-mono text-[10px] uppercase tracking-wider">System</span>
               </div>
               <div className="text-white font-bold text-sm mb-2" style={{textShadow: '0 0 10px rgba(0,255,255,0.5)'}}>Cyberpunk</div>
-              <p className="text-gray-500 text-xs mb-3">霓虹发光效果</p>
+              <p className="text-gray-500 text-xs mb-3">{previewCopy(locale, "霓虹发光效果", "Neon glow")}</p>
               <button className="bg-transparent border border-cyan-400 text-cyan-400 text-[10px] font-mono uppercase px-3 py-1.5 rounded shadow-[0_0_10px_rgba(0,255,255,0.3)]">
                 Execute
               </button>

@@ -9,10 +9,13 @@ import {
 } from "@/components/admin/admin-ui";
 import type { AnalyticsContent, AnalyticsEvents, AnalyticsRange } from "@/lib/admin/analytics-api-contract";
 import { useAnalyticsContent, useAnalyticsEvents } from "@/lib/swr";
+import { PromptCopyAnalyticsPanel } from "@/components/admin/prompt-copy-analytics-panel";
+import type { PromptCopyStyleLabel } from "@/lib/admin/prompt-copy-report";
+import type { PromptCopyAnalytics } from "@/lib/admin/prompt-copy-analytics";
 import { AnalyticsSectionNav, AnalyticsSyncStatus } from "./_content";
 import { useAnalyticsRangeState } from "./_range-state";
 
-export function AnalyticsContentPage({ initialRange = "7d", initialData, initialEvents }: { initialRange?: AnalyticsRange; initialData?: AnalyticsContent; initialEvents?: AnalyticsEvents }) {
+export function AnalyticsContentPage({ initialRange = "7d", initialData, initialEvents, initialPromptCopies, promptCopyStyles = [] }: { initialRange?: AnalyticsRange; initialData?: AnalyticsContent; initialEvents?: AnalyticsEvents; initialPromptCopies?: PromptCopyAnalytics; promptCopyStyles?: PromptCopyStyleLabel[] }) {
   const { range, setRange } = useAnalyticsRangeState(initialRange);
   const content = useAnalyticsContent(range, range === initialRange ? initialData : undefined);
   const events = useAnalyticsEvents(range, range === initialRange ? initialEvents : undefined);
@@ -20,7 +23,10 @@ export function AnalyticsContentPage({ initialRange = "7d", initialData, initial
   return (
     <div className="space-y-6">
       <AnalyticsSectionNav view="content" range={range} />
-      <AnalyticsSyncStatus syncing={content.isValidating || events.isValidating} />
+      <AnalyticsSyncStatus
+        syncing={content.isValidating || events.isValidating}
+        generatedAt={content.data?.generatedAt}
+      />
       <AdminPanel className="p-4 sm:p-5">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div>
@@ -42,6 +48,12 @@ export function AnalyticsContentPage({ initialRange = "7d", initialData, initial
           />
         </div>
       </AdminPanel>
+
+      <PromptCopyAnalyticsPanel
+        range={range}
+        styles={promptCopyStyles}
+        initialData={range === initialRange ? initialPromptCopies : undefined}
+      />
 
       {content.isLoading && !content.data ? <PageSkeleton /> : null}
       {!content.data && content.error ? (

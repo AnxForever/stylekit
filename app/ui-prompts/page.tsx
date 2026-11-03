@@ -230,6 +230,22 @@ export default async function UiPromptsPage() {
           </div>
         </section>
 
+        <section className="border-b border-border">
+          <div className="max-w-7xl mx-auto px-6 md:px-12 py-10">
+            <p className="text-muted leading-relaxed">
+              {isZh ? "还在比较同类站点？" : "Still comparing prompt libraries? "}
+              <LocalizedLink
+                href="/prompt-sites"
+                className="font-medium text-foreground underline underline-offset-4 transition-colors hover:text-muted"
+              >
+                {isZh
+                  ? "看 9 个前端风格提示词站点的取舍对比"
+                  : "see nine frontend style prompt sites compared side by side"}
+              </LocalizedLink>
+            </p>
+          </div>
+        </section>
+
         <PromptTemplatePreviewSection
           title={isZh ? "示例预览与起步模板" : "Example previews and starter templates"}
           description={isZh

@@ -1,6 +1,8 @@
 import { z } from "zod";
 import {
   CLIENT_EVENT_NAMES,
+  PROMPT_COPY_SOURCES,
+  PROMPT_COPY_TYPES,
   TEMPLATE_DOWNLOAD_SURFACES,
   TEMPLATE_SOURCE_LANGUAGES,
   type ClientEventName,
@@ -83,6 +85,12 @@ const clientEventDataSchemas = {
   code_copy: eventDataSchema({
     slug: slugSchema.nullable(),
     language: shortStringSchema,
+  }),
+  prompt_copy: eventDataSchema({
+    slug: slugSchema,
+    prompt_type: z.enum(PROMPT_COPY_TYPES),
+    source: z.enum(PROMPT_COPY_SOURCES),
+    locale: z.enum(["zh", "en"]),
   }),
   animation_view: eventDataSchema({ slug: slugSchema, source: shortStringSchema }),
   template_view: eventDataSchema({ slug: slugSchema, source: shortStringSchema }),
@@ -216,6 +224,7 @@ export function readEventStyleSlug(
     eventType === "style_view" ||
     eventType === "style_export" ||
     eventType === "code_copy" ||
+    eventType === "prompt_copy" ||
     eventType === "showcase_open" ||
     eventType === "shadcn_command_copy" ||
     eventType === "project_brief_generated" ||

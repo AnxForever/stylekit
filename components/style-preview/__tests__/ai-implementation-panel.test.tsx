@@ -77,6 +77,33 @@ describe("AiImplementationPanel", () => {
     expect(copied).toContain("## 什么时候用");
     expect(copied).toContain("## 怎么用");
     expect(copied).toContain("RULES_ZH");
+    expect(trackEventMock).toHaveBeenCalledWith("prompt_copy", {
+      slug: "neo-brutalist",
+      prompt_type: "hard",
+      source: "implementation-panel",
+      locale: "zh",
+    });
+    expect(trackEventMock).not.toHaveBeenCalledWith("code_copy", expect.anything());
+  });
+
+  it("tracks the active prompt type and locale after a successful copy", async () => {
+    useI18nMock.mockReturnValue({
+      t: (key: string) => key,
+      locale: "en",
+      setLocale: vi.fn(),
+    });
+    render(<AiImplementationPanel {...baseProps} />);
+
+    fireEvent.click(screen.getByRole("tab", { name: /Design Spec/ }));
+    fireEvent.click(screen.getByRole("button", { name: "Copy" }));
+
+    await waitFor(() => expect(writeTextMock).toHaveBeenCalledTimes(1));
+    expect(trackEventMock).toHaveBeenCalledWith("prompt_copy", {
+      slug: "neo-brutalist",
+      prompt_type: "design-spec",
+      source: "implementation-panel",
+      locale: "en",
+    });
   });
 
   it("switches to design spec and shows the style standard", () => {
@@ -121,6 +148,7 @@ describe("AiImplementationPanel", () => {
     expect(objectUrlSpy).toHaveBeenCalledTimes(1);
     expect(revokeSpy).toHaveBeenCalledWith("blob:mock");
     expect(anchorClicks[0]?.download).toBe("neo-brutalist-creative-brief.md");
+    expect(trackEventMock).not.toHaveBeenCalledWith("prompt_copy", expect.anything());
 
     createElementSpy.mockRestore();
     objectUrlSpy.mockRestore();
@@ -284,7 +312,15 @@ describe("AiImplementationPanel", () => {
       "project_brief_copy",
       generatedCall?.[1],
     );
+    expect(trackEventMock).toHaveBeenCalledWith("prompt_copy", {
+      slug: "neo-brutalist",
+      prompt_type: "project-brief",
+      source: "project-brief",
+      locale: "zh",
+    });
+    expect(trackEventMock.mock.calls.filter(([eventName]) => eventName === "prompt_copy")).toHaveLength(1);
 
+    trackEventMock.mockClear();
     fireEvent.click(screen.getByRole("button", { name: "下载简报" }));
     expect(anchorClicks.at(-1)?.download).toBe(
       "neo-brutalist-project-implementation-brief.md",
@@ -294,6 +330,7 @@ describe("AiImplementationPanel", () => {
       "project_brief_download",
       generatedCall?.[1],
     );
+    expect(trackEventMock).not.toHaveBeenCalledWith("prompt_copy", expect.anything());
 
     fireEvent.change(screen.getByLabelText(/核心任务/), {
       target: { value: "查看延误订单、分配负责人并确认结果" },

@@ -34,6 +34,7 @@ export function Footer({ compact = false }: { compact?: boolean }) {
     { href: "/animations", label: t("nav.animations") },
     { href: "/resources", label: t("nav.resourceLibrary") },
     { href: "/ui-prompts", label: locale === "zh" ? "提示词库" : "Prompts" },
+    { href: "/prompt-sites", label: locale === "zh" ? "提示词站对比" : "Prompt sites" },
     { href: "/collections", label: locale === "zh" ? "主题合集" : "Collections" },
     { href: "/kit", label: locale === "zh" ? "工具箱" : "Kit" },
     { href: "/community", label: t("nav.community") },
@@ -266,11 +267,13 @@ export function Footer({ compact = false }: { compact?: boolean }) {
             </a>
           </div>
 
-          <div className="border-t border-white/10 py-8 md:col-span-2 md:border-l md:border-t-0 md:py-12 md:pl-8">
+          <div className="border-t border-white/10 py-8 md:col-span-3 md:border-l md:border-t-0 md:py-12 md:pl-8">
             <p className={sectionLabelClassName}>
               {locale === "zh" ? "浏览" : "Explore"}
             </p>
-            <nav className="mt-6 flex flex-col gap-3">
+            {/* Nine destinations would make this the tallest column and leave a
+                long empty tail under the neighbouring list, so pair them up. */}
+            <nav className="mt-6 grid grid-cols-2 gap-x-4 gap-y-3">
               {exploreLinks.map((link) => (
                 <Link
                   key={link.href}
@@ -302,7 +305,7 @@ export function Footer({ compact = false }: { compact?: boolean }) {
             </nav>
           </div>
 
-          <div className="border-t border-white/10 py-8 md:col-span-4 md:border-l md:border-t-0 md:py-12 md:pl-8">
+          <div className="border-t border-white/10 py-8 md:col-span-3 md:border-l md:border-t-0 md:py-12 md:pl-8">
             <p className={sectionLabelClassName}>
               {locale === "zh" ? "订阅动态" : "Dispatch"}
             </p>

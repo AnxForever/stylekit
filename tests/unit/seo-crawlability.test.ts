@@ -135,7 +135,12 @@ describe("SEO crawlability contracts", () => {
     expect(generalGroup).toBeDefined();
     expect(aiGroup).toBeDefined();
     expect(asRuleList(aiGroup?.allow)).toEqual(asRuleList(generalGroup?.allow));
-    expect(asRuleList(aiGroup?.disallow)).toEqual(asRuleList(generalGroup?.disallow));
+    expect(asRuleList(generalGroup?.disallow)).toEqual(
+      expect.arrayContaining(asRuleList(aiGroup?.disallow))
+    );
+    expect(asRuleList(generalGroup?.disallow).filter(
+      (rule) => !asRuleList(aiGroup?.disallow).includes(rule)
+    )).toHaveLength(20);
 
     for (const group of [generalGroup, aiGroup]) {
       expect(group).toBeDefined();
@@ -192,6 +197,48 @@ describe("SEO crawlability contracts", () => {
     for (const locale of LOCALES) {
       expect(getLocaleRouteStrategy("/kit/shared")).toBe("rewrite");
       expect(getAlternateLocalePath("/kit/shared", locale)).toBe(`/${locale}/kit/shared`);
+    }
+  });
+
+  it("excludes exact MCP transports from web crawling while preserving AI access and public discovery", async () => {
+    const groups = normalizeRobotsGroups(robots().rules);
+    const generalGroup = groups.find((group) => group.userAgent === "*");
+    const aiGroup = groups.find(
+      (group) => Array.isArray(group.userAgent) && group.userAgent.includes("OAI-SearchBot")
+    );
+    expect(generalGroup).toBeDefined();
+    expect(aiGroup).toBeDefined();
+    if (!generalGroup || !aiGroup) return;
+
+    for (const endpoint of ["/mcp", "/mcp/all", "/mcp/core", "/mcp/assets", "/mcp/design"]) {
+      for (const suffix of ["", "?client=web", "/", "/?client=web"]) {
+        const path = `${endpoint}${suffix}`;
+        expect(crawlDecision(generalGroup, path), path).toBe("disallow");
+        expect(crawlDecision(aiGroup, path), path).toBe("allow");
+      }
+    }
+
+    const sitemapPaths = (await sitemap()).map((entry) => {
+      const url = new URL(entry.url);
+      return `${url.pathname}${url.search}`;
+    });
+    for (const group of groups) {
+      for (const path of [
+        ...sitemapPaths,
+        "/mcp-guide",
+        "/mcp/all-guide",
+        "/mcp/core-guide",
+        "/mcp/core/docs",
+        "/developers",
+        "/en/developers",
+        "/zh/developers",
+        "/llms.txt",
+        "/llms.md",
+        "/llms-full.txt",
+        "/api/styles/neo-brutalist/md",
+      ]) {
+        expect(crawlDecision(group, path), path).toBe("allow");
+      }
     }
   });
 });

@@ -1,4 +1,5 @@
 import type { StylePreviewComponents } from "../types";
+import { previewCopy } from "../copy";
 
 const preview = {
     button: () => (
@@ -22,14 +23,14 @@ const preview = {
         className="w-full px-4 py-4 bg-white border-4 border-black text-black font-medium placeholder:text-gray-400 focus:outline-none focus:bg-yellow-300 transition-colors duration-200"
       />
     ),
-    coverPreview: () => (
+    coverPreview: ({ locale } = {}) => (
       <div className="w-full h-full bg-white flex items-center justify-center p-4">
         <div className="w-full max-w-[200px] relative">
           <div className="border-4 border-black p-4 relative">
             <div className="absolute -top-4 -right-4 w-8 h-8 bg-red-500 rotate-45" />
             <span className="text-[10px] font-bold uppercase tracking-[0.2em]">01</span>
             <div className="font-black text-xl uppercase mt-1 mb-2">Bold</div>
-            <p className="text-xs text-gray-600 mb-3">几何大胆风格</p>
+            <p className="text-xs text-gray-600 mb-3">{previewCopy(locale, "几何大胆风格", "Bold geometry")}</p>
             <button className="bg-black text-white text-[10px] font-bold uppercase tracking-widest px-4 py-2">
               View
             </button>

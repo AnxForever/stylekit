@@ -35,9 +35,26 @@ describe("HardPromptCopyButton", () => {
       expect(writeText).toHaveBeenCalledWith("STYLEKIT_STYLE_REFERENCE\n# Hard Prompt");
     });
     expect(screen.getByText("已复制硬性提示词")).toBeTruthy();
-    expect(trackEvent).toHaveBeenCalledWith("code_copy", {
+    expect(trackEvent).toHaveBeenCalledWith("prompt_copy", {
       slug: "neo-brutalist",
-      language: "hard",
+      prompt_type: "hard",
+      source: "hero",
+      locale: "zh",
     });
+    expect(trackEvent).not.toHaveBeenCalledWith("code_copy", expect.anything());
+  });
+
+  it("does not count a failed clipboard write", async () => {
+    writeText.mockRejectedValueOnce(new Error("clipboard unavailable"));
+
+    render(
+      <HardPromptCopyButton content="# Hard Prompt" locale="en" slug="editorial" />
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: "Copy Hard Prompt" }));
+
+    await waitFor(() => expect(writeText).toHaveBeenCalledWith("# Hard Prompt"));
+    expect(trackEvent).not.toHaveBeenCalled();
+    expect(screen.getByRole("status").textContent).toContain("Clipboard access failed");
   });
 });

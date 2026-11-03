@@ -55,12 +55,20 @@ const StylePackExport = dynamic(
 
 type CompatibleStyleSummary = Pick<DesignStyle, "slug" | "name" | "nameEn">;
 
+/** The nearest sibling, carrying the fields a visible comparison needs. */
+export interface ComparisonSibling extends CompatibleStyleSummary {
+  colors: DesignStyle["colors"];
+  keywords: string[];
+  tags: DesignStyle["tags"];
+}
+
 interface Props {
   style: DesignStyle;
   hasIdeExports?: boolean;
   compatibleStyles: CompatibleStyleSummary[];
   compatibleLayouts: CompatibleStyleSummary[];
   relatedStyles?: CompatibleStyleSummary[];
+  comparison?: ComparisonSibling | null;
   enhancedRules: string | null;
   specTokens?: DesignSpecTokens;
   accessibilityScore: AccessibilityScore | null;
@@ -78,6 +86,7 @@ export function StyleDetailContent({
   compatibleStyles,
   compatibleLayouts,
   relatedStyles = [],
+  comparison = null,
   enhancedRules,
   specTokens,
   accessibilityScore,
@@ -156,6 +165,13 @@ export function StyleDetailContent({
     locale === "zh" ? targetStyle.name : targetStyle.nameEn || targetStyle.name;
   const getSecondaryName = (targetStyle: CompatibleStyleSummary) =>
     locale === "zh" ? targetStyle.nameEn : targetStyle.name;
+  const comparisonKeywordsHere = localizedKeywords.slice(0, 3);
+  const comparisonTagsHere = comparison
+    ? (style.tags ?? []).filter((tag) => !comparison.tags.includes(tag))
+    : [];
+  const comparisonTagsThere = comparison
+    ? comparison.tags.filter((tag) => !(style.tags ?? []).includes(tag))
+    : [];
   const detailSections = [
     {
       href: "#style-prompts",
@@ -618,6 +634,76 @@ export function StyleDetailContent({
             <p className="text-muted mb-8 max-w-2xl">
               {t("seo.relatedStylesDesc")}
             </p>
+            {comparison ? (
+              <div className="mb-10 overflow-x-auto">
+                <p className="max-w-2xl text-muted mb-4">
+                  {locale === "zh"
+                    ? `${primaryStyleName} 和 ${getPrimaryName(comparison)} 是最接近的两个方向。下表列出它们在配色、适用场景和标签上的实际差异，选之前先看这一栏。`
+                    : `${primaryStyleName} and ${getPrimaryName(comparison)} sit closest to each other. The table below gives the real differences in color, use case, and tags, so the choice between them is made on facts.`}
+                </p>
+                <table className="w-full min-w-[560px] border-collapse text-left text-sm">
+                  <thead>
+                    <tr className="border-b border-foreground">
+                      <th scope="col" className="py-3 pr-6 font-mono text-[11px] uppercase tracking-wider text-muted">
+                        {locale === "zh" ? "维度" : "Attribute"}
+                      </th>
+                      <th scope="col" className="py-3 pr-6 font-semibold">
+                        {primaryStyleName}
+                      </th>
+                      <th scope="col" className="py-3 font-semibold">
+                        {getPrimaryName(comparison)}
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {[
+                      {
+                        label: locale === "zh" ? "主色" : "Primary color",
+                        here: style.colors?.primary,
+                        there: comparison.colors?.primary,
+                      },
+                      {
+                        label: locale === "zh" ? "辅助色" : "Secondary color",
+                        here: style.colors?.secondary,
+                        there: comparison.colors?.secondary,
+                      },
+                    ].map((row) => (
+                      <tr key={row.label} className="border-b border-border">
+                        <th scope="row" className="py-3 pr-6 font-normal text-muted">
+                          {row.label}
+                        </th>
+                        {[row.here, row.there].map((color, index) => (
+                          <td key={`${row.label}-${index}`} className="py-3 pr-6">
+                            <span className="inline-flex items-center gap-2">
+                              <span
+                                aria-hidden="true"
+                                className="inline-block h-4 w-4 border border-border"
+                                style={{ backgroundColor: color }}
+                              />
+                              <span className="font-mono text-xs">{color}</span>
+                            </span>
+                          </td>
+                        ))}
+                      </tr>
+                    ))}
+                    <tr className="border-b border-border">
+                      <th scope="row" className="py-3 pr-6 font-normal text-muted">
+                        {locale === "zh" ? "适合场景" : "Best for"}
+                      </th>
+                      <td className="py-3 pr-6">{comparisonKeywordsHere.join(" / ")}</td>
+                      <td className="py-3">{comparison.keywords.slice(0, 3).join(" / ")}</td>
+                    </tr>
+                    <tr>
+                      <th scope="row" className="py-3 pr-6 font-normal text-muted">
+                        {locale === "zh" ? "独有标签" : "Unique tags"}
+                      </th>
+                      <td className="py-3 pr-6">{comparisonTagsHere.join(", ") || "—"}</td>
+                      <td className="py-3">{comparisonTagsThere.join(", ") || "—"}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            ) : null}
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
               {relatedStyles.map((relatedStyle) => (
                 <LocalizedLink

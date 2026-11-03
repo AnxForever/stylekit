@@ -21,8 +21,15 @@ import { GitHubStarButton } from "@/components/github-star-button";
 import { KitNavButton } from "@/components/kit/kit-nav-button";
 import { trackEvent } from "@/lib/analytics/events";
 import { localizeHref } from "@/lib/i18n/routing";
+import { setThemeAnimated } from "@/lib/theme/transition";
 import { StyleKitLogo } from "@/components/brand/stylekit-logo";
 
+// Hover emphasis stays colour-only on purpose. Bolding a nav label widens it
+// and pushes every sibling, and the GRAD-axis trick cannot stand in for it
+// here: Albert Sans is loaded with only a wght axis, so a "GRAD" setting would
+// render identically. The muted-to-foreground colour change darkens the label
+// without moving the row; keep new nav items on this class rather than adding
+// hover weight utilities.
 const linkClass =
   "shrink-0 whitespace-nowrap text-sm tracking-wide text-muted hover:text-foreground transition-colors";
 
@@ -387,7 +394,7 @@ export function Header() {
   }, []);
 
   const toggleTheme = () => {
-    setTheme(resolvedTheme === "dark" ? "light" : "dark");
+    setThemeAnimated(resolvedTheme === "dark" ? "light" : "dark", setTheme);
   };
   const markChangelogSeen = () => {
     markLatestChangelogSeen();

@@ -2,8 +2,8 @@
   /* Pair regular editorial headings with the site's readable UI body face.
      Rebind the semantic aliases here because body resolves them before this
      route overrides the active font stack. */
-  --font-body-active: var(--font-public-sans), "PingFang SC", "Microsoft YaHei UI", "Microsoft YaHei", "Noto Sans CJK SC", ui-sans-serif, system-ui, sans-serif;
-  --font-display-active: var(--font-login-display), "Songti SC", "STSong", "Noto Serif CJK SC", "SimSun", ui-serif, Georgia, serif;
+  --font-body-active: var(--font-public-sans), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei UI", "Microsoft YaHei", "Noto Sans CJK SC", "Noto Sans SC", "Source Han Sans CN", sans-serif;
+  --font-display-active: var(--font-login-display), ui-serif, Georgia, Cambria, "Times New Roman", Times, "Songti SC", "STSong", "SimSun", "Noto Serif CJK SC", "Source Han Serif SC", serif;
   --font-sans: var(--font-body-active);
   --font-serif: var(--font-display-active);
   font-family: var(--font-body-active);

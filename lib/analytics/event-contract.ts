@@ -12,6 +12,29 @@ type CodeCopyProps = {
   slug: string | null;
   language: string;
 };
+export const PROMPT_COPY_TYPES = [
+  "hard",
+  "soft",
+  "design-spec",
+  "creative-brief",
+  "example",
+  "project-brief",
+  "recipe",
+] as const;
+export const PROMPT_COPY_SOURCES = [
+  "hero",
+  "implementation-panel",
+  "prompt-pair",
+  "example-prompts",
+  "project-brief",
+  "recipe",
+] as const;
+type PromptCopyProps = {
+  slug: string;
+  prompt_type: (typeof PROMPT_COPY_TYPES)[number];
+  source: (typeof PROMPT_COPY_SOURCES)[number];
+  locale: "zh" | "en";
+};
 type AnimationViewProps = { slug: string; source: string };
 type TemplateViewProps = { slug: string; source: string };
 
@@ -139,6 +162,7 @@ interface ClientEventMap {
   style_view: StyleViewProps;
   style_export: StyleExportProps;
   code_copy: CodeCopyProps;
+  prompt_copy: PromptCopyProps;
   animation_view: AnimationViewProps;
   template_view: TemplateViewProps;
   template_source_open: TemplateSourceOpenProps;
@@ -224,6 +248,7 @@ export const CLIENT_EVENT_NAMES = [
   "style_view",
   "style_export",
   "code_copy",
+  "prompt_copy",
   "animation_view",
   "template_view",
   "template_source_open",

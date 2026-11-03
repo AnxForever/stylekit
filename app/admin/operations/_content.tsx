@@ -210,9 +210,20 @@ function RecentSignals({ data }: { data: AdminOperationsData }) {
       title="近期内容信号"
       description={`过去 ${data.windowDays} 天的互动，以及最近收到的赞助。`}
       actions={
-        <Link href="/admin/analytics/content" className="text-xs text-muted hover:text-foreground">
-          查看完整分析 <ArrowUpRight className="ml-1 inline h-3.5 w-3.5" />
-        </Link>
+        <div className="flex items-center gap-4">
+          {/* A plain anchor is deliberate: the endpoint answers with a CSV
+              attachment, and client-side routing would try to render it. */}
+          {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
+          <a
+            href="/api/admin/newsletter/subscribers"
+            className="text-xs text-muted hover:text-foreground"
+          >
+            导出订阅者 <ArrowUpRight className="ml-1 inline h-3.5 w-3.5" />
+          </a>
+          <Link href="/admin/analytics/content" className="text-xs text-muted hover:text-foreground">
+            查看完整分析 <ArrowUpRight className="ml-1 inline h-3.5 w-3.5" />
+          </Link>
+        </div>
       }
     >
       <div className="grid gap-3 sm:grid-cols-3">
