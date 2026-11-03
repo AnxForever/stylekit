@@ -54,7 +54,7 @@ describe("HardPromptCopyButton", () => {
       <HardPromptCopyButton content="# Hard Prompt" locale="en" slug="editorial" />
     );
 
-    fireEvent.click(screen.getByRole("button", { name: "Copy Hard Prompt" }));
+    fireEvent.click(screen.getByRole("button", { name: "Copy for AI" }));
 
     await waitFor(() => expect(writeText).toHaveBeenCalledWith("# Hard Prompt"));
     expect(trackEvent).not.toHaveBeenCalled();
