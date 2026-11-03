@@ -1,11 +1,13 @@
 "use client";
 
 import { ArrowRight, Copy, Check, Sparkles, Layout, Layers, ExternalLink } from "lucide-react";
-import { useState } from "react";
 import { LocalizedLink } from "@/components/i18n/localized-link";
 import { StyleCoverPreview } from "@/components/style-preview/style-cover-preview";
 import { RecipeCard } from "@/components/recipes/recipe-card";
+import { ClipboardFeedback } from "@/components/ui/clipboard-feedback";
 import { useI18n } from "@/lib/i18n/context";
+import { trackEvent } from "@/lib/analytics/events";
+import { useClipboard } from "@/lib/hooks/use-clipboard";
 import {
   type StyleRecipe,
 } from "@/lib/styles/recipe-types";
@@ -23,7 +25,7 @@ interface Props {
 
 export function RecipeDetailContent({ recipe, visualStyle, layoutStyle }: Props) {
   const { locale } = useI18n();
-  const [copied, setCopied] = useState(false);
+  const { copy, result, isCopied } = useClipboard({ copiedDuration: 2000 });
 
   const name = locale === "zh" ? recipe.nameZh : recipe.name;
   const description = locale === "zh" ? recipe.descriptionZh : recipe.description;
@@ -56,11 +58,17 @@ ${parts.join("\n")}
 ${reasoning}`;
   };
 
+  const prompt = generatePrompt();
+  const copied = isCopied(recipe.id, prompt);
+
   const handleCopyPrompt = async () => {
-    const prompt = generatePrompt();
-    await navigator.clipboard.writeText(prompt);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    if (!(await copy(prompt, recipe.id))) return;
+    trackEvent("prompt_copy", {
+      slug: recipe.visualStyle,
+      prompt_type: "recipe",
+      source: "recipe",
+      locale,
+    });
   };
 
   return (
@@ -136,6 +144,7 @@ ${reasoning}`;
 
               {/* Quick Copy Prompt */}
               <button
+                type="button"
                 onClick={handleCopyPrompt}
                 className="inline-flex items-center gap-2 px-6 py-3 bg-foreground text-background hover:bg-foreground/90 transition-colors"
               >
@@ -151,6 +160,12 @@ ${reasoning}`;
                   </>
                 )}
               </button>
+              <ClipboardFeedback
+                result={result?.id === recipe.id && result.text === prompt ? result : null}
+                locale={locale}
+                currentText={prompt}
+                className="mt-3 mb-0"
+              />
             </div>
 
             {/* Right: Preview */}

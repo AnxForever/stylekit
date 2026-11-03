@@ -31,6 +31,7 @@ export function prefetchAnalyticsView(view: string, range: AnalyticsRange) {
   if (view === "content") {
     keys.push(`/api/admin/analytics/content?range=${range}`);
     keys.push(`/api/admin/analytics/events?range=${range}`);
+    keys.push(`/api/admin/analytics/prompt-copies?range=${range}`);
   }
   if (view === "users") {
     keys.push(`/api/admin/analytics/registrations?range=${range}`);
@@ -40,12 +41,4 @@ export function prefetchAnalyticsView(view: string, range: AnalyticsRange) {
   }
 
   return Promise.allSettled(keys.map((key) => preload(key, fetcher)));
-}
-
-export function prefetchCommonAnalytics(range: AnalyticsRange) {
-  return Promise.allSettled([
-    prefetchAnalyticsView("traffic", range),
-    prefetchAnalyticsView("content", range),
-    prefetchAnalyticsView("users", range),
-  ]);
 }

@@ -1,4 +1,5 @@
 import type { StylePreviewComponents } from "../types";
+import { previewCopy } from "../copy";
 
 const preview = {
     button: () => (
@@ -20,13 +21,13 @@ const preview = {
         className="w-full px-0 py-3 bg-transparent border-b border-[#1C1C1C]/20 text-sm tracking-wide focus:outline-none focus:border-[#1C1C1C] transition-colors"
       />
     ),
-    coverPreview: () => (
+    coverPreview: ({ locale } = {}) => (
       <div className="w-full h-full bg-[#F9F8F6] flex items-center justify-center p-6">
         <div className="w-full max-w-[200px]">
           <p className="text-[10px] tracking-[0.2em] uppercase text-[#595959] mb-2">Featured</p>
           <h3 className="font-serif text-xl italic mb-1 text-[#1C1C1C]">Editorial</h3>
           <div className="w-8 h-px bg-[#1C1C1C]/20 mb-3" />
-          <p className="text-xs text-[#1C1C1C]/60 leading-relaxed mb-4">优雅的杂志排版，衬线标题与留白之美</p>
+          <p className="text-xs text-[#1C1C1C]/60 leading-relaxed mb-4">{previewCopy(locale, "优雅的杂志排版，衬线标题与留白之美", "Elegant editorial layout with serif headlines and generous whitespace")}</p>
           <button className="text-[10px] tracking-[0.15em] uppercase px-4 py-2 border border-[#1C1C1C]/20 text-[#1C1C1C] hover:border-[#1C1C1C]/60">
             Read More
           </button>

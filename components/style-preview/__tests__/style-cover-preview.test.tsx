@@ -12,6 +12,14 @@ vi.mock("@/lib/style-preview/delivery", () => ({
   loadStylePreview: loadStylePreviewMock,
 }));
 
+vi.mock("@/lib/i18n/context", () => ({
+  useI18n: () => ({
+    locale: "en",
+    setLocale: vi.fn(),
+    t: (key: string) => key,
+  }),
+}));
+
 import { StyleCoverPreview } from "@/components/style-preview/style-cover-preview";
 
 class IntersectionObserverMock {
@@ -63,6 +71,21 @@ describe("StyleCoverPreview delivery boundary", () => {
 
     await waitFor(() => {
       expect(screen.getByTestId("approved-cover")).toBeInTheDocument();
+    });
+  });
+
+  it("hands the active locale to the cover renderer", async () => {
+    const coverPreview = vi.fn(() => <span data-testid="localized-cover">cover</span>);
+    loadStylePreviewMock.mockResolvedValue({ coverPreview });
+
+    render(<StyleCoverPreview styleSlug="neo-brutalist" />);
+
+    act(() => {
+      IntersectionObserverMock.instances[0].trigger(true);
+    });
+
+    await waitFor(() => {
+      expect(coverPreview).toHaveBeenCalledWith({ locale: "en" });
     });
   });
 });

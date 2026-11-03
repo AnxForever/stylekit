@@ -32,6 +32,7 @@ import { sanitizeNextPath } from "@/lib/auth/next-path";
 import { LinuxDoMark, NodeLocMark } from "@/components/auth/brand-marks";
 import { XiaoheiLoading } from "@/components/profile/xiaohei-note";
 import { StyleKitLogo } from "@/components/brand/stylekit-logo";
+import { setThemeAnimated } from "@/lib/theme/transition";
 import typography from "./login-typography.module.css";
 
 const loginDisplay = Playfair_Display({
@@ -557,7 +558,9 @@ export function LoginContent() {
         </button>
         <button
           type="button"
-          onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}
+          onClick={() =>
+            setThemeAnimated(resolvedTheme === "dark" ? "light" : "dark", setTheme)
+          }
           aria-label={
             !mounted
               ? t("theme.switchToDark")

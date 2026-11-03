@@ -119,6 +119,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...createLocalizedEntries("/animations/vocabulary", undefined, "monthly", 0.6),
     ...createLocalizedEntries("/templates", undefined, "weekly", 0.7),
     ...createLocalizedEntries("/resources", undefined, "weekly", 0.7),
+    ...createLocalizedEntries("/prompt-sites", undefined, "weekly", 0.9),
     ...createLocalizedEntries("/component-patterns", undefined, "monthly", 0.7),
     ...createLocalizedEntries("/mobile", undefined, "monthly", 0.7),
     ...createLocalizedEntries("/learn", undefined, "monthly", 0.6),

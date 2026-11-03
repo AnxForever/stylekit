@@ -33,6 +33,8 @@ const CRAWLER_RULES = {
     "/",
     "/llms.md",
     "/llms-full.txt",
+    "/all-styles.md",
+    "/api/styles/all.json$",
     "/api/styles/*/md$",
     ...PUBLIC_NOINDEX_ROUTE_ALLOW,
     ...SHARED_KIT_ROUTE_ALLOW,

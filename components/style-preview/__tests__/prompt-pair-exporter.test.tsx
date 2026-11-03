@@ -3,12 +3,17 @@ import "@testing-library/jest-dom/vitest";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 
-const { useI18nMock } = vi.hoisted(() => ({
+const { trackEventMock, useI18nMock } = vi.hoisted(() => ({
+  trackEventMock: vi.fn(),
   useI18nMock: vi.fn(),
 }));
 
 vi.mock("@/lib/i18n/context", () => ({
   useI18n: useI18nMock,
+}));
+
+vi.mock("@/lib/analytics/events", () => ({
+  trackEvent: trackEventMock,
 }));
 
 import { PromptPairExporter } from "@/components/style-preview/prompt-pair-exporter";
@@ -17,6 +22,7 @@ describe("PromptPairExporter", () => {
   const writeTextMock = vi.fn();
 
   beforeEach(() => {
+    trackEventMock.mockReset();
     writeTextMock.mockReset();
     writeTextMock.mockResolvedValue(undefined);
 
@@ -58,6 +64,13 @@ describe("PromptPairExporter", () => {
     // Both sources ship: the authored rules explain composition, the generated
     // spec pins the classes.
     expect(copied).toContain("BASE_RULES");
+    expect(trackEventMock).toHaveBeenCalledWith("prompt_copy", {
+      slug: "editorial",
+      prompt_type: "hard",
+      source: "prompt-pair",
+      locale: "zh",
+    });
+    expect(trackEventMock).not.toHaveBeenCalledWith("code_copy", expect.anything());
   });
 
   it("updates soft prompt identity after rerendering a different style", async () => {
@@ -94,6 +107,12 @@ describe("PromptPairExporter", () => {
     expect(copied).toContain("style_name: 新粗野主义");
     expect(copied).toContain("style_slug: neo-brutalist");
     expect(copied).not.toContain("style_slug: editorial");
+    expect(trackEventMock).toHaveBeenLastCalledWith("prompt_copy", {
+      slug: "neo-brutalist",
+      prompt_type: "soft",
+      source: "prompt-pair",
+      locale: "zh",
+    });
   });
 
   it("downloads hard prompt with deterministic filename", () => {
@@ -132,9 +151,65 @@ describe("PromptPairExporter", () => {
     expect(objectUrlSpy).toHaveBeenCalledTimes(1);
     expect(revokeSpy).toHaveBeenCalledWith("blob:mock");
     expect(anchorClicks[0]?.download).toBe("editorial-hard-prompt.md");
+    expect(trackEventMock).not.toHaveBeenCalledWith("prompt_copy", expect.anything());
 
     createElementSpy.mockRestore();
     objectUrlSpy.mockRestore();
     revokeSpy.mockRestore();
+  });
+
+  it("does not count when both clipboard APIs fail", async () => {
+    writeTextMock.mockRejectedValueOnce(new Error("clipboard denied"));
+    const execCommandMock = vi.fn().mockReturnValue(false);
+    Object.defineProperty(document, "execCommand", {
+      configurable: true,
+      value: execCommandMock,
+    });
+
+    render(
+      <PromptPairExporter
+        styleName="编辑杂志"
+        styleSlug="editorial"
+        aiRules="RULES"
+        doList={[]}
+        dontList={[]}
+        keywords={[]}
+      />
+    );
+    const copyButton = screen.getAllByRole("button", { name: "promptPair.copy" })[0];
+    fireEvent.click(copyButton);
+
+    await waitFor(() => expect(execCommandMock).toHaveBeenCalledWith("copy"));
+    expect(trackEventMock).not.toHaveBeenCalled();
+    expect(copyButton).toHaveTextContent("promptPair.copy");
+  });
+
+  it("counts a successful legacy clipboard fallback", async () => {
+    writeTextMock.mockRejectedValueOnce(new Error("clipboard denied"));
+    const execCommandMock = vi.fn().mockReturnValue(true);
+    Object.defineProperty(document, "execCommand", {
+      configurable: true,
+      value: execCommandMock,
+    });
+
+    render(
+      <PromptPairExporter
+        styleName="编辑杂志"
+        styleSlug="editorial"
+        aiRules="RULES"
+        doList={[]}
+        dontList={[]}
+        keywords={[]}
+      />
+    );
+    fireEvent.click(screen.getAllByRole("button", { name: "promptPair.copy" })[1]);
+
+    await waitFor(() => expect(trackEventMock).toHaveBeenCalledWith("prompt_copy", {
+      slug: "editorial",
+      prompt_type: "soft",
+      source: "prompt-pair",
+      locale: "zh",
+    }));
+    expect(execCommandMock).toHaveBeenCalledWith("copy");
   });
 });

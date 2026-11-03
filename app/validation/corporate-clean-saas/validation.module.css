@@ -13,7 +13,7 @@
   min-height: 100vh;
   background: var(--research-paper);
   color: var(--research-ink);
-  font-family: var(--font-geist-sans), Arial, sans-serif;
+  font-family: var(--font-body-active);
 }
 
 .topbar {
@@ -49,7 +49,7 @@
 .evidenceRail li::before { position: absolute; top: -4px; left: 0; width: 7px; height: 7px; border-radius: 999px; background: #c9ced7; content: ""; }
 .evidenceRail li[data-active="true"] { color: var(--research-ink); }
 .evidenceRail li[data-active="true"]::before { background: var(--research-blue); box-shadow: 0 0 0 4px var(--research-blue-soft); }
-.evidenceRail span { font-family: var(--font-geist-mono), monospace; font-size: 10px; }
+.evidenceRail span { font-family: var(--font-mono-active); font-size: 10px; }
 .evidenceRail strong { font-size: 12px; font-weight: 500; }
 
 .proofGrid, .qualification, .pricePanel { background: var(--research-sheet); box-shadow: 0 0 0 1px var(--research-line), 0 10px 30px rgba(23, 32, 51, 0.035); }
@@ -75,7 +75,7 @@
 .primaryAction:focus-visible, .secondaryAction:focus-visible, .checkRow:has(input:focus-visible) { outline: 2px solid var(--research-blue); outline-offset: 2px; }
 
 .pricePanel { display: grid; gap: 28px; margin-top: 28px; padding: 48px; }
-.priceIdentity h2 { font-family: var(--font-geist-mono), monospace; font-size: clamp(44px, 7vw, 72px); font-variant-numeric: tabular-nums; }
+.priceIdentity h2 { font-family: var(--font-mono-active); font-size: clamp(44px, 7vw, 72px); font-variant-numeric: tabular-nums; }
 .priceIdentity > p:last-child { max-width: 620px; margin: 12px 0 0; color: var(--research-secondary); font-size: 12px; line-height: 1.7; }
 .termsGrid { display: grid; grid-template-columns: repeat(4, 1fr); margin: 0; border-block: 1px solid var(--research-line); }
 .termsGrid div { padding: 18px 16px 18px 0; }

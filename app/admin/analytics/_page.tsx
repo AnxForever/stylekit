@@ -13,6 +13,8 @@ import { AnalyticsContentPage } from "./_content-page";
 import { AnalyticsAuditPage } from "./_audit-page";
 import type { AdminAuditData } from "@/lib/swr";
 import type { AnalyticsContent, AnalyticsEvents, AnalyticsOverview, AnalyticsRange, AnalyticsRegistrations } from "@/lib/admin/analytics-api-contract";
+import type { PromptCopyStyleLabel } from "@/lib/admin/prompt-copy-report";
+import type { PromptCopyAnalytics } from "@/lib/admin/prompt-copy-analytics";
 
 const PAGE_COPY: Record<AnalyticsView, { title: string; description: string }> = {
   overview: {
@@ -52,6 +54,8 @@ export function AnalyticsPage({
   initialTraffic,
   initialContent,
   initialEvents,
+  promptCopyStyles,
+  initialPromptCopies,
   initialRegistrations,
   initialAudit,
 }: {
@@ -61,6 +65,8 @@ export function AnalyticsPage({
   initialTraffic?: TrafficSnapshots;
   initialContent?: AnalyticsContent;
   initialEvents?: AnalyticsEvents;
+  promptCopyStyles?: PromptCopyStyleLabel[];
+  initialPromptCopies?: PromptCopyAnalytics;
   initialRegistrations?: AnalyticsRegistrations;
   initialAudit?: AdminAuditData;
 }) {
@@ -76,7 +82,7 @@ export function AnalyticsPage({
         ) : view === "users" ? (
           <AnalyticsUsersPage initialRange={initialRange} initialOverview={initialOverview} initialRegistrations={initialRegistrations} />
         ) : view === "content" ? (
-          <AnalyticsContentPage initialRange={initialRange} initialData={initialContent} initialEvents={initialEvents} />
+          <AnalyticsContentPage initialRange={initialRange} initialData={initialContent} initialEvents={initialEvents} initialPromptCopies={initialPromptCopies} promptCopyStyles={promptCopyStyles} />
         ) : (
           <AnalyticsAuditPage initialData={initialAudit} />
         )}

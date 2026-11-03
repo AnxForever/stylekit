@@ -1,7 +1,7 @@
 "use client";
 
 import { Activity, Eye, Gauge, MousePointerClick, Users } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
   AdminErrorState,
   AdminPanel,
@@ -12,7 +12,6 @@ import { useAnalyticsOverview } from "@/lib/swr";
 import { AnalyticsSectionNav, AnalyticsSyncStatus } from "./_content";
 import { useAnalyticsRangeState } from "./_range-state";
 import { InteractiveLineChart } from "./_interactive-line-chart";
-import { prefetchCommonAnalytics } from "@/lib/swr/analytics-prefetch";
 
 export function AnalyticsOverviewPage({
   initialRange = "7d",
@@ -26,12 +25,6 @@ export function AnalyticsOverviewPage({
     range,
     range === initialRange ? initialData : undefined
   );
-
-  useEffect(() => {
-    if (!data) return;
-    const id = window.setTimeout(() => void prefetchCommonAnalytics(range), 3500);
-    return () => window.clearTimeout(id);
-  }, [data, range]);
 
   return (
     <div className="space-y-6">

@@ -68,7 +68,7 @@ export function CommunityRail() {
           </span>
         ) : null}
         <span className="mt-2 block text-sm font-medium">
-          {COMMUNITY_GROUP.name ?? label}
+          {t("communityRail.groupName")}
         </span>
         <span className="mt-1 block text-xs leading-5 text-muted">
           {t("communityRail.purpose")}

@@ -8,23 +8,26 @@ import {
   isMissingAnalyticsRpc,
 } from "@/lib/admin/analytics-api-contract";
 import {
+  type AnalyticsRpcResult,
+  coalesceAnalyticsRequest,
   readAnalyticsCache,
   writeAnalyticsCache,
 } from "@/lib/admin/analytics-response-cache";
 import { writePersistentAnalyticsSnapshot } from "@/lib/admin/analytics-persistent-snapshot";
 
 const TIMEZONE = "Asia/Shanghai";
+const RESPONSE_HEADERS = { "Cache-Control": "private, no-store" };
 
 export async function GET(request: Request) {
   const access = await checkAdminApiAccess(request);
   if (!access.allowed) {
-    return NextResponse.json({ error: access.error }, { status: access.status ?? 403 });
+    return NextResponse.json({ error: access.error }, { status: access.status ?? 403, headers: RESPONSE_HEADERS });
   }
 
   const url = new URL(request.url);
   const range = analyticsRangeSchema.safeParse(url.searchParams.get("range") ?? "7d");
   if (!range.success) {
-    return NextResponse.json({ error: "Invalid analytics range." }, { status: 400 });
+    return NextResponse.json({ error: "Invalid analytics range." }, { status: 400, headers: RESPONSE_HEADERS });
   }
 
   const cacheKey = `content:${range.data}`;
@@ -40,7 +43,7 @@ export async function GET(request: Request) {
   if (!supabaseUrl || !serviceKey) {
     return NextResponse.json(
       { error: "Analytics storage is not configured.", code: "ANALYTICS_UNAVAILABLE" },
-      { status: 503 }
+      { status: 503, headers: RESPONSE_HEADERS }
     );
   }
 
@@ -49,11 +52,18 @@ export async function GET(request: Request) {
   });
   const window = getAnalyticsWindow(range.data);
   const startedAt = performance.now();
-  const { data, error } = await client.rpc("admin_analytics_content", {
-    p_start: window.start,
-    p_end: window.end,
-    p_timezone: TIMEZONE,
-  });
+  const { data, error } = await coalesceAnalyticsRequest<AnalyticsRpcResult>(
+    `rpc:${cacheKey}`,
+    async () => {
+      const recent = readAnalyticsCache<unknown>(cacheKey);
+      if (recent) return { data: recent, error: null };
+      return await client.rpc("admin_analytics_content", {
+        p_start: window.start,
+        p_end: window.end,
+        p_timezone: TIMEZONE,
+      });
+    },
+  );
   const durationMs = Math.round(performance.now() - startedAt);
 
   if (error) {
@@ -65,7 +75,7 @@ export async function GET(request: Request) {
           : "Failed to load content analytics.",
         code: migrationMissing ? "ANALYTICS_MIGRATION_REQUIRED" : "ANALYTICS_QUERY_FAILED",
       },
-      { status: 503, headers: { "Server-Timing": `analytics;dur=${durationMs}` } }
+      { status: 503, headers: { ...RESPONSE_HEADERS, "Server-Timing": `analytics;dur=${durationMs}` } }
     );
   }
 
@@ -73,14 +83,15 @@ export async function GET(request: Request) {
   if (!parsed.success) {
     return NextResponse.json(
       { error: "Content analytics returned an invalid payload.", code: "ANALYTICS_INVALID_PAYLOAD" },
-      { status: 502, headers: { "Server-Timing": `analytics;dur=${durationMs}` } }
+      { status: 502, headers: { ...RESPONSE_HEADERS, "Server-Timing": `analytics;dur=${durationMs}` } }
     );
   }
 
   writeAnalyticsCache(cacheKey, parsed.data);
-  await writePersistentAnalyticsSnapshot(cacheKey, parsed.data);
+  void writePersistentAnalyticsSnapshot(cacheKey, parsed.data);
   return NextResponse.json(parsed.data, {
     headers: {
+      ...RESPONSE_HEADERS,
       "Server-Timing": `analytics;dur=${durationMs}`,
       "X-StyleKit-Analytics-Cache": "MISS",
     },

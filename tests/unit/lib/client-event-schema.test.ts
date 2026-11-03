@@ -5,6 +5,45 @@ import {
 } from "@/lib/analytics/client-event-schema";
 
 describe("client analytics runtime schema", () => {
+  it.each(["hard", "soft", "design-spec", "creative-brief", "example", "project-brief", "recipe"])(
+    "accepts %s prompt copy metadata and derives its style identity",
+    (promptType) => {
+      const parsed = parseClientAnalyticsPayload({
+        eventType: "prompt_copy",
+        eventData: {
+          slug: "neo-brutalist",
+          prompt_type: promptType,
+          source: "implementation-panel",
+          locale: "zh",
+        },
+        sessionId: null,
+      });
+      expect(parsed.success).toBe(true);
+      if (!parsed.success) return;
+      expect(readEventStyleSlug(parsed.data.eventType, parsed.data.eventData)).toBe("neo-brutalist");
+    },
+  );
+
+  it.each([
+    { slug: null },
+    { prompt_type: "css" },
+    { source: "unknown" },
+    { locale: "fr" },
+    { prompt: "private project prompt" },
+  ])("rejects invalid or free-form prompt copy metadata %j", (override) => {
+    expect(parseClientAnalyticsPayload({
+      eventType: "prompt_copy",
+      eventData: {
+        slug: "neo-brutalist",
+        prompt_type: "hard",
+        source: "hero",
+        locale: "en",
+        ...override,
+      },
+      sessionId: null,
+    }).success).toBe(false);
+  });
+
   it("accepts a bounded client event and derives its style slug", () => {
     const parsed = parseClientAnalyticsPayload({
       eventType: "catalog_impression",

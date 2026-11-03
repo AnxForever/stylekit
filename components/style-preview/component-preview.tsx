@@ -62,8 +62,20 @@ export function ComponentPreview({
       hero: "Hero",
       footer: t("preview.tab.footer"),
     };
-    return labelMap[key] || components[key].name;
+    return labelMap[key] || (locale === "zh" ? components[key].name : key);
   };
+
+  // Component templates only carry Chinese copy today. On the English UI the
+  // heading falls back to the translated tab label and the description is
+  // omitted unless the style supplies an English one.
+  const activeHeading =
+    locale === "zh"
+      ? activeComponent.name
+      : activeComponent.nameEn || getTabLabel(activeTab);
+  const activeDescription =
+    locale === "zh"
+      ? activeComponent.description
+      : activeComponent.descriptionEn;
 
   const previewHtml = useMemo(() => {
     if (!activeComponent) return "";
@@ -95,10 +107,12 @@ export function ComponentPreview({
       {/* Component Info */}
       <div className="px-4 md:px-6 py-4 border-b border-border flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
         <div>
-          <h4 className="font-serif text-lg">{activeComponent.name}</h4>
-          <p className="text-sm text-muted mt-1">
-            {activeComponent.description}
-          </p>
+          <h4 className="font-serif text-lg">{activeHeading}</h4>
+          {activeDescription && (
+            <p className="text-sm text-muted mt-1">
+              {activeDescription}
+            </p>
+          )}
         </div>
         <button
           type="button"

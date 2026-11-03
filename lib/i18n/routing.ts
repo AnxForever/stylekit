@@ -84,6 +84,7 @@ export const LOCALE_ROUTE_POLICY = [
       "/avoid-ai-slop",
       "/privacy",
       "/resources",
+      "/prompt-sites",
       "/style-advisor",
       "/tailwind-ui-prompts",
       "/templates",

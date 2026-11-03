@@ -9,6 +9,7 @@ import { StyleCoverPreview } from "@/components/style-preview/style-cover-previe
 import { useI18n } from "@/lib/i18n/context";
 import type { StyleMeta } from "@/lib/styles/meta";
 import { getScenarioLabel, getStyleScenarios } from "@/lib/styles/scenarios";
+import { CardSpotlight, useCardSpotlight } from "@/components/ui/card-spotlight";
 
 interface StyleCardProps {
   style: StyleMeta;
@@ -35,6 +36,7 @@ export const StyleCard = React.memo(function StyleCard({
   badge,
 }: StyleCardProps) {
   const { locale } = useI18n();
+  const spotlight = useCardSpotlight();
   const isCompact = variant === "compact";
   const scenarios = getStyleScenarios(style, isCompact ? 2 : 3);
   const cardClassName = "group relative border border-border motion-safe:transition-[border-color,transform,box-shadow] motion-safe:duration-200 hover:border-foreground focus-within:border-foreground motion-safe:hover:-translate-y-0.5 motion-safe:hover:shadow-md";
@@ -54,7 +56,12 @@ export const StyleCard = React.memo(function StyleCard({
 
   return (
     <div className="relative">
-      <div className={cardClassName}>
+      <div
+        className={cardClassName}
+        ref={spotlight.ref}
+        onPointerMove={spotlight.onPointerMove}
+      >
+        <CardSpotlight />
         <LocalizedLink
           href={`${basePath}/${style.slug}`}
           onClick={handleClick}
