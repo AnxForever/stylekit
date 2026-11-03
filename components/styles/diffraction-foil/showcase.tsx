@@ -14,7 +14,6 @@ import styles from "./showcase.module.css";
 type PromptLocale = "zh" | "en";
 
 const reference = "/experiments/diffraction-foil/index.html";
-const origin = "https://yophon.github.io/1001-pages/holo.html";
 const focus = "focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#c9c8d4]";
 const action = `inline-flex min-h-11 items-center justify-center rounded-full border px-5 py-2.5 text-sm transition-colors ${focus}`;
 const panel = "rounded-2xl border border-white/10 bg-[#141319]";
@@ -229,12 +228,6 @@ export default function DiffractionFoilShowcase() {
           <span data-foil="text" className={styles.text}>{zh ? "光就是油墨。" : "Light is the ink."}</span>
         </p>
         <p className="mt-6 max-w-2xl text-base leading-relaxed text-[#a9a8b6]">{zh ? diffractionFoil.description : diffractionFoil.descriptionEn}</p>
-        <p className="mt-4 text-sm text-[#8a8996]">
-          {zh ? "原作：" : "Original: "}
-          <a href={origin} target="_blank" rel="noopener noreferrer" className={`underline underline-offset-4 hover:text-[#ececf2] ${focus}`}>
-            {zh ? "一千零一页 · 002 镭射闪卡" : "1001 Pages · 002 Foil Card"}
-          </a>
-        </p>
       </header>
 
       <section aria-label={zh ? "实时效果" : "Live study"} className="border-t border-white/10">
@@ -439,19 +432,6 @@ export default function DiffractionFoilShowcase() {
                 ))}
               </tbody>
             </table>
-          </div>
-        </Section>
-
-        <Section id="source" title={zh ? "出处" : "Source"}>
-          <div className={`${panel} flex flex-wrap items-center justify-between gap-4 p-6`}>
-            <p className="max-w-2xl text-sm leading-relaxed text-[#a9a8b6]">
-              {zh
-                ? "这套风格来自一千零一页的第 002 页“镭射闪卡”：一张按衍射光栅实时算颜色的收藏卡，和从它拆出来的一整套镭射零件。"
-                : "This style comes from page 002 of 1001 Pages, a trading card whose color is computed from a diffraction grating in real time, together with the foil components taken apart from it."}
-            </p>
-            <a href={origin} target="_blank" rel="noopener noreferrer" className={`${action} border-white/15 text-[#ececf2] hover:border-white/40`}>
-              {zh ? "打开原作" : "Open the original"} →
-            </a>
           </div>
         </Section>
       </main>
