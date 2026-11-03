@@ -165,6 +165,7 @@ import { pastelUiTokens } from "./pastel-ui-tokens";
 import { mobileEditorialTokens } from "./mobile-editorial-tokens";
 import { softUtilityTokens } from "./soft-utility-tokens";
 import { quantizedLineFieldTokens } from "./quantized-line-field-tokens";
+import { diffractionFoilTokens } from "./diffraction-foil-tokens";
 
 
 
@@ -334,4 +335,5 @@ export const styleTokensRegistry: Record<string, StyleTokens> = {
   "mobile-editorial": mobileEditorialTokens,
   "soft-utility": softUtilityTokens,
   "quantized-line-field": quantizedLineFieldTokens,
+  "diffraction-foil": diffractionFoilTokens,
 };

@@ -175,6 +175,7 @@ import { pastelUi } from "./pastel-ui";
 import { mobileEditorial } from "./mobile-editorial";
 import { softUtility } from "./soft-utility";
 import { quantizedLineField } from "./quantized-line-field";
+import { diffractionFoil } from "./diffraction-foil";
 
 
 
@@ -360,6 +361,7 @@ export const rawStyles: DesignStyle[] = [
   mobileEditorial,
   softUtility,
   quantizedLineField,
+  diffractionFoil,
 ];
 
 export const styles: DesignStyle[] = rawStyles.map((style) => normalizeStyleRules(style));

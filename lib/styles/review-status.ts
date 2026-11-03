@@ -5,6 +5,7 @@
  * their visual baselines.
  */
 export const PENDING_STYLE_SLUGS = [
+  "diffraction-foil",
   "mobile-editorial",
   "pastel-ui",
   "quantized-line-field",
