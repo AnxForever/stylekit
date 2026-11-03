@@ -53,22 +53,6 @@ export const mainNav: NavItem[] = [
   { href: "/styles", labelKey: "nav.styles" },
   { href: "/templates", labelKey: "nav.templates" },
   {
-    // One place for the things built around the catalog: contributed work,
-    // the chat group, and the blog. Keeping them together avoids a fifth
-    // top-level item at the `lg` breakpoint, where the header is already full.
-    href: "/community",
-    labelKey: "nav.community",
-    dropdown: {
-      labelKey: "nav.community",
-      width: "narrow",
-      items: [
-        { href: "/community", labelKey: "nav.communityStyles" },
-        { href: "/community/join", labelKey: "nav.communityJoin" },
-        { href: "/blog", labelKey: "nav.blog" },
-      ],
-    },
-  },
-  {
     href: "/guides",
     labelKey: "nav.resources",
     dropdown: {

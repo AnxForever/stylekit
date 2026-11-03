@@ -3,14 +3,15 @@
 export const dynamic = "force-static";
 
 import Image from "next/image";
-import { useCallback, useDeferredValue, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useDeferredValue, useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { Check, ClipboardCopy, Code2, Download, ExternalLink, Github, Loader2, X } from "lucide-react";
+import { Code2, Download, ExternalLink, Github, Loader2, X } from "lucide-react";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { getAllStylesMeta } from "@/lib/styles/meta";
 import { TemplatesFilter } from "@/components/templates/templates-filter";
 import { TemplateCoverPreview } from "@/components/templates/template-cover-preview";
+import { TemplateSourceDialog } from "@/components/templates/template-source-dialog";
 import { LocalizedLink } from "@/components/i18n/localized-link";
 import { useI18n } from "@/lib/i18n/context";
 import { pickLocale } from "@/lib/i18n/locale-copy";
@@ -25,11 +26,20 @@ import {
   type TemplateCatalogEntry,
   type TemplateCatalogType,
 } from "@/lib/templates/catalog";
+import {
+  getTemplateTypeScenarios,
+  getTemplateTypes,
+  matchesTemplateSearch,
+  matchesTemplateType,
+  type TemplateTypeFilter,
+} from "@/lib/templates/discovery";
 import { templateCoverSlugs } from "@/lib/templates/covers.generated";
 
-type TemplateTypeFilter = "all" | TemplateCatalogType | "pricing";
 type TemplateSort = "recommended" | "name-asc" | "name-desc";
 const templates = templateCatalog;
+const subscribeToClientReady = () => () => {};
+const getClientReady = () => true;
+const getServerReady = () => false;
 
 const allStyles = getAllStylesMeta();
 const styleMap = new Map(allStyles.map((style) => [style.slug, style]));
@@ -46,11 +56,10 @@ const templatePrimaryScenarioMap: Partial<Record<TemplateCatalogType, StyleScena
 };
 
 function getTemplateScenarios(template: TemplateCatalogEntry): StyleScenario[] {
-  const primary = templatePrimaryScenarioMap[template.type];
   const style = styleMap.get(template.styleSlug);
   const styleScenarios = style ? getStyleScenarios(style, 3) : [];
   const combined = [
-    ...(primary ? [primary] : []),
+    ...getTemplateTypeScenarios(template, templatePrimaryScenarioMap),
     ...styleScenarios,
   ];
 
@@ -197,6 +206,7 @@ export default function TemplatesPage() {
       if (event.key !== "/") return;
 
       const target = event.target as HTMLElement | null;
+      if (target?.closest("dialog")) return;
       if (
         target &&
         (target.tagName === "INPUT" ||
@@ -279,29 +289,17 @@ export default function TemplatesPage() {
         deferredActiveScenario === "all" ||
         getTemplateScenarios(template).includes(deferredActiveScenario)
       ))
-      .filter((template) => (
-        deferredActiveType === "all" ||
-        (deferredActiveType === "pricing" ? template.id === "pricing-page" : template.type === deferredActiveType)
-      ))
+      .filter((template) => matchesTemplateType(template, deferredActiveType))
       .filter((template) => {
-        if (!normalizedQuery) return true;
-
         const style = styleMap.get(template.styleSlug);
-        const searchableText = [
-          template.id,
-          template.href,
-          template.name.zh,
-          template.name.en,
-          template.description.zh,
-          template.description.en,
-          style?.name,
-          style?.nameEn,
-        ]
-          .filter(Boolean)
-          .join(" ")
-          .toLowerCase();
-
-        return searchableText.includes(normalizedQuery);
+        const typeLabels = getTemplateTypes(template).map((type) =>
+          t(templateTypeToTranslationKey(type))
+        );
+        return matchesTemplateSearch(template, normalizedQuery, [
+          style?.name ?? "",
+          style?.nameEn ?? "",
+          ...typeLabels,
+        ]);
       });
 
     if (deferredActiveSort === "recommended") return matchedTemplates;
@@ -317,7 +315,7 @@ export default function TemplatesPage() {
     }
 
     return sortedTemplates;
-  }, [deferredActiveScenario, deferredActiveSort, deferredActiveStyleSlug, deferredActiveType, locale, trimmedDeferredSearchQuery]);
+  }, [deferredActiveScenario, deferredActiveSort, deferredActiveStyleSlug, deferredActiveType, locale, t, trimmedDeferredSearchQuery]);
   const isFiltering =
     searchQuery !== deferredSearchQuery ||
     activeScenario !== deferredActiveScenario ||
@@ -329,68 +327,13 @@ export default function TemplatesPage() {
     templateCardRefs.current = templateCardRefs.current.slice(0, filteredTemplates.length);
   }, [filteredTemplates.length]);
 
-  // --- Source code actions state ---
-  const [sourceOpen, setSourceOpen] = useState(false);
-  const [sourceSlug, setSourceSlug] = useState("");
-  const [source, setSource] = useState<string | null>(null);
-  const [sourceLoading, setSourceLoading] = useState(false);
-  const [copied, setCopied] = useState(false);
-  const dialogRef = useRef<HTMLDialogElement>(null);
-  const sourceCache = useRef<Record<string, string>>({});
-
-  const fetchSource = useCallback(async (slug: string): Promise<string | null> => {
-    if (sourceCache.current[slug]) return sourceCache.current[slug];
-    setSourceLoading(true);
-    try {
-      const res = await fetch(`/api/templates/${slug}/source`);
-      if (!res.ok) throw new Error("fetch failed");
-      const json = await res.json();
-      sourceCache.current[slug] = json.source;
-      return json.source as string;
-    } catch {
-      return null;
-    } finally {
-      setSourceLoading(false);
-    }
+  const [sourceTemplate, setSourceTemplate] = useState<{ slug: string; name: string } | null>(null);
+  const clientReady = useSyncExternalStore(subscribeToClientReady, getClientReady, getServerReady);
+  const handleViewSource = useCallback((slug: string, name: string) => {
+    setSourceTemplate({ slug, name });
   }, []);
-
-  const handleViewSource = useCallback(async (slug: string) => {
-    setSourceSlug(slug);
-    const code = await fetchSource(slug);
-    setSource(code);
-    setSourceOpen(true);
-  }, [fetchSource]);
-
-  const handleCopy = useCallback(async (slug: string) => {
-    const code = sourceCache.current[slug] ?? await fetchSource(slug);
-    if (!code) return;
-    await navigator.clipboard.writeText(code);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  }, [fetchSource]);
-
-  // Full-project ZIP: the API packages the template with a runnable Next.js
-  // scaffold, so a plain navigation triggers the browser's native download.
-  const handleDownload = useCallback((slug: string) => {
-    window.location.assign(`/api/templates/${slug}/download`);
-  }, []);
-
-  useEffect(() => {
-    const dialog = dialogRef.current;
-    if (!dialog) return;
-    if (sourceOpen && !dialog.open) {
-      dialog.showModal();
-    } else if (!sourceOpen && dialog.open) {
-      dialog.close();
-    }
-  }, [sourceOpen]);
-
-  useEffect(() => {
-    const dialog = dialogRef.current;
-    if (!dialog) return;
-    const onClose = () => setSourceOpen(false);
-    dialog.addEventListener("close", onClose);
-    return () => dialog.removeEventListener("close", onClose);
+  const handleCloseSource = useCallback(() => {
+    setSourceTemplate(null);
   }, []);
 
   const handleTemplateCardKeyDown = (
@@ -634,6 +577,7 @@ export default function TemplatesPage() {
                   return (
                     <div
                       key={template.id}
+                      data-template-id={template.id}
                       className="group border border-border hover:border-foreground focus-within:border-foreground transition-colors [content-visibility:auto] [contain-intrinsic-size:1px_520px]"
                     >
                       <a
@@ -644,7 +588,7 @@ export default function TemplatesPage() {
                           templateCardRefs.current[index] = element;
                         }}
                         onKeyDown={(event) => handleTemplateCardKeyDown(event, index)}
-                        aria-label={`${templateName} - ${t("templates.visitSite")}`}
+                        aria-label={`${templateName} - ${t("templates.externalPreview")}`}
                         className="block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                       >
                         <div className="aspect-[16/10] relative overflow-hidden bg-zinc-100 dark:bg-zinc-900">
@@ -659,7 +603,7 @@ export default function TemplatesPage() {
                             />
                           )}
                           <span className="absolute left-3 top-3 border border-foreground bg-background/90 px-2 py-1 text-[10px] uppercase tracking-[0.16em] backdrop-blur-sm">
-                            {t("templates.communityPick")}
+                            {t("templates.completeProject")}
                           </span>
                           <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent px-4 py-3">
                             <span className="text-white text-sm font-medium">{templateName}</span>
@@ -668,12 +612,11 @@ export default function TemplatesPage() {
 
                         <div className="p-4 md:p-5">
                           <div className="flex flex-wrap items-center gap-2 mb-3">
-                            <span className="text-xs px-2 py-0.5 bg-zinc-100 dark:bg-zinc-800 text-muted">
-                              {t(templateTypeToTranslationKey(template.type))}
-                            </span>
-                            <span className="text-xs px-2 py-0.5 bg-zinc-100 dark:bg-zinc-800 text-muted">
-                              {t("templates.badgeOpenSource")}
-                            </span>
+                            {getTemplateTypes(template).map((type) => (
+                              <span key={type} className="text-xs px-2 py-0.5 bg-zinc-100 dark:bg-zinc-800 text-muted">
+                                {t(templateTypeToTranslationKey(type))}
+                              </span>
+                            ))}
                           </div>
 
                           <h3 className="text-lg mb-2 group-hover:text-accent transition-colors">
@@ -682,34 +625,57 @@ export default function TemplatesPage() {
                           <p className="text-sm text-muted leading-relaxed line-clamp-2">
                             {templateDescription}
                           </p>
-
-                          <p className="text-xs tracking-wide mt-4 group-hover:text-accent transition-colors">
-                            {t("templates.visitSite")} &#8599;
-                          </p>
+                          {template.external.stack && (
+                            <p className="mt-4 text-xs leading-relaxed text-muted">
+                              <span className="mr-1 text-foreground">{t("templates.stack")}</span>
+                              {template.external.stack}
+                            </p>
+                          )}
+                          {template.external.features && (
+                            <ul className="mt-3 space-y-1.5 text-xs leading-relaxed text-muted">
+                              {pickLocale(locale, template.external.features).slice(0, 3).map((feature) => (
+                                <li key={feature} className="flex gap-2">
+                                  <span aria-hidden="true" className="text-foreground">—</span>
+                                  <span>{feature}</span>
+                                </li>
+                              ))}
+                            </ul>
+                          )}
                         </div>
                       </a>
 
-                      <div className="flex items-center gap-1 px-4 pb-4 md:px-5 md:pb-5 pt-0">
+                      <div className="flex flex-wrap items-center gap-2 px-4 pb-4 md:px-5 md:pb-5 pt-0">
                         <a
                           href={template.external.repoUrl}
                           target="_blank"
                           rel="noopener noreferrer"
-                          title={t("templates.viewOnGitHub")}
+                          title={t("templates.fullSource")}
                           className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium border border-foreground text-foreground hover:bg-foreground hover:text-background transition-colors"
                         >
                           <Github className="w-3.5 h-3.5" />
-                          GitHub
+                          {t("templates.fullSource")}
                         </a>
                         <a
                           href={template.external.siteUrl}
                           target="_blank"
                           rel="noopener noreferrer"
-                          title={t("templates.visitSite")}
+                          title={t("templates.externalPreview")}
                           className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-muted border border-border hover:border-foreground hover:text-foreground transition-colors"
                         >
                           <ExternalLink className="w-3.5 h-3.5" />
-                          {t("templates.visitSite")}
+                          {t("templates.externalPreview")}
                         </a>
+                        {template.external.license && (
+                          <a
+                            href={template.external.license.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            title={t("templates.viewLicense")}
+                            className="ml-auto text-xs text-muted underline decoration-border underline-offset-4 hover:text-foreground"
+                          >
+                            {template.external.license.label} {t("templates.license")}
+                          </a>
+                        )}
                       </div>
                     </div>
                   );
@@ -718,6 +684,7 @@ export default function TemplatesPage() {
                 return (
                   <div
                     key={template.id}
+                    data-template-id={template.id}
                     className="group border border-border hover:border-foreground focus-within:border-foreground transition-colors [content-visibility:auto] [contain-intrinsic-size:1px_520px]"
                   >
                     <LocalizedLink
@@ -758,11 +725,16 @@ export default function TemplatesPage() {
 
                       <div className="p-4 md:p-5">
                         <div className="flex flex-wrap items-center gap-2 mb-3">
-                          <span className="text-xs px-2 py-0.5 bg-zinc-100 dark:bg-zinc-800 text-muted">
-                            {t(templateTypeToTranslationKey(template.type))}
-                          </span>
+                          {getTemplateTypes(template).map((type) => (
+                            <span key={type} className="text-xs px-2 py-0.5 bg-zinc-100 dark:bg-zinc-800 text-muted">
+                              {t(templateTypeToTranslationKey(type))}
+                            </span>
+                          ))}
                           <span className="text-xs px-2 py-0.5 bg-zinc-100 dark:bg-zinc-800 text-muted">
                             {styleLabel}
+                          </span>
+                          <span className="text-xs px-2 py-0.5 border border-border text-muted">
+                            {t("templates.downloadableExample")}
                           </span>
                         </div>
 
@@ -793,31 +765,23 @@ export default function TemplatesPage() {
                     <div className="flex items-center gap-1 px-4 pb-4 md:px-5 md:pb-5 pt-0">
                       <button
                         type="button"
-                        onClick={() => handleViewSource(slug)}
+                        onClick={() => handleViewSource(slug, templateName)}
+                        disabled={!clientReady}
                         title={t("templates.viewSource")}
-                        className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-muted border border-border hover:border-foreground hover:text-foreground transition-colors"
+                        className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-muted border border-border hover:border-foreground hover:text-foreground transition-colors disabled:cursor-wait disabled:opacity-50"
                       >
                         <Code2 className="w-3.5 h-3.5" />
                         {t("templates.viewSource")}
                       </button>
-                      <button
-                        type="button"
-                        onClick={() => handleCopy(slug)}
-                        title={t("templates.copyCode")}
-                        className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-muted border border-border hover:border-foreground hover:text-foreground transition-colors"
-                      >
-                        <ClipboardCopy className="w-3.5 h-3.5" />
-                        {t("templates.copyCode")}
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => handleDownload(slug)}
-                        title={t("templates.download")}
+                      <a
+                        href={"/api/templates/" + encodeURIComponent(slug) + "/download"}
+                        download
+                        title={t("templates.downloadExample")}
                         className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium border border-foreground text-foreground hover:bg-foreground hover:text-background transition-colors"
                       >
                         <Download className="w-3.5 h-3.5" />
-                        {t("templates.download")}
-                      </button>
+                        {t("templates.downloadExample")}
+                      </a>
                     </div>
                   </div>
                 );
@@ -850,82 +814,14 @@ export default function TemplatesPage() {
 
       <Footer />
 
-      {/* Source code modal */}
-      <dialog
-        ref={dialogRef}
-        className="fixed inset-0 z-[10000] m-0 h-full w-full max-h-full max-w-full bg-transparent backdrop:bg-black/60"
-      >
-        <div className="flex h-full w-full items-start justify-center p-4 md:p-8">
-          <div className="relative w-full max-w-4xl max-h-full flex flex-col rounded-xl bg-zinc-900 shadow-2xl border border-zinc-700 overflow-hidden">
-            {/* Header */}
-            <div className="flex items-center justify-between px-4 py-3 border-b border-zinc-700 bg-zinc-800/80">
-              <div className="flex items-center gap-3">
-                <Code2 className="w-4 h-4 text-zinc-400" />
-                <span className="text-sm font-mono text-zinc-300">
-                  {sourceSlug}.tsx
-                </span>
-              </div>
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={() => handleCopy(sourceSlug)}
-                  className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-zinc-300 bg-zinc-700 rounded-md hover:bg-zinc-600 transition-colors"
-                >
-                  {copied ? (
-                    <>
-                      <Check className="w-3.5 h-3.5 text-green-400" />
-                      {t("templates.copied")}
-                    </>
-                  ) : (
-                    <>
-                      <ClipboardCopy className="w-3.5 h-3.5" />
-                      {t("templates.copyCode")}
-                    </>
-                  )}
-                </button>
-                <button
-                  onClick={() => handleDownload(sourceSlug)}
-                  className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-zinc-300 bg-zinc-700 rounded-md hover:bg-zinc-600 transition-colors"
-                >
-                  <Download className="w-3.5 h-3.5" />
-                  {t("templates.download")}
-                </button>
-                <button
-                  onClick={() => setSourceOpen(false)}
-                  className="p-1.5 text-zinc-400 hover:text-white transition-colors"
-                >
-                  <X className="w-4 h-4" />
-                </button>
-              </div>
-            </div>
-
-            {/* Code content */}
-            <div className="flex-1 overflow-auto">
-              {sourceLoading ? (
-                <div className="flex items-center justify-center py-20 text-zinc-500 text-sm">
-                  {t("templates.loadingSource")}
-                </div>
-              ) : source ? (
-                <div className="flex text-sm font-mono leading-relaxed">
-                  {/* Line numbers */}
-                  <div className="select-none px-4 py-4 text-right text-zinc-600 bg-zinc-900/50 border-r border-zinc-800 shrink-0">
-                    {source.split("\n").map((_, i) => (
-                      <div key={i}>{i + 1}</div>
-                    ))}
-                  </div>
-                  {/* Code */}
-                  <pre className="flex-1 px-4 py-4 text-zinc-300 overflow-x-auto">
-                    <code>{source}</code>
-                  </pre>
-                </div>
-              ) : (
-                <div className="flex items-center justify-center py-20 text-zinc-500 text-sm">
-                  {t("templates.sourceNotFound")}
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      </dialog>
+      {sourceTemplate && (
+        <TemplateSourceDialog
+          key={sourceTemplate.slug}
+          slug={sourceTemplate.slug}
+          name={sourceTemplate.name}
+          onClose={handleCloseSource}
+        />
+      )}
     </div>
   );
 }

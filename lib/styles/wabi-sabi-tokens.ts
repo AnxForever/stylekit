@@ -96,8 +96,23 @@ export const wabiSabiTokens = createStyleTokens({
   },
 
   required: {
-    button: ["bg-transparent", "transition-colors", "duration-500"],
-    card: ["transition-colors"],
-    input: ["bg-transparent", "focus:outline-none"],
+    button: [
+      "transition-all",
+      "duration-300",
+    ],
+    card: [
+      "transition-all",
+      "bg-[#f7f3ec]",
+      "border",
+      "border-[#e0d8cf]",
+      "rounded-[16px_12px_18px_10px]",
+    ],
+    input: [
+      "bg-[#f7f3ec]",
+      "focus:outline-none",
+      "focus:border-[#8a9a7b]",
+      "focus:ring-1",
+      "focus:ring-[#8a9a7b]/15",
+    ],
   },
 });

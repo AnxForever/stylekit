@@ -75,6 +75,18 @@ export function ComponentPreview({
     return labelMap[key] || components[key].name;
   };
 
+  // Component templates only carry Chinese copy today. On the English UI the
+  // heading falls back to the translated tab label and the description is
+  // omitted unless the style supplies an English one.
+  const activeHeading =
+    locale === "zh"
+      ? activeComponent.name
+      : activeComponent.nameEn || getTabLabel(activeTab);
+  const activeDescription =
+    locale === "zh"
+      ? activeComponent.description
+      : activeComponent.descriptionEn;
+
   const previewHtml = useMemo(() => {
     if (!activeComponent) return "";
     return sanitizePreviewHtml(
@@ -106,6 +118,12 @@ export function ComponentPreview({
 
       {/* Component Info */}
       <div className="flex flex-wrap items-center gap-2 border-b border-border px-3 py-2">
+          <div className="min-w-0 flex-1">
+            <h4 className="font-serif text-lg">{activeHeading}</h4>
+            {activeDescription && (
+              <p className="text-sm text-muted mt-1">{activeDescription}</p>
+            )}
+          </div>
           {canCustomize && (
             <fieldset className="inline-flex border border-border p-0.5">
               <legend className="sr-only">{locale === "zh" ? "组件视图" : "Component view"}</legend>

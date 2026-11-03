@@ -94,11 +94,16 @@
   --shadow-brutal-orange-card-lg: 12px 12px 0px 0px var(--brutal-orange);
 }
 
-/* Editorial/Magazine Typography */
+/* Editorial/Magazine Typography.
+   Font stacks follow the house rule for mixed Chinese/Latin copy: the loaded
+   Latin face first, then mainstream system Latin faces, then Chinese families,
+   then the generic family as the final fallback. Latin always precedes Chinese
+   so a CJK face's own (coarse) Latin glyphs never win. Names use their English
+   spellings and multi-word names stay quoted. */
 body {
-  --font-display-active: var(--font-public-display), "Songti SC", "STSong", "SimSun", ui-serif, Georgia, serif;
-  --font-body-active: var(--font-public-sans), "PingFang SC", "Microsoft YaHei", ui-sans-serif, system-ui, sans-serif;
-  --font-mono-active: var(--font-public-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "PingFang SC", "Microsoft YaHei", monospace;
+  --font-display-active: var(--font-public-display), ui-serif, Georgia, Cambria, "Times New Roman", Times, "Songti SC", "STSong", "SimSun", "Noto Serif CJK SC", "Source Han Serif SC", serif;
+  --font-body-active: var(--font-public-sans), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei UI", "Microsoft YaHei", "Noto Sans CJK SC", "Noto Sans SC", "Source Han Sans CN", sans-serif;
+  --font-mono-active: var(--font-public-mono), "JetBrains Mono", "SF Mono", ui-monospace, Menlo, Consolas, "Liberation Mono", "Courier New", "PingFang SC", "Microsoft YaHei", monospace;
   --font-serif: var(--font-display-active);
   --font-sans: var(--font-body-active);
   --font-mono: var(--font-mono-active);
@@ -118,8 +123,28 @@ html[data-site-announcement-dismissed="true"] [data-site-announcement] {
   display: none;
 }
 
-html[data-friend-promo-dismissed="true"] [data-friend-promo] {
-  display: none;
+/* The house promo cannot be dismissed, so its single line scrolls instead of
+   truncating. Hovering or focusing the bar pauses it so the copy and the ad's
+   own call to action stay readable under the pointer. */
+@keyframes friend-promo-marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+[data-friend-promo-track] {
+  animation: friend-promo-marquee 30s linear infinite;
+}
+
+[data-friend-promo]:hover [data-friend-promo-track],
+[data-friend-promo]:focus-within [data-friend-promo-track] {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-friend-promo-track] {
+    animation: none;
+    transform: none;
+  }
 }
 
 /* Public headings use the display face. Showcase routes override the same
@@ -325,7 +350,7 @@ code {
   --muted: var(--admin-text-secondary);
   --border: var(--admin-border-soft);
   color: var(--admin-text-primary);
-  font-family: var(--font-geist-sans), "PingFang SC", "Microsoft YaHei", ui-sans-serif, system-ui, sans-serif;
+  font-family: var(--font-body-active);
   font-feature-settings: "liga" 1, "tnum" 1, "cv02" 1, "cv03" 1;
 }
 
@@ -336,7 +361,7 @@ code {
 .admin-shell h4,
 .admin-shell h5,
 .admin-shell h6 {
-  font-family: var(--font-geist-sans), "PingFang SC", "Microsoft YaHei", ui-sans-serif, system-ui, sans-serif;
+  font-family: var(--font-body-active);
   text-wrap: balance;
 }
 
@@ -346,7 +371,7 @@ code {
 .admin-shell textarea,
 .admin-shell select,
 .admin-shell button {
-  font-family: var(--font-geist-sans), "PingFang SC", "Microsoft YaHei", ui-sans-serif, system-ui, sans-serif;
+  font-family: var(--font-body-active);
 }
 
 .admin-shell input,
@@ -406,7 +431,7 @@ code {
   border-radius: 0.375rem;
   background-color: var(--admin-input);
   padding: 0.125rem 0.375rem;
-  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-family: var(--font-mono-active);
 }
 
 .dark .admin-shell {
@@ -440,6 +465,31 @@ code {
 
 ::view-transition-new(root) {
   animation: fade-in 150ms ease-out;
+}
+
+/* Theme toggle: the incoming palette wipes in as a soft-edged circle growing
+   from the centre while the previous snapshot stays still underneath. Scoped
+   to `html.theme-transition`, a class only added around the theme swap, so
+   page navigations keep their simple crossfade. */
+html.theme-transition::view-transition-group(root) {
+  animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+html.theme-transition::view-transition-old(root) {
+  animation: none;
+  z-index: -1;
+}
+
+html.theme-transition::view-transition-new(root) {
+  mask: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40"><defs><filter id="blur"><feGaussianBlur stdDeviation="2"/></filter></defs><circle cx="20" cy="20" r="18" fill="white" filter="url(%23blur)"/></svg>')
+    center / 0 no-repeat;
+  animation: theme-circle-blur 800ms both;
+}
+
+@keyframes theme-circle-blur {
+  to {
+    mask-size: 200vmax;
+  }
 }
 
 @keyframes fade-out {
@@ -635,6 +685,25 @@ input[type="range"] { cursor: pointer; }
       transparent 46%
     );
   opacity: var(--sk-spotlight-opacity, 0);
+}
+
+/* Card spotlight: a soft wash that follows the pointer, ported from the
+   owner's blog. useCardSpotlight writes --spotlight-x/y on the card; the layer
+   paints them above the card content but below its links and controls. The
+   colour derives from --foreground so it darkens a light surface and lifts a
+   dark one without a second palette. */
+.card-spotlight {
+  background: radial-gradient(
+    260px circle at var(--spotlight-x, 50%) var(--spotlight-y, 50%),
+    color-mix(in oklab, var(--foreground) 7%, transparent),
+    transparent 70%
+  );
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card-spotlight {
+    display: none;
+  }
 }
 
 .sk-tilt-perspective {

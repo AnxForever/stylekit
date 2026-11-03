@@ -7,6 +7,7 @@ export type TemplateProjectMeta = {
   nameEn: string;
   nameZh: string;
   descriptionEn: string;
+  hasCustomizationGuide?: boolean;
 };
 
 // Templates import the site-only floating back button; a downloaded project
@@ -142,7 +143,7 @@ pnpm install   # or: npm install / yarn
 pnpm dev       # http://localhost:3000
 \`\`\`
 
-## Stack
+${meta.hasCustomizationGuide ? "## Customize / 定制模板\n\nSee [CUSTOMIZE.md](./CUSTOMIZE.md) for the file map and steps to edit profile details, projects, articles, colors, and the SVG mark.\n\n逐文件修改说明见 [CUSTOMIZE.md](./CUSTOMIZE.md)，包括个人资料、项目、文章、主题配色和浮雕字标。\n\n" : ""}## Stack
 
 - Next.js (App Router) + React
 - Tailwind CSS v4 (no config file needed)

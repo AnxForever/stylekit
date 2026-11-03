@@ -169,7 +169,6 @@ import { quantizedLineFieldTokens } from "./quantized-line-field-tokens";
 
 
 
-
 // Registry of all style tokens
 export const styleTokensRegistry: Record<string, StyleTokens> = {
   "neo-brutalist": neoBrutalistTokens,

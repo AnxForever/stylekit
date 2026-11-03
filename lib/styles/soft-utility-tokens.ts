@@ -75,19 +75,20 @@ export const softUtilityTokens: StyleTokens = {
       "rounded-lg",
       "border",
       "font-medium",
-      "inline-flex",
-      "items-center"
     ],
     "card": [
       "rounded-lg",
       "border",
-      "bg-white/80"
+      "bg-[#f4f8f6]",
     ],
     "input": [
       "rounded-lg",
       "border",
-      "bg-background",
-      "focus:outline-none"
+      "bg-[#f4f8f6]",
+      "focus:outline-none",
+      "focus:border-[#2d5b63]",
+      "focus:ring-1",
+      "focus:ring-[#2d5b63]/30",
     ]
   }
 };

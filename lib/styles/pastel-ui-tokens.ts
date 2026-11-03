@@ -75,19 +75,20 @@ export const pastelUiTokens: StyleTokens = {
       "rounded-lg",
       "border",
       "font-medium",
-      "inline-flex",
-      "items-center"
     ],
     "card": [
       "rounded-lg",
       "border",
-      "bg-white/80"
+      "bg-[#fff8f0]",
     ],
     "input": [
       "rounded-lg",
       "border",
-      "bg-background",
-      "focus:outline-none"
+      "bg-[#fff8f0]",
+      "focus:outline-none",
+      "focus:border-[#66508f]",
+      "focus:ring-1",
+      "focus:ring-[#66508f]/30",
     ]
   }
 };

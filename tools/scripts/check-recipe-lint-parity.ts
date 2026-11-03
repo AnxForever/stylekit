@@ -15,17 +15,17 @@
  * each render with the style's own rules. Any forbidden-class hit fails the
  * check.
  *
- * Missing-required hits are measured on the canonical render of each
- * button/card/input recipe and reported as a metric, not a failure. The
- * linter already treats equivalent spellings as equal
- * (shadow-[4px_4px_0_#000] vs shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]); what
- * remains is value drift between the required contracts and the recipes
- * (rounded-xl vs rounded-2xl), a per-style data decision.
+ * Required contracts describe recipe invariants, including self-gated
+ * interaction classes. Enforce them for every button/card/input variant and
+ * parameter combination, and keep the canonical-render metric for comparison.
+ * AI tokens and curated lint requirements must agree; neither may be empty.
  */
 
 import { getStylesWithRecipes, getStyleRecipes, renderRecipe } from "../../lib/recipes";
 import type { ComponentRecipe, RecipeParameter, RecipeStates } from "../../lib/recipes/types";
-import { lintStyleCode } from "../../lib/styles/style-linter";
+import { canonicalRequiredClass, lintStyleCode } from "../../lib/styles/style-linter";
+import { getStyleTokens } from "../../lib/styles/tokens-registry";
+import { getStyleLintRules } from "../../lib/styles/lint-rules";
 
 type RenderState = NonNullable<Parameters<typeof renderRecipe>[1]>["state"];
 
@@ -36,6 +36,25 @@ interface ParityViolation {
   state: string;
   className: string;
   reason: string;
+}
+
+const components = ["button", "card", "input"] as const;
+const requiredViolations = new Set<string>();
+
+function normalizedEntries(entries: string[] | undefined): string[] {
+  return [...new Set((entries ?? []).flatMap((entry) => entry.split(/\s+/).filter(Boolean)).map(canonicalRequiredClass))].sort();
+}
+
+function checkRequiredSources(slug: string): void {
+  const tokens = getStyleTokens(slug);
+  const curated = getStyleLintRules(slug);
+  for (const component of components) {
+    const tokenClasses = normalizedEntries(tokens?.required[component]);
+    if (!tokenClasses.length) requiredViolations.add(`${slug}/${component}: empty token contract`);
+    if (curated?.required[component] && JSON.stringify(tokenClasses) !== JSON.stringify(normalizedEntries(curated.required[component]))) {
+      requiredViolations.add(`${slug}/${component}: AI tokens and curated required contracts disagree`);
+    }
+  }
 }
 
 function paramCombos(parameters: RecipeParameter[]): Array<Record<string, string | boolean | number>> {
@@ -58,7 +77,7 @@ function paramCombos(parameters: RecipeParameter[]): Array<Record<string, string
 
 function stateNames(states: RecipeStates | undefined): string[] {
   const names = Object.keys(states ?? {}).filter((key) => (states as Record<string, unknown>)[key]?.length);
-  return names.length ? names : ["default"];
+  return ["default", ...names];
 }
 
 function lintRecipeRender(
@@ -85,7 +104,17 @@ function lintRecipeRender(
     return [];
   }
 
-  const report = lintStyleCode(slug, rendered.code, {});
+  const component = components.find((component) => component === recipe.id);
+  const report = lintStyleCode(slug, rendered.code, {
+    checkRequired: component ? [component] : [],
+    strict: true,
+  });
+  for (const entry of report.missingRequired) {
+    requiredViolations.add(`${slug}/${recipe.id}/${variantId} [${state}]: ${entry.missing.join(", ")}`);
+  }
+  if (report.status === "inconclusive") {
+    requiredViolations.add(`${slug}/${recipe.id}/${variantId} [${state}]: inconclusive static lint`);
+  }
   return report.violations.map((violation) => ({
     slug,
     recipe: recipe.id,
@@ -97,12 +126,8 @@ function lintRecipeRender(
 }
 
 /**
- * Forbidden rules are enforced above; required rules are only measured, on
- * the canonical render (first variant, default parameters) of each
- * button/card/input recipe. The gap between required contracts and recipes
- * is mostly value drift (the contract says rounded-xl, the recipe ships
- * rounded-2xl), which is a per-style data decision, so it is reported as a
- * stable metric instead of failing the check.
+ * Preserve the canonical metric (first variant, default parameters) alongside
+ * the stronger full-surface gate. Renderer defaults include interaction CSS.
  */
 function reportCanonicalRequiredGaps(): void {
   const lines: string[] = [];
@@ -134,7 +159,7 @@ function reportCanonicalRequiredGaps(): void {
   }
 
   console.log(
-    `missing-required on canonical recipes (informational, value drift): ${pairs - clean}/${pairs} button/card/input pairs`,
+    `missing-required on canonical recipes: ${pairs - clean}/${pairs} button/card/input pairs`,
   );
   for (const line of lines) console.log(line);
 }
@@ -145,7 +170,17 @@ function main() {
 
   for (const slug of getStylesWithRecipes()) {
     const styleRecipes = getStyleRecipes(slug);
-    if (!styleRecipes) continue;
+    if (!styleRecipes) {
+      requiredViolations.add(`${slug}: registered style recipes could not be loaded`);
+      continue;
+    }
+    checkRequiredSources(slug);
+    for (const component of components) {
+      const recipe = styleRecipes.recipes[component];
+      if (!recipe || !Object.keys(recipe.variants).length) {
+        requiredViolations.add(`${slug}/${component}: missing recipe or variants`);
+      }
+    }
 
     for (const recipe of Object.values(styleRecipes.recipes)) {
       const combos = paramCombos(recipe.parameters ?? []);
@@ -183,8 +218,10 @@ function main() {
   console.log(`\nchecked renders: ${renders}`);
   console.log(`forbidden violations: ${violations.length}`);
   reportCanonicalRequiredGaps();
+  console.log(`required contract violations (all variants, parameters and states): ${requiredViolations.size}`);
+  for (const violation of requiredViolations) console.log(`  ${violation}`);
 
-  if (violations.length) {
+  if (violations.length || requiredViolations.size) {
     console.error("\nofficial recipes must not violate their own style's lint rules");
     process.exitCode = 1;
   }

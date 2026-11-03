@@ -34,7 +34,7 @@ describe("parseCatalogSort", () => {
     expect(parseCatalogSort("popular")).toBe("popular");
     expect(parseCatalogSort("favorites")).toBe("favorites");
     expect(parseCatalogSort("rating")).toBe("rating");
-    expect(parseCatalogSort("name-desc")).toBe("name-desc");
+    expect(parseCatalogSort("latest")).toBe("latest");
   });
 
   it("falls back to recommended for unknown or missing values", () => {
@@ -50,17 +50,26 @@ describe("sortCatalogStyles", () => {
     expect(result).toBe(styles);
   });
 
-  it("sorts by name in both directions without mutating the input", () => {
-    const input = [style("charlie", "Charlie"), style("alpha", "Alpha")];
-    expect(sortCatalogStyles(input, "name-asc").map((s) => s.slug)).toEqual([
-      "alpha",
-      "charlie",
+  it("lifts the newly shipped style to the front for recommended", () => {
+    const input = [
+      style("corporate-clean", "Corporate Clean"),
+      style("quantized-line-field", "Quantized Line Field"),
+      style("soft-ui", "Soft UI"),
+    ];
+    expect(sortCatalogStyles(input, "recommended").map((s) => s.slug)).toEqual([
+      "quantized-line-field",
+      "corporate-clean",
+      "soft-ui",
     ]);
-    expect(sortCatalogStyles(input, "name-desc").map((s) => s.slug)).toEqual([
+  });
+
+  it("reverses the curated order for latest without mutating the input", () => {
+    const input = [style("alpha", "Alpha"), style("charlie", "Charlie")];
+    expect(sortCatalogStyles(input, "latest").map((s) => s.slug)).toEqual([
       "charlie",
       "alpha",
     ]);
-    expect(input.map((s) => s.slug)).toEqual(["charlie", "alpha"]);
+    expect(input.map((s) => s.slug)).toEqual(["alpha", "charlie"]);
   });
 
   it("orders by usage for popular and falls back to views on ties", () => {

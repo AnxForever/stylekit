@@ -10,6 +10,7 @@ import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { getSiteBaseUrl } from "@/lib/site-url";
 import { canonicalizeEnglishMetadata } from "@/lib/i18n/metadata";
+import { brandPreviewUrl } from "@/lib/brand/assets";
 
 interface BlogPostPageProps {
   params: Promise<{ slug: string }>;
@@ -25,6 +26,7 @@ export async function generateMetadata({ params }: BlogPostPageProps): Promise<M
   const { slug } = await params;
   const post = getPostBySlug(slug);
   if (!post) return {};
+  const image = brandPreviewUrl(`${getSiteBaseUrl()}/blog/${slug}/opengraph-image`);
 
   return canonicalizeEnglishMetadata({
     title: post.title,
@@ -37,6 +39,13 @@ export async function generateMetadata({ params }: BlogPostPageProps): Promise<M
       ...(post.modified ? { modifiedTime: post.modified } : {}),
       authors: [post.author],
       tags: post.tags,
+      images: [{ url: image, width: 1200, height: 630, alt: post.title }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${post.title} | StyleKit`,
+      description: post.description,
+      images: [image],
     },
   }, `/blog/${slug}`);
 }

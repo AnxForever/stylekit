@@ -30,6 +30,7 @@ export function AnalyticsSectionNav({
           <Link
             key={item.view}
             href={range ? `${item.href}?range=${range}` : item.href}
+            prefetch={false}
             aria-current={view === item.view ? "page" : undefined}
             onMouseEnter={() => void prefetchAnalyticsView(item.view, (range ?? "7d") as AnalyticsRange)}
             onFocus={() => void prefetchAnalyticsView(item.view, (range ?? "7d") as AnalyticsRange)}

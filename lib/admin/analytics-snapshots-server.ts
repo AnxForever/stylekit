@@ -15,12 +15,15 @@ import {
   analyticsRegistrationsSchema,
   getAnalyticsWindow,
 } from "./analytics-api-contract";
-import { readAnalyticsCache, writeAnalyticsCache } from "./analytics-response-cache";
+import {
+  type AnalyticsRpcResult,
+  coalesceAnalyticsRequest,
+  readAnalyticsCache,
+  writeAnalyticsCache,
+} from "./analytics-response-cache";
 import { getSupabaseAdmin } from "@/lib/supabase/server";
 import { readPersistentAnalyticsSnapshot, writePersistentAnalyticsSnapshot } from "./analytics-persistent-snapshot";
-import { isUmamiMetricDimension, mapUmamiBreakdown } from "./analytics-umami-map";
-import { fetchUmamiMetrics, getUmamiConfig } from "@/lib/analytics/umami-api";
-import { hasUmamiSnapshotConfiguration, readUmamiSnapshotBreakdown } from "./analytics-umami-snapshot";
+import { promptCopyAnalyticsSchema, type PromptCopyAnalytics } from "./prompt-copy-analytics";
 
 const TIMEZONE = "Asia/Shanghai";
 
@@ -28,38 +31,38 @@ async function rpcSnapshot<T>(
   cacheKey: string,
   rpc: string,
   params: Record<string, unknown>,
-  parse: (value: unknown) => T | null,
-  readPrimary?: () => Promise<T | null>
+  parse: (value: unknown) => T | null
 ): Promise<T | null> {
   const cached = readAnalyticsCache<T>(cacheKey);
   if (cached) return cached;
 
-  // Primary source (Umami Cloud) runs before the snapshot fallback: a persisted
-  // snapshot must not shadow fresher numbers while Cloud is reachable.
-  if (readPrimary) {
-    const primary = await readPrimary();
-    if (primary) {
-      writeAnalyticsCache(cacheKey, primary);
-      await writePersistentAnalyticsSnapshot(cacheKey, primary);
-      return primary;
+  const client = getSupabaseAdmin();
+  if (client) {
+    try {
+      const response = await coalesceAnalyticsRequest<AnalyticsRpcResult>(`rpc:${cacheKey}`, async () => {
+        const recent = readAnalyticsCache<T>(cacheKey);
+        if (recent) return { data: recent, error: null };
+        return await client.rpc(rpc, params);
+      });
+      if (response.error === null && response.data !== null) {
+        const parsed = parse(response.data);
+        if (!parsed) return null;
+        writeAnalyticsCache(cacheKey, parsed);
+        void writePersistentAnalyticsSnapshot(cacheKey, parsed);
+        return parsed;
+      }
+      if (response.error === null) {
+        return null;
+      }
+    } catch {
+      // The persistent snapshot below is a last-resort display fallback.
     }
   }
 
-  const persisted = await readPersistentAnalyticsSnapshot<T>(cacheKey);
-  if (persisted) {
-    writeAnalyticsCache(cacheKey, persisted);
-    return persisted;
-  }
-  const client = getSupabaseAdmin();
-  if (!client) return null;
-  const { data, error } = await client.rpc(rpc, params);
-  if (error) return null;
-  const parsed = parse(data);
-  if (parsed) {
-    writeAnalyticsCache(cacheKey, parsed);
-    await writePersistentAnalyticsSnapshot(cacheKey, parsed);
-  }
-  return parsed;
+  // Disk snapshots preserve the original generatedAt value and are never
+  // inserted into the fresh response cache. A later request rechecks the DB.
+  const persisted = await readPersistentAnalyticsSnapshot<unknown>(cacheKey);
+  return persisted === null ? null : parse(persisted);
 }
 
 export function getBreakdownSnapshot(
@@ -67,12 +70,6 @@ export function getBreakdownSnapshot(
   dimension: AnalyticsBreakdownDimension,
   limit: number
 ) {
-  if (hasUmamiSnapshotConfiguration()) {
-    // The curated snapshot applies one population to the overview and every
-    // breakdown. An unavailable breakdown is safer than an unlabelled switch
-    // to rankings from an unrelated collection pipeline.
-    return readUmamiSnapshotBreakdown(range, dimension, limit);
-  }
   const window = getAnalyticsWindow(range);
   return rpcSnapshot<AnalyticsBreakdown>(
     `breakdown:${range}:${dimension}:${limit}`,
@@ -81,18 +78,6 @@ export function getBreakdownSnapshot(
     (value) => {
       const result = analyticsBreakdownSchema.safeParse(value);
       return result.success ? result.data : null;
-    },
-    // Umami Cloud ranks the same dimensions the traffic view requests, so it
-    // replaces the RPC for those; the RPC stays as the degraded fallback.
-    async () => {
-      const config = getUmamiConfig();
-      if (!config || !isUmamiMetricDimension(dimension)) return null;
-      try {
-        const rows = await fetchUmamiMetrics(config, dimension, range, limit);
-        return mapUmamiBreakdown(rows, dimension);
-      } catch {
-        return null;
-      }
     }
   );
 }
@@ -134,4 +119,33 @@ export function getEventsSnapshot(range: AnalyticsRange) {
       return result.success ? result.data : null;
     }
   );
+}
+
+export function getPromptCopySnapshot(range: AnalyticsRange): Promise<PromptCopyAnalytics | null> {
+  const cacheKey = `prompt-copies:${range}`;
+  const cached = readAnalyticsCache<PromptCopyAnalytics>(cacheKey);
+  if (cached) return Promise.resolve(cached);
+
+  return coalesceAnalyticsRequest(`snapshot:${cacheKey}`, async () => {
+    const recent = readAnalyticsCache<PromptCopyAnalytics>(cacheKey);
+    if (recent) return recent;
+
+    const client = getSupabaseAdmin();
+    if (!client) return null;
+    const window = getAnalyticsWindow(range);
+    const { data, error } = await coalesceAnalyticsRequest<AnalyticsRpcResult>(`rpc:${cacheKey}`, async () => {
+      const recent = readAnalyticsCache<PromptCopyAnalytics>(cacheKey);
+      if (recent) return { data: recent, error: null };
+      return await client.rpc("admin_analytics_prompt_copies", {
+        p_start: window.start,
+        p_end: window.end,
+      });
+    });
+    if (error) return null;
+
+    const parsed = promptCopyAnalyticsSchema.safeParse(data);
+    if (!parsed.success) return null;
+    writeAnalyticsCache(cacheKey, parsed.data);
+    return parsed.data;
+  }).catch(() => null);
 }

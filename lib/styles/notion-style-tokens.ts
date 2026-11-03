@@ -89,25 +89,27 @@ export const notionStyleTokens = createStyleTokens({
 
   required: {
     button: [
-      "px-3 py-1.5",
       "rounded-md",
-      "text-sm font-medium",
+      "text-sm",
+      "font-medium",
       "hover:bg-gray-100",
-      "transition-colors duration-150",
+      "transition-colors",
+      "duration-150",
     ],
     card: [
       "bg-white",
-      "border border-gray-200",
       "rounded-lg",
-      "shadow-sm",
     ],
     input: [
-      "bg-white",
-      "border border-gray-200",
-      "rounded-md",
-      "text-gray-900 placeholder-gray-400",
-      "focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent",
+      "bg-transparent",
+      "border-0",
+      "border-transparent",
+      "rounded-none",
+      "text-gray-900",
+      "focus:outline-none",
       "transition-all",
+      "focus:border-b-2",
+      "focus:border-b-[#2383e2]",
     ],
   },
 });

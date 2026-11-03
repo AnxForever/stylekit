@@ -97,8 +97,21 @@ export const celShadingTokens = createStyleTokens({
   },
 
   required: {
-    button: ["border-[3px]", "border-[#1a1a2e]", "font-black", "uppercase"],
-    card: ["border-[3px]", "border-[#1a1a2e]", "shadow-[3px_3px_0_#1a1a2e]"],
-    input: ["border-[3px]", "border-[#1a1a2e]", "focus:outline-none"],
+    button: [
+      "border-3",
+      "border-[#1a1a2e]",
+      "font-bold",
+    ],
+    card: [
+      "border-3",
+      "border-[#1a1a2e]",
+    ],
+    input: [
+      "border-3",
+      "border-[#1a1a2e]",
+      "focus:outline-none",
+      "focus:border-[#4ea8de]",
+      "focus:shadow-[3px_3px_0px_0px_#4ea8de]",
+    ],
   },
 });

@@ -23,7 +23,7 @@ test("an exact reply link reaches older context without paging through the discu
   await page.goto(`/en/styles/dark-mode?comment=${replyId}#comment-${replyId}`);
   await expect(page.locator(`#comment-${replyId}`)).toBeInViewport();
   await expect(page.getByText("Specific reply fixture")).toBeVisible();
-  await page.getByRole("button", { name: "Replying to Contributor" }).click();
+  await page.getByRole("button", { name: /Contributor Original implementation question/ }).click();
   await expect(page).toHaveURL(new RegExp(`comment=${parentId}`));
   await expect(page.locator(`#comment-${parentId}`)).toBeInViewport();
   await expect(page.locator(`#comment-${parentId}`)).toContainText("Original implementation question");
@@ -68,7 +68,8 @@ test.describe("initial HTML without scripts", () => {
   });
   test("color answers show actual pairings, sources, and a single canonical URL", async ({ page }) => {
     await page.goto("/en/colors/111827");
-    await expect(page).toHaveTitle("#111827 — UI Styles That Use It & Pairings | StyleKit");
+    await expect(page).toHaveTitle("#111827 Hex Color Code: RGB, CSS & Contrast | StyleKit");
+    await expect(page.getByRole("heading", { level: 1, name: "#111827 Hex Color" })).toBeVisible();
     await expect(page.locator("main")).toHaveAttribute("lang", "en");
     await expect(page.getByRole("heading", { name: "Colors paired with #111827 in real UI palettes" })).toBeVisible();
     await expect(page.locator("header p").filter({ hasText: "not an exact match" })).toBeVisible();

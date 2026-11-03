@@ -101,13 +101,13 @@ export function LearnContent() {
         </aside>
 
         {/* right chapter stream — reuse existing content components verbatim */}
-        <main className="flex-1 min-w-0 divide-y divide-border">
+        <div className="flex-1 min-w-0 divide-y divide-border">
           {CHAPTERS.map((ch) => (
             <section key={ch.id} id={ch.id} className="scroll-mt-24">
               <ch.Comp />
             </section>
           ))}
-        </main>
+        </div>
       </div>
     </div>
   );

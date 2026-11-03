@@ -6,6 +6,9 @@ import {
   badgeStyle,
   titleStyle,
   subtitleStyle,
+  brandLogoStyle,
+  fitTitleFontSize,
+  getOgBrandLogoDataUri,
   getAnimationAccent,
 } from "@/lib/og/shared";
 
@@ -28,6 +31,7 @@ export default async function OGImage({
   const description = animation?.descriptionEn ?? "CSS Animation Pattern";
   const category = animation?.category ?? "entrance";
   const accent = getAnimationAccent(category);
+  const brandLogo = await getOgBrandLogoDataUri();
 
   return new ImageResponse(
     (
@@ -43,7 +47,7 @@ export default async function OGImage({
           <div style={badgeStyle(accent)}>
             {category.charAt(0).toUpperCase() + category.slice(1)} Animation
           </div>
-          <div style={titleStyle()}>{name}</div>
+          <div style={titleStyle(fitTitleFontSize(name))}>{name}</div>
           <div style={subtitleStyle()}>{description}</div>
         </div>
         <div
@@ -67,9 +71,13 @@ export default async function OGImage({
               />
             ))}
           </div>
-          <div style={{ display: "flex", fontSize: 20, color: "rgba(255,255,255,0.3)" }}>
-            stylekit.top
-          </div>
+          <img
+            src={brandLogo}
+            width={168}
+            height={56}
+            alt="StyleKit"
+            style={brandLogoStyle()}
+          />
         </div>
       </div>
     ),

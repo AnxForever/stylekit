@@ -97,26 +97,29 @@ export const naturalOrganicTokens = createStyleTokens({
 
   required: {
     button: [
-      "px-6 py-3",
       "rounded-full",
       "font-medium",
-      "transition-colors duration-300",
+      "transition-colors",
+      "duration-300",
     ],
     card: [
       "bg-[#faf6f1]",
       "rounded-[2rem]",
-      "border border-stone-200",
+      "border",
+      "border-stone-200",
     ],
     input: [
-      "px-5 py-3",
       "bg-white",
-      "border border-stone-200",
+      "border",
+      "border-stone-200",
       "rounded-full",
       "text-stone-800",
       "placeholder:text-stone-400",
       "focus:border-stone-400",
-      "focus:ring-2 focus:ring-stone-200",
-      "transition-all duration-300",
+      "focus:ring-2",
+      "focus:ring-stone-200",
+      "transition-all",
+      "duration-300",
     ],
   },
 });

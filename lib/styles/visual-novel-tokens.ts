@@ -103,8 +103,11 @@ export const visualNovelTokens = createStyleTokens({
   required: {
     button: [
       "rounded-lg",
-      "font-sans font-medium",
-      "transition-all duration-300 ease-in-out",
+      "font-sans",
+      "font-medium",
+      "transition-all",
+      "duration-300",
+      "ease-in-out",
     ],
     card: [
       "rounded-lg",
@@ -117,6 +120,8 @@ export const visualNovelTokens = createStyleTokens({
       "font-sans",
       "backdrop-blur-sm",
       "focus:outline-none",
+      "focus:border-[#6366f1]/50",
+      "focus:shadow-[0_0_12px_#6366f120]",
     ],
   },
 });

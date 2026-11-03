@@ -97,8 +97,10 @@ export const luxeLookbookTokens = createStyleTokens({
   required: {
     button: [
       "rounded-none",
-      "uppercase tracking-[0.2em]",
-      "transition-all duration-500",
+      "uppercase",
+      "tracking-[0.2em]",
+      "transition-all",
+      "duration-500",
     ],
     card: [
       "rounded-none",
@@ -107,10 +109,14 @@ export const luxeLookbookTokens = createStyleTokens({
     input: [
       "rounded-none",
       "bg-transparent",
-      "border-b border-[#141210]/25",
-      "text-[#141210] placeholder-[#141210]/40",
-      "focus:outline-none focus:border-[#9A7B4F]",
-      "transition-all duration-500",
+      "border-b",
+      "border-[#141210]/25",
+      "text-[#141210]",
+      "placeholder-[#141210]/40",
+      "focus:outline-none",
+      "focus:border-[#9A7B4F]",
+      "transition-all",
+      "duration-500",
     ],
   },
 });

@@ -40,6 +40,11 @@ Complete checklist for adding a new design style to StyleKit.
     - `colors`: background, text, button (style-specific)
     - `forbidden`: classes to never use
     - `required`: classes that must be used
+      - Required utilities must occur in every recipe variant and parameter combination.
+      - Keep optional colors, sizes and interactive-only treatments in recipes.
+      - Keep any curated `lint-rules.ts` required entries identical to token requirements.
+      - Review changes with `pnpm run align:recipe-required --report .tmp/required-review.json`;
+        only use `--write` after reviewing the proposed per-style decisions.
   - Optional overrides (inherit defaults if omitted):
     - `border`: radius, width, style
     - `shadow`: default, hover variants
@@ -237,7 +242,8 @@ publication never invents a generic preview.
 
 ### 5.2 Test Suite
 
-- [ ] Run `npm test` - all tests pass
+- [ ] Run `pnpm run check:recipe-lint` - no forbidden or required contract violations
+- [ ] Run `pnpm test` - all tests pass
   - `styles-consistency.test.ts` validates index + meta alignment
   - `style-assets.test.ts` validates SVG + coverPreview existence
   - `recipes-integrity.test.ts` validates recipe structure

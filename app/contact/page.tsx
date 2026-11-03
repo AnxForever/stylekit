@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { withBrandPreviews } from "@/lib/seo/social-metadata";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { SupportContent } from "@/components/support/support-content";
@@ -6,7 +7,7 @@ import { Heart } from "lucide-react";
 import { getPublishedThankYouEntries } from "@/lib/support/acknowledgments";
 import { FriendPromoBanner } from "@/components/home/friend-promo-banner";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = withBrandPreviews({
   title: "Contact & Support",
   description:
     "Where to ask questions, report bugs, and support ongoing StyleKit maintenance.",
@@ -15,7 +16,7 @@ export const metadata: Metadata = {
     description:
       "Where to ask questions, report bugs, and support ongoing StyleKit maintenance.",
   },
-};
+});
 
 export default async function ContactPage() {
   const thankYouEntries = await getPublishedThankYouEntries();

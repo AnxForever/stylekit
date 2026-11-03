@@ -16,23 +16,69 @@ describe("truthful color query answers", () => {
     expect(isExactTailwindHex(color)).toBe(false);
     expect(getColorAnswer(color)).toContain("not an exact match");
     expect(buildColorDetailMetadata(color).description).not.toContain("is Tailwind's");
-    expect(buildColorDetailMetadata(color).description).toContain("not an exact match");
+    expect(buildColorDetailMetadata(color).description).toContain("not exact");
     expect(getColorAnswer(color)).toContain("rgb(17, 24, 39)");
   });
   it("keeps hex search titles focused on real style use or color guidance", () => {
     const used = detail("111827");
     const usedMetadata = buildColorDetailMetadata(used);
     expect(used.usedBy.length).toBeGreaterThan(0);
-    expect(usedMetadata.title).toContain("UI Styles That Use It & Pairings");
-    expect(usedMetadata.description).toContain(used.usedBy[0].nameEn);
+    expect(usedMetadata.title).toBe("#111827 Hex Color Code: RGB, CSS & Contrast");
+    expect(usedMetadata.description).toContain(
+      used.usedBy.length === 1
+        ? used.usedBy[0].nameEn
+        : `Used in ${used.usedBy.length} style palettes`
+    );
 
     const unused = detail("123456");
     expect(unused.usedBy).toHaveLength(0);
-    expect(buildColorDetailMetadata(unused).title).toContain("Pairings, Tints & Contrast");
+    expect(buildColorDetailMetadata(unused).title).toBe("#123456 Hex Color Code: RGB, CSS & Contrast");
 
     const exact = detail("ffffff");
-    expect(buildColorDetailMetadata(exact).title).toContain(`(${exact.tailwind.token})`);
-    expect(buildColorDetailMetadata(exact).description).toContain("Exact Tailwind v4 token");
+    expect(buildColorDetailMetadata(exact).description).toContain("Exact Tailwind v4:");
+  });
+  it("uses the actual conversions and palette role for the reported color queries", () => {
+    const expected = [
+      { input: "f8f9fa", rgb: "rgb(248, 249, 250)", hsl: "hsl(210, 17%, 98%)" },
+      { input: "f59e0b", rgb: "rgb(245, 158, 11)", hsl: "hsl(38, 92%, 50%)" },
+      { input: "10b981", rgb: "rgb(16, 185, 129)", hsl: "hsl(160, 84%, 39%)" },
+      { input: "8b5cf6", rgb: "rgb(139, 92, 246)", hsl: "hsl(258, 90%, 66%)" },
+    ];
+
+    for (const item of expected) {
+      const color = detail(item.input);
+      const metadata = buildColorDetailMetadata(color);
+      const description = metadata.description;
+      if (typeof description !== "string") {
+        throw new Error(`Missing color metadata description for ${item.input}`);
+      }
+
+      expect(color.rgbCss).toBe(item.rgb);
+      expect(color.hslCss).toBe(item.hsl);
+      expect(metadata.title).toBe(`${color.hex} Hex Color Code: RGB, CSS & Contrast`);
+      expect(description).toContain(`${item.rgb}; ${item.hsl}`);
+      expect(description).toContain("contrast");
+      expect(description.length).toBeLessThanOrEqual(200);
+      expect(description).toContain(
+        isExactTailwindHex(color) ? "Exact Tailwind v4:" : "not exact"
+      );
+    }
+
+    const lightSurface = detail("f8f9fa");
+    expect(lightSurface.usedBy).toContainEqual(
+      expect.objectContaining({ nameEn: "F-Pattern Layout", role: "secondary" })
+    );
+    expect(getColorAnswer(lightSurface)).toContain(
+      "Used as a secondary color in the F-Pattern Layout palette."
+    );
+
+    for (const input of ["f59e0b", "10b981", "8b5cf6"]) {
+      const color = detail(input);
+      expect(color.usedBy.length).toBeGreaterThan(1);
+      expect(getColorAnswer(color)).toContain(
+        `in ${color.usedBy.length} curated StyleKit style palettes`
+      );
+    }
   });
   it("compares hex values rather than a rounded distance when reporting an exact match", () => {
     const color = detail("ffffff");

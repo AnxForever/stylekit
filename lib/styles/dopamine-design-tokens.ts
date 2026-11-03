@@ -102,10 +102,10 @@ export const dopamineDesignTokens = createStyleTokens({
     button: [
       "rounded-full",
       "font-bold",
-      "shadow-[0_8px_30px_rgba(255,0,110,0.4)]",
       "hover:scale-105",
       "active:scale-95",
-      "transition-all duration-300",
+      "transition-all",
+      "duration-300",
     ],
     card: [
       "rounded-3xl",
@@ -114,6 +114,8 @@ export const dopamineDesignTokens = createStyleTokens({
       "rounded-2xl",
       "border-2",
       "focus:outline-none",
+      "focus:border-[#ff006e]",
+      "focus:shadow-[0_0_0_4px_rgba(255,0,110,0.15)]",
     ],
   },
 });

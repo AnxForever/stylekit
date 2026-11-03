@@ -232,7 +232,7 @@ describe("lintStyleCode", () => {
   it("treats a satisfied requirement as satisfied", () => {
     const report = lintStyleCode(
       "neo-brutalist",
-      '<button className="border-2 border-black shadow-[4px_4px_0_#000] hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px] transition-all duration-200 cursor-pointer" />',
+      '<button className="rounded-none border-2 md:border-4 border-black font-black hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px] transition-all duration-200" />',
       { checkRequired: ["button"] },
     );
     expect(report.missingRequired).toEqual([]);

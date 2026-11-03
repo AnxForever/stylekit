@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useI18n } from "@/lib/i18n/context";
 import { buildStyleCopyIdentity } from "@/lib/styles/style-copy-identity";
 import type { ExamplePrompt } from "@/lib/styles";
+import { trackEvent } from "@/lib/analytics/events";
 
 interface ExamplePromptsProps {
   prompts: ExamplePrompt[];
@@ -40,21 +41,33 @@ ${separator}
 
 ${rules}`;
 
+    let copied = false;
     try {
       await navigator.clipboard.writeText(content);
-      setCopiedIndex(index);
-      setTimeout(() => setCopiedIndex(null), 2000);
+      copied = true;
     } catch {
-      // Fallback
       const textArea = document.createElement("textarea");
       textArea.value = content;
-      document.body.appendChild(textArea);
-      textArea.select();
-      document.execCommand("copy");
-      document.body.removeChild(textArea);
-      setCopiedIndex(index);
-      setTimeout(() => setCopiedIndex(null), 2000);
+      try {
+        document.body.appendChild(textArea);
+        textArea.select();
+        copied = document.execCommand("copy");
+      } catch {
+        copied = false;
+      } finally {
+        textArea.remove();
+      }
     }
+
+    if (!copied) return;
+    setCopiedIndex(index);
+    trackEvent("prompt_copy", {
+      slug: styleSlug,
+      prompt_type: "example",
+      source: "example-prompts",
+      locale,
+    });
+    setTimeout(() => setCopiedIndex(null), 2000);
   };
 
   if (!prompts || prompts.length === 0) {

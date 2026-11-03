@@ -1,31 +1,83 @@
-import { createStyleTokens } from "./token-defaults";
+// Quantized Line Field Style Tokens
+import type { StyleTokens } from "./tokens";
 
-export const quantizedLineFieldTokens = createStyleTokens({
-  border: { radius: "rounded-[17px]", color: "border-[#d9dbd5]", width: "border", style: "border-solid" },
+export const quantizedLineFieldTokens: StyleTokens = {
+  border: {
+    width: "border",
+    color: "border-[#d9dbd5]",
+    radius: "rounded-md",
+    style: "border-solid",
+  },
   shadow: {
-    sm: "shadow-[0_12px_26px_-18px_rgba(32,34,32,0.45)]",
-    md: "shadow-[0_14px_30px_-20px_rgba(32,34,32,0.5)]",
-    lg: "shadow-[0_22px_44px_-24px_rgba(32,34,32,0.56)]",
-    hover: "hover:shadow-[0_22px_44px_-24px_rgba(32,34,32,0.56)]",
-    focus: "shadow-none",
+    sm: "shadow-sm",
+    md: "shadow-md",
+    lg: "shadow-lg",
     none: "shadow-none",
-    colored: { cobalt: "shadow-[0_18px_42px_-26px_rgba(33,82,231,0.45)]" },
+    hover: "hover:shadow-sm",
+    focus: "focus:ring-2 focus:ring-[#267dff]/30",
+  },
+  interaction: {
+    transition: "transition-colors duration-200",
+    hoverOpacity: "hover:opacity-85",
+    active: "active:translate-y-px",
   },
   typography: {
-    heading: "font-serif font-normal tracking-tight", body: "font-sans", mono: "font-mono",
-    sizes: { hero: "text-4xl md:text-6xl", h1: "text-3xl md:text-5xl", h2: "text-2xl md:text-4xl", h3: "text-lg md:text-xl", body: "text-sm md:text-base", small: "text-xs" },
+    heading: "font-semibold tracking-tight",
+    body: "font-sans",
+    sizes: {
+      hero: "text-5xl md:text-7xl",
+      h1: "text-4xl md:text-6xl",
+      h2: "text-3xl md:text-4xl",
+      h3: "text-xl md:text-2xl",
+      body: "text-sm md:text-base",
+      small: "text-xs md:text-sm",
+    },
+  },
+  spacing: {
+    section: "py-12 md:py-24",
+    container: "px-4 md:px-8",
+    card: "p-5 md:p-6",
+    gap: {
+      sm: "gap-2 md:gap-4",
+      md: "gap-4 md:gap-6",
+      lg: "gap-6 md:gap-8",
+    },
   },
   colors: {
-    background: { primary: "bg-[#fafaf8]", secondary: "bg-[#eeeeeb]", accent: ["bg-[#2152e7]", "bg-[#111212]"] },
-    text: { primary: "text-[#202220]", secondary: "text-[#686b64]", muted: "text-[#73766e]" },
-    button: { primary: "bg-[#202220] text-[#fafaf8]", secondary: "bg-transparent text-[#202220] border border-[#d9dbd5]", danger: "bg-[#ec353e] text-[#111212]" },
+    background: {
+      primary: "bg-[#fafaf8]",
+      secondary: "bg-[#202220]",
+      accent: ["bg-[#2152e7]", "bg-[#c2dcff]", "bg-[#ec353e]", "bg-[#267dff]"],
+    },
+    text: {
+      primary: "text-[#202220]",
+      secondary: "text-[#267dff]",
+      muted: "text-[#6b7068]",
+    },
+    button: {
+      primary: "bg-[#202220] text-[#fafaf8]",
+      secondary: "bg-[#fafaf8] text-[#202220]",
+      danger: "bg-[#ec353e] text-white",
+    },
   },
-  spacing: { section: "py-12 md:py-20", container: "px-6 md:px-10", card: "p-7", gap: { sm: "gap-3", md: "gap-[19px]", lg: "gap-8" } },
-  interaction: { transition: "transition-colors duration-200", active: "active:opacity-80", hoverOpacity: "hover:opacity-90" },
   forbidden: {
-    classes: ["blur", "backdrop-blur", "shadow-lg", "shadow-xl", "rounded-none"],
-    patterns: ["^blur(?:-|$)", "^backdrop-blur(?:-|$)", "^shadow-(?:lg|xl|2xl)$"],
-    reasons: { blur: "Keep discrete strokes sharp.", "backdrop-blur": "Use opaque card surfaces.", "shadow-lg": "Use the tight negative-spread contact shadow instead of a wide halo.", "rounded-none": "Use 17-pixel card corners." },
+    classes: [],
+    patterns: [],
+    reasons: {},
   },
-  required: { button: ["font-sans", "focus-visible:outline-2"], card: ["rounded-[17px]", "overflow-hidden"], input: ["border", "focus-visible:outline-2"] },
-});
+  required: {
+    button: [
+      "rounded-md",
+      "border",
+      "font-medium",
+    ],
+    card: ["rounded-md", "border", "bg-[#fafaf8]"],
+    input: [
+      "rounded-md",
+      "border",
+      "bg-[#fafaf8]",
+      "focus:outline-none",
+      "focus:border-[#267dff]",
+    ],
+  },
+};

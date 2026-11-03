@@ -2,6 +2,7 @@ import { constants as fsConstants } from "node:fs";
 import { lstat, open, readdir, realpath } from "node:fs/promises";
 import path from "node:path";
 import { templateCatalog } from "@/lib/templates/catalog";
+import { REPOSITORY_LICENSE } from "@/lib/templates/repository-license";
 import {
   buildScaffoldFiles,
   stripSiteOnlyCode,
@@ -112,7 +113,7 @@ async function collectSourceFiles(
 }
 
 function packageDependencies(slug: string): Record<string, string> {
-  // These cover imports used by the 36 local catalog templates and the
+  // These cover imports used by the local catalog templates and the
   // shared Brutal UI component barrel. Tests verify source imports against it.
   const dependencies: Record<string, string> = {
     "lucide-react": "^0.563.0",
@@ -179,14 +180,6 @@ function licenseFromSource(
   return license;
 }
 
-async function readRepositoryLicense(): Promise<string> {
-  const root = path.resolve(process.cwd());
-  const licensePath = path.join(root, "LICENSE");
-  if (await realpath(root) !== root || await realpath(licensePath) !== licensePath) {
-    throw new Error("Repository license resolves through a symlink");
-  }
-  return (await readRegularFile(licensePath)).toString("utf8");
-}
 
 async function collectBrutalUiFiles(): Promise<SourceFile[]> {
   const root = path.resolve(process.cwd(), "components", "ui", "brutal");
@@ -208,6 +201,17 @@ async function readSharedUtils(): Promise<SourceFile> {
     throw new Error("Shared utility source resolves through a symlink");
   }
   return { relativePath: "lib/utils.ts", content: await readRegularFile(filePath) };
+}
+
+async function collectReliefMarkFiles(): Promise<SourceFile[]> {
+  const root = path.resolve(process.cwd(), "components", "templates");
+  if (await realpath(root) !== root) {
+    throw new Error("Shared template source resolves through a symlink");
+  }
+  return Promise.all(["relief-mark.tsx", "relief-mark.module.css"].map(async (name) => ({
+    relativePath: `components/templates/${name}`,
+    content: await readRegularFile(path.join(root, name)),
+  })));
 }
 
 /** Returns a complete standalone project for local catalog entries only. */
@@ -238,7 +242,10 @@ export async function getTemplateProject(
         MAX_PROJECT_BYTES) return null;
 
     const dependencies = packageDependencies(slug);
-    const scaffold = buildScaffoldFiles(projectMeta(entry, slug));
+    const scaffold = buildScaffoldFiles({
+      ...projectMeta(entry, slug),
+      hasCustomizationGuide: sourceFiles.some((file) => file.relativePath === "CUSTOMIZE.md"),
+    });
     const files = withDependencies(scaffold, dependencies);
     const binaryFiles: string[] = [];
 
@@ -246,9 +253,13 @@ export async function getTemplateProject(
     if (slug === "brutal-landing") {
       exportedSources.push(...await collectBrutalUiFiles(), await readSharedUtils());
     }
+    if (slug === "technical-profile") {
+      exportedSources.push(...await collectReliefMarkFiles());
+    }
 
     for (const file of exportedSources) {
-      const projectPath = file.relativePath.startsWith("components/") ||
+      const projectPath = file.relativePath === "CUSTOMIZE.md" ||
+        file.relativePath.startsWith("components/") ||
         file.relativePath.startsWith("lib/")
         ? file.relativePath
         : `app/templates/${slug}/${file.relativePath}`;
@@ -269,7 +280,7 @@ export async function getTemplateProject(
     files["app/page.tsx"] =
       `import { redirect } from "next/navigation";\n\nexport default function Home() {\n  redirect("/templates/${slug}");\n}\n`;
 
-    const rootLicense = await readRepositoryLicense();
+    const rootLicense = REPOSITORY_LICENSE;
     const license = licenseFromSource(sourceFiles, rootLicense);
     files["LICENSE"] = rootLicense.endsWith("\n") ? rootLicense : rootLicense + "\n";
     files["README.md"] =

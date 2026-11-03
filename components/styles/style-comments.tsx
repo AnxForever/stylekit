@@ -7,7 +7,7 @@ import { usePathname, useSearchParams } from "next/navigation";
 import { useSWRConfig } from "swr";
 import { LocalizedLink } from "@/components/i18n/localized-link";
 import { COMMENT_MAX_LENGTH, COMMENTS_PAGE_SIZE, getStyleFeedbackLoginHref, getStyleCommentsKey } from "@/lib/community/comments";
-import { Check, MessageSquare, Pencil, Reply, Send, Trash2, X } from "lucide-react";
+import { Check, CornerDownRight, MessageSquare, Pencil, Reply, Send, Trash2, X } from "lucide-react";
 import { useStyleComments, type Comment } from "@/lib/swr";
 import { useUser } from "@/lib/auth/use-user";
 import { getAvatarImageSrc } from "@/lib/avatar";
@@ -128,6 +128,28 @@ function normalizeTitleIconPath(value: string | null | undefined): string | null
   return trimmed;
 }
 
+function formatRelativeTime(iso: string, locale: string): string {
+  const timestamp = new Date(iso).getTime();
+  if (!Number.isFinite(timestamp)) return iso;
+  const diffSeconds = Math.round((timestamp - Date.now()) / 1000);
+  const absolute = Math.abs(diffSeconds);
+  const rtf = new Intl.RelativeTimeFormat(locale === "zh" ? "zh-CN" : "en", {
+    numeric: "auto",
+  });
+  if (absolute < 60) return locale === "zh" ? "刚刚" : "just now";
+  if (absolute < 3600) return rtf.format(Math.round(diffSeconds / 60), "minute");
+  if (absolute < 86400) return rtf.format(Math.round(diffSeconds / 3600), "hour");
+  if (absolute < 86400 * 30) return rtf.format(Math.round(diffSeconds / 86400), "day");
+  return new Date(iso).toLocaleDateString(locale === "zh" ? "zh-CN" : "en-US");
+}
+
+function formatAbsoluteTime(iso: string, locale: string): string {
+  return new Date(iso).toLocaleString(locale === "zh" ? "zh-CN" : "en-US", {
+    dateStyle: "medium",
+    timeStyle: "short",
+  });
+}
+
 export function StyleComments({ slug }: StyleCommentsProps) {
   const { t, locale } = useI18n();
   const copy = COPY[locale];
@@ -232,6 +254,15 @@ export function StyleComments({ slug }: StyleCommentsProps) {
     setError(""); setSuccess("");
     composerRef.current?.focus();
     composerRef.current?.scrollIntoView?.({ block: "center", behavior: "instant" });
+  }
+
+  function handleComposerKeyDown(
+    event: React.KeyboardEvent<HTMLTextAreaElement>
+  ) {
+    if ((event.metaKey || event.ctrlKey) && event.key === "Enter") {
+      event.preventDefault();
+      event.currentTarget.form?.requestSubmit();
+    }
   }
 
   async function handleSubmit(e: React.FormEvent) {
@@ -392,91 +423,168 @@ export function StyleComments({ slug }: StyleCommentsProps) {
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-5">
       <div className="flex items-center gap-2 text-sm text-muted">
-        <MessageSquare className="w-4 h-4" />
-        <span>{focusedCommentId ? copy.linked : data ? `${total} ${t("styleComments.countSuffix")}` : isLoading ? copy.loading : "—"}</span>
-        {focusedCommentId ? <button type="button" onClick={showAllComments} className="ml-auto min-h-10 underline underline-offset-4">{copy.viewAll}</button> : null}
+        <MessageSquare className="size-4" aria-hidden="true" />
+        <span>
+          {focusedCommentId
+            ? copy.linked
+            : data
+              ? `${total} ${t("styleComments.countSuffix")}`
+              : isLoading
+                ? copy.loading
+                : "—"}
+        </span>
+        {focusedCommentId ? (
+          <button
+            type="button"
+            onClick={showAllComments}
+            className="ml-auto min-h-9 text-xs underline underline-offset-4 hover:text-foreground"
+          >
+            {copy.viewAll}
+          </button>
+        ) : null}
       </div>
 
-      {data?.repliesEnabled === false ? <p className="text-xs leading-6 text-muted">{copy.upgrade}</p> : null}
+      {data?.repliesEnabled === false ? (
+        <p className="text-xs leading-6 text-muted">{copy.upgrade}</p>
+      ) : null}
+
       {user ? (
-        <form onSubmit={handleSubmit} className="space-y-3">
-          <div className="flex min-w-0 items-center gap-2">
+        <form
+          onSubmit={handleSubmit}
+          className="rounded-lg border border-border bg-background/50 transition-colors focus-within:border-foreground/40"
+        >
+          <div className="flex items-start gap-3 p-3">
             {userAvatarSrc ? (
-              <Image src={userAvatarSrc} alt="" width={28} height={28} unoptimized className="size-7 shrink-0 rounded-full" />
+              <Image
+                src={userAvatarSrc}
+                alt=""
+                width={32}
+                height={32}
+                unoptimized
+                className="size-8 shrink-0 rounded-full"
+              />
             ) : (
-              <div className="flex size-7 shrink-0 items-center justify-center rounded-full bg-muted/20 text-xs font-medium" aria-hidden="true">
+              <div
+                className="flex size-8 shrink-0 items-center justify-center rounded-full bg-muted/20 text-xs font-medium"
+                aria-hidden="true"
+              >
                 {userName.charAt(0).toUpperCase()}
               </div>
             )}
-            <span className="truncate text-sm font-medium">{userName}</span>
-          </div>
-          {replyTo ? (
-            <div className="rounded-md border border-border bg-muted/5 p-3 text-sm">
-              <div className="flex flex-wrap items-center justify-between gap-2">
-                <span className="font-medium">{copy.replying} {replyTo.author_name}</span>
-                <button type="button" onClick={() => setReplyTo(null)} disabled={busy} className="min-h-9 text-xs underline underline-offset-4">{copy.cancelReply}</button>
+            <div className="min-w-0 flex-1 space-y-2">
+              <div className="flex flex-wrap items-center gap-2 text-sm">
+                <span className="truncate font-medium">{userName}</span>
+                {replyTo ? (
+                  <span className="inline-flex max-w-full items-center gap-1 rounded-full bg-muted/10 px-2 py-0.5 text-[11px] text-muted">
+                    <CornerDownRight className="size-3 shrink-0" aria-hidden="true" />
+                    <span className="truncate">
+                      {copy.replying} {replyTo.author_name}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => setReplyTo(null)}
+                      disabled={busy}
+                      className="ml-1 shrink-0 underline underline-offset-2 hover:text-foreground"
+                    >
+                      {copy.cancelReply}
+                    </button>
+                  </span>
+                ) : null}
               </div>
-              <p className="mt-1 line-clamp-2 break-words leading-6 text-muted">{replyTo.content}</p>
+              <label htmlFor={`comment-content-${slug}`} className="sr-only">
+                {copy.writeLabel}
+              </label>
+              <textarea
+                ref={composerRef}
+                id={`comment-content-${slug}`}
+                value={content}
+                onChange={(event) => setContent(event.target.value)}
+                onKeyDown={handleComposerKeyDown}
+                placeholder={t("styleComments.placeholder")}
+                maxLength={COMMENT_MAX_LENGTH}
+                rows={3}
+                disabled={submitting}
+                aria-describedby={`comment-count-${slug}`}
+                className="block min-h-20 w-full resize-y bg-transparent text-sm leading-6 placeholder:text-muted focus:outline-none disabled:opacity-60"
+              />
+              <div className="flex flex-wrap items-center justify-between gap-3 border-t border-border/70 pt-2">
+                <p id={`comment-count-${slug}`} className="text-xs tabular-nums text-muted">
+                  {content.length}/{COMMENT_MAX_LENGTH}
+                  <span className="ml-2 hidden sm:inline">⌘/Ctrl + Enter</span>
+                </p>
+                <button
+                  type="submit"
+                  disabled={busy || editingCommentId !== null || !content.trim()}
+                  className="inline-flex min-h-9 items-center gap-1.5 rounded-md bg-foreground px-3 text-xs font-medium text-background transition-opacity hover:opacity-85 disabled:opacity-50"
+                >
+                  <Send className="size-3.5" aria-hidden="true" />
+                  {submitting ? copy.posting : replyTo ? copy.replyAction : copy.post}
+                </button>
+              </div>
             </div>
-          ) : null}
-          <label htmlFor={`comment-content-${slug}`} className="block text-sm font-medium">{copy.writeLabel}</label>
-          <textarea
-            ref={composerRef}
-            id={`comment-content-${slug}`}
-            value={content}
-            onChange={(event) => setContent(event.target.value)}
-            placeholder={t("styleComments.placeholder")}
-            maxLength={COMMENT_MAX_LENGTH}
-            rows={3}
-            disabled={submitting}
-            aria-describedby={`comment-count-${slug}`}
-            className="block min-h-24 w-full resize-y rounded-md border border-border bg-background px-3 py-2 text-sm leading-6 placeholder:text-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground disabled:opacity-60"
-          />
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <p id={`comment-count-${slug}`} className="text-xs tabular-nums text-muted">{content.length}/{COMMENT_MAX_LENGTH}</p>
-            <button
-              type="submit"
-              disabled={busy || editingCommentId !== null || !content.trim()}
-              className="inline-flex min-h-11 items-center gap-2 rounded-md bg-foreground px-4 text-sm font-medium text-background transition-opacity hover:opacity-85 disabled:opacity-50"
-            >
-              <Send className="size-4" aria-hidden="true" />
-              {submitting ? copy.posting : replyTo ? copy.replyAction : copy.post}
-            </button>
           </div>
         </form>
       ) : (
-        <div className="rounded-md border border-border bg-background/50 px-4 py-3 text-sm text-muted">
-          {t("styleComments.signInPrompt")}
-          {" "}
-          <Link href={loginHref} className="underline hover:text-foreground">
+        <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-dashed border-border px-4 py-3 text-sm">
+          <p className="text-muted">{t("styleComments.signInPrompt")}</p>
+          <Link
+            href={loginHref}
+            className="inline-flex min-h-9 items-center rounded-md bg-foreground px-3 text-xs font-medium text-background transition-opacity hover:opacity-85"
+          >
             {t("styleComments.signInAction")}
           </Link>
         </div>
       )}
 
-      {error ? <p role="alert" className="text-sm text-red-700 dark:text-red-300">{error}</p> : null}
-      <p role="status" aria-live="polite" className="text-sm text-muted">{success}</p>
+      {error ? (
+        <p role="alert" className="text-sm text-red-700 dark:text-red-300">
+          {error}
+        </p>
+      ) : null}
+      {success ? (
+        <p role="status" aria-live="polite" className="text-sm text-muted">
+          {success}
+        </p>
+      ) : null}
 
       {loadError ? (
         <div role="alert" className="flex flex-wrap items-center gap-3 rounded-md border border-border p-4 text-sm">
           <p>{copy.loadFailed}</p>
-          <button type="button" onClick={() => void mutate()} className="min-h-10 px-2 underline underline-offset-4">{copy.retry}</button>
+          <button
+            type="button"
+            onClick={() => void mutate()}
+            className="min-h-9 px-2 underline underline-offset-4"
+          >
+            {copy.retry}
+          </button>
         </div>
       ) : null}
+
       {isLoading ? (
-        <div role="status" aria-label={copy.loading} className="space-y-3 py-3">
+        <div role="status" aria-label={copy.loading} className="space-y-4 border-t border-border py-3">
           <span className="sr-only">{copy.loading}</span>
-          {[0, 1].map((item) => <div key={item} className="h-20 rounded-md bg-muted/10 motion-safe:animate-pulse" aria-hidden="true" />)}
+          {[0, 1, 2].map((item) => (
+            <div key={item} className="flex gap-3" aria-hidden="true">
+              <div className="size-8 shrink-0 rounded-full bg-muted/15 motion-safe:animate-pulse" />
+              <div className="flex-1 space-y-2">
+                <div className="h-3 w-28 rounded bg-muted/15 motion-safe:animate-pulse" />
+                <div className="h-3 w-full max-w-md rounded bg-muted/10 motion-safe:animate-pulse" />
+              </div>
+            </div>
+          ))}
         </div>
       ) : null}
+
       {!isLoading && !loadError && data && comments.length === 0 ? (
-        <p className="border-y border-border py-8 text-sm leading-6 text-muted">{focusedCommentId ? copy.linkedMissing : page === 0 ? copy.empty : copy.emptyPage}</p>
+        <div className="border-y border-border py-8 text-sm leading-6 text-muted">
+          <p>{focusedCommentId ? copy.linkedMissing : page === 0 ? copy.empty : copy.emptyPage}</p>
+        </div>
       ) : null}
 
       {comments.length > 0 && (
-        <div className="space-y-3 pt-2">
+        <ol className="divide-y divide-border border-y border-border">
           {comments.map((comment) => {
             const rawTitle = comment.author_title;
             const commentTitle = getDisplayTitle(rawTitle);
@@ -485,175 +593,219 @@ export function StyleComments({ slug }: StyleCommentsProps) {
             const avatarFallback = commentName.charAt(0).toUpperCase();
             const isOwner = isOwnComment(comment);
             const isEditing = editingCommentId === comment.id;
-            const titleBadge = getTitleBadgeAppearance(
-              rawTitle,
-              comment.author_title_color
-            );
-            const iconPath = normalizeTitleIconPath(
-              comment.author_title_icon_path
-            );
+            const titleBadge = getTitleBadgeAppearance(rawTitle, comment.author_title_color);
+            const iconPath = normalizeTitleIconPath(comment.author_title_icon_path);
+            const providerLabel =
+              comment.author_provider === "unknown"
+                ? null
+                : getProviderLabel(comment.author_provider);
+            const relativeTime = formatRelativeTime(comment.created_at, locale);
+            const absoluteTime = formatAbsoluteTime(comment.created_at, locale);
 
             return (
-              <div
+              <li
                 key={comment.id}
                 id={`comment-${comment.id}`}
                 tabIndex={-1}
-                className="scroll-mt-28 p-3 border border-border rounded-md text-sm target:border-foreground"
+                className={`scroll-mt-28 focus:outline-none ${
+                  focusedCommentId === comment.id ? "bg-muted/5" : ""
+                }`}
               >
-                <div className="mb-2 flex flex-wrap items-start justify-between gap-3">
-                  <div className="flex items-start gap-2 min-w-0">
-                    {commentAvatarSrc ? (
-                      <Image
-                        src={commentAvatarSrc}
-                        alt={commentName}
-                        width={24}
-                        height={24}
-                        unoptimized
-                        className="w-6 h-6 rounded-full"
-                      />
-                    ) : (
-                      <div className="w-6 h-6 rounded-full bg-muted/30 flex items-center justify-center text-[10px] font-semibold text-foreground/80">
-                        {avatarFallback || "U"}
-                      </div>
-                    )}
-                    <div className="min-w-0">
-                      <div className="flex items-center gap-2 flex-wrap">
-                        {comment.author_seq_id && Number.isSafeInteger(comment.author_seq_id) && comment.author_seq_id > 0 ? (
-                          <LocalizedLink href={`/community/u/${comment.author_seq_id}`} className="max-w-[200px] truncate font-medium text-foreground underline-offset-4 hover:underline">
-                            {commentName}
-                          </LocalizedLink>
-                        ) : (
-                          <span className="max-w-[200px] truncate font-medium text-foreground">{commentName}</span>
-                        )}
-                        {commentTitle ? (
-                          <span
-                            className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] leading-none ${titleBadge.className}`}
-                            style={titleBadge.style}
-                          >
-                            {iconPath ? (
-                              <svg
-                                viewBox="0 0 40 40"
-                                className="h-3 w-3 fill-current"
-                                aria-hidden="true"
-                                focusable="false"
-                              >
-                                <path d={iconPath} />
-                              </svg>
-                            ) : null}
-                            {commentTitle}
-                          </span>
-                        ) : null}
-                      </div>
-                      <div className="flex items-center gap-2 flex-wrap mt-1 text-[11px] text-muted">
-                        <span>{getProviderLabel(comment.author_provider)}</span>
-                        {comment.author_seq_id ? (
-                          <span>#{comment.author_seq_id}</span>
-                        ) : null}
-                      </div>
+                <article className={`flex gap-3 py-4 ${comment.is_reply ? "pl-5 md:pl-8" : ""}`}>
+                  {commentAvatarSrc ? (
+                    <Image
+                      src={commentAvatarSrc}
+                      alt={commentName}
+                      width={32}
+                      height={32}
+                      unoptimized
+                      className="size-8 shrink-0 rounded-full"
+                    />
+                  ) : (
+                    <div className="flex size-8 shrink-0 items-center justify-center rounded-full bg-muted/30 text-[11px] font-semibold text-foreground/80">
+                      {avatarFallback || "U"}
                     </div>
-                  </div>
-                  <div className="flex flex-wrap items-center gap-2">
-                    <time dateTime={comment.created_at} className="text-xs text-muted shrink-0">
-                      {new Date(comment.created_at).toLocaleDateString(
-                        locale === "zh" ? "zh-CN" : "en-US"
+                  )}
+                  <div className="min-w-0 flex-1">
+                    <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1">
+                      {comment.author_seq_id && Number.isSafeInteger(comment.author_seq_id) && comment.author_seq_id > 0 ? (
+                        <LocalizedLink
+                          href={`/community/u/${comment.author_seq_id}`}
+                          className="max-w-[200px] truncate text-sm font-medium text-foreground underline-offset-4 hover:underline"
+                        >
+                          {commentName}
+                        </LocalizedLink>
+                      ) : (
+                        <span className="max-w-[200px] truncate text-sm font-medium text-foreground">
+                          {commentName}
+                        </span>
                       )}
-                    </time>
-                    {isOwner && !isEditing ? (
-                      <>
+                      {commentTitle ? (
+                        <span
+                          className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] leading-none ${titleBadge.className}`}
+                          style={titleBadge.style}
+                        >
+                          {iconPath ? (
+                            <svg viewBox="0 0 40 40" className="size-3 fill-current" aria-hidden="true" focusable="false">
+                              <path d={iconPath} />
+                            </svg>
+                          ) : null}
+                          {commentTitle}
+                        </span>
+                      ) : null}
+                      {providerLabel ? (
+                        <span className="text-[11px] text-muted">{providerLabel}</span>
+                      ) : null}
+                      <time
+                        dateTime={comment.created_at}
+                        title={absoluteTime}
+                        className="ml-auto text-[11px] text-muted"
+                      >
+                        {relativeTime}
+                      </time>
+                    </div>
+
+                    {isEditing ? (
+                      <div className="mt-2 space-y-2">
+                        <textarea
+                          aria-label={copy.editLabel}
+                          rows={3}
+                          value={editingContent}
+                          onChange={(event) => setEditingContent(event.target.value)}
+                          maxLength={COMMENT_MAX_LENGTH}
+                          disabled={savingCommentId === comment.id}
+                          className="w-full resize-y rounded-md border border-border bg-background px-3 py-2 text-sm leading-6 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground"
+                        />
+                        <div className="flex items-center justify-between">
+                          <p className="text-xs text-muted">
+                            {editingContent.length}/{COMMENT_MAX_LENGTH}
+                          </p>
+                          <div className="flex items-center gap-2">
+                            <button
+                              type="button"
+                              disabled={savingCommentId === comment.id || !editingContent.trim()}
+                              onClick={() => saveEdit(comment)}
+                              className="inline-flex min-h-8 items-center gap-1 rounded-md border border-border px-2 text-xs transition-colors hover:bg-muted/10 disabled:opacity-60"
+                            >
+                              <Check className="size-3" />
+                              {t("styleComments.save")}
+                            </button>
+                            <button
+                              type="button"
+                              disabled={savingCommentId === comment.id}
+                              onClick={cancelEdit}
+                              className="inline-flex min-h-8 items-center gap-1 rounded-md border border-border px-2 text-xs transition-colors hover:bg-muted/10 disabled:opacity-60"
+                            >
+                              <X className="size-3" />
+                              {t("styleComments.cancel")}
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    ) : (
+                      <p className="mt-1 whitespace-pre-wrap break-words text-sm leading-6 text-foreground/85">
+                        {comment.content}
+                      </p>
+                    )}
+
+                    {comment.is_reply ? (
+                      comment.reply_to ? (
                         <button
                           type="button"
-                          disabled={busy}
-                          onClick={() => startEdit(comment)}
-                          className="inline-flex min-h-9 items-center gap-1 rounded-md border border-border px-2 py-1 text-xs text-muted hover:text-foreground hover:bg-muted/10 transition-colors"
+                          onClick={() => focusComment(comment.reply_to!.id)}
+                          className="mt-1.5 flex max-w-full items-center gap-1 text-left text-xs text-muted hover:text-foreground"
                         >
-                          <Pencil className="w-3 h-3" />
-                          {t("styleComments.edit")}
+                          <CornerDownRight className="size-3 shrink-0" aria-hidden="true" />
+                          <span className="shrink-0 font-medium">{comment.reply_to.author_name}</span>
+                          <span className="truncate">{comment.reply_to.content}</span>
                         </button>
-                        <button
-                          type="button"
-                          disabled={busy}
-                          onClick={() => removeComment(comment)}
-                          className="inline-flex min-h-9 items-center gap-1 rounded-md border border-red-300 px-2 py-1 text-xs text-red-700 hover:bg-red-50 dark:border-red-800 dark:text-red-300 dark:hover:bg-red-950/40 transition-colors disabled:opacity-60"
-                        >
-                          <Trash2 className="w-3 h-3" />
-                          {t("styleComments.delete")}
-                        </button>
-                      </>
+                      ) : (
+                        <p className="mt-1.5 text-xs text-muted">{copy.removed}</p>
+                      )
+                    ) : null}
+
+                    {!isEditing ? (
+                      <div className="-ml-1.5 mt-1 flex flex-wrap items-center gap-1">
+                        {repliesEnabled ? (
+                          user ? (
+                            <button
+                              type="button"
+                              disabled={busy || editingCommentId !== null}
+                              onClick={() => startReply(comment)}
+                              className="inline-flex min-h-8 items-center gap-1 rounded-md px-1.5 text-xs text-muted transition-colors hover:text-foreground disabled:opacity-50"
+                            >
+                              <Reply className="size-3.5" aria-hidden="true" />
+                              {copy.reply}
+                            </button>
+                          ) : (
+                            <Link
+                              href={getStyleFeedbackLoginHref(pathname, slug, locale, comment.id)}
+                              className="inline-flex min-h-8 items-center gap-1 rounded-md px-1.5 text-xs text-muted underline-offset-4 hover:text-foreground hover:underline"
+                            >
+                              <Reply className="size-3.5" aria-hidden="true" />
+                              {copy.reply}
+                            </Link>
+                          )
+                        ) : null}
+                        {isOwner ? (
+                          <>
+                            <button
+                              type="button"
+                              disabled={busy}
+                              onClick={() => startEdit(comment)}
+                              className="inline-flex min-h-8 items-center gap-1 rounded-md px-1.5 text-xs text-muted transition-colors hover:text-foreground disabled:opacity-60"
+                            >
+                              <Pencil className="size-3.5" aria-hidden="true" />
+                              {t("styleComments.edit")}
+                            </button>
+                            <button
+                              type="button"
+                              disabled={busy}
+                              onClick={() => removeComment(comment)}
+                              className="inline-flex min-h-8 items-center gap-1 rounded-md px-1.5 text-xs text-muted transition-colors hover:text-red-600 disabled:opacity-60 dark:hover:text-red-400"
+                            >
+                              <Trash2 className="size-3.5" aria-hidden="true" />
+                              {t("styleComments.delete")}
+                            </button>
+                          </>
+                        ) : null}
+                      </div>
                     ) : null}
                   </div>
-                </div>
-
-                {comment.is_reply ? (
-                  <div className="mb-3 rounded-md border border-border bg-muted/5 p-3 text-xs leading-6 text-muted">
-                    {comment.reply_to ? (
-                      <>
-                        <button type="button" onClick={() => focusComment(comment.reply_to!.id)} className="min-h-8 font-medium text-foreground underline underline-offset-4">{copy.replying} {comment.reply_to.author_name}</button>
-                        <p className="line-clamp-2 whitespace-pre-wrap break-words">{comment.reply_to.content}</p>
-                      </>
-                    ) : <p>{copy.removed}</p>}
-                  </div>
-                ) : null}
-                {isEditing ? (
-                  <div className="space-y-2">
-                    <textarea
-                      aria-label={copy.editLabel}
-                      rows={3}
-                      value={editingContent}
-                      onChange={(e) => setEditingContent(e.target.value)}
-                      maxLength={COMMENT_MAX_LENGTH}
-                      disabled={savingCommentId === comment.id}
-                      className="w-full resize-y px-3 py-2 text-sm leading-6 border border-border rounded-md bg-background focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground"
-                    />
-                    <div className="flex items-center justify-between">
-                      <p className="text-xs text-muted">{editingContent.length}/{COMMENT_MAX_LENGTH}</p>
-                      <div className="flex items-center gap-2">
-                        <button
-                          type="button"
-                          disabled={savingCommentId === comment.id || !editingContent.trim()}
-                          onClick={() => saveEdit(comment)}
-                          className="inline-flex min-h-9 items-center gap-1 rounded-md border border-border px-2 py-1 text-xs hover:bg-muted/10 transition-colors disabled:opacity-60"
-                        >
-                          <Check className="w-3 h-3" />
-                          {t("styleComments.save")}
-                        </button>
-                        <button
-                          type="button"
-                          disabled={savingCommentId === comment.id}
-                          onClick={cancelEdit}
-                          className="inline-flex min-h-9 items-center gap-1 rounded-md border border-border px-2 py-1 text-xs hover:bg-muted/10 transition-colors disabled:opacity-60"
-                        >
-                          <X className="w-3 h-3" />
-                          {t("styleComments.cancel")}
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                ) : (
-                  <p className="whitespace-pre-wrap break-words text-foreground/80 leading-6">{comment.content}</p>
-                )}
-                {repliesEnabled && !isEditing ? (
-                  <div className="mt-2 flex justify-end">
-                    {user ? (
-                      <button type="button" disabled={busy || editingCommentId !== null} onClick={() => startReply(comment)} className="inline-flex min-h-10 items-center gap-1.5 px-2 text-xs text-muted hover:text-foreground disabled:opacity-50">
-                        <Reply className="size-3.5" aria-hidden="true" />{copy.reply}
-                      </button>
-                    ) : <Link href={getStyleFeedbackLoginHref(pathname, slug, locale, comment.id)} className="inline-flex min-h-10 items-center gap-1.5 px-2 text-xs underline underline-offset-4"><Reply className="size-3.5" aria-hidden="true" />{copy.reply}</Link>}
-                  </div>
-                ) : null}
-              </div>
+                </article>
+              </li>
             );
           })}
-        </div>
+        </ol>
       )}
+
       {!focusedCommentId && (total > COMMENTS_PAGE_SIZE || page > 0) ? (
-        <nav aria-label={copy.pagination} className="flex flex-wrap items-center justify-between gap-3 border-t border-border pt-4">
-          <button type="button" disabled={page === 0 || isLoading || busy || editingCommentId !== null} onClick={() => setPage((current) => Math.max(0, current - 1))} className="min-h-11 rounded-md border border-border px-3 text-sm transition-colors hover:border-foreground disabled:cursor-not-allowed disabled:opacity-50">
+        <nav
+          aria-label={copy.pagination}
+          className="flex flex-wrap items-center justify-between gap-3"
+        >
+          <button
+            type="button"
+            disabled={page === 0 || isLoading || busy || editingCommentId !== null}
+            onClick={() => setPage((current) => Math.max(0, current - 1))}
+            className="inline-flex min-h-9 items-center rounded-md border border-border px-3 text-xs transition-colors hover:border-foreground disabled:cursor-not-allowed disabled:opacity-50"
+          >
             {copy.previous}
           </button>
           <span role="status" aria-live="polite" className="text-xs tabular-nums text-muted">
             {locale === "zh" ? `第 ${page + 1} 页` : `Page ${page + 1}`}
           </span>
-          <button type="button" disabled={isLoading || busy || editingCommentId !== null || (page + 1) * COMMENTS_PAGE_SIZE >= total} onClick={() => setPage((current) => current + 1)} className="min-h-11 rounded-md border border-border px-3 text-sm transition-colors hover:border-foreground disabled:cursor-not-allowed disabled:opacity-50">
+          <button
+            type="button"
+            disabled={
+              isLoading ||
+              busy ||
+              editingCommentId !== null ||
+              (page + 1) * COMMENTS_PAGE_SIZE >= total
+            }
+            onClick={() => setPage((current) => current + 1)}
+            className="inline-flex min-h-9 items-center rounded-md border border-border px-3 text-xs transition-colors hover:border-foreground disabled:cursor-not-allowed disabled:opacity-50"
+          >
             {copy.next}
           </button>
         </nav>

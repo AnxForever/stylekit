@@ -79,6 +79,9 @@ describe("i18n routing helpers", () => {
     expect(shouldBypassLocale("/styles/corporate-clean/showcase")).toBe(true);
     expect(shouldBypassLocale("/styles/neo-brutalist/showcase")).toBe(true);
     expect(shouldBypassLocale("/styles/corporate-clean")).toBe(false);
+    expect(shouldBypassLocale("/templates/technical-profile")).toBe(true);
+    expect(shouldBypassLocale("/templates/technical-profile/notes/tokens-are-a-promise")).toBe(true);
+    expect(shouldBypassLocale("/templates/technical-profile-copy")).toBe(false);
     expect(shouldBypassLocale("/styles")).toBe(false);
     expect(shouldBypassLocale("/")).toBe(false);
   });
@@ -103,11 +106,13 @@ describe("i18n routing helpers", () => {
     expect(getLocaleRouteStrategy("/guides/neumorphism")).toBe("rewrite");
     expect(getLocaleRouteStrategy("/templates/saas-landing")).toBe("rewrite");
     expect(getLocaleRouteStrategy("/liquid-glass")).toBe("filesystem");
+    expect(getLocaleRouteStrategy("/docs")).toBe("filesystem");
     expect(getLocaleRouteStrategy("/downloads")).toBe("filesystem");
 
     expect(getIndexableLocalesForPath("/styles/neo-brutalist")).toEqual(LOCALES);
     expect(getIndexableLocalesForPath("/downloads")).toEqual(["en", "zh"]);
     expect(getIndexableLocalesForPath("/blog/example")).toEqual(["en"]);
+    expect(getIndexableLocalesForPath("/docs")).toEqual(LOCALES);
     expect(getIndexableLocalesForPath("/guides/neumorphism")).toEqual(["en"]);
     expect(getIndexableLocalesForPath("/login")).toEqual([]);
     expect(getIndexableLocalesForPath("/styles/neo-brutalist/showcase")).toEqual([]);

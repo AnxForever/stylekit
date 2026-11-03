@@ -14,7 +14,11 @@ export function artifactContents(tarball) {
   // remote host and fails to open the archive.
   const cwd = path.dirname(tarball);
   const archive = path.basename(tarball);
-  const entries = run("tar", ["-tzf", archive], cwd).toString("utf8").trim().split(/\r?\n/);
+  const entries = run("tar", ["-tzf", archive], cwd)
+    .toString("utf8")
+    .split(/\r?\n/)
+    .map((entry) => entry.trim())
+    .filter(Boolean);
   const result = new Map();
   for (const entry of entries) {
     if (!entry.startsWith("package/dist/") && entry !== "package/package.json") continue;

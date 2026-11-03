@@ -99,8 +99,15 @@ export const inkWashTokens = createStyleTokens({
   },
 
   required: {
-    button: ["bg-transparent", "transition-all", "duration-700"],
-    card: ["transition-colors"],
-    input: ["bg-transparent", "focus:outline-none"],
+    button: [
+      "transition-all",
+      "duration-200",
+    ],
+    card: ["bg-[#f8f5f0]", "border", "border-[#c4b9a8]/30", "rounded-none"],
+    input: [
+      "bg-transparent",
+      "focus:outline-none",
+      "focus:border-[#2c2c2c]",
+    ],
   },
 });

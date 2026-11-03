@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import Link from "next/link";
 import { useI18n } from "@/lib/i18n/context";
 import { LocalizedLink } from "@/components/i18n/localized-link";
 import type { StyleColorEntry } from "@/lib/styles/colors";
@@ -40,13 +41,13 @@ function Swatch({
           style={{ backgroundColor: hex }}
         />
       </button>
-      <LocalizedLink
-        href={`/colors/${hex.replace("#", "")}`}
+      <Link
+        href={`/en/colors/${hex.replace("#", "")}`}
         className="mt-1 font-mono text-[11px] text-muted hover:underline group-hover/swatch:text-foreground"
         aria-label={isZh ? `${hex} 色值详情` : `${hex} color details`}
       >
         {copied ? <Check className="h-4 w-4" aria-hidden="true" /> : hex}
-      </LocalizedLink>
+      </Link>
     </div>
   );
 }
@@ -83,6 +84,31 @@ export function ColorsExplorer({ entries, swatchCount }: ColorsExplorerProps) {
           {isZh
             ? `浏览、搜索并一键复制 ${swatchCount}+ 个精选色值——每个 hex 都标注了它所属的设计风格。搜索色号（如 #667eea）、风格名或分类即可定位。`
             : `Browse, search, and copy ${swatchCount}+ curated hex codes — each one tagged with the design style it belongs to. Search by hex (e.g. #667eea), style name, or category.`}
+        </p>
+        <p className="mt-3 text-sm text-muted">
+          {isZh ? (
+            <>
+              想把色值整理成可复用的设计令牌？{" "}
+              <Link
+                href="/en/blog/design-tokens-explained"
+                className="underline underline-offset-4 hover:text-foreground"
+              >
+                阅读设计令牌指南（英文）
+              </Link>
+              。
+            </>
+          ) : (
+            <>
+              Want to turn these colors into reusable design tokens?{" "}
+              <Link
+                href="/en/blog/design-tokens-explained"
+                className="underline underline-offset-4 hover:text-foreground"
+              >
+                Read the design tokens guide
+              </Link>
+              .
+            </>
+          )}
         </p>
       </header>
 

@@ -89,12 +89,13 @@ export const luxuryRetailTokens = createStyleTokens({
 
   required: {
     button: [
-      "border border-[#1a1a1a]",
-      "bg-transparent",
-      "text-[#1a1a1a]",
-      "text-xs tracking-[0.2em] uppercase",
-      "hover:bg-[#1a1a1a] hover:text-[#faf9f6]",
-      "transition-all duration-300",
+      "border",
+      "tracking-[0.2em]",
+      "uppercase",
+      "hover:bg-[#1a1a1a]",
+      "hover:text-[#faf9f6]",
+      "transition-all",
+      "duration-300",
     ],
     card: [
       "bg-[#faf9f6]",
@@ -102,10 +103,12 @@ export const luxuryRetailTokens = createStyleTokens({
     ],
     input: [
       "bg-transparent",
-      "border-b border-[#c9a96e]",
+      "border-b",
+      "border-[#c9a96e]",
       "text-[#1a1a1a]",
       "placeholder:text-[#8b7355]",
-      "focus:outline-none focus:border-[#1a1a1a]",
+      "focus:outline-none",
+      "focus:border-[#1a1a1a]",
       "tracking-wide",
     ],
   },

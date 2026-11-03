@@ -7,6 +7,9 @@ import { CopyValueRow } from "@/components/colors/copy-value-row";
 import type { StyleColorEntry } from "@/lib/styles/colors";
 
 vi.mock("@/lib/i18n/context", () => ({ useI18n: () => ({ locale: "zh" }) }));
+vi.mock("next/link", () => ({
+  default: (props: React.AnchorHTMLAttributes<HTMLAnchorElement>) => <a {...props} />,
+}));
 vi.mock("@/components/i18n/localized-link", () => ({
   LocalizedLink: (props: React.AnchorHTMLAttributes<HTMLAnchorElement>) => <a {...props} />,
 }));
@@ -32,7 +35,8 @@ describe("live color copy flows", () => {
     const palette = screen.getByRole("region", { name: "Neo Brutalist palette" });
     await waitFor(() => expect(within(palette).getByRole("textbox")).toHaveValue("#ff0000"));
     expect(screen.queryByText("已复制到剪贴板。")).not.toBeInTheDocument();
-    expect(within(palette).getByRole("link", { name: "#ff0000 色值详情" })).toHaveAttribute("href", "/colors/ff0000");
+    expect(within(palette).getByRole("link", { name: "#ff0000 色值详情" })).toHaveAttribute("href", "/en/colors/ff0000");
+    expect(screen.getByRole("link", { name: "阅读设计令牌指南（英文）" })).toHaveAttribute("href", "/en/blog/design-tokens-explained");
   });
 
   it("copies a searched palette value and announces success", async () => {

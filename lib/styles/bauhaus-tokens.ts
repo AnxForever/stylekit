@@ -94,20 +94,27 @@ export const bauhausTokens = createStyleTokens({
   required: {
     button: [
       "rounded-none",
-      "border-2 border-black",
-      "font-sans font-bold uppercase",
-      "transition-opacity duration-200",
+      "border-2",
+      "border-black",
+      "font-sans",
+      "font-bold",
+      "uppercase",
+      "transition-opacity",
+      "duration-200",
     ],
     card: [
       "rounded-none",
-      "border-2 border-black",
+      "border-2",
+      "border-black",
       "bg-white",
     ],
     input: [
       "rounded-none",
-      "border-2 border-black",
+      "border-2",
+      "border-black",
       "font-sans",
       "focus:outline-none",
+      "focus:border-[#0057b8]",
     ],
   },
 });

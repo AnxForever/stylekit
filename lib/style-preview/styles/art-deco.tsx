@@ -1,4 +1,5 @@
 import type { StylePreviewComponents } from "../types";
+import { previewCopy } from "../copy";
 
 const preview = {
     button: () => (
@@ -23,7 +24,7 @@ const preview = {
         className="w-full px-4 py-3 bg-slate-900 border border-yellow-600/50 text-yellow-100 placeholder-yellow-600/50 font-serif tracking-wider focus:border-yellow-500 focus:shadow-[0_0_15px_rgba(212,175,55,0.2)] focus:outline-none transition-all"
       />
     ),
-    coverPreview: () => (
+    coverPreview: ({ locale } = {}) => (
       <div className="w-full h-full bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center p-3 relative overflow-hidden">
         {/* Radial lines */}
         <div className="absolute inset-0 opacity-10">
@@ -45,7 +46,7 @@ const preview = {
             <div className="absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2 border-yellow-500" />
             <div className="font-serif text-yellow-500 text-sm text-center mb-1 tracking-wider">ART DECO</div>
             <div className="w-12 h-px bg-gradient-to-r from-transparent via-yellow-500 to-transparent mx-auto mb-2" />
-            <p className="text-gray-400 text-[10px] text-center mb-3">黄金时代</p>
+            <p className="text-gray-400 text-[10px] text-center mb-3">{previewCopy(locale, "黄金时代", "Golden Age")}</p>
             <button className="w-full py-2 border border-yellow-500 text-yellow-500 text-xs font-serif uppercase tracking-wider hover:bg-yellow-500 hover:text-black transition-all">
               Enter
             </button>

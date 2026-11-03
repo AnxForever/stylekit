@@ -94,8 +94,20 @@ export const scandinavianTokens = createStyleTokens({
   },
 
   required: {
-    button: ["transition-colors", "duration-300"],
-    card: ["rounded-sm", "transition-colors"],
-    input: ["bg-transparent", "focus:outline-none"],
+    button: [
+      "transition-all",
+      "duration-200",
+    ],
+    card: [
+      "rounded-lg",
+      "transition-all",
+    ],
+    input: [
+      "bg-white",
+      "focus:outline-none",
+      "focus:border-[#5a7a6b]",
+      "focus:ring-1",
+      "focus:ring-[#5a7a6b]/20",
+    ],
   },
 });

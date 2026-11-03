@@ -99,20 +99,23 @@ export const cyberpunkNeonTokens = createStyleTokens({
 
   required: {
     button: [
-      "px-6 py-3",
       "rounded-lg",
       "font-mono",
-      "uppercase tracking-wider",
-      "transition-all duration-300",
+      "uppercase",
+      "tracking-wider",
+      "transition-all",
+      "duration-300",
     ],
     card: [
       "bg-gray-950",
-      "border border-cyan-400/30",
+      "border",
+      "border-cyan-400/30",
       "rounded-lg",
     ],
     input: [
       "bg-gray-950",
-      "border border-cyan-400/30",
+      "border",
+      "border-cyan-400/30",
       "rounded-lg",
       "text-cyan-400",
       "font-mono",

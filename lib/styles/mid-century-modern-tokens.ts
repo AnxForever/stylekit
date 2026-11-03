@@ -100,23 +100,24 @@ export const midCenturyModernTokens = createStyleTokens({
 
   required: {
     button: [
-      "rounded-lg",
-      "font-sans font-semibold uppercase tracking-wider",
-      "transition-all duration-200",
+      "rounded-sm",
+      "font-sans",
+      "font-semibold",
+      "uppercase",
+      "tracking-wide",
+      "transition-all",
+      "duration-200",
     ],
     card: [
-      "rounded-xl",
-      "border-2 border-[#3d3d3d]",
+      "rounded-sm",
       "bg-[#f5f0e1]",
     ],
     input: [
       "rounded-lg",
-      "border-2 border-[#3d3d3d]/30",
-      "bg-white",
-      "text-[#3d3d3d]",
-      "font-sans tracking-wide",
-      "focus:border-[#e8572a]",
+      "bg-[#f5f0e1]",
+      "text-[#1a1a1a]",
       "focus:outline-none",
+      "focus:border-b-[#e8572a]",
     ],
   },
 });

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { withBrandPreviews } from "@/lib/seo/social-metadata";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { Breadcrumb } from "@/components/ui/breadcrumb";
@@ -113,7 +114,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const t = COPY[locale === "zh" ? "zh" : "en"];
   const title = locale === "zh" ? "社区风格与 UI 设计讨论" : "Community Styles & UI Design Discussions";
 
-  return {
+  return withBrandPreviews({
     // This page shares a segment with its legacy root layout; Next only
     // applies title templates to child segments. Pin one brand explicitly.
     title: { absolute: `${title} | StyleKit` },
@@ -139,7 +140,7 @@ export async function generateMetadata(): Promise<Metadata> {
       title: `${title} | StyleKit`,
       description: t.intro,
     },
-  };
+  });
 }
 
 export default async function CommunityPage({

@@ -18,6 +18,7 @@ import { MobileBottomNav } from "@/components/layout/mobile-bottom-nav";
 import { getSiteBaseUrl } from "@/lib/site-url";
 import { getLocaleDocumentContext, getRequestLocaleContext } from "@/lib/i18n/request";
 import { buildSiteMetadata } from "@/lib/seo/site-metadata";
+import { BRAND_ASSETS } from "@/lib/brand/assets";
 import { CURATED_STYLE_COUNT } from "@/lib/product/catalog-facts";
 import { getShowcaseTypographyProfile } from "@/lib/typography/showcase-profiles";
 import { LazyShowcaseTypographyRuntime } from "@/components/typography/lazy-showcase-typography-runtime";
@@ -25,7 +26,6 @@ import { ShowcaseBackBar } from "@/components/showcase/showcase-back-bar";
 import { getSiteAnnouncement } from "@/lib/site-announcements";
 import "@/app/globals.css";
 import type { Locale } from "@/lib/i18n/translations";
-import { FRIEND_PROMO_ID, FRIEND_PROMO_STORAGE_KEY } from "@/lib/home/friend-promo";
 import { UMAMI_TRACKING_DOMAINS } from "@/lib/analytics/umami-constants";
 import { GOOGLE_ANALYTICS_BOOTSTRAP_SCRIPT } from "@/lib/analytics/google-analytics";
 import { ANALYTICS_COLLECTION_POLICY_BOOTSTRAP_SCRIPT } from "@/lib/analytics/collection-policy";
@@ -58,13 +58,19 @@ const publicMono = Fragment_Mono({
   variable: "--font-public-mono",
 });
 
+// Product surfaces keep a system UI stack instead of the editorial faces.
+// Latin families come first, then Chinese families, then the generic family,
+// so a CJK face's Latin glyphs never override the UI Latin face.
+const SYSTEM_LATIN_STACK =
+  '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial';
+const SYSTEM_CJK_STACK =
+  '"PingFang SC", "Hiragino Sans GB", "Microsoft YaHei UI", "Microsoft YaHei", "Noto Sans CJK SC", "Noto Sans SC", "Source Han Sans CN"';
+
 const productFontVariables = {
-  "--font-body-active":
-    '"PingFang SC", "Microsoft YaHei", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
-  "--font-display-active":
-    '"PingFang SC", "Microsoft YaHei", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
+  "--font-body-active": `${SYSTEM_LATIN_STACK}, ${SYSTEM_CJK_STACK}, sans-serif`,
+  "--font-display-active": `${SYSTEM_LATIN_STACK}, ${SYSTEM_CJK_STACK}, sans-serif`,
   "--font-mono-active":
-    "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace",
+    '"JetBrains Mono", "SF Mono", ui-monospace, Menlo, Consolas, "Liberation Mono", "Courier New", "PingFang SC", "Microsoft YaHei", monospace',
 } as CSSProperties;
 
 export const viewport: Viewport = {
@@ -142,16 +148,6 @@ function buildAnnouncementBootstrapScript(id: string): string {
 `;
 }
 
-const FRIEND_PROMO_BOOTSTRAP_SCRIPT = `
-(() => {
-  try {
-    if (localStorage.getItem(${serializeJsonLd(FRIEND_PROMO_STORAGE_KEY)}) === ${serializeJsonLd(FRIEND_PROMO_ID)}) {
-      document.documentElement.dataset.friendPromoDismissed = "true";
-    }
-  } catch {}
-})();
-`;
-
 export async function generateSiteMetadata(): Promise<Metadata> {
   return buildSiteMetadata(await getRequestLocaleContext());
 }
@@ -202,12 +198,12 @@ export default async function SiteDocument({
             />
           </>
         ) : null}
-        <link rel="icon" href="/favicon.ico" sizes="32x32" />
-        <link rel="icon" href="/favicon-16x16.png" sizes="16x16" type="image/png" />
-        <link rel="icon" href="/favicon-32x32.png" sizes="32x32" type="image/png" />
-        <link rel="icon" href="/icon.svg" type="image/svg+xml" />
-        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-        <link rel="manifest" href="/manifest.json" />
+        <link rel="icon" href={BRAND_ASSETS.favicon} sizes="16x16 32x32 48x48" type="image/x-icon" />
+        <link rel="icon" href={BRAND_ASSETS.icon16} sizes="16x16" type="image/png" />
+        <link rel="icon" href={BRAND_ASSETS.icon32} sizes="32x32" type="image/png" />
+        <link rel="icon" href={BRAND_ASSETS.icon} sizes="any" type="image/svg+xml" />
+        <link rel="apple-touch-icon" href={BRAND_ASSETS.appleTouchIcon} sizes="180x180" />
+        <link rel="manifest" href={BRAND_ASSETS.manifest} />
         <script
           dangerouslySetInnerHTML={{
             __html: ANALYTICS_COLLECTION_POLICY_BOOTSTRAP_SCRIPT,
@@ -275,11 +271,6 @@ export default async function SiteDocument({
             }}
           />
         ) : null}
-        <script
-          dangerouslySetInnerHTML={{
-            __html: FRIEND_PROMO_BOOTSTRAP_SCRIPT,
-          }}
-        />
         {process.env.NODE_ENV !== "production" ? (
           <script
             dangerouslySetInnerHTML={{
@@ -326,9 +317,23 @@ export default async function SiteDocument({
               "url": BASE_URL,
               "logo": {
                 "@type": "ImageObject",
-                "url": `${BASE_URL}/icon-512x512.png`,
+                "url": `${BASE_URL}${BRAND_ASSETS.icon512}`,
               },
               "description": `Open-source visual style library for AI-generated web interfaces with ${CURATED_STYLE_COUNT} curated styles, design tokens, and AI prompts.`,
+              // The name is generic enough that unrelated projects share it: a
+              // Qt Quick styling module, an iOS styling framework, a Chrome
+              // extension. The disambiguating description and the aliases in
+              // use on third-party pages keep those entities apart.
+              "disambiguatingDescription": "Open-source web and UI design style library at stylekit.top for AI-generated interfaces. Unrelated to the Qt Labs StyleKit module and to the StyleKit.io Chrome extension.",
+              "alternateName": ["StyleKit 风格库", "StyleKit design style library"],
+              "knowsAbout": [
+                "Web design styles",
+                "UI design systems",
+                "Design tokens",
+                "AI coding prompts",
+                "Tailwind CSS",
+                "shadcn/ui",
+              ],
               "sameAs": [
                 "https://github.com/AnxForever/stylekit",
                 "https://x.com/Justice66890051",

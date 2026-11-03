@@ -157,8 +157,8 @@ describe("getTemplateProject", () => {
     (entry) => !entry.external && entry.href.startsWith("/templates/")
   );
 
-  it("exports all 36 local templates with closed import graphs and license data", async () => {
-    expect(localTemplates).toHaveLength(36);
+  it("exports all local templates with closed import graphs and license data", async () => {
+    expect(localTemplates).toHaveLength(37);
 
     for (const entry of localTemplates) {
       const project = await getTemplateProject(entry.id);
@@ -215,6 +215,77 @@ describe("getTemplateProject", () => {
     await expect(getTemplateProject("nextdevtpl")).resolves.toBeNull();
     await expect(getTemplateProject("../brutal-landing")).resolves.toBeNull();
     await expect(getTemplateProject("not-a-template")).resolves.toBeNull();
+  });
+
+  it("bundles the technical profile shared relief and journal in its download", async () => {
+    const project = await getTemplateProject("technical-profile");
+    expect(project).not.toBeNull();
+    if (!project) return;
+    expect(project.files["components/templates/relief-mark.tsx"]).toContain("ReliefMark");
+    expect(project.files["components/templates/relief-mark.module.css"]).toContain("prefers-reduced-motion");
+    expect(project.files["CUSTOMIZE.md"]).toContain("FIELD_NOTES");
+    expect(project.files["app/templates/technical-profile/CUSTOMIZE.md"]).toBeUndefined();
+    expect(project.files["README.md"]).toContain("[CUSTOMIZE.md](./CUSTOMIZE.md)");
+    expect(project.license.attribution).not.toContain("Customize this template");
+    expect(Object.keys(project.files).some((file) => file.includes("[slug]/page.tsx"))).toBe(true);
+
+    const response = await getDownload(
+      new Request("https://stylekit.test/api/templates/technical-profile/download"),
+      { params: Promise.resolve({ slug: "technical-profile" }) }
+    );
+    expect(response.status).toBe(200);
+    const archive = await JSZip.loadAsync(await response.arrayBuffer());
+    for (const name of [
+      "components/templates/relief-mark.tsx",
+      "components/templates/relief-mark.module.css",
+      "CUSTOMIZE.md",
+    ]) {
+      expect(await archive.file(`technical-profile-template/${name}`)?.async("string"))
+        .toBe(project.files[name]);
+    }
+  });
+
+  it("exposes the complete technical profile text files that are present in its ZIP", async () => {
+    const project = await getTemplateProject("technical-profile");
+    expect(project).not.toBeNull();
+    if (!project) return;
+
+    const response = await getSource(
+      new Request("https://stylekit.test/api/templates/technical-profile/source?view=project"),
+      { params: Promise.resolve({ slug: "technical-profile" }) }
+    );
+    expect(response.status).toBe(200);
+    const viewed = await response.json();
+    expect(viewed.entryPath).toBe("app/templates/technical-profile/page.tsx");
+    expect(viewed.source).toBe(project.source);
+    expect(viewed.binaryFiles).toEqual(project.binaryFiles);
+
+    const binaryFiles = new Set(project.binaryFiles);
+    const expectedTextFiles = Object.fromEntries(
+      Object.entries(project.files).filter(([name]) => !binaryFiles.has(name))
+    );
+    expect(viewed.files).toEqual(expectedTextFiles);
+    for (const name of [
+      "app/templates/technical-profile/_components/field-manual.module.css",
+      "app/templates/technical-profile/_components/field-notes-list.tsx",
+      "app/templates/technical-profile/_data.ts",
+      "app/templates/technical-profile/notes/[slug]/page.tsx",
+      "components/templates/relief-mark.tsx",
+      "components/templates/relief-mark.module.css",
+    ]) {
+      expect(viewed.files[name]).toBe(project.files[name]);
+    }
+
+    const download = await getDownload(
+      new Request("https://stylekit.test/api/templates/technical-profile/download"),
+      { params: Promise.resolve({ slug: "technical-profile" }) }
+    );
+    expect(download.status).toBe(200);
+    const archive = await JSZip.loadAsync(await download.arrayBuffer());
+    for (const [name, content] of Object.entries(expectedTextFiles)) {
+      expect(await archive.file(`technical-profile-template/${name}`)?.async("string"))
+        .toBe(content);
+    }
   });
 
   it("keeps the source endpoint JSON contract and excludes nonlocal slugs", async () => {

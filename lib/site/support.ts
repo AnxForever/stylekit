@@ -217,6 +217,42 @@ export const supportLinks: SupportLink[] = [
 
 export const thankYouEntries: ThankYouEntry[] = [
   {
+    id: "donation-2026-10-28-050-00",
+    date: "2026-10-28",
+    donorLabel: {
+      en: "鸢不言",
+      zh: "鸢不言",
+    },
+    amount: {
+      en: "¥50.00",
+      zh: "¥50.00",
+    },
+    receiptImage:
+      "https://ktconteogvofbwetnmlz.supabase.co/storage/v1/object/public/support-acknowledgments/acknowledgments/4b1122ef-f24c-4b11-970f-701c3029e970.png",
+    receiptAlt: {
+      en: "鸢不言 50.00 元的赞赏记录",
+      zh: "鸢不言 50.00 元的赞赏记录",
+    },
+  },
+  {
+    id: "donation-2026-10-24-005-00",
+    date: "2026-10-24",
+    donorLabel: {
+      en: "Recycle",
+      zh: "Recycle",
+    },
+    amount: {
+      en: "¥5.00",
+      zh: "¥5.00",
+    },
+    receiptImage:
+      "https://ktconteogvofbwetnmlz.supabase.co/storage/v1/object/public/support-acknowledgments/acknowledgments/7e62ac8c-2b54-4055-9b3d-de749490240b.png",
+    receiptAlt: {
+      en: "Recycle 5.00 元的赞赏记录",
+      zh: "Recycle 5.00 元的赞赏记录",
+    },
+  },
+  {
     id: "donation-2026-07-18-008-88",
     date: "2026-07-18",
     donorLabel: {

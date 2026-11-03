@@ -127,23 +127,22 @@ export const brutalistWebTokens = createStyleTokens({
   required: {
     button: [
       "rounded-none",
-      "border",
-      "border-black",
+      "border-2",
+      "border-[#000000]",
       "font-mono",
-      "bg-white",
     ],
     card: [
       "rounded-none",
-      "border",
-      "border-black",
-      "bg-white",
+      "border-2",
+      "border-[#000000]",
+      "bg-[#ffffff]",
     ],
     input: [
       "rounded-none",
-      "border",
-      "border-black",
+      "border-2",
+      "border-[#000000]",
       "font-mono",
-      "bg-white",
+      "bg-[#ffffff]",
     ],
   },
 });

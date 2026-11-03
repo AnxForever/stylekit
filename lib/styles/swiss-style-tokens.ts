@@ -94,19 +94,23 @@ export const swissStyleTokens = createStyleTokens({
   required: {
     button: [
       "rounded-none",
-      "font-sans font-bold",
-      "transition-opacity duration-150",
+      "font-sans",
+      "font-bold",
+      "transition-opacity",
+      "duration-150",
     ],
     card: [
-      "rounded-none",
-      "border border-black",
+      "border",
+      "border-black",
       "bg-white",
     ],
     input: [
       "rounded-none",
-      "border border-black",
+      "border-0",
+      "border-black",
       "font-sans",
       "focus:outline-none",
+      "focus:border-[#e30613]",
     ],
   },
 });

@@ -164,7 +164,6 @@ import { quantizedLineFieldRecipes } from "./quantized-line-field";
 
 
 
-
 // Recipe registry
 const recipeRegistry: Record<string, StyleRecipes> = {
   "neo-brutalist": neoBrutalistRecipes,

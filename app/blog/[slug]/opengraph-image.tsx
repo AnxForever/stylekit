@@ -6,6 +6,9 @@ import {
   badgeStyle,
   titleStyle,
   subtitleStyle,
+  brandLogoStyle,
+  fitTitleFontSize,
+  getOgBrandLogoDataUri,
 } from "@/lib/og/shared";
 
 export const alt = "StyleKit Blog";
@@ -27,6 +30,7 @@ export default async function OGImage({
   const date = post?.date ?? "";
   const author = post?.author ?? "StyleKit Team";
   const tags = post?.tags?.slice(0, 3) ?? [];
+  const brandLogo = await getOgBrandLogoDataUri();
 
   const accent = "#00d4ff";
 
@@ -42,7 +46,7 @@ export default async function OGImage({
           }}
         >
           <div style={badgeStyle(accent)}>Blog</div>
-          <div style={titleStyle(56)}>{title}</div>
+          <div style={titleStyle(fitTitleFontSize(title, 56))}>{title}</div>
           <div
             style={{
               display: "flex",
@@ -82,9 +86,13 @@ export default async function OGImage({
               </div>
             ))}
           </div>
-          <div style={{ display: "flex", fontSize: 20, color: "rgba(255,255,255,0.3)" }}>
-            stylekit.top
-          </div>
+          <img
+            src={brandLogo}
+            width={168}
+            height={56}
+            alt="StyleKit"
+            style={brandLogoStyle()}
+          />
         </div>
       </div>
     ),

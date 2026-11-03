@@ -103,23 +103,27 @@ export const popArtTokens = createStyleTokens({
 
   required: {
     button: [
-      "px-6 py-3",
-      "border-4 border-black",
+      "border-4",
+      "border-black",
       "rounded-lg",
       "font-black",
-      "uppercase tracking-wider",
+      "uppercase",
+      "tracking-wider",
       "shadow-[4px_4px_0_#000]",
-      "transition-all duration-150",
+      "transition-all",
+      "duration-150",
     ],
     card: [
       "bg-white",
-      "border-4 border-black",
+      "border-4",
+      "border-black",
       "rounded-lg",
       "shadow-[6px_6px_0_#000]",
     ],
     input: [
       "bg-white",
-      "border-4 border-black",
+      "border-4",
+      "border-black",
       "rounded-lg",
       "text-black",
       "font-bold",

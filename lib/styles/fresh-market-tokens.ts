@@ -93,10 +93,10 @@ export const freshMarketTokens = createStyleTokens({
 
   required: {
     button: [
-      "px-6 py-3",
       "rounded-full",
       "font-medium",
-      "transition-all duration-200",
+      "transition-all",
+      "duration-200",
     ],
     card: [
       "bg-white",
@@ -104,14 +104,15 @@ export const freshMarketTokens = createStyleTokens({
       "shadow-sm",
     ],
     input: [
-      "px-5 py-3",
       "bg-white",
-      "border border-[#d4e4bc]",
+      "border",
+      "border-[#d4e4bc]",
       "rounded-full",
       "text-[#2d5016]",
       "placeholder:text-[#8b7355]",
       "focus:outline-none",
-      "focus:ring-2 focus:ring-[#2d5016]/20",
+      "focus:ring-2",
+      "focus:ring-[#2d5016]/20",
       "transition-colors",
     ],
   },

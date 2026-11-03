@@ -198,8 +198,7 @@ function queueInternalAnalyticsEvent(
 
     if (typeof navigator !== "undefined" && typeof navigator.sendBeacon === "function") {
       const blob = new Blob([body], { type: "application/json" });
-      navigator.sendBeacon(INTERNAL_ANALYTICS_ENDPOINT, blob);
-      return;
+      if (navigator.sendBeacon(INTERNAL_ANALYTICS_ENDPOINT, blob)) return;
     }
 
     void fetch(INTERNAL_ANALYTICS_ENDPOINT, {
@@ -207,6 +206,8 @@ function queueInternalAnalyticsEvent(
       headers: { "Content-Type": "application/json" },
       body,
       keepalive: true,
+    }).catch(() => {
+      // A rejected background request must not affect the copy interaction.
     });
   } catch {
     // Analytics failures must remain non-blocking.

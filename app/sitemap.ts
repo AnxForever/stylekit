@@ -119,19 +119,21 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...createLocalizedEntries("/animations/vocabulary", undefined, "monthly", 0.6),
     ...createLocalizedEntries("/templates", undefined, "weekly", 0.7),
     ...createLocalizedEntries("/resources", undefined, "weekly", 0.7),
+    ...createLocalizedEntries("/prompt-sites", undefined, "weekly", 0.9),
     ...createLocalizedEntries("/downloads", undefined, "weekly", 0.7),
     ...createLocalizedEntries("/component-patterns", undefined, "monthly", 0.7),
     ...createLocalizedEntries("/mobile", undefined, "monthly", 0.7),
     ...createLocalizedEntries("/learn", undefined, "monthly", 0.6),
     ...createLocalizedEntries("/liquid-glass", undefined, "weekly", 0.7),
+    ...createLocalizedEntries("/launch", undefined, "monthly", 0.7),
     ...createLocalizedEntries("/repair", undefined, "monthly", 0.8),
     ...createLocalizedEntries("/developers", undefined, "monthly", 0.6),
     ...createLocalizedEntries("/mouse-interactions", undefined, "monthly", 0.6),
     ...createLocalizedEntries("/guide", undefined, "monthly", 0.6),
+    ...createLocalizedEntries("/docs", undefined, "monthly", 0.6),
     ...createLocalizedEntries("/components", undefined, "weekly", 0.6),
-    ...createLocalizedEntries("/about", undefined, "monthly", 0.4),
-    ...createLocalizedEntries("/launch", undefined, "monthly", 0.6),
     ...createLocalizedEntries("/style-advisor", undefined, "monthly", 0.7),
+    ...createLocalizedEntries("/about", undefined, "monthly", 0.4),
     ...createLocalizedEntries("/support", undefined, "monthly", 0.3),
     ...createLocalizedEntries("/contact", undefined, "monthly", 0.4),
     ...createEnglishEntry("/privacy", undefined, "yearly", 0.2),
@@ -183,7 +185,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         !template.external && template.href !== "/templates/editorial-profile-archive"
     )
     .flatMap((template) =>
-      createLocalizedEntries(template.href, undefined, "monthly", 0.6)
+      template.id === "technical-profile"
+        ? [{ url: `${BASE_URL}${template.href}`, changeFrequency: "monthly", priority: 0.6 }]
+        : createLocalizedEntries(template.href, undefined, "monthly", 0.6)
     );
 
   const blogPosts = getAllPosts();

@@ -103,22 +103,27 @@ export const macosVibrancyTokens = createStyleTokens({
 
   required: {
     button: [
-      "bg-[#3a3a3c] text-white/90",
       "rounded-lg",
-      "transition-colors duration-200",
+      "transition-colors",
+      "duration-200",
     ],
     card: [
       "bg-[#2c2c2e]",
-      "border border-white/8",
+      "border",
+      "border-white/8",
       "rounded-xl",
     ],
     input: [
       "bg-[#1c1c1e]",
-      "border border-white/10",
+      "border",
+      "border-white/10",
       "rounded-lg",
-      "text-white/90 placeholder-white/30",
-      "focus:outline-none focus:border-white/25",
-      "transition-colors duration-200",
+      "text-white/90",
+      "placeholder-white/30",
+      "focus:outline-none",
+      "focus:border-white/25",
+      "transition-colors",
+      "duration-200",
     ],
   },
 });

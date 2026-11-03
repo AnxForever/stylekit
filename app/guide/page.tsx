@@ -79,6 +79,21 @@ export default function GuidePage() {
               <p className="border-t border-border px-5 py-4 text-xs leading-6 text-muted">{zh ? "这里是需求示例；请先填入真实风格规则。StyleKit 提供参考和素材，页面在你的工具中实现。" : "This is a sample brief. Add the actual style rules before using it. StyleKit supplies references and resources; implementation happens in your own tool."}</p>
               <ClipboardFeedback result={result?.state === "failed" ? result : null} locale={locale} currentText={brief} className="mx-5 mb-5" />
             </div>
+            <div className="mt-8 flex flex-col gap-3 border-t border-border pt-6 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <p className="text-sm font-medium">{t("guide.docs.title")}</p>
+                <p className="mt-1 max-w-3xl text-sm leading-relaxed text-muted">
+                  {t("guide.docs.description")}
+                </p>
+              </div>
+              <LocalizedLink
+                href="/docs"
+                className="inline-flex shrink-0 items-center gap-2 text-sm hover:underline underline-offset-4"
+              >
+                {t("guide.docs.cta")}
+                <ArrowRight className="w-4 h-4" />
+              </LocalizedLink>
+            </div>
           </div>
         </section>
 

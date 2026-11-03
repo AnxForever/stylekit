@@ -1,4 +1,5 @@
 import type { StylePreviewComponents } from "../types";
+import { previewCopy } from "../copy";
 
 const preview = {
     button: () => (
@@ -19,12 +20,12 @@ const preview = {
         className="w-full px-6 py-4 bg-gradient-to-b from-gray-100 to-gray-200 rounded-2xl text-gray-700 placeholder-gray-400 shadow-[inset_4px_4px_8px_rgba(0,0,0,0.1),inset_-4px_-4px_8px_rgba(255,255,255,0.9)] focus:outline-none focus:shadow-[inset_4px_4px_8px_rgba(0,0,0,0.15),inset_-4px_-4px_8px_rgba(255,255,255,0.9),0_0_0_4px_rgba(248,180,217,0.3)] transition-all"
       />
     ),
-    coverPreview: () => (
+    coverPreview: ({ locale } = {}) => (
       <div className="w-full h-full bg-gradient-to-br from-amber-100 via-pink-100 to-purple-100 flex items-center justify-center p-3">
         <div className="w-full max-w-[180px]">
           <div className="bg-gradient-to-br from-white to-pink-50 rounded-[24px] p-4 shadow-[8px_8px_16px_rgba(0,0,0,0.1),inset_4px_4px_8px_rgba(255,255,255,0.6),inset_-2px_-2px_4px_rgba(0,0,0,0.05)]">
             <div className="text-pink-600 font-bold text-sm mb-2">Clay Card</div>
-            <p className="text-pink-500 text-[10px] mb-3">柔软的粘土质感</p>
+            <p className="text-pink-500 text-[10px] mb-3">{previewCopy(locale, "柔软的粘土质感", "Soft clay texture")}</p>
             <button className="w-full py-2 bg-gradient-to-b from-pink-300 to-pink-400 rounded-full text-white text-xs font-bold shadow-[4px_4px_8px_rgba(0,0,0,0.1),inset_2px_2px_4px_rgba(255,255,255,0.4)]">
               Button
             </button>

@@ -83,6 +83,7 @@ export function TemplateBackButton({
       ) : null}
       <button
         type="button"
+        aria-label={t("templates.backToList")}
         onClick={() =>
           navigateBackOrFallback(router, {
             href: "/templates",

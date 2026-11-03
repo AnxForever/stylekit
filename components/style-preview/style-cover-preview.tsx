@@ -2,10 +2,12 @@
 
 import * as React from "react";
 import { cn } from "@/lib/utils";
+import { useI18n } from "@/lib/i18n/context";
 import {
   loadStylePreview,
   preloadStylePreviews,
 } from "@/lib/style-preview/delivery";
+import type { StylePreviewRenderer } from "@/lib/style-preview/types";
 
 interface StyleCoverPreviewProps {
   styleSlug: string;
@@ -18,9 +20,10 @@ export function StyleCoverPreview({
   className,
   interactive = true,
 }: StyleCoverPreviewProps) {
+  const { locale, t } = useI18n();
   const [resolvedPreview, setResolvedPreview] = React.useState<{
     slug: string;
-    renderer: (() => React.ReactNode) | null;
+    renderer: StylePreviewRenderer | null;
   } | null>(null);
   const containerRef = React.useRef<HTMLDivElement>(null);
   const hasResolvedPreview = resolvedPreview?.slug === styleSlug;
@@ -97,12 +100,12 @@ export function StyleCoverPreview({
           className
         )}
       >
-        <span className="text-zinc-400 text-sm">暂无预览</span>
+        <span className="text-zinc-400 text-sm">{t("common.previewUnavailable")}</span>
       </div>
     );
   }
 
-  const content = renderer();
+  const content = renderer({ locale });
 
   return (
     <div

@@ -1,3 +1,4 @@
+import { BRAND_ASSETS } from "@/lib/brand/assets";
 import type { BlogPost } from "@/lib/blog";
 import { getSiteBaseUrl } from "@/lib/site-url";
 
@@ -97,7 +98,7 @@ export function generateBlogPostJsonLd(
       url: BASE_URL,
       logo: {
         "@type": "ImageObject",
-        url: `${BASE_URL}/icon-512x512.png`,
+        url: `${BASE_URL}${BRAND_ASSETS.icon512}`,
       },
     },
     isPartOf: {

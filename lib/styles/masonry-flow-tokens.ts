@@ -84,7 +84,7 @@ export const masonryFlowTokens = createStyleTokens({
   required: {
     button: [
       "rounded-lg",
-      "font-medium text-sm",
+      "font-medium",
       "transition-colors",
     ],
     card: [
@@ -98,7 +98,8 @@ export const masonryFlowTokens = createStyleTokens({
       "bg-zinc-100",
       "border-0",
       "focus:outline-none",
-      "focus:ring-2 focus:ring-zinc-900/10",
+      "focus:ring-2",
+      "focus:ring-zinc-900/10",
       "transition-all",
     ],
   },

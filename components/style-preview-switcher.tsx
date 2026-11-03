@@ -31,7 +31,9 @@ export function StylePreviewSwitcher() {
     slug: string;
     preview: StylePreviewComponents | null;
   } | null>(null);
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
+  const getStyleName = (style: { name: string; nameEn: string }) =>
+    locale === "zh" ? style.name : style.nameEn || style.name;
 
   const selectedStyle = styles.find((s) => s.slug === selectedSlug);
   const hasLoadedSelectedPreview = loadedPreview?.slug === selectedSlug;
@@ -82,7 +84,7 @@ export function StylePreviewSwitcher() {
           >
             <span>
               {selectedStyle
-                ? selectedStyle.name
+                ? getStyleName(selectedStyle)
                 : t("previewSwitcher.placeholder")}
             </span>
             <ChevronDown
@@ -119,7 +121,7 @@ export function StylePreviewSwitcher() {
                     className="w-3 h-3 rounded-full shrink-0"
                     style={{ backgroundColor: style.colors.primary }}
                   />
-                  {style.name}
+                  {getStyleName(style)}
                 </button>
               ))}
             </div>
@@ -146,21 +148,21 @@ export function StylePreviewSwitcher() {
                   <p className="text-xs text-muted mb-3">{t(componentLabelKeys[comp])}</p>
                   <div className="p-4 bg-background rounded-lg border border-border flex items-center justify-center min-h-[120px]">
                     {selectedPreview[comp]?.() ?? (
-                      <div className="text-muted text-sm">暂无此组件</div>
+                      <div className="text-muted text-sm">{t("previewSwitcher.componentUnavailable")}</div>
                     )}
                   </div>
                 </div>
               ))}
             </div>
           ) : (
-            <div className="py-8 text-center text-sm text-muted">暂无预览</div>
+            <div className="py-8 text-center text-sm text-muted">{t("common.previewUnavailable")}</div>
           )}
           <div className="mt-6 flex items-center justify-between">
             <Link
               href={`/styles/${selectedSlug}`}
               className="text-sm text-muted hover:text-foreground transition-colors"
             >
-              {t("previewSwitcher.viewDocs").replace("{name}", selectedStyle?.name ?? "")}{" "}
+              {t("previewSwitcher.viewDocs").replace("{name}", selectedStyle ? getStyleName(selectedStyle) : "")}{" "}
               →
             </Link>
             <Link

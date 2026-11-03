@@ -65,7 +65,8 @@
     "test:developer-consumer": "node tools/scripts/verify-developer-consumer.mjs",
     "check:style-catalog": "pnpm exec tsx tools/scripts/check-style-catalog.ts",
     "check:recipe-lint": "pnpm exec tsx tools/scripts/check-recipe-lint-parity.ts",
-    "check:contrast": "npx --no-install tsx tools/scripts/check-contrast.ts"
+    "check:contrast": "npx --no-install tsx tools/scripts/check-contrast.ts",
+    "align:recipe-required": "pnpm exec tsx tools/scripts/align-recipe-required.ts"
   },
   "dependencies": {
     "@codemirror/autocomplete": "^6.20.0",

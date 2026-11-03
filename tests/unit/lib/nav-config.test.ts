@@ -3,32 +3,16 @@ import { describe, expect, it } from "vitest";
 import { mainNav, secondaryNav } from "@/lib/nav-config";
 
 describe("primary navigation", () => {
-  it("keeps the chat group and blog together under community", () => {
+  it("keeps the top bar to the two catalogs and resources", () => {
     expect(mainNav.map((item) => item.labelKey)).toEqual([
       "nav.styles",
       "nav.templates",
-      "nav.community",
       "nav.resources",
     ]);
-
-    const community = mainNav.find((item) => item.labelKey === "nav.community");
-
-    expect(community?.href).toBe("/community");
-    expect(community?.dropdown?.width).toBe("narrow");
-    expect(community?.dropdown?.items?.map((item) => item.labelKey)).toEqual([
-      "nav.communityStyles",
-      "nav.communityJoin",
-      "nav.blog",
-    ]);
-    expect(community?.dropdown?.items?.map((item) => item.href)).toEqual([
-      "/community",
-      "/community/join",
-      "/blog",
-    ]);
-    expect(community?.dropdown?.groups).toBeUndefined();
+    expect(mainNav.some((item) => item.labelKey === "nav.community")).toBe(false);
   });
 
-  it("keeps resources grouped without a build menu or an external blog", () => {
+  it("keeps resources to browsing, components and tools", () => {
     const resources = mainNav.find((item) => item.labelKey === "nav.resources");
     const resourceItems = resources?.dropdown?.groups?.flatMap(
       (group) => group.items

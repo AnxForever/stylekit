@@ -1,3 +1,4 @@
+import { orderByCatalogPriority } from "./catalog-priority";
 import type { StyleStatsEntry } from "./catalog-stats";
 
 /**
@@ -9,16 +10,14 @@ import type { StyleStatsEntry } from "./catalog-stats";
 
 export type CatalogSortOption =
   | "recommended"
-  | "name-asc"
-  | "name-desc"
+  | "latest"
   | "popular"
   | "favorites"
   | "rating";
 
 export const CATALOG_SORT_OPTIONS: readonly CatalogSortOption[] = [
   "recommended",
-  "name-asc",
-  "name-desc",
+  "latest",
   "popular",
   "favorites",
   "rating",
@@ -98,20 +97,19 @@ function compareName(left: SortableStyle, right: SortableStyle): number {
 }
 
 /**
- * Order the catalog. `recommended` preserves the curated registry order, so it
- * returns the input array untouched; every other option returns a new array.
+ * Order the catalog. `recommended` is the editorial ranking in
+ * `catalog-priority` with the registry order behind it, so the catalog opens on
+ * the previews that show the range rather than on whatever was added first.
+ * `latest` is the reverse of the registry order.
  */
 export function sortCatalogStyles<T extends SortableStyle>(
   styles: T[],
   sort: CatalogSortOption,
   stats?: CatalogStats
 ): T[] {
-  if (sort === "recommended") return styles;
+  if (sort === "recommended") return orderByCatalogPriority(styles);
 
-  if (sort === "name-asc" || sort === "name-desc") {
-    const byName = [...styles].sort(compareName);
-    return sort === "name-desc" ? byName.reverse() : byName;
-  }
+  if (sort === "latest") return [...styles].reverse();
 
   const catalogMean = catalogRatingMean(stats);
 

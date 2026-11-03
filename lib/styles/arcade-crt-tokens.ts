@@ -113,21 +113,22 @@ export const arcadeCrtTokens = createStyleTokens({
     button: [
       "font-mono",
       "uppercase",
-      "tracking-[0.2em]",
+      "tracking-wider",
       "border-2",
-      "transition-all duration-200",
+      "transition-all",
+      "duration-200",
     ],
     card: [
       "bg-[#0a0a0a]",
-      "border-2",
+      "border",
     ],
     input: [
-      "bg-black",
-      "border-2",
+      "bg-[#050505]",
+      "border",
       "text-[#39ff14]",
       "font-mono",
       "focus:border-[#39ff14]",
-      "focus:shadow-[0_0_15px_rgba(57,255,20,0.3)]",
+      "focus:shadow-[0_0_8px_rgba(57,255,20,0.3)]",
     ],
   },
 });

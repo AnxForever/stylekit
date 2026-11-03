@@ -1,5 +1,12 @@
 import { describe, expect, it } from "vitest";
-import { canonicalRequiredClass, lintStyleCode } from "@/lib/styles/style-linter";
+import { canonicalRequiredClass, lintCodeWithRules, mergeRulesFromTokens } from "@/lib/styles/style-linter";
+import { createStyleTokens } from "@/lib/styles/token-defaults";
+
+// Test spelling independently of catalog changes: outline buttons intentionally
+// do not require the primary variant's offset shadow.
+const rules = mergeRulesFromTokens(createStyleTokens({
+  required: { button: ["shadow-[4px_4px_0_#000]", "hover:shadow-none"] },
+}));
 
 /**
  * The curated required rules and the canonical recipes spell the same look
@@ -24,8 +31,8 @@ describe("canonical required-class matching", () => {
   });
 
   it("stops reporting a required class the code spells differently", () => {
-    const report = lintStyleCode(
-      "neo-brutalist",
+    const report = lintCodeWithRules(
+      rules,
       `<button class="rounded-none border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] font-bold uppercase">Hi</button>`,
       { checkRequired: ["button"] },
     );
@@ -36,8 +43,8 @@ describe("canonical required-class matching", () => {
   });
 
   it("still reports the class when the value genuinely differs", () => {
-    const report = lintStyleCode(
-      "neo-brutalist",
+    const report = lintCodeWithRules(
+      rules,
       `<button class="rounded-none border-2 border-black shadow-[6px_6px_0_#000] font-bold uppercase">Hi</button>`,
       { checkRequired: ["button"] },
     );

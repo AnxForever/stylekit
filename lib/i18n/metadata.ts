@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import type { Locale } from "./translations";
 import type { RequestLocaleContext } from "./request";
+import { withBrandPreviews } from "@/lib/seo/social-metadata";
 import {
   getBaseUrl,
   getLocaleHtmlLang,
@@ -54,7 +55,7 @@ export function localizeMetadata(
     ),
   };
 
-  return result;
+  return withBrandPreviews(result);
 }
 
 /**
@@ -67,7 +68,7 @@ export function canonicalizeEnglishMetadata(
 ): Metadata {
   const canonical = `${getBaseUrl()}${localizeHref(pathname, DEFAULT_LOCALE)}`;
 
-  return {
+  return withBrandPreviews({
     ...metadata,
     alternates: {
       canonical,
@@ -78,14 +79,14 @@ export function canonicalizeEnglishMetadata(
       locale: getOpenGraphLocale(DEFAULT_LOCALE),
       alternateLocale: [],
     },
-  };
+  });
 }
 
 export function applyRequestMetadata(
   metadata: Metadata,
   context: RequestLocaleContext
 ): Metadata {
-  return {
+  return withBrandPreviews({
     ...metadata,
     alternates: {
       ...(metadata.alternates ?? {}),
@@ -100,5 +101,5 @@ export function applyRequestMetadata(
       locale: context.openGraphLocale,
       alternateLocale: context.locale === "zh" ? ["en_US"] : ["zh_CN"],
     },
-  };
+  });
 }

@@ -76,22 +76,33 @@ export function PromptPairExporter({
   ];
 
   const handleCopy = async (kind: PromptKind, content: string) => {
+    let copied = false;
     try {
       await navigator.clipboard.writeText(content);
-      setCopiedKind(kind);
-      trackEvent("code_copy", { slug: styleSlug, language: `prompt-${kind}` });
-      setTimeout(() => setCopiedKind(null), 2000);
+      copied = true;
     } catch {
       const textArea = document.createElement("textarea");
       textArea.value = content;
-      document.body.appendChild(textArea);
-      textArea.select();
-      document.execCommand("copy");
-      document.body.removeChild(textArea);
-      setCopiedKind(kind);
-      trackEvent("code_copy", { slug: styleSlug, language: `prompt-${kind}` });
-      setTimeout(() => setCopiedKind(null), 2000);
+      try {
+        document.body.appendChild(textArea);
+        textArea.select();
+        copied = document.execCommand("copy");
+      } catch {
+        copied = false;
+      } finally {
+        textArea.remove();
+      }
     }
+
+    if (!copied) return;
+    setCopiedKind(kind);
+    trackEvent("prompt_copy", {
+      slug: styleSlug,
+      prompt_type: kind === "hard" ? "hard" : "soft",
+      source: "prompt-pair",
+      locale,
+    });
+    setTimeout(() => setCopiedKind(null), 2000);
   };
 
   const handleDownload = (kind: PromptKind, content: string) => {

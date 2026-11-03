@@ -97,22 +97,23 @@ export const editorialTokens = createStyleTokens({
 
   required: {
     button: [
-      "px-6 py-3",
-      "text-sm tracking-wide",
+      "text-xs",
+      "tracking-[0.2em]",
       "transition-colors",
+      "font-sans",
     ],
     card: [
-      "border border-border",
-      "hover:border-foreground",
+      "border-[#1C1C1C]/10",
       "transition-colors",
+      "border-b",
     ],
     input: [
-      "border border-border",
-      "text-sm",
+      "border-[#1C1C1C]/20",
+      "text-xl",
       "focus:outline-none",
-      "focus:border-foreground",
+      "focus:border-[#1C1C1C]",
       "transition-colors",
-      "placeholder:text-muted",
+      "border-b",
     ],
   },
 });

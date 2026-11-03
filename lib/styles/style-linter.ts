@@ -426,9 +426,8 @@ export interface MergedRules {
    * Classes the style itself requires. Never reported as violations, even when
    * a forbidden rule matches them.
    *
-   * Measured: 2/15 curated styles ban a class they also require
-   * (neo-brutalist forbids `transition-all` yet requires `transition-all duration-200`;
-   * dark-mode forbids `text-white` yet requires it). Without this exemption the
+   * Neo-brutalist forbids `transition-all` yet requires it with duration-200.
+   * Without this exemption the
    * linter fires on the style's own canonical code, which destroys trust faster
    * than missing a real violation.
    */
@@ -446,8 +445,8 @@ export interface MergedRules {
 
 /**
  * Merges curated and token-derived rules into one rule set.
- * Union, not override: the two sources were measured to be complementary
- * (no class is forbidden by one while required by the other).
+ * Forbidden rules are unioned; registered required contracts are kept aligned
+ * by check:recipe-lint. Curated precedence remains for compatibility.
  */
 export function mergeStyleRules(slug: string): MergedRules {
   return mergeRulesFromParts(getStyleTokens(slug), getStyleLintRules(slug));

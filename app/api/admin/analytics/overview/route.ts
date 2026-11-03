@@ -1,46 +1,55 @@
 import { NextResponse } from "next/server";
 import { checkAdminApiAccess } from "@/lib/auth/admin-api";
 import { analyticsRangeSchema } from "@/lib/admin/analytics-api-contract";
-import { getAnalyticsOverviewSnapshot } from "@/lib/admin/analytics-overview-server";
+import { getAnalyticsOverviewSnapshotResult } from "@/lib/admin/analytics-overview-server";
+
+const RESPONSE_HEADERS = { "Cache-Control": "private, no-store" };
 
 export async function GET(request: Request) {
   const access = await checkAdminApiAccess(request);
   if (!access.allowed) {
     return NextResponse.json(
       { error: access.error },
-      { status: access.status ?? 403 }
+      { status: access.status ?? 403, headers: RESPONSE_HEADERS }
     );
   }
 
   const url = new URL(request.url);
   const rangeResult = analyticsRangeSchema.safeParse(url.searchParams.get("range") ?? "7d");
   if (!rangeResult.success) {
-    return NextResponse.json({ error: "Invalid analytics range." }, { status: 400 });
+    return NextResponse.json({ error: "Invalid analytics range." }, { status: 400, headers: RESPONSE_HEADERS });
   }
 
-  // Shares one reader with the server-rendered page, so the Umami Cloud source
-  // (and its cache) is applied identically on navigation and on revalidation.
   const startedAt = performance.now();
-  const overview = await getAnalyticsOverviewSnapshot(rangeResult.data);
+  const result = await getAnalyticsOverviewSnapshotResult(rangeResult.data);
   const durationMs = Math.round(performance.now() - startedAt);
 
-  if (!overview) {
+  if (!result.data) {
     return NextResponse.json(
       {
-        error: "Failed to load analytics overview.",
-        code: "ANALYTICS_QUERY_FAILED",
+        error: "Analytics overview is unavailable from Umami and internal storage.",
+        code: "ANALYTICS_UNAVAILABLE",
       },
       {
         status: 503,
-        headers: { "Server-Timing": `analytics;dur=${durationMs}` },
+        headers: {
+          ...RESPONSE_HEADERS,
+          "Server-Timing": `analytics;dur=${durationMs}`,
+        },
       }
     );
   }
 
-  return NextResponse.json(overview, {
+  return NextResponse.json(result.data, {
     headers: {
-      "Cache-Control": "private, max-age=0, stale-while-revalidate=60",
+      ...RESPONSE_HEADERS,
       "Server-Timing": `analytics;dur=${durationMs}`,
+      "X-StyleKit-Analytics-Cache":
+        result.source === "persistent_fallback"
+          ? "STALE"
+          : result.source === "memory"
+            ? "HIT"
+            : "MISS",
     },
   });
 }

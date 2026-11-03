@@ -1,3 +1,4 @@
+import { brandPreviewUrl } from "@/lib/brand/assets";
 import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
 import { Header } from "@/components/layout/header";
@@ -67,7 +68,7 @@ export async function generateMetadata({
       ? `${localizedName} — 社区风格`
       : `${localizedName} — Community Style`;
   const description = localizedDescription;
-  const imageUrl = `${baseUrl}/styles/${style.slug}/opengraph-image`;
+  const imageUrl = brandPreviewUrl(`${baseUrl}/styles/${style.slug}/opengraph-image`);
   const imageAlt =
     locale === "zh"
       ? `${localizedName} 社区设计风格预览`

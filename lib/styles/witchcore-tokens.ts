@@ -105,21 +105,23 @@ export const witchcoreTokens = createStyleTokens({
 
   required: {
     button: [
-      "px-8 py-3",
       "font-serif",
-      "uppercase tracking-widest",
-      "transition-all duration-500",
+      "tracking-wide",
+      "transition-all",
+      "duration-300",
     ],
     card: [
-      "bg-[#0d0b14]/90",
-      "border border-[#c9a74e]/30",
+      "bg-[#0d0b14]",
+      "border",
+      "border-[#4a1942]/60",
     ],
     input: [
-      "bg-[#0d0b14]/80",
-      "border border-[#c9a74e]/20",
-      "text-[#c9a74e]",
+      "bg-[#0d0b14]",
+      "border",
+      "border-[#4a1942]/50",
+      "text-[#c9a74e]/90",
       "font-serif",
-      "focus:border-[#c9a74e]/60",
+      "focus:border-[#c9a74e]/70",
       "focus:outline-none",
     ],
   },

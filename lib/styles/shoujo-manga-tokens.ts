@@ -102,22 +102,28 @@ export const shoujoMangaTokens = createStyleTokens({
   required: {
     button: [
       "rounded-full",
-      "font-sans font-medium",
-      "shadow-[0_4px_15px_#ffb7c560]",
-      "transition-all duration-300 ease-in-out",
+      "font-sans",
+      "font-medium",
+      "transition-all",
+      "duration-300",
+      "ease-in-out",
     ],
     card: [
       "rounded-2xl",
       "bg-[#fff5f7]",
-      "border-2 border-[#ffb7c5]/20",
+      "border-2",
+      "border-[#ffb7c5]/20",
       "shadow-[0_4px_20px_#ffb7c520]",
     ],
     input: [
       "rounded-full",
-      "border border-[#ffb7c5]/25",
+      "border",
+      "border-[#ffb7c5]/25",
       "bg-[#fff5f7]",
       "font-sans",
       "focus:outline-none",
+      "focus:border-[#ffb7c5]",
+      "focus:shadow-[0_0_12px_#ffb7c540]",
     ],
   },
 });

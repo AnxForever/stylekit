@@ -26,6 +26,14 @@ import {
 } from "@/lib/styles/catalog-sort";
 
 type TypeFilter = StyleType | "all";
+
+/**
+ * Styles and layout patterns share one catalog, but they answer different
+ * questions: a style decides how a page looks, a layout decides how it is
+ * arranged. The catalog opens on visual styles so the first cards are finished
+ * designs rather than wireframes; 布局模式 and 全部 are one click away.
+ */
+const DEFAULT_TYPE_FILTER: TypeFilter = "visual";
 type SortOption = CatalogSortOption;
 const INITIAL_VISIBLE_STYLE_COUNT = 24;
 const VISIBLE_STYLE_COUNT_STEP = 24;
@@ -40,8 +48,16 @@ interface SearchParamsLike {
 
 function parseStylesSearchParams(searchParams: SearchParamsLike | null) {
   const typeParam = searchParams?.get("type");
+  // The visual baseline snapshots every approved cover, layout patterns
+  // included, so it opts out of the visual-styles default. An explicit ?type=
+  // still wins, and 全部 stays addressable via ?type=all.
+  const isBaseline = searchParams?.get("visual-baseline") === "1";
   const type: TypeFilter =
-    typeParam === "visual" || typeParam === "layout" ? typeParam : "all";
+    typeParam === "visual" || typeParam === "layout" || typeParam === "all"
+      ? typeParam
+      : isBaseline
+        ? "all"
+        : DEFAULT_TYPE_FILTER;
 
   const tags = (searchParams?.get("tags") ?? "")
     .split(",")
@@ -95,6 +111,7 @@ export function StylesContent({ allStyles }: StylesContentProps) {
   const catalogStyles: StyleMeta[] = allStyles;
   const searchInputRef = useRef<HTMLInputElement>(null);
   const catalogGridRef = useRef<HTMLDivElement>(null);
+  const loadMoreRef = useRef<HTMLDivElement>(null);
   const seenCatalogImpressionsRef = useRef(new Set<string>());
   const hasMountedQuerySyncRef = useRef(false);
   const hasMountedVisibleCountRef = useRef(false);
@@ -269,7 +286,7 @@ export function StylesContent({ allStyles }: StylesContentProps) {
       scenario: StyleScenario | "all"
     ) => {
       const sp = new URLSearchParams();
-      if (type && type !== "all") sp.set("type", type);
+      if (type && type !== DEFAULT_TYPE_FILTER) sp.set("type", type);
       if (tags.length > 0) sp.set("tags", tags.join(","));
       if (fav) sp.set("fav", "1");
       if (sort !== "recommended") sp.set("sort", sort);
@@ -332,8 +349,7 @@ export function StylesContent({ allStyles }: StylesContentProps) {
   const sortLabels: Record<SortOption, string> = useMemo(
     () => ({
       recommended: t("styles.sortRecommended"),
-      "name-asc": t("styles.sortNameAsc"),
-      "name-desc": t("styles.sortNameDesc"),
+      latest: t("styles.sortLatest"),
       popular: t("styles.sortPopular"),
       favorites: t("styles.sortMostFavorited"),
       rating: t("styles.sortTopRated"),
@@ -347,7 +363,7 @@ export function StylesContent({ allStyles }: StylesContentProps) {
       parts.push(`${locale === "zh" ? "场景" : "Scenario"}: ${getScenarioLabel(activeScenario, locale)}`);
     }
 
-    if (activeType !== "all") {
+    if (activeType !== DEFAULT_TYPE_FILTER) {
       parts.push(`${t("styles.type")}: ${typeFilters.find((item) => item.key === activeType)?.label ?? activeType}`);
     }
 
@@ -432,13 +448,13 @@ export function StylesContent({ allStyles }: StylesContentProps) {
 
   const handleResetFilters = () => {
     startTransition(() => {
-      setActiveType("all");
+      setActiveType(DEFAULT_TYPE_FILTER);
       setActiveTags([]);
       setShowFavorites(false);
       setSortBy("recommended");
       setSearchQuery("");
       setActiveScenario("all");
-      syncToUrl("all", [], false, "recommended", "", "all");
+      syncToUrl(DEFAULT_TYPE_FILTER, [], false, "recommended", "", "all");
     });
   };
 
@@ -525,9 +541,36 @@ export function StylesContent({ allStyles }: StylesContentProps) {
   );
   const hasMoreStyles = visibleStyles.length < filteredStyles.length;
 
+
+  useEffect(() => {
+    if (!hasMoreStyles || isVisualBaseline) return;
+    const sentinel = loadMoreRef.current;
+    if (!sentinel) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (!entries.some((entry) => entry.isIntersecting)) return;
+        setVisibleStyleCount((current) =>
+          Math.min(current + VISIBLE_STYLE_COUNT_STEP, filteredStyles.length)
+        );
+      },
+      {
+        rootMargin: "0px 0px 600px 0px",
+      }
+    );
+
+    observer.observe(sentinel);
+    return () => observer.disconnect();
+  }, [
+    hasMoreStyles,
+    filteredStyles.length,
+    visibleStyleCount,
+    isVisualBaseline,
+  ]);
+
   const hasActiveFilters =
     activeScenario !== "all" ||
-    activeType !== "all" ||
+    activeType !== DEFAULT_TYPE_FILTER ||
     activeTags.length > 0 ||
     showFavorites ||
     sortBy !== "recommended" ||
@@ -536,7 +579,7 @@ export function StylesContent({ allStyles }: StylesContentProps) {
   const layoutStyleCount = catalogStyles.filter((style) => style.styleType === "layout").length;
   const activeFilterCount = [
     activeScenario !== "all",
-    activeType !== "all",
+    activeType !== DEFAULT_TYPE_FILTER,
     activeTags.length > 0,
     showFavorites,
     sortBy !== "recommended",
@@ -554,7 +597,7 @@ export function StylesContent({ allStyles }: StylesContentProps) {
 
   const deferredFilterCount = [
     deferredActiveScenario !== "all",
-    deferredActiveType !== "all",
+    deferredActiveType !== DEFAULT_TYPE_FILTER,
     deferredActiveTags.length > 0,
     deferredShowFavorites,
   ].filter(Boolean).length;
@@ -645,49 +688,6 @@ export function StylesContent({ allStyles }: StylesContentProps) {
               ))}
             </dl>
           </div>
-        </div>
-      </section>
-
-      <section className="border-b border-border" aria-labelledby="style-library-guide">
-        <div className="mx-auto grid max-w-7xl gap-6 px-4 py-8 sm:px-6 md:grid-cols-[1.4fr_1fr] md:px-12 md:py-10">
-          <div>
-            <h2 id="style-library-guide" className="text-xl md:text-2xl">
-              {locale === "zh" ? "如何选择网页设计风格" : "How to choose a web design style"}
-            </h2>
-            <p className="mt-3 max-w-2xl text-sm leading-relaxed text-muted">
-              {locale === "zh"
-                ? "网页与 UI 设计风格由配色、排版、布局和组件处理共同决定。先按产品场景筛选，再查看实际预览、色板、字体和实现规则；确定方向后，可以用提示词或模板继续构建页面。"
-                : "Start with a product scenario, then open a style to compare its palette, typography, component recipes, and AI implementation rules. Move from a visual direction to prompts or a runnable template when you are ready to build."}
-            </p>
-            {locale === "zh" && (
-              <p className="mt-4 max-w-2xl text-sm leading-relaxed text-muted">
-                按场景起步：
-                <LocalizedLink href="/styles/corporate-clean" className="text-foreground underline underline-offset-4 hover:no-underline">
-                  企业简洁风
-                </LocalizedLink>
-                适合需要清晰层级的产品页面；
-                <LocalizedLink href="/styles/editorial" className="text-foreground underline underline-offset-4 hover:no-underline">
-                  Editorial
-                </LocalizedLink>
-                侧重内容排版；
-                <LocalizedLink href="/styles/neo-brutalist" className="text-foreground underline underline-offset-4 hover:no-underline">
-                  新野兽派
-                </LocalizedLink>
-                适合需要鲜明视觉个性的展示页。
-              </p>
-            )}
-          </div>
-          <nav aria-label={locale === "zh" ? "设计资源导航" : "Design resource navigation"} className="grid gap-2 text-sm">
-            <LocalizedLink href="/collections" className="border border-border px-4 py-3 transition-colors hover:border-foreground">
-              {locale === "zh" ? "按主题浏览风格合集 →" : "Browse style collections by theme →"}
-            </LocalizedLink>
-            <LocalizedLink href="/ui-prompts" className="border border-border px-4 py-3 transition-colors hover:border-foreground">
-              {locale === "zh" ? "使用 UI 与前端提示词 →" : "Use UI and frontend prompts →"}
-            </LocalizedLink>
-            <LocalizedLink href="/templates" className="border border-border px-4 py-3 transition-colors hover:border-foreground">
-              {locale === "zh" ? "查看 Next.js 页面模板 →" : "Explore Next.js page templates →"}
-            </LocalizedLink>
-          </nav>
         </div>
       </section>
 
@@ -820,6 +820,7 @@ export function StylesContent({ allStyles }: StylesContentProps) {
               <button
                 key={type.key}
                 onClick={() => handleTypeChange(type.key)}
+                aria-pressed={activeType === type.key}
                 className={`shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 min-h-[44px] sm:min-h-0 transition-colors ${
                   activeType === type.key
                     ? "bg-foreground text-background"
@@ -955,73 +956,105 @@ export function StylesContent({ allStyles }: StylesContentProps) {
                 >
                   <SelectValue />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent align="start">
                   <SelectItem value="recommended">{t("styles.sortRecommended")}</SelectItem>
+                  <SelectItem value="latest">{t("styles.sortLatest")}</SelectItem>
                   <SelectItem value="popular">{t("styles.sortPopular")}</SelectItem>
                   <SelectItem value="favorites">{t("styles.sortMostFavorited")}</SelectItem>
                   <SelectItem value="rating">{t("styles.sortTopRated")}</SelectItem>
-                  <SelectItem value="name-asc">{t("styles.sortNameAsc")}</SelectItem>
-                  <SelectItem value="name-desc">{t("styles.sortNameDesc")}</SelectItem>
                 </SelectContent>
               </Select>
-              {hasActiveFilters && (
-                <button
-                  onClick={handleResetFilters}
-                  className="px-3 py-1.5 text-xs border border-border hover:border-foreground transition-colors"
-                >
-                  {t("styles.resetFilters")}
-                </button>
-              )}
             </div>
           </div>
 
-          {/* Styles List with loading indicator */}
-          <div
-            id="styles-catalog-grid"
-            ref={catalogGridRef}
-            className={`grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 md:gap-8 transition-opacity ${
-              isFiltering ? "opacity-70" : ""
-            }`}
-          >
-            {filteredStyles.length === 0 ? (
-              <div className="col-span-full py-12 text-center text-muted">
-                {showFavorites && favorites.length === 0 ? (
-                  <span className="inline-flex items-center gap-1">
-                    {t("styles.noFavorites")} <Heart className="w-4 h-4" />
-                  </span>
-                ) : (
-                  t("common.noResults")
-                )}
-              </div>
-            ) : (
-              visibleStyles.map((style: StyleMeta, index: number) => (
-                <div
-                  key={style.slug}
-                  data-catalog-style-slug={style.slug}
-                  data-catalog-style-rank={index + 1}
-                  className="[content-visibility:auto] [contain-intrinsic-size:1px_540px]"
-                >
-                  <StyleCard style={style} variant="compact" />
+            <div
+              id="styles-catalog-grid"
+              ref={catalogGridRef}
+              className={`grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 md:gap-8 transition-opacity ${
+                isFiltering ? "opacity-70" : ""
+              }`}
+            >
+              {filteredStyles.length === 0 ? (
+                <div className="col-span-full py-12 text-center text-muted">
+                  {showFavorites && favorites.length === 0 ? (
+                    <span className="inline-flex items-center gap-1">
+                      {t("styles.noFavorites")} <Heart className="w-4 h-4" />
+                    </span>
+                  ) : (
+                    t("common.noResults")
+                  )}
                 </div>
-              ))
+              ) : (
+                visibleStyles.map((style: StyleMeta, index: number) => (
+                  <div
+                    key={style.slug}
+                    data-catalog-style-slug={style.slug}
+                    data-catalog-style-rank={index + 1}
+                    className="[content-visibility:auto] [contain-intrinsic-size:1px_540px]"
+                  >
+                    <StyleCard style={style} variant="compact" />
+                  </div>
+                ))
+              )}
+            </div>
+            {hasMoreStyles ? (
+              <div ref={loadMoreRef} aria-hidden="true" className="h-px" />
+            ) : null}
+          {!hasMoreStyles &&
+          filteredStyles.length > INITIAL_VISIBLE_STYLE_COUNT &&
+          !isVisualBaseline ? (
+            <p className="mt-6 text-center text-xs text-muted">
+              {locale === "zh"
+                ? `已显示全部 ${filteredStyles.length} 种风格`
+                : `All ${filteredStyles.length} styles loaded`}
+            </p>
+          ) : null}
+        </div>
+      </section>
+
+      {/* The guide used to sit between the page header and the grid, so a
+          reader who clicked "styles" landed on three paragraphs before seeing
+          a single style. It reads as an epilogue to the catalog now. */}
+      <section className="border-t border-border" aria-labelledby="style-library-guide">
+        <div className="mx-auto grid max-w-7xl gap-6 px-4 py-8 sm:px-6 md:grid-cols-[1.4fr_1fr] md:px-12 md:py-10">
+          <div>
+            <h2 id="style-library-guide" className="text-xl md:text-2xl">
+              {locale === "zh" ? "如何选择网页设计风格" : "How to choose a web design style"}
+            </h2>
+            <p className="mt-3 max-w-2xl text-sm leading-relaxed text-muted">
+              {locale === "zh"
+                ? "网页与 UI 设计风格由配色、排版、布局和组件处理共同决定。先按产品场景筛选，再查看实际预览、色板、字体和实现规则；确定方向后，可以用提示词或模板继续构建页面。"
+                : "Start with a product scenario, then open a style to compare its palette, typography, component recipes, and AI implementation rules. Move from a visual direction to prompts or a runnable template when you are ready to build."}
+            </p>
+            {locale === "zh" && (
+              <p className="mt-4 max-w-2xl text-sm leading-relaxed text-muted">
+                按场景起步：
+                <LocalizedLink href="/styles/corporate-clean" className="text-foreground underline underline-offset-4 hover:no-underline">
+                  企业简洁风
+                </LocalizedLink>
+                适合需要清晰层级的产品页面；
+                <LocalizedLink href="/styles/editorial" className="text-foreground underline underline-offset-4 hover:no-underline">
+                  Editorial
+                </LocalizedLink>
+                侧重内容排版；
+                <LocalizedLink href="/styles/neo-brutalist" className="text-foreground underline underline-offset-4 hover:no-underline">
+                  新野兽派
+                </LocalizedLink>
+                适合需要鲜明视觉个性的展示页。
+              </p>
             )}
           </div>
-          {hasMoreStyles ? (
-            <div className="mt-8 flex justify-center">
-              <button
-                type="button"
-                onClick={() =>
-                  setVisibleStyleCount((current) =>
-                    Math.min(current + VISIBLE_STYLE_COUNT_STEP, filteredStyles.length)
-                  )
-                }
-                className="inline-flex min-h-[48px] items-center justify-center border border-foreground bg-background px-6 py-3 text-sm tracking-wide text-foreground transition-colors hover:bg-foreground hover:text-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-                aria-controls="styles-catalog-grid"
-              >
-                {locale === "zh" ? "加载更多风格" : "Load more styles"}
-              </button>
-            </div>
-          ) : null}
+          <nav aria-label={locale === "zh" ? "设计资源导航" : "Design resource navigation"} className="grid gap-2 text-sm">
+            <LocalizedLink href="/collections" className="border border-border px-4 py-3 transition-colors hover:border-foreground">
+              {locale === "zh" ? "按主题浏览风格合集 →" : "Browse style collections by theme →"}
+            </LocalizedLink>
+            <LocalizedLink href="/ui-prompts" className="border border-border px-4 py-3 transition-colors hover:border-foreground">
+              {locale === "zh" ? "使用 UI 与前端提示词 →" : "Use UI and frontend prompts →"}
+            </LocalizedLink>
+            <LocalizedLink href="/templates" className="border border-border px-4 py-3 transition-colors hover:border-foreground">
+              {locale === "zh" ? "查看 Next.js 页面模板 →" : "Explore Next.js page templates →"}
+            </LocalizedLink>
+          </nav>
         </div>
       </section>
 

@@ -1,4 +1,5 @@
 import type { StylePreviewComponents } from "../types";
+import { previewCopy } from "../copy";
 
 const preview = {
     button: () => (
@@ -22,7 +23,7 @@ const preview = {
         className="w-full px-4 py-3 bg-white border-4 border-black text-black font-bold placeholder-gray-400 shadow-[4px_4px_0px_#48dbfb] focus:shadow-[4px_4px_0px_#ff6b6b] focus:outline-none transition-all"
       />
     ),
-    coverPreview: () => (
+    coverPreview: ({ locale } = {}) => (
       <div className="w-full h-full bg-gradient-to-br from-yellow-300 via-pink-300 to-cyan-300 flex items-center justify-center p-3 relative overflow-hidden">
         {/* Decorative shapes */}
         <div className="absolute top-2 left-2 w-6 h-6 bg-red-500 rounded-full border-2 border-black" />
@@ -32,7 +33,7 @@ const preview = {
           <div className="relative bg-white border-4 border-black p-4 shadow-[6px_6px_0px_#000]">
             <div className="absolute -top-2 -right-2 w-4 h-4 bg-yellow-400 rounded-full border-2 border-black" />
             <div className="font-black text-sm text-black uppercase mb-2">MEMPHIS</div>
-            <p className="text-gray-600 text-[10px] mb-3">大胆撞色风格</p>
+            <p className="text-gray-600 text-[10px] mb-3">{previewCopy(locale, "大胆撞色风格", "Bold clashing colors")}</p>
             <button className="w-full py-2 bg-pink-400 border-2 border-black text-black text-xs font-black uppercase shadow-[3px_3px_0px_#000]">
               Fun!
             </button>

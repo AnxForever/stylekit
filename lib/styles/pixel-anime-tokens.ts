@@ -97,21 +97,30 @@ export const pixelAnimeTokens = createStyleTokens({
 
   required: {
     button: [
-      "font-mono font-bold uppercase",
-      "border-2 border-[#1a1040]",
+      "font-mono",
+      "font-bold",
+      "uppercase",
+      "border-2",
+      "border-[#1a1040]",
       "shadow-[4px_4px_0px_#1a1040]",
-      "transition-all duration-150 ease-linear",
+      "transition-all",
+      "duration-150",
+      "ease-linear",
     ],
     card: [
-      "bg-[#2d1b69]",
-      "border-2 border-[#1a1040]",
+      "bg-[#1a1040]",
+      "border-2",
+      "border-[#4a90d9]",
       "shadow-[4px_4px_0px_#1a1040]",
     ],
     input: [
       "bg-[#1a1040]",
-      "border-2 border-[#4a90d9]",
+      "border-2",
+      "border-[#4a90d9]",
       "font-mono",
       "focus:outline-none",
+      "focus:border-[#ffd93d]",
+      "focus:shadow-[2px_2px_0px_#4a90d9]",
     ],
   },
 });

@@ -101,7 +101,8 @@ export const studioBoldTokens = createStyleTokens({
     button: [
       "font-bold",
       "rounded-none",
-      "transition-all duration-300",
+      "transition-all",
+      "duration-300",
     ],
     card: [
       "bg-[#F5F5F0]",
@@ -111,9 +112,13 @@ export const studioBoldTokens = createStyleTokens({
     ],
     input: [
       "bg-[#333333]",
-      "border-0 border-b-2 border-white/20",
+      "border-0",
+      "border-b-2",
+      "border-white/20",
       "text-white",
-      "focus:outline-none focus:border-[#FF6B6B] focus:ring-0",
+      "focus:outline-none",
+      "focus:border-[#FF6B6B]",
+      "focus:ring-0",
     ],
   },
 });

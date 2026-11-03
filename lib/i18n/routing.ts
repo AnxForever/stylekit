@@ -40,6 +40,7 @@ export const LOCALE_ROUTE_POLICY = [
     mode: "filesystem",
     sitemapLocales: "none",
     exact: [
+      "/backgrounds",
       "/color-theory",
       "/design-principles",
       "/spacing",
@@ -62,7 +63,6 @@ export const LOCALE_ROUTE_POLICY = [
       "/ai-web-design-tools",
       "/ai-ui-generator",
       "/ai-frontend-workflow",
-      "/backgrounds",
       "/changelog",
       "/claude-code-ui-design",
       "/colors",
@@ -73,6 +73,7 @@ export const LOCALE_ROUTE_POLICY = [
       "/dark-mode-ui-prompts",
       "/dashboard-prompts",
       "/developers",
+      "/docs",
       "/downloads",
       "/guide",
       "/landing-page-prompts",
@@ -83,6 +84,7 @@ export const LOCALE_ROUTE_POLICY = [
       "/mouse-interactions",
       "/avoid-ai-slop",
       "/resources",
+      "/prompt-sites",
       "/style-advisor",
       "/repair",
       "/tailwind-ui-prompts",
@@ -103,6 +105,13 @@ export const LOCALE_ROUTE_POLICY = [
     sitemapLocales: "en",
     exact: [],
     prefixes: ["/blog"],
+  },
+  {
+    id: "localized-support",
+    mode: "rewrite",
+    sitemapLocales: "all",
+    exact: ["/support"],
+    prefixes: [],
   },
   {
     id: "localized-template-details",
@@ -156,7 +165,6 @@ export const LOCALE_ROUTE_POLICY = [
     mode: "rewrite",
     sitemapLocales: "none",
     exact: [
-      "/docs",
       "/html-in-canvas",
       "/kit",
       "/kit/shared",
@@ -304,15 +312,16 @@ export function shouldBypassLocale(pathname: string): boolean {
   // with the generic dynamic fallback.
   if (/^\/styles\/[^/]+\/showcase$/.test(normalized)) return true;
   if (normalized.startsWith("/feed/")) return true;
-  // The editorial-profile-archive template is a standalone English-only
-  // microsite served from the unprefixed top-level route
-  // (app/templates/editorial-profile-archive/*). Locale-prefixed requests
+  // These templates are standalone English-only microsites served from
+  // their unprefixed top-level routes. Locale-prefixed requests
   // redirect to it via the bypass branch in the proxy; routing it through the
   // [locale] filesystem tree (which holds only a redirect stub) produced a
   // soft-404 home shell. Match the base page and every sub-route.
   if (
     normalized === "/templates/editorial-profile-archive" ||
-    normalized.startsWith("/templates/editorial-profile-archive/")
+    normalized.startsWith("/templates/editorial-profile-archive/") ||
+    normalized === "/templates/technical-profile" ||
+    normalized.startsWith("/templates/technical-profile/")
   ) {
     return true;
   }

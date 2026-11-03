@@ -119,20 +119,27 @@ export const impressionistOilTokens = createStyleTokens({
   required: {
     button: [
       "rounded-lg",
-      "font-serif font-bold",
-      "transition-all duration-300 ease-in-out",
+      "font-serif",
+      "font-bold",
+      "transition-all",
+      "duration-300",
+      "ease-in-out",
     ],
     card: [
       "rounded-lg",
       "bg-[#f5f0e1]",
-      "border border-[#e8a87c]/25",
+      "border",
+      "border-[#e8a87c]/25",
     ],
     input: [
       "rounded-lg",
-      "border-2 border-[#e8a87c]/25",
+      "border-2",
+      "border-[#e8a87c]/25",
       "bg-[#f5f0e1]",
       "font-serif",
       "focus:outline-none",
+      "focus:border-[#e8a87c]",
+      "focus:shadow-[0_0_0_3px_rgba(232,168,124,0.12)]",
     ],
   },
 });

@@ -57,6 +57,27 @@ describe("implementation brief", () => {
     expect(brief.components.hero?.code).toContain("animation: kt-breathe 2.4s ease-in-out infinite alternate");
   });
 
+  it("keeps kinetic landing-page prompts consistent with continuous loop guidance", () => {
+    const style = getStyleBySlug("kinetic-typography")!;
+    const example = style.examplePrompts?.find((prompt) => prompt.titleEn === "Kinetic Type Landing Page");
+    expect(example).toBeDefined();
+
+    for (const prompt of [example?.prompt, example?.promptEn]) {
+      expect(prompt).not.toMatch(/All easing cubic-bezier/i);
+      expect(prompt).toContain("for discrete entrances and interaction transitions");
+      expect(prompt).toContain("breathing uses 2.4s ease-in-out");
+      expect(prompt).toContain("marquee uses 24s linear");
+    }
+
+    for (const examplePrompt of style.examplePrompts ?? []) {
+      for (const prompt of [examplePrompt.prompt, examplePrompt.promptEn]) {
+        expect(prompt).toContain("pause on hover");
+        expect(prompt).toContain("persistent pause/stop/hide mechanism");
+        expect(prompt).toContain("auto-starting scrolling information that runs over 5 seconds alongside other content");
+      }
+    }
+  });
+
   it("uses community capabilities without importing curated rules for a reused slug", () => {
     const brief = getImplementationBrief("neo-brutalist")!;
     const community = createImplementationBrief(getStyleBySlug(brief.slug)!, {

@@ -2,7 +2,6 @@ import { describe, expect, it, vi } from "vitest";
 import sitemap from "@/app/sitemap";
 import { getIndexableLocalesForPath } from "@/lib/i18n/routing";
 import { generateMetadata as supportMetadata } from "@/app/support/page";
-import { generateMetadata as docsMetadata } from "@/app/docs/layout";
 import { generateMetadata as canvasMetadata } from "@/app/html-in-canvas/layout";
 import { generateMetadata as experimentMetadata } from "@/app/experiments/layout";
 
@@ -28,7 +27,7 @@ describe("public discovery and indexing policy", () => {
       }
     }
     expect(urls).not.toContain("/zh/refunds");
-    expect(urls.some(path => /\/(docs|html-in-canvas|experiments)(\/|$)/.test(path))).toBe(false);
+    expect(urls.some(path => /\/(html-in-canvas|experiments)(\/|$)/.test(path))).toBe(false);
   });
 
   it.each(["en", "zh"] as const)("gives the bilingual %s support page its own canonical and alternates", async (locale) => {
@@ -43,7 +42,6 @@ describe("public discovery and indexing policy", () => {
   });
 
   it.each([
-    ["documentation tool", docsMetadata],
     ["HTML canvas demo", canvasMetadata],
     ["experiments", experimentMetadata],
   ] as const)("keeps the %s crawlable but explicitly outside the search index", async (_name, generate) => {
