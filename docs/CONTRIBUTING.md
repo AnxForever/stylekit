@@ -55,9 +55,17 @@ Open [localhost:3000](http://localhost:3000).
 | Docs | Improve guides, fix typos, add examples | Easy |
 | Performance | Optimize rendering, bundle size, or load times | Medium |
 
+## Branch Model
+
+- `dev` is the development branch and the default branch. All pull requests
+  target `dev`.
+- `main` is the release branch. Maintainers promote a validated `dev` to
+  `main`; do not open a pull request against `main` unless a maintainer asks
+  for one.
+
 ## Workflow
 
-1. **Fork** the repo and create a branch from `main`:
+1. **Fork** the repo and create a branch from `dev`:
    ```bash
    git checkout -b feat/your-feature
    ```
@@ -72,7 +80,7 @@ Open [localhost:3000](http://localhost:3000).
 
 4. **Run validation** (see [Local Validation](#local-validation)).
 
-5. **Open a PR** against `main`.
+5. **Open a PR** against `dev`.
 
 ## Code Style
 
