@@ -1,0 +1,543 @@
+<title>StyleKit 流量研究</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Albert+Sans:wght@400;500;600;700&display=swap">
+<style>
+  /* Palette follows the site's own tokens: near-white paper, ink, one red accent. */
+  :root {
+    --bg: #fafafa;
+    --surface: #ffffff;
+    --ink: #0a0a0a;
+    --muted: #6b7280;
+    --border: #e5e5e5;
+    --grid: #ececec;
+    --accent: #e63946;
+    --accent-ink: #ffffff;
+    --accent-soft: rgba(230, 57, 70, 0.09);
+    --warn: #b45309;
+    --warn-soft: rgba(180, 83, 9, 0.08);
+    --good: #15803d;
+    color-scheme: light;
+    --font-display: "Albert Sans", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    --font-body: "Albert Sans", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0a0a0a;
+      --surface: #141414;
+      --ink: #fafafa;
+      --muted: #9ca3af;
+      --border: #2a2a2a;
+      --grid: #202020;
+      --accent: #ff6b6b;
+      --accent-ink: #0a0a0a;
+      --accent-soft: rgba(255, 107, 107, 0.12);
+      --warn: #fbbf24;
+      --warn-soft: rgba(251, 191, 36, 0.1);
+      --good: #4ade80;
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0a0a0a;
+    --surface: #141414;
+    --ink: #fafafa;
+    --muted: #9ca3af;
+    --border: #2a2a2a;
+    --grid: #202020;
+    --accent: #ff6b6b;
+    --accent-ink: #0a0a0a;
+    --accent-soft: rgba(255, 107, 107, 0.12);
+    --warn: #fbbf24;
+    --warn-soft: rgba(251, 191, 36, 0.1);
+    --good: #4ade80;
+    color-scheme: dark;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-body);
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding-block: 40px 72px;
+    padding-inline: 20px;
+  }
+  header.masthead {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 16px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border);
+  }
+  .eyebrow {
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 0 0 6px;
+  }
+  h1 {
+    font-family: var(--font-display);
+    font-size: clamp(30px, 5vw, 44px);
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    margin: 0;
+    font-weight: 700;
+    text-wrap: balance;
+  }
+  .masthead p {
+    margin: 8px 0 0;
+    color: var(--muted);
+    font-size: 14px;
+    max-width: 46ch;
+  }
+  .stamp {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--muted);
+    text-align: right;
+    line-height: 1.7;
+  }
+
+  .kpis {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    margin-top: 28px;
+  }
+  .kpi {
+    background: var(--surface);
+    padding: 18px 18px 16px;
+  }
+  .kpi .label {
+    font-size: 12px;
+    color: var(--muted);
+    letter-spacing: 0.02em;
+  }
+  .kpi .value {
+    font-family: var(--font-display);
+    font-variant-numeric: tabular-nums;
+    font-size: clamp(26px, 4vw, 36px);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+    margin-top: 4px;
+  }
+  .kpi .note {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+
+  section {
+    margin-top: 40px;
+  }
+  h2 {
+    font-family: var(--font-display);
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    margin: 0 0 4px;
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+  }
+  h2 .idx {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 400;
+    color: var(--accent);
+    letter-spacing: 0.08em;
+  }
+  .lede {
+    margin: 0 0 18px;
+    color: var(--muted);
+    font-size: 14px;
+    max-width: 70ch;
+  }
+
+  .chart-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 18px 18px 10px;
+  }
+  .chart-box svg { display: block; width: 100%; height: auto; }
+  .chart-foot {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    justify-content: space-between;
+    font-size: 12px;
+    color: var(--muted);
+    padding: 8px 2px 4px;
+  }
+  .legend { display: inline-flex; align-items: center; gap: 6px; }
+  .legend i { width: 10px; height: 10px; border-radius: 2px; display: inline-block; }
+
+  .funnel { border-top: 1px solid var(--border); }
+  .funnel-row {
+    display: grid;
+    grid-template-columns: 128px 1fr 92px 76px;
+    gap: 14px;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .funnel-row .name { font-size: 14px; }
+  .funnel-row .name small { display: block; color: var(--muted); font-size: 11px; font-family: var(--font-mono); }
+  .track { height: 20px; background: var(--accent-soft); position: relative; overflow: hidden; }
+  .track span { position: absolute; inset: 0 auto 0 0; background: var(--accent); }
+  .funnel-row .count { font-variant-numeric: tabular-nums; text-align: right; font-size: 14px; font-weight: 600; }
+  .funnel-row .rate { font-variant-numeric: tabular-nums; text-align: right; font-size: 12px; color: var(--muted); }
+  .funnel-row .rate b { color: var(--ink); font-weight: 600; }
+
+  .split {
+    display: grid;
+    grid-template-columns: 1.35fr 1fr;
+    gap: 28px;
+    align-items: start;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    font-variant-numeric: tabular-nums;
+  }
+  .table-scroll { overflow-x: auto; border-top: 1px solid var(--border); }
+  th, td { padding: 9px 10px; text-align: right; white-space: nowrap; }
+  th:first-child, td:first-child { text-align: left; }
+  thead th {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--muted);
+    letter-spacing: 0.04em;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+    position: sticky;
+    top: 0;
+  }
+  tbody tr { border-bottom: 1px solid var(--border); }
+  tbody tr:last-child { border-bottom: 0; }
+  td .slug { font-family: var(--font-mono); font-size: 12px; }
+  .bar-cell { display: inline-flex; align-items: center; gap: 6px; }
+  .bar-cell .mini { height: 6px; background: var(--accent); display: inline-block; border-radius: 1px; }
+  .best { color: var(--accent); font-weight: 700; }
+
+  .stat-list { display: grid; gap: 10px; }
+  .stat {
+    display: grid;
+    grid-template-columns: 150px 1fr 64px;
+    gap: 12px;
+    align-items: center;
+    font-size: 13px;
+  }
+  .stat .track { height: 10px; }
+  .stat .num { text-align: right; font-variant-numeric: tabular-nums; color: var(--muted); }
+  .stat .track span { background: var(--ink); opacity: 0.85; }
+
+  .notes { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; }
+  .note-card {
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--warn);
+    background: var(--surface);
+    padding: 14px 16px;
+  }
+  .note-card h3 { margin: 0 0 6px; font-size: 14px; }
+  .note-card p { margin: 0; font-size: 13px; color: var(--muted); }
+  .note-card strong { color: var(--ink); }
+
+  .cleanup {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+  }
+  .cleanup div { background: var(--surface); padding: 14px 16px; }
+  .cleanup .k { font-size: 12px; color: var(--muted); }
+  .cleanup .v { font-family: var(--font-display); font-size: 22px; font-weight: 700; letter-spacing: -0.01em; margin-top: 2px; font-variant-numeric: tabular-nums; }
+
+  ol.actions { margin: 0; padding-left: 20px; display: grid; gap: 10px; font-size: 14px; }
+  ol.actions li::marker { color: var(--accent); font-family: var(--font-mono); font-size: 12px; }
+  ol.actions b { font-weight: 600; }
+
+  footer {
+    margin-top: 48px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+    font-size: 12px;
+    color: var(--muted);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 20px;
+    justify-content: space-between;
+  }
+
+  @media (max-width: 760px) {
+    .kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .split { grid-template-columns: 1fr; }
+    .funnel-row { grid-template-columns: 96px 1fr 72px; }
+    .funnel-row .rate { display: none; }
+    .stat { grid-template-columns: 110px 1fr 56px; }
+    .stamp { text-align: left; }
+  }
+</style>
+
+<div class="wrap">
+  <header class="masthead">
+    <div>
+      <p class="eyebrow">Umami / StyleKit</p>
+      <h1>三个月流量研究</h1>
+      <p>从 2026 年 8 月 9 日到 11 月 3 日，共 1,031,053 次页面浏览。分析用的是自建 Umami 的原始事件，清理前先做聚合。</p>
+    </div>
+    <div class="stamp">
+      样本 2026-08-09 → 2026-11-03<br>
+      最近 30 天 400,111 PV<br>
+      数据源 umami@stylekit-jd
+    </div>
+  </header>
+
+  <div class="kpis">
+    <div class="kpi"><div class="label">最近 30 天 PV</div><div class="value">400,111</div><div class="note">日均 13,337</div></div>
+    <div class="kpi"><div class="label">会话</div><div class="value">32,615</div><div class="note">日均 1,087</div></div>
+    <div class="kpi"><div class="label">风格详情浏览</div><div class="value">89,365</div><div class="note">占 PV 22.3%</div></div>
+    <div class="kpi"><div class="label">风格包导出</div><div class="value">415</div><div class="note">每千次浏览 4.6 次</div></div>
+  </div>
+
+  <section>
+    <h2><span class="idx">01</span> 日趋势</h2>
+    <p class="lede">工作日明显高于周末；9 月 29 日与 10 月 30 日是两次采集中断，不是真实下跌。8 月 9–11 日的访客数因历史回填被放大，这里只看 PV。</p>
+    <div class="chart-box">
+      <svg id="trend" viewBox="0 0 1000 300" role="img" aria-label="2026 年 8 月至 11 月每日页面浏览量"></svg>
+      <div class="chart-foot">
+        <span class="legend"><i style="background:var(--accent)"></i> 每日 PV</span>
+        <span>横轴：2026-08-09 → 2026-11-03 · 纵轴：PV / 日</span>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="idx">02</span> 转化漏斗</h2>
+    <p class="lede">最近 30 天。曝光到详情、详情到预览、预览到复制都还算健康，复制到下载是整条链路最窄的一段。</p>
+    <div class="funnel" id="funnel"></div>
+  </section>
+
+  <section>
+    <h2><span class="idx">03</span> 哪些风格真正被拿走</h2>
+    <p class="lede">浏览量和导出量给出的排名不同。点击率高的是 glassmorphism 与 corporate-clean，导出率最高的是 fluent-design。</p>
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr><th>风格</th><th>曝光</th><th>详情</th><th>点击率</th><th>复制</th><th>导出</th><th>导出率</th></tr>
+        </thead>
+        <tbody id="styles"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="split">
+    <div>
+      <h2><span class="idx">04</span> 目录怎么被使用</h2>
+      <p class="lede">推荐排序加"什么都不筛"是绝对主流，搜索几乎没被用起来。</p>
+      <div class="stat-list" id="catalog"></div>
+    </div>
+    <div>
+      <h2><span class="idx">05</span> 外部来源</h2>
+      <p class="lede">站内跳转与直接访问之外，外部只占 PV 的 7.1%，其中 Bing 占七成。</p>
+      <div class="stat-list" id="referrers"></div>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="idx">06</span> 三处需要扣除的噪声</h2>
+    <div class="notes">
+      <div class="note-card">
+        <h3>8 月 9–11 日访客虚高</h3>
+        <p>三天分别 9,145 / 12,167 / 11,109 名访客，但每访客不到 2 PV。历史回填脚本拆散了会话，<strong>PV 可信，访客不可信</strong>。</p>
+      </div>
+      <div class="note-card">
+        <h3>一个模板页被循环访问</h3>
+        <p><strong>/zh/templates/editorial-profile-archive</strong> 全期 25,902 PV，8 月 25 日单日 7,189 PV 只来自 5 个会话，来源几乎全是 direct。</p>
+      </div>
+      <div class="note-card">
+        <h3>两次采集中断</h3>
+        <p>9 月 29 日只有 <strong>70 PV</strong>（前后日均约 1 万），10 月 30 日 <strong>1,267 PV</strong>（前后日均约 1.5 万）。</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="idx">07</span> 清理结果</h2>
+    <p class="lede">聚合结果已先行落盘，随后删除 30 天以前的原始卡片曝光事件，再用 VACUUM FULL 把空间还给操作系统。</p>
+    <div class="cleanup">
+      <div><div class="k">删除的事件</div><div class="v">1,707,128</div></div>
+      <div><div class="k">删除的 event_data 行</div><div class="v">13,648,556</div></div>
+      <div><div class="k">PostgreSQL 体积</div><div class="v">11.4 → 7.4 GB</div></div>
+      <div><div class="k">主机可用空间</div><div class="v">6.1 → 11 GB</div></div>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="idx">08</span> 接下来值得做的</h2>
+    <ol class="actions">
+      <li><b>修导出链路。</b>复制到导出的 4% 是全链路最低点：先看 ZIP 内容是否完整、弹层里的下载按钮是否可见、移动端能不能下载。</li>
+      <li><b>把实现提示词做成主产物。</b>94% 的复制是 hard 提示词，用户要的是能直接交给模型执行的指令；导出时默认带上。</li>
+      <li><b>推荐位按导出率补一列。</b>点击率和导出率排序不同，首页混合两者比只看浏览量更接近真实价值。</li>
+      <li><b>精简目录筛选。</b>74% 的曝光不筛选，name-asc / name-desc 合计不到 800 次；把搜索提到更容易点到的位置。</li>
+      <li><b>修埋点。</b>page 恒为 1；每张卡片写 8 个键值对、每页触发几十次。改成每页一条曝光汇总，写入量能降一个数量级。</li>
+      <li><b>给采集加告警。</b>当日 PV 低于前 7 天均值一半就报警，两次中断都能提前发现。</li>
+    </ol>
+  </section>
+
+  <footer>
+    <span>数据：Umami PostgreSQL，只读聚合；原始 CSV 与 SQL 见 ops/analytics/study-2026-11-03</span>
+    <span>生成于 2026-11-03</span>
+  </footer>
+</div>
+
+<script>
+  const daily = [["2026-08-09",13567],["2026-08-10",20325],["2026-08-11",19818],["2026-08-12",9862],["2026-08-13",10989],["2026-08-14",10243],["2026-08-15",6273],["2026-08-16",6191],["2026-08-17",9207],["2026-08-18",9062],["2026-08-19",10507],["2026-08-20",9201],["2026-08-21",10928],["2026-08-22",13332],["2026-08-23",8615],["2026-08-24",19522],["2026-08-25",17968],["2026-08-26",10680],["2026-08-27",15934],["2026-08-28",13690],["2026-08-29",9350],["2026-08-30",7808],["2026-08-31",13058],["2026-09-01",12548],["2026-09-02",12405],["2026-09-03",16265],["2026-09-04",12118],["2026-09-05",10860],["2026-09-06",8460],["2026-09-07",11514],["2026-09-08",13312],["2026-09-09",14213],["2026-09-10",15241],["2026-09-11",13296],["2026-09-12",11859],["2026-09-13",10140],["2026-09-14",14098],["2026-09-15",14835],["2026-09-16",11867],["2026-09-17",11070],["2026-09-18",10647],["2026-09-19",8233],["2026-09-20",13531],["2026-09-21",12525],["2026-09-22",13864],["2026-09-23",11958],["2026-09-24",11250],["2026-09-25",5906],["2026-09-26",7229],["2026-09-27",7038],["2026-09-28",8757],["2026-09-29",70],["2026-09-30",2366],["2026-10-01",6746],["2026-10-02",7840],["2026-10-03",7381],["2026-10-04",6517],["2026-10-05",8114],["2026-10-06",7637],["2026-10-07",7658],["2026-10-08",11152],["2026-10-09",12361],["2026-10-10",13373],["2026-10-11",9340],["2026-10-12",13690],["2026-10-13",14583],["2026-10-14",14823],["2026-10-15",16441],["2026-10-16",16123],["2026-10-17",10896],["2026-10-18",9533],["2026-10-19",15237],["2026-10-20",15615],["2026-10-21",15509],["2026-10-22",17998],["2026-10-23",16597],["2026-10-24",11045],["2026-10-25",10757],["2026-10-26",16741],["2026-10-27",14024],["2026-10-28",18179],["2026-10-29",19753],["2026-10-30",1267],["2026-10-31",12305],["2026-11-01",11344],["2026-11-02",17334],["2026-11-03",19544]];
+
+  const funnel = [
+    ["目录卡片曝光", "catalog_impression", 1538147, null],
+    ["风格详情浏览", "style_view", 89365, 5.8],
+    ["打开预览", "showcase_open", 32097, 35.9],
+    ["复制实现提示词", "code_copy", 10310, 32.1],
+    ["下载风格包", "style_export", 415, 4.0],
+  ];
+
+  const styles = [
+    ["neumorphism", 38494, 5225, 13.6, 880, 39, 0.75],
+    ["corporate-clean", 37828, 5195, 13.7, 889, 33, 0.64],
+    ["editorial", 39879, 3668, 9.2, 427, 11, 0.30],
+    ["glassmorphism", 20143, 3648, 18.1, 680, 31, 0.85],
+    ["soft-ui", 31781, 3368, 10.6, 430, 12, 0.36],
+    ["macos-vibrancy", 28214, 3035, 10.8, 370, 10, 0.33],
+    ["neo-brutalist", 39779, 2678, 6.7, 300, 11, 0.41],
+    ["bento-grid", 29459, 2273, 7.7, 311, 17, 0.75],
+    ["notion-style", 23770, 2148, 9.0, 313, 14, 0.65],
+    ["minimalist-flat", 32925, 2120, 6.4, 230, 7, 0.33],
+    ["fluent-design", 17375, 1327, 7.6, 171, 16, 1.21],
+  ];
+
+  const catalog = [
+    ["推荐排序占比", 94.1],
+    ["没有使用筛选", 74.1],
+    ["带搜索词", 0.9],
+    ["name-asc 排序", 0.05],
+  ];
+
+  const referrers = [
+    ["直接访问", 178844, 44.7],
+    ["cn.bing.com", 15139, 3.8],
+    ["bing.com", 5411, 1.4],
+    ["google.com", 2930, 0.7],
+    ["linux.do", 1735, 0.4],
+    ["github.com", 747, 0.2],
+  ];
+
+  function fmt(n) { return n.toLocaleString("en-US"); }
+
+  function drawTrend() {
+    const svg = document.getElementById("trend");
+    const W = 1000, H = 300, padL = 56, padR = 16, padT = 18, padB = 34;
+    const max = 21000;
+    const xs = i => padL + (i / (daily.length - 1)) * (W - padL - padR);
+    const ys = v => padT + (1 - v / max) * (H - padT - padB);
+    const ns = "http://www.w3.org/2000/svg";
+    const el = (name, attrs) => {
+      const e = document.createElementNS(ns, name);
+      for (const k in attrs) e.setAttribute(k, attrs[k]);
+      svg.appendChild(e);
+      return e;
+    };
+    for (let v = 0; v <= max; v += 5000) {
+      const y = ys(v);
+      el("line", { x1: padL, y1: y, x2: W - padR, y2: y, stroke: "var(--grid)", "stroke-width": 1 });
+      const t = el("text", { x: padL - 10, y: y + 4, "text-anchor": "end", "font-size": 11, fill: "var(--muted)", "font-family": "var(--font-mono)" });
+      t.textContent = v === 0 ? "0" : (v / 1000) + "k";
+    }
+    let d = "";
+    daily.forEach((row, i) => { d += (i ? " L" : "M") + xs(i).toFixed(1) + " " + ys(row[1]).toFixed(1); });
+    const area = d + " L" + xs(daily.length - 1).toFixed(1) + " " + ys(0) + " L" + xs(0).toFixed(1) + " " + ys(0) + " Z";
+    el("path", { d: area, fill: "var(--accent-soft)" });
+    el("path", { d: d, fill: "none", stroke: "var(--accent)", "stroke-width": 1.8, "stroke-linejoin": "round" });
+
+    daily.forEach((row, i) => {
+      if (row[0] === "2026-09-29" || row[0] === "2026-10-30") {
+        el("circle", { cx: xs(i), cy: ys(row[1]), r: 3.5, fill: "var(--warn)" });
+      }
+    });
+    const last = daily[daily.length - 1];
+    el("circle", { cx: xs(daily.length - 1), cy: ys(last[1]), r: 4, fill: "var(--accent)" });
+    const label = el("text", { x: xs(daily.length - 1) - 8, y: ys(last[1]) - 10, "text-anchor": "end", "font-size": 12, fill: "var(--ink)", "font-weight": 600, "font-family": "var(--font-mono)" });
+    label.textContent = fmt(last[1]);
+
+    const ticks = ["2026-08-09", "2026-09-01", "2026-10-01", "2026-11-01"];
+    ticks.forEach(date => {
+      const i = daily.findIndex(r => r[0] === date);
+      if (i < 0) return;
+      const t = el("text", { x: xs(i), y: H - 12, "text-anchor": "middle", "font-size": 11, fill: "var(--muted)", "font-family": "var(--font-mono)" });
+      t.textContent = date.slice(5);
+    });
+  }
+
+  function drawFunnel() {
+    const root = document.getElementById("funnel");
+    const max = funnel[0][2];
+    funnel.forEach(row => {
+      const [name, event, count, rate] = row;
+      const wrap = document.createElement("div");
+      wrap.className = "funnel-row";
+      wrap.innerHTML = '<div class="name">' + name + '<small>' + event + '</small></div>' +
+        '<div class="track"><span style="width:' + Math.max(0.35, count / max * 100) + '%"></span></div>' +
+        '<div class="count">' + fmt(count) + '</div>' +
+        '<div class="rate">' + (rate === null ? "—" : "<b>" + rate + "%</b> 上一步") + '</div>';
+      root.appendChild(wrap);
+    });
+  }
+
+  function drawStyles() {
+    const root = document.getElementById("styles");
+    const maxRate = Math.max(...styles.map(s => s[6]));
+    styles.forEach(s => {
+      const tr = document.createElement("tr");
+      const width = Math.max(2, (s[6] / maxRate) * 54);
+      tr.innerHTML = '<td><span class="slug">' + s[0] + '</span></td>' +
+        '<td>' + fmt(s[1]) + '</td><td>' + fmt(s[2]) + '</td><td>' + s[3].toFixed(1) + '%</td>' +
+        '<td>' + fmt(s[4]) + '</td><td>' + fmt(s[5]) + '</td>' +
+        '<td><span class="bar-cell"><span class="mini" style="width:' + width + 'px"></span>' +
+        '<span class="' + (s[6] === maxRate ? "best" : "") + '">' + s[6].toFixed(2) + '%</span></span></td>';
+      root.appendChild(tr);
+    });
+  }
+
+  function drawStats(id, rows, maxValue) {
+    const root = document.getElementById(id);
+    rows.forEach(r => {
+      const el = document.createElement("div");
+      el.className = "stat";
+      const pct = (r[1] / maxValue) * 100;
+      el.innerHTML = '<span>' + r[0] + '</span><span class="track"><span style="width:' + pct + '%"></span></span>' +
+        '<span class="num">' + (r.length > 2 ? r[1].toLocaleString("en-US") : r[1] + "%") + '</span>';
+      root.appendChild(el);
+    });
+  }
+
+  drawTrend();
+  drawFunnel();
+  drawStyles();
+  drawStats("catalog", catalog, 100);
+  drawStats("referrers", referrers, 178844);
+</script>

@@ -1,0 +1,73 @@
+browser,os,device,sessions
+edge-chromium,Windows 10,laptop,9328
+chrome,Windows 10,laptop,9006
+edge-chromium,Windows 10,desktop,2986
+chrome,Mac OS,laptop,2688
+chrome,Windows 10,desktop,1587
+chrome,Android OS,mobile,770
+chromium-webview,Android OS,mobile,718
+chrome,Mac OS,desktop,492
+edge-chromium,Mac OS,laptop,483
+ios,iOS,mobile,469
+chrome,Linux,laptop,469
+safari,Mac OS,laptop,430
+edge-chromium,Android OS,mobile,382
+firefox,Windows 10,laptop,278
+ios-webview,iOS,mobile,271
+firefox,Linux,laptop,206
+crios,iOS,mobile,186
+edge-chromium,Mac OS,desktop,116
+firefox,Windows 10,desktop,96
+edge-chromium,Linux,laptop,70
+chrome,Linux,desktop,68
+(unknown),iOS,mobile,64
+safari,Mac OS,desktop,60
+firefox,Mac OS,laptop,53
+chrome,(unknown),mobile,51
+firefox,Linux,desktop,50
+edge-ios,iOS,mobile,49
+ios-webview,Mac OS,laptop,42
+firefox,Android OS,mobile,37
+opera,Windows 10,laptop,28
+firefox,Mac OS,desktop,27
+edge-chromium,Linux,desktop,26
+miui,Android OS,mobile,25
+chrome,Android OS,tablet,14
+ios-webview,iOS,tablet,11
+edge-chromium,Android OS,tablet,10
+chromium-webview,Android OS,tablet,9
+samsung,Android OS,mobile,9
+edge-ios,iOS,tablet,8
+yandexbrowser,Windows 10,laptop,7
+opera,Mac OS,laptop,6
+ios-webview,Mac OS,desktop,6
+opera,Windows 10,desktop,6
+chrome,Windows 7,laptop,5
+edge,Windows 10,laptop,4
+samsung,Linux,laptop,3
+yandexbrowser,Mac OS,desktop,3
+crios,iOS,tablet,3
+chrome,(unknown),tablet,3
+chrome,iOS,mobile,3
+ie,Windows 7,laptop,2
+facebook,iOS,mobile,2
+yandexbrowser,Mac OS,laptop,2
+chrome,Windows 10,tablet,2
+yandexbrowser,Android OS,mobile,2
+chrome,Windows Server 2003,laptop,2
+miui,Linux,laptop,2
+edge-chromium,Windows 7,laptop,1
+android,Android OS,tablet,1
+opera,Mac OS,desktop,1
+firefox,Windows 7,laptop,1
+fxios,iOS,mobile,1
+opera,Android OS,mobile,1
+firefox,iOS,mobile,1
+(unknown),Mac OS,laptop,1
+chrome,Linux,xr,1
+chrome,(unknown),laptop,1
+yandexbrowser,iOS,mobile,1
+ios,iOS,tablet,1
+yandexbrowser,Linux,laptop,1
+chrome,Chrome OS,laptop,1
+ios-webview,(unknown),mobile,1

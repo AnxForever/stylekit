@@ -1,0 +1,16 @@
+data_key,value,hits
+filter_count,0.0000,1139698
+filter_count,1.0000,352781
+filter_count,2.0000,45125
+filter_count,3.0000,543
+page,1.0000,1538147
+query_present,false,1523927
+query_present,true,14220
+sort,recommended,1447661
+sort,rating,43761
+sort,favorites,24690
+sort,popular,17390
+sort,latest,3902
+sort,name-asc,734
+sort,name-desc,9
+surface,styles_catalog,1538147

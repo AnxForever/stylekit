@@ -1,0 +1,26 @@
+session_id,events,impressions,browser,os,device,country,first_seen
+438161a8-c635-5045-bb03-551cab395cd9,4129,3124,chrome,Mac OS,desktop,CN,2026-10-31 16:30
+c5064b38-d205-5ad6-bda3-b42a081594fe,3694,3144,edge-chromium,Windows 10,desktop,CN,2026-10-21 19:07
+24710ba5-99c4-5b23-a1e7-b8e903d6880e,3410,1841,edge-chromium,Windows 10,desktop,US,2026-10-05 20:48
+0de4e8b9-17b5-5bf9-93f8-933839e2ec8a,2986,2248,chrome,Mac OS,laptop,CN,2026-11-01 13:32
+f2da0a62-23e0-5d3f-ab2e-d03da3bcc395,2838,2117,chrome,Windows 10,laptop,CN,2026-10-25 13:13
+35add125-5042-5e3b-8d10-871e1a668bb4,2667,2213,edge-chromium,Windows 10,laptop,CN,2026-10-17 23:22
+5f0ceeb0-3af2-5107-bcb2-f836e3563be5,2435,1770,edge-chromium,Windows 10,desktop,CN,2026-10-15 16:32
+f6f1d181-e668-5924-886d-6c25ef8511f2,2405,1854,edge-chromium,Windows 10,desktop,CN,2026-10-15 17:23
+8493b34c-8d27-5df7-9817-6863d10b6d49,2211,1771,edge-chromium,Windows 10,laptop,CN,2026-10-27 09:47
+1fcb9b7d-523c-5056-b333-416d76def3ac,2127,1460,edge-chromium,Windows 10,laptop,CN,2026-10-10 23:17
+c5a8d5b6-fad2-55f9-94ba-35a28bd2d7a3,2110,1917,edge-chromium,Windows 10,desktop,CN,2026-10-26 22:19
+d7d3c0a2-60cf-5cdf-86ff-6078d83c864c,2090,1643,chrome,Windows 10,desktop,CN,2026-10-27 00:51
+352e8d56-7cf2-5131-a9a6-2b3969f0715f,1969,1343,chrome,Mac OS,desktop,US,2026-10-14 15:19
+edb72d69-f03a-5320-9e6d-bd2370a96438,1942,1540,chrome,Windows 10,laptop,CN,2026-10-28 15:48
+fb6c40e4-762b-5ce9-a7cb-d33b031f9b46,1929,1562,chrome,Mac OS,laptop,CN,2026-10-08 09:29
+1511d383-64aa-5ec7-bb61-c1862de31435,1927,1493,chrome,Mac OS,laptop,CN,2026-10-12 19:53
+1a9ef053-9590-5c4e-a752-c8fd1cf51b77,1919,1030,chrome,Windows 10,laptop,CN,2026-10-14 14:31
+2771a1fd-3299-5a5c-abed-1789136dea06,1872,1584,chrome,Windows 10,laptop,CN,2026-10-08 15:44
+24b7f19d-0614-5bf0-9dd1-28385fe9c007,1862,1590,chrome,Windows 10,laptop,CN,2026-10-27 21:24
+bd22efd9-fa71-565a-80eb-a9b1ae2282cc,1843,1512,edge-chromium,Windows 10,desktop,CN,2026-10-16 15:43
+464b5f64-ccfc-5389-be2b-8cea509c706b,1841,1518,chrome,Mac OS,laptop,CN,2026-10-07 01:51
+53f9b40a-1523-55c6-95c4-7e9fc2dea3b1,1818,1512,safari,Mac OS,laptop,PL,2026-10-05 16:47
+6264e44f-53f4-5489-a7fe-6a72648fa996,1817,1462,edge-chromium,Windows 10,laptop,CN,2026-10-19 09:22
+967b780e-2439-5e1c-a9ed-7c359a9b01c3,1806,1456,chrome,Mac OS,laptop,CN,2026-10-20 09:07
+46333aa8-dcf2-533b-8869-09e7034960f6,1786,1055,chrome,Windows 10,laptop,CN,2026-11-03 11:17

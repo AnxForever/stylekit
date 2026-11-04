@@ -1,0 +1,1148 @@
+{
+  "generatedAt": "2026-11-03T05:44:27.323Z",
+  "window": {
+    "days": 90,
+    "end": "2026-11-03T05:28:02.645Z"
+  },
+  "source": {
+    "pageviews": "self-hosted Umami, website_event table, event_type = 1 (stylekit-jd 117.72.199.116)",
+    "sitemap": "https://www.stylekit.top",
+    "query": "ops/analytics/query-umami-paths.mjs --days 90 --limit 40000"
+  },
+  "totals": {
+    "pageviews": 1019487,
+    "distinctPaths": 32267
+  },
+  "sitemap": {
+    "totalUrls": 1163,
+    "families": {
+      "/colors/[hex]": 496,
+      "/styles/[slug]": 298,
+      "/animations/[slug]": 122,
+      "/templates/*": 70,
+      "/recipes/[id]": 36,
+      "/collections/[slug]": 24,
+      "/prompts/[topic]": 16,
+      "/blog/[slug]": 7,
+      "/guides/[slug]": 6,
+      "/": 2,
+      "/styles": 2,
+      "/community": 2,
+      "/community/[slug]": 2,
+      "/colors": 2,
+      "/collections": 2,
+      "/recipes": 2,
+      "/ui-prompts": 2,
+      "/ai-ui-design": 2,
+      "/ai-web-design": 2,
+      "/ai-frontend-design": 2,
+      "/ai-generated-website-fix": 2,
+      "/ai-web-design-tools": 2,
+      "/ai-ui-generator": 2,
+      "/ai-frontend-workflow": 2,
+      "/avoid-ai-slop": 2,
+      "/claude-code-ui-design": 2,
+      "/codex-ui-design": 2,
+      "/landing-page-prompts": 2,
+      "/dashboard-prompts": 2,
+      "/tailwind-ui-prompts": 2,
+      "/dark-mode-ui-prompts": 2,
+      "/animations": 2,
+      "/templates": 2,
+      "/resources": 2,
+      "/prompt-sites": 2,
+      "/component-patterns": 2,
+      "/mobile": 2,
+      "/learn": 2,
+      "/liquid-glass": 2,
+      "/launch": 2,
+      "/developers": 2,
+      "/mouse-interactions": 2,
+      "/guide": 2,
+      "/docs": 2,
+      "/components": 2,
+      "/style-advisor": 2,
+      "/about": 2,
+      "/contact": 2,
+      "/support": 2,
+      "/changelog": 2,
+      "/guides": 1,
+      "/privacy": 1,
+      "/terms": 1,
+      "/refunds": 1,
+      "/blog": 1,
+      "/templates/technical-profile": 1
+    }
+  },
+  "traffic": {
+    "families": [
+      {
+        "route": "/styles/[slug]/showcase",
+        "views": 301357,
+        "sharePct": 29.56
+      },
+      {
+        "route": "/styles",
+        "views": 232160,
+        "sharePct": 22.77
+      },
+      {
+        "route": "/styles/[slug]",
+        "views": 228904,
+        "sharePct": 22.45
+      },
+      {
+        "route": "/templates",
+        "views": 56832,
+        "sharePct": 5.57
+      },
+      {
+        "route": "/templates/*",
+        "views": 46177,
+        "sharePct": 4.53
+      },
+      {
+        "route": "/colors/[hex]",
+        "views": 37247,
+        "sharePct": 3.65
+      },
+      {
+        "route": "/",
+        "views": 32890,
+        "sharePct": 3.23
+      },
+      {
+        "route": "/ui-prompts",
+        "views": 14166,
+        "sharePct": 1.39
+      },
+      {
+        "route": "/collections/[slug]",
+        "views": 12436,
+        "sharePct": 1.22
+      },
+      {
+        "route": "/animations",
+        "views": 9832,
+        "sharePct": 0.96
+      },
+      {
+        "route": "/collections",
+        "views": 7919,
+        "sharePct": 0.78
+      },
+      {
+        "route": "/prompts/[topic]",
+        "views": 7046,
+        "sharePct": 0.69
+      },
+      {
+        "route": "/animations/[slug]",
+        "views": 5847,
+        "sharePct": 0.57
+      },
+      {
+        "route": "/resources",
+        "views": 2970,
+        "sharePct": 0.29
+      },
+      {
+        "route": "/dashboard-prompts",
+        "views": 2193,
+        "sharePct": 0.22
+      },
+      {
+        "route": "/recipes/[id]",
+        "views": 1849,
+        "sharePct": 0.18
+      },
+      {
+        "route": "/component-patterns",
+        "views": 1575,
+        "sharePct": 0.15
+      },
+      {
+        "route": "/zh",
+        "views": 1513,
+        "sharePct": 0.15
+      },
+      {
+        "route": "/recipes",
+        "views": 1459,
+        "sharePct": 0.14
+      },
+      {
+        "route": "/changelog",
+        "views": 1428,
+        "sharePct": 0.14
+      },
+      {
+        "route": "/community",
+        "views": 1371,
+        "sharePct": 0.13
+      },
+      {
+        "route": "/mouse-interactions",
+        "views": 1334,
+        "sharePct": 0.13
+      },
+      {
+        "route": "/learn",
+        "views": 1220,
+        "sharePct": 0.12
+      },
+      {
+        "route": "/login",
+        "views": 1014,
+        "sharePct": 0.1
+      },
+      {
+        "route": "/landing-page-prompts",
+        "views": 1006,
+        "sharePct": 0.1
+      },
+      {
+        "route": "/tailwind-ui-prompts",
+        "views": 762,
+        "sharePct": 0.07
+      },
+      {
+        "route": "/dark-mode-ui-prompts",
+        "views": 709,
+        "sharePct": 0.07
+      },
+      {
+        "route": "/kit",
+        "views": 690,
+        "sharePct": 0.07
+      },
+      {
+        "route": "/developers",
+        "views": 618,
+        "sharePct": 0.06
+      },
+      {
+        "route": "/guides",
+        "views": 497,
+        "sharePct": 0.05
+      },
+      {
+        "route": "/ai-web-design",
+        "views": 471,
+        "sharePct": 0.05
+      },
+      {
+        "route": "/avoid-ai-slop",
+        "views": 344,
+        "sharePct": 0.03
+      },
+      {
+        "route": "/contact",
+        "views": 314,
+        "sharePct": 0.03
+      },
+      {
+        "route": "/mobile",
+        "views": 290,
+        "sharePct": 0.03
+      },
+      {
+        "route": "/guides/[slug]",
+        "views": 283,
+        "sharePct": 0.03
+      },
+      {
+        "route": "/codex-ui-design",
+        "views": 281,
+        "sharePct": 0.03
+      },
+      {
+        "route": "/profile",
+        "views": 271,
+        "sharePct": 0.03
+      },
+      {
+        "route": "/colors",
+        "views": 265,
+        "sharePct": 0.03
+      },
+      {
+        "route": "/ai-generated-website-fix",
+        "views": 247,
+        "sharePct": 0.02
+      },
+      {
+        "route": "/guide",
+        "views": 237,
+        "sharePct": 0.02
+      },
+      {
+        "route": "/blog/[slug]",
+        "views": 153,
+        "sharePct": 0.02
+      },
+      {
+        "route": "/launch",
+        "views": 127,
+        "sharePct": 0.01
+      },
+      {
+        "route": "/ai-ui-design",
+        "views": 115,
+        "sharePct": 0.01
+      },
+      {
+        "route": "/claude-code-ui-design",
+        "views": 108,
+        "sharePct": 0.01
+      },
+      {
+        "route": "/ai-ui-generator",
+        "views": 104,
+        "sharePct": 0.01
+      },
+      {
+        "route": "/about",
+        "views": 72,
+        "sharePct": 0.01
+      },
+      {
+        "route": "/ai-frontend-workflow",
+        "views": 64,
+        "sharePct": 0.01
+      },
+      {
+        "route": "/ai-frontend-design",
+        "views": 63,
+        "sharePct": 0.01
+      },
+      {
+        "route": "/ai-web-design-tools",
+        "views": 51,
+        "sharePct": 0.01
+      },
+      {
+        "route": "/en",
+        "views": 51,
+        "sharePct": 0.01
+      },
+      {
+        "route": "/support",
+        "views": 39,
+        "sharePct": 0
+      },
+      {
+        "route": "/admin-login",
+        "views": 30,
+        "sharePct": 0
+      },
+      {
+        "route": "/components",
+        "views": 30,
+        "sharePct": 0
+      },
+      {
+        "route": "/terms",
+        "views": 30,
+        "sharePct": 0
+      },
+      {
+        "route": "/admin/operations",
+        "views": 23,
+        "sharePct": 0
+      },
+      {
+        "route": "/admin/analytics",
+        "views": 21,
+        "sharePct": 0
+      },
+      {
+        "route": "/refunds",
+        "views": 20,
+        "sharePct": 0
+      },
+      {
+        "route": "/prompt-sites",
+        "views": 19,
+        "sharePct": 0
+      },
+      {
+        "route": "/privacy",
+        "views": 18,
+        "sharePct": 0
+      },
+      {
+        "route": "/undefined",
+        "views": 17,
+        "sharePct": 0
+      },
+      {
+        "route": "/community/[slug]",
+        "views": 17,
+        "sharePct": 0
+      },
+      {
+        "route": "/submit",
+        "views": 15,
+        "sharePct": 0
+      },
+      {
+        "route": "/liquid-glass",
+        "views": 13,
+        "sharePct": 0
+      },
+      {
+        "route": "/docs",
+        "views": 11,
+        "sharePct": 0
+      },
+      {
+        "route": "/blog",
+        "views": 11,
+        "sharePct": 0
+      },
+      {
+        "route": "/developers/api",
+        "views": 10,
+        "sharePct": 0
+      },
+      {
+        "route": "/admin/users",
+        "views": 10,
+        "sharePct": 0
+      },
+      {
+        "route": "/admin/support",
+        "views": 10,
+        "sharePct": 0
+      },
+      {
+        "route": "/admin/content",
+        "views": 9,
+        "sharePct": 0
+      },
+      {
+        "route": "/compare",
+        "views": 9,
+        "sharePct": 0
+      },
+      {
+        "route": "/preview",
+        "views": 9,
+        "sharePct": 0
+      },
+      {
+        "route": "/experiments/webgl-lab",
+        "views": 8,
+        "sharePct": 0
+      },
+      {
+        "route": "/kit/shared",
+        "views": 8,
+        "sharePct": 0
+      },
+      {
+        "route": "/community/u/2",
+        "views": 8,
+        "sharePct": 0
+      },
+      {
+        "route": "/community/u/1",
+        "views": 5,
+        "sharePct": 0
+      },
+      {
+        "route": "/community/u/291",
+        "views": 5,
+        "sharePct": 0
+      },
+      {
+        "route": "/cursor-ui-design",
+        "views": 4,
+        "sharePct": 0
+      },
+      {
+        "route": "/cn",
+        "views": 4,
+        "sharePct": 0
+      },
+      {
+        "route": "/styles\"}",
+        "views": 4,
+        "sharePct": 0
+      },
+      {
+        "route": "/community/u/371",
+        "views": 4,
+        "sharePct": 0
+      },
+      {
+        "route": "/community/u/211",
+        "views": 4,
+        "sharePct": 0
+      },
+      {
+        "route": "/community/u/351",
+        "views": 4,
+        "sharePct": 0
+      },
+      {
+        "route": "/EN/login",
+        "views": 3,
+        "sharePct": 0
+      },
+      {
+        "route": "/generate",
+        "views": 3,
+        "sharePct": 0
+      },
+      {
+        "route": "/002.html",
+        "views": 3,
+        "sharePct": 0
+      },
+      {
+        "route": "/styles/full-page-scroll/cover",
+        "views": 3,
+        "sharePct": 0
+      },
+      {
+        "route": "/styles/mid-century-modern/cover",
+        "views": 3,
+        "sharePct": 0
+      },
+      {
+        "route": "/styles/pop-art/cover",
+        "views": 3,
+        "sharePct": 0
+      },
+      {
+        "route": "/styles/sidebar-fixed/cover",
+        "views": 3,
+        "sharePct": 0
+      },
+      {
+        "route": "/styles/bauhaus/cover",
+        "views": 3,
+        "sharePct": 0
+      },
+      {
+        "route": "/community/u/208",
+        "views": 3,
+        "sharePct": 0
+      },
+      {
+        "route": "/styles/film-noir/cover",
+        "views": 2,
+        "sharePct": 0
+      },
+      {
+        "route": "/styles/magazine-grid/cover",
+        "views": 2,
+        "sharePct": 0
+      },
+      {
+        "route": "/styles/marble-luxury/cover",
+        "views": 2,
+        "sharePct": 0
+      },
+      {
+        "route": "/corporate",
+        "views": 2,
+        "sharePct": 0
+      },
+      {
+        "route": "/styles/masonry-flow/cover",
+        "views": 2,
+        "sharePct": 0
+      },
+      {
+        "route": "/styles/modern-gradient/badges-gradient",
+        "views": 2,
+        "sharePct": 0
+      },
+      {
+        "route": "/styles/modern-gradient/Badges-Gradient",
+        "views": 2,
+        "sharePct": 0
+      },
+      {
+        "route": "/styles/neo-brutalist/cover",
+        "views": 2,
+        "sharePct": 0
+      },
+      {
+        "route": "/styles/dashboard-layout/cover",
+        "views": 2,
+        "sharePct": 0
+      },
+      {
+        "route": "/styles/cubism/cover",
+        "views": 2,
+        "sharePct": 0
+      },
+      {
+        "route": "/styles/outrun/cover",
+        "views": 2,
+        "sharePct": 0
+      },
+      {
+        "route": "/glassmorphism",
+        "views": 2,
+        "sharePct": 0
+      },
+      {
+        "route": "/editorial",
+        "views": 2,
+        "sharePct": 0
+      },
+      {
+        "route": "/admin/submissions",
+        "views": 2,
+        "sharePct": 0
+      },
+      {
+        "route": "/styles/art-deco/cover",
+        "views": 2,
+        "sharePct": 0
+      },
+      {
+        "route": "/st",
+        "views": 2,
+        "sharePct": 0
+      },
+      {
+        "route": "/r/bento",
+        "views": 2,
+        "sharePct": 0
+      },
+      {
+        "route": "/admin/comments",
+        "views": 2,
+        "sharePct": 0
+      },
+      {
+        "route": "/styles/holy-grail-layout/cover",
+        "views": 2,
+        "sharePct": 0
+      },
+      {
+        "route": "/styles/geometric-bold/cover",
+        "views": 2,
+        "sharePct": 0
+      },
+      {
+        "route": "/styles/warm-dashboard/cover",
+        "views": 2,
+        "sharePct": 0
+      },
+      {
+        "route": "/styles/generative-art/cover",
+        "views": 2,
+        "sharePct": 0
+      },
+      {
+        "route": "/community/u/400",
+        "views": 2,
+        "sharePct": 0
+      },
+      {
+        "route": "/neo-brutalist",
+        "views": 2,
+        "sharePct": 0
+      },
+      {
+        "route": "/ai-generated-website-fix)",
+        "views": 2,
+        "sharePct": 0
+      },
+      {
+        "route": "/styles/cyberpunk-neon/showcasehttps:/www.stylekit.top/styles/pixel-art/showcase",
+        "views": 1,
+        "sharePct": 0
+      },
+      {
+        "route": "/styles/data-dense/showcase\"",
+        "views": 1,
+        "sharePct": 0
+      },
+      {
+        "route": "/styles/full-page-scroll](https:/www.stylekit.top/en/styles/full-page-scroll",
+        "views": 1,
+        "sharePct": 0
+      },
+      {
+        "route": "/styles/hero-fullscreen/cover",
+        "views": 1,
+        "sharePct": 0
+      },
+      {
+        "route": "/type-scale",
+        "views": 1,
+        "sharePct": 0
+      },
+      {
+        "route": "/ui",
+        "views": 1,
+        "sharePct": 0
+      },
+      {
+        "route": "/ui‑prompts",
+        "views": 1,
+        "sharePct": 0
+      },
+      {
+        "route": "/vi",
+        "views": 1,
+        "sharePct": 0
+      },
+      {
+        "route": "/zh-CN/component/overview",
+        "views": 1,
+        "sharePct": 0
+      },
+      {
+        "route": "/zn/colors/0a0a0b",
+        "views": 1,
+        "sharePct": 0
+      },
+      {
+        "route": "/styles/watercolor-style/showcase/_next/static/media/26aa48c1bdeb5547-s.p.37505e65.woff2",
+        "views": 1,
+        "sharePct": 0
+      },
+      {
+        "route": "/ui-prompts 找找给有合适的提示词。 又搜了一下，还有几个 一、Motionsites 链接：https:/motionsites.ai/  二、uiprompt 链接： https:/huggingpt.com/ui-prompts  三、Lexica 链接：https:/lexica.art",
+        "views": 1,
+        "sharePct": 0
+      },
+      {
+        "route": "/ai-frontend-workflow)",
+        "views": 1,
+        "sharePct": 0
+      },
+      {
+        "route": "/ai-ui-generator)",
+        "views": 1,
+        "sharePct": 0
+      },
+      {
+        "route": "/categories/creative",
+        "views": 1,
+        "sharePct": 0
+      },
+      {
+        "route": "/community/u/91",
+        "views": 1,
+        "sharePct": 0
+      },
+      {
+        "route": "/dark-mode-ui-prompts、",
+        "views": 1,
+        "sharePct": 0
+      },
+      {
+        "route": "/dashboard-prompts-prompts",
+        "views": 1,
+        "sharePct": 0
+      },
+      {
+        "route": "/style",
+        "views": 1,
+        "sharePct": 0
+      },
+      {
+        "route": "/style-advisor",
+        "views": 1,
+        "sharePct": 0
+      },
+      {
+        "route": "/style/editorial",
+        "views": 1,
+        "sharePct": 0
+      },
+      {
+        "route": "/style/glassmorphism",
+        "views": 1,
+        "sharePct": 0
+      },
+      {
+        "route": "/style/neo-brutalist",
+        "views": 1,
+        "sharePct": 0
+      },
+      {
+        "route": "/styles'",
+        "views": 1,
+        "sharePct": 0
+      },
+      {
+        "route": "/styles、",
+        "views": 1,
+        "sharePct": 0
+      },
+      {
+        "route": "/styles/asymmetric-grid/cover",
+        "views": 1,
+        "sharePct": 0
+      },
+      {
+        "route": "/styles/cyberpunk-neon/showcasez",
+        "views": 1,
+        "sharePct": 0
+      },
+      {
+        "route": "/styles](https:/www.stylekit.top/zh/styles",
+        "views": 1,
+        "sharePct": 0
+      },
+      {
+        "route": "/styleshttps:/www.uiprompt.site/zh/styles",
+        "views": 1,
+        "sharePct": 0
+      },
+      {
+        "route": "/styles/islamic-geometric/cover",
+        "views": 1,
+        "sharePct": 0
+      },
+      {
+        "route": "/styles/japanese-fresh/cover",
+        "views": 1,
+        "sharePct": 0
+      },
+      {
+        "route": "/styles/mecha/cover",
+        "views": 1,
+        "sharePct": 0
+      },
+      {
+        "route": "/styles/memphis/cover",
+        "views": 1,
+        "sharePct": 0
+      },
+      {
+        "route": "/styles/neon-gradient/cover",
+        "views": 1,
+        "sharePct": 0
+      },
+      {
+        "route": "/styles/notion-stylehttps:/www.stylekit.top/styles/notion-style/showcase",
+        "views": 1,
+        "sharePct": 0
+      },
+      {
+        "route": "/styles/notion-stylehttps:/www.stylekit.top/styles/notion-style/showcase这个notion风格非常好官网 ",
+        "views": 1,
+        "sharePct": 0
+      },
+      {
+        "route": "/styles/timeline-vertical/cover",
+        "views": 1,
+        "sharePct": 0
+      },
+      {
+        "route": "/styles选一个ui风格",
+        "views": 1,
+        "sharePct": 0
+      },
+      {
+        "route": "/ui-prompts/",
+        "views": 1,
+        "sharePct": 0
+      },
+      {
+        "route": "/z",
+        "views": 1,
+        "sharePct": 0
+      },
+      {
+        "route": "/zh,",
+        "views": 1,
+        "sharePct": 0
+      },
+      {
+        "route": "/zh、",
+        "views": 1,
+        "sharePct": 0
+      },
+      {
+        "route": "/zh StyleKit",
+        "views": 1,
+        "sharePct": 0
+      },
+      {
+        "route": "/zh和https:/styles.refero.design/里面的设计帮我设计一下我的页面和按钮以及看一下有没有没有用的页面和功能删除",
+        "views": 1,
+        "sharePct": 0
+      },
+      {
+        "route": "/zh）里找寻灵感",
+        "views": 1,
+        "sharePct": 0
+      },
+      {
+        "route": "/ 还有没有类似这样的网站",
+        "views": 1,
+        "sharePct": 0
+      },
+      {
+        "route": "/admin/analytics/content",
+        "views": 1,
+        "sharePct": 0
+      },
+      {
+        "route": "/admin/ratings",
+        "views": 1,
+        "sharePct": 0
+      },
+      {
+        "route": "/admin/validation",
+        "views": 1,
+        "sharePct": 0
+      }
+    ],
+    "topPages": [
+      {
+        "path": "/styles",
+        "views": 232160
+      },
+      {
+        "path": "/templates",
+        "views": 56832
+      },
+      {
+        "path": "/templates/editorial-profile-archive",
+        "views": 26213
+      },
+      {
+        "path": "/styles/corporate-clean/showcase",
+        "views": 16165
+      },
+      {
+        "path": "/styles/neumorphism/showcase",
+        "views": 15798
+      },
+      {
+        "path": "/ui-prompts",
+        "views": 14166
+      },
+      {
+        "path": "/styles/corporate-clean",
+        "views": 13161
+      },
+      {
+        "path": "/styles/neumorphism",
+        "views": 12964
+      },
+      {
+        "path": "/styles/glassmorphism/showcase",
+        "views": 12953
+      },
+      {
+        "path": "/styles/editorial/showcase",
+        "views": 10997
+      },
+      {
+        "path": "/styles/soft-ui/showcase",
+        "views": 10738
+      },
+      {
+        "path": "/styles/macos-vibrancy/showcase",
+        "views": 10249
+      },
+      {
+        "path": "/styles/glassmorphism",
+        "views": 9975
+      },
+      {
+        "path": "/animations",
+        "views": 9832
+      },
+      {
+        "path": "/styles/editorial",
+        "views": 9102
+      },
+      {
+        "path": "/styles/soft-ui",
+        "views": 8472
+      },
+      {
+        "path": "/styles/bento-grid/showcase",
+        "views": 8236
+      },
+      {
+        "path": "/collections",
+        "views": 7919
+      },
+      {
+        "path": "/styles/neo-brutalist/showcase",
+        "views": 7912
+      },
+      {
+        "path": "/styles/notion-style/showcase",
+        "views": 7849
+      },
+      {
+        "path": "/styles/macos-vibrancy",
+        "views": 7612
+      },
+      {
+        "path": "/styles/neo-brutalist",
+        "views": 6926
+      },
+      {
+        "path": "/styles/apple-style/showcase",
+        "views": 6633
+      },
+      {
+        "path": "/styles/minimalist-flat/showcase",
+        "views": 6433
+      },
+      {
+        "path": "/styles/bento-grid",
+        "views": 6377
+      },
+      {
+        "path": "/styles/notion-style",
+        "views": 5996
+      },
+      {
+        "path": "/styles/natural-organic/showcase",
+        "views": 5967
+      },
+      {
+        "path": "/styles/sidebar-fixed/showcase",
+        "views": 5890
+      },
+      {
+        "path": "/styles/dashboard-layout/showcase",
+        "views": 5549
+      },
+      {
+        "path": "/styles/minimalist-flat",
+        "views": 5380
+      },
+      {
+        "path": "/styles/apple-style",
+        "views": 4980
+      },
+      {
+        "path": "/styles/fluent-design/showcase",
+        "views": 4874
+      },
+      {
+        "path": "/styles/natural-organic",
+        "views": 4869
+      },
+      {
+        "path": "/styles/modern-gradient/showcase",
+        "views": 4800
+      },
+      {
+        "path": "/styles/sidebar-fixed",
+        "views": 4130
+      },
+      {
+        "path": "/styles/stripe-style/showcase",
+        "views": 4116
+      },
+      {
+        "path": "/styles/dashboard-layout",
+        "views": 3938
+      },
+      {
+        "path": "/styles/swiss-style/showcase",
+        "views": 3812
+      },
+      {
+        "path": "/styles/modern-gradient",
+        "views": 3725
+      },
+      {
+        "path": "/styles/claymorphism/showcase",
+        "views": 3634
+      },
+      {
+        "path": "/styles/fluent-design",
+        "views": 3577
+      },
+      {
+        "path": "/styles/dark-mode/showcase",
+        "views": 3428
+      },
+      {
+        "path": "/styles/ghibli-style/showcase",
+        "views": 3257
+      },
+      {
+        "path": "/styles/hero-fullscreen/showcase",
+        "views": 3142
+      },
+      {
+        "path": "/styles/watercolor-style/showcase",
+        "views": 3135
+      },
+      {
+        "path": "/styles/card-stack/showcase",
+        "views": 3125
+      },
+      {
+        "path": "/styles/stripe-style",
+        "views": 3124
+      },
+      {
+        "path": "/styles/liquid-glass/showcase",
+        "views": 3062
+      },
+      {
+        "path": "/styles/masonry-flow/showcase",
+        "views": 3060
+      },
+      {
+        "path": "/styles/swiss-style",
+        "views": 3038
+      },
+      {
+        "path": "/resources",
+        "views": 2970
+      },
+      {
+        "path": "/styles/data-dense/showcase",
+        "views": 2955
+      },
+      {
+        "path": "/styles/claymorphism",
+        "views": 2840
+      },
+      {
+        "path": "/styles/parallax-sections/showcase",
+        "views": 2798
+      },
+      {
+        "path": "/styles/holy-grail-layout/showcase",
+        "views": 2698
+      },
+      {
+        "path": "/styles/dark-mode",
+        "views": 2575
+      },
+      {
+        "path": "/styles/ghibli-style",
+        "views": 2485
+      },
+      {
+        "path": "/styles/geometric-bold/showcase",
+        "views": 2466
+      },
+      {
+        "path": "/styles/pixel-art/showcase",
+        "views": 2428
+      },
+      {
+        "path": "/styles/linear-style/showcase",
+        "views": 2414
+      }
+    ]
+  }
+}
