@@ -14,8 +14,14 @@ import { resolveStyleBySlug } from "@/lib/styles/community-runtime";
 import {
   parseClientAnalyticsPayload,
   readEventStyleSlug,
+  readEventTemplateReference,
   type ParsedClientAnalyticsPayload,
+  type TemplateEventReference,
 } from "@/lib/analytics/client-event-schema";
+import {
+  isExternalTemplateId,
+  isShowcaseTemplateSlug,
+} from "@/lib/templates/identity";
 import { parseJsonBodyWithLimit } from "@/lib/security/json-body";
 import {
   checkRateLimit,
@@ -177,6 +183,14 @@ async function recordInternalAnalyticsEvent(
     return { ok: false, status: 400, error: "Unknown style slug" };
   }
 
+  const templateReference = readEventTemplateReference(
+    payload.eventType,
+    payload.eventData,
+  );
+  if (templateReference && !isKnownTemplateReference(templateReference)) {
+    return { ok: false, status: 400, error: "Unknown template slug" };
+  }
+
   const deviceType = readDeviceType(request.headers.get("user-agent"));
   const eventData = {
     ...payload.eventData,
@@ -210,6 +224,12 @@ async function recordInternalAnalyticsEvent(
   }
 
   return { ok: true };
+}
+
+function isKnownTemplateReference(reference: TemplateEventReference): boolean {
+  return reference.kind === "external"
+    ? isExternalTemplateId(reference.slug)
+    : isShowcaseTemplateSlug(reference.slug);
 }
 
 function inferLegacySource(eventType: string): "page" | "api" | null {
