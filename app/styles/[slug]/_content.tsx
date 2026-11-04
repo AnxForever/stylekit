@@ -1,22 +1,17 @@
 /// <reference types="react/canary" />
 "use client";
 
-import { Suspense, useEffect, useRef, useState, useCallback, useMemo, ViewTransition, type ReactNode } from "react";
+import { Suspense, useEffect, useRef, useState, useCallback, ViewTransition, type ReactNode } from "react";
 import dynamic from "next/dynamic";
 import { ArrowRight } from "lucide-react";
 import { LocalizedLink } from "@/components/i18n/localized-link";
 import { ScrollBackButton } from "@/components/scroll-back-button";
 import { ComponentPreview } from "@/components/style-preview/component-preview";
 import { ColorPalette } from "@/components/style-preview/color-palette";
-import { AiImplementationPanel } from "@/components/style-preview/ai-implementation-panel";
-import type { DesignSpecTokens } from "@/components/style-preview/_prompt-builders";
-import { HardPromptCopyButton } from "@/components/style-preview/hard-prompt-copy-button";
 import { CodeBlock } from "@/components/style-preview/code-block";
-import { TokensExportButton } from "@/components/tokens-export-button";
 import { StyleCoverPreview } from "@/components/style-preview/style-cover-preview";
 import { ScoreBadge } from "@/components/accessibility/score-badge";
 import { ScoreDetail } from "@/components/accessibility/score-detail";
-import { IdeExportButtons } from "@/components/export/ide-export-buttons";
 import { VersionBadge } from "@/components/styles/version-badge";
 import { StyleRating } from "@/components/styles/style-rating";
 import { StyleRatingBadge } from "@/components/styles/style-rating-badge";
@@ -24,9 +19,7 @@ import { StyleComments } from "@/components/styles/style-comments";
 import { CollapsibleSection } from "@/components/ui/collapsible-section";
 import { useI18n } from "@/lib/i18n/context";
 import { localizedString, localizedList } from "@/lib/styles/locale-content";
-import { buildPromptPair } from "@/lib/styles/prompt-pair";
 import { trackEvent } from "@/lib/analytics/events";
-import { addPromptPurpose } from "@/components/style-preview/_prompt-builders";
 
 import type { DesignStyle } from "@/lib/styles";
 import type { AccessibilityScore } from "@/lib/accessibility";
@@ -39,6 +32,8 @@ import {
 import { RecipeCard } from "@/components/recipes/recipe-card";
 import { getRoomBySlug } from "@/components/mouse-interactions/rooms/registry";
 import { GenericRoom } from "@/components/mouse-interactions/rooms/generic-room";
+import { DesignMdSection } from "@/components/style-preview/design-md-section";
+import { TokenCopyButton } from "@/components/style-preview/token-copy-button";
 import { ShowcaseDownloadButton } from "@/components/showcase/showcase-download-button";
 
 // StylePackExport statically fans out to the full design-token registry
@@ -64,15 +59,14 @@ export interface ComparisonSibling extends CompatibleStyleSummary {
 
 interface Props {
   style: DesignStyle;
-  hasIdeExports?: boolean;
   compatibleStyles: CompatibleStyleSummary[];
   compatibleLayouts: CompatibleStyleSummary[];
   relatedStyles?: CompatibleStyleSummary[];
   comparison?: ComparisonSibling | null;
-  enhancedRules: string | null;
-  specTokens?: DesignSpecTokens;
+  /** Compact DESIGN.md for this locale, rendered on the server. */
+  designMarkdown: string;
+  hasDesignSpec: boolean;
   accessibilityScore: AccessibilityScore | null;
-  readinessSection: ReactNode;
   faqSection?: ReactNode;
   version?: string;
   changelog?: StyleVersion[];
@@ -82,15 +76,13 @@ interface Props {
 
 export function StyleDetailContent({
   style,
-  hasIdeExports = true,
   compatibleStyles,
   compatibleLayouts,
   relatedStyles = [],
   comparison = null,
-  enhancedRules,
-  specTokens,
+  designMarkdown,
+  hasDesignSpec,
   accessibilityScore,
-  readinessSection,
   faqSection,
   version,
   changelog,
@@ -140,27 +132,6 @@ export function StyleDetailContent({
   const localizedKeywords = localizedList(locale, style.keywords, style.keywordsEn);
   const primaryStyleName = locale === "zh" ? style.name : style.nameEn || style.name;
   const secondaryStyleName = locale === "zh" ? style.nameEn : style.name;
-  const hardPromptContent = useMemo(() => {
-    const promptInput = {
-      styleName: primaryStyleName,
-      styleSlug: style.slug,
-      aiRules: style.aiRules,
-      aiRulesEn: style.aiRulesEn,
-      enhancedRules,
-      doList: style.doList,
-      doListEn: style.doListEn,
-      dontList: style.dontList,
-      dontListEn: style.dontListEn,
-      keywords: style.keywords,
-      keywordsEn: style.keywordsEn,
-    };
-
-    return addPromptPurpose({
-      locale,
-      kind: "hard",
-      content: buildPromptPair(promptInput, locale).hardPrompt,
-    });
-  }, [enhancedRules, locale, primaryStyleName, style]);
   const getPrimaryName = (targetStyle: CompatibleStyleSummary) =>
     locale === "zh" ? targetStyle.name : targetStyle.nameEn || targetStyle.name;
   const getSecondaryName = (targetStyle: CompatibleStyleSummary) =>
@@ -268,14 +239,9 @@ export function StyleDetailContent({
               </div>
 
               <div className="flex flex-col sm:flex-row flex-wrap gap-3 sm:gap-4 mt-6">
-                <HardPromptCopyButton
-                  content={hardPromptContent}
-                  locale={locale}
-                  slug={style.slug}
-                />
                 <LocalizedLink
-                  href="#style-exports"
-                  className="inline-flex min-h-[48px] items-center justify-center px-4 py-3 text-sm text-muted underline underline-offset-4 transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                  href="#style-prompts"
+                  className="inline-flex min-h-[48px] items-center justify-center bg-foreground px-5 py-3 text-sm tracking-wide text-background transition-colors hover:bg-foreground/85 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                 >
                   {t("styleDetail.export")}
                 </LocalizedLink>
@@ -396,71 +362,12 @@ export function StyleDetailContent({
         </div>
       </section>
 
-      {/* AI implementation documents */}
-      <section id="style-prompts" className="border-b border-border scroll-mt-24">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-12 py-12 md:py-16">
-          <p className="text-xs tracking-widest uppercase text-muted mb-4">
-            {locale === "zh" ? "AI 实现文档" : "AI Implementation"}
-          </p>
-          <h2 className="text-2xl md:text-3xl mb-4">
-            {locale === "zh"
-              ? "先复制硬性提示词，需要时再看设计规范"
-              : "Copy the Hard Prompt first, then use the spec when needed"}
-          </h2>
-          <p className="text-muted mb-8 max-w-2xl">
-            {locale === "zh"
-              ? `默认用硬性提示词让 AI 直接生成前端；Design Spec 用来理解、改写和审核风格；Creative Brief 用来早期探索方向。`
-              : `Use the Hard Prompt by default to generate UI. Use the Design Spec to understand, modify, and review the style. Use the Creative Brief for early exploration.`}
-          </p>
-          <AiImplementationPanel
-            styleName={primaryStyleName}
-            styleSlug={style.slug}
-            description={localizedDescription}
-            philosophy={localizedPhilosophy}
-            colors={style.colors}
-            aiRules={style.aiRules}
-            aiRulesEn={style.aiRulesEn}
-            enhancedRules={enhancedRules}
-            doList={style.doList}
-            doListEn={style.doListEn}
-            dontList={style.dontList}
-            dontListEn={style.dontListEn}
-            keywords={style.keywords}
-            keywordsEn={style.keywordsEn}
-            specTokens={specTokens}
-          />
-          <p className="mt-8 text-sm text-muted">
-            {locale === "zh" ? "更多资源：" : "More resources: "}
-            <LocalizedLink
-              href={`/templates?style=${style.slug}`}
-              className="underline underline-offset-4 hover:text-foreground transition-colors"
-            >
-              {t("nav.templates")}
-            </LocalizedLink>
-            {" · "}
-            <LocalizedLink
-              href="/ui-prompts"
-              className="underline underline-offset-4 hover:text-foreground transition-colors"
-            >
-              {locale === "zh" ? "全部 UI 提示词" : "All UI Prompts"}
-            </LocalizedLink>
-            {" · "}
-            <LocalizedLink
-              href="/tailwind-ui-prompts"
-              className="underline underline-offset-4 hover:text-foreground transition-colors"
-            >
-              {locale === "zh" ? "Tailwind UI 提示词" : "Tailwind UI Prompts"}
-            </LocalizedLink>
-            {" · "}
-            <LocalizedLink
-              href="/dark-mode-ui-prompts"
-              className="underline underline-offset-4 hover:text-foreground transition-colors"
-            >
-              {locale === "zh" ? "暗色模式提示词" : "Dark Mode UI Prompts"}
-            </LocalizedLink>
-          </p>
-        </div>
-      </section>
+      <DesignMdSection
+        slug={style.slug}
+        styleName={primaryStyleName}
+        hasSpec={hasDesignSpec}
+        initialMarkdown={designMarkdown}
+      />
 
       {/* Community — keep feedback close to the prompt users act on */}
       <section id="style-feedback" className="border-b border-border scroll-mt-24">
@@ -535,9 +442,6 @@ export function StyleDetailContent({
           </div>
         </section>
       ) : null}
-
-      {/* Frontend Readiness */}
-      {readinessSection}
 
       {faqSection}
 
@@ -734,55 +638,28 @@ export function StyleDetailContent({
             {locale === "zh" ? "导出工具" : "Export tools"}
           </p>
           <h2 className="text-2xl md:text-3xl mb-4">
-            {locale === "zh" ? "按需要导出风格资源" : "Export the style assets you need"}
+            {locale === "zh" ? "一次点击拿到" : "One click, then paste"}
           </h2>
-          <p className="text-muted mb-8 max-w-2xl">
-            {locale === "zh"
-              ? "Showcase 离线包、Figma 令牌、IDE 规则和完整风格包都集中在这里。"
-              : "Showcase ZIP, Figma tokens, IDE rules, and the complete style pack are collected here."}
-          </p>
-          <div className="grid gap-8 md:grid-cols-2">
-            <article className="border border-border p-5 md:p-6">
-              <h3 className="text-lg mb-2">
-                {locale === "zh" ? "Showcase 离线包" : "Showcase ZIP"}
-              </h3>
-              <p className="text-sm text-muted mb-5">
-                {locale === "zh"
-                  ? "下载完整 Showcase，离线查看页面效果。"
-                  : "Download the complete showcase for offline viewing."}
-              </p>
-              <ShowcaseDownloadButton slug={style.slug} />
-            </article>
-            <article className="border border-border p-5 md:p-6">
-              <h3 className="text-lg mb-2">
-                {locale === "zh" ? "Figma 设计令牌" : "Figma design tokens"}
-              </h3>
-              <p className="text-sm text-muted mb-5">
-                {locale === "zh"
-                  ? "导出可用于 Figma 和设计令牌工具的颜色与样式。"
-                  : "Export colors and styles for Figma and design-token tools."}
-              </p>
-              <TokensExportButton style={style} />
-            </article>
-            {hasIdeExports && (
-              <article className="border border-border p-5 md:p-6">
-                <h3 className="text-lg mb-2">{t("ideExport.title")}</h3>
-                <p className="text-sm text-muted mb-5">
-                  {t("ideExport.description")}
-                </p>
-                <IdeExportButtons slug={style.slug} />
-              </article>
-            )}
-            <article className="border border-border p-5 md:col-span-2 md:p-6">
-              <p className="text-xs tracking-widest uppercase text-muted mb-3">
-                {t("styleDetail.stylePackLabel")}
-              </p>
-              <h3 className="text-xl mb-3">{t("styleDetail.exportStylePack")}</h3>
-              <p className="text-sm text-muted mb-5 max-w-2xl">
-                {t("styleDetail.exportStylePackDesc")}
-              </p>
-              <StylePackExport style={style} version={version} />
-            </article>
+          <div className="flex flex-wrap items-center gap-3">
+            <TokenCopyButton
+              style={style}
+              format="figma-tokens"
+              label={locale === "zh" ? "复制 Tokens JSON" : "Copy tokens JSON"}
+            />
+            <TokenCopyButton
+              style={style}
+              format="css-variables"
+              label={locale === "zh" ? "复制 CSS 变量" : "Copy CSS variables"}
+            />
+            <TokenCopyButton
+              style={style}
+              format="style-dictionary"
+              label={locale === "zh" ? "复制 Style Dictionary" : "Copy Style Dictionary"}
+            />
+            <ShowcaseDownloadButton slug={style.slug} />
+          </div>
+          <div className="mt-8">
+            <StylePackExport style={style} version={version} />
           </div>
         </div>
       </section>
