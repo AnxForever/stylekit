@@ -12,7 +12,6 @@ import { trackEvent } from "@/lib/analytics/events";
 import { MobileHomeSummarySection } from "./_mobile-summary";
 import { TrendingStylesSkeleton } from "./_skeletons";
 import { ThankYouModal } from "@/components/home/thank-you-modal";
-import { HeroGridField } from "@/components/home/hero-grid-field";
 import { ConnectAiButton } from "@/components/ai/connect-ai-button";
 import { HomeSupportCard, type SupportPreviewItem } from "./_support-card";
 import {
