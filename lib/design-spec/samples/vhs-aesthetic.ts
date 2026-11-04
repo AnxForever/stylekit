@@ -170,8 +170,8 @@ export const vhsAestheticSpec: DesignSpec = {
       name: "OSD Label",
       role: { zh: "屏幕字符标签", en: "The on-screen display label" },
       construction: {
-        zh: "11px 等宽全大写 0.18em，色黄或绿，可带 1px 黑描边保证在亮画面上可读。格式固定为「SP · 00:12:47」或「PLAY ▶」。它是录像机叠加在画面上的信息，常驻角落。",
-        en: "11px monospace uppercase at 0.18em in yellow or green, optionally carrying a 1px black stroke so it stays readable over bright footage. The format is fixed as SP · 00:12:47 or PLAY ▶. It is the VCR's overlay, resident in a corner.",
+        zh: "11px 等宽全大写 0.18em，色黄或绿，可带 1px 黑描边保证在亮画面上可读。格式固定为「SP · 00:12:47」或「PLAY」。它是录像机叠加在画面上的信息，常驻角落。",
+        en: "11px monospace uppercase at 0.18em in yellow or green, optionally carrying a 1px black stroke so it stays readable over bright footage. The format is fixed as SP · 00:12:47 or PLAY. It is the VCR's overlay, resident in a corner.",
       },
     },
   ],
