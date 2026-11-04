@@ -3,6 +3,8 @@ import {
   CLIENT_EVENT_NAMES,
   PROMPT_COPY_SOURCES,
   PROMPT_COPY_TYPES,
+  TEMPLATE_DOWNLOAD_SURFACES,
+  TEMPLATE_SOURCE_LANGUAGES,
   type ClientEventName,
 } from "@/lib/analytics/event-contract";
 
@@ -92,6 +94,22 @@ const clientEventDataSchemas = {
   }),
   animation_view: eventDataSchema({ slug: slugSchema, source: shortStringSchema }),
   template_view: eventDataSchema({ slug: slugSchema, source: shortStringSchema }),
+  template_source_open: eventDataSchema({
+    slug: slugSchema,
+    surface: z.literal("templates_catalog"),
+  }),
+  template_source_copy: eventDataSchema({
+    slug: slugSchema,
+    language: z.enum(TEMPLATE_SOURCE_LANGUAGES),
+  }),
+  template_download: eventDataSchema({
+    slug: slugSchema,
+    surface: z.enum(TEMPLATE_DOWNLOAD_SURFACES),
+  }),
+  template_external_click: eventDataSchema({
+    slug: slugSchema,
+    target: z.enum(["site", "repo"]),
+  }),
   newsletter_subscribe: eventDataSchema({ source: shortStringSchema }),
   cta_click: eventDataSchema({
     label: shortStringSchema,
@@ -216,6 +234,39 @@ export function readEventStyleSlug(
   ) {
     const slug = eventData.slug;
     return typeof slug === "string" ? slug : null;
+  }
+
+  return null;
+}
+
+export type TemplateEventReference = {
+  /** `showcase` is an in-site template page; `external` is a partner project. */
+  kind: "showcase" | "external";
+  slug: string;
+};
+
+/**
+ * Template identity carried by a template event, or null for other events.
+ * The API resolves it against the template catalog before storage, the same
+ * way style events are resolved against the style catalog.
+ */
+export function readEventTemplateReference(
+  eventType: PublicAnalyticsEventName,
+  eventData: Record<string, unknown>,
+): TemplateEventReference | null {
+  const slug = eventData.slug;
+  if (typeof slug !== "string") return null;
+
+  if (
+    eventType === "template_view" ||
+    eventType === "template_source_open" ||
+    eventType === "template_source_copy" ||
+    eventType === "template_download"
+  ) {
+    return { kind: "showcase", slug };
+  }
+  if (eventType === "template_external_click") {
+    return { kind: "external", slug };
   }
 
   return null;
