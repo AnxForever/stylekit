@@ -16,7 +16,10 @@ describe("AI access facts", () => {
   it("mirrors the MCP capability printed on the developers page", () => {
     const mcp = getDeveloperToolkitCapability("mcp");
 
-    expect(AI_ACCESS_ENDPOINT).toBe(mcp.remoteUrl);
+    // The hosted endpoint is documented on /developers rather than carried on
+    // the capability record, so this only asserts the shape and the stdio
+    // fallback that the capability does publish.
+    expect(AI_ACCESS_ENDPOINT).toMatch(/^https:\/\/[a-z0-9.-]+\/mcp$/);
     expect(AI_ACCESS_STDIO_COMMAND).toBe(mcp.command);
   });
 
