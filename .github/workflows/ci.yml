@@ -100,13 +100,12 @@ jobs:
         run: pnpm exec playwright install --with-deps chromium
         env:
           # ubuntu-latest now points at 26.04, which Playwright 1.58 does not
-          # recognise yet: `playwright install` aborts with "Playwright does
-          # not support chromium on ubuntu26.04-x64" before downloading
-          # anything. The Linux browser build is identical across Ubuntu
-          # releases, so borrow the 24.04 dependency list instead of pinning
-          # the whole job to an older runner (which cannot build the app:
-          # Turbopack's font loader needs the newer runner image). Remove this
-          # once @playwright/test is upgraded to a release that knows 26.04.
+          # recognise: `playwright install` aborts with "Playwright does not
+          # support chromium on ubuntu26.04-x64" before downloading anything.
+          # The Linux browser build is identical across Ubuntu releases, so
+          # borrow the 24.04 dependency list instead of pinning the whole job
+          # to an older runner. Remove the override once @playwright/test is
+          # upgraded to a release that knows 26.04.
           PLAYWRIGHT_HOST_PLATFORM_OVERRIDE: ubuntu24.04-x64
       - run: pnpm run build
       - run: pnpm exec playwright test --config tests/playwright.config.ts
