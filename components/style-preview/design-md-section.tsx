@@ -7,6 +7,7 @@ import { useI18n } from "@/lib/i18n/context";
 import { trackEvent } from "@/lib/analytics/events";
 import { LocalizedLink } from "@/components/i18n/localized-link";
 import { ConnectAiButton } from "@/components/ai/connect-ai-button";
+import { DesignMarkdown } from "@/components/style-preview/design-md-content";
 import { cn } from "@/lib/utils";
 
 type Density = "compact" | "extended";
@@ -104,8 +105,8 @@ export function DesignMdSection({
               ? "一份文档说明这套风格的配色职责、字体规则、间距与组件构造。复制或下载后直接交给 Claude Code、Cursor、Codex 或 v0。"
               : "One document describes the colour roles, type rules, spacing and component construction behind this style. Copy or download it into Claude Code, Cursor, Codex or v0."
             : zh
-              ? "这份 DESIGN.md 还在整理中。下方仍是可用的规则导出，文档完成后会自动替换。"
-              : "This DESIGN.md is still being written. The rule export below still works and will be replaced once the document lands."}
+              ? "这份 DESIGN.md 还在整理中，完成后会自动出现在这里。"
+              : "This DESIGN.md is still being written and will appear here once it lands."}
         </p>
 
         {hasSpec ? (
@@ -165,12 +166,12 @@ export function DesignMdSection({
                   <LoaderCircle className="h-4 w-4 animate-spin text-muted" aria-hidden="true" />
                 </div>
               ) : null}
-              <pre
+              <div
                 tabIndex={0}
-                className="max-h-[32rem] overflow-auto border border-border bg-foreground/[0.025] p-4 font-mono text-[12.5px] leading-6 text-foreground/90"
+                className="max-h-[32rem] overflow-auto border border-border bg-foreground/[0.025] p-4 md:p-6"
               >
-                <code>{content}</code>
-              </pre>
+                <DesignMarkdown markdown={content} />
+              </div>
             </div>
 
             {loadError ? (
@@ -193,20 +194,7 @@ export function DesignMdSection({
               </span>
             </div>
           </>
-        ) : (
-          <div className="flex flex-wrap items-center gap-4">
-            <a
-              href={`/api/styles/${encodeURIComponent(slug)}/claude-rules`}
-              className="inline-flex min-h-9 items-center gap-1.5 border border-foreground/30 px-4 text-sm tracking-wide transition-colors hover:border-foreground"
-            >
-              <Download className="h-3.5 w-3.5" aria-hidden="true" />
-              {zh ? "下载规则文件" : "Download rules"}
-            </a>
-            <span className="text-xs text-muted">
-              {zh ? "临时方案，覆盖配色与禁忌清单" : "Temporary: covers palette and the do/don't list"}
-            </span>
-          </div>
-        )}
+        ) : null}
 
         <p role="status" className="sr-only">
           {result?.state === "copied" ? (zh ? "已复制" : "Copied") : ""}
