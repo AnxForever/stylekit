@@ -37,6 +37,41 @@ const results = ["first", "second", "third"].map((slug) => ({
   description: `${slug} description`,
 }));
 
+function detail() {
+  return {
+    slug: "existing-without-tokens",
+    name: "Existing",
+    nameEn: "Existing",
+    category: "modern",
+    tags: [],
+    description: "",
+    philosophy: "",
+    colors: { primary: "#000000", secondary: "#111111", accent: [] },
+    doList: [],
+    dontList: [],
+    keywords: [],
+    hasTokens: false,
+    hasRecipes: false,
+    recipeIds: [],
+    shadcnInstall: "npx shadcn add /r/existing.json",
+    url: "https://www.stylekit.top/styles/existing",
+    quality: {
+      tier: "curated",
+      capabilities: {
+        tokens: "missing",
+        recipes: "missing",
+        componentCode: "missing",
+        variants: "missing",
+        readiness: "curated",
+        darkMode: "missing",
+        accessibility: "unavailable",
+      },
+      accessibilityScore: null,
+      flags: [],
+    },
+  };
+}
+
 type ToolResult = {
   structuredContent?: Record<string, unknown>;
   isError?: boolean;
@@ -162,9 +197,10 @@ describe("stylekit_search_styles pagination", () => {
       fallbackReason: "HTTP 404",
     });
     mocks.knownSlugLive.mockResolvedValue({ data: true, origin: "live" });
-    const handler = registeredHandler<{ slug: string }>("stylekit_get_style_tokens");
+    mocks.getStyleDetailLive.mockResolvedValue({ data: detail(), origin: "bundled" });
+    const handler = registeredHandler<{ slug: string; include?: string[] }>("stylekit_get_style");
 
-    const result = await handler({ slug: "existing-without-tokens" });
+    const result = await handler({ slug: "existing-without-tokens", include: ["tokens"] });
     const message = result.content?.[0]?.text ?? "";
 
     expect(result.isError).toBe(true);
@@ -179,9 +215,10 @@ describe("stylekit_search_styles pagination", () => {
       failureKind: "unsupported",
       fallbackReason: "live implementation brief endpoint is unavailable (HTTP 404) for an existing style",
     });
-    const handler = registeredHandler<{ slug: string }>("stylekit_get_implementation_brief");
+    mocks.getStyleDetailLive.mockResolvedValue({ data: detail(), origin: "bundled" });
+    const handler = registeredHandler<{ slug: string; include?: string[] }>("stylekit_get_style");
 
-    const result = await handler({ slug: "known-online-style" });
+    const result = await handler({ slug: "known-online-style", include: ["brief"] });
     const message = result.content?.[0]?.text ?? "";
 
     expect(result.isError).toBe(true);

@@ -451,20 +451,20 @@ try {
     assert.equal(empty.structuredContent.offset, 100_000);
     assert.equal(empty.structuredContent.has_more, false);
   });
-  for (const name of ["stylekit_get_style", "stylekit_get_style_tokens", "stylekit_get_shadcn_install"]) {
-    const result = await call(name, { slug: "neo-brutalist" });
-    check(`${name} responds through stdio`, () => assert.ok(!result.isError && result.structuredContent));
+  for (const include of [[], ["tokens"], ["recipe"], ["brief"]]) {
+    const result = await call("stylekit_get_style", include.length ? { slug: "neo-brutalist", include } : { slug: "neo-brutalist" });
+    check(`stylekit_get_style${include.length ? " (" + include[0] + ")" : ""} responds through stdio`, () => assert.ok(!result.isError && result.structuredContent));
   }
-  const contract = await call("stylekit_get_implementation_brief", { slug: "neo-brutalist" });
+  const contract = await call("stylekit_get_style", { slug: "neo-brutalist", include: ["brief"] });
   check("MCP and CLI deliver identical implementation inputs", () => {
     assert.ok(!contract.isError);
-    assert.equal(contract.structuredContent.provenance.contentHash, brief.provenance.contentHash);
-    assert.deepEqual(contract.structuredContent.lintRules, brief.lintRules);
+    assert.equal(contract.structuredContent.brief.provenance.contentHash, brief.provenance.contentHash);
+    assert.deepEqual(contract.structuredContent.brief.lintRules, brief.lintRules);
   });
   writeFileSync("mcp-brief.json", JSON.stringify(contract, null, 2));
-  const recipe = await call("stylekit_get_component_recipe", { slug: "swiss-style", component: "button" });
+  const recipe = await call("stylekit_get_style", { slug: "swiss-style", include: ["recipe"], component: "button" });
   const lint = await call("stylekit_lint_code", {
-    slug: "swiss-style", code: `<button className="${recipe.structuredContent.className}">Continue</button>`,
+    slug: "swiss-style", code: `<button className="${recipe.structuredContent.recipe.className}">Continue</button>`,
     checkRequired: ["button"], strict: true,
   });
   check("official Swiss button passes its strict MCP rules", () => {

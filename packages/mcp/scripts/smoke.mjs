@@ -18,7 +18,18 @@ await client.connect(transport);
 
 const { tools } = await client.listTools();
 const names = tools.map((t) => t.name).sort();
-check(tools.length === 9, `9 tools registered (${names.join(", ")})`);
+check(tools.length === 5, `5 tools registered (${names.join(", ")})`);
+check(
+  JSON.stringify(names) ===
+    JSON.stringify([
+      "stylekit_get_asset",
+      "stylekit_get_style",
+      "stylekit_lint_code",
+      "stylekit_list_assets",
+      "stylekit_search_styles",
+    ]),
+  "tool surface is exactly the five consolidated tools",
+);
 check(
   tools.every((t) => t.annotations?.readOnlyHint === true),
   "all tools annotated readOnlyHint",
@@ -140,37 +151,37 @@ check(
 );
 
 const tokens = await client.callTool({
-  name: "stylekit_get_style_tokens",
-  arguments: { slug: "neo-brutalist" },
+  name: "stylekit_get_style",
+  arguments: { slug: "neo-brutalist", include: ["tokens"] },
 });
 check(/radius|border/i.test(tokens.content[0].text), "get_style_tokens returns tokens");
 check(
-  typeof tokens.structuredContent?.colors?.background?.primary === "string",
+  typeof tokens.structuredContent?.tokens?.colors?.background?.primary === "string",
   "get_style_tokens returns typed structured tokens",
 );
 check(
-  ["live", "bundled"].includes(tokens.structuredContent?.origin) &&
-    (tokens.structuredContent.origin === "live" || typeof tokens.structuredContent.fallbackReason === "string"),
-  "get_style_tokens reports live origin or its bundled fallback reason",
+  ["live", "bundled"].includes(tokens.structuredContent?.tokens?.origin) &&
+    (tokens.structuredContent.tokens.origin === "live" || typeof tokens.structuredContent.tokens.fallbackReason === "string"),
+  "get_style include tokens reports live origin or its bundled fallback reason",
 );
 
 const recipe = await client.callTool({
-  name: "stylekit_get_component_recipe",
-  arguments: { slug: "glassmorphism", component: "button" },
+  name: "stylekit_get_style",
+  arguments: { slug: "glassmorphism", include: ["recipe"], component: "button" },
 });
 check(
-  recipe.structuredContent?.className?.length > 0 &&
-    ["live", "bundled"].includes(recipe.structuredContent?.origin),
+  recipe.structuredContent?.recipe?.className?.length > 0 &&
+    ["live", "bundled"].includes(recipe.structuredContent?.recipe?.origin),
   "get_component_recipe returns a className and its data origin",
 );
 
 const install = await client.callTool({
-  name: "stylekit_get_shadcn_install",
+  name: "stylekit_get_style",
   arguments: { slug: "synthwave" },
 });
 check(
-  /npx shadcn add .*synthwave\.json/.test(install.content[0].text) &&
-    ["live", "bundled"].includes(install.structuredContent?.lookupOrigin),
+  /npx shadcn add .*synthwave\.json/.test(install.structuredContent?.shadcnInstall ?? "") &&
+    ["live", "bundled"].includes(install.structuredContent?.origin),
   "get_shadcn_install returns the command and separate style lookup origin",
 );
 
@@ -222,23 +233,23 @@ check(
   "lint_code reports missing required classes when asked",
 );
 
-const brief = await client.callTool({ name: "stylekit_get_implementation_brief", arguments: { slug: "neo-brutalist" } });
-check(brief.structuredContent?.schemaVersion === "stylekit-brief-v1" &&
-  brief.structuredContent?.components?.button?.code?.includes("className") &&
-  brief.structuredContent?.recipes?.button?.skeleton?.baseClasses?.length > 0 &&
-  brief.structuredContent?.lintRules?.sources?.includes("curated") &&
-  brief.structuredContent?.aiRules?.length > 0,
+const brief = await client.callTool({ name: "stylekit_get_style", arguments: { slug: "neo-brutalist", include: ["brief"] } });
+check(brief.structuredContent?.brief?.schemaVersion === "stylekit-brief-v1" &&
+  brief.structuredContent?.brief?.components?.button?.code?.includes("className") &&
+  brief.structuredContent?.brief?.recipes?.button?.skeleton?.baseClasses?.length > 0 &&
+  brief.structuredContent?.brief?.lintRules?.sources?.includes("curated") &&
+  brief.structuredContent?.brief?.aiRules?.length > 0,
   "implementation brief includes instructions, template code, recipes and merged rules");
-check(JSON.stringify(JSON.parse(brief.content[0].text)) === JSON.stringify(brief.structuredContent), "brief text contains complete valid JSON for legacy clients");
+check(/## Implementation brief/.test(brief.content[0].text) && brief.structuredContent?.brief?.schemaVersion === "stylekit-brief-v1", "brief text renders the merged section");
 check(
-  ["live", "bundled"].includes(brief.structuredContent?.origin) &&
-    ["bundled", "static", "community"].includes(brief.structuredContent?.provenance?.source) &&
-    (brief.structuredContent.origin === "live" || typeof brief.structuredContent.fallbackReason === "string"),
+  ["live", "bundled"].includes(brief.structuredContent?.brief?.origin) &&
+    ["bundled", "static", "community"].includes(brief.structuredContent?.brief?.provenance?.source) &&
+    (brief.structuredContent.brief.origin === "live" || typeof brief.structuredContent.brief.fallbackReason === "string"),
   "implementation brief separates transport origin from content provenance and explains fallback",
 );
 check(
-  lintBad.structuredContent?.contentSource === brief.structuredContent?.provenance?.source &&
-    JSON.stringify([...lintBad.structuredContent.ruleSources].sort()) === JSON.stringify([...brief.structuredContent.lintRules.sources].sort()),
+  lintBad.structuredContent?.contentSource === brief.structuredContent?.brief?.provenance?.source &&
+    JSON.stringify([...lintBad.structuredContent.ruleSources].sort()) === JSON.stringify([...brief.structuredContent.brief.lintRules.sources].sort()),
   "lint_code uses the same brief rules and reports the distinct content source",
 );
 const strict = await client.callTool({ name: "stylekit_lint_code", arguments: {

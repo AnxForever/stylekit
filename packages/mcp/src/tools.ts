@@ -339,7 +339,7 @@ Returns structured JSON with total, count, offset, has_more, source, optional fa
 Examples:
   - "find a glassy frosted style" -> query: "glass"
   - "next page of retro styles" -> category: "retro", offset: 15
-  - For full tokens of one style, use stylekit_get_style_tokens instead.`,
+  - For full tokens of one style, call stylekit_get_style with include: ["tokens"] instead.`,
       inputSchema: {
         query: z.string().max(100).optional().describe("Keyword to match"),
         category: z
@@ -506,32 +506,63 @@ Returns complete structured JSON and JSON text, preserving the namespace and pro
     },
   );
 
-  // 2) Style detail
+  // 2) Style detail, with optional tokens, recipe, and implementation brief
   server.registerTool(
     "stylekit_get_style",
     {
       title: "Get StyleKit style detail",
-      description: `Get one style's full profile: philosophy, palette, do/don't rules, keywords, and what's available (tokens, recipes, shadcn install). Style data is read from the live catalogue with a five-minute cache; when live data is unavailable, a bundled snapshot may be returned and marked with origin and fallbackReason.
+      description: `Get one style's profile and, optionally, its design tokens, one component recipe, and the full implementation brief. Everything ships through this single tool so the server stays small: pass include: ["tokens"], ["recipe"], ["brief"] or a combination.
+
+Style data is read from the live catalogue with a five-minute cache; when live data is unavailable, a bundled snapshot may be returned and marked with origin and fallbackReason.
 
 Args:
   - slug (string): style identifier, e.g. "glassmorphism", "neo-brutalist".
+  - include (array, optional): sections to attach — "tokens", "recipe", "brief".
+  - component (string, optional): recipe id for include: ["recipe"], e.g. "button"; defaults to the style's first recipe.
 
-Returns JSON: { slug, name, nameEn, category, tags, description, philosophy, colors, doList, dontList, keywords, hasTokens, hasRecipes, recipeIds, shadcnInstall, url, quality, origin, fallbackReason? }. The content provenance is separate from origin when returned by the implementation brief.
+Returns JSON: { slug, name, nameEn, category, tags, description, philosophy, colors, doList, dontList, keywords, hasTokens, hasRecipes, recipeIds, shadcnInstall, url, quality, origin, fallbackReason?, tokens?, recipe?, brief? }.
 
 Examples:
   - "how should I use neo-brutalist?" -> slug: "neo-brutalist"
+  - "give me the glassmorphism button code" -> slug: "glassmorphism", include: ["recipe"], component: "button"
   - Returns an error with a hint if the slug is unknown.`,
       inputSchema: {
         slug: z.string().min(1).describe("Style slug, e.g. 'glassmorphism'"),
+        include: z
+          .array(z.enum(["tokens", "recipe", "brief"]))
+          .optional()
+          .describe('Sections to attach: "tokens", "recipe", "brief"'),
+        component: z
+          .string()
+          .min(1)
+          .optional()
+          .describe("Recipe id when include contains 'recipe'; defaults to the first recipe"),
       },
-      outputSchema: DETAIL_SHAPE,
+      outputSchema: {
+        ...DETAIL_SHAPE,
+        tokens: STYLE_TOKENS_SHAPE.extend({
+          origin: z.enum(["live", "bundled"]),
+          fallbackReason: z.string().optional(),
+        }).optional(),
+        recipe: z
+          .object({
+            slug: z.string(),
+            component: z.string(),
+            className: z.string(),
+            code: z.string(),
+            origin: z.enum(["live", "bundled"]),
+            fallbackReason: z.string().optional(),
+          })
+          .optional(),
+        brief: z.record(z.string(), z.unknown()).optional(),
+      },
       annotations: READ_ONLY,
     },
-    async ({ slug }) => {
+    async ({ slug, include, component }) => {
       const detailSource = await getStyleDetailLive(slug, remoteOptions);
       const detail = detailSource.data;
       if (!detail) return styleLookupFailure(slug, detailSource);
-      const structured = {
+      const structured: Record<string, unknown> = {
         ...detail,
         origin: detailSource.origin,
         ...(detailSource.fallbackReason ? { fallbackReason: detailSource.fallbackReason } : {}),
@@ -554,186 +585,89 @@ Examples:
         `Tokens: ${detail.hasTokens ? "yes" : "no"} · Recipes: ${detail.recipeIds.join(", ") || "none"}`,
         `Install theme: \`${detail.shadcnInstall}\``,
       ];
-      return toolResult(lines.join("\n"), structured);
-    },
-  );
 
-  // 3) Design tokens
-  server.registerTool(
-    "stylekit_get_style_tokens",
-    {
-      title: "Get StyleKit style design tokens",
-      description: `Get a style's design tokens (Tailwind class mappings): border, shadow, typography, spacing, semantic colors, and forbidden/required classes. Style data is read from the live catalogue with a five-minute cache; when live data is unavailable, a bundled snapshot may be returned and marked with origin and fallbackReason.
+      const wanted = new Set(include ?? []);
 
-Args:
-  - slug (string): style identifier.
-
-Returns JSON: the full StyleTokens object plus origin (live or bundled) and optional fallbackReason. Content provenance is distinct from transport origin.
-
-Examples:
-  - "give me the spacing and border tokens for bento-grid" -> slug: "bento-grid"
-  - Returns an error if the style has no tokens registered.`,
-      inputSchema: {
-        slug: z.string().min(1).describe("Style slug"),
-      },
-      outputSchema: STYLE_TOKENS_OUTPUT_SHAPE,
-      annotations: READ_ONLY,
-    },
-    async ({ slug }) => {
-      const tokensSource = await getTokensLive(slug, remoteOptions);
-      const tokens = tokensSource.data;
-      if (!tokens) {
-        if (tokensSource.failureKind === "unavailable" || tokensSource.failureKind === "unsupported") {
-          return sourceUnavailable(`Tokens for style "${slug}"`, tokensSource);
-        }
-        const known = await knownSlugLive(slug, remoteOptions);
-        if (known.data) {
+      if (wanted.has("tokens")) {
+        const tokensSource = await getTokensLive(slug, remoteOptions);
+        const tokens = tokensSource.data;
+        if (!tokens) {
+          if (tokensSource.failureKind === "unavailable" || tokensSource.failureKind === "unsupported") {
+            return sourceUnavailable(`Tokens for style "${slug}"`, tokensSource);
+          }
           return errorResult(
-            `Style "${slug}" exists but has no registered design tokens. Use stylekit_get_style for its palette and rules instead.`,
+            `Style "${slug}" exists but has no registered design tokens. Use the palette and rules above instead.`,
           );
         }
-        return styleLookupFailure(slug, known);
-      }
-      const structured = {
-        ...(tokens as unknown as Record<string, unknown>),
-        origin: tokensSource.origin,
-        ...(tokensSource.fallbackReason ? { fallbackReason: tokensSource.fallbackReason } : {}),
-      };
-      return toolResult(JSON.stringify(structured, null, 2), structured, true);
-    },
-  );
-
-  // 4) Component recipe
-  server.registerTool(
-    "stylekit_get_component_recipe",
-    {
-      title: "Get StyleKit component recipe",
-      description: `Render a ready-to-use component for a style: the full Tailwind className and JSX code. Components are usually "button", "card", "input" (check recipeIds via stylekit_get_style). Recipe data is read from the live catalogue with a five-minute cache; a bundled snapshot may be returned during an outage and is marked with origin and fallbackReason.
-
-Args:
-  - slug (string): style identifier.
-  - component (string): recipe id, e.g. "button", "card", "input".
-
-Returns JSON: { slug, component, className, code, origin, fallbackReason? }.
-
-Examples:
-  - "give me a glassmorphism button" -> slug: "glassmorphism", component: "button"
-  - Returns an error listing available recipes if the component isn't found.`,
-      inputSchema: {
-        slug: z.string().min(1).describe("Style slug"),
-        component: z
-          .string()
-          .min(1)
-          .describe("Recipe id: button, card, input, ..."),
-      },
-      outputSchema: {
-        slug: z.string(),
-        component: z.string(),
-        className: z.string(),
-        code: z.string(),
-        origin: z.enum(["live", "bundled"]),
-        fallbackReason: z.string().optional(),
-      },
-      annotations: READ_ONLY,
-    },
-    async ({ slug, component }) => {
-      const detailSource = await getStyleDetailLive(slug, remoteOptions);
-      const detail = detailSource.data;
-      if (!detail) return styleLookupFailure(slug, detailSource);
-      const recipeSource = await getComponentRecipeLive(slug, component, remoteOptions);
-      const recipe = recipeSource.data;
-      if (!recipe) {
-        if (recipeSource.failureKind === "unavailable") {
-          return sourceUnavailable(`Recipe "${component}" for style "${slug}"`, recipeSource);
-        }
-        const available = detail.recipeIds.length
-          ? detail.recipeIds.join(", ")
-          : "none";
-        const guidance = recipeSource.failureKind === "unsupported"
-          ? " Use stylekit_get_implementation_brief for its source definitions."
-          : "";
-        return errorResult(
-          `Cannot render "${component}" for "${slug}". Available recipes: ${available}.${recipeSource.fallbackReason ? ` ${recipeSource.fallbackReason}.` : ""}${guidance}`,
+        structured.tokens = {
+          ...(tokens as unknown as Record<string, unknown>),
+          origin: tokensSource.origin,
+          ...(tokensSource.fallbackReason ? { fallbackReason: tokensSource.fallbackReason } : {}),
+        };
+        lines.push(
+          "",
+          "## Tokens",
+          `Origin: ${tokensSource.origin}${tokensSource.fallbackReason ? `; fallback: ${tokensSource.fallbackReason}` : ""}.`,
+          "```json",
+          JSON.stringify(tokens, null, 2),
+          "```",
         );
       }
-      const structured = {
-        ...recipe,
-        origin: recipeSource.origin,
-        ...(recipeSource.fallbackReason ? { fallbackReason: recipeSource.fallbackReason } : {}),
-      };
-      const lines = [
-        `# ${component} — \`${slug}\``,
-        `Catalogue origin: ${recipeSource.origin}${recipeSource.fallbackReason ? `; fallback: ${recipeSource.fallbackReason}` : ""}.`,
-        "",
-        "**className**:",
-        "```",
-        recipe.className,
-        "```",
-        "",
-        "**code**:",
-        "```tsx",
-        recipe.code,
-        "```",
-      ];
-      return toolResult(lines.join("\n"), structured);
-    },
-  );
 
-  // 5) shadcn install command
-  server.registerTool(
-    "stylekit_get_shadcn_install",
-    {
-      title: "Get StyleKit shadcn install command",
-      description: `Get the one-line shadcn CLI command that installs a style's color theme (light + dark) into a shadcn project.
-
-Args:
-  - slug (string): style identifier.
-
-Returns JSON: { slug, command, registryUrl, prerequisite, lookupOrigin, fallbackReason? }. The command is derived from the style slug; lookupOrigin reports how StyleKit confirmed that slug.
-
-Examples:
-  - "how do I install the synthwave theme?" -> slug: "synthwave"
-  - The target project must have a tsconfig.json or the shadcn CLI errors out.`,
-      inputSchema: {
-        slug: z.string().min(1).describe("Style slug"),
-      },
-      outputSchema: {
-        slug: z.string(),
-        command: z.string(),
-        registryUrl: z.string(),
-        prerequisite: z.string(),
-        lookupOrigin: z.enum(["live", "bundled"]),
-        fallbackReason: z.string().optional(),
-      },
-      annotations: READ_ONLY,
-    },
-    async ({ slug }) => {
-      const known = await knownSlugLive(slug, remoteOptions);
-      if (!known.data) {
-        return known.failureKind === "not-found"
-          ? unknownSlug(slug)
-          : sourceUnavailable(`Style "${slug}"`, known);
+      if (wanted.has("recipe")) {
+        const recipeId = component ?? detail.recipeIds[0];
+        if (!recipeId) {
+          return errorResult(`Style "${slug}" has no component recipes.`);
+        }
+        const recipeSource = await getComponentRecipeLive(slug, recipeId, remoteOptions);
+        const recipe = recipeSource.data;
+        if (!recipe) {
+          return errorResult(
+            `Cannot render "${recipeId}" for "${slug}". Available recipes: ${detail.recipeIds.join(", ") || "none"}.`,
+          );
+        }
+        structured.recipe = {
+          ...recipe,
+          origin: recipeSource.origin,
+          ...(recipeSource.fallbackReason ? { fallbackReason: recipeSource.fallbackReason } : {}),
+        };
+        lines.push(
+          "",
+          `## Recipe — ${recipeId}`,
+          "```tsx",
+          recipe.code,
+          "```",
+          "",
+          `**className**: \`${recipe.className}\``,
+        );
       }
-      const structured = {
-        slug,
-        command: shadcnInstallCommand(slug),
-        registryUrl: registryUrl(slug),
-        prerequisite: "The target project must contain a tsconfig.json.",
-        lookupOrigin: known.origin,
-        ...(known.fallbackReason ? { fallbackReason: known.fallbackReason } : {}),
-      };
-      const text = [
-        `Install the **${slug}** theme into your shadcn project:`,
-        `Style existence lookup origin: ${known.origin}${known.fallbackReason ? `; fallback: ${known.fallbackReason}` : ""}.`,
-        "",
-        "```bash",
-        structured.command,
-        "```",
-        "",
-        "Injects light + dark cssVars into your globals.css (Tailwind v4 compatible).",
-        "Prerequisite: the project must contain a tsconfig.json.",
-      ].join("\n");
-      return toolResult(text, structured);
+
+      if (wanted.has("brief")) {
+        const briefSource = await getImplementationBriefLive(slug, remoteOptions);
+        if (!briefSource.data) {
+          if (briefSource.failureKind === "not-found") return unknownSlug(slug);
+          if (briefSource.failureKind === "unsupported") {
+            return errorResult(
+              `Style "${slug}" exists, but this StyleKit source does not expose a compatible implementation brief.${briefSource.fallbackReason ? ` ${briefSource.fallbackReason}.` : ""}`,
+            );
+          }
+          return sourceUnavailable(`Implementation brief for style "${slug}"`, briefSource);
+        }
+        structured.brief = {
+          ...briefSource.data,
+          origin: briefSource.origin,
+          ...(briefSource.fallbackReason ? { fallbackReason: briefSource.fallbackReason } : {}),
+        };
+        lines.push(
+          "",
+          "## Implementation brief",
+          "```json",
+          JSON.stringify(briefSource.data),
+          "```",
+        );
+      }
+
+      return toolResult(lines.join("\n"), structured);
     },
   );
 
@@ -865,37 +799,4 @@ Examples:
     },
   );
 
-  server.registerTool("stylekit_get_implementation_brief", {
-    title: "Get complete StyleKit implementation brief",
-    description: "Fetch one complete implementation contract before generating UI: AI rules, philosophy, global CSS, component templates, recipe definitions, tokens, readiness guidance, merged lint rules, and content provenance. The live brief is preferred and cached for five minutes; when the live source is unavailable, a bundled snapshot is returned only when available and marked with origin and fallbackReason. provenance.source records the content publisher (bundled, static, or community) and is distinct from transport origin. Coverage guidance does not certify visual quality or accessibility.",
-    inputSchema: { slug: z.string().min(1).max(100).describe("Style slug") },
-    outputSchema: {
-      schemaVersion: z.literal("stylekit-brief-v1"), slug: z.string(), name: z.string(), nameEn: z.string(),
-      category: z.string(), styleType: z.string(), description: z.string(),
-      tags: z.array(z.string()), keywords: z.array(z.string()), philosophy: z.string(), aiRules: z.string(),
-      doList: z.array(z.string()), dontList: z.array(z.string()), colors: z.object(DETAIL_SHAPE.colors.shape),
-      globalCss: z.string(), components: z.record(z.unknown()), variants: z.array(z.unknown()),
-      tokens: STYLE_TOKENS_SHAPE.nullable(), recipes: z.record(z.unknown()), readiness: z.record(z.unknown()),
-      lintRules: z.record(z.unknown()),
-      provenance: z.object({ source: z.enum(["bundled", "static", "community"]), contentHash: z.string(), url: z.string() }),
-      origin: z.enum(["live", "bundled"]),
-      fallbackReason: z.string().optional(),
-    },
-    annotations: READ_ONLY,
-  }, async ({ slug }) => {
-    const result = await getImplementationBriefLive(slug, remoteOptions);
-    if (!result.data) {
-      if (result.failureKind === "not-found") return unknownSlug(slug);
-      if (result.failureKind === "unsupported") {
-        return errorResult(`Style "${slug}" exists, but this StyleKit source does not expose a compatible implementation brief.${result.fallbackReason ? ` ${result.fallbackReason}.` : ""}`);
-      }
-      return sourceUnavailable(`Implementation brief for style "${slug}"`, result);
-    }
-    const structured = {
-      ...result.data,
-      origin: result.origin,
-      ...(result.fallbackReason ? { fallbackReason: result.fallbackReason } : {}),
-    };
-    return toolResult(JSON.stringify(structured), structured, true);
-  });
 }

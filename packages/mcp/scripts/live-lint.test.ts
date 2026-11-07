@@ -33,6 +33,23 @@ lintRules.forbiddenClasses.push({
 
 const httpServer = createServer((request, response) => {
   const pathname = new URL(request.url ?? "/", "http://127.0.0.1").pathname;
+  if (pathname === `/api/styles/${dynamicSlug}`) {
+    response.writeHead(200, { "content-type": "application/json" });
+    response.end(
+      JSON.stringify({
+        slug: dynamicSlug,
+        name: liveBrief.name,
+        nameEn: liveBrief.nameEn,
+        philosophy: "Live fixture style.",
+        colors: { primary: "#000000", secondary: "#ffffff", accent: [] },
+        doList: [],
+        dontList: [],
+        keywords: [],
+        tokens: {},
+      }),
+    );
+    return;
+  }
   if (pathname === `/api/styles/${dynamicSlug}/brief`) {
     response.writeHead(200, { "content-type": "application/json" });
     response.end(JSON.stringify(liveBrief));
@@ -69,11 +86,11 @@ try {
   await client.connect(clientTransport);
 
   const briefResult = await client.callTool({
-    name: "stylekit_get_implementation_brief",
-    arguments: { slug: dynamicSlug },
+    name: "stylekit_get_style",
+    arguments: { slug: dynamicSlug, include: ["brief"] },
   });
   assert.equal(briefResult.isError, undefined);
-  const briefContent = briefResult.structuredContent as { origin?: string; provenance?: { source?: string } };
+  const briefContent = (briefResult.structuredContent as { brief?: { origin?: string; provenance?: { source?: string } } })?.brief;
   assert.equal(briefContent?.origin, "live");
   assert.equal(briefContent?.provenance?.source, "static");
 
