@@ -54,7 +54,7 @@ When the client starts the MCP process, `npx` checks npm for the current
 `latest` release, including when the package is already cached. A running MCP
 process does not replace itself; restart the server or client to load an update.
 For a reproducible setup, replace `stylekit-mcp@latest` with an exact published
-version such as `stylekit-mcp@0.4.1`. The [npm caching options](https://docs.npmjs.com/cli/v11/commands/npm-exec/#a-note-on-caching)
+version such as `stylekit-mcp@0.6.0`. The [npm caching options](https://docs.npmjs.com/cli/v11/commands/npm-exec/#a-note-on-caching)
 describe how `--prefer-online` handles cached packages.
 
 To run a locally built copy instead, point your client at the absolute path:
