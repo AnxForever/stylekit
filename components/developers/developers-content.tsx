@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { useI18n } from "@/lib/i18n/context";
 import { RevealOnScroll } from "@/components/home/reveal-on-scroll";
+import { ConnectAiButton } from "@/components/ai/connect-ai-button";
 import {
   getDeveloperToolkitCapability,
   getDeveloperToolkitSetupSnippet,
@@ -29,10 +30,9 @@ const COPY = {
     intro:
       "Use the CLI, MCP server or Skill to find styles, animations and reusable assets, then retrieve source and dependencies where available. Install color themes through shadcn.",
     note: "These install a style's color theme — design tokens for light and dark. The component code is yours to build.",
-    // Kept as a literal because this is a client component and importing the
-    // registry would ship all 150 style records to the browser to print a number.
-    // CI enforces it instead: `check:product-truth` fails with this file named if
-    // the registry count ever moves past it.
+    remoteTitle: "Connect an AI client",
+    remoteDescription:
+      "Use the hosted, read-only MCP server for the live style catalogue. Choose your client for its exact setup and a style-aware handoff to the complete design.md.",
     browse: "Browse all 150 styles",
     docs: "Docs",
     status: "Status",
@@ -81,7 +81,7 @@ const COPY = {
         id: "mcp",
         name: "MCP server",
         desc: "Run the public beta MCP package over stdio from a compatible AI client.",
-        foot: "Nine read-only tools · live assets with bundled fallback",
+        foot: "Five read-only tools · live assets with bundled fallback",
       },
       {
         id: "cli",
@@ -103,6 +103,9 @@ const COPY = {
     intro:
       "用 CLI、MCP 或 Skill 查找风格、动画和设计素材，并按素材提供情况获取源码和依赖；配色主题也可以通过 shadcn 安装。",
     note: "安装的是风格的配色主题——明暗两套 design tokens。组件代码由你自己实现。",
+    remoteTitle: "连接 AI 客户端",
+    remoteDescription:
+      "通过在线的只读 MCP 服务获取最新风格目录。选择客户端查看对应配置，也可以从风格详情页把该风格唯一的完整 design.md 带入 AI。",
     browse: "浏览全部 150 风格",
     docs: "文档",
     status: "状态",
@@ -151,7 +154,7 @@ const COPY = {
         id: "mcp",
         name: "MCP server",
         desc: "通过兼容的 AI 客户端，以 stdio 运行公开 Beta 版 MCP package。",
-        foot: "9 个只读工具 · 在线资产与离线回退",
+        foot: "5 个只读工具 · 在线素材与离线回退",
       },
       {
         id: "cli",
@@ -324,6 +327,26 @@ export function DevelopersContent() {
               );
             })}
           </div>
+
+          <RevealOnScroll variant="soft" delayMs={320} className="mt-8">
+            <section
+              aria-labelledby="developer-remote-mcp-title"
+              className="flex flex-wrap items-center justify-between gap-5 border border-border bg-background/70 p-5 sm:p-6"
+            >
+              <div className="max-w-3xl">
+                <h2 id="developer-remote-mcp-title" className="text-lg">
+                  {c.remoteTitle}
+                </h2>
+                <p className="mt-2 text-sm leading-relaxed text-muted">
+                  {c.remoteDescription}
+                </p>
+              </div>
+              <ConnectAiButton
+                location="developers_page"
+                className="shrink-0"
+              />
+            </section>
+          </RevealOnScroll>
 
           <RevealOnScroll variant="soft" delayMs={360} className="mt-8">
             <p className="max-w-2xl border-l-2 border-accent pl-4 text-sm leading-relaxed text-muted">

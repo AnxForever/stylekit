@@ -20,6 +20,7 @@ export const AI_ACCESS_STDIO_COMMAND = "npx -y --prefer-online stylekit-mcp@late
  * shows them. Order is editorial: the three editors most of our readers use
  * first, the rest behind them.
  */
+/** Client names with a configuration path in the guide; they are not a claim of manual end-to-end testing. */
 export const AI_ACCESS_CLIENTS = [
   "Claude Code",
   "Cursor",

@@ -363,6 +363,7 @@ export function StyleDetailContent({
       </section>
 
       <DesignMdSection
+        slug={style.slug}
         styleName={primaryStyleName}
         hasSpec={hasDesignSpec}
         markdown={designMarkdown}
