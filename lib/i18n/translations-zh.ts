@@ -1271,6 +1271,7 @@ export const zh: { [K in keyof typeof en]: string } = {
   "a11y.fontSize": "字号",
   "a11y.fontWeight": "字重",
   "a11y.lineHeight": "行高",
+  "a11y.notAssessed": "未检测",
   "a11y.wcagReference": "评分基于 WCAG 2.1 标准。AA 级要求普通文本对比度 4.5:1、大文本 3:1；AAA 级要求普通文本 7:1、大文本 4.5:1。",
 
   // Docs page

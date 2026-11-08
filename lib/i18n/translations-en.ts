@@ -1501,6 +1501,7 @@ export const en = {
     "a11y.fontSize": "Font Size",
     "a11y.fontWeight": "Font Weight",
     "a11y.lineHeight": "Line Height",
+    "a11y.notAssessed": "Not assessed",
     "a11y.wcagReference": "Scoring is based on WCAG 2.1 standards. AA requires 4.5:1 contrast for normal text, 3:1 for large text; AAA requires 7:1 for normal text, 4.5:1 for large text.",
     "docs.badge": "Documentation",
     "docs.heading": "StyleKit Documentation",
