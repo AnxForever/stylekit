@@ -1,12 +1,15 @@
 "use client";
 
-import { ArrowRight, Check, Copy, Download } from "lucide-react";
+import { ArrowRight, Check, Code2, Copy, Download, Eye } from "lucide-react";
+import { useId, useState } from "react";
+import { ClipboardFeedback } from "@/components/ui/clipboard-feedback";
 import { useClipboard } from "@/lib/hooks/use-clipboard";
 import { useI18n } from "@/lib/i18n/context";
 import { trackEvent } from "@/lib/analytics/events";
 import { LocalizedLink } from "@/components/i18n/localized-link";
 import { ConnectAiButton } from "@/components/ai/connect-ai-button";
 import { DesignMarkdown } from "@/components/style-preview/design-md-content";
+import { cn } from "@/lib/utils";
 
 interface DesignMdSectionProps {
   slug?: string;
@@ -15,6 +18,7 @@ interface DesignMdSectionProps {
   hasSpec: boolean;
   /** Complete markdown for this locale, rendered on the server. */
   markdown: string;
+  className?: string;
 }
 
 /**
@@ -26,9 +30,12 @@ export function DesignMdSection({
   styleName,
   hasSpec,
   markdown,
+  className,
 }: DesignMdSectionProps) {
   const { locale } = useI18n();
   const zh = locale === "zh";
+  const [view, setView] = useState<"preview" | "markdown">("preview");
+  const viewLabelId = useId();
   const { copy, result, isCopied } = useClipboard({ copiedDuration: 2200 });
   const copied = isCopied("design.md", markdown);
 
@@ -46,30 +53,26 @@ export function DesignMdSection({
   }
 
   return (
-    <section id="style-prompts" className="border-b border-border scroll-mt-24">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-12 py-12 md:py-16">
-        <p className="text-xs tracking-widest text-muted mb-4">design.md</p>
-        <h2 className="text-2xl md:text-3xl mb-3">
-          {zh ? `${styleName} 的设计文档` : `${styleName} as a design document`}
-        </h2>
-        <p className="text-muted mb-8 max-w-2xl">
-          {hasSpec
-            ? zh
-              ? "一份文档说明这套风格的配色职责、字体规则、间距与组件构造。复制或下载后直接交给 Claude Code、Cursor、Codex 或 v0。"
-              : "One document describes the colour roles, type rules, spacing and component construction behind this style. Copy or download it into Claude Code, Cursor, Codex or v0."
-            : zh
-              ? "这份 design.md 还在整理中，完成后会自动出现在这里。"
-              : "This design.md is still being written and will appear here once it lands."}
-        </p>
-
+    <section
+      id="style-prompts"
+      className={cn("min-w-0 scroll-mt-24 border border-border bg-background", className)}
+      aria-labelledby={`${viewLabelId}-title`}
+    >
+      <div className="p-4 sm:p-5">
         {hasSpec ? (
           <>
-            <div className="flex flex-wrap items-center justify-end gap-4 border-b border-border pb-3">
-              <div className="flex items-center gap-3">
+            <div className="flex flex-wrap items-start justify-between gap-3 border-b border-border pb-4">
+              <div>
+                <p className="text-[10px] uppercase tracking-[0.16em] text-muted">design.md</p>
+                <h2 id={`${viewLabelId}-title`} className="mt-1 text-lg font-normal tracking-tight">
+                  {zh ? `${styleName} 的设计文档` : `${styleName} design document`}
+                </h2>
+              </div>
+              <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
                 <button
                   type="button"
                   onClick={() => void copy(markdown, "design.md")}
-                  className="inline-flex min-h-8 items-center gap-1.5 text-xs text-foreground transition-colors hover:text-accent"
+                  className="inline-flex min-h-10 items-center gap-1.5 text-xs text-foreground transition-colors hover:text-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
                 >
                   {copied ? (
                     <Check className="h-3.5 w-3.5 text-accent" aria-hidden="true" />
@@ -82,49 +85,118 @@ export function DesignMdSection({
                 <button
                   type="button"
                   onClick={handleDownload}
-                  className="inline-flex min-h-8 items-center gap-1.5 text-xs text-foreground transition-colors hover:text-accent"
+                  className="inline-flex min-h-10 items-center gap-1.5 text-xs text-foreground transition-colors hover:text-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
                 >
                   <Download className="h-3.5 w-3.5" aria-hidden="true" />
                   {zh ? "下载" : "Download"}
                 </button>
+                <ConnectAiButton
+                  location="style_detail"
+                  styleContext={
+                    slug
+                      ? { slug, name: styleName, locale, markdown }
+                      : undefined
+                  }
+                  className="min-h-10 px-3 text-xs"
+                />
               </div>
             </div>
 
-            <div className="mt-4">
-              <div
-                tabIndex={0}
-                className="max-h-[32rem] overflow-auto border border-border bg-foreground/[0.025] p-4 md:p-6"
-              >
+            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border py-3">
+              <div role="group" aria-labelledby={viewLabelId} className="inline-flex items-center gap-1">
+                <span id={viewLabelId} className="sr-only">
+                  {zh ? "文档视图" : "Document view"}
+                </span>
+                <button
+                  type="button"
+                  aria-pressed={view === "preview"}
+                  onClick={() => setView("preview")}
+                  className={cn(
+                    "inline-flex min-h-10 items-center gap-1.5 border px-3 text-xs transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent",
+                    view === "preview"
+                      ? "border-foreground bg-foreground text-background"
+                      : "border-border text-muted hover:text-foreground",
+                  )}
+                >
+                  <Eye className="h-3.5 w-3.5" aria-hidden="true" />
+                  {zh ? "预览" : "Preview"}
+                </button>
+                <button
+                  type="button"
+                  aria-pressed={view === "markdown"}
+                  onClick={() => setView("markdown")}
+                  className={cn(
+                    "inline-flex min-h-10 items-center gap-1.5 border px-3 text-xs transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent",
+                    view === "markdown"
+                      ? "border-foreground bg-foreground text-background"
+                      : "border-border text-muted hover:text-foreground",
+                  )}
+                >
+                  <Code2 className="h-3.5 w-3.5" aria-hidden="true" />
+                  Markdown
+                </button>
+              </div>
+            </div>
+
+            <ClipboardFeedback
+              result={
+                result?.state === "failed" && result.text === markdown
+                  ? result
+                  : null
+              }
+              currentText={markdown}
+              locale={locale}
+              className="mt-3 mb-0"
+            />
+
+            <div
+              role="region"
+              tabIndex={0}
+              className="mt-3 max-h-[min(60dvh,32rem)] min-h-64 overflow-auto border border-border bg-foreground/[0.025] p-4 sm:p-5"
+              aria-label={view === "preview" ? (zh ? "设计文档预览" : "Design document preview") : (zh ? "Markdown 源文档" : "Markdown source document")}
+            >
+              {view === "preview" ? (
                 <DesignMarkdown markdown={markdown} />
-              </div>
+              ) : (
+                <pre className="whitespace-pre-wrap break-words font-mono text-xs leading-relaxed text-foreground/90">
+                  <code>{markdown}</code>
+                </pre>
+              )}
             </div>
 
-            <div className="mt-6 flex flex-wrap items-center gap-x-4 gap-y-3 text-sm">
-              <ConnectAiButton
-                location="style_detail"
-                styleContext={
-                  slug
-                    ? { slug, name: styleName, locale, markdown }
-                    : undefined
-                }
-              />
-              <LocalizedLink
-                href="/developers"
-                className="group inline-flex items-center gap-1.5 text-foreground transition-colors hover:text-accent"
-              >
-                {zh ? "查看接入文档" : "Read the setup docs"}
-                <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
-              </LocalizedLink>
-              <span className="text-xs text-muted">
-                {zh ? "远程 MCP 端点，无需 token" : "Remote MCP endpoint, no token required"}
-              </span>
+            {copied ? (
+              <p role="status" className="sr-only">
+                {zh ? "design.md 已复制到剪贴板。" : "design.md copied to clipboard."}
+              </p>
+            ) : null}
+
+            <div className="mt-3 flex flex-wrap items-center justify-between gap-x-4 gap-y-2 text-xs">
+              <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+                <LocalizedLink
+                  href="/developers"
+                  className="inline-flex min-h-10 items-center gap-1.5 text-foreground transition-colors hover:text-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+                >
+                  {zh ? "查看接入文档" : "Read setup docs"}
+                  <ArrowRight className="h-3.5 w-3.5" />
+                </LocalizedLink>
+                <span className="text-muted">
+                  {zh ? "远程 MCP 端点，无需 token" : "Remote MCP endpoint, no token required"}
+                </span>
+              </div>
             </div>
           </>
-        ) : null}
+        ) : (
+          <>
+            <p className="text-[10px] uppercase tracking-[0.16em] text-muted">design.md</p>
+            <h2 id={`${viewLabelId}-title`} className="mt-1 text-lg font-normal tracking-tight">
+              {zh ? `${styleName} 的设计文档` : `${styleName} design document`}
+            </h2>
+            <p className="mt-3 text-sm leading-6 text-muted">
+              {zh ? "这份 design.md 还在整理中，完成后会自动出现在这里。" : "This design.md is still being written and will appear here once it lands."}
+            </p>
+          </>
+        )}
 
-        <p role="status" className="sr-only">
-          {result?.state === "copied" ? (zh ? "已复制" : "Copied") : ""}
-        </p>
       </div>
     </section>
   );

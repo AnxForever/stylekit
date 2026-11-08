@@ -13,6 +13,7 @@ Start with the guide for the task you are working on:
 | Use the agent skill | [Agent skill guide](AGENT_SKILL_GUIDE.md) |
 | Understand complete template exports | [Template projects](complete-template-projects.md) |
 | Maintain the local workspace | [Local workspace](LOCAL_WORKSPACE.md) |
+| Understand the style document workspace decisions | [Research and acceptance](research/style-document-workspace.md) |
 
 Repository-wide assistant rules live in [AGENTS.md](../AGENTS.md). Deployment
 credentials, private environment files and dated verification records stay out
