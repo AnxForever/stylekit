@@ -25,6 +25,7 @@ import { dashboardLayoutSpec } from "./samples/dashboard-layout";
 import { darkAcademiaSpec } from "./samples/dark-academia";
 import { developerTerminalSpec } from "./samples/developer-terminal";
 import { distillStyleSpec } from "./samples/distill-style";
+import { diffractionFoilSpec } from "./samples/diffraction-foil";
 import { dopamineDesignSpec } from "./samples/dopamine-design";
 import { darkModeSpec } from "./samples/dark-mode";
 import { cyberAnimeSpec } from "./samples/cyber-anime";
@@ -239,6 +240,7 @@ const SPECS: readonly DesignSpec[] = [
   parallaxEditorialSpec,
   mechaSpec,
   holographicSpec,
+  diffractionFoilSpec,
   particleSpec,
   swissPosterSpec,
   wabiSabiSpec,

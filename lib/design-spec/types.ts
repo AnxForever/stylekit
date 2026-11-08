@@ -129,8 +129,8 @@ export interface CustomSection {
 }
 
 /**
- * `stub` renders colors and the do/don't list only. It exists so 149 styles can
- * ship incrementally instead of blocking the pivot on a full backfill.
+ * `stub` renders colors and the do/don't list only. It supports incremental
+ * backfills while complete documents are still being prepared.
  */
 export type SpecCompleteness = "stub" | "partial" | "full";
 

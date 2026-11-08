@@ -8,9 +8,17 @@ import {
 import { editorialSpec } from "@/lib/design-spec/samples/editorial";
 import { listDesignSpecs } from "@/lib/design-spec/registry";
 import type { DesignSpec } from "@/lib/design-spec/types";
+import { stylesMeta } from "@/lib/styles/meta-registry";
 
 describe("backfilled specs", () => {
   const specs = listDesignSpecs();
+
+  it("provides a complete design document for every curated style", () => {
+    const completeSlugs = new Set(
+      specs.filter((spec) => spec.completeness === "full").map((spec) => spec.slug),
+    );
+    expect(stylesMeta.map((style) => style.slug).filter((slug) => !completeSlugs.has(slug))).toEqual([]);
+  });
 
   it("renders every registered spec with all twelve sections", () => {
     for (const spec of specs) {
