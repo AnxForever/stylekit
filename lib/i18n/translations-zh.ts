@@ -370,6 +370,8 @@ export const zh: { [K in keyof typeof en]: string } = {
   "home.cta.browseStyles": "浏览风格",
   "home.cta.viewGitHub": "查看 GitHub",
   "aiAccess.buttonPrefix": "接入 AI 到",
+  "aiAccess.documentButtonPrefix": "连接到",
+  "aiAccess.documentButtonSuffix": "你的 AI",
   "aiAccess.buttonAria": "接入 AI 并选择客户端配置",
   "aiAccess.eyebrow": "AI 接入",
   "aiAccess.title": "把 StyleKit 接进你的编码 Agent",

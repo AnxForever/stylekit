@@ -68,12 +68,23 @@ interface ConnectAiButtonProps {
   location?: string;
   className?: string;
   styleContext?: AiStyleHandoff;
+  variant?: "default" | "document";
 }
+
+const DOCUMENT_AI_CLIENTS = [
+  { name: "Claude", icon: "/ai-clients/claude.svg" },
+  { name: "OpenAI", icon: "/ai-clients/openai.svg" },
+  { name: "Cursor", icon: "/ai-clients/cursor.svg" },
+  { name: "Gemini", icon: "/ai-clients/gemini.svg" },
+] as const;
+
+const DOCUMENT_AI_REEL_ITEMS = [...DOCUMENT_AI_CLIENTS, DOCUMENT_AI_CLIENTS[0]];
 
 export function ConnectAiButton({
   location = "home_hero",
   className,
   styleContext,
+  variant = "default",
 }: ConnectAiButtonProps) {
   const { t, locale } = useI18n();
   const [isOpen, setIsOpen] = useState(false);
@@ -156,29 +167,55 @@ export function ConnectAiButton({
           trackEvent("cta_click", { label: "connect_ai", location });
         }}
         className={cn(
-          "group inline-flex min-h-11 items-center justify-center gap-2 border border-foreground/30 px-5 text-sm tracking-wide transition-colors hover:border-foreground hover:bg-background focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent",
+          variant === "document"
+            ? "group inline-flex min-h-10 items-center justify-center gap-1.5 rounded-[6px] bg-foreground px-3 text-xs font-medium text-background transition-colors hover:bg-foreground/90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+            : "group inline-flex min-h-11 items-center justify-center gap-2 border border-foreground/30 px-5 text-sm tracking-wide transition-colors hover:border-foreground hover:bg-background focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent",
           className,
         )}
       >
-        <span>{t("aiAccess.buttonPrefix")}</span>
-        {/* Client names ride a vertical reel: the button promises "any of these"
-            without spending five lines of hero copy on a list. aria-hidden because
-            the button's own label already names the clients. */}
-        <span
-          aria-hidden="true"
-          className="relative inline-block h-[1.15em] w-[6.6rem] overflow-hidden text-left align-bottom"
-        >
-          <span className="ai-reel-track absolute inset-x-0 top-0 flex flex-col">
-            {REEL_ITEMS.map((client, index) => (
-              <span
-                key={`${client}-${index}`}
-                className="block h-[1.15em] leading-[1.15em] whitespace-nowrap"
-              >
-                {client}
+        {variant === "document" ? (
+          <>
+            <span>{t("aiAccess.documentButtonPrefix")}</span>
+            <span
+              aria-hidden="true"
+              className="ai-icon-reel-viewport relative inline-block h-4 w-4 shrink-0 overflow-hidden"
+            >
+              <span className="ai-icon-reel-track absolute inset-x-0 top-0 flex flex-col">
+                {DOCUMENT_AI_REEL_ITEMS.map((client, index) => (
+                  <span
+                    key={`${client.name}-${index}`}
+                    className="ai-icon-reel-item block h-4 w-4 shrink-0"
+                    style={{
+                      maskImage: `url(${client.icon})`,
+                      WebkitMaskImage: `url(${client.icon})`,
+                    }}
+                  />
+                ))}
               </span>
-            ))}
-          </span>
-        </span>
+            </span>
+            <span>{t("aiAccess.documentButtonSuffix")}</span>
+          </>
+        ) : (
+          <>
+            <span>{t("aiAccess.buttonPrefix")}</span>
+            {/* The default button keeps its six-client name reel and display. */}
+            <span
+              aria-hidden="true"
+              className="relative inline-block h-[1.15em] w-[6.6rem] overflow-hidden text-left align-bottom"
+            >
+              <span className="ai-reel-track absolute inset-x-0 top-0 flex flex-col">
+                {REEL_ITEMS.map((client, index) => (
+                  <span
+                    key={`${client}-${index}`}
+                    className="block h-[1.15em] leading-[1.15em] whitespace-nowrap"
+                  >
+                    {client}
+                  </span>
+                ))}
+              </span>
+            </span>
+          </>
+        )}
         <ArrowUpRight
           className="h-3.5 w-3.5 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
           aria-hidden="true"

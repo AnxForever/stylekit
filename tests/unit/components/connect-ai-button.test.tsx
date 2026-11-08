@@ -143,6 +143,7 @@ describe("connect AI call to action", () => {
     render(
       <ConnectAiButton
         location="style_detail"
+        variant="document"
         styleContext={{
           slug: "editorial",
           name: "Editorial",

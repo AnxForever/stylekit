@@ -621,6 +621,14 @@ html.theme-transition::view-transition-new(root) {
   100% { transform: translateY(-6.9em); }
 }
 
+@keyframes ai-icon-reel {
+  0%, 18% { transform: translateY(0); }
+  25%, 43% { transform: translateY(-1rem); }
+  50%, 68% { transform: translateY(-2rem); }
+  75%, 93% { transform: translateY(-3rem); }
+  100% { transform: translateY(-4rem); }
+}
+
 @theme inline {
   --animate-home-reveal-up-strong: home-reveal-up-strong 620ms cubic-bezier(0.22, 1, 0.36, 1) both;
   --animate-home-reveal-up: home-reveal-up 520ms cubic-bezier(0.22, 1, 0.36, 1) both;
@@ -639,6 +647,21 @@ html.theme-transition::view-transition-new(root) {
 .ai-reel-track {
   animation: ai-reel 16s cubic-bezier(0.65, 0, 0.35, 1) infinite;
   will-change: transform;
+}
+
+.ai-icon-reel-track {
+  animation: ai-icon-reel 14s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+  will-change: transform;
+}
+
+.ai-icon-reel-item {
+  background-color: currentColor;
+  mask-position: center;
+  mask-repeat: no-repeat;
+  mask-size: contain;
+  -webkit-mask-position: center;
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-size: contain;
 }
 
 @media (max-width: 767px) {
@@ -822,7 +845,8 @@ input[type="range"] { cursor: pointer; }
 
   /* The reel would otherwise step through names at 0.01ms and land on a blank
      frame; pin it to the first client instead. */
-  .ai-reel-track {
+  .ai-reel-track,
+  .ai-icon-reel-track {
     animation: none !important;
     transform: none !important;
   }

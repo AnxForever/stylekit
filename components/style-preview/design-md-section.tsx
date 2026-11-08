@@ -102,7 +102,7 @@ export function DesignMdSection({
                   Markdown
                 </button>
               </div>
-              <div className="flex items-center gap-3">
+              <div className="flex flex-wrap items-center gap-3">
                 <button
                   type="button"
                   onClick={() => void copy(markdown, "design.md")}
@@ -124,6 +124,15 @@ export function DesignMdSection({
                   <Download className="h-3.5 w-3.5" aria-hidden="true" />
                   {zh ? "下载" : "Download"}
                 </button>
+                <ConnectAiButton
+                  location="style_detail"
+                  styleContext={
+                    slug
+                      ? { slug, name: styleName, locale, markdown }
+                      : undefined
+                  }
+                  variant="document"
+                />
               </div>
             </div>
 
@@ -158,14 +167,6 @@ export function DesignMdSection({
             ) : null}
 
             <div className="mt-6 flex flex-wrap items-center gap-x-4 gap-y-3 text-sm">
-              <ConnectAiButton
-                location="style_detail"
-                styleContext={
-                  slug
-                    ? { slug, name: styleName, locale, markdown }
-                    : undefined
-                }
-              />
               <LocalizedLink
                 href="/developers"
                 className="group inline-flex items-center gap-1.5 text-foreground transition-colors hover:text-accent"

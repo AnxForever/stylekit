@@ -76,6 +76,11 @@ describe("DesignMdSection", () => {
     expect(screen.getByRole("heading", { name: "Editorial system" })).toBeVisible();
     expect(screen.getByText("Use ocean blue for primary actions.")).toBeVisible();
     expect(screen.getByRole("button", { name: "Preview" })).toHaveAttribute("aria-pressed", "true");
+    const connectAiButton = screen.getByRole("button", { name: "Connect AI" });
+    const documentRegion = screen.getByRole("region", { name: "Design document preview" });
+    expect(
+      connectAiButton.compareDocumentPosition(documentRegion) & Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy();
 
     fireEvent.click(screen.getByRole("button", { name: "Markdown" }));
     expect(screen.getByRole("button", { name: "Markdown" })).toHaveAttribute("aria-pressed", "true");

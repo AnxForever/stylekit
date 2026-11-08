@@ -61,3 +61,17 @@ requirement; public token formats and legacy compatibility routes remain.
 
 Changes are local and reversible in Git. No production state, account setup,
 third-party write access or newly generated prompt variant is required.
+
+## Document AI action
+
+The owner subsequently requested the AI action above the prompt, using Refero's
+button form while preserving StyleKit's restored page layout. The reference
+uses a compact filled button, small radius, a fixed label surrounding rotating
+tool marks and an up-right arrow. Adapt that form only in the document toolbar;
+keep the existing setup dialog, selected-style context and default homepage
+trigger. Local marks come from LobeHub's MIT-licensed static SVG package, with
+the version and license retained in `public/ai-clients/`.
+
+Verify both locales, mobile wrapping, light/dark contrast, reduced-motion static
+behavior and current-style handoff. Button position changes no document payload
+and does not automatically establish an AI connection.

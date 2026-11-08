@@ -646,6 +646,8 @@ export const en = {
     "home.cta.browseStyles": "Browse Styles",
     "home.cta.viewGitHub": "View on GitHub",
     "aiAccess.buttonPrefix": "Connect AI to",
+    "aiAccess.documentButtonPrefix": "Connect to",
+    "aiAccess.documentButtonSuffix": "your AI",
     "aiAccess.buttonAria": "Connect AI and choose a client setup",
     "aiAccess.eyebrow": "AI access",
     "aiAccess.title": "Put StyleKit inside your coding agent",
