@@ -202,12 +202,13 @@ export function StyleDetailContent({
     <>
       {/* Hero */}
       <section className="border-b border-border">
-        <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 md:px-12 md:py-10">
-          <div className="grid grid-cols-1 items-start gap-5 lg:grid-cols-2 lg:gap-x-12 lg:gap-y-5">
-            <div className="min-w-0 lg:col-start-1 lg:row-start-1">
-              <div className="mb-3">
-                <ScrollBackButton label={t("styleDetail.backToCatalog")} href="/styles" />
-              </div>
+        <div className="max-w-7xl mx-auto px-4 sm:px-4 sm:px-6 md:px-12 py-8 md:py-20">
+          <div className="mb-4">
+            <ScrollBackButton label={t("styleDetail.backToCatalog")} href="/styles" />
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 lg:gap-16 items-start">
+            <div>
               <h1 className="text-4xl md:text-5xl lg:text-6xl mb-2">
                 {primaryStyleName}
               </h1>
@@ -223,31 +224,49 @@ export function StyleDetailContent({
                 )}
                 <StyleRatingBadge slug={style.slug} />
               </div>
-              <p className="text-base text-muted leading-relaxed mb-4">
+              <p className="text-lg text-muted leading-relaxed mb-6">
                 {localizedDescription}
               </p>
               <div className="flex flex-wrap gap-2">
                 {localizedKeywords.map((keyword) => (
                   <span
                     key={keyword}
-                    className="border border-border bg-foreground/[0.04] px-3 py-1 text-xs text-muted"
+                    className="text-xs px-3 py-1 bg-zinc-100 text-muted"
                   >
                     {keyword}
                   </span>
                 ))}
               </div>
-              <LocalizedLink
-                href="#style-prompts"
-                className="mt-4 inline-flex min-h-11 items-center border border-foreground bg-foreground px-4 text-sm text-background transition-colors hover:bg-foreground/85 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent lg:hidden"
-              >
-                {locale === "zh" ? "查看 design.md" : "View design.md"}
-                <ArrowRight className="ml-2 h-3.5 w-3.5" aria-hidden="true" />
-              </LocalizedLink>
+
+              <div className="flex flex-col sm:flex-row flex-wrap gap-3 sm:gap-4 mt-6">
+                <LocalizedLink
+                  href="#style-prompts"
+                  className="inline-flex min-h-[48px] items-center justify-center bg-foreground px-5 py-3 text-sm tracking-wide text-background transition-colors hover:bg-foreground/85 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                >
+                  {t("styleDetail.export")}
+                </LocalizedLink>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 mt-8">
+                {summaryCards.map((card) => (
+                  <article
+                    key={card.label}
+                    className="border border-border bg-background/60 px-4 py-4 md:px-5 md:py-5"
+                  >
+                    <p className="text-[10px] tracking-[0.16em] uppercase text-muted mb-2">
+                      {card.label}
+                    </p>
+                    <p className="text-sm leading-relaxed line-clamp-3">
+                      {card.value}
+                    </p>
+                  </article>
+                ))}
+              </div>
             </div>
 
-            <div className="min-w-0 lg:col-start-1 lg:row-start-2">
+            <div className="space-y-6">
               <div>
-                <p className="mb-3 text-xs uppercase tracking-widest text-muted">
+                <p className="text-xs tracking-widest uppercase text-muted mb-4">
                   {locale === "zh" ? "Showcase 入口" : "Showcase Entry"}
                 </p>
                 <LocalizedLink
@@ -312,38 +331,15 @@ export function StyleDetailContent({
                 </LocalizedLink>
               </div>
 
-            </div>
-
-            <DesignMdSection
-              slug={style.slug}
-              styleName={primaryStyleName}
-              hasSpec={hasDesignSpec}
-              markdown={designMarkdown}
-              className="lg:sticky lg:top-24 lg:col-start-2 lg:row-start-1 lg:row-span-3 lg:self-start"
-            />
-
-            <div className="grid min-w-0 grid-cols-1 gap-4 sm:grid-cols-2 lg:col-start-1 lg:row-start-3 lg:grid-cols-1">
-              {summaryCards.map((card) => (
-                <article
-                  key={card.label}
-                  className="border border-border bg-background/60 px-4 py-4"
-                >
-                  <p className="mb-2 text-[10px] uppercase tracking-[0.16em] text-muted">
-                    {card.label}
-                  </p>
-                  <p className="text-sm leading-relaxed line-clamp-3">
-                    {card.value}
-                  </p>
-                </article>
-              ))}
-              <div className="sm:col-span-2 lg:col-span-1">
-                <p className="mb-3 text-xs uppercase tracking-widest text-muted">
+              <div>
+                <p className="text-xs tracking-widest uppercase text-muted mb-4">
                   {t("styleDetail.colorPalette")}
                 </p>
                 <ColorPalette colors={style.colors} />
               </div>
             </div>
           </div>
+
         </div>
       </section>
 
@@ -365,6 +361,13 @@ export function StyleDetailContent({
           </nav>
         </div>
       </section>
+
+      <DesignMdSection
+        slug={style.slug}
+        styleName={primaryStyleName}
+        hasSpec={hasDesignSpec}
+        markdown={designMarkdown}
+      />
 
       {/* Community — keep feedback close to the prompt users act on */}
       <section id="style-feedback" className="border-b border-border scroll-mt-24">

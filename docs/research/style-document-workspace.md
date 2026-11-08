@@ -1,7 +1,15 @@
-# Style document workspace
+# Style document reading and delivery
 
-Evidence reviewed on 2026-11-08. Scope: reduce the steps between choosing a
-style, seeing its result and taking its complete design.md into an AI tool.
+Evidence reviewed on 2026-11-08. Scope: improve document reading and complete
+design.md delivery while retaining the owner's original detail-page layout.
+
+## Owner's layout decision
+
+After reviewing the first implementation, the owner asked to retain StyleKit's
+original layout. The Refero-style document sidebar is withdrawn. Keep the
+original hero, summary cards, showcase and palette positions, followed by the
+section navigation and full-width document. Reading-view controls and reliable
+copy/API delivery remain useful independently of that layout experiment.
 
 ## Current behavior and historical gap
 
@@ -10,11 +18,11 @@ reuses that string for preview, clipboard, download and AI handoff. Search,
 filters, showcases, related styles and six client setup guides already exist.
 These features are not new outcomes of this research.
 
-The old detail layout put document actions after the large hero. In one live
+The original detail layout puts document actions after the hero. In one live
 desktop observation at 2048 × 994, the document began at y=1024 and its Copy
 action at y=1248. The hero's Export action was an anchor to that lower section.
-This is evidence of an extra step at that viewport, not a general conversion or
-performance measurement.
+This records one viewport, not a conversion or performance measurement, and it
+does not justify overriding the owner's preferred composition.
 
 The canonical document API also still accepted a compact density that omitted
 parts of the document. That historical behavior conflicts with the owner's
@@ -24,7 +32,7 @@ requirement that each style provide one complete design.md.
 
 | Feature | Primary evidence | Decision | Verification |
 | --- | --- | --- | --- |
-| Visual preview beside the document | [Refero detail](https://styles.refero.design/style/c60f05ff-2420-4a24-92db-80c4b6a74683), live desktop browser: visual reference left, document and actions right | ADAPT with StyleKit's existing component and theme tokens | Desktop browser: document actions visible in initial workspace; no duplicate document |
+| Visual preview beside the document | [Refero detail](https://styles.refero.design/style/c60f05ff-2420-4a24-92db-80c4b6a74683), live desktop browser; owner's review of the adaptation | REJECT the layout adaptation; restore StyleKit's original section order and full-width document | Browser: original hero and preview positions, document below navigation; no duplicate document |
 | One complete document, two reading views | Existing shared renderer plus Refero's visible Markdown source | ADAPT: rendered preview and source share the same complete string | Toggle view, then copy/download; payload stays identical |
 | Complete API output | Local route and renderer show compact omitted guidance | FIX: canonical md always extended, including old compact queries | Compare default and compact-query responses with the shared full renderer |
 | Reusable AI connection setup | Existing StyleKit client adapters; [shadcn MCP](https://ui.shadcn.com/docs/mcp) | REUSE current setup; no second client integration layer | Existing client and style handoff tests |
