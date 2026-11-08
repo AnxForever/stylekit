@@ -156,7 +156,7 @@
     "lib/style-preview/styles/z-pattern-layout.tsx": "45735dc9271bc545c30dfa994303ae911adac343307c522808962de987face78",
     "lib/style-preview/styles/zen-garden.tsx": "b10338b2e55a267e8be31f8e6bcb458092aabbab3b2aee39f6aef76ec884c5d8",
     "lib/style-preview/types.ts": "38a0dd83e6f52a5e903d1c2f5735bf2bdbb843b65d6ba8ee42aafd1509b41348",
-    "lib/styles/meta-registry.ts": "792e3358327b525d597174e06dca08f1ea474b4da27893a4160a6f0b4bb26342"
+    "lib/styles/meta-registry.ts": "5ba78576b558c66f6fb11289ac6ca1e2dede176d3a1983869b6e2bcbf4a63b31"
   },
   "nonVisualSourceUpdates": [
     {
@@ -165,6 +165,16 @@
       "reason": "Share the catalog return-URL storage key; rendered JSX is unchanged.",
       "previousHash": "8f48f6f1a228ab2c381a173a01f9240f4e266276e3fcc47c677eeacbed590b9f",
       "currentHash": "bc4ed4d99a8f4fc5af21582a5408758aa78f106cc1c4ffb037b85a4dfee3b66a"
+    }
+  ],
+  "reviewedMetadataCorrections": [
+    {
+      "path": "lib/styles/meta-registry.ts",
+      "commit": "78c27a61",
+      "scope": "editorial.colors only",
+      "reason": "Match the existing canonical Editorial palette. Approved cover renderer and shared Corporate Clean card fixtures are unchanged.",
+      "previousHash": "792e3358327b525d597174e06dca08f1ea474b4da27893a4160a6f0b4bb26342",
+      "currentHash": "5ba78576b558c66f6fb11289ac6ca1e2dede176d3a1983869b6e2bcbf4a63b31"
     }
   ]
 }
