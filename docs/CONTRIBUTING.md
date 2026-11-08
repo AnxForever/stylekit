@@ -100,7 +100,7 @@ Open [localhost:3000](http://localhost:3000).
 
 ## Adding a New Style
 
-This is the most common contribution. A complete style requires **7 new files + 6 modified files**.
+This is the most common contribution. A complete style requires **8 new files + 7 modified files**.
 
 > For the full step-by-step checklist, see [`STYLE_ADDITION_CHECKLIST.md`](./STYLE_ADDITION_CHECKLIST.md).
 
@@ -110,6 +110,7 @@ This is the most common contribution. A complete style requires **7 new files + 
 New files:
   lib/styles/{slug}.ts              # Style definition (colors, rules, components)
   lib/styles/{slug}-tokens.ts       # Design tokens for AI consumption
+  lib/design-spec/samples/{slug}.ts # Complete bilingual design.md source
   lib/recipes/{slug}.ts             # Component recipes (button, card, input)
   app/styles/{slug}/showcase/page.tsx       # Showcase page wrapper
   app/styles/{slug}/showcase/_content.tsx   # Showcase content (400+ lines, 12+ sections)
@@ -119,6 +120,7 @@ New files:
 Modified files:
   lib/styles/registry.ts            # Register full style definition
   lib/styles/meta-registry.ts       # Add lightweight metadata
+  lib/design-spec/registry.ts       # Register the complete design document
   lib/styles/tokens-registry-data.ts # Register style tokens
   lib/recipes/registry.ts           # Register recipes
   lib/style-preview/registry.ts     # Eager preview compatibility registry
