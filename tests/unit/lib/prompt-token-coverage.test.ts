@@ -3,7 +3,6 @@ import { styles } from "@/lib/styles";
 import { getStyleTokens } from "@/lib/styles/tokens-registry";
 import { generateEnhancedAIRules } from "@/lib/styles/enhanced-rules";
 import { buildHardPrompt } from "@/lib/styles/prompt-pair";
-import { buildDesignSpec } from "@/components/style-preview/_prompt-builders";
 
 const CJK = /[㐀-鿿]/g;
 
@@ -89,73 +88,5 @@ describe("prompt token coverage", () => {
     }
 
     expect(leaking).toEqual([]);
-  });
-});
-
-describe("design spec layout and motion", () => {
-  const styleAgnosticClaims = [
-    "blurry depth",
-    "gradient-heavy",
-    "compress or flatten",
-    "deliberate asymmetry",
-    "模糊景深",
-    "重渐变",
-    "压平或压缩",
-  ];
-
-  it("quotes the style's own tokens instead of one hard-coded temperament", () => {
-    for (const slug of ["glassmorphism", "neo-brutalist", "soft-ui"]) {
-      const style = styles.find((candidate) => candidate.slug === slug)!;
-      const tokens = getStyleTokens(slug)!;
-
-      const spec = buildDesignSpec({
-        locale: "en",
-        styleName: style.nameEn,
-        styleSlug: slug,
-        description: style.descriptionEn ?? style.description,
-        philosophy: style.philosophyEn ?? style.philosophy,
-        colors: style.colors,
-        doList: style.doListEn ?? style.doList,
-        dontList: style.dontListEn ?? style.dontList,
-        keywords: style.keywordsEn ?? style.keywords,
-        tokens: {
-          section: tokens.spacing.section,
-          container: tokens.spacing.container,
-          card: tokens.spacing.card,
-          gap: tokens.spacing.gap.md,
-          radius: tokens.border.radius,
-          transition: tokens.interaction.transition,
-          active: tokens.interaction.active ?? undefined,
-          focus: tokens.shadow.focus,
-        },
-      });
-
-      expect(spec, slug).toContain(tokens.spacing.section);
-      expect(spec, slug).toContain(tokens.border.radius);
-      expect(spec, slug).toContain(tokens.interaction.transition);
-
-      for (const claim of styleAgnosticClaims) {
-        expect(spec.includes(claim), `${slug} must not ship "${claim}"`).toBe(false);
-      }
-    }
-  });
-
-  it("falls back to the style's own rules when no tokens are supplied", () => {
-    const style = styles.find((candidate) => candidate.slug === "glassmorphism")!;
-    const spec = buildDesignSpec({
-      locale: "en",
-      styleName: style.nameEn,
-      styleSlug: style.slug,
-      description: style.descriptionEn ?? style.description,
-      philosophy: style.philosophyEn ?? style.philosophy,
-      colors: style.colors,
-      doList: style.doListEn ?? style.doList,
-      dontList: style.dontListEn ?? style.dontList,
-      keywords: style.keywordsEn ?? style.keywords,
-    });
-
-    for (const claim of styleAgnosticClaims) {
-      expect(spec.includes(claim), `fallback must not ship "${claim}"`).toBe(false);
-    }
   });
 });

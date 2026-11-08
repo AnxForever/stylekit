@@ -27,7 +27,6 @@ const PUBLIC_PACKAGE_CLAIM_FILES = [
   "SKILL.md",
   "app/developers/page.tsx",
   "components/developers/developers-content.tsx",
-  "components/style-preview/style-use-panel.tsx",
   "lib/styles/collections.ts",
   "public/llms.txt",
 ] as const;
@@ -90,7 +89,6 @@ export async function auditDeveloperToolkitTruth(
     "SKILL.md",
     "app/developers/page.tsx",
     "components/developers/developers-content.tsx",
-    "components/style-preview/style-use-panel.tsx",
     "packages/cli/README.md",
     "packages/mcp/README.md",
     "public/llms.txt",
