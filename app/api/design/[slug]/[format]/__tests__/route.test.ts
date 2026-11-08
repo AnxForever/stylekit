@@ -22,13 +22,13 @@ describe("design spec routes", () => {
     expect(body).toContain("## Do's and Don'ts");
   });
 
-  it("honours the compact density", async () => {
-    const extended = await (await call("editorial", "design.md")).text();
+  it("serves the same complete design.md regardless of density", async () => {
+    const canonical = await (await call("editorial", "design.md")).text();
     const compact = await (await call("editorial", "design.md", "?density=compact")).text();
 
-    expect(extended).toContain("## Quick Start");
-    expect(compact).not.toContain("## Quick Start");
-    expect(compact.length).toBeGreaterThan(0);
+    expect(compact).toBe(canonical);
+    expect(compact).toContain("## Agent Prompt Guide");
+    expect(compact).toContain("## Quick Start");
   });
 
   it("honours the zh locale and falls back to English for unknown values", async () => {

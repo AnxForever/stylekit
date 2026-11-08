@@ -9,15 +9,16 @@ import { getDesignSpec } from "@/lib/design-spec/registry";
 import type { SpecLocale } from "@/lib/design-spec/types";
 
 /**
- * One spec, four downloads:
+ * One spec, four outputs:
  *
- *   /api/design/editorial/design.md?density=compact&locale=zh
+ *   /api/design/editorial/design.md?locale=zh
  *   /api/design/editorial/theme.css
  *   /api/design/editorial/variables.css
  *   /api/design/editorial/tokens.json
  *
- * The last three ignore density: they are the extended artifact by definition.
- * Everything comes from the same spec, so the four files cannot disagree.
+ * design.md is always the complete document. The other formats export related
+ * tokens from the same spec. The legacy density query is ignored for URL
+ * compatibility.
  */
 
 const FORMATS = {
@@ -54,14 +55,13 @@ export async function GET(
   }
 
   const url = new URL(request.url);
-  const density = url.searchParams.get("density") === "compact" ? "compact" : "extended";
   const localeParam = url.searchParams.get("locale");
   const locale: SpecLocale = localeParam === "zh" ? "zh" : "en";
 
   let body: string;
   switch (format) {
     case "design.md":
-      body = renderDesignMd(spec, { density, locale });
+      body = renderDesignMd(spec, { locale });
       break;
     case "theme.css":
       body = renderTailwindTheme(spec);
