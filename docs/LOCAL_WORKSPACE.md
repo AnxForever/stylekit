@@ -22,7 +22,7 @@ does not need dependencies, screenshots or build output from every past task.
 git status --short
 git worktree list
 pnpm run lint
-pnpm exec tsc --noEmit
+pnpm run typecheck
 pnpm test
 pnpm run build
 ```
@@ -30,6 +30,9 @@ pnpm run build
 The lint and TypeScript configuration excludes local task output and nested
 checkouts. Imported application/package source and Next-generated route types
 continue to be checked.
+
+The typecheck script generates fresh route types without deleting `.next/dev`,
+so it also works from Windows PowerShell while a development server is running.
 
 ## Finishing a task
 

@@ -161,8 +161,8 @@ pnpm run security:secrets
 # Lint
 pnpm run lint
 
-# Type check
-npx tsc --noEmit
+# Type check, including generated Next.js route types
+pnpm run typecheck
 
 # Unit tests
 pnpm test
