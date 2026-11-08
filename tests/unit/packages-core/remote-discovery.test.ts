@@ -57,7 +57,16 @@ afterEach(() => {
 
 describe("remote discovery", () => {
   it("prefers updated live detail, tokens, briefs, and recipe definitions for bundled styles", async () => {
-    const brief = copyLocalBrief();
+    const designDocument = {
+      schemaVersion: "stylekit-design-document-v1",
+      fileName: "design.md",
+      locale: "en",
+      contentType: "text/markdown",
+      url: "https://style-update.test/api/design/neo-brutalist/design.md?locale=en",
+      contentHash: "sha256:design-document",
+      content: "# Neo-brutalist — Style Reference\n\nComplete canonical design document.",
+    };
+    const brief = { ...copyLocalBrief(), designDocument };
     brief.name = "Live updated name";
     brief.aiRules = `${brief.aiRules}\nLive-only guidance.`;
     brief.recipes.button.skeleton.baseClasses[0] = "online-recipe-class";
@@ -107,6 +116,11 @@ describe("remote discovery", () => {
 
     expect(liveBrief).toMatchObject({ origin: "live", data: { name: "Live updated name" } });
     expect(liveBrief.data?.aiRules).toContain("Live-only guidance.");
+    expect(JSON.parse(JSON.stringify(liveBrief.data))).toMatchObject({
+      schemaVersion: "stylekit-brief-v1",
+      designDocument,
+      provenance: brief.provenance,
+    });
     expect(liveTokensResult).toMatchObject({ origin: "live", data: { border: { width: "border-8" } } });
     expect(liveDetailResult).toMatchObject({
       origin: "live",
