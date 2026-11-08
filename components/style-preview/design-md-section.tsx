@@ -9,6 +9,7 @@ import { ConnectAiButton } from "@/components/ai/connect-ai-button";
 import { DesignMarkdown } from "@/components/style-preview/design-md-content";
 
 interface DesignMdSectionProps {
+  slug?: string;
   styleName: string;
   /** False for styles that have not been backfilled yet. */
   hasSpec: boolean;
@@ -21,6 +22,7 @@ interface DesignMdSectionProps {
  * the complete markdown rendered on the server.
  */
 export function DesignMdSection({
+  slug,
   styleName,
   hasSpec,
   markdown,
@@ -98,7 +100,14 @@ export function DesignMdSection({
             </div>
 
             <div className="mt-6 flex flex-wrap items-center gap-x-4 gap-y-3 text-sm">
-              <ConnectAiButton location="style_detail" />
+              <ConnectAiButton
+                location="style_detail"
+                styleContext={
+                  slug
+                    ? { slug, name: styleName, locale, markdown }
+                    : undefined
+                }
+              />
               <LocalizedLink
                 href="/developers"
                 className="group inline-flex items-center gap-1.5 text-foreground transition-colors hover:text-accent"
