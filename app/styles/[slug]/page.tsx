@@ -176,13 +176,11 @@ export default async function StyleDetailPage({
       }
     : null;
 
-  // Pre-compute enhanced rules
-  // The style page now hands out one document instead of three prompt exports.
-  // Render the compact density here so the section is useful before hydration
-  // and readable by crawlers; tab switches fetch the other formats.
+  // Render the complete document once for preview, copy and download, including
+  // before hydration and for crawlers.
   const designSpec = getDesignSpec(style.slug);
   const designMarkdown = designSpec
-    ? renderDesignMd(designSpec, { density: "compact", locale })
+    ? renderDesignMd(designSpec, { locale })
     : "";
 
   const accessibilityScore = capabilities.accessibility;

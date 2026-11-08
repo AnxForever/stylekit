@@ -16,6 +16,7 @@ describe("design spec routes", () => {
 
     expect(response.status).toBe(200);
     expect(response.headers.get("content-type")).toContain("text/markdown");
+    expect(response.headers.get("content-disposition")).toBe('inline; filename="design.md"');
     const body = await response.text();
     expect(body.startsWith("# Editorial — Style Reference")).toBe(true);
     expect(body).toContain("## Do's and Don'ts");

@@ -47,8 +47,9 @@ describe("public UX priority contract", () => {
     expect(source).not.toContain("<IdeExportButtons");
     // The hero action lands on that one document.
     expect(source).toContain('href="#style-prompts"');
-    // Two densities of one format, never a format picker.
-    expect(section).toContain("/design.md?density=");
+    // One complete document for preview, copy and download.
+    expect(section).toContain('anchor.download = "design.md"');
+    expect(section).not.toContain("DENSITIES");
     expect(section).not.toContain("theme.css");
     expect(section).not.toContain("tokens.json");
     expect(section).not.toContain("variables.css");

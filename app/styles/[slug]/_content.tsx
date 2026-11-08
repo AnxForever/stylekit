@@ -63,7 +63,7 @@ interface Props {
   compatibleLayouts: CompatibleStyleSummary[];
   relatedStyles?: CompatibleStyleSummary[];
   comparison?: ComparisonSibling | null;
-  /** Compact DESIGN.md for this locale, rendered on the server. */
+  /** Complete design.md for this locale, rendered on the server. */
   designMarkdown: string;
   hasDesignSpec: boolean;
   accessibilityScore: AccessibilityScore | null;
@@ -363,10 +363,9 @@ export function StyleDetailContent({
       </section>
 
       <DesignMdSection
-        slug={style.slug}
         styleName={primaryStyleName}
         hasSpec={hasDesignSpec}
-        initialMarkdown={designMarkdown}
+        markdown={designMarkdown}
       />
 
       {/* Community — keep feedback close to the prompt users act on */}

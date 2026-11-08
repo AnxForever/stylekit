@@ -21,7 +21,7 @@ import type { SpecLocale } from "@/lib/design-spec/types";
  */
 
 const FORMATS = {
-  "design.md": { contentType: "text/markdown; charset=utf-8", filename: "DESIGN.md" },
+  "design.md": { contentType: "text/markdown; charset=utf-8", filename: "design.md" },
   "theme.css": { contentType: "text/css; charset=utf-8", filename: "theme.css" },
   "variables.css": { contentType: "text/css; charset=utf-8", filename: "variables.css" },
   "tokens.json": { contentType: "application/json; charset=utf-8", filename: "tokens.json" },
