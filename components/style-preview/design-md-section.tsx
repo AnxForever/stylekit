@@ -61,8 +61,8 @@ export function DesignMdSection({
         <p className="text-muted mb-8 max-w-2xl">
           {hasSpec
             ? zh
-              ? "一份文档说明这套风格的配色职责、字体规则、间距与组件构造。复制或下载后直接交给 Claude Code、Cursor、Codex 或 v0。"
-              : "One document describes the colour roles, type rules, spacing and component construction behind this style. Copy or download it into Claude Code, Cursor, Codex or v0."
+              ? "一份文档说明这套风格的配色职责、字体规则、间距与组件构造。复制或下载后直接交给 Claude Code 或 Codex。"
+              : "One document describes the colour roles, type rules, spacing and component construction behind this style. Copy or download it into Claude Code or Codex."
             : zh
               ? "这份 design.md 还在整理中，完成后会自动出现在这里。"
               : "This design.md is still being written and will appear here once it lands."}
@@ -174,9 +174,6 @@ export function DesignMdSection({
                 {zh ? "查看接入文档" : "Read the setup docs"}
                 <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
               </LocalizedLink>
-              <span className="text-xs text-muted">
-                {zh ? "远程 MCP 端点，无需 token" : "Remote MCP endpoint, no token required"}
-              </span>
             </div>
           </>
         ) : null}

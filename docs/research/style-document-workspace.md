@@ -68,10 +68,27 @@ The owner subsequently requested the AI action above the prompt, using Refero's
 button form while preserving StyleKit's restored page layout. The reference
 uses a compact filled button, small radius, a fixed label surrounding rotating
 tool marks and an up-right arrow. Adapt that form only in the document toolbar;
-keep the existing setup dialog, selected-style context and default homepage
-trigger. Local marks come from LobeHub's MIT-licensed static SVG package, with
+keep the selected-style context and original page layout. Local marks come from
+LobeHub's MIT-licensed static SVG package, with
 the version and license retained in `public/ai-clients/`.
 
 Verify both locales, mobile wrapping, light/dark contrast, reduced-motion static
 behavior and current-style handoff. Button position changes no document payload
 and does not automatically establish an AI connection.
+
+## Simplified agent setup
+
+The owner found the six-client dialog and repeated configuration/document panels
+too complex. This reopens the earlier setup decision: the primary entry now
+focuses on Claude Code and Codex, using two choices and one terminal command.
+[Kage](https://kage.design/mcp-setup) and [shadcn](https://ui.shadcn.com/docs/mcp)
+both separate client selection from a short copyable setup command. The command
+forms were checked against [OpenAI's official quickstart](https://developers.openai.com/learn/docs-mcp)
+and [Claude Code's MCP reference](https://code.claude.com/docs/en/mcp).
+
+The optional current-style action copies usage instructions; the modal does not
+repeat the complete design.md. Other client adapters and developer documentation
+remain compatibility paths. Verify command switching/copy, selected-style
+handoff, clipboard failure, keyboard closing and a compact mobile dialog. A
+copied command is not a successful connection signal; no client settings are
+written by this interface.

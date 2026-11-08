@@ -1,6 +1,6 @@
 # AI client marks
 
-These four monochrome SVGs come unmodified from @lobehub/icons-static-svg 1.102.0, distributed under the accompanying MIT license.
+These two monochrome SVGs come unmodified from @lobehub/icons-static-svg 1.102.0, distributed under the accompanying MIT license.
 
 Upstream: https://github.com/lobehub/lobe-icons
 Package: https://www.npmjs.com/package/@lobehub/icons-static-svg/v/1.102.0
