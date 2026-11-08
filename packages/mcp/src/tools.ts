@@ -678,8 +678,8 @@ Examples:
           origin: briefSource.origin,
           ...(briefSource.fallbackReason ? { fallbackReason: briefSource.fallbackReason } : {}),
         };
-        const briefData = isRecord(briefSource.data) ? briefSource.data : {};
-        const provenance = isRecord(briefData["provenance"]) ? briefData["provenance"] : {};
+        const briefData: Record<string, unknown> = isRecord(briefSource.data) ? briefSource.data : {};
+        const provenance: Record<string, unknown> = isRecord(briefData["provenance"]) ? briefData["provenance"] : {};
         const document = isRecord(briefData["designDocument"]) ? briefData["designDocument"] : null;
         const documentLocale = document?.["locale"] === "zh" ? "zh" : "en";
         const canonicalMarkdown =
