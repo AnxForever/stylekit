@@ -52,7 +52,7 @@ export const editorialTokens = createStyleTokens({
     background: {
       primary: "bg-background",
       secondary: "bg-foreground",
-      accent: ["bg-[#e63946]"],
+      accent: ["bg-[#816d70]"],
     },
     text: {
       primary: "text-foreground",

@@ -1,8 +1,11 @@
 import { describe, expect, it } from "vitest";
 import { styles } from "@/lib/styles";
+import { getStyleMetaBySlug } from "@/lib/styles/meta";
 import { getStyleTokens } from "@/lib/styles/tokens-registry";
 import { generateEnhancedAIRules } from "@/lib/styles/enhanced-rules";
-import { buildHardPrompt } from "@/lib/styles/prompt-pair";
+import { buildHardPrompt, buildSoftPrompt } from "@/lib/styles/prompt-pair";
+import { editorialSpec } from "@/lib/design-spec/samples/editorial";
+import { renderCssVariables, renderDesignMd, renderDtcg } from "@/lib/design-spec";
 
 const CJK = /[㐀-鿿]/g;
 
@@ -10,7 +13,7 @@ function cjkRatio(value: string): number {
   return (value.match(CJK) ?? []).length / Math.max(value.length, 1);
 }
 
-function hardPromptFor(slug: string, locale: "zh" | "en"): string {
+function promptInputFor(slug: string, locale: "zh" | "en") {
   const style = styles.find((candidate) => candidate.slug === slug);
   if (!style) throw new Error(`unknown style: ${slug}`);
   const tokens = getStyleTokens(slug);
@@ -23,22 +26,23 @@ function hardPromptFor(slug: string, locale: "zh" | "en"): string {
     locale,
   });
 
-  return buildHardPrompt(
-    {
-      styleName: locale === "zh" ? style.name : style.nameEn,
-      styleSlug: style.slug,
-      aiRules: style.aiRules,
-      aiRulesEn: style.aiRulesEn,
-      enhancedRules,
-      doList: style.doList,
-      doListEn: style.doListEn,
-      dontList: style.dontList,
-      dontListEn: style.dontListEn,
-      keywords: style.keywords,
-      keywordsEn: style.keywordsEn,
-    },
-    locale
-  );
+  return {
+    styleName: locale === "zh" ? style.name : style.nameEn,
+    styleSlug: style.slug,
+    aiRules: style.aiRules,
+    aiRulesEn: style.aiRulesEn,
+    enhancedRules,
+    doList: style.doList,
+    doListEn: style.doListEn,
+    dontList: style.dontList,
+    dontListEn: style.dontListEn,
+    keywords: style.keywords,
+    keywordsEn: style.keywordsEn,
+  };
+}
+
+function hardPromptFor(slug: string, locale: "zh" | "en"): string {
+  return buildHardPrompt(promptInputFor(slug, locale), locale);
 }
 
 describe("prompt token coverage", () => {
@@ -74,6 +78,40 @@ describe("prompt token coverage", () => {
     expect(en).toContain((style.aiRulesEn ?? "").slice(30, 70));
     expect(/Token (Dictionary|字典)/.test(zh)).toBe(true);
     expect(/Token (Dictionary|字典)/.test(en)).toBe(true);
+  });
+
+  it("keeps Editorial's single Mauve accent consistent across tokens and prompt forms", () => {
+    const style = styles.find((candidate) => candidate.slug === "editorial")!;
+    const metadata = getStyleMetaBySlug("editorial")!;
+    const color = editorialSpec.colors.find((entry) => entry.group === "accent");
+    expect(color?.value).toBe("#816d70");
+    expect(metadata.colors).toEqual(style.colors);
+    expect(metadata.colors).toEqual({
+      primary: "#1C1C1C",
+      secondary: "#F9F8F6",
+      accent: ["#1C1C1C", "#6b7280", "#1c1c1c", "#816d70"],
+    });
+
+    const tokens = getStyleTokens("editorial");
+    expect(tokens?.colors.background.accent).toEqual(["bg-[#816d70]"]);
+    expect(renderCssVariables(editorialSpec)).toContain("--color-mauve: #816d70;");
+    const exportedTokens = JSON.parse(renderDtcg(editorialSpec)) as {
+      color: Record<string, { $value: string }>;
+    };
+    expect(exportedTokens.color.mauve.$value).toBe("#816d70");
+
+    for (const locale of ["zh", "en"] as const) {
+      const document = renderDesignMd(editorialSpec, { locale });
+      expect(document).toContain(color?.role[locale]);
+
+      const input = promptInputFor("editorial", locale);
+      const prompts = [buildHardPrompt(input, locale), buildSoftPrompt(input, locale)];
+      for (const prompt of prompts) {
+        expect(prompt).toContain("#816d70");
+        expect(prompt).toContain(locale === "zh" ? "陈玫" : "Mauve");
+        expect(prompt).not.toMatch(/NO colored accents|purely monochromatic/i);
+      }
+    }
   });
 
   it("keeps English prompts free of Chinese so the builder cannot drop them", () => {

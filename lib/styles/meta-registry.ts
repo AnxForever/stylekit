@@ -35,9 +35,9 @@ export const stylesMeta: StyleMeta[] = [
     tags: [],
     category: "minimal",
     colors: {
-      primary: "#0a0a0a",
-      secondary: "#fafafa",
-      accent: ["#e63946", "#6b7280", "#e5e5e5"],
+      primary: "#1C1C1C",
+      secondary: "#F9F8F6",
+      accent: ["#1C1C1C", "#6b7280", "#1c1c1c", "#816d70"],
     },
     keywords: ["杂志排版", "衬线字体", "优雅留白", "网格系统", "极简主义"],
   },
