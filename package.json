@@ -2,6 +2,16 @@
   "name": "stylekit",
   "version": "0.1.0",
   "private": true,
+  "description": "Open-source visual style library for AI-assisted web development.",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AnxForever/stylekit.git"
+  },
+  "homepage": "https://www.stylekit.top",
+  "engines": {
+    "node": ">=20.9.0"
+  },
   "packageManager": "pnpm@11.5.3",
   "scripts": {
     "dev": "next dev",
@@ -101,7 +111,7 @@
     "isomorphic-dompurify": "^3.22.0",
     "jszip": "^3.10.1",
     "lucide-react": "^0.563.0",
-    "next": "16.3.1",
+    "next": "16.4.5",
     "next-mdx-remote": "^6.0.0",
     "next-themes": "^0.4.6",
     "nodemailer": "^9.0.1",
@@ -130,7 +140,7 @@
     "@vitejs/plugin-react": "^5.1.2",
     "@vitest/coverage-v8": "^4.1.10",
     "eslint": "^9",
-    "eslint-config-next": "16.3.1",
+    "eslint-config-next": "16.4.5",
     "happy-dom": "^20.11.2",
     "jsdom": "^27.4.0",
     "sharp": "^0.35.2",

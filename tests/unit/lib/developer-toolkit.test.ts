@@ -6,7 +6,7 @@ import {
 } from "@/lib/developer-toolkit";
 
 describe("Developer Toolkit capability manifest", () => {
-  it("matches verified npm tags and GitHub main versions", () => {
+  it("matches verified published versions and repository manifests", () => {
     expect(getDeveloperToolkitCapability("cli")).toMatchObject({
       id: "cli",
       state: "public-beta",
@@ -23,10 +23,10 @@ describe("Developer Toolkit capability manifest", () => {
       verifiedAt: "2026-10-07",
     });
     expect(getDeveloperToolkitCapability("mcp")).toMatchObject({
-      publicVersion: "0.4.1",
-      repositoryVersion: "0.4.1",
+      publicVersion: "0.6.0",
+      repositoryVersion: "0.6.0",
       command: "npx -y --prefer-online stylekit-mcp@latest",
-      verifiedAt: "2026-10-07",
+      verifiedAt: "2026-11-08",
     });
     expect(getDeveloperToolkitCapability("agent-skill")).toMatchObject({
       publicVersion: "0.8.0",

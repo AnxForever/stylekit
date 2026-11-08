@@ -1,6 +1,6 @@
 {
   "name": "stylekit-mcp",
-  "version": "0.4.1",
+  "version": "0.6.0",
   "mcpName": "io.github.AnxForever/stylekit-mcp",
   "description": "MCP server for StyleKit — search 150 design styles and pull tokens, recipes, and shadcn install commands from Claude, Cursor, or Windsurf",
   "type": "module",
@@ -17,6 +17,7 @@
     "dev": "tsx watch src/index.ts",
     "clean": "rm -rf dist",
     "test": "node scripts/smoke.mjs && tsx scripts/live-lint.test.ts",
+    "test:http": "node scripts/http-smoke.mjs",
     "prepublishOnly": "pnpm run clean && pnpm run build"
   },
   "engines": {

@@ -98,6 +98,13 @@ Complete checklist for adding a new design style to StyleKit.
     });
     ```
 
+### 1.4 Complete Design Document
+
+- [ ] `lib/design-spec/samples/{slug}.ts` - Full bilingual `DesignSpec` derived from the style definition and showcase
+- [ ] Register the spec in `lib/design-spec/registry.ts`
+- [ ] Set `completeness: "full"` and cover every section used by the shared renderer
+- [ ] Verify the style page previews, copies and downloads the same complete `design.md`
+
 ## Phase 2: Registration Files (MODIFY)
 
 Preferred workflow: submit one `StyleScaffoldInput` through `publishStyle` from

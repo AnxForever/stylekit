@@ -5,7 +5,8 @@ import { Footer } from "@/components/layout/footer";
 import { Breadcrumb } from "@/components/ui/breadcrumb";
 import { DisableAutoScroll } from "@/components/style-preview/disable-auto-scroll";
 import { getStyleBySlug, styles } from "@/lib/styles";
-import { generateEnhancedAIRules } from "@/lib/styles/enhanced-rules";
+import { getDesignSpec } from "@/lib/design-spec/registry";
+import { renderDesignMd } from "@/lib/design-spec";
 import { resolveStyleDelivery } from "@/lib/style-delivery";
 import { serializeJsonLd } from "@/lib/security/json-ld";
 import { generateStyleJsonLd, generateBreadcrumbJsonLd } from "@/lib/seo/json-ld";
@@ -16,7 +17,6 @@ import { getAlternateLocalePath } from "@/lib/i18n/routing";
 import { localizedString, localizedList } from "@/lib/styles/locale-content";
 import type { Locale } from "@/lib/i18n/translations";
 import { StyleDetailContent } from "./_content";
-import { StyleReadinessSection } from "./_readiness-section";
 import { StyleFaqSection } from "./_faq-section";
 
 // 生成静态参数
@@ -176,43 +176,16 @@ export default async function StyleDetailPage({
       }
     : null;
 
-  // Pre-compute enhanced rules
-  // Generate the token spec in the reader's language. It used to be Chinese
-  // only, and the prompt builder drops CJK sources for English prompts, so
-  // English readers were copying a prompt with no token dictionary at all.
-  const enhancedRules = capabilities.tokens
-    ? generateEnhancedAIRules({
-        style,
-        tokens: capabilities.tokens,
-        format: "full",
-        locale,
-      })
-    : null;
-
-  // The design spec used to hard-code one style's temperament for all of them.
-  // Hand it this style's own layout and motion tokens instead.
-  const specTokens = capabilities.tokens
-    ? {
-        section: capabilities.tokens.spacing.section,
-        container: capabilities.tokens.spacing.container,
-        card: capabilities.tokens.spacing.card,
-        gap: capabilities.tokens.spacing.gap.md,
-        radius: capabilities.tokens.border.radius,
-        transition: capabilities.tokens.interaction.transition,
-        hover:
-          capabilities.tokens.interaction.hoverTranslate ??
-          capabilities.tokens.interaction.hoverScale ??
-          capabilities.tokens.interaction.hoverOpacity ??
-          undefined,
-        active: capabilities.tokens.interaction.active ?? undefined,
-        focus: capabilities.tokens.shadow.focus,
-      }
-    : undefined;
+  // Render the complete document once for preview, copy and download, including
+  // before hydration and for crawlers.
+  const designSpec = getDesignSpec(style.slug);
+  const designMarkdown = designSpec
+    ? renderDesignMd(designSpec, { locale })
+    : "";
 
   const accessibilityScore = capabilities.accessibility;
   const version = capabilities.versioning?.current;
   const changelog = capabilities.versioning?.versions ?? [];
-  const readiness = capabilities.readiness;
   const BASE_URL = getSiteBaseUrl();
 
   // Pre-compute localized content for server-side rendering (SEO)
@@ -270,17 +243,13 @@ export default async function StyleDetailPage({
         <main className="flex-1">
           <StyleDetailContent
             style={style}
-            hasIdeExports={capabilities.exports.ideConfigs}
             compatibleStyles={compatibleStyles}
             compatibleLayouts={compatibleLayouts}
             relatedStyles={relatedStyles}
             comparison={comparison}
-            enhancedRules={enhancedRules}
-            specTokens={specTokens}
+            designMarkdown={designMarkdown}
+            hasDesignSpec={Boolean(designSpec)}
             accessibilityScore={accessibilityScore}
-            readinessSection={
-              <StyleReadinessSection readiness={readiness} locale={locale} />
-            }
             faqSection={
               <StyleFaqSection
                 faqs={faqs}

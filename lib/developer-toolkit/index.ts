@@ -90,13 +90,13 @@ export const developerToolkitManifest = Object.freeze({
     {
       id: "mcp",
       state: "public-beta",
-      publicVersion: "0.4.1",
-      repositoryVersion: "0.4.1",
+      publicVersion: "0.6.0",
+      repositoryVersion: "0.6.0",
       command: `npx ${MCP_NPX_ARGS.join(" ")}`,
       docsUrl:
         "https://github.com/AnxForever/stylekit/tree/main/packages/mcp#readme",
-      verifiedAt: "2026-10-07",
-      evidence: "GitHub main and npm's latest dist-tag both report 0.4.1; the configured process resolves latest on client startup, and a running process must be restarted to load an update",
+      verifiedAt: "2026-11-08",
+      evidence: "npm's latest dist-tag and the repository package manifest both report 0.6.0; the configured process resolves latest on client startup, and a running process must be restarted to load an update",
       clientConfiguration: Object.freeze({
         mcpServers: Object.freeze({
           stylekit: Object.freeze({

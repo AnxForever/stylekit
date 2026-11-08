@@ -36,7 +36,12 @@ jobs:
           node-version: 24
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      - run: pnpm exec playwright install --with-deps chromium
+      - name: Install Playwright browsers
+        run: pnpm exec playwright install --with-deps chromium
+        env:
+          # Same bridge as the E2E job: Playwright 1.58 does not recognise
+          # ubuntu-26.04, and ubuntu-latest now resolves to it.
+          PLAYWRIGHT_HOST_PLATFORM_OVERRIDE: ubuntu24.04-x64
       - run: pnpm run build
 
       # Spelled out rather than wrapped in a package script: a test asserts

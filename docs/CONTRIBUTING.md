@@ -55,9 +55,17 @@ Open [localhost:3000](http://localhost:3000).
 | Docs | Improve guides, fix typos, add examples | Easy |
 | Performance | Optimize rendering, bundle size, or load times | Medium |
 
+## Branch Model
+
+- `dev` is the development branch and the default branch. All pull requests
+  target `dev`.
+- `main` is the release branch. Maintainers promote a validated `dev` to
+  `main`; do not open a pull request against `main` unless a maintainer asks
+  for one.
+
 ## Workflow
 
-1. **Fork** the repo and create a branch from `main`:
+1. **Fork** the repo and create a branch from `dev`:
    ```bash
    git checkout -b feat/your-feature
    ```
@@ -72,7 +80,7 @@ Open [localhost:3000](http://localhost:3000).
 
 4. **Run validation** (see [Local Validation](#local-validation)).
 
-5. **Open a PR** against `main`.
+5. **Open a PR** against `dev`.
 
 ## Code Style
 
@@ -92,7 +100,7 @@ Open [localhost:3000](http://localhost:3000).
 
 ## Adding a New Style
 
-This is the most common contribution. A complete style requires **7 new files + 6 modified files**.
+This is the most common contribution. A complete style requires **8 new files + 7 modified files**.
 
 > For the full step-by-step checklist, see [`STYLE_ADDITION_CHECKLIST.md`](./STYLE_ADDITION_CHECKLIST.md).
 
@@ -102,6 +110,7 @@ This is the most common contribution. A complete style requires **7 new files + 
 New files:
   lib/styles/{slug}.ts              # Style definition (colors, rules, components)
   lib/styles/{slug}-tokens.ts       # Design tokens for AI consumption
+  lib/design-spec/samples/{slug}.ts # Complete bilingual design.md source
   lib/recipes/{slug}.ts             # Component recipes (button, card, input)
   app/styles/{slug}/showcase/page.tsx       # Showcase page wrapper
   app/styles/{slug}/showcase/_content.tsx   # Showcase content (400+ lines, 12+ sections)
@@ -111,6 +120,7 @@ New files:
 Modified files:
   lib/styles/registry.ts            # Register full style definition
   lib/styles/meta-registry.ts       # Add lightweight metadata
+  lib/design-spec/registry.ts       # Register the complete design document
   lib/styles/tokens-registry-data.ts # Register style tokens
   lib/recipes/registry.ts           # Register recipes
   lib/style-preview/registry.ts     # Eager preview compatibility registry
