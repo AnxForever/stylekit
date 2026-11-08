@@ -76,6 +76,15 @@ Verify both locales, mobile wrapping, light/dark contrast, reduced-motion static
 behavior and current-style handoff. Button position changes no document payload
 and does not automatically establish an AI connection.
 
+## Catalogue navigation fixes
+
+- Shared tag query parsing now uses `STYLE_TAGS`, the tag vocabulary used by
+  the picker and submission validator. Regression coverage round-trips all 13
+  current tags and rejects the three retired category names.
+- Any user-driven filter update clears the saved catalogue return URL, so an
+  individual tag/search clear cannot revive older criteria on a later visit.
+  The browser-history back path retains its existing return behavior.
+
 ## Simplified agent setup
 
 The owner found the six-client dialog and repeated configuration/document panels
