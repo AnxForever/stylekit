@@ -6,19 +6,24 @@ The server runs locally over stdio using the official MCP SDK. It bundles `style
 
 ## Tools
 
-All tools are read-only.
+All tools are read-only. Five tools total: `get_style` carries the optional
+tokens, recipe, and brief sections so the catalogue stays small.
 
 | Tool | What it does |
 |------|--------------|
 | `stylekit_search_styles` | Search styles by keyword and/or category |
 | `stylekit_list_assets` | Browse public templates and design assets by kind or query, with pagination and source provenance |
 | `stylekit_get_asset` | Retrieve a namespaced public asset detail and any source files the license permits |
-| `stylekit_get_implementation_brief` | Complete AI guidance, CSS, templates, recipes, tokens, readiness, merged lint rules and provenance (0.3.0) |
-| `stylekit_get_style` | Full style profile: philosophy, palette, do/don't rules, quality/capability signals |
-| `stylekit_get_style_tokens` | Typed design tokens: border, shadow, typography, spacing, colors |
-| `stylekit_get_component_recipe` | Rendered component `className` + JSX (button/card/input) |
-| `stylekit_get_shadcn_install` | The `npx shadcn add` command for a style's theme |
+| `stylekit_get_style` | Full style profile, plus optional `include: ["tokens" \| "recipe" \| "brief"]` sections |
 | `stylekit_lint_code` | Check generated UI code against a style's rules, with a reason and a fix per violation |
+
+`stylekit_get_style` returns the philosophy, palette, do/don't rules, quality
+signals and the shadcn install command. Pass `include` to attach:
+
+- `tokens` — typed design tokens: border, shadow, typography, spacing, colors;
+- `recipe` — one component's `className` + JSX (`component` picks the recipe id);
+- `brief` — the complete `stylekit-brief-v1` contract (tokens, recipes, global
+  CSS, merged lint rules, provenance).
 
 `stylekit_lint_code` is the one worth building into your loop: call it after the
 agent writes UI code, so a style's constraints are **verified rather than
@@ -49,7 +54,7 @@ When the client starts the MCP process, `npx` checks npm for the current
 `latest` release, including when the package is already cached. A running MCP
 process does not replace itself; restart the server or client to load an update.
 For a reproducible setup, replace `stylekit-mcp@latest` with an exact published
-version such as `stylekit-mcp@0.4.1`. The [npm caching options](https://docs.npmjs.com/cli/v11/commands/npm-exec/#a-note-on-caching)
+version such as `stylekit-mcp@0.6.0`. The [npm caching options](https://docs.npmjs.com/cli/v11/commands/npm-exec/#a-note-on-caching)
 describe how `--prefer-online` handles cached packages.
 
 To run a locally built copy instead, point your client at the absolute path:
@@ -85,7 +90,7 @@ In your editor's AI chat:
 
 > "Search StyleKit for a frosted glass style, then give me its button recipe and the shadcn install command."
 
-The agent calls `stylekit_search_styles` → `stylekit_get_component_recipe` → `stylekit_get_shadcn_install` and hands back ready-to-use code.
+The agent calls `stylekit_search_styles` → `stylekit_get_style` with `include: ["recipe", "brief"]` and hands back ready-to-use code.
 
 ## Development
 
@@ -104,9 +109,9 @@ The published MCP package includes the public asset tools, source provenance,
 and discovery reliability fixes described above. It bundles `stylekit-core`;
 the runtime npm dependencies remain the MCP SDK and Zod.
 
-Call the brief tool before generation and save its `stylekit-brief-v1` payload
-for later validation. `provenance.source` identifies the data origin;
-`contentHash` detects drift.
+Call `stylekit_get_style` with `include: ["brief"]` before generation and save
+its `stylekit-brief-v1` payload for later validation. `provenance.source`
+identifies the data origin; `contentHash` detects drift.
 
 Lint returns `status: pass | fail | inconclusive`. `ok` is true only for a
 conclusive static pass. Runtime expressions are reported as inconclusive unless

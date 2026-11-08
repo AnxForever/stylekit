@@ -6,7 +6,7 @@ import { isPendingStyleSlug } from "@/lib/styles/review-status";
 
 describe("approved preview baseline", () => {
   it("keeps the frozen catalog slug inventory explicit", () => {
-    expect(baseline.baselineCommit).toBe("9b142663");
+    expect(baseline.baselineCommit).toBe("f31d4eb8");
     expect(baseline.slugs).toHaveLength(baseline.count);
     expect(new Set(baseline.slugs).size).toBe(baseline.count);
   });

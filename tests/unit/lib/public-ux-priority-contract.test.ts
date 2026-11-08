@@ -35,13 +35,24 @@ describe("public UX priority contract", () => {
     expect(contact).toContain("<FriendPromoBanner");
   });
 
-  it("makes hard-prompt copy the primary style-detail action", async () => {
+  it("makes the DESIGN.md the single export surface on a style page", async () => {
     const source = await read("app/styles/[slug]/_content.tsx");
-    const button = await read("components/style-preview/hard-prompt-copy-button.tsx");
+    const section = await read("components/style-preview/design-md-section.tsx");
 
-    expect(source).toContain("<HardPromptCopyButton");
-    expect(button).toContain('locale === "zh" ? "复制硬性提示词" : "Copy Hard Prompt"');
-    expect(button).toContain('aria-live="polite"');
+    expect(source).toContain("<DesignMdSection");
+    // One document instead of a menu of prompt variants. The hard-prompt
+    // button and the IDE rule export were retired alongside the three sibling
+    // formats of DESIGN.md itself.
+    expect(source).not.toContain("<HardPromptCopyButton");
+    expect(source).not.toContain("<IdeExportButtons");
+    // The hero action lands on that one document.
+    expect(source).toContain('href="#style-prompts"');
+    // One complete document for preview, copy and download.
+    expect(section).toContain('anchor.download = "design.md"');
+    expect(section).not.toContain("DENSITIES");
+    expect(section).not.toContain("theme.css");
+    expect(section).not.toContain("tokens.json");
+    expect(section).not.toContain("variables.css");
   });
 
   it("renders the catalog progressively and announces result changes", async () => {

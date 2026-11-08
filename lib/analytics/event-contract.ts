@@ -37,6 +37,38 @@ type PromptCopyProps = {
 };
 type AnimationViewProps = { slug: string; source: string };
 type TemplateViewProps = { slug: string; source: string };
+
+/** Places that expose the same template download action. */
+export const TEMPLATE_DOWNLOAD_SURFACES = [
+  "templates_catalog",
+  "source_dialog",
+  "template_page",
+] as const;
+/**
+ * File-type bucket of a copied template source file. Paths are never sent:
+ * the bucket answers "what kind of code is copied" with bounded cardinality.
+ */
+export const TEMPLATE_SOURCE_LANGUAGES = [
+  "tsx",
+  "ts",
+  "js",
+  "css",
+  "json",
+  "md",
+  "other",
+] as const;
+export type TemplateDownloadSurface = (typeof TEMPLATE_DOWNLOAD_SURFACES)[number];
+export type TemplateSourceLanguage = (typeof TEMPLATE_SOURCE_LANGUAGES)[number];
+
+type TemplateSourceOpenProps = { slug: string; surface: "templates_catalog" };
+type TemplateSourceCopyProps = { slug: string; language: TemplateSourceLanguage };
+type TemplateDownloadProps = { slug: string; surface: TemplateDownloadSurface };
+type TemplateExternalClickProps = {
+  /** Catalog id of a partner project hosted outside StyleKit. */
+  slug: string;
+  target: "site" | "repo";
+};
+
 type NewsletterSubscribeProps = { source: string };
 type CtaClickProps = { label: string; location: string };
 type SearchProps = {
@@ -134,6 +166,10 @@ interface ClientEventMap {
   prompt_copy: PromptCopyProps;
   animation_view: AnimationViewProps;
   template_view: TemplateViewProps;
+  template_source_open: TemplateSourceOpenProps;
+  template_source_copy: TemplateSourceCopyProps;
+  template_download: TemplateDownloadProps;
+  template_external_click: TemplateExternalClickProps;
   newsletter_subscribe: NewsletterSubscribeProps;
   cta_click: CtaClickProps;
   search: SearchProps;
@@ -216,6 +252,10 @@ export const CLIENT_EVENT_NAMES = [
   "prompt_copy",
   "animation_view",
   "template_view",
+  "template_source_open",
+  "template_source_copy",
+  "template_download",
+  "template_external_click",
   "newsletter_subscribe",
   "cta_click",
   "search",

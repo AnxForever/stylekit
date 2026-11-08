@@ -267,9 +267,11 @@ export default async function SiteDocument({
                 priceCurrency: "USD",
               },
               author: {
-                "@type": "Organization",
-                "@id": `${BASE_URL}/#organization`,
-                name: "StyleKit",
+                "@type": "Person",
+                "@id": "https://anxforever.cn/#person",
+                name: "Anx",
+                alternateName: "AnxForever",
+                url: "https://anxforever.cn",
               },
               isPartOf: {
                 "@id": `${BASE_URL}/#website`,
@@ -297,6 +299,15 @@ export default async function SiteDocument({
               // use on third-party pages keep those entities apart.
               "disambiguatingDescription": "Open-source web and UI design style library at stylekit.top for AI-generated interfaces. Unrelated to the Qt Labs StyleKit module and to the StyleKit.io Chrome extension.",
               "alternateName": ["StyleKit 风格库", "StyleKit design style library"],
+              // Links the product entity back to the person who maintains it, so
+              // the two sites resolve to one graph instead of two unrelated ones.
+              "founder": {
+                "@type": "Person",
+                "@id": "https://anxforever.cn/#person",
+                name: "Anx",
+                alternateName: "AnxForever",
+                url: "https://anxforever.cn",
+              },
               "knowsAbout": [
                 "Web design styles",
                 "UI design systems",

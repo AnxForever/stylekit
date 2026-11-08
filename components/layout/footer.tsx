@@ -322,7 +322,17 @@ export function Footer({ compact = false }: { compact?: boolean }) {
 
         {/* Baseline */}
         <div className="flex flex-col items-start justify-between gap-x-6 gap-y-2 py-6 font-mono text-[11px] text-zinc-500 md:flex-row md:items-center">
-          <p>{t("footer.openSource").replace("{year}", String(currentYear))}</p>
+          <p className="flex flex-wrap items-center gap-x-3">
+            {t("footer.openSource").replace("{year}", String(currentYear))}
+            <a
+              href="https://anxforever.cn"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="transition-colors hover:text-white"
+            >
+              {locale === "zh" ? "由 AnxForever 维护" : "by AnxForever"}
+            </a>
+          </p>
           <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
             {trustLinks.map((link) => (
               <Link

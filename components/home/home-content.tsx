@@ -12,6 +12,7 @@ import { trackEvent } from "@/lib/analytics/events";
 import { MobileHomeSummarySection } from "./_mobile-summary";
 import { TrendingStylesSkeleton } from "./_skeletons";
 import { ThankYouModal } from "@/components/home/thank-you-modal";
+import { ConnectAiButton } from "@/components/ai/connect-ai-button";
 import { HomeSupportCard, type SupportPreviewItem } from "./_support-card";
 import {
   Drawer,
@@ -386,6 +387,7 @@ export function HomeContent({ styles, stats, thankYouEntries }: HomeContentProps
                 >
                   {t("nav.templates")}
                 </Link>
+                <ConnectAiButton />
               </div>
               <ul className="mt-7 flex flex-wrap items-center gap-4" aria-label={t("home.metricAriaLabel")}>
                 {heroStats.map((item) => (
