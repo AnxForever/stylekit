@@ -64,6 +64,8 @@ pnpm dev
 
 打开 [localhost:3000](http://localhost:3000)。Supabase 与管理员相关的可选配置见 [`.env.example`](.env.example)。
 
+开发前先看[代码目录地图](docs/ARCHITECTURE.md)；按任务查找[文档索引](docs/README.md)。本地缓存、任务产物与工作树的整理方式见[工作区维护](docs/LOCAL_WORKSPACE.md)。
+
 ## 三种使用方式
 
 ### 1. 把风格装进现有的 shadcn 项目

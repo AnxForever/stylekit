@@ -2,6 +2,10 @@
 
 Thanks for your interest in contributing to StyleKit. Whether you're fixing a bug, adding a new style, or improving docs, this guide will help you get started.
 
+Use the [codebase map](ARCHITECTURE.md) to find an implementation and the
+[documentation index](README.md) for task-specific guides. See
+[local workspace maintenance](LOCAL_WORKSPACE.md) before cleaning generated output.
+
 ## Table of Contents
 
 - [Development Setup](#development-setup)
