@@ -1,8 +1,10 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import {
+  clearStyleCatalogReturnUrl,
   isSemanticBackLabel,
   navigateBackOrFallback,
+  STYLE_CATALOG_RETURN_URL_KEY,
 } from "@/lib/navigation/smart-back";
 
 function installBrowserState({
@@ -50,22 +52,36 @@ describe("navigateBackOrFallback", () => {
       historyLength: 3,
       referrer: "https://stylekit.dev/zh/styles/neo-brutalist?category=bold",
       savedEntries: {
-        "styles-return-url": "/zh/styles?category=bold&sort=popular",
+        [STYLE_CATALOG_RETURN_URL_KEY]: "/zh/styles?category=bold&sort=popular",
       },
     });
     const router = { back: vi.fn(), push: vi.fn() };
 
     navigateBackOrFallback(router, {
       href: "/styles",
-      savedReturnUrlKey: "styles-return-url",
+      savedReturnUrlKey: STYLE_CATALOG_RETURN_URL_KEY,
       fallbackHref: "/styles",
     });
 
     expect(router.back).toHaveBeenCalledOnce();
     expect(router.push).not.toHaveBeenCalled();
-    expect(storage.get("styles-return-url")).toBe(
+    expect(storage.get(STYLE_CATALOG_RETURN_URL_KEY)).toBe(
       "/zh/styles?category=bold&sort=popular"
     );
+  });
+
+  it("clears the saved catalog context when filters are deliberately reset", () => {
+    const storage = installBrowserState({
+      pathname: "/en/styles",
+      historyLength: 1,
+      savedEntries: {
+        [STYLE_CATALOG_RETURN_URL_KEY]: "/en/styles?q=editorial&tags=dark-theme",
+      },
+    });
+
+    clearStyleCatalogReturnUrl({ removeItem: (key) => storage.delete(key) });
+
+    expect(storage.has(STYLE_CATALOG_RETURN_URL_KEY)).toBe(false);
   });
 
   it("uses a locale-preserving fallback for a direct entry", () => {

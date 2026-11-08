@@ -18,6 +18,22 @@ interface SmartBackOptions {
   consumeSavedReturnUrl?: boolean;
 }
 
+export const STYLE_CATALOG_RETURN_URL_KEY = "styles-return-url";
+
+/** Clear the catalog return destination after the user deliberately resets filters. */
+export function clearStyleCatalogReturnUrl(
+  storage?: Pick<Storage, "removeItem">,
+): void {
+  try {
+    const target =
+      storage ??
+      (typeof window !== "undefined" ? window.sessionStorage : undefined);
+    target?.removeItem(STYLE_CATALOG_RETURN_URL_KEY);
+  } catch {
+    // Session storage may be disabled by browser privacy settings.
+  }
+}
+
 function readSavedReturnUrl(key: string): string | null {
   if (typeof window === "undefined") {
     return null;
