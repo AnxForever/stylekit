@@ -127,7 +127,7 @@ export default async function CommunityStylePage({
     redirect(`/styles/${slug}`);
   }
 
-  const { style, capabilities } = delivery;
+  const { style } = delivery;
   const promoted = await isPromotedCommunityStyle(style.slug);
   const communityMeta = promoted
     ? (await listCommunityStylesMeta()).find((item) => item.slug === style.slug)
