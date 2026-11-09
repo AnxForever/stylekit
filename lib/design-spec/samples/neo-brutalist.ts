@@ -59,8 +59,8 @@ export const neoBrutalistSpec: DesignSpec = {
       value: "#ccff00",
       group: "accent",
       role: {
-        zh: "hover 硬切背景。用于标签与主按钮的悬停底，切换必须是瞬间硬切。",
-        en: "Hover fill. Used as the hover ground for labels and primary buttons, switched instantly with no transition.",
+        zh: "hover 强调底色。用于标签与主按钮的悬停底；背景过渡遵循通用 token，或具名组件单独声明的状态时长。不要使用渐变或 opacity 淡入淡出。",
+        en: "Hover emphasis fill for labels and primary buttons. Follow the shared token timing or an explicit component override. Use no gradients or opacity fade.",
       },
       token: "--color-acid-lime",
     },
@@ -154,11 +154,11 @@ export const neoBrutalistSpec: DesignSpec = {
       name: "Block Button",
       role: { zh: "主行动按钮", en: "Primary action" },
       construction: {
-        zh: "白底、2px 墨黑描边、直角、4px 硬阴影（偏移 4px 4px，模糊 0）。字号 12px、字重 700、全大写、字距 0.12em、等宽；padding 12px 24px。hover 时阴影增到 10px、元素向左上位移 4px，背景瞬间硬切到酸柠绿，持续时间 150ms ease-out。按下时元素右下位移 6px，阴影归零。",
-        en: "Paper fill, 2px ink border, square corners, a 4px hard shadow offset by 4px 4px with zero blur. Type at 12px, weight 700, uppercase, 0.12em tracking, monospace; padding 12px 24px. On hover the shadow grows to 10px, the element lifts 4px up-left and the background cuts instantly to acid lime over 150ms ease-out. On press the element travels 6px down-right and the shadow collapses to zero.",
+        zh: "白底、2px 墨黑描边、直角、4px 硬阴影（偏移 4px 4px，模糊 0）。字号 12px、字重 700、全大写、字距 0.12em、等宽；padding 12px 24px。hover 时阴影增到 10px、元素向左上位移 4px，背景转为酸柠绿，按 150ms ease-out 过渡。按下时元素右下位移 6px，阴影归零。",
+        en: "Paper fill, 2px ink border, square corners, a 4px hard shadow offset by 4px 4px with zero blur. Type at 12px, weight 700, uppercase, 0.12em tracking, monospace; padding 12px 24px. On hover the shadow grows to 10px, the element lifts 4px up-left and the background transitions to acid lime over 150ms ease-out. On press the element travels 6px down-right and the shadow collapses to zero.",
       },
       sizes: "padding 12px 24px; label 12px",
-      states: "hover: shadow 10px, translate -4px -4px, hard-cut fill; active: translate 6px 6px, shadow none",
+      states: "hover: fill, shadow, and translate transition 150ms ease-out; active: translate 6px 6px, shadow none",
     },
     {
       name: "Brutal Card",
@@ -226,8 +226,8 @@ export const neoBrutalistSpec: DesignSpec = {
       en: "Headings pinned at weight 900, body set in monospace",
     },
     {
-      zh: "交互时长 150ms ease-out，硬切而不是淡入",
-      en: "Interactions run 150ms ease-out and cut, never fade",
+      zh: "共享过渡 token 为 transition-all duration-200；本页具名 showcase 组件示例采用 150ms ease-out",
+      en: "The shared transition token is transition-all duration-200; named showcase components in this document use 150ms ease-out",
     },
   ],
   donts: [
@@ -248,8 +248,8 @@ export const neoBrutalistSpec: DesignSpec = {
       en: "No grey or semi-transparent borders",
     },
     {
-      zh: "不要在 hover 上用 opacity 过渡代替硬切",
-      en: "Do not substitute an opacity fade for the hard-cut hover",
+      zh: "不要用 opacity 淡入淡出；区分共享 token 的 200ms 与具名 showcase 组件的 150ms 覆盖",
+      en: "Do not use opacity fades; distinguish the shared 200ms token from the 150ms override for named showcase components",
     },
     {
       zh: "不要在 active 时只位移不归零阴影",
@@ -267,8 +267,8 @@ export const neoBrutalistSpec: DesignSpec = {
     },
     prompts: [
       {
-        zh: "做一个主按钮：白底、2px 纯黑描边、直角、box-shadow 4px 4px 0 0 #000。文字 12px 等宽、700、全大写、字距 0.12em，padding 12px 24px。hover 时 box-shadow 变 10px 10px 0 0 #000，transform 位移 -4px -4px，背景切到 #ccff00，transition 150ms ease-out。active 时 transform 位移 6px 6px，box-shadow 变 none。",
-        en: "Build a primary button: white fill, 2px solid black border, square corners, box-shadow 4px 4px 0 0 #000. Label at 12px monospace, weight 700, uppercase, 0.12em tracking, padding 12px 24px. On hover the shadow becomes 10px 10px 0 0 #000, transform moves -4px -4px, background cuts to #ccff00 with a 150ms ease-out transition. On active transform moves 6px 6px and the shadow becomes none.",
+        zh: "做一个主按钮：白底、2px 纯黑描边、直角、box-shadow 4px 4px 0 0 #000。文字 12px 等宽、700、全大写、字距 0.12em，padding 12px 24px。hover 时 box-shadow 变 10px 10px 0 0 #000，transform 位移 -4px -4px，背景过渡到 #ccff00，transition 150ms ease-out。active 时 transform 位移 6px 6px，box-shadow 变 none。",
+        en: "Build a primary button: white fill, 2px solid black border, square corners, box-shadow 4px 4px 0 0 #000. Label at 12px monospace, weight 700, uppercase, 0.12em tracking, padding 12px 24px. On hover the shadow becomes 10px 10px 0 0 #000, transform moves -4px -4px, background transitions to #ccff00 over 150ms ease-out. On active transform moves 6px 6px and the shadow becomes none.",
       },
       {
         zh: "做一个卡片网格：三列，间距 32px。每张卡白底、2px 纯黑描边、直角、8px 硬阴影，内边距 24px，内部依次是 12px 全大写等宽标签（墨黑底白字）、32px 900 字重标题、14px 等宽正文。hover 时卡片位移 -4px -4px，阴影变 10px。",
@@ -280,8 +280,8 @@ export const neoBrutalistSpec: DesignSpec = {
     {
       name: "Gumroad",
       why: {
-        zh: "同样的黑框硬阴影与彩色强调，交互也是硬切而非渐变",
-        en: "Same black frames, hard shadows and saturated accents, with cut rather than faded interaction",
+        zh: "同样的黑框硬阴影与彩色强调，交互干脆且无渐变",
+        en: "Same black frames, hard shadows and saturated accents, with crisp interaction and no gradients",
       },
     },
     {

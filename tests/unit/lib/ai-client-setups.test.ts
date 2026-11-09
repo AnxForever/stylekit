@@ -66,6 +66,8 @@ describe("AI client setup guides", () => {
     expect(handoff.instruction).toContain('"include": ["brief"]');
     expect(handoff.instruction).toContain("默认是英文");
     expect(handoff.instruction).toContain("如果需要本页语言版本，请读取上方链接");
+    expect(handoff.instruction).toContain("Implementation Contract");
+    expect(handoff.instruction).toContain("项目适配和验收要求");
     expect(handoff.designDocumentMarkdown).toBe(markdown);
   });
 
@@ -79,6 +81,8 @@ describe("AI client setup guides", () => {
 
     expect(handoff.instruction).toContain("designDocument.content defaults to English");
     expect(handoff.instruction).toContain("this page's language");
+    expect(handoff.instruction).toContain("Implementation Contract");
+    expect(handoff.instruction).toContain("project fit and verification");
     expect(handoff.instruction).not.toContain("same canonical design.md");
   });
 

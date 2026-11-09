@@ -172,7 +172,7 @@ const doItems = [
   "shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] — hard offset shadow",
   "rounded-none — zero border radius always",
   "font-black for headings, font-mono for body",
-  "hover:bg-[#ffff00] — hard instant color snap",
+  "hover:bg-[#ffff00] — short, deterministic color transition",
   "active:translate-x-[Npx] active:shadow-none — crushing press",
   "hover:-translate-y-1 hover:shadow-[10px_10px] — lift before crush",
   "transition-all duration-150 ease-out — fast, brutal timing",
@@ -851,7 +851,7 @@ export default function ShowcaseContent() {
                   hover:bg-[#ffff00] duration-150 ease-out
                 </p>
                 <p className="font-mono text-xs text-[#ccff00] mb-6 leading-relaxed">
-                  Instant hard-cut background switch on hover. NO gradients, NO opacity fade. Sharp instantaneous snap.
+                  A short 150ms background transition on hover. No gradients or opacity fade; keep edges and contrast crisp.
                 </p>
                 <div className="flex items-center justify-center py-6 bg-white/5 border-2 border-white/20">
                   <div className="text-center">
@@ -882,7 +882,7 @@ export default function ShowcaseContent() {
                   transition-all duration-150 ease-out
                 </p>
                 <p className="font-mono text-xs text-[#00d9ff] mb-6 leading-relaxed">
-                  All transitions: ease-out, 150ms. Brutal collision feel. No spring overshoot, no elastic settling.
+                  These motion examples use 150ms ease-out; shared style tokens use 200ms. No spring overshoot or elastic settling.
                 </p>
                 <div className="py-6 bg-white/5 border-2 border-white/20 px-4">
                   <div className="mb-5">
@@ -1209,7 +1209,7 @@ export default function ShowcaseContent() {
                 <h3 className="font-black text-xl uppercase mb-2">Interactive Counter</h3>
                 <p className="font-mono text-sm text-black/60 leading-relaxed">
                   Physical Crushing on the decrement button. Brutal Snap color on increment.
-                  Zero easing &#8212; instant feedback.
+                  Short transitions keep the feedback clear.
                 </p>
               </div>
               <div className="flex items-center gap-0 border-4 border-black">

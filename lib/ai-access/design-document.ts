@@ -3,6 +3,7 @@ import { renderDesignMd } from "@/lib/design-spec";
 import { getDesignSpec } from "@/lib/design-spec/registry";
 import type { SpecLocale } from "@/lib/design-spec/types";
 import { getSiteBaseUrl } from "@/lib/site-url";
+import { getCanonicalDesignDocumentUrl } from "./design-document-url";
 
 export interface StyleDesignDocument {
   schemaVersion: "stylekit-design-document-v1";
@@ -22,11 +23,7 @@ export function getStyleDesignDocument(
   const spec = getDesignSpec(slug);
   if (!spec) return null;
 
-  const encodedSlug = encodeURIComponent(slug);
-  const url = new URL(
-    `/api/design/${encodedSlug}/design.md?locale=${locale}`,
-    getSiteBaseUrl(),
-  ).toString();
+  const url = getCanonicalDesignDocumentUrl(getSiteBaseUrl(), slug, locale);
   const content = renderDesignMd(spec, { locale });
 
   return {

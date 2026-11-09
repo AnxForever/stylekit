@@ -8,6 +8,7 @@ import type { ComponentRecipe, RecipeParameter, RecipeSlot } from "@/lib/recipes
 import { getAllArchetypes } from "@/lib/archetypes";
 import { localizedList, localizedString } from "@/lib/styles/locale-content";
 import { getSiteBaseUrl } from "@/lib/site-url";
+import { getCanonicalDesignDocumentUrl } from "@/lib/ai-access/design-document-url";
 
 const BASE_URL = getSiteBaseUrl();
 
@@ -17,7 +18,7 @@ export function generateLlmsFullText(): string {
   // Header
   sections.push(`# StyleKit - Generated Catalog Reference
 
-This file is generated from the current StyleKit catalog. It summarizes all styles and includes selected token fields, implementation rules, component examples, recipe summaries, and layout archetypes. For a smaller index, use ${BASE_URL}/llms.txt. For one style at a time, use ${BASE_URL}/api/styles/{slug}/md.
+This file is generated from the current StyleKit catalog. It summarizes all styles and includes selected token fields, implementation rules, component examples, recipe summaries, and layout archetypes. For a smaller index, use ${BASE_URL}/llms.txt. For one curated style at a time, use ${BASE_URL}/api/design/{slug}/design.md?locale=en.
 
 ---
 
@@ -69,7 +70,7 @@ StyleKit is an open-source visual style library for AI-generated web interfaces.
 - **Has Tokens**: ${tokens ? "Yes" : "No"}
 - **Has Recipes**: ${recipes ? "Yes" : "No"}
 - **Style Page**: ${BASE_URL}/en/styles/${style.slug}
-- **Markdown**: ${BASE_URL}/api/styles/${style.slug}/md
+- **design.md**: ${getCanonicalDesignDocumentUrl(BASE_URL, style.slug, "en")}
 
 `);
   });

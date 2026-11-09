@@ -3,6 +3,7 @@ import { getStyleTokens } from "@/lib/styles/tokens-registry";
 import { getStyleRecipes } from "@/lib/recipes";
 import { localizedString } from "@/lib/styles/locale-content";
 import { getSiteBaseUrl } from "@/lib/site-url";
+import { getCanonicalDesignDocumentUrl } from "@/lib/ai-access/design-document-url";
 import { listPromotedCommunityStyles } from "@/lib/styles/community-runtime";
 
 export const dynamic = "force-dynamic";
@@ -42,7 +43,7 @@ StyleKit provides structured design systems that AI can use to generate consiste
     const tokens = getStyleTokens(style.slug);
     const recipes = getStyleRecipes(style.slug);
     sections.push(
-      `- [${style.nameEn}](${BASE_URL}/en/styles/${style.slug}): ${localizedString("en", style.description, style.descriptionEn)} ([Markdown](${BASE_URL}/api/styles/${style.slug}/md); Tokens: ${tokens ? "Yes" : "No"}; Recipes: ${recipes ? "Yes" : "No"})`
+      `- [${style.nameEn}](${BASE_URL}/en/styles/${style.slug}): ${localizedString("en", style.description, style.descriptionEn)} ([design.md](${getCanonicalDesignDocumentUrl(BASE_URL, style.slug, "en")}); Tokens: ${tokens ? "Yes" : "No"}; Recipes: ${recipes ? "Yes" : "No"})`
     );
   }
 
@@ -51,7 +52,7 @@ StyleKit provides structured design systems that AI can use to generate consiste
 
 ## Promoted Community Styles
 
-These approved community contributions were selected for the curated catalog. Each page includes the human-readable reference and the read-only Markdown style endpoint.
+These approved community contributions were selected for the curated catalog. Their read-only Markdown endpoint remains available until a complete canonical design.md spec is authored.
 
 `);
 

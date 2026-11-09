@@ -101,8 +101,8 @@ Core principles:
     "标题使用 font-black，正文使用 font-mono",
     "所有样式包含移动端和桌面端响应式值",
     "按钮 active:translate-x-[6px] active:translate-y-[6px] active:shadow-none，位移量必须等于原始阴影像素值（Physical Crushing，实体完全压平）",
-    "Hover 时瞬间切换高对比背景色（如 hover:bg-[#ffff00]）并增大阴影（Brutal Snap，禁止使用渐变或 opacity 过渡）",
-    "卡片 hover 使用 ease-out duration-150，保持生猛的碰撞感",
+    "Hover 背景与阴影默认遵循共享 transition-all duration-200 token；具名 showcase 组件示例使用 150ms ease-out。禁止渐变与 opacity 淡化",
+    "具名 showcase 卡片的 hover 使用 ease-out duration-150，保持生猛的碰撞感",
     "按钮 hover 时增大阴影并向左上角偏移：hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[10px_10px_0px_0px_rgba(0,0,0,1)]",
   ],
 
@@ -114,8 +114,8 @@ Core principles:
     "Headings use font-black, body text uses font-mono",
     "All styles include mobile and desktop responsive values",
     "Button active:translate-x-[6px] active:translate-y-[6px] active:shadow-none, displacement must equal original shadow pixel value (Physical Crushing, fully flattened)",
-    "Hover instantly switches to high-contrast background color (e.g. hover:bg-[#ffff00]) and enlarges shadow (Brutal Snap, no gradients or opacity transitions allowed)",
-    "Card hover uses ease-out duration-150, maintaining raw collision feel",
+    "Hover background and shadow default to the shared transition-all duration-200 token; named showcase components use 150ms ease-out. No gradients or opacity fades",
+    "Named showcase cards use ease-out duration-150 on hover, maintaining raw collision feel",
     "Button hover enlarges shadow and offsets toward upper-left: hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[10px_10px_0px_0px_rgba(0,0,0,1)]",
   ],
 
@@ -127,7 +127,7 @@ Core principles:
     "禁止使用淡入淡出的半透明效果",
     "禁止使用 rounded-full（装饰圆除外）",
     "禁止按钮 active 状态位移量小于原始阴影像素值（未完全压平，失去碾压感）",
-    "禁止 hover 背景色切换使用渐变或 opacity 过渡（必须是硬切，duration-150 ease-out）",
+    "禁止 hover 背景使用渐变或 opacity 淡化；通用交互遵循 transition-all duration-200 token",
     "禁止按钮 hover 时仅用位移替代阴影消失（hover 应增大阴影强调力量，active 才是完全压平）",
   ],
 
@@ -139,7 +139,7 @@ Core principles:
     "Do not use fade-in/fade-out semi-transparent effects",
     "Do not use rounded-full (except for decorative circles)",
     "Do not let button active state displacement be less than original shadow pixel value (not fully flattened, loses crushing feel)",
-    "Do not use gradients or opacity transitions for hover background color switch (must be hard-cut, duration-150 ease-out)",
+    "Do not add gradients or opacity fades to hover backgrounds; follow the shared transition-all duration-200 token",
     "Do not use only displacement to replace shadow disappearance on button hover (hover should enlarge shadow to emphasize power, active is for full flattening)",
   ],
 
@@ -431,7 +431,7 @@ LABELS: font-mono uppercase tracking-wider
 </div>
 \`\`\`
 
-**关键**：hover 背景色切换必须是瞬间硬切，禁止渐变、禁止 opacity 淡出；duration-150 ease-out 仅用于位置和阴影的过渡。
+**时长**：共享过渡 token 为 \`transition-all duration-200\`。上面的具名 showcase 卡片示例将背景、位置和阴影覆盖为 \`duration-150 ease-out\`；不增加渐变或 opacity 淡化。
 
 ---
 
@@ -439,17 +439,18 @@ LABELS: font-mono uppercase tracking-wider
 
 ### 交互物理
 - **Physical Crushing**：按钮 active 位移量必须等于阴影偏移量。以 6px 阴影为例：\`active:translate-x-[6px] active:translate-y-[6px] active:shadow-none\`。
-- **Brutal Snap**：hover 时背景瞬间切换为高对比色，硬切、无渐隐：\`hover:bg-[#ffff00]\`
-- **Zero Rounding Easing**：所有过渡统一使用 \`ease-out duration-150\`，保持生猛的碰撞质感，拒绝柔和的弹簧物理效果。
+- **Brutal Snap**：具名 showcase 示例用 \`duration-150 ease-out\` 切换高对比背景，并同步变化位置与阴影：\`hover:bg-[#ffff00]\`
+- **Zero Rounding Easing**：共享过渡 token 默认为 200ms；具名 showcase 示例使用 \`ease-out duration-150\`。不使用弹簧回弹。
 - **Heavy Focus**：卡片 hover 时阴影增大，同时阴影颜色切换为强调色（粉色/品红）。
 
 ### 时长指南
 | 交互 | 时长 | 缓动 |
 |------|------|------|
-| Hover 位移变换 | 150ms | ease-out |
-| Active 按压 | 瞬间 | — |
-| 阴影变化 | 150ms | ease-out |
-| 颜色瞬切 | 0ms | 瞬间 |
+| Hover 位移变换（具名 showcase 示例） | 150ms | ease-out |
+| Active 按压（具名 showcase 示例） | 150ms | ease-out |
+| 阴影变化（具名 showcase 示例） | 150ms | ease-out |
+| 背景与阴影（共享 token） | 200ms | token 默认 |
+| 背景变化（具名 showcase 示例） | 150ms | ease-out |
 
 ---
 
@@ -569,10 +570,10 @@ text-4xl md:text-6xl lg:text-8xl
 | shadow-lg, shadow-xl, shadow-2xl | 模糊违反了硬边缘原则 |
 | bg-gradient-* | 渐变过于精致光滑 |
 | border-gray-*, border-slate-* | 必须使用纯黑边框 |
-| 淡入淡出/opacity 过渡 | 必须使用硬切换 |
+| 渐变或 opacity 淡化 | 破坏纯色状态切换 |
 | rounded-full（一般用途） | 仅限装饰性圆形 |
 | Active 位移量 < 阴影像素值 | 无法实现完全压平的碾压感 |
-| Hover opacity 淡出 | 必须瞬间切换到新颜色 |
+| Hover opacity 淡出 | 使用纯色背景与对应 transition token |
 
 ---
 
@@ -583,8 +584,8 @@ text-4xl md:text-6xl lg:text-8xl
 - [ ] 阴影是硬边缘格式：shadow-[Xpx_Xpx_0px_0px_rgba...]
 - [ ] 边框是纯黑色：border-black
 - [ ] 按钮 active 位移量 = 原始阴影像素值
-- [ ] hover 背景变化是瞬间完成的（硬切，无渐隐）
-- [ ] 过渡统一使用 duration-150 ease-out
+- [ ] 通用交互遵循 transition-all duration-200 token；具名组件遵循其覆盖时长
+- [ ] hover 背景不使用渐变或 opacity 淡化
 - [ ] 标题使用 font-black，正文使用 font-mono
 - [ ] 边框、阴影、间距均带有响应式 md: 前缀
 - [ ] 移动端数值 ≈ 桌面端数值的 50%`,
@@ -666,7 +667,7 @@ LABELS: font-mono uppercase tracking-wider
 </div>
 \`\`\`
 
-**CRITICAL**: Hover background color switch must be INSTANT (hard cut). NO gradients, NO opacity fade. Use duration-150 ease-out for position/shadow only.
+**TIMING**: The shared transition token is \`transition-all duration-200\`. The named showcase card above overrides it with \`transition-all duration-150 ease-out\` for the background, position, and shadow. Do not add gradients or opacity fades.
 
 ---
 
@@ -674,17 +675,18 @@ LABELS: font-mono uppercase tracking-wider
 
 ### Interaction Physics
 - **Physical Crushing**: Button active displacement EQUALS shadow offset. \`active:translate-x-[6px] active:translate-y-[6px] active:shadow-none\` for a 6px shadow.
-- **Brutal Snap**: Hover switches to high-contrast background INSTANTLY. Hard cut, no fade. \`hover:bg-[#ffff00]\`
-- **Zero Rounding Easing**: All transitions use \`ease-out duration-150\`. Raw collision feel. No soft spring physics.
+- **Brutal Snap**: Named showcase examples switch to high-contrast backgrounds over \`duration-150 ease-out\`, alongside position and shadow: \`hover:bg-[#ffff00]\`
+- **Zero Rounding Easing**: The shared transition token defaults to 200ms; named showcase examples use \`ease-out duration-150\`. No soft spring physics.
 - **Heavy Focus**: Card hover enlarges shadow AND changes shadow color to accent (pink/magenta).
 
 ### Timing Guidelines
 | Interaction | Duration | Easing |
 |-------------|----------|--------|
-| Hover transform | 150ms | ease-out |
-| Active press | instant | — |
-| Shadow change | 150ms | ease-out |
-| Color snap | 0ms | instant |
+| Hover transform (named showcase example) | 150ms | ease-out |
+| Active press (named showcase example) | 150ms | ease-out |
+| Shadow change (named showcase example) | 150ms | ease-out |
+| Background and shadow (shared token) | 200ms | token default |
+| Background change (named showcase example) | 150ms | ease-out |
 
 ---
 
@@ -804,10 +806,10 @@ text-4xl md:text-6xl lg:text-8xl
 | shadow-lg, shadow-xl, shadow-2xl | Blur violates hard-edge principle |
 | bg-gradient-* | Gradients are too polished |
 | border-gray-*, border-slate-* | Must use pure black borders |
-| Fade/opacity transitions | Must use hard cuts |
+| Gradients or opacity fades | Keep flat state changes |
 | rounded-full (general use) | Only for decorative circles |
 | Active displacement < shadow value | Fails to achieve full crushing |
-| Hover opacity fade | Must snap to new color |
+| Hover opacity fade | Use a solid fill and the documented transition |
 
 ---
 
@@ -818,8 +820,8 @@ Before outputting code, verify:
 - [ ] Shadows are hard-edge format: shadow-[Xpx_Xpx_0px_0px_rgba...]
 - [ ] Borders are pure black: border-black
 - [ ] Button active displacement = original shadow pixel value
-- [ ] Hover background changes are instant (hard cut, no fade)
-- [ ] Transitions use duration-150 ease-out
+- [ ] Shared interactions follow transition-all duration-200; named components follow their override
+- [ ] Hover backgrounds use no gradients or opacity fades
 - [ ] Font-black for headings, font-mono for body
 - [ ] Has responsive md: prefixes for borders, shadows, spacing
 - [ ] Mobile values ≈ 50% of desktop values`,
