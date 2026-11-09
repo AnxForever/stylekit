@@ -2,7 +2,6 @@
 "use client";
 
 import { Suspense, useEffect, useRef, useState, useCallback, ViewTransition, type ReactNode } from "react";
-import dynamic from "next/dynamic";
 import { ArrowRight } from "lucide-react";
 import { LocalizedLink } from "@/components/i18n/localized-link";
 import { ScrollBackButton } from "@/components/scroll-back-button";
@@ -10,8 +9,6 @@ import { ComponentPreview } from "@/components/style-preview/component-preview";
 import { ColorPalette } from "@/components/style-preview/color-palette";
 import { CodeBlock } from "@/components/style-preview/code-block";
 import { StyleCoverPreview } from "@/components/style-preview/style-cover-preview";
-import { ScoreBadge } from "@/components/accessibility/score-badge";
-import { ScoreDetail } from "@/components/accessibility/score-detail";
 import { VersionBadge } from "@/components/styles/version-badge";
 import { StyleRating } from "@/components/styles/style-rating";
 import { StyleRatingBadge } from "@/components/styles/style-rating-badge";
@@ -22,7 +19,6 @@ import { localizedString, localizedList } from "@/lib/styles/locale-content";
 import { trackEvent } from "@/lib/analytics/events";
 
 import type { DesignStyle } from "@/lib/styles";
-import type { AccessibilityScore } from "@/lib/accessibility";
 import type { StyleVersion } from "@/lib/versioning";
 import type { Locale } from "@/lib/i18n/translations";
 import {
@@ -33,20 +29,6 @@ import { RecipeCard } from "@/components/recipes/recipe-card";
 import { getRoomBySlug } from "@/components/mouse-interactions/rooms/registry";
 import { GenericRoom } from "@/components/mouse-interactions/rooms/generic-room";
 import { DesignMdSection } from "@/components/style-preview/design-md-section";
-import { TokenCopyButton } from "@/components/style-preview/token-copy-button";
-import { ShowcaseDownloadButton } from "@/components/showcase/showcase-download-button";
-
-// StylePackExport statically fans out to the full design-token registry
-// (every *-tokens.ts) plus JSZip. Loading it via next/dynamic keeps that
-// subtree out of the page's synchronous first-load bundle; SSR output is
-// unchanged because the component still renders on the server.
-const StylePackExport = dynamic(
-  () =>
-    import("@/components/style-preview/style-pack-export").then(
-      (m) => m.StylePackExport
-    ),
-  { ssr: true }
-);
 
 type CompatibleStyleSummary = Pick<DesignStyle, "slug" | "name" | "nameEn">;
 
@@ -66,7 +48,6 @@ interface Props {
   /** Complete design.md for this locale, rendered on the server. */
   designMarkdown: string;
   hasDesignSpec: boolean;
-  accessibilityScore: AccessibilityScore | null;
   faqSection?: ReactNode;
   version?: string;
   changelog?: StyleVersion[];
@@ -82,7 +63,6 @@ export function StyleDetailContent({
   comparison = null,
   designMarkdown,
   hasDesignSpec,
-  accessibilityScore,
   faqSection,
   version,
   changelog,
@@ -159,10 +139,6 @@ export function StyleDetailContent({
     ...(pointerRoom
       ? [{ href: "#style-pointer", label: locale === "zh" ? "指针交互" : "Pointer" }]
       : []),
-    {
-      href: "#frontend-readiness",
-      label: locale === "zh" ? "完成度" : "Readiness",
-    },
     ...(faqSection
       ? [{ href: "#style-faq", label: locale === "zh" ? "常见问题" : "FAQ" }]
       : []),
@@ -218,9 +194,6 @@ export function StyleDetailContent({
                 )}
                 {version && (
                   <VersionBadge version={version} changelog={changelog} />
-                )}
-                {accessibilityScore && (
-                  <ScoreBadge score={accessibilityScore} />
                 )}
                 <StyleRatingBadge slug={style.slug} />
               </div>
@@ -631,39 +604,6 @@ export function StyleDetailContent({
         </section>
       )}
 
-      {/* Export Tools */}
-      <section id="style-exports" className="border-b border-border scroll-mt-24">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-12 py-12 md:py-16">
-          <p className="text-xs tracking-widest uppercase text-muted mb-4">
-            {locale === "zh" ? "导出工具" : "Export tools"}
-          </p>
-          <h2 className="text-2xl md:text-3xl mb-4">
-            {locale === "zh" ? "一次点击拿到" : "One click, then paste"}
-          </h2>
-          <div className="flex flex-wrap items-center gap-3">
-            <TokenCopyButton
-              style={style}
-              format="figma-tokens"
-              label={locale === "zh" ? "复制 Tokens JSON" : "Copy tokens JSON"}
-            />
-            <TokenCopyButton
-              style={style}
-              format="css-variables"
-              label={locale === "zh" ? "复制 CSS 变量" : "Copy CSS variables"}
-            />
-            <TokenCopyButton
-              style={style}
-              format="style-dictionary"
-              label={locale === "zh" ? "复制 Style Dictionary" : "Copy Style Dictionary"}
-            />
-            <ShowcaseDownloadButton slug={style.slug} />
-          </div>
-          <div className="mt-8">
-            <StylePackExport style={style} version={version} />
-          </div>
-        </div>
-      </section>
-
       {/* Philosophy — condensed, collapsed */}
       <section className="border-b border-border">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-12 py-12 md:py-16">
@@ -674,21 +614,6 @@ export function StyleDetailContent({
           </CollapsibleSection>
         </div>
       </section>
-
-      {/* Accessibility Score */}
-      {accessibilityScore && (
-        <section className="border-b border-border">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-12 py-12 md:py-16">
-            <CollapsibleSection title={t("a11y.section")}>
-              <h2 className="text-2xl md:text-3xl mb-4">{t("a11y.title")}</h2>
-              <p className="text-muted mb-8 max-w-2xl">
-                {t("a11y.description")}
-              </p>
-              <ScoreDetail score={accessibilityScore} />
-            </CollapsibleSection>
-          </div>
-        </section>
-      )}
 
       {/* Related Recipes */}
       {relatedRecipes.length > 0 && (

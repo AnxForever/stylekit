@@ -183,7 +183,6 @@ export default async function StyleDetailPage({
     ? renderDesignMd(designSpec, { locale })
     : "";
 
-  const accessibilityScore = capabilities.accessibility;
   const version = capabilities.versioning?.current;
   const changelog = capabilities.versioning?.versions ?? [];
   const BASE_URL = getSiteBaseUrl();
@@ -249,7 +248,6 @@ export default async function StyleDetailPage({
             comparison={comparison}
             designMarkdown={designMarkdown}
             hasDesignSpec={Boolean(designSpec)}
-            accessibilityScore={accessibilityScore}
             faqSection={
               <StyleFaqSection
                 faqs={faqs}
