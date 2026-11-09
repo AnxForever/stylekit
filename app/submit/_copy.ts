@@ -32,6 +32,9 @@ export const COPY = {
     clear: "Clear",
     invalidJson: "That is not valid JSON. Paste the whole manifest object.",
     checkFailed: "Could not run the checks. Try again in a moment.",
+    checkAgain: "The submission changed after the last check. Run the checks again before submitting.",
+    reportOutdated: "These results are for an earlier version of the submission. Run the checks again.",
+    fileReadFailed: "Could not read that file. Paste the manifest or try another file.",
 
     step3Title: "Review the checks",
     step3Description:
@@ -171,6 +174,9 @@ export const COPY = {
     clear: "清空",
     invalidJson: "这不是合法 JSON，请粘贴完整的 manifest 对象。",
     checkFailed: "检查没跑起来，稍后重试。",
+    checkAgain: "上次自查后内容已变化，请重新检查后再提交。",
+    reportOutdated: "这份结果对应之前的内容，请重新检查当前版本。",
+    fileReadFailed: "无法读取这个文件，请粘贴 manifest 内容或换一个文件。",
 
     step3Title: "查看检查结果",
     step3Description:

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 type AdvisorIntent = {
   styleSlug: string;
@@ -65,21 +65,36 @@ function providerLabel(provider: AdvisorStatus["provider"] | "fixture") {
 export function StyleAdvisor({
   initialRequest = "Build a clear B2B account-risk dashboard with loading, empty, error, and success states.",
   onApplyStyle,
+  applyLabel,
+  applyHelpText,
 }: {
   initialRequest?: string;
   onApplyStyle: (styleSlug: string) => void;
+  applyLabel?: string;
+  applyHelpText?: string;
 }) {
   const [request, setRequest] = useState(initialRequest);
+  const [resultRequest, setResultRequest] = useState<string | null>(null);
+  const [resultMode, setResultMode] = useState<"live" | "replay" | null>(null);
+  const [resultGeneration, setResultGeneration] = useState<number | null>(null);
   const [intent, setIntent] = useState<AdvisorIntent | null>(null);
   const [style, setStyle] = useState<StyleSummary | null>(null);
   const [status, setStatus] = useState<AdvisorStatus | null>(null);
   const [mode, setMode] = useState<"live" | "replay" | null>(null);
+  const [currentGeneration, setCurrentGeneration] = useState(0);
   const [source, setSource] = useState<AdvisorResponse["source"] | null>(null);
   const [knowledge, setKnowledge] = useState<KnowledgeReferenceContext | null>(null);
   const [generatorKnowledge, setGeneratorKnowledge] = useState<KnowledgeReference[]>([]);
   const [working, setWorking] = useState(false);
   const [statusLoading, setStatusLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const requestGenerationRef = useRef(0);
+  const requestControllerRef = useRef<AbortController | null>(null);
+
+  useEffect(() => () => {
+    requestGenerationRef.current += 1;
+    requestControllerRef.current?.abort();
+  }, []);
 
   useEffect(() => {
     let active = true;
@@ -110,11 +125,40 @@ export function StyleAdvisor({
       : `${providerLabel(status.provider)} · 未配置 Key`;
   }, [status, statusLoading]);
 
+  function handleRequestChange(nextRequest: string) {
+    requestControllerRef.current?.abort();
+    requestControllerRef.current = null;
+    const nextGeneration = ++requestGenerationRef.current;
+    setCurrentGeneration(nextGeneration);
+    setRequest(nextRequest);
+    setIntent(null);
+    setStyle(null);
+    setResultRequest(null);
+    setResultMode(null);
+    setResultGeneration(null);
+    setSource(null);
+    setKnowledge(null);
+    setGeneratorKnowledge([]);
+    setMode(null);
+    setWorking(false);
+    setError(null);
+  }
+
   async function recommend(nextMode: "live" | "replay") {
+    const requestSnapshot = request.trim();
+    if (!requestSnapshot) return;
+    const requestGeneration = ++requestGenerationRef.current;
+    requestControllerRef.current?.abort();
+    const controller = new AbortController();
+    requestControllerRef.current = controller;
+    setCurrentGeneration(requestGeneration);
     setWorking(true);
     setMode(nextMode);
     setIntent(null);
     setStyle(null);
+    setResultRequest(null);
+    setResultMode(null);
+    setResultGeneration(null);
     setSource(null);
     setKnowledge(null);
     setGeneratorKnowledge([]);
@@ -123,21 +167,28 @@ export function StyleAdvisor({
       const response = await fetch("/api/ai/style-advisor", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ request: request.trim(), mode: nextMode }),
+        body: JSON.stringify({ request: requestSnapshot, mode: nextMode }),
+        signal: controller.signal,
       });
       const payload = (await response.json()) as Partial<AdvisorResponse> & { error?: string };
+      if (requestGeneration !== requestGenerationRef.current) return;
       if (!response.ok || !payload.intent) {
         throw new Error(payload.error ?? "风格分析失败，请稍后重试。");
       }
       setIntent(payload.intent);
       setStyle(payload.style ?? null);
+      setResultRequest(requestSnapshot);
+      setResultMode(nextMode);
+      setResultGeneration(requestGeneration);
       setSource(payload.source ?? (nextMode === "replay" ? "replay" : "live"));
       setKnowledge(payload.knowledge ?? { references: [], retrieved: false });
       setGeneratorKnowledge(payload.generatorKnowledge ?? []);
     } catch (advisorError) {
+      if (requestGeneration !== requestGenerationRef.current) return;
       setError(advisorError instanceof Error ? advisorError.message : "风格分析失败，请稍后重试。");
     } finally {
-      setWorking(false);
+      if (requestControllerRef.current === controller) requestControllerRef.current = null;
+      if (requestGeneration === requestGenerationRef.current) setWorking(false);
     }
   }
 
@@ -178,7 +229,7 @@ export function StyleAdvisor({
           <textarea
             id="style-advisor-request"
             value={request}
-            onChange={(event) => setRequest(event.target.value)}
+            onChange={(event) => handleRequestChange(event.target.value)}
             rows={5}
             maxLength={2_000}
             className="workspace-input mt-2 min-h-28 resize-y leading-6 focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-2"
@@ -194,7 +245,7 @@ export function StyleAdvisor({
             <button
               key={sample}
               type="button"
-              onClick={() => setRequest(sample)}
+              onClick={() => handleRequestChange(sample)}
               className="border border-border px-2.5 py-1.5 text-left text-[11px] leading-4 text-muted transition-colors hover:border-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-2"
             >
               {sample.slice(0, 18)}…
@@ -245,6 +296,13 @@ export function StyleAdvisor({
               </div>
             </div>
 
+            <details className="mt-3 border-t border-border pt-3 text-xs text-muted">
+              <summary className="cursor-pointer">
+                本次推荐对应的需求（{resultMode === "live" ? "实时推荐" : "离线回放"}）
+              </summary>
+              <p className="mt-2 whitespace-pre-wrap leading-5">{resultRequest}</p>
+            </details>
+
             <div className="mt-3 h-1.5 overflow-hidden bg-border" role="progressbar" aria-label="推荐置信度" aria-valuemin={0} aria-valuemax={100} aria-valuenow={confidence}>
               <div className="h-full bg-foreground transition-[width] duration-500 motion-reduce:transition-none" style={{ width: `${confidence}%` }} />
             </div>
@@ -264,12 +322,30 @@ export function StyleAdvisor({
 
             <button
               type="button"
-              onClick={() => onApplyStyle(intent.styleSlug)}
+              disabled={
+                working ||
+                !resultRequest ||
+                resultRequest !== request.trim() ||
+                resultMode !== mode ||
+                resultGeneration !== currentGeneration
+              }
+              onClick={() => {
+                if (
+                  !working &&
+                  resultRequest === request.trim() &&
+                  resultMode === mode &&
+                  resultGeneration === requestGenerationRef.current
+                ) {
+                  onApplyStyle(intent.styleSlug);
+                }
+              }}
               className="mt-4 min-h-11 w-full bg-foreground px-3 text-sm font-medium text-background transition-opacity hover:opacity-85 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-2"
             >
-              应用 {style?.nameEn ?? intent.styleSlug} 到项目
+              {applyLabel ?? `应用 ${style?.nameEn ?? intent.styleSlug} 到项目`}
             </button>
-            <p className="mt-2 text-center text-[11px] text-muted">应用后仍需点击“保存新版本”，再开始生成工程。</p>
+            <p className="mt-2 text-center text-[11px] text-muted">
+              {applyHelpText ?? "应用后仍需点击“保存新版本”，再开始生成工程。"}
+            </p>
             <div className="mt-5 grid gap-3 border-t border-border pt-5 sm:grid-cols-2" aria-label="Knowledge sources">
               <KnowledgeSourceGroup
                 title="Advisor context"
