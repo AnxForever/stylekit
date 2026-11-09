@@ -240,7 +240,6 @@ export default async function CommunityStylePage({
             compatibleLayouts={[]}
             designMarkdown=""
             hasDesignSpec={false}
-            accessibilityScore={capabilities.accessibility}
             ssrLocale={locale}
           />
           <div className="mx-auto w-full max-w-7xl px-4 pb-12 sm:px-6 md:px-12">
