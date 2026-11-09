@@ -349,7 +349,7 @@ describe("stylekit_get_style brief text budget", () => {
       const configuredUrl = new URL(kind === "non-http" ? "file:///private/stylekit" : "https://preview.stylekit.test");
       if (kind === "credentials") {
         configuredUrl.username = "fixture-user";
-        configuredUrl.password = "fixture-pass";
+        configuredUrl.password = "example-test-value";
       }
       const baseUrl = kind === "empty" ? " " : configuredUrl.toString();
       const handler = prepareBriefHandler(slug, liveBrief(slug, canonicalDocument("# Full guide")), baseUrl);
@@ -359,7 +359,7 @@ describe("stylekit_get_style brief text budget", () => {
 
       expect(text).toContain("no safe HTTP URL is configured");
       expect(text).not.toContain("fixture-user");
-      expect(text).not.toContain("fixture-pass");
+      expect(text).not.toContain("example-test-value");
       expect(text).not.toContain("file:///private/stylekit");
       expect(() => CallToolResultSchema.parse(result)).not.toThrow();
     },
