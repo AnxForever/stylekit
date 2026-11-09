@@ -95,14 +95,16 @@ describe("getColorDetail", () => {
   });
 
   it("builds a complete detail object for a library swatch", () => {
-    const detail = getColorDetail("667eea")!;
-    expect(detail.hex).toBe("#667eea");
-    expect(detail.rgbCss).toBe("rgb(102, 126, 234)");
+    const detail = getColorDetail("e4b863")!;
+    expect(detail.hex).toBe("#e4b863");
+    expect(detail.rgbCss).toBe("rgb(228, 184, 99)");
     expect(detail.oklchCss).toMatch(/^oklch\(/);
     expect(detail.contrast).toHaveLength(4);
     expect(detail.tints).toHaveLength(4);
     expect(detail.shades).toHaveLength(4);
-    expect(detail.usedBy.length).toBeGreaterThan(0);
+    expect(detail.usedBy).toEqual(expect.arrayContaining([
+      expect.objectContaining({ slug: "glassmorphism", role: "accent" }),
+    ]));
     expect(detail.neighbors.length).toBeGreaterThan(0);
     expect(detail.neighbors[0].hex).not.toBe(detail.hex);
   });
@@ -124,7 +126,7 @@ describe("getColorDetail", () => {
 
   it("rejects arbitrary hex values from the public curated-page surface", () => {
     expect(getCuratedColorDetail("#123456")).toBeNull();
-    expect(getCuratedColorDetail("667eea")?.hex).toBe("#667eea");
+    expect(getCuratedColorDetail("e4b863")?.hex).toBe("#e4b863");
   });
 });
 
