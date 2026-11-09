@@ -33,7 +33,7 @@ export function StyleAdvisorStandalone() {
           <div className="mt-12 grid max-w-xl gap-4 border-y border-border py-5 text-sm sm:grid-cols-3">
             <div><p className="font-mono text-xs text-muted">01</p><p className="mt-2">描述需求</p></div>
             <div><p className="font-mono text-xs text-muted">02</p><p className="mt-2">匹配风格</p></div>
-            <div><p className="font-mono text-xs text-muted">03</p><p className="mt-2">回填项目</p></div>
+            <div><p className="font-mono text-xs text-muted">03</p><p className="mt-2">选定风格</p></div>
           </div>
 
           <div className="mt-8 flex flex-wrap gap-2 text-xs text-muted">
@@ -44,8 +44,8 @@ export function StyleAdvisorStandalone() {
 
           {appliedStyle ? (
             <div className="mt-10 max-w-xl border-l-2 border-foreground pl-4" role="status" aria-live="polite">
-              <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted">Selected for project</p>
-              <p className="mt-2 text-sm">已选择 <strong>{appliedStyle}</strong>。进入项目工作区后保存版本即可生成工程。</p>
+              <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted">Selected on this page</p>
+              <p className="mt-2 text-sm">已在本页选择 <strong>{appliedStyle}</strong>。这个选择不会修改项目；进入项目工作区后，请在项目设置中手动选择该风格。</p>
               <Link href="/workspace" className="mt-3 inline-block text-sm underline underline-offset-4">进入项目工作区 →</Link>
             </div>
           ) : null}
@@ -55,6 +55,8 @@ export function StyleAdvisorStandalone() {
           <StyleAdvisor
             initialRequest="B2B 风控数据后台，强调清晰层级，需要加载、空数据、错误和成功状态。"
             onApplyStyle={setAppliedStyle}
+            applyLabel="选择此风格"
+            applyHelpText="这只会在当前页面记录选择，不会修改项目。"
           />
         </div>
       </div>

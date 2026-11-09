@@ -24,6 +24,7 @@ import { getShowcaseTypographyProfile } from "@/lib/typography/showcase-profiles
 import { LazyShowcaseTypographyRuntime } from "@/components/typography/lazy-showcase-typography-runtime";
 import { ShowcaseBackBar } from "@/components/showcase/showcase-back-bar";
 import { getSiteAnnouncement } from "@/lib/site-announcements";
+import { buildAnnouncementBootstrapScript } from "@/lib/site-announcement-dismissal";
 import "@/app/globals.css";
 import type { Locale } from "@/lib/i18n/translations";
 
@@ -132,19 +133,6 @@ const DEV_SW_CLEANUP_SCRIPT = `
 })();
 `;
 
-function buildAnnouncementBootstrapScript(id: string): string {
-  const dismissalKey = serializeJsonLd(`sk-site-announcement-dismissed:${id}`);
-  return `
-(() => {
-  try {
-    if (localStorage.getItem(${dismissalKey}) === "1") {
-      document.documentElement.dataset.siteAnnouncementDismissed = "true";
-    }
-  } catch {}
-})();
-`;
-}
-
 export async function generateSiteMetadata(): Promise<Metadata> {
   return buildSiteMetadata(await getRequestLocaleContext());
 }
@@ -238,7 +226,7 @@ export default async function SiteDocument({
         {activeAnnouncement ? (
           <script
             dangerouslySetInnerHTML={{
-              __html: buildAnnouncementBootstrapScript(activeAnnouncement.id),
+              __html: buildAnnouncementBootstrapScript(activeAnnouncement.id, activeAnnouncement.locale),
             }}
           />
         ) : null}

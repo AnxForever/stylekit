@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useI18n } from "@/lib/i18n/context";
 import type { SiteAnnouncement } from "@/lib/site-announcements";
+import { getAnnouncementDismissalKeys, hasAnnouncementDismissal } from "@/lib/site-announcement-dismissal";
 
 export interface AnnouncementBannerCopy {
   en: SiteAnnouncement | null;
@@ -45,11 +46,16 @@ export function AnnouncementBanner({
     if (isAnnouncementRoute) return;
 
     try {
-      const dismissed = localStorage.getItem(getDismissKey(announcement.id));
+      const dismissed = hasAnnouncementDismissal(window.localStorage, announcement.id, announcement.locale);
       document.documentElement.dataset.siteAnnouncementDismissed =
-        dismissed === "1" ? "true" : "false";
+        dismissed ? "true" : "false";
+      // The head bootstrap covers the initial revision; this synchronizes client-side locale or revision changes.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setVisible(!dismissed);
     } catch {
       document.documentElement.dataset.siteAnnouncementDismissed = "false";
+      // If storage is unavailable, a changed revision should still be visible.
+      setVisible(true);
     }
   }, [announcement, isAnnouncementRoute]);
 
@@ -58,7 +64,7 @@ export function AnnouncementBanner({
     document.documentElement.dataset.siteAnnouncementDismissed = "true";
     if (!announcement) return;
     try {
-      localStorage.setItem(getDismissKey(announcement.id), "1");
+      localStorage.setItem(getAnnouncementDismissalKeys(announcement.id, announcement.locale).current, "1");
     } catch {
       // localStorage may be unavailable in private or restricted contexts.
     }
@@ -107,8 +113,4 @@ export function AnnouncementBanner({
       </button>
     </div>
   );
-}
-
-function getDismissKey(id: string): string {
-  return `sk-site-announcement-dismissed:${id}`;
 }

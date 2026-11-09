@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { LocalizedLink } from "@/components/i18n/localized-link";
 import type { GateReport } from "@/lib/submission/types";
 import { COPY, type SubmitLocale } from "./_copy";
@@ -15,6 +15,26 @@ import {
 
 const DRAFT_KEY = "stylekit:submit:manifest-draft";
 const FORM_DRAFT_KEY = "stylekit:submit:form-draft";
+
+function normalizedManifestSnapshot(value: unknown): string | null {
+  if (value === null || value === undefined) return null;
+
+  const normalize = (item: unknown): unknown => {
+    if (Array.isArray(item)) return item.map(normalize);
+    if (typeof item !== "object" || item === null) return item;
+    return Object.fromEntries(
+      Object.entries(item as Record<string, unknown>)
+        .sort(([left], [right]) => left < right ? -1 : left > right ? 1 : 0)
+        .map(([key, nested]) => [key, normalize(nested)]),
+    );
+  };
+
+  try {
+    return JSON.stringify(normalize(value)) ?? null;
+  } catch {
+    return null;
+  }
+}
 
 // A machine cannot judge these from computed styles; the extractor flags them
 // so the form can ask the contributor to confirm.
@@ -50,6 +70,7 @@ export function SubmitConsole({
   const [form, setForm] = useState<StyleFormValue>(EMPTY_STYLE_FORM);
   const [manifestText, setManifestText] = useState("");
   const [report, setReport] = useState<GateReport | null>(null);
+  const [checkedManifestSnapshot, setCheckedManifestSnapshot] = useState<string | null>(null);
   const [phase, setPhase] = useState<Phase>("idle");
   const [error, setError] = useState<string | null>(null);
   const [accepted, setAccepted] = useState(false);
@@ -61,6 +82,47 @@ export function SubmitConsole({
   const [extractError, setExtractError] = useState<string | null>(null);
   const [beforeExtraction, setBeforeExtraction] = useState<StyleFormValue | null>(null);
   const restoredRef = useRef(false);
+  const draftRevisionRef = useRef(0);
+  const gateRequestIdRef = useRef(0);
+  const activeGateControllerRef = useRef<AbortController | null>(null);
+  const checkedManifestSnapshotRef = useRef<string | null>(null);
+  const submitInFlightRef = useRef(false);
+
+  const invalidateGate = useCallback(() => {
+    gateRequestIdRef.current += 1;
+    activeGateControllerRef.current?.abort();
+    activeGateControllerRef.current = null;
+    checkedManifestSnapshotRef.current = null;
+    setCheckedManifestSnapshot(null);
+    setPhase((current) => current === "checking" || current === "checked" ? "idle" : current);
+  }, []);
+
+  const handleFormChange = useCallback((next: StyleFormValue) => {
+    draftRevisionRef.current += 1;
+    invalidateGate();
+    setForm(next);
+  }, [invalidateGate]);
+
+  const handleManifestChange = useCallback((next: string) => {
+    draftRevisionRef.current += 1;
+    invalidateGate();
+    setManifestText(next);
+  }, [invalidateGate]);
+
+  const handleModeChange = useCallback((next: "form" | "manifest") => {
+    if (next === mode) return;
+    draftRevisionRef.current += 1;
+    invalidateGate();
+    setReport(null);
+    setError(null);
+    setPhase("idle");
+    setMode(next);
+  }, [invalidateGate, mode]);
+
+  useEffect(() => () => {
+    gateRequestIdRef.current += 1;
+    activeGateControllerRef.current?.abort();
+  }, []);
 
   // Restore an unsent draft once. A manifest is expensive to regenerate, so
   // losing one to an accidental navigation is worse than a stale textarea.
@@ -127,46 +189,105 @@ export function SubmitConsole({
     }
   }, [mode, form, manifestText, t.invalidJson]);
 
+  const currentManifestSnapshot = useMemo(() => {
+    if (mode === "form") return normalizedManifestSnapshot(toManifest(form));
+    try {
+      return normalizedManifestSnapshot(JSON.parse(manifestText));
+    } catch {
+      return null;
+    }
+  }, [form, manifestText, mode]);
+  const reportIsCurrent =
+    report !== null &&
+    checkedManifestSnapshot !== null &&
+    checkedManifestSnapshot === currentManifestSnapshot;
+
   const runCheck = useCallback(async () => {
+    const requestId = ++gateRequestIdRef.current;
+    const capturedDraftRevision = draftRevisionRef.current;
+    activeGateControllerRef.current?.abort();
+    activeGateControllerRef.current = null;
+    checkedManifestSnapshotRef.current = null;
+    setCheckedManifestSnapshot(null);
+    setReport(null);
+    setError(null);
     if (mode === "form") {
       const missing = findMissingFields(form, locale);
       if (missing.length > 0) {
-        setReport(null);
         setError(`${t.formMissing} ${missing.join(locale === "zh" ? "、" : ", ")}`);
+        setPhase("idle");
         return;
       }
     }
-    setError(null);
-    setReport(null);
     const manifest = parseManifest();
-    if (manifest === null) return;
+    if (manifest === null) {
+      setPhase("idle");
+      return;
+    }
 
+    const manifestSnapshot = normalizedManifestSnapshot(manifest);
+    if (manifestSnapshot === null) return;
+    const controller = new AbortController();
+    activeGateControllerRef.current = controller;
     setPhase("checking");
     try {
       const response = await fetch("/api/submit/validate", {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ manifest }),
+        signal: controller.signal,
       });
       const payload = await response.json();
+      if (
+        requestId !== gateRequestIdRef.current ||
+        controller.signal.aborted ||
+        draftRevisionRef.current !== capturedDraftRevision
+      ) return;
       if (!response.ok || !payload.success) {
         setError(payload.error ?? t.checkFailed);
         setPhase("idle");
         return;
       }
       setReport(payload.report as GateReport);
+      checkedManifestSnapshotRef.current = manifestSnapshot;
+      setCheckedManifestSnapshot(manifestSnapshot);
       setPhase("checked");
     } catch {
+      if (
+        requestId !== gateRequestIdRef.current ||
+        controller.signal.aborted ||
+        draftRevisionRef.current !== capturedDraftRevision
+      ) return;
       setError(t.checkFailed);
       setPhase("idle");
+    } finally {
+      if (activeGateControllerRef.current === controller) {
+        activeGateControllerRef.current = null;
+      }
     }
   }, [mode, form, locale, t.formMissing, parseManifest, t.checkFailed]);
 
   const submit = useCallback(async () => {
+    if (submitInFlightRef.current || !accepted || !signedIn || extracting) return;
     setError(null);
     const manifest = parseManifest();
     if (manifest === null) return;
 
+    const manifestSnapshot = normalizedManifestSnapshot(manifest);
+    if (
+      manifestSnapshot === null ||
+      !report?.accepted ||
+      checkedManifestSnapshotRef.current !== manifestSnapshot ||
+      checkedManifestSnapshot !== manifestSnapshot ||
+      currentManifestSnapshot !== manifestSnapshot
+    ) {
+      setError(t.checkAgain);
+      return;
+    }
+
+    submitInFlightRef.current = true;
+    const submitMode = mode;
+    const submitDraftRevision = draftRevisionRef.current;
     setPhase("submitting");
     try {
       const response = await fetch("/api/submit", {
@@ -176,9 +297,22 @@ export function SubmitConsole({
       });
       const payload = await response.json();
       if (!response.ok || !payload.success) {
-        if (payload.report) setReport(payload.report as GateReport);
+        const submittedInputIsCurrent =
+          draftRevisionRef.current === submitDraftRevision &&
+          mode === submitMode &&
+          currentManifestSnapshot === manifestSnapshot;
+        if (payload.report && submittedInputIsCurrent) {
+          setReport(payload.report as GateReport);
+          checkedManifestSnapshotRef.current = manifestSnapshot;
+          setCheckedManifestSnapshot(manifestSnapshot);
+        }
+        if (!submittedInputIsCurrent) {
+          setReport(null);
+          checkedManifestSnapshotRef.current = null;
+          setCheckedManifestSnapshot(null);
+        }
         setError(payload.error ?? t.submitFailed);
-        setPhase("checked");
+        setPhase(submittedInputIsCurrent ? "checked" : "idle");
         return;
       }
       setSubmittedSlug(payload.submission?.slug ?? null);
@@ -189,22 +323,32 @@ export function SubmitConsole({
       setReviewFields([]);
       setExtractError(null);
       try {
+        window.localStorage.removeItem(DRAFT_KEY);
         window.localStorage.removeItem(FORM_DRAFT_KEY);
       } catch {
         // best-effort cleanup
       }
+      gateRequestIdRef.current += 1;
+      checkedManifestSnapshotRef.current = null;
+      setCheckedManifestSnapshot(null);
+      setReport(null);
+      setPhase("submitted");
     } catch {
       setError(t.submitFailed);
       setPhase("checked");
+    } finally {
+      submitInFlightRef.current = false;
     }
-  }, [parseManifest, t.submitFailed]);
+  }, [accepted, checkedManifestSnapshot, currentManifestSnapshot, extracting, mode, parseManifest, report?.accepted, signedIn, t.checkAgain, t.submitFailed]);
 
   const onDrop = useCallback((event: React.DragEvent<HTMLTextAreaElement>) => {
     event.preventDefault();
     const file = event.dataTransfer.files?.[0];
     if (!file) return;
-    void file.text().then(setManifestText);
-  }, []);
+    draftRevisionRef.current += 1;
+    invalidateGate();
+    void file.text().then(handleManifestChange).catch(() => setError(t.fileReadFailed));
+  }, [handleManifestChange, invalidateGate, t.fileReadFailed]);
 
   const copyPrompt = useCallback(() => {
     void navigator.clipboard.writeText(masterPrompt).then(() => {
@@ -243,7 +387,7 @@ export function SubmitConsole({
         return;
       }
       setBeforeExtraction(form);
-      setForm(manifestToForm(payload.manifest.formData as Record<string, unknown>, payload.manifest));
+      handleFormChange(manifestToForm(payload.manifest.formData as Record<string, unknown>, payload.manifest));
       setReviewFields(Array.isArray(payload.needsReview)
         ? payload.needsReview.filter((field: unknown): field is string => typeof field === "string")
         : []);
@@ -254,15 +398,19 @@ export function SubmitConsole({
     } finally {
       setExtracting(false);
     }
-  }, [extractUrl, extracting, form, phase, signedIn, t]);
+  }, [extractUrl, extracting, form, handleFormChange, phase, signedIn, t]);
 
   if (phase === "submitted") {
     return (
-      <SubmittedNotice locale={locale} slug={submittedSlug} onAgain={() => setPhase("idle")} />
+      <SubmittedNotice
+        locale={locale}
+        slug={submittedSlug}
+        onAgain={() => setPhase("idle")}
+      />
     );
   }
 
-  const canSubmit = Boolean(report?.accepted) && accepted && signedIn && !extracting;
+  const canSubmit = Boolean(report?.accepted) && reportIsCurrent && accepted && signedIn && !extracting;
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-12 md:py-16">
@@ -283,13 +431,8 @@ export function SubmitConsole({
             type="button"
             role="tab"
             aria-selected={mode === option}
-            disabled={extracting}
-            onClick={() => {
-              setMode(option);
-              setReport(null);
-              setError(null);
-              setPhase("idle");
-            }}
+            disabled={extracting || phase === "submitting"}
+            onClick={() => handleModeChange(option)}
             className={`h-9 rounded-md border px-4 text-xs font-medium transition-colors ${
               mode === option
                 ? "border-foreground bg-foreground text-background"
@@ -352,7 +495,7 @@ export function SubmitConsole({
                 type="button"
                 disabled={extracting || phase === "checking" || phase === "submitting"}
                 onClick={() => {
-                  setForm(beforeExtraction);
+                  handleFormChange(beforeExtraction);
                   setBeforeExtraction(null);
                   setReviewFields([]);
                   setExtractError(null);
@@ -378,8 +521,8 @@ export function SubmitConsole({
               {promptCopied ? t.promptCopied : t.copyRules}
             </button>
           </div>
-          <fieldset disabled={extracting} className="min-w-0">
-            <StyleForm locale={locale} value={form} onChange={setForm} />
+          <fieldset disabled={extracting || phase === "submitting"} className="min-w-0">
+            <StyleForm locale={locale} value={form} onChange={handleFormChange} />
           </fieldset>
           <div className="mt-6 flex flex-wrap items-center gap-3">
             <button
@@ -421,7 +564,8 @@ export function SubmitConsole({
           <Section index="02" title={t.step2Title} description={t.step2Description}>
             <textarea
               value={manifestText}
-              onChange={(event) => setManifestText(event.target.value)}
+              disabled={phase === "submitting"}
+              onChange={(event) => handleManifestChange(event.target.value)}
               onDrop={onDrop}
               onDragOver={(event) => event.preventDefault()}
               spellCheck={false}
@@ -443,7 +587,7 @@ export function SubmitConsole({
                 <button
                   type="button"
                   onClick={() => {
-                    setManifestText("");
+                    handleManifestChange("");
                     setReport(null);
                     setError(null);
                     setPhase("idle");
@@ -468,8 +612,12 @@ export function SubmitConsole({
       ) : null}
 
       <Section index="03" title={t.step3Title} description={t.step3Description}>
-        {report ? (
+        {report && reportIsCurrent ? (
           <GateTable report={report} locale={locale} humanizeFields={mode === "form"} />
+        ) : report ? (
+          <p role="status" className="border border-dashed border-border p-6 text-center text-sm text-muted-foreground">
+            {t.reportOutdated}
+          </p>
         ) : (
           <p className="border border-dashed border-border p-6 text-center text-sm text-muted-foreground">
             {t.noReport}
@@ -512,7 +660,7 @@ export function SubmitConsole({
         >
           {phase === "submitting" ? t.submitting : t.submit}
         </button>
-        {report && !report.accepted ? (
+        {reportIsCurrent && report && !report.accepted ? (
           <p className="mt-3 text-xs text-muted-foreground">{t.blockedHint}</p>
         ) : null}
       </Section>

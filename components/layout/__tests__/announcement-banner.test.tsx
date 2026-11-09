@@ -1,6 +1,6 @@
 // @vitest-environment happy-dom
 import "@testing-library/jest-dom/vitest";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { render, screen, waitFor } from "@testing-library/react";
 
 const { useI18nMock, usePathnameMock } = vi.hoisted(() => ({
@@ -26,7 +26,7 @@ import { AnnouncementBanner } from "@/components/layout/announcement-banner";
 import type { SiteAnnouncement } from "@/lib/site-announcements";
 
 const zhAnnouncement: SiteAnnouncement = {
-  id: "site-announcement:zh-CN",
+  id: "site-announcement:zh-CN:revision-1",
   locale: "zh-CN",
   enabled: true,
   title: "本周更新",
@@ -39,7 +39,7 @@ const zhAnnouncement: SiteAnnouncement = {
 };
 
 const enAnnouncement: SiteAnnouncement = {
-  id: "site-announcement:en",
+  id: "site-announcement:en:revision-1",
   locale: "en",
   enabled: true,
   title: "Weekly update",
@@ -51,11 +51,22 @@ const enAnnouncement: SiteAnnouncement = {
   updatedAt: null,
 };
 
+function dismissAnnouncement(announcement: SiteAnnouncement) {
+  window.localStorage.setItem(
+    "sk-site-announcement-dismissed:" + announcement.id,
+    "1",
+  );
+}
+
 describe("AnnouncementBanner", () => {
   beforeEach(() => {
     window.localStorage.clear();
     useI18nMock.mockReturnValue({ locale: "zh", t: (key: string) => key });
     usePathnameMock.mockReturnValue("/zh");
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
   });
 
   it("renders the announcement body on the public banner", async () => {
@@ -95,5 +106,44 @@ describe("AnnouncementBanner", () => {
     );
 
     expect(screen.queryByRole("banner")).not.toBeInTheDocument();
+  });
+
+  it("shows changed content after the visitor dismissed the previous revision", async () => {
+    dismissAnnouncement(zhAnnouncement);
+    const updated = { ...zhAnnouncement, id: "site-announcement:zh-CN:revision-2", title: "重要公告" };
+    render(<AnnouncementBanner announcements={{ en: enAnnouncement, zh: updated }} />);
+    expect(await screen.findByText("重要公告")).toBeVisible();
+  });
+
+  it("adopts the locale-only dismissal once, then shows a later revision", async () => {
+    window.localStorage.setItem("sk-site-announcement-dismissed:site-announcement:zh-CN", "1");
+    const { rerender } = render(<AnnouncementBanner announcements={{ en: enAnnouncement, zh: zhAnnouncement }} />);
+    await waitFor(() => expect(screen.queryByRole("banner")).not.toBeInTheDocument());
+    expect(window.localStorage.getItem("sk-site-announcement-legacy-revision:zh-CN")).toBe(zhAnnouncement.id);
+
+    const updated = { ...zhAnnouncement, id: "site-announcement:zh-CN:revision-2", title: "新公告" };
+    rerender(<AnnouncementBanner announcements={{ en: enAnnouncement, zh: updated }} />);
+    expect(await screen.findByText("新公告")).toBeVisible();
+  });
+
+  it("shows a new revision when dismissal storage becomes unavailable", async () => {
+    dismissAnnouncement(zhAnnouncement);
+    const { rerender } = render(
+      <AnnouncementBanner announcements={{ en: enAnnouncement, zh: zhAnnouncement }} />,
+    );
+    await waitFor(() => expect(screen.queryByRole("banner")).not.toBeInTheDocument());
+
+    vi.spyOn(Storage.prototype, "getItem").mockImplementation(() => {
+      throw new Error("localStorage is unavailable");
+    });
+    const updated = {
+      ...zhAnnouncement,
+      id: "site-announcement:zh-CN:revision-2",
+      title: "新版本公告",
+    };
+    rerender(<AnnouncementBanner announcements={{ en: enAnnouncement, zh: updated }} />);
+
+    expect(await screen.findByText("新版本公告")).toBeVisible();
+    expect(screen.getByRole("banner")).toBeVisible();
   });
 });

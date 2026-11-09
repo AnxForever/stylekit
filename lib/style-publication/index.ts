@@ -24,6 +24,7 @@ export async function publishStyle(
   } catch (error: unknown) {
     return {
       success: false,
+      outcome: "not-applied",
       filesWritten: [],
       registriesPatched: [],
       errors: [error instanceof Error ? error.message : String(error)],

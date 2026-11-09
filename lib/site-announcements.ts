@@ -1,6 +1,7 @@
 import "server-only";
 
 import { changelog } from "@/lib/changelog";
+import { getSiteAnnouncementRevisionId } from "@/lib/site-announcement-revision";
 import { getSupabaseAdmin } from "@/lib/supabase/server";
 
 export type SiteAnnouncementLocale = "zh-CN" | "en";
@@ -108,7 +109,7 @@ async function loadSiteAnnouncement(
 
 export function toSiteAnnouncement(row: SiteAnnouncementRow): SiteAnnouncement {
   return {
-    id: `site-announcement:${row.locale}`,
+    id: getSiteAnnouncementRevisionId(row),
     locale: row.locale,
     enabled: row.enabled,
     title: row.title,
@@ -120,7 +121,6 @@ export function toSiteAnnouncement(row: SiteAnnouncementRow): SiteAnnouncement {
     updatedAt: row.updated_at,
   };
 }
-
 export function isCurrentlyActive(
   announcement: Pick<SiteAnnouncement, "enabled" | "startsAt" | "endsAt">,
   now = Date.now(),

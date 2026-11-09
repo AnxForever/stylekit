@@ -1,4 +1,4 @@
-import type { writeFile } from "node:fs/promises";
+import type { rename, writeFile } from "node:fs/promises";
 
 export type PublicationWriteKind = "generated" | "registry";
 
@@ -25,8 +25,13 @@ export interface StylePublicationResult {
   filesWritten: string[];
   registriesPatched: string[];
   errors: string[];
+  outcome?: "applied" | "not-applied" | "busy" | "conflict" | "rolled-back" | "recovery-needed";
+  /** Root-relative recovery locations if restoring the original files failed. */
+  recoveryFiles?: string[];
 }
 
 export interface StylePublicationOptions {
   writeFile?: typeof writeFile;
+  /** Test seam for failures while atomically replacing staged files. */
+  rename?: typeof rename;
 }
