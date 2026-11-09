@@ -8,6 +8,8 @@ import { getStylesWithRecipes, getStyleRecipes } from "../../lib/recipes";
 import { styles, stylesMeta } from "../../lib/styles";
 import { hasStyleTokens } from "../../lib/styles/tokens-registry";
 import { getStyleQuality } from "../../lib/styles/quality";
+import { listDesignSpecs } from "../../lib/design-spec/registry";
+import { validateDesignSpecCoverage } from "../../lib/design-spec/catalog-coverage";
 import { publishStyle } from "../../lib/style-publication";
 import { STYLE_PUBLICATION_REGISTRIES } from "../../lib/style-publication/plan";
 import type { StyleScaffoldInput } from "../../lib/scaffold/style-scaffold";
@@ -84,6 +86,15 @@ function validateCatalog(): Issue[] {
   }
   for (const slug of stylesVsRecipes.onlyRight) {
     issues.push({ slug, message: "Recipe registry entry has no full style definition." });
+  }
+
+  for (const issue of validateDesignSpecCoverage(styleSlugs, listDesignSpecs())) {
+    issues.push({
+      slug: issue.slug,
+      message: issue.kind === "missing"
+        ? "Missing authored DesignSpec required for the canonical design.md."
+        : "DesignSpec is incomplete; the canonical design.md requires completeness: full.",
+    });
   }
 
   for (const style of styles) {
@@ -215,7 +226,7 @@ async function main(): Promise<void> {
       (style) => getStyleQuality(style).tier === "curated",
     ).length;
     console.log(
-      `[check:catalog] PASS - ${styles.length} styles have metadata, recipes, tokens, components, cover assets, and quality metadata (${curatedReadiness} curated readiness profiles).`
+      `[check:catalog] PASS - ${styles.length} styles have metadata, recipes, tokens, components, cover assets, complete design documents, and quality metadata (${curatedReadiness} curated readiness profiles).`
     );
     return;
   }

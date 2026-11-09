@@ -8,7 +8,7 @@ import { StyleCard } from "@/components/home/style-card";
 import { LocalizedLink } from "@/components/i18n/localized-link";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Heart, Layers, Paintbrush, Loader2, ChevronDown, Search, X, SlidersHorizontal } from "lucide-react";
-import type { StyleMeta, StyleType, StyleTag } from "@/lib/styles/meta";
+import type { StyleMeta, StyleTag } from "@/lib/styles/meta";
 import {
   getScenarioLabel,
   getStyleScenarios,
@@ -18,76 +18,28 @@ import {
 import { useStyleStats } from "@/lib/swr";
 import { expandQueryTerms, colorIntentMatches, hasTerm } from "@/lib/search/synonyms";
 import { observeCatalogImpressions } from "@/lib/analytics/catalog-impressions";
+import { STYLE_TAGS } from "@/lib/styles/meta-types";
+import {
+  clearStyleCatalogReturnUrl,
+  STYLE_CATALOG_RETURN_URL_KEY,
+} from "@/lib/navigation/smart-back";
+import {
+  DEFAULT_TYPE_FILTER,
+  parseStylesSearchParams,
+  type TypeFilter,
+} from "@/lib/styles/catalog-query";
 import {
   isStatsDrivenSort,
-  parseCatalogSort,
   sortCatalogStyles,
   type CatalogSortOption,
 } from "@/lib/styles/catalog-sort";
 
-type TypeFilter = StyleType | "all";
-
-/**
- * Styles and layout patterns share one catalog, but they answer different
- * questions: a style decides how a page looks, a layout decides how it is
- * arranged. The catalog opens on visual styles so the first cards are finished
- * designs rather than wireframes; 布局模式 and 全部 are one click away.
- */
-const DEFAULT_TYPE_FILTER: TypeFilter = "visual";
 type SortOption = CatalogSortOption;
 const INITIAL_VISIBLE_STYLE_COUNT = 24;
 const VISIBLE_STYLE_COUNT_STEP = 24;
 
 interface StylesContentProps {
   allStyles: StyleMeta[];
-}
-
-interface SearchParamsLike {
-  get(name: string): string | null;
-}
-
-function parseStylesSearchParams(searchParams: SearchParamsLike | null) {
-  const typeParam = searchParams?.get("type");
-  // The visual baseline snapshots every approved cover, layout patterns
-  // included, so it opts out of the visual-styles default. An explicit ?type=
-  // still wins, and 全部 stays addressable via ?type=all.
-  const isBaseline = searchParams?.get("visual-baseline") === "1";
-  const type: TypeFilter =
-    typeParam === "visual" || typeParam === "layout" || typeParam === "all"
-      ? typeParam
-      : isBaseline
-        ? "all"
-        : DEFAULT_TYPE_FILTER;
-
-  const tags = (searchParams?.get("tags") ?? "")
-    .split(",")
-    .filter(Boolean)
-    .filter((tag: string): tag is StyleTag => [
-      "modern",
-      "expressive",
-      "minimal",
-      "retro",
-      "high-contrast",
-      "responsive",
-      "brand-inspired",
-    ].includes(tag));
-
-  const showFavorites = searchParams?.get("fav") === "1";
-  const sort = parseCatalogSort(searchParams?.get("sort"));
-  const query = searchParams?.get("q") ?? "";
-  const scenarioParam = searchParams?.get("scenario");
-  const scenario: StyleScenario | "all" = STYLE_SCENARIOS.includes(scenarioParam as StyleScenario)
-    ? (scenarioParam as StyleScenario)
-    : "all";
-
-  return {
-    type,
-    tags,
-    showFavorites,
-    sort,
-    query,
-    scenario,
-  };
 }
 
 export function StylesContent({ allStyles }: StylesContentProps) {
@@ -237,14 +189,14 @@ export function StylesContent({ allStyles }: StylesContentProps) {
 
   // 兜底恢复 filter 状态：当从 showcase 直接跳到 /styles 时（绕过 ScrollBackButton）
   useEffect(() => {
-    const savedUrl = sessionStorage.getItem("styles-return-url");
+    const savedUrl = sessionStorage.getItem(STYLE_CATALOG_RETURN_URL_KEY);
     if (savedUrl) {
       const current = window.location.search;
       if (!current) {
         try {
           const url = new URL(savedUrl);
           if (url.search) {
-            sessionStorage.removeItem("styles-return-url");
+            sessionStorage.removeItem(STYLE_CATALOG_RETURN_URL_KEY);
             router.replace(url.pathname + url.search, { scroll: false });
           }
         } catch {
@@ -285,6 +237,8 @@ export function StylesContent({ allStyles }: StylesContentProps) {
       query: string,
       scenario: StyleScenario | "all"
     ) => {
+      // Explicitly changed filters replace a snapshot saved by an earlier card visit.
+      clearStyleCatalogReturnUrl();
       const sp = new URLSearchParams();
       if (type && type !== DEFAULT_TYPE_FILTER) sp.set("type", type);
       if (tags.length > 0) sp.set("tags", tags.join(","));
@@ -312,21 +266,7 @@ export function StylesContent({ allStyles }: StylesContentProps) {
   );
 
   // Tag filter 配置
-  const availableTags: StyleTag[] = [
-    "retro",
-    "high-contrast",
-    "responsive",
-    "brand-inspired",
-    "dark-theme",
-    "colorful",
-    "hand-drawn",
-    "glassmorphic",
-    "gradient",
-    "geometric",
-    "game-ui",
-    "anime-aesthetic",
-    "texture-heavy",
-  ];
+  const availableTags = STYLE_TAGS;
 
   const tagLabels: Record<StyleTag, string> = useMemo(
     () => ({

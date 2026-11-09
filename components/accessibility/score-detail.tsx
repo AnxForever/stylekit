@@ -130,7 +130,11 @@ export function ScoreDetail({ score }: ScoreDetailProps) {
           </div>
           <div className="border border-border p-3">
             <p className="text-xs text-muted mb-1">{t("a11y.lineHeight")}</p>
-            <p className="text-xs font-mono">{score.readability.lineHeight}</p>
+            <p className="text-xs font-mono">
+              {score.readability.lineHeight === "not-evaluated"
+                ? t("a11y.notAssessed")
+                : score.readability.lineHeight}
+            </p>
           </div>
         </div>
       </div>

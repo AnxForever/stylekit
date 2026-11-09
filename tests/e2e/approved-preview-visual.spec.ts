@@ -21,6 +21,30 @@ async function stabilizeCatalogChrome(page: Page) {
   });
   await page.evaluate(async () => {
     await document.fonts.ready;
+
+    // A fractional cover boundary can include one row of the neighboring
+    // palette strip. Glass also samples its backdrop beyond that boundary.
+    // Pin this surrounding chrome to the approved cover's original palette:
+    // catalogue swatch corrections are checked separately, while this guard
+    // continues to compare the authored preview against the original PNG.
+    const glassPalette = document.querySelector(
+      '[data-catalog-style-slug="glassmorphism"] [class~="h-1.5"].flex',
+    );
+    if (!glassPalette || glassPalette.children.length !== 4) {
+      throw new Error("Glass cover palette fixture no longer matches card chrome");
+    }
+    const approvedColors = [
+      "rgba(255, 255, 255, 0.25)",
+      "rgba(255, 255, 255, 0.18)",
+      "#667eea",
+      "#764ba2",
+    ];
+    Array.from(glassPalette.children).forEach((cell, index) => {
+      if (!(cell instanceof HTMLElement)) {
+        throw new Error("Glass palette fixture requires HTML color cells");
+      }
+      cell.style.backgroundColor = approvedColors[index];
+    });
   });
 }
 

@@ -170,7 +170,8 @@ function scoreContrast(pairs: Array<{ fg: string; bg: string; context: string }>
 
 /**
  * Score readability based on typography tokens.
- * Evaluates font size, weight, and line height for reading comfort.
+ * Evaluates font size and weight for reading comfort. Line height is reported
+ * separately and stays unassessed until style tokens expose a body line-height field.
  */
 function scoreReadability(tokens: StyleTokens | undefined): ReadabilityScore {
   if (!tokens) {
@@ -236,7 +237,7 @@ function scoreReadability(tokens: StyleTokens | undefined): ReadabilityScore {
     score: Math.min(Math.max(score, 0), 100),
     fontSize,
     fontWeight,
-    lineHeight: sectionSpacing.includes("leading-") ? "defined" : "default",
+    lineHeight: "not-evaluated",
   };
 }
 

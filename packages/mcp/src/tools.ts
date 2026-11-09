@@ -17,13 +17,14 @@ import {
   getPublicAssetLive,
   lintCodeWithRules,
   rulesFromBrief,
+  SITE_URL,
   type AssetKind,
   type PublicAssetDetail,
   type StyleCategory,
   type StyleLintComponent,
 } from "./data.js";
 import type { RemoteOptions } from "stylekit-core/discovery";
-import { toolResult, errorResult } from "./format.js";
+import { CHARACTER_LIMIT, toolResult, errorResult } from "./format.js";
 
 const READ_ONLY = {
   readOnlyHint: true,
@@ -40,6 +41,24 @@ const RANKING_LABEL = {
   keyword: "keyword search (vector path unavailable)",
   local: "local scorer",
 } as const;
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return Boolean(value) && typeof value === "object" && !Array.isArray(value);
+}
+
+function publicApiUrl(baseUrl: string | undefined, path: string): string | null {
+  try {
+    const configuredBase = baseUrl === undefined ? SITE_URL : baseUrl.trim();
+    if (!configuredBase) return null;
+    const url = new URL(configuredBase);
+    if ((url.protocol !== "http:" && url.protocol !== "https:") || url.username || url.password || url.search || url.hash) {
+      return null;
+    }
+    return `${url.toString().replace(/\/+$/, "")}${path}`;
+  } catch {
+    return null;
+  }
+}
 
 // Shared output shapes (so clients get typed structuredContent).
 const SUMMARY_SHAPE = {
@@ -520,7 +539,7 @@ Args:
   - include (array, optional): sections to attach — "tokens", "recipe", "brief".
   - component (string, optional): recipe id for include: ["recipe"], e.g. "button"; defaults to the style's first recipe.
 
-Returns JSON: { slug, name, nameEn, category, tags, description, philosophy, colors, doList, dontList, keywords, hasTokens, hasRecipes, recipeIds, shadcnInstall, url, quality, origin, fallbackReason?, tokens?, recipe?, brief? }.
+Returns structured JSON with the shape below. When a canonical design.md is available, the human-readable text includes its complete Markdown; the full machine-readable brief remains at its URL.
 
 Examples:
   - "how should I use neo-brutalist?" -> slug: "neo-brutalist"
@@ -585,6 +604,7 @@ Examples:
         `Tokens: ${detail.hasTokens ? "yes" : "no"} · Recipes: ${detail.recipeIds.join(", ") || "none"}`,
         `Install theme: \`${detail.shadcnInstall}\``,
       ];
+      const selectedSectionLines: string[] = [];
 
       const wanted = new Set(include ?? []);
 
@@ -604,7 +624,7 @@ Examples:
           origin: tokensSource.origin,
           ...(tokensSource.fallbackReason ? { fallbackReason: tokensSource.fallbackReason } : {}),
         };
-        lines.push(
+        selectedSectionLines.push(
           "",
           "## Tokens",
           `Origin: ${tokensSource.origin}${tokensSource.fallbackReason ? `; fallback: ${tokensSource.fallbackReason}` : ""}.`,
@@ -631,7 +651,7 @@ Examples:
           origin: recipeSource.origin,
           ...(recipeSource.fallbackReason ? { fallbackReason: recipeSource.fallbackReason } : {}),
         };
-        lines.push(
+        selectedSectionLines.push(
           "",
           `## Recipe — ${recipeId}`,
           "```tsx",
@@ -658,16 +678,171 @@ Examples:
           origin: briefSource.origin,
           ...(briefSource.fallbackReason ? { fallbackReason: briefSource.fallbackReason } : {}),
         };
-        lines.push(
-          "",
-          "## Implementation brief",
-          "```json",
-          JSON.stringify(briefSource.data),
-          "```",
+        const briefData: Record<string, unknown> = isRecord(briefSource.data) ? briefSource.data : {};
+        const provenance: Record<string, unknown> = isRecord(briefData["provenance"]) ? briefData["provenance"] : {};
+        const document = isRecord(briefData["designDocument"]) ? briefData["designDocument"] : null;
+        const documentLocale = document?.["locale"] === "zh" ? "zh" : "en";
+        const canonicalMarkdown =
+          document?.["schemaVersion"] === "stylekit-design-document-v1" &&
+          document["fileName"] === "design.md" &&
+          document["contentType"] === "text/markdown" &&
+          (document["locale"] === "en" || document["locale"] === "zh") &&
+          typeof document["content"] === "string" &&
+          document["content"].length > 0
+            ? document["content"]
+            : null;
+        const canonicalDocumentUrl = publicApiUrl(
+          remoteOptions.baseUrl,
+          `/api/design/${encodeURIComponent(slug)}/design.md?locale=${documentLocale}`,
         );
+        const fullBriefUrl = publicApiUrl(
+          remoteOptions.baseUrl,
+          `/api/styles/${encodeURIComponent(slug)}/brief`,
+        );
+        const profileSummary = [lines[0], lines[1], lines[2]];
+        const optionalRequested = wanted.has("tokens") || wanted.has("recipe");
+        const fullBriefReference = fullBriefUrl
+          ? `Full machine-readable brief JSON: ${fullBriefUrl}`
+          : "The full machine-readable brief remains in structuredContent; no safe HTTP URL is configured.";
+        const tokenUrl = wanted.has("tokens")
+          ? publicApiUrl(remoteOptions.baseUrl, `/api/styles/${encodeURIComponent(slug)}/tokens`)
+          : null;
+        const recipeUrl = wanted.has("recipe")
+          ? publicApiUrl(remoteOptions.baseUrl, `/api/styles/${encodeURIComponent(slug)}/recipes`)
+          : null;
+        const optionalSectionUrls = [
+          ...(tokenUrl ? [`Tokens JSON: ${tokenUrl}`] : []),
+          ...(recipeUrl ? [`Component recipes JSON: ${recipeUrl}`] : []),
+        ];
+        const optionalSectionsNote =
+          'Requested tokens and/or recipe are not embedded; call include: ["tokens"] or include: ["recipe"] separately.';
+        const optionalFallback = optionalRequested
+          ? [
+              optionalSectionsNote,
+              ...optionalSectionUrls,
+            ]
+          : [];
+        const requestedSections = selectedSectionLines.join("\n").trim();
+
+        if (!canonicalMarkdown) {
+          const sourceKind = provenance["source"];
+          const reason = briefSource.origin === "bundled"
+            ? "The bundled fallback does not include a canonical design.md."
+            : sourceKind === "community"
+              ? "This community style has no canonical design.md."
+              : "This source did not return a canonical design.md.";
+          const summaryLines = [
+            ...profileSummary,
+            "",
+            "## Implementation brief",
+            reason,
+            ...(briefSource.fallbackReason ? [`Source note: ${briefSource.fallbackReason}`] : []),
+            fullBriefReference,
+          ];
+          const withRequestedSections = requestedSections
+            ? [...summaryLines, "", requestedSections].join("\n")
+            : summaryLines.join("\n");
+          if (withRequestedSections.length <= CHARACTER_LIMIT) {
+            return toolResult(withRequestedSections, structured);
+          }
+          return toolResult(
+            [
+              ...summaryLines,
+              "",
+              "Requested sections exceed the text budget and were not partially included.",
+              ...optionalFallback,
+            ].join("\n"),
+            structured,
+          );
+        }
+
+        const canonicalLines = [
+          ...profileSummary,
+          "",
+          "## Canonical design.md",
+          canonicalMarkdown,
+        ];
+        const canonicalWithBothUrls = [
+          ...canonicalLines,
+          ...(canonicalDocumentUrl ? ["", `Canonical design.md URL: ${canonicalDocumentUrl}`] : []),
+          "",
+          fullBriefReference,
+        ].join("\n");
+        const canonicalWithBriefUrl = [...canonicalLines, "", fullBriefReference].join("\n");
+        const inlineReserve = optionalRequested ? optionalSectionsNote.length + 2 : 0;
+        const canonicalBaseText = canonicalWithBothUrls.length + inlineReserve <= CHARACTER_LIMIT
+          ? canonicalWithBothUrls
+          : canonicalWithBriefUrl;
+        if (canonicalWithBriefUrl.length + inlineReserve > CHARACTER_LIMIT) {
+          const urlFallback = [
+            ...profileSummary,
+            "",
+            "## Implementation brief",
+            `The complete canonical design.md cannot fit within the ${CHARACTER_LIMIT}-character MCP text budget, so it is not embedded partially.`,
+            ...(canonicalDocumentUrl ? [`Read the complete design.md: ${canonicalDocumentUrl}`] : ["The complete design.md is available in structuredContent.brief.designDocument.content; no safe HTTP URL is configured."]),
+            fullBriefReference,
+            ...optionalFallback,
+          ].join("\n");
+          return toolResult(urlFallback, structured);
+        }
+
+        const withRequestedSections = requestedSections
+          ? `${canonicalBaseText}\n\n${requestedSections}`
+          : canonicalBaseText;
+        if (withRequestedSections.length <= CHARACTER_LIMIT) {
+          return toolResult(withRequestedSections, structured);
+        }
+
+        const conciseWithOptionalFallback = [
+          canonicalBaseText,
+          "",
+          "Requested sections exceed the text budget and were not partially included.",
+          ...optionalFallback,
+        ].join("\n");
+        if (conciseWithOptionalFallback.length <= CHARACTER_LIMIT) {
+          return toolResult(conciseWithOptionalFallback, structured);
+        }
+
+        const conciseNarrowerCallFallback = [
+          canonicalBaseText,
+          "",
+          optionalSectionsNote,
+        ].join("\n");
+        if (conciseNarrowerCallFallback.length <= CHARACTER_LIMIT) {
+          return toolResult(conciseNarrowerCallFallback, structured);
+        }
+
+        const referencesFallback = [
+          ...profileSummary,
+          "",
+          "The canonical design.md is not embedded because the complete document and requested section references do not fit the MCP text budget.",
+          ...(canonicalDocumentUrl ? [`Read the complete design.md: ${canonicalDocumentUrl}`] : []),
+          fullBriefReference,
+          ...optionalFallback,
+        ].join("\n");
+        return toolResult(referencesFallback, structured);
       }
 
-      return toolResult(lines.join("\n"), structured);
+      const text = [...lines, ...selectedSectionLines].join("\n");
+      if (text.length <= CHARACTER_LIMIT) return toolResult(text, structured);
+      const tokenUrl = wanted.has("tokens")
+        ? publicApiUrl(remoteOptions.baseUrl, `/api/styles/${encodeURIComponent(slug)}/tokens`)
+        : null;
+      const recipeUrl = wanted.has("recipe")
+        ? publicApiUrl(remoteOptions.baseUrl, `/api/styles/${encodeURIComponent(slug)}/recipes`)
+        : null;
+      const sectionUrls = [
+        ...(tokenUrl ? [`Tokens JSON: ${tokenUrl}`] : []),
+        ...(recipeUrl ? [`Component recipes JSON: ${recipeUrl}`] : []),
+      ];
+      return toolResult([
+        ...lines.slice(0, 3),
+        "",
+        `The requested sections exceed the ${CHARACTER_LIMIT}-character text limit and were not partially included.`,
+        "Full selected data remains in structuredContent.",
+        ...(sectionUrls.length === 0 ? ["No safe HTTP URL is available; use a narrower include request or structuredContent."] : []),
+        ...sectionUrls,
+      ].join("\n"), structured);
     },
   );
 

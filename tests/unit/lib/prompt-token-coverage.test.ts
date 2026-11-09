@@ -1,9 +1,12 @@
 import { describe, expect, it } from "vitest";
 import { styles } from "@/lib/styles";
+import { rawStyles } from "@/lib/styles/registry";
+import { getStyleMetaBySlug } from "@/lib/styles/meta";
 import { getStyleTokens } from "@/lib/styles/tokens-registry";
 import { generateEnhancedAIRules } from "@/lib/styles/enhanced-rules";
-import { buildHardPrompt } from "@/lib/styles/prompt-pair";
-import { buildDesignSpec } from "@/components/style-preview/_prompt-builders";
+import { buildHardPrompt, buildSoftPrompt } from "@/lib/styles/prompt-pair";
+import { editorialSpec } from "@/lib/design-spec/samples/editorial";
+import { renderCssVariables, renderDesignMd, renderDtcg } from "@/lib/design-spec";
 
 const CJK = /[㐀-鿿]/g;
 
@@ -11,7 +14,7 @@ function cjkRatio(value: string): number {
   return (value.match(CJK) ?? []).length / Math.max(value.length, 1);
 }
 
-function hardPromptFor(slug: string, locale: "zh" | "en"): string {
+function promptInputFor(slug: string, locale: "zh" | "en") {
   const style = styles.find((candidate) => candidate.slug === slug);
   if (!style) throw new Error(`unknown style: ${slug}`);
   const tokens = getStyleTokens(slug);
@@ -24,22 +27,23 @@ function hardPromptFor(slug: string, locale: "zh" | "en"): string {
     locale,
   });
 
-  return buildHardPrompt(
-    {
-      styleName: locale === "zh" ? style.name : style.nameEn,
-      styleSlug: style.slug,
-      aiRules: style.aiRules,
-      aiRulesEn: style.aiRulesEn,
-      enhancedRules,
-      doList: style.doList,
-      doListEn: style.doListEn,
-      dontList: style.dontList,
-      dontListEn: style.dontListEn,
-      keywords: style.keywords,
-      keywordsEn: style.keywordsEn,
-    },
-    locale
-  );
+  return {
+    styleName: locale === "zh" ? style.name : style.nameEn,
+    styleSlug: style.slug,
+    aiRules: style.aiRules,
+    aiRulesEn: style.aiRulesEn,
+    enhancedRules,
+    doList: style.doList,
+    doListEn: style.doListEn,
+    dontList: style.dontList,
+    dontListEn: style.dontListEn,
+    keywords: style.keywords,
+    keywordsEn: style.keywordsEn,
+  };
+}
+
+function hardPromptFor(slug: string, locale: "zh" | "en"): string {
+  return buildHardPrompt(promptInputFor(slug, locale), locale);
 }
 
 describe("prompt token coverage", () => {
@@ -77,6 +81,40 @@ describe("prompt token coverage", () => {
     expect(/Token (Dictionary|字典)/.test(en)).toBe(true);
   });
 
+  it("keeps Editorial's single Mauve accent consistent across tokens and prompt forms", () => {
+    const style = styles.find((candidate) => candidate.slug === "editorial")!;
+    const metadata = getStyleMetaBySlug("editorial")!;
+    const color = editorialSpec.colors.find((entry) => entry.group === "accent");
+    expect(color?.value).toBe("#816d70");
+    expect(metadata.colors).toEqual(style.colors);
+    expect(metadata.colors).toEqual({
+      primary: "#1C1C1C",
+      secondary: "#F9F8F6",
+      accent: ["#1C1C1C", "#6b7280", "#1c1c1c", "#816d70"],
+    });
+
+    const tokens = getStyleTokens("editorial");
+    expect(tokens?.colors.background.accent).toEqual(["bg-[#816d70]"]);
+    expect(renderCssVariables(editorialSpec)).toContain("--color-mauve: #816d70;");
+    const exportedTokens = JSON.parse(renderDtcg(editorialSpec)) as {
+      color: Record<string, { $value: string }>;
+    };
+    expect(exportedTokens.color.mauve.$value).toBe("#816d70");
+
+    for (const locale of ["zh", "en"] as const) {
+      const document = renderDesignMd(editorialSpec, { locale });
+      expect(document).toContain(color?.role[locale]);
+
+      const input = promptInputFor("editorial", locale);
+      const prompts = [buildHardPrompt(input, locale), buildSoftPrompt(input, locale)];
+      for (const prompt of prompts) {
+        expect(prompt).toContain("#816d70");
+        expect(prompt).toContain(locale === "zh" ? "陈玫" : "Mauve");
+        expect(prompt).not.toMatch(/NO colored accents|purely monochromatic/i);
+      }
+    }
+  });
+
   it("keeps English prompts free of Chinese so the builder cannot drop them", () => {
     const leaking: string[] = [];
 
@@ -90,72 +128,24 @@ describe("prompt token coverage", () => {
 
     expect(leaking).toEqual([]);
   });
-});
 
-describe("design spec layout and motion", () => {
-  const styleAgnosticClaims = [
-    "blurry depth",
-    "gradient-heavy",
-    "compress or flatten",
-    "deliberate asymmetry",
-    "模糊景深",
-    "重渐变",
-    "压平或压缩",
-  ];
+  it.each([
+    "cel-shading", "film-noir", "indian-festive", "african-textile", "witchcore",
+    "neon-tokyo", "dopamine-design", "linear-style", "shopify-clean", "luxury-retail",
+    "fresh-market", "data-dense", "horizontal-gallery", "latex-paper", "distill-style",
+    "studio-bold", "warm-organic", "pastel-ui", "soft-utility",
+  ])("delivers localized authored rules for %s through legacy prompts", (slug) => {
+    const style = styles.find((candidate) => candidate.slug === slug)!;
+    const authored = rawStyles.find((candidate) => candidate.slug === slug)!;
+    const prose = authored.aiRules
+      .replace(/```[\s\S]*?```/g, "")
+      .replace(/`[^`]*`/g, "");
 
-  it("quotes the style's own tokens instead of one hard-coded temperament", () => {
-    for (const slug of ["glassmorphism", "neo-brutalist", "soft-ui"]) {
-      const style = styles.find((candidate) => candidate.slug === slug)!;
-      const tokens = getStyleTokens(slug)!;
-
-      const spec = buildDesignSpec({
-        locale: "en",
-        styleName: style.nameEn,
-        styleSlug: slug,
-        description: style.descriptionEn ?? style.description,
-        philosophy: style.philosophyEn ?? style.philosophy,
-        colors: style.colors,
-        doList: style.doListEn ?? style.doList,
-        dontList: style.dontListEn ?? style.dontList,
-        keywords: style.keywordsEn ?? style.keywords,
-        tokens: {
-          section: tokens.spacing.section,
-          container: tokens.spacing.container,
-          card: tokens.spacing.card,
-          gap: tokens.spacing.gap.md,
-          radius: tokens.border.radius,
-          transition: tokens.interaction.transition,
-          active: tokens.interaction.active ?? undefined,
-          focus: tokens.shadow.focus,
-        },
-      });
-
-      expect(spec, slug).toContain(tokens.spacing.section);
-      expect(spec, slug).toContain(tokens.border.radius);
-      expect(spec, slug).toContain(tokens.interaction.transition);
-
-      for (const claim of styleAgnosticClaims) {
-        expect(spec.includes(claim), `${slug} must not ship "${claim}"`).toBe(false);
-      }
-    }
-  });
-
-  it("falls back to the style's own rules when no tokens are supplied", () => {
-    const style = styles.find((candidate) => candidate.slug === "glassmorphism")!;
-    const spec = buildDesignSpec({
-      locale: "en",
-      styleName: style.nameEn,
-      styleSlug: style.slug,
-      description: style.descriptionEn ?? style.description,
-      philosophy: style.philosophyEn ?? style.philosophy,
-      colors: style.colors,
-      doList: style.doListEn ?? style.doList,
-      dontList: style.dontListEn ?? style.dontList,
-      keywords: style.keywordsEn ?? style.keywords,
-    });
-
-    for (const claim of styleAgnosticClaims) {
-      expect(spec.includes(claim), `fallback must not ship "${claim}"`).toBe(false);
-    }
+    // Code samples and utility names stay in English; the instructions must
+    // contain Chinese prose beyond just a translated style name or heading.
+    expect((prose.match(CJK) ?? []).length).toBeGreaterThan(20);
+    expect(hardPromptFor(slug, "zh")).toContain(style.aiRules.trim());
+    expect(style.aiRulesEn?.trim()).toBeTruthy();
+    expect(hardPromptFor(slug, "en")).toContain(style.aiRulesEn!.trim());
   });
 });

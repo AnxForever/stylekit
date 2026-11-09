@@ -389,63 +389,63 @@ Core principles:
   animation: film-noir-fade-in 0.5s ease-out both;
 }`,
 
-  aiRules: `STYLE: Film Noir
-TYPE: Dramatic high-contrast monochrome interface
+  aiRules: `风格：Film Noir
+类型：戏剧化的高对比度黑白界面
 
-MUST USE:
-- Deep black background: bg-[#0a0a0a] or bg-neutral-950
-- Grayscale palette: neutral-100 through neutral-950
-- Serif italic headings: font-serif italic
-- Extremely subtle layer separation: bg-neutral-900 vs bg-neutral-800
-- Minimal crimson accent: text-[#c41e3a] / bg-[#c41e3a] (sparingly)
-- Diagonal gradient light effects for drama
-- Thin or no borders: border-neutral-800
-- Uppercase small tracking labels: text-xs uppercase tracking-[0.2em]
+## 必须使用
+- 深黑背景：bg-[#0a0a0a] 或 bg-neutral-950
+- 灰阶调色板：neutral-100 至 neutral-950
+- 衬线斜体标题：font-serif italic
+- 极轻微的层次区分：bg-neutral-900 与 bg-neutral-800
+- 少量深红色点缀：text-[#c41e3a] / bg-[#c41e3a]（克制使用）
+- 斜向渐变光效，营造戏剧感
+- 使用极细边框或不加边框：border-neutral-800
+- 使用小号全大写字母和宽字距标签：text-xs uppercase tracking-[0.2em]
 
-MUST AVOID:
-- Colorful backgrounds
-- High saturation colors (crimson only as rare accent)
-- Large rounded corners (rounded-2xl+)
-- Cartoon/cute elements
-- Glow effects (forbidden — breaks the noir darkness)
-- Gradient buttons
-- Emoji or playful iconography
-- Buttons without active:scale-[0.98]
-- focus:ring without focus:ring-offset-neutral-950
-- Animation duration below 300ms (Noir is slow and dramatic, not snappy)
+## 绝对禁止
+- 彩色背景
+- 高饱和色彩（深红色只能作为少量点缀）
+- 大圆角（rounded-2xl+）
+- 卡通或可爱元素
+- 发光效果（会破坏黑色电影的暗调氛围，禁止使用）
+- 渐变按钮
+- 表情符号或俏皮风格的图标
+- 缺少 active:scale-[0.98] 的按钮
+- 使用 focus:ring 却没有 focus:ring-offset-neutral-950
+- 动画时长低于 300ms（黑色电影节奏缓慢而富有戏剧性，不能显得急促）
 
-COLOR SYSTEM:
-- Background: #0a0a0a (near black)
-- Card: neutral-900
-- Card border hover: neutral-600 (from neutral-800)
-- Text primary: neutral-100 → white on group-hover
-- Text secondary: neutral-400 → neutral-300 on group-hover
-- Text muted: neutral-500
-- Crimson accent: #c41e3a (very sparingly)
-- Gold accent: #d4af37 (very sparingly)
-- Borders: neutral-700 to neutral-800
+## 色彩系统
+- 背景：#0a0a0a（近黑色）
+- 卡片：neutral-900
+- 卡片边框悬停态：从 neutral-800 变为 neutral-600
+- 主文字：neutral-100，悬停时通过 group-hover 变为 white
+- 次级文字：neutral-400，悬停时通过 group-hover 变为 neutral-300
+- 弱化文字：neutral-500
+- 深红色点缀：#c41e3a（极少使用）
+- 金色点缀：#d4af37（极少使用）
+- 边框：neutral-700 至 neutral-800
 
-## Animation & Interaction Rules
+## 动画与交互规则
 
-- Light Shaft Sweep: ALL buttons use group class. Inside, an absolute div with bg-gradient-to-r from-transparent via-white/30 to-transparent starts at -translate-x-[200%] skew-x-[-20deg] and sweeps to translate-x-[200%] on group-hover. Use transition-transform duration-700 ease-in-out. The skew creates a diagonal "flashlight beam" effect. The sweep is slow and deliberate — this is noir, not a sprint.
-- Harsh Monochrome Swap: Primary button hover does hover:bg-neutral-100 hover:text-neutral-950 hover:border-neutral-100. This is a complete binary inversion (dark→light), not a gradual shade change. The abruptness reflects 40s film drama where scenes cut hard between shadow and light.
-- Venetian Blinds Pattern: Cards have an absolute overlay with bg-[repeating-linear-gradient(180deg,transparent,transparent_4px,#fff_4px,#fff_6px)] at opacity-0, transitioning to group-hover:opacity-[0.06]. This is barely perceptible — like light filtering through half-closed window blinds in a detective's office.
-- Crimson Bleed: Cards include a horizontal line w-12 h-[2px] bg-[#c41e3a] that expands to group-hover:w-full over duration-700 ease-out. Simulates blood spreading, or a film title card's crimson underline unfurling.
-- Text Reveal: Card headings and body text brighten on group-hover (neutral-100→white, neutral-400→neutral-300) using transition-colors duration-500. Combined with venetian blinds pattern, creates the effect of light falling on text.
-- Tactile Confirmation: ALL buttons must use active:scale-[0.98].
-- Focus Ring Dark: Always use focus:ring-2 focus:ring-neutral-400 focus:ring-offset-2 focus:ring-offset-neutral-950.
-- Slow Easing: Buttons use duration-500. Cards use duration-700. The sweeping light shaft uses duration-700 ease-in-out. NEVER use duration below 300ms — slowness is inherent to noir's dramatic weight.
+- 光束扫过：所有按钮都必须带有 group 类。按钮内部放置一个绝对定位的 div，并使用 bg-gradient-to-r from-transparent via-white/30 to-transparent；光束从 -translate-x-[200%] skew-x-[-20deg] 开始，在 group-hover 时扫至 translate-x-[200%]。使用 transition-transform duration-700 ease-in-out。倾斜会形成斜向的“手电光束”效果。光束移动要缓慢而克制——这是 Noir 的节奏，不是冲刺。
+- 强烈的黑白反转：主按钮悬停时使用 hover:bg-neutral-100 hover:text-neutral-950 hover:border-neutral-100。颜色要从暗到亮彻底反转，而非逐渐变浅；这种突变对应40 年代电影中明暗场景的硬切换。
+- 百叶窗纹理：卡片添加绝对定位的遮罩 bg-[repeating-linear-gradient(180deg,transparent,transparent_4px,#fff_4px,#fff_6px)]，初始 opacity-0，悬停后转为 group-hover:opacity-[0.06]。效果应几乎不可察觉，像侦探办公室半掩的百叶窗透进的光。
+- 深红渗染：卡片放置一条水平线 w-12 h-[2px] bg-[#c41e3a]，并在悬停时通过 group-hover:w-full 展开，过渡使用 duration-700 ease-out。效果应像血色蔓延，也像电影片名下的深红色线条缓缓展开。
+- 文字显影：悬停时通过 group-hover 提亮卡片标题和正文（neutral-100→white、neutral-400→neutral-300），使用 transition-colors duration-500。结合百叶窗纹理，营造光线落在文字上的效果。
+- 按压反馈：所有按钮都必须使用 active:scale-[0.98]。
+- 深色焦点环：始终使用 focus:ring-2 focus:ring-neutral-400 focus:ring-offset-2 focus:ring-offset-neutral-950。
+- 慢速缓动：按钮使用 duration-500，卡片使用 duration-700，扫光使用 duration-700 ease-in-out。绝不能使用低于 300ms 的时长——缓慢是 Noir 戏剧张力的一部分。
 
-## Self-Check
+## 自检清单
 
-After generating code, verify:
-1. All buttons are wrapped in group, have the light shaft sweep div inside
-2. All buttons have active:scale-[0.98]
-3. All focusable elements have focus:ring-offset-neutral-950
-4. Cards have venetian blinds overlay (opacity-0 → group-hover:opacity-[0.06])
-5. Cards have crimson bleed line (w-12 → group-hover:w-full)
-6. No animation duration below 300ms
-7. No rounded-2xl or larger`,
+生成代码后逐项确认：
+1. 所有按钮都包在 group 中，且内部包含扫光 div
+2. 所有按钮都有 active:scale-[0.98]
+3. 所有可聚焦元素都有 focus:ring-offset-neutral-950
+4. 卡片都有百叶窗遮罩（opacity-0 → group-hover:opacity-[0.06]）
+5. 卡片都有深红色延展线（w-12 → group-hover:w-full）
+6. 没有动画时长低于 300ms
+7. 没有使用 rounded-2xl 或更大的圆角`,
 
   aiRulesEn: `STYLE: Film Noir
 TYPE: Dramatic high-contrast monochrome interface

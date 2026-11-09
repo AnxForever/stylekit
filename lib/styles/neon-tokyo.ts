@@ -214,48 +214,48 @@ Suitable for: nightlife apps, music streaming, streetwear brands, urban photogra
 
 .neon-tokyo-focus { outline: 2px solid var(--neon-tokyo-primary, currentColor); outline-offset: 2px; }`,
 
-  aiRules: `STYLE: Neon Tokyo
-TYPE: Urban nightscape interface
+  aiRules: `风格：Neon Tokyo
+类型：都市夜景界面
 
-MUST USE:
-- Dark night sky background: bg-[#0a0a1a]
-- Multi-color neon glows (not single-color)
-- Primary pink: text-[#ff1493], border-[#ff1493]
-- Cyan accent: text-[#00f0ff]
-- Warm neon: text-[#ff6b00]
-- Purple neon: text-[#bc13fe]
-- Glow shadows with color: shadow-[0_0_20px_rgba(255,20,147,0.5)]
-- backdrop-blur for glass/reflection effect
-- font-bold uppercase tracking-wider for labels
-- rounded-sm for subtle edge softness
+## 必须使用
+- 深夜空背景：bg-[#0a0a1a]
+- 使用多色霓虹光晕，不要只用单一颜色
+- 主色粉色：text-[#ff1493]、border-[#ff1493]
+- 青色强调：text-[#00f0ff]
+- 暖色霓虹：text-[#ff6b00]
+- 紫色霓虹：text-[#bc13fe]
+- 使用带颜色的辉光阴影：shadow-[0_0_20px_rgba(255,20,147,0.5)]
+- 使用 backdrop-blur 营造玻璃/反射效果
+- 标签使用 font-bold uppercase tracking-wider
+- 使用 rounded-sm 保持边缘柔和
 
-MUST AVOID:
-- Light/white backgrounds
-- Low saturation or muted colors
-- Regular shadows (shadow-md)
-- Serif fonts (except for Japanese decorative text)
-- Single-color neon palettes
-- Corporate or overly clean layouts
+## 绝对禁止
+- 浅色或白色背景
+- 低饱和或灰暗的颜色
+- 常规阴影（shadow-md）
+- 衬线字体（日本装饰文字除外）
+- 单色霓虹配色
+- 企业化或过度整洁的布局
 
-COLOR RULES:
-- Neon Pink: #ff1493 (primary)
-- Night Sky: #0a0a1a (background)
-- Cyan Neon: #00f0ff
-- Warm Neon: #ff6b00
-- Purple Neon: #bc13fe
+## 配色规则
+- 霓虹粉：#ff1493（主色）
+- 夜空：#0a0a1a（背景）
+- 青色霓虹：#00f0ff
+- 暖色霓虹：#ff6b00
+- 紫色霓虹：#bc13fe
 
-DIFFERENCE FROM CYBERPUNK-NEON:
-- Warmer, more organic feel
-- Multi-color neon mixing (not cyan-dominant)
-- Street photography aesthetic, not sci-fi
-- Wet reflections, not scan lines
+## 与 Cyberpunk-Neon 的区别
+- 氛围更温暖、更自然
+- 混合使用多色霓虹，不以青色为主导
+- 采用街头摄影美学，而不是科幻风格
+- 表现潮湿路面的反光，而不是扫描线
 
-## Animation & Interaction Rules
+## 动画与交互规则
 
-- Rain-Slicked Reflections: bottom reflection gradients should intensify on hover with higher opacity and mixed-color refraction.
-- Signboard Flicker: primary neon headings can use subtle irregular flicker to mimic aging street signage.
-- Bleeding Glows: hover state should expand pink/cyan/orange glow layers simultaneously so light bleeds at the edges.
-- Damp Atmosphere: transitions stay smooth (duration-300 to 500) to preserve wet-night ambience rather than sharp arcade motion.`,
+- 雨后反光：悬停时，底部反射渐变应提高不透明度并增强混色折射。
+- 招牌闪烁：主霓虹标题可以使用轻微且不规则的闪烁，模拟老旧街头招牌。
+- 溢光：悬停状态应同时扩展粉色/青色/橙色的光晕层，让光线从边缘溢出。
+- 潮湿氛围：过渡保持平滑（duration-300 to 500），延续雨夜气息，避免街机式的生硬运动。`,
 
   aiRulesEn: `STYLE: Neon Tokyo
 TYPE: Urban nightscape interface

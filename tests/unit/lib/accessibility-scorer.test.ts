@@ -92,6 +92,25 @@ describe("accessibility-scorer", () => {
   // Submissions are not registered yet, so scoreStyle() returns null for them.
   // scoreStyleData is the data-driven path that can score them anyway.
   describe("scoreStyleData", () => {
+    it("does not infer body line height from section spacing", () => {
+      const style = getStyleBySlug("editorial")!;
+      const tokens = getStyleTokens("editorial")!;
+      const variants = [
+        tokens.spacing.section,
+        "py-16 md:py-24 lg:py-32",
+        "py-16 leading-8",
+      ];
+
+      const values = variants.map((section) =>
+        scoreStyleData(style.colors, {
+          ...tokens,
+          spacing: { ...tokens.spacing, section },
+        }).readability.lineHeight,
+      );
+
+      expect(values).toEqual(["not-evaluated", "not-evaluated", "not-evaluated"]);
+    });
+
     it("scores colors and tokens that are not in the registry", () => {
       const result = scoreStyleData(
         { primary: "#000000", secondary: "#ffffff", accent: ["#ff0000"] },

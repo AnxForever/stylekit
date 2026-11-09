@@ -1,7 +1,8 @@
 // @vitest-environment happy-dom
 import "@testing-library/jest-dom/vitest";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { cleanup, fireEvent, render, screen, waitFor, act } from "@testing-library/react";
+import type { ThankYouEntry } from "@/lib/site/support";
 
 const { useI18nMock } = vi.hoisted(() => ({
   useI18nMock: vi.fn(),
@@ -13,8 +14,21 @@ vi.mock("@/lib/i18n/context", () => ({
 
 import { ThankYouModal } from "@/components/home/thank-you-modal";
 
+function makeEntry(id: string, date: string): ThankYouEntry {
+  return {
+    id,
+    date,
+    donorLabel: { en: id, zh: id },
+    receiptImage: `/support/${id}.png`,
+    receiptAlt: { en: id, zh: id },
+  };
+}
+
 describe("ThankYouModal", () => {
-  afterEach(cleanup);
+  afterEach(() => {
+    cleanup();
+    vi.useRealTimers();
+  });
   beforeEach(() => {
     window.history.replaceState({}, "", "/zh");
     window.localStorage.clear();
@@ -42,6 +56,36 @@ describe("ThankYouModal", () => {
     await waitFor(() => expect(screen.getByRole("dialog")).toBeInTheDocument());
     fireEvent.click(screen.getByRole("button", { name: "关闭" }));
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+  });
+
+  it("stays closed for a batch the visitor already acknowledged", async () => {
+    vi.useFakeTimers();
+    window.localStorage.setItem("stylekit-thank-you-seen", "donation-a");
+
+    render(<ThankYouModal entries={[makeEntry("donation-a", "2026-11-05")]} />);
+    await act(async () => {
+      vi.advanceTimersByTime(1300);
+    });
+
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+  });
+
+  it("opens again when a newer donation batch arrives", async () => {
+    vi.useFakeTimers();
+    window.localStorage.setItem("stylekit-thank-you-seen", "donation-a");
+
+    render(
+      <ThankYouModal
+        entries={[makeEntry("donation-b", "2026-11-06"), makeEntry("donation-a", "2026-11-05")]}
+      />
+    );
+    await act(async () => {
+      vi.advanceTimersByTime(1300);
+    });
+
+    expect(screen.getByRole("dialog")).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: "关闭" }));
+    expect(window.localStorage.getItem("stylekit-thank-you-seen")).toBe("donation-b");
   });
 
   it("does not render outside the homepage when restricted", () => {

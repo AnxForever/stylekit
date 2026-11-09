@@ -74,6 +74,32 @@ export const pastelUi: DesignStyle = {
     }
   },
   "globalCss": `:root { --pastel-cream: #fff8f0; --pastel-lilac: #d9c7ff; --pastel-mint: #cbefdf; --pastel-butter: #ffe49a; --pastel-coral: #ffb5a7; --pastel-ink: #332d3d; }\n.pastel-surface { background: var(--pastel-cream); color: var(--pastel-ink); }\n.pastel-bottom-nav { padding-bottom: max(0.75rem, env(safe-area-inset-bottom)); }\n@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; } }`,
-  "aiRules": `STYLE: Pastel App UI\n\nMUST USE:\n- Warm cream backgrounds with pastel accents reserved for grouping and state\n- Deep plum or charcoal text for readable headings and body copy\n- rounded-2xl to rounded-3xl touch surfaces\n- Mobile-first single-column flows and a stable bottom navigation\n- Visible save, use, rating, and quick-feedback actions near the decision point\n- Soft borders and tinted shadows instead of heavy glass panels\n\nMUST AVOID:\n- Low-contrast light text on pastel backgrounds\n- Full-page neon gradients or excessive glassmorphism\n- Tiny touch targets and dense desktop tables on mobile\n- Hiding core actions at the bottom of a long detail page\n\nINTERACTION:\n- Use 200-300ms transitions, subtle lift on hover, and scale-[0.98] on press\n- Respect prefers-reduced-motion\n- Keep the primary action reachable by the thumb\n\nCOLOR ROLES:\n- Background: #fff8f0\n- Primary action: #66508f\n- Soft surfaces: #d9c7ff and #cbefdf\n- Emotional accents: #ffe49a and #ffb5a7\n- Text: #332d3d`,
+  "aiRules": `风格：Pastel App UI
+
+## 必须使用
+- 暖奶油色背景，粉彩强调色仅用于分组和状态提示
+- 使用深梅子色或炭灰色文字，确保标题和正文易读
+- 触控区域使用 rounded-2xl 至 rounded-3xl
+- 采用移动端优先的单列流程，并保持底部导航稳定
+- 在用户作出决定的位置附近显示保存、使用、评分和快速反馈操作
+- 使用柔和边框和着色阴影，避免厚重的玻璃面板
+
+## 绝对禁止
+- 在粉彩背景上使用对比度过低的浅色文字
+- 整页霓虹渐变或过度使用玻璃拟态
+- 触控目标过小，以及在移动端使用密集的桌面表格
+- 将核心操作藏在很长的详情页底部
+
+## 交互
+- 使用 200-300ms 过渡，悬停时轻微抬起，按下时应用 scale-[0.98]
+- 尊重 prefers-reduced-motion 设置
+- 确保主要操作在拇指可触及范围内
+
+## 颜色角色
+- 背景：#fff8f0
+- 主操作：#66508f
+- 柔和表面：#d9c7ff 和 #cbefdf
+- 情绪强调色：#ffe49a 和 #ffb5a7
+- 文字：#332d3d`,
   "aiRulesEn": `STYLE: Pastel App UI\n\nMUST USE:\n- Warm cream backgrounds with pastel accents reserved for grouping and state\n- Deep plum or charcoal text for readable headings and body copy\n- rounded-2xl to rounded-3xl touch surfaces\n- Mobile-first single-column flows and a stable bottom navigation\n- Visible save, use, rating, and quick-feedback actions near the decision point\n- Soft borders and tinted shadows instead of heavy glass panels\n\nMUST AVOID:\n- Low-contrast light text on pastel backgrounds\n- Full-page neon gradients or excessive glassmorphism\n- Tiny touch targets and dense desktop tables on mobile\n- Hiding core actions at the bottom of a long detail page\n\nINTERACTION:\n- Use 200-300ms transitions, subtle lift on hover, and scale-[0.98] on press\n- Respect prefers-reduced-motion\n- Keep the primary action reachable by the thumb\n\nCOLOR ROLES:\n- Background: #fff8f0\n- Primary action: #66508f\n- Soft surfaces: #d9c7ff and #cbefdf\n- Emotional accents: #ffe49a and #ffb5a7\n- Text: #332d3d`
 };

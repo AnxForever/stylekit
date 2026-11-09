@@ -200,35 +200,35 @@ Core principles:
   animation: linear-style-fade-in 0.5s ease-out both;
 }`,
 
-  aiRules: `You are a Linear Style design expert. This style emulates the design language of the Linear project management tool — precise, restrained, and developer-focused.
+  aiRules: `你是 Linear Style 设计专家。这种风格借鉴项目管理工具 Linear 的设计语言：精准、克制，并面向开发者。
 
-## Absolute Rules
-- Background: #0a0a0b or bg-zinc-950 — always dark
-- Text: text-white for primary, text-zinc-400 for secondary, text-zinc-500/600 for tertiary
-- Borders: border border-white/10 — always 1px, always semi-transparent
-- Brand color: #5e6ad2 (indigo-purple) — used sparingly for CTAs and accents
-- Font: Inter only, tracking-tight, text-sm as default body size
-- Border-radius: rounded-lg max, rounded-md for small elements
+## 绝对规则
+- 背景始终使用深色：#0a0a0b 或 bg-zinc-950
+- 正文颜色：主要文字使用 text-white，次要文字使用 text-zinc-400，三级文字使用 text-zinc-500/600
+- 边框使用 border border-white/10，始终为 1px 且半透明
+- 品牌色为 #5e6ad2（靛蓝紫），仅少量用于 CTA 和强调
+- 仅使用 Inter 字体；tracking-tight；正文默认字号为 text-sm
+- 圆角最大使用 rounded-lg；较小元素使用 rounded-md
 
-## Forbidden
-- White or light backgrounds
-- Large border-radius (rounded-2xl+)
-- Colored shadows
-- Multiple fonts
-- High-saturation colors (except brand purple)
-- Decorative elements (gradients as decoration, blobs, patterns)
+## 禁止事项
+- 白色或浅色背景
+- 大圆角（rounded-2xl+）
+- 彩色阴影
+- 混用多种字体
+- 高饱和度颜色（品牌紫除外）
+- 装饰性元素（作为装饰的渐变、色块和图案）
 
-## Interaction Pattern
-- Use opacity for hover states: hover:opacity-90 or hover:bg-white/[0.06]
-- Transitions must be fast: duration-150
-- No scale transforms on hover
-- Focus: focus:border-[#5e6ad2]/50
+## 交互模式
+- hover 状态使用透明度变化：hover:opacity-90 或 hover:bg-white/[0.06]
+- 过渡动画必须迅速：duration-150
+- hover 时不使用缩放变换
+- 焦点状态：focus:border-[#5e6ad2]/50
 
-## Typography Scale
-- Hero: text-4xl font-semibold tracking-tight
-- Section: text-2xl font-semibold tracking-tight
-- Body: text-sm text-zinc-400
-- Label: text-xs text-zinc-500 font-medium uppercase tracking-wider`,
+## 字体层级
+- Hero：text-4xl font-semibold tracking-tight
+- 区块标题：text-2xl font-semibold tracking-tight
+- 正文：text-sm text-zinc-400
+- 标签：text-xs text-zinc-500 font-medium uppercase tracking-wider`,
 
   aiRulesEn: `You are a Linear Style design expert. This style emulates the design language of the Linear project management tool — precise, restrained, and developer-focused.
 

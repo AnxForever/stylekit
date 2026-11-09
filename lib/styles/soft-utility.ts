@@ -73,6 +73,33 @@ export const softUtility: DesignStyle = {
     }
   },
   "globalCss": `:root { --utility-surface: #f4f8f6; --utility-ink: #203b40; --utility-primary: #2d5b63; --utility-mint: #a9d8cc; --utility-apricot: #f3c98b; }\n.utility-status { min-height: 0.5rem; border-radius: 9999px; }\n.utility-bottom-bar { padding-bottom: max(0.75rem, env(safe-area-inset-bottom)); }\n@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; } }`,
-  "aiRules": `STYLE: Soft Utility\n\nMUST USE:\n- Deep teal primary actions with pale surfaces and distinct state colors\n- Rounded-xl to rounded-2xl controls that preserve information density\n- Mobile-first bottom action bars and thumb-reachable primary actions\n- Explicit default, focus, success, error, disabled, and loading states\n- Status colors paired with text or icons; never communicate meaning by color alone\n- Fast, restrained motion that supports task completion\n\nMUST AVOID:\n- Low-contrast text for task-critical information\n- Turning a tool screen into a decorative card gallery\n- Removing boundaries or state feedback in the name of softness\n- Bouncy animations that slow down repeated actions\n\nINTERACTION:\n- Use 160-240ms transitions and scale-[0.98] on press\n- Keep primary controls in a consistent location across screens\n- Provide undo or confirmation for destructive actions\n\nCOLOR ROLES:\n- Surface: #f4f8f6\n- Text: #203b40\n- Primary: #2d5b63\n- Success/support: #a9d8cc\n- Notice: #f3c98b\n- Secondary states: #e6b7b0 and #b8c9ed`,
+  "aiRules": `风格：Soft Utility
+
+## 必须使用
+- 浅色表面搭配深青色主要操作，并为不同状态使用清晰区分的颜色
+- 控件使用 rounded-xl 至 rounded-2xl，同时保持信息密度
+- 采用移动端优先的底部操作栏，让主要操作位于拇指易触及的位置
+- 明确呈现 default、focus、success、error、disabled 和 loading 状态
+- 状态颜色必须搭配文字或图标；绝不能只靠颜色传达含义
+- 动效快速、克制，并服务于任务完成
+
+## 绝对禁止
+- 任务关键信息使用低对比度文字
+- 把工具页面变成装饰性卡片画廊
+- 为了追求柔和感而移除边界或状态反馈
+- 会拖慢重复操作的弹跳动画
+
+## 交互
+- 使用 160-240ms 过渡，并在按下时应用 scale-[0.98]
+- 各页面的主要控件应位于一致的位置
+- 破坏性操作应提供撤销或确认
+
+## 颜色角色
+- 表面：#f4f8f6
+- 文字：#203b40
+- 主色：#2d5b63
+- 成功/辅助色：#a9d8cc
+- 提示色：#f3c98b
+- 次级状态色：#e6b7b0 和 #b8c9ed`,
   "aiRulesEn": `STYLE: Soft Utility\n\nMUST USE:\n- Deep teal primary actions with pale surfaces and distinct state colors\n- Rounded-xl to rounded-2xl controls that preserve information density\n- Mobile-first bottom action bars and thumb-reachable primary actions\n- Explicit default, focus, success, error, disabled, and loading states\n- Status colors paired with text or icons; never communicate meaning by color alone\n- Fast, restrained motion that supports task completion\n\nMUST AVOID:\n- Low-contrast text for task-critical information\n- Turning a tool screen into a decorative card gallery\n- Removing boundaries or state feedback in the name of softness\n- Bouncy animations that slow down repeated actions\n\nINTERACTION:\n- Use 160-240ms transitions and scale-[0.98] on press\n- Keep primary controls in a consistent location across screens\n- Provide undo or confirmation for destructive actions\n\nCOLOR ROLES:\n- Surface: #f4f8f6\n- Text: #203b40\n- Primary: #2d5b63\n- Success/support: #a9d8cc\n- Notice: #f3c98b\n- Secondary states: #e6b7b0 and #b8c9ed`
 };

@@ -112,6 +112,38 @@ describe("GET /api/styles/[slug]/brief", () => {
     expect(payload.provenance.contentHash).toBe(bundled.provenance.contentHash);
   });
 
+  it("keeps Editorial's brief, legacy bans, tokens, and canonical document aligned", async () => {
+    const bundled = getImplementationBrief("editorial")!;
+    vi.mocked(resolveStyleDelivery).mockResolvedValue({
+      source: "static",
+      style: getStyleBySlug(bundled.slug)!,
+      capabilities: {
+        tokens: bundled.tokens,
+        recipes: getStyleRecipes(bundled.slug)!,
+        readiness: bundled.readiness,
+        accessibility: null,
+        versioning: null,
+        exports: { ideConfigs: true },
+      },
+    });
+
+    const response = await GET(new Request("https://www.stylekit.top/api/styles/editorial/brief"), {
+      params: Promise.resolve({ slug: "editorial" }),
+    });
+    const payload = await response.json();
+
+    expect(response.status).toBe(200);
+    expect(payload.dontList[0]).toContain("Mauve (#816d70)");
+    expect(payload.dontList[0]).toContain("quote marks and selected states");
+    expect(payload.dontList[0]).not.toContain("pure monochrome");
+    expect(payload.tokens.colors.background.accent).toEqual(["bg-[#816d70]"]);
+    expect(payload.designDocument.content).toContain(
+      "The only warm accent. Restricted to quote marks and selection states",
+    );
+    expect(payload.designDocument.content).toContain("#816d70");
+    expect(payload.designDocument.content).not.toContain("NO colored accents");
+  });
+
   it("keeps community capabilities separate from bundled rules for a reused slug", async () => {
     const bundled = getImplementationBrief("neo-brutalist")!;
     vi.mocked(resolveStyleDelivery).mockResolvedValue({

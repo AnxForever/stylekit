@@ -4,7 +4,7 @@
   "files": {
     "components/home/featured-carousel.tsx": "8d74ccd23b6af86b4c79c293bd382e166711a6a50fefc98a70b48b97bd084cfc",
     "components/home/home-style-card.tsx": "e0529494ea3d3269fa8270ffb2fed3e42dd0d48d801a4976381e796497028991",
-    "components/home/style-card.tsx": "8f48f6f1a228ab2c381a173a01f9240f4e266276e3fcc47c677eeacbed590b9f",
+    "components/home/style-card.tsx": "bc4ed4d99a8f4fc5af21582a5408758aa78f106cc1c4ffb037b85a4dfee3b66a",
     "components/style-preview-switcher.tsx": "feed9300e9ba3bc35df5967d36d25fd1d71dea2f05685d7608fdf82cba499d12",
     "components/style-preview/style-cover-preview.tsx": "8d7d9a11a08acd2f64696f7e688e33c8ecb7ee03f4f22994fadae4293819a3e6",
     "lib/style-components.tsx": "2ee32bee110d37e2d62191cc1b036f5579f99ba4c1c10524a46b4e24fbaa53f2",
@@ -156,6 +156,33 @@
     "lib/style-preview/styles/z-pattern-layout.tsx": "45735dc9271bc545c30dfa994303ae911adac343307c522808962de987face78",
     "lib/style-preview/styles/zen-garden.tsx": "b10338b2e55a267e8be31f8e6bcb458092aabbab3b2aee39f6aef76ec884c5d8",
     "lib/style-preview/types.ts": "38a0dd83e6f52a5e903d1c2f5735bf2bdbb843b65d6ba8ee42aafd1509b41348",
-    "lib/styles/meta-registry.ts": "792e3358327b525d597174e06dca08f1ea474b4da27893a4160a6f0b4bb26342"
-  }
+    "lib/styles/meta-registry.ts": "13c36d49a8387ab83e47902cd91e145193597d7a00ef76adcc83577a3d04f484"
+  },
+  "nonVisualSourceUpdates": [
+    {
+      "path": "components/home/style-card.tsx",
+      "commit": "10ed468d",
+      "reason": "Share the catalog return-URL storage key; rendered JSX is unchanged.",
+      "previousHash": "8f48f6f1a228ab2c381a173a01f9240f4e266276e3fcc47c677eeacbed590b9f",
+      "currentHash": "bc4ed4d99a8f4fc5af21582a5408758aa78f106cc1c4ffb037b85a4dfee3b66a"
+    }
+  ],
+  "reviewedMetadataCorrections": [
+    {
+      "path": "lib/styles/meta-registry.ts",
+      "commit": "78c27a61",
+      "scope": "editorial.colors only",
+      "reason": "Match the existing canonical Editorial palette. Approved cover renderer and shared Corporate Clean card fixtures are unchanged.",
+      "previousHash": "792e3358327b525d597174e06dca08f1ea474b4da27893a4160a6f0b4bb26342",
+      "currentHash": "5ba78576b558c66f6fb11289ac6ca1e2dede176d3a1983869b6e2bcbf4a63b31"
+    },
+    {
+      "path": "lib/styles/meta-registry.ts",
+      "reviewedOn": "2026-11-09",
+      "scope": "glassmorphism.colors only",
+      "reason": "Match the existing rich definition, canonical nocturne palette and approved glass preview. Cover renderers, shared Corporate Clean fixtures and stored PNG baselines are unchanged.",
+      "previousHash": "5ba78576b558c66f6fb11289ac6ca1e2dede176d3a1983869b6e2bcbf4a63b31",
+      "currentHash": "13c36d49a8387ab83e47902cd91e145193597d7a00ef76adcc83577a3d04f484"
+    }
+  ]
 }

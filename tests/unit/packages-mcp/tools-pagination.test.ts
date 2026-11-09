@@ -1,4 +1,10 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import { createRequire } from "node:module";
+
+const requireFromMcp = createRequire(new URL("../../../packages/mcp/package.json", import.meta.url));
+const { CallToolResultSchema } = requireFromMcp("@modelcontextprotocol/sdk/types.js") as {
+  CallToolResultSchema: { parse: (value: unknown) => unknown };
+};
 
 const mocks = vi.hoisted(() => ({
   // Read synchronously by tools.ts when it builds the search tool's description,
@@ -22,6 +28,7 @@ const mocks = vi.hoisted(() => ({
   ASSET_KINDS: ["style", "component-pattern", "template", "experience-pack", "prompt"],
   listPublicAssetsLive: vi.fn(),
   getPublicAssetLive: vi.fn(),
+  SITE_URL: "https://www.stylekit.top",
 }));
 
 vi.mock("../../../packages/mcp/src/data.js", () => mocks);
@@ -84,6 +91,63 @@ function registeredHandler<T extends Record<string, unknown>>(toolName: string) 
   const registration = registerTool.mock.calls.find(([name]) => name === toolName);
   expect(registration).toBeDefined();
   return registration?.[2] as unknown as (input: T) => Promise<ToolResult>;
+}
+
+function registerBriefHandler(baseUrl?: string) {
+  const registerTool = vi.fn();
+  registerStyleKitTools({ registerTool } as never, { baseUrl });
+  const registration = registerTool.mock.calls.find(([name]) => name === "stylekit_get_style");
+  expect(registration).toBeDefined();
+  return registration?.[2] as unknown as (input: { slug: string; include: string[] }) => Promise<ToolResult>;
+}
+
+function liveBrief(slug: string, designDocument?: { schemaVersion: string; fileName: string; locale: string; contentType: string; url: string; contentHash: string; content: string }) {
+  return {
+    schemaVersion: "stylekit-brief-v1",
+    slug,
+    name: "Style",
+    nameEn: "Style",
+    category: "modern",
+    styleType: "visual",
+    description: "A style.",
+    tags: [],
+    keywords: [],
+    philosophy: "Be consistent.",
+    aiRules: "Use the style.",
+    doList: [],
+    dontList: [],
+    colors: { primary: "#000000", secondary: "#ffffff", accent: [] },
+    globalCss: "",
+    components: {},
+    variants: [],
+    tokens: null,
+    recipes: {},
+    readiness: {},
+    lintRules: { schemaVersion: "stylekit-lint-v1", sources: [], forbiddenClasses: [], forbiddenPatterns: [], required: {}, exempt: [], unsupportedRules: [] },
+    provenance: { source: "static", contentHash: "fnv1a32:1234abcd", url: `https://www.stylekit.top/api/styles/${slug}/brief` },
+    ...(designDocument ? { designDocument } : {}),
+  };
+}
+
+function canonicalDocument(content: string, locale = "en") {
+  return {
+    schemaVersion: "stylekit-design-document-v1",
+    fileName: "design.md",
+    locale,
+    contentType: "text/markdown",
+    url: `https://www.stylekit.top/api/design/existing-without-tokens/design.md?locale=${locale}`,
+    contentHash: "fnv1a32:1234abcd",
+    content,
+  };
+}
+
+function prepareBriefHandler(slug: string, brief: Record<string, unknown>, baseUrl?: string, detailPatch: Record<string, unknown> = {}) {
+  mocks.getStyleDetailLive.mockResolvedValue({
+    data: { ...detail(), slug, name: "Style", nameEn: "Style", ...detailPatch },
+    origin: "live",
+  });
+  mocks.getImplementationBriefLive.mockResolvedValue({ data: brief, origin: "live" });
+  return registerBriefHandler(baseUrl);
 }
 
 function registeredSearchHandler() {
@@ -225,5 +289,146 @@ describe("stylekit_search_styles pagination", () => {
     expect(message).toContain("exists");
     expect(message).toContain("does not expose a compatible implementation brief");
     expect(message).not.toContain("Unknown style");
+  });
+});
+
+describe("stylekit_get_style brief text budget", () => {
+  it("keeps a complete canonical document inline when the full brief JSON is oversized", async () => {
+    const slug = "editorial";
+    const markdown = `# Editorial visual guide\n\n${"Use the documented type scale and restrained layout.\n".repeat(180)}`;
+    const brief = {
+      ...liveBrief(slug, canonicalDocument(markdown)),
+      largeLegacyPayload: "x".repeat(30_000),
+    };
+    const handler = prepareBriefHandler(slug, brief, "https://preview.stylekit.test/context/");
+
+    const result = await handler({ slug, include: ["brief"] });
+    const text = result.content?.[0]?.text ?? "";
+
+    expect(result.content).toHaveLength(1);
+    expect(JSON.stringify(result.structuredContent).length).toBeGreaterThan(25_000);
+    expect(text.length).toBeLessThanOrEqual(25_000);
+    expect(text).toContain(`## Canonical design.md\n${markdown}`);
+    expect(text).toContain("Full machine-readable brief JSON: https://preview.stylekit.test/context/api/styles/editorial/brief");
+    expect(text).not.toContain("largeLegacyPayload");
+    expect(CallToolResultSchema.parse(result)).toMatchObject({ structuredContent: result.structuredContent });
+  });
+
+  it("does not inline a partial canonical document when the document exceeds the budget", async () => {
+    const slug = "oversized-guide";
+    const markdown = `CANONICAL_BEGIN\n${"Complete visual rules.\n".repeat(1_400)}CANONICAL_END`;
+    const handler = prepareBriefHandler(slug, liveBrief(slug, canonicalDocument(markdown)));
+
+    const result = await handler({ slug, include: ["brief"] });
+    const text = result.content?.[0]?.text ?? "";
+
+    expect(text.length).toBeLessThanOrEqual(25_000);
+    expect(text).toContain("not embedded partially");
+    expect(text).toContain("Read the complete design.md: https://www.stylekit.top/api/design/oversized-guide/design.md?locale=en");
+    expect(text).not.toContain("CANONICAL_BEGIN");
+    expect((result.structuredContent?.brief as Record<string, unknown>)?.["designDocument"]).toMatchObject({ content: markdown });
+    expect(() => CallToolResultSchema.parse(result)).not.toThrow();
+  });
+
+  it("uses the configured HTTP base URL and encodes the canonical slug", async () => {
+    const slug = "editorial/style 1";
+    const handler = prepareBriefHandler(slug, liveBrief(slug, canonicalDocument("# Full guide")), "https://preview.stylekit.test/prefix/");
+
+    const result = await handler({ slug, include: ["brief"] });
+    const text = result.content?.[0]?.text ?? "";
+
+    expect(text).toContain("https://preview.stylekit.test/prefix/api/styles/editorial%2Fstyle%201/brief");
+    expect(text).toContain("https://preview.stylekit.test/prefix/api/design/editorial%2Fstyle%201/design.md?locale=en");
+    expect(() => CallToolResultSchema.parse(result)).not.toThrow();
+  });
+
+  it.each(["credentials", "non-http", "empty"] as const)(
+    "does not emit an unsafe configured base URL (%s)",
+    async (kind) => {
+      const slug = "editorial";
+      const configuredUrl = new URL(kind === "non-http" ? "file:///private/stylekit" : "https://preview.stylekit.test");
+      if (kind === "credentials") {
+        configuredUrl.username = "fixture-user";
+        configuredUrl.password = "example-test-value";
+      }
+      const baseUrl = kind === "empty" ? " " : configuredUrl.toString();
+      const handler = prepareBriefHandler(slug, liveBrief(slug, canonicalDocument("# Full guide")), baseUrl);
+
+      const result = await handler({ slug, include: ["brief"] });
+      const text = result.content?.[0]?.text ?? "";
+
+      expect(text).toContain("no safe HTTP URL is configured");
+      expect(text).not.toContain("fixture-user");
+      expect(text).not.toContain("example-test-value");
+      expect(text).not.toContain("file:///private/stylekit");
+      expect(() => CallToolResultSchema.parse(result)).not.toThrow();
+    },
+  );
+
+  it("clearly identifies bundled briefs that do not carry a canonical design.md", async () => {
+    const slug = "bundled-style";
+    mocks.getStyleDetailLive.mockResolvedValue({ data: { ...detail(), slug }, origin: "bundled", fallbackReason: "offline" });
+    mocks.getImplementationBriefLive.mockResolvedValue({ data: liveBrief(slug), origin: "bundled", fallbackReason: "offline" });
+    const handler = registerBriefHandler();
+
+    const result = await handler({ slug, include: ["brief"] });
+    const text = result.content?.[0]?.text ?? "";
+
+    expect(text).toContain("The bundled fallback does not include a canonical design.md.");
+    expect(text).toContain("Full machine-readable brief JSON: https://www.stylekit.top/api/styles/bundled-style/brief");
+    expect(text).not.toContain("## Canonical design.md");
+    expect(text.length).toBeLessThanOrEqual(25_000);
+    expect(() => CallToolResultSchema.parse(result)).not.toThrow();
+  });
+
+  it("includes requested token and recipe sections when they fit alongside the canonical document", async () => {
+    const slug = "editorial";
+    mocks.getTokensLive.mockResolvedValue({ data: { colors: { primary: "#000000" } }, origin: "live" });
+    mocks.getComponentRecipeLive.mockResolvedValue({
+      data: { component: "button", className: "button", code: "<button>Save</button>" },
+      origin: "live",
+    });
+    const handler = prepareBriefHandler(slug, liveBrief(slug, canonicalDocument("# Full guide")), undefined, {
+      hasTokens: true,
+      hasRecipes: true,
+      recipeIds: ["button"],
+    });
+
+    const result = await handler({ slug, include: ["brief", "tokens", "recipe"] });
+    const text = result.content?.[0]?.text ?? "";
+
+    expect(text).toContain("## Tokens");
+    expect(text).toContain("## Recipe — button");
+    expect(text).toContain("<button>Save</button>");
+    expect(result.structuredContent?.tokens).toBeDefined();
+    expect(result.structuredContent?.recipe).toBeDefined();
+    expect(text.length).toBeLessThanOrEqual(25_000);
+    expect(() => CallToolResultSchema.parse(result)).not.toThrow();
+  });
+
+  it("says where explicitly requested sections went when they cannot fit", async () => {
+    const slug = "editorial";
+    mocks.getTokensLive.mockResolvedValue({ data: { oversized: "token".repeat(5_000) }, origin: "live" });
+    mocks.getComponentRecipeLive.mockResolvedValue({
+      data: { component: "button", className: "button", code: "<button>Save</button>" },
+      origin: "live",
+    });
+    const handler = prepareBriefHandler(slug, liveBrief(slug, canonicalDocument("# Full guide")), undefined, {
+      hasTokens: true,
+      hasRecipes: true,
+      recipeIds: ["button"],
+    });
+
+    const result = await handler({ slug, include: ["brief", "tokens", "recipe"] });
+    const text = result.content?.[0]?.text ?? "";
+
+    expect(text.length).toBeLessThanOrEqual(25_000);
+    expect(text).toContain("Requested sections exceed the text budget and were not partially included.");
+    expect(text).toContain('call include: ["tokens"] or include: ["recipe"] separately.');
+    expect(text).toContain("Tokens JSON: https://www.stylekit.top/api/styles/editorial/tokens");
+    expect(text).not.toContain("## Tokens");
+    expect(result.structuredContent?.tokens).toBeDefined();
+    expect(result.structuredContent?.recipe).toBeDefined();
+    expect(() => CallToolResultSchema.parse(result)).not.toThrow();
   });
 });

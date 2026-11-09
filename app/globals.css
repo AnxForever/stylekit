@@ -608,17 +608,17 @@ html.theme-transition::view-transition-new(root) {
   50% { transform: translateY(-6px); }
 }
 
-/* AI access reel — one client name at a time in the connect-AI button.
-   Each step is exactly one line box (1.15em), and the track carries a
-   duplicate of the first name so the wrap back to 0 is invisible. */
+/* The compact agent reels pause on each supported tool. */
 @keyframes ai-reel {
-  0%, 12% { transform: translateY(0); }
-  16%, 28% { transform: translateY(-1.15em); }
-  32%, 44% { transform: translateY(-2.3em); }
-  48%, 60% { transform: translateY(-3.45em); }
-  64%, 76% { transform: translateY(-4.6em); }
-  80%, 92% { transform: translateY(-5.75em); }
-  100% { transform: translateY(-6.9em); }
+  0%, 42% { transform: translateY(0); }
+  50%, 92% { transform: translateY(-1.15em); }
+  100% { transform: translateY(-2.3em); }
+}
+
+@keyframes ai-icon-reel {
+  0%, 42% { transform: translateY(0); }
+  50%, 92% { transform: translateY(-1rem); }
+  100% { transform: translateY(-2rem); }
 }
 
 @theme inline {
@@ -634,11 +634,25 @@ html.theme-transition::view-transition-new(root) {
   --animate-home-support-float: home-support-float 5.2s ease-in-out infinite;
 }
 
-/* The reel steps between fixed positions, so a linear-easing step is the
-   intended look; the long duration keeps it from reading as a loading spinner. */
+/* Two supported clients, with enough time to read each name or icon. */
 .ai-reel-track {
-  animation: ai-reel 16s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+  animation: ai-reel 8s cubic-bezier(0.65, 0, 0.35, 1) infinite;
   will-change: transform;
+}
+
+.ai-icon-reel-track {
+  animation: ai-icon-reel 8s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+  will-change: transform;
+}
+
+.ai-icon-reel-item {
+  background-color: currentColor;
+  mask-position: center;
+  mask-repeat: no-repeat;
+  mask-size: contain;
+  -webkit-mask-position: center;
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-size: contain;
 }
 
 @media (max-width: 767px) {
@@ -822,7 +836,8 @@ input[type="range"] { cursor: pointer; }
 
   /* The reel would otherwise step through names at 0.01ms and land on a blank
      frame; pin it to the first client instead. */
-  .ai-reel-track {
+  .ai-reel-track,
+  .ai-icon-reel-track {
     animation: none !important;
     transform: none !important;
   }

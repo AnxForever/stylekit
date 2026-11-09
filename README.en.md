@@ -67,6 +67,8 @@ pnpm install
 pnpm dev
 ```
 
+Start with the [codebase map](docs/ARCHITECTURE.md), [documentation index](docs/README.md), and [local workspace guide](docs/LOCAL_WORKSPACE.md).
+
 Open [localhost:3000](http://localhost:3000). See [`.env.example`](.env.example)
 for optional Supabase and admin configuration.
 

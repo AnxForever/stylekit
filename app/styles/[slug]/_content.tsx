@@ -212,7 +212,7 @@ export function StyleDetailContent({
               <h1 className="text-4xl md:text-5xl lg:text-6xl mb-2">
                 {primaryStyleName}
               </h1>
-              <div className="flex items-center gap-3 mb-6">
+              <div className="flex flex-wrap items-center gap-3 mb-6">
                 {secondaryStyleName && secondaryStyleName !== primaryStyleName && (
                   <p className="text-xl text-muted">{secondaryStyleName}</p>
                 )}

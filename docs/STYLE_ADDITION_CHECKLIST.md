@@ -10,8 +10,8 @@ Complete checklist for adding a new design style to StyleKit.
 - [ ] Define style slug (kebab-case, e.g., `warm-dashboard`)
 - [ ] Prepare 3-5 primary colors with hex codes
 - [ ] Identify 5-10 characteristic visual traits
-- [ ] Determine styleType: `visual` | `layout` | `both`
-- [ ] Choose category: `modern` | `classic` | `expressive` | `cultural` | `functional`
+- [ ] Determine styleType: `visual` | `layout`
+- [ ] Choose category: `modern` | `retro` | `minimal` | `expressive` (see `lib/styles/meta-types.ts`)
 
 ## Phase 1: Core Definition Files (CREATE)
 
@@ -104,12 +104,15 @@ Complete checklist for adding a new design style to StyleKit.
 - [ ] Register the spec in `lib/design-spec/registry.ts`
 - [ ] Set `completeness: "full"` and cover every section used by the shared renderer
 - [ ] Verify the style page previews, copies and downloads the same complete `design.md`
+- [ ] After registration, run `pnpm run check:catalog` - the publish preflight also requires a full `DesignSpec` for every curated style
 
 ## Phase 2: Registration Files (MODIFY)
 
 Preferred workflow: submit one `StyleScaffoldInput` through `publishStyle` from
-`@/lib/style-publication`. It plans and validates every projection before commit and rolls back a
-partial commit. Treat the registry items below as review assertions or manual recovery steps, not
+`@/lib/style-publication`. It plans and validates its file and registry projections before commit and rolls back a
+partial commit. The authored DesignSpec and its registration in phase 1.4 remain separate required work;
+the publisher does not generate a replacement design document. Run the full test suite before merging.
+Treat the registry items below as review assertions or manual recovery steps, not
 independent publication operations. The input must contain an explicitly approved `previewModule`;
 publication never invents a generic preview.
 
@@ -245,7 +248,7 @@ publication never invents a generic preview.
 
 ### 5.1 TypeScript Check
 
-- [ ] Run `npx tsc --noEmit` - no errors
+- [ ] Run `pnpm run typecheck` - generates current route types and reports no errors
 
 ### 5.2 Test Suite
 
@@ -270,6 +273,8 @@ publication never invents a generic preview.
 | 1.1 | CREATE | `lib/styles/{slug}.ts` |
 | 1.2 | CREATE | `lib/styles/{slug}-tokens.ts` |
 | 1.3 | CREATE | `lib/recipes/{slug}.ts` |
+| 1.4 | CREATE | `lib/design-spec/samples/{slug}.ts` |
+| 1.4 | MODIFY | `lib/design-spec/registry.ts` |
 | 2.1 | MODIFY | `lib/styles/registry.ts` |
 | 2.2 | MODIFY | `lib/styles/meta-registry.ts` |
 | 2.3 | MODIFY | `lib/styles/tokens-registry-data.ts` |
@@ -282,7 +287,7 @@ publication never invents a generic preview.
 | 3.3 | CREATE | `app/styles/{slug}/showcase/_content.tsx` |
 | 4.1 | CREATE | `public/styles/{slug}.svg` |
 
-**Total: 7 new files + 6 modified files per style**
+**Total: 8 new files + 7 modified files per style**
 
 ## Common Mistakes to Avoid
 

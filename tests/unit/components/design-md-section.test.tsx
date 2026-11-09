@@ -75,11 +75,24 @@ describe("DesignMdSection", () => {
 
     expect(screen.getByRole("heading", { name: "Editorial system" })).toBeVisible();
     expect(screen.getByText("Use ocean blue for primary actions.")).toBeVisible();
-    expect(screen.queryByRole("button", { name: /compact|extended/i })).not.toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Preview" })).toHaveAttribute("aria-pressed", "true");
+    const connectAiButton = screen.getByRole("button", { name: "Connect AI" });
+    const documentRegion = screen.getByRole("region", { name: "Design document preview" });
+    expect(
+      connectAiButton.compareDocumentPosition(documentRegion) & Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy();
+
+    fireEvent.click(screen.getByRole("button", { name: "Markdown" }));
+    expect(screen.getByRole("button", { name: "Markdown" })).toHaveAttribute("aria-pressed", "true");
+    expect(screen.getByLabelText("Markdown source document").querySelector("code")?.textContent).toBe(markdown);
+
+    fireEvent.click(screen.getByRole("button", { name: "Preview" }));
+    expect(screen.getByRole("heading", { name: "Editorial system" })).toBeVisible();
 
     fireEvent.click(screen.getByRole("button", { name: "Copy" }));
     await waitFor(() => expect(writeTextMock).toHaveBeenCalledWith(markdown));
     await waitFor(() => expect(screen.getByRole("button", { name: "Copied" })).toBeVisible());
+    expect(await screen.findByRole("status")).toHaveTextContent("design.md copied to clipboard");
 
     fireEvent.click(screen.getByRole("button", { name: "Download" }));
     expect(createObjectUrlMock).toHaveBeenCalledTimes(1);
@@ -140,7 +153,7 @@ describe("DesignMdSection", () => {
 
   it("does not show a successful copy state when clipboard writing fails", async () => {
     writeTextMock.mockRejectedValueOnce(new Error("Clipboard unavailable"));
-    render(
+    const { rerender } = render(
       <DesignMdSection
         styleName="Editorial"
         hasSpec
@@ -156,7 +169,22 @@ describe("DesignMdSection", () => {
     expect(writeTextMock).toHaveBeenCalledWith("# Editorial system");
     expect(screen.getByRole("button", { name: "Copy" })).toBeInTheDocument();
     expect(screen.queryByRole("button", { name: "Copied" })).not.toBeInTheDocument();
-    expect(screen.getByRole("status")).toBeEmptyDOMElement();
+    expect(screen.getByRole("status")).toHaveTextContent("Clipboard access failed");
+    const manualCopyField = screen.getByRole("textbox", { name: "Code to copy manually" });
+    expect(manualCopyField).toHaveValue("# Editorial system");
+    manualCopyField.focus();
+    expect(manualCopyField).toHaveProperty("selectionStart", 0);
+    expect(manualCopyField).toHaveProperty("selectionEnd", "# Editorial system".length);
+
+    rerender(
+      <DesignMdSection
+        styleName="Editorial"
+        hasSpec
+        markdown="# Revised system"
+      />,
+    );
+    expect(screen.queryByRole("textbox", { name: "Code to copy manually" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("status")).not.toBeInTheDocument();
   });
 
   afterEach(() => {

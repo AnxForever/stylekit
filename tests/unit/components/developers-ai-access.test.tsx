@@ -33,10 +33,15 @@ describe("developer AI access entry", () => {
 
     const dialog = await screen.findByRole("dialog");
     expect(screen.getByRole("group", { name: translations.en["aiAccess.clientsLabel"] })).toBeVisible();
-    fireEvent.click(screen.getByRole("button", { name: translations.en["aiAccess.clientCodexCli"] }));
-    expect(screen.getByText("codex mcp add stylekit --url https://www.stylekit.top/mcp")).toBeVisible();
+    fireEvent.click(screen.getByRole("button", { name: translations.en["aiAccess.agentCodex"] }));
+    expect(
+      within(dialog).getByRole("button", { name: translations.en["aiAccess.agentCodex"], pressed: true }),
+    ).toBeInTheDocument();
+    expect(
+      within(dialog).getByRole("region", { name: translations.en["aiAccess.commandLabel"] }),
+    ).toHaveTextContent("codex mcp add stylekit --url https://www.stylekit.top/mcp");
 
-    expect(within(dialog).getByRole("link", { name: translations.en["aiAccess.docs"] })).toHaveAttribute(
+    expect(within(dialog).getByRole("link", { name: translations.en["aiAccess.moreSetups"] })).toHaveAttribute(
       "href",
       "/en/developers",
     );

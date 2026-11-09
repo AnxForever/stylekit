@@ -210,8 +210,8 @@ export const editorialSpec: DesignSpec = {
   ],
   donts: [
     {
-      zh: "不要引入任何彩色强调（红、蓝、绿），整页保持单色",
-      en: "Do not introduce any chromatic accent; the page stays monochrome",
+      zh: "不要引入其它彩色强调。只允许陈玫色 #816d70 用于引文标记和选中态，面积不超过一屏的 2%",
+      en: "Do not introduce any other chromatic accent. The sole exception is Mauve #816d70 for quote marks and selected states, under two percent of the viewport",
     },
     {
       zh: "不要用阴影表达层次，深度只来自留白与 1px 线",

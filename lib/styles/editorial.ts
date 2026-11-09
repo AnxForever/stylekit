@@ -28,7 +28,7 @@ export const editorial: DesignStyle = {
 - 内容为王：设计服务于内容，不喧宾夺主。UI 是低声细语，不是大声喊叫
 - 字体层次：衬线标题与无衬线正文形成对比，标签使用 uppercase tracking 增加呼吸感
 - 留白即美：适当的负空间让内容呼吸，section 间距 py-24 md:py-40 起步
-- 单色克制：仅使用 #1C1C1C 配合不同透明度（/60 /40 /10）构建视觉层次，拒绝彩色装饰
+- 单色克制：以 #1C1C1C 与暖米纸为主；唯一例外为陈玫色 #816d70，只用于引文标记和选中态，面积不超过一屏的 2%，禁止其它彩色装饰
 - 微妙动效：hover-underline 动画、clip-path reveal、group-hover:italic 等克制而精致的交互`,
 
   philosophyEn: `Editorial design style originates from the typographic aesthetics of traditional print media, particularly the design language of high-end fashion magazines and newspapers. This style emphasizes content hierarchy, refined font pairing, and generous whitespace.
@@ -37,7 +37,7 @@ Core principles:
 - Content is king: Design serves content, never overshadowing it. UI whispers, it does not shout
 - Typographic hierarchy: Serif headings contrast with sans-serif body text; labels use uppercase tracking for breathing room
 - Whitespace is beauty: Proper negative space lets content breathe; section spacing starts at py-24 md:py-40
-- Monochrome restraint: Only #1C1C1C with varying opacities (/60 /40 /10) to build visual hierarchy; no colored decoration
+- Monochrome restraint: Let #1C1C1C and warm paper lead. Reserve Mauve (#816d70) for quote marks and selected states under two percent of a viewport; no other colored decoration.
 - Subtle motion: Restrained yet refined interactions like hover-underline animations, clip-path reveals, and group-hover:italic`,
 
   doList: [
@@ -67,7 +67,7 @@ Core principles:
   ],
 
   dontList: [
-    "禁止使用彩色强调色（红、蓝、绿等），保持纯单色体系",
+    "以墨黑和暖米纸为主；仅允许陈玫色 #816d70 用于引文标记和选中态，面积不超过一屏的 2%；禁止其它彩色强调",
     "禁止使用粗边框或阴影（shadow-*）",
     "禁止使用 #0a0a0a 纯黑或 #fafafa 冷白作为主色",
     "禁止标题使用无衬线字体",
@@ -78,7 +78,7 @@ Core principles:
   ],
 
   dontListEn: [
-    "Do not use colored accents (red, blue, green, etc.), maintain pure monochrome system",
+    "Use ink and warm paper as the base; reserve Mauve (#816d70) for quote marks and selected states under two percent of the viewport; no other colored accents.",
     "Do not use thick borders or shadows (shadow-*)",
     "Do not use #0a0a0a pure black or #fafafa cool white as primary colors",
     "Do not use sans-serif fonts for headings",
@@ -308,7 +308,7 @@ h1, h2, h3, h4, h5, h6 {
 - Background: #F9F8F6 (warm cream, NOT pure white or #fafafa)
 - Foreground: #1C1C1C (soft black, NOT #000 or #0a0a0a)
 - Opacity hierarchy: text-[#1C1C1C]/60 (secondary), /40 (tertiary), /10 (borders/dividers)
-- NO colored accents. This style is purely monochromatic.
+- Reserve the single warm accent, Mauve (#816d70), for quote marks and selected states under two percent of the viewport; no other chromatic accents.
 
 ## Typography
 
@@ -349,7 +349,7 @@ h1, h2, h3, h4, h5, h6 {
 
 ## Absolutely Forbidden
 
-- Colored accents (red, blue, green) - this is a monochrome style
+- Other colored accents. The sole exception is Mauve (#816d70) for quote marks and selected states under two percent of the viewport.
 - Box shadows (shadow-*)
 - Thick borders (border-2 and above)
 - Large border-radius (rounded-xl and above)
@@ -373,7 +373,7 @@ h1, h2, h3, h4, h5, h6 {
 - Background: #F9F8F6 (warm cream, NOT pure white or #fafafa)
 - Foreground: #1C1C1C (soft black, NOT #000 or #0a0a0a)
 - Opacity hierarchy: text-[#1C1C1C]/60 (secondary), /40 (tertiary), /10 (borders/dividers)
-- NO colored accents. This style is purely monochromatic.
+- Reserve the single warm accent, Mauve (#816d70), for quote marks and selected states under two percent of the viewport; no other chromatic accents.
 
 ## Typography
 
@@ -414,7 +414,7 @@ h1, h2, h3, h4, h5, h6 {
 
 ## Absolutely Forbidden
 
-- Colored accents (red, blue, green) - this is a monochrome style
+- Other colored accents. The sole exception is Mauve (#816d70) for quote marks and selected states under two percent of the viewport.
 - Box shadows (shadow-*)
 - Thick borders (border-2 and above)
 - Large border-radius (rounded-xl and above)
@@ -436,7 +436,7 @@ h1, h2, h3, h4, h5, h6 {
       title: "创意作品集",
       titleEn: "Creative Portfolio",
       description: "编辑杂志风格的创意设计师作品集",
-      descriptionEn: "Editorial-style creative designer portfolio with monochrome palette",
+      descriptionEn: "Monochrome-led Editorial designer portfolio with one restrained Mauve accent",
       prompt: `Use Editorial style to create a creative portfolio page:
 1. Fixed nav: font-serif logo with tracking-[0.3em], hover-underline links
 2. Hero: massive serif title (9rem+) with italic subtitle in #1C1C1C/60, clip-path image reveal
@@ -445,7 +445,7 @@ h1, h2, h3, h4, h5, h6 {
 5. Archive grid: masonry 2-col layout with staggered scroll reveals
 6. About section: sticky portrait left, serif quote right, services/clients lists
 7. Contact: floating-label inputs with bottom borders, hover-underline submit button
-8. Palette: bg-[#F9F8F6], text-[#1C1C1C] with /60 /40 /10 opacity hierarchy only`,
+8. Palette: bg-[#F9F8F6] and ink text with a /60 /40 /10 opacity hierarchy; reserve Mauve (#816d70) for quote marks and selected states under two percent of the viewport`,
     },
     {
       title: "杂志风格博客",
@@ -458,7 +458,7 @@ h1, h2, h3, h4, h5, h6 {
 3. Article list: numbered editorial list with border-b border-[#1C1C1C]/10 dividers
 4. Typography: font-serif headings tracking-tighter, font-sans text-xs labels with tracking-[0.2em] uppercase
 5. Footer: minimal, text-xs uppercase with dot separators
-6. Colors: monochrome only, #F9F8F6 background, #1C1C1C text with opacity variants`,
+6. Colors: #F9F8F6 background and #1C1C1C text with opacity variants; reserve Mauve (#816d70) for quote marks and selected states under two percent of the viewport`,
     },
     {
       title: "工作室介绍",
@@ -472,7 +472,7 @@ h1, h2, h3, h4, h5, h6 {
 4. Services & clients: two-column grid with uppercase tracking labels, serif list items
 5. Contact section: Say Hello heading text-8xl, floating-label form inputs
 6. Interactions: IntersectionObserver scroll reveals, group-hover:italic on links
-7. Palette: bg-[#F9F8F6], pure monochrome, NO accent colors`,
+7. Palette: bg-[#F9F8F6] and ink as the base; reserve Mauve (#816d70) for quote marks and selected states under two percent of the viewport`,
     },
   ],
 

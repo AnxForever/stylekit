@@ -10,6 +10,7 @@ import { useI18n } from "@/lib/i18n/context";
 import type { StyleMeta } from "@/lib/styles/meta";
 import { getScenarioLabel, getStyleScenarios } from "@/lib/styles/scenarios";
 import { CardSpotlight, useCardSpotlight } from "@/components/ui/card-spotlight";
+import { STYLE_CATALOG_RETURN_URL_KEY } from "@/lib/navigation/smart-back";
 
 interface StyleCardProps {
   style: StyleMeta;
@@ -50,7 +51,7 @@ export const StyleCard = React.memo(function StyleCard({
       sessionStorage.setItem("styles-scroll-position", window.scrollY.toString());
       // 保存当前URL中的过滤器参数，以便返回时恢复
       const currentUrl = window.location.href;
-      sessionStorage.setItem("styles-return-url", currentUrl);
+      sessionStorage.setItem(STYLE_CATALOG_RETURN_URL_KEY, currentUrl);
     }
   };
 

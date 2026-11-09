@@ -4,7 +4,10 @@ import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { ChevronLeft } from "lucide-react";
 import { useI18n } from "@/lib/i18n/context";
-import { navigateBackOrFallback } from "@/lib/navigation/smart-back";
+import {
+  navigateBackOrFallback,
+  STYLE_CATALOG_RETURN_URL_KEY,
+} from "@/lib/navigation/smart-back";
 
 interface ScrollBackButtonProps {
   label?: string;
@@ -51,7 +54,8 @@ export function ScrollBackButton({
       navigateBackOrFallback(router, {
         href,
         savedReturnUrlKey:
-          savedReturnUrlKey ?? (href === "/styles" ? "styles-return-url" : undefined),
+          savedReturnUrlKey ??
+            (href === "/styles" ? STYLE_CATALOG_RETURN_URL_KEY : undefined),
         fallbackHref: fallbackHref ?? href,
       });
     } else {
