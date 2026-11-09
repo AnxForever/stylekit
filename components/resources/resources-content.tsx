@@ -6,6 +6,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useI18n } from "@/lib/i18n/context";
 import { LocalizedLink } from "@/components/i18n/localized-link";
 import { TypographyContent } from "@/components/typography/typography-content";
+import { OpenSourceDesignsContent } from "@/components/resources/open-source-designs-content";
 import {
   getCanonicalResourceUrl,
   getResourceSectionFromSearch,
@@ -109,6 +110,14 @@ const SECTIONS: ResourceSection[] = [
     blurbEn: "Zero-dependency WebGL2 animated backgrounds — tune live, copy the React snippet.",
     Comp: ShadersContent,
   },
+  {
+    id: "open-source-designs",
+    zh: "开源设计",
+    en: "Open Source",
+    blurbZh: "浏览可核验源码、许可与技术栈的完整网站。",
+    blurbEn: "Browse complete sites with verified source, license, and stack details.",
+    Comp: OpenSourceDesignsContent,
+  },
 ];
 
 export function ResourcesContent() {
@@ -161,8 +170,8 @@ export function ResourcesContent() {
           </h1>
           <p className="text-muted leading-relaxed max-w-2xl text-lg">
             {tx(
-              "可直接取用的设计素材，集中在一处：字体配对、渐变、阴影与背景纹理。复制 CSS，或加入你的工具箱一键导出。",
-              "Copy-ready design assets in one place: font pairings, gradients, shadows and background textures. Copy the CSS, or add them to your kit and export in one go.",
+              "可直接取用的设计素材和完整开源网站：字体配对、渐变、阴影与背景纹理。也可查看网站源码、许可与适用场景。",
+              "Copy-ready design assets and complete open-source sites: explore font pairings, gradients, shadows, background textures, source and licenses.",
             )}
           </p>
           <LocalizedLink

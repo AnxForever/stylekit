@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import { styles } from "@/lib/styles";
 import { getStyleTokens } from "@/lib/styles/tokens-registry";
 import { getSiteBaseUrl } from "@/lib/site-url";
+import { getCanonicalDesignDocumentUrl } from "@/lib/ai-access/design-document-url";
 
 export const revalidate = 3600;
 
@@ -46,7 +47,7 @@ export async function GET() {
     urls: {
       page: `${baseUrl}/en/styles/${style.slug}`,
       pageZh: `${baseUrl}/zh/styles/${style.slug}`,
-      markdown: `${baseUrl}/api/styles/${style.slug}/md`,
+      markdown: getCanonicalDesignDocumentUrl(baseUrl, style.slug, "en"),
       recipes: `${baseUrl}/api/styles/${style.slug}/recipes`,
     },
   }));

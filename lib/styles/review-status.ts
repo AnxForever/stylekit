@@ -6,6 +6,7 @@
  */
 export const PENDING_STYLE_SLUGS = [
   "diffraction-foil",
+  "e-ink",
   "mobile-editorial",
   "pastel-ui",
   "quantized-line-field",

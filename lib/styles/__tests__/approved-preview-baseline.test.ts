@@ -37,6 +37,7 @@ describe("approved preview baseline", () => {
 
     expect(pending.sort()).toEqual([
       "diffraction-foil",
+      "e-ink",
       "mobile-editorial",
       "pastel-ui",
       "quantized-line-field",

@@ -24,7 +24,7 @@ export async function GET() {
 
 StyleKit (${baseUrl}) is an open-source design style library for AI-generated web interfaces: ${styles.length} curated styles, each with copy-ready AI prompts, design tokens, component recipes, and Tailwind or shadcn export.
 
-This file lists every style in one table. For the full documentation use ${baseUrl}/llms-full.txt. For structured data use ${baseUrl}/api/styles/all.json. For one style at a time use ${baseUrl}/api/styles/{slug}/md. License: MIT.
+This file lists every style in one table. For the full documentation use ${baseUrl}/llms-full.txt. For structured data use ${baseUrl}/api/styles/all.json. For one curated style use ${baseUrl}/api/design/{slug}/design.md?locale=en. Promoted community styles use ${baseUrl}/api/styles/{slug}/md until a canonical design spec exists. License: MIT.
 
 | Slug | Style | 中文名 | Category | Definition | Page |
 | --- | --- | --- | --- | --- | --- |

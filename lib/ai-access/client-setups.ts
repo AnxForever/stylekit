@@ -1,4 +1,5 @@
 import { AI_ACCESS_ENDPOINT } from "@/lib/ai-access";
+import { getCanonicalDesignDocumentUrl } from "./design-document-url";
 
 export const AI_CLIENT_SETUPS = [
   {
@@ -97,11 +98,11 @@ export function buildAiStyleHandoff({
   locale,
   markdown,
 }: AiStyleHandoff): AiStyleHandoffText {
-  const designDocumentUrl = `${AI_ACCESS_ENDPOINT.replace(/\/mcp$/, "")}/api/design/${encodeURIComponent(slug)}/design.md?locale=${locale}`;
+  const designDocumentUrl = getCanonicalDesignDocumentUrl(AI_ACCESS_ENDPOINT, slug, locale);
   const instruction =
     locale === "zh"
-      ? `请根据同一个 StyleKit 风格规范「${name}」（${slug}）实现我接下来的需求。此链接返回本页语言的完整 design.md：\n${designDocumentUrl}\n\n如果已连接 StyleKit MCP，调用 stylekit_get_style，参数为 { "slug": "${slug}", "include": ["brief"] }。MCP brief 中的 structuredContent.brief.designDocument.content 默认是英文；如果需要本页语言版本，请读取上方链接。`
-      : `Use StyleKit's ${JSON.stringify(name)} style (${slug}) to implement my next request. This link returns the complete design.md in this page's language:\n${designDocumentUrl}\n\nIf StyleKit MCP is connected, call stylekit_get_style with { "slug": "${slug}", "include": ["brief"] }. Its structuredContent.brief.designDocument.content defaults to English. Fetch the linked URL when you need this page's language.`;
+      ? `请根据同一个 StyleKit 风格规范「${name}」（${slug}）实现我接下来的需求。此链接返回本页语言的完整 design.md：\n${designDocumentUrl}\n\n请遵循 design.md 的 “Implementation Contract”，并落实与本次任务相关的项目适配和验收要求。\n\n如果已连接 StyleKit MCP，调用 stylekit_get_style，参数为 { "slug": "${slug}", "include": ["brief"] }。MCP brief 中的 structuredContent.brief.designDocument.content 默认是英文；如果需要本页语言版本，请读取上方链接。`
+      : `Use StyleKit's ${JSON.stringify(name)} style (${slug}) to implement my next request. This link returns the complete design.md in this page's language:\n${designDocumentUrl}\n\nFollow the document's “Implementation Contract” for project fit and verification.\n\nIf StyleKit MCP is connected, call stylekit_get_style with { "slug": "${slug}", "include": ["brief"] }. Its structuredContent.brief.designDocument.content defaults to English. Fetch the linked URL when you need this page's language.`;
 
   // Keep the original Markdown verbatim so the on-page and modal copy actions
   // always hand over the same single design.md.

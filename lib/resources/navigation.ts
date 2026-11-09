@@ -4,6 +4,7 @@ export const RESOURCE_SECTION_IDS = [
   "shadows",
   "backgrounds",
   "shaders",
+  "open-source-designs",
 ] as const;
 
 export type ResourceSectionId = (typeof RESOURCE_SECTION_IDS)[number];

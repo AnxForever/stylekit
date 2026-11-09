@@ -7,6 +7,22 @@ export interface DesignMdOptions {
   locale?: SpecLocale;
 }
 
+function safeReferenceUrl(value: string): string | null {
+  try {
+    const url = new URL(value);
+    if (
+      (url.protocol !== "http:" && url.protocol !== "https:") ||
+      url.username ||
+      url.password
+    ) {
+      return null;
+    }
+    return url.href;
+  } catch {
+    return null;
+  }
+}
+
 /**
  * Markdown table. Pipes inside a cell are escaped so a role sentence containing
  * "a | b" cannot break the column count.
@@ -45,6 +61,16 @@ export function renderDesignMd(spec: DesignSpec, options: DesignMdOptions = {}):
   blocks.push(`> ${t(spec.northStar)}`);
   blocks.push(`**Theme:** ${spec.theme}`);
   blocks.push(t(spec.summary));
+
+  const referenceUrl = spec.sourceUrl ? safeReferenceUrl(spec.sourceUrl) : null;
+  if (referenceUrl) {
+    blocks.push("## Reference");
+    blocks.push(
+      locale === "zh"
+        ? `参考链接：<${referenceUrl}>`
+        : `Reference URL: <${referenceUrl}>`,
+    );
+  }
 
   const colorHeaders = extended
     ? ["Name", "Value", "Token", "Role"]
@@ -181,19 +207,37 @@ export function renderDesignMd(spec: DesignSpec, options: DesignMdOptions = {}):
     blocks.push(t(spec.layout));
   }
 
-  if (extended && spec.completeness === "full" && spec.promptGuide.prompts.length > 0) {
+  if (extended && spec.completeness === "full") {
     blocks.push("## Agent Prompt Guide");
+    blocks.push("### Implementation Contract");
+    blocks.push(bulletList(locale === "zh"
+      ? [
+          "以用户请求中的页面、用户任务和真实内容为依据，只实施指定范围；标明缺失的业务信息，不编造数据或能力。",
+          "先检查现有项目、技术栈与组件；沿用项目结构、路由和依赖，复用已有组件，不重建未要求的页面或功能。",
+          "沿用项目断点，调整窄屏与桌面的网格和留白；保留信息层级，避免意外横向溢出。",
+          "对本次涉及的交互，处理键盘焦点与减少动态效果；补齐适用的禁用、加载、空内容与错误状态。",
+          "完成后按项目现有脚本检查，仅报告实际运行的测试与视觉检查，并列出未验证项。",
+        ]
+      : [
+          "Use the requested page, user task and real content as the brief. Implement only the requested scope; identify missing business information instead of inventing data or capabilities.",
+          "Inspect the current project, stack and components first. Reuse its structure, routes, dependencies and components; do not rebuild unrelated pages or features.",
+          "Use the project's breakpoints to adapt columns and spacing for narrow and desktop screens. Preserve hierarchy and prevent accidental horizontal overflow.",
+          "For interactions in scope, support keyboard focus and reduced motion, with applicable disabled, loading, empty and error states.",
+          "Run the project's existing checks after implementation. Report only tests and visual checks actually run, and list unverified behavior.",
+        ]));
     const quick = Object.entries(spec.promptGuide.quickColors);
     if (quick.length > 0) {
       blocks.push("QUICK COLOR REFERENCE:");
       blocks.push(bulletList(quick.map(([slot, value]) => `${slot}: \`${value}\``)));
     }
-    blocks.push("EXAMPLE COMPONENT PROMPTS:");
-    blocks.push(
-      spec.promptGuide.prompts
-        .map((prompt, index) => `${index + 1}. ${t(prompt)}`)
-        .join("\n"),
-    );
+    if (spec.promptGuide.prompts.length > 0) {
+      blocks.push("EXAMPLE COMPONENT PROMPTS:");
+      blocks.push(
+        spec.promptGuide.prompts
+          .map((prompt, index) => `${index + 1}. ${t(prompt)}`)
+          .join("\n"),
+      );
+    }
   }
 
   if (spec.similar.length > 0) {

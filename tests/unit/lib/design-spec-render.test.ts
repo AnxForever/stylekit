@@ -6,9 +6,11 @@ import {
   renderTailwindTheme,
 } from "@/lib/design-spec";
 import { editorialSpec } from "@/lib/design-spec/samples/editorial";
+import { neoBrutalistSpec } from "@/lib/design-spec/samples/neo-brutalist";
 import { listDesignSpecs } from "@/lib/design-spec/registry";
 import type { DesignSpec } from "@/lib/design-spec/types";
 import { stylesMeta } from "@/lib/styles/meta-registry";
+import { neoBrutalistTokens } from "@/lib/styles/neo-brutalist-tokens";
 
 describe("backfilled specs", () => {
   const specs = listDesignSpecs();
@@ -20,11 +22,14 @@ describe("backfilled specs", () => {
     expect(stylesMeta.map((style) => style.slug).filter((slug) => !completeSlugs.has(slug))).toEqual([]);
   });
 
-  it("renders every registered spec with all twelve sections", () => {
+  it("renders every registered spec with its complete section set", () => {
     for (const spec of specs) {
       const md = renderDesignMd(spec, { density: "extended", locale: "en" });
       const sections = md.split("\n").filter((line) => line.startsWith("## "));
-      expect(sections.length, `${spec.slug} sections`).toBe(12);
+      expect(sections.length, `${spec.slug} sections`).toBe(
+        12 + (spec.sourceUrl ? 1 : 0) + (spec.customSections?.length ?? 0),
+      );
+      if (spec.sourceUrl) expect(md, spec.slug).toContain(`Reference URL: <${spec.sourceUrl}>`);
     }
   });
 
@@ -121,6 +126,74 @@ describe("DESIGN.md renderer", () => {
     expect(md).toContain(editorialSpec.northStar.zh);
     expect(md).toContain(editorialSpec.dos[0].zh);
     expect(md).not.toContain(editorialSpec.northStar.en);
+  });
+
+  it.each(["en", "zh"] as const)("keeps the implementation contract in the full %s document without example prompts", (locale) => {
+    const spec: DesignSpec = {
+      ...editorialSpec,
+      promptGuide: { quickColors: {}, prompts: [] },
+    };
+    const md = renderDesignMd(spec, { locale });
+    const required = locale === "zh"
+      ? ["只实施指定范围", "不编造数据或能力", "复用已有组件", "项目断点", "窄屏与桌面", "键盘焦点", "减少动态效果", "禁用、加载、空内容与错误状态", "实际运行的测试与视觉检查", "未验证项"]
+      : ["only the requested scope", "instead of inventing data or capabilities", "routes, dependencies and components", "project's breakpoints", "narrow and desktop", "keyboard focus", "reduced motion", "disabled, loading, empty and error states", "tests and visual checks actually run", "unverified behavior"];
+
+    expect(md).toContain("### Implementation Contract");
+    for (const requirement of required) expect(md).toContain(requirement);
+    expect(md).not.toContain("EXAMPLE COMPONENT PROMPTS:");
+  });
+
+  it.each(["en", "zh"] as const)("distinguishes Neo-Brutalist's shared timing from its named showcase overrides in %s", (locale) => {
+    const md = renderDesignMd(neoBrutalistSpec, { locale });
+    expect(neoBrutalistTokens.interaction.transition).toBe("transition-all duration-200");
+    expect(md).toContain(neoBrutalistTokens.interaction.transition);
+    expect(md).toContain("150ms ease-out");
+    expect(md).toContain("showcase");
+    expect(md).not.toMatch(/hard.cut|cuts instantly|瞬间|硬切/i);
+    expect(neoBrutalistSpec.components.find((component) => component.name === "Block Button")?.states)
+      .toContain("fill, shadow, and translate transition 150ms ease-out");
+  });
+
+  it("includes an optional HTTP(S) reference URL without inventing a license claim", () => {
+    const withSource: DesignSpec = {
+      ...editorialSpec,
+      sourceUrl: "https://example.com/source?view=1",
+    };
+    const withoutSource: DesignSpec = { ...editorialSpec, sourceUrl: undefined };
+
+    expect(renderDesignMd(withSource, { locale: "en" })).toContain(
+      "Reference URL: <https://example.com/source?view=1>",
+    );
+    expect(renderDesignMd(withSource, { locale: "zh" })).toContain(
+      "参考链接：<https://example.com/source?view=1>",
+    );
+    expect(renderDesignMd(withoutSource)).not.toContain("## Reference");
+    expect(renderDesignMd({ ...editorialSpec, sourceUrl: "http://example.com/source" }))
+      .toContain("Reference URL: <http://example.com/source>");
+  });
+
+  it.each([
+    "javascript:alert(1)",
+    "data:text/html,<script>alert(1)</script>",
+    "ftp://example.com/source",
+    "/relative/source",
+    "not a URL",
+    "https://user:secret@example.com/source",
+    " \thttps://user:secret@example.com/source",
+    "https://:secret@example.com/source",
+  ])("omits unsafe reference URL %s", (sourceUrl) => {
+    const md = renderDesignMd({ ...editorialSpec, sourceUrl });
+    expect(md).not.toContain("## Reference");
+    expect(md).not.toContain("secret");
+  });
+
+  it("serializes a reference URL so it cannot break out of its Markdown autolink", () => {
+    const md = renderDesignMd({
+      ...editorialSpec,
+      sourceUrl: "https://example.com/#><img src=x>",
+    });
+    expect(md).toContain("Reference URL: <https://example.com/#%3E%3Cimg%20src=x%3E>");
+    expect(md).not.toContain("<img");
   });
 
   it("escapes pipes so a role sentence cannot break a table row", () => {

@@ -176,6 +176,7 @@ import { mobileEditorial } from "./mobile-editorial";
 import { softUtility } from "./soft-utility";
 import { quantizedLineField } from "./quantized-line-field";
 import { diffractionFoil } from "./diffraction-foil";
+import { eInk } from "./e-ink";
 
 
 
@@ -362,6 +363,7 @@ export const rawStyles: DesignStyle[] = [
   softUtility,
   quantizedLineField,
   diffractionFoil,
+  eInk,
 ];
 
 export const styles: DesignStyle[] = rawStyles.map((style) => normalizeStyleRules(style));

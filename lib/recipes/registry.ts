@@ -161,6 +161,7 @@ import { mobileEditorialRecipes } from "./mobile-editorial";
 import { softUtilityRecipes } from "./soft-utility";
 import { quantizedLineFieldRecipes } from "./quantized-line-field";
 import { diffractionFoilRecipes } from "./diffraction-foil";
+import { eInkRecipes } from "./e-ink";
 
 
 
@@ -328,6 +329,7 @@ const recipeRegistry: Record<string, StyleRecipes> = {
   "soft-utility": softUtilityRecipes,
   "quantized-line-field": quantizedLineFieldRecipes,
   "diffraction-foil": diffractionFoilRecipes,
+  "e-ink": eInkRecipes,
 };
 
 /**

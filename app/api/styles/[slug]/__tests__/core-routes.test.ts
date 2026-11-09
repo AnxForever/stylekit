@@ -24,6 +24,7 @@ import { GET as getStyleDetail } from "@/app/api/styles/[slug]/route";
 import { GET as getStyleTokens } from "@/app/api/styles/[slug]/tokens/route";
 import { GET as getStyleRecipes } from "@/app/api/styles/[slug]/recipes/route";
 import { GET as getStyleMarkdown } from "@/app/api/styles/[slug]/md/route";
+import { GET as getCanonicalDesignDocument } from "@/app/api/design/[slug]/[format]/route";
 import { GET as getClaudeRules } from "@/app/api/styles/[slug]/claude-rules/route";
 import { GET as getCursorRules } from "@/app/api/styles/[slug]/cursorrules/route";
 import { GET as getSkillPack } from "@/app/api/styles/[slug]/skill-pack/route";
@@ -35,6 +36,31 @@ import type { DesignStyle } from "@/lib/styles";
 const params = (slug: string) => Promise.resolve({ slug });
 const mockedResolveStyleBySlug = vi.mocked(resolveStyleBySlug);
 const mockedResolveStyleDelivery = vi.mocked(resolveStyleDelivery);
+
+function makeCommunityStyle(): DesignStyle {
+  return {
+    slug: "aurora-community",
+    name: "极光社区风",
+    nameEn: "Aurora Community",
+    description: "Community-submitted aurora style.",
+    cover: "/styles/aurora-community/opengraph-image",
+    styleType: "visual",
+    tags: ["retro"],
+    category: "expressive",
+    colors: { primary: "#2f3cff", secondary: "#f6f8ff", accent: ["#22d3ee", "#a855f7"] },
+    keywords: ["aurora", "glow"],
+    philosophy: "Blend soft glow with high readability.",
+    doList: ["Keep glow effects subtle."],
+    dontList: ["Avoid muddy gradients."],
+    components: {
+      button: { name: "Button", description: "Primary action", code: "<button>Aurora</button>" },
+      card: { name: "Card", description: "Content card", code: "<div>Card</div>" },
+      input: { name: "Input", description: "Text input", code: "<input />" },
+    },
+    globalCss: "",
+    aiRules: "Prefer layered gradients.",
+  };
+}
 
 describe("styles [slug] core routes", () => {
   it("style detail returns 404 for missing slug", async () => {
@@ -108,44 +134,7 @@ describe("styles [slug] core routes", () => {
   });
 
   it("recipes route returns synthesized recipes for community style", async () => {
-    const communityStyle: DesignStyle = {
-      slug: "aurora-community",
-      name: "极光社区风",
-      nameEn: "Aurora Community",
-      description: "Community-submitted aurora style.",
-      cover: "/styles/aurora-community/opengraph-image",
-      styleType: "visual",
-      tags: ["retro"],
-      category: "expressive",
-      colors: {
-        primary: "#2f3cff",
-        secondary: "#f6f8ff",
-        accent: ["#22d3ee", "#a855f7"],
-      },
-      keywords: ["aurora", "glow"],
-      philosophy: "Blend soft glow with high readability.",
-      doList: ["Keep glow effects subtle."],
-      dontList: ["Avoid muddy gradients."],
-      components: {
-        button: {
-          name: "Button",
-          description: "Primary action",
-          code: "<button className=\"px-4 py-2 rounded\">Aurora</button>",
-        },
-        card: {
-          name: "Card",
-          description: "Content card",
-          code: "<div className=\"p-4 rounded-xl\">Card</div>",
-        },
-        input: {
-          name: "Input",
-          description: "Text input",
-          code: "<input className=\"px-3 py-2 rounded\" />",
-        },
-      },
-      globalCss: "",
-      aiRules: "Prefer layered gradients.",
-    };
+    const communityStyle = makeCommunityStyle();
 
     mockedResolveStyleBySlug.mockResolvedValueOnce({
       source: "community",
@@ -171,16 +160,65 @@ describe("styles [slug] core routes", () => {
     expect(mockedResolveStyleDelivery).toHaveBeenCalledWith("aurora-community");
   });
 
-  it("markdown route returns markdown content", async () => {
-    const response = await getStyleMarkdown(
-      new Request("https://stylekit.top/api/styles/neo-brutalist/md"),
-      { params: params("neo-brutalist") },
-    );
+  it.each([
+    { query: "", language: "en" },
+    { query: "?locale=en", language: "en" },
+    { query: "?locale=zh", language: "zh-CN" },
+    { query: "?locale=unknown&density=compact", language: "en" },
+  ])("serves the canonical complete design.md through the legacy curated URL ($query)", async ({ query, language }) => {
+    const [legacy, canonical] = await Promise.all([
+      getStyleMarkdown(
+        new Request(`https://stylekit.top/api/styles/neo-brutalist/md${query}`),
+        { params: params("neo-brutalist") },
+      ),
+      getCanonicalDesignDocument(
+        new Request(`https://stylekit.top/api/design/neo-brutalist/design.md${query}`),
+        { params: Promise.resolve({ slug: "neo-brutalist", format: "design.md" }) },
+      ),
+    ]);
 
-    expect(response.status).toBe(200);
+    expect(legacy.status).toBe(200);
+    expect(canonical.status).toBe(200);
+    expect(legacy.headers.get("content-type")).toContain("text/markdown");
+    expect(legacy.headers.get("content-language")).toBe(language);
+    await expect(legacy.text()).resolves.toBe(await canonical.text());
+  });
+
+  it("returns a Markdown 404 for a missing style", async () => {
+    const response = await getStyleMarkdown(
+      new Request("https://stylekit.top/api/styles/not-exist/md"),
+      { params: params("not-exist") },
+    );
+    expect(response.status).toBe(404);
     expect(response.headers.get("content-type")).toContain("text/markdown");
-    const text = await response.text();
-    expect(text).toContain("**Slug**: `neo-brutalist`");
+  });
+
+  it("keeps the legacy Markdown fallback for community styles without a DesignSpec", async () => {
+    const communityStyle = makeCommunityStyle();
+    mockedResolveStyleBySlug.mockResolvedValueOnce({
+      source: "community",
+      style: communityStyle,
+      submissionId: "sub-community-1",
+      tokens: null,
+    });
+
+    const [legacy, canonical] = await Promise.all([
+      getStyleMarkdown(
+        new Request("https://stylekit.top/api/styles/aurora-community/md?locale=zh"),
+        { params: params("aurora-community") },
+      ),
+      getCanonicalDesignDocument(
+        new Request("https://stylekit.top/api/design/aurora-community/design.md?locale=zh"),
+        { params: Promise.resolve({ slug: "aurora-community", format: "design.md" }) },
+      ),
+    ]);
+
+    expect(canonical.status).toBe(404);
+    expect(legacy.status).toBe(200);
+    expect(legacy.headers.get("content-language")).toBe("zh-CN");
+    const content = await legacy.text();
+    expect(content).toContain("## AI Rules");
+    expect(content).toContain(communityStyle.aiRules);
   });
 
   it("rules and skill-pack exports return downloadable content", async () => {

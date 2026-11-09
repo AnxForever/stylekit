@@ -1,4 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
+import { readFileSync } from "node:fs";
 
 vi.mock("@/lib/styles/community-runtime", () => ({
   listPromotedCommunityStyles: vi.fn().mockResolvedValue([]),
@@ -10,6 +11,12 @@ vi.mock("next/font/google", () => ({
 
 import sitemap from "@/app/sitemap";
 import robots from "@/app/robots";
+import { GET as getStylesJson } from "@/app/api/styles/all.json/route";
+import { GET as getLlmsMarkdown } from "@/app/llms.md/route";
+import { GET as getAllStylesMarkdown } from "@/app/all-styles.md/route";
+import { generateLlmsFullText } from "@/lib/export/llms-full";
+import { listPromotedCommunityStyles } from "@/lib/styles/community-runtime";
+import { stylesMeta } from "@/lib/styles/meta-registry";
 import { metadata as kitMetadata } from "@/app/kit/page";
 import { metadata as sharedKitMetadata } from "@/app/kit/shared/page";
 import { metadata as loginMetadata } from "@/app/login/page";
@@ -189,6 +196,9 @@ describe("SEO crawlability contracts", () => {
         "/validation/corporate-clean-saas",
         "/admin-login",
         "/api/admin/workspace/validation",
+        "/api/design/neo-brutalist/tokens.json",
+        "/api/design/neo-brutalist/design.md/private",
+        "/api/design/neo-brutalist/design.md-backup",
       ]) {
         expect(crawlDecision(group, route), route).toBe("disallow");
       }
@@ -236,9 +246,61 @@ describe("SEO crawlability contracts", () => {
         "/llms.md",
         "/llms-full.txt",
         "/api/styles/neo-brutalist/md",
+        "/api/design/neo-brutalist/design.md",
+        "/api/design/neo-brutalist/design.md?locale=en",
+        "/api/design/neo-brutalist/design.md?locale=zh",
       ]) {
         expect(crawlDecision(group, path), path).toBe("allow");
       }
+    }
+  });
+
+  it("advertises one canonical design.md for curated style discovery", async () => {
+    const staticIndex = readFileSync("public/llms.txt", "utf8");
+    expect(staticIndex).toContain(`${stylesMeta.length} curated`);
+    expect(staticIndex).toContain("/api/design/{slug}/design.md?locale=en");
+    expect(staticIndex).toContain("/api/design/neo-brutalist/design.md?locale=en");
+    expect(staticIndex).toContain("/api/styles/{slug}/md");
+    const [jsonResponse, markdownResponse, allStylesResponse] = await Promise.all([
+      getStylesJson(),
+      getLlmsMarkdown(),
+      getAllStylesMarkdown(),
+    ]);
+    const catalog = (await jsonResponse.json()) as {
+      source: string;
+      styles: Array<{ slug: string; urls: { markdown: string } }>;
+    };
+    const index = await markdownResponse.text();
+    const fullIndex = generateLlmsFullText();
+    const allStyles = await allStylesResponse.text();
+
+    expect(catalog.styles.length).toBeGreaterThan(0);
+    for (const style of catalog.styles) {
+      const canonicalUrl = `${catalog.source}/api/design/${style.slug}/design.md?locale=en`;
+      expect(style.urls.markdown, style.slug).toBe(canonicalUrl);
+      expect(index, style.slug).toContain(`([design.md](${canonicalUrl})`);
+      expect(fullIndex, style.slug).toContain(`**design.md**: ${canonicalUrl}`);
+      expect(index, style.slug).not.toContain(`/api/styles/${style.slug}/md`);
+      expect(fullIndex, style.slug).not.toContain(`/api/styles/${style.slug}/md`);
+    }
+    expect(allStyles).toContain(`${catalog.source}/api/design/{slug}/design.md?locale=en`);
+    expect(allStyles).toContain(`${catalog.source}/api/styles/{slug}/md`);
+  });
+
+  it("keeps a discoverable legacy Markdown link for promoted community styles without a canonical spec", async () => {
+    vi.mocked(listPromotedCommunityStyles).mockResolvedValueOnce([{
+      ...stylesMeta[0],
+      slug: "aurora-community",
+      nameEn: "Aurora Community",
+      promoted: true,
+      curated: false,
+    }]);
+
+    const index = await (await getLlmsMarkdown()).text();
+    expect(index).toContain("/api/styles/aurora-community/md");
+    expect(index).not.toContain("/api/design/aurora-community/design.md");
+    for (const group of normalizeRobotsGroups(robots().rules)) {
+      expect(crawlDecision(group, "/api/styles/aurora-community/md")).toBe("allow");
     }
   });
 });

@@ -1,11 +1,12 @@
 import { resolveStyleDelivery } from "@/lib/style-delivery";
 import { localizedList, localizedString } from "@/lib/styles/locale-content";
+import { getStyleDesignDocument } from "@/lib/ai-access/design-document";
 
 /**
- * /api/styles/[slug]/md - Markdown variant for LLM consumption
+ * /api/styles/[slug]/md - Compatibility Markdown URL for LLM consumption
  *
- * Per the llms.txt specification, .md variants improve LLM parsing.
- * Returns a human-readable Markdown document with all style details.
+ * Curated styles return the complete canonical design.md. Community styles
+ * without an authored DesignSpec retain the legacy style document.
  */
 export async function GET(
   request: Request,
@@ -20,6 +21,19 @@ export async function GET(
     return new Response("# Error\n\nStyle not found", {
       status: 404,
       headers: { "Content-Type": "text/markdown; charset=utf-8" },
+    });
+  }
+
+  // Keep the long-standing Markdown URL as a compatibility alias for curated
+  // styles. Community styles without a DesignSpec retain the legacy fallback.
+  const canonicalDocument = getStyleDesignDocument(slug, locale);
+  if (canonicalDocument) {
+    return new Response(canonicalDocument.content, {
+      headers: {
+        "Content-Type": "text/markdown; charset=utf-8",
+        "Content-Language": locale === "zh" ? "zh-CN" : "en",
+        "Cache-Control": "public, max-age=3600, s-maxage=3600",
+      },
     });
   }
 

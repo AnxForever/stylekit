@@ -26,6 +26,7 @@ import { darkAcademiaSpec } from "./samples/dark-academia";
 import { developerTerminalSpec } from "./samples/developer-terminal";
 import { distillStyleSpec } from "./samples/distill-style";
 import { diffractionFoilSpec } from "./samples/diffraction-foil";
+import { eInkSpec } from "./samples/e-ink";
 import { dopamineDesignSpec } from "./samples/dopamine-design";
 import { darkModeSpec } from "./samples/dark-mode";
 import { cyberAnimeSpec } from "./samples/cyber-anime";
@@ -308,6 +309,7 @@ const SPECS: readonly DesignSpec[] = [
   indianFestiveSpec,
   pastelGothSpec,
   vhsAestheticSpec,
+  eInkSpec,
 ];
 
 const BY_SLUG = new Map(SPECS.map((spec) => [spec.slug, spec]));

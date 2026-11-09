@@ -5,9 +5,9 @@ import { Footer } from "@/components/layout/footer";
 import { ResourcesContent } from "@/components/resources/resources-content";
 
 export const metadata: Metadata = {
-  title: "Design Resources — Fonts, Gradients, Shadows, Backgrounds & Shaders",
+  title: "Open-Source Designs & Resources — UI Inspiration and Assets",
   description:
-    "Copy-ready design assets in one place: curated font pairings, CSS gradients, box-shadow presets, background textures and WebGL2 shader backgrounds. Copy the code or add them to your kit.",
+    "Explore complete open-source websites with verified source and licenses, plus copy-ready font pairings, CSS gradients, shadows, textures and shaders.",
 };
 
 export default function ResourcesPage() {
