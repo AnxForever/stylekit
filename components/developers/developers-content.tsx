@@ -33,7 +33,7 @@ const COPY = {
     remoteTitle: "Connect an AI client",
     remoteDescription:
       "Use the hosted, read-only MCP server for the live style catalogue. Choose your client for its exact setup and a style-aware handoff to the complete design.md.",
-    browse: "Browse all 150 styles",
+    browse: "Browse all styles",
     docs: "Docs",
     status: "Status",
     verified: "Verified",
@@ -106,7 +106,7 @@ const COPY = {
     remoteTitle: "连接 AI 客户端",
     remoteDescription:
       "通过在线的只读 MCP 服务获取最新风格目录。选择客户端查看对应配置，也可以从风格详情页把该风格唯一的完整 design.md 带入 AI。",
-    browse: "浏览全部 150 风格",
+    browse: "浏览全部风格",
     docs: "文档",
     status: "状态",
     verified: "已验证",

@@ -17,6 +17,7 @@ describe("approved preview source baseline", () => {
   it("keeps the pending preview lane explicit", () => {
     expect(PENDING_STYLE_SLUGS).toEqual([
       "diffraction-foil",
+      "e-ink",
       "mobile-editorial",
       "pastel-ui",
       "quantized-line-field",

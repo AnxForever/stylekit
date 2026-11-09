@@ -168,6 +168,7 @@ export const SHOWCASE_SEQUENCE: readonly ShowcaseSequenceEntry[] = [
   ["soft-utility", "Soft Utility"],
   ["quantized-line-field", "Quantized Line Field"],
   ["diffraction-foil", "Diffraction Foil"],
+  ["e-ink", "E-Ink"],
 ];
 
 export function getShowcaseNeighbors(slug: string): ShowcaseNeighbors | null {

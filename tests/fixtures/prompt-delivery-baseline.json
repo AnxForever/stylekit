@@ -1798,5 +1798,17 @@
     "enHeadings": 40,
     "zhBullets": 128,
     "enBullets": 99
+  },
+  "e-ink": {
+    "zh": 8930,
+    "en": 12231,
+    "zhTokens": true,
+    "enTokens": true,
+    "zhFences": 46,
+    "enFences": 42,
+    "zhHeadings": 42,
+    "enHeadings": 39,
+    "zhBullets": 93,
+    "enBullets": 81
   }
 }

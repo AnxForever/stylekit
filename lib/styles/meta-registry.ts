@@ -2485,4 +2485,17 @@ export const stylesMeta: StyleMeta[] = [
     },
     keywords: ["镭射","烫印","衍射光栅","全息箔","收藏卡","防伪","WebGL","光谱","指针光源"],
   },
+  {
+    slug: "e-ink",
+    name: "电子纸",
+    nameEn: "E-Ink",
+    description: "暖纸白、墨色字级和局部灰阶点阵组织阅读清单与示例数据面板。明确标注状态，避免以颜色或硬件外观代替信息。",
+    descriptionEn: "Warm paper, ink hierarchy and local halftone organize reading lists and sample data panels. Statuses stay explicit without relying on color or pretending to be a hardware device.",
+    cover: "/styles/e-ink.svg",
+    styleType: "visual",
+    tags: ["high-contrast", "responsive", "texture-heavy"],
+    category: "modern",
+    colors: { primary: "#20211e", secondary: "#f5f3ea", accent: ["#555750", "#bab9b0", "#e6e4da"] },
+    keywords: ["电子纸", "灰阶界面", "阅读清单", "点阵纹理", "纸张背景", "设备状态", "墨色排版"],
+  },
 ];

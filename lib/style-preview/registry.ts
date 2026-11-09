@@ -150,6 +150,7 @@ import mobileEditorialPreview from "./styles/mobile-editorial";
 import softUtilityPreview from "./styles/soft-utility";
 import quantizedLineFieldPreview from "./styles/quantized-line-field";
 import diffractionFoilPreview from "./styles/diffraction-foil";
+import preview144 from "./styles/e-ink";
 
 
 
@@ -303,6 +304,7 @@ export const styleComponents: Record<string, StylePreviewComponents> = {
   "shader-gradient": preview142,
   "kinetic-constructivism": preview143,
   "broadcast-glitch": preview145,
+  "e-ink": preview144,
   // End style preview entries
   "pastel-ui": pastelUiPreview,
   "mobile-editorial": mobileEditorialPreview,

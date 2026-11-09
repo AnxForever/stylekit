@@ -20,7 +20,8 @@ import { hasLintableRules } from "@/lib/styles/style-linter";
  * field scores 56). The gate thresholds stay valid.
  *
  * diffraction-foil joined at 150 and scores 93; min/p25/p50/p75/max and the
- * sub-60 count did not move.
+ * sub-60 count did not move. E-Ink joins at 151; its score also leaves that
+ * distribution and the sub-60 count unchanged.
  *
  * If a refactor moves these numbers, the gate thresholds derived from them are
  * no longer valid and must be re-derived rather than nudged back.
@@ -34,7 +35,7 @@ describe("style library quality baseline", () => {
   const percentile = (p: number) => scores[Math.floor((scores.length - 1) * p)];
 
   it("covers every registered style", () => {
-    expect(styles.length).toBe(150);
+    expect(styles.length).toBe(151);
     expect(scores.length).toBe(styles.length);
   });
 
@@ -52,7 +53,7 @@ describe("style library quality baseline", () => {
   });
 
   it("has complete component code for every style", () => {
-    // This one IS a hard gate for submissions: our own library meets it 150/150.
+    // This one IS a hard gate for submissions: the curated library meets it 151/151.
     const complete = styles.filter(
       (style) => getStyleQuality(style).capabilities.componentCode === "complete",
     );

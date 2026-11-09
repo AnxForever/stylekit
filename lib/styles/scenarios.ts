@@ -235,6 +235,7 @@ const SCENARIO_ASSIGNMENTS: Record<string, StyleScenario[]> = {
   // their siblings do: kinetic-typography and glitch-art.
   "kinetic-constructivism": ["creative", "marketing", "portfolio"],
   "broadcast-glitch": ["creative", "portfolio", "marketing"],
+  "e-ink": ["dashboard", "docs", "blog"],
 };
 
 // Safety net for styles created outside the registry (e.g. runtime-generated

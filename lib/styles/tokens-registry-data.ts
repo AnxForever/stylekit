@@ -166,6 +166,7 @@ import { mobileEditorialTokens } from "./mobile-editorial-tokens";
 import { softUtilityTokens } from "./soft-utility-tokens";
 import { quantizedLineFieldTokens } from "./quantized-line-field-tokens";
 import { diffractionFoilTokens } from "./diffraction-foil-tokens";
+import { eInkTokens } from "./e-ink-tokens";
 
 
 
@@ -336,4 +337,5 @@ export const styleTokensRegistry: Record<string, StyleTokens> = {
   "soft-utility": softUtilityTokens,
   "quantized-line-field": quantizedLineFieldTokens,
   "diffraction-foil": diffractionFoilTokens,
+  "e-ink": eInkTokens,
 };

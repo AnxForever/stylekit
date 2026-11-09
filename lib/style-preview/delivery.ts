@@ -155,6 +155,7 @@ const stylePreviewLoaders: Record<string, StylePreviewLoader> = {
   "soft-utility": () => import("./styles/soft-utility").then((module) => module.default),
   "quantized-line-field": () => import("./styles/quantized-line-field").then((module) => module.default),
   "diffraction-foil": () => import("./styles/diffraction-foil").then((module) => module.default),
+  "e-ink": () => import("./styles/e-ink").then((module) => module.default),
 };
 
 const previewPromises = new Map<string, Promise<StylePreviewComponents>>();
@@ -313,6 +314,7 @@ export const stylePreviewSlugs = Object.freeze([
   "soft-utility",
   "quantized-line-field",
   "diffraction-foil",
+  "e-ink",
 ]);
 
 export function loadStylePreview(

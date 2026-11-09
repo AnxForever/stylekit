@@ -1,0 +1,92 @@
+import {
+  sizeParam,
+  paddingParam,
+  fullWidthParam,
+  buttonSlots,
+  cardSlots,
+  inputSlots,
+  variant,
+  createStyleRecipes,
+} from "./factory";
+
+export const eInkRecipes = createStyleRecipes("e-ink", "E-Ink", {
+  button: {
+    id: "button",
+    name: "Ink Action",
+    nameZh: "墨面操作",
+    description: "High-contrast square action for a limited grayscale surface.",
+    skeleton: {
+      element: "button",
+      baseClasses: [
+        "min-h-11",
+        "rounded-none",
+        "font-mono",
+        "font-semibold",
+        "tracking-wide",
+        "focus-visible:ring-2",
+        "focus-visible:ring-offset-2",
+        "focus-visible:ring-[#20211e]",
+      ],
+    },
+    parameters: [sizeParam({ sm: "px-3 py-2 text-xs", md: "px-4 py-3 text-sm", lg: "px-6 py-4 text-base" }), fullWidthParam],
+    variants: {
+      primary: variant("primary", "Primary", "主要", ["border border-[#20211e] bg-[#20211e] text-[#f5f3ea"]),
+      secondary: variant("secondary", "Secondary", "次要", ["border border-[#555750] bg-[#f5f3ea] text-[#20211e"]),
+      outlined: variant("outlined", "Outlined", "线框", ["border border-[#555750] bg-transparent text-[#20211e"]),
+    },
+    slots: buttonSlots("Open item"),
+    states: {
+      hover: ["hover:bg-[#e6e4da]", "hover:text-[#20211e]", "hover:border-[#20211e]"],
+      active: ["active:bg-[#bab9b0]", "active:text-[#20211e]"],
+      disabled: ["disabled:cursor-not-allowed", "disabled:opacity-60"],
+    },
+  },
+  card: {
+    id: "card",
+    name: "Information Panel",
+    nameZh: "信息面板",
+    description: "A quiet paper panel separated with one structural rule.",
+    skeleton: {
+      element: "section",
+      baseClasses: ["rounded-none", "border", "border-[#bab9b0]", "bg-[#e6e4da]", "text-[#20211e]"],
+    },
+    parameters: [paddingParam({ sm: "p-3", md: "p-4", lg: "p-6" })],
+    variants: {
+      default: variant("default", "Paper", "纸面", ["bg-[#e6e4da]"]),
+      selected: variant("selected", "Selected", "选中", ["border-l-4", "border-l-[#20211e]"]),
+    },
+    slots: cardSlots("Room sensor", "21.4 °C · Sample data"),
+    states: { focus: ["focus-visible:outline", "focus-visible:outline-2", "focus-visible:outline-offset-2", "focus-visible:outline-[#20211e]"] },
+  },
+  input: {
+    id: "input",
+    name: "Paper Field",
+    nameZh: "纸面输入框",
+    description: "A high-contrast text field with a visible keyboard focus outline.",
+    skeleton: {
+      element: "input",
+      baseClasses: [
+        "w-full",
+        "min-h-11",
+        "rounded-none",
+        "border",
+        "border-[#77786f]",
+        "bg-[#f5f3ea]",
+        "px-3",
+        "py-2.5",
+        "text-[#20211e]",
+        "placeholder:text-[#555750]",
+        "focus-visible:ring-2",
+        "focus-visible:ring-offset-2",
+        "focus-visible:ring-[#20211e]",
+      ],
+    },
+    parameters: [sizeParam({ sm: "text-xs", md: "text-sm", lg: "text-base" }), fullWidthParam],
+    variants: { default: variant("default", "Paper", "纸面", []) },
+    slots: inputSlots("Search the sample archive"),
+    states: {
+      focus: ["focus:border-[#20211e]"],
+      disabled: ["disabled:cursor-not-allowed", "disabled:opacity-60"],
+    },
+  },
+});

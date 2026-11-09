@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <pattern id="paper-dot" width="8" height="8" patternUnits="userSpaceOnUse">
+      <circle cx="1" cy="1" r=".55" fill="#555750" opacity=".28"/>
+    </pattern>
+    <pattern id="rule-grid" width="32" height="32" patternUnits="userSpaceOnUse">
+      <path d="M32 0H0v32" fill="none" stroke="#bab9b0" stroke-width=".8"/>
+    </pattern>
+  </defs>
+  <rect width="1200" height="630" fill="#f5f3ea"/>
+  <rect x="1" y="1" width="1198" height="628" fill="none" stroke="#20211e" stroke-width="2"/>
+  <rect x="24" y="24" width="1152" height="582" fill="url(#paper-dot)" opacity=".18"/>
+
+  <!-- Top-left: aligned reading row. -->
+  <g transform="translate(58 54)">
+    <rect width="338" height="190" fill="#e6e4da" stroke="#77786f"/>
+    <rect x="16" y="16" width="4" height="158" fill="#20211e"/>
+    <text x="34" y="42" fill="#555750" font-family="monospace" font-size="13" font-weight="600">READING QUEUE / SAMPLE</text>
+    <path d="M34 58H318" stroke="#bab9b0"/>
+    <text x="34" y="92" fill="#20211e" font-family="monospace" font-size="17" font-weight="600">01</text>
+    <text x="78" y="92" fill="#20211e" font-family="sans-serif" font-size="16">Keep values legible</text>
+    <text x="34" y="130" fill="#555750" font-family="monospace" font-size="17">02</text>
+    <text x="78" y="130" fill="#555750" font-family="sans-serif" font-size="16">Name each state</text>
+    <path d="M34 150H318" stroke="#bab9b0"/>
+    <text x="34" y="172" fill="#20211e" font-family="monospace" font-size="13">PAGE 04 / 12</text>
+  </g>
+
+  <!-- Top-right: sample sensor values with aligned units. -->
+  <g transform="translate(804 54)">
+    <rect width="338" height="190" fill="#f5f3ea" stroke="#77786f"/>
+    <text x="18" y="31" fill="#555750" font-family="monospace" font-size="12" font-weight="600">DEVICE STATUS / EXAMPLE DATA</text>
+    <path d="M18 45H320M18 88H320M18 131H320" stroke="#bab9b0"/>
+    <circle cx="25" cy="66" r="5" fill="#20211e"/>
+    <text x="40" y="71" fill="#20211e" font-family="sans-serif" font-size="15">Room temperature</text>
+    <text x="316" y="71" text-anchor="end" fill="#20211e" font-family="monospace" font-size="16" font-weight="600">21.4 °C</text>
+    <circle cx="25" cy="109" r="5" fill="none" stroke="#20211e" stroke-width="2"/>
+    <text x="40" y="114" fill="#20211e" font-family="sans-serif" font-size="15">Network</text>
+    <text x="316" y="114" text-anchor="end" fill="#20211e" font-family="monospace" font-size="14">SAMPLE</text>
+    <text x="18" y="160" fill="#555750" font-family="monospace" font-size="12">UPDATED 09:42 / STATIC</text>
+  </g>
+
+  <!-- Bottom-left: status and action in monochrome. -->
+  <g transform="translate(58 394)">
+    <rect width="338" height="172" fill="#f5f3ea" stroke="#77786f"/>
+    <text x="18" y="29" fill="#555750" font-family="monospace" font-size="12" font-weight="600">ACTIONS</text>
+    <rect x="18" y="44" width="142" height="42" fill="#20211e"/>
+    <text x="89" y="70" text-anchor="middle" fill="#f5f3ea" font-family="monospace" font-size="13" font-weight="600">OPEN ITEM</text>
+    <rect x="174" y="44" width="146" height="42" fill="#f5f3ea" stroke="#555750"/>
+    <text x="247" y="70" text-anchor="middle" fill="#20211e" font-family="monospace" font-size="13">SETTINGS</text>
+    <path d="M18 107H320" stroke="#bab9b0"/>
+    <rect x="20" y="124" width="11" height="11" fill="#20211e"/>
+    <text x="40" y="135" fill="#20211e" font-family="sans-serif" font-size="13">Read status in text, too</text>
+  </g>
+
+  <!-- Bottom-right: chart grouping by strokes and stipple, with labels. -->
+  <g transform="translate(804 394)">
+    <rect width="338" height="172" fill="#f5f3ea" stroke="#77786f"/>
+    <text x="18" y="29" fill="#555750" font-family="monospace" font-size="12" font-weight="600">HOURLY / SAMPLE</text>
+    <rect x="20" y="45" width="298" height="72" fill="url(#rule-grid)"/>
+    <path d="M32 99L72 83 112 88 152 68 192 78 232 59 272 68 306 53" fill="none" stroke="#20211e" stroke-width="3"/>
+    <circle cx="232" cy="59" r="5" fill="#f5f3ea" stroke="#20211e" stroke-width="2"/>
+    <text x="20" y="139" fill="#555750" font-family="monospace" font-size="11">06:00</text>
+    <text x="160" y="139" text-anchor="middle" fill="#555750" font-family="monospace" font-size="11">12:00</text>
+    <text x="318" y="139" text-anchor="end" fill="#555750" font-family="monospace" font-size="11">18:00</text>
+  </g>
+
+  <path d="M444 76H756M444 554H756" stroke="#bab9b0" stroke-width="1"/>
+  <text x="600" y="217" text-anchor="middle" fill="#555750" font-family="monospace" font-size="13" font-weight="600" letter-spacing="3">DAILY BRIEF</text>
+  <text x="600" y="290" text-anchor="middle" fill="#20211e" font-family="monospace" font-size="70" font-weight="600" letter-spacing="-2">09:42</text>
+  <text x="600" y="330" text-anchor="middle" fill="#555750" font-family="sans-serif" font-size="19">4 items ready to read</text>
+  <text x="600" y="370" text-anchor="middle" fill="#555750" font-family="monospace" font-size="12" letter-spacing="1">LOCAL ARCHIVE / SAMPLE</text>
+</svg>
