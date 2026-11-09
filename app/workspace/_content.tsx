@@ -1,9 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { FormEvent, useEffect, useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
+import { FormEvent, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { StylePicker, NO_STYLE, type PickerStyle } from "@/components/workspace/style-picker";
+import { readWorkspaceResponse, WorkspaceRequestError, workspaceTransportError } from "@/lib/workspace/client-operations";
 
 type StyleOption = PickerStyle;
 type ProjectRow = {
@@ -28,31 +30,64 @@ const stackOptions = [
 ] as const;
 
 export function WorkspaceHome({ styles }: { styles: StyleOption[] }) {
+  const router = useRouter();
   const [projects, setProjects] = useState<ProjectRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [creating, setCreating] = useState(false);
+  const [createResultUnknown, setCreateResultUnknown] = useState(false);
   // Mirrors the uncontrolled projectType select so the style picker can
   // pre-filter recommendations by the type currently chosen in the form.
   const [projectTypeHint, setProjectTypeHint] = useState("dashboard");
   const [error, setError] = useState<string | null>(null);
   const [query, setQuery] = useState("");
+  const mountedRef = useRef(false);
+  const listRequestIdRef = useRef(0);
+  const listLoadControllerRef = useRef<AbortController | null>(null);
+  const createRequestIdRef = useRef(0);
+  const createPendingRef = useRef(false);
 
-  async function loadProjects() {
+  const loadProjects = useCallback(async () => {
+    listLoadControllerRef.current?.abort();
+    const controller = new AbortController();
+    listLoadControllerRef.current = controller;
+    const requestId = ++listRequestIdRef.current;
+    const isCurrent = () => mountedRef.current && listRequestIdRef.current === requestId && !controller.signal.aborted;
+
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch("/api/workspace/projects", { cache: "no-store" });
-      const payload = await response.json();
-      if (!response.ok) throw new Error(payload.error ?? "项目读取失败");
-      setProjects(payload.projects ?? []);
+      const response = await fetch("/api/workspace/projects", { cache: "no-store", signal: controller.signal });
+      const payload = await readWorkspaceResponse<{ projects?: unknown }>(response, "项目读取失败");
+      if (!Array.isArray(payload.projects)) {
+        throw new WorkspaceRequestError("项目列表响应格式无效。", {
+          outcome: "rejected",
+          code: "INVALID_PROJECT_LIST",
+          status: response.status,
+        });
+      }
+      if (!isCurrent()) return;
+      setProjects(payload.projects as ProjectRow[]);
+      setCreateResultUnknown(false);
     } catch (loadError) {
-      setError(loadError instanceof Error ? loadError.message : "项目读取失败");
+      if (isCurrent()) setError(workspaceTransportError(loadError, "项目读取失败").message);
     } finally {
-      setLoading(false);
+      if (isCurrent()) {
+        setLoading(false);
+        if (listLoadControllerRef.current === controller) listLoadControllerRef.current = null;
+      }
     }
-  }
+  }, []);
 
-  useEffect(() => { void loadProjects(); }, []);
+  useEffect(() => {
+    mountedRef.current = true;
+    void loadProjects();
+    return () => {
+      mountedRef.current = false;
+      listRequestIdRef.current += 1;
+      createRequestIdRef.current += 1;
+      listLoadControllerRef.current?.abort();
+    };
+  }, [loadProjects]);
 
   const visibleProjects = useMemo(() => {
     const normalized = query.trim().toLowerCase();
@@ -63,36 +98,53 @@ export function WorkspaceHome({ styles }: { styles: StyleOption[] }) {
 
   async function createProject(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (createPendingRef.current || createResultUnknown) return;
+    createPendingRef.current = true;
+    const requestId = ++createRequestIdRef.current;
+    const isCurrent = () => mountedRef.current && createRequestIdRef.current === requestId;
     setCreating(true);
     setError(null);
     const form = new FormData(event.currentTarget);
-    const response = await fetch("/api/workspace/projects", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        name: form.get("name"),
-        description: form.get("description"),
-        projectType: form.get("projectType"),
-        selectedStyleSlug: form.get("selectedStyleSlug") === NO_STYLE ? null : form.get("selectedStyleSlug") || null,
-        stack: stackOptions.filter(([value]) => form.get(`stack:${value}`) === "on").map(([value]) => value),
-        brief: {
-          audience: form.get("audience"),
-          primaryGoal: form.get("primaryGoal"),
-          requiredPages: String(form.get("requiredPages") ?? "").split(/[，,\n]/).map((value) => value.trim()).filter(Boolean),
-          requiredStates: ["loading", "empty", "error", "success"],
-          brandPersonality: String(form.get("brandPersonality") ?? "").split(/[，,]/).map((value) => value.trim()).filter(Boolean),
-          antiReferences: String(form.get("antiReferences") ?? "").split(/[，,]/).map((value) => value.trim()).filter(Boolean),
-          notes: form.get("notes"),
-        },
-      }),
-    });
-    const payload = await response.json();
-    setCreating(false);
-    if (!response.ok) {
-      setError(payload.error ?? "项目创建失败");
-      return;
+    const project = {
+      name: form.get("name"),
+      description: form.get("description"),
+      projectType: form.get("projectType"),
+      selectedStyleSlug: form.get("selectedStyleSlug") === NO_STYLE ? null : form.get("selectedStyleSlug") || null,
+      stack: stackOptions.filter(([value]) => form.get(`stack:${value}`) === "on").map(([value]) => value),
+      brief: {
+        audience: form.get("audience"),
+        primaryGoal: form.get("primaryGoal"),
+        requiredPages: String(form.get("requiredPages") ?? "").split(/[，,\n]/).map((value) => value.trim()).filter(Boolean),
+        requiredStates: ["loading", "empty", "error", "success"],
+        brandPersonality: String(form.get("brandPersonality") ?? "").split(/[，,]/).map((value) => value.trim()).filter(Boolean),
+        antiReferences: String(form.get("antiReferences") ?? "").split(/[，,]/).map((value) => value.trim()).filter(Boolean),
+        notes: form.get("notes"),
+      },
+    };
+    try {
+      const response = await fetch("/api/workspace/projects", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(project),
+      });
+      const payload = await readWorkspaceResponse<{ project?: { id?: unknown } }>(response, "项目创建失败", true);
+      if (typeof payload.project?.id !== "string" || !payload.project.id) {
+        throw new WorkspaceRequestError("项目创建结果不完整。请先刷新项目列表确认结果。", {
+          outcome: "unknown",
+          status: response.status,
+          code: "PROJECT_CREATE_RESULT_UNKNOWN",
+        });
+      }
+      if (isCurrent()) router.push("/workspace/" + payload.project.id);
+    } catch (createError) {
+      if (!isCurrent()) return;
+      const failure = workspaceTransportError(createError, "项目创建", true);
+      setError(failure.message);
+      setCreateResultUnknown(failure.outcome === "unknown");
+    } finally {
+      createPendingRef.current = false;
+      if (isCurrent()) setCreating(false);
     }
-    window.location.href = `/workspace/${payload.project.id}`;
   }
 
   return (
@@ -118,6 +170,7 @@ export function WorkspaceHome({ styles }: { styles: StyleOption[] }) {
           </div>
           {loading ? <p className="border border-border p-6 text-sm text-muted">正在读取项目…</p> : null}
           {error ? <div role="alert" className="mb-4 border border-red-300 bg-red-50 p-4 text-sm text-red-800"><p>{error}</p><button className="mt-2 underline" onClick={() => void loadProjects()}>重试</button></div> : null}
+          {createResultUnknown ? <div role="status" aria-live="polite" className="mb-4 border border-amber-300 bg-amber-50 p-4 text-sm text-amber-900"><p>创建请求结果尚未确认。先刷新项目列表检查是否已创建，再继续操作。</p><button className="mt-2 underline" onClick={() => void loadProjects()}>刷新项目列表</button></div> : null}
           {!loading && !error && visibleProjects.length === 0 ? (
             <div className="border border-dashed border-border p-10 text-center"><h3 className="font-medium">还没有项目</h3><p className="mt-2 text-sm text-muted">从右侧填写真实需求，创建第一个可保存的 StyleKit 项目。</p></div>
           ) : null}
@@ -146,7 +199,7 @@ export function WorkspaceHome({ styles }: { styles: StyleOption[] }) {
             <Field label="绝对不要"><input name="antiReferences" className="workspace-input" placeholder="不要紫色渐变，不要玻璃拟态" /></Field>
             <Field label="选择现有风格"><StylePicker styles={styles} noneLabel="稍后选择" projectType={projectTypeHint} /></Field>
             <Field label="其他约束"><textarea name="notes" rows={3} className="workspace-input" placeholder="移动端、无障碍、数据密度等要求" /></Field>
-            <button disabled={creating} className="h-11 bg-foreground px-4 text-sm font-medium text-background disabled:opacity-50">{creating ? "正在创建…" : "创建并进入项目"}</button>
+            <button disabled={creating || createResultUnknown} className="h-11 bg-foreground px-4 text-sm font-medium text-background disabled:opacity-50">{creating ? "正在创建…" : createResultUnknown ? "请先确认创建结果" : "创建并进入项目"}</button>
           </form>
         </section>
       </div>
