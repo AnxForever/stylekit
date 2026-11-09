@@ -48,6 +48,37 @@ describe("ThankYouModal", () => {
 
     const receipts = screen.getAllByRole("figure");
     expect(receipts.length).toBeGreaterThanOrEqual(2);
+    const originalImageLinks = screen.getAllByRole("link");
+    expect(originalImageLinks).toHaveLength(receipts.length);
+    expect(
+      originalImageLinks.every(
+        (link) =>
+          link.getAttribute("href") === link.querySelector("img")?.getAttribute("src") &&
+          link.getAttribute("target") === "_blank" &&
+          link.getAttribute("rel") === "noopener noreferrer",
+      ),
+    ).toBe(true);
+  });
+
+  it("keeps the newest six receipts when the oldest is over a week old", async () => {
+    window.history.replaceState({}, "", "/zh?preview");
+    const entries = [
+      makeEntry("donation-nov-9", "2026-11-09"),
+      makeEntry("donation-nov-8", "2026-11-08"),
+      makeEntry("donation-nov-7", "2026-11-07"),
+      makeEntry("donation-nov-5", "2026-11-05"),
+      makeEntry("donation-nov-3", "2026-11-03"),
+      makeEntry("donation-nov-1", "2026-11-01"),
+      makeEntry("donation-oct-25", "2026-10-25"),
+    ];
+
+    render(<ThankYouModal entries={entries} />);
+    await screen.findByRole("dialog");
+
+    const receiptLinks = screen.getAllByRole("link");
+    expect(receiptLinks).toHaveLength(6);
+    expect(receiptLinks.map((link) => link.getAttribute("href"))).toContain("/support/donation-nov-1.png");
+    expect(receiptLinks.map((link) => link.getAttribute("href"))).not.toContain("/support/donation-oct-25.png");
   });
 
   it("opens via an explicit support link and can be closed", async () => {
