@@ -104,6 +104,7 @@ Complete checklist for adding a new design style to StyleKit.
 - [ ] Register the spec in `lib/design-spec/registry.ts`
 - [ ] Set `completeness: "full"` and cover every section used by the shared renderer
 - [ ] Verify the style page previews, copies and downloads the same complete `design.md`
+- [ ] After registration, run `pnpm run check:catalog` - the publish preflight also requires a full `DesignSpec` for every curated style
 
 ## Phase 2: Registration Files (MODIFY)
 
