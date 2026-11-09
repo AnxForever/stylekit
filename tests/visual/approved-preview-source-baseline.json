@@ -156,7 +156,7 @@
     "lib/style-preview/styles/z-pattern-layout.tsx": "45735dc9271bc545c30dfa994303ae911adac343307c522808962de987face78",
     "lib/style-preview/styles/zen-garden.tsx": "b10338b2e55a267e8be31f8e6bcb458092aabbab3b2aee39f6aef76ec884c5d8",
     "lib/style-preview/types.ts": "38a0dd83e6f52a5e903d1c2f5735bf2bdbb843b65d6ba8ee42aafd1509b41348",
-    "lib/styles/meta-registry.ts": "5ba78576b558c66f6fb11289ac6ca1e2dede176d3a1983869b6e2bcbf4a63b31"
+    "lib/styles/meta-registry.ts": "13c36d49a8387ab83e47902cd91e145193597d7a00ef76adcc83577a3d04f484"
   },
   "nonVisualSourceUpdates": [
     {
@@ -175,6 +175,14 @@
       "reason": "Match the existing canonical Editorial palette. Approved cover renderer and shared Corporate Clean card fixtures are unchanged.",
       "previousHash": "792e3358327b525d597174e06dca08f1ea474b4da27893a4160a6f0b4bb26342",
       "currentHash": "5ba78576b558c66f6fb11289ac6ca1e2dede176d3a1983869b6e2bcbf4a63b31"
+    },
+    {
+      "path": "lib/styles/meta-registry.ts",
+      "reviewedOn": "2026-11-09",
+      "scope": "glassmorphism.colors only",
+      "reason": "Match the existing rich definition, canonical nocturne palette and approved glass preview. Cover renderers, shared Corporate Clean fixtures and stored PNG baselines are unchanged.",
+      "previousHash": "5ba78576b558c66f6fb11289ac6ca1e2dede176d3a1983869b6e2bcbf4a63b31",
+      "currentHash": "13c36d49a8387ab83e47902cd91e145193597d7a00ef76adcc83577a3d04f484"
     }
   ]
 }

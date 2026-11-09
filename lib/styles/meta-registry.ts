@@ -437,9 +437,9 @@ export const stylesMeta: StyleMeta[] = [
     tags: ["glassmorphic"],
     category: "modern",
     colors: {
-      primary: "rgba(255, 255, 255, 0.25)",
-      secondary: "rgba(255, 255, 255, 0.18)",
-      accent: ["#667eea", "#764ba2", "#f093fb", "#f5576c"],
+      primary: "rgba(255, 255, 255, 0.08)",
+      secondary: "rgba(255, 255, 255, 0.05)",
+      accent: ["#0B1322", "#33517A", "#7C9CC4", "#E4B863"],
     },
     keywords: ["毛玻璃", "透明", "模糊", "现代", "层叠"],
   },
