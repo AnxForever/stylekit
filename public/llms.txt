@@ -1,14 +1,14 @@
 # StyleKit
 
-> StyleKit is an open-source visual style library for AI-generated web interfaces. Its catalog currently contains 150 curated visual and layout styles. Every catalog style includes machine-readable design tokens, component recipes, AI rules, and React + Tailwind examples.
+> StyleKit is an open-source visual style library for AI-generated web interfaces. Its catalog currently contains 151 curated visual and layout styles. Every catalog style includes machine-readable design tokens, component recipes, AI rules, and React + Tailwind examples.
 
 StyleKit helps developers give ChatGPT, Claude, Claude Code, Codex, and other coding tools concrete visual constraints instead of relying on a vague style name. The public site supports English and Chinese style discovery; some editorial content is English-only and is identified as such by its canonical URL.
 
 ## Start Here
 
-- [English style catalog](https://www.stylekit.top/en/styles): Browse all 150 UI and web design styles.
+- [English style catalog](https://www.stylekit.top/en/styles): Browse all 151 UI and web design styles.
 - [Whole catalog as one Markdown table](https://www.stylekit.top/all-styles.md): Every style with its Chinese name, category, and one-line definition.
-- [Whole catalog as one JSON file](https://www.stylekit.top/api/styles/all.json): Names, descriptions, colors, design tokens, and AI rules for all 150 styles in a single request.
+- [Whole catalog as one JSON file](https://www.stylekit.top/api/styles/all.json): Names, descriptions, colors, design tokens, and AI rules for all 151 styles in a single request.
 - [中文前端风格库](https://www.stylekit.top/zh/styles): 浏览网页设计风格、UI 风格与实现约束。
 - [UI design prompt library](https://www.stylekit.top/en/ui-prompts): Copy prompt structures for websites, dashboards, landing pages, dark mode, and Tailwind UI.
 - [中文 UI 与前端提示词](https://www.stylekit.top/zh/ui-prompts): 面向 ChatGPT、Claude、Claude Code 与 Codex 的提示词入口。
@@ -17,6 +17,8 @@ StyleKit helps developers give ChatGPT, Claude, Claude Code, Codex, and other co
 - [Color catalog](https://www.stylekit.top/en/colors): Browse and copy palettes from the style catalog.
 - [Community styles and discussions](https://www.stylekit.top/en/community): Read public style discussions, explore reviewed contributions, and find the submission workflow.
 - [中文风格社区](https://www.stylekit.top/zh/community): 参与风格讨论、浏览审核通过的社区作品，或提交原创风格。
+
+- [Open-source designs](https://www.stylekit.top/en/resources?tab=open-source-designs): Discover attributed original sites and interface frameworks with previews, demos, source and license notes.
 
 ## Prompt Collections
 
@@ -35,13 +37,15 @@ Each style has a canonical web page and a read-only Markdown representation:
 
 - Web page pattern: `https://www.stylekit.top/en/styles/{slug}`
 - Chinese page pattern: `https://www.stylekit.top/zh/styles/{slug}`
-- Markdown pattern: `https://www.stylekit.top/api/styles/{slug}/md`
+- Canonical design.md pattern: `https://www.stylekit.top/api/design/{slug}/design.md?locale=en`
+- Chinese design.md pattern: `https://www.stylekit.top/api/design/{slug}/design.md?locale=zh`
+- Compatibility / community Markdown: `https://www.stylekit.top/api/styles/{slug}/md`
 - shadcn registry pattern: `https://www.stylekit.top/r/{slug}.json`
 
 Example resources:
 
 - [Neo-Brutalist style](https://www.stylekit.top/en/styles/neo-brutalist)
-- [Neo-Brutalist Markdown](https://www.stylekit.top/api/styles/neo-brutalist/md)
+- [Neo-Brutalist Markdown](https://www.stylekit.top/api/design/neo-brutalist/design.md?locale=en)
 - [Glassmorphism style](https://www.stylekit.top/en/styles/glassmorphism)
 - [Corporate Clean style](https://www.stylekit.top/en/styles/corporate-clean)
 - [Corporate SaaS prompt](https://www.stylekit.top/en/prompts/corporate-saas)

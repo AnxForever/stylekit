@@ -1,4 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
+import { readFileSync } from "node:fs";
 
 vi.mock("@/lib/styles/community-runtime", () => ({
   listPromotedCommunityStyles: vi.fn().mockResolvedValue([]),
@@ -255,6 +256,11 @@ describe("SEO crawlability contracts", () => {
   });
 
   it("advertises one canonical design.md for curated style discovery", async () => {
+    const staticIndex = readFileSync("public/llms.txt", "utf8");
+    expect(staticIndex).toContain(`${stylesMeta.length} curated`);
+    expect(staticIndex).toContain("/api/design/{slug}/design.md?locale=en");
+    expect(staticIndex).toContain("/api/design/neo-brutalist/design.md?locale=en");
+    expect(staticIndex).toContain("/api/styles/{slug}/md");
     const [jsonResponse, markdownResponse, allStylesResponse] = await Promise.all([
       getStylesJson(),
       getLlmsMarkdown(),
