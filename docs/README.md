@@ -14,7 +14,7 @@ Start with the guide for the task you are working on:
 | Understand complete template exports | [Template projects](complete-template-projects.md) |
 | Maintain the local workspace | [Local workspace](LOCAL_WORKSPACE.md) |
 | Understand design document reading and delivery | [Research and acceptance](research/style-document-workspace.md) |
-| Review core-tool defects, repairs and evidence gaps | [Core quality audit](research/core-quality-audit-2026-11-08.md) |
+| Review core-tool defects, repairs and evidence gaps | [Core quality audit](research/core-quality-audit-2026-11-08.md), [content follow-up](research/content-quality-audit-2026-11-09.md) |
 
 Repository-wide assistant rules live in [AGENTS.md](../AGENTS.md). Deployment
 credentials, private environment files and dated verification records stay out
