@@ -15,9 +15,13 @@ import {
 const RECENT_WINDOW_MS = 7 * 24 * 60 * 60 * 1000;
 
 /**
- * Shown once per browser. Closing the dialog is the only thing that writes
- * this key, so a first visit still gets the thank-you note even when the
- * visitor bounces before the dialog appears.
+ * Shown once per browser per donation batch. The value is the id of the newest
+ * acknowledgment the visitor already dismissed, so a later batch opens the
+ * dialog again. A legacy "1" from the old boolean flag simply never matches a
+ * row id, which gives returning visitors one final thank-you before migrating.
+ * Closing the dialog is the only thing that writes this key, so a first visit
+ * still gets the thank-you note even when the visitor bounces before the
+ * dialog appears.
  */
 const DISMISSED_STORAGE_KEY = "stylekit-thank-you-seen";
 const OPEN_DELAY_MS = 1200;
@@ -40,6 +44,7 @@ export function ThankYouModal({
     [resolvedEntries]
   );
   const latestEntry = sortedReceiptEntries[0];
+  const latestBatchId = latestEntry?.id ?? null;
   const latestReceiptEntries = useMemo(
     () =>
       latestEntry
@@ -57,31 +62,32 @@ export function ThankYouModal({
     const isHome = pathname === "/" || pathname === "/en" || pathname === "/zh";
 
     if (showOnHomepageOnly && !isHome) return;
-    if (!thankYouModalConfig.enabled || latestReceiptEntries.length === 0) return;
+    if (!thankYouModalConfig.enabled || !latestBatchId || latestReceiptEntries.length === 0) return;
 
     const params = new URLSearchParams(window.location.search);
     const forceOpen = params.has("preview") || params.get("support") === "thanks";
 
-    let dismissed = false;
+    let acknowledgedId: string | null = null;
     try {
-      dismissed = window.localStorage.getItem(DISMISSED_STORAGE_KEY) === "1";
+      acknowledgedId = window.localStorage.getItem(DISMISSED_STORAGE_KEY);
     } catch {
       // Storage can be unavailable in private mode; keep the notice, don't crash.
     }
-    if (!forceOpen && dismissed) return;
+    if (!forceOpen && acknowledgedId === latestBatchId) return;
 
     const timer = window.setTimeout(
       () => setIsOpen(true),
       forceOpen ? 0 : OPEN_DELAY_MS
     );
     return () => window.clearTimeout(timer);
-  }, [latestReceiptEntries.length, showOnHomepageOnly]);
+  }, [latestBatchId, latestReceiptEntries.length, showOnHomepageOnly]);
 
   const handleClose = () => {
     setIsOpen(false);
-    if (!thankYouModalConfig.dismissible) return;
+    if (!thankYouModalConfig.dismissible || !latestBatchId) return;
     try {
-      window.localStorage.setItem(DISMISSED_STORAGE_KEY, "1");
+      // Remember the batch that was just acknowledged, not a permanent flag.
+      window.localStorage.setItem(DISMISSED_STORAGE_KEY, latestBatchId);
     } catch {
       // Ignore storage failures: the dialog closes for this session either way.
     }
