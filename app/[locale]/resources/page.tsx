@@ -14,9 +14,9 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   const localized = locale === "zh"
     ? {
         ...baseMetadata,
-        title: "网页设计资源：字体、渐变、阴影、背景与着色器",
-        description: "复制即用的网页设计资源：字体搭配、CSS 渐变、box-shadow 阴影预设、背景纹理和 WebGL2 着色器背景，快速加入你的前端项目。",
-        keywords: ["网页设计资源", "CSS 渐变", "CSS 阴影", "字体搭配", "背景纹理", "WebGL 背景", "着色器"],
+        title: "开源网站与网页设计资源",
+        description: "浏览源码、许可和技术栈均已核对的开源网站，也可复制字体搭配、CSS 渐变、阴影预设、背景纹理和 WebGL2 着色器。",
+        keywords: ["开源设计网站", "开源网页模板", "网页设计资源", "CSS 渐变", "CSS 阴影", "字体搭配", "背景纹理", "WebGL 背景", "着色器"],
       }
     : baseMetadata;
   return localizeMetadata(localized, locale, "/resources");

@@ -14,6 +14,13 @@ describe("resource tab navigation", () => {
     expect(parseResourceSectionId("unknown")).toBeNull();
   });
 
+  it("opens the curated open-source design library from a shareable tab URL", () => {
+    expect(parseResourceSectionId("open-source-designs")).toBe("open-source-designs");
+    expect(
+      getResourceSectionFromSearch("?utm_source=docs&tab=open-source-designs"),
+    ).toBe("open-source-designs");
+  });
+
   it("migrates a legacy hash to the query while retaining other parameters", () => {
     const canonical = getCanonicalResourceUrl(
       new URL("https://stylekit.test/zh/resources?campaign=launch#shadows"),
