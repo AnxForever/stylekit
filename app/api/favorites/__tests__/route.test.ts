@@ -55,6 +55,19 @@ describe("favorites route", () => {
     });
   });
 
+  it("rejects a request whose expected user does not match the authenticated cookie", async () => {
+    mockedGetServerUser.mockResolvedValue({ id: "account-b" } as never);
+
+    const response = await GET(
+      new Request("https://stylekit.top/api/favorites", {
+        headers: { "X-StyleKit-Expected-User": "account-a" },
+      }),
+    );
+
+    expect(response.status).toBe(401);
+    expect(mockedCreateClient).not.toHaveBeenCalled();
+  });
+
   it("GET returns favorite slugs for authenticated user", async () => {
     mockedGetServerUser.mockResolvedValue({ id: "user-1" } as never);
     mockedIsSupabaseConfigured.mockReturnValue(true);
@@ -424,20 +437,31 @@ describe("favorites route", () => {
     mockedGetServerUser.mockResolvedValue({ id: "user-legacy" } as never);
     mockedIsSupabaseConfigured.mockReturnValue(true);
 
+    const legacyAliases = vi.fn((column: string, values: string[]) => ({
+      eq: vi.fn((styleColumn: string, slug: string) => {
+        if (
+          column === "session_id" &&
+          styleColumn === "style_slug" &&
+          slug === "neo-brutalist" &&
+          values.includes("user:user-legacy") &&
+          values.includes("user-legacy")
+        ) {
+          return Promise.resolve({ error: null });
+        }
+        return Promise.resolve({ error: { message: "unexpected legacy delete call" } });
+      }),
+    }));
+
     const userTableDelete = vi.fn().mockReturnValue({
       eq: vi.fn((firstColumn: string, firstValue: string) => ({
-        eq: vi.fn(() => {
-          if (firstColumn === "user_id" && firstValue === "user-legacy") {
-            return Promise.resolve({
-              error: { code: "42703", message: "column user_id does not exist" },
-            });
-          }
-          if (firstColumn === "session_id" && firstValue === "user:user-legacy") {
-            return Promise.resolve({ error: null });
-          }
-          return Promise.resolve({ error: { message: "unexpected delete call" } });
+        eq: vi.fn().mockResolvedValue({
+          error:
+            firstColumn === "user_id" && firstValue === "user-legacy"
+              ? { code: "42703", message: "column user_id does not exist" }
+              : { message: "unexpected direct delete call" },
         }),
       })),
+      in: legacyAliases,
     });
 
     const styleTableDelete = vi.fn().mockReturnValue({
@@ -467,6 +491,70 @@ describe("favorites route", () => {
     );
 
     expect(response.status).toBe(200);
+    expect(legacyAliases).toHaveBeenCalledWith("session_id", ["user:user-legacy", "user-legacy"]);
     await expect(response.json()).resolves.toEqual({ success: true });
+  });
+
+  it("DELETE reports failure when every compatible favorites store rejects the write", async () => {
+    mockedVerifyTrustedOrigin.mockReturnValue({ ok: true });
+    mockedGetServerUser.mockResolvedValue({ id: "user-delete-error" } as never);
+    mockedIsSupabaseConfigured.mockReturnValue(true);
+
+    const from = vi.fn(() => ({
+      delete: vi.fn(() => ({
+        eq: vi.fn(() => ({
+          eq: vi.fn().mockResolvedValue({
+            error: { code: "42501", message: "permission denied" },
+          }),
+        })),
+      })),
+    }));
+    mockedCreateClient.mockReturnValue({ from } as never);
+
+    const response = await DELETE(
+      new Request("https://stylekit.top/api/favorites?slug=neo-brutalist", {
+        method: "DELETE",
+      }),
+    );
+
+    expect(response.status).toBe(500);
+    await expect(response.json()).resolves.toEqual({
+      success: false,
+      error: "Failed to remove favorite",
+    });
+  });
+
+  it("DELETE does not report success while another readable store still rejects", async () => {
+    mockedVerifyTrustedOrigin.mockReturnValue({ ok: true });
+    mockedGetServerUser.mockResolvedValue({ id: "user-partial-delete" } as never);
+    mockedIsSupabaseConfigured.mockReturnValue(true);
+
+    const from = vi.fn((table: string) => {
+      const deleteChain = {
+        eq: vi.fn((column: string) => ({
+          eq: vi.fn(() =>
+            Promise.resolve(
+              table === "user_favorites" && column === "user_id"
+                ? { error: null }
+                : { error: { code: "42501", message: "permission denied" } },
+            ),
+          ),
+        })),
+      };
+      return { delete: vi.fn(() => deleteChain) };
+    });
+    mockedCreateClient.mockReturnValue({ from } as never);
+
+    const response = await DELETE(
+      new Request("https://stylekit.top/api/favorites?slug=glassmorphism", {
+        method: "DELETE",
+      }),
+    );
+
+    expect(response.status).toBe(500);
+    await expect(response.json()).resolves.toEqual({
+      success: false,
+      error: "Failed to remove favorite",
+    });
   });
 });

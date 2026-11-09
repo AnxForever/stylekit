@@ -157,11 +157,22 @@ export async function DELETE(request: Request) {
       { auth: { autoRefreshToken: false, persistSession: false } }
     );
 
-    await Promise.allSettled(
+    const deletes = await Promise.allSettled(
       FAVORITES_TABLE_CANDIDATES.map((tableName) =>
         deleteFavoriteForUser(sb, tableName, user.id, slug)
       )
     );
+
+    // The GET route merges both compatibility tables. A real failure in either
+    // readable store can leave a favorite visible, so deletion is confirmed
+    // only when every available store accepted it. Missing legacy schemas are
+    // represented as fulfilled false and keep the compatibility fallback.
+    if (deletes.some((result) => result.status === "rejected")) {
+      return NextResponse.json(
+        { success: false, error: "Failed to remove favorite" },
+        { status: 500 }
+      );
+    }
 
     return NextResponse.json({ success: true });
   } catch {
@@ -181,9 +192,10 @@ function readStyleSlug(row: unknown): string | null {
 }
 
 async function getRequestUser(request: Request) {
+  const expectedUserId = request.headers.get("x-stylekit-expected-user")?.trim();
   const cookieUser = await getServerUser();
   if (cookieUser) {
-    return cookieUser;
+    return !expectedUserId || cookieUser.id === expectedUserId ? cookieUser : null;
   }
 
   const token = getBearerToken(request);
@@ -205,7 +217,8 @@ async function getRequestUser(request: Request) {
   const {
     data: { user },
   } = await sb.auth.getUser(token);
-  return user ?? null;
+  if (!user || (expectedUserId && user.id !== expectedUserId)) return null;
+  return user;
 }
 
 function getBearerToken(request: Request): string | null {
@@ -326,7 +339,7 @@ async function deleteFavoriteForUser(
     const legacyDelete = await sb
       .from(tableName)
       .delete()
-      .eq("session_id", buildLegacyUserSessionId(userId))
+      .in("session_id", [buildLegacyUserSessionId(userId), userId])
       .eq("style_slug", slug);
 
     if (!legacyDelete.error) {
