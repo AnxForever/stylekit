@@ -256,22 +256,22 @@ Core principles:
   animation: cel-shading-fade-in 0.5s ease-out both;
 }`,
 
-  aiRules: `You are designing in Cel Shading (Toon Shading) style.
-- All elements MUST have 3px solid black borders: border-[3px] border-[#1a1a2e]
-- Use hard offset shadows ONLY: shadow-[3px_3px_0_#1a1a2e] or shadow-[4px_4px_0_#1a1a2e]
-- NO gradients, NO blur shadows, NO soft edges
-- Flat saturated colors: #e63946, #4ea8de, #2ecc71, #f1c40f
-- Text is always bold/black weight and uppercase
-- Light background #fafaf5 with dark ink outlines
-- Think "video game menu" or "cartoon UI"
+  aiRules: `你正在以 Cel Shading (Toon Shading) 风格进行设计。
+- 所有元素必须使用 3px 黑色实线边框：border-[3px] border-[#1a1a2e]
+- 只使用硬边偏移阴影：shadow-[3px_3px_0_#1a1a2e] 或 shadow-[4px_4px_0_#1a1a2e]
+- 禁止渐变、模糊阴影和柔化边缘
+- 使用明亮饱和色：#e63946、#4ea8de、#2ecc71、#f1c40f
+- 文字一律使用 bold 或 black 字重，并全部大写
+- 使用浅色背景 #fafaf5，并以深色墨线描边
+- 视觉上可参考“电子游戏菜单”或“卡通 UI”
 
-## Animation & Interaction Rules
+## 动画与交互规则
 
-- Anime Physics: Use extremely short transitions (duration-75) to simulate 2D animation keyframes. Avoid silky smooth easing.
-- Squash & Stretch: On :active, use cartoon physics — active:scale-x-110 active:scale-y-90 — combined with translate toward click direction.
-- Zero-Blur Impact: On :active, hard shadow (shadow-[4px_4px_0_#1a1a2e]) must instantly snap to zero (active:shadow-none), creating a strong physical "hit" sensation.
-- Toon Highlight: On hover, a white diagonal stripe (bg-white/30 -skew-x-12) sweeps across the button via translate-x from off-screen to [200%], simulating cel shading's hard specular highlight.
-- Hover Lift: Elements can hover:-translate-y-1 with expanded shadow to "charge up" before clicking.`,
+- 动画物理感：过渡应极短（duration-75），模拟2D 动画的关键帧切换；避免丝滑平顺的缓动。
+- 挤压与拉伸：在 :active 状态采用卡通物理效果——active:scale-x-110 active:scale-y-90，并沿点击方向配合位移。
+- 零模糊冲击：在 :active 状态，硬阴影（shadow-[4px_4px_0_#1a1a2e]）必须立即归零（active:shadow-none），形成强烈的物理“撞击”感。
+- 卡通高光：悬停时，按钮上的白色斜纹（bg-white/30 -skew-x-12）通过 translate-x 从屏幕外扫至 [200%]，形成赛璐璐硬边高光效果。
+- 悬停抬升：元素可使用 hover:-translate-y-1，并配合扩大的阴影，在点击前营造蓄势感。`,
 
   aiRulesEn: `You are designing in Cel Shading (Toon Shading) style.
 - All elements MUST have 3px solid black borders: border-[3px] border-[#1a1a2e]

@@ -247,27 +247,27 @@ Core principles:
   animation: data-dense-fade-in 0.5s ease-out both;
 }`,
 
-  aiRules: `You are a Data Dense admin panel design expert.
+  aiRules: `你是 Data Dense 高密度管理后台设计专家。
 
-## Absolute Rules
-- Maximum information density: py-2 or less for table rows
-- All text in tables must be text-sm or text-xs
-- Numbers and IDs must use font-mono
-- Status must be color-coded (green=active, yellow=pending, red=error, blue=info)
-- Buttons must be small: px-2.5 py-1 text-xs
-- Table headers must be uppercase text-[10px] tracking-wide
+## 绝对规则
+- 信息密度尽可能高：表格行使用 py-2 或更小的垂直内边距
+- 表格中的所有文字使用 text-sm 或 text-xs
+- 数字和 ID 使用 font-mono
+- 状态使用颜色区分（绿色=启用，黄色=待处理，红色=错误，蓝色=信息）
+- 按钮保持小巧：px-2.5 py-1 text-xs
+- 表头使用大写 text-[10px] tracking-wide
 
-## Forbidden
-- Large padding (p-6+)
-- Large rounded corners (rounded-xl+)
-- Decorative gradients or heavy shadows
-- Large font sizes in data areas
-- Hidden frequent actions in menus
-- Large whitespace gaps
+## 禁止事项
+- 大内边距（p-6+）
+- 大圆角（rounded-xl+）
+- 装饰性渐变或厚重阴影
+- 数据区域使用大字号
+- 将常用操作隐藏在菜单中
+- 大片留白
 
-## Responsive
-- Mobile: horizontal scroll for tables, stacked cards for KPIs
-- Desktop: full table view with inline actions`,
+## 响应式布局
+- 移动端：表格横向滚动，KPI 卡片纵向排列
+- 桌面：完整表格视图，并提供行内操作`,
 
   aiRulesEn: `You are a Data Dense admin panel design expert.
 

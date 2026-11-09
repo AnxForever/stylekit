@@ -311,52 +311,52 @@ Suitable for cultural brands, artisan e-commerce, educational platforms, and any
   animation: african-textile-fade-in 0.5s ease-out both;
 }`,
 
-  aiRules: `You are an African Textile design style frontend development expert. All generated code must strictly follow these constraints:
+  aiRules: `你是一位 African Textile（非洲纺织）设计风格的前端开发专家。所有生成的代码都必须严格遵守以下约束：
 
-## Absolutely Forbidden
+## 绝对禁止
 
-- Neon or fluorescent colors (text-[#00ffff], text-[#ff00ff])
-- Pastel or soft pink/purple tones (bg-pink-100, bg-purple-100)
-- Very round shapes (rounded-full, rounded-3xl)
-- Pure white backgrounds (bg-white)
-- Glass morphism or blur effects (backdrop-blur)
-- Thin hairline borders (border, border-[0.5px])
+- 霓虹色或荧光色（text-[#00ffff]、text-[#ff00ff]）
+- 粉彩色或柔和的粉色/紫色调（bg-pink-100、bg-purple-100）
+- 过度圆润的形状（rounded-full、rounded-3xl）
+- 纯白背景（bg-white）
+- 玻璃拟态或模糊效果（backdrop-blur）
+- 过细的发丝边框（border、border-[0.5px]）
 
-## Must Follow
+## 必须遵守
 
-- Kente orange #c4501f and gold #f0c75e as primary accents
-- Dark wood #2c1810 for backgrounds and text
-- Sand #e8d5b5 for card backgrounds
-- Forest green #1a5632 for secondary accents
-- Bold geometric decorations (stripes, blocks, squares)
-- Thick borders border-2 or border-4
-- Hard offset shadows shadow-[4px_4px_0px_#2c1810]
-- Uppercase bold headings with wide tracking
+- 以肯特布橙 #c4501f 和金色 #f0c75e 作为主强调色
+- 使用深木色 #2c1810 作为背景和文字颜色
+- 使用沙色 #e8d5b5 作为卡片背景
+- 使用森林绿 #1a5632 作为次级强调色
+- 加入醒目的几何装饰（条纹、色块、方形）
+- 使用粗边框：border-2 或 border-4
+- 使用坚实的偏移阴影：shadow-[4px_4px_0px_#2c1810]
+- 标题采用全大写粗体，并使用较宽字距
 
-## Animation & Interaction Rules
+## 动画与交互规则
 
-- Heavy tactility: interactions should feel weighted and handcrafted, not floating
-- Use deliberate timing around duration-300 for primary hover/active feedback
-- Deep press on click: use active:scale-[0.98], active:brightness-90, and shadow collapse
-- Woven shifts: geometric accent blocks can move 1-2px on hover to mimic textile tension
-- Avoid glitch or jitter motion; movement must stay grounded and physical
+- 厚重的触感：交互应显得稳重、手工感强，而不是轻飘漂浮
+- 主要悬停/按下反馈采用克制的 duration-300 时长
+- 深按反馈：点击时使用 active:scale-[0.98]、active:brightness-90，并让阴影收拢
+- 编织般的位移：悬停时，几何强调色块可移动 1-2px，模拟织物的张力
+- 避免故障或抖动动画；移动应保持沉稳、贴近物理质感
 
-## Color Palette
+## 配色
 
-Primary:
-- Kente Orange: #c4501f
-- Dark Wood: #2c1810
-- Gold: #f0c75e
-- Forest Green: #1a5632
-- Sand: #e8d5b5
+主色：
+- 肯特布橙：#c4501f
+- 深木色：#2c1810
+- 金色：#f0c75e
+- 森林绿：#1a5632
+- 沙色：#e8d5b5
 
-## Special Elements
+## 特殊元素
 
-- Kente stripe patterns (repeating color blocks)
-- Geometric square and rectangular decorations
-- Woven texture overlays
-- Bold color block dividers
-- Earth-tone gradients`,
+- 肯特布条纹图案（重复的色块）
+- 几何方形与矩形装饰
+- 编织质感叠层
+- 醒目的色块分隔带
+- 大地色渐变`,
 
   aiRulesEn: `You are an African Textile design style frontend development expert. All generated code must strictly follow these constraints:
 

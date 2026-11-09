@@ -208,45 +208,45 @@ Suitable for: occult apps, tarot reading platforms, crystal healing shops, dark 
   animation: witchcore-fade-in 0.5s ease-out both;
 }`,
 
-  aiRules: `STYLE: Witchcore
-TYPE: Occult mystical interface
+  aiRules: `风格：Witchcore
+类型：神秘学氛围的界面
 
-MUST USE:
-- Dark backgrounds: bg-[#0d0b14] or bg-[#4a1942]
-- Gold rune text: text-[#c9a74e]
-- Text glow: style={{textShadow: '0 0 10px rgba(201,167,78,0.3)'}}
-- Glowing gold borders: border border-[#c9a74e]/30
-- Serif fonts: font-serif for all text
-- uppercase tracking-wider for labels
-- Amethyst secondary: text-[#7b68ae]
-- Herb green accent: text-[#3d8b6e]
+## 必须使用
+- 深色背景：bg-[#0d0b14] 或 bg-[#4a1942]
+- 金色符文文字：text-[#c9a74e]
+- 文字辉光：style={{textShadow: '0 0 10px rgba(201,167,78,0.3)'}}
+- 发光金色边框：border border-[#c9a74e]/30
+- 所有文字都使用衬线字体：font-serif
+- 标签使用 uppercase tracking-wider
+- 次级紫水晶色：text-[#7b68ae]
+- 草本绿作为强调色：text-[#3d8b6e]
 
-MUST AVOID:
-- Light/white backgrounds
-- Neon/high-saturation modern colors
-- Sans-serif fonts for headings
-- Regular shadows (shadow-md)
-- Rounded/cute elements (rounded-full)
-- Bright cheerful gradients
+## 绝对禁止
+- 浅色或白色背景
+- 霓虹色或高饱和的现代色彩
+- 标题使用无衬线字体
+- 常规阴影（shadow-md）
+- 圆润、可爱的元素（rounded-full）
+- 明亮欢快的渐变
 
-COLOR RULES:
-- Primary: Mystic purple (#4a1942)
-- Secondary: Midnight (#0d0b14)
-- Gold rune: #c9a74e
-- Amethyst: #7b68ae
-- Herb green: #3d8b6e
+## 配色规则
+- 主色：神秘紫（#4a1942）
+- 次色：午夜黑（#0d0b14）
+- 金色符文：#c9a74e
+- 紫水晶色：#7b68ae
+- 草本绿：#3d8b6e
 
-SPECIAL EFFECTS:
-- Stardust particle overlays
-- Rune glow pulsing animation
-- Moon phase symbols as decorative elements
-- Radial gradient for mystical light sources
+## 特殊效果
+- 星尘粒子叠层
+- 符文辉光脉冲动画
+- 以月相符号作为装饰元素
+- 用径向渐变表现神秘光源
 
-ANIMATION & INTERACTION RULES:
-- Ritual Levitation: Cards and primary elements must NOT bounce quickly. Use extremely slow upfloat (hover:-translate-y-2) with duration-1000 ease-in-out. Simulate the feeling of ritual levitation, not a spring.
-- Occult Glow: On hover, the gold rune glow (text-shadow or box-shadow using #c9a74e) must expand and pulse as if imbued with magic. Use drop-shadow CSS filter on headings for text glow enhancement.
-- Shadow Engulf: On dark backgrounds (#0d0b14), hover should expand a deep purple/amethyst outer glow outward, simulating dark matter or mystical fog spreading.
-- Talisman Press: On :active, cancel the glow and add a deep inset shadow (active:shadow-[inset_0_0_20px_rgba(0,0,0,0.8)]) plus slight downward translate (active:translate-y-1), simulating pressing a heavy talisman or ritual object.`,
+## 动画与交互规则
+- 仪式悬浮：卡片和主要元素绝不能快速弹跳。使用极缓慢的上浮效果（hover:-translate-y-2），并设置 duration-1000 ease-in-out。营造仪式般的悬浮感，而不是弹簧感。
+- 神秘辉光：悬停时，金色符文辉光（text-shadow 或使用 #c9a74e 的 box-shadow）必须扩散并脉动，仿佛注入了魔力。标题应使用 drop-shadow CSS filter 增强文字辉光。
+- 暗影吞没：在深色背景（#0d0b14）上，悬停时应扩展深紫色/紫水晶色外部光晕，模拟暗物质或神秘雾气蔓延。
+- 护符按压：在 :active 状态取消光晕，加入深邃的内阴影（active:shadow-[inset_0_0_20px_rgba(0,0,0,0.8)])，并轻微向下位移（active:translate-y-1），模拟按压沉重的护符或仪式物件。`,
 
   aiRulesEn: `STYLE: Witchcore
 TYPE: Occult mystical interface

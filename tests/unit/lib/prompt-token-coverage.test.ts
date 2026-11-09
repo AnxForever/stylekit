@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { styles } from "@/lib/styles";
+import { rawStyles } from "@/lib/styles/registry";
 import { getStyleMetaBySlug } from "@/lib/styles/meta";
 import { getStyleTokens } from "@/lib/styles/tokens-registry";
 import { generateEnhancedAIRules } from "@/lib/styles/enhanced-rules";
@@ -126,5 +127,25 @@ describe("prompt token coverage", () => {
     }
 
     expect(leaking).toEqual([]);
+  });
+
+  it.each([
+    "cel-shading", "film-noir", "indian-festive", "african-textile", "witchcore",
+    "neon-tokyo", "dopamine-design", "linear-style", "shopify-clean", "luxury-retail",
+    "fresh-market", "data-dense", "horizontal-gallery", "latex-paper", "distill-style",
+    "studio-bold", "warm-organic", "pastel-ui", "soft-utility",
+  ])("delivers localized authored rules for %s through legacy prompts", (slug) => {
+    const style = styles.find((candidate) => candidate.slug === slug)!;
+    const authored = rawStyles.find((candidate) => candidate.slug === slug)!;
+    const prose = authored.aiRules
+      .replace(/```[\s\S]*?```/g, "")
+      .replace(/`[^`]*`/g, "");
+
+    // Code samples and utility names stay in English; the instructions must
+    // contain Chinese prose beyond just a translated style name or heading.
+    expect((prose.match(CJK) ?? []).length).toBeGreaterThan(20);
+    expect(hardPromptFor(slug, "zh")).toContain(style.aiRules.trim());
+    expect(style.aiRulesEn?.trim()).toBeTruthy();
+    expect(hardPromptFor(slug, "en")).toContain(style.aiRulesEn!.trim());
   });
 });

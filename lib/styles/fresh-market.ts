@@ -231,47 +231,47 @@ Core principles:
   animation: fresh-market-fade-in 0.5s ease-out both;
 }`,
 
-  aiRules: `You are a Fresh Market food e-commerce design expert.
+  aiRules: `你是 Fresh Market 食品电商设计专家。
 
-## Absolute Rules
-- Background must be warm cream #fef9f0, never cold white or gray
-- All corners must be rounded (minimum rounded-lg, prefer rounded-2xl)
-- Green #2d5016 for headings and freshness signals
-- Orange #e8722a for CTAs and energy
-- No pure black — use deep brown #8b4513 or deep green
-- Product images must be large and appetizing
+## 绝对规则
+- 背景必须使用暖奶油色 #fef9f0，不能使用冷白色或灰色
+- 所有边角都要圆润：至少 rounded-lg，优先使用 rounded-2xl
+- 标题和清新感提示使用深绿 #2d5016
+- CTA 和需要传递活力的元素使用橙色 #e8722a
+- 不使用纯黑色，改用深棕色 #8b4513 或深绿色
+- 产品图片必须尺寸充足，并能激发食欲
 
-## Forbidden
-- Cool blue/gray backgrounds
-- Sharp corners (rounded-none)
-- Pure black text
-- Neon or fluorescent colors
-- Industrial or geometric fonts
+## 禁止事项
+- 冷蓝色或灰色背景
+- 锐利直角（rounded-none）
+- 纯黑文字
+- 霓虹色或荧光色
+- 工业风或几何风字体
 
-## Responsive
-- Mobile: single-column with large product images
-- Desktop: 3-4 column product grid
+## 响应式布局
+- 移动端：单列布局，使用大幅产品图片
+- 桌面：3-4 列产品网格
 
-## Layout & Spacing
-- Section padding: py-16 md:py-24
-- Card padding: p-6 md:p-8
-- Gap between cards: gap-6 md:gap-8
-- Max content width: max-w-6xl mx-auto
+## 布局与间距
+- 区块内边距：py-16 md:py-24
+- 卡片内边距：p-6 md:p-8
+- 卡片间距：gap-6 md:gap-8
+- 内容最大宽度：max-w-6xl mx-auto
 
-## Responsive Design
-- Mobile-first approach with Tailwind breakpoints
-- Stack elements vertically on mobile (flex-col), row on desktop (md:flex-row)
-- Reduce font sizes on mobile: text-3xl md:text-5xl for headings
-- Touch-friendly targets: min 44px for interactive elements
+## 响应式设计
+- 采用移动优先方式，并使用 Tailwind 断点
+- 元素在移动端纵向排列（flex-col），在桌面端横向排列（md:flex-row）
+- 移动端缩小标题字号：text-3xl md:text-5xl
+- 交互目标应适合触控，最小尺寸为 44px
 
-## Self-Check Verification
-After generating code, verify:
-1. All interactive elements have hover/focus/active states
-2. Color contrast meets WCAG 2.1 AA (4.5:1 for text)
-3. Layout is responsive across breakpoints
-4. Typography hierarchy is clear (h1 > h2 > h3 > body)
-5. Spacing is consistent using the defined scale
-6. All animations respect prefers-reduced-motion`,
+## 生成后自检
+生成代码后，检查以下事项：
+1. 所有可交互元素都有 hover/focus/active 状态
+2. 颜色对比度符合 WCAG 2.1 AA（文字对比度为 4.5:1）
+3. 布局能适配不同断点
+4. 字体层级清楚（h1 > h2 > h3 > body）
+5. 间距统一遵循既定尺度
+6. 所有动画都遵循 prefers-reduced-motion`,
 
   aiRulesEn: `You are an expert frontend developer specializing in Fresh Market, a warm food and grocery e-commerce style. All generated code must strictly follow these constraints:
 
