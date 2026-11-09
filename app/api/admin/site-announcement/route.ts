@@ -3,6 +3,12 @@ import { z } from "zod";
 import { checkAdminApiAccess } from "@/lib/auth/admin-api";
 import { recordAdminAuditEvent } from "@/lib/admin/audit-log";
 import { clearSiteAnnouncementCache } from "@/lib/site-announcements";
+import {
+  getNextAnnouncementUpdatedAt,
+  hasSameAnnouncementContent,
+  SITE_ANNOUNCEMENT_SELECT_FIELDS,
+  toAnnouncementWriteRow,
+} from "@/lib/site-announcement-write";
 import { getSupabaseAdmin } from "@/lib/supabase/server";
 
 const locales = ["zh-CN", "en"] as const;
@@ -29,6 +35,9 @@ const announcementSchema = z.object({
   ctaHref: ctaHrefSchema.nullable().optional(),
   startsAt: z.string().datetime({ offset: true }).nullable().optional(),
   endsAt: z.string().datetime({ offset: true }).nullable().optional(),
+  // Optional to keep existing clients compatible while allowing the admin UI
+  // to guard drafts against concurrent edits from another tab or editor.
+  expectedUpdatedAt: z.string().datetime({ offset: true }).nullable().optional(),
 });
 
 export async function GET(request: Request) {
@@ -84,24 +93,120 @@ export async function PUT(request: Request) {
     return NextResponse.json({ error: "Supabase 未配置，无法保存站点公告。" }, { status: 503 });
   }
 
-  const { data, error } = await supabase
-    .from("site_announcements")
-    .upsert(
-      {
-        locale: parsed.data.locale,
-        enabled: parsed.data.enabled,
-        title: parsed.data.title,
-        body: parsed.data.body,
-        cta_label: parsed.data.ctaLabel || null,
-        cta_href: parsed.data.ctaHref || null,
-        starts_at: parsed.data.startsAt || null,
-        ends_at: parsed.data.endsAt || null,
-        updated_at: new Date().toISOString(),
-      },
-      { onConflict: "locale" },
-    )
-    .select("locale, enabled, title, body, cta_label, cta_href, starts_at, ends_at, updated_at")
-    .single();
+  const input = parsed.data;
+  let data: Record<string, unknown> | null = null;
+  let error: { message?: string } | null = null;
+
+  if (!Object.hasOwn(input, "expectedUpdatedAt")) {
+    // Preserve the existing write contract for callers that have not adopted
+    // the optional revision guard yet.
+    const result = await supabase
+      .from("site_announcements")
+      .upsert(
+        toAnnouncementWriteRow(input, getNextAnnouncementUpdatedAt(null)),
+        { onConflict: "locale" },
+      )
+      .select(SITE_ANNOUNCEMENT_SELECT_FIELDS)
+      .single();
+    data = result.data;
+    error = result.error;
+  } else {
+    const expectedUpdatedAt = input.expectedUpdatedAt ?? null;
+    const currentResult = await supabase
+      .from("site_announcements")
+      .select(SITE_ANNOUNCEMENT_SELECT_FIELDS)
+      .eq("locale", input.locale)
+      .maybeSingle();
+
+    if (currentResult.error) {
+      return NextResponse.json(
+        { error: "读取站点公告版本失败，请稍后重试。" },
+        { status: 502 },
+      );
+    }
+
+    const current = currentResult.data;
+    // A client can retry after a lost response. If its exact submitted
+    // snapshot is already stored, acknowledge that snapshot without creating
+    // another revision or changing the timestamp.
+    if (current && hasSameAnnouncementContent(current, input)) {
+      data = current;
+    } else if ((current?.updated_at ?? null) !== expectedUpdatedAt) {
+      return NextResponse.json(
+        {
+          error: "公告已被其他管理员更新。请检查服务器版本后再保存。",
+          latestAnnouncement: current,
+        },
+        { status: 409 },
+      );
+    } else if (current) {
+      const result = await supabase
+        .from("site_announcements")
+        .update(toAnnouncementWriteRow(input, getNextAnnouncementUpdatedAt(current.updated_at)))
+        .eq("locale", input.locale)
+        .eq("updated_at", expectedUpdatedAt)
+        .select(SITE_ANNOUNCEMENT_SELECT_FIELDS)
+        .maybeSingle();
+
+      if (result.error) {
+        error = result.error;
+      } else if (result.data) {
+        data = result.data;
+      } else {
+        const latestResult = await supabase
+          .from("site_announcements")
+          .select(SITE_ANNOUNCEMENT_SELECT_FIELDS)
+          .eq("locale", input.locale)
+          .maybeSingle();
+
+        if (latestResult.error) {
+          error = latestResult.error;
+        } else if (latestResult.data && hasSameAnnouncementContent(latestResult.data, input)) {
+          data = latestResult.data;
+        } else {
+          return NextResponse.json(
+            {
+              error: "公告已被其他管理员更新。请检查服务器版本后再保存。",
+              latestAnnouncement: latestResult.data,
+            },
+            { status: 409 },
+          );
+        }
+      }
+    } else {
+      const result = await supabase
+        .from("site_announcements")
+        .insert(toAnnouncementWriteRow(input, getNextAnnouncementUpdatedAt(null)))
+        .select(SITE_ANNOUNCEMENT_SELECT_FIELDS)
+        .maybeSingle();
+
+      if (result.error || !result.data) {
+        const latestResult = await supabase
+          .from("site_announcements")
+          .select(SITE_ANNOUNCEMENT_SELECT_FIELDS)
+          .eq("locale", input.locale)
+          .maybeSingle();
+
+        if (latestResult.error) {
+          error = latestResult.error;
+        } else if (latestResult.data && hasSameAnnouncementContent(latestResult.data, input)) {
+          data = latestResult.data;
+        } else if (latestResult.data) {
+          return NextResponse.json(
+            {
+              error: "公告已被其他管理员更新。请检查服务器版本后再保存。",
+              latestAnnouncement: latestResult.data,
+            },
+            { status: 409 },
+          );
+        } else {
+          error = result.error ?? { message: "公告 insert 未返回数据。" };
+        }
+      } else {
+        data = result.data;
+      }
+    }
+  }
 
   if (error || !data) {
     return NextResponse.json({ error: "保存站点公告失败，请检查 migration 和数据库连接。" }, { status: 502 });

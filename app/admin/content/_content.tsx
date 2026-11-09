@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   Check,
   ExternalLink,
@@ -69,10 +69,20 @@ const EMPTY_FORM: Record<Locale, FormState> = {
 export function SiteContentEditor() {
   const [locale, setLocale] = useState<Locale>("zh-CN");
   const [forms, setForms] = useState<Record<Locale, FormState>>(EMPTY_FORM);
+  const [updatedAt, setUpdatedAt] = useState<Record<Locale, string | null>>({
+    "zh-CN": null,
+    en: null,
+  });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [savingLocale, setSavingLocale] = useState<Locale | null>(null);
+  const [conflict, setConflict] = useState<{
+    locale: Locale;
+    latest: AnnouncementRecord | null;
+  } | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
+  const draftRevision = useRef<Record<Locale, number>>({ "zh-CN": 0, en: 0 });
 
   const load = useCallback(async (signal?: AbortSignal) => {
     setLoading(true);
@@ -88,10 +98,23 @@ export function SiteContentEditor() {
       if (!response.ok) throw new Error(payload?.error ?? "加载内容失败。");
 
       const nextForms = { ...EMPTY_FORM };
+      const nextUpdatedAt: Record<Locale, string | null> = {
+        "zh-CN": null,
+        en: null,
+      };
       for (const record of payload?.announcements ?? []) {
         nextForms[record.locale] = toFormState(record);
+        nextUpdatedAt[record.locale] = record.updated_at;
       }
-      if (!signal?.aborted) setForms(nextForms);
+      if (!signal?.aborted) {
+        setForms(nextForms);
+        setUpdatedAt(nextUpdatedAt);
+        setConflict(null);
+        draftRevision.current = {
+          "zh-CN": draftRevision.current["zh-CN"] + 1,
+          en: draftRevision.current.en + 1,
+        };
+      }
     } catch (err) {
       if (signal?.aborted) return;
       setError(err instanceof Error ? err.message : "加载内容失败。");
@@ -108,6 +131,7 @@ export function SiteContentEditor() {
 
   const form = forms[locale];
   const updateForm = (patch: Partial<FormState>) => {
+    draftRevision.current[locale] += 1;
     setForms((current) => ({
       ...current,
       [locale]: { ...current[locale], ...patch },
@@ -115,8 +139,16 @@ export function SiteContentEditor() {
     setNotice(null);
   };
 
-  const save = async () => {
+  const save = async (options?: { expectedUpdatedAt: string | null }) => {
+    const submittedLocale = locale;
+    const submittedForm = { ...form };
+    const submittedRevision = draftRevision.current[submittedLocale];
+    const expectedRevision = options
+      ? options.expectedUpdatedAt
+      : updatedAt[submittedLocale];
+
     setSaving(true);
+    setSavingLocale(submittedLocale);
     setError(null);
     setNotice(null);
     try {
@@ -124,25 +156,73 @@ export function SiteContentEditor() {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          locale,
-          enabled: form.enabled,
-          title: form.title,
-          body: form.body,
-          ctaLabel: form.ctaLabel || null,
-          ctaHref: form.ctaHref || null,
-          startsAt: toIsoDate(form.startsAt),
-          endsAt: toIsoDate(form.endsAt),
+          locale: submittedLocale,
+          enabled: submittedForm.enabled,
+          title: submittedForm.title,
+          body: submittedForm.body,
+          ctaLabel: submittedForm.ctaLabel || null,
+          ctaHref: submittedForm.ctaHref || null,
+          startsAt: toIsoDate(submittedForm.startsAt),
+          endsAt: toIsoDate(submittedForm.endsAt),
+          expectedUpdatedAt: expectedRevision,
         }),
       });
-      const payload = (await response.json().catch(() => null)) as { error?: string } | null;
+      const payload = (await response.json().catch(() => null)) as
+        | {
+            error?: string;
+            announcement?: AnnouncementRecord;
+            latestAnnouncement?: AnnouncementRecord | null;
+          }
+        | null;
+      if (response.status === 409) {
+        setConflict({
+          locale: submittedLocale,
+          latest: payload?.latestAnnouncement ?? null,
+        });
+        setError(payload?.error ?? "公告已被其他管理员更新。请检查服务器版本后再保存。");
+        return;
+      }
       if (!response.ok) throw new Error(payload?.error ?? "保存公告失败。");
-      setNotice(`${locale === "zh-CN" ? "中文" : "英文"}公告已保存。`);
-      await load();
+
+      const savedAnnouncement = payload?.announcement;
+      if (!savedAnnouncement) throw new Error("保存成功，但服务器没有返回公告版本。请重试读取后再编辑。");
+      setUpdatedAt((current) => ({
+        ...current,
+        [submittedLocale]: savedAnnouncement.updated_at,
+      }));
+      setConflict((current) => current?.locale === submittedLocale ? null : current);
+      const localeLabel = submittedLocale === "zh-CN" ? "中文" : "英文";
+      const hasNewerEdits = draftRevision.current[submittedLocale] !== submittedRevision;
+      setNotice(
+        hasNewerEdits
+          ? `${localeLabel}公告已保存；保存后继续编辑的内容仍未保存。`
+          : `${localeLabel}公告已保存。`,
+      );
     } catch (err) {
       setError(err instanceof Error ? err.message : "保存公告失败。");
     } finally {
       setSaving(false);
+      setSavingLocale(null);
     }
+  };
+
+  const loadServerVersion = () => {
+    if (!conflict || conflict.locale !== locale) return;
+    const serverForm = conflict.latest ? toFormState(conflict.latest) : EMPTY_FORM[locale];
+    setForms((current) => ({ ...current, [locale]: serverForm }));
+    setUpdatedAt((current) => ({
+      ...current,
+      [locale]: conflict.latest?.updated_at ?? null,
+    }));
+    draftRevision.current[locale] += 1;
+    setConflict(null);
+    setError(null);
+    setNotice("已载入服务器版本，本地草稿已替换。");
+  };
+
+  const overwriteServerVersion = () => {
+    if (!conflict || conflict.locale !== locale) return;
+    void save({ expectedUpdatedAt: conflict.latest?.updated_at ?? null });
   };
 
   if (loading) return <AdminLoadingState label="正在读取内容配置…" />;
@@ -173,9 +253,13 @@ export function SiteContentEditor() {
               {notice}
             </span>
           ) : null}
-          <AdminButton onClick={() => void save()} disabled={saving || !form.title.trim()}>
+          <AdminButton onClick={() => void save()} disabled={saving || !form.title.trim() || conflict?.locale === locale}>
             <Save className="h-4 w-4" />
-            {saving ? "保存中…" : "保存公告"}
+            {saving
+              ? savingLocale === locale
+                ? "保存中…"
+                : `${savingLocale === "zh-CN" ? "中文" : "英文"}公告保存中…`
+              : "保存公告"}
           </AdminButton>
         </div>
       </div>
@@ -184,6 +268,22 @@ export function SiteContentEditor() {
         <div className="rounded-lg bg-[color-mix(in_srgb,var(--admin-status-red)_10%,transparent)] px-4 py-3 text-sm text-[var(--admin-status-red)]" role="alert">
           {error}
         </div>
+      ) : null}
+
+      {conflict?.locale === locale ? (
+        <AdminPanel className="flex flex-col gap-3 p-4 sm:flex-row sm:items-center sm:justify-between">
+          <p className="text-sm text-muted">
+            服务器版本已变化。当前草稿仍保留；你可以载入服务器版本，或明确选择用当前草稿覆盖。
+          </p>
+          <div className="flex shrink-0 flex-wrap gap-2">
+            <AdminButton tone="ghost" onClick={loadServerVersion} disabled={saving}>
+              载入服务器版本
+            </AdminButton>
+            <AdminButton onClick={overwriteServerVersion} disabled={saving || !form.title.trim()}>
+              用当前草稿覆盖
+            </AdminButton>
+          </div>
+        </AdminPanel>
       ) : null}
 
       <div className="grid gap-6 xl:grid-cols-[minmax(0,1.1fr)_minmax(320px,0.9fr)]">
