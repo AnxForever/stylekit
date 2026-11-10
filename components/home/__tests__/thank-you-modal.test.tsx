@@ -12,6 +12,11 @@ vi.mock("@/lib/i18n/context", () => ({
   useI18n: useI18nMock,
 }));
 
+vi.mock("next/navigation", () => ({
+  usePathname: () => window.location.pathname,
+  useSearchParams: () => new URLSearchParams(window.location.search),
+}));
+
 import { ThankYouModal } from "@/components/home/thank-you-modal";
 
 function makeEntry(id: string, date: string): ThankYouEntry {
@@ -117,6 +122,98 @@ describe("ThankYouModal", () => {
     expect(screen.getByRole("dialog")).toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: "关闭" }));
     expect(window.localStorage.getItem("stylekit-thank-you-seen")).toBe("donation-b");
+  });
+
+  it("consumes an explicit request on close, preserves unrelated URL state, and can reopen explicitly", async () => {
+    vi.useFakeTimers();
+    const historyState = { test: "preserve-router-state" };
+    const entries = [makeEntry("donation-a", "2026-11-05")];
+    window.history.replaceState(historyState, "", "/zh?preview&support=thanks&utm_source=test#receipts");
+    const first = render(<ThankYouModal entries={entries} />);
+    await act(async () => { vi.advanceTimersByTime(0); });
+    expect(screen.getByRole("dialog")).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: "关闭" }));
+    expect(window.location.search).toBe("?utm_source=test");
+    expect(window.location.hash).toBe("#receipts");
+    expect(window.history.state).toEqual(historyState);
+    first.unmount();
+
+    const next = render(<ThankYouModal entries={entries} />);
+    await act(async () => { vi.advanceTimersByTime(1300); });
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+    window.history.replaceState(historyState, "", "/zh?support=thanks");
+    next.rerender(<ThankYouModal entries={entries} />);
+    await act(async () => { vi.advanceTimersByTime(0); });
+    expect(screen.getByRole("dialog")).toBeInTheDocument();
+  });
+
+  it("does not reopen for changed row IDs/order but does reopen when displayed content changes", async () => {
+    vi.useFakeTimers();
+    const entries = [makeEntry("a", "2026-11-05"), makeEntry("b", "2026-11-05")];
+    const first = render(<ThankYouModal entries={entries} />);
+    await act(async () => { vi.advanceTimersByTime(1300); });
+    fireEvent.click(screen.getByRole("button", { name: "关闭" }));
+    first.unmount();
+    const reordered = [...entries].reverse().map((entry) => ({ ...entry, id: "new-" + entry.id }));
+    const next = render(<ThankYouModal entries={reordered} />);
+    await act(async () => { vi.advanceTimersByTime(1300); });
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+
+    next.rerender(<ThankYouModal entries={[{ ...reordered[0], receiptImage: "/support/updated.png" }, reordered[1]]} />);
+    await act(async () => { vi.advanceTimersByTime(1300); });
+    expect(screen.getByRole("dialog")).toBeInTheDocument();
+  });
+
+  it("migrates the old boolean quietly while allowing a later content update", async () => {
+    vi.useFakeTimers();
+    window.localStorage.setItem("stylekit-thank-you-seen", "1");
+    const entry = makeEntry("donation-a", "2026-11-05");
+    const view = render(<ThankYouModal entries={[entry]} />);
+    await act(async () => { vi.advanceTimersByTime(1300); });
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+    expect(window.localStorage.getItem("stylekit-thank-you-seen")).toBe("donation-a");
+    expect(window.localStorage.getItem("stylekit-thank-you-dismissed-version")).toMatch(/^thank-you-v1:/);
+    view.rerender(<ThankYouModal entries={[{ ...entry, receiptImage: "/support/updated.png" }]} />);
+    await act(async () => { vi.advanceTimersByTime(1300); });
+    expect(screen.getByRole("dialog")).toBeInTheDocument();
+  });
+
+  it("does not announce degraded data or overwrite the last published dismissal", async () => {
+    vi.useFakeTimers();
+    const current = makeEntry("current", "2026-11-09");
+    const view = render(<ThankYouModal entries={[current]} />);
+    await act(async () => { vi.advanceTimersByTime(1300); });
+    fireEvent.click(screen.getByRole("button", { name: "关闭" }));
+    const storedVersion = window.localStorage.getItem("stylekit-thank-you-dismissed-version");
+    const fallback = [makeEntry("legacy", "2026-10-28")];
+    view.rerender(<ThankYouModal entries={fallback} allowAutomaticOpen={false} />);
+    await act(async () => { vi.advanceTimersByTime(1300); });
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+    window.history.replaceState({}, "", "/zh?support=thanks");
+    view.rerender(<ThankYouModal entries={fallback} allowAutomaticOpen={false} />);
+    await act(async () => { vi.advanceTimersByTime(0); });
+    expect(screen.getByRole("dialog")).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: "关闭" }));
+    expect(window.localStorage.getItem("stylekit-thank-you-dismissed-version")).toBe(storedVersion);
+    expect(window.localStorage.getItem("stylekit-thank-you-seen")).toBe("current");
+    view.rerender(<ThankYouModal entries={[current]} />);
+    await act(async () => { vi.advanceTimersByTime(1300); });
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+  });
+
+  it("shares the content dismissal across English and Chinese homepages", async () => {
+    vi.useFakeTimers();
+    const entries = [makeEntry("donation-a", "2026-11-05")];
+    const first = render(<ThankYouModal entries={entries} />);
+    await act(async () => { vi.advanceTimersByTime(1300); });
+    fireEvent.click(screen.getByRole("button", { name: "关闭" }));
+    first.unmount();
+
+    window.history.replaceState({}, "", "/en");
+    useI18nMock.mockReturnValue({ locale: "en" });
+    render(<ThankYouModal entries={entries} />);
+    await act(async () => { vi.advanceTimersByTime(1300); });
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
   });
 
   it("does not render outside the homepage when restricted", () => {
