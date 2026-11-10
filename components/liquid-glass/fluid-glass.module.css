@@ -1,0 +1,154 @@
+.surface {
+  position: relative;
+  isolation: isolate;
+  min-width: 0;
+  --fluid-pressure: 0;
+  --fluid-material-transform: translate(0, 0) scale(1, 1);
+}
+
+.surface::before,
+.surface::after {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  transform: var(--fluid-material-transform);
+  transform-origin: center;
+  content: "";
+}
+
+.surface::before {
+  z-index: -1;
+  box-shadow: var(--fluid-shadow, 0 18px 46px -22px rgb(7 27 38 / 42%), 0 2px 8px rgb(10 29 40 / 10%));
+}
+
+.surface::after {
+  z-index: 1;
+  opacity: calc(var(--fluid-pressure) * 0.75);
+  background: radial-gradient(ellipse at var(--fluid-contact-x, 50%) var(--fluid-contact-y, 50%), rgb(255 255 255 / 18%), transparent 65%);
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 25%);
+}
+
+.material {
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  border-radius: inherit !important;
+}
+
+.material > div[aria-hidden="true"] {
+  transform: var(--fluid-material-transform);
+  transform-origin: center;
+}
+
+.surface[data-fluid-active] > .material > div[aria-hidden="true"],
+.surface[data-fluid-active]::before,
+.surface[data-fluid-active]::after {
+  will-change: transform;
+}
+
+.surface[data-fluid-draggable] {
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.surface[data-fluid-draggable][data-fluid-pressed] {
+  cursor: grabbing;
+}
+
+.surface[data-fluid-draggable]:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 6px;
+}
+
+.segmented {
+  position: relative;
+  isolation: isolate;
+  display: inline-flex;
+  align-items: stretch;
+  padding: 4px;
+  border: 1px solid rgb(255 255 255 / 24%);
+  border-radius: 999px;
+  background: rgb(255 255 255 / 8%);
+  touch-action: pan-y;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.segmentPill {
+  position: absolute;
+  z-index: 0;
+  top: 4px;
+  bottom: 4px;
+  left: 0;
+  visibility: hidden;
+  border-radius: inherit;
+  pointer-events: none;
+  transform-origin: center;
+}
+
+.segmented[data-fluid-active] > .segmentPill {
+  will-change: transform;
+}
+
+.segmentGlass {
+  width: 100%;
+  height: 100%;
+}
+
+.segmentButton {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  flex: 1 1 0;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  min-width: 0;
+  min-height: 36px;
+  padding: 8px 16px;
+  border: 0;
+  border-radius: inherit;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-weight: 560;
+  cursor: pointer;
+  touch-action: pan-y;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.segmentButton:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: -3px;
+}
+
+.segmentButton[aria-pressed="true"] {
+  font-weight: 650;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .surface::before,
+  .surface::after,
+  .material > div[aria-hidden="true"] {
+    transform: none;
+  }
+}
+
+@media (forced-colors: active) {
+  .surface::before,
+  .surface::after {
+    display: none;
+  }
+
+  .segmented {
+    border-color: CanvasText;
+  }
+
+  .segmentButton[aria-pressed="true"] {
+    outline: 2px solid Highlight;
+    outline-offset: -3px;
+  }
+}
