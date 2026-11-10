@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import dynamic from "next/dynamic";
-import { startTransition, useEffect, useMemo, useRef, useState } from "react";
+import { Suspense, startTransition, useEffect, useMemo, useRef, useState } from "react";
 import { ArrowRight, Heart } from "lucide-react";
 import { useI18n } from "@/lib/i18n/context";
 import { HomeStyleCard } from "@/components/home/home-style-card";
@@ -46,6 +46,7 @@ interface HomeContentProps {
     templates: number;
   };
   thankYouEntries: ThankYouEntry[];
+  allowAutomaticThankYou?: boolean;
 }
 
 const HERO_SCENARIO_ORDER: StyleScenario[] = [
@@ -65,7 +66,7 @@ const TrendingStyles = dynamic(
   }
 );
 
-export function HomeContent({ styles, stats, thankYouEntries }: HomeContentProps) {
+export function HomeContent({ styles, stats, thankYouEntries, allowAutomaticThankYou = true }: HomeContentProps) {
   const { t, locale } = useI18n();
   const heroTitleLine1 = t("home.title.line1");
   const [heroTitleBeforeAi, heroTitleAfterAi] = heroTitleLine1.split("AI");
@@ -325,7 +326,13 @@ export function HomeContent({ styles, stats, thankYouEntries }: HomeContentProps
 
   return (
     <>
-      <ThankYouModal showOnHomepageOnly={true} entries={thankYouEntries} />
+      <Suspense fallback={null}>
+        <ThankYouModal
+          showOnHomepageOnly={true}
+          entries={thankYouEntries}
+          allowAutomaticOpen={allowAutomaticThankYou}
+        />
+      </Suspense>
       <section id="home-hero" className="home-hero-surface relative overflow-hidden border-b border-border">
         <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
           <div className="absolute -top-28 left-[-8rem] h-72 w-72 rounded-full bg-accent/10 blur-3xl" />
