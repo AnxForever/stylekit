@@ -26,6 +26,11 @@ export interface SupportAcknowledgmentAdminItem extends SupportAcknowledgmentRow
   receiptImage: string;
 }
 
+export interface PublishedThankYouContent {
+  entries: ThankYouEntry[];
+  source: "published" | "legacy" | "fallback";
+}
+
 const EMPTY_COPY: SupportLocaleCopy = { en: "", zh: "" };
 
 /**
@@ -48,11 +53,16 @@ function withRenderableReceipts(entries: ThankYouEntry[]): ThankYouEntry[] {
 // The home page calls this on every request; the data changes only when an
 // admin publishes an acknowledgment, so a 60s data-cache window removes a
 // Supabase round trip per home visit without making publications feel stale.
-export const getPublishedThankYouEntries = unstable_cache(
-  async (): Promise<ThankYouEntry[]> => {
+export const getPublishedThankYouContent = unstable_cache(
+  async (): Promise<PublishedThankYouContent> => {
     const admin = getSupabaseAdmin();
     if (!admin) {
-      return withRenderableReceipts(legacyThankYouEntries);
+      return {
+        entries: withRenderableReceipts(legacyThankYouEntries),
+        // CI has public Supabase configuration but deliberately no service key.
+        // Do not announce its prerendered legacy data as a new donation batch.
+        source: process.env.NEXT_PUBLIC_SUPABASE_URL ? "fallback" : "legacy",
+      };
     }
 
     const { data, error } = await admin
@@ -62,21 +72,28 @@ export const getPublishedThankYouEntries = unstable_cache(
       )
       .eq("published", true)
       .order("donated_on", { ascending: false })
-      .order("created_at", { ascending: false });
+      .order("created_at", { ascending: false })
+      .order("id", { ascending: false });
 
     // Keep the public site available while a deployment is waiting for the
     // migration, or when Supabase is temporarily unavailable.
     if (error || !data) {
-      return withRenderableReceipts(legacyThankYouEntries);
+      return { entries: withRenderableReceipts(legacyThankYouEntries), source: "fallback" };
     }
 
-    return withRenderableReceipts(
-      (data as SupportAcknowledgmentRow[]).map(toThankYouEntry),
-    );
+    return {
+      entries: withRenderableReceipts((data as SupportAcknowledgmentRow[]).map(toThankYouEntry)),
+      source: "published",
+    };
   },
-  ["support-published-thank-you-entries"],
+  ["support-published-thank-you-content-v2"],
   { revalidate: 60 },
 );
+
+// Existing support/contact consumers continue to receive the same array shape.
+export async function getPublishedThankYouEntries(): Promise<ThankYouEntry[]> {
+  return (await getPublishedThankYouContent()).entries;
+}
 
 export function toThankYouEntry(row: SupportAcknowledgmentRow): ThankYouEntry {
   const label = row.donor_label.trim() || "匿名支持者";

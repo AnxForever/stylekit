@@ -1,9 +1,11 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { usePathname, useSearchParams } from "next/navigation";
 import Image from "next/image";
 import { X } from "lucide-react";
 import { useI18n } from "@/lib/i18n/context";
+import { getThankYouContentVersion, withoutThankYouRequest } from "@/lib/support/thank-you-state";
 import {
   thankYouEntries as legacyThankYouEntries,
   thankYouModalConfig,
@@ -11,26 +13,28 @@ import {
 } from "@/lib/site/support";
 
 /**
- * Shown once per browser per donation batch. The value is the id of the newest
- * acknowledgment the visitor already dismissed, so a later batch opens the
- * dialog again. A legacy "1" from the old boolean flag simply never matches a
- * row id, which gives returning visitors one final thank-you before migrating.
- * Closing the dialog is the only thing that writes this key, so a first visit
- * still gets the thank-you note even when the visitor bounces before the
- * dialog appears.
+ * Keep the legacy row ID for already-open older bundles. The separate content
+ * version suppresses repeat visits without suppressing later content updates.
  */
 const DISMISSED_STORAGE_KEY = "stylekit-thank-you-seen";
+const DISMISSED_VERSION_KEY = "stylekit-thank-you-dismissed-version";
 const OPEN_DELAY_MS = 1200;
 
 export function ThankYouModal({
   showOnHomepageOnly = true,
   entries,
+  allowAutomaticOpen = true,
 }: {
   showOnHomepageOnly?: boolean;
   entries?: ThankYouEntry[];
+  allowAutomaticOpen?: boolean;
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const { locale } = useI18n();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const forceOpen = Boolean(searchParams?.has("preview") || searchParams?.get("support") === "thanks");
+  const dismissedVersionRef = useRef<string | null>(null);
   const resolvedEntries = entries ?? legacyThankYouEntries;
   const sortedReceiptEntries = useMemo(
     () =>
@@ -41,55 +45,90 @@ export function ThankYouModal({
   );
   const latestEntry = sortedReceiptEntries[0];
   const latestBatchId = latestEntry?.id ?? null;
-  // Keep the newest six receipts in view across donation batches. The batch
-  // acknowledgement continues to follow the newest receipt's id.
+  // The notice version follows the six receipts that are actually visible.
   const latestReceiptEntries = useMemo(
     () => sortedReceiptEntries.slice(0, 6),
     [sortedReceiptEntries]
   );
+  const celebrationEntry =
+    latestEntry?.celebrationImage
+      ? latestEntry
+      : resolvedEntries.find((entry) => entry.celebrationImage);
+  const contentVersion = getThankYouContentVersion(
+    latestReceiptEntries,
+    thankYouModalConfig,
+    celebrationEntry,
+  );
+
   useEffect(() => {
-    const pathname = window.location.pathname;
     const isHome = pathname === "/" || pathname === "/en" || pathname === "/zh";
-
     if (showOnHomepageOnly && !isHome) return;
-    if (!thankYouModalConfig.enabled || !latestBatchId || latestReceiptEntries.length === 0) return;
+    if (!thankYouModalConfig.enabled || !latestBatchId || !contentVersion) return;
+    if (!forceOpen && !allowAutomaticOpen) return;
 
-    const params = new URLSearchParams(window.location.search);
-    const forceOpen = params.has("preview") || params.get("support") === "thanks";
-
+    let dismissedVersion: string | null = null;
     let acknowledgedId: string | null = null;
     try {
+      dismissedVersion = window.localStorage.getItem(DISMISSED_VERSION_KEY);
       acknowledgedId = window.localStorage.getItem(DISMISSED_STORAGE_KEY);
     } catch {
-      // Storage can be unavailable in private mode; keep the notice, don't crash.
+      // The in-component ref still keeps a close action closed if storage fails.
     }
-    if (!forceOpen && acknowledgedId === latestBatchId) return;
+    if (!forceOpen) {
+      if (dismissedVersionRef.current === contentVersion || dismissedVersion === contentVersion) return;
+      if (!dismissedVersion && (acknowledgedId === latestBatchId || acknowledgedId === "1")) {
+        // The old boolean cannot identify a batch. Honor that dismissal during
+        // migration, then let every later content-version change open normally.
+        dismissedVersionRef.current = contentVersion;
+        try {
+          window.localStorage.setItem(DISMISSED_VERSION_KEY, contentVersion);
+          window.localStorage.setItem(DISMISSED_STORAGE_KEY, latestBatchId);
+        } catch {
+          // No persistent storage: retain the current component's dismissal.
+        }
+        return;
+      }
+    }
 
-    const timer = window.setTimeout(
-      () => setIsOpen(true),
-      forceOpen ? 0 : OPEN_DELAY_MS
-    );
+    const timer = window.setTimeout(() => {
+      if (!forceOpen) {
+        if (dismissedVersionRef.current === contentVersion) return;
+        try {
+          if (window.localStorage.getItem(DISMISSED_VERSION_KEY) === contentVersion) return;
+        } catch {
+          // A storage failure must not break the notice.
+        }
+      }
+      setIsOpen(true);
+    }, forceOpen ? 0 : OPEN_DELAY_MS);
     return () => window.clearTimeout(timer);
-  }, [latestBatchId, latestReceiptEntries.length, showOnHomepageOnly]);
+  }, [allowAutomaticOpen, contentVersion, forceOpen, latestBatchId, pathname, showOnHomepageOnly]);
 
   const handleClose = () => {
+    dismissedVersionRef.current = contentVersion;
     setIsOpen(false);
-    if (!thankYouModalConfig.dismissible || !latestBatchId) return;
-    try {
-      // Remember the batch that was just acknowledged, not a permanent flag.
-      window.localStorage.setItem(DISMISSED_STORAGE_KEY, latestBatchId);
-    } catch {
-      // Ignore storage failures: the dialog closes for this session either way.
+    if (thankYouModalConfig.dismissible && latestBatchId && contentVersion && allowAutomaticOpen) {
+      try {
+        window.localStorage.setItem(DISMISSED_VERSION_KEY, contentVersion);
+        window.localStorage.setItem(DISMISSED_STORAGE_KEY, latestBatchId);
+      } catch {
+        // Storage may be unavailable; this mounted notice still stays closed.
+      }
+    }
+    const nextUrl = withoutThankYouRequest(window.location.href);
+    if (nextUrl) {
+      // Next copies its router state itself. Passing its internal markers would
+      // bypass the update that synchronizes useSearchParams with this URL.
+      const nextHistoryState = { ...window.history.state };
+      delete nextHistoryState.__NA;
+      delete nextHistoryState._N;
+      window.history.replaceState(nextHistoryState, "", nextUrl);
     }
   };
 
   if (!isOpen) return null;
 
   const config = thankYouModalConfig;
-  const celebrationEntry =
-    latestEntry?.celebrationImage
-      ? latestEntry
-      : resolvedEntries.find((entry) => entry.celebrationImage);
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">

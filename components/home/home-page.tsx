@@ -8,7 +8,7 @@ import { getAllAnimationsMeta } from "@/lib/animations/meta";
 import { templateCatalog } from "@/lib/templates/catalog";
 import { CURATED_STYLE_COUNT } from "@/lib/product/catalog-facts";
 import { HOME_SOCIAL_IMAGE } from "@/lib/seo/site-metadata";
-import { getPublishedThankYouEntries } from "@/lib/support/acknowledgments";
+import { getPublishedThankYouContent } from "@/lib/support/acknowledgments";
 
 export const metadata: Metadata = {
   // Use `absolute` so the root "%s | StyleKit" template does not append a second
@@ -97,7 +97,7 @@ function buildHomeStyles(all: StyleMeta[]): StyleMeta[] {
 export default async function Home() {
   const allStyles = getAllStylesMeta();
   const styles = buildHomeStyles(allStyles);
-  const thankYouEntries = await getPublishedThankYouEntries();
+  const thankYouContent = await getPublishedThankYouContent();
   const stats = {
     styles: allStyles.length,
     animations: getAllAnimationsMeta().length,
@@ -109,7 +109,12 @@ export default async function Home() {
       <Header />
       <main className="flex-1">
         <FriendPromoBanner placement="home" />
-        <HomeContent styles={styles} stats={stats} thankYouEntries={thankYouEntries} />
+        <HomeContent
+          styles={styles}
+          stats={stats}
+          thankYouEntries={thankYouContent.entries}
+          allowAutomaticThankYou={thankYouContent.source !== "fallback"}
+        />
       </main>
       <Footer />
     </div>
