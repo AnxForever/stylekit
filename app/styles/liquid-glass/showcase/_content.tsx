@@ -1,1685 +1,407 @@
 "use client";
-import { useState, useRef, useEffect } from "react";
-import Link from "next/link";
 
-function useInView(options = {}) {
-  const ref = useRef<HTMLDivElement>(null);
-  const [inView, setInView] = useState(false);
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const obs = new IntersectionObserver(
-      ([e]) => {
-        if (e.isIntersecting) {
-          setInView(true);
-          obs.disconnect();
-        }
-      },
-      { threshold: 0.15, ...options }
-    );
-    obs.observe(el);
-    return () => obs.disconnect();
-  }, []);
-  return { ref, inView };
-}
+import Image from "next/image";
+import { useCallback, useEffect, useId, useRef, useState } from "react";
+import type { KeyboardEvent, PointerEvent } from "react";
+import { ArrowLeft, ArrowUpRight, Grid2X2, ImageIcon, Moon, Move, RotateCcw, Search, Sun, Waves, X } from "lucide-react";
+import { useTheme } from "next-themes";
+import { LocalizedLink } from "@/components/i18n/localized-link";
+import { LiquidGlass, useOpaqueGlassPreference, useSvgBackdropSupport } from "@/components/liquid-glass/liquid-glass";
+import { useI18n } from "@/lib/i18n/context";
+import { GlassBackdrop } from "./_backdrop";
+import styles from "./showcase.module.css";
 
-function RevealBlock({
-  children,
-  className = "",
-  delay = 0,
-}: {
-  children: React.ReactNode;
-  className?: string;
-  delay?: number;
-}) {
-  const { ref, inView } = useInView();
-  return (
-    <div
-      ref={ref}
-      className={className}
-      style={{
-        opacity: inView ? 1 : 0,
-        transform: inView ? "translateY(0)" : "translateY(28px)",
-        transition: `opacity 0.7s cubic-bezier(0.16,1,0.3,1) ${delay}s, transform 0.7s cubic-bezier(0.16,1,0.3,1) ${delay}s`,
-      }}
-    >
-      {children}
-    </div>
-  );
-}
+const scenes = [
+  { id: "glacier", icon: ImageIcon, en: "Glacier", zh: "冰川" },
+  { id: "tide", icon: Waves, en: "Contours", zh: "等高线" },
+  { id: "grid", icon: Grid2X2, en: "Grid", zh: "网格" },
+] as const;
 
-// ─── data ────────────────────────────────────────────────────────────────────
+const copy = {
+  en: {
+    back: "Liquid Glass style",
+    lab: "Material lab",
+    title: "Liquid Glass",
+    description: "Move the glass across the scene. Watch the edges bend while the center stays clear.",
+    material: "Material",
+    clear: "Glass",
+    frost: "Frost",
+    background: "Background",
+    search: "Find a scene",
+    searchPlaceholder: "Glacier, contours, grid…",
+    noResults: "No matching scene. Try another name.",
+    closeSearch: "Close scene search",
+    refraction: "Refraction",
+    move: "Move the glass",
+    instruction: "Drag the glass, or focus it and use the arrow keys. Home or Enter centers it; Escape cancels a drag.",
+    center: "Center lens",
+    live: "Live refraction",
+    frosted: "Frost softens the view without bending it.",
+    fallback: "This browser shows a frosted alternative. Live refraction is available in Chrome and Edge.",
+    opaque: "Your display preference is using a solid surface.",
+    imageFailed: "The photograph could not load. A local contour scene is shown instead.",
+    dark: "Switch to dark theme",
+    light: "Switch to light theme",
+    sceneNames: { glacier: "Jökulsárlón, Iceland", tide: "Lines in the water", grid: "Follow the straight lines" },
+    sceneDetail: { glacier: "Light, ice, and a little distortion.", tide: "A drawn landscape for a moving lens.", grid: "The clearest way to see the curve." },
+    principles: [
+      ["A clear center", "The scene stays recognizable. The strongest distortion lives at the edge."],
+      ["A fine rim", "A thin highlight and a soft shadow give the glass its thickness."],
+      ["Content stays sharp", "Keep labels above the material and longer reading on solid surfaces."],
+    ],
+    guide: "Explore the full style guide",
+    credit: "Photograph: Jeremy Bishop",
+  },
+  zh: {
+    back: "液态玻璃风格",
+    lab: "材质实验室",
+    title: "液态玻璃",
+    description: "把玻璃拖过画面，看边缘的光线弯折，让中心的细节透过来。",
+    material: "材质",
+    clear: "清透",
+    frost: "磨砂",
+    background: "背景",
+    search: "查找场景",
+    searchPlaceholder: "冰川、等高线、网格…",
+    noResults: "没有匹配的场景，试试其他名称。",
+    closeSearch: "关闭场景搜索",
+    refraction: "折射",
+    move: "移动玻璃",
+    instruction: "拖动玻璃，或聚焦后用方向键移动。Home 或 Enter 居中，Escape 取消拖动。",
+    center: "透镜居中",
+    live: "实时折射",
+    frosted: "磨砂让画面柔和，保留原来的线条走向。",
+    fallback: "当前浏览器显示磨砂材质；Chrome 和 Edge 可体验实时折射。",
+    opaque: "已按你的显示偏好使用实体材质。",
+    imageFailed: "照片暂时无法加载，已显示本地等高线背景。",
+    dark: "切换到深色主题",
+    light: "切换到浅色主题",
+    sceneNames: { glacier: "冰岛，杰古沙龙冰河湖", tide: "水上的等高线", grid: "沿着直线，看见弯折" },
+    sceneDetail: { glacier: "光、冰川，以及一点折射。", tide: "让一幅线条风景经过透镜。", grid: "让细节呈现材质的曲率。" },
+    principles: [
+      ["中心清晰", "背景依然可以辨认，明显的弯折留在玻璃边缘。"],
+      ["边缘轻盈", "一圈细高光和柔和投影，让透明表面有了厚度。"],
+      ["文字稳定", "标签放在材质之上，长文字留在安静的实体表面。"],
+    ],
+    guide: "查看完整风格规范",
+    credit: "摄影：Jeremy Bishop",
+  },
+} as const;
 
-const doList = [
-  "Hero 标题使用粗描边 -webkit-text-stroke: 3px #4ecdc4",
-  "Hero 标题使用 3D 偏移阴影 text-shadow: 4px 4px 0 rgba(0,0,0,0.5)",
-  "Hero 标题使用渐变填充 bg-gradient-to-r from-[#a855f7] via-[#ff2d92] to-[#a855f7]",
-  "副标题使用青色发光 text-shadow: 0 0 20px rgba(78,205,196,0.8)",
-  "使用超高模糊值 backdrop-blur-[40px] 或 backdrop-blur-3xl",
-  "添加饱和度增强 backdrop-saturate-[1.8]",
-  "使用彩虹渐变边框模拟光线折射效果",
-  "使用超大圆角 rounded-3xl 或 rounded-[24px]",
-  "使用流体动画 transition-all duration-500 ease-out",
-];
-
-const dontList = [
-  "禁止使用普通白色标题（必须使用渐变+粗描边+3D阴影）",
-  "禁止省略 3D 偏移阴影（4px 4px 是必须的）",
-  "禁止使用细描边（Hero 必须 3px，h1/h2 至少 2px）",
-  "禁止省略文字发光效果（缺少霓虹感）",
-  "禁止使用低模糊值 backdrop-blur-sm（太弱）",
-  "禁止省略饱和度增强（颜色会显得暗淡）",
-  "禁止使用直角或小圆角（rounded-none, rounded-sm）",
-  "禁止使用快速过渡（duration-100, duration-150）",
-];
-
-const blurLevels = [
-  { label: "blur-[10px]", style: "backdrop-blur-[10px]", desc: "轻微模糊" },
-  { label: "blur-[20px]", style: "backdrop-blur-[20px]", desc: "中等模糊" },
-  { label: "blur-[40px]", style: "backdrop-blur-[40px]", desc: "标准玻璃" },
-  { label: "blur-[80px]", style: "backdrop-blur-[80px]", desc: "深度玻璃" },
-];
-
-const opacityLevels = [
-  { label: "bg-white/5", opacity: "5%", tailwind: "bg-white/5" },
-  { label: "bg-white/10", opacity: "10%", tailwind: "bg-white/10" },
-  { label: "bg-white/15", opacity: "15%", tailwind: "bg-white/15" },
-  { label: "bg-white/20", opacity: "20%", tailwind: "bg-white/20" },
-];
-
-const palette = [
-  { name: "Neon Pink", hex: "#ff2d92", rgb: "rgba(255,45,146,1)" },
-  { name: "Neon Purple", hex: "#a855f7", rgb: "rgba(168,85,247,1)" },
-  { name: "Neon Cyan", hex: "#4ecdc4", rgb: "rgba(78,205,196,1)" },
-  { name: "Neon Yellow", hex: "#ffd93d", rgb: "rgba(255,217,61,1)" },
-  { name: "Neon Green", hex: "#6bcb77", rgb: "rgba(107,203,119,1)" },
-  { name: "Apple Blue", hex: "#007AFF", rgb: "rgba(0,122,255,1)" },
-  { name: "Glass White", hex: "rgba(255,255,255,0.10)", rgb: "rgba(255,255,255,0.1)" },
-  { name: "Apple Red", hex: "#FF2D55", rgb: "rgba(255,45,85,1)" },
-];
-
-// ─── component ────────────────────────────────────────────────────────────────
+type Scene = (typeof scenes)[number]["id"];
+type Point = { x: number; y: number };
+type Drag = { id: number; pointer: Point; start: Point };
+const clamp = (value: number, min: number, max: number) => Math.min(max, Math.max(min, value));
 
 export default function LiquidGlassShowcase() {
-  const [selectedTab, setSelectedTab] = useState(0);
-  const [toggleStates, setToggleStates] = useState([true, false, true, false]);
-  const [heroRevealed, setHeroRevealed] = useState(false);
+  const { locale } = useI18n();
+  const t = copy[locale];
+  const { resolvedTheme, setTheme } = useTheme();
+  const supported = useSvgBackdropSupport();
+  const opaque = useOpaqueGlassPreference();
+  const hintId = useId();
+  const searchId = useId();
+  const [scene, setScene] = useState<Scene>("glacier");
+  const [material, setMaterial] = useState<"clear" | "frost">("clear");
+  const [refraction, setRefraction] = useState(62);
+  const [imageFailed, setImageFailed] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [query, setQuery] = useState("");
+  const searchInput = useRef<HTMLInputElement>(null);
+  const searchTrigger = useRef<HTMLButtonElement>(null);
+  const stageRef = useRef<HTMLDivElement>(null);
+  const lensRef = useRef<HTMLDivElement>(null);
+  const handleRef = useRef<HTMLButtonElement>(null);
+  const position = useRef<Point | null>(null);
+  const drag = useRef<Drag | null>(null);
+  const pending = useRef<Point | null>(null);
+  const frame = useRef<number | null>(null);
 
   useEffect(() => {
-    const t = setTimeout(() => setHeroRevealed(true), 80);
-    return () => clearTimeout(t);
+    if (searchOpen) searchInput.current?.focus();
+  }, [searchOpen]);
+
+  function closeSearch() {
+    setSearchOpen(false);
+    searchTrigger.current?.focus();
+  }
+
+  function chooseScene(id: Scene) {
+    setScene(id);
+    setQuery("");
+    if (searchOpen) closeSearch();
+  }
+
+  const placeLens = useCallback((point?: Point) => {
+    const stage = stageRef.current;
+    const lens = lensRef.current;
+    if (!stage || !lens) return;
+    const minX = Math.min(12, Math.max(0, (stage.clientWidth - lens.offsetWidth) / 2));
+    const minY = Math.min(12, Math.max(0, (stage.clientHeight - lens.offsetHeight) / 2));
+    const maxX = Math.max(minX, stage.clientWidth - lens.offsetWidth - minX);
+    const maxY = Math.max(minY, stage.clientHeight - lens.offsetHeight - minY);
+    const next = {
+      x: clamp(point?.x ?? (minX + maxX) / 2, minX, maxX),
+      y: clamp(point?.y ?? (minY + maxY) / 2, minY, maxY),
+    };
+    position.current = next;
+    lens.style.left = "0";
+    lens.style.top = "0";
+    lens.style.transform = "translate3d(" + next.x + "px," + next.y + "px,0)";
   }, []);
 
-  const toggleSwitch = (i: number) => {
-    setToggleStates((prev) => {
-      const next = [...prev];
-      next[i] = !next[i];
-      return next;
+  const finishDrag = useCallback((commit: boolean) => {
+    const gesture = drag.current;
+    if (!gesture) return;
+    drag.current = null;
+    if (frame.current !== null) cancelAnimationFrame(frame.current);
+    frame.current = null;
+    placeLens(commit ? pending.current ?? position.current ?? gesture.start : gesture.start);
+    pending.current = null;
+    if (lensRef.current) lensRef.current.dataset.dragging = "false";
+    const handle = handleRef.current;
+    if (handle?.hasPointerCapture(gesture.id)) handle.releasePointerCapture(gesture.id);
+  }, [placeLens]);
+
+  useEffect(() => {
+    const stage = stageRef.current;
+    const lens = lensRef.current;
+    if (!stage || !lens) return;
+    placeLens();
+    const resize = () => {
+      finishDrag(false);
+      placeLens(position.current ?? undefined);
+    };
+    const observer = typeof ResizeObserver === "undefined" ? null : new ResizeObserver(resize);
+    observer?.observe(stage);
+    observer?.observe(lens);
+    window.addEventListener("resize", resize);
+    return () => {
+      observer?.disconnect();
+      window.removeEventListener("resize", resize);
+      if (frame.current !== null) cancelAnimationFrame(frame.current);
+    };
+  }, [finishDrag, placeLens]);
+
+  function startDrag(event: PointerEvent<HTMLButtonElement>) {
+    if (!event.isPrimary || event.button !== 0 || drag.current) return;
+    if (!position.current) placeLens();
+    if (!position.current) return;
+    event.currentTarget.focus({ preventScroll: true });
+    drag.current = {
+      id: event.pointerId,
+      pointer: { x: event.clientX, y: event.clientY },
+      start: { ...position.current },
+    };
+    event.currentTarget.setPointerCapture(event.pointerId);
+    if (lensRef.current) lensRef.current.dataset.dragging = "true";
+  }
+
+  function moveDrag(event: PointerEvent<HTMLButtonElement>) {
+    const gesture = drag.current;
+    if (!gesture || gesture.id !== event.pointerId) return;
+    pending.current = {
+      x: gesture.start.x + event.clientX - gesture.pointer.x,
+      y: gesture.start.y + event.clientY - gesture.pointer.y,
+    };
+    if (frame.current !== null) return;
+    frame.current = requestAnimationFrame(() => {
+      frame.current = null;
+      if (pending.current) placeLens(pending.current);
+      pending.current = null;
     });
-  };
+  }
+
+  function endPointer(event: PointerEvent<HTMLButtonElement>, commit: boolean) {
+    if (drag.current?.id === event.pointerId) finishDrag(commit);
+  }
+
+  function centerLens() {
+    finishDrag(false);
+    placeLens();
+  }
+
+  function moveWithKeyboard(event: KeyboardEvent<HTMLButtonElement>) {
+    if (event.key === "Escape") {
+      if (drag.current) {
+        event.preventDefault();
+        finishDrag(false);
+      }
+      return;
+    }
+    if (event.key === "Home") {
+      event.preventDefault();
+      centerLens();
+      return;
+    }
+    const step = event.shiftKey ? 30 : 10;
+    const direction: Record<string, Point> = {
+      ArrowLeft: { x: -step, y: 0 },
+      ArrowRight: { x: step, y: 0 },
+      ArrowUp: { x: 0, y: -step },
+      ArrowDown: { x: 0, y: step },
+    };
+    const delta = direction[event.key];
+    if (!delta) return;
+    event.preventDefault();
+    finishDrag(false);
+    const current = position.current;
+    if (current) placeLens({ x: current.x + delta.x, y: current.y + delta.y });
+  }
+
+  const clear = material === "clear";
+  const controlsDisabled = !supported || opaque || !clear;
+  const visibleScene = scene === "glacier" && imageFailed ? "tide" : scene;
+  const materialSettings = { refraction: clear ? refraction : 0, depth: 40, spread: 52, dispersion: clear ? 5 : 0, frost: clear ? 1.1 : 65, light: 72 };
+  const matchingScenes = scenes.filter(({ id, en, zh }) =>
+    (id + " " + en + " " + zh).toLowerCase().includes(query.trim().toLowerCase())
+  );
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#1a1a2e] via-[#16213e] to-[#0f0f23] relative overflow-x-hidden">
-      {/* ── Animated background blobs ── */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none fixed inset-0 overflow-hidden"
-        style={{ zIndex: 0 }}
-      >
-        <div
-          className="absolute top-[-10%] left-[-10%] w-[60vw] h-[60vw] rounded-full opacity-20"
-          style={{
-            background: "radial-gradient(circle, #a855f7 0%, transparent 70%)",
-            filter: "blur(80px)",
-            animation: "blobDrift1 18s ease-in-out infinite alternate",
-          }}
-        />
-        <div
-          className="absolute top-[30%] right-[-15%] w-[50vw] h-[50vw] rounded-full opacity-15"
-          style={{
-            background: "radial-gradient(circle, #4ecdc4 0%, transparent 70%)",
-            filter: "blur(100px)",
-            animation: "blobDrift2 22s ease-in-out infinite alternate",
-          }}
-        />
-        <div
-          className="absolute bottom-[-10%] left-[20%] w-[55vw] h-[55vw] rounded-full opacity-15"
-          style={{
-            background: "radial-gradient(circle, #ff2d92 0%, transparent 70%)",
-            filter: "blur(90px)",
-            animation: "blobDrift3 26s ease-in-out infinite alternate",
-          }}
-        />
-        <div
-          className="absolute top-[55%] left-[50%] w-[35vw] h-[35vw] rounded-full opacity-10"
-          style={{
-            background: "radial-gradient(circle, #ffd93d 0%, transparent 70%)",
-            filter: "blur(70px)",
-            animation: "blobDrift1 14s ease-in-out infinite alternate-reverse",
-          }}
-        />
-      </div>
-
-      <style>{`
-        @keyframes blobDrift1 {
-          from { transform: translate(0, 0) scale(1); }
-          to   { transform: translate(8vw, 6vh) scale(1.12); }
-        }
-        @keyframes blobDrift2 {
-          from { transform: translate(0, 0) scale(1); }
-          to   { transform: translate(-6vw, 8vh) scale(1.08); }
-        }
-        @keyframes blobDrift3 {
-          from { transform: translate(0, 0) scale(1); }
-          to   { transform: translate(5vw, -7vh) scale(1.15); }
-        }
-        @keyframes liquidMorph {
-          0%,100% { border-radius: 24px; }
-          25% { border-radius: 28px 20px 26px 22px; }
-          50% { border-radius: 22px 26px 20px 28px; }
-          75% { border-radius: 26px 22px 28px 20px; }
-        }
-        @keyframes rainbowPulse {
-          0%,100% { opacity: 0.6; }
-          50% { opacity: 1; }
-        }
-        @keyframes glowPulse {
-          0%,100% { box-shadow: 0 0 20px rgba(168,85,247,0.3); }
-          50% { box-shadow: 0 0 40px rgba(168,85,247,0.6); }
-        }
-        @keyframes shimmer {
-          from { transform: translateX(-130%) skewX(-20deg); }
-          to   { transform: translateX(130%)  skewX(-20deg); }
-        }
-        .liquid-morph { animation: liquidMorph 8s ease-in-out infinite; }
-        .rainbow-pulse { animation: rainbowPulse 2.5s ease-in-out infinite; }
-        .glow-pulse { animation: glowPulse 3s ease-in-out infinite; }
-      `}</style>
-
-      {/* ── 1. Fixed navigation bar ── */}
-      <nav
-        className="fixed top-0 left-0 right-0 z-50 px-6 py-4"
-        style={{
-          background: "rgba(255,255,255,0.05)",
-          backdropFilter: "blur(40px) saturate(1.8)",
-          WebkitBackdropFilter: "blur(40px) saturate(1.8)",
-          borderBottom: "1px solid rgba(255,255,255,0.10)",
-          boxShadow:
-            "0 1px 0 0 rgba(255,255,255,0.1), inset 0 -1px 0 0 rgba(168,85,247,0.2)",
-        }}
-      >
-        <div className="max-w-6xl mx-auto flex items-center justify-between">
-          <Link
-            href="/styles/liquid-glass"
-            className="flex items-center gap-2 text-white/80 hover:text-white transition-colors duration-300"
-          >
-            <svg
-              className="w-5 h-5"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth={2}
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M15 19l-7-7 7-7"
-              />
-            </svg>
-            <span className="font-semibold text-sm">Back</span>
-          </Link>
-
-          <div className="flex items-center gap-2">
-            <div
-              className="w-6 h-6 rounded-full rainbow-pulse"
-              style={{
-                background:
-                  "linear-gradient(135deg, #ff6b6b, #ffd93d, #6bcb77, #4ecdc4, #a855f7)",
-              }}
-            />
-            <span
-              className="font-bold text-base text-white"
-              style={{
-                textShadow:
-                  "0 0 15px rgba(78,205,196,0.7), 0 0 30px rgba(168,85,247,0.4)",
-              }}
-            >
-              Liquid Glass
-            </span>
-          </div>
-
-          <Link
-            href="/styles"
-            className="relative px-4 py-2 text-white text-sm font-medium rounded-[12px] hover:bg-white/15 transition-all duration-500"
-            style={{
-              background: "rgba(255,255,255,0.10)",
-              backdropFilter: "blur(20px)",
-            }}
-          >
-            <span
-              className="absolute inset-0 rounded-[12px] pointer-events-none"
-              style={{
-                background:
-                  "linear-gradient(135deg, #ff6b6b, #4ecdc4, #a855f7)",
-                padding: "1px",
-                WebkitMask:
-                  "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)",
-                WebkitMaskComposite: "xor",
-                maskComposite: "exclude",
-              }}
-            />
-            All Styles
-          </Link>
-        </div>
-      </nav>
-
-      {/* ── 2. Hero section ── */}
-      <section className="relative z-10 pt-28 pb-24 px-6 min-h-screen flex items-center">
-        <div className="max-w-5xl mx-auto w-full">
-          {/* Badge */}
-          <div
-            className="flex justify-center mb-10"
-            style={{
-              opacity: heroRevealed ? 1 : 0,
-              transform: heroRevealed ? "translateY(0)" : "translateY(20px)",
-              transition:
-                "opacity 0.7s cubic-bezier(0.16,1,0.3,1) 0s, transform 0.7s cubic-bezier(0.16,1,0.3,1) 0s",
-            }}
-          >
-            <div
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-medium text-white/80"
-              style={{
-                background: "rgba(255,255,255,0.07)",
-                backdropFilter: "blur(20px)",
-                border: "1px solid rgba(255,255,255,0.15)",
-                boxShadow: "inset 0 1px 0 rgba(255,255,255,0.15)",
-              }}
-            >
-              <span
-                className="w-2 h-2 rounded-full"
-                style={{ background: "#4ecdc4", boxShadow: "0 0 8px #4ecdc4" }}
-              />
-              Apple WWDC 2025 — New Design Language
-            </div>
-          </div>
-
-          {/* Title */}
-          <div
-            className="text-center mb-8"
-            style={{
-              opacity: heroRevealed ? 1 : 0,
-              transform: heroRevealed ? "translateY(0)" : "translateY(28px)",
-              transition:
-                "opacity 0.7s cubic-bezier(0.16,1,0.3,1) 0.12s, transform 0.7s cubic-bezier(0.16,1,0.3,1) 0.12s",
-            }}
-          >
-            <h1
-              className="text-5xl md:text-7xl lg:text-8xl font-black leading-tight bg-gradient-to-r from-[#a855f7] via-[#ff2d92] to-[#a855f7] bg-clip-text"
-              style={{
-                WebkitTextStroke: "3px #4ecdc4",
-                WebkitTextFillColor: "transparent",
-                textShadow:
-                  "4px 4px 0 rgba(0,0,0,0.5), 0 0 30px rgba(78,205,196,0.6), 0 0 60px rgba(168,85,247,0.4)",
-                filter: "drop-shadow(0 0 15px rgba(78,205,196,0.5))",
-              }}
-            >
-              Liquid Glass
-            </h1>
-            <h2
-              className="mt-4 text-2xl md:text-3xl font-bold text-white"
-              style={{
-                textShadow:
-                  "0 0 25px rgba(78,205,196,0.9), 0 0 50px rgba(78,205,196,0.5), 3px 3px 0 rgba(0,0,0,0.4)",
-              }}
-            >
-              流动光线折射 · 多层深度堆叠 · 液态形变动画
-            </h2>
-          </div>
-
-          {/* Description glass panel */}
-          <div
-            className="max-w-2xl mx-auto mb-12"
-            style={{
-              opacity: heroRevealed ? 1 : 0,
-              transform: heroRevealed ? "translateY(0)" : "translateY(28px)",
-              transition:
-                "opacity 0.7s cubic-bezier(0.16,1,0.3,1) 0.22s, transform 0.7s cubic-bezier(0.16,1,0.3,1) 0.22s",
-            }}
-          >
-            <div
-              className="relative p-6 rounded-[24px] text-center"
-              style={{
-                background: "rgba(255,255,255,0.07)",
-                backdropFilter: "blur(40px) saturate(1.8)",
-                WebkitBackdropFilter: "blur(40px) saturate(1.8)",
-                border: "1px solid rgba(255,255,255,0.12)",
-                boxShadow: "inset 0 1px 0 rgba(255,255,255,0.15)",
-              }}
-            >
-              <p className="text-white/80 text-lg leading-relaxed">
-                超越传统毛玻璃效果，通过光线折射、彩虹边缘和流体动画创造出真正有机、
-                流动的视觉体验。多层玻璃堆叠产生丰富的空间层次感。
-              </p>
-            </div>
-          </div>
-
-          {/* CTA Buttons */}
-          <div
-            className="flex flex-wrap justify-center gap-4 mb-20"
-            style={{
-              opacity: heroRevealed ? 1 : 0,
-              transform: heroRevealed ? "translateY(0)" : "translateY(28px)",
-              transition:
-                "opacity 0.7s cubic-bezier(0.16,1,0.3,1) 0.32s, transform 0.7s cubic-bezier(0.16,1,0.3,1) 0.32s",
-            }}
-          >
-            <button
-              className="group relative px-8 py-4 rounded-full text-white font-bold overflow-hidden transition-all duration-500 hover:scale-[1.03] active:scale-[0.97]"
-              style={{
-                background:
-                  "linear-gradient(135deg, #ff2d92, #a855f7)",
-                boxShadow: "0 8px 32px rgba(255,45,146,0.3)",
-              }}
-              onMouseEnter={(e) => {
-                (e.currentTarget as HTMLButtonElement).style.boxShadow =
-                  "0 0 40px rgba(255,45,146,0.6), 0 12px 40px rgba(168,85,247,0.4)";
-              }}
-              onMouseLeave={(e) => {
-                (e.currentTarget as HTMLButtonElement).style.boxShadow =
-                  "0 8px 32px rgba(255,45,146,0.3)";
-              }}
-            >
-              <span
-                aria-hidden="true"
-                className="pointer-events-none absolute inset-0 -translate-x-full skew-x-[-20deg] bg-gradient-to-r from-transparent via-white/25 to-transparent group-hover:translate-x-full transition-transform duration-700 ease-out"
-              />
-              <span className="relative flex items-center gap-2">
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
-                </svg>
-                Explore the Style
-              </span>
-            </button>
-            <button
-              className="group px-8 py-4 rounded-full text-white font-semibold transition-all duration-500 hover:bg-white/15 hover:scale-[1.02] active:scale-[0.97]"
-              style={{
-                background: "rgba(255,255,255,0.10)",
-                backdropFilter: "blur(20px)",
-                border: "1px solid rgba(255,255,255,0.25)",
-              }}
-            >
-              <span className="flex items-center gap-2">
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                Watch Demo
-              </span>
+    <main className={styles.page}>
+      <div className={styles.frame}>
+        <nav className={styles.utility} aria-label={t.title}>
+          <LocalizedLink href="/styles/liquid-glass" data-back-navigation="true" className={styles.utilityLink}>
+            <ArrowLeft size={15} aria-hidden="true" /> {t.back}
+          </LocalizedLink>
+          <div className={styles.utilityActions}>
+            <LocalizedLink href="/liquid-glass" className={styles.utilityLink}>
+              {t.lab} <ArrowUpRight size={15} aria-hidden="true" />
+            </LocalizedLink>
+            <button type="button" className={styles.themeButton}
+              aria-label={resolvedTheme === "dark" ? t.light : t.dark}
+              onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}>
+              {resolvedTheme === "dark" ? <Sun size={17} aria-hidden="true" /> : <Moon size={17} aria-hidden="true" />}
             </button>
           </div>
+        </nav>
 
-          {/* Hero feature cards */}
-          <div
-            className="grid md:grid-cols-3 gap-6"
-            style={{
-              opacity: heroRevealed ? 1 : 0,
-              transform: heroRevealed ? "translateY(0)" : "translateY(28px)",
-              transition:
-                "opacity 0.7s cubic-bezier(0.16,1,0.3,1) 0.42s, transform 0.7s cubic-bezier(0.16,1,0.3,1) 0.42s",
-            }}
-          >
-            {[
-              {
-                icon: (
-                  <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z" />
-                  </svg>
-                ),
-                gradient: "linear-gradient(135deg, #a855f7, #ff2d92)",
-                glow: "rgba(168,85,247,0.4)",
-                title: "彩虹折射",
-                desc: "棱镜边缘光谱渐变，模拟真实光线折射",
-              },
-              {
-                icon: (
-                  <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-                  </svg>
-                ),
-                gradient: "linear-gradient(135deg, #4ecdc4, #6bcb77)",
-                glow: "rgba(78,205,196,0.4)",
-                title: "多层深度",
-                desc: "3+ 层玻璃堆叠产生丰富的空间层次感",
-              },
-              {
-                icon: (
-                  <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
-                  </svg>
-                ),
-                gradient: "linear-gradient(135deg, #ff2d92, #ff6b35)",
-                glow: "rgba(255,45,146,0.4)",
-                title: "液态形变",
-                desc: "border-radius 随交互产生有机液态动画",
-              },
-            ].map((card) => (
-              <div
-                key={card.title}
-                className="relative group p-6 rounded-[24px] overflow-hidden hover:-translate-y-2 transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] cursor-default"
-                style={{ boxShadow: `0 8px 32px ${card.glow}` }}
-                onMouseEnter={(e) => {
-                  (e.currentTarget as HTMLDivElement).style.boxShadow = `0 20px 60px ${card.glow}`;
-                }}
-                onMouseLeave={(e) => {
-                  (e.currentTarget as HTMLDivElement).style.boxShadow = `0 8px 32px ${card.glow}`;
-                }}
-              >
-                <div
-                  className="absolute inset-0"
-                  style={{ background: card.gradient }}
-                />
-                <div
-                  className="absolute inset-[3px] rounded-[21px]"
-                  style={{ background: card.gradient, opacity: 0.9 }}
-                />
-                <span
-                  aria-hidden="true"
-                  className="pointer-events-none absolute inset-0 -translate-x-full skew-x-[-20deg] bg-gradient-to-r from-transparent via-white/20 to-transparent group-hover:translate-x-full transition-transform duration-1000 ease-out"
-                />
-                <div className="relative z-10 flex flex-col items-center text-center gap-3">
-                  <div className="w-14 h-14 bg-white/20 rounded-[14px] flex items-center justify-center">
-                    {card.icon}
-                  </div>
-                  <h3 className="text-lg font-bold text-white">{card.title}</h3>
-                  <p className="text-white/80 text-sm leading-relaxed">{card.desc}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+        <header className={styles.intro}>
+          <h1>{t.title}</h1>
+          <p>{t.description}</p>
+        </header>
 
-      {/* ── 3. Component demos ── */}
-      <section className="relative z-10 py-24 px-6">
-        <div className="max-w-6xl mx-auto">
-          <RevealBlock className="text-center mb-16">
-            <h2
-              className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-[#a855f7] via-[#ff2d92] to-[#a855f7] bg-clip-text mb-4"
-              style={{
-                WebkitTextStroke: "2px #4ecdc4",
-                WebkitTextFillColor: "transparent",
-                textShadow:
-                  "3px 3px 0 rgba(0,0,0,0.4), 0 0 15px rgba(78,205,196,0.5)",
-                filter: "drop-shadow(0 0 8px rgba(78,205,196,0.3))",
-              }}
-            >
-              Component Library
-            </h2>
-            <p className="text-white/60 text-lg">
-              Glass buttons, cards, and inputs — the core building blocks
-            </p>
-          </RevealBlock>
-
-          <div className="grid md:grid-cols-2 gap-8">
-            {/* ── Buttons panel ── */}
-            <RevealBlock delay={0.05}>
-              <div
-                className="relative p-8 rounded-[28px]"
-                style={{
-                  background: "rgba(255,255,255,0.05)",
-                  backdropFilter: "blur(40px) saturate(1.8)",
-                  WebkitBackdropFilter: "blur(40px) saturate(1.8)",
-                  border: "1px solid rgba(255,255,255,0.12)",
-                  boxShadow: "inset 0 1px 0 rgba(255,255,255,0.15)",
-                }}
-              >
-                <p className="text-xs font-semibold text-white/50 uppercase tracking-widest mb-6">
-                  Buttons
-                </p>
-                <div className="space-y-4">
-                  {/* Primary liquid button */}
-                  <button
-                    className="group relative w-full px-6 py-3.5 rounded-[20px] text-white font-bold overflow-hidden transition-all duration-500 hover:scale-[1.02] active:scale-[0.97]"
-                    style={{
-                      background:
-                        "linear-gradient(135deg, #ff2d92, #a855f7)",
-                      boxShadow:
-                        "0 8px 24px rgba(168,85,247,0.3), inset 0 1px 0 rgba(255,255,255,0.25)",
-                    }}
-                    onMouseEnter={(e) => {
-                      (e.currentTarget as HTMLButtonElement).style.boxShadow =
-                        "0 0 35px rgba(255,45,146,0.6), 0 12px 40px rgba(168,85,247,0.4), inset 0 1px 0 rgba(255,255,255,0.3)";
-                    }}
-                    onMouseLeave={(e) => {
-                      (e.currentTarget as HTMLButtonElement).style.boxShadow =
-                        "0 8px 24px rgba(168,85,247,0.3), inset 0 1px 0 rgba(255,255,255,0.25)";
-                    }}
-                  >
-                    <span
-                      aria-hidden="true"
-                      className="pointer-events-none absolute inset-0 -translate-x-full skew-x-[-20deg] bg-gradient-to-r from-transparent via-white/30 to-transparent group-hover:translate-x-full transition-transform duration-700 ease-out"
-                    />
-                    <span className="relative">Liquid Primary</span>
-                  </button>
-
-                  {/* Glass secondary button */}
-                  <button
-                    className="group relative w-full px-6 py-3.5 rounded-[20px] text-white font-semibold overflow-hidden transition-all duration-500 hover:bg-white/15 hover:scale-[1.01] active:scale-[0.97]"
-                    style={{
-                      background: "rgba(255,255,255,0.10)",
-                      backdropFilter: "blur(40px)",
-                      border: "1px solid rgba(255,255,255,0.20)",
-                      boxShadow: "inset 0 1px 0 rgba(255,255,255,0.20)",
-                    }}
-                  >
-                    <span className="relative">Glass Secondary</span>
-                  </button>
-
-                  {/* Rainbow outline button */}
-                  <button
-                    className="group relative w-full px-6 py-3.5 rounded-[20px] text-white font-semibold overflow-hidden transition-all duration-500 hover:scale-[1.01] active:scale-[0.97]"
-                    style={{ background: "transparent" }}
-                  >
-                    <span
-                      className="absolute inset-0 rounded-[20px]"
-                      style={{
-                        background:
-                          "linear-gradient(135deg, #ff6b6b, #ffd93d, #6bcb77, #4ecdc4, #a855f7)",
-                        padding: "1.5px",
-                        WebkitMask:
-                          "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)",
-                        WebkitMaskComposite: "xor",
-                        maskComposite: "exclude",
-                      }}
-                    />
-                    <span className="relative bg-gradient-to-r from-[#ff6b6b] via-[#4ecdc4] to-[#a855f7] bg-clip-text text-transparent font-bold">
-                      Rainbow Outline
-                    </span>
-                  </button>
-
-                  {/* Small variants row */}
-                  <div className="flex gap-3 pt-2">
-                    {["Small", "Warning", "Success"].map((label, i) => {
-                      const grads = [
-                        "linear-gradient(135deg, #ff6b35, #ffd93d)",
-                        "linear-gradient(135deg, #ff6b35, #ffd93d)",
-                        "linear-gradient(135deg, #4ecdc4, #6bcb77)",
-                      ];
-                      const glows = [
-                        "rgba(168,85,247,0.5)",
-                        "rgba(255,107,53,0.5)",
-                        "rgba(78,205,196,0.5)",
-                      ];
-                      const bg =
-                        i === 0
-                          ? "linear-gradient(135deg, #a855f7, #ff2d92)"
-                          : grads[i];
-                      return (
-                        <button
-                          key={label}
-                          className="flex-1 px-4 py-2 rounded-full text-white text-sm font-semibold transition-all duration-500 hover:scale-[1.05] active:scale-[0.95]"
-                          style={{
-                            background: bg,
-                            boxShadow: `0 4px 16px ${glows[i]}`,
-                          }}
-                          onMouseEnter={(e) => {
-                            (e.currentTarget as HTMLButtonElement).style.boxShadow = `0 0 24px ${glows[i]}`;
-                          }}
-                          onMouseLeave={(e) => {
-                            (e.currentTarget as HTMLButtonElement).style.boxShadow = `0 4px 16px ${glows[i]}`;
-                          }}
-                        >
-                          {label}
+        <section aria-label={t.title} onKeyDown={(event) => {
+          if (event.key === "Escape" && searchOpen) { event.preventDefault(); closeSearch(); }
+        }}>
+          <div ref={stageRef} className={styles.stage} data-scene={visibleScene}>
+            <div className={styles.scene} aria-hidden="true">
+              {visibleScene === "glacier" ? (
+                <Image src="/styles/liquid-glass/glacier.webp" alt="" fill priority unoptimized
+                  sizes="(max-width: 700px) 100vw, 1200px" className={styles.photograph}
+                  onError={() => setImageFailed(true)} />
+              ) : <GlassBackdrop scene={visibleScene} className={styles.art} />}
+            </div>
+            <div className={styles.sceneCaption} aria-hidden="true">
+              <span>{t.sceneNames[visibleScene]}</span>
+              <p>{t.sceneDetail[visibleScene]}</p>
+            </div>
+            <div ref={lensRef} className={styles.lensPosition} data-dragging="false">
+              <LiquidGlass appearance="clear" radius={52}
+                settings={materialSettings}
+                tint={clear ? "rgba(255,255,255,0.025)" : "rgba(235,244,247,0.18)"}
+                className={styles.lens} contentClassName={styles.lensContent}>
+                <button ref={handleRef} type="button" className={styles.lensHandle}
+                  aria-label={t.move} aria-describedby={hintId}
+                  onPointerDown={startDrag} onPointerMove={moveDrag}
+                  onPointerUp={(event) => endPointer(event, true)}
+                  onPointerCancel={(event) => endPointer(event, false)}
+                  onLostPointerCapture={(event) => endPointer(event, false)}
+                  onBlur={() => finishDrag(false)}
+                  onKeyDown={moveWithKeyboard}
+                  onClick={(event) => { if (event.detail === 0) centerLens(); }}>
+                  <span className={styles.lensLabel}>{clear ? t.clear : t.frost}</span>
+                  <span className={styles.moveIcon}><Move size={17} aria-hidden="true" /></span>
+                </button>
+              </LiquidGlass>
+            </div>
+            {searchOpen && <button type="button" className={styles.searchDismiss} aria-label={t.closeSearch} onClick={closeSearch} tabIndex={-1} />}
+            <div className={styles.glassControls}>
+              {searchOpen && (
+                <LiquidGlass appearance="clear" settings={materialSettings} radius={26}
+                  tint="rgba(20,43,54,0.82)" className={styles.searchPanel}>
+                  <form id={searchId} role="search" aria-label={t.search} onSubmit={(event) => {
+                    event.preventDefault();
+                    if (matchingScenes[0]) chooseScene(matchingScenes[0].id);
+                  }}>
+                    <div className={styles.searchHeading}>
+                      <label htmlFor={searchId + "-input"}>{t.search}</label>
+                      <button type="button" aria-label={t.closeSearch} onClick={closeSearch}><X size={16} aria-hidden="true" /></button>
+                    </div>
+                    <input ref={searchInput} id={searchId + "-input"} type="search" autoComplete="off"
+                      placeholder={t.searchPlaceholder} value={query} onChange={(event) => setQuery(event.currentTarget.value)} />
+                    <div className={styles.searchResults}>
+                      {matchingScenes.map(({ id, icon: Icon, en, zh }) => (
+                        <button key={id} type="button" onClick={() => chooseScene(id)} aria-pressed={scene === id}>
+                          <Icon size={16} aria-hidden="true" />{locale === "zh" ? zh : en}
                         </button>
-                      );
-                    })}
-                  </div>
-                </div>
-              </div>
-            </RevealBlock>
-
-            {/* ── Input panel ── */}
-            <RevealBlock delay={0.1}>
-              <div
-                className="relative p-8 rounded-[28px]"
-                style={{
-                  background: "rgba(255,255,255,0.05)",
-                  backdropFilter: "blur(40px) saturate(1.8)",
-                  WebkitBackdropFilter: "blur(40px) saturate(1.8)",
-                  border: "1px solid rgba(255,255,255,0.12)",
-                  boxShadow: "inset 0 1px 0 rgba(255,255,255,0.15)",
-                }}
-              >
-                <p className="text-xs font-semibold text-white/50 uppercase tracking-widest mb-6">
-                  Form Inputs
-                </p>
-                <div className="space-y-4">
-                  <div>
-                    <label className="block text-sm text-white/70 mb-2 font-medium">
-                      Name
-                    </label>
-                    <input
-                      type="text"
-                      placeholder="Your name"
-                      className="w-full px-4 py-3.5 rounded-[16px] text-white placeholder-white/40 outline-none transition-all duration-500"
-                      style={{
-                        background: "rgba(255,255,255,0.10)",
-                        backdropFilter: "blur(40px) saturate(1.8)",
-                        border: "1px solid rgba(255,255,255,0.20)",
-                      }}
-                      onFocus={(e) => {
-                        e.currentTarget.style.background =
-                          "rgba(255,255,255,0.15)";
-                        e.currentTarget.style.borderColor = "transparent";
-                        e.currentTarget.style.boxShadow =
-                          "0 0 0 2px rgba(168,85,247,0.5), 0 0 20px rgba(168,85,247,0.2)";
-                      }}
-                      onBlur={(e) => {
-                        e.currentTarget.style.background =
-                          "rgba(255,255,255,0.10)";
-                        e.currentTarget.style.borderColor =
-                          "rgba(255,255,255,0.20)";
-                        e.currentTarget.style.boxShadow = "none";
-                      }}
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm text-white/70 mb-2 font-medium">
-                      Email
-                    </label>
-                    <input
-                      type="email"
-                      placeholder="your@email.com"
-                      className="w-full px-4 py-3.5 rounded-[16px] text-white placeholder-white/40 outline-none transition-all duration-500"
-                      style={{
-                        background: "rgba(255,255,255,0.10)",
-                        backdropFilter: "blur(40px) saturate(1.8)",
-                        border: "1px solid rgba(255,255,255,0.20)",
-                      }}
-                      onFocus={(e) => {
-                        e.currentTarget.style.background =
-                          "rgba(255,255,255,0.15)";
-                        e.currentTarget.style.borderColor = "transparent";
-                        e.currentTarget.style.boxShadow =
-                          "0 0 0 2px rgba(78,205,196,0.5), 0 0 20px rgba(78,205,196,0.2)";
-                      }}
-                      onBlur={(e) => {
-                        e.currentTarget.style.background =
-                          "rgba(255,255,255,0.10)";
-                        e.currentTarget.style.borderColor =
-                          "rgba(255,255,255,0.20)";
-                        e.currentTarget.style.boxShadow = "none";
-                      }}
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm text-white/70 mb-2 font-medium">
-                      Message
-                    </label>
-                    <textarea
-                      placeholder="Your message..."
-                      rows={3}
-                      className="w-full px-4 py-3.5 rounded-[16px] text-white placeholder-white/40 outline-none transition-all duration-500 resize-none"
-                      style={{
-                        background: "rgba(255,255,255,0.10)",
-                        backdropFilter: "blur(40px) saturate(1.8)",
-                        border: "1px solid rgba(255,255,255,0.20)",
-                      }}
-                      onFocus={(e) => {
-                        e.currentTarget.style.background =
-                          "rgba(255,255,255,0.15)";
-                        e.currentTarget.style.borderColor = "transparent";
-                        e.currentTarget.style.boxShadow =
-                          "0 0 0 2px rgba(255,45,146,0.5), 0 0 20px rgba(255,45,146,0.2)";
-                      }}
-                      onBlur={(e) => {
-                        e.currentTarget.style.background =
-                          "rgba(255,255,255,0.10)";
-                        e.currentTarget.style.borderColor =
-                          "rgba(255,255,255,0.20)";
-                        e.currentTarget.style.boxShadow = "none";
-                      }}
-                    />
-                  </div>
-                  <button
-                    className="group relative w-full px-6 py-3 rounded-[16px] text-white font-semibold overflow-hidden transition-all duration-500 hover:scale-[1.01] active:scale-[0.98]"
-                    style={{
-                      background: "rgba(255,255,255,0.10)",
-                      backdropFilter: "blur(20px)",
-                    }}
-                  >
-                    <span
-                      className="absolute inset-0 rounded-[16px]"
-                      style={{
-                        background:
-                          "linear-gradient(135deg, #ff6b6b, #4ecdc4, #a855f7)",
-                        padding: "1px",
-                        WebkitMask:
-                          "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)",
-                        WebkitMaskComposite: "xor",
-                        maskComposite: "exclude",
-                      }}
-                    />
-                    <span className="relative">Send Message</span>
-                  </button>
-                </div>
-              </div>
-            </RevealBlock>
-          </div>
-
-          {/* ── Glass Card demos ── */}
-          <div className="mt-8 grid md:grid-cols-3 gap-6">
-            {[
-              {
-                title: "Multi-Layer Card",
-                desc: "3+ layer glass stacking creates depth and dimension beyond simple blur",
-                grad: "linear-gradient(135deg, #a855f7, #ff2d92)",
-                glow: "rgba(168,85,247,0.35)",
-              },
-              {
-                title: "Refraction Card",
-                desc: "Rainbow edges simulate prismatic light refraction on glass surfaces",
-                grad: "linear-gradient(135deg, #4ecdc4, #6bcb77)",
-                glow: "rgba(78,205,196,0.35)",
-              },
-              {
-                title: "Fluid Motion Card",
-                desc: "Smooth 500ms+ transitions create organic liquid movement on hover",
-                grad: "linear-gradient(135deg, #ff2d92, #ff6b35)",
-                glow: "rgba(255,45,146,0.35)",
-              },
-            ].map((card, i) => (
-              <RevealBlock key={card.title} delay={i * 0.08}>
-                <div
-                  className="group relative p-6 rounded-[24px] overflow-hidden cursor-default transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] hover:-translate-y-2 hover:scale-[1.01]"
-                  style={{
-                    background: "rgba(255,255,255,0.08)",
-                    backdropFilter: "blur(40px) saturate(1.8)",
-                    WebkitBackdropFilter: "blur(40px) saturate(1.8)",
-                    border: "1px solid rgba(255,255,255,0.15)",
-                    boxShadow: `inset 0 1px 0 rgba(255,255,255,0.3), 0 12px 30px rgba(0,0,0,0.25)`,
-                  }}
-                  onMouseEnter={(e) => {
-                    (e.currentTarget as HTMLDivElement).style.boxShadow = `inset 0 1px 0 rgba(255,255,255,0.4), 0 28px 64px rgba(0,0,0,0.35), 0 0 40px ${card.glow}`;
-                  }}
-                  onMouseLeave={(e) => {
-                    (e.currentTarget as HTMLDivElement).style.boxShadow = `inset 0 1px 0 rgba(255,255,255,0.3), 0 12px 30px rgba(0,0,0,0.25)`;
-                  }}
-                >
-                  {/* rainbow border via ::before emulated with absolute div */}
-                  <span
-                    aria-hidden="true"
-                    className="absolute inset-0 rounded-[24px] pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-                    style={{
-                      background: card.grad,
-                      padding: "1px",
-                      WebkitMask:
-                        "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)",
-                      WebkitMaskComposite: "xor",
-                      maskComposite: "exclude",
-                    }}
-                  />
-                  {/* inner glow blob */}
-                  <div
-                    aria-hidden="true"
-                    className="pointer-events-none absolute -inset-1/2 opacity-30 group-hover:opacity-50 transition-opacity duration-700"
-                    style={{
-                      background: `radial-gradient(circle, ${card.glow} 0%, transparent 60%)`,
-                      filter: "blur(60px)",
-                    }}
-                  />
-                  {/* shimmer */}
-                  <span
-                    aria-hidden="true"
-                    className="pointer-events-none absolute inset-0 -translate-x-full skew-x-[-20deg] bg-gradient-to-r from-transparent via-white/15 to-transparent group-hover:translate-x-full transition-transform duration-1000 ease-out"
-                  />
-                  <div className="relative z-10">
-                    <div
-                      className="w-12 h-12 rounded-[12px] flex items-center justify-center mb-4"
-                      style={{ background: card.grad }}
-                    >
-                      <svg
-                        className="w-6 h-6 text-white"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth={2}
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M5 3l14 9-14 9V3z"
-                        />
-                      </svg>
+                      ))}
+                      {matchingScenes.length === 0 && <p role="status">{t.noResults}</p>}
                     </div>
-                    <h3
-                      className="text-lg font-bold text-white mb-2"
-                      style={{
-                        textShadow:
-                          "0 0 12px rgba(78,205,196,0.4), 2px 2px 0 rgba(0,0,0,0.3)",
-                      }}
-                    >
-                      {card.title}
-                    </h3>
-                    <p className="text-white/70 text-sm leading-relaxed">
-                      {card.desc}
-                    </p>
-                  </div>
-                </div>
-              </RevealBlock>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── 4. Glass effects showcase ── */}
-      <section className="relative z-10 py-24 px-6">
-        <div className="max-w-6xl mx-auto">
-          <RevealBlock className="text-center mb-16">
-            <h2
-              className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-[#a855f7] via-[#ff2d92] to-[#a855f7] bg-clip-text mb-4"
-              style={{
-                WebkitTextStroke: "2px #4ecdc4",
-                WebkitTextFillColor: "transparent",
-                textShadow:
-                  "3px 3px 0 rgba(0,0,0,0.4), 0 0 15px rgba(78,205,196,0.5)",
-              }}
-            >
-              Glass Effects
-            </h2>
-            <p className="text-white/60 text-lg">
-              Blur levels, opacity layers, and multi-depth stacking
-            </p>
-          </RevealBlock>
-
-          {/* Blur levels */}
-          <RevealBlock className="mb-12">
-            <div
-              className="relative p-8 rounded-[28px]"
-              style={{
-                background: "rgba(255,255,255,0.04)",
-                backdropFilter: "blur(40px) saturate(1.8)",
-                WebkitBackdropFilter: "blur(40px) saturate(1.8)",
-                border: "1px solid rgba(255,255,255,0.10)",
-              }}
-            >
-              <p className="text-sm font-semibold text-white/50 uppercase tracking-widest mb-6">
-                Blur Intensity
-              </p>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                {blurLevels.map((lvl) => (
-                  <div
-                    key={lvl.label}
-                    className="flex flex-col items-center gap-3"
-                  >
-                    <div
-                      className="w-full h-24 rounded-[16px] flex items-center justify-center"
-                      style={{
-                        background: "rgba(255,255,255,0.10)",
-                        backdropFilter: `blur(${lvl.style.replace("backdrop-blur-", "").replace("[", "").replace("]", "")}) saturate(1.8)`,
-                        border: "1px solid rgba(255,255,255,0.20)",
-                        boxShadow: "inset 0 1px 0 rgba(255,255,255,0.20)",
-                      }}
-                    >
-                      <span className="text-white/80 text-xs font-mono">
-                        {lvl.desc}
-                      </span>
-                    </div>
-                    <span className="text-white/50 text-xs font-mono">
-                      {lvl.label}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </RevealBlock>
-
-          {/* Opacity levels */}
-          <RevealBlock delay={0.08} className="mb-12">
-            <div
-              className="relative p-8 rounded-[28px]"
-              style={{
-                background: "rgba(255,255,255,0.04)",
-                backdropFilter: "blur(40px) saturate(1.8)",
-                WebkitBackdropFilter: "blur(40px) saturate(1.8)",
-                border: "1px solid rgba(255,255,255,0.10)",
-              }}
-            >
-              <p className="text-sm font-semibold text-white/50 uppercase tracking-widest mb-6">
-                Opacity Layers
-              </p>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                {opacityLevels.map((lvl) => (
-                  <div
-                    key={lvl.label}
-                    className="flex flex-col items-center gap-3"
-                  >
-                    <div
-                      className="w-full h-20 rounded-[16px] flex items-center justify-center"
-                      style={{
-                        background: `rgba(255,255,255,${parseInt(lvl.opacity) / 100})`,
-                        backdropFilter: "blur(40px) saturate(1.8)",
-                        border: "1px solid rgba(255,255,255,0.20)",
-                        boxShadow: "inset 0 1px 0 rgba(255,255,255,0.25)",
-                      }}
-                    >
-                      <span className="text-white/80 text-xs font-mono">
-                        {lvl.opacity}
-                      </span>
-                    </div>
-                    <span className="text-white/50 text-xs font-mono">
-                      {lvl.label}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </RevealBlock>
-
-          {/* Glass stack visual */}
-          <RevealBlock delay={0.14}>
-            <div
-              className="relative p-8 rounded-[28px]"
-              style={{
-                background: "rgba(255,255,255,0.04)",
-                backdropFilter: "blur(40px) saturate(1.8)",
-                WebkitBackdropFilter: "blur(40px) saturate(1.8)",
-                border: "1px solid rgba(255,255,255,0.10)",
-              }}
-            >
-              <p className="text-sm font-semibold text-white/50 uppercase tracking-widest mb-6">
-                Multi-Layer Stack
-              </p>
-              <div className="flex justify-center">
-                <div className="relative h-56 w-72">
-                  {/* Layer 3 – back */}
-                  <div
-                    className="absolute inset-0 rounded-[24px] translate-y-8 -rotate-3"
-                    style={{
-                      background: "rgba(255,255,255,0.05)",
-                      backdropFilter: "blur(40px) saturate(1.8)",
-                      border: "1px solid rgba(255,255,255,0.10)",
-                    }}
-                  />
-                  {/* Layer 2 – mid */}
-                  <div
-                    className="absolute inset-0 rounded-[24px] translate-y-4 rotate-1"
-                    style={{
-                      background: "rgba(255,255,255,0.08)",
-                      backdropFilter: "blur(40px) saturate(1.8)",
-                      border: "1px solid rgba(255,255,255,0.13)",
-                    }}
-                  />
-                  {/* Layer 1 – front */}
-                  <div
-                    className="absolute inset-0 rounded-[24px] p-6 flex flex-col justify-end"
-                    style={{
-                      background: "rgba(255,255,255,0.12)",
-                      backdropFilter: "blur(40px) saturate(1.8)",
-                      border: "1px solid rgba(255,255,255,0.20)",
-                      boxShadow: "inset 0 1px 0 rgba(255,255,255,0.35)",
-                    }}
-                  >
-                    <span
-                      className="absolute inset-0 rounded-[24px]"
-                      style={{
-                        background:
-                          "linear-gradient(135deg, #ff6b6b, #4ecdc4, #a855f7)",
-                        padding: "1px",
-                        WebkitMask:
-                          "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)",
-                        WebkitMaskComposite: "xor",
-                        maskComposite: "exclude",
-                      }}
-                    />
-                    <h3
-                      className="text-white font-semibold text-base"
-                      style={{
-                        textShadow:
-                          "0 0 10px rgba(78,205,196,0.5), 2px 2px 0 rgba(0,0,0,0.3)",
-                      }}
-                    >
-                      Front Layer
-                    </h3>
-                    <p className="text-white/60 text-sm mt-1">
-                      bg-white/12 — richest depth
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </RevealBlock>
-        </div>
-      </section>
-
-      {/* ── 5. Design rules (do/don't) ── */}
-      <section className="relative z-10 py-24 px-6">
-        <div className="max-w-6xl mx-auto">
-          <RevealBlock className="text-center mb-16">
-            <h2
-              className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-[#a855f7] via-[#ff2d92] to-[#a855f7] bg-clip-text mb-4"
-              style={{
-                WebkitTextStroke: "2px #4ecdc4",
-                WebkitTextFillColor: "transparent",
-                textShadow:
-                  "3px 3px 0 rgba(0,0,0,0.4), 0 0 15px rgba(78,205,196,0.5)",
-              }}
-            >
-              Design Rules
-            </h2>
-            <p className="text-white/60 text-lg">
-              The principles that define authentic Liquid Glass
-            </p>
-          </RevealBlock>
-
-          <div className="grid md:grid-cols-2 gap-8">
-            {/* Do list */}
-            <RevealBlock delay={0.05}>
-              <div
-                className="relative p-8 rounded-[28px]"
-                style={{
-                  background: "rgba(78,205,196,0.06)",
-                  backdropFilter: "blur(40px) saturate(1.8)",
-                  WebkitBackdropFilter: "blur(40px) saturate(1.8)",
-                  border: "1px solid rgba(78,205,196,0.25)",
-                  boxShadow: "inset 0 1px 0 rgba(78,205,196,0.15)",
-                }}
-              >
-                <div className="flex items-center gap-3 mb-6">
-                  <div
-                    className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0"
-                    style={{
-                      background: "rgba(78,205,196,0.2)",
-                      border: "1px solid rgba(78,205,196,0.4)",
-                    }}
-                  >
-                    <svg
-                      className="w-4 h-4"
-                      fill="none"
-                      stroke="#4ecdc4"
-                      strokeWidth={2.5}
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M5 13l4 4L19 7"
-                      />
-                    </svg>
-                  </div>
-                  <h3
-                    className="text-xl font-bold"
-                    style={{ color: "#4ecdc4", textShadow: "0 0 12px rgba(78,205,196,0.5)" }}
-                  >
-                    Do
-                  </h3>
-                </div>
-                <ul className="space-y-3">
-                  {doList.map((item, i) => (
-                    <li key={i} className="flex items-start gap-3">
-                      <svg
-                        className="w-4 h-4 mt-0.5 flex-shrink-0"
-                        fill="none"
-                        stroke="#4ecdc4"
-                        strokeWidth={2}
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M5 13l4 4L19 7"
-                        />
-                      </svg>
-                      <span className="text-white/80 text-sm leading-relaxed">
-                        {item}
-                      </span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </RevealBlock>
-
-            {/* Don't list */}
-            <RevealBlock delay={0.1}>
-              <div
-                className="relative p-8 rounded-[28px]"
-                style={{
-                  background: "rgba(255,45,146,0.06)",
-                  backdropFilter: "blur(40px) saturate(1.8)",
-                  WebkitBackdropFilter: "blur(40px) saturate(1.8)",
-                  border: "1px solid rgba(255,45,146,0.25)",
-                  boxShadow: "inset 0 1px 0 rgba(255,45,146,0.15)",
-                }}
-              >
-                <div className="flex items-center gap-3 mb-6">
-                  <div
-                    className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0"
-                    style={{
-                      background: "rgba(255,45,146,0.2)",
-                      border: "1px solid rgba(255,45,146,0.4)",
-                    }}
-                  >
-                    <svg
-                      className="w-4 h-4"
-                      fill="none"
-                      stroke="#ff2d92"
-                      strokeWidth={2.5}
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M6 18L18 6M6 6l12 12"
-                      />
-                    </svg>
-                  </div>
-                  <h3
-                    className="text-xl font-bold"
-                    style={{ color: "#ff2d92", textShadow: "0 0 12px rgba(255,45,146,0.5)" }}
-                  >
-                    Don&apos;t
-                  </h3>
-                </div>
-                <ul className="space-y-3">
-                  {dontList.map((item, i) => (
-                    <li key={i} className="flex items-start gap-3">
-                      <svg
-                        className="w-4 h-4 mt-0.5 flex-shrink-0"
-                        fill="none"
-                        stroke="#ff2d92"
-                        strokeWidth={2}
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M6 18L18 6M6 6l12 12"
-                        />
-                      </svg>
-                      <span className="text-white/80 text-sm leading-relaxed">
-                        {item}
-                      </span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </RevealBlock>
-          </div>
-
-          {/* Interactive tab demo */}
-          <RevealBlock delay={0.15} className="mt-10">
-            <div
-              className="relative p-8 rounded-[28px]"
-              style={{
-                background: "rgba(255,255,255,0.05)",
-                backdropFilter: "blur(40px) saturate(1.8)",
-                WebkitBackdropFilter: "blur(40px) saturate(1.8)",
-                border: "1px solid rgba(255,255,255,0.12)",
-                boxShadow: "inset 0 1px 0 rgba(255,255,255,0.15)",
-              }}
-            >
-              <p className="text-sm font-semibold text-white/50 uppercase tracking-widest mb-6">
-                Interactive Tabs
-              </p>
-              <div
-                className="flex gap-2 p-1 rounded-[16px] mb-6"
-                style={{ background: "rgba(255,255,255,0.05)" }}
-              >
-                {["Overview", "Features", "Tokens"].map((tab, i) => (
-                  <button
-                    key={tab}
-                    onClick={() => setSelectedTab(i)}
-                    className="flex-1 py-2.5 rounded-[12px] text-sm font-medium transition-all duration-500"
-                    style={{
-                      background:
-                        selectedTab === i
-                          ? "rgba(255,255,255,0.15)"
-                          : "transparent",
-                      color:
-                        selectedTab === i
-                          ? "white"
-                          : "rgba(255,255,255,0.5)",
-                      boxShadow:
-                        selectedTab === i
-                          ? "0 0 15px rgba(168,85,247,0.35)"
-                          : "none",
-                    }}
-                  >
-                    {tab}
-                  </button>
-                ))}
-              </div>
-              <div className="text-white/70 text-sm leading-relaxed min-h-[3rem]">
-                {selectedTab === 0 && (
-                  <p>
-                    Liquid Glass combines backdrop blur, rainbow gradient borders, and
-                    multi-layer stacking to produce an organic, fluid visual experience
-                    inspired by Apple&apos;s WWDC 2025 design language.
-                  </p>
-                )}
-                {selectedTab === 1 && (
-                  <p>
-                    Key features: prismatic edge refraction, neon text strokes, 3D offset
-                    shadows, saturate-1.8 color enhancement, and fluid morph animations with
-                    duration-500+ transitions.
-                  </p>
-                )}
-                {selectedTab === 2 && (
-                  <p>
-                    Core tokens: blur(40px), saturate(1.8), rgba(255,255,255,0.10) base,
-                    rgba(255,255,255,0.15) hover, border rgba(255,255,255,0.20), and
-                    cubic-bezier(0.25,1,0.5,1) easing.
-                  </p>
-                )}
-              </div>
-            </div>
-          </RevealBlock>
-        </div>
-      </section>
-
-      {/* ── 6. Color / transparency palette ── */}
-      <section className="relative z-10 py-24 px-6">
-        <div className="max-w-6xl mx-auto">
-          <RevealBlock className="text-center mb-16">
-            <h2
-              className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-[#a855f7] via-[#ff2d92] to-[#a855f7] bg-clip-text mb-4"
-              style={{
-                WebkitTextStroke: "2px #4ecdc4",
-                WebkitTextFillColor: "transparent",
-                textShadow:
-                  "3px 3px 0 rgba(0,0,0,0.4), 0 0 15px rgba(78,205,196,0.5)",
-              }}
-            >
-              Color Palette
-            </h2>
-            <p className="text-white/60 text-lg">
-              Rainbow spectrum for prismatic edges and neon accents
-            </p>
-          </RevealBlock>
-
-          {/* Palette swatches */}
-          <RevealBlock>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
-              {palette.map((color) => (
-                <div
-                  key={color.name}
-                  className="group relative rounded-[20px] overflow-hidden cursor-default transition-all duration-500 hover:-translate-y-1 hover:scale-[1.02]"
-                  style={{
-                    background: "rgba(255,255,255,0.05)",
-                    backdropFilter: "blur(20px)",
-                    border: "1px solid rgba(255,255,255,0.10)",
-                  }}
-                >
-                  <div
-                    className="w-full h-24"
-                    style={{ background: color.hex }}
-                  />
-                  <div className="p-3">
-                    <p className="text-white text-sm font-semibold truncate">
-                      {color.name}
-                    </p>
-                    <p className="text-white/50 text-xs font-mono mt-0.5 truncate">
-                      {color.hex}
-                    </p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </RevealBlock>
-
-          {/* Rainbow gradient bar */}
-          <RevealBlock delay={0.08}>
-            <div
-              className="relative p-8 rounded-[28px]"
-              style={{
-                background: "rgba(255,255,255,0.04)",
-                backdropFilter: "blur(40px) saturate(1.8)",
-                WebkitBackdropFilter: "blur(40px) saturate(1.8)",
-                border: "1px solid rgba(255,255,255,0.10)",
-              }}
-            >
-              <p className="text-sm font-semibold text-white/50 uppercase tracking-widest mb-6">
-                Rainbow Refraction Gradient
-              </p>
-              <div
-                className="w-full h-10 rounded-full mb-4"
-                style={{
-                  background:
-                    "linear-gradient(to right, #ff6b6b, #ffd93d, #6bcb77, #4ecdc4, #007AFF, #a855f7, #ff2d92)",
-                }}
-              />
-              <p className="text-white/50 text-xs font-mono">
-                from-[#ff6b6b] via-[#ffd93d] via-[#6bcb77] via-[#4ecdc4] via-[#007AFF] via-[#a855f7] to-[#ff2d92]
-              </p>
-            </div>
-          </RevealBlock>
-
-          {/* Typography showcase */}
-          <RevealBlock delay={0.14} className="mt-8">
-            <div
-              className="relative p-8 rounded-[28px]"
-              style={{
-                background: "rgba(255,255,255,0.04)",
-                backdropFilter: "blur(40px) saturate(1.8)",
-                WebkitBackdropFilter: "blur(40px) saturate(1.8)",
-                border: "1px solid rgba(255,255,255,0.10)",
-              }}
-            >
-              <p className="text-sm font-semibold text-white/50 uppercase tracking-widest mb-8">
-                Neon Typography
-              </p>
-              {/* H1 style */}
-              <div className="mb-6 pb-6 border-b border-white/10">
-                <p className="text-xs text-white/40 mb-3 font-mono">H1 — 3px stroke + 3D shadow + gradient fill</p>
-                <h1
-                  className="text-4xl md:text-5xl font-black bg-gradient-to-r from-[#a855f7] via-[#ff2d92] to-[#a855f7] bg-clip-text"
-                  style={{
-                    WebkitTextStroke: "3px #4ecdc4",
-                    WebkitTextFillColor: "transparent",
-                    textShadow:
-                      "4px 4px 0 rgba(0,0,0,0.5), 0 0 25px rgba(78,205,196,0.6), 0 0 50px rgba(168,85,247,0.4)",
-                    filter: "drop-shadow(0 0 12px rgba(78,205,196,0.4))",
-                  }}
-                >
-                  Hero Heading
-                </h1>
-              </div>
-              {/* H2 style */}
-              <div className="mb-6 pb-6 border-b border-white/10">
-                <p className="text-xs text-white/40 mb-3 font-mono">H2 — 2px stroke + glow</p>
-                <h2
-                  className="text-3xl font-bold bg-gradient-to-r from-[#a855f7] via-[#ff2d92] to-[#a855f7] bg-clip-text"
-                  style={{
-                    WebkitTextStroke: "2px #4ecdc4",
-                    WebkitTextFillColor: "transparent",
-                    textShadow:
-                      "3px 3px 0 rgba(0,0,0,0.4), 0 0 15px rgba(78,205,196,0.5)",
-                    filter: "drop-shadow(0 0 8px rgba(78,205,196,0.3))",
-                  }}
-                >
-                  Section Heading
-                </h2>
-              </div>
-              {/* Subtitle style */}
-              <div className="mb-6 pb-6 border-b border-white/10">
-                <p className="text-xs text-white/40 mb-3 font-mono">Subtitle — cyan glow, no stroke</p>
-                <h3
-                  className="text-2xl font-bold text-white"
-                  style={{
-                    textShadow:
-                      "0 0 25px rgba(78,205,196,0.9), 0 0 50px rgba(78,205,196,0.5), 3px 3px 0 rgba(0,0,0,0.4)",
-                  }}
-                >
-                  Cyan Glow Subtitle
-                </h3>
-              </div>
-              {/* Body text */}
-              <div>
-                <p className="text-xs text-white/40 mb-3 font-mono">Body — high contrast white</p>
-                <p className="text-white/90 text-lg leading-relaxed">
-                  Primary body text maintains high contrast against dark glass backgrounds.
-                </p>
-                <p className="text-white/70 text-base mt-2 leading-relaxed">
-                  Secondary text at 70% opacity for supporting information.
-                </p>
-                <p className="text-white/50 text-sm mt-2">
-                  Tertiary text at 50% for metadata and timestamps.
-                </p>
-              </div>
-            </div>
-          </RevealBlock>
-        </div>
-      </section>
-
-      {/* ── Extra: Control Center interactive demo ── */}
-      <section className="relative z-10 py-24 px-6">
-        <div className="max-w-6xl mx-auto">
-          <RevealBlock className="text-center mb-16">
-            <h2
-              className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-[#a855f7] via-[#ff2d92] to-[#a855f7] bg-clip-text mb-4"
-              style={{
-                WebkitTextStroke: "2px #4ecdc4",
-                WebkitTextFillColor: "transparent",
-                textShadow:
-                  "3px 3px 0 rgba(0,0,0,0.4), 0 0 15px rgba(78,205,196,0.5)",
-              }}
-            >
-              Control Center
-            </h2>
-            <p className="text-white/60 text-lg">
-              iOS-style glass control tiles — click to toggle
-            </p>
-          </RevealBlock>
-
-          <RevealBlock>
-            <div className="max-w-sm mx-auto">
-              <div
-                className="relative p-4 rounded-[28px]"
-                style={{
-                  background: "rgba(255,255,255,0.05)",
-                  backdropFilter: "blur(40px) saturate(1.8)",
-                  WebkitBackdropFilter: "blur(40px) saturate(1.8)",
-                  border: "1px solid rgba(255,255,255,0.10)",
-                  boxShadow: "inset 0 1px 0 rgba(255,255,255,0.15)",
-                }}
-              >
-                <div className="grid grid-cols-2 gap-3">
-                  {(
-                    [
-                      { label: "Wi-Fi", icon: "wifi" },
-                      { label: "Bluetooth", icon: "bluetooth" },
-                      { label: "Focus", icon: "moon" },
-                      { label: "Sound", icon: "volume" },
-                    ] as { label: string; icon: string }[]
-                  ).map((item, i) => (
-                    <button
-                      key={item.label}
-                      onClick={() => toggleSwitch(i)}
-                      className="aspect-square flex flex-col items-center justify-center gap-2 rounded-[20px] transition-all duration-500"
-                      style={{
-                        background: toggleStates[i]
-                          ? "rgba(0,122,255,0.35)"
-                          : "rgba(255,255,255,0.08)",
-                        boxShadow: toggleStates[i]
-                          ? "0 0 20px rgba(0,122,255,0.4), inset 0 1px 0 rgba(255,255,255,0.2)"
-                          : "none",
-                        border: toggleStates[i]
-                          ? "1px solid rgba(0,122,255,0.4)"
-                          : "1px solid rgba(255,255,255,0.10)",
-                      }}
-                    >
-                      {item.icon === "wifi" && (
-                        <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.141 0M1.394 9.393c5.857-5.857 15.355-5.857 21.213 0" />
-                        </svg>
-                      )}
-                      {item.icon === "bluetooth" && (
-                        <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M8 12l8-8v16l-8-8zm0 0l4 4m-4-4l4-4" />
-                        </svg>
-                      )}
-                      {item.icon === "moon" && (
-                        <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
-                        </svg>
-                      )}
-                      {item.icon === "volume" && (
-                        <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M15.536 8.464a5 5 0 010 7.072M12 6v12m-3.536-9.536a5 5 0 000 7.072M8 9H4a1 1 0 00-1 1v4a1 1 0 001 1h4l5 5V4L8 9z" />
-                        </svg>
-                      )}
-                      <span className="text-white text-xs font-medium">
-                        {item.label}
-                      </span>
+                  </form>
+                </LiquidGlass>
+              )}
+              <LiquidGlass appearance="clear" settings={materialSettings} radius={999}
+                tint="rgba(20,43,54,0.64)" contentClassName={styles.dockContent}>
+                <nav className={styles.sceneNavigation} aria-label={t.background}>
+                  {scenes.map(({ id, icon: Icon, en, zh }) => (
+                    <button key={id} type="button" aria-pressed={scene === id} onClick={() => chooseScene(id)}>
+                      <Icon size={17} aria-hidden="true" /><span>{locale === "zh" ? zh : en}</span>
                     </button>
                   ))}
-                </div>
-
-                {/* Volume slider */}
-                <div
-                  className="mt-3 p-3 rounded-[16px]"
-                  style={{ background: "rgba(255,255,255,0.05)" }}
-                >
-                  <div className="flex items-center gap-3">
-                    <svg className="w-5 h-5 text-white/60 flex-shrink-0" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M15.536 8.464a5 5 0 010 7.072M8 9H4a1 1 0 00-1 1v4a1 1 0 001 1h4l5 5V4L8 9z" />
-                    </svg>
-                    <div className="flex-1 h-2 rounded-full relative" style={{ background: "rgba(255,255,255,0.10)" }}>
-                      <div
-                        className="absolute left-0 top-0 h-full rounded-full"
-                        style={{
-                          width: "65%",
-                          background: "linear-gradient(to right, #007AFF, #5AC8FA)",
-                        }}
-                      />
-                      <div
-                        className="absolute top-1/2 -translate-y-1/2 w-4 h-4 rounded-full bg-white shadow-lg"
-                        style={{ left: "calc(65% - 8px)" }}
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </RevealBlock>
-
-          {/* Alerts row */}
-          <RevealBlock delay={0.1} className="mt-10 max-w-lg mx-auto space-y-4">
-            {[
-              {
-                color: "#34C759",
-                bg: "rgba(52,199,89,0.08)",
-                label: "Success",
-                msg: "Changes saved successfully.",
-              },
-              {
-                color: "#FF9500",
-                bg: "rgba(255,149,0,0.08)",
-                label: "Warning",
-                msg: "Review settings before continuing.",
-              },
-              {
-                color: "#FF2D55",
-                bg: "rgba(255,45,85,0.08)",
-                label: "Error",
-                msg: "Something went wrong. Please retry.",
-              },
-            ].map((alert) => (
-              <div
-                key={alert.label}
-                className="relative p-4 rounded-[16px] flex items-start gap-3"
-                style={{
-                  background: alert.bg,
-                  backdropFilter: "blur(40px) saturate(1.8)",
-                  border: `1px solid ${alert.color}40`,
-                  boxShadow: `inset 0 1px 0 ${alert.color}25`,
-                }}
-              >
-                <div
-                  className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0"
-                  style={{ background: `${alert.color}30` }}
-                >
-                  {alert.label === "Success" && (
-                    <svg className="w-4 h-4" fill="none" stroke={alert.color} strokeWidth={2.5} viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                    </svg>
-                  )}
-                  {alert.label === "Warning" && (
-                    <svg className="w-4 h-4" fill="none" stroke={alert.color} strokeWidth={2.5} viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
-                    </svg>
-                  )}
-                  {alert.label === "Error" && (
-                    <svg className="w-4 h-4" fill="none" stroke={alert.color} strokeWidth={2.5} viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                  )}
-                </div>
-                <div>
-                  <p className="font-semibold text-white text-sm">{alert.label}</p>
-                  <p className="text-white/70 text-sm">{alert.msg}</p>
-                </div>
-              </div>
-            ))}
-          </RevealBlock>
-        </div>
-      </section>
-
-      {/* ── 7. Footer ── */}
-      <footer
-        className="relative z-10 px-6 py-12"
-        style={{
-          background: "rgba(255,255,255,0.04)",
-          backdropFilter: "blur(40px) saturate(1.8)",
-          WebkitBackdropFilter: "blur(40px) saturate(1.8)",
-          borderTop: "1px solid rgba(255,255,255,0.10)",
-          boxShadow:
-            "0 -1px 0 rgba(255,255,255,0.08), inset 0 1px 0 rgba(168,85,247,0.15)",
-        }}
-      >
-        <div className="max-w-6xl mx-auto">
-          {/* Top row */}
-          <div className="flex flex-col md:flex-row items-center justify-between gap-8 mb-10">
-            <div className="flex items-center gap-3">
-              <div
-                className="w-10 h-10 rounded-[10px] rainbow-pulse"
-                style={{
-                  background:
-                    "linear-gradient(135deg, #ff6b6b, #ffd93d, #6bcb77, #4ecdc4, #a855f7)",
-                }}
-              />
-              <div>
-                <div
-                  className="text-xl font-bold text-white"
-                  style={{
-                    textShadow:
-                      "0 0 15px rgba(78,205,196,0.6), 0 0 30px rgba(168,85,247,0.3)",
-                  }}
-                >
-                  Liquid Glass
-                </div>
-                <div className="text-white/50 text-xs">
-                  Apple WWDC 2025 Design Language
-                </div>
-              </div>
-            </div>
-
-            <div className="flex flex-wrap justify-center gap-8 text-sm">
-              {[
-                { label: "Documentation", href: "/styles/liquid-glass" },
-                { label: "Components", href: "/styles/liquid-glass" },
-                { label: "All Styles", href: "/styles" },
-              ].map((link) => (
-                <Link
-                  key={link.label}
-                  href={link.href}
-                  className="text-white/60 hover:text-white transition-colors duration-300"
-                >
-                  {link.label}
-                </Link>
-              ))}
+                </nav>
+                <span className={styles.dockDivider} aria-hidden="true" />
+                <button ref={searchTrigger} type="button" className={styles.searchButton}
+                  aria-label={t.search} aria-expanded={searchOpen} aria-controls={searchOpen ? searchId : undefined}
+                  onClick={() => { if (searchOpen) closeSearch(); else setSearchOpen(true); }}>
+                  <Search size={20} aria-hidden="true" />
+                </button>
+              </LiquidGlass>
             </div>
           </div>
 
-          {/* Rainbow separator */}
-          <div
-            className="w-full h-px mb-8"
-            style={{
-              background:
-                "linear-gradient(to right, transparent, #ff6b6b, #ffd93d, #6bcb77, #4ecdc4, #a855f7, transparent)",
-              opacity: 0.4,
-            }}
-          />
-
-          {/* Bottom row */}
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-white/40 text-xs">
-            <span>Liquid Glass Design System — StyleKit</span>
-            <span className="font-mono">
-              backdrop-blur-[40px] backdrop-saturate-[1.8]
-            </span>
+          <div className={styles.toolbar}>
+            <div className={styles.choiceGroup}>
+              <span className={styles.controlLabel}>{t.material}</span>
+              <div className={styles.segmented} role="group" aria-label={t.material}>
+                <button type="button" aria-pressed={clear} onClick={() => setMaterial("clear")}>{t.clear}</button>
+                <button type="button" aria-pressed={!clear} onClick={() => setMaterial("frost")}>{t.frost}</button>
+              </div>
+            </div>
+            <label className={styles.range} data-disabled={controlsDisabled}>
+              <span>{t.refraction}<output>{refraction}%</output></span>
+              <input type="range" min={0} max={100} step={1} value={refraction}
+                disabled={controlsDisabled}
+                onChange={(event) => setRefraction(event.currentTarget.valueAsNumber)} />
+            </label>
           </div>
-        </div>
-      </footer>
-    </div>
+
+          <div className={styles.caption}>
+            <p id={hintId}>{t.instruction}</p>
+            <button type="button" className={styles.reset} onClick={centerLens}>
+              <RotateCcw size={14} aria-hidden="true" /> {t.center}
+            </button>
+          </div>
+          <p className={styles.status} role="status" aria-live="polite">
+            {opaque ? t.opaque : !supported ? t.fallback : clear ? t.live : t.frosted}
+            {scene === "glacier" && imageFailed ? " " + t.imageFailed : ""}
+          </p>
+        </section>
+
+        <section className={styles.principles} aria-label={t.guide}>
+          {t.principles.map(([title, body]) => (
+            <div key={title}><h2>{title}</h2><p>{body}</p></div>
+          ))}
+        </section>
+
+        <footer className={styles.footer}>
+          <LocalizedLink href="/styles/liquid-glass" className={styles.guideLink}>
+            {t.guide} <ArrowUpRight size={16} aria-hidden="true" />
+          </LocalizedLink>
+          <a className={styles.credit} href="https://commons.wikimedia.org/wiki/File:Iceberg_reflection_in_J%C3%B6kuls%C3%A1rl%C3%B3n_(Unsplash).jpg"
+            target="_blank" rel="noopener noreferrer">{t.credit} · CC0</a>
+        </footer>
+      </div>
+    </main>
   );
 }

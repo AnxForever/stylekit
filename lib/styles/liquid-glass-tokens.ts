@@ -1,69 +1,50 @@
-// Liquid Glass Style Tokens - Precise class mappings for AI
+// Liquid Glass Style Tokens — clear optical surfaces with portable CSS fallbacks.
+// These classes describe the portable fallback only. Compatible environments MUST
+// pair them with the shared LiquidGlass renderer for visible curved-rim refraction.
+// A translucent blur alone does not implement the Liquid Glass material.
 import { createStyleTokens } from "./token-defaults";
 
 export const liquidGlassTokens = createStyleTokens({
   border: {
     width: "border",
-    color: "border-white/20",
+    color: "border-white/24",
     radius: "rounded-[24px]",
     style: "border-solid",
   },
 
   shadow: {
-    sm: "shadow-lg shadow-black/5",
-    md: "shadow-xl shadow-black/10",
-    lg: "shadow-2xl shadow-black/15",
+    sm: "shadow-[0_2px_8px_rgba(8,24,50,0.08)]",
+    md: "shadow-[0_8px_22px_rgba(8,24,50,0.12)]",
+    lg: "shadow-[0_12px_32px_rgba(8,24,50,0.16)]",
     none: "shadow-none",
-    hover: "hover:shadow-xl hover:shadow-black/15",
-    focus: "focus:shadow-[0_0_0_2px_rgba(168,85,247,0.5),0_0_20px_rgba(168,85,247,0.2)]",
+    hover: "hover:shadow-[0_14px_32px_rgba(8,24,50,0.16)]",
+    focus: "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#557b79] dark:focus-visible:ring-[#c7e4e5]",
     colored: {
-      inner: "[box-shadow:inset_0_1px_0_rgba(255,255,255,0.4)]",
-      glow: "shadow-[0_0_30px_rgba(168,85,247,0.4)]",
-      rainbow: "shadow-[0_0_20px_rgba(255,107,107,0.3),0_0_40px_rgba(78,205,196,0.2),0_0_60px_rgba(168,85,247,0.1)]",
-      blue: "shadow-[0_0_20px_rgba(0,122,255,0.3)]",
-      pink: "shadow-[0_0_20px_rgba(255,45,85,0.3)]",
+      inner: "[box-shadow:inset_0_1px_0_rgba(255,255,255,0.48)]",
+      teal: "shadow-[0_8px_24px_rgba(37,65,74,0.14)]",
     },
   },
 
   interaction: {
-    hoverOpacity: "hover:bg-white/15",
-    transition: "transition-all duration-500 ease-out",
-    active: "active:scale-[0.98]",
+    hoverOpacity: "hover:bg-[#25414a]/95",
+    transition:
+      "transition-[transform,background-color,border-color,box-shadow] duration-[420ms] ease-[cubic-bezier(0.2,0.8,0.2,1)] motion-reduce:transition-none",
+    active:
+      "active:duration-[110ms] active:scale-[0.985] active:translate-y-px motion-reduce:active:duration-0 motion-reduce:active:scale-100 motion-reduce:active:translate-y-0",
   },
 
   typography: {
-    // Neon stroke hero text (purple gradient + cyan stroke + 3D shadow)
-    heading: "font-black bg-gradient-to-r from-[#a855f7] via-[#ff2d92] to-[#a855f7] bg-clip-text text-transparent",
-    // Cyan glow subtitle text
-    subtitle: "font-bold text-white",
-    body: "text-white/80",
-    mono: "font-mono text-white/90",
+    heading: "font-medium tracking-[-0.025em] text-[#202929]",
+    subtitle: "font-medium text-[#4c5d57]",
+    body: "font-sans text-[#202929]",
+    mono: "font-mono tabular-nums text-[#25414a]",
     sizes: {
       hero: "text-5xl md:text-7xl lg:text-8xl",
       h1: "text-4xl md:text-5xl",
       h2: "text-3xl md:text-4xl",
       h3: "text-xl md:text-2xl",
       body: "text-sm md:text-base",
-      small: "text-xs",
-    },
-    // Core neon stroke styles (apply via inline style)
-    neonStroke: {
-      // Purple gradient hero text with thick cyan stroke
-      hero: {
-        WebkitTextStroke: "3px #4ecdc4",
-        textShadow: "4px 4px 0 rgba(0,0,0,0.5), 0 0 20px rgba(78,205,196,0.5), 0 0 40px rgba(168,85,247,0.3)",
-        filter: "drop-shadow(0 0 15px rgba(78,205,196,0.4))",
-      },
-      // Cyan glow subtitle (no stroke, just glow)
-      subtitle: {
-        textShadow: "0 0 20px rgba(78,205,196,0.8), 0 0 40px rgba(78,205,196,0.4), 2px 2px 0 rgba(0,0,0,0.3)",
-      },
-      // Smaller headlines with thinner stroke
-      heading: {
-        WebkitTextStroke: "2px #4ecdc4",
-        textShadow: "3px 3px 0 rgba(0,0,0,0.4), 0 0 15px rgba(78,205,196,0.4)",
-        filter: "drop-shadow(0 0 10px rgba(78,205,196,0.3))",
-      },
+      small: "text-xs md:text-sm",
     },
   },
 
@@ -80,138 +61,96 @@ export const liquidGlassTokens = createStyleTokens({
 
   colors: {
     background: {
-      // Liquid Glass backgrounds with high saturation boost
-      primary: "bg-white/10 backdrop-blur-[40px] backdrop-saturate-[1.8]",
-      secondary: "bg-white/15 backdrop-blur-[40px] backdrop-saturate-[1.8]",
+      // Portable page skeletons pair these reading surfaces with dark text.
+      // Dark optical scenes belong to the style palette and dedicated renderer.
+      primary: "bg-[#f3f2ed]",
+      secondary: "bg-[#e4efeb]",
       accent: [
-        "bg-gradient-to-br from-[#1a1a2e] via-[#16213e] to-[#0f0f23]",
-        "bg-gradient-to-r from-[#ff2d92] to-[#a855f7]",
-        "bg-gradient-to-r from-[#4ecdc4] to-[#6bcb77]",
+        "bg-[#e4efeb]",
+        "bg-white",
+        "bg-[#c7e4e5]",
       ],
     },
     text: {
-      primary: "text-white",
-      secondary: "text-white/80",
-      muted: "text-white/50",
+      primary: "text-[#202929]",
+      secondary: "text-[#25414a]",
+      muted: "text-[#4c5d57]",
     },
     button: {
-      primary: "bg-gradient-to-r from-[#ff2d92] to-[#a855f7] text-white font-bold",
-      secondary: "bg-white/10 text-white backdrop-blur-[40px] backdrop-saturate-[1.8]",
+      primary:
+        "bg-[#25414a]/85 text-white border border-white/25 backdrop-blur-[10px]",
+      secondary: "bg-[#25414a] text-white border border-white/24",
     },
   },
 
-  // Rainbow gradient patterns are implemented via ::before/::after pseudo-elements
-  // See required.button and required.card for usage examples
-
   forbidden: {
     classes: [
-      // No sharp or small corners
-      "rounded-none", "rounded-sm", "rounded",
-      // No opaque backgrounds on glass elements
-      "bg-white", "bg-black", "bg-gray-100", "bg-gray-900",
-      // No hard shadows
-      "shadow-[0px_0px_0px",
-      // No low blur
-      "backdrop-blur-sm", "backdrop-blur",
-      // No fast transitions
-      "duration-100", "duration-150", "duration-200",
-      // No single color borders
-      "border-black", "border-gray-500", "border-white",
-      // No light backgrounds as containers
-      "bg-gray-50", "bg-slate-100",
+      "bg-[#ff2d92]",
+      "bg-[#a855f7]",
+      "bg-[#4ecdc4]",
+      "text-[#ff2d92]",
+      "text-[#a855f7]",
+      "from-[#ff6b6b]",
+      "via-[#4ecdc4]",
+      "to-[#a855f7]",
+      "backdrop-saturate-[1.8]",
+      "backdrop-saturate-200",
     ],
     patterns: [
-      "^rounded-none",
-      "^rounded-sm$",
-      "^rounded$",
-      "^bg-(?!white\\/|gradient|\\[|transparent)",
-      "^border-(?!(?:white\\/|\\[|transparent|(?:t|b|l|r|x|y)(?:$|-)))",
-      "^backdrop-blur$",
-      "^backdrop-blur-sm$",
-      "^duration-(100|150|200)$",
+      "(?:^|:)(?:from|via|to)-\\[#(?:ff6b6b|ff2d92|a855f7|4ecdc4)",
+      "^backdrop-saturate-",
+      "^text-transparent$",
     ],
     reasons: {
-      "rounded-none": "Liquid Glass requires large rounded corners (rounded-[24px] or rounded-3xl)",
-      "rounded-sm": "Liquid Glass requires large rounded corners (rounded-[24px] or rounded-3xl)",
-      "bg-white": "Liquid Glass uses semi-transparent backgrounds (bg-white/10 to bg-white/15)",
-      "bg-black": "Liquid Glass requires semi-transparent backgrounds, not opaque colors",
-      "backdrop-blur-sm": "Liquid Glass requires high blur (backdrop-blur-[40px] or backdrop-blur-3xl)",
-      "backdrop-blur": "Liquid Glass requires high blur (backdrop-blur-[40px] or backdrop-blur-3xl)",
-      "duration-100": "Liquid Glass uses fluid animations (duration-500 or higher)",
-      "duration-150": "Liquid Glass uses fluid animations (duration-500 or higher)",
-      "duration-200": "Liquid Glass uses fluid animations (duration-500 or higher)",
-      "border-white": "Liquid Glass uses gradient borders for rainbow refraction effect",
+      "bg-[#ff2d92]": "Use muted glass tints and the teal scene palette, not neon surfaces.",
+      "bg-[#a855f7]": "The material uses neutral light, not purple neon surfaces.",
+      "bg-[#4ecdc4]": "Keep cyan as a restrained highlight rather than a filled surface.",
+      "text-[#ff2d92]": "Keep interface text neutral and readable.",
+      "text-[#a855f7]": "Keep interface text neutral and readable.",
+      "from-[#ff6b6b]": "Liquid Glass uses a fine neutral rim, not rainbow borders.",
+      "via-[#4ecdc4]": "Liquid Glass uses a fine neutral rim, not rainbow borders.",
+      "to-[#a855f7]": "Liquid Glass uses a fine neutral rim, not rainbow borders.",
+      "backdrop-saturate-[1.8]": "Keep colors from the scene natural instead of boosting saturation.",
+      "backdrop-saturate-200": "Keep colors from the scene natural instead of boosting saturation.",
     },
   },
 
   required: {
     button: [
-      "backdrop-blur-[40px]",
-      "backdrop-saturate-[1.8]",
-      "rounded-[20px]",
-      "text-white",
-      "before:absolute",
-      "before:inset-0",
-      "before:rounded-[20px]",
-      "before:p-[1px]",
-      "before:-z-10",
-      "before:bg-gradient-to-r",
-      "before:from-[#ff6b6b]",
-      "before:via-[#4ecdc4]",
-      "before:to-[#a855f7]",
-      "after:absolute",
-      "after:inset-[1px]",
-      "after:rounded-[19px]",
-      "after:-z-10",
-      "after:bg-gradient-to-b",
-      "after:from-white/20",
-      "after:to-transparent",
-      "hover:bg-white/15",
-      "hover:shadow-[0_0_20px_rgba(168,85,247,0.3)]",
-      "transition-all",
-      "duration-500",
-      "ease-out",
+      "relative",
+      "inline-flex",
+      "items-center",
+      "justify-center",
+      "min-h-[44px]",
+      "min-w-[44px]",
+      "rounded-full",
+      "border",
+      "backdrop-blur-[10px]",
+      "transition-[transform,background-color,border-color,box-shadow]",
+      "duration-[420ms]",
+      "active:duration-[110ms]",
+      "active:scale-[0.985]",
+      "motion-reduce:transition-none",
     ],
     card: [
-      "bg-white/10",
-      "backdrop-blur-[40px]",
-      "backdrop-saturate-[1.8]",
+      "relative",
       "rounded-[24px]",
-      "shadow-xl",
-      "shadow-black/10",
-      "before:absolute",
-      "before:inset-0",
-      "before:rounded-[24px]",
-      "before:p-[1px]",
-      "before:-z-10",
-      "before:bg-gradient-to-br",
-      "before:from-[#ff6b6b]",
-      "before:via-[#4ecdc4]",
-      "before:to-[#a855f7]",
-      "after:absolute",
-      "after:inset-[1px]",
-      "after:rounded-[23px]",
-      "after:-z-10",
-      "after:bg-gradient-to-b",
-      "after:from-white/15",
-      "after:to-transparent",
-      "[box-shadow:inset_0_1px_0_rgba(255,255,255,0.4)]",
+      "border",
+      "shadow-[0_12px_32px_rgba(8,24,50,0.12)]",
+      "transition-[transform,background-color,border-color,box-shadow]",
+      "duration-[420ms]",
+      "motion-reduce:transition-none",
     ],
     input: [
-      "bg-white/10",
-      "backdrop-blur-[40px]",
-      "backdrop-saturate-[1.8]",
+      "w-full",
+      "min-h-[44px]",
+      "rounded-full",
       "border",
-      "border-white/20",
-      "rounded-[16px]",
-      "text-white",
+      "backdrop-blur-[12px]",
       "focus:outline-none",
-      "focus:bg-white/15",
-      "focus:border-transparent",
-      "focus:shadow-[0_0_0_2px_rgba(168,85,247,0.5),0_0_20px_rgba(168,85,247,0.2)]",
-      "transition-all",
-      "duration-500",
-      "ease-out",
+      "transition-[background-color,border-color,box-shadow]",
+      "duration-[420ms]",
+      "motion-reduce:transition-none",
     ],
   },
 });

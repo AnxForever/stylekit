@@ -25,6 +25,13 @@ describe("prompt-pair builders", () => {
     expect(hard.indexOf("BASE_RULES")).toBeLessThan(hard.indexOf("ENHANCED_RULES"));
   });
 
+  it("keeps Liquid Glass gesture guidance consistent without relaxing other styles", () => {
+    const glass = buildHardPrompt({ ...input, styleSlug: "liquid-glass" }, "en");
+    expect(glass).toContain("Use restrained spring settling only after a press or drag");
+    expect(glass).not.toContain("No bounce or elastic easing curves");
+    expect(buildHardPrompt(input, "en")).toContain("No bounce or elastic easing curves");
+  });
+
   it("falls back to base rules for hard prompt when enhanced rules are missing", () => {
     const hard = buildHardPrompt({
       ...input,

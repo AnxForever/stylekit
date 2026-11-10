@@ -1,713 +1,432 @@
 import type { DesignStyle } from "./types";
 
+const description = "通透的玻璃浮在内容之上：中心清晰、边缘轻折光，白色细高光勾勒厚度。用在浮动导航、搜索和控制面板，触碰时轻压、拖动时伸展、松手后回弹。";
+const descriptionEn = "Clear glass floats above the content, bending detail near a fine white rim. Floating navigation, search, and controls compress on press, stretch with the gesture, and spring back on release.";
+
 export const liquidGlass: DesignStyle = {
   slug: "liquid-glass",
-  name: "Apple 流动玻璃",
-  nameEn: "Apple Liquid Glass",
-  description:
-    "Apple WWDC 2025 发布的全新设计语言，通过 SVG 折射滤镜、彩虹边缘光晕、流体形变动画和多层玻璃堆叠，创造出超越传统毛玻璃的有机流动视觉体验。",
-  descriptionEn:
-    "Apple's revolutionary design language from WWDC 2025, creating an organic, fluid visual experience beyond traditional frosted glass through SVG refraction filters, rainbow edge halos, fluid morphing animations, and multi-layer glass stacking.",
+  name: "液态玻璃",
+  nameEn: "Liquid Glass",
+  description,
+  descriptionEn,
   cover: "/styles/liquid-glass.svg",
   styleType: "visual",
   tags: ["brand-inspired"],
   category: "modern",
   colors: {
-    primary: "rgba(255, 255, 255, 0.1)",
-    secondary: "rgba(255, 255, 255, 0.15)",
-    accent: ["#ff6b6b", "#4ecdc4", "#a855f7", "#007AFF", "#FF2D55"],
+    primary: "#f3f2ed",
+    secondary: "#202929",
+    accent: ["#25414a", "#e4efeb", "#c7e4e5", "#557b79"],
   },
-  keywords: ["Apple", "Liquid Glass", "流动玻璃", "彩虹边缘", "折射", "多层堆叠", "WWDC 2025"],
-  keywordsEn: ["liquid glass", "Apple Liquid Glass", "glassmorphism", "frosted glass", "glass ui", "refraction effect", "SVG displacement filter", "backdrop blur", "rainbow edge glow", "fluid morphing", "WWDC 2025"],
+  keywords: ["液态玻璃", "流动玻璃", "Apple", "透明材质", "光学折射", "浮动导航", "回弹"],
+  keywordsEn: ["liquid glass", "Apple Liquid Glass", "transparent material", "glassmorphism", "optical refraction", "floating dock", "thin specular rim", "spring motion"],
 
-  philosophy: `Liquid Glass（流动玻璃）是 Apple WWDC 2025 发布的革命性设计语言，超越传统毛玻璃效果，通过光线折射、彩虹边缘和流体动画创造出真正有机、流动的视觉体验。
+  philosophy: `玻璃属于操作层。先布置清晰的内容，再把用户下一步要用的导航、搜索和控制放在其上方。玻璃从场景借色，靠一条细高光表现厚度。折射集中在边缘，中心要能辨认原来的线条和纹理。
 
-核心理念：
-- 霓虹描边文字：标题使用 text-stroke 配合青色发光描边，产生霓虹效果
-- 渐变填充文字：紫色到品红的渐变填充，配合 3D 阴影产生立体感
-- 彩虹折射边缘：边缘呈现棱镜效果，红橙黄绿青蓝紫的光谱渐变
-- 流体形变：圆角随交互产生液态变形动画
-- 多层深度：3+ 层玻璃堆叠产生丰富的空间层次
-- 高饱和度：backdrop-saturate-180 让背景色彩更加鲜艳
+材质分成三种：清透玻璃给有纹理的图片或图形上的小控件；着色玻璃给菜单、搜索和设置；实体表面承载正文、列表和表格。动效来自手势：按下轻压，拖动时沿方向伸展，释放后迅速归位。`,
+  philosophyEn: `Glass is the control layer. Lay out sharp content first, then float the navigation, search, and controls that people need above it. Glass borrows color from the scene, and a fine glint gives the rim depth. Bend the backdrop near the edge and keep its original texture recognizable in the center.
 
-## 字体设计核心（最重要的视觉元素）
-
-### Hero 标题（主标题）
-紫色渐变填充 + 粗青色描边(3px) + 3D偏移阴影：
-- background: linear-gradient(to right, #a855f7, #ff2d92, #a855f7)
-- -webkit-text-stroke: 3px #4ecdc4
-- text-shadow: 4px 4px 0 rgba(0,0,0,0.5), 0 0 20px rgba(78,205,196,0.5), 0 0 40px rgba(168,85,247,0.3)
-- filter: drop-shadow(0 0 15px rgba(78,205,196,0.4))
-
-### 副标题（青色发光）
-白色/青色文字 + 发光效果（无描边）：
-- color: white 或 gradient cyan
-- text-shadow: 0 0 20px rgba(78,205,196,0.8), 0 0 40px rgba(78,205,196,0.4), 2px 2px 0 rgba(0,0,0,0.3)
-
-### h1/h2 标题
-较细描边(2px) + 发光 + 轻微3D：
-- -webkit-text-stroke: 2px #4ecdc4
-- text-shadow: 3px 3px 0 rgba(0,0,0,0.4), 0 0 15px rgba(78,205,196,0.4)
-
-### 正文
-高对比度白色，保证可读性：
-- color: text-white/80 到 text-white/90
-
-与 Glassmorphism 的区别：
-| 特性 | Glassmorphism | Liquid Glass |
-|------|---------------|--------------|
-| 边框 | border-white/20 | 彩虹渐变边框 |
-| 模糊 | blur-2xl | blur-3xl + saturate-180 |
-| 动画 | 简单过渡 | 液态形变 morph |
-| 深度 | 单层 | 多层堆叠 |
-| 文字 | 普通白色 | 渐变+粗描边+3D阴影 |
-| 描边 | 无 | 3px青色霓虹描边 |
-| 阴影 | 普通投影 | 3D偏移+发光组合 |`,
-
-  philosophyEn: `Liquid Glass is Apple's revolutionary design language released at WWDC 2025, transcending traditional frosted glass effects to create truly organic, fluid visual experiences through light refraction, rainbow edges, and fluid animations.
-
-Core principles:
-- Neon stroke text: Titles use text-stroke with cyan glow stroke for a neon effect
-- Gradient fill text: Purple-to-magenta gradient fill with 3D shadow for dimensional feel
-- Rainbow refraction edges: Edges display prismatic effects with red-orange-yellow-green-cyan-blue-purple spectrum gradients
-- Fluid morphing: Border radius produces liquid deformation animations during interaction
-- Multi-layer depth: 3+ glass layers stacked for rich spatial hierarchy
-- High saturation: backdrop-saturate-180 makes background colors more vivid
-
-## Typography Design Core (Most Important Visual Element)
-
-### Hero Title (Main Title)
-Purple gradient fill + thick cyan stroke (3px) + 3D offset shadow:
-- background: linear-gradient(to right, #a855f7, #ff2d92, #a855f7)
-- -webkit-text-stroke: 3px #4ecdc4
-- text-shadow: 4px 4px 0 rgba(0,0,0,0.5), 0 0 20px rgba(78,205,196,0.5), 0 0 40px rgba(168,85,247,0.3)
-- filter: drop-shadow(0 0 15px rgba(78,205,196,0.4))
-
-### Subtitle (Cyan Glow)
-White/cyan text + glow effect (no stroke):
-- color: white or gradient cyan
-- text-shadow: 0 0 20px rgba(78,205,196,0.8), 0 0 40px rgba(78,205,196,0.4), 2px 2px 0 rgba(0,0,0,0.3)
-
-### h1/h2 Titles
-Thinner stroke (2px) + glow + slight 3D:
-- -webkit-text-stroke: 2px #4ecdc4
-- text-shadow: 3px 3px 0 rgba(0,0,0,0.4), 0 0 15px rgba(78,205,196,0.4)
-
-### Body Text
-High-contrast white for readability:
-- color: text-white/80 to text-white/90
-
-Differences from Glassmorphism:
-| Feature | Glassmorphism | Liquid Glass |
-|---------|---------------|--------------|
-| Border | border-white/20 | Rainbow gradient border |
-| Blur | blur-2xl | blur-3xl + saturate-180 |
-| Animation | Simple transitions | Liquid morph |
-| Depth | Single layer | Multi-layer stacking |
-| Text | Plain white | Gradient + thick stroke + 3D shadow |
-| Stroke | None | 3px cyan neon stroke |
-| Shadow | Standard drop | 3D offset + glow combo |`,
+Use three surfaces: clear glass for compact controls over richly textured scenes, tinted glass for menus, search, and settings, and solid surfaces for reading, lists, and tables. Motion follows the gesture: press to compress, drag to stretch, release to settle.`,
 
   doList: [
-    "Hero标题使用粗描边 -webkit-text-stroke: 3px #4ecdc4",
-    "Hero标题使用3D偏移阴影 text-shadow: 4px 4px 0 rgba(0,0,0,0.5)",
-    "Hero标题使用渐变填充 bg-gradient-to-r from-[#a855f7] via-[#ff2d92] to-[#a855f7]",
-    "副标题使用青色发光 text-shadow: 0 0 20px rgba(78, 205, 196, 0.8)",
-    "使用超高模糊值 backdrop-blur-[40px] 或 backdrop-blur-3xl",
-    "添加饱和度增强 backdrop-saturate-[1.8] 或 backdrop-saturate-200",
-    "使用彩虹渐变边框模拟光线折射效果",
-    "使用超大圆角 rounded-3xl 或 rounded-[24px]",
-    "使用流体动画 transition-all duration-500 ease-out",
+    "把浮动导航和主要控件作为玻璃层，正文和长列表放在实体表面。",
+    "让中心保留背景细节，把中性折射和约 1px 的白色高光集中在边缘。",
+    "过亮、复杂或变化大的背景上提高着色浓度，保持文字和焦点清晰。",
+    "短操作用胶囊，浮层用 22–28px 圆角；底栏内共用一块移动的选中胶囊。",
+    "按压约 110ms，释放在约 420ms 内归位；键盘和触屏都能操作。",
+    "提供静止和实体材质选项；不支持实时折射时保留色调、细边和可读性。",
   ],
-
   doListEn: [
-    "Hero titles use thick stroke -webkit-text-stroke: 3px #4ecdc4",
-    "Hero titles use 3D offset shadow text-shadow: 4px 4px 0 rgba(0,0,0,0.5)",
-    "Hero titles use gradient fill bg-gradient-to-r from-[#a855f7] via-[#ff2d92] to-[#a855f7]",
-    "Subtitles use cyan glow text-shadow: 0 0 20px rgba(78, 205, 196, 0.8)",
-    "Use ultra-high blur values backdrop-blur-[40px] or backdrop-blur-3xl",
-    "Add saturation enhancement backdrop-saturate-[1.8] or backdrop-saturate-200",
-    "Use rainbow gradient borders to simulate light refraction effects",
-    "Use extra-large rounded corners rounded-3xl or rounded-[24px]",
-    "Use fluid animations transition-all duration-500 ease-out",
+    "Place floating navigation and key controls in the glass layer; keep reading and long lists on solid surfaces.",
+    "Keep recognizable detail at the center, concentrating neutral refraction and a roughly 1px white glint near the rim.",
+    "Increase tint over bright, busy, or changing scenes to preserve readable labels and visible focus.",
+    "Use capsules for compact controls and 22–28px corners for overlays. Share one moving selection lens in the dock.",
+    "Compress in about 110ms and settle in about 420ms; support keyboard and touch.",
+    "Provide still and opaque alternatives; retain tint, a fine rim, and contrast when live refraction is unavailable.",
   ],
-
   dontList: [
-    "禁止使用普通白色标题（必须使用渐变+粗描边+3D阴影）",
-    "禁止省略3D偏移阴影（4px 4px是必须的）",
-    "禁止使用细描边（Hero必须3px，h1/h2至少2px）",
-    "禁止省略文字发光效果（缺少霓虹感）",
-    "禁止使用低模糊值 backdrop-blur-sm（太弱）",
-    "禁止省略饱和度增强（颜色会显得暗淡）",
-    "禁止使用直角或小圆角（rounded-none, rounded-sm）",
-    "禁止使用快速过渡（duration-100, duration-150）",
+    "避免霓虹标题、彩虹边框、发光描边和夸张的 RGB 分离；真实折射边缘允许微量色散。",
+    "不要给每个卡片或每个导航按钮单独加一层玻璃。",
+    "不要用重度模糊掩盖背景，也不要把 CSS 模糊描述成实时折射。",
+    "不要让内容文字变形或让动效循环；也不要用纯颜色区分选中、禁用与聚焦。",
+    "不要将清透白字控件直接放在高亮背景上，或把拖动作为唯一操作方式。",
   ],
-
   dontListEn: [
-    "No plain white titles (must use gradient + thick stroke + 3D shadow)",
-    "No omitting 3D offset shadow (4px 4px is mandatory)",
-    "No thin strokes (Hero must be 3px, h1/h2 at least 2px)",
-    "No omitting text glow effects (loses neon feel)",
-    "No low blur values backdrop-blur-sm (too weak)",
-    "No omitting saturation enhancement (colors will appear dull)",
-    "No right angles or small rounded corners (rounded-none, rounded-sm)",
-    "No fast transitions (duration-100, duration-150)",
+    "Avoid neon headlines, painted rainbow borders, glowing outlines, and exaggerated RGB separation; very subtle optical dispersion is allowed.",
+    "Do not give every card or every dock item its own layer of glass.",
+    "Do not erase the backdrop with heavy blur or describe CSS blur as live refraction.",
+    "Do not distort foreground text or loop motion; do not use color alone for selected, disabled, or focused states.",
+    "Do not put clear white-label controls over a bright backdrop without contrast support, or make dragging the only way to act.",
   ],
 
   components: {
     button: {
-      name: "按钮",
-      description: "流动玻璃按钮，具有彩虹边缘渐变和液态压缩效果",
-      code: `<button className="
-  group relative overflow-hidden px-8 py-4
-  bg-white/10 backdrop-blur-[40px] backdrop-saturate-[1.8]
-  rounded-[20px]
-  text-white font-medium
-  before:absolute before:inset-0 before:-z-10 before:rounded-[20px]
-  before:bg-gradient-to-r before:from-[#ff6b6b] before:via-[#4ecdc4] before:to-[#a855f7]
-  before:p-[1px]
-  after:absolute after:inset-[1px] after:-z-10 after:rounded-[19px] after:bg-white/10
-  border border-white/20
-  shadow-[0_8px_24px_rgba(0,0,0,0.12)]
-  hover:bg-white/15 hover:border-white/40
-  hover:shadow-[0_18px_42px_rgba(0,0,0,0.22)]
-  hover:scale-[1.02]
-  active:scale-95
-  transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)]
-">
-  <span className="pointer-events-none absolute inset-0 -translate-x-[130%] skew-x-[-20deg] bg-gradient-to-r from-transparent via-white/30 to-transparent transition-transform duration-700 ease-out group-hover:translate-x-[130%]" />
-  <span className="relative z-10">Spatial UI</span>
-</button>`,
+      name: "玻璃按钮",
+      nameEn: "Glass Button",
+      description: "胶囊形操作按钮，细高光，按下轻压，适合在深色场景上操作。",
+      descriptionEn: "A tinted capsule over a dark scene with a fine rim and tactile press.",
+      code: `import { LiquidGlass } from "@/components/liquid-glass/liquid-glass";
+
+<LiquidGlass appearance="clear" radius={999} className="inline-block text-white"
+  settings={{ refraction: 62, depth: 40, spread: 52, dispersion: 5, frost: 1.1, light: 72 }}
+  tint="rgba(20,43,54,0.64)">
+  <button type="button" className="liquid-button liquid-pressable">查看场景</button>
+</LiquidGlass>`,
     },
     card: {
-      name: "卡片",
-      description: "流动玻璃卡片，多层深度、彩虹边缘折射效果",
-      code: `<div className="
-  group relative overflow-hidden p-6 md:p-8
-  bg-white/10 backdrop-blur-[40px] backdrop-saturate-[1.8]
-  rounded-[24px]
-  border border-white/20
-  shadow-[0_12px_30px_rgba(0,0,0,0.18)]
-  before:absolute before:inset-0 before:rounded-[24px]
-  before:p-[1px] before:-z-10
-  before:bg-gradient-to-br before:from-[#ff6b6b] before:via-[#4ecdc4] before:to-[#a855f7]
-  after:absolute after:inset-[1px] after:rounded-[23px] after:-z-10
-  after:bg-gradient-to-b after:from-white/15 after:to-transparent
-  [box-shadow:inset_0_1px_0_rgba(255,255,255,0.4)]
-  hover:bg-white/15 hover:border-white/40
-  hover:-translate-y-2 hover:scale-[1.01]
-  hover:shadow-[0_28px_64px_rgba(0,0,0,0.35)]
-  transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)]
-">
-  <div className="pointer-events-none absolute -inset-1/2 bg-gradient-to-br from-[#ff2d55]/25 via-[#a855f7]/20 to-[#007aff]/25 blur-3xl opacity-45 transition-all duration-1000 ease-out group-hover:rotate-12 group-hover:scale-110" />
-  <div className="pointer-events-none absolute inset-0 -translate-x-[130%] skew-x-[-20deg] bg-gradient-to-r from-transparent via-white/20 to-transparent transition-transform duration-1000 ease-out group-hover:translate-x-[130%]" />
+      name: "玻璃信息卡",
+      nameEn: "Glass Info Card",
+      description: "短信息浮在清透玻璃上，背景只在边缘弯折；长篇正文使用实体阅读面板。",
+      descriptionEn: "A clear glass card for concise information, with refraction at the rim. Keep long-form reading on a solid surface.",
+      code: `import { LiquidGlass } from "@/components/liquid-glass/liquid-glass";
 
-  <div className="relative z-10">
-  <h3 className="text-xl font-semibold text-white mb-2">
-    Liquid Glass Card
-  </h3>
-  <p className="text-white/80">
-    多层玻璃体积感与流体折射叠加，营造空间计算般的前推深度。
-  </p>
-  </div>
-</div>`,
+<LiquidGlass appearance="clear" radius={24} className="max-w-72 text-[#17374c]"
+  settings={{ refraction: 62, depth: 40, spread: 52, dispersion: 5, frost: 1.1, light: 72 }}
+  tint="rgba(240,250,255,0.065)" contentClassName="min-h-36 px-5 py-4">
+  <article>
+    <h2 className="font-sans text-base font-semibold">冰河湖的光</h2>
+    <p className="mt-1 text-xs">冰岛 · 杰古沙龙冰河湖</p>
+  </article>
+</LiquidGlass>`,
     },
     input: {
-      name: "输入框",
-      description: "流动玻璃输入框，焦点时彩虹边框动画",
-      code: `<input
-  type="text"
-  placeholder="请输入..."
-  className="
-    w-full px-4 py-3
-    bg-white/10 backdrop-blur-[40px] backdrop-saturate-[1.8]
-    border border-white/20
-    rounded-[16px]
-    text-white placeholder-white/50
-    focus:outline-none
-    focus:bg-white/15
-    focus:border-transparent
-    focus:[box-shadow:0_0_0_2px_rgba(168,85,247,0.5),0_0_20px_rgba(168,85,247,0.2)]
-    transition-all duration-500 ease-out
-  "
-/>`,
+      name: "玻璃搜索",
+      nameEn: "Glass Search",
+      description: "着色胶囊保持输入文字清晰，始终提供可见标签和键盘焦点。",
+      descriptionEn: "Tinted search keeps entered text crisp and shows a visible label and keyboard focus.",
+      code: `import { LiquidGlass } from "@/components/liquid-glass/liquid-glass";
+
+<label className="liquid-field">
+  <span>搜索场景</span>
+  <LiquidGlass appearance="clear" radius={999} className="text-white"
+    settings={{ refraction: 62, depth: 40, spread: 52, dispersion: 5, frost: 1.1, light: 72 }}
+    tint="rgba(20,43,54,0.72)">
+    <input className="liquid-input" type="search" placeholder="例如：潮汐" />
+  </LiquidGlass>
+</label>`,
     },
     nav: {
-      name: "导航栏",
-      description: "固定顶部的流动玻璃导航栏，带彩虹底边",
-      code: `<nav className="
-  fixed top-0 left-0 right-0 z-50
-  px-6 py-4
-  bg-white/5 backdrop-blur-[40px] backdrop-saturate-[1.8]
-  border-b border-white/10
-  [box-shadow:0_1px_0_0_rgba(255,255,255,0.1),inset_0_-1px_0_0_rgba(168,85,247,0.2)]
-">
-  <div className="max-w-6xl mx-auto flex items-center justify-between">
-    <a href="/" className="text-white font-bold text-xl">
-      Logo
-    </a>
-    <div className="flex gap-6">
-      <a href="#" className="text-white/70 hover:text-white transition-colors duration-300">
-        Home
-      </a>
-      <a href="#" className="text-white/70 hover:text-white transition-colors duration-300">
-        About
-      </a>
-    </div>
-  </div>
-</nav>`,
+      name: "浮动底栏",
+      nameEn: "Floating Dock",
+      description: "共用一块清透玻璃，选中项有胶囊形轮廓和语义状态。",
+      descriptionEn: "One clear shell for navigation with a capsule and semantic current state.",
+      code: `import { LiquidGlass } from "@/components/liquid-glass/liquid-glass";
+
+<LiquidGlass appearance="clear" radius={999} className="inline-block text-white"
+  settings={{ refraction: 62, depth: 40, spread: 52, dispersion: 5, frost: 1.1, light: 72 }}
+  tint="rgba(20,43,54,0.64)">
+  <nav className="liquid-dock" aria-label="场景导航">
+    <a href="#tide" className="liquid-button" aria-current="page">潮汐</a>
+    <a href="#ridge" className="liquid-button">山脊</a>
+    <a href="#rain" className="liquid-button">细雨</a>
+  </nav>
+</LiquidGlass>`,
     },
     hero: {
-      name: "Hero 区块",
-      description: "带深色渐变背景的流动玻璃 Hero 展示区域",
-      code: `<section className="
-  min-h-screen
-  flex items-center justify-center
-  bg-gradient-to-br from-[#1a1a2e] via-[#16213e] to-[#0f0f23]
-  px-6
-">
-  <div className="
-    max-w-2xl mx-auto text-center
-    p-8 md:p-12
-    relative
-    bg-white/10 backdrop-blur-[40px] backdrop-saturate-[1.8]
-    rounded-[32px]
-    shadow-2xl shadow-black/20
-    before:absolute before:inset-0 before:rounded-[32px]
-    before:p-[1px] before:-z-10
-    before:bg-gradient-to-br before:from-[#ff6b6b] before:via-[#4ecdc4] before:to-[#a855f7]
-    after:absolute after:inset-[1px] after:rounded-[31px] after:-z-10
-    after:bg-gradient-to-b after:from-white/20 after:to-transparent
-  ">
-    <h1 className="text-4xl md:text-6xl font-bold text-white mb-6">
-      Liquid Glass
-    </h1>
-    <p className="text-lg text-white/80 mb-8">
-      Apple WWDC 2025 全新设计语言
-    </p>
-    <button className="
-      px-8 py-4
-      bg-white/15 backdrop-blur-md
-      rounded-full
-      text-white font-semibold
-      border border-white/30
-      hover:bg-white/25
-      hover:shadow-[0_0_30px_rgba(168,85,247,0.4)]
-      transition-all duration-500 ease-out
-    ">
-      Get Started
-    </button>
-  </div>
+      name: "光学场景",
+      nameEn: "Optical Scene",
+      description: "让等高线经过玻璃下面，保留清晰的标题和足够的控件对比度。",
+      descriptionEn: "Run contours underneath the glass and keep headings and control contrast sharp.",
+      code: `import { LiquidGlass } from "@/components/liquid-glass/liquid-glass";
+
+<section className="liquid-scene" id="tide">
+  <p className="liquid-kicker">光学场景</p>
+  <h1>潮汐</h1>
+  <LiquidGlass appearance="clear" radius={999} tint="rgba(20,43,54,0.64)">
+    <a className="liquid-button" href="#scenes">浏览场景</a>
+  </LiquidGlass>
 </section>`,
     },
     footer: {
-      name: "页脚",
-      description: "流动玻璃页脚，带有顶部彩虹边缘",
-      code: `<footer className="
-  px-6 py-8
-  bg-white/5 backdrop-blur-[40px] backdrop-saturate-[1.8]
-  border-t border-white/10
-  [box-shadow:0_-1px_0_0_rgba(255,255,255,0.1),inset_0_1px_0_0_rgba(168,85,247,0.2)]
-">
-  <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
-    <span className="text-white/60 text-sm">Liquid Glass Design</span>
-    <div className="flex gap-6">
-      <a href="#" className="text-white/70 hover:text-white transition-colors duration-300">
-        About
-      </a>
-      <a href="#" className="text-white/70 hover:text-white transition-colors duration-300">
-        Contact
-      </a>
-    </div>
-  </div>
+      name: "实体页脚",
+      nameEn: "Solid Footer",
+      description: "页脚使用与内容一致的实体材质，为信息留出清晰的收尾。",
+      descriptionEn: "Close the experience on the same solid material as the reading layer.",
+      code: `<footer className="liquid-content" id="scenes">
+  <p>场景资料库</p>
+  <a href="#tide">回到潮汐</a>
 </footer>`,
     },
   },
 
-  globalCss: `/* Liquid Glass 全局样式 */
-
-/* 流动玻璃变量 */
-:root {
-  --liquid-glass-bg: rgba(255, 255, 255, 0.1);
-  --liquid-glass-bg-hover: rgba(255, 255, 255, 0.15);
-  --liquid-glass-blur: 40px;
-  --liquid-glass-saturate: 1.8;
-  --liquid-glass-border-start: #ff6b6b;
-  --liquid-glass-border-mid: #4ecdc4;
-  --liquid-glass-border-end: #a855f7;
+  globalCss: `/* Liquid Glass fallback skin. Live rim refraction requires the shared LiquidGlass renderer. Use .liquid-system on the owning region. */
+.liquid-system {
+  --liquid-paper: #f3f2ed;
+  --liquid-ink: #202929;
+  --liquid-muted: #4c5d57;
+  --liquid-scene: #25414a;
+  --liquid-glint: rgb(255 255 255 / 62%);
+  --liquid-rim: rgb(255 255 255 / 25%);
+  --liquid-clear-fill: rgb(15 25 32 / 21%);
+  --liquid-tinted-fill: rgb(17 29 37 / 88%);
+  --liquid-opaque: #20343b;
+  --liquid-on-glass: #fff;
+  --liquid-selection: rgb(255 255 255 / 18%);
+  --liquid-placeholder: #d5e0e0;
+  --liquid-focus: #c7e4e5;
+  --liquid-focus-on-paper: #557b79;
+  --liquid-panel-radius: 24px;
+  --liquid-press: 110ms;
+  --liquid-release: 420ms cubic-bezier(.26, 1.55, .52, 1);
+  color: var(--liquid-ink);
+  background: var(--liquid-paper);
+  font-family: system-ui, sans-serif;
 }
 
-/* 彩虹边框渐变 */
-.liquid-glass-rainbow-border {
-  background: linear-gradient(
-    135deg,
-    var(--liquid-glass-border-start) 0%,
-    #ffd93d 25%,
-    #6bcb77 50%,
-    var(--liquid-glass-border-mid) 75%,
-    var(--liquid-glass-border-end) 100%
-  );
+.liquid-system [data-liquid-tone="light"] {
+  --liquid-clear-fill: rgb(243 242 237 / 68%);
+  --liquid-tinted-fill: rgb(243 242 237 / 92%);
+  --liquid-opaque: #f3f2ed;
+  --liquid-on-glass: #202929;
+  --liquid-selection: rgb(32 41 41 / 12%);
+  --liquid-placeholder: #4c5d57;
+  --liquid-focus: var(--liquid-focus-on-paper);
 }
 
-/* 基础流动玻璃类 */
+.liquid-scene {
+  display: grid;
+  justify-items: start;
+  align-content: center;
+  min-block-size: 18rem;
+  gap: 1rem;
+  padding: clamp(1.5rem, 5vw, 4rem);
+  border-radius: var(--liquid-panel-radius);
+  color: #fff;
+  background:
+    repeating-linear-gradient(163deg, transparent 0 19px, rgb(221 239 234 / 16%) 20px 21px),
+    linear-gradient(140deg, #18262e, var(--liquid-scene) 62%, #486d72);
+}
+
+.liquid-kicker {
+  margin: 0;
+  font-size: .75rem;
+  font-weight: 600;
+  letter-spacing: .08em;
+}
+
 .liquid-glass {
-  background: var(--liquid-glass-bg);
-  backdrop-filter: blur(var(--liquid-glass-blur)) saturate(var(--liquid-glass-saturate));
-  -webkit-backdrop-filter: blur(var(--liquid-glass-blur)) saturate(var(--liquid-glass-saturate));
-  border-radius: 24px;
+  --liquid-fill: var(--liquid-clear-fill);
+  --liquid-blur: blur(4px);
+  position: relative;
+  box-sizing: border-box;
+  border: 1px solid var(--liquid-rim);
+  border-radius: var(--liquid-panel-radius);
+  color: var(--liquid-on-glass);
+  background-color: var(--liquid-opaque);
+  box-shadow: inset 0 1px 0 var(--liquid-glint), 0 8px 24px -18px rgb(8 24 38 / 55%);
 }
 
-/* 顶部高光条 */
-.liquid-glass-highlight {
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4);
-  background-image: linear-gradient(
-    to bottom,
-    rgba(255, 255, 255, 0.2),
-    transparent 50%
-  );
+.liquid-glass--tinted {
+  --liquid-fill: var(--liquid-tinted-fill);
+  --liquid-blur: blur(12px);
 }
 
-/* 流体形变动画 */
-@keyframes liquid-morph {
-  0%, 100% { border-radius: 24px; }
-  25% { border-radius: 28px 20px 26px 22px; }
-  50% { border-radius: 22px 26px 20px 28px; }
-  75% { border-radius: 26px 22px 28px 20px; }
+@supports ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .liquid-glass {
+    background-color: var(--liquid-fill);
+    -webkit-backdrop-filter: var(--liquid-blur);
+    backdrop-filter: var(--liquid-blur);
+  }
 }
 
-.liquid-glass-morph {
-  animation: liquid-morph 8s ease-in-out infinite;
+/* Only opt in after verifying SVG backdrop support and attaching a live lens map. */
+.liquid-glass[data-liquid-optics="svg"] {
+  backdrop-filter: var(--liquid-refraction-filter, var(--liquid-blur));
 }
 
-/* 脉冲发光动画 */
-@keyframes liquid-glow {
-  0%, 100% { box-shadow: 0 0 20px rgba(168, 85, 247, 0.3); }
-  50% { box-shadow: 0 0 40px rgba(168, 85, 247, 0.5); }
+.liquid-content {
+  padding: clamp(1rem, 3vw, 2rem);
+  border: 1px solid #d9e0db;
+  border-radius: var(--liquid-panel-radius);
+  background: #fff;
+  color: var(--liquid-ink);
 }
 
-.liquid-glass-glow {
-  animation: liquid-glow 3s ease-in-out infinite;
+.liquid-dock {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  max-inline-size: 100%;
+  padding: 5px;
+  border-radius: 999px;
 }
 
-/* 彩虹边缘脉冲 */
-@keyframes rainbow-pulse {
-  0%, 100% { opacity: 0.6; }
-  50% { opacity: 1; }
+.liquid-button,
+.liquid-input {
+  box-sizing: border-box;
+  min-block-size: 44px;
+  border-radius: 999px;
+  padding: .625rem 1rem;
+  font: inherit;
 }
 
-.liquid-glass-rainbow-pulse {
-  animation: rainbow-pulse 2s ease-in-out infinite;
+.liquid-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: inherit;
+  text-decoration: none;
+  cursor: pointer;
 }
 
-/* 多层玻璃堆叠 */
-.liquid-glass-stack-1 { --liquid-glass-bg: rgba(255, 255, 255, 0.08); }
-.liquid-glass-stack-2 { --liquid-glass-bg: rgba(255, 255, 255, 0.12); }
-.liquid-glass-stack-3 { --liquid-glass-bg: rgba(255, 255, 255, 0.16); }
+.liquid-button[aria-current]:not([aria-current="false"]),
+.liquid-button[aria-pressed="true"] {
+  background: var(--liquid-selection);
+  box-shadow: inset 0 1px 0 var(--liquid-glint);
+}
 
-/* 深色渐变容器背景 */
-.liquid-glass-container {
-  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f0f23 100%);
-  min-height: 100vh;
+.liquid-pressable {
+  transition: transform var(--liquid-release);
+}
+
+.liquid-pressable:active:not(:disabled) {
+  transform: scale(.97, .92);
+  transition-duration: var(--liquid-press);
+}
+
+.liquid-button:disabled {
+  opacity: .55;
+  cursor: not-allowed;
+}
+
+.liquid-field {
+  display: grid;
+  gap: .375rem;
+}
+
+.liquid-input {
+  inline-size: 100%;
+}
+
+.liquid-input::placeholder {
+  color: var(--liquid-placeholder);
+  opacity: 1;
+}
+
+.liquid-content :focus-visible {
+  outline: 2px solid var(--liquid-focus-on-paper);
+  outline-offset: 3px;
+}
+
+.liquid-button:focus-visible,
+.liquid-input:focus-visible {
+  outline: 2px solid var(--liquid-focus);
+  outline-offset: 3px;
+}
+
+.liquid-system[data-liquid-transparency="reduce"] .liquid-glass {
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  background-color: var(--liquid-opaque);
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .liquid-system .liquid-glass {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    background-color: var(--liquid-opaque);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .liquid-system .liquid-pressable {
+    transition: none;
+  }
+  .liquid-system .liquid-pressable:active {
+    transform: none;
+  }
+}
+
+@media (forced-colors: active) {
+  .liquid-system .liquid-glass {
+    border: 1px solid ButtonText;
+    color: ButtonText;
+    background: ButtonFace;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    box-shadow: none;
+  }
+  .liquid-button[aria-current]:not([aria-current="false"]),
+  .liquid-button[aria-pressed="true"] {
+    outline: 1px solid Highlight;
+    outline-offset: -2px;
+  }
+  .liquid-button:focus-visible,
+  .liquid-input:focus-visible {
+    outline-color: Highlight;
+  }
 }`,
 
-  aiRules: `你是一个 Apple Liquid Glass（流动玻璃）设计风格的前端开发专家。这是 Apple WWDC 2025 发布的全新设计语言。生成的所有代码必须严格遵守以下约束：
+  aiRules: `# 液态玻璃 · 实现规范
 
-## 字体设计（最重要！）
+## 材质与层级
+- 先做内容层，再把玻璃放在操作层。阅读内容用纸白 #f3f2ed 或白色，标题和正文用墨色 #202929。
+- 用深青灰 #25414a 的等高线、照片或滚动内容给玻璃提供可辨认的纹理。玻璃跟随场景色；不在材质本身涂彩虹。
+- 清透玻璃用在经过对比度检查的深色媒体上，例如浮动底栏和单个工具按钮。中心低模糊，边缘约 1px 白色方向性高光。
+- 着色玻璃用在搜索、菜单、设置面板等带文字的操作层，先保证清楚再保留少量背景。
+- 正文、卡片内容、密集列表和表格保持实体表面。大面积玻璃会抹平内容层级。
 
-### Hero 标题 - 必须使用以下样式：
-\`\`\`jsx
-<h1
-  className="font-black bg-gradient-to-r from-[#a855f7] via-[#ff2d92] to-[#a855f7] bg-clip-text"
-  style={{
-    WebkitTextStroke: '3px #4ecdc4',
-    WebkitTextFillColor: 'transparent',
-    textShadow: '4px 4px 0 rgba(0,0,0,0.5), 0 0 25px rgba(78,205,196,0.6), 0 0 50px rgba(168,85,247,0.4)',
-    filter: 'drop-shadow(0 0 15px rgba(78,205,196,0.4))',
-  }}
->
-  标题文字
-</h1>
-\`\`\`
+## 光学实现
+- 在支持的 Chromium 浏览器，必须默认启用真实 SVG 背景位移；只用半透明背景和 blur 不构成液态玻璃。位移图由曲面法线和 Snell 折射曲线生成，在中心完全中性，靠窄边带弯折。允许极轻的 RGB 色散。仅处理背景，把可交互子元素留在滤镜之外。
+- 只有检测到可用的 SVG 背景滤镜且贴图准备好才启用折射。浏览器只支持模糊时，清透层可用约 4px，着色层约 12px；完全无滤镜时用实体填色。
+- 先准备不透明底色和可靠文字对比，再逐步增强材质。用直线网格和深浅背景检查折射，避免以彩色边框模拟。
 
-### 副标题 - 青色发光白色文字：
-\`\`\`jsx
-<h2
-  className="font-bold text-white"
-  style={{
-    textShadow: '0 0 25px rgba(78,205,196,0.9), 0 0 50px rgba(78,205,196,0.5), 3px 3px 0 rgba(0,0,0,0.4)',
-  }}
->
-  副标题
-</h2>
-\`\`\`
+## 组件与交互
+- 底栏使用一个共享胶囊容器，按钮用真实导航或可按压语义。选中态除颜色外有轮廓或位置；拖拽时选中胶囊横向拉伸，松手后落到目标，点按和键盘也能切换。
+- 按钮和搜索用胶囊形状，面板约 22–28px 圆角。按下约 110ms 轻压，释放约 420ms 归位。留出至少 44px 触控目标。
+- 搜索和输入保留可见标签。弹层能用 Escape 关闭并把焦点交回触发按钮；禁用态不可触发。
+- 对比度随背景检查，普通文本至少 4.5:1。焦点环可辨，减少动态效果时取消拉伸和弹跳；减少透明度或强制颜色时使用实体底色。
+- 展示页用真实背景切换、折射调节和同位置清透/磨砂对比来说明材质。移动透镜只更新位置，不重建位移图。拖动取消、失去捕获或 Escape 时恢复起点，方向键和居中按钮提供等价操作。不要用没有接通音频的播放器或占位功能填充展示。
+- 不使用霓虹标题、绘制的彩虹边、整页重模糊、循环抖动、发光文字或重复叠滤镜。
+- CSS tokens/recipes 仅是降级外观，必须搭配共享 LiquidGlass 渲染器。参考固定实现：rdev/liquid-glass-react@ac48eab18d1f7f444ae30002d240cae29c863a21；9und30/glassy-liquid@2361eb1f03979703db988180028ccc6d5fc23fe5；shuding/liquid-glass@a2d2e847f793430e3409a52927af815a23f4d372。复制或改编须保留完整 MIT 署名。`,
 
-### h2/h3 标题 - 较细描边(2px)：
-\`\`\`jsx
-<h2
-  style={{
-    WebkitTextStroke: '2px #4ecdc4',
-    textShadow: '3px 3px 0 rgba(0,0,0,0.4), 0 0 15px rgba(78,205,196,0.5)',
-  }}
->
-  标题
-</h2>
-\`\`\`
+  aiRulesEn: `# Liquid Glass · Implementation Rules
 
-## 绝对禁止
+## Materials and Layers
+- Build the content layer first, then float glass where people act. Set reading content in ink #202929 on paper #f3f2ed or white.
+- Give the glass recognizable detail: a #25414a contour scene, a photograph, or scrolling content. The glass borrows the scene color.
+- Use clear glass on compact controls over tested, contrast-safe media. Keep the center lightly blurred and use a roughly 1px directional white glint near the rim.
+- Use tinted glass for labeled search, menus, and settings. Preserve text contrast before increasing transparency.
+- Keep articles, data, lists, and reading cards on solid surfaces. Do not coat every container in glass.
 
-- 使用普通白色标题（必须有描边+3D阴影+发光）
-- 使用细描边（Hero必须3px，h2至少2px）
-- 省略3D偏移阴影（4px 4px是必须的）
-- 使用低模糊值 backdrop-blur-sm, backdrop-blur（太弱）
-- 省略饱和度增强 backdrop-saturate
-- 使用直角或小圆角 rounded-none, rounded-sm, rounded
-- 使用单一颜色边框（应使用彩虹渐变）
-- 使用快速过渡 duration-100, duration-150
-- 使用纯色不透明背景 bg-white, bg-black
-- 使用浅色背景作为容器底层（应使用深色渐变）
+## Optical Implementation
+- On compatible Chromium engines, real SVG backdrop displacement is required by default; translucent fill plus blur alone is not Liquid Glass. Generate a narrow curved rim from surface normals and a Snell refraction profile, with a fully neutral center. Subtle RGB dispersion is allowed. Filter the backdrop only and keep the interactive foreground sharp.
+- Enable refraction only after checking support and preparing the map. Approximate the material with about 4px blur for clear and 12px for tinted where SVG refraction does not work. Use solid fill when no backdrop filter is available.
+- Set readable opaque colors first and enhance progressively. Test with straight lines and both light and dark backgrounds. A colorful outline is not refraction.
 
-## 必须遵守
-
-- Hero标题：3px青色描边 + 紫色渐变填充 + 3D阴影(4px 4px) + 发光
-- 副标题：白色 + 青色发光阴影
-- 超高模糊值 backdrop-blur-[40px], backdrop-blur-3xl
-- 高饱和度增强 backdrop-saturate-[1.8], backdrop-saturate-200
-- 彩虹渐变边框 from-[#ff6b6b] via-[#4ecdc4] to-[#a855f7]
-- 顶部高光渐变 from-white/20 to-transparent
-- 超大圆角 rounded-3xl, rounded-[24px]
-- 流体过渡 transition-all duration-500 ease-out
-- 半透明背景 bg-white/10 到 bg-white/15
-- 多层堆叠使用 z-index 和不同透明度
-
-## 彩虹配色
-
-边缘折射渐变：
-- 红: #ff6b6b
-- 橙: #ffd93d
-- 绿: #6bcb77
-- 青: #4ecdc4
-- 紫: #a855f7
-
-背景推荐：
-- 深色渐变: from-[#1a1a2e] via-[#16213e] to-[#0f0f23]
-- Apple 蓝: #007AFF
-- Apple 粉: #FF2D55
-
-## 层级结构
-
-1. 底层：深色渐变背景
-2. 中层：流动玻璃容器（backdrop-blur-[40px] backdrop-saturate-[1.8]）
-3. 边框层：彩虹渐变伪元素 before:
-4. 高光层：顶部渐变伪元素 after:
-5. 顶层：内容元素
-
-## 核心特效
-
-1. 彩虹边框：使用 before 伪元素 + 渐变背景 + p-[1px]
-2. 顶部高光：使用 after 伪元素 + 从白色渐变到透明
-3. 液态动画：animation: liquid-morph 8s ease-in-out infinite
-4. 发光效果：hover:shadow-[0_0_30px_rgba(168,85,247,0.4)]
-5. 压缩反馈：active:scale-[0.98]
-
-## Animation & Interaction Rules
-
-- Fluid Refraction: 通过滑动高光层与内部渐变云团模拟流体折射，不仅模糊，还要有“流动中的光”。
-- Spatial Push: hover 需有轻微前推（scale 约 1.01-1.02）并同步扩散阴影，建议使用 cubic-bezier 物理缓动。
-- Specular Edges: 交互时边框亮度从 border-white/20 提升至 /40，强化玻璃倒角高光感。
-- Silky Squeeze: active 使用柔软压缩（active:scale-95~98）形成硅胶般触感，避免硬切缩放。
-
-## 自检
-
-每次生成代码后检查：
-1. Hero标题有3px青色描边和3D偏移阴影
-2. 副标题有青色发光效果
-3. 有深色渐变背景容器
-4. 有 backdrop-blur-[40px] 或 backdrop-blur-3xl
-5. 有 backdrop-saturate-[1.8] 或更高
-6. 有彩虹渐变边框
-7. 有顶部高光条
-8. 使用 rounded-[24px] 或更大圆角
-9. 过渡时间 >= 500ms
-10. 文字可读性良好`,
-
-  aiRulesEn: `You are an Apple Liquid Glass design style frontend development expert. This is Apple's brand-new design language released at WWDC 2025. All generated code must strictly follow these constraints:
-
-## Typography Design (Most Important!)
-
-### Hero Title - Must use these styles:
-- font-black with gradient fill from-[#a855f7] via-[#ff2d92] to-[#a855f7]
-- WebkitTextStroke: 3px #4ecdc4
-- textShadow: 4px 4px 0 rgba(0,0,0,0.5), 0 0 25px rgba(78,205,196,0.6), 0 0 50px rgba(168,85,247,0.4)
-- filter: drop-shadow(0 0 15px rgba(78,205,196,0.4))
-
-### Subtitle - Cyan glow white text:
-- font-bold text-white
-- textShadow: 0 0 25px rgba(78,205,196,0.9), 0 0 50px rgba(78,205,196,0.5), 3px 3px 0 rgba(0,0,0,0.4)
-
-### h2/h3 Titles - Thinner stroke (2px):
-- WebkitTextStroke: 2px #4ecdc4
-- textShadow: 3px 3px 0 rgba(0,0,0,0.4), 0 0 15px rgba(78,205,196,0.5)
-
-## Absolutely Forbidden
-
-- Plain white titles (must have stroke + 3D shadow + glow)
-- Thin strokes (Hero must be 3px, h2 at least 2px)
-- Omitting 3D offset shadow (4px 4px is mandatory)
-- Low blur values backdrop-blur-sm, backdrop-blur (too weak)
-- Omitting saturation enhancement backdrop-saturate
-- Right angles or small rounded corners rounded-none, rounded-sm, rounded
-- Single-color borders (should use rainbow gradients)
-- Fast transitions duration-100, duration-150
-- Solid opaque backgrounds bg-white, bg-black
-- Light backgrounds as container base layer (should use dark gradients)
-
-## Must Follow
-
-- Hero title: 3px cyan stroke + purple gradient fill + 3D shadow (4px 4px) + glow
-- Subtitle: white + cyan glow shadow
-- Ultra-high blur backdrop-blur-[40px], backdrop-blur-3xl
-- High saturation enhancement backdrop-saturate-[1.8], backdrop-saturate-200
-- Rainbow gradient borders from-[#ff6b6b] via-[#4ecdc4] to-[#a855f7]
-- Top highlight gradient from-white/20 to-transparent
-- Extra-large rounded corners rounded-3xl, rounded-[24px]
-- Fluid transitions transition-all duration-500 ease-out
-- Semi-transparent backgrounds bg-white/10 to bg-white/15
-- Multi-layer stacking using z-index and different opacities
-
-## Rainbow Colors
-
-Edge refraction gradient:
-- Red: #ff6b6b
-- Orange: #ffd93d
-- Green: #6bcb77
-- Cyan: #4ecdc4
-- Purple: #a855f7
-
-Recommended backgrounds:
-- Dark gradient: from-[#1a1a2e] via-[#16213e] to-[#0f0f23]
-- Apple Blue: #007AFF
-- Apple Pink: #FF2D55
-
-## Layer Structure
-
-1. Base: Dark gradient background
-2. Middle: Liquid glass container (backdrop-blur-[40px] backdrop-saturate-[1.8])
-3. Border layer: Rainbow gradient pseudo-element before:
-4. Highlight layer: Top gradient pseudo-element after:
-5. Top: Content elements
-
-## Core Effects
-
-1. Rainbow border: before pseudo-element + gradient background + p-[1px]
-2. Top highlight: after pseudo-element + white-to-transparent gradient
-3. Liquid animation: animation: liquid-morph 8s ease-in-out infinite
-4. Glow effect: hover:shadow-[0_0_30px_rgba(168,85,247,0.4)]
-5. Compression feedback: active:scale-[0.98]
-
-## Animation & Interaction Rules
-
-- Fluid Refraction: Simulate fluid refraction through sliding highlight layers and internal gradient clouds, not just blur but "light in motion."
-- Spatial Push: Hover needs slight forward push (scale about 1.01-1.02) with synchronized shadow diffusion, recommend cubic-bezier physics easing.
-- Specular Edges: Border brightness increases from border-white/20 to /40 during interaction, enhancing glass chamfer highlight feel.
-- Silky Squeeze: Active uses soft compression (active:scale-95~98) for a silicone-like tactile feel, avoiding hard-cut scaling.
-
-## Self-Check
-
-After each code generation, verify:
-1. Hero title has 3px cyan stroke and 3D offset shadow
-2. Subtitle has cyan glow effect
-3. Has dark gradient background container
-4. Has backdrop-blur-[40px] or backdrop-blur-3xl
-5. Has backdrop-saturate-[1.8] or higher
-6. Has rainbow gradient border
-7. Has top highlight bar
-8. Uses rounded-[24px] or larger corners
-9. Transition time >= 500ms
-10. Text readability is good`,
+## Components and Interaction
+- Float one capsule shell around dock items. Use semantic navigation or pressed buttons, and make selection visible in shape or position. Stretch the shared lens along the drag and settle on release; offer click and keyboard selection too.
+- Use capsules for short controls and inputs and 22–28px corners for panels. Compress in about 110ms and settle in about 420ms. Allow at least 44px for touch targets.
+- Keep visible input labels. Close overlays with Escape and return focus to the trigger; disabled actions must not fire.
+- Check text against the actual backdrop (at least 4.5:1 for normal text). Give focus a visible outline. Remove stretch and bounce in reduced-motion mode and use solid fills for reduced transparency or forced colors.
+- Demonstrate the material through working background choices, refraction strength, and a clear/frost comparison at the same lens position. Move the lens without regenerating its map. Cancelled gestures, lost capture, and Escape restore the starting position; offer arrow keys and a center action. Do not pad the showcase with unconnected playback or placeholder features.
+- Avoid neon headlines, painted rainbow rims, page-wide heavy blur, idle wobble, glowing type, and redundant layered filters.
+- CSS tokens/recipes are fallback skins and must be paired with the shared LiquidGlass renderer. Pinned references: rdev/liquid-glass-react@ac48eab18d1f7f444ae30002d240cae29c863a21; 9und30/glassy-liquid@2361eb1f03979703db988180028ccc6d5fc23fe5; shuding/liquid-glass@a2d2e847f793430e3409a52927af815a23f4d372. Retain full MIT notices when copying or adapting.`,
 
   examplePrompts: [
     {
-      title: "Apple 风格控制中心",
-      titleEn: "Apple-style Control Center",
-      description: "iOS 风格的流动玻璃控制中心",
-      descriptionEn: "iOS-style liquid glass control center",
-      prompt: `用 Liquid Glass 风格创建一个 iOS 风格控制中心，要求：
-
-## 核心效果
-- 背景：深色渐变 bg-gradient-to-br from-[#1a1a2e] via-[#16213e] to-[#0f0f23]
-- 主面板：bg-white/10 backdrop-blur-[40px] backdrop-saturate-[1.8] rounded-[24px]
-- 彩虹边框：使用 before 伪元素实现渐变边框
-- 顶部渐变：使用 after 伪元素实现高光
-
-## 控制模块
-- 网格布局：2x4 圆角正方形网格
-- 每个磁贴：bg-white/10 rounded-[16px] 带彩虹边框
-- 激活状态：bg-[#007AFF]/40 shadow-[0_0_20px_rgba(0,122,255,0.4)]
-
-## 交互
-- 开关控件：胶囊形状，开启时带发光
-- 滑块控件：流动玻璃轨道，圆形滑块带发光
-- 所有过渡：transition-all duration-500 ease-out`,
+      title: "清透材质体验",
+      titleEn: "Clear Material Experience",
+      description: "在同一幅画面上移动透镜，比较真实折射和磨砂。",
+      descriptionEn: "Move a lens across one scene and compare refraction with frost.",
+      prompt: "设计一个液态玻璃材质体验页。用有明确许可的明亮照片承托一枚可移动的透明透镜，提供照片、等高线、网格三种真实背景切换，以及同一位置的清透/磨砂对比和折射强度调节。内容文字保持锐利。拖动取消或 Escape 恢复起点，方向键可移动、按钮可居中。适配深浅主题、触屏、减少运动和减少透明度；不支持 SVG 背景折射时明确显示磨砂降级。不要添加占位播放器。",
+      promptEn: "Build a Liquid Glass material experience. Place one movable clear lens above a licensed bright photograph. Offer working photo, contour and grid backgrounds, a clear/frost comparison at the same position, and refraction strength. Keep foreground text sharp. Cancel or Escape restores the drag start; arrow keys move and a button centers the lens. Support light/dark themes, touch, reduced motion and reduced transparency, and label the frosted fallback when SVG backdrop refraction is unavailable. Do not add a placeholder player.",
     },
     {
-      title: "流动玻璃音乐播放器",
-      titleEn: "Liquid Glass Music Player",
-      description: "Apple Music 风格播放界面",
-      descriptionEn: "Apple Music style player interface",
-      prompt: `用 Liquid Glass 风格设计一个音乐播放器界面，要求：
-
-## 背景层
-- 当前播放歌曲的模糊封面作为背景
-- 叠加深色渐变：bg-gradient-to-b from-black/40 via-transparent to-black/60
-
-## 播放卡片（多层玻璃）
-- 外层容器：bg-white/8 backdrop-blur-[40px] backdrop-saturate-[1.8] rounded-[32px]
-- 彩虹边框：before 伪元素实现
-- 内层面板：bg-white/12 rounded-[28px] p-6
-
-## 控件设计
-- 专辑封面：rounded-[20px] shadow-2xl 带发光边框
-- 播放按钮：w-16 h-16 bg-white/15 rounded-full 带脉冲发光动画
-- 上下曲按钮：w-12 h-12 bg-white/10 rounded-full
-- 进度条：h-1 bg-white/20 rounded-full，滑块 w-4 h-4 带发光
-
-## 动画
-- 专辑封面：hover 时微微放大和发光
-- 播放按钮：按下时液态压缩效果
-- 进度条滑块：拖动时发光增强`,
+      title: "快速控制面板",
+      titleEn: "Quick Controls",
+      description: "可读的设置浮层和独立的滑块、开关。",
+      descriptionEn: "A readable settings overlay with sliders and toggles.",
+      prompt: "用深青灰光学场景承托着色控制面板。包含亮度、音量、两项切换和关闭按钮。白色细边只在光照方向突出；旋钮拖动时增强触感，正文和数值始终清楚。Escape 关闭并恢复焦点；背景太亮时提高面板不透明度。",
+      promptEn: "Place a tinted quick-control panel above a deep teal optical scene. Include brightness, volume, two toggles, and Close. Put the finest rim light on the lit edge. Add feedback while dragging the thumb without compromising label contrast. Escape closes the panel and restores focus; increase opacity over bright scenes.",
     },
     {
-      title: "流动玻璃登录页面",
-      titleEn: "Liquid Glass Login Page",
-      description: "现代登录表单设计",
-      descriptionEn: "Modern login form design",
-      prompt: `用 Liquid Glass 风格创建一个登录页面，要求：
-
-## 全屏背景
-- 深色渐变：bg-gradient-to-br from-[#1a1a2e] via-[#16213e] to-[#0f0f23]
-- 添加装饰性彩虹光斑元素
-
-## 登录卡片
-- 居中容器：max-w-md mx-auto
-- 流动玻璃：bg-white/10 backdrop-blur-[40px] backdrop-saturate-[1.8]
-- 圆角：rounded-[32px]
-- 彩虹边框：before 伪元素
-- 顶部高光：after 伪元素
-
-## 表单元素
-- 输入框：bg-white/10 backdrop-blur-xl border border-white/20 rounded-[16px]
-- 焦点态：focus:bg-white/15 focus:shadow-[0_0_0_2px_rgba(168,85,247,0.5)]
-- 占位符：placeholder:text-white/50
-
-## 按钮
-- 主按钮：彩虹渐变边框 + 发光 hover 效果
-- 次按钮：bg-transparent border border-white/30 text-white/80
-- 社交登录：bg-white/10 hover:bg-white/15 rounded-[12px]
-
-## 额外元素
-- Logo：text-white text-2xl font-bold 带发光效果
-- 分隔线：border-t border-white/20 my-6
-- 链接：text-white/70 hover:text-white`,
+      title: "图册与悬浮搜索",
+      titleEn: "Gallery with Floating Search",
+      description: "照片保持清晰，导航和搜索用适当透明度的玻璃。",
+      descriptionEn: "Crisp photos with glass reserved for navigation and search.",
+      prompt: "设计一套作品图册。照片和说明保持实体材质，把搜索入口与分类切换放在下方悬浮操作层。分类按钮共用一块清玻璃，带文字的搜索和筛选弹层使用着色玻璃。提供无结果、清空、聚焦和回到触发器的状态。",
+      promptEn: "Design a portfolio gallery. Keep photos and captions solid and sharp; float search and category navigation below. Group categories in one clear shell, use tinted glass for labeled search and filters, and include empty, clear, focus, and focus-return states.",
     },
   ],
 };

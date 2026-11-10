@@ -1,0 +1,48 @@
+.surface {
+  --liquid-solid-fill: #233b42;
+}
+
+.rim {
+  position: absolute;
+  inset: 0;
+  padding: 1px;
+  pointer-events: none;
+  background: conic-gradient(from var(--liquid-light-angle, -45deg), rgb(255 255 255 / 95%), rgb(255 255 255 / 8%) 20%, rgb(255 255 255 / 12%) 44%, rgb(255 255 255 / 60%) 56%, rgb(255 255 255 / 5%) 74%, rgb(255 255 255 / 95%));
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask-composite: exclude;
+}
+
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .backdrop {
+    background: var(--liquid-solid-fill) !important;
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .backdrop {
+    background: var(--liquid-solid-fill) !important;
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+  }
+}
+
+@media (forced-colors: active) {
+  .surface {
+    color: CanvasText !important;
+    box-shadow: none !important;
+  }
+
+  .backdrop {
+    border: 1px solid CanvasText;
+    background: Canvas !important;
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+  }
+
+  .highlight,
+  .rim {
+    display: none;
+  }
+}
