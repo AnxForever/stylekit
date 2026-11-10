@@ -89,13 +89,15 @@ test.describe("approved preview visual baseline", () => {
     const catalogItems = page.locator(APPROVED_CATALOG_SELECTOR);
     await expect(catalogItems).toHaveCount(approvedPreviews.count);
 
-    const slugs = recordingSlug ? [recordingSlug] : approvedPreviews.slugs;
-    for (const slug of slugs) {
+    for (const slug of approvedPreviews.slugs) {
       const item = page.locator(`[data-catalog-style-slug="${slug}"]`);
       const cover = item.locator("div.relative.overflow-hidden").first();
 
       await cover.scrollIntoViewIfNeeded();
       await expect(cover.locator('[data-preview-ready="true"]')).toBeVisible();
+      // Keep the same scroll and lazy-loading history as a full replay. A
+      // direct jump to the target can change fractional mobile crop bounds.
+      if (recordingSlug && slug !== recordingSlug) continue;
       await expect.soft(cover, slug).toHaveScreenshot(`${slug}-cover.png`, {
         animations: "disabled",
         caret: "hide",
