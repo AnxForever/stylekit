@@ -1,12 +1,16 @@
 {
-  "baselineCommit": "f31d4eb8",
+  "baselineCommit": "217dfcb6",
   "algorithm": "sha256",
   "files": {
     "components/home/featured-carousel.tsx": "8d74ccd23b6af86b4c79c293bd382e166711a6a50fefc98a70b48b97bd084cfc",
     "components/home/home-style-card.tsx": "e0529494ea3d3269fa8270ffb2fed3e42dd0d48d801a4976381e796497028991",
     "components/home/style-card.tsx": "bc4ed4d99a8f4fc5af21582a5408758aa78f106cc1c4ffb037b85a4dfee3b66a",
+    "components/liquid-glass/liquid-glass.module.css": "94a3c878bbc16e8f7429446104609db7df095987191137127a50390d9d5cc065",
+    "components/liquid-glass/liquid-glass.tsx": "dd79ff19d9953596ad0021ac3a21c934c9258f60b122a6fb156e73bd5b1a4f82",
     "components/style-preview-switcher.tsx": "feed9300e9ba3bc35df5967d36d25fd1d71dea2f05685d7608fdf82cba499d12",
     "components/style-preview/style-cover-preview.tsx": "8d7d9a11a08acd2f64696f7e688e33c8ecb7ee03f4f22994fadae4293819a3e6",
+    "lib/liquid-glass/index.ts": "e4520792bc831fe121b4386a728ba910fe92e1119ce2accd1de95f0349cab9aa",
+    "lib/liquid-glass/optics.ts": "fef453f0bd71dd45826e586b764551060f3be7581657fa784856742ddce8a200",
     "lib/style-components.tsx": "2ee32bee110d37e2d62191cc1b036f5579f99ba4c1c10524a46b4e24fbaa53f2",
     "lib/style-preview/delivery.ts": "85014f17448abf56d7e3349291f4b5b7c9a942a47f3c3b5ac851fc42f64a8934",
     "lib/style-preview/registry.ts": "4911c069e91ccd9d4ea77c749208ce4d63239363f99afb23a2699f7554df8999",
@@ -80,7 +84,7 @@
     "lib/style-preview/styles/latex-paper.tsx": "bd9a569b92ad41add554a44dc8c729e79a6b8be099ccfde5468f1c0f443af7a7",
     "lib/style-preview/styles/launch-keynote.tsx": "f36704058e5da756476328da7434f245acc479bff6758e4006d69c3c30e64803",
     "lib/style-preview/styles/linear-style.tsx": "d99bdaf248a800bbb4dac9d80a0539903f1fc52938f6b4a4f43c0bfa50ba26cd",
-    "lib/style-preview/styles/liquid-glass.tsx": "a46cfe93e6d201e22f65fac2700294fd3eaa502083073bec1d7594807f3c47fe",
+    "lib/style-preview/styles/liquid-glass.tsx": "5fa706f6e391c0599b6cf2279c814188736b2d84bf14a993ef84e40642a5ec0f",
     "lib/style-preview/styles/luxe-lookbook.tsx": "8e37512d9ebe684e74951a9389f0d1ac1550e64cb150bf3ac7f7849ac117ff40",
     "lib/style-preview/styles/luxury-retail.tsx": "c118017246738b5d08dc633afbf6e0b54e2d5bbfd5f8d17d376753a1e9d59327",
     "lib/style-preview/styles/macos-vibrancy.tsx": "ce56b04e750d909ddd0fdaf3ef4b91e0b984c18660f6e0eda87887ffd1f9d2e8",
@@ -156,33 +160,7 @@
     "lib/style-preview/styles/z-pattern-layout.tsx": "45735dc9271bc545c30dfa994303ae911adac343307c522808962de987face78",
     "lib/style-preview/styles/zen-garden.tsx": "b10338b2e55a267e8be31f8e6bcb458092aabbab3b2aee39f6aef76ec884c5d8",
     "lib/style-preview/types.ts": "38a0dd83e6f52a5e903d1c2f5735bf2bdbb843b65d6ba8ee42aafd1509b41348",
-    "lib/styles/meta-registry.ts": "a19017d9cc1cbc9ee3209cdfff82712419b3d30ca386a6f9179f8d0939f6993e"
-  },
-  "nonVisualSourceUpdates": [
-    {
-      "path": "components/home/style-card.tsx",
-      "commit": "10ed468d",
-      "reason": "Share the catalog return-URL storage key; rendered JSX is unchanged.",
-      "previousHash": "8f48f6f1a228ab2c381a173a01f9240f4e266276e3fcc47c677eeacbed590b9f",
-      "currentHash": "bc4ed4d99a8f4fc5af21582a5408758aa78f106cc1c4ffb037b85a4dfee3b66a"
-    }
-  ],
-  "reviewedMetadataCorrections": [
-    {
-      "path": "lib/styles/meta-registry.ts",
-      "commit": "78c27a61",
-      "scope": "editorial.colors only",
-      "reason": "Match the existing canonical Editorial palette. Approved cover renderer and shared Corporate Clean card fixtures are unchanged.",
-      "previousHash": "792e3358327b525d597174e06dca08f1ea474b4da27893a4160a6f0b4bb26342",
-      "currentHash": "5ba78576b558c66f6fb11289ac6ca1e2dede176d3a1983869b6e2bcbf4a63b31"
-    },
-    {
-      "path": "lib/styles/meta-registry.ts",
-      "reviewedOn": "2026-11-09",
-      "scope": "glassmorphism.colors only",
-      "reason": "Match the existing rich definition, canonical nocturne palette and approved glass preview. Cover renderers, shared Corporate Clean fixtures and stored PNG baselines are unchanged.",
-      "previousHash": "5ba78576b558c66f6fb11289ac6ca1e2dede176d3a1983869b6e2bcbf4a63b31",
-      "currentHash": "13c36d49a8387ab83e47902cd91e145193597d7a00ef76adcc83577a3d04f484"
-    }
-  ]
+    "lib/styles/meta-registry.ts": "e78bdf5b0f0d8f94eb7c86539b14812dea6b631d979fe7065cac371c330dc83d",
+    "public/styles/liquid-glass/glacier.webp": "e7d34c4c4e35fc9a2d7bc6e818f4c7d05c605dac262364a4635c48028b5d646f"
+  }
 }

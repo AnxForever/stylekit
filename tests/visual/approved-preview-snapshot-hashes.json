@@ -1,5 +1,5 @@
 {
-  "baselineCommit": "f31d4eb8",
+  "baselineCommit": "217dfcb6",
   "algorithm": "sha256",
   "count": 296,
   "files": {
@@ -143,8 +143,8 @@
     "launch-keynote-cover-mobile-chrome-linux.png": "dd308dc5cf04c5bb971c410ee7c43060cdafcfd3aa1b62c2a06bab18d9a014b3",
     "linear-style-cover-chromium-linux.png": "5309e7cdf9e7b24d3d6eddb2d5bcab7df8e0c9834197185173f35ee92dfed2b8",
     "linear-style-cover-mobile-chrome-linux.png": "62b7b1d9781bf646cd9ef09f3936a149f0b6f7a3de1d79ea6fea31866635b12a",
-    "liquid-glass-cover-chromium-linux.png": "872de6cde5fadaa71bbc6228f11f1875d955697471f615647ccf23abaee44242",
-    "liquid-glass-cover-mobile-chrome-linux.png": "f6e0bfd155580e41edf73db1972f6778923d0665a81cfd730aaa71ffe69d7cdd",
+    "liquid-glass-cover-chromium-linux.png": "5604519ea1730d5435af3430be86d33c490bd6740f3eda64710a45679777e13b",
+    "liquid-glass-cover-mobile-chrome-linux.png": "99c523ae71a3b7bf75ee8a458e94c921c2a5e2406f6280f8c7f997caa2fb5d2a",
     "luxe-lookbook-cover-chromium-linux.png": "80bff8784fb6d80a67157dcd80b33bd1512005c1e5d24149711653b24b731d3a",
     "luxe-lookbook-cover-mobile-chrome-linux.png": "764a514cc1902fe266705caa01fc517a43bc4a86b77affde79a971063c05f010",
     "luxury-retail-cover-chromium-linux.png": "ba67c74ae5089a068ef9fa9a8145307e6ebfce98fca3479e9abacec4aea619d1",
