@@ -39,6 +39,7 @@ import type { StyleTokens } from "@/lib/styles/tokens";
 import type { StyleQuality, CapabilityStatus } from "@/lib/styles/quality";
 import { getImplementationBrief, type ImplementationBrief } from "@/lib/implementation-brief";
 import { renderRecipe, type ComponentRecipe } from "@/lib/recipes";
+import { withRecipeImplementationNote } from "@/lib/recipes/implementation-note";
 
 export type DataOrigin = "live" | "bundled";
 
@@ -790,7 +791,15 @@ export async function getComponentRecipeLive(
     }
     const variant = Object.keys(liveRecipe.variants)[0] ?? "default";
     const rendered = renderRecipe(liveRecipe, { variant, params: {}, slots: {} });
-    return { data: { slug, component: recipeId, className: rendered.className, code: rendered.code }, origin: "live" };
+    return {
+      data: {
+        slug,
+        component: recipeId,
+        className: rendered.className,
+        code: withRecipeImplementationNote(slug, rendered.code),
+      },
+      origin: "live",
+    };
   }
   if (brief.failureKind === "not-found") {
     return { data: null, origin: "live", failureKind: "not-found", fallbackReason: brief.fallbackReason };

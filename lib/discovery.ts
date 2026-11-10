@@ -9,6 +9,7 @@
 
 import { styles, getStyleBySlug } from "./styles";
 import { getRecipe, getRecipeIds, hasRecipes, renderRecipe } from "./recipes";
+import { withRecipeImplementationNote } from "./recipes/implementation-note";
 import { getStyleTokens, hasStyleTokens } from "./styles/tokens-registry";
 import { getStyleQuality, type StyleQuality } from "./styles/quality";
 import { expandQueryTerms, colorIntentMatches, hasTerm } from "./search/synonyms";
@@ -192,5 +193,10 @@ export function getComponentRecipe(
     params: {},
     slots: {},
   });
-  return { slug, component, className: rendered.className, code: rendered.code };
+  return {
+    slug,
+    component,
+    className: rendered.className,
+    code: withRecipeImplementationNote(slug, rendered.code),
+  };
 }
