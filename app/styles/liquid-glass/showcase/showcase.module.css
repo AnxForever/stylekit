@@ -1,19 +1,24 @@
 .page {
-  --travel-paper: #f4f6f3;
-  --travel-panel: #fff;
-  --travel-ink: #173239;
-  --travel-muted: #5d7074;
-  --travel-line: #dce4df;
-  background: var(--travel-paper);
+  --travel-paper: transparent;
+  --travel-panel: rgb(231 245 255 / 12%);
+  --travel-ink: #f4faff;
+  --travel-muted: #d0e2ec;
+  --travel-line: rgb(233 247 255 / 23%);
+  position: relative;
+  isolation: isolate;
+  background: #294b60;
   color: var(--travel-ink);
   font-family: Arial, Helvetica, sans-serif;
 }
-:global(.dark) .page { --travel-paper: #111d21; --travel-panel: #1a2b30; --travel-ink: #e7f0ec; --travel-muted: #a8bcba; --travel-line: #31464a; }
+:global(.dark) .page { --travel-panel: rgb(18 43 62 / 28%); --travel-ink: #f2f8ff; --travel-muted: #c1d6e5; --travel-line: rgb(205 235 255 / 20%); }
+.ambient { position: fixed; z-index: -1; inset: 0; pointer-events: none; background: linear-gradient(145deg, rgb(20 57 80 / 48%), rgb(8 32 50 / 72%)), url('/styles/liquid-glass/glacier.webp') center / cover; }
+:global(.dark) .ambient { background-image: linear-gradient(145deg, rgb(7 23 43 / 70%), rgb(4 18 34 / 85%)), url('/styles/liquid-glass/glacier.webp'); }
 .page button, .page a, .page summary, .detailContent button { -webkit-tap-highlight-color: transparent; }
 .page button, .page summary, .detailContent button { cursor: pointer; }
 .page :is(a, button, input, summary):focus-visible, .detailContent button:focus-visible { outline: 2px solid #4b98ac; outline-offset: 5px; }
 .hero :is(a, button):focus-visible, .placeCard button:focus-visible { outline-color: #fff; outline-offset: 3px; }
-.utility { display: flex; justify-content: space-between; align-items: center; max-width: 1600px; margin: auto; padding: 0 36px; min-height: 54px; font-size: 11px; color: var(--travel-muted); }
+.utilityGlass { width: calc(100% - 48px); max-width: 1556px; margin: 14px auto; }
+.utility { display: flex; justify-content: space-between; align-items: center; padding: 0 24px; min-height: 48px; font-size: 11px; color: var(--travel-muted); }
 .utility a { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; }
 .utility > span { font-size: 10px; letter-spacing: .18em; }
 .utility a:hover { color: var(--travel-ink); }
@@ -50,8 +55,9 @@
 .heroCopy h1 em { font-weight: 400; }
 .page[data-locale="zh"] .heroCopy h1 { letter-spacing: -.04em; line-height: 1.13; font-size: clamp(60px,7.7vw,116px); }
 .heroDescription { font-size: 14px; color: rgb(255 255 255 / 84%); line-height: 1.75; }
-.heroCta { display: inline-flex; gap: 28px; align-items: center; min-height: 46px; padding: 0 21px; margin-top: 25px; background: #fff; color: #173239; border-radius: 99px; font-size: 12px; font-weight: 600; text-shadow: none; transition: transform 200ms, background 200ms; }
-.heroCta:hover { transform: translateY(-3px); background: #e3f0e9; }
+.ctaGlass { display: inline-block; margin-top: 25px; }
+.heroCta { display: inline-flex; gap: 28px; align-items: center; min-height: 48px; padding: 0 23px; color: #fff; border-radius: 99px; font-size: 12px; font-weight: 600; text-shadow: none; }
+.heroCta:hover { background: rgb(255 255 255 / 7%); }
 .heroAside { position: absolute; right: max(46px, calc((100% - 1240px) / 2)); bottom: 164px; width: 312px; display: grid; gap: 12px; }
 .weather { padding: 18px 20px; display: flex; align-items: center; gap: 12px; }
 .weather > div { display: grid; gap: 4px; }
@@ -64,6 +70,7 @@
 .featureIcon > span { font-size: 11px; letter-spacing: .1em; }
 .featureCard h2 { font-family: Georgia,"Songti SC",serif; font-size: 29px; line-height: 1.25; letter-spacing: -.025em; }
 .featureCard p { margin-top: 13px; font-size: 12px; color: #e4edef; line-height: 1.85; }
+.dragFoot { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding-top: 22px; margin-top: 24px; border-top: 1px solid #ffffff35; font-size: 11px; }
 .featureCard > a { display: flex; align-items: center; justify-content: space-between; padding-top: 23px; margin-top: 20px; border-top: 1px solid #ffffff35; font-size: 11px; }
 .featureCard > a > span { width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; background: #ffffff21; transition: transform 200ms; }
 .featureCard > a:hover > span { transform: rotate(45deg); }
@@ -113,7 +120,7 @@
 .captionInner > div > span { font-size: 11px; color: #e0e9eb; }
 .captionInner button { display: grid; place-items: center; width: 42px; height: 42px; border: 1px solid #ffffff4d; border-radius: 50%; flex-shrink: 0; transition: background 180ms, transform 180ms; }
 .captionInner button:hover { background: #ffffff26; transform: rotate(45deg); }
-.empty { display: grid; justify-items: center; text-align: center; min-height: 320px; align-content: center; gap: 15px; background: var(--travel-panel); border-radius: 24px; }
+.empty { display: grid; justify-items: center; text-align: center; min-height: 320px; align-content: center; gap: 15px; }
 .empty h3 { font-family: Georgia,"Songti SC",serif; font-size: 25px; }
 .empty p { color: var(--travel-muted); font-size: 12px; }
 .empty button { display: flex; align-items: center; gap: 15px; border-bottom: 1px solid var(--travel-ink); padding: 7px 0; margin-top: 6px; font-size: 12px; }
@@ -122,7 +129,7 @@
 .journalImage::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg,#102c3820,transparent,#102c3873); }
 .journalImage > span { position: absolute; left: 30px; top: 30px; z-index: 1; font-size: 9px; letter-spacing: .15em; }
 .journalImage blockquote { position: absolute; bottom: 36px; left: 34px; right: 34px; z-index: 1; font-family: Georgia,"Songti SC",serif; font-size: 35px; font-style: italic; line-height: 1.2; letter-spacing: -.03em; }
-.journalCopy { align-self: center; padding: 15px 20px 15px 0; }
+.journalCopy { padding: 34px; height: 100%; }
 .journalCopy > svg { margin-top: 42px; color: var(--travel-muted); }
 .journalCopy h2 { margin: 23px 0; max-width: 13ch; font-size: clamp(34px,3.4vw,48px); }
 .journalCopy > p:not(.chapter), .journalCopy details p { font-size: 13px; line-height: 2; color: var(--travel-muted); max-width: 40ch; }
@@ -134,10 +141,8 @@
 .materialNote { margin-top: 80px; padding: 70px 0 45px; border-top: 1px solid var(--travel-line); text-align: center; }
 .materialNote > h2 { margin-top: 20px; }
 .materialNote > p:not(.chapter) { max-width: 48ch; margin: 20px auto 0; color: var(--travel-muted); font-size: 13px; line-height: 1.9; }
-.principles { display: grid; grid-template-columns: repeat(3,1fr); text-align: left; margin: 60px 0 48px; }
-.principles > div { padding: 0 35px; border-left: 1px solid var(--travel-line); }
-.principles > div:first-child { padding-left: 0; border-left: 0; }
-.principles > div:last-child { padding-right: 0; }
+.principles { display: grid; grid-template-columns: repeat(3,1fr); gap: 20px; text-align: left; margin: 50px 0 40px; }
+.principleCard { padding: 28px; }
 .principles span { font-size: 10px; color: var(--travel-muted); }
 .principles h3 { margin: 18px 0 10px; font-family: Georgia,"Songti SC",serif; font-size: 24px; }
 .principles p { color: var(--travel-muted); font-size: 12px; line-height: 1.9; max-width: 30ch; }
@@ -145,22 +150,41 @@
 .references > span { margin-right: 6px; }
 .references a { display: inline-flex; gap: 4px; align-items: center; min-height: 44px; }
 .references a:hover { color: var(--travel-ink); text-decoration: underline; text-underline-offset: 4px; }
-.footer { display: flex; align-items: center; justify-content: space-between; gap: 30px; border-top: 1px solid var(--travel-line); padding: 42px 0; }
+.footer { display: flex; align-items: center; justify-content: space-between; gap: 30px; padding: 32px; }
+.body { padding-bottom: 36px; }
 .footerBrand { font-size: 34px; font-weight: 600; letter-spacing: -.09em; }
 .footer p { color: var(--travel-muted); font-size: 11px; margin-top: 13px; }
 .footer small { color: var(--travel-muted); font-size: 9px; margin-top: 6px; display: block; }
 .footer > div:last-child { display: grid; gap: 6px; }
 .footer a { display: flex; align-items: center; gap: 20px; justify-content: space-between; min-height: 34px; font-size: 11px; }
-.detailContent { padding: 0 !important; border-radius: 28px; overflow: auto; max-height: calc(100svh - 40px); max-width: 600px !important; background: #f4f6f3 !important; color: #173239; gap: 0 !important; }
-:global(.dark) .detailContent { background: #1a2b30 !important; color: #e7f0ec; }
-.detailContent > button { background: #f4f6f3; color: #173239; width: 32px; height: 32px; display: grid; place-items: center; border-radius: 50%; opacity: .95; }
+.detailContent { --travel-muted:#d0e2ec; padding: 0 !important; border-radius: 28px; overflow: auto; max-height: calc(100svh - 40px); max-width: 600px !important; background: transparent !important; color: #f4faff; gap: 0 !important; }
+:global(.dark) .detailContent { background: transparent !important; color: #f4faff; }
+.detailContent > button { background: rgb(255 255 255 / 13%); color: #fff; border:1px solid #ffffff5c; width: 34px; height: 34px; display: grid; place-items: center; border-radius: 50%; opacity: .95; z-index:5; }
 .detailImage { position: relative; height: 280px; flex-shrink: 0; }
-.detailBody { padding: 30px 34px 34px; }
+.detailBody { padding: 85px 38px 38px; min-height: 400px; }
 .detailTitle { font-family: Georgia,"Songti SC",serif !important; font-size: 34px !important; font-weight: 400 !important; margin: 14px 0 12px; }
 .detailCoordinates { display: flex; align-items: center; gap: 8px; font-size: 11px; opacity: .65; }
 .detailDescription { margin: 22px 0 26px; font-size: 14px !important; line-height: 1.9; color: inherit !important; opacity: .8; }
-.detailSave { display: flex; align-items: center; justify-content: center; gap: 10px; min-height: 46px; width: 100%; padding: 10px 20px; border-radius: 99px; background: #173239; color: #f4f6f3; font-size: 12px; }
-:global(.dark) .detailSave { background: #dcece3; color: #173239; }
+.detailSave { display: flex; align-items: center; justify-content: center; gap: 10px; min-height: 46px; width: 100%; padding: 10px 20px; border-radius: 99px; color: #fff; font-size: 12px; }
+.tabGlass { width: 530px; max-width: 100%; }
+.materialTabs { width: 100%; max-width: 100%; font-size: 12px; border: 0 !important; background: transparent !important; }
+.dockControl { border: 0 !important; background: transparent !important; padding: 0 !important; }
+.dockControl > button { padding: 0; }
+.savedLabel { display: inline-flex; align-items: center; gap: 7px; }
+.searchField { padding: 13px 20px; min-width: 230px; max-width: 280px; border-bottom: 0; }
+.searchField input { color: #fff; }
+.placeCard { background: transparent; }
+.placeCard::after { display: none; }
+.cardGlass { position: absolute !important; inset: 8px; }
+.cardContent { height: 100%; }
+.placeCard .saveButton { position: absolute; top: 19px; right: 19px; background: rgb(255 255 255 / 9%); border: 1px solid #ffffff5c; border-radius: 50%; }
+.captionInner { position: absolute; left: 20px; right: 20px; bottom: 20px; padding: 24px; border-radius: 24px; background: linear-gradient(120deg, rgb(8 31 48 / 58%), rgb(8 31 48 / 23%)); border: 1px solid rgb(255 255 255 / 17%); }
+.demoLens { position: absolute !important; width: 230px; height: 180px; left: calc(50% - 115px); top: calc(50% - 90px); z-index: 2; }
+.demoLensContent { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px; height: 100%; font-family: Georgia,"Songti SC",serif; font-size: 30px; }
+.pressPad { width: 100%; height: 100%; display:flex; align-items:center; justify-content:center; flex-direction:column; gap:18px; border-radius:58px; }
+.journalImage .lensHint { position: absolute; z-index: 1; left: 26px; right: 26px; bottom: 27px; font-size: 11px; text-align: center; }
+.interactionTabs { margin-top: 26px; min-width: 215px; font-size: 12px; }
+.journalCopy .fusionHint { margin-top: 18px; color: #eefaff; }
 @keyframes reveal { from { opacity: 0; } to { opacity: 1; } }
 @media (min-width: 1600px) { .hero { max-width: 1556px; margin-inline: auto; } }
 @media (max-width: 1100px) {
@@ -195,7 +219,7 @@
   .page[data-locale="zh"] .heroCopy h1 { font-size: clamp(60px,11vw,86px); line-height: 1.12; }
   .heroDescription { font-size: 12px; }
   .eyebrow { font-size: 9px; }
-  .heroCta { margin-top: 22px; }
+  .ctaGlass { margin-top: 22px; }
   .heroAside { right: 24px; left: 24px; bottom: 168px; width: auto; gap: 12px; }
   .featureCard { padding: 22px; }
   .featureCard h2 { font-size: 27px; }
@@ -229,22 +253,30 @@
   .journal { padding: 42px 0 60px; grid-template-columns: 1fr; gap: 36px; }
   .journalImage { min-height: 420px; }
   .journalImage blockquote { font-size: 33px; }
-  .journalCopy { padding: 0 8px; }
+  .journalCopy { padding: 28px; }
   .journalCopy > svg { margin-top: 25px; }
   .journalCopy h2 { max-width: 17ch; }
   .materialNote { margin-top: 54px; padding-top: 50px; }
   .materialNote > h2 { font-size: 36px; }
   .principles { grid-template-columns: 1fr; gap: 25px; margin: 40px 0 30px; }
-  .principles > div, .principles > div:first-child, .principles > div:last-child { border-left: 0; padding: 20px 8px 0; border-top: 1px solid var(--travel-line); }
+  .principleCard { padding: 26px; }
   .principles h3 { margin-top: 12px; }
   .principles p { max-width: none; }
   .references { gap: 15px; }
   .references > span { width: 100%; margin: 0; }
-  .footer { padding: 32px 0; align-items: start; }
+  .footer { padding: 26px; align-items: start; }
   .footer p { max-width: 18ch; line-height: 1.7; }
   .footer a { font-size: 10px; gap: 8px; }
   .detailImage { height: 230px; }
-  .detailBody { padding: 25px; }
+  .detailBody { padding: 70px 26px 26px; }
+  .utilityGlass { width: calc(100% - 24px); margin: 10px auto; }
+  .utility { padding: 0 16px; }
+  .materialTabs { width: 100%; }
+  .materialTabs > button { padding-inline: 11px; font-size: 10px; }
+  .filters > div:last-child { width: 100%; }
+  .searchField { width: 100%; max-width: none; }
+  .captionInner { left: 10px; right: 10px; bottom: 10px; padding: 18px; }
+  .captionInner h3 { font-size: 25px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .heroImage, .placeCard { animation: none; }
