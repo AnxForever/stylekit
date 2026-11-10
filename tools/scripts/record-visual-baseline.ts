@@ -7,11 +7,8 @@
  * still on the old one, so the suite failed its own consistency assertions
  * before it could compare a single pixel.
  *
- * Run this after re-recording snapshots, from the same checkout that recorded
- * them:
- *
- *   pnpm run test:preview-visual:update
- *   pnpm run record:visual-baseline
+ * Run pnpm run record:visual-baseline after recording snapshots in the manual
+ * record-visual-baselines workflow, from the same checkout that recorded them.
  *
  * Pass --check to verify without writing (used by CI to prove the committed
  * files match the images actually in the tree).
@@ -23,6 +20,7 @@ import path from "node:path";
 
 import { stylesMeta } from "../../lib/styles/meta-registry";
 import { PENDING_STYLE_SLUGS } from "../../lib/styles/review-status";
+import { approvedPreviewSourcePaths } from "../../tests/visual/approved-preview-sources";
 
 const ROOT = process.cwd();
 const SNAPSHOT_DIR = "tests/e2e/approved-preview-visual.spec.ts-snapshots";
@@ -30,22 +28,6 @@ const BASELINE = "tests/visual/approved-preview-baseline.json";
 const SOURCE_BASELINE = "tests/visual/approved-preview-source-baseline.json";
 const SNAPSHOT_HASHES = "tests/visual/approved-preview-snapshot-hashes.json";
 const PIN_TEST = "lib/styles/__tests__/approved-preview-baseline.test.ts";
-
-// Files whose content decides how a cover renders. A change to any of them
-// should force the baseline to be re-examined, which is what the source hashes
-// are for. Per-style preview modules are appended per approved slug.
-const SHARED_SOURCES = [
-  "components/home/featured-carousel.tsx",
-  "components/home/home-style-card.tsx",
-  "components/home/style-card.tsx",
-  "components/style-preview-switcher.tsx",
-  "components/style-preview/style-cover-preview.tsx",
-  "lib/style-components.tsx",
-  "lib/style-preview/delivery.ts",
-  "lib/style-preview/registry.ts",
-  "lib/style-preview/types.ts",
-  "lib/styles/meta-registry.ts",
-] as const;
 
 // Three shared card states (default, hover, focus) captured on both projects.
 const SHARED_STATE_SNAPSHOTS = 3 * 2;
@@ -80,10 +62,7 @@ async function main(): Promise<void> {
   };
 
   const sourceFiles: Record<string, string> = {};
-  for (const relativePath of [
-    ...SHARED_SOURCES,
-    ...approvedSlugs.map((slug) => `lib/style-preview/styles/${slug}.tsx`),
-  ].sort()) {
+  for (const relativePath of approvedPreviewSourcePaths(approvedSlugs)) {
     sourceFiles[relativePath] = await sha256(relativePath);
   }
   const sourceBaseline = {

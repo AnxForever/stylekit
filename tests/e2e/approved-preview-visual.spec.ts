@@ -1,6 +1,7 @@
 import { expect, test, type Page } from "@playwright/test";
 import { PENDING_STYLE_SLUGS } from "@/lib/styles/review-status";
 import approvedPreviews from "../visual/approved-preview-baseline.json";
+import { resolveRecordingSlug } from "../visual/recording-scope";
 
 const APPROVED_CATALOG_SELECTOR = [
   "[data-catalog-style-slug]",
@@ -73,7 +74,14 @@ test.describe("approved preview visual baseline", () => {
     },
   });
 
-  test("keeps every approved cover preview pixel-stable", async ({ page }) => {
+  test("keeps every approved cover preview pixel-stable", async ({ page }, testInfo) => {
+    const recordingSlug = resolveRecordingSlug({
+      requestedSlug: process.env.STYLEKIT_RECORD_STYLE_SLUG,
+      ci: process.env.CI,
+      eventName: process.env.GITHUB_EVENT_NAME,
+      updateSnapshots: testInfo.config.updateSnapshots,
+      approvedSlugs: approvedPreviews.slugs,
+    });
     test.setTimeout(10 * 60 * 1000);
     await page.goto("/styles?visual-baseline=1", { waitUntil: "networkidle" });
     await stabilizeCatalogChrome(page);
@@ -81,7 +89,8 @@ test.describe("approved preview visual baseline", () => {
     const catalogItems = page.locator(APPROVED_CATALOG_SELECTOR);
     await expect(catalogItems).toHaveCount(approvedPreviews.count);
 
-    for (const slug of approvedPreviews.slugs) {
+    const slugs = recordingSlug ? [recordingSlug] : approvedPreviews.slugs;
+    for (const slug of slugs) {
       const item = page.locator(`[data-catalog-style-slug="${slug}"]`);
       const cover = item.locator("div.relative.overflow-hidden").first();
 
@@ -98,7 +107,15 @@ test.describe("approved preview visual baseline", () => {
 
   test("keeps shared card default, hover, and focus states pixel-stable", async ({
     page,
-  }) => {
+  }, testInfo) => {
+    const recordingSlug = resolveRecordingSlug({
+      requestedSlug: process.env.STYLEKIT_RECORD_STYLE_SLUG,
+      ci: process.env.CI,
+      eventName: process.env.GITHUB_EVENT_NAME,
+      updateSnapshots: testInfo.config.updateSnapshots,
+      approvedSlugs: approvedPreviews.slugs,
+    });
+    test.skip(recordingSlug !== null, "Targeted recording preserves shared-state PNGs; the full replay still compares them");
     test.setTimeout(60 * 1000);
     await page.goto("/styles?visual-baseline=states", {
       waitUntil: "networkidle",

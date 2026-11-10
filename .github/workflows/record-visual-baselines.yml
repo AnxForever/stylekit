@@ -13,6 +13,10 @@ name: Record Visual Baselines
 on:
   workflow_dispatch:
     inputs:
+      style_slug:
+        description: "Approved style to record; blank records the full catalog"
+        type: string
+        default: ""
       commit:
         description: "Commit the re-recorded baselines back to the branch"
         type: boolean
@@ -26,6 +30,8 @@ jobs:
     name: Record and verify
     runs-on: ubuntu-latest
     timeout-minutes: 60
+    env:
+      STYLEKIT_BASELINE_GUARD_FILE: ${{ runner.temp }}/stylekit-visual-baseline-before.json
     steps:
       - uses: actions/checkout@v4
         with:
@@ -44,6 +50,12 @@ jobs:
           PLAYWRIGHT_HOST_PLATFORM_OVERRIDE: ubuntu24.04-x64
       - run: pnpm run build
 
+      - name: Capture targeted recording boundary
+        if: inputs.style_slug != ''
+        env:
+          STYLEKIT_RECORD_STYLE_SLUG: ${{ inputs.style_slug }}
+        run: node --import tsx tools/scripts/check-visual-baseline-recording.ts capture
+
       # Spelled out rather than wrapped in a package script: a test asserts
       # that `--update-snapshots` never appears in package.json or ci.yml, so
       # that the recorded images cannot be refreshed as a routine convenience.
@@ -56,11 +68,16 @@ jobs:
       - name: Record snapshots
         env:
           BASE_URL: http://localhost:3000
+          STYLEKIT_RECORD_STYLE_SLUG: ${{ inputs.style_slug }}
         run: >-
           npx --no-install playwright test
           --config tests/playwright.config.ts
           tests/e2e/approved-preview-visual.spec.ts
           --update-snapshots
+
+      - name: Reject unrelated snapshot changes
+        if: inputs.style_slug != ''
+        run: node --import tsx tools/scripts/check-visual-baseline-recording.ts verify-recording
 
       - name: Sync the frozen baseline files
         run: pnpm run record:visual-baseline
@@ -80,6 +97,10 @@ jobs:
 
       - name: Verify the frozen files match the recorded images
         run: pnpm run check:visual-baseline
+
+      - name: Verify targeted frozen baseline scope
+        if: inputs.style_slug != ''
+        run: node --import tsx tools/scripts/check-visual-baseline-recording.ts verify-frozen
 
       - name: Summarise
         if: always()

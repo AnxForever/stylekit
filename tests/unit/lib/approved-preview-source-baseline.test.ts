@@ -6,6 +6,7 @@ import sourceBaseline from "@/tests/visual/approved-preview-source-baseline.json
 import approvedPreviews from "@/tests/visual/approved-preview-baseline.json";
 import snapshotBaseline from "@/tests/visual/approved-preview-snapshot-hashes.json";
 import { PENDING_STYLE_SLUGS } from "@/lib/styles/review-status";
+import { approvedPreviewSourcePaths } from "@/tests/visual/approved-preview-sources";
 
 const ROOT = process.cwd();
 const SNAPSHOT_DIRECTORY = path.join(
@@ -28,6 +29,9 @@ describe("approved preview source baseline", () => {
   it("fails immediately when approved preview sources change", async () => {
     expect(sourceBaseline.baselineCommit).toBe(approvedPreviews.baselineCommit);
     expect(sourceBaseline.algorithm).toBe("sha256");
+    expect(Object.keys(sourceBaseline.files).sort()).toEqual(
+      approvedPreviewSourcePaths(approvedPreviews.slugs),
+    );
 
     for (const [relativePath, expectedHash] of Object.entries(
       sourceBaseline.files
