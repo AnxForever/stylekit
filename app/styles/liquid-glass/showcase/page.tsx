@@ -4,7 +4,7 @@ export const dynamic = "force-static";
 
 export const metadata = {
   title: "Liquid Glass Showcase - StyleKit",
-  description: "Move a clear glass lens over a glacier photograph, contours, and a grid. Compare live edge refraction with soft frost, with keyboard controls and accessible fallbacks.",
+  description: "Explore a complete Liquid Glass travel experience: immersive Iceland photography, refractive navigation, destination cards, search, collections, a day-by-day itinerary, and interactive controls.",
 };
 
 const ShowcaseContent = dynamicImport(() => import("./_content"), {
