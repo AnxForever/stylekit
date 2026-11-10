@@ -107,7 +107,7 @@ export default function LiquidGlassShowcase() {
               </nav>
               <div className={styles.navActions}>
                 <button type="button" aria-label={`${t.saved} (${saved.size})`} onClick={showCollection}><Heart size={18} aria-hidden="true" />{saved.size > 0 && <span className={styles.count}>{saved.size}</span>}</button>
-                <button type="button" aria-label={t.theme} onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}>{resolvedTheme === "dark" ? <Sun size={18} aria-hidden="true" /> : <Moon size={18} aria-hidden="true" />}</button>
+                <button type="button" aria-label={t.theme} onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}><Sun size={18} className={styles.sunIcon} aria-hidden="true" /><Moon size={18} className={styles.moonIcon} aria-hidden="true" /></button>
               </div>
             </LiquidGlass>
           </div>
