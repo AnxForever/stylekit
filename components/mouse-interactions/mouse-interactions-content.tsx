@@ -5,16 +5,13 @@ import Link from "next/link";
 import { ArrowDown, ArrowUpRight } from "lucide-react";
 import { ROOMS } from "./rooms/registry";
 import { GenericRoom } from "./rooms/generic-room";
-import { NeoBrutalistRoom } from "./rooms/neo-brutalist-room";
-import { GlassmorphismRoom } from "./rooms/glassmorphism-room";
-import { EditorialRoom } from "./rooms/editorial-room";
 import { useI18n } from "@/lib/i18n/context";
 import { cn } from "@/lib/utils";
 
 /**
  * Cursor Lab —— 风格驱动的鼠标交互实验室。
  * 房间数据来自 rooms/registry (数据驱动, 8→20 逐步扩展)。
- * 现有 3 房间 (Component) 独立渲染; 新房间 (stage 配置) 由 GenericRoom 渲染。
+ * 独立房间使用注册表的 Component; stage 配置由 GenericRoom 渲染。
  */
 
 type Lang = "en" | "zh";
@@ -106,10 +103,7 @@ export function MouseInteractionsContent() {
 
         {/* Stage */}
         <div className="overflow-hidden rounded-lg">
-          {room.slug === "neo-brutalist" ? <NeoBrutalistRoom /> : null}
-          {room.slug === "glassmorphism" ? <GlassmorphismRoom /> : null}
-          {room.slug === "editorial" ? <EditorialRoom /> : null}
-          {room.Component === undefined && room.stage ? <GenericRoom config={room} /> : null}
+          {room.Component ? <room.Component /> : room.stage ? <GenericRoom config={room} /> : null}
         </div>
 
         {/* Room details */}
