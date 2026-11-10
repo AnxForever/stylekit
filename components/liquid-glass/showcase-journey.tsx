@@ -2,9 +2,9 @@
 
 import Image from "next/image";
 import { useId, useState } from "react";
-import { ArrowUpRight, Check, Compass, Moon, MoveUpRight, Sun, Waves } from "lucide-react";
+import { Check, Circle, Contrast, MousePointer2, Navigation2, PanelsTopLeft, RectangleHorizontal, Shapes, SlidersHorizontal, Sparkles } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
-import { LiquidGlass } from "./liquid-glass";
+import { FluidGlass, FluidSegmented } from "./fluid-glass";
 import styles from "./showcase-journey.module.css";
 
 export interface ShowcaseJourneyProps {
@@ -17,249 +17,212 @@ export interface ShowcaseJourneyProps {
 
 const copy = {
   en: {
-    journey: "The journey",
-    title: "The long way round.",
-    intro: "Three unhurried days. A coastline worth getting a little lost on.",
-    sample: "Sample route",
-    routeLabel: "An illustrated route along Iceland’s south coast",
-    day: "Day",
-    days: [
-      { name: "Follow the coast", distance: "Reykjavík → Vík", stops: [
-        { time: "09:00", name: "Leave the city behind", detail: "Reykjavík · a slow start" },
-        { time: "12:30", name: "A little closer to the falls", detail: "Skógafoss · take the scenic path" },
-        { time: "17:00", name: "Where the sand turns black", detail: "Vík · the last light" },
-      ] },
-      { name: "Into the blue", distance: "Vík → Jökulsárlón", stops: [
-        { time: "08:30", name: "Coffee, then the open road", detail: "Vík · a morning to linger" },
-        { time: "12:00", name: "Walk beneath the mountains", detail: "Skaftafell · find a quiet trail" },
-        { time: "16:00", name: "Watch the ice drift by", detail: "Jökulsárlón · stay a little longer" },
-      ] },
-      { name: "Take the quiet road", distance: "Jökulsárlón → Höfn", stops: [
-        { time: "08:00", name: "Meet the morning light", detail: "Glacier lagoon · a moment of stillness" },
-        { time: "11:30", name: "An empty stretch of coast", detail: "Stokksnes · sand, sea, and mountain" },
-        { time: "15:00", name: "Something warm by the harbor", detail: "Höfn · no rush to leave" },
-      ] },
-    ],
-    before: "Before you go",
-    prep: ["Save a route for the road", "Check the weather", "Leave room for a detour"],
-    essentials: "The essentials",
-    essentialsTitle: "Travel a little lighter.",
-    essentialsIntro: "A few thoughtful details. More room for everything else.",
-    location: "Jökulsárlón, Iceland",
-    photoNote: "A moment to take it all in.",
-    quietPhotoNote: "Less on screen. More of the view.",
-    controls: "Make it your own",
-    material: "Surface",
+    forms: "Material forms",
+    title: "One material. Different forms.",
+    intro: "A circle, a capsule, a panel. Press the surface and feel the same soft response.",
+    shapeLabel: "Glass shape",
+    circle: "Circle",
+    capsule: "Capsule",
+    panel: "Panel",
+    press: "Press the glass",
+    dragLabel: "Press or move the glass with arrow keys. Home resets its position.",
+    shapeHint: "Press, then release. Watch the edge settle.",
+    checklist: "The material checklist",
+    checks: ["Rounded edges", "Clear content", "Elastic feedback"],
+    checkProgress: "Material checklist progress",
+    allChecked: "Every detail, accounted for.",
+    controls: "Material controls",
+    controlsTitle: "Give the light a little direction.",
+    controlsIntro: "Change the surface, adjust its refraction, and watch the background through the glass.",
+    preview: "A background for refraction",
+    photoNote: "The view changes through the surface.",
+    contrastPhotoNote: "Sharper contrast. Clearer refraction.",
+    controlCenter: "The control surface",
+    material: "Material",
     clear: "Clear",
     frost: "Frost",
     refraction: "Refraction",
-    quiet: "Quiet mode",
-    quietOff: "A little room for everything.",
-    quietOn: "Just you and the landscape.",
-    packing: "A well-packed day",
-    packingDetail: "The small things make the difference.",
-    packed: "packed",
-    packingItems: ["Camera & a spare battery", "A warm extra layer", "Something waterproof", "A notebook, just in case"],
-    allPacked: "Ready for whatever the day brings.",
-    packProgress: "Packing progress",
-    imageAlt: "Blue ice reflected in the still water of an Icelandic glacier lagoon",
+    contrast: "Enhance background contrast",
+    contrastOff: "Original contrast and color.",
+    contrastOn: "Higher contrast and richer color.",
+    collection: "A small glass collection",
+    collectionDetail: "Choose the components you want to keep.",
+    collectionItems: ["Navigation", "Button", "Card", "Slider"],
+    collectionProgress: "Component collection progress",
+    allCollected: "Your glass collection is complete.",
+    imageAlt: "Blue glacier ice and water behind the glass controls",
   },
   zh: {
-    journey: "沿途的时光",
-    title: "把时间，留给沿途。",
-    intro: "用三天，慢慢走过南岸。偶尔绕路，也是一种抵达。",
-    sample: "行程示例",
-    routeLabel: "冰岛南岸旅行路线示意",
-    day: "第",
-    days: [
-      { name: "沿着海岸出发", distance: "雷克雅未克 → 维克", stops: [
-        { time: "09:00", name: "把城市留在身后", detail: "雷克雅未克 · 不慌不忙地出发" },
-        { time: "12:30", name: "走近瀑布与水雾", detail: "斯科加瀑布 · 绕一段风景里的路" },
-        { time: "17:00", name: "在黑色沙滩等一束光", detail: "维克 · 把傍晚留给海边" },
-      ] },
-      { name: "走进冰蓝深处", distance: "维克 → 杰古沙龙", stops: [
-        { time: "08:30", name: "先喝咖啡，再迎接远方", detail: "维克 · 值得慢一点的早晨" },
-        { time: "12:00", name: "在群山之下走一走", detail: "斯卡夫塔山 · 寻一条安静小路" },
-        { time: "16:00", name: "看浮冰缓缓经过", detail: "杰古沙龙冰河湖 · 再多待一会儿" },
-      ] },
-      { name: "去人少的地方", distance: "杰古沙龙 → 赫本", stops: [
-        { time: "08:00", name: "迎接湖面的第一束光", detail: "冰河湖 · 给自己片刻安静" },
-        { time: "11:30", name: "走过一段空旷海岸", detail: "斯托克角 · 沙滩、海与山" },
-        { time: "15:00", name: "在港口吃点热乎的", detail: "赫本 · 不必急着告别" },
-      ] },
-    ],
-    before: "出发前的小事",
-    prep: ["保存一份沿途路线", "看一眼天气", "为临时绕路留点时间"],
-    essentials: "旅途的小事",
-    essentialsTitle: "把轻盈，一起带上。",
-    essentialsIntro: "照顾好几个小细节，把更多空间留给风景。",
-    location: "冰岛，杰古沙龙冰河湖",
-    photoNote: "把眼前的片刻，好好收藏。",
-    quietPhotoNote: "少一些打扰，多一些风景。",
-    controls: "留一点自己的偏好",
+    forms: "材质的形态",
+    title: "同一种材质，不同的形态。",
+    intro: "圆形、胶囊、面板。按压表面，感受同样柔软的回应。",
+    shapeLabel: "玻璃形态",
+    circle: "圆形",
+    capsule: "胶囊",
+    panel: "面板",
+    press: "按压玻璃",
+    dragLabel: "按压玻璃，或用方向键移动。按 Home 键复位。",
+    shapeHint: "按下，再松开。看边缘轻轻回弹。",
+    checklist: "材质的小细节",
+    checks: ["圆润边缘", "清晰内容", "弹性反馈"],
+    checkProgress: "材质核对进度",
+    allChecked: "每一处细节，都刚刚好。",
+    controls: "材质控制",
+    controlsTitle: "给光线，一点方向。",
+    controlsIntro: "切换表面，调整折射，看背景如何穿过玻璃。",
+    preview: "用来观察折射的背景",
+    photoNote: "风景，经过表面而改变。",
+    contrastPhotoNote: "对比更鲜明，折射更清楚。",
+    controlCenter: "玻璃控制面板",
     material: "材质",
     clear: "清透",
     frost: "磨砂",
     refraction: "折射",
-    quiet: "安静模式",
-    quietOff: "让每个小细节，各就其位。",
-    quietOn: "此刻，只有你与风景。",
-    packing: "带上这些，就很好",
-    packingDetail: "一点小准备，让一路更从容。",
-    packed: "已装好",
-    packingItems: ["相机与备用电池", "一件保暖的外套", "能挡风雨的装备", "一本随手记录的小册子"],
-    allPacked: "都准备好了，放心去遇见沿途。",
-    packProgress: "行李准备进度",
-    imageAlt: "冰岛冰河湖中的蓝色浮冰倒映在平静水面上",
+    contrast: "增强背景对比",
+    contrastOff: "保留原本的对比与色彩。",
+    contrastOn: "对比更鲜明，色彩更饱满。",
+    collection: "收藏几件玻璃组件",
+    collectionDetail: "选出你想留下的组件。",
+    collectionItems: ["导航", "按钮", "卡片", "滑块"],
+    collectionProgress: "组件收藏进度",
+    allCollected: "喜欢的玻璃组件，都在这里了。",
+    imageAlt: "玻璃控制面板后方的蓝色浮冰与水面",
   },
 } as const;
 
-const routePaths = [
-  "M133 173 C155 189 197 199 253 200",
-  "M253 200 C284 201 326 187 373 169",
-  "M373 169 C389 161 403 151 417 136",
-];
+const shapePresets = {
+  circle: { radius: 999, icon: Circle, className: styles.circleShape },
+  capsule: { radius: 999, icon: RectangleHorizontal, className: styles.capsuleShape },
+  panel: { radius: 30, icon: PanelsTopLeft, className: styles.panelShape },
+} as const;
 
-function JourneyMap({ day, label, sample }: { day: number; label: string; sample: string }) {
-  const mapId = useId();
-  return (
-    <div className={styles.map}>
-      <span className={styles.mapLabel}><Compass size={13} aria-hidden="true" />{sample}</span>
-      <svg viewBox="0 0 520 260" role="img" aria-labelledby={mapId}>
-        <title id={mapId}>{label}</title>
-        <g className={styles.mapWater} fill="none" strokeWidth="0.7">
-          <path d="M-35 165C46 104 109 113 186 89S340 32 555 83" />
-          <path d="M-35 183C46 122 109 131 186 107S340 50 555 101" />
-          <path d="M-35 201C46 140 109 149 186 125S340 68 555 119" />
-          <path d="M-35 219C46 158 109 167 186 143S340 86 555 137" />
-          <path d="M-35 237C46 176 109 185 186 161S340 104 555 155" />
-          <path d="M-35 255C46 194 109 203 186 179S340 122 555 173" />
-        </g>
-        <path className={styles.island} d="M101 108 87 91 108 87 103 74 124 81 135 65 147 81 167 77 181 85 198 65 218 73 239 53 257 67 282 58 297 74 321 66 338 80 362 79 375 94 398 88 409 108 431 118 427 138 407 150 394 170 371 177 347 188 321 192 295 205 266 207 241 202 211 202 183 193 157 190 135 175 115 168 113 148 98 135 110 124Z" />
-        <path className={styles.mapMountain} d="m230 137 15-20 12 12 16-25 20 33m39-4 14-16 16 21m-167-7 11-15 14 20" fill="none" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
-        {routePaths.map((path, index) => <path key={path} d={path} fill="none" strokeWidth={index === day ? 3 : 1.6} strokeLinecap="round" className={index === day ? styles.activeRoute : styles.route} strokeDasharray={index === day ? undefined : "3 5"} />)}
-        {[[133, 173], [253, 200], [373, 169], [417, 136]].map(([x, y], index) => (
-          <g key={index}>
-            {index === day + 1 && <circle cx={x} cy={y} r="12" className={styles.mapHalo} />}
-            <circle cx={x} cy={y} r={index === day + 1 ? 4.5 : 3.5} className={styles.mapPin} />
-          </g>
-        ))}
-        <g className={styles.mapPlace}>
-          <text x="118" y="157">Reykjavík</text>
-          <text x="247" y="224">Vík</text>
-          <text x="329" y="153">Jökulsárlón</text>
-          <text x="424" y="129">Höfn</text>
-        </g>
-      </svg>
-      <span className={styles.mapCompass} aria-hidden="true">N<MoveUpRight size={15} /></span>
-    </div>
-  );
-}
+type GlassShape = keyof typeof shapePresets;
+
+const collectionIcons = [Navigation2, MousePointer2, PanelsTopLeft, SlidersHorizontal] as const;
 
 export function ShowcaseJourney({ locale, material, onMaterialChange, refraction, onRefractionChange }: ShowcaseJourneyProps) {
   const t = copy[locale];
-  const [activeDay, setActiveDay] = useState(0);
-  const [prepared, setPrepared] = useState([true, false, false]);
-  const [packed, setPacked] = useState([true, true, false, false]);
-  const [quiet, setQuiet] = useState(false);
+  const [shape, setShape] = useState<GlassShape>("circle");
+  const [checked, setChecked] = useState([true, true, false]);
+  const [collected, setCollected] = useState([true, false, true, false]);
+  const [contrast, setContrast] = useState(false);
   const rangeId = useId();
   const checklistId = useId();
   const clear = material === "clear";
-  const day = t.days[activeDay];
-  const packedCount = packed.filter(Boolean).length;
-  const materialSettings = { refraction: clear ? refraction : 0, depth: 40, spread: 52, dispersion: clear ? 3 : 0, frost: clear ? 1.1 : 65, light: 72 };
+  const checkedCount = checked.filter(Boolean).length;
+  const collectedCount = collected.filter(Boolean).length;
+  const preset = shapePresets[shape];
+  const ShapeIcon = preset.icon;
+  const materialSettings = { refraction: clear ? refraction : 0, depth: 40, spread: 52, dispersion: 0, frost: clear ? 1.3 : 12, light: 72 };
+  const panelTint = clear ? "rgba(12,43,62,0.20)" : "rgba(12,43,62,0.34)";
+
+  function changeShape(value: string) {
+    if (value === "circle" || value === "capsule" || value === "panel") setShape(value);
+  }
+
+  function changeMaterial(value: string) {
+    if (value === "clear" || value === "frost") onMaterialChange(value);
+  }
 
   return (
     <div className={styles.root}>
-      <section id="journey" className={styles.journey} aria-labelledby={checklistId + "-journey"}>
+      <section id="journey" className={styles.forms} aria-labelledby={checklistId + "-forms"}>
         <header className={styles.sectionHeading}>
-          <p className={styles.eyebrow}><span>03</span>{t.journey}</p>
-          <h2 id={checklistId + "-journey"}>{t.title}</h2>
+          <p className={styles.eyebrow}><span>03</span>{t.forms}</p>
+          <h2 id={checklistId + "-forms"}>{t.title}</h2>
           <p className={styles.sectionIntro}>{t.intro}</p>
         </header>
-        <div className={styles.journeyCard}>
-          <div className={styles.days} role="group" aria-label={t.journey}>
-            {t.days.map((item, index) => (
-              <button key={item.name} type="button" aria-pressed={activeDay === index} onClick={() => setActiveDay(index)}>
-                <span>{locale === "zh" ? `第 ${index + 1} 天` : `Day ${index + 1}`}</span>
-                <strong>{item.name}</strong>
-              </button>
-            ))}
+
+        <FluidGlass appearance="clear" radius={32} settings={materialSettings} tint={panelTint} className={styles.materialPanel} contentClassName={styles.materialContent}>
+          <div className={styles.shapeSelector}>
+            <FluidSegmented options={[{ value: "circle", label: t.circle }, { value: "capsule", label: t.capsule }, { value: "panel", label: t.panel }]} value={shape} onValueChange={changeShape} ariaLabel={t.shapeLabel} settings={materialSettings} className={styles.shapeSegmented} />
           </div>
-          <JourneyMap day={activeDay} label={t.routeLabel} sample={t.sample} />
-          <div className={styles.dayHeading} aria-live="polite">
-            <h3>{day.name}</h3>
-            <span>{day.distance}</span>
+          <div className={styles.shapeStage} data-fluid-bounds="">
+            <div className={styles.opticalField} aria-hidden="true" />
+            <div className={styles.stageMeta} aria-hidden="true"><span>LIQUID GLASS</span><span>0{shape === "circle" ? 1 : shape === "capsule" ? 2 : 3} / 03</span></div>
+            <FluidGlass key={shape} appearance="clear" radius={preset.radius} settings={materialSettings} tint="rgba(190,235,250,0.13)" className={[styles.specimen, preset.className].join(" ")} contentClassName={styles.shapeContent} draggable dragLabel={t.dragLabel}>
+              <ShapeIcon size={27} strokeWidth={1.25} aria-hidden="true" />
+              <span>{t[shape]}</span>
+              <small>{t.press}</small>
+            </FluidGlass>
+            <p className={styles.shapeHint}>{t.shapeHint}</p>
           </div>
-          <ol className={styles.timeline}>
-            {day.stops.map((stop, index) => (
-              <li key={stop.time}>
-                <time dateTime={stop.time}>{stop.time}</time>
-                <span className={styles.timelineMark} aria-hidden="true">{index === day.stops.length - 1 ? <Waves size={13} /> : <span />}</span>
-                <div><h4>{stop.name}</h4><p>{stop.detail}</p></div>
-              </li>
-            ))}
-          </ol>
-          <div className={styles.preparation}>
-            <h3>{t.before}<Check size={15} aria-hidden="true" /></h3>
-            {t.prep.map((item, index) => (
+          <div className={styles.checklist} data-fluid-control="">
+            <div className={styles.listHeading}>
+              <h3><Shapes size={16} aria-hidden="true" />{t.checklist}</h3>
+              <span className={styles.smallCount} aria-live="polite">{checkedCount}<span> / {checked.length}</span></span>
+            </div>
+            <div className={styles.progress} role="progressbar" aria-label={t.checkProgress} aria-valuenow={checkedCount} aria-valuemin={0} aria-valuemax={checked.length}>
+              <span style={{ width: checkedCount / checked.length * 100 + "%" }} />
+            </div>
+            {t.checks.map((item, index) => (
               <div key={item} className={styles.checkRow}>
-                <Checkbox id={checklistId + "-prep-" + index} className={styles.checkbox} checked={prepared[index]} onCheckedChange={(checked) => setPrepared((previous) => previous.map((value, itemIndex) => itemIndex === index ? checked === true : value))} />
-                <label htmlFor={checklistId + "-prep-" + index} data-checked={prepared[index]}>{item}</label>
+                <Checkbox id={checklistId + "-check-" + index} className={styles.checkbox} checked={checked[index]} onCheckedChange={(value) => setChecked((previous) => previous.map((entry, entryIndex) => entryIndex === index ? value === true : entry))} />
+                <label htmlFor={checklistId + "-check-" + index} data-checked={checked[index]}>{item}</label>
+                <span className={styles.rowNumber} aria-hidden="true">0{index + 1}</span>
               </div>
             ))}
+            {checkedCount === checked.length && <p className={styles.ready} role="status"><Check size={14} aria-hidden="true" />{t.allChecked}</p>}
           </div>
-        </div>
+        </FluidGlass>
       </section>
 
-      <section id="essentials" className={styles.essentials} aria-labelledby={checklistId + "-essentials"}>
+      <section id="essentials" className={styles.essentials} aria-labelledby={checklistId + "-controls"}>
         <header className={styles.sectionHeading}>
-          <p className={styles.eyebrow}><span>04</span>{t.essentials}</p>
-          <h2 id={checklistId + "-essentials"}>{t.essentialsTitle}</h2>
-          <p className={styles.sectionIntro}>{t.essentialsIntro}</p>
+          <p className={styles.eyebrow}><span>04</span>{t.controls}</p>
+          <h2 id={checklistId + "-controls"}>{t.controlsTitle}</h2>
+          <p className={styles.sectionIntro}>{t.controlsIntro}</p>
         </header>
-        <div className={styles.controlScene} data-quiet={quiet}>
-          <Image src="/styles/liquid-glass/glacier.webp" alt={t.imageAlt} fill sizes="(max-width: 900px) 100vw, 560px" className={styles.photograph} unoptimized />
-          <div className={styles.sceneShade} aria-hidden="true" />
-          <div className={styles.sceneCaption}><span>{t.location}</span><ArrowUpRight size={17} aria-hidden="true" /></div>
-          <p className={styles.sceneNote}>{quiet ? t.quietPhotoNote : t.photoNote}</p>
-          <LiquidGlass appearance="clear" radius={28} settings={materialSettings} tint={clear ? "rgba(12,36,45,0.37)" : "rgba(28,51,61,0.56)"} className={styles.controlCenter} contentClassName={styles.controlContent}>
-            <div className={styles.controlTitle}><Compass size={17} aria-hidden="true" /><span>{t.controls}</span></div>
-            <div className={styles.materialRow}>
-              <span>{t.material}</span>
-              <div className={styles.segmented} role="group" aria-label={t.material}>
-                <button type="button" aria-pressed={clear} onClick={() => onMaterialChange("clear")}>{t.clear}</button>
-                <button type="button" aria-pressed={!clear} onClick={() => onMaterialChange("frost")}>{t.frost}</button>
+        <div className={styles.controlEnvironment} data-contrast={contrast}>
+          <FluidGlass appearance="clear" radius={32} settings={materialSettings} tint={panelTint} className={styles.controlScene} contentClassName={styles.sceneContent}>
+            <Image src="/styles/liquid-glass/glacier.webp" alt={t.imageAlt} fill sizes="(max-width: 800px) 100vw, 560px" className={styles.photograph} unoptimized />
+            <div className={styles.sceneShade} aria-hidden="true" />
+            <div className={styles.sceneStripes} aria-hidden="true" />
+            <div className={styles.sceneCaption}><span>{t.preview}</span><Sparkles size={16} aria-hidden="true" /></div>
+            <p className={styles.sceneNote} aria-live="polite">{contrast ? t.contrastPhotoNote : t.photoNote}</p>
+            <FluidGlass appearance="clear" radius={26} settings={materialSettings} tint={clear ? "rgba(8,30,47,0.34)" : "rgba(8,30,47,0.44)"} className={styles.controlCenter} contentClassName={styles.controlContent}>
+              <div className={styles.controlTitle}><SlidersHorizontal size={17} aria-hidden="true" /><span>{t.controlCenter}</span></div>
+              <div className={styles.materialRow}>
+                <span>{t.material}</span>
+                <FluidSegmented options={[{ value: "clear", label: t.clear }, { value: "frost", label: t.frost }]} value={material} onValueChange={changeMaterial} ariaLabel={t.material} settings={materialSettings} className={styles.materialSegmented} />
               </div>
-            </div>
-            <div className={styles.rangeControl} data-disabled={!clear}>
-              <label htmlFor={rangeId}>{t.refraction}<output htmlFor={rangeId}>{refraction}%</output></label>
-              <input id={rangeId} type="range" min={0} max={100} value={refraction} disabled={!clear} onChange={(event) => onRefractionChange(event.currentTarget.valueAsNumber)} />
-            </div>
-            <div className={styles.quietControl}>
-              <span className={styles.quietIcon}>{quiet ? <Moon size={19} aria-hidden="true" /> : <Sun size={19} aria-hidden="true" />}</span>
-              <div><span>{t.quiet}</span><p role="status">{quiet ? t.quietOn : t.quietOff}</p></div>
-              <button type="button" role="switch" aria-checked={quiet} aria-label={t.quiet} className={styles.switch} onClick={() => setQuiet((value) => !value)}><span /></button>
-            </div>
-          </LiquidGlass>
+              <div className={styles.rangeControl} data-disabled={!clear} data-fluid-control="">
+                <label htmlFor={rangeId}>{t.refraction}<output htmlFor={rangeId}>{refraction}%</output></label>
+                <input id={rangeId} type="range" min={0} max={100} value={refraction} disabled={!clear} onChange={(event) => onRefractionChange(event.currentTarget.valueAsNumber)} />
+              </div>
+              <div className={styles.contrastControl} data-fluid-control="">
+                <span className={styles.contrastIcon}><Contrast size={18} aria-hidden="true" /></span>
+                <div><span>{t.contrast}</span><p role="status">{contrast ? t.contrastOn : t.contrastOff}</p></div>
+                <button type="button" role="switch" aria-checked={contrast} aria-label={t.contrast} className={styles.switch} onClick={() => setContrast((value) => !value)}>
+                  <span className={styles.switchTrack}>
+                    <span className={styles.switchKnob}><FluidGlass appearance="clear" radius={999} settings={materialSettings} tint="rgba(219,248,255,0.26)" className={styles.knobGlass} /></span>
+                  </span>
+                </button>
+              </div>
+            </FluidGlass>
+          </FluidGlass>
         </div>
 
-        <div className={styles.packing}>
-          <div className={styles.packingHeading}>
-            <div><h3>{t.packing}</h3><p>{t.packingDetail}</p></div>
-            <span className={styles.packedCount} aria-live="polite">{packedCount}<span> / {packed.length}</span></span>
+        <FluidGlass appearance="clear" radius={28} settings={materialSettings} tint={panelTint} className={styles.collectionPanel} contentClassName={styles.collectionContent}>
+          <div className={styles.listHeading}>
+            <div><h3>{t.collection}</h3><p>{t.collectionDetail}</p></div>
+            <span className={styles.collectionCount} aria-live="polite">{collectedCount}<span> / {collected.length}</span></span>
           </div>
-          <div className={styles.progress} role="progressbar" aria-label={t.packProgress} aria-valuenow={packedCount} aria-valuemin={0} aria-valuemax={packed.length}>
-            <span style={{ width: `${packedCount / packed.length * 100}%` }} />
+          <div className={styles.progress} role="progressbar" aria-label={t.collectionProgress} aria-valuenow={collectedCount} aria-valuemin={0} aria-valuemax={collected.length}>
+            <span style={{ width: collectedCount / collected.length * 100 + "%" }} />
           </div>
-          {t.packingItems.map((item, index) => (
-            <div key={item} className={styles.checkRow}>
-              <Checkbox id={checklistId + "-pack-" + index} className={styles.checkbox} checked={packed[index]} onCheckedChange={(checked) => setPacked((previous) => previous.map((value, itemIndex) => itemIndex === index ? checked === true : value))} />
-              <label htmlFor={checklistId + "-pack-" + index} data-checked={packed[index]}>{item}</label>
-            </div>
-          ))}
-          {packedCount === packed.length && <p className={styles.ready} role="status"><Check size={14} aria-hidden="true" />{t.allPacked}</p>}
-        </div>
+          {t.collectionItems.map((item, index) => {
+            const ItemIcon = collectionIcons[index];
+            return (
+              <div key={item} className={styles.checkRow} data-fluid-control="">
+                <Checkbox id={checklistId + "-collect-" + index} className={styles.checkbox} checked={collected[index]} onCheckedChange={(value) => setCollected((previous) => previous.map((entry, entryIndex) => entryIndex === index ? value === true : entry))} />
+                <label htmlFor={checklistId + "-collect-" + index} data-checked={collected[index]}>{item}</label>
+                {ItemIcon && <ItemIcon size={16} className={styles.collectionIcon} aria-hidden="true" />}
+              </div>
+            );
+          })}
+          {collectedCount === collected.length && <p className={styles.ready} role="status"><Check size={14} aria-hidden="true" />{t.allCollected}</p>}
+        </FluidGlass>
       </section>
     </div>
   );

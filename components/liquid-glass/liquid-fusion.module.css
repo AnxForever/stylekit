@@ -1,0 +1,143 @@
+.root {
+  position: relative;
+  isolation: isolate;
+  width: 100%;
+  max-width: 640px;
+  height: 420px;
+  overflow: hidden;
+  border: 1px solid var(--travel-line, rgb(210 241 255 / 24%));
+  border-radius: 26px;
+  color: var(--travel-ink, #effbff);
+  background: #214f65 url("/styles/liquid-glass/glacier.webp") center / cover;
+}
+
+.canvas,
+.fallback {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.fallback {
+  display: none;
+  background: rgb(10 47 68 / 55%);
+}
+
+.root[data-liquid-fusion="fallback"] .canvas {
+  visibility: hidden;
+}
+
+.root[data-liquid-fusion="fallback"] .fallback {
+  display: block;
+}
+
+.fallbackCircle {
+  fill: rgb(235 249 255 / 9%);
+  stroke: rgb(255 255 255 / 74%);
+  stroke-width: 1;
+}
+
+.heading {
+  position: absolute;
+  z-index: 1;
+  top: 23px;
+  right: 20px;
+  left: 20px;
+  margin: 0;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.015em;
+  text-align: center;
+  pointer-events: none;
+  text-shadow: 0 1px 7px rgb(5 24 36 / 45%);
+}
+
+.handle {
+  position: absolute;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: inherit;
+  cursor: grab;
+  transform: translate(-50%, -50%);
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.handle[data-held] {
+  cursor: grabbing;
+}
+
+.handle span {
+  padding: 5px 8px;
+  border: 1px solid rgb(236 250 255 / 20%);
+  border-radius: 999px;
+  background: rgb(8 40 58 / 20%);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  pointer-events: none;
+}
+
+.handle:focus-visible {
+  outline: 2px solid var(--travel-ink, #effbff);
+  outline-offset: 5px;
+}
+
+.controls {
+  position: absolute;
+  z-index: 3;
+  right: 22px;
+  bottom: 24px;
+  left: 22px;
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  color: var(--travel-ink, #effbff);
+  font-size: 10px;
+}
+
+.controls input {
+  width: 100%;
+  min-width: 0;
+  height: 18px;
+  accent-color: #effbff;
+  cursor: pointer;
+}
+
+.controls input:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 4px;
+  border-radius: 999px;
+}
+
+.controls span,
+.controls label {
+  flex-shrink: 0;
+}
+
+.notice {
+  position: absolute;
+  z-index: 3;
+  right: 20px;
+  bottom: 53px;
+  left: 20px;
+  margin: 0;
+  font-size: 10px;
+  line-height: 1.5;
+  text-align: center;
+}
+
+@media (forced-colors: active) {
+  .handle {
+    border: 1px solid ButtonText;
+  }
+}
