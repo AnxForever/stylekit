@@ -114,8 +114,8 @@ const SECTIONS: ResourceSection[] = [
     id: "open-source-designs",
     zh: "开源设计",
     en: "Open Source",
-    blurbZh: "浏览可核验源码、许可与技术栈的完整网站。",
-    blurbEn: "Browse complete sites with verified source, license, and stack details.",
+    blurbZh: "发现精选开源网站、组件与交互，浏览演示和 GitHub。",
+    blurbEn: "Discover selected open-source sites, components, and interactions, with demos and GitHub links.",
     Comp: OpenSourceDesignsContent,
   },
 ];
@@ -170,8 +170,8 @@ export function ResourcesContent() {
           </h1>
           <p className="text-muted leading-relaxed max-w-2xl text-lg">
             {tx(
-              "可直接取用的设计素材和完整开源网站：字体配对、渐变、阴影与背景纹理。也可查看网站源码、许可与适用场景。",
-              "Copy-ready design assets and complete open-source sites: explore font pairings, gradients, shadows, background textures, source and licenses.",
+              "可直接取用的字体配对、渐变、阴影与背景纹理，以及值得一看的开源网站、组件与交互。",
+              "Copy-ready font pairings, gradients, shadows, and backgrounds, alongside open-source sites, components, and interactions worth exploring.",
             )}
           </p>
           <LocalizedLink
