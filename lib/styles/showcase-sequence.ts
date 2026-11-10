@@ -102,7 +102,7 @@ export const SHOWCASE_SEQUENCE: readonly ShowcaseSequenceEntry[] = [
   ["parallax-sections", "Parallax Sections"],
   ["warm-dashboard", "Warm Dashboard"],
   ["neon-gradient", "Neon Gradient"],
-  ["liquid-glass", "Apple Liquid Glass"],
+  ["liquid-glass", "Liquid Glass"],
   ["scandinavian", "Scandinavian Minimalism"],
   ["cel-shading", "Cel Shading"],
   ["wabi-sabi", "Wabi-Sabi"],

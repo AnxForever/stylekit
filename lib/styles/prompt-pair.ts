@@ -330,6 +330,7 @@ export function buildHardPrompt(
   const checklistBlock = buildSlopChecklist({
     dontList: dontForLocale,
     locale: locale === "en" ? "en" : "zh",
+    styleSlug: input.styleSlug,
   });
 
   const parts = [

@@ -996,16 +996,16 @@
     "enBullets": 116
   },
   "liquid-glass": {
-    "zh": 19714,
-    "en": 22609,
+    "zh": 13169,
+    "en": 17847,
     "zhTokens": true,
     "enTokens": true,
-    "zhFences": 54,
+    "zhFences": 48,
     "enFences": 42,
-    "zhHeadings": 71,
-    "enHeadings": 55,
-    "zhBullets": 189,
-    "enBullets": 164
+    "zhHeadings": 49,
+    "enHeadings": 43,
+    "zhBullets": 99,
+    "enBullets": 88
   },
   "scandinavian": {
     "zh": 8996,

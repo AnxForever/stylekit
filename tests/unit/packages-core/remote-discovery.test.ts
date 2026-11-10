@@ -9,7 +9,7 @@ import {
   searchStylesLive,
 } from "@/packages/core/src/discovery/remote";
 import { getImplementationBrief, type ImplementationBrief } from "@/lib/implementation-brief";
-import { getTokens } from "@/lib/discovery";
+import { getComponentRecipe, getTokens } from "@/lib/discovery";
 
 const catalogue = (styles: unknown[]) =>
   new Response(JSON.stringify({ total: styles.length, styles }), {
@@ -133,6 +133,37 @@ describe("remote discovery", () => {
       },
     });
     expect(liveRecipe).toMatchObject({ origin: "live", data: { className: expect.stringContaining("online-recipe-class") } });
+    expect(liveRecipe.data?.code).toMatch(/^<button\b/);
+    expect(liveRecipe.data?.code).not.toContain("CSS fallback");
+  });
+
+  it("keeps the material note on live Liquid Glass code without replacing the live recipe or data provenance", async () => {
+    const brief = copyLocalBrief("liquid-glass");
+    brief.recipes.button.skeleton.baseClasses.push("live-glass-contract");
+    vi.stubGlobal("fetch", vi.fn((url: string) => Promise.resolve(responseFor(url, brief))));
+
+    const result = await getComponentRecipeLive("liquid-glass", "button", { baseUrl: "https://live-glass.test" });
+    const local = getComponentRecipe("liquid-glass", "button");
+
+    expect(result.origin).toBe("live");
+    expect(result.fallbackReason).toBeUndefined();
+    expect(result.data?.code).toMatch(/^\/\* Liquid Glass: CSS fallback only/);
+    expect(result.data?.code).toContain("https://www.stylekit.top/api/design/liquid-glass/design.md?locale=en");
+    expect(result.data?.code).toContain("Keep foreground text separate from the filtered backdrop layer.");
+    expect(result.data?.code).toContain("live-glass-contract");
+    expect(result.data?.code.split("*/", 1)[0]).toBe(local?.code.split("*/", 1)[0]);
+    expect(result.data?.className).toContain("live-glass-contract");
+    expect(Object.keys(result.data ?? {}).sort()).toEqual(["className", "code", "component", "slug"]);
+  });
+
+  it("retains one material note while reporting an offline Liquid Glass fallback separately", async () => {
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue(responseFor("", { error: "offline" }, 503)));
+
+    const result = await getComponentRecipeLive("liquid-glass", "input", { baseUrl: "https://offline-glass.test" });
+
+    expect(result).toMatchObject({ origin: "bundled", fallbackReason: "HTTP 503" });
+    expect(result.data).toEqual(getComponentRecipe("liquid-glass", "input"));
+    expect(result.data?.code.match(/CSS fallback only/g)).toHaveLength(1);
   });
 
   it("does not revive a bundled style after the online catalogue removes it", async () => {

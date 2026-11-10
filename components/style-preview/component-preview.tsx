@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState, useRef, useCallback } from "react";
+import dynamic from "next/dynamic";
 import { CodeBlock } from "./code-block";
 import type { ComponentTemplate } from "@/lib/styles";
 import { useI18n } from "@/lib/i18n/context";
@@ -9,6 +10,12 @@ import { generatePreviewHTML } from "@/lib/style-preview/preview-html";
 import { componentCodeWithAssets } from "@/lib/style-preview/motion-css";
 import type { PreviewAssets } from "@/lib/style-preview/preview-assets";
 import { ExtractedComponentPreview } from "./extracted-component-preview";
+
+const LiquidGlassDetailPreview = dynamic(
+  () => import("@/components/liquid-glass/detail-preview"),
+  { loading: () => <div className="min-h-[200px] rounded-2xl bg-zinc-100 dark:bg-zinc-800" aria-busy="true" /> },
+);
+const liquidGlassComponentKeys = new Set(["button", "card", "input", "nav", "hero", "footer"]);
 
 interface ComponentPreviewProps {
   components: Record<string, ComponentTemplate>;
@@ -31,6 +38,8 @@ export function ComponentPreview({
   const [activeTab, setActiveTab] = useState(componentKeys[0]);
   const [showCode, setShowCode] = useState(defaultShowCode);
   const activeComponent = components[activeTab];
+  const useLiquidGlassPreview = styleSlug === "liquid-glass" &&
+    !previewAssets && liquidGlassComponentKeys.has(activeTab);
   const { t, locale } = useI18n();
   const touchStartX = useRef(0);
 
@@ -78,11 +87,13 @@ export function ComponentPreview({
       : activeComponent.descriptionEn;
 
   const previewHtml = useMemo(() => {
-    if (!activeComponent) return "";
+    // These checked-in React examples need their renderer, not JSX converted
+    // to HTML. Keep imports in the code panel and out of the rendered preview.
+    if (!activeComponent || useLiquidGlassPreview) return "";
     return sanitizePreviewHtml(
       activeComponent.preview || generatePreviewHTML(activeComponent.code)
     );
-  }, [activeComponent]);
+  }, [activeComponent, useLiquidGlassPreview]);
   if (!activeComponent) return null;
 
   return (
@@ -132,13 +143,15 @@ export function ComponentPreview({
         onTouchStart={handleTouchStart}
         onTouchEnd={handleTouchEnd}
       >
-        {/* 
+        {/*
           Create a containing block for position: fixed preview snippets
           (common in nav examples). Without this, fixed elements attach to the
           viewport and the preview pane can appear blank.
         */}
-        <div className="relative isolate w-full min-h-[200px] transform-gpu">
-          {previewAssets ? (
+        <div className={`relative isolate w-full min-h-[200px]${useLiquidGlassPreview ? "" : " transform-gpu"}`}>
+          {useLiquidGlassPreview ? (
+            <LiquidGlassDetailPreview key={activeTab} componentKey={activeTab} locale={locale} />
+          ) : previewAssets ? (
             <ExtractedComponentPreview key={activeTab} html={previewHtml} assets={previewAssets} componentKey={activeTab} />
           ) : (
             <div dangerouslySetInnerHTML={{ __html: previewHtml }} />

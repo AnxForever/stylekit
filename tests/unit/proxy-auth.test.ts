@@ -235,3 +235,93 @@ describe("proxy locale negotiation for /colors", () => {
     );
   });
 });
+
+describe("proxy canonical routing for style details", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    vi.stubEnv("NEXT_PUBLIC_SUPABASE_URL", "");
+    vi.stubEnv("NEXT_PUBLIC_SUPABASE_ANON_KEY", "");
+    mocks.verifyAdminSessionCookieValue.mockResolvedValue(false);
+  });
+
+  const canonicalRequestHeaders: Record<string, string>[] = [
+    { "user-agent": "Googlebot" },
+    { "user-agent": "Google-InspectionTool", "accept-language": "zh-CN" },
+    { "user-agent": "ClaudeBot" },
+    { "user-agent": "Twitterbot" },
+    { "user-agent": "Mozilla/5.0" },
+    {},
+  ];
+
+  it.each(canonicalRequestHeaders)("consolidates unprefixed details for crawlers or requests without a language preference: %j", async (headers) => {
+    const response = await proxy(
+      new NextRequest("https://www.stylekit.top/styles/swiss-style?utm_source=link", {
+        headers,
+      }),
+    );
+
+    expect(response.status).toBe(308);
+    expect(response.headers.get("location")).toBe(
+      "https://www.stylekit.top/en/styles/swiss-style?utm_source=link",
+    );
+    expect(response.headers.get("vary")).toBe("Accept-Language, Cookie, User-Agent");
+    expect(response.headers.get("set-cookie")).toBeNull();
+  });
+
+  const browserPreferences: {
+    headers: Record<string, string>;
+    locale: "en" | "zh";
+  }[] = [
+    { headers: { "accept-language": "zh-CN,zh;q=0.9" }, locale: "zh" },
+    { headers: { "accept-language": "en-US,en;q=0.9" }, locale: "en" },
+    { headers: { "accept-language": "en-US", cookie: "stylekit-locale=zh" }, locale: "zh" },
+  ];
+
+  it.each(browserPreferences)("keeps browser language negotiation temporary: %j", async ({ headers, locale }) => {
+    const response = await proxy(
+      new NextRequest("https://www.stylekit.top/styles/swiss-style", { headers }),
+    );
+
+    expect(response.status).toBe(307);
+    expect(response.headers.get("location")).toBe(
+      `https://www.stylekit.top/${locale}/styles/swiss-style`,
+    );
+  });
+
+  it.each([
+    "/",
+    "/styles",
+    "/en/styles/swiss-style",
+    "/zh/styles/swiss-style",
+    "/styles/swiss-style/showcase",
+    "/styles/swiss-style.md",
+    "/styles/swiss-style/opengraph-image",
+    "/api/design/swiss-style/design.md",
+    "/llms.txt",
+    "/mcp",
+  ])("preserves the existing route handling for %s", async (pathname) => {
+    const response = await proxy(
+      new NextRequest(`https://www.stylekit.top${pathname}`, {
+        headers: { "user-agent": "Googlebot" },
+      }),
+    );
+
+    expect(response.status).toBe(200);
+    expect(response.headers.get("location")).toBeNull();
+  });
+
+  it("does not redirect a detail after an internal locale rewrite", async () => {
+    const response = await proxy(
+      new NextRequest("https://www.stylekit.top/styles/swiss-style", {
+        headers: {
+          "user-agent": "Googlebot",
+          "x-stylekit-locale": "en",
+          "x-stylekit-visible-path": "/en/styles/swiss-style",
+        },
+      }),
+    );
+
+    expect(response.status).toBe(200);
+    expect(response.headers.get("location")).toBeNull();
+  });
+});

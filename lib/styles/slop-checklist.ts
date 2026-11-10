@@ -9,6 +9,11 @@
  * AI self-validates before delivering output.
  */
 
+const defaultMotionCheck = {
+  zh: "没有 bounce / elastic 缓动曲线",
+  en: "No bounce or elastic easing curves",
+} as const;
+
 const universalChecks = {
   zh: [
     "没有紫色到蓝色的渐变",
@@ -16,7 +21,7 @@ const universalChecks = {
     "没有嵌套卡片（卡片里面套卡片）",
     "没有在彩色背景上放灰色文字",
     "正文对比度满足 WCAG AA（≥4.5:1）",
-    "没有 bounce / elastic 缓动曲线",
+    defaultMotionCheck.zh,
     "动效有 prefers-reduced-motion 备选方案",
     "正文行宽不超过 65-75 个字符",
     "没有单侧粗边框装饰（border-left/right accent stripe）",
@@ -30,7 +35,7 @@ const universalChecks = {
     "No nested cards (cards inside cards)",
     "No gray text on colored backgrounds",
     "Body text contrast meets WCAG AA (>= 4.5:1)",
-    "No bounce or elastic easing curves",
+    defaultMotionCheck.en,
     "Animations have a prefers-reduced-motion fallback",
     "Body text line length capped at 65-75 characters",
     "No side-stripe accent borders (border-left/right > 1px)",
@@ -75,6 +80,7 @@ function deriveStyleChecks(
 export interface SlopChecklistInput {
   dontList: string[];
   locale?: "zh" | "en";
+  styleSlug?: string;
 }
 
 export function buildSlopChecklist(input: SlopChecklistInput): string {
@@ -82,7 +88,12 @@ export function buildSlopChecklist(input: SlopChecklistInput): string {
   const universal = universalChecks[locale];
   const styleSpecific = deriveStyleChecks(input.dontList, locale);
 
-  const allChecks: string[] = [...universal];
+  const allChecks: string[] = universal.map((check) => {
+    if (input.styleSlug !== "liquid-glass" || check !== defaultMotionCheck[locale]) return check;
+    return locale === "zh"
+      ? "回弹仅用于短促的按压和拖动反馈；停止操作后保持静止，并遵守减少动态效果偏好"
+      : "Use restrained spring settling only after a press or drag; stay still at rest and honor reduced motion";
+  });
 
   // Insert style-specific checks after the first 4 universal checks
   // so they feel contextual rather than appended

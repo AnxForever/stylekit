@@ -1340,20 +1340,20 @@ export const stylesMeta: StyleMeta[] = [
   // New styles - Batch 8
   {
     slug: "liquid-glass",
-    name: "Apple 流动玻璃",
-    nameEn: "Apple Liquid Glass",
-    description: "Apple WWDC 2025 发布的全新设计语言，通过 SVG 折射滤镜、彩虹边缘光晕、流体形变动画和多层玻璃堆叠，创造出超越传统毛玻璃的有机流动视觉体验。",
-    descriptionEn: "Apple's revolutionary design language from WWDC 2025, creating an organic, fluid visual experience beyond traditional frosted glass through SVG refraction filters, rainbow edge halos, fluid morphing animations, and multi-layer glass stacking.",
+    name: "液态玻璃",
+    nameEn: "Liquid Glass",
+    description: "通透的玻璃浮在内容之上：中心清晰、边缘轻折光，白色细高光勾勒厚度。用在浮动导航、搜索和控制面板，触碰时轻压、拖动时伸展、松手后回弹。",
+    descriptionEn: "Clear glass floats above the content, bending detail near a fine white rim. Floating navigation, search, and controls compress on press, stretch with the gesture, and spring back on release.",
     cover: "/styles/liquid-glass.svg",
     styleType: "visual",
     tags: ["brand-inspired"],
     category: "modern",
     colors: {
-      primary: "rgba(255, 255, 255, 0.1)",
-      secondary: "rgba(255, 255, 255, 0.15)",
-      accent: ["#ff6b6b", "#4ecdc4", "#a855f7", "#007AFF", "#FF2D55"],
+      primary: "#f3f2ed",
+      secondary: "#202929",
+      accent: ["#25414a", "#e4efeb", "#c7e4e5", "#557b79"],
     },
-    keywords: ["Apple", "Liquid Glass", "流动玻璃", "彩虹边缘", "折射", "多层堆叠", "WWDC 2025"],
+    keywords: ["液态玻璃", "流动玻璃", "Apple", "透明材质", "光学折射", "浮动导航", "回弹"],
   },
   // New styles - from style-optimization
   {

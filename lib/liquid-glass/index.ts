@@ -1,10 +1,10 @@
-// Liquid Glass — Apple-style refraction material built on SVG displacement filters.
+// Liquid Glass: curved-rim refraction with a clear, undistorted center.
+import { lensProfile, sampleLensProfile } from "./optics";
 //
 // The pipeline encodes a lens-shaped vector field into an RGBA displacement map
 // (R = horizontal offset, G = vertical offset, 128 = rest). feDisplacementMap
-// bends the backdrop through that map once per RGB channel at slightly
-// different scales, producing chromatic dispersion at the rim. An feTurbulence
-// pass adds a liquid wobble and feGaussianBlur frosts the result.
+// bends the backdrop at the curved rim. RGB can use subtly different scales;
+// the center remains neutral. Blur is a separate material/fallback choice.
 //
 // Everything in this module is pure math so it can run in unit tests without a
 // DOM; the canvas/PNG encoding lives in components/liquid-glass.
@@ -14,7 +14,7 @@ export interface LiquidGlassSettings {
   light: number;
   /** Overall displacement strength — how hard the backdrop bends (0-100). */
   refraction: number;
-  /** Virtual lens thickness: reach and magnification of the bend (0-100). */
+  /** Virtual lens thickness: curvature of the refracting rim (0-100). */
   depth: number;
   /** Chromatic dispersion — RGB separation at the rim (0-100). */
   dispersion: number;
@@ -25,12 +25,12 @@ export interface LiquidGlassSettings {
 }
 
 export const DEFAULT_LIQUID_GLASS_SETTINGS: LiquidGlassSettings = {
-  light: 55,
+  light: 65,
   refraction: 60,
-  depth: 55,
-  dispersion: 45,
-  frost: 10,
-  spread: 50,
+  depth: 50,
+  dispersion: 8,
+  frost: 2,
+  spread: 45,
 };
 
 export function resolveLiquidGlassSettings(
@@ -94,10 +94,12 @@ export interface DisplacementMapOptions {
   width: number;
   height: number;
   radius: number;
-  /** Lens thickness (0-100): bend reach and center magnification. */
+  /** Lens thickness (0-100): height of the refracting rim. */
   depth: number;
-  /** Rim falloff band width (0-100), as a share of the half min dimension. */
+  /** Width of the curved rim (0-100), mapped to 8-36 CSS px. */
   spread: number;
+  /** Map pixels per CSS pixel, from resolveMapGeometry. Defaults to 1. */
+  mapScale?: number;
 }
 
 const NEUTRAL = 127.5;
@@ -107,23 +109,19 @@ const NEUTRAL = 127.5;
  *
  * Each pixel stores an offset vector: R encodes x, G encodes y, and 128 means
  * "sample in place". The vector points toward the interior and its magnitude
- * ramps up near the border (water-droplet refraction: strongest at the rim,
- * near-neutral at the center), plus a gentle whole-surface magnification that
- * grows with depth.
+ * follows the refracted ray through a curved rim. Its width is independent of
+ * the overall panel size. The flat interior has no radial magnification.
  */
 export function buildDisplacementPixels(
   options: DisplacementMapOptions
 ): Uint8ClampedArray<ArrayBuffer> {
   const { width, height, radius } = options;
-  const depth = clamp01(options.depth / 100);
   const spread = clamp01(options.spread / 100);
+  const profile = lensProfile(options.depth);
 
   const data = new Uint8ClampedArray(width * height * 4);
   const halfMin = Math.min(width, height) / 2;
-  const band = Math.max(2, spread * halfMin);
-  // Thin glass hugs the rim (steep falloff); thick glass bends deep inward.
-  const falloffExponent = 4 - depth * 2.8;
-  const magnification = depth * 0.14;
+  const band = Math.max(1, Math.min(halfMin * 0.8, (8 + spread * 28) * (options.mapScale ?? 1)));
   const centerX = width / 2;
   const centerY = height / 2;
 
@@ -135,26 +133,22 @@ export function buildDisplacementPixels(
       let vx = 0;
       let vy = 0;
 
-      if (sd < 0) {
-        const rimDistance = -sd;
-        const t = Math.min(rimDistance / band, 1);
-        const falloff = Math.pow(1 - t, falloffExponent);
-
-        if (falloff > 0.001) {
-          const gx =
-            sdRoundedRect(px + 1, py, width, height, radius) -
-            sdRoundedRect(px - 1, py, width, height, radius);
-          const gy =
-            sdRoundedRect(px, py + 1, width, height, radius) -
-            sdRoundedRect(px, py - 1, width, height, radius);
-          const length = Math.hypot(gx, gy) || 1;
-          // Sample toward the interior so the rim wraps content like a lens.
-          vx = (-gx / length) * falloff;
-          vy = (-gy / length) * falloff;
+      if (sd < 0 && -sd < band) {
+        const magnitude = sampleLensProfile(profile, -sd / band);
+        // Analytic rounded-rectangle normals avoid finite-difference seams.
+        const dx = px - centerX;
+        const dy = py - centerY;
+        const qx = Math.abs(dx) - (width / 2 - radius);
+        const qy = Math.abs(dy) - (height / 2 - radius);
+        if (qx > 0 && qy > 0) {
+          const length = Math.hypot(qx, qy);
+          vx = -Math.sign(dx) * qx / length * magnitude;
+          vy = -Math.sign(dy) * qy / length * magnitude;
+        } else if (qx > qy) {
+          vx = -Math.sign(dx) * magnitude;
+        } else {
+          vy = -Math.sign(dy) * magnitude;
         }
-
-        vx += ((centerX - px) / halfMin) * magnification;
-        vy += ((centerY - py) / halfMin) * magnification;
       }
 
       const index = (y * width + x) * 4;
@@ -175,7 +169,7 @@ export interface LiquidGlassFilterParams {
   scaleB: number;
   /** feGaussianBlur stdDeviation in px. */
   blurPx: number;
-  /** feTurbulence wobble displacement scale in px. */
+  /** Retained for API compatibility. Clear optics do not add turbulence. */
   wobblePx: number;
   /** Opacity of the specular rim highlight (0-1). */
   specularOpacity: number;
@@ -185,7 +179,8 @@ export interface LiquidGlassFilterParams {
 
 /** Maps the 0-100 user settings onto concrete SVG filter primitive values. */
 export function deriveFilterParams(
-  settings: LiquidGlassSettings
+  settings: LiquidGlassSettings,
+  shortSide?: number
 ): LiquidGlassFilterParams {
   const refraction = clamp01(settings.refraction / 100);
   const depth = clamp01(settings.depth / 100);
@@ -193,15 +188,16 @@ export function deriveFilterParams(
   const frost = clamp01(settings.frost / 100);
   const light = clamp01(settings.light / 100);
 
-  const base = refraction * 280 * (0.55 + depth * 0.75);
-  const split = dispersion * 0.35;
+  const requested = refraction * (36 + depth * 36);
+  const base = shortSide === undefined ? requested : Math.min(requested, Math.max(0, shortSide) * 0.7);
+  const split = dispersion * 0.12;
 
   return {
     scaleR: base * (1 - split),
     scaleG: base,
     scaleB: base * (1 + split),
     blurPx: frost * 16,
-    wobblePx: refraction === 0 ? 0 : 1.5 + refraction * 9,
+    wobblePx: 0,
     specularOpacity: light,
     saturation: 1 + light * 0.35,
   };

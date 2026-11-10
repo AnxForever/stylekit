@@ -4,13 +4,14 @@ import type { ComponentType } from "react";
 import { NeoBrutalistRoom } from "./neo-brutalist-room";
 import { GlassmorphismRoom } from "./glassmorphism-room";
 import { EditorialRoom } from "./editorial-room";
+import { LiquidGlassRoom } from "./liquid-glass-room";
 import type { RoomProps } from "./types";
 
 /**
  * 风格房间注册表 — 数据驱动, Cursor Lab 和详情页都从这里取。
  *
  * 两种房间:
- *  - Component (现有 3): 独立实现, 直接渲染 <Component showHeader={false} />
+ *  - Component: 独立实现, 直接渲染 <Component showHeader={false} />
  *  - stage (新房间): 原语组合 + 视觉配置, 由 <GenericRoom> 渲染
  */
 
@@ -278,29 +279,18 @@ export const ROOMS: RoomConfig[] = [
     accent: "#b4dcff",
     name: { en: "Liquid Glass", zh: "液态玻璃" },
     tagline: {
-      en: "A liquid blob drifts under the cursor, refracting light.",
-      zh: "液态光斑在光标下漂移,折射光线。",
+      en: "A clear lens follows your pointer across the ice.",
+      zh: "清透镜片追随指针，经过冰川的纹理。",
     },
     note: {
-      en: "Organic morphing aura — border-radius breathes, scale pulses, like liquid metal.",
-      zh: "有机形变光晕——圆角呼吸、缩放脉动,像液态金属。",
+      en: "Shared Liquid Glass bends the scene at the rim. Unsupported browsers use a labeled frosted alternative; touch swipes keep scrolling.",
+      zh: "共用液态玻璃材质，在边缘弯折真实背景。不支持的浏览器显示磨砂替代提示，触屏滑动保留滚动。",
     },
     effects: {
-      en: ["Liquid morph blob", "Refraction aura", "Glass spotlight"],
-      zh: ["液态形变光斑", "折射光晕", "玻璃聚光灯"],
+      en: ["Clear lens with refracting edges", "Pointer, arrow keys and Home", "Tap to place; still when idle"],
+      zh: ["清透中心与边缘折射", "指针、方向键与 Home", "轻点定位，无操作时静止"],
     },
-    stage: {
-      bg: "radial-gradient(circle at 40% 30%, #142840 0%, #0a1424 80%)",
-      fontColor: "#b4dcff",
-      fontFamily: "var(--font-sans), ui-sans-serif, system-ui, sans-serif",
-      hero: "liquid",
-      heroColor: "#b4dcff",
-      primitives: [
-        { type: "Warp", props: { color: "rgba(180,220,255,0.5)", size: 200 } },
-        { type: "FollowAura", props: { color: "rgba(180,220,255,0.3)", size: 240, blur: 20, blend: "screen" } },
-        { type: "Spotlight", props: { color: "180,220,255", strength: 0.16 } },
-      ],
-    },
+    Component: LiquidGlassRoom,
   },
   {
     slug: "claymorphism",

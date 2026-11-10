@@ -290,10 +290,12 @@ export function Warp({
 
     const xTo = gsap.quickTo(el, "x", { duration: 0.28, ease: "expo.out" });
     const yTo = gsap.quickTo(el, "y", { duration: 0.28, ease: "expo.out" });
-    const scaleTo = gsap.quickTo(el, "scale", { duration: 0.22, ease: "expo.out" });
+    // quickTo updates one property; the scale alias expands to two axes.
+    const scaleXTo = gsap.quickTo(el, "scaleX", { duration: 0.22, ease: "expo.out" });
+    const scaleYTo = gsap.quickTo(el, "scaleY", { duration: 0.22, ease: "expo.out" });
     const opacityTo = gsap.quickTo(el, "opacity", { duration: 0.4 });
 
-    gsap.ticker.add(() => {
+    const tick = () => {
       const stage = stageRef.current;
       if (!stage) return;
       const r = stage.getBoundingClientRect();
@@ -311,8 +313,12 @@ export function Warp({
       const br1 = 45 + Math.sin(t * 1.7) * 18;
       const br2 = 55 - Math.sin(t * 1.3) * 18;
       el.style.borderRadius = `${br1}% ${br2}% ${br2}% ${br1}% / ${br2}% ${br1}% ${br1}% ${br2}%`;
-      scaleTo(1 + Math.sin(t * 2.2) * 0.12);
-    });
+      const scale = 1 + Math.sin(t * 2.2) * 0.12;
+      scaleXTo(scale);
+      scaleYTo(scale);
+    };
+    gsap.ticker.add(tick);
+    return () => gsap.ticker.remove(tick);
   }, { scope: ref });
 
   return (

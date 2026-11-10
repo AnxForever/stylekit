@@ -195,6 +195,18 @@ export async function proxy(request: NextRequest) {
       isLocale(localeCookieValue) ||
       Boolean(request.headers.get("accept-language"));
     if (isContentCrawler(ua) || !hasLanguagePreference) {
+      // The English detail URL is canonical. Serving its unprefixed alias as
+      // another 200 let Google select /styles/swiss-style instead of /en/.
+      // Keep browser language negotiation below and standalone showcases out
+      // of this exact detail-route match.
+      if (/^\/styles\/[^/]+$/.test(incomingPath)) {
+        const canonicalUrl = request.nextUrl.clone();
+        canonicalUrl.pathname = addLocaleToPathname(incomingPath, DEFAULT_LOCALE);
+        const response = NextResponse.redirect(canonicalUrl, 308);
+        response.headers.set("Vary", "Accept-Language, Cookie, User-Agent");
+        return response;
+      }
+
       const localizedVisiblePath = addLocaleToPathname(incomingPath, DEFAULT_LOCALE);
       const requestHeaders = new Headers(request.headers);
       requestHeaders.set("x-stylekit-locale", DEFAULT_LOCALE);

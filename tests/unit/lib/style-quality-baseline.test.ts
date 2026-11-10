@@ -23,6 +23,11 @@ import { hasLintableRules } from "@/lib/styles/style-linter";
  * sub-60 count did not move. E-Ink joins at 151; its score also leaves that
  * distribution and the sub-60 count unchanged.
  *
+ * The Liquid Glass material revision separates light reading surfaces from
+ * dark optical scenes and gives its CSS fallback readable text pairs. Its
+ * measured token score rises from 60 to 97; p75 becomes 70, with the other
+ * percentiles and the sub-60 count unchanged. Submission gates are unchanged.
+ *
  * If a refactor moves these numbers, the gate thresholds derived from them are
  * no longer valid and must be re-derived rather than nudged back.
  */
@@ -43,7 +48,7 @@ describe("style library quality baseline", () => {
     expect(scores[0]).toBe(27);
     expect(percentile(0.25)).toBe(51);
     expect(percentile(0.5)).toBe(59);
-    expect(percentile(0.75)).toBe(69);
+    expect(percentile(0.75)).toBe(70);
     expect(scores[scores.length - 1]).toBe(97);
   });
 

@@ -68,6 +68,19 @@ describe("discovery", () => {
     const r = getComponentRecipe("glassmorphism", "button");
     expect(r).not.toBeNull();
     expect((r?.className.length ?? 0) > 0).toBe(true);
+    expect(r?.code).toMatch(/^<button\b/);
+    expect(r?.code).not.toContain("CSS fallback");
     expect(getComponentRecipe("glassmorphism", "nonexistent")).toBeNull();
+  });
+
+  it.each(["button", "input", "nav"])("keeps the optical implementation requirement with copied Liquid Glass %s code", (component) => {
+    const recipe = getComponentRecipe("liquid-glass", component);
+
+    expect(recipe?.code).toMatch(/^\/\* Liquid Glass: CSS fallback only/);
+    expect(recipe?.code).toContain("https://www.stylekit.top/api/design/liquid-glass/design.md?locale=en");
+    expect(recipe?.code).toContain("Keep foreground text separate from the filtered backdrop layer.");
+    expect(recipe?.code).toContain(`*/\n<${component}`);
+    expect(recipe?.className).not.toContain("CSS fallback");
+    expect(Object.keys(recipe ?? {}).sort()).toEqual(["className", "code", "component", "slug"]);
   });
 });

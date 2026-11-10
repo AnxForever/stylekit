@@ -96,6 +96,13 @@ describe("buildDisplacementPixels", () => {
     expect(r).toBe(NEUTRAL);
     expect(g).toBe(NEUTRAL);
   });
+
+  it("keeps the whole flat interior neutral, including wide controls", () => {
+    const wide = buildDisplacementPixels({ width: 600, height: 80, radius: 24, depth: 100, spread: 45 });
+    for (const x of [60, 140, 300, 460, 540]) {
+      expect(pixelAt(wide, 600, x, 40).slice(0, 2)).toEqual([NEUTRAL, NEUTRAL]);
+    }
+  });
 });
 
 describe("resolveMapGeometry", () => {
@@ -153,6 +160,12 @@ describe("deriveFilterParams", () => {
     const frosted = deriveFilterParams({ ...DEFAULT_LIQUID_GLASS_SETTINGS, frost: 100 });
     expect(clear.blurPx).toBe(0);
     expect(frosted.blurPx).toBe(16);
+  });
+
+  it("limits displacement on small controls at the strongest settings", () => {
+    const params = deriveFilterParams({ ...DEFAULT_LIQUID_GLASS_SETTINGS, refraction: 100, depth: 100, dispersion: 100 }, 44);
+    expect(params.scaleB).toBeLessThan(44 * 0.8);
+    expect(params.wobblePx).toBe(0);
   });
 });
 

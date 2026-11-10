@@ -519,11 +519,11 @@ export const promptTopics: PromptTopic[] = [
           "Build a glassmorphism dashboard using shadcn/ui. Background with a mesh gradient (purple, blue, teal). All cards use backdrop-blur-xl with bg-white/10 borders border-white/20. Include: floating stat cards, a glass navigation bar at the top, and a profile dropdown with glass effect. Use rounded-2xl for all containers. Text hierarchy through white text opacity levels: headings 100%, body 80%, muted 50%.",
       },
       {
-        titleEn: "Apple Liquid Glass for Cursor",
-        titleZh: "Cursor Apple 液态玻璃",
+        titleEn: "Liquid Glass for Cursor",
+        titleZh: "Cursor 液态玻璃",
         tool: "cursor",
         prompt:
-          "Implement an Apple-inspired liquid glass design system in Next.js with Tailwind. Create a glass() utility that applies: bg-white/10 dark:bg-black/10, backdrop-blur-2xl, border border-white/20, shadow-lg. Build a modal, dropdown, sidebar, and tooltip using this glass treatment. The background should be a gradient with floating colored orbs (CSS radial-gradient) that create dynamic color through the glass effect.",
+          "Implement a real Liquid Glass system in Next.js with Tailwind. Follow https://www.stylekit.top/api/design/liquid-glass/design.md?locale=en. Use a warm paper canvas (#f3f2ed), dark ink (#202929), and a detailed photograph or lined scene behind floating controls. On compatible Chromium engines, enable real SVG backdrop displacement by default: a Snell curved-rim profile, rounded-rectangle normals, a flat center, size-bounded displacement, a directional fine rim, and optional very subtle dispersion. Translucent fill plus backdrop-blur is only an unsupported-browser fallback, not the complete material. Keep navigation, buttons, and search text sharp above the filtered layer. Give each displayed control a working action. Use tinted glass for short menus over busy imagery and solid surfaces for reading cards. Allow 44px hit areas, visible focus, sufficient contrast on light and dark scenes, keyboard equivalents, and cancellation that restores a drag's start. Honor reduced motion and reduced transparency. Avoid painted rainbow borders, neon type, idle morphing, and placeholder playback features.",
       },
       {
         titleEn: "Glass UI for Claude",

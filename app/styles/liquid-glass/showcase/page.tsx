@@ -4,7 +4,7 @@ export const dynamic = "force-static";
 
 export const metadata = {
   title: "Liquid Glass Showcase - StyleKit",
-  description: "Live demonstration of Apple Liquid Glass design style with rainbow edge refraction, fluid animations, and multi-layer glass stacking.",
+  description: "Move a clear glass lens over a glacier photograph, contours, and a grid. Compare live edge refraction with soft frost, with keyboard controls and accessible fallbacks.",
 };
 
 const ShowcaseContent = dynamicImport(() => import("./_content"), {

@@ -102,7 +102,7 @@ async function main() {
     }
   }
 
-  for (const pathname of ["/", "/styles", "/styles/corporate-clean", "/templates/saas-landing"]) {
+  for (const pathname of ["/", "/styles", "/templates/saas-landing"]) {
     const response = await fetchManual(pathname, "Applebot/0.1");
     if (response.status !== 200) {
       issues.push(`${pathname} (Applebot): expected 200, got ${response.status}`);
@@ -113,6 +113,27 @@ async function main() {
     const expected = `${new URL(canonicalUrls[0]).origin}/en${pathname === "/" ? "" : pathname}`;
     if (canonicals.length !== 1 || canonicals[0] !== expected) {
       issues.push(`${pathname} (Applebot): expected canonical ${expected}, got ${canonicals.join(", ") || "none"}`);
+    }
+  }
+
+  // Style detail aliases must consolidate to the localized canonical rather
+  // than serving a second 200 copy that search engines can select instead.
+  for (const slug of ["corporate-clean", "swiss-style"]) {
+    const pathname = `/styles/${slug}`;
+    const destination = `/en/styles/${slug}`;
+    for (const userAgent of ["Applebot/0.1", "Googlebot"]) {
+      const response = await fetchManual(pathname, userAgent);
+      const location = response.headers.get("location");
+      if (response.status !== 308 || !location || new URL(location, origin).href !== `${origin}${destination}`) {
+        issues.push(`${pathname} (${userAgent}): expected 308 to ${destination}, got ${response.status} to ${location}`);
+        continue;
+      }
+      const canonicalResponse = await fetchManual(destination, userAgent);
+      const canonicals = extractLinks(await canonicalResponse.text(), "canonical");
+      const expected = `${new URL(canonicalUrls[0]).origin}${destination}`;
+      if (canonicalResponse.status !== 200 || canonicals.length !== 1 || canonicals[0] !== expected) {
+        issues.push(`${destination} (${userAgent}): expected 200 with canonical ${expected}, got ${canonicalResponse.status} / ${canonicals.join(", ") || "none"}`);
+      }
     }
   }
 

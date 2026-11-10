@@ -240,7 +240,16 @@ check(brief.structuredContent?.brief?.schemaVersion === "stylekit-brief-v1" &&
   brief.structuredContent?.brief?.lintRules?.sources?.includes("curated") &&
   brief.structuredContent?.brief?.aiRules?.length > 0,
   "implementation brief includes instructions, template code, recipes and merged rules");
-check(/## Implementation brief/.test(brief.content[0].text) && brief.structuredContent?.brief?.schemaVersion === "stylekit-brief-v1", "brief text renders the merged section");
+const designDocument = brief.structuredContent?.brief?.designDocument;
+const briefText = brief.content[0].text;
+check(
+  designDocument?.schemaVersion === "stylekit-design-document-v1"
+    ? designDocument.fileName === "design.md" &&
+      typeof designDocument.content === "string" && designDocument.content.length > 0 &&
+      briefText.includes("## Canonical design.md") && briefText.includes(designDocument.content)
+    : /## Implementation brief/.test(briefText) && brief.structuredContent?.brief?.schemaVersion === "stylekit-brief-v1",
+  "brief text renders the complete canonical document or its explicit legacy fallback",
+);
 check(
   ["live", "bundled"].includes(brief.structuredContent?.brief?.origin) &&
     ["bundled", "static", "community"].includes(brief.structuredContent?.brief?.provenance?.source) &&

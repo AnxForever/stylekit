@@ -229,18 +229,38 @@ export function PatternPreview({ previewId }: { previewId: ComponentPatternPrevi
       );
 
     // --- Accordion additions ---
+    // Standalone CSS fallback and solid reading layout, not a live optical renderer.
     case "accordion-liquid-glass":
       return (
-        <Frame className="bg-[linear-gradient(135deg,#e0e7ff,#f0e6ff_50%,#dbeafe)]">
-          <AccordionStack
-            items={[
-              "Frosted panel with glass refraction",
-              "Translucent layers and blur depth",
-              "Soft chromatic edge highlights",
-            ]}
-            itemClassName="border border-white/50 bg-white/40 text-slate-700 backdrop-blur-md shadow-[0_4px_16px_rgba(148,163,184,0.15)]"
-            accentClassName="bg-indigo-400/80"
-          />
+        <Frame className="bg-[#25414a]">
+          <div className="space-y-2">
+            <p className="text-[10px] leading-relaxed text-white/85">CSS fallback with solid reading content.</p>
+            <div className="flex items-center gap-1 rounded-full border border-white/25 bg-white/10 p-1 shadow-[inset_0_1px_0_rgba(255,255,255,0.55),0_4px_12px_rgba(5,19,24,0.16)] backdrop-blur-md">
+              {["Scene", "Controls", "Details"].map((item, index) => (
+                <span
+                  key={item}
+                  className={`rounded-full px-2.5 py-1 text-[9px] font-medium ${
+                    index === 0
+                      ? "bg-white/20 text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.7)]"
+                      : "text-white/70"
+                  }`}
+                >
+                  {item}
+                </span>
+              ))}
+            </div>
+            <div className="rounded-xl border border-white/70 bg-[#fcfcfa] p-2.5 text-[#202929] shadow-[0_5px_14px_rgba(11,29,34,0.14)]">
+              <AccordionStack
+                items={[
+                  "Scene and selected collection",
+                  "Navigation and contrast",
+                  "Motion and accessibility",
+                ]}
+                itemClassName="border-b border-[#202929]/10 text-[#202929] last:border-b-0"
+                accentClassName="bg-[#557b79]"
+              />
+            </div>
+          </div>
         </Frame>
       );
     case "accordion-sci-fi-hud":
