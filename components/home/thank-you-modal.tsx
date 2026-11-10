@@ -116,7 +116,14 @@ export function ThankYouModal({
       }
     }
     const nextUrl = withoutThankYouRequest(window.location.href);
-    if (nextUrl) window.history.replaceState(window.history.state, "", nextUrl);
+    if (nextUrl) {
+      // Next copies its router state itself. Passing its internal markers would
+      // bypass the update that synchronizes useSearchParams with this URL.
+      const nextHistoryState = { ...window.history.state };
+      delete nextHistoryState.__NA;
+      delete nextHistoryState._N;
+      window.history.replaceState(nextHistoryState, "", nextUrl);
+    }
   };
 
   if (!isOpen) return null;
