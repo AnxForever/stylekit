@@ -31,6 +31,35 @@ export function getThankYouContentVersion(
   return "thank-you-v1:" + content.length + ":" + hash.toString(16);
 }
 
+/**
+ * Dismissals live in localStorage, but restricted contexts (private windows,
+ * in-app webviews, blocked site storage) can make reads/writes throw or drop
+ * the value. A first-party cookie is the fallback so a closed notice stays
+ * closed; the value is the same content version, so it still reopens when the
+ * notice content changes.
+ */
+export const THANK_YOU_VERSION_COOKIE = "sk-thank-you-version";
+const THANK_YOU_COOKIE_MAX_AGE_SECONDS = 60 * 60 * 24 * 365;
+
+export function parseThankYouCookie(cookieHeader: string): string | null {
+  for (const part of cookieHeader.split(";")) {
+    const separator = part.indexOf("=");
+    if (separator < 0) continue;
+    if (part.slice(0, separator).trim() !== THANK_YOU_VERSION_COOKIE) continue;
+    const value = part.slice(separator + 1).trim();
+    try {
+      return decodeURIComponent(value) || null;
+    } catch {
+      return value || null;
+    }
+  }
+  return null;
+}
+
+export function serializeThankYouCookie(version: string): string {
+  return `${THANK_YOU_VERSION_COOKIE}=${encodeURIComponent(version)}; path=/; max-age=${THANK_YOU_COOKIE_MAX_AGE_SECONDS}; samesite=lax`;
+}
+
 /** Consume only this dialog's explicit request; preserve attribution and anchors. */
 export function withoutThankYouRequest(href: string): string | null {
   const url = new URL(href);

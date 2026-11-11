@@ -5,7 +5,7 @@ import { usePathname, useSearchParams } from "next/navigation";
 import Image from "next/image";
 import { X } from "lucide-react";
 import { useI18n } from "@/lib/i18n/context";
-import { getThankYouContentVersion, withoutThankYouRequest } from "@/lib/support/thank-you-state";
+import { getThankYouContentVersion, parseThankYouCookie, serializeThankYouCookie, withoutThankYouRequest } from "@/lib/support/thank-you-state";
 import {
   thankYouEntries as legacyThankYouEntries,
   thankYouModalConfig,
@@ -19,6 +19,34 @@ import {
 const DISMISSED_STORAGE_KEY = "stylekit-thank-you-seen";
 const DISMISSED_VERSION_KEY = "stylekit-thank-you-dismissed-version";
 const OPEN_DELAY_MS = 1200;
+
+function readDismissedVersion(): string | null {
+  try {
+    const stored = window.localStorage.getItem(DISMISSED_VERSION_KEY);
+    if (stored) return stored;
+  } catch {
+    // Fall through to the cookie when site storage is unavailable.
+  }
+  try {
+    return parseThankYouCookie(document.cookie);
+  } catch {
+    return null;
+  }
+}
+
+function persistDismissal(version: string, batchId: string) {
+  try {
+    window.localStorage.setItem(DISMISSED_VERSION_KEY, version);
+    window.localStorage.setItem(DISMISSED_STORAGE_KEY, batchId);
+  } catch {
+    // Restricted storage must not undo a close; the cookie below still records it.
+  }
+  try {
+    document.cookie = serializeThankYouCookie(version);
+  } catch {
+    // Cookies may be disabled too; the mounted notice still stays closed.
+  }
+}
 
 export function ThankYouModal({
   showOnHomepageOnly = true,
@@ -66,26 +94,20 @@ export function ThankYouModal({
     if (!thankYouModalConfig.enabled || !latestBatchId || !contentVersion) return;
     if (!forceOpen && !allowAutomaticOpen) return;
 
-    let dismissedVersion: string | null = null;
     let acknowledgedId: string | null = null;
     try {
-      dismissedVersion = window.localStorage.getItem(DISMISSED_VERSION_KEY);
       acknowledgedId = window.localStorage.getItem(DISMISSED_STORAGE_KEY);
     } catch {
       // The in-component ref still keeps a close action closed if storage fails.
     }
+    const dismissedVersion = readDismissedVersion();
     if (!forceOpen) {
       if (dismissedVersionRef.current === contentVersion || dismissedVersion === contentVersion) return;
       if (!dismissedVersion && (acknowledgedId === latestBatchId || acknowledgedId === "1")) {
         // The old boolean cannot identify a batch. Honor that dismissal during
         // migration, then let every later content-version change open normally.
         dismissedVersionRef.current = contentVersion;
-        try {
-          window.localStorage.setItem(DISMISSED_VERSION_KEY, contentVersion);
-          window.localStorage.setItem(DISMISSED_STORAGE_KEY, latestBatchId);
-        } catch {
-          // No persistent storage: retain the current component's dismissal.
-        }
+        persistDismissal(contentVersion, latestBatchId);
         return;
       }
     }
@@ -93,27 +115,37 @@ export function ThankYouModal({
     const timer = window.setTimeout(() => {
       if (!forceOpen) {
         if (dismissedVersionRef.current === contentVersion) return;
-        try {
-          if (window.localStorage.getItem(DISMISSED_VERSION_KEY) === contentVersion) return;
-        } catch {
-          // A storage failure must not break the notice.
-        }
+        if (readDismissedVersion() === contentVersion) return;
+      }
+      // A notice that has appeared counts as delivered. Recording it at open
+      // time (not only in handleClose) means closing the tab or the whole site
+      // without pressing X still suppresses it until the content changes.
+      if (allowAutomaticOpen) {
+        dismissedVersionRef.current = contentVersion;
+        persistDismissal(contentVersion, latestBatchId);
       }
       setIsOpen(true);
     }, forceOpen ? 0 : OPEN_DELAY_MS);
     return () => window.clearTimeout(timer);
   }, [allowAutomaticOpen, contentVersion, forceOpen, latestBatchId, pathname, showOnHomepageOnly]);
 
+  // A close in another tab applies here too, so a second open tab does not keep
+  // showing a notice the visitor already dismissed.
+  useEffect(() => {
+    const handleStorage = (event: StorageEvent) => {
+      if (event.key === DISMISSED_VERSION_KEY && event.newValue === contentVersion) {
+        setIsOpen(false);
+      }
+    };
+    window.addEventListener("storage", handleStorage);
+    return () => window.removeEventListener("storage", handleStorage);
+  }, [contentVersion]);
+
   const handleClose = () => {
     dismissedVersionRef.current = contentVersion;
     setIsOpen(false);
     if (thankYouModalConfig.dismissible && latestBatchId && contentVersion && allowAutomaticOpen) {
-      try {
-        window.localStorage.setItem(DISMISSED_VERSION_KEY, contentVersion);
-        window.localStorage.setItem(DISMISSED_STORAGE_KEY, latestBatchId);
-      } catch {
-        // Storage may be unavailable; this mounted notice still stays closed.
-      }
+      persistDismissal(contentVersion, latestBatchId);
     }
     const nextUrl = withoutThankYouRequest(window.location.href);
     if (nextUrl) {
