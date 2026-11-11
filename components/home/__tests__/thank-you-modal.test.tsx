@@ -33,10 +33,12 @@ describe("ThankYouModal", () => {
   afterEach(() => {
     cleanup();
     vi.useRealTimers();
+    vi.restoreAllMocks();
   });
   beforeEach(() => {
     window.history.replaceState({}, "", "/zh");
     window.localStorage.clear();
+    document.cookie = "sk-thank-you-version=; max-age=0; path=/";
     useI18nMock.mockReturnValue({ locale: "zh" });
   });
 
@@ -220,5 +222,70 @@ describe("ThankYouModal", () => {
     window.history.replaceState({}, "", "/zh/styles");
     render(<ThankYouModal showOnHomepageOnly={true} />);
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+  });
+
+  it("counts an appeared notice as seen even when the site is closed without pressing X", async () => {
+    vi.useFakeTimers();
+    const entries = [makeEntry("donation-a", "2026-11-05")];
+
+    const first = render(<ThankYouModal entries={entries} />);
+    await act(async () => { vi.advanceTimersByTime(1300); });
+    expect(screen.getByRole("dialog")).toBeInTheDocument();
+    // Leaving without a close action, e.g. closing the tab.
+    first.unmount();
+
+    render(<ThankYouModal entries={entries} />);
+    await act(async () => { vi.advanceTimersByTime(1300); });
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+  });
+
+  it("stays closed across visits when site storage is unavailable but cookies work", async () => {
+    vi.useFakeTimers();
+    vi.spyOn(Storage.prototype, "getItem").mockImplementation(() => {
+      throw new Error("storage blocked");
+    });
+    vi.spyOn(Storage.prototype, "setItem").mockImplementation(() => {
+      throw new Error("storage blocked");
+    });
+    const entries = [makeEntry("donation-a", "2026-11-05")];
+
+    const first = render(<ThankYouModal entries={entries} />);
+    await act(async () => { vi.advanceTimersByTime(1300); });
+    expect(screen.getByRole("dialog")).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: "关闭" }));
+    expect(document.cookie).toContain("sk-thank-you-version=");
+    first.unmount();
+
+    render(<ThankYouModal entries={entries} />);
+    await act(async () => { vi.advanceTimersByTime(1300); });
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+  });
+
+  it("closes when another tab dismisses the same content", async () => {
+    vi.useFakeTimers();
+    const entries = [makeEntry("donation-a", "2026-11-05")];
+
+    const first = render(<ThankYouModal entries={entries} />);
+    await act(async () => { vi.advanceTimersByTime(1300); });
+    fireEvent.click(screen.getByRole("button", { name: "关闭" }));
+    const version = window.localStorage.getItem("stylekit-thank-you-dismissed-version");
+    expect(version).toBeTruthy();
+    first.unmount();
+
+    window.history.replaceState({}, "", "/zh?preview");
+    const second = render(<ThankYouModal entries={entries} />);
+    await act(async () => { vi.advanceTimersByTime(0); });
+    expect(screen.getByRole("dialog")).toBeInTheDocument();
+
+    await act(async () => {
+      window.dispatchEvent(
+        new StorageEvent("storage", {
+          key: "stylekit-thank-you-dismissed-version",
+          newValue: version,
+        }),
+      );
+    });
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+    second.unmount();
   });
 });
