@@ -5,11 +5,13 @@ import Link from "next/link";
 import { Home, Palette, LayoutTemplate, Search } from "lucide-react";
 import { useI18n } from "@/lib/i18n/context";
 import { localizeHref, stripLocaleFromPathname } from "@/lib/i18n/routing";
+import { isMobileBottomNavVisible } from "@/lib/mobile-navigation";
 
 export function MobileBottomNav() {
   const pathname = usePathname();
   const { locale } = useI18n();
   const visiblePath = stripLocaleFromPathname(pathname || "/");
+  const showBottomNav = isMobileBottomNavVisible(pathname || "/");
   const tabs = [
     {
       href: "/",
@@ -31,14 +33,7 @@ export function MobileBottomNav() {
     },
   ] as const;
 
-  if (
-    visiblePath.startsWith("/admin") ||
-    visiblePath.startsWith("/experiments") ||
-    visiblePath.startsWith("/validation/") ||
-    visiblePath.startsWith("/workspace")
-  ) {
-    return null;
-  }
+  if (!showBottomNav) return null;
 
   const handleSearchClick = () => {
     const event = new KeyboardEvent("keydown", {
