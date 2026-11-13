@@ -1,7 +1,7 @@
 // @vitest-environment happy-dom
 import "@testing-library/jest-dom/vitest";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { cleanup, fireEvent, render, screen, waitFor, act } from "@testing-library/react";
+import { cleanup, fireEvent, render, screen, waitFor, act, within } from "@testing-library/react";
 import type { ThankYouEntry } from "@/lib/site/support";
 
 const { useI18nMock } = vi.hoisted(() => ({
@@ -55,7 +55,8 @@ describe("ThankYouModal", () => {
 
     const receipts = screen.getAllByRole("figure");
     expect(receipts.length).toBeGreaterThanOrEqual(2);
-    const originalImageLinks = screen.getAllByRole("link");
+    // Scope to the receipts: the notice also carries a contact link below them.
+    const originalImageLinks = receipts.flatMap((figure) => within(figure).getAllByRole("link"));
     expect(originalImageLinks).toHaveLength(receipts.length);
     expect(
       originalImageLinks.every(
@@ -82,7 +83,9 @@ describe("ThankYouModal", () => {
     render(<ThankYouModal entries={entries} />);
     await screen.findByRole("dialog");
 
-    const receiptLinks = screen.getAllByRole("link");
+    const receiptLinks = screen
+      .getAllByRole("figure")
+      .flatMap((figure) => within(figure).getAllByRole("link"));
     expect(receiptLinks).toHaveLength(6);
     expect(receiptLinks.map((link) => link.getAttribute("href"))).toContain("/support/donation-nov-1.png");
     expect(receiptLinks.map((link) => link.getAttribute("href"))).not.toContain("/support/donation-oct-25.png");
@@ -94,6 +97,17 @@ describe("ThankYouModal", () => {
     await waitFor(() => expect(screen.getByRole("dialog")).toBeInTheDocument());
     fireEvent.click(screen.getByRole("button", { name: "关闭" }));
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+  });
+
+  it("sends supporters to the contact note on the support page", async () => {
+    window.history.replaceState({}, "", "/zh?preview");
+    render(<ThankYouModal />);
+    await screen.findByRole("dialog");
+
+    expect(screen.getByRole("link", { name: "给我留一句" })).toHaveAttribute(
+      "href",
+      "/zh/contact#supporter-contact",
+    );
   });
 
   it("stays closed for a batch the visitor already acknowledged", async () => {

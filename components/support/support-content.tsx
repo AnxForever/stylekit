@@ -5,7 +5,14 @@ import Link from "next/link";
 import { ArrowUpRight, Heart, Mail, QrCode, Server } from "lucide-react";
 import { useI18n } from "@/lib/i18n/context";
 import { localizeHref } from "@/lib/i18n/routing";
-import { supportMethods, supportLinks, supportPageCopy, businessContactCopy, businessContactEmail } from "@/lib/site/support";
+import {
+  supportMethods,
+  supportLinks,
+  supportPageCopy,
+  businessContactCopy,
+  businessContactEmail,
+  supporterContactCopy,
+} from "@/lib/site/support";
 import { ThankYouList } from "@/components/support/thank-you-list";
 import { FeedbackForm } from "@/components/feedback/feedback-form";
 import type { ThankYouEntry } from "@/lib/site/support";
@@ -27,6 +34,7 @@ export function SupportContent({ thankYouEntries }: { thankYouEntries: ThankYouE
   const { locale } = useI18n();
   const copy = supportPageCopy[locale];
   const business = businessContactCopy[locale];
+  const supporterContact = supporterContactCopy[locale];
 
   return (
     <div>
@@ -186,9 +194,30 @@ export function SupportContent({ thankYouEntries }: { thankYouEntries: ThankYouE
         </div>
       </section>
 
+      <section
+        id="supporter-contact"
+        className="scroll-mt-24 border-t border-border py-10 md:grid md:grid-cols-[200px_minmax(0,1fr)] md:gap-10 md:py-14"
+      >
+        <div className="mb-4 md:mb-0">
+          <SectionRail index="05" label={supporterContact.eyebrow} />
+        </div>
+        <div>
+          <h2 className="max-w-2xl text-2xl leading-tight md:text-3xl">
+            {supporterContact.title}
+          </h2>
+          <p className="mt-3 max-w-2xl text-sm leading-6 text-muted">
+            {supporterContact.description}
+          </p>
+          <div className="mt-6 max-w-xl">
+            <FeedbackForm variant="supporter" />
+          </div>
+          <p className="mt-4 text-[11px] leading-5 text-muted">{supporterContact.note}</p>
+        </div>
+      </section>
+
       <section className="border-t border-border py-10 md:grid md:grid-cols-[200px_minmax(0,1fr)] md:gap-10 md:py-14">
         <div className="mb-4 md:mb-0">
-          <SectionRail index="05" label={copy.transparencyTitle} />
+          <SectionRail index="06" label={copy.transparencyTitle} />
         </div>
         <div>
           <ul className="grid max-w-2xl gap-2">

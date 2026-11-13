@@ -3,15 +3,37 @@
 import { useState } from "react";
 import { z } from "zod";
 import { useI18n } from "@/lib/i18n/context";
+import { supporterContactCopy } from "@/lib/site/support";
 
 const clientSchema = z.object({
   message: z.string().trim().min(1),
   email: z.string().email().optional().or(z.literal("")),
+  contact: z.string().trim().max(200).optional(),
 });
 
 type Status = "idle" | "loading" | "success" | "error";
+type Variant = "feedback" | "supporter";
+type LocaleKey = "en" | "zh";
 
-const COPY = {
+type FormCopy = {
+  messageLabel: string;
+  messagePlaceholder: string;
+  submit: string;
+  sending: string;
+  success: string;
+  errorEmpty: string;
+  errorGeneric: string;
+  // Feedback variant: an optional reply address.
+  emailLabel?: string;
+  emailPlaceholder?: string;
+  // Supporter variant: a required email or WeChat handle, because the whole
+  // point of that form is being able to answer.
+  contactLabel?: string;
+  contactPlaceholder?: string;
+  errorContact?: string;
+};
+
+const FEEDBACK_COPY: Record<LocaleKey, FormCopy> = {
   en: {
     messageLabel: "Your message",
     messagePlaceholder:
@@ -36,13 +58,21 @@ const COPY = {
     errorEmpty: "先写点内容吧。",
     errorGeneric: "出了点问题，请稍后再试。",
   },
-} as const;
+};
 
-export function FeedbackForm() {
+const COPY: Record<Variant, Record<LocaleKey, FormCopy>> = {
+  feedback: FEEDBACK_COPY,
+  supporter: supporterContactCopy,
+};
+
+export function FeedbackForm({ variant = "feedback" }: { variant?: Variant }) {
   const { locale } = useI18n();
-  const c = COPY[locale as keyof typeof COPY] ?? COPY.en;
+  const isSupporter = variant === "supporter";
+  const c = COPY[variant][locale === "zh" ? "zh" : "en"];
+  const idPrefix = isSupporter ? "supporter-contact" : "feedback";
   const [message, setMessage] = useState("");
   const [email, setEmail] = useState("");
+  const [contact, setContact] = useState("");
   const [website, setWebsite] = useState(""); // honeypot
   const [status, setStatus] = useState<Status>("idle");
   const [errorMsg, setErrorMsg] = useState("");
@@ -51,10 +81,15 @@ export function FeedbackForm() {
     e.preventDefault();
     setErrorMsg("");
 
-    const result = clientSchema.safeParse({ message, email });
+    const result = clientSchema.safeParse({ message, email, contact });
     if (!result.success) {
       setStatus("error");
       setErrorMsg(c.errorEmpty);
+      return;
+    }
+    if (isSupporter && !result.data.contact) {
+      setStatus("error");
+      setErrorMsg(c.errorContact ?? c.errorEmpty);
       return;
     }
 
@@ -63,7 +98,13 @@ export function FeedbackForm() {
       const res = await fetch("/api/feedback", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message, email, website }),
+        body: JSON.stringify({
+          message,
+          email: isSupporter ? "" : email,
+          contact: isSupporter ? contact : undefined,
+          website,
+          topic: variant,
+        }),
       });
       const data = await res.json();
 
@@ -76,6 +117,7 @@ export function FeedbackForm() {
       setStatus("success");
       setMessage("");
       setEmail("");
+      setContact("");
     } catch {
       setStatus("error");
       setErrorMsg(c.errorGeneric);
@@ -96,11 +138,11 @@ export function FeedbackForm() {
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-3" noValidate>
-      <label htmlFor="feedback-message" className="sr-only">
+      <label htmlFor={`${idPrefix}-message`} className="sr-only">
         {c.messageLabel}
       </label>
       <textarea
-        id="feedback-message"
+        id={`${idPrefix}-message`}
         value={message}
         onChange={(e) => setMessage(e.target.value)}
         placeholder={c.messagePlaceholder}
@@ -110,20 +152,41 @@ export function FeedbackForm() {
         className="w-full resize-y border border-border bg-background px-3.5 py-3 text-sm leading-relaxed placeholder:text-muted transition-colors focus:border-foreground focus:outline-none"
       />
       <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
-        <label htmlFor="feedback-email" className="sr-only">
-          {c.emailLabel}
-        </label>
-        <input
-          id="feedback-email"
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          placeholder={c.emailPlaceholder}
-          autoComplete="email"
-          inputMode="email"
-          disabled={status === "loading"}
-          className="min-w-0 flex-1 border border-border bg-background px-3.5 py-2 text-sm placeholder:text-muted transition-colors focus:border-foreground focus:outline-none"
-        />
+        {isSupporter ? (
+          <>
+            <label htmlFor={`${idPrefix}-contact`} className="sr-only">
+              {c.contactLabel}
+            </label>
+            <input
+              id={`${idPrefix}-contact`}
+              type="text"
+              value={contact}
+              onChange={(e) => setContact(e.target.value)}
+              placeholder={c.contactPlaceholder}
+              autoComplete="email"
+              required
+              disabled={status === "loading"}
+              className="min-w-0 flex-1 border border-border bg-background px-3.5 py-2 text-sm placeholder:text-muted transition-colors focus:border-foreground focus:outline-none"
+            />
+          </>
+        ) : (
+          <>
+            <label htmlFor={`${idPrefix}-email`} className="sr-only">
+              {c.emailLabel}
+            </label>
+            <input
+              id={`${idPrefix}-email`}
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder={c.emailPlaceholder}
+              autoComplete="email"
+              inputMode="email"
+              disabled={status === "loading"}
+              className="min-w-0 flex-1 border border-border bg-background px-3.5 py-2 text-sm placeholder:text-muted transition-colors focus:border-foreground focus:outline-none"
+            />
+          </>
+        )}
         <button
           type="submit"
           disabled={status === "loading"}

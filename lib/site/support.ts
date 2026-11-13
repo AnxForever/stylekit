@@ -33,6 +33,25 @@ export type ThankYouModalConfig = {
   dismissible: boolean;
   title: SupportLocaleCopy;
   description: SupportLocaleCopy;
+  contactPrompt: SupportLocaleCopy;
+  contactAction: SupportLocaleCopy;
+};
+
+export type SupporterContactCopy = {
+  eyebrow: string;
+  title: string;
+  description: string;
+  messageLabel: string;
+  messagePlaceholder: string;
+  contactLabel: string;
+  contactPlaceholder: string;
+  submit: string;
+  sending: string;
+  success: string;
+  errorEmpty: string;
+  errorContact: string;
+  errorGeneric: string;
+  note: string;
 };
 
 export const supportPageCopy = {
@@ -103,6 +122,51 @@ export const businessContactCopy = {
     note: "产品咨询和 Bug 反馈走下面的公开渠道会更快。",
   },
 } as const;
+
+// Supporters who want to talk after tipping have no address to write to.
+// Rather than publish a personal inbox on a page anyone can scrape, the support
+// page and the thank-you notice send them to a form that relays through
+// /api/feedback: they leave an email or WeChat handle, the note arrives in the
+// same inbox, and a reply goes straight back to them.
+export const supporterContactHref = "/contact#supporter-contact";
+
+export const supporterContactCopy = {
+  en: {
+    eyebrow: "Contact",
+    title: "Want to reach me directly?",
+    description:
+      "If you have supported StyleKit, or just want to talk, leave a note here with an email address or WeChat handle. I read these myself and reply the same way.",
+    messageLabel: "Your note",
+    messagePlaceholder:
+      "What you would like to talk about: collaboration, licensing, a question, or just hello.",
+    contactLabel: "Email or WeChat",
+    contactPlaceholder: "Where I can reply",
+    submit: "Send note",
+    sending: "Sending…",
+    success: "Got it. I will reply the way you asked.",
+    errorEmpty: "Please write a short note first.",
+    errorContact: "Leave an email address or WeChat handle so I can reply.",
+    errorGeneric: "Something went wrong. Please try again later.",
+    note: "The note goes straight to my inbox. No personal contact details are published on this site.",
+  },
+  zh: {
+    eyebrow: "联系方式",
+    title: "想直接找我？",
+    description:
+      "赞赏过的朋友，或者只是想聊两句的，都可以在这儿给我留个言。留个邮箱或者微信号，我本人看到就会回你。",
+    messageLabel: "想说的话",
+    messagePlaceholder: "合作、授权、提问，或者只是打个招呼，都可以写在这儿。",
+    contactLabel: "邮箱或微信号",
+    contactPlaceholder: "方便我回你的联系方式",
+    submit: "发送留言",
+    sending: "发送中…",
+    success: "收到了，我会按你留的方式回你。",
+    errorEmpty: "先写一句吧。",
+    errorContact: "留个邮箱或微信号，不然我没法回你。",
+    errorGeneric: "出了点问题，请稍后再试。",
+    note: "留言会直接发到我的邮箱，站内不会公开任何私人联系方式。",
+  },
+} as const satisfies Record<"en" | "zh", SupporterContactCopy>;
 
 // Add future QR methods by placing images under public/support/ and appending
 // new items here with kind: "qr" and imageSrc set to the new asset path.
@@ -408,5 +472,13 @@ export const thankYouModalConfig: ThankYouModalConfig = {
   description: {
     en: "We recently received a generous donation. Your support helps keep StyleKit running and accessible to everyone.",
     zh: "我去我去，赛博乞讨真的有人给我打赏了，哭辽(╥﹏╥)。感谢大哥/姐姐！！！！",
+  },
+  contactPrompt: {
+    en: "Supported StyleKit and want to reach me?",
+    zh: "赞赏过，想找我说句话？",
+  },
+  contactAction: {
+    en: "Leave a note",
+    zh: "给我留一句",
   },
 };
