@@ -2,9 +2,21 @@
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
   "name": "io.github.AnxForever/stylekit-mcp",
   "title": "StyleKit",
-  "description": "stdio MCP server for StyleKit styles, templates, assets, tokens, recipes, and lint checks.",
+  "description": "MCP server for StyleKit styles, tokens, recipes, lint and repair over stdio or HTTP.",
   "version": "0.6.0",
-  "websiteUrl": "https://stylekit.top",
+  "websiteUrl": "https://www.stylekit.top",
+  "icons": [
+    {
+      "src": "https://www.stylekit.top/brand/v3/icon.svg",
+      "mimeType": "image/svg+xml",
+      "sizes": ["any"]
+    },
+    {
+      "src": "https://www.stylekit.top/brand/v3/apple-touch-icon.png",
+      "mimeType": "image/png",
+      "sizes": ["180x180"]
+    }
+  ],
   "repository": {
     "url": "https://github.com/AnxForever/stylekit",
     "source": "github",
@@ -20,6 +32,12 @@
       "transport": {
         "type": "stdio"
       }
+    }
+  ],
+  "remotes": [
+    {
+      "type": "streamable-http",
+      "url": "https://www.stylekit.top/mcp"
     }
   ]
 }
