@@ -20,6 +20,7 @@
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-green?style=flat-square" alt="License"></a>
   <a href="https://nextjs.org"><img src="https://img.shields.io/badge/Next.js-16-black?style=flat-square&logo=next.js" alt="Next.js 16"></a>
   <a href="https://www.typescriptlang.org"><img src="https://img.shields.io/badge/TypeScript-5-3178C6?style=flat-square&logo=typescript" alt="TypeScript"></a>
+  <a href="https://mcptry.com/servers/io.github.AnxForever/stylekit-mcp"><img src="https://mcptry.com/badge/io.github.AnxForever/stylekit-mcp" alt="mcptry"></a>
 </p>
 
 <p align="center">
