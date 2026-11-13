@@ -13,6 +13,7 @@ import { ScrollToTop } from "@/components/ui/scroll-to-top";
 import { ClientScripts } from "@/components/layout/client-scripts";
 import { AnnouncementBanner } from "@/components/layout/announcement-banner";
 import { serializeJsonLd } from "@/lib/security/json-ld";
+import { getUmamiTrackerConfig } from "@/lib/analytics/umami-tracker-config";
 import { MobileBottomNav } from "@/components/layout/mobile-bottom-nav";
 import { CommunityRail } from "@/components/community/community-rail";
 import { getSiteBaseUrl } from "@/lib/site-url";
@@ -154,6 +155,9 @@ export default async function SiteDocument({
     getSiteAnnouncement("zh-CN"),
   ]);
   const activeAnnouncement = locale === "zh" ? announcementZh : announcementEn;
+  // Resolved per render so the tag follows a server-runtime env change after a
+  // restart instead of being frozen into the bundle at build time.
+  const umamiTracker = getUmamiTrackerConfig();
   const showcaseTypography = getShowcaseTypographyProfile(contentPath);
   const isProductSurface = /^\/(?:admin|admin-login|login|profile|validation|workspace)(?:\/|$)/.test(
     contentPath
@@ -202,13 +206,12 @@ export default async function SiteDocument({
           data-vc-product-id="cmvkjmjs0000208ighwdlcmgy"
           data-vc-auth-key="vc_web_ZQQOrQHyU2kzOgSc6cRs6RfyT_oRl1QxQaoRDU0n4ow"
         />
-        {process.env.NEXT_PUBLIC_UMAMI_SCRIPT_URL &&
-        process.env.NEXT_PUBLIC_UMAMI_WEBSITE_ID ? (
+        {umamiTracker ? (
           <Script
             id="umami-analytics"
             strategy="afterInteractive"
-            src={process.env.NEXT_PUBLIC_UMAMI_SCRIPT_URL}
-            data-website-id={process.env.NEXT_PUBLIC_UMAMI_WEBSITE_ID}
+            src={umamiTracker.scriptUrl}
+            data-website-id={umamiTracker.websiteId}
           />
         ) : null}
         {showcaseTypography ? (
