@@ -99,11 +99,7 @@
 .categories button:hover { background: var(--travel-panel); }
 .categories button[aria-pressed="true"] { background: var(--travel-ink); color: var(--travel-paper); border-color: var(--travel-ink); }
 .categories .savedFilter { padding-inline: 14px; }
-.searchField { min-width: 200px; max-width: 240px; display: flex; gap: 10px; align-items: center; padding: 11px 0; border-bottom: 1px solid var(--travel-line); color: var(--travel-muted); }
-.searchField input { background: transparent; outline: none; font-size: 12px; color: var(--travel-ink); width: 100%; min-width: 0; }
-.searchField input::-webkit-search-cancel-button { display: none; }
-.searchField input::placeholder { color: var(--travel-muted); }
-.searchField button { width: 24px; flex-shrink: 0; }
+.searchControl { flex: 0 1 420px; min-width: 230px; max-width: 100%; color: var(--travel-ink); }
 .placeGrid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 24px; }
 .placeCard { position: relative; aspect-ratio: 1.19; overflow: hidden; border-radius: 27px; background: #42768b; color: #fff; isolation: isolate; animation: reveal 480ms ease-out both; }
 .placeCard::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg,#09232d24,transparent 50%,#09232d36); pointer-events: none; }
@@ -171,8 +167,6 @@
 .dockControl { border: 0 !important; background: transparent !important; padding: 0 !important; }
 .dockControl > button { padding: 0; }
 .savedLabel { display: inline-flex; align-items: center; gap: 7px; }
-.searchField { padding: 13px 20px; min-width: 230px; max-width: 280px; border-bottom: 0; }
-.searchField input { color: #fff; }
 .placeCard { background: transparent; }
 .placeCard::after { display: none; }
 .cardGlass { position: absolute !important; inset: 8px; }
@@ -243,7 +237,7 @@
   .filters { flex-direction: column; gap: 18px; }
   .categories { gap: 6px; }
   .categories button { min-height: 40px; padding: 10px 13px; font-size: 10px; }
-  .searchField { max-width: none; width: 100%; }
+  .searchControl { width: 100%; flex: none; min-width: 0; }
   .placeGrid { grid-template-columns: 1fr; gap: 18px; }
   .placeCard { aspect-ratio: 1.05; border-radius: 23px; }
   .placeTag { left: 23px; top: 26px; font-size: 9px; }
@@ -274,7 +268,7 @@
   .materialTabs { width: 100%; }
   .materialTabs > button { padding-inline: 11px; font-size: 10px; }
   .filters > div:last-child { width: 100%; }
-  .searchField { width: 100%; max-width: none; }
+  .filters .searchControl { width: 100%; max-width: 420px; }
   .captionInner { left: 10px; right: 10px; bottom: 10px; padding: 18px; }
   .captionInner h3 { font-size: 25px; }
 }

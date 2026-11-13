@@ -5,12 +5,16 @@
  * 2361eb1f03979703db988180028ccc6d5fc23fe5: core/spring.ts,
  * interaction/press.ts and components/selector.ts. MIT, copyright 2026
  * thirtynine. Full notice: docs/licenses/glassy-liquid-MIT.txt.
+ * Segmented leading/trailing edge motion adapted from Meniscus GlassIndicator
+ * at c7a9514b3974eb2dc1dce64c995e59c4f43c3d22. MIT, copyright 2026
+ * meniscus contributors. Full notice: docs/licenses/meniscus-MIT.txt.
  * This showcase adapter keeps optical maps at their layout size and animates
  * only the material layers; text never receives the gel deformation.
  */
 import { useEffect, useRef } from "react";
 import type { ReactNode } from "react";
 import type { LiquidGlassSettings } from "@/lib/liquid-glass";
+import { LiquidSpring as Spring } from "@/lib/liquid-glass/spring";
 import { cn } from "@/lib/utils";
 import { LiquidGlass, type LiquidGlassProps } from "./liquid-glass";
 import styles from "./fluid-glass.module.css";
@@ -19,61 +23,10 @@ const clamp = (value: number, min: number, max: number) => Math.max(min, Math.mi
 const rubberBand = (offset: number, limit: number) =>
   Math.sign(offset) * limit * (1 - 1 / (Math.abs(offset) * 0.55 / limit + 1));
 
-/** Analytic damped spring. Retargeting deliberately preserves velocity. */
-class Spring {
-  value: number;
-  target: number;
-  velocity = 0;
-
-  constructor(value = 0, private duration = 0.42, private bounce = 0.24) {
-    this.value = this.target = value;
-  }
-
-  to(target: number, duration = this.duration, bounce = this.bounce) {
-    this.target = target;
-    this.duration = duration;
-    this.bounce = bounce;
-  }
-
-  set(value: number) {
-    this.value = this.target = value;
-    this.velocity = 0;
-  }
-
-  get settled() {
-    return this.value === this.target && this.velocity === 0;
-  }
-
-  step(dt: number) {
-    if (this.settled || dt <= 0) return;
-    const omega = 2 * Math.PI / Math.max(0.001, this.duration);
-    const damping = 1 - clamp(this.bounce, 0, 0.99);
-    const start = this.value - this.target;
-    const velocity = this.velocity;
-    const decay = Math.exp(-damping * omega * dt);
-    let offset: number;
-    let nextVelocity: number;
-    if (damping < 1) {
-      const frequency = omega * Math.sqrt(1 - damping * damping);
-      const b = (velocity + damping * omega * start) / frequency;
-      const cosine = Math.cos(frequency * dt);
-      const sine = Math.sin(frequency * dt);
-      offset = decay * (start * cosine + b * sine);
-      nextVelocity = decay * ((b * frequency - damping * omega * start) * cosine
-        - (start * frequency + damping * omega * b) * sine);
-    } else {
-      const b = velocity + omega * start;
-      offset = decay * (start + b * dt);
-      nextVelocity = decay * (b - omega * (start + b * dt));
-    }
-    if (Math.abs(offset) < 0.001 && Math.abs(nextVelocity) < 0.01) {
-      this.set(this.target);
-    } else {
-      this.value = this.target + offset;
-      this.velocity = nextVelocity;
-    }
-  }
-}
+// Convert Meniscus's unit-mass stiffness/damping to the analytic spring API:
+// duration = 2π / sqrt(k), bounce = 1 - c / (2 * sqrt(k)).
+const EDGE_FAST = { duration: 2 * Math.PI / Math.sqrt(560), bounce: 1 - 38 / (2 * Math.sqrt(560)) };
+const EDGE_SLOW = { duration: 2 * Math.PI / Math.sqrt(240), bounce: 1 - 27 / (2 * Math.sqrt(240)) };
 
 export interface FluidGlassProps extends LiquidGlassProps {
   draggable?: boolean;
@@ -405,10 +358,9 @@ export function FluidSegmented({ options, value, onValueChange, ariaLabel, class
     const pill = pillRef.current;
     if (!root || !pill) return;
     const preference = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const center = new Spring();
-    const width = new Spring();
+    const left = new Spring(0, EDGE_FAST.duration, EDGE_FAST.bounce);
+    const right = new Spring(0, EDGE_FAST.duration, EDGE_FAST.bounce);
     const lift = new Spring(0, 0.22, 0.18);
-    const stretch = new Spring(0, 0.16, 0);
     let geometry: { value: string; center: number; width: number; button: HTMLButtonElement }[] = [];
     let basis = 1;
     let frame = 0;
@@ -429,11 +381,21 @@ export function FluidSegmented({ options, value, onValueChange, ariaLabel, class
       return (clientX - rect.left) * (root!.offsetWidth / (rect.width || 1));
     }
 
+    function moveEdges(position: number, width: number, jump = false) {
+      const halfWidth = Math.max(1, width) / 2;
+      if (jump) {
+        left.set(position - halfWidth);
+        right.set(position + halfWidth);
+      } else {
+        left.to(position - halfWidth);
+        right.to(position + halfWidth);
+      }
+    }
+
     function target(nextValue: string, jump = false) {
       const item = geometry.find((entry) => entry.value === nextValue) ?? geometry[0];
       if (!item) return;
-      if (jump) { center.set(item.center); width.set(item.width); }
-      else { center.to(item.center, 0.42, 0.24); width.to(item.width, 0.42, 0.24); }
+      moveEdges(item.center, item.width, jump);
       wake();
     }
 
@@ -456,21 +418,37 @@ export function FluidSegmented({ options, value, onValueChange, ariaLabel, class
       const dt = lastTime ? Math.min(0.064, (now - lastTime) / 1000) : 1 / 60;
       lastTime = now;
       if (preference.matches) {
-        center.set(center.target); width.set(width.target); lift.set(lift.target); stretch.set(0);
+        left.set(left.target); right.set(right.target); lift.set(lift.target);
       } else {
-        center.step(dt); width.step(dt); lift.step(dt);
-        // Migration itself stretches the liquid, including keyboard selection.
-        stretch.to(Math.min(0.3, Math.abs(center.velocity) * 0.0005));
-        stretch.step(dt);
+        const movingRight = left.target + right.target > left.value + right.value;
+        const leading = movingRight ? right : left;
+        const trailing = movingRight ? left : right;
+        leading.to(leading.target, EDGE_FAST.duration, EDGE_FAST.bounce);
+        trailing.to(trailing.target, EDGE_SLOW.duration, EDGE_SLOW.bounce);
+        left.step(dt); right.step(dt); lift.step(dt);
+        // A rapid reversal can bring the edges together. Resolve their contact
+        // without losing the shared translation velocity or inverting the lens.
+        if (right.value - left.value < 1) {
+          const midpoint = (left.value + right.value) / 2;
+          left.value = midpoint - 0.5;
+          right.value = midpoint + 0.5;
+          if (left.velocity > right.velocity) {
+            left.velocity = right.velocity = (left.velocity + right.velocity) / 2;
+          }
+        }
       }
       const raised = preference.matches ? 0 : clamp(lift.value, 0, 1.2);
-      const sx = width.value / basis * (1 + stretch.value) * (1 + raised * 0.06);
-      const sy = (1 + raised * 0.17) / Math.sqrt(1 + stretch.value);
-      pill!.style.transform = `translateX(${(center.value - basis / 2).toFixed(2)}px) scale(${sx.toFixed(4)}, ${sy.toFixed(4)})`;
+      const width = Math.max(1, right.value - left.value);
+      const center = (left.value + right.value) / 2;
+      const stretched = Math.max(0, width / Math.max(1, right.target - left.target) - 1);
+      const thin = preference.matches ? 0 : Math.min(0.2, stretched * 0.5);
+      const sx = width / basis;
+      const sy = (1 + raised * 0.17) * (1 - thin);
+      pill!.style.transform = `translateX(${(center - basis / 2).toFixed(2)}px) scale(${sx.toFixed(4)}, ${sy.toFixed(4)})`;
       root!.style.setProperty("--fluid-segment-lift", String(raised));
-      const preview = at(center.value)?.value;
+      const preview = at(center)?.value;
       geometry.forEach((item) => item.button.toggleAttribute("data-fluid-current", item.value === preview));
-      if ([center, width, lift, stretch].some((spring) => !spring.settled)) frame = requestAnimationFrame(tick);
+      if ([left, right, lift].some((spring) => !spring.settled)) frame = requestAnimationFrame(tick);
       else { lastTime = 0; root!.removeAttribute("data-fluid-active"); }
     }
 
@@ -489,7 +467,7 @@ export function FluidSegmented({ options, value, onValueChange, ariaLabel, class
       suppressClickUntil = performance.now() + 400;
       if (cancelled) target(held.original);
       else {
-        const item = at(center.target);
+        const item = at((left.target + right.target) / 2);
         if (item) {
           target(item.value);
           latest.current.onValueChange(item.value);
@@ -505,10 +483,11 @@ export function FluidSegmented({ options, value, onValueChange, ariaLabel, class
       if (event.button !== 0 || drag || !geometry.length) return;
       if (releaseTimer) clearTimeout(releaseTimer);
       const position = localX(event.clientX);
+      const center = (left.value + right.value) / 2;
       const selected = geometry.find((item) => item.value === latest.current.value);
-      const onSelection = selected && Math.abs(position - center.value) <= selected.width / 2;
+      const onSelection = selected && Math.abs(position - center) <= selected.width / 2;
       drag = { id: event.pointerId, x: event.clientX, y: event.clientY,
-        offset: onSelection ? center.value - position : 0, moved: false, original: latest.current.value };
+        offset: onSelection ? center - position : 0, moved: false, original: latest.current.value };
       const next = onSelection ? selected : at(position);
       if (next) target(next.value);
       lift.to(1, 0.22, 0.18);
@@ -525,14 +504,12 @@ export function FluidSegmented({ options, value, onValueChange, ariaLabel, class
       if (!drag.moved && dx < (event.pointerType === "mouse" ? 4 : 8)) return;
       drag.moved = true;
       event.preventDefault();
-      const first = geometry[0];
-      const last = geometry[geometry.length - 1];
-      if (!first || !last) return;
+      const minCenter = Math.min(...geometry.map((item) => item.center));
+      const maxCenter = Math.max(...geometry.map((item) => item.center));
       const raw = localX(event.clientX) + drag.offset;
-      const position = raw < first.center ? first.center + (raw - first.center) * 0.15
-        : raw > last.center ? last.center + (raw - last.center) * 0.15 : raw;
-      center.to(position, 0.16, 0);
-      width.to(at(position)?.width ?? basis, 0.16, 0);
+      const position = raw < minCenter ? minCenter + (raw - minCenter) * 0.15
+        : raw > maxCenter ? maxCenter + (raw - maxCenter) * 0.15 : raw;
+      moveEdges(position, at(position)?.width ?? basis);
       wake();
     }
 

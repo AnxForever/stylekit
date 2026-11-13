@@ -2,11 +2,12 @@
 
 import Image from "next/image";
 import { useRef, useState } from "react";
-import { ArrowDown, ArrowLeft, ArrowRight, ArrowUpRight, Check, Compass, Heart, Moon, Move, Search, SlidersHorizontal, Sun, Waves, X } from "lucide-react";
+import { ArrowDown, ArrowLeft, ArrowRight, ArrowUpRight, Check, Compass, Heart, Moon, Move, SlidersHorizontal, Sun, Waves } from "lucide-react";
 import { useTheme } from "next-themes";
 import { LocalizedLink } from "@/components/i18n/localized-link";
 import { useOpaqueGlassPreference, useSvgBackdropSupport } from "@/components/liquid-glass/liquid-glass";
 import { FluidGlass as LiquidGlass, FluidSegmented } from "@/components/liquid-glass/fluid-glass";
+import { FluidSearch } from "@/components/liquid-glass/fluid-search";
 import { LiquidFusion } from "@/components/liquid-glass/liquid-fusion";
 import { ShowcaseJourney } from "@/components/liquid-glass/showcase-journey";
 import { Modal, ModalContent, ModalDescription, ModalTitle } from "@/components/ui/modal/modal";
@@ -107,7 +108,7 @@ export default function LiquidGlassShowcase() {
         <section id="destinations" className={styles.destinations} aria-labelledby="surfaces-title">
           <header className={styles.sectionHeader}><div><p className={styles.chapter}>{t.chapter}</p><h2 id="surfaces-title">{t.heading}</h2></div><p>{t.subheading}</p></header>
           <div className={styles.filters}><LiquidGlass appearance="clear" radius={999} settings={settings} tint={darkTint} className={styles.tabGlass}><FluidSegmented settings={settings} ariaLabel={t.explore} className={styles.materialTabs} value={onlySaved ? "saved" : category} options={[...(["all", "water", "ice", "coast"] as const).map(value => ({ value, label: t[value] })), { value: "saved", label: <span className={styles.savedLabel}><Heart size={14} aria-hidden="true" />{saved.size}<span className="sr-only">{t.savedCount}</span></span> }]} onValueChange={(value) => { if (value === "saved") setOnlySaved(true); else { setOnlySaved(false); setCategory(value as Category); } }} /></LiquidGlass>
-            <LiquidGlass appearance="clear" radius={999} settings={settings} tint={darkTint}><div className={styles.searchField} role="search" aria-label={t.search}><Search size={17} aria-hidden="true" /><input ref={searchInput} type="search" aria-label={t.search} placeholder={t.searchHint} value={query} onChange={(event) => setQuery(event.currentTarget.value)} />{query && <button type="button" aria-label={t.clearSearch} onClick={() => setQuery("")}><X size={15} aria-hidden="true" /></button>}</div></LiquidGlass></div>
+            <FluidSearch ref={searchInput} value={query} onValueChange={setQuery} label={t.search} placeholder={t.searchHint} labels={{ open: t.search, clear: t.clearSearch, close: locale === "zh" ? "收起材质搜索" : "Close surface search" }} settings={settings} tint={darkTint} className={styles.searchControl} /></div>
           <div className={styles.placeGrid}>{matches.map((surface) => <article key={surface.id} className={styles.placeCard}><Landscape image={surface.id} sizes="(max-width: 700px) 100vw, 50vw" />
             <LiquidGlass appearance="clear" radius={surface.id === "mountain" ? 58 : 28} settings={{ ...settings, frost: surface.id === "waterfall" ? 8 : settings.frost, dispersion: surface.id === "coast" ? 3 : settings.dispersion }} tint="rgba(12,35,52,0.18)" className={styles.cardGlass} contentClassName={styles.cardContent}>
               <span className={styles.placeTag}>{surface.tag[locale]}</span><button type="button" className={styles.saveButton} aria-pressed={saved.has(surface.id)} aria-label={`${saved.has(surface.id) ? t.removeBookmark : t.bookmark} ${locale === "zh" ? surface.zh : surface.name}`} onClick={() => toggleSaved(surface.id)}><Heart size={19} fill={saved.has(surface.id) ? "currentColor" : "none"} aria-hidden="true" /></button>
