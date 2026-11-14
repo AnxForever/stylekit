@@ -24,9 +24,36 @@ const emptyReport = {
 describe("first-party style insights loading", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    vi.stubEnv("ANALYTICS_BACKEND_URL", "");
+    vi.stubEnv("ANALYTICS_BACKEND_TOKEN", "");
     getClient.mockReturnValue({ rpc });
     readCache.mockReturnValue(null);
     rpc.mockResolvedValue({ data: emptyReport, error: null });
+  });
+
+  it("reads self-hosted insights using a separate cache namespace and no Supabase client", async () => {
+    vi.stubEnv("ANALYTICS_BACKEND_URL", "https://stats.example.test/private");
+    vi.stubEnv("ANALYTICS_BACKEND_TOKEN", "test-token");
+    getClient.mockReturnValue(null);
+    const fetchMock = vi.fn().mockResolvedValue(new Response(JSON.stringify(emptyReport)));
+    vi.stubGlobal("fetch", fetchMock);
+    expect(await getStyleInsightsSnapshot("7d")).toEqual({ data: emptyReport, cache: "MISS" });
+    expect(String(fetchMock.mock.calls[0][0])).toBe("https://stats.example.test/private/insights");
+    expect(JSON.parse(fetchMock.mock.calls[0][1].body)).toEqual({ start: expect.any(String), end: expect.any(String) });
+    expect(getClient).not.toHaveBeenCalled();
+    expect(rpc).not.toHaveBeenCalled();
+    expect(writeCache).toHaveBeenCalledWith("style-insights:v2:7d:self-hosted", emptyReport);
+  });
+
+  it("does not fall back to Supabase after partial backend configuration or backend errors", async () => {
+    vi.stubEnv("ANALYTICS_BACKEND_URL", "https://stats.example.test/private");
+    expect(await getStyleInsightsSnapshot("7d")).toMatchObject({ data: null, code: "ANALYTICS_BACKEND_CONFIGURATION", status: 503 });
+    vi.stubEnv("ANALYTICS_BACKEND_TOKEN", "test-token");
+    vi.stubGlobal("fetch", vi.fn().mockRejectedValue(new Error("private provider details")));
+    expect(await getStyleInsightsSnapshot("7d")).toMatchObject({ data: null, code: "ANALYTICS_BACKEND_UNAVAILABLE", status: 503 });
+    expect(getClient).not.toHaveBeenCalled();
+    expect(rpc).not.toHaveBeenCalled();
+    expect(writeCache).not.toHaveBeenCalled();
   });
 
   it("accepts a measured empty window and caches only validated first-party data", async () => {

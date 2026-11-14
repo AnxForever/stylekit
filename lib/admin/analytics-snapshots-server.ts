@@ -24,6 +24,7 @@ import {
 import { getSupabaseAdmin } from "@/lib/supabase/server";
 import { readPersistentAnalyticsSnapshot, writePersistentAnalyticsSnapshot } from "./analytics-persistent-snapshot";
 import { promptCopyAnalyticsSchema, type PromptCopyAnalytics } from "./prompt-copy-analytics";
+import { callAnalyticsBackend, isAnalyticsBackendConfigured } from "@/lib/analytics/storage-server";
 
 const TIMEZONE = "Asia/Shanghai";
 
@@ -122,7 +123,8 @@ export function getEventsSnapshot(range: AnalyticsRange) {
 }
 
 export function getPromptCopySnapshot(range: AnalyticsRange): Promise<PromptCopyAnalytics | null> {
-  const cacheKey = `prompt-copies:${range}`;
+  const selfHosted = isAnalyticsBackendConfigured();
+  const cacheKey = `prompt-copies:${range}${selfHosted ? ":self-hosted" : ""}`;
   const cached = readAnalyticsCache<PromptCopyAnalytics>(cacheKey);
   if (cached) return Promise.resolve(cached);
 
@@ -130,12 +132,15 @@ export function getPromptCopySnapshot(range: AnalyticsRange): Promise<PromptCopy
     const recent = readAnalyticsCache<PromptCopyAnalytics>(cacheKey);
     if (recent) return recent;
 
-    const client = getSupabaseAdmin();
-    if (!client) return null;
+    const client = selfHosted ? null : getSupabaseAdmin();
+    if (!selfHosted && !client) return null;
     const window = getAnalyticsWindow(range);
     const { data, error } = await coalesceAnalyticsRequest<AnalyticsRpcResult>(`rpc:${cacheKey}`, async () => {
       const recent = readAnalyticsCache<PromptCopyAnalytics>(cacheKey);
       if (recent) return { data: recent, error: null };
+      if (selfHosted) {
+        return { data: await callAnalyticsBackend("prompt-copies", window), error: null };
+      }
       return await client.rpc("admin_analytics_prompt_copies", {
         p_start: window.start,
         p_end: window.end,

@@ -7,7 +7,7 @@ import {
 } from "@/lib/analytics";
 import { NextResponse } from "next/server";
 import { verifyTrustedOrigin } from "@/lib/security/request-origin";
-import { getSupabaseAdmin } from "@/lib/supabase/server";
+import { AnalyticsStorageError, storeAnalyticsEvent } from "@/lib/analytics/storage-server";
 import { z } from "zod";
 import { getStyleBySlug } from "@/lib/styles";
 import { resolveStyleBySlug } from "@/lib/styles/community-runtime";
@@ -227,12 +227,7 @@ async function recordInternalAnalyticsEvent(
     } : {}),
   };
 
-  const supabase = getSupabaseAdmin();
-  if (!supabase) {
-    return { ok: false, status: 503, error: "Analytics storage not configured" };
-  }
-
-  const { error } = await supabase.from("analytics_events").insert({
+  const record = {
     event_type: payload.eventType,
     event_data: eventData,
     style_slug: styleSlug,
@@ -242,12 +237,17 @@ async function recordInternalAnalyticsEvent(
       event_id: payload.eventId,
       created_at: new Date(acceptedClientTime ? occurredAt : receivedAt).toISOString(),
     } : {}),
-  });
-  if (error) {
-    // The database's unique event_id index arbitrates concurrent retries. The
-    // public legacy counters are only touched after a genuinely new insert.
-    if (payload.eventId && error.code === "23505") return { ok: true };
-    return { ok: false, status: 500, error: "Failed to store analytics event" };
+  };
+  try {
+    const result = await storeAnalyticsEvent(record);
+    // Public usage counters advance only for a genuinely new database insert.
+    if (result.duplicate) return { ok: true };
+  } catch (error) {
+    return {
+      ok: false,
+      status: error instanceof AnalyticsStorageError && error.code === "ANALYTICS_WRITE_FAILED" ? 500 : 503,
+      error: error instanceof AnalyticsStorageError ? error.message : "Analytics service unavailable",
+    };
   }
 
   if (styleSlug && resolvedStyle) {

@@ -1,0 +1,15 @@
+[Unit]
+Description=Remove expired StyleKit analytics after 90 days
+After=postgresql.service
+
+[Service]
+Type=oneshot
+User=postgres
+Environment="PGOPTIONS=-c statement_timeout=45000 -c lock_timeout=5000"
+ExecStart=/usr/bin/psql -X -v ON_ERROR_STOP=1 -d stylekit_analytics -c "select private.cleanup_analytics_events(interval '90 days', 50000);"
+TimeoutStartSec=60
+NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectSystem=strict
+ProtectHome=yes
+RestrictAddressFamilies=AF_UNIX

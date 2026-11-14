@@ -32,6 +32,7 @@ import {
 import { getAnalyticsOverviewSnapshot, getAnalyticsOverviewSnapshotResult } from "@/lib/admin/analytics-overview-server";
 import { GET as getContentApi } from "@/app/api/admin/analytics/content/route";
 import { GET as getOverviewApi } from "@/app/api/admin/analytics/overview/route";
+import { GET as getPromptCopyApi } from "@/app/api/admin/analytics/prompt-copies/route";
 
 const contentPayload = (generatedAt: string) => ({
   implementationIntentVersion: 2,
@@ -91,6 +92,8 @@ function deferred<T>() {
 
 beforeEach(() => {
   vi.clearAllMocks();
+  vi.stubEnv("ANALYTICS_BACKEND_URL", "");
+  vi.stubEnv("ANALYTICS_BACKEND_TOKEN", "");
   vi.stubEnv("NEXT_PUBLIC_SUPABASE_URL", "https://analytics.test.invalid");
   vi.stubEnv("SUPABASE_SERVICE_ROLE_KEY", "test-service-key");
   vi.stubEnv("UMAMI_INSIGHTS_URL", "");
@@ -103,6 +106,29 @@ beforeEach(() => {
 });
 
 describe("analytics SSR snapshots", () => {
+  it("coalesces the configured prompt-copy backend between SSR and API without Supabase", async () => {
+    vi.stubEnv("ANALYTICS_BACKEND_URL", "https://stats.example.test/private/");
+    vi.stubEnv("ANALYTICS_BACKEND_TOKEN", "test-token");
+    getSupabaseAdminMock.mockReturnValue(null);
+    const gate = deferred<Response>();
+    const fetchMock = vi.fn(() => gate.promise);
+    vi.stubGlobal("fetch", fetchMock);
+    const ssr = getPromptCopySnapshot("7d");
+    await Promise.resolve();
+    await Promise.resolve();
+    const api = getPromptCopyApi(new Request("https://stylekit.top/api/admin/analytics/prompt-copies?range=7d"));
+    await Promise.resolve();
+    await Promise.resolve();
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+    gate.resolve(new Response(JSON.stringify(promptCopyPayload)));
+    const [snapshot, response] = await Promise.all([ssr, api]);
+    expect(snapshot).toEqual(promptCopyPayload);
+    expect(await response.json()).toEqual(promptCopyPayload);
+    expect(rpcMock).not.toHaveBeenCalled();
+    expect(getSupabaseAdminMock).not.toHaveBeenCalled();
+    expect(readPersistentMock).not.toHaveBeenCalled();
+  });
+
   it("does not wait for a durable snapshot write before returning fresh RPC data", async () => {
     const pendingWrite = deferred<void>();
     rpcMock.mockResolvedValue({ data: contentPayload("2026-10-29T00:00:00.000Z"), error: null });

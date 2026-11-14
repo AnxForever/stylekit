@@ -69,7 +69,7 @@ export function PromptCopyAnalyticsPanel({
   return (
     <AdminSection
       title="各风格提示词复制"
-      description="只统计复制成功的操作。每次成功复制计 1 次；会话包含历史标签页和新版访问会话标识，不代表浏览器 UV。"
+      description="只统计复制成功的操作。每次成功复制计 1 次；会话按采集时的会话标识去重，不代表浏览器 UV。"
       actions={
         <AdminButton
           type="button"

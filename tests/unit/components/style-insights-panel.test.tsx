@@ -106,4 +106,32 @@ describe("style insights panels", () => {
     expect(screen.getByRole("alert")).toHaveTextContent("刷新失败，以下保留上次结果");
     expect(screen.getByText("12")).toBeInTheDocument();
   });
+
+  it("shows a capacity warning while preserving received counts", () => {
+    mockReport({ ...report, collectionHealth: {
+      status: "warning", databaseBytes: 2 * 1024 ** 3, freeDiskBytes: 8 * 1024 ** 3,
+      checkedAt: "2026-11-14T00:00:02.000Z",
+    } });
+    render(<FirstPartyTrafficPanel range="7d" />);
+    expect(screen.getByRole("status")).toHaveTextContent("统计存储容量预警");
+    expect(screen.getByRole("status")).toHaveTextContent("目前仍在接收新事件");
+    expect(screen.getByRole("status")).toHaveTextContent("2.00 GiB");
+    expect(screen.getByText("12")).toBeInTheDocument();
+    expect(screen.getByText("100")).toBeInTheDocument();
+  });
+
+  it("distinguishes blocked collection from zero traffic and unknown capacity", () => {
+    mockReport({ ...report, collectionHealth: {
+      status: "blocked", databaseBytes: null, freeDiskBytes: null,
+      checkedAt: "2026-11-14T00:00:02.000Z", reason: "health_unavailable",
+    } });
+    render(<FirstPartyTrafficPanel range="7d" />);
+    const notice = screen.getByRole("alert");
+    expect(notice).toHaveTextContent("新事件采集已暂停");
+    expect(notice).toHaveTextContent("容量检查暂不可用");
+    expect(notice).toHaveTextContent("数据库占用：未知");
+    expect(notice).toHaveTextContent("暂停期间不代表网站没有访问");
+    expect(screen.getByText("12")).toBeInTheDocument();
+    expect(screen.getByText("100")).toBeInTheDocument();
+  });
 });

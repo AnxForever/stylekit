@@ -1,0 +1,11 @@
+[Unit]
+Description=Run bounded StyleKit analytics retention every 15 minutes
+
+[Timer]
+OnBootSec=5min
+OnUnitActiveSec=15min
+AccuracySec=30s
+Unit=stylekit-analytics-retention.service
+
+[Install]
+WantedBy=timers.target

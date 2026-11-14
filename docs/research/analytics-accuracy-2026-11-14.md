@@ -46,3 +46,15 @@ Local evidence:
 - The preview source baseline changed only for analytics attributes on the existing home card; no visual image baselines were changed.
 
 Apply migration 044 before the application release. Verify provider/runtime version, actual trusted proxy headers and SQL cron availability in the release environment. A rollback can leave additive database columns in place; open clients using a newer event envelope may need reload before an older collector endpoint accepts them.
+
+## Production storage decision, 2026-11-14
+
+Release preflight found about 304 MB of database storage, including 283 MB for approximately 179,000 retained analytics rows, and an active free-quota warning. The owner selected the existing self-hosted server instead of increasing Supabase spending. **For this deployment, do not apply migration 044 to the business Supabase database.** Generate the dedicated `stylekit_analytics` schema using `tools/analytics-server/schema.mjs`; it reuses the reviewed 043/044 aggregation functions without the legacy dimension columns or Supabase roles.
+
+The new versioned collector writes exclusively to the configured private analytics service. Old client envelopes and business/authentication data stay on Supabase. A service failure never falls back to Supabase or double-writes. Both the new style report and prompt-copy report use the same service; legacy event-derived panels are explicitly marked as historical partial views.
+
+The service exposes only fixed, authenticated operations, parameterized queries and bounded requests. Its PostgreSQL role can insert and call report functions but cannot directly read raw rows, update, delete, create tables or run cleanup. A separate operator-owned timer performs the 90-day bounded cleanup. Browser code never receives database credentials or the service token.
+
+Transport is a dedicated restricted SSH forward between the existing servers, with both HTTP listeners bound to loopback and an independent bearer token. This avoids adding a public database port or changing the unrelated HTTPS application. The tunnel uses a new forwarding-only key; existing deployment keys remain unchanged.
+
+Storage pressure is visible in the admin report. Database size above 2 GiB warns; 4 GiB, less than 2 GiB free disk, or an unavailable capacity check pauses new ingest while keeping existing report data readable. This is a protective limit, not a claim that the full future 90-day workload has been capacity-tested. Observe actual growth after release.

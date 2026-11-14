@@ -1,5 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
+vi.mock("server-only", () => ({}));
+
 vi.mock("@/lib/analytics", () => ({
   getUsageStats: vi.fn(),
   getTopStyles: vi.fn(),
@@ -66,6 +68,8 @@ function request(body: unknown, headers: HeadersInit = {}) {
 
 beforeEach(() => {
   vi.clearAllMocks();
+  vi.stubEnv("ANALYTICS_BACKEND_URL", "");
+  vi.stubEnv("ANALYTICS_BACKEND_TOKEN", "");
   mockedVerifyTrustedOrigin.mockReturnValue({ ok: true });
   mockedGetRequestClientKey.mockReturnValue("client-key");
   mockedCheckRateLimit.mockReturnValue({
@@ -89,6 +93,30 @@ beforeEach(() => {
 });
 
 describe("analytics route", () => {
+  it("sends versioned events only to the configured backend and honors remote deduplication", async () => {
+    vi.stubEnv("ANALYTICS_BACKEND_URL", "https://stats.example.test/private/");
+    vi.stubEnv("ANALYTICS_BACKEND_TOKEN", "test-token");
+    mockedGetSupabaseAdmin.mockReturnValue(null);
+    const fetchMock = vi.fn()
+      .mockResolvedValueOnce(new Response(JSON.stringify({ success: true, duplicate: false })))
+      .mockResolvedValueOnce(new Response(JSON.stringify({ success: true, duplicate: true })));
+    vi.stubGlobal("fetch", fetchMock);
+    const body = {
+      eventType: "style_view", eventData: { slug: "neo-brutalist", source: "page" },
+      eventId: "123e4567-e89b-42d3-a456-426614174001",
+      visitorId: "123e4567-e89b-42d3-a456-426614174002",
+    };
+    expect((await POST(request(body))).status).toBe(200);
+    expect((await POST(request(body))).status).toBe(200);
+    expect(mockedGetSupabaseAdmin).not.toHaveBeenCalled();
+    expect(mockedTrackStyleUsage).toHaveBeenCalledTimes(1);
+    expect(String(fetchMock.mock.calls[0][0])).toBe("https://stats.example.test/private/events");
+    expect(JSON.parse(fetchMock.mock.calls[0][1].body)).toMatchObject({
+      event_id: body.eventId, visitor_id: body.visitorId, event_type: "style_view",
+      event_data: { measurementVersion: 2 },
+    });
+  });
+
   it("stores versioned browser identity separately from the session", async () => {
     const insert = vi.fn().mockResolvedValue({ error: null });
     mockedGetSupabaseAdmin.mockReturnValue({ from: vi.fn().mockReturnValue({ insert }) } as never);

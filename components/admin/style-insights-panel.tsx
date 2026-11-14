@@ -73,6 +73,7 @@ export function FirstPartyTrafficPanel({ range }: { range: AnalyticsRange }) {
       {error ? <AdminErrorState message={`${data ? "刷新失败，以下保留上次结果。" : ""}${reportError(error)}`} onRetry={() => void mutate()} /> : null}
       {data ? (
         <>
+          <CollectionHealthNotice health={data.collectionHealth} />
           <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
             <TrafficMetric label="浏览器 UV" value={formatCount(data.traffic.visitors)} />
             <TrafficMetric label="页面浏览 PV" value={formatCount(data.traffic.pageViews)} />
@@ -86,6 +87,28 @@ export function FirstPartyTrafficPanel({ range }: { range: AnalyticsRange }) {
         </>
       ) : null}
     </AdminSection>
+  );
+}
+
+function CollectionHealthNotice({ health }: { health: StyleInsights["collectionHealth"] }) {
+  if (!health || health.status === "ok") return null;
+  const blocked = health.status === "blocked";
+  const unavailable = health.reason === "health_unavailable";
+  const capacity = (bytes: number | null) => bytes === null ? "未知" : `${(bytes / 1024 ** 3).toFixed(2)} GiB`;
+
+  return (
+    <div role={blocked ? "alert" : "status"} className="mb-5 rounded-lg border border-[var(--admin-border-emphasis)] bg-[var(--admin-input)] p-4 text-xs leading-5 text-muted">
+      <p className="font-medium text-foreground">{blocked ? "新事件采集已暂停" : "统计存储容量预警"}</p>
+      <p className="mt-1">
+        {unavailable
+          ? "容量检查暂不可用，采集服务已暂停接收新事件；请检查统计服务状态。"
+          : blocked
+            ? "统计存储已达到容量保护阈值，暂停接收新事件；请检查磁盘空间或扩容。"
+            : "统计存储接近容量上限，目前仍在接收新事件；请检查空间并安排扩容。"}
+        {blocked ? " 下方保留已保存的统计结果，暂停期间不代表网站没有访问。" : " 下方只显示已成功接收的记录，容量状态不能证明采集完整。"}
+      </p>
+      <p className="mt-1">数据库占用：{capacity(health.databaseBytes)}；磁盘可用：{capacity(health.freeDiskBytes)}；检查于 {formatDate(health.checkedAt)}。</p>
+    </div>
   );
 }
 

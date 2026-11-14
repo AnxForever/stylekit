@@ -1,0 +1,32 @@
+[Unit]
+Description=StyleKit private analytics ingestion and reports
+After=network.target postgresql.service
+
+[Service]
+Type=simple
+DynamicUser=yes
+WorkingDirectory=/opt/stylekit-analytics
+EnvironmentFile=/etc/stylekit-analytics.env
+Environment=NODE_ENV=production
+ExecStart=/usr/bin/node --max-old-space-size=96 /opt/stylekit-analytics/server.mjs
+Restart=on-failure
+RestartSec=5
+TimeoutStopSec=15
+MemoryMax=192M
+CPUQuota=30%
+TasksMax=32
+LimitNOFILE=1024
+NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectSystem=strict
+ProtectHome=yes
+ProtectKernelTunables=yes
+ProtectControlGroups=yes
+RestrictSUIDSGID=yes
+LockPersonality=yes
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+IPAddressDeny=any
+IPAddressAllow=localhost
+
+[Install]
+WantedBy=multi-user.target

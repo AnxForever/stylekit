@@ -48,6 +48,13 @@ export const styleInsightsSchema = z.object({
   retentionDays: z.literal(90).default(90),
   range: z.object({ start: timestamp, end: timestamp, timezone: z.literal("Asia/Shanghai") }),
   generatedAt: timestamp,
+  collectionHealth: z.object({
+    status: z.enum(["ok", "warning", "blocked"]),
+    databaseBytes: count.nullable(),
+    freeDiskBytes: count.nullable(),
+    checkedAt: timestamp,
+    reason: z.enum(["database_limit", "disk_pressure", "health_unavailable"]).optional(),
+  }).optional(),
   /** Oldest retained v2 event, not a claim about collector installation time. */
   firstCollectedAt: timestamp.nullable(),
   traffic: z.object({

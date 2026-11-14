@@ -27,13 +27,14 @@ export function AnalyticsContentPage({ initialRange = "7d", initialData, initial
       <AnalyticsSyncStatus
         syncing={content.isValidating || events.isValidating}
         generatedAt={content.data?.generatedAt}
+        label="旧事件与社区数据"
       />
       <AdminPanel className="p-4 sm:p-5">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <p className="text-sm font-medium text-foreground">内容表现</p>
             <p className="mt-1 text-sm text-muted">
-              区分曝光、探索、实现意向、商业意向和已验证结果。
+              新版风格行为与提示词复制独立统计；下方保留旧事件参考和社区业务数据。
             </p>
           </div>
           <AdminSegmentedControl<AnalyticsRange>
@@ -68,7 +69,7 @@ export function AnalyticsContentPage({ initialRange = "7d", initialData, initial
       {content.data ? (
         <>
           <AdminPanel className="p-5 sm:p-6">
-            <SectionTitle title="价值信号" description="从被看到到产生可验证结果，不把不同强度的事件混为同一指标。" />
+            <SectionTitle title="旧事件库价值信号" description="新采集切换后，浏览器行为不再同步到旧事件库；部分业务事件仍可能新增。这里不代表当前完整流量或转化，请以上方新版报表为准。" />
             <ValueSignalTrack
               items={[
                 { label: "曝光", value: content.data.behavior.exposure },
@@ -81,17 +82,17 @@ export function AnalyticsContentPage({ initialRange = "7d", initialData, initial
           </AdminPanel>
 
           <AdminPanel className="p-5 sm:p-6">
-            <SectionTitle title="历史兼容事件汇总" description="包含新旧采集记录；会话标识的去重结果不代表浏览器 UV，风格转化请以上方新口径报表为准。" />
+            <SectionTitle title="旧事件库汇总" description="仅包含旧事件库中仍保留的记录，新采集风格行为不再写入此处。会话标识不代表浏览器 UV，空白也不代表网站没有访问。" />
             {events.isLoading && !events.data ? <PageSkeleton /> : null}
             {events.data ? <EventRows rows={events.data} /> : null}
           </AdminPanel>
 
           <div className="grid gap-6 xl:grid-cols-[1.2fr_0.8fr]">
             <AdminPanel className="p-5 sm:p-6">
-              <SectionTitle title="历史兼容热门风格" description="按全部有效产品行为排序；包含新旧记录和曝光权重，适合查阅历史，不作为风格转化排名。" />
+              <SectionTitle title="旧事件库热门风格" description="按旧事件库保留的产品行为排序；新采集切换后不再完整更新，不能作为当前风格热度或转化排名。" />
               <div className="mt-5 space-y-1">
                 {content.data.topStyles.length === 0 ? (
-                  <p className="text-sm text-muted">当前时间范围内暂无风格行为。</p>
+                  <p className="text-sm text-muted">旧事件库在当前范围内暂无风格记录，请查看上方新版报表。</p>
                 ) : (
                   content.data.topStyles.map((style, index) => (
                     <Link
@@ -143,7 +144,7 @@ export function AnalyticsContentPage({ initialRange = "7d", initialData, initial
 }
 
 function EventRows({ rows }: { rows: AnalyticsEvents }) {
-  if (rows.length === 0) return <p className="mt-5 text-sm text-muted">当前时间范围内暂无自定义事件。</p>;
+  if (rows.length === 0) return <p className="mt-5 text-sm text-muted">旧事件库在当前范围内暂无自定义事件，不代表当前网站没有活动。</p>;
   return <div className="mt-5 divide-y divide-[var(--admin-border-soft)]">{rows.map((row) => <div key={row.event} className="grid grid-cols-[minmax(0,1fr)_auto] gap-4 py-3"><div className="min-w-0"><p className="truncate font-mono text-xs text-foreground">{row.event}</p><p className="mt-1 text-[11px] text-muted">{row.visitors.toLocaleString("zh-CN")} 个内部会话标识 · {row.share.toFixed(1)}%</p></div><p className="font-mono text-sm tabular-nums text-foreground">{row.count.toLocaleString("zh-CN")}</p></div>)}</div>;
 }
 

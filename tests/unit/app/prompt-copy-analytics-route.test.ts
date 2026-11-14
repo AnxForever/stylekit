@@ -1,5 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
+vi.mock("server-only", () => ({}));
+
 const { checkAdminApiAccessMock, getSupabaseAdminMock, rpcMock } = vi.hoisted(() => ({
   checkAdminApiAccessMock: vi.fn(),
   getSupabaseAdminMock: vi.fn(),
@@ -47,9 +49,37 @@ function request(range = "7d") {
 
 describe("GET /api/admin/analytics/prompt-copies", () => {
   beforeEach(() => {
+    vi.stubEnv("ANALYTICS_BACKEND_URL", "");
+    vi.stubEnv("ANALYTICS_BACKEND_TOKEN", "");
     checkAdminApiAccessMock.mockReset().mockResolvedValue({ allowed: true });
     getSupabaseAdminMock.mockReset().mockReturnValue({ rpc: rpcMock });
     rpcMock.mockReset();
+  });
+
+  it("reads the configured backend without requiring a Supabase connection", async () => {
+    vi.stubEnv("ANALYTICS_BACKEND_URL", "https://stats.example.test/private/");
+    vi.stubEnv("ANALYTICS_BACKEND_TOKEN", "test-token");
+    getSupabaseAdminMock.mockReturnValue(null);
+    const fetchMock = vi.fn().mockResolvedValue(new Response(JSON.stringify(payload)));
+    vi.stubGlobal("fetch", fetchMock);
+    const response = await GET(request());
+    expect(response.status).toBe(200);
+    expect(await response.json()).toEqual(payload);
+    expect(String(fetchMock.mock.calls[0][0])).toBe("https://stats.example.test/private/prompt-copies");
+    expect(getSupabaseAdminMock).not.toHaveBeenCalled();
+    expect(rpcMock).not.toHaveBeenCalled();
+  });
+
+  it("fails closed on a configured backend outage without leaking provider errors", async () => {
+    vi.stubEnv("ANALYTICS_BACKEND_URL", "https://stats.example.test/private/");
+    vi.stubEnv("ANALYTICS_BACKEND_TOKEN", "test-token");
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue(new Response("provider credentials", { status: 500 })));
+    const response = await GET(request());
+    expect(response.status).toBe(503);
+    const body = await response.json();
+    expect(body.code).toBe("ANALYTICS_BACKEND_UNAVAILABLE");
+    expect(JSON.stringify(body)).not.toContain("provider credentials");
+    expect(rpcMock).not.toHaveBeenCalled();
   });
 
   it("requires admin access and returns no-store headers", async () => {
