@@ -47,7 +47,18 @@ async function readUmamiOverview(range: AnalyticsRange): Promise<AnalyticsOvervi
     const raw = data.overview?.[range];
     if (!raw) return null;
     const parsed = analyticsOverviewSchema.safeParse(raw);
-    return parsed.success ? parsed.data : null;
+    if (!parsed.success) return null;
+    const age = Date.now() - Date.parse(parsed.data.quality.generatedAt);
+    return {
+      ...parsed.data,
+      measurement: { collector: "umami", visitorMetric: "umami_identifier", fallback: false },
+      quality: {
+        ...parsed.data.quality,
+        status: !Number.isFinite(age) || age > 30 * 60_000 || age < -60_000
+          ? "stale"
+          : parsed.data.quality.status,
+      },
+    };
   } catch {
     return null;
   }
@@ -95,9 +106,13 @@ export async function getAnalyticsOverviewSnapshotResult(
         if (!error) {
           const parsed = analyticsOverviewSchema.safeParse(data);
           if (parsed.success) {
-            writeAnalyticsCache(cacheKey, parsed.data);
-            void writePersistentAnalyticsSnapshot(cacheKey, parsed.data);
-            return { data: parsed.data, source: "database" };
+            const measured: AnalyticsOverview = {
+              ...parsed.data,
+              measurement: { collector: "internal_legacy", visitorMetric: "tab_session", fallback: false },
+            };
+            writeAnalyticsCache(cacheKey, measured);
+            void writePersistentAnalyticsSnapshot(cacheKey, measured);
+            return { data: measured, source: "database" };
           }
         }
       } catch {
@@ -110,8 +125,18 @@ export async function getAnalyticsOverviewSnapshotResult(
     const persisted = await readPersistentAnalyticsSnapshot<unknown>(cacheKey);
     if (persisted === null) return { data: null, source: "unavailable" };
     const parsed = analyticsOverviewSchema.safeParse(persisted);
-    return parsed.success
-      ? { data: parsed.data, source: "persistent_fallback" }
-      : { data: null, source: "unavailable" };
+    if (!parsed.success) return { data: null, source: "unavailable" };
+    return {
+      data: {
+        ...parsed.data,
+        measurement: {
+          collector: parsed.data.measurement?.collector ?? "unknown",
+          visitorMetric: parsed.data.measurement?.visitorMetric ?? "unknown",
+          fallback: true,
+        },
+        quality: { ...parsed.data.quality, status: "stale" },
+      },
+      source: "persistent_fallback",
+    };
   });
 }

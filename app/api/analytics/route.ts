@@ -7,7 +7,7 @@ import {
 } from "@/lib/analytics";
 import { NextResponse } from "next/server";
 import { verifyTrustedOrigin } from "@/lib/security/request-origin";
-import { getSupabaseAdmin } from "@/lib/supabase/server";
+import { AnalyticsStorageError, storeAnalyticsEvent } from "@/lib/analytics/storage-server";
 import { z } from "zod";
 import { getStyleBySlug } from "@/lib/styles";
 import { resolveStyleBySlug } from "@/lib/styles/community-runtime";
@@ -23,6 +23,7 @@ import {
   isShowcaseTemplateSlug,
 } from "@/lib/templates/identity";
 import { parseJsonBodyWithLimit } from "@/lib/security/json-body";
+import { shouldExcludeAnalyticsRequest } from "@/lib/analytics/collection-policy";
 import {
   checkRateLimit,
   createRateLimitHeaders,
@@ -76,20 +77,11 @@ export async function POST(request: Request) {
     );
   }
 
-  const rateLimit = checkRateLimit({
-    namespace: "analytics",
-    key: getRequestClientKey(request),
-    limit: ANALYTICS_RATE_LIMIT_MAX_REQUESTS,
-    windowMs: ANALYTICS_RATE_LIMIT_WINDOW_MS,
-  });
-  const rateLimitHeaders = createRateLimitHeaders(rateLimit);
-  if (!rateLimit.allowed) {
-    return NextResponse.json(
-      { success: false, error: "Too many analytics requests" },
-      { status: 429, headers: rateLimitHeaders },
-    );
+  if (shouldExcludeAnalyticsRequest(request)) {
+    return NextResponse.json({ success: true, excluded: true });
   }
 
+  let rateLimitHeaders: Record<string, string> = {};
   try {
     const parsedBody = await parseJsonBodyWithLimit<unknown>(request, {
       maxBytes: MAX_ANALYTICS_BODY_BYTES,
@@ -105,22 +97,47 @@ export async function POST(request: Request) {
 
     const body = parsedBody.data;
     const internalPayload = parseClientAnalyticsPayload(body);
+    // Passive exposures cannot spend the allowance needed by deliberate actions.
+    // Parse first, with a strict body-size cap, to select the appropriate budget.
+    const passive = internalPayload.success && [
+      "catalog_impression", "style_engagement", "pack_offer_view", "pack_price_view",
+    ].includes(internalPayload.data.eventType);
+    const clientKey = getRequestClientKey(request);
+    const visitorId = internalPayload.success ? internalPayload.data.visitorId : null;
+    // Missing proxy configuration must not put the entire site into a 300-event
+    // bucket. Unknown traffic still has a finite site-wide abuse ceiling.
+    const sharedLimit = clientKey === "ip:unknown"
+      ? (passive ? 120_000 : 60_000)
+      : (passive ? 12_000 : 6_000);
+    let rateLimit = checkRateLimit({
+      namespace: visitorId
+        ? (passive ? "analytics-passive-abuse" : "analytics-abuse")
+        : (passive ? "analytics-passive" : "analytics"),
+      key: clientKey,
+      limit: sharedLimit,
+      windowMs: ANALYTICS_RATE_LIMIT_WINDOW_MS,
+    });
+    if (rateLimit.allowed && visitorId) {
+      // Check the shared ceiling first, so rotating visitor IDs cannot allocate
+      // unbounded buckets after the abuse budget has already been exhausted.
+      rateLimit = checkRateLimit({
+        namespace: passive ? "analytics-passive" : "analytics",
+        key: `visitor:${visitorId}`,
+        limit: passive ? 1200 : ANALYTICS_RATE_LIMIT_MAX_REQUESTS,
+        windowMs: ANALYTICS_RATE_LIMIT_WINDOW_MS,
+      });
+    }
+    rateLimitHeaders = createRateLimitHeaders(rateLimit);
+    if (!rateLimit.allowed) {
+      return NextResponse.json(
+        { success: false, error: "Too many analytics requests" },
+        { status: 429, headers: rateLimitHeaders },
+      );
+    }
+
     if (internalPayload.success) {
-      // Catalog impressions are high-volume passive telemetry. Keep them in
-      // Umami, but do not persist every card exposure in Postgres.
-      // This protects the database quota without changing user-facing behavior.
-      if (internalPayload.data.eventType === "catalog_impression") {
-        const catalogStyleSlug = readEventStyleSlug(
-          internalPayload.data.eventType,
-          internalPayload.data.eventData,
-        );
-        if (catalogStyleSlug && !(await resolveStyleBySlug(catalogStyleSlug))) {
-          return NextResponse.json(
-            { success: false, error: "Unknown style slug" },
-            { status: 400, headers: rateLimitHeaders },
-          );
-        }
-        return NextResponse.json({ success: true }, { headers: rateLimitHeaders });
+      if (shouldExcludeAnalyticsRequest(request, internalPayload.data.eventData)) {
+        return NextResponse.json({ success: true, excluded: true }, { headers: rateLimitHeaders });
       }
 
       const result = await recordInternalAnalyticsEvent(request, internalPayload.data);
@@ -192,6 +209,11 @@ async function recordInternalAnalyticsEvent(
   }
 
   const deviceType = readDeviceType(request.headers.get("user-agent"));
+  const receivedAt = Date.now();
+  const occurredAt = payload.occurredAt ? Date.parse(payload.occurredAt) : Number.NaN;
+  const acceptedClientTime = Number.isFinite(occurredAt)
+    && occurredAt >= receivedAt - 5 * 60 * 1000
+    && occurredAt <= receivedAt + 60 * 1000;
   const eventData = {
     ...payload.eventData,
     browser: readBrowser(request.headers.get("user-agent")),
@@ -199,21 +221,33 @@ async function recordInternalAnalyticsEvent(
     deviceType,
     country: readCountry(request),
     environment: readEnvironment(),
+    ...(payload.eventId ? {
+      measurementVersion: 2,
+      timestampSource: acceptedClientTime ? "client" : "server",
+    } : {}),
   };
 
-  const supabase = getSupabaseAdmin();
-  if (!supabase) {
-    return { ok: false, status: 503, error: "Analytics storage not configured" };
-  }
-
-  const { error } = await supabase.from("analytics_events").insert({
+  const record = {
     event_type: payload.eventType,
     event_data: eventData,
     style_slug: styleSlug,
     session_id: payload.sessionId,
-  });
-  if (error) {
-    return { ok: false, status: 500, error: "Failed to store analytics event" };
+    ...(payload.eventId ? {
+      visitor_id: payload.visitorId,
+      event_id: payload.eventId,
+      created_at: new Date(acceptedClientTime ? occurredAt : receivedAt).toISOString(),
+    } : {}),
+  };
+  try {
+    const result = await storeAnalyticsEvent(record);
+    // Public usage counters advance only for a genuinely new database insert.
+    if (result.duplicate) return { ok: true };
+  } catch (error) {
+    return {
+      ok: false,
+      status: error instanceof AnalyticsStorageError && error.code === "ANALYTICS_WRITE_FAILED" ? 500 : 503,
+      error: error instanceof AnalyticsStorageError ? error.message : "Analytics service unavailable",
+    };
   }
 
   if (styleSlug && resolvedStyle) {

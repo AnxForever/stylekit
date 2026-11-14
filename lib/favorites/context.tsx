@@ -12,6 +12,7 @@ import {
 import { useUser } from "@/lib/auth/use-user";
 import { loadAuthClient } from "@/lib/auth/browser-client-loader";
 import { useI18n } from "@/lib/i18n/context";
+import { trackEvent } from "@/lib/analytics/events";
 import {
   createFavoritesState,
   favoritesStateReducer,
@@ -125,6 +126,19 @@ function writeLocalFavorites(favorites: string[]): boolean {
 
 function isValidSlug(slug: string): boolean {
   return SLUG_RE.test(slug);
+}
+
+function trackPersistedLocalChanges(previous: string[], next: string[]): void {
+  const before = new Set(previous);
+  const after = new Set(next);
+  for (const slug of new Set([...before, ...after])) {
+    if (before.has(slug) === after.has(slug)) continue;
+    trackEvent("style_favorite", {
+      slug,
+      action: after.has(slug) ? "add" : "remove",
+      storage: "local",
+    });
+  }
 }
 
 export function FavoritesProvider({ children }: { children: ReactNode }) {
@@ -306,6 +320,13 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
 
             const latestIntent = scope.intents.get(slug);
             if (succeeded) {
+              if (stateRef.current.confirmed.includes(slug) !== intent.desired) {
+                trackEvent("style_favorite", {
+                  slug,
+                  action: intent.desired ? "add" : "remove",
+                  storage: "account",
+                });
+              }
               const revision = ++scope.successfulRevision;
               scope.successfulChanges.set(slug, {
                 ...intent,
@@ -387,6 +408,7 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
         const current = stateRef.current;
         const nextFavorites = setFavoriteValue(current.favorites, slug, desired);
         const persisted = writeLocalFavorites(nextFavorites);
+        if (persisted) trackPersistedLocalChanges(current.confirmed, nextFavorites);
         transition({
           type: "anonymous-updated",
           scopeKey: "anonymous",
@@ -443,6 +465,7 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
       if (!scope.userId && error.kind === "local-storage") {
         const desired = current.favorites.includes(slug);
         const persisted = writeLocalFavorites(current.favorites);
+        if (persisted) trackPersistedLocalChanges(current.confirmed, current.favorites);
         transition({
           type: "anonymous-updated",
           scopeKey: "anonymous",

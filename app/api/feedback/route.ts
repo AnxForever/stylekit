@@ -15,8 +15,14 @@ const feedbackSchema = z.object({
   message: z.string().trim().min(1).max(5000),
   // Optional reply-to address. Either a valid email or an empty string.
   email: z.string().email().optional().or(z.literal("")),
+  // Free-form contact a supporter leaves behind so they can be answered
+  // somewhere other than the site. It may be an email address or a WeChat
+  // handle, so it is not validated as an address; an email is also used as the
+  // reply-to header below.
+  contact: z.string().trim().max(200).optional(),
   // Honeypot — real users never see or fill this.
   website: z.string().optional(),
+  topic: z.enum(["feedback", "supporter"]).optional(),
 });
 
 export async function POST(request: Request) {
@@ -45,7 +51,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const { message, email, website } = parsed.data;
+    const { message, email, contact, website, topic } = parsed.data;
 
     // Honeypot hit → almost certainly a bot. Pretend success, send nothing.
     if (website) {
@@ -54,6 +60,15 @@ export async function POST(request: Request) {
         { headers: createRateLimitHeaders(rateLimit) }
       );
     }
+
+    const supporterContact = contact?.trim() ?? "";
+    // A supporter may leave only a WeChat handle, so the reply-to header is set
+    // only when what they left is actually an address.
+    const replyTo =
+      email ||
+      (supporterContact && z.string().email().safeParse(supporterContact).success
+        ? supporterContact
+        : undefined);
 
     const host = process.env.FEEDBACK_SMTP_HOST;
     const port = process.env.FEEDBACK_SMTP_PORT;
@@ -78,9 +93,12 @@ export async function POST(request: Request) {
     await transporter.sendMail({
       from: `"StyleKit Feedback" <${user}>`,
       to,
-      replyTo: email || undefined,
-      subject: "StyleKit 反馈 / Feedback",
-      text: `${message}\n\n---\nFrom: ${email || "anonymous"}`,
+      replyTo,
+      subject:
+        topic === "supporter"
+          ? "StyleKit 支持者留言 / Supporter note"
+          : "StyleKit 反馈 / Feedback",
+      text: `${message}\n\n---\nFrom: ${supporterContact || email || "anonymous"}`,
     });
 
     return NextResponse.json(

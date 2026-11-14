@@ -6,6 +6,8 @@
  */
 
 import { getUtmParams } from "@/lib/analytics/utm";
+import { canCollectClientAnalytics } from "@/lib/analytics/collection-policy";
+import { createAnalyticsEventId, getAnalyticsIdentity, getStoredAnalyticsIdentity } from "@/lib/analytics/identity";
 import type {
   ClientEventName,
   EventProperties,
@@ -40,10 +42,6 @@ declare global {
 
 // ── Tracker ─────────────────────────────────────────────────
 
-function isClient(): boolean {
-  return typeof window !== "undefined";
-}
-
 /**
  * Forward an event to the self-hosted Umami instance.
  * The tracker script loads lazily; events fired before it arrives are dropped
@@ -68,7 +66,7 @@ export function trackEvent<T extends ClientEventName>(
   name: T,
   properties: EventProperties<T>
 ): void {
-  if (!isClient()) return;
+  if (!canCollectClientAnalytics()) return;
 
   const utm = getUtmParams();
   const merged = utm
@@ -78,68 +76,65 @@ export function trackEvent<T extends ClientEventName>(
   // Umami manages UTM at the session level itself, so forward the raw
   // properties without the merged UTM fields.
   trackWithUmami(name, properties);
-  queueInternalAnalyticsEvent(name, merged);
+  void queueInternalAnalyticsEvent(name, merged);
 }
 
 export function trackPageView(payload: PageViewPayload): void {
-  if (!isClient()) return;
+  if (!canCollectClientAnalytics()) return;
   const utm = getUtmParams();
-  queueInternalAnalyticsEvent("page_view", utm ? { ...payload, ...utm } : payload);
+  void queueInternalAnalyticsEvent("page_view", utm ? { ...payload, ...utm } : payload);
 }
 
 // ── UTM helpers (inline to avoid circular deps) ─────────────
 
-const SESSION_STORAGE_KEY = "stylekit_session_id";
 const INTERNAL_ANALYTICS_ENDPOINT = "/api/analytics";
 
-function queueInternalAnalyticsEvent(
+async function queueInternalAnalyticsEvent(
   name: ClientEventName | "page_view",
   properties:
     | PageViewPayload
     | Record<string, string | number | boolean | null>
-): void {
-  if (process.env.NODE_ENV === "test") {
-    return;
-  }
-
+): Promise<void> {
   try {
+    const occurredAt = new Date().toISOString();
+    const eventId = createAnalyticsEventId();
+    const identity = document.visibilityState === "hidden"
+      ? getStoredAnalyticsIdentity()
+      : await getAnalyticsIdentity();
     const payload = {
       eventType: name,
       eventData: properties,
-      sessionId: getOrCreateSessionId(),
+      eventId,
+      occurredAt,
+      ...identity,
     };
     const body = JSON.stringify(payload);
 
-    if (typeof navigator !== "undefined" && typeof navigator.sendBeacon === "function") {
+    if (document.visibilityState === "hidden" && typeof navigator.sendBeacon === "function") {
       const blob = new Blob([body], { type: "application/json" });
       if (navigator.sendBeacon(INTERNAL_ANALYTICS_ENDPOINT, blob)) return;
     }
 
-    void fetch(INTERNAL_ANALYTICS_ENDPOINT, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body,
-      keepalive: true,
-    }).catch(() => {
-      // A rejected background request must not affect the copy interaction.
-    });
+    // Reuse the exact event ID for one transient retry, including an unknown
+    // outcome where the server committed before the connection failed.
+    for (let attempt = 0; attempt < 2; attempt += 1) {
+      try {
+        const response = await fetch(INTERNAL_ANALYTICS_ENDPOINT, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body,
+          keepalive: true,
+        });
+        if (response.ok || response.status < 500) return;
+      } catch {
+        // A transient failure must not block the product interaction.
+      }
+      if (attempt === 0) {
+        await new Promise((resolve) => window.setTimeout(resolve, 500));
+        if (!canCollectClientAnalytics()) return;
+      }
+    }
   } catch {
     // Analytics failures must remain non-blocking.
-  }
-}
-
-function getOrCreateSessionId(): string | null {
-  try {
-    const existing = sessionStorage.getItem(SESSION_STORAGE_KEY);
-    if (existing) return existing;
-
-    const next =
-      typeof crypto !== "undefined" && typeof crypto.randomUUID === "function"
-        ? crypto.randomUUID()
-        : `sess_${Math.random().toString(36).slice(2)}${Date.now().toString(36)}`;
-    sessionStorage.setItem(SESSION_STORAGE_KEY, next);
-    return next;
-  } catch {
-    return null;
   }
 }

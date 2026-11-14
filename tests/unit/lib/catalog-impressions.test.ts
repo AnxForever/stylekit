@@ -1,5 +1,5 @@
 // @vitest-environment happy-dom
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 const { trackEventMock } = vi.hoisted(() => ({
   trackEventMock: vi.fn(),
@@ -50,10 +50,14 @@ class IntersectionObserverMock {
 
 describe("catalog impressions", () => {
   beforeEach(() => {
+    vi.useFakeTimers();
+    Object.defineProperty(document, "visibilityState", { configurable: true, value: "visible" });
     trackEventMock.mockReset();
     IntersectionObserverMock.instances = [];
     vi.stubGlobal("IntersectionObserver", IntersectionObserverMock);
   });
+
+  afterEach(() => { vi.useRealTimers(); vi.unstubAllGlobals(); });
 
   it("tracks a visible card with rank context without the raw search query", () => {
     const root = document.createElement("div");
@@ -77,6 +81,9 @@ describe("catalog impressions", () => {
     expect(trackEventMock).not.toHaveBeenCalled();
 
     observer.trigger(card, 0.5);
+    vi.advanceTimersByTime(999);
+    expect(trackEventMock).not.toHaveBeenCalled();
+    vi.advanceTimersByTime(1);
     expect(trackEventMock).toHaveBeenCalledWith("catalog_impression", {
       slug: "corporate-clean",
       rank: 3,
@@ -105,9 +112,46 @@ describe("catalog impressions", () => {
 
     observeCatalogImpressions(root, context, seen);
     IntersectionObserverMock.instances[0].trigger(card, 1);
+    vi.advanceTimersByTime(1_000);
     observeCatalogImpressions(root, context, seen);
     IntersectionObserverMock.instances[1].trigger(card, 1);
+    vi.advanceTimersByTime(1_000);
 
     expect(trackEventMock).toHaveBeenCalledTimes(1);
+  });
+
+  it("requires continuous foreground visibility and cancels on cleanup", () => {
+    const root = document.createElement("div");
+    root.innerHTML = '<div data-catalog-style-slug="corporate-clean" data-catalog-style-rank="1"></div>';
+    const card = root.firstElementChild as HTMLElement;
+    const stop = observeCatalogImpressions(root, { contextKey: "x", sort: null, filterCount: 0, queryPresent: false }, new Set());
+    const observer = IntersectionObserverMock.instances[0];
+    observer.trigger(card, 1);
+    vi.advanceTimersByTime(500);
+    observer.trigger(card, 0.4);
+    vi.advanceTimersByTime(1_000);
+    expect(trackEventMock).not.toHaveBeenCalled();
+    observer.trigger(card, 1);
+    Object.defineProperty(document, "visibilityState", { configurable: true, value: "hidden" });
+    document.dispatchEvent(new Event("visibilitychange"));
+    vi.advanceTimersByTime(5_000);
+    expect(trackEventMock).not.toHaveBeenCalled();
+    Object.defineProperty(document, "visibilityState", { configurable: true, value: "visible" });
+    document.dispatchEvent(new Event("visibilitychange"));
+    vi.advanceTimersByTime(500);
+    stop();
+    vi.advanceTimersByTime(5_000);
+    expect(trackEventMock).not.toHaveBeenCalled();
+  });
+
+  it("attributes navigation clicks but ignores favorite controls", () => {
+    const root = document.createElement("div");
+    root.innerHTML = '<div data-catalog-style-slug="corporate-clean" data-catalog-style-rank="2"><a href="/en/styles/corporate-clean">Details</a><button>Favorite</button></div>';
+    const stop = observeCatalogImpressions(root, { contextKey: "dark", surface: "collection", collectionSlug: "dark-mode", sort: null, filterCount: 0, queryPresent: false }, new Set());
+    root.querySelector("button")!.click();
+    expect(trackEventMock).not.toHaveBeenCalled();
+    root.querySelector("a")!.dispatchEvent(new MouseEvent("click", { bubbles: true }));
+    expect(trackEventMock).toHaveBeenCalledWith("catalog_click", expect.objectContaining({ slug: "corporate-clean", rank: 2, surface: "collection", collection_slug: "dark-mode" }));
+    stop();
   });
 });

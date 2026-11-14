@@ -49,13 +49,13 @@ export function AnalyticsTrafficPage({ initialRange = "7d", initialData = {} }: 
   return (
     <div className="space-y-6">
       <AnalyticsSectionNav view="traffic" range={range} />
-      <AnalyticsSyncStatus syncing={overview.isValidating} generatedAt={overview.data?.quality.generatedAt} />
+      <AnalyticsSyncStatus syncing={overview.isValidating} generatedAt={overview.data?.quality.generatedAt} label="兼容流量趋势" />
       <AdminPanel className="p-4 sm:p-5">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <p className="text-sm font-medium text-foreground">流量调查</p>
             <p className="mt-1 text-sm text-muted">
-              点击一个维度继续调查；每个面板独立加载和失败。
+              下方维度用于旧事件参考；当前浏览器 UV 与风格行为请查看概览和内容中的新版报表。
             </p>
           </div>
           <AdminSegmentedControl<AnalyticsRange>
@@ -74,8 +74,8 @@ export function AnalyticsTrafficPage({ initialRange = "7d", initialData = {} }: 
 
       <AdminPanel className="p-5 sm:p-6">
         <PanelHeading
-          title="访问趋势"
-          description="切换查看标签页会话或页面浏览；两种指标使用各自刻度。同一人开多个标签页会分别计数，真实独立访客请看 Umami。"
+          title="访问趋势（兼容口径）"
+          description="Umami 如可用仍独立更新，旧内部数据按会话去重。下方维度只读取旧事件库，新采集切换后不再完整更新，与 Umami 和新版浏览器 UV 不可合并比较。"
         />
         {overview.isLoading && !overview.data ? <PanelSkeleton tall /> : null}
         {!overview.data && overview.error ? (
@@ -87,14 +87,14 @@ export function AnalyticsTrafficPage({ initialRange = "7d", initialData = {} }: 
       <div className="grid gap-6 xl:grid-cols-2">
         <BreakdownPanel
           icon={Route}
-          title="热门页面"
-          description="浏览量最高的规范化页面路径。"
+          title="旧事件热门页面"
+          description="旧事件库保留记录中的页面浏览排序，不代表当前完整页面流量。"
           state={pages}
         />
         <BreakdownPanel
           icon={Search}
-          title="访问来源"
-          description="访客首次进入网站时记录的外部来源。"
+          title="旧事件访问来源"
+          description="旧页面浏览记录中的来源域名；历史数据可能重复沿用首次页面来源。"
           state={referrers}
         />
       </div>
@@ -124,7 +124,7 @@ export function AnalyticsTrafficPage({ initialRange = "7d", initialData = {} }: 
       <div className="grid gap-6 xl:grid-cols-2">
         <BreakdownPanel icon={Server} title="主机名" description="区分主域名、预览域名和其他有效入口。" state={hostnames} />
         <AdminPanel className="p-5 sm:p-6">
-          <PanelHeading title="活动归因" description="UTM 仅从本次上线后的页面访问开始完整采集。" icon={Megaphone} />
+          <PanelHeading title="旧事件活动归因" description="仅展示旧事件库保留的 UTM 记录；新采集切换后不会继续补齐这里的活动数据。" icon={Megaphone} />
           <div className="mt-5 grid gap-5 lg:grid-cols-3">
             <CompactBreakdown title="来源" state={utmSources} icon={Network} />
             <CompactBreakdown title="媒介" state={utmMediums} icon={Search} />
@@ -187,7 +187,7 @@ function PanelHeading({
 
 function BreakdownRows({ rows }: { rows: AnalyticsBreakdown }) {
   if (rows.length === 0) {
-    return <p className="mt-5 text-sm text-muted">当前时间范围内暂无数据。</p>;
+    return <p className="mt-5 text-sm text-muted">旧事件库在当前范围内暂无记录，不代表当前网站没有访问。</p>;
   }
 
   return (
@@ -210,7 +210,7 @@ function BreakdownRows({ rows }: { rows: AnalyticsBreakdown }) {
             />
           </div>
           <p className="ml-10 mt-1 font-mono text-[10px] text-[var(--admin-text-muted)]">
-            {row.visitors.toLocaleString("zh-CN")} 个标签页会话 · {row.share.toFixed(1)}%
+            {row.visitors.toLocaleString("zh-CN")} 个内部会话标识 · {row.share.toFixed(1)}%
           </p>
         </div>
       ))}
@@ -229,7 +229,7 @@ function TrafficTrend({
         label: new Date(point.bucket).toLocaleString("zh-CN"),
         primary: point[metric],
       }));
-  return <div><div className="mt-4 flex justify-end"><div className="inline-flex rounded-md bg-[var(--admin-input)] p-1 shadow-[var(--admin-shadow-border)]" role="group" aria-label="流量趋势指标"><button type="button" aria-pressed={metric === "visitors"} onClick={() => setMetric("visitors")} className={`rounded px-3 py-1.5 text-xs ${metric === "visitors" ? "bg-[var(--admin-panel)] text-foreground shadow-[var(--admin-shadow-small)]" : "text-muted"}`}>标签页会话</button><button type="button" aria-pressed={metric === "pageViews"} onClick={() => setMetric("pageViews")} className={`rounded px-3 py-1.5 text-xs ${metric === "pageViews" ? "bg-[var(--admin-panel)] text-foreground shadow-[var(--admin-shadow-small)]" : "text-muted"}`}>页面浏览</button></div></div><InteractiveLineChart ariaLabel={metric === "visitors" ? "标签页会话趋势" : "页面浏览趋势"} primaryLabel={metric === "visitors" ? "标签页会话" : "页面浏览"} points={points(metric)} /></div>;
+  return <div><div className="mt-4 flex justify-end"><div className="inline-flex rounded-md bg-[var(--admin-input)] p-1 shadow-[var(--admin-shadow-border)]" role="group" aria-label="流量趋势指标"><button type="button" aria-pressed={metric === "visitors"} onClick={() => setMetric("visitors")} className={`rounded px-3 py-1.5 text-xs ${metric === "visitors" ? "bg-[var(--admin-panel)] text-foreground shadow-[var(--admin-shadow-small)]" : "text-muted"}`}>历史标识数</button><button type="button" aria-pressed={metric === "pageViews"} onClick={() => setMetric("pageViews")} className={`rounded px-3 py-1.5 text-xs ${metric === "pageViews" ? "bg-[var(--admin-panel)] text-foreground shadow-[var(--admin-shadow-small)]" : "text-muted"}`}>页面浏览</button></div></div><InteractiveLineChart ariaLabel={metric === "visitors" ? "历史标识趋势" : "页面浏览趋势"} primaryLabel={metric === "visitors" ? "历史标识数" : "页面浏览"} points={points(metric)} /></div>;
 }
 
 function PanelSkeleton({ tall = false }: { tall?: boolean }) {

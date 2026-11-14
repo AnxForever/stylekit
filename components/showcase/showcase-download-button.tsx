@@ -23,7 +23,6 @@ export function ShowcaseDownloadButton({ slug }: ShowcaseDownloadButtonProps) {
     if (state === "downloading") return;
 
     setState("downloading");
-    trackEvent("style_export", { slug, format: "showcase-zip" });
 
     try {
       const response = await fetch(
@@ -41,6 +40,8 @@ export function ShowcaseDownloadButton({ slug }: ShowcaseDownloadButtonProps) {
       document.body.appendChild(anchor);
       anchor.click();
       anchor.remove();
+      // The ZIP was delivered to the browser; saving it to disk is not observable.
+      trackEvent("style_export", { slug, format: "showcase-zip" });
       // Give the browser time to start the download before releasing the blob.
       window.setTimeout(() => URL.revokeObjectURL(url), 1000);
       setState("downloaded");

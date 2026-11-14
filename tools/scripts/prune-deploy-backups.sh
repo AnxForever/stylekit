@@ -1,16 +1,22 @@
 #!/bin/bash
 # StyleKit deployment artifact retention (runs on the production host)
 #
-# Every deploy leaves a pre-deploy snapshot under /www/stylekit-backups and the
-# previously served build at /www/stylekit/.next.previous-*. Nothing pruned the
-# older ones, so the host reached 98% disk use on 2026-10-03: 37 GB of 40 GB
-# used, 843 MB free. The snapshots alone were 8.1 GB across 20 entries.
+# Every deploy leaves four things behind: a pre-deploy snapshot under
+# /www/stylekit-backups, the previously served build at
+# /www/stylekit/.next.previous-*, the extracted staging tree under
+# /www/stylekit-release-stage, and the uploaded archive in /tmp. Nothing pruned
+# the older ones, so the host reached 98% disk use on 2026-10-03: 37 GB of 40 GB
+# used, 843 MB free. The snapshots alone were 8.1 GB across 20 entries. On
+# 2026-11-13 the staging trees and /tmp archives accounted for ~2 GB of the
+# ~4.6 GB a manual cleanup reclaimed, because this script did not cover them.
 #
 # This keeps the most recent entries and deletes the rest. The newest snapshot
 # is never a candidate: it is the rollback target for the deploy that just
 # landed, and the snapshot directory holds source only, so it is the one
 # artifact that can still rebuild the previous release. KEEP_* values are
-# floored at 1 for the same reason.
+# floored at 1 for the same reason, and the same newest-first rule protects a
+# release that is still staging: its directory and archive are the newest by
+# mtime, so they survive a run that happens mid-deploy.
 #
 # Install:
 #   install -m 755 tools/scripts/prune-deploy-backups.sh \
@@ -27,8 +33,12 @@ set -euo pipefail
 
 BACKUP_DIR="${BACKUP_DIR:-/www/stylekit-backups}"
 APP_DIR="${APP_DIR:-/www/stylekit}"
+STAGE_DIR="${STAGE_DIR:-/www/stylekit-release-stage}"
+ARCHIVE_DIR="${ARCHIVE_DIR:-/tmp}"
 KEEP_SNAPSHOTS="${KEEP_SNAPSHOTS:-3}"
 KEEP_NEXT_PREVIOUS="${KEEP_NEXT_PREVIOUS:-1}"
+KEEP_STAGES="${KEEP_STAGES:-1}"
+KEEP_ARCHIVES="${KEEP_ARCHIVES:-1}"
 DRY_RUN="${DRY_RUN:-0}"
 LOCK_FILE="${LOCK_FILE:-/run/stylekit-prune-backups.lock}"
 
@@ -124,6 +134,8 @@ main() {
 
   prune "$BACKUP_DIR" "$KEEP_SNAPSHOTS" '*' 'deploy snapshots'
   prune "$APP_DIR" "$KEEP_NEXT_PREVIOUS" '.next.previous-*' 'previous builds'
+  prune "$STAGE_DIR" "$KEEP_STAGES" '*' 'staging trees'
+  prune "$ARCHIVE_DIR" "$KEEP_ARCHIVES" 'stylekit-*.tar.gz' 'release archives'
 
   after=$(free_mb)
   if [ "$DRY_RUN" = "1" ]; then

@@ -48,8 +48,8 @@ export function AnalyticsSectionNav({
   );
 }
 
-export function AnalyticsSyncStatus({ syncing, generatedAt }: { syncing: boolean; generatedAt?: string }) {
-  return <p className="text-right text-[11px] text-[var(--admin-text-muted)]" role="status" aria-live="polite">{syncing ? "正在后台同步最新数据…" : generatedAt ? `数据更新于 ${new Date(generatedAt).toLocaleString("zh-CN")}` : "数据已同步"}</p>;
+export function AnalyticsSyncStatus({ syncing, generatedAt, label }: { syncing: boolean; generatedAt?: string; label?: string }) {
+  return <p className="text-right text-[11px] text-[var(--admin-text-muted)]" role="status" aria-live="polite">{label ? `${label}：` : ""}{syncing ? "正在后台同步最新数据…" : generatedAt ? `数据更新于 ${new Date(generatedAt).toLocaleString("zh-CN")}` : "数据已同步"}</p>;
 }
 
 export function DashboardSkeleton() {

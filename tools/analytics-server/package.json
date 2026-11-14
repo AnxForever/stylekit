@@ -1,0 +1,9 @@
+{
+  "name": "stylekit-analytics-server",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@11.5.3",
+  "engines": { "node": ">=22.21.1" },
+  "dependencies": { "pg": "8.23.0" }
+}

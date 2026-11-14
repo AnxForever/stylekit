@@ -17,6 +17,7 @@ import { CollapsibleSection } from "@/components/ui/collapsible-section";
 import { useI18n } from "@/lib/i18n/context";
 import { localizedString, localizedList } from "@/lib/styles/locale-content";
 import { trackEvent } from "@/lib/analytics/events";
+import { CatalogAnalytics } from "@/components/analytics/catalog-analytics";
 
 import type { DesignStyle } from "@/lib/styles";
 import type { StyleVersion } from "@/lib/versioning";
@@ -160,19 +161,6 @@ export function StyleDetailContent({
       value: localizedDonts[0] ?? localizedDescription,
     },
   ];
-  useEffect(() => {
-    const sendAnalytics = () => {
-      trackEvent("style_view", { slug: style.slug, source: "page" });
-    };
-
-    if (typeof window.requestIdleCallback === "function") {
-      const id = window.requestIdleCallback(sendAnalytics);
-      return () => window.cancelIdleCallback(id);
-    } else {
-      const id = setTimeout(sendAnalytics, 1);
-      return () => clearTimeout(id);
-    }
-  }, [style.slug]);
 
   return (
     <>
@@ -581,10 +569,12 @@ export function StyleDetailContent({
                 </table>
               </div>
             ) : null}
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-              {relatedStyles.map((relatedStyle) => (
+            <CatalogAnalytics surface="related_styles" contextKey={style.slug} className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+              {relatedStyles.map((relatedStyle, index) => (
                 <LocalizedLink
                   key={relatedStyle.slug}
+                  data-catalog-style-slug={relatedStyle.slug}
+                  data-catalog-style-rank={index + 1}
                   href={`/styles/${relatedStyle.slug}`}
                   className="group block border border-border hover:border-foreground transition-colors"
                 >
@@ -599,7 +589,7 @@ export function StyleDetailContent({
                   </div>
                 </LocalizedLink>
               ))}
-            </div>
+            </CatalogAnalytics>
           </div>
         </section>
       )}

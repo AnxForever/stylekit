@@ -161,6 +161,15 @@ type CatalogImpressionProps = {
 
 interface ClientEventMap {
   style_view: StyleViewProps;
+  showcase_view: { slug: string; source: "page" };
+  style_engagement: {
+    slug: string;
+    surface: "detail" | "showcase";
+    /** Visible foreground duration since the preceding flush, not cumulative. */
+    active_ms: number;
+    max_scroll_percent: number;
+  };
+  style_favorite: { slug: string; action: "add" | "remove"; storage: "local" | "account" };
   style_export: StyleExportProps;
   code_copy: CodeCopyProps;
   prompt_copy: PromptCopyProps;
@@ -182,6 +191,7 @@ interface ClientEventMap {
   pack_offer_view: PackOfferProps;
   pack_price_view: PackPriceProps;
   catalog_impression: CatalogImpressionProps;
+  catalog_click: CatalogImpressionProps;
 }
 
 type PackPurchaseProps = Omit<PackCheckoutStartProps, "source"> & {
@@ -247,6 +257,9 @@ interface AuthoritativeEventMap {
 
 export const CLIENT_EVENT_NAMES = [
   "style_view",
+  "showcase_view",
+  "style_engagement",
+  "style_favorite",
   "style_export",
   "code_copy",
   "prompt_copy",
@@ -268,6 +281,7 @@ export const CLIENT_EVENT_NAMES = [
   "pack_offer_view",
   "pack_price_view",
   "catalog_impression",
+  "catalog_click",
 ] as const satisfies readonly (keyof ClientEventMap)[];
 
 export const AUTHORITATIVE_EVENT_NAMES = [

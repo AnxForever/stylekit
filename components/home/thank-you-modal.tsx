@@ -5,9 +5,11 @@ import { usePathname, useSearchParams } from "next/navigation";
 import Image from "next/image";
 import { X } from "lucide-react";
 import { useI18n } from "@/lib/i18n/context";
+import { localizeHref } from "@/lib/i18n/routing";
 import { getThankYouContentVersion, parseThankYouCookie, serializeThankYouCookie, withoutThankYouRequest } from "@/lib/support/thank-you-state";
 import {
   thankYouEntries as legacyThankYouEntries,
+  supporterContactHref,
   thankYouModalConfig,
   type ThankYouEntry,
 } from "@/lib/site/support";
@@ -241,6 +243,18 @@ export function ThankYouModal({
         </div>
         <p className="mt-3 shrink-0 text-center text-xs text-muted">
           {locale === "zh" ? "点击截图查看原图" : "Select a receipt to view its original image"}
+        </p>
+        {/* A plain anchor, not next/link: the target is an anchor on another
+            route, and only a real document load scrolls to it. */}
+        <p className="mt-2 shrink-0 text-center text-xs text-muted">
+          {config.contactPrompt[locale]}{" "}
+          <a
+            href={localizeHref(supporterContactHref, locale)}
+            onClick={() => setIsOpen(false)}
+            className="underline underline-offset-4 transition-colors hover:text-foreground"
+          >
+            {config.contactAction[locale]}
+          </a>
         </p>
       </div>
     </div>

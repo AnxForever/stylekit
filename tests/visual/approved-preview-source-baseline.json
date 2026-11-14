@@ -3,7 +3,7 @@
   "algorithm": "sha256",
   "files": {
     "components/home/featured-carousel.tsx": "8d74ccd23b6af86b4c79c293bd382e166711a6a50fefc98a70b48b97bd084cfc",
-    "components/home/home-style-card.tsx": "e0529494ea3d3269fa8270ffb2fed3e42dd0d48d801a4976381e796497028991",
+    "components/home/home-style-card.tsx": "95f05ae8b1c246552d7c3f667e909a69c6dd39d716335d2a09244c212860200c",
     "components/home/style-card.tsx": "bc4ed4d99a8f4fc5af21582a5408758aa78f106cc1c4ffb037b85a4dfee3b66a",
     "components/liquid-glass/liquid-glass.module.css": "94a3c878bbc16e8f7429446104609db7df095987191137127a50390d9d5cc065",
     "components/liquid-glass/liquid-glass.tsx": "dd79ff19d9953596ad0021ac3a21c934c9258f60b122a6fb156e73bd5b1a4f82",

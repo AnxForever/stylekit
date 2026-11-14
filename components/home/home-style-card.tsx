@@ -20,9 +20,10 @@ interface HomeStyleCardProps {
    * so only the list visible at the current breakpoint enables it.
    */
   enableViewTransition?: boolean;
+  analyticsRank?: number;
 }
 
-export function HomeStyleCard({ style, enableViewTransition = true }: HomeStyleCardProps) {
+export function HomeStyleCard({ style, enableViewTransition = true, analyticsRank }: HomeStyleCardProps) {
   const { locale } = useI18n();
   const scenarios = getStyleScenarios(style, 2);
   const description = locale === "zh" ? style.description : style.descriptionEn;
@@ -42,7 +43,7 @@ export function HomeStyleCard({ style, enableViewTransition = true }: HomeStyleC
   );
 
   return (
-    <div className="relative">
+    <div className="relative" data-catalog-style-slug={style.slug} data-catalog-style-rank={analyticsRank}>
       <div className={cardClassName}>
         <LocalizedLink
           href={`/styles/${style.slug}`}

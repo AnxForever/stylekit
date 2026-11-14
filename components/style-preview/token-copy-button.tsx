@@ -29,8 +29,8 @@ export function TokenCopyButton({ style, format, label }: TokenCopyButtonProps) 
 
   async function handleCopy() {
     const ok = await copy(exportStyleTokens(style, format), `tokens:${format}`);
-    trackEvent("style_export", { slug: style.slug, format });
     if (!ok) return;
+    trackEvent("style_export", { slug: style.slug, format });
     setCopied(true);
     window.setTimeout(() => setCopied(false), 2000);
   }

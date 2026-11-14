@@ -13,6 +13,11 @@ import {
   writeAnalyticsCache,
 } from "@/lib/admin/analytics-response-cache";
 import { getSupabaseAdmin } from "@/lib/supabase/server";
+import {
+  AnalyticsStorageError,
+  callAnalyticsBackend,
+  isAnalyticsBackendConfigured,
+} from "@/lib/analytics/storage-server";
 
 const RESPONSE_HEADERS = { "Cache-Control": "private, no-store" };
 
@@ -34,7 +39,8 @@ export async function GET(request: Request) {
     );
   }
 
-  const cacheKey = `prompt-copies:${range.data}`;
+  const selfHosted = isAnalyticsBackendConfigured();
+  const cacheKey = `prompt-copies:${range.data}${selfHosted ? ":self-hosted" : ""}`;
   const cached = readAnalyticsCache<unknown>(cacheKey);
   if (cached) {
     return NextResponse.json(cached, {
@@ -42,8 +48,8 @@ export async function GET(request: Request) {
     });
   }
 
-  const client = getSupabaseAdmin();
-  if (!client) {
+  const client = selfHosted ? null : getSupabaseAdmin();
+  if (!selfHosted && !client) {
     return NextResponse.json(
       { error: "Analytics storage is not configured.", code: "ANALYTICS_UNAVAILABLE" },
       { status: 503, headers: RESPONSE_HEADERS },
@@ -52,17 +58,32 @@ export async function GET(request: Request) {
 
   const window = getAnalyticsWindow(range.data);
   const startedAt = performance.now();
-  const { data, error } = await coalesceAnalyticsRequest<AnalyticsRpcResult>(
-    `rpc:${cacheKey}`,
-    async () => {
-      const recent = readAnalyticsCache<unknown>(cacheKey);
-      if (recent) return { data: recent, error: null };
-      return await client.rpc("admin_analytics_prompt_copies", {
-        p_start: window.start,
-        p_end: window.end,
-      });
-    },
-  );
+  let result: AnalyticsRpcResult;
+  try {
+    result = await coalesceAnalyticsRequest<AnalyticsRpcResult>(
+      `rpc:${cacheKey}`,
+      async () => {
+        const recent = readAnalyticsCache<unknown>(cacheKey);
+        if (recent) return { data: recent, error: null };
+        if (selfHosted) {
+          return { data: await callAnalyticsBackend("prompt-copies", window), error: null };
+        }
+        return await client.rpc("admin_analytics_prompt_copies", {
+          p_start: window.start,
+          p_end: window.end,
+        });
+      },
+    );
+  } catch (error) {
+    return NextResponse.json(
+      {
+        error: error instanceof AnalyticsStorageError ? error.message : "Failed to load prompt copy analytics.",
+        code: error instanceof AnalyticsStorageError ? error.code : "ANALYTICS_QUERY_FAILED",
+      },
+      { status: error instanceof AnalyticsStorageError ? error.status : 503, headers: RESPONSE_HEADERS },
+    );
+  }
+  const { data, error } = result;
   const durationMs = Math.round(performance.now() - startedAt);
 
   if (error) {

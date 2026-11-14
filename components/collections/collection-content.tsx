@@ -1,6 +1,7 @@
 "use client";
 
 import { StyleCard } from "@/components/home/style-card";
+import { CatalogAnalytics } from "@/components/analytics/catalog-analytics";
 import { LocalizedLink } from "@/components/i18n/localized-link";
 import { useI18n } from "@/lib/i18n/context";
 import type { StyleCollection } from "@/lib/styles/collections";
@@ -55,11 +56,13 @@ export function CollectionContent({ collection, styles }: CollectionContentProps
           {isZh ? "该合集暂无风格。" : "No styles in this collection yet."}
         </p>
       ) : (
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {styles.map((style) => (
-            <StyleCard key={style.slug} style={style} variant="compact" />
+        <CatalogAnalytics surface="collection" contextKey={collection.slug} collectionSlug={collection.slug} className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {styles.map((style, index) => (
+            <div key={style.slug} data-catalog-style-slug={style.slug} data-catalog-style-rank={index + 1}>
+              <StyleCard style={style} variant="compact" />
+            </div>
           ))}
-        </div>
+        </CatalogAnalytics>
       )}
     </div>
   );

@@ -3,6 +3,7 @@
 import { Suspense } from "react";
 import dynamic from "next/dynamic";
 import { PageViewTracker } from "@/components/analytics/page-view-tracker";
+import { StylePageTracker } from "@/components/analytics/style-page-tracker";
 import { BackNavigationRuntime } from "@/components/navigation/back-navigation-runtime";
 
 const RegisterSW = dynamic(
@@ -16,6 +17,7 @@ export function ClientScripts() {
       <BackNavigationRuntime />
       <Suspense fallback={null}>
         <PageViewTracker />
+        <StylePageTracker />
       </Suspense>
       <RegisterSW />
     </>
