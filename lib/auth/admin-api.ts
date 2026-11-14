@@ -184,5 +184,7 @@ function hasSupabaseAuthCookie(request: Request): boolean {
     return false;
   }
 
-  return /(?:^|;\s*)sb-[^=]+-auth-token=/.test(rawCookie);
+  // Supabase SSR splits larger sessions into auth-token.0, auth-token.1, ... .
+  // Keep this aligned with the proxy, which already accepts those cookies.
+  return /(?:^|;\s*)sb-[^=;\s]+-auth-token(?:\.\d+)?=/.test(rawCookie);
 }

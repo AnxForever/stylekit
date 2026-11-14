@@ -133,6 +133,21 @@ describe("admin api access", () => {
     expect(mockedGetServerUser).toHaveBeenCalledTimes(1);
   });
 
+  it("recognizes the split Supabase session used by the live admin console", async () => {
+    process.env.ADMIN_USER_IDS = "user-1";
+    mockedGetServerUser.mockResolvedValue({ id: "user-1" } as ServerUser);
+
+    const request = new Request("https://stylekit.top/api/admin/users", {
+      headers: {
+        cookie: "stylekit-locale=zh; sb-project-auth-token.0=first; sb-project-auth-token.1=second",
+      },
+    });
+
+    const result = await checkAdminApiAccess(request, { nodeEnv: "production" });
+    expect(result.actor).toEqual({ type: "user", id: "user-1" });
+    expect(mockedGetServerUser).toHaveBeenCalledTimes(1);
+  });
+
   it("rejects non-admin user when auth cookie exists", async () => {
     process.env.ADMIN_USER_IDS = "user-1";
     mockedGetServerUser.mockResolvedValue({ id: "user-2" } as ServerUser);
