@@ -89,6 +89,124 @@ beforeEach(() => {
 });
 
 describe("analytics route", () => {
+  it("stores versioned browser identity separately from the session", async () => {
+    const insert = vi.fn().mockResolvedValue({ error: null });
+    mockedGetSupabaseAdmin.mockReturnValue({ from: vi.fn().mockReturnValue({ insert }) } as never);
+    const eventId = "123e4567-e89b-42d3-a456-426614174001";
+    const visitorId = "123e4567-e89b-42d3-a456-426614174002";
+    const response = await POST(request({
+      eventType: "style_view", eventData: { slug: "neo-brutalist", source: "page" },
+      eventId, visitorId, sessionId: "123e4567-e89b-42d3-a456-426614174003",
+    }));
+    expect(response.status).toBe(200);
+    expect(insert).toHaveBeenCalledWith(expect.objectContaining({
+      event_id: eventId, visitor_id: visitorId,
+      session_id: "123e4567-e89b-42d3-a456-426614174003",
+      event_data: expect.objectContaining({ measurementVersion: 2 }),
+    }));
+  });
+
+  it("acknowledges a database-deduplicated replay without incrementing style usage twice", async () => {
+    const insert = vi.fn().mockResolvedValueOnce({ error: null })
+      .mockResolvedValueOnce({ error: { code: "23505" } });
+    mockedGetSupabaseAdmin.mockReturnValue({ from: vi.fn().mockReturnValue({ insert }) } as never);
+    const payload = {
+      eventType: "style_view", eventData: { slug: "neo-brutalist", source: "page" },
+      eventId: "123e4567-e89b-42d3-a456-426614174001", visitorId: null, sessionId: null,
+    };
+    expect((await POST(request(payload))).status).toBe(200);
+    expect((await POST(request(payload))).status).toBe(200);
+    expect(mockedTrackStyleUsage).toHaveBeenCalledTimes(1);
+  });
+
+  it("keeps legacy session identifiers out of the new visitor metric", async () => {
+    const insert = vi.fn().mockResolvedValue({ error: null });
+    mockedGetSupabaseAdmin.mockReturnValue({ from: vi.fn().mockReturnValue({ insert }) } as never);
+    await POST(request({
+      eventType: "style_view", eventData: { slug: "neo-brutalist", source: "page" },
+      visitorId: "123e4567-e89b-42d3-a456-426614174002",
+      sessionId: "123e4567-e89b-42d3-a456-426614174003",
+    }));
+    const record = insert.mock.calls[0][0];
+    expect(record.visitor_id).toBeUndefined();
+    expect(record.event_id).toBeUndefined();
+    expect(record.event_data.measurementVersion).toBeUndefined();
+  });
+
+  it("rejects client attempts to set the server measurement version", async () => {
+    const response = await POST(request({
+      eventType: "style_view",
+      eventData: { slug: "neo-brutalist", source: "page", measurementVersion: 2 },
+    }));
+    expect(response.status).toBe(400);
+  });
+
+  it("gives different browsers on the same IP independent action budgets", async () => {
+    const counts = new Map<string, number>();
+    mockedCheckRateLimit.mockImplementation(({ namespace, key, limit }) => {
+      const bucket = `${namespace}:${key}`;
+      const count = (counts.get(bucket) ?? 0) + 1;
+      counts.set(bucket, count);
+      return { allowed: count <= limit, limit, remaining: Math.max(0, limit - count), resetAt: Date.now() + 60_000, retryAfterSec: 60 };
+    });
+    mockedGetRequestClientKey.mockReturnValue("ip:shared-office");
+    const insert = vi.fn().mockResolvedValue({ error: null });
+    mockedGetSupabaseAdmin.mockReturnValue({ from: vi.fn().mockReturnValue({ insert }) } as never);
+    const payload = {
+      eventType: "github_click", eventData: { location: "header" },
+      eventId: "123e4567-e89b-42d3-a456-426614174001",
+      visitorId: "123e4567-e89b-42d3-a456-426614174002",
+    };
+    for (let index = 0; index < 300; index += 1) {
+      expect((await POST(request(payload))).status).toBe(200);
+    }
+    expect((await POST(request(payload))).status).toBe(429);
+    expect((await POST(request({ ...payload, visitorId: "123e4567-e89b-42d3-a456-426614174003" }))).status).toBe(200);
+  });
+
+  it("keeps unidentified traffic bounded without a low site-wide visitor limit", async () => {
+    mockedGetRequestClientKey.mockReturnValue("ip:unknown");
+    mockedGetSupabaseAdmin.mockReturnValue({ from: vi.fn().mockReturnValue({ insert: vi.fn().mockResolvedValue({ error: null }) }) } as never);
+    await POST(request({ eventType: "github_click", eventData: { location: "header" } }));
+    expect(mockedCheckRateLimit).toHaveBeenCalledWith(expect.objectContaining({ key: "ip:unknown", limit: 60_000 }));
+  });
+
+  it("preserves event order when network requests arrive in reverse order", async () => {
+    const insert = vi.fn().mockResolvedValue({ error: null });
+    mockedGetSupabaseAdmin.mockReturnValue({ from: vi.fn().mockReturnValue({ insert }) } as never);
+    const earlier = new Date(Date.now() - 2000).toISOString();
+    const later = new Date(Date.now() - 1000).toISOString();
+    const base = { eventType: "style_view", eventData: { slug: "neo-brutalist", source: "page" } };
+    await POST(request({ ...base, eventId: "123e4567-e89b-42d3-a456-426614174001", occurredAt: later }));
+    await POST(request({ ...base, eventId: "123e4567-e89b-42d3-a456-426614174002", occurredAt: earlier }));
+    expect(insert.mock.calls[0][0].created_at).toBe(later);
+    expect(insert.mock.calls[1][0].created_at).toBe(earlier);
+  });
+
+  it.each([-6 * 60 * 1000, 2 * 60 * 1000])("uses receipt time for excessive client clock skew (%i ms)", async (skew) => {
+    const insert = vi.fn().mockResolvedValue({ error: null });
+    mockedGetSupabaseAdmin.mockReturnValue({ from: vi.fn().mockReturnValue({ insert }) } as never);
+    const before = Date.now();
+    await POST(request({
+      eventType: "style_view", eventData: { slug: "neo-brutalist", source: "page" },
+      eventId: "123e4567-e89b-42d3-a456-426614174001", occurredAt: new Date(before + skew).toISOString(),
+    }));
+    expect(Date.parse(insert.mock.calls[0][0].created_at)).toBeGreaterThanOrEqual(before);
+    expect(insert.mock.calls[0][0].event_data.timestampSource).toBe("server");
+  });
+
+  it.each<Record<string, string>>([{ dnt: "1" }, { "user-agent": "Googlebot" }, { referer: "https://stylekit.top/admin" }])(
+    "does not persist excluded traffic %j", async (headers) => {
+      const insert = vi.fn();
+      mockedGetSupabaseAdmin.mockReturnValue({ from: vi.fn().mockReturnValue({ insert }) } as never);
+      const response = await POST(request({
+        eventType: "style_view", eventData: { slug: "neo-brutalist", source: "page" },
+      }, headers));
+      expect(await response.json()).toMatchObject({ excluded: true });
+      expect(insert).not.toHaveBeenCalled();
+    },
+  );
+
   it("stores one prompt copy against the validated style without the prompt text", async () => {
     const insert = vi.fn().mockResolvedValue({ error: null });
     mockedGetSupabaseAdmin.mockReturnValue({ from: vi.fn().mockReturnValue({ insert }) } as never);
@@ -247,7 +365,7 @@ describe("analytics route", () => {
     expect(insert).not.toHaveBeenCalled();
   });
 
-  it("rate limits before parsing or storing the request", async () => {
+  it("rate limits valid bounded requests before storing them", async () => {
     mockedCheckRateLimit.mockReturnValue({
       allowed: false,
       limit: 300,
@@ -260,7 +378,7 @@ describe("analytics route", () => {
       from: vi.fn().mockReturnValue({ insert }),
     } as never);
 
-    const response = await POST(request("{invalid"));
+    const response = await POST(request({ eventType: "github_click", eventData: { location: "header" } }));
 
     expect(response.status).toBe(429);
     expect(insert).not.toHaveBeenCalled();
@@ -362,8 +480,8 @@ describe("analytics route", () => {
     expect(insert).not.toHaveBeenCalled();
   });
 
-  it("acknowledges catalog impressions without persisting passive telemetry", async () => {
-    const insert = vi.fn();
+  it("persists catalog impressions using a budget separate from deliberate actions", async () => {
+    const insert = vi.fn().mockResolvedValue({ error: null });
     mockedGetSupabaseAdmin.mockReturnValue({
       from: vi.fn().mockReturnValue({ insert }),
     } as never);
@@ -386,7 +504,8 @@ describe("analytics route", () => {
     );
 
     expect(response.status).toBe(200);
-    expect(insert).not.toHaveBeenCalled();
+    expect(insert).toHaveBeenCalledWith(expect.objectContaining({ event_type: "catalog_impression" }));
+    expect(mockedCheckRateLimit).toHaveBeenCalledWith(expect.objectContaining({ namespace: "analytics-passive" }));
   });
 
   it("accepts catalog-backed legacy usage and combinations", async () => {

@@ -6,6 +6,7 @@ import { Suspense, startTransition, useEffect, useMemo, useRef, useState } from 
 import { ArrowRight, Heart } from "lucide-react";
 import { useI18n } from "@/lib/i18n/context";
 import { HomeStyleCard } from "@/components/home/home-style-card";
+import { CatalogAnalytics } from "@/components/analytics/catalog-analytics";
 import { FeaturedCarousel } from "@/components/home/featured-carousel";
 import { RevealOnScroll } from "@/components/home/reveal-on-scroll";
 import { trackEvent } from "@/lib/analytics/events";
@@ -647,7 +648,7 @@ export function HomeContent({ styles, stats, thankYouEntries, allowAutomaticThan
             </Link>
           </RevealOnScroll>
 
-          <div className="-mx-4 flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-2 scrollbar-hide md:hidden [content-visibility:auto] [contain-intrinsic-size:1px_320px]">
+          <CatalogAnalytics surface="home" contextKey="home-mobile" className="-mx-4 flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-2 scrollbar-hide md:hidden [content-visibility:auto] [contain-intrinsic-size:1px_320px]">
             {mobileFeaturedStyles.map((style, styleIndex) => (
               <RevealOnScroll
                 key={style.slug}
@@ -656,18 +657,18 @@ export function HomeContent({ styles, stats, thankYouEntries, allowAutomaticThan
                 disableDelayOnMobile
                 className="w-[min(19rem,calc(100vw-2.5rem))] shrink-0 snap-start"
               >
-                <HomeStyleCard style={style} enableViewTransition={!isDesktopViewport} />
+                <HomeStyleCard style={style} analyticsRank={styleIndex + 1} enableViewTransition={!isDesktopViewport} />
               </RevealOnScroll>
             ))}
-          </div>
+          </CatalogAnalytics>
 
-          <div className="hidden md:grid md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-5 [content-visibility:auto] [contain-intrinsic-size:1px_680px]">
+          <CatalogAnalytics surface="home" contextKey="home-desktop" className="hidden md:grid md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-5 [content-visibility:auto] [contain-intrinsic-size:1px_680px]">
             {featuredStyles.map((style, styleIndex) => (
               <RevealOnScroll key={style.slug} variant="upSubtle" delayMs={60 + styleIndex * 30} disableDelayOnMobile>
-                <HomeStyleCard style={style} enableViewTransition={isDesktopViewport} />
+                <HomeStyleCard style={style} analyticsRank={styleIndex + 1} enableViewTransition={isDesktopViewport} />
               </RevealOnScroll>
             ))}
-          </div>
+          </CatalogAnalytics>
         </div>
       </section>
 

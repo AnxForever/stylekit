@@ -9,6 +9,11 @@ export const PROJECT_BRIEF_ANALYTICS_SIGNAL_VERSION = 2;
 const nullableNumber = z.number().nullable();
 
 export const analyticsOverviewSchema = z.object({
+  measurement: z.object({
+    collector: z.enum(["umami", "internal_legacy", "unknown"]),
+    visitorMetric: z.enum(["umami_identifier", "tab_session", "unknown"]),
+    fallback: z.boolean(),
+  }).optional(),
   range: z.object({
     start: z.string(),
     end: z.string(),

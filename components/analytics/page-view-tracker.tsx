@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { usePathname, useSearchParams } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { trackPageView } from "@/lib/analytics/events";
 
 const SEARCH_ENGINES = ["google.", "bing.com", "duckduckgo.com", "baidu.com", "yahoo.", "yandex."];
@@ -9,21 +9,22 @@ const SOCIAL_SOURCES = ["x.com", "twitter.com", "t.co", "linkedin.com", "faceboo
 
 export function PageViewTracker() {
   const pathname = usePathname();
-  const searchParams = useSearchParams();
   const lastTrackedRef = useRef<string>("");
 
   useEffect(() => {
     if (!pathname || typeof window === "undefined") return;
 
-    const query = searchParams?.toString();
-    const key = query ? `${pathname}?${query}` : pathname;
-    if (lastTrackedRef.current === key) return;
-    lastTrackedRef.current = key;
+    let restored = false;
+    const trackVisiblePage = () => {
+      if (document.visibilityState === "hidden" || (lastTrackedRef.current === pathname && !restored)) return;
+      const hostname = window.location.hostname;
+      // BFCache retains document.referrer from the original load; it cannot
+      // establish the source of a later history restoration.
+      const referrer = restored ? null : lastTrackedRef.current ? window.location.origin : document.referrer || null;
+      lastTrackedRef.current = pathname;
+      restored = false;
 
-    const referrer = document.referrer || null;
-    const hostname = window.location.hostname;
-
-    const trackCurrentPage = () => {
+      // Queue immediately: an idle callback cancelled during navigation loses PV.
       trackPageView({
         path: pathname,
         hostname,
@@ -31,20 +32,19 @@ export function PageViewTracker() {
         referrerType: classifyReferrer(referrer, hostname),
       });
     };
-
-    let idleId: number | null = null;
-    let timeoutId: number | null = null;
-    if (typeof window.requestIdleCallback === "function") {
-      idleId = window.requestIdleCallback(trackCurrentPage, { timeout: 1500 });
-    } else {
-      timeoutId = window.setTimeout(trackCurrentPage, 250);
-    }
-
-    return () => {
-      if (idleId !== null) window.cancelIdleCallback(idleId);
-      if (timeoutId !== null) window.clearTimeout(timeoutId);
+    const onPageShow = (event: PageTransitionEvent) => {
+      if (!event.persisted) return;
+      restored = true;
+      trackVisiblePage();
     };
-  }, [pathname, searchParams]);
+    trackVisiblePage();
+    document.addEventListener("visibilitychange", trackVisiblePage);
+    window.addEventListener("pageshow", onPageShow);
+    return () => {
+      document.removeEventListener("visibilitychange", trackVisiblePage);
+      window.removeEventListener("pageshow", onPageShow);
+    };
+  }, [pathname]);
 
   return null;
 }

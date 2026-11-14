@@ -4,6 +4,9 @@ import { act, cleanup, fireEvent, render, screen, waitFor } from "@testing-libra
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 const authState = vi.hoisted(() => ({ user: null as null | { id: string } }));
+const trackEventMock = vi.hoisted(() => vi.fn());
+
+vi.mock("@/lib/analytics/events", () => ({ trackEvent: trackEventMock }));
 
 vi.mock("@/lib/auth/use-user", () => ({
   useUser: () => ({ user: authState.user }),
@@ -67,6 +70,7 @@ function installFetch(
 }
 
 beforeEach(() => {
+  trackEventMock.mockReset();
   authState.user = null;
   window.localStorage.clear();
 });
@@ -123,6 +127,9 @@ describe("FavoritesProvider", () => {
     await act(async () => accountARead.resolve(jsonResponse({ success: true, favorites: ["editorial"] })));
     await act(async () => accountAWrite.resolve(jsonResponse({ success: true })));
     expect(screen.getByTestId("favorites").textContent).toBe("neo-brutalist");
+    expect(trackEventMock.mock.calls).toEqual([
+      ["style_favorite", { slug: "editorial", action: "add", storage: "local" }],
+    ]);
   });
 
   it("serializes rapid toggles of one slug and keeps the last requested value", async () => {
@@ -145,10 +152,16 @@ describe("FavoritesProvider", () => {
     expect(fetchMock.mock.calls.some(([, init]) => init?.method === "DELETE")).toBe(false);
     expect(screen.getByTestId("favorites").textContent).toBe("");
 
+    expect(trackEventMock).not.toHaveBeenCalled();
+
     await act(async () => post.resolve(jsonResponse({ success: true })));
     await waitFor(() => expect(fetchMock.mock.calls.some(([, init]) => init?.method === "DELETE")).toBe(true));
     await waitFor(() => expect(screen.getByTestId("mutation-status").textContent).toBe("false:false"));
     expect(screen.getByTestId("favorites").textContent).toBe("");
+    expect(trackEventMock.mock.calls).toEqual([
+      ["style_favorite", { slug: "glassmorphism", action: "add", storage: "account" }],
+      ["style_favorite", { slug: "glassmorphism", action: "remove", storage: "account" }],
+    ]);
   });
 
   it("does not let an older initial GET erase a favorite confirmed by a later write", async () => {
@@ -198,11 +211,16 @@ describe("FavoritesProvider", () => {
     expect(screen.getByTestId("favorites").textContent).toBe("");
     expect(screen.getByRole("button", { name: "error.retry" })).toBeTruthy();
     expect(getCount).toBe(2);
+    expect(trackEventMock).not.toHaveBeenCalled();
 
     fireEvent.click(screen.getByRole("button", { name: "error.retry" }));
     await waitFor(() => expect(screen.getByTestId("favorites").textContent).toBe("glassmorphism"));
     await waitFor(() => expect(screen.getByTestId("mutation-status").textContent).toBe("false:false"));
     expect(postCount).toBe(2);
+    expect(trackEventMock).toHaveBeenCalledTimes(1);
+    expect(trackEventMock).toHaveBeenCalledWith("style_favorite", {
+      slug: "glassmorphism", action: "add", storage: "account",
+    });
   });
 
   it("keeps anonymous intent in memory when localStorage fails and can retry persistence", async () => {
@@ -218,11 +236,45 @@ describe("FavoritesProvider", () => {
     expect(screen.getByTestId("favorites").textContent).toBe("glassmorphism");
     expect(screen.getByTestId("mutation-status").textContent).toBe("false:true");
     expect(fetchMock).not.toHaveBeenCalled();
+    expect(trackEventMock).not.toHaveBeenCalled();
 
     storageWrite.mockRestore();
     fireEvent.click(screen.getByRole("button", { name: "error.retry" }));
     await waitFor(() => expect(screen.getByTestId("mutation-status").textContent).toBe("false:false"));
     expect(screen.getByTestId("favorites").textContent).toBe("glassmorphism");
+    expect(trackEventMock).toHaveBeenCalledTimes(1);
+    expect(trackEventMock).toHaveBeenCalledWith("style_favorite", {
+      slug: "glassmorphism", action: "add", storage: "local",
+    });
+  });
+
+  it("does not count restored or repeated local favorite state as an action", () => {
+    render(tree());
+    fireEvent.click(screen.getByRole("button", { name: "Seed anonymous favorite" }));
+    fireEvent.click(screen.getByRole("button", { name: "Seed anonymous favorite" }));
+    expect(trackEventMock).toHaveBeenCalledTimes(1);
+    cleanup();
+    trackEventMock.mockClear();
+    render(tree());
+    expect(screen.getByTestId("favorites").textContent).toBe("editorial");
+    expect(trackEventMock).not.toHaveBeenCalled();
+  });
+
+  it("does not infer a successful action from reconciliation after a failed request", async () => {
+    let reads = 0;
+    const fetchMock = installFetch(async (_input, init) => {
+      if (init?.method === "POST") return jsonResponse({ success: false }, 503);
+      reads += 1;
+      return jsonResponse({ success: true, favorites: reads === 1 ? [] : ["glassmorphism"] });
+    });
+    authState.user = { id: "account-a" };
+    render(tree());
+    await waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(1));
+    fireEvent.click(screen.getByRole("button", { name: "Add to favorites" }));
+    await waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(3));
+    await waitFor(() => expect(screen.getByTestId("mutation-status").textContent).toBe("false:false"));
+    expect(screen.getByTestId("favorites").textContent).toBe("glassmorphism");
+    expect(trackEventMock).not.toHaveBeenCalled();
   });
 
 });

@@ -69,7 +69,7 @@ export function PromptCopyAnalyticsPanel({
   return (
     <AdminSection
       title="各风格提示词复制"
-      description="只统计复制成功的操作。每次成功复制计 1 次；会话是匿名标签页会话，不代表去重用户。"
+      description="只统计复制成功的操作。每次成功复制计 1 次；会话包含历史标签页和新版访问会话标识，不代表浏览器 UV。"
       actions={
         <AdminButton
           type="button"
@@ -134,12 +134,12 @@ export function PromptCopyAnalyticsPanel({
             <AdminPanel className="overflow-hidden">
               <div className="overflow-x-auto">
                 <table className="w-full min-w-[1120px] text-xs">
-                <caption className="sr-only">按风格统计的提示词复制次数和匿名标签页会话数</caption>
+                <caption className="sr-only">按风格统计的提示词复制次数和内部会话标识数</caption>
                 <thead className="border-b border-[var(--admin-border-soft)] text-left text-[var(--admin-text-secondary)]">
                   <tr>
                     <th scope="col" className="px-4 py-3 font-medium">风格</th>
                     <th scope="col" className="px-3 py-3 text-right font-medium">成功复制</th>
-                    <th scope="col" className="px-3 py-3 text-right font-medium">标签页会话</th>
+                    <th scope="col" className="px-3 py-3 text-right font-medium">内部会话标识</th>
                     <th scope="col" className="px-3 py-3 text-right font-medium">硬性提示词</th>
                     <th scope="col" className="px-3 py-3 text-right font-medium">柔性提示词</th>
                     <th scope="col" className="px-3 py-3 text-right font-medium">设计规范</th>

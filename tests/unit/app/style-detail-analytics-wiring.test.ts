@@ -23,7 +23,9 @@ describe("style detail analytics wiring", () => {
   });
 
   it("records each style view through one analytics path", () => {
-    expect(source.match(/trackEvent\("style_view"/g)).toHaveLength(1);
+    const tracker = readFileSync(path.join(process.cwd(), "components/analytics/style-page-tracker.tsx"), "utf8");
+    expect(source).not.toContain('trackEvent("style_view"');
+    expect(tracker).toContain('page.surface === "detail" ? "style_view" : "showcase_view"');
     expect(source).not.toContain('fetch("/api/analytics"');
   });
 });

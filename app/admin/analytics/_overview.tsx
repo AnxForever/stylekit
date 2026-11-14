@@ -12,6 +12,7 @@ import { useAnalyticsOverview } from "@/lib/swr";
 import { AnalyticsSectionNav, AnalyticsSyncStatus } from "./_content";
 import { useAnalyticsRangeState } from "./_range-state";
 import { InteractiveLineChart } from "./_interactive-line-chart";
+import { FirstPartyTrafficPanel } from "@/components/admin/style-insights-panel";
 
 export function AnalyticsOverviewPage({
   initialRange = "7d",
@@ -52,6 +53,8 @@ export function AnalyticsOverviewPage({
         </div>
       </AdminPanel>
 
+      <FirstPartyTrafficPanel range={range} />
+
       {isLoading && !data ? <OverviewSkeleton /> : null}
       {!data && error ? (
         <AdminErrorState
@@ -61,12 +64,17 @@ export function AnalyticsOverviewPage({
       ) : null}
       {data ? (
         <>
+          <AdminPanel className="p-4 text-xs leading-5 text-muted">
+            <p className="font-medium text-foreground">历史兼容流量概览 · {collectorLabel(data)}</p>
+            <p className="mt-1">下方保留原统计来源及历史趋势，与上方浏览器 UV 的识别方式不同，不能合并计算或直接比较。{data.measurement?.fallback ? "当前显示最近保留的快照，实时读取未成功。" : ""}</p>
+            {data.quality.status === "stale" ? <p className="mt-1">该来源的数据已过期，请以标注的更新时间为准。</p> : null}
+          </AdminPanel>
           <OverviewTrendPanel data={data} />
 
           <div className="grid gap-px overflow-hidden rounded-xl bg-[var(--admin-border-soft)] shadow-[var(--admin-shadow-border)] sm:grid-cols-2 xl:grid-cols-5">
             <OverviewMetric
               icon={Users}
-              label="标签页会话"
+              label={visitorLabel(data)}
               value={data.current.visitors}
               previous={data.previous.visitors}
             />
@@ -156,11 +164,24 @@ function OverviewMetric({
 function OverviewTrendPanel({ data }: { data: AnalyticsOverview }) {
   const [metric, setMetric] = useState<"visitors" | "pageViews">("visitors");
   const isVisitors = metric === "visitors";
-  return <AdminPanel className="p-5 sm:p-6"><div className="flex flex-wrap items-start justify-between gap-4"><div><h2 className="text-sm font-medium text-foreground">{isVisitors ? "标签页会话趋势" : "页面浏览趋势"}</h2><p className="mt-1 text-xs text-muted">{isVisitors ? "每个时间桶内去重后的标签页会话。同一人开多个标签页会分别计数，真实独立访客请看 Umami。" : "页面加载与站内路由切换产生的浏览次数。"}</p></div><MetricSwitch value={metric} onChange={setMetric} /></div><InteractiveLineChart ariaLabel={isVisitors ? "标签页会话趋势图" : "页面浏览趋势图"} primaryLabel={isVisitors ? "标签页会话" : "页面浏览"} secondaryLabel={isVisitors ? undefined : "上一周期"} secondaryIsComparison={!isVisitors} points={data.series.map((point) => ({ key: point.bucket, label: new Date(point.bucket).toLocaleString("zh-CN"), primary: isVisitors ? point.visitors : point.pageViews, secondary: isVisitors ? undefined : point.previousPageViews }))} /></AdminPanel>;
+  const visitorMetric = visitorLabel(data);
+  return <AdminPanel className="p-5 sm:p-6"><div className="flex flex-wrap items-start justify-between gap-4"><div><h2 className="text-sm font-medium text-foreground">{isVisitors ? `${visitorMetric}趋势` : "页面浏览趋势"}</h2><p className="mt-1 text-xs text-muted">{isVisitors ? "每个时间桶内按原来源标识去重；时间桶不能直接相加作为区间 UV，也不代表自然人数。" : "原来源记录的页面浏览次数。"}</p></div><MetricSwitch value={metric} onChange={setMetric} visitorMetric={visitorMetric} /></div><InteractiveLineChart ariaLabel={isVisitors ? `${visitorMetric}趋势图` : "页面浏览趋势图"} primaryLabel={isVisitors ? visitorMetric : "页面浏览"} secondaryLabel={isVisitors ? undefined : "上一周期"} secondaryIsComparison={!isVisitors} points={data.series.map((point) => ({ key: point.bucket, label: new Date(point.bucket).toLocaleString("zh-CN", { timeZone: "Asia/Shanghai" }), primary: isVisitors ? point.visitors : point.pageViews, secondary: isVisitors ? undefined : point.previousPageViews }))} /></AdminPanel>;
 }
 
-function MetricSwitch({ value, onChange }: { value: "visitors" | "pageViews"; onChange: (value: "visitors" | "pageViews") => void }) {
-  return <div className="inline-flex rounded-md bg-[var(--admin-input)] p-1 shadow-[var(--admin-shadow-border)]" role="group" aria-label="趋势指标">{([['visitors','标签页会话'],['pageViews','页面浏览']] as const).map(([metric,label]) => <button key={metric} type="button" aria-pressed={value === metric} onClick={() => onChange(metric)} className={`rounded px-3 py-1.5 text-xs transition-colors ${value === metric ? "bg-[var(--admin-panel)] text-foreground shadow-[var(--admin-shadow-small)]" : "text-muted hover:text-foreground"}`}>{label}</button>)}</div>;
+function MetricSwitch({ value, onChange, visitorMetric }: { value: "visitors" | "pageViews"; onChange: (value: "visitors" | "pageViews") => void; visitorMetric: string }) {
+  return <div className="inline-flex rounded-md bg-[var(--admin-input)] p-1 shadow-[var(--admin-shadow-border)]" role="group" aria-label="趋势指标">{([["visitors",visitorMetric],["pageViews","页面浏览"]] as const).map(([metric,label]) => <button key={metric} type="button" aria-pressed={value === metric} onClick={() => onChange(metric)} className={`rounded px-3 py-1.5 text-xs transition-colors ${value === metric ? "bg-[var(--admin-panel)] text-foreground shadow-[var(--admin-shadow-small)]" : "text-muted hover:text-foreground"}`}>{label}</button>)}</div>;
+}
+
+function visitorLabel(data: AnalyticsOverview): string {
+  if (data.measurement?.visitorMetric === "umami_identifier") return "Umami 访客标识";
+  if (data.measurement?.visitorMetric === "tab_session") return "内部会话标识";
+  return "原来源去重标识";
+}
+
+function collectorLabel(data: AnalyticsOverview): string {
+  if (data.measurement?.collector === "umami") return "Umami";
+  if (data.measurement?.collector === "internal_legacy") return "内部事件";
+  return "来源未确认";
 }
 
 function OverviewSkeleton() {

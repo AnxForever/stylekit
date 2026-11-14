@@ -29,7 +29,7 @@ const legalCopy: Record<Locale, Record<LegalDocument, LegalPageCopy>> = {
         {
           title: "Information the site handles",
           paragraphs: [
-            "Site analytics may include page paths, referring domains, campaign tags, event details, browser or device categories, and a session identifier. Search analytics record whether a search occurred, the query length, and the result count rather than the raw search text. Some community requests also store the request IP address alongside a submission, rating, or comment.",
+            "Site analytics may include page paths, referring domains, campaign tags, event details, browser or device categories, a random browser identifier, and a session identifier. Style analytics include visible card impressions, clicks, visible-page duration, scroll depth, and successful copy or export actions. Search analytics record whether a search occurred, the query length, and the result count rather than the raw search text. Some community requests also store the request IP address alongside a submission, rating, or comment.",
             "When you sign in, account data can include your email address, the identifier supplied by the sign-in provider, and profile details such as your display name or avatar. If you use Kit or workspace features, saved data can include selected items, project names and descriptions, project details you enter, selected styles, notes, revisions, and export-related records. Some preferences and saved items may remain only in your browser.",
             "Community comments, ratings, and submissions may include the content and profile details you provide. A submission may be shown in public galleries after review; submitted material may also be available to moderators. Newsletter sign-up stores the email address you submit. Feedback messages and any optional reply address are sent through the email service configured for that feature.",
             "When you use the AI style advisor, the project needs you enter are sent to the model service configured for that request so it can generate a response. Do not include confidential or sensitive personal information in an AI request.",
@@ -39,6 +39,7 @@ const legalCopy: Record<Locale, Record<LegalDocument, LegalPageCopy>> = {
           title: "Browser storage",
           paragraphs: [
             "The site uses browser storage for choices such as language, local favorites or Kit items, and analytics session or campaign context. Sign-in and specific features may also use cookies. Clearing browser storage can remove local preferences, but it does not by itself remove information already stored by a server or service provider.",
+            "First-party analytics store a random identifier in localStorage to recognize the same browser across tabs and visits; it is not linked to your account or a browser fingerprint. Clearing site storage resets this identifier. This collector respects Do Not Track and Global Privacy Control signals, and its version 2 event records have a 90-day retention window. Other enabled analytics providers use their own identification methods.",
           ],
         },
         {
@@ -118,7 +119,7 @@ const legalCopy: Record<Locale, Record<LegalDocument, LegalPageCopy>> = {
         {
           title: "网站处理的信息",
           paragraphs: [
-            "站内统计可能记录页面路径、来源域名、推广来源标记、操作事件、浏览器或设备类别，以及本次访问的会话标识。搜索统计记录是否发生搜索、查询长度和结果数量，不记录原始搜索词。部分社区操作还会将请求 IP 地址与投稿、评分或评论一并保存。",
+            "站内统计可能记录页面路径、来源域名、推广来源标记、操作事件、浏览器或设备类别、随机浏览器标识及访问会话标识。风格统计包括卡片可见曝光、点击、页面可见时长、滚动深度，以及成功的复制或导出操作。搜索统计记录是否发生搜索、查询长度和结果数量，不记录原始搜索词。部分社区操作还会将请求 IP 地址与投稿、评分或评论一并保存。",
             "登录时，账户信息可能包括邮箱、登录服务提供的账户标识，以及你填写的昵称或头像。使用 Kit 或 workspace 时，保存的信息可能包括已选素材、项目名称与说明、你填写的项目需求、所选风格、备注、版本记录和导出相关记录。部分偏好和收藏只保存在你的浏览器中。",
             "社区评论、评分和投稿可能包含你提交的内容和个人资料信息。投稿经审核后可能展示在公开作品区，也可能供审核人员查看。订阅通讯会保存你提交的邮箱；反馈内容及你自愿填写的回复邮箱会通过该功能配置的邮件服务发送。",
             "使用 AI 风格顾问时，你填写的项目需求会发送给该次请求所配置的模型服务以生成回答。请勿在 AI 输入中填写保密信息或敏感个人信息。",
@@ -128,6 +129,7 @@ const legalCopy: Record<Locale, Record<LegalDocument, LegalPageCopy>> = {
           title: "浏览器存储",
           paragraphs: [
             "网站会在浏览器中保存语言选择、本地收藏或 Kit 内容，以及统计所需的会话或推广来源信息。登录和具体功能也可能使用 Cookie。清除浏览器数据可以移除本地偏好，但不会自动删除已经保存在服务器或服务商处的信息。",
+            "一方统计在 localStorage 中保存随机标识，用于识别跨标签页和多次访问的同一浏览器，不关联账户或生成浏览器指纹；清除站点数据会重置该标识。这套采集遵循浏览器的 Do Not Track 和 Global Privacy Control 信号，第二版事件明细保留 90 天。其他启用的统计服务使用各自的识别方式。",
           ],
         },
         {

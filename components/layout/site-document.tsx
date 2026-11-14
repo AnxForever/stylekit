@@ -1,5 +1,5 @@
 /* eslint-disable @next/next/no-head-element -- Shared App Router document, rendered by root layouts; next/head is for the Pages Router. */
-import type { CSSProperties } from "react";
+import { Suspense, type CSSProperties } from "react";
 import type { Metadata, Viewport } from "next";
 import Script from "next/script";
 import {
@@ -11,6 +11,7 @@ import { ClientProviders } from "@/components/providers/client-providers";
 import { LazyCommandPalette } from "@/components/ui/lazy-command-palette";
 import { ScrollToTop } from "@/components/ui/scroll-to-top";
 import { ClientScripts } from "@/components/layout/client-scripts";
+import { UmamiAnalytics } from "@/components/analytics/umami-analytics";
 import { AnnouncementBanner } from "@/components/layout/announcement-banner";
 import { serializeJsonLd } from "@/lib/security/json-ld";
 import { getUmamiTrackerConfig } from "@/lib/analytics/umami-tracker-config";
@@ -207,12 +208,9 @@ export default async function SiteDocument({
           data-vc-auth-key="vc_web_ZQQOrQHyU2kzOgSc6cRs6RfyT_oRl1QxQaoRDU0n4ow"
         />
         {umamiTracker ? (
-          <Script
-            id="umami-analytics"
-            strategy="afterInteractive"
-            src={umamiTracker.scriptUrl}
-            data-website-id={umamiTracker.websiteId}
-          />
+          <Suspense fallback={null}>
+            <UmamiAnalytics src={umamiTracker.scriptUrl} websiteId={umamiTracker.websiteId} />
+          </Suspense>
         ) : null}
         {showcaseTypography ? (
           <link

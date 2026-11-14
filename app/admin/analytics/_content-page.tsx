@@ -10,6 +10,7 @@ import {
 import type { AnalyticsContent, AnalyticsEvents, AnalyticsRange } from "@/lib/admin/analytics-api-contract";
 import { useAnalyticsContent, useAnalyticsEvents } from "@/lib/swr";
 import { PromptCopyAnalyticsPanel } from "@/components/admin/prompt-copy-analytics-panel";
+import { StyleInsightsPanel } from "@/components/admin/style-insights-panel";
 import type { PromptCopyStyleLabel } from "@/lib/admin/prompt-copy-report";
 import type { PromptCopyAnalytics } from "@/lib/admin/prompt-copy-analytics";
 import { AnalyticsSectionNav, AnalyticsSyncStatus } from "./_content";
@@ -49,6 +50,8 @@ export function AnalyticsContentPage({ initialRange = "7d", initialData, initial
         </div>
       </AdminPanel>
 
+      <StyleInsightsPanel range={range} styles={promptCopyStyles} />
+
       <PromptCopyAnalyticsPanel
         range={range}
         styles={promptCopyStyles}
@@ -78,14 +81,14 @@ export function AnalyticsContentPage({ initialRange = "7d", initialData, initial
           </AdminPanel>
 
           <AdminPanel className="p-5 sm:p-6">
-            <SectionTitle title="自定义事件" description="像 Vercel Custom Events 一样，直接查看产品行为的事件次数与参与的标签页会话数。" />
+            <SectionTitle title="历史兼容事件汇总" description="包含新旧采集记录；会话标识的去重结果不代表浏览器 UV，风格转化请以上方新口径报表为准。" />
             {events.isLoading && !events.data ? <PageSkeleton /> : null}
             {events.data ? <EventRows rows={events.data} /> : null}
           </AdminPanel>
 
           <div className="grid gap-6 xl:grid-cols-[1.2fr_0.8fr]">
             <AdminPanel className="p-5 sm:p-6">
-              <SectionTitle title="热门风格" description="按全部有效产品行为排序，并拆出浏览、复制和导出。" />
+              <SectionTitle title="历史兼容热门风格" description="按全部有效产品行为排序；包含新旧记录和曝光权重，适合查阅历史，不作为风格转化排名。" />
               <div className="mt-5 space-y-1">
                 {content.data.topStyles.length === 0 ? (
                   <p className="text-sm text-muted">当前时间范围内暂无风格行为。</p>
@@ -141,7 +144,7 @@ export function AnalyticsContentPage({ initialRange = "7d", initialData, initial
 
 function EventRows({ rows }: { rows: AnalyticsEvents }) {
   if (rows.length === 0) return <p className="mt-5 text-sm text-muted">当前时间范围内暂无自定义事件。</p>;
-  return <div className="mt-5 divide-y divide-[var(--admin-border-soft)]">{rows.map((row) => <div key={row.event} className="grid grid-cols-[minmax(0,1fr)_auto] gap-4 py-3"><div className="min-w-0"><p className="truncate font-mono text-xs text-foreground">{row.event}</p><p className="mt-1 text-[11px] text-muted">{row.visitors.toLocaleString("zh-CN")} 个标签页会话 · {row.share.toFixed(1)}%</p></div><p className="font-mono text-sm tabular-nums text-foreground">{row.count.toLocaleString("zh-CN")}</p></div>)}</div>;
+  return <div className="mt-5 divide-y divide-[var(--admin-border-soft)]">{rows.map((row) => <div key={row.event} className="grid grid-cols-[minmax(0,1fr)_auto] gap-4 py-3"><div className="min-w-0"><p className="truncate font-mono text-xs text-foreground">{row.event}</p><p className="mt-1 text-[11px] text-muted">{row.visitors.toLocaleString("zh-CN")} 个内部会话标识 · {row.share.toFixed(1)}%</p></div><p className="font-mono text-sm tabular-nums text-foreground">{row.count.toLocaleString("zh-CN")}</p></div>)}</div>;
 }
 
 function SectionTitle({ title, description }: { title: string; description: string }) {

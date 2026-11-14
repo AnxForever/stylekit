@@ -79,8 +79,31 @@ const projectBriefShape = {
   source: z.literal("style_detail"),
 };
 
+const catalogShape = {
+  slug: slugSchema,
+  rank: z.number().int().positive().max(10_000),
+  surface: z.enum(["styles_catalog", "home", "collection", "search", "related_styles"]),
+  page: z.number().int().positive().max(10_000),
+  sort: z.string().trim().min(1).max(80).nullable(),
+  collection_slug: slugSchema.nullable(),
+  filter_count: z.number().int().nonnegative().max(100),
+  query_present: z.boolean(),
+};
+
 const clientEventDataSchemas = {
   style_view: eventDataSchema({ slug: slugSchema, source: shortStringSchema }),
+  showcase_view: eventDataSchema({ slug: slugSchema, source: z.literal("page") }),
+  style_engagement: eventDataSchema({
+    slug: slugSchema,
+    surface: z.enum(["detail", "showcase"]),
+    active_ms: z.number().int().min(0).max(1_800_000),
+    max_scroll_percent: z.number().int().min(0).max(100),
+  }),
+  style_favorite: eventDataSchema({
+    slug: slugSchema,
+    action: z.enum(["add", "remove"]),
+    storage: z.enum(["local", "account"]),
+  }),
   style_export: eventDataSchema({ slug: slugSchema, format: shortStringSchema }),
   code_copy: eventDataSchema({
     slug: slugSchema.nullable(),
@@ -134,22 +157,8 @@ const clientEventDataSchemas = {
   project_brief_download: eventDataSchema(projectBriefShape),
   pack_offer_view: eventDataSchema(packExperimentShape),
   pack_price_view: eventDataSchema(packPriceShape),
-  catalog_impression: eventDataSchema({
-    slug: slugSchema,
-    rank: z.number().int().positive().max(10_000),
-    surface: z.enum([
-      "styles_catalog",
-      "home",
-      "collection",
-      "search",
-      "related_styles",
-    ]),
-    page: z.number().int().positive().max(10_000),
-    sort: z.string().trim().min(1).max(80).nullable(),
-    collection_slug: slugSchema.nullable(),
-    filter_count: z.number().int().nonnegative().max(100),
-    query_present: z.boolean(),
-  }),
+  catalog_impression: eventDataSchema(catalogShape),
+  catalog_click: eventDataSchema(catalogShape),
 } satisfies Record<ClientEventName, z.ZodType>;
 
 const pageViewDataSchema = z
@@ -175,6 +184,9 @@ const envelopeSchema = z
     eventType: z.string().min(1).max(80),
     eventData: z.unknown(),
     sessionId: sessionIdSchema.optional().default(null),
+    visitorId: z.string().uuid().nullable().optional().default(null),
+    eventId: z.string().uuid().optional(),
+    occurredAt: z.string().datetime().optional(),
   })
   .strict();
 
@@ -184,6 +196,9 @@ export type ParsedClientAnalyticsPayload = {
   eventType: PublicAnalyticsEventName;
   eventData: Record<string, string | number | boolean | null>;
   sessionId: string | null;
+  visitorId: string | null;
+  eventId?: string;
+  occurredAt?: string;
 };
 
 const publicEventNames = new Set<string>([...CLIENT_EVENT_NAMES, "page_view"]);
@@ -212,6 +227,9 @@ export function parseClientAnalyticsPayload(
       eventType,
       eventData: eventData.data as Record<string, string | number | boolean | null>,
       sessionId: envelope.data.sessionId,
+      visitorId: envelope.data.eventId ? envelope.data.visitorId : null,
+      eventId: envelope.data.eventId,
+      occurredAt: envelope.data.occurredAt,
     },
   };
 }
@@ -222,6 +240,10 @@ export function readEventStyleSlug(
 ): string | null {
   if (
     eventType === "style_view" ||
+    eventType === "showcase_view" ||
+    eventType === "style_engagement" ||
+    eventType === "style_favorite" ||
+    eventType === "catalog_click" ||
     eventType === "style_export" ||
     eventType === "code_copy" ||
     eventType === "prompt_copy" ||

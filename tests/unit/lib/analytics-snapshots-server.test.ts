@@ -234,7 +234,12 @@ describe("analytics SSR snapshots", () => {
     expect(snapshot?.quality.generatedAt).toBe("2026-10-29T00:00:00.000Z");
     expect(response.headers.get("Cache-Control")).toBe("private, no-store");
     expect(body).toEqual(snapshot);
+    expect(body.measurement).toEqual({ collector: "umami", visitorMetric: "umami_identifier", fallback: false });
+    expect(body.quality.status).toBe("stale");
     expect(rpcMock).not.toHaveBeenCalled();
+    const cached = await getAnalyticsOverviewSnapshotResult("30d");
+    expect(cached.source).toBe("memory");
+    expect(cached.data?.measurement?.collector).toBe("umami");
   });
 
   it("marks a preserved persistent overview as stale and retries live sources next time", async () => {
@@ -243,7 +248,14 @@ describe("analytics SSR snapshots", () => {
     rpcMock.mockResolvedValue({ data: null, error: { code: "XX000" } });
 
     const result = await getAnalyticsOverviewSnapshotResult("24h");
-    expect(result).toEqual({ data: stale, source: "persistent_fallback" });
+    expect(result).toEqual({
+      data: {
+        ...stale,
+        measurement: { collector: "unknown", visitorMetric: "unknown", fallback: true },
+        quality: { ...stale.quality, status: "stale" },
+      },
+      source: "persistent_fallback",
+    });
     const response = await getOverviewApi(new Request("https://stylekit.top/api/admin/analytics/overview?range=24h"));
 
     expect(response.status).toBe(200);
