@@ -79,7 +79,7 @@ export function AdminSidebar() {
           open ? "visible translate-x-0" : "invisible -translate-x-full"
         }`}
       >
-        <div className="flex h-16 items-center justify-between px-4 shadow-[0_1px_0_0_var(--admin-border-soft)]">
+        <div className="flex h-16 shrink-0 items-center justify-between px-4 shadow-[0_1px_0_0_var(--admin-border-soft)]">
           <Link
             href="/admin/operations"
             className="flex min-w-0 items-center gap-2.5 rounded-md px-1 py-1"
@@ -105,7 +105,7 @@ export function AdminSidebar() {
           </button>
         </div>
 
-        <nav aria-label="管理后台导航" className="flex-1 space-y-1 px-3 py-4">
+        <nav aria-label="管理后台导航" className="min-h-0 flex-1 space-y-1 overflow-y-auto overscroll-contain px-3 py-4">
           {adminNavItems.map((item) => {
             if (item.external) {
               return (
@@ -156,7 +156,7 @@ export function AdminSidebar() {
           })}
         </nav>
 
-        <div className="p-3 shadow-[0_-1px_0_0_var(--admin-border-soft)]">
+        <div className="shrink-0 p-3 shadow-[0_-1px_0_0_var(--admin-border-soft)]">
           <button
             onClick={handleLogout}
             className="flex h-9 w-full items-center gap-3 rounded-md px-3 text-sm font-normal text-muted transition-colors hover:bg-[var(--admin-hover)] hover:text-foreground"
