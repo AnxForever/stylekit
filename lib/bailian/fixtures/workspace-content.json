@@ -1,0 +1,43 @@
+{
+  "sections": {
+    "sidebar": {
+      "appName": "收入控制台",
+      "navItems": "概览, 收入, 账户, 风险, 设置",
+      "activeItem": "概览"
+    },
+    "kpi": {
+      "sectionTitle": "本季度收入概览",
+      "kpi1Label": "月度经常性收入",
+      "kpi1Value": "¥486,200",
+      "kpi1Change": "+12.4%",
+      "kpi2Label": "活跃账户",
+      "kpi2Value": "2,418",
+      "kpi2Change": "+5.1%",
+      "kpi3Label": "待续约合同",
+      "kpi3Value": "37",
+      "kpi3Change": "-2.3%",
+      "kpi4Label": "风险账户占比",
+      "kpi4Value": "3.2%",
+      "kpi4Change": "-0.4%"
+    },
+    "charts": {
+      "chartTitle": "收入与目标",
+      "chartSummary": "比较每月实际收入与既定目标，标出需要追赶的月份。",
+      "chartLabels": "7月, 8月, 9月, 10月, 11月, 12月",
+      "primarySeriesLabel": "实际收入",
+      "primarySeriesValues": "42, 48, 53, 57, 66, 74",
+      "secondarySeriesLabel": "目标收入",
+      "secondarySeriesValues": "40, 45, 50, 56, 62, 70"
+    },
+    "table": {
+      "tableTitle": "待处理账户",
+      "columns": "客户, 计划, 月度收入, 风险等级, 负责人",
+      "rowCount": "5"
+    },
+    "footer": {
+      "copyright": "2026 收入控制台 · 仅供内部运营使用",
+      "version": "v1.0.0"
+    }
+  },
+  "note": "Replay plan: rewrite the dashboard copy for a revenue operations team."
+}

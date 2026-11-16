@@ -18,10 +18,13 @@ import {
 } from "@/lib/workspace/client-operations";
 
 type StyleOption = PickerStyle;
+type WorkspaceContent = Record<string, Record<string, string>>;
+type ContentSummaryEntry = { sectionId: string; sectionName: string; fieldId: string; label: string; value: string };
 type Project = {
   id: string; name: string; description: string; project_type: string; stack: string[];
   brief: { audience?: string; primaryGoal?: string; requiredPages?: string[]; requiredStates?: string[]; brandPersonality?: string[]; antiReferences?: string[]; notes?: string };
   selected_style_slug: string | null; status: "active" | "archived"; current_revision_number: number; updated_at: string;
+  content?: WorkspaceContent;
 };
 type Revision = { id: string; revision_number: number; source: string; change_summary: string | null; created_at: string; content_sha256: string };
 type ExportRow = { id: string; revision_number: number; artifact_sha256: string; file_count: number; status: string; verification: { filename?: string; target?: string }; created_at: string };
@@ -30,6 +33,7 @@ type Preview = {
   styleSlug: string;
   templateType: string;
   unsavedStyle: boolean;
+  unsavedContent: boolean;
   revisionNumber: number;
 };
 
@@ -66,6 +70,10 @@ export function WorkspaceProjectEditor({ projectId, styles, supportedStyles }: {
   const [previewError, setPreviewError] = useState<string | null>(null);
   const [previewBusy, setPreviewBusy] = useState(false);
   const [previewDevice, setPreviewDevice] = useState<PreviewDevice>("desktop");
+  const [contentDraft, setContentDraft] = useState<WorkspaceContent>({});
+  const [contentSummary, setContentSummary] = useState<ContentSummaryEntry[] | null>(null);
+  const [contentNote, setContentNote] = useState<string | null>(null);
+  const [contentBusy, setContentBusy] = useState(false);
   // Mirrors the uncontrolled projectType select once the user changes it, so
   // the style picker recommends by the type currently chosen in the form.
   const [projectTypeHint, setProjectTypeHint] = useState<string | null>(null);
@@ -80,6 +88,7 @@ export function WorkspaceProjectEditor({ projectId, styles, supportedStyles }: {
   const remoteConflictRef = useRef(false);
   const reconciliationRequiredRef = useRef(false);
   const writeGateRef = useRef(createWorkspaceWriteGate());
+  const previewRequestIdRef = useRef(0);
 
   const load = useCallback(async (options: LoadOptions = {}) => {
     loadControllerRef.current?.abort();
@@ -133,6 +142,9 @@ export function WorkspaceProjectEditor({ projectId, styles, supportedStyles }: {
         if (isFirstReadForProject) draftVersionRef.current = 0;
         setSelectedStyleSlug(nextProject.selected_style_slug ?? null);
         setProjectTypeHint(null);
+        setContentDraft(nextProject.content ?? {});
+        setContentSummary(null);
+        setContentNote(null);
         draftBaseRevisionRef.current = nextProject.current_revision_number;
         draftDirtyRef.current = false;
         setDraftDirty(false);
@@ -164,12 +176,18 @@ export function WorkspaceProjectEditor({ projectId, styles, supportedStyles }: {
   }, [projectId]);
 
   const loadPreview = useCallback(async (options: { styleSlug?: string | null } = {}) => {
-    const query = options.styleSlug ? "?style=" + encodeURIComponent(options.styleSlug) : "";
+    const requestId = ++previewRequestIdRef.current;
     setPreviewBusy(true);
     try {
+      // POST so the preview can show copy the user has not saved yet.
       const response = await fetch(
-        "/api/workspace/projects/" + projectId + "/preview" + query,
-        { cache: "no-store" }
+        "/api/workspace/projects/" + projectId + "/preview",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          cache: "no-store",
+          body: JSON.stringify({ styleSlug: options.styleSlug ?? null, content: contentDraft }),
+        }
       );
       const payload = await readWorkspaceResponse<{ preview?: Preview }>(response, "预览生成失败");
       if (!payload.preview || typeof payload.preview.html !== "string") {
@@ -178,14 +196,16 @@ export function WorkspaceProjectEditor({ projectId, styles, supportedStyles }: {
           code: "INVALID_PREVIEW_RESULT",
         });
       }
+      if (requestId !== previewRequestIdRef.current) return;
       setPreview(payload.preview);
       setPreviewError(null);
     } catch (previewFailure) {
+      if (requestId !== previewRequestIdRef.current) return;
       setPreviewError(workspaceTransportError(previewFailure, "预览生成失败").message);
     } finally {
-      setPreviewBusy(false);
+      if (requestId === previewRequestIdRef.current) setPreviewBusy(false);
     }
-  }, [projectId]);
+  }, [projectId, contentDraft]);
 
   useEffect(() => {
     mountedRef.current = true;
@@ -314,6 +334,7 @@ export function WorkspaceProjectEditor({ projectId, styles, supportedStyles }: {
       projectType: form.get("projectType"),
       stack: stackOptions.filter(([value]) => form.get("stack:" + value) === "on").map(([value]) => value),
       selectedStyleSlug: form.get("selectedStyleSlug") === NO_STYLE ? null : form.get("selectedStyleSlug") || null,
+      content: contentDraft,
       status: currentProject.status,
       brief: {
         audience: form.get("audience"),
@@ -410,6 +431,68 @@ export function WorkspaceProjectEditor({ projectId, styles, supportedStyles }: {
       if (ownsWrite(token)) reportWriteFailure(writeError, "生成失败");
     } finally {
       finishWrite(token);
+    }
+  }
+
+  async function fillContent() {
+    if (contentBusy) return;
+    setContentBusy(true);
+    setMessage(null);
+    setError(null);
+    try {
+      const request = async (mode: "live" | "replay") => {
+        const response = await fetch("/api/workspace/projects/" + projectId + "/content", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ mode }),
+        });
+        const payload = await readWorkspaceResponse<{
+          content?: unknown;
+          summary?: unknown;
+          fieldCount?: unknown;
+          note?: unknown;
+          source?: unknown;
+        }>(response, "界面文案生成失败");
+        return payload;
+      };
+      let payload;
+      let usedReplay = false;
+      try {
+        payload = await request("live");
+      } catch (liveError) {
+        // Without a configured model key the route answers 503; the fixture
+        // keeps the feature demonstrable instead of dead.
+        if (
+          liveError instanceof WorkspaceRequestError &&
+          liveError.status === 503 &&
+          liveError.code === "CONFIGURATION_ERROR"
+        ) {
+          usedReplay = true;
+          payload = await request("replay");
+        } else {
+          throw liveError;
+        }
+      }
+      const content = payload.content;
+      if (!content || typeof content !== "object" || Array.isArray(content)) {
+        throw new WorkspaceRequestError("文案结果不完整。", {
+          outcome: "rejected",
+          code: "INVALID_CONTENT_RESULT",
+        });
+      }
+      const draft = content as WorkspaceContent;
+      setContentDraft(draft);
+      setContentSummary(Array.isArray(payload.summary) ? (payload.summary as ContentSummaryEntry[]) : null);
+      setContentNote(typeof payload.note === "string" ? payload.note : null);
+      markDraftChanged();
+      setMessage(
+        "AI 已生成 " + countContent(draft) + " 项界面文案" + (usedReplay ? "（replay 示例）" : "") +
+        "，预览已更新；保存新版本后写入版本历史。"
+      );
+    } catch (contentError) {
+      setError(workspaceTransportError(contentError, "界面文案生成失败").message);
+    } finally {
+      setContentBusy(false);
     }
   }
 
@@ -518,6 +601,7 @@ export function WorkspaceProjectEditor({ projectId, styles, supportedStyles }: {
               <h2 className="font-medium">界面预览</h2>
               {preview ? <span data-testid="workspace-preview-meta" className="text-xs text-muted">{preview.styleSlug} · v{preview.revisionNumber}</span> : null}
               {preview?.unsavedStyle ? <span className="border border-amber-300 bg-amber-50 px-2 py-0.5 text-xs text-amber-900">未保存的风格</span> : null}
+              {preview?.unsavedContent ? <span data-testid="workspace-preview-unsaved-content" className="border border-amber-300 bg-amber-50 px-2 py-0.5 text-xs text-amber-900">未保存的文案</span> : null}
               {previewBusy ? <span className="text-xs text-muted">渲染中…</span> : null}
             </div>
             <div className="flex items-center gap-2">
@@ -575,7 +659,8 @@ export function WorkspaceProjectEditor({ projectId, styles, supportedStyles }: {
               }}
             />
             <section className="border border-border p-5"><h2 className="font-medium">风格参考</h2>{selectedStyleSlug ? <><p className="mt-2 text-sm text-muted">项目引用原风格，不复制或修改 Showcase。</p><Link className="mt-4 inline-block text-sm underline underline-offset-4" href={`/styles/${selectedStyleSlug}`}>查看风格详情</Link><br/><Link className="mt-2 inline-block text-sm underline underline-offset-4" href={`/styles/${selectedStyleSlug}/showcase`}>查看原 Showcase</Link></> : <p className="mt-2 text-sm text-muted">保存前可以选择一个现有风格方向。</p>}</section>
-            <section className="border border-border p-5"><h2 className="font-medium">真实生成</h2><p className="mt-2 text-sm text-muted">当前仅开放通过干净生产构建的 Next.js 数据后台与 4 个专用风格。</p><button type="button" onClick={() => void generate()} disabled={!canGenerate || writeBusy || remoteConflict || reconciliationRequired || project.current_revision_number === 0} className="mt-4 min-h-11 w-full border border-foreground px-3 text-sm font-medium disabled:opacity-40">{currentWrite?.kind === "generate" ? "正在生成…" : "生成 Next.js 工程"}</button>{!canGenerate ? <p className="mt-2 text-xs text-amber-700">当前项目类型或风格尚未通过工程验证，不会降级生成。</p> : null}{project.current_revision_number === 0 ? <p className="mt-2 text-xs text-muted">请先保存第一个项目版本。</p> : null}</section>
+            <section className="border border-border p-5"><h2 className="font-medium">界面文案</h2><p className="mt-2 text-sm text-muted">AI 按项目说明撰写各区块的标题、指标、列名和图表数据，结果随版本快照保存并进入生成的工程。</p><button type="button" onClick={() => void fillContent()} disabled={contentBusy || project.status === "archived" || project.project_type !== "dashboard"} className="mt-4 min-h-11 w-full border border-foreground px-3 text-sm font-medium disabled:opacity-40">{contentBusy ? "正在撰写…" : "AI 填充内容"}</button>{project.project_type !== "dashboard" ? <p className="mt-2 text-xs text-amber-700">当前只有数据后台模板可以填写界面文案。</p> : null}<p className="mt-2 text-xs text-muted">{countContent(contentDraft) > 0 ? "已填写 " + countContent(contentDraft) + " 项" + (preview?.unsavedContent ? "，尚未保存" : "") : "尚未填写自定义文案，生成时使用模板默认值。"}</p>{contentNote ? <p data-testid="workspace-content-note" className="mt-2 text-xs text-muted">{contentNote}</p> : null}{contentSummary && contentSummary.length > 0 ? <details data-testid="workspace-content-summary" className="mt-3 text-sm"><summary className="cursor-pointer text-xs underline">查看 AI 文案（{contentSummary.length} 项）</summary><ul className="mt-2 grid gap-1.5 text-xs">{contentSummary.map((entry) => <li key={entry.sectionId + "-" + entry.fieldId}><span className="text-muted">{entry.sectionName} · {entry.label}：</span>{entry.value}</li>)}</ul></details> : null}{countContent(contentDraft) > 0 ? <button type="button" onClick={() => { setContentDraft({}); setContentSummary(null); setContentNote(null); markDraftChanged(); setMessage("已清空草稿文案，保存新版本后生效。"); }} className="mt-3 text-xs underline">清空文案</button> : null}</section>
+            <section className="border border-border p-5"><h2 className="font-medium">真实生成</h2><p className="mt-2 text-sm text-muted">当前仅开放通过干净生产构建的 Next.js 数据后台与 4 个专用风格。</p><button type="button" onClick={() => void generate()} disabled={!canGenerate || writeBusy || remoteConflict || reconciliationRequired || project.current_revision_number === 0} className="mt-4 min-h-11 w-full border border-foreground px-3 text-sm font-medium disabled:opacity-40">{currentWrite?.kind === "generate" ? "正在生成…" : "生成 Next.js 工程"}</button>{!canGenerate ? <p className="mt-2 text-xs text-amber-700">当前项目类型或风格尚未通过工程验证，不会降级生成。</p> : null}{draftDirty ? <p className="mt-2 text-xs text-amber-700">生成使用已保存的版本内容；界面文案请先保存新版本。</p> : null}{project.current_revision_number === 0 ? <p className="mt-2 text-xs text-muted">请先保存第一个项目版本。</p> : null}</section>
             <section className="border border-border p-5"><h2 className="font-medium">版本历史</h2>{revisions.length === 0 ? <p className="mt-2 text-sm text-muted">保存后会生成第一个不可变版本。</p> : <ol className="mt-3 grid gap-3">{revisions.map((revision) => <li key={revision.id} className="border-t border-border pt-3"><div className="flex justify-between text-sm"><strong>v{revision.revision_number}</strong><span className="text-muted">{new Date(revision.created_at).toLocaleString("zh-CN")}</span></div><p className="mt-1 text-xs text-muted">{revision.change_summary || sourceLabel(revision.source)}</p><div className="mt-2 flex gap-3"><button type="button" className="text-xs underline disabled:opacity-40" disabled={writeBusy || remoteConflict || reconciliationRequired || revision.revision_number === project.current_revision_number} onClick={() => void restore(revision.revision_number)}>{currentWrite?.kind === "restore" ? "恢复中…" : "恢复为新版本"}</button>{revision.source === "generation" ? <button type="button" className="text-xs underline disabled:opacity-40" disabled={writeBusy || remoteConflict || reconciliationRequired} onClick={() => void createExport(revision.revision_number)}>{currentWrite?.kind === "export" ? "导出中…" : "创建并下载 ZIP"}</button> : null}</div></li>)}</ol>}</section>
             <section className="border border-border p-5"><h2 className="font-medium">导出记录</h2>{exports.length === 0 ? <p className="mt-2 text-sm text-muted">生成版本后才能创建可追溯导出。</p> : <ol className="mt-3 grid gap-3">{exports.map((item) => <li key={item.id} className="border-t border-border pt-3 text-xs"><div className="flex justify-between"><strong>v{item.revision_number} · {item.file_count} 文件</strong><span>{item.status}</span></div><code className="mt-1 block break-all text-muted">{item.artifact_sha256}</code><a className="mt-2 inline-block underline" href={`/api/workspace/exports/${item.id}/download`}>重新下载并校验</a></li>)}</ol>}</section>
           </aside>
@@ -587,5 +672,6 @@ export function WorkspaceProjectEditor({ projectId, styles, supportedStyles }: {
 }
 
 function split(value: FormDataEntryValue | null) { return String(value ?? "").split(/[，,\n]/).map((item) => item.trim()).filter(Boolean); }
+function countContent(content: WorkspaceContent) { return Object.values(content).reduce((total, section) => total + Object.keys(section).length, 0); }
 function sourceLabel(source: string) { return source === "restore" ? "从历史版本恢复" : source === "generation" ? "生成结果" : "手动保存"; }
 function Field({ label, children }: { label: string; children: React.ReactNode }) { return <label className="grid gap-1.5 text-sm"><span className="font-medium">{label}</span>{children}</label>; }

@@ -15,7 +15,7 @@ import {
 } from "@/lib/generator";
 import { getStyleBySlug } from "@/lib/styles";
 import type { KnowledgeAdvisorReference } from "@/lib/knowledge";
-import type { CreateWorkspaceProjectInput } from "./schema";
+import type { CreateWorkspaceProjectInput, WorkspaceContent } from "./schema";
 
 export const WORKSPACE_GENERATOR_VERSION = "workspace-generator-v1" as const;
 export const WORKSPACE_SUPPORTED_STYLES = [
@@ -27,6 +27,12 @@ export const WORKSPACE_SUPPORTED_STYLES = [
 
 type Target = "nextjs" | "react" | "html";
 type SupportedStyle = (typeof WORKSPACE_SUPPORTED_STYLES)[number];
+
+// Copy is optional for direct callers that only care about the template
+// defaults; parsed project rows and revision snapshots always carry it.
+type WorkspaceProjectInput = Omit<CreateWorkspaceProjectInput, "content"> & {
+  content?: WorkspaceContent;
+};
 
 export class WorkspaceGenerationError extends Error {
   constructor(public readonly code: "UNSUPPORTED_CAPABILITY" | "INVALID_PROJECT_BRIEF" | "GENERATION_QUALITY_FAILED", message: string) {
@@ -48,7 +54,7 @@ function requireSupportedStyle(slug: string | null): { slug: SupportedStyle; sty
   return { slug: slug as SupportedStyle, style };
 }
 
-function buildSections(templateType: TemplateType): SectionConfig[] {
+function buildSections(templateType: TemplateType, content?: WorkspaceContent): SectionConfig[] {
   const template = getTemplateByType(templateType);
   if (!template) throw new WorkspaceGenerationError("UNSUPPORTED_CAPABILITY", `模板 ${templateType} 不存在。`);
   return template.sections.map((section) => ({
@@ -57,7 +63,14 @@ function buildSections(templateType: TemplateType): SectionConfig[] {
     nameEn: section.nameEn,
     description: section.description,
     enabled: section.defaultEnabled,
-    content: Object.fromEntries(section.fields.map((field) => [field.id, field.defaultValue])),
+    // Saved copy wins over the template default. Unknown ids are ignored, so a
+    // revision written before a template change still renders.
+    content: Object.fromEntries(
+      section.fields.map((field) => [
+        field.id,
+        content?.[section.id]?.[field.id]?.trim() || field.defaultValue,
+      ])
+    ),
   }));
 }
 
@@ -69,7 +82,7 @@ function sha256(content: string): string {
 // like. Generation and preview both build it here, so a preview can never drift
 // from the code the user downloads.
 function buildConfig(
-  input: CreateWorkspaceProjectInput,
+  input: WorkspaceProjectInput,
   templateType: TemplateType,
   outputFormat: Target
 ) {
@@ -79,7 +92,7 @@ function buildConfig(
       styleSlug: selected.slug,
       templateType,
       outputFormat,
-      sections: buildSections(templateType),
+      sections: buildSections(templateType, input.content),
       globalContent: {
         siteName: input.name,
         siteDescription: input.description || input.brief.primaryGoal,
@@ -99,7 +112,7 @@ function buildConfig(
   };
 }
 
-export function generateWorkspaceProject(input: CreateWorkspaceProjectInput & {
+export function generateWorkspaceProject(input: WorkspaceProjectInput & {
   target: Target;
   generatedAt: string;
   knowledgeReferences?: KnowledgeAdvisorReference[];
@@ -147,7 +160,7 @@ export function generateWorkspaceProject(input: CreateWorkspaceProjectInput & {
  * not saved yet; it is validated against the same supported list.
  */
 export function buildWorkspacePreview(
-  input: CreateWorkspaceProjectInput,
+  input: WorkspaceProjectInput,
   options: { styleSlug?: string | null } = {}
 ) {
   const templateType = templateForProject(input.projectType);
