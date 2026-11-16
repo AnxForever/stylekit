@@ -32,6 +32,15 @@
   --muted: #6b7280;
   --border: #e5e5e5;
 
+  /* MDX figure ink. The framed figures in components/mdx draw with a single
+     accent plus three neutrals, so every figure stays in the site palette
+     instead of importing a second colour system. */
+  --graph-accent: var(--accent);
+  --graph-accent-2: var(--foreground);
+  --graph-accent-3: var(--muted);
+  --graph-frame: rgba(10, 10, 10, 0.22);
+  --graph-muted: var(--muted);
+
   /* Neo-Brutalist Colors */
   --brutal-pink: #ff006e;
   --brutal-green: #ccff00;
@@ -48,6 +57,12 @@
   --accent-foreground: #0a0a0a;
   --muted: #9ca3af;
   --border: #374151;
+
+  --graph-accent: var(--accent);
+  --graph-accent-2: var(--foreground);
+  --graph-accent-3: var(--muted);
+  --graph-frame: rgba(250, 250, 250, 0.24);
+  --graph-muted: var(--muted);
 }
 
 @theme inline {
@@ -57,6 +72,11 @@
   --color-accent-foreground: var(--accent-foreground);
   --color-muted: var(--muted);
   --color-border: var(--border);
+  --color-graph-accent: var(--graph-accent);
+  --color-graph-accent-2: var(--graph-accent-2);
+  --color-graph-accent-3: var(--graph-accent-3);
+  --color-graph-frame: var(--graph-frame);
+  --color-graph-muted: var(--graph-muted);
   --font-serif: var(--font-display-active);
   --font-sans: var(--font-body-active);
   --font-mono: var(--font-mono-active);
@@ -92,6 +112,38 @@
   --shadow-brutal-blue-card-lg: 12px 12px 0px 0px var(--brutal-blue);
   --shadow-brutal-yellow-card-lg: 12px 12px 0px 0px var(--brutal-yellow);
   --shadow-brutal-orange-card-lg: 12px 12px 0px 0px var(--brutal-orange);
+}
+
+/* Dashed rules for the MDX figures. Draw dashes with repeating gradients
+   rather than `border-style: dashed`, because the browser picks the dash
+   length there and every figure would frame itself differently. */
+@utility graph-frame {
+  background-image:
+    repeating-linear-gradient(to right, var(--graph-frame) 0 2px, transparent 2px 7px),
+    repeating-linear-gradient(to bottom, var(--graph-frame) 0 2px, transparent 2px 7px),
+    repeating-linear-gradient(to right, var(--graph-frame) 0 2px, transparent 2px 7px),
+    repeating-linear-gradient(to bottom, var(--graph-frame) 0 2px, transparent 2px 7px);
+  background-repeat: repeat-x, repeat-y, repeat-x, repeat-y;
+  background-position: 0 0, 100% 0, 0 100%, 0 0;
+  background-size: 100% 1px, 1px 100%, 100% 1px, 1px 100%;
+}
+
+@utility graph-rule {
+  height: 1px;
+  background-image: repeating-linear-gradient(
+    to right,
+    var(--graph-frame) 0 2px,
+    transparent 2px 7px
+  );
+}
+
+@utility graph-rule-y {
+  width: 1px;
+  background-image: repeating-linear-gradient(
+    to bottom,
+    var(--graph-frame) 0 2px,
+    transparent 2px 7px
+  );
 }
 
 /* Editorial/Magazine Typography.
