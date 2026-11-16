@@ -2,7 +2,16 @@
 
 import { useState } from "react";
 import { Search } from "lucide-react";
+import { FieldSelect, type SelectOption } from "../_components/field-select";
 import { contentItems, contentTypeColor, statusColor } from "../_data";
+
+const typeOptions: SelectOption[] = [
+  { value: "All", label: "All Types" },
+  { value: "Article", label: "Article" },
+  { value: "Video", label: "Video" },
+  { value: "Document", label: "Document" },
+  { value: "Gallery", label: "Gallery" },
+];
 
 export function ContentView() {
   const [contentSearch, setContentSearch] = useState("");
@@ -42,17 +51,13 @@ export function ContentView() {
             className="w-full pl-10 pr-4 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-indigo-400 transition-colors"
           />
         </div>
-        <select
+        <FieldSelect
+          ariaLabel="Filter by content type"
           value={typeFilter}
-          onChange={(e) => setTypeFilter(e.target.value)}
-          className="px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm text-gray-700 focus:outline-none focus:border-indigo-400 transition-colors"
-        >
-          <option value="All">All Types</option>
-          <option value="Article">Article</option>
-          <option value="Video">Video</option>
-          <option value="Document">Document</option>
-          <option value="Gallery">Gallery</option>
-        </select>
+          onValueChange={setTypeFilter}
+          options={typeOptions}
+          className="w-auto shrink-0"
+        />
       </div>
 
       <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">

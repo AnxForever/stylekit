@@ -1,7 +1,15 @@
 "use client";
 
 import { Search } from "lucide-react";
+import { FieldSelect, type SelectOption } from "../_components/field-select";
 import { statusColor, users } from "../_data";
+
+const statusOptions: SelectOption[] = [
+  { value: "All", label: "All Statuses" },
+  { value: "Active", label: "Active" },
+  { value: "Inactive", label: "Inactive" },
+  { value: "Suspended", label: "Suspended" },
+];
 
 interface UsersViewProps {
   selectedUsers: string[];
@@ -93,16 +101,13 @@ export function UsersView({
             className="w-full pl-10 pr-4 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-indigo-400 transition-colors"
           />
         </div>
-        <select
+        <FieldSelect
+          ariaLabel="Filter by status"
           value={statusFilter}
-          onChange={(e) => setStatusFilter(e.target.value)}
-          className="px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm text-gray-700 focus:outline-none focus:border-indigo-400 transition-colors"
-        >
-          <option value="All">All Statuses</option>
-          <option value="Active">Active</option>
-          <option value="Inactive">Inactive</option>
-          <option value="Suspended">Suspended</option>
-        </select>
+          onValueChange={setStatusFilter}
+          options={statusOptions}
+          className="w-auto shrink-0"
+        />
         {selectedUsers.length > 0 && (
           <span className="self-center text-sm text-indigo-600 font-medium">
             {selectedUsers.length} selected

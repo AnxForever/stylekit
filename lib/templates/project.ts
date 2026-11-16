@@ -125,6 +125,12 @@ function packageDependencies(slug: string): Record<string, string> {
     dependencies.clsx = "^2.1.1";
     dependencies["tailwind-merge"] = "^3.4.0";
   }
+  if (slug === "admin-panel") {
+    // The template's selects are built on ui-sdk's headless behavior, so the
+    // download has to install it. @ui-sdk/core is a peer of the react adapter.
+    dependencies["@ui-sdk/core"] = "^0.1.0-beta.5";
+    dependencies["@ui-sdk/react"] = "^0.1.0-beta.5";
+  }
   return dependencies;
 }
 
