@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
+import type { ComponentProps } from "react";
 import { notFound } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import { LocalizedLink } from "@/components/i18n/localized-link";
+import { mdxcnComponents, withMdxcn } from "@/components/mdx";
 import { getAllSlugs, getPostBySlug } from "@/lib/blog";
 import { serializeJsonLd } from "@/lib/security/json-ld";
 import { generateBlogPostJsonLd, generateBreadcrumbJsonLd } from "@/lib/seo/json-ld";
@@ -15,6 +17,11 @@ import { brandPreviewUrl } from "@/lib/brand/assets";
 interface BlogPostPageProps {
   params: Promise<{ slug: string }>;
 }
+
+type MDXComponents = NonNullable<ComponentProps<typeof MDXRemote>["components"]>;
+
+/** Built once: the map is static, so it should not be rebuilt per render. */
+const mdxComponents = withMdxcn(mdxcnComponents) as MDXComponents;
 
 export const dynamicParams = false;
 
@@ -114,7 +121,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             </header>
 
             <div className="prose prose-neutral dark:prose-invert max-w-none">
-              <MDXRemote source={post.content} />
+              <MDXRemote source={post.content} components={mdxComponents} />
             </div>
           </article>
         </main>

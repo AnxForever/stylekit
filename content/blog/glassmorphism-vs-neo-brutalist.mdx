@@ -9,6 +9,17 @@ tags: ["comparison", "glassmorphism", "neo-brutalist", "design"]
 
 Glassmorphism and Neo-Brutalism are two of the most distinctive visual styles in modern web design, and they could not be more different. One simulates light flowing through translucent glass; the other slams you with thick black borders and zero-blur shadows. Choosing between them is not just an aesthetic preference -- it depends on your audience, your content, and the experience you want to create. This guide breaks down both styles using real definitions from StyleKit's library so you can make an informed decision.
 
+<GraphCompare title="glass vs brutal" columns="Glassmorphism Neo-Brutalist">
+  <Row label="corner radius">rounded-3xl rounded-none</Row>
+  <Row label="shadow">blurred hard-offset</Row>
+  <Row label="border">white/20 4px-black</Row>
+  <Row label="backdrop blur">60px none</Row>
+  <Row label="body text">white/90 font-mono</Row>
+  <Row label="accent source">background ink</Row>
+</GraphCompare>
+
+Both are real StyleKit styles, so every value above is copied verbatim from their definitions rather than rounded off for the comparison.
+
 ## Glassmorphism: Light Through Glass
 
 Glassmorphism -- called "Liquid Glass" in StyleKit's library -- creates depth through translucency. The core technique layers semi-transparent backgrounds (`bg-white/15`) over rich gradient backdrops, then applies heavy gaussian blur (`backdrop-blur-[60px]`) and saturation boost (`backdrop-saturate-[180%]`) to make background colors feel alive behind the glass surface. Borders are subtle white lines (`border-white/20`) that brighten on hover. Corners are always generously rounded (`rounded-3xl`). Shadows are multi-layered, combining outer depth with inset highlights that simulate light hitting the glass from above.
@@ -27,7 +38,15 @@ Interactions in Neo-Brutalism are deliberately physical. StyleKit's implementati
 
 ## Accessibility Considerations
 
-Both styles require attention to accessibility, but in different ways. Glassmorphism's biggest challenge is text contrast. White text on a semi-transparent background can become unreadable if the underlying gradient shifts to a light color. StyleKit's Glassmorphism tokens address this by requiring `text-white` on backgrounds with sufficient opacity and blur, but you should always test with real content and varying viewport sizes. The style also relies heavily on `backdrop-filter`, which has good browser support today but may not render on older browsers -- plan a fallback.
+Both styles require attention to accessibility, but in different ways. Glassmorphism's biggest challenge is text contrast.
+
+<Callout type="warning" title="contrast">
+  White text on `bg-white/15` can fall under 4.5:1 the moment the gradient
+  behind it turns light. Test with real content over the actual backdrop, not
+  against a flat swatch.
+</Callout>
+
+StyleKit's Glassmorphism tokens address this by requiring `text-white` on backgrounds with sufficient opacity and blur, but you should always test with real content and varying viewport sizes. The style also relies heavily on `backdrop-filter`, which has good browser support today but may not render on older browsers -- plan a fallback.
 
 Neo-Brutalism has a natural advantage in contrast. Black borders on white backgrounds, bold font weights, and vivid accent colors produce high contrast ratios that typically exceed WCAG AA requirements without extra effort. The main accessibility concern is interaction feedback: the hard-cut hover transitions can feel jarring for users with vestibular sensitivities. Consider respecting `prefers-reduced-motion` by softening or disabling the snap transitions for users who request it. StyleKit's Neo-Brutalist definition notes that all interactive elements should have clear hover, active, and focus states -- which is good practice regardless of style.
 

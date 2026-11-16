@@ -13,6 +13,7 @@ Use the [codebase map](ARCHITECTURE.md) to find an implementation and the
 - [Workflow](#workflow)
 - [Code Style](#code-style)
 - [Adding a New Style](#adding-a-new-style)
+- [Writing a Blog Post](#writing-a-blog-post)
 - [Pull Request Process](#pull-request-process)
 - [Local Validation](#local-validation)
 - [Security](#security)
@@ -136,6 +137,35 @@ Modified files:
 - Showcase must have 12+ sections with interactive elements (useState)
 - Cover SVG must show miniaturized UI components, not just the style name
 - Run the test suite to verify all registrations are correct
+
+## Writing a Blog Post
+
+Posts live in `content/blog/*.mdx` and render through `app/blog/[slug]/page.tsx`
+with the figures in `components/mdx/`. Plain Markdown is upgraded automatically:
+
+````mdx
+> [!WARNING] contrast        -> a framed callout
+> quote text                 -> a framed quote when the last line is "— Name, Where"
+```console                    -> a terminal frame
+[^1] footnotes                -> a framed footnotes block
+````
+
+Figures are written as MDX tags:
+
+```mdx
+<GraphCompare title="glass vs brutal" columns="Glassmorphism Neo-Brutalist">
+  <Row label="corner radius">rounded-3xl rounded-none</Row>
+</GraphCompare>
+```
+
+**Props must be literal strings or booleans.** `next-mdx-remote` runs
+`removeJavaScriptExpressions` in RSC mode, which deletes every `prop={...}`
+before render — `<GraphCompare rows={[...]}>` renders an empty frame with no
+error. Pass data as children, where the parent reads one whitespace-separated
+token per column.
+
+Every figure also has to read correctly as plain Markdown on GitHub, where
+nothing is upgraded, so keep the children form instead of a prop-only API.
 
 ## Pull Request Process
 
