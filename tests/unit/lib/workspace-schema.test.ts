@@ -43,6 +43,35 @@ describe("StyleKit workspace project contract", () => {
     expect(hashWorkspaceSnapshot({ b: 2, a: 1 })).toBe(hashWorkspaceSnapshot({ a: 1, b: 2 }));
   });
 
+  it("defaults interface copy and keeps it inside the revision snapshot", () => {
+    const parsed = createWorkspaceProjectSchema.parse({
+      name: "客户数据后台",
+      projectType: "dashboard",
+    });
+    expect(parsed.content).toEqual({});
+
+    const revision = appendWorkspaceRevisionSchema.parse({
+      expectedRevisionNumber: 0,
+      snapshot: {
+        name: "客户数据后台",
+        projectType: "dashboard",
+        content: { kpi: { sectionTitle: "本季度收入概览" } },
+      },
+    });
+    expect(revision.snapshot.content).toEqual({ kpi: { sectionTitle: "本季度收入概览" } });
+
+    expect(
+      appendWorkspaceRevisionSchema.safeParse({
+        expectedRevisionNumber: 0,
+        snapshot: {
+          name: "客户数据后台",
+          projectType: "dashboard",
+          content: { "bad key": { sectionTitle: "X" } },
+        },
+      }).success
+    ).toBe(false);
+  });
+
   it("does not let a manual revision impersonate server generation", () => {
     const result = appendWorkspaceRevisionSchema.safeParse({
       expectedRevisionNumber: 0,

@@ -5,11 +5,16 @@ vi.mock("@/lib/auth/supabase-server", () => ({
   getAuthServerClient: vi.fn(),
 }));
 
-import { GET as getPreview } from "@/app/api/workspace/projects/[projectId]/preview/route";
+vi.mock("@/lib/security/request-origin", () => ({
+  verifyTrustedOrigin: vi.fn(),
+}));
+
+import { GET as getPreview, POST as postPreviewRoute } from "@/app/api/workspace/projects/[projectId]/preview/route";
 import {
   getAuthServerClient,
   getServerUser,
 } from "@/lib/auth/supabase-server";
+import { verifyTrustedOrigin } from "@/lib/security/request-origin";
 
 const PROJECT_ID = "11111111-1111-4111-8111-111111111111";
 const ROW = {
@@ -34,15 +39,30 @@ const ROW = {
 const mockedGetServerUser = vi.mocked(getServerUser);
 const mockedGetAuthServerClient = vi.mocked(getAuthServerClient);
 
-function authenticated(row: Record<string, unknown> | null, error: unknown = null) {
-  const maybeSingle = vi.fn().mockResolvedValue({ data: row, error });
-  const eq = vi.fn().mockReturnValue({ maybeSingle });
-  const select = vi.fn().mockReturnValue({ eq });
+function table(result: { data: unknown; error: unknown }) {
+  const chain = {
+    select: vi.fn(),
+    eq: vi.fn(),
+    maybeSingle: vi.fn().mockResolvedValue(result),
+  };
+  chain.select.mockReturnValue(chain);
+  chain.eq.mockReturnValue(chain);
+  return chain;
+}
+
+function authenticated(
+  row: Record<string, unknown> | null,
+  revision: { data: unknown; error: unknown } = { data: null, error: null }
+) {
+  const projects = table({ data: row, error: null });
+  const revisions = table(revision);
   mockedGetServerUser.mockResolvedValue({ id: "user-a" } as never);
   mockedGetAuthServerClient.mockResolvedValue({
-    from: vi.fn().mockReturnValue({ select }),
+    from: vi.fn((name: string) =>
+      name === "stylekit_project_revisions" ? revisions : projects
+    ),
   } as never);
-  return { select, eq, maybeSingle };
+  return { projects, revisions };
 }
 
 function previewRequest(query = "") {
@@ -52,12 +72,37 @@ function previewRequest(query = "") {
   );
 }
 
+function draftPreviewRequest(body: unknown) {
+  return new Request(
+    "https://stylekit.top/api/workspace/projects/" + PROJECT_ID + "/preview",
+    {
+      method: "POST",
+      headers: { "content-type": "application/json", origin: "https://stylekit.top" },
+      body: JSON.stringify(body),
+    }
+  );
+}
+
+const SAVED_REVISION = {
+  snapshot: {
+    name: ROW.name,
+    description: ROW.description,
+    projectType: "dashboard",
+    stack: ROW.stack,
+    brief: ROW.brief,
+    selectedStyleSlug: "neo-brutalist",
+    status: "active",
+    content: { kpi: { sectionTitle: "本季度收入概览" } },
+  },
+};
+
 const context = {
   params: Promise.resolve({ projectId: PROJECT_ID }),
 };
 
 beforeEach(() => {
   vi.clearAllMocks();
+  vi.mocked(verifyTrustedOrigin).mockReturnValue({ ok: true });
 });
 
 describe("/api/workspace/projects/[projectId]/preview", () => {
@@ -148,5 +193,60 @@ describe("/api/workspace/projects/[projectId]/preview", () => {
 
     expect(response.status).toBe(422);
     await expect(response.json()).resolves.toMatchObject({ success: false });
+  });
+
+  it("renders the copy saved in the current revision", async () => {
+    authenticated(ROW, { data: SAVED_REVISION, error: null });
+
+    const response = await getPreview(previewRequest(), context);
+
+    expect(response.status).toBe(200);
+    const payload = (await response.json()) as {
+      preview: { html: string; unsavedContent: boolean };
+    };
+    expect(payload.preview.unsavedContent).toBe(false);
+    expect(payload.preview.html).toContain("本季度收入概览");
+  });
+
+  it("renders copy the user has not saved yet and labels it as unsaved", async () => {
+    authenticated(ROW, { data: SAVED_REVISION, error: null });
+
+    const response = await postPreviewRoute(
+      draftPreviewRequest({ styleSlug: null, content: { kpi: { sectionTitle: "草稿标题" } } }),
+      context
+    );
+
+    expect(response.status).toBe(200);
+    const payload = (await response.json()) as {
+      preview: { html: string; unsavedContent: boolean; unsavedStyle: boolean };
+    };
+    expect(payload.preview.unsavedContent).toBe(true);
+    expect(payload.preview.unsavedStyle).toBe(false);
+    expect(payload.preview.html).toContain("草稿标题");
+    expect(payload.preview.html).not.toContain("本季度收入概览");
+  });
+
+  it("does not flag draft copy that matches the saved revision", async () => {
+    authenticated(ROW, { data: SAVED_REVISION, error: null });
+
+    const response = await postPreviewRoute(
+      draftPreviewRequest({ styleSlug: null, content: SAVED_REVISION.snapshot.content }),
+      context
+    );
+
+    const payload = (await response.json()) as { preview: { unsavedContent: boolean } };
+    expect(payload.preview.unsavedContent).toBe(false);
+  });
+
+  it("rejects a cross-origin draft preview before reading the project", async () => {
+    vi.mocked(verifyTrustedOrigin).mockReturnValue({ ok: false, status: 403, error: "请求来源不可信。" });
+    const client = { from: vi.fn() };
+    authenticated(ROW);
+    mockedGetAuthServerClient.mockResolvedValue(client as never);
+
+    const response = await postPreviewRoute(draftPreviewRequest({ styleSlug: null }), context);
+
+    expect(response.status).toBe(403);
+    expect(client.from).not.toHaveBeenCalled();
   });
 });
