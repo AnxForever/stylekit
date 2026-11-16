@@ -3,7 +3,6 @@ import {
   evaluateGeneratedFiles,
   generateHtmlFiles,
   generateNextjsFiles,
-  generatePreviewHtml,
   generateReactFiles,
   getTemplateByType,
   sanitizeGeneratorConfig,
@@ -15,7 +14,7 @@ import {
 } from "@/lib/generator";
 import { getStyleBySlug } from "@/lib/styles";
 import type { KnowledgeAdvisorReference } from "@/lib/knowledge";
-import type { CreateWorkspaceProjectInput, WorkspaceContent } from "./schema";
+import type { CreateWorkspaceProjectInput } from "./schema";
 
 export const WORKSPACE_GENERATOR_VERSION = "workspace-generator-v1" as const;
 export const WORKSPACE_SUPPORTED_STYLES = [
@@ -27,12 +26,6 @@ export const WORKSPACE_SUPPORTED_STYLES = [
 
 type Target = "nextjs" | "react" | "html";
 type SupportedStyle = (typeof WORKSPACE_SUPPORTED_STYLES)[number];
-
-// Copy is optional for direct callers that only care about the template
-// defaults; parsed project rows and revision snapshots always carry it.
-type WorkspaceProjectInput = Omit<CreateWorkspaceProjectInput, "content"> & {
-  content?: WorkspaceContent;
-};
 
 export class WorkspaceGenerationError extends Error {
   constructor(public readonly code: "UNSUPPORTED_CAPABILITY" | "INVALID_PROJECT_BRIEF" | "GENERATION_QUALITY_FAILED", message: string) {
@@ -54,7 +47,7 @@ function requireSupportedStyle(slug: string | null): { slug: SupportedStyle; sty
   return { slug: slug as SupportedStyle, style };
 }
 
-function buildSections(templateType: TemplateType, content?: WorkspaceContent): SectionConfig[] {
+function buildSections(templateType: TemplateType): SectionConfig[] {
   const template = getTemplateByType(templateType);
   if (!template) throw new WorkspaceGenerationError("UNSUPPORTED_CAPABILITY", `模板 ${templateType} 不存在。`);
   return template.sections.map((section) => ({
@@ -63,14 +56,7 @@ function buildSections(templateType: TemplateType, content?: WorkspaceContent): 
     nameEn: section.nameEn,
     description: section.description,
     enabled: section.defaultEnabled,
-    // Saved copy wins over the template default. Unknown ids are ignored, so a
-    // revision written before a template change still renders.
-    content: Object.fromEntries(
-      section.fields.map((field) => [
-        field.id,
-        content?.[section.id]?.[field.id]?.trim() || field.defaultValue,
-      ])
-    ),
+    content: Object.fromEntries(section.fields.map((field) => [field.id, field.defaultValue])),
   }));
 }
 
@@ -78,41 +64,7 @@ function sha256(content: string): string {
   return `sha256:${createHash("sha256").update(content).digest("hex")}`;
 }
 
-// The generator config is the single input that decides what a project looks
-// like. Generation and preview both build it here, so a preview can never drift
-// from the code the user downloads.
-function buildConfig(
-  input: WorkspaceProjectInput,
-  templateType: TemplateType,
-  outputFormat: Target
-) {
-  const selected = requireSupportedStyle(input.selectedStyleSlug);
-  const config: GeneratorConfig = sanitizeGeneratorConfig(
-    {
-      styleSlug: selected.slug,
-      templateType,
-      outputFormat,
-      sections: buildSections(templateType, input.content),
-      globalContent: {
-        siteName: input.name,
-        siteDescription: input.description || input.brief.primaryGoal,
-      },
-    },
-    getTemplateByType(templateType)
-  );
-  const validation = validateGeneratorConfig(config, getTemplateByType(templateType));
-  if (validation.errors.length > 0) {
-    throw new WorkspaceGenerationError("INVALID_PROJECT_BRIEF", validation.errors.map((issue) => issue.message).join(" "));
-  }
-  return {
-    config,
-    styleSlug: selected.slug,
-    style: selected.style,
-    warnings: validation.warnings.map((issue) => issue.message),
-  };
-}
-
-export function generateWorkspaceProject(input: WorkspaceProjectInput & {
+export function generateWorkspaceProject(input: CreateWorkspaceProjectInput & {
   target: Target;
   generatedAt: string;
   knowledgeReferences?: KnowledgeAdvisorReference[];
@@ -124,11 +76,25 @@ export function generateWorkspaceProject(input: WorkspaceProjectInput & {
       "当前只开放已完成干净安装与生产构建验证的 Next.js 数据后台。其他模板和目标不会降级冒充成功。",
     );
   }
-  const { config, styleSlug, style, warnings } = buildConfig(input, templateType, input.target);
+  const selected = requireSupportedStyle(input.selectedStyleSlug);
+  const config: GeneratorConfig = sanitizeGeneratorConfig({
+    styleSlug: selected.slug,
+    templateType,
+    outputFormat: input.target,
+    sections: buildSections(templateType),
+    globalContent: {
+      siteName: input.name,
+      siteDescription: input.description || input.brief.primaryGoal,
+    },
+  }, getTemplateByType(templateType));
+  const validation = validateGeneratorConfig(config, getTemplateByType(templateType));
+  if (validation.errors.length > 0) {
+    throw new WorkspaceGenerationError("INVALID_PROJECT_BRIEF", validation.errors.map((issue) => issue.message).join(" "));
+  }
   let files: GeneratedFile[];
-  if (input.target === "nextjs") files = generateNextjsFiles(config, { type: "builtin", style });
-  else if (input.target === "react") files = generateReactFiles(config, { type: "builtin", style });
-  else files = generateHtmlFiles(config, { type: "builtin", style });
+  if (input.target === "nextjs") files = generateNextjsFiles(config, { type: "builtin", style: selected.style });
+  else if (input.target === "react") files = generateReactFiles(config, { type: "builtin", style: selected.style });
+  else files = generateHtmlFiles(config, { type: "builtin", style: selected.style });
   files = files.map((file) => {
     if (file.name !== "stylekit.config.json") return file;
     const manifest = JSON.parse(file.content) as Record<string, unknown>;
@@ -144,45 +110,12 @@ export function generateWorkspaceProject(input: WorkspaceProjectInput & {
     engineVersion: WORKSPACE_GENERATOR_VERSION,
     target: input.target,
     templateType,
-    styleSlug,
+    styleSlug: selected.slug,
     knowledge: {
       schemaVersion: "knowledge-generation-context-v1" as const,
       references: input.knowledgeReferences ?? [],
     },
     files: files.map((file) => ({ ...file, sha256: sha256(file.content) })),
-    quality: { errors: quality.errors, warnings: [...warnings, ...quality.warnings] },
-  };
-}
-
-/**
- * Renders the same config into a single self-contained HTML document, for an
- * iframe. `styleSlug` lets the editor preview a style the user has picked but
- * not saved yet; it is validated against the same supported list.
- */
-export function buildWorkspacePreview(
-  input: WorkspaceProjectInput,
-  options: { styleSlug?: string | null } = {}
-) {
-  const templateType = templateForProject(input.projectType);
-  if (templateType !== "dashboard") {
-    throw new WorkspaceGenerationError(
-      "UNSUPPORTED_CAPABILITY",
-      "预览只覆盖已完成工程验证的 Next.js 数据后台。"
-    );
-  }
-  const override =
-    options.styleSlug && options.styleSlug !== input.selectedStyleSlug
-      ? options.styleSlug
-      : null;
-  const { config, styleSlug, style } = buildConfig(
-    { ...input, selectedStyleSlug: override ?? input.selectedStyleSlug },
-    templateType,
-    "html"
-  );
-  return {
-    html: generatePreviewHtml(config, { type: "builtin", style }),
-    templateType,
-    styleSlug,
-    unsavedStyle: override !== null,
+    quality: { errors: quality.errors, warnings: [...validation.warnings.map((issue) => issue.message), ...quality.warnings] },
   };
 }

@@ -10,36 +10,13 @@ import {
   createWorkspaceProjectSchema,
   generateWorkspaceProject,
   hashWorkspaceSnapshot,
-  workspaceRevisionSnapshotSchema,
   WorkspaceGenerationError,
-  type WorkspaceContent,
 } from "@/lib/workspace";
 
 const requestSchema = z.object({
   expectedRevisionNumber: z.number().int().min(0),
   target: z.enum(["nextjs", "react", "html"]),
 }).strict();
-
-type AuthClient = NonNullable<Awaited<ReturnType<typeof getAuthServerClient>>>;
-
-// Generation uses the copy saved with the current revision, so downloading
-// code never silently falls back to template defaults the user has replaced.
-async function readSavedContent(
-  client: AuthClient,
-  projectId: string,
-  revisionNumber: number
-): Promise<{ ok: boolean; content: WorkspaceContent }> {
-  const { data, error } = await client
-    .from("stylekit_project_revisions")
-    .select("snapshot")
-    .eq("project_id", projectId)
-    .eq("revision_number", revisionNumber)
-    .maybeSingle();
-  if (error) return { ok: false, content: {} };
-  if (!data) return { ok: false, content: {} };
-  const parsed = workspaceRevisionSnapshotSchema.safeParse(data.snapshot);
-  return { ok: parsed.success, content: parsed.success ? parsed.data.content : {} };
-}
 
 export async function POST(request: Request, { params }: { params: Promise<{ projectId: string }> }) {
   const origin = verifyTrustedOrigin(request);
@@ -70,8 +47,6 @@ export async function POST(request: Request, { params }: { params: Promise<{ pro
   if (row.current_revision_number !== parsed.data.expectedRevisionNumber) {
     return NextResponse.json({ success: false, error: "项目已更新，请刷新后再生成。", code: "PROJECT_REVISION_CONFLICT" }, { status: 409 });
   }
-  const saved = await readSavedContent(client, projectId, row.current_revision_number);
-  if (!saved.ok) return NextResponse.json({ success: false, error: "项目版本读取失败。" }, { status: 500 });
   const project = createWorkspaceProjectSchema.safeParse({
     name: row.name,
     description: row.description,
@@ -79,7 +54,6 @@ export async function POST(request: Request, { params }: { params: Promise<{ pro
     stack: row.stack,
     brief: row.brief,
     selectedStyleSlug: row.selected_style_slug,
-    content: saved.content,
   });
   if (!project.success) return NextResponse.json({ success: false, error: "项目规格不完整，无法生成。" }, { status: 422 });
   try {

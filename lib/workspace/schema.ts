@@ -31,22 +31,6 @@ export const workspaceBriefSchema = z
   })
   .strict();
 
-// Per-section copy for the generated interface, stored in the revision
-// snapshot so every AI-written title, KPI or column name stays traceable and
-// ships with the download. Shape-only validation lives here; the template-aware
-// rules (known section/field ids, list and chart-series coherence) live in
-// lib/workspace/content.ts.
-export const workspaceSectionKeySchema = z.string().regex(/^[a-zA-Z][a-zA-Z0-9_-]{0,39}$/);
-export const workspaceContentValueSchema = z.string().trim().min(1).max(240);
-
-export const workspaceContentSchema = z
-  .record(workspaceSectionKeySchema, z.record(workspaceSectionKeySchema, workspaceContentValueSchema))
-  .refine((value) => Object.keys(value).length <= 8, "最多只能填写 8 个区块。")
-  .refine(
-    (value) => Object.values(value).every((section) => Object.keys(section).length <= 40),
-    "每个区块最多只能填写 40 个字段。"
-  );
-
 export const createWorkspaceProjectSchema = z
   .object({
     name: z.string().trim().min(1).max(120),
@@ -63,7 +47,6 @@ export const createWorkspaceProjectSchema = z
       notes: "",
     }),
     selectedStyleSlug: z.string().trim().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/).nullable().default(null),
-    content: workspaceContentSchema.default({}),
   })
   .strict();
 
@@ -114,4 +97,3 @@ export const appendWorkspaceRevisionSchema = z
   .strict();
 
 export type CreateWorkspaceProjectInput = z.infer<typeof createWorkspaceProjectSchema>;
-export type WorkspaceContent = z.infer<typeof workspaceContentSchema>;

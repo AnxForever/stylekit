@@ -23,42 +23,7 @@ const project = {
   updated_at: "2026-07-11T01:00:00.000Z",
 };
 
-async function mockPreview(page: Page) {
-  await page.route(new RegExp(`/api/workspace/projects/${projectId}/preview`), async (route) => {
-    const request = route.request();
-    const posted =
-      request.method() === "POST"
-        ? (request.postDataJSON() as {
-            styleSlug?: string | null;
-            content?: Record<string, Record<string, string>>;
-          })
-        : null;
-    const styleSlug =
-      posted?.styleSlug ??
-      new URL(request.url()).searchParams.get("style") ??
-      project.selected_style_slug;
-    const heading = posted?.content?.kpi?.sectionTitle ?? project.name;
-    const unsavedContent = Boolean(posted?.content && Object.keys(posted.content).length > 0);
-    await route.fulfill({
-      status: 200,
-      contentType: "application/json",
-      body: JSON.stringify({
-        success: true,
-        preview: {
-          html: `<!DOCTYPE html><html><head><title>${project.name}</title></head><body><h1>${heading}</h1><p data-style="${styleSlug}">${styleSlug}</p></body></html>`,
-          styleSlug,
-          templateType: "dashboard",
-          unsavedStyle: styleSlug !== project.selected_style_slug,
-          unsavedContent,
-          revisionNumber: project.current_revision_number,
-        },
-      }),
-    });
-  });
-}
-
 async function mockWorkspace(page: Page) {
-  await mockPreview(page);
   await page.route("**/api/workspace/projects", async (route) => {
     if (route.request().method() === "POST") {
       await route.fulfill({ status: 201, contentType: "application/json", body: JSON.stringify({ success: true, project }) });
@@ -81,7 +46,6 @@ async function mockWorkspace(page: Page) {
 }
 
 async function mockWorkspaceLifecycle(page: Page) {
-  await mockPreview(page);
   let currentRevision = 2;
   const exportId = "44444444-4444-4444-8444-444444444444";
   const revisions = [
@@ -160,107 +124,6 @@ test.describe("StyleKit authenticated workspace", () => {
     await expect(page.getByRole("button", { name: "恢复为新版本" })).toHaveCount(2);
     await expect(page.getByRole("button", { name: "创建并下载 ZIP" })).toBeVisible();
     await expect(page.getByRole("link", { name: "查看原 Showcase" })).toHaveAttribute("href", "/styles/neo-brutalist/showcase");
-  });
-
-  test("renders the saved project in a sandboxed preview the user can resize", async ({ page }) => {
-    await mockWorkspace(page);
-    await page.goto(`/workspace/${projectId}`);
-
-    const preview = page.getByTestId("workspace-preview");
-    const frame = page.frameLocator('[data-testid="workspace-preview"]');
-    await expect(frame.getByRole("heading", { name: "客户数据后台" })).toBeVisible();
-    await expect(page.getByTestId("workspace-preview-meta")).toContainText("neo-brutalist");
-    await expect(preview).toHaveAttribute("sandbox", "");
-
-    const widths = page.getByRole("group", { name: "预览宽度" });
-    await expect(widths.getByRole("button", { name: "桌面" })).toHaveAttribute("aria-pressed", "true");
-    await widths.getByRole("button", { name: "手机" }).click();
-    await expect(widths.getByRole("button", { name: "手机" })).toHaveAttribute("aria-pressed", "true");
-    await expect.poll(async () => (await preview.boundingBox())?.width ?? 0).toBeLessThan(420);
-  });
-
-  test("writes AI copy into the preview and the saved revision snapshot", async ({ page }) => {
-    const aiContent = {
-      sidebar: { appName: "收入控制台" },
-      kpi: { sectionTitle: "本季度收入概览" },
-    };
-    const aiSummary = [
-      { sectionId: "sidebar", sectionName: "侧边导航", fieldId: "appName", label: "应用名称", value: "收入控制台" },
-      { sectionId: "kpi", sectionName: "KPI 指标", fieldId: "sectionTitle", label: "区块标题", value: "本季度收入概览" },
-    ];
-    await mockWorkspace(page);
-    const savedBodies: string[] = [];
-    page.on("request", (request) => {
-      if (request.method() === "POST" && request.url().endsWith("/revisions")) {
-        savedBodies.push(request.postData() ?? "");
-      }
-    });
-    await page.route(`**/api/workspace/projects/${projectId}/content`, async (route) => {
-      await route.fulfill({
-        status: 200,
-        contentType: "application/json",
-        body: JSON.stringify({
-          success: true,
-          source: "replay",
-          model: "fixture",
-          content: aiContent,
-          fieldCount: 2,
-          summary: aiSummary,
-          note: "Replay plan",
-        }),
-      });
-    });
-    await page.route(`**/api/workspace/projects/${projectId}/revisions`, async (route) => {
-      if (route.request().method() === "POST") {
-        await route.fulfill({
-          status: 201,
-          contentType: "application/json",
-          body: JSON.stringify({ success: true, revision: { revisionNumber: 3 } }),
-        });
-        return;
-      }
-      await route.fulfill({
-        status: 200,
-        contentType: "application/json",
-        body: JSON.stringify({ success: true, revisions: [] }),
-      });
-    });
-    await page.goto(`/workspace/${projectId}`);
-    // The preview meta is rendered by the client after hydration, and the
-    // advisor panel above this card reflows when its request resolves. Waiting
-    // for both keeps a click from landing during that reflow.
-    await expect(page.getByTestId("workspace-preview-meta")).toBeVisible();
-    await page.waitForLoadState("networkidle");
-
-    await expect(async () => {
-      await page.getByRole("button", { name: "AI 填充内容" }).click();
-      await expect(page.getByText(/AI 已生成 2 项界面文案/)).toBeVisible({ timeout: 3_000 });
-    }).toPass({ timeout: 20_000 });
-    await expect(page.getByText(/AI 已生成 2 项界面文案/)).toBeVisible();
-    await expect(page.getByTestId("workspace-preview-unsaved-content")).toBeVisible();
-    await expect(
-      page
-        .frameLocator('[data-testid="workspace-preview"]')
-        .getByRole("heading", { name: "本季度收入概览" })
-    ).toBeVisible();
-
-    await page.getByText("查看 AI 文案（2 项）").click();
-    await expect(
-      page.getByTestId("workspace-content-summary").getByText("本季度收入概览")
-    ).toBeVisible();
-
-    await page.getByRole("button", { name: "保存新版本" }).click();
-    await expect(page.getByText("版本 v3 已保存")).toBeVisible();
-    await expect
-      .poll(() => {
-        const saved = savedBodies.at(-1);
-        if (!saved) return null;
-        const snapshot = (JSON.parse(saved) as {
-          snapshot?: { content?: Record<string, Record<string, string>> };
-        }).snapshot;
-        return snapshot?.content?.kpi?.sectionTitle ?? null;
-      })
-      .toBe("本季度收入概览");
   });
 
   test("saves and restores by creating new immutable revision numbers", async ({ page }) => {

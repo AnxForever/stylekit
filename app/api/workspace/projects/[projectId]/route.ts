@@ -3,7 +3,7 @@ import { z } from "zod";
 import { getAuthServerClient, getServerUser } from "@/lib/auth/supabase-server";
 import { parseJsonBodyWithLimit } from "@/lib/security/json-body";
 import { verifyTrustedOrigin } from "@/lib/security/request-origin";
-import { updateWorkspaceProjectSchema, workspaceRevisionSnapshotSchema, type WorkspaceContent } from "@/lib/workspace";
+import { updateWorkspaceProjectSchema } from "@/lib/workspace";
 
 const projectIdSchema = z.uuid();
 type Context = { params: Promise<{ projectId: string }> };
@@ -16,25 +16,6 @@ async function context(params: Context["params"]) {
   return { projectId, user, client };
 }
 
-async function readSavedContent(
-  client: NonNullable<Awaited<ReturnType<typeof getAuthServerClient>>>,
-  projectId: string,
-  revisionNumber: number
-): Promise<{ ok: boolean; content: WorkspaceContent }> {
-  if (!Number.isInteger(revisionNumber) || revisionNumber < 1) {
-    return { ok: true, content: {} };
-  }
-  const { data, error } = await client
-    .from("stylekit_project_revisions")
-    .select("snapshot")
-    .eq("project_id", projectId)
-    .eq("revision_number", revisionNumber)
-    .maybeSingle();
-  if (error) return { ok: false, content: {} };
-  const parsed = workspaceRevisionSnapshotSchema.safeParse(data?.snapshot);
-  return { ok: true, content: parsed.success ? parsed.data.content : {} };
-}
-
 export async function GET(_request: Request, { params }: Context) {
   const resolved = await context(params);
   if ("response" in resolved) return resolved.response;
@@ -45,14 +26,7 @@ export async function GET(_request: Request, { params }: Context) {
     .maybeSingle();
   if (error) return NextResponse.json({ success: false, error: "项目读取失败。" }, { status: 500 });
   if (!data) return NextResponse.json({ success: false, error: "项目不存在。" }, { status: 404 });
-  // The saved interface copy lives in the current revision snapshot, not in a
-  // project column. The editor needs it to show what AI has already written and
-  // to decide whether the draft differs from what would be generated.
-  const content = await readSavedContent(resolved.client, resolved.projectId, data.current_revision_number);
-  if (!content.ok) {
-    return NextResponse.json({ success: false, error: "项目版本读取失败。" }, { status: 500 });
-  }
-  return NextResponse.json({ success: true, project: { ...data, content: content.content } }, { headers: { "Cache-Control": "private, no-store" } });
+  return NextResponse.json({ success: true, project: data }, { headers: { "Cache-Control": "private, no-store" } });
 }
 
 export async function PATCH(request: Request, { params }: Context) {
