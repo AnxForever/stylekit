@@ -819,6 +819,15 @@ export function generateDashboardCss(): string {
   padding: 2rem;
 }
 
+/* The base stylesheet pads <section> for landing pages. Dashboard sections are
+   stacked inside a padded column, so that padding only produced empty bands
+   between the KPI row and the charts. */
+.dashboard-kpi-section,
+.dashboard-chart-section,
+.dashboard-table-section {
+  padding: 0;
+}
+
 /* Dashboard Section Title */
 .dashboard-section-title {
   font-size: var(--font-size-2xl);
