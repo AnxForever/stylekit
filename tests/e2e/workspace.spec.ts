@@ -23,7 +23,30 @@ const project = {
   updated_at: "2026-07-11T01:00:00.000Z",
 };
 
+async function mockPreview(page: Page) {
+  await page.route(new RegExp(`/api/workspace/projects/${projectId}/preview`), async (route) => {
+    const styleSlug =
+      new URL(route.request().url()).searchParams.get("style") ??
+      project.selected_style_slug;
+    await route.fulfill({
+      status: 200,
+      contentType: "application/json",
+      body: JSON.stringify({
+        success: true,
+        preview: {
+          html: `<!DOCTYPE html><html><head><title>${project.name}</title></head><body><h1>${project.name}</h1><p data-style="${styleSlug}">${styleSlug}</p></body></html>`,
+          styleSlug,
+          templateType: "dashboard",
+          unsavedStyle: styleSlug !== project.selected_style_slug,
+          revisionNumber: project.current_revision_number,
+        },
+      }),
+    });
+  });
+}
+
 async function mockWorkspace(page: Page) {
+  await mockPreview(page);
   await page.route("**/api/workspace/projects", async (route) => {
     if (route.request().method() === "POST") {
       await route.fulfill({ status: 201, contentType: "application/json", body: JSON.stringify({ success: true, project }) });
@@ -46,6 +69,7 @@ async function mockWorkspace(page: Page) {
 }
 
 async function mockWorkspaceLifecycle(page: Page) {
+  await mockPreview(page);
   let currentRevision = 2;
   const exportId = "44444444-4444-4444-8444-444444444444";
   const revisions = [
@@ -124,6 +148,23 @@ test.describe("StyleKit authenticated workspace", () => {
     await expect(page.getByRole("button", { name: "恢复为新版本" })).toHaveCount(2);
     await expect(page.getByRole("button", { name: "创建并下载 ZIP" })).toBeVisible();
     await expect(page.getByRole("link", { name: "查看原 Showcase" })).toHaveAttribute("href", "/styles/neo-brutalist/showcase");
+  });
+
+  test("renders the saved project in a sandboxed preview the user can resize", async ({ page }) => {
+    await mockWorkspace(page);
+    await page.goto(`/workspace/${projectId}`);
+
+    const preview = page.getByTestId("workspace-preview");
+    const frame = page.frameLocator('[data-testid="workspace-preview"]');
+    await expect(frame.getByRole("heading", { name: "客户数据后台" })).toBeVisible();
+    await expect(page.getByTestId("workspace-preview-meta")).toContainText("neo-brutalist");
+    await expect(preview).toHaveAttribute("sandbox", "");
+
+    const widths = page.getByRole("group", { name: "预览宽度" });
+    await expect(widths.getByRole("button", { name: "桌面" })).toHaveAttribute("aria-pressed", "true");
+    await widths.getByRole("button", { name: "手机" }).click();
+    await expect(widths.getByRole("button", { name: "手机" })).toHaveAttribute("aria-pressed", "true");
+    await expect.poll(async () => (await preview.boundingBox())?.width ?? 0).toBeLessThan(420);
   });
 
   test("saves and restores by creating new immutable revision numbers", async ({ page }) => {
