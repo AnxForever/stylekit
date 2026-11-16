@@ -165,6 +165,20 @@ describe("buildWorkspaceContentPrompt", () => {
     expect(prompt).toContain("kpi1Label");
     expect(prompt).not.toContain("chartType");
   });
+
+  it("pins the app name, copyright year and version format so the model stops inventing them", () => {
+    const year = new Date().getFullYear();
+    const prompt = buildWorkspaceContentPrompt({
+      name: "客户数据后台",
+      description: "",
+      projectType: "dashboard",
+    });
+
+    expect(prompt).toContain(`当前年份：${year}`);
+    expect(prompt).toContain("不要直接照抄「客户数据后台」");
+    expect(prompt).toContain("footer.copyright 的年份必须是");
+    expect(prompt).toContain("v1.0.0");
+  });
 });
 
 describe("saved workspace copy", () => {

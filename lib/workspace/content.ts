@@ -19,6 +19,8 @@ export const WORKSPACE_CONTENT_SYSTEM_PROMPT = `你是资深 B2B 产品文案编
 - 每个值都是字符串；列表字段用英文逗号加空格分隔；数值序列只写数字。
 - 同一张图表的标签与两组数值数量必须一致，数值要和标签一一对应。
 - 文案贴合项目说明、目标用户和品牌调性，简洁、具体，不写口号式空话。
+- 应用名称要像独立产品名（2-6 个汉字，或品牌式英文），不要原样重复项目名称。
+- 版权行使用给定的当前年份；版本号使用 v1.0.0 这样的语义化格式，除非项目说明另有要求。
 - 不要输出 HTML、脚本、反引号、表情符号或占位符。`;
 
 const EXCLUDED_FIELD_IDS = new Set(["chartType"]);
@@ -197,10 +199,12 @@ export function workspaceContentSignature(content: WorkspaceContent): string {
 export function buildWorkspaceContentPrompt(project: WorkspaceContentBrief): string {
   const template = getTemplateByType("dashboard");
   const brief = project.brief ?? {};
+  const currentYear = new Date().getFullYear();
   const lines = [
     `请为下面这个「${template?.name ?? "数据后台"}」项目撰写界面文案。`,
     "",
     `项目名称：${project.name}`,
+    `当前年份：${currentYear}`,
     `项目说明：${project.description || "（未填写）"}`,
     `目标用户：${brief.audience || "（未填写）"}`,
     `主要目标：${brief.primaryGoal || "（未填写）"}`,
@@ -208,6 +212,9 @@ export function buildWorkspaceContentPrompt(project: WorkspaceContentBrief): str
     `品牌调性：${brief.brandPersonality?.length ? brief.brandPersonality.join("、") : "（未填写）"}`,
     `绝对不要：${brief.antiReferences?.length ? brief.antiReferences.join("、") : "（未填写）"}`,
     `其他约束：${brief.notes || "（未填写）"}`,
+    "",
+    `给 sidebar.appName 起一个产品名，不要直接照抄「${project.name}」。`,
+    `footer.copyright 的年份必须是 ${currentYear}；footer.version 使用 v1.0.0 格式，除非项目说明另有要求。`,
     "",
     "可填写字段（必须全部填写，只使用这些区块和字段 id）：",
   ];
