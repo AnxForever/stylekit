@@ -40,3 +40,5 @@ minimumReleaseAgeExclude:
   - next@16.4.5
   - '@next/eslint-plugin-next@16.4.5'
   - eslint-config-next@16.4.5
+  - '@ui-sdk/core@0.1.0-beta.5'
+  - '@ui-sdk/react@0.1.0-beta.5'
