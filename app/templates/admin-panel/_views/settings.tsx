@@ -3,6 +3,24 @@
 import { useState } from "react";
 import { CheckCircle } from "lucide-react";
 
+import { FieldSelect, type SelectOption } from "../_components/field-select";
+
+const timezoneOptions: SelectOption[] = [
+  { value: "UTC", label: "UTC" },
+  { value: "UTC+8", label: "UTC+8 (CST)" },
+  { value: "UTC-5", label: "UTC-5 (EST)" },
+  { value: "UTC-8", label: "UTC-8 (PST)" },
+  { value: "UTC+1", label: "UTC+1 (CET)" },
+];
+
+const languageOptions: SelectOption[] = [
+  { value: "en", label: "English" },
+  { value: "zh", label: "Chinese (Simplified)" },
+  { value: "ja", label: "Japanese" },
+  { value: "fr", label: "French" },
+  { value: "de", label: "German" },
+];
+
 export function SettingsView() {
   const [form, setForm] = useState({
     siteName: "StyleKit Admin",
@@ -42,36 +60,20 @@ export function SettingsView() {
           />
         </div>
         <div className="space-y-1">
-          <label className="block text-sm font-medium text-gray-700">
-            Timezone
-          </label>
-          <select
+          <FieldSelect
+            label="Timezone"
             value={form.timezone}
-            onChange={(e) => setForm({ ...form, timezone: e.target.value })}
-            className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm text-gray-700 focus:outline-none focus:border-indigo-400 transition-colors"
-          >
-            <option value="UTC">UTC</option>
-            <option value="UTC+8">UTC+8 (CST)</option>
-            <option value="UTC-5">UTC-5 (EST)</option>
-            <option value="UTC-8">UTC-8 (PST)</option>
-            <option value="UTC+1">UTC+1 (CET)</option>
-          </select>
+            onValueChange={(timezone) => setForm({ ...form, timezone })}
+            options={timezoneOptions}
+          />
         </div>
         <div className="space-y-1">
-          <label className="block text-sm font-medium text-gray-700">
-            Language
-          </label>
-          <select
+          <FieldSelect
+            label="Language"
             value={form.language}
-            onChange={(e) => setForm({ ...form, language: e.target.value })}
-            className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm text-gray-700 focus:outline-none focus:border-indigo-400 transition-colors"
-          >
-            <option value="en">English</option>
-            <option value="zh">Chinese (Simplified)</option>
-            <option value="ja">Japanese</option>
-            <option value="fr">French</option>
-            <option value="de">German</option>
-          </select>
+            onValueChange={(language) => setForm({ ...form, language })}
+            options={languageOptions}
+          />
         </div>
       </div>
 

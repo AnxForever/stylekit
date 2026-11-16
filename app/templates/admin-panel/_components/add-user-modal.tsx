@@ -3,6 +3,14 @@
 import { useState } from "react";
 import { CheckCircle, X } from "lucide-react";
 
+import { FieldSelect, type SelectOption } from "./field-select";
+
+const roleOptions: SelectOption[] = [
+  { value: "Viewer", label: "Viewer" },
+  { value: "Editor", label: "Editor" },
+  { value: "Admin", label: "Admin" },
+];
+
 interface AddUserModalProps {
   onClose: () => void;
 }
@@ -114,20 +122,12 @@ export function AddUserModal({ onClose }: AddUserModalProps) {
             </div>
 
             <div className="space-y-1">
-              <label className="block text-sm font-medium text-gray-700">
-                Role
-              </label>
-              <select
+              <FieldSelect
+                label="Role"
                 value={form.role}
-                onChange={(e) =>
-                  setForm({ ...form, role: e.target.value })
-                }
-                className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm text-gray-700 focus:outline-none focus:border-indigo-400 transition-colors"
-              >
-                <option value="Viewer">Viewer</option>
-                <option value="Editor">Editor</option>
-                <option value="Admin">Admin</option>
-              </select>
+                onValueChange={(role) => setForm({ ...form, role })}
+                options={roleOptions}
+              />
             </div>
 
             <div className="flex gap-3 pt-2">
