@@ -10,15 +10,19 @@ export type TemplateProjectMeta = {
   hasCustomizationGuide?: boolean;
 };
 
-// Templates import the site-only floating back button; a downloaded project
-// has no template list to go back to, so both the import and the JSX go away.
+// Templates import site-only chrome: the floating back button, which a
+// downloaded project has no template list for, and the ui-sdk agent bridge,
+// which exists to let an agent drive the demo on this site. Both the imports
+// and the JSX go away in the export.
 export function stripSiteOnlyCode(source: string): string {
   return source
     .split("\n")
     .filter(
       (line) =>
         !line.includes("components/templates/template-back-button") &&
-        !line.includes("<TemplateBackButton")
+        !line.includes("<TemplateBackButton") &&
+        !line.includes("components/templates/template-agent-bridge") &&
+        !line.includes("<TemplateAgentBridge")
     )
     .join("\n");
 }

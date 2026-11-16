@@ -19,6 +19,7 @@ import {
   CheckCircle,
 } from "lucide-react";
 import { TemplateBackButton } from "@/components/templates/template-back-button";
+import { TemplateAgentBridge } from "@/components/templates/template-agent-bridge";
 import { notifications } from "./_data";
 import { DashboardView } from "./_views/dashboard";
 import { UsersView } from "./_views/users";
@@ -216,6 +217,7 @@ export default function AdminPanelTemplate() {
       )}
 
       <TemplateBackButton variant="dark" />
+      <TemplateAgentBridge />
     </div>
   );
 }
