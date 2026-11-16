@@ -25,9 +25,22 @@ type Project = {
 };
 type Revision = { id: string; revision_number: number; source: string; change_summary: string | null; created_at: string; content_sha256: string };
 type ExportRow = { id: string; revision_number: number; artifact_sha256: string; file_count: number; status: string; verification: { filename?: string; target?: string }; created_at: string };
+type Preview = {
+  html: string;
+  styleSlug: string;
+  templateType: string;
+  unsavedStyle: boolean;
+  revisionNumber: number;
+};
 
 const stackOptions = [["nextjs","Next.js"],["react","React"],["typescript","TypeScript"],["tailwind","Tailwind CSS"],["shadcn","shadcn/ui"],["css-modules","CSS Modules"]] as const;
 const requiredStates = [["loading","加载"],["empty","空状态"],["error","错误"],["success","成功"],["disabled","禁用"]] as const;
+const previewDevices = [
+  { key: "desktop", label: "桌面", className: "w-full" },
+  { key: "tablet", label: "平板", className: "w-[768px]" },
+  { key: "phone", label: "手机", className: "w-[390px]" },
+] as const;
+type PreviewDevice = (typeof previewDevices)[number]["key"];
 
 type LoadOptions = {
   showLoading?: boolean;
@@ -49,6 +62,10 @@ export function WorkspaceProjectEditor({ projectId, styles, supportedStyles }: {
   const [remoteConflict, setRemoteConflict] = useState(false);
   const [reconciliationRequired, setReconciliationRequired] = useState(false);
   const [formResetVersion, setFormResetVersion] = useState(0);
+  const [preview, setPreview] = useState<Preview | null>(null);
+  const [previewError, setPreviewError] = useState<string | null>(null);
+  const [previewBusy, setPreviewBusy] = useState(false);
+  const [previewDevice, setPreviewDevice] = useState<PreviewDevice>("desktop");
   // Mirrors the uncontrolled projectType select once the user changes it, so
   // the style picker recommends by the type currently chosen in the form.
   const [projectTypeHint, setProjectTypeHint] = useState<string | null>(null);
@@ -146,6 +163,30 @@ export function WorkspaceProjectEditor({ projectId, styles, supportedStyles }: {
     }
   }, [projectId]);
 
+  const loadPreview = useCallback(async (options: { styleSlug?: string | null } = {}) => {
+    const query = options.styleSlug ? "?style=" + encodeURIComponent(options.styleSlug) : "";
+    setPreviewBusy(true);
+    try {
+      const response = await fetch(
+        "/api/workspace/projects/" + projectId + "/preview" + query,
+        { cache: "no-store" }
+      );
+      const payload = await readWorkspaceResponse<{ preview?: Preview }>(response, "预览生成失败");
+      if (!payload.preview || typeof payload.preview.html !== "string") {
+        throw new WorkspaceRequestError("预览结果不完整。", {
+          outcome: "rejected",
+          code: "INVALID_PREVIEW_RESULT",
+        });
+      }
+      setPreview(payload.preview);
+      setPreviewError(null);
+    } catch (previewFailure) {
+      setPreviewError(workspaceTransportError(previewFailure, "预览生成失败").message);
+    } finally {
+      setPreviewBusy(false);
+    }
+  }, [projectId]);
+
   useEffect(() => {
     mountedRef.current = true;
     projectIdRef.current = projectId;
@@ -159,6 +200,24 @@ export function WorkspaceProjectEditor({ projectId, styles, supportedStyles }: {
       loadControllerRef.current?.abort();
     };
   }, [load, projectId]);
+
+  // The preview follows the saved project, and also a style the user is still
+  // deciding on, so picking a style in the form shows it before anything is
+  // saved. Saving, generating or restoring bumps the project object, which
+  // re-renders the preview from server truth.
+  useEffect(() => {
+    if (!project || project.id !== projectId) return;
+    const unsavedStyle =
+      selectedStyleSlug && selectedStyleSlug !== project.selected_style_slug
+        ? selectedStyleSlug
+        : null;
+    if (!unsavedStyle && !project.selected_style_slug) return;
+    // Deferred so a style the user clicks past never sends its own request.
+    const timer = window.setTimeout(() => {
+      void loadPreview({ styleSlug: unsavedStyle });
+    }, 0);
+    return () => window.clearTimeout(timer);
+  }, [project, projectId, selectedStyleSlug, loadPreview]);
 
   function markDraftChanged() {
     draftVersionRef.current += 1;
@@ -451,6 +510,39 @@ export function WorkspaceProjectEditor({ projectId, styles, supportedStyles }: {
       <div className="mx-auto max-w-6xl px-6 py-8">
         <section aria-label="交付准备轨" className="mb-8 grid gap-px border border-border bg-border sm:grid-cols-5">
           {readiness.map(([label, complete]) => <div key={label} className="bg-background p-4"><span className={`mr-2 inline-block h-2 w-2 rounded-full ${complete ? "bg-green-600" : "bg-amber-500"}`} /><span className="text-sm">{label}</span><p className="mt-1 text-xs text-muted">{complete ? "已具备" : "待补充"}</p></div>)}
+        </section>
+
+        <section aria-label="界面预览" className="mb-8 border border-border">
+          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border px-4 py-3">
+            <div className="flex flex-wrap items-center gap-2">
+              <h2 className="font-medium">界面预览</h2>
+              {preview ? <span data-testid="workspace-preview-meta" className="text-xs text-muted">{preview.styleSlug} · v{preview.revisionNumber}</span> : null}
+              {preview?.unsavedStyle ? <span className="border border-amber-300 bg-amber-50 px-2 py-0.5 text-xs text-amber-900">未保存的风格</span> : null}
+              {previewBusy ? <span className="text-xs text-muted">渲染中…</span> : null}
+            </div>
+            <div className="flex items-center gap-2">
+              <div role="group" aria-label="预览宽度" className="flex border border-border">
+                {previewDevices.map((device) => (
+                  <button key={device.key} type="button" aria-pressed={previewDevice === device.key} onClick={() => setPreviewDevice(device.key)} className={`px-2.5 py-1 text-xs ${previewDevice === device.key ? "bg-foreground text-background" : "text-muted hover:text-foreground"}`}>{device.label}</button>
+                ))}
+              </div>
+              <button type="button" onClick={() => void loadPreview({ styleSlug: selectedStyleSlug && selectedStyleSlug !== project.selected_style_slug ? selectedStyleSlug : null })} disabled={previewBusy || (!project.selected_style_slug && !selectedStyleSlug)} className="min-h-8 border border-border px-3 text-xs disabled:opacity-40">{previewBusy ? "渲染中…" : "刷新预览"}</button>
+            </div>
+          </div>
+          {previewError ? <p role="alert" className="border-b border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">{previewError}</p> : null}
+          {!project.selected_style_slug && !selectedStyleSlug ? (
+            <p className="px-4 py-10 text-center text-sm text-muted">选择一个风格后，这里会渲染真实界面。</p>
+          ) : (
+            <div className="flex justify-center overflow-x-auto bg-neutral-100 p-4">
+              <iframe
+                title="项目界面预览"
+                data-testid="workspace-preview"
+                sandbox=""
+                srcDoc={preview?.html ?? ""}
+                className={`h-[520px] border border-border bg-white ${previewDevices.find((device) => device.key === previewDevice)?.className ?? "w-full"}`}
+              />
+            </div>
+          )}
         </section>
 
         <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_300px]">
