@@ -1,0 +1,10 @@
+{
+  "steps": [
+    {
+      "ref": "Filter by status",
+      "action": "setValue",
+      "args": ["Suspended"]
+    }
+  ],
+  "note": "Replay plan: set the status filter to Suspended."
+}
