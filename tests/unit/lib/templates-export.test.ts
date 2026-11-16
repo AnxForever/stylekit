@@ -38,6 +38,29 @@ describe("stripSiteOnlyCode", () => {
     const source = "export default function Page() {\n  return null;\n}\n";
     expect(stripSiteOnlyCode(source)).toBe(source);
   });
+
+  it("removes the agent bridge import and JSX", () => {
+    const source = [
+      '"use client";',
+      "",
+      'import { TemplateAgentBridge } from "@/components/templates/template-agent-bridge";',
+      "",
+      "export default function Page() {",
+      "  return (",
+      "    <main>",
+      "      <TemplateAgentBridge />",
+      "      <h1>Hello</h1>",
+      "    </main>",
+      "  );",
+      "}",
+    ].join("\n");
+
+    const stripped = stripSiteOnlyCode(source);
+
+    expect(stripped).not.toContain("TemplateAgentBridge");
+    expect(stripped).not.toContain("template-agent-bridge");
+    expect(stripped).toContain("<h1>Hello</h1>");
+  });
 });
 
 describe("buildScaffoldFiles", () => {
