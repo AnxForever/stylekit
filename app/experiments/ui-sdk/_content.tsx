@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 
+import "./_agent";
+
 import {
   Select,
   SelectContent,
@@ -40,9 +42,11 @@ export function UiSdkProbe() {
           ui-sdk 接入验证
         </h1>
         <p className="text-sm leading-6 text-[var(--muted)]">
-          这一页只验证两件事：headless 组件能否在 Next 16 的
-          App Router 里正常渲染并参与交互，以及能否用站点现有的 CSS
-          变量和 Tailwind 的 data-* 变体把它完全换成 StyleKit 的皮肤。
+          这一页验证三件事：headless 组件能否在 Next 16 的 App Router
+          里正常渲染并参与交互；能否用站点现有的 CSS 变量和 Tailwind 的 data-*
+          变体把它完全换成 StyleKit 的皮肤；以及 agent
+          桥能否读取并操作这些组件（开发时可通过 window.__uiAgent
+          调用 snapshot 和 act）。
         </p>
       </header>
 
@@ -83,6 +87,7 @@ export function UiSdkProbe() {
             </span>
           </span>
           <Switch
+            aria-label="允许 agent 播报变更"
             checked={agentAnnouncements}
             onCheckedChange={setAgentAnnouncements}
             className="relative h-6 w-11 shrink-0 rounded-full border border-[var(--border)] bg-[var(--muted)]/25 transition-colors data-checked:bg-[var(--foreground)]"
