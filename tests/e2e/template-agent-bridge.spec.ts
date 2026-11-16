@@ -37,3 +37,31 @@ test("admin-panel demo runs its agent self-check and can be driven by label", as
     page.getByRole("combobox", { name: "Filter by status" })
   ).toContainText("Suspended");
 });
+
+// The model is in the loop here: the page sends its bridge snapshot to the
+// route, the route resolves the plan against that same snapshot, and the page
+// executes it and checks the result. With no provider key configured the
+// route falls back to the replay plan, so the spec exercises the whole path
+// without a network call to a model.
+test("admin-panel demo executes a model plan through the bridge", async ({
+  page,
+}) => {
+  await page.goto("/templates/admin-panel?agent-check=1");
+
+  const panel = page.getByTestId("agent-check-panel");
+  await expect(page.getByTestId("agent-check-status")).toHaveText("PASS");
+
+  await page.getByTestId("agent-ai-run").click();
+
+  await expect(page.getByTestId("agent-ai-status")).toHaveText("PASS");
+  await expect(
+    panel.getByText(/replay \/ fixture · AI 1 步 \/ 人写 5 步/)
+  ).toBeVisible();
+  await expect(panel.getByText(/Replay plan/)).toBeVisible();
+
+  // The plan ran, was verified, and the page was restored afterwards.
+  await expect(page.locator("tbody tr")).toHaveCount(6);
+  await expect(
+    page.getByRole("combobox", { name: "Filter by status" })
+  ).toContainText("All");
+});

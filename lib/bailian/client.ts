@@ -80,13 +80,13 @@ function parseForScope(scope: StyleIntentScope, value: unknown): StyleIntent {
   return intent;
 }
 
-function stripJsonFence(value: string): string {
+export function stripJsonFence(value: string): string {
   const trimmed = value.trim();
   const match = trimmed.match(/^```(?:json)?\s*([\s\S]*?)\s*```$/i);
   return (match?.[1] ?? trimmed).trim();
 }
 
-function extractText(value: unknown): string {
+export function extractText(value: unknown): string {
   if (typeof value === "string") return value;
   if (!value || typeof value !== "object") return "";
 
