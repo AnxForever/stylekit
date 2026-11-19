@@ -117,7 +117,7 @@ export default async function ColorDetailPage({ params }: PageProps) {
       : `Use ${detail.hex} (${detail.rgbCss}, nearest Tailwind token ${detail.tailwind.token}) as an accent. Keep text contrast at least 4.5:1 — this color scores ${detail.contrast[0].ratio}:1 on white and ${detail.contrast[1].ratio}:1 on black.`;
 
   return (
-    <div className="flex min-h-screen flex-col bg-[#0a0a0f]">
+    <div className="dark flex min-h-screen flex-col bg-[#0a0a0f] text-foreground">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: serializeJsonLd(jsonLd) }}
